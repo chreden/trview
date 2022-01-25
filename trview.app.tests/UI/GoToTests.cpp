@@ -6,7 +6,7 @@
 using namespace trview;
 using namespace trview::mocks;
 using namespace trview::ui;
-
+/*
 TEST(GoTo, Name)
 {
     ui::Window parent(Size(), Colour::Transparent);
@@ -77,3 +77,4 @@ TEST(GoTo, Visible)
     ASSERT_FALSE(window.visible());
     ASSERT_FALSE(text_area->visible(true));
 }
+*/

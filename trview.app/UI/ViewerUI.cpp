@@ -69,7 +69,7 @@ namespace trview
 
         generate_tool_window(*ui_source);
 
-        _go_to = std::make_unique<GoTo>(*_control.get(), *ui_source);
+        _go_to = std::make_unique<GoTo>();
         _token_store += _go_to->on_selected += [&](uint32_t index)
         {
             if (_go_to->name() == L"Item")
@@ -291,6 +291,7 @@ namespace trview
         _camera_position->render();
         _settings_window->render();
         _context_menu->render();
+        _go_to->render();
     }
 
     void ViewerUI::set_alternate_group(uint32_t value, bool enabled)
