@@ -1,6 +1,4 @@
 #include "SettingsWindow.h"
-#include <external/imgui/imgui.h>
-#include <external/imgui/imgui_internal.h>
 
 using namespace trview::ui;
 

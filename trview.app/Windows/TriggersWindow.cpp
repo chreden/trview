@@ -1,9 +1,6 @@
 #include "TriggersWindow.h"
-#include <trview.app/Resources/resource.h>
 #include <trview.common/Strings.h>
 #include <trview.common/Windows/Clipboard.h>
-#include <external/imgui/imgui.h>
-#include <external/imgui/imgui_internal.h>
 
 // TODO
 // Most things

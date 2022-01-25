@@ -1,6 +1,5 @@
 #include "ViewOptions.h"
 #include "../Windows/IViewer.h"
-#include <external/imgui/imgui.h>
 
 namespace trview
 {

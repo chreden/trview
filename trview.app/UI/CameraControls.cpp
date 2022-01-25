@@ -1,5 +1,4 @@
 #include "CameraControls.h"
-#include <external/imgui/imgui.h>
 
 namespace trview
 {

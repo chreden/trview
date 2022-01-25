@@ -1,7 +1,5 @@
 #include "Viewer.h"
 
-#include <external/imgui/imgui.h>
-
 #include <trlevel/ILevel.h>
 #include <trview.graphics/RenderTargetStore.h>
 #include <trview.graphics/ISprite.h>

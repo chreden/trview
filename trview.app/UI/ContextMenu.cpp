@@ -1,6 +1,4 @@
 #include "ContextMenu.h"
-#include <external/imgui/imgui.h>
-#include <external/imgui/imgui_internal.h>
 
 // TODO: Only show context menu on clicks that weren't drags (rotations of the camera)
 

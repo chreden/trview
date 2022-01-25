@@ -1,5 +1,4 @@
 #include "ControlTracker.h"
-#include <external/imgui/imgui.h>
 
 namespace trview
 {
