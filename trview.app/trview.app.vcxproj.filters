@@ -1024,31 +1024,10 @@
     <None Include="Resources\Generated\ui_vertex_shader.cso">
       <Filter>Resources\Generated</Filter>
     </None>
-    <None Include="Resources\Files\UI\settings_window.json">
-      <Filter>Resources\Files\UI</Filter>
-    </None>
-    <None Include="Resources\Files\UI\camera_controls.json">
-      <Filter>Resources\Files\UI</Filter>
-    </None>
-    <None Include="Resources\Files\UI\view_options.json">
-      <Filter>Resources\Files\UI</Filter>
-    </None>
-    <None Include="Resources\Files\UI\items_window.json">
-      <Filter>Resources\Files\UI</Filter>
-    </None>
-    <None Include="Resources\Files\UI\triggers_window.json">
-      <Filter>Resources\Files\UI</Filter>
-    </None>
     <None Include="Resources\Files\UI\route_window.json">
       <Filter>Resources\Files\UI</Filter>
     </None>
     <None Include="Resources\Files\UI\rooms_window.json">
-      <Filter>Resources\Files\UI</Filter>
-    </None>
-    <None Include="Resources\Files\UI\context_menu.json">
-      <Filter>Resources\Files\UI</Filter>
-    </None>
-    <None Include="Resources\Files\UI\go_to.json">
       <Filter>Resources\Files\UI</Filter>
     </None>
     <None Include="Resources\Files\UI\level_info.json">
@@ -1058,9 +1037,6 @@
       <Filter>Resources\Files\UI</Filter>
     </None>
     <None Include="Resources\Files\UI\room_navigator.json">
-      <Filter>Resources\Files\UI</Filter>
-    </None>
-    <None Include="Resources\Files\UI\camera_position.json">
       <Filter>Resources\Files\UI</Filter>
     </None>
     <None Include="Resources\Files\UI\tool_window.json">

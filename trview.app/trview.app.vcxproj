@@ -357,20 +357,12 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <Text Include="Resources\Files\actions.json">
       <FileType>Document</FileType>
     </Text>
-    <None Include="Resources\Files\UI\camera_controls.json" />
-    <None Include="Resources\Files\UI\camera_position.json" />
     <None Include="Resources\Files\UI\console.json" />
-    <None Include="Resources\Files\UI\context_menu.json" />
-    <None Include="Resources\Files\UI\go_to.json" />
-    <None Include="Resources\Files\UI\items_window.json" />
     <None Include="Resources\Files\UI\level_info.json" />
     <None Include="Resources\Files\UI\rooms_window.json" />
     <None Include="Resources\Files\UI\room_navigator.json" />
     <None Include="Resources\Files\UI\route_window.json" />
-    <None Include="Resources\Files\UI\settings_window.json" />
     <None Include="Resources\Files\UI\tool_window.json" />
-    <None Include="Resources\Files\UI\triggers_window.json" />
-    <None Include="Resources\Files\UI\view_options.json" />
     <None Include="Resources\Generated\level_pixel_shader.cso" />
     <None Include="Resources\Generated\level_vertex_shader.cso" />
     <None Include="Resources\Generated\selection_pixel_shader.cso" />
