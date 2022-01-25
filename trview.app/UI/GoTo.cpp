@@ -27,12 +27,14 @@ namespace trview
     {
         if (_visible)
         {
-            auto viewport = ImGui::GetMainViewport();
-            auto final = viewport->Pos + viewport->Size * 0.5f;
-            ImGui::SetNextWindowPos(final, 0, ImVec2(0.5f, 0.5f));
-            if (ImGui::Begin((std::string("Go To ") + to_utf8(_name)).c_str(), &_visible,
-                ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoCollapse))
+            const auto viewport = ImGui::GetMainViewport();
+            ImGui::SetNextWindowPos(viewport->Pos + viewport->Size * 0.5f, 0, ImVec2(0.5f, 0.5f));
+
+            const std::string id = (std::string("Go To ") + to_utf8(_name));
+            ImGui::OpenPopup(id.c_str());
+            if (ImGui::BeginPopup(id.c_str(), 0))
             {
+                ImGui::Text(id.c_str());
                 if (ImGui::IsWindowAppearing())
                 {
                     ImGui::SetKeyboardFocusHere();
@@ -42,8 +44,14 @@ namespace trview
                     on_selected(_index);
                     _visible = false;
                 }
+
+                ImGui::EndPopup();
+                
+                if (ImGui::IsKeyPressed(ImGuiKey_Escape))
+                {
+                    _visible = false;
+                }
             }
-            ImGui::End();
         }
     }
 }
