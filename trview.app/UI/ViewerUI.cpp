@@ -274,7 +274,7 @@ namespace trview
         _view_options->on_scalar_changed += on_scalar_changed;
         _view_options->on_alternate_group += on_alternate_group;
 
-        _room_navigator = std::make_unique<RoomNavigator>(*tool_window, ui_source);
+        _room_navigator = std::make_unique<RoomNavigator>();
         _room_navigator->on_room_selected += on_select_room;
 
         _camera_controls->on_reset += on_camera_reset;
@@ -287,6 +287,7 @@ namespace trview
         _map_renderer->render();
         _ui_renderer->render();
         _view_options->render();
+        _room_navigator->render();
         _camera_controls->render();
         _camera_position->render();
         _settings_window->render();
@@ -413,7 +414,6 @@ namespace trview
     void ViewerUI::set_selected_room(const std::shared_ptr<IRoom>& room)
     {
         _room_navigator->set_selected_room(room->number());
-        _room_navigator->set_room_info(room->info());
         _map_renderer->load(room);
     }
 
