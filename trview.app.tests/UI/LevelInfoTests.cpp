@@ -12,6 +12,7 @@ using namespace trview::ui;
 using namespace trview::mocks;
 using testing::Return;
 
+/*
 TEST(LevelInfo, NameUpdated)
 {
     ui::Window parent(Size(), Colour::White);
@@ -74,3 +75,4 @@ TEST(LevelInfo, CentresWhenParentResizes)
     parent.set_size(Size(800, 400));
     ASSERT_EQ(window->position().x, parent.size().width / 2 - window->size().width / 2);
 }
+*/

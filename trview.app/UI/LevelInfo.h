@@ -8,23 +8,13 @@
 
 #include <string>
 #include <unordered_map>
-
 #include <trlevel/LevelVersion.h>
 #include <trview.graphics/Texture.h>
 #include <trview.common/Event.h>
-#include <trview.common/TokenStore.h>
 #include <trview.app/Graphics/ITextureStorage.h>
-#include <trview.ui/Control.h>
-#include <trview.ui/ILoader.h>
 
 namespace trview
 {
-    namespace ui
-    {
-        class Label;
-        class Image;
-    }
-
     /// The level info display shows the name of the current level as well
     /// as the game that the level was built for.
     class LevelInfo
@@ -37,11 +27,11 @@ namespace trview
             static const std::string settings;
         };
 
-        /// Creates an instance of the LevelInfo class. This will add UI elements to the 
-        /// control provided.
-        /// @param parent The control to which the instance will be added as a child.
+        /// Creates an instance of the LevelInfo class. 
         /// @param texture_storage Texture storage instance to use.
-        LevelInfo(ui::Control& parent, const ITextureStorage& texture_storage, const ui::ILoader& ui_source);
+        explicit LevelInfo(const ITextureStorage& texture_storage);
+
+        void render();
 
         /// Sets the name of the level.
         /// @param name The level name.
@@ -56,10 +46,8 @@ namespace trview
         Event<> on_toggle_settings;
     private:
         graphics::Texture get_version_image(trlevel::LevelVersion version) const;
-
-        ui::Label* _name;
-        ui::Image* _version;
         std::unordered_map<trlevel::LevelVersion, graphics::Texture> _version_textures;
-        TokenStore _token_store;
+        std::string _name{ "No Level" };
+        trlevel::LevelVersion _version{ trlevel::LevelVersion::Unknown };
     };
 }

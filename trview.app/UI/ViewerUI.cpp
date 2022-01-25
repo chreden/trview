@@ -107,7 +107,7 @@ namespace trview
         _context_menu->set_remove_enabled(false);
         _context_menu->set_hide_enabled(false);
 
-        _level_info = std::make_unique<LevelInfo>(*_control.get(), *texture_storage, *ui_source);
+        _level_info = std::make_unique<LevelInfo>(*texture_storage);
         _token_store += _level_info->on_toggle_settings += [&]() { _settings_window->toggle_visibility(); };
 
         _token_store += _settings_window->on_vsync += [&](bool value)
@@ -292,6 +292,7 @@ namespace trview
         _settings_window->render();
         _context_menu->render();
         _go_to->render();
+        _level_info->render();
     }
 
     void ViewerUI::set_alternate_group(uint32_t value, bool enabled)
