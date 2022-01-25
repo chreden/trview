@@ -1,5 +1,7 @@
 #include "GoTo.h"
+#define IMGUI_DEFINE_MATH_OPERATORS
 #include <external/imgui/imgui.h>
+#include <external/imgui/imgui_internal.h>
 
 namespace trview
 {
@@ -28,7 +30,11 @@ namespace trview
     {
         if (_visible)
         {
-            if (ImGui::Begin((std::string("Go To ") + to_utf8(_name)).c_str(), &_visible, ImGuiWindowFlags_AlwaysAutoResize))
+            auto viewport = ImGui::GetMainViewport();
+            auto final = viewport->Pos + viewport->Size * 0.5f;
+            ImGui::SetNextWindowPos(final, 0, ImVec2(0.5f, 0.5f));
+            if (ImGui::Begin((std::string("Go To ") + to_utf8(_name)).c_str(), &_visible,
+                ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoCollapse))
             {
                 if (ImGui::IsWindowAppearing())
                 {
