@@ -1,7 +1,5 @@
 #include "SettingsWindow.h"
 
-using namespace trview::ui;
-
 namespace trview
 {
     const std::string SettingsWindow::Names::vsync = "VSync";

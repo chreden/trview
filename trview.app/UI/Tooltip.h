@@ -1,29 +1,14 @@
 #pragma once
 
 #include <string>
-#include <trview.common/Point.h>
 #include <trview.common/Colour.h>
 
 namespace trview
 {
-    namespace ui
-    {
-        class TextArea;
-        class Control;
-    }
-
     /// Shows text in a floating control.
     class Tooltip final
     {
     public:
-        /// Create a new tooltip.
-        /// @param control The parent control.
-        explicit Tooltip(ui::Control& control);
-
-        /// Set the position of the tooltip. The tooltip will be offset so as not to cover the subject.
-        /// @param position The new location of the tooltip.
-        void set_position(const Point& position);
-
         /// Set the tooltip text.
         /// @param text The text to show.
         void set_text(const std::wstring& text);
@@ -38,8 +23,11 @@ namespace trview
 
         /// Gets whether the tooltip is visible.
         bool visible() const;
+
+        void render();
     private:
-        ui::Control* _container;
-        ui::TextArea* _area;
+        bool _visible{ false };
+        std::string _text;
+        Colour _colour{ Colour::White };
     };
 }

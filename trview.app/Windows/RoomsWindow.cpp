@@ -177,10 +177,6 @@ namespace trview
                 // Adjust mouse coordinates to be relative to what the map renderer thinks is going on.
                 auto ccp = client_cursor_position(window());
                 _map_renderer->set_cursor_position(ccp - _minimap->absolute_position() + _map_renderer->first());
-                if (_map_tooltip && _map_tooltip->visible())
-                {
-                    _map_tooltip->set_position(client_cursor_position(window()) - _minimap->parent()->absolute_position());
-                }
                 render_minimap();
             }
         };
@@ -204,7 +200,6 @@ namespace trview
                     std::wstring(L"Below: ") + std::to_wstring(sector->room_below());
             }
             _map_tooltip->set_text(text);
-            _map_tooltip->set_position(client_cursor_position(window()) - _minimap->parent()->absolute_position());
             _map_tooltip->set_visible(!text.empty());
         };
     }
@@ -245,7 +240,7 @@ namespace trview
         };
 
         _minimap = _ui->find<ui::Image>(Names::minimap);
-        _map_tooltip = std::make_unique<Tooltip>(*_minimap->parent());
+        _map_tooltip = std::make_unique<Tooltip>();
 
         _stats_box = _ui->find<Listbox>(Names::stats_listbox);
         _token_store += _stats_box->on_item_selected += [this](const auto& item)

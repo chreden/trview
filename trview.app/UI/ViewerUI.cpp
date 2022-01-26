@@ -34,10 +34,6 @@ namespace trview
         _token_store += _mouse.mouse_move += [&](long, long)
         {
             _map_renderer->set_cursor_position(client_cursor_position(_window));
-            if (_map_tooltip && _map_tooltip->visible())
-            {
-                _map_tooltip->set_position(client_cursor_position(_window));
-            }
         };
 
         _token_store += shortcuts->add_shortcut(true, 'G') += [&]()
@@ -91,8 +87,8 @@ namespace trview
             }
         };
 
-        _tooltip = std::make_unique<Tooltip>(*_control);
-        _map_tooltip = std::make_unique<Tooltip>(*_control);
+        _tooltip = std::make_unique<Tooltip>();
+        _map_tooltip = std::make_unique<Tooltip>();
 
         auto measure = std::make_unique<ui::Label>(Point(300, 100), Size(50, 30), Colour(1.0f, 0.2f, 0.2f, 0.2f), L"0", 8, graphics::TextAlignment::Centre, graphics::ParagraphAlignment::Centre);
         measure->set_visible(false);
@@ -224,7 +220,6 @@ namespace trview
                     std::wstring(L"Below: ") + std::to_wstring(sector->room_below());
             }
             _map_tooltip->set_text(text);
-            _map_tooltip->set_position(client_cursor_position(_window));
             _map_tooltip->set_visible(!text.empty());
         };
     }
@@ -280,6 +275,8 @@ namespace trview
 
     void ViewerUI::render()
     {
+        _tooltip->render();
+        _map_tooltip->render();
         _map_renderer->render();
         _ui_renderer->render();
         _view_options->render();
@@ -377,7 +374,6 @@ namespace trview
         {
             _map_tooltip->set_visible(false);
             _tooltip->set_text(result.text);
-            _tooltip->set_position(info.screen_position);
             _tooltip->set_text_colour(pick_to_colour(result));
         }
     }
