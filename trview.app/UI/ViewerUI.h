@@ -16,7 +16,6 @@
 #include <trview.ui/Input.h>
 #include <trview.ui.render/IRenderer.h>
 #include <trview.ui.render/IMapRenderer.h>
-#include <trview.ui/ILoader.h>
 
 namespace trview
 {
@@ -32,8 +31,7 @@ namespace trview
             std::unique_ptr<ISettingsWindow> settings_window,
             std::unique_ptr<IViewOptions> view_options,
             std::unique_ptr<IContextMenu> context_menu,
-            std::unique_ptr<ICameraControls> camera_controls,
-            const std::shared_ptr<ui::ILoader>& ui_source);
+            std::unique_ptr<ICameraControls> camera_controls);
         virtual ~ViewerUI() = default;
         virtual void clear_minimap_highlight() override;
         virtual std::shared_ptr<ISector> current_minimap_sector() const override;

@@ -8,7 +8,6 @@
 #include "ContextMenu.h"
 #include "CameraControls.h"
 #include <trview.common/Resources.h>
-#include <trview.ui/ILoader.h>
 
 namespace trview
 {
@@ -41,8 +40,7 @@ namespace trview
                         injector.create<std::unique_ptr<ISettingsWindow>>(),
                         injector.create<std::unique_ptr<IViewOptions>>(),
                         injector.create<std::unique_ptr<IContextMenu>>(),
-                        injector.create<std::unique_ptr<ICameraControls>>(),
-                        injector.create<std::shared_ptr<ui::ILoader>>());
+                        injector.create<std::unique_ptr<ICameraControls>>());
                 })
         );
     }

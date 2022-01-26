@@ -247,7 +247,6 @@ IDR_TYPE_NAMES                      TEXT         "Files\\type_names.txt"
 IDR_ACTIONS                         TEXT         "Files\\actions.json"
 IDR_UI_ROUTE_WINDOW                 TEXT         "Files\\UI\\route_window.json"
 IDR_UI_ROOMS_WINDOW                 TEXT         "Files\\UI\\rooms_window.json"
-IDR_UI_CONSOLE                      TEXT         "Files\\UI\\console.json"
 
 /////////////////////////////////////////////////////////////////////////////
 //
