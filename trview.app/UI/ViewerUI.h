@@ -75,7 +75,7 @@ namespace trview
         virtual void set_toggle(const std::string& name, bool value) override;
         virtual bool toggle(const std::string& name) const override;
     private:
-        void generate_tool_window(const ui::ILoader& ui_source);
+        void generate_tool_window();
         void register_change_detection(ui::Control* control);
 
         TokenStore _token_store;

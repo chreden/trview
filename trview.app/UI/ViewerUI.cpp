@@ -67,7 +67,7 @@ namespace trview
             }
         };
 
-        generate_tool_window(*ui_source);
+        generate_tool_window();
 
         _go_to = std::make_unique<GoTo>();
         _token_store += _go_to->on_selected += [&](uint32_t index)
@@ -265,11 +265,8 @@ namespace trview
             || (_map_renderer->loaded() && _map_renderer->cursor_is_over_control());
     }
 
-    void ViewerUI::generate_tool_window(const ui::ILoader& ui_source)
+    void ViewerUI::generate_tool_window()
     {
-        // This is the main tool window on the side of the screen.
-        auto tool_window = _control->add_child(ui_source.load_from_resource(IDR_UI_TOOL_WINDOW));
-
         _view_options->on_toggle_changed += on_toggle_changed;
         _view_options->on_scalar_changed += on_scalar_changed;
         _view_options->on_alternate_group += on_alternate_group;

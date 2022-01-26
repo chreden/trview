@@ -1030,16 +1030,7 @@
     <None Include="Resources\Files\UI\rooms_window.json">
       <Filter>Resources\Files\UI</Filter>
     </None>
-    <None Include="Resources\Files\UI\level_info.json">
-      <Filter>Resources\Files\UI</Filter>
-    </None>
     <None Include="Resources\Files\UI\console.json">
-      <Filter>Resources\Files\UI</Filter>
-    </None>
-    <None Include="Resources\Files\UI\room_navigator.json">
-      <Filter>Resources\Files\UI</Filter>
-    </None>
-    <None Include="Resources\Files\UI\tool_window.json">
       <Filter>Resources\Files\UI</Filter>
     </None>
   </ItemGroup>

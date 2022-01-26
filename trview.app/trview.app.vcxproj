@@ -358,11 +358,8 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
       <FileType>Document</FileType>
     </Text>
     <None Include="Resources\Files\UI\console.json" />
-    <None Include="Resources\Files\UI\level_info.json" />
     <None Include="Resources\Files\UI\rooms_window.json" />
-    <None Include="Resources\Files\UI\room_navigator.json" />
     <None Include="Resources\Files\UI\route_window.json" />
-    <None Include="Resources\Files\UI\tool_window.json" />
     <None Include="Resources\Generated\level_pixel_shader.cso" />
     <None Include="Resources\Generated\level_vertex_shader.cso" />
     <None Include="Resources\Generated\selection_pixel_shader.cso" />
