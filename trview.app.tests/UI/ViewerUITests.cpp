@@ -44,8 +44,7 @@ namespace
             {
                 EXPECT_CALL(*shortcuts, add_shortcut).WillRepeatedly([&](auto, auto) -> Event<>&{ return shortcut_handler; });
                 return std::make_unique<ViewerUI>(window, texture_storage, shortcuts, std::move(input_source),
-                    ui_renderer_source, map_renderer_source, std::move(settings_window), std::move(view_options), std::move(context_menu), std::move(camera_controls),
-                    std::make_shared<JsonLoader>(std::make_shared<MockShell>()));
+                    ui_renderer_source, map_renderer_source, std::move(settings_window), std::move(view_options), std::move(context_menu), std::move(camera_controls));
             }
 
             test_module& with_settings_window(std::unique_ptr<ISettingsWindow> window)

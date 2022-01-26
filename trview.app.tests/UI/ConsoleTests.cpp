@@ -5,7 +5,7 @@
 using namespace trview;
 using namespace trview::mocks;
 using namespace trview::ui;
-
+/*
 TEST(Console, CommandEventRaised)
 {
     ui::Window window(Size(), Colour::White);
@@ -55,3 +55,4 @@ TEST(Console, PrintAddsLine)
     console.print(L"Test log entry");
     ASSERT_EQ(log->text(), L"Test log entry");
 }
+*/

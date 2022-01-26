@@ -81,7 +81,7 @@ namespace trview
             }
         };
 
-        _toolbar = std::make_unique<Toolbar>(*_control);
+        _toolbar = std::make_unique<Toolbar>();
         _toolbar->add_tool(L"Measure", L"|....|");
         _token_store += _toolbar->on_tool_clicked += [this](const std::wstring& tool)
         {
@@ -291,6 +291,7 @@ namespace trview
         _go_to->render();
         _level_info->render();
         _console->render();
+        _toolbar->render();
     }
 
     void ViewerUI::set_alternate_group(uint32_t value, bool enabled)
