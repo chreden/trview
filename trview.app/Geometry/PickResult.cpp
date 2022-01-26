@@ -145,6 +145,11 @@ namespace trview
                 }
                 break;
             }
+            case PickResult::Type::Compass:
+            {
+                stream << result.text;
+                break;
+            }
         }
 
         return stream.str();

@@ -40,8 +40,9 @@ namespace trview
                 add_toggle(IViewer::Options::depth_enabled);
                 ImGui::TableNextColumn();
                 ImGui::PushItemWidth(-1);
-                if (ImGui::InputInt(IViewer::Options::depth.c_str(), &_scalars[IViewer::Options::depth], 1))
+                if (ImGui::InputInt(IViewer::Options::depth.c_str(), &_scalars[IViewer::Options::depth], 1, 10))
                 {
+                    _scalars[IViewer::Options::depth] = std::max(0, _scalars[IViewer::Options::depth]);
                     on_scalar_changed(IViewer::Options::depth, _scalars[IViewer::Options::depth]);
                 }
                 ImGui::PopItemWidth();

@@ -224,6 +224,7 @@ namespace trview
                 result.type = PickResult::Type::Compass;
                 result.index = static_cast<uint32_t>(axis);
                 result.distance = 1.0f;
+                result.text = axis_name(axis);
                 _compass_axis = axis;
             }
             else
