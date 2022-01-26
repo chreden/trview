@@ -66,6 +66,7 @@ namespace trview
                     {
                         ImGui::PushID(id.c_str());
                         ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.06f, 0.53f, 0.98f, 1.00f));
+                        ImGui::PopID();
                     }
                     if (ImGui::Button(id.c_str()))
                     {
