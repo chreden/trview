@@ -62,9 +62,125 @@ namespace trview
         bind_controls();
     }
 
+    bool RouteWindow::render_host()
+    {
+        bool stay_open = true;
+        ImGui::Begin("Route", &stay_open);
+        ImGuiID dockspaceID = ImGui::GetID("dockspace");
+        if (!ImGui::DockBuilderGetNode(dockspaceID))
+        {
+            ImGuiViewport* viewport = ImGui::GetMainViewport();
+
+            ImGui::DockBuilderRemoveNode(dockspaceID);
+            ImGui::DockBuilderAddNode(dockspaceID, ImGuiDockNodeFlags_DockSpace | ImGuiDockNodeFlags_NoTabBar);
+            ImGui::DockBuilderSetNodeSize(dockspaceID, viewport->Size);
+
+            ImGuiID dock_main_id = dockspaceID;
+            ImGui::DockBuilderDockWindow("WaypointList", dock_main_id);
+            ImGuiID dock_id_right = ImGui::DockBuilderSplitNode(dock_main_id, ImGuiDir_Right, 0.2f, NULL, &dock_main_id);
+            ImGui::DockBuilderDockWindow("WaypointDetails", dock_id_right);
+
+            ImGui::DockBuilderGetNode(dock_main_id)->LocalFlags |= ImGuiDockNodeFlags_NoTabBar;
+            ImGui::DockBuilderGetNode(dock_id_right)->LocalFlags |= ImGuiDockNodeFlags_NoTabBar;
+
+            ImGui::DockBuilderFinish(dockspaceID);
+        }
+        ImGui::DockSpace(dockspaceID, ImVec2(0.0f, 0.0f), 0);
+        ImGui::End();
+        return stay_open;
+    }
+
+    void RouteWindow::render_waypoint_list()
+    {
+        if (ImGui::Begin("WaypointList", nullptr, ImGuiWindowFlags_NoTitleBar))
+        {
+            auto colour = _route ? _route->colour() : Colour::Green;
+            if (ImGui::ColorEdit3("##colour", &colour.r, ImGuiColorEditFlags_NoInputs))
+            {
+                on_colour_changed(colour);
+            }
+            ImGui::SameLine();
+            if (ImGui::Button("Import"))
+            {
+                std::vector<IDialogs::FileFilter> filters{ { L"trview route", { L"*.tvr" } } };
+                if (_randomizer_enabled)
+                {
+                    filters.push_back({ L"Randomizer Locations", { L"*.json" } });
+                }
+
+                const auto filename = _dialogs->open_file(L"Import route", filters, OFN_FILEMUSTEXIST);
+                if (filename.has_value())
+                {
+                    on_route_import(filename.value().filename, filename.value().filter_index == 2);
+                }
+            }
+            ImGui::SameLine();
+            if (ImGui::Button("Export"))
+            {
+                std::vector<IDialogs::FileFilter> filters{ { L"trview route", { L"*.tvr" } } };
+                uint32_t filter_index = 1;
+                if (_randomizer_enabled)
+                {
+                    filters.push_back({ L"Randomizer Locations", { L"*.json" } });
+                    filter_index = 2;
+                }
+
+                const auto filename = _dialogs->save_file(L"Export route", filters, filter_index);
+                if (filename.has_value())
+                {
+                    on_route_export(filename.value().filename, filename.value().filter_index == 2);
+                }
+            }
+
+            if (ImGui::BeginTable("##waypointslist", 4, ImGuiTableFlags_ScrollY | ImGuiTableFlags_SizingFixedFit, ImVec2(-1, -1)))
+            {
+                ImGui::TableSetupColumn("#");
+                ImGui::TableSetupColumn("Type");
+                ImGui::TableSetupScrollFreeze(1, 1);
+                ImGui::TableHeadersRow();
+
+                if (_route) 
+                {
+                    for (uint32_t i = 0; i < _route->waypoints(); ++i)
+                    {
+                        const auto& waypoint = _route->waypoint(i);
+                        ImGui::TableNextRow();
+                        ImGui::TableNextColumn();
+                        bool selected = _selected_index == i;
+                        if (ImGui::Selectable(std::to_string(i).c_str(), &selected, ImGuiSelectableFlags_SpanAllColumns))
+                        {
+                            _selected_index = i;
+                            on_waypoint_selected(i);
+                        }
+                        ImGui::TableNextColumn();
+                        ImGui::Text(to_utf8(waypoint_type_to_string(waypoint.type())).c_str());
+                    }
+                }
+                ImGui::EndTable();
+            }
+        }
+        ImGui::End();
+    }
+
+    void RouteWindow::render_waypoint_details()
+    {
+        if (ImGui::Begin("WaypointDetails", nullptr, ImGuiWindowFlags_NoTitleBar))
+        {
+            ImGui::Text("Details lol");
+        }
+        ImGui::End();
+    }
+
     void RouteWindow::render(bool vsync)
     {
         CollapsiblePanel::render(vsync);
+        if (!render_host())
+        {
+            IRouteWindow::on_window_closed();
+        }
+
+        render_waypoint_list();
+        render_waypoint_details();
     }
 
     void RouteWindow::set_route(IRoute* route) 

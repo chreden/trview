@@ -66,6 +66,10 @@ namespace trview
         ui::Listbox::Item create_listbox_item(uint32_t index, const IWaypoint& waypoint);
         void load_randomiser_settings(const IWaypoint& waypoint);
         void update_minimum_height();
+        bool render_host();
+        void render_waypoint_list();
+        void render_waypoint_details();
+
 
         ui::Dropdown* _colour;
         ui::Listbox* _waypoints;

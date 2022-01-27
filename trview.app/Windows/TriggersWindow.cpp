@@ -105,7 +105,7 @@ namespace trview
     {
         if (!render_host())
         {
-            ITriggersWindow::on_window_closed();
+            on_window_closed();
             return;
         }
 

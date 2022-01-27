@@ -326,7 +326,7 @@ namespace trview
     {
         if (!render_host())
         {
-            IItemsWindow::on_window_closed();
+            on_window_closed();
             return;
         }
 
