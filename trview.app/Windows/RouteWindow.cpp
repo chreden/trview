@@ -8,16 +8,6 @@ namespace trview
 {
     using namespace DirectX::SimpleMath;
 
-    namespace
-    {
-        std::wstring pos_to_string(const Vector3& position)
-        {
-            return std::to_wstring(static_cast<int>(position.x * 1024)) + L", " +
-                std::to_wstring(static_cast<int>(position.y * 1024)) + L", " + 
-                std::to_wstring(static_cast<int>(position.z * 1024));
-        }
-    }
-
     const std::string RouteWindow::Names::colour = "colour";
     const std::string RouteWindow::Names::waypoints = "waypoints";
     const std::string RouteWindow::Names::delete_waypoint = "delete_waypoint";
