@@ -15,6 +15,7 @@
 #include <trview.ui/JsonLoader.h>
 #include <trview.common/Mocks/Windows/IShell.h>
 
+/*
 using namespace DirectX::SimpleMath;
 using namespace testing;
 using namespace trview;
@@ -703,3 +704,4 @@ TEST(RouteWindow, RandomizerTextAreasUseShell)
     text_area->set_text(L"http://example.com");
     text_area->clicked(Point(5, 5));
 }
+*/

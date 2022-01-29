@@ -28,7 +28,7 @@ namespace trview
         }
 
         // Otherwise create the window.
-        _route_window = _route_window_source(window());
+        _route_window = _route_window_source();
         _route_window->on_colour_changed += on_colour_changed;
         _route_window->on_route_import += on_route_import;
         _route_window->on_route_export += on_route_export;

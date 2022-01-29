@@ -11,7 +11,7 @@ namespace trview
 {
     struct IRouteWindow
     {
-        using Source = std::function<std::shared_ptr<IRouteWindow>(const Window)>;
+        using Source = std::function<std::shared_ptr<IRouteWindow>()>;
 
         virtual ~IRouteWindow() = 0;
 

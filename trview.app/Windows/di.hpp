@@ -46,18 +46,13 @@ namespace trview
             di::bind<IRouteWindow::Source>.to(
                 [](const auto& injector) -> IRouteWindow::Source
                 {
-                    return [&](auto window)
+                    return [&]()
                     {
                         return std::make_shared<RouteWindow>(
-                            injector.create<IDeviceWindow::Source>(),
-                            injector.create<ui::render::IRenderer::Source>(),
-                            injector.create<ui::IInput::Source>(),
-                            window,
+                            injector.create<Window>(),
                             injector.create<std::shared_ptr<IClipboard>>(),
                             injector.create<std::shared_ptr<IDialogs>>(),
                             injector.create<std::shared_ptr<IFiles>>(),
-                            injector.create<IBubble::Source>(),
-                            injector.create<std::shared_ptr<ui::ILoader>>(),
                             injector.create<std::shared_ptr<IShell>>());
                     };
                 }

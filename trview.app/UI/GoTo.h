@@ -36,10 +36,6 @@ namespace trview
         /// Set the name of the type of thing that is being gone to.
         void set_name(const std::wstring& name);
     private:
-        TokenStore    _token_store;
-        ui::Control*  _window;
-        ui::GroupBox* _group;
-        ui::TextArea* _text_area;
         std::wstring  _name;
         bool _visible{ false };
         int _index{ 0 };

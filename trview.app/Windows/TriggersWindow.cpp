@@ -303,7 +303,7 @@ namespace trview
                     auto add_stat = [&](const std::string& name, const std::string& value)
                     {
                         ImGui::TableNextColumn();
-                        if (ImGui::Selectable(name.c_str(), false, ImGuiSelectableFlags_SpanAllColumns))
+                        if (ImGui::Selectable(name.c_str(), false, ImGuiSelectableFlags_SpanAllColumns | ImGuiSelectableFlags_SelectOnNav))
                         {
                             _clipboard->write(_window, to_utf16(value));
                         }
