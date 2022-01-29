@@ -97,7 +97,9 @@ namespace trview
         std::unique_ptr<Tooltip> _map_tooltip;
         std::unique_ptr<Tooltip> _tooltip;
         std::unique_ptr<Console> _console;
-        ui::Label* _measure;
         bool _show_tooltip{ true };
+        bool _show_measure{ false };
+        std::string _measure_text;
+        Point _measure_position;
     };
 }

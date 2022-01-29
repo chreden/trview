@@ -90,10 +90,6 @@ namespace trview
         _tooltip = std::make_unique<Tooltip>();
         _map_tooltip = std::make_unique<Tooltip>();
 
-        auto measure = std::make_unique<ui::Label>(Point(300, 100), Size(50, 30), Colour(1.0f, 0.2f, 0.2f, 0.2f), L"0", 8, graphics::TextAlignment::Centre, graphics::ParagraphAlignment::Centre);
-        measure->set_visible(false);
-        _measure = _control->add_child(std::move(measure));
-
         _context_menu->on_add_waypoint += on_add_waypoint;
         _context_menu->on_add_mid_waypoint += on_add_mid_waypoint;
         _context_menu->on_remove_waypoint += on_remove_waypoint;
@@ -289,6 +285,20 @@ namespace trview
         _level_info->render();
         _console->render();
         _toolbar->render();
+
+        if (_show_measure)
+        {
+            const auto vp = ImGui::GetMainViewport();
+            if (!(_measure_position.x < 0 || _measure_position.y < 0 || _measure_position.x > vp->Size.x || _measure_position.y > vp->Size.y))
+            {
+                ImGui::SetNextWindowPos(vp->Pos + ImVec2(_measure_position.x, _measure_position.y));
+                if (ImGui::Begin("##measure", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_AlwaysAutoResize))
+                {
+                    ImGui::Text(_measure_text.c_str());
+                }
+                ImGui::End();
+            }
+        }
     }
 
     void ViewerUI::set_alternate_group(uint32_t value, bool enabled)
@@ -353,12 +363,12 @@ namespace trview
     {
         std::wstringstream stream;
         stream << std::fixed << std::setprecision(2) << distance;
-        _measure->set_text(stream.str());
+        _measure_text = to_utf8(stream.str());
     }
 
     void ViewerUI::set_measure_position(const Point& position)
     {
-        _measure->set_position(position);
+        _measure_position = position;
     }
 
     void ViewerUI::set_minimap_highlight(uint16_t x, uint16_t z)
@@ -422,7 +432,7 @@ namespace trview
 
     void ViewerUI::set_show_measure(bool value)
     {
-        _measure->set_visible(value);
+        _show_measure = value;
     }
 
     void ViewerUI::set_show_minimap(bool value)
