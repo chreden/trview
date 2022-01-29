@@ -2,22 +2,17 @@
 #include <trview.app/Windows/IViewer.h>
 #include <trview.app/Mocks/Graphics/ITextureStorage.h>
 #include <trview.common/Mocks/Windows/IShortcuts.h>
-#include <trview.ui.render/Mocks/IRenderer.h>
 #include <trview.ui.render/Mocks/IMapRenderer.h>
-#include <trview.ui/Mocks/Input/IInput.h>
 #include <trview.tests.common/Window.h>
 #include <trview.app/Mocks/UI/ISettingsWindow.h>
 #include <trview.app/Mocks/UI/IViewOptions.h>
 #include <trview.app/Mocks/UI/IContextMenu.h>
 #include <trview.app/Mocks/UI/ICameraControls.h>
-#include <trview.ui/JsonLoader.h>
 #include <trview.common/Mocks/Windows/IShell.h>
 
 using namespace trview;
 using namespace trview::tests;
 using namespace trview::mocks;
-using namespace trview::ui;
-using namespace trview::ui::mocks;
 using namespace trview::ui::render;
 using namespace trview::ui::render::mocks;
 
@@ -32,8 +27,6 @@ namespace
             trview::Window window{ create_test_window(L"ViewerUITests") };
             std::shared_ptr<ITextureStorage> texture_storage{ std::make_shared<MockTextureStorage>() };
             std::shared_ptr<MockShortcuts> shortcuts{ std::make_shared<MockShortcuts>() };
-            IInput::Source input_source{ [](auto&&...) { return std::make_unique<MockInput>(); } };
-            IRenderer::Source ui_renderer_source{ [](auto&&...) { return std::make_unique<MockRenderer>(); }};
             IMapRenderer::Source map_renderer_source{ [](auto&&...) { return std::make_unique<MockMapRenderer>(); }};
             std::unique_ptr<ISettingsWindow> settings_window{ std::make_unique<MockSettingsWindow>() };
             std::unique_ptr<IViewOptions> view_options{ std::make_unique<MockViewOptions>() };
@@ -43,8 +36,7 @@ namespace
             std::unique_ptr<ViewerUI> build()
             {
                 EXPECT_CALL(*shortcuts, add_shortcut).WillRepeatedly([&](auto, auto) -> Event<>&{ return shortcut_handler; });
-                return std::make_unique<ViewerUI>(window, texture_storage, shortcuts, std::move(input_source),
-                    ui_renderer_source, map_renderer_source, std::move(settings_window), std::move(view_options), std::move(context_menu), std::move(camera_controls));
+                return std::make_unique<ViewerUI>(window, texture_storage, shortcuts, map_renderer_source, std::move(settings_window), std::move(view_options), std::move(context_menu), std::move(camera_controls));
             }
 
             test_module& with_settings_window(std::unique_ptr<ISettingsWindow> window)

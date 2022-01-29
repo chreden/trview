@@ -13,8 +13,6 @@
 #include <trview.app/UI/Tooltip.h>
 #include <trview.app/UI/IViewOptions.h>
 #include <trview.input/Mouse.h>
-#include <trview.ui/Input.h>
-#include <trview.ui.render/IRenderer.h>
 #include <trview.ui.render/IMapRenderer.h>
 
 namespace trview
@@ -25,8 +23,6 @@ namespace trview
         explicit ViewerUI(const Window& window,
             const std::shared_ptr<ITextureStorage>& texture_storage,
             const std::shared_ptr<IShortcuts>& shortcuts,
-            const ui::IInput::Source& input_source,
-            const ui::render::IRenderer::Source& ui_renderer_source,
             const ui::render::IMapRenderer::Source& map_renderer_source,
             std::unique_ptr<ISettingsWindow> settings_window,
             std::unique_ptr<IViewOptions> view_options,
@@ -67,23 +63,18 @@ namespace trview
         virtual bool show_context_menu() const override;
         virtual void toggle_settings_visibility() override;
         virtual void print_console(const std::wstring& text) override;
-        virtual void initialise_input() override;
         virtual void set_mid_waypoint_enabled(bool value) override;
         virtual void set_scalar(const std::string& name, int32_t value) override;
         virtual void set_toggle(const std::string& name, bool value) override;
         virtual bool toggle(const std::string& name) const override;
     private:
         void generate_tool_window();
-        void register_change_detection(ui::Control* control);
 
         TokenStore _token_store;
         input::Mouse _mouse;
         Window _window;
         UserSettings _settings;
         ui::IInput::Source _input_source;
-        std::unique_ptr<ui::Control> _control;
-        std::unique_ptr<ui::render::IRenderer> _ui_renderer;
-        std::unique_ptr<ui::IInput> _ui_input;
         std::unique_ptr<IContextMenu> _context_menu;
         std::unique_ptr<GoTo> _go_to;
         std::unique_ptr<RoomNavigator> _room_navigator;
@@ -101,5 +92,6 @@ namespace trview
         bool _show_measure{ false };
         std::string _measure_text;
         Point _measure_position;
+        bool _visible{ true };
     };
 }

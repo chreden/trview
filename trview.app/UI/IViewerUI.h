@@ -217,8 +217,6 @@ namespace trview
         /// </summary>
         /// <param name="text">The text to write.</param>
         virtual void print_console(const std::wstring& text) = 0;
-
-        virtual void initialise_input() = 0;
         /// <summary>
         /// Set whether the mid waypoint button is enabled.
         /// </summary>

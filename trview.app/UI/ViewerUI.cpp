@@ -1,36 +1,22 @@
 #include "ViewerUI.h"
-#include <trview.ui/Window.h>
-#include <trview.ui/Label.h>
 #include <trview.app/Graphics/ILevelTextureStorage.h>
 #include "GoTo.h"
 #include <trview.app/UI/ContextMenu.h>
 #include <trview.input/WindowTester.h>
 #include <trview.common/Windows/Shortcuts.h>
-#include "../Resources/resource.h"
-
-using namespace trview::ui;
 
 namespace trview
 {
     ViewerUI::ViewerUI(const Window& window, const std::shared_ptr<ITextureStorage>& texture_storage,
         const std::shared_ptr<IShortcuts>& shortcuts,
-        const ui::IInput::Source& input_source,
-        const ui::render::IRenderer::Source& ui_renderer_source,
         const ui::render::IMapRenderer::Source& map_renderer_source,
         std::unique_ptr<ISettingsWindow> settings_window,
         std::unique_ptr<IViewOptions> view_options,
         std::unique_ptr<IContextMenu> context_menu,
         std::unique_ptr<ICameraControls> camera_controls)
-        : _mouse(window, std::make_unique<input::WindowTester>(window)), _window(window), _input_source(input_source),
-        _camera_controls(std::move(camera_controls)), _view_options(std::move(view_options)), _settings_window(std::move(settings_window)),
-        _context_menu(std::move(context_menu))
+        : _mouse(window, std::make_unique<input::WindowTester>(window)), _window(window), _camera_controls(std::move(camera_controls)),
+        _view_options(std::move(view_options)), _settings_window(std::move(settings_window)), _context_menu(std::move(context_menu))
     {
-        _control = std::make_unique<ui::Window>(window.size(), Colour::Transparent);
-
-        register_change_detection(_control.get());
-
-        _control->set_handles_input(false);
-
         _token_store += _mouse.mouse_move += [&](long, long)
         {
             _map_renderer->set_cursor_position(client_cursor_position(_window));
@@ -189,10 +175,6 @@ namespace trview
         _console = std::make_unique<Console>();
         _console->on_command += on_command;
 
-        // Create the renderer for the UI based on the controls created.
-        _ui_renderer = ui_renderer_source(window.size());
-        _ui_renderer->load(_control.get());
-
         _map_renderer = map_renderer_source(window.size());
         _token_store += _map_renderer->on_sector_hover += [this](const std::shared_ptr<ISector>& sector)
         {
@@ -220,19 +202,6 @@ namespace trview
         };
     }
 
-    void ViewerUI::register_change_detection(Control* control)
-    {
-        control->on_invalidate += on_ui_changed;
-        control->on_hierarchy_changed += on_ui_changed;
-        _token_store += control->on_add_child += std::bind(&ViewerUI::register_change_detection, this, std::placeholders::_1);
-
-        // Go through all of the control's children, as they may have been added previously.
-        for (auto& child : control->child_elements())
-        {
-            register_change_detection(child);
-        }
-    }
-
     void ViewerUI::clear_minimap_highlight()
     {
         _map_renderer->clear_highlight();
@@ -245,14 +214,12 @@ namespace trview
 
     bool ViewerUI::is_input_active() const
     {
-        const auto focus = _ui_input->focus_control();
-        return focus && focus->visible(true) && focus->handles_input();
+        return ImGui::GetIO().WantCaptureKeyboard;
     }
 
     bool ViewerUI::is_cursor_over() const
     {
-        return _control->is_mouse_over(client_cursor_position(_window))
-            || (_map_renderer->loaded() && _map_renderer->cursor_is_over_control());
+        return ImGui::GetIO().WantCaptureMouse || (_map_renderer->loaded() && _map_renderer->cursor_is_over_control());
     }
 
     void ViewerUI::generate_tool_window()
@@ -271,10 +238,14 @@ namespace trview
 
     void ViewerUI::render()
     {
+        if (!_visible)
+        {
+            return;
+        }
+
         _tooltip->render();
         _map_tooltip->render();
         _map_renderer->render();
-        _ui_renderer->render();
         _view_options->render();
         _room_navigator->render();
         _camera_controls->render();
@@ -343,8 +314,6 @@ namespace trview
 
     void ViewerUI::set_host_size(const Size& size)
     {
-        _control->set_size(size);
-        _ui_renderer->set_host_size(size);
         _map_renderer->set_window_size(size);
     }
 
@@ -454,7 +423,7 @@ namespace trview
 
     void ViewerUI::set_visible(bool value)
     {
-        _control->set_visible(value);
+        _visible = value;
     }
 
     bool ViewerUI::show_context_menu() const
@@ -470,11 +439,6 @@ namespace trview
     void ViewerUI::print_console(const std::wstring& text)
     {
         _console->print(text);
-    }
-
-    void ViewerUI::initialise_input()
-    {
-        _ui_input = _input_source(_window, *_control);
     }
 
     void ViewerUI::set_mid_waypoint_enabled(bool value)

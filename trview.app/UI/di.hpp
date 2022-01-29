@@ -34,8 +34,6 @@ namespace trview
                         injector.create<Window>(),
                         injector.create<std::shared_ptr<ITextureStorage>>(),
                         injector.create<std::shared_ptr<IShortcuts>>(),
-                        injector.create<ui::IInput::Source>(),
-                        injector.create<ui::render::IRenderer::Source>(),
                         injector.create<ui::render::IMapRenderer::Source>(),
                         injector.create<std::unique_ptr<ISettingsWindow>>(),
                         injector.create<std::unique_ptr<IViewOptions>>(),

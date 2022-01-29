@@ -61,7 +61,6 @@ namespace trview
         std::unordered_map<std::string, std::function<void(int32_t)>> scalars;
         scalars[Options::depth] = [this](int32_t value) { if (_level) { _level->set_neighbour_depth(value); } };
 
-        _ui->initialise_input();
         _token_store += _ui->on_ui_changed += [&]() {_ui_changed = true; };
         _token_store += _ui->on_select_item += [&](uint32_t index)
         {
