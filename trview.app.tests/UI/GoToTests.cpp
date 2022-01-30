@@ -1,11 +1,8 @@
 #include <trview.app/UI/GoTo.h>
-#include <trview.ui/TextArea.h>
-#include <trview.ui/JsonLoader.h>
 #include <trview.common/Mocks/Windows/IShell.h>
 
 using namespace trview;
 using namespace trview::mocks;
-using namespace trview::ui;
 /*
 TEST(GoTo, Name)
 {

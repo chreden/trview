@@ -1,24 +1,16 @@
 #include <trview.app/Windows/ItemsWindow.h>
 #include <trview.tests.common/Window.h>
-#include <trview.ui/Button.h>
-#include <trview.ui/Checkbox.h>
 #include <trview.common/Size.h>
 #include <trview.app/Elements/Types.h>
 #include <trview.graphics/mocks/IDeviceWindow.h>
-#include <trview.ui.render/Mocks/IRenderer.h>
 #include <trview.common/Mocks/Windows/IClipboard.h>
-#include <trview.ui/Mocks/Input/IInput.h>
 #include <trview.app/Mocks/Elements/ITrigger.h>
-#include <trview.app/Mocks/UI/IBubble.h>
-#include <trview.ui/JsonLoader.h>
 #include <trview.common/Mocks/Windows/IShell.h>
 
 using namespace trview;
 using namespace trview::tests;
 using namespace trview::graphics;
 using namespace trview::graphics::mocks;
-using namespace trview::ui;
-using namespace trview::ui::mocks;
 using namespace trview::ui::render;
 using namespace trview::ui::render::mocks;
 using namespace trview::mocks;

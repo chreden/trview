@@ -1,5 +1,4 @@
 #include <trview.app/UI/ContextMenu.h>
-#include <trview.ui/JsonLoader.h>
 #include <trview.common/Mocks/Windows/IShell.h>
 
 using namespace trview;

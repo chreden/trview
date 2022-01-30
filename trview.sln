@@ -14,15 +14,11 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "trview.input", "trview.inpu
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "trview.common", "trview.common\trview.common.vcxproj", "{D0633291-23A6-4B3F-9A5E-E94D20F66A07}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "trview.ui", "trview.ui\trview.ui.vcxproj", "{160BD1C8-42C1-46E6-A232-B980B9B6D57E}"
-EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "trview.ui.render", "trview.ui.render\trview.ui.render.vcxproj", "{0C5A9791-6CF1-42E9-9776-AC47EEFF8EC8}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "external", "external", "{14424861-057E-431A-97B1-0F482C6DD4E0}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DirectXTK_Desktop_2017", "external\DirectXTK\DirectXTK_Desktop_2017.vcxproj", "{E0B52AE7-E160-4D32-BF3F-910B785E5A8E}"
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "trview.ui.tests", "trview.ui.tests\trview.ui.tests.vcxproj", "{BD627C7D-0143-453F-BAE4-9819D2CB50A9}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "trview.graphics", "trview.graphics\trview.graphics.vcxproj", "{3270FD29-EDAB-40BE-8CA1-DABC5E261E4C}"
 EndProject
@@ -99,14 +95,6 @@ Global
 		{D0633291-23A6-4B3F-9A5E-E94D20F66A07}.Release|x64.Build.0 = Release|x64
 		{D0633291-23A6-4B3F-9A5E-E94D20F66A07}.Release|x86.ActiveCfg = Release|Win32
 		{D0633291-23A6-4B3F-9A5E-E94D20F66A07}.Release|x86.Build.0 = Release|Win32
-		{160BD1C8-42C1-46E6-A232-B980B9B6D57E}.Debug|x64.ActiveCfg = Debug|x64
-		{160BD1C8-42C1-46E6-A232-B980B9B6D57E}.Debug|x64.Build.0 = Debug|x64
-		{160BD1C8-42C1-46E6-A232-B980B9B6D57E}.Debug|x86.ActiveCfg = Debug|Win32
-		{160BD1C8-42C1-46E6-A232-B980B9B6D57E}.Debug|x86.Build.0 = Debug|Win32
-		{160BD1C8-42C1-46E6-A232-B980B9B6D57E}.Release|x64.ActiveCfg = Release|x64
-		{160BD1C8-42C1-46E6-A232-B980B9B6D57E}.Release|x64.Build.0 = Release|x64
-		{160BD1C8-42C1-46E6-A232-B980B9B6D57E}.Release|x86.ActiveCfg = Release|Win32
-		{160BD1C8-42C1-46E6-A232-B980B9B6D57E}.Release|x86.Build.0 = Release|Win32
 		{0C5A9791-6CF1-42E9-9776-AC47EEFF8EC8}.Debug|x64.ActiveCfg = Debug|x64
 		{0C5A9791-6CF1-42E9-9776-AC47EEFF8EC8}.Debug|x64.Build.0 = Debug|x64
 		{0C5A9791-6CF1-42E9-9776-AC47EEFF8EC8}.Debug|x86.ActiveCfg = Debug|Win32
@@ -123,14 +111,6 @@ Global
 		{E0B52AE7-E160-4D32-BF3F-910B785E5A8E}.Release|x64.Build.0 = Release|x64
 		{E0B52AE7-E160-4D32-BF3F-910B785E5A8E}.Release|x86.ActiveCfg = Release|Win32
 		{E0B52AE7-E160-4D32-BF3F-910B785E5A8E}.Release|x86.Build.0 = Release|Win32
-		{BD627C7D-0143-453F-BAE4-9819D2CB50A9}.Debug|x64.ActiveCfg = Debug|x64
-		{BD627C7D-0143-453F-BAE4-9819D2CB50A9}.Debug|x64.Build.0 = Debug|x64
-		{BD627C7D-0143-453F-BAE4-9819D2CB50A9}.Debug|x86.ActiveCfg = Debug|Win32
-		{BD627C7D-0143-453F-BAE4-9819D2CB50A9}.Debug|x86.Build.0 = Debug|Win32
-		{BD627C7D-0143-453F-BAE4-9819D2CB50A9}.Release|x64.ActiveCfg = Release|x64
-		{BD627C7D-0143-453F-BAE4-9819D2CB50A9}.Release|x64.Build.0 = Release|x64
-		{BD627C7D-0143-453F-BAE4-9819D2CB50A9}.Release|x86.ActiveCfg = Release|Win32
-		{BD627C7D-0143-453F-BAE4-9819D2CB50A9}.Release|x86.Build.0 = Release|Win32
 		{3270FD29-EDAB-40BE-8CA1-DABC5E261E4C}.Debug|x64.ActiveCfg = Debug|x64
 		{3270FD29-EDAB-40BE-8CA1-DABC5E261E4C}.Debug|x64.Build.0 = Debug|x64
 		{3270FD29-EDAB-40BE-8CA1-DABC5E261E4C}.Debug|x86.ActiveCfg = Debug|Win32

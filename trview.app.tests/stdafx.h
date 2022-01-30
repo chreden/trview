@@ -66,7 +66,6 @@ namespace testing
 #include <trview.app/Mocks/Settings/IStartupOptions.h>
 #include <trview.app/Mocks/Tools/ICompass.h>
 #include <trview.app/Mocks/Tools/IMeasure.h>
-#include <trview.app/Mocks/UI/IBubble.h>
 #include <trview.app/Mocks/UI/ICameraControls.h>
 #include <trview.app/Mocks/UI/IContextMenu.h>
 #include <trview.app/Mocks/UI/ISettingsWindow.h>
@@ -94,18 +93,4 @@ namespace testing
 #include <trview.graphics/mocks/IShaderStorage.h>
 #include <trview.graphics/mocks/ISprite.h>
 #include <trview.input/Mocks/IMouse.h>
-#include <trview.ui/Mocks/Input/IInput.h>
-#include <trview.ui.render/Mocks/IRenderer.h>
 #include <trview.ui.render/Mocks/IMapRenderer.h>
-
-#include <trview.ui/Button.h>
-#include <trview.ui/Checkbox.h>
-#include <trview.ui/Dropdown.h>
-#include <trview.ui/Image.h>
-#include <trview.ui/Label.h>
-#include <trview.ui/Listbox.h>
-#include <trview.ui/NumericUpDown.h>
-#include <trview.ui/Slider.h>
-#include <trview.ui/TextArea.h>
-#include <trview.ui/JsonLoader.h>
-

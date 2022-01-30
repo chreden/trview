@@ -1,17 +1,11 @@
 #include <trview.app/Windows/RoomsWindow.h>
-#include <trview.ui.render/Mocks/IRenderer.h>
-#include <trview.ui/Button.h>
-#include <trview.ui/Listbox.h>
 #include <trview.app/Elements/Types.h>
 #include <trview.graphics/mocks/IDeviceWindow.h>
 #include <trview.ui.render/Mocks/IMapRenderer.h>
 #include <trview.app/Mocks/Elements/IRoom.h>
-#include <trview.ui/Mocks/Input/IInput.h>
 #include <trview.input/Mocks/IMouse.h>
 #include <trview.app/Mocks/Elements/ITrigger.h>
 #include <trview.common/Mocks/Windows/IClipboard.h>
-#include <trview.app/Mocks/UI/IBubble.h>
-#include <trview.ui/JsonLoader.h>
 #include <trview.common/Mocks/Windows/IShell.h>
 
 /*

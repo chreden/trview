@@ -208,9 +208,6 @@
     <ProjectReference Include="..\trview.ui.render\trview.ui.render.vcxproj">
       <Project>{0c5a9791-6cf1-42e9-9776-ac47eeff8ec8}</Project>
     </ProjectReference>
-    <ProjectReference Include="..\trview.ui\trview.ui.vcxproj">
-      <Project>{160bd1c8-42c1-46e6-a232-b980b9b6d57e}</Project>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

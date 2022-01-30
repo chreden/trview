@@ -24,40 +24,24 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="ButtonNode.h" />
     <ClInclude Include="DefaultFonts.h" />
     <ClInclude Include="di.h" />
     <ClInclude Include="di.hpp" />
-    <ClInclude Include="ImageNode.h" />
     <ClInclude Include="IMapRenderer.h" />
-    <ClInclude Include="IRenderer.h" />
-    <ClInclude Include="LabelNode.h" />
     <ClInclude Include="MapRenderer.h" />
     <ClInclude Include="Mocks\IMapRenderer.h" />
-    <ClInclude Include="Mocks\IRenderer.h" />
-    <ClInclude Include="Renderer.h" />
-    <ClInclude Include="RenderNode.h" />
-    <ClInclude Include="Resources/resource.h" />
     <ClInclude Include="stdafx.h" />
-    <ClInclude Include="WindowNode.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="ButtonNode.cpp" />
     <ClCompile Include="DefaultFonts.cpp" />
-    <ClCompile Include="ImageNode.cpp" />
     <ClCompile Include="IMapRenderer.cpp" />
-    <ClCompile Include="IRenderer.cpp" />
-    <ClCompile Include="LabelNode.cpp" />
     <ClCompile Include="MapRenderer.cpp" />
-    <ClCompile Include="Renderer.cpp" />
-    <ClCompile Include="RenderNode.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="WindowNode.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\trview.graphics\trview.graphics.vcxproj">
@@ -66,17 +50,6 @@
     <ProjectReference Include="..\trview.ui\trview.ui.vcxproj">
       <Project>{160bd1c8-42c1-46e6-a232-b980b9b6d57e}</Project>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <ResourceCompile Include="Resources/trview.ui.render.rc" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\Files\Fonts\arial7.bin" />
-    <None Include="Resources\Files\Fonts\arial8.bin" />
-    <None Include="Resources\Files\Fonts\icons8.bin" />
-  </ItemGroup>
-  <ItemGroup>
-    <Image Include="Resources\Files\Fonts\icons8.bmp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>

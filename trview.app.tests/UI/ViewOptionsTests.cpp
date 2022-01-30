@@ -1,14 +1,9 @@
 #include <trview.app/UI/ViewOptions.h>
 #include <trview.app/Windows/IViewer.h>
-#include <trview.ui/Window.h>
-#include <trview.ui/Checkbox.h>
-#include <trview.ui/Button.h>
-#include <trview.ui/JsonLoader.h>
 #include <trview.common/Mocks/Windows/IShell.h>
 
 using namespace trview;
 using namespace trview::mocks;
-using namespace trview::ui;
 /*
 TEST(ViewOptions, HighlightCheckboxToggle)
 {

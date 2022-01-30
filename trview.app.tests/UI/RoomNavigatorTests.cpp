@@ -1,16 +1,9 @@
 #include <trview.app/UI/RoomNavigator.h>
-#include <trview.ui/JsonLoader.h>
 #include <trview.common/Mocks/Windows/IShell.h>
-#include <trview.ui/Window.h>
-#include <trview.ui/NumericUpDown.h>
-#include <trview.ui/Button.h>
-#include <trview.ui/Label.h>
-#include <trview.ui/Listbox.h>
 #include <trview.app/Elements/RoomInfo.h>
 
 using namespace trview;
 using namespace trview::mocks;
-using namespace trview::ui;
 /*
 TEST(RoomNavigator, MaxRoomsLimitsCurrentRoom)
 {

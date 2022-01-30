@@ -1,14 +1,8 @@
 #include <trview.app/UI/LevelInfo.h>
-#include <trview.ui/JsonLoader.h>
 #include <trview.common/Mocks/Windows/IShell.h>
-#include <trview.ui/Window.h>
 #include <trview.app/Mocks/Graphics/ITextureStorage.h>
-#include <trview.ui/Button.h>
-#include <trview.ui/Label.h>
-#include <trview.ui/Image.h>
 
 using namespace trview;
-using namespace trview::ui;
 using namespace trview::mocks;
 using testing::Return;
 

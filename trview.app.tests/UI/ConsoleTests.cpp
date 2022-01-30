@@ -1,10 +1,8 @@
 #include <trview.app/UI/Console.h>
-#include <trview.ui/JsonLoader.h>
 #include <trview.common/Mocks/Windows/IShell.h>
 
 using namespace trview;
 using namespace trview::mocks;
-using namespace trview::ui;
 /*
 TEST(Console, CommandEventRaised)
 {

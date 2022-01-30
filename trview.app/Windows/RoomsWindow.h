@@ -5,8 +5,9 @@
 #include <trview.app/Elements/Item.h>
 #include <trview.ui.render/IMapRenderer.h>
 #include "IRoomsWindow.h"
-#include <trview.app/UI/IBubble.h>
 #include <trview.common/Windows/IClipboard.h>
+#include <trview.common/TokenStore.h>>
+#include <trview.input/IMouse.h>
 
 namespace trview
 {
@@ -69,7 +70,6 @@ namespace trview
         TokenStore _token_store;
         std::unique_ptr<ui::render::IMapRenderer> _map_renderer;
         std::unique_ptr<Tooltip> _map_tooltip;
-        std::unique_ptr<IBubble> _bubble;
         std::shared_ptr<IClipboard> _clipboard;
         trlevel::LevelVersion _level_version;
         std::shared_ptr<input::IMouse> _mouse;

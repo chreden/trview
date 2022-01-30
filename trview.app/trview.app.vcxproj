@@ -117,7 +117,6 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClCompile Include="UI\ContextMenu.cpp" />
     <ClCompile Include="UI\ControlTracker.cpp" />
     <ClCompile Include="UI\GoTo.cpp" />
-    <ClCompile Include="UI\IBubble.cpp" />
     <ClCompile Include="UI\ICameraControls.cpp" />
     <ClCompile Include="UI\IContextMenu.cpp" />
     <ClCompile Include="UI\ISettingsWindow.cpp" />
@@ -247,7 +246,6 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClInclude Include="Mocks\Settings\IStartupOptions.h" />
     <ClInclude Include="Mocks\Tools\ICompass.h" />
     <ClInclude Include="Mocks\Tools\IMeasure.h" />
-    <ClInclude Include="Mocks\UI\IBubble.h" />
     <ClInclude Include="Mocks\UI\ICameraControls.h" />
     <ClInclude Include="Mocks\UI\IContextMenu.h" />
     <ClInclude Include="Mocks\UI\ISettingsWindow.h" />
@@ -299,7 +297,6 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClInclude Include="UI\di.h" />
     <ClInclude Include="UI\di.hpp" />
     <ClInclude Include="UI\GoTo.h" />
-    <ClInclude Include="UI\IBubble.h" />
     <ClInclude Include="UI\ICameraControls.h" />
     <ClInclude Include="UI\IContextMenu.h" />
     <ClInclude Include="UI\ISettingsWindow.h" />
@@ -379,9 +376,6 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     </ProjectReference>
     <ProjectReference Include="..\trview.ui.render\trview.ui.render.vcxproj">
       <Project>{0c5a9791-6cf1-42e9-9776-ac47eeff8ec8}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\trview.ui\trview.ui.vcxproj">
-      <Project>{160bd1c8-42c1-46e6-a232-b980b9b6d57e}</Project>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

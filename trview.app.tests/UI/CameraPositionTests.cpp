@@ -1,10 +1,8 @@
 #include <trview.app/UI/CameraPosition.h>
-#include <trview.ui/JsonLoader.h>
 #include <trview.common/Mocks/Windows/IShell.h>
 
 using namespace trview;
 using namespace trview::mocks;
-using namespace trview::ui;
 using namespace DirectX::SimpleMath;
 using testing::HasSubstr;
 

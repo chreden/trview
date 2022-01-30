@@ -14,6 +14,7 @@
 #include <trview.app/UI/IViewOptions.h>
 #include <trview.input/Mouse.h>
 #include <trview.ui.render/IMapRenderer.h>
+#include <trview.common/TokenStore.h>>
 
 namespace trview
 {
@@ -74,7 +75,6 @@ namespace trview
         input::Mouse _mouse;
         Window _window;
         UserSettings _settings;
-        ui::IInput::Source _input_source;
         std::unique_ptr<IContextMenu> _context_menu;
         std::unique_ptr<GoTo> _go_to;
         std::unique_ptr<RoomNavigator> _room_navigator;

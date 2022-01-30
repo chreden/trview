@@ -1,11 +1,8 @@
 #include <trview.app/UI/CameraControls.h>
-#include <trview.ui/Button.h>
-#include <trview.ui/JsonLoader.h>
 #include <trview.common/Mocks/Windows/IShell.h>
 
 using namespace trview;
 using namespace trview::mocks;
-using namespace trview::ui;
 
 /*
 TEST(CameraControls, ResetRaisesEvent)

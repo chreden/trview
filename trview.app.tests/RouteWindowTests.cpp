@@ -1,18 +1,13 @@
 #include <trview.app/Windows/RouteWindow.h>
-#include <trview.ui.render/Mocks/IRenderer.h>
 #include <trview.graphics/mocks/IDeviceWindow.h>
 #include <trview.app/Mocks/Routing/IRoute.h>
 #include <trlevel/Mocks/ILevel.h>
 #include <trview.app/Mocks/Elements/ILevel.h>
 #include <trview.app/Mocks/Elements/IRoom.h>
 #include <trview.common/Mocks/Windows/IClipboard.h>
-#include <trview.ui/Mocks/Input/IInput.h>
 #include <trview.common/Mocks/Windows/IDialogs.h>
 #include <trview.common/Mocks/IFiles.h>
-#include <trview.app/Mocks/UI/IBubble.h>
 #include <trview.app/Mocks/Routing/IWaypoint.h>
-#include <trview.ui/Checkbox.h>
-#include <trview.ui/JsonLoader.h>
 #include <trview.common/Mocks/Windows/IShell.h>
 
 /*

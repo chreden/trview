@@ -1,14 +1,8 @@
 #include <trview.app/UI/SettingsWindow.h>
-#include <trview.ui/Button.h>
-#include <trview.ui/Checkbox.h>
-#include <trview.ui/Slider.h>
-#include <trview.ui/NumericUpDown.h>
-#include <trview.ui/JsonLoader.h>
 #include <trview.common/Mocks/Windows/IShell.h>
 
 using namespace trview;
 using namespace trview::mocks;
-using namespace trview::ui;
 
 /*
 TEST(SettingsWindow, SetVSyncUpdatesCheckbox)
