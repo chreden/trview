@@ -358,8 +358,6 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
       <FileType>Document</FileType>
     </Text>
     <None Include="Resources\Files\Fonts\arial7.bin" />
-    <None Include="Resources\Files\UI\rooms_window.json" />
-    <None Include="Resources\Files\UI\route_window.json" />
     <None Include="Resources\Generated\level_pixel_shader.cso" />
     <None Include="Resources\Generated\level_vertex_shader.cso" />
     <None Include="Resources\Generated\selection_pixel_shader.cso" />

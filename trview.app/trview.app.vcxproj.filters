@@ -976,9 +976,6 @@
     <Filter Include="Mocks\Settings">
       <UniqueIdentifier>{dd4f8f55-fa38-46f7-8a03-a4f1ed7b68b2}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Resources\Files\UI">
-      <UniqueIdentifier>{c6bc5197-3c80-4b1f-804a-62228b062485}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Resources\Files\Fonts">
       <UniqueIdentifier>{466ee8d4-f50b-4b30-bc47-f6e2f7219a7c}</UniqueIdentifier>
     </Filter>
@@ -1026,12 +1023,6 @@
     </None>
     <None Include="Resources\Generated\ui_vertex_shader.cso">
       <Filter>Resources\Generated</Filter>
-    </None>
-    <None Include="Resources\Files\UI\route_window.json">
-      <Filter>Resources\Files\UI</Filter>
-    </None>
-    <None Include="Resources\Files\UI\rooms_window.json">
-      <Filter>Resources\Files\UI</Filter>
     </None>
     <None Include="Resources\Files\Fonts\arial7.bin">
       <Filter>Resources\Files\Fonts</Filter>
