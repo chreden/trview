@@ -8,7 +8,6 @@
 
 #include <trlevel/di.h>
 #include <trview.graphics/di.h>
-#include <trview.ui/di.h>
 #include <trview.ui.render/di.h>
 #include <trview.input/di.h>
 #include <trview.app/Elements/di.h>
@@ -644,7 +643,6 @@ namespace trview
             graphics::register_module(),
             input::register_module(),
             trlevel::register_module(),
-            ui::register_module(),
             ui::render::register_module(),
             register_app_elements_module(),
             register_app_geometry_module(),

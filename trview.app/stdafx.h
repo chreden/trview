@@ -67,18 +67,5 @@
 #include <trview.graphics/VertexShaderStore.h>
 #include <trview.input/IMouse.h>
 
-#include <trview.ui/Button.h>
-#include <trview.ui/Label.h>
-#include <trview.ui/Checkbox.h>
-#include <trview.ui/GroupBox.h>
-#include <trview.ui/NumericUpDown.h>
-#include <trview.ui/Listbox.h>
-#include <trview.ui/TextArea.h>
-#include <trview.ui/Slider.h>
-#include <trview.ui/Window.h>
-#include <trview.ui/Image.h>
-#include <trview.ui/Layouts/StackLayout.h>
-#include <trview.ui/ILoader.h>
-
 #include <trview.ui.render/IRenderer.h>
 #include <trview.ui.render/IMapRenderer.h>

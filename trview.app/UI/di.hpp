@@ -4,7 +4,6 @@
 #include "ViewerUI.h"
 #include "SettingsWindow.h"
 #include "ViewOptions.h"
-#include "Bubble.h"
 #include "ContextMenu.h"
 #include "CameraControls.h"
 #include <trview.common/Resources.h>
@@ -18,14 +17,6 @@ namespace trview
             di::bind<ISettingsWindow>.to<SettingsWindow>(),
             di::bind<ICameraControls>.to<CameraControls>(),
             di::bind<IViewOptions>.to<ViewOptions>(),
-            di::bind<IBubble::Source>.to(
-                [](const auto&) -> IBubble::Source
-                {
-                    return [&](ui::Control& parent)
-                    {
-                        return std::make_unique<Bubble>(parent);
-                    };
-                }),
             di::bind<IContextMenu>.to<ContextMenu>(),
             di::bind<IViewerUI>.to(
                 [](const auto& injector) -> std::unique_ptr<IViewerUI>

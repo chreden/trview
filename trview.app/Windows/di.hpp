@@ -11,7 +11,6 @@
 #include "RouteWindowManager.h"
 #include "RoomsWindowManager.h"
 #include "Viewer.h"
-#include <trview.ui/ILoader.h>
 
 namespace trview
 {

@@ -15,20 +15,6 @@ using namespace trview::graphics;
 
 namespace trview
 {
-    namespace
-    {
-        const float Height{ 420 };
-
-        ui::Listbox::Item create_listbox_item(const Item& item)
-        {
-            return { {{ L"#", std::to_wstring(item.number()) },
-                     { L"ID", std::to_wstring(item.type_id()) },
-                     { L"Room", std::to_wstring(item.room()) },
-                     { L"Type", item.type() },
-                     { L"Hide", std::to_wstring(!item.visible()) }} };
-        }
-    }
-
     const std::string ItemsWindow::Names::add_to_route_button{ "AddToRoute" };
     const std::string ItemsWindow::Names::items_listbox{ "Items" };
     const std::string ItemsWindow::Names::stats_listbox{ "Stats" };
