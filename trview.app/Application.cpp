@@ -3,12 +3,12 @@
 #include "Resources/resource.h"
 #include "Resources/DefaultShaders.h"
 #include "Resources/DefaultTextures.h"
+#include "Resources/DefaultFonts.h"
 
 #include <external/boost/di.hpp>
 
 #include <trlevel/di.h>
 #include <trview.graphics/di.h>
-#include <trview.ui.render/di.h>
 #include <trview.input/di.h>
 #include <trview.app/Elements/di.h>
 #include <trview.app/Geometry/di.h>
@@ -24,7 +24,6 @@
 #include <trview.common/Windows/Dialogs.h>
 #include <trview.common/Windows/Shell.h>
 #include <trview.app/Settings/IStartupOptions.h>
-#include <trview.ui.render/DefaultFonts.h>
 
 #include <external/imgui/backends/imgui_impl_win32.h>
 #include <external/imgui/backends/imgui_impl_dx11.h>
@@ -643,7 +642,6 @@ namespace trview
             graphics::register_module(),
             input::register_module(),
             trlevel::register_module(),
-            ui::render::register_module(),
             register_app_elements_module(),
             register_app_geometry_module(),
             register_app_graphics_module(),

@@ -93,4 +93,4 @@ namespace testing
 #include <trview.graphics/mocks/IShaderStorage.h>
 #include <trview.graphics/mocks/ISprite.h>
 #include <trview.input/Mocks/IMouse.h>
-#include <trview.ui.render/Mocks/IMapRenderer.h>
+#include <trview.app/Mocks/UI/IMapRenderer.h>

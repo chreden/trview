@@ -66,5 +66,3 @@
 #include <trview.graphics/PixelShaderStore.h>
 #include <trview.graphics/VertexShaderStore.h>
 #include <trview.input/IMouse.h>
-
-#include <trview.ui.render/IMapRenderer.h>

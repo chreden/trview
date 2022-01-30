@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../IMapRenderer.h"
+#include "../../UI/IMapRenderer.h"
 
 namespace trview
 {

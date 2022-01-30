@@ -13,8 +13,8 @@
 #include <trview.app/UI/Tooltip.h>
 #include <trview.app/UI/IViewOptions.h>
 #include <trview.input/Mouse.h>
-#include <trview.ui.render/IMapRenderer.h>
-#include <trview.common/TokenStore.h>>
+#include <trview.app/UI/IMapRenderer.h>
+#include <trview.common/TokenStore.h>
 
 namespace trview
 {
@@ -24,7 +24,7 @@ namespace trview
         explicit ViewerUI(const Window& window,
             const std::shared_ptr<ITextureStorage>& texture_storage,
             const std::shared_ptr<IShortcuts>& shortcuts,
-            const ui::render::IMapRenderer::Source& map_renderer_source,
+            const IMapRenderer::Source& map_renderer_source,
             std::unique_ptr<ISettingsWindow> settings_window,
             std::unique_ptr<IViewOptions> view_options,
             std::unique_ptr<IContextMenu> context_menu,
@@ -84,7 +84,7 @@ namespace trview
         std::unique_ptr<ISettingsWindow> _settings_window;
         std::unique_ptr<ICameraControls> _camera_controls;
         std::unique_ptr<CameraPosition> _camera_position;
-        std::unique_ptr<ui::render::IMapRenderer> _map_renderer;
+        std::unique_ptr<IMapRenderer> _map_renderer;
         std::unique_ptr<Tooltip> _map_tooltip;
         std::unique_ptr<Tooltip> _tooltip;
         std::unique_ptr<Console> _console;

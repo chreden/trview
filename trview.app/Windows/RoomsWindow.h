@@ -3,10 +3,10 @@
 #include <trview.common/Window.h>
 #include <trview.app/UI/Tooltip.h>
 #include <trview.app/Elements/Item.h>
-#include <trview.ui.render/IMapRenderer.h>
+#include "../UI/IMapRenderer.h"
 #include "IRoomsWindow.h"
 #include <trview.common/Windows/IClipboard.h>
-#include <trview.common/TokenStore.h>>
+#include <trview.common/TokenStore.h>
 #include <trview.input/IMouse.h>
 
 namespace trview
@@ -31,7 +31,7 @@ namespace trview
         /// @param device The graphics device
         /// @param renderer_source The function to call to get a renderer.
         /// @param parent The parent window.
-        explicit RoomsWindow(const ui::render::IMapRenderer::Source& map_renderer_source,
+        explicit RoomsWindow(const IMapRenderer::Source& map_renderer_source,
             const std::shared_ptr<IClipboard>& clipboard,
             const input::IMouse::Source& mouse_source,
             const Window& parent);
@@ -68,7 +68,7 @@ namespace trview
 
         Window _window;
         TokenStore _token_store;
-        std::unique_ptr<ui::render::IMapRenderer> _map_renderer;
+        std::unique_ptr<IMapRenderer> _map_renderer;
         std::unique_ptr<Tooltip> _map_tooltip;
         std::shared_ptr<IClipboard> _clipboard;
         trlevel::LevelVersion _level_version;

@@ -85,6 +85,7 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClCompile Include="Menus\RecentFiles.cpp" />
     <ClCompile Include="Menus\UpdateChecker.cpp" />
     <ClCompile Include="Menus\ViewMenu.cpp" />
+    <ClCompile Include="Resources\DefaultFonts.cpp" />
     <ClCompile Include="Resources\DefaultShaders.cpp" />
     <ClCompile Include="Resources\DefaultTextures.cpp" />
     <ClCompile Include="Routing\Action.cpp" />
@@ -119,10 +120,12 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClCompile Include="UI\GoTo.cpp" />
     <ClCompile Include="UI\ICameraControls.cpp" />
     <ClCompile Include="UI\IContextMenu.cpp" />
+    <ClCompile Include="UI\IMapRenderer.cpp" />
     <ClCompile Include="UI\ISettingsWindow.cpp" />
     <ClCompile Include="UI\IViewerUI.cpp" />
     <ClCompile Include="UI\IViewOptions.cpp" />
     <ClCompile Include="UI\LevelInfo.cpp" />
+    <ClCompile Include="UI\MapRenderer.cpp" />
     <ClCompile Include="UI\RoomNavigator.cpp" />
     <ClCompile Include="UI\SettingsWindow.cpp" />
     <ClCompile Include="UI\Tooltip.cpp" />
@@ -248,6 +251,7 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClInclude Include="Mocks\Tools\IMeasure.h" />
     <ClInclude Include="Mocks\UI\ICameraControls.h" />
     <ClInclude Include="Mocks\UI\IContextMenu.h" />
+    <ClInclude Include="Mocks\UI\IMapRenderer.h" />
     <ClInclude Include="Mocks\UI\ISettingsWindow.h" />
     <ClInclude Include="Mocks\UI\IViewerUI.h" />
     <ClInclude Include="Mocks\UI\IViewOptions.h" />
@@ -260,6 +264,7 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClInclude Include="Mocks\Windows\ITriggersWindow.h" />
     <ClInclude Include="Mocks\Windows\ITriggersWindowManager.h" />
     <ClInclude Include="Mocks\Windows\IViewer.h" />
+    <ClInclude Include="Resources\DefaultFonts.h" />
     <ClInclude Include="Resources\DefaultShaders.h" />
     <ClInclude Include="Resources\DefaultTextures.h" />
     <ClInclude Include="Resources\resource.h" />
@@ -299,10 +304,12 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClInclude Include="UI\GoTo.h" />
     <ClInclude Include="UI\ICameraControls.h" />
     <ClInclude Include="UI\IContextMenu.h" />
+    <ClInclude Include="UI\IMapRenderer.h" />
     <ClInclude Include="UI\ISettingsWindow.h" />
     <ClInclude Include="UI\IViewerUI.h" />
     <ClInclude Include="UI\IViewOptions.h" />
     <ClInclude Include="UI\LevelInfo.h" />
+    <ClInclude Include="UI\MapRenderer.h" />
     <ClInclude Include="UI\RoomNavigator.h" />
     <ClInclude Include="UI\SettingsWindow.h" />
     <ClInclude Include="UI\Tooltip.h" />
@@ -350,6 +357,7 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <Text Include="Resources\Files\actions.json">
       <FileType>Document</FileType>
     </Text>
+    <None Include="Resources\Files\Fonts\arial7.bin" />
     <None Include="Resources\Files\UI\rooms_window.json" />
     <None Include="Resources\Files\UI\route_window.json" />
     <None Include="Resources\Generated\level_pixel_shader.cso" />
@@ -373,9 +381,6 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     </ProjectReference>
     <ProjectReference Include="..\trview.lau\trview.lau.vcxproj">
       <Project>{2ac76373-f9a6-426d-b732-80e6bd6bfab4}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\trview.ui.render\trview.ui.render.vcxproj">
-      <Project>{0c5a9791-6cf1-42e9-9776-ac47eeff8ec8}</Project>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

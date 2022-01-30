@@ -67,7 +67,7 @@ namespace trview
     const std::string RoomsWindow::Names::neighbours_listbox{ "neighbours" };
     const std::string RoomsWindow::Names::items_listbox{ "items" };
 
-    RoomsWindow::RoomsWindow(const ui::render::IMapRenderer::Source& map_renderer_source,
+    RoomsWindow::RoomsWindow(const IMapRenderer::Source& map_renderer_source,
         const std::shared_ptr<IClipboard>& clipboard,
         const input::IMouse::Source& mouse_source,
         const Window& parent)
@@ -179,7 +179,6 @@ namespace trview
 
     void RoomsWindow::set_rooms(const std::vector<std::weak_ptr<IRoom>>& rooms)
     {
-        using namespace ui;
         _all_rooms = rooms;
         _current_room = 0xffffffff;
     }

@@ -63,7 +63,7 @@ namespace trview
                     return [&]()
                     {
                         return std::make_shared<RoomsWindow>(
-                            injector.create<ui::render::IMapRenderer::Source>(),
+                            injector.create<IMapRenderer::Source>(),
                             injector.create<std::shared_ptr<IClipboard>>(),
                             injector.create<input::IMouse::Source>(),
                             injector.create<Window>());

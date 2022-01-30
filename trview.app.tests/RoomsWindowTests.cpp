@@ -1,7 +1,7 @@
 #include <trview.app/Windows/RoomsWindow.h>
 #include <trview.app/Elements/Types.h>
 #include <trview.graphics/mocks/IDeviceWindow.h>
-#include <trview.ui.render/Mocks/IMapRenderer.h>
+#include <trview.app/Mocks/UI/IMapRenderer.h>
 #include <trview.app/Mocks/Elements/IRoom.h>
 #include <trview.input/Mocks/IMouse.h>
 #include <trview.app/Mocks/Elements/ITrigger.h>
