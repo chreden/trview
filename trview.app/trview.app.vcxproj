@@ -130,7 +130,6 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClCompile Include="UI\Tooltip.cpp" />
     <ClCompile Include="UI\ViewerUI.cpp" />
     <ClCompile Include="UI\ViewOptions.cpp" />
-    <ClCompile Include="Windows\CollapsiblePanel.cpp" />
     <ClCompile Include="Windows\IItemsWindow.cpp" />
     <ClCompile Include="Windows\IItemsWindowManager.cpp" />
     <ClCompile Include="Windows\IRoomsWindow.cpp" />
@@ -314,7 +313,6 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClInclude Include="UI\Tooltip.h" />
     <ClInclude Include="UI\ViewerUI.h" />
     <ClInclude Include="UI\ViewOptions.h" />
-    <ClInclude Include="Windows\CollapsiblePanel.h" />
     <ClInclude Include="Windows\di.h" />
     <ClInclude Include="Windows\di.hpp" />
     <ClInclude Include="Windows\IItemsWindow.h" />

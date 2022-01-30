@@ -109,7 +109,7 @@ namespace trview
 
     std::weak_ptr<IRoomsWindow> RoomsWindowManager::create_window()
     {
-        auto rooms_window = _rooms_window_source(window());
+        auto rooms_window = _rooms_window_source();
         rooms_window->on_room_selected += on_room_selected;
         rooms_window->on_item_selected += on_item_selected;
         rooms_window->on_trigger_selected += on_trigger_selected;

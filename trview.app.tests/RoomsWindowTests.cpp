@@ -14,6 +14,8 @@
 #include <trview.ui/JsonLoader.h>
 #include <trview.common/Mocks/Windows/IShell.h>
 
+/*
+
 using namespace trview;
 using namespace trview::tests;
 using namespace trview::graphics;
@@ -190,3 +192,4 @@ TEST(RoomsWindow, LevelVersionChangesFlags)
     ASSERT_THAT(names, testing::Contains(L"Quicksand / 7"));
 }
 
+*/

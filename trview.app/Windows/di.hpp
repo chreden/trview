@@ -61,17 +61,13 @@ namespace trview
             di::bind<IRoomsWindow::Source>.to(
                 [](const auto& injector) -> IRoomsWindow::Source
                 {
-                    return [&](auto window)
+                    return [&]()
                     {
                         return std::make_shared<RoomsWindow>(
-                            injector.create<IDeviceWindow::Source>(),
-                            injector.create<ui::render::IRenderer::Source>(),
                             injector.create<ui::render::IMapRenderer::Source>(),
-                            injector.create<ui::IInput::Source>(),
                             injector.create<std::shared_ptr<IClipboard>>(),
-                            injector.create<IBubble::Source>(),
-                            window,
-                            injector.create<std::shared_ptr<ui::ILoader>>());
+                            injector.create<input::IMouse::Source>(),
+                            injector.create<Window>());
                     };
                 }),
             di::bind<IRoomsWindowManager>.to<RoomsWindowManager>(),

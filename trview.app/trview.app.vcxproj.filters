@@ -49,9 +49,6 @@
     <ClCompile Include="UI\CameraPosition.cpp">
       <Filter>UI</Filter>
     </ClCompile>
-    <ClCompile Include="Windows\CollapsiblePanel.cpp">
-      <Filter>Windows</Filter>
-    </ClCompile>
     <ClCompile Include="Windows\ItemsWindow.cpp">
       <Filter>Windows</Filter>
     </ClCompile>
@@ -404,9 +401,6 @@
     </ClInclude>
     <ClInclude Include="UI\CameraPosition.h">
       <Filter>UI</Filter>
-    </ClInclude>
-    <ClInclude Include="Windows\CollapsiblePanel.h">
-      <Filter>Windows</Filter>
     </ClInclude>
     <ClInclude Include="Windows\ItemsWindow.h">
       <Filter>Windows</Filter>

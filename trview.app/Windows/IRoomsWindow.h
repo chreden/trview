@@ -10,7 +10,7 @@ namespace trview
 {
     struct IRoomsWindow
     {
-        using Source = std::function<std::shared_ptr<IRoomsWindow>(const Window)>;
+        using Source = std::function<std::shared_ptr<IRoomsWindow>()>;
 
         virtual ~IRoomsWindow() = 0;
 
