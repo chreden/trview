@@ -61,6 +61,9 @@ namespace trview
         void set_track_item(bool value);
         void set_track_trigger(bool value);
         void render_minimap();
+        bool render_host();
+        void render_rooms_list();
+        void render_room_details();
 
         std::vector<std::weak_ptr<IRoom>> _all_rooms;
         std::vector<Item> _all_items;
@@ -82,6 +85,7 @@ namespace trview
         uint32_t _current_room{ 0u };
         std::optional<Item> _selected_item;
         std::weak_ptr<ITrigger> _selected_trigger;
+        uint32_t _selected_room{ 0u };
 
         std::unique_ptr<ui::render::IMapRenderer> _map_renderer;
         std::unique_ptr<Tooltip> _map_tooltip;

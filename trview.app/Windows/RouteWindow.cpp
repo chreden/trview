@@ -264,7 +264,8 @@ namespace trview
     {
         if (!render_host())
         {
-            IRouteWindow::on_window_closed();
+            on_window_closed();
+            return;
         }
 
         render_waypoint_list();
