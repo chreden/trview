@@ -28,7 +28,7 @@ namespace trview
 
         if (ImGui::Begin("View Options", nullptr, ImGuiWindowFlags_AlwaysAutoResize))
         {
-            if (ImGui::BeginTable("flags", 2))
+            if (ImGui::BeginTable(Names::flags.c_str(), 2))
             {
                 ImGui::TableNextRow();
                 add_toggle(IViewer::Options::highlight);

@@ -8,6 +8,11 @@ namespace trview
     class ViewOptions final : public IViewOptions
     {
     public:
+        struct Names
+        {
+            static const inline std::string flags = "flags";
+        };
+
         ViewOptions();
         virtual void render() override;
         virtual void set_alternate_group(uint32_t value, bool enabled) override;

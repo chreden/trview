@@ -13,6 +13,10 @@ void ImGuiTestEngineHook_ItemInfo(ImGuiContext* ctx, ImGuiID id, const char* lab
 
     test->add_status_flag(id, flags);
     test->add_item_flag(id, ctx->CurrentItemFlags);
+
+    std::array<ImVec4, ImGuiCol_COUNT> colours;
+    memcpy(&colours[0], ctx->Style.Colors, sizeof(ctx->Style.Colors));
+    test->add_style_colours(id, colours);
 }
 
 void ImGuiTestEngineHook_ItemAdd(ImGuiContext* ctx, const ImRect& bb, ImGuiID id)
@@ -24,6 +28,11 @@ void ImGuiTestEngineHook_ItemAdd(ImGuiContext* ctx, const ImRect& bb, ImGuiID id
     }
 
     test->add_rect(id, bb);
+    test->add_item_flag(id, ctx->CurrentItemFlags);
+
+    std::array<ImVec4, ImGuiCol_COUNT> colours;
+    memcpy(&colours[0], ctx->Style.Colors, sizeof(ctx->Style.Colors));
+    test->add_style_colours(id, colours);
 }
 
 void ImGuiTestEngineHook_Log(ImGuiContext* ctx, const char* fmt, ...)
@@ -80,6 +89,8 @@ namespace trview
                 _context->IO.MouseClicked[0] = true;
             };
             render(setup);
+
+            _context->IO.MouseClicked[0] = false;
         }
 
         ImGuiID TestImgui::get_id(ImGuiWindow* window, const std::vector<std::string>& path_to_element) const
@@ -137,6 +148,11 @@ namespace trview
             _item_flags[id] = flags;
         }
 
+        void TestImgui::add_style_colours(ImGuiID id, const std::array<ImVec4, ImGuiCol_COUNT>& colours)
+        {
+            _item_colours[id] = colours;
+        }
+
         ImGuiItemStatusFlags TestImgui::status_flags(const std::string& window_name, const std::vector<std::string>& path_to_element) const
         {
             const auto window = find_window(window_name);
@@ -166,6 +182,31 @@ namespace trview
         void TestImgui::render()
         {
             render([](){});
+        }
+
+        Colour TestImgui::style_colour(const std::string& window_name, const std::vector<std::string>& path_to_element, ImGuiCol colour) const
+        {
+            const auto window = find_window(window_name);
+            const auto id = get_id(window, path_to_element);
+            const auto& colours = _item_colours.find(id)->second;
+            const auto result = colours[colour];
+            return Colour(result.w, result.x, result.y, result.z);
+        }
+
+        bool TestImgui::element_present(const std::string& window_name, const std::vector<std::string>& path_to_element) const
+        {
+            const auto window = find_window(window_name);
+            const auto id = get_id(window, path_to_element);
+            return _element_rects.find(id) != _element_rects.end();
+        }
+
+        void TestImgui::reset()
+        {
+            _element_rects.clear();
+            _status_flags.clear();
+            _item_flags.clear();
+            _item_colours.clear();
+            _tracking_id = 0;
         }
     }
 }
