@@ -123,6 +123,7 @@
     <ClCompile Include="Graphics\TextureStorage.cpp">
       <Filter>Graphics</Filter>
     </ClCompile>
+    <ClCompile Include="TestImgui.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Input">
@@ -155,5 +156,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
+    <ClInclude Include="TestImgui.h" />
   </ItemGroup>
 </Project>
