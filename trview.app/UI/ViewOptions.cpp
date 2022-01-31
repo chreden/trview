@@ -20,6 +20,13 @@ namespace trview
         auto add_toggle = [&](const std::string& name)
         {
             ImGui::TableNextColumn();
+            const ImGuiStyle& style = ImGui::GetCurrentContext()->Style;
+            const ImVec2 label_size = ImGui::CalcTextSize(name.c_str(), NULL, true);
+            const float square_sz = ImGui::GetFrameHeight();
+            const ImVec2 pos = ImGui::GetCurrentWindow()->DC.CursorPos;
+            const ImRect total_bb(pos, pos + ImVec2(square_sz + (label_size.x > 0.0f ? style.ItemInnerSpacing.x + label_size.x : 0.0f), label_size.y + style.FramePadding.y * 2.0f));
+            _positions[name] = { ImGui::GetCurrentWindow()->GetID(name.c_str()), Point(total_bb.Min.x, total_bb.Min.y)};
+            _pos_fn(name, ImGui::GetCurrentWindow()->GetID(name.c_str()), Point(total_bb.Min.x, total_bb.Min.y));
             if (ImGui::Checkbox(name.c_str(), &_toggles[name]))
             {
                 on_toggle_changed(name, _toggles[name]);

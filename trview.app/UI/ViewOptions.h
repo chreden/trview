@@ -17,6 +17,9 @@ namespace trview
         virtual void set_toggle(const std::string& name, bool value) override;
         virtual void set_use_alternate_groups(bool value) override;
         virtual bool toggle(const std::string& name) const override;
+    public:
+        std::unordered_map<std::string, std::tuple<uint32_t, Point>> _positions;
+        std::function<void(const std::string&, uint32_t, Point)> _pos_fn{ [](auto,auto,auto) {} };
     private:
         std::unordered_map<uint32_t, bool> _alternate_group_values;
         std::unordered_map<std::string, bool> _toggles;
