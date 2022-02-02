@@ -13,22 +13,22 @@ namespace trview
     public:
         struct Names
         {
-            static const std::string vsync;
-            static const std::string go_to_lara;
-            static const std::string invert_map_controls;
-            static const std::string items_startup;
-            static const std::string triggers_startup;
-            static const std::string rooms_startup;
-            static const std::string auto_orbit;
-            static const std::string invert_vertical_pan;
-            static const std::string camera_display_degrees;
-            static const std::string randomizer_tools;
-            static const std::string max_recent_files;
-            static const std::string sensitivity;
-            static const std::string movement_speed;
-            static const std::string acceleration;
-            static const std::string acceleration_rate;
-            static const std::string close;
+            static inline const std::string vsync = "Vsync";
+            static inline const std::string go_to_lara = "Select Lara when level is opened";
+            static inline const std::string invert_map_controls = "Invert map controls";
+            static inline const std::string items_startup = "Open Items Window at startup";
+            static inline const std::string triggers_startup = "Open Triggers Window at startup";
+            static inline const std::string rooms_startup = "Open Rooms Window at startup";
+            static inline const std::string auto_orbit = "Switch to orbit on selection";
+            static inline const std::string invert_vertical_pan = "Invert vertical panning";
+            static inline const std::string camera_display_degrees = "Use degrees for camera angle display";
+            static inline const std::string randomizer_tools = "Enable Randomizer Tools";
+            static inline const std::string max_recent_files = "Recent Files";
+            static inline const std::string sensitivity = "Sensitivity";
+            static inline const std::string movement_speed = "Movement Speed";
+            static inline const std::string acceleration = "Acceleration";
+            static inline const std::string acceleration_rate = "Acceleration Rate";
+            static inline const std::string background_colour = "Background Colour";
         };
 
         virtual ~SettingsWindow() = default;

@@ -1,34 +1,26 @@
 #include <trview.app/UI/SettingsWindow.h>
-#include <trview.common/Mocks/Windows/IShell.h>
+#include "TestImgui.h"
 
 using namespace trview;
-using namespace trview::mocks;
+using namespace trview::tests;
 
-/*
 TEST(SettingsWindow, SetVSyncUpdatesCheckbox)
 {
-    ui::Window host(Size(), Colour::Transparent);
-    SettingsWindow window(host, std::make_shared<JsonLoader>(std::make_shared<MockShell>()));
+    SettingsWindow window;
+    window.toggle_visibility();
 
-    auto checkbox = host.find<Checkbox>(SettingsWindow::Names::vsync);
-    ASSERT_NE(checkbox, nullptr);
-    ASSERT_FALSE(checkbox->state());
-
-    std::optional<bool> received_value;
-    auto token = window.on_vsync += [&](bool value)
-    {
-        received_value = value;
-    };
+    TestImgui imgui([&]() { window.render(); });
+    ASSERT_FALSE(imgui.status_flags("Settings", { "TabBar", "General", SettingsWindow::Names::vsync }) & ImGuiItemStatusFlags_Checked);
 
     window.set_vsync(true);
-    ASSERT_TRUE(checkbox->state());
-    ASSERT_FALSE(received_value.has_value());
+    imgui.render();
+    ASSERT_TRUE(imgui.status_flags("Settings", { "TabBar", "General", SettingsWindow::Names::vsync }) & ImGuiItemStatusFlags_Checked);
 }
 
 TEST(SettingsWindow, ClickingVSyncRaisesEvent)
 {
-    ui::Window host(Size(), Colour::Transparent);
-    SettingsWindow window(host, std::make_shared<JsonLoader>(std::make_shared<MockShell>()));
+    SettingsWindow window;
+    window.toggle_visibility();
 
     std::optional<bool> received_value;
     auto token = window.on_vsync += [&](bool value)
@@ -36,39 +28,31 @@ TEST(SettingsWindow, ClickingVSyncRaisesEvent)
         received_value = value;
     };
 
-    auto checkbox = host.find<Checkbox>(SettingsWindow::Names::vsync);
-    ASSERT_NE(checkbox, nullptr);
-    ASSERT_FALSE(checkbox->state());
-
-    checkbox->clicked(Point());
+    TestImgui imgui([&]() { window.render(); });
+    ASSERT_FALSE(imgui.status_flags("Settings", { "TabBar", "General", SettingsWindow::Names::vsync }) & ImGuiItemStatusFlags_Checked);
+    imgui.click_element("Settings", { "TabBar", "General", SettingsWindow::Names::vsync });
+    ASSERT_TRUE(imgui.status_flags("Settings", { "TabBar", "General", SettingsWindow::Names::vsync }) & ImGuiItemStatusFlags_Checked);
     ASSERT_EQ(received_value.has_value(), true);
     ASSERT_TRUE(received_value.value());
 }
 
 TEST(SettingsWindow, SetGoToLaraUpdatesCheckbox)
 {
-    ui::Window host(Size(), Colour::Transparent);
-    SettingsWindow window(host, std::make_shared<JsonLoader>(std::make_shared<MockShell>()));
+    SettingsWindow window;
+    window.toggle_visibility();
 
-    auto checkbox = host.find<Checkbox>(SettingsWindow::Names::go_to_lara);
-    ASSERT_NE(checkbox, nullptr);
-    ASSERT_FALSE(checkbox->state());
-
-    std::optional<bool> received_value;
-    auto token = window.on_go_to_lara += [&](bool value)
-    {
-        received_value = value;
-    };
+    TestImgui imgui([&]() { window.render(); });
+    ASSERT_FALSE(imgui.status_flags("Settings", { "TabBar", "General", SettingsWindow::Names::go_to_lara }) & ImGuiItemStatusFlags_Checked);
 
     window.set_go_to_lara(true);
-    ASSERT_TRUE(checkbox->state());
-    ASSERT_FALSE(received_value.has_value());
+    imgui.render();
+    ASSERT_TRUE(imgui.status_flags("Settings", { "TabBar", "General", SettingsWindow::Names::go_to_lara }) & ImGuiItemStatusFlags_Checked);
 }
 
 TEST(SettingsWindow, ClickingGoToLaraRaisesEvent)
 {
-    ui::Window host(Size(), Colour::Transparent);
-    SettingsWindow window(host, std::make_shared<JsonLoader>(std::make_shared<MockShell>()));
+    SettingsWindow window;
+    window.toggle_visibility();
 
     std::optional<bool> received_value;
     auto token = window.on_go_to_lara += [&](bool value)
@@ -76,39 +60,31 @@ TEST(SettingsWindow, ClickingGoToLaraRaisesEvent)
         received_value = value;
     };
 
-    auto checkbox = host.find<Checkbox>(SettingsWindow::Names::go_to_lara);
-    ASSERT_NE(checkbox, nullptr);
-    ASSERT_FALSE(checkbox->state());
-
-    checkbox->clicked(Point());
+    TestImgui imgui([&]() { window.render(); });
+    ASSERT_FALSE(imgui.status_flags("Settings", { "TabBar", "General", SettingsWindow::Names::go_to_lara }) & ImGuiItemStatusFlags_Checked);
+    imgui.click_element("Settings", { "TabBar", "General", SettingsWindow::Names::go_to_lara });
+    ASSERT_TRUE(imgui.status_flags("Settings", { "TabBar", "General", SettingsWindow::Names::go_to_lara }) & ImGuiItemStatusFlags_Checked);
     ASSERT_EQ(received_value.has_value(), true);
     ASSERT_TRUE(received_value.value());
 }
 
 TEST(SettingsWindow, SetInvertMapControlsUpdatesCheckbox)
 {
-    ui::Window host(Size(), Colour::Transparent);
-    SettingsWindow window(host, std::make_shared<JsonLoader>(std::make_shared<MockShell>()));
+    SettingsWindow window;
+    window.toggle_visibility();
 
-    auto checkbox = host.find<Checkbox>(SettingsWindow::Names::invert_map_controls);
-    ASSERT_NE(checkbox, nullptr);
-    ASSERT_FALSE(checkbox->state());
-
-    std::optional<bool> received_value;
-    auto token = window.on_invert_map_controls += [&](bool value)
-    {
-        received_value = value;
-    };
+    TestImgui imgui([&]() { window.render(); });
+    ASSERT_FALSE(imgui.status_flags("Settings", { "TabBar", "General", SettingsWindow::Names::invert_map_controls }) & ImGuiItemStatusFlags_Checked);
 
     window.set_invert_map_controls(true);
-    ASSERT_TRUE(checkbox->state());
-    ASSERT_FALSE(received_value.has_value());
+    imgui.render();
+    ASSERT_TRUE(imgui.status_flags("Settings", { "TabBar", "General", SettingsWindow::Names::invert_map_controls }) & ImGuiItemStatusFlags_Checked);
 }
 
 TEST(SettingsWindow, ClickingInvertMapControlsRaisesEvent)
 {
-    ui::Window host(Size(), Colour::Transparent);
-    SettingsWindow window(host, std::make_shared<JsonLoader>(std::make_shared<MockShell>()));
+    SettingsWindow window;
+    window.toggle_visibility();
 
     std::optional<bool> received_value;
     auto token = window.on_invert_map_controls += [&](bool value)
@@ -116,15 +92,15 @@ TEST(SettingsWindow, ClickingInvertMapControlsRaisesEvent)
         received_value = value;
     };
 
-    auto checkbox = host.find<Checkbox>(SettingsWindow::Names::invert_map_controls);
-    ASSERT_NE(checkbox, nullptr);
-    ASSERT_FALSE(checkbox->state());
-
-    checkbox->clicked(Point());
+    TestImgui imgui([&]() { window.render(); });
+    ASSERT_FALSE(imgui.status_flags("Settings", { "TabBar", "General", SettingsWindow::Names::invert_map_controls }) & ImGuiItemStatusFlags_Checked);
+    imgui.click_element("Settings", { "TabBar", "General", SettingsWindow::Names::invert_map_controls });
+    ASSERT_TRUE(imgui.status_flags("Settings", { "TabBar", "General", SettingsWindow::Names::invert_map_controls }) & ImGuiItemStatusFlags_Checked);
     ASSERT_EQ(received_value.has_value(), true);
     ASSERT_TRUE(received_value.value());
 }
 
+/*
 TEST(SettingsWindow, SetItemsWindowOnStartupUpdatesCheckbox)
 {
     ui::Window host(Size(), Colour::Transparent);

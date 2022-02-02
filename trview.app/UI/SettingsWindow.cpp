@@ -2,23 +2,6 @@
 
 namespace trview
 {
-    const std::string SettingsWindow::Names::vsync = "VSync";
-    const std::string SettingsWindow::Names::go_to_lara = "GoToLara";
-    const std::string SettingsWindow::Names::invert_map_controls = "InvertMapControls";
-    const std::string SettingsWindow::Names::items_startup = "ItemsStartup";
-    const std::string SettingsWindow::Names::triggers_startup = "TriggersStartup";
-    const std::string SettingsWindow::Names::rooms_startup = "RoomsStartup";
-    const std::string SettingsWindow::Names::auto_orbit = "AutoOrbit";
-    const std::string SettingsWindow::Names::invert_vertical_pan = "InvertVerticalPan";
-    const std::string SettingsWindow::Names::camera_display_degrees = "CameraDisplayDegrees";
-    const std::string SettingsWindow::Names::randomizer_tools = "RandomizerTools";
-    const std::string SettingsWindow::Names::max_recent_files = "MaxRecentFiles";
-    const std::string SettingsWindow::Names::sensitivity = "Sensitivity";
-    const std::string SettingsWindow::Names::movement_speed = "MovementSpeed";
-    const std::string SettingsWindow::Names::acceleration = "Acceleration";
-    const std::string SettingsWindow::Names::acceleration_rate = "AccelerationRate";
-    const std::string SettingsWindow::Names::close = "Close";
-
     void SettingsWindow::render()
     {
         if (!_visible)
@@ -40,19 +23,19 @@ namespace trview
             {
                 if (ImGui::BeginTabItem("General"))
                 {
-                    checkbox("Vsync", _vsync, on_vsync);
-                    checkbox("Select Lara when level is opened", _go_to_lara, on_go_to_lara);
-                    checkbox("Invert map controls", _invert_map_controls, on_invert_map_controls);
-                    checkbox("Open Items Window at startup", _items_startup, on_items_startup);
-                    checkbox("Open Triggers Window at startup", _triggers_startup, on_triggers_startup);
-                    checkbox("Open Rooms Window at startup", _rooms_startup, on_rooms_startup);
-                    checkbox("Enable Randomizer Tools", _randomizer_tools, on_randomizer_tools);
-                    if (ImGui::InputInt("Recent Files", &_max_recent_files))
+                    checkbox(Names::vsync, _vsync, on_vsync);
+                    checkbox(Names::go_to_lara, _go_to_lara, on_go_to_lara);
+                    checkbox(Names::invert_map_controls, _invert_map_controls, on_invert_map_controls);
+                    checkbox(Names::items_startup, _items_startup, on_items_startup);
+                    checkbox(Names::triggers_startup, _triggers_startup, on_triggers_startup);
+                    checkbox(Names::rooms_startup, _rooms_startup, on_rooms_startup);
+                    checkbox(Names::randomizer_tools, _randomizer_tools, on_randomizer_tools);
+                    if (ImGui::InputInt(Names::max_recent_files.c_str(), &_max_recent_files))
                     {
                         _max_recent_files = std::max(0, _max_recent_files);
                         on_max_recent_files(_max_recent_files);
                     }
-                    if (ImGui::ColorEdit3("Background Colour", _colour))
+                    if (ImGui::ColorEdit3(Names::background_colour.c_str(), _colour))
                     {
                         on_background_colour(Colour(1.0f, _colour[0], _colour[1], _colour[2]));
                     }
@@ -61,19 +44,19 @@ namespace trview
 
                 if (ImGui::BeginTabItem("Camera"))
                 {
-                    checkbox("Invert vertical panning", _invert_vertical_panning, on_invert_vertical_pan);
-                    checkbox("Use degrees for camera angle display", _camera_display_degrees, on_camera_display_degrees);
-                    checkbox("Switch to orbit on selection", _auto_orbit, on_auto_orbit);
-                    if (ImGui::SliderFloat("Sensitivity", &_sensitivity, 0.0f, 1.0f))
+                    checkbox(Names::invert_vertical_pan, _invert_vertical_panning, on_invert_vertical_pan);
+                    checkbox(Names::camera_display_degrees, _camera_display_degrees, on_camera_display_degrees);
+                    checkbox(Names::auto_orbit, _auto_orbit, on_auto_orbit);
+                    if (ImGui::SliderFloat(Names::sensitivity.c_str(), &_sensitivity, 0.0f, 1.0f))
                     {
                         on_sensitivity_changed(_sensitivity);
                     }
-                    if (ImGui::SliderFloat("Movement Speed", &_movement_speed, 0.0f, 1.0f))
+                    if (ImGui::SliderFloat(Names::movement_speed.c_str(), &_movement_speed, 0.0f, 1.0f))
                     {
                         on_movement_speed_changed(_movement_speed);
                     }
-                    checkbox("Acceleration", _acceleration, on_camera_acceleration);
-                    if (ImGui::SliderFloat("Acceleration Rate", &_acceleration_rate, 0.0f, 1.0f))
+                    checkbox(Names::acceleration, _acceleration, on_camera_acceleration);
+                    if (ImGui::SliderFloat(Names::acceleration_rate.c_str(), &_acceleration_rate, 0.0f, 1.0f))
                     {
                         on_camera_acceleration_rate(_acceleration_rate);
                     }
