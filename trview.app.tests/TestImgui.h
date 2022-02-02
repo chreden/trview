@@ -30,6 +30,8 @@ namespace trview
             /// <param name="path_to_element">The path to the element including containing elements.</param>
             void click_element(const std::string& window_name, const std::vector<std::string>& path_to_element);
 
+            void enter_text(const std::string& window_name, const std::vector<std::string>& path_to_element, const std::string& text);
+
             /// <summary>
             /// Add a control recangle.
             /// </summary>
@@ -39,12 +41,14 @@ namespace trview
 
             void add_status_flag(ImGuiID id, ImGuiItemStatusFlags flags);
             void add_item_flag(ImGuiID id, ImGuiItemFlags flags);
+            void add_item_text(ImGuiID id, const std::string& text);
             void add_style_colours(ImGuiID id, const std::array<ImVec4, ImGuiCol_COUNT>& colours);
 
             bool element_present(const std::string& window_name, const std::vector<std::string>& path_to_element) const;
 
             ImGuiItemStatusFlags status_flags(const std::string& window_name, const std::vector<std::string>& path_to_element) const;
             ImGuiItemFlags item_flags(const std::string& window_name, const std::vector<std::string>& path_to_element) const;
+            std::string item_text(const std::string& window_name, const std::vector<std::string>& path_to_element) const;
             Colour style_colour(const std::string& window_name, const std::vector<std::string>& path_to_element, ImGuiCol colour) const;
 
             void render();
@@ -62,6 +66,7 @@ namespace trview
             std::unordered_map<ImGuiID, ImGuiItemStatusFlags> _status_flags;
             std::unordered_map<ImGuiID, ImGuiItemFlags> _item_flags;
             std::unordered_map<ImGuiID, std::array<ImVec4, ImGuiCol_COUNT>> _item_colours;
+            std::unordered_map<ImGuiID, std::string> _item_text;
             ImGuiID _tracking_id{ 0 };
             ImGuiContext* _context{ nullptr };
         };

@@ -45,6 +45,17 @@ const char* ImGuiTestEngine_FindItemDebugLabel(ImGuiContext* ctx, ImGuiID id)
     return "";
 }
 
+void ImGuiTrviewTestEngineHook_ItemText(ImGuiContext* ctx, ImGuiID id, const char* buf)
+{
+    TestImgui* test = static_cast<TestImgui*>(ctx->TestEngine);
+    if (!test)
+    {
+        return;
+    }
+
+    test->add_item_text(id, buf);
+}
+
 namespace trview
 {
     namespace tests
@@ -77,7 +88,7 @@ namespace trview
 
         void TestImgui::click_element(const std::string& window_name, const std::vector<std::string>& path_to_element)
         {
-            const auto setup = [&]()
+            const auto click_on_element = [&]()
             {
                 auto window = find_window(window_name);
                 _context->HoveredWindow = window;
@@ -88,9 +99,43 @@ namespace trview
                 _context->IO.MousePos = ImVec2(bb.Min.y, bb.Min.y);
                 _context->IO.MouseClicked[0] = true;
             };
-            render(setup);
+            render(click_on_element);
 
+            _tracking_id = 0;
             _context->IO.MouseClicked[0] = false;
+        }
+
+        void TestImgui::enter_text(const std::string& window_name, const std::vector<std::string>& path_to_element, const std::string& text)
+        {
+            const auto focus_on_element = [&]()
+            {
+                auto window = find_window(window_name);
+                _context->HoveredWindow = window;
+                const auto id = get_id(window, path_to_element);
+                _tracking_id = id;
+                const auto bb = _element_rects[id];
+                _context->ActiveId = 0;
+                _context->HoveredId = id;
+                _context->IO.MousePos = ImVec2(bb.Min.y, bb.Min.y);
+                _context->IO.MouseClicked[0] = true;
+                for (const auto& c : text)
+                {
+                    _context->IO.InputQueueCharacters.push_back(c);
+                }
+            };
+
+            const auto type_into_element = [&]()
+            {
+                _context->IO.MouseClicked[0] = false;
+                _context->IO.KeysData[ImGuiKey_Enter].Down = true;
+                _context->IO.KeysData[ImGuiKey_Enter].DownDuration = 0.5f;
+                _context->IO.DeltaTime = 1.0f;
+            };
+
+            render(focus_on_element);
+            render(type_into_element);
+
+            _tracking_id = 0;
         }
 
         ImGuiID TestImgui::get_id(ImGuiWindow* window, const std::vector<std::string>& path_to_element) const
@@ -106,8 +151,7 @@ namespace trview
                 ImGui::PushID(path_to_element[i].c_str());
             }
 
-            auto id = window->GetID(path_to_element.back().c_str());
-
+            const auto id = window->GetID(path_to_element.back().c_str());
             for (uint32_t i = 0; i < path_to_element.size() - 1; ++i)
             {
                 ImGui::PopID();
@@ -148,6 +192,11 @@ namespace trview
             _item_flags[id] = flags;
         }
 
+        void TestImgui::add_item_text(ImGuiID id, const std::string& text)
+        {
+            _item_text[id] = text;
+        }
+
         void TestImgui::add_style_colours(ImGuiID id, const std::array<ImVec4, ImGuiCol_COUNT>& colours)
         {
             _item_colours[id] = colours;
@@ -165,6 +214,13 @@ namespace trview
             const auto window = find_window(window_name);
             const auto id = get_id(window, path_to_element);
             return _item_flags.find(id)->second;
+        }
+
+        std::string TestImgui::item_text(const std::string& window_name, const std::vector<std::string>& path_to_element) const
+        {
+            const auto window = find_window(window_name);
+            const auto id = get_id(window, path_to_element);
+            return _item_text.find(id)->second;
         }
 
         void TestImgui::render(const std::function<void()>& pre_render_callback)
@@ -206,6 +262,7 @@ namespace trview
             _status_flags.clear();
             _item_flags.clear();
             _item_colours.clear();
+            _item_text.clear();
             _tracking_id = 0;
         }
     }

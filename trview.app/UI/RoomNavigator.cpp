@@ -6,10 +6,14 @@ namespace trview
     {
         if (ImGui::Begin("Room Navigator", nullptr, ImGuiWindowFlags_AlwaysAutoResize))
         {
-            if (ImGui::InputInt(std::string("of " + std::to_string(_max_rooms) +  "##roomnumber").c_str(), &_selected_room, 1, 10))
+            const uint32_t previous_selection = _selected_room;
+            if (ImGui::InputInt(std::string("of " + std::to_string(_max_rooms) +  "##roomnumber").c_str(), &_selected_room, 1, 10, ImGuiInputTextFlags_EnterReturnsTrue))
             {
                 _selected_room = std::clamp(_selected_room, 0, _max_rooms);
-                on_room_selected(_selected_room);
+                if (_selected_room != previous_selection)
+                {
+                    on_room_selected(_selected_room);
+                }
             }
         }
         ImGui::End();

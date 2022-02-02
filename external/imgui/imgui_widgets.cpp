@@ -3936,6 +3936,8 @@ bool ImGui::InputTextEx(const char* label, const char* hint, char* buf, int buf_
     const ImRect frame_bb(window->DC.CursorPos, window->DC.CursorPos + frame_size);
     const ImRect total_bb(frame_bb.Min, frame_bb.Min + total_size);
 
+    IMGUI_TRVIEW_TEST_ENGINE_ITEM_TEXT(id, buf);
+
     ImGuiWindow* draw_window = window;
     ImVec2 inner_size = frame_size;
     ImGuiItemStatusFlags item_status_flags = 0;
@@ -4526,6 +4528,7 @@ bool ImGui::InputTextEx(const char* label, const char* hint, char* buf, int buf_
 
         // If the underlying buffer resize was denied or not carried to the next frame, apply_new_text_length+1 may be >= buf_size.
         ImStrncpy(buf, apply_new_text, ImMin(apply_new_text_length + 1, buf_size));
+        IMGUI_TRVIEW_TEST_ENGINE_ITEM_TEXT(id, buf);
         value_changed = true;
     }
 
