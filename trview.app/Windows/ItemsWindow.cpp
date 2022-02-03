@@ -86,38 +86,9 @@ namespace trview
         return _selected_item;
     }
 
-    bool ItemsWindow::render_host()
-    {
-        bool stay_open = true;
-        ImGui::Begin("Items", &stay_open);
-        ImGuiID dockspaceID = ImGui::GetID("dockspace");
-        if (!ImGui::DockBuilderGetNode(dockspaceID))
-        {
-            ImGuiViewport* viewport = ImGui::GetMainViewport();
-
-            ImGui::DockBuilderRemoveNode(dockspaceID);
-            ImGui::DockBuilderAddNode(dockspaceID, ImGuiDockNodeFlags_DockSpace | ImGuiDockNodeFlags_NoTabBar);
-            ImGui::DockBuilderSetNodeSize(dockspaceID, viewport->Size);
-
-            ImGuiID dock_main_id = dockspaceID;
-            ImGui::DockBuilderDockWindow("ItemsList", dock_main_id);
-            ImGuiID dock_id_right = ImGui::DockBuilderSplitNode(dock_main_id, ImGuiDir_Right, 0.2f, NULL, &dock_main_id);
-            ImGui::DockBuilderDockWindow("ItemsDetails", dock_id_right);
-
-            ImGui::DockBuilderGetNode(dock_main_id)->LocalFlags |= ImGuiDockNodeFlags_NoTabBar;
-            ImGui::DockBuilderGetNode(dock_id_right)->LocalFlags |= ImGuiDockNodeFlags_NoTabBar;
-
-            ImGui::DockBuilderFinish(dockspaceID);
-        }
-        ImGui::DockSpace(dockspaceID, ImVec2(0.0f, 0.0f), 0);
-        ImGui::End();
-        return stay_open;
-    }
-
     void ItemsWindow::render_items_list()
     {
-        // TODO: Unique ID.
-        if (ImGui::Begin("ItemsList", nullptr, ImGuiWindowFlags_NoTitleBar))
+        if (ImGui::BeginChild("Item List", ImVec2(270, 0), true))
         {
             bool track_room = _track_room;
             if (ImGui::Checkbox("Track Room##trackroom", &track_room))
@@ -130,8 +101,6 @@ namespace trview
             {
                 set_sync_item(sync_item);
             }
-
-            ImGui::ShowStackToolWindow();
 
             if (ImGui::BeginTable("##itemslist", 5, ImGuiTableFlags_Sortable | ImGuiTableFlags_ScrollY | ImGuiTableFlags_SizingFixedFit, ImVec2(-1, -1)))
             {
@@ -209,12 +178,12 @@ namespace trview
                 ImGui::EndTable();
             }
         }
-        ImGui::End();
+        ImGui::EndChild();
     }
 
     void ItemsWindow::render_item_details()
     {
-        if (ImGui::Begin("ItemsDetails", nullptr, ImGuiWindowFlags_NoTitleBar))
+        if (ImGui::BeginChild("Item Details", ImVec2(), true))
         {
             ImGui::Text("Item Details");
             if (ImGui::BeginTable("##itemstats", 2, 0, ImVec2(-1, 150)))
@@ -305,19 +274,31 @@ namespace trview
                 ImGui::EndTable();
             }
         }
+        ImGui::EndChild();
+    }
+
+    bool ItemsWindow::render_items_window()
+    {
+        bool stay_open = true;
+        ImGui::PushStyleVar(ImGuiStyleVar_WindowMinSize, ImVec2(500, 500));
+        if (ImGui::Begin("Items", &stay_open))
+        {
+            render_items_list();
+            ImGui::SameLine();
+            render_item_details();
+        }
         ImGui::End();
+        ImGui::PopStyleVar();
+        return stay_open;
     }
 
     void ItemsWindow::render(bool vsync)
     {
-        if (!render_host())
+        if (!render_items_window())
         {
             on_window_closed();
             return;
         }
-
-        render_items_list();
-        render_item_details();
     }
 
     void ItemsWindow::update(float delta)

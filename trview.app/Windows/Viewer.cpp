@@ -864,11 +864,14 @@ namespace trview
         {
             if (window_under_cursor() == _window)
             {
-                auto& io = ImGui::GetIO();
-                if (!(io.WantCaptureKeyboard || io.WantCaptureMouse))
+                if (ImGui::GetCurrentContext() != nullptr)
                 {
-                    _ui->set_show_context_menu(false);
-                    _camera_input.mouse_scroll(scroll);
+                    auto& io = ImGui::GetIO();
+                    if (!(io.WantCaptureKeyboard || io.WantCaptureMouse))
+                    {
+                        _ui->set_show_context_menu(false);
+                        _camera_input.mouse_scroll(scroll);
+                    }
                 }
             }
         };

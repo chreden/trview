@@ -11,6 +11,7 @@ namespace trview
     {
         _visible = !_visible;
         _index = 0;
+        _shown = false;
     }
 
     std::wstring GoTo::name() const
@@ -31,7 +32,11 @@ namespace trview
             ImGui::SetNextWindowPos(viewport->Pos + viewport->Size * 0.5f, 0, ImVec2(0.5f, 0.5f));
 
             const std::string id = (std::string("Go To ") + to_utf8(_name));
-            ImGui::OpenPopup(id.c_str());
+            if (!_shown)
+            {
+                ImGui::OpenPopup(id.c_str());
+                _shown = true;
+            }
             if (ImGui::BeginPopup(id.c_str(), 0))
             {
                 ImGui::Text(id.c_str());
@@ -39,18 +44,21 @@ namespace trview
                 {
                     ImGui::SetKeyboardFocusHere();
                 }
-                if (ImGui::InputInt("##gotoentry", &_index, 1, 100, ImGuiInputTextFlags_EnterReturnsTrue))
+                if(ImGui::InputInt("##gotoentry", &_index, 1, 100, ImGuiInputTextFlags_EnterReturnsTrue))
                 {
                     on_selected(_index);
-                    _visible = false;
                 }
 
                 ImGui::EndPopup();
                 
-                if (ImGui::IsKeyPressed(ImGuiKey_Escape))
+                if (ImGui::IsKeyPressed(ImGuiKey_Escape) || ImGui::IsKeyPressed(ImGuiKey_Enter) || ImGui::IsKeyPressed(ImGuiKey_KeypadEnter))
                 {
                     _visible = false;
                 }
+            }
+            else
+            {
+                _visible = false;
             }
         }
     }

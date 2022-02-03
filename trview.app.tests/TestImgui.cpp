@@ -265,5 +265,13 @@ namespace trview
             _item_text.clear();
             _tracking_id = 0;
         }
+
+        std::string TestImgui::popup_name(const std::string& name) const
+        {
+            auto id = get_id(find_window("Debug##Default"), { name });
+            std::stringstream stream;
+            stream << "##Popup_" << std::hex << std::setfill('0') << std::setw(8) << id;
+            return stream.str();
+        }
     }
 }

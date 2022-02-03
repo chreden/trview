@@ -410,12 +410,10 @@ TEST(SettingsWindow, SetAccelerationRateUpdatesSlider)
 
 TEST(SettingsWindow, ClickingAccelerationRateRaisesEvent)
 {
-    ui::Window host(Size(), Colour::Transparent);
-    SettingsWindow window(host, std::make_shared<JsonLoader>(std::make_shared<MockShell>()));
-
-    auto slider = host.find<Slider>(SettingsWindow::Names::acceleration_rate);
-    ASSERT_NE(slider, nullptr);
-    ASSERT_EQ(slider->value(), 0.0f);
+    // ui::Window host(Size(), Colour::Transparent);
+    // SettingsWindow window(host, std::make_shared<JsonLoader>(std::make_shared<MockShell>()));
+    SettingsWindow window;
+    window.toggle_visibility();
 
     std::optional<float> received_value;
     auto token = window.on_camera_acceleration_rate += [&](float value)
@@ -423,46 +421,18 @@ TEST(SettingsWindow, ClickingAccelerationRateRaisesEvent)
         received_value = value;
     };
 
-    slider->clicked(Point(slider->size().width / 2, 0));
+    // auto slider = host.find<Slider>(SettingsWindow::Names::acceleration_rate);
+    // ASSERT_NE(slider, nullptr);
+    // ASSERT_EQ(slider->value(), 0.0f);
+    TestImgui imgui([&]() { window.render(); });
+    imgui.click_element("Settings", { "TabBar", "Camera" });
+    imgui.render();
+    imgui.click_element("Settings", { "TabBar", "Camera", SettingsWindow::Names::acceleration_rate });
+    // slider->clicked(Point(slider->size().width / 2, 0));
     ASSERT_TRUE(received_value.has_value());
-    ASSERT_EQ(received_value.value(), 0.5f);
+    ASSERT_EQ(received_value.value(), 0.0f);
 }
-
-TEST(SettingsWindow, CloseClosesWindow)
-{
-    ui::Window host(Size(), Colour::Transparent);
-    SettingsWindow window(host, std::make_shared<JsonLoader>(std::make_shared<MockShell>()));
-
-    auto control = host.find<Control>("SettingsWindow");
-    ASSERT_NE(control, nullptr);
-    ASSERT_FALSE(control->visible());
-
-    window.toggle_visibility();
-    ASSERT_TRUE(control->visible());
-
-    auto close = control->find<Button>(SettingsWindow::Names::close);
-    ASSERT_NE(close, nullptr);
-
-    close->clicked(Point());
-    ASSERT_FALSE(control->visible());
-}
-
-TEST(SettingsWindow, WindowIsCentred)
-{
-    auto host_size = Size(3000, 2000);
-    ui::Window host(host_size, Colour::Transparent);
-    SettingsWindow window(host, std::make_shared<JsonLoader>(std::make_shared<MockShell>()));
-
-    auto control = host.find<Control>("SettingsWindow");
-    ASSERT_NE(control, nullptr);
-
-    auto size = control->size();
-    auto position = control->position();
-
-    auto calculated_size = host_size / 2 - size / 2;
-    ASSERT_EQ(position, Point(calculated_size.width, calculated_size.height));
-}*/
-
+*/
 TEST(SettingsWindow, ClickingCameraDegreesRaisesEvent)
 {
     SettingsWindow window;

@@ -1,24 +1,27 @@
 #include <trview.app/UI/GoTo.h>
-#include <trview.common/Mocks/Windows/IShell.h>
+#include "TestImgui.h"
 
 using namespace trview;
-using namespace trview::mocks;
-/*
+using namespace trview::tests;
+
 TEST(GoTo, Name)
 {
-    ui::Window parent(Size(), Colour::Transparent);
-    GoTo window(parent, JsonLoader(std::make_shared<MockShell>()));
+    GoTo window;
+    window.toggle_visible();
 
     ASSERT_EQ(window.name(), L"");
     window.set_name(L"Item");
     ASSERT_EQ(window.name(), L"Item");
-}
 
+    TestImgui imgui([&]() { window.render(); });
+    ASSERT_NE(imgui.find_window(imgui.popup_name("Go To Item")), nullptr);
+}
+/*
 TEST(GoTo, OnSelectedRaised)
 {
-    ui::Window parent(Size(), Colour::Transparent);
-    GoTo window(parent, JsonLoader(std::make_shared<MockShell>()));
+    GoTo window;
     window.toggle_visible();
+    window.set_name(L"Item");
 
     std::optional<uint32_t> raised;
     auto token = window.on_selected += [&](auto value)
@@ -26,13 +29,11 @@ TEST(GoTo, OnSelectedRaised)
         raised = value;
     };
 
-    auto text_area = parent.find<TextArea>(GoTo::Names::text_area);
-    text_area->gained_focus();
-    text_area->set_text(L"100");
-    text_area->key_char(VK_RETURN);
+    TestImgui imgui([&]() { window.render(); });
+    imgui.click_element(imgui.popup_name("Go To Item"), { "##gotoentry", "+" });
 
     ASSERT_TRUE(raised.has_value());
-    ASSERT_EQ(raised.value(), 100u);
+    ASSERT_EQ(raised.value(), 1u);
     ASSERT_FALSE(window.visible());
 }
 

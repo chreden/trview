@@ -55,10 +55,10 @@ namespace trview
             void render(const std::function<void()>& pre_render_callback);
 
             void reset();
-        private:
-            ImGuiID get_id(ImGuiWindow* window, const std::vector<std::string>& path_to_element) const;
             ImGuiWindow* find_window(const std::string& name) const;
-
+            ImGuiID get_id(ImGuiWindow* window, const std::vector<std::string>& path_to_element) const;
+            std::string popup_name(const std::string& name) const;
+        private:
             Window _window;
             graphics::Device _device;
             RenderCallback _render_callback;

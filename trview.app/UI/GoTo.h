@@ -39,5 +39,6 @@ namespace trview
         std::wstring  _name;
         bool _visible{ false };
         int _index{ 0 };
+        bool _shown{ false };
     };
 }

@@ -214,12 +214,12 @@ namespace trview
 
     bool ViewerUI::is_input_active() const
     {
-        return ImGui::GetIO().WantCaptureKeyboard;
+        return ImGui::GetCurrentContext() != nullptr && ImGui::GetIO().WantCaptureKeyboard;
     }
 
     bool ViewerUI::is_cursor_over() const
     {
-        return ImGui::GetIO().WantCaptureMouse || (_map_renderer->loaded() && _map_renderer->cursor_is_over_control());
+        return (ImGui::GetCurrentContext() != nullptr && ImGui::GetIO().WantCaptureMouse) || (_map_renderer->loaded() && _map_renderer->cursor_is_over_control());
     }
 
     void ViewerUI::generate_tool_window()
