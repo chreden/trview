@@ -100,31 +100,24 @@ TEST(SettingsWindow, ClickingInvertMapControlsRaisesEvent)
     ASSERT_TRUE(received_value.value());
 }
 
-/*
+
 TEST(SettingsWindow, SetItemsWindowOnStartupUpdatesCheckbox)
 {
-    ui::Window host(Size(), Colour::Transparent);
-    SettingsWindow window(host, std::make_shared<JsonLoader>(std::make_shared<MockShell>()));
+    SettingsWindow window;
+    window.toggle_visibility();
 
-    auto checkbox = host.find<Checkbox>(SettingsWindow::Names::items_startup);
-    ASSERT_NE(checkbox, nullptr);
-    ASSERT_FALSE(checkbox->state());
-
-    std::optional<bool> received_value;
-    auto token = window.on_items_startup += [&](bool value)
-    {
-        received_value = value;
-    };
+    TestImgui imgui([&]() { window.render(); });
+    ASSERT_FALSE(imgui.status_flags("Settings", { "TabBar", "General", SettingsWindow::Names::items_startup }) & ImGuiItemStatusFlags_Checked);
 
     window.set_items_startup(true);
-    ASSERT_TRUE(checkbox->state());
-    ASSERT_FALSE(received_value.has_value());
+    imgui.render();
+    ASSERT_TRUE(imgui.status_flags("Settings", { "TabBar", "General", SettingsWindow::Names::items_startup }) & ImGuiItemStatusFlags_Checked);
 }
 
 TEST(SettingsWindow, ClickingItemsWindowOnStartupRaisesEvent)
 {
-    ui::Window host(Size(), Colour::Transparent);
-    SettingsWindow window(host, std::make_shared<JsonLoader>(std::make_shared<MockShell>()));
+    SettingsWindow window;
+    window.toggle_visibility();
 
     std::optional<bool> received_value;
     auto token = window.on_items_startup += [&](bool value)
@@ -132,39 +125,31 @@ TEST(SettingsWindow, ClickingItemsWindowOnStartupRaisesEvent)
         received_value = value;
     };
 
-    auto checkbox = host.find<Checkbox>(SettingsWindow::Names::items_startup);
-    ASSERT_NE(checkbox, nullptr);
-    ASSERT_FALSE(checkbox->state());
-
-    checkbox->clicked(Point());
+    TestImgui imgui([&]() { window.render(); });
+    ASSERT_FALSE(imgui.status_flags("Settings", { "TabBar", "General", SettingsWindow::Names::items_startup }) & ImGuiItemStatusFlags_Checked);
+    imgui.click_element("Settings", { "TabBar", "General", SettingsWindow::Names::items_startup });
+    ASSERT_TRUE(imgui.status_flags("Settings", { "TabBar", "General", SettingsWindow::Names::items_startup }) & ImGuiItemStatusFlags_Checked);
     ASSERT_EQ(received_value.has_value(), true);
     ASSERT_TRUE(received_value.value());
 }
 
 TEST(SettingsWindow, SetTriggersWindowOnStartupUpdatesCheckbox)
 {
-    ui::Window host(Size(), Colour::Transparent);
-    SettingsWindow window(host, std::make_shared<JsonLoader>(std::make_shared<MockShell>()));
+    SettingsWindow window;
+    window.toggle_visibility();
 
-    auto checkbox = host.find<Checkbox>(SettingsWindow::Names::triggers_startup);
-    ASSERT_NE(checkbox, nullptr);
-    ASSERT_FALSE(checkbox->state());
-
-    std::optional<bool> received_value;
-    auto token = window.on_triggers_startup += [&](bool value)
-    {
-        received_value = value;
-    };
+    TestImgui imgui([&]() { window.render(); });
+    ASSERT_FALSE(imgui.status_flags("Settings", { "TabBar", "General", SettingsWindow::Names::triggers_startup }) & ImGuiItemStatusFlags_Checked);
 
     window.set_triggers_startup(true);
-    ASSERT_TRUE(checkbox->state());
-    ASSERT_FALSE(received_value.has_value());
+    imgui.render();
+    ASSERT_TRUE(imgui.status_flags("Settings", { "TabBar", "General", SettingsWindow::Names::triggers_startup }) & ImGuiItemStatusFlags_Checked);
 }
 
 TEST(SettingsWindow, ClickingTriggersWindowOnStartupRaisesEvent)
 {
-    ui::Window host(Size(), Colour::Transparent);
-    SettingsWindow window(host, std::make_shared<JsonLoader>(std::make_shared<MockShell>()));
+    SettingsWindow window;
+    window.toggle_visibility();
 
     std::optional<bool> received_value;
     auto token = window.on_triggers_startup += [&](bool value)
@@ -172,39 +157,31 @@ TEST(SettingsWindow, ClickingTriggersWindowOnStartupRaisesEvent)
         received_value = value;
     };
 
-    auto checkbox = host.find<Checkbox>(SettingsWindow::Names::triggers_startup);
-    ASSERT_NE(checkbox, nullptr);
-    ASSERT_FALSE(checkbox->state());
-
-    checkbox->clicked(Point());
+    TestImgui imgui([&]() { window.render(); });
+    ASSERT_FALSE(imgui.status_flags("Settings", { "TabBar", "General", SettingsWindow::Names::triggers_startup }) & ImGuiItemStatusFlags_Checked);
+    imgui.click_element("Settings", { "TabBar", "General", SettingsWindow::Names::triggers_startup });
+    ASSERT_TRUE(imgui.status_flags("Settings", { "TabBar", "General", SettingsWindow::Names::triggers_startup }) & ImGuiItemStatusFlags_Checked);
     ASSERT_EQ(received_value.has_value(), true);
     ASSERT_TRUE(received_value.value());
 }
 
 TEST(SettingsWindow, SetRoomsWindowOnStartupUpdatesCheckbox)
 {
-    ui::Window host(Size(), Colour::Transparent);
-    SettingsWindow window(host, std::make_shared<JsonLoader>(std::make_shared<MockShell>()));
+    SettingsWindow window;
+    window.toggle_visibility();
 
-    auto checkbox = host.find<Checkbox>(SettingsWindow::Names::rooms_startup);
-    ASSERT_NE(checkbox, nullptr);
-    ASSERT_FALSE(checkbox->state());
-
-    std::optional<bool> received_value;
-    auto token = window.on_rooms_startup += [&](bool value)
-    {
-        received_value = value;
-    };
+    TestImgui imgui([&]() { window.render(); });
+    ASSERT_FALSE(imgui.status_flags("Settings", { "TabBar", "General", SettingsWindow::Names::rooms_startup }) & ImGuiItemStatusFlags_Checked);
 
     window.set_rooms_startup(true);
-    ASSERT_TRUE(checkbox->state());
-    ASSERT_FALSE(received_value.has_value());
+    imgui.render();
+    ASSERT_TRUE(imgui.status_flags("Settings", { "TabBar", "General", SettingsWindow::Names::rooms_startup }) & ImGuiItemStatusFlags_Checked);
 }
 
 TEST(SettingsWindow, ClickingRoomsWindowOnStartupRaisesEvent)
 {
-    ui::Window host(Size(), Colour::Transparent);
-    SettingsWindow window(host, std::make_shared<JsonLoader>(std::make_shared<MockShell>()));
+    SettingsWindow window;
+    window.toggle_visibility();
 
     std::optional<bool> received_value;
     auto token = window.on_rooms_startup += [&](bool value)
@@ -212,39 +189,33 @@ TEST(SettingsWindow, ClickingRoomsWindowOnStartupRaisesEvent)
         received_value = value;
     };
 
-    auto checkbox = host.find<Checkbox>(SettingsWindow::Names::rooms_startup);
-    ASSERT_NE(checkbox, nullptr);
-    ASSERT_FALSE(checkbox->state());
-
-    checkbox->clicked(Point());
+    TestImgui imgui([&]() { window.render(); });
+    ASSERT_FALSE(imgui.status_flags("Settings", { "TabBar", "General", SettingsWindow::Names::rooms_startup }) & ImGuiItemStatusFlags_Checked);
+    imgui.click_element("Settings", { "TabBar", "General", SettingsWindow::Names::rooms_startup });
+    ASSERT_TRUE(imgui.status_flags("Settings", { "TabBar", "General", SettingsWindow::Names::rooms_startup }) & ImGuiItemStatusFlags_Checked);
     ASSERT_EQ(received_value.has_value(), true);
     ASSERT_TRUE(received_value.value());
 }
 
 TEST(SettingsWindow, SetOrbitUpdatesCheckbox)
 {
-    ui::Window host(Size(), Colour::Transparent);
-    SettingsWindow window(host, std::make_shared<JsonLoader>(std::make_shared<MockShell>()));
+    SettingsWindow window;
+    window.toggle_visibility();
 
-    auto checkbox = host.find<Checkbox>(SettingsWindow::Names::auto_orbit);
-    ASSERT_NE(checkbox, nullptr);
-    ASSERT_FALSE(checkbox->state());
-
-    std::optional<bool> received_value;
-    auto token = window.on_auto_orbit += [&](bool value)
-    {
-        received_value = value;
-    };
+    TestImgui imgui([&]() { window.render(); });
+    imgui.click_element("Settings", { "TabBar", "Camera" });
+    imgui.render();
+    ASSERT_FALSE(imgui.status_flags("Settings", { "TabBar", "Camera", SettingsWindow::Names::auto_orbit }) & ImGuiItemStatusFlags_Checked);
 
     window.set_auto_orbit(true);
-    ASSERT_TRUE(checkbox->state());
-    ASSERT_FALSE(received_value.has_value());
+    imgui.render();
+    ASSERT_TRUE(imgui.status_flags("Settings", { "TabBar", "Camera", SettingsWindow::Names::auto_orbit }) & ImGuiItemStatusFlags_Checked);
 }
 
 TEST(SettingsWindow, ClickingOrbitRaisesEvent)
 {
-    ui::Window host(Size(), Colour::Transparent);
-    SettingsWindow window(host, std::make_shared<JsonLoader>(std::make_shared<MockShell>()));
+    SettingsWindow window;
+    window.toggle_visibility();
 
     std::optional<bool> received_value;
     auto token = window.on_auto_orbit += [&](bool value)
@@ -252,39 +223,35 @@ TEST(SettingsWindow, ClickingOrbitRaisesEvent)
         received_value = value;
     };
 
-    auto checkbox = host.find<Checkbox>(SettingsWindow::Names::auto_orbit);
-    ASSERT_NE(checkbox, nullptr);
-    ASSERT_FALSE(checkbox->state());
-
-    checkbox->clicked(Point());
+    TestImgui imgui([&]() { window.render(); });
+    imgui.click_element("Settings", { "TabBar", "Camera" });
+    imgui.render();
+    ASSERT_FALSE(imgui.status_flags("Settings", { "TabBar", "Camera", SettingsWindow::Names::auto_orbit }) & ImGuiItemStatusFlags_Checked);
+    imgui.click_element("Settings", { "TabBar", "Camera", SettingsWindow::Names::auto_orbit });
+    ASSERT_TRUE(imgui.status_flags("Settings", { "TabBar", "Camera", SettingsWindow::Names::auto_orbit }) & ImGuiItemStatusFlags_Checked);
     ASSERT_EQ(received_value.has_value(), true);
     ASSERT_TRUE(received_value.value());
 }
 
 TEST(SettingsWindow, SetInvertVerticalPanUpdatesCheckbox)
 {
-    ui::Window host(Size(), Colour::Transparent);
-    SettingsWindow window(host, std::make_shared<JsonLoader>(std::make_shared<MockShell>()));
+    SettingsWindow window;
+    window.toggle_visibility();
 
-    auto checkbox = host.find<Checkbox>(SettingsWindow::Names::invert_vertical_pan);
-    ASSERT_NE(checkbox, nullptr);
-    ASSERT_FALSE(checkbox->state());
-
-    std::optional<bool> received_value;
-    auto token = window.on_invert_vertical_pan += [&](bool value)
-    {
-        received_value = value;
-    };
+    TestImgui imgui([&]() { window.render(); });
+    imgui.click_element("Settings", { "TabBar", "Camera" });
+    imgui.render();
+    ASSERT_FALSE(imgui.status_flags("Settings", { "TabBar", "Camera", SettingsWindow::Names::invert_vertical_pan }) & ImGuiItemStatusFlags_Checked);
 
     window.set_invert_vertical_pan(true);
-    ASSERT_TRUE(checkbox->state());
-    ASSERT_FALSE(received_value.has_value());
+    imgui.render();
+    ASSERT_TRUE(imgui.status_flags("Settings", { "TabBar", "Camera", SettingsWindow::Names::invert_vertical_pan }) & ImGuiItemStatusFlags_Checked);
 }
 
 TEST(SettingsWindow, ClickingInvertVerticalPanRaisesEvent)
 {
-    ui::Window host(Size(), Colour::Transparent);
-    SettingsWindow window(host, std::make_shared<JsonLoader>(std::make_shared<MockShell>()));
+    SettingsWindow window;
+    window.toggle_visibility();
 
     std::optional<bool> received_value;
     auto token = window.on_invert_vertical_pan += [&](bool value)
@@ -292,15 +259,16 @@ TEST(SettingsWindow, ClickingInvertVerticalPanRaisesEvent)
         received_value = value;
     };
 
-    auto checkbox = host.find<Checkbox>(SettingsWindow::Names::invert_vertical_pan);
-    ASSERT_NE(checkbox, nullptr);
-    ASSERT_FALSE(checkbox->state());
-
-    checkbox->clicked(Point());
+    TestImgui imgui([&]() { window.render(); });
+    imgui.click_element("Settings", { "TabBar", "Camera" });
+    imgui.render();
+    ASSERT_FALSE(imgui.status_flags("Settings", { "TabBar", "Camera", SettingsWindow::Names::invert_vertical_pan }) & ImGuiItemStatusFlags_Checked);
+    imgui.click_element("Settings", { "TabBar", "Camera", SettingsWindow::Names::invert_vertical_pan });
+    ASSERT_TRUE(imgui.status_flags("Settings", { "TabBar", "Camera", SettingsWindow::Names::invert_vertical_pan }) & ImGuiItemStatusFlags_Checked);
     ASSERT_EQ(received_value.has_value(), true);
     ASSERT_TRUE(received_value.value());
 }
-
+/*
 TEST(SettingsWindow, SetMovementSpeedUpdatesSlider)
 {
     ui::Window host(Size(), Colour::Transparent);
@@ -382,31 +350,26 @@ TEST(SettingsWindow, ClickingSensitivityRaisesEvent)
     ASSERT_TRUE(received_value.has_value());
     ASSERT_EQ(received_value.value(), 0.5f);
 }
-
+*/
 TEST(SettingsWindow, SetAccelerationUpdatesCheckbox)
 {
-    ui::Window host(Size(), Colour::Transparent);
-    SettingsWindow window(host, std::make_shared<JsonLoader>(std::make_shared<MockShell>()));
+    SettingsWindow window;
+    window.toggle_visibility();
 
-    auto checkbox = host.find<Checkbox>(SettingsWindow::Names::acceleration);
-    ASSERT_NE(checkbox, nullptr);
-    ASSERT_FALSE(checkbox->state());
-
-    std::optional<bool> received_value;
-    auto token = window.on_camera_acceleration += [&](bool value)
-    {
-        received_value = value;
-    };
+    TestImgui imgui([&]() { window.render(); });
+    imgui.click_element("Settings", { "TabBar", "Camera" });
+    imgui.render();
+    ASSERT_FALSE(imgui.status_flags("Settings", { "TabBar", "Camera", SettingsWindow::Names::acceleration }) & ImGuiItemStatusFlags_Checked);
 
     window.set_camera_acceleration(true);
-    ASSERT_TRUE(checkbox->state());
-    ASSERT_FALSE(received_value.has_value());
+    imgui.render();
+    ASSERT_TRUE(imgui.status_flags("Settings", { "TabBar", "Camera", SettingsWindow::Names::acceleration }) & ImGuiItemStatusFlags_Checked);
 }
 
 TEST(SettingsWindow, ClickingAccelerationRaisesEvent)
 {
-    ui::Window host(Size(), Colour::Transparent);
-    SettingsWindow window(host, std::make_shared<JsonLoader>(std::make_shared<MockShell>()));
+    SettingsWindow window;
+    window.toggle_visibility();
 
     std::optional<bool> received_value;
     auto token = window.on_camera_acceleration += [&](bool value)
@@ -414,15 +377,16 @@ TEST(SettingsWindow, ClickingAccelerationRaisesEvent)
         received_value = value;
     };
 
-    auto checkbox = host.find<Checkbox>(SettingsWindow::Names::acceleration);
-    ASSERT_NE(checkbox, nullptr);
-    ASSERT_FALSE(checkbox->state());
-
-    checkbox->clicked(Point());
+    TestImgui imgui([&]() { window.render(); });
+    imgui.click_element("Settings", { "TabBar", "Camera" });
+    imgui.render();
+    ASSERT_FALSE(imgui.status_flags("Settings", { "TabBar", "Camera", SettingsWindow::Names::acceleration }) & ImGuiItemStatusFlags_Checked);
+    imgui.click_element("Settings", { "TabBar", "Camera", SettingsWindow::Names::acceleration });
+    ASSERT_TRUE(imgui.status_flags("Settings", { "TabBar", "Camera", SettingsWindow::Names::acceleration }) & ImGuiItemStatusFlags_Checked);
     ASSERT_EQ(received_value.has_value(), true);
     ASSERT_TRUE(received_value.value());
 }
-
+/*
 TEST(SettingsWindow, SetAccelerationRateUpdatesSlider)
 {
     ui::Window host(Size(), Colour::Transparent);
@@ -497,36 +461,27 @@ TEST(SettingsWindow, WindowIsCentred)
 
     auto calculated_size = host_size / 2 - size / 2;
     ASSERT_EQ(position, Point(calculated_size.width, calculated_size.height));
-}
+}*/
 
 TEST(SettingsWindow, ClickingCameraDegreesRaisesEvent)
 {
-    ui::Window host(Size(), Colour::Transparent);
-    SettingsWindow window(host, std::make_shared<JsonLoader>(std::make_shared<MockShell>()));
+    SettingsWindow window;
+    window.toggle_visibility();
 
-    std::optional<bool> received_value;
-    auto token = window.on_camera_display_degrees += [&](bool value)
-    {
-        received_value = value;
-    };
+    TestImgui imgui([&]() { window.render(); });
+    imgui.click_element("Settings", { "TabBar", "Camera" });
+    imgui.render();
+    ASSERT_FALSE(imgui.status_flags("Settings", { "TabBar", "Camera", SettingsWindow::Names::camera_display_degrees }) & ImGuiItemStatusFlags_Checked);
 
-    auto checkbox = host.find<Checkbox>(SettingsWindow::Names::camera_display_degrees);
-    ASSERT_NE(checkbox, nullptr);
-    ASSERT_FALSE(checkbox->state());
-
-    checkbox->clicked(Point());
-    ASSERT_TRUE(received_value.has_value());
-    ASSERT_TRUE(received_value.value());
+    window.set_camera_display_degrees(true);
+    imgui.render();
+    ASSERT_TRUE(imgui.status_flags("Settings", { "TabBar", "Camera", SettingsWindow::Names::camera_display_degrees }) & ImGuiItemStatusFlags_Checked);
 }
 
 TEST(SettingsWindow, SetCameraDegreesUpdatesCheckbox)
 {
-    ui::Window host(Size(), Colour::Transparent);
-    SettingsWindow window(host, std::make_shared<JsonLoader>(std::make_shared<MockShell>()));
-
-    auto checkbox = host.find<Checkbox>(SettingsWindow::Names::camera_display_degrees);
-    ASSERT_NE(checkbox, nullptr);
-    ASSERT_FALSE(checkbox->state());
+    SettingsWindow window;
+    window.toggle_visibility();
 
     std::optional<bool> received_value;
     auto token = window.on_camera_display_degrees += [&](bool value)
@@ -534,40 +489,34 @@ TEST(SettingsWindow, SetCameraDegreesUpdatesCheckbox)
         received_value = value;
     };
 
-    window.set_camera_display_degrees(true);
-    ASSERT_TRUE(checkbox->state());
-    ASSERT_FALSE(received_value.has_value());
+    TestImgui imgui([&]() { window.render(); });
+    imgui.click_element("Settings", { "TabBar", "Camera" });
+    imgui.render();
+    ASSERT_FALSE(imgui.status_flags("Settings", { "TabBar", "Camera", SettingsWindow::Names::camera_display_degrees }) & ImGuiItemStatusFlags_Checked);
+    imgui.click_element("Settings", { "TabBar", "Camera", SettingsWindow::Names::camera_display_degrees });
+    ASSERT_TRUE(imgui.status_flags("Settings", { "TabBar", "Camera", SettingsWindow::Names::camera_display_degrees }) & ImGuiItemStatusFlags_Checked);
+    ASSERT_EQ(received_value.has_value(), true);
+    ASSERT_TRUE(received_value.value());
 }
 
 
 TEST(SettingsWindow, ClickingRandomizerToolsRaisesEvent)
 {
-    ui::Window host(Size(), Colour::Transparent);
-    SettingsWindow window(host, std::make_shared<JsonLoader>(std::make_shared<MockShell>()));
+    SettingsWindow window;
+    window.toggle_visibility();
 
-    std::optional<bool> received_value;
-    auto token = window.on_randomizer_tools += [&](bool value)
-    {
-        received_value = value;
-    };
+    TestImgui imgui([&]() { window.render(); });
+    ASSERT_FALSE(imgui.status_flags("Settings", { "TabBar", "General", SettingsWindow::Names::randomizer_tools }) & ImGuiItemStatusFlags_Checked);
 
-    auto checkbox = host.find<Checkbox>(SettingsWindow::Names::randomizer_tools);
-    ASSERT_NE(checkbox, nullptr);
-    ASSERT_FALSE(checkbox->state());
-
-    checkbox->clicked(Point());
-    ASSERT_TRUE(received_value.has_value());
-    ASSERT_TRUE(received_value.value());
+    window.set_randomizer_tools(true);
+    imgui.render();
+    ASSERT_TRUE(imgui.status_flags("Settings", { "TabBar", "General", SettingsWindow::Names::randomizer_tools }) & ImGuiItemStatusFlags_Checked);
 }
 
 TEST(SettingsWindow, SetRandomizerToolsUpdatesCheckbox)
 {
-    ui::Window host(Size(), Colour::Transparent);
-    SettingsWindow window(host, std::make_shared<JsonLoader>(std::make_shared<MockShell>()));
-
-    auto checkbox = host.find<Checkbox>(SettingsWindow::Names::randomizer_tools);
-    ASSERT_NE(checkbox, nullptr);
-    ASSERT_FALSE(checkbox->state());
+    SettingsWindow window;
+    window.toggle_visibility();
 
     std::optional<bool> received_value;
     auto token = window.on_randomizer_tools += [&](bool value)
@@ -575,15 +524,18 @@ TEST(SettingsWindow, SetRandomizerToolsUpdatesCheckbox)
         received_value = value;
     };
 
-    window.set_randomizer_tools(true);
-    ASSERT_TRUE(checkbox->state());
-    ASSERT_FALSE(received_value.has_value());
+    TestImgui imgui([&]() { window.render(); });
+    ASSERT_FALSE(imgui.status_flags("Settings", { "TabBar", "General", SettingsWindow::Names::randomizer_tools }) & ImGuiItemStatusFlags_Checked);
+    imgui.click_element("Settings", { "TabBar", "General", SettingsWindow::Names::randomizer_tools });
+    ASSERT_TRUE(imgui.status_flags("Settings", { "TabBar", "General", SettingsWindow::Names::randomizer_tools }) & ImGuiItemStatusFlags_Checked);
+    ASSERT_EQ(received_value.has_value(), true);
+    ASSERT_TRUE(received_value.value());
 }
 
 TEST(SettingsWindow, ChangingMaxRecentFilesRaisesEvent)
 {
-    ui::Window host(Size(), Colour::Transparent);
-    SettingsWindow window(host, std::make_shared<JsonLoader>(std::make_shared<MockShell>()));
+    SettingsWindow window;
+    window.toggle_visibility();
 
     std::optional<uint32_t> received_value;
     auto token = window.on_max_recent_files += [&](uint32_t value)
@@ -591,36 +543,22 @@ TEST(SettingsWindow, ChangingMaxRecentFilesRaisesEvent)
         received_value = value;
     };
 
-    auto numeric_up_down = host.find<NumericUpDown>(SettingsWindow::Names::max_recent_files);
-    ASSERT_NE(numeric_up_down, nullptr);
-    ASSERT_EQ(numeric_up_down->value(), 0);
-
-    // Click on the up button.
-    auto up = numeric_up_down->find<Button>(NumericUpDown::Names::up);
-    ASSERT_NE(up, nullptr);
-    up->clicked(Point());
+    tests::TestImgui imgui([&]() { window.render(); });
+    imgui.click_element("Settings", { "TabBar", "General", SettingsWindow::Names::max_recent_files, "+" });
 
     ASSERT_TRUE(received_value.has_value());
-    ASSERT_EQ(received_value.value(), 1);
+    ASSERT_EQ(received_value.value(), 11);
 }
 
 TEST(SettingsWindow, SetMaxRecentFilesUpdatesNumericUpDown)
 {
-    ui::Window host(Size(), Colour::Transparent);
-    SettingsWindow window(host, std::make_shared<JsonLoader>(std::make_shared<MockShell>()));
+    SettingsWindow window;
+    window.toggle_visibility();
 
-    auto numeric_up_down = host.find<NumericUpDown>(SettingsWindow::Names::max_recent_files);
-    ASSERT_NE(numeric_up_down, nullptr);
-    ASSERT_EQ(numeric_up_down->value(), 0);
-
-    std::optional<uint32_t> received_value;
-    auto token = window.on_max_recent_files += [&](uint32_t value)
-    {
-        received_value = value;
-    };
+    tests::TestImgui imgui([&]() { window.render(); });
+    ASSERT_EQ(imgui.item_text("Settings", { "TabBar", "General", SettingsWindow::Names::max_recent_files }), "10");
 
     window.set_max_recent_files(5);
-    ASSERT_EQ(numeric_up_down->value(), 5);
-    ASSERT_FALSE(received_value.has_value());
+    imgui.render();
+    ASSERT_EQ(imgui.item_text("Settings", { "TabBar", "General", SettingsWindow::Names::max_recent_files }), "5");
 }
-*/
