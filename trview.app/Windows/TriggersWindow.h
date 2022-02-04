@@ -48,7 +48,9 @@ namespace trview
         bool render_host();
         void render_triggers_list();
         void render_trigger_details();
+        bool render_triggers_window();
 
+        std::string _id;
         std::vector<Item> _all_items;
         std::vector<std::weak_ptr<ITrigger>> _all_triggers;
 
@@ -59,11 +61,14 @@ namespace trview
         /// Whether the room tracking filter has been applied.
         bool _filter_applied{ false };
         bool _sync_trigger{ true };
-        std::weak_ptr<ITrigger> _selected_trigger;
         std::vector<TriggerCommandType> _selected_commands;
         std::shared_ptr<IClipboard> _clipboard;
         std::vector<std::string> _all_commands;
         uint32_t _selected_command{ 0u };
         Window _window;
+
+        std::weak_ptr<ITrigger> _selected_trigger;
+        std::weak_ptr<ITrigger> _global_selected_trigger;
+        bool _scroll_to_trigger{ false };
     };
 }

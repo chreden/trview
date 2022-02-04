@@ -24,6 +24,8 @@ namespace trview
     TriggersWindow::TriggersWindow(const Window& parent, const std::shared_ptr<IClipboard>& clipboard)
         : _clipboard(clipboard), _window(parent)
     {
+        static int number = 0;
+        _id = "Triggers " + std::to_string(++number);
     }
 
     void TriggersWindow::set_triggers(const std::vector<std::weak_ptr<ITrigger>>& triggers)
@@ -62,7 +64,12 @@ namespace trview
 
     void TriggersWindow::set_selected_trigger(const std::weak_ptr<ITrigger>& trigger)
     {
-        _selected_trigger = trigger;
+        _global_selected_trigger = trigger;
+        if (_sync_trigger)
+        {
+            _scroll_to_trigger = true;
+            _selected_trigger = trigger;
+        }
     }
 
     void TriggersWindow::set_sync_trigger(bool value)
@@ -70,7 +77,11 @@ namespace trview
         if (_sync_trigger != value)
         {
             _sync_trigger = value;
-            set_selected_trigger(_selected_trigger);
+            _scroll_to_trigger = true;
+            if (_sync_trigger && _global_selected_trigger.lock())
+            {
+                set_selected_trigger(_global_selected_trigger);
+            }
         }
     }
 
@@ -103,14 +114,11 @@ namespace trview
 
     void TriggersWindow::render(bool vsync)
     {
-        if (!render_host())
+        if (!render_triggers_window())
         {
             on_window_closed();
             return;
         }
-
-        render_triggers_list();
-        render_trigger_details();
     }
 
     void TriggersWindow::update(float delta)
@@ -147,8 +155,7 @@ namespace trview
 
     void TriggersWindow::render_triggers_list()
     {
-        // TODO: Unique ID.
-        if (ImGui::Begin("TriggersList", nullptr, ImGuiWindowFlags_NoTitleBar))
+        if (ImGui::BeginChild("Triggers List", ImVec2(220, 0), true))
         {
             bool track_room = _track_room;
             if (ImGui::Checkbox("Track Room##trackroom", &track_room))
@@ -245,6 +252,15 @@ namespace trview
                     ImGui::TableNextRow();
                     ImGui::TableNextColumn();
                     bool selected = _selected_trigger.lock() && _selected_trigger.lock()->number() == trigger_ptr->number();
+                    if (selected && _scroll_to_trigger)
+                    {
+                        const auto pos = ImGui::GetCurrentWindow()->DC.CursorPos;
+                        if (!ImGui::IsRectVisible(pos, pos + ImVec2(1, 1)))
+                        {
+                            ImGui::SetScrollHereY();
+                        }
+                        _scroll_to_trigger = false;
+                    }
                     if (ImGui::Selectable((std::to_string(trigger_ptr->number()) + std::string("##") + std::to_string(trigger_ptr->number())).c_str(), &selected, ImGuiSelectableFlags_SpanAllColumns | ImGuiSelectableFlags_SelectOnNav))
                     {
                         _selected_trigger = trigger;
@@ -270,7 +286,7 @@ namespace trview
                 ImGui::EndTable();
             }
         }
-        ImGui::End();
+        ImGui::EndChild();
     }
 
     void TriggersWindow::render_trigger_details()
@@ -288,7 +304,7 @@ namespace trview
             return std::wstring();
         };
 
-        if (ImGui::Begin("TriggersDetails", nullptr, ImGuiWindowFlags_NoTitleBar))
+        if (ImGui::BeginChild("Trigger Details", ImVec2(), true))
         {
             ImGui::Text("Trigger Details");
             if (ImGui::BeginTable("##triggerstats", 2, 0, ImVec2(-1, 150)))
@@ -371,6 +387,21 @@ namespace trview
                 ImGui::EndTable();
             }
         }
+        ImGui::EndChild();
+    }
+
+    bool TriggersWindow::render_triggers_window()
+    {
+        bool stay_open = true;
+        ImGui::PushStyleVar(ImGuiStyleVar_WindowMinSize, ImVec2(520, 500));
+        if (ImGui::Begin(_id.c_str(), &stay_open))
+        {
+            render_triggers_list();
+            ImGui::SameLine();
+            render_trigger_details();
+        }
         ImGui::End();
+        ImGui::PopStyleVar();
+        return stay_open;
     }
 }
