@@ -43,6 +43,7 @@ namespace trview
         void render_item_details();
         bool render_items_window();
 
+        std::string _id;
         std::vector<Item> _all_items;
         std::vector<std::weak_ptr<ITrigger>> _all_triggers;
         /// Whether the item window is tracking the current room.
@@ -50,11 +51,16 @@ namespace trview
         /// The current room number selected for tracking.
         uint32_t _current_room{ 0u };
         bool _sync_item{ true };
-        std::optional<Item> _selected_item;
+        
         std::shared_ptr<IClipboard> _clipboard;
         std::unordered_map<std::wstring, std::wstring> _tips;
         std::optional<float> _tooltip_timer;
         std::weak_ptr<ITrigger> _selected_trigger;
         Window _window;
+
+        // Item selection.
+        std::optional<Item> _selected_item;
+        std::optional<Item> _global_selected_item;
+        bool _scroll_to_item{ false };
     };
 }

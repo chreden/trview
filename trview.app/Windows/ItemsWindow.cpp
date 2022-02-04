@@ -26,6 +26,8 @@ namespace trview
     ItemsWindow::ItemsWindow(const Window& window, const std::shared_ptr<IClipboard>& clipboard)
         : _window(window), _clipboard(clipboard)
     {
+        static int number = 0;
+        _id = "Items " + std::to_string(++number);
         _tips[L"OCB"] = L"Changes entity behaviour";
         _tips[L"Clear Body"] = L"Removed when Bodybag is triggered";
     }
@@ -69,16 +71,22 @@ namespace trview
         if (_sync_item != value)
         {
             _sync_item = value;
-            if (_selected_item.has_value())
+            _scroll_to_item = true;
+            if (_sync_item && _global_selected_item.has_value())
             {
-                set_selected_item(_selected_item.value());
+                set_selected_item(_global_selected_item.value());
             }
         }
     }
 
     void ItemsWindow::set_selected_item(const Item& item)
     {
-        _selected_item = item;
+        _global_selected_item = item;
+        if (_sync_item)
+        {
+            _scroll_to_item = true;
+            _selected_item = item;
+        }
     }
 
     std::optional<Item> ItemsWindow::selected_item() const
@@ -151,6 +159,15 @@ namespace trview
                     ImGui::TableNextRow();
                     ImGui::TableNextColumn();
                     bool selected = _selected_item.has_value() && _selected_item.value().number() == item.number();
+                    if (selected && _scroll_to_item)
+                    {
+                        const auto pos = ImGui::GetCurrentWindow()->DC.CursorPos;
+                        if (!ImGui::IsRectVisible(pos, pos))
+                        {
+                            ImGui::SetScrollHereY();
+                        }
+                        _scroll_to_item = false;
+                    }
                     if (ImGui::Selectable((std::to_string(item.number()) + std::string("##") + std::to_string(item.number())).c_str(), &selected, ImGuiSelectableFlags_SpanAllColumns | ImGuiSelectableFlags_SelectOnNav))
                     {
                         _selected_item = item;
@@ -280,8 +297,8 @@ namespace trview
     bool ItemsWindow::render_items_window()
     {
         bool stay_open = true;
-        ImGui::PushStyleVar(ImGuiStyleVar_WindowMinSize, ImVec2(500, 500));
-        if (ImGui::Begin("Items", &stay_open))
+        ImGui::PushStyleVar(ImGuiStyleVar_WindowMinSize, ImVec2(520, 500));
+        if (ImGui::Begin(_id.c_str(), &stay_open))
         {
             render_items_list();
             ImGui::SameLine();
