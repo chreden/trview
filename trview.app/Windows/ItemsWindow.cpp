@@ -3,9 +3,8 @@
 #include <trview.common/Windows/Clipboard.h>
 
 // TODO:
-// Show tooltip
-// Tooltips for certain stats
 // Sorting on triggered by
+// Show copy bubble?
 
 using namespace trview::graphics;
 
