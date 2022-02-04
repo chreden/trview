@@ -4,32 +4,20 @@
 
 // TODO:
 // Show tooltip
-// Fix column sizes
-// Fix window widths
 // Tooltips for certain stats
-// Scroll into view on tables
 // Sorting on triggered by
-// Check sync item
 
 using namespace trview::graphics;
 
 namespace trview
 {
-    const std::string ItemsWindow::Names::add_to_route_button{ "AddToRoute" };
-    const std::string ItemsWindow::Names::items_listbox{ "Items" };
-    const std::string ItemsWindow::Names::stats_listbox{ "Stats" };
-    const std::string ItemsWindow::Names::sync_item_checkbox{ "SyncItem" };
-    const std::string ItemsWindow::Names::track_room_checkbox{ "TrackRoom" };
-    const std::string ItemsWindow::Names::triggers_listbox{ "Triggers" };
-    const std::string ItemsWindow::Names::expander{ "Expander" };
-
     ItemsWindow::ItemsWindow(const Window& window, const std::shared_ptr<IClipboard>& clipboard)
         : _window(window), _clipboard(clipboard)
     {
         static int number = 0;
         _id = "Items " + std::to_string(++number);
-        _tips[L"OCB"] = L"Changes entity behaviour";
-        _tips[L"Clear Body"] = L"Removed when Bodybag is triggered";
+        _tips["OCB"] = "Changes entity behaviour";
+        _tips["Clear Body"] = "If true, removed when Bodybag is triggered";
     }
 
     void ItemsWindow::set_items(const std::vector<Item>& items)
@@ -99,13 +87,13 @@ namespace trview
         if (ImGui::BeginChild("Item List", ImVec2(270, 0), true))
         {
             bool track_room = _track_room;
-            if (ImGui::Checkbox("Track Room##trackroom", &track_room))
+            if (ImGui::Checkbox(Names::track_room.c_str(), &track_room))
             {
                 set_track_room(track_room);
             }
             ImGui::SameLine();
             bool sync_item = _sync_item;
-            if (ImGui::Checkbox("Sync Item##syncitem", &sync_item))
+            if (ImGui::Checkbox(Names::sync_item.c_str(), &sync_item))
             {
                 set_sync_item(sync_item);
             }
@@ -162,7 +150,7 @@ namespace trview
                     if (selected && _scroll_to_item)
                     {
                         const auto pos = ImGui::GetCurrentWindow()->DC.CursorPos;
-                        if (!ImGui::IsRectVisible(pos, pos))
+                        if (!ImGui::IsRectVisible(pos, pos + ImVec2(1,1)))
                         {
                             ImGui::SetScrollHereY();
                         }
@@ -220,6 +208,13 @@ namespace trview
                         {
                             _clipboard->write(_window, to_utf16(value));
                         }
+                        if (ImGui::IsItemHovered() && _tips.find(name) != _tips.end())
+                        {
+                            ImGui::BeginTooltip();
+                            ImGui::Text(_tips[name].c_str());
+                            ImGui::EndTooltip();
+                        }
+
                         ImGui::TableNextColumn();
                         ImGui::Text(value.c_str());
                     };
@@ -247,7 +242,7 @@ namespace trview
 
                 ImGui::EndTable();
             }
-            if (ImGui::Button("Add to Route##addtoroute", ImVec2(-1, 30)))
+            if (ImGui::Button(Names::add_to_route_button.c_str(), ImVec2(-1, 30)))
             {
                 on_add_to_route(_selected_item.value());
             }
@@ -263,7 +258,6 @@ namespace trview
                 if (_selected_item.has_value())
                 {
                     const auto& item = _selected_item.value();
-
                     for (auto& trigger : item.triggers())
                     {
                         auto trigger_ptr = trigger.lock();

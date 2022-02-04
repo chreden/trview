@@ -16,13 +16,9 @@ namespace trview
     public:
         struct Names
         {
-            static const std::string add_to_route_button;
-            static const std::string items_listbox;
-            static const std::string stats_listbox;
-            static const std::string sync_item_checkbox;
-            static const std::string track_room_checkbox;
-            static const std::string triggers_listbox;
-            static const std::string expander;
+            static inline const std::string add_to_route_button = "Add to Route";
+            static inline const std::string sync_item = "Sync Item";
+            static inline const std::string track_room = "Track Room";
         };
 
         explicit ItemsWindow(const Window& window, const std::shared_ptr<IClipboard>& clipboard);
@@ -53,7 +49,7 @@ namespace trview
         bool _sync_item{ true };
         
         std::shared_ptr<IClipboard> _clipboard;
-        std::unordered_map<std::wstring, std::wstring> _tips;
+        std::unordered_map<std::string, std::string> _tips;
         std::optional<float> _tooltip_timer;
         std::weak_ptr<ITrigger> _selected_trigger;
         Window _window;
