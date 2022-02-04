@@ -21,14 +21,9 @@ namespace trview
     public:
         struct Names
         {
-            static const std::string add_to_route_button;
-            static const std::string filter_dropdown;
-            static const std::string stats_listbox;
-            static const std::string sync_trigger_checkbox;
-            static const std::string track_room_checkbox;
-            static const std::string triggers_listbox;
-            static const std::string trigger_commands_listbox;
-            static const std::string expander;
+            static inline const std::string add_to_route = "Add to Route";
+            static inline const std::string sync_trigger = "Sync Trigger";
+            static inline const std::string track_room = "Track Room";
         };
 
         explicit TriggersWindow(const Window& parent, const std::shared_ptr<IClipboard>& clipboard);

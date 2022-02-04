@@ -6,21 +6,9 @@
 // Most things
 // Command filter
 // Fix sorting (commands sorted by trigger list)
-// Fix sync trigger
 
 namespace trview
 {
-    const std::string TriggersWindow::Names::add_to_route_button{ "AddToRoute" };
-    const std::string TriggersWindow::Names::filter_dropdown{ "FilterDropdown" };
-    const std::string TriggersWindow::Names::stats_listbox{ "StatsListbox" };
-    const std::string TriggersWindow::Names::sync_trigger_checkbox{ "SyncTriggers" };
-    const std::string TriggersWindow::Names::track_room_checkbox{ "TrackRoom" };
-    const std::string TriggersWindow::Names::triggers_listbox{ "Triggers" };
-    const std::string TriggersWindow::Names::trigger_commands_listbox{ "TriggerCommands" };
-    const std::string TriggersWindow::Names::expander{ "Expander" };
-
-    using namespace graphics;
-
     TriggersWindow::TriggersWindow(const Window& parent, const std::shared_ptr<IClipboard>& clipboard)
         : _clipboard(clipboard), _window(parent)
     {
@@ -158,13 +146,13 @@ namespace trview
         if (ImGui::BeginChild("Triggers List", ImVec2(220, 0), true))
         {
             bool track_room = _track_room;
-            if (ImGui::Checkbox("Track Room##trackroom", &track_room))
+            if (ImGui::Checkbox(Names::track_room.c_str(), &track_room))
             {
                 set_track_room(track_room);
             }
             ImGui::SameLine();
             bool sync_trigger = _sync_trigger;
-            if (ImGui::Checkbox("Sync Trigger##synctrigger", &sync_trigger))
+            if (ImGui::Checkbox(Names::sync_trigger.c_str(), &sync_trigger))
             {
                 set_sync_trigger(sync_trigger);
             }
@@ -349,7 +337,7 @@ namespace trview
 
                 ImGui::EndTable();
             }
-            if (ImGui::Button("Add to Route##addtoroute", ImVec2(-1, 30)))
+            if (ImGui::Button(Names::add_to_route.c_str(), ImVec2(-1, 30)))
             {
                 on_add_to_route(_selected_trigger);
             }
