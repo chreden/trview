@@ -169,6 +169,7 @@ namespace trview
                 set_sync_trigger(sync_trigger);
             }
 
+            ImGui::PushItemWidth(-1);
             if (ImGui::BeginCombo("##commandfilter", _all_commands[_selected_command].c_str()))
             {
                 for (int n = 0; n < _all_commands.size(); ++n)
