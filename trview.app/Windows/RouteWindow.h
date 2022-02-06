@@ -52,9 +52,9 @@ namespace trview
         virtual void set_randomizer_settings(const RandomizerSettings& settings) override;
     private:
         void load_randomiser_settings(IWaypoint& waypoint);
-        bool render_host();
         void render_waypoint_list();
         void render_waypoint_details();
+        bool render_route_window();
 
         IRoute* _route{ nullptr };
         std::vector<Item> _all_items;
@@ -69,5 +69,6 @@ namespace trview
         RandomizerSettings _randomizer_settings;
         std::shared_ptr<IShell> _shell;
         trview::Window _window;
+        bool _scroll_to_trigger{ false };
     };
 }

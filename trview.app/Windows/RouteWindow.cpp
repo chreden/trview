@@ -28,37 +28,9 @@ namespace trview
     {
     }
 
-    bool RouteWindow::render_host()
-    {
-        bool stay_open = true;
-        ImGui::Begin("Route", &stay_open);
-        ImGuiID dockspaceID = ImGui::GetID("dockspace");
-        if (!ImGui::DockBuilderGetNode(dockspaceID))
-        {
-            ImGuiViewport* viewport = ImGui::GetMainViewport();
-
-            ImGui::DockBuilderRemoveNode(dockspaceID);
-            ImGui::DockBuilderAddNode(dockspaceID, ImGuiDockNodeFlags_DockSpace | ImGuiDockNodeFlags_NoTabBar);
-            ImGui::DockBuilderSetNodeSize(dockspaceID, viewport->Size);
-
-            ImGuiID dock_main_id = dockspaceID;
-            ImGui::DockBuilderDockWindow("WaypointList", dock_main_id);
-            ImGuiID dock_id_right = ImGui::DockBuilderSplitNode(dock_main_id, ImGuiDir_Right, 0.2f, NULL, &dock_main_id);
-            ImGui::DockBuilderDockWindow("WaypointDetails", dock_id_right);
-
-            ImGui::DockBuilderGetNode(dock_main_id)->LocalFlags |= ImGuiDockNodeFlags_NoTabBar;
-            ImGui::DockBuilderGetNode(dock_id_right)->LocalFlags |= ImGuiDockNodeFlags_NoTabBar;
-
-            ImGui::DockBuilderFinish(dockspaceID);
-        }
-        ImGui::DockSpace(dockspaceID, ImVec2(0.0f, 0.0f), 0);
-        ImGui::End();
-        return stay_open;
-    }
-
     void RouteWindow::render_waypoint_list()
     {
-        if (ImGui::Begin("WaypointList", nullptr, ImGuiWindowFlags_NoTitleBar))
+        if (ImGui::BeginChild("Waypoint List", ImVec2(150, 0), true))
         {
             auto colour = _route ? _route->colour() : Colour::Green;
             if (ImGui::ColorEdit3("##colour", &colour.r, ImGuiColorEditFlags_NoInputs))
@@ -113,6 +85,15 @@ namespace trview
                         ImGui::TableNextRow();
                         ImGui::TableNextColumn();
                         bool selected = _selected_index == i;
+                        if (selected && _scroll_to_trigger)
+                        {
+                            const auto pos = ImGui::GetCurrentWindow()->DC.CursorPos;
+                            if (!ImGui::IsRectVisible(pos, pos + ImVec2(1, 1)))
+                            {
+                                ImGui::SetScrollHereY();
+                            }
+                            _scroll_to_trigger = false;
+                        }
                         if (ImGui::Selectable(std::to_string(i).c_str(), &selected, ImGuiSelectableFlags_SpanAllColumns | ImGuiSelectableFlags_SelectOnNav))
                         {
                             _selected_index = i;
@@ -125,18 +106,18 @@ namespace trview
                 ImGui::EndTable();
             }
         }
-        ImGui::End();
+        ImGui::EndChild();
     }
 
     void RouteWindow::render_waypoint_details()
     {
-        if (ImGui::Begin("WaypointDetails", nullptr, ImGuiWindowFlags_NoTitleBar))
+        if (ImGui::BeginChild("Waypoint Details", ImVec2(), true))
         {
             if (_route && _selected_index < _route->waypoints())
             {
                 auto& waypoint = _route->waypoint(_selected_index);
 
-                if (ImGui::BeginTable("##triggerstats", 2, 0, ImVec2(-1, 100)))
+                if (ImGui::BeginTable("##triggerstats", 2, 0, ImVec2(-1, 80)))
                 {
                     ImGui::TableSetupColumn("Name");
                     ImGui::TableSetupColumn("Value");
@@ -187,7 +168,7 @@ namespace trview
                 ImGui::EndTable();
 
                 const std::string save_text = waypoint.has_save() ? "SAVEGAME.0" : "Attach Save";
-                if (ImGui::Button(save_text.c_str()))
+                if (ImGui::Button(save_text.c_str(), ImVec2(-24, 18)))
                 {
                     if (!waypoint.has_save())
                     {
@@ -227,7 +208,7 @@ namespace trview
                     }
                 }
                 ImGui::SameLine();
-                if (ImGui::Button("X"))
+                if (ImGui::Button("X", ImVec2(-1,0)))
                 {
                     if (waypoint.has_save())
                     {
@@ -236,19 +217,18 @@ namespace trview
                     }
                 }
 
-                if (ImGui::Button("Delete Waypoint"))
+                if (ImGui::Button("Delete Waypoint", ImVec2(-1, 0)))
                 {
                     on_waypoint_deleted(_selected_index);
                 }
 
-                ImGui::PushItemWidth(-1);
+                ImGui::Text("Notes");
                 std::string notes = to_utf8(waypoint.notes());
-                if (ImGui::InputTextMultiline("Notes##notes", &notes))
+                if (ImGui::InputTextMultiline("Notes##notes", &notes, ImVec2(-1, 200)))
                 {
                     waypoint.set_notes(to_utf16(notes));
                     _route->set_unsaved(true);
                 }
-                ImGui::PopItemWidth();
 
                 if (_randomizer_enabled)
                 {
@@ -257,19 +237,31 @@ namespace trview
                 }
             }
         }
+        ImGui::EndChild();
+    }
+
+    bool RouteWindow::render_route_window()
+    {
+        bool stay_open = true;
+        ImGui::PushStyleVar(ImGuiStyleVar_WindowMinSize, ImVec2(420, 500));
+        if (ImGui::Begin("Route", &stay_open))
+        {
+            render_waypoint_list();
+            ImGui::SameLine();
+            render_waypoint_details();
+        }
         ImGui::End();
+        ImGui::PopStyleVar();
+        return stay_open;
     }
 
     void RouteWindow::render(bool vsync)
     {
-        if (!render_host())
+        if (!render_route_window())
         {
             on_window_closed();
             return;
         }
-
-        render_waypoint_list();
-        render_waypoint_details();
     }
 
     void RouteWindow::set_route(IRoute* route) 
@@ -281,6 +273,7 @@ namespace trview
     void RouteWindow::select_waypoint(uint32_t index)
     {
         _selected_index = index;
+        _scroll_to_trigger = true;
     }
 
     /// Set the items to that are in the level.

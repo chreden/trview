@@ -113,34 +113,6 @@ namespace trview
     {
     }
 
-    bool TriggersWindow::render_host()
-    {
-        bool stay_open = true;
-        ImGui::Begin("Triggers", &stay_open);
-        ImGuiID dockspaceID = ImGui::GetID("dockspace");
-        if (!ImGui::DockBuilderGetNode(dockspaceID))
-        {
-            ImGuiViewport* viewport = ImGui::GetMainViewport();
-
-            ImGui::DockBuilderRemoveNode(dockspaceID);
-            ImGui::DockBuilderAddNode(dockspaceID, ImGuiDockNodeFlags_DockSpace | ImGuiDockNodeFlags_NoTabBar);
-            ImGui::DockBuilderSetNodeSize(dockspaceID, viewport->Size);
-
-            ImGuiID dock_main_id = dockspaceID;
-            ImGui::DockBuilderDockWindow("TriggersList", dock_main_id);
-            ImGuiID dock_id_right = ImGui::DockBuilderSplitNode(dock_main_id, ImGuiDir_Right, 0.2f, NULL, &dock_main_id);
-            ImGui::DockBuilderDockWindow("TriggersDetails", dock_id_right);
-
-            ImGui::DockBuilderGetNode(dock_main_id)->LocalFlags |= ImGuiDockNodeFlags_NoTabBar;
-            ImGui::DockBuilderGetNode(dock_id_right)->LocalFlags |= ImGuiDockNodeFlags_NoTabBar;
-
-            ImGui::DockBuilderFinish(dockspaceID);
-        }
-        ImGui::DockSpace(dockspaceID, ImVec2(0.0f, 0.0f), 0);
-        ImGui::End();
-        return stay_open;
-    }
-
     void TriggersWindow::render_triggers_list()
     {
         if (ImGui::BeginChild("Triggers List", ImVec2(220, 0), true))

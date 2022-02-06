@@ -40,7 +40,6 @@ namespace trview
     private:
         void set_track_room(bool value);
         void set_sync_trigger(bool value);
-        bool render_host();
         void render_triggers_list();
         void render_trigger_details();
         bool render_triggers_window();
