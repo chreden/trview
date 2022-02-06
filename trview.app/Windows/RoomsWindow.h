@@ -50,9 +50,9 @@ namespace trview
         void set_sync_room(bool value);
         void set_track_item(bool value);
         void set_track_trigger(bool value);
-        bool render_host();
         void render_rooms_list();
         void render_room_details();
+        bool render_rooms_window();
 
         std::vector<std::weak_ptr<IRoom>> _all_rooms;
         std::vector<Item> _all_items;
@@ -69,9 +69,9 @@ namespace trview
         Window _window;
         TokenStore _token_store;
         std::unique_ptr<IMapRenderer> _map_renderer;
-        std::unique_ptr<Tooltip> _map_tooltip;
         std::shared_ptr<IClipboard> _clipboard;
         trlevel::LevelVersion _level_version;
         std::shared_ptr<input::IMouse> _mouse;
+        std::string _id;
     };
 }

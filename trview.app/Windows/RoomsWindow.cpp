@@ -73,6 +73,9 @@ namespace trview
         const Window& parent)
         : _window(parent), _map_renderer(map_renderer_source(Size(341, 341))), _clipboard(clipboard)
     {
+        static int number = 0;
+        _id = "Rooms " + std::to_string(++number);
+
         using namespace input;
         _mouse = mouse_source(_window);
         _token_store += _mouse->mouse_click += [&](IMouse::Button button)
@@ -134,7 +137,7 @@ namespace trview
         {
             if (!sector)
             {
-                _map_tooltip->set_visible(false);
+                // _map_tooltip->set_visible(false);
                 return;
             }
 
@@ -148,8 +151,8 @@ namespace trview
                 text += ((sector->flags() & SectorFlag::RoomAbove) ? L", " : L"") +
                     std::wstring(L"Below: ") + std::to_wstring(sector->room_below());
             }
-            _map_tooltip->set_text(text);
-            _map_tooltip->set_visible(!text.empty());
+            // _map_tooltip->set_text(text);
+            // _map_tooltip->set_visible(!text.empty());
         };
     }
 
@@ -231,47 +234,40 @@ namespace trview
 
     void RoomsWindow::render(bool vsync)
     {
-        if (!render_host())
+        // if (!render_host())
+        // {
+        //     IRoomsWindow::on_window_closed();
+        //     return;
+        // }
+        // 
+        // render_rooms_list();
+        // render_room_details();
+
+        if (!render_rooms_window())
         {
-            IRoomsWindow::on_window_closed();
+            on_window_closed();
             return;
         }
-
-        render_rooms_list();
-        render_room_details();
     }
 
-    bool RoomsWindow::render_host()
+    bool RoomsWindow::render_rooms_window()
     {
         bool stay_open = true;
-        ImGui::Begin("Rooms", &stay_open);
-        ImGuiID dockspaceID = ImGui::GetID("dockspace");
-        if (!ImGui::DockBuilderGetNode(dockspaceID))
+        ImGui::PushStyleVar(ImGuiStyleVar_WindowMinSize, ImVec2(520, 500));
+        if (ImGui::Begin(_id.c_str(), &stay_open))
         {
-            ImGuiViewport* viewport = ImGui::GetMainViewport();
-
-            ImGui::DockBuilderRemoveNode(dockspaceID);
-            ImGui::DockBuilderAddNode(dockspaceID, ImGuiDockNodeFlags_DockSpace | ImGuiDockNodeFlags_NoTabBar);
-            ImGui::DockBuilderSetNodeSize(dockspaceID, viewport->Size);
-
-            ImGuiID dock_main_id = dockspaceID;
-            ImGui::DockBuilderDockWindow("RoomList", dock_main_id);
-            ImGuiID dock_id_right = ImGui::DockBuilderSplitNode(dock_main_id, ImGuiDir_Right, 0.2f, NULL, &dock_main_id);
-            ImGui::DockBuilderDockWindow("RoomDetails", dock_id_right);
-
-            ImGui::DockBuilderGetNode(dock_main_id)->LocalFlags |= ImGuiDockNodeFlags_NoTabBar;
-            ImGui::DockBuilderGetNode(dock_id_right)->LocalFlags |= ImGuiDockNodeFlags_NoTabBar;
-
-            ImGui::DockBuilderFinish(dockspaceID);
+            render_rooms_list();
+            ImGui::SameLine();
+            render_room_details();
         }
-        ImGui::DockSpace(dockspaceID, ImVec2(0.0f, 0.0f), 0);
         ImGui::End();
+        ImGui::PopStyleVar();
         return stay_open;
     }
 
     void RoomsWindow::render_rooms_list()
     {
-        if (ImGui::Begin("RoomList", nullptr, ImGuiWindowFlags_AlwaysAutoResize))
+        if (ImGui::BeginChild("Rooms List", ImVec2(270, 0), true))
         {
             bool sync_room = _sync_room;
             if (ImGui::Checkbox("Sync Room##syncroom", &sync_room))
@@ -345,6 +341,7 @@ namespace trview
                     if (ImGui::Selectable((std::to_string(room_ptr->number()) + std::string("##") + std::to_string(room_ptr->number())).c_str(), &selected, ImGuiSelectableFlags_SpanAllColumns | ImGuiSelectableFlags_SelectOnNav))
                     {
                         _selected_room = room_ptr->number();
+                        _map_renderer->load(room_ptr);
                         if (_sync_room)
                         {
                             on_room_selected(_selected_room);
@@ -359,7 +356,7 @@ namespace trview
                 ImGui::EndTable();
             }
         }
-        ImGui::End();
+        ImGui::EndChild();
     }
 
     void RoomsWindow::render_room_details()
@@ -377,7 +374,7 @@ namespace trview
         };
 
 
-        if (ImGui::Begin("RoomDetails", nullptr, ImGuiWindowFlags_AlwaysAutoResize))
+        if (ImGui::BeginChild("Room Details", ImVec2(), true))
         {
             if (_selected_room < _all_rooms.size())
             {
@@ -492,7 +489,7 @@ namespace trview
                 }
             }
         }
-        ImGui::End();
+        ImGui::EndChild();
     }
 
     void RoomsWindow::clear_selected_trigger()
