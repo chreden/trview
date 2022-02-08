@@ -196,7 +196,7 @@ namespace trview
     bool RoomsWindow::render_rooms_window()
     {
         bool stay_open = true;
-        ImGui::PushStyleVar(ImGuiStyleVar_WindowMinSize, ImVec2(620, 500));
+        ImGui::PushStyleVar(ImGuiStyleVar_WindowMinSize, ImVec2(620, 550));
         if (ImGui::Begin(_id.c_str(), &stay_open))
         {
             render_rooms_list();
@@ -409,85 +409,98 @@ namespace trview
                         ImGui::Text(value.c_str());
                     };
 
-                    ImGui::Text("Room Details");
-                    if (ImGui::BeginTable("Room Details", 2, ImGuiTableFlags_ScrollY, ImVec2(0, 150)))
+                    if (ImGui::BeginTable("##bottom", 2))
                     {
-                        ImGui::TableSetupColumn("Name");
-                        ImGui::TableSetupColumn("Value");
                         ImGui::TableNextRow();
+                        ImGui::TableNextColumn();
 
-                        add_stat("X", std::to_string(room->info().x));
-                        add_stat("Y", std::to_string(room->info().yBottom));
-                        add_stat("Z", std::to_string(room->info().z));
-                        if (room->alternate_mode() != Room::AlternateMode::None)
+                        ImGui::Text("Room Details");
+                        if (ImGui::BeginTable("Room Details", 2, ImGuiTableFlags_ScrollY, ImVec2(170, 150)))
                         {
-                            add_stat("Alternate", std::to_string(room->alternate_room()));
-                            if (room->alternate_group() != 0xff)
-                            {
-                                add_stat("Alternate Group", std::to_string(room->alternate_group()));
-                            }
-                        }
-                        add_room_flags(*_clipboard, _level_version, *room);
-                        ImGui::EndTable();
-                    }
-
-                    ImGui::Text("Items");
-                    if (ImGui::BeginTable("Items", 2, ImGuiTableFlags_ScrollY, ImVec2(0, 150)))
-                    {
-                        ImGui::TableSetupColumn("#");
-                        ImGui::TableSetupColumn("Type");
-                        ImGui::TableSetupScrollFreeze(1, 1);
-                        ImGui::TableHeadersRow();
-                        
-                        for (const auto& item : _all_items)
-                        {
-                            if (item.room() == room->number())
-                            {
-                                ImGui::TableNextRow();
-                                ImGui::TableNextColumn();
-                                ImGui::Text(std::to_string(item.number()).c_str());
-                                ImGui::TableNextColumn();
-                                ImGui::Text(to_utf8(item.type()).c_str());
-                            }
-                        }
-
-                        ImGui::EndTable();
-                    }
-
-                    ImGui::Text("Neighbours");
-                    if (ImGui::BeginTable("Neighbours", 1, ImGuiTableFlags_ScrollY, ImVec2(0, 150)))
-                    {
-                        ImGui::TableSetupColumn("#");
-
-                        for (auto& neighbour : room->neighbours())
-                        {
+                            ImGui::TableSetupColumn("Name");
+                            ImGui::TableSetupColumn("Value");
                             ImGui::TableNextRow();
-                            ImGui::TableNextColumn();
-                            ImGui::Text(std::to_string(neighbour).c_str());
+
+                            add_stat("X", std::to_string(room->info().x));
+                            add_stat("Y", std::to_string(room->info().yBottom));
+                            add_stat("Z", std::to_string(room->info().z));
+                            if (room->alternate_mode() != Room::AlternateMode::None)
+                            {
+                                add_stat("Alternate", std::to_string(room->alternate_room()));
+                                if (room->alternate_group() != 0xff)
+                                {
+                                    add_stat("Alternate Group", std::to_string(room->alternate_group()));
+                                }
+                            }
+                            add_room_flags(*_clipboard, _level_version, *room);
+                            ImGui::EndTable();
                         }
 
-                        ImGui::EndTable();
-                    }
-
-                    ImGui::Text("Triggers");
-                    if (ImGui::BeginTable("Triggers", 2, ImGuiTableFlags_ScrollY, ImVec2(0, 150)))
-                    {
-                        ImGui::TableSetupColumn("#");
-                        ImGui::TableSetupColumn("Type");
-                        ImGui::TableSetupScrollFreeze(1, 1);
-                        ImGui::TableHeadersRow();
-
-                        for (const auto& trigger : _all_triggers)
+                        ImGui::TableNextColumn();
+                        ImGui::Text("Items");
+                        if (ImGui::BeginTable("Items", 2, ImGuiTableFlags_ScrollY, ImVec2(0, 150)))
                         {
-                            const auto trigger_ptr = trigger.lock();
-                            if (trigger_ptr->room() == room->number())
+                            ImGui::TableSetupColumn("#");
+                            ImGui::TableSetupColumn("Type");
+                            ImGui::TableSetupScrollFreeze(1, 1);
+                            ImGui::TableHeadersRow();
+
+                            for (const auto& item : _all_items)
+                            {
+                                if (item.room() == room->number())
+                                {
+                                    ImGui::TableNextRow();
+                                    ImGui::TableNextColumn();
+                                    ImGui::Text(std::to_string(item.number()).c_str());
+                                    ImGui::TableNextColumn();
+                                    ImGui::Text(to_utf8(item.type()).c_str());
+                                }
+                            }
+
+                            ImGui::EndTable();
+                        }
+
+                        ImGui::TableNextColumn();
+                        ImGui::Text("Neighbours");
+                        if (ImGui::BeginTable("Neighbours", 1, ImGuiTableFlags_ScrollY, ImVec2(0, 150)))
+                        {
+                            ImGui::TableSetupColumn("#");
+                            ImGui::TableSetupScrollFreeze(1, 1);
+                            ImGui::TableHeadersRow();
+
+                            for (auto& neighbour : room->neighbours())
                             {
                                 ImGui::TableNextRow();
                                 ImGui::TableNextColumn();
-                                ImGui::Text(std::to_string(trigger_ptr->number()).c_str());
-                                ImGui::TableNextColumn();
-                                ImGui::Text(to_utf8(trigger_type_name(trigger_ptr->type())).c_str());
+                                ImGui::Text(std::to_string(neighbour).c_str());
                             }
+
+                            ImGui::EndTable();
+                        }
+
+                        ImGui::TableNextColumn();
+                        ImGui::Text("Triggers");
+                        if (ImGui::BeginTable("Triggers", 2, ImGuiTableFlags_ScrollY, ImVec2(0, 150)))
+                        {
+                            ImGui::TableSetupColumn("#");
+                            ImGui::TableSetupColumn("Type");
+                            ImGui::TableSetupScrollFreeze(1, 1);
+                            ImGui::TableHeadersRow();
+
+                            for (const auto& trigger : _all_triggers)
+                            {
+                                const auto trigger_ptr = trigger.lock();
+                                if (trigger_ptr->room() == room->number())
+                                {
+                                    ImGui::TableNextRow();
+                                    ImGui::TableNextColumn();
+                                    ImGui::Text(std::to_string(trigger_ptr->number()).c_str());
+                                    ImGui::TableNextColumn();
+                                    ImGui::Text(to_utf8(trigger_type_name(trigger_ptr->type())).c_str());
+                                }
+                            }
+
+                            ImGui::EndTable();
                         }
 
                         ImGui::EndTable();
