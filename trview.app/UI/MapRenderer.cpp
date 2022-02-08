@@ -41,7 +41,7 @@ namespace trview
     }
 
     void
-    MapRenderer::render(bool to_screen)
+    MapRenderer::render()
     {
         if (!_render_target || !_visible)
         {
@@ -66,7 +66,7 @@ namespace trview
             _force_redraw = false;
         }
 
-        if (to_screen)
+        if (_render_mode == RenderMode::Screen)
         {
             // Now render the render target in the correct position.
             auto p = Point(_first.x - 1, _first.y - 1);
@@ -257,8 +257,9 @@ namespace trview
     void 
     MapRenderer::update_map_position()
     {
+        const float margin = _render_mode == RenderMode::Screen ? _DRAW_MARGIN : 0;
         // Location of the origin of the control 
-        _first = Point(_window_width - (_DRAW_SCALE * _columns) - _DRAW_MARGIN, _DRAW_MARGIN);
+        _first = Point(_window_width - (_DRAW_SCALE * _columns) - margin, margin);
         // Location of the last point of the control (bottom-right)
         _last = _first + Point(_DRAW_SCALE * _columns, _DRAW_SCALE * _rows);
     }
@@ -329,5 +330,11 @@ namespace trview
     graphics::Texture MapRenderer::texture() const
     {
         return _render_target->texture();
+    }
+
+    void MapRenderer::set_render_mode(RenderMode mode)
+    {
+        _render_mode = mode;
+        update_map_position();
     }
 };

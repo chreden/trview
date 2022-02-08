@@ -86,24 +86,6 @@ namespace trview
 
             return RegisterClassExW(&wcex);
         }
-
-        Window create_window(HINSTANCE hInstance, int nCmdShow)
-        {
-            register_class(hInstance);
-
-            HWND window = CreateWindowW(window_class.c_str(), window_title.c_str(), WS_OVERLAPPEDWINDOW,
-                CW_USEDEFAULT, 0, CW_USEDEFAULT, 0, nullptr, nullptr, hInstance, nullptr);
-
-            if (!window)
-            {
-                return nullptr;
-            }
-
-            ShowWindow(window, nCmdShow);
-            UpdateWindow(window);
-
-            return window;
-        }
     }
 
     IApplication::~IApplication()
@@ -633,11 +615,30 @@ namespace trview
         return true;
     }
 
-    std::unique_ptr<IApplication> create_application(HINSTANCE instance, const std::wstring& command_line, int command_show)
+    Window create_window(HINSTANCE hInstance, int nCmdShow)
+    {
+        register_class(hInstance);
+
+        HWND window = CreateWindowW(window_class.c_str(), window_title.c_str(), WS_OVERLAPPEDWINDOW,
+            CW_USEDEFAULT, 0, CW_USEDEFAULT, 0, nullptr, nullptr, hInstance, nullptr);
+
+        if (!window)
+        {
+            return nullptr;
+        }
+
+        ShowWindow(window, nCmdShow);
+        UpdateWindow(window);
+
+        return window;
+    }
+
+    std::unique_ptr<IApplication> create_application(const Window& window, const std::wstring& command_line)
     {
         using namespace boost;
         using namespace graphics;
 
+        static Window w2 = window;
         const auto injector = di::make_injector(
             graphics::register_module(),
             input::register_module(),
@@ -651,7 +652,12 @@ namespace trview
             register_app_tools_module(),
             register_app_ui_module(),
             register_app_windows_module(),
-            di::bind<Window>.to(create_window(instance, command_show)),
+            di::bind<Window>.to(
+                []()
+                {
+                    return w2;
+                }
+            ),
             di::bind<IClipboard>.to<Clipboard>(),
             di::bind<IShortcuts>.to<Shortcuts>(),
             di::bind<IShortcuts::Source>.to(
@@ -669,6 +675,9 @@ namespace trview
             di::bind<IShell>.to<Shell>(),
             di::bind<IStartupOptions::CommandLine>.to(command_line)
         );
+
+        auto x = injector.create<Window>();
+        const Window& w = injector.create<const Window&>();
 
         load_default_shaders(
             injector.create<std::shared_ptr<graphics::IDevice>>(),

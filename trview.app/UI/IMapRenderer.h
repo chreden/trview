@@ -7,6 +7,12 @@ namespace trview
 {
     struct IMapRenderer
     {
+        enum class RenderMode
+        {
+            Screen,
+            Texture
+        };
+
         using Source = std::function<std::unique_ptr<IMapRenderer>(const Size&)>;
 
         virtual ~IMapRenderer() = 0;
@@ -15,7 +21,7 @@ namespace trview
         Event<std::shared_ptr<ISector>> on_sector_hover;
 
         // Renders the map 
-        virtual void render(bool to_screen = true) = 0;
+        virtual void render() = 0;
 
         // Changes the room to specified room, reloads map
         virtual void load(const std::shared_ptr<trview::IRoom>& room) = 0;
@@ -51,5 +57,7 @@ namespace trview
         virtual graphics::Texture texture() const = 0;
 
         virtual Point first() const = 0;
+
+        virtual void set_render_mode(RenderMode mode) = 0;
     };
 }

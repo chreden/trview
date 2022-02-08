@@ -125,5 +125,6 @@ namespace trview
         ImFont* _font;
     };
 
-    std::unique_ptr<IApplication> create_application(HINSTANCE instance, const std::wstring& command_line, int command_show);
+    Window create_window(HINSTANCE hInstance, int command_show);
+    std::unique_ptr<IApplication> create_application(const Window& window, const std::wstring& command_line);
 }

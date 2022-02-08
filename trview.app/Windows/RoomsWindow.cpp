@@ -3,7 +3,6 @@
 #include <trview.app/Elements/Item.h>
 #include <trview.app/Elements/ITrigger.h>
 #include <trview.common/Strings.h>
-#include <trview.input/IMouse.h>
 
 namespace trview
 {
@@ -69,75 +68,18 @@ namespace trview
 
     RoomsWindow::RoomsWindow(const IMapRenderer::Source& map_renderer_source,
         const std::shared_ptr<IClipboard>& clipboard,
-        const input::IMouse::Source& mouse_source,
         const Window& parent)
         : _window(parent), _map_renderer(map_renderer_source(Size(341, 341))), _clipboard(clipboard)
     {
         static int number = 0;
         _id = "Rooms " + std::to_string(++number);
 
-        using namespace input;
-        _mouse = mouse_source(_window);
-        _token_store += _mouse->mouse_click += [&](IMouse::Button button)
-        {
-            auto sector = _map_renderer->sector_at_cursor();
-            if (!sector)
-            {
-                return;
-            }
-
-            if (button == IMouse::Button::Left)
-            {
-                if (sector->flags() & SectorFlag::Portal)
-                {
-                    on_room_selected(sector->portal());
-                    return;
-                }
-
-                if (sector->room_below() != 0xff)
-                {
-                    on_room_selected(sector->room_below());
-                    return;
-                }
-
-                // Select triggers
-                for (const auto& trigger : _all_triggers)
-                {
-                    auto trigger_ptr = trigger.lock();
-                    if (trigger_ptr && trigger_ptr->room() == _current_room && trigger_ptr->sector_id() == sector->id())
-                    {
-                        on_trigger_selected(trigger);
-                        break;
-                    }
-                }
-            }
-            else if (button == IMouse::Button::Right)
-            {
-                if (sector->room_above() != 0xff)
-                {
-                    on_room_selected(sector->room_above());
-                    return;
-                }
-            }
-        };
-
-        _token_store += _mouse->mouse_move += [&](long, long)
-        {
-            // Only do work if we have actually loaded a map.
-            if (_map_renderer->loaded())
-            {
-                // Adjust mouse coordinates to be relative to what the map renderer thinks is going on.
-                auto ccp = client_cursor_position(_window);
-                // TODO: Fix this
-                // _map_renderer->set_cursor_position(ccp - _minimap->absolute_position() + _map_renderer->first());
-            }
-        };
-
+        _map_renderer->set_render_mode(IMapRenderer::RenderMode::Texture);
         _token_store += _map_renderer->on_sector_hover += [this](const std::shared_ptr<ISector>& sector)
         {
             if (!sector)
             {
-                // _map_tooltip->set_visible(false);
+                _map_tooltip.set_visible(false);
                 return;
             }
 
@@ -151,8 +93,8 @@ namespace trview
                 text += ((sector->flags() & SectorFlag::RoomAbove) ? L", " : L"") +
                     std::wstring(L"Below: ") + std::to_wstring(sector->room_below());
             }
-            // _map_tooltip->set_text(text);
-            // _map_tooltip->set_visible(!text.empty());
+            _map_tooltip.set_text(text);
+            _map_tooltip.set_visible(!text.empty());
         };
     }
 
@@ -164,9 +106,20 @@ namespace trview
         }
 
         _current_room = room;
+        _scroll_to_room = true;
         if (_sync_room && _current_room < _all_rooms.size())
         {
             _selected_room = _current_room;
+            const auto room = std::find_if(_all_rooms.begin(), _all_rooms.end(),
+                [&](auto&& r) 
+                { 
+                    const auto locked = r.lock();
+                    return locked && locked->number() == _selected_room; 
+                });
+            if (room != _all_rooms.end())
+            {
+                _map_renderer->load(room->lock());
+            }
         }
     }
 
@@ -234,15 +187,6 @@ namespace trview
 
     void RoomsWindow::render(bool vsync)
     {
-        // if (!render_host())
-        // {
-        //     IRoomsWindow::on_window_closed();
-        //     return;
-        // }
-        // 
-        // render_rooms_list();
-        // render_room_details();
-
         if (!render_rooms_window())
         {
             on_window_closed();
@@ -262,6 +206,8 @@ namespace trview
         }
         ImGui::End();
         ImGui::PopStyleVar();
+
+        _map_tooltip.render();
         return stay_open;
     }
 
@@ -338,6 +284,15 @@ namespace trview
                     ImGui::TableNextRow();
                     ImGui::TableNextColumn();
                     bool selected = room_ptr->number() == _selected_room;
+                    if (selected && _scroll_to_room)
+                    {
+                        const auto pos = ImGui::GetCurrentWindow()->DC.CursorPos;
+                        if (!ImGui::IsRectVisible(pos, pos + ImVec2(1, 1)))
+                        {
+                            ImGui::SetScrollHereY();
+                        }
+                        _scroll_to_room = false;
+                    }
                     if (ImGui::Selectable((std::to_string(room_ptr->number()) + std::string("##") + std::to_string(room_ptr->number())).c_str(), &selected, ImGuiSelectableFlags_SpanAllColumns | ImGuiSelectableFlags_SelectOnNav))
                     {
                         _selected_room = room_ptr->number();
@@ -383,12 +338,58 @@ namespace trview
                 {
                     if (_map_renderer->loaded())
                     {
-                        _map_renderer->render(false);
+                        const auto io = ImGui::GetIO();
+                        if (io.WantCaptureMouse)
+                        {
+                            const auto mouse_pos = io.MousePos;
+                            auto top_left = ImGui::GetCursorScreenPos();
+                            auto adjusted = mouse_pos - top_left;
+                            _map_renderer->set_cursor_position(Point(adjusted.x, adjusted.y));
+
+                            auto sector = _map_renderer->sector_at_cursor();
+                            if (sector)
+                            {
+                                if (io.MouseClicked[0])
+                                {
+                                    if (sector->flags() & SectorFlag::Portal)
+                                    {
+                                        on_room_selected(sector->portal());
+                                    }
+                                    else if (sector->room_below() != 0xff)
+                                    {
+                                        on_room_selected(sector->room_below());
+                                    }
+                                    else
+                                    {
+                                        // Select triggers
+                                        for (const auto& trigger : _all_triggers)
+                                        {
+                                            auto trigger_ptr = trigger.lock();
+                                            if (trigger_ptr && trigger_ptr->room() == _current_room && trigger_ptr->sector_id() == sector->id())
+                                            {
+                                                on_trigger_selected(trigger);
+                                                break;
+                                            }
+                                        }
+                                    }
+                                }
+                                else if (io.MouseClicked[1])
+                                {
+                                    if (sector->room_above() != 0xff)
+                                    {
+                                        on_room_selected(sector->room_above());
+                                    }
+                                }
+                            }
+                        }
+
+                        _map_renderer->render();
                         auto texture = _map_renderer->texture();
                         if (!texture.has_content())
                         {
                             return;
                         }
+                        _map_renderer->set_window_size(texture.size());
                         ImGui::Image(texture.view().Get(), ImVec2(texture.size().width, texture.size().height));
                     }
 

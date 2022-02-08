@@ -7,7 +7,6 @@
 #include "IRoomsWindow.h"
 #include <trview.common/Windows/IClipboard.h>
 #include <trview.common/TokenStore.h>
-#include <trview.input/IMouse.h>
 
 namespace trview
 {
@@ -33,7 +32,6 @@ namespace trview
         /// @param parent The parent window.
         explicit RoomsWindow(const IMapRenderer::Source& map_renderer_source,
             const std::shared_ptr<IClipboard>& clipboard,
-            const input::IMouse::Source& mouse_source,
             const Window& parent);
         virtual ~RoomsWindow() = default;
         virtual void clear_selected_trigger() override;
@@ -71,7 +69,8 @@ namespace trview
         std::unique_ptr<IMapRenderer> _map_renderer;
         std::shared_ptr<IClipboard> _clipboard;
         trlevel::LevelVersion _level_version;
-        std::shared_ptr<input::IMouse> _mouse;
         std::string _id;
+        Tooltip _map_tooltip;
+        bool _scroll_to_room{ false };
     };
 }

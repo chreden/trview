@@ -49,7 +49,7 @@ namespace trview
         virtual ~MapRenderer() = default;
 
         // Renders the map 
-        virtual void render(bool to_screen = true) override;
+        virtual void render() override;
 
         // Changes the room to specified room, reloads map
         virtual void load(const std::shared_ptr<trview::IRoom>& room) override;
@@ -85,6 +85,8 @@ namespace trview
         virtual graphics::Texture texture() const override;
 
         virtual Point first() const override;
+
+        virtual void set_render_mode(RenderMode mode) override;
     private:
         // Determines the position (on screen) to draw a sector 
         Point get_position(const ISector& sector); 
@@ -132,5 +134,6 @@ namespace trview
         std::unique_ptr<graphics::IFont> _font;
         std::shared_ptr<ISector> _previous_sector;
         Microsoft::WRL::ComPtr<ID3D11DepthStencilState> _depth_stencil_state;
+        RenderMode _render_mode{ RenderMode::Screen };
     };
 };
