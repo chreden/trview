@@ -1,12 +1,14 @@
 #pragma once
 
-#include <trview.common/Window.h>
-#include <trview.app/UI/Tooltip.h>
-#include <trview.app/Elements/Item.h>
-#include "../UI/IMapRenderer.h"
 #include "IRoomsWindow.h"
+
 #include <trview.common/Windows/IClipboard.h>
 #include <trview.common/TokenStore.h>
+
+#include "../UI/Tooltip.h"
+#include "../Elements/Item.h"
+#include "../UI/IMapRenderer.h"
+
 
 namespace trview
 {
@@ -29,10 +31,7 @@ namespace trview
         /// Create a rooms window as a child of the specified window.
         /// @param device The graphics device
         /// @param renderer_source The function to call to get a renderer.
-        /// @param parent The parent window.
-        explicit RoomsWindow(const IMapRenderer::Source& map_renderer_source,
-            const std::shared_ptr<IClipboard>& clipboard,
-            const Window& parent);
+        explicit RoomsWindow(const IMapRenderer::Source& map_renderer_source, const std::shared_ptr<IClipboard>& clipboard);
         virtual ~RoomsWindow() = default;
         virtual void clear_selected_trigger() override;
         virtual void render(bool vsync) override;
@@ -64,7 +63,6 @@ namespace trview
         std::weak_ptr<ITrigger> _selected_trigger;
         uint32_t _selected_room{ 0u };
 
-        Window _window;
         TokenStore _token_store;
         std::unique_ptr<IMapRenderer> _map_renderer;
         std::shared_ptr<IClipboard> _clipboard;

@@ -13,7 +13,7 @@ namespace trview
                 struct MockMapRenderer : public IMapRenderer
                 {
                     virtual ~MockMapRenderer() = default;
-                    MOCK_METHOD(void, render, (bool));
+                    MOCK_METHOD(void, render, ());
                     MOCK_METHOD(void, load, (const std::shared_ptr<trview::IRoom>&));
                     MOCK_METHOD(std::uint16_t, area, (), (const));
                     MOCK_METHOD(std::shared_ptr<ISector>, sector_at, (const Point&), (const));
@@ -27,6 +27,7 @@ namespace trview
                     MOCK_METHOD(void, set_highlight, (uint16_t, uint16_t));
                     MOCK_METHOD(graphics::Texture, texture, (), (const));
                     MOCK_METHOD(Point, first, (), (const));
+                    MOCK_METHOD(void, set_render_mode, (RenderMode), (override));
                 };
             }
         }

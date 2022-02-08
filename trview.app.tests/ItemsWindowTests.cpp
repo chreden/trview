@@ -21,12 +21,11 @@ namespace
     {
         struct test_module
         {
-            trview::Window window{ create_test_window(L"ItemsWindowTests") };
             std::shared_ptr<IClipboard> clipboard{ std::make_shared<MockClipboard>() };
 
             std::unique_ptr<ItemsWindow> build()
             {
-                return std::make_unique<ItemsWindow>(window, clipboard);
+                return std::make_unique<ItemsWindow>(clipboard);
             }
         };
 

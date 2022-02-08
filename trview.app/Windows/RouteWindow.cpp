@@ -128,7 +128,7 @@ namespace trview
                         ImGui::TableNextColumn();
                         if (ImGui::Selectable(name.c_str(), false, ImGuiSelectableFlags_SpanAllColumns))
                         {
-                            _clipboard->write(_window, to_utf16(value));
+                            _clipboard->write(to_utf16(value));
                         }
                         ImGui::TableNextColumn();
                         ImGui::Text(value.c_str());

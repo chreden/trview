@@ -1,6 +1,5 @@
 #include "TriggersWindow.h"
 #include <trview.common/Strings.h>
-#include <trview.common/Windows/Clipboard.h>
 
 // TODO
 // Most things
@@ -9,8 +8,8 @@
 
 namespace trview
 {
-    TriggersWindow::TriggersWindow(const Window& parent, const std::shared_ptr<IClipboard>& clipboard)
-        : _clipboard(clipboard), _window(parent)
+    TriggersWindow::TriggersWindow(const std::shared_ptr<IClipboard>& clipboard)
+        : _clipboard(clipboard)
     {
         static int number = 0;
         _id = "Triggers " + std::to_string(++number);
@@ -282,7 +281,7 @@ namespace trview
                         ImGui::TableNextColumn();
                         if (ImGui::Selectable(name.c_str(), false, ImGuiSelectableFlags_SpanAllColumns | ImGuiSelectableFlags_SelectOnNav))
                         {
-                            _clipboard->write(_window, to_utf16(value));
+                            _clipboard->write(to_utf16(value));
                         }
                         ImGui::TableNextColumn();
                         ImGui::Text(value.c_str());

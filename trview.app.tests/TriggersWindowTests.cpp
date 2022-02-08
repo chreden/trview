@@ -20,12 +20,11 @@ namespace
     {
         struct test_module
         {
-            trview::Window window{ create_test_window(L"TriggersWindowTests") };
             std::shared_ptr<IClipboard> clipboard{ std::make_shared<MockClipboard>() };
 
             std::unique_ptr<TriggersWindow> build()
             {
-                return std::make_unique<TriggersWindow>(window, clipboard);
+                return std::make_unique<TriggersWindow>(clipboard);
             }
         };
 

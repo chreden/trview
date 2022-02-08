@@ -3,19 +3,14 @@
 
 #pragma once
 
-#include <trview.app/Elements/Item.h>
-#include <trview.app/Elements/ITrigger.h>
-#include "ITriggersWindow.h"
 #include <trview.common/Windows/IClipboard.h>
+
+#include "ITriggersWindow.h"
+#include "../Elements/Item.h"
+#include "../Elements/ITrigger.h"
 
 namespace trview
 {
-    namespace ui
-    {
-        class Checkbox;
-        class Dropdown;
-    }
-
     class TriggersWindow final : public ITriggersWindow
     {
     public:
@@ -26,7 +21,7 @@ namespace trview
             static inline const std::string track_room = "Track Room";
         };
 
-        explicit TriggersWindow(const Window& parent, const std::shared_ptr<IClipboard>& clipboard);
+        explicit TriggersWindow(const std::shared_ptr<IClipboard>& clipboard);
         virtual ~TriggersWindow() = default;
         virtual void render(bool vsync) override;
         virtual void set_triggers(const std::vector<std::weak_ptr<ITrigger>>& triggers) override;
@@ -59,8 +54,6 @@ namespace trview
         std::shared_ptr<IClipboard> _clipboard;
         std::vector<std::string> _all_commands;
         uint32_t _selected_command{ 0u };
-        Window _window;
-
         std::weak_ptr<ITrigger> _selected_trigger;
         std::weak_ptr<ITrigger> _global_selected_trigger;
         bool _scroll_to_trigger{ false };

@@ -8,18 +8,19 @@ namespace trview
 {
     namespace
     {
-        void add_room_flags(trlevel::LevelVersion version, const IRoom& room)
+        void add_room_flags(IClipboard& clipboard, trlevel::LevelVersion version, const IRoom& room)
         {
             using trlevel::LevelVersion;
             const auto add_flag = [&](const std::wstring& name, bool flag) 
             {
+                auto value = to_utf8(format_bool(flag));
                 ImGui::TableNextColumn();
                 if (ImGui::Selectable(to_utf8(name).c_str(), false, ImGuiSelectableFlags_SpanAllColumns))
                 {
-                    // _clipboard->write(window(), to_utf16(value));
+                    clipboard.write(to_utf16(value));
                 }
                 ImGui::TableNextColumn();
-                ImGui::Text(to_utf8(format_bool(flag)).c_str());
+                ImGui::Text(value.c_str());
             };
             const auto add_flag_min = [&](LevelVersion min_version, const std::wstring& name, const std::wstring& alt_name, bool flag)
             {
@@ -66,10 +67,8 @@ namespace trview
     const std::string RoomsWindow::Names::neighbours_listbox{ "neighbours" };
     const std::string RoomsWindow::Names::items_listbox{ "items" };
 
-    RoomsWindow::RoomsWindow(const IMapRenderer::Source& map_renderer_source,
-        const std::shared_ptr<IClipboard>& clipboard,
-        const Window& parent)
-        : _window(parent), _map_renderer(map_renderer_source(Size(341, 341))), _clipboard(clipboard)
+    RoomsWindow::RoomsWindow(const IMapRenderer::Source& map_renderer_source, const std::shared_ptr<IClipboard>& clipboard)
+        : _map_renderer(map_renderer_source(Size(341, 341))), _clipboard(clipboard)
     {
         static int number = 0;
         _id = "Rooms " + std::to_string(++number);
@@ -398,7 +397,7 @@ namespace trview
                         ImGui::TableNextColumn();
                         if (ImGui::Selectable(name.c_str(), false, ImGuiSelectableFlags_SpanAllColumns))
                         {
-                            _clipboard->write(_window, to_utf16(value));
+                            _clipboard->write(to_utf16(value));
                         }
                         ImGui::TableNextColumn();
                         ImGui::Text(value.c_str());
@@ -422,7 +421,7 @@ namespace trview
                                 add_stat("Alternate Group", std::to_string(room->alternate_group()));
                             }
                         }
-                        add_room_flags(_level_version, *room);
+                        add_room_flags(*_clipboard, _level_version, *room);
                         ImGui::EndTable();
                     }
 

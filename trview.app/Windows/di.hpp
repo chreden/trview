@@ -20,25 +20,23 @@ namespace trview
         using namespace graphics;
 
         return di::make_injector(
+            di::bind<IItemsWindow>.to<ItemsWindow>().in(di::unique),
             di::bind<IItemsWindow::Source>.to(
             [](const auto& injector) -> IItemsWindow::Source
             {
                 return [&]()
                 {
-                    return std::make_shared<ItemsWindow>(
-                        injector.create<Window>(),
-                        injector.create<std::shared_ptr<IClipboard>>());
+                    return injector.create<std::shared_ptr<IItemsWindow>>();
                 };
             }),
             di::bind<IItemsWindowManager>.to<ItemsWindowManager>(),
+            di::bind<ITriggersWindow>.to<TriggersWindow>().in(di::unique),
             di::bind<ITriggersWindow::Source>.to(
                 [](const auto& injector) -> ITriggersWindow::Source
                 {
                     return [&]()
                     {
-                        return std::make_shared<TriggersWindow>(
-                            injector.create<Window>(),
-                            injector.create<std::shared_ptr<IClipboard>>());
+                        return injector.create<std::shared_ptr<ITriggersWindow>>();
                     };
                 }),
             di::bind<ITriggersWindowManager>.to<TriggersWindowManager>(),

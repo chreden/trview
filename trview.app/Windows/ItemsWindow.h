@@ -21,7 +21,7 @@ namespace trview
             static inline const std::string track_room = "Track Room";
         };
 
-        explicit ItemsWindow(const Window& window, const std::shared_ptr<IClipboard>& clipboard);
+        explicit ItemsWindow(const std::shared_ptr<IClipboard>& clipboard);
         virtual ~ItemsWindow() = default;
         virtual void render(bool vsync) override;
         virtual void set_items(const std::vector<Item>& items) override;
@@ -52,7 +52,6 @@ namespace trview
         std::unordered_map<std::string, std::string> _tips;
         std::optional<float> _tooltip_timer;
         std::weak_ptr<ITrigger> _selected_trigger;
-        Window _window;
 
         // Item selection.
         std::optional<Item> _selected_item;
