@@ -196,7 +196,7 @@ namespace trview
     bool RoomsWindow::render_rooms_window()
     {
         bool stay_open = true;
-        ImGui::PushStyleVar(ImGuiStyleVar_WindowMinSize, ImVec2(520, 500));
+        ImGui::PushStyleVar(ImGuiStyleVar_WindowMinSize, ImVec2(620, 500));
         if (ImGui::Begin(_id.c_str(), &stay_open))
         {
             render_rooms_list();
@@ -337,6 +337,18 @@ namespace trview
                 {
                     if (_map_renderer->loaded())
                     {
+                        _map_renderer->render();
+                        auto texture = _map_renderer->texture();
+                        if (!texture.has_content())
+                        {
+                            return;
+                        }
+                        _map_renderer->set_window_size(texture.size());
+
+                        float remainder = (341 - texture.size().height) * 0.5f;
+                        ImGui::SetCursorPosX(std::round((ImGui::GetWindowSize().x - texture.size().width) * 0.5f));
+                        ImGui::SetCursorPosY(ImGui::GetCursorPosY() + std::floor(remainder));
+                        
                         const auto io = ImGui::GetIO();
                         if (io.WantCaptureMouse)
                         {
@@ -381,15 +393,8 @@ namespace trview
                                 }
                             }
                         }
-
-                        _map_renderer->render();
-                        auto texture = _map_renderer->texture();
-                        if (!texture.has_content())
-                        {
-                            return;
-                        }
-                        _map_renderer->set_window_size(texture.size());
                         ImGui::Image(texture.view().Get(), ImVec2(texture.size().width, texture.size().height));
+                        ImGui::SetCursorPosY(ImGui::GetCursorPosY() + std::ceil(remainder));
                     }
 
                     auto add_stat = [&](const std::string& name, const std::string& value)
