@@ -395,6 +395,7 @@ namespace trview
                         }
                         ImGui::Image(texture.view().Get(), ImVec2(texture.size().width, texture.size().height));
                         ImGui::SetCursorPosY(ImGui::GetCursorPosY() + std::ceil(remainder));
+                        ImGui::Separator();
                     }
 
                     auto add_stat = [&](const std::string& name, const std::string& value)
