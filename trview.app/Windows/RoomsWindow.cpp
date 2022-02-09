@@ -338,15 +338,15 @@ namespace trview
                     if (_map_renderer->loaded())
                     {
                         _map_renderer->render();
-                        auto texture = _map_renderer->texture();
-                        if (!texture.has_content())
+                        _map_texture = _map_renderer->texture();
+                        if (!_map_texture.has_content())
                         {
                             return;
                         }
-                        _map_renderer->set_window_size(texture.size());
+                        _map_renderer->set_window_size(_map_texture.size());
 
-                        float remainder = (341 - texture.size().height) * 0.5f;
-                        ImGui::SetCursorPosX(std::round((ImGui::GetWindowSize().x - texture.size().width) * 0.5f));
+                        float remainder = (341 - _map_texture.size().height) * 0.5f;
+                        ImGui::SetCursorPosX(std::round((ImGui::GetWindowSize().x - _map_texture.size().width) * 0.5f));
                         ImGui::SetCursorPosY(ImGui::GetCursorPosY() + std::floor(remainder));
                         
                         const auto io = ImGui::GetIO();
@@ -393,7 +393,7 @@ namespace trview
                                 }
                             }
                         }
-                        ImGui::Image(texture.view().Get(), ImVec2(texture.size().width, texture.size().height));
+                        ImGui::Image(_map_texture.view().Get(), ImVec2(_map_texture.size().width, _map_texture.size().height));
                         ImGui::SetCursorPosY(ImGui::GetCursorPosY() + std::ceil(remainder));
                         ImGui::Separator();
                     }
@@ -472,7 +472,11 @@ namespace trview
                             {
                                 ImGui::TableNextRow();
                                 ImGui::TableNextColumn();
-                                ImGui::Text(std::to_string(neighbour).c_str());
+                                bool selected = false;
+                                if (ImGui::Selectable(std::to_string(neighbour).c_str(), &selected, ImGuiSelectableFlags_SpanAllColumns | ImGuiSelectableFlags_SelectOnNav))
+                                {
+                                    on_room_selected(neighbour);
+                                }
                             }
 
                             ImGui::EndTable();

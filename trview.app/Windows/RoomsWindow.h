@@ -70,5 +70,8 @@ namespace trview
         std::string _id;
         Tooltip _map_tooltip;
         bool _scroll_to_room{ false };
+
+        // Map texture saved so that it is guaranteed to survive until ImGui renders.
+        graphics::Texture _map_texture;
     };
 }
