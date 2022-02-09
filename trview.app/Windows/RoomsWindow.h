@@ -50,6 +50,7 @@ namespace trview
         void render_rooms_list();
         void render_room_details();
         bool render_rooms_window();
+        void load_room_details(uint32_t room_number);
 
         std::vector<std::weak_ptr<IRoom>> _all_rooms;
         std::vector<Item> _all_items;
@@ -58,9 +59,9 @@ namespace trview
         bool _sync_room{ true };
         bool _track_item{ false };
         bool _track_trigger{ false };
-        uint32_t _current_room{ 0u };
         std::optional<Item> _selected_item;
         std::weak_ptr<ITrigger> _selected_trigger;
+        uint32_t _current_room{ 0u };
         uint32_t _selected_room{ 0u };
 
         TokenStore _token_store;

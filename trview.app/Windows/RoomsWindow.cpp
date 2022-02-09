@@ -109,16 +109,21 @@ namespace trview
         if (_sync_room && _current_room < _all_rooms.size())
         {
             _selected_room = _current_room;
-            const auto room = std::find_if(_all_rooms.begin(), _all_rooms.end(),
-                [&](auto&& r) 
-                { 
-                    const auto locked = r.lock();
-                    return locked && locked->number() == _selected_room; 
-                });
-            if (room != _all_rooms.end())
+            load_room_details(_current_room);
+        }
+    }
+
+    void RoomsWindow::load_room_details(uint32_t room_number)
+    {
+        const auto room = std::find_if(_all_rooms.begin(), _all_rooms.end(),
+            [&](auto&& r)
             {
-                _map_renderer->load(room->lock());
-            }
+                const auto locked = r.lock();
+                return locked && locked->number() == room_number;
+            });
+        if (room != _all_rooms.end())
+        {
+            _map_renderer->load(room->lock());
         }
     }
 
@@ -141,11 +146,32 @@ namespace trview
     void RoomsWindow::set_selected_item(const Item& item)
     {
         _selected_item = item;
+        if (_track_item)
+        {
+            _selected_room = item.room();
+            _scroll_to_room = true;
+            if (!_sync_room)
+            {
+                load_room_details(item.room());
+            }
+        }
     }
 
     void RoomsWindow::set_selected_trigger(const std::weak_ptr<ITrigger>& trigger)
     {
         _selected_trigger = trigger;
+        if (_track_trigger)
+        {
+            if (const auto trigger_ptr = trigger.lock())
+            {
+                _selected_room = trigger_ptr->room();
+                _scroll_to_room = true;
+                if (!_sync_room)
+                {
+                    load_room_details(trigger_ptr->room());
+                }
+            }
+        }
     }
 
     void RoomsWindow::set_triggers(const std::vector<std::weak_ptr<ITrigger>>& triggers)
@@ -196,7 +222,7 @@ namespace trview
     bool RoomsWindow::render_rooms_window()
     {
         bool stay_open = true;
-        ImGui::PushStyleVar(ImGuiStyleVar_WindowMinSize, ImVec2(620, 550));
+        ImGui::PushStyleVar(ImGuiStyleVar_WindowMinSize, ImVec2(620, 760));
         if (ImGui::Begin(_id.c_str(), &stay_open))
         {
             render_rooms_list();
@@ -451,7 +477,11 @@ namespace trview
                                 {
                                     ImGui::TableNextRow();
                                     ImGui::TableNextColumn();
-                                    ImGui::Text(std::to_string(item.number()).c_str());
+                                    bool selected = false;
+                                    if (ImGui::Selectable(std::to_string(item.number()).c_str(), &selected, ImGuiSelectableFlags_SpanAllColumns | ImGuiSelectableFlags_SelectOnNav))
+                                    {
+                                        on_item_selected(item);
+                                    }
                                     ImGui::TableNextColumn();
                                     ImGui::Text(to_utf8(item.type()).c_str());
                                 }
@@ -475,7 +505,11 @@ namespace trview
                                 bool selected = false;
                                 if (ImGui::Selectable(std::to_string(neighbour).c_str(), &selected, ImGuiSelectableFlags_SpanAllColumns | ImGuiSelectableFlags_SelectOnNav))
                                 {
-                                    on_room_selected(neighbour);
+                                    _selected_room = neighbour;
+                                    if (_sync_room)
+                                    {
+                                        on_room_selected(neighbour);
+                                    }
                                 }
                             }
 
