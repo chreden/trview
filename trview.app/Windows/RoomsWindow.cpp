@@ -494,7 +494,11 @@ namespace trview
                                 {
                                     ImGui::TableNextRow();
                                     ImGui::TableNextColumn();
-                                    ImGui::Text(std::to_string(trigger_ptr->number()).c_str());
+                                    bool selected = false;
+                                    if (ImGui::Selectable((std::to_string(trigger_ptr->number()) + std::string("##") + std::to_string(trigger_ptr->number())).c_str(), &selected, ImGuiSelectableFlags_SpanAllColumns | ImGuiSelectableFlags_SelectOnNav))
+                                    {
+                                        on_trigger_selected(trigger);
+                                    }
                                     ImGui::TableNextColumn();
                                     ImGui::Text(to_utf8(trigger_type_name(trigger_ptr->type())).c_str());
                                 }
