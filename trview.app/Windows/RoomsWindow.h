@@ -64,7 +64,10 @@ namespace trview
         std::optional<Item> _local_selected_item;
         bool _scroll_to_item{ false };
 
-        std::weak_ptr<ITrigger> _selected_trigger;
+        std::weak_ptr<ITrigger> _global_selected_trigger;
+        std::weak_ptr<ITrigger> _local_selected_trigger;
+        bool _scroll_to_trigger{ false };
+
         uint32_t _current_room{ 0u };
         uint32_t _selected_room{ 0u };
 

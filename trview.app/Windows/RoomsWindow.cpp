@@ -134,6 +134,8 @@ namespace trview
     void RoomsWindow::set_items(const std::vector<Item>& items)
     {
         _all_items = items;
+        _global_selected_item.reset();
+        _local_selected_item.reset();
     }
 
     void RoomsWindow::set_level_version(trlevel::LevelVersion version)
@@ -165,13 +167,15 @@ namespace trview
 
     void RoomsWindow::set_selected_trigger(const std::weak_ptr<ITrigger>& trigger)
     {
-        _selected_trigger = trigger;
+        _global_selected_trigger = trigger;
         if (_track_trigger)
         {
+            _local_selected_trigger = trigger;
             if (const auto trigger_ptr = trigger.lock())
             {
                 _selected_room = trigger_ptr->room();
                 _scroll_to_room = true;
+                _scroll_to_trigger = true;
                 if (!_sync_room)
                 {
                     load_room_details(trigger_ptr->room());
@@ -182,7 +186,8 @@ namespace trview
 
     void RoomsWindow::set_triggers(const std::vector<std::weak_ptr<ITrigger>>& triggers)
     {
-        _selected_trigger.reset();
+        _global_selected_trigger.reset();
+        _local_selected_trigger.reset();
         _all_triggers = triggers;
     }
 
@@ -212,7 +217,7 @@ namespace trview
         if (_track_trigger != value)
         {
             _track_trigger = value;
-            set_selected_trigger(_selected_trigger);
+            set_selected_trigger(_global_selected_trigger);
         }
     }
 
@@ -264,7 +269,7 @@ namespace trview
                 set_track_trigger(track_trigger);
             }
 
-            if (ImGui::BeginTable("##roomslist", 3, ImGuiTableFlags_Sortable | ImGuiTableFlags_ScrollY | ImGuiTableFlags_SizingFixedFit, ImVec2(-1, -1)))
+            if (ImGui::BeginTable("##roomslist", 3, ImGuiTableFlags_Sortable | ImGuiTableFlags_ScrollY, ImVec2(-1, -1)))
             {
                 ImGui::TableSetupColumn("#");
                 ImGui::TableSetupColumn("Items");
@@ -470,7 +475,7 @@ namespace trview
 
                         ImGui::TableNextColumn();
                         ImGui::Text("Items");
-                        if (ImGui::BeginTable("Items", 2, ImGuiTableFlags_Sortable | ImGuiTableFlags_ScrollY | ImGuiTableFlags_SizingFixedFit, ImVec2(0, 150)))
+                        if (ImGui::BeginTable("Items", 2, ImGuiTableFlags_Sortable | ImGuiTableFlags_ScrollY, ImVec2(0, 150)))
                         {
                             ImGui::TableSetupColumn("#");
                             ImGui::TableSetupColumn("Type");
@@ -554,12 +559,35 @@ namespace trview
 
                         ImGui::TableNextColumn();
                         ImGui::Text("Triggers");
-                        if (ImGui::BeginTable("Triggers", 2, ImGuiTableFlags_ScrollY, ImVec2(0, 150)))
+                        if (ImGui::BeginTable("Triggers", 2, ImGuiTableFlags_Sortable | ImGuiTableFlags_ScrollY, ImVec2(0, 150)))
                         {
                             ImGui::TableSetupColumn("#");
                             ImGui::TableSetupColumn("Type");
                             ImGui::TableSetupScrollFreeze(1, 1);
                             ImGui::TableHeadersRow();
+
+                            auto specs = ImGui::TableGetSortSpecs();
+                            if (specs && specs->SpecsDirty)
+                            {
+                                std::sort(_all_triggers.begin(), _all_triggers.end(),
+                                    [&](const auto& l, const auto& r) -> int
+                                    {
+                                        const auto l_l = l.lock();
+                                        const auto r_l = r.lock();
+
+                                        switch (specs->Specs[0].ColumnIndex)
+                                        {
+                                        case 0:
+                                            return specs->Specs->SortDirection == ImGuiSortDirection_Ascending
+                                                ? (l_l->number() < r_l->number()) : (l_l->number() > r_l->number());
+                                        case 1:
+                                            return specs->Specs->SortDirection == ImGuiSortDirection_Ascending
+                                                ? (l_l->type() < r_l->type()) : (l_l->type() > r_l->type());
+                                        }
+                                        return 0;
+                                    });
+                                specs->SpecsDirty = false;
+                            }
 
                             for (const auto& trigger : _all_triggers)
                             {
@@ -568,9 +596,20 @@ namespace trview
                                 {
                                     ImGui::TableNextRow();
                                     ImGui::TableNextColumn();
-                                    bool selected = false;
+                                    const auto local_selection = _local_selected_trigger.lock();
+                                    bool selected = local_selection && local_selection->number() == trigger_ptr->number();
+                                    if (selected && _scroll_to_trigger)
+                                    {
+                                        const auto pos = ImGui::GetCurrentWindow()->DC.CursorPos;
+                                        if (!ImGui::IsRectVisible(pos, pos + ImVec2(1, 1)))
+                                        {
+                                            ImGui::SetScrollHereY();
+                                        }
+                                        _scroll_to_trigger = false;
+                                    }
                                     if (ImGui::Selectable((std::to_string(trigger_ptr->number()) + std::string("##") + std::to_string(trigger_ptr->number())).c_str(), &selected, ImGuiSelectableFlags_SpanAllColumns | ImGuiSelectableFlags_SelectOnNav))
                                     {
+                                        _local_selected_trigger = trigger_ptr;
                                         on_trigger_selected(trigger);
                                     }
                                     ImGui::TableNextColumn();
@@ -591,7 +630,8 @@ namespace trview
 
     void RoomsWindow::clear_selected_trigger()
     {
-        _selected_trigger.reset();
+        _local_selected_trigger.reset();
+        _global_selected_trigger.reset();
     }
 
     void RoomsWindow::update(float delta)
