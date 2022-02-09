@@ -1,6 +1,7 @@
 #include "ItemsWindow.h"
 #include <trview.common/Strings.h>
 #include <trview.common/Windows/Clipboard.h>
+#include "../trview_imgui.h"
 
 // TODO:
 // Sorting on triggered by
@@ -107,34 +108,14 @@ namespace trview
                 ImGui::TableSetupScrollFreeze(1, 1);
                 ImGui::TableHeadersRow();
 
-                auto specs = ImGui::TableGetSortSpecs();
-                if (specs && specs->SpecsDirty)
-                {
-                    std::sort(_all_items.begin(), _all_items.end(),
-                        [&](const auto& l, const auto& r) -> int
-                        {
-                            switch (specs->Specs[0].ColumnIndex)
-                            {
-                            case 0:
-                                return specs->Specs->SortDirection == ImGuiSortDirection_Ascending
-                                    ? (l.number() < r.number()) : (l.number() > r.number());
-                            case 1:
-                                return specs->Specs->SortDirection == ImGuiSortDirection_Ascending
-                                    ? (l.room() < r.room()) : (l.room() > r.room());
-                            case 2:
-                                return specs->Specs->SortDirection == ImGuiSortDirection_Ascending
-                                    ? (l.type_id() < r.type_id()) : (l.type_id() > r.type_id());
-                            case 3:
-                                return specs->Specs->SortDirection == ImGuiSortDirection_Ascending
-                                    ? (l.type() < r.type()) : (l.type() > r.type());
-                            case 4:
-                                return specs->Specs->SortDirection == ImGuiSortDirection_Ascending
-                                    ? (l.visible() < r.visible()) : (l.visible() > r.visible());
-                            }
-                            return 0;
-                        });
-                    specs->SpecsDirty = false;
-                }
+                imgui_sort(_all_items,
+                    {
+                        [](auto&& l, auto&& r) { return l.number() < r.number(); },
+                        [](auto&& l, auto&& r) { return l.room() < r.room(); },
+                        [](auto&& l, auto&& r) { return l.type_id() < r.type_id(); },
+                        [](auto&& l, auto&& r) { return l.type() < r.type(); },
+                        [](auto&& l, auto&& r) { return l.visible() < r.visible(); }
+                    });
 
                 for (const auto& item : _all_items)
                 {
@@ -146,15 +127,7 @@ namespace trview
                     ImGui::TableNextRow();
                     ImGui::TableNextColumn();
                     bool selected = _selected_item.has_value() && _selected_item.value().number() == item.number();
-                    if (selected && _scroll_to_item)
-                    {
-                        const auto pos = ImGui::GetCurrentWindow()->DC.CursorPos;
-                        if (!ImGui::IsRectVisible(pos, pos + ImVec2(1,1)))
-                        {
-                            ImGui::SetScrollHereY();
-                        }
-                        _scroll_to_item = false;
-                    }
+                    imgui_scroll_to_item(selected, _scroll_to_item);
                     if (ImGui::Selectable((std::to_string(item.number()) + std::string("##") + std::to_string(item.number())).c_str(), &selected, ImGuiSelectableFlags_SpanAllColumns | ImGuiSelectableFlags_SelectOnNav))
                     {
                         _selected_item = item;

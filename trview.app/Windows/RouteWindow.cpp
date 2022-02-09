@@ -2,7 +2,7 @@
 #include <trview.app/Routing/Route.h>
 #include <trview.common/Strings.h>
 #include <trview.common/Windows/IClipboard.h>
-#include <external/imgui/misc/cpp/imgui_stdlib.h>
+#include "../trview_imgui.h"
 
 namespace trview
 {
@@ -70,7 +70,7 @@ namespace trview
                 }
             }
 
-            if (ImGui::BeginTable("##waypointslist", 4, ImGuiTableFlags_ScrollY | ImGuiTableFlags_SizingFixedFit, ImVec2(-1, -1)))
+            if (ImGui::BeginTable("##waypointslist", 2, ImGuiTableFlags_ScrollY, ImVec2(-1, -1)))
             {
                 ImGui::TableSetupColumn("#");
                 ImGui::TableSetupColumn("Type");
@@ -85,15 +85,7 @@ namespace trview
                         ImGui::TableNextRow();
                         ImGui::TableNextColumn();
                         bool selected = _selected_index == i;
-                        if (selected && _scroll_to_trigger)
-                        {
-                            const auto pos = ImGui::GetCurrentWindow()->DC.CursorPos;
-                            if (!ImGui::IsRectVisible(pos, pos + ImVec2(1, 1)))
-                            {
-                                ImGui::SetScrollHereY();
-                            }
-                            _scroll_to_trigger = false;
-                        }
+                        imgui_scroll_to_item(selected, _scroll_to_trigger);
                         if (ImGui::Selectable(std::to_string(i).c_str(), &selected, ImGuiSelectableFlags_SpanAllColumns | ImGuiSelectableFlags_SelectOnNav))
                         {
                             _selected_index = i;

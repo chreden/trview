@@ -349,6 +349,7 @@
     <ClCompile Include="Resources\DefaultFonts.cpp">
       <Filter>Resources</Filter>
     </ClCompile>
+    <ClCompile Include="trview_imgui.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera\Camera.h">
@@ -899,6 +900,8 @@
     <ClInclude Include="Mocks\UI\IMapRenderer.h">
       <Filter>Mocks\UI</Filter>
     </ClInclude>
+    <ClInclude Include="trview_imgui.h" />
+    <ClInclude Include="trview_imgui.hpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Windows">
