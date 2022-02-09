@@ -4,6 +4,10 @@
 #include <trview.app/Elements/ITrigger.h>
 #include <trview.common/Strings.h>
 
+// Todo:
+// Sort items
+// Sort triggers
+
 namespace trview
 {
     namespace
@@ -145,11 +149,13 @@ namespace trview
 
     void RoomsWindow::set_selected_item(const Item& item)
     {
-        _selected_item = item;
+        _global_selected_item = item;
         if (_track_item)
         {
+            _local_selected_item = item;
             _selected_room = item.room();
             _scroll_to_room = true;
+            _scroll_to_item = true;
             if (!_sync_room)
             {
                 load_room_details(item.room());
@@ -194,9 +200,9 @@ namespace trview
         if (_track_item != value)
         {
             _track_item = value;
-            if (_selected_item.has_value())
+            if (_track_item && _global_selected_item.has_value())
             {
-                set_selected_item(_selected_item.value());
+                set_selected_item(_global_selected_item.value());
             }
         }
     }
@@ -464,12 +470,32 @@ namespace trview
 
                         ImGui::TableNextColumn();
                         ImGui::Text("Items");
-                        if (ImGui::BeginTable("Items", 2, ImGuiTableFlags_ScrollY, ImVec2(0, 150)))
+                        if (ImGui::BeginTable("Items", 2, ImGuiTableFlags_Sortable | ImGuiTableFlags_ScrollY | ImGuiTableFlags_SizingFixedFit, ImVec2(0, 150)))
                         {
                             ImGui::TableSetupColumn("#");
                             ImGui::TableSetupColumn("Type");
                             ImGui::TableSetupScrollFreeze(1, 1);
                             ImGui::TableHeadersRow();
+
+                            auto specs = ImGui::TableGetSortSpecs();
+                            if (specs && specs->SpecsDirty)
+                            {
+                                std::sort(_all_items.begin(), _all_items.end(),
+                                    [&](const auto& l, const auto& r) -> int
+                                    {
+                                        switch (specs->Specs[0].ColumnIndex)
+                                        {
+                                        case 0:
+                                            return specs->Specs->SortDirection == ImGuiSortDirection_Ascending
+                                                ? (l.number() < r.number()) : (l.number() > r.number());
+                                        case 1:
+                                            return specs->Specs->SortDirection == ImGuiSortDirection_Ascending
+                                                ? (l.type() < r.type()) : (l.type() > r.type());
+                                        }
+                                        return 0;
+                                    });
+                                specs->SpecsDirty = false;
+                            }
 
                             for (const auto& item : _all_items)
                             {
@@ -477,9 +503,19 @@ namespace trview
                                 {
                                     ImGui::TableNextRow();
                                     ImGui::TableNextColumn();
-                                    bool selected = false;
+                                    bool selected = _local_selected_item.has_value() && _local_selected_item.value().number() == item.number();
+                                    if (selected && _scroll_to_item)
+                                    {
+                                        const auto pos = ImGui::GetCurrentWindow()->DC.CursorPos;
+                                        if (!ImGui::IsRectVisible(pos, pos + ImVec2(1, 1)))
+                                        {
+                                            ImGui::SetScrollHereY();
+                                        }
+                                        _scroll_to_item = false;
+                                    }
                                     if (ImGui::Selectable(std::to_string(item.number()).c_str(), &selected, ImGuiSelectableFlags_SpanAllColumns | ImGuiSelectableFlags_SelectOnNav))
                                     {
+                                        _local_selected_item = item;
                                         on_item_selected(item);
                                     }
                                     ImGui::TableNextColumn();

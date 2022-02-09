@@ -59,7 +59,11 @@ namespace trview
         bool _sync_room{ true };
         bool _track_item{ false };
         bool _track_trigger{ false };
-        std::optional<Item> _selected_item;
+        
+        std::optional<Item> _global_selected_item;
+        std::optional<Item> _local_selected_item;
+        bool _scroll_to_item{ false };
+
         std::weak_ptr<ITrigger> _selected_trigger;
         uint32_t _current_room{ 0u };
         uint32_t _selected_room{ 0u };
