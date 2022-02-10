@@ -18,52 +18,53 @@ namespace trview
 
     void CameraControls::render()
     {
-        ImGui::Begin("Camera Controls", nullptr, ImGuiWindowFlags_AlwaysAutoResize);
-
-        const std::array<std::string, 3> mode_items { "Orbit", "Free", "Axis" };
-        if (ImGui::BeginCombo("##Mode", mode_items[static_cast<uint32_t>(_mode)].c_str()))
+        ImGui::SetNextWindowPos(ImGui::GetMainViewport()->Pos + ImVec2(4, 59), ImGuiCond_FirstUseEver);
+        if (ImGui::Begin("Camera Controls", nullptr, ImGuiWindowFlags_AlwaysAutoResize))
         {
-            for (int n = 0; n < mode_items.size(); ++n)
+            const std::array<std::string, 3> mode_items{ "Orbit", "Free", "Axis" };
+            if (ImGui::BeginCombo("##Mode", mode_items[static_cast<uint32_t>(_mode)].c_str()))
             {
-                bool is_selected = _mode == static_cast<CameraMode>(n);
-                if (ImGui::Selectable(mode_items[n].c_str(), is_selected))
+                for (int n = 0; n < mode_items.size(); ++n)
                 {
-                    change_mode(static_cast<CameraMode>(n));
-                }
+                    bool is_selected = _mode == static_cast<CameraMode>(n);
+                    if (ImGui::Selectable(mode_items[n].c_str(), is_selected))
+                    {
+                        change_mode(static_cast<CameraMode>(n));
+                    }
 
-                if (is_selected) 
-                {
-                    ImGui::SetItemDefaultFocus();
+                    if (is_selected)
+                    {
+                        ImGui::SetItemDefaultFocus();
+                    }
                 }
+                ImGui::EndCombo();
             }
-            ImGui::EndCombo();
-        }
 
-        const std::array<std::string, 2> projection_items{ "Perspective", "Orthographic" };
-        if (ImGui::BeginCombo("##Projection", projection_items[static_cast<uint32_t>(_projection_mode)].c_str()))
-        {
-            for (int n = 0; n < projection_items.size(); ++n)
+            const std::array<std::string, 2> projection_items{ "Perspective", "Orthographic" };
+            if (ImGui::BeginCombo("##Projection", projection_items[static_cast<uint32_t>(_projection_mode)].c_str()))
             {
-                bool is_selected = _projection_mode == static_cast<ProjectionMode>(n);
-                if (ImGui::Selectable(projection_items[n].c_str(), is_selected))
+                for (int n = 0; n < projection_items.size(); ++n)
                 {
-                    change_projection(static_cast<ProjectionMode>(n));
-                }
+                    bool is_selected = _projection_mode == static_cast<ProjectionMode>(n);
+                    if (ImGui::Selectable(projection_items[n].c_str(), is_selected))
+                    {
+                        change_projection(static_cast<ProjectionMode>(n));
+                    }
 
-                if (is_selected)
-                {
-                    ImGui::SetItemDefaultFocus();
+                    if (is_selected)
+                    {
+                        ImGui::SetItemDefaultFocus();
+                    }
                 }
+                ImGui::EndCombo();
             }
-            ImGui::EndCombo();
-        }
 
-        if (ImGui::Button(Names::reset.c_str()))
-        {
-            on_reset();
+            if (ImGui::Button(Names::reset.c_str()))
+            {
+                on_reset();
+            }
+            track(Names::reset);
         }
-        track(Names::reset);
-
         ImGui::End();
     }
 

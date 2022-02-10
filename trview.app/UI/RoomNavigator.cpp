@@ -4,6 +4,7 @@ namespace trview
 {
     void RoomNavigator::render()
     {
+        ImGui::SetNextWindowPos(ImGui::GetMainViewport()->Pos + ImVec2(4, 4), ImGuiCond_FirstUseEver);
         if (ImGui::Begin("Room Navigator", nullptr, ImGuiWindowFlags_AlwaysAutoResize))
         {
             const uint32_t previous_selection = _selected_room;

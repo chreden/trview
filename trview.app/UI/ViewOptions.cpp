@@ -26,6 +26,7 @@ namespace trview
             }
         };
 
+        ImGui::SetNextWindowPos(ImGui::GetMainViewport()->Pos + ImVec2(4, 161), ImGuiCond_FirstUseEver);
         if (ImGui::Begin("View Options", nullptr, ImGuiWindowFlags_AlwaysAutoResize))
         {
             if (ImGui::BeginTable(Names::flags.c_str(), 2))

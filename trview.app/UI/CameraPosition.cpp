@@ -7,6 +7,7 @@ namespace trview
 {
     void CameraPosition::render()
     {
+        ImGui::SetNextWindowPos(ImGui::GetMainViewport()->Pos + ImVec2(4, ImGui::GetMainViewport()->Size.y - 148), ImGuiCond_FirstUseEver);
         if (ImGui::Begin("Camera Position", nullptr, ImGuiWindowFlags_AlwaysAutoResize))
         {
             if (ImGui::InputFloat("Yaw", &_rotation_yaw))
