@@ -49,24 +49,6 @@
     <ClCompile Include="UI\CameraPosition.cpp">
       <Filter>UI</Filter>
     </ClCompile>
-    <ClCompile Include="Windows\ItemsWindow.cpp">
-      <Filter>Windows</Filter>
-    </ClCompile>
-    <ClCompile Include="Windows\ItemsWindowManager.cpp">
-      <Filter>Windows</Filter>
-    </ClCompile>
-    <ClCompile Include="Windows\RouteWindow.cpp">
-      <Filter>Windows</Filter>
-    </ClCompile>
-    <ClCompile Include="Windows\RouteWindowManager.cpp">
-      <Filter>Windows</Filter>
-    </ClCompile>
-    <ClCompile Include="Windows\TriggersWindow.cpp">
-      <Filter>Windows</Filter>
-    </ClCompile>
-    <ClCompile Include="Windows\TriggersWindowManager.cpp">
-      <Filter>Windows</Filter>
-    </ClCompile>
     <ClCompile Include="Tools\Compass.cpp">
       <Filter>Tools</Filter>
     </ClCompile>
@@ -181,12 +163,6 @@
     <ClCompile Include="Menus\MenuDetector.cpp">
       <Filter>Menus</Filter>
     </ClCompile>
-    <ClCompile Include="Windows\RoomsWindow.cpp">
-      <Filter>Windows</Filter>
-    </ClCompile>
-    <ClCompile Include="Windows\RoomsWindowManager.cpp">
-      <Filter>Windows</Filter>
-    </ClCompile>
     <ClCompile Include="UI\Console.cpp">
       <Filter>UI</Filter>
     </ClCompile>
@@ -240,30 +216,6 @@
     </ClCompile>
     <ClCompile Include="Routing\IRoute.cpp">
       <Filter>Routing</Filter>
-    </ClCompile>
-    <ClCompile Include="Windows\IItemsWindowManager.cpp">
-      <Filter>Windows</Filter>
-    </ClCompile>
-    <ClCompile Include="Windows\ITriggersWindowManager.cpp">
-      <Filter>Windows</Filter>
-    </ClCompile>
-    <ClCompile Include="Windows\IRouteWindowManager.cpp">
-      <Filter>Windows</Filter>
-    </ClCompile>
-    <ClCompile Include="Windows\IRoomsWindowManager.cpp">
-      <Filter>Windows</Filter>
-    </ClCompile>
-    <ClCompile Include="Windows\ITriggersWindow.cpp">
-      <Filter>Windows</Filter>
-    </ClCompile>
-    <ClCompile Include="Windows\IItemsWindow.cpp">
-      <Filter>Windows</Filter>
-    </ClCompile>
-    <ClCompile Include="Windows\IRoomsWindow.cpp">
-      <Filter>Windows</Filter>
-    </ClCompile>
-    <ClCompile Include="Windows\IRouteWindow.cpp">
-      <Filter>Windows</Filter>
     </ClCompile>
     <ClCompile Include="Tools\ICompass.cpp">
       <Filter>Tools</Filter>
@@ -350,6 +302,54 @@
       <Filter>Resources</Filter>
     </ClCompile>
     <ClCompile Include="trview_imgui.cpp" />
+    <ClCompile Include="Windows\IItemsWindow.cpp">
+      <Filter>Windows\Items</Filter>
+    </ClCompile>
+    <ClCompile Include="Windows\IItemsWindowManager.cpp">
+      <Filter>Windows\Items</Filter>
+    </ClCompile>
+    <ClCompile Include="Windows\ItemsWindow.cpp">
+      <Filter>Windows\Items</Filter>
+    </ClCompile>
+    <ClCompile Include="Windows\ItemsWindowManager.cpp">
+      <Filter>Windows\Items</Filter>
+    </ClCompile>
+    <ClCompile Include="Windows\ITriggersWindow.cpp">
+      <Filter>Windows\Triggers</Filter>
+    </ClCompile>
+    <ClCompile Include="Windows\ITriggersWindowManager.cpp">
+      <Filter>Windows\Triggers</Filter>
+    </ClCompile>
+    <ClCompile Include="Windows\TriggersWindow.cpp">
+      <Filter>Windows\Triggers</Filter>
+    </ClCompile>
+    <ClCompile Include="Windows\TriggersWindowManager.cpp">
+      <Filter>Windows\Triggers</Filter>
+    </ClCompile>
+    <ClCompile Include="Windows\IRoomsWindow.cpp">
+      <Filter>Windows\Rooms</Filter>
+    </ClCompile>
+    <ClCompile Include="Windows\IRoomsWindowManager.cpp">
+      <Filter>Windows\Rooms</Filter>
+    </ClCompile>
+    <ClCompile Include="Windows\RoomsWindow.cpp">
+      <Filter>Windows\Rooms</Filter>
+    </ClCompile>
+    <ClCompile Include="Windows\RoomsWindowManager.cpp">
+      <Filter>Windows\Rooms</Filter>
+    </ClCompile>
+    <ClCompile Include="Windows\IRouteWindow.cpp">
+      <Filter>Windows\Route</Filter>
+    </ClCompile>
+    <ClCompile Include="Windows\IRouteWindowManager.cpp">
+      <Filter>Windows\Route</Filter>
+    </ClCompile>
+    <ClCompile Include="Windows\RouteWindow.cpp">
+      <Filter>Windows\Route</Filter>
+    </ClCompile>
+    <ClCompile Include="Windows\RouteWindowManager.cpp">
+      <Filter>Windows\Route</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera\Camera.h">
@@ -405,24 +405,6 @@
     </ClInclude>
     <ClInclude Include="UI\CameraPosition.h">
       <Filter>UI</Filter>
-    </ClInclude>
-    <ClInclude Include="Windows\ItemsWindow.h">
-      <Filter>Windows</Filter>
-    </ClInclude>
-    <ClInclude Include="Windows\ItemsWindowManager.h">
-      <Filter>Windows</Filter>
-    </ClInclude>
-    <ClInclude Include="Windows\RouteWindow.h">
-      <Filter>Windows</Filter>
-    </ClInclude>
-    <ClInclude Include="Windows\RouteWindowManager.h">
-      <Filter>Windows</Filter>
-    </ClInclude>
-    <ClInclude Include="Windows\TriggersWindow.h">
-      <Filter>Windows</Filter>
-    </ClInclude>
-    <ClInclude Include="Windows\TriggersWindowManager.h">
-      <Filter>Windows</Filter>
     </ClInclude>
     <ClInclude Include="Tools\Compass.h">
       <Filter>Tools</Filter>
@@ -553,12 +535,6 @@
     <ClInclude Include="Camera\ProjectionMode.h">
       <Filter>Camera</Filter>
     </ClInclude>
-    <ClInclude Include="Windows\RoomsWindow.h">
-      <Filter>Windows</Filter>
-    </ClInclude>
-    <ClInclude Include="Windows\RoomsWindowManager.h">
-      <Filter>Windows</Filter>
-    </ClInclude>
     <ClInclude Include="UI\Console.h">
       <Filter>UI</Filter>
     </ClInclude>
@@ -645,44 +621,20 @@
     <ClInclude Include="Mocks\Routing\IRoute.h">
       <Filter>Mocks\Routing</Filter>
     </ClInclude>
-    <ClInclude Include="Windows\IItemsWindowManager.h">
-      <Filter>Windows</Filter>
-    </ClInclude>
     <ClInclude Include="Mocks\Windows\IItemsWindowManager.h">
       <Filter>Mocks\Windows</Filter>
     </ClInclude>
     <ClInclude Include="Mocks\Windows\ITriggersWindowManager.h">
       <Filter>Mocks\Windows</Filter>
     </ClInclude>
-    <ClInclude Include="Windows\ITriggersWindowManager.h">
-      <Filter>Windows</Filter>
-    </ClInclude>
-    <ClInclude Include="Windows\IRouteWindowManager.h">
-      <Filter>Windows</Filter>
-    </ClInclude>
     <ClInclude Include="Mocks\Windows\IRouteWindowManager.h">
       <Filter>Mocks\Windows</Filter>
-    </ClInclude>
-    <ClInclude Include="Windows\IRoomsWindowManager.h">
-      <Filter>Windows</Filter>
     </ClInclude>
     <ClInclude Include="Mocks\Windows\IRoomsWindowManager.h">
       <Filter>Mocks\Windows</Filter>
     </ClInclude>
-    <ClInclude Include="Windows\ITriggersWindow.h">
-      <Filter>Windows</Filter>
-    </ClInclude>
     <ClInclude Include="Mocks\Windows\ITriggersWindow.h">
       <Filter>Mocks\Windows</Filter>
-    </ClInclude>
-    <ClInclude Include="Windows\IItemsWindow.h">
-      <Filter>Windows</Filter>
-    </ClInclude>
-    <ClInclude Include="Windows\IRouteWindow.h">
-      <Filter>Windows</Filter>
-    </ClInclude>
-    <ClInclude Include="Windows\IRoomsWindow.h">
-      <Filter>Windows</Filter>
     </ClInclude>
     <ClInclude Include="Mocks\Windows\IItemsWindow.h">
       <Filter>Mocks\Windows</Filter>
@@ -902,6 +854,54 @@
     </ClInclude>
     <ClInclude Include="trview_imgui.h" />
     <ClInclude Include="trview_imgui.hpp" />
+    <ClInclude Include="Windows\IItemsWindow.h">
+      <Filter>Windows\Items</Filter>
+    </ClInclude>
+    <ClInclude Include="Windows\IItemsWindowManager.h">
+      <Filter>Windows\Items</Filter>
+    </ClInclude>
+    <ClInclude Include="Windows\ItemsWindow.h">
+      <Filter>Windows\Items</Filter>
+    </ClInclude>
+    <ClInclude Include="Windows\ItemsWindowManager.h">
+      <Filter>Windows\Items</Filter>
+    </ClInclude>
+    <ClInclude Include="Windows\ITriggersWindow.h">
+      <Filter>Windows\Triggers</Filter>
+    </ClInclude>
+    <ClInclude Include="Windows\ITriggersWindowManager.h">
+      <Filter>Windows\Triggers</Filter>
+    </ClInclude>
+    <ClInclude Include="Windows\TriggersWindow.h">
+      <Filter>Windows\Triggers</Filter>
+    </ClInclude>
+    <ClInclude Include="Windows\TriggersWindowManager.h">
+      <Filter>Windows\Triggers</Filter>
+    </ClInclude>
+    <ClInclude Include="Windows\IRoomsWindow.h">
+      <Filter>Windows\Rooms</Filter>
+    </ClInclude>
+    <ClInclude Include="Windows\IRoomsWindowManager.h">
+      <Filter>Windows\Rooms</Filter>
+    </ClInclude>
+    <ClInclude Include="Windows\RoomsWindow.h">
+      <Filter>Windows\Rooms</Filter>
+    </ClInclude>
+    <ClInclude Include="Windows\RoomsWindowManager.h">
+      <Filter>Windows\Rooms</Filter>
+    </ClInclude>
+    <ClInclude Include="Windows\IRouteWindow.h">
+      <Filter>Windows\Route</Filter>
+    </ClInclude>
+    <ClInclude Include="Windows\IRouteWindowManager.h">
+      <Filter>Windows\Route</Filter>
+    </ClInclude>
+    <ClInclude Include="Windows\RouteWindow.h">
+      <Filter>Windows\Route</Filter>
+    </ClInclude>
+    <ClInclude Include="Windows\RouteWindowManager.h">
+      <Filter>Windows\Route</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Windows">
@@ -981,6 +981,18 @@
     </Filter>
     <Filter Include="Resources\Files\Fonts">
       <UniqueIdentifier>{466ee8d4-f50b-4b30-bc47-f6e2f7219a7c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Windows\Items">
+      <UniqueIdentifier>{ce2a8d5b-cdbb-4fb8-93fe-c8d9a6cbb594}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Windows\Triggers">
+      <UniqueIdentifier>{785d9776-2c6e-4925-b4db-a544dffa6e3a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Windows\Rooms">
+      <UniqueIdentifier>{b8bc12d1-66ce-42ac-afa6-eea7e381349f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Windows\Route">
+      <UniqueIdentifier>{ad73c4b2-4cde-4987-82e7-eac11a79ee3f}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
