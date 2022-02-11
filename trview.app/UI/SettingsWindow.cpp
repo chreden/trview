@@ -17,7 +17,9 @@ namespace trview
             }
         };
 
-        if (ImGui::Begin("Settings", &_visible))
+        const auto viewport = ImGui::GetMainViewport();
+        ImGui::SetNextWindowPos(ImVec2(viewport->Pos.x + viewport->Size.x * 0.5f, viewport->Pos.y + viewport->Size.y * 0.5f), ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
+        if (ImGui::Begin("Settings", &_visible, ImGuiWindowFlags_AlwaysAutoResize))
         {
             if (ImGui::BeginTabBar("TabBar"))
             {
