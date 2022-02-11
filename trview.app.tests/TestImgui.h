@@ -20,6 +20,7 @@ namespace trview
         public:
             using RenderCallback = std::function<void()>;
 
+            explicit TestImgui();
             explicit TestImgui(const RenderCallback& callback);
             ~TestImgui();
 

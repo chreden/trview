@@ -60,8 +60,8 @@ namespace trview
 {
     namespace tests
     {
-        TestImgui::TestImgui(const RenderCallback& render_callback)
-            : _window(create_test_window(L"Test")), _render_callback(render_callback)
+        TestImgui::TestImgui()
+            : _window(create_test_window(L"Test"))
         {
             _context = ImGui::CreateContext();
             _context->TestEngineHookItems = true;
@@ -76,6 +76,12 @@ namespace trview
                 ImGui_ImplDX11_Init(_device.device().Get(), _device.context().Get());
                 auto f = io.Fonts->AddFontFromFileTTF("C:\\Windows\\Fonts\\Arial.ttf", 12.0f);
             }
+        }
+
+        TestImgui::TestImgui(const RenderCallback& render_callback)
+            : TestImgui()
+        {
+            _render_callback = render_callback;
             render();
         }
 
@@ -229,7 +235,10 @@ namespace trview
             ImGui_ImplWin32_NewFrame();
             ImGui::NewFrame();
             pre_render_callback();
-            _render_callback();
+            if (_render_callback)
+            {
+                _render_callback();
+            }
             ImGui::Render();
             ImGui::UpdatePlatformWindows();
             ImGui::RenderPlatformWindowsDefault();
