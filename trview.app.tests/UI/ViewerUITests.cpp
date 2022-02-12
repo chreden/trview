@@ -13,8 +13,6 @@
 using namespace trview;
 using namespace trview::tests;
 using namespace trview::mocks;
-using namespace trview::ui::render;
-using namespace trview::ui::render::mocks;
 
 namespace
 {

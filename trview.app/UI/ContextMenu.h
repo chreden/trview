@@ -10,9 +10,9 @@ namespace trview
         /// Control names used for automation
         struct Names
         {
-            static const std::string add_waypoint_button;
+            static inline const std::string add_waypoint = "Add Waypoint";
             static const std::string add_mid_waypoint_button;
-            static const std::string hide_button;
+            static inline const std::string hide = "Hide";
             static const std::string orbit_button;
             static const std::string remove_waypoint_button;
         };

@@ -29,7 +29,7 @@ namespace trview
             /// </summary>
             /// <param name="window_name">The window that contains the element.</param>
             /// <param name="path_to_element">The path to the element including containing elements.</param>
-            void click_element(const std::string& window_name, const std::vector<std::string>& path_to_element);
+            void click_element(const std::string& window_name, const std::vector<std::string>& path_to_element, bool show_context_menu = false);
 
             void enter_text(const std::string& window_name, const std::vector<std::string>& path_to_element, const std::string& text);
 
@@ -51,6 +51,8 @@ namespace trview
             ImGuiItemFlags item_flags(const std::string& window_name, const std::vector<std::string>& path_to_element) const;
             std::string item_text(const std::string& window_name, const std::vector<std::string>& path_to_element) const;
             Colour style_colour(const std::string& window_name, const std::vector<std::string>& path_to_element, ImGuiCol colour) const;
+
+            void show_context_menu(const std::string& window_name);
 
             void render();
             void render(const std::function<void()>& pre_render_callback);

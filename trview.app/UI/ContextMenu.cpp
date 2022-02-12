@@ -4,9 +4,7 @@
 
 namespace trview
 {
-    const std::string ContextMenu::Names::hide_button{ "Hide" };
     const std::string ContextMenu::Names::orbit_button{ "Orbit" };
-    const std::string ContextMenu::Names::add_waypoint_button{ "AddWaypoint" };
     const std::string ContextMenu::Names::add_mid_waypoint_button{ "AddMidWaypoint" };
     const std::string ContextMenu::Names::remove_waypoint_button{ "RemoveWaypoint" };
 
@@ -15,7 +13,7 @@ namespace trview
         if (_can_show && ImGui::BeginPopupContextVoid())
         {
             _visible = true;
-            if (ImGui::MenuItem("Add Waypoint"))
+            if (ImGui::MenuItem(Names::add_waypoint.c_str()))
             {
                 on_add_waypoint();
             }
@@ -31,10 +29,11 @@ namespace trview
             {
                 on_orbit_here();
             }
-            if (ImGui::MenuItem("Hide", nullptr, nullptr, _hide_enabled))
+            if (ImGui::MenuItem(Names::hide.c_str(), nullptr, nullptr, _hide_enabled))
             {
                 on_hide();
             }
+
             ImGui::EndPopup();
         }
         else

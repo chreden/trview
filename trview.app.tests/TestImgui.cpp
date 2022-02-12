@@ -92,7 +92,7 @@ namespace trview
             ImGui::DestroyContext(_context);
         }
 
-        void TestImgui::click_element(const std::string& window_name, const std::vector<std::string>& path_to_element)
+        void TestImgui::click_element(const std::string& window_name, const std::vector<std::string>& path_to_element, bool show_context_menu)
         {
             const auto click_on_element = [&]()
             {
@@ -104,11 +104,21 @@ namespace trview
                 _context->HoveredId = id;
                 _context->IO.MousePos = ImVec2(bb.Min.y, bb.Min.y);
                 _context->IO.MouseClicked[0] = true;
+
+                if (show_context_menu)
+                {
+                    _context->IO.MouseReleased[0] = true;
+                    _context->IO.MouseDownDurationPrev[0] = _context->IO.KeyRepeatDelay;
+                    _context->ActiveId = id;
+                    _context->CurrentWindow = find_window("Debug##Default");
+                    _context->MouseViewport = window->Viewport;
+                }
             };
             render(click_on_element);
 
             _tracking_id = 0;
             _context->IO.MouseClicked[0] = false;
+            _context->IO.MouseReleased[1] = false;
         }
 
         void TestImgui::enter_text(const std::string& window_name, const std::vector<std::string>& path_to_element, const std::string& text)
@@ -273,6 +283,22 @@ namespace trview
             _item_colours.clear();
             _item_text.clear();
             _tracking_id = 0;
+        }
+
+        void TestImgui::show_context_menu(const std::string& window_name)
+        {
+            const auto click_on_element = [&]()
+            {
+                auto window = find_window(window_name);
+                _context->HoveredWindow = nullptr;
+                _context->CurrentWindow = window;
+                _context->IO.MouseReleased[1] = true;
+            };
+            render(click_on_element);
+
+            _tracking_id = 0;
+            _context->IO.MouseClicked[0] = false;
+            _context->IO.MouseReleased[1] = false;
         }
 
         std::string TestImgui::popup_name(const std::string& name) const

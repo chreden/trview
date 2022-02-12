@@ -52,7 +52,6 @@ namespace
             std::shared_ptr<IStartupOptions> startup_options{ std::make_shared<MockStartupOptions>() };
             std::shared_ptr<IDialogs> dialogs{ std::make_shared<MockDialogs>() };
             std::shared_ptr<IFiles> files{ std::make_shared<MockFiles>() };
-            // std::shared_ptr<graphics::IDevice> device{ std::make_shared<graphics::mocks::MockDevice>() };
             std::shared_ptr<graphics::IDevice> device{ std::make_shared<graphics::Device>() };
 
             std::unique_ptr<Application> build()

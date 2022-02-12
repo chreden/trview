@@ -1,47 +1,48 @@
 #include <trview.app/UI/ContextMenu.h>
 #include <trview.common/Mocks/Windows/IShell.h>
+#include "TestImgui.h"
 
 using namespace trview;
 using namespace trview::mocks;
 using namespace trview::tests;
-using namespace trview::ui;
-/*
+
 TEST(ContextMenu, AddWaypointRaised)
 {
-    ui::Window parent(Size(800, 600), Colour::Transparent);
-    ContextMenu menu(parent, std::make_shared<JsonLoader>(std::make_shared<MockShell>()));
-    menu.set_hide_enabled(true);
+    ContextMenu menu;
     menu.set_visible(true);
+
+    TestImgui imgui([&]() { menu.render(); });
 
     bool raised = false;
     auto token = menu.on_add_waypoint += [&raised]() { raised = true; };
 
-    auto button = parent.find<ui::Button>(ContextMenu::Names::add_waypoint_button);
-    ASSERT_NE(button, nullptr);
+    imgui.show_context_menu("Debug##Default");
+    imgui.click_element(imgui.popup_name("void_context"), { ContextMenu::Names::add_waypoint }, true);
+    imgui.render();
 
-    button->clicked(Point());
     ASSERT_TRUE(raised);
     ASSERT_FALSE(menu.visible());
 }
 
-TEST(ContextMenu, HideButtonTextColourChangesWhenDisabled)
+TEST(ContextMenu, HideButtonDisabled)
 {
-    ui::Window parent(Size(800, 600), Colour::Transparent);
-    ContextMenu menu(parent, std::make_shared<JsonLoader>(std::make_shared<MockShell>()));
+    ContextMenu menu;
     menu.set_visible(true);
-
-    auto button = parent.find<ui::Button>(ContextMenu::Names::hide_button);
-    ASSERT_NE(button, nullptr);
-    auto current_colour = button->text_colour();
-    ASSERT_TRUE(current_colour.has_value());
-
     menu.set_hide_enabled(true);
-    auto new_colour = button->text_colour();
-    ASSERT_TRUE(new_colour.has_value());
 
-    ASSERT_NE(current_colour.value(), new_colour.value());
+    TestImgui imgui([&]() { menu.render(); });
+
+    imgui.show_context_menu("Debug##Default");
+    const auto original_flags = imgui.item_flags(imgui.popup_name("void_context"), { ContextMenu::Names::hide });
+    ASSERT_FALSE(original_flags & ImGuiItemFlags_Disabled);
+
+    menu.set_hide_enabled(false);
+    imgui.render();
+
+    const auto new_flags = imgui.item_flags(imgui.popup_name("void_context"), { ContextMenu::Names::hide });
+    ASSERT_TRUE(new_flags & ImGuiItemFlags_Disabled);
 }
-
+/*
 TEST(ContextMenu, HideNotRaisedWhenDisabled)
 {
     ui::Window parent(Size(800, 600), Colour::Transparent);

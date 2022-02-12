@@ -11,8 +11,6 @@ using namespace trview;
 using namespace trview::tests;
 using namespace trview::graphics;
 using namespace trview::graphics::mocks;
-using namespace trview::ui::render;
-using namespace trview::ui::render::mocks;
 using namespace trview::mocks;
 
 namespace
