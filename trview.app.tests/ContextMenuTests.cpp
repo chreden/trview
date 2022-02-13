@@ -42,177 +42,170 @@ TEST(ContextMenu, HideButtonDisabled)
     const auto new_flags = imgui.item_flags(imgui.popup_name("void_context"), { ContextMenu::Names::hide });
     ASSERT_TRUE(new_flags & ImGuiItemFlags_Disabled);
 }
-/*
+
 TEST(ContextMenu, HideNotRaisedWhenDisabled)
 {
-    ui::Window parent(Size(800, 600), Colour::Transparent);
-    ContextMenu menu(parent, std::make_shared<JsonLoader>(std::make_shared<MockShell>()));
+    ContextMenu menu;
     menu.set_visible(true);
+    menu.set_hide_enabled(false);
+
+    TestImgui imgui([&]() { menu.render(); });
 
     bool raised = false;
     auto token = menu.on_hide += [&raised]() { raised = true; };
 
-    auto button = parent.find<ui::Button>(ContextMenu::Names::hide_button);
-    ASSERT_NE(button, nullptr);
+    imgui.show_context_menu("Debug##Default");
+    imgui.click_element(imgui.popup_name("void_context"), { ContextMenu::Names::hide }, true);
 
-    button->clicked(Point());
     ASSERT_FALSE(raised);
     ASSERT_TRUE(menu.visible());
 }
 
 TEST(ContextMenu, HideRaised)
 {
-    ui::Window parent(Size(800, 600), Colour::Transparent);
-    ContextMenu menu(parent, std::make_shared<JsonLoader>(std::make_shared<MockShell>()));
-    menu.set_hide_enabled(true);
+    ContextMenu menu;
     menu.set_visible(true);
+    menu.set_hide_enabled(true);
+
+    TestImgui imgui([&]() { menu.render(); });
 
     bool raised = false;
     auto token = menu.on_hide += [&raised]() { raised = true; };
 
-    auto button = parent.find<ui::Button>(ContextMenu::Names::hide_button);
-    ASSERT_NE(button, nullptr);
+    imgui.show_context_menu("Debug##Default");
+    imgui.click_element(imgui.popup_name("void_context"), { ContextMenu::Names::hide }, true);
+    imgui.render();
 
-    button->clicked(Point());
     ASSERT_TRUE(raised);
     ASSERT_FALSE(menu.visible());
 }
 
 TEST(ContextMenu, OrbitHereRaised)
 {
-    ui::Window parent(Size(800, 600), Colour::Transparent);
-    ContextMenu menu(parent, std::make_shared<JsonLoader>(std::make_shared<MockShell>()));
-    menu.set_hide_enabled(true);
+    ContextMenu menu;
     menu.set_visible(true);
+
+    TestImgui imgui([&]() { menu.render(); });
 
     bool raised = false;
     auto token = menu.on_orbit_here += [&raised]() { raised = true; };
 
-    auto button = parent.find<ui::Button>(ContextMenu::Names::orbit_button);
-    ASSERT_NE(button, nullptr);
+    imgui.show_context_menu("Debug##Default");
+    imgui.click_element(imgui.popup_name("void_context"), { ContextMenu::Names::orbit }, true);
+    imgui.render();
 
-    button->clicked(Point());
     ASSERT_TRUE(raised);
     ASSERT_FALSE(menu.visible());
 }
 
-TEST(ContextMenu, RemoveWaypointButtonTextColourChangesWhenDisabled)
+TEST(ContextMenu, RemoveWaypointDisabled)
 {
-    ui::Window parent(Size(800, 600), Colour::Transparent);
-    ContextMenu menu(parent, std::make_shared<JsonLoader>(std::make_shared<MockShell>()));
-
-    auto button = parent.find<ui::Button>(ContextMenu::Names::remove_waypoint_button);
-    ASSERT_NE(button, nullptr);
-    auto current_colour = button->text_colour();
-    ASSERT_TRUE(current_colour.has_value());
-
+    ContextMenu menu;
+    menu.set_visible(true);
     menu.set_remove_enabled(true);
-    auto new_colour = button->text_colour();
-    ASSERT_TRUE(new_colour.has_value());
 
-    ASSERT_NE(current_colour.value(), new_colour.value());
+    TestImgui imgui([&]() { menu.render(); });
+
+    imgui.show_context_menu("Debug##Default");
+    const auto original_flags = imgui.item_flags(imgui.popup_name("void_context"), { ContextMenu::Names::remove_waypoint });
+    ASSERT_FALSE(original_flags & ImGuiItemFlags_Disabled);
+
+    menu.set_remove_enabled(false);
+    imgui.render();
+
+    const auto new_flags = imgui.item_flags(imgui.popup_name("void_context"), { ContextMenu::Names::remove_waypoint });
+    ASSERT_TRUE(new_flags & ImGuiItemFlags_Disabled);
 }
 
 TEST(ContextMenu, RemoveWaypointNotRaisedWhenDisabled)
 {
-    ui::Window parent(Size(800, 600), Colour::Transparent);
-    ContextMenu menu(parent, std::make_shared<JsonLoader>(std::make_shared<MockShell>()));
+    ContextMenu menu;
     menu.set_visible(true);
+    menu.set_remove_enabled(false);
+
+    TestImgui imgui([&]() { menu.render(); });
 
     bool raised = false;
     auto token = menu.on_remove_waypoint += [&raised]() { raised = true; };
 
-    auto button = parent.find<ui::Button>(ContextMenu::Names::remove_waypoint_button);
-    ASSERT_NE(button, nullptr);
+    imgui.show_context_menu("Debug##Default");
+    imgui.click_element(imgui.popup_name("void_context"), { ContextMenu::Names::remove_waypoint }, true);
 
-    button->clicked(Point());
     ASSERT_FALSE(raised);
     ASSERT_TRUE(menu.visible());
 }
 
 TEST(ContextMenu, RemoveWaypointRaised)
 {
-    ui::Window parent(Size(800, 600), Colour::Transparent);
-    ContextMenu menu(parent, std::make_shared<JsonLoader>(std::make_shared<MockShell>()));
+    ContextMenu menu;
+    menu.set_visible(true);
     menu.set_remove_enabled(true);
+
+    TestImgui imgui([&]() { menu.render(); });
 
     bool raised = false;
     auto token = menu.on_remove_waypoint += [&raised]() { raised = true; };
 
-    auto button = parent.find<ui::Button>(ContextMenu::Names::remove_waypoint_button);
-    ASSERT_NE(button, nullptr);
+    imgui.show_context_menu("Debug##Default");
+    imgui.click_element(imgui.popup_name("void_context"), { ContextMenu::Names::remove_waypoint }, true);
+    imgui.render();
 
-    button->clicked(Point());
     ASSERT_TRUE(raised);
     ASSERT_FALSE(menu.visible());
-}
-
-TEST(ContextMenu, ShowContextMenu)
-{
-    ui::Window parent(Size(800, 600), Colour::Transparent);
-    ContextMenu menu(parent, std::make_shared<JsonLoader>(std::make_shared<MockShell>()));
-
-    auto control = menu.control();
-    ASSERT_NE(control, nullptr);
-    ASSERT_FALSE(control->visible());
-    ASSERT_FALSE(menu.visible());
-    
-    menu.set_visible(true);
-    ASSERT_TRUE(menu.visible());
-    ASSERT_TRUE(control->visible());
 }
 
 TEST(ContextMenu, AddMidWaypointRaised)
 {
-    ui::Window parent(Size(800, 600), Colour::Transparent);
-    ContextMenu menu(parent, std::make_shared<JsonLoader>(std::make_shared<MockShell>()));
+    ContextMenu menu;
     menu.set_visible(true);
     menu.set_mid_waypoint_enabled(true);
+
+    TestImgui imgui([&]() { menu.render(); });
 
     bool raised = false;
     auto token = menu.on_add_mid_waypoint += [&raised]() { raised = true; };
 
-    auto button = parent.find<ui::Button>(ContextMenu::Names::add_mid_waypoint_button);
-    ASSERT_NE(button, nullptr);
+    imgui.show_context_menu("Debug##Default");
+    imgui.click_element(imgui.popup_name("void_context"), { ContextMenu::Names::add_mid_waypoint }, true);
+    imgui.render();
 
-    button->clicked(Point());
     ASSERT_TRUE(raised);
     ASSERT_FALSE(menu.visible());
 }
 
-TEST(ContextMenu, AddMidWaypointTextColourChangesWhenDisabled)
+TEST(ContextMenu, AddMidWaypointDisabled)
 {
-    ui::Window parent(Size(800, 600), Colour::Transparent);
-    ContextMenu menu(parent, std::make_shared<JsonLoader>(std::make_shared<MockShell>()));
+    ContextMenu menu;
     menu.set_visible(true);
-
-    auto button = parent.find<ui::Button>(ContextMenu::Names::add_mid_waypoint_button);
-    ASSERT_NE(button, nullptr);
-    auto current_colour = button->text_colour();
-    ASSERT_TRUE(current_colour.has_value());
-
     menu.set_mid_waypoint_enabled(true);
-    auto new_colour = button->text_colour();
-    ASSERT_TRUE(new_colour.has_value());
 
-    ASSERT_NE(current_colour.value(), new_colour.value());
-    ASSERT_TRUE(menu.visible());
+    TestImgui imgui([&]() { menu.render(); });
+
+    imgui.show_context_menu("Debug##Default");
+    const auto original_flags = imgui.item_flags(imgui.popup_name("void_context"), { ContextMenu::Names::add_mid_waypoint });
+    ASSERT_FALSE(original_flags & ImGuiItemFlags_Disabled);
+
+    menu.set_mid_waypoint_enabled(false);
+    imgui.render();
+
+    const auto new_flags = imgui.item_flags(imgui.popup_name("void_context"), { ContextMenu::Names::add_mid_waypoint });
+    ASSERT_TRUE(new_flags & ImGuiItemFlags_Disabled);
 }
 
 TEST(ContextMenu, AddMidWaypointNotRaisedWhenDisabled)
 {
-    ui::Window parent(Size(800, 600), Colour::Transparent);
-    ContextMenu menu(parent, std::make_shared<JsonLoader>(std::make_shared<MockShell>()));
+    ContextMenu menu;
     menu.set_visible(true);
+    menu.set_mid_waypoint_enabled(false);
+
+    TestImgui imgui([&]() { menu.render(); });
 
     bool raised = false;
     auto token = menu.on_add_mid_waypoint += [&raised]() { raised = true; };
 
-    auto button = parent.find<ui::Button>(ContextMenu::Names::add_mid_waypoint_button);
-    ASSERT_NE(button, nullptr);
+    imgui.show_context_menu("Debug##Default");
+    imgui.click_element(imgui.popup_name("void_context"), { ContextMenu::Names::add_mid_waypoint }, true);
 
-    button->clicked(Point());
     ASSERT_FALSE(raised);
     ASSERT_TRUE(menu.visible());
 }
-*/

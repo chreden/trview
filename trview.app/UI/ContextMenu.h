@@ -11,10 +11,10 @@ namespace trview
         struct Names
         {
             static inline const std::string add_waypoint = "Add Waypoint";
-            static const std::string add_mid_waypoint_button;
+            static inline const std::string add_mid_waypoint = "Add Mid Waypoint";
             static inline const std::string hide = "Hide";
-            static const std::string orbit_button;
-            static const std::string remove_waypoint_button;
+            static inline const std::string orbit = "Orbit Here";
+            static inline const std::string remove_waypoint = "Remove Waypoint";
         };
 
         virtual ~ContextMenu() = default;
