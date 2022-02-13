@@ -1,30 +1,40 @@
 #include <trview.app/UI/LevelInfo.h>
 #include <trview.common/Mocks/Windows/IShell.h>
 #include <trview.app/Mocks/Graphics/ITextureStorage.h>
+#include "TestImgui.h"
 
 using namespace trview;
 using namespace trview::mocks;
+using namespace trview::tests;
 using testing::Return;
-
 /*
 TEST(LevelInfo, NameUpdated)
 {
-    ui::Window parent(Size(), Colour::White);
     MockTextureStorage texture_storage;
-    LevelInfo info(parent, texture_storage, JsonLoader(std::make_shared<MockShell>()));
+    LevelInfo info(texture_storage);
+    // info.toggle_visibility();
+
+    TestImgui imgui([&]() { info.render(); });
+
+    // ui::Window parent(Size(), Colour::White);
+    // MockTextureStorage texture_storage;
+    // LevelInfo info(parent, texture_storage, JsonLoader(std::make_shared<MockShell>()));
 
     info.set_level("test");
+
+    ASSERT_EQ(imgui.item_text("LevelInfo", { }), "test");
 
     auto label = parent.find<Label>(LevelInfo::Names::name);
     ASSERT_NE(label, nullptr);
     ASSERT_EQ(label->text(), L"test");
 }
+*/
 
 TEST(LevelInfo, OnToggleSettingsRaised)
 {
-    ui::Window parent(Size(), Colour::White);
     MockTextureStorage texture_storage;
-    LevelInfo info(parent, texture_storage, JsonLoader(std::make_shared<MockShell>()));
+    LevelInfo info(texture_storage);
+    TestImgui imgui([&]() { info.render(); });
 
     bool raised = false;
     auto token = info.on_toggle_settings += [&]()
@@ -32,13 +42,11 @@ TEST(LevelInfo, OnToggleSettingsRaised)
         raised = true;
     };
 
-    auto button = parent.find<Button>(LevelInfo::Names::settings);
-    ASSERT_NE(button, nullptr);
-    button->clicked(Point());
-
+    imgui.click_element("LevelInfo", { "Settings" });
     ASSERT_TRUE(raised);
 }
 
+/*
 TEST(LevelInfo, VersionImageChanged)
 {
     ui::Window parent(Size(), Colour::White);
