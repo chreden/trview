@@ -19,6 +19,10 @@ namespace trview
             static inline const std::string add_to_route_button = "Add to Route";
             static inline const std::string sync_item = "Sync Item";
             static inline const std::string track_room = "Track Room";
+            static inline const std::string items_list = "##itemslist";
+            static inline const std::string item_list_panel = "Item List";
+            static inline const std::string details_panel = "Item Details";
+            static inline const std::string triggers_list = "##triggeredby";
         };
 
         explicit ItemsWindow(const std::shared_ptr<IClipboard>& clipboard);
@@ -32,6 +36,7 @@ namespace trview
         virtual void set_selected_item(const Item& item) override;
         virtual std::optional<Item> selected_item() const override;
         virtual void update(float delta) override;
+        virtual void set_number(int32_t number) override;
     private:
         void set_track_room(bool value);
         void set_sync_item(bool value);
@@ -39,7 +44,7 @@ namespace trview
         void render_item_details();
         bool render_items_window();
 
-        std::string _id;
+        std::string _id{ "Items 0" };
         std::vector<Item> _all_items;
         std::vector<std::weak_ptr<ITrigger>> _all_triggers;
         /// Whether the item window is tracking the current room.

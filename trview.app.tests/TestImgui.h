@@ -29,7 +29,7 @@ namespace trview
             /// </summary>
             /// <param name="window_name">The window that contains the element.</param>
             /// <param name="path_to_element">The path to the element including containing elements.</param>
-            void click_element(const std::string& window_name, const std::vector<std::string>& path_to_element, bool show_context_menu = false);
+            void click_element(const std::string& window_name, const std::vector<std::string>& path_to_element, bool show_context_menu = false, std::string hover = "");
 
             void enter_text(const std::string& window_name, const std::vector<std::string>& path_to_element, const std::string& text);
 
@@ -61,7 +61,7 @@ namespace trview
             ImGuiWindow* find_window(const std::string& name) const;
             ImGuiID get_id(ImGuiWindow* window, const std::vector<std::string>& path_to_element) const;
             std::string popup_name(const std::string& name) const;
-            std::string child_name(const std::string& window_name, const std::string& child_name) const;
+            std::string child_name(const std::string& window_name, const std::vector<std::string>& child_path) const;
         private:
             Window _window;
             graphics::Device _device;

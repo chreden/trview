@@ -48,7 +48,7 @@ TEST(ItemsWindow, AddToRouteEventRaised)
     window->set_selected_item(items[1]);
 
     TestImgui imgui([&]() { window->render(true); });
-    imgui.click_element(imgui.child_name("Items 1", { "Item Details" }), { ItemsWindow::Names::add_to_route_button });
+    imgui.click_element(imgui.child_name("Items 0", { "Item Details" }), { ItemsWindow::Names::add_to_route_button });
     ASSERT_TRUE(raised_item.has_value());
     ASSERT_EQ(raised_item.value().number(), 1);
 }
@@ -102,7 +102,7 @@ TEST(ItemsWindow, ClearSelectedItemClearsSelection)
     triggers_items = triggers_list->items();
     ASSERT_EQ(triggers_items.size(), 0);
 }
-
+*/
 TEST(ItemsWindow, ItemSelectedNotRaisedWhenSyncItemDisabled)
 {
     auto window = register_test_module().build();
@@ -117,19 +117,17 @@ TEST(ItemsWindow, ItemSelectedNotRaisedWhenSyncItemDisabled)
     };
     window->set_items(items);
 
-    auto sync = window->root_control()->find<ui::Checkbox>(ItemsWindow::Names::sync_item_checkbox);
-    ASSERT_NE(sync, nullptr);
-    sync->clicked(Point());
+    TestImgui imgui([&]() { window->render(true); });
 
-    auto list = window->root_control()->find<ui::Listbox>(ItemsWindow::Names::items_listbox);
-    ASSERT_NE(list, nullptr);
+    imgui.click_element(
+        imgui.child_name("Items 0", { ItemsWindow::Names::item_list_panel }),
+        { ItemsWindow::Names::sync_item });
 
-    auto row = list->find<ui::Control>(ui::Listbox::Names::row_name_format + "1");
-    ASSERT_NE(row, nullptr);
-
-    auto cell = row->find<ui::Button>(ui::Listbox::Row::Names::cell_name_format + "#");
-    ASSERT_NE(cell, nullptr);
-    cell->clicked(Point());
+    imgui.click_element(
+        imgui.child_name("Items 0", { ItemsWindow::Names::item_list_panel }),
+        { ItemsWindow::Names::items_list, "1##1" },
+        false,
+        imgui.child_name("Items 0", { ItemsWindow::Names::item_list_panel, ItemsWindow::Names::items_list }));
 
     ASSERT_FALSE(raised_item.has_value());
 }
@@ -148,15 +146,12 @@ TEST(ItemsWindow, ItemSelectedRaisedWhenSyncItemEnabled)
     };
     window->set_items(items);
 
-    auto list = window->root_control()->find<ui::Listbox>(ItemsWindow::Names::items_listbox);
-    ASSERT_NE(list, nullptr);
-
-    auto row = list->find<ui::Control>(ui::Listbox::Names::row_name_format + "1");
-    ASSERT_NE(row, nullptr);
-
-    auto cell = row->find<ui::Button>(ui::Listbox::Row::Names::cell_name_format + "#");
-    ASSERT_NE(cell, nullptr);
-    cell->clicked(Point());
+    TestImgui imgui([&]() { window->render(true); });
+    imgui.click_element(
+        imgui.child_name("Items 0", { ItemsWindow::Names::item_list_panel }),
+        { ItemsWindow::Names::items_list, "1##1" },
+        false,
+        imgui.child_name("Items 0", { ItemsWindow::Names::item_list_panel, ItemsWindow::Names::items_list }));
 
     ASSERT_TRUE(raised_item.has_value());
     ASSERT_EQ(raised_item.value().number(), 1);
@@ -176,21 +171,18 @@ TEST(ItemsWindow, ItemVisibilityRaised)
     };
     window->set_items(items);
 
-    auto list = window->root_control()->find<ui::Listbox>(ItemsWindow::Names::items_listbox);
-    ASSERT_NE(list, nullptr);
-
-    auto row = list->find<ui::Control>(ui::Listbox::Names::row_name_format + "1");
-    ASSERT_NE(row, nullptr);
-
-    auto cell = row->find<ui::Checkbox>(ui::Listbox::Row::Names::cell_name_format + "Hide");
-    ASSERT_NE(cell, nullptr);
-    cell->clicked(Point());
+    TestImgui imgui([&]() { window->render(true); });
+    imgui.click_element(
+        imgui.child_name("Items 0", { ItemsWindow::Names::item_list_panel }),
+        { ItemsWindow::Names::items_list, "##hide-1" },
+        false,
+        imgui.child_name("Items 0", { ItemsWindow::Names::item_list_panel, ItemsWindow::Names::items_list }));
 
     ASSERT_TRUE(raised_item.has_value());
     ASSERT_FALSE(std::get<1>(raised_item.value()));
     ASSERT_EQ(std::get<0>(raised_item.value()).number(), 1);
 }
-
+/*
 TEST(ItemsWindow, ItemsListNotFilteredWhenRoomSetAndTrackRoomDisabled)
 {
     auto window = register_test_module().build();
@@ -411,7 +403,7 @@ TEST(ItemsWindow, TriggersLoadedForItem)
     ASSERT_EQ(triggers_items[0].value(L"#"), L"0");
     ASSERT_EQ(triggers_items[1].value(L"#"), L"1");
 }
-
+*/
 TEST(ItemsWindow, TriggerSelectedEventRaised)
 {
     auto window = register_test_module().build();
@@ -428,30 +420,23 @@ TEST(ItemsWindow, TriggerSelectedEventRaised)
     window->set_items(items);
     window->set_triggers({ trigger });
 
-    auto list = window->root_control()->find<ui::Listbox>(ItemsWindow::Names::items_listbox);
-    ASSERT_NE(list, nullptr);
+    TestImgui imgui([&]() { window->render(true); });
+    imgui.click_element(
+        imgui.child_name("Items 0", { ItemsWindow::Names::item_list_panel }),
+        { ItemsWindow::Names::items_list, "1##1" },
+        false,
+        imgui.child_name("Items 0", { ItemsWindow::Names::item_list_panel, ItemsWindow::Names::items_list }));
 
-    auto row = list->find<ui::Control>(ui::Listbox::Names::row_name_format + "1");
-    ASSERT_NE(row, nullptr);
-
-    auto cell = row->find<ui::Button>(ui::Listbox::Row::Names::cell_name_format + "#");
-    ASSERT_NE(row, nullptr);
-    cell->clicked(Point());
-
-    auto triggers_list = window->root_control()->find<ui::Listbox>(ItemsWindow::Names::triggers_listbox);
-    ASSERT_NE(triggers_list, nullptr);
-
-    auto triggers_row = triggers_list->find<ui::Control>(ui::Listbox::Names::row_name_format + "0");
-    ASSERT_NE(triggers_row, nullptr);
-
-    auto triggers_cell = triggers_row->find<ui::Button>(ui::Listbox::Row::Names::cell_name_format + "#");
-    ASSERT_NE(triggers_cell, nullptr);
-    triggers_cell->clicked(Point());
+    imgui.click_element(
+        imgui.child_name("Items 0", { ItemsWindow::Names::details_panel }),
+        { ItemsWindow::Names::triggers_list, "0" },
+        false,
+        imgui.child_name("Items 0", { ItemsWindow::Names::details_panel, ItemsWindow::Names::triggers_list }));
 
     ASSERT_TRUE(raised_trigger.has_value());
     ASSERT_EQ(raised_trigger.value().lock(), trigger);
 }
-
+/*
 TEST(ItemsWindow, ClickStatShowsBubble)
 {
     auto bubble = std::make_unique<MockBubble>();

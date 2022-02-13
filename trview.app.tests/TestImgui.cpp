@@ -92,12 +92,19 @@ namespace trview
             ImGui::DestroyContext(_context);
         }
 
-        void TestImgui::click_element(const std::string& window_name, const std::vector<std::string>& path_to_element, bool show_context_menu)
+        void TestImgui::click_element(const std::string& window_name, const std::vector<std::string>& path_to_element, bool show_context_menu, std::string hover)
         {
             const auto click_on_element = [&]()
             {
                 auto window = find_window(window_name);
-                _context->HoveredWindow = window;
+                if (hover != "")
+                {
+                    _context->HoveredWindow = find_window(hover);
+                }
+                else
+                {
+                    _context->HoveredWindow = window;
+                }
                 const auto id = get_id(window, path_to_element);
                 _tracking_id = id;
                 const auto bb = _element_rects[id];
@@ -309,12 +316,22 @@ namespace trview
             return stream.str();
         }
 
-        std::string TestImgui::child_name(const std::string& window_name, const std::string& child_name) const
+        std::string TestImgui::child_name(const std::string& window_name, const std::vector<std::string>& child_path) const
         {
-            auto id = get_id(find_window(window_name), { child_name });
             std::stringstream stream;
-            stream << window_name << '/' << child_name << '_' << std::hex << std::uppercase << std::setfill('0') << std::setw(8) << id;
+            stream << window_name;
+
+            std::string previous_name = window_name;
+            for (const auto& child : child_path)
+            {
+                stream << '/' << child << '_' << std::hex << std::uppercase << std::setfill('0') << std::setw(8) << get_id(find_window(previous_name), { child });
+                previous_name = stream.str();
+            }
             return stream.str();
+            // auto id = get_id(find_window(window_name), { child_name });
+            // std::stringstream stream;
+            // stream << window_name << '/' << child_name << '_' << std::hex << std::uppercase << std::setfill('0') << std::setw(8) << id;
+            // return stream.str();
         }
     }
 }

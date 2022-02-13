@@ -63,6 +63,8 @@ namespace trview
         /// </summary>
         /// <param name="delta">Elapsed time since previous update.</param>
         virtual void update(float delta) = 0;
+
+        virtual void set_number(int32_t number) = 0;
     };
 }
 

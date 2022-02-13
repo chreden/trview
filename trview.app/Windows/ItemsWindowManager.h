@@ -42,5 +42,6 @@ namespace trview
         TokenStore _token_store;
         std::optional<Item> _selected_item;
         IItemsWindow::Source _items_window_source;
+        uint32_t _window_count{ 0u };
     };
 }

@@ -14,8 +14,6 @@ namespace trview
     ItemsWindow::ItemsWindow(const std::shared_ptr<IClipboard>& clipboard)
         : _clipboard(clipboard)
     {
-        static int number = 0;
-        _id = "Items " + std::to_string(++number);
         _tips["OCB"] = "Changes entity behaviour";
         _tips["Clear Body"] = "If true, removed when Bodybag is triggered";
     }
@@ -84,7 +82,7 @@ namespace trview
 
     void ItemsWindow::render_items_list()
     {
-        if (ImGui::BeginChild("Item List", ImVec2(270, 0), true))
+        if (ImGui::BeginChild(Names::item_list_panel.c_str(), ImVec2(270, 0), true))
         {
             bool track_room = _track_room;
             if (ImGui::Checkbox(Names::track_room.c_str(), &track_room))
@@ -98,7 +96,7 @@ namespace trview
                 set_sync_item(sync_item);
             }
 
-            if (ImGui::BeginTable("##itemslist", 5, ImGuiTableFlags_Sortable | ImGuiTableFlags_ScrollY | ImGuiTableFlags_SizingFixedFit, ImVec2(-1, -1)))
+            if (ImGui::BeginTable(Names::items_list.c_str(), 5, ImGuiTableFlags_Sortable | ImGuiTableFlags_ScrollY | ImGuiTableFlags_SizingFixedFit, ImVec2(-1, -1)))
             {
                 ImGui::TableSetupColumn("#");
                 ImGui::TableSetupColumn("Room");
@@ -160,7 +158,7 @@ namespace trview
 
     void ItemsWindow::render_item_details()
     {
-        if (ImGui::BeginChild("Item Details", ImVec2(), true))
+        if (ImGui::BeginChild(Names::details_panel.c_str(), ImVec2(), true))
         {
             ImGui::Text("Item Details");
             if (ImGui::BeginTable("##itemstats", 2, 0, ImVec2(-1, 150)))
@@ -219,7 +217,7 @@ namespace trview
                 on_add_to_route(_selected_item.value());
             }
             ImGui::Text("Triggered By");
-            if (ImGui::BeginTable("##triggeredby", 3, ImGuiTableFlags_ScrollY, ImVec2(-1, -1)))
+            if (ImGui::BeginTable(Names::triggers_list.c_str(), 3, ImGuiTableFlags_ScrollY, ImVec2(-1, -1)))
             {
                 ImGui::TableSetupColumn("#");
                 ImGui::TableSetupColumn("Room");
@@ -286,5 +284,10 @@ namespace trview
 
     void ItemsWindow::update(float delta)
     {
+    }
+
+    void ItemsWindow::set_number(int32_t number)
+    {
+
     }
 }
