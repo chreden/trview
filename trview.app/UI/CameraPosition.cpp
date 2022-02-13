@@ -10,7 +10,7 @@ namespace trview
         ImGui::SetNextWindowPos(ImGui::GetMainViewport()->Pos + ImVec2(4, ImGui::GetMainViewport()->Size.y - 148), ImGuiCond_FirstUseEver);
         if (ImGui::Begin("Camera Position", nullptr, ImGuiWindowFlags_AlwaysAutoResize))
         {
-            if (ImGui::InputFloat("Yaw", &_rotation_yaw))
+            if (ImGui::InputFloat("Yaw", &_rotation_yaw, 0.0f, 0.0f, "%.4f", ImGuiInputTextFlags_EnterReturnsTrue))
             {
                 if (_display_degrees)
                 {
@@ -18,7 +18,7 @@ namespace trview
                 }
                 on_rotation_changed(_rotation_yaw, _rotation_pitch);
             }
-            if (ImGui::InputFloat("Pitch", &_rotation_pitch))
+            if (ImGui::InputFloat("Pitch", &_rotation_pitch, 0.0f, 0.0f, "%.4f", ImGuiInputTextFlags_EnterReturnsTrue))
             {
                 if (_display_degrees)
                 {
