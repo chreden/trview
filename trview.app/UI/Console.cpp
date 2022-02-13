@@ -23,22 +23,26 @@ namespace trview
 
     void Console::render()
     {
-        if (_visible && ImGui::Begin("Console", &_visible))
+        if (_visible)
         {
-            ImGui::InputTextMultiline("##Log", const_cast<char*>(_text.c_str()), _text.size(), ImVec2(-1, 300), ImGuiInputTextFlags_ReadOnly);
-            if (ImGui::IsWindowAppearing())
+            if (ImGui::Begin("Console", &_visible))
             {
-                ImGui::SetKeyboardFocusHere();
+                ImGui::InputTextMultiline("##Log", const_cast<char*>(_text.c_str()), _text.size(), ImVec2(-1, 300), ImGuiInputTextFlags_ReadOnly);
+                if (ImGui::IsWindowAppearing())
+                {
+                    ImGui::SetKeyboardFocusHere();
+                }
+                std::vector<char> vec;
+                vec.resize(512);
+                ImGui::PushItemWidth(-1);
+                if (ImGui::InputText("##input", &vec[0], vec.size(), ImGuiInputTextFlags_EnterReturnsTrue))
+                {
+                    auto command = std::string(&vec[0]);
+                    on_command(to_utf16(command));
+                }
+                ImGui::PopItemWidth();
             }
-            std::vector<char> vec;
-            vec.resize(512);
-            ImGui::PushItemWidth(-1);
-            if (ImGui::InputText("##input", &vec[0], vec.size(), ImGuiInputTextFlags_EnterReturnsTrue))
-            {
-                auto command = std::string(&vec[0]);
-                on_command(to_utf16(command));
-            }
-            ImGui::PopItemWidth();
+            ImGui::End();
         }
     }
 }

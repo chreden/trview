@@ -194,7 +194,7 @@ namespace trview
             _element_rects[id] = rect;
             if (id == _tracking_id)
             {
-                _context->IO.MousePos = ImVec2(rect.Min.x, rect.Min.y);
+                _context->IO.MousePos = ImVec2(rect.Min.x, rect.Min.y) + ImVec2(4, 4);
             }
         }
 

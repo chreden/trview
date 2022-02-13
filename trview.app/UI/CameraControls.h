@@ -20,6 +20,8 @@ namespace trview
         struct Names
         {
             static inline const std::string reset{ "Reset" };
+            static inline const std::string mode{ "##Mode" };
+            static inline const std::string projection_mode{ "##Projection" };
         };
 
         virtual ~CameraControls() = default;

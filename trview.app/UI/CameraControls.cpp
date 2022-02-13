@@ -22,7 +22,7 @@ namespace trview
         if (ImGui::Begin("Camera Controls", nullptr, ImGuiWindowFlags_AlwaysAutoResize))
         {
             const std::array<std::string, 3> mode_items{ "Orbit", "Free", "Axis" };
-            if (ImGui::BeginCombo("##Mode", mode_items[static_cast<uint32_t>(_mode)].c_str()))
+            if (ImGui::BeginCombo(Names::mode.c_str(), mode_items[static_cast<uint32_t>(_mode)].c_str()))
             {
                 for (int n = 0; n < mode_items.size(); ++n)
                 {
@@ -41,7 +41,7 @@ namespace trview
             }
 
             const std::array<std::string, 2> projection_items{ "Perspective", "Orthographic" };
-            if (ImGui::BeginCombo("##Projection", projection_items[static_cast<uint32_t>(_projection_mode)].c_str()))
+            if (ImGui::BeginCombo(Names::projection_mode.c_str(), projection_items[static_cast<uint32_t>(_projection_mode)].c_str()))
             {
                 for (int n = 0; n < projection_items.size(); ++n)
                 {

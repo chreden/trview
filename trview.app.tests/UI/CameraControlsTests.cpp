@@ -1,14 +1,13 @@
 #include <trview.app/UI/CameraControls.h>
-#include <trview.common/Mocks/Windows/IShell.h>
+#include "TestImgui.h"
 
 using namespace trview;
-using namespace trview::mocks;
+using namespace trview::tests;
 
-/*
 TEST(CameraControls, ResetRaisesEvent)
 {
-    ui::Window host(Size(), Colour::Transparent);
-    CameraControls controls(host, std::make_shared<JsonLoader>(std::make_shared<MockShell>()));
+    CameraControls controls;
+    TestImgui imgui([&]() { controls.render(); });
 
     bool raised = false;
     auto token = controls.on_reset += [&]()
@@ -16,18 +15,15 @@ TEST(CameraControls, ResetRaisesEvent)
         raised = true;
     };
 
-    auto reset = host.find<Button>(CameraControls::Names::reset);
-    ASSERT_NE(reset, nullptr);
-
-    reset->clicked(Point());
+    imgui.click_element("Camera Controls", { CameraControls::Names::reset });
 
     ASSERT_TRUE(raised);
 }
 
 TEST(CameraControls, OrbitRaisesModeSelected)
 {
-    ui::Window host(Size(), Colour::Transparent);
-    CameraControls controls(host, std::make_shared<JsonLoader>(std::make_shared<MockShell>()));
+    CameraControls controls;
+    TestImgui imgui([&]() { controls.render(); });
 
     std::optional<CameraMode> selected_mode;
     auto token = controls.on_mode_selected += [&](auto mode)
@@ -35,10 +31,8 @@ TEST(CameraControls, OrbitRaisesModeSelected)
         selected_mode = mode;
     };
 
-    auto orbit = host.find<Checkbox>(CameraControls::Names::orbit);
-    ASSERT_NE(orbit, nullptr);
-
-    orbit->clicked(Point());
+    imgui.click_element("Camera Controls", { CameraControls::Names::mode });
+    imgui.click_element("##Combo_00", { "Orbit" });
 
     ASSERT_TRUE(selected_mode.has_value());
     ASSERT_EQ(selected_mode.value(), CameraMode::Orbit);
@@ -46,8 +40,8 @@ TEST(CameraControls, OrbitRaisesModeSelected)
 
 TEST(CameraControls, FreeRaisesModeSelected)
 {
-    ui::Window host(Size(), Colour::Transparent);
-    CameraControls controls(host, std::make_shared<JsonLoader>(std::make_shared<MockShell>()));
+    CameraControls controls;
+    TestImgui imgui([&]() { controls.render(); });
 
     std::optional<CameraMode> selected_mode;
     auto token = controls.on_mode_selected += [&](auto mode)
@@ -55,10 +49,8 @@ TEST(CameraControls, FreeRaisesModeSelected)
         selected_mode = mode;
     };
 
-    auto free = host.find<Checkbox>(CameraControls::Names::free);
-    ASSERT_NE(free, nullptr);
-
-    free->clicked(Point());
+    imgui.click_element("Camera Controls", { CameraControls::Names::mode });
+    imgui.click_element("##Combo_00", { "Free" });
 
     ASSERT_TRUE(selected_mode.has_value());
     ASSERT_EQ(selected_mode.value(), CameraMode::Free);
@@ -66,8 +58,8 @@ TEST(CameraControls, FreeRaisesModeSelected)
 
 TEST(CameraControls, AxisRaisesModeSelected)
 {
-    ui::Window host(Size(), Colour::Transparent);
-    CameraControls controls(host, std::make_shared<JsonLoader>(std::make_shared<MockShell>()));
+    CameraControls controls;
+    TestImgui imgui([&]() { controls.render(); });
 
     std::optional<CameraMode> selected_mode;
     auto token = controls.on_mode_selected += [&](auto mode)
@@ -75,19 +67,17 @@ TEST(CameraControls, AxisRaisesModeSelected)
         selected_mode = mode;
     };
 
-    auto axis = host.find<Checkbox>(CameraControls::Names::axis);
-    ASSERT_NE(axis, nullptr);
-
-    axis->clicked(Point());
+    imgui.click_element("Camera Controls", { CameraControls::Names::mode });
+    imgui.click_element("##Combo_00", { "Axis" });
 
     ASSERT_TRUE(selected_mode.has_value());
     ASSERT_EQ(selected_mode.value(), CameraMode::Axis);
 }
 
-TEST(CameraControls, OrthoOnRaisesProjectionMode)
+TEST(CameraControls, OrthoRaisesProjectionMode)
 {
-    ui::Window host(Size(), Colour::Transparent);
-    CameraControls controls(host, std::make_shared<JsonLoader>(std::make_shared<MockShell>()));
+    CameraControls controls;
+    TestImgui imgui([&]() { controls.render(); });
 
     std::optional<ProjectionMode> selected_mode;
     auto token = controls.on_projection_mode_selected += [&](auto mode)
@@ -95,19 +85,17 @@ TEST(CameraControls, OrthoOnRaisesProjectionMode)
         selected_mode = mode;
     };
 
-    auto ortho = host.find<Checkbox>(CameraControls::Names::ortho);
-    ASSERT_NE(ortho, nullptr);
-
-    ortho->clicked(Point());
+    imgui.click_element("Camera Controls", { CameraControls::Names::projection_mode });
+    imgui.click_element("##Combo_00", { "Orthographic" });
 
     ASSERT_TRUE(selected_mode.has_value());
     ASSERT_EQ(selected_mode.value(), ProjectionMode::Orthographic);
 }
 
-TEST(CameraControls, OrthoOffRaisesProjectionMode)
+TEST(CameraControls, PrespectiveRaisesProjectionMode)
 {
-    ui::Window host(Size(), Colour::Transparent);
-    CameraControls controls(host, std::make_shared<JsonLoader>(std::make_shared<MockShell>()));
+    CameraControls controls;
+    TestImgui imgui([&]() { controls.render(); });
 
     std::optional<ProjectionMode> selected_mode;
     auto token = controls.on_projection_mode_selected += [&](auto mode)
@@ -115,108 +103,36 @@ TEST(CameraControls, OrthoOffRaisesProjectionMode)
         selected_mode = mode;
     };
 
-    auto ortho = host.find<Checkbox>(CameraControls::Names::ortho);
-    ASSERT_NE(ortho, nullptr);
-    ortho->set_state(true);
-
-    ortho->clicked(Point());
+    imgui.click_element("Camera Controls", { CameraControls::Names::projection_mode });
+    imgui.click_element("##Combo_00", { "Perspective" });
 
     ASSERT_TRUE(selected_mode.has_value());
     ASSERT_EQ(selected_mode.value(), ProjectionMode::Perspective);
 }
 
-TEST(CameraControls, SetModeFreeUpdatesCheckboxes)
+TEST(CameraControls, SetModeUpdatesCombo)
 {
-    ui::Window host(Size(), Colour::Transparent);
-    CameraControls controls(host, std::make_shared<JsonLoader>(std::make_shared<MockShell>()));
+    CameraControls controls;
+    TestImgui imgui([&]() { controls.render(); });
 
-    auto free = host.find<Checkbox>(CameraControls::Names::free);
-    ASSERT_NE(free, nullptr);
-    ASSERT_FALSE(free->state());
-    auto orbit = host.find<Checkbox>(CameraControls::Names::orbit);
-    ASSERT_NE(orbit, nullptr);
-    ASSERT_FALSE(orbit->state());
-    auto axis = host.find<Checkbox>(CameraControls::Names::axis);
-    ASSERT_NE(axis, nullptr);
-    ASSERT_FALSE(axis->state());
-
-    controls.set_mode(CameraMode::Free);
-
-    ASSERT_TRUE(free->state());
-    ASSERT_FALSE(orbit->state());
-    ASSERT_FALSE(axis->state());
-}
-
-TEST(CameraControls, SetModeOrbitpdatesCheckboxes)
-{
-    ui::Window host(Size(), Colour::Transparent);
-    CameraControls controls(host, std::make_shared<JsonLoader>(std::make_shared<MockShell>()));
-
-    auto free = host.find<Checkbox>(CameraControls::Names::free);
-    ASSERT_NE(free, nullptr);
-    ASSERT_FALSE(free->state());
-    auto orbit = host.find<Checkbox>(CameraControls::Names::orbit);
-    ASSERT_NE(orbit, nullptr);
-    ASSERT_FALSE(orbit->state());
-    auto axis = host.find<Checkbox>(CameraControls::Names::axis);
-    ASSERT_NE(axis, nullptr);
-    ASSERT_FALSE(axis->state());
-
-    controls.set_mode(CameraMode::Orbit);
-
-    ASSERT_FALSE(free->state());
-    ASSERT_TRUE(orbit->state());
-    ASSERT_FALSE(axis->state());
-}
-
-TEST(CameraControls, SetModeAxisUpdatesCheckboxes)
-{
-    ui::Window host(Size(), Colour::Transparent);
-    CameraControls controls(host, std::make_shared<JsonLoader>(std::make_shared<MockShell>()));
-
-    auto free = host.find<Checkbox>(CameraControls::Names::free);
-    ASSERT_NE(free, nullptr);
-    ASSERT_FALSE(free->state());
-    auto orbit = host.find<Checkbox>(CameraControls::Names::orbit);
-    ASSERT_NE(orbit, nullptr);
-    ASSERT_FALSE(orbit->state());
-    auto axis = host.find<Checkbox>(CameraControls::Names::axis);
-    ASSERT_NE(axis, nullptr);
-    ASSERT_FALSE(axis->state());
+    imgui.render();
+    ASSERT_EQ(imgui.item_text("Camera Controls", { CameraControls::Names::mode }), "Orbit");
 
     controls.set_mode(CameraMode::Axis);
-
-    ASSERT_FALSE(free->state());
-    ASSERT_FALSE(orbit->state());
-    ASSERT_TRUE(axis->state());
+    imgui.render();
+    ASSERT_EQ(imgui.item_text("Camera Controls", { CameraControls::Names::mode }), "Axis");
 }
 
-TEST(CameraControls, SetProjectionsModeOrthoUpdatesCheckboxes)
-{
-    ui::Window host(Size(), Colour::Transparent);
-    CameraControls controls(host, std::make_shared<JsonLoader>(std::make_shared<MockShell>()));
 
-    auto ortho = host.find<Checkbox>(CameraControls::Names::ortho);
-    ASSERT_NE(ortho, nullptr);
-    ASSERT_FALSE(ortho->state());
+TEST(CameraControls, SetProjectionModeUpdatesCombo)
+{
+    CameraControls controls;
+    TestImgui imgui([&]() { controls.render(); });
+
+    imgui.render();
+    ASSERT_EQ(imgui.item_text("Camera Controls", { CameraControls::Names::projection_mode }), "Perspective");
 
     controls.set_projection_mode(ProjectionMode::Orthographic);
-
-    ASSERT_TRUE(ortho->state());
+    imgui.render();
+    ASSERT_EQ(imgui.item_text("Camera Controls", { CameraControls::Names::projection_mode }), "Orthographic");
 }
-
-TEST(CameraControls, SetProjectionsModePerspectiveUpdatesCheckboxes)
-{
-    ui::Window host(Size(), Colour::Transparent);
-    CameraControls controls(host, std::make_shared<JsonLoader>(std::make_shared<MockShell>()));
-
-    auto ortho = host.find<Checkbox>(CameraControls::Names::ortho);
-    ASSERT_NE(ortho, nullptr);
-    ASSERT_FALSE(ortho->state());
-    ortho->set_state(true);
-
-    controls.set_projection_mode(ProjectionMode::Perspective);
-
-    ASSERT_FALSE(ortho->state());
-}
-*/
