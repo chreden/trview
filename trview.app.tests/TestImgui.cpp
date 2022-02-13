@@ -308,5 +308,13 @@ namespace trview
             stream << "##Popup_" << std::hex << std::setfill('0') << std::setw(8) << id;
             return stream.str();
         }
+
+        std::string TestImgui::child_name(const std::string& window_name, const std::string& child_name) const
+        {
+            auto id = get_id(find_window(window_name), { child_name });
+            std::stringstream stream;
+            stream << window_name << '/' << child_name << '_' << std::hex << std::uppercase << std::setfill('0') << std::setw(8) << id;
+            return stream.str();
+        }
     }
 }

@@ -6,6 +6,7 @@
 #include <trview.common/Mocks/Windows/IClipboard.h>
 #include <trview.app/Mocks/Elements/ITrigger.h>
 #include <trview.common/Mocks/Windows/IShell.h>
+#include "TestImgui.h"
 
 using namespace trview;
 using namespace trview::tests;
@@ -30,7 +31,7 @@ namespace
         return test_module {};
     }
 }
-/*
+
 TEST(ItemsWindow, AddToRouteEventRaised)
 {
     auto window = register_test_module().build();
@@ -46,14 +47,12 @@ TEST(ItemsWindow, AddToRouteEventRaised)
     window->set_items(items);
     window->set_selected_item(items[1]);
 
-    auto button = window->root_control()->find<ui::Button>(ItemsWindow::Names::add_to_route_button);
-    ASSERT_NE(button, nullptr);
-
-    button->clicked(Point());
+    TestImgui imgui([&]() { window->render(true); });
+    imgui.click_element(imgui.child_name("Items 1", { "Item Details" }), { ItemsWindow::Names::add_to_route_button });
     ASSERT_TRUE(raised_item.has_value());
     ASSERT_EQ(raised_item.value().number(), 1);
 }
-
+/*
 TEST(ItemsWindow, ClearSelectedItemClearsSelection)
 {
     auto window = register_test_module().build();

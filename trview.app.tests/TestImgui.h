@@ -61,6 +61,7 @@ namespace trview
             ImGuiWindow* find_window(const std::string& name) const;
             ImGuiID get_id(ImGuiWindow* window, const std::vector<std::string>& path_to_element) const;
             std::string popup_name(const std::string& name) const;
+            std::string child_name(const std::string& window_name, const std::string& child_name) const;
         private:
             Window _window;
             graphics::Device _device;

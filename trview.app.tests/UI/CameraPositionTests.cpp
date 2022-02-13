@@ -3,7 +3,6 @@
 
 using namespace trview;
 using namespace trview::tests;
-using namespace trview::mocks;
 using namespace DirectX::SimpleMath;
 using testing::HasSubstr;
 
