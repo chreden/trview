@@ -164,6 +164,7 @@ namespace trview
                 return 0;
             }
 
+            auto previous_window = _context->CurrentWindow;
             _context->CurrentWindow = window;
             for (uint32_t i = 0; i < path_to_element.size() - 1; ++i)
             {
@@ -176,7 +177,7 @@ namespace trview
                 ImGui::PopID();
             }
 
-            _context->CurrentWindow = nullptr;
+            _context->CurrentWindow = previous_window;
             return id;
         }
 

@@ -18,7 +18,6 @@
 #include <trlevel/Mocks/ILevelLoader.h>
 #include <trlevel/Mocks/ILevel.h>
 #include <trview.app/Resources/resource.h>
-#include <trview.app/Mocks/UI/IImGuiBackend.h>
 #include "NullImGuiBackend.h"
 
 using namespace trview;

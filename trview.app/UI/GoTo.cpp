@@ -54,11 +54,13 @@ namespace trview
                 if (ImGui::IsKeyPressed(ImGuiKey_Escape) || ImGui::IsKeyPressed(ImGuiKey_Enter) || ImGui::IsKeyPressed(ImGuiKey_KeypadEnter))
                 {
                     _visible = false;
+                    ImGui::FocusWindow(nullptr);
                 }
             }
             else
             {
                 _visible = false;
+                ImGui::FocusWindow(nullptr);
             }
         }
     }
