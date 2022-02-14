@@ -383,7 +383,7 @@ namespace trview
             if (button == IMouse::Button::Left)
             {
                 auto io = ImGui::GetIO();
-                if (!(_ui->is_cursor_over() || io.WantCaptureMouse || io.WantCaptureKeyboard))
+                if (!(_ui->is_cursor_over() || io.WantCaptureMouse))
                 {
                     if (_ui->show_context_menu())
                     {
@@ -607,7 +607,7 @@ namespace trview
     bool Viewer::should_pick() const
     {
         auto& io = ImGui::GetIO();
-        return !(!_level || window_under_cursor() != _window || window_is_minimised(_window) || _ui->is_cursor_over() || cursor_outside_window(_window) || io.WantCaptureMouse || io.WantCaptureKeyboard);
+        return !(!_level || window_under_cursor() != _window || window_is_minimised(_window) || _ui->is_cursor_over() || cursor_outside_window(_window) || io.WantCaptureMouse);
     }
 
     void Viewer::render_scene()
@@ -867,7 +867,7 @@ namespace trview
                 if (ImGui::GetCurrentContext() != nullptr)
                 {
                     auto& io = ImGui::GetIO();
-                    if (!(io.WantCaptureKeyboard || io.WantCaptureMouse))
+                    if (!io.WantCaptureMouse)
                     {
                         _ui->set_show_context_menu(false);
                         _camera_input.mouse_scroll(scroll);
@@ -928,7 +928,7 @@ namespace trview
         _token_store += _camera_input.on_pan += [&](bool vertical, float x, float y)
         {
             auto& io = ImGui::GetIO();
-            if (_ui->is_cursor_over() || io.WantCaptureKeyboard || io.WantCaptureMouse || _camera_mode != CameraMode::Orbit)
+            if (_ui->is_cursor_over() || io.WantCaptureMouse || _camera_mode != CameraMode::Orbit)
             {
                 return;
             }
