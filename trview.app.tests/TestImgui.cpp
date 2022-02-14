@@ -58,6 +58,24 @@ void ImGuiTrviewTestEngineHook_ItemText(ImGuiContext* ctx, ImGuiID id, const cha
 
 namespace trview
 {
+    namespace
+    {
+        void ImGui_ImplTrviewTest_Init()
+        {
+            auto context = ImGui::GetCurrentContext();
+            context->IO.DisplaySize = ImVec2(1920, 1080);
+        }
+
+        void ImGui_ImplTrviewTest_NewFrame()
+        {
+            auto context = ImGui::GetCurrentContext();
+
+            unsigned char* data = 0;
+            int32_t width, height, bpp;
+            context->IO.Fonts->GetTexDataAsRGBA32(&data, &width, &height, &bpp);
+        }
+    }
+
     namespace tests
     {
         TestImgui::TestImgui()
@@ -72,9 +90,7 @@ namespace trview
             io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
             if (io.BackendPlatformUserData == 0)
             {
-                ImGui_ImplWin32_Init(_window);
-                ImGui_ImplDX11_Init(_device.device().Get(), _device.context().Get());
-                auto f = io.Fonts->AddFontFromFileTTF("C:\\Windows\\Fonts\\Arial.ttf", 12.0f);
+                ImGui_ImplTrviewTest_Init();
             }
         }
 
@@ -87,8 +103,6 @@ namespace trview
 
         TestImgui::~TestImgui()
         {
-            ImGui_ImplDX11_Shutdown();
-            ImGui_ImplWin32_Shutdown();
             ImGui::DestroyContext(_context);
         }
 
@@ -248,8 +262,7 @@ namespace trview
 
         void TestImgui::render(const std::function<void()>& pre_render_callback)
         {
-            ImGui_ImplDX11_NewFrame();
-            ImGui_ImplWin32_NewFrame();
+            ImGui_ImplTrviewTest_NewFrame();
             ImGui::NewFrame();
             pre_render_callback();
             if (_render_callback)
@@ -257,8 +270,6 @@ namespace trview
                 _render_callback();
             }
             ImGui::Render();
-            ImGui::UpdatePlatformWindows();
-            ImGui::RenderPlatformWindowsDefault();
         }
 
         void TestImgui::render()

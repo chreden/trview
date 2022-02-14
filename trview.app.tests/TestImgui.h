@@ -4,8 +4,6 @@
 #define IMGUI_ENABLE_TEST_ENGINE
 #include <external/imgui/imgui.h>
 #include <external/imgui/imgui_internal.h>
-#include <external/imgui/backends/imgui_impl_win32.h>
-#include <external/imgui/backends/imgui_impl_dx11.h>
 
 #include <unordered_map>
 #include <trview.common/Window.h>
