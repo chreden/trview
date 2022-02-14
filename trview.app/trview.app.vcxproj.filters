@@ -350,6 +350,10 @@
     <ClCompile Include="Windows\RouteWindowManager.cpp">
       <Filter>Windows\Route</Filter>
     </ClCompile>
+    <ClCompile Include="UI\DX11ImGuiBackend.cpp" />
+    <ClCompile Include="UI\IImGuiBackend.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera\Camera.h">
@@ -901,6 +905,15 @@
     </ClInclude>
     <ClInclude Include="Windows\RouteWindowManager.h">
       <Filter>Windows\Route</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\IImGuiBackend.h">
+      <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\DX11ImGuiBackend.h">
+      <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="Mocks\UI\IImGuiBackend.h">
+      <Filter>Mocks\UI</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

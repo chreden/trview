@@ -9,6 +9,7 @@
 #include "MapRenderer.h"
 #include <trview.common/Resources.h>
 #include <trview.graphics/IDevice.h>
+#include "DX11ImGuiBackend.h"
 
 namespace trview
 {
@@ -20,6 +21,7 @@ namespace trview
             di::bind<ICameraControls>.to<CameraControls>(),
             di::bind<IViewOptions>.to<ViewOptions>(),
             di::bind<IContextMenu>.to<ContextMenu>(),
+            di::bind<IImGuiBackend>.to<DX11ImGuiBackend>(),
             di::bind<IMapRenderer::Source>.to(
                 [](const auto& injector) -> IMapRenderer::Source
                 {

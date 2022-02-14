@@ -118,9 +118,11 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClCompile Include="UI\Console.cpp" />
     <ClCompile Include="UI\ContextMenu.cpp" />
     <ClCompile Include="UI\ControlTracker.cpp" />
+    <ClCompile Include="UI\DX11ImGuiBackend.cpp" />
     <ClCompile Include="UI\GoTo.cpp" />
     <ClCompile Include="UI\ICameraControls.cpp" />
     <ClCompile Include="UI\IContextMenu.cpp" />
+    <ClCompile Include="UI\IImGuiBackend.cpp" />
     <ClCompile Include="UI\IMapRenderer.cpp" />
     <ClCompile Include="UI\ISettingsWindow.cpp" />
     <ClCompile Include="UI\IViewerUI.cpp" />
@@ -252,6 +254,7 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClInclude Include="Mocks\Tools\IMeasure.h" />
     <ClInclude Include="Mocks\UI\ICameraControls.h" />
     <ClInclude Include="Mocks\UI\IContextMenu.h" />
+    <ClInclude Include="Mocks\UI\IImGuiBackend.h" />
     <ClInclude Include="Mocks\UI\IMapRenderer.h" />
     <ClInclude Include="Mocks\UI\ISettingsWindow.h" />
     <ClInclude Include="Mocks\UI\IViewerUI.h" />
@@ -304,9 +307,11 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClInclude Include="UI\ControlTracker.h" />
     <ClInclude Include="UI\di.h" />
     <ClInclude Include="UI\di.hpp" />
+    <ClInclude Include="UI\DX11ImGuiBackend.h" />
     <ClInclude Include="UI\GoTo.h" />
     <ClInclude Include="UI\ICameraControls.h" />
     <ClInclude Include="UI\IContextMenu.h" />
+    <ClInclude Include="UI\IImGuiBackend.h" />
     <ClInclude Include="UI\IMapRenderer.h" />
     <ClInclude Include="UI\ISettingsWindow.h" />
     <ClInclude Include="UI\IViewerUI.h" />

@@ -22,6 +22,7 @@
 #include <trview.app/Lua/Lua.h>
 #include <trview.common/Windows/IDialogs.h>
 #include <trview.common/Windows/IShortcuts.h>
+#include "UI/IImGuiBackend.h"
 
 struct ImFont;
 
@@ -56,7 +57,7 @@ namespace trview
             std::shared_ptr<IStartupOptions> startup_options,
             std::shared_ptr<IDialogs> dialogs,
             std::shared_ptr<IFiles> files,
-            const std::shared_ptr<graphics::IDevice>& device);
+            std::unique_ptr<IImGuiBackend> imgui_backend);
         virtual ~Application();
         /// Attempt to open the specified level file.
         /// @param filename The level file to open.
@@ -121,8 +122,9 @@ namespace trview
         std::unique_ptr<IRoomsWindowManager> _rooms_windows;
         Timer _timer;
         bool _imgui_setup{ false };
-        std::shared_ptr<graphics::IDevice> _device;
         ImFont* _font;
+
+        std::unique_ptr<IImGuiBackend> _imgui_backend;
     };
 
     Window create_window(HINSTANCE hInstance, int command_show);
