@@ -350,8 +350,10 @@
     <ClCompile Include="Windows\RouteWindowManager.cpp">
       <Filter>Windows\Route</Filter>
     </ClCompile>
-    <ClCompile Include="UI\DX11ImGuiBackend.cpp" />
     <ClCompile Include="UI\IImGuiBackend.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\DX11ImGuiBackend.cpp">
       <Filter>UI</Filter>
     </ClCompile>
   </ItemGroup>

@@ -1,4 +1,3 @@
-#include "stdafx.h"
 #include "DX11ImGuiBackend.h"
 
 #include <external/imgui/backends/imgui_impl_win32.h>

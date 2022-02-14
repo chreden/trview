@@ -58,24 +58,6 @@ void ImGuiTrviewTestEngineHook_ItemText(ImGuiContext* ctx, ImGuiID id, const cha
 
 namespace trview
 {
-    namespace
-    {
-        void ImGui_ImplTrviewTest_Init()
-        {
-            auto context = ImGui::GetCurrentContext();
-            context->IO.DisplaySize = ImVec2(1920, 1080);
-        }
-
-        void ImGui_ImplTrviewTest_NewFrame()
-        {
-            auto context = ImGui::GetCurrentContext();
-
-            unsigned char* data = 0;
-            int32_t width, height, bpp;
-            context->IO.Fonts->GetTexDataAsRGBA32(&data, &width, &height, &bpp);
-        }
-    }
-
     namespace tests
     {
         TestImgui::TestImgui()
@@ -90,7 +72,7 @@ namespace trview
             io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
             if (io.BackendPlatformUserData == 0)
             {
-                ImGui_ImplTrviewTest_Init();
+                _backend.initialise();
             }
         }
 
@@ -262,7 +244,7 @@ namespace trview
 
         void TestImgui::render(const std::function<void()>& pre_render_callback)
         {
-            ImGui_ImplTrviewTest_NewFrame();
+            _backend.new_frame();
             ImGui::NewFrame();
             pre_render_callback();
             if (_render_callback)

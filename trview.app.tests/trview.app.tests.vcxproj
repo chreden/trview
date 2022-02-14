@@ -37,6 +37,7 @@
     <ClCompile Include="ItemsWindowTests.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Menus\MenuDetectorTests.cpp" />
+    <ClCompile Include="NullImGuiBackend.cpp" />
     <ClCompile Include="OrbitCameraTests.cpp" />
     <ClCompile Include="RecentFilesTests.cpp" />
     <ClCompile Include="RoomsWindowManagerTests.cpp" />
@@ -96,6 +97,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="NullImGuiBackend.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="TestImgui.h" />
   </ItemGroup>

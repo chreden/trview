@@ -19,6 +19,7 @@
 #include <trlevel/Mocks/ILevel.h>
 #include <trview.app/Resources/resource.h>
 #include <trview.app/Mocks/UI/IImGuiBackend.h>
+#include "NullImGuiBackend.h"
 
 using namespace trview;
 using namespace trview::tests;
@@ -53,7 +54,7 @@ namespace
             std::shared_ptr<IStartupOptions> startup_options{ std::make_shared<MockStartupOptions>() };
             std::shared_ptr<IDialogs> dialogs{ std::make_shared<MockDialogs>() };
             std::shared_ptr<IFiles> files{ std::make_shared<MockFiles>() };
-            std::unique_ptr<IImGuiBackend> imgui_backend{ std::make_unique<MockImGuiBackend>() };
+            std::unique_ptr<IImGuiBackend> imgui_backend{ std::make_unique<NullImGuiBackend>() };
 
             std::unique_ptr<Application> build()
             {

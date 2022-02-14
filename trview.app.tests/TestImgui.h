@@ -4,6 +4,7 @@
 #define IMGUI_ENABLE_TEST_ENGINE
 #include <external/imgui/imgui.h>
 #include <external/imgui/imgui_internal.h>
+#include "NullImGuiBackend.h"
 
 #include <unordered_map>
 #include <trview.common/Window.h>
@@ -71,6 +72,7 @@ namespace trview
             std::unordered_map<ImGuiID, std::string> _item_text;
             ImGuiID _tracking_id{ 0 };
             ImGuiContext* _context{ nullptr };
+            NullImGuiBackend _backend;
         };
     }
 }

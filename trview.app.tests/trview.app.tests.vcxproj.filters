@@ -124,6 +124,7 @@
       <Filter>Graphics</Filter>
     </ClCompile>
     <ClCompile Include="TestImgui.cpp" />
+    <ClCompile Include="NullImGuiBackend.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Input">
@@ -157,5 +158,6 @@
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="TestImgui.h" />
+    <ClInclude Include="NullImGuiBackend.h" />
   </ItemGroup>
 </Project>
