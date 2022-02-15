@@ -161,7 +161,7 @@ namespace trview
         if (ImGui::BeginChild(Names::details_panel.c_str(), ImVec2(), true))
         {
             ImGui::Text("Item Details");
-            if (ImGui::BeginTable("##itemstats", 2, 0, ImVec2(-1, 150)))
+            if (ImGui::BeginTable(Names::item_stats.c_str(), 2, 0, ImVec2(-1, 150)))
             {
                 ImGui::TableSetupColumn("Name");
                 ImGui::TableSetupColumn("Value");
@@ -177,6 +177,7 @@ namespace trview
                         if (ImGui::Selectable(name.c_str(), false, ImGuiSelectableFlags_SpanAllColumns))
                         {
                             _clipboard->write(to_utf16(value));
+                            _tooltip_timer = 0.0f;
                         }
                         if (ImGui::IsItemHovered() && _tips.find(name) != _tips.end())
                         {
@@ -267,6 +268,13 @@ namespace trview
             render_items_list();
             ImGui::SameLine();
             render_item_details();
+
+            if (_tooltip_timer.has_value())
+            {
+                ImGui::BeginTooltip();
+                ImGui::Text("Copied");
+                ImGui::EndTooltip();
+            }
         }
         ImGui::End();
         ImGui::PopStyleVar();
@@ -284,6 +292,14 @@ namespace trview
 
     void ItemsWindow::update(float delta)
     {
+        if (_tooltip_timer.has_value())
+        {
+            _tooltip_timer = _tooltip_timer.value() + delta;
+            if (_tooltip_timer.value() > 0.6f)
+            {
+                _tooltip_timer.reset();
+            }
+        }
     }
 
     void ItemsWindow::set_number(int32_t number)

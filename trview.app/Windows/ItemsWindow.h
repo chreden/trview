@@ -23,6 +23,7 @@ namespace trview
             static inline const std::string item_list_panel = "Item List";
             static inline const std::string details_panel = "Item Details";
             static inline const std::string triggers_list = "##triggeredby";
+            static inline const std::string item_stats = "##itemstats";
         };
 
         explicit ItemsWindow(const std::shared_ptr<IClipboard>& clipboard);
@@ -47,18 +48,13 @@ namespace trview
         std::string _id{ "Items 0" };
         std::vector<Item> _all_items;
         std::vector<std::weak_ptr<ITrigger>> _all_triggers;
-        /// Whether the item window is tracking the current room.
         bool _track_room{ false };
-        /// The current room number selected for tracking.
         uint32_t _current_room{ 0u };
         bool _sync_item{ true };
-        
         std::shared_ptr<IClipboard> _clipboard;
         std::unordered_map<std::string, std::string> _tips;
         std::optional<float> _tooltip_timer;
         std::weak_ptr<ITrigger> _selected_trigger;
-
-        // Item selection.
         std::optional<Item> _selected_item;
         std::optional<Item> _global_selected_item;
         bool _scroll_to_item{ false };

@@ -1,18 +1,13 @@
 #include <trview.app/Windows/ItemsWindow.h>
-#include <trview.tests.common/Window.h>
-#include <trview.common/Size.h>
 #include <trview.app/Elements/Types.h>
-#include <trview.graphics/mocks/IDeviceWindow.h>
 #include <trview.common/Mocks/Windows/IClipboard.h>
 #include <trview.app/Mocks/Elements/ITrigger.h>
-#include <trview.common/Mocks/Windows/IShell.h>
 #include "TestImgui.h"
 
 using namespace trview;
 using namespace trview::tests;
-using namespace trview::graphics;
-using namespace trview::graphics::mocks;
 using namespace trview::mocks;
+using namespace DirectX::SimpleMath;
 
 namespace
 {
@@ -25,6 +20,12 @@ namespace
             std::unique_ptr<ItemsWindow> build()
             {
                 return std::make_unique<ItemsWindow>(clipboard);
+            }
+
+            test_module& with_clipboard(const std::shared_ptr<IClipboard>& clipboard)
+            {
+                this->clipboard = clipboard;
+                return *this;
             }
         };
 
@@ -41,8 +42,8 @@ TEST(ItemsWindow, AddToRouteEventRaised)
 
     std::vector<Item> items
     {
-        Item(0, 0, 0, L"Type", 0, 0, {}, DirectX::SimpleMath::Vector3::Zero),
-        Item(1, 0, 0, L"Type", 0, 0, {}, DirectX::SimpleMath::Vector3::Zero)
+        Item(0, 0, 0, L"Type", 0, 0, {}, Vector3::Zero),
+        Item(1, 0, 0, L"Type", 0, 0, {}, Vector3::Zero)
     };
     window->set_items(items);
     window->set_selected_item(items[1]);
@@ -52,57 +53,7 @@ TEST(ItemsWindow, AddToRouteEventRaised)
     ASSERT_TRUE(raised_item.has_value());
     ASSERT_EQ(raised_item.value().number(), 1);
 }
-/*
-TEST(ItemsWindow, ClearSelectedItemClearsSelection)
-{
-    auto window = register_test_module().build();
 
-    std::optional<Item> raised_item;
-    auto token = window->on_item_selected += [&raised_item](const auto& item) { raised_item = item; };
-
-    auto trigger = std::make_shared<MockTrigger>();
-    std::vector<Item> items
-    {
-        Item(0, 0, 0, L"Type", 0, 0, {}, DirectX::SimpleMath::Vector3::Zero),
-        Item(1, 0, 0, L"Type", 0, 0, { trigger }, DirectX::SimpleMath::Vector3::Zero)
-    };
-    window->set_items(items);
-    window->set_triggers({ trigger });
-
-    auto list = window->root_control()->find<ui::Listbox>(ItemsWindow::Names::items_listbox);
-    ASSERT_NE(list, nullptr);
-
-    auto row = list->find<ui::Control>(ui::Listbox::Names::row_name_format + "1");
-    ASSERT_NE(row, nullptr);
-
-    auto cell = row->find<ui::Button>(ui::Listbox::Row::Names::cell_name_format + "#");
-    ASSERT_NE(cell, nullptr);
-    cell->clicked(Point());
-
-    ASSERT_TRUE(raised_item.has_value());
-    ASSERT_EQ(raised_item.value().number(), 1);
-
-    auto stats_list = window->root_control()->find<ui::Listbox>(ItemsWindow::Names::stats_listbox);
-    ASSERT_NE(stats_list, nullptr);
-
-    auto stats_items = stats_list->items();
-    ASSERT_NE(stats_items.size(), 0);
-
-    auto triggers_list = window->root_control()->find<ui::Listbox>(ItemsWindow::Names::triggers_listbox);
-    ASSERT_NE(triggers_list, nullptr);
-
-    auto triggers_items = triggers_list->items();
-    ASSERT_NE(triggers_items.size(), 0);
-
-    window->clear_selected_item();
-
-    stats_items = stats_list->items();
-    ASSERT_EQ(stats_items.size(), 0);
-
-    triggers_items = triggers_list->items();
-    ASSERT_EQ(triggers_items.size(), 0);
-}
-*/
 TEST(ItemsWindow, ItemSelectedNotRaisedWhenSyncItemDisabled)
 {
     auto window = register_test_module().build();
@@ -141,8 +92,8 @@ TEST(ItemsWindow, ItemSelectedRaisedWhenSyncItemEnabled)
 
     std::vector<Item> items
     {
-        Item(0, 0, 0, L"Type", 0, 0, {}, DirectX::SimpleMath::Vector3::Zero),
-        Item(1, 0, 0, L"Type", 0, 0, {}, DirectX::SimpleMath::Vector3::Zero)
+        Item(0, 0, 0, L"Type", 0, 0, {}, Vector3::Zero),
+        Item(1, 0, 0, L"Type", 0, 0, {}, Vector3::Zero)
     };
     window->set_items(items);
 
@@ -155,6 +106,10 @@ TEST(ItemsWindow, ItemSelectedRaisedWhenSyncItemEnabled)
 
     ASSERT_TRUE(raised_item.has_value());
     ASSERT_EQ(raised_item.value().number(), 1);
+
+    const auto from_window = window->selected_item();
+    ASSERT_TRUE(from_window.has_value());
+    ASSERT_EQ(from_window.value().number(), 1);
 }
 
 TEST(ItemsWindow, ItemVisibilityRaised)
@@ -166,8 +121,8 @@ TEST(ItemsWindow, ItemVisibilityRaised)
 
     std::vector<Item> items
     {
-        Item(0, 0, 0, L"Type", 0, 0, {}, DirectX::SimpleMath::Vector3::Zero),
-        Item(1, 0, 0, L"Type", 0, 0, {}, DirectX::SimpleMath::Vector3::Zero)
+        Item(0, 0, 0, L"Type", 0, 0, {}, Vector3::Zero),
+        Item(1, 0, 0, L"Type", 0, 0, {}, Vector3::Zero)
     };
     window->set_items(items);
 
@@ -192,8 +147,8 @@ TEST(ItemsWindow, ItemsListNotFilteredWhenRoomSetAndTrackRoomDisabled)
 
     std::vector<Item> items
     {
-        Item(0, 55, 0, L"Type", 0, 0, {}, DirectX::SimpleMath::Vector3::Zero),
-        Item(1, 78, 0, L"Type", 0, 0, {}, DirectX::SimpleMath::Vector3::Zero)
+        Item(0, 55, 0, L"Type", 0, 0, {}, Vector3::Zero),
+        Item(1, 78, 0, L"Type", 0, 0, {}, Vector3::Zero)
     };
     window->set_items(items);
     window->set_current_room(78);
@@ -218,8 +173,8 @@ TEST(ItemsWindow, ItemsListFilteredWhenRoomSetAndTrackRoomEnabled)
 
     std::vector<Item> items
     {
-        Item(0, 55, 0, L"Type", 0, 0, {}, DirectX::SimpleMath::Vector3::Zero),
-        Item(1, 78, 0, L"Type", 0, 0, {}, DirectX::SimpleMath::Vector3::Zero)
+        Item(0, 55, 0, L"Type", 0, 0, {}, Vector3::Zero),
+        Item(1, 78, 0, L"Type", 0, 0, {}, Vector3::Zero)
     };
     window->set_items(items);
     window->set_current_room(78);
@@ -246,8 +201,8 @@ TEST(ItemsWindow, ItemsListPopulatedOnSet)
 
     std::vector<Item> items
     {
-        Item(0, 55, 0, L"Lara", 0, 0, {}, DirectX::SimpleMath::Vector3::Zero),
-        Item(1, 78, 0, L"Winston", 0, 0, {}, DirectX::SimpleMath::Vector3::Zero)
+        Item(0, 55, 0, L"Lara", 0, 0, {}, Vector3::Zero),
+        Item(1, 78, 0, L"Winston", 0, 0, {}, Vector3::Zero)
     };
     window->set_items(items);
 
@@ -268,8 +223,8 @@ TEST(ItemsWindow, ItemsListUpdatedWhenFiltered)
 
     std::vector<Item> items
     {
-        Item(0, 55, 0, L"Type", 0, 0, {}, DirectX::SimpleMath::Vector3::Zero),
-        Item(1, 78, 0, L"Type", 0, 0, {}, DirectX::SimpleMath::Vector3::Zero)
+        Item(0, 55, 0, L"Type", 0, 0, {}, Vector3::Zero),
+        Item(1, 78, 0, L"Type", 0, 0, {}, Vector3::Zero)
     };
     window->set_items(items);
     window->set_current_room(78);
@@ -295,8 +250,8 @@ TEST(ItemsWindow, ItemsListUpdatedWhenNotFiltered)
 
     std::vector<Item> items
     {
-        Item(0, 55, 0, L"Type", 0, 0, {}, DirectX::SimpleMath::Vector3::Zero),
-        Item(1, 78, 0, L"Type", 0, 0, {}, DirectX::SimpleMath::Vector3::Zero)
+        Item(0, 55, 0, L"Type", 0, 0, {}, Vector3::Zero),
+        Item(1, 78, 0, L"Type", 0, 0, {}, Vector3::Zero)
     };
     window->set_items(items);
     TestImgui imgui([&]() { window->render(true); });
@@ -320,38 +275,6 @@ TEST(ItemsWindow, ItemsListUpdatedWhenNotFiltered)
         { ItemsWindow::Names::items_list, "##hide-1" }) & ImGuiItemStatusFlags_Checked);
 }
 
-/*
-TEST(ItemsWindow, SelectionSurvivesFiltering)
-{
-    auto window = register_test_module().build();
-
-    std::vector<Item> items
-    {
-        Item(0, 55, 0, L"Type", 0, 0, {}, DirectX::SimpleMath::Vector3::Zero),
-        Item(1, 78, 0, L"Type", 0, 0, {}, DirectX::SimpleMath::Vector3::Zero)
-    };
-    window->set_items(items);
-    window->set_current_room(78);
-
-    TestImgui imgui([&]() { window->render(true); });
-
-    imgui.click_element(
-        imgui.child_name("Items 0", { ItemsWindow::Names::item_list_panel }),
-        { ItemsWindow::Names::items_list, "1##1" },
-        false,
-        imgui.child_name("Items 0", { ItemsWindow::Names::item_list_panel, ItemsWindow::Names::items_list }));
-
-    // TODO: Check if selected
-
-    imgui.click_element(
-        imgui.child_name("Items 0", { ItemsWindow::Names::item_list_panel }),
-        { ItemsWindow::Names::track_room });
-
-    // TODO: Check if still selected
-    imgui.reset();
-    imgui.render();
-}
-*/
 TEST(ItemsWindow, TriggersLoadedForItem)
 {
     auto window = register_test_module().build();
@@ -360,8 +283,8 @@ TEST(ItemsWindow, TriggersLoadedForItem)
     auto trigger2 = std::make_shared<MockTrigger>()->with_number(1);
     std::vector<Item> items
     {
-        Item(0, 0, 0, L"Type", 0, 0, {}, DirectX::SimpleMath::Vector3::Zero),
-        Item(1, 0, 0, L"Type", 0, 0, { trigger1, trigger2 }, DirectX::SimpleMath::Vector3::Zero)
+        Item(0, 0, 0, L"Type", 0, 0, {}, Vector3::Zero),
+        Item(1, 0, 0, L"Type", 0, 0, { trigger1, trigger2 }, Vector3::Zero)
     };
     window->set_items(items);
     window->set_triggers({ trigger1, trigger2 });
@@ -391,8 +314,8 @@ TEST(ItemsWindow, TriggerSelectedEventRaised)
     auto trigger = std::make_shared<MockTrigger>();
     std::vector<Item> items
     {
-        Item(0, 0, 0, L"Type", 0, 0, {}, DirectX::SimpleMath::Vector3::Zero),
-        Item(1, 0, 0, L"Type", 0, 0, { trigger }, DirectX::SimpleMath::Vector3::Zero)
+        Item(0, 0, 0, L"Type", 0, 0, {}, Vector3::Zero),
+        Item(1, 0, 0, L"Type", 0, 0, { trigger }, Vector3::Zero)
     };
     window->set_items(items);
     window->set_triggers({ trigger });
@@ -413,13 +336,13 @@ TEST(ItemsWindow, TriggerSelectedEventRaised)
     ASSERT_TRUE(raised_trigger.has_value());
     ASSERT_EQ(raised_trigger.value().lock(), trigger);
 }
-/*
-TEST(ItemsWindow, ClickStatShowsBubble)
-{
-    auto bubble = std::make_unique<MockBubble>();
-    EXPECT_CALL(*bubble, show(testing::A<const Point&>())).Times(1);
 
-    auto window = register_test_module().with_bubble_source([&](auto&&...) { return std::move(bubble); }).build();
+TEST(ItemsWindow, ClickStatShowsBubbleAndCopies)
+{
+    auto clipboard = std::make_shared<MockClipboard>();
+    EXPECT_CALL(*clipboard, write).Times(1);
+
+    auto window = register_test_module().with_clipboard(clipboard).build();
 
     std::vector<Item> items
     {
@@ -428,14 +351,11 @@ TEST(ItemsWindow, ClickStatShowsBubble)
     window->set_items(items);
     window->set_selected_item(items[0]);
 
-    auto stats = window->root_control()->find<Listbox>(ItemsWindow::Names::stats_listbox);
-    ASSERT_NE(stats, nullptr);
+    TestImgui imgui([&]() { window->render(true); });
 
-    auto first_stat = stats->find<ui::Control>(Listbox::Names::row_name_format + "0");
-    ASSERT_NE(first_stat, nullptr);
-
-    auto value = first_stat->find<ui::Button>(ui::Listbox::Row::Names::cell_name_format + "Value");
-    ASSERT_NE(value, nullptr);
-    value->clicked(Point());
+    ASSERT_EQ(imgui.find_window("##Tooltip_00"), nullptr);
+    imgui.click_element(
+        imgui.child_name("Items 0", { ItemsWindow::Names::details_panel }),
+        { ItemsWindow::Names::item_stats, "Position" });
+    ASSERT_NE(imgui.find_window("##Tooltip_00"), nullptr);
 }
-*/
