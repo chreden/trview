@@ -49,7 +49,9 @@ TEST(ItemsWindow, AddToRouteEventRaised)
     window->set_selected_item(items[1]);
 
     TestImgui imgui([&]() { window->render(); });
-    imgui.click_element(imgui.child_name("Items 0", { ItemsWindow::Names::details_panel }), { ItemsWindow::Names::add_to_route_button });
+    imgui.click_element(imgui.id("Items 0")
+        .push_child(ItemsWindow::Names::details_panel)
+        .id(ItemsWindow::Names::add_to_route_button));
     ASSERT_TRUE(raised_item.has_value());
     ASSERT_EQ(raised_item.value().number(), 1);
 }
@@ -321,17 +323,15 @@ TEST(ItemsWindow, TriggerSelectedEventRaised)
     window->set_triggers({ trigger });
 
     TestImgui imgui([&]() { window->render(); });
-    imgui.click_element(
-        imgui.child_name("Items 0", { ItemsWindow::Names::item_list_panel }),
-        { ItemsWindow::Names::items_list, "1##1" },
-        false,
-        imgui.child_name("Items 0", { ItemsWindow::Names::item_list_panel, ItemsWindow::Names::items_list }));
+    imgui.click_element(imgui.id("Items 0")
+        .push_child(ItemsWindow::Names::item_list_panel)
+        .push(ItemsWindow::Names::items_list)
+        .id("1##1"), false, true);
 
-    imgui.click_element(
-        imgui.child_name("Items 0", { ItemsWindow::Names::details_panel }),
-        { ItemsWindow::Names::triggers_list, "0" },
-        false,
-        imgui.child_name("Items 0", { ItemsWindow::Names::details_panel, ItemsWindow::Names::triggers_list }));
+    imgui.click_element(imgui.id("Items 0")
+        .push_child(ItemsWindow::Names::details_panel)
+        .push(ItemsWindow::Names::triggers_list)
+        .id("0"), false, true);
 
     ASSERT_TRUE(raised_trigger.has_value());
     ASSERT_EQ(raised_trigger.value().lock(), trigger);

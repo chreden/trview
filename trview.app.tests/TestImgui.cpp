@@ -61,7 +61,6 @@ namespace trview
     namespace tests
     {
         TestImgui::TestImgui()
-            : _window(create_test_window(L"Test"))
         {
             _context = ImGui::CreateContext();
             _context->TestEngineHookItems = true;

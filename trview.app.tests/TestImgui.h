@@ -7,8 +7,6 @@
 #include "NullImGuiBackend.h"
 
 #include <unordered_map>
-#include <trview.common/Window.h>
-#include <trview.graphics/Device.h>
 
 namespace trview
 {
@@ -84,8 +82,6 @@ namespace trview
 
             TestImGuiId id(const std::string& window_name) const;
         private:
-            Window _window;
-            graphics::Device _device;
             RenderCallback _render_callback;
             std::unordered_map<ImGuiID, ImRect> _element_rects;
             std::unordered_map<ImGuiID, ImGuiItemStatusFlags> _status_flags;
