@@ -5,7 +5,6 @@
 
 // TODO:
 // Sorting on triggered by
-// Show copy bubble?
 
 using namespace trview::graphics;
 
@@ -304,6 +303,6 @@ namespace trview
 
     void ItemsWindow::set_number(int32_t number)
     {
-
+        _id = "Items " + std::to_string(number);
     }
 }

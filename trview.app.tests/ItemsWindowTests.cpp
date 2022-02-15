@@ -49,7 +49,7 @@ TEST(ItemsWindow, AddToRouteEventRaised)
     window->set_selected_item(items[1]);
 
     TestImgui imgui([&]() { window->render(); });
-    imgui.click_element(imgui.child_name("Items 0", { "Item Details" }), { ItemsWindow::Names::add_to_route_button });
+    imgui.click_element(imgui.child_name("Items 0", { ItemsWindow::Names::details_panel }), { ItemsWindow::Names::add_to_route_button });
     ASSERT_TRUE(raised_item.has_value());
     ASSERT_EQ(raised_item.value().number(), 1);
 }
@@ -354,8 +354,10 @@ TEST(ItemsWindow, ClickStatShowsBubbleAndCopies)
     TestImgui imgui([&]() { window->render(); });
 
     ASSERT_EQ(imgui.find_window("##Tooltip_00"), nullptr);
-    imgui.click_element(
-        imgui.child_name("Items 0", { ItemsWindow::Names::details_panel }),
-        { ItemsWindow::Names::item_stats, "Position" });
+    const auto id = imgui.id("Items 0")
+        .push_child(ItemsWindow::Names::details_panel)
+        .push(ItemsWindow::Names::item_stats)
+        .id("Position");
+    imgui.click_element(id);
     ASSERT_NE(imgui.find_window("##Tooltip_00"), nullptr);
 }

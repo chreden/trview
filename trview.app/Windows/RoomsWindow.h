@@ -26,6 +26,9 @@ namespace trview
             static const std::string minimap;
             static const std::string neighbours_listbox;
             static const std::string items_listbox;
+            static inline const std::string details_panel = "Room Details";
+            static inline const std::string properties = "Properties";
+            static inline const std::string bottom = "##bottom";
         };
 
         /// Create a rooms window as a child of the specified window.
@@ -75,9 +78,10 @@ namespace trview
         std::unique_ptr<IMapRenderer> _map_renderer;
         std::shared_ptr<IClipboard> _clipboard;
         trlevel::LevelVersion _level_version;
-        std::string _id;
+        std::string _id{ "Rooms 0" };
         Tooltip _map_tooltip;
         bool _scroll_to_room{ false };
+        std::optional<float> _tooltip_timer;
 
         // Map texture saved so that it is guaranteed to survive until ImGui renders.
         graphics::Texture _map_texture;

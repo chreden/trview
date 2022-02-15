@@ -71,9 +71,6 @@ namespace trview
     RoomsWindow::RoomsWindow(const IMapRenderer::Source& map_renderer_source, const std::shared_ptr<IClipboard>& clipboard)
         : _map_renderer(map_renderer_source(Size(341, 341))), _clipboard(clipboard)
     {
-        static int number = 0;
-        _id = "Rooms " + std::to_string(++number);
-
         _map_renderer->set_render_mode(IMapRenderer::RenderMode::Texture);
         _token_store += _map_renderer->on_sector_hover += [this](const std::shared_ptr<ISector>& sector)
         {
@@ -236,6 +233,13 @@ namespace trview
             render_rooms_list();
             ImGui::SameLine();
             render_room_details();
+
+            if (_tooltip_timer.has_value())
+            {
+                ImGui::BeginTooltip();
+                ImGui::Text("Copied");
+                ImGui::EndTooltip();
+            }
         }
         ImGui::End();
         ImGui::PopStyleVar();
@@ -335,7 +339,7 @@ namespace trview
         };
 
 
-        if (ImGui::BeginChild("Room Details", ImVec2(), true))
+        if (ImGui::BeginChild(Names::details_panel.c_str(), ImVec2(), true))
         {
             if (_selected_room < _all_rooms.size())
             {
@@ -411,18 +415,19 @@ namespace trview
                         if (ImGui::Selectable(name.c_str(), false, ImGuiSelectableFlags_SpanAllColumns))
                         {
                             _clipboard->write(to_utf16(value));
+                            _tooltip_timer = 0.0f;
                         }
                         ImGui::TableNextColumn();
                         ImGui::Text(value.c_str());
                     };
 
-                    if (ImGui::BeginTable("##bottom", 2))
+                    if (ImGui::BeginTable(Names::bottom.c_str(), 2))
                     {
                         ImGui::TableNextRow();
                         ImGui::TableNextColumn();
 
-                        ImGui::Text("Room Details");
-                        if (ImGui::BeginTable("Room Details", 2, ImGuiTableFlags_ScrollY, ImVec2(170, 150)))
+                        ImGui::Text("Properties");
+                        if (ImGui::BeginTable(Names::properties.c_str(), 2, ImGuiTableFlags_ScrollY, ImVec2(170, 150)))
                         {
                             ImGui::TableSetupColumn("Name");
                             ImGui::TableSetupColumn("Value");
@@ -559,5 +564,13 @@ namespace trview
 
     void RoomsWindow::update(float delta)
     {
+        if (_tooltip_timer.has_value())
+        {
+            _tooltip_timer = _tooltip_timer.value() + delta;
+            if (_tooltip_timer.value() > 0.6f)
+            {
+                _tooltip_timer.reset();
+            }
+        }
     }
 }

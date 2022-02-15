@@ -14,6 +14,25 @@ namespace trview
 {
     namespace tests
     {
+        class TestImGuiId
+        {
+        public:
+            explicit TestImGuiId(ImGuiWindow* window);
+            TestImGuiId push_child(const std::string& name);
+            TestImGuiId push_override(const std::string& name);
+            TestImGuiId push(const std::string& name);
+            TestImGuiId id(const std::string& name);
+            ImGuiID id() const;
+
+            std::string name() const;
+            ImGuiWindow* root() const;
+        private:
+            ImGuiWindow* _window{ nullptr };
+            std::string _name;
+            ImGuiID _id;
+            ImGuiWindow* _root_window{ nullptr };
+        };
+
         class TestImgui final
         {
         public:
@@ -29,6 +48,7 @@ namespace trview
             /// <param name="window_name">The window that contains the element.</param>
             /// <param name="path_to_element">The path to the element including containing elements.</param>
             void click_element(const std::string& window_name, const std::vector<std::string>& path_to_element, bool show_context_menu = false, std::string hover = "");
+            void click_element(TestImGuiId id, bool show_context_menu = false, bool hover = false);
 
             void enter_text(const std::string& window_name, const std::vector<std::string>& path_to_element, const std::string& text);
 
@@ -61,6 +81,8 @@ namespace trview
             ImGuiID get_id(ImGuiWindow* window, const std::vector<std::string>& path_to_element) const;
             std::string popup_name(const std::string& name) const;
             std::string child_name(const std::string& window_name, const std::vector<std::string>& child_path) const;
+
+            TestImGuiId id(const std::string& window_name) const;
         private:
             Window _window;
             graphics::Device _device;

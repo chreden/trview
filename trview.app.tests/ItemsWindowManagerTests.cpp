@@ -2,7 +2,6 @@
 #include <trview.common/Mocks/Windows/IShortcuts.h>
 #include <trview.app/Mocks/Windows/IItemsWindow.h>
 #include <trview.app/Elements/Types.h>
-#include <trview.app/Mocks/Geometry/IMesh.h>
 #include <trview.app/Mocks/Elements/ITrigger.h>
 
 using namespace trview;

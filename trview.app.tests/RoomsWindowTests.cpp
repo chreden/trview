@@ -1,25 +1,14 @@
 #include <trview.app/Windows/RoomsWindow.h>
 #include <trview.app/Elements/Types.h>
-#include <trview.graphics/mocks/IDeviceWindow.h>
 #include <trview.app/Mocks/UI/IMapRenderer.h>
 #include <trview.app/Mocks/Elements/IRoom.h>
-#include <trview.input/Mocks/IMouse.h>
 #include <trview.app/Mocks/Elements/ITrigger.h>
 #include <trview.common/Mocks/Windows/IClipboard.h>
-#include <trview.common/Mocks/Windows/IShell.h>
-
-/*
+#include "TestImgui.h"
 
 using namespace trview;
 using namespace trview::tests;
-using namespace trview::graphics;
-using namespace trview::graphics::mocks;
-using namespace trview::ui;
-using namespace trview::ui::mocks;
-using namespace trview::ui::render;
-using namespace trview::ui::render::mocks;
 using namespace trview::mocks;
-using namespace trview::input::mocks;
 
 namespace
 {
@@ -27,34 +16,24 @@ namespace
     {
         struct test_module
         {
-            IDeviceWindow::Source device_window_source{ [](auto&&...) { return std::make_unique<MockDeviceWindow>(); } };
-            IRenderer::Source renderer_source{ [](auto&&...) { return std::make_unique<MockRenderer>(); } };
             IMapRenderer::Source map_renderer_source{ [](auto&&...) { return std::make_unique<MockMapRenderer>(); } };
-            IInput::Source input_source{ [&](auto&&...)
-                    {
-                        auto input = std::make_unique<MockInput>();
-                        EXPECT_CALL(*input, mouse).WillRepeatedly(testing::Return(std::make_shared<MockMouse>()));
-                        return std::move(input);
-                    } };
-            trview::Window window{ create_test_window(L"RoomsWindowTests") };
             std::shared_ptr<IClipboard> clipboard{ std::make_shared<MockClipboard>() };
-            IBubble::Source bubble_source{ [](auto&&...) { return std::make_unique<MockBubble>(); } };
-
-            test_module& with_bubble_source(const IBubble::Source& source)
-            {
-                this->bubble_source = source;
-                return *this;
-            }
 
             std::unique_ptr<RoomsWindow> build()
             {
-                return std::make_unique<RoomsWindow>(device_window_source, renderer_source, map_renderer_source, input_source, clipboard, bubble_source, window, std::make_shared<JsonLoader>(std::make_shared<MockShell>()));
+                return std::make_unique<RoomsWindow>(map_renderer_source, clipboard);
+            }
+
+            test_module& with_clipboard(const std::shared_ptr<IClipboard>& clipboard)
+            {
+                this->clipboard = clipboard;
+                return *this;
             }
         };
         return test_module{};
     }
 }
-
+/*
 TEST(RoomsWindow, ClearSelectedTriggerClearsSelection)
 {
     auto window = register_test_module().build();
@@ -63,7 +42,7 @@ TEST(RoomsWindow, ClearSelectedTriggerClearsSelection)
 
     window->set_rooms({ room });
     window->set_triggers({ trigger });
-
+    
     auto list = window->root_control()->find<ui::Listbox>(RoomsWindow::Names::rooms_listbox);
     ASSERT_NE(list, nullptr);
 
@@ -128,30 +107,31 @@ TEST(RoomsWindow, SetTriggersClearsSelection)
     window->set_triggers({});
     ASSERT_FALSE(triggers_list->selected_item().has_value());
 }
+*/
 
-
-TEST(RoomsWindow, ClickStatShowsBubble)
+TEST(RoomsWindow, ClickStatShowsBubbleAndCopies)
 {
-    auto bubble = std::make_unique<MockBubble>();
-    EXPECT_CALL(*bubble, show(testing::A<const Point&>())).Times(1);
-
-    auto window = register_test_module().with_bubble_source([&](auto&&...) { return std::move(bubble); }).build();
+    auto clipboard = std::make_shared<MockClipboard>();
+    EXPECT_CALL(*clipboard, write).Times(1);
+    auto window = register_test_module().with_clipboard(clipboard).build();
 
     auto room = std::make_shared<MockRoom>();
     window->set_rooms({ room });
     window->set_current_room(0);
 
-    auto stats = window->root_control()->find<Listbox>(RoomsWindow::Names::stats_listbox);
-    ASSERT_NE(stats, nullptr);
+    TestImgui imgui([&]() { window->render(); });
 
-    auto first_stat = stats->find<ui::Control>(Listbox::Names::row_name_format + "0");
-    ASSERT_NE(first_stat, nullptr);
+    ASSERT_EQ(imgui.find_window("##Tooltip_00"), nullptr);
 
-    auto value = first_stat->find<ui::Button>(ui::Listbox::Row::Names::cell_name_format + "Value");
-    ASSERT_NE(value, nullptr);
-    value->clicked(Point());
+    const auto id = imgui.id("Rooms 0")
+        .push_child(RoomsWindow::Names::details_panel)
+        .push_override(RoomsWindow::Names::bottom)
+        .push(RoomsWindow::Names::properties)
+        .id("X");
+    imgui.click_element(id, false, true);
 }
 
+/*
 TEST(RoomsWindow, LevelVersionChangesFlags)
 {
     auto room = std::make_shared<MockRoom>();
@@ -185,5 +165,4 @@ TEST(RoomsWindow, LevelVersionChangesFlags)
     ASSERT_THAT(names, testing::Not(testing::Contains(L"Bit 7")));
     ASSERT_THAT(names, testing::Contains(L"Quicksand / 7"));
 }
-
 */

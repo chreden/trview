@@ -124,6 +124,35 @@ namespace trview
             _context->IO.MouseReleased[1] = false;
         }
 
+        void TestImgui::click_element(TestImGuiId test_id, bool show_context_menu, bool hover)
+        {
+            const auto window = test_id.root();
+            const auto id = test_id.id();
+            const auto click_on_element = [&]()
+            {
+                _context->HoveredWindow = hover ? find_window(test_id.name()) : window;
+                _tracking_id = id;
+                const auto bb = _element_rects[id];
+                _context->HoveredId = id;
+                _context->IO.MousePos = ImVec2(bb.Min.y, bb.Min.y);
+                _context->IO.MouseClicked[0] = true;
+
+                if (show_context_menu)
+                {
+                    _context->IO.MouseReleased[0] = true;
+                    _context->IO.MouseDownDurationPrev[0] = _context->IO.KeyRepeatDelay;
+                    _context->ActiveId = id;
+                    _context->CurrentWindow = find_window("Debug##Default");
+                    _context->MouseViewport = window->Viewport;
+                }
+            };
+            render(click_on_element);
+
+            _tracking_id = 0;
+            _context->IO.MouseClicked[0] = false;
+            _context->IO.MouseReleased[1] = false;
+        }
+
         void TestImgui::enter_text(const std::string& window_name, const std::vector<std::string>& path_to_element, const std::string& text)
         {
             const auto focus_on_element = [&]()
@@ -322,10 +351,75 @@ namespace trview
                 previous_name = stream.str();
             }
             return stream.str();
-            // auto id = get_id(find_window(window_name), { child_name });
-            // std::stringstream stream;
-            // stream << window_name << '/' << child_name << '_' << std::hex << std::uppercase << std::setfill('0') << std::setw(8) << id;
-            // return stream.str();
+        }
+
+        TestImGuiId TestImgui::id(const std::string& window_name) const
+        {
+            auto window = find_window(window_name);
+            return TestImGuiId(window);
+        }
+
+        TestImGuiId TestImGuiId::push_child(const std::string& name)
+        {
+            auto context = ImGui::GetCurrentContext();
+            auto id = _window->GetID(name.c_str());
+
+            std::stringstream stream;
+            stream << _window->Name << '/' << name << '_' << std::hex << std::uppercase << std::setfill('0') << std::setw(8) << id;
+            auto child_name = stream.str();
+
+            for (const auto& window : context->Windows)
+            {
+                if (window->Name == child_name)
+                {
+                    return TestImGuiId(window);
+                }
+            }
+            throw 0;
+        }
+
+        TestImGuiId TestImGuiId::push_override(const std::string& name)
+        {
+            auto id = _window->GetID(name.c_str());
+            _window->IDStack.push_back(id);
+            return *this;
+        }
+
+        TestImGuiId TestImGuiId::push(const std::string& name)
+        {
+            auto new_id = _window->GetID(name.c_str());
+            std::stringstream stream;
+            stream << _window->Name << '/' << name << '_' << std::hex << std::uppercase << std::setfill('0') << std::setw(8) << new_id;
+            _name = stream.str();
+            _window->IDStack.push_back(new_id);
+            return *this;
+        }
+
+        TestImGuiId::TestImGuiId(ImGuiWindow* window)
+            : _window(window), _id(window->ID), _root_window(window)
+        {
+        }
+
+        TestImGuiId TestImGuiId::id(const std::string& name)
+        {
+            _id = _window->GetID(name.c_str());
+            _window->IDStack.clear();
+            return *this;
+        }
+
+        ImGuiID TestImGuiId::id() const
+        {
+            return _id;
+        }
+
+        std::string TestImGuiId::name() const
+        {
+            return _name;
+        }
+
+        ImGuiWindow* TestImGuiId::root() const
+        {
+            return _root_window;
         }
     }
 }
