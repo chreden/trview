@@ -304,6 +304,11 @@ namespace trview
             return _element_rects.find(id) != _element_rects.end();
         }
 
+        bool TestImgui::element_present(TestImGuiId id) const
+        {
+            return _element_rects.find(id.id()) != _element_rects.end();
+        }
+
         void TestImgui::reset()
         {
             _element_rects.clear();
@@ -402,7 +407,10 @@ namespace trview
         TestImGuiId TestImGuiId::id(const std::string& name)
         {
             _id = _window->GetID(name.c_str());
-            _window->IDStack.clear();
+            while (_window->IDStack.size() > 1)
+            {
+                _window->IDStack.pop_back();
+            }
             return *this;
         }
 

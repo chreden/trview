@@ -129,9 +129,11 @@ TEST(RoomsWindow, ClickStatShowsBubbleAndCopies)
         .push(RoomsWindow::Names::properties)
         .id("X");
     imgui.click_element(id, false, true);
+
+    ASSERT_NE(imgui.find_window("##Tooltip_00"), nullptr);
 }
 
-/*
+
 TEST(RoomsWindow, LevelVersionChangesFlags)
 {
     auto room = std::make_shared<MockRoom>();
@@ -142,27 +144,38 @@ TEST(RoomsWindow, LevelVersionChangesFlags)
     window->set_rooms({ room });
     window->set_current_room(0);
 
-    auto stats_box = window->root_control()->find<Listbox>(RoomsWindow::Names::stats_listbox);
-    const auto get_item_names = [](const auto& items)
-    {
-        std::vector<std::wstring> names;
-        for (const auto& item : items)
-        {
-            names.push_back(item.value(L"Name"));
-        }
-        return names;
-    };
-    auto names = get_item_names(stats_box->items());
+    TestImgui imgui([&]() { window->render(); });
 
-    ASSERT_THAT(names, testing::Contains(L"Bit 7"));
-    ASSERT_THAT(names, testing::Not(testing::Contains(L"Quicksand / 7")));
+    ASSERT_TRUE(imgui.element_present(
+            imgui.id("Rooms 0")
+            .push_child(RoomsWindow::Names::details_panel)
+            .push_override(RoomsWindow::Names::bottom)
+            .push(RoomsWindow::Names::properties)
+            .id("Bit 7")));
+    ASSERT_FALSE(imgui.element_present(
+        imgui.id("Rooms 0")
+        .push_child(RoomsWindow::Names::details_panel)
+        .push_override(RoomsWindow::Names::bottom)
+        .push(RoomsWindow::Names::properties)
+        .id("Quicksand / 7")));
 
     window->set_level_version(trlevel::LevelVersion::Tomb3);
     window->set_rooms({ room });
     window->set_current_room(0);
-    names = get_item_names(stats_box->items());
 
-    ASSERT_THAT(names, testing::Not(testing::Contains(L"Bit 7")));
-    ASSERT_THAT(names, testing::Contains(L"Quicksand / 7"));
+    imgui.reset();
+    imgui.render();
+
+    ASSERT_FALSE(imgui.element_present(
+        imgui.id("Rooms 0")
+        .push_child(RoomsWindow::Names::details_panel)
+        .push_override(RoomsWindow::Names::bottom)
+        .push(RoomsWindow::Names::properties)
+        .id("Bit 7")));
+    ASSERT_TRUE(imgui.element_present(
+        imgui.id("Rooms 0")
+        .push_child(RoomsWindow::Names::details_panel)
+        .push_override(RoomsWindow::Names::bottom)
+        .push(RoomsWindow::Names::properties)
+        .id("Quicksand / 7")));
 }
-*/

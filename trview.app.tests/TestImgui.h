@@ -63,6 +63,7 @@ namespace trview
             void add_style_colours(ImGuiID id, const std::array<ImVec4, ImGuiCol_COUNT>& colours);
 
             bool element_present(const std::string& window_name, const std::vector<std::string>& path_to_element) const;
+            bool element_present(TestImGuiId id) const;
 
             ImGuiItemStatusFlags status_flags(const std::string& window_name, const std::vector<std::string>& path_to_element) const;
             ImGuiItemFlags item_flags(const std::string& window_name, const std::vector<std::string>& path_to_element) const;
