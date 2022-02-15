@@ -28,7 +28,7 @@ namespace trview
 
         explicit ItemsWindow(const std::shared_ptr<IClipboard>& clipboard);
         virtual ~ItemsWindow() = default;
-        virtual void render(bool vsync) override;
+        virtual void render() override;
         virtual void set_items(const std::vector<Item>& items) override;
         virtual void update_items(const std::vector<Item>& items) override;
         virtual void set_triggers(const std::vector<std::weak_ptr<ITrigger>>& triggers) override;

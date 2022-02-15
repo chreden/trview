@@ -40,8 +40,7 @@ namespace trview
         Event<> on_window_closed;
 
         /// Render the window.
-        /// @param vsync Whether to use vsync or not.
-        virtual void render(bool vsync) = 0;
+        virtual void render() = 0;
 
         /// Load the waypoints from the route.
         /// @param route The route to load from.

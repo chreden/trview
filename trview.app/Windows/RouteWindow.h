@@ -40,7 +40,7 @@ namespace trview
         explicit RouteWindow(const trview::Window& parent, const std::shared_ptr<IClipboard>& clipboard, const std::shared_ptr<IDialogs>& dialogs,
             const std::shared_ptr<IFiles>& files, const std::shared_ptr<IShell>& shell);
         virtual ~RouteWindow() = default;
-        virtual void render(bool vsync) override;
+        virtual void render() override;
         virtual void set_route(IRoute* route) override;
         virtual void select_waypoint(uint32_t index) override;
         virtual void set_items(const std::vector<Item>& items) override;

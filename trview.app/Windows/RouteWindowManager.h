@@ -14,7 +14,7 @@ namespace trview
         explicit RouteWindowManager(const Window& window, const std::shared_ptr<IShortcuts>& shortcuts, const IRouteWindow::Source& route_window_source);
         virtual ~RouteWindowManager() = default;
         virtual std::optional<int> process_message(UINT message, WPARAM wParam, LPARAM lParam) override;
-        virtual void render(bool vsync) override;
+        virtual void render() override;
         virtual void set_route(IRoute* route) override;
         virtual void create_window() override;
         virtual void set_items(const std::vector<Item>& items) override;

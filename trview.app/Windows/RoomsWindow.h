@@ -34,7 +34,7 @@ namespace trview
         explicit RoomsWindow(const IMapRenderer::Source& map_renderer_source, const std::shared_ptr<IClipboard>& clipboard);
         virtual ~RoomsWindow() = default;
         virtual void clear_selected_trigger() override;
-        virtual void render(bool vsync) override;
+        virtual void render() override;
         virtual void set_current_room(uint32_t room) override;
         virtual void set_items(const std::vector<Item>& items) override;
         virtual void set_level_version(trlevel::LevelVersion version) override;

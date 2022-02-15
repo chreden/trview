@@ -247,7 +247,7 @@ namespace trview
         return stay_open;
     }
 
-    void RouteWindow::render(bool vsync)
+    void RouteWindow::render()
     {
         if (!render_route_window())
         {

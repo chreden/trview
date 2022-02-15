@@ -48,7 +48,7 @@ TEST(ItemsWindow, AddToRouteEventRaised)
     window->set_items(items);
     window->set_selected_item(items[1]);
 
-    TestImgui imgui([&]() { window->render(true); });
+    TestImgui imgui([&]() { window->render(); });
     imgui.click_element(imgui.child_name("Items 0", { "Item Details" }), { ItemsWindow::Names::add_to_route_button });
     ASSERT_TRUE(raised_item.has_value());
     ASSERT_EQ(raised_item.value().number(), 1);
@@ -68,7 +68,7 @@ TEST(ItemsWindow, ItemSelectedNotRaisedWhenSyncItemDisabled)
     };
     window->set_items(items);
 
-    TestImgui imgui([&]() { window->render(true); });
+    TestImgui imgui([&]() { window->render(); });
 
     imgui.click_element(
         imgui.child_name("Items 0", { ItemsWindow::Names::item_list_panel }),
@@ -97,7 +97,7 @@ TEST(ItemsWindow, ItemSelectedRaisedWhenSyncItemEnabled)
     };
     window->set_items(items);
 
-    TestImgui imgui([&]() { window->render(true); });
+    TestImgui imgui([&]() { window->render(); });
     imgui.click_element(
         imgui.child_name("Items 0", { ItemsWindow::Names::item_list_panel }),
         { ItemsWindow::Names::items_list, "1##1" },
@@ -126,7 +126,7 @@ TEST(ItemsWindow, ItemVisibilityRaised)
     };
     window->set_items(items);
 
-    TestImgui imgui([&]() { window->render(true); });
+    TestImgui imgui([&]() { window->render(); });
     imgui.click_element(
         imgui.child_name("Items 0", { ItemsWindow::Names::item_list_panel }),
         { ItemsWindow::Names::items_list, "##hide-1" },
@@ -153,7 +153,7 @@ TEST(ItemsWindow, ItemsListNotFilteredWhenRoomSetAndTrackRoomDisabled)
     window->set_items(items);
     window->set_current_room(78);
 
-    TestImgui imgui([&]() { window->render(true); });
+    TestImgui imgui([&]() { window->render(); });
     imgui.click_element(
         imgui.child_name("Items 0", { ItemsWindow::Names::item_list_panel }),
         { ItemsWindow::Names::items_list, "0##0" },
@@ -179,7 +179,7 @@ TEST(ItemsWindow, ItemsListFilteredWhenRoomSetAndTrackRoomEnabled)
     window->set_items(items);
     window->set_current_room(78);
 
-    TestImgui imgui([&]() { window->render(true); });
+    TestImgui imgui([&]() { window->render(); });
 
     imgui.click_element(
         imgui.child_name("Items 0", { ItemsWindow::Names::item_list_panel }),
@@ -206,7 +206,7 @@ TEST(ItemsWindow, ItemsListPopulatedOnSet)
     };
     window->set_items(items);
 
-    TestImgui imgui([&]() { window->render(true); });
+    TestImgui imgui([&]() { window->render(); });
 
     for (auto i = 0; i < items.size(); ++i)
     {
@@ -229,7 +229,7 @@ TEST(ItemsWindow, ItemsListUpdatedWhenFiltered)
     window->set_items(items);
     window->set_current_room(78);
 
-    TestImgui imgui([&]() { window->render(true); });
+    TestImgui imgui([&]() { window->render(); });
     imgui.click_element(
         imgui.child_name("Items 0", { ItemsWindow::Names::item_list_panel }),
         { ItemsWindow::Names::track_room });
@@ -254,7 +254,7 @@ TEST(ItemsWindow, ItemsListUpdatedWhenNotFiltered)
         Item(1, 78, 0, L"Type", 0, 0, {}, Vector3::Zero)
     };
     window->set_items(items);
-    TestImgui imgui([&]() { window->render(true); });
+    TestImgui imgui([&]() { window->render(); });
 
     ASSERT_TRUE(imgui.element_present(
         imgui.child_name("Items 0", { ItemsWindow::Names::item_list_panel }),
@@ -289,7 +289,7 @@ TEST(ItemsWindow, TriggersLoadedForItem)
     window->set_items(items);
     window->set_triggers({ trigger1, trigger2 });
 
-    TestImgui imgui([&]() { window->render(true); });
+    TestImgui imgui([&]() { window->render(); });
     imgui.click_element(
         imgui.child_name("Items 0", { ItemsWindow::Names::item_list_panel }),
         { ItemsWindow::Names::items_list, "1##1" },
@@ -320,7 +320,7 @@ TEST(ItemsWindow, TriggerSelectedEventRaised)
     window->set_items(items);
     window->set_triggers({ trigger });
 
-    TestImgui imgui([&]() { window->render(true); });
+    TestImgui imgui([&]() { window->render(); });
     imgui.click_element(
         imgui.child_name("Items 0", { ItemsWindow::Names::item_list_panel }),
         { ItemsWindow::Names::items_list, "1##1" },
@@ -351,7 +351,7 @@ TEST(ItemsWindow, ClickStatShowsBubbleAndCopies)
     window->set_items(items);
     window->set_selected_item(items[0]);
 
-    TestImgui imgui([&]() { window->render(true); });
+    TestImgui imgui([&]() { window->render(); });
 
     ASSERT_EQ(imgui.find_window("##Tooltip_00"), nullptr);
     imgui.click_element(

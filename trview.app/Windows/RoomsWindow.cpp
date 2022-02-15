@@ -218,7 +218,7 @@ namespace trview
         }
     }
 
-    void RoomsWindow::render(bool vsync)
+    void RoomsWindow::render()
     {
         if (!render_rooms_window())
         {

@@ -33,8 +33,7 @@ namespace trview
         virtual void clear_selected_trigger() = 0;
 
         /// Render the window.
-        /// @param vsync Whether to use vsync or not.
-        virtual void render(bool vsync) = 0;
+        virtual void render() = 0;
 
         virtual std::weak_ptr<ITrigger> selected_trigger() const = 0;
 

@@ -23,7 +23,7 @@ namespace trview
 
         explicit TriggersWindow(const std::shared_ptr<IClipboard>& clipboard);
         virtual ~TriggersWindow() = default;
-        virtual void render(bool vsync) override;
+        virtual void render() override;
         virtual void set_triggers(const std::vector<std::weak_ptr<ITrigger>>& triggers) override;
         virtual void update_triggers(const std::vector<std::weak_ptr<ITrigger>>& triggers) override;
         virtual void clear_selected_trigger() override;

@@ -582,10 +582,11 @@ namespace trview
 
         ImGui::PushFont(_font);
 
-        _items_windows->render(_settings.vsync);
-        _triggers_windows->render(_settings.vsync);
-        _rooms_windows->render(_settings.vsync);
-        _route_window->render(_settings.vsync);
+        ImGui::ShowStackToolWindow();
+        _items_windows->render();
+        _triggers_windows->render();
+        _rooms_windows->render();
+        _route_window->render();
         _viewer->render_ui();
 
         ImGui::PopFont();

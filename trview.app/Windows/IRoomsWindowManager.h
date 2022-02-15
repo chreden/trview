@@ -18,8 +18,7 @@ namespace trview
         Event<std::weak_ptr<ITrigger>> on_trigger_selected;
 
         /// Render all of the rooms windows.
-        /// @param vsync Whether to use vsync.
-        virtual void render(bool vsync) = 0;
+        virtual void render() = 0;
 
         /// Set the items in the current level.
         virtual void set_items(const std::vector<Item>& items) = 0;

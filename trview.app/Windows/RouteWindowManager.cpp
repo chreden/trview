@@ -50,7 +50,7 @@ namespace trview
         _route_window->select_waypoint(_selected_waypoint);
     }
 
-    void RouteWindowManager::render(bool vsync)
+    void RouteWindowManager::render()
     {
         if (_closing)
         {
@@ -60,7 +60,7 @@ namespace trview
 
         if (_route_window)
         {
-            _route_window->render(vsync);
+            _route_window->render();
         }
     }
 

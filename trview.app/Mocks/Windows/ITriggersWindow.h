@@ -10,7 +10,7 @@ namespace trview
         {
         public:
             MOCK_METHOD(void, clear_selected_trigger, (), (override));
-            MOCK_METHOD(void, render, (bool), (override));
+            MOCK_METHOD(void, render, (), (override));
             MOCK_METHOD(std::weak_ptr<ITrigger>, selected_trigger, (), (const, override));
             MOCK_METHOD(void, set_current_room, (uint32_t), (override));
             MOCK_METHOD(void, set_items, (const std::vector<Item>&), (override));

@@ -281,7 +281,7 @@ namespace trview
         return stay_open;
     }
 
-    void ItemsWindow::render(bool vsync)
+    void ItemsWindow::render()
     {
         if (!render_items_window())
         {

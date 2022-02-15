@@ -20,8 +20,7 @@ namespace trview
         Event<std::weak_ptr<ITrigger>> on_add_to_route;
 
         /// Render all of the triggers windows.
-        /// @param vsync Whether to use vsync.
-        virtual void render(bool vsync) = 0;
+        virtual void render() = 0;
 
         /// Set the items to use in the windows.
         /// @param items The items in the level.

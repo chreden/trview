@@ -30,8 +30,7 @@ namespace trview
         virtual void clear_selected_trigger() = 0;
 
         /// Render the window.
-        /// @param vsync Whether to use vsync or not.
-        virtual void render(bool vsync) = 0;
+        virtual void render() = 0;
 
         /// Set the current room that the viewer is focusing on.
         /// @param room The current room.

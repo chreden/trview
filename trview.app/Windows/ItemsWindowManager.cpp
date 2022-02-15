@@ -18,7 +18,7 @@ namespace trview
         return {};
     }
 
-    void ItemsWindowManager::render(bool vsync)
+    void ItemsWindowManager::render()
     {
         if (!_closing_windows.empty())
         {
@@ -32,7 +32,7 @@ namespace trview
 
         for (auto& window : _windows)
         {
-            window->render(vsync);
+            window->render();
         }
     }
 

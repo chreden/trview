@@ -100,7 +100,7 @@ namespace trview
         return _selected_trigger;
     }
 
-    void TriggersWindow::render(bool vsync)
+    void TriggersWindow::render()
     {
         if (!render_triggers_window())
         {

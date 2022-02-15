@@ -25,7 +25,7 @@ namespace trview
         explicit ItemsWindowManager(const Window& window, const std::shared_ptr<IShortcuts>& shortcuts, const IItemsWindow::Source& items_window_source);
         virtual ~ItemsWindowManager() = default;
         virtual std::optional<int> process_message(UINT message, WPARAM wParam, LPARAM lParam) override;
-        virtual void render(bool vsync) override;
+        virtual void render() override;
         virtual void set_items(const std::vector<Item>& items) override;
         virtual void set_item_visible(const Item& item, bool visible) override;
         virtual void set_triggers(const std::vector<std::weak_ptr<ITrigger>>& triggers) override;
