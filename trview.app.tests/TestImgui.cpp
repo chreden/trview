@@ -257,6 +257,11 @@ namespace trview
             return _status_flags.find(id)->second;
         }
 
+        ImGuiItemStatusFlags TestImgui::status_flags(TestImGuiId id) const
+        {
+            return _status_flags.find(id.id())->second;
+        }
+
         ImGuiItemStatusFlags TestImgui::item_flags(const std::string& window_name, const std::vector<std::string>& path_to_element) const
         {
             const auto window = find_window(window_name);

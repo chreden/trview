@@ -66,6 +66,7 @@ namespace trview
             bool element_present(TestImGuiId id) const;
 
             ImGuiItemStatusFlags status_flags(const std::string& window_name, const std::vector<std::string>& path_to_element) const;
+            ImGuiItemStatusFlags status_flags(TestImGuiId id) const;
             ImGuiItemFlags item_flags(const std::string& window_name, const std::vector<std::string>& path_to_element) const;
             std::string item_text(const std::string& window_name, const std::vector<std::string>& path_to_element) const;
             Colour style_colour(const std::string& window_name, const std::vector<std::string>& path_to_element, ImGuiCol colour) const;
