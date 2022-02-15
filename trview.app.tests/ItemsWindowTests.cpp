@@ -65,8 +65,8 @@ TEST(ItemsWindow, ItemSelectedNotRaisedWhenSyncItemDisabled)
 
     std::vector<Item> items
     {
-        Item(0, 0, 0, L"Type", 0, 0, {}, DirectX::SimpleMath::Vector3::Zero),
-        Item(1, 0, 0, L"Type", 0, 0, {}, DirectX::SimpleMath::Vector3::Zero)
+        Item(0, 0, 0, L"Type", 0, 0, {}, Vector3::Zero),
+        Item(1, 0, 0, L"Type", 0, 0, {}, Vector3::Zero)
     };
     window->set_items(items);
 
@@ -333,7 +333,7 @@ TEST(ItemsWindow, ClickStatShowsBubbleAndCopies)
 
     std::vector<Item> items
     {
-        Item(0, 0, 0, L"Test Type", 0, 0, {}, DirectX::SimpleMath::Vector3::Zero)
+        Item(0, 0, 0, L"Test Type", 0, 0, {}, Vector3::Zero)
     };
     window->set_items(items);
     window->set_selected_item(items[0]);
