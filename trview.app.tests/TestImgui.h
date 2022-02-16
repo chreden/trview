@@ -5,6 +5,7 @@
 #include <external/imgui/imgui.h>
 #include <external/imgui/imgui_internal.h>
 #include "NullImGuiBackend.h"
+#include "TestImGuiId.h"
 
 #include <unordered_map>
 
@@ -12,26 +13,6 @@ namespace trview
 {
     namespace tests
     {
-        class TestImGuiId
-        {
-        public:
-            explicit TestImGuiId(ImGuiWindow* window);
-            TestImGuiId push_popup(const std::string& name);
-            TestImGuiId push_child(const std::string& name);
-            TestImGuiId push_override(const std::string& name);
-            TestImGuiId push(const std::string& name);
-            TestImGuiId id(const std::string& name);
-            ImGuiID id() const;
-
-            std::string name() const;
-            ImGuiWindow* root() const;
-        private:
-            ImGuiWindow* _window{ nullptr };
-            std::string _name;
-            ImGuiID _id;
-            ImGuiWindow* _root_window{ nullptr };
-        };
-
         class TestImgui final
         {
         public:
@@ -64,7 +45,6 @@ namespace trview
             void render(const std::function<void()>& pre_render_callback);
             void reset();
             ImGuiWindow* find_window(const std::string& name) const;
-            ImGuiID get_id(ImGuiWindow* window, const std::vector<std::string>& path_to_element) const;
             TestImGuiId id(const std::string& window_name) const;
             TestImGuiId popup_id(const std::string& popup_name) const;
         private:

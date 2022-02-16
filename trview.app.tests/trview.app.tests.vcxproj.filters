@@ -129,6 +129,9 @@
     <ClCompile Include="NullImGuiBackend.cpp">
       <Filter>ImGui</Filter>
     </ClCompile>
+    <ClCompile Include="TestImGuiId.cpp">
+      <Filter>ImGui</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Input">
@@ -168,6 +171,9 @@
       <Filter>ImGui</Filter>
     </ClInclude>
     <ClInclude Include="NullImGuiBackend.h">
+      <Filter>ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="TestImGuiId.h">
       <Filter>ImGui</Filter>
     </ClInclude>
   </ItemGroup>
