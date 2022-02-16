@@ -14,7 +14,7 @@ TEST(GoTo, Name)
     ASSERT_EQ(window.name(), L"Item");
 
     TestImgui imgui([&]() { window.render(); });
-    ASSERT_NE(imgui.find_window(imgui.popup_name("Go To Item")), nullptr);
+    ASSERT_NE(imgui.find_window(imgui.popup_id("Go To Item").name()), nullptr);
 }
 /*
 TEST(GoTo, OnSelectedRaised)
@@ -30,10 +30,12 @@ TEST(GoTo, OnSelectedRaised)
     };
 
     TestImgui imgui([&]() { window.render(); });
-    imgui.click_element(imgui.popup_name("Go To Item"), { "##gotoentry", "+" });
+    imgui.enter_text(imgui.popup_name("Go To Item"), { "##gotoentry" }, "15");
+    // imgui.click_element(imgui.popup_name("Go To Item"), { "##gotoentry" });
+    // imgui.click_element(imgui.popup_name("Go To Item"), { "##gotoentry", "+" });
 
     ASSERT_TRUE(raised.has_value());
-    ASSERT_EQ(raised.value(), 1u);
+    ASSERT_EQ(raised.value(), 15u);
     ASSERT_FALSE(window.visible());
 }
 
