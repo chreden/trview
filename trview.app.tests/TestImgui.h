@@ -68,8 +68,10 @@ namespace trview
             ImGuiItemStatusFlags status_flags(const std::string& window_name, const std::vector<std::string>& path_to_element) const;
             ImGuiItemStatusFlags status_flags(TestImGuiId id) const;
             ImGuiItemFlags item_flags(const std::string& window_name, const std::vector<std::string>& path_to_element) const;
+            ImGuiItemFlags item_flags(TestImGuiId id) const;
             std::string item_text(const std::string& window_name, const std::vector<std::string>& path_to_element) const;
             Colour style_colour(const std::string& window_name, const std::vector<std::string>& path_to_element, ImGuiCol colour) const;
+            Colour style_colour(TestImGuiId id, ImGuiCol colour) const;
 
             void show_context_menu(const std::string& window_name);
 

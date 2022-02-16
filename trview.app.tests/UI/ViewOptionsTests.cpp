@@ -15,7 +15,7 @@ TEST(ViewOptions, HighlightCheckboxToggle)
     };
 
     tests::TestImgui imgui([&]() { view_options.render(); });
-    imgui.click_element("View Options", { ViewOptions::Names::flags, IViewer::Options::highlight });
+    imgui.click_element(imgui.id("View Options").push(ViewOptions::Names::flags).id(IViewer::Options::highlight));
 
     ASSERT_TRUE(clicked.has_value());
     ASSERT_EQ(std::get<0>(clicked.value()), IViewer::Options::highlight);
@@ -27,11 +27,11 @@ TEST(ViewOptions, HighlightCheckboxUpdated)
     ViewOptions view_options;
 
     tests::TestImgui imgui([&]() { view_options.render(); });
-    ASSERT_FALSE(imgui.status_flags("View Options", { ViewOptions::Names::flags, IViewer::Options::highlight }) & ImGuiItemStatusFlags_Checked);
+    ASSERT_FALSE(imgui.status_flags(imgui.id("View Options").push(ViewOptions::Names::flags).id(IViewer::Options::highlight)) & ImGuiItemStatusFlags_Checked);
 
     view_options.set_toggle(IViewer::Options::highlight, true);
     imgui.render();
-    ASSERT_TRUE(imgui.status_flags("View Options", { ViewOptions::Names::flags, IViewer::Options::highlight }) & ImGuiItemStatusFlags_Checked);
+    ASSERT_TRUE(imgui.status_flags(imgui.id("View Options").push(ViewOptions::Names::flags).id(IViewer::Options::highlight)) & ImGuiItemStatusFlags_Checked);
 };
 
 TEST(ViewOptions, TriggersCheckboxToggle)
@@ -45,7 +45,7 @@ TEST(ViewOptions, TriggersCheckboxToggle)
     };
 
     tests::TestImgui imgui([&]() { view_options.render(); });
-    imgui.click_element("View Options", { ViewOptions::Names::flags, IViewer::Options::triggers });
+    imgui.click_element(imgui.id("View Options").push(ViewOptions::Names::flags).id(IViewer::Options::triggers));
 
     ASSERT_TRUE(clicked.has_value());
     ASSERT_EQ(std::get<0>(clicked.value()), IViewer::Options::triggers);
@@ -57,11 +57,11 @@ TEST(ViewOptions, TriggersCheckboxUpdated)
     ViewOptions view_options;
 
     tests::TestImgui imgui([&]() { view_options.render(); });
-    ASSERT_TRUE(imgui.status_flags("View Options", { ViewOptions::Names::flags, IViewer::Options::triggers }) & ImGuiItemStatusFlags_Checked);
+    ASSERT_TRUE(imgui.status_flags(imgui.id("View Options").push(ViewOptions::Names::flags).id(IViewer::Options::triggers)) & ImGuiItemStatusFlags_Checked);
 
     view_options.set_toggle(IViewer::Options::triggers, false);
     imgui.render();
-    ASSERT_FALSE(imgui.status_flags("View Options", { ViewOptions::Names::flags, IViewer::Options::triggers }) & ImGuiItemStatusFlags_Checked);
+    ASSERT_FALSE(imgui.status_flags(imgui.id("View Options").push(ViewOptions::Names::flags).id(IViewer::Options::triggers)) & ImGuiItemStatusFlags_Checked);
 }
 
 TEST(ViewOptions, HiddenGeometryCheckboxToggle)
@@ -75,7 +75,7 @@ TEST(ViewOptions, HiddenGeometryCheckboxToggle)
     };
 
     tests::TestImgui imgui([&]() { view_options.render(); });
-    imgui.click_element("View Options", { ViewOptions::Names::flags, IViewer::Options::hidden_geometry });
+    imgui.click_element(imgui.id("View Options").push(ViewOptions::Names::flags).id(IViewer::Options::hidden_geometry));
 
     ASSERT_TRUE(clicked.has_value());
     ASSERT_EQ(std::get<0>(clicked.value()), IViewer::Options::hidden_geometry);
@@ -87,11 +87,11 @@ TEST(ViewOptions, HiddenGeometryCheckboxUpdated)
     ViewOptions view_options;
 
     tests::TestImgui imgui([&]() { view_options.render(); });
-    ASSERT_FALSE(imgui.status_flags("View Options", { ViewOptions::Names::flags, IViewer::Options::hidden_geometry }) & ImGuiItemStatusFlags_Checked);
+    ASSERT_FALSE(imgui.status_flags(imgui.id("View Options").push(ViewOptions::Names::flags).id(IViewer::Options::hidden_geometry)) & ImGuiItemStatusFlags_Checked);
 
     view_options.set_toggle(IViewer::Options::hidden_geometry, true);
     imgui.render();
-    ASSERT_TRUE(imgui.status_flags("View Options", { ViewOptions::Names::flags, IViewer::Options::hidden_geometry }) & ImGuiItemStatusFlags_Checked);
+    ASSERT_TRUE(imgui.status_flags(imgui.id("View Options").push(ViewOptions::Names::flags).id(IViewer::Options::hidden_geometry)) & ImGuiItemStatusFlags_Checked);
 }
 
 TEST(ViewOptions, WaterCheckboxToggle)
@@ -105,7 +105,7 @@ TEST(ViewOptions, WaterCheckboxToggle)
     };
 
     tests::TestImgui imgui([&]() { view_options.render(); });
-    imgui.click_element("View Options", { ViewOptions::Names::flags, IViewer::Options::water });
+    imgui.click_element(imgui.id("View Options").push(ViewOptions::Names::flags).id(IViewer::Options::water));
 
     ASSERT_TRUE(clicked.has_value());
     ASSERT_EQ(std::get<0>(clicked.value()), IViewer::Options::water);
@@ -117,11 +117,11 @@ TEST(ViewOptions, WaterCheckboxUpdated)
     ViewOptions view_options;
 
     tests::TestImgui imgui([&]() { view_options.render(); });
-    ASSERT_TRUE(imgui.status_flags("View Options", { ViewOptions::Names::flags, IViewer::Options::water }) & ImGuiItemStatusFlags_Checked);
+    ASSERT_TRUE(imgui.status_flags(imgui.id("View Options").push(ViewOptions::Names::flags).id(IViewer::Options::water)) & ImGuiItemStatusFlags_Checked);
 
     view_options.set_toggle(IViewer::Options::water, false);
     imgui.render();
-    ASSERT_FALSE(imgui.status_flags("View Options", { ViewOptions::Names::flags, IViewer::Options::water }) & ImGuiItemStatusFlags_Checked);
+    ASSERT_FALSE(imgui.status_flags(imgui.id("View Options").push(ViewOptions::Names::flags).id(IViewer::Options::water)) & ImGuiItemStatusFlags_Checked);
 }
 
 TEST(ViewOptions, DepthCheckboxToggle)
@@ -135,7 +135,7 @@ TEST(ViewOptions, DepthCheckboxToggle)
     };
 
     tests::TestImgui imgui([&]() { view_options.render(); });
-    imgui.click_element("View Options", { ViewOptions::Names::flags, IViewer::Options::depth_enabled });
+    imgui.click_element(imgui.id("View Options").push(ViewOptions::Names::flags).id(IViewer::Options::depth_enabled));
 
     ASSERT_TRUE(clicked.has_value());
     ASSERT_EQ(std::get<0>(clicked.value()), IViewer::Options::depth_enabled);
@@ -147,11 +147,11 @@ TEST(ViewOptions, DepthCheckboxUpdated)
     ViewOptions view_options;
 
     tests::TestImgui imgui([&]() { view_options.render(); });
-    ASSERT_FALSE(imgui.status_flags("View Options", { ViewOptions::Names::flags, IViewer::Options::depth_enabled }) & ImGuiItemStatusFlags_Checked);
+    ASSERT_FALSE(imgui.status_flags(imgui.id("View Options").push(ViewOptions::Names::flags).id(IViewer::Options::depth_enabled)) & ImGuiItemStatusFlags_Checked);
 
     view_options.set_toggle(IViewer::Options::depth_enabled, true);
     imgui.render();
-    ASSERT_TRUE(imgui.status_flags("View Options", { ViewOptions::Names::flags, IViewer::Options::depth_enabled }) & ImGuiItemStatusFlags_Checked);
+    ASSERT_TRUE(imgui.status_flags(imgui.id("View Options").push(ViewOptions::Names::flags).id(IViewer::Options::depth_enabled)) & ImGuiItemStatusFlags_Checked);
 }
 
 TEST(ViewOptions, WireframeCheckboxToggle)
@@ -165,7 +165,7 @@ TEST(ViewOptions, WireframeCheckboxToggle)
     };
 
     tests::TestImgui imgui([&]() { view_options.render(); });
-    imgui.click_element("View Options", { ViewOptions::Names::flags, IViewer::Options::wireframe });
+    imgui.click_element(imgui.id("View Options").push(ViewOptions::Names::flags).id(IViewer::Options::wireframe));
 
     ASSERT_TRUE(clicked.has_value());
     ASSERT_EQ(std::get<0>(clicked.value()), IViewer::Options::wireframe);
@@ -177,11 +177,11 @@ TEST(ViewOptions, WireframeCheckboxUpdated)
     ViewOptions view_options;
 
     tests::TestImgui imgui([&]() { view_options.render(); });
-    ASSERT_FALSE(imgui.status_flags("View Options", { ViewOptions::Names::flags, IViewer::Options::wireframe }) & ImGuiItemStatusFlags_Checked);
+    ASSERT_FALSE(imgui.status_flags(imgui.id("View Options").push(ViewOptions::Names::flags).id(IViewer::Options::wireframe)) & ImGuiItemStatusFlags_Checked);
 
     view_options.set_toggle(IViewer::Options::wireframe, true);
     imgui.render();
-    ASSERT_TRUE(imgui.status_flags("View Options", { ViewOptions::Names::flags, IViewer::Options::wireframe }) & ImGuiItemStatusFlags_Checked);
+    ASSERT_TRUE(imgui.status_flags(imgui.id("View Options").push(ViewOptions::Names::flags).id(IViewer::Options::wireframe)) & ImGuiItemStatusFlags_Checked);
 }
 
 TEST(ViewOptions, BoundsCheckboxToggle)
@@ -195,7 +195,7 @@ TEST(ViewOptions, BoundsCheckboxToggle)
     };
 
     tests::TestImgui imgui([&]() { view_options.render(); });
-    imgui.click_element("View Options", { ViewOptions::Names::flags, IViewer::Options::show_bounding_boxes });
+    imgui.click_element(imgui.id("View Options").push(ViewOptions::Names::flags).id(IViewer::Options::show_bounding_boxes));
 
     ASSERT_TRUE(clicked.has_value());
     ASSERT_EQ(std::get<0>(clicked.value()), IViewer::Options::show_bounding_boxes);
@@ -207,11 +207,11 @@ TEST(ViewOptions, BoundsCheckboxUpdated)
     ViewOptions view_options;
 
     tests::TestImgui imgui([&]() { view_options.render(); });
-    ASSERT_FALSE(imgui.status_flags("View Options", { ViewOptions::Names::flags, IViewer::Options::show_bounding_boxes }) & ImGuiItemStatusFlags_Checked);
+    ASSERT_FALSE(imgui.status_flags(imgui.id("View Options").push(ViewOptions::Names::flags).id(IViewer::Options::show_bounding_boxes)) & ImGuiItemStatusFlags_Checked);
 
     view_options.set_toggle(IViewer::Options::show_bounding_boxes, true);
     imgui.render();
-    ASSERT_TRUE(imgui.status_flags("View Options", { ViewOptions::Names::flags, IViewer::Options::show_bounding_boxes }) & ImGuiItemStatusFlags_Checked);
+    ASSERT_TRUE(imgui.status_flags(imgui.id("View Options").push(ViewOptions::Names::flags).id(IViewer::Options::show_bounding_boxes)) & ImGuiItemStatusFlags_Checked);
 }
 
 TEST(ViewOptions, FlipCheckboxToggle)
@@ -226,7 +226,7 @@ TEST(ViewOptions, FlipCheckboxToggle)
     };
 
     tests::TestImgui imgui([&]() { view_options.render(); });
-    imgui.click_element("View Options", { ViewOptions::Names::flags, IViewer::Options::flip });
+    imgui.click_element(imgui.id("View Options").push(ViewOptions::Names::flags).id(IViewer::Options::flip));
 
     ASSERT_TRUE(clicked.has_value());
     ASSERT_EQ(std::get<0>(clicked.value()), IViewer::Options::flip);
@@ -238,11 +238,11 @@ TEST(ViewOptions, FlipCheckboxUpdated)
     ViewOptions view_options;
 
     tests::TestImgui imgui([&]() { view_options.render(); });
-    ASSERT_FALSE(imgui.status_flags("View Options", { ViewOptions::Names::flags, IViewer::Options::flip }) & ImGuiItemStatusFlags_Checked);
+    ASSERT_FALSE(imgui.status_flags(imgui.id("View Options").push(ViewOptions::Names::flags).id(IViewer::Options::flip)) & ImGuiItemStatusFlags_Checked);
 
     view_options.set_toggle(IViewer::Options::flip, true);
     imgui.render();
-    ASSERT_TRUE(imgui.status_flags("View Options", { ViewOptions::Names::flags, IViewer::Options::flip }) & ImGuiItemStatusFlags_Checked);
+    ASSERT_TRUE(imgui.status_flags(imgui.id("View Options").push(ViewOptions::Names::flags).id(IViewer::Options::flip)) & ImGuiItemStatusFlags_Checked);
 }
 
 TEST(ViewOptions, FlipCheckboxEnabled)
@@ -250,11 +250,11 @@ TEST(ViewOptions, FlipCheckboxEnabled)
     ViewOptions view_options;
 
     tests::TestImgui imgui([&]() { view_options.render(); });
-    ASSERT_TRUE(imgui.item_flags("View Options", { ViewOptions::Names::flags, IViewer::Options::flip }) & ImGuiItemFlags_Disabled);
+    ASSERT_TRUE(imgui.item_flags(imgui.id("View Options").push(ViewOptions::Names::flags).id(IViewer::Options::flip)) & ImGuiItemFlags_Disabled);
 
     view_options.set_flip_enabled(true);
     imgui.render();
-    ASSERT_FALSE(imgui.item_flags("View Options", { ViewOptions::Names::flags, IViewer::Options::flip }) & ImGuiItemFlags_Disabled);
+    ASSERT_FALSE(imgui.item_flags(imgui.id("View Options").push(ViewOptions::Names::flags).id(IViewer::Options::flip)) & ImGuiItemFlags_Disabled);
 }
 
 TEST(ViewOptions, FlipFlagsToggle)
@@ -271,13 +271,13 @@ TEST(ViewOptions, FlipFlagsToggle)
     view_options.set_alternate_groups({ 1, 3, 5 });
 
     tests::TestImgui imgui([&]() { view_options.render(); });
-    auto original = imgui.style_colour("View Options", { "3##3_flip" }, ImGuiCol_Button);
+    auto original = imgui.style_colour(imgui.id("View Options").id("3##3_flip"), ImGuiCol_Button);
     imgui.click_element("View Options", { "3##3_flip" });
     imgui.render();
 
     ASSERT_EQ(raised.size(), 1);
     ASSERT_EQ(raised[3], true);
-    auto changed = imgui.style_colour("View Options", { "3##3_flip" }, ImGuiCol_Button);
+    auto changed = imgui.style_colour(imgui.id("View Options").id("3##3_flip"), ImGuiCol_Button);
     ASSERT_NE(original, changed);
 }
 
@@ -288,11 +288,11 @@ TEST(ViewOptions, FlipFlagsUpdated)
     view_options.set_alternate_groups({ 1, 3, 5 });
 
     tests::TestImgui imgui([&]() { view_options.render(); });
-    auto original = imgui.style_colour("View Options", { "3##3_flip" }, ImGuiCol_Button);
+    auto original = imgui.style_colour(imgui.id("View Options").id("3##3_flip"), ImGuiCol_Button);
     view_options.set_alternate_group(3, true);
     imgui.render();
 
-    auto changed = imgui.style_colour("View Options", { "3##3_flip" }, ImGuiCol_Button);
+    auto changed = imgui.style_colour(imgui.id("View Options").id("3##3_flip"), ImGuiCol_Button);
     ASSERT_NE(original, changed);
 }
 
@@ -301,10 +301,10 @@ TEST(ViewOptions, FlipCheckboxHiddenWithAlternateGroups)
     ViewOptions view_options;
 
     tests::TestImgui imgui([&]() { view_options.render(); });
-    ASSERT_TRUE(imgui.element_present("View Options", { ViewOptions::Names::flags, IViewer::Options::flip}));
+    ASSERT_TRUE(imgui.element_present(imgui.id("View Options").push(ViewOptions::Names::flags).id(IViewer::Options::flip)));
 
     view_options.set_use_alternate_groups(true);
     imgui.reset();
     imgui.render();
-    ASSERT_FALSE(imgui.element_present("View Options", { ViewOptions::Names::flags, IViewer::Options::flip }));
+    ASSERT_FALSE(imgui.element_present(imgui.id("View Options").push(ViewOptions::Names::flags).id(IViewer::Options::flip)));
 }

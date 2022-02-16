@@ -269,6 +269,11 @@ namespace trview
             return _item_flags.find(id)->second;
         }
 
+        ImGuiItemFlags TestImgui::item_flags(TestImGuiId id) const
+        {
+            return _item_flags.find(id.id())->second;
+        }
+
         std::string TestImgui::item_text(const std::string& window_name, const std::vector<std::string>& path_to_element) const
         {
             const auto window = find_window(window_name);
@@ -298,6 +303,13 @@ namespace trview
             const auto window = find_window(window_name);
             const auto id = get_id(window, path_to_element);
             const auto& colours = _item_colours.find(id)->second;
+            const auto result = colours[colour];
+            return Colour(result.w, result.x, result.y, result.z);
+        }
+
+        Colour TestImgui::style_colour(TestImGuiId id, ImGuiCol colour) const
+        {
+            const auto& colours = _item_colours.find(id.id())->second;
             const auto result = colours[colour];
             return Colour(result.w, result.x, result.y, result.z);
         }
