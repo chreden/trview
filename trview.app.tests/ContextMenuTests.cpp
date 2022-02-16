@@ -17,7 +17,7 @@ TEST(ContextMenu, AddWaypointRaised)
     auto token = menu.on_add_waypoint += [&raised]() { raised = true; };
 
     imgui.show_context_menu("Debug##Default");
-    imgui.click_element(imgui.popup_name("void_context"), { ContextMenu::Names::add_waypoint }, true);
+    imgui.click_element(imgui.popup_id("void_context").id(ContextMenu::Names::add_waypoint), true);
     imgui.render();
 
     ASSERT_TRUE(raised);
@@ -33,13 +33,13 @@ TEST(ContextMenu, HideButtonDisabled)
     TestImgui imgui([&]() { menu.render(); });
 
     imgui.show_context_menu("Debug##Default");
-    const auto original_flags = imgui.item_flags(imgui.popup_name("void_context"), { ContextMenu::Names::hide });
+    const auto original_flags = imgui.item_flags(imgui.popup_id("void_context").id(ContextMenu::Names::hide));
     ASSERT_FALSE(original_flags & ImGuiItemFlags_Disabled);
 
     menu.set_hide_enabled(false);
     imgui.render();
 
-    const auto new_flags = imgui.item_flags(imgui.popup_name("void_context"), { ContextMenu::Names::hide });
+    const auto new_flags = imgui.item_flags(imgui.popup_id("void_context").id(ContextMenu::Names::hide));
     ASSERT_TRUE(new_flags & ImGuiItemFlags_Disabled);
 }
 
@@ -55,7 +55,7 @@ TEST(ContextMenu, HideNotRaisedWhenDisabled)
     auto token = menu.on_hide += [&raised]() { raised = true; };
 
     imgui.show_context_menu("Debug##Default");
-    imgui.click_element(imgui.popup_name("void_context"), { ContextMenu::Names::hide }, true);
+    imgui.click_element(imgui.popup_id("void_context").id(ContextMenu::Names::hide), true);
 
     ASSERT_FALSE(raised);
     ASSERT_TRUE(menu.visible());
@@ -73,7 +73,7 @@ TEST(ContextMenu, HideRaised)
     auto token = menu.on_hide += [&raised]() { raised = true; };
 
     imgui.show_context_menu("Debug##Default");
-    imgui.click_element(imgui.popup_name("void_context"), { ContextMenu::Names::hide }, true);
+    imgui.click_element(imgui.popup_id("void_context").id(ContextMenu::Names::hide), true);
     imgui.render();
 
     ASSERT_TRUE(raised);
@@ -91,7 +91,7 @@ TEST(ContextMenu, OrbitHereRaised)
     auto token = menu.on_orbit_here += [&raised]() { raised = true; };
 
     imgui.show_context_menu("Debug##Default");
-    imgui.click_element(imgui.popup_name("void_context"), { ContextMenu::Names::orbit }, true);
+    imgui.click_element(imgui.popup_id("void_context").id(ContextMenu::Names::orbit), true);
     imgui.render();
 
     ASSERT_TRUE(raised);
@@ -107,13 +107,13 @@ TEST(ContextMenu, RemoveWaypointDisabled)
     TestImgui imgui([&]() { menu.render(); });
 
     imgui.show_context_menu("Debug##Default");
-    const auto original_flags = imgui.item_flags(imgui.popup_name("void_context"), { ContextMenu::Names::remove_waypoint });
+    const auto original_flags = imgui.item_flags(imgui.popup_id("void_context").id(ContextMenu::Names::remove_waypoint));
     ASSERT_FALSE(original_flags & ImGuiItemFlags_Disabled);
 
     menu.set_remove_enabled(false);
     imgui.render();
 
-    const auto new_flags = imgui.item_flags(imgui.popup_name("void_context"), { ContextMenu::Names::remove_waypoint });
+    const auto new_flags = imgui.item_flags(imgui.popup_id("void_context").id(ContextMenu::Names::remove_waypoint));
     ASSERT_TRUE(new_flags & ImGuiItemFlags_Disabled);
 }
 
@@ -129,7 +129,7 @@ TEST(ContextMenu, RemoveWaypointNotRaisedWhenDisabled)
     auto token = menu.on_remove_waypoint += [&raised]() { raised = true; };
 
     imgui.show_context_menu("Debug##Default");
-    imgui.click_element(imgui.popup_name("void_context"), { ContextMenu::Names::remove_waypoint }, true);
+    imgui.click_element(imgui.popup_id("void_context").id(ContextMenu::Names::remove_waypoint), true);
 
     ASSERT_FALSE(raised);
     ASSERT_TRUE(menu.visible());
@@ -147,7 +147,7 @@ TEST(ContextMenu, RemoveWaypointRaised)
     auto token = menu.on_remove_waypoint += [&raised]() { raised = true; };
 
     imgui.show_context_menu("Debug##Default");
-    imgui.click_element(imgui.popup_name("void_context"), { ContextMenu::Names::remove_waypoint }, true);
+    imgui.click_element(imgui.popup_id("void_context").id(ContextMenu::Names::remove_waypoint), true);
     imgui.render();
 
     ASSERT_TRUE(raised);
@@ -166,7 +166,7 @@ TEST(ContextMenu, AddMidWaypointRaised)
     auto token = menu.on_add_mid_waypoint += [&raised]() { raised = true; };
 
     imgui.show_context_menu("Debug##Default");
-    imgui.click_element(imgui.popup_name("void_context"), { ContextMenu::Names::add_mid_waypoint }, true);
+    imgui.click_element(imgui.popup_id("void_context").id(ContextMenu::Names::add_mid_waypoint), true);
     imgui.render();
 
     ASSERT_TRUE(raised);
@@ -182,13 +182,13 @@ TEST(ContextMenu, AddMidWaypointDisabled)
     TestImgui imgui([&]() { menu.render(); });
 
     imgui.show_context_menu("Debug##Default");
-    const auto original_flags = imgui.item_flags(imgui.popup_name("void_context"), { ContextMenu::Names::add_mid_waypoint });
+    const auto original_flags = imgui.item_flags(imgui.popup_id("void_context").id(ContextMenu::Names::add_mid_waypoint));
     ASSERT_FALSE(original_flags & ImGuiItemFlags_Disabled);
 
     menu.set_mid_waypoint_enabled(false);
     imgui.render();
 
-    const auto new_flags = imgui.item_flags(imgui.popup_name("void_context"), { ContextMenu::Names::add_mid_waypoint });
+    const auto new_flags = imgui.item_flags(imgui.popup_id("void_context").id(ContextMenu::Names::add_mid_waypoint));
     ASSERT_TRUE(new_flags & ImGuiItemFlags_Disabled);
 }
 
@@ -204,7 +204,7 @@ TEST(ContextMenu, AddMidWaypointNotRaisedWhenDisabled)
     auto token = menu.on_add_mid_waypoint += [&raised]() { raised = true; };
 
     imgui.show_context_menu("Debug##Default");
-    imgui.click_element(imgui.popup_name("void_context"), { ContextMenu::Names::add_mid_waypoint }, true);
+    imgui.click_element(imgui.popup_id("void_context").id(ContextMenu::Names::add_mid_waypoint), true);
 
     ASSERT_FALSE(raised);
     ASSERT_TRUE(menu.visible());

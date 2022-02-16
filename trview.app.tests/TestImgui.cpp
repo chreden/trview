@@ -86,7 +86,7 @@ namespace trview
         {
             ImGui::DestroyContext(_context);
         }
-
+        
         void TestImgui::click_element(const std::string& window_name, const std::vector<std::string>& path_to_element, bool show_context_menu, std::string hover)
         {
             const auto click_on_element = [&]()
@@ -122,7 +122,7 @@ namespace trview
             _context->IO.MouseClicked[0] = false;
             _context->IO.MouseReleased[1] = false;
         }
-
+        
         void TestImgui::click_element(TestImGuiId test_id, bool show_context_menu, bool hover)
         {
             const auto window = test_id.root();
@@ -151,7 +151,7 @@ namespace trview
             _context->IO.MouseClicked[0] = false;
             _context->IO.MouseReleased[1] = false;
         }
-
+        
         void TestImgui::enter_text(const std::string& window_name, const std::vector<std::string>& path_to_element, const std::string& text)
         {
             const auto focus_on_element = [&]()
@@ -163,6 +163,38 @@ namespace trview
                 const auto bb = _element_rects[id];
                 _context->ActiveId = 0;
                 _context->HoveredId = id;
+                _context->IO.MousePos = ImVec2(bb.Min.y, bb.Min.y);
+                _context->IO.MouseClicked[0] = true;
+                for (const auto& c : text)
+                {
+                    _context->IO.InputQueueCharacters.push_back(c);
+                }
+            };
+
+            const auto type_into_element = [&]()
+            {
+                _context->IO.MouseClicked[0] = false;
+                _context->IO.KeysData[ImGuiKey_Enter].Down = true;
+                _context->IO.KeysData[ImGuiKey_Enter].DownDuration = 0.5f;
+                _context->IO.DeltaTime = 1.0f;
+            };
+
+            render(focus_on_element);
+            render(type_into_element);
+
+            _tracking_id = 0;
+        }
+
+        void TestImgui::enter_text(TestImGuiId id, const std::string& text)
+        {
+            auto window = id.root();
+            const auto focus_on_element = [&]()
+            {
+                _context->HoveredWindow = window;
+                _tracking_id = id.id();
+                const auto bb = _element_rects[id.id()];
+                _context->ActiveId = 0;
+                _context->HoveredId = id.id();
                 _context->IO.MousePos = ImVec2(bb.Min.y, bb.Min.y);
                 _context->IO.MouseClicked[0] = true;
                 for (const auto& c : text)
@@ -249,7 +281,7 @@ namespace trview
         {
             _item_colours[id] = colours;
         }
-
+        
         ImGuiItemStatusFlags TestImgui::status_flags(const std::string& window_name, const std::vector<std::string>& path_to_element) const
         {
             const auto window = find_window(window_name);
@@ -261,7 +293,7 @@ namespace trview
         {
             return _status_flags.find(id.id())->second;
         }
-
+        
         ImGuiItemStatusFlags TestImgui::item_flags(const std::string& window_name, const std::vector<std::string>& path_to_element) const
         {
             const auto window = find_window(window_name);
@@ -273,12 +305,17 @@ namespace trview
         {
             return _item_flags.find(id.id())->second;
         }
-
+        
         std::string TestImgui::item_text(const std::string& window_name, const std::vector<std::string>& path_to_element) const
         {
             const auto window = find_window(window_name);
             const auto id = get_id(window, path_to_element);
             return _item_text.find(id)->second;
+        }
+
+        std::string TestImgui::item_text(TestImGuiId id) const
+        {
+            return _item_text.find(id.id())->second;
         }
 
         void TestImgui::render(const std::function<void()>& pre_render_callback)
@@ -297,7 +334,7 @@ namespace trview
         {
             render([](){});
         }
-
+        
         Colour TestImgui::style_colour(const std::string& window_name, const std::vector<std::string>& path_to_element, ImGuiCol colour) const
         {
             const auto window = find_window(window_name);
@@ -306,21 +343,21 @@ namespace trview
             const auto result = colours[colour];
             return Colour(result.w, result.x, result.y, result.z);
         }
-
+        
         Colour TestImgui::style_colour(TestImGuiId id, ImGuiCol colour) const
         {
             const auto& colours = _item_colours.find(id.id())->second;
             const auto result = colours[colour];
             return Colour(result.w, result.x, result.y, result.z);
         }
-
+        
         bool TestImgui::element_present(const std::string& window_name, const std::vector<std::string>& path_to_element) const
         {
             const auto window = find_window(window_name);
             const auto id = get_id(window, path_to_element);
             return _element_rects.find(id) != _element_rects.end();
         }
-
+        
         bool TestImgui::element_present(TestImGuiId id) const
         {
             return _element_rects.find(id.id()) != _element_rects.end();
@@ -378,6 +415,42 @@ namespace trview
         {
             auto window = find_window(window_name);
             return TestImGuiId(window);
+        }
+
+        TestImGuiId TestImgui::popup_id(const std::string& popup_name) const
+        {
+            auto window = find_window("Debug##Default");
+            auto id = window->GetID(popup_name.c_str());
+            std::stringstream stream;
+            stream << "##Popup_" << std::hex << std::setfill('0') << std::setw(8) << id;
+            return TestImGuiId(find_window(stream.str()));
+        }
+
+        TestImGuiId TestImGuiId::push_popup(const std::string& name)
+        {
+            auto context = ImGui::GetCurrentContext();
+            std::string popup_name;
+
+            for (const auto& window : context->Windows)
+            {
+                if (window->Name == "Debug##Default")
+                {
+                    auto id = window->GetID(name.c_str());
+                    std::stringstream stream;
+                    stream << "##Popup_" << std::hex << std::setfill('0') << std::setw(8) << id;
+                    popup_name = stream.str();
+                }
+            }
+
+            for (const auto& window : context->Windows)
+            {
+                if (window->Name == popup_name)
+                {
+                    return TestImGuiId(window);
+                }
+            }
+
+            return *this;
         }
 
         TestImGuiId TestImGuiId::push_child(const std::string& name)

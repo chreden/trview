@@ -16,6 +16,7 @@ namespace trview
         {
         public:
             explicit TestImGuiId(ImGuiWindow* window);
+            TestImGuiId push_popup(const std::string& name);
             TestImGuiId push_child(const std::string& name);
             TestImGuiId push_override(const std::string& name);
             TestImGuiId push(const std::string& name);
@@ -49,6 +50,7 @@ namespace trview
             void click_element(TestImGuiId id, bool show_context_menu = false, bool hover = false);
 
             void enter_text(const std::string& window_name, const std::vector<std::string>& path_to_element, const std::string& text);
+            void enter_text(TestImGuiId id, const std::string& text);
 
             /// <summary>
             /// Add a control recangle.
@@ -70,6 +72,7 @@ namespace trview
             ImGuiItemFlags item_flags(const std::string& window_name, const std::vector<std::string>& path_to_element) const;
             ImGuiItemFlags item_flags(TestImGuiId id) const;
             std::string item_text(const std::string& window_name, const std::vector<std::string>& path_to_element) const;
+            std::string item_text(TestImGuiId id) const;
             Colour style_colour(const std::string& window_name, const std::vector<std::string>& path_to_element, ImGuiCol colour) const;
             Colour style_colour(TestImGuiId id, ImGuiCol colour) const;
 
@@ -85,6 +88,7 @@ namespace trview
             std::string child_name(const std::string& window_name, const std::vector<std::string>& child_path) const;
 
             TestImGuiId id(const std::string& window_name) const;
+            TestImGuiId popup_id(const std::string& popup_name) const;
         private:
             RenderCallback _render_callback;
             std::unordered_map<ImGuiID, ImRect> _element_rects;

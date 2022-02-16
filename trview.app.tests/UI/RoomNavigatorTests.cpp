@@ -16,7 +16,7 @@ TEST(RoomNavigator, MinRoomsLimitsCurrentRoom)
     };
 
     tests::TestImgui imgui([&]() { navigator.render(); });
-    imgui.click_element("Room Navigator", { "of 0##roomnumber", "-" });
+    imgui.click_element(imgui.id("Room Navigator").push("of 0##roomnumber").id("-"));
 
     ASSERT_FALSE(raised.has_value());
 }
@@ -33,7 +33,7 @@ TEST(RoomNavigator, MaxRoomsLimitsCurrentRoom)
     };
 
     tests::TestImgui imgui([&]() { navigator.render(); });
-    imgui.click_element("Room Navigator", { "of 0##roomnumber", "+" });
+    imgui.click_element(imgui.id("Room Navigator").push("of 0##roomnumber").id("+"));
 
     ASSERT_FALSE(raised.has_value());
 }
@@ -44,12 +44,12 @@ TEST(RoomNavigator, MaxRoomsUpdatesLabel)
     navigator.set_max_rooms(0);
 
     tests::TestImgui imgui([&]() { navigator.render(); });
-    ASSERT_TRUE(imgui.element_present("Room Navigator", { "of 0##roomnumber" }));
+    ASSERT_TRUE(imgui.element_present(imgui.id("Room Navigator").id("of 0##roomnumber")));
     imgui.reset();
 
     navigator.set_max_rooms(100);
     imgui.render();
-    ASSERT_TRUE(imgui.element_present("Room Navigator", { "of 99##roomnumber" }));
+    ASSERT_TRUE(imgui.element_present(imgui.id("Room Navigator").id("of 99##roomnumber")));
 }
 
 TEST(RoomNavigator, RoomSelectedEventRaisedOnMinus)
@@ -66,7 +66,7 @@ TEST(RoomNavigator, RoomSelectedEventRaisedOnMinus)
     navigator.set_max_rooms(10);
 
     tests::TestImgui imgui([&]() { navigator.render(); });
-    imgui.click_element("Room Navigator", { "of 9##roomnumber", "-" });
+    imgui.click_element(imgui.id("Room Navigator").push("of 9##roomnumber").id("-"));
 
     ASSERT_TRUE(raised.has_value());
     ASSERT_EQ(raised.value(), 4);
@@ -85,7 +85,7 @@ TEST(RoomNavigator, RoomSelectedEventRaisedOnPlus)
     navigator.set_max_rooms(10);
 
     tests::TestImgui imgui([&]() { navigator.render(); });
-    imgui.click_element("Room Navigator", { "of 9##roomnumber", "+" });
+    imgui.click_element(imgui.id("Room Navigator").push("of 9##roomnumber").id("+"));
 
     ASSERT_TRUE(raised.has_value());
     ASSERT_EQ(raised.value(), 1);
@@ -97,11 +97,11 @@ TEST(RoomNavigator, SetCurrentRoomUpdatesUpDown)
 
     navigator.set_max_rooms(10);
     tests::TestImgui imgui([&]() { navigator.render(); });
-    ASSERT_EQ(imgui.item_text("Room Navigator", { "of 9##roomnumber", "" }), "0");
+    ASSERT_EQ(imgui.item_text(imgui.id("Room Navigator").push("of 9##roomnumber").id("")), "0");
 
     navigator.set_selected_room(1);
     imgui.render();
-    ASSERT_EQ(imgui.item_text("Room Navigator", { "of 9##roomnumber", "" }), "1");
+    ASSERT_EQ(imgui.item_text(imgui.id("Room Navigator").push("of 9##roomnumber").id("")), "1");
 }
 
 TEST(RoomNavigator, EnterRoomNumber)
@@ -116,7 +116,8 @@ TEST(RoomNavigator, EnterRoomNumber)
 
     navigator.set_max_rooms(10);
     tests::TestImgui imgui([&]() { navigator.render(); });
-    imgui.enter_text("Room Navigator", { "of 9##roomnumber", "" }, "5");
+    // imgui.enter_text("Room Navigator", { "of 9##roomnumber", "" }, "5");
+    imgui.enter_text(imgui.id("Room Navigator").push("of 9##roomnumber").id(""), "5");
  
     ASSERT_TRUE(raised.has_value());
     ASSERT_EQ(raised.value(), 5);
