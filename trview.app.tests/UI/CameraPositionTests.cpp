@@ -21,9 +21,9 @@ TEST(CameraPosition, PositionEventRaised)
         new_position = position;
     };
 
-    imgui.enter_text("Camera Position", { CameraPosition::Names::x }, "1024");
-    imgui.enter_text("Camera Position", { CameraPosition::Names::y }, "2048");
-    imgui.enter_text("Camera Position", { CameraPosition::Names::z }, "3072");
+    imgui.enter_text(imgui.id("Camera Position").id(CameraPosition::Names::x), "1024");
+    imgui.enter_text(imgui.id("Camera Position").id(CameraPosition::Names::y), "2048");
+    imgui.enter_text(imgui.id("Camera Position").id(CameraPosition::Names::z), "3072");
 
     ASSERT_EQ(times_called, 3);
     // The position is scaled by diving by 1024.
@@ -41,9 +41,9 @@ TEST(CameraPosition, CoordinatesUpdated)
     subject.set_position(Vector3(1, 2, 3));
     imgui.render();
 
-    EXPECT_THAT(imgui.item_text("Camera Position", { CameraPosition::Names::x }), HasSubstr("1024"));
-    EXPECT_THAT(imgui.item_text("Camera Position", { CameraPosition::Names::y }), HasSubstr("2048"));
-    EXPECT_THAT(imgui.item_text("Camera Position", { CameraPosition::Names::z }), HasSubstr("3072"));
+    EXPECT_THAT(imgui.item_text(imgui.id("Camera Position").id(CameraPosition::Names::x)), HasSubstr("1024"));
+    EXPECT_THAT(imgui.item_text(imgui.id("Camera Position").id(CameraPosition::Names::y)), HasSubstr("2048"));
+    EXPECT_THAT(imgui.item_text(imgui.id("Camera Position").id(CameraPosition::Names::z)), HasSubstr("3072"));
 }
 
 
@@ -63,8 +63,8 @@ TEST(CameraPosition, RotationEventRaised)
         new_pitch = pitch;
     };
 
-    imgui.enter_text("Camera Position", { CameraPosition::Names::yaw }, "90");
-    imgui.enter_text("Camera Position", { CameraPosition::Names::pitch }, "180");
+    imgui.enter_text(imgui.id("Camera Position").id(CameraPosition::Names::yaw), "90");
+    imgui.enter_text(imgui.id("Camera Position").id(CameraPosition::Names::pitch), "180");
 
     ASSERT_EQ(times_called, 2);
     ASSERT_FLOAT_EQ(new_yaw, 1.5707964);
@@ -80,8 +80,8 @@ TEST(CameraPosition, RotationUpdated)
     subject.set_rotation(pi, pi * 0.5f);
     imgui.render();
 
-    EXPECT_THAT(imgui.item_text("Camera Position", { CameraPosition::Names::yaw }), HasSubstr("180"));
-    EXPECT_THAT(imgui.item_text("Camera Position", { CameraPosition::Names::pitch }), HasSubstr("90"));
+    EXPECT_THAT(imgui.item_text(imgui.id("Camera Position").id(CameraPosition::Names::yaw)), HasSubstr("180"));
+    EXPECT_THAT(imgui.item_text(imgui.id("Camera Position").id(CameraPosition::Names::pitch)), HasSubstr("90"));
 }
 
 TEST(CameraPosition, RotationShowRadians)
@@ -95,8 +95,8 @@ TEST(CameraPosition, RotationShowRadians)
     subject.set_rotation(pi, pi * 0.5f);
     imgui.render();
 
-    EXPECT_THAT(imgui.item_text("Camera Position", { CameraPosition::Names::yaw }), HasSubstr("3.1416"));
-    EXPECT_THAT(imgui.item_text("Camera Position", { CameraPosition::Names::pitch }), HasSubstr("1.5708"));
+    EXPECT_THAT(imgui.item_text(imgui.id("Camera Position").id(CameraPosition::Names::yaw)), HasSubstr("3.1416"));
+    EXPECT_THAT(imgui.item_text(imgui.id("Camera Position").id(CameraPosition::Names::pitch)), HasSubstr("1.5708"));
 }
 
 TEST(CameraPosition, RotationNotUpdatedWithInvalidValues)
@@ -110,8 +110,8 @@ TEST(CameraPosition, RotationNotUpdatedWithInvalidValues)
         raised = true;
     };
 
-    imgui.enter_text("Camera Position", { CameraPosition::Names::yaw }, "inf");
-    imgui.enter_text("Camera Position", { CameraPosition::Names::pitch }, "nan");
+    imgui.enter_text(imgui.id("Camera Position").id(CameraPosition::Names::yaw), "inf");
+    imgui.enter_text(imgui.id("Camera Position").id(CameraPosition::Names::pitch), "nan");
 
     ASSERT_FALSE(raised);
 }
@@ -127,9 +127,9 @@ TEST(CameraPosition, CoordinatesNotUpdatedWithInvalidValues)
         raised = true;
     };
 
-    imgui.enter_text("Camera Position", { CameraPosition::Names::x }, "inf");
-    imgui.enter_text("Camera Position", { CameraPosition::Names::y }, "nan");
-    imgui.enter_text("Camera Position", { CameraPosition::Names::z }, "nan");
+    imgui.enter_text(imgui.id("Camera Position").id(CameraPosition::Names::x), "inf");
+    imgui.enter_text(imgui.id("Camera Position").id(CameraPosition::Names::y), "nan");
+    imgui.enter_text(imgui.id("Camera Position").id(CameraPosition::Names::z), "nan");
 
     ASSERT_FALSE(raised);
 }

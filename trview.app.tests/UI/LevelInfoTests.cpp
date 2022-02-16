@@ -42,7 +42,7 @@ TEST(LevelInfo, OnToggleSettingsRaised)
         raised = true;
     };
 
-    imgui.click_element("LevelInfo", { "Settings" });
+    imgui.click_element(imgui.id("LevelInfo").id("Settings"));
     ASSERT_TRUE(raised);
 }
 

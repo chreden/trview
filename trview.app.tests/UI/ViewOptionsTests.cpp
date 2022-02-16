@@ -272,7 +272,7 @@ TEST(ViewOptions, FlipFlagsToggle)
 
     tests::TestImgui imgui([&]() { view_options.render(); });
     auto original = imgui.style_colour(imgui.id("View Options").id("3##3_flip"), ImGuiCol_Button);
-    imgui.click_element("View Options", { "3##3_flip" });
+    imgui.click_element(imgui.id("View Options").id("3##3_flip"));
     imgui.render();
 
     ASSERT_EQ(raised.size(), 1);

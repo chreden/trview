@@ -86,43 +86,7 @@ namespace trview
         {
             ImGui::DestroyContext(_context);
         }
-        
-        void TestImgui::click_element(const std::string& window_name, const std::vector<std::string>& path_to_element, bool show_context_menu, std::string hover)
-        {
-            const auto click_on_element = [&]()
-            {
-                auto window = find_window(window_name);
-                if (hover != "")
-                {
-                    _context->HoveredWindow = find_window(hover);
-                }
-                else
-                {
-                    _context->HoveredWindow = window;
-                }
-                const auto id = get_id(window, path_to_element);
-                _tracking_id = id;
-                const auto bb = _element_rects[id];
-                _context->HoveredId = id;
-                _context->IO.MousePos = ImVec2(bb.Min.y, bb.Min.y);
-                _context->IO.MouseClicked[0] = true;
 
-                if (show_context_menu)
-                {
-                    _context->IO.MouseReleased[0] = true;
-                    _context->IO.MouseDownDurationPrev[0] = _context->IO.KeyRepeatDelay;
-                    _context->ActiveId = id;
-                    _context->CurrentWindow = find_window("Debug##Default");
-                    _context->MouseViewport = window->Viewport;
-                }
-            };
-            render(click_on_element);
-
-            _tracking_id = 0;
-            _context->IO.MouseClicked[0] = false;
-            _context->IO.MouseReleased[1] = false;
-        }
-        
         void TestImgui::click_element(TestImGuiId test_id, bool show_context_menu, bool hover)
         {
             const auto window = test_id.root();
@@ -150,39 +114,6 @@ namespace trview
             _tracking_id = 0;
             _context->IO.MouseClicked[0] = false;
             _context->IO.MouseReleased[1] = false;
-        }
-        
-        void TestImgui::enter_text(const std::string& window_name, const std::vector<std::string>& path_to_element, const std::string& text)
-        {
-            const auto focus_on_element = [&]()
-            {
-                auto window = find_window(window_name);
-                _context->HoveredWindow = window;
-                const auto id = get_id(window, path_to_element);
-                _tracking_id = id;
-                const auto bb = _element_rects[id];
-                _context->ActiveId = 0;
-                _context->HoveredId = id;
-                _context->IO.MousePos = ImVec2(bb.Min.y, bb.Min.y);
-                _context->IO.MouseClicked[0] = true;
-                for (const auto& c : text)
-                {
-                    _context->IO.InputQueueCharacters.push_back(c);
-                }
-            };
-
-            const auto type_into_element = [&]()
-            {
-                _context->IO.MouseClicked[0] = false;
-                _context->IO.KeysData[ImGuiKey_Enter].Down = true;
-                _context->IO.KeysData[ImGuiKey_Enter].DownDuration = 0.5f;
-                _context->IO.DeltaTime = 1.0f;
-            };
-
-            render(focus_on_element);
-            render(type_into_element);
-
-            _tracking_id = 0;
         }
 
         void TestImgui::enter_text(TestImGuiId id, const std::string& text)
@@ -281,36 +212,15 @@ namespace trview
         {
             _item_colours[id] = colours;
         }
-        
-        ImGuiItemStatusFlags TestImgui::status_flags(const std::string& window_name, const std::vector<std::string>& path_to_element) const
-        {
-            const auto window = find_window(window_name);
-            const auto id = get_id(window, path_to_element);
-            return _status_flags.find(id)->second;
-        }
 
         ImGuiItemStatusFlags TestImgui::status_flags(TestImGuiId id) const
         {
             return _status_flags.find(id.id())->second;
         }
-        
-        ImGuiItemStatusFlags TestImgui::item_flags(const std::string& window_name, const std::vector<std::string>& path_to_element) const
-        {
-            const auto window = find_window(window_name);
-            const auto id = get_id(window, path_to_element);
-            return _item_flags.find(id)->second;
-        }
 
         ImGuiItemFlags TestImgui::item_flags(TestImGuiId id) const
         {
             return _item_flags.find(id.id())->second;
-        }
-        
-        std::string TestImgui::item_text(const std::string& window_name, const std::vector<std::string>& path_to_element) const
-        {
-            const auto window = find_window(window_name);
-            const auto id = get_id(window, path_to_element);
-            return _item_text.find(id)->second;
         }
 
         std::string TestImgui::item_text(TestImGuiId id) const
@@ -334,30 +244,14 @@ namespace trview
         {
             render([](){});
         }
-        
-        Colour TestImgui::style_colour(const std::string& window_name, const std::vector<std::string>& path_to_element, ImGuiCol colour) const
-        {
-            const auto window = find_window(window_name);
-            const auto id = get_id(window, path_to_element);
-            const auto& colours = _item_colours.find(id)->second;
-            const auto result = colours[colour];
-            return Colour(result.w, result.x, result.y, result.z);
-        }
-        
+
         Colour TestImgui::style_colour(TestImGuiId id, ImGuiCol colour) const
         {
             const auto& colours = _item_colours.find(id.id())->second;
             const auto result = colours[colour];
             return Colour(result.w, result.x, result.y, result.z);
         }
-        
-        bool TestImgui::element_present(const std::string& window_name, const std::vector<std::string>& path_to_element) const
-        {
-            const auto window = find_window(window_name);
-            const auto id = get_id(window, path_to_element);
-            return _element_rects.find(id) != _element_rects.end();
-        }
-        
+
         bool TestImgui::element_present(TestImGuiId id) const
         {
             return _element_rects.find(id.id()) != _element_rects.end();
@@ -387,28 +281,6 @@ namespace trview
             _tracking_id = 0;
             _context->IO.MouseClicked[0] = false;
             _context->IO.MouseReleased[1] = false;
-        }
-
-        std::string TestImgui::popup_name(const std::string& name) const
-        {
-            auto id = get_id(find_window("Debug##Default"), { name });
-            std::stringstream stream;
-            stream << "##Popup_" << std::hex << std::setfill('0') << std::setw(8) << id;
-            return stream.str();
-        }
-
-        std::string TestImgui::child_name(const std::string& window_name, const std::vector<std::string>& child_path) const
-        {
-            std::stringstream stream;
-            stream << window_name;
-
-            std::string previous_name = window_name;
-            for (const auto& child : child_path)
-            {
-                stream << '/' << child << '_' << std::hex << std::uppercase << std::setfill('0') << std::setw(8) << get_id(find_window(previous_name), { child });
-                previous_name = stream.str();
-            }
-            return stream.str();
         }
 
         TestImGuiId TestImgui::id(const std::string& window_name) const
