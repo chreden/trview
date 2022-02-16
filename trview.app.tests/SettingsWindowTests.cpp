@@ -10,11 +10,11 @@ TEST(SettingsWindow, SetVSyncUpdatesCheckbox)
     window.toggle_visibility();
 
     TestImgui imgui([&]() { window.render(); });
-    ASSERT_FALSE(imgui.status_flags("Settings", { "TabBar", "General", SettingsWindow::Names::vsync }) & ImGuiItemStatusFlags_Checked);
+    ASSERT_FALSE(imgui.status_flags(imgui.id("Settings").push("TabBar").push("General").id(SettingsWindow::Names::vsync)) & ImGuiItemStatusFlags_Checked);
 
     window.set_vsync(true);
     imgui.render();
-    ASSERT_TRUE(imgui.status_flags("Settings", { "TabBar", "General", SettingsWindow::Names::vsync }) & ImGuiItemStatusFlags_Checked);
+    ASSERT_TRUE(imgui.status_flags(imgui.id("Settings").push("TabBar").push("General").id(SettingsWindow::Names::vsync)) & ImGuiItemStatusFlags_Checked);
 }
 
 TEST(SettingsWindow, ClickingVSyncRaisesEvent)
@@ -29,9 +29,9 @@ TEST(SettingsWindow, ClickingVSyncRaisesEvent)
     };
 
     TestImgui imgui([&]() { window.render(); });
-    ASSERT_FALSE(imgui.status_flags("Settings", { "TabBar", "General", SettingsWindow::Names::vsync }) & ImGuiItemStatusFlags_Checked);
-    imgui.click_element("Settings", { "TabBar", "General", SettingsWindow::Names::vsync });
-    ASSERT_TRUE(imgui.status_flags("Settings", { "TabBar", "General", SettingsWindow::Names::vsync }) & ImGuiItemStatusFlags_Checked);
+    ASSERT_FALSE(imgui.status_flags(imgui.id("Settings").push("TabBar").push("General").id(SettingsWindow::Names::vsync)) & ImGuiItemStatusFlags_Checked);
+    imgui.click_element(imgui.id("Settings").push("TabBar").push("General").id(SettingsWindow::Names::vsync));
+    ASSERT_TRUE(imgui.status_flags(imgui.id("Settings").push("TabBar").push("General").id(SettingsWindow::Names::vsync)) & ImGuiItemStatusFlags_Checked);
     ASSERT_EQ(received_value.has_value(), true);
     ASSERT_TRUE(received_value.value());
 }
@@ -42,11 +42,11 @@ TEST(SettingsWindow, SetGoToLaraUpdatesCheckbox)
     window.toggle_visibility();
 
     TestImgui imgui([&]() { window.render(); });
-    ASSERT_FALSE(imgui.status_flags("Settings", { "TabBar", "General", SettingsWindow::Names::go_to_lara }) & ImGuiItemStatusFlags_Checked);
+    ASSERT_FALSE(imgui.status_flags(imgui.id("Settings").push("TabBar").push("General").id(SettingsWindow::Names::go_to_lara)) & ImGuiItemStatusFlags_Checked);
 
     window.set_go_to_lara(true);
     imgui.render();
-    ASSERT_TRUE(imgui.status_flags("Settings", { "TabBar", "General", SettingsWindow::Names::go_to_lara }) & ImGuiItemStatusFlags_Checked);
+    ASSERT_TRUE(imgui.status_flags(imgui.id("Settings").push("TabBar").push("General").id(SettingsWindow::Names::go_to_lara)) & ImGuiItemStatusFlags_Checked);
 }
 
 TEST(SettingsWindow, ClickingGoToLaraRaisesEvent)
@@ -61,9 +61,9 @@ TEST(SettingsWindow, ClickingGoToLaraRaisesEvent)
     };
 
     TestImgui imgui([&]() { window.render(); });
-    ASSERT_FALSE(imgui.status_flags("Settings", { "TabBar", "General", SettingsWindow::Names::go_to_lara }) & ImGuiItemStatusFlags_Checked);
-    imgui.click_element("Settings", { "TabBar", "General", SettingsWindow::Names::go_to_lara });
-    ASSERT_TRUE(imgui.status_flags("Settings", { "TabBar", "General", SettingsWindow::Names::go_to_lara }) & ImGuiItemStatusFlags_Checked);
+    ASSERT_FALSE(imgui.status_flags(imgui.id("Settings").push("TabBar").push("General").id(SettingsWindow::Names::go_to_lara)) & ImGuiItemStatusFlags_Checked);
+    imgui.click_element(imgui.id("Settings").push("TabBar").push("General").id(SettingsWindow::Names::go_to_lara));
+    ASSERT_TRUE(imgui.status_flags(imgui.id("Settings").push("TabBar").push("General").id(SettingsWindow::Names::go_to_lara)) & ImGuiItemStatusFlags_Checked);
     ASSERT_EQ(received_value.has_value(), true);
     ASSERT_TRUE(received_value.value());
 }
@@ -74,11 +74,11 @@ TEST(SettingsWindow, SetInvertMapControlsUpdatesCheckbox)
     window.toggle_visibility();
 
     TestImgui imgui([&]() { window.render(); });
-    ASSERT_FALSE(imgui.status_flags("Settings", { "TabBar", "General", SettingsWindow::Names::invert_map_controls }) & ImGuiItemStatusFlags_Checked);
+    ASSERT_FALSE(imgui.status_flags(imgui.id("Settings").push("TabBar").push("General").id(SettingsWindow::Names::invert_map_controls)) & ImGuiItemStatusFlags_Checked);
 
     window.set_invert_map_controls(true);
     imgui.render();
-    ASSERT_TRUE(imgui.status_flags("Settings", { "TabBar", "General", SettingsWindow::Names::invert_map_controls }) & ImGuiItemStatusFlags_Checked);
+    ASSERT_TRUE(imgui.status_flags(imgui.id("Settings").push("TabBar").push("General").id(SettingsWindow::Names::invert_map_controls)) & ImGuiItemStatusFlags_Checked);
 }
 
 TEST(SettingsWindow, ClickingInvertMapControlsRaisesEvent)
@@ -93,9 +93,9 @@ TEST(SettingsWindow, ClickingInvertMapControlsRaisesEvent)
     };
 
     TestImgui imgui([&]() { window.render(); });
-    ASSERT_FALSE(imgui.status_flags("Settings", { "TabBar", "General", SettingsWindow::Names::invert_map_controls }) & ImGuiItemStatusFlags_Checked);
-    imgui.click_element("Settings", { "TabBar", "General", SettingsWindow::Names::invert_map_controls });
-    ASSERT_TRUE(imgui.status_flags("Settings", { "TabBar", "General", SettingsWindow::Names::invert_map_controls }) & ImGuiItemStatusFlags_Checked);
+    ASSERT_FALSE(imgui.status_flags(imgui.id("Settings").push("TabBar").push("General").id(SettingsWindow::Names::invert_map_controls)) & ImGuiItemStatusFlags_Checked);
+    imgui.click_element(imgui.id("Settings").push("TabBar").push("General").id(SettingsWindow::Names::invert_map_controls));
+    ASSERT_TRUE(imgui.status_flags(imgui.id("Settings").push("TabBar").push("General").id(SettingsWindow::Names::invert_map_controls)) & ImGuiItemStatusFlags_Checked);
     ASSERT_EQ(received_value.has_value(), true);
     ASSERT_TRUE(received_value.value());
 }
@@ -107,11 +107,11 @@ TEST(SettingsWindow, SetItemsWindowOnStartupUpdatesCheckbox)
     window.toggle_visibility();
 
     TestImgui imgui([&]() { window.render(); });
-    ASSERT_FALSE(imgui.status_flags("Settings", { "TabBar", "General", SettingsWindow::Names::items_startup }) & ImGuiItemStatusFlags_Checked);
+    ASSERT_FALSE(imgui.status_flags(imgui.id("Settings").push("TabBar").push("General").id(SettingsWindow::Names::items_startup)) & ImGuiItemStatusFlags_Checked);
 
     window.set_items_startup(true);
     imgui.render();
-    ASSERT_TRUE(imgui.status_flags("Settings", { "TabBar", "General", SettingsWindow::Names::items_startup }) & ImGuiItemStatusFlags_Checked);
+    ASSERT_TRUE(imgui.status_flags(imgui.id("Settings").push("TabBar").push("General").id(SettingsWindow::Names::items_startup)) & ImGuiItemStatusFlags_Checked);
 }
 
 TEST(SettingsWindow, ClickingItemsWindowOnStartupRaisesEvent)
@@ -126,9 +126,9 @@ TEST(SettingsWindow, ClickingItemsWindowOnStartupRaisesEvent)
     };
 
     TestImgui imgui([&]() { window.render(); });
-    ASSERT_FALSE(imgui.status_flags("Settings", { "TabBar", "General", SettingsWindow::Names::items_startup }) & ImGuiItemStatusFlags_Checked);
-    imgui.click_element("Settings", { "TabBar", "General", SettingsWindow::Names::items_startup });
-    ASSERT_TRUE(imgui.status_flags("Settings", { "TabBar", "General", SettingsWindow::Names::items_startup }) & ImGuiItemStatusFlags_Checked);
+    ASSERT_FALSE(imgui.status_flags(imgui.id("Settings").push("TabBar").push("General").id(SettingsWindow::Names::items_startup)) & ImGuiItemStatusFlags_Checked);
+    imgui.click_element(imgui.id("Settings").push("TabBar").push("General").id(SettingsWindow::Names::items_startup));
+    ASSERT_TRUE(imgui.status_flags(imgui.id("Settings").push("TabBar").push("General").id(SettingsWindow::Names::items_startup)) & ImGuiItemStatusFlags_Checked);
     ASSERT_EQ(received_value.has_value(), true);
     ASSERT_TRUE(received_value.value());
 }
@@ -139,11 +139,11 @@ TEST(SettingsWindow, SetTriggersWindowOnStartupUpdatesCheckbox)
     window.toggle_visibility();
 
     TestImgui imgui([&]() { window.render(); });
-    ASSERT_FALSE(imgui.status_flags("Settings", { "TabBar", "General", SettingsWindow::Names::triggers_startup }) & ImGuiItemStatusFlags_Checked);
+    ASSERT_FALSE(imgui.status_flags(imgui.id("Settings").push("TabBar").push("General").id(SettingsWindow::Names::triggers_startup)) & ImGuiItemStatusFlags_Checked);
 
     window.set_triggers_startup(true);
     imgui.render();
-    ASSERT_TRUE(imgui.status_flags("Settings", { "TabBar", "General", SettingsWindow::Names::triggers_startup }) & ImGuiItemStatusFlags_Checked);
+    ASSERT_TRUE(imgui.status_flags(imgui.id("Settings").push("TabBar").push("General").id(SettingsWindow::Names::triggers_startup)) & ImGuiItemStatusFlags_Checked);
 }
 
 TEST(SettingsWindow, ClickingTriggersWindowOnStartupRaisesEvent)
@@ -158,9 +158,9 @@ TEST(SettingsWindow, ClickingTriggersWindowOnStartupRaisesEvent)
     };
 
     TestImgui imgui([&]() { window.render(); });
-    ASSERT_FALSE(imgui.status_flags("Settings", { "TabBar", "General", SettingsWindow::Names::triggers_startup }) & ImGuiItemStatusFlags_Checked);
-    imgui.click_element("Settings", { "TabBar", "General", SettingsWindow::Names::triggers_startup });
-    ASSERT_TRUE(imgui.status_flags("Settings", { "TabBar", "General", SettingsWindow::Names::triggers_startup }) & ImGuiItemStatusFlags_Checked);
+    ASSERT_FALSE(imgui.status_flags(imgui.id("Settings").push("TabBar").push("General").id(SettingsWindow::Names::triggers_startup)) & ImGuiItemStatusFlags_Checked);
+    imgui.click_element(imgui.id("Settings").push("TabBar").push("General").id(SettingsWindow::Names::triggers_startup));
+    ASSERT_TRUE(imgui.status_flags(imgui.id("Settings").push("TabBar").push("General").id(SettingsWindow::Names::triggers_startup)) & ImGuiItemStatusFlags_Checked);
     ASSERT_EQ(received_value.has_value(), true);
     ASSERT_TRUE(received_value.value());
 }
@@ -171,11 +171,11 @@ TEST(SettingsWindow, SetRoomsWindowOnStartupUpdatesCheckbox)
     window.toggle_visibility();
 
     TestImgui imgui([&]() { window.render(); });
-    ASSERT_FALSE(imgui.status_flags("Settings", { "TabBar", "General", SettingsWindow::Names::rooms_startup }) & ImGuiItemStatusFlags_Checked);
+    ASSERT_FALSE(imgui.status_flags(imgui.id("Settings").push("TabBar").push("General").id(SettingsWindow::Names::rooms_startup )) & ImGuiItemStatusFlags_Checked);
 
     window.set_rooms_startup(true);
     imgui.render();
-    ASSERT_TRUE(imgui.status_flags("Settings", { "TabBar", "General", SettingsWindow::Names::rooms_startup }) & ImGuiItemStatusFlags_Checked);
+    ASSERT_TRUE(imgui.status_flags(imgui.id("Settings").push("TabBar").push("General").id(SettingsWindow::Names::rooms_startup )) & ImGuiItemStatusFlags_Checked);
 }
 
 TEST(SettingsWindow, ClickingRoomsWindowOnStartupRaisesEvent)
@@ -190,9 +190,9 @@ TEST(SettingsWindow, ClickingRoomsWindowOnStartupRaisesEvent)
     };
 
     TestImgui imgui([&]() { window.render(); });
-    ASSERT_FALSE(imgui.status_flags("Settings", { "TabBar", "General", SettingsWindow::Names::rooms_startup }) & ImGuiItemStatusFlags_Checked);
-    imgui.click_element("Settings", { "TabBar", "General", SettingsWindow::Names::rooms_startup });
-    ASSERT_TRUE(imgui.status_flags("Settings", { "TabBar", "General", SettingsWindow::Names::rooms_startup }) & ImGuiItemStatusFlags_Checked);
+    ASSERT_FALSE(imgui.status_flags(imgui.id("Settings").push("TabBar").push("General").id(SettingsWindow::Names::rooms_startup )) & ImGuiItemStatusFlags_Checked);
+    imgui.click_element(imgui.id("Settings").push("TabBar").push("General").id(SettingsWindow::Names::rooms_startup ));
+    ASSERT_TRUE(imgui.status_flags(imgui.id("Settings").push("TabBar").push("General").id(SettingsWindow::Names::rooms_startup )) & ImGuiItemStatusFlags_Checked);
     ASSERT_EQ(received_value.has_value(), true);
     ASSERT_TRUE(received_value.value());
 }
@@ -203,13 +203,13 @@ TEST(SettingsWindow, SetOrbitUpdatesCheckbox)
     window.toggle_visibility();
 
     TestImgui imgui([&]() { window.render(); });
-    imgui.click_element("Settings", { "TabBar", "Camera" });
+    imgui.click_element(imgui.id("Settings").push("TabBar").id("Camera"));
     imgui.render();
-    ASSERT_FALSE(imgui.status_flags("Settings", { "TabBar", "Camera", SettingsWindow::Names::auto_orbit }) & ImGuiItemStatusFlags_Checked);
+    ASSERT_FALSE(imgui.status_flags(imgui.id("Settings").push("TabBar").push("Camera").id(SettingsWindow::Names::auto_orbit )) & ImGuiItemStatusFlags_Checked);
 
     window.set_auto_orbit(true);
     imgui.render();
-    ASSERT_TRUE(imgui.status_flags("Settings", { "TabBar", "Camera", SettingsWindow::Names::auto_orbit }) & ImGuiItemStatusFlags_Checked);
+    ASSERT_TRUE(imgui.status_flags(imgui.id("Settings").push("TabBar").push("Camera").id(SettingsWindow::Names::auto_orbit )) & ImGuiItemStatusFlags_Checked);
 }
 
 TEST(SettingsWindow, ClickingOrbitRaisesEvent)
@@ -224,11 +224,11 @@ TEST(SettingsWindow, ClickingOrbitRaisesEvent)
     };
 
     TestImgui imgui([&]() { window.render(); });
-    imgui.click_element("Settings", { "TabBar", "Camera" });
+    imgui.click_element(imgui.id("Settings").push("TabBar").id("Camera"));
     imgui.render();
-    ASSERT_FALSE(imgui.status_flags("Settings", { "TabBar", "Camera", SettingsWindow::Names::auto_orbit }) & ImGuiItemStatusFlags_Checked);
-    imgui.click_element("Settings", { "TabBar", "Camera", SettingsWindow::Names::auto_orbit });
-    ASSERT_TRUE(imgui.status_flags("Settings", { "TabBar", "Camera", SettingsWindow::Names::auto_orbit }) & ImGuiItemStatusFlags_Checked);
+    ASSERT_FALSE(imgui.status_flags(imgui.id("Settings").push("TabBar").push("Camera").id(SettingsWindow::Names::auto_orbit )) & ImGuiItemStatusFlags_Checked);
+    imgui.click_element(imgui.id("Settings").push("TabBar").push("Camera").id(SettingsWindow::Names::auto_orbit ));
+    ASSERT_TRUE(imgui.status_flags(imgui.id("Settings").push("TabBar").push("Camera").id(SettingsWindow::Names::auto_orbit )) & ImGuiItemStatusFlags_Checked);
     ASSERT_EQ(received_value.has_value(), true);
     ASSERT_TRUE(received_value.value());
 }
@@ -239,13 +239,13 @@ TEST(SettingsWindow, SetInvertVerticalPanUpdatesCheckbox)
     window.toggle_visibility();
 
     TestImgui imgui([&]() { window.render(); });
-    imgui.click_element("Settings", { "TabBar", "Camera" });
+    imgui.click_element(imgui.id("Settings").push("TabBar").id("Camera"));
     imgui.render();
-    ASSERT_FALSE(imgui.status_flags("Settings", { "TabBar", "Camera", SettingsWindow::Names::invert_vertical_pan }) & ImGuiItemStatusFlags_Checked);
+    ASSERT_FALSE(imgui.status_flags(imgui.id("Settings").push("TabBar").push("Camera").id(SettingsWindow::Names::invert_vertical_pan )) & ImGuiItemStatusFlags_Checked);
 
     window.set_invert_vertical_pan(true);
     imgui.render();
-    ASSERT_TRUE(imgui.status_flags("Settings", { "TabBar", "Camera", SettingsWindow::Names::invert_vertical_pan }) & ImGuiItemStatusFlags_Checked);
+    ASSERT_TRUE(imgui.status_flags(imgui.id("Settings").push("TabBar").push("Camera").id(SettingsWindow::Names::invert_vertical_pan )) & ImGuiItemStatusFlags_Checked);
 }
 
 TEST(SettingsWindow, ClickingInvertVerticalPanRaisesEvent)
@@ -260,11 +260,11 @@ TEST(SettingsWindow, ClickingInvertVerticalPanRaisesEvent)
     };
 
     TestImgui imgui([&]() { window.render(); });
-    imgui.click_element("Settings", { "TabBar", "Camera" });
+    imgui.click_element(imgui.id("Settings").push("TabBar").id("Camera"));
     imgui.render();
-    ASSERT_FALSE(imgui.status_flags("Settings", { "TabBar", "Camera", SettingsWindow::Names::invert_vertical_pan }) & ImGuiItemStatusFlags_Checked);
-    imgui.click_element("Settings", { "TabBar", "Camera", SettingsWindow::Names::invert_vertical_pan });
-    ASSERT_TRUE(imgui.status_flags("Settings", { "TabBar", "Camera", SettingsWindow::Names::invert_vertical_pan }) & ImGuiItemStatusFlags_Checked);
+    ASSERT_FALSE(imgui.status_flags(imgui.id("Settings").push("TabBar").push("Camera").id(SettingsWindow::Names::invert_vertical_pan )) & ImGuiItemStatusFlags_Checked);
+    imgui.click_element(imgui.id("Settings").push("TabBar").push("Camera").id(SettingsWindow::Names::invert_vertical_pan ));
+    ASSERT_TRUE(imgui.status_flags(imgui.id("Settings").push("TabBar").push("Camera").id(SettingsWindow::Names::invert_vertical_pan )) & ImGuiItemStatusFlags_Checked);
     ASSERT_EQ(received_value.has_value(), true);
     ASSERT_TRUE(received_value.value());
 }
@@ -357,13 +357,13 @@ TEST(SettingsWindow, SetAccelerationUpdatesCheckbox)
     window.toggle_visibility();
 
     TestImgui imgui([&]() { window.render(); });
-    imgui.click_element("Settings", { "TabBar", "Camera" });
+    imgui.click_element(imgui.id("Settings").push("TabBar").id("Camera"));
     imgui.render();
-    ASSERT_FALSE(imgui.status_flags("Settings", { "TabBar", "Camera", SettingsWindow::Names::acceleration }) & ImGuiItemStatusFlags_Checked);
+    ASSERT_FALSE(imgui.status_flags(imgui.id("Settings").push("TabBar").push("Camera").id(SettingsWindow::Names::acceleration )) & ImGuiItemStatusFlags_Checked);
 
     window.set_camera_acceleration(true);
     imgui.render();
-    ASSERT_TRUE(imgui.status_flags("Settings", { "TabBar", "Camera", SettingsWindow::Names::acceleration }) & ImGuiItemStatusFlags_Checked);
+    ASSERT_TRUE(imgui.status_flags(imgui.id("Settings").push("TabBar").push("Camera").id(SettingsWindow::Names::acceleration )) & ImGuiItemStatusFlags_Checked);
 }
 
 TEST(SettingsWindow, ClickingAccelerationRaisesEvent)
@@ -378,11 +378,11 @@ TEST(SettingsWindow, ClickingAccelerationRaisesEvent)
     };
 
     TestImgui imgui([&]() { window.render(); });
-    imgui.click_element("Settings", { "TabBar", "Camera" });
+    imgui.click_element(imgui.id("Settings").push("TabBar").id("Camera"));
     imgui.render();
-    ASSERT_FALSE(imgui.status_flags("Settings", { "TabBar", "Camera", SettingsWindow::Names::acceleration }) & ImGuiItemStatusFlags_Checked);
-    imgui.click_element("Settings", { "TabBar", "Camera", SettingsWindow::Names::acceleration });
-    ASSERT_TRUE(imgui.status_flags("Settings", { "TabBar", "Camera", SettingsWindow::Names::acceleration }) & ImGuiItemStatusFlags_Checked);
+    ASSERT_FALSE(imgui.status_flags(imgui.id("Settings").push("TabBar").push("Camera").id(SettingsWindow::Names::acceleration )) & ImGuiItemStatusFlags_Checked);
+    imgui.click_element(imgui.id("Settings").push("TabBar").push("Camera").id(SettingsWindow::Names::acceleration ));
+    ASSERT_TRUE(imgui.status_flags(imgui.id("Settings").push("TabBar").push("Camera").id(SettingsWindow::Names::acceleration )) & ImGuiItemStatusFlags_Checked);
     ASSERT_EQ(received_value.has_value(), true);
     ASSERT_TRUE(received_value.value());
 }
@@ -425,9 +425,9 @@ TEST(SettingsWindow, ClickingAccelerationRateRaisesEvent)
     // ASSERT_NE(slider, nullptr);
     // ASSERT_EQ(slider->value(), 0.0f);
     TestImgui imgui([&]() { window.render(); });
-    imgui.click_element("Settings", { "TabBar", "Camera" });
+    imgui.click_element(imgui.id("Settings").push("TabBar").id("Camera"));
     imgui.render();
-    imgui.click_element("Settings", { "TabBar", "Camera", SettingsWindow::Names::acceleration_rate });
+    imgui.click_element(imgui.id("Settings").push("TabBar").push("Camera").id(SettingsWindow::Names::acceleration_rate });
     // slider->clicked(Point(slider->size().width / 2, 0));
     ASSERT_TRUE(received_value.has_value());
     ASSERT_EQ(received_value.value(), 0.0f);
@@ -439,13 +439,13 @@ TEST(SettingsWindow, ClickingCameraDegreesRaisesEvent)
     window.toggle_visibility();
 
     TestImgui imgui([&]() { window.render(); });
-    imgui.click_element("Settings", { "TabBar", "Camera" });
+    imgui.click_element(imgui.id("Settings").push("TabBar").id("Camera"));
     imgui.render();
-    ASSERT_FALSE(imgui.status_flags("Settings", { "TabBar", "Camera", SettingsWindow::Names::camera_display_degrees }) & ImGuiItemStatusFlags_Checked);
+    ASSERT_FALSE(imgui.status_flags(imgui.id("Settings").push("TabBar").push("Camera").id(SettingsWindow::Names::camera_display_degrees )) & ImGuiItemStatusFlags_Checked);
 
     window.set_camera_display_degrees(true);
     imgui.render();
-    ASSERT_TRUE(imgui.status_flags("Settings", { "TabBar", "Camera", SettingsWindow::Names::camera_display_degrees }) & ImGuiItemStatusFlags_Checked);
+    ASSERT_TRUE(imgui.status_flags(imgui.id("Settings").push("TabBar").push("Camera").id(SettingsWindow::Names::camera_display_degrees )) & ImGuiItemStatusFlags_Checked);
 }
 
 TEST(SettingsWindow, SetCameraDegreesUpdatesCheckbox)
@@ -460,11 +460,11 @@ TEST(SettingsWindow, SetCameraDegreesUpdatesCheckbox)
     };
 
     TestImgui imgui([&]() { window.render(); });
-    imgui.click_element("Settings", { "TabBar", "Camera" });
+    imgui.click_element(imgui.id("Settings").push("TabBar").id("Camera"));
     imgui.render();
-    ASSERT_FALSE(imgui.status_flags("Settings", { "TabBar", "Camera", SettingsWindow::Names::camera_display_degrees }) & ImGuiItemStatusFlags_Checked);
-    imgui.click_element("Settings", { "TabBar", "Camera", SettingsWindow::Names::camera_display_degrees });
-    ASSERT_TRUE(imgui.status_flags("Settings", { "TabBar", "Camera", SettingsWindow::Names::camera_display_degrees }) & ImGuiItemStatusFlags_Checked);
+    ASSERT_FALSE(imgui.status_flags(imgui.id("Settings").push("TabBar").push("Camera").id(SettingsWindow::Names::camera_display_degrees )) & ImGuiItemStatusFlags_Checked);
+    imgui.click_element(imgui.id("Settings").push("TabBar").push("Camera").id(SettingsWindow::Names::camera_display_degrees ));
+    ASSERT_TRUE(imgui.status_flags(imgui.id("Settings").push("TabBar").push("Camera").id(SettingsWindow::Names::camera_display_degrees )) & ImGuiItemStatusFlags_Checked);
     ASSERT_EQ(received_value.has_value(), true);
     ASSERT_TRUE(received_value.value());
 }
@@ -476,11 +476,11 @@ TEST(SettingsWindow, ClickingRandomizerToolsRaisesEvent)
     window.toggle_visibility();
 
     TestImgui imgui([&]() { window.render(); });
-    ASSERT_FALSE(imgui.status_flags("Settings", { "TabBar", "General", SettingsWindow::Names::randomizer_tools }) & ImGuiItemStatusFlags_Checked);
+    ASSERT_FALSE(imgui.status_flags(imgui.id("Settings").push("TabBar").push("General").id(SettingsWindow::Names::randomizer_tools )) & ImGuiItemStatusFlags_Checked);
 
     window.set_randomizer_tools(true);
     imgui.render();
-    ASSERT_TRUE(imgui.status_flags("Settings", { "TabBar", "General", SettingsWindow::Names::randomizer_tools }) & ImGuiItemStatusFlags_Checked);
+    ASSERT_TRUE(imgui.status_flags(imgui.id("Settings").push("TabBar").push("General").id(SettingsWindow::Names::randomizer_tools )) & ImGuiItemStatusFlags_Checked);
 }
 
 TEST(SettingsWindow, SetRandomizerToolsUpdatesCheckbox)
@@ -495,9 +495,9 @@ TEST(SettingsWindow, SetRandomizerToolsUpdatesCheckbox)
     };
 
     TestImgui imgui([&]() { window.render(); });
-    ASSERT_FALSE(imgui.status_flags("Settings", { "TabBar", "General", SettingsWindow::Names::randomizer_tools }) & ImGuiItemStatusFlags_Checked);
-    imgui.click_element("Settings", { "TabBar", "General", SettingsWindow::Names::randomizer_tools });
-    ASSERT_TRUE(imgui.status_flags("Settings", { "TabBar", "General", SettingsWindow::Names::randomizer_tools }) & ImGuiItemStatusFlags_Checked);
+    ASSERT_FALSE(imgui.status_flags(imgui.id("Settings").push("TabBar").push("General").id(SettingsWindow::Names::randomizer_tools )) & ImGuiItemStatusFlags_Checked);
+    imgui.click_element(imgui.id("Settings").push("TabBar").push("General").id(SettingsWindow::Names::randomizer_tools ));
+    ASSERT_TRUE(imgui.status_flags(imgui.id("Settings").push("TabBar").push("General").id(SettingsWindow::Names::randomizer_tools )) & ImGuiItemStatusFlags_Checked);
     ASSERT_EQ(received_value.has_value(), true);
     ASSERT_TRUE(received_value.value());
 }
@@ -514,7 +514,7 @@ TEST(SettingsWindow, ChangingMaxRecentFilesRaisesEvent)
     };
 
     tests::TestImgui imgui([&]() { window.render(); });
-    imgui.click_element("Settings", { "TabBar", "General", SettingsWindow::Names::max_recent_files, "+" });
+    imgui.click_element(imgui.id("Settings").push("TabBar").push("General").push(SettingsWindow::Names::max_recent_files).id("+"));
 
     ASSERT_TRUE(received_value.has_value());
     ASSERT_EQ(received_value.value(), 11);
@@ -526,9 +526,9 @@ TEST(SettingsWindow, SetMaxRecentFilesUpdatesNumericUpDown)
     window.toggle_visibility();
 
     tests::TestImgui imgui([&]() { window.render(); });
-    ASSERT_EQ(imgui.item_text("Settings", { "TabBar", "General", SettingsWindow::Names::max_recent_files }), "10");
+    ASSERT_EQ(imgui.item_text(imgui.id("Settings").push("TabBar").push("General").id(SettingsWindow::Names::max_recent_files )), "10");
 
     window.set_max_recent_files(5);
     imgui.render();
-    ASSERT_EQ(imgui.item_text("Settings", { "TabBar", "General", SettingsWindow::Names::max_recent_files }), "5");
+    ASSERT_EQ(imgui.item_text(imgui.id("Settings").push("TabBar").push("General").id(SettingsWindow::Names::max_recent_files )), "5");
 }

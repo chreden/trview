@@ -15,7 +15,7 @@ TEST(CameraControls, ResetRaisesEvent)
         raised = true;
     };
 
-    imgui.click_element("Camera Controls", { CameraControls::Names::reset });
+    imgui.click_element(imgui.id("Camera Controls").id(CameraControls::Names::reset));
 
     ASSERT_TRUE(raised);
 }
@@ -31,8 +31,8 @@ TEST(CameraControls, OrbitRaisesModeSelected)
         selected_mode = mode;
     };
 
-    imgui.click_element("Camera Controls", { CameraControls::Names::mode });
-    imgui.click_element("##Combo_00", { "Orbit" });
+    imgui.click_element(imgui.id("Camera Controls").id(CameraControls::Names::mode));
+    imgui.click_element(imgui.id("##Combo_00").id("Orbit"));
 
     ASSERT_TRUE(selected_mode.has_value());
     ASSERT_EQ(selected_mode.value(), CameraMode::Orbit);
@@ -49,8 +49,8 @@ TEST(CameraControls, FreeRaisesModeSelected)
         selected_mode = mode;
     };
 
-    imgui.click_element("Camera Controls", { CameraControls::Names::mode });
-    imgui.click_element("##Combo_00", { "Free" });
+    imgui.click_element(imgui.id("Camera Controls").id(CameraControls::Names::mode));
+    imgui.click_element(imgui.id("##Combo_00").id("Free"));
 
     ASSERT_TRUE(selected_mode.has_value());
     ASSERT_EQ(selected_mode.value(), CameraMode::Free);
@@ -67,8 +67,8 @@ TEST(CameraControls, AxisRaisesModeSelected)
         selected_mode = mode;
     };
 
-    imgui.click_element("Camera Controls", { CameraControls::Names::mode });
-    imgui.click_element("##Combo_00", { "Axis" });
+    imgui.click_element(imgui.id("Camera Controls").id(CameraControls::Names::mode));
+    imgui.click_element(imgui.id("##Combo_00").id("Axis"));
 
     ASSERT_TRUE(selected_mode.has_value());
     ASSERT_EQ(selected_mode.value(), CameraMode::Axis);
@@ -85,8 +85,8 @@ TEST(CameraControls, OrthoRaisesProjectionMode)
         selected_mode = mode;
     };
 
-    imgui.click_element("Camera Controls", { CameraControls::Names::projection_mode });
-    imgui.click_element("##Combo_00", { "Orthographic" });
+    imgui.click_element(imgui.id("Camera Controls").id(CameraControls::Names::projection_mode));
+    imgui.click_element(imgui.id("##Combo_00").id("Orthographic"));
 
     ASSERT_TRUE(selected_mode.has_value());
     ASSERT_EQ(selected_mode.value(), ProjectionMode::Orthographic);
@@ -103,8 +103,8 @@ TEST(CameraControls, PrespectiveRaisesProjectionMode)
         selected_mode = mode;
     };
 
-    imgui.click_element("Camera Controls", { CameraControls::Names::projection_mode });
-    imgui.click_element("##Combo_00", { "Perspective" });
+    imgui.click_element(imgui.id("Camera Controls").id(CameraControls::Names::projection_mode));
+    imgui.click_element(imgui.id("##Combo_00").id("Perspective"));
 
     ASSERT_TRUE(selected_mode.has_value());
     ASSERT_EQ(selected_mode.value(), ProjectionMode::Perspective);
@@ -116,11 +116,11 @@ TEST(CameraControls, SetModeUpdatesCombo)
     TestImgui imgui([&]() { controls.render(); });
 
     imgui.render();
-    ASSERT_EQ(imgui.item_text("Camera Controls", { CameraControls::Names::mode }), "Orbit");
+    ASSERT_EQ(imgui.item_text(imgui.id("Camera Controls").id(CameraControls::Names::mode)), "Orbit");
 
     controls.set_mode(CameraMode::Axis);
     imgui.render();
-    ASSERT_EQ(imgui.item_text("Camera Controls", { CameraControls::Names::mode }), "Axis");
+    ASSERT_EQ(imgui.item_text(imgui.id("Camera Controls").id(CameraControls::Names::mode)), "Axis");
 }
 
 
@@ -130,9 +130,9 @@ TEST(CameraControls, SetProjectionModeUpdatesCombo)
     TestImgui imgui([&]() { controls.render(); });
 
     imgui.render();
-    ASSERT_EQ(imgui.item_text("Camera Controls", { CameraControls::Names::projection_mode }), "Perspective");
+    ASSERT_EQ(imgui.item_text(imgui.id("Camera Controls").id(CameraControls::Names::projection_mode )), "Perspective");
 
     controls.set_projection_mode(ProjectionMode::Orthographic);
     imgui.render();
-    ASSERT_EQ(imgui.item_text("Camera Controls", { CameraControls::Names::projection_mode }), "Orthographic");
+    ASSERT_EQ(imgui.item_text(imgui.id("Camera Controls").id(CameraControls::Names::projection_mode )), "Orthographic");
 }

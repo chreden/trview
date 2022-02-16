@@ -492,6 +492,7 @@ namespace trview
         TestImGuiId::TestImGuiId(ImGuiWindow* window)
             : _window(window), _id(window->ID), _root_window(window)
         {
+            _name = window->Name;
         }
 
         TestImGuiId TestImGuiId::id(const std::string& name)
