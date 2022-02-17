@@ -1,16 +1,14 @@
 #include <trview.app/Windows/TriggersWindow.h>
 #include <trview.app/Elements/Types.h>
-#include <trview.graphics/mocks/IDeviceWindow.h>
 #include <trview.common/Mocks/Windows/IClipboard.h>
 #include <trview.app/Mocks/Elements/ITrigger.h>
-#include <trview.common/Mocks/Windows/IShell.h>
+#include "TestImgui.h"
 
 using namespace trview;
 using namespace trview::tests;
-using namespace trview::graphics;
-using namespace trview::graphics::mocks;
 using namespace trview::mocks;
 using testing::Return;
+using testing::NiceMock;
 
 namespace
 {
@@ -18,7 +16,7 @@ namespace
     {
         struct test_module
         {
-            std::shared_ptr<IClipboard> clipboard{ std::make_shared<MockClipboard>() };
+            std::shared_ptr<IClipboard> clipboard{ std::make_shared<NiceMock<MockClipboard>>() };
 
             std::unique_ptr<TriggersWindow> build()
             {
@@ -29,7 +27,7 @@ namespace
         return test_module {};
     }
 }
-/*
+
 TEST(TriggersWindow, TriggerSelectedRaisedWhenSyncTriggerEnabled)
 {
     auto window = register_test_module().build();
@@ -37,24 +35,23 @@ TEST(TriggersWindow, TriggerSelectedRaisedWhenSyncTriggerEnabled)
     std::optional<std::weak_ptr<ITrigger>> raised_trigger;
     auto token = window->on_trigger_selected += [&raised_trigger](const auto& trigger) { raised_trigger = trigger; };
 
-    auto trigger1 = std::make_shared<MockTrigger>()->with_number(0);
-    auto trigger2 = std::make_shared<MockTrigger>()->with_number(1);
+    auto trigger1 = std::make_shared<NiceMock<MockTrigger>>()->with_number(0);
+    auto trigger2 = std::make_shared<NiceMock<MockTrigger>>()->with_number(1);
     window->set_triggers({ trigger1, trigger2 });
 
-    auto list = window->root_control()->find<ui::Listbox>(TriggersWindow::Names::triggers_listbox);
-    ASSERT_NE(list, nullptr);
-
-    auto row = list->find<ui::Control>(ui::Listbox::Names::row_name_format + "1");
-    ASSERT_NE(row, nullptr);
-
-    auto cell = row->find<ui::Button>(ui::Listbox::Row::Names::cell_name_format + "#");
-    ASSERT_NE(cell, nullptr);
-    cell->clicked(Point());
+    TestImgui imgui([&]() { window->render(); });
+    imgui.click_element(imgui.id("Triggers 0")
+        .push_child(TriggersWindow::Names::trigger_list_panel)
+        .push(TriggersWindow::Names::triggers_list).id("1##1"), false, true);
 
     ASSERT_TRUE(raised_trigger.has_value());
     ASSERT_EQ(raised_trigger.value().lock(), trigger2);
-}
 
+    const auto from_window = window->selected_trigger();
+    ASSERT_NE(from_window.lock(), nullptr);
+    ASSERT_EQ(from_window.lock()->number(), 1);
+}
+/*
 TEST(TriggersWindow, TriggerSelectedNotRaisedWhenSyncTriggerDisabled)
 {
     auto window = register_test_module().build();

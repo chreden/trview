@@ -12,8 +12,6 @@ namespace trview
     TriggersWindow::TriggersWindow(const std::shared_ptr<IClipboard>& clipboard)
         : _clipboard(clipboard)
     {
-        static int number = 0;
-        _id = "Triggers " + std::to_string(++number);
     }
 
     void TriggersWindow::set_triggers(const std::vector<std::weak_ptr<ITrigger>>& triggers)
@@ -48,6 +46,11 @@ namespace trview
     void TriggersWindow::set_current_room(uint32_t room)
     {
         _current_room = room;
+    }
+
+    void TriggersWindow::set_number(int32_t number)
+    {
+        _id = "Triggers " + std::to_string(number);
     }
 
     void TriggersWindow::set_selected_trigger(const std::weak_ptr<ITrigger>& trigger)
@@ -115,7 +118,7 @@ namespace trview
 
     void TriggersWindow::render_triggers_list()
     {
-        if (ImGui::BeginChild("Triggers List", ImVec2(220, 0), true))
+        if (ImGui::BeginChild(Names::trigger_list_panel.c_str(), ImVec2(220, 0), true))
         {
             bool track_room = _track_room;
             if (ImGui::Checkbox(Names::track_room.c_str(), &track_room))
@@ -159,7 +162,7 @@ namespace trview
                 ImGui::EndCombo();
             }
 
-            if (ImGui::BeginTable("##triggerslist", 4, ImGuiTableFlags_Sortable | ImGuiTableFlags_ScrollY | ImGuiTableFlags_SizingFixedFit, ImVec2(-1, -1)))
+            if (ImGui::BeginTable(Names::triggers_list.c_str(), 4, ImGuiTableFlags_Sortable | ImGuiTableFlags_ScrollY | ImGuiTableFlags_SizingFixedFit, ImVec2(-1, -1)))
             {
                 ImGui::TableSetupColumn("#");
                 ImGui::TableSetupColumn("Room");

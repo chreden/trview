@@ -19,6 +19,8 @@ namespace trview
             static inline const std::string add_to_route = "Add to Route";
             static inline const std::string sync_trigger = "Sync Trigger";
             static inline const std::string track_room = "Track Room";
+            static inline const std::string trigger_list_panel = "Trigger List";
+            static inline const std::string triggers_list = "##triggerslist";
         };
 
         explicit TriggersWindow(const std::shared_ptr<IClipboard>& clipboard);
@@ -28,6 +30,7 @@ namespace trview
         virtual void update_triggers(const std::vector<std::weak_ptr<ITrigger>>& triggers) override;
         virtual void clear_selected_trigger() override;
         virtual void set_current_room(uint32_t room) override;
+        virtual void set_number(int32_t number) override;
         virtual void set_selected_trigger(const std::weak_ptr<ITrigger>& trigger) override;
         virtual void set_items(const std::vector<Item>& items) override;
         virtual std::weak_ptr<ITrigger> selected_trigger() const override;
@@ -39,7 +42,7 @@ namespace trview
         void render_trigger_details();
         bool render_triggers_window();
 
-        std::string _id;
+        std::string _id{ "Triggers 0" };
         std::vector<Item> _all_items;
         std::vector<std::weak_ptr<ITrigger>> _all_triggers;
 

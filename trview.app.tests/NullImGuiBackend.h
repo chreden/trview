@@ -6,7 +6,7 @@ namespace trview
 {
     namespace tests
     {
-        class NullImGuiBackend : public IImGuiBackend
+        class NullImGuiBackend final : public IImGuiBackend
         {
         public:
             virtual ~NullImGuiBackend() = default;

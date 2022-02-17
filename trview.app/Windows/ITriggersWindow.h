@@ -43,6 +43,8 @@ namespace trview
 
         virtual void set_items(const std::vector<Item>& items) = 0;
 
+        virtual void set_number(int32_t number) = 0;
+
         /// Set the selected trigger.
         /// @param item The selected trigger.
         virtual void set_selected_trigger(const std::weak_ptr<ITrigger>& trigger) = 0;

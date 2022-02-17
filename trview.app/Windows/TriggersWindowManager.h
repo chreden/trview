@@ -40,5 +40,6 @@ namespace trview
         TokenStore _token_store;
         std::weak_ptr<ITrigger> _selected_trigger;
         ITriggersWindow::Source _triggers_window_source;
+        int32_t _window_count{ 0 };
     };
 }
