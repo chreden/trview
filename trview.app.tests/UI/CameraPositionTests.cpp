@@ -21,9 +21,17 @@ TEST(CameraPosition, PositionEventRaised)
         new_position = position;
     };
 
-    imgui.enter_text(imgui.id("Camera Position").id(CameraPosition::Names::x), "1024");
-    imgui.enter_text(imgui.id("Camera Position").id(CameraPosition::Names::y), "2048");
-    imgui.enter_text(imgui.id("Camera Position").id(CameraPosition::Names::z), "3072");
+    imgui.click_element(imgui.id("Camera Position").id(CameraPosition::Names::x));
+    imgui.enter_text("1024");
+    imgui.press_key(ImGuiKey_Enter);
+
+    imgui.click_element(imgui.id("Camera Position").id(CameraPosition::Names::y));
+    imgui.enter_text("2048");
+    imgui.press_key(ImGuiKey_Enter);
+    
+    imgui.click_element(imgui.id("Camera Position").id(CameraPosition::Names::z));
+    imgui.enter_text("3072");
+    imgui.press_key(ImGuiKey_Enter);
 
     ASSERT_EQ(times_called, 3);
     // The position is scaled by diving by 1024.
@@ -63,8 +71,12 @@ TEST(CameraPosition, RotationEventRaised)
         new_pitch = pitch;
     };
 
-    imgui.enter_text(imgui.id("Camera Position").id(CameraPosition::Names::yaw), "90");
-    imgui.enter_text(imgui.id("Camera Position").id(CameraPosition::Names::pitch), "180");
+    imgui.click_element(imgui.id("Camera Position").id(CameraPosition::Names::yaw));
+    imgui.enter_text("90");
+    imgui.press_key(ImGuiKey_Enter);
+    imgui.click_element(imgui.id("Camera Position").id(CameraPosition::Names::pitch));
+    imgui.enter_text("180");
+    imgui.press_key(ImGuiKey_Enter);
 
     ASSERT_EQ(times_called, 2);
     ASSERT_FLOAT_EQ(new_yaw, 1.5707964);
@@ -110,8 +122,12 @@ TEST(CameraPosition, RotationNotUpdatedWithInvalidValues)
         raised = true;
     };
 
-    imgui.enter_text(imgui.id("Camera Position").id(CameraPosition::Names::yaw), "inf");
-    imgui.enter_text(imgui.id("Camera Position").id(CameraPosition::Names::pitch), "nan");
+    imgui.click_element(imgui.id("Camera Position").id(CameraPosition::Names::yaw));
+    imgui.enter_text("inf");
+    imgui.press_key(ImGuiKey_Enter);
+    imgui.click_element(imgui.id("Camera Position").id(CameraPosition::Names::pitch));
+    imgui.enter_text("nan");
+    imgui.press_key(ImGuiKey_Enter);
 
     ASSERT_FALSE(raised);
 }
@@ -127,9 +143,15 @@ TEST(CameraPosition, CoordinatesNotUpdatedWithInvalidValues)
         raised = true;
     };
 
-    imgui.enter_text(imgui.id("Camera Position").id(CameraPosition::Names::x), "inf");
-    imgui.enter_text(imgui.id("Camera Position").id(CameraPosition::Names::y), "nan");
-    imgui.enter_text(imgui.id("Camera Position").id(CameraPosition::Names::z), "nan");
+    imgui.click_element(imgui.id("Camera Position").id(CameraPosition::Names::x));
+    imgui.enter_text("inf");
+    imgui.press_key(ImGuiKey_Enter);
+    imgui.click_element(imgui.id("Camera Position").id(CameraPosition::Names::y));
+    imgui.enter_text("nan");
+    imgui.press_key(ImGuiKey_Enter);
+    imgui.click_element(imgui.id("Camera Position").id(CameraPosition::Names::z));
+    imgui.enter_text("nan");
+    imgui.press_key(ImGuiKey_Enter);
 
     ASSERT_FALSE(raised);
 }

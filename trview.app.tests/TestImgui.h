@@ -22,8 +22,9 @@ namespace trview
             explicit TestImgui(const RenderCallback& callback);
             ~TestImgui();
 
-            void click_element(TestImGuiId id, bool show_context_menu = false, bool hover = false);
-            void enter_text(TestImGuiId id, const std::string& text);
+            void click_element(TestImGuiId id, bool show_context_menu = false, bool hover = false, ImGuiID active_override = 0);
+            void enter_text(const std::string& text);
+            void press_key(ImGuiKey key);
 
             /// <summary>
             /// Add a control recangle.

@@ -87,7 +87,7 @@ namespace trview
             ImGui::DestroyContext(_context);
         }
 
-        void TestImgui::click_element(TestImGuiId test_id, bool show_context_menu, bool hover)
+        void TestImgui::click_element(TestImGuiId test_id, bool show_context_menu, bool hover, ImGuiID active_override)
         {
             const auto window = test_id.root();
             const auto id = test_id.id();
@@ -100,11 +100,16 @@ namespace trview
                 _context->IO.MousePos = ImVec2(bb.Min.y, bb.Min.y);
                 _context->IO.MouseClicked[0] = true;
 
+                if (active_override != 0)
+                {
+                    _context->ActiveId = active_override;
+                }
+
                 if (show_context_menu)
                 {
                     _context->IO.MouseReleased[0] = true;
                     _context->IO.MouseDownDurationPrev[0] = _context->IO.KeyRepeatDelay;
-                    _context->ActiveId = id;
+                    
                     _context->CurrentWindow = find_window("Debug##Default");
                     _context->MouseViewport = window->Viewport;
                 }
@@ -116,36 +121,31 @@ namespace trview
             _context->IO.MouseReleased[1] = false;
         }
 
-        void TestImgui::enter_text(TestImGuiId id, const std::string& text)
+        void TestImgui::enter_text(const std::string& text)
         {
-            auto window = id.root();
-            const auto focus_on_element = [&]()
+            const auto type_into_element = [&]()
             {
-                _context->HoveredWindow = window;
-                _tracking_id = id.id();
-                const auto bb = _element_rects[id.id()];
-                _context->ActiveId = 0;
-                _context->HoveredId = id.id();
-                _context->IO.MousePos = ImVec2(bb.Min.y, bb.Min.y);
-                _context->IO.MouseClicked[0] = true;
                 for (const auto& c : text)
                 {
                     _context->IO.InputQueueCharacters.push_back(c);
                 }
             };
 
-            const auto type_into_element = [&]()
-            {
-                _context->IO.MouseClicked[0] = false;
-                _context->IO.KeysData[ImGuiKey_Enter].Down = true;
-                _context->IO.KeysData[ImGuiKey_Enter].DownDuration = 0.5f;
-                _context->IO.DeltaTime = 1.0f;
-            };
-
-            render(focus_on_element);
             render(type_into_element);
 
             _tracking_id = 0;
+        }
+
+        void TestImgui::press_key(ImGuiKey key)
+        {
+            const auto type_into_element = [&]()
+            {
+                _context->IO.KeysData[key].Down = true;
+                _context->IO.KeysData[key].DownDuration = 0.5f;
+                _context->IO.DeltaTime = 1.0f;
+            };
+
+            render(type_into_element);
         }
 
         ImGuiWindow* TestImgui::find_window(const std::string& name) const

@@ -46,7 +46,14 @@ namespace trview
                 }
                 if(ImGui::InputInt("##gotoentry", &_index, 1, 100, ImGuiInputTextFlags_EnterReturnsTrue))
                 {
-                    on_selected(_index);
+                    if (_index < 0)
+                    {
+                        _index = 0;
+                    }
+                    else
+                    {
+                        on_selected(_index);
+                    }
                 }
 
                 ImGui::EndPopup();

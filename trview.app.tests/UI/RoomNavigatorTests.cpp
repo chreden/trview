@@ -116,8 +116,9 @@ TEST(RoomNavigator, EnterRoomNumber)
 
     navigator.set_max_rooms(10);
     tests::TestImgui imgui([&]() { navigator.render(); });
-    // imgui.enter_text("Room Navigator", { "of 9##roomnumber", "" }, "5");
-    imgui.enter_text(imgui.id("Room Navigator").push("of 9##roomnumber").id(""), "5");
+    imgui.click_element(imgui.id("Room Navigator").push("of 9##roomnumber").id(""));
+    imgui.enter_text("5");
+    imgui.press_key(ImGuiKey_Enter);
  
     ASSERT_TRUE(raised.has_value());
     ASSERT_EQ(raised.value(), 5);

@@ -16,7 +16,75 @@ TEST(GoTo, Name)
     TestImgui imgui([&]() { window.render(); });
     ASSERT_NE(imgui.find_window(imgui.popup_id("Go To Item").name()), nullptr);
 }
-/*
+
+TEST(GoTo, OnSelectedWithPlusRaised)
+{
+    GoTo window;
+    window.toggle_visible();
+    window.set_name(L"Item");
+
+    std::optional<uint32_t> raised;
+    auto token = window.on_selected += [&](auto value)
+    {
+        raised = value;
+    };
+
+    TestImgui imgui([&]() { window.render(); });
+    imgui.click_element(
+        imgui.popup_id("Go To Item").push("##gotoentry").id("+"), 
+        false, false, 
+        imgui.popup_id("Go To Item").id("##gotoentry").id());
+
+    ASSERT_TRUE(raised.has_value());
+    ASSERT_EQ(raised.value(), 1u);
+}
+
+TEST(GoTo, OnSelectedWithMinusRaised)
+{
+    GoTo window;
+    window.toggle_visible();
+    window.set_name(L"Item");
+
+    std::vector<uint32_t> raised;
+    auto token = window.on_selected += [&](auto value)
+    {
+        raised.push_back(value);
+    };
+
+    TestImgui imgui([&]() { window.render(); });
+    const auto goto_entry = imgui.popup_id("Go To Item").id("##gotoentry").id();
+    const auto plus = imgui.popup_id("Go To Item").push("##gotoentry").id("+");
+    const auto minus = imgui.popup_id("Go To Item").push("##gotoentry").id("-");
+
+    imgui.click_element(plus, false, false, goto_entry);
+    imgui.click_element(plus, false, false, goto_entry);
+    imgui.click_element(minus, false, false, goto_entry);
+
+    const std::vector<uint32_t> expected{ 1, 2, 1 };
+    ASSERT_EQ(raised, expected);
+}
+
+TEST(GoTo, OnSelectedNotRaisedWhenMinusPressedAtZero)
+{
+    GoTo window;
+    window.toggle_visible();
+    window.set_name(L"Item");
+
+    std::optional<uint32_t> raised;
+    auto token = window.on_selected += [&](auto value)
+    {
+        raised = value;
+    };
+
+    TestImgui imgui([&]() { window.render(); });
+    imgui.click_element(
+        imgui.popup_id("Go To Item").push("##gotoentry").id("-"),
+        false, false,
+        imgui.popup_id("Go To Item").id("##gotoentry").id());
+
+    ASSERT_FALSE(raised.has_value());
+}
+
 TEST(GoTo, OnSelectedRaised)
 {
     GoTo window;
@@ -30,20 +98,23 @@ TEST(GoTo, OnSelectedRaised)
     };
 
     TestImgui imgui([&]() { window.render(); });
-    imgui.enter_text(imgui.popup_name("Go To Item"), { "##gotoentry" }, "15");
-    // imgui.click_element(imgui.popup_name("Go To Item"), { "##gotoentry" });
-    // imgui.click_element(imgui.popup_name("Go To Item"), { "##gotoentry", "+" });
+    imgui.click_element(imgui.popup_id("Go To Item").id("##gotoentry"));
+    imgui.enter_text("10");
+    imgui.press_key(ImGuiKey_Enter);
+
+    imgui.reset();
+    imgui.render();
 
     ASSERT_TRUE(raised.has_value());
-    ASSERT_EQ(raised.value(), 15u);
+    ASSERT_EQ(raised.value(), 10u);
     ASSERT_FALSE(window.visible());
 }
 
 TEST(GoTo, OnSelectedNotRaisedWhenCancelled)
 {
-    ui::Window parent(Size(), Colour::Transparent);
-    GoTo window(parent, JsonLoader(std::make_shared<MockShell>()));
+    GoTo window;
     window.toggle_visible();
+    window.set_name(L"Item");
 
     std::optional<uint32_t> raised;
     auto token = window.on_selected += [&](auto value)
@@ -51,30 +122,10 @@ TEST(GoTo, OnSelectedNotRaisedWhenCancelled)
         raised = value;
     };
 
-    auto text_area = parent.find<TextArea>(GoTo::Names::text_area);
-    ASSERT_NE(text_area, nullptr);
-    text_area->gained_focus();
-    text_area->set_text(L"100");
-    text_area->key_char(VK_ESCAPE);
+    TestImgui imgui([&]() { window.render(); });
+    imgui.click_element(imgui.popup_id("Go To Item").id("##gotoentry"));
+    imgui.press_key(ImGuiKey_Escape);
 
     ASSERT_FALSE(raised.has_value());
     ASSERT_FALSE(window.visible());
 }
-
-TEST(GoTo, Visible)
-{
-    ui::Window parent(Size(), Colour::Transparent);
-    GoTo window(parent, JsonLoader(std::make_shared<MockShell>()));
-    window.toggle_visible();
-
-    auto text_area = parent.find<TextArea>(GoTo::Names::text_area);
-    ASSERT_NE(text_area, nullptr);
-
-    ASSERT_TRUE(window.visible());
-    ASSERT_TRUE(text_area->visible(true));
-
-    window.toggle_visible();
-    ASSERT_FALSE(window.visible());
-    ASSERT_FALSE(text_area->visible(true));
-}
-*/
