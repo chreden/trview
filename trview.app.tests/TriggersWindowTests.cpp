@@ -170,7 +170,7 @@ TEST(TriggersWindow, TriggersListFilteredByCommand)
     ASSERT_EQ(list->items().size(), 1);
     ASSERT_EQ(list->items()[0].value(L"#"), L"1");
 }
-
+*/
 TEST(TriggersWindow, AddToRouteEventRaised)
 {
     auto window = register_test_module().build();
@@ -184,14 +184,15 @@ TEST(TriggersWindow, AddToRouteEventRaised)
     window->set_triggers(triggers);
     window->set_selected_trigger(trigger);
 
-    auto button = window->root_control()->find<ui::Button>(TriggersWindow::Names::add_to_route_button);
-    ASSERT_NE(button, nullptr);
-    button->clicked(Point());
+    TestImgui imgui([&]() { window->render(); });
+    imgui.click_element(imgui.id("Triggers 0")
+        .push_child(TriggersWindow::Names::details_panel)
+        .id(TriggersWindow::Names::add_to_route));
 
     ASSERT_TRUE(raised_trigger.has_value());
     ASSERT_EQ(raised_trigger.value().lock(), trigger);
 }
-
+/*
 TEST(TriggersWindow, TriggerVisibilityRaised)
 {
     auto window = register_test_module().build();

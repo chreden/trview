@@ -4,7 +4,6 @@
 
 // TODO
 // Most things
-// Command filter
 // Fix sorting (commands sorted by trigger list)
 
 namespace trview
@@ -239,7 +238,7 @@ namespace trview
             return std::wstring();
         };
 
-        if (ImGui::BeginChild("Trigger Details", ImVec2(), true))
+        if (ImGui::BeginChild(Names::details_panel.c_str(), ImVec2(), true))
         {
             ImGui::Text("Trigger Details");
             if (ImGui::BeginTable("##triggerstats", 2, 0, ImVec2(-1, 150)))
