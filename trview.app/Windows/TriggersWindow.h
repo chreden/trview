@@ -22,6 +22,8 @@ namespace trview
             static inline const std::string trigger_list_panel = "Trigger List";
             static inline const std::string triggers_list = "##triggerslist";
             static inline const std::string details_panel = "Trigger Details";
+            static inline const std::string commands_list = "##commands";
+            static inline const std::string trigger_stats = "##triggerstats";
         };
 
         explicit TriggersWindow(const std::shared_ptr<IClipboard>& clipboard);
@@ -61,5 +63,6 @@ namespace trview
         std::weak_ptr<ITrigger> _selected_trigger;
         std::weak_ptr<ITrigger> _global_selected_trigger;
         bool _scroll_to_trigger{ false };
+        std::optional<float> _tooltip_timer;
     };
 }

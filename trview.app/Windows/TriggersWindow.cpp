@@ -113,6 +113,14 @@ namespace trview
 
     void TriggersWindow::update(float delta)
     {
+        if (_tooltip_timer.has_value())
+        {
+            _tooltip_timer = _tooltip_timer.value() + delta;
+            if (_tooltip_timer.value() > 0.6f)
+            {
+                _tooltip_timer.reset();
+            }
+        }
     }
 
     void TriggersWindow::render_triggers_list()
@@ -241,7 +249,7 @@ namespace trview
         if (ImGui::BeginChild(Names::details_panel.c_str(), ImVec2(), true))
         {
             ImGui::Text("Trigger Details");
-            if (ImGui::BeginTable("##triggerstats", 2, 0, ImVec2(-1, 150)))
+            if (ImGui::BeginTable(Names::trigger_stats.c_str(), 2, 0, ImVec2(-1, 150)))
             {
                 ImGui::TableSetupColumn("Name");
                 ImGui::TableSetupColumn("Value");
@@ -256,6 +264,7 @@ namespace trview
                         if (ImGui::Selectable(name.c_str(), false, ImGuiSelectableFlags_SpanAllColumns | ImGuiSelectableFlags_SelectOnNav))
                         {
                             _clipboard->write(to_utf16(value));
+                            _tooltip_timer = 0.0f;
                         }
                         ImGui::TableNextColumn();
                         ImGui::Text(value.c_str());
@@ -287,7 +296,7 @@ namespace trview
                 on_add_to_route(_selected_trigger);
             }
             ImGui::Text("Commands");
-            if (ImGui::BeginTable("##commands", 3, ImGuiTableFlags_ScrollY, ImVec2(-1, -1)))
+            if (ImGui::BeginTable(Names::commands_list.c_str(), 3, ImGuiTableFlags_ScrollY, ImVec2(-1, -1)))
             {
                 ImGui::TableSetupColumn("Type");
                 ImGui::TableSetupColumn("Index");
@@ -333,6 +342,13 @@ namespace trview
             render_triggers_list();
             ImGui::SameLine();
             render_trigger_details();
+
+            if (_tooltip_timer.has_value())
+            {
+                ImGui::BeginTooltip();
+                ImGui::Text("Copied");
+                ImGui::EndTooltip();
+            }
         }
         ImGui::End();
         ImGui::PopStyleVar();

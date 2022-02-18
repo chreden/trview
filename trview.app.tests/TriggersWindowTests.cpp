@@ -192,7 +192,7 @@ TEST(TriggersWindow, AddToRouteEventRaised)
     ASSERT_TRUE(raised_trigger.has_value());
     ASSERT_EQ(raised_trigger.value().lock(), trigger);
 }
-/*
+
 TEST(TriggersWindow, TriggerVisibilityRaised)
 {
     auto window = register_test_module().build();
@@ -200,19 +200,14 @@ TEST(TriggersWindow, TriggerVisibilityRaised)
     std::optional<std::tuple<std::weak_ptr<ITrigger>, bool>> raised_trigger;
     auto token = window->on_trigger_visibility += [&raised_trigger](const auto& trigger, bool state) { raised_trigger = { trigger, state }; };
 
-    auto trigger = std::make_shared<MockTrigger>()->with_visible(true);
+    auto trigger = std::make_shared<NiceMock<MockTrigger>>()->with_visible(true);
     std::vector<std::weak_ptr<ITrigger>> triggers{ trigger };
     window->set_triggers(triggers);
 
-    auto list = window->root_control()->find<ui::Listbox>(TriggersWindow::Names::triggers_listbox);
-    ASSERT_NE(list, nullptr);
-
-    auto row = list->find<ui::Control>(ui::Listbox::Names::row_name_format + "0");
-    ASSERT_NE(row, nullptr);
-
-    auto cell = row->find<ui::Checkbox>(ui::Listbox::Row::Names::cell_name_format + "Hide");
-    ASSERT_NE(cell, nullptr);
-    cell->clicked(Point());
+    TestImgui imgui([&]() { window->render(); });
+    imgui.click_element(imgui.id("Triggers 0")
+        .push_child(TriggersWindow::Names::trigger_list_panel)
+        .push(TriggersWindow::Names::triggers_list).id("##hide-0"), false, true);
 
     ASSERT_TRUE(raised_trigger.has_value());
     ASSERT_EQ(std::get<0>(raised_trigger.value()).lock(), trigger);
@@ -237,24 +232,16 @@ TEST(TriggersWindow, ItemSelectedRaised)
     window->set_triggers({ trigger });
     window->set_selected_trigger(trigger);
 
-    auto list = window->root_control()->find<ui::Listbox>(TriggersWindow::Names::trigger_commands_listbox);
-    ASSERT_NE(list, nullptr);
-
-    auto row = list->find<ui::Control>(ui::Listbox::Names::row_name_format + "0");
-    ASSERT_NE(row, nullptr);
-
-    auto cell = row->find<ui::Button>(ui::Listbox::Row::Names::cell_name_format + "Index");
-    ASSERT_NE(cell, nullptr);
-    cell->clicked(Point());
-
-    ASSERT_TRUE(raised_item.has_value());
-    ASSERT_EQ(raised_item.value().number(), 1);
+    TestImgui imgui([&]() { window->render(); });
+    imgui.click_element(imgui.id("Triggers 0")
+        .push_child(TriggersWindow::Names::details_panel)
+        .push(TriggersWindow::Names::commands_list).id("1##1"), false, true);
 
     auto selected = window->selected_trigger().lock();
     ASSERT_NE(selected, nullptr);
     ASSERT_EQ(selected, trigger);
 }
-
+/*
 TEST(TriggersWindow, SetTriggersLoadsTriggers)
 {
     auto window = register_test_module().build();
@@ -267,26 +254,29 @@ TEST(TriggersWindow, SetTriggersLoadsTriggers)
     ASSERT_NE(list, nullptr);
     ASSERT_EQ(list->items().size(), 2);
 }
-
+*/
 TEST(TriggersWindow, SetTriggerVisiblityUpdatesTrigger)
 {
     auto window = register_test_module().build();
 
-    auto list = window->root_control()->find<ui::Listbox>(TriggersWindow::Names::triggers_listbox);
-    ASSERT_NE(list, nullptr);
-    ASSERT_TRUE(list->items().empty());
-
     bool visible = true;
-    auto trigger = std::make_shared<MockTrigger>()->with_visible([&]() { return visible; });
+    auto trigger = std::make_shared<NiceMock<MockTrigger>>()->with_visible([&]() { return visible; });
     window->set_triggers({ trigger });
-    ASSERT_EQ(list->items().size(), 1);
-    ASSERT_EQ(list->items()[0].value(L"Hide"), L"0");
+
+    TestImgui imgui([&]() { window->render(); });
+    ASSERT_FALSE(imgui.status_flags(imgui.id("Triggers 0")
+        .push_child(TriggersWindow::Names::trigger_list_panel)
+        .push(TriggersWindow::Names::triggers_list).id("##hide-0")) & ImGuiItemStatusFlags_Checked);
 
     visible = false;
     window->update_triggers({ trigger });
-    ASSERT_EQ(list->items()[0].value(L"Hide"), L"1");
-}
+    imgui.render();
 
+    ASSERT_TRUE(imgui.status_flags(imgui.id("Triggers 0")
+        .push_child(TriggersWindow::Names::trigger_list_panel)
+        .push(TriggersWindow::Names::triggers_list).id("##hide-0")) & ImGuiItemStatusFlags_Checked);
+}
+/*
 TEST(TriggersWindow, SetItemsLoadsItems)
 {
     auto window = register_test_module().build();
@@ -486,26 +476,22 @@ TEST(TriggersWindow, FlipmapsFiltersAllFlipTriggers)
 
     ASSERT_THAT(get_numbers(), ElementsAre(0, 1, 2));
 }
-
+*/
 TEST(TriggersWindow, ClickStatShowsBubble)
 {
-    auto bubble = std::make_unique<MockBubble>();
-    EXPECT_CALL(*bubble, show(testing::A<const Point&>())).Times(1);
+    auto window = register_test_module().build();
 
-    auto window = register_test_module().with_bubble_source([&](auto&&...) { return std::move(bubble); }).build();
-
-    auto trigger1 = std::make_shared<MockTrigger>()->with_number(0)->with_commands({ Command(0, TriggerCommandType::FlipOff, 0) });
+    auto trigger1 = std::make_shared<NiceMock<MockTrigger>>()->with_number(0)->with_commands({ Command(0, TriggerCommandType::FlipOff, 0) });
     window->set_triggers({ trigger1 });
     window->set_selected_trigger(trigger1);
 
-    auto stats = window->root_control()->find<ui::Listbox>(TriggersWindow::Names::stats_listbox);
-    ASSERT_NE(stats, nullptr);
+    TestImgui imgui([&]() { window->render(); });
 
-    auto first_stat = stats->find<ui::Control>(ui::Listbox::Names::row_name_format + "0");
-    ASSERT_NE(first_stat, nullptr);
-
-    auto value = first_stat->find<ui::Button>(ui::Listbox::Row::Names::cell_name_format + "Value");
-    ASSERT_NE(value, nullptr);
-    value->clicked(Point());
+    ASSERT_EQ(imgui.find_window("##Tooltip_00"), nullptr);
+    const auto id = imgui.id("Triggers 0")
+        .push_child(TriggersWindow::Names::details_panel)
+        .push(TriggersWindow::Names::trigger_stats)
+        .id("Position");
+    imgui.click_element(id);
+    ASSERT_NE(imgui.find_window("##Tooltip_00"), nullptr);
 }
-*/
