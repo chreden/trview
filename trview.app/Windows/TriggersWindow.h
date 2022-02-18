@@ -24,6 +24,7 @@ namespace trview
             static inline const std::string details_panel = "Trigger Details";
             static inline const std::string commands_list = "##commands";
             static inline const std::string trigger_stats = "##triggerstats";
+            static inline const std::string command_filter = "##commandfilter";
         };
 
         explicit TriggersWindow(const std::shared_ptr<IClipboard>& clipboard);

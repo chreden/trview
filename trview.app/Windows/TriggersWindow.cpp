@@ -140,7 +140,7 @@ namespace trview
             }
 
             ImGui::PushItemWidth(-1);
-            if (ImGui::BeginCombo("##commandfilter", _all_commands[_selected_command].c_str()))
+            if (ImGui::BeginCombo(Names::command_filter.c_str(), _all_commands[_selected_command].c_str()))
             {
                 for (int n = 0; n < _all_commands.size(); ++n)
                 {

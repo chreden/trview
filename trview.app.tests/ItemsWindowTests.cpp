@@ -8,6 +8,7 @@ using namespace trview;
 using namespace trview::tests;
 using namespace trview::mocks;
 using namespace DirectX::SimpleMath;
+using testing::NiceMock;
 
 namespace
 {
@@ -15,7 +16,7 @@ namespace
     {
         struct test_module
         {
-            std::shared_ptr<IClipboard> clipboard{ std::make_shared<MockClipboard>() };
+            std::shared_ptr<IClipboard> clipboard{ std::make_shared<NiceMock<MockClipboard>>() };
 
             std::unique_ptr<ItemsWindow> build()
             {
@@ -270,8 +271,8 @@ TEST(ItemsWindow, TriggersLoadedForItem)
 {
     auto window = register_test_module().build();
 
-    auto trigger1 = std::make_shared<MockTrigger>()->with_number(0);
-    auto trigger2 = std::make_shared<MockTrigger>()->with_number(1);
+    auto trigger1 = std::make_shared<NiceMock<MockTrigger>>()->with_number(0);
+    auto trigger2 = std::make_shared<NiceMock<MockTrigger>>()->with_number(1);
     std::vector<Item> items
     {
         Item(0, 0, 0, L"Type", 0, 0, {}, Vector3::Zero),
@@ -300,7 +301,7 @@ TEST(ItemsWindow, TriggerSelectedEventRaised)
     std::optional<std::weak_ptr<ITrigger>> raised_trigger;
     auto token = window->on_trigger_selected += [&raised_trigger](const auto& trigger) { raised_trigger = trigger; };
 
-    auto trigger = std::make_shared<MockTrigger>();
+    auto trigger = std::make_shared<NiceMock<MockTrigger>>();
     std::vector<Item> items
     {
         Item(0, 0, 0, L"Type", 0, 0, {}, Vector3::Zero),
@@ -326,7 +327,7 @@ TEST(ItemsWindow, TriggerSelectedEventRaised)
 
 TEST(ItemsWindow, ClickStatShowsBubbleAndCopies)
 {
-    auto clipboard = std::make_shared<MockClipboard>();
+    auto clipboard = std::make_shared<NiceMock<MockClipboard>>();
     EXPECT_CALL(*clipboard, write).Times(1);
 
     auto window = register_test_module().with_clipboard(clipboard).build();
