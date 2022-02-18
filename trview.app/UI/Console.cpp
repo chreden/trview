@@ -25,9 +25,10 @@ namespace trview
     {
         if (_visible)
         {
+            ImGui::PushStyleVar(ImGuiStyleVar_WindowMinSize, ImVec2(520, 400));
             if (ImGui::Begin("Console", &_visible))
             {
-                ImGui::InputTextMultiline("##Log", const_cast<char*>(_text.c_str()), _text.size(), ImVec2(-1, 300), ImGuiInputTextFlags_ReadOnly);
+                ImGui::InputTextMultiline("##Log", const_cast<char*>(_text.c_str()), _text.size(), ImVec2(-1, -25), ImGuiInputTextFlags_ReadOnly);
                 if (ImGui::IsWindowAppearing())
                 {
                     ImGui::SetKeyboardFocusHere();
@@ -43,6 +44,7 @@ namespace trview
                 ImGui::PopItemWidth();
             }
             ImGui::End();
+            ImGui::PopStyleVar();
         }
     }
 }
