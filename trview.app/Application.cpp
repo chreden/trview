@@ -674,9 +674,6 @@ namespace trview
             di::bind<IStartupOptions::CommandLine>.to(command_line)
         );
 
-        auto x = injector.create<Window>();
-        const Window& w = injector.create<const Window&>();
-
         load_default_shaders(
             injector.create<std::shared_ptr<graphics::IDevice>>(),
             injector.create<std::shared_ptr<IShaderStorage>>());

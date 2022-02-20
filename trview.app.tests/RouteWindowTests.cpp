@@ -1,5 +1,4 @@
 #include <trview.app/Windows/RouteWindow.h>
-#include <trview.graphics/mocks/IDeviceWindow.h>
 #include <trview.app/Mocks/Routing/IRoute.h>
 #include <trlevel/Mocks/ILevel.h>
 #include <trview.app/Mocks/Elements/ILevel.h>
@@ -9,18 +8,14 @@
 #include <trview.common/Mocks/IFiles.h>
 #include <trview.app/Mocks/Routing/IWaypoint.h>
 #include <trview.common/Mocks/Windows/IShell.h>
+#include "TestImgui.h"
 
-/*
+
 using namespace DirectX::SimpleMath;
 using namespace testing;
 using namespace trview;
-using namespace trview::graphics;
-using namespace trview::graphics::mocks;
 using namespace trview::mocks;
 using namespace trview::tests;
-using namespace trview::ui;
-using namespace trview::ui::mocks;
-using namespace trview::ui::render::mocks;
 
 namespace
 {
@@ -28,15 +23,11 @@ namespace
     {
         struct test_module
         {
-            IDeviceWindow::Source device_window_source{ [](auto&&...) { return std::make_unique<MockDeviceWindow>(); } };
-            ui::render::IRenderer::Source renderer_source{ [](auto&&...) { return std::make_unique<MockRenderer>(); } };
-            ui::IInput::Source input_source{ [](auto&&...) { return std::make_unique<MockInput>(); } };
-            trview::Window parent{ create_test_window(L"RouteWindowTests") };
             std::shared_ptr<IClipboard> clipboard{ std::make_shared<MockClipboard>() };
             std::shared_ptr<IDialogs> dialogs{ std::make_shared<MockDialogs>() };
             std::shared_ptr<IFiles> files{ std::make_shared<MockFiles>() };
-            IBubble::Source bubble_source{ [](auto&&...) { return std::make_unique<MockBubble>(); }};
             std::shared_ptr<IShell> shell{ std::make_shared<MockShell>() };
+            trview::Window parent{ create_test_window(L"RouteWindowTests") };
 
             test_module& with_clipboard(const std::shared_ptr<IClipboard>& clipboard)
             {
@@ -56,12 +47,6 @@ namespace
                 return *this;
             }
 
-            test_module& with_bubble_source(const IBubble::Source& source)
-            {
-                this->bubble_source = source;
-                return *this;
-            }
-
             test_module& with_shell(const std::shared_ptr<IShell>& shell)
             {
                 this->shell = shell;
@@ -70,14 +55,13 @@ namespace
 
             std::unique_ptr<RouteWindow> build()
             {
-                return std::make_unique<RouteWindow>(device_window_source, renderer_source, input_source,
-                    parent, clipboard, dialogs, files, bubble_source, std::make_shared<JsonLoader>(shell), shell);
+                return std::make_unique<RouteWindow>(parent, clipboard, dialogs, files, shell);
             }
         };
         return test_module{};
     }
 }
-
+/*
 TEST(RouteWindow, WaypointRoomPositionCalculatedCorrectly)
 {
     const Vector3 room_pos{ 102400, 204800, 307200 };
@@ -226,7 +210,7 @@ TEST(RouteWindow, ClearSaveMarksRouteUnsaved)
 
     clear_save->on_click();
 }
-
+*/
 TEST(RouteWindow, ExportRouteButtonRaisesEvent)
 {
     auto dialogs = std::make_shared<MockDialogs>();
@@ -239,10 +223,10 @@ TEST(RouteWindow, ExportRouteButtonRaisesEvent)
         file_raised = filename;
     };
 
-    auto export_button = window->root_control()->find<ui::Button>(RouteWindow::Names::export_button);
-    ASSERT_NE(export_button, nullptr);
-
-    export_button->on_click();
+    TestImgui imgui([&]() { window->render(); });
+    imgui.click_element(imgui.id("Route")
+        .push_child(RouteWindow::Names::waypoint_list_panel)
+        .id(RouteWindow::Names::export_button));
 
     ASSERT_TRUE(file_raised.has_value());
     ASSERT_EQ(file_raised, "filename");
@@ -259,10 +243,12 @@ TEST(RouteWindow, ExportRouteButtonDoesNotRaiseEventWhenCancelled)
     {
         file_raised = true;
     };
-    auto export_button = window->root_control()->find<ui::Button>(RouteWindow::Names::export_button);
-    ASSERT_NE(export_button, nullptr);
 
-    export_button->on_click();
+    TestImgui imgui([&]() { window->render(); });
+    imgui.click_element(imgui.id("Route")
+        .push_child(RouteWindow::Names::waypoint_list_panel)
+        .id(RouteWindow::Names::export_button));
+
     ASSERT_FALSE(file_raised);
 }
 
@@ -278,10 +264,10 @@ TEST(RouteWindow, ImportRouteButtonRaisesEvent)
         file_raised = filename;
     };
 
-    auto import_button = window->root_control()->find<ui::Button>(RouteWindow::Names::import_button);
-    ASSERT_NE(import_button, nullptr);
-
-    import_button->on_click();
+    TestImgui imgui([&]() { window->render(); });
+    imgui.click_element(imgui.id("Route")
+        .push_child(RouteWindow::Names::waypoint_list_panel)
+        .id(RouteWindow::Names::import_button));
 
     ASSERT_TRUE(file_raised.has_value());
     ASSERT_EQ(file_raised, "filename");
@@ -298,10 +284,12 @@ TEST(RouteWindow, ImportRouteButtonDoesNotRaiseEventWhenCancelled)
     {
         file_raised = true;
     };
-    auto import_button = window->root_control()->find<ui::Button>(RouteWindow::Names::import_button);
-    ASSERT_NE(import_button, nullptr);
+    
+    TestImgui imgui([&]() { window->render(); });
+    imgui.click_element(imgui.id("Route")
+        .push_child(RouteWindow::Names::waypoint_list_panel)
+        .id(RouteWindow::Names::import_button));
 
-    import_button->on_click();
     ASSERT_FALSE(file_raised);
 }
 
@@ -324,10 +312,10 @@ TEST(RouteWindow, ExportSaveButtonSavesFile)
     auto window = register_test_module().with_dialogs(dialogs).with_files(files).build();
     window->set_route(&route);
 
-    auto export_save_button = window->root_control()->find<ui::Button>(RouteWindow::Names::select_save_button);
-    ASSERT_NE(export_save_button, nullptr);
-
-    export_save_button->on_click();
+    TestImgui imgui([&]() { window->render(); });
+    imgui.click_element(imgui.id("Route")
+        .push_child(RouteWindow::Names::waypoint_details_panel)
+        .id("SAVEGAME.0"));
 }
 
 TEST(RouteWindow, ExportSaveButtonShowsErrorOnFailure)
@@ -349,10 +337,10 @@ TEST(RouteWindow, ExportSaveButtonShowsErrorOnFailure)
     auto window = register_test_module().with_dialogs(dialogs).with_files(files).build();
     window->set_route(&route);
 
-    auto export_save_button = window->root_control()->find<ui::Button>(RouteWindow::Names::select_save_button);
-    ASSERT_NE(export_save_button, nullptr);
-
-    export_save_button->on_click();
+    TestImgui imgui([&]() { window->render(); });
+    imgui.click_element(imgui.id("Route")
+        .push_child(RouteWindow::Names::waypoint_details_panel)
+        .id("SAVEGAME.0"));
 }
 
 TEST(RouteWindow, ExportSaveButtonDoesNotSaveFileWhenCancelled)
@@ -373,12 +361,12 @@ TEST(RouteWindow, ExportSaveButtonDoesNotSaveFileWhenCancelled)
     auto window = register_test_module().with_dialogs(dialogs).with_files(files).build();
     window->set_route(&route);
 
-    auto export_save_button = window->root_control()->find<ui::Button>(RouteWindow::Names::select_save_button);
-    ASSERT_NE(export_save_button, nullptr);
-
-    export_save_button->on_click();
+    TestImgui imgui([&]() { window->render(); });
+    imgui.click_element(imgui.id("Route")
+        .push_child(RouteWindow::Names::waypoint_details_panel)
+        .id("SAVEGAME.0"));
 }
-
+/*
 TEST(RouteWindow, AttachSaveButtonLoadsSave)
 {
     auto dialogs = std::make_shared<MockDialogs>();

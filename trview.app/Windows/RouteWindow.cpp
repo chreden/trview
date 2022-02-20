@@ -11,8 +11,6 @@ namespace trview
     const std::string RouteWindow::Names::colour = "colour";
     const std::string RouteWindow::Names::waypoints = "waypoints";
     const std::string RouteWindow::Names::delete_waypoint = "delete_waypoint";
-    const std::string RouteWindow::Names::export_button = "export_button";
-    const std::string RouteWindow::Names::import_button = "import_button";
     const std::string RouteWindow::Names::clear_save = "clear_save";
     const std::string RouteWindow::Names::notes_area = "notes_area";
     const std::string RouteWindow::Names::select_save_button = "select_save_button";
@@ -24,13 +22,13 @@ namespace trview
 
     RouteWindow::RouteWindow(const trview::Window& parent, const std::shared_ptr<IClipboard>& clipboard, const std::shared_ptr<IDialogs>& dialogs,
         const std::shared_ptr<IFiles>& files, const std::shared_ptr<IShell>& shell)
-        : _clipboard(clipboard), _dialogs(dialogs), _files(files), _shell(shell), _window(parent)
+        : _clipboard(clipboard), _dialogs(dialogs), _files(files), _window(parent)
     {
     }
 
     void RouteWindow::render_waypoint_list()
     {
-        if (ImGui::BeginChild("Waypoint List", ImVec2(150, 0), true))
+        if (ImGui::BeginChild(Names::waypoint_list_panel.c_str(), ImVec2(150, 0), true))
         {
             auto colour = _route ? _route->colour() : Colour::Green;
             if (ImGui::ColorEdit3("##colour", &colour.r, ImGuiColorEditFlags_NoInputs))
@@ -38,7 +36,7 @@ namespace trview
                 on_colour_changed(colour);
             }
             ImGui::SameLine();
-            if (ImGui::Button("Import"))
+            if (ImGui::Button(Names::import_button.c_str()))
             {
                 std::vector<IDialogs::FileFilter> filters{ { L"trview route", { L"*.tvr" } } };
                 if (_randomizer_enabled)
@@ -53,7 +51,7 @@ namespace trview
                 }
             }
             ImGui::SameLine();
-            if (ImGui::Button("Export"))
+            if (ImGui::Button(Names::export_button.c_str()))
             {
                 std::vector<IDialogs::FileFilter> filters{ { L"trview route", { L"*.tvr" } } };
                 uint32_t filter_index = 1;
@@ -103,7 +101,7 @@ namespace trview
 
     void RouteWindow::render_waypoint_details()
     {
-        if (ImGui::BeginChild("Waypoint Details", ImVec2(), true))
+        if (ImGui::BeginChild(Names::waypoint_details_panel.c_str(), ImVec2(), true))
         {
             if (_route && _selected_index < _route->waypoints())
             {
