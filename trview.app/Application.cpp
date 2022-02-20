@@ -582,7 +582,6 @@ namespace trview
 
         ImGui::PushFont(_font);
 
-        ImGui::ShowStackToolWindow();
         _items_windows->render();
         _triggers_windows->render();
         _rooms_windows->render();

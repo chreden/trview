@@ -214,7 +214,7 @@ namespace trview
 
     bool ViewerUI::is_input_active() const
     {
-        return ImGui::GetCurrentContext() != nullptr && ImGui::GetIO().WantCaptureKeyboard;
+        return ImGui::GetCurrentContext() != nullptr && ImGui::GetIO().WantTextInput;
     }
 
     bool ViewerUI::is_cursor_over() const
