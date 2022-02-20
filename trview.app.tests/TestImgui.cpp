@@ -56,6 +56,17 @@ void ImGuiTrviewTestEngineHook_ItemText(ImGuiContext* ctx, ImGuiID id, const cha
     test->add_item_text(id, buf);
 }
 
+void ImGuiTrviewTestEngineHook_RenderedText(ImGuiContext* ctx, ImGuiID id, const char* buf)
+{
+    TestImgui* test = static_cast<TestImgui*>(ctx->TestEngine);
+    if (!test)
+    {
+        return;
+    }
+
+    test->add_rendered_text(id, buf);
+}
+
 namespace trview
 {
     namespace tests
@@ -184,6 +195,11 @@ namespace trview
             _item_text[id] = text;
         }
 
+        void TestImgui::add_rendered_text(ImGuiID id, const std::string& text)
+        {
+            _item_rendered_text[id].push_back(text);
+        }
+
         void TestImgui::add_style_colours(ImGuiID id, const std::array<ImVec4, ImGuiCol_COUNT>& colours)
         {
             _item_colours[id] = colours;
@@ -202,6 +218,11 @@ namespace trview
         std::string TestImgui::item_text(TestImGuiId id) const
         {
             return _item_text.find(id.id())->second;
+        }
+
+        std::vector<std::string> TestImgui::rendered_text(TestImGuiId id) const
+        {
+            return _item_rendered_text.find(id.id())->second;
         }
 
         void TestImgui::render(const std::function<void()>& pre_render_callback)
@@ -240,6 +261,7 @@ namespace trview
             _item_flags.clear();
             _item_colours.clear();
             _item_text.clear();
+            _item_rendered_text.clear();
             _tracking_id = 0;
         }
 

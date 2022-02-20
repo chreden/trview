@@ -35,11 +35,13 @@ namespace trview
             void add_status_flag(ImGuiID id, ImGuiItemStatusFlags flags);
             void add_item_flag(ImGuiID id, ImGuiItemFlags flags);
             void add_item_text(ImGuiID id, const std::string& text);
+            void add_rendered_text(ImGuiID id, const std::string& text);
             void add_style_colours(ImGuiID id, const std::array<ImVec4, ImGuiCol_COUNT>& colours);
             bool element_present(TestImGuiId id) const;
             ImGuiItemStatusFlags status_flags(TestImGuiId id) const;
             ImGuiItemFlags item_flags(TestImGuiId id) const;
             std::string item_text(TestImGuiId id) const;
+            std::vector<std::string> rendered_text(TestImGuiId id) const;
             Colour style_colour(TestImGuiId id, ImGuiCol colour) const;
             void show_context_menu(const std::string& window_name);
             void render();
@@ -55,6 +57,7 @@ namespace trview
             std::unordered_map<ImGuiID, ImGuiItemFlags> _item_flags;
             std::unordered_map<ImGuiID, std::array<ImVec4, ImGuiCol_COUNT>> _item_colours;
             std::unordered_map<ImGuiID, std::string> _item_text;
+            std::unordered_map<ImGuiID, std::vector<std::string>> _item_rendered_text;
             ImGuiID _tracking_id{ 0 };
             ImGuiContext* _context{ nullptr };
             NullImGuiBackend _backend;

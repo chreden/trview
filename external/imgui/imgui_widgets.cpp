@@ -154,6 +154,8 @@ void ImGui::TextEx(const char* text, const char* text_end, ImGuiTextFlags flags)
         return;
     ImGuiContext& g = *GImGui;
 
+    IMGUI_TRVIEW_TEST_ENGINE_RENDERED_TEXT(window->IDStack.back(), text);
+
     // Accept null ranges
     if (text == text_end)
         text = text_end = "";
