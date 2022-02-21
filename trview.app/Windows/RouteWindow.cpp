@@ -13,7 +13,7 @@ namespace trview
     using namespace graphics;
 
     RouteWindow::RouteWindow(const trview::Window& parent, const std::shared_ptr<IClipboard>& clipboard, const std::shared_ptr<IDialogs>& dialogs,
-        const std::shared_ptr<IFiles>& files, const std::shared_ptr<IShell>& shell)
+        const std::shared_ptr<IFiles>& files)
         : _clipboard(clipboard), _dialogs(dialogs), _files(files), _window(parent)
     {
     }

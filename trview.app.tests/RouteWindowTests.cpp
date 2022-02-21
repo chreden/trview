@@ -22,7 +22,6 @@ namespace
             std::shared_ptr<IClipboard> clipboard{ std::make_shared<MockClipboard>() };
             std::shared_ptr<IDialogs> dialogs{ std::make_shared<MockDialogs>() };
             std::shared_ptr<IFiles> files{ std::make_shared<MockFiles>() };
-            std::shared_ptr<IShell> shell{ std::make_shared<MockShell>() };
             trview::Window parent{ create_test_window(L"RouteWindowTests") };
 
             test_module& with_clipboard(const std::shared_ptr<IClipboard>& clipboard)
@@ -43,15 +42,10 @@ namespace
                 return *this;
             }
 
-            test_module& with_shell(const std::shared_ptr<IShell>& shell)
-            {
-                this->shell = shell;
-                return *this;
-            }
 
             std::unique_ptr<RouteWindow> build()
             {
-                return std::make_unique<RouteWindow>(parent, clipboard, dialogs, files, shell);
+                return std::make_unique<RouteWindow>(parent, clipboard, dialogs, files);
             }
         };
         return test_module{};
@@ -89,7 +83,7 @@ TEST(RouteWindow, WaypointRoomPositionCalculatedCorrectly)
         .push_child(RouteWindow::Names::waypoint_details_panel)
         .id(RouteWindow::Names::waypoint_stats));
 
-    ASSERT_THAT(rendered, testing::Contains("30720, 51200, 25600"));
+    ASSERT_THAT(rendered, Contains("30720, 51200, 25600"));
 }
 
 TEST(RouteWindow, PositionValuesCopiedToClipboard)

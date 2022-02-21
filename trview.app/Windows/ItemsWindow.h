@@ -44,6 +44,7 @@ namespace trview
         void render_items_list();
         void render_item_details();
         bool render_items_window();
+        void set_local_selected_item(const Item& item);
 
         std::string _id{ "Items 0" };
         std::vector<Item> _all_items;
@@ -57,6 +58,7 @@ namespace trview
         std::weak_ptr<ITrigger> _selected_trigger;
         std::optional<Item> _selected_item;
         std::optional<Item> _global_selected_item;
+        std::vector<std::weak_ptr<ITrigger>> _triggered_by;
         bool _scroll_to_item{ false };
     };
 }

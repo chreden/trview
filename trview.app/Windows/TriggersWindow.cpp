@@ -2,10 +2,6 @@
 #include <trview.common/Strings.h>
 #include "../trview_imgui.h"
 
-// TODO
-// Most things
-// Fix sorting (commands sorted by trigger list)
-
 namespace trview
 {
     TriggersWindow::TriggersWindow(const std::shared_ptr<IClipboard>& clipboard)
@@ -40,6 +36,7 @@ namespace trview
     void TriggersWindow::clear_selected_trigger()
     {
         _selected_trigger.reset();
+        _local_selected_trigger_commands.clear();
     }
 
     void TriggersWindow::set_current_room(uint32_t room)
@@ -58,7 +55,7 @@ namespace trview
         if (_sync_trigger)
         {
             _scroll_to_trigger = true;
-            _selected_trigger = trigger;
+            set_local_selected_trigger(trigger);
         }
     }
 
@@ -205,7 +202,7 @@ namespace trview
                     imgui_scroll_to_item(selected, _scroll_to_trigger);
                     if (ImGui::Selectable((std::to_string(trigger_ptr->number()) + std::string("##") + std::to_string(trigger_ptr->number())).c_str(), &selected, ImGuiSelectableFlags_SpanAllColumns | ImGuiSelectableFlags_SelectOnNav))
                     {
-                        _selected_trigger = trigger;
+                        set_local_selected_trigger(trigger);
                         if (_sync_trigger)
                         {
                             on_trigger_selected(trigger);
@@ -296,7 +293,7 @@ namespace trview
                 on_add_to_route(_selected_trigger);
             }
             ImGui::Text("Commands");
-            if (ImGui::BeginTable(Names::commands_list.c_str(), 3, ImGuiTableFlags_ScrollY, ImVec2(-1, -1)))
+            if (ImGui::BeginTable(Names::commands_list.c_str(), 3, ImGuiTableFlags_ScrollY | ImGuiTableFlags_Sortable, ImVec2(-1, -1)))
             {
                 ImGui::TableSetupColumn("Type");
                 ImGui::TableSetupColumn("Index");
@@ -304,27 +301,30 @@ namespace trview
                 ImGui::TableSetupScrollFreeze(1, 1);
                 ImGui::TableHeadersRow();
 
-                auto selected_trigger = _selected_trigger.lock();
-                if (selected_trigger)
-                {
-                    for (auto& command : selected_trigger->commands())
+                imgui_sort(_local_selected_trigger_commands,
                     {
-                        ImGui::TableNextRow();
-                        ImGui::TableNextColumn();
-                        bool selected = false;
-                        if (ImGui::Selectable((to_utf8(command_type_name(command.type())) + "##" + std::to_string(command.number())).c_str(), &selected, ImGuiSelectableFlags_SpanAllColumns | ImGuiSelectableFlags_SelectOnNav))
+                        [](auto&& l, auto&& r) { return l.type() < r.type(); },
+                        [](auto&& l, auto&& r) { return l.index() < r.index(); },
+                        [&](auto&& l, auto&& r) { return get_command_display(l) < get_command_display(r); },
+                    });
+
+                for (auto& command : _local_selected_trigger_commands)
+                {
+                    ImGui::TableNextRow();
+                    ImGui::TableNextColumn();
+                    bool selected = false;
+                    if (ImGui::Selectable((to_utf8(command_type_name(command.type())) + "##" + std::to_string(command.number())).c_str(), &selected, ImGuiSelectableFlags_SpanAllColumns | ImGuiSelectableFlags_SelectOnNav))
+                    {
+                        if (command.type() == TriggerCommandType::LookAtItem || command.type() == TriggerCommandType::Object && command.index() < _all_items.size())
                         {
-                            if (command.type() == TriggerCommandType::LookAtItem || command.type() == TriggerCommandType::Object && command.index() < _all_items.size())
-                            {
-                                set_track_room(false);
-                                on_item_selected(_all_items[command.index()]);
-                            }
+                            set_track_room(false);
+                            on_item_selected(_all_items[command.index()]);
                         }
-                        ImGui::TableNextColumn();
-                        ImGui::Text(std::to_string(command.index()).c_str());
-                        ImGui::TableNextColumn();
-                        ImGui::Text(to_utf8(get_command_display(command)).c_str());;
                     }
+                    ImGui::TableNextColumn();
+                    ImGui::Text(std::to_string(command.index()).c_str());
+                    ImGui::TableNextColumn();
+                    ImGui::Text(to_utf8(get_command_display(command)).c_str());;
                 }
 
                 ImGui::EndTable();
@@ -353,5 +353,15 @@ namespace trview
         ImGui::End();
         ImGui::PopStyleVar();
         return stay_open;
+    }
+
+    void TriggersWindow::set_local_selected_trigger(const std::weak_ptr<ITrigger>& trigger)
+    {
+        _selected_trigger = trigger;
+        _local_selected_trigger_commands.clear();
+        if (auto selected_trigger = _selected_trigger.lock())
+        {
+            _local_selected_trigger_commands = selected_trigger->commands();
+        }
     }
 }

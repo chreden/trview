@@ -606,8 +606,7 @@ namespace trview
 
     bool Viewer::should_pick() const
     {
-        auto& io = ImGui::GetIO();
-        return !(!_level || window_under_cursor() != _window || window_is_minimised(_window) || _ui->is_cursor_over() || cursor_outside_window(_window) || io.WantCaptureMouse);
+        return !(!_level || window_under_cursor() != _window || window_is_minimised(_window) || _ui->is_cursor_over() || cursor_outside_window(_window));
     }
 
     void Viewer::render_scene()

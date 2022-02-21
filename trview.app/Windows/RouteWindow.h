@@ -38,7 +38,7 @@ namespace trview
         /// @param renderer_source The function to call to get a renderer.
         /// @param parent The parent window.
         explicit RouteWindow(const trview::Window& parent, const std::shared_ptr<IClipboard>& clipboard, const std::shared_ptr<IDialogs>& dialogs,
-            const std::shared_ptr<IFiles>& files, const std::shared_ptr<IShell>& shell);
+            const std::shared_ptr<IFiles>& files);
         virtual ~RouteWindow() = default;
         virtual void render() override;
         virtual void set_route(IRoute* route) override;

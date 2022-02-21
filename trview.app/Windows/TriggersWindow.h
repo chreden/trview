@@ -45,6 +45,7 @@ namespace trview
         void render_triggers_list();
         void render_trigger_details();
         bool render_triggers_window();
+        void set_local_selected_trigger(const std::weak_ptr<ITrigger>& trigger);
 
         std::string _id{ "Triggers 0" };
         std::vector<Item> _all_items;
@@ -65,5 +66,6 @@ namespace trview
         std::weak_ptr<ITrigger> _global_selected_trigger;
         bool _scroll_to_trigger{ false };
         std::optional<float> _tooltip_timer;
+        std::vector<Command> _local_selected_trigger_commands;
     };
 }

@@ -3,11 +3,6 @@
 #include <trview.common/Windows/Clipboard.h>
 #include "../trview_imgui.h"
 
-// TODO:
-// Sorting on triggered by
-
-using namespace trview::graphics;
-
 namespace trview
 {
     ItemsWindow::ItemsWindow(const std::shared_ptr<IClipboard>& clipboard)
@@ -39,6 +34,7 @@ namespace trview
     void ItemsWindow::clear_selected_item()
     {
         _selected_item.reset();
+        _triggered_by.clear();
     }
 
     void ItemsWindow::set_current_room(uint32_t room)
@@ -70,7 +66,7 @@ namespace trview
         if (_sync_item)
         {
             _scroll_to_item = true;
-            _selected_item = item;
+            set_local_selected_item(item);
         }
     }
 
@@ -127,7 +123,7 @@ namespace trview
                     imgui_scroll_to_item(selected, _scroll_to_item);
                     if (ImGui::Selectable((std::to_string(item.number()) + std::string("##") + std::to_string(item.number())).c_str(), &selected, ImGuiSelectableFlags_SpanAllColumns | ImGuiSelectableFlags_SelectOnNav))
                     {
-                        _selected_item = item;
+                        set_local_selected_item(item);
                         if (_sync_item)
                         {
                             on_item_selected(item);
@@ -217,7 +213,7 @@ namespace trview
                 on_add_to_route(_selected_item.value());
             }
             ImGui::Text("Triggered By");
-            if (ImGui::BeginTable(Names::triggers_list.c_str(), 3, ImGuiTableFlags_ScrollY, ImVec2(-1, -1)))
+            if (ImGui::BeginTable(Names::triggers_list.c_str(), 3, ImGuiTableFlags_ScrollY | ImGuiTableFlags_Sortable, ImVec2(-1, -1)))
             {
                 ImGui::TableSetupColumn("#");
                 ImGui::TableSetupColumn("Room");
@@ -225,31 +221,34 @@ namespace trview
                 ImGui::TableSetupScrollFreeze(1, 1);
                 ImGui::TableHeadersRow();
 
-                if (_selected_item.has_value())
-                {
-                    const auto& item = _selected_item.value();
-                    for (auto& trigger : item.triggers())
+                imgui_sort_weak(_triggered_by,
                     {
-                        auto trigger_ptr = trigger.lock();
-                        if (!trigger_ptr)
-                        {
-                            continue;
-                        }
+                        [](auto&& l, auto&& r) { return l.number() < r.number(); },
+                        [](auto&& l, auto&& r) { return l.room() < r.room(); },
+                        [](auto&& l, auto&& r) { return l.type() < r.type(); },
+                    });
 
-                        ImGui::TableNextRow();
-                        ImGui::TableNextColumn();
-                        bool selected = _selected_trigger.lock() == trigger_ptr;
-                        if (ImGui::Selectable(std::to_string(trigger_ptr->number()).c_str(), &selected, ImGuiSelectableFlags_SpanAllColumns | ImGuiSelectableFlags_SelectOnNav))
-                        {
-                            _selected_trigger = trigger;
-                            set_track_room(false);
-                            on_trigger_selected(trigger);
-                        }
-                        ImGui::TableNextColumn();
-                        ImGui::Text(std::to_string(trigger_ptr->room()).c_str());
-                        ImGui::TableNextColumn();
-                        ImGui::Text(to_utf8(trigger_type_name(trigger_ptr->type())).c_str());
+                for (auto& trigger : _triggered_by)
+                {
+                    auto trigger_ptr = trigger.lock();
+                    if (!trigger_ptr)
+                    {
+                        continue;
                     }
+
+                    ImGui::TableNextRow();
+                    ImGui::TableNextColumn();
+                    bool selected = _selected_trigger.lock() == trigger_ptr;
+                    if (ImGui::Selectable(std::to_string(trigger_ptr->number()).c_str(), &selected, ImGuiSelectableFlags_SpanAllColumns | ImGuiSelectableFlags_SelectOnNav))
+                    {
+                        _selected_trigger = trigger;
+                        set_track_room(false);
+                        on_trigger_selected(trigger);
+                    }
+                    ImGui::TableNextColumn();
+                    ImGui::Text(std::to_string(trigger_ptr->room()).c_str());
+                    ImGui::TableNextColumn();
+                    ImGui::Text(to_utf8(trigger_type_name(trigger_ptr->type())).c_str());
                 }
 
                 ImGui::EndTable();
@@ -304,5 +303,11 @@ namespace trview
     void ItemsWindow::set_number(int32_t number)
     {
         _id = "Items " + std::to_string(number);
+    }
+
+    void ItemsWindow::set_local_selected_item(const Item& item)
+    {
+        _selected_item = item;
+        _triggered_by = item.triggers();
     }
 }
