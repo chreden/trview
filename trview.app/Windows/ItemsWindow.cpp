@@ -121,7 +121,7 @@ namespace trview
                     ImGui::TableNextColumn();
                     bool selected = _selected_item.has_value() && _selected_item.value().number() == item.number();
                     imgui_scroll_to_item(selected, _scroll_to_item);
-                    if (ImGui::Selectable((std::to_string(item.number()) + std::string("##") + std::to_string(item.number())).c_str(), &selected, ImGuiSelectableFlags_SpanAllColumns | ImGuiSelectableFlags_SelectOnNav))
+                    if (ImGui::Selectable((std::to_string(item.number()) + std::string("##") + std::to_string(item.number())).c_str(), &selected, ImGuiSelectableFlags_SpanAllColumns | ImGuiSelectableFlags_SelectOnNav | ImGuiTableFlags_SizingFixedFit))
                     {
                         set_local_selected_item(item);
                         if (_sync_item)
@@ -213,7 +213,7 @@ namespace trview
                 on_add_to_route(_selected_item.value());
             }
             ImGui::Text("Triggered By");
-            if (ImGui::BeginTable(Names::triggers_list.c_str(), 3, ImGuiTableFlags_ScrollY | ImGuiTableFlags_Sortable, ImVec2(-1, -1)))
+            if (ImGui::BeginTable(Names::triggers_list.c_str(), 3, ImGuiTableFlags_ScrollY | ImGuiTableFlags_Sortable | ImGuiTableFlags_SizingFixedFit, ImVec2(-1, -1)))
             {
                 ImGui::TableSetupColumn("#");
                 ImGui::TableSetupColumn("Room");

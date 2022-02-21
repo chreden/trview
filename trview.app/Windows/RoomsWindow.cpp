@@ -265,12 +265,12 @@ namespace trview
             }
             ImGui::SameLine();
             bool track_trigger = _track_trigger;
-            if (ImGui::Checkbox("Track Triger##tracktrigger", &track_trigger))
+            if (ImGui::Checkbox("Track Trigger##tracktrigger", &track_trigger))
             {
                 set_track_trigger(track_trigger);
             }
 
-            if (ImGui::BeginTable("##roomslist", 3, ImGuiTableFlags_Sortable | ImGuiTableFlags_ScrollY, ImVec2(-1, -1)))
+            if (ImGui::BeginTable("##roomslist", 3, ImGuiTableFlags_Sortable | ImGuiTableFlags_ScrollY | ImGuiTableFlags_SizingFixedSame, ImVec2(-1, -1)))
             {
                 ImGui::TableSetupColumn("#");
                 ImGui::TableSetupColumn("Items");
@@ -427,7 +427,7 @@ namespace trview
                         ImGui::TableNextColumn();
 
                         ImGui::Text("Properties");
-                        if (ImGui::BeginTable(Names::properties.c_str(), 2, ImGuiTableFlags_ScrollY, ImVec2(170, 150)))
+                        if (ImGui::BeginTable(Names::properties.c_str(), 2, ImGuiTableFlags_ScrollY | ImGuiTableFlags_SizingFixedFit, ImVec2(170, 150)))
                         {
                             ImGui::TableSetupColumn("Name");
                             ImGui::TableSetupColumn("Value");
@@ -450,7 +450,7 @@ namespace trview
 
                         ImGui::TableNextColumn();
                         ImGui::Text("Items");
-                        if (ImGui::BeginTable("Items", 2, ImGuiTableFlags_Sortable | ImGuiTableFlags_ScrollY, ImVec2(0, 150)))
+                        if (ImGui::BeginTable("Items", 2, ImGuiTableFlags_Sortable | ImGuiTableFlags_ScrollY | ImGuiTableFlags_SizingFixedFit, ImVec2(0, 150)))
                         {
                             ImGui::TableSetupColumn("#");
                             ImGui::TableSetupColumn("Type");
@@ -486,7 +486,7 @@ namespace trview
 
                         ImGui::TableNextColumn();
                         ImGui::Text("Neighbours");
-                        if (ImGui::BeginTable("Neighbours", 1, ImGuiTableFlags_ScrollY, ImVec2(0, 150)))
+                        if (ImGui::BeginTable("Neighbours", 1, ImGuiTableFlags_ScrollY | ImGuiTableFlags_SizingFixedFit, ImVec2(0, 150)))
                         {
                             ImGui::TableSetupColumn("#");
                             ImGui::TableSetupScrollFreeze(1, 1);
@@ -512,7 +512,7 @@ namespace trview
 
                         ImGui::TableNextColumn();
                         ImGui::Text("Triggers");
-                        if (ImGui::BeginTable("Triggers", 2, ImGuiTableFlags_Sortable | ImGuiTableFlags_ScrollY, ImVec2(0, 150)))
+                        if (ImGui::BeginTable("Triggers", 2, ImGuiTableFlags_Sortable | ImGuiTableFlags_ScrollY | ImGuiTableFlags_SizingFixedFit, ImVec2(0, 150)))
                         {
                             ImGui::TableSetupColumn("#");
                             ImGui::TableSetupColumn("Type");

@@ -293,7 +293,7 @@ namespace trview
                 on_add_to_route(_selected_trigger);
             }
             ImGui::Text("Commands");
-            if (ImGui::BeginTable(Names::commands_list.c_str(), 3, ImGuiTableFlags_ScrollY | ImGuiTableFlags_Sortable, ImVec2(-1, -1)))
+            if (ImGui::BeginTable(Names::commands_list.c_str(), 3, ImGuiTableFlags_ScrollY | ImGuiTableFlags_Sortable | ImGuiTableFlags_SizingFixedFit, ImVec2(-1, -1)))
             {
                 ImGui::TableSetupColumn("Type");
                 ImGui::TableSetupColumn("Index");
