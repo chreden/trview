@@ -60,7 +60,7 @@ namespace trview
                 }
             }
 
-            if (ImGui::BeginTable("##waypointslist", 2, ImGuiTableFlags_ScrollY, ImVec2(-1, -1)))
+            if (ImGui::BeginTable("##waypointslist", 2, ImGuiTableFlags_ScrollY | ImGuiTableFlags_SizingFixedFit, ImVec2(-1, -1)))
             {
                 ImGui::TableSetupColumn("#");
                 ImGui::TableSetupColumn("Type");
@@ -82,7 +82,7 @@ namespace trview
                             on_waypoint_selected(i);
                         }
                         ImGui::TableNextColumn();
-                        ImGui::Text(to_utf8(waypoint_type_to_string(waypoint.type())).c_str());
+                        ImGui::Text(waypoint_text(waypoint).c_str());
                     }
                 }
                 ImGui::EndTable();
@@ -205,18 +205,18 @@ namespace trview
                     on_waypoint_deleted(_selected_index);
                 }
 
-                ImGui::Text("Notes");
-                std::string notes = to_utf8(waypoint.notes());
-                if (ImGui::InputTextMultiline(Names::notes.c_str(), &notes, ImVec2(-1, 200)))
-                {
-                    waypoint.set_notes(to_utf16(notes));
-                    _route->set_unsaved(true);
-                }
-
                 if (_randomizer_enabled)
                 {
                     ImGui::Text("Randomizer");
                     load_randomiser_settings(waypoint);
+                }
+
+                ImGui::Text("Notes");
+                std::string notes = to_utf8(waypoint.notes());
+                if (ImGui::InputTextMultiline(Names::notes.c_str(), &notes, ImVec2(-1, -1)))
+                {
+                    waypoint.set_notes(to_utf16(notes));
+                    _route->set_unsaved(true);
                 }
             }
         }
@@ -390,5 +390,35 @@ namespace trview
                 }
             }
         }
+    }
+
+    std::string RouteWindow::waypoint_text(const IWaypoint& waypoint) const
+    {
+        if (waypoint.type() == IWaypoint::Type::Entity)
+        {
+            if (waypoint.index() < _all_items.size())
+            {
+                return to_utf8(_all_items[waypoint.index()].type());
+            }
+            else
+            {
+                return "Invalid entity";
+            }
+        }
+        else if (waypoint.type() == IWaypoint::Type::Trigger)
+        {
+            if (waypoint.index() < _all_triggers.size())
+            {
+                if (auto trigger = _all_triggers[waypoint.index()].lock())
+                {
+                    return to_utf8(trigger_type_name(trigger->type()));
+                }
+            }
+            else
+            {
+                return "Invalid trigger";
+            }
+        }
+        return to_utf8(waypoint_type_to_string(waypoint.type()));
     }
 }
