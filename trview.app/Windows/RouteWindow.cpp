@@ -243,8 +243,6 @@ namespace trview
         ImGui::End();
         ImGui::PopStyleVar();
 
-        ImGui::ShowStackToolWindow();
-
         return stay_open;
     }
 
