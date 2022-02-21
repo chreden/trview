@@ -9,11 +9,6 @@ namespace trview
     using namespace DirectX::SimpleMath;
 
     const std::string RouteWindow::Names::colour = "colour";
-    const std::string RouteWindow::Names::waypoints = "waypoints";
-    const std::string RouteWindow::Names::delete_waypoint = "delete_waypoint";
-    const std::string RouteWindow::Names::select_save_button = "select_save_button";
-    const std::string RouteWindow::Names::randomizer_group = "randomizer_group";
-    const std::string RouteWindow::Names::randomizer_area = "randomizer_area";
 
     using namespace graphics;
 
@@ -152,8 +147,8 @@ namespace trview
                     add_stat("Position", position_text(waypoint.position()));
                     add_stat("Room", std::to_string(waypoint.room()));
                     add_stat("Room Position", position_text(get_room_pos()));
+                    ImGui::EndTable();
                 }
-                ImGui::EndTable();
 
                 const std::string save_text = waypoint.has_save() ? "SAVEGAME.0" : Names::attach_save.c_str();
                 if (ImGui::Button(save_text.c_str(), ImVec2(-24, 18)))
@@ -205,7 +200,7 @@ namespace trview
                     }
                 }
 
-                if (ImGui::Button("Delete Waypoint", ImVec2(-1, 0)))
+                if (ImGui::Button(Names::delete_waypoint.c_str(), ImVec2(-1, 0)))
                 {
                     on_waypoint_deleted(_selected_index);
                 }
@@ -247,6 +242,9 @@ namespace trview
         }
         ImGui::End();
         ImGui::PopStyleVar();
+
+        ImGui::ShowStackToolWindow();
+
         return stay_open;
     }
 
@@ -319,7 +317,7 @@ namespace trview
     {
         auto waypoint_settings = waypoint.randomizer_settings();
 
-        if (ImGui::BeginTable("flags", 2))
+        if (ImGui::BeginTable(Names::randomizer_flags.c_str(), 2))
         {
             for (const auto& b : _randomizer_settings.settings)
             {
@@ -352,7 +350,7 @@ namespace trview
                     auto text = std::get<std::string>(value);
                     if (b.second.options.empty())
                     {
-                        if (ImGui::InputText(b.second.display.c_str(), &text))
+                        if (ImGui::InputText(b.second.display.c_str(), &text, ImGuiInputTextFlags_AutoSelectAll))
                         {
                             auto settings = waypoint.randomizer_settings();
                             settings[b.first] = text;
@@ -370,11 +368,12 @@ namespace trview
                                 if (ImGui::Selectable(std::get<std::string>(option).c_str(), is_selected))
                                 {
                                     auto settings = waypoint.randomizer_settings();
-                                    settings[b.first] = text;
+                                    settings[b.first] = option;
                                     waypoint.set_randomizer_settings(settings);
                                     _route->set_unsaved(true);
                                 }
                             }
+                            ImGui::EndCombo();
                         }
                     }
                     break;
@@ -382,7 +381,7 @@ namespace trview
                 case RandomizerSettings::Setting::Type::Number:
                 {
                     auto number = std::get<float>(value);
-                    if (ImGui::InputFloat(b.second.display.c_str(), &number))
+                    if (ImGui::InputFloat(b.second.display.c_str(), &number, ImGuiInputTextFlags_AutoSelectAll))
                     {
                         auto settings = waypoint.randomizer_settings();
                         settings[b.first] = number;

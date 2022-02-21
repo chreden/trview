@@ -1,15 +1,11 @@
 #include <trview.app/Windows/RouteWindow.h>
 #include <trview.app/Mocks/Routing/IRoute.h>
-#include <trlevel/Mocks/ILevel.h>
-#include <trview.app/Mocks/Elements/ILevel.h>
 #include <trview.app/Mocks/Elements/IRoom.h>
 #include <trview.common/Mocks/Windows/IClipboard.h>
 #include <trview.common/Mocks/Windows/IDialogs.h>
 #include <trview.common/Mocks/IFiles.h>
 #include <trview.app/Mocks/Routing/IWaypoint.h>
-#include <trview.common/Mocks/Windows/IShell.h>
 #include "TestImgui.h"
-
 
 using namespace DirectX::SimpleMath;
 using namespace testing;
@@ -145,7 +141,7 @@ TEST(RouteWindow, RoomPositionValuesCopiedToClipboard)
         .push(RouteWindow::Names::waypoint_stats)
         .id("Room Position"));
 }
-/*
+
 TEST(RouteWindow, AddingWaypointNotesMarksRouteUnsaved)
 {
     const Vector3 waypoint_pos{ 130, 250, 325 };
@@ -165,9 +161,9 @@ TEST(RouteWindow, AddingWaypointNotesMarksRouteUnsaved)
     TestImgui imgui([&]() { window->render(); });
     imgui.click_element(imgui.id("Route")
         .push_child(RouteWindow::Names::waypoint_details_panel)
-        .id(RouteWindow::Names::notes));
+        .push(RouteWindow::Names::notes).id(""), false, true);
     imgui.enter_text("Test");
-}*/
+}
 
 TEST(RouteWindow, ClearSaveMarksRouteUnsaved)
 {
@@ -438,55 +434,75 @@ TEST(RouteWindow, ClickStatShowsBubble)
         .id("Room Position"));
     ASSERT_NE(imgui.find_window("##Tooltip_00"), nullptr);
 }
-/*
+
 TEST(RouteWindow, RandomizerPanelVisibleBasedOnSetting)
 {
     auto window = register_test_module().build();
-    auto randomizer_group = window->root_control()->find<ui::Control>(RouteWindow::Names::randomizer_group);
-    ASSERT_NE(randomizer_group, nullptr);
-    ASSERT_FALSE(randomizer_group->visible());
-    window->set_randomizer_enabled(true);
-    ASSERT_TRUE(randomizer_group->visible());
-}
 
-TEST(RouteWindow, WindowResizesWhenRandomizerEnabled)
-{
-    auto window = register_test_module().build();
-    const auto size = window->window().size();
+    RandomizerSettings settings;
+    settings.settings["test"] = { "Test", RandomizerSettings::Setting::Type::Boolean };
+    window->set_randomizer_settings(settings);
+
+    MockWaypoint waypoint;
+    MockRoute route;
+    EXPECT_CALL(route, waypoints).WillRepeatedly(Return(1));
+    EXPECT_CALL(route, waypoint(An<uint32_t>())).WillRepeatedly(ReturnRef(waypoint));
+    window->set_route(&route);
+    window->select_waypoint(0);
+
+    TestImgui imgui([&]() { window->render(); });
+    ASSERT_FALSE(imgui.element_present(imgui.id("Route")
+        .push_child(RouteWindow::Names::waypoint_details_panel)
+        .push(RouteWindow::Names::randomizer_flags)
+        .id("Test")));
     window->set_randomizer_enabled(true);
-    const auto new_size = window->window().size();
-    ASSERT_GT(new_size.height, size.height);
+    imgui.render();
+    ASSERT_TRUE(imgui.element_present(imgui.id("Route")
+        .push_child(RouteWindow::Names::waypoint_details_panel)
+        .push(RouteWindow::Names::randomizer_flags)
+        .id("Test")));
 }
 
 TEST(RouteWindow, RandomizerPanelCreatesUIFromSettings)
 {
     auto window = register_test_module().build();
-    auto randomizer_group = window->root_control()->find<ui::Control>(RouteWindow::Names::randomizer_group);
+
+    MockWaypoint waypoint;
+    MockRoute route;
+    EXPECT_CALL(route, waypoints).WillRepeatedly(Return(1));
+    EXPECT_CALL(route, waypoint(An<uint32_t>())).WillRepeatedly(ReturnRef(waypoint));
+    window->set_route(&route);
+    window->select_waypoint(0);
 
     RandomizerSettings settings;
     settings.settings["test1"] = { "Test 1", RandomizerSettings::Setting::Type::Boolean };
-    settings.settings["test2"] = { "Test 2", RandomizerSettings::Setting::Type::String, "One", { std::string("One"), std::string("Two"), std::string("Three") } };
+    settings.settings["test2"] = { "Test 2", RandomizerSettings::Setting::Type::String, std::string("One"), { std::string("One"), std::string("Two"), std::string("Three") } };
     settings.settings["test3"] = { "Test 3", RandomizerSettings::Setting::Type::Number, 1.0f };
     window->set_randomizer_settings(settings);
+    window->set_randomizer_enabled(true);
 
-    auto test1 = randomizer_group->find<ui::Checkbox>("test1");
-    ASSERT_NE(test1, nullptr);
+    TestImgui imgui([&]() { window->render(); });
 
-    auto test2 = randomizer_group->find<ui::Dropdown>("test2");
-    ASSERT_NE(test2, nullptr);
-
-    auto test3 = randomizer_group->find<ui::TextArea>("test3");
-    ASSERT_NE(test3, nullptr);
+    ASSERT_TRUE(imgui.element_present(imgui.id("Route")
+        .push_child(RouteWindow::Names::waypoint_details_panel)
+        .push(RouteWindow::Names::randomizer_flags)
+        .id("Test 1")));
+    ASSERT_TRUE(imgui.element_present(imgui.id("Route")
+        .push_child(RouteWindow::Names::waypoint_details_panel)
+        .id("Test 2")));
+    ASSERT_TRUE(imgui.element_present(imgui.id("Route")
+        .push_child(RouteWindow::Names::waypoint_details_panel)
+        .id("Test 3")));
 }
 
 TEST(RouteWindow, ToggleRandomizerBoolUpdatesWaypoint)
 {
     auto window = register_test_module().build();
-    auto randomizer_group = window->root_control()->find<ui::Control>(RouteWindow::Names::randomizer_group);
 
     RandomizerSettings settings;
     settings.settings["test1"] = { "Test 1", RandomizerSettings::Setting::Type::Boolean, true };
     window->set_randomizer_settings(settings);
+    window->set_randomizer_enabled(true);
 
     IWaypoint::WaypointRandomizerSettings new_settings;
 
@@ -498,11 +514,12 @@ TEST(RouteWindow, ToggleRandomizerBoolUpdatesWaypoint)
     window->set_route(&route);
     window->select_waypoint(0);
 
-    auto test1 = randomizer_group->find<ui::Checkbox>("test1");
-    ASSERT_NE(test1, nullptr);
-    ASSERT_TRUE(test1->state());
+    TestImgui imgui([&]() { window->render(); });
+    imgui.click_element(imgui.id("Route")
+        .push_child(RouteWindow::Names::waypoint_details_panel)
+        .push(RouteWindow::Names::randomizer_flags)
+        .id("Test 1"));
 
-    test1->clicked(Point());
     ASSERT_NE(new_settings.find("test1"), new_settings.end());
     ASSERT_FALSE(std::get<bool>(new_settings["test1"]));
 }
@@ -510,11 +527,11 @@ TEST(RouteWindow, ToggleRandomizerBoolUpdatesWaypoint)
 TEST(RouteWindow, ChooseRandomizerDropDownUpdatesWaypoint)
 {
     auto window = register_test_module().build();
-    auto randomizer_group = window->root_control()->find<ui::Control>(RouteWindow::Names::randomizer_group);
 
     RandomizerSettings settings;
     settings.settings["test1"] = { "Test 1", RandomizerSettings::Setting::Type::String, std::string("One"), { std::string("One"), std::string("Two") } };
     window->set_randomizer_settings(settings);
+    window->set_randomizer_enabled(true);
 
     IWaypoint::WaypointRandomizerSettings new_settings;
 
@@ -526,25 +543,12 @@ TEST(RouteWindow, ChooseRandomizerDropDownUpdatesWaypoint)
     window->set_route(&route);
     window->select_waypoint(0);
 
-    auto test1 = randomizer_group->find<ui::Dropdown>("test1");
-    ASSERT_NE(test1, nullptr);
-    ASSERT_EQ(test1->selected_value(), L"One");
+    TestImgui imgui([&]() { window->render(); });
+    imgui.click_element(imgui.id("Route")
+        .push_child(RouteWindow::Names::waypoint_details_panel)
+        .id("Test 1"));
+    imgui.click_element(imgui.id("##Combo_00").id("Two"));
 
-    auto dropdown_button = test1->find<ui::Button>(ui::Dropdown::Names::dropdown_button);
-    ASSERT_NE(dropdown_button, nullptr);
-    dropdown_button->clicked(Point());
-
-    auto dropdown_list = test1->dropdown_listbox();
-    ASSERT_NE(dropdown_list, nullptr);
-
-    auto row = dropdown_list->find<ui::Control>(ui::Listbox::Names::row_name_format + "1");
-    ASSERT_NE(row, nullptr);
-
-    auto cell = row->find<ui::Button>(ui::Listbox::Row::Names::cell_name_format + "Name");
-    ASSERT_NE(cell, nullptr);
-    cell->clicked(Point());
-
-    test1->set_selected_value(L"Two");
     ASSERT_NE(new_settings.find("test1"), new_settings.end());
     ASSERT_EQ(std::get<std::string>(new_settings["test1"]), "Two");
 }
@@ -552,11 +556,11 @@ TEST(RouteWindow, ChooseRandomizerDropDownUpdatesWaypoint)
 TEST(RouteWindow, SetRandomizerTextUpdatesWaypoint)
 {
     auto window = register_test_module().build();
-    auto randomizer_group = window->root_control()->find<ui::Control>(RouteWindow::Names::randomizer_group);
 
     RandomizerSettings settings;
     settings.settings["test1"] = { "Test 1", RandomizerSettings::Setting::Type::String, std::string("One") };
     window->set_randomizer_settings(settings);
+    window->set_randomizer_enabled(true);
 
     IWaypoint::WaypointRandomizerSettings new_settings;
 
@@ -568,11 +572,11 @@ TEST(RouteWindow, SetRandomizerTextUpdatesWaypoint)
     window->set_route(&route);
     window->select_waypoint(0);
 
-    auto test1 = randomizer_group->find<ui::TextArea>("test1");
-    ASSERT_NE(test1, nullptr);
-    ASSERT_EQ(test1->text(), L"One");
-
-    test1->set_text(L"Two");
+    TestImgui imgui([&]() { window->render(); });
+    imgui.click_element(imgui.id("Route")
+        .push_child(RouteWindow::Names::waypoint_details_panel)
+        .id("Test 1"));
+    imgui.enter_text("Two");
 
     ASSERT_NE(new_settings.find("test1"), new_settings.end());
     ASSERT_EQ(std::get<std::string>(new_settings["test1"]), "Two");
@@ -581,11 +585,11 @@ TEST(RouteWindow, SetRandomizerTextUpdatesWaypoint)
 TEST(RouteWindow, SetRandomizerNumberUpdatesWaypoint)
 {
     auto window = register_test_module().build();
-    auto randomizer_group = window->root_control()->find<ui::Control>(RouteWindow::Names::randomizer_group);
 
     RandomizerSettings settings;
     settings.settings["test1"] = { "Test 1", RandomizerSettings::Setting::Type::Number, 1.0f };
     window->set_randomizer_settings(settings);
+    window->set_randomizer_enabled(true);
 
     IWaypoint::WaypointRandomizerSettings new_settings;
 
@@ -597,66 +601,37 @@ TEST(RouteWindow, SetRandomizerNumberUpdatesWaypoint)
     window->set_route(&route);
     window->select_waypoint(0);
 
-    auto test1 = randomizer_group->find<ui::TextArea>("test1");
-    ASSERT_NE(test1, nullptr);
-    ASSERT_EQ(test1->text(), L"1.000000");
-
-    test1->set_text(L"2.0");
-    test1->gained_focus();
-    test1->key_char(0xD);
+    TestImgui imgui([&]() { window->render(); });
+    imgui.click_element(imgui.id("Route")
+        .push_child(RouteWindow::Names::waypoint_details_panel)
+        .id("Test 1"));
+    imgui.enter_text("2");
 
     ASSERT_NE(new_settings.find("test1"), new_settings.end());
     ASSERT_EQ(std::get<float>(new_settings["test1"]), 2.0);
 }
 
-TEST(RouteWindow, SetRandomizerNumberUpdatesWaypointByChangingFocus)
+TEST(RouteWindow, DeleteWaypointRaisesEvent)
 {
     auto window = register_test_module().build();
-    auto randomizer_group = window->root_control()->find<ui::Control>(RouteWindow::Names::randomizer_group);
-
-    RandomizerSettings settings;
-    settings.settings["test1"] = { "Test 1", RandomizerSettings::Setting::Type::Number, 1.0f };
-    window->set_randomizer_settings(settings);
-
-    IWaypoint::WaypointRandomizerSettings new_settings;
-
     MockWaypoint waypoint;
     MockRoute route;
     EXPECT_CALL(route, waypoints).WillRepeatedly(Return(1));
     EXPECT_CALL(route, waypoint(An<uint32_t>())).WillRepeatedly(ReturnRef(waypoint));
-    EXPECT_CALL(waypoint, set_randomizer_settings(An<const IWaypoint::WaypointRandomizerSettings&>())).WillRepeatedly(SaveArg<0>(&new_settings));
     window->set_route(&route);
     window->select_waypoint(0);
 
-    auto test1 = randomizer_group->find<ui::TextArea>("test1");
-    ASSERT_NE(test1, nullptr);
-    ASSERT_EQ(test1->text(), L"1.000000");
+    std::optional<uint32_t> raised;
+    auto token = window->on_waypoint_deleted += [&](const auto& waypoint)
+    {
+        raised = waypoint;
+    };
 
-    test1->gained_focus();
-    test1->set_text(L"2.0");
-    test1->lost_focus(nullptr);
+    TestImgui imgui([&]() { window->render(); });
+    imgui.click_element(imgui.id("Route")
+        .push_child(RouteWindow::Names::waypoint_details_panel)
+        .id(RouteWindow::Names::delete_waypoint));
 
-    ASSERT_NE(new_settings.find("test1"), new_settings.end());
-    ASSERT_EQ(std::get<float>(new_settings["test1"]), 2.0);
+    ASSERT_TRUE(raised.has_value());
+    ASSERT_EQ(raised, 0);
 }
-
-TEST(RouteWindow, RandomizerTextAreasUseShell)
-{
-    auto shell = std::make_shared<MockShell>();
-    EXPECT_CALL(*shell, open(std::wstring(L"http://example.com"))).Times(1);
-
-    auto window = register_test_module().with_shell(shell).build();
-
-    RandomizerSettings settings;
-    settings.settings["test_text"] = { "test_text", RandomizerSettings::Setting::Type::String };
-
-    window->set_randomizer_enabled(true);
-    window->set_randomizer_settings(settings);
-
-    auto text_area = window->root_control()->find<TextArea>("test_text");
-    ASSERT_NE(text_area, nullptr);
-
-    text_area->set_text(L"http://example.com");
-    text_area->clicked(Point(5, 5));
-}
-*/

@@ -21,17 +21,14 @@ namespace trview
         struct Names
         {
             static const std::string colour;
-            static const std::string waypoints;
-            static const std::string delete_waypoint;
+            static const inline std::string delete_waypoint = "Delete Waypoint";
             static const inline std::string attach_save = "Attach Save";
             static const inline std::string export_button = "Export";
             static const inline std::string import_button = "Import";
             static const inline std::string clear_save = "X";
             static const inline std::string notes = "Notes##notes";
-            static const std::string select_save_button;
             static const inline std::string waypoint_stats = "##waypointstats";
-            static const std::string randomizer_group;
-            static const std::string randomizer_area;
+            static const inline std::string randomizer_flags = "Randomizer Flags";
             static const inline std::string waypoint_list_panel = "Waypoint List";
             static const inline std::string waypoint_details_panel = "Waypoint Details";
         };
