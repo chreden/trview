@@ -11,8 +11,6 @@ namespace trview
     const std::string RouteWindow::Names::colour = "colour";
     const std::string RouteWindow::Names::waypoints = "waypoints";
     const std::string RouteWindow::Names::delete_waypoint = "delete_waypoint";
-    const std::string RouteWindow::Names::clear_save = "clear_save";
-    const std::string RouteWindow::Names::notes_area = "notes_area";
     const std::string RouteWindow::Names::select_save_button = "select_save_button";
     const std::string RouteWindow::Names::waypoint_stats = "waypoint_stats";
     const std::string RouteWindow::Names::randomizer_group = "randomizer_group";
@@ -198,7 +196,7 @@ namespace trview
                     }
                 }
                 ImGui::SameLine();
-                if (ImGui::Button("X", ImVec2(-1,0)))
+                if (ImGui::Button(Names::clear_save.c_str(), ImVec2(-1,0)))
                 {
                     if (waypoint.has_save())
                     {
@@ -214,7 +212,7 @@ namespace trview
 
                 ImGui::Text("Notes");
                 std::string notes = to_utf8(waypoint.notes());
-                if (ImGui::InputTextMultiline("Notes##notes", &notes, ImVec2(-1, 200)))
+                if (ImGui::InputTextMultiline(Names::notes.c_str(), &notes, ImVec2(-1, 200)))
                 {
                     waypoint.set_notes(to_utf16(notes));
                     _route->set_unsaved(true);

@@ -25,8 +25,8 @@ namespace trview
             static const std::string delete_waypoint;
             static const inline std::string export_button = "Export";
             static const inline std::string import_button = "Import";
-            static const std::string clear_save;
-            static const std::string notes_area;
+            static const inline std::string clear_save = "X";
+            static const inline std::string notes = "Notes##notes";
             static const std::string select_save_button;
             static const std::string waypoint_stats;
             static const std::string randomizer_group;

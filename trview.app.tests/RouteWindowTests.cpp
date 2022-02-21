@@ -169,6 +169,7 @@ TEST(RouteWindow, RoomPositionValuesCopiedToClipboard)
     ASSERT_NE(cell, nullptr);
     cell->clicked(Point());
 }
+*/
 
 TEST(RouteWindow, AddingWaypointNotesMarksRouteUnsaved)
 {
@@ -184,11 +185,13 @@ TEST(RouteWindow, AddingWaypointNotesMarksRouteUnsaved)
 
     auto window = register_test_module().build();
     window->set_route(&route);
+    window->select_waypoint(0);
 
-    auto notes_area = window->root_control()->find<ui::TextArea>(RouteWindow::Names::notes_area);
-    ASSERT_NE(notes_area, nullptr);
-
-    notes_area->on_text_changed(L"Test");
+    TestImgui imgui([&]() { window->render(); });
+    imgui.click_element(imgui.id("Route")
+        .push_child(RouteWindow::Names::waypoint_details_panel)
+        .id(RouteWindow::Names::notes));
+    imgui.enter_text("Test");
 }
 
 TEST(RouteWindow, ClearSaveMarksRouteUnsaved)
@@ -205,12 +208,12 @@ TEST(RouteWindow, ClearSaveMarksRouteUnsaved)
     auto window = register_test_module().build();
     window->set_route(&route);
 
-    auto clear_save = window->root_control()->find<ui::Button>(RouteWindow::Names::clear_save);
-    ASSERT_NE(clear_save, nullptr);
-
-    clear_save->on_click();
+    TestImgui imgui([&]() { window->render(); });
+    imgui.click_element(imgui.id("Route")
+        .push_child(RouteWindow::Names::waypoint_details_panel)
+        .id(RouteWindow::Names::clear_save));
 }
-*/
+
 TEST(RouteWindow, ExportRouteButtonRaisesEvent)
 {
     auto dialogs = std::make_shared<MockDialogs>();
