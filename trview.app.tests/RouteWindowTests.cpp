@@ -61,12 +61,11 @@ namespace
         return test_module{};
     }
 }
-/*
+
 TEST(RouteWindow, WaypointRoomPositionCalculatedCorrectly)
 {
     const Vector3 room_pos{ 102400, 204800, 307200 };
     const Vector3 waypoint_pos{ 130, 250, 325 };
-    const Vector3 expected{ 30720, 51200, 25600 };
 
     auto window = register_test_module().build();
 
@@ -88,34 +87,19 @@ TEST(RouteWindow, WaypointRoomPositionCalculatedCorrectly)
     window->set_route(&route);
 
     window->select_waypoint(0);
-    auto waypoint_stats = window->root_control()->find<ui::Listbox>(RouteWindow::Names::waypoint_stats);
-    ASSERT_NE(waypoint_stats, nullptr);
 
-    auto items = waypoint_stats->items();
-    auto item_iter = std::find_if(items.begin(), items.end(), [](auto i) { return i.value(L"Name") == L"Room Position"; });
-    ASSERT_NE(item_iter, items.end());
+    TestImgui imgui([&]() { window->render(); });
+    auto rendered = imgui.rendered_text(imgui.id("Route")
+        .push_child(RouteWindow::Names::waypoint_details_panel)
+        .id(RouteWindow::Names::waypoint_stats));
 
-    auto value = item_iter->value(L"Value");
-    value.erase(std::remove_if(value.begin(), value.end(),
-        [](wchar_t c)
-        {
-            return std::isspace(static_cast<int>(c));
-        }), value.end());
-    std::replace(value.begin(), value.end(), L',', L' ');
-
-    int32_t x, y, z;
-    std::wstringstream stream(value);
-    stream >> x >> y >> z;
-
-    ASSERT_EQ(x, expected.x);
-    ASSERT_EQ(y, expected.y);
-    ASSERT_EQ(z, expected.z);
+    ASSERT_THAT(rendered, testing::Contains("30720, 51200, 25600"));
 }
 
 TEST(RouteWindow, PositionValuesCopiedToClipboard)
 {
     auto clipboard = std::make_shared<MockClipboard>();
-    EXPECT_CALL(*clipboard, write(An<const trview::Window&>(), std::wstring(L"133120, 256000, 332800"))).Times(1);
+    EXPECT_CALL(*clipboard, write(std::wstring(L"133120, 256000, 332800"))).Times(1);
 
     auto window = register_test_module().with_clipboard(clipboard).build();
 
@@ -130,21 +114,17 @@ TEST(RouteWindow, PositionValuesCopiedToClipboard)
     window->set_route(&route);
     window->select_waypoint(0);
 
-    auto waypoint_stats = window->root_control()->find<ui::Listbox>(RouteWindow::Names::waypoint_stats);
-    ASSERT_NE(waypoint_stats, nullptr);
-
-    auto row = waypoint_stats->find<ui::Control>(ui::Listbox::Names::row_name_format + "1");
-    ASSERT_NE(row, nullptr);
-
-    auto cell = row->find<ui::Button>(ui::Listbox::Row::Names::cell_name_format + "Value");
-    ASSERT_NE(cell, nullptr);
-    cell->clicked(Point());
+    TestImgui imgui([&]() { window->render(); });
+    imgui.click_element(imgui.id("Route")
+        .push_child(RouteWindow::Names::waypoint_details_panel)
+        .push(RouteWindow::Names::waypoint_stats)
+        .id("Position"));
 }
 
 TEST(RouteWindow, RoomPositionValuesCopiedToClipboard)
 {
     auto clipboard = std::make_shared<MockClipboard>();
-    EXPECT_CALL(*clipboard, write(An<const trview::Window&>(), std::wstring(L"133120, 256000, 332800"))).Times(1);
+    EXPECT_CALL(*clipboard, write(std::wstring(L"133120, 256000, 332800"))).Times(1);
 
     auto window = register_test_module().with_clipboard(clipboard).build();
 
@@ -159,18 +139,13 @@ TEST(RouteWindow, RoomPositionValuesCopiedToClipboard)
     window->set_route(&route);
     window->select_waypoint(0);
 
-    auto waypoint_stats = window->root_control()->find<ui::Listbox>(RouteWindow::Names::waypoint_stats);
-    ASSERT_NE(waypoint_stats, nullptr);
-
-    auto row = waypoint_stats->find<ui::Control>(ui::Listbox::Names::row_name_format + "3");
-    ASSERT_NE(row, nullptr);
-
-    auto cell = row->find<ui::Button>(ui::Listbox::Row::Names::cell_name_format + "Value");
-    ASSERT_NE(cell, nullptr);
-    cell->clicked(Point());
+    TestImgui imgui([&]() { window->render(); });
+    imgui.click_element(imgui.id("Route")
+        .push_child(RouteWindow::Names::waypoint_details_panel)
+        .push(RouteWindow::Names::waypoint_stats)
+        .id("Room Position"));
 }
-*/
-
+/*
 TEST(RouteWindow, AddingWaypointNotesMarksRouteUnsaved)
 {
     const Vector3 waypoint_pos{ 130, 250, 325 };
@@ -192,7 +167,7 @@ TEST(RouteWindow, AddingWaypointNotesMarksRouteUnsaved)
         .push_child(RouteWindow::Names::waypoint_details_panel)
         .id(RouteWindow::Names::notes));
     imgui.enter_text("Test");
-}
+}*/
 
 TEST(RouteWindow, ClearSaveMarksRouteUnsaved)
 {
@@ -369,7 +344,7 @@ TEST(RouteWindow, ExportSaveButtonDoesNotSaveFileWhenCancelled)
         .push_child(RouteWindow::Names::waypoint_details_panel)
         .id("SAVEGAME.0"));
 }
-/*
+
 TEST(RouteWindow, AttachSaveButtonLoadsSave)
 {
     auto dialogs = std::make_shared<MockDialogs>();
@@ -389,10 +364,10 @@ TEST(RouteWindow, AttachSaveButtonLoadsSave)
     auto window = register_test_module().with_dialogs(dialogs).with_files(files).build();
     window->set_route(&route);
 
-    auto attach_save_button = window->root_control()->find<ui::Button>(RouteWindow::Names::select_save_button);
-    ASSERT_NE(attach_save_button, nullptr);
-
-    attach_save_button->on_click();
+    TestImgui imgui([&]() { window->render(); });
+    imgui.click_element(imgui.id("Route")
+        .push_child(RouteWindow::Names::waypoint_details_panel)
+        .id(RouteWindow::Names::attach_save));
 }
 
 TEST(RouteWindow, AttachSaveButtonShowsMessageOnError)
@@ -413,10 +388,10 @@ TEST(RouteWindow, AttachSaveButtonShowsMessageOnError)
     auto window = register_test_module().with_dialogs(dialogs).with_files(files).build();
     window->set_route(&route);
 
-    auto attach_save_button = window->root_control()->find<ui::Button>(RouteWindow::Names::select_save_button);
-    ASSERT_NE(attach_save_button, nullptr);
-
-    attach_save_button->on_click();
+    TestImgui imgui([&]() { window->render(); });
+    imgui.click_element(imgui.id("Route")
+        .push_child(RouteWindow::Names::waypoint_details_panel)
+        .id(RouteWindow::Names::attach_save));
 
     ASSERT_FALSE(waypoint.has_save());
 }
@@ -438,19 +413,16 @@ TEST(RouteWindow, AttachSaveButtonDoesNotLoadFileWhenCancelled)
     auto window = register_test_module().with_dialogs(dialogs).with_files(files).build();
     window->set_route(&route);
 
-    auto attach_save_button = window->root_control()->find<ui::Button>(RouteWindow::Names::select_save_button);
-    ASSERT_NE(attach_save_button, nullptr);
-
-    attach_save_button->on_click();
+    TestImgui imgui([&]() { window->render(); });
+    imgui.click_element(imgui.id("Route")
+        .push_child(RouteWindow::Names::waypoint_details_panel)
+        .id(RouteWindow::Names::attach_save));
     ASSERT_FALSE(waypoint.has_save());
 }
 
 TEST(RouteWindow, ClickStatShowsBubble)
 {
-    auto bubble = std::make_unique<MockBubble>();
-    EXPECT_CALL(*bubble, show(testing::A<const Point&>())).Times(1);
-
-    auto window = register_test_module().with_bubble_source([&](auto&&...) { return std::move(bubble); }).build();
+    auto window = register_test_module().build();
 
     MockWaypoint waypoint;
     MockRoute route;
@@ -459,17 +431,14 @@ TEST(RouteWindow, ClickStatShowsBubble)
     window->set_route(&route);
     window->select_waypoint(0);
 
-    auto stats = window->root_control()->find<ui::Listbox>(RouteWindow::Names::waypoint_stats);
-    ASSERT_NE(stats, nullptr);
-
-    auto first_stat = stats->find<ui::Control>(ui::Listbox::Names::row_name_format + "1");
-    ASSERT_NE(first_stat, nullptr);
-
-    auto value = first_stat->find<ui::Button>(ui::Listbox::Row::Names::cell_name_format + "Value");
-    ASSERT_NE(value, nullptr);
-    value->clicked(Point());
+    TestImgui imgui([&]() { window->render(); });
+    imgui.click_element(imgui.id("Route")
+        .push_child(RouteWindow::Names::waypoint_details_panel)
+        .push(RouteWindow::Names::waypoint_stats)
+        .id("Room Position"));
+    ASSERT_NE(imgui.find_window("##Tooltip_00"), nullptr);
 }
-
+/*
 TEST(RouteWindow, RandomizerPanelVisibleBasedOnSetting)
 {
     auto window = register_test_module().build();

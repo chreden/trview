@@ -12,7 +12,6 @@ namespace trview
     const std::string RouteWindow::Names::waypoints = "waypoints";
     const std::string RouteWindow::Names::delete_waypoint = "delete_waypoint";
     const std::string RouteWindow::Names::select_save_button = "select_save_button";
-    const std::string RouteWindow::Names::waypoint_stats = "waypoint_stats";
     const std::string RouteWindow::Names::randomizer_group = "randomizer_group";
     const std::string RouteWindow::Names::randomizer_area = "randomizer_area";
 
@@ -105,7 +104,7 @@ namespace trview
             {
                 auto& waypoint = _route->waypoint(_selected_index);
 
-                if (ImGui::BeginTable("##triggerstats", 2, 0, ImVec2(-1, 80)))
+                if (ImGui::BeginTable(Names::waypoint_stats.c_str(), 2, 0, ImVec2(-1, 80)))
                 {
                     ImGui::TableSetupColumn("Name");
                     ImGui::TableSetupColumn("Value");
@@ -117,6 +116,7 @@ namespace trview
                         if (ImGui::Selectable(name.c_str(), false, ImGuiSelectableFlags_SpanAllColumns))
                         {
                             _clipboard->write(to_utf16(value));
+                            _tooltip_timer = 0.0f;
                         }
                         ImGui::TableNextColumn();
                         ImGui::Text(value.c_str());
@@ -155,7 +155,7 @@ namespace trview
                 }
                 ImGui::EndTable();
 
-                const std::string save_text = waypoint.has_save() ? "SAVEGAME.0" : "Attach Save";
+                const std::string save_text = waypoint.has_save() ? "SAVEGAME.0" : Names::attach_save.c_str();
                 if (ImGui::Button(save_text.c_str(), ImVec2(-24, 18)))
                 {
                     if (!waypoint.has_save())
@@ -237,6 +237,13 @@ namespace trview
             render_waypoint_list();
             ImGui::SameLine();
             render_waypoint_details();
+
+            if (_tooltip_timer.has_value())
+            {
+                ImGui::BeginTooltip();
+                ImGui::Text("Copied");
+                ImGui::EndTooltip();
+            }
         }
         ImGui::End();
         ImGui::PopStyleVar();
@@ -288,6 +295,14 @@ namespace trview
 
     void RouteWindow::update(float delta)
     {
+        if (_tooltip_timer.has_value())
+        {
+            _tooltip_timer = _tooltip_timer.value() + delta;
+            if (_tooltip_timer.value() > 0.6f)
+            {
+                _tooltip_timer.reset();
+            }
+        }
     }
 
     void RouteWindow::set_randomizer_enabled(bool value)
