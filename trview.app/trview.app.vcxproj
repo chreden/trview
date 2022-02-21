@@ -117,7 +117,6 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClCompile Include="UI\CameraPosition.cpp" />
     <ClCompile Include="UI\Console.cpp" />
     <ClCompile Include="UI\ContextMenu.cpp" />
-    <ClCompile Include="UI\ControlTracker.cpp" />
     <ClCompile Include="UI\DX11ImGuiBackend.cpp" />
     <ClCompile Include="UI\GoTo.cpp" />
     <ClCompile Include="UI\ICameraControls.cpp" />
@@ -304,7 +303,6 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClInclude Include="UI\CameraPosition.h" />
     <ClInclude Include="UI\Console.h" />
     <ClInclude Include="UI\ContextMenu.h" />
-    <ClInclude Include="UI\ControlTracker.h" />
     <ClInclude Include="UI\di.h" />
     <ClInclude Include="UI\di.hpp" />
     <ClInclude Include="UI\DX11ImGuiBackend.h" />

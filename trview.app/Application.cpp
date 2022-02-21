@@ -676,7 +676,7 @@ namespace trview
         load_default_shaders(
             injector.create<std::shared_ptr<graphics::IDevice>>(),
             injector.create<std::shared_ptr<IShaderStorage>>());
-        ui::render::load_default_fonts(
+        load_default_fonts(
             injector.create<std::shared_ptr<graphics::IDevice>>(),
             injector.create<std::shared_ptr<IFontFactory>>());
         load_default_textures(

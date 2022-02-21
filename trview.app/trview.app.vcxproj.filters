@@ -289,9 +289,6 @@
     <ClCompile Include="Settings\RandomizerSettings.cpp">
       <Filter>Settings</Filter>
     </ClCompile>
-    <ClCompile Include="UI\ControlTracker.cpp">
-      <Filter>UI</Filter>
-    </ClCompile>
     <ClCompile Include="UI\IMapRenderer.cpp">
       <Filter>UI</Filter>
     </ClCompile>
@@ -842,9 +839,6 @@
     </ClInclude>
     <ClInclude Include="Settings\RandomizerSettings.h">
       <Filter>Settings</Filter>
-    </ClInclude>
-    <ClInclude Include="UI\ControlTracker.h">
-      <Filter>UI</Filter>
     </ClInclude>
     <ClInclude Include="UI\IMapRenderer.h">
       <Filter>UI</Filter>

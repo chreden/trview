@@ -1,7 +1,5 @@
 #include "ContextMenu.h"
 
-// TODO: Only show context menu on clicks that weren't drags (rotations of the camera)
-
 namespace trview
 {
     void ContextMenu::render()

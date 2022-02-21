@@ -1,9 +1,7 @@
 #include <trview.app/UI/ContextMenu.h>
-#include <trview.common/Mocks/Windows/IShell.h>
 #include "TestImgui.h"
 
 using namespace trview;
-using namespace trview::mocks;
 using namespace trview::tests;
 
 TEST(ContextMenu, AddWaypointRaised)

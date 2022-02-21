@@ -7,14 +7,13 @@
 #pragma once
 
 #include "ICameraControls.h"
-#include "ControlTracker.h"
 
 namespace trview
 {
     /// <summary>
     /// The camera controls control has settings for the operation mode of the camera and other camera related settings.
     /// </summary>
-    class CameraControls final : public ICameraControls, public ControlTracker
+    class CameraControls final : public ICameraControls
     {
     public:
         struct Names

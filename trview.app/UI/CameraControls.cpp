@@ -63,7 +63,6 @@ namespace trview
             {
                 on_reset();
             }
-            track(Names::reset);
         }
         ImGui::End();
     }
