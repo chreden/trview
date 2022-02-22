@@ -18,12 +18,6 @@ jobs:
     - name: setup-msbuild
       uses: microsoft/setup-msbuild@v1
     
-    - name: Setup NuGet.exe
-      uses: NuGet/setup-nuget@v1.0.5
-    
-    - name: Restore Packages
-      run: nuget restore trview.sln
-    
     - name: Build Solution (x86)
       run: msbuild trview.sln /property:Configuration=Release /property:Platform=x86 /m
     
@@ -56,12 +50,6 @@ jobs:
 
     - name: setup-msbuild
       uses: microsoft/setup-msbuild@v1
-    
-    - name: Setup NuGet.exe
-      uses: NuGet/setup-nuget@v1.0.5
-    
-    - name: Restore Packages
-      run: nuget restore trview.sln
     
     - name: Build Solution (x64)
       run: msbuild trview.sln /property:Configuration=Release /property:Platform=x64 /m
