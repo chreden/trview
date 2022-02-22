@@ -21,6 +21,7 @@
 #include "TestImgui.h"
 
 using testing::Return;
+using testing::NiceMock;
 using namespace trview;
 using namespace trview::mocks;
 using namespace trview::graphics;
@@ -52,18 +53,18 @@ namespace
         struct test_module
         {
             trview::Window window{ create_test_window(L"ViewerTests") };
-            std::shared_ptr<IDevice> device{ std::make_shared<MockDevice>() };
-            std::unique_ptr<IViewerUI> ui{ std::make_unique<MockViewerUI>() };
-            std::unique_ptr<IPicking> picking{ std::make_unique<MockPicking>() };
-            std::unique_ptr<IMouse> mouse{ std::make_unique<MockMouse>() };
-            std::shared_ptr<MockShortcuts> shortcuts{ std::make_shared<MockShortcuts>() };
-            std::shared_ptr<IRoute> route{ std::make_shared<MockRoute>() };
-            ISprite::Source sprite_source{ [](auto&&...) { return std::make_unique<MockSprite>(); }};
-            std::unique_ptr<ICompass> compass{ std::make_unique<MockCompass>() };
-            std::unique_ptr<IMeasure> measure{ std::make_unique<MockMeasure>() };
-            IRenderTarget::SizeSource render_target_source{ [](auto&&...) { return std::make_unique<MockRenderTarget>(); } };
-            IDeviceWindow::Source device_window_source{ [](auto&&...) { return std::make_unique<MockDeviceWindow>(); } };
-            std::unique_ptr<ISectorHighlight> sector_highlight{ std::make_unique<MockSectorHighlight>() };
+            std::shared_ptr<IDevice> device{ std::make_shared<NiceMock<MockDevice>>() };
+            std::unique_ptr<IViewerUI> ui{ std::make_unique< NiceMock<MockViewerUI>>() };
+            std::unique_ptr<IPicking> picking{ std::make_unique<NiceMock<MockPicking>>() };
+            std::unique_ptr<IMouse> mouse{ std::make_unique<NiceMock<MockMouse>>() };
+            std::shared_ptr<MockShortcuts> shortcuts{ std::make_shared<NiceMock<MockShortcuts>>() };
+            std::shared_ptr<IRoute> route{ std::make_shared<NiceMock<MockRoute>>() };
+            ISprite::Source sprite_source{ [](auto&&...) { return std::make_unique<NiceMock<MockSprite>>(); }};
+            std::unique_ptr<ICompass> compass{ std::make_unique<NiceMock<MockCompass>>() };
+            std::unique_ptr<IMeasure> measure{ std::make_unique<NiceMock<MockMeasure>>() };
+            IRenderTarget::SizeSource render_target_source{ [](auto&&...) { return std::make_unique<NiceMock<MockRenderTarget>>(); } };
+            IDeviceWindow::Source device_window_source{ [](auto&&...) { return std::make_unique<NiceMock<MockDeviceWindow>>(); } };
+            std::unique_ptr<ISectorHighlight> sector_highlight{ std::make_unique<NiceMock<MockSectorHighlight>>() };
 
             std::unique_ptr<Viewer> build()
             {

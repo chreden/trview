@@ -23,6 +23,7 @@ using namespace trlevel::mocks;
 using namespace trview::tests;
 using testing::Return;
 using testing::A;
+using testing::NiceMock;
 using namespace DirectX::SimpleMath;
 
 namespace
@@ -31,18 +32,18 @@ namespace
     {
         struct test_module
         {
-            std::shared_ptr<IDevice> device{ std::make_shared<MockDevice>() };
-            std::shared_ptr<graphics::IShaderStorage> shader_storage{ std::make_shared<MockShaderStorage>() };
-            std::unique_ptr<trlevel::ILevel> level{ std::make_unique<trlevel::mocks::MockLevel>() };
-            std::shared_ptr<ILevelTextureStorage> level_texture_storage{ std::make_shared<MockLevelTextureStorage>() };
-            std::unique_ptr<IMeshStorage> mesh_storage { std::make_unique<MockMeshStorage>() };
-            std::unique_ptr<ITransparencyBuffer> transparency_buffer{ std::make_unique<MockTransparencyBuffer>() };
-            std::unique_ptr<ISelectionRenderer> selection_renderer{ std::make_unique<MockSelectionRenderer>() };
-            std::shared_ptr<ITypeNameLookup> type_name_lookup{ std::make_shared<MockTypeNameLookup>() };
-            IEntity::EntitySource entity_source{ [](auto&&...) { return std::make_shared<MockEntity>(); } };
-            IEntity::AiSource ai_source{ [](auto&&...) { return std::make_shared<MockEntity>(); } };
-            IRoom::Source room_source{ [](auto&&...) { return std::make_shared<MockRoom>(); } };
-            ITrigger::Source trigger_source{ [](auto&&...) {return std::make_shared<MockTrigger>(); } };
+            std::shared_ptr<IDevice> device{ std::make_shared<NiceMock<MockDevice>>() };
+            std::shared_ptr<graphics::IShaderStorage> shader_storage{ std::make_shared<NiceMock<MockShaderStorage>>() };
+            std::unique_ptr<trlevel::ILevel> level{ std::make_unique<NiceMock<trlevel::mocks::MockLevel>>() };
+            std::shared_ptr<ILevelTextureStorage> level_texture_storage{ std::make_shared<NiceMock<MockLevelTextureStorage>>() };
+            std::unique_ptr<IMeshStorage> mesh_storage { std::make_unique<NiceMock<MockMeshStorage>>() };
+            std::unique_ptr<ITransparencyBuffer> transparency_buffer{ std::make_unique<NiceMock<MockTransparencyBuffer>>() };
+            std::unique_ptr<ISelectionRenderer> selection_renderer{ std::make_unique<NiceMock<MockSelectionRenderer>>() };
+            std::shared_ptr<ITypeNameLookup> type_name_lookup{ std::make_shared<NiceMock<MockTypeNameLookup>>() };
+            IEntity::EntitySource entity_source{ [](auto&&...) { return std::make_shared<NiceMock<MockEntity>>(); } };
+            IEntity::AiSource ai_source{ [](auto&&...) { return std::make_shared<NiceMock<MockEntity>>(); } };
+            IRoom::Source room_source{ [](auto&&...) { return std::make_shared<NiceMock<MockRoom>>(); } };
+            ITrigger::Source trigger_source{ [](auto&&...) {return std::make_shared<NiceMock<MockTrigger>>(); } };
 
             std::unique_ptr<Level> build()
             {

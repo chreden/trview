@@ -8,15 +8,14 @@ namespace trview
     {
         namespace mocks
         {
-            class MockDeviceWindow final : public IDeviceWindow
+            struct MockDeviceWindow : public IDeviceWindow
             {
-            public:
                 virtual ~MockDeviceWindow() = default;
-                MOCK_METHOD(void, begin, ());
-                MOCK_METHOD(void, clear, (const DirectX::SimpleMath::Color&));
-                MOCK_METHOD(void, present, (bool));
-                MOCK_METHOD(void, resize, ());
-                MOCK_METHOD(Microsoft::WRL::ComPtr<ID3D11DeviceContext>, context, (), (const));
+                MOCK_METHOD(void, begin, (), (override));
+                MOCK_METHOD(void, clear, (const DirectX::SimpleMath::Color&), (override));
+                MOCK_METHOD(void, present, (bool), (override));
+                MOCK_METHOD(void, resize, (), (override));
+                MOCK_METHOD(Microsoft::WRL::ComPtr<ID3D11DeviceContext>, context, (), (const, override));
             };
         }
     }
