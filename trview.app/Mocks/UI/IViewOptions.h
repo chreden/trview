@@ -1,12 +1,12 @@
 #pragma once
 
-#include <trview.app/UI/IViewOptions.h>
+#include "../../UI/IViewOptions.h"
 
 namespace trview
 {
     namespace mocks
     {
-        struct MockViewOptions final : public IViewOptions
+        struct MockViewOptions : public IViewOptions
         {
             virtual ~MockViewOptions() = default;
             MOCK_METHOD(void, set_alternate_group, (uint32_t, bool), (override));

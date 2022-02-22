@@ -1,14 +1,13 @@
 #pragma once
 
-#include <trview.app/Routing/IRoute.h>
+#include "../../Routing/IRoute.h"
 
 namespace trview
 {
     namespace mocks
     {
-        class MockRoute : public IRoute
+        struct MockRoute : public IRoute
         {
-        public:
             virtual ~MockRoute() = default;
             MOCK_METHOD(void, add, (const DirectX::SimpleMath::Vector3&, const DirectX::SimpleMath::Vector3&, uint32_t), (override));
             MOCK_METHOD(void, add, (const DirectX::SimpleMath::Vector3&, const DirectX::SimpleMath::Vector3&, uint32_t, IWaypoint::Type, uint32_t), (override));

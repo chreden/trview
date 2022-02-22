@@ -6,10 +6,10 @@ namespace trview
 {
     namespace mocks
     {
-        class MockPicking final : public IPicking
+        struct MockPicking : public IPicking
         {
-        public:
-            MOCK_METHOD(void, pick, (const Window&, const ICamera&));
+            virtual ~MockPicking() = default;
+            MOCK_METHOD(void, pick, (const Window&, const ICamera&), (override));
         };
     }
 }

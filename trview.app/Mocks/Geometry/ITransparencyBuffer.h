@@ -1,18 +1,18 @@
 #pragma once
 
-#include <trview.app/Geometry/ITransparencyBuffer.h>
+#include "../../Geometry/ITransparencyBuffer.h"
 
 namespace trview
 {
     namespace mocks
     {
-        class MockTransparencyBuffer final : public ITransparencyBuffer
+        struct MockTransparencyBuffer : public ITransparencyBuffer
         {
-        public:
-            MOCK_METHOD(void, add, (const TransparentTriangle&));
-            MOCK_METHOD(void, sort, (const DirectX::SimpleMath::Vector3&));
-            MOCK_METHOD(void, render, (const ICamera&, const ILevelTextureStorage&, bool));
-            MOCK_METHOD(void, reset, ());
+            virtual ~MockTransparencyBuffer() = default;
+            MOCK_METHOD(void, add, (const TransparentTriangle&), (override));
+            MOCK_METHOD(void, sort, (const DirectX::SimpleMath::Vector3&), (override));
+            MOCK_METHOD(void, render, (const ICamera&, const ILevelTextureStorage&, bool), (override));
+            MOCK_METHOD(void, reset, (), (override));
         };
     }
 }

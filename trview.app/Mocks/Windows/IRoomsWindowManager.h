@@ -1,12 +1,12 @@
 #pragma once
 
-#include <trview.app/Windows/IRoomsWindowManager.h>
+#include "../../Windows/IRoomsWindowManager.h"
 
 namespace trview
 {
     namespace mocks
     {
-        class MockRoomsWindowManager final : public IRoomsWindowManager
+        struct MockRoomsWindowManager : public IRoomsWindowManager
         {
         public:
             MOCK_METHOD(void, render, (), (override));

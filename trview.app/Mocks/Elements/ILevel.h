@@ -6,9 +6,9 @@ namespace trview
 {
     namespace mocks
     {
-        class MockLevel final : public ILevel
+        struct MockLevel : public ILevel
         {
-        public:
+            virtual ~MockLevel() = default;
             MOCK_METHOD(bool, alternate_group, (uint32_t), (const));
             MOCK_METHOD(std::set<uint32_t>, alternate_groups, (), (const));
             MOCK_METHOD(bool, alternate_mode, (), (const));

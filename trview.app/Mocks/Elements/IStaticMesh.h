@@ -6,7 +6,7 @@ namespace trview
 {
     namespace mocks
     {
-        struct MockStaticMesh final : public IStaticMesh
+        struct MockStaticMesh : public IStaticMesh
         {
             virtual ~MockStaticMesh() = default;
             MOCK_METHOD(void, render, (const ICamera&, const ILevelTextureStorage&, const DirectX::SimpleMath::Color&), (override));

@@ -1,6 +1,6 @@
 #pragma once
 
-#include <trview.app/Windows/IRoomsWindow.h>
+#include "../../Windows/IRoomsWindow.h"
 
 namespace trview
 {

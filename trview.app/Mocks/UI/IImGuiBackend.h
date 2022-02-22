@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../UI/IImGuiBackend.h"
+#include "../../UI/IImGuiBackend.h"
 
 namespace trview
 {

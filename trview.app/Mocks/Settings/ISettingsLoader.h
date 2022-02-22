@@ -6,12 +6,11 @@ namespace trview
 {
     namespace mocks
     {
-        class MockSettingsLoader final : public ISettingsLoader
+        struct MockSettingsLoader : public ISettingsLoader
         {
-        public:
             virtual ~MockSettingsLoader() = default;
-            MOCK_METHOD(UserSettings, load_user_settings, (), (const));
-            MOCK_METHOD(void, save_user_settings, (const UserSettings&));
+            MOCK_METHOD(UserSettings, load_user_settings, (), (const, override));
+            MOCK_METHOD(void, save_user_settings, (const UserSettings&), (override));
         };
     }
 }
