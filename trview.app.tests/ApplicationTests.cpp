@@ -36,23 +36,23 @@ namespace
         struct test_module
         {
             Window window{ create_test_window(L"ApplicationTests") };
-            std::unique_ptr<IUpdateChecker> update_checker{ std::make_unique<MockUpdateChecker>() };
-            std::unique_ptr<ISettingsLoader> settings_loader{ std::make_unique<MockSettingsLoader>() };
-            std::unique_ptr<IFileDropper> file_dropper{ std::make_unique<MockFileDropper>() };
-            std::unique_ptr<trlevel::ILevelLoader> level_loader{ std::make_unique<MockLevelLoader>() };
-            std::unique_ptr<ILevelSwitcher> level_switcher{ std::make_unique<MockLevelSwitcher>() };
-            std::unique_ptr<IRecentFiles> recent_files{ std::make_unique<MockRecentFiles>() };
-            std::unique_ptr<IViewer> viewer{ std::make_unique<MockViewer>() };
-            IRoute::Source route_source{ [](auto&&...) { return std::make_shared<MockRoute>(); } };
-            std::shared_ptr<MockShortcuts> shortcuts{ std::make_shared<MockShortcuts>() };
-            std::unique_ptr<IItemsWindowManager> items_window_manager{ std::make_unique<MockItemsWindowManager>() };
-            std::unique_ptr<ITriggersWindowManager> triggers_window_manager{ std::make_unique<MockTriggersWindowManager>() };
-            std::unique_ptr<IRouteWindowManager> route_window_manager{ std::make_unique<MockRouteWindowManager>() };
-            std::unique_ptr<IRoomsWindowManager> rooms_window_manager{ std::make_unique<MockRoomsWindowManager>() };
-            ILevel::Source level_source{ [](auto&&...) { return std::make_unique<trview::mocks::MockLevel>(); } };
-            std::shared_ptr<IStartupOptions> startup_options{ std::make_shared<MockStartupOptions>() };
-            std::shared_ptr<IDialogs> dialogs{ std::make_shared<MockDialogs>() };
-            std::shared_ptr<IFiles> files{ std::make_shared<MockFiles>() };
+            std::unique_ptr<IUpdateChecker> update_checker{ std::make_unique<NiceMock<MockUpdateChecker>>() };
+            std::unique_ptr<ISettingsLoader> settings_loader{ std::make_unique<NiceMock<MockSettingsLoader>>() };
+            std::unique_ptr<IFileDropper> file_dropper{ std::make_unique<NiceMock<MockFileDropper>>() };
+            std::unique_ptr<trlevel::ILevelLoader> level_loader{ std::make_unique<NiceMock<MockLevelLoader>>() };
+            std::unique_ptr<ILevelSwitcher> level_switcher{ std::make_unique<NiceMock<MockLevelSwitcher>>() };
+            std::unique_ptr<IRecentFiles> recent_files{ std::make_unique<NiceMock<MockRecentFiles>>() };
+            std::unique_ptr<IViewer> viewer{ std::make_unique<NiceMock<MockViewer>>() };
+            IRoute::Source route_source{ [](auto&&...) { return std::make_shared<NiceMock<MockRoute>>(); } };
+            std::shared_ptr<MockShortcuts> shortcuts{ std::make_shared<NiceMock<MockShortcuts>>() };
+            std::unique_ptr<IItemsWindowManager> items_window_manager{ std::make_unique<NiceMock<MockItemsWindowManager>>() };
+            std::unique_ptr<ITriggersWindowManager> triggers_window_manager{ std::make_unique<NiceMock<MockTriggersWindowManager>>() };
+            std::unique_ptr<IRouteWindowManager> route_window_manager{ std::make_unique<NiceMock<MockRouteWindowManager>>() };
+            std::unique_ptr<IRoomsWindowManager> rooms_window_manager{ std::make_unique<NiceMock<MockRoomsWindowManager>>() };
+            ILevel::Source level_source{ [](auto&&...) { return std::make_unique<NiceMock<trview::mocks::MockLevel>>(); } };
+            std::shared_ptr<IStartupOptions> startup_options{ std::make_shared<NiceMock<MockStartupOptions>>() };
+            std::shared_ptr<IDialogs> dialogs{ std::make_shared<NiceMock<MockDialogs>>() };
+            std::shared_ptr<IFiles> files{ std::make_shared<NiceMock<MockFiles>>() };
             std::unique_ptr<IImGuiBackend> imgui_backend{ std::make_unique<NullImGuiBackend>() };
 
             std::unique_ptr<Application> build()

@@ -2,6 +2,7 @@
 #include <trview.common/Mocks/IFiles.h>
 
 using namespace trview;
+using namespace trview::mocks;
 using testing::Return;
 using testing::A;
 using testing::SaveArg;

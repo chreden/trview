@@ -6,7 +6,7 @@ namespace trview
 {
     namespace mocks
     {
-        struct MockWaypoint final : public IWaypoint
+        struct MockWaypoint : public IWaypoint
         {
             virtual ~MockWaypoint() = default;
             MOCK_METHOD(DirectX::BoundingBox, bounding_box, (), (const, override));

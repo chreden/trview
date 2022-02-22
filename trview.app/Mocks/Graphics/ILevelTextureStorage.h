@@ -11,7 +11,7 @@ namespace trview
             virtual ~MockLevelTextureStorage() = default;
             MOCK_METHOD(graphics::Texture, coloured, (uint32_t), (const, override));
             MOCK_METHOD(graphics::Texture, lookup, (const std::string&), (const, override));
-            MOCK_METHOD(void, store, (const std::string&, const graphics::Texture&), (const));
+            MOCK_METHOD(void, store, (const std::string&, const graphics::Texture&), (override));
             MOCK_METHOD(graphics::Texture, texture, (uint32_t texture_index), (const, override));
             MOCK_METHOD(graphics::Texture, untextured, (), (const, override));
             MOCK_METHOD(DirectX::SimpleMath::Vector2, uv, (uint32_t, uint32_t), (const, override));
