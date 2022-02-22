@@ -109,6 +109,7 @@ Uses DirectXTK (MIT)\r\n\
 Uses zlib (zlib)\r\n\
 Uses nlohmann/json (MIT)\r\n\
 Uses boost-ext/di (boost)\r\n\
+Uses Dear ImGui (MIT)\r\n\
 Based on the information in TRosettaStone3 - https://github.com/opentomb/TRosettaStone3\
 \r\n\r\n",IDC_STATIC,42,38,200,70
     DEFPUSHBUTTON   "OK", IDOK, 134, 108, 50, 14, WS_GROUP

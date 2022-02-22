@@ -52,6 +52,7 @@ namespace trview
         std::optional<Item> _selected_item;
         IRoomsWindow::Source _rooms_window_source;
         trlevel::LevelVersion _level_version{ trlevel::LevelVersion::Unknown };
+        uint32_t _window_count{ 0u };
     };
 }
 

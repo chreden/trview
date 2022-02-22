@@ -46,6 +46,7 @@ namespace trview
         virtual void set_selected_trigger(const std::weak_ptr<ITrigger>& trigger) override;
         virtual void set_triggers(const std::vector<std::weak_ptr<ITrigger>>& triggers) override;
         virtual void update(float delta) override;
+        virtual void set_number(int32_t number) override;
     private:
         void set_sync_room(bool value);
         void set_track_item(bool value);

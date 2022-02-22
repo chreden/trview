@@ -573,4 +573,9 @@ namespace trview
             }
         }
     }
+
+    void RoomsWindow::set_number(int32_t number)
+    {
+        _id = "Rooms " + std::to_string(number);
+    }
 }
