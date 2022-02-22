@@ -28,7 +28,7 @@ namespace trview
         {
             ImGui::BeginTooltip();
             ImGui::TextColored(ImVec4(_colour.r, _colour.g, _colour.b, _colour.a), _text.c_str());
-            ImGui::End();
+            ImGui::EndTooltip();
         }
     }
 }
