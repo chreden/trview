@@ -13,10 +13,8 @@
 #include <trview.app/UI/Tooltip.h>
 #include <trview.app/UI/IViewOptions.h>
 #include <trview.input/Mouse.h>
-#include <trview.ui/Input.h>
-#include <trview.ui.render/IRenderer.h>
-#include <trview.ui.render/IMapRenderer.h>
-#include <trview.ui/ILoader.h>
+#include <trview.app/UI/IMapRenderer.h>
+#include <trview.common/TokenStore.h>
 
 namespace trview
 {
@@ -26,14 +24,11 @@ namespace trview
         explicit ViewerUI(const Window& window,
             const std::shared_ptr<ITextureStorage>& texture_storage,
             const std::shared_ptr<IShortcuts>& shortcuts,
-            const ui::IInput::Source& input_source,
-            const ui::render::IRenderer::Source& ui_renderer_source,
-            const ui::render::IMapRenderer::Source& map_renderer_source,
-            const ISettingsWindow::Source& settings_window_source,
-            const IViewOptions::Source& view_options_source,
-            const IContextMenu::Source& context_menu_source,
-            const ICameraControls::Source& camera_controls_source,
-            const std::shared_ptr<ui::ILoader>& ui_source);
+            const IMapRenderer::Source& map_renderer_source,
+            std::unique_ptr<ISettingsWindow> settings_window,
+            std::unique_ptr<IViewOptions> view_options,
+            std::unique_ptr<IContextMenu> context_menu,
+            std::unique_ptr<ICameraControls> camera_controls);
         virtual ~ViewerUI() = default;
         virtual void clear_minimap_highlight() override;
         virtual std::shared_ptr<ISector> current_minimap_sector() const override;
@@ -69,23 +64,17 @@ namespace trview
         virtual bool show_context_menu() const override;
         virtual void toggle_settings_visibility() override;
         virtual void print_console(const std::wstring& text) override;
-        virtual void initialise_input() override;
         virtual void set_mid_waypoint_enabled(bool value) override;
         virtual void set_scalar(const std::string& name, int32_t value) override;
         virtual void set_toggle(const std::string& name, bool value) override;
         virtual bool toggle(const std::string& name) const override;
     private:
-        void generate_tool_window(const IViewOptions::Source& view_options_source, const ICameraControls::Source& camera_controls_source, const ui::ILoader& ui_source);
-        void register_change_detection(ui::Control* control);
+        void generate_tool_window();
 
         TokenStore _token_store;
         input::Mouse _mouse;
         Window _window;
         UserSettings _settings;
-        ui::IInput::Source _input_source;
-        std::unique_ptr<ui::Control> _control;
-        std::unique_ptr<ui::render::IRenderer> _ui_renderer;
-        std::unique_ptr<ui::IInput> _ui_input;
         std::unique_ptr<IContextMenu> _context_menu;
         std::unique_ptr<GoTo> _go_to;
         std::unique_ptr<RoomNavigator> _room_navigator;
@@ -95,11 +84,14 @@ namespace trview
         std::unique_ptr<ISettingsWindow> _settings_window;
         std::unique_ptr<ICameraControls> _camera_controls;
         std::unique_ptr<CameraPosition> _camera_position;
-        std::unique_ptr<ui::render::IMapRenderer> _map_renderer;
+        std::unique_ptr<IMapRenderer> _map_renderer;
         std::unique_ptr<Tooltip> _map_tooltip;
         std::unique_ptr<Tooltip> _tooltip;
         std::unique_ptr<Console> _console;
-        ui::Label* _measure;
         bool _show_tooltip{ true };
+        bool _show_measure{ false };
+        std::string _measure_text;
+        Point _measure_position;
+        bool _visible{ true };
     };
 }

@@ -3,13 +3,12 @@
 #include "Resources/resource.h"
 #include "Resources/DefaultShaders.h"
 #include "Resources/DefaultTextures.h"
+#include "Resources/DefaultFonts.h"
 
 #include <external/boost/di.hpp>
 
 #include <trlevel/di.h>
 #include <trview.graphics/di.h>
-#include <trview.ui/di.h>
-#include <trview.ui.render/di.h>
 #include <trview.input/di.h>
 #include <trview.app/Elements/di.h>
 #include <trview.app/Geometry/di.h>
@@ -25,7 +24,6 @@
 #include <trview.common/Windows/Dialogs.h>
 #include <trview.common/Windows/Shell.h>
 #include <trview.app/Settings/IStartupOptions.h>
-#include <trview.ui.render/DefaultFonts.h>
 
 using namespace DirectX::SimpleMath;
 
@@ -56,6 +54,12 @@ namespace trview
 
         LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         {
+            LONG_PTR ptr = GetWindowLongPtr(hWnd, GWLP_USERDATA);
+            IImGuiBackend* backend = reinterpret_cast<IImGuiBackend*>(ptr);
+            if (backend && backend->window_procedure(hWnd, message, wParam, lParam))
+            {
+                return true;
+            }
             return DefWindowProc(hWnd, message, wParam, lParam);
         }
 
@@ -78,24 +82,6 @@ namespace trview
             wcex.hIconSm = LoadIcon(wcex.hInstance, MAKEINTRESOURCE(IDI_SMALL));
 
             return RegisterClassExW(&wcex);
-        }
-
-        Window create_window(HINSTANCE hInstance, int nCmdShow)
-        {
-            register_class(hInstance);
-
-            HWND window = CreateWindowW(window_class.c_str(), window_title.c_str(), WS_OVERLAPPEDWINDOW,
-                CW_USEDEFAULT, 0, CW_USEDEFAULT, 0, nullptr, nullptr, hInstance, nullptr);
-
-            if (!window)
-            {
-                return nullptr;
-            }
-
-            ShowWindow(window, nCmdShow);
-            UpdateWindow(window);
-
-            return window;
         }
     }
 
@@ -120,14 +106,17 @@ namespace trview
         const ILevel::Source& level_source,
         std::shared_ptr<IStartupOptions> startup_options,
         std::shared_ptr<IDialogs> dialogs,
-        std::shared_ptr<IFiles> files)
+        std::shared_ptr<IFiles> files,
+        std::unique_ptr<IImGuiBackend> imgui_backend)
         : MessageHandler(application_window), _instance(GetModuleHandle(nullptr)),
         _file_dropper(std::move(file_dropper)), _level_switcher(std::move(level_switcher)), _recent_files(std::move(recent_files)), _update_checker(std::move(update_checker)),
         _view_menu(window()), _settings_loader(std::move(settings_loader)), _level_loader(std::move(level_loader)), _viewer(std::move(viewer)), _route_source(route_source),
         _route(route_source()), _shortcuts(shortcuts), _items_windows(std::move(items_window_manager)),
         _triggers_windows(std::move(triggers_window_manager)), _route_window(std::move(route_window_manager)), _rooms_windows(std::move(rooms_window_manager)), _level_source(level_source),
-        _dialogs(dialogs), _files(files), _timer(default_time_source())
+        _dialogs(dialogs), _files(files), _timer(default_time_source()), _imgui_backend(std::move(imgui_backend))
     {
+        SetWindowLongPtr(window(), GWLP_USERDATA, reinterpret_cast<LONG_PTR>(_imgui_backend.get()));
+
         _update_checker->check_for_updates();
         _settings = _settings_loader->load_user_settings();
 
@@ -151,7 +140,13 @@ namespace trview
 
     Application::~Application()
     {
+        SetWindowLongPtr(window(), GWLP_USERDATA, reinterpret_cast<LONG_PTR>(nullptr));
         _settings_loader->save_user_settings(_settings);
+        if (_imgui_setup)
+        {
+            _imgui_backend->shutdown();
+            ImGui::DestroyContext();
+        }
     }
 
     void Application::open(const std::string& filename)
@@ -277,7 +272,7 @@ namespace trview
             {
                 if (msg.message == WM_QUIT)
                 {
-                    break;
+                    return (int)msg.wParam;
                 }
 
                 if (!TranslateAccelerator(msg.hwnd, hAccelTable, &msg))
@@ -303,11 +298,6 @@ namespace trview
         _token_store += _view_menu.on_show_selection += [&](bool show) { _viewer->set_show_selection(show); };
         _token_store += _view_menu.on_show_route += [&](bool show) { _viewer->set_show_route(show); };
         _token_store += _view_menu.on_show_tools += [&](bool show) { _viewer->set_show_tools(show); };
-        _token_store += _view_menu.on_colour_change += [&](Colour colour)
-        {
-            _settings.background_colour = static_cast<uint32_t>(colour);
-            _viewer->set_settings(_settings);
-        };
         _token_store += _view_menu.on_unhide_all += [&]()
         {
             for (const auto& item : _level->items()) { if (!item.visible()) { set_item_visibility(item, true); } }
@@ -558,6 +548,26 @@ namespace trview
             return;
         }
 
+        if (!_imgui_setup)
+        {
+            // Setup Dear ImGui context
+            IMGUI_CHECKVERSION();
+            ImGui::CreateContext();
+            ImGuiIO& io = ImGui::GetIO();
+            io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
+            io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
+            io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
+
+            // Setup Dear ImGui style
+            ImGui::StyleColorsDark();
+
+            _font = io.Fonts->AddFontFromFileTTF("C:\\Windows\\Fonts\\Arial.ttf", 12.0f);
+
+            // Setup Platform/Renderer backends
+            _imgui_backend->initialise();
+            _imgui_setup = true;
+        }
+
         _timer.update();
         const auto elapsed = _timer.elapsed();
         _items_windows->update(elapsed);
@@ -566,10 +576,31 @@ namespace trview
         _route_window->update(elapsed);
 
         _viewer->render();
-        _items_windows->render(_settings.vsync);
-        _triggers_windows->render(_settings.vsync);
-        _rooms_windows->render(_settings.vsync);
-        _route_window->render(_settings.vsync);
+
+        _imgui_backend->new_frame();
+        ImGui::NewFrame();
+
+        ImGui::PushFont(_font);
+
+        _items_windows->render();
+        _triggers_windows->render();
+        _rooms_windows->render();
+        _route_window->render();
+        _viewer->render_ui();
+
+        ImGui::PopFont();
+        ImGui::Render();
+        _imgui_backend->render();
+
+        // Update and Render additional Platform Windows
+        ImGuiIO& io = ImGui::GetIO();
+        if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
+        {
+            ImGui::UpdatePlatformWindows();
+            ImGui::RenderPlatformWindowsDefault();
+        }
+
+        _viewer->present(_settings.vsync);
     }
 
     bool Application::should_discard_changes()
@@ -581,17 +612,34 @@ namespace trview
         return true;
     }
 
-    std::unique_ptr<IApplication> create_application(HINSTANCE instance, const std::wstring& command_line, int command_show)
+    Window create_window(HINSTANCE hInstance, int nCmdShow)
+    {
+        register_class(hInstance);
+
+        HWND window = CreateWindowW(window_class.c_str(), window_title.c_str(), WS_OVERLAPPEDWINDOW,
+            CW_USEDEFAULT, 0, CW_USEDEFAULT, 0, nullptr, nullptr, hInstance, nullptr);
+
+        if (!window)
+        {
+            return nullptr;
+        }
+
+        ShowWindow(window, nCmdShow);
+        UpdateWindow(window);
+
+        return window;
+    }
+
+    std::unique_ptr<IApplication> create_application(const Window& window, const std::wstring& command_line)
     {
         using namespace boost;
         using namespace graphics;
 
+        static Window w2 = window;
         const auto injector = di::make_injector(
             graphics::register_module(),
             input::register_module(),
             trlevel::register_module(),
-            ui::register_module(),
-            ui::render::register_module(),
             register_app_elements_module(),
             register_app_geometry_module(),
             register_app_graphics_module(),
@@ -601,7 +649,12 @@ namespace trview
             register_app_tools_module(),
             register_app_ui_module(),
             register_app_windows_module(),
-            di::bind<Window>.to(create_window(instance, command_show)),
+            di::bind<Window>.to(
+                []()
+                {
+                    return w2;
+                }
+            ),
             di::bind<IClipboard>.to<Clipboard>(),
             di::bind<IShortcuts>.to<Shortcuts>(),
             di::bind<IShortcuts::Source>.to(
@@ -623,7 +676,7 @@ namespace trview
         load_default_shaders(
             injector.create<std::shared_ptr<graphics::IDevice>>(),
             injector.create<std::shared_ptr<IShaderStorage>>());
-        ui::render::load_default_fonts(
+        load_default_fonts(
             injector.create<std::shared_ptr<graphics::IDevice>>(),
             injector.create<std::shared_ptr<IFontFactory>>());
         load_default_textures(

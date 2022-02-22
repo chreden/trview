@@ -21,8 +21,6 @@ namespace trview
         void set_title(const std::string& title);
     private:
         HWND        _window;
-        uint32_t    _width;
-        uint32_t    _height;
     };
 
     // Get the position of the cursor in client coordinates.

@@ -3,50 +3,32 @@
 
 #pragma once
 
-#include <trview.ui/Listbox.h>
-#include <trview.app/Elements/Item.h>
-#include "CollapsiblePanel.h"
-#include "IItemsWindow.h"
 #include <trview.common/Windows/IClipboard.h>
-#include <trview.app/UI/IBubble.h>
-#include <trview.ui/ILoader.h>
-#include <trview.app/UI/Tooltip.h>
+
+#include "IItemsWindow.h"
+#include "../Elements/Item.h"
 
 namespace trview
 {
-    namespace ui
-    {
-        class Checkbox;
-    }
-
     /// Used to show and filter the items in the level.
-    class ItemsWindow final : public IItemsWindow, public CollapsiblePanel
+    class ItemsWindow final : public IItemsWindow
     {
     public:
         struct Names
         {
-            static const std::string add_to_route_button;
-            static const std::string items_listbox;
-            static const std::string stats_listbox;
-            static const std::string sync_item_checkbox;
-            static const std::string track_room_checkbox;
-            static const std::string triggers_listbox;
-            static const std::string expander;
+            static inline const std::string add_to_route_button = "Add to Route";
+            static inline const std::string sync_item = "Sync Item";
+            static inline const std::string track_room = "Track Room";
+            static inline const std::string items_list = "##itemslist";
+            static inline const std::string item_list_panel = "Item List";
+            static inline const std::string details_panel = "Item Details";
+            static inline const std::string triggers_list = "##triggeredby";
+            static inline const std::string item_stats = "##itemstats";
         };
 
-        /// Create an items window as a child of the specified window.
-        /// @param device The graphics device
-        /// @param renderer_source The function to call to get a renderer.
-        /// @param parent The parent window.
-        explicit ItemsWindow(const graphics::IDeviceWindow::Source& device_window_source,
-            const ui::render::IRenderer::Source& renderer_source,
-            const ui::IInput::Source& input_source,
-            const Window& parent,
-            const std::shared_ptr<IClipboard>& clipboard,
-            const IBubble::Source& bubble_source,
-            const std::shared_ptr<ui::ILoader>& ui_source);
+        explicit ItemsWindow(const std::shared_ptr<IClipboard>& clipboard);
         virtual ~ItemsWindow() = default;
-        virtual void render(bool vsync) override;
+        virtual void render() override;
         virtual void set_items(const std::vector<Item>& items) override;
         virtual void update_items(const std::vector<Item>& items) override;
         virtual void set_triggers(const std::vector<std::weak_ptr<ITrigger>>& triggers) override;
@@ -55,33 +37,28 @@ namespace trview
         virtual void set_selected_item(const Item& item) override;
         virtual std::optional<Item> selected_item() const override;
         virtual void update(float delta) override;
+        virtual void set_number(int32_t number) override;
     private:
-        void populate_items(const std::vector<Item>& items);
-        void load_item_details(const Item& item);
         void set_track_room(bool value);
         void set_sync_item(bool value);
-        void bind_controls();
-        void bind_tooltip();
+        void render_items_list();
+        void render_item_details();
+        bool render_items_window();
+        void set_local_selected_item(const Item& item);
 
-        ui::Listbox* _items_list;
-        ui::Listbox* _stats_list;
-        ui::Listbox* _trigger_list;
-        ui::Checkbox* _track_room_checkbox;
+        std::string _id{ "Items 0" };
         std::vector<Item> _all_items;
         std::vector<std::weak_ptr<ITrigger>> _all_triggers;
-        /// Whether the item window is tracking the current room.
         bool _track_room{ false };
-        /// The current room number selected for tracking.
         uint32_t _current_room{ 0u };
-        /// Whether the room tracking filter has been applied.
-        bool _filter_applied{ false };
         bool _sync_item{ true };
-        std::optional<Item> _selected_item;
         std::shared_ptr<IClipboard> _clipboard;
-        std::unique_ptr<IBubble> _bubble;
-        std::unique_ptr<Tooltip> _tooltip;
-
-        std::unordered_map<std::wstring, std::wstring> _tips;
+        std::unordered_map<std::string, std::string> _tips;
         std::optional<float> _tooltip_timer;
+        std::weak_ptr<ITrigger> _selected_trigger;
+        std::optional<Item> _selected_item;
+        std::optional<Item> _global_selected_item;
+        std::vector<std::weak_ptr<ITrigger>> _triggered_by;
+        bool _scroll_to_item{ false };
     };
 }

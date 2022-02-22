@@ -6,9 +6,6 @@
 
 #pragma once
 
-#include <trview.common/TokenStore.h>
-#include <trview.ui/Checkbox.h>
-#include <trview.ui/ILoader.h>
 #include "ICameraControls.h"
 
 namespace trview
@@ -21,20 +18,13 @@ namespace trview
     public:
         struct Names
         {
-            static const std::string reset;
-            static const std::string orbit;
-            static const std::string free;
-            static const std::string axis;
-            static const std::string ortho;
+            static inline const std::string reset{ "Reset" };
+            static inline const std::string mode{ "##Mode" };
+            static inline const std::string projection_mode{ "##Projection" };
         };
 
-        /// <summary>
-        /// Creates an instance of the CameraControls class.
-        /// </summary>
-        /// <param name="parent">The control to which the instance will be added as a child.</param>
-        /// <param name="source">The function to call to find the UI elements.</param>
-        explicit CameraControls(ui::Control& parent, const std::shared_ptr<ui::ILoader>& source);
         virtual ~CameraControls() = default;
+        virtual void render() override;
         virtual void set_mode(CameraMode mode) override;
         virtual void set_projection_mode(ProjectionMode mode) override;
     private:
@@ -51,10 +41,7 @@ namespace trview
         /// <remarks>This will raise the on_projection_mode_selected event</remarks>
         void change_projection(ProjectionMode mode);
 
-        ui::Checkbox* _orbit;
-        ui::Checkbox* _free;
-        ui::Checkbox* _axis;
-        ui::Checkbox* _ortho;
-        TokenStore _token_store;
+        CameraMode _mode{ CameraMode::Orbit };
+        ProjectionMode _projection_mode{ ProjectionMode::Perspective };
     };
 }

@@ -4,10 +4,10 @@
 
 namespace trview
 {
-    struct MockClipboard final : public IClipboard
+    struct MockClipboard : public IClipboard
     {
         virtual ~MockClipboard() = default;
-        MOCK_METHOD(std::wstring, read, (const Window&), (const));
-        MOCK_METHOD(void, write, (const Window&, const std::wstring&));
+        MOCK_METHOD(std::wstring, read, (), (const));
+        MOCK_METHOD(void, write, (const std::wstring&));
     };
 }

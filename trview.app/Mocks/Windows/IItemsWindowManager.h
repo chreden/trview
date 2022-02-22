@@ -9,7 +9,7 @@ namespace trview
         class MockItemsWindowManager final : public IItemsWindowManager
         {
         public:
-            MOCK_METHOD(void, render, (bool), (override));
+            MOCK_METHOD(void, render, (), (override));
             MOCK_METHOD(void, set_items, (const std::vector<Item>&), (override));
             MOCK_METHOD(void, set_item_visible, (const Item&, bool), (override));
             MOCK_METHOD(void, set_triggers, (const std::vector<std::weak_ptr<ITrigger>>&), (override));

@@ -1,13 +1,9 @@
 #pragma once
 
-#include <trview.ui/Control.h>
-
 namespace trview
 {
     struct IContextMenu
     {
-        using Source = std::function<std::unique_ptr<IContextMenu>(ui::Control&)>;
-
         virtual ~IContextMenu() = 0;
         /// <summary>
         /// Event raised when the user has clicked the button to create a new waypoint for the current route.
@@ -29,11 +25,7 @@ namespace trview
         /// Event raised when the user has clicked the hide button.
         /// </summary>
         Event<> on_hide;
-        /// <summary>
-        /// Set the position of the context menu.
-        /// </summary>
-        /// <param name="position">The new position of the menu.</param>
-        virtual void set_position(const Point& position) = 0;
+        virtual void render() = 0;
         /// <summary>
         /// Set the context menu to visible.
         /// </summary>

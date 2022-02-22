@@ -3,13 +3,11 @@
 #include <trview.common/Event.h>
 #include <trview.app/Camera/CameraMode.h>
 #include <trview.app/Camera/ProjectionMode.h>
-#include <trview.ui/Control.h>
 
 namespace trview
 {
     struct ICameraControls
     {
-        using Source = std::function<std::unique_ptr<ICameraControls>(ui::Control&)>;
         virtual ~ICameraControls() = 0;
         /// <summary>
         /// Event raised when the camera mode has been selected by the user. The newly selected
@@ -27,6 +25,7 @@ namespace trview
         /// Event raised when the user clicks the reset button.
         /// </summary>
         Event<> on_reset;
+        virtual void render() = 0;
         /// <summary>
         /// Set the current camera mode. This will not raise the on_mode_selected event.
         /// </summary>

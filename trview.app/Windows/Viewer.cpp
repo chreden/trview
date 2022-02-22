@@ -4,7 +4,6 @@
 #include <trview.graphics/RenderTargetStore.h>
 #include <trview.graphics/ISprite.h>
 #include <trview.graphics/ViewportStore.h>
-
 #include <trview.common/Strings.h>
 
 namespace trview
@@ -62,7 +61,6 @@ namespace trview
         std::unordered_map<std::string, std::function<void(int32_t)>> scalars;
         scalars[Options::depth] = [this](int32_t value) { if (_level) { _level->set_neighbour_depth(value); } };
 
-        _ui->initialise_input();
         _token_store += _ui->on_ui_changed += [&]() {_ui_changed = true; };
         _token_store += _ui->on_select_item += [&](uint32_t index)
         {
@@ -225,6 +223,7 @@ namespace trview
                 result.type = PickResult::Type::Compass;
                 result.index = static_cast<uint32_t>(axis);
                 result.distance = 1.0f;
+                result.text = axis_name(axis);
                 _compass_axis = axis;
             }
             else
@@ -383,7 +382,8 @@ namespace trview
         {
             if (button == IMouse::Button::Left)
             {
-                if (!_ui->is_cursor_over())
+                auto io = ImGui::GetIO();
+                if (!(_ui->is_cursor_over() || io.WantCaptureMouse))
                 {
                     if (_ui->show_context_menu())
                     {
@@ -565,6 +565,8 @@ namespace trview
             _mouse_changed = false;
         }
 
+        _ui_changed = true;
+
         if (_scene_changed || _ui_changed)
         {
             _device->begin();
@@ -586,14 +588,20 @@ namespace trview
             _scene_sprite->render(_scene_target->texture(), 0, 0, _window.size().width, _window.size().height);
             _ui->set_camera_position(current_camera().position());
             _ui->set_camera_rotation(current_camera().rotation_yaw(), current_camera().rotation_pitch());
-
-            _ui->render();
             _ui_changed = false;
-
-            _main_window->present(_settings.vsync);
         }
 
         lua_fire_event ( LuaEvent::ON_RENDER );
+    }
+
+    void Viewer::render_ui()
+    {
+        _ui->render();
+    }
+
+    void Viewer::present(bool vsync)
+    {
+        _main_window->present(vsync);
     }
 
     bool Viewer::should_pick() const
@@ -855,8 +863,15 @@ namespace trview
         {
             if (window_under_cursor() == _window)
             {
-                _ui->set_show_context_menu(false);
-                _camera_input.mouse_scroll(scroll);
+                if (ImGui::GetCurrentContext() != nullptr)
+                {
+                    auto& io = ImGui::GetIO();
+                    if (!io.WantCaptureMouse)
+                    {
+                        _ui->set_show_context_menu(false);
+                        _camera_input.mouse_scroll(scroll);
+                    }
+                }
             }
         };
 
@@ -911,7 +926,8 @@ namespace trview
 
         _token_store += _camera_input.on_pan += [&](bool vertical, float x, float y)
         {
-            if (_ui->is_cursor_over() || _camera_mode != CameraMode::Orbit)
+            auto& io = ImGui::GetIO();
+            if (_ui->is_cursor_over() || io.WantCaptureMouse || _camera_mode != CameraMode::Orbit)
             {
                 return;
             }

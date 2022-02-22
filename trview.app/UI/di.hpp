@@ -4,11 +4,12 @@
 #include "ViewerUI.h"
 #include "SettingsWindow.h"
 #include "ViewOptions.h"
-#include "Bubble.h"
 #include "ContextMenu.h"
 #include "CameraControls.h"
+#include "MapRenderer.h"
 #include <trview.common/Resources.h>
-#include <trview.ui/ILoader.h>
+#include <trview.graphics/IDevice.h>
+#include "DX11ImGuiBackend.h"
 
 namespace trview
 {
@@ -16,44 +17,22 @@ namespace trview
     {
         using namespace boost;
         return di::make_injector(
-            di::bind<ISettingsWindow::Source>.to(
-                [](const auto& injector) -> ISettingsWindow::Source
+            di::bind<ISettingsWindow>.to<SettingsWindow>(),
+            di::bind<ICameraControls>.to<CameraControls>(),
+            di::bind<IViewOptions>.to<ViewOptions>(),
+            di::bind<IContextMenu>.to<ContextMenu>(),
+            di::bind<IImGuiBackend>.to<DX11ImGuiBackend>(),
+            di::bind<IMapRenderer::Source>.to(
+                [](const auto& injector) -> IMapRenderer::Source
                 {
-                    return [&](ui::Control& parent)
+                    return [&](auto size)
                     {
-                        return std::make_unique<SettingsWindow>(parent, injector.create<std::shared_ptr<ui::ILoader>>());
-                    };
-                }),
-            di::bind<ICameraControls::Source>.to(
-                [](const auto& injector) -> ICameraControls::Source
-                {
-                    return [&](ui::Control& parent)
-                    {
-                        return std::make_unique<CameraControls>(parent, injector.create<std::shared_ptr<ui::ILoader>>());
-                    };
-                }),
-            di::bind<IViewOptions::Source>.to(
-                [](const auto& injector) -> IViewOptions::Source
-                {
-                    return [&](auto&& parent)
-                    {
-                        return std::make_unique<ViewOptions>(parent, injector.create< std::shared_ptr<ui::ILoader>>());
-                    };
-                }),
-            di::bind<IBubble::Source>.to(
-                [](const auto&) -> IBubble::Source
-                {
-                    return [&](ui::Control& parent)
-                    {
-                        return std::make_unique<Bubble>(parent);
-                    };
-                }),
-            di::bind<IContextMenu::Source>.to(
-                [](const auto& injector) -> IContextMenu::Source
-                {
-                    return [&](ui::Control& parent)
-                    {
-                        return std::make_unique<ContextMenu>(parent, injector.create<std::shared_ptr<ui::ILoader>>());
+                        return std::make_unique<MapRenderer>(
+                            injector.create<std::shared_ptr<graphics::IDevice>>(),
+                            *injector.create<std::shared_ptr<graphics::IFontFactory>>(),
+                            size,
+                            injector.create<graphics::ISprite::Source>(),
+                            injector.create<graphics::IRenderTarget::SizeSource>());
                     };
                 }),
             di::bind<IViewerUI>.to(
@@ -63,14 +42,11 @@ namespace trview
                         injector.create<Window>(),
                         injector.create<std::shared_ptr<ITextureStorage>>(),
                         injector.create<std::shared_ptr<IShortcuts>>(),
-                        injector.create<ui::IInput::Source>(),
-                        injector.create<ui::render::IRenderer::Source>(),
-                        injector.create<ui::render::IMapRenderer::Source>(),
-                        injector.create<ISettingsWindow::Source>(),
-                        injector.create<IViewOptions::Source>(),
-                        injector.create<IContextMenu::Source>(),
-                        injector.create<ICameraControls::Source>(),
-                        injector.create<std::shared_ptr<ui::ILoader>>());
+                        injector.create<IMapRenderer::Source>(),
+                        injector.create<std::unique_ptr<ISettingsWindow>>(),
+                        injector.create<std::unique_ptr<IViewOptions>>(),
+                        injector.create<std::unique_ptr<IContextMenu>>(),
+                        injector.create<std::unique_ptr<ICameraControls>>());
                 })
         );
     }

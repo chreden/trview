@@ -1,12 +1,6 @@
 
 #pragma once
 
-#include <trview.ui/Listbox.h>
-#include <trview.ui/TextArea.h>
-#include <trview.ui/Dropdown.h>
-#include <trview.ui/Checkbox.h>
-#include <trview.ui/GroupBox.h>
-#include "CollapsiblePanel.h"
 #include <trview.common/Event.h>
 #include <trview.app/Routing/IWaypoint.h>
 #include <trview.app/Elements/Item.h>
@@ -15,42 +9,38 @@
 #include <trview.common/Windows/IDialogs.h>
 #include <trview.common/IFiles.h>
 #include "IRouteWindow.h"
-#include <trview.app/UI/IBubble.h>
-#include <trview.ui/ILoader.h>
 #include <trview.common/Windows/IShell.h>
 
 namespace trview
 {
     struct IRoute;
 
-    class RouteWindow final : public IRouteWindow, public CollapsiblePanel
+    class RouteWindow final : public IRouteWindow
     {
     public:
         struct Names
         {
             static const std::string colour;
-            static const std::string waypoints;
-            static const std::string delete_waypoint;
-            static const std::string export_button;
-            static const std::string import_button;
-            static const std::string clear_save;
-            static const std::string notes_area;
-            static const std::string select_save_button;
-            static const std::string waypoint_stats;
-            static const std::string randomizer_group;
-            static const std::string randomizer_area;
+            static const inline std::string delete_waypoint = "Delete Waypoint";
+            static const inline std::string attach_save = "Attach Save";
+            static const inline std::string export_button = "Export";
+            static const inline std::string import_button = "Import";
+            static const inline std::string clear_save = "X";
+            static const inline std::string notes = "Notes##notes";
+            static const inline std::string waypoint_stats = "##waypointstats";
+            static const inline std::string randomizer_flags = "Randomizer Flags";
+            static const inline std::string waypoint_list_panel = "Waypoint List";
+            static const inline std::string waypoint_details_panel = "Waypoint Details";
         };
 
         /// Create a route window as a child of the specified window.
         /// @param device The graphics device
         /// @param renderer_source The function to call to get a renderer.
         /// @param parent The parent window.
-        explicit RouteWindow(const graphics::IDeviceWindow::Source& device_window_source, const ui::render::IRenderer::Source& renderer_source,
-            const ui::IInput::Source& input_source, const trview::Window& parent, const std::shared_ptr<IClipboard>& clipboard,
-            const std::shared_ptr<IDialogs>& dialogs, const std::shared_ptr<IFiles>& files, const IBubble::Source& bubble_source,
-            const std::shared_ptr<ui::ILoader>& ui_source, const std::shared_ptr<IShell>& shell);
+        explicit RouteWindow(const trview::Window& parent, const std::shared_ptr<IClipboard>& clipboard, const std::shared_ptr<IDialogs>& dialogs,
+            const std::shared_ptr<IFiles>& files);
         virtual ~RouteWindow() = default;
-        virtual void render(bool vsync) override;
+        virtual void render() override;
         virtual void set_route(IRoute* route) override;
         virtual void select_waypoint(uint32_t index) override;
         virtual void set_items(const std::vector<Item>& items) override;
@@ -61,20 +51,12 @@ namespace trview
         virtual void set_randomizer_enabled(bool value) override;
         virtual void set_randomizer_settings(const RandomizerSettings& settings) override;
     private:
-        void load_waypoint_details(uint32_t index);
-        void bind_controls();
-        ui::Listbox::Item create_listbox_item(uint32_t index, const IWaypoint& waypoint);
-        void load_randomiser_settings(const IWaypoint& waypoint);
-        void update_minimum_height();
+        void load_randomiser_settings(IWaypoint& waypoint);
+        void render_waypoint_list();
+        void render_waypoint_details();
+        bool render_route_window();
+        std::string waypoint_text(const IWaypoint& waypoint) const;
 
-        ui::Dropdown* _colour;
-        ui::Listbox* _waypoints;
-        ui::Listbox* _stats;
-        ui::Window* _lower_box;
-        ui::TextArea* _notes_area;
-        ui::Button* _select_save;
-        ui::Button* _delete_waypoint;
-        ui::Button* _clear_save;
         IRoute* _route{ nullptr };
         std::vector<Item> _all_items;
         std::vector<std::weak_ptr<IRoom>> _all_rooms;
@@ -84,17 +66,10 @@ namespace trview
         std::shared_ptr<IClipboard> _clipboard;
         std::shared_ptr<IDialogs> _dialogs;
         std::shared_ptr<IFiles> _files;
-        std::unique_ptr<IBubble> _bubble;
-
-        // Randomizer settings:
-        ui::Window* _rando_group;
-        ui::Checkbox* _requires_glitch;
-        ui::Checkbox* _vehicle_required;
-        ui::Checkbox* _is_item;
-        ui::Dropdown* _difficulty;
         bool _randomizer_enabled{ false };
         RandomizerSettings _randomizer_settings;
-        ui::Window* _rando_area;
-        std::shared_ptr<IShell> _shell;
+        trview::Window _window;
+        bool _scroll_to_trigger{ false };
+        std::optional<float> _tooltip_timer;
     };
 }

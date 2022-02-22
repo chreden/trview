@@ -4,10 +4,7 @@
 #pragma once
 
 #include <SimpleMath.h>
-#include <trview.ui/Control.h>
-#include <trview.ui/TextArea.h>
-#include <trview.common/TokenStore.h>
-#include <trview.ui/ILoader.h>
+#include <trview.common/Event.h>
 
 namespace trview
 {
@@ -17,19 +14,14 @@ namespace trview
     public:
         struct Names
         {
-            static const std::string x;
-            static const std::string y;
-            static const std::string z;
-            static const std::string yaw;
-            static const std::string pitch;
+            static const inline std::string x { "X" };
+            static const inline std::string y { "Y" };
+            static const inline std::string z { "Z" };
+            static const inline std::string yaw{ "Yaw" };
+            static const inline std::string pitch{ "Pitch" };
         };
 
-        /// <summary>
-        /// Create a new CameraPositon display.
-        /// </summary>
-        /// <param name="parent">The parent control.</param>
-        /// <param name="ui_source">The UI source function.</param>
-        explicit CameraPosition(ui::Control& parent, const ui::ILoader& ui_source);
+        void render();
 
         /// Update the position text.
         /// @param position The camera position.
@@ -53,22 +45,6 @@ namespace trview
 
         Event<float, float> on_rotation_changed;
     private:
-        /// Attempt to update the specified coordinate by converting the text to a float.
-        /// If successful this will also raise the on_position_changed event.
-        void update_position_coordinate(float& coordinate, const std::wstring& text);
-
-        /// Attempt to update the specified coordinate by converting the text to a float.
-        /// If successful this will also raise the on_rotation_changed event.
-        void update_rotation_coordinate(float& coordinate, const std::wstring& text);
-
-        void bind_coordinate_entry(ui::TextArea* entry, float& coordinate, bool is_rotation = false);
-
-        TokenStore _token_store;
-        ui::TextArea* _x;
-        ui::TextArea* _y;
-        ui::TextArea* _z;
-        ui::TextArea* _yaw;
-        ui::TextArea* _pitch;
         DirectX::SimpleMath::Vector3 _position;
         float _rotation_yaw{ 0 };
         float _rotation_pitch{ 0 };

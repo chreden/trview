@@ -97,6 +97,11 @@ namespace trview
         return name->second;
     }
 
+    std::string command_type_name_8(TriggerCommandType type)
+    {
+        return to_utf8(command_type_name(type));
+    }
+
     TriggerCommandType command_from_name(const std::wstring& name)
     {
         auto type = command_type_lookup.find(name);
@@ -106,6 +111,12 @@ namespace trview
         }
         return type->second;
     }
+
+    TriggerCommandType command_from_name(const std::string& name)
+    {
+        return command_from_name(to_utf16(name));
+    }
+
 
     bool command_has_index(TriggerCommandType type)
     {

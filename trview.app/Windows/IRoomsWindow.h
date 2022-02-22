@@ -10,7 +10,7 @@ namespace trview
 {
     struct IRoomsWindow
     {
-        using Source = std::function<std::shared_ptr<IRoomsWindow>(const Window)>;
+        using Source = std::function<std::shared_ptr<IRoomsWindow>()>;
 
         virtual ~IRoomsWindow() = 0;
 
@@ -30,8 +30,7 @@ namespace trview
         virtual void clear_selected_trigger() = 0;
 
         /// Render the window.
-        /// @param vsync Whether to use vsync or not.
-        virtual void render(bool vsync) = 0;
+        virtual void render() = 0;
 
         /// Set the current room that the viewer is focusing on.
         /// @param room The current room.
@@ -66,5 +65,7 @@ namespace trview
         /// </summary>
         /// <param name="delta">Elapsed time since previous update.</param>
         virtual void update(float delta) = 0;
+
+        virtual void set_number(int32_t number) = 0;
     };
 }

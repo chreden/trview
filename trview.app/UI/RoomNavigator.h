@@ -8,47 +8,20 @@
 
 #include <cstdint>
 #include <trview.common/Event.h>
-#include <trview.app/Graphics/ITextureStorage.h>
-#include <trview.ui/Control.h>
-#include <trview.ui/ILoader.h>
 
 namespace trview
 {
-    namespace ui
-    {
-        class Label;
-        class NumericUpDown;
-        class Listbox;
-    }
-
-    struct RoomInfo;
-
     /// The room navigator control allows the user to select which room to look at and
     /// whether to highlight the current room.
     class RoomNavigator final
     {
     public:
-        struct Names
-        {
-            static const std::string current_room;
-            static const std::string max_rooms;
-            static const std::string stats;
-        };
-
-        /// <summary>
-        /// Create the RoomNavigator control and attach it as a child to the parent control specified.
-        /// </summary>
-        /// <param name="parent">The control to attach the navigator to.</param>
-        explicit RoomNavigator(ui::Control& parent, const ui::ILoader& ui_source);
-
         /// Event raised when the user selects a different room. The room that the user has selected is passed as
         /// a parameter when this event is raised.
         /// @remarks This event is not raised by the set_selected_room function.
         Event<int32_t> on_room_selected;
 
-        /// Set the room information for the current room. This will be used to populate the labels (eg position).
-        /// @param room_info The room information.
-        void set_room_info(RoomInfo room_info);
+        void render();
 
         /// Set the maximum number of rooms in the level. This will constrain the room number that the user can select.
         /// @param max_rooms The number of rooms in the level.
@@ -58,8 +31,7 @@ namespace trview
         /// @param selected_room The room that has been selected.
         void set_selected_room(uint32_t selected_room);
     private:
-        ui::NumericUpDown* _current;
-        ui::Label*         _max;
-        ui::Listbox*       _listbox;
+        int32_t _selected_room{ 0 };
+        int32_t _max_rooms{ 0 };
     };
 }

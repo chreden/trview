@@ -4,50 +4,35 @@
 #pragma once
 
 #include "ISettingsWindow.h"
-#include <trview.common/TokenStore.h>
-#include <trview.ui/ILoader.h>
 
 namespace trview
 {
-    namespace ui
-    {
-        class Control;
-        class Checkbox;
-        class NumericUpDown;
-        class Slider;
-    }
-
     /// UI window for program level settings.
     class SettingsWindow final : public ISettingsWindow
     {
     public:
         struct Names
         {
-            static const std::string vsync;
-            static const std::string go_to_lara;
-            static const std::string invert_map_controls;
-            static const std::string items_startup;
-            static const std::string triggers_startup;
-            static const std::string rooms_startup;
-            static const std::string auto_orbit;
-            static const std::string invert_vertical_pan;
-            static const std::string camera_display_degrees;
-            static const std::string randomizer_tools;
-            static const std::string max_recent_files;
-            static const std::string sensitivity;
-            static const std::string movement_speed;
-            static const std::string acceleration;
-            static const std::string acceleration_rate;
-            static const std::string close;
+            static inline const std::string vsync = "Vsync";
+            static inline const std::string go_to_lara = "Select Lara when level is opened";
+            static inline const std::string invert_map_controls = "Invert map controls";
+            static inline const std::string items_startup = "Open Items Window at startup";
+            static inline const std::string triggers_startup = "Open Triggers Window at startup";
+            static inline const std::string rooms_startup = "Open Rooms Window at startup";
+            static inline const std::string auto_orbit = "Switch to orbit on selection";
+            static inline const std::string invert_vertical_pan = "Invert vertical panning";
+            static inline const std::string camera_display_degrees = "Use degrees for camera angle display";
+            static inline const std::string randomizer_tools = "Enable Randomizer Tools";
+            static inline const std::string max_recent_files = "Recent Files";
+            static inline const std::string sensitivity = "Sensitivity";
+            static inline const std::string movement_speed = "Movement Speed";
+            static inline const std::string acceleration = "Acceleration";
+            static inline const std::string acceleration_rate = "Acceleration Rate";
+            static inline const std::string background_colour = "Background Colour";
         };
 
-        /// <summary>
-        /// Creates an instance of the SettingsWindow class. This will add UI elements to the control provided.
-        /// </summary>
-        /// <param name="parent">The control to which the instance will add elements.</param>
-        /// <param name="source">The function to call to get the UI elements.</param>
-        explicit SettingsWindow(ui::Control& parent, const std::shared_ptr<ui::ILoader>& source);
         virtual ~SettingsWindow() = default;
+        virtual void render() override;
         virtual void set_vsync(bool value) override;
         virtual void set_go_to_lara(bool value) override;
         virtual void set_invert_map_controls(bool value) override;
@@ -63,24 +48,25 @@ namespace trview
         virtual void set_camera_display_degrees(bool value) override;
         virtual void set_randomizer_tools(bool value) override;
         virtual void set_max_recent_files(uint32_t value) override;
+        virtual void set_background_colour(const Colour& colour) override;
         virtual void toggle_visibility() override;
     private:
-        ui::Checkbox* _vsync{ nullptr };
-        ui::Checkbox* _go_to_lara{ nullptr };
-        ui::Checkbox* _invert_map_controls{ nullptr };
-        ui::Checkbox* _items_startup{ nullptr };
-        ui::Checkbox* _triggers_startup{ nullptr };
-        ui::Checkbox* _rooms_startup{ nullptr };
-        ui::Checkbox* _auto_orbit{ nullptr };
-        ui::Slider* _sensitivity{ nullptr };
-        ui::Slider* _movement_speed{ nullptr };
-        ui::Control* _window{ nullptr };
-        ui::Checkbox* _invert_vertical_pan{ nullptr };
-        ui::Checkbox* _acceleration{ nullptr };
-        ui::Slider* _acceleration_rate{ nullptr };
-        ui::Checkbox* _camera_display_degrees{ nullptr };
-        ui::Checkbox* _randomizer_tools{ nullptr };
-        ui::NumericUpDown* _max_recent_files{ nullptr };
-        TokenStore _token_store;
+        bool _visible{ false };
+        bool _vsync{ false };
+        bool _go_to_lara{ false };
+        bool _invert_map_controls{ false };
+        bool _items_startup{ false };
+        bool _triggers_startup{ false };
+        bool _rooms_startup{ false };
+        bool _auto_orbit{ false };
+        bool _invert_vertical_panning{ false };
+        bool _camera_display_degrees{ false };
+        bool _randomizer_tools{ false };
+        bool _acceleration{ false };
+        float _sensitivity{ 1.0f };
+        float _acceleration_rate{ 1.0f };
+        float _movement_speed{ 1.0f };
+        int _max_recent_files{ 10 };
+        float _colour[3];
     };
 }

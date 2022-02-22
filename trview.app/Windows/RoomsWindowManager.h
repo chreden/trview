@@ -29,7 +29,7 @@ namespace trview
         explicit RoomsWindowManager(const Window& window, const std::shared_ptr<IShortcuts>& shortcuts, const IRoomsWindow::Source& rooms_window_source);
         virtual ~RoomsWindowManager() = default;
         virtual std::optional<int> process_message(UINT message, WPARAM wParam, LPARAM lParam) override;
-        virtual void render(bool vsync) override;
+        virtual void render() override;
         std::weak_ptr<ITrigger> selected_trigger() const;
         virtual void set_items(const std::vector<Item>& items) override;
         virtual void set_level_version(trlevel::LevelVersion version) override;
@@ -52,6 +52,7 @@ namespace trview
         std::optional<Item> _selected_item;
         IRoomsWindow::Source _rooms_window_source;
         trlevel::LevelVersion _level_version{ trlevel::LevelVersion::Unknown };
+        uint32_t _window_count{ 0u };
     };
 }
 

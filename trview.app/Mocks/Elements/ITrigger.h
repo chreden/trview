@@ -6,7 +6,7 @@ namespace trview
 {
     namespace mocks
     {
-        struct MockTrigger final : public ITrigger, public std::enable_shared_from_this<MockTrigger>
+        struct MockTrigger : public ITrigger, public std::enable_shared_from_this<MockTrigger>
         {
             virtual ~MockTrigger() = default;
             MOCK_METHOD(void, render, (const ICamera&, const ILevelTextureStorage&, const DirectX::SimpleMath::Color&));

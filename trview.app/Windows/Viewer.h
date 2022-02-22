@@ -68,6 +68,8 @@ namespace trview
         virtual ~Viewer() = default;
         virtual CameraMode camera_mode() const override;
         virtual void render() override;
+        virtual void render_ui() override;
+        virtual void present(bool vsync) override;
         virtual void open(ILevel* level) override;
         virtual void set_settings(const UserSettings& settings) override;
         virtual void select_item(const Item& item) override;

@@ -22,7 +22,7 @@ namespace trview
         explicit TriggersWindowManager(const Window& window, const std::shared_ptr<IShortcuts>& shortcuts, const ITriggersWindow::Source& triggers_window_source);
         virtual ~TriggersWindowManager() = default;
         virtual std::optional<int> process_message(UINT message, WPARAM wParam, LPARAM lParam) override;
-        virtual void render(bool vsync) override;
+        virtual void render() override;
         const std::weak_ptr<ITrigger> selected_trigger() const;
         virtual void set_items(const std::vector<Item>& items) override;
         virtual void set_triggers(const std::vector<std::weak_ptr<ITrigger>>& triggers) override;
@@ -40,5 +40,6 @@ namespace trview
         TokenStore _token_store;
         std::weak_ptr<ITrigger> _selected_trigger;
         ITriggersWindow::Source _triggers_window_source;
+        int32_t _window_count{ 0 };
     };
 }

@@ -1,19 +1,12 @@
 #include <trview.app/UI/ViewOptions.h>
 #include <trview.app/Windows/IViewer.h>
-#include <trview.ui/Window.h>
-#include <trview.ui/Checkbox.h>
-#include <trview.ui/Button.h>
-#include <trview.ui/JsonLoader.h>
-#include <trview.common/Mocks/Windows/IShell.h>
+#include "TestImgui.h"
 
 using namespace trview;
-using namespace trview::mocks;
-using namespace trview::ui;
 
 TEST(ViewOptions, HighlightCheckboxToggle)
 {
-    ui::Window window(Size(1, 1), Colour::White);
-    auto view_options = ViewOptions(window, std::make_shared<JsonLoader>(std::make_shared<MockShell>()));
+    ViewOptions view_options;
 
     std::optional<std::tuple<std::string, bool>> clicked;
     auto token = view_options.on_toggle_changed += [&](const std::string& name, bool value)
@@ -21,9 +14,9 @@ TEST(ViewOptions, HighlightCheckboxToggle)
         clicked = { name, value };
     };
 
-    auto checkbox = window.find<ui::Checkbox>(IViewer::Options::highlight);
-    ASSERT_FALSE(checkbox->state());
-    checkbox->clicked({});
+    tests::TestImgui imgui([&]() { view_options.render(); });
+    imgui.click_element(imgui.id("View Options").push(ViewOptions::Names::flags).id(IViewer::Options::highlight));
+
     ASSERT_TRUE(clicked.has_value());
     ASSERT_EQ(std::get<0>(clicked.value()), IViewer::Options::highlight);
     ASSERT_TRUE(std::get<1>(clicked.value()));
@@ -31,20 +24,19 @@ TEST(ViewOptions, HighlightCheckboxToggle)
 
 TEST(ViewOptions, HighlightCheckboxUpdated)
 {
-    ui::Window window(Size(1, 1), Colour::White);
-    auto view_options = ViewOptions(window, std::make_shared<JsonLoader>(std::make_shared<MockShell>()));
+    ViewOptions view_options;
 
-    auto checkbox = window.find<ui::Checkbox>(IViewer::Options::highlight);
-    ASSERT_FALSE(checkbox->state());
+    tests::TestImgui imgui([&]() { view_options.render(); });
+    ASSERT_FALSE(imgui.status_flags(imgui.id("View Options").push(ViewOptions::Names::flags).id(IViewer::Options::highlight)) & ImGuiItemStatusFlags_Checked);
 
     view_options.set_toggle(IViewer::Options::highlight, true);
-    ASSERT_TRUE(checkbox->state());
+    imgui.render();
+    ASSERT_TRUE(imgui.status_flags(imgui.id("View Options").push(ViewOptions::Names::flags).id(IViewer::Options::highlight)) & ImGuiItemStatusFlags_Checked);
 };
 
 TEST(ViewOptions, TriggersCheckboxToggle)
 {
-    ui::Window window(Size(1, 1), Colour::White);
-    auto view_options = ViewOptions(window, std::make_shared<JsonLoader>(std::make_shared<MockShell>()));
+    ViewOptions view_options;
 
     std::optional<std::tuple<std::string, bool>> clicked;
     auto token = view_options.on_toggle_changed += [&](const std::string& name, bool value)
@@ -52,9 +44,9 @@ TEST(ViewOptions, TriggersCheckboxToggle)
         clicked = { name, value };
     };
 
-    auto checkbox = window.find<ui::Checkbox>(IViewer::Options::triggers);
-    ASSERT_TRUE(checkbox->state());
-    checkbox->clicked({});
+    tests::TestImgui imgui([&]() { view_options.render(); });
+    imgui.click_element(imgui.id("View Options").push(ViewOptions::Names::flags).id(IViewer::Options::triggers));
+
     ASSERT_TRUE(clicked.has_value());
     ASSERT_EQ(std::get<0>(clicked.value()), IViewer::Options::triggers);
     ASSERT_FALSE(std::get<1>(clicked.value()));
@@ -62,20 +54,19 @@ TEST(ViewOptions, TriggersCheckboxToggle)
 
 TEST(ViewOptions, TriggersCheckboxUpdated)
 {
-    ui::Window window(Size(1, 1), Colour::White);
-    auto view_options = ViewOptions(window, std::make_shared<JsonLoader>(std::make_shared<MockShell>()));
+    ViewOptions view_options;
 
-    auto checkbox = window.find<ui::Checkbox>(IViewer::Options::triggers);
-    ASSERT_TRUE(checkbox->state());
+    tests::TestImgui imgui([&]() { view_options.render(); });
+    ASSERT_TRUE(imgui.status_flags(imgui.id("View Options").push(ViewOptions::Names::flags).id(IViewer::Options::triggers)) & ImGuiItemStatusFlags_Checked);
 
     view_options.set_toggle(IViewer::Options::triggers, false);
-    ASSERT_FALSE(checkbox->state());
+    imgui.render();
+    ASSERT_FALSE(imgui.status_flags(imgui.id("View Options").push(ViewOptions::Names::flags).id(IViewer::Options::triggers)) & ImGuiItemStatusFlags_Checked);
 }
 
 TEST(ViewOptions, HiddenGeometryCheckboxToggle)
 {
-    ui::Window window(Size(1, 1), Colour::White);
-    auto view_options = ViewOptions(window, std::make_shared<JsonLoader>(std::make_shared<MockShell>()));
+    ViewOptions view_options;
 
     std::optional<std::tuple<std::string, bool>> clicked;
     auto token = view_options.on_toggle_changed += [&](const std::string& name, bool value)
@@ -83,9 +74,9 @@ TEST(ViewOptions, HiddenGeometryCheckboxToggle)
         clicked = { name, value };
     };
 
-    auto checkbox = window.find<ui::Checkbox>(IViewer::Options::hidden_geometry);
-    ASSERT_FALSE(checkbox->state());
-    checkbox->clicked({});
+    tests::TestImgui imgui([&]() { view_options.render(); });
+    imgui.click_element(imgui.id("View Options").push(ViewOptions::Names::flags).id(IViewer::Options::hidden_geometry));
+
     ASSERT_TRUE(clicked.has_value());
     ASSERT_EQ(std::get<0>(clicked.value()), IViewer::Options::hidden_geometry);
     ASSERT_TRUE(std::get<1>(clicked.value()));
@@ -93,20 +84,19 @@ TEST(ViewOptions, HiddenGeometryCheckboxToggle)
 
 TEST(ViewOptions, HiddenGeometryCheckboxUpdated)
 {
-    ui::Window window(Size(1, 1), Colour::White);
-    auto view_options = ViewOptions(window, std::make_shared<JsonLoader>(std::make_shared<MockShell>()));
+    ViewOptions view_options;
 
-    auto checkbox = window.find<ui::Checkbox>(IViewer::Options::hidden_geometry);
-    ASSERT_FALSE(checkbox->state());
+    tests::TestImgui imgui([&]() { view_options.render(); });
+    ASSERT_FALSE(imgui.status_flags(imgui.id("View Options").push(ViewOptions::Names::flags).id(IViewer::Options::hidden_geometry)) & ImGuiItemStatusFlags_Checked);
 
     view_options.set_toggle(IViewer::Options::hidden_geometry, true);
-    ASSERT_TRUE(checkbox->state());
+    imgui.render();
+    ASSERT_TRUE(imgui.status_flags(imgui.id("View Options").push(ViewOptions::Names::flags).id(IViewer::Options::hidden_geometry)) & ImGuiItemStatusFlags_Checked);
 }
 
 TEST(ViewOptions, WaterCheckboxToggle)
 {
-    ui::Window window(Size(1, 1), Colour::White);
-    auto view_options = ViewOptions(window, std::make_shared<JsonLoader>(std::make_shared<MockShell>()));
+    ViewOptions view_options;
 
     std::optional<std::tuple<std::string, bool>> clicked;
     auto token = view_options.on_toggle_changed += [&](const std::string& name, bool value)
@@ -114,9 +104,9 @@ TEST(ViewOptions, WaterCheckboxToggle)
         clicked = { name, value };
     };
 
-    auto checkbox = window.find<ui::Checkbox>(IViewer::Options::water);
-    ASSERT_TRUE(checkbox->state());
-    checkbox->clicked({});
+    tests::TestImgui imgui([&]() { view_options.render(); });
+    imgui.click_element(imgui.id("View Options").push(ViewOptions::Names::flags).id(IViewer::Options::water));
+
     ASSERT_TRUE(clicked.has_value());
     ASSERT_EQ(std::get<0>(clicked.value()), IViewer::Options::water);
     ASSERT_FALSE(std::get<1>(clicked.value()));
@@ -124,20 +114,19 @@ TEST(ViewOptions, WaterCheckboxToggle)
 
 TEST(ViewOptions, WaterCheckboxUpdated)
 {
-    ui::Window window(Size(1, 1), Colour::White);
-    auto view_options = ViewOptions(window, std::make_shared<JsonLoader>(std::make_shared<MockShell>()));
+    ViewOptions view_options;
 
-    auto checkbox = window.find<ui::Checkbox>(IViewer::Options::water);
-    ASSERT_TRUE(checkbox->state());
+    tests::TestImgui imgui([&]() { view_options.render(); });
+    ASSERT_TRUE(imgui.status_flags(imgui.id("View Options").push(ViewOptions::Names::flags).id(IViewer::Options::water)) & ImGuiItemStatusFlags_Checked);
 
     view_options.set_toggle(IViewer::Options::water, false);
-    ASSERT_FALSE(checkbox->state());
+    imgui.render();
+    ASSERT_FALSE(imgui.status_flags(imgui.id("View Options").push(ViewOptions::Names::flags).id(IViewer::Options::water)) & ImGuiItemStatusFlags_Checked);
 }
 
 TEST(ViewOptions, DepthCheckboxToggle)
 {
-    ui::Window window(Size(1, 1), Colour::White);
-    auto view_options = ViewOptions(window, std::make_shared<JsonLoader>(std::make_shared<MockShell>()));
+    ViewOptions view_options;
 
     std::optional<std::tuple<std::string, bool>> clicked;
     auto token = view_options.on_toggle_changed += [&](const std::string& name, bool value)
@@ -145,9 +134,9 @@ TEST(ViewOptions, DepthCheckboxToggle)
         clicked = { name, value };
     };
 
-    auto checkbox = window.find<ui::Checkbox>(IViewer::Options::depth_enabled);
-    ASSERT_FALSE(checkbox->state());
-    checkbox->clicked({});
+    tests::TestImgui imgui([&]() { view_options.render(); });
+    imgui.click_element(imgui.id("View Options").push(ViewOptions::Names::flags).id(IViewer::Options::depth_enabled));
+
     ASSERT_TRUE(clicked.has_value());
     ASSERT_EQ(std::get<0>(clicked.value()), IViewer::Options::depth_enabled);
     ASSERT_TRUE(std::get<1>(clicked.value()));
@@ -155,20 +144,19 @@ TEST(ViewOptions, DepthCheckboxToggle)
 
 TEST(ViewOptions, DepthCheckboxUpdated)
 {
-    ui::Window window(Size(1, 1), Colour::White);
-    auto view_options = ViewOptions(window, std::make_shared<JsonLoader>(std::make_shared<MockShell>()));
+    ViewOptions view_options;
 
-    auto checkbox = window.find<ui::Checkbox>(IViewer::Options::depth_enabled);
-    ASSERT_FALSE(checkbox->state());
+    tests::TestImgui imgui([&]() { view_options.render(); });
+    ASSERT_FALSE(imgui.status_flags(imgui.id("View Options").push(ViewOptions::Names::flags).id(IViewer::Options::depth_enabled)) & ImGuiItemStatusFlags_Checked);
 
     view_options.set_toggle(IViewer::Options::depth_enabled, true);
-    ASSERT_TRUE(checkbox->state());
+    imgui.render();
+    ASSERT_TRUE(imgui.status_flags(imgui.id("View Options").push(ViewOptions::Names::flags).id(IViewer::Options::depth_enabled)) & ImGuiItemStatusFlags_Checked);
 }
 
 TEST(ViewOptions, WireframeCheckboxToggle)
 {
-    ui::Window window(Size(1, 1), Colour::White);
-    auto view_options = ViewOptions(window, std::make_shared<JsonLoader>(std::make_shared<MockShell>()));
+    ViewOptions view_options;
 
     std::optional<std::tuple<std::string, bool>> clicked;
     auto token = view_options.on_toggle_changed += [&](const std::string& name, bool value)
@@ -176,9 +164,9 @@ TEST(ViewOptions, WireframeCheckboxToggle)
         clicked = { name, value };
     };
 
-    auto checkbox = window.find<ui::Checkbox>(IViewer::Options::wireframe);
-    ASSERT_FALSE(checkbox->state());
-    checkbox->clicked({});
+    tests::TestImgui imgui([&]() { view_options.render(); });
+    imgui.click_element(imgui.id("View Options").push(ViewOptions::Names::flags).id(IViewer::Options::wireframe));
+
     ASSERT_TRUE(clicked.has_value());
     ASSERT_EQ(std::get<0>(clicked.value()), IViewer::Options::wireframe);
     ASSERT_TRUE(std::get<1>(clicked.value()));
@@ -186,20 +174,19 @@ TEST(ViewOptions, WireframeCheckboxToggle)
 
 TEST(ViewOptions, WireframeCheckboxUpdated)
 {
-    ui::Window window(Size(1, 1), Colour::White);
-    auto view_options = ViewOptions(window, std::make_shared<JsonLoader>(std::make_shared<MockShell>()));
+    ViewOptions view_options;
 
-    auto checkbox = window.find<ui::Checkbox>(IViewer::Options::wireframe);
-    ASSERT_FALSE(checkbox->state());
+    tests::TestImgui imgui([&]() { view_options.render(); });
+    ASSERT_FALSE(imgui.status_flags(imgui.id("View Options").push(ViewOptions::Names::flags).id(IViewer::Options::wireframe)) & ImGuiItemStatusFlags_Checked);
 
     view_options.set_toggle(IViewer::Options::wireframe, true);
-    ASSERT_TRUE(checkbox->state());
+    imgui.render();
+    ASSERT_TRUE(imgui.status_flags(imgui.id("View Options").push(ViewOptions::Names::flags).id(IViewer::Options::wireframe)) & ImGuiItemStatusFlags_Checked);
 }
 
 TEST(ViewOptions, BoundsCheckboxToggle)
 {
-    ui::Window window(Size(1, 1), Colour::White);
-    auto view_options = ViewOptions(window, std::make_shared<JsonLoader>(std::make_shared<MockShell>()));
+    ViewOptions view_options;
 
     std::optional<std::tuple<std::string, bool>> clicked;
     auto token = view_options.on_toggle_changed += [&](const std::string& name, bool value)
@@ -207,9 +194,9 @@ TEST(ViewOptions, BoundsCheckboxToggle)
         clicked = { name, value };
     };
 
-    auto checkbox = window.find<ui::Checkbox>(IViewer::Options::show_bounding_boxes);
-    ASSERT_FALSE(checkbox->state());
-    checkbox->clicked({});
+    tests::TestImgui imgui([&]() { view_options.render(); });
+    imgui.click_element(imgui.id("View Options").push(ViewOptions::Names::flags).id(IViewer::Options::show_bounding_boxes));
+
     ASSERT_TRUE(clicked.has_value());
     ASSERT_EQ(std::get<0>(clicked.value()), IViewer::Options::show_bounding_boxes);
     ASSERT_TRUE(std::get<1>(clicked.value()));
@@ -217,20 +204,20 @@ TEST(ViewOptions, BoundsCheckboxToggle)
 
 TEST(ViewOptions, BoundsCheckboxUpdated)
 {
-    ui::Window window(Size(1, 1), Colour::White);
-    auto view_options = ViewOptions(window, std::make_shared<JsonLoader>(std::make_shared<MockShell>()));
+    ViewOptions view_options;
 
-    auto checkbox = window.find<ui::Checkbox>(IViewer::Options::show_bounding_boxes);
-    ASSERT_FALSE(checkbox->state());
-    
+    tests::TestImgui imgui([&]() { view_options.render(); });
+    ASSERT_FALSE(imgui.status_flags(imgui.id("View Options").push(ViewOptions::Names::flags).id(IViewer::Options::show_bounding_boxes)) & ImGuiItemStatusFlags_Checked);
+
     view_options.set_toggle(IViewer::Options::show_bounding_boxes, true);
-    ASSERT_TRUE(checkbox->state());
+    imgui.render();
+    ASSERT_TRUE(imgui.status_flags(imgui.id("View Options").push(ViewOptions::Names::flags).id(IViewer::Options::show_bounding_boxes)) & ImGuiItemStatusFlags_Checked);
 }
 
 TEST(ViewOptions, FlipCheckboxToggle)
 {
-    ui::Window window(Size(1, 1), Colour::White);
-    auto view_options = ViewOptions(window, std::make_shared<JsonLoader>(std::make_shared<MockShell>()));
+    ViewOptions view_options;
+    view_options.set_flip_enabled(true);
 
     std::optional<std::tuple<std::string, bool>> clicked;
     auto token = view_options.on_toggle_changed += [&](const std::string& name, bool value)
@@ -238,9 +225,9 @@ TEST(ViewOptions, FlipCheckboxToggle)
         clicked = { name, value };
     };
 
-    auto checkbox = window.find<ui::Checkbox>(IViewer::Options::flip);
-    ASSERT_FALSE(checkbox->state());
-    checkbox->clicked({});
+    tests::TestImgui imgui([&]() { view_options.render(); });
+    imgui.click_element(imgui.id("View Options").push(ViewOptions::Names::flags).id(IViewer::Options::flip));
+
     ASSERT_TRUE(clicked.has_value());
     ASSERT_EQ(std::get<0>(clicked.value()), IViewer::Options::flip);
     ASSERT_TRUE(std::get<1>(clicked.value()));
@@ -248,32 +235,31 @@ TEST(ViewOptions, FlipCheckboxToggle)
 
 TEST(ViewOptions, FlipCheckboxUpdated)
 {
-    ui::Window window(Size(1, 1), Colour::White);
-    auto view_options = ViewOptions(window, std::make_shared<JsonLoader>(std::make_shared<MockShell>()));
+    ViewOptions view_options;
 
-    auto checkbox = window.find<ui::Checkbox>(IViewer::Options::flip);
-    ASSERT_FALSE(checkbox->state());
+    tests::TestImgui imgui([&]() { view_options.render(); });
+    ASSERT_FALSE(imgui.status_flags(imgui.id("View Options").push(ViewOptions::Names::flags).id(IViewer::Options::flip)) & ImGuiItemStatusFlags_Checked);
 
     view_options.set_toggle(IViewer::Options::flip, true);
-    ASSERT_TRUE(checkbox->state());
+    imgui.render();
+    ASSERT_TRUE(imgui.status_flags(imgui.id("View Options").push(ViewOptions::Names::flags).id(IViewer::Options::flip)) & ImGuiItemStatusFlags_Checked);
 }
 
 TEST(ViewOptions, FlipCheckboxEnabled)
 {
-    ui::Window window(Size(1, 1), Colour::White);
-    auto view_options = ViewOptions(window, std::make_shared<JsonLoader>(std::make_shared<MockShell>()));
+    ViewOptions view_options;
 
-    auto checkbox = window.find<ui::Checkbox>(IViewer::Options::flip);
-    ASSERT_TRUE(checkbox->enabled());
+    tests::TestImgui imgui([&]() { view_options.render(); });
+    ASSERT_TRUE(imgui.item_flags(imgui.id("View Options").push(ViewOptions::Names::flags).id(IViewer::Options::flip)) & ImGuiItemFlags_Disabled);
 
-    view_options.set_flip_enabled(false);
-    ASSERT_FALSE(checkbox->enabled());
+    view_options.set_flip_enabled(true);
+    imgui.render();
+    ASSERT_FALSE(imgui.item_flags(imgui.id("View Options").push(ViewOptions::Names::flags).id(IViewer::Options::flip)) & ImGuiItemFlags_Disabled);
 }
 
 TEST(ViewOptions, FlipFlagsToggle)
 {
-    ui::Window window(Size(1, 1), Colour::White);
-    auto view_options = ViewOptions(window, std::make_shared<JsonLoader>(std::make_shared<MockShell>()));
+    ViewOptions view_options;
 
     std::unordered_map<uint32_t, bool> raised;
     auto token = view_options.on_alternate_group += [&](uint32_t group, bool state)
@@ -284,41 +270,41 @@ TEST(ViewOptions, FlipFlagsToggle)
     view_options.set_use_alternate_groups(true);
     view_options.set_alternate_groups({ 1, 3, 5 });
 
-    auto group3 = window.find<ui::Button>(ViewOptions::Names::group + "3");
-    ASSERT_NE(group3, nullptr);
-    ASSERT_EQ(group3->text_background_colour(), ViewOptions::Colours::FlipOff);
+    tests::TestImgui imgui([&]() { view_options.render(); });
+    auto original = imgui.style_colour(imgui.id("View Options").id("3##3_flip"), ImGuiCol_Button);
+    imgui.click_element(imgui.id("View Options").id("3##3_flip"));
+    imgui.render();
 
-    group3->clicked({});
-
-    ASSERT_EQ(group3->text_background_colour(), ViewOptions::Colours::FlipOn);
     ASSERT_EQ(raised.size(), 1);
     ASSERT_EQ(raised[3], true);
+    auto changed = imgui.style_colour(imgui.id("View Options").id("3##3_flip"), ImGuiCol_Button);
+    ASSERT_NE(original, changed);
 }
 
 TEST(ViewOptions, FlipFlagsUpdated)
 {
-    ui::Window window(Size(1, 1), Colour::White);
-    auto view_options = ViewOptions(window, std::make_shared<JsonLoader>(std::make_shared<MockShell>()));
-
+    ViewOptions view_options;
     view_options.set_use_alternate_groups(true);
     view_options.set_alternate_groups({ 1, 3, 5 });
 
-    auto group3 = window.find<ui::Button>(ViewOptions::Names::group + "3");
-    ASSERT_NE(group3, nullptr);
-    ASSERT_EQ(group3->text_background_colour(), ViewOptions::Colours::FlipOff);
-
+    tests::TestImgui imgui([&]() { view_options.render(); });
+    auto original = imgui.style_colour(imgui.id("View Options").id("3##3_flip"), ImGuiCol_Button);
     view_options.set_alternate_group(3, true);
-    ASSERT_EQ(group3->text_background_colour(), ViewOptions::Colours::FlipOn);
+    imgui.render();
+
+    auto changed = imgui.style_colour(imgui.id("View Options").id("3##3_flip"), ImGuiCol_Button);
+    ASSERT_NE(original, changed);
 }
 
 TEST(ViewOptions, FlipCheckboxHiddenWithAlternateGroups)
 {
-    ui::Window window(Size(1, 1), Colour::White);
-    auto view_options = ViewOptions(window, std::make_shared<JsonLoader>(std::make_shared<MockShell>()));
+    ViewOptions view_options;
 
-    auto checkbox = window.find<ui::Checkbox>(IViewer::Options::flip);
-    ASSERT_TRUE(checkbox->visible());
+    tests::TestImgui imgui([&]() { view_options.render(); });
+    ASSERT_TRUE(imgui.element_present(imgui.id("View Options").push(ViewOptions::Names::flags).id(IViewer::Options::flip)));
 
     view_options.set_use_alternate_groups(true);
-    ASSERT_FALSE(checkbox->visible(true));
+    imgui.reset();
+    imgui.render();
+    ASSERT_FALSE(imgui.element_present(imgui.id("View Options").push(ViewOptions::Names::flags).id(IViewer::Options::flip)));
 }

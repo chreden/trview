@@ -1,15 +1,13 @@
 #include <trview.app/UI/Console.h>
-#include <trview.ui/JsonLoader.h>
-#include <trview.common/Mocks/Windows/IShell.h>
+#include "TestImgui.h"
 
 using namespace trview;
-using namespace trview::mocks;
-using namespace trview::ui;
+using namespace trview::tests;
 
 TEST(Console, CommandEventRaised)
 {
-    ui::Window window(Size(), Colour::White);
-    Console console(window, JsonLoader(std::make_shared<MockShell>()));
+    Console console;
+    console.set_visible(true);
 
     std::optional<std::wstring> raised;
     auto token = console.on_command += [&](auto value)
@@ -17,41 +15,27 @@ TEST(Console, CommandEventRaised)
         raised = value;
     };
 
-    auto input = window.find<TextArea>(Console::Names::input);
-    ASSERT_NE(input, nullptr);
-    input->gained_focus();
-    input->set_text(L"Test command");
-    input->key_char(VK_RETURN);
+    TestImgui imgui([&]() { console.render(); });
+    imgui.click_element(imgui.id("Console").id(Console::Names::input));
+    imgui.enter_text("Test command");
+    imgui.press_key(ImGuiKey_Enter);
+    imgui.reset();
+    imgui.render();
 
     ASSERT_TRUE(raised.has_value());
     ASSERT_EQ(raised.value(), L"Test command");
-    ASSERT_EQ(input->text(), L"");
-}
-
-TEST(Console, Visible)
-{
-    ui::Window window(Size(), Colour::White);
-    Console console(window, JsonLoader(std::make_shared<MockShell>()));
-
-    ASSERT_FALSE(console.visible());
-
-    auto input = window.find<TextArea>(Console::Names::input);
-    ASSERT_NE(input, nullptr);
-    ASSERT_FALSE(input->visible(true));
-
-    console.set_visible(true);
-    ASSERT_TRUE(input->visible(true));
+    ASSERT_EQ(imgui.item_text(imgui.id("Console").id(Console::Names::input)), "");
 }
 
 TEST(Console, PrintAddsLine)
 {
-    ui::Window window(Size(), Colour::White);
-    Console console(window, JsonLoader(std::make_shared<MockShell>()));
+    Console console;
+    console.set_visible(true);
 
-    auto log = window.find<TextArea>(Console::Names::log);
-    ASSERT_NE(log, nullptr);
-    ASSERT_EQ(log->text(), L"");
+    TestImgui imgui([&]() { console.render(); });
+    ASSERT_EQ(imgui.item_text(imgui.id("Console").id(Console::Names::log)), "");
 
     console.print(L"Test log entry");
-    ASSERT_EQ(log->text(), L"Test log entry");
+    imgui.render();
+    ASSERT_EQ(imgui.item_text(imgui.id("Console").id(Console::Names::log)), "Test log entry");
 }

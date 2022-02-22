@@ -18,6 +18,7 @@
 #include <trview.app/Mocks/Graphics/ISectorHighlight.h>
 #include <trlevel/Mocks/ILevel.h>
 #include <trview.app/Mocks/Routing/IWaypoint.h>
+#include "TestImgui.h"
 
 using testing::Return;
 using namespace trview;
@@ -207,6 +208,7 @@ TEST(Viewer, SelectTriggerRaised)
 
     auto viewer = register_test_module().with_ui(std::move(ui_ptr)).with_picking(std::move(picking_ptr)).with_mouse(std::move(mouse_ptr)).build();
     viewer->open(&level);
+    TestImgui imgui;
 
     std::optional<std::weak_ptr<ITrigger>> selected_trigger;
     auto token = viewer->on_trigger_selected += [&selected_trigger](const auto& trigger) { selected_trigger = trigger; };
@@ -254,6 +256,7 @@ TEST(Viewer, SelectWaypointRaised)
     auto [picking_ptr, picking] = create_mock<MockPicking>();
     auto [mouse_ptr, mouse] = create_mock<MockMouse>();
     auto viewer = register_test_module().with_ui(std::move(ui_ptr)).with_picking(std::move(picking_ptr)).with_mouse(std::move(mouse_ptr)).build();
+    TestImgui imgui;
 
     std::optional<uint32_t> selected_waypoint;
     auto token = viewer->on_waypoint_selected += [&selected_waypoint](const auto& waypoint) { selected_waypoint = waypoint; };

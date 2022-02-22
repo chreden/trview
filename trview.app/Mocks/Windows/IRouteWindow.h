@@ -9,7 +9,7 @@ namespace trview
         struct MockRouteWindow : public IRouteWindow
         {
             virtual ~MockRouteWindow() = default;
-            MOCK_METHOD(void, render, (bool), (override));
+            MOCK_METHOD(void, render, (), (override));
             MOCK_METHOD(void, set_route, (IRoute*), (override));
             MOCK_METHOD(void, select_waypoint, (uint32_t), (override));
             MOCK_METHOD(void, set_items, (const std::vector<Item>&), (override));

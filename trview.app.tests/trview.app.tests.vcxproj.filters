@@ -90,9 +90,6 @@
     <ClCompile Include="Windows\RouteWindowManagerTests.cpp">
       <Filter>Windows</Filter>
     </ClCompile>
-    <ClCompile Include="UI\BubbleTests.cpp">
-      <Filter>UI</Filter>
-    </ClCompile>
     <ClCompile Include="Routing\WaypointTests.cpp">
       <Filter>Routing</Filter>
     </ClCompile>
@@ -126,6 +123,15 @@
     <ClCompile Include="Graphics\TextureStorage.cpp">
       <Filter>Graphics</Filter>
     </ClCompile>
+    <ClCompile Include="TestImgui.cpp">
+      <Filter>ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="NullImGuiBackend.cpp">
+      <Filter>ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="TestImGuiId.cpp">
+      <Filter>ImGui</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Input">
@@ -155,8 +161,20 @@
     <Filter Include="Routing">
       <UniqueIdentifier>{0bd554a8-2460-48fd-9867-d4a7397529c2}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ImGui">
+      <UniqueIdentifier>{eaa20ff6-06ad-48bd-afeb-4dadda155787}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
+    <ClInclude Include="TestImgui.h">
+      <Filter>ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="NullImGuiBackend.h">
+      <Filter>ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="TestImGuiId.h">
+      <Filter>ImGui</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

@@ -3,66 +3,51 @@
 
 #pragma once
 
-#include <trview.ui/Listbox.h>
-#include <trview.app/Elements/Item.h>
-#include <trview.app/Elements/ITrigger.h>
-#include "ITriggersWindow.h"
-#include "CollapsiblePanel.h"
 #include <trview.common/Windows/IClipboard.h>
-#include <trview.app/UI/IBubble.h>
-#include <trview.ui/ILoader.h>
+
+#include "ITriggersWindow.h"
+#include "../Elements/Item.h"
+#include "../Elements/ITrigger.h"
 
 namespace trview
 {
-    namespace ui
-    {
-        class Checkbox;
-        class Dropdown;
-    }
-
-    class TriggersWindow final : public ITriggersWindow, public CollapsiblePanel
+    class TriggersWindow final : public ITriggersWindow
     {
     public:
         struct Names
         {
-            static const std::string add_to_route_button;
-            static const std::string filter_dropdown;
-            static const std::string stats_listbox;
-            static const std::string sync_trigger_checkbox;
-            static const std::string track_room_checkbox;
-            static const std::string triggers_listbox;
-            static const std::string trigger_commands_listbox;
-            static const std::string expander;
+            static inline const std::string add_to_route = "Add to Route";
+            static inline const std::string sync_trigger = "Sync Trigger";
+            static inline const std::string track_room = "Track Room";
+            static inline const std::string trigger_list_panel = "Trigger List";
+            static inline const std::string triggers_list = "##triggerslist";
+            static inline const std::string details_panel = "Trigger Details";
+            static inline const std::string commands_list = "##commands";
+            static inline const std::string trigger_stats = "##triggerstats";
+            static inline const std::string command_filter = "##commandfilter";
         };
 
-        explicit TriggersWindow(const graphics::IDeviceWindow::Source& device_window_source, const ui::render::IRenderer::Source& renderer_source,
-            const ui::IInput::Source& input_source, const Window& parent, const std::shared_ptr<IClipboard>& clipboard, const IBubble::Source& bubble_source,
-            const std::shared_ptr<ui::ILoader>& ui_source);
+        explicit TriggersWindow(const std::shared_ptr<IClipboard>& clipboard);
         virtual ~TriggersWindow() = default;
-        virtual void render(bool vsync) override;
+        virtual void render() override;
         virtual void set_triggers(const std::vector<std::weak_ptr<ITrigger>>& triggers) override;
         virtual void update_triggers(const std::vector<std::weak_ptr<ITrigger>>& triggers) override;
         virtual void clear_selected_trigger() override;
         virtual void set_current_room(uint32_t room) override;
+        virtual void set_number(int32_t number) override;
         virtual void set_selected_trigger(const std::weak_ptr<ITrigger>& trigger) override;
         virtual void set_items(const std::vector<Item>& items) override;
         virtual std::weak_ptr<ITrigger> selected_trigger() const override;
         virtual void update(float delta) override;
     private:
-        void populate_triggers(const std::vector<std::weak_ptr<ITrigger>>& triggers);
-        void bind_controls();
         void set_track_room(bool value);
         void set_sync_trigger(bool value);
-        void load_trigger_details(const ITrigger& trigger);
-        void apply_filters();
+        void render_triggers_list();
+        void render_trigger_details();
+        bool render_triggers_window();
+        void set_local_selected_trigger(const std::weak_ptr<ITrigger>& trigger);
 
-        ui::Control* _controls;
-        ui::Checkbox* _track_room_checkbox;
-        ui::Listbox*  _triggers_list;
-        ui::Listbox*  _stats_list;
-        ui::Listbox*  _command_list;
-        ui::Dropdown* _command_filter;
-
+        std::string _id{ "Triggers 0" };
         std::vector<Item> _all_items;
         std::vector<std::weak_ptr<ITrigger>> _all_triggers;
 
@@ -73,9 +58,14 @@ namespace trview
         /// Whether the room tracking filter has been applied.
         bool _filter_applied{ false };
         bool _sync_trigger{ true };
-        std::weak_ptr<ITrigger> _selected_trigger;
         std::vector<TriggerCommandType> _selected_commands;
         std::shared_ptr<IClipboard> _clipboard;
-        std::unique_ptr<IBubble> _bubble;
+        std::vector<std::string> _all_commands;
+        uint32_t _selected_command{ 0u };
+        std::weak_ptr<ITrigger> _selected_trigger;
+        std::weak_ptr<ITrigger> _global_selected_trigger;
+        bool _scroll_to_trigger{ false };
+        std::optional<float> _tooltip_timer;
+        std::vector<Command> _local_selected_trigger_commands;
     };
 }

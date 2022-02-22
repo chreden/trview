@@ -34,9 +34,6 @@ namespace trview
         /// Event raised when the show tools option is toggled.
         Event<bool> on_show_tools;
 
-        /// Event raised when the background colour is changed.
-        Event<Colour> on_colour_change; 
-
         /// Event raised when the unhide all option is selected.
         Event<> on_unhide_all;
     };

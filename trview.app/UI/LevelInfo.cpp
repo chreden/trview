@@ -1,18 +1,10 @@
 #include "LevelInfo.h"
-
-#include <trview.ui/Control.h>
-#include <trview.ui/Image.h>
-#include <trview.ui/Label.h>
-#include <trview.ui/Button.h>
 #include <trview.app/Graphics/ITextureStorage.h>
-#include <trview.common/Strings.h>
-#include "../Resources/resource.h"
 
 namespace trview
 {
     namespace
     {
-        // Ideally this will be stored somewhere else.
         const std::unordered_map<trlevel::LevelVersion, std::string> texture_names
         {
             { trlevel::LevelVersion::Unknown, "unknown_icon" },
@@ -24,53 +16,44 @@ namespace trview
         };
     }
 
-    const std::string LevelInfo::Names::version{ "version" };
-    const std::string LevelInfo::Names::name{ "name" };
-    const std::string LevelInfo::Names::settings{ "settings" };
-
-    LevelInfo::LevelInfo(ui::Control& control, const ITextureStorage& texture_storage, const ui::ILoader& ui_source)
+    LevelInfo::LevelInfo(const ITextureStorage& texture_storage)
     {
         for (const auto& tex : texture_names)
         {
             _version_textures.insert({ tex.first, texture_storage.lookup(tex.second) });
         }
-
-        using namespace ui;
-        auto panel = control.add_child(ui_source.load_from_resource(IDR_UI_LEVEL_INFO));
-        _version = panel->find<Image>(Names::version);
-        _version->set_texture(get_version_image(trlevel::LevelVersion::Unknown));
-
-        _name = panel->find<Label>(Names::name);
-
-        auto settings = panel->find<Button>(Names::settings);
-        settings->on_click += on_toggle_settings;
-
-        // Have the control move itself when the parent control resizes.
-        const auto update_position = [=](const Size& size)
-        {
-            panel->set_position(Point(size.width / 2.0f - panel->size().width / 2.0f, 0));
-        };
-        _token_store += control.on_size_changed += update_position;
-        _token_store += panel->on_size_changed += [=](const Size& size)
-        {
-            update_position(panel->parent()->size());
-        };
-
-        update_position(control.size());
     }
 
-    // Set the name of the level.
-    // name: The level name.
+    void LevelInfo::render()
+    {
+        const auto viewport = ImGui::GetMainViewport();
+        ImGui::SetNextWindowPos(ImVec2(viewport->Pos.x + viewport->Size.x * 0.5f, viewport->Pos.y), 0, ImVec2(0.5f, 0.0f));
+
+        if (ImGui::Begin("LevelInfo", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_AlwaysAutoResize))
+        {
+            ImGui::Image(get_version_image(_version).view().Get(), ImVec2(16, 16));
+            ImGui::SameLine();
+            const float previous = ImGui::GetCursorPosY();
+            ImGui::SetCursorPosY(ImGui::GetWindowHeight() * 0.5f - ImGui::CalcTextSize(_name.c_str()).y * 0.5f);
+            ImGui::Text(_name.c_str());
+            ImGui::SameLine();
+            ImGui::SetCursorPosY(previous);
+            if (ImGui::Button("Settings"))
+            {
+                on_toggle_settings();
+            }
+        }
+        ImGui::End();
+    }
+
     void LevelInfo::set_level(const std::string& name)
     {
-        _name->set_text(to_utf16(name));
+        _name = name;
     }
 
-    // Set the version of the game that level was created for.
-    // version: The version of the game.
     void LevelInfo::set_level_version(trlevel::LevelVersion version)
     {
-        _version->set_texture(get_version_image(version));
+        _version = version;
     }
 
     graphics::Texture LevelInfo::get_version_image(trlevel::LevelVersion version) const

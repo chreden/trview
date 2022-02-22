@@ -72,6 +72,7 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClCompile Include="Graphics\SectorHighlight.cpp" />
     <ClCompile Include="Graphics\SelectionRenderer.cpp" />
     <ClCompile Include="Graphics\TextureStorage.cpp" />
+    <ClCompile Include="trview_imgui.cpp" />
     <ClCompile Include="Lua\Lua.cpp" />
     <ClCompile Include="Menus\AlternateGroupToggler.cpp" />
     <ClCompile Include="Menus\DirectoryListing.cpp" />
@@ -85,6 +86,7 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClCompile Include="Menus\RecentFiles.cpp" />
     <ClCompile Include="Menus\UpdateChecker.cpp" />
     <ClCompile Include="Menus\ViewMenu.cpp" />
+    <ClCompile Include="Resources\DefaultFonts.cpp" />
     <ClCompile Include="Resources\DefaultShaders.cpp" />
     <ClCompile Include="Resources\DefaultTextures.cpp" />
     <ClCompile Include="Routing\Action.cpp" />
@@ -111,25 +113,26 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClCompile Include="Tools\IMeasure.cpp" />
     <ClCompile Include="Tools\Measure.cpp" />
     <ClCompile Include="Tools\Toolbar.cpp" />
-    <ClCompile Include="UI\Bubble.cpp" />
     <ClCompile Include="UI\CameraControls.cpp" />
     <ClCompile Include="UI\CameraPosition.cpp" />
     <ClCompile Include="UI\Console.cpp" />
     <ClCompile Include="UI\ContextMenu.cpp" />
+    <ClCompile Include="UI\DX11ImGuiBackend.cpp" />
     <ClCompile Include="UI\GoTo.cpp" />
-    <ClCompile Include="UI\IBubble.cpp" />
     <ClCompile Include="UI\ICameraControls.cpp" />
     <ClCompile Include="UI\IContextMenu.cpp" />
+    <ClCompile Include="UI\IImGuiBackend.cpp" />
+    <ClCompile Include="UI\IMapRenderer.cpp" />
     <ClCompile Include="UI\ISettingsWindow.cpp" />
     <ClCompile Include="UI\IViewerUI.cpp" />
     <ClCompile Include="UI\IViewOptions.cpp" />
     <ClCompile Include="UI\LevelInfo.cpp" />
+    <ClCompile Include="UI\MapRenderer.cpp" />
     <ClCompile Include="UI\RoomNavigator.cpp" />
     <ClCompile Include="UI\SettingsWindow.cpp" />
     <ClCompile Include="UI\Tooltip.cpp" />
     <ClCompile Include="UI\ViewerUI.cpp" />
     <ClCompile Include="UI\ViewOptions.cpp" />
-    <ClCompile Include="Windows\CollapsiblePanel.cpp" />
     <ClCompile Include="Windows\IItemsWindow.cpp" />
     <ClCompile Include="Windows\IItemsWindowManager.cpp" />
     <ClCompile Include="Windows\IRoomsWindow.cpp" />
@@ -248,9 +251,10 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClInclude Include="Mocks\Settings\IStartupOptions.h" />
     <ClInclude Include="Mocks\Tools\ICompass.h" />
     <ClInclude Include="Mocks\Tools\IMeasure.h" />
-    <ClInclude Include="Mocks\UI\IBubble.h" />
     <ClInclude Include="Mocks\UI\ICameraControls.h" />
     <ClInclude Include="Mocks\UI\IContextMenu.h" />
+    <ClInclude Include="Mocks\UI\IImGuiBackend.h" />
+    <ClInclude Include="Mocks\UI\IMapRenderer.h" />
     <ClInclude Include="Mocks\UI\ISettingsWindow.h" />
     <ClInclude Include="Mocks\UI\IViewerUI.h" />
     <ClInclude Include="Mocks\UI\IViewOptions.h" />
@@ -263,6 +267,7 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClInclude Include="Mocks\Windows\ITriggersWindow.h" />
     <ClInclude Include="Mocks\Windows\ITriggersWindowManager.h" />
     <ClInclude Include="Mocks\Windows\IViewer.h" />
+    <ClInclude Include="Resources\DefaultFonts.h" />
     <ClInclude Include="Resources\DefaultShaders.h" />
     <ClInclude Include="Resources\DefaultTextures.h" />
     <ClInclude Include="Resources\resource.h" />
@@ -292,27 +297,30 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClInclude Include="Tools\IMeasure.h" />
     <ClInclude Include="Tools\Measure.h" />
     <ClInclude Include="Tools\Toolbar.h" />
-    <ClInclude Include="UI\Bubble.h" />
+    <ClInclude Include="trview_imgui.h" />
+    <ClInclude Include="trview_imgui.hpp" />
     <ClInclude Include="UI\CameraControls.h" />
     <ClInclude Include="UI\CameraPosition.h" />
     <ClInclude Include="UI\Console.h" />
     <ClInclude Include="UI\ContextMenu.h" />
     <ClInclude Include="UI\di.h" />
     <ClInclude Include="UI\di.hpp" />
+    <ClInclude Include="UI\DX11ImGuiBackend.h" />
     <ClInclude Include="UI\GoTo.h" />
-    <ClInclude Include="UI\IBubble.h" />
     <ClInclude Include="UI\ICameraControls.h" />
     <ClInclude Include="UI\IContextMenu.h" />
+    <ClInclude Include="UI\IImGuiBackend.h" />
+    <ClInclude Include="UI\IMapRenderer.h" />
     <ClInclude Include="UI\ISettingsWindow.h" />
     <ClInclude Include="UI\IViewerUI.h" />
     <ClInclude Include="UI\IViewOptions.h" />
     <ClInclude Include="UI\LevelInfo.h" />
+    <ClInclude Include="UI\MapRenderer.h" />
     <ClInclude Include="UI\RoomNavigator.h" />
     <ClInclude Include="UI\SettingsWindow.h" />
     <ClInclude Include="UI\Tooltip.h" />
     <ClInclude Include="UI\ViewerUI.h" />
     <ClInclude Include="UI\ViewOptions.h" />
-    <ClInclude Include="Windows\CollapsiblePanel.h" />
     <ClInclude Include="Windows\di.h" />
     <ClInclude Include="Windows\di.hpp" />
     <ClInclude Include="Windows\IItemsWindow.h" />
@@ -355,20 +363,7 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <Text Include="Resources\Files\actions.json">
       <FileType>Document</FileType>
     </Text>
-    <None Include="Resources\Files\UI\camera_controls.json" />
-    <None Include="Resources\Files\UI\camera_position.json" />
-    <None Include="Resources\Files\UI\console.json" />
-    <None Include="Resources\Files\UI\context_menu.json" />
-    <None Include="Resources\Files\UI\go_to.json" />
-    <None Include="Resources\Files\UI\items_window.json" />
-    <None Include="Resources\Files\UI\level_info.json" />
-    <None Include="Resources\Files\UI\rooms_window.json" />
-    <None Include="Resources\Files\UI\room_navigator.json" />
-    <None Include="Resources\Files\UI\route_window.json" />
-    <None Include="Resources\Files\UI\settings_window.json" />
-    <None Include="Resources\Files\UI\tool_window.json" />
-    <None Include="Resources\Files\UI\triggers_window.json" />
-    <None Include="Resources\Files\UI\view_options.json" />
+    <None Include="Resources\Files\Fonts\arial7.bin" />
     <None Include="Resources\Generated\level_pixel_shader.cso" />
     <None Include="Resources\Generated\level_vertex_shader.cso" />
     <None Include="Resources\Generated\selection_pixel_shader.cso" />
@@ -376,6 +371,9 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <None Include="Resources\Generated\ui_vertex_shader.cso" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\external\imgui\imgui.vcxproj">
+      <Project>{6aabd08e-3361-4d84-88f0-851ee588162a}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\external\lua\lua.vcxproj">
       <Project>{2a4f1e89-71ac-46c3-a711-1a4d67accdf5}</Project>
     </ProjectReference>
@@ -387,12 +385,6 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     </ProjectReference>
     <ProjectReference Include="..\trview.lau\trview.lau.vcxproj">
       <Project>{2ac76373-f9a6-426d-b732-80e6bd6bfab4}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\trview.ui.render\trview.ui.render.vcxproj">
-      <Project>{0c5a9791-6cf1-42e9-9776-ac47eeff8ec8}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\trview.ui\trview.ui.vcxproj">
-      <Project>{160bd1c8-42c1-46e6-a232-b980b9b6d57e}</Project>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
@@ -472,7 +464,7 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir);$(SolutionDir)external\DirectXTK\Inc;$(ProjectDir)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir);$(SolutionDir)external\DirectXTK\Inc;$(ProjectDir);$(SolutionDir)external\imgui</AdditionalIncludeDirectories>
       <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <ForcedIncludeFiles>stdafx.h</ForcedIncludeFiles>
@@ -497,7 +489,7 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir);$(SolutionDir)external\DirectXTK\Inc;$(ProjectDir)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir);$(SolutionDir)external\DirectXTK\Inc;$(ProjectDir);$(SolutionDir)external\imgui</AdditionalIncludeDirectories>
       <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <ForcedIncludeFiles>stdafx.h</ForcedIncludeFiles>
@@ -520,7 +512,7 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir);$(SolutionDir)external\DirectXTK\Inc;$(ProjectDir)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir);$(SolutionDir)external\DirectXTK\Inc;$(ProjectDir);$(SolutionDir)external\imgui</AdditionalIncludeDirectories>
       <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <ForcedIncludeFiles>stdafx.h</ForcedIncludeFiles>
@@ -545,7 +537,7 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir);$(SolutionDir)external\DirectXTK\Inc;$(ProjectDir)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir);$(SolutionDir)external\DirectXTK\Inc;$(ProjectDir);$(SolutionDir)external\imgui</AdditionalIncludeDirectories>
       <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <ForcedIncludeFiles>stdafx.h</ForcedIncludeFiles>

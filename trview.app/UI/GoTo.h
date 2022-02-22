@@ -9,33 +9,14 @@
 #include <cstdint>
 #include <string>
 #include <trview.common/Event.h>
-#include <trview.common/TokenStore.h>
-#include <trview.ui/Control.h>
-#include <trview.ui/ILoader.h>
 
 namespace trview
 {
-    namespace ui
-    {
-        class GroupBox;
-        class TextArea;
-    }
-    
     /// This window presents the user with a box where they can enter the number of the thing
     /// that they want to go to. Then when they press enter, that will be the selected.
     class GoTo final
     {
     public:
-        struct Names
-        {
-            static const std::string group;
-            static const std::string text_area;
-        };
-
-        /// Creates an instance of the GoTo class. This will add UI elements to the control provided.
-        /// @param parent The control to which the instance will be added as a child.
-        explicit GoTo(ui::Control& parent, const ui::ILoader& ui_source);
-
         /// Gets whether the window is currently visible.
         /// @returns True if the window is visible.
         bool visible() const;
@@ -50,13 +31,14 @@ namespace trview
         /// Get the name of the type of thing being selected.
         std::wstring name() const;
 
+        void render();
+
         /// Set the name of the type of thing that is being gone to.
         void set_name(const std::wstring& name);
     private:
-        TokenStore    _token_store;
-        ui::Control*  _window;
-        ui::GroupBox* _group;
-        ui::TextArea* _text_area;
         std::wstring  _name;
+        bool _visible{ false };
+        int _index{ 0 };
+        bool _shown{ false };
     };
 }

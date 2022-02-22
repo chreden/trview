@@ -11,7 +11,6 @@
 #include "RouteWindowManager.h"
 #include "RoomsWindowManager.h"
 #include "Viewer.h"
-#include <trview.ui/ILoader.h>
 
 namespace trview
 {
@@ -21,72 +20,47 @@ namespace trview
         using namespace graphics;
 
         return di::make_injector(
+            di::bind<IItemsWindow>.to<ItemsWindow>().in(di::unique),
             di::bind<IItemsWindow::Source>.to(
             [](const auto& injector) -> IItemsWindow::Source
             {
-                return [&](auto window)
+                return [&]()
                 {
-                    return std::make_shared<ItemsWindow>(
-                        injector.create<IDeviceWindow::Source>(),
-                        injector.create<ui::render::IRenderer::Source>(),
-                        injector.create<ui::IInput::Source>(),
-                        window,
-                        injector.create<std::shared_ptr<IClipboard>>(),
-                        injector.create<IBubble::Source>(),
-                        injector.create<std::shared_ptr<ui::ILoader>>());
+                    return injector.create<std::shared_ptr<IItemsWindow>>();
                 };
             }),
             di::bind<IItemsWindowManager>.to<ItemsWindowManager>(),
+            di::bind<ITriggersWindow>.to<TriggersWindow>().in(di::unique),
             di::bind<ITriggersWindow::Source>.to(
                 [](const auto& injector) -> ITriggersWindow::Source
                 {
-                    return [&](auto window)
+                    return [&]()
                     {
-                        return std::make_shared<TriggersWindow>(
-                            injector.create<IDeviceWindow::Source>(),
-                            injector.create<ui::render::IRenderer::Source>(),
-                            injector.create<ui::IInput::Source>(),
-                            window,
-                            injector.create<std::shared_ptr<IClipboard>>(),
-                            injector.create<IBubble::Source>(),
-                            injector.create<std::shared_ptr<ui::ILoader>>());
+                        return injector.create<std::shared_ptr<ITriggersWindow>>();
                     };
                 }),
             di::bind<ITriggersWindowManager>.to<TriggersWindowManager>(),
             di::bind<IRouteWindow::Source>.to(
                 [](const auto& injector) -> IRouteWindow::Source
                 {
-                    return [&](auto window)
+                    return [&]()
                     {
                         return std::make_shared<RouteWindow>(
-                            injector.create<IDeviceWindow::Source>(),
-                            injector.create<ui::render::IRenderer::Source>(),
-                            injector.create<ui::IInput::Source>(),
-                            window,
+                            injector.create<Window>(),
                             injector.create<std::shared_ptr<IClipboard>>(),
                             injector.create<std::shared_ptr<IDialogs>>(),
-                            injector.create<std::shared_ptr<IFiles>>(),
-                            injector.create<IBubble::Source>(),
-                            injector.create<std::shared_ptr<ui::ILoader>>(),
-                            injector.create<std::shared_ptr<IShell>>());
+                            injector.create<std::shared_ptr<IFiles>>());
                     };
                 }
             ),
             di::bind<IRouteWindowManager>.to<RouteWindowManager>(),
+            di::bind<IRoomsWindow>.to<RoomsWindow>().in(di::unique),
             di::bind<IRoomsWindow::Source>.to(
                 [](const auto& injector) -> IRoomsWindow::Source
                 {
-                    return [&](auto window)
+                    return [&]()
                     {
-                        return std::make_shared<RoomsWindow>(
-                            injector.create<IDeviceWindow::Source>(),
-                            injector.create<ui::render::IRenderer::Source>(),
-                            injector.create<ui::render::IMapRenderer::Source>(),
-                            injector.create<ui::IInput::Source>(),
-                            injector.create<std::shared_ptr<IClipboard>>(),
-                            injector.create<IBubble::Source>(),
-                            window,
-                            injector.create<std::shared_ptr<ui::ILoader>>());
+                        return injector.create<std::shared_ptr<IRoomsWindow>>();
                     };
                 }),
             di::bind<IRoomsWindowManager>.to<RoomsWindowManager>(),

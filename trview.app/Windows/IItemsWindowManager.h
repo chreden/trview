@@ -21,9 +21,7 @@ namespace trview
         Event<Item> on_add_to_route;
 
         /// Render all of the item windows.
-        /// @param device The device to use to render.
-        /// @param vsync Whether to use vsync.
-        virtual void render(bool vsync) = 0;
+        virtual void render() = 0;
 
         /// Set the items to use in the windows.
         /// @param items The items in the level.

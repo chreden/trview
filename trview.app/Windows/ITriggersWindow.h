@@ -5,13 +5,12 @@
 #include <trview.common/Event.h>
 #include <trview.app/Elements/Item.h>
 #include <trview.app/Elements/ITrigger.h>
-#include <trview.ui/Control.h>
 
 namespace trview
 {
     struct ITriggersWindow
     {
-        using Source = std::function<std::shared_ptr<ITriggersWindow>(const Window)>;
+        using Source = std::function<std::shared_ptr<ITriggersWindow>()>;
 
         virtual ~ITriggersWindow() = 0;
 
@@ -34,8 +33,7 @@ namespace trview
         virtual void clear_selected_trigger() = 0;
 
         /// Render the window.
-        /// @param vsync Whether to use vsync or not.
-        virtual void render(bool vsync) = 0;
+        virtual void render() = 0;
 
         virtual std::weak_ptr<ITrigger> selected_trigger() const = 0;
 
@@ -44,6 +42,8 @@ namespace trview
         virtual void set_current_room(uint32_t room) = 0;
 
         virtual void set_items(const std::vector<Item>& items) = 0;
+
+        virtual void set_number(int32_t number) = 0;
 
         /// Set the selected trigger.
         /// @param item The selected trigger.

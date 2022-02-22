@@ -1,21 +1,29 @@
 #include <trview.app/UI/RoomNavigator.h>
-#include <trview.ui/JsonLoader.h>
-#include <trview.common/Mocks/Windows/IShell.h>
-#include <trview.ui/Window.h>
-#include <trview.ui/NumericUpDown.h>
-#include <trview.ui/Button.h>
-#include <trview.ui/Label.h>
-#include <trview.ui/Listbox.h>
-#include <trview.app/Elements/RoomInfo.h>
+#include "TestImgui.h"
 
 using namespace trview;
-using namespace trview::mocks;
-using namespace trview::ui;
+using namespace trview::tests;
+
+TEST(RoomNavigator, MinRoomsLimitsCurrentRoom)
+{
+    RoomNavigator navigator;
+    navigator.set_max_rooms(10);
+
+    std::optional<uint32_t> raised;
+    auto token = navigator.on_room_selected += [&](auto room)
+    {
+        raised = room;
+    };
+
+    tests::TestImgui imgui([&]() { navigator.render(); });
+    imgui.click_element(imgui.id("Room Navigator").push("of 0##roomnumber").id("-"));
+
+    ASSERT_FALSE(raised.has_value());
+}
 
 TEST(RoomNavigator, MaxRoomsLimitsCurrentRoom)
 {
-    ui::Window window(Size(), Colour::White);
-    RoomNavigator navigator(window, JsonLoader(std::make_shared<MockShell>()));
+    RoomNavigator navigator;
     navigator.set_max_rooms(0);
 
     std::optional<uint32_t> raised;
@@ -24,62 +32,49 @@ TEST(RoomNavigator, MaxRoomsLimitsCurrentRoom)
         raised = room;
     };
 
-    auto current = window.find<NumericUpDown>(RoomNavigator::Names::current_room);
-    ASSERT_NE(current, nullptr);
-
-    auto up = current->find<Button>(NumericUpDown::Names::up);
-    up->clicked(Point());
+    tests::TestImgui imgui([&]() { navigator.render(); });
+    imgui.click_element(imgui.id("Room Navigator").push("of 0##roomnumber").id("+"));
 
     ASSERT_FALSE(raised.has_value());
 }
 
 TEST(RoomNavigator, MaxRoomsUpdatesLabel)
 {
-    ui::Window window(Size(), Colour::White);
-    RoomNavigator navigator(window, JsonLoader(std::make_shared<MockShell>()));
+    RoomNavigator navigator;
     navigator.set_max_rooms(0);
 
-    auto max = window.find<Label>(RoomNavigator::Names::max_rooms);
-    ASSERT_NE(max, nullptr);
-    ASSERT_EQ(max->text(), L"0");
+    tests::TestImgui imgui([&]() { navigator.render(); });
+    ASSERT_TRUE(imgui.element_present(imgui.id("Room Navigator").id("of 0##roomnumber")));
+    imgui.reset();
 
     navigator.set_max_rooms(100);
-    ASSERT_EQ(max->text(), L"99");
+    imgui.render();
+    ASSERT_TRUE(imgui.element_present(imgui.id("Room Navigator").id("of 99##roomnumber")));
 }
 
-TEST(RoomNavigator, CoordinatesDisplayed)
+TEST(RoomNavigator, RoomSelectedEventRaisedOnMinus)
 {
-    ui::Window window(Size(), Colour::White);
-    RoomNavigator navigator(window, JsonLoader(std::make_shared<MockShell>()));
+    RoomNavigator navigator;
 
-    RoomInfo info;
-    info.x = 1024;
-    info.z = 2048;
-    navigator.set_room_info(info);
+    std::optional<uint32_t> raised;
+    auto token = navigator.on_room_selected += [&](auto room)
+    {
+        raised = room;
+    };
 
-    auto stats = window.find<Listbox>(RoomNavigator::Names::stats);
-    ASSERT_NE(stats, nullptr);
+    navigator.set_selected_room(5);
+    navigator.set_max_rooms(10);
 
-    auto x_row = stats->find<ui::Control>(ui::Listbox::Names::row_name_format + "0");
-    ASSERT_NE(x_row, nullptr);
+    tests::TestImgui imgui([&]() { navigator.render(); });
+    imgui.click_element(imgui.id("Room Navigator").push("of 9##roomnumber").id("-"));
 
-    auto x_cell = x_row->find<ui::Button>(ui::Listbox::Row::Names::cell_name_format + "Value");
-    ASSERT_NE(x_cell, nullptr);
-
-    auto z_row = stats->find<ui::Control>(ui::Listbox::Names::row_name_format + "1");
-    ASSERT_NE(z_row, nullptr);
-
-    auto z_cell = z_row->find<ui::Button>(ui::Listbox::Row::Names::cell_name_format + "Value");
-    ASSERT_NE(z_cell, nullptr);
-
-    ASSERT_EQ(x_cell->text(), L"1");
-    ASSERT_EQ(z_cell->text(), L"2");
+    ASSERT_TRUE(raised.has_value());
+    ASSERT_EQ(raised.value(), 4);
 }
 
-TEST(RoomNavigator, RoomSelectedEventRaised)
+TEST(RoomNavigator, RoomSelectedEventRaisedOnPlus)
 {
-    ui::Window window(Size(), Colour::White);
-    RoomNavigator navigator(window, JsonLoader(std::make_shared<MockShell>()));
+    RoomNavigator navigator;
 
     std::optional<uint32_t> raised;
     auto token = navigator.on_room_selected += [&](auto room)
@@ -89,11 +84,8 @@ TEST(RoomNavigator, RoomSelectedEventRaised)
 
     navigator.set_max_rooms(10);
 
-    auto current = window.find<NumericUpDown>(RoomNavigator::Names::current_room);
-    ASSERT_NE(current, nullptr);
-
-    auto up = current->find<Button>(NumericUpDown::Names::up);
-    up->clicked(Point());
+    tests::TestImgui imgui([&]() { navigator.render(); });
+    imgui.click_element(imgui.id("Room Navigator").push("of 9##roomnumber").id("+"));
 
     ASSERT_TRUE(raised.has_value());
     ASSERT_EQ(raised.value(), 1);
@@ -101,13 +93,33 @@ TEST(RoomNavigator, RoomSelectedEventRaised)
 
 TEST(RoomNavigator, SetCurrentRoomUpdatesUpDown)
 {
-    ui::Window window(Size(), Colour::White);
-    RoomNavigator navigator(window, JsonLoader(std::make_shared<MockShell>()));
+    RoomNavigator navigator;
+
     navigator.set_max_rooms(10);
-    auto current = window.find<NumericUpDown>(RoomNavigator::Names::current_room);
-    ASSERT_NE(current, nullptr);
-    ASSERT_EQ(current->value(), 0);
+    tests::TestImgui imgui([&]() { navigator.render(); });
+    ASSERT_EQ(imgui.item_text(imgui.id("Room Navigator").push("of 9##roomnumber").id("")), "0");
 
     navigator.set_selected_room(1);
-    ASSERT_EQ(current->value(), 1);
+    imgui.render();
+    ASSERT_EQ(imgui.item_text(imgui.id("Room Navigator").push("of 9##roomnumber").id("")), "1");
+}
+
+TEST(RoomNavigator, EnterRoomNumber)
+{
+    RoomNavigator navigator;
+
+    std::optional<uint32_t> raised;
+    auto token = navigator.on_room_selected += [&](auto room)
+    {
+        raised = room;
+    };
+
+    navigator.set_max_rooms(10);
+    tests::TestImgui imgui([&]() { navigator.render(); });
+    imgui.click_element(imgui.id("Room Navigator").push("of 9##roomnumber").id(""));
+    imgui.enter_text("5");
+    imgui.press_key(ImGuiKey_Enter);
+ 
+    ASSERT_TRUE(raised.has_value());
+    ASSERT_EQ(raised.value(), 5);
 }

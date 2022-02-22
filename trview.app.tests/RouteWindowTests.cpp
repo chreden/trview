@@ -1,30 +1,17 @@
 #include <trview.app/Windows/RouteWindow.h>
-#include <trview.ui.render/Mocks/IRenderer.h>
-#include <trview.graphics/mocks/IDeviceWindow.h>
 #include <trview.app/Mocks/Routing/IRoute.h>
-#include <trlevel/Mocks/ILevel.h>
-#include <trview.app/Mocks/Elements/ILevel.h>
 #include <trview.app/Mocks/Elements/IRoom.h>
 #include <trview.common/Mocks/Windows/IClipboard.h>
-#include <trview.ui/Mocks/Input/IInput.h>
 #include <trview.common/Mocks/Windows/IDialogs.h>
 #include <trview.common/Mocks/IFiles.h>
-#include <trview.app/Mocks/UI/IBubble.h>
 #include <trview.app/Mocks/Routing/IWaypoint.h>
-#include <trview.ui/Checkbox.h>
-#include <trview.ui/JsonLoader.h>
-#include <trview.common/Mocks/Windows/IShell.h>
+#include "TestImgui.h"
 
 using namespace DirectX::SimpleMath;
 using namespace testing;
 using namespace trview;
-using namespace trview::graphics;
-using namespace trview::graphics::mocks;
 using namespace trview::mocks;
 using namespace trview::tests;
-using namespace trview::ui;
-using namespace trview::ui::mocks;
-using namespace trview::ui::render::mocks;
 
 namespace
 {
@@ -32,15 +19,10 @@ namespace
     {
         struct test_module
         {
-            IDeviceWindow::Source device_window_source{ [](auto&&...) { return std::make_unique<MockDeviceWindow>(); } };
-            ui::render::IRenderer::Source renderer_source{ [](auto&&...) { return std::make_unique<MockRenderer>(); } };
-            ui::IInput::Source input_source{ [](auto&&...) { return std::make_unique<MockInput>(); } };
-            trview::Window parent{ create_test_window(L"RouteWindowTests") };
             std::shared_ptr<IClipboard> clipboard{ std::make_shared<MockClipboard>() };
             std::shared_ptr<IDialogs> dialogs{ std::make_shared<MockDialogs>() };
             std::shared_ptr<IFiles> files{ std::make_shared<MockFiles>() };
-            IBubble::Source bubble_source{ [](auto&&...) { return std::make_unique<MockBubble>(); }};
-            std::shared_ptr<IShell> shell{ std::make_shared<MockShell>() };
+            trview::Window parent{ create_test_window(L"RouteWindowTests") };
 
             test_module& with_clipboard(const std::shared_ptr<IClipboard>& clipboard)
             {
@@ -60,22 +42,10 @@ namespace
                 return *this;
             }
 
-            test_module& with_bubble_source(const IBubble::Source& source)
-            {
-                this->bubble_source = source;
-                return *this;
-            }
-
-            test_module& with_shell(const std::shared_ptr<IShell>& shell)
-            {
-                this->shell = shell;
-                return *this;
-            }
 
             std::unique_ptr<RouteWindow> build()
             {
-                return std::make_unique<RouteWindow>(device_window_source, renderer_source, input_source,
-                    parent, clipboard, dialogs, files, bubble_source, std::make_shared<JsonLoader>(shell), shell);
+                return std::make_unique<RouteWindow>(parent, clipboard, dialogs, files);
             }
         };
         return test_module{};
@@ -86,7 +56,6 @@ TEST(RouteWindow, WaypointRoomPositionCalculatedCorrectly)
 {
     const Vector3 room_pos{ 102400, 204800, 307200 };
     const Vector3 waypoint_pos{ 130, 250, 325 };
-    const Vector3 expected{ 30720, 51200, 25600 };
 
     auto window = register_test_module().build();
 
@@ -108,34 +77,19 @@ TEST(RouteWindow, WaypointRoomPositionCalculatedCorrectly)
     window->set_route(&route);
 
     window->select_waypoint(0);
-    auto waypoint_stats = window->root_control()->find<ui::Listbox>(RouteWindow::Names::waypoint_stats);
-    ASSERT_NE(waypoint_stats, nullptr);
 
-    auto items = waypoint_stats->items();
-    auto item_iter = std::find_if(items.begin(), items.end(), [](auto i) { return i.value(L"Name") == L"Room Position"; });
-    ASSERT_NE(item_iter, items.end());
+    TestImgui imgui([&]() { window->render(); });
+    auto rendered = imgui.rendered_text(imgui.id("Route")
+        .push_child(RouteWindow::Names::waypoint_details_panel)
+        .id(RouteWindow::Names::waypoint_stats));
 
-    auto value = item_iter->value(L"Value");
-    value.erase(std::remove_if(value.begin(), value.end(),
-        [](wchar_t c)
-        {
-            return std::isspace(static_cast<int>(c));
-        }), value.end());
-    std::replace(value.begin(), value.end(), L',', L' ');
-
-    int32_t x, y, z;
-    std::wstringstream stream(value);
-    stream >> x >> y >> z;
-
-    ASSERT_EQ(x, expected.x);
-    ASSERT_EQ(y, expected.y);
-    ASSERT_EQ(z, expected.z);
+    ASSERT_THAT(rendered, Contains("30720, 51200, 25600"));
 }
 
 TEST(RouteWindow, PositionValuesCopiedToClipboard)
 {
     auto clipboard = std::make_shared<MockClipboard>();
-    EXPECT_CALL(*clipboard, write(An<const trview::Window&>(), std::wstring(L"133120, 256000, 332800"))).Times(1);
+    EXPECT_CALL(*clipboard, write(std::wstring(L"133120, 256000, 332800"))).Times(1);
 
     auto window = register_test_module().with_clipboard(clipboard).build();
 
@@ -150,21 +104,17 @@ TEST(RouteWindow, PositionValuesCopiedToClipboard)
     window->set_route(&route);
     window->select_waypoint(0);
 
-    auto waypoint_stats = window->root_control()->find<ui::Listbox>(RouteWindow::Names::waypoint_stats);
-    ASSERT_NE(waypoint_stats, nullptr);
-
-    auto row = waypoint_stats->find<ui::Control>(ui::Listbox::Names::row_name_format + "1");
-    ASSERT_NE(row, nullptr);
-
-    auto cell = row->find<ui::Button>(ui::Listbox::Row::Names::cell_name_format + "Value");
-    ASSERT_NE(cell, nullptr);
-    cell->clicked(Point());
+    TestImgui imgui([&]() { window->render(); });
+    imgui.click_element(imgui.id("Route")
+        .push_child(RouteWindow::Names::waypoint_details_panel)
+        .push(RouteWindow::Names::waypoint_stats)
+        .id("Position"));
 }
 
 TEST(RouteWindow, RoomPositionValuesCopiedToClipboard)
 {
     auto clipboard = std::make_shared<MockClipboard>();
-    EXPECT_CALL(*clipboard, write(An<const trview::Window&>(), std::wstring(L"133120, 256000, 332800"))).Times(1);
+    EXPECT_CALL(*clipboard, write(std::wstring(L"133120, 256000, 332800"))).Times(1);
 
     auto window = register_test_module().with_clipboard(clipboard).build();
 
@@ -179,15 +129,11 @@ TEST(RouteWindow, RoomPositionValuesCopiedToClipboard)
     window->set_route(&route);
     window->select_waypoint(0);
 
-    auto waypoint_stats = window->root_control()->find<ui::Listbox>(RouteWindow::Names::waypoint_stats);
-    ASSERT_NE(waypoint_stats, nullptr);
-
-    auto row = waypoint_stats->find<ui::Control>(ui::Listbox::Names::row_name_format + "3");
-    ASSERT_NE(row, nullptr);
-
-    auto cell = row->find<ui::Button>(ui::Listbox::Row::Names::cell_name_format + "Value");
-    ASSERT_NE(cell, nullptr);
-    cell->clicked(Point());
+    TestImgui imgui([&]() { window->render(); });
+    imgui.click_element(imgui.id("Route")
+        .push_child(RouteWindow::Names::waypoint_details_panel)
+        .push(RouteWindow::Names::waypoint_stats)
+        .id("Room Position"));
 }
 
 TEST(RouteWindow, AddingWaypointNotesMarksRouteUnsaved)
@@ -204,11 +150,13 @@ TEST(RouteWindow, AddingWaypointNotesMarksRouteUnsaved)
 
     auto window = register_test_module().build();
     window->set_route(&route);
+    window->select_waypoint(0);
 
-    auto notes_area = window->root_control()->find<ui::TextArea>(RouteWindow::Names::notes_area);
-    ASSERT_NE(notes_area, nullptr);
-
-    notes_area->on_text_changed(L"Test");
+    TestImgui imgui([&]() { window->render(); });
+    imgui.click_element(imgui.id("Route")
+        .push_child(RouteWindow::Names::waypoint_details_panel)
+        .push(RouteWindow::Names::notes).id(""), false, true);
+    imgui.enter_text("Test");
 }
 
 TEST(RouteWindow, ClearSaveMarksRouteUnsaved)
@@ -225,10 +173,10 @@ TEST(RouteWindow, ClearSaveMarksRouteUnsaved)
     auto window = register_test_module().build();
     window->set_route(&route);
 
-    auto clear_save = window->root_control()->find<ui::Button>(RouteWindow::Names::clear_save);
-    ASSERT_NE(clear_save, nullptr);
-
-    clear_save->on_click();
+    TestImgui imgui([&]() { window->render(); });
+    imgui.click_element(imgui.id("Route")
+        .push_child(RouteWindow::Names::waypoint_details_panel)
+        .id(RouteWindow::Names::clear_save));
 }
 
 TEST(RouteWindow, ExportRouteButtonRaisesEvent)
@@ -243,10 +191,10 @@ TEST(RouteWindow, ExportRouteButtonRaisesEvent)
         file_raised = filename;
     };
 
-    auto export_button = window->root_control()->find<ui::Button>(RouteWindow::Names::export_button);
-    ASSERT_NE(export_button, nullptr);
-
-    export_button->on_click();
+    TestImgui imgui([&]() { window->render(); });
+    imgui.click_element(imgui.id("Route")
+        .push_child(RouteWindow::Names::waypoint_list_panel)
+        .id(RouteWindow::Names::export_button));
 
     ASSERT_TRUE(file_raised.has_value());
     ASSERT_EQ(file_raised, "filename");
@@ -263,10 +211,12 @@ TEST(RouteWindow, ExportRouteButtonDoesNotRaiseEventWhenCancelled)
     {
         file_raised = true;
     };
-    auto export_button = window->root_control()->find<ui::Button>(RouteWindow::Names::export_button);
-    ASSERT_NE(export_button, nullptr);
 
-    export_button->on_click();
+    TestImgui imgui([&]() { window->render(); });
+    imgui.click_element(imgui.id("Route")
+        .push_child(RouteWindow::Names::waypoint_list_panel)
+        .id(RouteWindow::Names::export_button));
+
     ASSERT_FALSE(file_raised);
 }
 
@@ -282,10 +232,10 @@ TEST(RouteWindow, ImportRouteButtonRaisesEvent)
         file_raised = filename;
     };
 
-    auto import_button = window->root_control()->find<ui::Button>(RouteWindow::Names::import_button);
-    ASSERT_NE(import_button, nullptr);
-
-    import_button->on_click();
+    TestImgui imgui([&]() { window->render(); });
+    imgui.click_element(imgui.id("Route")
+        .push_child(RouteWindow::Names::waypoint_list_panel)
+        .id(RouteWindow::Names::import_button));
 
     ASSERT_TRUE(file_raised.has_value());
     ASSERT_EQ(file_raised, "filename");
@@ -302,10 +252,12 @@ TEST(RouteWindow, ImportRouteButtonDoesNotRaiseEventWhenCancelled)
     {
         file_raised = true;
     };
-    auto import_button = window->root_control()->find<ui::Button>(RouteWindow::Names::import_button);
-    ASSERT_NE(import_button, nullptr);
+    
+    TestImgui imgui([&]() { window->render(); });
+    imgui.click_element(imgui.id("Route")
+        .push_child(RouteWindow::Names::waypoint_list_panel)
+        .id(RouteWindow::Names::import_button));
 
-    import_button->on_click();
     ASSERT_FALSE(file_raised);
 }
 
@@ -328,10 +280,10 @@ TEST(RouteWindow, ExportSaveButtonSavesFile)
     auto window = register_test_module().with_dialogs(dialogs).with_files(files).build();
     window->set_route(&route);
 
-    auto export_save_button = window->root_control()->find<ui::Button>(RouteWindow::Names::select_save_button);
-    ASSERT_NE(export_save_button, nullptr);
-
-    export_save_button->on_click();
+    TestImgui imgui([&]() { window->render(); });
+    imgui.click_element(imgui.id("Route")
+        .push_child(RouteWindow::Names::waypoint_details_panel)
+        .id("SAVEGAME.0"));
 }
 
 TEST(RouteWindow, ExportSaveButtonShowsErrorOnFailure)
@@ -353,10 +305,10 @@ TEST(RouteWindow, ExportSaveButtonShowsErrorOnFailure)
     auto window = register_test_module().with_dialogs(dialogs).with_files(files).build();
     window->set_route(&route);
 
-    auto export_save_button = window->root_control()->find<ui::Button>(RouteWindow::Names::select_save_button);
-    ASSERT_NE(export_save_button, nullptr);
-
-    export_save_button->on_click();
+    TestImgui imgui([&]() { window->render(); });
+    imgui.click_element(imgui.id("Route")
+        .push_child(RouteWindow::Names::waypoint_details_panel)
+        .id("SAVEGAME.0"));
 }
 
 TEST(RouteWindow, ExportSaveButtonDoesNotSaveFileWhenCancelled)
@@ -377,10 +329,10 @@ TEST(RouteWindow, ExportSaveButtonDoesNotSaveFileWhenCancelled)
     auto window = register_test_module().with_dialogs(dialogs).with_files(files).build();
     window->set_route(&route);
 
-    auto export_save_button = window->root_control()->find<ui::Button>(RouteWindow::Names::select_save_button);
-    ASSERT_NE(export_save_button, nullptr);
-
-    export_save_button->on_click();
+    TestImgui imgui([&]() { window->render(); });
+    imgui.click_element(imgui.id("Route")
+        .push_child(RouteWindow::Names::waypoint_details_panel)
+        .id("SAVEGAME.0"));
 }
 
 TEST(RouteWindow, AttachSaveButtonLoadsSave)
@@ -402,10 +354,10 @@ TEST(RouteWindow, AttachSaveButtonLoadsSave)
     auto window = register_test_module().with_dialogs(dialogs).with_files(files).build();
     window->set_route(&route);
 
-    auto attach_save_button = window->root_control()->find<ui::Button>(RouteWindow::Names::select_save_button);
-    ASSERT_NE(attach_save_button, nullptr);
-
-    attach_save_button->on_click();
+    TestImgui imgui([&]() { window->render(); });
+    imgui.click_element(imgui.id("Route")
+        .push_child(RouteWindow::Names::waypoint_details_panel)
+        .id(RouteWindow::Names::attach_save));
 }
 
 TEST(RouteWindow, AttachSaveButtonShowsMessageOnError)
@@ -426,10 +378,10 @@ TEST(RouteWindow, AttachSaveButtonShowsMessageOnError)
     auto window = register_test_module().with_dialogs(dialogs).with_files(files).build();
     window->set_route(&route);
 
-    auto attach_save_button = window->root_control()->find<ui::Button>(RouteWindow::Names::select_save_button);
-    ASSERT_NE(attach_save_button, nullptr);
-
-    attach_save_button->on_click();
+    TestImgui imgui([&]() { window->render(); });
+    imgui.click_element(imgui.id("Route")
+        .push_child(RouteWindow::Names::waypoint_details_panel)
+        .id(RouteWindow::Names::attach_save));
 
     ASSERT_FALSE(waypoint.has_save());
 }
@@ -451,19 +403,16 @@ TEST(RouteWindow, AttachSaveButtonDoesNotLoadFileWhenCancelled)
     auto window = register_test_module().with_dialogs(dialogs).with_files(files).build();
     window->set_route(&route);
 
-    auto attach_save_button = window->root_control()->find<ui::Button>(RouteWindow::Names::select_save_button);
-    ASSERT_NE(attach_save_button, nullptr);
-
-    attach_save_button->on_click();
+    TestImgui imgui([&]() { window->render(); });
+    imgui.click_element(imgui.id("Route")
+        .push_child(RouteWindow::Names::waypoint_details_panel)
+        .id(RouteWindow::Names::attach_save));
     ASSERT_FALSE(waypoint.has_save());
 }
 
 TEST(RouteWindow, ClickStatShowsBubble)
 {
-    auto bubble = std::make_unique<MockBubble>();
-    EXPECT_CALL(*bubble, show(testing::A<const Point&>())).Times(1);
-
-    auto window = register_test_module().with_bubble_source([&](auto&&...) { return std::move(bubble); }).build();
+    auto window = register_test_module().build();
 
     MockWaypoint waypoint;
     MockRoute route;
@@ -472,65 +421,82 @@ TEST(RouteWindow, ClickStatShowsBubble)
     window->set_route(&route);
     window->select_waypoint(0);
 
-    auto stats = window->root_control()->find<ui::Listbox>(RouteWindow::Names::waypoint_stats);
-    ASSERT_NE(stats, nullptr);
-
-    auto first_stat = stats->find<ui::Control>(ui::Listbox::Names::row_name_format + "1");
-    ASSERT_NE(first_stat, nullptr);
-
-    auto value = first_stat->find<ui::Button>(ui::Listbox::Row::Names::cell_name_format + "Value");
-    ASSERT_NE(value, nullptr);
-    value->clicked(Point());
+    TestImgui imgui([&]() { window->render(); });
+    imgui.click_element(imgui.id("Route")
+        .push_child(RouteWindow::Names::waypoint_details_panel)
+        .push(RouteWindow::Names::waypoint_stats)
+        .id("Room Position"));
+    ASSERT_NE(imgui.find_window("##Tooltip_00"), nullptr);
 }
 
 TEST(RouteWindow, RandomizerPanelVisibleBasedOnSetting)
 {
     auto window = register_test_module().build();
-    auto randomizer_group = window->root_control()->find<ui::Control>(RouteWindow::Names::randomizer_group);
-    ASSERT_NE(randomizer_group, nullptr);
-    ASSERT_FALSE(randomizer_group->visible());
-    window->set_randomizer_enabled(true);
-    ASSERT_TRUE(randomizer_group->visible());
-}
 
-TEST(RouteWindow, WindowResizesWhenRandomizerEnabled)
-{
-    auto window = register_test_module().build();
-    const auto size = window->window().size();
+    RandomizerSettings settings;
+    settings.settings["test"] = { "Test", RandomizerSettings::Setting::Type::Boolean };
+    window->set_randomizer_settings(settings);
+
+    MockWaypoint waypoint;
+    MockRoute route;
+    EXPECT_CALL(route, waypoints).WillRepeatedly(Return(1));
+    EXPECT_CALL(route, waypoint(An<uint32_t>())).WillRepeatedly(ReturnRef(waypoint));
+    window->set_route(&route);
+    window->select_waypoint(0);
+
+    TestImgui imgui([&]() { window->render(); });
+    ASSERT_FALSE(imgui.element_present(imgui.id("Route")
+        .push_child(RouteWindow::Names::waypoint_details_panel)
+        .push(RouteWindow::Names::randomizer_flags)
+        .id("Test")));
     window->set_randomizer_enabled(true);
-    const auto new_size = window->window().size();
-    ASSERT_GT(new_size.height, size.height);
+    imgui.render();
+    ASSERT_TRUE(imgui.element_present(imgui.id("Route")
+        .push_child(RouteWindow::Names::waypoint_details_panel)
+        .push(RouteWindow::Names::randomizer_flags)
+        .id("Test")));
 }
 
 TEST(RouteWindow, RandomizerPanelCreatesUIFromSettings)
 {
     auto window = register_test_module().build();
-    auto randomizer_group = window->root_control()->find<ui::Control>(RouteWindow::Names::randomizer_group);
+
+    MockWaypoint waypoint;
+    MockRoute route;
+    EXPECT_CALL(route, waypoints).WillRepeatedly(Return(1));
+    EXPECT_CALL(route, waypoint(An<uint32_t>())).WillRepeatedly(ReturnRef(waypoint));
+    window->set_route(&route);
+    window->select_waypoint(0);
 
     RandomizerSettings settings;
     settings.settings["test1"] = { "Test 1", RandomizerSettings::Setting::Type::Boolean };
-    settings.settings["test2"] = { "Test 2", RandomizerSettings::Setting::Type::String, "One", { std::string("One"), std::string("Two"), std::string("Three") } };
+    settings.settings["test2"] = { "Test 2", RandomizerSettings::Setting::Type::String, std::string("One"), { std::string("One"), std::string("Two"), std::string("Three") } };
     settings.settings["test3"] = { "Test 3", RandomizerSettings::Setting::Type::Number, 1.0f };
     window->set_randomizer_settings(settings);
+    window->set_randomizer_enabled(true);
 
-    auto test1 = randomizer_group->find<ui::Checkbox>("test1");
-    ASSERT_NE(test1, nullptr);
+    TestImgui imgui([&]() { window->render(); });
 
-    auto test2 = randomizer_group->find<ui::Dropdown>("test2");
-    ASSERT_NE(test2, nullptr);
-
-    auto test3 = randomizer_group->find<ui::TextArea>("test3");
-    ASSERT_NE(test3, nullptr);
+    ASSERT_TRUE(imgui.element_present(imgui.id("Route")
+        .push_child(RouteWindow::Names::waypoint_details_panel)
+        .push(RouteWindow::Names::randomizer_flags)
+        .id("Test 1")));
+    ASSERT_TRUE(imgui.element_present(imgui.id("Route")
+        .push_child(RouteWindow::Names::waypoint_details_panel)
+        .id("Test 2")));
+    ASSERT_TRUE(imgui.element_present(imgui.id("Route")
+        .push_child(RouteWindow::Names::waypoint_details_panel)
+        .id("Test 3")));
 }
 
 TEST(RouteWindow, ToggleRandomizerBoolUpdatesWaypoint)
 {
     auto window = register_test_module().build();
-    auto randomizer_group = window->root_control()->find<ui::Control>(RouteWindow::Names::randomizer_group);
 
     RandomizerSettings settings;
     settings.settings["test1"] = { "Test 1", RandomizerSettings::Setting::Type::Boolean, true };
     window->set_randomizer_settings(settings);
+    window->set_randomizer_enabled(true);
 
     IWaypoint::WaypointRandomizerSettings new_settings;
 
@@ -542,11 +508,12 @@ TEST(RouteWindow, ToggleRandomizerBoolUpdatesWaypoint)
     window->set_route(&route);
     window->select_waypoint(0);
 
-    auto test1 = randomizer_group->find<ui::Checkbox>("test1");
-    ASSERT_NE(test1, nullptr);
-    ASSERT_TRUE(test1->state());
+    TestImgui imgui([&]() { window->render(); });
+    imgui.click_element(imgui.id("Route")
+        .push_child(RouteWindow::Names::waypoint_details_panel)
+        .push(RouteWindow::Names::randomizer_flags)
+        .id("Test 1"));
 
-    test1->clicked(Point());
     ASSERT_NE(new_settings.find("test1"), new_settings.end());
     ASSERT_FALSE(std::get<bool>(new_settings["test1"]));
 }
@@ -554,11 +521,11 @@ TEST(RouteWindow, ToggleRandomizerBoolUpdatesWaypoint)
 TEST(RouteWindow, ChooseRandomizerDropDownUpdatesWaypoint)
 {
     auto window = register_test_module().build();
-    auto randomizer_group = window->root_control()->find<ui::Control>(RouteWindow::Names::randomizer_group);
 
     RandomizerSettings settings;
     settings.settings["test1"] = { "Test 1", RandomizerSettings::Setting::Type::String, std::string("One"), { std::string("One"), std::string("Two") } };
     window->set_randomizer_settings(settings);
+    window->set_randomizer_enabled(true);
 
     IWaypoint::WaypointRandomizerSettings new_settings;
 
@@ -570,25 +537,12 @@ TEST(RouteWindow, ChooseRandomizerDropDownUpdatesWaypoint)
     window->set_route(&route);
     window->select_waypoint(0);
 
-    auto test1 = randomizer_group->find<ui::Dropdown>("test1");
-    ASSERT_NE(test1, nullptr);
-    ASSERT_EQ(test1->selected_value(), L"One");
+    TestImgui imgui([&]() { window->render(); });
+    imgui.click_element(imgui.id("Route")
+        .push_child(RouteWindow::Names::waypoint_details_panel)
+        .id("Test 1"));
+    imgui.click_element(imgui.id("##Combo_00").id("Two"));
 
-    auto dropdown_button = test1->find<ui::Button>(ui::Dropdown::Names::dropdown_button);
-    ASSERT_NE(dropdown_button, nullptr);
-    dropdown_button->clicked(Point());
-
-    auto dropdown_list = test1->dropdown_listbox();
-    ASSERT_NE(dropdown_list, nullptr);
-
-    auto row = dropdown_list->find<ui::Control>(ui::Listbox::Names::row_name_format + "1");
-    ASSERT_NE(row, nullptr);
-
-    auto cell = row->find<ui::Button>(ui::Listbox::Row::Names::cell_name_format + "Name");
-    ASSERT_NE(cell, nullptr);
-    cell->clicked(Point());
-
-    test1->set_selected_value(L"Two");
     ASSERT_NE(new_settings.find("test1"), new_settings.end());
     ASSERT_EQ(std::get<std::string>(new_settings["test1"]), "Two");
 }
@@ -596,11 +550,11 @@ TEST(RouteWindow, ChooseRandomizerDropDownUpdatesWaypoint)
 TEST(RouteWindow, SetRandomizerTextUpdatesWaypoint)
 {
     auto window = register_test_module().build();
-    auto randomizer_group = window->root_control()->find<ui::Control>(RouteWindow::Names::randomizer_group);
 
     RandomizerSettings settings;
     settings.settings["test1"] = { "Test 1", RandomizerSettings::Setting::Type::String, std::string("One") };
     window->set_randomizer_settings(settings);
+    window->set_randomizer_enabled(true);
 
     IWaypoint::WaypointRandomizerSettings new_settings;
 
@@ -612,11 +566,11 @@ TEST(RouteWindow, SetRandomizerTextUpdatesWaypoint)
     window->set_route(&route);
     window->select_waypoint(0);
 
-    auto test1 = randomizer_group->find<ui::TextArea>("test1");
-    ASSERT_NE(test1, nullptr);
-    ASSERT_EQ(test1->text(), L"One");
-
-    test1->set_text(L"Two");
+    TestImgui imgui([&]() { window->render(); });
+    imgui.click_element(imgui.id("Route")
+        .push_child(RouteWindow::Names::waypoint_details_panel)
+        .id("Test 1"));
+    imgui.enter_text("Two");
 
     ASSERT_NE(new_settings.find("test1"), new_settings.end());
     ASSERT_EQ(std::get<std::string>(new_settings["test1"]), "Two");
@@ -625,11 +579,11 @@ TEST(RouteWindow, SetRandomizerTextUpdatesWaypoint)
 TEST(RouteWindow, SetRandomizerNumberUpdatesWaypoint)
 {
     auto window = register_test_module().build();
-    auto randomizer_group = window->root_control()->find<ui::Control>(RouteWindow::Names::randomizer_group);
 
     RandomizerSettings settings;
     settings.settings["test1"] = { "Test 1", RandomizerSettings::Setting::Type::Number, 1.0f };
     window->set_randomizer_settings(settings);
+    window->set_randomizer_enabled(true);
 
     IWaypoint::WaypointRandomizerSettings new_settings;
 
@@ -641,65 +595,37 @@ TEST(RouteWindow, SetRandomizerNumberUpdatesWaypoint)
     window->set_route(&route);
     window->select_waypoint(0);
 
-    auto test1 = randomizer_group->find<ui::TextArea>("test1");
-    ASSERT_NE(test1, nullptr);
-    ASSERT_EQ(test1->text(), L"1.000000");
-
-    test1->set_text(L"2.0");
-    test1->gained_focus();
-    test1->key_char(0xD);
+    TestImgui imgui([&]() { window->render(); });
+    imgui.click_element(imgui.id("Route")
+        .push_child(RouteWindow::Names::waypoint_details_panel)
+        .id("Test 1"));
+    imgui.enter_text("2");
 
     ASSERT_NE(new_settings.find("test1"), new_settings.end());
     ASSERT_EQ(std::get<float>(new_settings["test1"]), 2.0);
 }
 
-TEST(RouteWindow, SetRandomizerNumberUpdatesWaypointByChangingFocus)
+TEST(RouteWindow, DeleteWaypointRaisesEvent)
 {
     auto window = register_test_module().build();
-    auto randomizer_group = window->root_control()->find<ui::Control>(RouteWindow::Names::randomizer_group);
-
-    RandomizerSettings settings;
-    settings.settings["test1"] = { "Test 1", RandomizerSettings::Setting::Type::Number, 1.0f };
-    window->set_randomizer_settings(settings);
-
-    IWaypoint::WaypointRandomizerSettings new_settings;
-
     MockWaypoint waypoint;
     MockRoute route;
     EXPECT_CALL(route, waypoints).WillRepeatedly(Return(1));
     EXPECT_CALL(route, waypoint(An<uint32_t>())).WillRepeatedly(ReturnRef(waypoint));
-    EXPECT_CALL(waypoint, set_randomizer_settings(An<const IWaypoint::WaypointRandomizerSettings&>())).WillRepeatedly(SaveArg<0>(&new_settings));
     window->set_route(&route);
     window->select_waypoint(0);
 
-    auto test1 = randomizer_group->find<ui::TextArea>("test1");
-    ASSERT_NE(test1, nullptr);
-    ASSERT_EQ(test1->text(), L"1.000000");
+    std::optional<uint32_t> raised;
+    auto token = window->on_waypoint_deleted += [&](const auto& waypoint)
+    {
+        raised = waypoint;
+    };
 
-    test1->gained_focus();
-    test1->set_text(L"2.0");
-    test1->lost_focus(nullptr);
+    TestImgui imgui([&]() { window->render(); });
+    imgui.click_element(imgui.id("Route")
+        .push_child(RouteWindow::Names::waypoint_details_panel)
+        .id(RouteWindow::Names::delete_waypoint));
 
-    ASSERT_NE(new_settings.find("test1"), new_settings.end());
-    ASSERT_EQ(std::get<float>(new_settings["test1"]), 2.0);
-}
-
-TEST(RouteWindow, RandomizerTextAreasUseShell)
-{
-    auto shell = std::make_shared<MockShell>();
-    EXPECT_CALL(*shell, open(std::wstring(L"http://example.com"))).Times(1);
-
-    auto window = register_test_module().with_shell(shell).build();
-
-    RandomizerSettings settings;
-    settings.settings["test_text"] = { "test_text", RandomizerSettings::Setting::Type::String };
-
-    window->set_randomizer_enabled(true);
-    window->set_randomizer_settings(settings);
-
-    auto text_area = window->root_control()->find<TextArea>("test_text");
-    ASSERT_NE(text_area, nullptr);
-
-    text_area->set_text(L"http://example.com");
-    text_area->clicked(Point(5, 5));
+    ASSERT_TRUE(raised.has_value());
+    ASSERT_EQ(raised, 0);
 }

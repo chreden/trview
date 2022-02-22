@@ -17,15 +17,15 @@ namespace trview
     {
         struct Options
         {
-            inline static const std::string depth = "depth";
-            inline static const std::string depth_enabled = "depth_enabled";
-            inline static const std::string flip = "flip";
-            inline static const std::string hidden_geometry = "hidden_geometry";
-            inline static const std::string highlight = "highlight";
-            inline static const std::string show_bounding_boxes = "show_bounding_boxes";
-            inline static const std::string triggers = "triggers";
-            inline static const std::string water = "water";
-            inline static const std::string wireframe = "wireframe";
+            inline static const std::string depth = "##DepthValue";
+            inline static const std::string depth_enabled = "Depth";
+            inline static const std::string flip = "Flip";
+            inline static const std::string hidden_geometry = "Geometry";
+            inline static const std::string highlight = "Highlight";
+            inline static const std::string show_bounding_boxes = "Bounds";
+            inline static const std::string triggers = "Triggers";
+            inline static const std::string water = "Water";
+            inline static const std::string wireframe = "Wireframe";
         };
 
         virtual ~IViewer() = 0;
@@ -62,6 +62,10 @@ namespace trview
 
         /// Render the viewer.
         virtual void render() = 0;
+
+        virtual void render_ui() = 0;
+
+        virtual void present(bool vsync) = 0;
 
         /// Attempt to open the specified level file.
         /// @param filename The level file to open.
