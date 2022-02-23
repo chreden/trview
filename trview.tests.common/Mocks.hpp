@@ -16,6 +16,12 @@ namespace trview
         }
 
         template <typename T>
+        auto mock_unique()
+        {
+            return std::make_unique<testing::NiceMock<T>>();;
+        }
+
+        template <typename T>
         auto mock_shared()
         {
             return std::make_shared<testing::NiceMock<T>>();

@@ -6,8 +6,8 @@
 using namespace trlevel::mocks;
 using namespace trview;
 using namespace trview::mocks;
+using namespace trview::tests;
 using testing::Return;
-using testing::NiceMock;
 
 namespace
 {
@@ -15,9 +15,9 @@ namespace
     {
         struct test_module
         {
-            std::shared_ptr<trlevel::ILevel> level{ std::make_shared<NiceMock<trlevel::mocks::MockLevel>>() };
-            IMesh::Source mesh_source = [](auto&&...) { return std::make_shared<NiceMock<MockMesh>>(); };
-            std::shared_ptr<IMeshStorage> mesh_storage = std::make_shared<NiceMock<MockMeshStorage>>();
+            std::shared_ptr<trlevel::ILevel> level{ mock_shared<trlevel::mocks::MockLevel>() };
+            IMesh::Source mesh_source = [](auto&&...) { return mock_shared<MockMesh>(); };
+            std::shared_ptr<IMeshStorage> mesh_storage = mock_shared<MockMeshStorage>();
             trlevel::tr2_entity entity{};
             uint32_t index{ 0u };
             bool is_pickup{ false };
@@ -51,7 +51,7 @@ namespace
 
 TEST(Entity, OcbAdjustmentTrueForPickup)
 {
-    auto level = std::make_shared<NiceMock<trlevel::mocks::MockLevel>>();
+    auto level = mock_shared<trlevel::mocks::MockLevel>();
     EXPECT_CALL(*level, get_version).WillRepeatedly(Return(trlevel::LevelVersion::Tomb4));
     auto entity = register_test_module().with_level(level).with_pickup(true).build();
     ASSERT_TRUE(entity->needs_ocb_adjustment());
@@ -59,7 +59,7 @@ TEST(Entity, OcbAdjustmentTrueForPickup)
 
 TEST(Entity, OcbAdjustmentFalseForNonPickup)
 {
-    auto level = std::make_shared<NiceMock<trlevel::mocks::MockLevel>>();
+    auto level = mock_shared<trlevel::mocks::MockLevel>();
     EXPECT_CALL(*level, get_version).WillRepeatedly(Return(trlevel::LevelVersion::Tomb4));
     auto entity = register_test_module().with_level(level).with_pickup(false).build();
     ASSERT_FALSE(entity->needs_ocb_adjustment());
@@ -67,7 +67,7 @@ TEST(Entity, OcbAdjustmentFalseForNonPickup)
 
 TEST(Entity, OcbAdjustmentFalseForPickupWithNonMatchingOCB)
 {
-    auto level = std::make_shared<NiceMock<trlevel::mocks::MockLevel>>();
+    auto level = mock_shared<trlevel::mocks::MockLevel>();
     EXPECT_CALL(*level, get_version).WillRepeatedly(Return(trlevel::LevelVersion::Tomb4));
     trlevel::tr2_entity tr2_entity{};
     tr2_entity.Intensity2 = 1;
@@ -77,7 +77,7 @@ TEST(Entity, OcbAdjustmentFalseForPickupWithNonMatchingOCB)
 
 TEST(Entity, OcbAdjustmentNotDonePreTR4)
 {
-    auto level = std::make_shared<NiceMock<trlevel::mocks::MockLevel>>();
+    auto level = mock_shared<trlevel::mocks::MockLevel>();
     EXPECT_CALL(*level, get_version).WillRepeatedly(Return(trlevel::LevelVersion::Tomb3));
     auto entity = register_test_module().with_level(level).with_pickup(true).build();
     ASSERT_FALSE(entity->needs_ocb_adjustment());

@@ -15,7 +15,6 @@ using namespace trview;
 using namespace trview::mocks;
 using namespace trview::tests;
 using testing::Return;
-using testing::NiceMock;
 
 namespace
 {
@@ -23,16 +22,16 @@ namespace
     {
         struct test_module
         {
-            std::shared_ptr<ILevelTextureStorage> level_texture_storage{ std::make_shared<NiceMock<MockLevelTextureStorage>>() };
-            std::shared_ptr<IMeshStorage> mesh_storage{ std::make_shared<NiceMock<MockMeshStorage>>() };
-            IMesh::Source mesh_source{ [](auto&&...) { return std::make_shared<NiceMock<MockMesh>>(); } };
-            std::shared_ptr<trlevel::ILevel> tr_level{ std::make_shared<NiceMock<trlevel::mocks::MockLevel>>() };
+            std::shared_ptr<ILevelTextureStorage> level_texture_storage{ mock_shared<MockLevelTextureStorage>() };
+            std::shared_ptr<IMeshStorage> mesh_storage{ mock_shared<MockMeshStorage>() };
+            IMesh::Source mesh_source{ [](auto&&...) { return mock_shared<MockMesh>(); } };
+            std::shared_ptr<trlevel::ILevel> tr_level{ mock_shared<trlevel::mocks::MockLevel>() };
             trlevel::tr3_room room;
             uint32_t index{ 0u };
-            std::shared_ptr<ILevel> level{ std::make_shared<NiceMock<MockLevel>>() };
-            IStaticMesh::MeshSource static_mesh_source{ [](auto&&...) { return std::make_shared<NiceMock<MockStaticMesh>>(); } };
-            IStaticMesh::PositionSource static_mesh_position_source{ [](auto&&...) { return std::make_shared<NiceMock<MockStaticMesh>>(); } };
-            ISector::Source sector_source{ [](auto&&...) { return std::make_shared<NiceMock<MockSector>>(); } };
+            std::shared_ptr<ILevel> level{ mock_shared<MockLevel>() };
+            IStaticMesh::MeshSource static_mesh_source{ [](auto&&...) { return mock_shared<MockStaticMesh>(); } };
+            IStaticMesh::PositionSource static_mesh_position_source{ [](auto&&...) { return mock_shared<MockStaticMesh>(); } };
+            ISector::Source sector_source{ [](auto&&...) { return mock_shared<MockSector>(); } };
 
             std::unique_ptr<Room> build()
             {
