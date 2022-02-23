@@ -323,7 +323,7 @@ TEST(Level, BoundingBoxesRenderedWhenEnabled)
     Microsoft::WRL::ComPtr<ID3D11DeviceContext> context{ new NiceMock<MockD3D11DeviceContext>() };
     EXPECT_CALL(*device, context).WillRepeatedly(Return(context));
 
-    MockShader shader;
+    NiceMock<MockShader> shader;
     auto shader_storage = mock_shared<MockShaderStorage>();
     EXPECT_CALL(*shader_storage, get).WillRepeatedly(Return(&shader));
 
