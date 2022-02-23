@@ -456,7 +456,7 @@ TEST(Viewer, OrbitEnabledWhenWaypointSelectedAndAutoOrbitEnabled)
     ASSERT_EQ(viewer->camera_mode(), CameraMode::Free);
 
     auto mesh = mock_shared<MockMesh>();
-    viewer->select_waypoint(MockWaypoint{});
+    viewer->select_waypoint(NiceMock<MockWaypoint>{});
     ASSERT_EQ(viewer->camera_mode(), CameraMode::Orbit);
 }
 
@@ -476,7 +476,7 @@ TEST(Viewer, OrbitNotEnabledWhenWaypointSelectedAndAutoOrbitDisabled)
     ASSERT_EQ(viewer->camera_mode(), CameraMode::Free);
 
     auto mesh = mock_shared<MockMesh>();
-    viewer->select_waypoint(MockWaypoint{});
+    viewer->select_waypoint(NiceMock<MockWaypoint>{});
     ASSERT_EQ(viewer->camera_mode(), CameraMode::Free);
 }
 

@@ -7,6 +7,7 @@ using namespace trview;
 using namespace trview::mocks;
 using namespace trview::tests;
 using namespace DirectX::SimpleMath;
+using testing::NiceMock;
 
 TEST(StaticMesh, BoundingBoxRendered)
 {
@@ -15,5 +16,5 @@ TEST(StaticMesh, BoundingBoxRendered)
     EXPECT_CALL(*bounding_mesh, render).Times(1);
 
     StaticMesh mesh({}, {}, actual_mesh, bounding_mesh);
-    mesh.render_bounding_box(MockCamera{}, MockLevelTextureStorage{}, Colour::White);
+    mesh.render_bounding_box(NiceMock<MockCamera>{}, NiceMock<MockLevelTextureStorage>{}, Colour::White);
 }

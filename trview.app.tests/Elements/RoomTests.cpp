@@ -15,6 +15,7 @@ using namespace trview;
 using namespace trview::mocks;
 using namespace trview::tests;
 using testing::Return;
+using testing::NiceMock;
 
 namespace
 {
@@ -174,7 +175,7 @@ TEST(Room, GetTransparentTriangles)
     EXPECT_CALL(*trigger, get_transparent_triangles).Times(1);
     room->add_entity(entity);
     room->add_trigger(trigger);
-    room->get_transparent_triangles(MockTransparencyBuffer{}, MockCamera{}, IRoom::SelectionMode::NotSelected, true, true);
+    room->get_transparent_triangles(NiceMock<MockTransparencyBuffer>{}, NiceMock<MockCamera>{}, IRoom::SelectionMode::NotSelected, true, true);
 }
 
 /// <summary>
@@ -189,7 +190,7 @@ TEST(Room, GetTransparentTrianglesWithoutTriggers)
     EXPECT_CALL(*trigger, get_transparent_triangles).Times(0);
     room->add_entity(entity);
     room->add_trigger(trigger);
-    room->get_transparent_triangles(MockTransparencyBuffer{}, MockCamera{}, IRoom::SelectionMode::NotSelected, false, true);
+    room->get_transparent_triangles(NiceMock<MockTransparencyBuffer>{}, NiceMock<MockCamera>{}, IRoom::SelectionMode::NotSelected, false, true);
 }
 
 /// <summary>
@@ -204,7 +205,7 @@ TEST(Room, GetTransparentTrianglesFromContents)
     EXPECT_CALL(*trigger, get_transparent_triangles).Times(0);
     room->add_entity(entity);
     room->add_trigger(trigger);
-    room->get_contained_transparent_triangles(MockTransparencyBuffer{}, MockCamera{}, IRoom::SelectionMode::NotSelected, true);
+    room->get_contained_transparent_triangles(NiceMock<MockTransparencyBuffer>{}, NiceMock<MockCamera>{}, IRoom::SelectionMode::NotSelected, true);
 }
 
 /// <summary>
@@ -416,7 +417,7 @@ TEST(Room, RendersContainedEntities)
     auto entity = mock_shared<MockEntity>();
     EXPECT_CALL(*entity, render).Times(1);
     room->add_entity(entity);
-    room->render(MockCamera{}, IRoom::SelectionMode::NotSelected, true, true);
+    room->render(NiceMock<MockCamera>{}, IRoom::SelectionMode::NotSelected, true, true);
 }
 
 /// <summary>
@@ -562,5 +563,5 @@ TEST(Room, BoundingBoxesRendered)
         .with_room(level_room)
         .with_static_mesh_source([&](auto&&...) { return mesh; })
         .build();
-    room->render_bounding_boxes(MockCamera{});
+    room->render_bounding_boxes(NiceMock<MockCamera>{});
 }

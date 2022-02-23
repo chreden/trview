@@ -292,7 +292,7 @@ TEST(Level, BoundingBoxesNotRenderedWhenDisabled)
     auto room = mock_shared<MockRoom>();
 
     auto device = mock_shared<MockDevice>();
-    Microsoft::WRL::ComPtr<ID3D11DeviceContext> context{ new MockD3D11DeviceContext() };
+    Microsoft::WRL::ComPtr<ID3D11DeviceContext> context{ new NiceMock<MockD3D11DeviceContext>() };
     EXPECT_CALL(*device, context).WillRepeatedly(Return(context));
 
     NiceMock<MockShader> shader;
@@ -320,7 +320,7 @@ TEST(Level, BoundingBoxesRenderedWhenEnabled)
     auto room = mock_shared<MockRoom>();
 
     auto device = mock_shared<MockDevice>();
-    Microsoft::WRL::ComPtr<ID3D11DeviceContext> context{ new MockD3D11DeviceContext() };
+    Microsoft::WRL::ComPtr<ID3D11DeviceContext> context{ new NiceMock<MockD3D11DeviceContext>() };
     EXPECT_CALL(*device, context).WillRepeatedly(Return(context));
 
     MockShader shader;
