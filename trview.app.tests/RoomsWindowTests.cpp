@@ -16,7 +16,7 @@ namespace
     {
         struct test_module
         {
-            IMapRenderer::Source map_renderer_source{ [](auto&&...) { return std::make_unique<MockMapRenderer>(); } };
+            IMapRenderer::Source map_renderer_source{ [](auto&&...) { return mock_unique<MockMapRenderer>(); } };
             std::shared_ptr<IClipboard> clipboard{ mock_shared<MockClipboard>() };
 
             std::unique_ptr<RoomsWindow> build()

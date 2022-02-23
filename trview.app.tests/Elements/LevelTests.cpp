@@ -23,6 +23,7 @@ using namespace trlevel::mocks;
 using namespace trview::tests;
 using testing::Return;
 using testing::A;
+using testing::NiceMock;
 using namespace DirectX::SimpleMath;
 
 namespace
@@ -242,7 +243,7 @@ TEST(Level, PickUsesCorrectDefaultFilters)
         .with_room_source([&](auto&&...) { return room; })
         .build();
 
-    MockCamera camera;
+    NiceMock<MockCamera> camera;
     level->pick(camera, Vector3::Zero, Vector3::Forward);
 }
 
@@ -261,7 +262,7 @@ TEST(Level, PickUsesCorrectOptionalFilters)
     level->set_show_triggers(true);
     level->set_show_hidden_geometry(true);
 
-    MockCamera camera;
+    NiceMock<MockCamera> camera;
     level->pick(camera, Vector3::Zero, Vector3::Forward);
 }
 
@@ -280,7 +281,7 @@ TEST(Level, PickUsesCorrectMinimalFilters)
     level->set_show_triggers(false);
     level->set_show_hidden_geometry(false);
 
-    MockCamera camera;
+    NiceMock<MockCamera> camera;
     level->pick(camera, Vector3::Zero, Vector3::Forward);
 }
 
@@ -294,7 +295,7 @@ TEST(Level, BoundingBoxesNotRenderedWhenDisabled)
     Microsoft::WRL::ComPtr<ID3D11DeviceContext> context{ new MockD3D11DeviceContext() };
     EXPECT_CALL(*device, context).WillRepeatedly(Return(context));
 
-    MockShader shader;
+    NiceMock<MockShader> shader;
     auto shader_storage = mock_shared<MockShaderStorage>();
     EXPECT_CALL(*shader_storage, get).WillRepeatedly(Return(&shader));
 
@@ -308,7 +309,7 @@ TEST(Level, BoundingBoxesNotRenderedWhenDisabled)
         .with_room_source([&](auto&&...) { return room; })
         .build();
 
-    MockCamera camera;
+    NiceMock<MockCamera> camera;
     level->render(camera, false);
 }
 
@@ -338,7 +339,7 @@ TEST(Level, BoundingBoxesRenderedWhenEnabled)
 
     level->set_show_bounding_boxes(true);
 
-    MockCamera camera;
+    NiceMock<MockCamera> camera;
     level->render(camera, false);
 }
 

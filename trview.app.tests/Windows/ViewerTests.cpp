@@ -322,7 +322,7 @@ TEST(Viewer, AddWaypointRaisedUsesItemPosition)
     auto [picking_ptr, picking] = create_mock<MockPicking>();
     auto [mouse_ptr, mouse] = create_mock<MockMouse>();
 
-    MockLevel level;
+    NiceMock<MockLevel> level;
     std::vector<Item> items_list(51);
     Item item(50, 10, 0, L"Test", 0, 0, {}, Vector3::Zero);
     items_list[50] = item;

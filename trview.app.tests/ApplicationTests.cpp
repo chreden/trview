@@ -206,7 +206,7 @@ TEST(Application, RecentFilesUpdatedOnFileOpen)
     auto [level_loader_ptr, level_loader] = create_mock<MockLevelLoader>();
     EXPECT_CALL(recent_files, set_recent_files(std::list<std::string>{})).Times(1);
     EXPECT_CALL(recent_files, set_recent_files(std::list<std::string>{"test_path.tr2"})).Times(1);
-    EXPECT_CALL(level_loader, load_level("test_path.tr2")).WillOnce(Return(ByMove(std::make_unique<trlevel::mocks::MockLevel>())));
+    EXPECT_CALL(level_loader, load_level("test_path.tr2")).WillOnce(Return(ByMove(mock_unique<trlevel::mocks::MockLevel>())));
     auto application = register_test_module().with_level_loader(std::move(level_loader_ptr)).with_recent_files(std::move(recent_files_ptr)).build();
     application->open("test_path.tr2");
 }

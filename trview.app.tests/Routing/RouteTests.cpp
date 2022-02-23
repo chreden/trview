@@ -10,6 +10,7 @@ using namespace trview::mocks;
 using namespace trview::tests;
 using namespace DirectX::SimpleMath;
 using testing::Return;
+using testing::NiceMock;
 
 namespace
 {
@@ -17,8 +18,8 @@ namespace
     {
         struct test_module
         {
-            std::unique_ptr<ISelectionRenderer> selection_renderer = std::make_unique<MockSelectionRenderer>();
-            IWaypoint::Source waypoint_source = [](auto&&...) { return std::make_unique<MockWaypoint>(); };
+            std::unique_ptr<ISelectionRenderer> selection_renderer = mock_unique<MockSelectionRenderer>();
+            IWaypoint::Source waypoint_source = [](auto&&...) { return mock_unique<MockWaypoint>(); };
 
             test_module& with_selection_renderer(std::unique_ptr<ISelectionRenderer> selection_renderer)
             {
@@ -59,7 +60,7 @@ namespace
     {
         return [&](auto&&...)
         {
-            auto waypoint = std::make_unique<MockWaypoint>();
+            auto waypoint = mock_unique<MockWaypoint>();
             waypoint->test_index = test_index++;
             return waypoint;
         };
@@ -87,7 +88,7 @@ TEST(Route, Add)
     auto source = [&](auto&& position, auto&& normal, auto&& room, auto&& type, auto&& index, auto&& colour)
     {
         waypoint_values = { position, normal, room, type, index, colour };
-        return std::make_unique<MockWaypoint>();
+        return mock_unique<MockWaypoint>();
     };
 
     auto route = register_test_module().with_waypoint_source(source).build();
@@ -107,7 +108,7 @@ TEST(Route, AddSpecificType)
     auto source = [&](auto&& position, auto&& normal, auto&& room, auto&& type, auto&& index, auto&& colour)
     {
         waypoint_values = { position, normal, room, type, index, colour };
-        return std::make_unique<MockWaypoint>();
+        return mock_unique<MockWaypoint>();
     };
     auto route = register_test_module().with_waypoint_source(source).build();
     route->add(Vector3(0, 1, 0), Vector3::Down, 10, IWaypoint::Type::Trigger, 100);
@@ -261,8 +262,8 @@ TEST(Route, Render)
     route->add(Vector3::Zero, Vector3::Down, 0);
     route->add(Vector3::Zero, Vector3::Down, 0);
  
-    MockCamera camera;
-    MockLevelTextureStorage texture_storage;
+    NiceMock<MockCamera> camera;
+    NiceMock<MockLevelTextureStorage> texture_storage;
     route->render(camera, texture_storage);
 }
 
@@ -298,7 +299,7 @@ TEST(Route, RenderDoesNotJoinWhenRandoEnabled)
     route->add(Vector3::Zero, Vector3::Down, 0);
     route->add(Vector3::Zero, Vector3::Down, 0);
 
-    MockCamera camera;
-    MockLevelTextureStorage texture_storage;
+    NiceMock<MockCamera> camera;
+    NiceMock<MockLevelTextureStorage> texture_storage;
     route->render(camera, texture_storage);
 }
