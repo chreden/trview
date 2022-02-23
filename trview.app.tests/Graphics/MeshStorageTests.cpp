@@ -5,6 +5,7 @@
 
 using namespace trview;
 using namespace trview::mocks;
+using namespace trview::tests;
 using namespace trlevel;
 using namespace trlevel::mocks;
 
@@ -14,9 +15,9 @@ namespace
     {
         struct test_module
         {
-            IMesh::Source mesh_source{ [](auto&&...) { return std::make_shared<MockMesh>(); } };
+            IMesh::Source mesh_source{ [](auto&&...) { return mock_shared<MockMesh>(); } };
             std::shared_ptr<trlevel::ILevel> level{ std::make_shared<trlevel::mocks::MockLevel>() };
-            std::shared_ptr<ILevelTextureStorage> texture_storage{ std::make_shared<MockLevelTextureStorage>() };
+            std::shared_ptr<ILevelTextureStorage> texture_storage{ mock_shared<MockLevelTextureStorage>() };
 
             std::unique_ptr<MeshStorage> build()
             {

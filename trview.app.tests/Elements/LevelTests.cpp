@@ -111,7 +111,7 @@ TEST(Level, LoadTypeNames)
     EXPECT_CALL(mock_level, num_entities()).WillRepeatedly(Return(1));
     EXPECT_CALL(mock_level, get_entity(0)).WillRepeatedly(Return(entity));
 
-    auto mock_type_name_lookup = std::make_shared<MockTypeNameLookup>();
+    auto mock_type_name_lookup = mock_shared<MockTypeNameLookup>();
     EXPECT_CALL(*mock_type_name_lookup, lookup_type_name(LevelVersion::Tomb2, 123));
     auto level = register_test_module().with_level(std::move(mock_level_ptr)).with_type_name_lookup(mock_type_name_lookup).build();
 }
@@ -140,13 +140,13 @@ TEST(Level, LoadFromEntitySources)
             [&](auto&&...)
             {
                 ++entity_source_called;
-                return std::make_shared<MockEntity>();
+                return mock_shared<MockEntity>();
             })
         .with_ai_source(
             [&](auto&&...)
             {
                 ++ai_source_called;
-                return std::make_shared<MockEntity>();
+                return mock_shared<MockEntity>();
             }).build();
 
     ASSERT_EQ(entity_source_called, 1);
@@ -166,7 +166,7 @@ TEST(Level, LoadRooms)
             [&](auto&&...)
             {
                 ++room_called;
-                return std::make_shared<MockRoom>();
+                return mock_shared<MockRoom>();
             }).build();
 
     ASSERT_EQ(room_called, 3);
@@ -182,7 +182,7 @@ TEST(Level, OcbAdjustmentsPerformedWhenNeeded)
         .with_room_source(
             [&](auto&&...)
             {
-                auto room = std::make_shared<MockRoom>();
+                auto room = mock_shared<MockRoom>();
                 PickResult result{};
                 result.hit = true;
                 EXPECT_CALL(*room, pick).WillRepeatedly(Return(result));
@@ -192,7 +192,7 @@ TEST(Level, OcbAdjustmentsPerformedWhenNeeded)
             [&](auto&&...)
             {
                 ++entity_source_called;
-                auto entity = std::make_shared<MockEntity>();
+                auto entity = mock_shared<MockEntity>();
                 EXPECT_CALL(*entity, needs_ocb_adjustment).WillRepeatedly(Return(true));
                 EXPECT_CALL(*entity, adjust_y).Times(1);
                 return entity;
@@ -211,7 +211,7 @@ TEST(Level, OcbAdjustmentsNotPerformedWhenNotNeeded)
         .with_room_source(
             [&](auto&&...)
             {
-                auto room = std::make_shared<MockRoom>();
+                auto room = mock_shared<MockRoom>();
                 PickResult result{};
                 result.hit = true;
                 EXPECT_CALL(*room, pick).WillRepeatedly(Return(result));
@@ -221,7 +221,7 @@ TEST(Level, OcbAdjustmentsNotPerformedWhenNotNeeded)
             [&](auto&&...)
             {
                 ++entity_source_called;
-                auto entity = std::make_shared<MockEntity>();
+                auto entity = mock_shared<MockEntity>();
                 EXPECT_CALL(*entity, needs_ocb_adjustment).WillRepeatedly(Return(false));
                 EXPECT_CALL(*entity, adjust_y).Times(0);
                 return entity;
@@ -235,7 +235,7 @@ TEST(Level, PickUsesCorrectDefaultFilters)
     auto [mock_level_ptr, mock_level] = create_mock<trlevel::mocks::MockLevel>();
     EXPECT_CALL(mock_level, num_rooms()).WillRepeatedly(Return(1));
 
-    auto room = std::make_shared<MockRoom>();
+    auto room = mock_shared<MockRoom>();
     EXPECT_CALL(*room, pick(A<const Vector3&>(), A<const Vector3&>(), PickFilter::Geometry | PickFilter::Entities | PickFilter::StaticMeshes | PickFilter::Triggers)).Times(1);
 
     auto level = register_test_module()
@@ -252,7 +252,7 @@ TEST(Level, PickUsesCorrectOptionalFilters)
     auto [mock_level_ptr, mock_level] = create_mock<trlevel::mocks::MockLevel>();
     EXPECT_CALL(mock_level, num_rooms()).WillRepeatedly(Return(1));
 
-    auto room = std::make_shared<MockRoom>();
+    auto room = mock_shared<MockRoom>();
     EXPECT_CALL(*room, pick(A<const Vector3&>(), A<const Vector3&>(), PickFilter::Geometry | PickFilter::Entities | PickFilter::StaticMeshes | PickFilter::Triggers | PickFilter::HiddenGeometry)).Times(1);
 
     auto level = register_test_module()
@@ -271,7 +271,7 @@ TEST(Level, PickUsesCorrectMinimalFilters)
     auto [mock_level_ptr, mock_level] = create_mock<trlevel::mocks::MockLevel>();
     EXPECT_CALL(mock_level, num_rooms()).WillRepeatedly(Return(1));
 
-    auto room = std::make_shared<MockRoom>();
+    auto room = mock_shared<MockRoom>();
     EXPECT_CALL(*room, pick(A<const Vector3&>(), A<const Vector3&>(), PickFilter::Geometry | PickFilter::Entities | PickFilter::StaticMeshes)).Times(1);
 
     auto level = register_test_module()
@@ -289,14 +289,14 @@ TEST(Level, BoundingBoxesNotRenderedWhenDisabled)
 {
     auto [mock_level_ptr, mock_level] = create_mock<trlevel::mocks::MockLevel>();
     EXPECT_CALL(mock_level, num_rooms()).WillRepeatedly(Return(1));
-    auto room = std::make_shared<MockRoom>();
+    auto room = mock_shared<MockRoom>();
 
-    auto device = std::make_shared<MockDevice>();
+    auto device = mock_shared<MockDevice>();
     Microsoft::WRL::ComPtr<ID3D11DeviceContext> context{ new MockD3D11DeviceContext() };
     EXPECT_CALL(*device, context).WillRepeatedly(Return(context));
 
     MockShader shader;
-    auto shader_storage = std::make_shared<MockShaderStorage>();
+    auto shader_storage = mock_shared<MockShaderStorage>();
     EXPECT_CALL(*shader_storage, get).WillRepeatedly(Return(&shader));
 
     EXPECT_CALL(*room, render).Times(1);
@@ -317,14 +317,14 @@ TEST(Level, BoundingBoxesRenderedWhenEnabled)
 {
     auto [mock_level_ptr, mock_level] = create_mock<trlevel::mocks::MockLevel>();
     EXPECT_CALL(mock_level, num_rooms()).WillRepeatedly(Return(1));
-    auto room = std::make_shared<MockRoom>();
+    auto room = mock_shared<MockRoom>();
 
-    auto device = std::make_shared<MockDevice>();
+    auto device = mock_shared<MockDevice>();
     Microsoft::WRL::ComPtr<ID3D11DeviceContext> context{ new MockD3D11DeviceContext() };
     EXPECT_CALL(*device, context).WillRepeatedly(Return(context));
 
     MockShader shader;
-    auto shader_storage = std::make_shared<MockShaderStorage>();
+    auto shader_storage = mock_shared<MockShaderStorage>();
     EXPECT_CALL(*shader_storage, get).WillRepeatedly(Return(&shader));
 
     EXPECT_CALL(*room, render).Times(1);

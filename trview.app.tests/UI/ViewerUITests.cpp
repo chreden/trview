@@ -23,8 +23,8 @@ namespace
         struct test_module
         {
             trview::Window window{ create_test_window(L"ViewerUITests") };
-            std::shared_ptr<ITextureStorage> texture_storage{ std::make_shared<MockTextureStorage>() };
-            std::shared_ptr<MockShortcuts> shortcuts{ std::make_shared<MockShortcuts>() };
+            std::shared_ptr<ITextureStorage> texture_storage{ mock_shared<MockTextureStorage>() };
+            std::shared_ptr<MockShortcuts> shortcuts{ mock_shared<MockShortcuts>() };
             IMapRenderer::Source map_renderer_source{ [](auto&&...) { return std::make_unique<MockMapRenderer>(); }};
             std::unique_ptr<ISettingsWindow> settings_window{ std::make_unique<MockSettingsWindow>() };
             std::unique_ptr<IViewOptions> view_options{ std::make_unique<MockViewOptions>() };

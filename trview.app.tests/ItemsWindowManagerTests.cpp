@@ -17,8 +17,8 @@ namespace
         struct test_module
         {
             Window window{ create_test_window(L"ItemsWindowManagerTests") };
-            std::shared_ptr<MockShortcuts> shortcuts{ std::make_shared<MockShortcuts>() };
-            ItemsWindow::Source window_source{ [](auto&&...) { return std::make_shared<MockItemsWindow>(); } };
+            std::shared_ptr<MockShortcuts> shortcuts{ mock_shared<MockShortcuts>() };
+            ItemsWindow::Source window_source{ [](auto&&...) { return mock_shared<MockItemsWindow>(); } };
 
             test_module& with_window_source(const ItemsWindow::Source& source)
             {
@@ -109,7 +109,7 @@ TEST(ItemsWindowManager, TriggerSelectedEventRaised)
     auto created_window = manager->create_window().lock();
     ASSERT_NE(created_window, nullptr);
 
-    auto test_trigger = std::make_shared<MockTrigger>();
+    auto test_trigger = mock_shared<MockTrigger>();
     created_window->on_trigger_selected(test_trigger);
 
     ASSERT_TRUE(raised_trigger.has_value());
@@ -118,7 +118,7 @@ TEST(ItemsWindowManager, TriggerSelectedEventRaised)
 
 TEST(ItemsWindowManager, SetItemsSetsItemsOnWindows)
 {
-    auto mock_window = std::make_shared<MockItemsWindow>();
+    auto mock_window = mock_shared<MockItemsWindow>();
     EXPECT_CALL(*mock_window, set_items).Times(2);
     auto manager = register_test_module().with_window_source([&](auto&&...) { return mock_window; }).build();
 
@@ -136,7 +136,7 @@ TEST(ItemsWindowManager, SetItemsSetsItemsOnWindows)
 
 TEST(ItemsWindowManager, SetItemVisibilityUpdatesWindows)
 {
-    auto mock_window = std::make_shared<MockItemsWindow>();
+    auto mock_window = mock_shared<MockItemsWindow>();
     EXPECT_CALL(*mock_window, update_items).Times(1);
     auto manager = register_test_module().with_window_source([&](auto&&...) { return mock_window; }).build();
 
@@ -154,11 +154,11 @@ TEST(ItemsWindowManager, SetItemVisibilityUpdatesWindows)
 
 TEST(ItemsWindowManager, SetTriggersSetsTriggersOnWindows)
 {
-    auto mock_window = std::make_shared<MockItemsWindow>();
+    auto mock_window = mock_shared<MockItemsWindow>();
     EXPECT_CALL(*mock_window, set_triggers).Times(2);
     auto manager = register_test_module().with_window_source([&](auto&&...) { return mock_window; }).build();
 
-    auto trigger = std::make_shared<MockTrigger>();
+    auto trigger = mock_shared<MockTrigger>();
     manager->set_triggers({ trigger });
 
     auto created_window = manager->create_window().lock();
@@ -169,7 +169,7 @@ TEST(ItemsWindowManager, SetTriggersSetsTriggersOnWindows)
 
 TEST(ItemsWindowManager, SetRoomSetsRoomOnWindows)
 {
-    auto mock_window = std::make_shared<MockItemsWindow>();
+    auto mock_window = mock_shared<MockItemsWindow>();
     EXPECT_CALL(*mock_window, set_current_room).Times(2);
     auto manager = register_test_module().with_window_source([&](auto&&...) { return mock_window; }).build();
 
@@ -181,7 +181,7 @@ TEST(ItemsWindowManager, SetRoomSetsRoomOnWindows)
 
 TEST(ItemsWindowManager, SetSelectedItemSetsSelectedItemOnWindows)
 {
-    auto mock_window = std::make_shared<MockItemsWindow>();
+    auto mock_window = mock_shared<MockItemsWindow>();
     EXPECT_CALL(*mock_window, set_selected_item).Times(1);
     auto manager = register_test_module().with_window_source([&](auto&&...) { return mock_window; }).build();
 
@@ -200,7 +200,7 @@ TEST(ItemsWindowManager, SetSelectedItemSetsSelectedItemOnWindows)
 
 TEST(ItemsWindowManager, CreateWindowCreatesNewWindowWithSavedValues)
 {
-    auto mock_window = std::make_shared<MockItemsWindow>();
+    auto mock_window = mock_shared<MockItemsWindow>();
     EXPECT_CALL(*mock_window, set_items).Times(1);
     auto manager = register_test_module().with_window_source([&](auto&&...) { return mock_window; }).build();
 
@@ -219,14 +219,14 @@ TEST(ItemsWindowManager, CreateWindowCreatesNewWindowWithSavedValues)
 
 TEST(ItemsWindowManager, CreateItemsWindowKeyboardShortcut)
 {
-    auto shortcuts = std::make_shared<MockShortcuts>();
+    auto shortcuts = mock_shared<MockShortcuts>();
     EXPECT_CALL(*shortcuts, add_shortcut).Times(1).WillOnce([&](auto, auto) -> Event<>&{ return shortcut_handler; });
     auto manager = register_test_module().with_shortcuts(shortcuts).build();
 }
 
 TEST(ItemsWindowManager, WindowsUpdated)
 {
-    auto mock_window = std::make_shared<MockItemsWindow>();
+    auto mock_window = mock_shared<MockItemsWindow>();
     EXPECT_CALL(*mock_window, update(1.0f)).Times(1);
     auto manager = register_test_module().with_window_source([&](auto&&...) { return mock_window; }).build();
     manager->create_window();

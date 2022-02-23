@@ -19,9 +19,9 @@ namespace
     {
         struct test_module
         {
-            std::shared_ptr<IClipboard> clipboard{ std::make_shared<MockClipboard>() };
-            std::shared_ptr<IDialogs> dialogs{ std::make_shared<MockDialogs>() };
-            std::shared_ptr<IFiles> files{ std::make_shared<MockFiles>() };
+            std::shared_ptr<IClipboard> clipboard{ mock_shared<MockClipboard>() };
+            std::shared_ptr<IDialogs> dialogs{ mock_shared<MockDialogs>() };
+            std::shared_ptr<IFiles> files{ mock_shared<MockFiles>() };
             trview::Window parent{ create_test_window(L"RouteWindowTests") };
 
             test_module& with_clipboard(const std::shared_ptr<IClipboard>& clipboard)
@@ -64,7 +64,7 @@ TEST(RouteWindow, WaypointRoomPositionCalculatedCorrectly)
     info.yBottom = room_pos.y;
     info.z = room_pos.z;
 
-    auto room = std::make_shared<MockRoom>();
+    auto room = mock_shared<MockRoom>();
     EXPECT_CALL(*room, info).WillRepeatedly(Return(info));
 
     MockWaypoint waypoint;
@@ -88,7 +88,7 @@ TEST(RouteWindow, WaypointRoomPositionCalculatedCorrectly)
 
 TEST(RouteWindow, PositionValuesCopiedToClipboard)
 {
-    auto clipboard = std::make_shared<MockClipboard>();
+    auto clipboard = mock_shared<MockClipboard>();
     EXPECT_CALL(*clipboard, write(std::wstring(L"133120, 256000, 332800"))).Times(1);
 
     auto window = register_test_module().with_clipboard(clipboard).build();
@@ -113,7 +113,7 @@ TEST(RouteWindow, PositionValuesCopiedToClipboard)
 
 TEST(RouteWindow, RoomPositionValuesCopiedToClipboard)
 {
-    auto clipboard = std::make_shared<MockClipboard>();
+    auto clipboard = mock_shared<MockClipboard>();
     EXPECT_CALL(*clipboard, write(std::wstring(L"133120, 256000, 332800"))).Times(1);
 
     auto window = register_test_module().with_clipboard(clipboard).build();
@@ -181,7 +181,7 @@ TEST(RouteWindow, ClearSaveMarksRouteUnsaved)
 
 TEST(RouteWindow, ExportRouteButtonRaisesEvent)
 {
-    auto dialogs = std::make_shared<MockDialogs>();
+    auto dialogs = mock_shared<MockDialogs>();
     EXPECT_CALL(*dialogs, save_file).Times(1).WillRepeatedly(Return(IDialogs::FileResult{ "filename", 0 }));
 
     std::optional<std::string> file_raised;
@@ -202,7 +202,7 @@ TEST(RouteWindow, ExportRouteButtonRaisesEvent)
 
 TEST(RouteWindow, ExportRouteButtonDoesNotRaiseEventWhenCancelled)
 {
-    auto dialogs = std::make_shared<MockDialogs>();
+    auto dialogs = mock_shared<MockDialogs>();
     EXPECT_CALL(*dialogs, save_file).Times(1);
 
     bool file_raised = false;
@@ -222,7 +222,7 @@ TEST(RouteWindow, ExportRouteButtonDoesNotRaiseEventWhenCancelled)
 
 TEST(RouteWindow, ImportRouteButtonRaisesEvent)
 {
-    auto dialogs = std::make_shared<MockDialogs>();
+    auto dialogs = mock_shared<MockDialogs>();
     EXPECT_CALL(*dialogs, open_file).Times(1).WillRepeatedly(Return(IDialogs::FileResult{ "filename" }));
 
     std::optional<std::string> file_raised;
@@ -243,7 +243,7 @@ TEST(RouteWindow, ImportRouteButtonRaisesEvent)
 
 TEST(RouteWindow, ImportRouteButtonDoesNotRaiseEventWhenCancelled)
 {
-    auto dialogs = std::make_shared<MockDialogs>();
+    auto dialogs = mock_shared<MockDialogs>();
     EXPECT_CALL(*dialogs, open_file).Times(1);
 
     bool file_raised = false;
@@ -263,10 +263,10 @@ TEST(RouteWindow, ImportRouteButtonDoesNotRaiseEventWhenCancelled)
 
 TEST(RouteWindow, ExportSaveButtonSavesFile)
 {
-    auto dialogs = std::make_shared<MockDialogs>();
+    auto dialogs = mock_shared<MockDialogs>();
     EXPECT_CALL(*dialogs, save_file).Times(1).WillRepeatedly(Return(IDialogs::FileResult{ "filename", 0 }));
 
-    auto files = std::make_shared<MockFiles>();
+    auto files = mock_shared<MockFiles>();
     EXPECT_CALL(*files, save_file(An<const std::string&>(), An<const std::vector<uint8_t>&>())).Times(1);
 
     MockWaypoint waypoint;
@@ -288,11 +288,11 @@ TEST(RouteWindow, ExportSaveButtonSavesFile)
 
 TEST(RouteWindow, ExportSaveButtonShowsErrorOnFailure)
 {
-    auto dialogs = std::make_shared<MockDialogs>();
+    auto dialogs = mock_shared<MockDialogs>();
     EXPECT_CALL(*dialogs, save_file).Times(1).WillRepeatedly(Return(IDialogs::FileResult{ "filename", 0 }));
     EXPECT_CALL(*dialogs, message_box).Times(1);
 
-    auto files = std::make_shared<MockFiles>();
+    auto files = mock_shared<MockFiles>();
     EXPECT_CALL(*files, save_file(An<const std::string&>(), An<const std::vector<uint8_t>&>())).Times(1).WillRepeatedly(Throw(std::exception()));
 
     MockWaypoint waypoint;
@@ -313,10 +313,10 @@ TEST(RouteWindow, ExportSaveButtonShowsErrorOnFailure)
 
 TEST(RouteWindow, ExportSaveButtonDoesNotSaveFileWhenCancelled)
 {
-    auto dialogs = std::make_shared<MockDialogs>();
+    auto dialogs = mock_shared<MockDialogs>();
     EXPECT_CALL(*dialogs, save_file).Times(1);
 
-    auto files = std::make_shared<MockFiles>();
+    auto files = mock_shared<MockFiles>();
     EXPECT_CALL(*files, save_file(An<const std::string&>(), An<const std::vector<uint8_t>&>())).Times(0);
 
     MockWaypoint waypoint;
@@ -337,10 +337,10 @@ TEST(RouteWindow, ExportSaveButtonDoesNotSaveFileWhenCancelled)
 
 TEST(RouteWindow, AttachSaveButtonLoadsSave)
 {
-    auto dialogs = std::make_shared<MockDialogs>();
+    auto dialogs = mock_shared<MockDialogs>();
     EXPECT_CALL(*dialogs, open_file).Times(1).WillRepeatedly(Return(IDialogs::FileResult{ "filename" }));
 
-    auto files = std::make_shared<MockFiles>();
+    auto files = mock_shared<MockFiles>();
     EXPECT_CALL(*files, load_file).Times(1).WillRepeatedly(Return(std::vector<uint8_t>{ 0x1, 0x2 }));
 
     MockWaypoint waypoint;
@@ -362,11 +362,11 @@ TEST(RouteWindow, AttachSaveButtonLoadsSave)
 
 TEST(RouteWindow, AttachSaveButtonShowsMessageOnError)
 {
-    auto dialogs = std::make_shared<MockDialogs>();
+    auto dialogs = mock_shared<MockDialogs>();
     EXPECT_CALL(*dialogs, open_file).Times(1).WillRepeatedly(Return(IDialogs::FileResult{ "filename" }));
     EXPECT_CALL(*dialogs, message_box).Times(1);
 
-    auto files = std::make_shared<MockFiles>();
+    auto files = mock_shared<MockFiles>();
     EXPECT_CALL(*files, load_file).Times(1).WillRepeatedly(Throw(std::exception()));
 
     MockWaypoint waypoint;
@@ -388,10 +388,10 @@ TEST(RouteWindow, AttachSaveButtonShowsMessageOnError)
 
 TEST(RouteWindow, AttachSaveButtonDoesNotLoadFileWhenCancelled)
 {
-    auto dialogs = std::make_shared<MockDialogs>();
+    auto dialogs = mock_shared<MockDialogs>();
     EXPECT_CALL(*dialogs, open_file).Times(1);
 
-    auto files = std::make_shared<MockFiles>();
+    auto files = mock_shared<MockFiles>();
     EXPECT_CALL(*files, load_file).Times(0);
 
     MockWaypoint waypoint;

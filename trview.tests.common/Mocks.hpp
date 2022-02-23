@@ -35,7 +35,7 @@ namespace trview
         {
             if (!ptr)
             {
-                ptr = std::make_shared<Mock>();
+                ptr = mock_shared<Mock>();
             }
         }
     }

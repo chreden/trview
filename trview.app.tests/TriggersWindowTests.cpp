@@ -174,7 +174,7 @@ TEST(TriggersWindow, AddToRouteEventRaised)
     std::optional<std::weak_ptr<ITrigger>> raised_trigger;
     auto token = window->on_add_to_route += [&raised_trigger](const auto& trigger) { raised_trigger = trigger; };
 
-    auto trigger = std::make_shared<MockTrigger>();
+    auto trigger = mock_shared<MockTrigger>();
     std::vector<std::weak_ptr<ITrigger>> triggers{ trigger };
 
     window->set_triggers(triggers);
@@ -223,7 +223,7 @@ TEST(TriggersWindow, ItemSelectedRaised)
         Item(1, 0, 0, L"Type", 0, 0, {}, DirectX::SimpleMath::Vector3::Zero)
     };
 
-    auto trigger = std::make_shared<MockTrigger>()->with_commands({ Command(0, TriggerCommandType::Object, 1) });
+    auto trigger = mock_shared<MockTrigger>()->with_commands({ Command(0, TriggerCommandType::Object, 1) });
     window->set_items(items);
     window->set_triggers({ trigger });
     window->set_selected_trigger(trigger);

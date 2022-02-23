@@ -201,7 +201,7 @@ TEST(Viewer, SelectTriggerRaised)
     auto [mouse_ptr, mouse] = create_mock<MockMouse>();
 
     MockLevel level;
-    auto trigger = std::make_shared<MockTrigger>();
+    auto trigger = mock_shared<MockTrigger>();
     std::vector<std::weak_ptr<ITrigger>> triggers_list(101);
     triggers_list[100] = trigger;
 
@@ -230,7 +230,7 @@ TEST(Viewer, TriggerVisibilityRaised)
 
     MockLevel level;
     std::vector<std::weak_ptr<ITrigger>> triggers_list(101);
-    auto trigger = std::make_shared<MockTrigger>();
+    auto trigger = mock_shared<MockTrigger>();
     triggers_list[100] = trigger;
 
     EXPECT_CALL(level, triggers).WillRepeatedly([&]() { return triggers_list; });
@@ -415,7 +415,7 @@ TEST(Viewer, OrbitEnabledWhenTriggerSelectedAndAutoOrbitEnabled)
     viewer->set_camera_mode(CameraMode::Free);
     ASSERT_EQ(viewer->camera_mode(), CameraMode::Free);
 
-    auto trigger = std::make_shared<MockTrigger>();
+    auto trigger = mock_shared<MockTrigger>();
     viewer->select_trigger(trigger);
     ASSERT_EQ(viewer->camera_mode(), CameraMode::Orbit);
 }
@@ -435,7 +435,7 @@ TEST(Viewer, OrbitNotEnabledWhenTriggerSelectedAndAutoOrbitDisabled)
     viewer->set_camera_mode(CameraMode::Free);
     ASSERT_EQ(viewer->camera_mode(), CameraMode::Free);
 
-    auto trigger = std::make_shared<MockTrigger>();
+    auto trigger = mock_shared<MockTrigger>();
     viewer->select_trigger(trigger);
     ASSERT_EQ(viewer->camera_mode(), CameraMode::Free);
 }
@@ -455,7 +455,7 @@ TEST(Viewer, OrbitEnabledWhenWaypointSelectedAndAutoOrbitEnabled)
     viewer->set_camera_mode(CameraMode::Free);
     ASSERT_EQ(viewer->camera_mode(), CameraMode::Free);
 
-    auto mesh = std::make_shared<MockMesh>();
+    auto mesh = mock_shared<MockMesh>();
     viewer->select_waypoint(MockWaypoint{});
     ASSERT_EQ(viewer->camera_mode(), CameraMode::Orbit);
 }
@@ -475,7 +475,7 @@ TEST(Viewer, OrbitNotEnabledWhenWaypointSelectedAndAutoOrbitDisabled)
     viewer->set_camera_mode(CameraMode::Free);
     ASSERT_EQ(viewer->camera_mode(), CameraMode::Free);
 
-    auto mesh = std::make_shared<MockMesh>();
+    auto mesh = mock_shared<MockMesh>();
     viewer->select_waypoint(MockWaypoint{});
     ASSERT_EQ(viewer->camera_mode(), CameraMode::Free);
 }
@@ -494,7 +494,7 @@ TEST(Viewer, OrbitEnabledWhenRoomSelectedAndAutoOrbitEnabled)
     viewer->set_settings(settings);
 
     auto [level_ptr, level] = create_mock<MockLevel>();
-    auto room = std::make_shared<MockRoom>();
+    auto room = mock_shared<MockRoom>();
 
     EXPECT_CALL(level, number_of_rooms).WillRepeatedly(Return(1));
     EXPECT_CALL(level, rooms).WillRepeatedly(Return(std::vector<std::weak_ptr<IRoom>>{ room }));
@@ -521,7 +521,7 @@ TEST(Viewer, OrbitNotEnabledWhenRoomSelectedAndAutoOrbitDisabled)
     viewer->set_settings(settings);
 
     auto [level_ptr, level] = create_mock<MockLevel>();
-    auto room = std::make_shared<MockRoom>();
+    auto room = mock_shared<MockRoom>();
 
     EXPECT_CALL(level, number_of_rooms).WillRepeatedly(Return(1));
     EXPECT_CALL(level, rooms).WillRepeatedly(Return(std::vector<std::weak_ptr<IRoom>>{ room }));

@@ -17,7 +17,7 @@ namespace
         struct test_module
         {
             IMapRenderer::Source map_renderer_source{ [](auto&&...) { return std::make_unique<MockMapRenderer>(); } };
-            std::shared_ptr<IClipboard> clipboard{ std::make_shared<MockClipboard>() };
+            std::shared_ptr<IClipboard> clipboard{ mock_shared<MockClipboard>() };
 
             std::unique_ptr<RoomsWindow> build()
             {
@@ -36,11 +36,11 @@ namespace
 
 TEST(RoomsWindow, ClickStatShowsBubbleAndCopies)
 {
-    auto clipboard = std::make_shared<MockClipboard>();
+    auto clipboard = mock_shared<MockClipboard>();
     EXPECT_CALL(*clipboard, write).Times(1);
     auto window = register_test_module().with_clipboard(clipboard).build();
 
-    auto room = std::make_shared<MockRoom>();
+    auto room = mock_shared<MockRoom>();
     window->set_rooms({ room });
     window->set_current_room(0);
 
@@ -61,7 +61,7 @@ TEST(RoomsWindow, ClickStatShowsBubbleAndCopies)
 
 TEST(RoomsWindow, LevelVersionChangesFlags)
 {
-    auto room = std::make_shared<MockRoom>();
+    auto room = mock_shared<MockRoom>();
     EXPECT_CALL(*room, flag).Times(testing::AtLeast(1)).WillRepeatedly(testing::Return(true));
 
     auto window = register_test_module().build();
