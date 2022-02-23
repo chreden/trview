@@ -15,6 +15,12 @@ namespace trview
             return { std::move(ptr), ref };
         }
 
+        template <typename T>
+        auto mock_shared()
+        {
+            return std::make_shared<testing::NiceMock<T>>();
+        }
+
         template <typename Mock, typename T>
         auto choose_mock(std::unique_ptr<T>& ptr)
         {
