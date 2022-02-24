@@ -23,13 +23,13 @@ namespace
         struct test_module
         {
             trview::Window window{ create_test_window(L"ViewerUITests") };
-            std::shared_ptr<ITextureStorage> texture_storage{ std::make_shared<MockTextureStorage>() };
-            std::shared_ptr<MockShortcuts> shortcuts{ std::make_shared<MockShortcuts>() };
-            IMapRenderer::Source map_renderer_source{ [](auto&&...) { return std::make_unique<MockMapRenderer>(); }};
-            std::unique_ptr<ISettingsWindow> settings_window{ std::make_unique<MockSettingsWindow>() };
-            std::unique_ptr<IViewOptions> view_options{ std::make_unique<MockViewOptions>() };
-            std::unique_ptr<trview::IContextMenu> context_menu{ std::make_unique<MockContextMenu>() };
-            std::unique_ptr<ICameraControls> camera_controls{ std::make_unique<MockCameraControls>() };
+            std::shared_ptr<ITextureStorage> texture_storage{ mock_shared<MockTextureStorage>() };
+            std::shared_ptr<MockShortcuts> shortcuts{ mock_shared<MockShortcuts>() };
+            IMapRenderer::Source map_renderer_source{ [](auto&&...) { return mock_unique<MockMapRenderer>(); }};
+            std::unique_ptr<ISettingsWindow> settings_window{ mock_unique<MockSettingsWindow>() };
+            std::unique_ptr<IViewOptions> view_options{ mock_unique<MockViewOptions>() };
+            std::unique_ptr<trview::IContextMenu> context_menu{ mock_unique<MockContextMenu>() };
+            std::unique_ptr<ICameraControls> camera_controls{ mock_unique<MockCameraControls>() };
 
             std::unique_ptr<ViewerUI> build()
             {

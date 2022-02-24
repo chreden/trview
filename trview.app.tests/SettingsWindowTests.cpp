@@ -272,7 +272,7 @@ TEST(SettingsWindow, ClickingInvertVerticalPanRaisesEvent)
 TEST(SettingsWindow, SetMovementSpeedUpdatesSlider)
 {
     ui::Window host(Size(), Colour::Transparent);
-    SettingsWindow window(host, std::make_shared<JsonLoader>(std::make_shared<MockShell>()));
+    SettingsWindow window(host, std::make_shared<JsonLoader>(mock_shared<MockShell>()));
 
     auto slider = host.find<Slider>(SettingsWindow::Names::movement_speed);
     ASSERT_NE(slider, nullptr);
@@ -293,7 +293,7 @@ TEST(SettingsWindow, SetMovementSpeedUpdatesSlider)
 TEST(SettingsWindow, ClickingMovementSpeedRaisesEvent)
 {
     ui::Window host(Size(), Colour::Transparent);
-    SettingsWindow window(host, std::make_shared<JsonLoader>(std::make_shared<MockShell>()));
+    SettingsWindow window(host, std::make_shared<JsonLoader>(mock_shared<MockShell>()));
 
     auto slider = host.find<Slider>(SettingsWindow::Names::movement_speed);
     ASSERT_NE(slider, nullptr);
@@ -313,7 +313,7 @@ TEST(SettingsWindow, ClickingMovementSpeedRaisesEvent)
 TEST(SettingsWindow, SetSensitivitySlider)
 {
     ui::Window host(Size(), Colour::Transparent);
-    SettingsWindow window(host, std::make_shared<JsonLoader>(std::make_shared<MockShell>()));
+    SettingsWindow window(host, std::make_shared<JsonLoader>(mock_shared<MockShell>()));
 
     auto slider = host.find<Slider>(SettingsWindow::Names::sensitivity);
     ASSERT_NE(slider, nullptr);
@@ -334,7 +334,7 @@ TEST(SettingsWindow, SetSensitivitySlider)
 TEST(SettingsWindow, ClickingSensitivityRaisesEvent)
 {
     ui::Window host(Size(), Colour::Transparent);
-    SettingsWindow window(host, std::make_shared<JsonLoader>(std::make_shared<MockShell>()));
+    SettingsWindow window(host, std::make_shared<JsonLoader>(mock_shared<MockShell>()));
 
     auto slider = host.find<Slider>(SettingsWindow::Names::sensitivity);
     ASSERT_NE(slider, nullptr);
@@ -390,7 +390,7 @@ TEST(SettingsWindow, ClickingAccelerationRaisesEvent)
 TEST(SettingsWindow, SetAccelerationRateUpdatesSlider)
 {
     ui::Window host(Size(), Colour::Transparent);
-    SettingsWindow window(host, std::make_shared<JsonLoader>(std::make_shared<MockShell>()));
+    SettingsWindow window(host, std::make_shared<JsonLoader>(mock_shared<MockShell>()));
 
     auto slider = host.find<Slider>(SettingsWindow::Names::acceleration_rate);
     ASSERT_NE(slider, nullptr);
@@ -411,7 +411,7 @@ TEST(SettingsWindow, SetAccelerationRateUpdatesSlider)
 TEST(SettingsWindow, ClickingAccelerationRateRaisesEvent)
 {
     // ui::Window host(Size(), Colour::Transparent);
-    // SettingsWindow window(host, std::make_shared<JsonLoader>(std::make_shared<MockShell>()));
+    // SettingsWindow window(host, std::make_shared<JsonLoader>(mock_shared<MockShell>()));
     SettingsWindow window;
     window.toggle_visibility();
 

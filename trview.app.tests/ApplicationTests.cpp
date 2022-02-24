@@ -36,23 +36,23 @@ namespace
         struct test_module
         {
             Window window{ create_test_window(L"ApplicationTests") };
-            std::unique_ptr<IUpdateChecker> update_checker{ std::make_unique<MockUpdateChecker>() };
-            std::unique_ptr<ISettingsLoader> settings_loader{ std::make_unique<MockSettingsLoader>() };
-            std::unique_ptr<IFileDropper> file_dropper{ std::make_unique<MockFileDropper>() };
-            std::unique_ptr<trlevel::ILevelLoader> level_loader{ std::make_unique<MockLevelLoader>() };
-            std::unique_ptr<ILevelSwitcher> level_switcher{ std::make_unique<MockLevelSwitcher>() };
-            std::unique_ptr<IRecentFiles> recent_files{ std::make_unique<MockRecentFiles>() };
-            std::unique_ptr<IViewer> viewer{ std::make_unique<MockViewer>() };
-            IRoute::Source route_source{ [](auto&&...) { return std::make_shared<MockRoute>(); } };
-            std::shared_ptr<MockShortcuts> shortcuts{ std::make_shared<MockShortcuts>() };
-            std::unique_ptr<IItemsWindowManager> items_window_manager{ std::make_unique<MockItemsWindowManager>() };
-            std::unique_ptr<ITriggersWindowManager> triggers_window_manager{ std::make_unique<MockTriggersWindowManager>() };
-            std::unique_ptr<IRouteWindowManager> route_window_manager{ std::make_unique<MockRouteWindowManager>() };
-            std::unique_ptr<IRoomsWindowManager> rooms_window_manager{ std::make_unique<MockRoomsWindowManager>() };
-            ILevel::Source level_source{ [](auto&&...) { return std::make_unique<trview::mocks::MockLevel>(); } };
-            std::shared_ptr<IStartupOptions> startup_options{ std::make_shared<MockStartupOptions>() };
-            std::shared_ptr<IDialogs> dialogs{ std::make_shared<MockDialogs>() };
-            std::shared_ptr<IFiles> files{ std::make_shared<MockFiles>() };
+            std::unique_ptr<IUpdateChecker> update_checker{ mock_unique<MockUpdateChecker>() };
+            std::unique_ptr<ISettingsLoader> settings_loader{ mock_unique<MockSettingsLoader>() };
+            std::unique_ptr<IFileDropper> file_dropper{ mock_unique<MockFileDropper>() };
+            std::unique_ptr<trlevel::ILevelLoader> level_loader{ mock_unique<MockLevelLoader>() };
+            std::unique_ptr<ILevelSwitcher> level_switcher{ mock_unique<MockLevelSwitcher>() };
+            std::unique_ptr<IRecentFiles> recent_files{ mock_unique<MockRecentFiles>() };
+            std::unique_ptr<IViewer> viewer{ mock_unique<MockViewer>() };
+            IRoute::Source route_source{ [](auto&&...) { return mock_shared<MockRoute>(); } };
+            std::shared_ptr<MockShortcuts> shortcuts{ mock_shared<MockShortcuts>() };
+            std::unique_ptr<IItemsWindowManager> items_window_manager{ mock_unique<MockItemsWindowManager>() };
+            std::unique_ptr<ITriggersWindowManager> triggers_window_manager{ mock_unique<MockTriggersWindowManager>() };
+            std::unique_ptr<IRouteWindowManager> route_window_manager{ mock_unique<MockRouteWindowManager>() };
+            std::unique_ptr<IRoomsWindowManager> rooms_window_manager{ mock_unique<MockRoomsWindowManager>() };
+            ILevel::Source level_source{ [](auto&&...) { return mock_unique<trview::mocks::MockLevel>(); } };
+            std::shared_ptr<IStartupOptions> startup_options{ mock_shared<MockStartupOptions>() };
+            std::shared_ptr<IDialogs> dialogs{ mock_shared<MockDialogs>() };
+            std::shared_ptr<IFiles> files{ mock_shared<MockFiles>() };
             std::unique_ptr<IImGuiBackend> imgui_backend{ std::make_unique<NullImGuiBackend>() };
 
             std::unique_ptr<Application> build()
@@ -206,7 +206,7 @@ TEST(Application, RecentFilesUpdatedOnFileOpen)
     auto [level_loader_ptr, level_loader] = create_mock<MockLevelLoader>();
     EXPECT_CALL(recent_files, set_recent_files(std::list<std::string>{})).Times(1);
     EXPECT_CALL(recent_files, set_recent_files(std::list<std::string>{"test_path.tr2"})).Times(1);
-    EXPECT_CALL(level_loader, load_level("test_path.tr2")).WillOnce(Return(ByMove(std::make_unique<trlevel::mocks::MockLevel>())));
+    EXPECT_CALL(level_loader, load_level("test_path.tr2")).WillOnce(Return(ByMove(mock_unique<trlevel::mocks::MockLevel>())));
     auto application = register_test_module().with_level_loader(std::move(level_loader_ptr)).with_recent_files(std::move(recent_files_ptr)).build();
     application->open("test_path.tr2");
 }
@@ -231,7 +231,7 @@ TEST(Application, WindowContentsResetBeforeViewerLoaded)
     auto [rooms_window_manager_ptr, rooms_window_manager] = create_mock<MockRoomsWindowManager>();
     auto [triggers_window_manager_ptr, triggers_window_manager] = create_mock<MockTriggersWindowManager>();
     auto [route_window_manager_ptr, route_window_manager] = create_mock<MockRouteWindowManager>();
-    auto route = std::make_shared<MockRoute>();
+    auto route = mock_shared<MockRoute>();
 
     std::vector<std::string> events;
 
@@ -286,7 +286,7 @@ TEST(Application, SavesSettingsOnShutdown)
 
 TEST(Application, FileOpenedFromCommandLine)
 {
-    auto startup_options = std::make_shared<MockStartupOptions>();
+    auto startup_options = mock_shared<MockStartupOptions>();
     ON_CALL(*startup_options, filename).WillByDefault(testing::Return("test.tr2"));
     auto [level_loader_ptr, level_loader] = create_mock<MockLevelLoader>();
     auto [viewer_ptr, viewer] = create_mock<MockViewer>();
@@ -307,7 +307,7 @@ TEST(Application, FileNotOpenedWhenNotSpecified)
 TEST(Application, DialogShownOnCloseWithUnsavedRouteBlocksClose)
 {
     auto [route_ptr, route] = create_mock<MockRoute>();
-    auto dialogs = std::make_shared<MockDialogs>();
+    auto dialogs = mock_shared<MockDialogs>();
     auto route_ptr_actual = std::move(route_ptr);
 
     EXPECT_CALL(route, is_unsaved).WillRepeatedly(Return(true));
@@ -321,7 +321,7 @@ TEST(Application, DialogShownOnCloseWithUnsavedRouteBlocksClose)
 TEST(Application, DialogShownOnCloseWithUnsavedRouteAllowsClose)
 {
     auto [route_ptr, route] = create_mock<MockRoute>();
-    auto dialogs = std::make_shared<MockDialogs>();
+    auto dialogs = mock_shared<MockDialogs>();
     auto route_ptr_actual = std::move(route_ptr);
 
     EXPECT_CALL(route, is_unsaved).WillRepeatedly(Return(true));
@@ -336,7 +336,7 @@ TEST(Application, DialogShownOnCloseWithUnsavedRouteAllowsClose)
 TEST(Application, DialogShownOnOpenWithUnsavedRouteBlocksOpen)
 {
     auto [route_ptr, route] = create_mock<MockRoute>();
-    auto dialogs = std::make_shared<MockDialogs>();
+    auto dialogs = mock_shared<MockDialogs>();
     auto route_ptr_actual = std::move(route_ptr);
     auto [level_loader_ptr, level_loader] = create_mock<trlevel::mocks::MockLevelLoader>();
 
@@ -353,7 +353,7 @@ TEST(Application, DialogShownOnOpenWithUnsavedRouteBlocksOpen)
 TEST(Application, DialogShownOnOpenWithUnsavedRouteAllowsOpen)
 {
     auto [route_ptr, route] = create_mock<MockRoute>();
-    auto dialogs = std::make_shared<MockDialogs>();
+    auto dialogs = mock_shared<MockDialogs>();
     auto route_ptr_actual = std::move(route_ptr);
     auto [level_loader_ptr, level_loader] = create_mock<trlevel::mocks::MockLevelLoader>();
 
@@ -381,7 +381,7 @@ TEST(Application, FileOpenOpensFile)
 {
     auto [level_loader_ptr, level_loader] = create_mock<MockLevelLoader>();
     EXPECT_CALL(level_loader, load_level).Times(1);
-    auto dialogs = std::make_shared<MockDialogs>();
+    auto dialogs = mock_shared<MockDialogs>();
     EXPECT_CALL(*dialogs, open_file).Times(1).WillRepeatedly(Return(IDialogs::FileResult{ "filename" }));
 
     auto application = register_test_module().with_level_loader(std::move(level_loader_ptr)).with_dialogs(dialogs).build();
@@ -392,7 +392,7 @@ TEST(Application, FileOpenDoesNotOpenFileWhenCancelled)
 {
     auto [level_loader_ptr, level_loader] = create_mock<MockLevelLoader>();
     EXPECT_CALL(level_loader, load_level).Times(0);
-    auto dialogs = std::make_shared<MockDialogs>();
+    auto dialogs = mock_shared<MockDialogs>();
     EXPECT_CALL(*dialogs, open_file).Times(1);
 
     auto application = register_test_module().with_level_loader(std::move(level_loader_ptr)).with_dialogs(dialogs).build();
@@ -403,7 +403,7 @@ TEST(Application, FileOpenAcceleratorOpensFile)
 {
     auto [level_loader_ptr, level_loader] = create_mock<MockLevelLoader>();
     EXPECT_CALL(level_loader, load_level).Times(1);
-    auto dialogs = std::make_shared<MockDialogs>();
+    auto dialogs = mock_shared<MockDialogs>();
     EXPECT_CALL(*dialogs, open_file).Times(1).WillRepeatedly(Return(IDialogs::FileResult{ "filename" }));
 
     auto application = register_test_module().with_level_loader(std::move(level_loader_ptr)).with_dialogs(dialogs).build();
@@ -414,7 +414,7 @@ TEST(Application, FileOpenAcceleratorDoesNotOpenFileWhenCancelled)
 {
     auto [level_loader_ptr, level_loader] = create_mock<MockLevelLoader>();
     EXPECT_CALL(level_loader, load_level).Times(0);
-    auto dialogs = std::make_shared<MockDialogs>();
+    auto dialogs = mock_shared<MockDialogs>();
     EXPECT_CALL(*dialogs, open_file).Times(1);
 
     auto application = register_test_module().with_level_loader(std::move(level_loader_ptr)).with_dialogs(dialogs).build();
@@ -424,9 +424,9 @@ TEST(Application, FileOpenAcceleratorDoesNotOpenFileWhenCancelled)
 TEST(Application, ExportRouteSavesFile)
 {
     auto [route_window_manager_ptr, route_window_manager] = create_mock<MockRouteWindowManager>();
-    auto files = std::make_shared<MockFiles>();
+    auto files = mock_shared<MockFiles>();
     EXPECT_CALL(*files, save_file(An<const std::string&>(), An<const std::string&>())).Times(1);
-    auto route = std::make_shared<MockRoute>();
+    auto route = mock_shared<MockRoute>();
     EXPECT_CALL(*route, set_unsaved(false)).Times(1);
 
     auto application = register_test_module()
@@ -443,9 +443,9 @@ TEST(Application, ImportRouteLoadsFile)
     EXPECT_CALL(viewer, set_route).Times(1);
     auto [route_window_manager_ptr, route_window_manager] = create_mock<MockRouteWindowManager>();
     EXPECT_CALL(route_window_manager, set_route).Times(1);
-    auto files = std::make_shared<MockFiles>();
+    auto files = mock_shared<MockFiles>();
     EXPECT_CALL(*files, load_file).Times(1).WillRepeatedly(Return<std::vector<uint8_t>>({ 0x7b, 0x7d }));;
-    auto route = std::make_shared<MockRoute>();
+    auto route = mock_shared<MockRoute>();
     EXPECT_CALL(*route, set_unsaved(false)).Times(1);
 
     auto application = register_test_module()

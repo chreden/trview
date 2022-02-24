@@ -6,9 +6,8 @@ namespace trview
 {
     namespace mocks
     {
-        class MockViewerUI final : public IViewerUI
+        struct MockViewerUI : public IViewerUI
         {
-        public:
             virtual ~MockViewerUI() = default;
             MOCK_METHOD(void, clear_minimap_highlight, (), (override));
             MOCK_METHOD(std::shared_ptr<ISector>, current_minimap_sector, (), (const, override));

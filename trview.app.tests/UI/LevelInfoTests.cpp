@@ -5,10 +5,11 @@ using namespace trview;
 using namespace trview::mocks;
 using namespace trview::tests;
 using testing::Return;
+using testing::NiceMock;
 
 TEST(LevelInfo, NameUpdated)
 {
-    MockTextureStorage texture_storage;
+    NiceMock<MockTextureStorage> texture_storage;
     LevelInfo info(texture_storage);
 
     TestImgui imgui([&]() { info.render(); });
@@ -21,7 +22,7 @@ TEST(LevelInfo, NameUpdated)
 
 TEST(LevelInfo, OnToggleSettingsRaised)
 {
-    MockTextureStorage texture_storage;
+    NiceMock<MockTextureStorage> texture_storage;
     LevelInfo info(texture_storage);
     TestImgui imgui([&]() { info.render(); });
 

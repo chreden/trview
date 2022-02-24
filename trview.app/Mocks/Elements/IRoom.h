@@ -6,7 +6,7 @@ namespace trview
 {
     namespace mocks
     {
-        struct MockRoom final : public IRoom
+        struct MockRoom : public IRoom
         {
             virtual ~MockRoom() = default;
             MOCK_METHOD(void, add_entity, (const std::weak_ptr<IEntity>&), (override));

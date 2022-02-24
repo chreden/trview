@@ -6,9 +6,9 @@ namespace trview
 {
     namespace mocks
     {
-        class MockTriggersWindow final : public ITriggersWindow
+        struct MockTriggersWindow : public ITriggersWindow
         {
-        public:
+            virtual ~MockTriggersWindow() = default;
             MOCK_METHOD(void, clear_selected_trigger, (), (override));
             MOCK_METHOD(void, render, (), (override));
             MOCK_METHOD(std::weak_ptr<ITrigger>, selected_trigger, (), (const, override));

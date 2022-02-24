@@ -1,12 +1,12 @@
 #pragma once
 
-#include <trview.app/UI/IContextMenu.h>
+#include "../../UI/IContextMenu.h"
 
 namespace trview
 {
     namespace mocks
     {
-        struct MockContextMenu final : public IContextMenu
+        struct MockContextMenu : public IContextMenu
         {
             virtual ~MockContextMenu() = default;
             MOCK_METHOD(void, set_visible, (bool), (override));

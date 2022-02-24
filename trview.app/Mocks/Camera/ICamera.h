@@ -6,7 +6,7 @@ namespace trview
 {
     namespace mocks
     {
-        struct MockCamera final : public ICamera
+        struct MockCamera : public ICamera
         {
             virtual ~MockCamera() = default;
             MOCK_METHOD(DirectX::SimpleMath::Vector3, forward, (), (const, override));

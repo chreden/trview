@@ -3,10 +3,11 @@
 using namespace trview;
 using namespace trview::graphics;
 using namespace trview::graphics::mocks;
+using namespace trview::tests;
 
 TEST(TextureStorage, KeysAreCaseInsensitive)
 {
-    TextureStorage storage(std::make_shared<MockDevice>());
+    TextureStorage storage(mock_shared<MockDevice>());
     auto existing_texture = storage.lookup("test_key");
     ASSERT_EQ(existing_texture.name(), std::string());
 

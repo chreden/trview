@@ -6,11 +6,10 @@ namespace trlevel
 {
     namespace mocks
     {
-        class MockLevelLoader final : public ILevelLoader
+        struct MockLevelLoader : public ILevelLoader
         {
-        public:
             virtual ~MockLevelLoader() = default;
-            MOCK_METHOD(std::unique_ptr<ILevel>, load_level, (const std::string&), (const));
+            MOCK_METHOD(std::unique_ptr<ILevel>, load_level, (const std::string&), (const, override));
         };
     }
 }

@@ -1,14 +1,14 @@
 #pragma once
 
-#include <trview.app/Windows/ITriggersWindowManager.h>
+#include "../../Windows/ITriggersWindowManager.h"
 
 namespace trview
 {
     namespace mocks
     {
-        class MockTriggersWindowManager final : public ITriggersWindowManager
+        struct MockTriggersWindowManager : public ITriggersWindowManager
         {
-        public:
+            virtual ~MockTriggersWindowManager() = default;
             MOCK_METHOD(void, render, (), (override));
             MOCK_METHOD(void, set_items, (const std::vector<Item>&), (override));
             MOCK_METHOD(void, set_triggers, (const std::vector<std::weak_ptr<ITrigger>>&), (override));

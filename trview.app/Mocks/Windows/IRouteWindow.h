@@ -1,6 +1,6 @@
 #pragma once
 
-#include <trview.app/Windows/IRouteWindow.h>
+#include "../../Windows/IRouteWindow.h"
 
 namespace trview
 {

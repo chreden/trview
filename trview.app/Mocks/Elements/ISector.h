@@ -6,7 +6,7 @@ namespace trview
 {
     namespace mocks
     {
-        struct MockSector final : public ISector
+        struct MockSector : public ISector
         {
             virtual ~MockSector() = default;
             MOCK_METHOD(std::uint16_t, portal, (), (const, override));

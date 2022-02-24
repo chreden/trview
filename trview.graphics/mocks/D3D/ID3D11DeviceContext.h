@@ -8,7 +8,7 @@ namespace trview
     {
         namespace mocks
         {
-            struct MockD3D11DeviceContext final : public ID3D11DeviceContext
+            struct MockD3D11DeviceContext : public ID3D11DeviceContext
             {
                 virtual ~MockD3D11DeviceContext() = default;
 

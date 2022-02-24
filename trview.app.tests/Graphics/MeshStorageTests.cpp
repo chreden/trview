@@ -5,6 +5,7 @@
 
 using namespace trview;
 using namespace trview::mocks;
+using namespace trview::tests;
 using namespace trlevel;
 using namespace trlevel::mocks;
 
@@ -14,9 +15,9 @@ namespace
     {
         struct test_module
         {
-            IMesh::Source mesh_source{ [](auto&&...) { return std::make_shared<MockMesh>(); } };
-            std::shared_ptr<trlevel::ILevel> level{ std::make_shared<trlevel::mocks::MockLevel>() };
-            std::shared_ptr<ILevelTextureStorage> texture_storage{ std::make_shared<MockLevelTextureStorage>() };
+            IMesh::Source mesh_source{ [](auto&&...) { return mock_shared<MockMesh>(); } };
+            std::shared_ptr<trlevel::ILevel> level{ mock_shared<trlevel::mocks::MockLevel>() };
+            std::shared_ptr<ILevelTextureStorage> texture_storage{ mock_shared<MockLevelTextureStorage>() };
 
             std::unique_ptr<MeshStorage> build()
             {
@@ -35,7 +36,7 @@ namespace
 
 TEST(MeshStorage, MeshesLoadedFromLevel)
 {
-    auto level = std::make_shared<trlevel::mocks::MockLevel>();
+    auto level = mock_shared<trlevel::mocks::MockLevel>();
     ON_CALL(*level, num_mesh_pointers).WillByDefault(testing::Return(2));
     EXPECT_CALL(*level, get_mesh_by_pointer(0)).Times(1);
     EXPECT_CALL(*level, get_mesh_by_pointer(1)).Times(1);
@@ -44,7 +45,7 @@ TEST(MeshStorage, MeshesLoadedFromLevel)
 
 TEST(MeshStorage, MeshCanBeRetrieved)
 {
-    auto level = std::make_shared<trlevel::mocks::MockLevel>();
+    auto level = mock_shared<trlevel::mocks::MockLevel>();
     ON_CALL(*level, num_mesh_pointers).WillByDefault(testing::Return(1));
     EXPECT_CALL(*level, get_mesh_by_pointer(0)).Times(1);
     auto storage = register_test_module().with_level(level).build();
@@ -54,7 +55,7 @@ TEST(MeshStorage, MeshCanBeRetrieved)
 
 TEST(MeshStorage, MissingMeshNotFound)
 {
-    auto level = std::make_shared<trlevel::mocks::MockLevel>();
+    auto level = mock_shared<trlevel::mocks::MockLevel>();
     ON_CALL(*level, num_mesh_pointers).WillByDefault(testing::Return(1));
     EXPECT_CALL(*level, get_mesh_by_pointer(0)).Times(1);
     auto storage = register_test_module().with_level(level).build();

@@ -5,14 +5,16 @@
 
 using namespace trview;
 using namespace trview::mocks;
+using namespace trview::tests;
 using namespace DirectX::SimpleMath;
+using testing::NiceMock;
 
 TEST(StaticMesh, BoundingBoxRendered)
 {
-    auto actual_mesh = std::make_shared<MockMesh>();
-    auto bounding_mesh = std::make_shared<MockMesh>();
+    auto actual_mesh = mock_shared<MockMesh>();
+    auto bounding_mesh = mock_shared<MockMesh>();
     EXPECT_CALL(*bounding_mesh, render).Times(1);
 
     StaticMesh mesh({}, {}, actual_mesh, bounding_mesh);
-    mesh.render_bounding_box(MockCamera{}, MockLevelTextureStorage{}, Colour::White);
+    mesh.render_bounding_box(NiceMock<MockCamera>{}, NiceMock<MockLevelTextureStorage>{}, Colour::White);
 }

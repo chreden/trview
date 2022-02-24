@@ -6,11 +6,10 @@ namespace trview
 {
     namespace mocks
     {
-        class MockUpdateChecker final : public IUpdateChecker
+        struct MockUpdateChecker : public IUpdateChecker
         {
-        public:
             virtual ~MockUpdateChecker() = default;
-            MOCK_METHOD(void, check_for_updates, ());
+            MOCK_METHOD(void, check_for_updates, (), (override));
         };
     }
 }

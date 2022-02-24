@@ -8,7 +8,6 @@ using namespace trview;
 using namespace trview::tests;
 using namespace trview::mocks;
 using testing::Return;
-using testing::NiceMock;
 
 namespace
 {
@@ -16,7 +15,7 @@ namespace
     {
         struct test_module
         {
-            std::shared_ptr<IClipboard> clipboard{ std::make_shared<NiceMock<MockClipboard>>() };
+            std::shared_ptr<IClipboard> clipboard{ mock_shared<MockClipboard>() };
 
             std::unique_ptr<TriggersWindow> build()
             {
@@ -35,8 +34,8 @@ TEST(TriggersWindow, TriggerSelectedRaisedWhenSyncTriggerEnabled)
     std::optional<std::weak_ptr<ITrigger>> raised_trigger;
     auto token = window->on_trigger_selected += [&raised_trigger](const auto& trigger) { raised_trigger = trigger; };
 
-    auto trigger1 = std::make_shared<NiceMock<MockTrigger>>()->with_number(0);
-    auto trigger2 = std::make_shared<NiceMock<MockTrigger>>()->with_number(1);
+    auto trigger1 = mock_shared<MockTrigger>()->with_number(0);
+    auto trigger2 = mock_shared<MockTrigger>()->with_number(1);
     window->set_triggers({ trigger1, trigger2 });
 
     TestImgui imgui([&]() { window->render(); });
@@ -59,8 +58,8 @@ TEST(TriggersWindow, TriggerSelectedNotRaisedWhenSyncTriggerDisabled)
     std::optional<std::weak_ptr<ITrigger>> raised_trigger;
     auto token = window->on_trigger_selected += [&raised_trigger](const auto& trigger) { raised_trigger = trigger; };
 
-    auto trigger1 = std::make_shared<NiceMock<MockTrigger>>()->with_number(0);
-    auto trigger2 = std::make_shared<NiceMock<MockTrigger>>()->with_number(1);
+    auto trigger1 = mock_shared<MockTrigger>()->with_number(0);
+    auto trigger2 = mock_shared<MockTrigger>()->with_number(1);
     window->set_triggers({ trigger1, trigger2 });
 
     TestImgui imgui([&]() { window->render(); });
@@ -80,8 +79,8 @@ TEST(TriggersWindow, TriggersListNotFilteredWhenRoomSetAndTrackRoomDisabled)
 {
     auto window = register_test_module().build();
 
-    auto trigger1 = std::make_shared<NiceMock<MockTrigger>>()->with_number(0);
-    auto trigger2 = std::make_shared<NiceMock<MockTrigger>>()->with_number(1);
+    auto trigger1 = mock_shared<MockTrigger>()->with_number(0);
+    auto trigger2 = mock_shared<MockTrigger>()->with_number(1);
     window->set_triggers({ trigger1, trigger2 });
     window->set_current_room(78);
 
@@ -101,8 +100,8 @@ TEST(TriggersWindow, TriggersListFilteredWhenRoomSetAndTrackRoomEnabled)
 {
     auto window = register_test_module().build();
 
-    auto trigger1 = std::make_shared<NiceMock<MockTrigger>>()->with_number(0)->with_room(55);
-    auto trigger2 = std::make_shared<NiceMock<MockTrigger>>()->with_number(1)->with_room(78);
+    auto trigger1 = mock_shared<MockTrigger>()->with_number(0)->with_room(55);
+    auto trigger2 = mock_shared<MockTrigger>()->with_number(1)->with_room(78);
     window->set_triggers({ trigger1, trigger2 });
     window->set_current_room(78);
 
@@ -134,8 +133,8 @@ TEST(TriggersWindow, TriggersListFilteredWhenRoomSetAndTrackRoomEnabled)
 TEST(TriggersWindow, TriggersListFilteredByCommand)
 {
     auto window = register_test_module().build();
-    auto trigger1 = std::make_shared<NiceMock<MockTrigger>>()->with_commands({ Command(0, TriggerCommandType::Object, 1) });
-    auto trigger2 = std::make_shared<NiceMock<MockTrigger>>()->with_number(1)->with_commands({ Command(0, TriggerCommandType::Camera, 1) });
+    auto trigger1 = mock_shared<MockTrigger>()->with_commands({ Command(0, TriggerCommandType::Object, 1) });
+    auto trigger2 = mock_shared<MockTrigger>()->with_number(1)->with_commands({ Command(0, TriggerCommandType::Camera, 1) });
     std::vector<std::weak_ptr<ITrigger>> triggers{ trigger1, trigger2 };
     window->set_triggers(triggers);
 
@@ -174,7 +173,7 @@ TEST(TriggersWindow, AddToRouteEventRaised)
     std::optional<std::weak_ptr<ITrigger>> raised_trigger;
     auto token = window->on_add_to_route += [&raised_trigger](const auto& trigger) { raised_trigger = trigger; };
 
-    auto trigger = std::make_shared<MockTrigger>();
+    auto trigger = mock_shared<MockTrigger>();
     std::vector<std::weak_ptr<ITrigger>> triggers{ trigger };
 
     window->set_triggers(triggers);
@@ -196,7 +195,7 @@ TEST(TriggersWindow, TriggerVisibilityRaised)
     std::optional<std::tuple<std::weak_ptr<ITrigger>, bool>> raised_trigger;
     auto token = window->on_trigger_visibility += [&raised_trigger](const auto& trigger, bool state) { raised_trigger = { trigger, state }; };
 
-    auto trigger = std::make_shared<NiceMock<MockTrigger>>()->with_visible(true);
+    auto trigger = mock_shared<MockTrigger>()->with_visible(true);
     std::vector<std::weak_ptr<ITrigger>> triggers{ trigger };
     window->set_triggers(triggers);
 
@@ -223,7 +222,7 @@ TEST(TriggersWindow, ItemSelectedRaised)
         Item(1, 0, 0, L"Type", 0, 0, {}, DirectX::SimpleMath::Vector3::Zero)
     };
 
-    auto trigger = std::make_shared<MockTrigger>()->with_commands({ Command(0, TriggerCommandType::Object, 1) });
+    auto trigger = mock_shared<MockTrigger>()->with_commands({ Command(0, TriggerCommandType::Object, 1) });
     window->set_items(items);
     window->set_triggers({ trigger });
     window->set_selected_trigger(trigger);
@@ -243,7 +242,7 @@ TEST(TriggersWindow, SetTriggerVisiblityUpdatesTrigger)
     auto window = register_test_module().build();
 
     bool visible = true;
-    auto trigger = std::make_shared<NiceMock<MockTrigger>>()->with_visible([&]() { return visible; });
+    auto trigger = mock_shared<MockTrigger>()->with_visible([&]() { return visible; });
     window->set_triggers({ trigger });
 
     TestImgui imgui([&]() { window->render(); });
@@ -263,10 +262,10 @@ TEST(TriggersWindow, SetTriggerVisiblityUpdatesTrigger)
 TEST(TriggersWindow, FlipmapsFiltersAllFlipTriggers)
 {
     auto window = register_test_module().build();
-    auto trigger1 = std::make_shared<NiceMock<MockTrigger>>()->with_number(0)->with_commands({ Command(0, TriggerCommandType::FlipOff, 0) });
-    auto trigger2 = std::make_shared<NiceMock<MockTrigger>>()->with_number(1)->with_commands({ Command(0, TriggerCommandType::FlipOn, 0) });
-    auto trigger3 = std::make_shared<NiceMock<MockTrigger>>()->with_number(2)->with_commands({ Command(0, TriggerCommandType::FlipMap, 0) });
-    auto trigger4 = std::make_shared<NiceMock<MockTrigger>>()->with_number(3);
+    auto trigger1 = mock_shared<MockTrigger>()->with_number(0)->with_commands({ Command(0, TriggerCommandType::FlipOff, 0) });
+    auto trigger2 = mock_shared<MockTrigger>()->with_number(1)->with_commands({ Command(0, TriggerCommandType::FlipOn, 0) });
+    auto trigger3 = mock_shared<MockTrigger>()->with_number(2)->with_commands({ Command(0, TriggerCommandType::FlipMap, 0) });
+    auto trigger4 = mock_shared<MockTrigger>()->with_number(3);
     window->set_triggers({ trigger1, trigger2, trigger3, trigger4 });
 
     TestImgui imgui([&]() { window->render(); });
@@ -316,7 +315,7 @@ TEST(TriggersWindow, ClickStatShowsBubble)
 {
     auto window = register_test_module().build();
 
-    auto trigger1 = std::make_shared<NiceMock<MockTrigger>>()->with_number(0)->with_commands({ Command(0, TriggerCommandType::FlipOff, 0) });
+    auto trigger1 = mock_shared<MockTrigger>()->with_number(0)->with_commands({ Command(0, TriggerCommandType::FlipOff, 0) });
     window->set_triggers({ trigger1 });
     window->set_selected_trigger(trigger1);
 

@@ -15,6 +15,7 @@ using namespace trview;
 using namespace trview::mocks;
 using namespace trview::tests;
 using testing::Return;
+using testing::NiceMock;
 
 namespace
 {
@@ -22,16 +23,16 @@ namespace
     {
         struct test_module
         {
-            std::shared_ptr<ILevelTextureStorage> level_texture_storage{ std::make_shared<MockLevelTextureStorage>() };
-            std::shared_ptr<IMeshStorage> mesh_storage{ std::make_shared<MockMeshStorage>() };
-            IMesh::Source mesh_source{ [](auto&&...) { return std::make_shared<MockMesh>(); } };
-            std::shared_ptr<trlevel::ILevel> tr_level{ std::make_shared<trlevel::mocks::MockLevel>() };
+            std::shared_ptr<ILevelTextureStorage> level_texture_storage{ mock_shared<MockLevelTextureStorage>() };
+            std::shared_ptr<IMeshStorage> mesh_storage{ mock_shared<MockMeshStorage>() };
+            IMesh::Source mesh_source{ [](auto&&...) { return mock_shared<MockMesh>(); } };
+            std::shared_ptr<trlevel::ILevel> tr_level{ mock_shared<trlevel::mocks::MockLevel>() };
             trlevel::tr3_room room;
             uint32_t index{ 0u };
-            std::shared_ptr<ILevel> level{ std::make_shared<MockLevel>() };
-            IStaticMesh::MeshSource static_mesh_source{ [](auto&&...) { return std::make_shared<MockStaticMesh>(); } };
-            IStaticMesh::PositionSource static_mesh_position_source{ [](auto&&...) { return std::make_shared<MockStaticMesh>(); } };
-            ISector::Source sector_source{ [](auto&&...) { return std::make_shared<MockSector>(); } };
+            std::shared_ptr<ILevel> level{ mock_shared<MockLevel>() };
+            IStaticMesh::MeshSource static_mesh_source{ [](auto&&...) { return mock_shared<MockStaticMesh>(); } };
+            IStaticMesh::PositionSource static_mesh_position_source{ [](auto&&...) { return mock_shared<MockStaticMesh>(); } };
+            ISector::Source sector_source{ [](auto&&...) { return mock_shared<MockSector>(); } };
 
             std::unique_ptr<Room> build()
             {
@@ -134,7 +135,7 @@ TEST(Room, BoundingBoxIncorporatesContents)
     level_room.info.yTop = -1024;
     auto room = register_test_module().with_room(level_room).build();
 
-    auto entity = std::make_shared<MockEntity>();
+    auto entity = mock_shared<MockEntity>();
     EXPECT_CALL(*entity, bounding_box).WillOnce(Return(BoundingBox(Vector3(1.0f, -1.0f, 1.0f), Vector3(0.5f, 0.5f, 0.5f))));
     room->add_entity(entity);
     room->update_bounding_box();
@@ -168,13 +169,13 @@ TEST(Room, CentreCalculated)
 TEST(Room, GetTransparentTriangles)
 {
     auto room = register_test_module().build();
-    auto entity = std::make_shared<MockEntity>();
+    auto entity = mock_shared<MockEntity>();
     EXPECT_CALL(*entity, get_transparent_triangles).Times(1);
-    auto trigger = std::make_shared<MockTrigger>();
+    auto trigger = mock_shared<MockTrigger>();
     EXPECT_CALL(*trigger, get_transparent_triangles).Times(1);
     room->add_entity(entity);
     room->add_trigger(trigger);
-    room->get_transparent_triangles(MockTransparencyBuffer{}, MockCamera{}, IRoom::SelectionMode::NotSelected, true, true);
+    room->get_transparent_triangles(NiceMock<MockTransparencyBuffer>{}, NiceMock<MockCamera>{}, IRoom::SelectionMode::NotSelected, true, true);
 }
 
 /// <summary>
@@ -183,13 +184,13 @@ TEST(Room, GetTransparentTriangles)
 TEST(Room, GetTransparentTrianglesWithoutTriggers)
 {
     auto room = register_test_module().build();
-    auto entity = std::make_shared<MockEntity>();
+    auto entity = mock_shared<MockEntity>();
     EXPECT_CALL(*entity, get_transparent_triangles).Times(1);
-    auto trigger = std::make_shared<MockTrigger>();
+    auto trigger = mock_shared<MockTrigger>();
     EXPECT_CALL(*trigger, get_transparent_triangles).Times(0);
     room->add_entity(entity);
     room->add_trigger(trigger);
-    room->get_transparent_triangles(MockTransparencyBuffer{}, MockCamera{}, IRoom::SelectionMode::NotSelected, false, true);
+    room->get_transparent_triangles(NiceMock<MockTransparencyBuffer>{}, NiceMock<MockCamera>{}, IRoom::SelectionMode::NotSelected, false, true);
 }
 
 /// <summary>
@@ -198,13 +199,13 @@ TEST(Room, GetTransparentTrianglesWithoutTriggers)
 TEST(Room, GetTransparentTrianglesFromContents)
 {
     auto room = register_test_module().build();
-    auto entity = std::make_shared<MockEntity>();
+    auto entity = mock_shared<MockEntity>();
     EXPECT_CALL(*entity, get_transparent_triangles).Times(1);
-    auto trigger = std::make_shared<MockTrigger>();
+    auto trigger = mock_shared<MockTrigger>();
     EXPECT_CALL(*trigger, get_transparent_triangles).Times(0);
     room->add_entity(entity);
     room->add_trigger(trigger);
-    room->get_contained_transparent_triangles(MockTransparencyBuffer{}, MockCamera{}, IRoom::SelectionMode::NotSelected, true);
+    room->get_contained_transparent_triangles(NiceMock<MockTransparencyBuffer>{}, NiceMock<MockCamera>{}, IRoom::SelectionMode::NotSelected, true);
 }
 
 /// <summary>
@@ -249,9 +250,9 @@ TEST(Room, NeighboursLoaded)
     level_room.sector_list.resize(2);
 
     std::set<uint16_t> expected{ 0, 10, 20, 30 };
-    auto sector1 = std::make_shared<MockSector>();
+    auto sector1 = mock_shared<MockSector>();
     ON_CALL(*sector1, neighbours).WillByDefault(Return(std::set<uint16_t>{ 0, 20 }));
-    auto sector2 = std::make_shared<MockSector>();
+    auto sector2 = mock_shared<MockSector>();
     ON_CALL(*sector2, neighbours).WillByDefault(Return(std::set<uint16_t>{ 0, 10, 30 }));
     uint32_t times_called = 0;
 
@@ -299,7 +300,7 @@ TEST(Room, PickTestsEntities)
     using namespace DirectX::SimpleMath;
 
     auto room = register_test_module().build();
-    auto entity = std::make_shared<MockEntity>();
+    auto entity = mock_shared<MockEntity>();
     ON_CALL(*entity, visible).WillByDefault(Return(true));
     EXPECT_CALL(*entity, pick).Times(1).WillOnce(Return(PickResult{ true, 0, {}, {}, PickResult::Type::Entity, 10 }));
     room->add_entity(entity);
@@ -319,7 +320,7 @@ TEST(Room, PickTestsTriggers)
     using namespace DirectX::SimpleMath;
 
     auto room = register_test_module().build();
-    auto trigger = std::make_shared<MockTrigger>();
+    auto trigger = mock_shared<MockTrigger>();
     ON_CALL(*trigger, visible).WillByDefault(Return(true));
     EXPECT_CALL(*trigger, pick).Times(1).WillOnce(Return(PickResult{ true, 0, {}, {}, PickResult::Type::Trigger, 10 }));
     room->add_trigger(trigger);
@@ -339,12 +340,12 @@ TEST(Room, PickChoosesClosest)
     using namespace DirectX::SimpleMath;
 
     auto room = register_test_module().build();
-    auto entity = std::make_shared<MockEntity>();
+    auto entity = mock_shared<MockEntity>();
     ON_CALL(*entity, visible).WillByDefault(Return(true));
     EXPECT_CALL(*entity, pick).Times(1).WillOnce(Return(PickResult{ true, 0.5f, {}, {}, PickResult::Type::Entity, 5 }));
     room->add_entity(entity);
 
-    auto entity2 = std::make_shared<MockEntity>();
+    auto entity2 = mock_shared<MockEntity>();
     ON_CALL(*entity2, visible).WillByDefault(Return(true));
     EXPECT_CALL(*entity2, pick).Times(1).WillOnce(Return(PickResult{ true, 1.0f, {}, {}, PickResult::Type::Entity, 10 }));
     room->add_entity(entity2);
@@ -365,12 +366,12 @@ TEST(Room, PickChoosesEntityOverTrigger)
     using namespace DirectX::SimpleMath;
 
     auto room = register_test_module().build();
-    auto entity = std::make_shared<MockEntity>();
+    auto entity = mock_shared<MockEntity>();
     ON_CALL(*entity, visible).WillByDefault(Return(true));
     EXPECT_CALL(*entity, pick).Times(1).WillOnce(Return(PickResult{ true, 1.0f, {}, {}, PickResult::Type::Entity, 5 }));
     room->add_entity(entity);
 
-    auto trigger = std::make_shared<MockTrigger>();
+    auto trigger = mock_shared<MockTrigger>();
     EXPECT_CALL(*trigger, pick).Times(0);
     room->add_trigger(trigger);
 
@@ -388,7 +389,7 @@ TEST(Room, QuicksandDetectedAfterTR3)
 {
     trlevel::tr3_room level_room;
     level_room.flags |= 0x80;
-    auto level = std::make_shared<MockLevel>();
+    auto level = mock_shared<MockLevel>();
     ON_CALL(*level, version).WillByDefault(Return(trlevel::LevelVersion::Tomb3));
     auto room = register_test_module().with_room(level_room).with_level(level).build();
     ASSERT_EQ(room->quicksand(), true);
@@ -401,7 +402,7 @@ TEST(Room, QuicksandNotDetectedBeforeTR3)
 {
     trlevel::tr3_room level_room;
     level_room.flags |= 0x80;
-    auto level = std::make_shared<MockLevel>();
+    auto level = mock_shared<MockLevel>();
     ON_CALL(*level, version).WillByDefault(Return(trlevel::LevelVersion::Tomb1));
     auto room = register_test_module().with_room(level_room).with_level(level).build();
     ASSERT_EQ(room->quicksand(), false);
@@ -413,10 +414,10 @@ TEST(Room, QuicksandNotDetectedBeforeTR3)
 TEST(Room, RendersContainedEntities)
 {
     auto room = register_test_module().build();
-    auto entity = std::make_shared<MockEntity>();
+    auto entity = mock_shared<MockEntity>();
     EXPECT_CALL(*entity, render).Times(1);
     room->add_entity(entity);
-    room->render(MockCamera{}, IRoom::SelectionMode::NotSelected, true, true);
+    room->render(NiceMock<MockCamera>{}, IRoom::SelectionMode::NotSelected, true, true);
 }
 
 /// <summary>
@@ -443,7 +444,7 @@ TEST(Room, SectorsCreated)
     auto source = [&](auto&&...)
     {
         ++times_called;
-        return std::make_shared<MockSector>();
+        return mock_shared<MockSector>();
     };
     auto room = register_test_module().with_room(level_room).with_sector_source(source).build();
     ASSERT_EQ(times_called, 4);
@@ -462,7 +463,7 @@ TEST(Room, StaticMeshesLoaded)
     auto static_mesh_source = [&](auto&&...)
     {
         ++times_called;
-        return std::make_shared<MockStaticMesh>();
+        return mock_shared<MockStaticMesh>();
     };
 
     register_test_module().with_room(level_room).with_static_mesh_source(static_mesh_source).build();
@@ -482,7 +483,7 @@ TEST(Room, SpritesLoaded)
     auto static_mesh_position_source = [&](auto&&...)
     {
         ++times_called;
-        return std::make_shared<MockStaticMesh>();
+        return mock_shared<MockStaticMesh>();
     };
 
     register_test_module().with_room(level_room).with_static_mesh_position_source(static_mesh_position_source).build();
@@ -499,9 +500,9 @@ TEST(Room, TriggerAtSectorId)
     level_room.num_z_sectors = 3;
     auto room = register_test_module().with_room(level_room).build();
 
-    auto trigger1 = std::make_shared<MockTrigger>();
+    auto trigger1 = mock_shared<MockTrigger>();
     ON_CALL(*trigger1, sector_id).WillByDefault(Return(0));
-    auto trigger2 = std::make_shared<MockTrigger>();
+    auto trigger2 = mock_shared<MockTrigger>();
     ON_CALL(*trigger2, sector_id).WillByDefault(Return(4));
 
     room->add_trigger(trigger1);
@@ -529,7 +530,7 @@ TEST(Room, TriggerAtNotFound)
 /// </summary>
 TEST(Room, TriggerGeometryGenerated)
 {
-    auto trigger = std::make_shared<MockTrigger>();
+    auto trigger = mock_shared<MockTrigger>();
     EXPECT_CALL(*trigger, set_triangles).Times(1);
     EXPECT_CALL(*trigger, set_position).Times(1);
 
@@ -554,7 +555,7 @@ TEST(Room, WaterDetected)
 
 TEST(Room, BoundingBoxesRendered)
 {
-    auto mesh = std::make_shared<MockStaticMesh>();
+    auto mesh = mock_shared<MockStaticMesh>();
     EXPECT_CALL(*mesh, render_bounding_box).Times(1);
     trlevel::tr3_room level_room;
     level_room.static_meshes.push_back({});
@@ -562,5 +563,5 @@ TEST(Room, BoundingBoxesRendered)
         .with_room(level_room)
         .with_static_mesh_source([&](auto&&...) { return mesh; })
         .build();
-    room->render_bounding_boxes(MockCamera{});
+    room->render_bounding_boxes(NiceMock<MockCamera>{});
 }

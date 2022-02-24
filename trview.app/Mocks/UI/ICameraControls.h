@@ -6,7 +6,7 @@ namespace trview
 {
     namespace mocks
     {
-        struct MockCameraControls final : public ICameraControls
+        struct MockCameraControls : public ICameraControls
         {
             virtual ~MockCameraControls() = default;
             MOCK_METHOD(void, render, (), (override));

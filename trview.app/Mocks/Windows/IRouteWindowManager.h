@@ -1,14 +1,14 @@
 #pragma once
 
-#include <trview.app/Windows/IRouteWindowManager.h>
+#include "../../Windows/IRouteWindowManager.h"
 
 namespace trview
 {
     namespace mocks
     {
-        class MockRouteWindowManager final : public IRouteWindowManager
+        struct MockRouteWindowManager : public IRouteWindowManager
         {
-        public:
+            virtual ~MockRouteWindowManager() = default;
             MOCK_METHOD(void, render, (), (override));
             MOCK_METHOD(void, set_route, (IRoute*), (override));
             MOCK_METHOD(void, create_window, (), (override));

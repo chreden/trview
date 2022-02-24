@@ -1,14 +1,13 @@
 #pragma once
 
-#include <trview.app/Geometry/IMesh.h>
+#include "../../Geometry/IMesh.h"
 
 namespace trview
 {
     namespace mocks
     {
-        class MockMesh : public IMesh
+        struct MockMesh : public IMesh
         {
-        public:
             virtual ~MockMesh() = default;
             MOCK_METHOD(void, render, (const DirectX::SimpleMath::Matrix&, const ILevelTextureStorage&, const DirectX::SimpleMath::Color&, float, DirectX::SimpleMath::Vector3), (override));
             MOCK_METHOD(std::vector<TransparentTriangle>, transparent_triangles, (), (const, override));

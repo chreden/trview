@@ -2,6 +2,8 @@
 #include <trview.common/Mocks/IFiles.h>
 
 using namespace trview;
+using namespace trview::mocks;
+using namespace trview::tests;
 using testing::Return;
 using testing::A;
 using testing::SaveArg;
@@ -13,7 +15,7 @@ namespace
     {
         struct test_module
         {
-            std::shared_ptr<IFiles> files{ std::make_shared<MockFiles>() };
+            std::shared_ptr<IFiles> files{ mock_shared<MockFiles>() };
 
             std::unique_ptr<SettingsLoader> build()
             {
@@ -38,7 +40,7 @@ namespace
     std::unique_ptr<SettingsLoader> setup_setting(const std::string& setting, std::string randomizer_settings = "")
     {
         const auto contents = to_bytes(setting);
-        auto files = std::make_shared<MockFiles>();
+        auto files = mock_shared<MockFiles>();
         EXPECT_CALL(*files, appdata_directory).Times(2).WillRepeatedly(Return("appdata"));
         EXPECT_CALL(*files, load_file("appdata\\trview\\settings.txt")).Times(1).WillRepeatedly(Return(contents));
         EXPECT_CALL(*files, load_file("appdata\\trview\\randomizer.json")).Times(1).WillRepeatedly(Return(to_bytes(randomizer_settings)));
@@ -47,7 +49,7 @@ namespace
 
     std::unique_ptr<SettingsLoader> setup_save_setting(std::string& setting)
     {
-        auto files = std::make_shared<MockFiles>();
+        auto files = mock_shared<MockFiles>();
         EXPECT_CALL(*files, appdata_directory).Times(testing::AtLeast(1)).WillRepeatedly(Return("appdata"));
         EXPECT_CALL(*files, save_file(A<const std::string&>(), A<const std::string&>())).WillRepeatedly(SaveArg<1>(&setting));
         return register_test_module().with_files(files).build();
@@ -56,7 +58,7 @@ namespace
 
 TEST(SettingsLoader, FileNotFound)
 {
-    auto files = std::make_shared<MockFiles>();
+    auto files = mock_shared<MockFiles>();
     EXPECT_CALL(*files, appdata_directory).Times(1).WillRepeatedly(Return("appdata"));
     EXPECT_CALL(*files, load_file("appdata\\trview\\settings.txt")).Times(1);
     auto loader = register_test_module().with_files(files).build();
@@ -68,7 +70,7 @@ TEST(SettingsLoader, FileNotFound)
 
 TEST(SettingsLoader, FileSaved)
 {
-    auto files = std::make_shared<MockFiles>();
+    auto files = mock_shared<MockFiles>();
     EXPECT_CALL(*files, appdata_directory).Times(1).WillRepeatedly(Return("appdata"));
     EXPECT_CALL(*files, save_file("appdata\\trview\\settings.txt", A<const std::string&>())).Times(1);
     auto loader = register_test_module().with_files(files).build();

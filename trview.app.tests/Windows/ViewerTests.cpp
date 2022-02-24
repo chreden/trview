@@ -21,6 +21,7 @@
 #include "TestImgui.h"
 
 using testing::Return;
+using testing::NiceMock;
 using namespace trview;
 using namespace trview::mocks;
 using namespace trview::graphics;
@@ -52,18 +53,18 @@ namespace
         struct test_module
         {
             trview::Window window{ create_test_window(L"ViewerTests") };
-            std::shared_ptr<IDevice> device{ std::make_shared<MockDevice>() };
-            std::unique_ptr<IViewerUI> ui{ std::make_unique<MockViewerUI>() };
-            std::unique_ptr<IPicking> picking{ std::make_unique<MockPicking>() };
-            std::unique_ptr<IMouse> mouse{ std::make_unique<MockMouse>() };
-            std::shared_ptr<MockShortcuts> shortcuts{ std::make_shared<MockShortcuts>() };
-            std::shared_ptr<IRoute> route{ std::make_shared<MockRoute>() };
-            ISprite::Source sprite_source{ [](auto&&...) { return std::make_unique<MockSprite>(); }};
-            std::unique_ptr<ICompass> compass{ std::make_unique<MockCompass>() };
-            std::unique_ptr<IMeasure> measure{ std::make_unique<MockMeasure>() };
-            IRenderTarget::SizeSource render_target_source{ [](auto&&...) { return std::make_unique<MockRenderTarget>(); } };
-            IDeviceWindow::Source device_window_source{ [](auto&&...) { return std::make_unique<MockDeviceWindow>(); } };
-            std::unique_ptr<ISectorHighlight> sector_highlight{ std::make_unique<MockSectorHighlight>() };
+            std::shared_ptr<IDevice> device{ mock_shared<MockDevice>() };
+            std::unique_ptr<IViewerUI> ui{ mock_unique<MockViewerUI>() };
+            std::unique_ptr<IPicking> picking{ mock_unique<MockPicking>() };
+            std::unique_ptr<IMouse> mouse{ mock_unique<MockMouse>() };
+            std::shared_ptr<MockShortcuts> shortcuts{ mock_shared<MockShortcuts>() };
+            std::shared_ptr<IRoute> route{ mock_shared<MockRoute>() };
+            ISprite::Source sprite_source{ [](auto&&...) { return mock_unique<MockSprite>(); }};
+            std::unique_ptr<ICompass> compass{ mock_unique<MockCompass>() };
+            std::unique_ptr<IMeasure> measure{ mock_unique<MockMeasure>() };
+            IRenderTarget::SizeSource render_target_source{ [](auto&&...) { return mock_unique<MockRenderTarget>(); } };
+            IDeviceWindow::Source device_window_source{ [](auto&&...) { return mock_unique<MockDeviceWindow>(); } };
+            std::unique_ptr<ISectorHighlight> sector_highlight{ mock_unique<MockSectorHighlight>() };
 
             std::unique_ptr<Viewer> build()
             {
@@ -100,7 +101,7 @@ TEST(Viewer, SelectItemRaisedForValidItem)
     auto [ui_ptr, ui] = create_mock<MockViewerUI>();
 
     Item item(123, 0, 0, L"Test", 0, 0, {}, Vector3::Zero);
-    MockLevel level;
+    NiceMock<MockLevel> level;
 
     std::vector<Item> items_list{ item };
     EXPECT_CALL(level, items).WillRepeatedly([&]() { return items_list; });
@@ -135,7 +136,7 @@ TEST(Viewer, SelectItemNotRaisedForInvalidItem)
 TEST(Viewer, ItemVisibilityRaisedForValidItem)
 {
     Item item(123, 0, 0, L"Test", 0, 0, {}, Vector3::Zero);
-    MockLevel level;
+    NiceMock<MockLevel> level;
 
     std::vector<Item> items_list{ item };
     EXPECT_CALL(level, items).WillRepeatedly([&]() { return items_list; });
@@ -199,8 +200,8 @@ TEST(Viewer, SelectTriggerRaised)
     auto [picking_ptr, picking] = create_mock<MockPicking>();
     auto [mouse_ptr, mouse] = create_mock<MockMouse>();
 
-    MockLevel level;
-    auto trigger = std::make_shared<MockTrigger>();
+    NiceMock<MockLevel> level;
+    auto trigger = mock_shared<MockTrigger>();
     std::vector<std::weak_ptr<ITrigger>> triggers_list(101);
     triggers_list[100] = trigger;
 
@@ -227,9 +228,9 @@ TEST(Viewer, TriggerVisibilityRaised)
     auto [picking_ptr, picking] = create_mock<MockPicking>();
     auto [mouse_ptr, mouse] = create_mock<MockMouse>();
 
-    MockLevel level;
+    NiceMock<MockLevel> level;
     std::vector<std::weak_ptr<ITrigger>> triggers_list(101);
-    auto trigger = std::make_shared<MockTrigger>();
+    auto trigger = mock_shared<MockTrigger>();
     triggers_list[100] = trigger;
 
     EXPECT_CALL(level, triggers).WillRepeatedly([&]() { return triggers_list; });
@@ -294,7 +295,7 @@ TEST(Viewer, AddWaypointRaised)
     auto [picking_ptr, picking] = create_mock<MockPicking>();
     auto [mouse_ptr, mouse] = create_mock<MockMouse>();
 
-    MockLevel level;
+    NiceMock<MockLevel> level;
     auto viewer = register_test_module().with_ui(std::move(ui_ptr)).with_picking(std::move(picking_ptr)).with_mouse(std::move(mouse_ptr)).build();
     viewer->open(&level);
 
@@ -321,7 +322,7 @@ TEST(Viewer, AddWaypointRaisedUsesItemPosition)
     auto [picking_ptr, picking] = create_mock<MockPicking>();
     auto [mouse_ptr, mouse] = create_mock<MockMouse>();
 
-    MockLevel level;
+    NiceMock<MockLevel> level;
     std::vector<Item> items_list(51);
     Item item(50, 10, 0, L"Test", 0, 0, {}, Vector3::Zero);
     items_list[50] = item;
@@ -414,7 +415,7 @@ TEST(Viewer, OrbitEnabledWhenTriggerSelectedAndAutoOrbitEnabled)
     viewer->set_camera_mode(CameraMode::Free);
     ASSERT_EQ(viewer->camera_mode(), CameraMode::Free);
 
-    auto trigger = std::make_shared<MockTrigger>();
+    auto trigger = mock_shared<MockTrigger>();
     viewer->select_trigger(trigger);
     ASSERT_EQ(viewer->camera_mode(), CameraMode::Orbit);
 }
@@ -434,7 +435,7 @@ TEST(Viewer, OrbitNotEnabledWhenTriggerSelectedAndAutoOrbitDisabled)
     viewer->set_camera_mode(CameraMode::Free);
     ASSERT_EQ(viewer->camera_mode(), CameraMode::Free);
 
-    auto trigger = std::make_shared<MockTrigger>();
+    auto trigger = mock_shared<MockTrigger>();
     viewer->select_trigger(trigger);
     ASSERT_EQ(viewer->camera_mode(), CameraMode::Free);
 }
@@ -454,8 +455,8 @@ TEST(Viewer, OrbitEnabledWhenWaypointSelectedAndAutoOrbitEnabled)
     viewer->set_camera_mode(CameraMode::Free);
     ASSERT_EQ(viewer->camera_mode(), CameraMode::Free);
 
-    auto mesh = std::make_shared<MockMesh>();
-    viewer->select_waypoint(MockWaypoint{});
+    auto mesh = mock_shared<MockMesh>();
+    viewer->select_waypoint(NiceMock<MockWaypoint>{});
     ASSERT_EQ(viewer->camera_mode(), CameraMode::Orbit);
 }
 
@@ -474,8 +475,8 @@ TEST(Viewer, OrbitNotEnabledWhenWaypointSelectedAndAutoOrbitDisabled)
     viewer->set_camera_mode(CameraMode::Free);
     ASSERT_EQ(viewer->camera_mode(), CameraMode::Free);
 
-    auto mesh = std::make_shared<MockMesh>();
-    viewer->select_waypoint(MockWaypoint{});
+    auto mesh = mock_shared<MockMesh>();
+    viewer->select_waypoint(NiceMock<MockWaypoint>{});
     ASSERT_EQ(viewer->camera_mode(), CameraMode::Free);
 }
 
@@ -493,7 +494,7 @@ TEST(Viewer, OrbitEnabledWhenRoomSelectedAndAutoOrbitEnabled)
     viewer->set_settings(settings);
 
     auto [level_ptr, level] = create_mock<MockLevel>();
-    auto room = std::make_shared<MockRoom>();
+    auto room = mock_shared<MockRoom>();
 
     EXPECT_CALL(level, number_of_rooms).WillRepeatedly(Return(1));
     EXPECT_CALL(level, rooms).WillRepeatedly(Return(std::vector<std::weak_ptr<IRoom>>{ room }));
@@ -520,7 +521,7 @@ TEST(Viewer, OrbitNotEnabledWhenRoomSelectedAndAutoOrbitDisabled)
     viewer->set_settings(settings);
 
     auto [level_ptr, level] = create_mock<MockLevel>();
-    auto room = std::make_shared<MockRoom>();
+    auto room = mock_shared<MockRoom>();
 
     EXPECT_CALL(level, number_of_rooms).WillRepeatedly(Return(1));
     EXPECT_CALL(level, rooms).WillRepeatedly(Return(std::vector<std::weak_ptr<IRoom>>{ room }));
@@ -647,7 +648,7 @@ TEST(Viewer, MidWaypointUsesCentroid)
 TEST(Viewer, DepthViewOptionUpdatesLevel)
 {
     auto [ui_ptr, ui] = create_mock<MockViewerUI>();
-    MockLevel level;
+    NiceMock<MockLevel> level;
     EXPECT_CALL(level, set_neighbour_depth(6)).Times(1);
     auto viewer = register_test_module().with_ui(std::move(ui_ptr)).build();
     viewer->open(&level);

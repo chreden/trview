@@ -6,11 +6,10 @@ namespace trview
 {
     namespace mocks
     {
-        class MockLevelSwitcher final : public ILevelSwitcher
+        struct MockLevelSwitcher : public ILevelSwitcher
         {
-        public:
             virtual ~MockLevelSwitcher() = default;
-            MOCK_METHOD(void, open_file, (const std::string&));
+            MOCK_METHOD(void, open_file, (const std::string&), (override));
         };
     }
 }

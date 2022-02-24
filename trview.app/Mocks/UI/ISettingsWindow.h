@@ -6,7 +6,7 @@ namespace trview
 {
     namespace mocks
     {
-        struct MockSettingsWindow final : public ISettingsWindow
+        struct MockSettingsWindow : public ISettingsWindow
         {
             virtual ~MockSettingsWindow() = default;
             MOCK_METHOD(void, render, (), (override));

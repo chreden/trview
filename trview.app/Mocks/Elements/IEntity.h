@@ -6,7 +6,7 @@ namespace trview
 {
     namespace mocks
     {
-        struct MockEntity final : public IEntity
+        struct MockEntity : public IEntity
         {
             virtual ~MockEntity() = default;
             MOCK_METHOD(void, render, (const ICamera&, const ILevelTextureStorage&, const DirectX::SimpleMath::Color&), (override));

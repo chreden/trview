@@ -6,7 +6,7 @@ namespace trview
 {
     namespace mocks
     {
-        class MockFileDropper final : public IFileDropper
+        struct MockFileDropper : public IFileDropper
         {
         };
     }

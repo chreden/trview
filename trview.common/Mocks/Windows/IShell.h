@@ -6,7 +6,7 @@ namespace trview
 {
     namespace mocks
     {
-        struct MockShell final : public IShell
+        struct MockShell : public IShell
         {
             virtual ~MockShell() = default;
             MOCK_METHOD(void, open, (const std::wstring&), (override));

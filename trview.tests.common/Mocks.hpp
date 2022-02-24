@@ -1,5 +1,8 @@
 #pragma once
 
+#include <gtest/gtest.h>
+#include <gmock/gmock.h>
+
 namespace trview
 {
     namespace tests
@@ -7,9 +10,21 @@ namespace trview
         template <typename T>
         std::tuple<std::unique_ptr<T>, T&> create_mock()
         {
-            auto ptr = std::make_unique<T>();
+            auto ptr = std::make_unique<testing::NiceMock<T>>();
             auto& ref = *ptr;
             return { std::move(ptr), ref };
+        }
+
+        template <typename T>
+        auto mock_unique()
+        {
+            return std::make_unique<testing::NiceMock<T>>();;
+        }
+
+        template <typename T>
+        auto mock_shared()
+        {
+            return std::make_shared<testing::NiceMock<T>>();
         }
 
         template <typename Mock, typename T>
@@ -26,7 +41,7 @@ namespace trview
         {
             if (!ptr)
             {
-                ptr = std::make_shared<Mock>();
+                ptr = mock_shared<Mock>();
             }
         }
     }
