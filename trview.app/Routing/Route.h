@@ -27,6 +27,7 @@ namespace trview
         virtual void insert(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& normal, uint32_t room, uint32_t index, IWaypoint::Type type, uint32_t type_index) override;
         virtual bool is_unsaved() const override;
         virtual uint32_t insert(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& normal, uint32_t room, IWaypoint::Type type, uint32_t type_index) override;
+        virtual void move(int32_t left, int32_t right) override;
         virtual PickResult pick(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& direction) const override;
         virtual void remove(uint32_t index) override;
         virtual void render(const ICamera& camera, const ILevelTextureStorage& texture_storage) override;

@@ -27,6 +27,11 @@ namespace trview
         /// Event raised when the route colour has been changed.
         Event<Colour> on_colour_changed;
 
+        /// <summary>
+        /// Event raised when a waypoint has moved from one index to another.
+        /// </summary>
+        Event<int32_t, int32_t> on_waypoint_reordered;
+
         /// Event raised when a route file is opened.
         Event<std::string, bool> on_route_import;
 

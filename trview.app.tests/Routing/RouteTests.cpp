@@ -196,6 +196,36 @@ TEST(Route, IsUnsaved)
     ASSERT_TRUE(route->is_unsaved());
 }
 
+TEST(Route, MoveBackwards)
+{
+    uint32_t test_index = 0;
+    auto route = register_test_module().with_waypoint_source(indexed_source(test_index)).build();
+    route->add(Vector3::Zero, Vector3::Down, 0);
+    route->add(Vector3::Zero, Vector3::Down, 1);
+    route->add(Vector3::Zero, Vector3::Down, 2);
+    route->set_unsaved(false);
+    route->move(2, 0);
+    const auto order = get_order(*route);
+    const auto expected = std::vector<uint32_t>{ 2u, 0u, 1u };
+    ASSERT_EQ(order, expected);
+    ASSERT_TRUE(route->is_unsaved());
+}
+
+TEST(Route, MoveForward)
+{
+    uint32_t test_index = 0;
+    auto route = register_test_module().with_waypoint_source(indexed_source(test_index)).build();
+    route->add(Vector3::Zero, Vector3::Down, 0);
+    route->add(Vector3::Zero, Vector3::Down, 1);
+    route->add(Vector3::Zero, Vector3::Down, 2);
+    route->set_unsaved(false);
+    route->move(0, 2);
+    const auto order = get_order(*route);
+    const auto expected = std::vector<uint32_t>{ 1u, 2u, 0u };
+    ASSERT_EQ(order, expected);
+    ASSERT_TRUE(route->is_unsaved());
+}
+
 TEST(Route, Remove)
 {
     auto route = register_test_module().build();

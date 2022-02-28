@@ -80,6 +80,12 @@ namespace trview
         /// <returns>True if there are unsaved changes.</returns>
         virtual bool is_unsaved() const = 0;
         /// <summary>
+        /// Move a waypoint from one index to another.
+        /// </summary>
+        /// <param name="from">The source index.</param>
+        /// <param name="to">Destination index.</param>
+        virtual void move(int32_t from, int32_t to) = 0;
+        /// <summary>
         /// Pick against the waypoints in the route.
         /// </summary>
         /// <param name="position">The position of the camera.</param>
