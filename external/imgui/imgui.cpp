@@ -4035,6 +4035,7 @@ static void TranslateWindow(ImGuiWindow* window, const ImVec2& delta)
     window->DC.CursorPos += delta;
     window->DC.CursorStartPos += delta;
     window->DC.CursorMaxPos += delta;
+    window->DC.IdealMaxPos += delta;
 }
 
 static void ScaleWindow(ImGuiWindow* window, float scale)
