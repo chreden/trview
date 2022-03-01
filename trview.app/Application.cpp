@@ -404,6 +404,11 @@ namespace trview
             _route->set_colour(colour);
             _viewer->set_route(_route);
         };
+        _token_store += _route_window->on_waypoint_reordered += [&](int32_t from, int32_t to)
+        {
+            _route->move(from, to);
+            _viewer->set_route(_route);
+        };
         _route_window->set_randomizer_enabled(_settings.randomizer_tools);
         _route->set_randomizer_enabled(_settings.randomizer_tools);
         _route_window->set_randomizer_settings(_settings.randomizer);

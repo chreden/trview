@@ -152,6 +152,19 @@ namespace trview
         return _is_unsaved;
     }
 
+    void Route::move(int32_t from, int32_t to)
+    {
+        auto source = _waypoints[from];
+        auto final_to = to;
+        if (to > from)
+        {
+            final_to = to + 1;
+        }
+        _waypoints.insert(_waypoints.begin() + final_to, source);
+        _waypoints.erase(_waypoints.begin() + from + ((from > final_to) ? 1 : 0));
+        set_unsaved(true);
+    }
+
     PickResult Route::pick(const Vector3& position, const Vector3& direction) const
     {
         PickResult result;

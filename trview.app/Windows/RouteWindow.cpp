@@ -60,6 +60,9 @@ namespace trview
                 }
             }
 
+            int32_t move_from = -1;
+            int32_t move_to = -1;
+
             if (ImGui::BeginTable("##waypointslist", 2, ImGuiTableFlags_ScrollY | ImGuiTableFlags_SizingFixedFit, ImVec2(-1, -1)))
             {
                 ImGui::TableSetupColumn("#");
@@ -72,6 +75,7 @@ namespace trview
                     for (uint32_t i = 0; i < _route->waypoints(); ++i)
                     {
                         const auto& waypoint = _route->waypoint(i);
+
                         ImGui::TableNextRow();
                         ImGui::TableNextColumn();
                         bool selected = _selected_index == i;
@@ -81,11 +85,39 @@ namespace trview
                             _selected_index = i;
                             on_waypoint_selected(i);
                         }
+
+                        ImGuiDragDropFlags src_flags = 0;
+                        src_flags |= ImGuiDragDropFlags_SourceNoDisableHover;
+                        src_flags |= ImGuiDragDropFlags_SourceNoHoldToOpenOthers;
+                        src_flags |= ImGuiDragDropFlags_SourceNoPreviewTooltip;
+                        if (ImGui::BeginDragDropSource(src_flags))
+                        {
+                            ImGui::SetDragDropPayload("RouteWindowWaypoint", &i, sizeof(int));
+                            ImGui::EndDragDropSource();
+                        }
+
+                        if (ImGui::BeginDragDropTarget())
+                        {
+                            ImGuiDragDropFlags target_flags = 0;
+                            if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("RouteWindowWaypoint", target_flags))
+                            {
+                                move_from = *(const int*)payload->Data;
+                                move_to = i;
+                                _route->waypoints();
+                            }
+                            ImGui::EndDragDropTarget();
+                        }
+
                         ImGui::TableNextColumn();
                         ImGui::Text(waypoint_text(waypoint).c_str());
                     }
                 }
                 ImGui::EndTable();
+            }
+
+            if (move_from != -1 && move_to != -1)
+            {
+                on_waypoint_reordered(move_from, move_to);
             }
         }
         ImGui::EndChild();
@@ -204,19 +236,24 @@ namespace trview
                 {
                     on_waypoint_deleted(_selected_index);
                 }
-
-                if (_randomizer_enabled)
+                else
                 {
-                    ImGui::Text("Randomizer");
-                    load_randomiser_settings(waypoint);
-                }
+                    // Don't access the waypoint after it has been deleted - this is an issue with the window not
+                    // having temporary ownership of the waypoint - if it was shared_ptr it would be fine.
 
-                ImGui::Text("Notes");
-                std::string notes = to_utf8(waypoint.notes());
-                if (ImGui::InputTextMultiline(Names::notes.c_str(), &notes, ImVec2(-1, -1)))
-                {
-                    waypoint.set_notes(to_utf16(notes));
-                    _route->set_unsaved(true);
+                    if (_randomizer_enabled)
+                    {
+                        ImGui::Text("Randomizer");
+                        load_randomiser_settings(waypoint);
+                    }
+
+                    ImGui::Text("Notes");
+                    std::string notes = to_utf8(waypoint.notes());
+                    if (ImGui::InputTextMultiline(Names::notes.c_str(), &notes, ImVec2(-1, -1)))
+                    {
+                        waypoint.set_notes(to_utf16(notes));
+                        _route->set_unsaved(true);
+                    }
                 }
             }
         }

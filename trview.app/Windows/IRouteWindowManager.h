@@ -30,6 +30,11 @@ namespace trview
         /// Event raised when a waypoint is deleted.
         Event<uint32_t> on_waypoint_deleted;
 
+        /// <summary>
+        /// Event raised when a waypoint has moved from one index to another.
+        /// </summary>
+        Event<int32_t, int32_t> on_waypoint_reordered;
+
         /// Render all of the route windows.
         virtual void render() = 0;
 

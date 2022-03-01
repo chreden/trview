@@ -93,3 +93,19 @@ TEST(RouteWindowManager, RandomizerSettingsPassedToNewWindow)
     auto manager = register_test_module().with_window_source([&](auto&&...) { return mock_window; }).build();
     manager->create_window();
 }
+
+TEST(RouteWindowManager, WaypointReorderedEventRaised)
+{
+    auto mock_window = mock_shared<MockRouteWindow>();
+    auto manager = register_test_module().with_window_source([&](auto&&...) { return mock_window; }).build();
+    std::optional<std::tuple<int32_t, int32_t>> raised;
+    auto token = manager->on_waypoint_reordered += [&](int32_t from, int32_t to)
+    {
+        raised = { from, to };
+    };
+    manager->create_window();
+    mock_window->on_waypoint_reordered(1, 2);
+    ASSERT_TRUE(raised.has_value());
+    ASSERT_EQ(std::get<0>(raised.value()), 1);
+    ASSERT_EQ(std::get<1>(raised.value()), 2);
+}

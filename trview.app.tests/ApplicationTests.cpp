@@ -499,3 +499,18 @@ TEST(Application, WindowManagersAndViewerRendered)
         .build();
     application->render();
 }
+
+TEST(Application, WaypointReorderedMovesWaypoint)
+{
+    auto route = mock_shared<MockRoute>();
+    EXPECT_CALL(*route, move(1, 2)).Times(1);
+
+    auto [route_window_manager_ptr, route_window_manager] = create_mock<MockRouteWindowManager>();
+    auto application = register_test_module()
+        .with_route_window_manager(std::move(route_window_manager_ptr))
+        .with_route_source([&](auto&&...) {return route; })
+        .build();
+
+    route_window_manager.on_waypoint_reordered(1, 2);
+}
+
