@@ -13,18 +13,18 @@ namespace trlevel
 
     namespace
     {
+        template < typename T >
+        void read(std::istream& file, T& value)
+        {
+            file.read(reinterpret_cast<char*>(&value), sizeof(value));
+        }
+
         template <typename T>
         T read(std::istream& file)
         {
             T value;
             read<T>(file, value);
             return value;
-        }
-
-        template < typename T >
-        void read(std::istream& file, T& value)
-        {
-            file.read(reinterpret_cast<char*>(&value), sizeof(value));
         }
 
         template < typename DataType, typename SizeType >
