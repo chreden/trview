@@ -18,6 +18,12 @@ namespace trview
             { SectorFlag::ClimbableRight, { 0.6f, 0.0f, 0.9f, 0.0f } },
             { SectorFlag::ClimbableLeft, { 0.6f, 0.0f, 0.9f, 0.0f } },
         };
+
+        // Also need:
+        // Fallback
+        // NO-SPACE
+        // Down
+        // Up
     }
 
     Colour MapColours::colour_from_flag(uint16_t flag) const
