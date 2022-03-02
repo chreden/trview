@@ -20,6 +20,7 @@
 #include <trview.graphics/IFont.h>
 
 #include "IMapRenderer.h"
+#include "MapColours.h"
 
 namespace trview
 {
@@ -135,5 +136,6 @@ namespace trview
         std::shared_ptr<ISector> _previous_sector;
         Microsoft::WRL::ComPtr<ID3D11DepthStencilState> _depth_stencil_state;
         RenderMode _render_mode{ RenderMode::Screen };
+        MapColours _colours;
     };
 };

@@ -289,12 +289,6 @@
     <ClCompile Include="Settings\RandomizerSettings.cpp">
       <Filter>Settings</Filter>
     </ClCompile>
-    <ClCompile Include="UI\IMapRenderer.cpp">
-      <Filter>UI</Filter>
-    </ClCompile>
-    <ClCompile Include="UI\MapRenderer.cpp">
-      <Filter>UI</Filter>
-    </ClCompile>
     <ClCompile Include="Resources\DefaultFonts.cpp">
       <Filter>Resources</Filter>
     </ClCompile>
@@ -352,6 +346,15 @@
     </ClCompile>
     <ClCompile Include="UI\DX11ImGuiBackend.cpp">
       <Filter>UI</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\IMapRenderer.cpp">
+      <Filter>UI\Minimap</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\MapRenderer.cpp">
+      <Filter>UI\Minimap</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\MapColours.cpp">
+      <Filter>UI\Minimap</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -840,12 +843,6 @@
     <ClInclude Include="Settings\RandomizerSettings.h">
       <Filter>Settings</Filter>
     </ClInclude>
-    <ClInclude Include="UI\IMapRenderer.h">
-      <Filter>UI</Filter>
-    </ClInclude>
-    <ClInclude Include="UI\MapRenderer.h">
-      <Filter>UI</Filter>
-    </ClInclude>
     <ClInclude Include="Resources\DefaultFonts.h">
       <Filter>Resources</Filter>
     </ClInclude>
@@ -910,6 +907,15 @@
     </ClInclude>
     <ClInclude Include="Mocks\UI\IImGuiBackend.h">
       <Filter>Mocks\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\IMapRenderer.h">
+      <Filter>UI\Minimap</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\MapRenderer.h">
+      <Filter>UI\Minimap</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\MapColours.h">
+      <Filter>UI\Minimap</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1002,6 +1008,9 @@
     </Filter>
     <Filter Include="Windows\Route">
       <UniqueIdentifier>{ad73c4b2-4cde-4987-82e7-eac11a79ee3f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="UI\Minimap">
+      <UniqueIdentifier>{35934bbe-5267-4aea-8d40-82452ae7874c}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
