@@ -1,6 +1,7 @@
 #pragma once
 
 #include <trview.common/Event.h>
+#include "../UI/MapColours.h"
 
 namespace trview
 {
@@ -70,6 +71,7 @@ namespace trview
         /// </summary>
         Event<uint32_t> on_max_recent_files;
         Event<Colour> on_background_colour;
+        Event<MapColours> on_minimap_colours;
         virtual void render() = 0;
         /// <summary>
         /// Set the new value of the vsync setting. This will not raise the on_vsync event.

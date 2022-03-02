@@ -26,9 +26,36 @@ namespace trview
         // Up
     }
 
+    std::unordered_map<uint16_t, Colour> MapColours::colours() const
+    {
+        std::unordered_map<uint16_t, Colour> result;
+        for (const auto& color : default_colours)
+        {
+            uint16_t key = color.first;
+            auto override_colour = _override_colours.find(key);
+            if (override_colour != _override_colours.end())
+            {
+                result[key] = override_colour->second;
+            }
+            else
+            {
+                result[key] = color.second;
+            }
+        }
+        return result;
+    }
+
     Colour MapColours::colour_from_flag(uint16_t flag) const
     {
-        return default_colours.find(flag)->second;
+        auto override_colour = _override_colours.find(flag);
+        if (override_colour != _override_colours.end())
+        {
+            return override_colour->second;
+        }
+        else
+        {
+            return default_colours[flag];
+        }
     }
 
     Colour MapColours::colour_from_flags_field(uint16_t flags) const
@@ -46,16 +73,30 @@ namespace trview
         {
             for (const auto& color : default_colours)
             {
-                if ((color.first & flags)
-                    && (color.first < minimum_flag_enabled || minimum_flag_enabled == -1)
-                    && (color.first < SectorFlag::ClimbableUp || color.first > SectorFlag::ClimbableLeft)) // climbable flag handled separately
+                uint16_t key = color.first;
+                if ((key & flags)
+                    && (key < minimum_flag_enabled || minimum_flag_enabled == -1)
+                    && (key < SectorFlag::ClimbableUp || key > SectorFlag::ClimbableLeft)) // climbable flag handled separately
                 {
-                    minimum_flag_enabled = color.first;
-                    draw_color = color.second;
+                    minimum_flag_enabled = key;
+                    auto override_colour = _override_colours.find(key);
+                    if (override_colour != _override_colours.end())
+                    {
+                        draw_color = override_colour->second;
+                    }
+                    else
+                    {
+                        draw_color = color.second;
+                    }
                 }
             }
         }
 
         return draw_color;
+    }
+
+    void MapColours::set_colour(uint16_t flag, const Colour& colour)
+    {
+        _override_colours[flag] = colour;
     }
 }

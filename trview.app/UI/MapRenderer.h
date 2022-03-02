@@ -20,7 +20,6 @@
 #include <trview.graphics/IFont.h>
 
 #include "IMapRenderer.h"
-#include "MapColours.h"
 
 namespace trview
 {
@@ -88,6 +87,7 @@ namespace trview
         virtual Point first() const override;
 
         virtual void set_render_mode(RenderMode mode) override;
+        virtual void set_colours(const MapColours& colours) override;
     private:
         // Determines the position (on screen) to draw a sector 
         Point get_position(const ISector& sector); 

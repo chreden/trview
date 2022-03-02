@@ -68,5 +68,6 @@ namespace trview
         float _movement_speed{ 1.0f };
         int _max_recent_files{ 10 };
         float _colour[3];
+        MapColours _colours;
     };
 }

@@ -64,6 +64,25 @@ namespace trview
                     }
                     ImGui::EndTabItem();
                 }
+
+                if (ImGui::BeginTabItem("Minimap"))
+                {
+                    DirectX::SimpleMath::Color portal_colour = _colours.colour_from_flag(SectorFlag::Portal);
+                    if (ImGui::ColorEdit4("Portal", &portal_colour.x))
+                    {
+                        _colours.set_colour(SectorFlag::Portal, portal_colour);
+                        on_minimap_colours(_colours);
+                    }
+
+                    DirectX::SimpleMath::Color wall_colour = _colours.colour_from_flag(SectorFlag::Wall);
+                    if (ImGui::ColorEdit4("Wall", &wall_colour.x))
+                    {
+                        _colours.set_colour(SectorFlag::Wall, wall_colour);
+                        on_minimap_colours(_colours);
+                    }
+                    ImGui::EndTabItem();
+                }
+
                 ImGui::EndTabBar();
             }
         }

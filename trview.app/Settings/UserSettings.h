@@ -3,6 +3,7 @@
 #include <list>
 #include <string>
 #include "RandomizerSettings.h"
+#include "../UI/MapColours.h"
 
 namespace trview
 {
@@ -28,6 +29,7 @@ namespace trview
         bool randomizer_tools{ false };
         RandomizerSettings randomizer;
         uint32_t max_recent_files{ 10u };
+        MapColours map_colours;
 
         bool operator==(const UserSettings& other) const;
     };

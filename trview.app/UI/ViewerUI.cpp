@@ -167,6 +167,11 @@ namespace trview
             _settings.background_colour = value;
             on_settings(_settings);
         };
+        _token_store += _settings_window->on_minimap_colours += [&](MapColours colours)
+        {
+            _settings.map_colours = colours;
+            on_settings(_settings);
+        };
 
         _camera_position = std::make_unique<CameraPosition>();
         _camera_position->on_position_changed += on_camera_position;
@@ -382,6 +387,7 @@ namespace trview
         _settings_window->set_max_recent_files(settings.max_recent_files);
         _settings_window->set_background_colour(settings.background_colour);
         _camera_position->set_display_degrees(settings.camera_display_degrees);
+        _map_renderer->set_colours(settings.map_colours);
     }
 
     void ViewerUI::set_selected_room(const std::shared_ptr<IRoom>& room)

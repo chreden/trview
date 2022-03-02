@@ -2,6 +2,7 @@
 
 #include <trview.common/Event.h>
 #include <trview.app/Elements/Room.h>
+#include "MapColours.h"
 
 namespace trview
 {
@@ -59,5 +60,7 @@ namespace trview
         virtual Point first() const = 0;
 
         virtual void set_render_mode(RenderMode mode) = 0;
+
+        virtual void set_colours(const MapColours& colours) = 0;
     };
 }

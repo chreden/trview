@@ -299,4 +299,10 @@ namespace trview
         _render_mode = mode;
         update_map_position();
     }
+
+    void MapRenderer::set_colours(const MapColours& colours)
+    {
+        _colours = colours;
+        _force_redraw = true;
+    }
 };
