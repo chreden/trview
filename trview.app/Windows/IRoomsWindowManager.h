@@ -27,6 +27,7 @@ namespace trview
         /// </summary>
         /// <param name="version">The level version.</param>
         virtual void set_level_version(trlevel::LevelVersion version) = 0;
+        virtual void set_map_colours(const MapColours& colours) = 0;
         /// Set the current room that the viewer is focusing on.
         /// @param room The current room.
         virtual void set_room(uint32_t room) = 0;

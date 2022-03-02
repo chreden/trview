@@ -5,6 +5,7 @@
 #include <trview.app/Elements/Item.h>
 #include <trview.app/Elements/ITrigger.h>
 #include <trview.app/Elements/IRoom.h>
+#include "../UI/MapColours.h"
 
 namespace trview
 {
@@ -44,6 +45,8 @@ namespace trview
         /// </summary>
         /// <param name="version">The level version</param>
         virtual void set_level_version(trlevel::LevelVersion version) = 0;
+
+        virtual void set_map_colours(const MapColours& colours) = 0;
 
         /// Set the rooms to display in the window.
         /// @param rooms The rooms to show.

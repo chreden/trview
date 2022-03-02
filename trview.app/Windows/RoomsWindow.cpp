@@ -137,6 +137,11 @@ namespace trview
         _level_version = version;
     }
 
+    void RoomsWindow::set_map_colours(const MapColours& colours)
+    {
+        _map_renderer->set_colours(colours);
+    }
+
     void RoomsWindow::set_rooms(const std::vector<std::weak_ptr<IRoom>>& rooms)
     {
         _all_rooms = rooms;
