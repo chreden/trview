@@ -5,7 +5,7 @@ namespace trview
 {
     namespace
     {
-        std::map<uint16_t, Colour> default_colours = {
+        const std::map<uint16_t, Colour> default_colours = {
             { SectorFlag::Portal, { 0.0f, 0.0f, 0.0f } },
             { SectorFlag::Wall, { 0.4f, 0.4f, 0.4f } },
             { SectorFlag::Trigger, { 1.0f, 0.3f, 0.7f } },
@@ -19,11 +19,12 @@ namespace trview
             { SectorFlag::ClimbableLeft, { 0.6f, 0.0f, 0.9f, 0.0f } },
         };
 
-        // Also need:
-        // Fallback
-        // NO-SPACE
-        // Down
-        // Up
+        const std::map<MapColours::Special, Colour> default_special_colours = {
+            { MapColours::Special::Default, { 0.0f, 0.7f, 0.7f } },
+            { MapColours::Special::NoSpace, { 0.2f, 0.2f, 0.9f } },
+            { MapColours::Special::RoomAbove, { 0.0f, 0.0f, 0.0f } },
+            { MapColours::Special::RoomBelow, { 0.6f, 0.0f, 0.0f, 0.0f } }
+        };
     }
 
     std::unordered_map<uint16_t, Colour> MapColours::colours() const
@@ -54,7 +55,7 @@ namespace trview
         }
         else
         {
-            return default_colours[flag];
+            return default_colours.find(flag)->second;
         }
     }
 
@@ -63,11 +64,11 @@ namespace trview
         // Firstly get the colour for the tile 
         // To determine the base colour we order the floor functions by the *minimum* enabled flag (ranked by order asc)
         int minimum_flag_enabled = -1;
-        Colour draw_color = { 0.0f, 0.7f, 0.7f }; // fallback 
+        Colour draw_color = colour(Special::Default);
 
         if (!(flags & SectorFlag::Portal) && (flags & SectorFlag::Wall && flags & SectorFlag::FloorSlant)) // is it no-space?
         {
-            return { 0.2f, 0.2f, 0.9f };
+            return colour(Special::NoSpace);
         }
         else
         {
@@ -95,8 +96,26 @@ namespace trview
         return draw_color;
     }
 
+    Colour MapColours::colour(Special type) const
+    {
+        auto override_special_colour = _override_special_colours.find(type);
+        if (override_special_colour != _override_special_colours.end())
+        {
+            return override_special_colour->second;
+        }
+        else
+        {
+            return default_special_colours.find(type)->second;
+        }
+    }
+
     void MapColours::set_colour(uint16_t flag, const Colour& colour)
     {
         _override_colours[flag] = colour;
+    }
+
+    void MapColours::set_colour(Special type, const Colour& colour)
+    {
+        _override_special_colours[type] = colour;
     }
 }

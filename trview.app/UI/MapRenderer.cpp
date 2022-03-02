@@ -97,11 +97,11 @@ namespace trview
 
             // If sector is a down portal, draw a transparent black square over it 
             if (tile.sector->flags() & SectorFlag::RoomBelow)
-                draw(tile.position, tile.size, Color(0.0f, 0.0f, 0.0f, 0.6f));
+                draw(tile.position, tile.size, _colours.colour(MapColours::Special::RoomBelow));
 
             // If sector is an up portal, draw a small corner square in the top left to signify this 
             if (tile.sector->flags() & SectorFlag::RoomAbove)
-                draw(tile.position, Size(tile.size.width / 4, tile.size.height / 4), Color(0.0f, 0.0f, 0.0f));
+                draw(tile.position, Size(tile.size.width / 4, tile.size.height / 4), _colours.colour(MapColours::Special::RoomAbove));
 
             if (tile.sector->flags() & SectorFlag::Death && tile.sector->flags() & SectorFlag::Trigger)
             {

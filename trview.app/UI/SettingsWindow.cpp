@@ -67,19 +67,41 @@ namespace trview
 
                 if (ImGui::BeginTabItem("Minimap"))
                 {
-                    DirectX::SimpleMath::Color portal_colour = _colours.colour_from_flag(SectorFlag::Portal);
-                    if (ImGui::ColorEdit4("Portal", &portal_colour.x))
+                    auto add_colour = [&](auto&& name, auto&& flag)
                     {
-                        _colours.set_colour(SectorFlag::Portal, portal_colour);
-                        on_minimap_colours(_colours);
-                    }
+                        DirectX::SimpleMath::Color colour = _colours.colour_from_flag(flag);
+                        if (ImGui::ColorEdit4(name, &colour.x))
+                        {
+                            _colours.set_colour(flag, colour);
+                            on_minimap_colours(_colours);
+                        }
+                    };
 
-                    DirectX::SimpleMath::Color wall_colour = _colours.colour_from_flag(SectorFlag::Wall);
-                    if (ImGui::ColorEdit4("Wall", &wall_colour.x))
+                    auto add_special = [&](auto&& name, auto&& type)
                     {
-                        _colours.set_colour(SectorFlag::Wall, wall_colour);
-                        on_minimap_colours(_colours);
-                    }
+                        DirectX::SimpleMath::Color colour = _colours.colour(type);
+                        if (ImGui::ColorEdit4(name, &colour.x))
+                        {
+                            _colours.set_colour(type, colour);
+                            on_minimap_colours(_colours);
+                        }
+                    };
+
+                    add_special("Default", MapColours::Special::Default);
+                    add_colour("Portal", SectorFlag::Portal);
+                    add_colour("Wall", SectorFlag::Wall);
+                    add_colour("Trigger", SectorFlag::Trigger);
+                    add_colour("Death", SectorFlag::Death);
+                    add_colour("Minecart Left", SectorFlag::MinecartLeft);
+                    add_colour("Minecart Right", SectorFlag::MinecartRight);
+                    add_colour("Monkey Swing", SectorFlag::MonkeySwing);
+                    add_colour("Climbable Up", SectorFlag::ClimbableUp);
+                    add_colour("Climbable Down", SectorFlag::ClimbableDown);
+                    add_colour("Climbable Right", SectorFlag::ClimbableRight);
+                    add_colour("Climbable Left", SectorFlag::ClimbableLeft);
+                    add_special("No Space", MapColours::Special::NoSpace);
+                    add_special("Room Above", MapColours::Special::RoomAbove);
+                    add_special("Room Below", MapColours::Special::RoomBelow);
                     ImGui::EndTabItem();
                 }
 
