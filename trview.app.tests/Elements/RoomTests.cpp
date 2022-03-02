@@ -175,7 +175,9 @@ TEST(Room, GetTransparentTriangles)
     EXPECT_CALL(*trigger, get_transparent_triangles).Times(1);
     room->add_entity(entity);
     room->add_trigger(trigger);
-    room->get_transparent_triangles(NiceMock<MockTransparencyBuffer>{}, NiceMock<MockCamera>{}, IRoom::SelectionMode::NotSelected, true, true);
+    NiceMock<MockTransparencyBuffer> transparency;
+    NiceMock<MockCamera> camera;
+    room->get_transparent_triangles(transparency, camera, IRoom::SelectionMode::NotSelected, true, true);
 }
 
 /// <summary>
@@ -190,7 +192,9 @@ TEST(Room, GetTransparentTrianglesWithoutTriggers)
     EXPECT_CALL(*trigger, get_transparent_triangles).Times(0);
     room->add_entity(entity);
     room->add_trigger(trigger);
-    room->get_transparent_triangles(NiceMock<MockTransparencyBuffer>{}, NiceMock<MockCamera>{}, IRoom::SelectionMode::NotSelected, false, true);
+    NiceMock<MockTransparencyBuffer> transparency;
+    NiceMock<MockCamera> camera;
+    room->get_transparent_triangles(transparency, camera, IRoom::SelectionMode::NotSelected, false, true);
 }
 
 /// <summary>
@@ -205,7 +209,9 @@ TEST(Room, GetTransparentTrianglesFromContents)
     EXPECT_CALL(*trigger, get_transparent_triangles).Times(0);
     room->add_entity(entity);
     room->add_trigger(trigger);
-    room->get_contained_transparent_triangles(NiceMock<MockTransparencyBuffer>{}, NiceMock<MockCamera>{}, IRoom::SelectionMode::NotSelected, true);
+    NiceMock<MockTransparencyBuffer> transparency;
+    NiceMock<MockCamera> camera;
+    room->get_contained_transparent_triangles(transparency, camera, IRoom::SelectionMode::NotSelected, true);
 }
 
 /// <summary>
