@@ -21,7 +21,9 @@ namespace trview
             std::string name() const;
             ImGuiWindow* root() const;
         private:
-            ImGuiWindow* _window{ nullptr };
+            ImGuiID GetID(const std::string& name);
+
+            ImVector<ImGuiID> _stack;
             std::string _name;
             ImGuiID _id;
             ImGuiWindow* _root_window{ nullptr };

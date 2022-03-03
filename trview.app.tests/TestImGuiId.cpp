@@ -34,10 +34,10 @@ namespace trview
         TestImGuiId TestImGuiId::push_child(const std::string& name)
         {
             auto context = ImGui::GetCurrentContext();
-            auto id = _window->GetID(name.c_str());
+            auto id = GetID(name.c_str());
 
             std::stringstream stream;
-            stream << _window->Name << '/' << name << '_' << std::hex << std::uppercase << std::setfill('0') << std::setw(8) << id;
+            stream << _name << '/' << name << '_' << std::hex << std::uppercase << std::setfill('0') << std::setw(8) << id;
             auto child_name = stream.str();
 
             for (const auto& window : context->Windows)
@@ -52,34 +52,31 @@ namespace trview
 
         TestImGuiId TestImGuiId::push_override(const std::string& name)
         {
-            auto id = _window->GetID(name.c_str());
-            _window->IDStack.push_back(id);
+            auto id = GetID(name.c_str());
+            _stack.push_back(id);
             return *this;
         }
 
         TestImGuiId TestImGuiId::push(const std::string& name)
         {
-            auto new_id = _window->GetID(name.c_str());
+            auto new_id = GetID(name.c_str());
             std::stringstream stream;
-            stream << _window->Name << '/' << name << '_' << std::hex << std::uppercase << std::setfill('0') << std::setw(8) << new_id;
+            stream << _name << '/' << name << '_' << std::hex << std::uppercase << std::setfill('0') << std::setw(8) << new_id;
             _name = stream.str();
-            _window->IDStack.push_back(new_id);
+            _stack.push_back(new_id);
             return *this;
         }
 
         TestImGuiId::TestImGuiId(ImGuiWindow* window)
-            : _window(window), _id(window->ID), _root_window(window)
+            : _id(window->ID), _root_window(window)
         {
+            _stack.push_back(_id);
             _name = window->Name;
         }
 
         TestImGuiId TestImGuiId::id(const std::string& name)
         {
-            _id = _window->GetID(name.c_str());
-            while (_window->IDStack.size() > 1)
-            {
-                _window->IDStack.pop_back();
-            }
+            _id = GetID(name);
             return *this;
         }
 
@@ -96,6 +93,12 @@ namespace trview
         ImGuiWindow* TestImGuiId::root() const
         {
             return _root_window;
+        }
+
+        ImGuiID TestImGuiId::GetID(const std::string& name)
+        {
+            ImGuiID seed = _stack.empty() ? 0 : _stack.back();
+            return ImHashStr(name.c_str(), name.size(), seed);
         }
     }
 }
