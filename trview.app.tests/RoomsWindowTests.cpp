@@ -53,8 +53,7 @@ TEST(RoomsWindow, ClickStatShowsBubbleAndCopies)
         .push_override(RoomsWindow::Names::bottom)
         .push(RoomsWindow::Names::properties)
         .id("X");
-    imgui.click_element_with_hover(id,
-        imgui.id("Rooms 0").push_child(RoomsWindow::Names::details_panel).push_override(RoomsWindow::Names::bottom).push_child(RoomsWindow::Names::properties));
+    imgui.click_element_with_hover(id);
 
     ASSERT_NE(imgui.find_window("##Tooltip_00"), nullptr);
 }

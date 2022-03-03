@@ -40,8 +40,7 @@ TEST(TriggersWindow, TriggerSelectedRaisedWhenSyncTriggerEnabled)
 
     TestImgui imgui([&]() { window->render(); });
     imgui.click_element_with_hover(
-        imgui.id("Triggers 0").push_child(TriggersWindow::Names::trigger_list_panel).push(TriggersWindow::Names::triggers_list).id("1##1"), 
-        imgui.id("Triggers 0").push_child(TriggersWindow::Names::trigger_list_panel).push_child(TriggersWindow::Names::triggers_list));
+        imgui.id("Triggers 0").push_child(TriggersWindow::Names::trigger_list_panel).push(TriggersWindow::Names::triggers_list).id("1##1"));
 
     ASSERT_TRUE(raised_trigger.has_value());
     ASSERT_EQ(raised_trigger.value().lock(), trigger2);
@@ -68,8 +67,7 @@ TEST(TriggersWindow, TriggerSelectedNotRaisedWhenSyncTriggerDisabled)
         .id(TriggersWindow::Names::sync_trigger));
 
     imgui.click_element_with_hover(
-        imgui.id("Triggers 0").push_child(TriggersWindow::Names::trigger_list_panel).push(TriggersWindow::Names::triggers_list).id("1##1"),
-        imgui.id("Triggers 0").push_child(TriggersWindow::Names::trigger_list_panel).push_child(TriggersWindow::Names::triggers_list));
+        imgui.id("Triggers 0").push_child(TriggersWindow::Names::trigger_list_panel).push(TriggersWindow::Names::triggers_list).id("1##1"));
 
     ASSERT_FALSE(raised_trigger.has_value());
 }
@@ -200,8 +198,7 @@ TEST(TriggersWindow, TriggerVisibilityRaised)
 
     TestImgui imgui([&]() { window->render(); });
     imgui.click_element_with_hover(
-        imgui.id("Triggers 0").push_child(TriggersWindow::Names::trigger_list_panel).push(TriggersWindow::Names::triggers_list).id("##hide-0"), 
-        imgui.id("Triggers 0").push_child(TriggersWindow::Names::trigger_list_panel).push_child(TriggersWindow::Names::triggers_list));
+        imgui.id("Triggers 0").push_child(TriggersWindow::Names::trigger_list_panel).push(TriggersWindow::Names::triggers_list).id("##hide-0"));
 
     ASSERT_TRUE(raised_trigger.has_value());
     ASSERT_EQ(std::get<0>(raised_trigger.value()).lock(), trigger);
@@ -228,8 +225,7 @@ TEST(TriggersWindow, ItemSelectedRaised)
 
     TestImgui imgui([&]() { window->render(); });
     imgui.click_element_with_hover(
-        imgui.id("Triggers 0").push_child(TriggersWindow::Names::details_panel).push(TriggersWindow::Names::commands_list).id("1##1"),
-        imgui.id("Triggers 0").push_child(TriggersWindow::Names::details_panel).push_child(TriggersWindow::Names::commands_list));
+        imgui.id("Triggers 0").push_child(TriggersWindow::Names::details_panel).push(TriggersWindow::Names::commands_list).id("1##1"));
 
     auto selected = window->selected_trigger().lock();
     ASSERT_NE(selected, nullptr);

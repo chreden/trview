@@ -98,18 +98,13 @@ namespace trview
             ImGui::DestroyContext(_context);
         }
 
-        void TestImgui::click_element(TestImGuiId test_id, bool show_context_menu, TestImGuiId active_override)
-        {
-            click_element_with_hover(test_id, TestImGuiId(), show_context_menu, active_override);
-        }
-
-        void TestImgui::click_element_with_hover(TestImGuiId test_id, TestImGuiId hover_id, bool show_context_menu, TestImGuiId active_override)
+        void TestImgui::click_element_internal(TestImGuiId test_id, bool show_context_menu, TestImGuiId active_override, bool hover)
         {
             const auto window = find_window(test_id.root());
             const auto id = test_id.id();
             const auto click_on_element = [&]()
             {
-                _context->HoveredWindow = hover_id.id() != 0 ? find_window(hover_id.id()) : window;
+                _context->HoveredWindow = hover ? find_window(test_id.hover()) : window;
                 _tracking_id = id;
                 const auto bb = _element_rects[id];
                 _context->HoveredId = id;
@@ -125,7 +120,7 @@ namespace trview
                 {
                     _context->IO.MouseReleased[0] = true;
                     _context->IO.MouseDownDurationPrev[0] = _context->IO.KeyRepeatDelay;
-                    
+
                     _context->CurrentWindow = find_window("Debug##Default");
                     _context->MouseViewport = window->Viewport;
                 }
@@ -135,6 +130,16 @@ namespace trview
             _tracking_id = 0;
             _context->IO.MouseClicked[0] = false;
             _context->IO.MouseReleased[1] = false;
+        }
+
+        void TestImgui::click_element(TestImGuiId test_id, bool show_context_menu, TestImGuiId active_override)
+        {
+            click_element_internal(test_id, show_context_menu, active_override, false);
+        }
+
+        void TestImgui::click_element_with_hover(TestImGuiId test_id, bool show_context_menu, TestImGuiId active_override)
+        {
+            click_element_internal(test_id, show_context_menu, active_override, true);
         }
 
         void TestImgui::enter_text(const std::string& text)
