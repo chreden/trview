@@ -28,4 +28,12 @@ namespace trview
                 read_attribute<float>(json, "b", 0.0f));
         }
     }
+
+    void to_json(nlohmann::json& json, const Colour& colour)
+    {
+        json["a"] = colour.a;
+        json["r"] = colour.r;
+        json["g"] = colour.g;
+        json["b"] = colour.b;
+    }
 }

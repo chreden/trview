@@ -154,6 +154,7 @@ namespace trview
         /// <param name="value">The new setting value.</param>
         virtual void set_max_recent_files(uint32_t value) = 0;
         virtual void set_background_colour(const Colour& colour) = 0;
+        virtual void set_map_colours(const MapColours& colours) = 0;
         /// <summary>
         /// Toggle the visibility of the settings window.
         /// </summary>

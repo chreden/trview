@@ -16,7 +16,10 @@ namespace trview
             RoomBelow
         };
 
-        std::unordered_map<uint16_t, Colour> colours() const;
+        std::unordered_map<uint16_t, Colour> override_colours() const;
+        std::unordered_map<Special, Colour> special_colours() const;
+        void clear_colour(uint16_t flag);
+        void clear_colour(Special flag);
         Colour colour_from_flag(uint16_t flag) const;
         Colour colour_from_flags_field(uint16_t flags) const;
         Colour colour(Special type) const;
@@ -26,4 +29,7 @@ namespace trview
         std::unordered_map<uint16_t, Colour> _override_colours;
         std::unordered_map<Special, Colour> _override_special_colours;
     };
+
+    void to_json(nlohmann::json& json, const MapColours& colours);
+    void from_json(const nlohmann::json& json, MapColours& colours);
 }

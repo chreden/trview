@@ -67,20 +67,30 @@ namespace trview
 
                 if (ImGui::BeginTabItem("Minimap"))
                 {
-                    auto add_colour = [&](auto&& name, auto&& flag)
+                    auto add_colour = [&](const std::string& name, auto&& flag)
                     {
+                        if (ImGui::Button(("Reset##" + name).c_str()))
+                        {
+                            _colours.clear_colour(flag);
+                        }
+                        ImGui::SameLine();
                         DirectX::SimpleMath::Color colour = _colours.colour_from_flag(flag);
-                        if (ImGui::ColorEdit4(name, &colour.x))
+                        if (ImGui::ColorEdit4(name.c_str(), &colour.x))
                         {
                             _colours.set_colour(flag, colour);
                             on_minimap_colours(_colours);
                         }
                     };
 
-                    auto add_special = [&](auto&& name, auto&& type)
+                    auto add_special = [&](const std::string& name, auto&& type)
                     {
+                        if (ImGui::Button(("Reset##" + name).c_str()))
+                        {
+                            _colours.clear_colour(type);
+                        }
+                        ImGui::SameLine();
                         DirectX::SimpleMath::Color colour = _colours.colour(type);
-                        if (ImGui::ColorEdit4(name, &colour.x))
+                        if (ImGui::ColorEdit4(name.c_str(), &colour.x))
                         {
                             _colours.set_colour(type, colour);
                             on_minimap_colours(_colours);
@@ -196,5 +206,10 @@ namespace trview
         _colour[0] = colour.r;
         _colour[1] = colour.g;
         _colour[2] = colour.b;
+    }
+
+    void SettingsWindow::set_map_colours(const MapColours& colours)
+    {
+        _colours = colours;
     }
 }

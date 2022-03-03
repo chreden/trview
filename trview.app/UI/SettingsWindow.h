@@ -49,6 +49,7 @@ namespace trview
         virtual void set_randomizer_tools(bool value) override;
         virtual void set_max_recent_files(uint32_t value) override;
         virtual void set_background_colour(const Colour& colour) override;
+        virtual void set_map_colours(const MapColours& colours) override;
         virtual void toggle_visibility() override;
     private:
         bool _visible{ false };
