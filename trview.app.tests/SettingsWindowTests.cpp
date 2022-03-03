@@ -563,27 +563,3 @@ TEST(SettingsWindow, SetMapColoursUpdatesColours)
     ASSERT_EQ(imgui.item_text(imgui.id("Settings").push("TabBar").push("Minimap").push("Default").id("##W")), "64");
     */
 }
-
-
-TEST(SettingsWindow, IdTest)
-{
-    ImVector<ImGuiID> stack;
-    auto get_id = [&](const std::string& name)
-    {
-        ImGuiID seed = stack.empty() ? 0 : stack.back();
-        ImGuiID id = ImHashStr(name.c_str(), name.size(), seed);
-        // ImGui::KeepAliveID(id);
-        return id;
-    };
-
-    auto id1 = get_id("Settings");
-    stack.push_back(id1);
-    auto id2 = get_id("TabBar");
-    stack.push_back(id2);
-    auto id3 = get_id("Minimap");
-    stack.push_back(id3);
-    auto id4 = get_id("Default");
-    stack.push_back(id4);
-    auto id5 = get_id("##X");
-    stack.push_back(id5);
-}
