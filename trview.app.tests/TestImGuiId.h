@@ -1,7 +1,6 @@
 #pragma once
 
 #include <external/imgui/imgui.h>
-#include <external/imgui/imgui_internal.h>
 
 namespace trview
 {
@@ -18,9 +17,7 @@ namespace trview
             TestImGuiId push(const std::string& name);
             TestImGuiId id(const std::string& name);
             ImGuiID id() const;
-
             std::string name() const;
-            ImGuiID lowest_window() const;
             ImGuiID root() const;
         private:
             ImGuiID GetID(const std::string& name);
@@ -29,7 +26,6 @@ namespace trview
             std::string _name;
             ImGuiID _id;
             ImGuiID _root;
-            ImGuiID _lowest_window;
         };
     }
 }

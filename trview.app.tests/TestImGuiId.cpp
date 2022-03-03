@@ -1,4 +1,5 @@
 #include "TestImGuiId.h"
+#include <external/imgui/imgui_internal.h>
 
 namespace trview
 {
@@ -51,10 +52,9 @@ namespace trview
         }
 
         TestImGuiId::TestImGuiId(const std::string& name)
-            : _name(name), _id(GetID(name))
+            : _name(name), _id(GetID(name)), _root(_id)
         {
             _stack.push_back(_id);
-            _lowest_window = _id;
         }
 
         TestImGuiId TestImGuiId::id(const std::string& name)
@@ -82,11 +82,6 @@ namespace trview
         {
             ImGuiID seed = _stack.empty() ? 0 : _stack.back();
             return ImHashStr(name.c_str(), name.size(), seed);
-        }
-
-        ImGuiID TestImGuiId::lowest_window() const
-        {
-            return _lowest_window;
         }
     }
 }

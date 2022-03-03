@@ -105,7 +105,7 @@ namespace trview
 
         void TestImgui::click_element_with_hover(TestImGuiId test_id, TestImGuiId hover_id, bool show_context_menu, TestImGuiId active_override)
         {
-            const auto window = find_window(test_id.lowest_window());
+            const auto window = find_window(test_id.root());
             const auto id = test_id.id();
             const auto click_on_element = [&]()
             {
