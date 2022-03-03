@@ -10,7 +10,8 @@ namespace trview
         class TestImGuiId
         {
         public:
-            explicit TestImGuiId(ImGuiWindow* window);
+            TestImGuiId();
+            explicit TestImGuiId(const std::string& name);
             TestImGuiId push_popup(const std::string& name);
             TestImGuiId push_child(const std::string& name);
             TestImGuiId push_override(const std::string& name);
@@ -19,14 +20,16 @@ namespace trview
             ImGuiID id() const;
 
             std::string name() const;
-            ImGuiWindow* root() const;
+            ImGuiID lowest_window() const;
+            ImGuiID root() const;
         private:
             ImGuiID GetID(const std::string& name);
 
             ImVector<ImGuiID> _stack;
             std::string _name;
             ImGuiID _id;
-            ImGuiWindow* _root_window{ nullptr };
+            ImGuiID _root;
+            ImGuiID _lowest_window;
         };
     }
 }

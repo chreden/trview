@@ -22,7 +22,8 @@ namespace trview
             explicit TestImgui(const RenderCallback& callback);
             ~TestImgui();
 
-            void click_element(TestImGuiId id, bool show_context_menu = false, bool hover = false, ImGuiID active_override = 0);
+            void click_element(TestImGuiId id, bool show_context_menu = false, TestImGuiId active_override = TestImGuiId());
+            void click_element_with_hover(TestImGuiId id, TestImGuiId hover_id, bool show_context_menu = false, TestImGuiId active_override = TestImGuiId());
             void enter_text(const std::string& text);
             void press_key(ImGuiKey key);
 
@@ -48,6 +49,7 @@ namespace trview
             void render(const std::function<void()>& pre_render_callback);
             void reset();
             ImGuiWindow* find_window(const std::string& name) const;
+            ImGuiWindow* find_window(ImGuiID id) const;
             TestImGuiId id(const std::string& window_name) const;
             TestImGuiId popup_id(const std::string& popup_name) const;
         private:

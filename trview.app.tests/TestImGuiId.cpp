@@ -9,26 +9,11 @@ namespace trview
             auto context = ImGui::GetCurrentContext();
             std::string popup_name;
 
-            for (const auto& window : context->Windows)
-            {
-                if (window->Name == "Debug##Default")
-                {
-                    auto id = window->GetID(name.c_str());
-                    std::stringstream stream;
-                    stream << "##Popup_" << std::hex << std::setfill('0') << std::setw(8) << id;
-                    popup_name = stream.str();
-                }
-            }
+            std::stringstream stream;
+            stream << "##Popup_" << std::hex << std::setfill('0') << std::setw(8) << TestImGuiId("Debug##Default").id(name).id();
+            popup_name = stream.str();
 
-            for (const auto& window : context->Windows)
-            {
-                if (window->Name == popup_name)
-                {
-                    return TestImGuiId(window);
-                }
-            }
-
-            return *this;
+            return TestImGuiId(popup_name);
         }
 
         TestImGuiId TestImGuiId::push_child(const std::string& name)
@@ -40,14 +25,7 @@ namespace trview
             stream << _name << '/' << name << '_' << std::hex << std::uppercase << std::setfill('0') << std::setw(8) << id;
             auto child_name = stream.str();
 
-            for (const auto& window : context->Windows)
-            {
-                if (window->Name == child_name)
-                {
-                    return TestImGuiId(window);
-                }
-            }
-            throw 0;
+            return TestImGuiId(child_name);
         }
 
         TestImGuiId TestImGuiId::push_override(const std::string& name)
@@ -67,11 +45,16 @@ namespace trview
             return *this;
         }
 
-        TestImGuiId::TestImGuiId(ImGuiWindow* window)
-            : _id(window->ID), _root_window(window)
+        TestImGuiId::TestImGuiId()
+            : _id(0)
+        {
+        }
+
+        TestImGuiId::TestImGuiId(const std::string& name)
+            : _name(name), _id(GetID(name))
         {
             _stack.push_back(_id);
-            _name = window->Name;
+            _lowest_window = _id;
         }
 
         TestImGuiId TestImGuiId::id(const std::string& name)
@@ -90,15 +73,20 @@ namespace trview
             return _name;
         }
 
-        ImGuiWindow* TestImGuiId::root() const
+        ImGuiID TestImGuiId::root() const
         {
-            return _root_window;
+            return _root;
         }
 
         ImGuiID TestImGuiId::GetID(const std::string& name)
         {
             ImGuiID seed = _stack.empty() ? 0 : _stack.back();
             return ImHashStr(name.c_str(), name.size(), seed);
+        }
+
+        ImGuiID TestImGuiId::lowest_window() const
+        {
+            return _lowest_window;
         }
     }
 }
