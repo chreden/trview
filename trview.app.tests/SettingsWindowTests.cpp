@@ -3,6 +3,7 @@
 
 using namespace trview;
 using namespace trview::tests;
+using namespace testing;
 
 TEST(SettingsWindow, SetVSyncUpdatesCheckbox)
 {
@@ -540,7 +541,6 @@ TEST(SettingsWindow, SetMaxRecentFilesUpdatesNumericUpDown)
 
 TEST(SettingsWindow, SetMapColoursUpdatesColours)
 {
-    /*
     SettingsWindow window;
     window.toggle_visibility();
 
@@ -548,18 +548,68 @@ TEST(SettingsWindow, SetMapColoursUpdatesColours)
     imgui.click_element(imgui.id("Settings").push("TabBar").id("Minimap"));
     imgui.render();
 
-    ASSERT_EQ(imgui.item_text(imgui.id("Settings").push("TabBar").push("Minimap").push("Default").id("##X")), "0");
-    ASSERT_EQ(imgui.item_text(imgui.id("Settings").push("TabBar").push("Minimap").push("Default").id("##Y")), "179");
-    ASSERT_EQ(imgui.item_text(imgui.id("Settings").push("TabBar").push("Minimap").push("Default").id("##Z")), "179");
-    ASSERT_EQ(imgui.item_text(imgui.id("Settings").push("TabBar").push("Minimap").push("Default").id("##W")), "255");
+    ASSERT_THAT(imgui.item_text(imgui.id("Settings").push("TabBar").push("Minimap").push("Default").id("##X")), HasSubstr("0"));
+    ASSERT_THAT(imgui.item_text(imgui.id("Settings").push("TabBar").push("Minimap").push("Default").id("##Y")), HasSubstr("179"));
+    ASSERT_THAT(imgui.item_text(imgui.id("Settings").push("TabBar").push("Minimap").push("Default").id("##Z")), HasSubstr("179"));
+    ASSERT_THAT(imgui.item_text(imgui.id("Settings").push("TabBar").push("Minimap").push("Default").id("##W")), HasSubstr("255"));
 
     MapColours colours;
     colours.set_colour(MapColours::Special::Default, Colour(0.25f, 0.5f, 0.75f, 1.0f));
     window.set_map_colours(colours);
+    imgui.render();
 
-    ASSERT_EQ(imgui.item_text(imgui.id("Settings").push("TabBar").push("Minimap").push("Default").id("##X")), "128");
-    ASSERT_EQ(imgui.item_text(imgui.id("Settings").push("TabBar").push("Minimap").push("Default").id("##Y")), "192");
-    ASSERT_EQ(imgui.item_text(imgui.id("Settings").push("TabBar").push("Minimap").push("Default").id("##Z")), "255");
-    ASSERT_EQ(imgui.item_text(imgui.id("Settings").push("TabBar").push("Minimap").push("Default").id("##W")), "64");
-    */
+    ASSERT_THAT(imgui.item_text(imgui.id("Settings").push("TabBar").push("Minimap").push("Default").id("##X")), HasSubstr("128"));
+    ASSERT_THAT(imgui.item_text(imgui.id("Settings").push("TabBar").push("Minimap").push("Default").id("##Y")), HasSubstr("191"));
+    ASSERT_THAT(imgui.item_text(imgui.id("Settings").push("TabBar").push("Minimap").push("Default").id("##Z")), HasSubstr("255"));
+    ASSERT_THAT(imgui.item_text(imgui.id("Settings").push("TabBar").push("Minimap").push("Default").id("##W")), HasSubstr("64"));
+}
+
+TEST(SettingsWindow, OnMinimapColoursRaisedOnResetSpecial)
+{
+    SettingsWindow window;
+    window.toggle_visibility();
+
+    MapColours colours;
+    colours.set_colour(MapColours::Special::Default, Colour::Red);
+    window.set_map_colours(colours);
+
+    std::optional<MapColours> map_colours;
+    auto token = window.on_minimap_colours += [&](const auto& colours)
+    {
+        map_colours = colours;
+    };
+
+    tests::TestImgui imgui([&]() { window.render(); });
+    imgui.click_element(imgui.id("Settings").push("TabBar").id("Minimap"));
+    imgui.render();
+
+    imgui.click_element(imgui.id("Settings").push("TabBar").push("Minimap").id("Reset##Default"));
+
+    ASSERT_TRUE(map_colours.has_value());
+    ASSERT_EQ(map_colours.value().special_colours().size(), 0.0f);
+}
+
+TEST(SettingsWindow, OnMinimapColoursRaisedOnResetNormal)
+{
+    SettingsWindow window;
+    window.toggle_visibility();
+
+    MapColours colours;
+    colours.set_colour(SectorFlag::Death, Colour::Blue);
+    window.set_map_colours(colours);
+
+    std::optional<MapColours> map_colours;
+    auto token = window.on_minimap_colours += [&](const auto& colours)
+    {
+        map_colours = colours;
+    };
+
+    tests::TestImgui imgui([&]() { window.render(); });
+    imgui.click_element(imgui.id("Settings").push("TabBar").id("Minimap"));
+    imgui.render();
+
+    imgui.click_element(imgui.id("Settings").push("TabBar").push("Minimap").id("Reset##Death"));
+
+    ASSERT_TRUE(map_colours.has_value());
+    ASSERT_EQ(map_colours.value().override_colours().size(), 0.0f);
 }
