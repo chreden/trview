@@ -74,11 +74,12 @@ TEST(SettingsWindow, SetInvertMapControlsUpdatesCheckbox)
     window.toggle_visibility();
 
     TestImgui imgui([&]() { window.render(); });
-    ASSERT_FALSE(imgui.status_flags(imgui.id("Settings").push("TabBar").push("General").id(SettingsWindow::Names::invert_map_controls)) & ImGuiItemStatusFlags_Checked);
+    imgui.click_element(imgui.id("Settings").push("TabBar").id("Minimap"));
+    ASSERT_FALSE(imgui.status_flags(imgui.id("Settings").push("TabBar").push("Minimap").id(SettingsWindow::Names::invert_map_controls)) & ImGuiItemStatusFlags_Checked);
 
     window.set_invert_map_controls(true);
     imgui.render();
-    ASSERT_TRUE(imgui.status_flags(imgui.id("Settings").push("TabBar").push("General").id(SettingsWindow::Names::invert_map_controls)) & ImGuiItemStatusFlags_Checked);
+    ASSERT_TRUE(imgui.status_flags(imgui.id("Settings").push("TabBar").push("Minimap").id(SettingsWindow::Names::invert_map_controls)) & ImGuiItemStatusFlags_Checked);
 }
 
 TEST(SettingsWindow, ClickingInvertMapControlsRaisesEvent)
@@ -93,9 +94,10 @@ TEST(SettingsWindow, ClickingInvertMapControlsRaisesEvent)
     };
 
     TestImgui imgui([&]() { window.render(); });
-    ASSERT_FALSE(imgui.status_flags(imgui.id("Settings").push("TabBar").push("General").id(SettingsWindow::Names::invert_map_controls)) & ImGuiItemStatusFlags_Checked);
-    imgui.click_element(imgui.id("Settings").push("TabBar").push("General").id(SettingsWindow::Names::invert_map_controls));
-    ASSERT_TRUE(imgui.status_flags(imgui.id("Settings").push("TabBar").push("General").id(SettingsWindow::Names::invert_map_controls)) & ImGuiItemStatusFlags_Checked);
+    imgui.click_element(imgui.id("Settings").push("TabBar").id("Minimap"));
+    ASSERT_FALSE(imgui.status_flags(imgui.id("Settings").push("TabBar").push("Minimap").id(SettingsWindow::Names::invert_map_controls)) & ImGuiItemStatusFlags_Checked);
+    imgui.click_element(imgui.id("Settings").push("TabBar").push("Minimap").id(SettingsWindow::Names::invert_map_controls));
+    ASSERT_TRUE(imgui.status_flags(imgui.id("Settings").push("TabBar").push("Minimap").id(SettingsWindow::Names::invert_map_controls)) & ImGuiItemStatusFlags_Checked);
     ASSERT_EQ(received_value.has_value(), true);
     ASSERT_TRUE(received_value.value());
 }

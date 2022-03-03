@@ -27,7 +27,6 @@ namespace trview
                 {
                     checkbox(Names::vsync, _vsync, on_vsync);
                     checkbox(Names::go_to_lara, _go_to_lara, on_go_to_lara);
-                    checkbox(Names::invert_map_controls, _invert_map_controls, on_invert_map_controls);
                     checkbox(Names::items_startup, _items_startup, on_items_startup);
                     checkbox(Names::triggers_startup, _triggers_startup, on_triggers_startup);
                     checkbox(Names::rooms_startup, _rooms_startup, on_rooms_startup);
@@ -67,11 +66,15 @@ namespace trview
 
                 if (ImGui::BeginTabItem("Minimap"))
                 {
+                    checkbox(Names::invert_map_controls, _invert_map_controls, on_invert_map_controls);
+                    ImGui::Separator();
+
                     auto add_colour = [&](const std::string& name, auto&& flag)
                     {
                         if (ImGui::Button(("Reset##" + name).c_str()))
                         {
                             _colours.clear_colour(flag);
+                            on_minimap_colours(_colours);
                         }
                         ImGui::SameLine();
                         DirectX::SimpleMath::Color colour = _colours.colour_from_flag(flag);
@@ -87,6 +90,7 @@ namespace trview
                         if (ImGui::Button(("Reset##" + name).c_str()))
                         {
                             _colours.clear_colour(type);
+                            on_minimap_colours(_colours);
                         }
                         ImGui::SameLine();
                         DirectX::SimpleMath::Color colour = _colours.colour(type);
