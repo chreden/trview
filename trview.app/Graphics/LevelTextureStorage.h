@@ -33,5 +33,12 @@ namespace trview
         mutable graphics::Texture _untextured_texture;
         std::array<DirectX::SimpleMath::Color, 256> _palette;
         trlevel::LevelVersion _version;
+
+        enum class TextureMode
+        {
+            Official,
+            Custom
+        };
+        TextureMode _texture_mode{ TextureMode::Official };
     };
 }
