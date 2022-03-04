@@ -514,3 +514,26 @@ TEST(Application, WaypointReorderedMovesWaypoint)
     route_window_manager.on_waypoint_reordered(1, 2);
 }
 
+TEST(Application, MapColoursSetOnRoomWindow)
+{
+    auto [rooms_window_manager_ptr, rooms_window_manager] = create_mock<MockRoomsWindowManager>();
+    EXPECT_CALL(rooms_window_manager, set_map_colours).Times(1);
+
+    auto application = register_test_module()
+        .with_rooms_window_manager(std::move(rooms_window_manager_ptr))
+        .build();
+}
+
+TEST(Application, MapColoursSetOnSettingsChanged)
+{
+    auto [rooms_window_manager_ptr, rooms_window_manager] = create_mock<MockRoomsWindowManager>();
+    EXPECT_CALL(rooms_window_manager, set_map_colours).Times(2);
+    auto [viewer_ptr, viewer] = create_mock<MockViewer>();
+
+    auto application = register_test_module()
+        .with_rooms_window_manager(std::move(rooms_window_manager_ptr))
+        .with_viewer(std::move(viewer_ptr))
+        .build();
+
+    viewer.on_settings(UserSettings());
+}
