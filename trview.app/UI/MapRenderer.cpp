@@ -87,13 +87,13 @@ namespace trview
             const float thickness = _DRAW_SCALE / 4;
 
             if (tile.sector->flags() & SectorFlag::ClimbableUp)
-                draw(tile.position, Size(tile.size.width, thickness), _colours.colour_from_flag(SectorFlag::ClimbableUp));
+                draw(tile.position, Size(tile.size.width, thickness), _colours.colour(SectorFlag::ClimbableUp));
             if (tile.sector->flags() & SectorFlag::ClimbableRight)
-                draw(Point(tile.position.x + _DRAW_SCALE - thickness, tile.position.y), Size(thickness, tile.size.height), _colours.colour_from_flag(SectorFlag::ClimbableRight));
+                draw(Point(tile.position.x + _DRAW_SCALE - thickness, tile.position.y), Size(thickness, tile.size.height), _colours.colour(SectorFlag::ClimbableRight));
             if (tile.sector->flags() & SectorFlag::ClimbableDown)
-                draw(Point(tile.position.x, tile.position.y + _DRAW_SCALE - thickness), Size(tile.size.width, thickness), _colours.colour_from_flag(SectorFlag::ClimbableDown));
+                draw(Point(tile.position.x, tile.position.y + _DRAW_SCALE - thickness), Size(tile.size.width, thickness), _colours.colour(SectorFlag::ClimbableDown));
             if (tile.sector->flags() & SectorFlag::ClimbableLeft)
-                draw(tile.position, Size(thickness, tile.size.height), _colours.colour_from_flag(SectorFlag::ClimbableLeft));
+                draw(tile.position, Size(thickness, tile.size.height), _colours.colour(SectorFlag::ClimbableLeft));
 
             // If sector is a down portal, draw a transparent black square over it 
             if (tile.sector->flags() & SectorFlag::RoomBelow)
@@ -105,7 +105,7 @@ namespace trview
 
             if (tile.sector->flags() & SectorFlag::Death && tile.sector->flags() & SectorFlag::Trigger)
             {
-                draw(tile.position + Point(tile.size.width * 0.75f, 0), tile.size / 4.0f, _colours.colour_from_flag(SectorFlag::Death));
+                draw(tile.position + Point(tile.size.width * 0.75f, 0), tile.size / 4.0f, _colours.colour(SectorFlag::Death));
             }
 
             if (tile.sector->flags() & SectorFlag::Portal)

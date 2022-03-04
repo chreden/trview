@@ -20,7 +20,7 @@ namespace trview
         std::unordered_map<Special, Colour> special_colours() const;
         void clear_colour(uint16_t flag);
         void clear_colour(Special flag);
-        Colour colour_from_flag(uint16_t flag) const;
+        Colour colour(uint16_t flag) const;
         Colour colour_from_flags_field(uint16_t flags) const;
         Colour colour(Special type) const;
         void set_colour(uint16_t flag, const Colour& colour);

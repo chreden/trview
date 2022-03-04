@@ -77,7 +77,7 @@ namespace trview
                             on_minimap_colours(_colours);
                         }
                         ImGui::SameLine();
-                        DirectX::SimpleMath::Color colour = _colours.colour_from_flag(flag);
+                        DirectX::SimpleMath::Color colour = _colours.colour(flag);
                         if (ImGui::ColorEdit4(name.c_str(), &colour.x))
                         {
                             _colours.set_colour(flag, colour);

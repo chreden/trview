@@ -492,7 +492,7 @@ TEST(SettingsLoader, MapColoursLoaded)
     auto loader = setup_setting("{\"mapcolours\":{\"special\":[[0,{\"a\":1.0,\"b\":0.0,\"g\":0.0,\"r\":1.0}]],\"colours\":[[8,{\"a\":1.0,\"b\":1.0,\"g\":0.0,\"r\":0.0}]]}}");
     auto settings = loader->load_user_settings();
     ASSERT_EQ(settings.map_colours.colour(MapColours::Special::Default), Colour::Red);
-    ASSERT_EQ(settings.map_colours.colour_from_flag(SectorFlag::Death), Colour::Blue);
+    ASSERT_EQ(settings.map_colours.colour(SectorFlag::Death), Colour::Blue);
 }
 
 TEST(SettingsLoader, MapColoursSaved)

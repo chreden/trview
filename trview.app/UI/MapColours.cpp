@@ -48,7 +48,7 @@ namespace trview
         _override_special_colours.erase(flag);
     }
 
-    Colour MapColours::colour_from_flag(uint16_t flag) const
+    Colour MapColours::colour(uint16_t flag) const
     {
         auto override_colour = _override_colours.find(flag);
         if (override_colour != _override_colours.end())
