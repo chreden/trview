@@ -28,20 +28,20 @@ namespace trview
             }
         }
 
+        determine_texture_mode();
+    }
+
+    void LevelTextureStorage::determine_texture_mode()
+    {
         for (const auto& object_texture : _object_textures)
         {
-            if (_texture_mode == TextureMode::Custom)
-            {
-                break;
-            }
-
             for (const auto& vert : object_texture.Vertices)
             {
                 if ((vert.x_frac > 1 && vert.x_frac < 255) ||
                     (vert.y_frac > 1 && vert.y_frac < 255))
                 {
                     _texture_mode = TextureMode::Custom;
-                    break;
+                    return;
                 }
             }
         }

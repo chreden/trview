@@ -27,6 +27,8 @@ namespace trview
         virtual uint16_t attribute(uint32_t texture_index) const override;
         virtual DirectX::SimpleMath::Color palette_from_texture(uint32_t texture) const override;
     private:
+        void determine_texture_mode();
+
         std::vector<graphics::Texture> _tiles;
         std::vector<trlevel::tr_object_texture> _object_textures;
         std::unique_ptr<ITextureStorage> _texture_storage;
