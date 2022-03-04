@@ -60,6 +60,12 @@ namespace
                 camera_controls = std::move(controls);
                 return *this;
             }
+
+            test_module& with_map_renderer_source(IMapRenderer::Source map_renderer_source)
+            {
+                this->map_renderer_source = map_renderer_source;
+                return *this;
+            }
         };
         return test_module{};
     }
@@ -221,4 +227,28 @@ TEST(ViewerUI, SetCameraProjectionModeUpdatesCameraControls)
     EXPECT_CALL(camera_controls, set_projection_mode(ProjectionMode::Orthographic)).Times(1);
 
     ui->set_camera_projection_mode(ProjectionMode::Orthographic);
+}
+
+TEST(ViewerUI, SetMapColoursUpdatesMapRenderer)
+{
+    auto [map_renderer_ptr, map_renderer] = create_mock<MockMapRenderer>();
+    EXPECT_CALL(map_renderer, set_colours).Times(1);
+
+    auto window = register_test_module().with_map_renderer_source([&](auto&&) { return std::move(map_renderer_ptr); }).build();
+    window->set_settings({});
+}
+
+TEST(ViewerUI, OnMinimapColoursEventRaised)
+{
+    auto [settings_window_ptr, settings_window] = create_mock<MockSettingsWindow>();
+    auto window = register_test_module().with_settings_window(std::move(settings_window_ptr)).build();
+
+    auto raised = false;
+    auto token = window->on_settings += [&](auto&&)
+    {
+        raised = true;
+    };
+
+    settings_window.on_minimap_colours({});
+    ASSERT_TRUE(raised);
 }
