@@ -132,6 +132,9 @@
     <ClCompile Include="TestImGuiId.cpp">
       <Filter>ImGui</Filter>
     </ClCompile>
+    <ClCompile Include="UI\MapColoursTests.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Input">
