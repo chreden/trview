@@ -125,6 +125,7 @@ namespace trview
         ImFont* _font;
 
         std::unique_ptr<IImGuiBackend> _imgui_backend;
+        std::string _imgui_ini_filename;
     };
 
     Window create_window(HINSTANCE hInstance, int command_show);
