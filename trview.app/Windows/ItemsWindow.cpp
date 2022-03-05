@@ -10,7 +10,7 @@ namespace trview
     {
         _tips["OCB"] = "Changes entity behaviour";
         _tips["Clear Body"] = "If true, removed when Bodybag is triggered";
-        _tips["Trigger triggerer"] = "Until this item is triggered, the trigger it is placed on cannot be triggered";
+        _tips["Trigger triggerer"] = "Disables the trigger on the same sector until this item is triggered";
     }
 
     void ItemsWindow::set_items(const std::vector<Item>& items)
