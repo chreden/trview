@@ -10,6 +10,7 @@ namespace trview
     {
         _tips["OCB"] = "Changes entity behaviour";
         _tips["Clear Body"] = "If true, removed when Bodybag is triggered";
+        _tips["Trigger triggerer"] = "Until this item is triggered, the trigger it is placed on cannot be triggered";
     }
 
     void ItemsWindow::set_items(const std::vector<Item>& items)
@@ -178,6 +179,12 @@ namespace trview
                         {
                             ImGui::BeginTooltip();
                             ImGui::Text(_tips[name].c_str());
+                            ImGui::EndTooltip();
+                        }
+                        if (ImGui::IsItemHovered() && _tips.find(value) != _tips.end())
+                        {
+                            ImGui::BeginTooltip();
+                            ImGui::Text(_tips[value].c_str());
                             ImGui::EndTooltip();
                         }
 
