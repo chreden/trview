@@ -563,6 +563,9 @@ namespace trview
             io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
             io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
 
+            _imgui_ini_filename = _files->appdata_directory() + "\\trview\\imgui.ini";
+            io.IniFilename = _imgui_ini_filename.c_str();
+
             // Setup Dear ImGui style
             ImGui::StyleColorsDark();
 
