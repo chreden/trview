@@ -39,6 +39,7 @@ namespace trview
             read_attribute(json, settings.camera_display_degrees, "cameradisplaydegrees");
             read_attribute(json, settings.randomizer_tools, "randomizertools");
             read_attribute(json, settings.max_recent_files, "maxrecentfiles");
+            read_attribute(json, settings.map_colours, "mapcolours");
 
             settings.recent_files.resize(std::min<std::size_t>(settings.recent_files.size(), settings.max_recent_files));
         }
@@ -92,6 +93,7 @@ namespace trview
             json["cameradisplaydegrees"] = settings.camera_display_degrees;
             json["randomizertools"] = settings.randomizer_tools;
             json["maxrecentfiles"] = settings.max_recent_files;
+            json["mapcolours"] = settings.map_colours;
             _files->save_file(file_path, json.dump());
         }
         catch (...)

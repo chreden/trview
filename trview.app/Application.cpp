@@ -321,6 +321,7 @@ namespace trview
             _viewer->set_settings(_settings);
             _route_window->set_randomizer_enabled(settings.randomizer_tools);
             _route->set_randomizer_enabled(settings.randomizer_tools);
+            _rooms_windows->set_map_colours(settings.map_colours);
         };
         _viewer->set_settings(_settings);
 
@@ -367,6 +368,8 @@ namespace trview
 
     void Application::setup_rooms_windows()
     {
+        _rooms_windows->set_map_colours(_settings.map_colours);
+
         if (_settings.rooms_startup)
         {
             _rooms_windows->create_window();

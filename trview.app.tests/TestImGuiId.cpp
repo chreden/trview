@@ -1,86 +1,69 @@
 #include "TestImGuiId.h"
+#include <external/imgui/imgui_internal.h>
 
 namespace trview
 {
     namespace tests
     {
-        TestImGuiId TestImGuiId::push_popup(const std::string& name)
+        TestImGuiId TestImGuiId::push_popup(const std::string& name) const
         {
             auto context = ImGui::GetCurrentContext();
             std::string popup_name;
 
-            for (const auto& window : context->Windows)
-            {
-                if (window->Name == "Debug##Default")
-                {
-                    auto id = window->GetID(name.c_str());
-                    std::stringstream stream;
-                    stream << "##Popup_" << std::hex << std::setfill('0') << std::setw(8) << id;
-                    popup_name = stream.str();
-                }
-            }
+            std::stringstream stream;
+            stream << "##Popup_" << std::hex << std::setfill('0') << std::setw(8) << TestImGuiId("Debug##Default").id(name).id();
+            popup_name = stream.str();
 
-            for (const auto& window : context->Windows)
-            {
-                if (window->Name == popup_name)
-                {
-                    return TestImGuiId(window);
-                }
-            }
-
-            return *this;
+            return TestImGuiId(popup_name);
         }
 
-        TestImGuiId TestImGuiId::push_child(const std::string& name)
+        TestImGuiId TestImGuiId::push_child(const std::string& name) const
         {
             auto context = ImGui::GetCurrentContext();
-            auto id = _window->GetID(name.c_str());
+            auto id = GetID(name.c_str());
 
             std::stringstream stream;
-            stream << _window->Name << '/' << name << '_' << std::hex << std::uppercase << std::setfill('0') << std::setw(8) << id;
+            stream << _name << '/' << name << '_' << std::hex << std::uppercase << std::setfill('0') << std::setw(8) << id;
             auto child_name = stream.str();
 
-            for (const auto& window : context->Windows)
-            {
-                if (window->Name == child_name)
-                {
-                    return TestImGuiId(window);
-                }
-            }
-            throw 0;
+            return TestImGuiId(child_name);
         }
 
-        TestImGuiId TestImGuiId::push_override(const std::string& name)
+        TestImGuiId TestImGuiId::push_override(const std::string& name) const
         {
-            auto id = _window->GetID(name.c_str());
-            _window->IDStack.push_back(id);
-            return *this;
+            TestImGuiId copy = *this;
+            copy._stack.push_back(copy.GetID(name.c_str()));
+            return copy;
         }
 
-        TestImGuiId TestImGuiId::push(const std::string& name)
+        TestImGuiId TestImGuiId::push(const std::string& name) const
         {
-            auto new_id = _window->GetID(name.c_str());
+            TestImGuiId copy = *this;
+            auto new_id = copy.GetID(name.c_str());
             std::stringstream stream;
-            stream << _window->Name << '/' << name << '_' << std::hex << std::uppercase << std::setfill('0') << std::setw(8) << new_id;
-            _name = stream.str();
-            _window->IDStack.push_back(new_id);
-            return *this;
+            stream << _name << '/' << name << '_' << std::hex << std::uppercase << std::setfill('0') << std::setw(8) << new_id;
+            copy._name = stream.str();
+            copy._stack.push_back(new_id);
+            copy._hover_id = push_child(name).id();
+            return copy;
         }
 
-        TestImGuiId::TestImGuiId(ImGuiWindow* window)
-            : _window(window), _id(window->ID), _root_window(window)
+        TestImGuiId::TestImGuiId()
+            : _id(0)
         {
-            _name = window->Name;
         }
 
-        TestImGuiId TestImGuiId::id(const std::string& name)
+        TestImGuiId::TestImGuiId(const std::string& name)
+            : _name(name), _id(GetID(name)), _root(_id)
         {
-            _id = _window->GetID(name.c_str());
-            while (_window->IDStack.size() > 1)
-            {
-                _window->IDStack.pop_back();
-            }
-            return *this;
+            _stack.push_back(_id);
+        }
+
+        TestImGuiId TestImGuiId::id(const std::string& name) const
+        {
+            TestImGuiId copy = *this;
+            copy._id = copy.GetID(name);
+            return copy;
         }
 
         ImGuiID TestImGuiId::id() const
@@ -93,9 +76,20 @@ namespace trview
             return _name;
         }
 
-        ImGuiWindow* TestImGuiId::root() const
+        ImGuiID TestImGuiId::root() const
         {
-            return _root_window;
+            return _root;
+        }
+
+        ImGuiID TestImGuiId::GetID(const std::string& name) const
+        {
+            ImGuiID seed = _stack.empty() ? 0 : _stack.back();
+            return ImHashStr(name.c_str(), name.size(), seed);
+        }
+
+        ImGuiID TestImGuiId::hover() const
+        {
+            return _hover_id;
         }
     }
 }

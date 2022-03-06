@@ -60,6 +60,15 @@ namespace trview
         }
     }
 
+    void RoomsWindowManager::set_map_colours(const MapColours& colours)
+    {
+        _map_colours = colours;
+        for (auto& window : _windows)
+        {
+            window->set_map_colours(colours);
+        }
+    }
+
     void RoomsWindowManager::set_room(uint32_t room)
     {
         _current_room = room;
@@ -125,6 +134,7 @@ namespace trview
         rooms_window->set_triggers(_all_triggers);
         rooms_window->set_rooms(_all_rooms);
         rooms_window->set_current_room(_current_room);
+        rooms_window->set_map_colours(_map_colours);
 
         _windows.push_back(rooms_window);
         return rooms_window;

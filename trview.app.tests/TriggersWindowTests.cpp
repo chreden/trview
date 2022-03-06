@@ -39,9 +39,9 @@ TEST(TriggersWindow, TriggerSelectedRaisedWhenSyncTriggerEnabled)
     window->set_triggers({ trigger1, trigger2 });
 
     TestImgui imgui([&]() { window->render(); });
-    imgui.click_element(imgui.id("Triggers 0")
+    imgui.click_element_with_hover(imgui.id("Triggers 0")
         .push_child(TriggersWindow::Names::trigger_list_panel)
-        .push(TriggersWindow::Names::triggers_list).id("1##1"), false, true);
+        .push(TriggersWindow::Names::triggers_list).id("1##1"));
 
     ASSERT_TRUE(raised_trigger.has_value());
     ASSERT_EQ(raised_trigger.value().lock(), trigger2);
@@ -67,10 +67,9 @@ TEST(TriggersWindow, TriggerSelectedNotRaisedWhenSyncTriggerDisabled)
         .push_child(TriggersWindow::Names::trigger_list_panel)
         .id(TriggersWindow::Names::sync_trigger));
 
-    imgui.click_element(imgui.id("Triggers 0")
+    imgui.click_element_with_hover(imgui.id("Triggers 0")
         .push_child(TriggersWindow::Names::trigger_list_panel)
-        .push(TriggersWindow::Names::triggers_list)
-        .id("1##1"), false, true);
+        .push(TriggersWindow::Names::triggers_list).id("1##1"));
 
     ASSERT_FALSE(raised_trigger.has_value());
 }
@@ -200,9 +199,9 @@ TEST(TriggersWindow, TriggerVisibilityRaised)
     window->set_triggers(triggers);
 
     TestImgui imgui([&]() { window->render(); });
-    imgui.click_element(imgui.id("Triggers 0")
+    imgui.click_element_with_hover(imgui.id("Triggers 0")
         .push_child(TriggersWindow::Names::trigger_list_panel)
-        .push(TriggersWindow::Names::triggers_list).id("##hide-0"), false, true);
+        .push(TriggersWindow::Names::triggers_list).id("##hide-0"));
 
     ASSERT_TRUE(raised_trigger.has_value());
     ASSERT_EQ(std::get<0>(raised_trigger.value()).lock(), trigger);
@@ -228,9 +227,9 @@ TEST(TriggersWindow, ItemSelectedRaised)
     window->set_selected_trigger(trigger);
 
     TestImgui imgui([&]() { window->render(); });
-    imgui.click_element(imgui.id("Triggers 0")
+    imgui.click_element_with_hover(imgui.id("Triggers 0")
         .push_child(TriggersWindow::Names::details_panel)
-        .push(TriggersWindow::Names::commands_list).id("1##1"), false, true);
+        .push(TriggersWindow::Names::commands_list).id("1##1"));
 
     auto selected = window->selected_trigger().lock();
     ASSERT_NE(selected, nullptr);

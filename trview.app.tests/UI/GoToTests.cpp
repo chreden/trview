@@ -32,8 +32,8 @@ TEST(GoTo, OnSelectedWithPlusRaised)
     TestImgui imgui([&]() { window.render(); });
     imgui.click_element(
         imgui.popup_id("Go To Item").push("##gotoentry").id("+"), 
-        false, false, 
-        imgui.popup_id("Go To Item").id("##gotoentry").id());
+        false, 
+        imgui.popup_id("Go To Item").id("##gotoentry"));
 
     ASSERT_TRUE(raised.has_value());
     ASSERT_EQ(raised.value(), 1u);
@@ -52,13 +52,13 @@ TEST(GoTo, OnSelectedWithMinusRaised)
     };
 
     TestImgui imgui([&]() { window.render(); });
-    const auto goto_entry = imgui.popup_id("Go To Item").id("##gotoentry").id();
+    const auto goto_entry = imgui.popup_id("Go To Item").id("##gotoentry");
     const auto plus = imgui.popup_id("Go To Item").push("##gotoentry").id("+");
     const auto minus = imgui.popup_id("Go To Item").push("##gotoentry").id("-");
 
-    imgui.click_element(plus, false, false, goto_entry);
-    imgui.click_element(plus, false, false, goto_entry);
-    imgui.click_element(minus, false, false, goto_entry);
+    imgui.click_element(plus, false, goto_entry);
+    imgui.click_element(plus, false, goto_entry);
+    imgui.click_element(minus, false, goto_entry);
 
     const std::vector<uint32_t> expected{ 1, 2, 1 };
     ASSERT_EQ(raised, expected);
@@ -79,8 +79,8 @@ TEST(GoTo, OnSelectedNotRaisedWhenMinusPressedAtZero)
     TestImgui imgui([&]() { window.render(); });
     imgui.click_element(
         imgui.popup_id("Go To Item").push("##gotoentry").id("-"),
-        false, false,
-        imgui.popup_id("Go To Item").id("##gotoentry").id());
+        false,
+        imgui.popup_id("Go To Item").id("##gotoentry"));
 
     ASSERT_FALSE(raised.has_value());
 }

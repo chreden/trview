@@ -75,9 +75,9 @@ TEST(ItemsWindow, ItemSelectedNotRaisedWhenSyncItemDisabled)
     imgui.click_element(imgui.id("Items 0")
         .push_child(ItemsWindow::Names::item_list_panel)
         .id(ItemsWindow::Names::sync_item));
-    imgui.click_element(imgui.id("Items 0")
+    imgui.click_element_with_hover(imgui.id("Items 0")
         .push_child(ItemsWindow::Names::item_list_panel)
-        .push(ItemsWindow::Names::items_list).id("1##1"), false, true);
+        .push(ItemsWindow::Names::items_list).id("1##1"));
 
     ASSERT_FALSE(raised_item.has_value());
 }
@@ -97,9 +97,9 @@ TEST(ItemsWindow, ItemSelectedRaisedWhenSyncItemEnabled)
     window->set_items(items);
 
     TestImgui imgui([&]() { window->render(); });
-    imgui.click_element(imgui.id("Items 0")
+    imgui.click_element_with_hover(imgui.id("Items 0")
         .push_child(ItemsWindow::Names::item_list_panel)
-        .push(ItemsWindow::Names::items_list).id("1##1"), false, true);
+        .push(ItemsWindow::Names::items_list).id("1##1"));
 
     ASSERT_TRUE(raised_item.has_value());
     ASSERT_EQ(raised_item.value().number(), 1);
@@ -124,9 +124,9 @@ TEST(ItemsWindow, ItemVisibilityRaised)
     window->set_items(items);
 
     TestImgui imgui([&]() { window->render(); });
-    imgui.click_element(imgui.id("Items 0")
+    imgui.click_element_with_hover(imgui.id("Items 0")
         .push_child(ItemsWindow::Names::item_list_panel)
-        .push(ItemsWindow::Names::items_list).id("##hide-1"), false, true);
+        .push(ItemsWindow::Names::items_list).id("##hide-1"));
 
     ASSERT_TRUE(raised_item.has_value());
     ASSERT_FALSE(std::get<1>(raised_item.value()));
@@ -149,9 +149,9 @@ TEST(ItemsWindow, ItemsListNotFilteredWhenRoomSetAndTrackRoomDisabled)
     window->set_current_room(78);
 
     TestImgui imgui([&]() { window->render(); });
-    imgui.click_element(imgui.id("Items 0")
+    imgui.click_element_with_hover(imgui.id("Items 0")
         .push_child(ItemsWindow::Names::item_list_panel)
-        .push(ItemsWindow::Names::items_list).id("0##0"), false, true);
+        .push(ItemsWindow::Names::items_list).id("0##0"));
 
     ASSERT_TRUE(raised_item.has_value());
     ASSERT_EQ(raised_item.value().number(), 0);
@@ -178,9 +178,9 @@ TEST(ItemsWindow, ItemsListFilteredWhenRoomSetAndTrackRoomEnabled)
         .push_child(ItemsWindow::Names::item_list_panel)
         .id(ItemsWindow::Names::track_room));
 
-    imgui.click_element(imgui.id("Items 0")
+    imgui.click_element_with_hover(imgui.id("Items 0")
         .push_child(ItemsWindow::Names::item_list_panel)
-        .push(ItemsWindow::Names::items_list).id("1##1"), false, true);
+        .push(ItemsWindow::Names::items_list).id("1##1"));
 
     ASSERT_TRUE(raised_item.has_value());
     ASSERT_EQ(raised_item.value().number(), 1);
@@ -281,9 +281,9 @@ TEST(ItemsWindow, TriggersLoadedForItem)
     window->set_triggers({ trigger1, trigger2 });
 
     TestImgui imgui([&]() { window->render(); });
-    imgui.click_element(imgui.id("Items 0")
+    imgui.click_element_with_hover(imgui.id("Items 0")
         .push_child(ItemsWindow::Names::item_list_panel)
-        .push(ItemsWindow::Names::items_list).id("1##1"), false, true);
+        .push(ItemsWindow::Names::items_list).id("1##1"));
 
     ASSERT_TRUE(imgui.element_present(
         imgui.id("Items 0").push_child(ItemsWindow::Names::details_panel)
@@ -310,15 +310,13 @@ TEST(ItemsWindow, TriggerSelectedEventRaised)
     window->set_triggers({ trigger });
 
     TestImgui imgui([&]() { window->render(); });
-    imgui.click_element(imgui.id("Items 0")
+    imgui.click_element_with_hover(imgui.id("Items 0")
         .push_child(ItemsWindow::Names::item_list_panel)
-        .push(ItemsWindow::Names::items_list)
-        .id("1##1"), false, true);
+        .push(ItemsWindow::Names::items_list).id("1##1"));
 
-    imgui.click_element(imgui.id("Items 0")
+    imgui.click_element_with_hover(imgui.id("Items 0")
         .push_child(ItemsWindow::Names::details_panel)
-        .push(ItemsWindow::Names::triggers_list)
-        .id("0"), false, true);
+        .push(ItemsWindow::Names::triggers_list).id("0"));
 
     ASSERT_TRUE(raised_trigger.has_value());
     ASSERT_EQ(raised_trigger.value().lock(), trigger);

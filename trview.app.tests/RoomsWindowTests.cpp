@@ -24,6 +24,12 @@ namespace
                 return std::make_unique<RoomsWindow>(map_renderer_source, clipboard);
             }
 
+            test_module& with_map_renderer_source(IMapRenderer::Source map_renderer_source)
+            {
+                this->map_renderer_source = map_renderer_source;
+                return *this;
+            }
+
             test_module& with_clipboard(const std::shared_ptr<IClipboard>& clipboard)
             {
                 this->clipboard = clipboard;
@@ -53,7 +59,7 @@ TEST(RoomsWindow, ClickStatShowsBubbleAndCopies)
         .push_override(RoomsWindow::Names::bottom)
         .push(RoomsWindow::Names::properties)
         .id("X");
-    imgui.click_element(id, false, true);
+    imgui.click_element_with_hover(id);
 
     ASSERT_NE(imgui.find_window("##Tooltip_00"), nullptr);
 }
@@ -103,4 +109,13 @@ TEST(RoomsWindow, LevelVersionChangesFlags)
         .push_override(RoomsWindow::Names::bottom)
         .push(RoomsWindow::Names::properties)
         .id("Quicksand / 7")));
+}
+
+TEST(RoomsWindow, SetMapColoursUpdatesMapRenderer)
+{
+    auto [map_renderer_ptr, map_renderer] = create_mock<MockMapRenderer>();
+    EXPECT_CALL(map_renderer, set_colours).Times(1);
+
+    auto window = register_test_module().with_map_renderer_source([&](auto&&) { return std::move(map_renderer_ptr); }).build();
+    window->set_map_colours({});
 }

@@ -8,23 +8,6 @@ using namespace Microsoft::WRL;
 
 namespace trview
 {
-    namespace
-    {
-        std::map<uint16_t, DirectX::SimpleMath::Color> default_colours = {
-            { SectorFlag::Portal, { 0.0f, 0.0f, 0.0f } },
-            { SectorFlag::Wall, { 0.4f, 0.4f, 0.4f } },
-            { SectorFlag::Trigger, { 1.0f, 0.3f, 0.7f } },
-            { SectorFlag::Death, { 0.9f, 0.1f, 0.1f } },
-            { SectorFlag::MinecartLeft, { 0.0f, 0.9f, 0.9f } },
-            { SectorFlag::MinecartRight, { 0.0f, 0.9f, 0.9f } },
-            { SectorFlag::MonkeySwing, { 0.9f, 0.9f, 0.4f } },
-            { SectorFlag::ClimbableUp, { 0.0f, 0.9f, 0.0f, 0.6f } },
-            { SectorFlag::ClimbableDown, { 0.0f, 0.9f, 0.0f, 0.6f } },
-            { SectorFlag::ClimbableRight, { 0.0f, 0.9f, 0.0f, 0.6f } },
-            { SectorFlag::ClimbableLeft, { 0.0f, 0.9f, 0.0f, 0.6f } },
-        };
-    }
-
     MapRenderer::MapRenderer(const std::shared_ptr<graphics::IDevice>& device, const graphics::IFontFactory& font_factory, const Size& window_size, const graphics::ISprite::Source& sprite_source,
         const graphics::IRenderTarget::SizeSource& render_target_source)
         : _device(device),
@@ -82,29 +65,8 @@ namespace trview
 
         std::for_each(_tiles.begin(), _tiles.end(), [&](const Tile &tile)
         {
-            // Firstly get the colour for the tile 
-            // To determine the base colour we order the floor functions by the *minimum* enabled flag (ranked by order asc)
-            int minimum_flag_enabled = -1;
-            Color draw_color = Color(0.0f, 0.7f, 0.7f); // fallback 
             Color text_color = Colour::White;
-
-            if (!(tile.sector->flags() & SectorFlag::Portal) && (tile.sector->flags() & SectorFlag::Wall && tile.sector->flags() & SectorFlag::FloorSlant)) // is it no-space?
-            {
-                draw_color = { 0.2f, 0.2f, 0.9f };
-            }
-            else
-            {
-                for (const auto& color : default_colours)
-                {
-                    if ((color.first & tile.sector->flags())
-                        && (color.first < minimum_flag_enabled || minimum_flag_enabled == -1)
-                        && (color.first < SectorFlag::ClimbableUp || color.first > SectorFlag::ClimbableLeft)) // climbable flag handled separately
-                    {
-                        minimum_flag_enabled = color.first;
-                        draw_color = color.second;
-                    }
-                }
-            }
+            Color draw_color = _colours.colour_from_flags_field(tile.sector->flags());
 
             // If the cursor is over the tile, then negate colour 
             Point first = tile.position, last = Point(tile.size.width, tile.size.height) + tile.position;
@@ -125,25 +87,25 @@ namespace trview
             const float thickness = _DRAW_SCALE / 4;
 
             if (tile.sector->flags() & SectorFlag::ClimbableUp)
-                draw(tile.position, Size(tile.size.width, thickness), default_colours[SectorFlag::ClimbableUp]);
+                draw(tile.position, Size(tile.size.width, thickness), _colours.colour(SectorFlag::ClimbableUp));
             if (tile.sector->flags() & SectorFlag::ClimbableRight)
-                draw(Point(tile.position.x + _DRAW_SCALE - thickness, tile.position.y), Size(thickness, tile.size.height), default_colours[SectorFlag::ClimbableRight]);
+                draw(Point(tile.position.x + _DRAW_SCALE - thickness, tile.position.y), Size(thickness, tile.size.height), _colours.colour(SectorFlag::ClimbableRight));
             if (tile.sector->flags() & SectorFlag::ClimbableDown)
-                draw(Point(tile.position.x, tile.position.y + _DRAW_SCALE - thickness), Size(tile.size.width, thickness), default_colours[SectorFlag::ClimbableDown]);
+                draw(Point(tile.position.x, tile.position.y + _DRAW_SCALE - thickness), Size(tile.size.width, thickness), _colours.colour(SectorFlag::ClimbableDown));
             if (tile.sector->flags() & SectorFlag::ClimbableLeft)
-                draw(tile.position, Size(thickness, tile.size.height), default_colours[SectorFlag::ClimbableLeft]);
+                draw(tile.position, Size(thickness, tile.size.height), _colours.colour(SectorFlag::ClimbableLeft));
 
             // If sector is a down portal, draw a transparent black square over it 
             if (tile.sector->flags() & SectorFlag::RoomBelow)
-                draw(tile.position, tile.size, Color(0.0f, 0.0f, 0.0f, 0.6f));
+                draw(tile.position, tile.size, _colours.colour(MapColours::Special::RoomBelow));
 
             // If sector is an up portal, draw a small corner square in the top left to signify this 
             if (tile.sector->flags() & SectorFlag::RoomAbove)
-                draw(tile.position, Size(tile.size.width / 4, tile.size.height / 4), Color(0.0f, 0.0f, 0.0f));
+                draw(tile.position, Size(tile.size.width / 4, tile.size.height / 4), _colours.colour(MapColours::Special::RoomAbove));
 
             if (tile.sector->flags() & SectorFlag::Death && tile.sector->flags() & SectorFlag::Trigger)
             {
-                draw(tile.position + Point(tile.size.width * 0.75f, 0), tile.size / 4.0f, default_colours[SectorFlag::Death]);
+                draw(tile.position + Point(tile.size.width * 0.75f, 0), tile.size / 4.0f, _colours.colour(SectorFlag::Death));
             }
 
             if (tile.sector->flags() & SectorFlag::Portal)
@@ -336,5 +298,11 @@ namespace trview
     {
         _render_mode = mode;
         update_map_position();
+    }
+
+    void MapRenderer::set_colours(const MapColours& colours)
+    {
+        _colours = colours;
+        _force_redraw = true;
     }
 };

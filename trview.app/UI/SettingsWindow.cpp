@@ -27,7 +27,6 @@ namespace trview
                 {
                     checkbox(Names::vsync, _vsync, on_vsync);
                     checkbox(Names::go_to_lara, _go_to_lara, on_go_to_lara);
-                    checkbox(Names::invert_map_controls, _invert_map_controls, on_invert_map_controls);
                     checkbox(Names::items_startup, _items_startup, on_items_startup);
                     checkbox(Names::triggers_startup, _triggers_startup, on_triggers_startup);
                     checkbox(Names::rooms_startup, _rooms_startup, on_rooms_startup);
@@ -64,6 +63,62 @@ namespace trview
                     }
                     ImGui::EndTabItem();
                 }
+
+                if (ImGui::BeginTabItem("Minimap"))
+                {
+                    checkbox(Names::invert_map_controls, _invert_map_controls, on_invert_map_controls);
+                    ImGui::Separator();
+
+                    auto add_colour = [&](const std::string& name, auto&& flag)
+                    {
+                        if (ImGui::Button(("Reset##" + name).c_str()))
+                        {
+                            _colours.clear_colour(flag);
+                            on_minimap_colours(_colours);
+                        }
+                        ImGui::SameLine();
+                        DirectX::SimpleMath::Color colour = _colours.colour(flag);
+                        if (ImGui::ColorEdit4(name.c_str(), &colour.x))
+                        {
+                            _colours.set_colour(flag, colour);
+                            on_minimap_colours(_colours);
+                        }
+                    };
+
+                    auto add_special = [&](const std::string& name, auto&& type)
+                    {
+                        if (ImGui::Button(("Reset##" + name).c_str()))
+                        {
+                            _colours.clear_colour(type);
+                            on_minimap_colours(_colours);
+                        }
+                        ImGui::SameLine();
+                        DirectX::SimpleMath::Color colour = _colours.colour(type);
+                        if (ImGui::ColorEdit4(name.c_str(), &colour.x))
+                        {
+                            _colours.set_colour(type, colour);
+                            on_minimap_colours(_colours);
+                        }
+                    };
+
+                    add_special("Default", MapColours::Special::Default);
+                    add_colour("Portal", SectorFlag::Portal);
+                    add_colour("Wall", SectorFlag::Wall);
+                    add_colour("Trigger", SectorFlag::Trigger);
+                    add_colour("Death", SectorFlag::Death);
+                    add_colour("Minecart Left", SectorFlag::MinecartLeft);
+                    add_colour("Minecart Right", SectorFlag::MinecartRight);
+                    add_colour("Monkey Swing", SectorFlag::MonkeySwing);
+                    add_colour("Climbable Up", SectorFlag::ClimbableUp);
+                    add_colour("Climbable Down", SectorFlag::ClimbableDown);
+                    add_colour("Climbable Right", SectorFlag::ClimbableRight);
+                    add_colour("Climbable Left", SectorFlag::ClimbableLeft);
+                    add_special("No Space", MapColours::Special::NoSpace);
+                    add_special("Room Above", MapColours::Special::RoomAbove);
+                    add_special("Room Below", MapColours::Special::RoomBelow);
+                    ImGui::EndTabItem();
+                }
+
                 ImGui::EndTabBar();
             }
         }
@@ -155,5 +210,10 @@ namespace trview
         _colour[0] = colour.r;
         _colour[1] = colour.g;
         _colour[2] = colour.b;
+    }
+
+    void SettingsWindow::set_map_colours(const MapColours& colours)
+    {
+        _colours = colours;
     }
 }

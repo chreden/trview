@@ -98,29 +98,29 @@ namespace trview
             ImGui::DestroyContext(_context);
         }
 
-        void TestImgui::click_element(TestImGuiId test_id, bool show_context_menu, bool hover, ImGuiID active_override)
+        void TestImgui::click_element_internal(TestImGuiId test_id, bool show_context_menu, TestImGuiId active_override, bool hover)
         {
-            const auto window = test_id.root();
+            const auto window = find_window(test_id.root());
             const auto id = test_id.id();
             const auto click_on_element = [&]()
             {
-                _context->HoveredWindow = hover ? find_window(test_id.name()) : window;
+                _context->HoveredWindow = hover ? find_window(test_id.hover()) : window;
                 _tracking_id = id;
                 const auto bb = _element_rects[id];
                 _context->HoveredId = id;
                 _context->IO.MousePos = ImVec2(bb.Min.y, bb.Min.y);
                 _context->IO.MouseClicked[0] = true;
 
-                if (active_override != 0)
+                if (active_override.id() != 0)
                 {
-                    _context->ActiveId = active_override;
+                    _context->ActiveId = active_override.id();
                 }
 
                 if (show_context_menu)
                 {
                     _context->IO.MouseReleased[0] = true;
                     _context->IO.MouseDownDurationPrev[0] = _context->IO.KeyRepeatDelay;
-                    
+
                     _context->CurrentWindow = find_window("Debug##Default");
                     _context->MouseViewport = window->Viewport;
                 }
@@ -130,6 +130,16 @@ namespace trview
             _tracking_id = 0;
             _context->IO.MouseClicked[0] = false;
             _context->IO.MouseReleased[1] = false;
+        }
+
+        void TestImgui::click_element(TestImGuiId test_id, bool show_context_menu, TestImGuiId active_override)
+        {
+            click_element_internal(test_id, show_context_menu, active_override, false);
+        }
+
+        void TestImgui::click_element_with_hover(TestImGuiId test_id, bool show_context_menu, TestImGuiId active_override)
+        {
+            click_element_internal(test_id, show_context_menu, active_override, true);
         }
 
         void TestImgui::enter_text(const std::string& text)
@@ -157,6 +167,18 @@ namespace trview
             };
 
             render(type_into_element);
+        }
+
+        ImGuiWindow* TestImgui::find_window(ImGuiID id) const
+        {
+            for (const auto& w : _context->Windows)
+            {
+                if (w->ID == id)
+                {
+                    return w;
+                }
+            }
+            return nullptr;
         }
 
         ImGuiWindow* TestImgui::find_window(const std::string& name) const
@@ -283,17 +305,15 @@ namespace trview
 
         TestImGuiId TestImgui::id(const std::string& window_name) const
         {
-            auto window = find_window(window_name);
-            return TestImGuiId(window);
+            return TestImGuiId(window_name);
         }
 
         TestImGuiId TestImgui::popup_id(const std::string& popup_name) const
         {
-            auto window = find_window("Debug##Default");
-            auto id = window->GetID(popup_name.c_str());
+            auto id = TestImGuiId("Debug##Default").id(popup_name).id();
             std::stringstream stream;
             stream << "##Popup_" << std::hex << std::setfill('0') << std::setw(8) << id;
-            return TestImGuiId(find_window(stream.str()));
+            return TestImGuiId(stream.str());
         }
     }
 }

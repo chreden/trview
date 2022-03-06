@@ -24,6 +24,7 @@ namespace trview
             MOCK_METHOD(graphics::Texture, texture, (), (const, override));
             MOCK_METHOD(Point, first, (), (const, override));
             MOCK_METHOD(void, set_render_mode, (RenderMode), (override));
+            MOCK_METHOD(void, set_colours, (const MapColours&), (override));
         };
     }
 }

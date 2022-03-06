@@ -40,9 +40,6 @@
     <ClCompile Include="UI\RoomNavigator.cpp">
       <Filter>UI</Filter>
     </ClCompile>
-    <ClCompile Include="UI\SettingsWindow.cpp">
-      <Filter>UI</Filter>
-    </ClCompile>
     <ClCompile Include="UI\ViewerUI.cpp">
       <Filter>UI</Filter>
     </ClCompile>
@@ -271,9 +268,6 @@
     <ClCompile Include="Routing\IActions.cpp">
       <Filter>Routing</Filter>
     </ClCompile>
-    <ClCompile Include="UI\ISettingsWindow.cpp">
-      <Filter>UI</Filter>
-    </ClCompile>
     <ClCompile Include="Routing\IWaypoint.cpp">
       <Filter>Routing</Filter>
     </ClCompile>
@@ -288,12 +282,6 @@
     </ClCompile>
     <ClCompile Include="Settings\RandomizerSettings.cpp">
       <Filter>Settings</Filter>
-    </ClCompile>
-    <ClCompile Include="UI\IMapRenderer.cpp">
-      <Filter>UI</Filter>
-    </ClCompile>
-    <ClCompile Include="UI\MapRenderer.cpp">
-      <Filter>UI</Filter>
     </ClCompile>
     <ClCompile Include="Resources\DefaultFonts.cpp">
       <Filter>Resources</Filter>
@@ -353,6 +341,21 @@
     <ClCompile Include="UI\DX11ImGuiBackend.cpp">
       <Filter>UI</Filter>
     </ClCompile>
+    <ClCompile Include="UI\IMapRenderer.cpp">
+      <Filter>UI\Minimap</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\MapRenderer.cpp">
+      <Filter>UI\Minimap</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\MapColours.cpp">
+      <Filter>UI\Minimap</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\ISettingsWindow.cpp">
+      <Filter>UI\Settings</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\SettingsWindow.cpp">
+      <Filter>UI\Settings</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera\Camera.h">
@@ -398,9 +401,6 @@
       <Filter>UI</Filter>
     </ClInclude>
     <ClInclude Include="UI\RoomNavigator.h">
-      <Filter>UI</Filter>
-    </ClInclude>
-    <ClInclude Include="UI\SettingsWindow.h">
       <Filter>UI</Filter>
     </ClInclude>
     <ClInclude Include="UI\ViewerUI.h">
@@ -804,9 +804,6 @@
     <ClInclude Include="Routing\Actions.h">
       <Filter>Routing</Filter>
     </ClInclude>
-    <ClInclude Include="UI\ISettingsWindow.h">
-      <Filter>UI</Filter>
-    </ClInclude>
     <ClInclude Include="Mocks\UI\ISettingsWindow.h">
       <Filter>Mocks\UI</Filter>
     </ClInclude>
@@ -839,12 +836,6 @@
     </ClInclude>
     <ClInclude Include="Settings\RandomizerSettings.h">
       <Filter>Settings</Filter>
-    </ClInclude>
-    <ClInclude Include="UI\IMapRenderer.h">
-      <Filter>UI</Filter>
-    </ClInclude>
-    <ClInclude Include="UI\MapRenderer.h">
-      <Filter>UI</Filter>
     </ClInclude>
     <ClInclude Include="Resources\DefaultFonts.h">
       <Filter>Resources</Filter>
@@ -910,6 +901,21 @@
     </ClInclude>
     <ClInclude Include="Mocks\UI\IImGuiBackend.h">
       <Filter>Mocks\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\IMapRenderer.h">
+      <Filter>UI\Minimap</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\MapRenderer.h">
+      <Filter>UI\Minimap</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\MapColours.h">
+      <Filter>UI\Minimap</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\ISettingsWindow.h">
+      <Filter>UI\Settings</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\SettingsWindow.h">
+      <Filter>UI\Settings</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1002,6 +1008,12 @@
     </Filter>
     <Filter Include="Windows\Route">
       <UniqueIdentifier>{ad73c4b2-4cde-4987-82e7-eac11a79ee3f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="UI\Minimap">
+      <UniqueIdentifier>{35934bbe-5267-4aea-8d40-82452ae7874c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="UI\Settings">
+      <UniqueIdentifier>{a03b798e-88e6-4f9d-9d44-e81545390315}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

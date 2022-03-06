@@ -153,9 +153,9 @@ TEST(RouteWindow, AddingWaypointNotesMarksRouteUnsaved)
     window->select_waypoint(0);
 
     TestImgui imgui([&]() { window->render(); });
-    imgui.click_element(imgui.id("Route")
+    imgui.click_element_with_hover(imgui.id("Route")
         .push_child(RouteWindow::Names::waypoint_details_panel)
-        .push(RouteWindow::Names::notes).id(""), false, true);
+        .push(RouteWindow::Names::notes).id(""));
     imgui.enter_text("Test");
 }
 
