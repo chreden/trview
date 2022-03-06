@@ -93,6 +93,7 @@ namespace trview
 
     void Camera::set_rotation_pitch(float rotation)
     {
+        _last_rotation = 0.0f;
         _rotation_pitch = std::max(-DirectX::XM_PIDIV2, std::min(rotation, DirectX::XM_PIDIV2));
         _target_rotation_pitch.reset();
         _target_rotation_yaw.reset();
@@ -101,6 +102,7 @@ namespace trview
 
     void Camera::set_rotation_yaw(float rotation)
     {
+        _last_rotation = 0.0f;
         _rotation_yaw = rotation - static_cast<int>(rotation / maths::Pi2) * maths::Pi2;
         _target_rotation_pitch.reset();
         _target_rotation_yaw.reset();
@@ -135,6 +137,8 @@ namespace trview
     void Camera::update(float elapsed)
     {
         const float speed = 10.0f;
+
+        _last_rotation += elapsed;
 
         if (_target_rotation_yaw.has_value())
         {
@@ -235,5 +239,10 @@ namespace trview
         }
         _view_projection = _view * _projection;
         calculate_bounding_frustum();
+    }
+
+    bool Camera::idle_rotation() const
+    {
+        return _last_rotation > 0.3f;
     }
 }

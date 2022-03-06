@@ -30,6 +30,7 @@ namespace trview
             MOCK_METHOD(const DirectX::SimpleMath::Matrix, view_projection, (), (const, override));
             MOCK_METHOD(const Size, view_size, (), (const, override));
             MOCK_METHOD(float, zoom, (), (const, override));
+            MOCK_METHOD(bool, idle_rotation, (), (const, override));
         };
     }
 }

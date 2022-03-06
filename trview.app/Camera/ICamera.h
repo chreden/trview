@@ -97,5 +97,7 @@ namespace trview
         /// Gets the zoom level.
         /// @returns The zoom level.
         virtual float zoom() const = 0;
+
+        virtual bool idle_rotation() const = 0;
     };
 }
