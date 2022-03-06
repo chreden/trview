@@ -8,6 +8,7 @@
 #include <trview.app/Elements/ITypeNameLookup.h>
 #include <trview.graphics/RasterizerStateStore.h>
 
+using namespace DirectX;
 using namespace DirectX::SimpleMath;
 
 namespace trview
@@ -298,13 +299,28 @@ namespace trview
     {
         std::vector<RoomToRender> rooms;
 
-        DirectX::BoundingFrustum frustum = camera.frustum();
+        const auto frustum = camera.frustum();
+        const auto view_projection = camera.view_projection();
+        BoundingBox screen_box;
+        DirectX::BoundingBox::CreateFromPoints(screen_box, Vector3(-1, -1, 0), Vector3(1, 1, 1));
+
+        auto visible_perspective = [&](const IRoom& room)
+        {
+            return frustum.Contains(room.bounding_box()) != DISJOINT;
+        };
+
+        auto visible_orthographic = [&](const IRoom& room)
+        {
+            DirectX::BoundingBox room_box = room.bounding_box();
+            room_box.Transform(room_box, view_projection);
+            return room_box.Intersects(screen_box);
+        };
 
         auto in_view = [&](const IRoom& room)
         {
-            return camera.projection_mode() == ProjectionMode::Orthographic || frustum.Contains(room.bounding_box()) != DirectX::DISJOINT;
+            return camera.projection_mode() == ProjectionMode::Orthographic ? visible_orthographic(room) : visible_perspective(room);
         };
-    
+
         bool highlight = highlight_mode_enabled(RoomHighlightMode::Highlight);
         if (highlight_mode_enabled(RoomHighlightMode::Neighbours))
         {
