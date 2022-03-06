@@ -224,7 +224,7 @@ namespace trview
 
     bool ViewerUI::is_cursor_over() const
     {
-        return (ImGui::GetCurrentContext() != nullptr && ImGui::GetIO().WantCaptureMouse) || (_map_renderer->loaded() && _map_renderer->cursor_is_over_control());
+        return (ImGui::GetCurrentContext() != nullptr && ImGui::GetIO().WantCaptureMouseUnlessPopupClose) || (_map_renderer->loaded() && _map_renderer->cursor_is_over_control());
     }
 
     void ViewerUI::generate_tool_window()
