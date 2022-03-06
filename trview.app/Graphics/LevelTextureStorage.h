@@ -27,11 +27,20 @@ namespace trview
         virtual uint16_t attribute(uint32_t texture_index) const override;
         virtual DirectX::SimpleMath::Color palette_from_texture(uint32_t texture) const override;
     private:
+        void determine_texture_mode();
+
         std::vector<graphics::Texture> _tiles;
         std::vector<trlevel::tr_object_texture> _object_textures;
         std::unique_ptr<ITextureStorage> _texture_storage;
         mutable graphics::Texture _untextured_texture;
         std::array<DirectX::SimpleMath::Color, 256> _palette;
         trlevel::LevelVersion _version;
+
+        enum class TextureMode
+        {
+            Official,
+            Custom
+        };
+        TextureMode _texture_mode{ TextureMode::Official };
     };
 }

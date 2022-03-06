@@ -290,10 +290,10 @@ namespace trlevel
 
     struct tr_object_texture_vert // 4 bytes
     {
-        int8_t Xcoordinate; // 1 if Xpixel is the low value, 255 if Xpixel is the high value in the object texture
-        uint8_t Xpixel;
-        int8_t Ycoordinate; // 1 if Ypixel is the low value, 255 if Ypixel is the high value in the object texture
-        uint8_t Ypixel;
+        uint8_t x_frac;
+        uint8_t x_whole;
+        uint8_t y_frac;
+        uint8_t y_whole;
     };
 
     // Version of box used in TR1/UB.

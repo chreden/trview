@@ -27,6 +27,24 @@ namespace trview
                 _palette[i] = Color(entry.Red / 255.f, entry.Green / 255.f, entry.Blue / 255.f, 1.0f);
             }
         }
+
+        determine_texture_mode();
+    }
+
+    void LevelTextureStorage::determine_texture_mode()
+    {
+        for (const auto& object_texture : _object_textures)
+        {
+            for (const auto& vert : object_texture.Vertices)
+            {
+                if ((vert.x_frac > 1 && vert.x_frac < 255) ||
+                    (vert.y_frac > 1 && vert.y_frac < 255))
+                {
+                    _texture_mode = TextureMode::Custom;
+                    return;
+                }
+            }
+        }
     }
 
     graphics::Texture LevelTextureStorage::texture(uint32_t tile_index) const
@@ -52,7 +70,15 @@ namespace trview
     {
         using namespace DirectX::SimpleMath;
         const auto& vert = _object_textures[texture_index].Vertices[uv_index];
-        return Vector2(static_cast<float>(vert.Xpixel + vert.Xcoordinate), static_cast<float>(vert.Ypixel + vert.Ycoordinate)) / 255.0f;
+
+        if (_texture_mode == TextureMode::Official)
+        {
+            return Vector2(static_cast<float>(vert.x_whole + static_cast<int8_t>(vert.x_frac)), static_cast<float>(vert.y_whole + static_cast<int8_t>(vert.y_frac))) / 255.0f;
+        }
+        
+        float x = static_cast<float>(vert.x_whole) + (vert.x_frac / 256.0f);
+        float y = static_cast<float>(vert.y_whole) + (vert.y_frac / 256.0f);
+        return Vector2(x, y) / 256.0f;
     }
 
     uint32_t LevelTextureStorage::tile(uint32_t texture_index) const
