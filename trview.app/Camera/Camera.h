@@ -67,6 +67,7 @@ namespace trview
         float _rotation_pitch{ default_pitch };
         float _zoom{ default_zoom };
         ProjectionMode _projection_mode{ ProjectionMode::Perspective };
+        std::optional<float> _last_rotation;
     private:
         Size _view_size;
         DirectX::SimpleMath::Matrix _view;
@@ -78,6 +79,5 @@ namespace trview
         std::optional<float> _target_rotation_yaw;
         std::optional<float> _target_rotation_pitch;
         float _ortho_size{ 10.0f };
-        float _last_rotation{ 0.0f };
     };
 }

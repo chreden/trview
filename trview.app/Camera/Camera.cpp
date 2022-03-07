@@ -138,7 +138,10 @@ namespace trview
     {
         const float speed = 10.0f;
 
-        _last_rotation += elapsed;
+        if (_last_rotation.has_value())
+        {
+            _last_rotation = _last_rotation.value() + elapsed;
+        }
 
         if (_target_rotation_yaw.has_value())
         {
@@ -243,6 +246,6 @@ namespace trview
 
     bool Camera::idle_rotation() const
     {
-        return _last_rotation > 0.3f;
+        return !_last_rotation.has_value() || _last_rotation.value() > 0.3f;
     }
 }
