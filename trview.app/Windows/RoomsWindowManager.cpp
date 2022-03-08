@@ -120,11 +120,21 @@ namespace trview
         rooms_window->set_rooms(_all_rooms);
         rooms_window->set_current_room(_current_room);
         rooms_window->set_map_colours(_map_colours);
+        rooms_window->set_floordata(_floordata);
         return add_window(rooms_window);
     }
 
     void RoomsWindowManager::update(float delta)
     {
         WindowManager::update(delta);
+    }
+
+    void RoomsWindowManager::set_floordata(const std::vector<uint16_t>& data)
+    {
+        _floordata = data;
+        for (auto& window : _windows)
+        {
+            window.second->set_floordata(data);
+        }
     }
 }

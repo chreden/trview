@@ -25,7 +25,10 @@ namespace trview
         if (mouse_pos.x < 0 || mouse_pos.x > window_size.width ||
             mouse_pos.y < 0 || mouse_pos.y > window_size.height)
         {
-            on_pick({}, {});
+            PickResult empty;
+            empty.stop = true;
+            on_pick({}, empty);
+            return;
         }
 
         Vector3 position = camera.position();

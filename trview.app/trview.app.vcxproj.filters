@@ -230,6 +230,9 @@
     <ClCompile Include="UI\SettingsWindow.cpp">
       <Filter>UI\Settings</Filter>
     </ClCompile>
+    <ClCompile Include="Elements\Floordata.cpp">
+      <Filter>Elements</Filter>
+    </ClCompile>
     <ClCompile Include="ApplicationCreate.cpp" />
     <ClCompile Include="Elements\Room.cpp">
       <Filter>Elements\Room</Filter>
@@ -740,6 +743,9 @@
     </ClInclude>
     <ClInclude Include="UI\SettingsWindow.h">
       <Filter>UI\Settings</Filter>
+    </ClInclude>
+    <ClInclude Include="Elements\Floordata.h">
+      <Filter>Elements</Filter>
     </ClInclude>
     <ClInclude Include="Filters\Filters.h">
       <Filter>Filters</Filter>

@@ -72,5 +72,7 @@ namespace trview
         virtual void update(float delta) = 0;
 
         virtual void set_number(int32_t number) = 0;
+
+        virtual void set_floordata(const std::vector<uint16_t>& data) = 0;
     };
 }

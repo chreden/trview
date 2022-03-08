@@ -23,6 +23,7 @@ namespace trview
             static inline const std::string bottom = "##bottom";
             static inline const std::string rooms_panel = "Rooms List";
             static inline const std::string rooms_list = "##roomslist";
+            static inline const std::string simple_mode = "Simple";
         };
 
         /// Create a rooms window as a child of the specified window.
@@ -42,6 +43,7 @@ namespace trview
         virtual void set_triggers(const std::vector<std::weak_ptr<ITrigger>>& triggers) override;
         virtual void update(float delta) override;
         virtual void set_number(int32_t number) override;
+        virtual void set_floordata(const std::vector<uint16_t>& data) override;
     private:
         void set_sync_room(bool value);
         void set_track_item(bool value);
@@ -51,6 +53,13 @@ namespace trview
         bool render_rooms_window();
         void load_room_details(uint32_t room_number);
         void generate_filters();
+        void render_properties_tab(const std::shared_ptr<IRoom>& room);
+        void render_neighbours_tab(const std::shared_ptr<IRoom>& room);
+        void render_items_tab(const std::shared_ptr<IRoom>& room);
+        void render_triggers_tab(const std::shared_ptr<IRoom>& room);
+        void render_floordata_tab(const std::shared_ptr<IRoom>& room);
+
+        void render_simple();
 
         std::vector<std::weak_ptr<IRoom>> _all_rooms;
         std::vector<Item> _all_items;
@@ -85,5 +94,9 @@ namespace trview
 
         Filters<IRoom> _filters;
         bool _force_sort{ false };
+        std::vector<uint16_t> _floordata;
+        bool _simple_mode{ true };
+        bool _in_floordata_mode{ false };
+        std::shared_ptr<ISector> _selected_sector;
     };
 }
