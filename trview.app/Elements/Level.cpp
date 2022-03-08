@@ -47,7 +47,8 @@ namespace trview
         const std::shared_ptr<ILog>& log,
         const graphics::IBuffer::ConstantSource& buffer_source)
         : _device(device), _version(level->get_version()), _texture_storage(level_texture_storage),
-        _transparency(std::move(transparency_buffer)), _selection_renderer(std::move(selection_renderer)), _log(log)
+        _transparency(std::move(transparency_buffer)), _selection_renderer(std::move(selection_renderer)), _log(log),
+        _floor_data(level->get_floor_data_all())
     {
         _vertex_shader = shader_storage->get("level_vertex_shader");
         _pixel_shader = shader_storage->get("level_pixel_shader");
@@ -921,6 +922,11 @@ namespace trview
                 entity->adjust_y(new_height - entity_pos.y);
             }
         }
+    }
+
+    std::vector<uint16_t> Level::floor_data() const
+    {
+        return _floor_data;
     }
 
     void Level::generate_lights(const trlevel::ILevel& level, const ILight::Source& light_source)

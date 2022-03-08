@@ -37,6 +37,7 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClCompile Include="Camera\FreeCamera.cpp" />
     <ClCompile Include="Camera\OrbitCamera.cpp" />
     <ClCompile Include="Elements\Entity.cpp" />
+    <ClCompile Include="Elements\Floordata.cpp" />
     <ClCompile Include="Elements\ILight.cpp" />
     <ClCompile Include="Elements\ISector.cpp" />
     <ClCompile Include="Elements\Item.cpp" />
@@ -109,6 +110,8 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClCompile Include="UI\Tooltip.cpp" />
     <ClCompile Include="UI\ViewerUI.cpp" />
     <ClCompile Include="UI\ViewOptions.cpp" />
+    <ClCompile Include="Windows\Floordata\FloordataWindow.cpp" />
+    <ClCompile Include="Windows\Floordata\FloordataWindowManager.cpp" />
     <ClCompile Include="Windows\ItemsWindow.cpp" />
     <ClCompile Include="Windows\ItemsWindowManager.cpp" />
     <ClCompile Include="Windows\LightsWindow.cpp" />
@@ -137,6 +140,7 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClInclude Include="Camera\OrbitCamera.h" />
     <ClInclude Include="Camera\ProjectionMode.h" />
     <ClInclude Include="Elements\Entity.h" />
+    <ClInclude Include="Elements\Floordata.h" />
     <ClInclude Include="Elements\IEntity.h" />
     <ClInclude Include="Elements\ILevel.h" />
     <ClInclude Include="Elements\ILight.h" />
@@ -222,6 +226,8 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClInclude Include="Mocks\UI\ISettingsWindow.h" />
     <ClInclude Include="Mocks\UI\IViewerUI.h" />
     <ClInclude Include="Mocks\UI\IViewOptions.h" />
+    <ClInclude Include="Mocks\Windows\IFloordataWindow.h" />
+    <ClInclude Include="Mocks\Windows\IFloordataWindowManager.h" />
     <ClInclude Include="Mocks\Windows\IItemsWindow.h" />
     <ClInclude Include="Mocks\Windows\IItemsWindowManager.h" />
     <ClInclude Include="Mocks\Windows\ILightsWindow.h" />
@@ -284,6 +290,10 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClInclude Include="UI\Tooltip.h" />
     <ClInclude Include="UI\ViewerUI.h" />
     <ClInclude Include="UI\ViewOptions.h" />
+    <ClInclude Include="Windows\Floordata\FloordataWindow.h" />
+    <ClInclude Include="Windows\Floordata\FloordataWindowManager.h" />
+    <ClInclude Include="Windows\Floordata\IFloordataWindow.h" />
+    <ClInclude Include="Windows\Floordata\IFloordataWindowManager.h" />
     <ClInclude Include="Windows\IItemsWindow.h" />
     <ClInclude Include="Windows\IItemsWindowManager.h" />
     <ClInclude Include="Windows\ILightsWindow.h" />

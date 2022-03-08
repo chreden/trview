@@ -117,6 +117,7 @@ namespace trview
         virtual std::vector<Triangle> triangles() const = 0;
         virtual bool is_floor() const = 0;
         virtual bool is_wall() const = 0;
+        virtual uint32_t floordata_index() const = 0;
         virtual bool is_portal() const = 0;
         virtual bool is_ceiling() const = 0;
 

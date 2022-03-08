@@ -24,6 +24,7 @@
 #include "Windows/Log/ILogWindowManager.h"
 #include "Windows/Textures/ITexturesWindowManager.h"
 #include "UI/IImGuiBackend.h"
+#include "Windows/Floordata/IFloordataWindowManager.h"
 
 struct ImFont;
 
@@ -59,7 +60,8 @@ namespace trview
             std::unique_ptr<IImGuiBackend> imgui_backend,
             std::unique_ptr<ILightsWindowManager> lights_window_manager,
             std::unique_ptr<ILogWindowManager> log_window_manager,
-            std::unique_ptr<ITexturesWindowManager> textures_window_manager);
+            std::unique_ptr<ITexturesWindowManager> textures_window_manager,
+            std::unique_ptr<IFloordataWindowManager> floordata_window_manager);
         virtual ~Application();
         /// Attempt to open the specified level file.
         /// @param filename The level file to open.
@@ -76,6 +78,7 @@ namespace trview
         void setup_rooms_windows();
         void setup_route_window();
         void setup_lights_windows();
+        void setup_floordata_windows();
         void setup_shortcuts();
         // Entity manipulation
         void add_waypoint(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& normal, uint32_t room, IWaypoint::Type type, uint32_t index);
@@ -142,6 +145,7 @@ namespace trview
         std::unique_ptr<ILogWindowManager> _log_windows;
         bool _recent_route_prompted{ false };
 
+        std::unique_ptr<IFloordataWindowManager> _floordata_windows;
         std::unique_ptr<ITexturesWindowManager> _textures_windows;
     };
 

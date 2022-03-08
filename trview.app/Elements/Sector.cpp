@@ -1,5 +1,6 @@
 #include "Sector.h"
 #include "IRoom.h"
+#include "Floordata.h"
 #include <trview.common/Algorithms.h>
 
 using namespace DirectX::SimpleMath;
@@ -7,7 +8,8 @@ using namespace DirectX::SimpleMath;
 namespace trview
 {
     Sector::Sector(const trlevel::ILevel &level, const trlevel::tr3_room& room, const trlevel::tr_room_sector &sector, int sector_id, uint32_t room_number, const IRoom& room_ptr)
-        : _sector(sector), _sector_id(static_cast<uint16_t>(sector_id)), _room_above(sector.room_above), _room_below(sector.room_below), _room(room_number), _info(room.info), _room_ptr(room_ptr)
+        : _sector(sector), _sector_id(static_cast<uint16_t>(sector_id)), _room_above(sector.room_above), _room_below(sector.room_below), _room(room_number), _info(room.info), _room_ptr(room_ptr),
+        _floordata_index(sector.floordata_index)
     {
         _x = static_cast<int16_t>(sector_id / room.num_z_sectors);
         _z = static_cast<int16_t>(sector_id % room.num_z_sectors);
@@ -51,136 +53,145 @@ namespace trview
             level.get_room(_room).info.yTop / trlevel::Scale_Y :
             _sector.ceiling * 0.25f);
 
-        std::uint16_t cur_index = _sector.floordata_index;
-        if (cur_index == 0x0)
-            return true; 
-
-        const auto max_floordata = level.num_floor_data();
-
-        for (;;)
+        if (_sector.floordata_index != 0)
         {
-            std::uint16_t floor = level.get_floor_data(cur_index);
-            std::uint16_t subfunction = (floor & 0x7F00) >> 8; 
+            auto floordata = parse_floordata(level.get_floor_data_all(), _sector.floordata_index, FloordataMeanings::None);
 
-            switch (floor & 0x1f)
+            for (const auto& command : floordata.commands)
             {
-            case 0x1:
-            {
-                _portal = level.get_floor_data(++cur_index);
-                _flags |= SectorFlag::Portal;
-                break;
-            }
-            case 0x2: 
-            {
-                _floor_slant = level.get_floor_data(++cur_index);
-                _flags |= SectorFlag::FloorSlant;
-                parse_slope();
-                break;
-            }
-            case 0x3:
-                _ceiling_slant = level.get_floor_data(++cur_index);
-                _flags |= SectorFlag::CeilingSlant;
-                parse_ceiling_slope();
-                break;
+                using Function = Floordata::Command::Function;
+                const uint16_t floor = command.data[0];
+                std::uint16_t subfunction = (floor & 0x7F00) >> 8;
 
-            case 0x4:
-            {
-                std::uint16_t command = 0; 
-                std::uint16_t setup = level.get_floor_data(++cur_index);
-
-                // Basic trigger setup 
-                _trigger.timer = setup & 0xFF;
-                _trigger.oneshot = (setup & 0x100) >> 8; 
-                _trigger.mask = (setup & 0x3E00) >> 9; 
-                _trigger.sector_id = _sector_id;
-
-                // Type of the trigger, e.g. Pad, Switch, etc.
-                _trigger.type = (TriggerType) subfunction;
-
-                bool continue_processing = true;
-                if (_trigger.type == TriggerType::Key || _trigger.type == TriggerType::Switch)
+                switch (command.type)
                 {
-                    // The next element is the lock or switch - ignore.
-                    auto reference = level.get_floor_data(++cur_index);
-                    continue_processing = (reference & 0x8000) == 0;
+                case Function::Portal:
+                {
+                    _flags |= SectorFlag::Portal;
+                    _portal = command.data[1] & 0xFF;
+                    break;
                 }
-
-                // Parse actions 
-                if (continue_processing)
+                case Function::FloorSlant:
                 {
-                    do
+                    _floor_slant = command.data[1];
+                    _flags |= SectorFlag::FloorSlant;
+                    parse_slope();
+                    break;
+                }
+                case Function::CeilingSlant:
+                {
+                    _ceiling_slant = command.data[1];
+                    _flags |= SectorFlag::CeilingSlant;
+                    parse_ceiling_slope();
+                    break;
+                }
+                case Function::Trigger:
+                {
+                    _flags |= SectorFlag::Trigger;
+
+                    uint32_t index = 0;
+
+                    // Basic trigger setup 
+                    const std::uint16_t setup = command.data[++index];
+                    _trigger.timer = setup & 0xFF;
+                    _trigger.oneshot = (setup & 0x100) >> 8;
+                    _trigger.mask = (setup & 0x3E00) >> 9;
+                    _trigger.sector_id = _sector_id;
+
+                    // Type of the trigger, e.g. Pad, Switch, etc.
+                    _trigger.type = static_cast<TriggerType>(subfunction);
+
+                    bool continue_processing = true;
+                    if (_trigger.type == TriggerType::Key || _trigger.type == TriggerType::Switch)
                     {
-                        if (++cur_index < max_floordata)
+                        // The next element is the lock or switch - ignore.
+                        auto reference = command.data[++index];
+                        continue_processing = (reference & 0x8000) == 0;
+                    }
+
+                    uint16_t trigger_command = 0;
+
+                    // Parse actions 
+                    if (continue_processing)
+                    {
+                        do
                         {
-                            command = level.get_floor_data(cur_index);
-                            auto action = static_cast<TriggerCommandType>((command & 0x7C00) >> 10);
-                            _trigger.commands.emplace_back(action, static_cast<uint16_t>(command & 0x3FF));
-                            if (action == TriggerCommandType::Camera || action == TriggerCommandType::Flyby)
+                            if (++index < command.data.size())
                             {
-                                // Camera has another uint16_t - skip for now.
-                                command = level.get_floor_data(++cur_index);
+                                trigger_command = command.data[index];
+                                auto action = static_cast<TriggerCommandType>((trigger_command & 0x7C00) >> 10);
+                                _trigger.commands.emplace_back(action, static_cast<uint16_t>(trigger_command & 0x3FF));
+                                if (action == TriggerCommandType::Camera || action == TriggerCommandType::Flyby)
+                                {
+                                    // Camera has another uint16_t - skip for now.
+                                    trigger_command = command.data[++index];
+                                }
                             }
-                        }
 
-                    } while (cur_index < max_floordata && !(command & 0x8000));
+                        } while (index < command.data.size() && !(trigger_command & 0x8000));
+                    }
+
+                    break;
                 }
-
-                _flags |= SectorFlag::Trigger;
-                break; 
+                case Function::Death:
+                {
+                    _flags |= SectorFlag::Death;
+                    break;
+                }
+                case Function::ClimbableWall:
+                {
+                    _flags |= static_cast<SectorFlag>(subfunction << 6);
+                    break;
+                }
+                case Function::Triangulation_Floor_NWSE:
+                case Function::Triangulation_Floor_NESW:
+                case Function::Triangulation_Floor_Collision_SW:
+                case Function::Triangulation_Floor_Collision_NE:
+                case Function::Triangulation_Floor_Collision_SE:
+                case Function::Triangulation_Floor_Collision_NW:
+                {
+                    auto tri = parse_triangulation(floor, command.data[1]);
+                    _floor_triangulation = tri;
+                    _triangulation_function = tri.direction;
+                    _corners[0] += tri.c00;
+                    _corners[1] += tri.c01;
+                    _corners[2] += tri.c10;
+                    _corners[3] += tri.c11;
+                    break;
+                }
+                case Function::Triangulation_Ceiling_NW:
+                case Function::Triangulation_Ceiling_NE:
+                case Function::Triangulation_Ceiling_Collision_SW:
+                case Function::Triangulation_Ceiling_Collision_NE:
+                case Function::Triangulation_Ceiling_Collision_NW:
+                case Function::Triangulation_Ceiling_Collision_SE:
+                {
+                    auto tri = parse_triangulation(floor, command.data[1]);
+                    _ceiling_triangulation = tri;
+                    _ceiling_triangulation_function = tri.direction;
+                    _ceiling_corners[3] -= tri.c00;
+                    _ceiling_corners[2] -= tri.c01;
+                    _ceiling_corners[1] -= tri.c10;
+                    _ceiling_corners[0] -= tri.c11;
+                    break;
+                }
+                case Function::MonkeySwing:
+                {
+                    _flags |= SectorFlag::MonkeySwing;
+                    break;
+                }
+                case Function::MinecartLeft_DeferredTrigger:
+                {
+                    _flags |= SectorFlag::MinecartLeft;
+                    break;
+                }
+                case Function::MinecartRight_Mapper:
+                {
+                    _flags |= SectorFlag::MinecartRight;
+                    break;
+                }
+                }
             }
-            case 0x5: 
-                _flags |= SectorFlag::Death;
-                break; 
-
-            case 0x6: // climbable walls 
-                _flags |= static_cast<SectorFlag>(subfunction << 6);
-                break; 
-
-            case 0x7:
-            case 0xB:
-            case 0xC:
-            case 0x8:
-            case 0xD:
-            case 0xE:
-            {
-                auto tri = read_triangulation(level, floor, cur_index);
-                _floor_triangulation = tri;
-                _triangulation_function = tri.direction;
-                _corners[0] += tri.c00;
-                _corners[1] += tri.c01;
-                _corners[2] += tri.c10;
-                _corners[3] += tri.c11;
-                break;
-            }
-            case 0x9:
-            case 0xA:
-            case 0xF:
-            case 0x10:
-            case 0x11:
-            case 0x12:
-            {
-                const auto tri = read_triangulation(level, floor, cur_index);
-                _ceiling_triangulation = tri;
-                _ceiling_triangulation_function = tri.direction;
-                _ceiling_corners[3] -= tri.c00;
-                _ceiling_corners[2] -= tri.c01;
-                _ceiling_corners[1] -= tri.c10;
-                _ceiling_corners[0] -= tri.c11;
-                break;
-            }
-            case 0x13: 
-                _flags |= SectorFlag::MonkeySwing;
-                break; 
-            case 0x14:
-                _flags |= SectorFlag::MinecartLeft;
-                break; 
-            case 0x15:
-                _flags |= SectorFlag::MinecartRight;
-                break; 
-            }
-
-            if ((floor >> 15) || cur_index == 0x0) break; 
-            else cur_index++; 
         }
 
         return true; 
@@ -360,6 +371,11 @@ namespace trview
         {
             add_neighbour(_room_below);
         }
+    }
+
+    uint32_t Sector::floordata_index() const
+    {
+        return _floordata_index;
     }
 
     bool Sector::is_wall() const
@@ -643,7 +659,7 @@ namespace trview
         _flags |= flag;
     }
 
-    Triangulation read_triangulation(const trlevel::ILevel& level, uint16_t floor, std::uint16_t& cur_index)
+    Triangulation parse_triangulation(uint16_t floor, uint16_t data)
     {
         // Not sure what to do with h1 and h2 values yet.
         // const int16_t h2 = (floor & 0x7C00) >> 10;
@@ -665,11 +681,10 @@ namespace trview
             break;
         }
 
-        const uint16_t corner_values = level.get_floor_data(++cur_index);
-        const uint16_t c00 = (corner_values & 0x00F0) >> 4;
-        const uint16_t c01 = (corner_values & 0x0F00) >> 8;
-        const uint16_t c10 = (corner_values & 0x000F);
-        const uint16_t c11 = (corner_values & 0xF000) >> 12;
+        const uint16_t c00 = (data & 0x00F0) >> 4;
+        const uint16_t c01 = (data & 0x0F00) >> 8;
+        const uint16_t c10 = (data & 0x000F);
+        const uint16_t c11 = (data & 0xF000) >> 12;
         const auto max_corner = std::max({ c00, c01, c10, c11 });
         return Triangulation{ function, direction, (max_corner - c00) * 0.25f, (max_corner - c01) * 0.25f, (max_corner - c10) * 0.25f, (max_corner - c11) * 0.25f };
     }

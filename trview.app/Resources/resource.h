@@ -44,6 +44,7 @@
 #define ID_WINDOWS_LOG                  33020
 #define ID_FILE_RELOAD                  33021
 #define ID_WINDOWS_TEXTURES             33022
+#define ID_WINDOWS_FLOORDATA            33023
 
 // Next default values for new objects
 // 

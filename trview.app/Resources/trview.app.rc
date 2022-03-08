@@ -72,6 +72,7 @@ BEGIN
         MENUITEM "&Lights\tCtrl+L"              ID_WINDOWS_LIGHTS
         MENUITEM "Log"                          ID_WINDOWS_LOG
         MENUITEM "Textures"                     ID_WINDOWS_TEXTURES
+        MENUITEM "Floor&data\tCtrl+D"           ID_WINDOWS_FLOORDATA
         MENUITEM SEPARATOR
         MENUITEM "Reset Layout"                 ID_WINDOWS_RESET_LAYOUT
     END

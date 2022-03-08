@@ -230,6 +230,9 @@
     <ClCompile Include="UI\SettingsWindow.cpp">
       <Filter>UI\Settings</Filter>
     </ClCompile>
+    <ClCompile Include="Elements\Floordata.cpp">
+      <Filter>Elements</Filter>
+    </ClCompile>
     <ClCompile Include="ApplicationCreate.cpp" />
     <ClCompile Include="Elements\Room.cpp">
       <Filter>Elements\Room</Filter>
@@ -249,11 +252,17 @@
     <ClCompile Include="Mocks\Mocks.cpp">
       <Filter>Mocks</Filter>
     </ClCompile>
+    <ClCompile Include="Windows\Floordata\FloordataWindow.cpp">
+      <Filter>Windows\Floordata</Filter>
+    </ClCompile>
     <ClCompile Include="Windows\Textures\TexturesWindow.cpp">
       <Filter>Windows\Textures</Filter>
     </ClCompile>
     <ClCompile Include="Windows\Textures\TexturesWindowManager.cpp">
       <Filter>Windows\Textures</Filter>
+    </ClCompile>
+    <ClCompile Include="Windows\Floordata\FloordataWindowManager.cpp">
+      <Filter>Windows\Floordata</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -741,6 +750,9 @@
     <ClInclude Include="UI\SettingsWindow.h">
       <Filter>UI\Settings</Filter>
     </ClInclude>
+    <ClInclude Include="Elements\Floordata.h">
+      <Filter>Elements</Filter>
+    </ClInclude>
     <ClInclude Include="Filters\Filters.h">
       <Filter>Filters</Filter>
     </ClInclude>
@@ -801,19 +813,37 @@
     <ClInclude Include="Windows\Textures\ITexturesWindow.h">
       <Filter>Windows\Textures</Filter>
     </ClInclude>
+    <ClInclude Include="Windows\Floordata\IFloordataWindow.h">
+      <Filter>Windows\Floordata</Filter>
+    </ClInclude>
     <ClInclude Include="Windows\Textures\ITexturesWindowManager.h">
       <Filter>Windows\Textures</Filter>
+    </ClInclude>
+    <ClInclude Include="Windows\Floordata\FloordataWindow.h">
+      <Filter>Windows\Floordata</Filter>
     </ClInclude>
     <ClInclude Include="Windows\Textures\TexturesWindow.h">
       <Filter>Windows\Textures</Filter>
     </ClInclude>
+    <ClInclude Include="Windows\Floordata\IFloordataWindowManager.h">
+      <Filter>Windows\Floordata</Filter>
+    </ClInclude>
     <ClInclude Include="Windows\Textures\TexturesWindowManager.h">
       <Filter>Windows\Textures</Filter>
+    </ClInclude>
+    <ClInclude Include="Windows\Floordata\FloordataWindowManager.h">
+      <Filter>Windows\Floordata</Filter>
     </ClInclude>
     <ClInclude Include="Mocks\Windows\ITexturesWindowManager.h">
       <Filter>Mocks\Windows</Filter>
     </ClInclude>
+    <ClInclude Include="Mocks\Windows\IFloordataWindowManager.h">
+      <Filter>Mocks\Windows</Filter>
+    </ClInclude>
     <ClInclude Include="Mocks\Windows\ITexturesWindow.h">
+      <Filter>Mocks\Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="Mocks\Windows\IFloordataWindow.h">
       <Filter>Mocks\Windows</Filter>
     </ClInclude>
   </ItemGroup>
@@ -934,6 +964,9 @@
     </Filter>
     <Filter Include="Windows\Textures">
       <UniqueIdentifier>{36446548-876c-425f-ad6c-ea61b062a959}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Windows\Floordata">
+      <UniqueIdentifier>{86d691c5-6530-4a4e-a748-56d43758e0f1}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

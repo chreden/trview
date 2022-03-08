@@ -51,13 +51,14 @@ namespace trview
         std::unique_ptr<IImGuiBackend> imgui_backend,
         std::unique_ptr<ILightsWindowManager> lights_window_manager,
         std::unique_ptr<ILogWindowManager> log_window_manager,
-        std::unique_ptr<ITexturesWindowManager> textures_window_manager)
+        std::unique_ptr<ITexturesWindowManager> textures_window_manager,
+        std::unique_ptr<IFloordataWindowManager> floordata_window_manager)
         : MessageHandler(application_window), _instance(GetModuleHandle(nullptr)),
         _file_menu(std::move(file_menu)), _update_checker(std::move(update_checker)), _view_menu(window()), _settings_loader(settings_loader), _trlevel_source(trlevel_source),
         _viewer(std::move(viewer)), _route_source(route_source), _route(route_source()), _shortcuts(shortcuts), _items_windows(std::move(items_window_manager)),
         _triggers_windows(std::move(triggers_window_manager)), _route_window(std::move(route_window_manager)), _rooms_windows(std::move(rooms_window_manager)), _level_source(level_source),
         _dialogs(dialogs), _files(files), _timer(default_time_source()), _imgui_backend(std::move(imgui_backend)), _lights_windows(std::move(lights_window_manager)), _log_windows(std::move(log_window_manager)),
-        _textures_windows(std::move(textures_window_manager))
+        _textures_windows(std::move(textures_window_manager)), _floordata_windows(std::move(floordata_window_manager))
     {
         SetWindowLongPtr(window(), GWLP_USERDATA, reinterpret_cast<LONG_PTR>(_imgui_backend.get()));
 
@@ -75,6 +76,7 @@ namespace trview
         setup_rooms_windows();
         setup_route_window();
         setup_lights_windows();
+        setup_floordata_windows();
         setup_viewer(*startup_options);
 
         register_lua();
@@ -151,6 +153,9 @@ namespace trview
             _route_window->set_route(_route.get());
         }
         _textures_windows->set_texture_storage(_level->texture_storage());
+        _floordata_windows->set_rooms(_level->rooms());
+        _floordata_windows->set_items(_level->items());
+        _floordata_windows->set_floordata(_level->floor_data());
 
         _viewer->open(_level.get(), open_mode);
         _viewer->set_route(_route);
@@ -446,6 +451,14 @@ namespace trview
         _token_store += _lights_windows->on_light_visibility += [this](const auto& light, bool value) { set_light_visibility(light, value); };
     }
 
+    void Application::setup_floordata_windows()
+    {
+        _token_store += _floordata_windows->on_sector_highlight += [this](auto sector)
+        {
+            _viewer->select_sector(sector);
+        };
+    }
+
     void Application::setup_shortcuts()
     {
         auto add_shortcut = [&](bool control, uint16_t key, std::function<void()> fn)
@@ -507,6 +520,7 @@ namespace trview
         _rooms_windows->set_room(room);
         _triggers_windows->set_room(room);
         _lights_windows->set_room(room);
+        _floordata_windows->set_room(room);
     }
 
     void Application::select_trigger(const std::weak_ptr<ITrigger>& trigger)
@@ -676,6 +690,7 @@ namespace trview
         _rooms_windows->update(elapsed);
         _route_window->update(elapsed);
         _lights_windows->update(elapsed);
+        _floordata_windows->update(elapsed);
 
         _viewer->render();
 
@@ -692,6 +707,7 @@ namespace trview
         _lights_windows->render();
         _log_windows->render();
         _textures_windows->render();
+        _floordata_windows->render();
 
         ImGui::PopFont();
         ImGui::Render();

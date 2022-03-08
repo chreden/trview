@@ -78,6 +78,8 @@
     <ClCompile Include="UI\ViewOptionsTests.cpp" />
     <ClCompile Include="ViewMenuTests.cpp" />
     <ClCompile Include="WindowResizerTests.cpp" />
+    <ClCompile Include="Windows\FloordataWindowManagerTests.cpp" />
+    <ClCompile Include="Windows\FloordataWindowTests.cpp" />
     <ClCompile Include="Windows\LightsWindowManagerTests.cpp" />
     <ClCompile Include="Windows\LightsWindowTests.cpp" />
     <ClCompile Include="Windows\LogWindowManagerTests.cpp" />
