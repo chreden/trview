@@ -210,7 +210,7 @@ namespace trview
                     add_stat("Clear Body", to_utf8(format_bool(item.clear_body_flag())));
                     add_stat("Invisible", to_utf8(format_bool(item.invisible_flag())));
                     add_stat("Flags", to_utf8(format_binary(item.activation_flags())));
-                    add_stat("OCB", to_utf8(format_bool(item.ocb())));
+                    add_stat("OCB", std::to_string(item.ocb()));
                 }
 
                 ImGui::EndTable();
