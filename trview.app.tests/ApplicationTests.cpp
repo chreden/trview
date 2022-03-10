@@ -138,6 +138,12 @@ namespace
                 return *this;
             }
 
+            test_module& with_lights_window_manager(std::unique_ptr<ILightsWindowManager> lights_window_manager)
+            {
+                this->lights_window_manager = std::move(lights_window_manager);
+                return *this;
+            }
+
             test_module& with_update_checker(std::unique_ptr<IUpdateChecker> update_checker)
             {
                 this->update_checker = std::move(update_checker);
@@ -233,6 +239,7 @@ TEST(Application, WindowContentsResetBeforeViewerLoaded)
     auto [rooms_window_manager_ptr, rooms_window_manager] = create_mock<MockRoomsWindowManager>();
     auto [triggers_window_manager_ptr, triggers_window_manager] = create_mock<MockTriggersWindowManager>();
     auto [route_window_manager_ptr, route_window_manager] = create_mock<MockRouteWindowManager>();
+    auto [lights_window_manager_ptr, lights_window_manager] = create_mock<MockLightsWindowManager>();
     auto route = mock_shared<MockRoute>();
 
     std::vector<std::string> events;
@@ -251,6 +258,7 @@ TEST(Application, WindowContentsResetBeforeViewerLoaded)
     EXPECT_CALL(route_window_manager, set_triggers(A<const std::vector<std::weak_ptr<ITrigger>>&>())).Times(1).WillOnce([&](auto) { events.push_back("route_triggers"); });
     EXPECT_CALL(route_window_manager, set_rooms(A<const std::vector<std::weak_ptr<IRoom>>&>())).Times(1).WillOnce([&](auto) { events.push_back("route_rooms"); });
     EXPECT_CALL(route_window_manager, set_route(A<IRoute*>())).Times(1).WillOnce([&](auto) { events.push_back("route_route"); });
+    EXPECT_CALL(lights_window_manager, set_lights(A<const std::vector<std::weak_ptr<ILight>>&>())).Times(1).WillOnce([&](auto) { events.push_back("lights_lights"); });
     EXPECT_CALL(*route, clear()).Times(1).WillOnce([&] { events.push_back("route_clear"); });
     EXPECT_CALL(*route, set_unsaved(false)).Times(1);
     EXPECT_CALL(viewer, open(NotNull())).Times(1).WillOnce([&](auto) { events.push_back("viewer"); });
@@ -263,10 +271,11 @@ TEST(Application, WindowContentsResetBeforeViewerLoaded)
         .with_triggers_window_manager(std::move(triggers_window_manager_ptr))
         .with_route_window_manager(std::move(route_window_manager_ptr))
         .with_rooms_window_manager(std::move(rooms_window_manager_ptr))
+        .with_lights_window_manager(std::move(lights_window_manager_ptr))
         .build();
     application->open("test_path.tr2");
 
-    ASSERT_EQ(events.size(), 14);
+    ASSERT_EQ(events.size(), 15);
     ASSERT_EQ(events.back(), "viewer");
 }
 
@@ -469,12 +478,15 @@ TEST(Application, WindowManagersUpdated)
     EXPECT_CALL(rooms_window_manager, update).Times(1);
     auto [triggers_window_manager_ptr, triggers_window_manager] = create_mock<MockTriggersWindowManager>();
     EXPECT_CALL(triggers_window_manager, update).Times(1);
+    auto [lights_window_manager_ptr, lights_window_manager] = create_mock<MockLightsWindowManager>();
+    EXPECT_CALL(lights_window_manager, update).Times(1);
 
     auto application = register_test_module()
         .with_route_window_manager(std::move(route_window_manager_ptr))
         .with_items_window_manager(std::move(items_window_manager_ptr))
         .with_rooms_window_manager(std::move(rooms_window_manager_ptr))
         .with_triggers_window_manager(std::move(triggers_window_manager_ptr))
+        .with_lights_window_manager(std::move(lights_window_manager_ptr))
         .build();
     application->render();
 }
@@ -489,6 +501,8 @@ TEST(Application, WindowManagersAndViewerRendered)
     EXPECT_CALL(rooms_window_manager, render).Times(1);
     auto [triggers_window_manager_ptr, triggers_window_manager] = create_mock<MockTriggersWindowManager>();
     EXPECT_CALL(triggers_window_manager, render).Times(1);
+    auto [lights_window_manager_ptr, lights_window_manager] = create_mock<MockLightsWindowManager>();
+    EXPECT_CALL(lights_window_manager, render).Times(1);
     auto [viewer_ptr, viewer] = create_mock<MockViewer>();
     EXPECT_CALL(viewer, render).Times(1);
 
@@ -497,6 +511,7 @@ TEST(Application, WindowManagersAndViewerRendered)
         .with_items_window_manager(std::move(items_window_manager_ptr))
         .with_rooms_window_manager(std::move(rooms_window_manager_ptr))
         .with_triggers_window_manager(std::move(triggers_window_manager_ptr))
+        .with_lights_window_manager(std::move(lights_window_manager_ptr))
         .with_viewer(std::move(viewer_ptr))
         .build();
     application->render();
