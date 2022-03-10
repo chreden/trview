@@ -29,7 +29,7 @@ namespace trview
         std::vector<std::weak_ptr<ILight>> _lights;
         ILightsWindow::Source _lights_window_source;
         std::weak_ptr<ILight> _selected_light;
-        trlevel::LevelVersion _level_version{ trlevel::LevelVersion::Unknown };
+        trlevel::LevelVersion _level_version{ trlevel::LevelVersion::Tomb1 };
         uint32_t _current_room{ 0u };
         uint32_t _window_count{ 0u };
     };

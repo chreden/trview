@@ -37,9 +37,9 @@ TEST(LightsWindow, LightSelectedRaisedWhenSyncItemEnabled)
     window->set_lights({ light1, light2 });
 
     TestImgui imgui([&]() { window->render(); });
-    imgui.click_element(imgui.id("Lights 0")
+    imgui.click_element_with_hover(imgui.id("Lights 0")
         .push_child(LightsWindow::Names::light_list_panel)
-        .push(LightsWindow::Names::lights_listbox).id("1##1"), false, true);
+        .push(LightsWindow::Names::lights_listbox).id("1##1"));
 
     ASSERT_EQ(raised_light.lock(), light2);
 }
@@ -59,9 +59,9 @@ TEST(LightsWindow, LightSelectedNotRaisedWhenSyncItemDisabled)
     imgui.click_element(imgui.id("Lights 0")
         .push_child(LightsWindow::Names::light_list_panel)
         .id(LightsWindow::Names::sync_light));
-    imgui.click_element(imgui.id("Lights 0")
+    imgui.click_element_with_hover(imgui.id("Lights 0")
         .push_child(LightsWindow::Names::light_list_panel)
-        .push(LightsWindow::Names::lights_listbox).id("1##1"), false, true);
+        .push(LightsWindow::Names::lights_listbox).id("1##1"));
 
     ASSERT_EQ(raised_light.lock(), nullptr);
 }
@@ -81,9 +81,9 @@ TEST(LightsWindow, OnLightVisibilityRaised)
     window->set_lights({ light1, light2 });
 
     TestImgui imgui([&]() { window->render(); });
-    imgui.click_element(imgui.id("Lights 0")
+    imgui.click_element_with_hover(imgui.id("Lights 0")
         .push_child(LightsWindow::Names::light_list_panel)
-        .push(LightsWindow::Names::lights_listbox).id("##hide-1"), false, true);
+        .push(LightsWindow::Names::lights_listbox).id("##hide-1"));
 
     ASSERT_EQ(std::get<0>(raised_light).lock(), light2);
     ASSERT_TRUE(std::get<1>(raised_light));
@@ -130,12 +130,13 @@ TEST(LightsWindow, LightsListNotFilteredWhenRoomSetAndTrackRoomDisabled)
         .push(LightsWindow::Names::lights_listbox).id("1##1")));
 }
 
-TEST(LightsWindow, PointLightStatsShown)
+TEST(LightsWindow, PointLightStatsShownPreTR4)
 {
     auto window = register_test_module().build();
     auto light1 = mock_shared<MockLight>()->with_number(0)->with_type(trlevel::LightType::Point);
     window->set_lights({ light1 });
     window->set_selected_light(light1);
+    window->set_level_version(trlevel::LevelVersion::Tomb1);
 
     TestImgui imgui([&]() { window->render(); });
 
@@ -144,11 +145,37 @@ TEST(LightsWindow, PointLightStatsShown)
         .push(LightsWindow::Names::stats_listbox);
 
     ASSERT_TRUE(imgui.element_present(id.id("Type")));
-    ASSERT_TRUE(imgui.element_present(id.id("###")));
+    ASSERT_TRUE(imgui.element_present(id.id("#")));
     ASSERT_TRUE(imgui.element_present(id.id("Room")));
     ASSERT_TRUE(imgui.element_present(id.id("Colour")));
     ASSERT_TRUE(imgui.element_present(id.id("Position")));
     ASSERT_TRUE(imgui.element_present(id.id("Intensity")));
+    ASSERT_TRUE(imgui.element_present(id.id("Fade")));
+    ASSERT_FALSE(imgui.element_present(id.id("Hotspot")));
+    ASSERT_FALSE(imgui.element_present(id.id("Falloff")));
+}
+
+TEST(LightsWindow, PointLightStatsShownTR4)
+{
+    auto window = register_test_module().build();
+    auto light1 = mock_shared<MockLight>()->with_number(0)->with_type(trlevel::LightType::Point);
+    window->set_lights({ light1 });
+    window->set_selected_light(light1);
+    window->set_level_version(trlevel::LevelVersion::Tomb4);
+
+    TestImgui imgui([&]() { window->render(); });
+
+    auto id = imgui.id("Lights 0")
+        .push_child(LightsWindow::Names::details_panel)
+        .push(LightsWindow::Names::stats_listbox);
+
+    ASSERT_TRUE(imgui.element_present(id.id("Type")));
+    ASSERT_TRUE(imgui.element_present(id.id("#")));
+    ASSERT_TRUE(imgui.element_present(id.id("Room")));
+    ASSERT_TRUE(imgui.element_present(id.id("Colour")));
+    ASSERT_TRUE(imgui.element_present(id.id("Position")));
+    ASSERT_TRUE(imgui.element_present(id.id("Intensity")));
+    ASSERT_FALSE(imgui.element_present(id.id("Fade")));
     ASSERT_TRUE(imgui.element_present(id.id("Hotspot")));
     ASSERT_TRUE(imgui.element_present(id.id("Falloff")));
 }
@@ -159,6 +186,7 @@ TEST(LightsWindow, SpotLightStatsShown)
     auto light1 = mock_shared<MockLight>()->with_number(0)->with_type(trlevel::LightType::Spot);
     window->set_lights({ light1 });
     window->set_selected_light(light1);
+    window->set_level_version(trlevel::LevelVersion::Tomb4);
 
     TestImgui imgui([&]() { window->render(); });
 
@@ -167,7 +195,7 @@ TEST(LightsWindow, SpotLightStatsShown)
         .push(LightsWindow::Names::stats_listbox);
 
     ASSERT_TRUE(imgui.element_present(id.id("Type")));
-    ASSERT_TRUE(imgui.element_present(id.id("###")));
+    ASSERT_TRUE(imgui.element_present(id.id("#")));
     ASSERT_TRUE(imgui.element_present(id.id("Room")));
     ASSERT_TRUE(imgui.element_present(id.id("Colour")));
     ASSERT_TRUE(imgui.element_present(id.id("Position")));
@@ -193,7 +221,7 @@ TEST(LightsWindow, SunLightStatsShown)
         .push(LightsWindow::Names::stats_listbox);
 
     ASSERT_TRUE(imgui.element_present(id.id("Type")));
-    ASSERT_TRUE(imgui.element_present(id.id("###")));
+    ASSERT_TRUE(imgui.element_present(id.id("#")));
     ASSERT_TRUE(imgui.element_present(id.id("Room")));
     ASSERT_TRUE(imgui.element_present(id.id("Colour")));
     ASSERT_TRUE(imgui.element_present(id.id("Direction")));
@@ -205,6 +233,7 @@ TEST(LightsWindow, FogBulbStatsShown)
     auto light1 = mock_shared<MockLight>()->with_number(0)->with_type(trlevel::LightType::FogBulb);
     window->set_lights({ light1 });
     window->set_selected_light(light1);
+    window->set_level_version(trlevel::LevelVersion::Tomb4);
 
     TestImgui imgui([&]() { window->render(); });
 
@@ -213,7 +242,7 @@ TEST(LightsWindow, FogBulbStatsShown)
         .push(LightsWindow::Names::stats_listbox);
 
     ASSERT_TRUE(imgui.element_present(id.id("Type")));
-    ASSERT_TRUE(imgui.element_present(id.id("###")));
+    ASSERT_TRUE(imgui.element_present(id.id("#")));
     ASSERT_TRUE(imgui.element_present(id.id("Room")));
     ASSERT_TRUE(imgui.element_present(id.id("Position")));
     ASSERT_TRUE(imgui.element_present(id.id("Intensity")));
@@ -227,6 +256,7 @@ TEST(LightsWindow, ShadowStatsShown)
     auto light1 = mock_shared<MockLight>()->with_number(0)->with_type(trlevel::LightType::Shadow);
     window->set_lights({ light1 });
     window->set_selected_light(light1);
+    window->set_level_version(trlevel::LevelVersion::Tomb4);
 
     TestImgui imgui([&]() { window->render(); });
 
@@ -235,7 +265,7 @@ TEST(LightsWindow, ShadowStatsShown)
         .push(LightsWindow::Names::stats_listbox);
 
     ASSERT_TRUE(imgui.element_present(id.id("Type")));
-    ASSERT_TRUE(imgui.element_present(id.id("###")));
+    ASSERT_TRUE(imgui.element_present(id.id("#")));
     ASSERT_TRUE(imgui.element_present(id.id("Room")));
     ASSERT_TRUE(imgui.element_present(id.id("Colour")));
     ASSERT_TRUE(imgui.element_present(id.id("Position")));

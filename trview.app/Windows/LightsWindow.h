@@ -42,7 +42,7 @@ namespace trview
         std::shared_ptr<IClipboard> _clipboard;
         bool _sync_light{ true };
         bool _track_room{ false };
-        trlevel::LevelVersion _level_version;
+        trlevel::LevelVersion _level_version{ trlevel::LevelVersion::Tomb1 };
         std::optional<float> _tooltip_timer;
         std::string _id{ "Lights 0" };
         bool _scroll_to_light{ false };
