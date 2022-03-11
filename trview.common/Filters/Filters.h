@@ -6,6 +6,12 @@
 
 namespace trview
 {
+    enum class Op
+    {
+        And,
+        Or
+    };
+
     template <typename T>
     class Filters
     {
@@ -19,6 +25,9 @@ namespace trview
         {
             std::string key;
             std::string value;
+
+            
+            Op op{ Op::And };
         };
         std::vector<Filter> filters;
 
@@ -38,6 +47,8 @@ namespace trview
     private:
         std::unordered_map<std::string, ValueGetter> _getters;
     };
+
+    constexpr std::string op_to_string(Op op);
 }
 
 #include "Filters.hpp"

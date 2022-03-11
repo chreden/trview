@@ -375,6 +375,23 @@ namespace trview
                 {
                     remove.push_back(i);
                 }
+
+                if (i != _filters.filters.size() - 1)
+                {
+                    std::vector<Op> ops{ Op::And, Op::Or };
+                    if (ImGui::BeginCombo(("##filter-op-" + std::to_string(i)).c_str(), op_to_string(filter.op).c_str()))
+                    {
+                        for (const auto& op : ops)
+                        {
+                            if (ImGui::Selectable(op_to_string(op).c_str(), op == filter.op))
+                            {
+                                filter.op = op;
+                                ImGui::SetItemDefaultFocus();
+                            }
+                        }
+                        ImGui::EndCombo();
+                    }
+                }
             }
 
             for (auto iter = remove.rbegin(); iter < remove.rend(); ++iter)
