@@ -8,6 +8,15 @@ namespace trlevel
 {
 #pragma pack(push, 1)
 
+    enum class LightType : uint8_t
+    {
+        Sun = 0,
+        Point = 1,
+        Spot = 2,
+        Shadow = 3,
+        FogBulb = 4
+    };
+
     constexpr float Scale_X { 1024.0f };
     constexpr float Scale_Y { 1024.0f };
     constexpr float Scale_Z { 1024.0f };
@@ -490,7 +499,7 @@ namespace trlevel
         int32_t y;
         int32_t z;
         tr_colour colour;
-        uint8_t type;
+        LightType type;
         union
         {
             tr3_room_sun sun;
@@ -509,7 +518,7 @@ namespace trlevel
         int32_t y;
         int32_t z;
         tr_colour colour;
-        uint8_t light_type;
+        LightType light_type;
         uint16_t intensity;
         float in;
         float out;
@@ -533,7 +542,7 @@ namespace trlevel
         tr5_vertex direction;
         int32_t x2, y2, z2;
         int32_t dx2, dy2, dz2;
-        uint8_t light_type;
+        LightType light_type;
         uint8_t filler[3];
     };
 

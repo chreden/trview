@@ -20,6 +20,7 @@ namespace trlevel
         case LevelVersion::Tomb5:
             return Vector3(tr5.position.x, tr5.position.y, tr5.position.z) / Scale_X;
         }
+        return Vector3::Zero;
     }
 
     Colour tr_x_room_light::colour() const
@@ -36,6 +37,7 @@ namespace trlevel
         case LevelVersion::Tomb5:
             return Colour(tr5.r, tr5.g, tr5.b);
         }
+        Colour::Transparent;
     }
 
     LightType tr_x_room_light::type() const
@@ -46,12 +48,13 @@ namespace trlevel
         case LevelVersion::Tomb2:
             return LightType::Point;
         case LevelVersion::Tomb3:
-            return static_cast<LightType>(tr3.type);
+            return tr3.type;
         case LevelVersion::Tomb4:
-            return static_cast<LightType>(tr4.light_type);
+            return tr4.light_type;
         case LevelVersion::Tomb5:
-            return static_cast<LightType>(tr5.light_type);
+            return tr5.light_type;
         }
+        return LightType::Point;
     }
 
     int32_t tr_x_room_light::intensity() const
@@ -69,6 +72,7 @@ namespace trlevel
         case LevelVersion::Tomb5:
             return 0;
         }
+        return 0;
     }
 
     int32_t tr_x_room_light::fade() const
@@ -85,6 +89,7 @@ namespace trlevel
         case LevelVersion::Tomb5:
             return 0;
         }
+        return 0;
     }
 
     Vector3 tr_x_room_light::direction() const
@@ -209,6 +214,7 @@ namespace trlevel
                 return tr4.cutoff;
             }
         }
+        return 0;
     }
 
     float tr_x_room_light::radius() const
@@ -246,6 +252,7 @@ namespace trlevel
                 }
             }
         }
+        return 0;
     }
 
     std::wstring light_type_name(LightType type)
@@ -263,6 +270,7 @@ namespace trlevel
         case LightType::FogBulb:
             return L"Fog Bulb";
         }
+        return L"Unknown";
     }
 
     std::vector<tr_x_room_light> convert_lights(std::vector<tr_room_light> lights)

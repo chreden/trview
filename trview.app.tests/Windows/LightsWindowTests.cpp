@@ -130,13 +130,63 @@ TEST(LightsWindow, LightsListNotFilteredWhenRoomSetAndTrackRoomDisabled)
         .push(LightsWindow::Names::lights_listbox).id("1##1")));
 }
 
-TEST(LightsWindow, PointLightStatsShownPreTR4)
+TEST(LightsWindow, PointLightStatsTR1)
 {
     auto window = register_test_module().build();
     auto light1 = mock_shared<MockLight>()->with_number(0)->with_type(trlevel::LightType::Point);
     window->set_lights({ light1 });
     window->set_selected_light(light1);
     window->set_level_version(trlevel::LevelVersion::Tomb1);
+
+    TestImgui imgui([&]() { window->render(); });
+
+    auto id = imgui.id("Lights 0")
+        .push_child(LightsWindow::Names::details_panel)
+        .push(LightsWindow::Names::stats_listbox);
+
+    ASSERT_TRUE(imgui.element_present(id.id("Type")));
+    ASSERT_TRUE(imgui.element_present(id.id("#")));
+    ASSERT_TRUE(imgui.element_present(id.id("Room")));
+    ASSERT_FALSE(imgui.element_present(id.id("Colour")));
+    ASSERT_TRUE(imgui.element_present(id.id("Position")));
+    ASSERT_TRUE(imgui.element_present(id.id("Intensity")));
+    ASSERT_TRUE(imgui.element_present(id.id("Fade")));
+    ASSERT_FALSE(imgui.element_present(id.id("Hotspot")));
+    ASSERT_FALSE(imgui.element_present(id.id("Falloff")));
+}
+
+TEST(LightsWindow, PointLightStatsTR2)
+{
+    auto window = register_test_module().build();
+    auto light1 = mock_shared<MockLight>()->with_number(0)->with_type(trlevel::LightType::Point);
+    window->set_lights({ light1 });
+    window->set_selected_light(light1);
+    window->set_level_version(trlevel::LevelVersion::Tomb2);
+
+    TestImgui imgui([&]() { window->render(); });
+
+    auto id = imgui.id("Lights 0")
+        .push_child(LightsWindow::Names::details_panel)
+        .push(LightsWindow::Names::stats_listbox);
+
+    ASSERT_TRUE(imgui.element_present(id.id("Type")));
+    ASSERT_TRUE(imgui.element_present(id.id("#")));
+    ASSERT_TRUE(imgui.element_present(id.id("Room")));
+    ASSERT_FALSE(imgui.element_present(id.id("Colour")));
+    ASSERT_TRUE(imgui.element_present(id.id("Position")));
+    ASSERT_TRUE(imgui.element_present(id.id("Intensity")));
+    ASSERT_TRUE(imgui.element_present(id.id("Fade")));
+    ASSERT_FALSE(imgui.element_present(id.id("Hotspot")));
+    ASSERT_FALSE(imgui.element_present(id.id("Falloff")));
+}
+
+TEST(LightsWindow, PointLightStatsShownTR3)
+{
+    auto window = register_test_module().build();
+    auto light1 = mock_shared<MockLight>()->with_number(0)->with_type(trlevel::LightType::Point);
+    window->set_lights({ light1 });
+    window->set_selected_light(light1);
+    window->set_level_version(trlevel::LevelVersion::Tomb3);
 
     TestImgui imgui([&]() { window->render(); });
 
@@ -223,7 +273,7 @@ TEST(LightsWindow, SunLightStatsShown)
     ASSERT_TRUE(imgui.element_present(id.id("Type")));
     ASSERT_TRUE(imgui.element_present(id.id("#")));
     ASSERT_TRUE(imgui.element_present(id.id("Room")));
-    ASSERT_TRUE(imgui.element_present(id.id("Colour")));
+    ASSERT_FALSE(imgui.element_present(id.id("Colour")));
     ASSERT_TRUE(imgui.element_present(id.id("Direction")));
 }
 

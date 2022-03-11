@@ -221,7 +221,7 @@ namespace trlevel
                 if (*reinterpret_cast<uint32_t*>(&light.tr5.position.x) == 0xCDCDCDCD)
                 {
                     const auto fog = fog_bulbs[fog_bulb++];
-                    light.tr5.light_type = static_cast<uint8_t>(LightType::FogBulb);
+                    light.tr5.light_type = LightType::FogBulb;
                     light.tr5.position = fog.position;
                     light.tr5.r = fog.r;
                     light.tr5.g = fog.g;

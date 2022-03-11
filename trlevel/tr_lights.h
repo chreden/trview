@@ -6,15 +6,6 @@
 
 namespace trlevel
 {
-    enum class LightType
-    {
-        Sun = 0,
-        Point = 1,
-        Spot = 2,
-        Shadow = 3,
-        FogBulb = 4
-    };
-
     /// <summary>
     /// A structure that can hold any light.
     /// </summary>

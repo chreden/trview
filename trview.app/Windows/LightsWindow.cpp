@@ -220,7 +220,7 @@ namespace trview
                     add_stat("#", std::to_string(selected_light->number()));
                     add_stat("Room", std::to_string(selected_light->room()));
 
-                    if (!(selected_light->type() == trlevel::LightType::FogBulb && _level_version == trlevel::LevelVersion::Tomb4))
+                    if (!(_level_version < trlevel::LevelVersion::Tomb3 || selected_light->type() == trlevel::LightType::FogBulb && _level_version == trlevel::LevelVersion::Tomb4))
                     {
                         add_stat("Colour", format_colour(selected_light->colour()), selected_light->colour());
                     }
