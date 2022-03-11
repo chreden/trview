@@ -82,6 +82,13 @@ namespace trlevel
         float z;
     };
 
+    struct tr5_colour
+    {
+        float r;
+        float g;
+        float b;
+    };
+
     // Four vertices(the values are indices into the appropriate vertex list) and a texture(an index into 
     // the object - texture list) or colour(index into 8 - bit palette or 16 - bit palette).If the rectangle 
     // is a coloured polygon(not textured), the.Texture element contains two indices : the low byte(Texture & 0xFF)
@@ -532,7 +539,7 @@ namespace trlevel
     struct tr5_room_light
     {
         tr5_vertex position;
-        float r, g, b;
+        tr5_colour colour;
         uint32_t separator;
         float in;
         float out;
@@ -552,7 +559,7 @@ namespace trlevel
         float radius;
         float square_radius;
         float density;
-        float r, g, b;
+        tr5_colour colour;
     };
 
     // Version of tr_room_staticmesh used in TR1/UB.

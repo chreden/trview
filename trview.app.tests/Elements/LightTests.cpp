@@ -211,9 +211,7 @@ TEST(Light, PointTR5)
     tr_x_room_light level_light{};
     level_light.level_version = LevelVersion::Tomb5;
     level_light.tr5.position = { 1024, 2048, 3072 };
-    level_light.tr5.r = 0.25f;
-    level_light.tr5.g = 0.5f;
-    level_light.tr5.b = 1.0f;
+    level_light.tr5.colour = { 0.25f, 0.5f, 1.0f };
     level_light.tr5.light_type = LightType::Point;
     level_light.tr5.in = 1.0f;
     level_light.tr5.out = 0.5f;
@@ -231,9 +229,7 @@ TEST(Light, SpotTR5)
     tr_x_room_light level_light{};
     level_light.level_version = LevelVersion::Tomb5;
     level_light.tr5.position = { 1024, 2048, 3072 };
-    level_light.tr5.r = 0.25f;
-    level_light.tr5.g = 0.5f;
-    level_light.tr5.b = 1.0f;
+    level_light.tr5.colour = { 0.25f, 0.5f, 1.0f };
     level_light.tr5.light_type = LightType::Spot;
     level_light.tr5.in = 1.0f;
     level_light.tr5.out = 0.5f;
@@ -257,9 +253,7 @@ TEST(Light, SunTR5)
     tr_x_room_light level_light{};
     level_light.level_version = LevelVersion::Tomb5;
     level_light.tr5.direction = { 1024, 2048, 3072 };
-    level_light.tr5.r = 0.25f;
-    level_light.tr5.g = 0.5f;
-    level_light.tr5.b = 1.0f;
+    level_light.tr5.colour = { 0.25f, 0.5f, 1.0f };
     level_light.tr5.light_type = LightType::Sun;
     auto light = register_test_module().with_light(level_light).build();
 
@@ -273,9 +267,7 @@ TEST(Light, ShadowTR5)
     tr_x_room_light level_light{};
     level_light.level_version = LevelVersion::Tomb5;
     level_light.tr5.position = { 1024, 2048, 3072 };
-    level_light.tr5.r = 0.25f;
-    level_light.tr5.g = 0.5f;
-    level_light.tr5.b = 1.0f;
+    level_light.tr5.colour = { 0.25f, 0.5f, 1.0f };
     level_light.tr5.light_type = LightType::Shadow;
     level_light.tr5.in = 1.0f;
     level_light.tr5.out = 0.5f;
@@ -292,10 +284,8 @@ TEST(Light, FogBulbTR5)
 {
     tr_x_room_light level_light{};
     level_light.level_version = LevelVersion::Tomb5;
-    level_light.tr5.position = { 1024, 2048, 3072 };
-    level_light.tr5.r = 0.25f;
-    level_light.tr5.g = 0.5f;
-    level_light.tr5.b = 1.0f;
+    level_light.tr5_fog.position = { 1024, 2048, 3072 };
+    level_light.tr5_fog.colour = { 0.25f, 0.5f, 1.0f };
     level_light.tr5.light_type = LightType::FogBulb;
     level_light.tr5_fog.density = 1.5f;
     level_light.tr5_fog.radius = 2.0f;

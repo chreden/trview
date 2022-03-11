@@ -222,10 +222,6 @@ namespace trlevel
                 {
                     const auto fog = fog_bulbs[fog_bulb++];
                     light.tr5.light_type = LightType::FogBulb;
-                    light.tr5.position = fog.position;
-                    light.tr5.r = fog.r;
-                    light.tr5.g = fog.g;
-                    light.tr5.b = fog.b;
                     light.tr5_fog = fog;
                 }
             }

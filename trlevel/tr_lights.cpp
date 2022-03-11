@@ -18,7 +18,9 @@ namespace trlevel
         case LevelVersion::Tomb4:
             return Vector3(tr4.x, tr4.y, tr4.z) / Scale_X;
         case LevelVersion::Tomb5:
-            return Vector3(tr5.position.x, tr5.position.y, tr5.position.z) / Scale_X;
+            return type() == LightType::FogBulb ? 
+                Vector3(tr5_fog.position.x, tr5_fog.position.y, tr5_fog.position.z) / Scale_X :
+                Vector3(tr5.position.x, tr5.position.y, tr5.position.z) / Scale_X;
         }
         return Vector3::Zero;
     }
@@ -35,7 +37,9 @@ namespace trlevel
         case LevelVersion::Tomb4:
             return Colour(tr4.colour.Red / 255.f, tr4.colour.Green / 255.0f, tr4.colour.Blue / 255.0f);
         case LevelVersion::Tomb5:
-            return Colour(tr5.r, tr5.g, tr5.b);
+            return type() == LightType::FogBulb ? 
+                Colour(tr5_fog.colour.r, tr5_fog.colour.g, tr5_fog.colour.b) :
+                Colour(tr5.colour.r, tr5.colour.g, tr5.colour.b);
         }
         Colour::Transparent;
     }
