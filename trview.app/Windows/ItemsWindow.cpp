@@ -13,6 +13,8 @@ namespace trview
         _tips["Trigger triggerer"] = "Disables the trigger on the same sector until this item is triggered";
 
         _filters.add_getter("Type", [](auto&& item) { return to_utf8(item.type()); });
+        _filters.add_getter("Room", [](auto&& item) { return std::to_string(item.room()); });
+        _filters.add_getter("Invisible", [](auto&& item) { return to_utf8(format_bool(!item.visible())); });
     }
 
     void ItemsWindow::set_items(const std::vector<Item>& items)
