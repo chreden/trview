@@ -346,11 +346,24 @@ namespace trview
     {
         if (_show_filters && ImGui::BeginPopup("Filters"))
         {
+            const auto keys = _filters.keys();
+
             std::vector<uint32_t> remove;
             for (uint32_t i = 0; i < _filters.filters.size(); ++i)
             {
                 auto& filter = _filters.filters[i];
-                ImGui::InputText(("##filter-key-" + std::to_string(i)).c_str(), &filter.key);
+                if (ImGui::BeginCombo(("##filter-key-" + std::to_string(i)).c_str(), filter.key.c_str()))
+                {
+                    for (const auto& key : keys)
+                    {
+                        if (ImGui::Selectable(key.c_str(), key == filter.key))
+                        {
+                            filter.key = key;
+                            ImGui::SetItemDefaultFocus();
+                        }
+                    }
+                    ImGui::EndCombo();
+                }
                 ImGui::SameLine();
                 ImGui::Text("is equal to");
                 ImGui::SameLine();

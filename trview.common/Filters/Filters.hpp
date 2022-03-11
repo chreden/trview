@@ -9,6 +9,17 @@ namespace trview
     }
 
     template <typename T>
+    std::vector<std::string> Filters<T>::keys() const
+    {
+        std::vector<std::string> result;
+        for (const auto& key : _getters)
+        {
+            result.push_back(key.first);
+        }
+        return result;
+    }
+
+    template <typename T>
     bool Filters<T>::match(const T& value) const
     {
         return filters.empty() || std::any_of(filters.begin(), filters.end(),

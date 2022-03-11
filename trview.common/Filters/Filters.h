@@ -1,5 +1,6 @@
 #pragma once
 
+#include <vector>
 #include <string>
 #include <unordered_map>
 
@@ -27,6 +28,7 @@ namespace trview
         /// <param name="key">The key used in filters</param>
         /// <param name="getter">The getter function.</param>
         void add_getter(const std::string& key, const ValueGetter& getter);
+        std::vector<std::string> keys() const;
         /// <summary>
         /// Check whether the object matches the configured filters.
         /// </summary>
