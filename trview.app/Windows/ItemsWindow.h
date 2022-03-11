@@ -4,6 +4,7 @@
 #pragma once
 
 #include <trview.common/Windows/IClipboard.h>
+#include <trview.common/Filters/Filters.h>
 
 #include "IItemsWindow.h"
 #include "../Elements/Item.h"
@@ -64,15 +65,9 @@ namespace trview
         // WIP filters section.
         bool _filter_enabled{ false };
         bool _show_filters{ false };
-        struct Filter
-        {
-            std::string key;
-            std::string value;
-        };
-        std::vector<Filter> _filters;
+        Filters<Item> _filters;
 
         void toggle_filters_window();
         void render_filters();
-        bool filter_match(const Item& item);
     };
 }

@@ -11,6 +11,8 @@ namespace trview
         _tips["OCB"] = "Changes entity behaviour";
         _tips["Clear Body"] = "If true, removed when Bodybag is triggered";
         _tips["Trigger triggerer"] = "Disables the trigger on the same sector until this item is triggered";
+
+        _filters.add_getter("Type", [](auto&& item) { return to_utf8(item.type()); });
     }
 
     void ItemsWindow::set_items(const std::vector<Item>& items)
@@ -126,7 +128,7 @@ namespace trview
 
                 for (const auto& item : _all_items)
                 {
-                    if (_track_room && item.room() != _current_room || !filter_match(item))
+                    if (_track_room && item.room() != _current_room || !_filters.match(item))
                     {
                         continue;
                     }
@@ -345,16 +347,16 @@ namespace trview
         if (_show_filters && ImGui::BeginPopup("Filters"))
         {
             std::vector<uint32_t> remove;
-            for (uint32_t i = 0; i < _filters.size(); ++i)
+            for (uint32_t i = 0; i < _filters.filters.size(); ++i)
             {
-                auto& filter = _filters[i];
+                auto& filter = _filters.filters[i];
                 ImGui::InputText(("##filter-key-" + std::to_string(i)).c_str(), &filter.key);
                 ImGui::SameLine();
                 ImGui::Text("is equal to");
                 ImGui::SameLine();
                 ImGui::InputText(("##filter-value-" + std::to_string(i)).c_str(), &filter.value);
                 ImGui::SameLine();
-                if (ImGui::Button("X"))
+                if (ImGui::Button(("X##" + std::to_string(i)).c_str()))
                 {
                     remove.push_back(i);
                 }
@@ -362,12 +364,12 @@ namespace trview
 
             for (auto iter = remove.rbegin(); iter < remove.rend(); ++iter)
             {
-                _filters.erase(_filters.begin() + *iter);
+                _filters.filters.erase(_filters.filters.begin() + *iter);
             }
 
             if (ImGui::Button("+"))
             {
-                _filters.push_back({});
+                _filters.filters.push_back({});
             }
             ImGui::EndPopup();
         }
@@ -375,19 +377,5 @@ namespace trview
         {
             _show_filters = false;
         }
-    }
-
-    bool ItemsWindow::filter_match(const Item& item)
-    {
-        return _filters.empty() || std::any_of(_filters.begin(), _filters.end(),
-            [&](auto&& filter)
-            {
-                if (filter.key == "" || filter.value == "" ||
-                    filter.key == "Type" && to_utf8(item.type()) == filter.value)
-                {
-                    return true;
-                }
-                return false;
-            });
     }
 }
