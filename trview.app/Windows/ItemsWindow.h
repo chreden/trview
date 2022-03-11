@@ -60,5 +60,19 @@ namespace trview
         std::optional<Item> _global_selected_item;
         std::vector<std::weak_ptr<ITrigger>> _triggered_by;
         bool _scroll_to_item{ false };
+
+        // WIP filters section.
+        bool _filter_enabled{ false };
+        bool _show_filters{ false };
+        struct Filter
+        {
+            std::string key;
+            std::string value;
+        };
+        std::vector<Filter> _filters;
+
+        void toggle_filters_window();
+        void render_filters();
+        bool filter_match(const Item& item);
     };
 }

@@ -80,6 +80,19 @@ namespace trview
     {
         if (ImGui::BeginChild(Names::item_list_panel.c_str(), ImVec2(280, 0), true))
         {
+            bool filter_enabled = _filter_enabled;
+            if (ImGui::Checkbox("##filter_enabled", &filter_enabled))
+            {
+                _filter_enabled = filter_enabled;
+            }
+            ImGui::SameLine();
+            if (ImGui::Button("Filters"))
+            {
+                toggle_filters_window();
+            }
+            render_filters();
+            ImGui::SameLine();
+
             bool track_room = _track_room;
             if (ImGui::Checkbox(Names::track_room.c_str(), &track_room))
             {
@@ -113,7 +126,7 @@ namespace trview
 
                 for (const auto& item : _all_items)
                 {
-                    if (_track_room && item.room() != _current_room)
+                    if (_track_room && item.room() != _current_room || !filter_match(item))
                     {
                         continue;
                     }
@@ -316,5 +329,65 @@ namespace trview
     {
         _selected_item = item;
         _triggered_by = item.triggers();
+    }
+
+    void ItemsWindow::toggle_filters_window()
+    {
+        if (!_show_filters)
+        {
+            ImGui::OpenPopup("Filters");
+        }
+        _show_filters = !_show_filters;
+    }
+
+    void ItemsWindow::render_filters()
+    {
+        if (_show_filters && ImGui::BeginPopup("Filters"))
+        {
+            std::vector<uint32_t> remove;
+            for (uint32_t i = 0; i < _filters.size(); ++i)
+            {
+                auto& filter = _filters[i];
+                ImGui::InputText(("##filter-key-" + std::to_string(i)).c_str(), &filter.key);
+                ImGui::SameLine();
+                ImGui::Text("is equal to");
+                ImGui::SameLine();
+                ImGui::InputText(("##filter-value-" + std::to_string(i)).c_str(), &filter.value);
+                ImGui::SameLine();
+                if (ImGui::Button("X"))
+                {
+                    remove.push_back(i);
+                }
+            }
+
+            for (auto iter = remove.rbegin(); iter < remove.rend(); ++iter)
+            {
+                _filters.erase(_filters.begin() + *iter);
+            }
+
+            if (ImGui::Button("+"))
+            {
+                _filters.push_back({});
+            }
+            ImGui::EndPopup();
+        }
+        else
+        {
+            _show_filters = false;
+        }
+    }
+
+    bool ItemsWindow::filter_match(const Item& item)
+    {
+        return _filters.empty() || std::any_of(_filters.begin(), _filters.end(),
+            [&](auto&& filter)
+            {
+                if (filter.key == "" || filter.value == "" ||
+                    filter.key == "Type" && to_utf8(item.type()) == filter.value)
+                {
+                    return true;
+                }
+                return false;
+            });
     }
 }
