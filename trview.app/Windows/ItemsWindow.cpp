@@ -13,8 +13,16 @@ namespace trview
         _tips["Trigger triggerer"] = "Disables the trigger on the same sector until this item is triggered";
 
         _filters.add_getter("Type", [](auto&& item) { return to_utf8(item.type()); });
+        _filters.add_getter("#", [](auto&& item) { return std::to_string(item.number()); });
+        // TODO: Position
+        _filters.add_getter("Type ID", [](auto&& item) { return std::to_string(item.type_id()); });
         _filters.add_getter("Room", [](auto&& item) { return std::to_string(item.room()); });
+        _filters.add_getter("Clear Body", [](auto&& item) { return to_utf8(format_bool(item.clear_body_flag())); });
         _filters.add_getter("Invisible", [](auto&& item) { return to_utf8(format_bool(item.invisible_flag())); });
+        _filters.add_getter("Flags", [](auto&& item) { return to_utf8(format_binary(item.activation_flags())); });
+        _filters.add_getter("OCB", [](auto&& item) { return std::to_string(item.ocb()); });
+        // TODO: Triggered by?
+
     }
 
     void ItemsWindow::set_items(const std::vector<Item>& items)
