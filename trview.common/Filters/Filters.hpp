@@ -20,9 +20,15 @@ namespace trview
     }
 
     template <typename T>
+    bool Filters<T>::empty() const
+    {
+        return filters.empty() || std::all_of(filters.begin(), filters.end(), [](auto&& f) { return f.key == "" && f.value == ""; });
+    }
+
+    template <typename T>
     bool Filters<T>::match(const T& value) const
     {
-        if (filters.empty())
+        if (empty())
         {
             return true;
         }

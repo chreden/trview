@@ -63,7 +63,7 @@ namespace trview
         bool _scroll_to_item{ false };
 
         // WIP filters section.
-        bool _filter_enabled{ false };
+        bool _filter_enabled{ true };
         bool _show_filters{ false };
         Filters<Item> _filters;
 

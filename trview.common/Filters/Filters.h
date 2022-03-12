@@ -45,6 +45,12 @@ namespace trview
         /// <returns>Whether it was a match.</returns>
         bool match(const T& value) const;
     private:
+        /// <summary>
+        /// Returns whether there are any filters of consequence.
+        /// </summary>
+        /// <returns>True if there's nothing of consequence.</returns>
+        bool empty() const;
+
         std::unordered_map<std::string, ValueGetter> _getters;
     };
 

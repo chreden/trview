@@ -22,7 +22,6 @@ namespace trview
         _filters.add_getter("Flags", [](auto&& item) { return to_utf8(format_binary(item.activation_flags())); });
         _filters.add_getter("OCB", [](auto&& item) { return std::to_string(item.ocb()); });
         // TODO: Triggered by?
-
     }
 
     void ItemsWindow::set_items(const std::vector<Item>& items)
@@ -138,7 +137,8 @@ namespace trview
 
                 for (const auto& item : _all_items)
                 {
-                    if (_track_room && item.room() != _current_room || !_filters.match(item))
+                    if (_track_room && item.room() != _current_room || 
+                        (_filter_enabled && !_filters.match(item)))
                     {
                         continue;
                     }
