@@ -22,6 +22,7 @@ namespace trview
             explicit TestImgui(const RenderCallback& callback);
             ~TestImgui();
 
+            void mouse_down_element(TestImGuiId id, TestImGuiId active_override = TestImGuiId());
             void click_element(TestImGuiId id, bool show_context_menu = false, TestImGuiId active_override = TestImGuiId());
             void click_element_with_hover(TestImGuiId id, bool show_context_menu = false, TestImGuiId active_override = TestImGuiId());
             void enter_text(const std::string& text);
