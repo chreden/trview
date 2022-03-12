@@ -14,7 +14,7 @@ namespace trview
 
         _filters.add_getter("Type", [](auto&& item) { return to_utf8(item.type()); });
         _filters.add_getter("Room", [](auto&& item) { return std::to_string(item.room()); });
-        _filters.add_getter("Invisible", [](auto&& item) { return to_utf8(format_bool(!item.visible())); });
+        _filters.add_getter("Invisible", [](auto&& item) { return to_utf8(format_bool(item.invisible_flag())); });
     }
 
     void ItemsWindow::set_items(const std::vector<Item>& items)

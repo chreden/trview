@@ -38,6 +38,11 @@ namespace trview
                 match = op == Op::Or ? match | filter_result : match & filter_result;
             }
             op = filter.op;
+
+            if (op == Op::And && !match)
+            {
+                break;
+            }
         }
         return match;
     }
