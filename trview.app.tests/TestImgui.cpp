@@ -142,6 +142,30 @@ namespace trview
             click_element_internal(test_id, show_context_menu, active_override, true);
         }
 
+        void TestImgui::mouse_down_element(TestImGuiId test_id, TestImGuiId active_override)
+        {
+            const auto window = find_window(test_id.root());
+            const auto id = test_id.id();
+            const auto click_on_element = [&]()
+            {
+                _context->HoveredWindow = window;
+                _tracking_id = id;
+                const auto bb = _element_rects[id];
+                _context->HoveredId = id;
+                _context->IO.MousePos = ImVec2(bb.Min.y, bb.Min.y);
+                _context->IO.MouseDown[0] = true;
+
+                if (active_override.id() != 0)
+                {
+                    _context->ActiveId = active_override.id();
+                }
+            };
+            render(click_on_element);
+
+            _tracking_id = 0;
+            _context->IO.MouseDown[0] = false;
+        }
+
         void TestImgui::enter_text(const std::string& text)
         {
             const auto type_into_element = [&]()

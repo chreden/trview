@@ -274,15 +274,17 @@ TEST(SettingsWindow, ClickingInvertVerticalPanRaisesEvent)
     ASSERT_EQ(received_value.has_value(), true);
     ASSERT_TRUE(received_value.value());
 }
-/*
+
 TEST(SettingsWindow, SetMovementSpeedUpdatesSlider)
 {
-    ui::Window host(Size(), Colour::Transparent);
-    SettingsWindow window(host, std::make_shared<JsonLoader>(mock_shared<MockShell>()));
+    SettingsWindow window;
+    window.toggle_visibility();
 
-    auto slider = host.find<Slider>(SettingsWindow::Names::movement_speed);
-    ASSERT_NE(slider, nullptr);
-    ASSERT_EQ(slider->value(), 0.0f);
+    TestImgui imgui([&]() { window.render(); });
+    imgui.click_element(imgui.id("Settings").push("TabBar").id("Camera"));
+    imgui.render();
+
+    ASSERT_EQ(imgui.item_text(imgui.id("Settings").push("TabBar").push("Camera").id(SettingsWindow::Names::movement_speed)), "1.000");
 
     std::optional<bool> received_value;
     auto token = window.on_movement_speed_changed += [&](bool value)
@@ -291,19 +293,23 @@ TEST(SettingsWindow, SetMovementSpeedUpdatesSlider)
     };
 
     window.set_movement_speed(0.5f);
-    ASSERT_EQ(slider->value(), 0.5f);
+    imgui.render();
+    ASSERT_EQ(imgui.item_text(imgui.id("Settings").push("TabBar").push("Camera").id(SettingsWindow::Names::movement_speed)), "0.500");
     ASSERT_FALSE(received_value.has_value());
 }
 
-
 TEST(SettingsWindow, ClickingMovementSpeedRaisesEvent)
 {
-    ui::Window host(Size(), Colour::Transparent);
-    SettingsWindow window(host, std::make_shared<JsonLoader>(mock_shared<MockShell>()));
+    SettingsWindow window;
+    window.toggle_visibility();
 
-    auto slider = host.find<Slider>(SettingsWindow::Names::movement_speed);
-    ASSERT_NE(slider, nullptr);
-    ASSERT_EQ(slider->value(), 0.0f);
+    TestImgui imgui([&]() { window.render(); });
+    imgui.click_element(imgui.id("Settings").push("TabBar").id("Camera"));
+    imgui.render();
+
+    const auto movement_speed_id = imgui.id("Settings").push("TabBar").push("Camera").id(SettingsWindow::Names::movement_speed);
+
+    ASSERT_EQ(imgui.item_text(movement_speed_id), "1.000");
 
     std::optional<float> received_value;
     auto token = window.on_movement_speed_changed += [&](float value)
@@ -311,19 +317,23 @@ TEST(SettingsWindow, ClickingMovementSpeedRaisesEvent)
         received_value = value;
     };
 
-    slider->clicked(Point(slider->size().width / 2, 0));
+    imgui.mouse_down_element(movement_speed_id, movement_speed_id);
+
+    ASSERT_EQ(imgui.item_text(movement_speed_id), "0.000");
     ASSERT_TRUE(received_value.has_value());
-    ASSERT_EQ(received_value.value(), 0.5f);
+    ASSERT_EQ(received_value.value(), 0.0f);
 }
 
 TEST(SettingsWindow, SetSensitivitySlider)
 {
-    ui::Window host(Size(), Colour::Transparent);
-    SettingsWindow window(host, std::make_shared<JsonLoader>(mock_shared<MockShell>()));
+    SettingsWindow window;
+    window.toggle_visibility();
 
-    auto slider = host.find<Slider>(SettingsWindow::Names::sensitivity);
-    ASSERT_NE(slider, nullptr);
-    ASSERT_EQ(slider->value(), 0.0f);
+    TestImgui imgui([&]() { window.render(); });
+    imgui.click_element(imgui.id("Settings").push("TabBar").id("Camera"));
+    imgui.render();
+
+    ASSERT_EQ(imgui.item_text(imgui.id("Settings").push("TabBar").push("Camera").id(SettingsWindow::Names::sensitivity)), "1.000");
 
     std::optional<bool> received_value;
     auto token = window.on_sensitivity_changed += [&](bool value)
@@ -332,19 +342,23 @@ TEST(SettingsWindow, SetSensitivitySlider)
     };
 
     window.set_sensitivity(0.5f);
-    ASSERT_EQ(slider->value(), 0.5f);
+    imgui.render();
+    ASSERT_EQ(imgui.item_text(imgui.id("Settings").push("TabBar").push("Camera").id(SettingsWindow::Names::sensitivity)), "0.500");
     ASSERT_FALSE(received_value.has_value());
 }
 
-
 TEST(SettingsWindow, ClickingSensitivityRaisesEvent)
 {
-    ui::Window host(Size(), Colour::Transparent);
-    SettingsWindow window(host, std::make_shared<JsonLoader>(mock_shared<MockShell>()));
+    SettingsWindow window;
+    window.toggle_visibility();
 
-    auto slider = host.find<Slider>(SettingsWindow::Names::sensitivity);
-    ASSERT_NE(slider, nullptr);
-    ASSERT_EQ(slider->value(), 0.0f);
+    TestImgui imgui([&]() { window.render(); });
+    imgui.click_element(imgui.id("Settings").push("TabBar").id("Camera"));
+    imgui.render();
+
+    const auto sensitivity_id = imgui.id("Settings").push("TabBar").push("Camera").id(SettingsWindow::Names::sensitivity);
+
+    ASSERT_EQ(imgui.item_text(sensitivity_id), "1.000");
 
     std::optional<float> received_value;
     auto token = window.on_sensitivity_changed += [&](float value)
@@ -352,11 +366,13 @@ TEST(SettingsWindow, ClickingSensitivityRaisesEvent)
         received_value = value;
     };
 
-    slider->clicked(Point(slider->size().width / 2, 0));
+    imgui.mouse_down_element(sensitivity_id, sensitivity_id);
+
+    ASSERT_EQ(imgui.item_text(sensitivity_id), "0.000");
     ASSERT_TRUE(received_value.has_value());
-    ASSERT_EQ(received_value.value(), 0.5f);
+    ASSERT_EQ(received_value.value(), 0.0f);
 }
-*/
+
 TEST(SettingsWindow, SetAccelerationUpdatesCheckbox)
 {
     SettingsWindow window;
@@ -392,15 +408,17 @@ TEST(SettingsWindow, ClickingAccelerationRaisesEvent)
     ASSERT_EQ(received_value.has_value(), true);
     ASSERT_TRUE(received_value.value());
 }
-/*
+
 TEST(SettingsWindow, SetAccelerationRateUpdatesSlider)
 {
-    ui::Window host(Size(), Colour::Transparent);
-    SettingsWindow window(host, std::make_shared<JsonLoader>(mock_shared<MockShell>()));
+    SettingsWindow window;
+    window.toggle_visibility();
 
-    auto slider = host.find<Slider>(SettingsWindow::Names::acceleration_rate);
-    ASSERT_NE(slider, nullptr);
-    ASSERT_EQ(slider->value(), 0.0f);
+    TestImgui imgui([&]() { window.render(); });
+    imgui.click_element(imgui.id("Settings").push("TabBar").id("Camera"));
+    imgui.render();
+
+    ASSERT_EQ(imgui.item_text(imgui.id("Settings").push("TabBar").push("Camera").id(SettingsWindow::Names::acceleration_rate)), "1.000");
 
     std::optional<bool> received_value;
     auto token = window.on_camera_acceleration_rate += [&](bool value)
@@ -409,17 +427,24 @@ TEST(SettingsWindow, SetAccelerationRateUpdatesSlider)
     };
 
     window.set_camera_acceleration_rate(0.5f);
-    ASSERT_EQ(slider->value(), 0.5f);
+    imgui.render();
+    ASSERT_EQ(imgui.item_text(imgui.id("Settings").push("TabBar").push("Camera").id(SettingsWindow::Names::acceleration_rate)), "0.500");
     ASSERT_FALSE(received_value.has_value());
 }
 
 
 TEST(SettingsWindow, ClickingAccelerationRateRaisesEvent)
 {
-    // ui::Window host(Size(), Colour::Transparent);
-    // SettingsWindow window(host, std::make_shared<JsonLoader>(mock_shared<MockShell>()));
     SettingsWindow window;
     window.toggle_visibility();
+
+    TestImgui imgui([&]() { window.render(); });
+    imgui.click_element(imgui.id("Settings").push("TabBar").id("Camera"));
+    imgui.render();
+
+    const auto acceleration_rate_id = imgui.id("Settings").push("TabBar").push("Camera").id(SettingsWindow::Names::acceleration_rate);
+
+    ASSERT_EQ(imgui.item_text(acceleration_rate_id), "1.000");
 
     std::optional<float> received_value;
     auto token = window.on_camera_acceleration_rate += [&](float value)
@@ -427,18 +452,13 @@ TEST(SettingsWindow, ClickingAccelerationRateRaisesEvent)
         received_value = value;
     };
 
-    // auto slider = host.find<Slider>(SettingsWindow::Names::acceleration_rate);
-    // ASSERT_NE(slider, nullptr);
-    // ASSERT_EQ(slider->value(), 0.0f);
-    TestImgui imgui([&]() { window.render(); });
-    imgui.click_element(imgui.id("Settings").push("TabBar").id("Camera"));
-    imgui.render();
-    imgui.click_element(imgui.id("Settings").push("TabBar").push("Camera").id(SettingsWindow::Names::acceleration_rate });
-    // slider->clicked(Point(slider->size().width / 2, 0));
+    imgui.mouse_down_element(acceleration_rate_id, acceleration_rate_id);
+
+    ASSERT_EQ(imgui.item_text(acceleration_rate_id), "0.000");
     ASSERT_TRUE(received_value.has_value());
     ASSERT_EQ(received_value.value(), 0.0f);
 }
-*/
+
 TEST(SettingsWindow, ClickingCameraDegreesRaisesEvent)
 {
     SettingsWindow window;
