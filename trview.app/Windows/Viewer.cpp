@@ -473,7 +473,7 @@ namespace trview
 
         _token_store += _mouse->mouse_click += [&](auto button)
         {
-            if (button == input::IMouse::Button::Right && _current_pick.hit && _current_pick.type != PickResult::Type::Compass)
+            if (button == input::IMouse::Button::Right && _current_pick.hit && _current_pick.type != PickResult::Type::Compass && current_camera().idle_rotation())
             {
                 _context_pick = _current_pick;
                 _ui->set_show_context_menu(true);
@@ -882,10 +882,7 @@ namespace trview
                 return;
             }
 
-            if (_ui->show_context_menu())
-            {
-                _ui->set_show_context_menu(false);
-            }
+            _ui->set_show_context_menu(false);
 
             ICamera& camera = current_camera();
             const float low_sensitivity = 200.0f;
@@ -927,15 +924,12 @@ namespace trview
         _token_store += _camera_input.on_pan += [&](bool vertical, float x, float y)
         {
             auto& io = ImGui::GetIO();
-            if (_ui->is_cursor_over() || io.WantCaptureMouse || _camera_mode != CameraMode::Orbit)
+            if (_ui->is_cursor_over() || _camera_mode != CameraMode::Orbit)
             {
                 return;
             }
 
-            if (_ui->show_context_menu())
-            {
-                _ui->set_show_context_menu(false);
-            }
+            _ui->set_show_context_menu(false);
 
             ICamera& camera = current_camera();
 

@@ -38,6 +38,7 @@ namespace trview
         virtual const DirectX::SimpleMath::Matrix view_projection() const override;
         virtual const Size view_size() const override;
         virtual float zoom() const override;
+        virtual bool idle_rotation() const override;
 
         /// Event raised when the view of the camera has changed.
         Event<> on_view_changed;
@@ -66,6 +67,7 @@ namespace trview
         float _rotation_pitch{ default_pitch };
         float _zoom{ default_zoom };
         ProjectionMode _projection_mode{ ProjectionMode::Perspective };
+        std::optional<float> _last_rotation;
     private:
         Size _view_size;
         DirectX::SimpleMath::Matrix _view;

@@ -14,6 +14,7 @@ namespace trview
         set_rotation_yaw(default_yaw);
         set_rotation_pitch(default_pitch);
         set_zoom(default_zoom);
+        _last_rotation.reset();
     }
 
     void OrbitCamera::set_target(const Vector3& target)
