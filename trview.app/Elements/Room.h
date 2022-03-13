@@ -41,9 +41,11 @@ namespace trview
         virtual PickResult pick(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& direction, PickFilter filters = PickFilter::Default) const override;
         virtual void render(const ICamera& camera, SelectionMode selected, bool show_hidden_geometry, bool show_water) override;
         virtual void render_bounding_boxes(const ICamera& camera) override;
+        virtual void render_lights(const ICamera& camera, const std::weak_ptr<ILight>& selected_light) override;
         virtual void render_contained(const ICamera& camera, SelectionMode selected, bool show_water) override;
         virtual void add_entity(const std::weak_ptr<IEntity>& entity) override;
         virtual void add_trigger(const std::weak_ptr<ITrigger>& trigger) override;
+        virtual void add_light(const std::weak_ptr<ILight>& light) override;
         virtual const std::vector<std::shared_ptr<ISector>> sectors() const override;
         virtual void get_transparent_triangles(ITransparencyBuffer& transparency, const ICamera& camera, SelectionMode selected, bool include_triggers, bool show_water) override;
         virtual void get_contained_transparent_triangles(ITransparencyBuffer& transparency, const ICamera& camera, SelectionMode selected, bool show_water) override;
@@ -123,5 +125,6 @@ namespace trview
         uint16_t _flags{ 0 };
         const ILevel& _level;
         std::shared_ptr<ILevelTextureStorage> _texture_storage;
+        std::vector<std::weak_ptr<ILight>> _lights;
     };
 }

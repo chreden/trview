@@ -1,4 +1,5 @@
 #include "IMesh.h"
+#include <random>
 
 using namespace DirectX::SimpleMath;
 
@@ -96,6 +97,60 @@ namespace trview
         };
 
         return source(vertices, std::vector<std::vector<uint32_t>>(), indices, std::vector<TransparentTriangle>(), std::vector<Triangle>());
+    }
+
+    std::shared_ptr<IMesh> create_sphere_mesh(const IMesh::Source& source, uint32_t stacks, uint32_t slices)
+    {
+        constexpr float Pi2 = 6.283185307f;
+        // Rotation around X per stack
+        const float per_stack = Pi2 / stacks;
+        // Rotation areound Y per slice
+        const float per_slice = Pi2 / slices;
+        const Matrix slice_rotation = Matrix::CreateRotationY(per_slice);
+
+        std::vector<MeshVertex> points;
+
+        const Vector3 top(0, -0.5f, 0);
+        points.push_back(MeshVertex{ top, Vector3::Down, Vector2::Zero, Colour::White });
+
+        for (uint32_t stack = 0; stack < stacks; ++stack)
+        {
+            Vector3 point = Vector3::Transform(top, Matrix::CreateRotationX(per_stack * (stack + 1)));
+            for (uint32_t slice = 0; slice < slices; ++slice)
+            {
+                Vector3 normal = point;
+                normal.Normalize();
+                points.push_back({ point, normal, Vector2::Zero, Colour::White });
+                point = Vector3::Transform(point, slice_rotation);
+            }
+        }
+
+        std::vector<uint32_t> indices;
+        for (uint32_t slice = 0; slice < slices; ++slice)
+        {
+            indices.push_back(0);
+            indices.push_back(slice + 1);
+            indices.push_back(slice == slices - 1 ? 1 : slice + 2);
+        }
+
+        for (uint32_t stack = 0; stack < stacks; ++stack)
+        {
+            uint32_t b = 1 + stack * slices;
+            for (uint32_t slice = 0; slice < slices; ++slice)
+            {
+                const uint32_t top_right = (slice == slices - 1 ? 0 : slice + 1);
+                const uint32_t bottom_right = (slice == slices - 1 ? 0 : slice + 1);
+
+                indices.push_back(b + slice);
+                indices.push_back(b + slice + slices);
+                indices.push_back(b + slices + bottom_right);
+                indices.push_back(b + slice);
+                indices.push_back(b + slices + bottom_right);
+                indices.push_back(b + top_right);
+            }
+        }
+
+        return source(points, std::vector<std::vector<uint32_t>>(), indices, std::vector<TransparentTriangle>(), std::vector<Triangle>());
     }
 
     std::shared_ptr<IMesh> create_sprite_mesh(const IMesh::Source& source, const trlevel::tr_sprite_texture& sprite, Matrix& scale, Vector3& offset, SpriteOffsetMode offset_mode)

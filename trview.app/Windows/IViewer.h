@@ -26,6 +26,7 @@ namespace trview
             inline static const std::string triggers = "Triggers";
             inline static const std::string water = "Water";
             inline static const std::string wireframe = "Wireframe";
+            inline static const std::string lights = "Lights";
         };
 
         virtual ~IViewer() = 0;
@@ -48,6 +49,16 @@ namespace trview
 
         /// Event raised when the viewer wants to change the visibility of a trigger.
         Event<std::weak_ptr<ITrigger>, bool> on_trigger_visibility;
+
+        /// <summary>
+        /// Event raised when the viewer wants to select a light.
+        /// </summary>
+        Event<std::weak_ptr<ILight>> on_light_selected;
+
+        /// <summary>
+        /// Event raised when the viewer wants to change the visibility of a light.
+        /// </summary>
+        Event<std::weak_ptr<ILight>, bool> on_light_visibility;
 
         /// Event raised when the viewer wants to select a waypoint.
         Event<uint32_t> on_waypoint_selected;
@@ -121,5 +132,7 @@ namespace trview
         virtual void set_show_ui(bool value) = 0;
 
         virtual bool ui_input_active() const = 0;
+
+        virtual void select_light(const std::weak_ptr<ILight>& light) = 0;
     };
 }

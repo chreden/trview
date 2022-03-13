@@ -18,6 +18,7 @@
 #include <trview.app/Windows/IRoomsWindowManager.h>
 #include <trview.app/Windows/IRouteWindowManager.h>
 #include <trview.app/Windows/ITriggersWindowManager.h>
+#include <trview.app/Windows/ILightsWindowManager.h>
 #include <trview.app/Windows/IViewer.h>
 #include <trview.app/Lua/Lua.h>
 #include <trview.common/Windows/IDialogs.h>
@@ -57,7 +58,8 @@ namespace trview
             std::shared_ptr<IStartupOptions> startup_options,
             std::shared_ptr<IDialogs> dialogs,
             std::shared_ptr<IFiles> files,
-            std::unique_ptr<IImGuiBackend> imgui_backend);
+            std::unique_ptr<IImGuiBackend> imgui_backend,
+            std::unique_ptr<ILightsWindowManager> lights_window_manager);
         virtual ~Application();
         /// Attempt to open the specified level file.
         /// @param filename The level file to open.
@@ -73,6 +75,7 @@ namespace trview
         void setup_triggers_windows();
         void setup_rooms_windows();
         void setup_route_window();
+        void setup_lights_windows();
         void setup_shortcuts();
         // Entity manipulation
         void add_waypoint(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& normal, uint32_t room, IWaypoint::Type type, uint32_t index);
@@ -83,8 +86,10 @@ namespace trview
         void select_waypoint(uint32_t index);
         void select_next_waypoint();
         void select_previous_waypoint();
+        void select_light(const std::weak_ptr<ILight>& light);
         void set_item_visibility(const Item& item, bool visible);
         void set_trigger_visibility(const std::weak_ptr<ITrigger>& trigger, bool visible);
+        void set_light_visibility(const std::weak_ptr<ILight>& light, bool visible);
         // Lua
         void register_lua();
         bool should_discard_changes();
@@ -120,6 +125,7 @@ namespace trview
         std::unique_ptr<ITriggersWindowManager> _triggers_windows;
         std::unique_ptr<IRouteWindowManager> _route_window;
         std::unique_ptr<IRoomsWindowManager> _rooms_windows;
+        std::unique_ptr<ILightsWindowManager> _lights_windows;
         Timer _timer;
         bool _imgui_setup{ false };
         ImFont* _font;

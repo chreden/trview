@@ -8,6 +8,15 @@ namespace trlevel
 {
 #pragma pack(push, 1)
 
+    enum class LightType : uint8_t
+    {
+        Sun = 0,
+        Point = 1,
+        Spot = 2,
+        Shadow = 3,
+        FogBulb = 4
+    };
+
     constexpr float Scale_X { 1024.0f };
     constexpr float Scale_Y { 1024.0f };
     constexpr float Scale_Z { 1024.0f };
@@ -71,6 +80,13 @@ namespace trlevel
         float x;
         float y;
         float z;
+    };
+
+    struct tr5_colour
+    {
+        float r;
+        float g;
+        float b;
     };
 
     // Four vertices(the values are indices into the appropriate vertex list) and a texture(an index into 
@@ -463,14 +479,44 @@ namespace trlevel
         uint32_t fade;
     };
 
+    struct tr2_room_light
+    {
+        int32_t x, y, z;
+        uint16_t intensity1;
+        uint16_t intensity2;
+        uint32_t fade1;
+        uint32_t fade2;
+    };
+
+    struct tr3_room_sun
+    {
+        int16_t nx, ny, nz;
+        int16_t unused;
+    };
+
+    struct tr3_room_pointlight
+    {
+        int32_t intensity;
+        int32_t fade;
+    };
+
     struct tr3_room_light   // 24 bytes
     {
         int32_t x;
         int32_t y;
         int32_t z;
-        tr_colour4 colour;        // Colour of the light
-        uint32_t   intensity;
-        uint32_t   fade;          // Falloff value
+        tr_colour colour;
+        LightType type;
+        union
+        {
+            tr3_room_sun sun;
+            tr3_room_pointlight point;
+        };
+
+        DirectX::SimpleMath::Vector3 position() const
+        {
+            return DirectX::SimpleMath::Vector3(x / Scale_X, y / Scale_Y, z / Scale_Z);
+        }
     };
 
     struct tr4_room_light
@@ -479,9 +525,8 @@ namespace trlevel
         int32_t y;
         int32_t z;
         tr_colour colour;
-        uint8_t light_type;
-        uint8_t unknown;
-        uint8_t intensity;
+        LightType light_type;
+        uint16_t intensity;
         float in;
         float out;
         float length;
@@ -494,7 +539,7 @@ namespace trlevel
     struct tr5_room_light
     {
         tr5_vertex position;
-        float r, g, b;
+        tr5_colour colour;
         uint32_t separator;
         float in;
         float out;
@@ -504,8 +549,17 @@ namespace trlevel
         tr5_vertex direction;
         int32_t x2, y2, z2;
         int32_t dx2, dy2, dz2;
-        uint8_t light_type;
+        LightType light_type;
         uint8_t filler[3];
+    };
+
+    struct tr5_fog_bulb
+    {
+        tr5_vertex position;
+        float radius;
+        float square_radius;
+        float density;
+        tr5_colour colour;
     };
 
     // Version of tr_room_staticmesh used in TR1/UB.
@@ -558,44 +612,6 @@ namespace trlevel
     };
 
 #pragma pack(pop)
-
-    struct tr3_room_data
-    {
-        std::vector<tr3_room_vertex> vertices;
-        std::vector<tr4_mesh_face4> rectangles;
-        std::vector<tr4_mesh_face3> triangles;
-        std::vector<tr_room_sprite> sprites;
-    };
-
-    struct tr3_room
-    {
-        tr_room_info info;
-        tr3_room_data data;
-
-        std::vector<tr_room_portal> portals;
-
-        uint16_t num_z_sectors{ 0u };
-        uint16_t num_x_sectors{ 0u };
-        std::vector<tr_room_sector> sector_list;
-
-        uint32_t colour{ 0xffffffff };
-        int16_t ambient_intensity_1;
-        int16_t ambient_intensity_2;
-        int16_t light_mode;
-
-        std::vector<tr3_room_light> lights;
-
-        std::vector<tr3_room_staticmesh> static_meshes;
-
-        int16_t alternate_room{ -1 };
-        int16_t flags;
-
-        uint16_t water_scheme;
-        uint8_t reverb_info;
-        uint8_t alternate_group{ 0xff };
-
-        uint32_t room_colour;
-    };
 
     struct tr2_frame
     {
@@ -654,10 +670,10 @@ namespace trlevel
         uint8_t _5[24];
         uint32_t num_room_triangles;
         uint32_t num_room_rectangles;
-        uint8_t _6[4];
-        uint32_t light_data_size;
+        uint32_t room_lights;
+        uint32_t fog_bulbs;
         uint32_t num_lights2;
-        uint8_t _7[4];
+        uint32_t num_fog_bulbs;
         float room_y_top;
         float room_y_bottom;
         uint32_t num_layers;
@@ -666,7 +682,7 @@ namespace trlevel
         uint32_t poly_offset;
         uint32_t poly_offset2;
         uint32_t vertices_size;
-        uint8_t _8[16];
+        uint32_t _8[4];
     };
 
     // Convert a 32 bit textile into a 32 bit argb value.
@@ -684,10 +700,6 @@ namespace trlevel
     /// @param vertices The vertices to convert.
     /// @return The converted vertices.
     std::vector<tr3_room_vertex> convert_vertices(std::vector<tr5_room_vertex> vertices);
-
-    // Convert a set of Tomb Raider I lights into a light format compatible
-    // with Tomb Raider III (what the viewer is currently using).
-    std::vector<tr3_room_light> convert_lights(std::vector<tr_room_light> lights);
 
     // Convert a set of Tomb Raider I static meshes into a format compatible
     // with Tomb Raider III (what the viewer is currently using).

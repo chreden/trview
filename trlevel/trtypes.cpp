@@ -70,21 +70,6 @@ namespace trlevel
         return new_vertices;
     }
 
-    // Convert a set of Tomb Raider I lights into a light format compatible
-    // with Tomb Raider III (what the viewer is currently using).
-    std::vector<tr3_room_light> convert_lights(std::vector<tr_room_light> lights)
-    {
-        std::vector<tr3_room_light> new_lights;
-        new_lights.reserve(lights.size());
-        std::transform(lights.begin(), lights.end(),
-            std::back_inserter(new_lights), [](const auto& light)
-        {
-            tr3_room_light new_light { light.x, light.y, light.z, tr_colour4 { 0xff, 0xff, 0xff, 0xff }, light.intensity, light.fade };
-            return new_light;
-        });
-        return new_lights;
-    }
-
     // Convert a set of Tomb Raider I static meshes into a format compatible
     // with Tomb Raider III (what the viewer is currently using).
     std::vector<tr3_room_staticmesh> convert_room_static_meshes(std::vector<tr_room_staticmesh> meshes)

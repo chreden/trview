@@ -38,6 +38,7 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClCompile Include="Camera\OrbitCamera.cpp" />
     <ClCompile Include="Elements\Entity.cpp" />
     <ClCompile Include="Elements\IEntity.cpp" />
+    <ClCompile Include="Elements\ILight.cpp" />
     <ClCompile Include="Elements\IRoom.cpp" />
     <ClCompile Include="Elements\ISector.cpp" />
     <ClCompile Include="Elements\IStaticMesh.cpp" />
@@ -46,6 +47,7 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClCompile Include="Elements\ITypeNameLookup.cpp" />
     <ClCompile Include="Elements\ILevel.cpp" />
     <ClCompile Include="Elements\Level.cpp" />
+    <ClCompile Include="Elements\Light.cpp" />
     <ClCompile Include="Elements\PickFilter.cpp" />
     <ClCompile Include="Elements\Room.cpp" />
     <ClCompile Include="Elements\Sector.cpp" />
@@ -136,6 +138,8 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClCompile Include="UI\ViewOptions.cpp" />
     <ClCompile Include="Windows\IItemsWindow.cpp" />
     <ClCompile Include="Windows\IItemsWindowManager.cpp" />
+    <ClCompile Include="Windows\ILightsWindow.cpp" />
+    <ClCompile Include="Windows\ILightsWindowManager.cpp" />
     <ClCompile Include="Windows\IRoomsWindow.cpp" />
     <ClCompile Include="Windows\IRoomsWindowManager.cpp" />
     <ClCompile Include="Windows\IRouteWindow.cpp" />
@@ -145,6 +149,8 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClCompile Include="Windows\ITriggersWindow.cpp" />
     <ClCompile Include="Windows\ITriggersWindowManager.cpp" />
     <ClCompile Include="Windows\IViewer.cpp" />
+    <ClCompile Include="Windows\LightsWindow.cpp" />
+    <ClCompile Include="Windows\LightsWindowManager.cpp" />
     <ClCompile Include="Windows\RoomsWindow.cpp" />
     <ClCompile Include="Windows\RoomsWindowManager.cpp" />
     <ClCompile Include="Windows\RouteWindow.cpp" />
@@ -169,6 +175,7 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClInclude Include="Elements\Entity.h" />
     <ClInclude Include="Elements\IEntity.h" />
     <ClInclude Include="Elements\ILevel.h" />
+    <ClInclude Include="Elements\ILight.h" />
     <ClInclude Include="Elements\IRoom.h" />
     <ClInclude Include="Elements\ISector.h" />
     <ClInclude Include="Elements\IStaticMesh.h" />
@@ -176,6 +183,7 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClInclude Include="Elements\ITrigger.h" />
     <ClInclude Include="Elements\ITypeNameLookup.h" />
     <ClInclude Include="Elements\Level.h" />
+    <ClInclude Include="Elements\Light.h" />
     <ClInclude Include="Elements\PickFilter.h" />
     <ClInclude Include="Elements\Room.h" />
     <ClInclude Include="Elements\RoomInfo.h" />
@@ -229,6 +237,7 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClInclude Include="Mocks\Camera\ICamera.h" />
     <ClInclude Include="Mocks\Elements\IEntity.h" />
     <ClInclude Include="Mocks\Elements\ILevel.h" />
+    <ClInclude Include="Mocks\Elements\ILight.h" />
     <ClInclude Include="Mocks\Elements\IRoom.h" />
     <ClInclude Include="Mocks\Elements\ISector.h" />
     <ClInclude Include="Mocks\Elements\IStaticMesh.h" />
@@ -261,6 +270,8 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClInclude Include="Mocks\UI\IViewOptions.h" />
     <ClInclude Include="Mocks\Windows\IItemsWindow.h" />
     <ClInclude Include="Mocks\Windows\IItemsWindowManager.h" />
+    <ClInclude Include="Mocks\Windows\ILightsWindow.h" />
+    <ClInclude Include="Mocks\Windows\ILightsWindowManager.h" />
     <ClInclude Include="Mocks\Windows\IRoomsWindow.h" />
     <ClInclude Include="Mocks\Windows\IRoomsWindowManager.h" />
     <ClInclude Include="Mocks\Windows\IRouteWindow.h" />
@@ -327,6 +338,8 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClInclude Include="Windows\di.hpp" />
     <ClInclude Include="Windows\IItemsWindow.h" />
     <ClInclude Include="Windows\IItemsWindowManager.h" />
+    <ClInclude Include="Windows\ILightsWindow.h" />
+    <ClInclude Include="Windows\ILightsWindowManager.h" />
     <ClInclude Include="Windows\IRoomsWindow.h" />
     <ClInclude Include="Windows\IRoomsWindowManager.h" />
     <ClInclude Include="Windows\IRouteWindow.h" />
@@ -336,6 +349,8 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClInclude Include="Windows\ITriggersWindow.h" />
     <ClInclude Include="Windows\ITriggersWindowManager.h" />
     <ClInclude Include="Windows\IViewer.h" />
+    <ClInclude Include="Windows\LightsWindow.h" />
+    <ClInclude Include="Windows\LightsWindowManager.h" />
     <ClInclude Include="Windows\RoomsWindow.h" />
     <ClInclude Include="Windows\RoomsWindowManager.h" />
     <ClInclude Include="Windows\RouteWindow.h" />

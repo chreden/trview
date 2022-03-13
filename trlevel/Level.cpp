@@ -145,17 +145,28 @@ namespace trlevel
                 room.light_mode = read<int16_t>(file);
             }
 
-            if (version == LevelVersion::Tomb1)
+            switch (version)
             {
-                room.lights = convert_lights(read_vector<uint16_t, tr_room_light>(file));
-            }
-            else if (version == LevelVersion::Tomb4)
-            {
-                auto lights = read_vector<uint16_t, tr4_room_light>(file);
-            }
-            else
-            {
-                room.lights = read_vector<uint16_t, tr3_room_light>(file);
+                case LevelVersion::Tomb1:
+                {
+                    room.lights = convert_lights(read_vector<uint16_t, tr_room_light>(file));
+                    break;
+                }
+                case LevelVersion::Tomb2:
+                {
+                    room.lights = convert_lights(read_vector<uint16_t, tr2_room_light>(file));
+                    break;
+                }
+                case LevelVersion::Tomb3:
+                {
+                    room.lights = convert_lights(read_vector<uint16_t, tr3_room_light>(file));
+                    break;
+                }
+                case LevelVersion::Tomb4:
+                {
+                    room.lights = convert_lights(read_vector<uint16_t, tr4_room_light>(file));
+                    break;
+                }
             }
 
             if (version == LevelVersion::Tomb1)
@@ -201,8 +212,19 @@ namespace trlevel
             // The offsets start measuring from this position, after all the header information.
             const uint32_t data_start = static_cast<uint32_t>(file.tellg());
 
-            // Discard lights as they are not currently used:
-            skip(file, sizeof(tr5_room_light) * header.num_lights);
+            room.lights = convert_lights(read_vector<tr5_room_light>(file, header.num_lights));
+            auto fog_bulbs = read_vector<tr5_fog_bulb>(file, header.num_fog_bulbs);
+
+            uint32_t fog_bulb = 0;
+            for (auto& light : room.lights)
+            {
+                if (*reinterpret_cast<uint32_t*>(&light.tr5.position.x) == 0xCDCDCDCD)
+                {
+                    const auto fog = fog_bulbs[fog_bulb++];
+                    light.tr5.light_type = LightType::FogBulb;
+                    light.tr5_fog = fog;
+                }
+            }
 
             file.seekg(data_start + header.start_sd_offset, std::ios::beg);
             room.sector_list = read_vector<tr_room_sector>(file, room.num_z_sectors * room.num_x_sectors);

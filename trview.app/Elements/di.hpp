@@ -6,6 +6,7 @@
 #include "Entity.h"
 #include "StaticMesh.h"
 #include "Sector.h"
+#include "Light.h"
 
 #include "Resources/resource.h"
 #include <trview.common/Resources.h>
@@ -82,6 +83,15 @@ namespace trview
                         return std::make_shared<Sector>(level, room, room_sector, sector_id, room_number);
                     };
                 }),
+            di::bind<ILight::Source>.to(
+                [](const auto& injector) -> ILight::Source
+                {
+                    const auto mesh = create_sphere_mesh(injector.create<IMesh::Source>(), 24, 24);
+                    return [=](auto&&... args)
+                    {
+                        return std::make_shared<Light>(mesh, args...);
+                    };
+                }),
             di::bind<ILevel::Source>.to(
                 [](const auto& injector) -> ILevel::Source
                 {
@@ -101,7 +111,8 @@ namespace trview
                             injector.create<IEntity::EntitySource>(),
                             injector.create<IEntity::AiSource>(),
                             injector.create<IRoom::Source>(),
-                            injector.create<ITrigger::Source>());
+                            injector.create<ITrigger::Source>(),
+                            injector.create<ILight::Source>());
                     };
                 })
         );

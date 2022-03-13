@@ -43,6 +43,8 @@ namespace trview
     /// Create a new cube mesh.
     std::shared_ptr<IMesh> create_cube_mesh(const IMesh::Source& source);
 
+    std::shared_ptr<IMesh> create_sphere_mesh(const IMesh::Source& source, uint32_t stacks, uint32_t slices);
+
     enum class SpriteOffsetMode
     {
         RoomSprite,

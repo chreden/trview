@@ -12,6 +12,7 @@ namespace trview
         _toggles[IViewer::Options::depth_enabled] = false;
         _toggles[IViewer::Options::wireframe] = false;
         _toggles[IViewer::Options::show_bounding_boxes] = false;
+        _toggles[IViewer::Options::lights] = false;
         _toggles[IViewer::Options::flip] = false;
     }
 
@@ -50,9 +51,10 @@ namespace trview
                 ImGui::TableNextRow();
                 add_toggle(IViewer::Options::wireframe);
                 add_toggle(IViewer::Options::show_bounding_boxes);
+                ImGui::TableNextRow();
+                add_toggle(IViewer::Options::lights);
                 if (!_use_alternate_groups)
                 {
-                    ImGui::TableNextRow();
                     ImGui::BeginDisabled(!_flip_enabled);
                     add_toggle(IViewer::Options::flip);
                     ImGui::EndDisabled();

@@ -13,6 +13,7 @@ namespace trview
         Triggers = 0x4,
         HiddenGeometry = 0x8,
         StaticMeshes = 0x10,
+        Lights = 0x20,
         All = 0xffffffff,
         Default = All & ~HiddenGeometry
     };

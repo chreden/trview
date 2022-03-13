@@ -24,7 +24,8 @@ namespace trview
         const IEntity::EntitySource& entity_source,
         const IEntity::AiSource& ai_source,
         const IRoom::Source& room_source,
-        const ITrigger::Source& trigger_source)
+        const ITrigger::Source& trigger_source,
+        const ILight::Source& light_source)
         : _device(device), _version(level->get_version()), _texture_storage(level_texture_storage),
         _transparency(std::move(transparency_buffer)), _selection_renderer(std::move(selection_renderer))
     {
@@ -55,6 +56,7 @@ namespace trview
         generate_rooms(*level, room_source, *mesh_storage);
         generate_triggers(trigger_source);
         generate_entities(*level, *type_names, entity_source, ai_source, *mesh_storage);
+        generate_lights(*level, light_source);
 
         for (auto& room : _rooms)
         {
@@ -248,6 +250,14 @@ namespace trview
             for (const auto& room : rooms)
             {
                 room.room.render_bounding_boxes(camera);
+            }
+        }
+
+        if (_show_lights)
+        {
+            for (const auto& room : rooms)
+            {
+                room.room.render_lights(camera, _selected_light);
             }
         }
 
@@ -515,7 +525,8 @@ namespace trview
                 PickFilter::Entities |
                 PickFilter::StaticMeshes |
                 filter_flag(PickFilter::Triggers, _show_triggers) |
-                filter_flag(PickFilter::HiddenGeometry, _show_hidden_geometry)));
+                filter_flag(PickFilter::HiddenGeometry, _show_hidden_geometry) |
+                filter_flag(PickFilter::Lights, _show_lights)));
             if (!is_alternate_mismatch(room.room) && room.room.alternate_mode() == IRoom::AlternateMode::IsAlternate)
             {
                 auto& original_room = _rooms[room.room.alternate_room()];
@@ -670,14 +681,32 @@ namespace trview
         on_level_changed();
     }
 
+    void Level::set_show_lights(bool show)
+    {
+        _show_lights = show;
+        _regenerate_transparency = true;
+        on_level_changed();
+    }
+
     bool Level::show_triggers() const
     {
         return _show_triggers;
     }
 
+    bool Level::show_lights() const
+    {
+        return _show_lights;
+    }
+
     void Level::set_selected_trigger(uint32_t number)
     {
         _selected_trigger = _triggers[number];
+        on_level_changed();
+    }
+
+    void Level::set_selected_light(uint32_t number)
+    {
+        _selected_light = _lights[number];
         on_level_changed();
     }
 
@@ -742,6 +771,34 @@ namespace trview
                 entity->adjust_y(new_height - entity_pos.y);
             }
         }
+    }
+
+    void Level::generate_lights(const trlevel::ILevel& level, const ILight::Source& light_source)
+    {
+        const auto num_rooms = level.num_rooms();
+        for (uint32_t i = 0u; i < num_rooms; ++i)
+        {
+            auto room = level.get_room(i);
+            for (const auto& light : room.lights)
+            {
+                _lights.push_back(light_source(_lights.size(), i, light));
+                _rooms[i]->add_light(_lights.back());
+            }
+        }
+    }
+
+    std::vector<std::weak_ptr<ILight>> Level::lights() const
+    {
+        std::vector<std::weak_ptr<ILight>> lights;
+        std::transform(_lights.begin(), _lights.end(), std::back_inserter(lights), [](const auto& light) { return light; });
+        return lights;
+    }
+
+    void Level::set_light_visibility(uint32_t index, bool state)
+    {
+        _lights[index]->set_visible(state);
+        _regenerate_transparency = true;
+        on_level_changed();
     }
 
     bool find_item_by_type_id(const ILevel& level, uint32_t type_id, Item& output_item)

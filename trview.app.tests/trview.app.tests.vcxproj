@@ -25,6 +25,7 @@
     <ClCompile Include="ContextMenuTests.cpp" />
     <ClCompile Include="Elements\EntityTests.cpp" />
     <ClCompile Include="Elements\LevelTests.cpp" />
+    <ClCompile Include="Elements\LightTests.cpp" />
     <ClCompile Include="Elements\RoomTests.cpp" />
     <ClCompile Include="Elements\StaticMeshTests.cpp" />
     <ClCompile Include="Elements\TypeNameLookupTests.cpp" />
@@ -72,6 +73,8 @@
     <ClCompile Include="UI\ViewOptionsTests.cpp" />
     <ClCompile Include="ViewMenuTests.cpp" />
     <ClCompile Include="WindowResizerTests.cpp" />
+    <ClCompile Include="Windows\LightsWindowManagerTests.cpp" />
+    <ClCompile Include="Windows\LightsWindowTests.cpp" />
     <ClCompile Include="Windows\RouteWindowManagerTests.cpp" />
     <ClCompile Include="Windows\ViewerTests.cpp" />
   </ItemGroup>

@@ -2,6 +2,7 @@
 
 #include <cstdint>
 #include "trtypes.h"
+#include "tr_rooms.h"
 #include "LevelVersion.h"
 
 namespace trlevel

@@ -287,6 +287,18 @@
       <Filter>Resources</Filter>
     </ClCompile>
     <ClCompile Include="trview_imgui.cpp" />
+    <ClCompile Include="Windows\ILightsWindow.cpp">
+      <Filter>Windows\Lights</Filter>
+    </ClCompile>
+    <ClCompile Include="Windows\ILightsWindowManager.cpp">
+      <Filter>Windows\Lights</Filter>
+    </ClCompile>
+    <ClCompile Include="Windows\LightsWindowManager.cpp">
+      <Filter>Windows\Lights</Filter>
+    </ClCompile>
+    <ClCompile Include="Windows\LightsWindow.cpp">
+      <Filter>Windows\Lights</Filter>
+    </ClCompile>
     <ClCompile Include="Windows\IItemsWindow.cpp">
       <Filter>Windows\Items</Filter>
     </ClCompile>
@@ -346,6 +358,12 @@
     </ClCompile>
     <ClCompile Include="UI\MapRenderer.cpp">
       <Filter>UI\Minimap</Filter>
+    </ClCompile>
+    <ClCompile Include="Elements\ILight.cpp">
+      <Filter>Elements\Light</Filter>
+    </ClCompile>    
+    <ClCompile Include="Elements\Light.cpp">
+      <Filter>Elements\Light</Filter>
     </ClCompile>
     <ClCompile Include="UI\MapColours.cpp">
       <Filter>UI\Minimap</Filter>
@@ -843,6 +861,24 @@
     <ClInclude Include="Mocks\UI\IMapRenderer.h">
       <Filter>Mocks\UI</Filter>
     </ClInclude>
+    <ClInclude Include="Windows\ILightsWindowManager.h">
+      <Filter>Windows\Lights</Filter>
+    </ClInclude>
+    <ClInclude Include="Windows\LightsWindowManager.h">
+      <Filter>Windows\Lights</Filter>
+    </ClInclude>
+    <ClInclude Include="Windows\LightsWindow.h">
+      <Filter>Windows\Lights</Filter>
+    </ClInclude>
+    <ClInclude Include="Windows\ILightsWindow.h">
+      <Filter>Windows\Lights</Filter>
+    </ClInclude>
+    <ClInclude Include="Mocks\Windows\ILightsWindowManager.h">
+      <Filter>Mocks\Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="Mocks\Elements\ILight.h">
+      <Filter>Mocks\Elements</Filter>
+    </ClInclude>
     <ClInclude Include="trview_imgui.h" />
     <ClInclude Include="trview_imgui.hpp" />
     <ClInclude Include="Windows\IItemsWindow.h">
@@ -908,8 +944,17 @@
     <ClInclude Include="UI\MapRenderer.h">
       <Filter>UI\Minimap</Filter>
     </ClInclude>
+    <ClInclude Include="Elements\ILight.h">
+      <Filter>Elements\Light</Filter>
+    </ClInclude>
     <ClInclude Include="UI\MapColours.h">
       <Filter>UI\Minimap</Filter>
+    </ClInclude>
+    <ClInclude Include="Elements\Light.h">
+      <Filter>Elements\Light</Filter>
+    </ClInclude>
+    <ClInclude Include="Mocks\Windows\ILightsWindow.h">
+      <Filter>Mocks\Windows</Filter>
     </ClInclude>
     <ClInclude Include="UI\ISettingsWindow.h">
       <Filter>UI\Settings</Filter>
@@ -1000,6 +1045,9 @@
     <Filter Include="Windows\Items">
       <UniqueIdentifier>{ce2a8d5b-cdbb-4fb8-93fe-c8d9a6cbb594}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Windows\Lights">
+      <UniqueIdentifier>{76758db9-58cb-4543-8489-52e61579825f}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Windows\Triggers">
       <UniqueIdentifier>{785d9776-2c6e-4925-b4db-a544dffa6e3a}</UniqueIdentifier>
     </Filter>
@@ -1011,6 +1059,9 @@
     </Filter>
     <Filter Include="UI\Minimap">
       <UniqueIdentifier>{35934bbe-5267-4aea-8d40-82452ae7874c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Elements\Light">
+      <UniqueIdentifier>{380e95ae-a945-4138-8eaf-afb59265c7ae}</UniqueIdentifier>
     </Filter>
     <Filter Include="UI\Settings">
       <UniqueIdentifier>{a03b798e-88e6-4f9d-9d44-e81545390315}</UniqueIdentifier>
