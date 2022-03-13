@@ -62,12 +62,6 @@ namespace trview
         std::vector<std::weak_ptr<ITrigger>> _triggered_by;
         bool _scroll_to_item{ false };
 
-        // WIP filters section.
-        bool _filter_enabled{ true };
-        bool _show_filters{ false };
         Filters<Item> _filters;
-
-        void toggle_filters_window();
-        void render_filters();
     };
 }

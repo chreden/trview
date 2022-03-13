@@ -91,17 +91,7 @@ namespace trview
     {
         if (ImGui::BeginChild(Names::item_list_panel.c_str(), ImVec2(280, 0), true))
         {
-            bool filter_enabled = _filter_enabled;
-            if (ImGui::Checkbox("##filter_enabled", &filter_enabled))
-            {
-                _filter_enabled = filter_enabled;
-            }
-            ImGui::SameLine();
-            if (ImGui::Button("Filters"))
-            {
-                toggle_filters_window();
-            }
-            render_filters();
+            _filters.render();
             ImGui::SameLine();
 
             bool track_room = _track_room;
@@ -137,8 +127,7 @@ namespace trview
 
                 for (const auto& item : _all_items)
                 {
-                    if (_track_room && item.room() != _current_room || 
-                        (_filter_enabled && !_filters.match(item)))
+                    if (_track_room && item.room() != _current_room || !_filters.match(item))
                     {
                         continue;
                     }
@@ -341,81 +330,5 @@ namespace trview
     {
         _selected_item = item;
         _triggered_by = item.triggers();
-    }
-
-    void ItemsWindow::toggle_filters_window()
-    {
-        if (!_show_filters)
-        {
-            ImGui::OpenPopup("Filters");
-        }
-        _show_filters = !_show_filters;
-    }
-
-    void ItemsWindow::render_filters()
-    {
-        if (_show_filters && ImGui::BeginPopup("Filters"))
-        {
-            const auto keys = _filters.keys();
-
-            std::vector<uint32_t> remove;
-            for (uint32_t i = 0; i < _filters.filters.size(); ++i)
-            {
-                auto& filter = _filters.filters[i];
-                if (ImGui::BeginCombo(("##filter-key-" + std::to_string(i)).c_str(), filter.key.c_str()))
-                {
-                    for (const auto& key : keys)
-                    {
-                        if (ImGui::Selectable(key.c_str(), key == filter.key))
-                        {
-                            filter.key = key;
-                            ImGui::SetItemDefaultFocus();
-                        }
-                    }
-                    ImGui::EndCombo();
-                }
-                ImGui::SameLine();
-                ImGui::Text("is equal to");
-                ImGui::SameLine();
-                ImGui::InputText(("##filter-value-" + std::to_string(i)).c_str(), &filter.value);
-                ImGui::SameLine();
-                if (ImGui::Button(("X##" + std::to_string(i)).c_str()))
-                {
-                    remove.push_back(i);
-                }
-
-                if (i != _filters.filters.size() - 1)
-                {
-                    std::vector<Op> ops{ Op::And, Op::Or };
-                    if (ImGui::BeginCombo(("##filter-op-" + std::to_string(i)).c_str(), op_to_string(filter.op).c_str()))
-                    {
-                        for (const auto& op : ops)
-                        {
-                            if (ImGui::Selectable(op_to_string(op).c_str(), op == filter.op))
-                            {
-                                filter.op = op;
-                                ImGui::SetItemDefaultFocus();
-                            }
-                        }
-                        ImGui::EndCombo();
-                    }
-                }
-            }
-
-            for (auto iter = remove.rbegin(); iter < remove.rend(); ++iter)
-            {
-                _filters.filters.erase(_filters.filters.begin() + *iter);
-            }
-
-            if (ImGui::Button("+"))
-            {
-                _filters.filters.push_back({});
-            }
-            ImGui::EndPopup();
-        }
-        else
-        {
-            _show_filters = false;
-        }
     }
 }

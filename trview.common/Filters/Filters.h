@@ -6,6 +6,12 @@
 
 namespace trview
 {
+    enum class CompareOp
+    {
+        Equal,
+        NotEqual
+    };
+
     enum class Op
     {
         And,
@@ -24,9 +30,9 @@ namespace trview
         struct Filter
         {
             std::string key;
+            CompareOp compare{ CompareOp::Equal };
             std::string value;
 
-            
             Op op{ Op::And };
         };
         std::vector<Filter> filters;
@@ -44,16 +50,23 @@ namespace trview
         /// <param name="value">The object to test.</param>
         /// <returns>Whether it was a match.</returns>
         bool match(const T& value) const;
+
+        void render();
+
     private:
         /// <summary>
         /// Returns whether there are any filters of consequence.
         /// </summary>
         /// <returns>True if there's nothing of consequence.</returns>
         bool empty() const;
+        void toggle_visible();
 
         std::unordered_map<std::string, ValueGetter> _getters;
+        bool _show_filters{ false };
+        bool _enabled{ true };
     };
 
+    constexpr std::string compare_op_to_string(CompareOp op);
     constexpr std::string op_to_string(Op op);
 }
 
