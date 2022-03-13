@@ -4,6 +4,7 @@
 #pragma once
 
 #include <trview.common/Windows/IClipboard.h>
+#include <trview.common/Filters/Filters.h>
 
 #include "ITriggersWindow.h"
 #include "../Elements/Item.h"
@@ -67,5 +68,6 @@ namespace trview
         bool _scroll_to_trigger{ false };
         std::optional<float> _tooltip_timer;
         std::vector<Command> _local_selected_trigger_commands;
+        Filters<ITrigger> _filters;
     };
 }

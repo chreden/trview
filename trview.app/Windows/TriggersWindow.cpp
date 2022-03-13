@@ -7,6 +7,12 @@ namespace trview
     TriggersWindow::TriggersWindow(const std::shared_ptr<IClipboard>& clipboard)
         : _clipboard(clipboard)
     {
+        _filters.add_getter("Type", [](auto&& trigger) { return to_utf8(trigger_type_name(trigger.type())); });
+        _filters.add_getter("#", [](auto&& trigger) { return std::to_string(trigger.number()); });
+        _filters.add_getter("Room", [](auto&& trigger) { return std::to_string(trigger.room()); });
+        _filters.add_getter("Flags", [](auto&& trigger) { return to_utf8(format_binary(trigger.flags())); });
+        _filters.add_getter("Only once", [](auto&& trigger) { return to_utf8(format_bool(trigger.only_once())); });
+        _filters.add_getter("Timer", [](auto&& trigger) { return std::to_string(trigger.timer()); });
     }
 
     void TriggersWindow::set_triggers(const std::vector<std::weak_ptr<ITrigger>>& triggers)
@@ -124,6 +130,9 @@ namespace trview
     {
         if (ImGui::BeginChild(Names::trigger_list_panel.c_str(), ImVec2(220, 0), true))
         {
+            _filters.render();
+            ImGui::SameLine();
+
             bool track_room = _track_room;
             if (ImGui::Checkbox(Names::track_room.c_str(), &track_room))
             {
@@ -186,7 +195,7 @@ namespace trview
                 for (const auto& trigger : _all_triggers)
                 {
                     const auto trigger_ptr = trigger.lock();
-                    if (_track_room && trigger_ptr->room() != _current_room)
+                    if (_track_room && trigger_ptr->room() != _current_room || !_filters.match(*trigger_ptr))
                     {
                         continue;
                     }
