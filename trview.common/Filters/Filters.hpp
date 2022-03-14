@@ -11,10 +11,20 @@ namespace trview
     }
 
     template <typename T>
+    void Filters<T>::add_multi_getter(const std::string& key, const MultiGetter& getter)
+    {
+        _multi_getters[key] = getter;
+    }
+
+    template <typename T>
     std::vector<std::string> Filters<T>::keys() const
     {
         std::vector<std::string> result;
         for (const auto& key : _getters)
+        {
+            result.push_back(key.first);
+        }
+        for (const auto& key : _multi_getters)
         {
             result.push_back(key.first);
         }
@@ -43,11 +53,21 @@ namespace trview
             if (getter != _getters.end())
             {
                 const auto getter_value = getter->second(value);
-                const auto filter_result =
-                    filter.compare == CompareOp::Equal ? getter_value == filter.value :
-                                                         getter_value != filter.value;
+                const auto filter_result = filter.compare == CompareOp::Equal ? getter_value == filter.value : getter_value != filter.value;
                 match = op == Op::Or ? match | filter_result : match & filter_result;
             }
+            else
+            {
+                const auto& multi_getter = _multi_getters.find(filter.key);
+                if (multi_getter != _multi_getters.end())
+                {
+                    const auto getter_values = multi_getter->second(value);
+                    const auto found = std::find(getter_values.begin(), getter_values.end(), filter.value) != getter_values.end();
+                    const auto filter_result = filter.compare == CompareOp::Equal ? found : !found && !getter_values.empty();
+                    match = op == Op::Or ? match | filter_result : match & filter_result;
+                }
+            }
+
             op = filter.op;
 
             if (op == Op::And && !match)

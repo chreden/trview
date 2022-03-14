@@ -13,6 +13,39 @@ namespace trview
         _filters.add_getter("Flags", [](auto&& trigger) { return to_utf8(format_binary(trigger.flags())); });
         _filters.add_getter("Only once", [](auto&& trigger) { return to_utf8(format_bool(trigger.only_once())); });
         _filters.add_getter("Timer", [](auto&& trigger) { return std::to_string(trigger.timer()); });
+
+        auto all_trigger_indices = [](TriggerCommandType type, const auto& trigger)
+        {
+            std::vector<std::string> indices;
+            for (const auto& command : trigger.commands())
+            {
+                if (command.type() == type)
+                {
+                    indices.push_back(std::to_string(command.index()));
+                }
+            }
+            return indices;
+        };
+
+        auto add_multi_getter = [=](TriggerCommandType type)
+        {
+            _filters.add_multi_getter(command_type_name_8(type), [=](auto&& trigger) { return all_trigger_indices(type, trigger); });
+        };
+
+        add_multi_getter(TriggerCommandType::Object);
+        add_multi_getter(TriggerCommandType::Camera);
+        add_multi_getter(TriggerCommandType::UnderwaterCurrent);
+        add_multi_getter(TriggerCommandType::FlipMap);
+        add_multi_getter(TriggerCommandType::FlipOn);
+        add_multi_getter(TriggerCommandType::FlipOff);
+        add_multi_getter(TriggerCommandType::LookAtItem);
+        add_multi_getter(TriggerCommandType::EndLevel);
+        add_multi_getter(TriggerCommandType::PlaySoundtrack);
+        add_multi_getter(TriggerCommandType::Flipeffect);
+        add_multi_getter(TriggerCommandType::SecretFound);
+        add_multi_getter(TriggerCommandType::ClearBodies);
+        add_multi_getter(TriggerCommandType::Flyby);
+        add_multi_getter(TriggerCommandType::Cutscene);
     }
 
     void TriggersWindow::set_triggers(const std::vector<std::weak_ptr<ITrigger>>& triggers)

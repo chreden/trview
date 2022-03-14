@@ -26,6 +26,10 @@ namespace trview
         /// Function that will return the value from a subject as a string.
         /// </summary>
         using ValueGetter = std::function<std::string (const T&)>;
+        /// <summary>
+        /// Function that will return multiple values from a subject as several strings.
+        /// </summary>
+        using MultiGetter = std::function<std::vector<std::string> (const T&)>;
 
         struct Filter
         {
@@ -43,6 +47,8 @@ namespace trview
         /// <param name="key">The key used in filters</param>
         /// <param name="getter">The getter function.</param>
         void add_getter(const std::string& key, const ValueGetter& getter);
+        void add_multi_getter(const std::string& key, const MultiGetter& getter);
+
         std::vector<std::string> keys() const;
         /// <summary>
         /// Check whether the object matches the configured filters.
@@ -62,6 +68,7 @@ namespace trview
         void toggle_visible();
 
         std::unordered_map<std::string, ValueGetter> _getters;
+        std::unordered_map<std::string, MultiGetter> _multi_getters;
         bool _show_filters{ false };
         bool _enabled{ true };
     };
