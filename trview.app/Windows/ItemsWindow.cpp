@@ -21,7 +21,18 @@ namespace trview
         _filters.add_getter("Invisible", [](auto&& item) { return to_utf8(format_bool(item.invisible_flag())); });
         _filters.add_getter("Flags", [](auto&& item) { return to_utf8(format_binary(item.activation_flags())); });
         _filters.add_getter("OCB", [](auto&& item) { return std::to_string(item.ocb()); });
-        // TODO: Triggered by?
+        _filters.add_multi_getter("Triggered By", [](auto&& item) 
+            {
+                std::vector<std::string> results;
+                for (auto trigger : item.triggers())
+                {
+                    if (auto trigger_ptr = trigger.lock())
+                    {
+                        results.push_back(std::to_string(trigger_ptr->number()));
+                    }
+                }
+                return results;
+            });
     }
 
     void ItemsWindow::set_items(const std::vector<Item>& items)
