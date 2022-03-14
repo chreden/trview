@@ -3,13 +3,16 @@
 #include <vector>
 #include <string>
 #include <unordered_map>
+#include <variant>
 
 namespace trview
 {
     enum class CompareOp
     {
         Equal,
-        NotEqual
+        NotEqual,
+        GreaterThan,
+        LessThan
     };
 
     enum class Op
@@ -25,7 +28,7 @@ namespace trview
         /// <summary>
         /// Function that will return the value from a subject as a string.
         /// </summary>
-        using ValueGetter = std::function<std::string (const T&)>;
+        using ValueGetter = std::function<std::variant<std::string, float> (const T&)>;
         /// <summary>
         /// Function that will return multiple values from a subject as several strings.
         /// </summary>
@@ -66,6 +69,9 @@ namespace trview
         /// <returns>True if there's nothing of consequence.</returns>
         bool empty() const;
         void toggle_visible();
+
+        bool is_match(const std::string& value, const Filter& filter) const;
+        bool is_match(float value, const Filter& filter) const;
 
         std::unordered_map<std::string, ValueGetter> _getters;
         std::unordered_map<std::string, MultiGetter> _multi_getters;

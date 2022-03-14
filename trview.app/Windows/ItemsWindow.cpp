@@ -15,6 +15,9 @@ namespace trview
         _filters.add_getter("Type", [](auto&& item) { return to_utf8(item.type()); });
         _filters.add_getter("#", [](auto&& item) { return std::to_string(item.number()); });
         // TODO: Position
+        _filters.add_getter("X", [](auto&& item) { return item.position().x * trlevel::Scale_X; });
+        _filters.add_getter("Y", [](auto&& item) { return item.position().y * trlevel::Scale_Y; });
+        _filters.add_getter("Z", [](auto&& item) { return item.position().z * trlevel::Scale_Z; });
         _filters.add_getter("Type ID", [](auto&& item) { return std::to_string(item.type_id()); });
         _filters.add_getter("Room", [](auto&& item) { return std::to_string(item.room()); });
         _filters.add_getter("Clear Body", [](auto&& item) { return to_utf8(format_bool(item.clear_body_flag())); });

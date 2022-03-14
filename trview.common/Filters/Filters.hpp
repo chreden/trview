@@ -1,6 +1,7 @@
 #pragma once
 
 #include <external/imgui/imgui.h>
+#include <charconv>
 
 namespace trview
 {
@@ -38,6 +39,43 @@ namespace trview
     }
 
     template <typename T>
+    bool Filters<T>::is_match(const std::string& value, const Filter& filter) const
+    {
+        switch (filter.compare)
+        {
+        case CompareOp::Equal:
+            return value == filter.value;
+        case CompareOp::NotEqual:
+            return value != filter.value;
+        }
+        return false;
+    }
+
+    template <typename T>
+    bool Filters<T>::is_match(float value, const Filter& filter) const
+    {
+        float float_value = 0;
+        auto [_, error] { std::from_chars(filter.value.data(), filter.value.data() + filter.value.size(), float_value) };
+        if (error != std::errc())
+        {
+            return false;
+        }
+
+        switch (filter.compare)
+        {
+        case CompareOp::Equal:
+            return value == float_value;
+        case CompareOp::NotEqual:
+            return value != float_value;
+        case CompareOp::GreaterThan:
+            return value > float_value;
+        case CompareOp::LessThan:
+            return value < float_value;
+        }
+        return false;
+    }
+
+    template <typename T>
     bool Filters<T>::match(const T& value) const
     {
         if (!_enabled || empty())
@@ -53,8 +91,21 @@ namespace trview
             if (getter != _getters.end())
             {
                 const auto getter_value = getter->second(value);
-                const auto filter_result = filter.compare == CompareOp::Equal ? getter_value == filter.value : getter_value != filter.value;
-                match = op == Op::Or ? match | filter_result : match & filter_result;
+                const std::string* value_string = std::get_if<std::string>(&getter_value);
+                if (value_string)
+                {
+                    const auto filter_result = is_match(*value_string, filter);
+                    match = op == Op::Or ? match | filter_result : match & filter_result;
+                }
+                else
+                {
+                    const float* value_float = std::get_if<float>(&getter_value);
+                    if (value_float)
+                    {
+                        const auto filter_result = is_match(*value_float, filter);
+                        match = op == Op::Or ? match | filter_result : match & filter_result;
+                    }
+                }
             }
             else
             {
@@ -126,7 +177,7 @@ namespace trview
                     ImGui::EndCombo();
                 }
                 ImGui::SameLine();
-                std::vector<CompareOp> compare_ops{ CompareOp::Equal, CompareOp::NotEqual };
+                std::vector<CompareOp> compare_ops{ CompareOp::Equal, CompareOp::NotEqual, CompareOp::GreaterThan, CompareOp::LessThan };
                 if (ImGui::BeginCombo(("##filter-compare-op-" + std::to_string(i)).c_str(), compare_op_to_string(filter.compare).c_str()))
                 {
                     for (const auto& compare_op : compare_ops)
@@ -190,6 +241,10 @@ namespace trview
             return "is";
         case CompareOp::NotEqual:
             return "is not";
+        case CompareOp::GreaterThan:
+            return "greater than";
+        case CompareOp::LessThan:
+            return "less than";
         }
         return "?";
     }
