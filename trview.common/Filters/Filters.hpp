@@ -122,12 +122,13 @@ namespace trview
         Op op = Op::Or;
         for (const auto& filter : filters)
         {
+            bool filter_result = false;
+
             const auto& getter = _getters.find(filter.key);
             if (getter != _getters.end())
             {
                 const auto getter_value = getter->second(value);
-                const auto filter_result = is_match(getter_value, filter);
-                match = op == Op::Or ? match | filter_result : match & filter_result;
+                filter_result = is_match(getter_value, filter);
             }
             else
             {
@@ -135,14 +136,11 @@ namespace trview
                 if (multi_getter != _multi_getters.end())
                 {
                     const auto getter_values = multi_getter->second(value);
-                    // const auto found = std::find_if(getter_values.begin(), getter_values.end(), [&](const auto& value) { return is_match(value, filter); }) != getter_values.end();
-                    // const auto filter_result = filter.compare != CompareOp::NotEqual ? !found : found && getter_values.empty();
-                    const auto found = std::find(getter_values.begin(), getter_values.end(), filter.value) != getter_values.end();
-                    const auto filter_result = filter.compare == CompareOp::Equal ? found : !found && !getter_values.empty();
-                    match = op == Op::Or ? match | filter_result : match & filter_result;
+                    filter_result = std::find_if(getter_values.begin(), getter_values.end(), [&](const auto& value) { return is_match(value, filter); }) != getter_values.end();
                 }
             }
 
+            match = op == Op::Or ? match | filter_result : match & filter_result;
             op = filter.op;
 
             if (op == Op::And && !match)

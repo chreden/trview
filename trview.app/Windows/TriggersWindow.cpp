@@ -16,12 +16,12 @@ namespace trview
 
         auto all_trigger_indices = [](TriggerCommandType type, const auto& trigger)
         {
-            std::vector<std::string> indices;
+            std::vector<Filters<ITrigger>::Value> indices;
             for (const auto& command : trigger.commands())
             {
                 if (command.type() == type)
                 {
-                    indices.push_back(std::to_string(command.index()));
+                    indices.push_back(static_cast<float>(command.index()));
                 }
             }
             return indices;

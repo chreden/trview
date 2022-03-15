@@ -34,7 +34,7 @@ namespace trview
         /// <summary>
         /// Function that will return multiple values from a subject as several strings.
         /// </summary>
-        using MultiGetter = std::function<std::vector<std::string> (const T&)>;
+        using MultiGetter = std::function<std::vector<Value> (const T&)>;
 
         struct Filter
         {

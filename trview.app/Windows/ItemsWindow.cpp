@@ -25,12 +25,12 @@ namespace trview
         _filters.add_getter("OCB", [](auto&& item) { return static_cast<float>(item.ocb()); });
         _filters.add_multi_getter("Triggered By", [](auto&& item) 
             {
-                std::vector<std::string> results;
+                std::vector<Filters<Item>::Value> results;
                 for (auto trigger : item.triggers())
                 {
                     if (auto trigger_ptr = trigger.lock())
                     {
-                        results.push_back(std::to_string(trigger_ptr->number()));
+                        results.push_back(static_cast<float>(trigger_ptr->number()));
                     }
                 }
                 return results;
