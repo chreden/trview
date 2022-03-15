@@ -12,7 +12,8 @@ namespace trview
         Equal,
         NotEqual,
         GreaterThan,
-        LessThan
+        LessThan,
+        Between
     };
 
     enum class Op
@@ -25,10 +26,11 @@ namespace trview
     class Filters
     {
     public:
+        using Value = std::variant<std::string, float>;
         /// <summary>
         /// Function that will return the value from a subject as a string.
         /// </summary>
-        using ValueGetter = std::function<std::variant<std::string, float> (const T&)>;
+        using ValueGetter = std::function<Value (const T&)>;
         /// <summary>
         /// Function that will return multiple values from a subject as several strings.
         /// </summary>
@@ -39,8 +41,10 @@ namespace trview
             std::string key;
             CompareOp compare{ CompareOp::Equal };
             std::string value;
-
+            std::string value2;
             Op op{ Op::And };
+
+            int value_count() const;
         };
         std::vector<Filter> filters;
 
@@ -70,6 +74,7 @@ namespace trview
         bool empty() const;
         void toggle_visible();
 
+        bool is_match(const Value& value, const Filter& filter) const;
         bool is_match(const std::string& value, const Filter& filter) const;
         bool is_match(float value, const Filter& filter) const;
 
