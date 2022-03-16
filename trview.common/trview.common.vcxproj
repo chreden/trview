@@ -24,8 +24,6 @@
     <ClInclude Include="Colour.h" />
     <ClInclude Include="Event.h" />
     <ClInclude Include="Files.h" />
-    <ClInclude Include="Filters\Filters.h" />
-    <ClInclude Include="Filters\Filters.hpp" />
     <ClInclude Include="JsonSerializers.h" />
     <ClInclude Include="Maths.h" />
     <ClInclude Include="IFiles.h" />

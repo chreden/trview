@@ -65,12 +65,6 @@
     <ClInclude Include="Mocks\Windows\IShell.h">
       <Filter>Mocks\Windows</Filter>
     </ClInclude>
-    <ClInclude Include="Filters\Filters.h">
-      <Filter>Filters</Filter>
-    </ClInclude>
-    <ClInclude Include="Filters\Filters.hpp">
-      <Filter>Filters</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Size.cpp" />
@@ -130,9 +124,6 @@
     </Filter>
     <Filter Include="Mocks\Windows">
       <UniqueIdentifier>{c6b999cb-3cb8-4d5b-9141-a00ea66d75e0}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Filters">
-      <UniqueIdentifier>{301c5285-bb75-48b6-8600-b9237a22f93c}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

@@ -4,7 +4,7 @@
 #pragma once
 
 #include <trview.common/Windows/IClipboard.h>
-#include <trview.common/Filters/Filters.h>
+#include "../Filters/Filters.h"
 
 #include "IItemsWindow.h"
 #include "../Elements/Item.h"

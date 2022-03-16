@@ -361,7 +361,7 @@
     </ClCompile>
     <ClCompile Include="Elements\ILight.cpp">
       <Filter>Elements\Light</Filter>
-    </ClCompile>    
+    </ClCompile>
     <ClCompile Include="Elements\Light.cpp">
       <Filter>Elements\Light</Filter>
     </ClCompile>
@@ -962,6 +962,12 @@
     <ClInclude Include="UI\SettingsWindow.h">
       <Filter>UI\Settings</Filter>
     </ClInclude>
+    <ClInclude Include="Filters\Filters.h">
+      <Filter>Filters</Filter>
+    </ClInclude>
+    <ClInclude Include="Filters\Filters.hpp">
+      <Filter>Filters</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Windows">
@@ -1065,6 +1071,9 @@
     </Filter>
     <Filter Include="UI\Settings">
       <UniqueIdentifier>{a03b798e-88e6-4f9d-9d44-e81545390315}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Filters">
+      <UniqueIdentifier>{a6d785cd-7837-4b30-8a3f-85d4aa1b995b}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
