@@ -12,8 +12,11 @@ namespace trview
         Equal,
         NotEqual,
         GreaterThan,
+        GreaterThanOrEqual,
         LessThan,
-        Between
+        LessThanOrEqual,
+        Between,
+        BetweenInclusive
     };
 
     enum class Op
@@ -53,8 +56,11 @@ namespace trview
         /// </summary>
         /// <param name="key">The key used in filters</param>
         /// <param name="getter">The getter function.</param>
-        void add_getter(const std::string& key, const ValueGetter& getter);
-        void add_multi_getter(const std::string& key, const MultiGetter& getter);
+        template <typename value_type>
+        void add_getter(const std::string& key, const std::function<value_type (const T&)>& getter);
+
+        template <typename value_type>
+        void add_multi_getter(const std::string& key, const std::function<std::vector<value_type> (const T&)>& getter);
 
         std::vector<std::string> keys() const;
         /// <summary>
@@ -86,6 +92,9 @@ namespace trview
 
     constexpr std::string compare_op_to_string(CompareOp op);
     constexpr std::string op_to_string(Op op);
+
+    template <typename T>
+    constexpr std::vector<CompareOp> compare_ops();
 }
 
 #include "Filters.hpp"

@@ -7,16 +7,16 @@ namespace trview
     TriggersWindow::TriggersWindow(const std::shared_ptr<IClipboard>& clipboard)
         : _clipboard(clipboard)
     {
-        _filters.add_getter("Type", [](auto&& trigger) { return to_utf8(trigger_type_name(trigger.type())); });
-        _filters.add_getter("#", [](auto&& trigger) { return std::to_string(trigger.number()); });
-        _filters.add_getter("Room", [](auto&& trigger) { return std::to_string(trigger.room()); });
-        _filters.add_getter("Flags", [](auto&& trigger) { return to_utf8(format_binary(trigger.flags())); });
-        _filters.add_getter("Only once", [](auto&& trigger) { return to_utf8(format_bool(trigger.only_once())); });
-        _filters.add_getter("Timer", [](auto&& trigger) { return std::to_string(trigger.timer()); });
+        _filters.add_getter<std::string>("Type", [](auto&& trigger) { return to_utf8(trigger_type_name(trigger.type())); });
+        _filters.add_getter<float>("#", [](auto&& trigger) { return trigger.number(); });
+        _filters.add_getter<float>("Room", [](auto&& trigger) { return trigger.room(); });
+        _filters.add_getter<std::string>("Flags", [](auto&& trigger) { return to_utf8(format_binary(trigger.flags())); });
+        _filters.add_getter<std::string>("Only once", [](auto&& trigger) { return to_utf8(format_bool(trigger.only_once())); });
+        _filters.add_getter<float>("Timer", [](auto&& trigger) { return trigger.timer(); });
 
         auto all_trigger_indices = [](TriggerCommandType type, const auto& trigger)
         {
-            std::vector<Filters<ITrigger>::Value> indices;
+            std::vector<float> indices;
             for (const auto& command : trigger.commands())
             {
                 if (command.type() == type)
@@ -29,7 +29,7 @@ namespace trview
 
         auto add_multi_getter = [=](TriggerCommandType type)
         {
-            _filters.add_multi_getter(command_type_name_8(type), [=](auto&& trigger) { return all_trigger_indices(type, trigger); });
+            _filters.add_multi_getter<float>(command_type_name_8(type), [=](auto&& trigger) { return all_trigger_indices(type, trigger); });
         };
 
         add_multi_getter(TriggerCommandType::Object);

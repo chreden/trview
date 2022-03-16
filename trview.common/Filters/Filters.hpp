@@ -11,21 +11,30 @@ namespace trview
         switch (compare)
         {
         case CompareOp::Between:
+        case CompareOp::BetweenInclusive:
             return 2;
         }
         return 1;
     }
 
     template <typename T>
-    void Filters<T>::add_getter(const std::string& key, const ValueGetter& getter)
+    template <typename value_type>
+    void Filters<T>::add_getter(const std::string& key, const std::function<value_type(const T&)>& getter)
     {
-        _getters[key] = getter;
+        _getters[key] = [=](const auto& value) { return getter(value); };
     }
 
     template <typename T>
-    void Filters<T>::add_multi_getter(const std::string& key, const MultiGetter& getter)
+    template <typename value_type>
+    void Filters<T>::add_multi_getter(const std::string& key, const std::function<std::vector<value_type>(const T&)>& getter)
     {
-        _multi_getters[key] = getter;
+        _multi_getters[key] = [=](const auto& value)
+        {
+            const auto results = getter(value);
+            std::vector<Value> values;
+            std::transform(results.begin(), results.end(), std::back_inserter(values), [](const auto& v) { return v; });
+            return values;
+        };
     }
 
     template <typename T>
@@ -102,9 +111,15 @@ namespace trview
             return value != float_value;
         case CompareOp::GreaterThan:
             return value > float_value;
+        case CompareOp::GreaterThanOrEqual:
+            return value >= float_value;
         case CompareOp::LessThan:
             return value < float_value;
+        case CompareOp::LessThanOrEqual:
+            return value <= float_value;
         case CompareOp::Between:
+            return error2 == std::errc() && value > float_value && value < float_value2;
+        case CompareOp::BetweenInclusive:
             return error2 == std::errc() && value >= float_value && value <= float_value2;
         }
         return false;
@@ -199,7 +214,7 @@ namespace trview
                     ImGui::EndCombo();
                 }
                 ImGui::SameLine();
-                std::vector<CompareOp> compare_ops{ CompareOp::Equal, CompareOp::NotEqual, CompareOp::GreaterThan, CompareOp::LessThan, CompareOp::Between };
+                std::vector<CompareOp> compare_ops{ CompareOp::Equal, CompareOp::NotEqual, CompareOp::GreaterThan, CompareOp::GreaterThanOrEqual, CompareOp::LessThan, CompareOp::LessThanOrEqual, CompareOp::Between, CompareOp::BetweenInclusive };
                 if (ImGui::BeginCombo(("##filter-compare-op-" + std::to_string(i)).c_str(), compare_op_to_string(filter.compare).c_str()))
                 {
                     for (const auto& compare_op : compare_ops)
@@ -270,10 +285,16 @@ namespace trview
             return "is not";
         case CompareOp::GreaterThan:
             return "greater than";
+        case CompareOp::GreaterThanOrEqual:
+            return "greater than or equal";
         case CompareOp::LessThan:
             return "less than";
+        case CompareOp::LessThanOrEqual:
+            return "less than or equal";
         case CompareOp::Between:
             return "between";
+        case CompareOp::BetweenInclusive:
+            return "between inclusive";
         }
         return "?";
     }
@@ -288,5 +309,31 @@ namespace trview
             return "Or";
         }
         return "?";
+    }
+
+    template <>
+    constexpr std::vector<CompareOp> compare_ops<float>()
+    {
+        return
+        {
+            CompareOp::Equal,
+            CompareOp::NotEqual,
+            CompareOp::GreaterThan,
+            CompareOp::GreaterThanOrEqual,
+            CompareOp::LessThan,
+            CompareOp::LessThanOrEqual,
+            CompareOp::Between,
+            CompareOp::BetweenInclusive
+        };
+    }
+
+    template <>
+    constexpr std::vector<CompareOp> compare_ops<std::string>()
+    {
+        return
+        {
+            CompareOp::Equal,
+            CompareOp::NotEqual
+        };
     }
 }

@@ -12,25 +12,25 @@ namespace trview
         _tips["Clear Body"] = "If true, removed when Bodybag is triggered";
         _tips["Trigger triggerer"] = "Disables the trigger on the same sector until this item is triggered";
 
-        _filters.add_getter("Type", [](auto&& item) { return to_utf8(item.type()); });
-        _filters.add_getter("#", [](auto&& item) { return static_cast<float>(item.number()); });
-        _filters.add_getter("X", [](auto&& item) { return item.position().x * trlevel::Scale_X; });
-        _filters.add_getter("Y", [](auto&& item) { return item.position().y * trlevel::Scale_Y; });
-        _filters.add_getter("Z", [](auto&& item) { return item.position().z * trlevel::Scale_Z; });
-        _filters.add_getter("Type ID", [](auto&& item) { return static_cast<float>(item.type_id()); });
-        _filters.add_getter("Room", [](auto&& item) { return static_cast<float>(item.room()); });
-        _filters.add_getter("Clear Body", [](auto&& item) { return to_utf8(format_bool(item.clear_body_flag())); });
-        _filters.add_getter("Invisible", [](auto&& item) { return to_utf8(format_bool(item.invisible_flag())); });
-        _filters.add_getter("Flags", [](auto&& item) { return to_utf8(format_binary(item.activation_flags())); });
-        _filters.add_getter("OCB", [](auto&& item) { return static_cast<float>(item.ocb()); });
-        _filters.add_multi_getter("Triggered By", [](auto&& item) 
+        _filters.add_getter<std::string>("Type", [](auto&& item) { return to_utf8(item.type()); });
+        _filters.add_getter<float>("#", [](auto&& item) { return item.number(); });
+        _filters.add_getter<float>("X", [](auto&& item) { return item.position().x * trlevel::Scale_X; });
+        _filters.add_getter<float>("Y", [](auto&& item) { return item.position().y * trlevel::Scale_Y; });
+        _filters.add_getter<float>("Z", [](auto&& item) { return item.position().z * trlevel::Scale_Z; });
+        _filters.add_getter<float>("Type ID", [](auto&& item) { return item.type_id(); });
+        _filters.add_getter<float>("Room", [](auto&& item) { return item.room(); });
+        _filters.add_getter<std::string>("Clear Body", [](auto&& item) { return to_utf8(format_bool(item.clear_body_flag())); });
+        _filters.add_getter<std::string>("Invisible", [](auto&& item) { return to_utf8(format_bool(item.invisible_flag())); });
+        _filters.add_getter<std::string>("Flags", [](auto&& item) { return to_utf8(format_binary(item.activation_flags())); });
+        _filters.add_getter<float>("OCB", [](auto&& item) { return item.ocb(); });
+        _filters.add_multi_getter<float>("Triggered By", [](auto&& item) 
             {
-                std::vector<Filters<Item>::Value> results;
+                std::vector<float> results;
                 for (auto trigger : item.triggers())
                 {
                     if (auto trigger_ptr = trigger.lock())
                     {
-                        results.push_back(static_cast<float>(trigger_ptr->number()));
+                        results.push_back(trigger_ptr->number());
                     }
                 }
                 return results;
