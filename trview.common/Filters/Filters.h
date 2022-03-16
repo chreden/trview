@@ -16,7 +16,8 @@ namespace trview
         LessThan,
         LessThanOrEqual,
         Between,
-        BetweenInclusive
+        BetweenInclusive,
+        Exists
     };
 
     enum class Op
@@ -33,11 +34,11 @@ namespace trview
         /// <summary>
         /// Function that will return the value from a subject as a string.
         /// </summary>
-        using ValueGetter = std::function<Value (const T&)>;
+        using ValueGetter = std::tuple<std::vector<CompareOp>, std::function<Value (const T&)>>;
         /// <summary>
         /// Function that will return multiple values from a subject as several strings.
         /// </summary>
-        using MultiGetter = std::function<std::vector<Value> (const T&)>;
+        using MultiGetter = std::tuple<std::vector<CompareOp>, std::function<std::vector<Value> (const T&)>>;
 
         struct Filter
         {
@@ -83,6 +84,7 @@ namespace trview
         bool is_match(const Value& value, const Filter& filter) const;
         bool is_match(const std::string& value, const Filter& filter) const;
         bool is_match(float value, const Filter& filter) const;
+        std::vector<CompareOp> ops_for_key(const std::string& key) const;
 
         std::unordered_map<std::string, ValueGetter> _getters;
         std::unordered_map<std::string, MultiGetter> _multi_getters;

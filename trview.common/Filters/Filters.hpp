@@ -13,6 +13,8 @@ namespace trview
         case CompareOp::Between:
         case CompareOp::BetweenInclusive:
             return 2;
+        case CompareOp::Exists:
+            return 0;
         }
         return 1;
     }
@@ -21,19 +23,27 @@ namespace trview
     template <typename value_type>
     void Filters<T>::add_getter(const std::string& key, const std::function<value_type(const T&)>& getter)
     {
-        _getters[key] = [=](const auto& value) { return getter(value); };
+        _getters[key] =
+        {
+            compare_ops<value_type>(),
+            [=](const auto& value) { return getter(value); }
+        };
     }
 
     template <typename T>
     template <typename value_type>
     void Filters<T>::add_multi_getter(const std::string& key, const std::function<std::vector<value_type>(const T&)>& getter)
     {
-        _multi_getters[key] = [=](const auto& value)
+        _multi_getters[key] =
         {
-            const auto results = getter(value);
-            std::vector<Value> values;
-            std::transform(results.begin(), results.end(), std::back_inserter(values), [](const auto& v) { return v; });
-            return values;
+            compare_ops<value_type>(),
+            [=](const auto& value)
+            {
+                const auto results = getter(value);
+                std::vector<Value> values;
+                std::transform(results.begin(), results.end(), std::back_inserter(values), [](const auto& v) { return v; });
+                return values;
+            }
         };
     }
 
@@ -93,6 +103,11 @@ namespace trview
     template <typename T>
     bool Filters<T>::is_match(float value, const Filter& filter) const
     {
+        if (filter.compare == CompareOp::Exists)
+        {
+            return true;
+        }
+
         float float_value = 0;
         auto [_, error] { std::from_chars(filter.value.data(), filter.value.data() + filter.value.size(), float_value) };
         if (error != std::errc())
@@ -142,7 +157,7 @@ namespace trview
             const auto& getter = _getters.find(filter.key);
             if (getter != _getters.end())
             {
-                const auto getter_value = getter->second(value);
+                const auto getter_value = std::get<1>(getter->second)(value);
                 filter_result = is_match(getter_value, filter);
             }
             else
@@ -150,7 +165,7 @@ namespace trview
                 const auto& multi_getter = _multi_getters.find(filter.key);
                 if (multi_getter != _multi_getters.end())
                 {
-                    const auto getter_values = multi_getter->second(value);
+                    const auto getter_values = std::get<1>(multi_getter->second)(value);
                     filter_result = std::find_if(getter_values.begin(), getter_values.end(), [&](const auto& value) { return is_match(value, filter); }) != getter_values.end();
                 }
             }
@@ -214,10 +229,11 @@ namespace trview
                     ImGui::EndCombo();
                 }
                 ImGui::SameLine();
-                std::vector<CompareOp> compare_ops{ CompareOp::Equal, CompareOp::NotEqual, CompareOp::GreaterThan, CompareOp::GreaterThanOrEqual, CompareOp::LessThan, CompareOp::LessThanOrEqual, CompareOp::Between, CompareOp::BetweenInclusive };
+
+                auto available_compare_ops = ops_for_key(filter.key);
                 if (ImGui::BeginCombo(("##filter-compare-op-" + std::to_string(i)).c_str(), compare_op_to_string(filter.compare).c_str()))
                 {
-                    for (const auto& compare_op : compare_ops)
+                    for (const auto& compare_op : available_compare_ops)
                     {
                         if (ImGui::Selectable(compare_op_to_string(compare_op).c_str(), compare_op == filter.compare))
                         {
@@ -228,8 +244,11 @@ namespace trview
                     ImGui::EndCombo();
                 }
                 ImGui::SameLine();
-                ImGui::InputText(("##filter-value-" + std::to_string(i)).c_str(), &filter.value);
-                ImGui::SameLine();
+                if (filter.value_count() > 0)
+                {
+                    ImGui::InputText(("##filter-value-" + std::to_string(i)).c_str(), &filter.value);
+                    ImGui::SameLine();
+                }
                 if (filter.value_count() > 1)
                 {
                     ImGui::InputText(("##filter-value2-" + std::to_string(i)).c_str(), &filter.value2);
@@ -275,6 +294,38 @@ namespace trview
         }
     }
 
+    template <typename T>
+    std::vector<CompareOp> Filters<T>::ops_for_key(const std::string& key) const
+    {
+        const auto& getter = _getters.find(key);
+        if (getter != _getters.end())
+        {
+            return std::get<0>(getter->second);
+        }
+        else
+        {
+            const auto& multi_getter = _multi_getters.find(key);
+            if (multi_getter != _multi_getters.end())
+            {
+                auto ops = std::get<0>(multi_getter->second);
+                ops.push_back(CompareOp::Exists);
+                return ops;
+            }
+        }
+
+        return
+        {
+            CompareOp::Equal,
+            CompareOp::NotEqual,
+            CompareOp::GreaterThan,
+            CompareOp::GreaterThanOrEqual,
+            CompareOp::LessThan,
+            CompareOp::LessThanOrEqual,
+            CompareOp::Between,
+            CompareOp::BetweenInclusive
+        };
+    }
+
     constexpr std::string compare_op_to_string(CompareOp op)
     {
         switch (op)
@@ -295,6 +346,8 @@ namespace trview
             return "between";
         case CompareOp::BetweenInclusive:
             return "between inclusive";
+        case CompareOp::Exists:
+            return "is present";
         }
         return "?";
     }

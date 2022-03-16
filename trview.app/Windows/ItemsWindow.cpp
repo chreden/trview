@@ -23,7 +23,7 @@ namespace trview
         _filters.add_getter<std::string>("Invisible", [](auto&& item) { return to_utf8(format_bool(item.invisible_flag())); });
         _filters.add_getter<std::string>("Flags", [](auto&& item) { return to_utf8(format_binary(item.activation_flags())); });
         _filters.add_getter<float>("OCB", [](auto&& item) { return item.ocb(); });
-        _filters.add_multi_getter<float>("Triggered By", [](auto&& item) 
+        _filters.add_multi_getter<float>("Triggered By", [](auto&& item)
             {
                 std::vector<float> results;
                 for (auto trigger : item.triggers())
