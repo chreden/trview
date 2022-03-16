@@ -144,6 +144,9 @@
     <ClCompile Include="Windows\LightsWindowManagerTests.cpp">
       <Filter>Windows</Filter>
     </ClCompile>
+    <ClCompile Include="Filters\FiltersTests.cpp">
+      <Filter>Filters</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Input">
@@ -175,6 +178,9 @@
     </Filter>
     <Filter Include="ImGui">
       <UniqueIdentifier>{eaa20ff6-06ad-48bd-afeb-4dadda155787}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Filters">
+      <UniqueIdentifier>{ab42e6fa-def3-4b06-8902-61c45b15dfda}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
