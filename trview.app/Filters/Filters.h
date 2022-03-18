@@ -30,33 +30,18 @@ namespace trview
     class Filters
     {
     public:
-        /// <summary>
-        /// Add a getter definition to extract values from an object.
-        /// </summary>
-        /// <param name="key">The key used in filters</param>
-        /// <param name="getter">The getter function.</param>
-        template <typename value_type>
-        void add_getter(const std::string& key, const std::function<value_type (const T&)>& getter);
-        template <typename value_type>
-        void add_multi_getter(const std::string& key, const std::function<std::vector<value_type> (const T&)>& getter);
-        std::vector<std::string> keys() const;
-        /// <summary>
-        /// Check whether the object matches the configured filters.
-        /// </summary>
-        /// <param name="value">The object to test.</param>
-        /// <returns>Whether it was a match.</returns>
-        bool match(const T& value) const;
-        void render();
-    private:
-        using Value = std::variant<std::string, float>;
-        /// <summary>
-        /// Function that will return the value from a subject as a string.
-        /// </summary>
-        using ValueGetter = std::tuple<std::vector<CompareOp>, std::function<Value(const T&)>>;
-        /// <summary>
-        /// Function that will return multiple values from a subject as several strings.
-        /// </summary>
-        using MultiGetter = std::tuple<std::vector<CompareOp>, std::function<std::vector<Value>(const T&)>>;
+        struct Names
+        {
+            static const inline std::string Popup{ "Filters" };
+            static const inline std::string FiltersButton{ "Filters##FiltersButton" };
+            static const inline std::string Enable{ "##filter_enabled" };
+            static const inline std::string AddFilter{ "+" };
+            static const inline std::string FilterKey{ "##filter-key-" };
+            static const inline std::string FilterCompareOp{ "##filter-compare-op-" };
+            static const inline std::string FilterValue{ "##filter-value-" };
+            static const inline std::string RemoveFilter{ "X##filter-remove-" };
+            static const inline std::string FilterOp{ "##filter-op-" };
+        };
 
         struct Filter
         {
@@ -68,7 +53,37 @@ namespace trview
 
             int value_count() const;
         };
-        std::vector<Filter> filters;
+
+        /// <summary>
+        /// Add a getter definition to extract values from an object.
+        /// </summary>
+        /// <param name="key">The key used in filters</param>
+        /// <param name="getter">The getter function.</param>
+        template <typename value_type>
+        void add_getter(const std::string& key, const std::function<value_type (const T&)>& getter);
+        template <typename value_type>
+        void add_multi_getter(const std::string& key, const std::function<std::vector<value_type> (const T&)>& getter);
+        /// <summary>
+        /// Check whether the object matches the configured filters.
+        /// </summary>
+        /// <param name="value">The object to test.</param>
+        /// <returns>Whether it was a match.</returns>
+        bool match(const T& value) const;
+        void render();
+        void set_filters(const std::vector<Filter> filters);
+    private:
+        using Value = std::variant<std::string, float>;
+        /// <summary>
+        /// Function that will return the value from a subject as a string.
+        /// </summary>
+        using ValueGetter = std::tuple<std::vector<CompareOp>, std::function<Value(const T&)>>;
+        /// <summary>
+        /// Function that will return multiple values from a subject as several strings.
+        /// </summary>
+        using MultiGetter = std::tuple<std::vector<CompareOp>, std::function<std::vector<Value>(const T&)>>;
+
+        std::vector<Filter> _filters;
+        std::vector<std::string> keys() const;
         /// <summary>
         /// Returns whether there are any filters of consequence.
         /// </summary>

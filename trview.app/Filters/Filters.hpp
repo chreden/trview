@@ -1,6 +1,7 @@
 #pragma once
 
 #include <external/imgui/imgui.h>
+#include <external/imgui/misc/cpp/imgui_stdlib.h>
 #include <charconv>
 
 namespace trview
@@ -65,7 +66,7 @@ namespace trview
     template <typename T>
     bool Filters<T>::empty() const
     {
-        return filters.empty() || std::all_of(filters.begin(), filters.end(), [](auto&& f) { return f.key == "" && f.value == ""; });
+        return _filters.empty() || std::all_of(_filters.begin(), _filters.end(), [](auto&& f) { return f.key == "" && f.value == ""; });
     }
 
     template <typename T>
@@ -96,6 +97,8 @@ namespace trview
             return value == filter.value;
         case CompareOp::NotEqual:
             return value != filter.value;
+        case CompareOp::Exists:
+            return true;
         }
         return false;
     }
@@ -150,7 +153,7 @@ namespace trview
 
         bool match = false;
         Op op = Op::Or;
-        for (const auto& filter : filters)
+        for (const auto& filter : _filters)
         {
             bool filter_result = false;
 
@@ -186,7 +189,7 @@ namespace trview
     {
         if (!_show_filters)
         {
-            ImGui::OpenPopup("Filters");
+            ImGui::OpenPopup(Names::Popup.c_str());
         }
         _show_filters = !_show_filters;
     }
@@ -195,28 +198,28 @@ namespace trview
     void Filters<T>::render()
     {
         bool filter_enabled = _enabled;
-        if (ImGui::Checkbox("##filter_enabled", &filter_enabled))
+        if (ImGui::Checkbox(Names::Enable.c_str(), &filter_enabled))
         {
             _enabled = filter_enabled;
         }
         ImGui::SameLine();
 
-        if (ImGui::Button("Filters"))
+        if (ImGui::Button(Names::FiltersButton.c_str()))
         {
             toggle_visible();
         }
 
-        if (_show_filters && ImGui::BeginPopup("Filters"))
+        if (_show_filters && ImGui::BeginPopup(Names::Popup.c_str()))
         {
             const auto keys = this->keys();
 
             ImGui::Text("Filters");
 
             std::vector<uint32_t> remove;
-            for (uint32_t i = 0; i < filters.size(); ++i)
+            for (uint32_t i = 0; i < _filters.size(); ++i)
             {
-                auto& filter = filters[i];
-                if (ImGui::BeginCombo(("##filter-key-" + std::to_string(i)).c_str(), filter.key.c_str()))
+                auto& filter = _filters[i];
+                if (ImGui::BeginCombo((Names::FilterKey + std::to_string(i)).c_str(), filter.key.c_str()))
                 {
                     for (const auto& key : keys)
                     {
@@ -231,7 +234,7 @@ namespace trview
                 ImGui::SameLine();
 
                 auto available_compare_ops = ops_for_key(filter.key);
-                if (ImGui::BeginCombo(("##filter-compare-op-" + std::to_string(i)).c_str(), compare_op_to_string(filter.compare).c_str()))
+                if (ImGui::BeginCombo((Names::FilterCompareOp + std::to_string(i)).c_str(), compare_op_to_string(filter.compare).c_str()))
                 {
                     for (const auto& compare_op : available_compare_ops)
                     {
@@ -246,23 +249,23 @@ namespace trview
                 ImGui::SameLine();
                 if (filter.value_count() > 0)
                 {
-                    ImGui::InputText(("##filter-value-" + std::to_string(i)).c_str(), &filter.value);
+                    ImGui::InputText((Names::FilterValue + std::to_string(i)).c_str(), &filter.value);
                     ImGui::SameLine();
                 }
                 if (filter.value_count() > 1)
                 {
-                    ImGui::InputText(("##filter-value2-" + std::to_string(i)).c_str(), &filter.value2);
+                    ImGui::InputText((Names::FilterValue + "2-" + std::to_string(i)).c_str(), &filter.value2);
                     ImGui::SameLine();
                 }
-                if (ImGui::Button(("X##" + std::to_string(i)).c_str()))
+                if (ImGui::Button((Names::RemoveFilter + std::to_string(i)).c_str()))
                 {
                     remove.push_back(i);
                 }
 
-                if (i != filters.size() - 1)
+                if (i != _filters.size() - 1)
                 {
                     std::vector<Op> ops{ Op::And, Op::Or };
-                    if (ImGui::BeginCombo(("##filter-op-" + std::to_string(i)).c_str(), op_to_string(filter.op).c_str()))
+                    if (ImGui::BeginCombo((Names::FilterOp + std::to_string(i)).c_str(), op_to_string(filter.op).c_str()))
                     {
                         for (const auto& op : ops)
                         {
@@ -279,12 +282,12 @@ namespace trview
 
             for (auto iter = remove.rbegin(); iter < remove.rend(); ++iter)
             {
-                filters.erase(filters.begin() + *iter);
+                _filters.erase(_filters.begin() + *iter);
             }
 
-            if (ImGui::Button("+"))
+            if (ImGui::Button(Names::AddFilter.c_str()))
             {
-                filters.push_back({});
+                _filters.push_back({});
             }
             ImGui::EndPopup();
         }
@@ -324,6 +327,12 @@ namespace trview
             CompareOp::Between,
             CompareOp::BetweenInclusive
         };
+    }
+
+    template <typename T>
+    void Filters<T>::set_filters(const std::vector<Filter> filters)
+    {
+        _filters = filters;
     }
 
     constexpr std::string compare_op_to_string(CompareOp op)
