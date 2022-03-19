@@ -3,6 +3,7 @@
 #include <trview.common/Windows/IClipboard.h>
 #include "../Elements/ILight.h"
 #include "ILightsWindow.h"
+#include "../Filters/Filters.h"
 
 namespace trview
 {
@@ -50,5 +51,6 @@ namespace trview
         std::weak_ptr<ILight> _global_selected_light;
         uint32_t _current_room{ 0u };
         std::unordered_map<std::string, std::string> _tips;
+        Filters<ILight> _filters;
     };
 }

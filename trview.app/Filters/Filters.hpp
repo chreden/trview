@@ -24,17 +24,32 @@ namespace trview
     template <typename value_type>
     void Filters<T>::add_getter(const std::string& key, const std::function<value_type(const T&)>& getter)
     {
+        add_getter(key, getter, {});
+    }
+
+    template <typename T>
+    template <typename value_type>
+    void Filters<T>::add_getter(const std::string& key, const std::function<value_type(const T&)>& getter, const std::function<bool(const T&)>& predicate)
+    {
         _getters[key] =
         {
             compare_ops<value_type>(),
             available_options<value_type>(),
-            [=](const auto& value) { return getter(value); }
+            [=](const auto& value) { return getter(value); },
+            predicate
         };
     }
 
     template <typename T>
     template <typename value_type>
     void Filters<T>::add_multi_getter(const std::string& key, const std::function<std::vector<value_type>(const T&)>& getter)
+    {
+        add_multi_getter(key, getter, {});
+    }
+
+    template <typename T>
+    template <typename value_type>
+    void Filters<T>::add_multi_getter(const std::string& key, const std::function<std::vector<value_type>(const T&)>& getter, const std::function<bool(const T&)>& predicate)
     {
         _multi_getters[key] =
         {
@@ -46,7 +61,8 @@ namespace trview
                 std::vector<Value> values;
                 std::transform(results.begin(), results.end(), std::back_inserter(values), [](const auto& v) { return v; });
                 return values;
-            }
+            },
+            predicate
         };
     }
 
@@ -177,16 +193,24 @@ namespace trview
             const auto& getter = _getters.find(filter.key);
             if (getter != _getters.end())
             {
-                const auto getter_value = std::get<2>(getter->second)(value);
-                filter_result = is_match(getter_value, filter);
+                const auto getter_predicate = std::get<3>(getter->second);
+                if (!getter_predicate || getter_predicate(value))
+                {
+                    const auto getter_value = std::get<2>(getter->second)(value);
+                    filter_result = is_match(getter_value, filter);
+                }
             }
             else
             {
                 const auto& multi_getter = _multi_getters.find(filter.key);
                 if (multi_getter != _multi_getters.end())
                 {
-                    const auto getter_values = std::get<2>(multi_getter->second)(value);
-                    filter_result = std::find_if(getter_values.begin(), getter_values.end(), [&](const auto& value) { return is_match(value, filter); }) != getter_values.end();
+                    const auto getter_predicate = std::get<3>(getter->second);
+                    if (!getter_predicate || getter_predicate(value))
+                    {
+                        const auto getter_values = std::get<2>(multi_getter->second)(value);
+                        filter_result = std::find_if(getter_values.begin(), getter_values.end(), [&](const auto& value) { return is_match(value, filter); }) != getter_values.end();
+                    }
                 }
             }
 

@@ -7,6 +7,21 @@ namespace trview
         : _clipboard(clipboard)
     {
         _tips["Direction"] = "Direction is inverted in-game. 3D view shows correct direction.";
+
+        _filters.add_getter<std::string>("Type", [](auto&& light) { return to_utf8(light_type_name(light.type())); });
+        _filters.add_getter<float>("#", [](auto&& light) { return light.number(); });
+        _filters.add_getter<float>("Room", [](auto&& light) { return light.room(); });
+        _filters.add_getter<float>("X", [](auto&& light) { return light.position().x * trlevel::Scale_X; });
+        _filters.add_getter<float>("Y", [](auto&& light) { return light.position().y * trlevel::Scale_Y; });
+        _filters.add_getter<float>("Z", [](auto&& light) { return light.position().z * trlevel::Scale_Z; });
+        _filters.add_getter<float>("R", [](auto&& light) { return static_cast<int>(light.colour().r * 255.0f); }, has_colour);
+        _filters.add_getter<float>("G", [](auto&& light) { return static_cast<int>(light.colour().g * 255.0f); }, has_colour);
+        _filters.add_getter<float>("B", [](auto&& light) { return static_cast<int>(light.colour().b * 255.0f); }, has_colour);
+        _filters.add_getter<float>("Intensity", [](auto&& light) { return light.intensity(); });
+        _filters.add_getter<float>("Fade", [](auto&& light) { return light.fade(); });
+        _filters.add_getter<float>("DX", [](auto&& light) { return light.direction().x * trlevel::Scale_X; }, has_direction);
+        _filters.add_getter<float>("DY", [](auto&& light) { return light.direction().y * trlevel::Scale_Y; }, has_direction);
+        _filters.add_getter<float>("DZ", [](auto&& light) { return light.direction().z * trlevel::Scale_Z; }, has_direction);
     }
 
     void LightsWindow::clear_selected_light()
@@ -86,6 +101,9 @@ namespace trview
     {
         if (ImGui::BeginChild(Names::light_list_panel.c_str(), ImVec2(230, 0), true))
         {
+            _filters.render();
+            ImGui::SameLine();
+
             bool track_room = _track_room;
             if (ImGui::Checkbox(Names::track_room.c_str(), &track_room))
             {
@@ -118,7 +136,7 @@ namespace trview
                 for (const auto& light_ptr : _all_lights)
                 {
                     const auto& light = light_ptr.lock();
-                    if (_track_room && light->room() != _current_room)
+                    if (_track_room && light->room() != _current_room || !_filters.match(*light))
                     {
                         continue;
                     }
@@ -220,7 +238,7 @@ namespace trview
                     add_stat("#", std::to_string(selected_light->number()));
                     add_stat("Room", std::to_string(selected_light->room()));
 
-                    if (!(_level_version < trlevel::LevelVersion::Tomb3 || selected_light->type() == trlevel::LightType::FogBulb && _level_version == trlevel::LevelVersion::Tomb4))
+                    if (has_colour(*selected_light))
                     {
                         add_stat("Colour", format_colour(selected_light->colour()), selected_light->colour());
                     }
@@ -229,7 +247,7 @@ namespace trview
                         add_stat("Position", position_text(selected_light->position()));
                     }
 
-                    if (selected_light->type() == trlevel::LightType::Sun || selected_light->type() == trlevel::LightType::Spot)
+                    if (has_direction(*selected_light))
                     {
                         add_stat("Direction", direction_text(selected_light->direction()));
                     }

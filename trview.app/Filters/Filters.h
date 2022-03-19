@@ -61,8 +61,15 @@ namespace trview
         /// <param name="getter">The getter function.</param>
         template <typename value_type>
         void add_getter(const std::string& key, const std::function<value_type (const T&)>& getter);
+
+        template <typename value_type>
+        void add_getter(const std::string& key, const std::function<value_type(const T&)>& getter, const std::function<bool(const T&)>& predicate);
+
         template <typename value_type>
         void add_multi_getter(const std::string& key, const std::function<std::vector<value_type> (const T&)>& getter);
+
+        template <typename value_type>
+        void add_multi_getter(const std::string& key, const std::function<std::vector<value_type>(const T&)>& getter, const std::function<bool(const T&)>& predicate);
         /// <summary>
         /// Check whether the object matches the configured filters.
         /// </summary>
@@ -76,11 +83,11 @@ namespace trview
         /// <summary>
         /// Function that will return the value from a subject as a string.
         /// </summary>
-        using ValueGetter = std::tuple<std::vector<CompareOp>, std::vector<std::string>, std::function<Value(const T&)>>;
+        using ValueGetter = std::tuple<std::vector<CompareOp>, std::vector<std::string>, std::function<Value(const T&)>, std::function<bool(const T&)>>;
         /// <summary>
         /// Function that will return multiple values from a subject as several strings.
         /// </summary>
-        using MultiGetter = std::tuple<std::vector<CompareOp>, std::vector<std::string>, std::function<std::vector<Value>(const T&)>>;
+        using MultiGetter = std::tuple<std::vector<CompareOp>, std::vector<std::string>, std::function<std::vector<Value>(const T&)>, std::function<bool(const T&)>>;
 
         std::vector<Filter> _filters;
         std::vector<std::string> keys() const;
