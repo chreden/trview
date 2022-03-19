@@ -27,6 +27,7 @@ namespace trview
         _getters[key] =
         {
             compare_ops<value_type>(),
+            available_options<value_type>(),
             [=](const auto& value) { return getter(value); }
         };
     }
@@ -38,6 +39,7 @@ namespace trview
         _multi_getters[key] =
         {
             compare_ops<value_type>(),
+            available_options<value_type>(),
             [=](const auto& value)
             {
                 const auto results = getter(value);
@@ -72,18 +74,17 @@ namespace trview
     template <typename T>
     bool Filters<T>::is_match(const Value& value, const Filter& filter) const
     {
-        const std::string* value_string = std::get_if<std::string>(&value);
-        if (value_string)
+        if (const std::string* value_string = std::get_if<std::string>(&value))
         {
             return is_match(*value_string, filter);
         }
-        else
+        else if (const float* value_float = std::get_if<float>(&value))
         {
-            const float* value_float = std::get_if<float>(&value);
-            if (value_float)
-            {
-                return is_match(*value_float, filter);
-            }
+            return is_match(*value_float, filter);
+        }
+        else if (const bool* value_bool = std::get_if<bool>(&value))
+        {
+            return is_match(*value_bool, filter);
         }
         return false;
     }
@@ -144,6 +145,22 @@ namespace trview
     }
 
     template <typename T>
+    bool Filters<T>::is_match(bool value, const Filter& filter) const
+    {
+        const bool actual_value = filter.value == "true";
+        switch (filter.compare)
+        {
+        case CompareOp::Equal:
+            return value == actual_value;
+        case CompareOp::NotEqual:
+            return value != actual_value;
+        case CompareOp::Exists:
+            return true;
+        }
+        return false;
+    }
+
+    template <typename T>
     bool Filters<T>::match(const T& value) const
     {
         if (!_enabled || empty())
@@ -160,7 +177,7 @@ namespace trview
             const auto& getter = _getters.find(filter.key);
             if (getter != _getters.end())
             {
-                const auto getter_value = std::get<1>(getter->second)(value);
+                const auto getter_value = std::get<2>(getter->second)(value);
                 filter_result = is_match(getter_value, filter);
             }
             else
@@ -168,7 +185,7 @@ namespace trview
                 const auto& multi_getter = _multi_getters.find(filter.key);
                 if (multi_getter != _multi_getters.end())
                 {
-                    const auto getter_values = std::get<1>(multi_getter->second)(value);
+                    const auto getter_values = std::get<2>(multi_getter->second)(value);
                     filter_result = std::find_if(getter_values.begin(), getter_values.end(), [&](const auto& value) { return is_match(value, filter); }) != getter_values.end();
                 }
             }
@@ -226,6 +243,18 @@ namespace trview
                         if (ImGui::Selectable(key.c_str(), key == filter.key))
                         {
                             filter.key = key;
+
+                            // If the current value is not in the options then set to one of them.
+                            if (has_options(filter.key))
+                            {
+                                const auto options = options_for_key(filter.key);
+                                bool value_valid = std::find(options.begin(), options.end(), filter.value) != options.end();
+                                if (!value_valid)
+                                {
+                                    filter.value = options.back();
+                                }
+                            }
+
                             ImGui::SetItemDefaultFocus();
                         }
                     }
@@ -247,16 +276,52 @@ namespace trview
                     ImGui::EndCombo();
                 }
                 ImGui::SameLine();
-                if (filter.value_count() > 0)
+
+                if (has_options(filter.key))
                 {
-                    ImGui::InputText((Names::FilterValue + std::to_string(i)).c_str(), &filter.value);
+                    auto available_options = options_for_key(filter.key);
+                    if (filter.value_count() > 0 && ImGui::BeginCombo((Names::FilterValue + std::to_string(i)).c_str(), filter.value.c_str()))
+                    {
+                        for (const auto& option : available_options)
+                        {
+                            if (ImGui::Selectable(option.c_str(), option == filter.value))
+                            {
+                                filter.value = option;
+                                ImGui::SetItemDefaultFocus();
+                            }
+                        }
+                        ImGui::EndCombo();
+                    }
+                    ImGui::SameLine();
+
+                    if (filter.value_count() > 1 && ImGui::BeginCombo((Names::FilterValue + "2-" + std::to_string(i)).c_str(), filter.value2.c_str()))
+                    {
+                        for (const auto& option : available_options)
+                        {
+                            if (ImGui::Selectable(option.c_str(), option == filter.value2))
+                            {
+                                filter.value2 = option;
+                                ImGui::SetItemDefaultFocus();
+                            }
+                        }
+                        ImGui::EndCombo();
+                    }
                     ImGui::SameLine();
                 }
-                if (filter.value_count() > 1)
+                else
                 {
-                    ImGui::InputText((Names::FilterValue + "2-" + std::to_string(i)).c_str(), &filter.value2);
-                    ImGui::SameLine();
+                    if (filter.value_count() > 0)
+                    {
+                        ImGui::InputText((Names::FilterValue + std::to_string(i)).c_str(), &filter.value);
+                        ImGui::SameLine();
+                    }
+                    if (filter.value_count() > 1)
+                    {
+                        ImGui::InputText((Names::FilterValue + "2-" + std::to_string(i)).c_str(), &filter.value2);
+                        ImGui::SameLine();
+                    }
                 }
+
                 if (ImGui::Button((Names::RemoveFilter + std::to_string(i)).c_str()))
                 {
                     remove.push_back(i);
@@ -330,6 +395,44 @@ namespace trview
     }
 
     template <typename T>
+    std::vector<std::string> Filters<T>::options_for_key(const std::string& key) const
+    {
+        const auto& getter = _getters.find(key);
+        if (getter != _getters.end())
+        {
+            return std::get<1>(getter->second);
+        }
+        else
+        {
+            const auto& multi_getter = _multi_getters.find(key);
+            if (multi_getter != _multi_getters.end())
+            {
+                return std::get<1>(multi_getter->second);
+            }
+        }
+        return {};
+    }
+
+    template <typename T>
+    bool Filters<T>::has_options(const std::string& key) const
+    {
+        const auto& getter = _getters.find(key);
+        if (getter != _getters.end())
+        {
+            return !std::get<1>(getter->second).empty();
+        }
+        else
+        {
+            const auto& multi_getter = _multi_getters.find(key);
+            if (multi_getter != _multi_getters.end())
+            {
+                return !std::get<1>(multi_getter->second).empty();
+            }
+        }
+        return false;
+    }
+
+    template <typename T>
     void Filters<T>::set_filters(const std::vector<Filter> filters)
     {
         _filters = filters;
@@ -373,6 +476,16 @@ namespace trview
         return "?";
     }
 
+    template <typename T>
+    constexpr std::vector<CompareOp> compare_ops()
+    {
+        return
+        {
+            CompareOp::Equal,
+            CompareOp::NotEqual
+        };
+    }
+
     template <>
     constexpr std::vector<CompareOp> compare_ops<float>()
     {
@@ -389,13 +502,15 @@ namespace trview
         };
     }
 
-    template <>
-    constexpr std::vector<CompareOp> compare_ops<std::string>()
+    template <typename T>
+    constexpr std::vector<std::string> available_options()
     {
-        return
-        {
-            CompareOp::Equal,
-            CompareOp::NotEqual
-        };
+        return {};
+    }
+
+    template <>
+    constexpr std::vector<std::string> available_options<bool>()
+    {
+        return { "false", "true" };
     }
 }

@@ -612,7 +612,7 @@ namespace trview
         // neighbours
         // triggers
         // itemss
-        _filters.add_getter<std::string>("Water", [](auto&& room) { return to_utf8(format_bool(room.water())); });
+        _filters.add_getter<bool>("Water", [](auto&& room) { return room.water(); });
         _filters.add_getter<std::string>("Bit 1", [](auto&& room) { return to_utf8(format_bool(room.flag(IRoom::Flag::Bit1))); });
         _filters.add_getter<std::string>("Bit 2", [](auto&& room) { return to_utf8(format_bool(room.flag(IRoom::Flag::Bit2))); });
         _filters.add_getter<std::string>("Outside/Bit 3", [](auto&& room) { return to_utf8(format_bool(room.outside())); });

@@ -72,15 +72,15 @@ namespace trview
         void render();
         void set_filters(const std::vector<Filter> filters);
     private:
-        using Value = std::variant<std::string, float>;
+        using Value = std::variant<std::string, float, bool>;
         /// <summary>
         /// Function that will return the value from a subject as a string.
         /// </summary>
-        using ValueGetter = std::tuple<std::vector<CompareOp>, std::function<Value(const T&)>>;
+        using ValueGetter = std::tuple<std::vector<CompareOp>, std::vector<std::string>, std::function<Value(const T&)>>;
         /// <summary>
         /// Function that will return multiple values from a subject as several strings.
         /// </summary>
-        using MultiGetter = std::tuple<std::vector<CompareOp>, std::function<std::vector<Value>(const T&)>>;
+        using MultiGetter = std::tuple<std::vector<CompareOp>, std::vector<std::string>, std::function<std::vector<Value>(const T&)>>;
 
         std::vector<Filter> _filters;
         std::vector<std::string> keys() const;
@@ -93,7 +93,10 @@ namespace trview
         bool is_match(const Value& value, const Filter& filter) const;
         bool is_match(const std::string& value, const Filter& filter) const;
         bool is_match(float value, const Filter& filter) const;
+        bool is_match(bool value, const Filter& filter) const;
         std::vector<CompareOp> ops_for_key(const std::string& key) const;
+        std::vector<std::string> options_for_key(const std::string& key) const;
+        bool has_options(const std::string& key) const;
         std::unordered_map<std::string, ValueGetter> _getters;
         std::unordered_map<std::string, MultiGetter> _multi_getters;
         bool _show_filters{ false };
@@ -105,6 +108,9 @@ namespace trview
 
     template <typename T>
     constexpr std::vector<CompareOp> compare_ops();
+
+    template <typename T>
+    constexpr std::vector<std::string> available_options();
 }
 
 #include "Filters.hpp"
