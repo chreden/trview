@@ -11,7 +11,7 @@ namespace trview
         _filters.add_getter<float>("#", [](auto&& trigger) { return trigger.number(); });
         _filters.add_getter<float>("Room", [](auto&& trigger) { return trigger.room(); });
         _filters.add_getter<std::string>("Flags", [](auto&& trigger) { return to_utf8(format_binary(trigger.flags())); });
-        _filters.add_getter<std::string>("Only once", [](auto&& trigger) { return to_utf8(format_bool(trigger.only_once())); });
+        _filters.add_getter<bool>("Only once", [](auto&& trigger) { return trigger.only_once(); });
         _filters.add_getter<float>("Timer", [](auto&& trigger) { return trigger.timer(); });
 
         auto all_trigger_indices = [](TriggerCommandType type, const auto& trigger)

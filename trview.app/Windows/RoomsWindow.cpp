@@ -613,20 +613,20 @@ namespace trview
         // triggers
         // itemss
         _filters.add_getter<bool>("Water", [](auto&& room) { return room.water(); });
-        _filters.add_getter<std::string>("Bit 1", [](auto&& room) { return to_utf8(format_bool(room.flag(IRoom::Flag::Bit1))); });
-        _filters.add_getter<std::string>("Bit 2", [](auto&& room) { return to_utf8(format_bool(room.flag(IRoom::Flag::Bit2))); });
-        _filters.add_getter<std::string>("Outside/Bit 3", [](auto&& room) { return to_utf8(format_bool(room.outside())); });
-        _filters.add_getter<std::string>("Bit 4", [](auto&& room) { return to_utf8(format_bool(room.flag(IRoom::Flag::Bit4))); });
-        _filters.add_getter<std::string>("Wind/Bit 5", [](auto&& room) { return to_utf8(format_bool(room.flag(IRoom::Flag::Wind))); });
-        _filters.add_getter<std::string>("Bit 6", [](auto&& room) { return to_utf8(format_bool(room.flag(IRoom::Flag::Bit6))); });
-        _filters.add_getter<std::string>("Quicksand/Block Lens Flare/Bit 7", [](auto&& room) { return to_utf8(format_bool(room.flag(IRoom::Flag::Bit7))); });
-        _filters.add_getter<std::string>("Caustics/Bit 8", [](auto&& room) { return to_utf8(format_bool(room.flag(IRoom::Flag::Caustics))); });
-        _filters.add_getter<std::string>("Reflectivity/Bit 9", [](auto&& room) { return to_utf8(format_bool(room.flag(IRoom::Flag::WaterReflectivity))); });
-        _filters.add_getter<std::string>("Snow (NGLE)/Bit 10", [](auto&& room) { return to_utf8(format_bool(room.flag(IRoom::Flag::Bit10))); });
-        _filters.add_getter<std::string>("D/Rain/Bit 11", [](auto&& room) { return to_utf8(format_bool(room.flag(IRoom::Flag::Bit11))); });
-        _filters.add_getter<std::string>("P/Cold/Bit 12", [](auto&& room) { return to_utf8(format_bool(room.flag(IRoom::Flag::Bit12))); });
-        _filters.add_getter<std::string>("Bit 13", [](auto&& room) { return to_utf8(format_bool(room.flag(IRoom::Flag::Bit13))); });
-        _filters.add_getter<std::string>("Bit 14", [](auto&& room) { return to_utf8(format_bool(room.flag(IRoom::Flag::Bit14))); });
-        _filters.add_getter<std::string>("Bit 15", [](auto&& room) { return to_utf8(format_bool(room.flag(IRoom::Flag::Bit15))); });
+        _filters.add_getter<bool>("Bit 1", [](auto&& room) { return room.flag(IRoom::Flag::Bit1); });
+        _filters.add_getter<bool>("Bit 2", [](auto&& room) { return room.flag(IRoom::Flag::Bit2); });
+        _filters.add_getter<bool>("Outside/Bit 3", [](auto&& room) { return room.outside(); });
+        _filters.add_getter<bool>("Bit 4", [](auto&& room) { return room.flag(IRoom::Flag::Bit4); });
+        _filters.add_getter<bool>("Wind/Bit 5", [](auto&& room) { return room.flag(IRoom::Flag::Wind); });
+        _filters.add_getter<bool>("Bit 6", [](auto&& room) { return room.flag(IRoom::Flag::Bit6); });
+        _filters.add_getter<bool>("Quicksand/Block Lens Flare/Bit 7", [](auto&& room) { return room.flag(IRoom::Flag::Bit7); });
+        _filters.add_getter<bool>("Caustics/Bit 8", [](auto&& room) { return room.flag(IRoom::Flag::Caustics); });
+        _filters.add_getter<bool>("Reflectivity/Bit 9", [](auto&& room) { return room.flag(IRoom::Flag::WaterReflectivity); });
+        _filters.add_getter<bool>("Snow (NGLE)/Bit 10", [](auto&& room) { return room.flag(IRoom::Flag::Bit10); });
+        _filters.add_getter<bool>("D/Rain/Bit 11", [](auto&& room) { return room.flag(IRoom::Flag::Bit11); });
+        _filters.add_getter<bool>("P/Cold/Bit 12", [](auto&& room) { return room.flag(IRoom::Flag::Bit12); });
+        _filters.add_getter<bool>("Bit 13", [](auto&& room) { return room.flag(IRoom::Flag::Bit13); });
+        _filters.add_getter<bool>("Bit 14", [](auto&& room) { return room.flag(IRoom::Flag::Bit14); });
+        _filters.add_getter<bool>("Bit 15", [](auto&& room) { return room.flag(IRoom::Flag::Bit15); });
     }
 }
