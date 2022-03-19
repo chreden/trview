@@ -93,6 +93,8 @@ namespace trview
             _map_tooltip.set_text(text);
             _map_tooltip.set_visible(!text.empty());
         };
+
+        _filters.add_getter<std::string>("Water", [](auto&& room) { return to_utf8(format_bool(room.water())); });
     }
 
     void RoomsWindow::set_current_room(uint32_t room)
@@ -257,22 +259,34 @@ namespace trview
     {
         if (ImGui::BeginChild("Rooms List", ImVec2(270, 0), true))
         {
-            bool sync_room = _sync_room;
-            if (ImGui::Checkbox("Sync Room##syncroom", &sync_room))
+            if (ImGui::BeginTable("##controls", 2, 0, ImVec2(-1, 0)))
             {
-                set_sync_room(sync_room);
-            }
-            ImGui::SameLine();
-            bool track_item = _track_item;
-            if (ImGui::Checkbox("Track Item##trackitem", &track_item))
-            {
-                set_track_item(track_item);
-            }
-            ImGui::SameLine();
-            bool track_trigger = _track_trigger;
-            if (ImGui::Checkbox("Track Trigger##tracktrigger", &track_trigger))
-            {
-                set_track_trigger(track_trigger);
+                ImGui::TableNextRow();
+                ImGui::TableNextColumn();
+
+                _filters.render();
+                ImGui::TableNextColumn();
+
+                bool sync_room = _sync_room;
+                if (ImGui::Checkbox("Sync Room##syncroom", &sync_room))
+                {
+                    set_sync_room(sync_room);
+                }
+                ImGui::TableNextColumn();
+
+                bool track_item = _track_item;
+                if (ImGui::Checkbox("Track Item##trackitem", &track_item))
+                {
+                    set_track_item(track_item);
+                }
+                ImGui::TableNextColumn();
+
+                bool track_trigger = _track_trigger;
+                if (ImGui::Checkbox("Track Trigger##tracktrigger", &track_trigger))
+                {
+                    set_track_trigger(track_trigger);
+                }
+                ImGui::EndTable();
             }
 
             if (ImGui::BeginTable("##roomslist", 3, ImGuiTableFlags_Sortable | ImGuiTableFlags_ScrollY | ImGuiTableFlags_SizingFixedSame, ImVec2(-1, -1)))
@@ -303,6 +317,11 @@ namespace trview
                 for (const auto& room : _all_rooms)
                 {
                     auto room_ptr = room.lock();
+
+                    if (!_filters.match(*room_ptr))
+                    {
+                        continue;
+                    }
 
                     ImGui::TableNextRow();
                     ImGui::TableNextColumn();

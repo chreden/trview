@@ -8,6 +8,7 @@
 #include "../UI/Tooltip.h"
 #include "../Elements/Item.h"
 #include "../UI/IMapRenderer.h"
+#include "../Filters/Filters.h"
 
 
 namespace trview
@@ -87,5 +88,7 @@ namespace trview
 
         // Map texture saved so that it is guaranteed to survive until ImGui renders.
         graphics::Texture _map_texture;
+
+        Filters<IRoom> _filters;
     };
 }
