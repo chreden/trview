@@ -33,6 +33,7 @@ namespace trview
             MOCK_METHOD(float, density, (), (const, override));
             MOCK_METHOD(void, set_position, (const DirectX::SimpleMath::Vector3&), (override));
             MOCK_METHOD(void, render_direction, (const ICamera&, const ILevelTextureStorage&), (override));
+            MOCK_METHOD(trlevel::LevelVersion, level_version, (), (const, override));
 
             std::shared_ptr<MockLight> with_number(uint32_t number)
             {

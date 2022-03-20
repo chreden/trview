@@ -37,4 +37,7 @@ namespace trview
 
     bool has_colour(const ILight& light);
     bool has_direction(const ILight& light);
+    bool has_fade(const ILight& light);
+    bool has_intensity(const ILight& light);
+    bool has_position(const ILight& light);
 }

@@ -11,14 +11,14 @@ namespace trview
         _filters.add_getter<std::string>("Type", [](auto&& light) { return to_utf8(light_type_name(light.type())); });
         _filters.add_getter<float>("#", [](auto&& light) { return light.number(); });
         _filters.add_getter<float>("Room", [](auto&& light) { return light.room(); });
-        _filters.add_getter<float>("X", [](auto&& light) { return light.position().x * trlevel::Scale_X; });
-        _filters.add_getter<float>("Y", [](auto&& light) { return light.position().y * trlevel::Scale_Y; });
-        _filters.add_getter<float>("Z", [](auto&& light) { return light.position().z * trlevel::Scale_Z; });
+        _filters.add_getter<float>("X", [](auto&& light) { return light.position().x * trlevel::Scale_X; }, has_position);
+        _filters.add_getter<float>("Y", [](auto&& light) { return light.position().y * trlevel::Scale_Y; }, has_position);
+        _filters.add_getter<float>("Z", [](auto&& light) { return light.position().z * trlevel::Scale_Z; }, has_position);
         _filters.add_getter<float>("R", [](auto&& light) { return static_cast<int>(light.colour().r * 255.0f); }, has_colour);
         _filters.add_getter<float>("G", [](auto&& light) { return static_cast<int>(light.colour().g * 255.0f); }, has_colour);
         _filters.add_getter<float>("B", [](auto&& light) { return static_cast<int>(light.colour().b * 255.0f); }, has_colour);
-        _filters.add_getter<float>("Intensity", [](auto&& light) { return light.intensity(); });
-        _filters.add_getter<float>("Fade", [](auto&& light) { return light.fade(); });
+        _filters.add_getter<float>("Intensity", [](auto&& light) { return light.intensity(); }, has_intensity);
+        _filters.add_getter<float>("Fade", [](auto&& light) { return light.fade(); }, has_fade);
         _filters.add_getter<float>("DX", [](auto&& light) { return light.direction().x * trlevel::Scale_X; }, has_direction);
         _filters.add_getter<float>("DY", [](auto&& light) { return light.direction().y * trlevel::Scale_Y; }, has_direction);
         _filters.add_getter<float>("DZ", [](auto&& light) { return light.direction().z * trlevel::Scale_Z; }, has_direction);
@@ -242,7 +242,8 @@ namespace trview
                     {
                         add_stat("Colour", format_colour(selected_light->colour()), selected_light->colour());
                     }
-                    if (selected_light->type() != trlevel::LightType::Sun)
+
+                    if (has_position(*selected_light))
                     {
                         add_stat("Position", position_text(selected_light->position()));
                     }
@@ -252,12 +253,12 @@ namespace trview
                         add_stat("Direction", direction_text(selected_light->direction()));
                     }
 
-                    if (_level_version < trlevel::LevelVersion::Tomb5 && selected_light->type() != trlevel::LightType::Sun)
+                    if (has_intensity(*selected_light))
                     {
                         add_stat("Intensity", std::to_string(selected_light->intensity()));
                     }
 
-                    if (_level_version < trlevel::LevelVersion::Tomb4 && selected_light->type() != trlevel::LightType::Sun)
+                    if (has_fade(*selected_light))
                     {
                         add_stat("Fade", std::to_string(selected_light->fade()));
                     }
