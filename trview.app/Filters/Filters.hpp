@@ -205,7 +205,7 @@ namespace trview
                 const auto& multi_getter = _multi_getters.find(filter.key);
                 if (multi_getter != _multi_getters.end())
                 {
-                    const auto getter_predicate = std::get<3>(getter->second);
+                    const auto getter_predicate = std::get<3>(multi_getter->second);
                     if (!getter_predicate || getter_predicate(value))
                     {
                         const auto getter_values = std::get<2>(multi_getter->second)(value);
