@@ -183,7 +183,7 @@ TEST(LightsWindow, PointLightStatsTR2)
 TEST(LightsWindow, PointLightStatsShownTR3)
 {
     auto window = register_test_module().build();
-    auto light1 = mock_shared<MockLight>()->with_number(0)->with_type(trlevel::LightType::Point);
+    auto light1 = mock_shared<MockLight>()->with_number(0)->with_type(trlevel::LightType::Point)->with_level_version(trlevel::LevelVersion::Tomb3);
     window->set_lights({ light1 });
     window->set_selected_light(light1);
     window->set_level_version(trlevel::LevelVersion::Tomb3);
@@ -208,7 +208,7 @@ TEST(LightsWindow, PointLightStatsShownTR3)
 TEST(LightsWindow, PointLightStatsShownTR4)
 {
     auto window = register_test_module().build();
-    auto light1 = mock_shared<MockLight>()->with_number(0)->with_type(trlevel::LightType::Point);
+    auto light1 = mock_shared<MockLight>()->with_number(0)->with_type(trlevel::LightType::Point)->with_level_version(trlevel::LevelVersion::Tomb4);
     window->set_lights({ light1 });
     window->set_selected_light(light1);
     window->set_level_version(trlevel::LevelVersion::Tomb4);
@@ -233,7 +233,7 @@ TEST(LightsWindow, PointLightStatsShownTR4)
 TEST(LightsWindow, SpotLightStatsShown)
 {
     auto window = register_test_module().build();
-    auto light1 = mock_shared<MockLight>()->with_number(0)->with_type(trlevel::LightType::Spot);
+    auto light1 = mock_shared<MockLight>()->with_number(0)->with_type(trlevel::LightType::Spot)->with_level_version(trlevel::LevelVersion::Tomb4);
     window->set_lights({ light1 });
     window->set_selected_light(light1);
     window->set_level_version(trlevel::LevelVersion::Tomb4);
@@ -303,7 +303,7 @@ TEST(LightsWindow, FogBulbStatsShown)
 TEST(LightsWindow, ShadowStatsShown)
 {
     auto window = register_test_module().build();
-    auto light1 = mock_shared<MockLight>()->with_number(0)->with_type(trlevel::LightType::Shadow);
+    auto light1 = mock_shared<MockLight>()->with_number(0)->with_type(trlevel::LightType::Shadow)->with_level_version(trlevel::LevelVersion::Tomb4);
     window->set_lights({ light1 });
     window->set_selected_light(light1);
     window->set_level_version(trlevel::LevelVersion::Tomb4);

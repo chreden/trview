@@ -52,6 +52,12 @@ namespace trview
                 ON_CALL(*this, type).WillByDefault(testing::Return(type));
                 return shared_from_this();
             }
+
+            std::shared_ptr<MockLight> with_level_version(trlevel::LevelVersion version)
+            {
+                ON_CALL(*this, level_version).WillByDefault(testing::Return(version));
+                return shared_from_this();
+            }
         };
     }
 }
