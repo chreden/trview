@@ -67,6 +67,13 @@ namespace trview
     }
 
     template <typename T>
+    void Filters<T>::clear_all_getters()
+    {
+        _getters.clear();
+        _multi_getters.clear();
+    }
+
+    template <typename T>
     std::vector<std::string> Filters<T>::keys() const
     {
         std::vector<std::string> result;
