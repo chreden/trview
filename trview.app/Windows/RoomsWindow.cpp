@@ -451,7 +451,7 @@ namespace trview
                         ImGui::TableNextColumn();
 
                         ImGui::Text("Properties");
-                        if (ImGui::BeginTable(Names::properties.c_str(), 2, ImGuiTableFlags_ScrollY | ImGuiTableFlags_SizingFixedFit, ImVec2(170, 150)))
+                        if (ImGui::BeginTable(Names::properties.c_str(), 2, ImGuiTableFlags_ScrollY | ImGuiTableFlags_SizingFixedFit, ImVec2(0, 150)))
                         {
                             ImGui::TableSetupColumn("Name");
                             ImGui::TableSetupColumn("Value");
