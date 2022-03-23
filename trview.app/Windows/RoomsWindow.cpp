@@ -605,13 +605,66 @@ namespace trview
 
     void RoomsWindow::generate_filters()
     {
-        // xyz
         _filters.add_getter<float>("X", [](auto&& room) { return room.info().x; });
         _filters.add_getter<float>("Y", [](auto&& room) { return room.info().yBottom; });
         _filters.add_getter<float>("Z", [](auto&& room) { return room.info().z; });
-        // neighbours
-        // triggers
-        // itemss
+        _filters.add_multi_getter<float>("Neighbours", [](auto&& room)
+            {
+                std::vector<float> results;
+                const auto neighbours = room.neighbours();
+                std::copy(neighbours.begin(), neighbours.end(), std::back_inserter(results));
+                return results;
+            });
+        _filters.add_multi_getter<float>("Trigger Index", [&](auto&& room)
+            {
+                std::vector<float> results;
+                for (const auto& trigger : _all_triggers)
+                {
+                    const auto trigger_ptr = trigger.lock();
+                    if (trigger_ptr && trigger_ptr->room() == room.number())
+                    {
+                        results.push_back(trigger_ptr->number());
+                    }
+                }
+                return results;
+            });
+        _filters.add_multi_getter<std::string>("Trigger Type", [&](auto&& room)
+            {
+                std::vector<std::string> results;
+                for (const auto& trigger : _all_triggers)
+                {
+                    const auto trigger_ptr = trigger.lock();
+                    if (trigger_ptr && trigger_ptr->room() == room.number())
+                    {
+                        results.push_back(to_utf8(trigger_type_name(trigger_ptr->type())));
+                    }
+                }
+                return results;
+            });
+        _filters.add_multi_getter<float>("Item Index", [&](auto&& room)
+            {
+                std::vector<float> results;
+                for (const auto& item : _all_items)
+                {
+                    if (item.room() == room.number())
+                    {
+                        results.push_back(item.number());
+                    }
+                }
+                return results;
+            });
+        _filters.add_multi_getter<std::string>("Item Type", [&](auto&& room)
+            {
+                std::vector<std::string> results;
+                for (const auto& item : _all_items)
+                {
+                    if (item.room() == room.number())
+                    {
+                        results.push_back(to_utf8(item.type()));
+                    }
+                }
+                return results;
+            });
         _filters.add_getter<bool>("Water", [](auto&& room) { return room.water(); });
         _filters.add_getter<bool>("Bit 1", [](auto&& room) { return room.flag(IRoom::Flag::Bit1); });
         _filters.add_getter<bool>("Bit 2", [](auto&& room) { return room.flag(IRoom::Flag::Bit2); });
