@@ -63,13 +63,25 @@ namespace trview
         void add_getter(const std::string& key, const std::function<value_type (const T&)>& getter);
 
         template <typename value_type>
+        void add_getter(const std::string& key, const std::vector<std::string>& options, const std::function<value_type(const T&)>& getter);
+
+        template <typename value_type>
         void add_getter(const std::string& key, const std::function<value_type(const T&)>& getter, const std::function<bool(const T&)>& predicate);
+
+        template <typename value_type>
+        void add_getter(const std::string& key, const std::vector<std::string>& options, const std::function<value_type(const T&)>& getter, const std::function<bool(const T&)>& predicate);
 
         template <typename value_type>
         void add_multi_getter(const std::string& key, const std::function<std::vector<value_type> (const T&)>& getter);
 
         template <typename value_type>
+        void add_multi_getter(const std::string& key, const std::vector<std::string>& options, const std::function<std::vector<value_type>(const T&)>& getter);
+
+        template <typename value_type>
         void add_multi_getter(const std::string& key, const std::function<std::vector<value_type>(const T&)>& getter, const std::function<bool(const T&)>& predicate);
+
+        template <typename value_type>
+        void add_multi_getter(const std::string& key, const std::vector<std::string>& options, const std::function<std::vector<value_type>(const T&)>& getter, const std::function<bool(const T&)>& predicate);
 
         void clear_all_getters();
         /// <summary>

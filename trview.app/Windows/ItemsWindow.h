@@ -46,6 +46,7 @@ namespace trview
         void render_item_details();
         bool render_items_window();
         void set_local_selected_item(const Item& item);
+        void setup_filters();
 
         std::string _id{ "Items 0" };
         std::vector<Item> _all_items;

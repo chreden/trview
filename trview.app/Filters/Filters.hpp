@@ -29,12 +29,26 @@ namespace trview
 
     template <typename T>
     template <typename value_type>
+    void Filters<T>::add_getter(const std::string& key, const std::vector<std::string>& options, const std::function<value_type(const T&)>& getter)
+    {
+        add_getter(key, options, getter, {});
+    }
+
+    template <typename T>
+    template <typename value_type>
     void Filters<T>::add_getter(const std::string& key, const std::function<value_type(const T&)>& getter, const std::function<bool(const T&)>& predicate)
+    {
+        add_getter(key, available_options<value_type>(), getter, {});
+    }
+
+    template <typename T>
+    template <typename value_type>
+    void Filters<T>::add_getter(const std::string& key, const std::vector<std::string>& options, const std::function<value_type(const T&)>& getter, const std::function<bool(const T&)>& predicate)
     {
         _getters[key] =
         {
             compare_ops<value_type>(),
-            available_options<value_type>(),
+            options,
             [=](const auto& value) { return getter(value); },
             predicate
         };
@@ -49,12 +63,26 @@ namespace trview
 
     template <typename T>
     template <typename value_type>
+    void Filters<T>::add_multi_getter(const std::string& key, const std::vector<std::string>& options, const std::function<std::vector<value_type>(const T&)>& getter)
+    {
+        add_multi_getter(key, options, getter, {});
+    }
+
+    template <typename T>
+    template <typename value_type>
     void Filters<T>::add_multi_getter(const std::string& key, const std::function<std::vector<value_type>(const T&)>& getter, const std::function<bool(const T&)>& predicate)
+    {
+        add_multi_getter(key, available_options<value_type>(), getter, predicate);
+    }
+
+    template <typename T>
+    template <typename value_type>
+    void Filters<T>::add_multi_getter(const std::string& key, const std::vector<std::string>& options, const std::function<std::vector<value_type>(const T&)>& getter, const std::function<bool(const T&)>& predicate)
     {
         _multi_getters[key] =
         {
             compare_ops<value_type>(),
-            available_options<value_type>(),
+            options,
             [=](const auto& value)
             {
                 const auto results = getter(value);
