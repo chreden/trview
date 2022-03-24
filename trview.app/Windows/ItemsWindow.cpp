@@ -326,6 +326,7 @@ namespace trview
 
     void ItemsWindow::setup_filters()
     {
+        _filters.clear_all_getters();
         std::set<std::string> available_types;
         for (const auto& item : _all_items)
         {

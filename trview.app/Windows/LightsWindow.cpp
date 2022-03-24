@@ -39,6 +39,7 @@ namespace trview
     void LightsWindow::set_lights(const std::vector<std::weak_ptr<ILight>>& lights)
     {
         _all_lights = lights;
+        setup_filters();
     }
 
     void LightsWindow::set_selected_light(const std::weak_ptr<ILight>& light)
@@ -63,7 +64,6 @@ namespace trview
     void LightsWindow::set_level_version(trlevel::LevelVersion version)
     {
         _level_version = version;
-        setup_filters();
     }
 
     void LightsWindow::set_sync_light(bool value)
@@ -307,7 +307,15 @@ namespace trview
     void LightsWindow::setup_filters()
     {
         _filters.clear_all_getters();
-        _filters.add_getter<std::string>("Type", [](auto&& light) { return to_utf8(light_type_name(light.type())); });
+        std::set<std::string> available_types;
+        for (const auto& light : _all_lights)
+        {
+            if (auto light_ptr = light.lock())
+            {
+                available_types.insert(to_utf8(light_type_name(light_ptr->type())));
+            }
+        }
+        _filters.add_getter<std::string>("Type", { available_types.begin(), available_types.end() }, [](auto&& light) { return to_utf8(light_type_name(light.type())); });
         _filters.add_getter<float>("#", [](auto&& light) { return light.number(); });
         _filters.add_getter<float>("Room", [](auto&& light) { return light.room(); });
         _filters.add_getter<float>("X", [](auto&& light) { return light.position().x * trlevel::Scale_X; }, has_position);
