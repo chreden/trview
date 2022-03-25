@@ -7,45 +7,7 @@ namespace trview
     TriggersWindow::TriggersWindow(const std::shared_ptr<IClipboard>& clipboard)
         : _clipboard(clipboard)
     {
-        _filters.add_getter<std::string>("Type", [](auto&& trigger) { return to_utf8(trigger_type_name(trigger.type())); });
-        _filters.add_getter<float>("#", [](auto&& trigger) { return trigger.number(); });
-        _filters.add_getter<float>("Room", [](auto&& trigger) { return trigger.room(); });
-        _filters.add_getter<std::string>("Flags", [](auto&& trigger) { return to_utf8(format_binary(trigger.flags())); });
-        _filters.add_getter<bool>("Only once", [](auto&& trigger) { return trigger.only_once(); });
-        _filters.add_getter<float>("Timer", [](auto&& trigger) { return trigger.timer(); });
-
-        auto all_trigger_indices = [](TriggerCommandType type, const auto& trigger)
-        {
-            std::vector<float> indices;
-            for (const auto& command : trigger.commands())
-            {
-                if (command.type() == type)
-                {
-                    indices.push_back(static_cast<float>(command.index()));
-                }
-            }
-            return indices;
-        };
-
-        auto add_multi_getter = [=](TriggerCommandType type)
-        {
-            _filters.add_multi_getter<float>(command_type_name_8(type), [=](auto&& trigger) { return all_trigger_indices(type, trigger); });
-        };
-
-        add_multi_getter(TriggerCommandType::Object);
-        add_multi_getter(TriggerCommandType::Camera);
-        add_multi_getter(TriggerCommandType::UnderwaterCurrent);
-        add_multi_getter(TriggerCommandType::FlipMap);
-        add_multi_getter(TriggerCommandType::FlipOn);
-        add_multi_getter(TriggerCommandType::FlipOff);
-        add_multi_getter(TriggerCommandType::LookAtItem);
-        add_multi_getter(TriggerCommandType::EndLevel);
-        add_multi_getter(TriggerCommandType::PlaySoundtrack);
-        add_multi_getter(TriggerCommandType::Flipeffect);
-        add_multi_getter(TriggerCommandType::SecretFound);
-        add_multi_getter(TriggerCommandType::ClearBodies);
-        add_multi_getter(TriggerCommandType::Flyby);
-        add_multi_getter(TriggerCommandType::Cutscene);
+        setup_filters();
     }
 
     void TriggersWindow::set_triggers(const std::vector<std::weak_ptr<ITrigger>>& triggers)
@@ -65,6 +27,8 @@ namespace trview
         std::vector<std::string> all_commands{ "All", "Flipmaps" };
         std::transform(command_set.begin(), command_set.end(), std::back_inserter(all_commands), command_type_name_8);
         _all_commands = all_commands;
+
+        setup_filters();
     }
 
     void TriggersWindow::update_triggers(const std::vector<std::weak_ptr<ITrigger>>& triggers)
@@ -405,5 +369,57 @@ namespace trview
         {
             _local_selected_trigger_commands = selected_trigger->commands();
         }
+    }
+
+    void TriggersWindow::setup_filters()
+    {
+        _filters.clear_all_getters();
+        std::set<std::string> available_types;
+        for (const auto& trigger : _all_triggers)
+        {
+            if (auto trigger_ptr = trigger.lock())
+            {
+                available_types.insert(to_utf8(trigger_type_name(trigger_ptr->type())));
+            }
+        }
+        _filters.add_getter<std::string>("Type", { available_types.begin(), available_types.end() }, [](auto&& trigger) { return to_utf8(trigger_type_name(trigger.type())); });
+        _filters.add_getter<float>("#", [](auto&& trigger) { return trigger.number(); });
+        _filters.add_getter<float>("Room", [](auto&& trigger) { return trigger.room(); });
+        _filters.add_getter<std::string>("Flags", [](auto&& trigger) { return to_utf8(format_binary(trigger.flags())); });
+        _filters.add_getter<bool>("Only once", [](auto&& trigger) { return trigger.only_once(); });
+        _filters.add_getter<float>("Timer", [](auto&& trigger) { return trigger.timer(); });
+
+        auto all_trigger_indices = [](TriggerCommandType type, const auto& trigger)
+        {
+            std::vector<float> indices;
+            for (const auto& command : trigger.commands())
+            {
+                if (command.type() == type)
+                {
+                    indices.push_back(static_cast<float>(command.index()));
+                }
+            }
+            return indices;
+        };
+
+        auto add_multi_getter = [=](TriggerCommandType type)
+        {
+            _filters.add_multi_getter<float>(command_type_name_8(type), [=](auto&& trigger) { return all_trigger_indices(type, trigger); });
+        };
+
+        add_multi_getter(TriggerCommandType::Object);
+        add_multi_getter(TriggerCommandType::Camera);
+        add_multi_getter(TriggerCommandType::UnderwaterCurrent);
+        add_multi_getter(TriggerCommandType::FlipMap);
+        add_multi_getter(TriggerCommandType::FlipOn);
+        add_multi_getter(TriggerCommandType::FlipOff);
+        add_multi_getter(TriggerCommandType::LookAtItem);
+        add_multi_getter(TriggerCommandType::EndLevel);
+        add_multi_getter(TriggerCommandType::PlaySoundtrack);
+        add_multi_getter(TriggerCommandType::Flipeffect);
+        add_multi_getter(TriggerCommandType::SecretFound);
+        add_multi_getter(TriggerCommandType::ClearBodies);
+        add_multi_getter(TriggerCommandType::Flyby);
+        add_multi_getter(TriggerCommandType::Cutscene);
     }
 }

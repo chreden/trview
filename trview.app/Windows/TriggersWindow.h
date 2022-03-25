@@ -47,6 +47,7 @@ namespace trview
         void render_trigger_details();
         bool render_triggers_window();
         void set_local_selected_trigger(const std::weak_ptr<ITrigger>& trigger);
+        void setup_filters();
 
         std::string _id{ "Triggers 0" };
         std::vector<Item> _all_items;
