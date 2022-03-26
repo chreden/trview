@@ -2,7 +2,7 @@
 
 #include <vector>
 #include <string>
-#include <unordered_map>
+#include <map>
 #include <variant>
 
 namespace trview
@@ -51,7 +51,7 @@ namespace trview
             std::string value2;
             Op op{ Op::And };
 
-            int value_count() const noexcept
+            int value_count() const noexcept;
         };
 
         /// <summary>
@@ -173,14 +173,14 @@ namespace trview
         std::vector<CompareOp> ops_for_key(const std::string& key) const;
         std::vector<std::string> options_for_key(const std::string& key) const;
         bool has_options(const std::string& key) const;
-        std::unordered_map<std::string, ValueGetter> _getters;
-        std::unordered_map<std::string, MultiGetter> _multi_getters;
+        std::map<std::string, ValueGetter> _getters;
+        std::map<std::string, MultiGetter> _multi_getters;
         bool _show_filters{ false };
         bool _enabled{ true };
     };
 
-    constexpr std::string to_string(CompareOp op);
-    constexpr std::string to_string(Op op);
+    constexpr std::string to_string(CompareOp op) noexcept;
+    constexpr std::string to_string(Op op) noexcept;
 
     /// <summary>
     /// Get the <see cref="CompareOp" />s that a type supports.

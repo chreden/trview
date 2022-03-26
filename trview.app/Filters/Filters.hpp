@@ -497,7 +497,7 @@ namespace trview
         _filters = filters;
     }
 
-    constexpr std::string to_string(CompareOp op)
+    constexpr std::string to_string(CompareOp op) noexcept
     {
         switch (op)
         {
@@ -523,7 +523,7 @@ namespace trview
         return "?";
     }
 
-    constexpr std::string to_string(Op op)
+    constexpr std::string to_string(Op op) noexcept
     {
         switch (op)
         {
