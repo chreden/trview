@@ -55,34 +55,72 @@ namespace trview
         };
 
         /// <summary>
-        /// Add a getter definition to extract values from an object.
+        /// Add a getter definition to extract a value from an object.
         /// </summary>
         /// <param name="key">The key used in filters</param>
         /// <param name="getter">The getter function.</param>
         template <typename value_type>
         void add_getter(const std::string& key, const std::function<value_type (const T&)>& getter);
-
+        /// <summary>
+        /// Add a getter definition to extract a value from an object with specific options.
+        /// </summary>
+        /// <param name="key">The key used in filters.</param>
+        /// <param name="options">List of possible options.</param>
+        /// <param name="getter">The getter function.</param>
         template <typename value_type>
         void add_getter(const std::string& key, const std::vector<std::string>& options, const std::function<value_type(const T&)>& getter);
-
+        /// <summary>
+        /// Add a getter definition to extract a value from an object with a predicate.
+        /// </summary>
+        /// <param name="key">The key used in filters.</param>
+        /// <param name="getter">The getter function.</param>
+        /// <param name="predicate">Predicate function to determine whether a specific object supports this getter.</param>
         template <typename value_type>
         void add_getter(const std::string& key, const std::function<value_type(const T&)>& getter, const std::function<bool(const T&)>& predicate);
-
+        /// <summary>
+        /// Add a getter definition to extract a value from an object with specific options and a predicate.
+        /// </summary>
+        /// <param name="key">The key used in filters.</param>
+        /// <param name="options">List of possible options.</param>
+        /// <param name="getter">The getter function.</param>
+        /// <param name="predicate">Predicate function to determine whether a specific object supports this getter.</param>
         template <typename value_type>
         void add_getter(const std::string& key, const std::vector<std::string>& options, const std::function<value_type(const T&)>& getter, const std::function<bool(const T&)>& predicate);
-
+        /// <summary>
+        /// Add a getter definition to extract multiple values from an object.
+        /// </summary>
+        /// <param name="key">The key used in filters</param>
+        /// <param name="getter">The getter function.</param>
         template <typename value_type>
         void add_multi_getter(const std::string& key, const std::function<std::vector<value_type> (const T&)>& getter);
-
+        /// <summary>
+        /// Add a getter definition to extract multiple values from an object with specific options.
+        /// </summary>
+        /// <param name="key">The key used in filters.</param>
+        /// <param name="options">List of possible options.</param>
+        /// <param name="getter">The getter function.</param>
         template <typename value_type>
         void add_multi_getter(const std::string& key, const std::vector<std::string>& options, const std::function<std::vector<value_type>(const T&)>& getter);
-
+        /// <summary>
+        /// Add a getter definition to extract multiple values from an object with a predicate.
+        /// </summary>
+        /// <param name="key">The key used in filters.</param>
+        /// <param name="getter">The getter function.</param>
+        /// <param name="predicate">Predicate function to determine whether a specific object supports this getter.</param>
         template <typename value_type>
         void add_multi_getter(const std::string& key, const std::function<std::vector<value_type>(const T&)>& getter, const std::function<bool(const T&)>& predicate);
-
+        /// <summary>
+        /// Add a getter definition to extract multiple values from an object with specific options and a predicate.
+        /// </summary>
+        /// <param name="key">The key used in filters.</param>
+        /// <param name="options">List of possible options.</param>
+        /// <param name="getter">The getter function.</param>
+        /// <param name="predicate">Predicate function to determine whether a specific object supports this getter.</param>
         template <typename value_type>
         void add_multi_getter(const std::string& key, const std::vector<std::string>& options, const std::function<std::vector<value_type>(const T&)>& getter, const std::function<bool(const T&)>& predicate);
-
+        /// <summary>
+        /// Remove all getters and multi getters
+        /// </summary>
         void clear_all_getters();
         /// <summary>
         /// Check whether the object matches the configured filters.
@@ -90,7 +128,14 @@ namespace trview
         /// <param name="value">The object to test.</param>
         /// <returns>Whether it was a match.</returns>
         bool match(const T& value) const;
+        /// <summary>
+        /// Render the filters button and popup.
+        /// </summary>
         void render();
+        /// <summary>
+        /// Set the filters to a specific value.
+        /// </summary>
+        /// <param name="filters">The filters to use.</param>
         void set_filters(const std::vector<Filter> filters);
     private:
         using Value = std::variant<std::string, float, bool>;
@@ -137,9 +182,19 @@ namespace trview
     constexpr std::string compare_op_to_string(CompareOp op);
     constexpr std::string op_to_string(Op op);
 
+    /// <summary>
+    /// Get the <see cref="CompareOp" />s that a type supports.
+    /// </summary>
+    /// <typeparam name="T">The type to check.</typeparam>
+    /// <returns>Supported <see cref="CompareOp"/>s</returns>
     template <typename T>
     constexpr std::vector<CompareOp> compare_ops();
 
+    /// <summary>
+    /// Get the acceptable values for a type.
+    /// </summary>
+    /// <typeparam name="T">Type to check.</typeparam>
+    /// <returns>The acceptable options. Emtpy means that there are no restrictions.</returns>
     template <typename T>
     constexpr std::vector<std::string> available_options();
 }
