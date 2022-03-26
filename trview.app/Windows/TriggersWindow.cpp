@@ -402,9 +402,30 @@ namespace trview
             return indices;
         };
 
-        auto add_multi_getter = [=](TriggerCommandType type)
+        auto any_of_command = [&](TriggerCommandType type)
         {
-            _filters.add_multi_getter<float>(command_type_name_8(type), [=](auto&& trigger) { return all_trigger_indices(type, trigger); });
+            for (auto& trigger : _all_triggers)
+            {
+                if (auto trigger_ptr = trigger.lock())
+                {
+                    for (auto command : trigger_ptr->commands())
+                    {
+                        if (command.type() == type)
+                        {
+                            return true;
+                        }
+                    }
+                }
+            }
+            return false;
+        };
+
+        auto add_multi_getter = [&](TriggerCommandType type)
+        {
+            if (any_of_command(type))
+            {
+                _filters.add_multi_getter<float>(command_type_name_8(type), [=](auto&& trigger) { return all_trigger_indices(type, trigger); });
+            }
         };
 
         add_multi_getter(TriggerCommandType::Object);
