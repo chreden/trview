@@ -51,7 +51,7 @@ namespace trview
             std::string value2;
             Op op{ Op::And };
 
-            int value_count() const;
+            int value_count() const noexcept
         };
 
         /// <summary>
@@ -188,7 +188,7 @@ namespace trview
     /// <typeparam name="T">The type to check.</typeparam>
     /// <returns>Supported <see cref="CompareOp"/>s</returns>
     template <typename T>
-    constexpr std::vector<CompareOp> compare_ops();
+    constexpr std::vector<CompareOp> compare_ops() noexcept;
 
     /// <summary>
     /// Get the acceptable values for a type.
@@ -196,7 +196,7 @@ namespace trview
     /// <typeparam name="T">Type to check.</typeparam>
     /// <returns>The acceptable options. Emtpy means that there are no restrictions.</returns>
     template <typename T>
-    constexpr std::vector<std::string> available_options();
+    constexpr std::vector<std::string> available_options() noexcept;
 }
 
 #include "Filters.hpp"

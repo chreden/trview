@@ -7,7 +7,7 @@
 namespace trview
 {
     template <typename T>
-    int Filters<T>::Filter::value_count() const
+    int Filters<T>::Filter::value_count() const noexcept
     {
         switch (compare)
         {
@@ -536,7 +536,7 @@ namespace trview
     }
 
     template <typename T>
-    constexpr std::vector<CompareOp> compare_ops()
+    constexpr std::vector<CompareOp> compare_ops() noexcept
     {
         return
         {
@@ -546,7 +546,7 @@ namespace trview
     }
 
     template <>
-    constexpr std::vector<CompareOp> compare_ops<float>()
+    constexpr std::vector<CompareOp> compare_ops<float>() noexcept
     {
         return
         {
@@ -562,13 +562,13 @@ namespace trview
     }
 
     template <typename T>
-    constexpr std::vector<std::string> available_options()
+    constexpr std::vector<std::string> available_options() noexcept
     {
         return {};
     }
 
     template <>
-    constexpr std::vector<std::string> available_options<bool>()
+    constexpr std::vector<std::string> available_options<bool>() noexcept
     {
         return { "false", "true" };
     }
