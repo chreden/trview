@@ -179,8 +179,8 @@ namespace trview
         bool _enabled{ true };
     };
 
-    constexpr std::string compare_op_to_string(CompareOp op);
-    constexpr std::string op_to_string(Op op);
+    constexpr std::string to_string(CompareOp op);
+    constexpr std::string to_string(Op op);
 
     /// <summary>
     /// Get the <see cref="CompareOp" />s that a type supports.

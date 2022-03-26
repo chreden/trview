@@ -125,20 +125,20 @@ TEST(Filters, AddFilterUsingUI)
     imgui.click_element(imgui.id("##Combo_01").id("value"));
 
     imgui.click_element(imgui.popup_id(Names::Popup).id(Names::FilterCompareOp + "0"));
-    imgui.click_element(imgui.id("##Combo_01").id(compare_op_to_string(CompareOp::LessThan)));
+    imgui.click_element(imgui.id("##Combo_01").id(to_string(CompareOp::LessThan)));
 
     imgui.click_element(imgui.popup_id(Names::Popup).id(Names::FilterValue + "0"));
     imgui.enter_text("10");
 
     imgui.click_element(imgui.popup_id(Names::Popup).id(Names::AddFilter));
     imgui.click_element(imgui.popup_id(Names::Popup).id(Names::FilterOp + "0"));
-    imgui.click_element(imgui.id("##Combo_01").id(op_to_string(Op::Or)));
+    imgui.click_element(imgui.id("##Combo_01").id(to_string(Op::Or)));
 
     imgui.click_element(imgui.popup_id(Names::Popup).id(Names::FilterKey + "1"));
     imgui.click_element(imgui.id("##Combo_01").id("value"));
 
     imgui.click_element(imgui.popup_id(Names::Popup).id(Names::FilterCompareOp + "1"));
-    imgui.click_element(imgui.id("##Combo_01").id(compare_op_to_string(CompareOp::GreaterThan)));
+    imgui.click_element(imgui.id("##Combo_01").id(to_string(CompareOp::GreaterThan)));
 
     imgui.click_element(imgui.popup_id(Names::Popup).id(Names::FilterValue + "1"));
     imgui.enter_text("15");

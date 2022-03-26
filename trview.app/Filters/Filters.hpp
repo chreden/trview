@@ -322,11 +322,11 @@ namespace trview
                 ImGui::SameLine();
 
                 auto available_compare_ops = ops_for_key(filter.key);
-                if (ImGui::BeginCombo((Names::FilterCompareOp + std::to_string(i)).c_str(), compare_op_to_string(filter.compare).c_str()))
+                if (ImGui::BeginCombo((Names::FilterCompareOp + std::to_string(i)).c_str(), to_string(filter.compare).c_str()))
                 {
                     for (const auto& compare_op : available_compare_ops)
                     {
-                        if (ImGui::Selectable(compare_op_to_string(compare_op).c_str(), compare_op == filter.compare))
+                        if (ImGui::Selectable(to_string(compare_op).c_str(), compare_op == filter.compare))
                         {
                             filter.compare = compare_op;
                             ImGui::SetItemDefaultFocus();
@@ -389,11 +389,11 @@ namespace trview
                 if (i != _filters.size() - 1)
                 {
                     std::vector<Op> ops{ Op::And, Op::Or };
-                    if (ImGui::BeginCombo((Names::FilterOp + std::to_string(i)).c_str(), op_to_string(filter.op).c_str()))
+                    if (ImGui::BeginCombo((Names::FilterOp + std::to_string(i)).c_str(), to_string(filter.op).c_str()))
                     {
                         for (const auto& op : ops)
                         {
-                            if (ImGui::Selectable(op_to_string(op).c_str(), op == filter.op))
+                            if (ImGui::Selectable(to_string(op).c_str(), op == filter.op))
                             {
                                 filter.op = op;
                                 ImGui::SetItemDefaultFocus();
@@ -497,7 +497,7 @@ namespace trview
         _filters = filters;
     }
 
-    constexpr std::string compare_op_to_string(CompareOp op)
+    constexpr std::string to_string(CompareOp op)
     {
         switch (op)
         {
@@ -523,7 +523,7 @@ namespace trview
         return "?";
     }
 
-    constexpr std::string op_to_string(Op op)
+    constexpr std::string to_string(Op op)
     {
         switch (op)
         {
