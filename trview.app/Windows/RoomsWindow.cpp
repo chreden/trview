@@ -269,7 +269,7 @@ namespace trview
                 ImGui::TableNextColumn();
 
                 bool sync_room = _sync_room;
-                if (ImGui::Checkbox("Sync Room##syncroom", &sync_room))
+                if (ImGui::Checkbox("Sync##syncroom", &sync_room))
                 {
                     set_sync_room(sync_room);
                 }

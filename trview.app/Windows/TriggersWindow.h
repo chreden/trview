@@ -18,7 +18,7 @@ namespace trview
         struct Names
         {
             static inline const std::string add_to_route = "Add to Route";
-            static inline const std::string sync_trigger = "Sync Trigger";
+            static inline const std::string sync_trigger = "Sync";
             static inline const std::string track_room = "Track Room";
             static inline const std::string trigger_list_panel = "Trigger List";
             static inline const std::string triggers_list = "##triggerslist";

@@ -15,7 +15,7 @@ namespace trview
             static inline const std::string light_list_panel = "Light List";
             static inline const std::string lights_listbox = "Lights";
             static inline const std::string stats_listbox = "Stats";
-            static inline const std::string sync_light = "Sync Light";
+            static inline const std::string sync_light = "Sync";
             static inline const std::string track_room = "Track Room";
             static inline const std::string details_panel = "Light Details";
         };
