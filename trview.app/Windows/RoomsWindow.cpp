@@ -148,6 +148,7 @@ namespace trview
     {
         _all_rooms = rooms;
         _current_room = 0xffffffff;
+        generate_filters();
     }
 
     void RoomsWindow::set_selected_item(const Item& item)
@@ -605,6 +606,7 @@ namespace trview
 
     void RoomsWindow::generate_filters()
     {
+        _filters.clear_all_getters();
         _filters.add_getter<float>("X", [](auto&& room) { return room.info().x; });
         _filters.add_getter<float>("Y", [](auto&& room) { return room.info().yBottom; });
         _filters.add_getter<float>("Z", [](auto&& room) { return room.info().z; });
@@ -628,7 +630,16 @@ namespace trview
                 }
                 return results;
             });
-        _filters.add_multi_getter<std::string>("Trigger Type", [&](auto&& room)
+
+        std::set<std::string> available_trigger_types;
+        for (const auto& trigger : _all_triggers)
+        {
+            if (auto trigger_ptr = trigger.lock())
+            {
+                available_trigger_types.insert(to_utf8(trigger_type_name(trigger_ptr->type())));
+            }
+        }
+        _filters.add_multi_getter<std::string>("Trigger Type", { available_trigger_types.begin(), available_trigger_types.end() }, [&](auto&& room)
             {
                 std::vector<std::string> results;
                 for (const auto& trigger : _all_triggers)
@@ -653,7 +664,13 @@ namespace trview
                 }
                 return results;
             });
-        _filters.add_multi_getter<std::string>("Item Type", [&](auto&& room)
+
+        std::set<std::string> available_item_types;
+        for (const auto& item : _all_items)
+        {
+            available_item_types.insert(to_utf8(item.type()));
+        }
+        _filters.add_multi_getter<std::string>("Item Type", { available_item_types.begin(), available_item_types.end() }, [&](auto&& room)
             {
                 std::vector<std::string> results;
                 for (const auto& item : _all_items)
