@@ -94,14 +94,24 @@ namespace trview
         void set_filters(const std::vector<Filter> filters);
     private:
         using Value = std::variant<std::string, float, bool>;
+
+        template <typename return_type>
+        struct Getter
+        {
+            std::vector<CompareOp> ops;
+            std::vector<std::string> options;
+            std::function<return_type (const T&)> function;
+            std::function<bool(const T&)> predicate;
+        };
+
         /// <summary>
         /// Function that will return the value from a subject as a string.
         /// </summary>
-        using ValueGetter = std::tuple<std::vector<CompareOp>, std::vector<std::string>, std::function<Value(const T&)>, std::function<bool(const T&)>>;
+        using ValueGetter = Getter<Value>;
         /// <summary>
         /// Function that will return multiple values from a subject as several strings.
         /// </summary>
-        using MultiGetter = std::tuple<std::vector<CompareOp>, std::vector<std::string>, std::function<std::vector<Value>(const T&)>, std::function<bool(const T&)>>;
+        using MultiGetter = Getter<std::vector<Value>>;
 
         std::vector<Filter> _filters;
         std::vector<std::string> keys() const;

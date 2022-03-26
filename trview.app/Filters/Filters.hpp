@@ -228,10 +228,10 @@ namespace trview
             const auto& getter = _getters.find(filter.key);
             if (getter != _getters.end())
             {
-                const auto getter_predicate = std::get<3>(getter->second);
+                const auto getter_predicate = getter->second.predicate;
                 if (!getter_predicate || getter_predicate(value))
                 {
-                    const auto getter_value = std::get<2>(getter->second)(value);
+                    const auto getter_value = getter->second.function(value);
                     filter_result = is_match(getter_value, filter);
                 }
             }
@@ -240,10 +240,10 @@ namespace trview
                 const auto& multi_getter = _multi_getters.find(filter.key);
                 if (multi_getter != _multi_getters.end())
                 {
-                    const auto getter_predicate = std::get<3>(multi_getter->second);
+                    const auto getter_predicate = multi_getter->second.predicate;
                     if (!getter_predicate || getter_predicate(value))
                     {
-                        const auto getter_values = std::get<2>(multi_getter->second)(value);
+                        const auto getter_values = multi_getter->second.function(value);
                         filter_result = std::find_if(getter_values.begin(), getter_values.end(), [&](const auto& value) { return is_match(value, filter); }) != getter_values.end();
                     }
                 }
@@ -427,14 +427,14 @@ namespace trview
         const auto& getter = _getters.find(key);
         if (getter != _getters.end())
         {
-            return std::get<0>(getter->second);
+            return getter->second.ops;
         }
         else
         {
             const auto& multi_getter = _multi_getters.find(key);
             if (multi_getter != _multi_getters.end())
             {
-                auto ops = std::get<0>(multi_getter->second);
+                auto ops = multi_getter->second.ops;
                 ops.push_back(CompareOp::Exists);
                 return ops;
             }
@@ -459,14 +459,14 @@ namespace trview
         const auto& getter = _getters.find(key);
         if (getter != _getters.end())
         {
-            return std::get<1>(getter->second);
+            return getter->second.options;
         }
         else
         {
             const auto& multi_getter = _multi_getters.find(key);
             if (multi_getter != _multi_getters.end())
             {
-                return std::get<1>(multi_getter->second);
+                return multi_getter->second.options;
             }
         }
         return {};
@@ -478,14 +478,14 @@ namespace trview
         const auto& getter = _getters.find(key);
         if (getter != _getters.end())
         {
-            return !std::get<1>(getter->second).empty();
+            return !getter->second.options.empty();
         }
         else
         {
             const auto& multi_getter = _multi_getters.find(key);
             if (multi_getter != _multi_getters.end())
             {
-                return !std::get<1>(multi_getter->second).empty();
+                return !multi_getter->second.options.empty();
             }
         }
         return false;
