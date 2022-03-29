@@ -181,4 +181,9 @@ namespace trview
     {
         _position = position;
     }
+
+    trlevel::LevelVersion Light::level_version() const
+    {
+        return _level_version;
+    }
 }

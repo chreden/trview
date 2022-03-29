@@ -34,6 +34,7 @@ namespace trview
         virtual float radius() const override;
         virtual float density() const override;
         virtual void set_position(const DirectX::SimpleMath::Vector3& position) override;
+        virtual trlevel::LevelVersion level_version() const override;
     private:
 
         std::shared_ptr<IMesh> _mesh;

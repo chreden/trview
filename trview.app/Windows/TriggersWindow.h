@@ -4,6 +4,7 @@
 #pragma once
 
 #include <trview.common/Windows/IClipboard.h>
+#include "../Filters/Filters.h"
 
 #include "ITriggersWindow.h"
 #include "../Elements/Item.h"
@@ -17,7 +18,7 @@ namespace trview
         struct Names
         {
             static inline const std::string add_to_route = "Add to Route";
-            static inline const std::string sync_trigger = "Sync Trigger";
+            static inline const std::string sync_trigger = "Sync";
             static inline const std::string track_room = "Track Room";
             static inline const std::string trigger_list_panel = "Trigger List";
             static inline const std::string triggers_list = "##triggerslist";
@@ -46,6 +47,7 @@ namespace trview
         void render_trigger_details();
         bool render_triggers_window();
         void set_local_selected_trigger(const std::weak_ptr<ITrigger>& trigger);
+        void setup_filters();
 
         std::string _id{ "Triggers 0" };
         std::vector<Item> _all_items;
@@ -67,5 +69,6 @@ namespace trview
         bool _scroll_to_trigger{ false };
         std::optional<float> _tooltip_timer;
         std::vector<Command> _local_selected_trigger_commands;
+        Filters<ITrigger> _filters;
     };
 }

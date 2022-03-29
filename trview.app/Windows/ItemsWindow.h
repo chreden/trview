@@ -4,6 +4,7 @@
 #pragma once
 
 #include <trview.common/Windows/IClipboard.h>
+#include "../Filters/Filters.h"
 
 #include "IItemsWindow.h"
 #include "../Elements/Item.h"
@@ -17,7 +18,7 @@ namespace trview
         struct Names
         {
             static inline const std::string add_to_route_button = "Add to Route";
-            static inline const std::string sync_item = "Sync Item";
+            static inline const std::string sync_item = "Sync";
             static inline const std::string track_room = "Track Room";
             static inline const std::string items_list = "##itemslist";
             static inline const std::string item_list_panel = "Item List";
@@ -45,6 +46,7 @@ namespace trview
         void render_item_details();
         bool render_items_window();
         void set_local_selected_item(const Item& item);
+        void setup_filters();
 
         std::string _id{ "Items 0" };
         std::vector<Item> _all_items;
@@ -60,5 +62,7 @@ namespace trview
         std::optional<Item> _global_selected_item;
         std::vector<std::weak_ptr<ITrigger>> _triggered_by;
         bool _scroll_to_item{ false };
+
+        Filters<Item> _filters;
     };
 }

@@ -11,11 +11,14 @@ namespace trview
         _tips["OCB"] = "Changes entity behaviour";
         _tips["Clear Body"] = "If true, removed when Bodybag is triggered";
         _tips["Trigger triggerer"] = "Disables the trigger on the same sector until this item is triggered";
+
+        setup_filters();
     }
 
     void ItemsWindow::set_items(const std::vector<Item>& items)
     {
         _all_items = items;
+        setup_filters();
     }
 
     void ItemsWindow::update_items(const std::vector<Item>& items)
@@ -80,6 +83,9 @@ namespace trview
     {
         if (ImGui::BeginChild(Names::item_list_panel.c_str(), ImVec2(280, 0), true))
         {
+            _filters.render();
+            ImGui::SameLine();
+
             bool track_room = _track_room;
             if (ImGui::Checkbox(Names::track_room.c_str(), &track_room))
             {
@@ -113,7 +119,7 @@ namespace trview
 
                 for (const auto& item : _all_items)
                 {
-                    if (_track_room && item.room() != _current_room)
+                    if (_track_room && item.room() != _current_room || !_filters.match(item))
                     {
                         continue;
                     }
@@ -316,5 +322,38 @@ namespace trview
     {
         _selected_item = item;
         _triggered_by = item.triggers();
+    }
+
+    void ItemsWindow::setup_filters()
+    {
+        _filters.clear_all_getters();
+        std::set<std::string> available_types;
+        for (const auto& item : _all_items)
+        {
+            available_types.insert(to_utf8(item.type()));
+        }
+        _filters.add_getter<std::string>("Type", { available_types.begin(), available_types.end() }, [](auto&& item) { return to_utf8(item.type()); });
+        _filters.add_getter<float>("#", [](auto&& item) { return item.number(); });
+        _filters.add_getter<float>("X", [](auto&& item) { return item.position().x * trlevel::Scale_X; });
+        _filters.add_getter<float>("Y", [](auto&& item) { return item.position().y * trlevel::Scale_Y; });
+        _filters.add_getter<float>("Z", [](auto&& item) { return item.position().z * trlevel::Scale_Z; });
+        _filters.add_getter<float>("Type ID", [](auto&& item) { return item.type_id(); });
+        _filters.add_getter<float>("Room", [](auto&& item) { return item.room(); });
+        _filters.add_getter<bool>("Clear Body", [](auto&& item) { return item.clear_body_flag(); });
+        _filters.add_getter<bool>("Invisible", [](auto&& item) { return item.invisible_flag(); });
+        _filters.add_getter<std::string>("Flags", [](auto&& item) { return to_utf8(format_binary(item.activation_flags())); });
+        _filters.add_getter<float>("OCB", [](auto&& item) { return item.ocb(); });
+        _filters.add_multi_getter<float>("Triggered By", [](auto&& item)
+            {
+                std::vector<float> results;
+                for (auto trigger : item.triggers())
+                {
+                    if (auto trigger_ptr = trigger.lock())
+                    {
+                        results.push_back(trigger_ptr->number());
+                    }
+                }
+                return results;
+            });
     }
 }

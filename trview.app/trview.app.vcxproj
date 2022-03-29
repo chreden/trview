@@ -192,6 +192,8 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClInclude Include="Elements\Trigger.h" />
     <ClInclude Include="Elements\TypeNameLookup.h" />
     <ClInclude Include="Elements\Types.h" />
+    <ClInclude Include="Filters\Filters.h" />
+    <ClInclude Include="Filters\Filters.hpp" />
     <ClInclude Include="Geometry\di.h" />
     <ClInclude Include="Geometry\di.hpp" />
     <ClInclude Include="Geometry\IMesh.h" />

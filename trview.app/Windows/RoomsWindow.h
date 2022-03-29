@@ -8,6 +8,7 @@
 #include "../UI/Tooltip.h"
 #include "../Elements/Item.h"
 #include "../UI/IMapRenderer.h"
+#include "../Filters/Filters.h"
 
 
 namespace trview
@@ -56,6 +57,7 @@ namespace trview
         void render_room_details();
         bool render_rooms_window();
         void load_room_details(uint32_t room_number);
+        void generate_filters();
 
         std::vector<std::weak_ptr<IRoom>> _all_rooms;
         std::vector<Item> _all_items;
@@ -79,7 +81,7 @@ namespace trview
         TokenStore _token_store;
         std::unique_ptr<IMapRenderer> _map_renderer;
         std::shared_ptr<IClipboard> _clipboard;
-        trlevel::LevelVersion _level_version;
+        trlevel::LevelVersion _level_version{ trlevel::LevelVersion::Tomb1 };
         std::string _id{ "Rooms 0" };
         Tooltip _map_tooltip;
         bool _scroll_to_room{ false };
@@ -87,5 +89,7 @@ namespace trview
 
         // Map texture saved so that it is guaranteed to survive until ImGui renders.
         graphics::Texture _map_texture;
+
+        Filters<IRoom> _filters;
     };
 }

@@ -3,10 +3,11 @@
 
 namespace trview
 {
-    LightsWindow::LightsWindow(const std::shared_ptr<IClipboard>& clipboard) 
+    LightsWindow::LightsWindow(const std::shared_ptr<IClipboard>& clipboard)
         : _clipboard(clipboard)
     {
         _tips["Direction"] = "Direction is inverted in-game. 3D view shows correct direction.";
+        setup_filters();
     }
 
     void LightsWindow::clear_selected_light()
@@ -38,6 +39,7 @@ namespace trview
     void LightsWindow::set_lights(const std::vector<std::weak_ptr<ILight>>& lights)
     {
         _all_lights = lights;
+        setup_filters();
     }
 
     void LightsWindow::set_selected_light(const std::weak_ptr<ILight>& light)
@@ -86,6 +88,9 @@ namespace trview
     {
         if (ImGui::BeginChild(Names::light_list_panel.c_str(), ImVec2(230, 0), true))
         {
+            _filters.render();
+            ImGui::SameLine();
+
             bool track_room = _track_room;
             if (ImGui::Checkbox(Names::track_room.c_str(), &track_room))
             {
@@ -118,7 +123,7 @@ namespace trview
                 for (const auto& light_ptr : _all_lights)
                 {
                     const auto& light = light_ptr.lock();
-                    if (_track_room && light->room() != _current_room)
+                    if (_track_room && light->room() != _current_room || !_filters.match(*light))
                     {
                         continue;
                     }
@@ -189,6 +194,14 @@ namespace trview
                         ImGui::PopStyleColor();
                     };
 
+                    auto add_stat_with_condition = [&](const std::string& name, const auto& stat, const auto& condition)
+                    {
+                        if (condition(*selected_light))
+                        {
+                            add_stat(name, std::to_string(stat(*selected_light)));
+                        }
+                    };
+
                     auto format_colour = [](const Colour& colour)
                     {
                         return "R:" + std::to_string(static_cast<int>(colour.r * 255)) +
@@ -220,72 +233,33 @@ namespace trview
                     add_stat("#", std::to_string(selected_light->number()));
                     add_stat("Room", std::to_string(selected_light->room()));
 
-                    if (!(_level_version < trlevel::LevelVersion::Tomb3 || selected_light->type() == trlevel::LightType::FogBulb && _level_version == trlevel::LevelVersion::Tomb4))
+                    if (has_colour(*selected_light))
                     {
                         add_stat("Colour", format_colour(selected_light->colour()), selected_light->colour());
                     }
-                    if (selected_light->type() != trlevel::LightType::Sun)
+
+                    if (has_position(*selected_light))
                     {
                         add_stat("Position", position_text(selected_light->position()));
                     }
 
-                    if (selected_light->type() == trlevel::LightType::Sun || selected_light->type() == trlevel::LightType::Spot)
+                    if (has_direction(*selected_light))
                     {
                         add_stat("Direction", direction_text(selected_light->direction()));
                     }
 
-                    if (_level_version < trlevel::LevelVersion::Tomb5 && selected_light->type() != trlevel::LightType::Sun)
-                    {
-                        add_stat("Intensity", std::to_string(selected_light->intensity()));
-                    }
-
-                    if (_level_version < trlevel::LevelVersion::Tomb4 && selected_light->type() != trlevel::LightType::Sun)
-                    {
-                        add_stat("Fade", std::to_string(selected_light->fade()));
-                    }
-
-                    if (_level_version >= trlevel::LevelVersion::Tomb4)
-                    {
-                        switch (selected_light->type())
-                        {
-                            case trlevel::LightType::Spot:
-                            {
-                                float hotspot = DirectX::XMConvertToDegrees(std::acosf(selected_light->in()));
-                                float falloff = DirectX::XMConvertToDegrees(std::acosf(selected_light->out()));
-
-                                add_stat("Hotspot", std::to_string(hotspot));
-                                add_stat("Falloff Angle", std::to_string(falloff));
-                                if (_level_version == trlevel::LevelVersion::Tomb4)
-                                {
-                                    add_stat("Length", std::to_string(selected_light->length()));
-                                    add_stat("Cutoff", std::to_string(selected_light->cutoff()));
-                                }
-                                else
-                                {
-                                    float rad_in = DirectX::XMConvertToDegrees(selected_light->rad_in() * 0.5f);
-                                    float rad_out = DirectX::XMConvertToDegrees(selected_light->rad_out() * 0.5f);
-
-                                    add_stat("Rad In", std::to_string(rad_in));
-                                    add_stat("Rad Out", std::to_string(rad_out));
-                                    add_stat("Range", std::to_string(selected_light->range()));
-                                }
-                                break;
-                            }
-                            case trlevel::LightType::Point:
-                            case trlevel::LightType::Shadow:
-                            {
-                                add_stat("Hotspot", std::to_string(selected_light->in()));
-                                add_stat("Falloff", std::to_string(selected_light->out()));
-                                break;
-                            }
-                            case trlevel::LightType::FogBulb:
-                            {
-                                add_stat("Density", std::to_string(selected_light->density()));
-                                add_stat("Radius", std::to_string(selected_light->radius()));
-                                break;
-                            }
-                        }
-                    }
+                    add_stat_with_condition("Intensity", intensity, has_intensity);
+                    add_stat_with_condition("Fade", fade, has_fade);
+                    add_stat_with_condition("Hotspot", hotspot, has_hotspot);
+                    add_stat_with_condition("Falloff", falloff, has_falloff);
+                    add_stat_with_condition("Falloff Angle", falloff_angle, has_falloff_angle);
+                    add_stat_with_condition("Length", length, has_length);
+                    add_stat_with_condition("Cutoff", cutoff, has_cutoff);
+                    add_stat_with_condition("Rad In", rad_in, has_rad_in);
+                    add_stat_with_condition("Rad Out", rad_out, has_rad_out);
+                    add_stat_with_condition("Range", range, has_range);
+                    add_stat_with_condition("Density", density, has_density);
+                    add_stat_with_condition("Radius", radius, has_radius);
                 }
                 ImGui::EndTable();
             }
@@ -328,6 +302,59 @@ namespace trview
     void LightsWindow::set_current_room(uint32_t room)
     {
         _current_room = room;
+    }
+
+    void LightsWindow::setup_filters()
+    {
+        _filters.clear_all_getters();
+        std::set<std::string> available_types;
+        for (const auto& light : _all_lights)
+        {
+            if (auto light_ptr = light.lock())
+            {
+                available_types.insert(to_utf8(light_type_name(light_ptr->type())));
+            }
+        }
+        _filters.add_getter<std::string>("Type", { available_types.begin(), available_types.end() }, [](auto&& light) { return to_utf8(light_type_name(light.type())); });
+        _filters.add_getter<float>("#", [](auto&& light) { return light.number(); });
+        _filters.add_getter<float>("Room", [](auto&& light) { return light.room(); });
+        _filters.add_getter<float>("X", [](auto&& light) { return light.position().x * trlevel::Scale_X; }, has_position);
+        _filters.add_getter<float>("Y", [](auto&& light) { return light.position().y * trlevel::Scale_Y; }, has_position);
+        _filters.add_getter<float>("Z", [](auto&& light) { return light.position().z * trlevel::Scale_Z; }, has_position);
+        _filters.add_getter<float>("Intensity", [](auto&& light) { return light.intensity(); }, has_intensity);
+        _filters.add_getter<float>("Fade", [](auto&& light) { return light.fade(); }, has_fade);
+
+        if (_level_version >= trlevel::LevelVersion::Tomb3)
+        {
+            _filters.add_getter<float>("R", [](auto&& light) { return static_cast<int>(light.colour().r * 255.0f); }, has_colour);
+            _filters.add_getter<float>("G", [](auto&& light) { return static_cast<int>(light.colour().g * 255.0f); }, has_colour);
+            _filters.add_getter<float>("B", [](auto&& light) { return static_cast<int>(light.colour().b * 255.0f); }, has_colour);
+            _filters.add_getter<float>("DX", [](auto&& light) { return light.direction().x * trlevel::Scale_X; }, has_direction);
+            _filters.add_getter<float>("DY", [](auto&& light) { return light.direction().y * trlevel::Scale_Y; }, has_direction);
+            _filters.add_getter<float>("DZ", [](auto&& light) { return light.direction().z * trlevel::Scale_Z; }, has_direction);
+        }
+
+        if (_level_version == trlevel::LevelVersion::Tomb4)
+        {
+            _filters.add_getter<float>("Length", [](auto&& light) { return length(light); }, has_length);
+            _filters.add_getter<float>("Cutoff", [](auto&& light) { return cutoff(light); }, has_cutoff);
+        }
+
+        if (_level_version >= trlevel::LevelVersion::Tomb4)
+        {
+            _filters.add_getter<float>("Hotspot", [](auto&& light) { return hotspot(light); }, has_hotspot);
+            _filters.add_getter<float>("Falloff", [](auto&& light) { return falloff(light); }, has_falloff);
+            _filters.add_getter<float>("Falloff Angle", [](auto&& light) { return falloff_angle(light); }, has_falloff_angle);
+            _filters.add_getter<float>("Density", [](auto&& light) { return density(light); }, has_density);
+            _filters.add_getter<float>("Radius", [](auto&& light) { return radius(light); }, has_radius);
+        }
+
+        if (_level_version >= trlevel::LevelVersion::Tomb5)
+        {
+            _filters.add_getter<float>("Rad In", [](auto&& light) { return rad_in(light); }, has_rad_in);
+            _filters.add_getter<float>("Rad Out", [](auto&& light) { return rad_out(light); }, has_rad_out);
+            _filters.add_getter<float>("Range", [](auto&& light) { return range(light); }, has_range);
+        }
     }
 }
 

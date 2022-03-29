@@ -32,5 +32,34 @@ namespace trview
         virtual float density() const = 0;
         virtual void set_position(const DirectX::SimpleMath::Vector3& position) = 0;
         virtual void render_direction(const ICamera& camera, const ILevelTextureStorage& texture_storage) = 0;
+        virtual trlevel::LevelVersion level_version() const = 0;
     };
+
+    bool has_colour(const ILight& light);
+    bool has_direction(const ILight& light);
+    bool has_fade(const ILight& light);
+    bool has_intensity(const ILight& light);
+    bool has_position(const ILight& light);
+    bool has_hotspot(const ILight& light);
+    bool has_falloff(const ILight& light);
+    bool has_falloff_angle(const ILight& light);
+    bool has_length(const ILight& light);
+    bool has_cutoff(const ILight& light);
+    bool has_rad_in(const ILight& light);
+    bool has_rad_out(const ILight& light);
+    bool has_range(const ILight& light);
+    bool has_density(const ILight& light);
+    bool has_radius(const ILight& light);
+    float fade(const ILight& light);
+    float intensity(const ILight& light);
+    float hotspot(const ILight& light);
+    float falloff(const ILight& light);
+    float falloff_angle(const ILight& light);
+    float length(const ILight& light);
+    float cutoff(const ILight& light);
+    float rad_in(const ILight& light);
+    float rad_out(const ILight& light);
+    float range(const ILight& light);
+    float density(const ILight& light);
+    float radius(const ILight& light);
 }

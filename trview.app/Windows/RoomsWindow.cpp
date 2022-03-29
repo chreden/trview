@@ -93,6 +93,8 @@ namespace trview
             _map_tooltip.set_text(text);
             _map_tooltip.set_visible(!text.empty());
         };
+
+        generate_filters();
     }
 
     void RoomsWindow::set_current_room(uint32_t room)
@@ -146,6 +148,7 @@ namespace trview
     {
         _all_rooms = rooms;
         _current_room = 0xffffffff;
+        generate_filters();
     }
 
     void RoomsWindow::set_selected_item(const Item& item)
@@ -257,22 +260,34 @@ namespace trview
     {
         if (ImGui::BeginChild("Rooms List", ImVec2(270, 0), true))
         {
-            bool sync_room = _sync_room;
-            if (ImGui::Checkbox("Sync Room##syncroom", &sync_room))
+            if (ImGui::BeginTable("##controls", 2, 0, ImVec2(-1, 0)))
             {
-                set_sync_room(sync_room);
-            }
-            ImGui::SameLine();
-            bool track_item = _track_item;
-            if (ImGui::Checkbox("Track Item##trackitem", &track_item))
-            {
-                set_track_item(track_item);
-            }
-            ImGui::SameLine();
-            bool track_trigger = _track_trigger;
-            if (ImGui::Checkbox("Track Trigger##tracktrigger", &track_trigger))
-            {
-                set_track_trigger(track_trigger);
+                ImGui::TableNextRow();
+                ImGui::TableNextColumn();
+
+                _filters.render();
+                ImGui::TableNextColumn();
+
+                bool sync_room = _sync_room;
+                if (ImGui::Checkbox("Sync##syncroom", &sync_room))
+                {
+                    set_sync_room(sync_room);
+                }
+                ImGui::TableNextColumn();
+
+                bool track_item = _track_item;
+                if (ImGui::Checkbox("Track Item##trackitem", &track_item))
+                {
+                    set_track_item(track_item);
+                }
+                ImGui::TableNextColumn();
+
+                bool track_trigger = _track_trigger;
+                if (ImGui::Checkbox("Track Trigger##tracktrigger", &track_trigger))
+                {
+                    set_track_trigger(track_trigger);
+                }
+                ImGui::EndTable();
             }
 
             if (ImGui::BeginTable("##roomslist", 3, ImGuiTableFlags_Sortable | ImGuiTableFlags_ScrollY | ImGuiTableFlags_SizingFixedSame, ImVec2(-1, -1)))
@@ -303,6 +318,11 @@ namespace trview
                 for (const auto& room : _all_rooms)
                 {
                     auto room_ptr = room.lock();
+
+                    if (!_filters.match(*room_ptr))
+                    {
+                        continue;
+                    }
 
                     ImGui::TableNextRow();
                     ImGui::TableNextColumn();
@@ -432,7 +452,7 @@ namespace trview
                         ImGui::TableNextColumn();
 
                         ImGui::Text("Properties");
-                        if (ImGui::BeginTable(Names::properties.c_str(), 2, ImGuiTableFlags_ScrollY | ImGuiTableFlags_SizingFixedFit, ImVec2(170, 150)))
+                        if (ImGui::BeginTable(Names::properties.c_str(), 2, ImGuiTableFlags_ScrollY | ImGuiTableFlags_SizingFixedFit, ImVec2(0, 150)))
                         {
                             ImGui::TableSetupColumn("Name");
                             ImGui::TableSetupColumn("Value");
@@ -582,5 +602,101 @@ namespace trview
     void RoomsWindow::set_number(int32_t number)
     {
         _id = "Rooms " + std::to_string(number);
+    }
+
+    void RoomsWindow::generate_filters()
+    {
+        _filters.clear_all_getters();
+        _filters.add_getter<float>("X", [](auto&& room) { return room.info().x; });
+        _filters.add_getter<float>("Y", [](auto&& room) { return room.info().yBottom; });
+        _filters.add_getter<float>("Z", [](auto&& room) { return room.info().z; });
+        _filters.add_multi_getter<float>("Neighbours", [](auto&& room)
+            {
+                std::vector<float> results;
+                const auto neighbours = room.neighbours();
+                std::copy(neighbours.begin(), neighbours.end(), std::back_inserter(results));
+                return results;
+            });
+        _filters.add_multi_getter<float>("Trigger Index", [&](auto&& room)
+            {
+                std::vector<float> results;
+                for (const auto& trigger : _all_triggers)
+                {
+                    const auto trigger_ptr = trigger.lock();
+                    if (trigger_ptr && trigger_ptr->room() == room.number())
+                    {
+                        results.push_back(trigger_ptr->number());
+                    }
+                }
+                return results;
+            });
+
+        std::set<std::string> available_trigger_types;
+        for (const auto& trigger : _all_triggers)
+        {
+            if (auto trigger_ptr = trigger.lock())
+            {
+                available_trigger_types.insert(to_utf8(trigger_type_name(trigger_ptr->type())));
+            }
+        }
+        _filters.add_multi_getter<std::string>("Trigger Type", { available_trigger_types.begin(), available_trigger_types.end() }, [&](auto&& room)
+            {
+                std::vector<std::string> results;
+                for (const auto& trigger : _all_triggers)
+                {
+                    const auto trigger_ptr = trigger.lock();
+                    if (trigger_ptr && trigger_ptr->room() == room.number())
+                    {
+                        results.push_back(to_utf8(trigger_type_name(trigger_ptr->type())));
+                    }
+                }
+                return results;
+            });
+        _filters.add_multi_getter<float>("Item Index", [&](auto&& room)
+            {
+                std::vector<float> results;
+                for (const auto& item : _all_items)
+                {
+                    if (item.room() == room.number())
+                    {
+                        results.push_back(item.number());
+                    }
+                }
+                return results;
+            });
+
+        std::set<std::string> available_item_types;
+        for (const auto& item : _all_items)
+        {
+            available_item_types.insert(to_utf8(item.type()));
+        }
+        _filters.add_multi_getter<std::string>("Item Type", { available_item_types.begin(), available_item_types.end() }, [&](auto&& room)
+            {
+                std::vector<std::string> results;
+                for (const auto& item : _all_items)
+                {
+                    if (item.room() == room.number())
+                    {
+                        results.push_back(to_utf8(item.type()));
+                    }
+                }
+                return results;
+            });
+        _filters.add_getter<bool>("Water", [](auto&& room) { return room.water(); });
+        _filters.add_getter<bool>("Bit 1", [](auto&& room) { return room.flag(IRoom::Flag::Bit1); });
+        _filters.add_getter<bool>("Bit 2", [](auto&& room) { return room.flag(IRoom::Flag::Bit2); });
+        _filters.add_getter<bool>("Outside/Bit 3", [](auto&& room) { return room.outside(); });
+        _filters.add_getter<bool>("Bit 4", [](auto&& room) { return room.flag(IRoom::Flag::Bit4); });
+        _filters.add_getter<bool>("Wind/Bit 5", [](auto&& room) { return room.flag(IRoom::Flag::Wind); });
+        _filters.add_getter<bool>("Bit 6", [](auto&& room) { return room.flag(IRoom::Flag::Bit6); });
+        _filters.add_getter<bool>("Quicksand/Block Lens Flare/Bit 7", [](auto&& room) { return room.flag(IRoom::Flag::Bit7); });
+        _filters.add_getter<bool>("Caustics/Bit 8", [](auto&& room) { return room.flag(IRoom::Flag::Caustics); });
+        _filters.add_getter<bool>("Reflectivity/Bit 9", [](auto&& room) { return room.flag(IRoom::Flag::WaterReflectivity); });
+        _filters.add_getter<bool>("Snow (NGLE)/Bit 10", [](auto&& room) { return room.flag(IRoom::Flag::Bit10); });
+        _filters.add_getter<bool>("D/Rain/Bit 11", [](auto&& room) { return room.flag(IRoom::Flag::Bit11); });
+        _filters.add_getter<bool>("P/Cold/Bit 12", [](auto&& room) { return room.flag(IRoom::Flag::Bit12); });
+        _filters.add_getter<bool>("Bit 13", [](auto&& room) { return room.flag(IRoom::Flag::Bit13); });
+        _filters.add_getter<bool>("Bit 14", [](auto&& room) { return room.flag(IRoom::Flag::Bit14); });
+        _filters.add_getter<bool>("Bit 15", [](auto&& room) { return room.flag(IRoom::Flag::Bit15); });
     }
 }

@@ -33,6 +33,7 @@ namespace trview
             MOCK_METHOD(float, density, (), (const, override));
             MOCK_METHOD(void, set_position, (const DirectX::SimpleMath::Vector3&), (override));
             MOCK_METHOD(void, render_direction, (const ICamera&, const ILevelTextureStorage&), (override));
+            MOCK_METHOD(trlevel::LevelVersion, level_version, (), (const, override));
 
             std::shared_ptr<MockLight> with_number(uint32_t number)
             {
@@ -49,6 +50,12 @@ namespace trview
             std::shared_ptr<MockLight> with_type(trlevel::LightType type)
             {
                 ON_CALL(*this, type).WillByDefault(testing::Return(type));
+                return shared_from_this();
+            }
+
+            std::shared_ptr<MockLight> with_level_version(trlevel::LevelVersion version)
+            {
+                ON_CALL(*this, level_version).WillByDefault(testing::Return(version));
                 return shared_from_this();
             }
         };
