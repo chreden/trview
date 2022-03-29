@@ -616,7 +616,7 @@ namespace trview
             // Setup Dear ImGui style
             ImGui::StyleColorsDark();
 
-            _font = io.Fonts->AddFontFromFileTTF("C:\\Windows\\Fonts\\Arial.ttf", 12.0f);
+            _font = io.Fonts->AddFontFromFileTTF((_files->fonts_directory() + "\\Arial.ttf").c_str(), 12.0f);
 
             // Setup Platform/Renderer backends
             _imgui_backend->initialise();
@@ -692,7 +692,6 @@ namespace trview
         using namespace boost;
         using namespace graphics;
 
-        static Window w2 = window;
         const auto injector = di::make_injector(
             graphics::register_module(),
             input::register_module(),
@@ -706,12 +705,7 @@ namespace trview
             register_app_tools_module(),
             register_app_ui_module(),
             register_app_windows_module(),
-            di::bind<Window>.to(
-                []()
-                {
-                    return w2;
-                }
-            ),
+            di::bind<Window>.to(window),
             di::bind<IClipboard>.to<Clipboard>(),
             di::bind<IShortcuts>.to<Shortcuts>(),
             di::bind<IShortcuts::Source>.to(
