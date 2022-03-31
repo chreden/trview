@@ -280,9 +280,7 @@ Show the about box.
 
 ## [Filters](doc/filters.md)
 
-## Randomizer
-
-[Randomizer Integration](doc/rando.md)
+## [Randomizer Integration](doc/rando.md)
 
 ## Licenses
 
