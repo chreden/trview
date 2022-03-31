@@ -19,10 +19,9 @@ namespace trview
     void ImGuiScroller::fix_scroll()
     {
         const auto window = ImGui::GetCurrentWindow();
-        const auto table = ImGui::GetCurrentTable();
         if (!ImGui::IsRectVisible(_cursor_pos, _cursor_pos + ImVec2(1, 1)))
         {
-            ImGui::SetScrollY(window->Scroll.y - table->LastFirstRowHeight);
+            ImGui::SetScrollY(window->Scroll.y - ImGui::GetTextLineHeightWithSpacing());
         }
     }
 }
