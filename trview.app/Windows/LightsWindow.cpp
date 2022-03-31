@@ -131,15 +131,27 @@ namespace trview
                     ImGui::TableNextRow();
                     ImGui::TableNextColumn();
                     bool selected = _selected_light.lock() && _selected_light.lock()->number() == light->number();
-                    imgui_scroll_to_item(selected, _scroll_to_light);
+
+                    ImGuiScroller scroller;
+                    if (selected && _scroll_to_light)
+                    {
+                        scroller.scroll_to_item();
+                        _scroll_to_light = false;
+                    }
+
                     if (ImGui::Selectable((std::to_string(light->number()) + std::string("##") + std::to_string(light->number())).c_str(), &selected, ImGuiSelectableFlags_SpanAllColumns | ImGuiSelectableFlags_SelectOnNav | ImGuiTableFlags_SizingFixedFit))
                     {
+                        scroller.fix_scroll();
+
                         set_local_selected_light(light);
                         if (_sync_light)
                         {
                             on_light_selected(light);
                         }
+
+                        _scroll_to_light = false;
                     }
+
                     ImGui::SetItemAllowOverlap();
                     ImGui::TableNextColumn();
                     ImGui::Text(std::to_string(light->room()).c_str());

@@ -327,15 +327,24 @@ namespace trview
                     ImGui::TableNextRow();
                     ImGui::TableNextColumn();
                     bool selected = room_ptr->number() == _selected_room;
-                    imgui_scroll_to_item(selected, _scroll_to_room);
+
+                    ImGuiScroller scroller;
+                    if (selected && _scroll_to_room)
+                    {
+                        scroller.scroll_to_item();
+                        _scroll_to_room = false;
+                    }
+
                     if (ImGui::Selectable((std::to_string(room_ptr->number()) + std::string("##") + std::to_string(room_ptr->number())).c_str(), &selected, ImGuiSelectableFlags_SpanAllColumns | ImGuiSelectableFlags_SelectOnNav))
                     {
+                        scroller.fix_scroll();
                         _selected_room = room_ptr->number();
                         _map_renderer->load(room_ptr);
                         if (_sync_room)
                         {
                             on_room_selected(_selected_room);
                         }
+                        _scroll_to_room = false;
                     }
                     ImGui::SetItemAllowOverlap();
                     ImGui::TableNextColumn();
@@ -495,12 +504,22 @@ namespace trview
                                     ImGui::TableNextRow();
                                     ImGui::TableNextColumn();
                                     bool selected = _local_selected_item.has_value() && _local_selected_item.value().number() == item.number();
-                                    imgui_scroll_to_item(selected, _scroll_to_item);
+                                    
+                                    ImGuiScroller scroller;
+                                    if (selected && _scroll_to_item)
+                                    {
+                                        scroller.scroll_to_item();
+                                        _scroll_to_item = false;
+                                    }
+
                                     if (ImGui::Selectable(std::to_string(item.number()).c_str(), &selected, ImGuiSelectableFlags_SpanAllColumns | ImGuiSelectableFlags_SelectOnNav))
                                     {
+                                        scroller.fix_scroll();
                                         _local_selected_item = item;
                                         on_item_selected(item);
+                                        _scroll_to_item = false;
                                     }
+
                                     ImGui::TableNextColumn();
                                     ImGui::Text(to_utf8(item.type()).c_str());
                                 }
@@ -559,12 +578,22 @@ namespace trview
                                     ImGui::TableNextColumn();
                                     const auto local_selection = _local_selected_trigger.lock();
                                     bool selected = local_selection && local_selection->number() == trigger_ptr->number();
-                                    imgui_scroll_to_item(selected, _scroll_to_trigger);
+                                    
+                                    ImGuiScroller scroller;
+                                    if (selected && _scroll_to_trigger)
+                                    {
+                                        scroller.scroll_to_item();
+                                        _scroll_to_trigger = false;
+                                    }
+
                                     if (ImGui::Selectable((std::to_string(trigger_ptr->number()) + std::string("##") + std::to_string(trigger_ptr->number())).c_str(), &selected, ImGuiSelectableFlags_SpanAllColumns | ImGuiSelectableFlags_SelectOnNav))
                                     {
+                                        scroller.fix_scroll();
                                         _local_selected_trigger = trigger_ptr;
                                         on_trigger_selected(trigger);
+                                        _scroll_to_trigger = false;
                                     }
+
                                     ImGui::TableNextColumn();
                                     ImGui::Text(to_utf8(trigger_type_name(trigger_ptr->type())).c_str());
                                 }
