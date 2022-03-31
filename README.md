@@ -278,6 +278,8 @@ Permanent invite to the trview Discord.
 #### About
 Show the about box.
 
+## [Filters](doc/filters.md)
+
 ## Randomizer
 
 [Randomizer Integration](doc/rando.md)
