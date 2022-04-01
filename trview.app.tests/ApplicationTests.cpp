@@ -20,6 +20,7 @@
 #include <trlevel/Mocks/ILevel.h>
 #include <trview.app/Resources/resource.h>
 #include "NullImGuiBackend.h"
+#include <trview.common/Strings.h>
 
 using namespace trview;
 using namespace trview::tests;
@@ -30,6 +31,18 @@ using testing::_;
 
 namespace
 {
+    std::string fonts_directory()
+    {
+        wchar_t* path;
+        if (S_OK != SHGetKnownFolderPath(FOLDERID_Fonts, 0, nullptr, &path))
+        {
+            return std::string();
+        }
+        auto result = trview::to_utf8(path);
+        CoTaskMemFree(path);
+        return result;
+    }
+
     Event<> shortcut_handler;
 
     auto register_test_module()
@@ -480,6 +493,8 @@ TEST(Application, WindowManagersUpdated)
     EXPECT_CALL(triggers_window_manager, update).Times(1);
     auto [lights_window_manager_ptr, lights_window_manager] = create_mock<MockLightsWindowManager>();
     EXPECT_CALL(lights_window_manager, update).Times(1);
+    auto files = mock_shared<MockFiles>();
+    EXPECT_CALL(*files, fonts_directory()).Times(1).WillRepeatedly(Return(fonts_directory()));
 
     auto application = register_test_module()
         .with_route_window_manager(std::move(route_window_manager_ptr))
@@ -487,6 +502,7 @@ TEST(Application, WindowManagersUpdated)
         .with_rooms_window_manager(std::move(rooms_window_manager_ptr))
         .with_triggers_window_manager(std::move(triggers_window_manager_ptr))
         .with_lights_window_manager(std::move(lights_window_manager_ptr))
+        .with_files(files)
         .build();
     application->render();
 }
@@ -505,6 +521,8 @@ TEST(Application, WindowManagersAndViewerRendered)
     EXPECT_CALL(lights_window_manager, render).Times(1);
     auto [viewer_ptr, viewer] = create_mock<MockViewer>();
     EXPECT_CALL(viewer, render).Times(1);
+    auto files = mock_shared<MockFiles>();
+    EXPECT_CALL(*files, fonts_directory()).Times(1).WillRepeatedly(Return(fonts_directory()));
 
     auto application = register_test_module()
         .with_route_window_manager(std::move(route_window_manager_ptr))
@@ -513,6 +531,7 @@ TEST(Application, WindowManagersAndViewerRendered)
         .with_triggers_window_manager(std::move(triggers_window_manager_ptr))
         .with_lights_window_manager(std::move(lights_window_manager_ptr))
         .with_viewer(std::move(viewer_ptr))
+        .with_files(files)
         .build();
     application->render();
 }

@@ -29,6 +29,16 @@ namespace trview
         return to_utf8(path.path);
     }
 
+    std::string Files::fonts_directory() const
+    {
+        SafePath path;
+        if (S_OK != SHGetKnownFolderPath(FOLDERID_Fonts, 0, nullptr, &path.path))
+        {
+            return std::string();
+        }
+        return to_utf8(path.path);
+    }
+
     bool Files::create_directory(const std::string& directory) const
     {
         return CreateDirectory(to_utf16(directory).c_str(), nullptr) || GetLastError() == ERROR_ALREADY_EXISTS;
