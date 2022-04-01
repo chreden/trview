@@ -2,16 +2,26 @@
 
 namespace trview
 {
-    void imgui_scroll_to_item(bool selected, bool& should_scroll_to)
+    ImGuiScroller::ImGuiScroller()
     {
-        if (selected && should_scroll_to)
+        const auto window = ImGui::GetCurrentWindow();
+        _cursor_pos = window->DC.CursorPos;
+    }
+
+    void ImGuiScroller::scroll_to_item()
+    {
+        if (!ImGui::IsRectVisible(_cursor_pos, _cursor_pos + ImVec2(1, 1)))
         {
-            const auto pos = ImGui::GetCurrentWindow()->DC.CursorPos;
-            if (!ImGui::IsRectVisible(pos, pos + ImVec2(1, 1)))
-            {
-                ImGui::SetScrollHereY();
-            }
-            should_scroll_to = false;
+            ImGui::SetScrollHereY();
+        }
+    }
+
+    void ImGuiScroller::fix_scroll()
+    {
+        const auto window = ImGui::GetCurrentWindow();
+        if (!ImGui::IsRectVisible(_cursor_pos, _cursor_pos + ImVec2(1, 1)))
+        {
+            ImGui::SetScrollY(window->Scroll.y - ImGui::GetTextLineHeightWithSpacing());
         }
     }
 }

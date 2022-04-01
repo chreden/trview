@@ -205,15 +205,25 @@ namespace trview
                     ImGui::TableNextRow();
                     ImGui::TableNextColumn();
                     bool selected = _selected_trigger.lock() && _selected_trigger.lock()->number() == trigger_ptr->number();
-                    imgui_scroll_to_item(selected, _scroll_to_trigger);
+
+                    ImGuiScroller scroller;
+                    if (selected && _scroll_to_trigger)
+                    {
+                        scroller.scroll_to_item();
+                        _scroll_to_trigger = false;
+                    }
+
                     if (ImGui::Selectable((std::to_string(trigger_ptr->number()) + std::string("##") + std::to_string(trigger_ptr->number())).c_str(), &selected, ImGuiSelectableFlags_SpanAllColumns | ImGuiSelectableFlags_SelectOnNav))
                     {
+                        scroller.fix_scroll();
                         set_local_selected_trigger(trigger);
                         if (_sync_trigger)
                         {
                             on_trigger_selected(trigger);
                         }
+                        _scroll_to_trigger = false;
                     }
+
                     ImGui::SetItemAllowOverlap();
                     ImGui::TableNextColumn();
                     ImGui::Text(std::to_string(trigger_ptr->room()).c_str());

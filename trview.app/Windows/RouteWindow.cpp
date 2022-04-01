@@ -79,11 +79,22 @@ namespace trview
                         ImGui::TableNextRow();
                         ImGui::TableNextColumn();
                         bool selected = _selected_index == i;
-                        imgui_scroll_to_item(selected, _scroll_to_trigger);
+
+                        ImGuiScroller scroller;
+                        if (selected && _scroll_to_trigger)
+                        {
+                            scroller.scroll_to_item();
+                            _scroll_to_trigger = false;
+                        }
+
                         if (ImGui::Selectable(std::to_string(i).c_str(), &selected, ImGuiSelectableFlags_SpanAllColumns | ImGuiSelectableFlags_SelectOnNav))
                         {
+                            scroller.fix_scroll();
+
                             _selected_index = i;
                             on_waypoint_selected(i);
+
+                            _scroll_to_trigger = false;
                         }
 
                         ImGuiDragDropFlags src_flags = 0;
