@@ -137,6 +137,11 @@ namespace trview
         /// </summary>
         /// <param name="filters">The filters to use.</param>
         void set_filters(const std::vector<Filter> filters);
+        /// <summary>
+        /// Test whether filters were changed and reset the changed flag.
+        /// </summary>
+        /// <returns>Whether filters were changed.</returns>
+        bool test_and_reset_changed();
     private:
         using Value = std::variant<std::string, float, bool>;
 
@@ -177,6 +182,7 @@ namespace trview
         std::map<std::string, MultiGetter> _multi_getters;
         bool _show_filters{ false };
         bool _enabled{ true };
+        bool _changed{ true };
     };
 
     constexpr std::string to_string(CompareOp op) noexcept;

@@ -47,9 +47,11 @@ namespace trview
         bool render_items_window();
         void set_local_selected_item(const Item& item);
         void setup_filters();
+        void filter_items();
 
         std::string _id{ "Items 0" };
         std::vector<Item> _all_items;
+        std::vector<Item> _filtered_items;
         std::vector<std::weak_ptr<ITrigger>> _all_triggers;
         bool _track_room{ false };
         uint32_t _current_room{ 0u };
@@ -62,6 +64,7 @@ namespace trview
         std::optional<Item> _global_selected_item;
         std::vector<std::weak_ptr<ITrigger>> _triggered_by;
         bool _scroll_to_item{ false };
+        bool _need_filtering{ true };
 
         Filters<Item> _filters;
     };
