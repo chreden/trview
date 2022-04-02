@@ -48,10 +48,12 @@ namespace trview
         bool render_triggers_window();
         void set_local_selected_trigger(const std::weak_ptr<ITrigger>& trigger);
         void setup_filters();
+        void filter_triggers();
 
         std::string _id{ "Triggers 0" };
         std::vector<Item> _all_items;
         std::vector<std::weak_ptr<ITrigger>> _all_triggers;
+        std::vector<std::weak_ptr<ITrigger>> _filtered_triggers;
 
         /// Whether the trigger window is tracking the current room.
         bool _track_room{ false };
@@ -70,5 +72,6 @@ namespace trview
         std::optional<float> _tooltip_timer;
         std::vector<Command> _local_selected_trigger_commands;
         Filters<ITrigger> _filters;
+        bool _need_filtering{ true };
     };
 }
