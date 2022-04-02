@@ -374,6 +374,7 @@
     <ClCompile Include="UI\SettingsWindow.cpp">
       <Filter>UI\Settings</Filter>
     </ClCompile>
+    <ClCompile Include="ApplicationCreate.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera\Camera.h">
