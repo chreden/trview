@@ -18,8 +18,6 @@
     <ClInclude Include="Mocks\IMouse.h">
       <Filter>Mocks</Filter>
     </ClInclude>
-    <ClInclude Include="di.h" />
-    <ClInclude Include="di.hpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Mocks">

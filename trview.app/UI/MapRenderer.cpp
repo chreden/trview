@@ -8,13 +8,13 @@ using namespace Microsoft::WRL;
 
 namespace trview
 {
-    MapRenderer::MapRenderer(const std::shared_ptr<graphics::IDevice>& device, const graphics::IFontFactory& font_factory, const Size& window_size, const graphics::ISprite::Source& sprite_source,
+    MapRenderer::MapRenderer(const std::shared_ptr<graphics::IDevice>& device, const std::shared_ptr<graphics::IFontFactory>& font_factory, const Size& window_size, const graphics::ISprite::Source& sprite_source,
         const graphics::IRenderTarget::SizeSource& render_target_source)
         : _device(device),
         _window_width(static_cast<int>(window_size.width)),
         _window_height(static_cast<int>(window_size.height)),
         _sprite(sprite_source(window_size)),
-        _font(font_factory.create_font("Arial", 7, graphics::TextAlignment::Centre, graphics::ParagraphAlignment::Centre)),
+        _font(font_factory->create_font("Arial", 7, graphics::TextAlignment::Centre, graphics::ParagraphAlignment::Centre)),
         _texture(create_texture(*device, Colour::White)),
         _render_target_source(render_target_source)
     {

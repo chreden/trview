@@ -1,29 +1,6 @@
 #include "Application.h"
 
 #include "Resources/resource.h"
-#include "Resources/DefaultShaders.h"
-#include "Resources/DefaultTextures.h"
-#include "Resources/DefaultFonts.h"
-
-#include <external/boost/di.hpp>
-
-#include <trlevel/di.h>
-#include <trview.graphics/di.h>
-#include <trview.input/di.h>
-#include <trview.app/Elements/di.h>
-#include <trview.app/Geometry/di.h>
-#include <trview.app/Graphics/di.h>
-#include <trview.app/Menus/di.h>
-#include <trview.app/Routing/di.h>
-#include <trview.app/Settings/di.h>
-#include <trview.app/Tools/di.h>
-#include <trview.app/UI/di.h>
-#include <trview.app/Windows/di.h>
-#include <trview.common/Files.h>
-#include <trview.common/windows/Clipboard.h>
-#include <trview.common/Windows/Dialogs.h>
-#include <trview.common/Windows/Shell.h>
-#include <trview.app/Settings/IStartupOptions.h>
 
 using namespace DirectX::SimpleMath;
 
@@ -685,55 +662,5 @@ namespace trview
         UpdateWindow(window);
 
         return window;
-    }
-
-    std::unique_ptr<IApplication> create_application(const Window& window, const std::wstring& command_line)
-    {
-        using namespace boost;
-        using namespace graphics;
-
-        const auto injector = di::make_injector(
-            graphics::register_module(),
-            input::register_module(),
-            trlevel::register_module(),
-            register_app_elements_module(),
-            register_app_geometry_module(),
-            register_app_graphics_module(),
-            register_app_menus_module(),
-            register_app_routing_module(),
-            register_app_settings_module(),
-            register_app_tools_module(),
-            register_app_ui_module(),
-            register_app_windows_module(),
-            di::bind<Window>.to(window),
-            di::bind<IClipboard>.to<Clipboard>(),
-            di::bind<IShortcuts>.to<Shortcuts>(),
-            di::bind<IShortcuts::Source>.to(
-                [](const auto& injector) -> IShortcuts::Source
-                {
-                    return [](auto&& window)
-                    {
-                        return std::make_shared<Shortcuts>(window);
-                    };
-                }
-            ),
-            di::bind<IApplication>.to<Application>(),
-            di::bind<IDialogs>.to<Dialogs>(),
-            di::bind<IFiles>.to<Files>(),
-            di::bind<IShell>.to<Shell>(),
-            di::bind<IStartupOptions::CommandLine>.to(command_line)
-        );
-
-        load_default_shaders(
-            injector.create<std::shared_ptr<graphics::IDevice>>(),
-            injector.create<std::shared_ptr<IShaderStorage>>());
-        load_default_fonts(
-            injector.create<std::shared_ptr<graphics::IDevice>>(),
-            injector.create<std::shared_ptr<IFontFactory>>());
-        load_default_textures(
-            injector.create<std::shared_ptr<graphics::IDevice>>(),
-            injector.create<std::shared_ptr<ITextureStorage>>());
-
-        return injector.create<std::unique_ptr<IApplication>>();
     }
 }

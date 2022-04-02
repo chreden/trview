@@ -32,8 +32,6 @@
     <ClCompile Include="WindowTester.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="di.h" />
-    <ClInclude Include="di.hpp" />
     <ClInclude Include="IMouse.h" />
     <ClInclude Include="IWindowTester.h" />
     <ClInclude Include="Keyboard.h" />

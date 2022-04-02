@@ -15,8 +15,6 @@
     <ClInclude Include="Mocks\ILevel.h">
       <Filter>Mocks</Filter>
     </ClInclude>
-    <ClInclude Include="di.h" />
-    <ClInclude Include="di.hpp" />
     <ClInclude Include="tr_lights.h" />
     <ClInclude Include="tr_rooms.h" />
   </ItemGroup>

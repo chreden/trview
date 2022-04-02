@@ -29,6 +29,7 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Application.cpp" />
+    <ClCompile Include="ApplicationCreate.cpp" />
     <ClCompile Include="ApplicationLuaRegistry.cpp" />
     <ClCompile Include="Camera\Camera.cpp" />
     <ClCompile Include="Camera\CameraInput.cpp" />
@@ -170,8 +171,6 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClInclude Include="Camera\ICamera.h" />
     <ClInclude Include="Camera\OrbitCamera.h" />
     <ClInclude Include="Camera\ProjectionMode.h" />
-    <ClInclude Include="Elements\di.h" />
-    <ClInclude Include="Elements\di.hpp" />
     <ClInclude Include="Elements\Entity.h" />
     <ClInclude Include="Elements\IEntity.h" />
     <ClInclude Include="Elements\ILevel.h" />
@@ -194,8 +193,6 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClInclude Include="Elements\Types.h" />
     <ClInclude Include="Filters\Filters.h" />
     <ClInclude Include="Filters\Filters.hpp" />
-    <ClInclude Include="Geometry\di.h" />
-    <ClInclude Include="Geometry\di.hpp" />
     <ClInclude Include="Geometry\IMesh.h" />
     <ClInclude Include="Geometry\IPicking.h" />
     <ClInclude Include="Geometry\IRenderable.h" />
@@ -209,8 +206,6 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClInclude Include="Geometry\TransparencyBuffer.h" />
     <ClInclude Include="Geometry\TransparentTriangle.h" />
     <ClInclude Include="Geometry\Triangle.h" />
-    <ClInclude Include="Graphics\di.h" />
-    <ClInclude Include="Graphics\di.hpp" />
     <ClInclude Include="Graphics\ILevelTextureStorage.h" />
     <ClInclude Include="Graphics\IMeshStorage.h" />
     <ClInclude Include="Graphics\ISectorHighlight.h" />
@@ -223,8 +218,6 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClInclude Include="Graphics\TextureStorage.h" />
     <ClInclude Include="Lua\Lua.h" />
     <ClInclude Include="Menus\AlternateGroupToggler.h" />
-    <ClInclude Include="Menus\di.h" />
-    <ClInclude Include="Menus\di.hpp" />
     <ClInclude Include="Menus\DirectoryListing.h" />
     <ClInclude Include="Menus\FileDropper.h" />
     <ClInclude Include="Menus\IFileDropper.h" />
@@ -288,15 +281,11 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClInclude Include="Resources\targetver.h" />
     <ClInclude Include="Routing\Action.h" />
     <ClInclude Include="Routing\Actions.h" />
-    <ClInclude Include="Routing\di.h" />
-    <ClInclude Include="Routing\di.hpp" />
     <ClInclude Include="Routing\IActions.h" />
     <ClInclude Include="Routing\IRoute.h" />
     <ClInclude Include="Routing\IWaypoint.h" />
     <ClInclude Include="Routing\Route.h" />
     <ClInclude Include="Routing\Waypoint.h" />
-    <ClInclude Include="Settings\di.h" />
-    <ClInclude Include="Settings\di.hpp" />
     <ClInclude Include="Settings\IStartupOptions.h" />
     <ClInclude Include="Settings\ISettingsLoader.h" />
     <ClInclude Include="Settings\RandomizerSettings.h" />
@@ -305,8 +294,6 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClInclude Include="Settings\UserSettings.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="Tools\Compass.h" />
-    <ClInclude Include="Tools\di.h" />
-    <ClInclude Include="Tools\di.hpp" />
     <ClInclude Include="Tools\ICompass.h" />
     <ClInclude Include="Tools\IMeasure.h" />
     <ClInclude Include="Tools\Measure.h" />
@@ -317,8 +304,6 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClInclude Include="UI\CameraPosition.h" />
     <ClInclude Include="UI\Console.h" />
     <ClInclude Include="UI\ContextMenu.h" />
-    <ClInclude Include="UI\di.h" />
-    <ClInclude Include="UI\di.hpp" />
     <ClInclude Include="UI\DX11ImGuiBackend.h" />
     <ClInclude Include="UI\GoTo.h" />
     <ClInclude Include="UI\ICameraControls.h" />
@@ -336,8 +321,6 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClInclude Include="UI\Tooltip.h" />
     <ClInclude Include="UI\ViewerUI.h" />
     <ClInclude Include="UI\ViewOptions.h" />
-    <ClInclude Include="Windows\di.h" />
-    <ClInclude Include="Windows\di.hpp" />
     <ClInclude Include="Windows\IItemsWindow.h" />
     <ClInclude Include="Windows\IItemsWindowManager.h" />
     <ClInclude Include="Windows\ILightsWindow.h" />

@@ -30,8 +30,6 @@
 #include <external/nlohmann/json.hpp>
 #pragma warning(pop)
 
-#include <external/boost/di.hpp>
-
 #include <windows.h>
 #include <WinHttp.h>
 #include <shellapi.h>
