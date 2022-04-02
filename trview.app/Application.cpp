@@ -689,51 +689,201 @@ namespace trview
 
     std::unique_ptr<IApplication> create_application(const Window& window, const std::wstring& command_line)
     {
-        using namespace boost;
-        using namespace graphics;
+        auto device = std::make_shared<graphics::Device>();
+        auto shortcuts = std::make_shared<Shortcuts>(window);
+        auto texture_storage = std::make_shared<TextureStorage>(device);
+        auto shader_storage = std::make_shared<graphics::ShaderStorage>();
+        auto font_factory = std::make_shared<graphics::FontFactory>();
 
-        const auto injector = di::make_injector(
-            graphics::register_module(),
-            input::register_module(),
-            trlevel::register_module(),
-            register_app_elements_module(),
-            register_app_geometry_module(),
-            register_app_graphics_module(),
-            register_app_menus_module(),
-            register_app_routing_module(),
-            register_app_settings_module(),
-            register_app_tools_module(),
-            register_app_ui_module(),
-            register_app_windows_module(),
-            di::bind<Window>.to(window),
-            di::bind<IClipboard>.to<Clipboard>(),
-            di::bind<IShortcuts>.to<Shortcuts>(),
-            di::bind<IShortcuts::Source>.to(
-                [](const auto& injector) -> IShortcuts::Source
-                {
-                    return [](auto&& window)
-                    {
-                        return std::make_shared<Shortcuts>(window);
-                    };
-                }
-            ),
-            di::bind<IApplication>.to<Application>(),
-            di::bind<IDialogs>.to<Dialogs>(),
-            di::bind<IFiles>.to<Files>(),
-            di::bind<IShell>.to<Shell>(),
-            di::bind<IStartupOptions::CommandLine>.to(command_line)
-        );
+        Resource type_list = get_resource_memory(IDR_TYPE_NAMES, L"TEXT");
+        auto type_name_lookup = std::make_shared<TypeNameLookup>(std::string(type_list.data, type_list.data + type_list.size));
 
-        load_default_shaders(
-            injector.create<std::shared_ptr<graphics::IDevice>>(),
-            injector.create<std::shared_ptr<IShaderStorage>>());
-        load_default_fonts(
-            injector.create<std::shared_ptr<graphics::IDevice>>(),
-            injector.create<std::shared_ptr<IFontFactory>>());
-        load_default_textures(
-            injector.create<std::shared_ptr<graphics::IDevice>>(),
-            injector.create<std::shared_ptr<ITextureStorage>>());
+        load_default_shaders(device, shader_storage);
+        load_default_fonts(device, font_factory);
+        load_default_textures(device, texture_storage);
 
-        return injector.create<std::unique_ptr<IApplication>>();
+        auto render_target_size_source = [=](uint32_t width, uint32_t height, graphics::IRenderTarget::DepthStencilMode mode)
+        {
+            return std::make_unique<graphics::RenderTarget>(device, width, height, mode);
+        };
+
+        auto render_target_texture_source = [=](auto texture, auto mode)
+        {
+            return std::make_unique<graphics::RenderTarget>(device, texture, mode);
+        };
+
+        auto device_window_source = [=](const Window& window)
+        {
+            return std::make_unique<graphics::DeviceWindow>(device, render_target_texture_source, window);
+        };
+
+        auto sprite_source = [=](auto size)
+        {
+            return std::make_unique<graphics::Sprite>(device, shader_storage, size);
+        };
+
+        auto map_renderer_source = [=](auto size)
+        {
+            return std::make_unique<MapRenderer>(device, font_factory, size, sprite_source, render_target_size_source);
+        };
+
+        auto mesh_source = [=](auto vertices, auto indices, auto untextured_indices, auto transparent_triangles, auto collision_triangles)
+        {
+            return std::make_shared<Mesh>(device, vertices, indices, untextured_indices, transparent_triangles, collision_triangles);
+        };
+
+        auto mesh_transparent_source = [=](auto&& transparent_triangles, auto&& collision_triangles)
+        {
+            return std::make_shared<Mesh>(transparent_triangles, collision_triangles);
+        };
+
+        const auto waypoint_mesh = create_cube_mesh(mesh_source);
+        auto waypoint_source = [=](auto&&... args)
+        {
+            return std::make_unique<Waypoint>(waypoint_mesh, args...);
+        };
+
+        auto route_source = [=]()
+        {
+            return std::make_shared<Route>(
+                std::make_unique<SelectionRenderer>(device, shader_storage, std::make_unique<TransparencyBuffer>(device), render_target_size_source),
+                waypoint_source);
+        };
+
+        auto entity_source = [=](auto&& level, auto&& entity, auto&& index, auto&& mesh_storage)
+        {
+            return std::make_shared<Entity>(mesh_source, level, entity, mesh_storage, index, type_name_lookup->is_pickup(level.get_version(), entity.TypeID));
+        };
+
+        auto ai_source = [=](auto&& level, auto&& entity, auto&& index, auto&& mesh_storage)
+        {
+            return std::make_shared<Entity>(mesh_source, level, entity, mesh_storage, index);
+        };
+
+        auto bounding_mesh = create_cube_mesh(mesh_source);
+        auto static_mesh_source = [=](auto&& static_mesh, auto&& level_static_mesh, auto&& mesh)
+        {
+            return std::make_shared<StaticMesh>(static_mesh, level_static_mesh, mesh, bounding_mesh);
+        };
+
+        auto static_mesh_position_source = [=](auto&& position, auto&& scale, auto&& mesh)
+        {
+            return std::make_shared<StaticMesh>(position, scale, mesh);
+        };
+
+        auto sector_source = [=](auto&& level, auto&& room, auto&& room_sector, auto&& sector_id, auto&& room_number)
+        {
+            return std::make_shared<Sector>(level, room, room_sector, sector_id, room_number);
+        };
+
+        auto room_source = [=](auto&& tr_level, auto&& room, auto&& level_texture_storage, auto&& mesh_storage, auto&& index, auto&& level)
+        {
+            return std::make_shared<Room>(
+                mesh_source, tr_level, room, level_texture_storage, mesh_storage, index, level, static_mesh_source, static_mesh_position_source, sector_source);
+        };
+
+        auto trigger_source = [=](auto&& number, auto&& room, auto&& x, auto&& z, auto&& info)
+        {
+            return std::make_shared<Trigger>(number, room, x, z, info, mesh_transparent_source);
+        };
+
+        const auto light_mesh = create_sphere_mesh(mesh_source, 24, 24);
+        auto light_source = [=](auto&& number, auto&& room, auto&& light)
+        {
+            return std::make_shared<Light>(light_mesh, number, room, light);
+        };
+
+        auto level_source = [=](auto&& level)
+        {
+            auto level_texture_storage = std::make_shared<LevelTextureStorage>(device, std::make_unique<TextureStorage>(device), *level);
+            auto mesh_storage = std::make_unique<MeshStorage>(mesh_source, *level, *level_texture_storage);
+            return std::make_unique<Level>(device, shader_storage, std::move(level),
+                level_texture_storage,
+                std::move(mesh_storage),
+                std::make_unique<TransparencyBuffer>(device),
+                std::make_unique<SelectionRenderer>(device, shader_storage, std::make_unique<TransparencyBuffer>(device), render_target_size_source),
+                type_name_lookup,
+                entity_source,
+                ai_source,
+                room_source,
+                trigger_source,
+                light_source);
+        };
+
+        auto viewer_ui = std::make_unique<ViewerUI>(
+            window,
+            texture_storage,
+            shortcuts,
+            map_renderer_source,
+            std::make_unique<SettingsWindow>(),
+            std::make_unique<ViewOptions>(),
+            std::make_unique<ContextMenu>(),
+            std::make_unique<CameraControls>());
+
+        auto viewer = std::make_unique<Viewer>(
+            window,
+            device,
+            std::move(viewer_ui),
+            std::make_unique<Picking>(),
+            std::make_unique<input::Mouse>(window, std::make_unique<input::WindowTester>(window)),
+            shortcuts,
+            route_source(),
+            sprite_source,
+            std::make_unique<Compass>(device, sprite_source, render_target_size_source, mesh_source),
+            std::make_unique<Measure>(device, mesh_source),
+            render_target_size_source,
+            device_window_source,
+            std::make_unique<SectorHighlight>(mesh_source));
+
+        auto files = std::make_shared<Files>();
+        auto dialogs = std::make_shared<Dialogs>();
+        auto clipboard = std::make_shared<Clipboard>(window);
+
+        auto items_window_source = [=]()
+        {
+            return std::make_shared<ItemsWindow>(clipboard);
+        };
+
+        auto triggers_window_source = [=]()
+        {
+            return std::make_shared<TriggersWindow>(clipboard);
+        };
+
+        auto route_window_source = [=]()
+        {
+            return std::make_shared<RouteWindow>(window, clipboard, dialogs, files);
+        };
+
+        auto rooms_window_source = [=]()
+        {
+            return std::make_shared<RoomsWindow>(map_renderer_source, clipboard);
+        };
+
+        auto lights_window_source = [=]()
+        {
+            return std::make_shared<LightsWindow>(clipboard);
+        };
+
+        return std::make_unique<Application>(
+            window,
+            std::make_unique<UpdateChecker>(window),
+            std::make_unique<SettingsLoader>(files),
+            std::make_unique<FileDropper>(window),
+            std::make_unique<trlevel::LevelLoader>(),
+            std::make_unique<LevelSwitcher>(window),
+            std::make_unique<RecentFiles>(window),
+            std::move(viewer),
+            route_source,
+            shortcuts,
+            std::make_unique<ItemsWindowManager>(window, shortcuts, items_window_source),
+            std::make_unique<TriggersWindowManager>(window, shortcuts, triggers_window_source),
+            std::make_unique<RouteWindowManager>(window, shortcuts, route_window_source),
+            std::make_unique<RoomsWindowManager>(window, shortcuts, rooms_window_source),
+            level_source,
+            std::make_shared<StartupOptions>(command_line),
+            dialogs,
+            files,
+            std::make_unique<DX11ImGuiBackend>(window, device),
+            std::make_unique<LightsWindowManager>(window, shortcuts, lights_window_source));
     }
 }
