@@ -118,7 +118,7 @@ namespace trview
         };
 
         auto bounding_mesh = create_cube_mesh(mesh_source);
-        auto static_mesh_source = [=](auto&&...) { return std::make_shared<StaticMesh>(args..., bounding_mesh); };
+        auto static_mesh_source = [=](auto&&... args) { return std::make_shared<StaticMesh>(args..., bounding_mesh); };
         auto static_mesh_position_source = [=](auto&&... args) { return std::make_shared<StaticMesh>(args...); };
         auto sector_source = [=](auto&&... args) { return std::make_shared<Sector>(args...); };
         auto room_source = [=](auto&&... args) { return std::make_shared<Room>( mesh_source, args..., static_mesh_source, static_mesh_position_source, sector_source); };
