@@ -159,8 +159,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="di.h" />
-    <ClInclude Include="di.hpp" />
     <ClInclude Include="ILevel.h" />
     <ClInclude Include="ILevelLoader.h" />
     <ClInclude Include="Level.h" />

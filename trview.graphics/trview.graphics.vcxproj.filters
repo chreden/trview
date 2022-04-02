@@ -104,8 +104,6 @@
     <ClInclude Include="mocks\IDeviceWindow.h">
       <Filter>Mocks</Filter>
     </ClInclude>
-    <ClInclude Include="di.h" />
-    <ClInclude Include="di.hpp" />
     <ClInclude Include="Mocks\D3D\ID3D11DeviceContext.h">
       <Filter>Mocks\D3D</Filter>
     </ClInclude>

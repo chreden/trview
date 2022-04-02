@@ -5,25 +5,52 @@
 #include "Resources/DefaultTextures.h"
 #include "Resources/DefaultFonts.h"
 
-#include <external/boost/di.hpp>
-
-#include <trlevel/di.h>
-#include <trview.graphics/di.h>
-#include <trview.input/di.h>
-#include <trview.app/Elements/di.h>
-#include <trview.app/Geometry/di.h>
-#include <trview.app/Graphics/di.h>
-#include <trview.app/Menus/di.h>
-#include <trview.app/Routing/di.h>
-#include <trview.app/Settings/di.h>
-#include <trview.app/Tools/di.h>
-#include <trview.app/UI/di.h>
-#include <trview.app/Windows/di.h>
+#include <trlevel/LevelLoader.h>
 #include <trview.common/Files.h>
 #include <trview.common/windows/Clipboard.h>
 #include <trview.common/Windows/Dialogs.h>
 #include <trview.common/Windows/Shell.h>
-#include <trview.app/Settings/IStartupOptions.h>
+
+#include <trview.graphics/ShaderStorage.h>
+#include <trview.graphics/FontFactory.h>
+#include <trview.graphics/DeviceWindow.h>
+#include <trview.graphics/RenderTarget.h>
+#include <trview.input/WindowTester.h>
+
+#include "Elements/TypeNameLookup.h"
+#include "Elements/Entity.h"
+#include "Elements/Light.h"
+#include "Elements/StaticMesh.h"
+#include "Elements/Sector.h"
+#include "Graphics/TextureStorage.h"
+#include "Geometry/Mesh.h"
+#include "Geometry/Picking.h"
+#include "Geometry/TransparencyBuffer.h"
+#include "Graphics/LevelTextureStorage.h"
+#include "Graphics/MeshStorage.h"
+#include "Graphics/SelectionRenderer.h"
+#include "Graphics/SectorHighlight.h"
+#include "Menus/FileDropper.h"
+#include "Menus/LevelSwitcher.h"
+#include "Menus/RecentFiles.h"
+#include "Menus/UpdateChecker.h"
+#include "Routing/Waypoint.h"
+#include "Settings/SettingsLoader.h"
+#include "Settings/StartupOptions.h"
+#include "UI/CameraControls.h"
+#include "UI/ContextMenu.h"
+#include "UI/SettingsWindow.h"
+#include "UI/ViewerUI.h"
+#include "UI/ViewOptions.h"
+#include "UI/MapRenderer.h"
+#include "Windows/ItemsWindowManager.h"
+#include "Windows/LightsWindow.h"
+#include "Windows/LightsWindowManager.h"
+#include "Windows/RouteWindowManager.h"
+#include "Windows/RoomsWindowManager.h"
+#include "Windows/TriggersWindowManager.h"
+#include "Windows/Viewer.h"
+#include "UI/DX11ImGuiBackend.h"
 
 using namespace DirectX::SimpleMath;
 
