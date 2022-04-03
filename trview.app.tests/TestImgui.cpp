@@ -89,6 +89,7 @@ namespace trview
             wchar_t* path = 0;
             SHGetKnownFolderPath(FOLDERID_Fonts, 0, nullptr, &path);
             _font = io.Fonts->AddFontFromFileTTF((to_utf8(path) + "\\Arial.ttf").c_str(), 12.0f);
+            CoTaskMemFree(path);
         }
 
         TestImgui::TestImgui(const RenderCallback& render_callback)
