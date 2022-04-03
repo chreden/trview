@@ -65,6 +65,7 @@ namespace trview
             ImGuiID _tracking_id{ 0 };
             ImGuiContext* _context{ nullptr };
             NullImGuiBackend _backend;
+            ImFont* _font{ nullptr };
         };
     }
 }

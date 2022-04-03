@@ -148,7 +148,8 @@ namespace trview
             }
 
             ImGui::PushItemWidth(-1);
-            if (ImGui::BeginCombo(Names::command_filter.c_str(), _all_commands[_selected_command].c_str()))
+            std::string preview_command = _selected_command < _all_commands.size() ? _all_commands[_selected_command] : "";
+            if (ImGui::BeginCombo(Names::command_filter.c_str(), preview_command.c_str()))
             {
                 for (int n = 0; n < _all_commands.size(); ++n)
                 {
@@ -481,6 +482,11 @@ namespace trview
 
     void TriggersWindow::calculate_column_widths()
     {
+        if (ImGui::GetCurrentContext() == nullptr)
+        {
+            return;
+        }
+
         _required_type_width = 0.0f;
         _required_number_width = 0.0f;
         for (const auto& trigger : _all_triggers)
