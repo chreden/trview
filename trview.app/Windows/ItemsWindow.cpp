@@ -19,7 +19,6 @@ namespace trview
     {
         _all_items = items;
         setup_filters();
-        _need_filtering = true;
     }
 
     void ItemsWindow::update_items(const std::vector<Item>& items)
@@ -45,13 +44,11 @@ namespace trview
     void ItemsWindow::set_current_room(uint32_t room)
     {
         _current_room = room;
-        _need_filtering = true;
     }
 
     void ItemsWindow::set_track_room(bool value)
     {
         _track_room = value;
-        _need_filtering = true;
     }
 
     void ItemsWindow::set_sync_item(bool value)
@@ -111,9 +108,7 @@ namespace trview
                 ImGui::TableSetupScrollFreeze(1, 1);
                 ImGui::TableHeadersRow();
 
-                filter_items();
-
-                imgui_sort(_filtered_items,
+                imgui_sort(_all_items,
                     {
                         [](auto&& l, auto&& r) { return l.number() < r.number(); },
                         [](auto&& l, auto&& r) { return l.room() < r.room(); },
@@ -122,53 +117,51 @@ namespace trview
                         [](auto&& l, auto&& r) { return l.visible() < r.visible(); }
                     });
 
-                ImGuiListClipper clipper;
-                clipper.Begin(_filtered_items.size());
-                while (clipper.Step())
+                for (const auto& item : _all_items)
                 {
-                    for (int i = clipper.DisplayStart; i < clipper.DisplayEnd; i++)
+                    if (_track_room && item.room() != _current_room || !_filters.match(item))
                     {
-                        const auto& item = _filtered_items[i];
-
-                        ImGui::TableNextRow();
-                        ImGui::TableNextColumn();
-                        bool selected = _selected_item.has_value() && _selected_item.value().number() == item.number();
-
-                        ImGuiScroller scroller;
-                        if (selected && _scroll_to_item)
-                        {
-                            scroller.scroll_to_item();
-                            _scroll_to_item = false;
-                        }
-
-                        if (ImGui::Selectable((std::to_string(item.number()) + std::string("##") + std::to_string(item.number())).c_str(), &selected, ImGuiSelectableFlags_SpanAllColumns | ImGuiSelectableFlags_SelectOnNav | ImGuiTableFlags_SizingFixedFit))
-                        {
-                            scroller.fix_scroll();
-
-                            set_local_selected_item(item);
-                            if (_sync_item)
-                            {
-                                on_item_selected(item);
-                            }
-                            _scroll_to_item = false;
-                        }
-
-                        ImGui::SetItemAllowOverlap();
-                        ImGui::TableNextColumn();
-                        ImGui::Text(std::to_string(item.room()).c_str());
-                        ImGui::TableNextColumn();
-                        ImGui::Text(std::to_string(item.type_id()).c_str());
-                        ImGui::TableNextColumn();
-                        ImGui::Text(to_utf8(item.type()).c_str());
-                        ImGui::TableNextColumn();
-                        bool hidden = !item.visible();
-                        ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0, 0));
-                        if (ImGui::Checkbox((std::string("##hide-") + std::to_string(item.number())).c_str(), &hidden))
-                        {
-                            on_item_visibility(item, !hidden);
-                        }
-                        ImGui::PopStyleVar();
+                        continue;
                     }
+
+                    ImGui::TableNextRow();
+                    ImGui::TableNextColumn();
+                    bool selected = _selected_item.has_value() && _selected_item.value().number() == item.number();
+
+                    ImGuiScroller scroller;
+                    if (selected && _scroll_to_item)
+                    {
+                        scroller.scroll_to_item();
+                        _scroll_to_item = false;
+                    }
+
+                    if (ImGui::Selectable((std::to_string(item.number()) + std::string("##") + std::to_string(item.number())).c_str(), &selected, ImGuiSelectableFlags_SpanAllColumns | ImGuiSelectableFlags_SelectOnNav | ImGuiTableFlags_SizingFixedFit))
+                    {
+                        scroller.fix_scroll();
+
+                        set_local_selected_item(item);
+                        if (_sync_item)
+                        {
+                            on_item_selected(item);
+                        }
+                        _scroll_to_item = false;
+                    }
+
+                    ImGui::SetItemAllowOverlap();
+                    ImGui::TableNextColumn();
+                    ImGui::Text(std::to_string(item.room()).c_str());
+                    ImGui::TableNextColumn();
+                    ImGui::Text(std::to_string(item.type_id()).c_str());
+                    ImGui::TableNextColumn();
+                    ImGui::Text(to_utf8(item.type()).c_str());
+                    ImGui::TableNextColumn();
+                    bool hidden = !item.visible();
+                    ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0, 0));
+                    if (ImGui::Checkbox((std::string("##hide-") + std::to_string(item.number())).c_str(), &hidden))
+                    {
+                        on_item_visibility(item, !hidden);
+                    }
+                    ImGui::PopStyleVar();
                 }
                 ImGui::EndTable();
             }
@@ -340,7 +333,6 @@ namespace trview
     {
         _selected_item = item;
         _triggered_by = item.triggers();
-        _need_filtering = true;
     }
 
     void ItemsWindow::setup_filters()
@@ -374,21 +366,5 @@ namespace trview
                 }
                 return results;
             });
-    }
-
-    void ItemsWindow::filter_items()
-    {
-        if (!_need_filtering && !_filters.test_and_reset_changed())
-        {
-            return;
-        }
-
-        _filtered_items.clear();
-        std::copy_if(_all_items.begin(), _all_items.end(), std::back_inserter(_filtered_items),
-            [&](const auto& item)
-            {
-                return (!_track_room || item.room() == _current_room) && _filters.match(item);
-            });
-        _need_filtering = false;
     }
 }
