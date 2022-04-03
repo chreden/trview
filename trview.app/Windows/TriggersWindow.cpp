@@ -30,6 +30,7 @@ namespace trview
 
         setup_filters();
         _need_filtering = true;
+        calculate_column_widths();
     }
 
     void TriggersWindow::update_triggers(const std::vector<std::weak_ptr<ITrigger>>& triggers)
@@ -179,9 +180,9 @@ namespace trview
 
             if (ImGui::BeginTable(Names::triggers_list.c_str(), 4, ImGuiTableFlags_Sortable | ImGuiTableFlags_ScrollY | ImGuiTableFlags_SizingFixedFit, ImVec2(-1, -1)))
             {
-                ImGui::TableSetupColumn("#");
+                ImGui::TableSetupColumn("#", ImGuiTableColumnFlags_WidthFixed, _required_number_width);
                 ImGui::TableSetupColumn("Room");
-                ImGui::TableSetupColumn("Type");
+                ImGui::TableSetupColumn("Type", ImGuiTableColumnFlags_WidthFixed, _required_type_width);
                 ImGui::TableSetupColumn("Hide");
                 ImGui::TableSetupScrollFreeze(1, 1);
                 ImGui::TableHeadersRow();
@@ -476,5 +477,22 @@ namespace trview
                          (!_selected_commands.empty() && !has_any_command(*trigger_ptr, _selected_commands)));
             });
         _need_filtering = false;
+    }
+
+    void TriggersWindow::calculate_column_widths()
+    {
+        _required_type_width = 0.0f;
+        _required_number_width = 0.0f;
+        for (const auto& trigger : _all_triggers)
+        {
+            const auto trigger_ptr = trigger.lock();
+            if (trigger_ptr)
+            {
+                _required_number_width = std::max(_required_number_width,
+                    ImGui::CalcTextSize(std::to_string(trigger_ptr->number()).c_str()).x);
+                _required_type_width = std::max(_required_type_width,
+                    ImGui::CalcTextSize(to_utf8(trigger_type_name(trigger_ptr->type())).c_str()).x);
+            }
+        }
     }
 }
