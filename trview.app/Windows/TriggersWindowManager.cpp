@@ -49,9 +49,10 @@ namespace trview
         triggers_window->set_current_room(_current_room);
         triggers_window->set_selected_trigger(_selected_trigger);
 
-        _token_store += triggers_window->on_window_closed += [triggers_window, this]()
+        std::weak_ptr<ITriggersWindow> triggers_window_weak;
+        _token_store += triggers_window->on_window_closed += [triggers_window_weak, this]()
         {
-            _closing_windows.push_back(triggers_window);
+            _closing_windows.push_back(triggers_window_weak);
         };
 
         _windows.push_back(triggers_window);

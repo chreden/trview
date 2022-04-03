@@ -67,9 +67,10 @@ namespace trview
         lights_window->set_selected_light(_selected_light);
         lights_window->set_current_room(_current_room);
 
-        _token_store += lights_window->on_window_closed += [lights_window, this]()
+        std::weak_ptr<ILightsWindow> lights_window_weak = lights_window;
+        _token_store += lights_window->on_window_closed += [lights_window_weak, this]()
         {
-            _closing_windows.push_back(lights_window);
+            _closing_windows.push_back(lights_window_weak);
         };
         lights_window->on_light_selected += on_light_selected;
         lights_window->on_light_visibility += on_light_visibility;
