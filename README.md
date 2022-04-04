@@ -243,7 +243,7 @@ Input|Action
 ---|------
 Filters | Open the filters editor. The checkbox toggles whether configured filters are applied.
 Track Room          | Whether to show the triggers that are in the currently selected room
-Sync | Whether the trigger selected in the window will be synced with the item selected in the view (bidirectional)
+Sync | Whether the trigger selected in the window will be synced with the trigger selected in the view (bidirectional)
 
 ## Triggers List
 
@@ -260,8 +260,8 @@ Stat | Meaning
 --- | ---
 Type | The type of the trigger
 \# | The trigger number
-Position | The position of the item in world space
-Room | The number of the room that the item is in
+Position | The position of the trigger in world space
+Room | The number of the room that the trigger is in
 Flags | Activation mask
 Only Once | Whether this trigger can only be triggered once
 Timer | Used to time trigger activation/deactivation
@@ -279,17 +279,56 @@ Index | The numerical value for this trigger - this could be an item number or s
 Entity | The name of the entity referenced if appropriate
 
 
-### Rooms Window
+# Rooms Window
+_Shortcut: Ctrl+M_
+
+Shows the list of rooms that exist in the current level and allows you to filter, sort and inspect rooms.
+
+![Rooms Window](doc/rooms.png)
+
+## Options
 
 Input|Action
 ---|------
-Sync Room           | Whether the room selected in the window will be synced with the room selected in the view (bidirectional)
-Track Item          | Whether to show the items that are selected in the currently selected room.
-Track Triggers      | Whether to show the items that are selected in the currently selected room.
+Filters | Open the filters editor. The checkbox toggles whether configured filters are applied.
+Sync | Whether the room selected in the window will be synced with the room selected in the view (bidirectional)
+Track Item | Whether to change selected room when an item is selected
+Track Trigger | Whether to change selected room when a trigger is selected
 
-Multiple Room windows can be active at once.
+## Rooms List
 
-### Route Window
+Column | Meaning
+---|---
+\# | The room number
+Items | The number of the items in the room
+Triggers | The number of triggers in the room
+
+## Minimap
+
+The minimap shows the sectors in the currently selected room.
+
+Key|Action
+---|------
+Left click          | If a trigger square, will select the trigger. If not a trigger (or control is pressed) it will follow a portal, or go to the room below. 
+Right click         | Goes to the room above, if one is present.
+
+## Properties
+
+TODO
+
+## Items
+
+TODO
+
+## Neighbours
+
+TODO
+
+## Triggers
+
+TODO
+
+# Route Window
 
 Input|Action
 ---|------
@@ -298,16 +337,16 @@ Export              | Export a route to a file.
 
 The selected waypoint will have its details shown in the right panel. The notes for the route can be edited by typing in the 'Notes' text area.
 
-### Minimap
+# Minimap
 
 Key|Action
 ---|------
 Left click          | If a trigger square, will select the trigger. If not a trigger (or control is pressed) it will follow a portal, or go to the room below. 
 Right click         | Goes to the room above, if one is present.
 
-## Tools
+# Tools
 
-### Measure
+## Measure
 
 The measure tool can be used to measure a distance: 
 * Click on the measure button at the bottom of the 3D view or press the M key 
@@ -315,15 +354,15 @@ The measure tool can be used to measure a distance:
 * Click on a second point
 A path will appear between the two points with a distance label. This is the distance in units of 1024.
 
-### Compass
+## Compass
 
 At the bottom right of the screen is the 3D compass. This shows the current direction of each axis, relative to the current camera view. Each of the nodes at the end of the axis lines can be clicked on to align the camera to that direction.
 
-### Angles
+## Angles
 
 At the bottom left of the screen are the current camera angles. You can click on yaw or pitch and enter new camera angles. Tab will cycle from X to Y to Z and enter will confirm the change. The format of the angles can be chosen in the settings window. By default the display is in degrees but radians can be selected.
 
-### Coordinates
+## Coordinates
 
 At the bottom left of the screen are the current camera coordinates. You can click on X, Y, or Z and enter camera coordinates to go that location. Tab will cycle from X to Y to Z and enter will confirm the change.
 
