@@ -1,3 +1,5 @@
+![Back](../../README.md)
+
 # Items Window
 
 Shows the list of items that exist in the current level and allows you to filter, sort, inspect and add items to a route.
