@@ -98,6 +98,12 @@ Mouse wheel               | Zoom in/out
 
 # View Options
 
+Controls the appearance of the level in the 3D view.
+
+TR1-3 | TR4+
+---|---
+![TR1-3](doc/view_options/tr1-3.png) | ![TR4](doc/view_options/tr4.png)
+
 Option|Action
 ---|------
 Highlight           | Highlight the currently selected room
@@ -111,11 +117,11 @@ Bounds              | Show static mesh bounding boxes
 Lights              | Toggle lights visibility
 Flip                | Toggle the level flipmap (if present in the level). In TR4+ this will be a flipmap group selector.
 
-# Room Naviator
-
-![Room Navigator](doc/room_navigator.png)
+# Room Navigator
 
 The room navigator shows the current room, the number of rooms in the level and allows you to enter a room number or cycle through them with the `-` or `+` buttons.
+
+![Room Navigator](doc/room_navigator.png)
 
 Option|Action
 ---|---
