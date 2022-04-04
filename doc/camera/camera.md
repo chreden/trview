@@ -1,5 +1,7 @@
 # Camera
 
+Shows options for the camera.
+
 ![Camera Controls](camera_controls.png)
 
 ## Camera Mode

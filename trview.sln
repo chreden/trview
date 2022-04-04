@@ -73,6 +73,12 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "camera", "camera", "{A01CD1
 		doc\camera\perspective.png = doc\camera\perspective.png
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "items", "items", "{EA2C0819-434C-4DCC-B62C-1CD6DB0834A6}"
+	ProjectSection(SolutionItems) = preProject
+		doc\items\items.md = doc\items\items.md
+		doc\items\items.png = doc\items\items.png
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -253,6 +259,7 @@ Global
 		{6AABD08E-3361-4D84-88F0-851EE588162A} = {14424861-057E-431A-97B1-0F482C6DD4E0}
 		{B3A7F8A1-CC61-4082-BFF5-A072AF85754C} = {E74799D9-07B1-4773-8458-C09A8C702BA7}
 		{A01CD1C0-7CDB-4562-A6B1-2655E9BA2B64} = {B3A7F8A1-CC61-4082-BFF5-A072AF85754C}
+		{EA2C0819-434C-4DCC-B62C-1CD6DB0834A6} = {B3A7F8A1-CC61-4082-BFF5-A072AF85754C}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {E1BD837F-81FB-40A7-879E-E411807799F4}

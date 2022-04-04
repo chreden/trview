@@ -133,19 +133,8 @@ Enter the room number - press enter to go to the room, escape to cancel.
 ### Go To Item
 Enter the item number - press enter to go to the item, escape to cancel.
 
-### Items Window
-
-Input|Action
----|------
-Track Room          | Whether to show the items that are in the currently selected room
-Sync Item           | Whether the item selected in the window will be synced with the item selected in the view (bidirectional)
-
-The column headers can be clicked to sort the items by that column. Clicking an item in the list will focus the camera on it in the viewer. The details of the item will be displayed in the Item Details panel.
-The 'Triggered By' list shows the triggers that can trigger the item. Clicking a trigger in the list will select that trigger.
-
-<</>>               This button collapses or expands the side panel.
-
-Each Item can be hidden or made visible by clicking the checkbox in the 'Hide' column.
+### [Items Window](doc/items/items.md)
+Shows properties for all items in the level.
 
 ### Triggers Window
 
