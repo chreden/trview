@@ -21,7 +21,7 @@ https://github.com/chreden/trview/releases
 
 ## Building
 
-Open the project file (.sln) with Visual Studio Community 2017 and click on
+Open the project file (.sln) with Visual Studio Community 2022 and click on
 Build > Build Solution.
 
 To run the tests you will need to install the 'Test Adapter for Google Test' - it can be found in Individual Components in the Visual Studio Installer.
@@ -45,20 +45,22 @@ CTRL + R    | Open Route window
 CTRL + T    | New Triggers window
 CTRL + I    | New Items window
 CTRL + M    | New Rooms window
+CTRL + L    | New Lights window
 F1          | Toggle settings window
-H           | Toggle room highlighting
-G           | Toggle hidden geometry
-INSERT      | Reset camera
 F           | Free camera
+G           | Toggle hidden geometry
+H           | Toggle room highlighting
+L           | Toggle lights visibility
 O           | Orbit camera
-X           | Axis camera
 P           | Toggle flipmap
 T           | Toggle trigger visibility
+X           | Axis camera
+INSERT      | Reset camera
 Left mouse  | Click on a room to go to that room
-LEFT ARROW  | Go to previous waypoint in route
-RIGHT ARROW | Go to next waypoint in route
-DELETE      | Delete the currently selected waypoint
-RIGHT MOUSE | Show the context menu
+:arrow_left: | Go to previous waypoint in route
+:arrow_right: | Go to next waypoint in route
+Delete      | Delete the currently selected waypoint
+Right mouse | Show the context menu
 
 ### Free View
 
@@ -96,7 +98,7 @@ Mouse wheel               | Zoom in/out
 
 ### View Options
 
-Input|Action
+Option|Action
 ---|------
 Highlight           | Highlight the currently selected room
 Triggers            | Toggle trigger visibility
@@ -106,22 +108,22 @@ Depth               | Toggle depth mode. This will show the currently selected d
 Depth Selector      | Choose the depth of neighbours to show
 Wireframe           | Enable wireframe rendering mode
 Bounds              | Show static mesh bounding boxes
+Lights              | Toggle lights visibility
 Flip                | Toggle the level flipmap (if present in the level). In TR4+ this will be a flipmap group selector.
 
 ### Room
 
-Room Selector       | Go up/down through room numbers
-X                   | X coordinate of the room
-Z                   | Z coordinate of the room
+![Room Navigator](doc/room_navigator.png)
 
-### Camera
+The room navigator shows the current room, the number of rooms in the level and allows you to enter a room number or cycle through them with the `-` or `+` buttons.
 
-Input|Action
----|------
-Reset               | Reset the orbit camera
-Orbit               | Use orbit mode - this orbits a room or item
-Free                | Use free mode
-Axis                | Use axis mode - this is like free, but the controls map to X/Z/Y axis (rotation is ignored)
+Option|Action
+---|---
+Number input       | Enter a room number and press `Enter` to go to it
+`-` | Go to the previous room (hold `CTRL` to skip by 10)
+`+` | Go to the next room (hold `CTRL` to skip by 10)
+
+### [Camera](doc/camera/camera.md)
 
 ## Windows
 
