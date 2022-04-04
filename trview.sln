@@ -62,6 +62,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "doc", "doc", "{B3A7F8A1-CC6
 		doc\rando.md = doc\rando.md
 		doc\rando.png = doc\rando.png
 		doc\room_navigator.png = doc\room_navigator.png
+		doc\rooms.png = doc\rooms.png
+		doc\triggers.png = doc\triggers.png
 		doc\trview.png = doc\trview.png
 	EndProjectSection
 EndProject
