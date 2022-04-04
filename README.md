@@ -6,35 +6,35 @@ see the triggers present on them and analyse route possibilities.
 
 ![Screenshot](doc/trview.png)
 
-## License
+# License
 
 This program is licensed under the MIT license. Please read the LICENSE text
 document included with the source code if you would like to read the terms of 
 the license. The license can also be found online at https://opensource.org/licenses/MIT.
 
-## Download
+# Download
 
 Source code archives and Windows binaries are available from the trview
 Releases section on GitHub:
 
 https://github.com/chreden/trview/releases
 
-## Building
+# Building
 
 Open the project file (.sln) with Visual Studio Community 2022 and click on
 Build > Build Solution.
 
 To run the tests you will need to install the 'Test Adapter for Google Test' - it can be found in Individual Components in the Visual Studio Installer.
 
-## Running
+# Running
 
 Double click a level file (.TR2, .TR4, .TRC or .PHD) present in the game's data folder 
 and choose to open it with trview.exe. You can also open trview by itself and choose
 a level file using the File menu or drag and drop a level file onto the window.
 
-## Controls
+# Controls
 
-### General
+## General
 
 Key|Action
 ---|------
@@ -62,7 +62,7 @@ Left mouse  | Click on a room to go to that room
 Delete      | Delete the currently selected waypoint
 Right mouse | Show the context menu
 
-### Free View
+## Free View
 
 Key|Action
 ---|------
@@ -75,7 +75,7 @@ Q                       | Move down
 Right mouse + move      | Change look direction
 Mouse wheel             | Zoom in/out
 
-### Axis View
+## Axis View
 
 Key|Action
 ---|------
@@ -87,7 +87,7 @@ E                       | Move up
 Q                       | Move down
 Right mouse + move      | Change look direction
 
-### Orbit View
+## Orbit View
 
 Key|Action
 ---|------
@@ -96,7 +96,7 @@ Right mouse + move        | Rotate around target
 Left + Right mouse + move | Vertical panning
 Mouse wheel               | Zoom in/out
 
-### View Options
+# View Options
 
 Option|Action
 ---|------
@@ -111,7 +111,7 @@ Bounds              | Show static mesh bounding boxes
 Lights              | Toggle lights visibility
 Flip                | Toggle the level flipmap (if present in the level). In TR4+ this will be a flipmap group selector.
 
-### Room
+# Room Naviator
 
 ![Room Navigator](doc/room_navigator.png)
 
@@ -123,18 +123,97 @@ Number input       | Enter a room number and press `Enter` to go to it
 `-` | Go to the previous room (hold `CTRL` to skip by 10)
 `+` | Go to the next room (hold `CTRL` to skip by 10)
 
-### [Camera](doc/camera/camera.md)
+# Camera
 
-## Windows
+Shows options for the camera.
 
-### Go To Room
+![Camera Controls](doc/camera/camera_controls.png)
+
+## Camera Mode
+Option|Action
+---|------
+Orbit               | Use orbit mode - this orbits a room or item
+Free                | Use free mode
+Axis                | Use axis mode - this is like free, but the controls map to X/Z/Y axis (rotation is ignored)
+
+## Projection mode
+
+Controls the way the camera is projected. Perspective is how we see the world whereas orthographic removes any distortion from depth.
+
+Option|Action
+---|------
+Persepective | Use persepective projection
+Orthographic | Use orthographic projection
+
+### Perspective
+![Perspective](doc/camera/perspective.png) 
+
+### Orthographic
+![Orthographic](doc/camera/orthographic.png)
+
+Orthographic mode can be useful when paired with the compass selector to choose a fixed camera orientation. You can use this to create a top-down camera without any perspective.
+
+![Orthographic Top Down](doc/camera/orthographic_topdown.png)
+
+## Reset
+Reset the orbit camera to default rotation.
+
+# Go To Room
 Enter the room number - press enter to go to the room, escape to cancel.
 
-### Go To Item
+# Go To Item
 Enter the item number - press enter to go to the item, escape to cancel.
 
-### [Items Window](doc/items/items.md)
-Shows properties for all items in the level.
+# Items Window
+
+Shows the list of items that exist in the current level and allows you to filter, sort, inspect and add items to a route.
+
+![Items Window](doc/items.png)
+
+## Options
+
+Input|Action
+---|------
+Filters | Open the filters editor. The checkbox toggles whether configured filters are applied.
+Track Room          | Whether to show the items that are in the currently selected room
+Sync | Whether the item selected in the window will be synced with the item selected in the view (bidirectional)
+
+## Items List
+
+Column | Meaning
+---|---
+\# | The item number
+Room | The number of the room that the item is in
+ID | The type ID of the item
+Type | The type name of the item
+Hide | Whether to hide this item in the viewer
+
+## Item Details
+
+Stat | Meaning
+--- | ---
+Type | The type name of the item
+\# | The item number
+Position | The position of the item in world space
+Type ID | The type ID of the item
+Room | The number of the room that the item is in
+Clear Body | Whether to remove a dead body when a bodybag trigger is triggered
+Invisible | Whether this item is invisible
+Flags | Entity activation flags
+OCB | Used to change entity behaviour
+
+## Add To Route
+Clicking the `Add to Route` button will insert this item at the current position in the route.
+
+## Triggered By
+The `Triggered By` list shows the triggers that can trigger the item. Clicking a trigger in the list will select that trigger.
+
+Column | Meaning
+---|---
+\# | The trigger number
+Room | The number of the room that the trigger is in
+Type | The type name of the trigger
+
 
 ### Triggers Window
 
