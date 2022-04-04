@@ -165,12 +165,21 @@ Orthographic mode can be useful when paired with the compass selector to choose 
 Reset the orbit camera to default rotation.
 
 # Go To Room
-Enter the room number - press enter to go to the room, escape to cancel.
+_Shortcut: Ctrl+G_
+
+Enter a room number and press enter to go to that room.
+
+![Go To Room](doc/go_to_room.png)
 
 # Go To Item
-Enter the item number - press enter to go to the item, escape to cancel.
+_Shortcut: Ctrl+E_
+
+Enter an item number and press enter to go to that room.
+
+![Go To Item](doc/go_to_item.png)
 
 # Items Window
+_Shortcut: Ctrl+I_
 
 Shows the list of items that exist in the current level and allows you to filter, sort, inspect and add items to a route.
 
@@ -222,20 +231,53 @@ Type | The type name of the trigger
 
 
 ### Triggers Window
+_Shortcut: Ctrl+T_
+
+Shows the list of triggers that exist in the current level and allows you to filter, sort, inspect and add triggers to a route.
+
+![Triggers Window](doc/triggers.png)
+
+## Options
 
 Input|Action
 ---|------
+Filters | Open the filters editor. The checkbox toggles whether configured filters are applied.
 Track Room          | Whether to show the triggers that are in the currently selected room
-Sync Item           | Whether the trigger selected in the window will be synced with the item selected in the view (bidirectional)
+Sync | Whether the trigger selected in the window will be synced with the item selected in the view (bidirectional)
 
-The column headers can be clicked to sort the items by that column. Clicking a trigger in the list will focus the camera on it in the viewer. The details of the trigger will be displayed in the Trigger Details panel.
-The 'Commands' list shows the commands carried out when the trigger executes. Clicking on 'Object' or 'Look at Item' commands will select the item.
+## Triggers List
 
-<</>>               This button collapses or expands the side panel.
+Column | Meaning
+---|---
+\# | The trigger number
+Room | The number of the room that the trigger is in
+Type | The type of the trigger
+Hide | Whether to hide this trigger in the viewer
 
-Multiple Trigger windows can be active at once.
+## Trigger Details
 
-Each Trigger can be hidden or made visible by clicking the checkbox in the 'Hide' column.
+Stat | Meaning
+--- | ---
+Type | The type of the trigger
+\# | The trigger number
+Position | The position of the item in world space
+Room | The number of the room that the item is in
+Flags | Activation mask
+Only Once | Whether this trigger can only be triggered once
+Timer | Used to time trigger activation/deactivation
+
+## Add To Route
+Clicking the `Add to Route` button will insert this trigger at the current position in the route.
+
+## Commands
+The `Commands` list shows the commands that will be executed when the trigger is activated. Clicking commands that reference an `Item` will select this `item` in the viewer.
+
+Column | Meaning
+---|---
+Type | The type name of the trigger
+Index | The numerical value for this trigger - this could be an item number or some other value
+Entity | The name of the entity referenced if appropriate
+
 
 ### Rooms Window
 
