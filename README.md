@@ -314,26 +314,94 @@ Right click         | Goes to the room above, if one is present.
 
 ## Properties
 
-TODO
+Lists the various properties of the room.
+
+Property | Meaning | Notes
+---|---
+X | X position of the room
+Y | Y position of the room
+Z | Z position of the room
+Water | Whether the water bit flag is set | Bit 0
+Bit 1 | Whether bit 1 is set
+Bit 2 | Whether bit 2 is set
+Outside / 3 | Whether the room can see the skybox | Bit 3
+Bit 4 | Whether bit 4 is set
+Wind / 5 | Whether there is wind in the room | Bit 5
+Bit 6 | Whether bit 6 is set
+Quicksand / Block Lens Fare / 7 / | In TR3 specifies a quicksand room. In TR4+ blocks global lens flare | Bit 7
+Caustics / 8 | Whether bit 8 is set
+Reflectivity / 9 | Whether bit 9 is set
+Snow / 10 | Whether bit 10 is set | Bit 10 (Snow in NGLE)
+Rain / D / 11 | Whether bit 11 is set | Bit 11 (Rain in NGLE, D in TRLE)
+Bit 12 | Whether bit 12 is set | Bit 12 (Cold in NGLE, P in TRLE)
+Bit 13 | Whether bit 13 is set
+Bit 14 | Whether bit 14 is set
+Bit 15 | Whether bit 15 is set
 
 ## Items
 
-TODO
+Shows the items that are contained in the room. Clicking an item will select it in the viewer.
+
+Column | Meaning
+---|---
+\# | The item number
+Type | The type of the item triggered
 
 ## Neighbours
 
-TODO
+Shows the rooms that are immediate neighbours of this room. Clicking one of the rooms will select it.
+
+Column | Meaning
+---|---
+\# | The room number
 
 ## Triggers
 
-TODO
+Shows the triggers that are in the room. Clicking one will select it in the viewer.
+
+Column | Meaning
+---|---
+\# | The room number
+Type | The type of trigger
 
 # Route Window
+
+_Shortcut: Ctrl + R_
+
+Shows the list of waypoints in the current route and allows them to be edited and rearraanged.
+
+![Route Window](doc/route.png)
+
+## Route Colour
+
+TODO
+
+## Import
+
+TODO
+
+## Export
+
+TODO
+
+## Waypoint List
 
 Input|Action
 ---|------
 Import              | Import a route from a file.
 Export              | Export a route to a file.
+
+## Waypoint Details
+TODO
+
+## Saves
+TODO
+
+## Delete Waypoint
+TODO
+
+## Notes
+TODO
 
 The selected waypoint will have its details shown in the right panel. The notes for the route can be edited by typing in the 'Notes' text area.
 
