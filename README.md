@@ -259,22 +259,18 @@ Y|Y position of the camera in level space|
 Z|Z position of the camera in level space|
 
 ## Context Menu
+
+![Context Menu](doc/context_menu.png)
+
 The context menu is opened by right clicking in the 3D view.
 
-### Add Waypoint
-Add a new route waypoint at this position. This is only available when a surface was clicked.
-
-### Add Mid-Waypoint
-Add a new route waypoint at the centre of the square that was clicked. This is only available when a floor was clicked.
-
-### Remove Waypoint
-Remove the clicked waypoint from the route. This is only available when a waypoint was clicked.
-
-### Orbit Here
-Switch the camera to orbit mode and orbit around the position that was right clicked when the context menu was opened. This is only available when a surface was clicked on.
-
-### Hide
-Hide the clicked entity or trigger. This can be unhidden from the view menu or the items or triggers window. This is only available if an item or trigger was clicked.
+Action|Meaning
+---|---
+Add Waypoint|Add a new route waypoint at this position. This is only available when a surface was clicked.
+Add Mid Waypoint|Add a new route waypoint at the centre of the square that was clicked. This is only available when a floor was clicked.
+Remove Waypoint|Remove the clicked waypoint from the route. This is only available when a waypoint was clicked.
+Orbit Here|Switch the camera to orbit mode and orbit around the position that was right clicked when the context menu was opened.
+Hide|Hide the clicked entity or trigger. This can be unhidden from the view menu or the items or triggers window. This is only available if an item or trigger was clicked.
 
 ## Menus
 
