@@ -55,7 +55,6 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "imgui", "external\imgui\img
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "doc", "doc", "{B3A7F8A1-CC61-4082-BFF5-A072AF85754C}"
 	ProjectSection(SolutionItems) = preProject
-		doc\filters.md = doc\filters.md
 		doc\filters_1.png = doc\filters_1.png
 		doc\filters_2.png = doc\filters_2.png
 		doc\items.png = doc\items.png

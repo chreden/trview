@@ -338,7 +338,7 @@ Shows the list of items that exist in the current level and allows you to filter
 
 Input|Action
 ---|------
-Filters | Open the filters editor. The checkbox toggles whether configured filters are applied.
+Filters | Open the [filters] editor. The checkbox toggles whether configured filters are applied.
 Track Room          | Whether to show the items that are in the currently selected room
 Sync | Whether the item selected in the window will be synced with the item selected in the view (bidirectional)
 
@@ -390,7 +390,7 @@ Shows the list of triggers that exist in the current level and allows you to fil
 
 Input|Action
 ---|------
-Filters | Open the filters editor. The checkbox toggles whether configured filters are applied.
+Filters | Open the [filters] editor. The checkbox toggles whether configured filters are applied.
 Track Room          | Whether to show the triggers that are in the currently selected room
 Sync | Whether the trigger selected in the window will be synced with the trigger selected in the view (bidirectional)
 
@@ -573,9 +573,116 @@ The selected waypoint will have its details shown in the right panel. The notes 
 
 TODO
 
-# [Filters](doc/filters.md)
+# Filters
 
-# [Randomizer Integration](doc/rando.md)
+Filters can used and combined to build a query to find items based on their properties. The following windows currently support filters:
+- `Items`
+- `Triggers`
+- `Lights`
+- `Rooms`
+
+## Using Filters
+
+![Screenshot](doc/filters_1.png)
+
+![Screenshot](doc/filters_2.png)
+
+Filters are enabled by default in each window. The usage of the current filter can be toggled with the checkbox next to the `Filters` button on each window. The filters editor can be opened by clicking the `Filters` button. New filters can be added with the `+` button and deleted with the `X` button.
+
+When multiple filters are defined they can be combined with different operators.
+
+The contents of the list will be filtered and show the items that satisfy all of the conditions.
+
+## Compare Operations
+
+Different comparison operators are available depending on the data type of the selected property and whether it is a single or multi-value property.
+
+| Name | String | Number | Boolean | Number of Values |
+| ---- | ------ | ------ | ------- | ---- |
+| Is   | &check; | &check; | &check; | 1 |
+| Is not   | &check; | &check; | &check; | 1 |
+| Greater than   | &cross; | &check; | &cross; | 1 |
+| Greater than or equal   | &cross; | &check; | &cross; | 1 |
+| Less than   | &cross; | &check; | &cross; | 1 |
+| Less than or equal  | &cross; | &check; | &cross; | 1 |
+| Between   | &cross; | &check; | &cross; | 2 |
+| Between inclusive   | &cross; | &check; | &cross; | 2 |
+| Is Present*  | &check; | &check; | &check; | 0 |
+
+If the value is a multi value property such as `Triggered By` on an `Item` then an additional operation `is present` is available. This will return true if there are any values for that property on the item being tested.
+
+## Combining Filters
+
+Filters can be comined with either `And` or `Or`. Filters are combined in the order they are defined.
+
+# Randomizer Integration
+
+TRView has an integration with the [Randomizer](https://github.com/DanzaG/TR2-Rando) that allows you to import and export waypoints from and to Randomizer location files.
+
+## Enabling
+To enable the integration check the 'Enable Randomizer Tools' box in the TRView settings menu.
+
+## Configuring
+Before you can use the integration properly you will need to configure it. You will need to create a file called `randomizer.json` in the `%LOCALAPPDATA%/trview` folder, next to the TRView `settings.txt` file. The contents of this file should be obtained from the Randomizer project, but this is an example for demonstrative purposes:
+
+```
+{
+    "fields": {
+        "Setting1": {
+            "default": "Easy",
+            "display": "Setting 1",
+            "options": ["Easy", "Medium", "Hard"],
+            "type": "string"
+        },
+        "Setting2": {
+            "default": false,
+            "display": "Setting 2",
+            "type": "boolean"
+        },
+        "Setting3": {
+            "default": 10,
+            "display": "Setting 3",
+            "type": "number",
+            "always_output": true
+        },
+        "Setting4": {
+            "default": "default text",
+            "display": "Setting 4",
+            "type": "string"
+        }
+    }
+}
+```
+
+All settings are defined in the `fields` field. TRView will load this on startup and generate the appropriate UI elements in the route window. These elements will be visible if the randomizer tools are enabled.
+
+## Setting
+Each setting is given a unique key. This is the value as it appears in the JSON for the Randomizer.
+
+### default
+The default value for a property. This is the value initially given to a waypoint. If a waypoint has the same value as the default it will not be saved into the JSON unless the `always_output` property is `true`.
+
+### display
+The text used for the control label in the route window.
+
+### type
+The variable type. This controls the UI that is generated by TRView. The options are: `boolean, string, number`. 
+
+### options
+Only available when the `type` is `string`. This is a set of values that the user will be able to choose from - if a setting has an `options` entry then a dropdown will be generated instead of a free text area.
+
+### always_output
+If set to `true` then the value for this attribute will always be saved in the JSON even if it matches the default. Otherwise if `false` or absent it will check against the `default` value first and skip if they match.
+
+## Generated UI
+The settings above will generate the UI below.
+
+![Screenshot](doc/rando.png)
+
+## Import and Export
+TRView can import locations from Randomizer location files, as long as the level name exactly matches the name in the location file. Select the Randomizer location file filter on the route import dialog to do this.
+
+TRView can export into Randomizer location files as long as the level names matches the one in the json file. Select the Randomizer filter in the export menu to do this.
 
 # Licenses
 
