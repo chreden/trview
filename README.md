@@ -420,6 +420,10 @@ Shows and allows editing of the notes associated with this waypoint.
 
 The selected waypoint will have its details shown in the right panel. The notes for the route can be edited by typing in the 'Notes' text area.
 
+# Lights Window
+
+TODO
+
 # Minimap
 
 Key|Action
