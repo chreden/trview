@@ -133,7 +133,7 @@ Number input       | Enter a room number and press `Enter` to go to it
 `-` | Go to the previous room (hold `CTRL` to skip by 10)
 `+` | Go to the next room (hold `CTRL` to skip by 10)
 
-## Camera
+## Camera Controls
 
 Shows options for the camera.
 
@@ -222,6 +222,10 @@ The settings window allows you to change how parts of trview behave.
 ![Settings - Minimap](doc/settings_minimap.png)
 
 ## Measure
+
+![Measure](doc/measure.png)
+
+![Measure Usage](doc/measure_usage.png)
 
 The measure tool can be used to measure a distance: 
 * Click on the measure button at the bottom of the 3D view or press the M key 
@@ -730,6 +734,14 @@ The settings above will generate the UI below.
 TRView can import locations from Randomizer location files, as long as the level name exactly matches the name in the location file. Select the Randomizer location file filter on the route import dialog to do this.
 
 TRView can export into Randomizer location files as long as the level names matches the one in the json file. Select the Randomizer filter in the export menu to do this.
+
+# Console
+
+The console window will log diagnostic messages in the future and can be used to run Lua.
+
+![Console](doc/console.png)
+
+The input box allows you to enter Lua scripts.
 
 # Licenses
 
