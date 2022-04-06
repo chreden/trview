@@ -160,7 +160,6 @@ TEST(CameraPosition, RotationsCorrectlyConverted)
 {
     CameraPosition subject;
     subject.set_rotation(1, 2);
-    subject.set_display_degrees(true);
 
     TestImgui imgui([&]() { subject.render(); });
 

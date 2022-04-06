@@ -11,7 +11,6 @@ namespace trview
         if (ImGui::Begin("Camera Position", nullptr, ImGuiWindowFlags_AlwaysAutoResize))
         {
             bool rotation_changed = false;
-
             if (ImGui::InputFloat("Yaw", &_rotation_yaw, 0.0f, 0.0f, "%.4f", ImGuiInputTextFlags_EnterReturnsTrue))
             {
                 rotation_changed = true;
@@ -36,12 +35,14 @@ namespace trview
 
             if (rotation_changed)
             {
+                float rotation_yaw = _rotation_yaw;
+                float rotation_pitch = _rotation_pitch;
                 if (_display_degrees)
                 {
-                    _rotation_yaw = DirectX::XMConvertToRadians(_rotation_yaw);
-                    _rotation_pitch = DirectX::XMConvertToRadians(_rotation_pitch);
+                    rotation_yaw = DirectX::XMConvertToRadians(rotation_yaw);
+                    rotation_pitch = DirectX::XMConvertToRadians(rotation_pitch);
                 }
-                on_rotation_changed(_rotation_yaw, _rotation_pitch);
+                on_rotation_changed(rotation_yaw, rotation_pitch);
             }
         }
         ImGui::End();
