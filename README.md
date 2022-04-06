@@ -317,7 +317,7 @@ Right click         | Goes to the room above, if one is present.
 Lists the various properties of the room.
 
 Property | Meaning | Notes
----|---
+---|---|---
 X | X position of the room
 Y | Y position of the room
 Z | Z position of the room
