@@ -592,25 +592,38 @@ Hide | Whether to hide this light in the viewer
 
 ## Light Details
 
-Stat | Light Type | Game Version | Meaning 
+Stat | Light Type | Game Version
 --- | --- | ---
-Type | All | All | The type name of the item
-\# | All | All | The item number
-Room | All | All | The number of the room that the item is in
-Position | All except Sun | All | Position of the light in the world
-Intensity |||
-Fade |||
-Colour | All | TR3+ | Colour of the light
-Direction ||| 
-Position | The position of the item in world space 
-Intensity  |||
-Hotspot|||
-Falloff|||
-Falloff Angle|||
-Length|||
-Cutoff|||
-Density|||
-Radius|||
+Type | All | All
+\# | All | All 
+Room | All | All
+Position | Point, Spot, Shadow, Fog Bulb | All 
+Intensity |Point, Spot| TR1-3
+Fade |Point, Spot|TR1-3
+Colour | Point, Spot, Sun, Shadow  | TR3+
+Direction |Sun, Spot|TR3+
+Intensity |Point, Spot, Shadow, Fog Bulb|TR1-4
+Hotspot|Point, Spot, Shadow|TR4+
+Falloff|Point, Shadow|TR4+
+Falloff Angle|Spot|TR4+
+Length|Spot|TR4
+Cutoff|Spot|TR4
+Rad In|Spot|TR5
+Rad Out|Spot|TR5
+Range|Spot|TR5
+Density|Fog Bulb|TR4+
+Radius|Fog Bulb|TR4+
+
+### Light Types
+
+Type | Games
+---|---
+Point|All
+Spot|TR3+
+Sun|TR3+
+Shadow|TR4+
+Fog Bulb|TR4+
+
 
 # Filters
 
