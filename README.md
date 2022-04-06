@@ -96,7 +96,9 @@ Right mouse + move        | Rotate around target
 Left + Right mouse + move | Vertical panning
 Mouse wheel               | Zoom in/out
 
-# View Options
+# Viewer
+
+## View Options
 
 Controls the appearance of the level in the 3D view.
 
@@ -117,7 +119,7 @@ Bounds              | Show static mesh bounding boxes
 Lights              | Toggle lights visibility
 Flip                | Toggle the level flipmap (if present in the level). In TR4+ this will be a flipmap group selector.
 
-# Room Navigator
+## Room Navigator
 
 The room navigator shows the current room, the number of rooms in the level and allows you to enter a room number or cycle through them with the `-` or `+` buttons.
 
@@ -129,20 +131,20 @@ Number input       | Enter a room number and press `Enter` to go to it
 `-` | Go to the previous room (hold `CTRL` to skip by 10)
 `+` | Go to the next room (hold `CTRL` to skip by 10)
 
-# Camera
+## Camera
 
 Shows options for the camera.
 
 ![Camera Controls](doc/camera/camera_controls.png)
 
-## Camera Mode
+### Camera Mode
 Option|Action
 ---|------
 Orbit               | Use orbit mode - this orbits a room or item
 Free                | Use free mode
 Axis                | Use axis mode - this is like free, but the controls map to X/Z/Y axis (rotation is ignored)
 
-## Projection mode
+### Projection mode
 
 Controls the way the camera is projected. Perspective is how we see the world whereas orthographic removes any distortion from depth.
 
@@ -151,32 +153,128 @@ Option|Action
 Persepective | Use persepective projection
 Orthographic | Use orthographic projection
 
-### Perspective
+#### Perspective
 ![Perspective](doc/camera/perspective.png) 
 
-### Orthographic
+#### Orthographic
 ![Orthographic](doc/camera/orthographic.png)
 
 Orthographic mode can be useful when paired with the compass selector to choose a fixed camera orientation. You can use this to create a top-down camera without any perspective.
 
 ![Orthographic Top Down](doc/camera/orthographic_topdown.png)
 
-## Reset
+### Reset
 Reset the orbit camera to default rotation.
 
-# Go To Room
+## Go To Room
 _Shortcut: Ctrl+G_
 
 Enter a room number and press enter to go to that room.
 
 ![Go To Room](doc/go_to_room.png)
 
-# Go To Item
+## Go To Item
 _Shortcut: Ctrl+E_
 
 Enter an item number and press enter to go to that room.
 
 ![Go To Item](doc/go_to_item.png)
+
+## Minimap
+
+Key|Action
+---|------
+Left click          | If a trigger square, will select the trigger. If not a trigger (or `CTRL` is pressed) it will follow a portal, or go to the room below. 
+Right click         | Goes to the room above, if one is present.
+
+## Measure
+
+The measure tool can be used to measure a distance: 
+* Click on the measure button at the bottom of the 3D view or press the M key 
+* Click on a point in the world
+* Click on a second point
+A path will appear between the two points with a distance label. This is the distance in units of 1024.
+
+## Compass
+
+At the bottom right of the screen is the 3D compass. This shows the current direction of each axis, relative to the current camera view. Each of the nodes at the end of the axis lines can be clicked on to align the camera to that direction.
+
+## Angles
+
+At the bottom left of the screen are the current camera angles. You can click on yaw or pitch and enter new camera angles. Tab will cycle from X to Y to Z and enter will confirm the change. The format of the angles can be chosen in the settings window. By default the display is in degrees but radians can be selected.
+
+## Coordinates
+
+At the bottom left of the screen are the current camera coordinates. You can click on X, Y, or Z and enter camera coordinates to go that location. Tab will cycle from X to Y to Z and enter will confirm the change.
+
+## Context Menu
+The context menu is opened by right clicking in the 3D view.
+
+### Add Waypoint
+Add a new route waypoint at this position. This is only available when a surface was clicked.
+
+### Add Mid-Waypoint
+Add a new route waypoint at the centre of the square that was clicked. This is only available when a floor was clicked.
+
+### Remove Waypoint
+Remove the clicked waypoint from the route. This is only available when a waypoint was clicked.
+
+### Orbit Here
+Switch the camera to orbit mode and orbit around the position that was right clicked when the context menu was opened. This is only available when a surface was clicked on.
+
+### Hide
+Hide the clicked entity or trigger. This can be unhidden from the view menu or the items or triggers window. This is only available if an item or trigger was clicked.
+
+## Menus
+
+### File
+
+#### Open
+Open a level file.
+#### Open Recent
+Open a recently opened file. Up to 10 successfully opened files will appear here.
+#### Switch Level
+Open another level in the same folder as the currently opened level file.
+#### Exit
+Close trview.
+
+### View
+#### UI
+Toggle on or off visibility of all UI elements. This will override the other visibility options below if set to off.
+#### Minimap
+Toggle visibility of the minimap.
+#### Tooltip
+Toggle visibility of the tooltip when hovering over elements in the viewer.
+#### Compass
+Toggle visibility of the compass.
+#### Selection
+Toggle visibility of the selection highlights.
+#### Route
+Toggle visibility of the route waypoints and paths.
+#### Tools
+Toggle visibility of the tools, such as the measure tool.
+#### Unhide All
+Unhides all entities and triggers that have been hidden via the context menu or their windows.
+
+### Windows
+#### Items
+Create a new items window.
+#### Triggers
+Create a new triggers window.
+#### Rooms
+Create a new rooms window.
+#### Route
+Create or open the route window.
+### Lights
+Create a new lights window.
+
+### Help
+#### Github
+Go to the trview GitHub page. 
+#### Discord
+Permanent invite to the trview Discord.
+#### About
+Show the about box.
 
 # Items Window
 _Shortcut: Ctrl+I_
@@ -309,7 +407,7 @@ The minimap shows the sectors in the currently selected room.
 
 Key|Action
 ---|------
-Left click          | If a trigger square, will select the trigger. If not a trigger (or control is pressed) it will follow a portal, or go to the room below. 
+Left click          | If a trigger square, will select the trigger. If not a trigger (or `CTRL` is pressed) it will follow a portal, or go to the room below. 
 Right click         | Goes to the room above, if one is present.
 
 ## Properties
@@ -423,104 +521,6 @@ The selected waypoint will have its details shown in the right panel. The notes 
 # Lights Window
 
 TODO
-
-# Minimap
-
-Key|Action
----|------
-Left click          | If a trigger square, will select the trigger. If not a trigger (or control is pressed) it will follow a portal, or go to the room below. 
-Right click         | Goes to the room above, if one is present.
-
-# Tools
-
-## Measure
-
-The measure tool can be used to measure a distance: 
-* Click on the measure button at the bottom of the 3D view or press the M key 
-* Click on a point in the world
-* Click on a second point
-A path will appear between the two points with a distance label. This is the distance in units of 1024.
-
-## Compass
-
-At the bottom right of the screen is the 3D compass. This shows the current direction of each axis, relative to the current camera view. Each of the nodes at the end of the axis lines can be clicked on to align the camera to that direction.
-
-## Angles
-
-At the bottom left of the screen are the current camera angles. You can click on yaw or pitch and enter new camera angles. Tab will cycle from X to Y to Z and enter will confirm the change. The format of the angles can be chosen in the settings window. By default the display is in degrees but radians can be selected.
-
-## Coordinates
-
-At the bottom left of the screen are the current camera coordinates. You can click on X, Y, or Z and enter camera coordinates to go that location. Tab will cycle from X to Y to Z and enter will confirm the change.
-
-## Context Menu
-The context menu is opened by right clicking in the 3D view.
-
-### Add Waypoint
-Add a new route waypoint at this position. This is only available when a surface was clicked.
-
-### Add Mid-Waypoint
-Add a new route waypoint at the centre of the square that was clicked. This is only available when a floor was clicked.
-
-### Remove Waypoint
-Remove the clicked waypoint from the route. This is only available when a waypoint was clicked.
-
-### Orbit Here
-Switch the camera to orbit mode and orbit around the position that was right clicked when the context menu was opened. This is only available when a surface was clicked on.
-
-### Hide
-Hide the clicked entity or trigger. This can be unhidden from the view menu or the items or triggers window. This is only available if an item or trigger was clicked.
-
-## Menus
-
-### File
-
-#### Open
-Open a level file.
-#### Open Recent
-Open a recently opened file. Up to 10 successfully opened files will appear here.
-#### Switch Level
-Open another level in the same folder as the currently opened level file.
-#### Exit
-Close trview.
-
-### View
-#### UI
-Toggle on or off visibility of all UI elements. This will override the other visibility options below if set to off.
-#### Minimap
-Toggle visibility of the minimap.
-#### Tooltip
-Toggle visibility of the tooltip when hovering over elements in the viewer.
-#### Compass
-Toggle visibility of the compass.
-#### Selection
-Toggle visibility of the selection highlights.
-#### Route
-Toggle visibility of the route waypoints and paths.
-#### Tools
-Toggle visibility of the tools, such as the measure tool.
-#### Background Colour
-Change the background colour for the 3D view.
-#### Unhide All
-Unhides all entities and triggers that have been hidden via the context menu or their windows.
-
-### Windows
-#### Items
-Create a new items window.
-#### Triggers
-Create a new triggers window.
-#### Rooms
-Create a new rooms window.
-#### Route
-Create or ppen the route window.
-
-### Help
-#### Github
-Go to the trview GitHub page. 
-#### Discord
-Permanent invite to the trview Discord.
-#### About
-Show the about box.
 
 ## [Filters](doc/filters.md)
 
