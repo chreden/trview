@@ -155,3 +155,26 @@ TEST(CameraPosition, CoordinatesNotUpdatedWithInvalidValues)
 
     ASSERT_FALSE(raised);
 }
+
+TEST(CameraPosition, RotationsCorrectlyConverted)
+{
+    CameraPosition subject;
+    subject.set_rotation(1, 2);
+    subject.set_display_degrees(true);
+
+    TestImgui imgui([&]() { subject.render(); });
+
+    std::optional<std::tuple<float, float>> value;
+    auto token = subject.on_rotation_changed += [&](auto yaw, auto pitch)
+    {
+        value = { yaw, pitch };
+    };
+
+    imgui.click_element(imgui.id("Camera Position").id(CameraPosition::Names::yaw));
+    imgui.enter_text("90");
+    imgui.press_key(ImGuiKey_Enter);
+
+    ASSERT_TRUE(value.has_value());
+    ASSERT_FLOAT_EQ(std::get<0>(value.value()), 1.5707963267948966192313216916398);
+    ASSERT_FLOAT_EQ(std::get<1>(value.value()), 2);
+}

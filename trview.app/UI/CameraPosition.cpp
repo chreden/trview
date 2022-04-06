@@ -39,14 +39,8 @@ namespace trview
             {
                 if (_display_degrees)
                 {
-                    if (yaw_changed)
-                    {
-                        _rotation_yaw = DirectX::XMConvertToRadians(_rotation_yaw);
-                    }
-                    if (pitch_changed)
-                    {
-                        _rotation_pitch = DirectX::XMConvertToRadians(_rotation_pitch);
-                    }
+                    _rotation_yaw = DirectX::XMConvertToRadians(_rotation_yaw);
+                    _rotation_pitch = DirectX::XMConvertToRadians(_rotation_pitch);
                 }
                 on_rotation_changed(_rotation_yaw, _rotation_pitch);
             }
