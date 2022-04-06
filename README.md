@@ -251,12 +251,12 @@ The camera position window shows and allows you to edit the position and rotatio
 ![Camera Position](doc/camera_position.png)
 
 Property|Meaning|Notes
----|---|
+---|---|---
 Yaw|Rotation around the vertical axis (looking left and right)|Can be displayed in degrees or radians depending on settings
 Pitch|Rotation around the horizontal axis (tilting up and down)|Can be displayed in degrees or radians depending on settings
-X|X position of the camera in level space
-Y|Y position of the camera in level space
-Z|Z position of the camera in level space
+X|X position of the camera in level space|
+Y|Y position of the camera in level space|
+Z|Z position of the camera in level space|
 
 ## Context Menu
 The context menu is opened by right clicking in the 3D view.
