@@ -265,7 +265,7 @@ Create a new triggers window.
 Create a new rooms window.
 #### Route
 Create or open the route window.
-### Lights
+#### Lights
 Create a new lights window.
 
 ### Help
@@ -522,13 +522,13 @@ The selected waypoint will have its details shown in the right panel. The notes 
 
 TODO
 
-## [Filters](doc/filters.md)
+# [Filters](doc/filters.md)
 
-## [Randomizer Integration](doc/rando.md)
+# [Randomizer Integration](doc/rando.md)
 
-## Licenses
+# Licenses
 
-### Lua
+## Lua
 
 Copyright © 1994–2020 Lua.org, PUC-Rio.
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
@@ -537,7 +537,7 @@ The above copyright notice and this permission notice shall be included in all c
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-### nlohmann/json
+## nlohmann/json
 
 ```    
     __ _____ _____ _____
@@ -568,7 +568,7 @@ LIABILITY, WHETHER IN AN ACTION OF  CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE  OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
-### zlib
+## zlib
 
 zlib.h -- interface of the 'zlib' general purpose compression library
 version 1.2.11, January 15th, 2017
@@ -599,7 +599,7 @@ The data format used by the zlib library is described by RFCs (Request for
 Comments) 1950 to 1952 in the files http://tools.ietf.org/html/rfc1950
 (zlib format), rfc1951 (deflate format) and rfc1952 (gzip format).
 
-### DirectXTK
+## DirectXTK
 
                                The MIT License (MIT)
 
@@ -622,7 +622,7 @@ HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTIO
 CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE 
 OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-### Googletest/Googlemock
+## Googletest/Googlemock
 
 Copyright 2008, Google Inc.
 All rights reserved.
@@ -653,7 +653,7 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-### Dear ImGui
+## Dear ImGui
 
 https://github.com/ocornut/imgui
 
