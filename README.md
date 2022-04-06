@@ -571,7 +571,46 @@ The selected waypoint will have its details shown in the right panel. The notes 
 
 # Lights Window
 
-TODO
+![Lights Window](doc/lights.png)
+
+## Options
+
+Input|Action
+---|------
+Filters | Open the [filters] editor. The checkbox toggles whether configured filters are applied.
+Track Room          | Whether to show the items that are in the currently selected room
+Sync | Whether the light selected in the window will be synced with the light selected in the view (bidirectional)
+
+## Lights List
+
+Column | Meaning
+---|---
+\# | The light number
+Room | The number of the room that the light is in
+Type | The type name of the light
+Hide | Whether to hide this light in the viewer
+
+## Light Details
+
+Stat | Light Type | Game Version | Meaning 
+--- | --- | ---
+Type | All | All | The type name of the item
+\# | All | All | The item number
+Room | All | All | The number of the room that the item is in
+Position | All except Sun | All | Position of the light in the world
+Intensity |||
+Fade |||
+Colour | All | TR3+ | Colour of the light
+Direction ||| 
+Position | The position of the item in world space 
+Intensity  |||
+Hotspot|||
+Falloff|||
+Falloff Angle|||
+Length|||
+Cutoff|||
+Density|||
+Radius|||
 
 # Filters
 
