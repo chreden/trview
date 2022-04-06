@@ -59,10 +59,16 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "doc", "doc", "{B3A7F8A1-CC6
 		doc\filters_1.png = doc\filters_1.png
 		doc\filters_2.png = doc\filters_2.png
 		doc\items.png = doc\items.png
+		doc\level_info.png = doc\level_info.png
+		doc\minimap.png = doc\minimap.png
 		doc\rando.md = doc\rando.md
 		doc\rando.png = doc\rando.png
 		doc\room_navigator.png = doc\room_navigator.png
 		doc\rooms.png = doc\rooms.png
+		doc\route.png = doc\route.png
+		doc\settings_camera.png = doc\settings_camera.png
+		doc\settings_general.png = doc\settings_general.png
+		doc\settings_minimap.png = doc\settings_minimap.png
 		doc\triggers.png = doc\triggers.png
 		doc\trview.png = doc\trview.png
 	EndProjectSection

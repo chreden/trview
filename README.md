@@ -98,6 +98,8 @@ Mouse wheel               | Zoom in/out
 
 # Viewer
 
+The viewer is the main 3D view for trview. It shows and and allows you to interact with the current level.
+
 ## View Options
 
 Controls the appearance of the level in the 3D view.
@@ -176,16 +178,48 @@ Enter a room number and press enter to go to that room.
 ## Go To Item
 _Shortcut: Ctrl+E_
 
-Enter an item number and press enter to go to that room.
+Enter an item number and press enter to go to that item.
 
 ![Go To Item](doc/go_to_item.png)
 
 ## Minimap
 
+Shows relevant triggers, portals and floor data from the currently selected room.
+
+![Minimap](doc/minimap.png)
+
 Key|Action
 ---|------
 Left click          | If a trigger square, will select the trigger. If not a trigger (or `CTRL` is pressed) it will follow a portal, or go to the room below. 
 Right click         | Goes to the room above, if one is present.
+
+## Level Info
+
+The level info display useful informationn about the current level.
+
+![Level Info](doc/level_info.png)
+
+### Game Version
+An icon representing the version of the game is displayed to the left of the level name.
+
+### Level Name
+The filename of the current level is displayed for reference.
+
+### Settings
+Clicking the settings button will open [Settings] for trview.
+
+## Settings
+
+The settings window allows you to change how parts of trview behave.
+
+### General
+![Settings - General](doc/settings_general.png)
+
+### Camera
+![Settings - Camera](doc/settings_camera.png)
+
+### Minimap
+![Settings - Minimap](doc/settings_minimap.png)
 
 ## Measure
 
@@ -197,15 +231,32 @@ A path will appear between the two points with a distance label. This is the dis
 
 ## Compass
 
-At the bottom right of the screen is the 3D compass. This shows the current direction of each axis, relative to the current camera view. Each of the nodes at the end of the axis lines can be clicked on to align the camera to that direction.
+When a level is open the 3D compass is displayed at the bottom right.
 
-## Angles
+![Compass](doc/compass.png)
 
-At the bottom left of the screen are the current camera angles. You can click on yaw or pitch and enter new camera angles. Tab will cycle from X to Y to Z and enter will confirm the change. The format of the angles can be chosen in the settings window. By default the display is in degrees but radians can be selected.
+This shows the current direction of each axis, relative to the current camera view. 
+Each of the nodes at the end of the axis lines can be clicked on to align the camera to that direction. Hovering over a node will show a tooltip with the name of the axis and the direction.
 
-## Coordinates
+Node|Axis
+---|---
+Red|Y
+Green|X
+Blue|Z
 
-At the bottom left of the screen are the current camera coordinates. You can click on X, Y, or Z and enter camera coordinates to go that location. Tab will cycle from X to Y to Z and enter will confirm the change.
+## Camera Position
+
+The camera position window shows and allows you to edit the position and rotation of the camera.
+
+![Camera Position](doc/camera_position.png)
+
+Property|Meaning|Notes
+---|---|
+Yaw|Rotation around the vertical axis (looking left and right)|Can be displayed in degrees or radians depending on settings
+Pitch|Rotation around the horizontal axis (tilting up and down)|Can be displayed in degrees or radians depending on settings
+X|X position of the camera in level space
+Y|Y position of the camera in level space
+Z|Z position of the camera in level space
 
 ## Context Menu
 The context menu is opened by right clicking in the 3D view.
