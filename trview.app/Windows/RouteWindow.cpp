@@ -81,10 +81,10 @@ namespace trview
                         bool selected = _selected_index == i;
 
                         ImGuiScroller scroller;
-                        if (selected && _scroll_to_trigger)
+                        if (selected && _scroll_to_waypoint)
                         {
                             scroller.scroll_to_item();
-                            _scroll_to_trigger = false;
+                            _scroll_to_waypoint = false;
                         }
 
                         if (ImGui::Selectable(std::to_string(i).c_str(), &selected, ImGuiSelectableFlags_SpanAllColumns | ImGuiSelectableFlags_SelectOnNav))
@@ -94,7 +94,7 @@ namespace trview
                             _selected_index = i;
                             on_waypoint_selected(i);
 
-                            _scroll_to_trigger = false;
+                            _scroll_to_waypoint = false;
                         }
 
                         ImGuiDragDropFlags src_flags = 0;
@@ -114,7 +114,6 @@ namespace trview
                             {
                                 move_from = *(const int*)payload->Data;
                                 move_to = i;
-                                _route->waypoints();
                             }
                             ImGui::EndDragDropTarget();
                         }
@@ -129,6 +128,10 @@ namespace trview
             if (move_from != -1 && move_to != -1)
             {
                 on_waypoint_reordered(move_from, move_to);
+                if (_selected_index == move_from)
+                {
+                    on_waypoint_selected(move_to);
+                }
             }
         }
         ImGui::EndChild();
@@ -312,7 +315,7 @@ namespace trview
     void RouteWindow::select_waypoint(uint32_t index)
     {
         _selected_index = index;
-        _scroll_to_trigger = true;
+        _scroll_to_waypoint = true;
     }
 
     /// Set the items to that are in the level.
