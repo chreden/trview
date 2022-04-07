@@ -28,6 +28,7 @@
     <ClCompile Include="Elements\LightTests.cpp" />
     <ClCompile Include="Elements\RoomTests.cpp" />
     <ClCompile Include="Elements\StaticMeshTests.cpp" />
+    <ClCompile Include="Elements\TriggerTests.cpp" />
     <ClCompile Include="Elements\TypeNameLookupTests.cpp" />
     <ClCompile Include="FileDropperTests.cpp" />
     <ClCompile Include="Filters\FiltersTests.cpp" />

@@ -21,7 +21,7 @@ namespace trview
             MOCK_METHOD(TriggerType, type, (), (const, override));
             MOCK_METHOD(bool, only_once, (), (const, override));
             MOCK_METHOD(uint16_t, flags, (), (const, override));
-            MOCK_METHOD(uint8_t, timer, (), (const, override));
+            MOCK_METHOD(int16_t, timer, (), (const, override));
             MOCK_METHOD(uint16_t, sector_id, (), (const, override));
             MOCK_METHOD(const std::vector<Command>, commands, (), (const, override));
             MOCK_METHOD(void, set_triangles, (const std::vector<TransparentTriangle>&), (override));

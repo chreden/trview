@@ -147,6 +147,9 @@
     <ClCompile Include="Filters\FiltersTests.cpp">
       <Filter>Filters</Filter>
     </ClCompile>
+    <ClCompile Include="Elements\TriggerTests.cpp">
+      <Filter>Elements</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Input">
