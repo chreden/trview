@@ -95,7 +95,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "camera", "camera", "{A01CD1
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "view_options", "view_options", "{9A66D582-DCDB-46FA-988B-50C7AC0C19EB}"
 	ProjectSection(SolutionItems) = preProject
+		doc\view_options\standard.png = doc\view_options\standard.png
 		doc\view_options\tr1-3.png = doc\view_options\tr1-3.png
+		doc\view_options\tr4.png = doc\view_options\tr4.png
 	EndProjectSection
 EndProject
 Global
