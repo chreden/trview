@@ -277,6 +277,7 @@ namespace trview
         if (ImGui::Checkbox(Names::Enable.c_str(), &filter_enabled))
         {
             _enabled = filter_enabled;
+            _changed = true;
         }
         ImGui::SameLine();
 
@@ -302,6 +303,7 @@ namespace trview
                         if (ImGui::Selectable(key.c_str(), key == filter.key))
                         {
                             filter.key = key;
+                            _changed = true;
 
                             // If the current value is not in the options then set to one of them.
                             if (has_options(filter.key))
@@ -329,6 +331,7 @@ namespace trview
                         if (ImGui::Selectable(to_string(compare_op).c_str(), compare_op == filter.compare))
                         {
                             filter.compare = compare_op;
+                            _changed = true;
                             ImGui::SetItemDefaultFocus();
                         }
                     }
@@ -346,6 +349,7 @@ namespace trview
                             if (ImGui::Selectable(option.c_str(), option == filter.value))
                             {
                                 filter.value = option;
+                                _changed = true;
                                 ImGui::SetItemDefaultFocus();
                             }
                         }
@@ -360,6 +364,7 @@ namespace trview
                             if (ImGui::Selectable(option.c_str(), option == filter.value2))
                             {
                                 filter.value2 = option;
+                                _changed = true;
                                 ImGui::SetItemDefaultFocus();
                             }
                         }
@@ -371,18 +376,25 @@ namespace trview
                 {
                     if (filter.value_count() > 0)
                     {
-                        ImGui::InputText((Names::FilterValue + std::to_string(i)).c_str(), &filter.value);
+                        if (ImGui::InputText((Names::FilterValue + std::to_string(i)).c_str(), &filter.value))
+                        {
+                            _changed = true;
+                        }
                         ImGui::SameLine();
                     }
                     if (filter.value_count() > 1)
                     {
-                        ImGui::InputText((Names::FilterValue + "2-" + std::to_string(i)).c_str(), &filter.value2);
+                        if (ImGui::InputText((Names::FilterValue + "2-" + std::to_string(i)).c_str(), &filter.value2))
+                        {
+                            _changed = true;
+                        }
                         ImGui::SameLine();
                     }
                 }
 
                 if (ImGui::Button((Names::RemoveFilter + std::to_string(i)).c_str()))
                 {
+                    _changed = true;
                     remove.push_back(i);
                 }
 
@@ -396,6 +408,7 @@ namespace trview
                             if (ImGui::Selectable(to_string(op).c_str(), op == filter.op))
                             {
                                 filter.op = op;
+                                _changed = true;
                                 ImGui::SetItemDefaultFocus();
                             }
                         }
@@ -412,6 +425,7 @@ namespace trview
             if (ImGui::Button(Names::AddFilter.c_str()))
             {
                 _filters.push_back({});
+                _changed = true;
             }
             ImGui::EndPopup();
         }
@@ -495,6 +509,14 @@ namespace trview
     void Filters<T>::set_filters(const std::vector<Filter> filters)
     {
         _filters = filters;
+    }
+
+    template <typename T>
+    bool Filters<T>::test_and_reset_changed()
+    {
+        bool current_value = _changed;
+        _changed = false;
+        return current_value;
     }
 
     constexpr std::string to_string(CompareOp op) noexcept
