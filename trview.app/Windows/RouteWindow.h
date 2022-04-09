@@ -69,7 +69,7 @@ namespace trview
         bool _randomizer_enabled{ false };
         RandomizerSettings _randomizer_settings;
         trview::Window _window;
-        bool _scroll_to_trigger{ false };
+        bool _scroll_to_waypoint{ false };
         std::optional<float> _tooltip_timer;
     };
 }
