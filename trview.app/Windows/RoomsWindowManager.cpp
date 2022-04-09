@@ -124,9 +124,10 @@ namespace trview
         rooms_window->on_item_selected += on_item_selected;
         rooms_window->on_trigger_selected += on_trigger_selected;
 
-        _token_store += rooms_window->on_window_closed += [rooms_window, this]()
+        std::weak_ptr<IRoomsWindow> rooms_window_weak;
+        _token_store += rooms_window->on_window_closed += [rooms_window_weak, this]()
         {
-            _closing_windows.push_back(rooms_window);
+            _closing_windows.push_back(rooms_window_weak);
         };
 
         rooms_window->set_level_version(_level_version);

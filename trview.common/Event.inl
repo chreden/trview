@@ -94,6 +94,7 @@ namespace trview
                     this),
                 listener->_subscriptions.end());
         }
+        _listener_events.clear();
 
         for (auto& sub : _subscriptions)
         {
@@ -103,6 +104,7 @@ namespace trview
                     this),
                 sub->_listener_events.end());
         }
+        _subscriptions.clear();
     }
 
     template <typename... Args>

@@ -52,9 +52,10 @@ namespace trview
             items_window->set_selected_item(_selected_item.value());
         }
 
-        _token_store += items_window->on_window_closed += [items_window, this]()
+        std::weak_ptr<IItemsWindow> items_window_weak;
+        _token_store += items_window->on_window_closed += [items_window_weak, this]()
         {
-            _closing_windows.push_back(items_window);
+            _closing_windows.push_back(items_window_weak);
         };
 
         _windows.push_back(items_window);
