@@ -23,9 +23,10 @@ namespace trview
         return _index;
     }
 
-    Trigger::Trigger(uint32_t number, uint32_t room, uint16_t x, uint16_t z, const TriggerInfo& trigger_info, const IMesh::TransparentSource& mesh_source)
-        : _number(number), _room(room), _x(x), _z(z), _type(trigger_info.type), _only_once(trigger_info.oneshot), _flags(trigger_info.mask), _timer(trigger_info.timer), _sector_id(trigger_info.sector_id),
-        _mesh_source(mesh_source)
+    Trigger::Trigger(uint32_t number, uint32_t room, uint16_t x, uint16_t z, const TriggerInfo& trigger_info, trlevel::LevelVersion level_version, const IMesh::TransparentSource& mesh_source)
+        : _number(number), _room(room), _x(x), _z(z), _type(trigger_info.type), _only_once(trigger_info.oneshot), _flags(trigger_info.mask),
+        _timer(level_version >= trlevel::LevelVersion::Tomb4 ? static_cast<int8_t>(trigger_info.timer) : trigger_info.timer), _sector_id(trigger_info.sector_id),
+        _level_version(level_version), _mesh_source(mesh_source)
     {
         uint32_t command_index = 0;
         for (auto action : trigger_info.commands)
@@ -79,7 +80,7 @@ namespace trview
         return _flags;
     }
 
-    uint8_t Trigger::timer() const
+    int16_t Trigger::timer() const
     {
         return _timer;
     }

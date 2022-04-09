@@ -11,7 +11,7 @@ namespace trview
     class Trigger final : public ITrigger
     {
     public:
-        explicit Trigger(uint32_t number, uint32_t room, uint16_t x, uint16_t z, const TriggerInfo& trigger_info, const IMesh::TransparentSource& mesh_source);
+        explicit Trigger(uint32_t number, uint32_t room, uint16_t x, uint16_t z, const TriggerInfo& trigger_info, trlevel::LevelVersion level_version, const IMesh::TransparentSource& mesh_source);
         virtual ~Trigger() = default;
         virtual uint32_t number() const override;
         virtual uint32_t room() const override;
@@ -21,7 +21,7 @@ namespace trview
         virtual TriggerType type() const override;
         virtual bool only_once() const override;
         virtual uint16_t flags() const override;
-        virtual uint8_t timer() const override;
+        virtual int16_t timer() const override;
         virtual uint16_t sector_id() const override;
         virtual const std::vector<Command> commands() const override;
         virtual void set_triangles(const std::vector<TransparentTriangle>& transparent_triangles) override;
@@ -45,8 +45,9 @@ namespace trview
         uint16_t _z;
         bool _only_once;
         uint16_t _flags;
-        uint8_t _timer;
+        int16_t _timer;
         uint16_t _sector_id;
         bool _visible{ true };
+        trlevel::LevelVersion _level_version{ trlevel::LevelVersion::Unknown };
     };
 }
