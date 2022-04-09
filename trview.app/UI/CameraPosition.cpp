@@ -10,16 +10,14 @@ namespace trview
         ImGui::SetNextWindowPos(ImGui::GetMainViewport()->Pos + ImVec2(4, ImGui::GetMainViewport()->Size.y - 148), ImGuiCond_FirstUseEver);
         if (ImGui::Begin("Camera Position", nullptr, ImGuiWindowFlags_AlwaysAutoResize))
         {
-            bool yaw_changed = false;
-            bool pitch_changed = false;
-
+            bool rotation_changed = false;
             if (ImGui::InputFloat("Yaw", &_rotation_yaw, 0.0f, 0.0f, "%.4f", ImGuiInputTextFlags_EnterReturnsTrue))
             {
-                yaw_changed = true;
+                rotation_changed = true;
             }
             if (ImGui::InputFloat("Pitch", &_rotation_pitch, 0.0f, 0.0f, "%.4f", ImGuiInputTextFlags_EnterReturnsTrue))
             {
-                pitch_changed = true;
+                rotation_changed = true;
             }
             ImGui::Separator();
             if (ImGui::InputFloat("X", &_position.x, 0.0f, 0.0f, "%.3f", ImGuiInputTextFlags_EnterReturnsTrue))
@@ -35,20 +33,16 @@ namespace trview
                 on_position_changed(_position / trlevel::Scale_X);
             }
 
-            if (yaw_changed || pitch_changed)
+            if (rotation_changed)
             {
+                float rotation_yaw = _rotation_yaw;
+                float rotation_pitch = _rotation_pitch;
                 if (_display_degrees)
                 {
-                    if (yaw_changed)
-                    {
-                        _rotation_yaw = DirectX::XMConvertToRadians(_rotation_yaw);
-                    }
-                    if (pitch_changed)
-                    {
-                        _rotation_pitch = DirectX::XMConvertToRadians(_rotation_pitch);
-                    }
+                    rotation_yaw = DirectX::XMConvertToRadians(rotation_yaw);
+                    rotation_pitch = DirectX::XMConvertToRadians(rotation_pitch);
                 }
-                on_rotation_changed(_rotation_yaw, _rotation_pitch);
+                on_rotation_changed(rotation_yaw, rotation_pitch);
             }
         }
         ImGui::End();
