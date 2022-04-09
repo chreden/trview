@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.30011.22
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.32014.148
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "trview", "trview\trview.vcxproj", "{8406D3CD-8C08-45C2-AF2C-844014A687A1}"
 	ProjectSection(ProjectDependencies) = postProject
@@ -52,6 +52,53 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "googlemock", "external\googlemock\googlemock.vcxproj", "{6E37091E-954C-4654-9B42-5980410791F4}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "imgui", "external\imgui\imgui.vcxproj", "{6AABD08E-3361-4D84-88F0-851EE588162A}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "doc", "doc", "{B3A7F8A1-CC61-4082-BFF5-A072AF85754C}"
+	ProjectSection(SolutionItems) = preProject
+		doc\camera_position.png = doc\camera_position.png
+		doc\compass.png = doc\compass.png
+		doc\console.png = doc\console.png
+		doc\context_menu.png = doc\context_menu.png
+		doc\filters_1.png = doc\filters_1.png
+		doc\filters_2.png = doc\filters_2.png
+		doc\go_to_item.png = doc\go_to_item.png
+		doc\go_to_room.png = doc\go_to_room.png
+		doc\items.png = doc\items.png
+		doc\level_info.png = doc\level_info.png
+		doc\lights.png = doc\lights.png
+		doc\measure.png = doc\measure.png
+		doc\measure_usage.png = doc\measure_usage.png
+		doc\menu_file.png = doc\menu_file.png
+		doc\menu_help.png = doc\menu_help.png
+		doc\menu_view.png = doc\menu_view.png
+		doc\menu_windows.png = doc\menu_windows.png
+		doc\minimap.png = doc\minimap.png
+		doc\rando.md = doc\rando.md
+		doc\rando.png = doc\rando.png
+		doc\room_navigator.png = doc\room_navigator.png
+		doc\rooms.png = doc\rooms.png
+		doc\route.png = doc\route.png
+		doc\settings_camera.png = doc\settings_camera.png
+		doc\settings_general.png = doc\settings_general.png
+		doc\settings_minimap.png = doc\settings_minimap.png
+		doc\triggers.png = doc\triggers.png
+		doc\trview.png = doc\trview.png
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "camera", "camera", "{A01CD1C0-7CDB-4562-A6B1-2655E9BA2B64}"
+	ProjectSection(SolutionItems) = preProject
+		doc\camera\camera_controls.png = doc\camera\camera_controls.png
+		doc\camera\orthographic.png = doc\camera\orthographic.png
+		doc\camera\orthographic_topdown.png = doc\camera\orthographic_topdown.png
+		doc\camera\perspective.png = doc\camera\perspective.png
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "view_options", "view_options", "{9A66D582-DCDB-46FA-988B-50C7AC0C19EB}"
+	ProjectSection(SolutionItems) = preProject
+		doc\view_options\standard.png = doc\view_options\standard.png
+		doc\view_options\tr1-3.png = doc\view_options\tr1-3.png
+		doc\view_options\tr4.png = doc\view_options\tr4.png
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -231,6 +278,9 @@ Global
 		{EAFD7489-57E3-4B6D-A704-F7C5EF640434} = {14424861-057E-431A-97B1-0F482C6DD4E0}
 		{6E37091E-954C-4654-9B42-5980410791F4} = {14424861-057E-431A-97B1-0F482C6DD4E0}
 		{6AABD08E-3361-4D84-88F0-851EE588162A} = {14424861-057E-431A-97B1-0F482C6DD4E0}
+		{B3A7F8A1-CC61-4082-BFF5-A072AF85754C} = {E74799D9-07B1-4773-8458-C09A8C702BA7}
+		{A01CD1C0-7CDB-4562-A6B1-2655E9BA2B64} = {B3A7F8A1-CC61-4082-BFF5-A072AF85754C}
+		{9A66D582-DCDB-46FA-988B-50C7AC0C19EB} = {B3A7F8A1-CC61-4082-BFF5-A072AF85754C}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {E1BD837F-81FB-40A7-879E-E411807799F4}
