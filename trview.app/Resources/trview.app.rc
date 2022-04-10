@@ -74,6 +74,10 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "Reset Layout"                 ID_WINDOWS_RESET_LAYOUT
     END
+    POPUP "Plugins"
+    BEGIN
+        MENUITEM "Reload Plugins\tF10",         ID_PLUGINS_RELOAD
+    END
     POPUP "&Help"
     BEGIN
         MENUITEM "&Github",                     ID_HELP_GITHUB

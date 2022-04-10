@@ -649,6 +649,7 @@ namespace trview
     void Viewer::render_ui()
     {
         _ui->render();
+        lua_fire_event(LuaEvent::ON_RENDER_UI);
     }
 
     void Viewer::present(bool vsync)

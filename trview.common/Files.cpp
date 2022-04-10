@@ -1,6 +1,7 @@
 #include "Files.h"
 #include "Strings.h"
 #include <shlobj.h>
+#include <filesystem>
 
 namespace trview
 {
@@ -85,4 +86,16 @@ namespace trview
         outfile.open(to_utf16(filename), std::ios::out);
         outfile << text;
     }
+
+    std::vector<std::string> Files::files(const std::string& directory) const
+    {
+        std::vector<std::string> results;
+        const std::filesystem::path plugins{ directory };
+        for (const auto& file : std::filesystem::directory_iterator(plugins))
+        {
+            results.push_back(file.path().generic_string());
+        }
+        return results;
+    }
+
 }

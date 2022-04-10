@@ -53,6 +53,9 @@
 #include "Windows/Log/LogWindowManager.h"
 #include "UI/DX11ImGuiBackend.h"
 
+#include "Lua/Plugins/Plugins.h"
+#include "Lua/Plugins/Plugin.h"
+
 namespace trview
 {
     namespace
@@ -187,10 +190,14 @@ namespace trview
 
         auto trlevel_source = [=](auto&& filename) { return std::make_unique<trlevel::Level>(filename, log); };
 
+        auto settings_loader = std::make_unique<SettingsLoader>(files);
+        auto plugin_source = [=](auto&&... args) { return std::make_unique<Plugin>(args...); };
+        auto plugins = std::make_unique<Plugins>(window, shortcuts, plugin_source, files, settings_loader->load_user_settings());
+
         return std::make_unique<Application>(
             window,
             std::make_unique<UpdateChecker>(window),
-            std::make_unique<SettingsLoader>(files),
+            std::move(settings_loader),
             trlevel_source,
             std::make_unique<FileMenu>(window, shortcuts, dialogs),
             std::move(viewer),
@@ -206,6 +213,7 @@ namespace trview
             files,
             std::make_unique<DX11ImGuiBackend>(window, device),
             std::make_unique<LightsWindowManager>(window, shortcuts, lights_window_source),
-            std::make_unique<LogWindowManager>(window, shortcuts, log_window_source));
+            std::make_unique<LogWindowManager>(window, shortcuts, log_window_source),
+            std::move(plugins));
     }
 }

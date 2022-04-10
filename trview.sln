@@ -100,6 +100,17 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "view_options", "view_option
 		doc\view_options\tr4.png = doc\view_options\tr4.png
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "lua", "lua", "{BF78FB49-CE77-414D-8032-FB6371AAED66}"
+	ProjectSection(SolutionItems) = preProject
+		doc\lua\lua.md = doc\lua\lua.md
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "examples", "examples", "{95DEBB42-DA5E-49A1-BAE3-16958F660B9D}"
+	ProjectSection(SolutionItems) = preProject
+		doc\lua\examples\monkeyfinder.lua = doc\lua\examples\monkeyfinder.lua
+		doc\lua\examples\slope_directions.lua = doc\lua\examples\slope_directions.lua
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -281,6 +292,8 @@ Global
 		{B3A7F8A1-CC61-4082-BFF5-A072AF85754C} = {E74799D9-07B1-4773-8458-C09A8C702BA7}
 		{A01CD1C0-7CDB-4562-A6B1-2655E9BA2B64} = {B3A7F8A1-CC61-4082-BFF5-A072AF85754C}
 		{9A66D582-DCDB-46FA-988B-50C7AC0C19EB} = {B3A7F8A1-CC61-4082-BFF5-A072AF85754C}
+		{BF78FB49-CE77-414D-8032-FB6371AAED66} = {B3A7F8A1-CC61-4082-BFF5-A072AF85754C}
+		{95DEBB42-DA5E-49A1-BAE3-16958F660B9D} = {BF78FB49-CE77-414D-8032-FB6371AAED66}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {E1BD837F-81FB-40A7-879E-E411807799F4}

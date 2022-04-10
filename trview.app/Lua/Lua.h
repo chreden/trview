@@ -11,6 +11,7 @@ namespace trview
     enum class LuaEvent
     {
         ON_RENDER,
+        ON_RENDER_UI
     };
 
     struct LuaFunctionRegistry
@@ -70,4 +71,22 @@ namespace trview
     void lua_init ( LuaFunctionRegistry * reg );
     void lua_execute ( const std::string& command );
     void lua_fire_event ( LuaEvent type );
+
+    namespace lua
+    {
+        /// <summary>
+        /// Set a boolean field on the table at the top of the stack.
+        /// </summary>
+        void set_boolean(lua_State* L, const std::string& name, bool value, int position = -2);
+
+        /// <summary>
+        /// Set an integer field on the table at the top of the stack.
+        /// </summary>
+        void set_integer(lua_State* L, const std::string& name, int value, int position = -2);
+
+        /// <summary>
+        /// Set a string field on the table at the top of the stack.
+        /// </summary>
+        void set_string(lua_State* L, const std::string& name, const std::string& value, int position = -2);
+    }
 }

@@ -30,6 +30,7 @@ namespace trview
         RandomizerSettings randomizer;
         uint32_t max_recent_files{ 10u };
         MapColours map_colours;
+        std::string plugins_directory;
 
         bool operator==(const UserSettings& other) const;
     };

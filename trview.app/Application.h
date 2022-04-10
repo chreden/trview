@@ -23,18 +23,13 @@
 #include <trview.common/Windows/IShortcuts.h>
 #include "Windows/Log/ILogWindowManager.h"
 #include "UI/IImGuiBackend.h"
+#include "Lua/Plugins/IPlugins.h"
+#include "IApplication.h"
 
 struct ImFont;
 
 namespace trview
 {
-    struct IApplication
-    {
-        virtual ~IApplication() = 0;
-        virtual int run() = 0;
-        Event<> on_closing;
-    };
-
     class Application final : public IApplication, public MessageHandler
     {
     public:
@@ -57,7 +52,8 @@ namespace trview
             std::shared_ptr<IFiles> files,
             std::unique_ptr<IImGuiBackend> imgui_backend,
             std::unique_ptr<ILightsWindowManager> lights_window_manager,
-            std::unique_ptr<ILogWindowManager> log_window_manager);
+            std::unique_ptr<ILogWindowManager> log_window_manager,
+            std::unique_ptr<IPlugins> plugins);
         virtual ~Application();
         /// Attempt to open the specified level file.
         /// @param filename The level file to open.
@@ -65,6 +61,7 @@ namespace trview
         virtual std::optional<int> process_message(UINT message, WPARAM wParam, LPARAM lParam) override;
         virtual int run() override;
         void render();
+        virtual void select_item(uint32_t index) override;
     private:
         // Window setup functions.
         void setup_view_menu();
@@ -135,6 +132,7 @@ namespace trview
         std::unique_ptr<IImGuiBackend> _imgui_backend;
         std::string _imgui_ini_filename;
         std::unique_ptr<ILogWindowManager> _log_windows;
+        std::unique_ptr<IPlugins> _plugins;
     };
 
     Window create_window(HINSTANCE hInstance, int command_show);

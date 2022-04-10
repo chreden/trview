@@ -1,5 +1,6 @@
 #include "Lua.h"
 #include <trview.common/Strings.h>
+#include "ImGui/ImGui.h"
 
 namespace trview
 {
@@ -82,6 +83,11 @@ namespace trview
     static int register_onrender ( lua_State* L )
     {
         return add_callback ( L, LuaEvent::ON_RENDER );
+    }
+
+    static int register_onrenderui(lua_State* L)
+    {
+        return add_callback(L, LuaEvent::ON_RENDER_UI);
     }
 
     // trview.open (str) - opens a new file in the viewer
@@ -208,6 +214,7 @@ namespace trview
     static const struct luaL_Reg register_lib[] =
     {
         { "onrender", register_onrender },
+        { "onrenderui", register_onrenderui },
         { NULL, NULL },
     };
 
@@ -255,6 +262,8 @@ namespace trview
         // utility
         lua_register ( L, "print", print );
 
+        lua::imgui_register(L);
+
         state = L;
     }
 
@@ -285,6 +294,27 @@ namespace trview
             num_tries = DEFAULT_MAX_TRIES;
             lua_rawgeti ( state, LUA_REGISTRYINDEX, ref );
             lua_call ( state, 0, 0 );
+        }
+    }
+
+    namespace lua
+    {
+        void set_boolean(lua_State* L, const std::string& name, bool value, int position)
+        {
+            lua_pushboolean(L, value);
+            lua_setfield(L, position, name.c_str());
+        }
+
+        void set_integer(lua_State* L, const std::string& name, int value, int position)
+        {
+            lua_pushinteger(L, value);
+            lua_setfield(L, position, name.c_str());
+        }
+
+        void set_string(lua_State* L, const std::string& name, const std::string& value, int position)
+        {
+            lua_pushstring(L, value.c_str());
+            lua_setfield(L, position, name.c_str());
         }
     }
 }

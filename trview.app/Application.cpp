@@ -1,7 +1,7 @@
 #include "Application.h"
 #include <trlevel/LevelEncryptedException.h>
-
 #include "Resources/resource.h"
+#include "Lua/trview/trview.h"
 
 using namespace DirectX::SimpleMath;
 
@@ -85,12 +85,14 @@ namespace trview
         std::shared_ptr<IFiles> files,
         std::unique_ptr<IImGuiBackend> imgui_backend,
         std::unique_ptr<ILightsWindowManager> lights_window_manager,
-        std::unique_ptr<ILogWindowManager> log_window_manager)
+        std::unique_ptr<ILogWindowManager> log_window_manager,
+        std::unique_ptr<IPlugins> plugins)
         : MessageHandler(application_window), _instance(GetModuleHandle(nullptr)),
         _file_menu(std::move(file_menu)), _update_checker(std::move(update_checker)), _view_menu(window()), _settings_loader(std::move(settings_loader)), _trlevel_source(trlevel_source),
         _viewer(std::move(viewer)), _route_source(route_source), _route(route_source()), _shortcuts(shortcuts), _items_windows(std::move(items_window_manager)),
         _triggers_windows(std::move(triggers_window_manager)), _route_window(std::move(route_window_manager)), _rooms_windows(std::move(rooms_window_manager)), _level_source(level_source),
-        _dialogs(dialogs), _files(files), _timer(default_time_source()), _imgui_backend(std::move(imgui_backend)), _lights_windows(std::move(lights_window_manager)), _log_windows(std::move(log_window_manager))
+        _dialogs(dialogs), _files(files), _timer(default_time_source()), _imgui_backend(std::move(imgui_backend)), _lights_windows(std::move(lights_window_manager)), _log_windows(std::move(log_window_manager)),
+        _plugins(std::move(plugins))
     {
         SetWindowLongPtr(window(), GWLP_USERDATA, reinterpret_cast<LONG_PTR>(_imgui_backend.get()));
 
@@ -112,6 +114,10 @@ namespace trview
 
         register_lua();
         lua_init(&lua_registry);
+
+        lua::set_application(this);
+        _plugins->load();
+        _plugins->initialise();
     }
 
     Application::~Application()
@@ -182,6 +188,8 @@ namespace trview
 
         _viewer->open(_level.get(), open_mode);
         _viewer->set_route(_route);
+
+        lua::set_current_level(_level.get());
 
         if (old_level && open_mode == ILevel::OpenMode::Reload)
         {
@@ -496,6 +504,15 @@ namespace trview
         }
     }
 
+    void Application::select_item(uint32_t index)
+    {
+        if (!_level || index >= _level->items().size())
+        {
+            return;
+        }
+        select_item(_level->items()[index]);
+    }
+
     void Application::select_item(const Item& item)
     {
         if (!_level || item.number() >= _level->items().size())
@@ -707,6 +724,7 @@ namespace trview
         _route_window->render();
         _lights_windows->render();
         _log_windows->render();
+        _plugins->render_ui();
 
         ImGui::PopFont();
         ImGui::Render();

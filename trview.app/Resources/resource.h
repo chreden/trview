@@ -43,6 +43,7 @@
 #define ID_WINDOWS_RESET_LAYOUT         33019
 #define ID_WINDOWS_LOG                  33020
 #define ID_FILE_RELOAD                  33021
+#define ID_PLUGINS_RELOAD               33022
 
 // Next default values for new objects
 // 

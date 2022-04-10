@@ -152,12 +152,6 @@
       <Filter>Lua</Filter>
     </ClCompile>
     <ClCompile Include="stdafx.cpp" />
-    <ClCompile Include="Windows\Viewer.cpp">
-      <Filter>Windows</Filter>
-    </ClCompile>
-    <ClCompile Include="Windows\ViewerLuaRegistry.cpp">
-      <Filter>Windows</Filter>
-    </ClCompile>
     <ClCompile Include="Resources\DefaultShaders.cpp">
       <Filter>Resources</Filter>
     </ClCompile>
@@ -180,9 +174,6 @@
     </ClCompile>
     <ClCompile Include="Settings\SettingsLoader.cpp">
       <Filter>Settings</Filter>
-    </ClCompile>
-    <ClCompile Include="Windows\IViewer.cpp">
-      <Filter>Windows</Filter>
     </ClCompile>
     <ClCompile Include="Routing\IRoute.cpp">
       <Filter>Routing</Filter>
@@ -366,6 +357,42 @@
     <ClCompile Include="Windows\Log\LogWindowManager.cpp">
       <Filter>Windows\Log</Filter>
     </ClCompile>
+    <ClCompile Include="Lua\ImGui\ImGui.cpp">
+      <Filter>Lua\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="Windows\ViewerLuaRegistry.cpp">
+      <Filter>Windows\Viewer</Filter>
+    </ClCompile>
+    <ClCompile Include="Windows\Viewer.cpp">
+      <Filter>Windows\Viewer</Filter>
+    </ClCompile>
+    <ClCompile Include="Windows\IViewer.cpp">
+      <Filter>Windows\Viewer</Filter>
+    </ClCompile>
+    <ClCompile Include="Lua\Plugins\Plugins.cpp">
+      <Filter>Lua\Plugins</Filter>
+    </ClCompile>
+    <ClCompile Include="Lua\Plugins\Plugin.cpp">
+      <Filter>Lua\Plugins</Filter>
+    </ClCompile>
+    <ClCompile Include="Lua\trview\trview.cpp">
+      <Filter>Lua\trview</Filter>
+    </ClCompile>
+    <ClCompile Include="Lua\Elements\Room\Lua_Room.cpp">
+      <Filter>Lua\Elements\Room</Filter>
+    </ClCompile>
+    <ClCompile Include="Lua\Elements\Level\Lua_Level.cpp">
+      <Filter>Lua\Elements\Level</Filter>
+    </ClCompile>
+    <ClCompile Include="Lua\Elements\Item\Lua_Item.cpp">
+      <Filter>Lua\Elements\Item</Filter>
+    </ClCompile>
+    <ClCompile Include="Lua\Elements\Sector\Lua_Sector.cpp">
+      <Filter>Lua\Elements\Sector</Filter>
+    </ClCompile>
+    <ClCompile Include="Lua\Elements\Trigger\Lua_Trigger.cpp">
+      <Filter>Lua\Elements\Trigger</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera\Camera.h">
@@ -534,9 +561,6 @@
       <Filter>Lua</Filter>
     </ClInclude>
     <ClInclude Include="stdafx.h" />
-    <ClInclude Include="Windows\Viewer.h">
-      <Filter>Windows</Filter>
-    </ClInclude>
     <ClInclude Include="Resources\resource.h">
       <Filter>Resources</Filter>
     </ClInclude>
@@ -576,9 +600,6 @@
     </ClInclude>
     <ClInclude Include="Mocks\Settings\ISettingsLoader.h">
       <Filter>Mocks\Settings</Filter>
-    </ClInclude>
-    <ClInclude Include="Windows\IViewer.h">
-      <Filter>Windows</Filter>
     </ClInclude>
     <ClInclude Include="Mocks\Windows\IViewer.h">
       <Filter>Mocks\Windows</Filter>
@@ -909,6 +930,64 @@
     <ClInclude Include="Mocks\Windows\ILogWindow.h">
       <Filter>Mocks\Windows</Filter>
     </ClInclude>
+    <ClInclude Include="Lua\ImGui\ImGui.h">
+      <Filter>Lua\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="Windows\Viewer.h">
+      <Filter>Windows\Viewer</Filter>
+    </ClInclude>
+    <ClInclude Include="Windows\IViewer.h">
+      <Filter>Windows\Viewer</Filter>
+    </ClInclude>
+    <ClInclude Include="Windows\IPluginsWindow.h">
+      <Filter>Windows\Plugins</Filter>
+    </ClInclude>
+    <ClInclude Include="Lua\Plugins\IPlugin.h">
+      <Filter>Lua\Plugins</Filter>
+    </ClInclude>
+    <ClInclude Include="Lua\Plugins\IPlugins.h">
+      <Filter>Lua\Plugins</Filter>
+    </ClInclude>
+    <ClInclude Include="Lua\Plugins\Plugins.h">
+      <Filter>Lua\Plugins</Filter>
+    </ClInclude>
+    <ClInclude Include="Lua\Plugins\Plugin.h">
+      <Filter>Lua\Plugins</Filter>
+    </ClInclude>
+    <ClInclude Include="Mocks\Lua\Plugins\IPlugins.h">
+      <Filter>Mocks\Lua\Plugins</Filter>
+    </ClInclude>
+    <ClInclude Include="Lua\trview\trview.h">
+      <Filter>Lua\trview</Filter>
+    </ClInclude>
+    <ClInclude Include="IApplication.h" />
+    <ClInclude Include="Lua\Elements\Room\Lua_Room.h">
+      <Filter>Lua\Elements\Room</Filter>
+    </ClInclude>
+    <ClInclude Include="Windows\Log\ILogWindowManager.h">
+      <Filter>Windows\Log</Filter>
+    </ClInclude>
+    <ClInclude Include="Windows\Log\LogWindowManager.h">
+      <Filter>Windows\Log</Filter>
+    </ClInclude>
+    <ClInclude Include="Mocks\Windows\ILogWindowManager.h">
+      <Filter>Mocks\Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="Mocks\Windows\ILogWindow.h">
+      <Filter>Mocks\Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="Lua\Elements\Level\Lua_Level.h">
+      <Filter>Lua\Elements\Level</Filter>
+    </ClInclude>
+    <ClInclude Include="Lua\Elements\Item\Lua_Item.h">
+      <Filter>Lua\Elements\Item</Filter>
+    </ClInclude>
+    <ClInclude Include="Lua\Elements\Sector\Lua_Sector.h">
+      <Filter>Lua\Elements\Sector</Filter>
+    </ClInclude>
+    <ClInclude Include="Lua\Elements\Trigger\Lua_Trigger.h">
+      <Filter>Lua\Elements\Trigger</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Windows">
@@ -1024,6 +1103,63 @@
     </Filter>
     <Filter Include="Windows\Log">
       <UniqueIdentifier>{d617ca7e-d7f1-4ea4-b6d6-ea63e358ff24}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Lua\ImGui">
+      <UniqueIdentifier>{117fa453-dcb0-4f17-9010-4b4f85c0634f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Windows\Plugins">
+      <UniqueIdentifier>{1fc7b0cc-4a19-4621-bdad-d1a8a3a934f0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Windows\Viewer">
+      <UniqueIdentifier>{b5b928b4-9d6e-4323-9028-6a2d3377cb2e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Lua\Plugins">
+      <UniqueIdentifier>{37e35c28-ed45-406f-98d9-a2a7d8c80b3e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Mocks\Lua">
+      <UniqueIdentifier>{85b539c2-bd88-40c1-bfc6-1e7d73d4bc33}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Mocks\Lua\Plugins">
+      <UniqueIdentifier>{633b104c-3d9e-4e25-b503-a23f5e894159}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Lua\trview">
+      <UniqueIdentifier>{0a8a994d-ea62-4613-b2d0-dc2208b383d3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Lua\Elements">
+      <UniqueIdentifier>{1486e60e-ea99-4903-8d5e-8487e7c8a19a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Lua\Elements\Room">
+      <UniqueIdentifier>{4aeb464c-a3a1-4867-98b9-70019ca14521}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Lua\Plugins">
+      <UniqueIdentifier>{37e35c28-ed45-406f-98d9-a2a7d8c80b3e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Mocks\Lua">
+      <UniqueIdentifier>{85b539c2-bd88-40c1-bfc6-1e7d73d4bc33}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Mocks\Lua\Plugins">
+      <UniqueIdentifier>{633b104c-3d9e-4e25-b503-a23f5e894159}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Lua\trview">
+      <UniqueIdentifier>{0a8a994d-ea62-4613-b2d0-dc2208b383d3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Lua\Elements">
+      <UniqueIdentifier>{1486e60e-ea99-4903-8d5e-8487e7c8a19a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Lua\Elements\Room">
+      <UniqueIdentifier>{4aeb464c-a3a1-4867-98b9-70019ca14521}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Lua\Elements\Level">
+      <UniqueIdentifier>{5919db65-9418-4929-9c55-9731a7a9a056}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Lua\Elements\Item">
+      <UniqueIdentifier>{fb1b8906-ce69-4b30-bdec-651effdac962}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Lua\Elements\Sector">
+      <UniqueIdentifier>{6d269cc1-6326-4e8a-a384-dd1274cef55d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Lua\Elements\Trigger">
+      <UniqueIdentifier>{ea04ed84-9dd0-42f0-bd24-ddb6a4beed58}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
