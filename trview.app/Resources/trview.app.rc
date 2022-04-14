@@ -103,7 +103,7 @@ CAPTION "About trview"
 FONT 8, "MS Shell Dlg", 0, 0, 0x1
 BEGIN
     ICON            IDI_TRVIEW,IDC_STATIC,14,14,21,20
-    LTEXT           "trview, Version 1.8.0",IDC_STATIC,42,14,114,8,SS_NOPREFIX
+    LTEXT           "trview, Version 2.0.0",IDC_STATIC,42,14,114,8,SS_NOPREFIX
     LTEXT           "Copyright (C) 2022 trview team",IDC_STATIC,42,26,127,17
     LTEXT           "Licensed under the MIT license\r\n\
 Uses DirectXTK (MIT)\r\n\
