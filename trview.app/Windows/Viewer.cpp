@@ -58,6 +58,7 @@ namespace trview
         toggles[Options::flip] = [this](bool value) { set_alternate_mode(value); };
         toggles[Options::depth_enabled] = [this](bool value) { if (_level) { _level->set_highlight_mode(ILevel::RoomHighlightMode::Neighbours, value); } };
         toggles[Options::lights] = [this](bool value) { set_show_lights(value); };
+        toggles[Options::trle_colours] = [this](bool value) { set_use_trle_colours(value); };
 
         std::unordered_map<std::string, std::function<void(int32_t)>> scalars;
         scalars[Options::depth] = [this](int32_t value) { if (_level) { _level->set_neighbour_depth(value); } };
@@ -1059,7 +1060,7 @@ namespace trview
         if (_level)
         {
             _level->set_use_trle_colours(show);
-            _ui->set_use_trle_colours(show);
+            _ui->set_toggle(Options::trle_colours, show);
         }
     }
 

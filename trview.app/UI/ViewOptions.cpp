@@ -53,7 +53,9 @@ namespace trview
                 add_toggle(IViewer::Options::wireframe);
                 add_toggle(IViewer::Options::show_bounding_boxes);
                 ImGui::TableNextRow();
+                add_toggle(IViewer::Options::trle_colours);
                 add_toggle(IViewer::Options::lights);
+                ImGui::TableNextRow();
                 if (!_use_alternate_groups)
                 {
                     ImGui::BeginDisabled(!_flip_enabled);
@@ -133,10 +135,5 @@ namespace trview
     void ViewOptions::set_flip_enabled(bool enabled)
     {
         _flip_enabled = enabled;
-    }
-
-    bool ViewOptions::use_trle_colours() const
-    {
-        return _trle_colours->state();
     }
 }

@@ -662,9 +662,10 @@ TEST(Viewer, SetUseTRLEColours)
     auto viewer = register_test_module().with_ui(std::move(ui_ptr)).build();
 
     EXPECT_CALL(level, set_use_trle_colours(false)).Times(1);
-    EXPECT_CALL(ui, set_use_trle_colours(true)).Times(1);
+    EXPECT_CALL(ui, set_toggle(testing::A<const std::string&>(), testing::A<bool>())).Times(testing::AtLeast(0));
+    EXPECT_CALL(ui, set_toggle(IViewer::Options::trle_colours, true)).Times(1);
     EXPECT_CALL(level, set_use_trle_colours(true)).Times(1);
 
     viewer->open(&level);
-    ui.on_use_trle_colours(true);
+    ui.on_toggle_changed(IViewer::Options::trle_colours, true);
 }

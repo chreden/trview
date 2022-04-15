@@ -312,30 +312,30 @@ TEST(ViewOptions, FlipCheckboxHiddenWithAlternateGroups)
 
 TEST(ViewOptions, TRLECheckboxToggle)
 {
-    ui::Window window(Size(1, 1), Colour::White);
-    auto view_options = ViewOptions(window, MockLevelTextureStorage{});
+    ViewOptions view_options;
 
-    std::optional<bool> clicked;
-    auto token = view_options.on_use_trle_colours += [&](bool value)
+    std::optional<std::tuple<std::string, bool>> clicked;
+    auto token = view_options.on_toggle_changed += [&](const std::string& name, bool value)
     {
-        clicked = value;
+        clicked = { name, value };
     };
 
-    auto checkbox = window.find<ui::Checkbox>(ViewOptions::Names::trle_colours);
-    ASSERT_FALSE(checkbox->state());
-    checkbox->clicked({});
+    tests::TestImgui imgui([&]() { view_options.render(); });
+    imgui.click_element(imgui.id("View Options").push(ViewOptions::Names::flags).id(IViewer::Options::trle_colours));
+
     ASSERT_TRUE(clicked.has_value());
-    ASSERT_TRUE(clicked.value());
+    ASSERT_EQ(std::get<0>(clicked.value()), IViewer::Options::trle_colours);
+    ASSERT_TRUE(std::get<1>(clicked.value()));
 }
 
 TEST(ViewOptions, TRLECheckboxUpdated)
 {
-    ui::Window window(Size(1, 1), Colour::White);
-    auto view_options = ViewOptions(window, MockLevelTextureStorage{});
+    ViewOptions view_options;
 
-    auto checkbox = window.find<ui::Checkbox>(ViewOptions::Names::trle_colours);
-    ASSERT_FALSE(checkbox->state());
+    tests::TestImgui imgui([&]() { view_options.render(); });
+    ASSERT_FALSE(imgui.status_flags(imgui.id("View Options").push(ViewOptions::Names::flags).id(IViewer::Options::trle_colours)) & ImGuiItemStatusFlags_Checked);
 
-    view_options.set_use_trle_colours(true);
-    ASSERT_TRUE(checkbox->state());
+    view_options.set_toggle(IViewer::Options::trle_colours, true);
+    imgui.render();
+    ASSERT_TRUE(imgui.status_flags(imgui.id("View Options").push(ViewOptions::Names::flags).id(IViewer::Options::trle_colours)) & ImGuiItemStatusFlags_Checked);
 }

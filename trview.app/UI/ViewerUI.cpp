@@ -470,14 +470,4 @@ namespace trview
     {
         return _view_options->toggle(name);
     }
-
-    bool ViewerUI::use_trle_colours() const
-    {
-        return _view_options->use_trle_colours();
-    }
-
-    void ViewerUI::set_use_trle_colours(bool value)
-    {
-        _view_options->set_use_trle_colours(value);
-    }
 }

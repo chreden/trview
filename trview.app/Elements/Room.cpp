@@ -170,7 +170,7 @@ namespace trview
                 pick_results.push_back(geometry_result);
             }
 
-            if (has_flag(filters, PickFilter::HiddenGeometry))
+            if (has_flag(filters, PickFilter::HiddenGeometry) && _unmatched_mesh)
             {
                 PickResult unmatched_result = _unmatched_mesh->pick(Vector3::Transform(position, room_offset), direction);
                 if (unmatched_result.hit)
