@@ -61,9 +61,14 @@ namespace trview
         }
     }
 
-    bool Dialogs::message_box(const Window& window, const std::wstring& message, const std::wstring& title, Buttons buttons) const
+    Dialogs::Dialogs(const Window& window)
+        : _window(window)
     {
-        return convert_response(MessageBox(window, message.c_str(), title.c_str(), convert_button(buttons)));
+    }
+
+    bool Dialogs::message_box(const std::wstring& message, const std::wstring& title, Buttons buttons) const
+    {
+        return convert_response(MessageBox(_window, message.c_str(), title.c_str(), convert_button(buttons)));
     }
 
     std::optional<IDialogs::FileResult> Dialogs::open_file(const std::wstring& title, const std::vector<FileFilter>& filters, uint32_t flags) const

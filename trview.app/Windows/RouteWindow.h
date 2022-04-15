@@ -33,11 +33,7 @@ namespace trview
             static const inline std::string waypoint_details_panel = "Waypoint Details";
         };
 
-        /// Create a route window as a child of the specified window.
-        /// @param device The graphics device
-        /// @param renderer_source The function to call to get a renderer.
-        /// @param parent The parent window.
-        explicit RouteWindow(const trview::Window& parent, const std::shared_ptr<IClipboard>& clipboard, const std::shared_ptr<IDialogs>& dialogs,
+        explicit RouteWindow(const std::shared_ptr<IClipboard>& clipboard, const std::shared_ptr<IDialogs>& dialogs,
             const std::shared_ptr<IFiles>& files);
         virtual ~RouteWindow() = default;
         virtual void render() override;
@@ -46,7 +42,6 @@ namespace trview
         virtual void set_items(const std::vector<Item>& items) override;
         virtual void set_rooms(const std::vector<std::weak_ptr<IRoom>>& rooms) override;
         virtual void set_triggers(const std::vector<std::weak_ptr<ITrigger>>& triggers) override;
-        virtual void focus() override;
         virtual void update(float delta) override;
         virtual void set_randomizer_enabled(bool value) override;
         virtual void set_randomizer_settings(const RandomizerSettings& settings) override;
@@ -68,7 +63,6 @@ namespace trview
         std::shared_ptr<IFiles> _files;
         bool _randomizer_enabled{ false };
         RandomizerSettings _randomizer_settings;
-        trview::Window _window;
         bool _scroll_to_waypoint{ false };
         std::optional<float> _tooltip_timer;
     };

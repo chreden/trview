@@ -12,9 +12,9 @@ namespace trview
 
     using namespace graphics;
 
-    RouteWindow::RouteWindow(const trview::Window& parent, const std::shared_ptr<IClipboard>& clipboard, const std::shared_ptr<IDialogs>& dialogs,
+    RouteWindow::RouteWindow(const std::shared_ptr<IClipboard>& clipboard, const std::shared_ptr<IDialogs>& dialogs,
         const std::shared_ptr<IFiles>& files)
-        : _clipboard(clipboard), _dialogs(dialogs), _files(files), _window(parent)
+        : _clipboard(clipboard), _dialogs(dialogs), _files(files)
     {
     }
 
@@ -216,7 +216,7 @@ namespace trview
                             }
                             catch (...)
                             {
-                                _dialogs->message_box(_window, L"Failed to attach save", L"Error", IDialogs::Buttons::OK);
+                                _dialogs->message_box(L"Failed to attach save", L"Error", IDialogs::Buttons::OK);
                             }
                         }
                     }
@@ -231,7 +231,7 @@ namespace trview
                             }
                             catch (...)
                             {
-                                _dialogs->message_box(_window, L"Failed to export save", L"Error", IDialogs::Buttons::OK);
+                                _dialogs->message_box(L"Failed to export save", L"Error", IDialogs::Buttons::OK);
                             }
                         }
                     }
@@ -333,11 +333,6 @@ namespace trview
     void RouteWindow::set_triggers(const std::vector<std::weak_ptr<ITrigger>>& triggers)
     {
         _all_triggers = triggers;
-    }
-
-    void RouteWindow::focus()
-    {
-        SetForegroundWindow(_window);
     }
 
     void RouteWindow::update(float delta)
