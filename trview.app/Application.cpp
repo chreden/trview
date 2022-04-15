@@ -1,4 +1,5 @@
 #include "Application.h"
+#include <trlevel/LevelEncryptedException.h>
 
 #include "Resources/resource.h"
 
@@ -139,6 +140,11 @@ namespace trview
         try
         {
             new_level = _level_loader->load_level(filename);
+        }
+        catch (trlevel::LevelEncryptedException&)
+        {
+            _dialogs->message_box(window(), L"Level is encrypted and cannot be loaded", L"Error", IDialogs::Buttons::OK);
+            return;
         }
         catch (...)
         {

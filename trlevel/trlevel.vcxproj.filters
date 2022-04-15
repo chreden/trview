@@ -17,6 +17,7 @@
     </ClInclude>
     <ClInclude Include="tr_lights.h" />
     <ClInclude Include="tr_rooms.h" />
+    <ClInclude Include="LevelEncryptedException.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ILevel.cpp" />
