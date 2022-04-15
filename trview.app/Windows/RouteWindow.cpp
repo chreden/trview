@@ -20,6 +20,12 @@ namespace trview
 
     void RouteWindow::render_waypoint_list()
     {
+        if (_need_focus)
+        {
+            ImGui::SetNextWindowFocus();
+            _need_focus = false;
+        }
+
         if (ImGui::BeginChild(Names::waypoint_list_panel.c_str(), ImVec2(150, 0), true))
         {
             auto colour = _route ? _route->colour() : Colour::Green;
@@ -333,6 +339,11 @@ namespace trview
     void RouteWindow::set_triggers(const std::vector<std::weak_ptr<ITrigger>>& triggers)
     {
         _all_triggers = triggers;
+    }
+
+    void RouteWindow::focus()
+    {
+        _need_focus = true;
     }
 
     void RouteWindow::update(float delta)

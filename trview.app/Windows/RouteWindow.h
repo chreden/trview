@@ -42,6 +42,7 @@ namespace trview
         virtual void set_items(const std::vector<Item>& items) override;
         virtual void set_rooms(const std::vector<std::weak_ptr<IRoom>>& rooms) override;
         virtual void set_triggers(const std::vector<std::weak_ptr<ITrigger>>& triggers) override;
+        virtual void focus() override;
         virtual void update(float delta) override;
         virtual void set_randomizer_enabled(bool value) override;
         virtual void set_randomizer_settings(const RandomizerSettings& settings) override;
@@ -65,5 +66,6 @@ namespace trview
         RandomizerSettings _randomizer_settings;
         bool _scroll_to_waypoint{ false };
         std::optional<float> _tooltip_timer;
+        bool _need_focus{ false };
     };
 }
