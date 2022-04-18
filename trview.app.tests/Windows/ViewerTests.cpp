@@ -20,6 +20,7 @@
 #include <trlevel/Mocks/ILevel.h>
 #include <trview.app/Mocks/Routing/IWaypoint.h>
 #include <trview.app/Mocks/Elements/ILight.h>
+#include <trview.app/Mocks/Tools/IMover.h>
 #include <trview.common/Mocks/Windows/IClipboard.h>
 #include <trview.app/Mocks/Elements/ISector.h>
 
@@ -70,12 +71,13 @@ namespace
             IDeviceWindow::Source device_window_source{ [](auto&&...) { return mock_unique<MockDeviceWindow>(); } };
             std::unique_ptr<ISectorHighlight> sector_highlight{ mock_unique<MockSectorHighlight>() };
             std::shared_ptr<IClipboard> clipboard{ mock_shared<MockClipboard>() };
+            std::unique_ptr<IMover> mover{ std::make_unique<MockMover>() };
 
             std::unique_ptr<Viewer> build()
             {
                 EXPECT_CALL(*shortcuts, add_shortcut).WillRepeatedly([&](auto, auto) -> Event<>&{ return shortcut_handler; });
                 return std::make_unique<Viewer>(window, device, std::move(ui), std::move(picking), std::move(mouse), shortcuts, route, sprite_source,
-                    std::move(compass), std::move(measure), render_target_source, device_window_source, std::move(sector_highlight), clipboard);
+                    std::move(compass), std::move(measure), render_target_source, device_window_source, std::move(sector_highlight), clipboard, std::move(mover));
             }
 
             test_module& with_device(const std::shared_ptr<IDevice>& device)

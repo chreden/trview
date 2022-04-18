@@ -22,11 +22,11 @@ namespace trview
     Viewer::Viewer(const Window& window, const std::shared_ptr<graphics::IDevice>& device, std::unique_ptr<IViewerUI> ui, std::unique_ptr<IPicking> picking,
         std::unique_ptr<input::IMouse> mouse, const std::shared_ptr<IShortcuts>& shortcuts, const std::shared_ptr<IRoute> route, const graphics::ISprite::Source& sprite_source,
         std::unique_ptr<ICompass> compass, std::unique_ptr<IMeasure> measure, const graphics::IRenderTarget::SizeSource& render_target_source, const graphics::IDeviceWindow::Source& device_window_source,
-        std::unique_ptr<ISectorHighlight> sector_highlight, const std::shared_ptr<IClipboard>& clipboard)
+        std::unique_ptr<ISectorHighlight> sector_highlight, const std::shared_ptr<IClipboard>& clipboard, std::unique_ptr<IMover> mover)
         : MessageHandler(window), _shortcuts(shortcuts), _camera(window.size()), _free_camera(window.size()), _timer(default_time_source()), _keyboard(window),
         _mouse(std::move(mouse)), _window_resizer(window), _alternate_group_toggler(window),
         _menu_detector(window), _device(device), _route(route), _ui(std::move(ui)), _picking(std::move(picking)), _compass(std::move(compass)), _measure(std::move(measure)),
-        _render_target_source(render_target_source), _sector_highlight(std::move(sector_highlight)), _clipboard(clipboard)
+        _render_target_source(render_target_source), _sector_highlight(std::move(sector_highlight)), _clipboard(clipboard), _mover(std::move(mover))
     {
         apply_camera_settings();
 
@@ -772,6 +772,7 @@ namespace trview
             }
 
             level->render_transparency(camera);
+            _mover->render(camera, *level->texture_storage());
             _compass->render(camera, *texture_storage);
         }
     }
@@ -890,6 +891,7 @@ namespace trview
             {
                 set_camera_mode(CameraMode::Orbit);
             }
+            _mover->set_position(waypoint_ptr->position());
             _scene_changed = true;
         }
     }

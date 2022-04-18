@@ -38,6 +38,7 @@
 #include <trview.graphics/IDeviceWindow.h>
 #include <trview.app/Windows/IViewer.h>
 #include <trview.common/Windows/IClipboard.h>
+#include <trview.app/Tools/IMover.h>
 
 namespace trview
 {
@@ -61,7 +62,8 @@ namespace trview
             const graphics::IRenderTarget::SizeSource& render_target_source,
             const graphics::IDeviceWindow::Source& device_window_source,
             std::unique_ptr<ISectorHighlight> sector_highlight,
-            const std::shared_ptr<IClipboard>& clipboard);
+            const std::shared_ptr<IClipboard>& clipboard,
+            std::unique_ptr<IMover> mover);
         virtual ~Viewer() = default;
         virtual CameraMode camera_mode() const override;
         virtual void render() override;
@@ -178,6 +180,7 @@ namespace trview
         std::vector<PickResult> _recent_orbits;
         std::size_t _recent_orbit_index{ 0u };
 
+        std::unique_ptr<IMover> _mover;
         std::shared_ptr<IClipboard> _clipboard;
 
         Point _previous_mouse_pos;

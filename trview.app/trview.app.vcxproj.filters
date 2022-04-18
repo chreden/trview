@@ -187,6 +187,12 @@
     <ClCompile Include="UI\DX11ImGuiBackend.cpp">
       <Filter>UI</Filter>
     </ClCompile>
+    <ClCompile Include="Tools\Mover.cpp">
+      <Filter>Tools</Filter>
+    </ClCompile>
+    <ClCompile Include="Tools\IMover.cpp">
+      <Filter>Tools</Filter>
+    </ClCompile>
     <ClCompile Include="UI\MapRenderer.cpp">
       <Filter>UI\Minimap</Filter>
     </ClCompile>
@@ -674,6 +680,15 @@
     </ClInclude>
     <ClInclude Include="Mocks\UI\IContextMenu.h">
       <Filter>Mocks\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="Tools\IMover.h">
+      <Filter>Tools</Filter>
+    </ClInclude>
+    <ClInclude Include="Tools\Mover.h">
+      <Filter>Tools</Filter>
+    </ClInclude>
+    <ClInclude Include="Mocks\Tools\IMover.h">
+      <Filter>Mocks\Tools</Filter>
     </ClInclude>
     <ClInclude Include="UI\ICameraControls.h">
       <Filter>UI</Filter>

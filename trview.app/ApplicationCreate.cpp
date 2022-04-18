@@ -57,6 +57,7 @@
 #include "Windows/Log/LogWindow.h"
 #include "Windows/Log/LogWindowManager.h"
 #include "UI/DX11ImGuiBackend.h"
+#include "Tools/Mover.h"
 #include "Windows/Textures/TexturesWindowManager.h"
 #include "Windows/Textures/TexturesWindow.h"
 #include "Windows/CameraSink/CameraSinkWindowManager.h"
@@ -309,7 +310,8 @@ namespace trview
             render_target_source,
             device_window_source,
             std::make_unique<SectorHighlight>(mesh_source),
-            clipboard);
+            clipboard,
+            std::make_unique<Mover>(mesh_source));
 
         auto items_window_source = [=]() { return std::make_shared<ItemsWindow>(clipboard); };
         auto triggers_window_source = [=]() { return std::make_shared<TriggersWindow>(clipboard); };

@@ -114,7 +114,9 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="Tools\Compass.cpp" />
+    <ClCompile Include="Tools\IMover.cpp" />
     <ClCompile Include="Tools\Measure.cpp" />
+    <ClCompile Include="Tools\Mover.cpp" />
     <ClCompile Include="Tools\Toolbar.cpp" />
     <ClInclude Include="Elements\ISector.hpp" />
     <ClInclude Include="Elements\TypeInfo.h" />
@@ -293,6 +295,7 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClInclude Include="Mocks\Settings\IStartupOptions.h" />
     <ClInclude Include="Mocks\Tools\ICompass.h" />
     <ClInclude Include="Mocks\Tools\IMeasure.h" />
+    <ClInclude Include="Mocks\Tools\IMover.h" />
     <ClInclude Include="Mocks\UI\ICameraControls.h" />
     <ClInclude Include="Mocks\UI\IContextMenu.h" />
     <ClInclude Include="Mocks\UI\IImGuiBackend.h" />
@@ -339,7 +342,9 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClInclude Include="Tools\Compass.h" />
     <ClInclude Include="Tools\ICompass.h" />
     <ClInclude Include="Tools\IMeasure.h" />
+    <ClInclude Include="Tools\IMover.h" />
     <ClInclude Include="Tools\Measure.h" />
+    <ClInclude Include="Tools\Mover.h" />
     <ClInclude Include="Tools\Toolbar.h" />
     <ClInclude Include="Track\Track.h" />
     <ClInclude Include="trview_imgui.h" />
