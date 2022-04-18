@@ -292,6 +292,11 @@ namespace trview
 
     void Level::render_transparency(const ICamera& camera)
     {
+        if (_use_trle_colours)
+        {
+            return;
+        }
+
         auto context = _device->context();
         graphics::RasterizerStateStore rasterizer_store(context);
         if (_show_wireframe)
