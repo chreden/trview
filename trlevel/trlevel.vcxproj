@@ -162,6 +162,7 @@
     <ClInclude Include="ILevel.h" />
     <ClInclude Include="ILevelLoader.h" />
     <ClInclude Include="Level.h" />
+    <ClInclude Include="LevelEncryptedException.h" />
     <ClInclude Include="LevelLoader.h" />
     <ClInclude Include="LevelLoadException.h" />
     <ClInclude Include="LevelVersion.h" />

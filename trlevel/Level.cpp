@@ -1,5 +1,6 @@
 #include "Level.h"
 #include "LevelLoadException.h"
+#include "LevelEncryptedException.h"
 
 namespace trlevel
 {
@@ -289,7 +290,14 @@ namespace trlevel
             file.exceptions(std::ifstream::failbit | std::ifstream::badbit | std::ifstream::eofbit);
             file.open(converted.c_str(), std::ios::binary);
 
-            _version = convert_level_version(read<uint32_t>(file));
+            uint32_t raw_version = read<uint32_t>(file);
+            _version = convert_level_version(raw_version);
+
+            if (raw_version == 0x63345254)
+            {
+                throw LevelEncryptedException();
+            }
+
             if (is_tr5(_version, converted))
             {
                 _version = LevelVersion::Tomb5;
@@ -322,10 +330,13 @@ namespace trlevel
             }
 
             load_level_data(file);
-
             generate_meshes(_mesh_data);
         }
-        catch(const std::exception&)
+        catch (const LevelEncryptedException&)
+        {
+            throw;
+        }
+        catch (const std::exception&)
         {
             throw LevelLoadException();
         }
