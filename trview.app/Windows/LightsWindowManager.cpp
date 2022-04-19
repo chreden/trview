@@ -60,48 +60,24 @@ namespace trview
 
     std::weak_ptr<ILightsWindow> LightsWindowManager::create_window()
     {
-        int32_t number = next_id();
         auto lights_window = _lights_window_source();
-        lights_window->set_number(number);
         lights_window->set_level_version(_level_version);
         lights_window->set_lights(_lights);
         lights_window->set_selected_light(_selected_light);
         lights_window->set_current_room(_current_room);
-
-        _token_store += lights_window->on_window_closed += [number, this]()
-        {
-            _closing_windows.push_back(number);
-        };
         lights_window->on_light_selected += on_light_selected;
         lights_window->on_light_visibility += on_light_visibility;
-
-        _windows[number] = lights_window;
-        return lights_window;
+        return add_window(lights_window);
     }
 
     void LightsWindowManager::render()
     {
-        if (!_closing_windows.empty())
-        {
-            for (const auto window_number : _closing_windows)
-            {
-                _windows.erase(window_number);
-            }
-            _closing_windows.clear();
-        }
-
-        for (auto& window : _windows)
-        {
-            window.second->render();
-        }
+        WindowManager::render();
     }
     
     void LightsWindowManager::update(float delta)
     {
-        for (auto& window : _windows)
-        {
-            window.second->update(delta);
-        }
+        WindowManager::update(delta);
     }
 
     void LightsWindowManager::set_selected_light(const std::weak_ptr<ILight>& light)
@@ -119,17 +95,6 @@ namespace trview
         for (auto& window : _windows)
         {
             window.second->set_current_room(room);
-        }
-    }
-
-    int32_t LightsWindowManager::next_id() const
-    {
-        for (int32_t i = 1;; ++i)
-        {
-            if (_windows.find(i) == _windows.end())
-            {
-                return i;
-            }
         }
     }
 }

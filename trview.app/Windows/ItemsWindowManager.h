@@ -7,15 +7,15 @@
 #include <memory>
 #include <optional>
 
-#include "IItemsWindowManager.h"
 #include <trview.common/MessageHandler.h>
-#include <trview.common/TokenStore.h>
 #include <trview.common/Windows/Shortcuts.h>
+#include "IItemsWindowManager.h"
+#include "WindowManager.h"
 
 namespace trview
 {
     /// Controls and creates ItemsWindows.
-    class ItemsWindowManager final : public IItemsWindowManager, public MessageHandler
+    class ItemsWindowManager final : public IItemsWindowManager, public WindowManager<IItemsWindow>, public MessageHandler
     {
     public:
         /// Create an TriggersWindowManager.
@@ -34,13 +34,9 @@ namespace trview
         virtual std::weak_ptr<IItemsWindow> create_window() override;
         virtual void update(float delta) override;
     private:
-        int32_t next_id() const;
-        std::unordered_map<int32_t, std::shared_ptr<IItemsWindow>> _windows;
-        std::vector<int32_t> _closing_windows;
         std::vector<Item> _items;
         std::vector<std::weak_ptr<ITrigger>> _triggers;
         uint32_t _current_room{ 0u };
-        TokenStore _token_store;
         std::optional<Item> _selected_item;
         IItemsWindow::Source _items_window_source;
     };

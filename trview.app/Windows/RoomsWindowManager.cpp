@@ -21,19 +21,7 @@ namespace trview
 
     void RoomsWindowManager::render()
     {
-        if (!_closing_windows.empty())
-        {
-            for (const auto window_number : _closing_windows)
-            {
-                _windows.erase(window_number);
-            }
-            _closing_windows.clear();
-        }
-
-        for (auto& window : _windows)
-        {
-            window.second->render();
-        }
+        WindowManager::render();
     }
 
     std::weak_ptr<ITrigger> RoomsWindowManager::selected_trigger() const
@@ -117,45 +105,21 @@ namespace trview
 
     std::weak_ptr<IRoomsWindow> RoomsWindowManager::create_window()
     {
-        int32_t number = next_id();
         auto rooms_window = _rooms_window_source();
-        rooms_window->set_number(number);
         rooms_window->on_room_selected += on_room_selected;
         rooms_window->on_item_selected += on_item_selected;
         rooms_window->on_trigger_selected += on_trigger_selected;
-
-        _token_store += rooms_window->on_window_closed += [number, this]()
-        {
-            _closing_windows.push_back(number);
-        };
-
         rooms_window->set_level_version(_level_version);
         rooms_window->set_items(_all_items);
         rooms_window->set_triggers(_all_triggers);
         rooms_window->set_rooms(_all_rooms);
         rooms_window->set_current_room(_current_room);
         rooms_window->set_map_colours(_map_colours);
-
-        _windows[number] = rooms_window;
-        return rooms_window;
+        return add_window(rooms_window);
     }
 
     void RoomsWindowManager::update(float delta)
     {
-        for (auto& window : _windows)
-        {
-            window.second->update(delta);
-        }
-    }
-
-    int32_t RoomsWindowManager::next_id() const
-    {
-        for (int32_t i = 1;; ++i)
-        {
-            if (_windows.find(i) == _windows.end())
-            {
-                return i;
-            }
-        }
+        WindowManager::update(delta);
     }
 }

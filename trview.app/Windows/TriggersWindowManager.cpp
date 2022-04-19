@@ -20,26 +20,12 @@ namespace trview
 
     void TriggersWindowManager::render()
     {
-        if (!_closing_windows.empty())
-        {
-            for (const auto window_number : _closing_windows)
-            {
-                _windows.erase(window_number);
-            }
-            _closing_windows.clear();
-        }
-
-        for (auto& window : _windows)
-        {
-            window.second->render();
-        }
+        WindowManager::render();
     }
 
     std::weak_ptr<ITriggersWindow> TriggersWindowManager::create_window()
     {
-        int32_t number = next_id();
         auto triggers_window = _triggers_window_source();
-        triggers_window->set_number(number);
         triggers_window->on_item_selected += on_item_selected;
         triggers_window->on_trigger_selected += on_trigger_selected;
         triggers_window->on_trigger_visibility += on_trigger_visibility;
@@ -48,14 +34,7 @@ namespace trview
         triggers_window->set_triggers(_triggers);
         triggers_window->set_current_room(_current_room);
         triggers_window->set_selected_trigger(_selected_trigger);
-
-        _token_store += triggers_window->on_window_closed += [number, this]()
-        {
-            _closing_windows.push_back(number);
-        };
-
-        _windows[number] = triggers_window;
-        return triggers_window;
+        return add_window(triggers_window);
     }
 
     const std::weak_ptr<ITrigger> TriggersWindowManager::selected_trigger() const
@@ -123,20 +102,6 @@ namespace trview
 
     void TriggersWindowManager::update(float delta)
     {
-        for (const auto& window : _windows)
-        {
-            window.second->update(delta);
-        }
-    }
-
-    int32_t TriggersWindowManager::next_id() const
-    {
-        for (int32_t i = 1;; ++i)
-        {
-            if (_windows.find(i) == _windows.end())
-            {
-                return i;
-            }
-        }
+        WindowManager::update(delta);
     }
 }

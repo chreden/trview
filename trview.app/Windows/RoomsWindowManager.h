@@ -7,11 +7,11 @@
 #include <memory>
 #include <optional>
 
-#include <trview.app/Windows/IRoomsWindowManager.h>
 #include <trview.common/MessageHandler.h>
-#include <trview.common/TokenStore.h>
-#include <trview.app/Elements/Item.h>
 #include <trview.common/Windows/IShortcuts.h>
+#include "../Elements/Item.h"
+#include "IRoomsWindowManager.h"
+#include "WindowManager.h"
 
 namespace trview
 {
@@ -19,7 +19,7 @@ namespace trview
     class Shortcuts;
 
     /// Controls and creates RoomsWindows.
-    class RoomsWindowManager final : public IRoomsWindowManager, public MessageHandler
+    class RoomsWindowManager final : public IRoomsWindowManager, public WindowManager<IRoomsWindow>, public MessageHandler
     {
     public:
         /// Create an RoomsWindowManager.
@@ -42,13 +42,9 @@ namespace trview
         virtual std::weak_ptr<IRoomsWindow> create_window() override;
         virtual void update(float delta) override;
     private:
-        int32_t next_id() const;
-        std::unordered_map<int32_t, std::shared_ptr<IRoomsWindow>> _windows;
-        std::vector<int32_t> _closing_windows;
         std::vector<Item> _all_items;
         std::vector<std::weak_ptr<IRoom>> _all_rooms;
         std::vector<std::weak_ptr<ITrigger>> _all_triggers;
-        TokenStore _token_store;
         uint32_t _current_room{ 0u };
         std::weak_ptr<ITrigger> _selected_trigger;
         std::optional<Item> _selected_item;
