@@ -23,14 +23,14 @@ namespace trview
         virtual std::weak_ptr<ILightsWindow> create_window() override;
         virtual void set_room(uint32_t room) override;
     private:
+        int32_t next_id() const;
         TokenStore _token_store;
-        std::vector<std::shared_ptr<ILightsWindow>> _windows;
-        std::vector<std::weak_ptr<ILightsWindow>> _closing_windows;
+        std::unordered_map<int32_t, std::shared_ptr<ILightsWindow>> _windows;
+        std::vector<int32_t> _closing_windows;
         std::vector<std::weak_ptr<ILight>> _lights;
         ILightsWindow::Source _lights_window_source;
         std::weak_ptr<ILight> _selected_light;
         trlevel::LevelVersion _level_version{ trlevel::LevelVersion::Tomb1 };
         uint32_t _current_room{ 0u };
-        uint32_t _window_count{ 0u };
     };
 }

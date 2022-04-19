@@ -42,8 +42,9 @@ namespace trview
         virtual std::weak_ptr<IRoomsWindow> create_window() override;
         virtual void update(float delta) override;
     private:
-        std::vector<std::shared_ptr<IRoomsWindow>> _windows;
-        std::vector<std::weak_ptr<IRoomsWindow>> _closing_windows;
+        int32_t next_id() const;
+        std::unordered_map<int32_t, std::shared_ptr<IRoomsWindow>> _windows;
+        std::vector<int32_t> _closing_windows;
         std::vector<Item> _all_items;
         std::vector<std::weak_ptr<IRoom>> _all_rooms;
         std::vector<std::weak_ptr<ITrigger>> _all_triggers;
@@ -53,7 +54,6 @@ namespace trview
         std::optional<Item> _selected_item;
         IRoomsWindow::Source _rooms_window_source;
         trlevel::LevelVersion _level_version{ trlevel::LevelVersion::Unknown };
-        uint32_t _window_count{ 0u };
         MapColours _map_colours;
     };
 }

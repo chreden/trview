@@ -34,14 +34,14 @@ namespace trview
         virtual std::weak_ptr<IItemsWindow> create_window() override;
         virtual void update(float delta) override;
     private:
-        std::vector<std::shared_ptr<IItemsWindow>> _windows;
-        std::vector<std::weak_ptr<IItemsWindow>> _closing_windows;
+        int32_t next_id() const;
+        std::unordered_map<int32_t, std::shared_ptr<IItemsWindow>> _windows;
+        std::vector<int32_t> _closing_windows;
         std::vector<Item> _items;
         std::vector<std::weak_ptr<ITrigger>> _triggers;
         uint32_t _current_room{ 0u };
         TokenStore _token_store;
         std::optional<Item> _selected_item;
         IItemsWindow::Source _items_window_source;
-        uint32_t _window_count{ 0u };
     };
 }

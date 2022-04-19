@@ -22,24 +22,24 @@ namespace trview
     {
         if (!_closing_windows.empty())
         {
-            for (const auto window_ptr : _closing_windows)
+            for (const auto window_number : _closing_windows)
             {
-                auto window = window_ptr.lock();
-                _windows.erase(std::remove(_windows.begin(), _windows.end(), window));
+                _windows.erase(window_number);
             }
             _closing_windows.clear();
         }
 
         for (auto& window : _windows)
         {
-            window->render();
+            window.second->render();
         }
     }
 
     std::weak_ptr<IItemsWindow> ItemsWindowManager::create_window()
     {
+        int32_t number = next_id();
         auto items_window = _items_window_source();
-        items_window->set_number(++_window_count);
+        items_window->set_number(number);
         items_window->on_item_selected += on_item_selected;
         items_window->on_item_visibility += on_item_visibility;
         items_window->on_trigger_selected += on_trigger_selected;
@@ -52,13 +52,12 @@ namespace trview
             items_window->set_selected_item(_selected_item.value());
         }
 
-        std::weak_ptr<IItemsWindow> items_window_weak = items_window;
-        _token_store += items_window->on_window_closed += [items_window_weak, this]()
+        _token_store += items_window->on_window_closed += [number, this]()
         {
-            _closing_windows.push_back(items_window_weak);
+            _closing_windows.push_back(number);
         };
 
-        _windows.push_back(items_window);
+        _windows[number] = items_window;
         return items_window;
     }
 
@@ -67,8 +66,8 @@ namespace trview
         _items = items;
         for (auto& window : _windows)
         {
-            window->clear_selected_item();
-            window->set_items(items);
+            window.second->clear_selected_item();
+            window.second->set_items(items);
         }
     }
 
@@ -82,7 +81,7 @@ namespace trview
         found->set_visible(visible);
         for (auto& window : _windows)
         {
-            window->update_items(_items);
+            window.second->update_items(_items);
         }
     }
 
@@ -91,7 +90,7 @@ namespace trview
         _triggers = triggers;
         for (auto& window : _windows)
         {
-            window->set_triggers(triggers);
+            window.second->set_triggers(triggers);
         }
     }
 
@@ -100,7 +99,7 @@ namespace trview
         _current_room = room;
         for (auto& window : _windows)
         {
-            window->set_current_room(room);
+            window.second->set_current_room(room);
         }
     }
 
@@ -109,7 +108,7 @@ namespace trview
         _selected_item = item;
         for (auto& window : _windows)
         {
-            window->set_selected_item(item);
+            window.second->set_selected_item(item);
         }
     }
 
@@ -117,7 +116,18 @@ namespace trview
     {
         for (const auto& window : _windows)
         {
-            window->update(delta);
+            window.second->update(delta);
+        }
+    }
+
+    int32_t ItemsWindowManager::next_id() const
+    {
+        for (int32_t i = 1;;++i)
+        {
+            if (_windows.find(i) == _windows.end())
+            {
+                return i;
+            }
         }
     }
 }
