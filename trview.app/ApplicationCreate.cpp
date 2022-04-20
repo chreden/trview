@@ -158,7 +158,7 @@ namespace trview
             window,
             device,
             std::move(viewer_ui),
-            std::make_unique<Picking>(),
+            std::make_unique<Picking>(window),
             std::make_unique<input::Mouse>(window, std::make_unique<input::WindowTester>(window)),
             shortcuts,
             route_source(),
