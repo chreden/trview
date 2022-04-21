@@ -51,6 +51,7 @@
 #include "Windows/TriggersWindowManager.h"
 #include "Windows/Viewer.h"
 #include "UI/DX11ImGuiBackend.h"
+#include "Tools/Mover.h"
 
 namespace trview
 {
@@ -167,7 +168,8 @@ namespace trview
             std::make_unique<Measure>(device, mesh_source),
             render_target_source,
             device_window_source,
-            std::make_unique<SectorHighlight>(mesh_source));
+            std::make_unique<SectorHighlight>(mesh_source),
+            std::make_unique<Mover>(mesh_source));
 
         auto files = std::make_shared<Files>();
         auto dialogs = std::make_shared<Dialogs>();
