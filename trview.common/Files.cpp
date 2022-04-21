@@ -39,6 +39,11 @@ namespace trview
         return to_utf8(path.path);
     }
 
+    void Files::delete_file(const std::string& filename) const
+    {
+        DeleteFile(to_utf16(filename).c_str());
+    }
+
     bool Files::create_directory(const std::string& directory) const
     {
         return CreateDirectory(to_utf16(directory).c_str(), nullptr) || GetLastError() == ERROR_ALREADY_EXISTS;

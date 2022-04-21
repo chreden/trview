@@ -18,5 +18,6 @@ namespace trview
     private:
         std::shared_ptr<graphics::IDevice> _device;
         Window _window;
+        bool _active{ false };
     };
 }

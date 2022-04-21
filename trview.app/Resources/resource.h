@@ -43,6 +43,7 @@
 #define ID_WINDOWS_LIGHTS               ID_APP_WINDOWS_LIGHTS
 #define IDC_STATIC                      -1
 #define ID_WINDOWS_ROOMS                ID_APP_WINDOWS_ROOMS
+#define ID_WINDOWS_RESET_LAYOUT         33019
 
 // Next default values for new objects
 // 

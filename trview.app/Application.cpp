@@ -225,6 +225,15 @@ namespace trview
                         }
                         break;
                     }
+                    case ID_WINDOWS_RESET_LAYOUT:
+                    {
+                        auto& io = ImGui::GetIO();
+                        _files->delete_file(io.IniFilename);
+                        io.IniFilename = nullptr;
+                        _imgui_setup = false;
+                        _imgui_backend->shutdown();
+                        break;
+                    }
                 }
                 break;
             }
@@ -587,6 +596,11 @@ namespace trview
         {
             // Setup Dear ImGui context
             IMGUI_CHECKVERSION();
+            auto existing_context = ImGui::GetCurrentContext();
+            if (existing_context)
+            {
+                ImGui::DestroyContext(existing_context);
+            }
             ImGui::CreateContext();
             ImGuiIO& io = ImGui::GetIO();
             io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
@@ -621,12 +635,12 @@ namespace trview
 
         ImGui::PushFont(_font);
 
+        _viewer->render_ui();
         _items_windows->render();
         _triggers_windows->render();
         _rooms_windows->render();
         _route_window->render();
         _lights_windows->render();
-        _viewer->render_ui();
 
         ImGui::PopFont();
         ImGui::Render();
