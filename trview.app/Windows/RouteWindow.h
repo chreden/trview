@@ -33,11 +33,7 @@ namespace trview
             static const inline std::string waypoint_details_panel = "Waypoint Details";
         };
 
-        /// Create a route window as a child of the specified window.
-        /// @param device The graphics device
-        /// @param renderer_source The function to call to get a renderer.
-        /// @param parent The parent window.
-        explicit RouteWindow(const trview::Window& parent, const std::shared_ptr<IClipboard>& clipboard, const std::shared_ptr<IDialogs>& dialogs,
+        explicit RouteWindow(const std::shared_ptr<IClipboard>& clipboard, const std::shared_ptr<IDialogs>& dialogs,
             const std::shared_ptr<IFiles>& files);
         virtual ~RouteWindow() = default;
         virtual void render() override;
@@ -68,8 +64,8 @@ namespace trview
         std::shared_ptr<IFiles> _files;
         bool _randomizer_enabled{ false };
         RandomizerSettings _randomizer_settings;
-        trview::Window _window;
         bool _scroll_to_waypoint{ false };
         std::optional<float> _tooltip_timer;
+        bool _need_focus{ false };
     };
 }

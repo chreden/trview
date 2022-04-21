@@ -568,7 +568,7 @@ namespace trview
 
         if (_mouse_changed || _scene_changed)
         {
-            _picking->pick(_window, current_camera());
+            _picking->pick(current_camera());
             _mouse_changed = false;
         }
 

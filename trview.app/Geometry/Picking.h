@@ -9,9 +9,14 @@ namespace trview
     public:
         virtual ~Picking() = default;
 
+        explicit Picking(const Window& window);
+
+        /// <summary>
         /// Perform a pick operation.
-        /// @param window The window that the scene is being rendered in.
-        /// @param camera The current scene camera.
-        virtual void pick(const Window& window, const ICamera& camera) override;
+        /// </summary>
+        /// <param name="camera">The current scene camera.</param>
+        virtual void pick(const ICamera& camera) override;
+    private:
+        Window _window;
     };
 }

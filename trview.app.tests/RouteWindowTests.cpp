@@ -22,7 +22,6 @@ namespace
             std::shared_ptr<IClipboard> clipboard{ mock_shared<MockClipboard>() };
             std::shared_ptr<IDialogs> dialogs{ mock_shared<MockDialogs>() };
             std::shared_ptr<IFiles> files{ mock_shared<MockFiles>() };
-            trview::Window parent{ create_test_window(L"RouteWindowTests") };
 
             test_module& with_clipboard(const std::shared_ptr<IClipboard>& clipboard)
             {
@@ -45,7 +44,7 @@ namespace
 
             std::unique_ptr<RouteWindow> build()
             {
-                return std::make_unique<RouteWindow>(parent, clipboard, dialogs, files);
+                return std::make_unique<RouteWindow>(clipboard, dialogs, files);
             }
         };
         return test_module{};

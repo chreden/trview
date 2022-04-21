@@ -12,14 +12,20 @@ namespace trview
 
     using namespace graphics;
 
-    RouteWindow::RouteWindow(const trview::Window& parent, const std::shared_ptr<IClipboard>& clipboard, const std::shared_ptr<IDialogs>& dialogs,
+    RouteWindow::RouteWindow(const std::shared_ptr<IClipboard>& clipboard, const std::shared_ptr<IDialogs>& dialogs,
         const std::shared_ptr<IFiles>& files)
-        : _clipboard(clipboard), _dialogs(dialogs), _files(files), _window(parent)
+        : _clipboard(clipboard), _dialogs(dialogs), _files(files)
     {
     }
 
     void RouteWindow::render_waypoint_list()
     {
+        if (_need_focus)
+        {
+            ImGui::SetNextWindowFocus();
+            _need_focus = false;
+        }
+
         if (ImGui::BeginChild(Names::waypoint_list_panel.c_str(), ImVec2(150, 0), true))
         {
             auto colour = _route ? _route->colour() : Colour::Green;
@@ -216,7 +222,7 @@ namespace trview
                             }
                             catch (...)
                             {
-                                _dialogs->message_box(_window, L"Failed to attach save", L"Error", IDialogs::Buttons::OK);
+                                _dialogs->message_box(L"Failed to attach save", L"Error", IDialogs::Buttons::OK);
                             }
                         }
                     }
@@ -231,7 +237,7 @@ namespace trview
                             }
                             catch (...)
                             {
-                                _dialogs->message_box(_window, L"Failed to export save", L"Error", IDialogs::Buttons::OK);
+                                _dialogs->message_box(L"Failed to export save", L"Error", IDialogs::Buttons::OK);
                             }
                         }
                     }
@@ -337,7 +343,7 @@ namespace trview
 
     void RouteWindow::focus()
     {
-        SetForegroundWindow(_window);
+        _need_focus = true;
     }
 
     void RouteWindow::update(float delta)

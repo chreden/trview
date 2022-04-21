@@ -143,12 +143,12 @@ namespace trview
         }
         catch (trlevel::LevelEncryptedException&)
         {
-            _dialogs->message_box(window(), L"Level is encrypted and cannot be loaded", L"Error", IDialogs::Buttons::OK);
+            _dialogs->message_box(L"Level is encrypted and cannot be loaded", L"Error", IDialogs::Buttons::OK);
             return;
         }
         catch (...)
         {
-            _dialogs->message_box(window(), L"Failed to load level", L"Error", IDialogs::Buttons::OK);
+            _dialogs->message_box(L"Failed to load level", L"Error", IDialogs::Buttons::OK);
             return;
         }
 
@@ -647,7 +647,7 @@ namespace trview
     {
         if (_route->is_unsaved())
         {
-            return _dialogs->message_box(window(), L"Route has unsaved changes. Do you want to continue and lose changes?", L"Unsaved Route Changes", IDialogs::Buttons::Yes_No);
+            return _dialogs->message_box(L"Route has unsaved changes. Do you want to continue and lose changes?", L"Unsaved Route Changes", IDialogs::Buttons::Yes_No);
         }
         return true;
     }

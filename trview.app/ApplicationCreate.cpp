@@ -158,7 +158,7 @@ namespace trview
             window,
             device,
             std::move(viewer_ui),
-            std::make_unique<Picking>(),
+            std::make_unique<Picking>(window),
             std::make_unique<input::Mouse>(window, std::make_unique<input::WindowTester>(window)),
             shortcuts,
             route_source(),
@@ -170,12 +170,12 @@ namespace trview
             std::make_unique<SectorHighlight>(mesh_source));
 
         auto files = std::make_shared<Files>();
-        auto dialogs = std::make_shared<Dialogs>();
+        auto dialogs = std::make_shared<Dialogs>(window);
         auto clipboard = std::make_shared<Clipboard>(window);
 
         auto items_window_source = [=]() { return std::make_shared<ItemsWindow>(clipboard); };
         auto triggers_window_source = [=]() { return std::make_shared<TriggersWindow>(clipboard); };
-        auto route_window_source = [=]() { return std::make_shared<RouteWindow>(window, clipboard, dialogs, files); };
+        auto route_window_source = [=]() { return std::make_shared<RouteWindow>(clipboard, dialogs, files); };
         auto rooms_window_source = [=]() { return std::make_shared<RoomsWindow>(map_renderer_source, clipboard); };
         auto lights_window_source = [=]() { return std::make_shared<LightsWindow>(clipboard); };
 
