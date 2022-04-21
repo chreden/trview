@@ -915,6 +915,12 @@
     <ClInclude Include="Filters\Filters.hpp">
       <Filter>Filters</Filter>
     </ClInclude>
+    <ClInclude Include="Windows\WindowManager.h">
+      <Filter>Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="Windows\WindowManager.hpp">
+      <Filter>Windows</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Windows">

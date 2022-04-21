@@ -4,15 +4,15 @@
 #include <memory>
 #include <optional>
 
-#include <trview.app/Windows/ITriggersWindowManager.h>
 #include <trview.common/MessageHandler.h>
-#include <trview.common/TokenStore.h>
 #include <trview.common/Windows/IShortcuts.h>
+#include "ITriggersWindowManager.h"
+#include "WindowManager.h"
 
 namespace trview
 {
     /// Controls and creates TriggersWindows.
-    class TriggersWindowManager final : public ITriggersWindowManager, public MessageHandler
+    class TriggersWindowManager final : public ITriggersWindowManager, public WindowManager<ITriggersWindow>, public MessageHandler
     {
     public:
         /// Create an TriggersWindowManager.
@@ -32,14 +32,10 @@ namespace trview
         virtual std::weak_ptr<ITriggersWindow> create_window() override;
         virtual void update(float delta) override;
     private:
-        std::vector<std::shared_ptr<ITriggersWindow>> _windows;
-        std::vector<std::weak_ptr<ITriggersWindow>> _closing_windows;
         std::vector<Item> _items;
         std::vector<std::weak_ptr<ITrigger>> _triggers;
         uint32_t _current_room{ 0u };
-        TokenStore _token_store;
         std::weak_ptr<ITrigger> _selected_trigger;
         ITriggersWindow::Source _triggers_window_source;
-        int32_t _window_count{ 0 };
     };
 }

@@ -21,20 +21,7 @@ namespace trview
 
     void RoomsWindowManager::render()
     {
-        if (!_closing_windows.empty())
-        {
-            for (const auto window_ptr : _closing_windows)
-            {
-                auto window = window_ptr.lock();
-                _windows.erase(std::remove(_windows.begin(), _windows.end(), window));
-            }
-            _closing_windows.clear();
-        }
-
-        for (auto& window : _windows)
-        {
-            window->render();
-        }
+        WindowManager::render();
     }
 
     std::weak_ptr<ITrigger> RoomsWindowManager::selected_trigger() const
@@ -47,7 +34,7 @@ namespace trview
         _all_items = items;
         for (auto& window : _windows)
         {
-            window->set_items(_all_items);
+            window.second->set_items(_all_items);
         }
     }
 
@@ -56,7 +43,7 @@ namespace trview
         _level_version = version;
         for (auto& window : _windows)
         {
-            window->set_level_version(_level_version);
+            window.second->set_level_version(_level_version);
         }
     }
 
@@ -65,7 +52,7 @@ namespace trview
         _map_colours = colours;
         for (auto& window : _windows)
         {
-            window->set_map_colours(colours);
+            window.second->set_map_colours(colours);
         }
     }
 
@@ -74,7 +61,7 @@ namespace trview
         _current_room = room;
         for (auto& window : _windows)
         {
-            window->set_current_room(room);
+            window.second->set_current_room(room);
         }
     }
 
@@ -83,7 +70,7 @@ namespace trview
         _all_rooms = rooms;
         for (auto& window : _windows)
         {
-            window->set_rooms(_all_rooms);
+            window.second->set_rooms(_all_rooms);
         }
     }
 
@@ -92,7 +79,7 @@ namespace trview
         _selected_item = item;
         for (auto& window : _windows)
         {
-            window->set_selected_item(item);
+            window.second->set_selected_item(item);
         }
     }
 
@@ -101,7 +88,7 @@ namespace trview
         _selected_trigger = trigger;
         for (auto& window : _windows)
         {
-            window->set_selected_trigger(trigger);
+            window.second->set_selected_trigger(trigger);
         }
     }
 
@@ -111,41 +98,28 @@ namespace trview
         _selected_trigger.reset();
         for (auto& window : _windows)
         {
-            window->clear_selected_trigger();
-            window->set_triggers(_all_triggers);
+            window.second->clear_selected_trigger();
+            window.second->set_triggers(_all_triggers);
         }
     }
 
     std::weak_ptr<IRoomsWindow> RoomsWindowManager::create_window()
     {
         auto rooms_window = _rooms_window_source();
-        rooms_window->set_number(++_window_count);
         rooms_window->on_room_selected += on_room_selected;
         rooms_window->on_item_selected += on_item_selected;
         rooms_window->on_trigger_selected += on_trigger_selected;
-
-        std::weak_ptr<IRoomsWindow> rooms_window_weak = rooms_window;
-        _token_store += rooms_window->on_window_closed += [rooms_window_weak, this]()
-        {
-            _closing_windows.push_back(rooms_window_weak);
-        };
-
         rooms_window->set_level_version(_level_version);
         rooms_window->set_items(_all_items);
         rooms_window->set_triggers(_all_triggers);
         rooms_window->set_rooms(_all_rooms);
         rooms_window->set_current_room(_current_room);
         rooms_window->set_map_colours(_map_colours);
-
-        _windows.push_back(rooms_window);
-        return rooms_window;
+        return add_window(rooms_window);
     }
 
     void RoomsWindowManager::update(float delta)
     {
-        for (auto& window : _windows)
-        {
-            window->update(delta);
-        }
+        WindowManager::update(delta);
     }
 }

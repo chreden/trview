@@ -20,26 +20,12 @@ namespace trview
 
     void TriggersWindowManager::render()
     {
-        if (!_closing_windows.empty())
-        {
-            for (const auto window_ptr : _closing_windows)
-            {
-                auto window = window_ptr.lock();
-                _windows.erase(std::remove(_windows.begin(), _windows.end(), window));
-            }
-            _closing_windows.clear();
-        }
-
-        for (auto& window : _windows)
-        {
-            window->render();
-        }
+        WindowManager::render();
     }
 
     std::weak_ptr<ITriggersWindow> TriggersWindowManager::create_window()
     {
         auto triggers_window = _triggers_window_source();
-        triggers_window->set_number(++_window_count);
         triggers_window->on_item_selected += on_item_selected;
         triggers_window->on_trigger_selected += on_trigger_selected;
         triggers_window->on_trigger_visibility += on_trigger_visibility;
@@ -48,15 +34,7 @@ namespace trview
         triggers_window->set_triggers(_triggers);
         triggers_window->set_current_room(_current_room);
         triggers_window->set_selected_trigger(_selected_trigger);
-
-        std::weak_ptr<ITriggersWindow> triggers_window_weak = triggers_window;
-        _token_store += triggers_window->on_window_closed += [triggers_window_weak, this]()
-        {
-            _closing_windows.push_back(triggers_window_weak);
-        };
-
-        _windows.push_back(triggers_window);
-        return triggers_window;
+        return add_window(triggers_window);
     }
 
     const std::weak_ptr<ITrigger> TriggersWindowManager::selected_trigger() const
@@ -69,7 +47,7 @@ namespace trview
         _items = items;
         for (auto& window : _windows)
         {
-            window->set_items(items);
+            window.second->set_items(items);
         }
     }
 
@@ -79,8 +57,8 @@ namespace trview
         _selected_trigger.reset();
         for (auto& window : _windows)
         {
-            window->clear_selected_trigger();
-            window->set_triggers(triggers);
+            window.second->clear_selected_trigger();
+            window.second->set_triggers(triggers);
         }
     }
 
@@ -100,7 +78,7 @@ namespace trview
         trigger_ptr->set_visible(visible);
         for (auto& window : _windows)
         {
-            window->update_triggers(_triggers);
+            window.second->update_triggers(_triggers);
         }
     }
 
@@ -109,7 +87,7 @@ namespace trview
         _current_room = room;
         for (auto& window : _windows)
         {
-            window->set_current_room(room);
+            window.second->set_current_room(room);
         }
     }
 
@@ -118,15 +96,12 @@ namespace trview
         _selected_trigger = trigger;
         for (auto& window : _windows)
         {
-            window->set_selected_trigger(trigger);
+            window.second->set_selected_trigger(trigger);
         }
     }
 
     void TriggersWindowManager::update(float delta)
     {
-        for (const auto& window : _windows)
-        {
-            window->update(delta);
-        }
+        WindowManager::update(delta);
     }
 }

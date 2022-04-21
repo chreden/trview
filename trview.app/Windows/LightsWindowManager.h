@@ -1,14 +1,14 @@
 #pragma once
 
-#include "ILightsWindow.h"
-#include "ILightsWindowManager.h"
 #include <trview.common/Windows/IShortcuts.h>
 #include <trview.common/MessageHandler.h>
-#include <trview.common/TokenStore.h>
+#include "ILightsWindow.h"
+#include "ILightsWindowManager.h"
+#include "WindowManager.h"
 
 namespace trview
 {
-    class LightsWindowManager final : public ILightsWindowManager, public MessageHandler
+    class LightsWindowManager final : public ILightsWindowManager, WindowManager<ILightsWindow>, public MessageHandler
     {
     public:
         LightsWindowManager(const Window& window, const std::shared_ptr<IShortcuts>& shortcuts, const ILightsWindow::Source& lights_window_source);
@@ -23,14 +23,10 @@ namespace trview
         virtual std::weak_ptr<ILightsWindow> create_window() override;
         virtual void set_room(uint32_t room) override;
     private:
-        TokenStore _token_store;
-        std::vector<std::shared_ptr<ILightsWindow>> _windows;
-        std::vector<std::weak_ptr<ILightsWindow>> _closing_windows;
         std::vector<std::weak_ptr<ILight>> _lights;
         ILightsWindow::Source _lights_window_source;
         std::weak_ptr<ILight> _selected_light;
         trlevel::LevelVersion _level_version{ trlevel::LevelVersion::Tomb1 };
         uint32_t _current_room{ 0u };
-        uint32_t _window_count{ 0u };
     };
 }
