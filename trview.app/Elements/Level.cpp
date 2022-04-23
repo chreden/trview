@@ -243,7 +243,7 @@ namespace trview
             room.room.render(camera, room.selection_mode, _show_hidden_geometry, _show_water, _use_trle_colours, visible_set);
             if (_regenerate_transparency)
             {
-                room.room.get_transparent_triangles(*_transparency, camera, room.selection_mode, _show_triggers, _show_water);
+                room.room.get_transparent_triangles(*_transparency, camera, room.selection_mode, _show_triggers, _show_water, _use_trle_colours);
             }
 
             // If this is an alternate room, render the items from the original room in the sample places.

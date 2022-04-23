@@ -177,7 +177,7 @@ TEST(Room, GetTransparentTriangles)
     room->add_trigger(trigger);
     NiceMock<MockTransparencyBuffer> transparency;
     NiceMock<MockCamera> camera;
-    room->get_transparent_triangles(transparency, camera, IRoom::SelectionMode::NotSelected, true, true);
+    room->get_transparent_triangles(transparency, camera, IRoom::SelectionMode::NotSelected, true, true, false);
 }
 
 /// <summary>
@@ -194,7 +194,7 @@ TEST(Room, GetTransparentTrianglesWithoutTriggers)
     room->add_trigger(trigger);
     NiceMock<MockTransparencyBuffer> transparency;
     NiceMock<MockCamera> camera;
-    room->get_transparent_triangles(transparency, camera, IRoom::SelectionMode::NotSelected, false, true);
+    room->get_transparent_triangles(transparency, camera, IRoom::SelectionMode::NotSelected, false, true, false);
 }
 
 /// <summary>

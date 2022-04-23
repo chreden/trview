@@ -48,7 +48,7 @@ namespace trview
         virtual void add_light(const std::weak_ptr<ILight>& light) override;
         virtual const std::vector<std::shared_ptr<ISector>> sectors() const override;
         virtual void generate_sector_triangles() override;
-        virtual void get_transparent_triangles(ITransparencyBuffer& transparency, const ICamera& camera, SelectionMode selected, bool include_triggers, bool show_water) override;
+        virtual void get_transparent_triangles(ITransparencyBuffer& transparency, const ICamera& camera, SelectionMode selected, bool include_triggers, bool show_water, bool trle_mode) override;
         virtual void get_contained_transparent_triangles(ITransparencyBuffer& transparency, const ICamera& camera, SelectionMode selected, bool show_water) override;
         virtual AlternateMode alternate_mode() const override;
         virtual int16_t alternate_room() const override;

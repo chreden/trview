@@ -20,7 +20,7 @@ namespace trview
             MOCK_METHOD(void, generate_sector_triangles, (), (override));
             MOCK_METHOD(void, generate_trigger_geometry, (), (override));
             MOCK_METHOD(void, get_contained_transparent_triangles, (ITransparencyBuffer&, const ICamera&, SelectionMode, bool), (override));
-            MOCK_METHOD(void, get_transparent_triangles, (ITransparencyBuffer&, const ICamera&, SelectionMode, bool, bool), (override));
+            MOCK_METHOD(void, get_transparent_triangles, (ITransparencyBuffer&, const ICamera&, SelectionMode, bool, bool, bool), (override));
             MOCK_METHOD(RoomInfo, info, (), (const, override));
             MOCK_METHOD(std::set<uint16_t>, neighbours, (), (const, override));
             MOCK_METHOD(uint16_t, num_x_sectors, (), (const, override));

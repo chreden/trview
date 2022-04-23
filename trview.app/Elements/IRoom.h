@@ -157,7 +157,8 @@ namespace trview
         /// <param name="selected">The selection mode for the room.</param>
         /// <param name="include_triggers">Whether to include triggers in the output.</param>
         /// <param name="show_water">Whether to render water effects.</param>
-        virtual void get_transparent_triangles(ITransparencyBuffer& transparency, const ICamera& camera, SelectionMode selected, bool include_triggers, bool show_water) = 0;
+        /// <param name="trle_mode">Whether TRLE mode is enabled.</param>
+        virtual void get_transparent_triangles(ITransparencyBuffer& transparency, const ICamera& camera, SelectionMode selected, bool include_triggers, bool show_water, bool trle_mode) = 0;
         /// <summary>
         /// Checks whether the room has the specified flag.
         /// </summary>

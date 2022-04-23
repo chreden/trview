@@ -244,11 +244,11 @@ namespace trview
 
                 _unmatched_mesh->render(_room_offset * camera.view_projection(), *_texture_storage, colour);
             }
-        }
 
-        for (const auto& mesh : _static_meshes)
-        {
-            mesh->render(camera, *_texture_storage, colour);
+            for (const auto& mesh : _static_meshes)
+            {
+                mesh->render(camera, *_texture_storage, colour);
+            }
         }
 
         render_contained(camera, colour);
@@ -424,8 +424,7 @@ namespace trview
         }
     }
 
-    void 
-    Room::generate_sectors(const trlevel::ILevel& level, const trlevel::tr3_room& room, const ISector::Source& sector_source)
+    void Room::generate_sectors(const trlevel::ILevel& level, const trlevel::tr3_room& room, const ISector::Source& sector_source)
     {
         for (auto i = 0u; i < room.sector_list.size(); ++i)
         {
@@ -434,18 +433,21 @@ namespace trview
         }
     }
 
-    void Room::get_transparent_triangles(ITransparencyBuffer& transparency, const ICamera& camera, SelectionMode selected, bool include_triggers, bool show_water)
+    void Room::get_transparent_triangles(ITransparencyBuffer& transparency, const ICamera& camera, SelectionMode selected, bool include_triggers, bool show_water, bool trle_mode)
     {
         Color colour = room_colour(water() && show_water, selected);
 
-        for (const auto& triangle : _mesh->transparent_triangles())
+        if (!trle_mode)
         {
-            transparency.add(triangle.transform(_room_offset, colour));
-        }
+            for (const auto& triangle : _mesh->transparent_triangles())
+            {
+                transparency.add(triangle.transform(_room_offset, colour));
+            }
 
-        for (const auto& static_mesh : _static_meshes)
-        {
-            static_mesh->get_transparent_triangles(transparency, camera, colour);
+            for (const auto& static_mesh : _static_meshes)
+            {
+                static_mesh->get_transparent_triangles(transparency, camera, colour);
+            }
         }
 
         if (include_triggers)
