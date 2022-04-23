@@ -6,6 +6,16 @@
 
 namespace trview
 {
+    struct Triangulation
+    {
+        int16_t function;
+        ISector::TriangulationDirection direction;
+        float c00;
+        float c01;
+        float c10;
+        float c11;
+    };
+
     class Sector final : public ISector
     {
     public:
@@ -80,7 +90,9 @@ namespace trview
 
         uint32_t _room;
 
+        std::optional<Triangulation> _floor_triangulation;
         TriangulationDirection _triangulation_function{ TriangulationDirection::NwSe };
+        std::optional<Triangulation> _ceiling_triangulation;
         TriangulationDirection _ceiling_triangulation_function{ TriangulationDirection::NwSe };
 
         std::set<uint16_t> _neighbours;
@@ -88,15 +100,6 @@ namespace trview
         trlevel::tr_room_info _info;
         std::vector<Triangle> _triangles;
         const IRoom& _room_ptr;
-    };
-
-    struct Triangulation
-    {
-        ISector::TriangulationDirection direction;
-        float c00;
-        float c01;
-        float c10;
-        float c11;
     };
 
     /// <summary>

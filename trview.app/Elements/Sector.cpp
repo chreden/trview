@@ -141,7 +141,8 @@ namespace trview
             case 0xD:
             case 0xE:
             {
-                const auto tri = read_triangulation(level, floor, cur_index);
+                auto tri = read_triangulation(level, floor, cur_index);
+                _floor_triangulation = tri;
                 _triangulation_function = tri.direction;
                 _corners[0] += tri.c00;
                 _corners[1] += tri.c01;
@@ -157,6 +158,7 @@ namespace trview
             case 0x12:
             {
                 const auto tri = read_triangulation(level, floor, cur_index);
+                _ceiling_triangulation = tri;
                 _ceiling_triangulation_function = tri.direction;
                 _ceiling_corners[3] -= tri.c00;
                 _ceiling_corners[2] -= tri.c01;
@@ -378,7 +380,7 @@ namespace trview
         const auto east = _room_ptr.sector_portal(_x, _z, _x + 1, _z);
         const auto west = _room_ptr.sector_portal(_x, _z, _x - 1, _z);
 
-        if (is_ceiling())
+        if (is_ceiling() && !_ceiling_triangulation.has_value())
         {
             add_quad(self, Quad(ceiling(Corner::SW), ceiling(Corner::NE), ceiling(Corner::NW), ceiling(Corner::SE), Triangle::Type::Floor, _room));
 
@@ -402,8 +404,34 @@ namespace trview
                 add_quad(self, Quad(ceiling(Corner::SW), west.ceiling(Corner::NE), west.ceiling(Corner::SE), ceiling(Corner::NW), Triangle::Type::Floor, _room));
             }
         }
+        else if (_ceiling_triangulation.has_value())
+        {
+            const auto function = _ceiling_triangulation.value().function;
+            if (_ceiling_triangulation_function == TriangulationDirection::NwSe)
+            {
+                if (function != 0x0F)
+                {
+                    tris.push_back(Triangle(ceiling(Corner::NW), ceiling(Corner::SW), ceiling(Corner::SE), corner_uv(Corner::NW), corner_uv(Corner::SW), corner_uv(Corner::SE), Triangle::Type::Floor, _room));
+                }
+                if (function != 0x10)
+                {
+                    tris.push_back(Triangle(ceiling(Corner::SE), ceiling(Corner::NE), ceiling(Corner::NW), corner_uv(Corner::SE), corner_uv(Corner::NE), corner_uv(Corner::NW), Triangle::Type::Floor, _room));
+                }
+            }
+            else
+            {
+                if (function != 0x11)
+                {
+                    tris.push_back(Triangle(ceiling(Corner::NW), ceiling(Corner::SW), ceiling(Corner::NE), corner_uv(Corner::NW), corner_uv(Corner::SW), corner_uv(Corner::NE), Triangle::Type::Floor, _room));
+                }
+                if (function != 0x12)
+                {
+                    tris.push_back(Triangle(ceiling(Corner::SW), ceiling(Corner::SE), ceiling(Corner::NE), corner_uv(Corner::SW), corner_uv(Corner::SE), corner_uv(Corner::NE), Triangle::Type::Floor, _room));
+                }
+            }
+        }
 
-        if (is_floor())
+        if (is_floor() && !_floor_triangulation.has_value())
         {
             if (_triangulation_function == TriangulationDirection::NwSe)
             {
@@ -414,6 +442,32 @@ namespace trview
             {
                 tris.push_back(Triangle( corner(Corner::NE), corner(Corner::SW), corner(Corner::NW), corner_uv(Corner::NE), corner_uv(Corner::SW), corner_uv(Corner::NW), Triangle::Type::Floor, _room));
                 tris.push_back(Triangle( corner(Corner::NE), corner(Corner::SE), corner(Corner::SW), corner_uv(Corner::NE), corner_uv(Corner::SE), corner_uv(Corner::SW), Triangle::Type::Floor, _room ));
+            }
+        } 
+        else if (_floor_triangulation.has_value())
+        {
+            const auto function = _floor_triangulation.value().function;
+            if (_triangulation_function == TriangulationDirection::NwSe)
+            {
+                if (function != 0x0B)
+                {
+                    tris.push_back(Triangle(corner(Corner::SE), corner(Corner::SW), corner(Corner::NW), corner_uv(Corner::SE), corner_uv(Corner::SW), corner_uv(Corner::NW), Triangle::Type::Floor, _room));
+                }
+                if (function != 0x0C)
+                {
+                    tris.push_back(Triangle(corner(Corner::NW), corner(Corner::NE), corner(Corner::SE), corner_uv(Corner::NW), corner_uv(Corner::NE), corner_uv(Corner::SE), Triangle::Type::Floor, _room));
+                }
+            }
+            else
+            {
+                if (function != 0x0D)
+                {
+                    tris.push_back(Triangle(corner(Corner::NE), corner(Corner::SW), corner(Corner::NW), corner_uv(Corner::NE), corner_uv(Corner::SW), corner_uv(Corner::NW), Triangle::Type::Floor, _room));
+                }
+                if (function != 0x0E)
+                {
+                    tris.push_back(Triangle(corner(Corner::NE), corner(Corner::SE), corner(Corner::SW), corner_uv(Corner::NE), corner_uv(Corner::SE), corner_uv(Corner::SW), Triangle::Type::Floor, _room));
+                }
             }
         }
 
@@ -583,7 +637,7 @@ namespace trview
         const uint16_t c10 = (corner_values & 0x000F);
         const uint16_t c11 = (corner_values & 0xF000) >> 12;
         const auto max_corner = std::max({ c00, c01, c10, c11 });
-        return Triangulation{ direction, (max_corner - c00) * 0.25f, (max_corner - c01) * 0.25f, (max_corner - c10) * 0.25f, (max_corner - c11) * 0.25f };
+        return Triangulation{ function, direction, (max_corner - c00) * 0.25f, (max_corner - c01) * 0.25f, (max_corner - c10) * 0.25f, (max_corner - c11) * 0.25f };
     }
 }
 
