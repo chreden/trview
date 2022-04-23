@@ -380,31 +380,7 @@ namespace trview
         const auto east = _room_ptr.sector_portal(_x, _z, _x + 1, _z);
         const auto west = _room_ptr.sector_portal(_x, _z, _x - 1, _z);
 
-        if (is_ceiling() && !_ceiling_triangulation.has_value())
-        {
-            add_quad(self, Quad(ceiling(Corner::SW), ceiling(Corner::NE), ceiling(Corner::NW), ceiling(Corner::SE), Triangle::Type::Floor, _room));
-
-            if (north && !north.is_wall() && (ceiling(Corner::NW) != north.ceiling(Corner::SW) || ceiling(Corner::NE) != north.ceiling(Corner::SE)))
-            {
-                add_quad(self, Quad(ceiling(Corner::NW), north.ceiling(Corner::SE), north.ceiling(Corner::SW), ceiling(Corner::NE), Triangle::Type::Floor, _room));
-            }
-
-            if (south && !south.is_wall() && (ceiling(Corner::SW) != south.ceiling(Corner::NW) || ceiling(Corner::SE) != south.ceiling(Corner::NE)))
-            {
-                add_quad(self, Quad(south.ceiling(Corner::NW), ceiling(Corner::SE), ceiling(Corner::SW), south.ceiling(Corner::NE), Triangle::Type::Floor, _room));
-            }
-
-            if (east && !east.is_wall() && (ceiling(Corner::NE) != east.ceiling(Corner::NW) || ceiling(Corner::SE) != east.ceiling(Corner::SW)))
-            {
-                add_quad(self, Quad(east.ceiling(Corner::SW), ceiling(Corner::NE), ceiling(Corner::SE), east.ceiling(Corner::NW), Triangle::Type::Floor, _room));
-            }
-
-            if (west && !west.is_wall() && (ceiling(Corner::NW) != west.ceiling(Corner::NE) || ceiling(Corner::SW) != west.ceiling(Corner::SE)))
-            {
-                add_quad(self, Quad(ceiling(Corner::SW), west.ceiling(Corner::NE), west.ceiling(Corner::SE), ceiling(Corner::NW), Triangle::Type::Floor, _room));
-            }
-        }
-        else if (_ceiling_triangulation.has_value())
+        if (_ceiling_triangulation.has_value())
         {
             const auto function = _ceiling_triangulation.value().function;
             if (_ceiling_triangulation_function == TriangulationDirection::NwSe)
@@ -430,21 +406,32 @@ namespace trview
                 }
             }
         }
-
-        if (is_floor() && !_floor_triangulation.has_value())
+        else if (is_ceiling())
         {
-            if (_triangulation_function == TriangulationDirection::NwSe)
+            add_quad(self, Quad(ceiling(Corner::SW), ceiling(Corner::NE), ceiling(Corner::NW), ceiling(Corner::SE), Triangle::Type::Floor, _room));
+
+            if (north && !north.is_wall() && (ceiling(Corner::NW) != north.ceiling(Corner::SW) || ceiling(Corner::NE) != north.ceiling(Corner::SE)))
             {
-                tris.push_back(Triangle( corner(Corner::SE), corner(Corner::SW), corner(Corner::NW), corner_uv(Corner::SE), corner_uv(Corner::SW), corner_uv(Corner::NW), Triangle::Type::Floor, _room ));
-                tris.push_back(Triangle( corner(Corner::NW), corner(Corner::NE), corner(Corner::SE), corner_uv(Corner::NW), corner_uv(Corner::NE), corner_uv(Corner::SE), Triangle::Type::Floor, _room ));
+                add_quad(self, Quad(ceiling(Corner::NW), north.ceiling(Corner::SE), north.ceiling(Corner::SW), ceiling(Corner::NE), Triangle::Type::Floor, _room));
             }
-            else
+
+            if (south && !south.is_wall() && (ceiling(Corner::SW) != south.ceiling(Corner::NW) || ceiling(Corner::SE) != south.ceiling(Corner::NE)))
             {
-                tris.push_back(Triangle( corner(Corner::NE), corner(Corner::SW), corner(Corner::NW), corner_uv(Corner::NE), corner_uv(Corner::SW), corner_uv(Corner::NW), Triangle::Type::Floor, _room));
-                tris.push_back(Triangle( corner(Corner::NE), corner(Corner::SE), corner(Corner::SW), corner_uv(Corner::NE), corner_uv(Corner::SE), corner_uv(Corner::SW), Triangle::Type::Floor, _room ));
+                add_quad(self, Quad(south.ceiling(Corner::NW), ceiling(Corner::SE), ceiling(Corner::SW), south.ceiling(Corner::NE), Triangle::Type::Floor, _room));
             }
-        } 
-        else if (_floor_triangulation.has_value())
+
+            if (east && !east.is_wall() && (ceiling(Corner::NE) != east.ceiling(Corner::NW) || ceiling(Corner::SE) != east.ceiling(Corner::SW)))
+            {
+                add_quad(self, Quad(east.ceiling(Corner::SW), ceiling(Corner::NE), ceiling(Corner::SE), east.ceiling(Corner::NW), Triangle::Type::Floor, _room));
+            }
+
+            if (west && !west.is_wall() && (ceiling(Corner::NW) != west.ceiling(Corner::NE) || ceiling(Corner::SW) != west.ceiling(Corner::SE)))
+            {
+                add_quad(self, Quad(ceiling(Corner::SW), west.ceiling(Corner::NE), west.ceiling(Corner::SE), ceiling(Corner::NW), Triangle::Type::Floor, _room));
+            }
+        }
+
+        if (_floor_triangulation.has_value())
         {
             const auto function = _floor_triangulation.value().function;
             if (_triangulation_function == TriangulationDirection::NwSe)
@@ -470,6 +457,19 @@ namespace trview
                 }
             }
         }
+        else if (is_floor())
+        {
+            if (_triangulation_function == TriangulationDirection::NwSe)
+            {
+                tris.push_back(Triangle( corner(Corner::SE), corner(Corner::SW), corner(Corner::NW), corner_uv(Corner::SE), corner_uv(Corner::SW), corner_uv(Corner::NW), Triangle::Type::Floor, _room ));
+                tris.push_back(Triangle( corner(Corner::NW), corner(Corner::NE), corner(Corner::SE), corner_uv(Corner::NW), corner_uv(Corner::NE), corner_uv(Corner::SE), Triangle::Type::Floor, _room ));
+            }
+            else
+            {
+                tris.push_back(Triangle( corner(Corner::NE), corner(Corner::SW), corner(Corner::NW), corner_uv(Corner::NE), corner_uv(Corner::SW), corner_uv(Corner::NW), Triangle::Type::Floor, _room));
+                tris.push_back(Triangle( corner(Corner::NE), corner(Corner::SE), corner(Corner::SW), corner_uv(Corner::NE), corner_uv(Corner::SE), corner_uv(Corner::SW), Triangle::Type::Floor, _room ));
+            }
+        } 
 
         if (is_wall())
         {
