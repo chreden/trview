@@ -145,7 +145,7 @@ namespace trview
             }
         }
 
-        if (has_flag(filters, PickFilter::StaticMeshes))
+        if (has_flag(filters, PickFilter::StaticMeshes) && !has_flag(filters, PickFilter::TrleGeometry))
         {
             for (const auto& static_mesh : _static_meshes)
             {
