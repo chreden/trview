@@ -37,7 +37,8 @@ namespace trview
             enum class Type
             {
                 Floor,
-                Wall
+                Wall,
+                Death
             };
 
             Triangle(const DirectX::SimpleMath::Vector3& v0, const DirectX::SimpleMath::Vector3& v1, const DirectX::SimpleMath::Vector3& v2,

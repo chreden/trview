@@ -432,6 +432,7 @@ namespace trview
             }
         }
 
+        const auto floor_type = flags() & SectorFlag::Death ? Triangle::Type::Death : Triangle::Type::Floor;
         if (_floor_triangulation.has_value())
         {
             const auto function = _floor_triangulation.value().function;
@@ -439,22 +440,22 @@ namespace trview
             {
                 if (function != 0x0B)
                 {
-                    tris.push_back(Triangle(corner(Corner::SE), corner(Corner::SW), corner(Corner::NW), corner_uv(Corner::SE), corner_uv(Corner::SW), corner_uv(Corner::NW), Triangle::Type::Floor, _room));
+                    tris.push_back(Triangle(corner(Corner::SE), corner(Corner::SW), corner(Corner::NW), corner_uv(Corner::SE), corner_uv(Corner::SW), corner_uv(Corner::NW), floor_type, _room));
                 }
                 if (function != 0x0C)
                 {
-                    tris.push_back(Triangle(corner(Corner::NW), corner(Corner::NE), corner(Corner::SE), corner_uv(Corner::NW), corner_uv(Corner::NE), corner_uv(Corner::SE), Triangle::Type::Floor, _room));
+                    tris.push_back(Triangle(corner(Corner::NW), corner(Corner::NE), corner(Corner::SE), corner_uv(Corner::NW), corner_uv(Corner::NE), corner_uv(Corner::SE), floor_type, _room));
                 }
             }
             else
             {
                 if (function != 0x0D)
                 {
-                    tris.push_back(Triangle(corner(Corner::NE), corner(Corner::SW), corner(Corner::NW), corner_uv(Corner::NE), corner_uv(Corner::SW), corner_uv(Corner::NW), Triangle::Type::Floor, _room));
+                    tris.push_back(Triangle(corner(Corner::NE), corner(Corner::SW), corner(Corner::NW), corner_uv(Corner::NE), corner_uv(Corner::SW), corner_uv(Corner::NW), floor_type, _room));
                 }
                 if (function != 0x0E)
                 {
-                    tris.push_back(Triangle(corner(Corner::NE), corner(Corner::SE), corner(Corner::SW), corner_uv(Corner::NE), corner_uv(Corner::SE), corner_uv(Corner::SW), Triangle::Type::Floor, _room));
+                    tris.push_back(Triangle(corner(Corner::NE), corner(Corner::SE), corner(Corner::SW), corner_uv(Corner::NE), corner_uv(Corner::SE), corner_uv(Corner::SW), floor_type, _room));
                 }
             }
         }
@@ -462,13 +463,13 @@ namespace trview
         {
             if (_triangulation_function == TriangulationDirection::NwSe)
             {
-                tris.push_back(Triangle( corner(Corner::SE), corner(Corner::SW), corner(Corner::NW), corner_uv(Corner::SE), corner_uv(Corner::SW), corner_uv(Corner::NW), Triangle::Type::Floor, _room ));
-                tris.push_back(Triangle( corner(Corner::NW), corner(Corner::NE), corner(Corner::SE), corner_uv(Corner::NW), corner_uv(Corner::NE), corner_uv(Corner::SE), Triangle::Type::Floor, _room ));
+                tris.push_back(Triangle( corner(Corner::SE), corner(Corner::SW), corner(Corner::NW), corner_uv(Corner::SE), corner_uv(Corner::SW), corner_uv(Corner::NW), floor_type, _room ));
+                tris.push_back(Triangle( corner(Corner::NW), corner(Corner::NE), corner(Corner::SE), corner_uv(Corner::NW), corner_uv(Corner::NE), corner_uv(Corner::SE), floor_type, _room ));
             }
             else
             {
-                tris.push_back(Triangle( corner(Corner::NE), corner(Corner::SW), corner(Corner::NW), corner_uv(Corner::NE), corner_uv(Corner::SW), corner_uv(Corner::NW), Triangle::Type::Floor, _room));
-                tris.push_back(Triangle( corner(Corner::NE), corner(Corner::SE), corner(Corner::SW), corner_uv(Corner::NE), corner_uv(Corner::SE), corner_uv(Corner::SW), Triangle::Type::Floor, _room ));
+                tris.push_back(Triangle( corner(Corner::NE), corner(Corner::SW), corner(Corner::NW), corner_uv(Corner::NE), corner_uv(Corner::SW), corner_uv(Corner::NW), floor_type, _room));
+                tris.push_back(Triangle( corner(Corner::NE), corner(Corner::SE), corner(Corner::SW), corner_uv(Corner::NE), corner_uv(Corner::SE), corner_uv(Corner::SW), floor_type, _room ));
             }
         } 
 

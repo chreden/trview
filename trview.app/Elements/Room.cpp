@@ -932,6 +932,11 @@ namespace trview
                     colour = Colour{ 0, 0.6f, 0.15f };
                     break;
                 }
+                case ISector::Triangle::Type::Death:
+                {
+                    colour = Colour{ 0.9f, 0.1f, 0.1f };
+                    break;
+                }
             }
             return colour;
         };
