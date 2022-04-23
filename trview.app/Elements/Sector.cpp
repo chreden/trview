@@ -541,17 +541,19 @@ namespace trview
         {
             // Limit the triangle to the height of the room
             Triangle tri = triangle;
-            tri.v0.y = std::max(tri.v0.y, portal.direct_room->y_top());
-            tri.v1.y = std::max(tri.v1.y, portal.direct_room->y_top());
-            tri.v2.y = std::max(tri.v2.y, portal.direct_room->y_top());
+
+            tri.uv0.y = tri.v0.y = std::max(tri.v0.y, portal.direct_room->y_top());
+            tri.uv1.y = tri.v1.y = std::max(tri.v1.y, portal.direct_room->y_top());
+            tri.uv2.y = tri.v2.y = std::max(tri.v2.y, portal.direct_room->y_top());
+
             add_triangle(tri);
 
             if (portal.sector_above)
             {
                 Triangle offcut = triangle;
-                offcut.v0.y = std::min(offcut.v0.y, portal.direct_room->y_top());
-                offcut.v1.y = std::min(offcut.v1.y, portal.direct_room->y_top());
-                offcut.v2.y = std::min(offcut.v2.y, portal.direct_room->y_top());
+                offcut.uv0.y = offcut.v0.y = std::min(offcut.v0.y, portal.direct_room->y_top());
+                offcut.uv1.y = offcut.v1.y = std::min(offcut.v1.y, portal.direct_room->y_top());
+                offcut.uv2.y = offcut.v2.y = std::min(offcut.v2.y, portal.direct_room->y_top());
 
                 offcut.v0 -= portal.above_offset;
                 offcut.v1 -= portal.above_offset;
@@ -579,7 +581,6 @@ namespace trview
             }
         }
 
-        // TODO: Subdivide the triangle into 1x1 block heights.
         triangle.room = _room;
         _triangles.push_back(triangle);
     }
@@ -590,7 +591,7 @@ namespace trview
         auto triangles = quad.triangles();
         for (const auto& triangle : triangles)
         {
-            add_triangle(triangle);
+            add_triangle(portal, triangle);
         }
     }
 
