@@ -547,6 +547,7 @@ namespace trview
                 PickFilter::Geometry |
                 PickFilter::Entities |
                 PickFilter::StaticMeshes |
+                filter_flag(PickFilter::TrleGeometry, _use_trle_colours) |
                 filter_flag(PickFilter::Triggers, _show_triggers) |
                 filter_flag(PickFilter::HiddenGeometry, _show_hidden_geometry) |
                 filter_flag(PickFilter::Lights, _show_lights)));

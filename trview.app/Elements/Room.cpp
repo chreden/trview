@@ -159,7 +159,20 @@ namespace trview
             }
         }
 
-        if (has_flag(filters, PickFilter::Geometry))
+        if (has_flag(filters, PickFilter::TrleGeometry))
+        {
+            auto room_offset = Matrix::CreateTranslation(-_info.x / trlevel::Scale_X, 0, -_info.z / trlevel::Scale_Z);
+            for (const auto& mesh : _trle_meshes)
+            {
+                PickResult trle_geometry_result = mesh.second->pick(Vector3::Transform(position, room_offset), direction);
+                if (trle_geometry_result.hit)
+                {
+                    add_centroid_to_pick(*mesh.second, trle_geometry_result);
+                    pick_results.push_back(trle_geometry_result);
+                }
+            }
+        }
+        else if (has_flag(filters, PickFilter::Geometry))
         {
             // Pick against the room geometry:
             auto room_offset = Matrix::CreateTranslation(-_info.x / trlevel::Scale_X, 0, -_info.z / trlevel::Scale_Z);

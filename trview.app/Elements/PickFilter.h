@@ -14,8 +14,9 @@ namespace trview
         HiddenGeometry = 0x8,
         StaticMeshes = 0x10,
         Lights = 0x20,
+        TrleGeometry = 0x40,
         All = 0xffffffff,
-        Default = All & ~HiddenGeometry
+        Default = All & ~(HiddenGeometry | TrleGeometry)
     };
 
     PickFilter operator & (PickFilter left, PickFilter right);
