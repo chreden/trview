@@ -408,7 +408,8 @@ namespace trview
         }
         else if (is_ceiling())
         {
-            add_quad(self, Quad(ceiling(Corner::SW), ceiling(Corner::NE), ceiling(Corner::NW), ceiling(Corner::SE), Triangle::Type::Floor, _room));
+            tris.push_back(Triangle(ceiling(Corner::NW), ceiling(Corner::SW), ceiling(Corner::SE), corner_uv(Corner::NW), corner_uv(Corner::SW), corner_uv(Corner::SE), Triangle::Type::Floor, _room));
+            tris.push_back(Triangle(ceiling(Corner::SE), ceiling(Corner::NE), ceiling(Corner::NW), corner_uv(Corner::SE), corner_uv(Corner::NE), corner_uv(Corner::NW), Triangle::Type::Floor, _room));
 
             if (north && !north.is_wall() && (ceiling(Corner::NW) != north.ceiling(Corner::SW) || ceiling(Corner::NE) != north.ceiling(Corner::SE)))
             {
