@@ -96,7 +96,7 @@ namespace trview
             std::shared_ptr<ISector> sector_above;
             std::shared_ptr<IRoom> room_above;
 
-            std::uint16_t flags() const;
+            SectorFlag flags() const;
             DirectX::SimpleMath::Vector3 corner(Corner corner) const;
             DirectX::SimpleMath::Vector3 ceiling(Corner corner) const;
             operator bool() const;
@@ -110,7 +110,7 @@ namespace trview
         virtual std::set<std::uint16_t> neighbours() const = 0;
         virtual inline std::uint16_t room_below() const = 0;
         virtual inline std::uint16_t room_above() const = 0;
-        virtual std::uint16_t flags() const = 0;
+        virtual SectorFlag flags() const = 0;
         virtual TriggerInfo trigger() const = 0;
         virtual uint16_t x() const = 0;
         virtual uint16_t z() const = 0;

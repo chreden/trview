@@ -648,7 +648,7 @@ namespace trview
 
         // Check if this sector is a portal.
         auto sector = _sectors[sector_id];
-        if (!(sector->flags() & SectorFlag::Portal))
+        if (!has_flag(sector->flags(), SectorFlag::Portal))
         {
             return nullptr;
         }
@@ -994,7 +994,7 @@ namespace trview
 
         portal.direct = _sectors[id];
         portal.direct_room = std::const_pointer_cast<IRoom>(shared_from_this());
-        if (portal.direct->flags() & SectorFlag::Portal)
+        if (has_flag(portal.direct->flags(), SectorFlag::Portal))
         {
             const auto other_room = _level.room(portal.direct->portal()).lock();
             const auto diff = (position() - other_room->position()) + Vector3(x2, 0, z2);

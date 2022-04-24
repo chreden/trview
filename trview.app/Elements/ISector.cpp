@@ -11,7 +11,7 @@ namespace trview
 
     Vector3 ISector::Portal::corner(ISector::Corner corner) const
     {
-        if (direct->flags() & SectorFlag::Portal)
+        if (has_flag(direct->flags(), SectorFlag::Portal))
         {
             return target->corner(corner) + offset;
         }
@@ -23,7 +23,7 @@ namespace trview
         return direct->ceiling(corner);
     }
 
-    std::uint16_t ISector::Portal::flags() const
+    SectorFlag ISector::Portal::flags() const
     {
         return direct->flags();
     }

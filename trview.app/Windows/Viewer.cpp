@@ -441,15 +441,15 @@ namespace trview
 
                     if (trigger == triggers.end() || (GetAsyncKeyState(VK_CONTROL) & 0x8000))
                     {
-                        if (sector->flags() & SectorFlag::Portal)
+                        if (has_flag(sector->flags(), SectorFlag::Portal))
                         {
                             on_room_selected(sector->portal());
                         }
-                        else if (!_settings.invert_map_controls && (sector->flags() & SectorFlag::RoomBelow))
+                        else if (!_settings.invert_map_controls && has_flag(sector->flags(), SectorFlag::RoomBelow))
                         {
                             on_room_selected(sector->room_below());
                         }
-                        else if (_settings.invert_map_controls && (sector->flags() & SectorFlag::RoomAbove))
+                        else if (_settings.invert_map_controls && has_flag(sector->flags(), SectorFlag::RoomAbove))
                         {
                             on_room_selected(sector->room_above());
                         }
@@ -466,11 +466,11 @@ namespace trview
 
                 if (auto sector = _ui->current_minimap_sector())
                 {
-                    if (!_settings.invert_map_controls && (sector->flags() & SectorFlag::RoomAbove))
+                    if (!_settings.invert_map_controls && has_flag(sector->flags(), SectorFlag::RoomAbove))
                     {
                         on_room_selected(sector->room_above());
                     }
-                    else if (_settings.invert_map_controls && (sector->flags() & SectorFlag::RoomBelow))
+                    else if (_settings.invert_map_controls && has_flag(sector->flags(), SectorFlag::RoomBelow))
                     {
                         on_room_selected(sector->room_below());
                     }

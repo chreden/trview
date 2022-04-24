@@ -14,7 +14,7 @@ namespace trview
         return equals_any(value, other) || equals_any(value, set...);
     }
 
-    template <typename T>
+    template <Enum T>
     bool has_flag(T field, T flag)
     {
         return (field & flag) == flag;
@@ -25,6 +25,13 @@ namespace trview
     {
         using under_t = std::underlying_type_t<T>;
         return static_cast<T>(static_cast<under_t>(left) | static_cast<under_t>(right));
+    }
+
+    template <Enum T>
+    T& operator |= (T& left, T right)
+    {
+        left = left | right;
+        return left;
     }
 
     template <Enum T>

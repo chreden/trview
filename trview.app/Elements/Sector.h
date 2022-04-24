@@ -33,7 +33,7 @@ namespace trview
         // Returns room above 
         virtual std::uint16_t room_above() const override { return _room_above; }
         // Holds "Function" enum bitwise values 
-        virtual uint16_t flags() const override;
+        virtual SectorFlag flags() const override;
         /// Get trigger information for the sector.
         virtual TriggerInfo trigger() const override;
         virtual uint16_t x() const override;
@@ -62,7 +62,7 @@ namespace trview
         DirectX::SimpleMath::Vector2 corner_uv(Corner corner) const;
         Triangle::Type floor_type_trle() const;
 
-        uint16_t _flags{ 0u };
+        SectorFlag _flags{ SectorFlag::None };
 
         // Holds the "wall portal" that this sector points to - this is the id of the room 
         std::uint8_t _portal, _room_above, _room_below;

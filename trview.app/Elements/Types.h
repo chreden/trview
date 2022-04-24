@@ -5,27 +5,25 @@
 namespace trview
 {
     // Flags stored on sector to determine behaviour 
-    namespace SectorFlag
+    enum class SectorFlag
     {
-        enum
-        {
-            Portal = 0x1,
-            Wall = 0x2,
-            Trigger = 0x4,
-            Death = 0x8,
-            FloorSlant = 0x10,
-            CeilingSlant = 0x20,
-            ClimbableUp = 0x40, // Top edge is climbable 
-            ClimbableRight = 0x80, // Right edge is climbable 
-            ClimbableDown = 0x100, // Bottom edge is climbable 
-            ClimbableLeft = 0x200, // Left edge is climbable
-            MonkeySwing = 0x400,
-            RoomAbove = 0x800, // There is a ceiling portal above
-            RoomBelow = 0x1000, // There is a floor portal 
-            MinecartLeft = 0x2000, // Minecart turns left, Trigger Triggerer in TR4+
-            MinecartRight = 0x4000, // Minecart turns right
-        };
-    }
+        None = 0x0,
+        Portal = 0x1,
+        Wall = 0x2,
+        Trigger = 0x4,
+        Death = 0x8,
+        FloorSlant = 0x10,
+        CeilingSlant = 0x20,
+        ClimbableUp = 0x40, // Top edge is climbable 
+        ClimbableRight = 0x80, // Right edge is climbable 
+        ClimbableDown = 0x100, // Bottom edge is climbable 
+        ClimbableLeft = 0x200, // Left edge is climbable
+        MonkeySwing = 0x400,
+        RoomAbove = 0x800, // There is a ceiling portal above
+        RoomBelow = 0x1000, // There is a floor portal 
+        MinecartLeft = 0x2000, // Minecart turns left, Trigger Triggerer in TR4+
+        MinecartRight = 0x4000, // Minecart turns right
+    };
 
     enum ClimbableWalls
     {

@@ -18,7 +18,7 @@ namespace trview
     std::uint16_t
     Sector::portal() const
     {
-        if (!(_flags & SectorFlag::Portal))
+        if (!has_flag(_flags, SectorFlag::Portal))
             throw std::runtime_error("Sector does not have portal function");
 
         return _portal;
@@ -43,11 +43,11 @@ namespace trview
 
         // Start off the heights at the height of the floor (or in the case of a 
         // wall, at the bottom of the room).
-        _corners.fill(_flags & SectorFlag::Wall ?
+        _corners.fill(has_flag(_flags, SectorFlag::Wall) ?
             level.get_room(_room).info.yBottom / trlevel::Scale_Y :
             _sector.floor * 0.25f);
 
-        _ceiling_corners.fill(_flags & SectorFlag::Wall ?
+        _ceiling_corners.fill(has_flag(_flags, SectorFlag::Wall) ?
             level.get_room(_room).info.yTop / trlevel::Scale_Y :
             _sector.ceiling * 0.25f);
 
@@ -132,7 +132,7 @@ namespace trview
                 break; 
 
             case 0x6: // climbable walls 
-                _flags |= (subfunction << 6);
+                _flags |= static_cast<SectorFlag>(subfunction << 6);
                 break; 
 
             case 0x7:
@@ -185,7 +185,7 @@ namespace trview
         return true; 
     }
 
-    uint16_t Sector::flags() const
+    SectorFlag Sector::flags() const
     {
         return _flags;
     }
@@ -324,7 +324,7 @@ namespace trview
 
     bool Sector::is_floor() const
     {
-        return room_below() == 0xff && !(_flags & SectorFlag::Wall) && !(_flags & SectorFlag::Portal);
+        return room_below() == 0xff && !has_flag(_flags, SectorFlag::Wall) && !has_flag(_flags, SectorFlag::Portal);
     }
 
     void Sector::calculate_neighbours(const trlevel::ILevel& level)
@@ -340,17 +340,17 @@ namespace trview
             _neighbours.insert(room);
         };
 
-        if (_flags & SectorFlag::Portal)
+        if (has_flag(_flags, SectorFlag::Portal))
         {
             add_neighbour(_portal);
         }
 
-        if (_flags & SectorFlag::RoomAbove)
+        if (has_flag(_flags, SectorFlag::RoomAbove))
         {
             add_neighbour(_room_above);
         }
 
-        if (_flags & SectorFlag::RoomBelow)
+        if (has_flag(_flags, SectorFlag::RoomBelow))
         {
             add_neighbour(_room_below);
         }
@@ -358,12 +358,12 @@ namespace trview
 
     bool Sector::is_wall() const
     {
-        return _flags & SectorFlag::Wall;
+        return has_flag(_flags, SectorFlag::Wall);
     }
 
     bool Sector::is_portal() const
     {
-        return _flags & SectorFlag::Portal;
+        return has_flag(_flags, SectorFlag::Portal);
     }
 
     bool Sector::is_ceiling() const
@@ -498,7 +498,7 @@ namespace trview
         }
         else if (!is_portal())
         {
-            if (north && !(north.flags() & SectorFlag::Wall))
+            if (north && !has_flag(north.flags(), SectorFlag::Wall))
             {
                 if (corner(Corner::NW) != north.corner(Corner::SW) || corner(Corner::NE) != north.corner(Corner::SE))
                 {
@@ -506,7 +506,7 @@ namespace trview
                 }
             }
 
-            if (south && !(south.flags() & SectorFlag::Wall))
+            if (south && !has_flag(south.flags(), SectorFlag::Wall))
             {
                 if (corner(Corner::SW) != south.corner(Corner::NW) || corner(Corner::SE) != south.corner(Corner::NE))
                 {
@@ -514,7 +514,7 @@ namespace trview
                 }
             }
 
-            if (east && !(east.flags() & SectorFlag::Wall))
+            if (east && !has_flag(east.flags(), SectorFlag::Wall))
             {
                 if (corner(Corner::NE) != east.corner(Corner::NW) || corner(Corner::SE) != east.corner(Corner::SW))
                 {
@@ -522,7 +522,7 @@ namespace trview
                 }
             }
 
-            if (west && !(west.flags() & SectorFlag::Wall))
+            if (west && !has_flag(west.flags(), SectorFlag::Wall))
             {
                 if (corner(Corner::NW) != west.corner(Corner::NE) || corner(Corner::SW) != west.corner(Corner::SE))
                 {
@@ -615,7 +615,7 @@ namespace trview
 
     ISector::Triangle::Type Sector::floor_type_trle() const
     {
-        if (has_flag<uint16_t>(flags(), SectorFlag::Death))
+        if (has_flag(flags(), SectorFlag::Death))
         {
             return Triangle::Type::Death;
         }

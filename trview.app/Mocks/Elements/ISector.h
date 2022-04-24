@@ -14,7 +14,7 @@ namespace trview
             MOCK_METHOD(std::set<std::uint16_t>, neighbours, (), (const, override));
             MOCK_METHOD(std::uint16_t, room_below, (), (const, override));
             MOCK_METHOD(std::uint16_t, room_above, (), (const, override));
-            MOCK_METHOD(uint16_t, flags, (), (const, override));
+            MOCK_METHOD(SectorFlag, flags, (), (const, override));
             MOCK_METHOD(TriggerInfo, trigger, (), (const, override));
             MOCK_METHOD(uint16_t, x, (), (const, override));
             MOCK_METHOD(uint16_t, z, (), (const, override));
