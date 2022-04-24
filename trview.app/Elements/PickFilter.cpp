@@ -20,11 +20,6 @@ namespace trview
         return static_cast<PickFilter>(static_cast<T>(left) | static_cast<T>(right));
     }
 
-    bool has_flag(PickFilter filter, PickFilter flag)
-    {
-        return (filter & flag) == flag;
-    }
-
     PickFilter filter_flag(PickFilter filter, bool condition)
     {
         return condition ? filter : PickFilter::None;

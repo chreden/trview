@@ -22,6 +22,5 @@ namespace trview
     PickFilter operator & (PickFilter left, PickFilter right);
     PickFilter operator | (PickFilter left, PickFilter right);
     PickFilter operator ~ (PickFilter left);
-    bool has_flag(PickFilter filter, PickFilter flag);
     PickFilter filter_flag(PickFilter filter, bool condition);
 }

@@ -13,4 +13,10 @@ namespace trview
     {
         return equals_any(value, other) || equals_any(value, set...);
     }
+
+    template <typename T>
+    bool has_flag(T field, T flag)
+    {
+        return (field & flag) == flag;
+    }
 }

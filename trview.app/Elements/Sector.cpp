@@ -1,5 +1,6 @@
 #include "Sector.h"
 #include "IRoom.h"
+#include <trview.common/Algorithms.h>
 
 using namespace DirectX::SimpleMath;
 
@@ -432,7 +433,7 @@ namespace trview
             }
         }
 
-        const auto floor_type = flags() & SectorFlag::Death ? Triangle::Type::Death : Triangle::Type::Floor;
+        const auto floor_type = floor_type_trle();
         if (_floor_triangulation.has_value())
         {
             const auto function = _floor_triangulation.value().function;
@@ -610,6 +611,15 @@ namespace trview
             return Vector2(0, 0);
         }
         return Vector2::Zero;
+    }
+
+    ISector::Triangle::Type Sector::floor_type_trle() const
+    {
+        if (has_flag<uint16_t>(flags(), SectorFlag::Death))
+        {
+            return Triangle::Type::Death;
+        }
+        return Triangle::Type::Floor;
     }
 
     Triangulation read_triangulation(const trlevel::ILevel& level, uint16_t floor, std::uint16_t& cur_index)

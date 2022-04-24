@@ -2,6 +2,7 @@
 #include <trview.app/Geometry/MeshVertex.h>
 #include <trview.app/Camera/ICamera.h>
 #include <trview.app/Elements/ILevel.h>
+#include <trview.common/Algorithms.h>
 
 using namespace DirectX::SimpleMath;
 
