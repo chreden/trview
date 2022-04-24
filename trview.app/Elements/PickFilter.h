@@ -19,8 +19,5 @@ namespace trview
         Default = All & ~(HiddenGeometry | TrleGeometry)
     };
 
-    PickFilter operator & (PickFilter left, PickFilter right);
-    PickFilter operator | (PickFilter left, PickFilter right);
-    PickFilter operator ~ (PickFilter left);
     PickFilter filter_flag(PickFilter filter, bool condition);
 }

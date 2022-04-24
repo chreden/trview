@@ -10,6 +10,7 @@
 #include <trview.app/Mocks/Elements/IStaticMesh.h>
 #include <trview.app/Mocks/Elements/ISector.h>
 #include <trview.app/Mocks/Elements/ITrigger.h>
+#include <trview.common/Algorithms.h>
 
 using namespace trview;
 using namespace trview::mocks;

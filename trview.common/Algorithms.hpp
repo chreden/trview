@@ -19,4 +19,27 @@ namespace trview
     {
         return (field & flag) == flag;
     }
+
+    template <Enum T>
+    T operator | (T left, T right)
+    {
+        using under_t = std::underlying_type_t<T>;
+        return static_cast<T>(static_cast<under_t>(left) | static_cast<under_t>(right));
+    }
+
+    template <Enum T>
+    T operator & (T left, T right)
+    {
+        using under_t = std::underlying_type_t<T>;
+        return static_cast<T>(static_cast<under_t>(left) & static_cast<under_t>(right));
+    }
+
+    template <Enum T>
+    T operator ~ (T left)
+    {
+        using under_t = std::underlying_type_t<T>;
+        return static_cast<T>(~static_cast<under_t>(left));
+    }
+
+
 }
