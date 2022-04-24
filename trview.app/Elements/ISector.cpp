@@ -55,17 +55,17 @@ namespace trview
 
     ISector::Triangle::Triangle(const Vector3& v0, const Vector3& v1, const Vector3& v2,
         const Vector2& uv0, const Vector2& uv1, const Vector2& uv2,
-        Type type, uint32_t room)
+        SectorFlag type, uint32_t room)
         : v0(v0), v1(v1), v2(v2), uv0(uv0), uv1(uv1), uv2(uv2), type(type), room(room)
     {
     }
 
-    ISector::Triangle::Triangle(const Vector3& v0, const Vector3& v1, const Vector3& v2, Type type, uint32_t room)
+    ISector::Triangle::Triangle(const Vector3& v0, const Vector3& v1, const Vector3& v2, SectorFlag type, uint32_t room)
         : Triangle(v0, v1, v2, Vector2::Zero, Vector2::Zero, Vector2::Zero, type, room)
     {
     }
 
-    ISector::Quad::Quad(const Vector3& v0, const Vector3& v1, const Vector3& v2, const Vector3& v3, Triangle::Type type, uint32_t room)
+    ISector::Quad::Quad(const Vector3& v0, const Vector3& v1, const Vector3& v2, const Vector3& v3, SectorFlag type, uint32_t room)
         : v{ v0, v1, v2, v3 }, uv{ Vector2(0, 1), Vector2(1, 0), Vector2(0, 0), Vector2(1, 1) }, type(type), room(room)
     {
         // Calculate a bunch of stats that can be used later.
@@ -89,7 +89,7 @@ namespace trview
     std::vector<ISector::Triangle> ISector::Quad::triangles()
     {
         std::vector<Triangle> results;
-        if (type == Triangle::Type::Wall || height > 1)
+        if (has_flag(type, SectorFlag::Wall) || height > 1)
         {
             uv[0].y = v[0].y;
             uv[1].y = v[1].y;

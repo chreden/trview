@@ -34,18 +34,11 @@ namespace trview
 
         struct Triangle
         {
-            enum class Type
-            {
-                Floor,
-                Wall,
-                Death
-            };
-
             Triangle(const DirectX::SimpleMath::Vector3& v0, const DirectX::SimpleMath::Vector3& v1, const DirectX::SimpleMath::Vector3& v2,
                 const DirectX::SimpleMath::Vector2& uv0, const DirectX::SimpleMath::Vector2& uv1, const DirectX::SimpleMath::Vector2& uv2,
-                Type type, uint32_t room);
+                SectorFlag type, uint32_t room);
 
-            Triangle(const DirectX::SimpleMath::Vector3& v0, const DirectX::SimpleMath::Vector3& v1, const DirectX::SimpleMath::Vector3& v2, Type type, uint32_t room);
+            Triangle(const DirectX::SimpleMath::Vector3& v0, const DirectX::SimpleMath::Vector3& v1, const DirectX::SimpleMath::Vector3& v2, SectorFlag type, uint32_t room);
 
             DirectX::SimpleMath::Vector3 v0;
             DirectX::SimpleMath::Vector3 v1;
@@ -53,7 +46,7 @@ namespace trview
             DirectX::SimpleMath::Vector2 uv0;
             DirectX::SimpleMath::Vector2 uv1;
             DirectX::SimpleMath::Vector2 uv2;
-            Type type;
+            SectorFlag type;
             uint32_t room;
 
             Triangle operator+(const DirectX::SimpleMath::Vector3& offset) const;
@@ -62,11 +55,11 @@ namespace trview
 
         struct Quad
         {
-            Quad(const DirectX::SimpleMath::Vector3& v0, const DirectX::SimpleMath::Vector3& v1, const DirectX::SimpleMath::Vector3& v2, const DirectX::SimpleMath::Vector3& v3, Triangle::Type type, uint32_t room);
+            Quad(const DirectX::SimpleMath::Vector3& v0, const DirectX::SimpleMath::Vector3& v1, const DirectX::SimpleMath::Vector3& v2, const DirectX::SimpleMath::Vector3& v3, SectorFlag type, uint32_t room);
 
             std::array<DirectX::SimpleMath::Vector3, 4> v;
             std::array<DirectX::SimpleMath::Vector2, 4> uv;
-            Triangle::Type type;
+            SectorFlag type;
             uint32_t room;
 
             float min;

@@ -917,29 +917,21 @@ namespace trview
     {
         // TODO: Split into meshes for the main room and then for adjacent rooms. If the adjacent room is being rendered
         // then only one room needs to render that part. This can be decided based on which room has the lower room number.
-        auto tri_colour = [&](uint32_t x_s, uint32_t z_s, const ISector::Triangle& tri) -> Colour
+        auto tri_colour = [&](const ISector::Triangle& tri) -> Colour
         {
-            Colour colour;
-
-            switch (tri.type)
+            if (has_flag(tri.type, SectorFlag::Death))
             {
-                case ISector::Triangle::Type::Floor:
-                {
-                    colour = Colour{ 0, 0.75f, 0.75f };
-                    break;
-                }
-                case ISector::Triangle::Type::Wall:
-                {
-                    colour = Colour{ 0, 0.6f, 0.15f };
-                    break;
-                }
-                case ISector::Triangle::Type::Death:
-                {
-                    colour = Colour{ 0.9f, 0.1f, 0.1f };
-                    break;
-                }
+                return Colour{ 0.9f, 0.1f, 0.1f };
             }
-            return colour;
+            else if (has_flag(tri.type, SectorFlag::Wall))
+            {
+                return Colour{ 0, 0.6f, 0.15f };
+            }
+            else if (has_flag(tri.type, SectorFlag::MonkeySwing))
+            {
+                return Colour{ 0.9f, 0.9f, 0.4f };
+            }
+            return Colour{ 0, 0.75f, 0.75f };
         };
 
         struct MeshPart
@@ -958,7 +950,7 @@ namespace trview
             {
                 const auto& tri = tris[i];
                 auto& part = mesh_parts[_trle_sector_rooms[base + i]];
-                add_triangle(tri, part.vertices, part.untextured_indices, part.collision_triangles, tri_colour(sector->x(), sector->z(), tri));
+                add_triangle(tri, part.vertices, part.untextured_indices, part.collision_triangles, tri_colour(tri));
             }
             base += tris.size();
         }

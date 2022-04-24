@@ -14,19 +14,25 @@ namespace trview
     concept Enum = !std::is_convertible<T, int>::value && std::integral_constant<bool, std::is_enum<T>::value>::value;
 
     template <Enum T>
-    bool has_flag(T field, T flag);
+    constexpr bool has_flag(T field, T flag) noexcept;
 
     template <Enum T>
-    T operator | (T left, T right);
+    constexpr bool has_any_flag(T field, T flag) noexcept;
+
+    template <Enum T, Enum... Args>
+    constexpr bool has_any_flag(T field, T flag, Args... flags) noexcept;
 
     template <Enum T>
-    T& operator |= (T& left, T right);
+    constexpr T operator | (T left, T right) noexcept;
 
     template <Enum T>
-    T operator & (T left, T right);
+    constexpr T& operator |= (T& left, T right) noexcept;
 
     template <Enum T>
-    T operator ~ (T left);
+    constexpr T operator & (T left, T right) noexcept;
+
+    template <Enum T>
+    constexpr T operator ~ (T left) noexcept;
 }
 
 #include "Algorithms.hpp"

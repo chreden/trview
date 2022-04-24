@@ -60,7 +60,6 @@ namespace trview
         void add_triangle(Triangle triangle);
         void add_quad(const ISector::Portal& portal, Quad quad);
         DirectX::SimpleMath::Vector2 corner_uv(Corner corner) const;
-        Triangle::Type floor_type_trle() const;
 
         SectorFlag _flags{ SectorFlag::None };
 

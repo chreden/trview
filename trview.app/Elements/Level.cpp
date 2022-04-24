@@ -737,6 +737,7 @@ namespace trview
     void Level::set_use_trle_colours(bool value)
     {
         _use_trle_colours = value;
+        _regenerate_transparency = true;
         on_level_changed();
     }
 
