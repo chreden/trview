@@ -7,6 +7,7 @@
 #include <trview.app/Elements/IEntity.h>
 #include <trview.app/Elements/ILight.h>
 #include <trview.common/Event.h>
+#include "../UI/MapColours.h"
 
 namespace trview
 {
@@ -41,6 +42,7 @@ namespace trview
         virtual std::vector<Item> items() const = 0;
         virtual std::vector<graphics::Texture> level_textures() const = 0;
         virtual std::vector<std::weak_ptr<ILight>> lights() const = 0;
+        virtual MapColours map_colours() const = 0;
         /// Get the number of rooms in the level.
         virtual uint32_t number_of_rooms() const = 0;
         virtual void on_camera_moved() = 0;
@@ -74,6 +76,7 @@ namespace trview
         virtual void set_filename(const std::string& filename) = 0;
         virtual void set_highlight_mode(RoomHighlightMode mode, bool enabled) = 0;
         virtual void set_item_visibility(uint32_t index, bool state) = 0;
+        virtual void set_map_colours(const MapColours& map_colours) = 0;
         virtual void set_selected_trigger(uint32_t number) = 0;
         virtual void set_selected_light(uint32_t number) = 0;
         virtual void set_show_hidden_geometry(bool show) = 0;
@@ -106,5 +109,6 @@ namespace trview
         /// Event raised when something has changed in the appearance of the level or the
         /// items that are contained within.
         Event<> on_level_changed;
+        mutable Event<> on_trle_colours_changed;
     };
 }

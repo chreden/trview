@@ -155,6 +155,8 @@ namespace trview
         _level = _level_source(std::move(new_level));
         _level->set_filename(filename);
 
+        _level->set_map_colours(_settings.map_colours);
+
         _items_windows->set_items(_level->items());
         _items_windows->set_triggers(_level->triggers());
         _triggers_windows->set_items(_level->items());
@@ -305,6 +307,10 @@ namespace trview
             _route_window->set_randomizer_enabled(settings.randomizer_tools);
             _route->set_randomizer_enabled(settings.randomizer_tools);
             _rooms_windows->set_map_colours(settings.map_colours);
+            if (_level)
+            {
+                _level->set_map_colours(settings.map_colours);
+            }
         };
         _viewer->set_settings(_settings);
 

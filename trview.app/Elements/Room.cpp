@@ -66,6 +66,8 @@ namespace trview
         generate_geometry(level.get_version(), mesh_source, room);
         generate_adjacency();
         generate_static_meshes(mesh_source, level, room, mesh_storage, static_mesh_mesh_source, static_mesh_position_source);
+
+        _token_store += _level.on_trle_colours_changed += [&]() { _trle_meshes.clear(); };
     }
 
     RoomInfo Room::info() const
@@ -917,21 +919,23 @@ namespace trview
     {
         // TODO: Split into meshes for the main room and then for adjacent rooms. If the adjacent room is being rendered
         // then only one room needs to render that part. This can be decided based on which room has the lower room number.
+        const auto colours = _level.map_colours();
+
         auto tri_colour = [&](const ISector::Triangle& tri) -> Colour
         {
             if (has_flag(tri.type, SectorFlag::Death))
             {
-                return Colour{ 0.9f, 0.1f, 0.1f };
+                return colours.colour(SectorFlag::Death);
             }
             else if (has_flag(tri.type, SectorFlag::Wall))
             {
-                return Colour{ 0, 0.6f, 0.15f };
+                return colours.colour(MapColours::Special::TrleWall);
             }
             else if (has_flag(tri.type, SectorFlag::MonkeySwing))
             {
-                return Colour{ 0.9f, 0.9f, 0.4f };
+                return colours.colour(SectorFlag::MonkeySwing);
             }
-            return Colour{ 0, 0.75f, 0.75f };
+            return colours.colour(MapColours::Special::Default);
         };
 
         struct MeshPart

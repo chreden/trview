@@ -892,6 +892,17 @@ namespace trview
         }
     }
 
+    MapColours Level::map_colours() const
+    {
+        return _map_colours;
+    }
+   
+    void Level::set_map_colours(const MapColours& map_colours)
+    {
+        _map_colours = map_colours;
+        on_trle_colours_changed();
+    }
+
     bool find_item_by_type_id(const ILevel& level, uint32_t type_id, Item& output_item)
     {
         const auto& items = level.items();

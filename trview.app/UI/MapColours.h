@@ -2,6 +2,7 @@
 
 #include <trview.common/Colour.h>
 #include "../Elements/Types.h"
+#include <external/nlohmann/json.hpp>
 
 namespace trview
 {
@@ -13,7 +14,8 @@ namespace trview
             Default,
             NoSpace,
             RoomAbove,
-            RoomBelow
+            RoomBelow,
+            TrleWall
         };
 
         std::unordered_map<SectorFlag, Colour> override_colours() const;

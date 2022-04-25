@@ -88,6 +88,8 @@ namespace trview
         virtual void set_light_visibility(uint32_t index, bool state) override;
         virtual void set_use_trle_colours(bool value) override;
         virtual bool use_trle_colours() const override;
+        virtual MapColours map_colours() const override;
+        virtual void set_map_colours(const MapColours& map_colours) override;
     private:
         void generate_rooms(const trlevel::ILevel& level, const IRoom::Source& room_source, const IMeshStorage& mesh_storage);
         void generate_triggers(const ITrigger::Source& trigger_source);
@@ -156,6 +158,8 @@ namespace trview
 
         std::shared_ptr<ILevelTextureStorage> _texture_storage;
         std::unique_ptr<ITransparencyBuffer> _transparency;
+
+        MapColours _map_colours;
 
         bool _regenerate_transparency{ true };
         bool _alternate_mode{ false };

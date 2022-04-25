@@ -54,6 +54,8 @@ namespace trview
             MOCK_METHOD(trlevel::LevelVersion, version, (), (const, override));
             MOCK_METHOD(bool, use_trle_colours, (), (const, override));
             MOCK_METHOD(void, set_use_trle_colours, (bool), (override));
+            MOCK_METHOD(MapColours, map_colours, (), (const, override));
+            MOCK_METHOD(void, set_map_colours, (const MapColours&), (override));
         };
     }
 }

@@ -18,6 +18,8 @@
 #include "IStaticMesh.h"
 #include "IRoom.h"
 
+#include <trview.common/TokenStore.h>
+
 namespace trview
 {
     class Room final : public IRoom, public std::enable_shared_from_this<IRoom>
@@ -130,6 +132,7 @@ namespace trview
         int16_t              _alternate_group;
         AlternateMode        _alternate_mode;
 
+        TokenStore _token_store;
         std::unordered_map<uint32_t, std::weak_ptr<ITrigger>> _triggers;
         uint16_t _flags{ 0 };
         const ILevel& _level;
