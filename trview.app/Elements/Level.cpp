@@ -427,6 +427,35 @@ namespace trview
         for (auto& room : _rooms)
         {
             room->generate_trigger_geometry();
+        }
+
+        std::function<void(std::shared_ptr<ISector>)> add_monkey_swing;
+        add_monkey_swing = [&](auto&& sector)
+        {
+            if (has_flag(sector->flags(), SectorFlag::MonkeySwing) && sector->room_above() != 0xff)
+            {
+                auto portal = _rooms[sector->room()]->sector_portal(sector->x(), sector->z(), -1, -1);
+                if (has_flag(portal.sector_above->flags(), SectorFlag::MonkeySwing))
+                {
+                    return;
+                }
+
+                portal.sector_above->add_flag(SectorFlag::MonkeySwing);
+                add_monkey_swing(portal.sector_above);
+            }
+        };
+
+        // Propagate monkey bars
+        for (auto& room : _rooms)
+        {
+            for (const auto& sector : room->sectors())
+            {
+                add_monkey_swing(sector);
+            }
+        }
+
+        for (auto& room : _rooms)
+        {
             room->generate_sector_triangles();
         }
 

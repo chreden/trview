@@ -52,6 +52,7 @@ namespace trview
         virtual bool is_ceiling() const override;
         virtual void generate_triangles() override;
         virtual void add_triangle(const ISector::Portal& portal, const Triangle& triangle) override;
+        virtual void add_flag(SectorFlag flag) override;
     private:
         bool parse(const trlevel::ILevel& level);
         void parse_slope();

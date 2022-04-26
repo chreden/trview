@@ -122,5 +122,6 @@ namespace trview
         // New triangle generation to include TRLE mode.
         virtual void generate_triangles() = 0;
         virtual void add_triangle(const ISector::Portal& portal, const Triangle& triangle) = 0;
+        virtual void add_flag(SectorFlag flag) = 0;
     };
 }
