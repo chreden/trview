@@ -381,8 +381,8 @@ namespace trview
         const auto east = _room_ptr.sector_portal(_x, _z, _x + 1, _z);
         const auto west = _room_ptr.sector_portal(_x, _z, _x - 1, _z);
 
-        const SectorFlag ceiling_flags = _flags & ~SectorFlag::Death;
-        const SectorFlag floor_flags = _flags & ~SectorFlag::MonkeySwing;
+        const SectorFlag ceiling_flags = _flags & ~(SectorFlag::Death | SectorFlag::ClimbableDown | SectorFlag::ClimbableLeft | SectorFlag::ClimbableRight | SectorFlag::ClimbableUp);
+        const SectorFlag floor_flags = _flags & ~(SectorFlag::MonkeySwing | SectorFlag::ClimbableDown | SectorFlag::ClimbableLeft | SectorFlag::ClimbableRight | SectorFlag::ClimbableUp);
         const SectorFlag wall_flags = _flags & ~(SectorFlag::Death | SectorFlag::MonkeySwing);
 
         if (_ceiling_triangulation.has_value())

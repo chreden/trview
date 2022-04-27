@@ -927,6 +927,12 @@ namespace trview
             {
                 return colours.colour(SectorFlag::Death);
             }
+            else if (has_any_flag(tri.type, SectorFlag::ClimbableDown, SectorFlag::ClimbableLeft, SectorFlag::ClimbableRight, SectorFlag::ClimbableUp))
+            {
+                auto colour = colours.colour(SectorFlag::ClimbableDown);
+                colour.a = 1.0f;
+                return colour;
+            }
             else if (has_flag(tri.type, SectorFlag::Wall))
             {
                 return colours.colour(MapColours::Special::TrleWall);
