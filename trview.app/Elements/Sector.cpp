@@ -384,6 +384,10 @@ namespace trview
         const SectorFlag ceiling_flags = _flags & ~(SectorFlag::Death | SectorFlag::ClimbableDown | SectorFlag::ClimbableLeft | SectorFlag::ClimbableRight | SectorFlag::ClimbableUp);
         const SectorFlag floor_flags = _flags & ~(SectorFlag::MonkeySwing | SectorFlag::ClimbableDown | SectorFlag::ClimbableLeft | SectorFlag::ClimbableRight | SectorFlag::ClimbableUp);
         const SectorFlag wall_flags = _flags & ~(SectorFlag::Death | SectorFlag::MonkeySwing);
+        constexpr SectorFlag north_wall = ~(SectorFlag::ClimbableDown | SectorFlag::ClimbableRight | SectorFlag::ClimbableLeft);
+        constexpr SectorFlag south_wall = ~(SectorFlag::ClimbableUp | SectorFlag::ClimbableRight | SectorFlag::ClimbableLeft);
+        constexpr SectorFlag east_wall = ~(SectorFlag::ClimbableDown | SectorFlag::ClimbableUp | SectorFlag::ClimbableLeft);
+        constexpr SectorFlag west_wall = ~(SectorFlag::ClimbableDown | SectorFlag::ClimbableRight | SectorFlag::ClimbableUp);
 
         if (_ceiling_triangulation.has_value())
         {
@@ -418,22 +422,22 @@ namespace trview
 
             if (north && !north.is_wall() && (ceiling(Corner::NW) != north.ceiling(Corner::SW) || ceiling(Corner::NE) != north.ceiling(Corner::SE)))
             {
-                add_quad(self, Quad(ceiling(Corner::NW), north.ceiling(Corner::SE), north.ceiling(Corner::SW), ceiling(Corner::NE), wall_flags, _room));
+                add_quad(self, Quad(ceiling(Corner::NW), north.ceiling(Corner::SE), north.ceiling(Corner::SW), ceiling(Corner::NE), wall_flags & north_wall, _room));
             }
 
             if (south && !south.is_wall() && (ceiling(Corner::SW) != south.ceiling(Corner::NW) || ceiling(Corner::SE) != south.ceiling(Corner::NE)))
             {
-                add_quad(self, Quad(south.ceiling(Corner::NW), ceiling(Corner::SE), ceiling(Corner::SW), south.ceiling(Corner::NE), wall_flags, _room));
+                add_quad(self, Quad(south.ceiling(Corner::NW), ceiling(Corner::SE), ceiling(Corner::SW), south.ceiling(Corner::NE), wall_flags & south_wall, _room));
             }
 
             if (east && !east.is_wall() && (ceiling(Corner::NE) != east.ceiling(Corner::NW) || ceiling(Corner::SE) != east.ceiling(Corner::SW)))
             {
-                add_quad(self, Quad(east.ceiling(Corner::SW), ceiling(Corner::NE), ceiling(Corner::SE), east.ceiling(Corner::NW), wall_flags, _room));
+                add_quad(self, Quad(east.ceiling(Corner::SW), ceiling(Corner::NE), ceiling(Corner::SE), east.ceiling(Corner::NW), wall_flags & east_wall, _room));
             }
 
             if (west && !west.is_wall() && (ceiling(Corner::NW) != west.ceiling(Corner::NE) || ceiling(Corner::SW) != west.ceiling(Corner::SE)))
             {
-                add_quad(self, Quad(ceiling(Corner::SW), west.ceiling(Corner::NE), west.ceiling(Corner::SE), ceiling(Corner::NW), wall_flags, _room));
+                add_quad(self, Quad(ceiling(Corner::SW), west.ceiling(Corner::NE), west.ceiling(Corner::SE), ceiling(Corner::NW), wall_flags & west_wall, _room));
             }
         }
 
@@ -481,22 +485,22 @@ namespace trview
         {
             if (north && !north.is_wall() && !north.is_portal())
             {
-                add_quad(self, Quad(north.ceiling(Corner::SE), north.corner(Corner::SW), north.corner(Corner::SE), north.ceiling(Corner::SW), wall_flags, _room));
+                add_quad(self, Quad(north.ceiling(Corner::SE), north.corner(Corner::SW), north.corner(Corner::SE), north.ceiling(Corner::SW), wall_flags & north_wall, _room));
             }
 
             if (south && !south.is_wall() && !south.is_portal())
             {
-                add_quad(self, Quad(south.ceiling(Corner::NW), south.corner(Corner::NE), south.corner(Corner::NW), south.ceiling(Corner::NE), wall_flags, _room));
+                add_quad(self, Quad(south.ceiling(Corner::NW), south.corner(Corner::NE), south.corner(Corner::NW), south.ceiling(Corner::NE), wall_flags & south_wall, _room));
             }
 
             if (east && !east.is_wall() && !east.is_portal())
             {
-                add_quad(self, Quad(east.ceiling(Corner::SW), east.corner(Corner::NW), east.corner(Corner::SW), east.ceiling(Corner::NW), wall_flags, _room));
+                add_quad(self, Quad(east.ceiling(Corner::SW), east.corner(Corner::NW), east.corner(Corner::SW), east.ceiling(Corner::NW), wall_flags & east_wall, _room));
             }
 
             if (west && !west.is_wall() && !west.is_portal())
             {
-                add_quad(self, Quad(west.ceiling(Corner::NE), west.corner(Corner::SE), west.corner(Corner::NE), west.ceiling(Corner::SE), wall_flags, _room));
+                add_quad(self, Quad(west.ceiling(Corner::NE), west.corner(Corner::SE), west.corner(Corner::NE), west.ceiling(Corner::SE), wall_flags & west_wall, _room));
             }
         }
         else if (!is_portal())
@@ -505,7 +509,7 @@ namespace trview
             {
                 if (corner(Corner::NW) != north.corner(Corner::SW) || corner(Corner::NE) != north.corner(Corner::SE))
                 {
-                    add_quad(self, Quad(north.corner(Corner::SW), corner(Corner::NE), corner(Corner::NW), north.corner(Corner::SE), wall_flags, _room));
+                    add_quad(self, Quad(north.corner(Corner::SW), corner(Corner::NE), corner(Corner::NW), north.corner(Corner::SE), wall_flags & north_wall, _room));
                 }
             }
 
@@ -513,7 +517,7 @@ namespace trview
             {
                 if (corner(Corner::SW) != south.corner(Corner::NW) || corner(Corner::SE) != south.corner(Corner::NE))
                 {
-                    add_quad(self, Quad(corner(Corner::SW), south.corner(Corner::NE), south.corner(Corner::NW), corner(Corner::SE), wall_flags, _room));
+                    add_quad(self, Quad(corner(Corner::SW), south.corner(Corner::NE), south.corner(Corner::NW), corner(Corner::SE), wall_flags & south_wall, _room));
                 }
             }
 
@@ -521,7 +525,7 @@ namespace trview
             {
                 if (corner(Corner::NE) != east.corner(Corner::NW) || corner(Corner::SE) != east.corner(Corner::SW))
                 {
-                    add_quad(self, Quad(corner(Corner::SE), east.corner(Corner::NW), east.corner(Corner::SW), corner(Corner::NE), wall_flags, _room));
+                    add_quad(self, Quad(corner(Corner::SE), east.corner(Corner::NW), east.corner(Corner::SW), corner(Corner::NE), wall_flags & east_wall, _room));
                 }
             }
 
@@ -529,7 +533,7 @@ namespace trview
             {
                 if (corner(Corner::NW) != west.corner(Corner::NE) || corner(Corner::SW) != west.corner(Corner::SE))
                 {
-                    add_quad(self, Quad(west.corner(Corner::SE), corner(Corner::NW), corner(Corner::SW), west.corner(Corner::NE), wall_flags, _room));
+                    add_quad(self, Quad(west.corner(Corner::SE), corner(Corner::NW), corner(Corner::SW), west.corner(Corner::NE), wall_flags & west_wall, _room));
                 }
             }
         }
@@ -568,6 +572,19 @@ namespace trview
                     portal.sector_above->x(), portal.sector_above->z());
                 portal.sector_above->add_triangle(above_portal, offcut);
             }
+        }
+        else if (triangle.v0.y > portal.direct_room->y_bottom() ||
+                 triangle.v1.y > portal.direct_room->y_bottom() ||
+                 triangle.v2.y > portal.direct_room->y_bottom())
+        {
+            // Limit the triangle to the height of the room
+            Triangle tri = triangle;
+
+            tri.uv0.y = tri.v0.y = std::min(tri.v0.y, portal.direct_room->y_bottom());
+            tri.uv1.y = tri.v1.y = std::min(tri.v1.y, portal.direct_room->y_bottom());
+            tri.uv2.y = tri.v2.y = std::min(tri.v2.y, portal.direct_room->y_bottom());
+
+            add_triangle(tri);
         }
         else
         {
