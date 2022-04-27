@@ -23,6 +23,7 @@ namespace trview
         RoomBelow = 0x1000, // There is a floor portal 
         MinecartLeft = 0x2000, // Minecart turns left, Trigger Triggerer in TR4+
         MinecartRight = 0x4000, // Minecart turns right
+        Climbable = ClimbableUp | ClimbableRight | ClimbableDown | ClimbableLeft
     };
 
     enum ClimbableWalls

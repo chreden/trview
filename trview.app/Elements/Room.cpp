@@ -929,7 +929,7 @@ namespace trview
             }
             else if (has_any_flag(tri.type, SectorFlag::ClimbableDown, SectorFlag::ClimbableLeft, SectorFlag::ClimbableRight, SectorFlag::ClimbableUp))
             {
-                auto colour = colours.colour(SectorFlag::ClimbableDown);
+                auto colour = colours.colour(tri.type & SectorFlag::Climbable);
                 colour.a = 1.0f;
                 return colour;
             }
