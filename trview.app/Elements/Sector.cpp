@@ -385,6 +385,46 @@ namespace trview
         const SectorFlag floor_flags = _flags & ~(SectorFlag::MonkeySwing | SectorFlag::Climbable);
         const SectorFlag wall_flags = _flags & ~(SectorFlag::Death | SectorFlag::MonkeySwing);
 
+        if (_floor_triangulation.has_value())
+        {
+            const auto function = _floor_triangulation.value().function;
+            if (_triangulation_function == TriangulationDirection::NwSe)
+            {
+                if (function != 0x0B)
+                {
+                    tris.push_back(Triangle(corner(Corner::SE), corner(Corner::SW), corner(Corner::NW), corner_uv(Corner::SE), corner_uv(Corner::SW), corner_uv(Corner::NW), floor_flags, _room));
+                }
+                if (function != 0x0C)
+                {
+                    tris.push_back(Triangle(corner(Corner::NW), corner(Corner::NE), corner(Corner::SE), corner_uv(Corner::NW), corner_uv(Corner::NE), corner_uv(Corner::SE), floor_flags, _room));
+                }
+            }
+            else
+            {
+                if (function != 0x0D)
+                {
+                    tris.push_back(Triangle(corner(Corner::NE), corner(Corner::SW), corner(Corner::NW), corner_uv(Corner::NE), corner_uv(Corner::SW), corner_uv(Corner::NW), floor_flags, _room));
+                }
+                if (function != 0x0E)
+                {
+                    tris.push_back(Triangle(corner(Corner::NE), corner(Corner::SE), corner(Corner::SW), corner_uv(Corner::NE), corner_uv(Corner::SE), corner_uv(Corner::SW), floor_flags, _room));
+                }
+            }
+        }
+        else if (is_floor())
+        {
+            if (_triangulation_function == TriangulationDirection::NwSe)
+            {
+                tris.push_back(Triangle(corner(Corner::SE), corner(Corner::SW), corner(Corner::NW), corner_uv(Corner::SE), corner_uv(Corner::SW), corner_uv(Corner::NW), floor_flags, _room));
+                tris.push_back(Triangle(corner(Corner::NW), corner(Corner::NE), corner(Corner::SE), corner_uv(Corner::NW), corner_uv(Corner::NE), corner_uv(Corner::SE), floor_flags, _room));
+            }
+            else
+            {
+                tris.push_back(Triangle(corner(Corner::NE), corner(Corner::SW), corner(Corner::NW), corner_uv(Corner::NE), corner_uv(Corner::SW), corner_uv(Corner::NW), floor_flags, _room));
+                tris.push_back(Triangle(corner(Corner::NE), corner(Corner::SE), corner(Corner::SW), corner_uv(Corner::NE), corner_uv(Corner::SE), corner_uv(Corner::SW), floor_flags, _room));
+            }
+        }
+
         if (_ceiling_triangulation.has_value())
         {
             const auto function = _ceiling_triangulation.value().function;
@@ -436,46 +476,6 @@ namespace trview
                 add_quad(self, Quad(ceiling(Corner::SW), west.ceiling(Corner::NE), west.ceiling(Corner::SE), ceiling(Corner::NW), wall_flags & (~SectorFlag::Climbable | SectorFlag::ClimbableRight), _room));
             }
         }
-
-        if (_floor_triangulation.has_value())
-        {
-            const auto function = _floor_triangulation.value().function;
-            if (_triangulation_function == TriangulationDirection::NwSe)
-            {
-                if (function != 0x0B)
-                {
-                    tris.push_back(Triangle(corner(Corner::SE), corner(Corner::SW), corner(Corner::NW), corner_uv(Corner::SE), corner_uv(Corner::SW), corner_uv(Corner::NW), floor_flags, _room));
-                }
-                if (function != 0x0C)
-                {
-                    tris.push_back(Triangle(corner(Corner::NW), corner(Corner::NE), corner(Corner::SE), corner_uv(Corner::NW), corner_uv(Corner::NE), corner_uv(Corner::SE), floor_flags, _room));
-                }
-            }
-            else
-            {
-                if (function != 0x0D)
-                {
-                    tris.push_back(Triangle(corner(Corner::NE), corner(Corner::SW), corner(Corner::NW), corner_uv(Corner::NE), corner_uv(Corner::SW), corner_uv(Corner::NW), floor_flags, _room));
-                }
-                if (function != 0x0E)
-                {
-                    tris.push_back(Triangle(corner(Corner::NE), corner(Corner::SE), corner(Corner::SW), corner_uv(Corner::NE), corner_uv(Corner::SE), corner_uv(Corner::SW), floor_flags, _room));
-                }
-            }
-        }
-        else if (is_floor())
-        {
-            if (_triangulation_function == TriangulationDirection::NwSe)
-            {
-                tris.push_back(Triangle( corner(Corner::SE), corner(Corner::SW), corner(Corner::NW), corner_uv(Corner::SE), corner_uv(Corner::SW), corner_uv(Corner::NW), floor_flags, _room ));
-                tris.push_back(Triangle( corner(Corner::NW), corner(Corner::NE), corner(Corner::SE), corner_uv(Corner::NW), corner_uv(Corner::NE), corner_uv(Corner::SE), floor_flags, _room ));
-            }
-            else
-            {
-                tris.push_back(Triangle( corner(Corner::NE), corner(Corner::SW), corner(Corner::NW), corner_uv(Corner::NE), corner_uv(Corner::SW), corner_uv(Corner::NW), floor_flags, _room));
-                tris.push_back(Triangle( corner(Corner::NE), corner(Corner::SE), corner(Corner::SW), corner_uv(Corner::NE), corner_uv(Corner::SE), corner_uv(Corner::SW), floor_flags, _room ));
-            }
-        } 
 
         if (is_wall())
         {

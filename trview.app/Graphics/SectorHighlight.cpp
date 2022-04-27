@@ -37,7 +37,7 @@ namespace trview
             }
 
             auto c1 = (triangles[0].v1 - triangles[0].v0).Cross(triangles[0].v2 - triangles[0].v0);
-            auto c2 = (triangles[1].v2 - triangles[0].v0).Cross(triangles[0].v2 - triangles[0].v0);
+            auto c2 = (triangles[1].v1 - triangles[1].v0).Cross(triangles[1].v2 - triangles[1].v0);
 
             c1.Normalize();
             c2.Normalize();
