@@ -32,6 +32,9 @@ namespace trview
     constexpr T operator & (T left, T right) noexcept;
 
     template <Enum T>
+    constexpr T& operator &= (T& left, T right) noexcept;
+
+    template <Enum T>
     constexpr T operator ~ (T left) noexcept;
 }
 

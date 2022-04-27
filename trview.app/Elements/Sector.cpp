@@ -481,22 +481,22 @@ namespace trview
         {
             if (north && !north.is_wall() && !north.is_portal())
             {
-                add_quad(self, Quad(north.ceiling(Corner::SE), north.corner(Corner::SW), north.corner(Corner::SE), north.ceiling(Corner::SW), wall_flags | (SectorFlag::ClimbableDown & north.direct->flags()), _room));
+                add_quad(self, Quad(north.ceiling(Corner::SE), north.corner(Corner::SW), north.corner(Corner::SE), north.ceiling(Corner::SW), (wall_flags & ~SectorFlag::Climbable) | (SectorFlag::ClimbableDown & north.direct->flags()), _room));
             }
 
             if (south && !south.is_wall() && !south.is_portal())
             {
-                add_quad(self, Quad(south.ceiling(Corner::NW), south.corner(Corner::NE), south.corner(Corner::NW), south.ceiling(Corner::NE), wall_flags | (SectorFlag::ClimbableUp & south.direct->flags()), _room));
+                add_quad(self, Quad(south.ceiling(Corner::NW), south.corner(Corner::NE), south.corner(Corner::NW), south.ceiling(Corner::NE), (wall_flags & ~SectorFlag::Climbable) | (SectorFlag::ClimbableUp & south.direct->flags()), _room));
             }
 
             if (east && !east.is_wall() && !east.is_portal())
             {
-                add_quad(self, Quad(east.ceiling(Corner::SW), east.corner(Corner::NW), east.corner(Corner::SW), east.ceiling(Corner::NW), wall_flags | (SectorFlag::ClimbableLeft & east.direct->flags()), _room));
+                add_quad(self, Quad(east.ceiling(Corner::SW), east.corner(Corner::NW), east.corner(Corner::SW), east.ceiling(Corner::NW), (wall_flags & ~SectorFlag::Climbable) | (SectorFlag::ClimbableLeft & east.direct->flags()), _room));
             }
 
             if (west && !west.is_wall() && !west.is_portal())
             {
-                add_quad(self, Quad(west.ceiling(Corner::NE), west.corner(Corner::SE), west.corner(Corner::NE), west.ceiling(Corner::SE), wall_flags | (SectorFlag::ClimbableRight & west.direct->flags()), _room));
+                add_quad(self, Quad(west.ceiling(Corner::NE), west.corner(Corner::SE), west.corner(Corner::NE), west.ceiling(Corner::SE), (wall_flags & ~SectorFlag::Climbable) | (SectorFlag::ClimbableRight & west.direct->flags()), _room));
             }
         }
         else if (!is_portal())

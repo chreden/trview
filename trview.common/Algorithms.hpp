@@ -54,6 +54,13 @@ namespace trview
     }
 
     template <Enum T>
+    constexpr T& operator &= (T& left, T right) noexcept
+    {
+        left = left & right;
+        return left;
+    }
+
+    template <Enum T>
     constexpr T operator ~ (T left) noexcept
     {
         using under_t = std::underlying_type_t<T>;
