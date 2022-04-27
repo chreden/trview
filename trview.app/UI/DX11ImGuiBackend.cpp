@@ -16,6 +16,7 @@ namespace trview
     {
         ImGui_ImplWin32_Init(_window);
         ImGui_ImplDX11_Init(_device->device().Get(), _device->context().Get());
+        _active = true;
     }
 
     void DX11ImGuiBackend::new_frame()
@@ -33,10 +34,15 @@ namespace trview
     {
         ImGui_ImplDX11_Shutdown();
         ImGui_ImplWin32_Shutdown();
+        _active = false;
     }
 
     bool DX11ImGuiBackend::window_procedure(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     {
-        return ImGui_ImplWin32_WndProcHandler(hWnd, message, wParam, lParam);
+        if (_active)
+        {
+            return ImGui_ImplWin32_WndProcHandler(hWnd, message, wParam, lParam);
+        }
+        return false;
     }
 }

@@ -12,6 +12,7 @@ namespace trview
             MOCK_METHOD(std::string, appdata_directory, (), (const, override));
             MOCK_METHOD(std::string, fonts_directory, (), (const, override));
             MOCK_METHOD(bool, create_directory, (const std::string&), (const, override));
+            MOCK_METHOD(void, delete_file, (const std::string&), (const, override));
             MOCK_METHOD(std::optional<std::vector<uint8_t>>, load_file, (const std::string&), (const, override));
             MOCK_METHOD(void, save_file, (const std::string&, const std::vector<uint8_t>&), (const, override));
             MOCK_METHOD(void, save_file, (const std::string&, const std::string&), (const, override));

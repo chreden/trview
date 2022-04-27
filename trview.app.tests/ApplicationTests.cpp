@@ -7,6 +7,7 @@
 #include <trview.app/Mocks/Routing/IRoute.h>
 #include <trview.app/Mocks/Settings/ISettingsLoader.h>
 #include <trview.app/Mocks/Settings/IStartupOptions.h>
+#include <trview.app/Mocks/UI/IImGuiBackend.h>
 #include <trview.app/Mocks/Windows/IViewer.h>
 #include <trview.app/Mocks/Windows/IItemsWindowManager.h>
 #include <trview.app/Mocks/Windows/ITriggersWindowManager.h>
@@ -21,6 +22,7 @@
 #include <trview.app/Resources/resource.h>
 #include "NullImGuiBackend.h"
 #include <trview.common/Strings.h>
+#include "TestImgui.h"
 
 using namespace trview;
 using namespace trview::tests;
@@ -172,6 +174,12 @@ namespace
             test_module& with_files(const std::shared_ptr<IFiles>& files)
             {
                 this->files = files;
+                return *this;
+            }
+
+            test_module& with_imgui_backend(std::unique_ptr<IImGuiBackend> backend)
+            {
+                this->imgui_backend = std::move(backend);
                 return *this;
             }
         };
@@ -572,4 +580,22 @@ TEST(Application, MapColoursSetOnSettingsChanged)
         .build();
 
     viewer.on_settings(UserSettings());
+}
+
+TEST(Application, ResetLayout)
+{
+    auto files = mock_shared<MockFiles>();
+    EXPECT_CALL(*files, delete_file).Times(1);
+    auto [imgui_backend_ptr, imgui_backend] = create_mock<MockImGuiBackend>();
+    EXPECT_CALL(imgui_backend, shutdown);
+
+    auto application = register_test_module()
+        .with_files(files)
+        .with_imgui_backend(std::move(imgui_backend_ptr))
+        .build();
+
+    TestImgui imgui;
+    application->process_message(WM_COMMAND, MAKEWPARAM(ID_WINDOWS_RESET_LAYOUT, 0), 0);
+
+    ASSERT_EQ(ImGui::GetIO().IniFilename, nullptr);
 }
