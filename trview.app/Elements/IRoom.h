@@ -272,11 +272,12 @@ namespace trview
         /// <returns></returns>
         virtual float y_top() const = 0;
         /// <summary>
-        /// Get sector portal information from one sector to another.
+        /// Get sector portal information from one sector to another. This can potentially link to a sector in another room.
         /// </summary>
-        /// <param name="x"></param>
-        /// <param name="z"></param>
-        /// <returns></returns>
+        /// <param name="x1">X coordinate of current sector.</param>
+        /// <param name="z1">Z coordinate of current sector.</param>
+        /// <param name="x2">X coordinate of target sector.</param>
+        /// <param name="z2">Z coordinate of target sector.</param>
         virtual ISector::Portal sector_portal(int x1, int z1, int x2, int z2) const = 0;
         /// <summary>
         /// Set the rooms for the sector triangles. This should be a collection matching the

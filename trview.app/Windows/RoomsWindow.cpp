@@ -80,7 +80,7 @@ namespace trview
                 return;
             }
 
-            std::wstring text;
+            std::wstring text = L"X: " + std::to_wstring(sector->x()) + L", Z:" + std::to_wstring(sector->z()) + L"\n";
             if (has_flag(sector->flags(), SectorFlag::RoomAbove))
             {
                 text += L"Above: " + std::to_wstring(sector->room_above());

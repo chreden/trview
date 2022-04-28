@@ -68,7 +68,6 @@ namespace trview
     ISector::Quad::Quad(const Vector3& v0, const Vector3& v1, const Vector3& v2, const Vector3& v3, SectorFlag type, uint32_t room)
         : v{ v0, v1, v2, v3 }, uv{ Vector2(0, 1), Vector2(1, 0), Vector2(0, 0), Vector2(1, 1) }, type(type), room(room)
     {
-        // Calculate a bunch of stats that can be used later.
         min = FLT_MAX;
         max = -FLT_MAX;
         for (const auto& vs : v)

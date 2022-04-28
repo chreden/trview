@@ -929,9 +929,7 @@ namespace trview
             }
             else if (has_any_flag(tri.type, SectorFlag::ClimbableDown, SectorFlag::ClimbableLeft, SectorFlag::ClimbableRight, SectorFlag::ClimbableUp))
             {
-                auto colour = colours.colour(tri.type & SectorFlag::Climbable);
-                colour.a = 1.0f;
-                return colour;
+                return colours.colour(tri.type & SectorFlag::Climbable);
             }
             else if (has_flag(tri.type, SectorFlag::Wall))
             {
@@ -960,7 +958,9 @@ namespace trview
             {
                 const auto& tri = tris[i];
                 auto& part = mesh_parts[_trle_sector_rooms[base + i]];
-                add_triangle(tri, part.vertices, part.untextured_indices, part.collision_triangles, tri_colour(tri));
+                auto colour = tri_colour(tri);
+                colour.a = 1.0f;
+                add_triangle(tri, part.vertices, part.untextured_indices, part.collision_triangles, colour);
             }
             base += tris.size();
         }
