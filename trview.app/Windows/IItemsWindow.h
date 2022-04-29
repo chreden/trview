@@ -34,7 +34,7 @@ namespace trview
         virtual void set_items(const std::vector<Item>& items) = 0;
 
         /// Update the items - this doesn't reset the filters.
-        virtual void update_items(const std::vector<Item>& items) = 0;
+        virtual void update_item(const Item& items) = 0;
 
         /// Render the window.
         virtual void render() = 0;

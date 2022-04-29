@@ -236,28 +236,6 @@ TEST(TriggersWindow, ItemSelectedRaised)
     ASSERT_EQ(selected, trigger);
 }
 
-TEST(TriggersWindow, SetTriggerVisiblityUpdatesTrigger)
-{
-    auto window = register_test_module().build();
-
-    bool visible = true;
-    auto trigger = mock_shared<MockTrigger>()->with_visible([&]() { return visible; });
-    window->set_triggers({ trigger });
-
-    TestImgui imgui([&]() { window->render(); });
-    ASSERT_FALSE(imgui.status_flags(imgui.id("Triggers 0")
-        .push_child(TriggersWindow::Names::trigger_list_panel)
-        .push(TriggersWindow::Names::triggers_list).id("##hide-0")) & ImGuiItemStatusFlags_Checked);
-
-    visible = false;
-    window->update_triggers({ trigger });
-    imgui.render();
-
-    ASSERT_TRUE(imgui.status_flags(imgui.id("Triggers 0")
-        .push_child(TriggersWindow::Names::trigger_list_panel)
-        .push(TriggersWindow::Names::triggers_list).id("##hide-0")) & ImGuiItemStatusFlags_Checked);
-}
-
 TEST(TriggersWindow, FlipmapsFiltersAllFlipTriggers)
 {
     auto window = register_test_module().build();

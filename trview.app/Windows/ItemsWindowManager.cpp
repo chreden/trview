@@ -60,7 +60,7 @@ namespace trview
         found->set_visible(visible);
         for (auto& window : _windows)
         {
-            window.second->update_items(_items);
+            window.second->update_item(*found);
         }
     }
 

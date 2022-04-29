@@ -27,7 +27,6 @@ namespace trview
         virtual void update(float delta) override;
         virtual void set_lights(const std::vector<std::weak_ptr<ILight>>& lights) override;
         virtual void set_selected_light(const std::weak_ptr<ILight>& light) override;
-        virtual void update_lights(const std::vector<std::weak_ptr<ILight>>& lights) override;
         virtual void set_level_version(trlevel::LevelVersion version) override;
         virtual void set_number(int32_t number) override;
         virtual void set_current_room(uint32_t room) override;

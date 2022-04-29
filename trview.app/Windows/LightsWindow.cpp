@@ -52,15 +52,6 @@ namespace trview
         }
     }
 
-    void LightsWindow::update_lights(const std::vector<std::weak_ptr<ILight>>& lights)
-    {
-        set_lights(lights);
-        if (_track_room)
-        {
-            set_current_room(_current_room);
-        }
-    }
-
     void LightsWindow::set_level_version(trlevel::LevelVersion version)
     {
         _level_version = version;

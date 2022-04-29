@@ -21,12 +21,15 @@ namespace trview
         setup_filters();
     }
 
-    void ItemsWindow::update_items(const std::vector<Item>& items)
+    void ItemsWindow::update_item(const Item& item)
     {
-        set_items(items);
-        if (_track_room)
+        for (auto& i : _all_items)
         {
-            set_current_room(_current_room);
+            if (i.number() == item.number())
+            {
+                i = item;
+                break;
+            }
         }
     }
 

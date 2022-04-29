@@ -14,7 +14,6 @@ namespace trview
         LightsWindowManager(const Window& window, const std::shared_ptr<IShortcuts>& shortcuts, const ILightsWindow::Source& lights_window_source);
         virtual ~LightsWindowManager() = default;
         virtual void set_lights(const std::vector<std::weak_ptr<ILight>>& lights) override;
-        virtual void set_light_visible(const std::weak_ptr<ILight>& light, bool state) override;
         virtual void set_level_version(trlevel::LevelVersion version) override;
         virtual void render() override;
         virtual void update(float delta) override;

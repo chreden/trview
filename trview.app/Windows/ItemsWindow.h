@@ -31,7 +31,7 @@ namespace trview
         virtual ~ItemsWindow() = default;
         virtual void render() override;
         virtual void set_items(const std::vector<Item>& items) override;
-        virtual void update_items(const std::vector<Item>& items) override;
+        virtual void update_item(const Item& items) override;
         virtual void set_triggers(const std::vector<std::weak_ptr<ITrigger>>& triggers) override;
         virtual void clear_selected_item() override;
         virtual void set_current_room(uint32_t room) override;

@@ -256,7 +256,7 @@ TEST(ItemsWindow, ItemsListUpdatedWhenNotFiltered)
         .push(ItemsWindow::Names::items_list).id("##hide-1")) & ImGuiItemStatusFlags_Checked);
 
     items[1].set_visible(false);
-    window->update_items(items);
+    window->update_item(items[1]);
 
     imgui.reset();
     imgui.render();

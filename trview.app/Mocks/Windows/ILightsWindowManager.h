@@ -14,7 +14,6 @@ namespace trview
             MOCK_METHOD(void, render, (), (override));
             MOCK_METHOD(void, update, (float), (override));
             MOCK_METHOD(void, set_selected_light, (const std::weak_ptr<ILight>&), (override));
-            MOCK_METHOD(void, set_light_visible, (const std::weak_ptr<ILight>&, bool), (override));
             MOCK_METHOD(void, set_level_version, (trlevel::LevelVersion), (override));
             MOCK_METHOD(void, set_room, (uint32_t), (override));
         };

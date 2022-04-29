@@ -10,7 +10,7 @@ namespace trview
         {
             virtual ~MockItemsWindow() = default;
             MOCK_METHOD(void, set_items, (const std::vector<Item>&), (override));
-            MOCK_METHOD(void, update_items, (const std::vector<Item>&), (override));
+            MOCK_METHOD(void, update_item, (const Item&), (override));
             MOCK_METHOD(void, render, (), (override));
             MOCK_METHOD(void, set_triggers, (const std::vector<std::weak_ptr<ITrigger>>&), (override));
             MOCK_METHOD(void, clear_selected_item, (), (override));

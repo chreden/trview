@@ -33,12 +33,6 @@ namespace trview
         calculate_column_widths();
     }
 
-    void TriggersWindow::update_triggers(const std::vector<std::weak_ptr<ITrigger>>& triggers)
-    {
-        _all_triggers = triggers;
-        _need_filtering = true;
-    }
-
     void TriggersWindow::clear_selected_trigger()
     {
         _selected_trigger.reset();

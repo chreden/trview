@@ -15,7 +15,6 @@ namespace trview
         virtual void render() = 0;
         virtual void update(float delta) = 0;
         virtual void set_selected_light(const std::weak_ptr<ILight>& light) = 0;
-        virtual void set_light_visible(const std::weak_ptr<ILight>& light, bool state) = 0;
         virtual void set_level_version(trlevel::LevelVersion version) = 0;
         virtual void set_room(uint32_t room) = 0;
 

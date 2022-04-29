@@ -207,21 +207,6 @@ TEST(TriggersWindowManager, SetTriggersClearsSelectedTrigger)
     ASSERT_EQ(manager->selected_trigger().lock(), nullptr);
 }
 
-TEST(TriggersWindowManager, SetTriggerVisibilityUpdatesWindows)
-{
-    auto mock_window = mock_shared<MockTriggersWindow>();
-    EXPECT_CALL(*mock_window, update_triggers).Times(1);
-    auto manager = register_test_module().with_window_source([&](auto&&...) { return mock_window; }).build();
-
-    auto created_window = manager->create_window().lock();
-    ASSERT_NE(created_window, nullptr);
-    ASSERT_EQ(created_window, mock_window);
-
-    auto trigger = mock_shared<MockTrigger>();
-    manager->set_triggers({ trigger });
-    manager->set_trigger_visible(trigger, false);
-}
-
 TEST(TriggersWindowManager, SetRoomSetsRoomOnWindows)
 {
     auto mock_window = mock_shared<MockTriggersWindow>();
