@@ -162,4 +162,14 @@ namespace trview
         _panning = false;
         _panning_vertical = false;
     }
+
+    void CameraInput::reset_input()
+    {
+        _free_forward = false;
+        _free_left = false;
+        _free_right = false;
+        _free_backward = false;
+        _free_up = false;
+        _free_down = false;
+    }
 }

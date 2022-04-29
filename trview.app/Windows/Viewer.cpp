@@ -17,9 +17,9 @@ namespace trview
         std::unique_ptr<input::IMouse> mouse, const std::shared_ptr<IShortcuts>& shortcuts, const std::shared_ptr<IRoute> route, const graphics::ISprite::Source& sprite_source,
         std::unique_ptr<ICompass> compass, std::unique_ptr<IMeasure> measure, const graphics::IRenderTarget::SizeSource& render_target_source, const graphics::IDeviceWindow::Source& device_window_source,
         std::unique_ptr<ISectorHighlight> sector_highlight)
-        : _shortcuts(shortcuts), _camera(window.size()), _free_camera(window.size()), _timer(default_time_source()), _keyboard(window),
+        : MessageHandler(window), _shortcuts(shortcuts), _camera(window.size()), _free_camera(window.size()), _timer(default_time_source()), _keyboard(window),
         _mouse(std::move(mouse)), _window_resizer(window), _alternate_group_toggler(window),
-        _menu_detector(window), _device(device), _route(route), _window(window), _ui(std::move(ui)), _picking(std::move(picking)), _compass(std::move(compass)), _measure(std::move(measure)),
+        _menu_detector(window), _device(device), _route(route), _ui(std::move(ui)), _picking(std::move(picking)), _compass(std::move(compass)), _measure(std::move(measure)),
         _render_target_source(render_target_source), _sector_highlight(std::move(sector_highlight))
     {
         apply_acceleration_settings();
@@ -552,7 +552,7 @@ namespace trview
         auto last_index = std::min(filename.find_last_of('\\'), filename.find_last_of('/'));
         auto name = last_index == filename.npos ? filename : filename.substr(std::min(last_index + 1, filename.size()));
         _ui->set_level(name, _level->version());
-        _window.set_title("trview - " + name);
+        window().set_title("trview - " + name);
         _measure->reset();
 
         _recent_orbits.clear();
@@ -592,7 +592,7 @@ namespace trview
                 _scene_changed = false;
             }
 
-            _scene_sprite->render(_scene_target->texture(), 0, 0, _window.size().width, _window.size().height);
+            _scene_sprite->render(_scene_target->texture(), 0, 0, window().size().width, window().size().height);
             _ui->set_camera_position(current_camera().position());
             _ui->set_camera_rotation(current_camera().rotation_yaw(), current_camera().rotation_pitch());
             _ui_changed = false;
@@ -613,7 +613,8 @@ namespace trview
 
     bool Viewer::should_pick() const
     {
-        return !(!_level || window_under_cursor() != _window || window_is_minimised(_window) || _ui->is_cursor_over() || cursor_outside_window(_window));
+        const auto window = this->window();
+        return !(!_level || window_under_cursor() != window || window_is_minimised(window) || _ui->is_cursor_over() || cursor_outside_window(window));
     }
 
     void Viewer::render_scene()
@@ -848,7 +849,7 @@ namespace trview
 
     void Viewer::resize_elements()
     {
-        const auto size = _window.size();
+        const auto size = window().size();
         // Inform elements that need to know that the device has been resized.
         _camera.set_view_size(size);
         _free_camera.set_view_size(size);
@@ -868,7 +869,7 @@ namespace trview
         _token_store += _mouse->mouse_move += [&](long x, long y) { _mouse_changed = true; _camera_input.mouse_move(x, y); };
         _token_store += _mouse->mouse_wheel += [&](int16_t scroll) 
         {
-            if (window_under_cursor() == _window)
+            if (window_under_cursor() == window())
             {
                 if (ImGui::GetCurrentContext() != nullptr)
                 {
@@ -1163,5 +1164,14 @@ namespace trview
             set_camera_mode(CameraMode::Orbit);
         }
         _scene_changed = true;
+    }
+
+    std::optional<int> Viewer::process_message(UINT message, WPARAM wParam, LPARAM lParam)
+    {
+        if (message == WM_ACTIVATE)
+        {
+            _camera_input.reset_input();
+        }
+        return {};
     }
 }
