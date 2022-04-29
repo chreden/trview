@@ -1166,7 +1166,7 @@ namespace trview
         _scene_changed = true;
     }
 
-    std::optional<int> Viewer::process_message(UINT message, WPARAM wParam, LPARAM lParam)
+    std::optional<int> Viewer::process_message(UINT message, WPARAM, LPARAM)
     {
         if (message == WM_ACTIVATE)
         {
