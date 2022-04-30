@@ -53,9 +53,6 @@ namespace trview
         /// @param triggers The triggers.
         /// @param reset_filters Whether to reset the trigger filters.
         virtual void set_triggers(const std::vector<std::weak_ptr<ITrigger>>& triggers) = 0;
-
-        /// Update the trigers - this doesn't reset the filters.
-        virtual void update_triggers(const std::vector<std::weak_ptr<ITrigger>>& triggers) = 0;
         /// <summary>
         /// Update the window.
         /// </summary>

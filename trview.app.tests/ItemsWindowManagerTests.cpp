@@ -137,7 +137,7 @@ TEST(ItemsWindowManager, SetItemsSetsItemsOnWindows)
 TEST(ItemsWindowManager, SetItemVisibilityUpdatesWindows)
 {
     auto mock_window = mock_shared<MockItemsWindow>();
-    EXPECT_CALL(*mock_window, update_items).Times(1);
+    EXPECT_CALL(*mock_window, update_item).Times(1);
     auto manager = register_test_module().with_window_source([&](auto&&...) { return mock_window; }).build();
 
     auto created_window = manager->create_window().lock();

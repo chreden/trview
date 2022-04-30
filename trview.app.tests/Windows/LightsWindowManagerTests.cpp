@@ -138,18 +138,6 @@ TEST(LightsWindowManager, SetSelectedLightUpdatesNewWindows)
     manager->create_window();
 }
 
-TEST(LightsWindowManager, SetLightVisibilityUpdatesWindows)
-{
-    auto window = mock_shared<MockLightsWindow>();
-    EXPECT_CALL(*window, update_lights).Times(1);
-    auto light = mock_shared<MockLight>();
-
-    auto manager = register_test_module().with_window_source([&]() { return window; }).build();
-    manager->set_lights({ light });
-    manager->create_window();
-    manager->set_light_visible(light, true);
-}
-
 TEST(LightsWindowManager, SetLevelVersionUpdatesExistingWindows)
 {
     auto window = mock_shared<MockLightsWindow>();

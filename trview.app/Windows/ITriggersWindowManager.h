@@ -30,11 +30,6 @@ namespace trview
         /// @param triggers The triggers in the level.
         virtual void set_triggers(const std::vector<std::weak_ptr<ITrigger>>& triggers) = 0;
 
-        /// Set whether a trigger is visible.
-        /// @param trigger The trigger.
-        /// @param visible Whether the trigger is visible.
-        virtual void set_trigger_visible(const std::weak_ptr<ITrigger>& trigger, bool visible) = 0;
-
         /// Set the current room to filter trigger windows.
         /// @param room The current room.
         virtual void set_room(uint32_t room) = 0;

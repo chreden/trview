@@ -62,26 +62,6 @@ namespace trview
         }
     }
 
-    void TriggersWindowManager::set_trigger_visible(const std::weak_ptr<ITrigger>& trigger, bool visible)
-    {
-        const auto trigger_ptr = trigger.lock();
-        auto found = std::find_if(_triggers.begin(), _triggers.end(), 
-            [&](const auto& t) 
-            {
-                return t.lock() == trigger_ptr;
-            });
-        if (found == _triggers.end())
-        {
-            return;
-        }
-        
-        trigger_ptr->set_visible(visible);
-        for (auto& window : _windows)
-        {
-            window.second->update_triggers(_triggers);
-        }
-    }
-
     void TriggersWindowManager::set_room(uint32_t room)
     {
         _current_room = room;

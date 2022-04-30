@@ -561,7 +561,6 @@ namespace trview
             if (trigger_ptr->visible() != visible)
             {
                 _level->set_trigger_visibility(trigger_ptr->number(), visible);
-                _triggers_windows->set_trigger_visible(trigger, visible);
             }
         }
     }
@@ -578,7 +577,6 @@ namespace trview
             if (light_ptr->visible() != visible)
             {
                 _level->set_light_visibility(light_ptr->number(), visible);
-                _lights_windows->set_light_visible(light, visible);
             }
         }
     }

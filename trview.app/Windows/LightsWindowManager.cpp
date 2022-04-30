@@ -29,26 +29,6 @@ namespace trview
         }
     }
 
-    void LightsWindowManager::set_light_visible(const std::weak_ptr<ILight>& light, bool state)
-    {
-        const auto light_ptr = light.lock();
-        auto found = std::find_if(_lights.begin(), _lights.end(),
-            [&](const auto& l)
-            {
-                return l.lock() == light_ptr;
-            });
-        if (found == _lights.end())
-        {
-            return;
-        }
-
-        light_ptr->set_visible(state);
-        for (auto& window : _windows)
-        {
-            window.second->update_lights(_lights);
-        }
-    }
-
     void LightsWindowManager::set_level_version(trlevel::LevelVersion version)
     {
         _level_version = version;

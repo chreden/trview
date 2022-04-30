@@ -32,7 +32,6 @@ namespace trview
         virtual ~TriggersWindow() = default;
         virtual void render() override;
         virtual void set_triggers(const std::vector<std::weak_ptr<ITrigger>>& triggers) override;
-        virtual void update_triggers(const std::vector<std::weak_ptr<ITrigger>>& triggers) override;
         virtual void clear_selected_trigger() override;
         virtual void set_current_room(uint32_t room) override;
         virtual void set_number(int32_t number) override;
