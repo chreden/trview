@@ -10,6 +10,7 @@
 #include <trview.app/Mocks/Elements/IStaticMesh.h>
 #include <trview.app/Mocks/Elements/ISector.h>
 #include <trview.app/Mocks/Elements/ITrigger.h>
+#include <trview.common/Algorithms.h>
 
 using namespace trview;
 using namespace trview::mocks;
@@ -177,7 +178,7 @@ TEST(Room, GetTransparentTriangles)
     room->add_trigger(trigger);
     NiceMock<MockTransparencyBuffer> transparency;
     NiceMock<MockCamera> camera;
-    room->get_transparent_triangles(transparency, camera, IRoom::SelectionMode::NotSelected, true, true);
+    room->get_transparent_triangles(transparency, camera, IRoom::SelectionMode::NotSelected, true, true, false);
 }
 
 /// <summary>
@@ -194,7 +195,7 @@ TEST(Room, GetTransparentTrianglesWithoutTriggers)
     room->add_trigger(trigger);
     NiceMock<MockTransparencyBuffer> transparency;
     NiceMock<MockCamera> camera;
-    room->get_transparent_triangles(transparency, camera, IRoom::SelectionMode::NotSelected, false, true);
+    room->get_transparent_triangles(transparency, camera, IRoom::SelectionMode::NotSelected, false, true, false);
 }
 
 /// <summary>
@@ -423,7 +424,7 @@ TEST(Room, RendersContainedEntities)
     auto entity = mock_shared<MockEntity>();
     EXPECT_CALL(*entity, render).Times(1);
     room->add_entity(entity);
-    room->render(NiceMock<MockCamera>{}, IRoom::SelectionMode::NotSelected, true, true);
+    room->render(NiceMock<MockCamera>{}, IRoom::SelectionMode::NotSelected, true, true, false, {});
 }
 
 /// <summary>

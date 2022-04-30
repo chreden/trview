@@ -86,6 +86,10 @@ namespace trview
         virtual void set_filename(const std::string& filename) override;
         virtual std::vector<std::weak_ptr<ILight>> lights() const override;
         virtual void set_light_visibility(uint32_t index, bool state) override;
+        virtual void set_use_trle_colours(bool value) override;
+        virtual bool use_trle_colours() const override;
+        virtual MapColours map_colours() const override;
+        virtual void set_map_colours(const MapColours& map_colours) override;
     private:
         void generate_rooms(const trlevel::ILevel& level, const IRoom::Source& room_source, const IMeshStorage& mesh_storage);
         void generate_triggers(const ITrigger::Source& trigger_source);
@@ -128,6 +132,7 @@ namespace trview
 
         bool is_alternate_group_set(uint16_t group) const;
         void apply_ocb_adjustment();
+        void deduplicate_triangles();
 
         std::shared_ptr<graphics::IDevice> _device;
         std::vector<std::shared_ptr<IRoom>>   _rooms;
@@ -139,8 +144,8 @@ namespace trview
         graphics::IShader*          _vertex_shader;
         graphics::IShader*          _pixel_shader;
         Microsoft::WRL::ComPtr<ID3D11SamplerState> _sampler_state;
+        Microsoft::WRL::ComPtr<ID3D11RasterizerState> _default_rasterizer;
         Microsoft::WRL::ComPtr<ID3D11RasterizerState> _wireframe_rasterizer;
-
 
         std::set<RoomHighlightMode> _room_highlight_modes;
         
@@ -154,6 +159,8 @@ namespace trview
         std::shared_ptr<ILevelTextureStorage> _texture_storage;
         std::unique_ptr<ITransparencyBuffer> _transparency;
 
+        MapColours _map_colours;
+
         bool _regenerate_transparency{ true };
         bool _alternate_mode{ false };
         bool _show_triggers{ true };
@@ -162,6 +169,7 @@ namespace trview
         bool _show_wireframe{ false };
         bool _show_bounding_boxes{ false };
         bool _show_lights{ false };
+        bool _use_trle_colours{ false };
 
         std::unique_ptr<ISelectionRenderer> _selection_renderer;
         std::set<uint32_t> _alternate_groups;

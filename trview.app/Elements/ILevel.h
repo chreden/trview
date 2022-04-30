@@ -7,6 +7,7 @@
 #include <trview.app/Elements/IEntity.h>
 #include <trview.app/Elements/ILight.h>
 #include <trview.common/Event.h>
+#include "../UI/MapColours.h"
 
 namespace trview
 {
@@ -41,6 +42,7 @@ namespace trview
         virtual std::vector<Item> items() const = 0;
         virtual std::vector<graphics::Texture> level_textures() const = 0;
         virtual std::vector<std::weak_ptr<ILight>> lights() const = 0;
+        virtual MapColours map_colours() const = 0;
         /// Get the number of rooms in the level.
         virtual uint32_t number_of_rooms() const = 0;
         virtual void on_camera_moved() = 0;
@@ -74,6 +76,7 @@ namespace trview
         virtual void set_filename(const std::string& filename) = 0;
         virtual void set_highlight_mode(RoomHighlightMode mode, bool enabled) = 0;
         virtual void set_item_visibility(uint32_t index, bool state) = 0;
+        virtual void set_map_colours(const MapColours& map_colours) = 0;
         virtual void set_selected_trigger(uint32_t number) = 0;
         virtual void set_selected_light(uint32_t number) = 0;
         virtual void set_show_hidden_geometry(bool show) = 0;
@@ -83,6 +86,7 @@ namespace trview
         virtual void set_show_bounding_boxes(bool show) = 0;
         virtual void set_show_lights(bool show) = 0;
         virtual void set_trigger_visibility(uint32_t index, bool state) = 0;
+        virtual void set_use_trle_colours(bool value) = 0;
         virtual void set_neighbour_depth(uint32_t depth) = 0;
         virtual void set_selected_room(uint16_t index) = 0;
         virtual void set_selected_item(uint32_t index) = 0;
@@ -94,6 +98,7 @@ namespace trview
         /// Get the triggers in this level.
         /// @returns All triggers in the level.
         virtual std::vector<std::weak_ptr<ITrigger>> triggers() const = 0;
+        virtual bool use_trle_colours() const = 0;
         virtual trlevel::LevelVersion version() const = 0;
         // Event raised when the level needs to change the selected room.
         Event<uint16_t> on_room_selected;
@@ -104,5 +109,6 @@ namespace trview
         /// Event raised when something has changed in the appearance of the level or the
         /// items that are contained within.
         Event<> on_level_changed;
+        mutable Event<> on_trle_colours_changed;
     };
 }

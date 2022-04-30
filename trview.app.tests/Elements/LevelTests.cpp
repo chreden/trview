@@ -14,6 +14,7 @@
 #include <trview.app/Mocks/Camera/ICamera.h>
 #include <trview.graphics/mocks/D3D/ID3D11DeviceContext.h>
 #include <trview.graphics/mocks/IShader.h>
+#include <trview.common/Algorithms.h>
 
 using namespace trview;
 using namespace trview::mocks;

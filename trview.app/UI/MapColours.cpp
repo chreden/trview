@@ -6,7 +6,7 @@ namespace trview
 {
     namespace
     {
-        const std::map<uint16_t, Colour> default_colours = {
+        const std::map<SectorFlag, Colour> default_colours = {
             { SectorFlag::Portal, { 0.0f, 0.0f, 0.0f } },
             { SectorFlag::Wall, { 0.4f, 0.4f, 0.4f } },
             { SectorFlag::Trigger, { 1.0f, 0.3f, 0.7f } },
@@ -24,11 +24,12 @@ namespace trview
             { MapColours::Special::Default, { 0.0f, 0.7f, 0.7f } },
             { MapColours::Special::NoSpace, { 0.2f, 0.2f, 0.9f } },
             { MapColours::Special::RoomAbove, { 0.0f, 0.0f, 0.0f } },
-            { MapColours::Special::RoomBelow, { 0.6f, 0.0f, 0.0f, 0.0f } }
+            { MapColours::Special::RoomBelow, { 0.6f, 0.0f, 0.0f, 0.0f } },
+            { MapColours::Special::TrleWall, { 0.0f, 0.6f, 0.15f } }
         };
     }
 
-    std::unordered_map<uint16_t, Colour> MapColours::override_colours() const
+    std::unordered_map<SectorFlag, Colour> MapColours::override_colours() const
     {
         return _override_colours;
     }
@@ -38,7 +39,7 @@ namespace trview
         return _override_special_colours;
     }
 
-    void MapColours::clear_colour(uint16_t flag)
+    void MapColours::clear_colour(SectorFlag flag)
     {
         _override_colours.erase(flag);
     }
@@ -48,7 +49,7 @@ namespace trview
         _override_special_colours.erase(flag);
     }
 
-    Colour MapColours::colour(uint16_t flag) const
+    Colour MapColours::colour(SectorFlag flag) const
     {
         auto override_colour = _override_colours.find(flag);
         if (override_colour != _override_colours.end())
@@ -61,14 +62,14 @@ namespace trview
         }
     }
 
-    Colour MapColours::colour_from_flags_field(uint16_t flags) const
+    Colour MapColours::colour_from_flags_field(SectorFlag flags) const
     {
         // Firstly get the colour for the tile 
         // To determine the base colour we order the floor functions by the *minimum* enabled flag (ranked by order asc)
         int minimum_flag_enabled = -1;
         Colour draw_color = colour(Special::Default);
 
-        if (!(flags & SectorFlag::Portal) && (flags & SectorFlag::Wall && flags & SectorFlag::FloorSlant)) // is it no-space?
+        if (!has_flag(flags, SectorFlag::Portal) && (has_flag(flags, SectorFlag::Wall) && has_flag(flags, SectorFlag::FloorSlant))) // is it no-space?
         {
             return colour(Special::NoSpace);
         }
@@ -76,12 +77,12 @@ namespace trview
         {
             for (const auto& color : default_colours)
             {
-                uint16_t key = color.first;
-                if ((key & flags)
-                    && (key < minimum_flag_enabled || minimum_flag_enabled == -1)
+                auto key = color.first;
+                if (has_flag(flags, key)
+                    && (static_cast<int>(key) < minimum_flag_enabled || minimum_flag_enabled == -1)
                     && (key < SectorFlag::ClimbableUp || key > SectorFlag::ClimbableLeft)) // climbable flag handled separately
                 {
-                    minimum_flag_enabled = key;
+                    minimum_flag_enabled = static_cast<int>(key);
                     auto override_colour = _override_colours.find(key);
                     if (override_colour != _override_colours.end())
                     {
@@ -111,7 +112,7 @@ namespace trview
         }
     }
 
-    void MapColours::set_colour(uint16_t flag, const Colour& colour)
+    void MapColours::set_colour(SectorFlag flag, const Colour& colour)
     {
         _override_colours[flag] = colour;
     }
@@ -129,7 +130,7 @@ namespace trview
 
     void from_json(const nlohmann::json& json, MapColours& colours)
     {
-        auto overrides = read_attribute<std::map<uint16_t, Colour>>(json, "colours");
+        auto overrides = read_attribute<std::map<SectorFlag, Colour>>(json, "colours");
         for (const auto& colour : overrides)
         {
             colours.set_colour(colour.first, colour.second);

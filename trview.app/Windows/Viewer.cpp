@@ -58,6 +58,7 @@ namespace trview
         toggles[Options::flip] = [this](bool value) { set_alternate_mode(value); };
         toggles[Options::depth_enabled] = [this](bool value) { if (_level) { _level->set_highlight_mode(ILevel::RoomHighlightMode::Neighbours, value); } };
         toggles[Options::lights] = [this](bool value) { set_show_lights(value); };
+        toggles[Options::trle_colours] = [this](bool value) { set_use_trle_colours(value); };
 
         std::unordered_map<std::string, std::function<void(int32_t)>> scalars;
         scalars[Options::depth] = [this](int32_t value) { if (_level) { _level->set_neighbour_depth(value); } };
@@ -440,15 +441,15 @@ namespace trview
 
                     if (trigger == triggers.end() || (GetAsyncKeyState(VK_CONTROL) & 0x8000))
                     {
-                        if (sector->flags() & SectorFlag::Portal)
+                        if (has_flag(sector->flags(), SectorFlag::Portal))
                         {
                             on_room_selected(sector->portal());
                         }
-                        else if (!_settings.invert_map_controls && (sector->flags() & SectorFlag::RoomBelow))
+                        else if (!_settings.invert_map_controls && has_flag(sector->flags(), SectorFlag::RoomBelow))
                         {
                             on_room_selected(sector->room_below());
                         }
-                        else if (_settings.invert_map_controls && (sector->flags() & SectorFlag::RoomAbove))
+                        else if (_settings.invert_map_controls && has_flag(sector->flags(), SectorFlag::RoomAbove))
                         {
                             on_room_selected(sector->room_above());
                         }
@@ -465,11 +466,11 @@ namespace trview
 
                 if (auto sector = _ui->current_minimap_sector())
                 {
-                    if (!_settings.invert_map_controls && (sector->flags() & SectorFlag::RoomAbove))
+                    if (!_settings.invert_map_controls && has_flag(sector->flags(), SectorFlag::RoomAbove))
                     {
                         on_room_selected(sector->room_above());
                     }
-                    else if (_settings.invert_map_controls && (sector->flags() & SectorFlag::RoomBelow))
+                    else if (_settings.invert_map_controls && has_flag(sector->flags(), SectorFlag::RoomBelow))
                     {
                         on_room_selected(sector->room_below());
                     }
@@ -521,6 +522,7 @@ namespace trview
         _level->set_show_wireframe(_ui->toggle(Options::wireframe)); 
         _level->set_show_bounding_boxes(_ui->toggle(Options::show_bounding_boxes));
         _level->set_show_lights(_ui->toggle(Options::lights));
+        _level->set_use_trle_colours(_ui->toggle(Options::trle_colours));
 
         // Set up the views.
         auto rooms = _level->room_info();
@@ -1051,6 +1053,15 @@ namespace trview
         {
             _level->set_show_lights(show);
             _ui->set_toggle(Options::lights, show);
+        }
+    }
+
+    void Viewer::set_use_trle_colours(bool show)
+    {
+        if (_level)
+        {
+            _level->set_use_trle_colours(show);
+            _ui->set_toggle(Options::trle_colours, show);
         }
     }
 

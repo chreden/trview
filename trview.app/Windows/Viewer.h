@@ -114,6 +114,7 @@ namespace trview
         void set_show_wireframe(bool show);
         void set_show_bounding_boxes(bool show);
         void set_show_lights(bool show);
+        void set_use_trle_colours(bool show);
         uint32_t room_from_pick(const PickResult& pick) const;
         void add_recent_orbit(const PickResult& pick);
         void select_previous_orbit();

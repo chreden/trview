@@ -18,9 +18,11 @@
 #include "IStaticMesh.h"
 #include "IRoom.h"
 
+#include <trview.common/TokenStore.h>
+
 namespace trview
 {
-    class Room final : public IRoom
+    class Room final : public IRoom, public std::enable_shared_from_this<IRoom>
     {
     public:
         explicit Room(const IMesh::Source& mesh_source,
@@ -39,7 +41,7 @@ namespace trview
         virtual RoomInfo info() const override;
         virtual std::set<uint16_t> neighbours() const override;
         virtual PickResult pick(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& direction, PickFilter filters = PickFilter::Default) const override;
-        virtual void render(const ICamera& camera, SelectionMode selected, bool show_hidden_geometry, bool show_water) override;
+        virtual void render(const ICamera& camera, SelectionMode selected, bool show_hidden_geometry, bool show_water, bool use_trle_colours, const std::unordered_set<uint32_t>& visible_rooms) override;
         virtual void render_bounding_boxes(const ICamera& camera) override;
         virtual void render_lights(const ICamera& camera, const std::weak_ptr<ILight>& selected_light) override;
         virtual void render_contained(const ICamera& camera, SelectionMode selected, bool show_water) override;
@@ -47,7 +49,8 @@ namespace trview
         virtual void add_trigger(const std::weak_ptr<ITrigger>& trigger) override;
         virtual void add_light(const std::weak_ptr<ILight>& light) override;
         virtual const std::vector<std::shared_ptr<ISector>> sectors() const override;
-        virtual void get_transparent_triangles(ITransparencyBuffer& transparency, const ICamera& camera, SelectionMode selected, bool include_triggers, bool show_water) override;
+        virtual void generate_sector_triangles() override;
+        virtual void get_transparent_triangles(ITransparencyBuffer& transparency, const ICamera& camera, SelectionMode selected, bool include_triggers, bool show_water, bool trle_mode) override;
         virtual void get_contained_transparent_triangles(ITransparencyBuffer& transparency, const ICamera& camera, SelectionMode selected, bool show_water) override;
         virtual AlternateMode alternate_mode() const override;
         virtual int16_t alternate_room() const override;
@@ -65,6 +68,11 @@ namespace trview
         virtual bool quicksand() const override;
         virtual std::weak_ptr<ITrigger> trigger_at(int32_t x, int32_t z) const override;
         virtual bool flag(Flag flag) const override;
+        virtual float y_bottom() const override;
+        virtual float y_top() const override;
+        virtual ISector::Portal sector_portal(int x1, int y1, int x2, int z2) const override;
+        virtual void set_sector_triangle_rooms(const std::vector<uint32_t>& triangles) override;
+        virtual DirectX::SimpleMath::Vector3 position() const override;
     private:
         void generate_geometry(trlevel::LevelVersion level_version, const IMesh::Source& mesh_source, const trlevel::tr3_room& room);
         void generate_adjacency();
@@ -94,6 +102,8 @@ namespace trview
             std::vector<uint32_t>& output_indices,
             std::vector<Triangle>& collision_triangles);
 
+        void generate_trle_mesh(const IMesh::Source& mesh_source);
+
         void add_centroid_to_pick(const IMesh& mesh, PickResult& geometry_result) const;
 
         RoomInfo                           _info;
@@ -104,6 +114,7 @@ namespace trview
 
         std::shared_ptr<IMesh> _mesh;
         std::shared_ptr<IMesh> _unmatched_mesh;
+        std::unordered_map<uint32_t, std::shared_ptr<IMesh>> _trle_meshes;
         DirectX::SimpleMath::Matrix _room_offset;
         DirectX::SimpleMath::Matrix _inverted_room_offset;
 
@@ -121,10 +132,14 @@ namespace trview
         int16_t              _alternate_group;
         AlternateMode        _alternate_mode;
 
+        TokenStore _token_store;
         std::unordered_map<uint32_t, std::weak_ptr<ITrigger>> _triggers;
         uint16_t _flags{ 0 };
         const ILevel& _level;
         std::shared_ptr<ILevelTextureStorage> _texture_storage;
         std::vector<std::weak_ptr<ILight>> _lights;
+        IMesh::Source _mesh_source;
+        std::vector<uint32_t> _trle_sector_rooms;
+        std::function<std::shared_ptr<IMesh>()> _unmatched_mesh_generator;
     };
 }

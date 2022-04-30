@@ -86,29 +86,29 @@ namespace trview
             // In the future I'd like to just draw a hollow square instead.
             const float thickness = _DRAW_SCALE / 4;
 
-            if (tile.sector->flags() & SectorFlag::ClimbableUp)
+            if (has_flag(tile.sector->flags(), SectorFlag::ClimbableUp))
                 draw(tile.position, Size(tile.size.width, thickness), _colours.colour(SectorFlag::ClimbableUp));
-            if (tile.sector->flags() & SectorFlag::ClimbableRight)
+            if (has_flag(tile.sector->flags(), SectorFlag::ClimbableRight))
                 draw(Point(tile.position.x + _DRAW_SCALE - thickness, tile.position.y), Size(thickness, tile.size.height), _colours.colour(SectorFlag::ClimbableRight));
-            if (tile.sector->flags() & SectorFlag::ClimbableDown)
+            if (has_flag(tile.sector->flags(), SectorFlag::ClimbableDown))
                 draw(Point(tile.position.x, tile.position.y + _DRAW_SCALE - thickness), Size(tile.size.width, thickness), _colours.colour(SectorFlag::ClimbableDown));
-            if (tile.sector->flags() & SectorFlag::ClimbableLeft)
+            if (has_flag(tile.sector->flags(), SectorFlag::ClimbableLeft))
                 draw(tile.position, Size(thickness, tile.size.height), _colours.colour(SectorFlag::ClimbableLeft));
 
             // If sector is a down portal, draw a transparent black square over it 
-            if (tile.sector->flags() & SectorFlag::RoomBelow)
+            if (has_flag(tile.sector->flags(), SectorFlag::RoomBelow))
                 draw(tile.position, tile.size, _colours.colour(MapColours::Special::RoomBelow));
 
             // If sector is an up portal, draw a small corner square in the top left to signify this 
-            if (tile.sector->flags() & SectorFlag::RoomAbove)
+            if (has_flag(tile.sector->flags(), SectorFlag::RoomAbove))
                 draw(tile.position, Size(tile.size.width / 4, tile.size.height / 4), _colours.colour(MapColours::Special::RoomAbove));
 
-            if (tile.sector->flags() & SectorFlag::Death && tile.sector->flags() & SectorFlag::Trigger)
+            if (has_flag(tile.sector->flags(), SectorFlag::Death) && has_flag(tile.sector->flags(), SectorFlag::Trigger))
             {
                 draw(tile.position + Point(tile.size.width * 0.75f, 0), tile.size / 4.0f, _colours.colour(SectorFlag::Death));
             }
 
-            if (tile.sector->flags() & SectorFlag::Portal)
+            if (has_flag(tile.sector->flags(), SectorFlag::Portal))
             {
                 _font->render(context, std::to_wstring(tile.sector->portal()), tile.position.x - 1, tile.position.y, tile.size.width, tile.size.height, text_color);
             }

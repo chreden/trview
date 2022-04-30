@@ -14,6 +14,7 @@ namespace trview
         _toggles[IViewer::Options::show_bounding_boxes] = false;
         _toggles[IViewer::Options::lights] = false;
         _toggles[IViewer::Options::flip] = false;
+        _toggles[IViewer::Options::trle_colours] = false;
     }
 
     void ViewOptions::render()
@@ -52,7 +53,9 @@ namespace trview
                 add_toggle(IViewer::Options::wireframe);
                 add_toggle(IViewer::Options::show_bounding_boxes);
                 ImGui::TableNextRow();
+                add_toggle(IViewer::Options::trle_colours);
                 add_toggle(IViewer::Options::lights);
+                ImGui::TableNextRow();
                 if (!_use_alternate_groups)
                 {
                     ImGui::BeginDisabled(!_flip_enabled);

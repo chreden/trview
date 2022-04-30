@@ -14,13 +14,10 @@ namespace trview
         HiddenGeometry = 0x8,
         StaticMeshes = 0x10,
         Lights = 0x20,
+        TrleGeometry = 0x40,
         All = 0xffffffff,
-        Default = All & ~HiddenGeometry
+        Default = All & ~(HiddenGeometry | TrleGeometry)
     };
 
-    PickFilter operator & (PickFilter left, PickFilter right);
-    PickFilter operator | (PickFilter left, PickFilter right);
-    PickFilter operator ~ (PickFilter left);
-    bool has_flag(PickFilter filter, PickFilter flag);
     PickFilter filter_flag(PickFilter filter, bool condition);
 }

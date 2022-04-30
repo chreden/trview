@@ -26,6 +26,7 @@ namespace trview
         virtual uint32_t          num_tiles() const override;
         virtual uint16_t attribute(uint32_t texture_index) const override;
         virtual DirectX::SimpleMath::Color palette_from_texture(uint32_t texture) const override;
+        virtual graphics::Texture trle_texture() const override;
     private:
         void determine_texture_mode();
 
@@ -42,5 +43,6 @@ namespace trview
             Custom
         };
         TextureMode _texture_mode{ TextureMode::Official };
+        graphics::Texture _trle_texture;
     };
 }

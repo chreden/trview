@@ -192,14 +192,14 @@ namespace trview
                 return;
             }
 
-            std::wstring text;
-            if (sector->flags() & SectorFlag::RoomAbove)
+            std::wstring text = L"X: " + std::to_wstring(sector->x()) + L", Z:" + std::to_wstring(sector->z()) + L"\n";
+            if (has_flag(sector->flags(), SectorFlag::RoomAbove))
             {
                 text += L"Above: " + std::to_wstring(sector->room_above());
             }
-            if (sector->flags() & SectorFlag::RoomBelow)
+            if (has_flag(sector->flags(), SectorFlag::RoomBelow))
             {
-                text += ((sector->flags() & SectorFlag::RoomAbove) ? L", " : L"") +
+                text += (has_flag(sector->flags(), SectorFlag::RoomAbove) ? L", " : L"") +
                     std::wstring(L"Below: ") + std::to_wstring(sector->room_below());
             }
             _map_tooltip->set_text(text);

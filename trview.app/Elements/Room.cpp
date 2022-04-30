@@ -2,6 +2,7 @@
 #include <trview.app/Geometry/MeshVertex.h>
 #include <trview.app/Camera/ICamera.h>
 #include <trview.app/Elements/ILevel.h>
+#include <trview.common/Algorithms.h>
 
 using namespace DirectX::SimpleMath;
 
@@ -50,7 +51,8 @@ namespace trview
         _index(index),
         _flags(room.flags),
         _level(parent_level),
-        _texture_storage(texture_storage)
+        _texture_storage(texture_storage),
+        _mesh_source(mesh_source)
     {
         // Can only determine HasAlternate or normal at this point. After all rooms have been loaded,
         // the level can fix up the rooms so that they know if they are alternates of another room
@@ -64,6 +66,8 @@ namespace trview
         generate_geometry(level.get_version(), mesh_source, room);
         generate_adjacency();
         generate_static_meshes(mesh_source, level, room, mesh_storage, static_mesh_mesh_source, static_mesh_position_source);
+
+        _token_store += _level.on_trle_colours_changed += [&]() { _trle_meshes.clear(); };
     }
 
     RoomInfo Room::info() const
@@ -144,7 +148,7 @@ namespace trview
             }
         }
 
-        if (has_flag(filters, PickFilter::StaticMeshes))
+        if (has_flag(filters, PickFilter::StaticMeshes) && !has_flag(filters, PickFilter::TrleGeometry))
         {
             for (const auto& static_mesh : _static_meshes)
             {
@@ -158,7 +162,20 @@ namespace trview
             }
         }
 
-        if (has_flag(filters, PickFilter::Geometry))
+        if (has_flag(filters, PickFilter::TrleGeometry))
+        {
+            auto room_offset = Matrix::CreateTranslation(-_info.x / trlevel::Scale_X, 0, -_info.z / trlevel::Scale_Z);
+            for (const auto& mesh : _trle_meshes)
+            {
+                PickResult trle_geometry_result = mesh.second->pick(Vector3::Transform(position, room_offset), direction);
+                if (trle_geometry_result.hit)
+                {
+                    add_centroid_to_pick(*mesh.second, trle_geometry_result);
+                    pick_results.push_back(trle_geometry_result);
+                }
+            }
+        }
+        else if (has_flag(filters, PickFilter::Geometry))
         {
             // Pick against the room geometry:
             auto room_offset = Matrix::CreateTranslation(-_info.x / trlevel::Scale_X, 0, -_info.z / trlevel::Scale_Z);
@@ -169,7 +186,7 @@ namespace trview
                 pick_results.push_back(geometry_result);
             }
 
-            if (has_flag(filters, PickFilter::HiddenGeometry))
+            if (has_flag(filters, PickFilter::HiddenGeometry) && _unmatched_mesh)
             {
                 PickResult unmatched_result = _unmatched_mesh->pick(Vector3::Transform(position, room_offset), direction);
                 if (unmatched_result.hit)
@@ -199,19 +216,42 @@ namespace trview
     // texture_storage: The textures for the level.
     // selected: The selection mode to use to highlight geometry and objects.
     // render_mode: The type of geometry and object geometry to render.
-    void Room::render(const ICamera& camera, SelectionMode selected, bool show_hidden_geometry, bool show_water)
+    void Room::render(const ICamera& camera, SelectionMode selected, bool show_hidden_geometry, bool show_water, bool use_trle_colours, const std::unordered_set<uint32_t>& visible_rooms)
     {
         Color colour = room_colour(water() && show_water, selected);
 
-        _mesh->render(_room_offset * camera.view_projection(), *_texture_storage, colour);
-        if (show_hidden_geometry)
+        if (use_trle_colours)
         {
-            _unmatched_mesh->render(_room_offset * camera.view_projection(), *_texture_storage, colour);
-        }
+            if (_trle_meshes.empty())
+            {
+                generate_trle_mesh(_mesh_source);
+            }
 
-        for (const auto& mesh : _static_meshes)
+            for (const auto& mesh : _trle_meshes)
+            {
+                if (mesh.first == _index || (visible_rooms.find(mesh.first) == visible_rooms.end() || _index < mesh.first))
+                {
+                    mesh.second->render(_room_offset * camera.view_projection(), *_texture_storage, colour, 1.0f, Vector3::Zero, use_trle_colours);
+                }
+            }
+        }
+        else
         {
-            mesh->render(camera, *_texture_storage, colour);
+            _mesh->render(_room_offset * camera.view_projection(), *_texture_storage, colour, 1.0f, Vector3::Zero);
+            if (show_hidden_geometry)
+            {
+                if (!_unmatched_mesh)
+                {
+                    _unmatched_mesh = _unmatched_mesh_generator();
+                }
+
+                _unmatched_mesh->render(_room_offset * camera.view_projection(), *_texture_storage, colour);
+            }
+
+            for (const auto& mesh : _static_meshes)
+            {
+                mesh->render(camera, *_texture_storage, colour);
+            }
         }
 
         render_contained(camera, colour);
@@ -294,6 +334,14 @@ namespace trview
             auto v2 = std::find(source.begin(), source.end(), tri[2]);
             return v0 != source.end() && v1 != source.end() && v2 != source.end();
         }
+
+        /// Check if the triangle points appear in the position source.
+        /// @param tri The triangle points.
+        /// @param source The point list.
+        bool triangle_contained(const ISector::Triangle& tri, const std::vector<Vector3>& source)
+        {
+            return triangle_contained(std::vector<Vector3>{ tri.v0, tri.v1, tri.v2 }, source);
+        }
     }
 
     void Room::generate_geometry(trlevel::LevelVersion level_version, const IMesh::Source& mesh_source, const trlevel::tr3_room& room)
@@ -316,12 +364,14 @@ namespace trview
 
         _mesh = mesh_source(vertices, indices, std::vector<uint32_t>{}, transparent_triangles, collision_triangles);
 
-        // Make the unmatched mesh.
-        collision_triangles.clear();
-        vertices.clear();
-        std::vector<uint32_t> untextured_indices;
-        process_unmatched_geometry(room.data, room_vertices, transparent_triangles, vertices, untextured_indices, collision_triangles);
-        _unmatched_mesh = mesh_source(vertices, std::vector<std::vector<uint32_t>>{}, untextured_indices, std::vector<TransparentTriangle>{}, collision_triangles);
+        _unmatched_mesh_generator = [this, room, room_vertices, transparent_triangles]()
+        {
+            std::vector<Triangle> collision_triangles;
+            std::vector<MeshVertex> vertices;
+            std::vector<uint32_t> untextured_indices;
+            process_unmatched_geometry(room.data, room_vertices, transparent_triangles, vertices, untextured_indices, collision_triangles);
+            return _mesh_source(vertices, std::vector<std::vector<uint32_t>>{}, untextured_indices, std::vector<TransparentTriangle>{}, collision_triangles);
+        };
 
         // Generate the bounding box based on the room dimensions.
         update_bounding_box();
@@ -377,28 +427,30 @@ namespace trview
         }
     }
 
-    void 
-    Room::generate_sectors(const trlevel::ILevel& level, const trlevel::tr3_room& room, const ISector::Source& sector_source)
+    void Room::generate_sectors(const trlevel::ILevel& level, const trlevel::tr3_room& room, const ISector::Source& sector_source)
     {
         for (auto i = 0u; i < room.sector_list.size(); ++i)
         {
             const trlevel::tr_room_sector &sector = room.sector_list[i];
-            _sectors.push_back(sector_source(level, room, sector, i, _index));
+            _sectors.push_back(sector_source(level, room, sector, i, _index, *this));
         }
     }
 
-    void Room::get_transparent_triangles(ITransparencyBuffer& transparency, const ICamera& camera, SelectionMode selected, bool include_triggers, bool show_water)
+    void Room::get_transparent_triangles(ITransparencyBuffer& transparency, const ICamera& camera, SelectionMode selected, bool include_triggers, bool show_water, bool trle_mode)
     {
         Color colour = room_colour(water() && show_water, selected);
 
-        for (const auto& triangle : _mesh->transparent_triangles())
+        if (!trle_mode)
         {
-            transparency.add(triangle.transform(_room_offset, colour));
-        }
+            for (const auto& triangle : _mesh->transparent_triangles())
+            {
+                transparency.add(triangle.transform(_room_offset, colour));
+            }
 
-        for (const auto& static_mesh : _static_meshes)
-        {
-            static_mesh->get_transparent_triangles(transparency, camera, colour);
+            for (const auto& static_mesh : _static_meshes)
+            {
+                static_mesh->get_transparent_triangles(transparency, camera, colour);
+            }
         }
 
         if (include_triggers)
@@ -598,7 +650,7 @@ namespace trview
 
         // Check if this sector is a portal.
         auto sector = _sectors[sector_id];
-        if (!(sector->flags() & SectorFlag::Portal))
+        if (!has_flag(sector->flags(), SectorFlag::Portal))
         {
             return nullptr;
         }
@@ -633,7 +685,7 @@ namespace trview
         /// @param data The room data containing the rectangles and triangles.
         /// @param room_vertices The vertices for the room.
         /// @param transparent_triangles Transparent triangles in the room.
-        bool geometry_matched(const std::vector<Vector3>& triangle, const trlevel::tr3_room_data& data,  const std::vector<Vector3>& room_vertices, const std::vector<TransparentTriangle>& transparent_triangles)
+        bool geometry_matched(const ISector::Triangle& triangle, const trlevel::tr3_room_data& data,  const std::vector<Vector3>& room_vertices, const std::vector<TransparentTriangle>& transparent_triangles)
         {
             for (const auto& r : data.rectangles)
             {
@@ -674,7 +726,7 @@ namespace trview
         }
 
         void add_triangle(
-            const std::vector<Vector3>& tri,
+            const ISector::Triangle& tri,
             std::vector<MeshVertex>& output_vertices,
             std::vector<uint32_t>& output_indices,
             std::vector<Triangle>& collision_triangles,
@@ -682,15 +734,15 @@ namespace trview
         {
             uint32_t base = static_cast<uint32_t>(output_vertices.size());
 
-            output_vertices.push_back({ tri[0], Vector3::Down, Vector2::Zero, color });
-            output_vertices.push_back({ tri[1], Vector3::Down, Vector2::Zero, color });
-            output_vertices.push_back({ tri[2], Vector3::Down, Vector2::Zero, color });
+            output_vertices.push_back({ tri.v0, Vector3::Down, tri.uv0, color });
+            output_vertices.push_back({ tri.v1, Vector3::Down, tri.uv1, color });
+            output_vertices.push_back({ tri.v2, Vector3::Down, tri.uv2, color });
 
             output_indices.push_back(base);
             output_indices.push_back(base + 1);
             output_indices.push_back(base + 2);
 
-            collision_triangles.emplace_back(tri[0], tri[1], tri[2]);
+            collision_triangles.emplace_back(tri.v0, tri.v1, tri.v2);
         }
     }
 
@@ -741,14 +793,12 @@ namespace trview
             if (sector->is_floor())
             {
                 const auto tris = sector->triangles();
-                if (!geometry_matched({ tris.begin(), tris.begin() + 3 }, data, transformed_room_vertices, transparent_triangles))
+                for (const auto& tri : tris)
                 {
-                    add_triangle({ tris.begin(), tris.begin() + 3 }, output_vertices, output_indices, collision_triangles, get_unmatched_colour(_info, *sector));
-                }
-
-                if (!geometry_matched({ tris.begin() + 3, tris.end() }, data, transformed_room_vertices, transparent_triangles))
-                {
-                    add_triangle({ tris.begin() + 3, tris.end() }, output_vertices, output_indices, collision_triangles, get_unmatched_colour(_info, *sector));
+                    if (!geometry_matched(tri, data, transformed_room_vertices, transparent_triangles))
+                    {
+                        add_triangle(tri, output_vertices, output_indices, collision_triangles, get_unmatched_colour(_info, *sector));
+                    }
                 }
             }
         }
@@ -845,5 +895,126 @@ namespace trview
     bool Room::flag(Flag flag) const
     {
         return _flags & static_cast<uint16_t>(flag);
+    }
+    
+    float Room::y_bottom() const
+    {
+        return _info.yBottom / trlevel::Scale_Y;
+    }
+
+    float Room::y_top() const
+    {
+        return _info.yTop / trlevel::Scale_Y;
+    }
+
+    void Room::generate_sector_triangles()
+    {
+        for (const auto& sector : _sectors)
+        {
+            sector->generate_triangles();
+        }
+    }
+
+    void Room::generate_trle_mesh(const IMesh::Source& mesh_source)
+    {
+        // TODO: Split into meshes for the main room and then for adjacent rooms. If the adjacent room is being rendered
+        // then only one room needs to render that part. This can be decided based on which room has the lower room number.
+        const auto colours = _level.map_colours();
+
+        auto tri_colour = [&](const ISector::Triangle& tri) -> Colour
+        {
+            if (has_flag(tri.type, SectorFlag::Death))
+            {
+                return colours.colour(SectorFlag::Death);
+            }
+            else if (has_any_flag(tri.type, SectorFlag::ClimbableDown, SectorFlag::ClimbableLeft, SectorFlag::ClimbableRight, SectorFlag::ClimbableUp))
+            {
+                return colours.colour(tri.type & SectorFlag::Climbable);
+            }
+            else if (has_flag(tri.type, SectorFlag::Wall))
+            {
+                return colours.colour(MapColours::Special::TrleWall);
+            }
+            else if (has_flag(tri.type, SectorFlag::MonkeySwing))
+            {
+                return colours.colour(SectorFlag::MonkeySwing);
+            }
+            return colours.colour(MapColours::Special::Default);
+        };
+
+        struct MeshPart
+        {
+            std::vector<MeshVertex> vertices;
+            std::vector<Triangle> collision_triangles;
+            std::vector<uint32_t> untextured_indices;
+        };
+
+        std::unordered_map<uint32_t, MeshPart> mesh_parts;
+        uint32_t base = 0u;
+        for (const auto& sector : _sectors)
+        {
+            const auto tris = sector->triangles();
+            for (uint32_t i = 0; i < tris.size(); ++i)
+            {
+                const auto& tri = tris[i];
+                auto& part = mesh_parts[_trle_sector_rooms[base + i]];
+                auto colour = tri_colour(tri);
+                colour.a = 1.0f;
+                add_triangle(tri, part.vertices, part.untextured_indices, part.collision_triangles, colour);
+            }
+            base += tris.size();
+        }
+
+        for (const auto& parts : mesh_parts)
+        {
+            std::vector<std::vector<uint32_t>> vec;
+            vec.push_back(parts.second.untextured_indices);
+            auto mesh = mesh_source(parts.second.vertices, vec, std::vector<uint32_t>{}, std::vector<TransparentTriangle>{}, parts.second.collision_triangles);
+            _trle_meshes[parts.first] = mesh;
+        }
+    }
+
+    ISector::Portal Room::sector_portal(int x1, int z1, int x2, int z2) const
+    {
+        ISector::Portal portal;
+        auto sector = _sectors[get_sector_id(x1, z1)];
+        if (sector->room_above() != 0xff)
+        {
+            const auto other_room = _level.room(sector->room_above()).lock();
+            const auto diff = (position() - other_room->position()) + Vector3(x1, 0, z1);
+            const int other_id = diff.x * other_room->num_z_sectors() + diff.z;
+            portal.sector_above = other_room->sectors()[other_id];
+            portal.above_offset = Vector3(x1, 0, z1) - diff;
+            portal.room_above = other_room;
+        }
+
+        const auto id = get_sector_id(x2, z2);
+        if (x2 >= _num_x_sectors || x2 < 0 || z2 >= _num_z_sectors || z2 < 0)
+        {
+            return portal;
+        }
+
+        portal.direct = _sectors[id];
+        portal.direct_room = std::const_pointer_cast<IRoom>(shared_from_this());
+        if (has_flag(portal.direct->flags(), SectorFlag::Portal))
+        {
+            const auto other_room = _level.room(portal.direct->portal()).lock();
+            const auto diff = (position() - other_room->position()) + Vector3(x2, 0, z2);
+            const int other_id = diff.x * other_room->num_z_sectors() + diff.z;
+            portal.target = other_room->sectors()[other_id];
+            portal.offset = Vector3(x2, 0, z2) - diff;
+        }
+
+        return portal;
+    }
+
+    void Room::set_sector_triangle_rooms(const std::vector<uint32_t>& triangles)
+    {
+        _trle_sector_rooms = triangles;
+    }
+
+    Vector3 Room::position() const
+    {
+        return Vector3(_info.x / trlevel::Scale_X, 0, _info.z / trlevel::Scale_Z);
     }
 }
