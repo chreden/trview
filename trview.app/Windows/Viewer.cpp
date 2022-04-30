@@ -59,6 +59,7 @@ namespace trview
         toggles[Options::depth_enabled] = [this](bool value) { if (_level) { _level->set_highlight_mode(ILevel::RoomHighlightMode::Neighbours, value); } };
         toggles[Options::lights] = [this](bool value) { set_show_lights(value); };
         toggles[Options::trle_colours] = [this](bool value) { set_use_trle_colours(value); };
+        toggles[Options::items] = [this](bool value) { set_show_items(value); };
 
         std::unordered_map<std::string, std::function<void(int32_t)>> scalars;
         scalars[Options::depth] = [this](int32_t value) { if (_level) { _level->set_neighbour_depth(value); } };
@@ -354,6 +355,7 @@ namespace trview
             _measure->reset();
             _scene_changed = true;
         });
+        add_shortcut(false, 'I', [&]() { toggle_show_items(); });
         add_shortcut(false, 'T', [&]() { toggle_show_triggers(); });
         add_shortcut(false, 'G', [&]() { toggle_show_hidden_geometry(); });
         add_shortcut(false, VK_OEM_MINUS, [&]() { select_previous_orbit(); });
@@ -523,6 +525,7 @@ namespace trview
         _level->set_show_bounding_boxes(_ui->toggle(Options::show_bounding_boxes));
         _level->set_show_lights(_ui->toggle(Options::lights));
         _level->set_use_trle_colours(_ui->toggle(Options::trle_colours));
+        _level->set_show_items(_ui->toggle(Options::items));
 
         // Set up the views.
         auto rooms = _level->room_info();
@@ -993,6 +996,23 @@ namespace trview
         if (_level)
         {
             set_show_triggers(!_level->show_triggers());
+        }
+    }
+
+    void Viewer::set_show_items(bool show)
+    {
+        if (_level)
+        {
+            _level->set_show_items(show);
+            _ui->set_toggle(Options::items, show);
+        }
+    }
+
+    void Viewer::toggle_show_items()
+    {
+        if (_level)
+        {
+            set_show_items(!_level->show_items());
         }
     }
 

@@ -147,18 +147,20 @@ namespace trview
         /// <param name="transparency">The buffer to which to add triangles.</param>
         /// <param name="camera">The current viewpoint.</param>
         /// <param name="selected">The selection mode for the room.</param>
+        /// <param name="show_items">Whether to render items.</param>
         /// <param name="show_water">Whether to render water effects.</param>
-        virtual void get_contained_transparent_triangles(ITransparencyBuffer& transparency, const ICamera& camera, SelectionMode selected, bool show_water) = 0;
+        virtual void get_contained_transparent_triangles(ITransparencyBuffer& transparency, const ICamera& camera, SelectionMode selected, bool show_items, bool show_water) = 0;
         /// <summary>
         /// Get the transparent triangles for the room geometry.
         /// </summary>
         /// <param name="transparency">The buffer to which to add triangles to.</param>
         /// <param name="camera">The current viewpoint.</param>
         /// <param name="selected">The selection mode for the room.</param>
+        /// <param name="show_items">Whether to render items.</param>
         /// <param name="include_triggers">Whether to include triggers in the output.</param>
         /// <param name="show_water">Whether to render water effects.</param>
         /// <param name="trle_mode">Whether TRLE mode is enabled.</param>
-        virtual void get_transparent_triangles(ITransparencyBuffer& transparency, const ICamera& camera, SelectionMode selected, bool include_triggers, bool show_water, bool trle_mode) = 0;
+        virtual void get_transparent_triangles(ITransparencyBuffer& transparency, const ICamera& camera, SelectionMode selected, bool show_items, bool include_triggers, bool show_water, bool trle_mode) = 0;
         /// <summary>
         /// Checks whether the room has the specified flag.
         /// </summary>
@@ -213,11 +215,12 @@ namespace trview
         /// </summary>
         /// <param name="camera">The current viewpoint.</param>
         /// <param name="selected">Whether the room is selected.</param>
+        /// <param name="show_items">Whether to render items.</param>
         /// <param name="show_hidden_geometry">Whether to render hidden geometry.</param>
         /// <param name="show_water">Whether to render water effects.</param>
         /// <param name="use_trle_colours">Whether to use trle colours.</param>
         /// <param name="visible_rooms">The rooms that are currently being rendered.</param>
-        virtual void render(const ICamera& camera, SelectionMode selected, bool show_hidden_geometry, bool show_water, bool use_trle_colours, const std::unordered_set<uint32_t>& visible_rooms) = 0;
+        virtual void render(const ICamera& camera, SelectionMode selected, bool show_items, bool show_hidden_geometry, bool show_water, bool use_trle_colours, const std::unordered_set<uint32_t>& visible_rooms) = 0;
         /// <summary>
         /// Render the bounding boxes in the room.
         /// </summary>
@@ -233,8 +236,9 @@ namespace trview
         /// </summary>
         /// <param name="camera">The current viewpoint.</param>
         /// <param name="selected">Whether the room is selected.</param>
+        /// <param name="show_items">Whether to render items.</param>
         /// <param name="show_water">Whether to render water effects.</param>
-        virtual void render_contained(const ICamera& camera, SelectionMode selected, bool show_water) = 0;
+        virtual void render_contained(const ICamera& camera, SelectionMode selected, bool show_items, bool show_water) = 0;
         /// <summary>
         /// Gets all sectors in the room.
         /// </summary>

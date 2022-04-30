@@ -75,8 +75,10 @@ namespace trview
         virtual void set_show_wireframe(bool show) override;
         virtual void set_show_bounding_boxes(bool show) override;
         virtual void set_show_lights(bool show) override;
+        virtual void set_show_items(bool show) override;
         virtual bool show_lights() const override;
         virtual bool show_triggers() const override;
+        virtual bool show_items() const override;
         virtual void set_selected_trigger(uint32_t number) override;
         virtual void set_selected_light(uint32_t number) override;
         virtual const ILevelTextureStorage& texture_storage() const override;
@@ -169,6 +171,7 @@ namespace trview
         bool _show_wireframe{ false };
         bool _show_bounding_boxes{ false };
         bool _show_lights{ false };
+        bool _show_items{ true };
         bool _use_trle_colours{ false };
 
         std::unique_ptr<ISelectionRenderer> _selection_renderer;

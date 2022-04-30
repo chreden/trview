@@ -210,13 +210,7 @@ namespace trview
         return pick_results.front();
     }
 
-    // Render the level geometry and the objects contained in this room.
-    // context: The D3D context.
-    // camera: The camera to use to render.
-    // texture_storage: The textures for the level.
-    // selected: The selection mode to use to highlight geometry and objects.
-    // render_mode: The type of geometry and object geometry to render.
-    void Room::render(const ICamera& camera, SelectionMode selected, bool show_hidden_geometry, bool show_water, bool use_trle_colours, const std::unordered_set<uint32_t>& visible_rooms)
+    void Room::render(const ICamera& camera, SelectionMode selected, bool show_items, bool show_hidden_geometry, bool show_water, bool use_trle_colours, const std::unordered_set<uint32_t>& visible_rooms)
     {
         Color colour = room_colour(water() && show_water, selected);
 
@@ -254,7 +248,7 @@ namespace trview
             }
         }
 
-        render_contained(camera, colour);
+        render_contained(camera, colour, show_items);
     }
 
     void Room::render_bounding_boxes(const ICamera& camera)
@@ -281,14 +275,19 @@ namespace trview
         }
     }
 
-    void Room::render_contained(const ICamera& camera, SelectionMode selected, bool show_water)
+    void Room::render_contained(const ICamera& camera, SelectionMode selected, bool show_items, bool show_water)
     {
         Color colour = room_colour(water() && show_water, selected);
-        render_contained(camera, colour);
+        render_contained(camera, colour, show_items);
     }
 
-    void Room::render_contained(const ICamera& camera, const Color& colour)
+    void Room::render_contained(const ICamera& camera, const Color& colour, bool show_items)
     {
+        if (!show_items)
+        {
+            return;
+        }
+
         for (const auto& entity : _entities)
         {
             if (auto entity_ptr = entity.lock())
@@ -436,7 +435,7 @@ namespace trview
         }
     }
 
-    void Room::get_transparent_triangles(ITransparencyBuffer& transparency, const ICamera& camera, SelectionMode selected, bool include_triggers, bool show_water, bool trle_mode)
+    void Room::get_transparent_triangles(ITransparencyBuffer& transparency, const ICamera& camera, SelectionMode selected, bool show_items, bool include_triggers, bool show_water, bool trle_mode)
     {
         Color colour = room_colour(water() && show_water, selected);
 
@@ -464,17 +463,22 @@ namespace trview
             }
         }
 
-        get_contained_transparent_triangles(transparency, camera, colour);
+        get_contained_transparent_triangles(transparency, camera, colour, show_items);
     }
 
-    void Room::get_contained_transparent_triangles(ITransparencyBuffer& transparency, const ICamera& camera, SelectionMode selected, bool show_water)
+    void Room::get_contained_transparent_triangles(ITransparencyBuffer& transparency, const ICamera& camera, SelectionMode selected, bool show_items, bool show_water)
     {
         Color colour = room_colour(water() && show_water, selected);
-        get_contained_transparent_triangles(transparency, camera, colour);
+        get_contained_transparent_triangles(transparency, camera, colour, show_items);
     }
 
-    void Room::get_contained_transparent_triangles(ITransparencyBuffer& transparency, const ICamera& camera, const Color& colour)
+    void Room::get_contained_transparent_triangles(ITransparencyBuffer& transparency, const ICamera& camera, const Color& colour, bool show_items)
     {
+        if (!show_items)
+        {
+            return;
+        }
+
         for (const auto& entity : _entities)
         {
             if (auto entity_ptr = entity.lock())
