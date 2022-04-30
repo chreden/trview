@@ -46,7 +46,7 @@ namespace trview
     }
 
     /// Class that coordinates all the parts of the application.
-    class Viewer : public IViewer
+    class Viewer : public IViewer, public MessageHandler
     {
     public:
         /// Create a new viewer.
@@ -87,6 +87,7 @@ namespace trview
         virtual void set_show_ui(bool value) override;
         virtual bool ui_input_active() const override;
         virtual void select_light(const std::weak_ptr<ILight>& light) override;
+        virtual std::optional<int> process_message(UINT message, WPARAM wParam, LPARAM lParam) override;
         const ICamera& current_camera() const;
         ICamera& current_camera();
     private:
@@ -123,7 +124,6 @@ namespace trview
         void apply_acceleration_settings();
 
         const std::shared_ptr<graphics::IDevice> _device;
-        Window _window;
         const std::shared_ptr<IShortcuts>& _shortcuts;
         std::unique_ptr<graphics::IDeviceWindow> _main_window;
         ILevel* _level{ nullptr };

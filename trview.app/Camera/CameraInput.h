@@ -60,6 +60,11 @@ namespace trview
 
         /// Event raised when the camera mode needs to change.
         Event<CameraMode> on_mode_change;
+
+        /// <summary>
+        /// Relase all pressed keys.
+        /// </summary>
+        void reset_input();
     private:
         bool _free_forward{ false };
         bool _free_left{ false };
