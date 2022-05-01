@@ -931,7 +931,7 @@ namespace trview
             {
                 return colours.colour(SectorFlag::Death);
             }
-            else if (has_any_flag(tri.type, SectorFlag::ClimbableDown, SectorFlag::ClimbableLeft, SectorFlag::ClimbableRight, SectorFlag::ClimbableUp))
+            else if (has_any_flag(tri.type, SectorFlag::ClimbableSouth, SectorFlag::ClimbableWest, SectorFlag::ClimbableEast, SectorFlag::ClimbableNorth))
             {
                 return colours.colour(tri.type & SectorFlag::Climbable);
             }

@@ -14,16 +14,16 @@ namespace trview
         Death = 0x8,
         FloorSlant = 0x10,
         CeilingSlant = 0x20,
-        ClimbableUp = 0x40, // Top edge is climbable 
-        ClimbableRight = 0x80, // Right edge is climbable 
-        ClimbableDown = 0x100, // Bottom edge is climbable 
-        ClimbableLeft = 0x200, // Left edge is climbable
+        ClimbableNorth = 0x40, // Top edge is climbable 
+        ClimbableEast = 0x80, // Right edge is climbable 
+        ClimbableSouth = 0x100, // Bottom edge is climbable 
+        ClimbableWest = 0x200, // Left edge is climbable
         MonkeySwing = 0x400,
         RoomAbove = 0x800, // There is a ceiling portal above
         RoomBelow = 0x1000, // There is a floor portal 
         MinecartLeft = 0x2000, // Minecart turns left, Trigger Triggerer in TR4+
         MinecartRight = 0x4000, // Minecart turns right
-        Climbable = ClimbableUp | ClimbableRight | ClimbableDown | ClimbableLeft
+        Climbable = ClimbableNorth | ClimbableEast | ClimbableSouth | ClimbableWest
     };
 
     enum ClimbableWalls

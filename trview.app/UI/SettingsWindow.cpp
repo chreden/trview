@@ -110,10 +110,10 @@ namespace trview
                     add_colour("Minecart Left", SectorFlag::MinecartLeft);
                     add_colour("Minecart Right", SectorFlag::MinecartRight);
                     add_colour("Monkey Swing", SectorFlag::MonkeySwing);
-                    add_colour("Climbable Up", SectorFlag::ClimbableUp);
-                    add_colour("Climbable Down", SectorFlag::ClimbableDown);
-                    add_colour("Climbable Right", SectorFlag::ClimbableRight);
-                    add_colour("Climbable Left", SectorFlag::ClimbableLeft);
+                    add_colour("Climbable North", SectorFlag::ClimbableNorth);
+                    add_colour("Climbable South", SectorFlag::ClimbableSouth);
+                    add_colour("Climbable East", SectorFlag::ClimbableEast);
+                    add_colour("Climbable West", SectorFlag::ClimbableWest);
                     add_special("No Space", MapColours::Special::NoSpace);
                     add_special("Room Above", MapColours::Special::RoomAbove);
                     add_special("Room Below", MapColours::Special::RoomBelow);

@@ -86,14 +86,14 @@ namespace trview
             // In the future I'd like to just draw a hollow square instead.
             const float thickness = _DRAW_SCALE / 4;
 
-            if (has_flag(tile.sector->flags(), SectorFlag::ClimbableUp))
-                draw(tile.position, Size(tile.size.width, thickness), _colours.colour(SectorFlag::ClimbableUp));
-            if (has_flag(tile.sector->flags(), SectorFlag::ClimbableRight))
-                draw(Point(tile.position.x + _DRAW_SCALE - thickness, tile.position.y), Size(thickness, tile.size.height), _colours.colour(SectorFlag::ClimbableRight));
-            if (has_flag(tile.sector->flags(), SectorFlag::ClimbableDown))
-                draw(Point(tile.position.x, tile.position.y + _DRAW_SCALE - thickness), Size(tile.size.width, thickness), _colours.colour(SectorFlag::ClimbableDown));
-            if (has_flag(tile.sector->flags(), SectorFlag::ClimbableLeft))
-                draw(tile.position, Size(thickness, tile.size.height), _colours.colour(SectorFlag::ClimbableLeft));
+            if (has_flag(tile.sector->flags(), SectorFlag::ClimbableNorth))
+                draw(tile.position, Size(tile.size.width, thickness), _colours.colour(SectorFlag::ClimbableNorth));
+            if (has_flag(tile.sector->flags(), SectorFlag::ClimbableEast))
+                draw(Point(tile.position.x + _DRAW_SCALE - thickness, tile.position.y), Size(thickness, tile.size.height), _colours.colour(SectorFlag::ClimbableEast));
+            if (has_flag(tile.sector->flags(), SectorFlag::ClimbableSouth))
+                draw(Point(tile.position.x, tile.position.y + _DRAW_SCALE - thickness), Size(tile.size.width, thickness), _colours.colour(SectorFlag::ClimbableSouth));
+            if (has_flag(tile.sector->flags(), SectorFlag::ClimbableWest))
+                draw(tile.position, Size(thickness, tile.size.height), _colours.colour(SectorFlag::ClimbableWest));
 
             // If sector is a down portal, draw a transparent black square over it 
             if (has_flag(tile.sector->flags(), SectorFlag::RoomBelow))
