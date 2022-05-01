@@ -41,6 +41,7 @@ namespace trview
             MOCK_METHOD(void, set_show_wireframe, (bool), (override));
             MOCK_METHOD(void, set_show_bounding_boxes, (bool), (override));
             MOCK_METHOD(void, set_show_lights, (bool), (override));
+            MOCK_METHOD(void, set_show_items, (bool), (override));
             MOCK_METHOD(void, set_trigger_visibility, (uint32_t, bool), (override));
             MOCK_METHOD(void, set_neighbour_depth, (uint32_t), (override));
             MOCK_METHOD(void, set_selected_room, (uint16_t), (override));
@@ -49,6 +50,7 @@ namespace trview
             MOCK_METHOD(bool, show_hidden_geometry, (), (const, override));
             MOCK_METHOD(bool, show_lights, (), (const, override));
             MOCK_METHOD(bool, show_triggers, (), (const, override));
+            MOCK_METHOD(bool, show_items, (), (const, override));
             MOCK_METHOD(const ILevelTextureStorage&, texture_storage, (), (const, override));
             MOCK_METHOD(std::vector<std::weak_ptr<ITrigger>>, triggers, (), (const, override));
             MOCK_METHOD(trlevel::LevelVersion, version, (), (const, override));

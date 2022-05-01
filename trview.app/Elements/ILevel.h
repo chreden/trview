@@ -85,6 +85,7 @@ namespace trview
         virtual void set_show_wireframe(bool show) = 0;
         virtual void set_show_bounding_boxes(bool show) = 0;
         virtual void set_show_lights(bool show) = 0;
+        virtual void set_show_items(bool show) = 0;
         virtual void set_trigger_visibility(uint32_t index, bool state) = 0;
         virtual void set_use_trle_colours(bool value) = 0;
         virtual void set_neighbour_depth(uint32_t depth) = 0;
@@ -94,6 +95,7 @@ namespace trview
         virtual bool show_hidden_geometry() const = 0;
         virtual bool show_lights() const = 0;
         virtual bool show_triggers() const = 0;
+        virtual bool show_items() const = 0;
         virtual const ILevelTextureStorage& texture_storage() const = 0;
         /// Get the triggers in this level.
         /// @returns All triggers in the level.

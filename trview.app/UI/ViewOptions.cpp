@@ -15,6 +15,7 @@ namespace trview
         _toggles[IViewer::Options::lights] = false;
         _toggles[IViewer::Options::flip] = false;
         _toggles[IViewer::Options::trle_colours] = false;
+        _toggles[IViewer::Options::items] = true;
     }
 
     void ViewOptions::render()
@@ -34,11 +35,14 @@ namespace trview
             if (ImGui::BeginTable(Names::flags.c_str(), 2))
             {
                 ImGui::TableNextRow();
-                add_toggle(IViewer::Options::highlight);
+                add_toggle(IViewer::Options::items);
                 add_toggle(IViewer::Options::triggers);
                 ImGui::TableNextRow();
-                add_toggle(IViewer::Options::hidden_geometry);
+                add_toggle(IViewer::Options::lights);
                 add_toggle(IViewer::Options::water);
+                ImGui::TableNextRow();
+                add_toggle(IViewer::Options::show_bounding_boxes);
+                add_toggle(IViewer::Options::highlight);
                 ImGui::TableNextRow();
                 add_toggle(IViewer::Options::depth_enabled);
                 ImGui::TableNextColumn();
@@ -51,11 +55,9 @@ namespace trview
                 ImGui::PopItemWidth();
                 ImGui::TableNextRow();
                 add_toggle(IViewer::Options::wireframe);
-                add_toggle(IViewer::Options::show_bounding_boxes);
+                add_toggle(IViewer::Options::hidden_geometry);
                 ImGui::TableNextRow();
                 add_toggle(IViewer::Options::trle_colours);
-                add_toggle(IViewer::Options::lights);
-                ImGui::TableNextRow();
                 if (!_use_alternate_groups)
                 {
                     ImGui::BeginDisabled(!_flip_enabled);

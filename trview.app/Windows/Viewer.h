@@ -107,6 +107,8 @@ namespace trview
         void setup_camera_input();
         void set_show_triggers(bool show);
         void toggle_show_triggers();
+        void set_show_items(bool show);
+        void toggle_show_items();
         void set_show_hidden_geometry(bool show);
         void toggle_show_hidden_geometry();
         void toggle_show_lights();

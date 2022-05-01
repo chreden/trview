@@ -178,7 +178,24 @@ TEST(Room, GetTransparentTriangles)
     room->add_trigger(trigger);
     NiceMock<MockTransparencyBuffer> transparency;
     NiceMock<MockCamera> camera;
-    room->get_transparent_triangles(transparency, camera, IRoom::SelectionMode::NotSelected, true, true, false);
+    room->get_transparent_triangles(transparency, camera, IRoom::SelectionMode::NotSelected, true, true, true, false);
+}
+
+/// <summary>
+/// Tests that the room gets transparent triangles when rendering, excluding items.
+/// </summary>
+TEST(Room, GetTransparentTrianglesWithoutItems)
+{
+    auto room = register_test_module().build();
+    auto entity = mock_shared<MockEntity>();
+    EXPECT_CALL(*entity, get_transparent_triangles).Times(0);
+    auto trigger = mock_shared<MockTrigger>();
+    EXPECT_CALL(*trigger, get_transparent_triangles).Times(1);
+    room->add_entity(entity);
+    room->add_trigger(trigger);
+    NiceMock<MockTransparencyBuffer> transparency;
+    NiceMock<MockCamera> camera;
+    room->get_transparent_triangles(transparency, camera, IRoom::SelectionMode::NotSelected, false, true, true, false);
 }
 
 /// <summary>
@@ -195,7 +212,7 @@ TEST(Room, GetTransparentTrianglesWithoutTriggers)
     room->add_trigger(trigger);
     NiceMock<MockTransparencyBuffer> transparency;
     NiceMock<MockCamera> camera;
-    room->get_transparent_triangles(transparency, camera, IRoom::SelectionMode::NotSelected, false, true, false);
+    room->get_transparent_triangles(transparency, camera, IRoom::SelectionMode::NotSelected, true, false, true, false);
 }
 
 /// <summary>
@@ -212,7 +229,7 @@ TEST(Room, GetTransparentTrianglesFromContents)
     room->add_trigger(trigger);
     NiceMock<MockTransparencyBuffer> transparency;
     NiceMock<MockCamera> camera;
-    room->get_contained_transparent_triangles(transparency, camera, IRoom::SelectionMode::NotSelected, true);
+    room->get_contained_transparent_triangles(transparency, camera, IRoom::SelectionMode::NotSelected, true, true);
 }
 
 /// <summary>
@@ -416,7 +433,7 @@ TEST(Room, QuicksandNotDetectedBeforeTR3)
 }
 
 /// <summary>
-/// Tests that entities are rendered when the room is rendererd.
+/// Tests that entities are rendered when the room is rendered.
 /// </summary>
 TEST(Room, RendersContainedEntities)
 {
@@ -424,7 +441,19 @@ TEST(Room, RendersContainedEntities)
     auto entity = mock_shared<MockEntity>();
     EXPECT_CALL(*entity, render).Times(1);
     room->add_entity(entity);
-    room->render(NiceMock<MockCamera>{}, IRoom::SelectionMode::NotSelected, true, true, false, {});
+    room->render(NiceMock<MockCamera>{}, IRoom::SelectionMode::NotSelected, true, true, true, false, {});
+}
+
+/// <summary>
+/// Tests that entities are not rendered when the room is rendered and show items is false.
+/// </summary>
+TEST(Room, DoesNotRenderContainedEntitiesWhenShowItemsDisabled)
+{
+    auto room = register_test_module().build();
+    auto entity = mock_shared<MockEntity>();
+    EXPECT_CALL(*entity, render).Times(0);
+    room->add_entity(entity);
+    room->render(NiceMock<MockCamera>{}, IRoom::SelectionMode::NotSelected, false, true, true, false, {});
 }
 
 /// <summary>

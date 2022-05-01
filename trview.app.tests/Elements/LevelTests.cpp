@@ -276,7 +276,7 @@ TEST(Level, PickUsesCorrectMinimalFilters)
     EXPECT_CALL(mock_level, num_rooms()).WillRepeatedly(Return(1));
 
     auto room = mock_shared<MockRoom>();
-    EXPECT_CALL(*room, pick(A<const Vector3&>(), A<const Vector3&>(), PickFilter::Geometry | PickFilter::Entities | PickFilter::StaticMeshes)).Times(1);
+    EXPECT_CALL(*room, pick(A<const Vector3&>(), A<const Vector3&>(), PickFilter::Geometry | PickFilter::StaticMeshes)).Times(1);
 
     auto level = register_test_module()
         .with_level(std::move(mock_level_ptr))
@@ -284,6 +284,7 @@ TEST(Level, PickUsesCorrectMinimalFilters)
         .build();
     level->set_show_triggers(false);
     level->set_show_hidden_geometry(false);
+    level->set_show_items(false);
 
     NiceMock<MockCamera> camera;
     level->pick(camera, Vector3::Zero, Vector3::Forward);
@@ -356,4 +357,67 @@ TEST(Level, SetShowBoundingBoxesRaisesLevelChangedEvent)
 
     level->set_show_bounding_boxes(true);
     ASSERT_EQ(times_called, 1u);
+}
+
+TEST(Level, ItemsNotRenderedWhenDisabled)
+{
+    auto [mock_level_ptr, mock_level] = create_mock<trlevel::mocks::MockLevel>();
+    EXPECT_CALL(mock_level, num_rooms()).WillRepeatedly(Return(1));
+    auto room = mock_shared<MockRoom>();
+    ON_CALL(*room, alternate_mode).WillByDefault(Return(IRoom::AlternateMode::IsAlternate));
+
+    auto device = mock_shared<MockDevice>();
+    Microsoft::WRL::ComPtr<ID3D11DeviceContext> context{ new NiceMock<MockD3D11DeviceContext>() };
+    EXPECT_CALL(*device, context).WillRepeatedly(Return(context));
+
+    NiceMock<MockShader> shader;
+    auto shader_storage = mock_shared<MockShaderStorage>();
+    EXPECT_CALL(*shader_storage, get).WillRepeatedly(Return(&shader));
+
+    EXPECT_CALL(*room, render(A<const ICamera&>(), A<IRoom::SelectionMode>(), false, A<bool>(), A<bool>(), A<bool>(), A<const std::unordered_set<uint32_t>&>())).Times(1);
+    EXPECT_CALL(*room, render_contained(A<const ICamera&>(), A<IRoom::SelectionMode>(), false, A<bool>())).Times(1);
+
+    auto level = register_test_module()
+        .with_device(device)
+        .with_shader_storage(shader_storage)
+        .with_level(std::move(mock_level_ptr))
+        .with_room_source([&](auto&&...) { return room; })
+        .build();
+
+    level->set_alternate_mode(true);
+    level->set_show_items(false);
+
+    NiceMock<MockCamera> camera;
+    level->render(camera, false);
+}
+
+TEST(Level, ItemsRenderedWhenEnabled)
+{
+    auto [mock_level_ptr, mock_level] = create_mock<trlevel::mocks::MockLevel>();
+    EXPECT_CALL(mock_level, num_rooms()).WillRepeatedly(Return(1));
+    auto room = mock_shared<MockRoom>();
+    ON_CALL(*room, alternate_mode).WillByDefault(Return(IRoom::AlternateMode::IsAlternate));
+
+    auto device = mock_shared<MockDevice>();
+    Microsoft::WRL::ComPtr<ID3D11DeviceContext> context{ new NiceMock<MockD3D11DeviceContext>() };
+    EXPECT_CALL(*device, context).WillRepeatedly(Return(context));
+
+    NiceMock<MockShader> shader;
+    auto shader_storage = mock_shared<MockShaderStorage>();
+    EXPECT_CALL(*shader_storage, get).WillRepeatedly(Return(&shader));
+
+    EXPECT_CALL(*room, render(A<const ICamera&>(), A<IRoom::SelectionMode>(), true, A<bool>(), A<bool>(), A<bool>(), A<const std::unordered_set<uint32_t>&>())).Times(1);
+    EXPECT_CALL(*room, render_contained(A<const ICamera&>(), A<IRoom::SelectionMode>(), true, A<bool>())).Times(1);
+
+    auto level = register_test_module()
+        .with_device(device)
+        .with_shader_storage(shader_storage)
+        .with_level(std::move(mock_level_ptr))
+        .with_room_source([&](auto&&...) { return room; })
+        .build();
+
+    level->set_alternate_mode(true);
+
+    NiceMock<MockCamera> camera;
+    level->render(camera, false);
 }

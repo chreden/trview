@@ -240,20 +240,20 @@ namespace trview
         // that need to be rendered in the second pass.
         for (const auto& room : rooms)
         {
-            room.room.render(camera, room.selection_mode, _show_hidden_geometry, _show_water, _use_trle_colours, visible_set);
+            room.room.render(camera, room.selection_mode, _show_items, _show_hidden_geometry, _show_water, _use_trle_colours, visible_set);
             if (_regenerate_transparency)
             {
-                room.room.get_transparent_triangles(*_transparency, camera, room.selection_mode, _show_triggers, _show_water, _use_trle_colours);
+                room.room.get_transparent_triangles(*_transparency, camera, room.selection_mode, _show_items, _show_triggers, _show_water, _use_trle_colours);
             }
 
             // If this is an alternate room, render the items from the original room in the sample places.
             if (!is_alternate_mismatch(room.room) && room.room.alternate_mode() == IRoom::AlternateMode::IsAlternate)
             {
                 auto& original_room = _rooms[room.room.alternate_room()];
-                original_room->render_contained(camera, room.selection_mode, _show_water);
+                original_room->render_contained(camera, room.selection_mode, _show_items, _show_water);
                 if (_regenerate_transparency)
                 {
-                    original_room->get_contained_transparent_triangles(*_transparency, camera, room.selection_mode, _show_water);
+                    original_room->get_contained_transparent_triangles(*_transparency, camera, room.selection_mode, _show_items, _show_water);
                 }
             }
         }
@@ -586,7 +586,7 @@ namespace trview
         {
             choose(room.room.pick(position, direction,
                 PickFilter::Geometry |
-                PickFilter::Entities |
+                filter_flag(PickFilter::Entities, _show_items) |
                 PickFilter::StaticMeshes |
                 filter_flag(PickFilter::TrleGeometry, _use_trle_colours) |
                 filter_flag(PickFilter::Triggers, _show_triggers) |
@@ -753,6 +753,13 @@ namespace trview
         on_level_changed();
     }
 
+    void Level::set_show_items(bool show)
+    {
+        _show_items = show;
+        _regenerate_transparency = true;
+        on_level_changed();
+    }
+
     bool Level::show_triggers() const
     {
         return _show_triggers;
@@ -761,6 +768,11 @@ namespace trview
     bool Level::show_lights() const
     {
         return _show_lights;
+    }
+
+    bool Level::show_items() const
+    {
+        return _show_items;
     }
 
     void Level::set_selected_trigger(uint32_t number)
