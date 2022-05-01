@@ -448,7 +448,7 @@ namespace trview
         std::function<void(std::shared_ptr<ISector>)> add_ladders;
         add_ladders = [&](auto&& sector)
         {
-            if (has_any_flag(sector->flags(), SectorFlag::ClimbableUp, SectorFlag::ClimbableDown, SectorFlag::ClimbableLeft, SectorFlag::ClimbableRight) && sector->room_above() != 0xff)
+            if (has_any_flag(sector->flags(), SectorFlag::ClimbableNorth, SectorFlag::ClimbableSouth, SectorFlag::ClimbableWest, SectorFlag::ClimbableEast) && sector->room_above() != 0xff)
             {
                 auto portal = _rooms[sector->room()]->sector_portal(sector->x(), sector->z(), -1, -1);
                 portal.sector_above->add_flag(sector->flags() & SectorFlag::Climbable);

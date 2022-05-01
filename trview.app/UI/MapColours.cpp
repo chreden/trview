@@ -14,10 +14,10 @@ namespace trview
             { SectorFlag::MinecartLeft, { 0.0f, 0.9f, 0.9f } },
             { SectorFlag::MinecartRight, { 0.0f, 0.9f, 0.9f } },
             { SectorFlag::MonkeySwing, { 0.9f, 0.9f, 0.4f } },
-            { SectorFlag::ClimbableUp, { 0.6f, 0.0f, 0.9f, 0.0f } },
-            { SectorFlag::ClimbableDown, { 0.6f, 0.0f, 0.9f, 0.0f } },
-            { SectorFlag::ClimbableRight, { 0.6f, 0.0f, 0.9f, 0.0f } },
-            { SectorFlag::ClimbableLeft, { 0.6f, 0.0f, 0.9f, 0.0f } },
+            { SectorFlag::ClimbableNorth, { 0.6f, 0.0f, 0.9f, 0.0f } },
+            { SectorFlag::ClimbableSouth, { 0.6f, 0.0f, 0.9f, 0.0f } },
+            { SectorFlag::ClimbableEast, { 0.6f, 0.0f, 0.9f, 0.0f } },
+            { SectorFlag::ClimbableWest, { 0.6f, 0.0f, 0.9f, 0.0f } },
         };
 
         const std::unordered_map<MapColours::Special, Colour> default_special_colours = {
@@ -80,7 +80,7 @@ namespace trview
                 auto key = color.first;
                 if (has_flag(flags, key)
                     && (static_cast<int>(key) < minimum_flag_enabled || minimum_flag_enabled == -1)
-                    && (key < SectorFlag::ClimbableUp || key > SectorFlag::ClimbableLeft)) // climbable flag handled separately
+                    && (key < SectorFlag::ClimbableNorth || key > SectorFlag::ClimbableWest)) // climbable flag handled separately
                 {
                     minimum_flag_enabled = static_cast<int>(key);
                     auto override_colour = _override_colours.find(key);
