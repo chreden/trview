@@ -298,8 +298,15 @@ namespace trview
         _token_store += _view_menu.on_show_tools += [&](bool show) { _viewer->set_show_tools(show); };
         _token_store += _view_menu.on_unhide_all += [&]()
         {
+            if (!_level)
+            {
+                return;
+            }
+
             for (const auto& item : _level->items()) { if (!item.visible()) { set_item_visibility(item, true); } }
             for (const auto& trigger : _level->triggers()) { set_trigger_visibility(trigger, true); }
+            for (const auto& light : _level->lights()) { set_light_visibility(light, true); }
+            for (const auto& room : _level->rooms()) { set_room_visibility(room, true); }
         };
     }
 
@@ -312,6 +319,7 @@ namespace trview
         _token_store += _viewer->on_trigger_visibility += [this](const auto& trigger, bool value) { set_trigger_visibility(trigger, value); };
         _token_store += _viewer->on_light_selected += [this](const auto& light) { select_light(light); };
         _token_store += _viewer->on_light_visibility += [this](const auto& light, bool value) { set_light_visibility(light, value); };
+        _token_store += _viewer->on_room_visibility += [this](const auto& room, bool value) { set_room_visibility(room, value); };
         _token_store += _viewer->on_waypoint_added += [this](const auto& position, const auto& normal, auto room, auto type, auto index) { add_waypoint(position, normal, room, type, index); };
         _token_store += _viewer->on_waypoint_selected += [this](auto index) { select_waypoint(index); };
         _token_store += _viewer->on_waypoint_removed += [this](auto index) { remove_waypoint(index); };
@@ -382,6 +390,7 @@ namespace trview
         _token_store += _rooms_windows->on_room_selected += [this](const auto& room) { select_room(room); };
         _token_store += _rooms_windows->on_item_selected += [this](const auto& item) { select_item(item); };
         _token_store += _rooms_windows->on_trigger_selected += [this](const auto& trigger) { select_trigger(trigger); };
+        _token_store += _rooms_windows->on_room_visibility += [this](const auto& room, bool value) { set_room_visibility(room, value); };
     }
 
     void Application::setup_route_window()
@@ -583,6 +592,22 @@ namespace trview
             if (light_ptr->visible() != visible)
             {
                 _level->set_light_visibility(light_ptr->number(), visible);
+            }
+        }
+    }
+
+    void Application::set_room_visibility(const std::weak_ptr<IRoom>& room, bool visible)
+    {
+        if (!_level)
+        {
+            return;
+        }
+
+        if (const auto room_ptr = room.lock())
+        {
+            if (room_ptr->visible() != visible)
+            {
+                _level->set_room_visibility(room_ptr->number(), visible);
             }
         }
     }

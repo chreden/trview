@@ -18,18 +18,11 @@ namespace trview
     public:
         struct Names
         {
-            static const std::string sync_room;
-            static const std::string track_item;
-            static const std::string track_trigger;
-            static const std::string rooms_listbox;
-            static const std::string triggers_listbox;
-            static const std::string stats_listbox;
-            static const std::string minimap;
-            static const std::string neighbours_listbox;
-            static const std::string items_listbox;
             static inline const std::string details_panel = "Room Details";
             static inline const std::string properties = "Properties";
             static inline const std::string bottom = "##bottom";
+            static inline const std::string rooms_panel = "Rooms List";
+            static inline const std::string rooms_list = "##roomslist";
         };
 
         /// Create a rooms window as a child of the specified window.

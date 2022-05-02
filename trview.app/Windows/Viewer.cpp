@@ -167,6 +167,10 @@ namespace trview
             {
                 on_light_visibility(_level->lights()[_context_pick.index], false);
             }
+            else if (_context_pick.type == PickResult::Type::Room)
+            {
+                on_room_visibility(_level->rooms()[_context_pick.index], false);
+            }
         };
         _token_store += _ui->on_orbit += [&]()
         {
@@ -488,7 +492,7 @@ namespace trview
                 _ui->set_show_context_menu(true);
                 _camera_input.reset(true);
                 _ui->set_remove_waypoint_enabled(_current_pick.type == PickResult::Type::Waypoint);
-                _ui->set_hide_enabled(_current_pick.type == PickResult::Type::Entity || _current_pick.type == PickResult::Type::Trigger);
+                _ui->set_hide_enabled(equals_any(_current_pick.type, PickResult::Type::Entity, PickResult::Type::Trigger, PickResult::Type::Light, PickResult::Type::Room));
                 _ui->set_mid_waypoint_enabled(_current_pick.type == PickResult::Type::Room && _current_pick.triangle.normal.y < 0);
             }
         };
