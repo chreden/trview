@@ -30,7 +30,7 @@ namespace trview
         virtual void move(int32_t left, int32_t right) override;
         virtual PickResult pick(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& direction) const override;
         virtual void remove(uint32_t index) override;
-        virtual void render(const ICamera& camera, const ILevelTextureStorage& texture_storage) override;
+        virtual void render(const ICamera& camera, const ILevelTextureStorage& texture_storage, bool show_selection) override;
         virtual uint32_t selected_waypoint() const override;
         virtual void select_waypoint(uint32_t index) override;
         virtual void set_colour(const Colour& colour) override;

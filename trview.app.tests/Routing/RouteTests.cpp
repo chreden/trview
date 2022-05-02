@@ -294,7 +294,7 @@ TEST(Route, Render)
  
     NiceMock<MockCamera> camera;
     NiceMock<MockLevelTextureStorage> texture_storage;
-    route->render(camera, texture_storage);
+    route->render(camera, texture_storage, true);
 }
 
 TEST(Route, RenderDoesNotJoinWhenRandoEnabled)
@@ -331,5 +331,31 @@ TEST(Route, RenderDoesNotJoinWhenRandoEnabled)
 
     NiceMock<MockCamera> camera;
     NiceMock<MockLevelTextureStorage> texture_storage;
-    route->render(camera, texture_storage);
+    route->render(camera, texture_storage, true);
+}
+
+TEST(Route, RenderShowsSelection)
+{
+    auto [selection_renderer_ptr, selection_renderer] = create_mock<MockSelectionRenderer>();
+    EXPECT_CALL(selection_renderer, render).Times(1);
+
+    NiceMock<MockCamera> camera;
+    NiceMock<MockLevelTextureStorage> texture_storage;
+
+    auto route = register_test_module().with_selection_renderer(std::move(selection_renderer_ptr)).build();
+    route->add(Vector3::Zero, Vector3::Down, 0);
+    route->render(camera, texture_storage, true);
+}
+
+TEST(Route, RenderDoesNotShowSelection)
+{
+    auto [selection_renderer_ptr, selection_renderer] = create_mock<MockSelectionRenderer>();
+    EXPECT_CALL(selection_renderer, render).Times(0);
+
+    NiceMock<MockCamera> camera;
+    NiceMock<MockLevelTextureStorage> texture_storage;
+
+    auto route = register_test_module().with_selection_renderer(std::move(selection_renderer_ptr)).build();
+    route->add(Vector3::Zero, Vector3::Down, 0);
+    route->render(camera, texture_storage, false);
 }

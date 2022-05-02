@@ -13,7 +13,7 @@ namespace trview
                 virtual ~MockRenderTarget() = default;
                 MOCK_METHOD(void, clear, (const DirectX::SimpleMath::Color& colour), (override));
                 MOCK_METHOD(void, apply, (), (override));
-                MOCK_METHOD(const Texture&, texture, (), (const, override));
+                MOCK_METHOD(Texture, texture, (), (const, override));
                 MOCK_METHOD(Microsoft::WRL::ComPtr<ID3D11RenderTargetView>, render_target, (), (const, override));
                 MOCK_METHOD(uint32_t, width, (), (const, override));
                 MOCK_METHOD(uint32_t, height, (), (const, override));

@@ -37,7 +37,7 @@ namespace trview
 
             // Get the texture for the render target.
             // Returns: The texture.
-            virtual const Texture& texture() const override;
+            virtual Texture texture() const override;
 
             // Get the render target interface for the render target.
             // Returns: The render target.

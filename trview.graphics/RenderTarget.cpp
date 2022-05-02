@@ -88,7 +88,7 @@ namespace trview
 
         // Get the texture for the render target.
         // Returns: The texture.
-        const Texture& RenderTarget::texture() const
+        Texture RenderTarget::texture() const
         {
             return _texture;
         }

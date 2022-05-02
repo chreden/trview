@@ -21,7 +21,7 @@ namespace trview
             MOCK_METHOD(void, move, (int32_t, int32_t), (override));
             MOCK_METHOD(PickResult, pick, (const DirectX::SimpleMath::Vector3&, const DirectX::SimpleMath::Vector3&), (const, override));
             MOCK_METHOD(void, remove, (uint32_t), (override));
-            MOCK_METHOD(void, render, (const ICamera&, const ILevelTextureStorage&), (override));
+            MOCK_METHOD(void, render, (const ICamera&, const ILevelTextureStorage&, bool), (override));
             MOCK_METHOD(uint32_t, selected_waypoint, (), (const, override));
             MOCK_METHOD(void, select_waypoint, (uint32_t), (override));
             MOCK_METHOD(void, set_colour, (const Colour&), (override));
