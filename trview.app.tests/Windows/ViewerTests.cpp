@@ -789,3 +789,22 @@ TEST(Viewer, RoomVisibilityRaised)
     ASSERT_EQ(std::get<0>(raised_room.value()).lock(), room);
     ASSERT_FALSE(std::get<1>(raised_room.value()));
 }
+
+TEST(Viewer, OrbitHereOrbitsWhenSettingDisabled)
+{
+    auto [ui_ptr, ui] = create_mock<MockViewerUI>();
+    EXPECT_CALL(ui, set_camera_mode(CameraMode::Free)).Times(1);
+    EXPECT_CALL(ui, set_camera_mode(CameraMode::Orbit)).Times(2);
+
+    UserSettings settings;
+    settings.auto_orbit = false;
+
+    auto viewer = register_test_module().with_ui(std::move(ui_ptr)).build();
+    viewer->set_camera_mode(CameraMode::Free);
+    viewer->set_settings(settings);
+
+    ASSERT_EQ(viewer->camera_mode(), CameraMode::Free);
+
+    ui.on_orbit();
+    ASSERT_EQ(viewer->camera_mode(), CameraMode::Orbit);
+}
