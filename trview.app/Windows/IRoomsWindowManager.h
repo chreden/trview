@@ -17,6 +17,8 @@ namespace trview
         /// Event raised when the user has selected a trigger in the room window.
         Event<std::weak_ptr<ITrigger>> on_trigger_selected;
 
+        Event<std::weak_ptr<IRoom>, bool> on_room_visibility;
+
         /// Render all of the rooms windows.
         virtual void render() = 0;
 

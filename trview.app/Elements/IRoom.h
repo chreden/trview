@@ -294,6 +294,14 @@ namespace trview
         /// </summary>
         /// <returns>The X/Z scaled position of the room.</returns>
         virtual DirectX::SimpleMath::Vector3 position() const = 0;
+        /// <summary>
+        /// Gets whether the room is visible.
+        /// </summary>
+        virtual bool visible() const = 0;
+        /// <summary>
+        /// Sets whether the room is visible.
+        /// </summary>
+        virtual void set_visible(bool visible) = 0;
     };
 }
 

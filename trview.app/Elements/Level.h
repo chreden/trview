@@ -88,6 +88,7 @@ namespace trview
         virtual void set_filename(const std::string& filename) override;
         virtual std::vector<std::weak_ptr<ILight>> lights() const override;
         virtual void set_light_visibility(uint32_t index, bool state) override;
+        virtual void set_room_visibility(uint32_t index, bool state) override;
         virtual void set_use_trle_colours(bool value) override;
         virtual bool use_trle_colours() const override;
         virtual MapColours map_colours() const override;

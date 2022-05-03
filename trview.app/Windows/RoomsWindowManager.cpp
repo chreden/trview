@@ -109,6 +109,7 @@ namespace trview
         rooms_window->on_room_selected += on_room_selected;
         rooms_window->on_item_selected += on_item_selected;
         rooms_window->on_trigger_selected += on_trigger_selected;
+        rooms_window->on_room_visibility += on_room_visibility;
         rooms_window->set_level_version(_level_version);
         rooms_window->set_items(_all_items);
         rooms_window->set_triggers(_all_triggers);

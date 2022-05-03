@@ -92,6 +92,7 @@ namespace trview
         virtual void set_selected_room(uint16_t index) = 0;
         virtual void set_selected_item(uint32_t index) = 0;
         virtual void set_light_visibility(uint32_t index, bool state) = 0;
+        virtual void set_room_visibility(uint32_t index, bool state) = 0;
         virtual bool show_hidden_geometry() const = 0;
         virtual bool show_lights() const = 0;
         virtual bool show_triggers() const = 0;

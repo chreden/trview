@@ -1021,4 +1021,14 @@ namespace trview
     {
         return Vector3(_info.x / trlevel::Scale_X, 0, _info.z / trlevel::Scale_Z);
     }
+
+    bool Room::visible() const
+    {
+        return _visible;
+    }
+
+    void Room::set_visible(bool visible)
+    {
+        _visible = visible;
+    }
 }
