@@ -202,7 +202,7 @@ namespace trview
         set_unsaved(true);
     }
 
-    void Route::render(const ICamera& camera, const ILevelTextureStorage& texture_storage)
+    void Route::render(const ICamera& camera, const ILevelTextureStorage& texture_storage, bool show_selection)
     {
         for (std::size_t i = 0; i < _waypoints.size(); ++i)
         {
@@ -215,7 +215,7 @@ namespace trview
         }
 
         // Render selected waypoint...
-        if (_selected_index < _waypoints.size())
+        if (show_selection && _selected_index < _waypoints.size())
         {
             _selection_renderer->render(camera, texture_storage, *_waypoints[_selected_index], Color(1.0f, 1.0f, 1.0f));
         }

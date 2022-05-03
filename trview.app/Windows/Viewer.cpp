@@ -64,7 +64,6 @@ namespace trview
         std::unordered_map<std::string, std::function<void(int32_t)>> scalars;
         scalars[Options::depth] = [this](int32_t value) { if (_level) { _level->set_neighbour_depth(value); } };
 
-        _token_store += _ui->on_ui_changed += [&]() {_ui_changed = true; };
         _token_store += _ui->on_select_item += [&](uint32_t index)
         {
             if (_level && index < _level->items().size())
@@ -581,31 +580,25 @@ namespace trview
             _mouse_changed = false;
         }
 
-        _ui_changed = true;
+        _device->begin();
+        _main_window->begin();
+        _main_window->clear(Colour(_settings.background_colour));
 
-        if (_scene_changed || _ui_changed)
+        if (_scene_changed)
         {
-            _device->begin();
-            _main_window->begin();
-            _main_window->clear(Colour(_settings.background_colour));
+            _scene_target->clear(Colour::Transparent);
 
-            if (_scene_changed)
-            {
-                _scene_target->clear(Colour::Transparent);
+            graphics::RenderTargetStore rs_store(_device->context());
+            graphics::ViewportStore vp_store(_device->context());
+            _scene_target->apply();
 
-                graphics::RenderTargetStore rs_store(_device->context());
-                graphics::ViewportStore vp_store(_device->context());
-                _scene_target->apply();
-
-                render_scene();
-                _scene_changed = false;
-            }
-
-            _scene_sprite->render(_scene_target->texture(), 0, 0, window().size().width, window().size().height);
-            _ui->set_camera_position(current_camera().position());
-            _ui->set_camera_rotation(current_camera().rotation_yaw(), current_camera().rotation_pitch());
-            _ui_changed = false;
+            render_scene();
+            _scene_changed = false;
         }
+
+        _scene_sprite->render(_scene_target->texture(), 0, 0, window().size().width, window().size().height);
+        _ui->set_camera_position(current_camera().position());
+        _ui->set_camera_rotation(current_camera().rotation_yaw(), current_camera().rotation_pitch());
 
         lua_fire_event ( LuaEvent::ON_RENDER );
     }
@@ -645,7 +638,7 @@ namespace trview
 
             if (_show_route)
             {
-                _route->render(camera, _level->texture_storage());
+                _route->render(camera, _level->texture_storage(), _show_selection);
             }
 
             _level->render_transparency(camera);
@@ -781,7 +774,6 @@ namespace trview
     void Viewer::set_show_minimap(bool value)
     {
         _ui->set_show_minimap(value);
-        _ui_changed = true;
     }
 
     void Viewer::set_show_route(bool value)
@@ -805,13 +797,11 @@ namespace trview
     void Viewer::set_show_tooltip(bool value)
     {
         _ui->set_show_tooltip(value);
-        _ui_changed = true;
     }
 
     void Viewer::set_show_ui(bool value)
     {
         _ui->set_visible(value);
-        _ui_changed = true;
     }
 
     bool Viewer::ui_input_active() const

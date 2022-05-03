@@ -102,7 +102,8 @@ namespace trview
         /// </summary>
         /// <param name="camera">The camera to use to render.</param>
         /// <param name="texture_storage">Texture storage for the mesh.</param>
-        virtual void render(const ICamera& camera, const ILevelTextureStorage& texture_storage) = 0;
+        /// <param name="show_selection">Whether to show the selection outline.</param>
+        virtual void render(const ICamera& camera, const ILevelTextureStorage& texture_storage, bool show_selection) = 0;
         /// <summary>
         /// Get the index of the currently selected waypoint.
         /// </summary>

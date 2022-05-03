@@ -21,6 +21,7 @@
 #include <trview.app/Mocks/Elements/ILight.h>
 #include "TestImgui.h"
 
+using testing::A;
 using testing::Return;
 using testing::NiceMock;
 using namespace trview;
@@ -72,6 +73,12 @@ namespace
                 EXPECT_CALL(*shortcuts, add_shortcut).WillRepeatedly([&](auto, auto) -> Event<>&{ return shortcut_handler; });
                 return std::make_unique<Viewer>(window, device, std::move(ui), std::move(picking), std::move(mouse), shortcuts, route, sprite_source,
                     std::move(compass), std::move(measure), render_target_source, device_window_source, std::move(sector_highlight));
+            }
+
+            test_module& with_device(const std::shared_ptr<IDevice>& device)
+            {
+                this->device = device;
+                return *this;
             }
 
             test_module& with_ui(std::unique_ptr<IViewerUI> ui)
@@ -684,6 +691,47 @@ TEST(Viewer, SetShowItems)
 
     viewer->open(&level);
     ui.on_toggle_changed(IViewer::Options::items, true);
+}
+
+TEST(Viewer, SelectionRendered)
+{
+    auto device = mock_shared<MockDevice>();
+    Microsoft::WRL::ComPtr<ID3D11DeviceContext> context{ new NiceMock<MockD3D11DeviceContext>() };
+    EXPECT_CALL(*device, context).WillRepeatedly(Return(context));
+
+    auto viewer = register_test_module().with_device(device).build();
+
+    NiceMock<MockLevelTextureStorage> texture_storage;
+    NiceMock<MockLevel> level;
+    ON_CALL(level, texture_storage).WillByDefault(testing::ReturnRef(texture_storage));
+    EXPECT_CALL(level, render(A<const ICamera&>(), true)).Times(1);
+    auto route = mock_shared<MockRoute>();
+    EXPECT_CALL(*route, render(A<const ICamera&>(), A<const ILevelTextureStorage&>(), true)).Times(1);
+
+    viewer->open(&level);
+    viewer->set_route(route);
+    viewer->render();
+}
+
+TEST(Viewer, SelectionNotRendered)
+{
+    auto device = mock_shared<MockDevice>();
+    Microsoft::WRL::ComPtr<ID3D11DeviceContext> context{ new NiceMock<MockD3D11DeviceContext>() };
+    EXPECT_CALL(*device, context).WillRepeatedly(Return(context));
+
+    auto viewer = register_test_module().with_device(device).build();
+
+    NiceMock<MockLevelTextureStorage> texture_storage;
+    NiceMock<MockLevel> level;
+    ON_CALL(level, texture_storage).WillByDefault(testing::ReturnRef(texture_storage));
+    EXPECT_CALL(level, render(A<const ICamera&>(), false)).Times(1);
+    auto route = mock_shared<MockRoute>();
+    EXPECT_CALL(*route, render(A<const ICamera&>(), A<const ILevelTextureStorage&>(), false)).Times(1);
+
+    viewer->set_show_selection(false);
+    viewer->open(&level);
+    viewer->set_route(route);
+    viewer->render();
 }
 
 TEST(Viewer, LightVisibilityRaised)

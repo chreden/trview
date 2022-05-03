@@ -82,9 +82,6 @@ namespace trview
         /// Event raised when a tool is selected.
         Event<Tool> on_tool_selected;
 
-        /// Event raised when something in the ui has changed.
-        Event<> on_ui_changed;
-
         /// Event raised when user edits camera position.
         Event<DirectX::SimpleMath::Vector3> on_camera_position;
 
