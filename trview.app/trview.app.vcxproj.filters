@@ -133,13 +133,7 @@
     <ClCompile Include="Graphics\TextureStorage.cpp">
       <Filter>Graphics</Filter>
     </ClCompile>
-    <ClCompile Include="Elements\Level.cpp">
-      <Filter>Elements</Filter>
-    </ClCompile>
     <ClCompile Include="Elements\Entity.cpp">
-      <Filter>Elements</Filter>
-    </ClCompile>
-    <ClCompile Include="Elements\Room.cpp">
       <Filter>Elements</Filter>
     </ClCompile>
     <ClCompile Include="Elements\StaticMesh.cpp">
@@ -183,9 +177,6 @@
     <ClCompile Include="ApplicationLuaRegistry.cpp" />
     <ClCompile Include="UI\IViewerUI.cpp">
       <Filter>UI</Filter>
-    </ClCompile>
-    <ClCompile Include="Elements\ILevel.cpp">
-      <Filter>Elements</Filter>
     </ClCompile>
     <ClCompile Include="Geometry\IPicking.cpp">
       <Filter>Geometry</Filter>
@@ -236,9 +227,6 @@
       <Filter>Graphics</Filter>
     </ClCompile>
     <ClCompile Include="Elements\IEntity.cpp">
-      <Filter>Elements</Filter>
-    </ClCompile>
-    <ClCompile Include="Elements\IRoom.cpp">
       <Filter>Elements</Filter>
     </ClCompile>
     <ClCompile Include="Settings\StartupOptions.cpp">
@@ -375,6 +363,18 @@
       <Filter>UI\Settings</Filter>
     </ClCompile>
     <ClCompile Include="ApplicationCreate.cpp" />
+    <ClCompile Include="Elements\IRoom.cpp">
+      <Filter>Elements\Room</Filter>
+    </ClCompile>
+    <ClCompile Include="Elements\Room.cpp">
+      <Filter>Elements\Room</Filter>
+    </ClCompile>
+    <ClCompile Include="Elements\ILevel.cpp">
+      <Filter>Elements\Level</Filter>
+    </ClCompile>
+    <ClCompile Include="Elements\Level.cpp">
+      <Filter>Elements\Level</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera\Camera.h">
@@ -461,9 +461,6 @@
     <ClInclude Include="Windows\WindowResizer.h">
       <Filter>Windows</Filter>
     </ClInclude>
-    <ClInclude Include="Elements\RoomInfo.h">
-      <Filter>Elements</Filter>
-    </ClInclude>
     <ClInclude Include="Elements\Item.h">
       <Filter>Elements</Filter>
     </ClInclude>
@@ -527,13 +524,7 @@
     <ClInclude Include="Graphics\TextureStorage.h">
       <Filter>Graphics</Filter>
     </ClInclude>
-    <ClInclude Include="Elements\Level.h">
-      <Filter>Elements</Filter>
-    </ClInclude>
     <ClInclude Include="Elements\Entity.h">
-      <Filter>Elements</Filter>
-    </ClInclude>
-    <ClInclude Include="Elements\Room.h">
       <Filter>Elements</Filter>
     </ClInclude>
     <ClInclude Include="Elements\StaticMesh.h">
@@ -585,9 +576,6 @@
     </ClInclude>
     <ClInclude Include="Mocks\UI\IViewerUI.h">
       <Filter>Mocks\UI</Filter>
-    </ClInclude>
-    <ClInclude Include="Elements\ILevel.h">
-      <Filter>Elements</Filter>
     </ClInclude>
     <ClInclude Include="Geometry\IPicking.h">
       <Filter>Geometry</Filter>
@@ -720,9 +708,6 @@
     </ClInclude>
     <ClInclude Include="Mocks\Elements\IEntity.h">
       <Filter>Mocks\Elements</Filter>
-    </ClInclude>
-    <ClInclude Include="Elements\IRoom.h">
-      <Filter>Elements</Filter>
     </ClInclude>
     <ClInclude Include="Mocks\Elements\IRoom.h">
       <Filter>Mocks\Elements</Filter>
@@ -921,6 +906,21 @@
     <ClInclude Include="Windows\WindowManager.hpp">
       <Filter>Windows</Filter>
     </ClInclude>
+    <ClInclude Include="Elements\IRoom.h">
+      <Filter>Elements\Room</Filter>
+    </ClInclude>
+    <ClInclude Include="Elements\Room.h">
+      <Filter>Elements\Room</Filter>
+    </ClInclude>
+    <ClInclude Include="Elements\RoomInfo.h">
+      <Filter>Elements\Room</Filter>
+    </ClInclude>
+    <ClInclude Include="Elements\ILevel.h">
+      <Filter>Elements\Level</Filter>
+    </ClInclude>
+    <ClInclude Include="Elements\Level.h">
+      <Filter>Elements\Level</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Windows">
@@ -1027,6 +1027,12 @@
     </Filter>
     <Filter Include="Filters">
       <UniqueIdentifier>{a6d785cd-7837-4b30-8a3f-85d4aa1b995b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Elements\Room">
+      <UniqueIdentifier>{c8bc7920-95a8-4a25-b9f1-f888a40a6eb3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Elements\Level">
+      <UniqueIdentifier>{9f0dcfc1-ab39-412a-92f2-2e75ae598aea}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

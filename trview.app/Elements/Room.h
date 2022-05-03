@@ -73,6 +73,8 @@ namespace trview
         virtual ISector::Portal sector_portal(int x1, int y1, int x2, int z2) const override;
         virtual void set_sector_triangle_rooms(const std::vector<uint32_t>& triangles) override;
         virtual DirectX::SimpleMath::Vector3 position() const override;
+        virtual bool visible() const override;
+        virtual void set_visible(bool visible) override;
     private:
         void generate_geometry(trlevel::LevelVersion level_version, const IMesh::Source& mesh_source, const trlevel::tr3_room& room);
         void generate_adjacency();
@@ -141,5 +143,7 @@ namespace trview
         IMesh::Source _mesh_source;
         std::vector<uint32_t> _trle_sector_rooms;
         std::function<std::shared_ptr<IMesh>()> _unmatched_mesh_generator;
+
+        bool _visible{ true };
     };
 }

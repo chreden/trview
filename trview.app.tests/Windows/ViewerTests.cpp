@@ -18,6 +18,7 @@
 #include <trview.app/Mocks/Graphics/ISectorHighlight.h>
 #include <trlevel/Mocks/ILevel.h>
 #include <trview.app/Mocks/Routing/IWaypoint.h>
+#include <trview.app/Mocks/Elements/ILight.h>
 #include "TestImgui.h"
 
 using testing::Return;
@@ -683,4 +684,60 @@ TEST(Viewer, SetShowItems)
 
     viewer->open(&level);
     ui.on_toggle_changed(IViewer::Options::items, true);
+}
+
+TEST(Viewer, LightVisibilityRaised)
+{
+    auto [ui_ptr, ui] = create_mock<MockViewerUI>();
+    auto [picking_ptr, picking] = create_mock<MockPicking>();
+    auto [mouse_ptr, mouse] = create_mock<MockMouse>();
+
+    NiceMock<MockLevel> level;
+    std::vector<std::weak_ptr<ILight>> lights_list(101);
+    auto light = mock_shared<MockLight>();
+    lights_list[100] = light;
+
+    EXPECT_CALL(level, lights).WillRepeatedly([&]() { return lights_list; });
+
+    auto viewer = register_test_module().with_ui(std::move(ui_ptr)).with_picking(std::move(picking_ptr)).with_mouse(std::move(mouse_ptr)).build();
+    viewer->open(&level);
+
+    std::optional<std::tuple<std::weak_ptr<ILight>, bool>> raised_light;
+    auto token = viewer->on_light_visibility += [&raised_light](const auto& light, auto visible) { raised_light = { light, visible }; };
+
+    activate_context_menu(picking, mouse, PickResult::Type::Light, 100);
+
+    ui.on_hide();
+
+    ASSERT_TRUE(raised_light.has_value());
+    ASSERT_EQ(std::get<0>(raised_light.value()).lock(), light);
+    ASSERT_FALSE(std::get<1>(raised_light.value()));
+}
+
+TEST(Viewer, RoomVisibilityRaised)
+{
+    auto [ui_ptr, ui] = create_mock<MockViewerUI>();
+    auto [picking_ptr, picking] = create_mock<MockPicking>();
+    auto [mouse_ptr, mouse] = create_mock<MockMouse>();
+
+    NiceMock<MockLevel> level;
+    std::vector<std::weak_ptr<IRoom>> rooms_list(101);
+    auto room = mock_shared<MockRoom>();
+    rooms_list[100] = room;
+
+    EXPECT_CALL(level, rooms).WillRepeatedly([&]() { return rooms_list; });
+
+    auto viewer = register_test_module().with_ui(std::move(ui_ptr)).with_picking(std::move(picking_ptr)).with_mouse(std::move(mouse_ptr)).build();
+    viewer->open(&level);
+
+    std::optional<std::tuple<std::weak_ptr<IRoom>, bool>> raised_room;
+    auto token = viewer->on_room_visibility += [&raised_room](const auto& room, auto visible) { raised_room = { room, visible }; };
+
+    activate_context_menu(picking, mouse, PickResult::Type::Room, 100);
+
+    ui.on_hide();
+
+    ASSERT_TRUE(raised_room.has_value());
+    ASSERT_EQ(std::get<0>(raised_room.value()).lock(), room);
+    ASSERT_FALSE(std::get<1>(raised_room.value()));
 }

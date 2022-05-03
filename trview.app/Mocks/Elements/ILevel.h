@@ -47,6 +47,7 @@ namespace trview
             MOCK_METHOD(void, set_selected_room, (uint16_t), (override));
             MOCK_METHOD(void, set_selected_item, (uint32_t), (override));
             MOCK_METHOD(void, set_light_visibility, (uint32_t, bool), (override));
+            MOCK_METHOD(void, set_room_visibility, (uint32_t, bool), (override));
             MOCK_METHOD(bool, show_hidden_geometry, (), (const, override));
             MOCK_METHOD(bool, show_lights, (), (const, override));
             MOCK_METHOD(bool, show_triggers, (), (const, override));

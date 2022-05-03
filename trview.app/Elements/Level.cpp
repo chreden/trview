@@ -357,7 +357,7 @@ namespace trview
             for (uint16_t i : _neighbours)
             {
                 const auto& room = _rooms[i];
-                if (is_alternate_mismatch(*room) || !in_view(*room))
+                if (!room->visible() || is_alternate_mismatch(*room) || !in_view(*room))
                 {
                     continue;
                 }
@@ -369,7 +369,7 @@ namespace trview
             for (std::size_t i = 0; i < _rooms.size(); ++i)
             {
                 const auto& room = _rooms[i].get();
-                if (is_alternate_mismatch(*room) || !in_view(*room))
+                if (!room->visible() || is_alternate_mismatch(*room) || !in_view(*room))
                 {
                     continue;
                 }
@@ -886,6 +886,13 @@ namespace trview
     void Level::set_light_visibility(uint32_t index, bool state)
     {
         _lights[index]->set_visible(state);
+        _regenerate_transparency = true;
+        on_level_changed();
+    }
+
+    void Level::set_room_visibility(uint32_t index, bool state)
+    {
+        _rooms[index]->set_visible(state);
         _regenerate_transparency = true;
         on_level_changed();
     }

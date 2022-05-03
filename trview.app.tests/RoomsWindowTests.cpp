@@ -119,3 +119,26 @@ TEST(RoomsWindow, SetMapColoursUpdatesMapRenderer)
     auto window = register_test_module().with_map_renderer_source([&](auto&&) { return std::move(map_renderer_ptr); }).build();
     window->set_map_colours({});
 }
+
+TEST(RoomsWindow, OnRoomVisibilityRaised)
+{
+    auto window = register_test_module().build();
+
+    std::tuple<std::weak_ptr<IRoom>, bool> raised;
+    auto token = window->on_room_visibility += [&raised](const auto& room, auto&& visible)
+    {
+        raised = { room, visible };
+    };
+
+    auto room1 = mock_shared<MockRoom>()->with_number(0);
+    auto room2 = mock_shared<MockRoom>()->with_number(1);
+    window->set_rooms({ room1, room2 });
+
+    TestImgui imgui([&]() { window->render(); });
+    imgui.click_element_with_hover(imgui.id("Rooms 0")
+        .push_child(RoomsWindow::Names::rooms_panel)
+        .push(RoomsWindow::Names::rooms_list).id("##hide-1"));
+
+    ASSERT_EQ(std::get<0>(raised).lock(), room2);
+    ASSERT_TRUE(std::get<1>(raised));
+}

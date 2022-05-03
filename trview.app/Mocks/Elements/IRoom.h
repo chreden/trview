@@ -6,7 +6,7 @@ namespace trview
 {
     namespace mocks
     {
-        struct MockRoom : public IRoom
+        struct MockRoom : public IRoom, public std::enable_shared_from_this<MockRoom>
         {
             virtual ~MockRoom() = default;
             MOCK_METHOD(void, add_entity, (const std::weak_ptr<IEntity>&), (override));
@@ -44,6 +44,14 @@ namespace trview
             MOCK_METHOD(ISector::Portal, sector_portal, (int, int, int, int), (const, override));
             MOCK_METHOD(void, set_sector_triangle_rooms, (const std::vector<uint32_t>&), (override));
             MOCK_METHOD(DirectX::SimpleMath::Vector3, position, (), (const, override));
+            MOCK_METHOD(bool, visible, (), (const, override));
+            MOCK_METHOD(void, set_visible, (bool visible), (override));
+
+            std::shared_ptr<MockRoom> with_number(uint32_t number)
+            {
+                ON_CALL(*this, number).WillByDefault(testing::Return(number));
+                return shared_from_this();
+            }
         };
     }
 }

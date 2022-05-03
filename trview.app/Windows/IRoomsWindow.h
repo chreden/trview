@@ -27,6 +27,8 @@ namespace trview
         /// Event raised when the window is closed.
         Event<> on_window_closed;
 
+        Event<std::weak_ptr<IRoom>, bool> on_room_visibility;
+
         /// Clear the selected trigger.
         virtual void clear_selected_trigger() = 0;
 

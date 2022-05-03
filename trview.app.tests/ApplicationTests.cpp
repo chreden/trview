@@ -182,6 +182,12 @@ namespace
                 this->imgui_backend = std::move(backend);
                 return *this;
             }
+
+            test_module& with_level_source(ILevel::Source& level_source)
+            {
+                this->level_source = level_source;
+                return *this;
+            }
         };
         return test_module{};
     }
@@ -598,4 +604,42 @@ TEST(Application, ResetLayout)
     application->process_message(WM_COMMAND, MAKEWPARAM(ID_WINDOWS_RESET_LAYOUT, 0), 0);
 
     ASSERT_EQ(ImGui::GetIO().IniFilename, nullptr);
+}
+
+TEST(Application, RoomsWindowRoomVisibilityCaptured)
+{
+    auto [rooms_window_manager_ptr, rooms_window_manager] = create_mock<MockRoomsWindowManager>();
+    auto [level_ptr, level] = create_mock<trview::mocks::MockLevel>();
+    EXPECT_CALL(level, set_room_visibility(0, true)).Times(1);
+
+    ILevel::Source level_source = [&](auto&&...) { return std::move(level_ptr); };
+
+    auto application = register_test_module()
+        .with_rooms_window_manager(std::move(rooms_window_manager_ptr))
+        .with_level_source(level_source)
+        .build();
+
+    application->open("");
+
+    auto room = mock_shared<MockRoom>();
+    rooms_window_manager.on_room_visibility(room, true);
+}
+
+TEST(Application, ViewerRoomVisibilityCaptured)
+{
+    auto [viewer_ptr, viewer] = create_mock<MockViewer>();
+    auto [level_ptr, level] = create_mock<trview::mocks::MockLevel>();
+    EXPECT_CALL(level, set_room_visibility(0, true)).Times(1);
+
+    ILevel::Source level_source = [&](auto&&...) { return std::move(level_ptr); };
+
+    auto application = register_test_module()
+        .with_viewer(std::move(viewer_ptr))
+        .with_level_source(level_source)
+        .build();
+
+    application->open("");
+
+    auto room = mock_shared<MockRoom>();
+    viewer.on_room_visibility(room, true);
 }

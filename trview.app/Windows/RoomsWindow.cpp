@@ -58,16 +58,6 @@ namespace trview
         }
     }
 
-    const std::string RoomsWindow::Names::sync_room{ "sync_room" };
-    const std::string RoomsWindow::Names::track_item{ "track_item" };
-    const std::string RoomsWindow::Names::track_trigger{ "track_trigger" };
-    const std::string RoomsWindow::Names::rooms_listbox{ "Rooms" };
-    const std::string RoomsWindow::Names::triggers_listbox{ "Triggers" };
-    const std::string RoomsWindow::Names::stats_listbox{ "Stats" };
-    const std::string RoomsWindow::Names::minimap{ "minimap" };
-    const std::string RoomsWindow::Names::neighbours_listbox{ "neighbours" };
-    const std::string RoomsWindow::Names::items_listbox{ "items" };
-
     RoomsWindow::RoomsWindow(const IMapRenderer::Source& map_renderer_source, const std::shared_ptr<IClipboard>& clipboard)
         : _map_renderer(map_renderer_source(Size(341, 341))), _clipboard(clipboard)
     {
@@ -258,7 +248,7 @@ namespace trview
 
     void RoomsWindow::render_rooms_list()
     {
-        if (ImGui::BeginChild("Rooms List", ImVec2(270, 0), true))
+        if (ImGui::BeginChild(Names::rooms_panel.c_str(), ImVec2(270, 0), true))
         {
             if (ImGui::BeginTable("##controls", 2, 0, ImVec2(-1, 0)))
             {
@@ -290,11 +280,12 @@ namespace trview
                 ImGui::EndTable();
             }
 
-            if (ImGui::BeginTable("##roomslist", 3, ImGuiTableFlags_Sortable | ImGuiTableFlags_ScrollY | ImGuiTableFlags_SizingFixedSame, ImVec2(-1, -1)))
+            if (ImGui::BeginTable(Names::rooms_list.c_str(), 4, ImGuiTableFlags_Sortable | ImGuiTableFlags_ScrollY | ImGuiTableFlags_SizingFixedSame, ImVec2(-1, -1)))
             {
                 ImGui::TableSetupColumn("#");
                 ImGui::TableSetupColumn("Items");
                 ImGui::TableSetupColumn("Triggers");
+                ImGui::TableSetupColumn("Hide");
                 ImGui::TableSetupScrollFreeze(1, 1);
                 ImGui::TableHeadersRow();
 
@@ -312,7 +303,8 @@ namespace trview
                     {
                         [](auto&& l, auto&& r) { return l.number() < r.number(); },
                         [&](auto&& l, auto&& r) { return item_count(l) < item_count(r); },
-                        [&](auto&& l, auto&& r) { return trigger_count(l) < trigger_count(r); }
+                        [&](auto&& l, auto&& r) { return trigger_count(l) < trigger_count(r); },
+                        [&](auto&& l, auto&& r) { return l.visible() < r.visible(); }
                     });
 
                 for (const auto& room : _all_rooms)
@@ -351,6 +343,14 @@ namespace trview
                     ImGui::Text(std::to_string(item_count(*room_ptr)).c_str());
                     ImGui::TableNextColumn();
                     ImGui::Text(std::to_string(trigger_count(*room_ptr)).c_str());
+                    ImGui::TableNextColumn();
+                    bool hidden = !room_ptr->visible();
+                    ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0, 0));
+                    if (ImGui::Checkbox((std::string("##hide-") + std::to_string(room_ptr->number())).c_str(), &hidden))
+                    {
+                        on_room_visibility(room, !hidden);
+                    }
+                    ImGui::PopStyleVar();
                 }
                 ImGui::EndTable();
             }
