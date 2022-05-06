@@ -4,7 +4,7 @@
 #include <trview.common/Timer.h>
 #include <trview.common/Logs/ILog.h>
 
-#include <trlevel/ILevelLoader.h>
+#include <trlevel/ILevel.h>
 
 #include <trview.app/Elements/ITypeNameLookup.h>
 #include <trview.app/Menus/IFileDropper.h>
@@ -45,7 +45,7 @@ namespace trview
             std::unique_ptr<IUpdateChecker> update_checker,
             std::unique_ptr<ISettingsLoader> settings_loader,
             std::unique_ptr<IFileDropper> file_dropper,
-            std::unique_ptr<trlevel::ILevelLoader> level_loader,
+            const trlevel::ILevel::Source& trlevel_source,
             std::unique_ptr<ILevelSwitcher> level_switcher,
             std::unique_ptr<IRecentFiles> recent_files,
             std::unique_ptr<IViewer> viewer,
@@ -103,7 +103,7 @@ namespace trview
         std::unique_ptr<ISettingsLoader> _settings_loader;
         UserSettings _settings;
         std::unique_ptr<IFileDropper> _file_dropper;
-        std::unique_ptr<trlevel::ILevelLoader> _level_loader;
+        trlevel::ILevel::Source _trlevel_source;
         std::unique_ptr<ILevelSwitcher> _level_switcher;
         std::unique_ptr<IRecentFiles> _recent_files;
         std::unique_ptr<IUpdateChecker> _update_checker;

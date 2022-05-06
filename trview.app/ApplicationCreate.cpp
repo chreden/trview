@@ -1,6 +1,6 @@
 #include "Application.h"
 
-#include <trlevel/LevelLoader.h>
+#include <trlevel/Level.h>
 #include <trview.common/Files.h>
 #include <trview.common/Logs/Log.h>
 #include <trview.common/windows/Clipboard.h>
@@ -181,13 +181,14 @@ namespace trview
         auto lights_window_source = [=]() { return std::make_shared<LightsWindow>(clipboard); };
 
         auto log = std::make_shared<Log>();
+        auto trlevel_source = [=](auto&& filename) { return std::make_unique<trlevel::Level>(filename, log); };
 
         return std::make_unique<Application>(
             window,
             std::make_unique<UpdateChecker>(window),
             std::make_unique<SettingsLoader>(files),
             std::make_unique<FileDropper>(window),
-            std::make_unique<trlevel::LevelLoader>(log),
+            trlevel_source,
             std::make_unique<LevelSwitcher>(window),
             std::make_unique<RecentFiles>(window),
             std::move(viewer),

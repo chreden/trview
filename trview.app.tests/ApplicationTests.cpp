@@ -18,7 +18,6 @@
 #include <trview.common/Mocks/Windows/IDialogs.h>
 #include <trview.common/Mocks/IFiles.h>
 #include <trview.common/Mocks/Logs/ILog.h>
-#include <trlevel/Mocks/ILevelLoader.h>
 #include <trlevel/Mocks/ILevel.h>
 #include <trview.app/Resources/resource.h>
 #include "NullImGuiBackend.h"

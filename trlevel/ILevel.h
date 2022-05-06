@@ -10,6 +10,8 @@ namespace trlevel
     // Interface that defines a level.
     struct ILevel
     {
+        using Source = std::function<std::unique_ptr<ILevel>(const std::string&)>;
+
         virtual ~ILevel() = 0;
 
         // Get the entry from the 8 bit palette at the given index.
