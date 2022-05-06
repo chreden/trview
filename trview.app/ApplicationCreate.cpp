@@ -2,6 +2,7 @@
 
 #include <trlevel/LevelLoader.h>
 #include <trview.common/Files.h>
+#include <trview.common/Logs/Log.h>
 #include <trview.common/windows/Clipboard.h>
 #include <trview.common/Windows/Dialogs.h>
 #include <trview.common/Windows/Shell.h>
@@ -179,12 +180,14 @@ namespace trview
         auto rooms_window_source = [=]() { return std::make_shared<RoomsWindow>(map_renderer_source, clipboard); };
         auto lights_window_source = [=]() { return std::make_shared<LightsWindow>(clipboard); };
 
+        auto log = std::make_shared<Log>();
+
         return std::make_unique<Application>(
             window,
             std::make_unique<UpdateChecker>(window),
             std::make_unique<SettingsLoader>(files),
             std::make_unique<FileDropper>(window),
-            std::make_unique<trlevel::LevelLoader>(),
+            std::make_unique<trlevel::LevelLoader>(log),
             std::make_unique<LevelSwitcher>(window),
             std::make_unique<RecentFiles>(window),
             std::move(viewer),
@@ -199,6 +202,7 @@ namespace trview
             dialogs,
             files,
             std::make_unique<DX11ImGuiBackend>(window, device),
-            std::make_unique<LightsWindowManager>(window, shortcuts, lights_window_source));
+            std::make_unique<LightsWindowManager>(window, shortcuts, lights_window_source),
+            log);
     }
 }

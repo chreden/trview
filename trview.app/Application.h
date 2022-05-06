@@ -2,6 +2,7 @@
 
 #include <trview.common/Window.h>
 #include <trview.common/Timer.h>
+#include <trview.common/Logs/ILog.h>
 
 #include <trlevel/ILevelLoader.h>
 
@@ -59,7 +60,8 @@ namespace trview
             std::shared_ptr<IDialogs> dialogs,
             std::shared_ptr<IFiles> files,
             std::unique_ptr<IImGuiBackend> imgui_backend,
-            std::unique_ptr<ILightsWindowManager> lights_window_manager);
+            std::unique_ptr<ILightsWindowManager> lights_window_manager,
+            const std::shared_ptr<ILog>& log);
         virtual ~Application();
         /// Attempt to open the specified level file.
         /// @param filename The level file to open.
@@ -133,6 +135,7 @@ namespace trview
 
         std::unique_ptr<IImGuiBackend> _imgui_backend;
         std::string _imgui_ini_filename;
+        std::shared_ptr<ILog> _log;
     };
 
     Window create_window(HINSTANCE hInstance, int command_show);

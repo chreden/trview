@@ -8,12 +8,14 @@
 #include "ILevel.h"
 #include "trtypes.h"
 
+#include <trview.common/Logs/ILog.h>
+
 namespace trlevel
 {
     class Level : public ILevel
     {
     public:
-        explicit Level(const std::string& filename);
+        explicit Level(const std::string& filename, const std::shared_ptr<trview::ILog>& log);
 
         virtual ~Level();
 
@@ -173,6 +175,8 @@ namespace trlevel
         void load_tr4(std::ifstream& file);
 
         void load_level_data(std::istream& file);
+
+        std::shared_ptr<trview::ILog> _log;
 
         LevelVersion _version;
 

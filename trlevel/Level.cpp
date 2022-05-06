@@ -278,7 +278,8 @@ namespace trlevel
         }
     }
 
-    Level::Level(const std::string& filename)
+    Level::Level(const std::string& filename, const std::shared_ptr<trview::ILog>& log)
+        : _log(log)
     {
         // Load the level from the file.
         try
