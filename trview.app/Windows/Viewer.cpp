@@ -555,6 +555,9 @@ namespace trview
         _ui->set_toggle(Options::depth_enabled, false);
         _ui->set_scalar(Options::depth, 1);
 
+        _ui->set_selected_room(level->rooms()[level->selected_room()].lock());
+        _ui->set_selected_item(level->selected_item());
+
         // Strip the last part of the path away.
         const auto filename = _level->filename();
         auto last_index = std::min(filename.find_last_of('\\'), filename.find_last_of('/'));
@@ -731,6 +734,7 @@ namespace trview
     void Viewer::select_item(const Item& item)
     {
         _target = item.position();
+        _ui->set_selected_item(item.number());
         if (_settings.auto_orbit)
         {
             set_camera_mode(CameraMode::Orbit);

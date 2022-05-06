@@ -53,6 +53,7 @@ namespace trview
         virtual void set_minimap_highlight(uint16_t x, uint16_t z) override;
         virtual void set_pick(const PickInfo& info, const PickResult& pick_result) override;
         virtual void set_remove_waypoint_enabled(bool value) override;
+        virtual void set_selected_item(uint32_t index) override;
         virtual void set_selected_room(const std::shared_ptr<IRoom>& room) override;
         virtual void set_settings(const UserSettings& settings) override;
         virtual void set_show_context_menu(bool value) override;
@@ -93,5 +94,7 @@ namespace trview
         std::string _measure_text;
         Point _measure_position;
         bool _visible{ true };
+        uint32_t _selected_room{ 0u };
+        uint32_t _selected_item{ 0u };
     };
 }

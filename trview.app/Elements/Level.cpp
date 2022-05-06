@@ -100,6 +100,12 @@ namespace trview
         return textures;
     }
 
+    uint32_t Level::selected_item() const
+    {
+        auto entity = _selected_item.lock();
+        return entity ? entity->index() : 0u;
+    }
+
     uint16_t Level::selected_room() const
     {
         return _selected_room;

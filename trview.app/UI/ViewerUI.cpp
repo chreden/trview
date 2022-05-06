@@ -27,7 +27,7 @@ namespace trview
             if (!is_input_active())
             {
                 _go_to->set_name(L"Room");
-                _go_to->toggle_visible();
+                _go_to->toggle_visible(_selected_room);
             }
         };
 
@@ -36,7 +36,7 @@ namespace trview
             if (!is_input_active())
             {
                 _go_to->set_name(L"Item");
-                _go_to->toggle_visible();
+                _go_to->toggle_visible(_selected_item);
             }
         };
 
@@ -390,9 +390,15 @@ namespace trview
         _map_renderer->set_colours(settings.map_colours);
     }
 
+    void ViewerUI::set_selected_item(uint32_t index)
+    {
+        _selected_item = index;
+    }
+
     void ViewerUI::set_selected_room(const std::shared_ptr<IRoom>& room)
     {
         _room_navigator->set_selected_room(room->number());
+        _selected_room = room->number();
         _map_renderer->load(room);
     }
 

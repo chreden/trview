@@ -7,10 +7,10 @@ namespace trview
         return _visible;
     }
 
-    void GoTo::toggle_visible()
+    void GoTo::toggle_visible(int32_t value)
     {
         _visible = !_visible;
-        _index = 0;
+        _index = value;
         _shown = false;
     }
 
@@ -44,7 +44,8 @@ namespace trview
                 {
                     ImGui::SetKeyboardFocusHere();
                 }
-                if(ImGui::InputInt("##gotoentry", &_index, 1, 100, ImGuiInputTextFlags_EnterReturnsTrue))
+
+                if (ImGui::InputInt("##gotoentry", &_index, 1, 100, ImGuiInputTextFlags_EnterReturnsTrue))
                 {
                     if (_index < 0)
                     {
@@ -57,9 +58,13 @@ namespace trview
                 }
 
                 ImGui::EndPopup();
-                
+
                 if (ImGui::IsKeyPressed(ImGuiKey_Escape) || ImGui::IsKeyPressed(ImGuiKey_Enter) || ImGui::IsKeyPressed(ImGuiKey_KeypadEnter))
                 {
+                    if (!ImGui::IsKeyPressed(ImGuiKey_Escape))
+                    {
+                        on_selected(_index);
+                    }
                     _visible = false;
                     ImGui::FocusWindow(nullptr);
                 }

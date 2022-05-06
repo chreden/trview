@@ -22,7 +22,7 @@ namespace trview
         bool visible() const;
 
         /// Toggle whether the window is visible.
-        void toggle_visible();
+        void toggle_visible(int32_t value);
 
         /// Event raised when the user selects a new room. The newly selected room is passed as
         /// a parameter when the event is raised.
