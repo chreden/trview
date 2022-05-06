@@ -175,7 +175,7 @@ namespace trview
         {
             bool was_alternate_select = _was_alternate_select;
             on_room_selected(room_from_pick(_context_pick));
-            if (_settings.auto_orbit && !was_alternate_select)
+            if (!was_alternate_select)
             {
                 set_camera_mode(CameraMode::Orbit);
             }
