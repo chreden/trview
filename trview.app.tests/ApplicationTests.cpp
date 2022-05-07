@@ -55,7 +55,7 @@ namespace
             std::unique_ptr<IUpdateChecker> update_checker{ mock_unique<MockUpdateChecker>() };
             std::unique_ptr<ISettingsLoader> settings_loader{ mock_unique<MockSettingsLoader>() };
             std::unique_ptr<IFileDropper> file_dropper{ mock_unique<MockFileDropper>() };
-            std::unique_ptr<trlevel::ILevelLoader> level_loader{ mock_unique<MockLevelLoader>() };
+            trlevel::ILevel::Source trlevel_source{ [](auto&&...) { return mock_unique<trlevel::mocks::MockLevel>(); } };
             std::unique_ptr<ILevelSwitcher> level_switcher{ mock_unique<MockLevelSwitcher>() };
             std::unique_ptr<IRecentFiles> recent_files{ mock_unique<MockRecentFiles>() };
             std::unique_ptr<IViewer> viewer{ mock_unique<MockViewer>() };
@@ -77,7 +77,7 @@ namespace
             {
                 EXPECT_CALL(*shortcuts, add_shortcut).WillRepeatedly([&](auto, auto) -> Event<>&{ return shortcut_handler; });
                 return std::make_unique<Application>(window, std::move(update_checker), std::move(settings_loader), std::move(file_dropper),
-                    std::move(level_loader), std::move(level_switcher), std::move(recent_files), std::move(viewer), route_source, shortcuts,
+                    trlevel_source, std::move(level_switcher), std::move(recent_files), std::move(viewer), route_source, shortcuts,
                     std::move(items_window_manager), std::move(triggers_window_manager), std::move(route_window_manager), std::move(rooms_window_manager),
                     level_source, startup_options, dialogs, files, std::move(imgui_backend), std::move(lights_window_manager), log);
             }
@@ -100,9 +100,9 @@ namespace
                 return *this;
             }
 
-            test_module& with_level_loader(std::unique_ptr<trlevel::ILevelLoader> level_loader)
+            test_module& with_trlevel_source(trlevel::ILevel::Source trlevel_source)
             {
-                this->level_loader = std::move(level_loader);
+                this->trlevel_source = trlevel_source;
                 return *this;
             }
 
@@ -212,57 +212,66 @@ TEST(Application, SettingsLoadedAndSaved)
 TEST(Application, FileDropperOpensFile)
 {
     auto [file_dropper_ptr, file_dropper] = create_mock<MockFileDropper>();
-    auto [level_loader_ptr, level_loader] = create_mock<MockLevelLoader>();
-    EXPECT_CALL(level_loader, load_level("test_path.tr2")).Times(1).WillRepeatedly(Throw(std::exception()));
-    auto application = register_test_module().with_file_dropper(std::move(file_dropper_ptr)).with_level_loader(std::move(level_loader_ptr)).build();
+    std::optional<std::string> called;
+    auto trlevel_source = [&](auto&& filename)-> std::unique_ptr<trlevel::ILevel> { called = filename; throw std::exception(); };
+    auto application = register_test_module().with_file_dropper(std::move(file_dropper_ptr)).with_trlevel_source(trlevel_source).build();
     file_dropper.on_file_dropped("test_path.tr2");
+    ASSERT_TRUE(called.has_value());
+    ASSERT_EQ(called.value(), "test_path.tr2");
 }
 
 TEST(Application, LevelLoadedOnSwitchLevel)
 {
-    auto [level_loader_ptr, level_loader] = create_mock<MockLevelLoader>();
     auto [level_switcher_ptr, level_switcher] = create_mock<MockLevelSwitcher>();
-    EXPECT_CALL(level_loader, load_level("test_path.tr2")).Times(1).WillRepeatedly(Throw(std::exception()));
-    auto application = register_test_module().with_level_loader(std::move(level_loader_ptr)).with_level_switcher(std::move(level_switcher_ptr)).build();
+    std::optional<std::string> called;
+    auto trlevel_source = [&](auto&& filename)-> std::unique_ptr<trlevel::ILevel> { called = filename; throw std::exception(); };
+    auto application = register_test_module().with_trlevel_source(trlevel_source).with_level_switcher(std::move(level_switcher_ptr)).build();
     level_switcher.on_switch_level("test_path.tr2");
+    ASSERT_TRUE(called.has_value());
+    ASSERT_EQ(called.value(), "test_path.tr2");
 }
 
 TEST(Application, LevelLoadedOnRecentFileOpen)
 {
-    auto [level_loader_ptr, level_loader] = create_mock<MockLevelLoader>();
     auto [recent_files_ptr, recent_files] = create_mock<MockRecentFiles>();
-    EXPECT_CALL(level_loader, load_level("test_path.tr2")).Times(1).WillRepeatedly(Throw(std::exception()));
-    auto application = register_test_module().with_level_loader(std::move(level_loader_ptr)).with_recent_files(std::move(recent_files_ptr)).build();
+    std::optional<std::string> called;
+    auto trlevel_source = [&](auto&& filename)-> std::unique_ptr<trlevel::ILevel> { called = filename; throw std::exception(); };
+    auto application = register_test_module().with_trlevel_source(trlevel_source).with_recent_files(std::move(recent_files_ptr)).build();
     recent_files.on_file_open("test_path.tr2");
+    ASSERT_TRUE(called.has_value());
+    ASSERT_EQ(called.value(), "test_path.tr2");
 }
 
 TEST(Application, RecentFilesUpdatedOnFileOpen)
 {
     auto [recent_files_ptr, recent_files] = create_mock<MockRecentFiles>();
-    auto [level_loader_ptr, level_loader] = create_mock<MockLevelLoader>();
     EXPECT_CALL(recent_files, set_recent_files(std::list<std::string>{})).Times(1);
     EXPECT_CALL(recent_files, set_recent_files(std::list<std::string>{"test_path.tr2"})).Times(1);
-    EXPECT_CALL(level_loader, load_level("test_path.tr2")).WillOnce(Return(ByMove(mock_unique<trlevel::mocks::MockLevel>())));
-    auto application = register_test_module().with_level_loader(std::move(level_loader_ptr)).with_recent_files(std::move(recent_files_ptr)).build();
+    std::optional<std::string> called;
+    auto trlevel_source = [&](auto&& filename) { called = filename; return mock_unique<trlevel::mocks::MockLevel>(); };
+    auto application = register_test_module().with_trlevel_source(trlevel_source).with_recent_files(std::move(recent_files_ptr)).build();
     application->open("test_path.tr2");
+    ASSERT_TRUE(called.has_value());
+    ASSERT_EQ(called.value(), "test_path.tr2");
 }
 
 TEST(Application, FileOpenedInViewer)
 {
-    auto [level_loader_ptr, level_loader] = create_mock<MockLevelLoader>();
     auto [viewer_ptr, viewer] = create_mock<MockViewer>();
-    auto [level_ptr, level] = create_mock<trlevel::mocks::MockLevel>();
-    EXPECT_CALL(level_loader, load_level("test_path.tr2")).WillOnce(Return(ByMove(std::move(level_ptr))));
+    std::optional<std::string> called;
+    auto trlevel_source = [&](auto&& filename) { called = filename; return mock_unique<trlevel::mocks::MockLevel>(); };
     EXPECT_CALL(viewer, open(NotNull())).Times(1);
-    auto application = register_test_module().with_level_loader(std::move(level_loader_ptr)).with_viewer(std::move(viewer_ptr)).build();
+    auto application = register_test_module().with_trlevel_source(trlevel_source).with_viewer(std::move(viewer_ptr)).build();
     application->open("test_path.tr2");
+    ASSERT_TRUE(called.has_value());
+    ASSERT_EQ(called.value(), "test_path.tr2");
 }
 
 TEST(Application, WindowContentsResetBeforeViewerLoaded)
 {
-    auto [level_loader_ptr, level_loader] = create_mock<MockLevelLoader>();
+    std::optional<std::string> called;
+    auto trlevel_source = [&](auto&& filename) { called = filename; return mock_unique<trlevel::mocks::MockLevel>(); };
     auto [viewer_ptr, viewer] = create_mock<MockViewer>();
-    auto [level_ptr, level] = create_mock<trlevel::mocks::MockLevel>();
     auto [items_window_manager_ptr, items_window_manager] = create_mock<MockItemsWindowManager>();
     auto [rooms_window_manager_ptr, rooms_window_manager] = create_mock<MockRoomsWindowManager>();
     auto [triggers_window_manager_ptr, triggers_window_manager] = create_mock<MockTriggersWindowManager>();
@@ -272,8 +281,6 @@ TEST(Application, WindowContentsResetBeforeViewerLoaded)
 
     std::vector<std::string> events;
 
-    EXPECT_CALL(level_loader, load_level("test_path.tr2")).WillOnce(Return(ByMove(std::move(level_ptr))));
-    
     EXPECT_CALL(items_window_manager, set_items(A<const std::vector<Item>&>())).Times(1).WillOnce([&](auto) { events.push_back("items_items"); });
     EXPECT_CALL(items_window_manager, set_triggers(A<const std::vector<std::weak_ptr<ITrigger>>&>())).Times(1).WillOnce([&](auto) { events.push_back("items_triggers"); });
     EXPECT_CALL(triggers_window_manager, set_items(A<const std::vector<Item>&>())).Times(1).WillOnce([&](auto) { events.push_back("triggers_items"); });
@@ -292,7 +299,7 @@ TEST(Application, WindowContentsResetBeforeViewerLoaded)
     EXPECT_CALL(viewer, open(NotNull())).Times(1).WillOnce([&](auto) { events.push_back("viewer"); });
 
     auto application = register_test_module()
-        .with_level_loader(std::move(level_loader_ptr))
+        .with_trlevel_source(trlevel_source)
         .with_viewer(std::move(viewer_ptr))
         .with_route_source([&](auto&&...) {return route; })
         .with_items_window_manager(std::move(items_window_manager_ptr))
@@ -302,6 +309,9 @@ TEST(Application, WindowContentsResetBeforeViewerLoaded)
         .with_lights_window_manager(std::move(lights_window_manager_ptr))
         .build();
     application->open("test_path.tr2");
+
+    ASSERT_TRUE(called.has_value());
+    ASSERT_EQ(called.value(), "test_path.tr2");
 
     ASSERT_EQ(events.size(), 15);
     ASSERT_EQ(events.back(), "viewer");
@@ -327,20 +337,23 @@ TEST(Application, FileOpenedFromCommandLine)
 {
     auto startup_options = mock_shared<MockStartupOptions>();
     ON_CALL(*startup_options, filename).WillByDefault(testing::Return("test.tr2"));
-    auto [level_loader_ptr, level_loader] = create_mock<MockLevelLoader>();
+    std::optional<std::string> called;
+    auto trlevel_source = [&](auto&& filename) { called = filename; return mock_unique<trlevel::mocks::MockLevel>(); };
     auto [viewer_ptr, viewer] = create_mock<MockViewer>();
-    EXPECT_CALL(level_loader, load_level("test.tr2")).Times(1);
     EXPECT_CALL(viewer, open).Times(1);
-    auto application = register_test_module().with_level_loader(std::move(level_loader_ptr)).with_viewer(std::move(viewer_ptr)).with_startup_options(startup_options).build();
+    auto application = register_test_module().with_trlevel_source(trlevel_source).with_viewer(std::move(viewer_ptr)).with_startup_options(startup_options).build();
+    ASSERT_TRUE(called.has_value());
+    ASSERT_EQ(called.value(), "test.tr2");
 }
 
 TEST(Application, FileNotOpenedWhenNotSpecified)
 {
-    auto [level_loader_ptr, level_loader] = create_mock<MockLevelLoader>();
+    int32_t times_called = 0;
+    auto trlevel_source = [&](auto&&...) { ++times_called; return mock_unique<trlevel::mocks::MockLevel>(); };
     auto [viewer_ptr, viewer] = create_mock<MockViewer>();
-    EXPECT_CALL(level_loader, load_level("test.tr2")).Times(0);
     EXPECT_CALL(viewer, open).Times(0);
-    auto application = register_test_module().with_level_loader(std::move(level_loader_ptr)).with_viewer(std::move(viewer_ptr)).build();
+    auto application = register_test_module().with_trlevel_source(trlevel_source).with_viewer(std::move(viewer_ptr)).build();
+    ASSERT_EQ(times_called, 0);
 }
 
 TEST(Application, DialogShownOnCloseWithUnsavedRouteBlocksClose)
@@ -377,16 +390,18 @@ TEST(Application, DialogShownOnOpenWithUnsavedRouteBlocksOpen)
     auto [route_ptr, route] = create_mock<MockRoute>();
     auto dialogs = mock_shared<MockDialogs>();
     auto route_ptr_actual = std::move(route_ptr);
-    auto [level_loader_ptr, level_loader] = create_mock<trlevel::mocks::MockLevelLoader>();
+    int32_t times_called = 0;
+    auto trlevel_source = [&](auto&&...) { ++times_called; return mock_unique<trlevel::mocks::MockLevel>(); };
 
     EXPECT_CALL(route, is_unsaved).WillRepeatedly(Return(true));
-    EXPECT_CALL(level_loader, load_level).Times(0);
     auto application = register_test_module()
         .with_route_source([&](auto&&...) {return std::move(route_ptr_actual); })
         .with_dialogs(dialogs)
-        .with_level_loader(std::move(level_loader_ptr))
+        .with_trlevel_source(trlevel_source)
         .build();
     application->open("");
+
+    ASSERT_EQ(times_called, 0);
 }
 
 TEST(Application, DialogShownOnOpenWithUnsavedRouteAllowsOpen)
@@ -394,17 +409,19 @@ TEST(Application, DialogShownOnOpenWithUnsavedRouteAllowsOpen)
     auto [route_ptr, route] = create_mock<MockRoute>();
     auto dialogs = mock_shared<MockDialogs>();
     auto route_ptr_actual = std::move(route_ptr);
-    auto [level_loader_ptr, level_loader] = create_mock<trlevel::mocks::MockLevelLoader>();
+    int32_t times_called = 0;
+    auto trlevel_source = [&](auto&&...) { ++times_called; return mock_unique<trlevel::mocks::MockLevel>(); };
 
     EXPECT_CALL(route, is_unsaved).WillRepeatedly(Return(true));
     EXPECT_CALL(*dialogs, message_box).WillRepeatedly(Return(true));
-    EXPECT_CALL(level_loader, load_level).Times(1);
     auto application = register_test_module()
         .with_route_source([&](auto&&...) {return std::move(route_ptr_actual); })
         .with_dialogs(dialogs)
-        .with_level_loader(std::move(level_loader_ptr))
+        .with_trlevel_source(trlevel_source)
         .build();
     application->open("");
+
+    ASSERT_EQ(times_called, 1);
 }
 
 TEST(Application, ClosingEventCalled)
@@ -418,46 +435,55 @@ TEST(Application, ClosingEventCalled)
 
 TEST(Application, FileOpenOpensFile)
 {
-    auto [level_loader_ptr, level_loader] = create_mock<MockLevelLoader>();
-    EXPECT_CALL(level_loader, load_level).Times(1);
+    int32_t times_called = 0;
+    auto trlevel_source = [&](auto&&...) { ++times_called; return mock_unique<trlevel::mocks::MockLevel>(); };
+
     auto dialogs = mock_shared<MockDialogs>();
     EXPECT_CALL(*dialogs, open_file).Times(1).WillRepeatedly(Return(IDialogs::FileResult{ "filename" }));
 
-    auto application = register_test_module().with_level_loader(std::move(level_loader_ptr)).with_dialogs(dialogs).build();
+    auto application = register_test_module().with_trlevel_source(trlevel_source).with_dialogs(dialogs).build();
     application->process_message(WM_COMMAND, MAKEWPARAM(ID_FILE_OPEN, 0), 0);
+
+    ASSERT_EQ(times_called, 1);
 }
 
 TEST(Application, FileOpenDoesNotOpenFileWhenCancelled)
 {
-    auto [level_loader_ptr, level_loader] = create_mock<MockLevelLoader>();
-    EXPECT_CALL(level_loader, load_level).Times(0);
+    int32_t times_called = 0;
+    auto trlevel_source = [&](auto&&...) { ++times_called; return mock_unique<trlevel::mocks::MockLevel>(); };
     auto dialogs = mock_shared<MockDialogs>();
     EXPECT_CALL(*dialogs, open_file).Times(1);
 
-    auto application = register_test_module().with_level_loader(std::move(level_loader_ptr)).with_dialogs(dialogs).build();
+    auto application = register_test_module().with_trlevel_source(trlevel_source).with_dialogs(dialogs).build();
     application->process_message(WM_COMMAND, MAKEWPARAM(ID_FILE_OPEN, 0), 0);
+
+    ASSERT_EQ(times_called, 0);
 }
 
 TEST(Application, FileOpenAcceleratorOpensFile)
 {
-    auto [level_loader_ptr, level_loader] = create_mock<MockLevelLoader>();
-    EXPECT_CALL(level_loader, load_level).Times(1);
+    int32_t times_called = 0;
+    auto trlevel_source = [&](auto&&...) { ++times_called; return mock_unique<trlevel::mocks::MockLevel>(); };
     auto dialogs = mock_shared<MockDialogs>();
     EXPECT_CALL(*dialogs, open_file).Times(1).WillRepeatedly(Return(IDialogs::FileResult{ "filename" }));
 
-    auto application = register_test_module().with_level_loader(std::move(level_loader_ptr)).with_dialogs(dialogs).build();
+    auto application = register_test_module().with_trlevel_source(trlevel_source).with_dialogs(dialogs).build();
     application->process_message(WM_COMMAND, MAKEWPARAM(ID_ACCEL_FILE_OPEN, 0), 0);
+
+    ASSERT_EQ(times_called, 1);
 }
 
 TEST(Application, FileOpenAcceleratorDoesNotOpenFileWhenCancelled)
 {
-    auto [level_loader_ptr, level_loader] = create_mock<MockLevelLoader>();
-    EXPECT_CALL(level_loader, load_level).Times(0);
+    int32_t times_called = 0;
+    auto trlevel_source = [&](auto&&...) { ++times_called; return mock_unique<trlevel::mocks::MockLevel>(); };
     auto dialogs = mock_shared<MockDialogs>();
     EXPECT_CALL(*dialogs, open_file).Times(1);
 
-    auto application = register_test_module().with_level_loader(std::move(level_loader_ptr)).with_dialogs(dialogs).build();
+    auto application = register_test_module().with_trlevel_source(trlevel_source).with_dialogs(dialogs).build();
     application->process_message(WM_COMMAND, MAKEWPARAM(ID_ACCEL_FILE_OPEN, 0), 0);
+
+    ASSERT_EQ(times_called, 0);
 }
 
 TEST(Application, ExportRouteSavesFile)
