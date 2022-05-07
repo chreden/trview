@@ -1,6 +1,7 @@
 #include "Level.h"
 #include "LevelLoadException.h"
 #include "LevelEncryptedException.h"
+#include <trview.common/Logs/Activity.h>
 
 namespace trlevel
 {
@@ -282,10 +283,14 @@ namespace trlevel
         : _log(log)
     {
         // Load the level from the file.
+        trview::Activity activity(log, "IO", "Load Level");
+
         try
         {
             // Convert the filename to UTF-16
             auto converted = trview::to_utf16(filename);
+
+            activity.log("Opening file \"" + filename + "\"");
 
             std::ifstream file;
             file.exceptions(std::ifstream::failbit | std::ifstream::badbit | std::ifstream::eofbit);

@@ -672,6 +672,16 @@ namespace trview
         _route_window->render();
         _lights_windows->render();
 
+        // Temporary log rendering:
+        if (ImGui::Begin("Log"))
+        {
+            for (const auto& message : _log->messages())
+            {
+                ImGui::Text("[%s][%s] - %s", message.topic.c_str(), message.activity.c_str(), message.text.c_str());
+            }
+        }
+        ImGui::End();
+
         ImGui::PopFont();
         ImGui::Render();
         _imgui_backend->render();
