@@ -47,11 +47,7 @@ namespace trview
 
                 if (ImGui::InputInt("##gotoentry", &_index, 1, 100, ImGuiInputTextFlags_EnterReturnsTrue))
                 {
-                    if (_index < 0)
-                    {
-                        _index = 0;
-                    }
-                    else
+                    if (_index >= 0)
                     {
                         on_selected(_index);
                     }
@@ -61,7 +57,7 @@ namespace trview
 
                 if (ImGui::IsKeyPressed(ImGuiKey_Escape) || ImGui::IsKeyPressed(ImGuiKey_Enter) || ImGui::IsKeyPressed(ImGuiKey_KeypadEnter))
                 {
-                    if (!ImGui::IsKeyPressed(ImGuiKey_Escape))
+                    if (!ImGui::IsKeyPressed(ImGuiKey_Escape) && _index >= 0)
                     {
                         on_selected(_index);
                     }

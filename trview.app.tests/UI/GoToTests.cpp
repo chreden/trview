@@ -154,3 +154,27 @@ TEST(GoTo, OnSelectedNotRaisedWhenCancelled)
     ASSERT_FALSE(raised.has_value());
     ASSERT_FALSE(window.visible());
 }
+
+TEST(GoTo, OnSelectedNotRaisedOnNegative)
+{
+    GoTo window;
+    window.toggle_visible(0);
+    window.set_name(L"Item");
+
+    std::optional<uint32_t> raised;
+    auto token = window.on_selected += [&](auto value)
+    {
+        raised = value;
+    };
+
+    TestImgui imgui([&]() { window.render(); });
+    imgui.click_element(imgui.popup_id("Go To Item").id("##gotoentry"));
+    imgui.enter_text("-10");
+    imgui.press_key(ImGuiKey_Enter);
+
+    imgui.reset();
+    imgui.render();
+
+    ASSERT_FALSE(raised.has_value());
+    ASSERT_FALSE(window.visible());
+}
