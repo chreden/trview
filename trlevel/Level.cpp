@@ -101,15 +101,20 @@ namespace trlevel
             skip(file, 4);
         }
 
-        void load_tr1_4_room(std::istream& file, tr3_room& room, LevelVersion version)
+        void load_tr1_4_room(trview::Activity& activity, std::istream& file, tr3_room& room, LevelVersion version)
         {
+            activity.log("Reading room info");
             room.info = convert_room_info(read<tr1_4_room_info>(file));
+            activity.log("Read room info");
 
+            activity.log("Reading number of data words");
             uint32_t NumDataWords = read<uint32_t>(file);
+            activity.log(std::format("{} data words to process", NumDataWords));
 
             // Read actual room data.
             if (NumDataWords > 0)
             {
+                activity.log("Reading vertices");
                 if (version == LevelVersion::Tomb1)
                 {
                     room.data.vertices = convert_vertices(read_vector<int16_t, tr_room_vertex>(file));
@@ -118,16 +123,32 @@ namespace trlevel
                 {
                     room.data.vertices = read_vector<int16_t, tr3_room_vertex>(file);
                 }
+                activity.log(std::format("Read {} vertices", room.data.vertices.size()));
+
+                activity.log("Reading rectangles");
                 room.data.rectangles = convert_rectangles(read_vector<int16_t, tr_face4>(file));
+                activity.log(std::format("Read {} rectangles", room.data.rectangles.size()));
+                activity.log("Reading triangles");
                 room.data.triangles = convert_triangles(read_vector<int16_t, tr_face3>(file));
+                activity.log(std::format("Read {} triangles", room.data.triangles.size()));
+                activity.log("Reading sprites");
                 room.data.sprites = read_vector<int16_t, tr_room_sprite>(file);
+                activity.log(std::format("Read {} sprites", room.data.sprites.size()));
             }
 
+            activity.log("Reading portals");
             room.portals = read_vector<uint16_t, tr_room_portal>(file);
+            activity.log(std::format("Read {} portals", room.portals.size()));
 
+            activity.log("Reading number of z sectors");
             room.num_z_sectors = read<uint16_t>(file);
+            activity.log(std::format("There are {} z sectors", room.num_z_sectors));
+            activity.log("Reading number of x sectors");
             room.num_x_sectors = read<uint16_t>(file);
+            activity.log(std::format("There are {} x sectors", room.num_x_sectors));
+            activity.log(std::format("Reading {} sectors", room.num_z_sectors * room.num_x_sectors));
             room.sector_list = read_vector<tr_room_sector>(file, room.num_z_sectors * room.num_x_sectors);
+            activity.log(std::format("Read {} sectors", room.sector_list.size()));
 
             if (version == LevelVersion::Tomb4)
             {
@@ -148,6 +169,7 @@ namespace trlevel
                 room.light_mode = read<int16_t>(file);
             }
 
+            activity.log("Reading lights");
             switch (version)
             {
                 case LevelVersion::Tomb1:
@@ -171,7 +193,9 @@ namespace trlevel
                     break;
                 }
             }
+            activity.log(std::format("Read {} lights", room.lights.size()));
 
+            activity.log("Reading static meshes");
             if (version == LevelVersion::Tomb1)
             {
                 room.static_meshes = convert_room_static_meshes(read_vector<uint16_t, tr_room_staticmesh>(file));
@@ -180,6 +204,7 @@ namespace trlevel
             {
                 room.static_meshes = read_vector<uint16_t, tr3_room_staticmesh>(file);
             }
+            activity.log(std::format("Read {} static meshes", room.static_meshes.size()));
 
             room.alternate_room = read<int16_t>(file);
             room.flags = read<int16_t>(file);
@@ -192,7 +217,7 @@ namespace trlevel
             }
         }
 
-        void load_tr5_room(std::istream& file, tr3_room& room)
+        void load_tr5_room(trview::Activity& activity, std::istream& file, tr3_room& room)
         {
             skip_xela(file);
             uint32_t room_data_size = read<uint32_t>(file);
@@ -798,15 +823,17 @@ namespace trlevel
         activity.log(std::format("Reading {} rooms", num_rooms));
         for (auto i = 0u; i < num_rooms; ++i)
         {
+            activity.log(std::format("Reading room {}", i));
             tr3_room room;
             if (_version == LevelVersion::Tomb5)
             {
-                load_tr5_room(file, room);
+                load_tr5_room(activity, file, room);
             }
             else
             {
-                load_tr1_4_room(file, room, _version);
+                load_tr1_4_room(activity, file, room, _version);
             }
+            activity.log(std::format("Read room {}", i));
             _rooms.push_back(room);
         }
 
