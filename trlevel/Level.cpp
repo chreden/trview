@@ -952,28 +952,39 @@ namespace trlevel
         if (_version >= LevelVersion::Tomb4)
         {
             // Animated textures uv count - not yet used:
-            skip(file, 1);
+            activity.log("Reading animated textures UV count");
+            uint8_t animated_textures_uv_count = read<uint8_t>(file);
+            activity.log(std::format("Animated texture UV count: {}", animated_textures_uv_count));
 
+            activity.log("Skipping TEX marker");
             file.seekg(3, std::ios::cur);
             if (_version == LevelVersion::Tomb5)
             {
+                activity.log("Skipping TEX null terminator");
                 skip(file, 1);
             }
         }
 
         if (get_version() == LevelVersion::Tomb3)
         {
+            activity.log("Reading object textures");
             _object_textures = read_vector<uint32_t, tr_object_texture>(file);
+            activity.log(std::format("Read {} object textures", _object_textures.size()));
         }
         if (get_version() == LevelVersion::Tomb4)
         {
+            activity.log("Reading object textures");
             _object_textures = convert_object_textures(read_vector<uint32_t, tr4_object_texture>(file));
+            activity.log(std::format("Read {} object textures", _object_textures.size()));
         }
         else if (get_version() == LevelVersion::Tomb5)
         {
+            activity.log("Reading object textures");
             _object_textures = convert_object_textures(read_vector<uint32_t, tr5_object_texture>(file));
+            activity.log(std::format("Read {} object textures", _object_textures.size()));
         }
 
+        activity.log("Reading entities");
         if (_version == LevelVersion::Tomb1)
         {
             _entities = convert_entities(read_vector<uint32_t, tr_entity>(file));
@@ -983,6 +994,7 @@ namespace trlevel
             // TR4 entity is in here, OCB is not set but goes into intensity2 (convert later).
             _entities = read_vector<uint32_t, tr2_entity>(file);
         }
+        activity.log(std::format("Read {} entities", _entities.size()));
 
         if (_version < LevelVersion::Tomb4)
         {
