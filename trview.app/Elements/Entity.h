@@ -33,7 +33,7 @@ namespace trview
         virtual ~Entity() = default;
         virtual void render(const ICamera& camera, const ILevelTextureStorage& texture_storage, const DirectX::SimpleMath::Color& colour) override;
         virtual uint16_t room() const override;
-        uint32_t index() const;
+        virtual uint32_t index() const override;
 
         virtual void get_transparent_triangles(ITransparencyBuffer& transparency, const ICamera& camera, const DirectX::SimpleMath::Color& colour) override;
 

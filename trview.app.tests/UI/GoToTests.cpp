@@ -7,7 +7,7 @@ using namespace trview::tests;
 TEST(GoTo, Name)
 {
     GoTo window;
-    window.toggle_visible();
+    window.toggle_visible(0);
 
     ASSERT_EQ(window.name(), L"");
     window.set_name(L"Item");
@@ -20,7 +20,7 @@ TEST(GoTo, Name)
 TEST(GoTo, OnSelectedWithPlusRaised)
 {
     GoTo window;
-    window.toggle_visible();
+    window.toggle_visible(0);
     window.set_name(L"Item");
 
     std::optional<uint32_t> raised;
@@ -42,7 +42,7 @@ TEST(GoTo, OnSelectedWithPlusRaised)
 TEST(GoTo, OnSelectedWithMinusRaised)
 {
     GoTo window;
-    window.toggle_visible();
+    window.toggle_visible(0);
     window.set_name(L"Item");
 
     std::vector<uint32_t> raised;
@@ -67,7 +67,7 @@ TEST(GoTo, OnSelectedWithMinusRaised)
 TEST(GoTo, OnSelectedNotRaisedWhenMinusPressedAtZero)
 {
     GoTo window;
-    window.toggle_visible();
+    window.toggle_visible(0);
     window.set_name(L"Item");
 
     std::optional<uint32_t> raised;
@@ -88,7 +88,7 @@ TEST(GoTo, OnSelectedNotRaisedWhenMinusPressedAtZero)
 TEST(GoTo, OnSelectedRaised)
 {
     GoTo window;
-    window.toggle_visible();
+    window.toggle_visible(0);
     window.set_name(L"Item");
 
     std::optional<uint32_t> raised;
@@ -110,10 +110,35 @@ TEST(GoTo, OnSelectedRaised)
     ASSERT_FALSE(window.visible());
 }
 
+TEST(GoTo, OnZeroSelectedRaised)
+{
+    GoTo window;
+    window.toggle_visible(0);
+    window.set_name(L"Item");
+
+    std::optional<uint32_t> raised;
+    auto token = window.on_selected += [&](auto value)
+    {
+        raised = value;
+    };
+
+    TestImgui imgui([&]() { window.render(); });
+    imgui.click_element(imgui.popup_id("Go To Item").id("##gotoentry"));
+    imgui.enter_text("0");
+    imgui.press_key(ImGuiKey_Enter);
+
+    imgui.reset();
+    imgui.render();
+
+    ASSERT_TRUE(raised.has_value());
+    ASSERT_EQ(raised.value(), 0u);
+    ASSERT_FALSE(window.visible());
+}
+
 TEST(GoTo, OnSelectedNotRaisedWhenCancelled)
 {
     GoTo window;
-    window.toggle_visible();
+    window.toggle_visible(0);
     window.set_name(L"Item");
 
     std::optional<uint32_t> raised;
@@ -125,6 +150,30 @@ TEST(GoTo, OnSelectedNotRaisedWhenCancelled)
     TestImgui imgui([&]() { window.render(); });
     imgui.click_element(imgui.popup_id("Go To Item").id("##gotoentry"));
     imgui.press_key(ImGuiKey_Escape);
+
+    ASSERT_FALSE(raised.has_value());
+    ASSERT_FALSE(window.visible());
+}
+
+TEST(GoTo, OnSelectedNotRaisedOnNegative)
+{
+    GoTo window;
+    window.toggle_visible(0);
+    window.set_name(L"Item");
+
+    std::optional<uint32_t> raised;
+    auto token = window.on_selected += [&](auto value)
+    {
+        raised = value;
+    };
+
+    TestImgui imgui([&]() { window.render(); });
+    imgui.click_element(imgui.popup_id("Go To Item").id("##gotoentry"));
+    imgui.enter_text("-10");
+    imgui.press_key(ImGuiKey_Enter);
+
+    imgui.reset();
+    imgui.render();
 
     ASSERT_FALSE(raised.has_value());
     ASSERT_FALSE(window.visible());

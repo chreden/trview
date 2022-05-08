@@ -46,6 +46,7 @@ namespace trview
         virtual std::vector<RoomInfo> room_info() const override;
         virtual RoomInfo room_info(uint32_t room) const override;
         virtual std::vector<graphics::Texture> level_textures() const override;
+        virtual uint32_t selected_item() const override;
         virtual uint16_t selected_room() const override;
         virtual std::vector<Item> items() const override;
         virtual uint32_t number_of_rooms() const override;

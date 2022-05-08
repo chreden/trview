@@ -531,7 +531,7 @@ namespace trview
         _level->set_show_items(_ui->toggle(Options::items));
 
         // Set up the views.
-        auto rooms = _level->room_info();
+        auto rooms = _level->rooms();
         _camera.reset();
 
         // Reset UI buttons
@@ -554,6 +554,12 @@ namespace trview
 
         _ui->set_toggle(Options::depth_enabled, false);
         _ui->set_scalar(Options::depth, 1);
+
+        if (level->selected_room() < rooms.size())
+        {
+            _ui->set_selected_room(rooms[level->selected_room()].lock());
+        }
+        _ui->set_selected_item(level->selected_item());
 
         // Strip the last part of the path away.
         const auto filename = _level->filename();
@@ -731,6 +737,7 @@ namespace trview
     void Viewer::select_item(const Item& item)
     {
         _target = item.position();
+        _ui->set_selected_item(item.number());
         if (_settings.auto_orbit)
         {
             set_camera_mode(CameraMode::Orbit);

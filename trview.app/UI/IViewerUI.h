@@ -171,6 +171,12 @@ namespace trview
         /// "param value Whether the button is enabled.
         virtual void set_remove_waypoint_enabled(bool value) = 0;
 
+        /// <summary>
+        /// Set the currently selected item index.
+        /// </summary>
+        /// <param name="item">The selected item number.</param>
+        virtual void set_selected_item(uint32_t index) = 0;
+
         /// Set the selected room.
         /// @param room The selected room.
         virtual void set_selected_room(const std::shared_ptr<IRoom>& room) = 0;
