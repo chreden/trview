@@ -323,9 +323,9 @@ namespace trlevel
 
             if (_version > LevelVersion::Tomb1)
             {
-                activity.log("Reading 8 bit palette");
+                activity.log("Reading 8-bit palette");
                 _palette = read_vector<tr_colour>(file, 256);
-                activity.log("Reading 16 bit palette");
+                activity.log("Reading 16-bit palette");
                 _palette16 = read_vector<tr_colour4>(file, 256);
             }
 
@@ -998,26 +998,37 @@ namespace trlevel
 
         if (_version < LevelVersion::Tomb4)
         {
+            activity.log("Reading light map");
             std::vector<uint8_t> light_map = read_vector<uint8_t>(file, 32 * 256);
+            activity.log("Read light map");
         }
 
         if (_version == LevelVersion::Tomb1)
         {
+            activity.log("Reading 8-bit palette");
             _palette = read_vector<tr_colour>(file, 256);
+            activity.log("Read 8-bit palette");
         }
 
         if (_version >= LevelVersion::Tomb4)
         {
+            activity.log("Reading AI objects");
             _ai_objects = read_vector<uint32_t, tr4_ai_object>(file);
+            activity.log(std::format("Read {} AI objects", _ai_objects.size()));
         }
 
         if (_version < LevelVersion::Tomb4)
         {
+            activity.log("Reading cinematic frames");
             std::vector<tr_cinematic_frame> cinematic_frames = read_vector<uint16_t, tr_cinematic_frame>(file);
+            activity.log(std::format("Read {} cinematic frames", cinematic_frames.size()));
         }
 
+        activity.log("Reading demo data");
         std::vector<uint8_t> demo_data = read_vector<uint16_t, uint8_t>(file);
+        activity.log(std::format("Read {} demo data", demo_data.size()));
 
+        activity.log("Reading sound map");
         if (_version == LevelVersion::Tomb1)
         {
             std::vector<int16_t> sound_map = read_vector<int16_t>(file, 256);
@@ -1041,15 +1052,22 @@ namespace trlevel
         {
             std::vector<int16_t> sound_map = read_vector<int16_t>(file, 450);
         }
+        activity.log("Read sound map");
 
+        activity.log("Reading sound details");
         std::vector<tr3_sound_details> sound_details = read_vector<uint32_t, tr3_sound_details>(file);
+        activity.log(std::format("Read {} sound details", sound_details.size()));
 
         if (_version == LevelVersion::Tomb1)
         {
+            activity.log("Reading sound data");
             std::vector<uint8_t> sound_data = read_vector<int32_t, uint8_t>(file);
+            activity.log(std::format("Read {} sound data", sound_data.size()));
         }
 
+        activity.log("Reading sample indices");
         std::vector<uint32_t> sample_indices = read_vector<uint32_t, uint32_t>(file);
+        activity.log(std::format("Read {} sample indices", sample_indices.size()));
     }
 
     bool Level::find_first_entity_by_type(int16_t type, tr2_entity& entity) const
