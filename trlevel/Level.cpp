@@ -900,16 +900,23 @@ namespace trlevel
         // If this is Unfinished Business, the palette is here.
         // Need to do something about that, instead of just crashing.
 
+        activity.log("Reading cameras");
         std::vector<tr_camera> cameras = read_vector<uint32_t, tr_camera>(file);
+        activity.log(std::format("Read {} cameras", cameras.size()));
 
         if (_version >= LevelVersion::Tomb4)
         {
+            activity.log("Reading flyby cameras");
             std::vector<tr4_flyby_camera> flyby_cameras = read_vector<uint32_t, tr4_flyby_camera>(file);
+            activity.log(std::format("Read {} flyby cameras", flyby_cameras.size()));
         }
 
+        activity.log("Reading sound sources");
         std::vector<tr_sound_source> sound_sources = read_vector<uint32_t, tr_sound_source>(file);
+        activity.log(std::format("Read {} sound sources", sound_sources.size()));
 
         uint32_t num_boxes = 0;
+        activity.log("Reading boxes");
         if (_version == LevelVersion::Tomb1)
         {
             std::vector<tr_box> boxes = read_vector<uint32_t, tr_box>(file);
@@ -920,17 +927,27 @@ namespace trlevel
             std::vector<tr2_box> boxes = read_vector<uint32_t, tr2_box>(file);
             num_boxes = static_cast<uint32_t>(boxes.size());
         }
-        std::vector<uint16_t> overlaps = read_vector<uint32_t, uint16_t>(file);
+        activity.log(std::format("Read {} boxes", num_boxes));
 
+        activity.log("Reading overlaps");
+        std::vector<uint16_t> overlaps = read_vector<uint32_t, uint16_t>(file);
+        activity.log(std::format("Read {} overlaps", overlaps.size()));
+
+        activity.log("Reading zones");
         if (_version == LevelVersion::Tomb1)
         {
             std::vector<int16_t> zones = read_vector<int16_t>(file, num_boxes * 6);
+            activity.log(std::format("Read {} zones", zones.size()));
         }
         else
         {
             std::vector<int16_t> zones = read_vector<int16_t>(file, num_boxes * 10);
+            activity.log(std::format("Read {} zones", zones.size()));
         }
+
+        activity.log("Reading animated textures");
         std::vector<uint16_t> animated_textures = read_vector<uint32_t, uint16_t>(file);
+        activity.log(std::format("Read {} animated textures", animated_textures.size()));
 
         if (_version >= LevelVersion::Tomb4)
         {
