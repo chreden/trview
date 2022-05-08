@@ -1,7 +1,7 @@
 #include "Level.h"
 #include "LevelLoadException.h"
 #include "LevelEncryptedException.h"
-#include <trview.common/Logs/Activity.h>
+#include <format>
 
 namespace trlevel
 {
@@ -78,13 +78,14 @@ namespace trlevel
             return read_vector<DataType>(data_stream, elements);
         }
 
-        bool is_tr5(LevelVersion version, const std::wstring& filename)
+        bool is_tr5(trview::Activity& activity, LevelVersion version, const std::wstring& filename)
         {
             if (version != LevelVersion::Tomb4)
             {
                 return false;
             }
 
+            activity.log("Checking file extension to determine whether this is a Tomb5 level");
             std::wstring transformed;
             std::transform(filename.begin(), filename.end(), std::back_inserter(transformed), towupper);
             return transformed.find(L".TRC") != filename.npos;
@@ -289,53 +290,57 @@ namespace trlevel
         {
             // Convert the filename to UTF-16
             auto converted = trview::to_utf16(filename);
-
-            activity.log("Opening file \"" + filename + "\"");
+            activity.log(std::format("Opening file \"{}\"", filename));
 
             std::ifstream file;
             file.exceptions(std::ifstream::failbit | std::ifstream::badbit | std::ifstream::eofbit);
             file.open(converted.c_str(), std::ios::binary);
 
+            activity.log(std::format("Opened file \"{}\"", filename));
+
+            activity.log("Reading version number from file");
             uint32_t raw_version = read<uint32_t>(file);
             _version = convert_level_version(raw_version);
+            activity.log(std::format("Version number is {:X} ({})", raw_version, to_string(_version)));
 
             if (raw_version == 0x63345254)
             {
+                activity.log("Level is encrypted, aborting");
                 throw LevelEncryptedException();
             }
 
-            if (is_tr5(_version, converted))
+            if (is_tr5(activity, _version, converted))
             {
                 _version = LevelVersion::Tomb5;
+                activity.log(std::format("Version number is {:X} ({})", raw_version, to_string(_version)));
             }
 
             if (_version >= LevelVersion::Tomb4)
             {
-                load_tr4(file);
+                load_tr4(activity, file);
                 return;
             }
 
             if (_version > LevelVersion::Tomb1)
             {
+                activity.log("Reading 8 bit palette");
                 _palette = read_vector<tr_colour>(file, 256);
+                activity.log("Reading 16 bit palette");
                 _palette16 = read_vector<tr_colour4>(file, 256);
             }
 
+            activity.log("Reading textiles");
             _num_textiles = read<uint32_t>(file);
-            for (uint32_t i = 0; i < _num_textiles; ++i)
-            {
-                _textile8.emplace_back(read<tr_textile8>(file));
-            }
+            activity.log(std::format("Reading {} 8-bit textiles", _num_textiles));
+            _textile8 = read_vector<tr_textile8>(file, _num_textiles);
 
             if (_version > LevelVersion::Tomb1)
             {
-                for (uint32_t i = 0; i < _num_textiles; ++i)
-                {
-                    _textile16.emplace_back(read<tr_textile16>(file));
-                }
+                activity.log(std::format("Reading {} 16-bit textiles", _num_textiles));
+                _textile16 = read_vector<tr_textile16>(file, _num_textiles);
             }
 
-            load_level_data(file);
+            load_level_data(activity, file);
             generate_meshes(_mesh_data);
         }
         catch (const LevelEncryptedException&)
@@ -713,7 +718,7 @@ namespace trlevel
         return _sprite_textures[index];
     }
 
-    void Level::load_tr4(std::ifstream& file)
+    void Level::load_tr4(trview::Activity& activity, std::ifstream& file)
     {
         uint16_t num_room_textiles = read<uint16_t>(file);
         uint16_t num_obj_textiles = read<uint16_t>(file);
@@ -736,14 +741,14 @@ namespace trlevel
             std::vector<uint8_t> level_data = read_compressed(file);
             std::string data(reinterpret_cast<char*>(&level_data[0]), level_data.size());
             std::istringstream data_stream(data, std::ios::binary);
-            load_level_data(data_stream);
+            load_level_data(activity, data_stream);
         }
         else
         {
             // Skip size of uncompressed and compressed level data as they are
             // unused in TR5.
             skip(file, 8);
-            load_level_data(file);
+            load_level_data(activity, file);
         }
 
         if (_version == LevelVersion::Tomb5)
@@ -761,7 +766,7 @@ namespace trlevel
         generate_meshes(_mesh_data);
     }
 
-    void Level::load_level_data(std::istream& file)
+    void Level::load_level_data(trview::Activity& activity, std::istream& file)
     {
         // Read unused value.
         read<uint32_t>(file);

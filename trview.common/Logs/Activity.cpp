@@ -6,6 +6,12 @@ namespace trview
     Activity::Activity(const std::shared_ptr<ILog>& log, const std::string& topic, const std::string& name)
         : _log(log), _topic(topic), _name(name)
     {
+        _log->log(topic, name, "Activity Started");
+    }
+
+    Activity::~Activity()
+    {
+        _log->log(_topic, _name, "Activity Ended");
     }
 
     void Activity::log(const std::string& text)

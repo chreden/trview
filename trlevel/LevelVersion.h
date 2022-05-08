@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cstdint>
+#include <string>
 
 namespace trlevel
 {
@@ -20,4 +21,8 @@ namespace trlevel
     // version: The version to convert.
     // Returns: The level version.
     LevelVersion convert_level_version(uint32_t version);
+
+    constexpr std::string to_string(LevelVersion version) noexcept;
 }
+
+#include "LevelVersion.hpp"

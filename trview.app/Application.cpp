@@ -677,7 +677,7 @@ namespace trview
         {
             for (const auto& message : _log->messages())
             {
-                ImGui::Text("[%s][%s] - %s", message.topic.c_str(), message.activity.c_str(), message.text.c_str());
+                ImGui::Text("[%s][%s][%s] - %s", message.timestamp.c_str(), message.topic.c_str(), message.activity.c_str(), message.text.c_str());
             }
         }
         ImGui::End();
