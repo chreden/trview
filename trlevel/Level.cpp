@@ -841,17 +841,18 @@ namespace trlevel
         activity.log(std::format("Reading {} rooms", num_rooms));
         for (auto i = 0u; i < num_rooms; ++i)
         {
-            activity.log(std::format("Reading room {}", i));
+            trview::Activity room_activity(activity, std::format("Room {}", i));
+            room_activity.log(std::format("Reading room {}", i));
             tr3_room room;
             if (_version == LevelVersion::Tomb5)
             {
-                load_tr5_room(activity, file, room);
+                load_tr5_room(room_activity, file, room);
             }
             else
             {
-                load_tr1_4_room(activity, file, room, _version);
+                load_tr1_4_room(room_activity, file, room, _version);
             }
-            activity.log(std::format("Read room {}", i));
+            room_activity.log(std::format("Read room {}", i));
             _rooms.push_back(room);
         }
 

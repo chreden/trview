@@ -10,6 +10,7 @@ namespace trview
     public:
         virtual ~Log() = default;
         virtual void log(const std::string& topic, const std::string& activity, const std::string& text) override;
+        virtual void log(const std::string& topic, const std::vector<std::string>& activity, const std::string& text) override;
         virtual std::vector<Message> messages() const override;
     private:
         std::vector<Message> _messages;

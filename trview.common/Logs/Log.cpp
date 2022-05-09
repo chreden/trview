@@ -9,6 +9,11 @@ namespace trview
 
     void Log::log(const std::string& topic, const std::string& activity, const std::string& text)
     {
+        log(topic, std::vector<std::string>{ activity }, text);
+    }
+
+    void Log::log(const std::string& topic, const std::vector<std::string>& activity, const std::string& text)
+    {
         // TODO: Make this nicer
         SYSTEMTIME time;
         GetLocalTime(&time);

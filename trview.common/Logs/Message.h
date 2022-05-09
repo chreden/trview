@@ -6,7 +6,7 @@ namespace trview
     {
         std::string timestamp;
         std::string topic;
-        std::string activity;
+        std::vector<std::string> activity;
         std::string text;
     };
 }
