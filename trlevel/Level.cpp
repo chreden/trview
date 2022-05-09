@@ -152,46 +152,54 @@ namespace trlevel
 
             if (version == LevelVersion::Tomb4)
             {
+                activity.log("Reading room colour");
                 room.room_colour = read<uint32_t>(file);
+                activity.log(std::format("Read room colour {:X}", room.room_colour));
             }
             else
             {
+                activity.log("Reading ambient intensity 1");
                 room.ambient_intensity_1 = read<int16_t>(file);
+                activity.log(std::format("Read ambient intensity 1: {}", room.ambient_intensity_1));
 
                 if (version > LevelVersion::Tomb1)
                 {
+                    activity.log("Reading ambient intensity 2");
                     room.ambient_intensity_2 = read<int16_t>(file);
+                    activity.log(std::format("Read ambient intensity 2: {}", room.ambient_intensity_2));
                 }
             }
 
             if (version == LevelVersion::Tomb2)
             {
+                activity.log("Reading light mode");
                 room.light_mode = read<int16_t>(file);
+                activity.log(std::format("Read light mode: {}", room.light_mode));
             }
 
             activity.log("Reading lights");
             switch (version)
             {
-                case LevelVersion::Tomb1:
-                {
-                    room.lights = convert_lights(read_vector<uint16_t, tr_room_light>(file));
-                    break;
-                }
-                case LevelVersion::Tomb2:
-                {
-                    room.lights = convert_lights(read_vector<uint16_t, tr2_room_light>(file));
-                    break;
-                }
-                case LevelVersion::Tomb3:
-                {
-                    room.lights = convert_lights(read_vector<uint16_t, tr3_room_light>(file));
-                    break;
-                }
-                case LevelVersion::Tomb4:
-                {
-                    room.lights = convert_lights(read_vector<uint16_t, tr4_room_light>(file));
-                    break;
-                }
+            case LevelVersion::Tomb1:
+            {
+                room.lights = convert_lights(read_vector<uint16_t, tr_room_light>(file));
+                break;
+            }
+            case LevelVersion::Tomb2:
+            {
+                room.lights = convert_lights(read_vector<uint16_t, tr2_room_light>(file));
+                break;
+            }
+            case LevelVersion::Tomb3:
+            {
+                room.lights = convert_lights(read_vector<uint16_t, tr3_room_light>(file));
+                break;
+            }
+            case LevelVersion::Tomb4:
+            {
+                room.lights = convert_lights(read_vector<uint16_t, tr4_room_light>(file));
+                break;
+            }
             }
             activity.log(std::format("Read {} lights", room.lights.size()));
 
@@ -206,14 +214,24 @@ namespace trlevel
             }
             activity.log(std::format("Read {} static meshes", room.static_meshes.size()));
 
+            activity.log("Reading alternate room");
             room.alternate_room = read<int16_t>(file);
+            activity.log(std::format("Read alternate room: {}", room.alternate_room));
+            activity.log("Reading flags");
             room.flags = read<int16_t>(file);
+            activity.log(std::format("Read flags: {:X}", room.flags));
 
             if (version >= LevelVersion::Tomb3)
             {
+                activity.log("Reading water scheme");
                 room.water_scheme = read<uint8_t>(file);
+                activity.log(std::format("Read water scheme: {}", room.water_scheme));
+                activity.log("Reading reverb info");
                 room.reverb_info = read<uint8_t>(file);
+                activity.log(std::format("Read reverb info: {}", room.reverb_info));
+                activity.log("Reading alternate group");
                 room.alternate_group = read<uint8_t>(file);
+                activity.log(std::format("Read alternate group: {}", room.alternate_group));
             }
         }
 
