@@ -43,6 +43,6 @@ namespace trview
             Custom
         };
         TextureMode _texture_mode{ TextureMode::Official };
-        graphics::Texture _trle_texture;
+        graphics::Texture _geometry_texture;
     };
 }
