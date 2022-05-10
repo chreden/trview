@@ -70,8 +70,8 @@ namespace trview
         virtual bool alternate_mode() const override;
         virtual bool any_alternates() const override;
         virtual void set_show_triggers(bool show) override;
-        virtual void set_show_hidden_geometry(bool show) override;
-        virtual bool show_hidden_geometry() const override;
+        virtual void set_show_geometry(bool show) override;
+        virtual bool show_geometry() const override;
         virtual void set_show_water(bool show) override;
         virtual void set_show_wireframe(bool show) override;
         virtual void set_show_bounding_boxes(bool show) override;
@@ -90,8 +90,6 @@ namespace trview
         virtual std::vector<std::weak_ptr<ILight>> lights() const override;
         virtual void set_light_visibility(uint32_t index, bool state) override;
         virtual void set_room_visibility(uint32_t index, bool state) override;
-        virtual void set_use_trle_colours(bool value) override;
-        virtual bool use_trle_colours() const override;
         virtual MapColours map_colours() const override;
         virtual void set_map_colours(const MapColours& map_colours) override;
     private:
@@ -168,13 +166,12 @@ namespace trview
         bool _regenerate_transparency{ true };
         bool _alternate_mode{ false };
         bool _show_triggers{ true };
-        bool _show_hidden_geometry{ false };
         bool _show_water{ true };
         bool _show_wireframe{ false };
         bool _show_bounding_boxes{ false };
         bool _show_lights{ false };
         bool _show_items{ true };
-        bool _use_trle_colours{ false };
+        bool _show_geometry { false };
 
         std::unique_ptr<ISelectionRenderer> _selection_renderer;
         std::set<uint32_t> _alternate_groups;

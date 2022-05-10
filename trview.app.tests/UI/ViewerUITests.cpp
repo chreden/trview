@@ -253,29 +253,3 @@ TEST(ViewerUI, OnMinimapColoursEventRaised)
     ASSERT_TRUE(raised);
 }
 
-TEST(ViewerUI, TRLEColoursEventRaised)
-{
-    auto [view_options_ptr, view_options] = create_mock<MockViewOptions>();
-    auto ui = register_test_module().with_view_options(std::move(view_options_ptr)).build();
-
-    std::optional<std::tuple<std::string, bool>> show;
-    auto token = ui->on_toggle_changed += [&](const auto& name, const auto& value)
-    {
-        show = { name, value };
-    };
-
-    view_options.on_toggle_changed(IViewer::Options::trle_colours, true);
-    ASSERT_TRUE(show.has_value());
-    ASSERT_EQ(std::get<0>(show.value()), IViewer::Options::trle_colours);
-    ASSERT_TRUE(std::get<1>(show.value()));
-}
-
-TEST(ViewerUI, TRLEColoursUpdatesViewOptions)
-{
-    auto [view_options_ptr, view_options] = create_mock<MockViewOptions>();
-    auto ui = register_test_module().with_view_options(std::move(view_options_ptr)).build();
-
-    EXPECT_CALL(view_options, set_toggle(IViewer::Options::trle_colours, true)).Times(1);
-
-    ui->set_toggle(IViewer::Options::trle_colours, true);
-}

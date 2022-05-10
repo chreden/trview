@@ -48,7 +48,7 @@ CTRL + M    | New Rooms window
 CTRL + L    | New Lights window
 F1          | Toggle settings window
 F           | Free camera
-G           | Toggle hidden geometry
+G           | Toggle geometry mode
 H           | Toggle room highlighting
 L           | Toggle lights visibility
 O           | Orbit camera
@@ -112,7 +112,7 @@ Option|Action
 ---|------
 Highlight           | Highlight the currently selected room
 Triggers            | Toggle trigger visibility
-Geometry            | Toggle hidden geometry visibility
+Geometry            | Toggle geometry mode
 Water               | Toggle water in water rooms
 Depth               | Toggle depth mode. This will show the currently selected depth of neighbours of the current room.
 Depth Selector      | Choose the depth of neighbours to show

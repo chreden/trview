@@ -23,7 +23,7 @@ namespace trview
             const DirectX::SimpleMath::Color& colour,
             float light_intensity = 1.0f,
             DirectX::SimpleMath::Vector3 light_direction = DirectX::SimpleMath::Vector3::Zero,
-            bool use_trle_colours = false) = 0;
+            bool geometry_mode = false) = 0;
 
         virtual std::vector<TransparentTriangle> transparent_triangles() const = 0;
 

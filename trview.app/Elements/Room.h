@@ -41,7 +41,7 @@ namespace trview
         virtual RoomInfo info() const override;
         virtual std::set<uint16_t> neighbours() const override;
         virtual PickResult pick(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& direction, PickFilter filters = PickFilter::Default) const override;
-        virtual void render(const ICamera& camera, SelectionMode selected, bool show_items, bool show_hidden_geometry, bool show_water, bool use_trle_colours, const std::unordered_set<uint32_t>& visible_rooms) override;
+        virtual void render(const ICamera& camera, SelectionMode selected, bool show_items, bool show_water, bool geometry_mode, const std::unordered_set<uint32_t>& visible_rooms) override;
         virtual void render_bounding_boxes(const ICamera& camera) override;
         virtual void render_lights(const ICamera& camera, const std::weak_ptr<ILight>& selected_light) override;
         virtual void render_contained(const ICamera& camera, SelectionMode selected, bool show_items, bool show_water) override;
@@ -50,7 +50,7 @@ namespace trview
         virtual void add_light(const std::weak_ptr<ILight>& light) override;
         virtual const std::vector<std::shared_ptr<ISector>> sectors() const override;
         virtual void generate_sector_triangles() override;
-        virtual void get_transparent_triangles(ITransparencyBuffer& transparency, const ICamera& camera, SelectionMode selected, bool show_items, bool include_triggers, bool show_water, bool trle_mode) override;
+        virtual void get_transparent_triangles(ITransparencyBuffer& transparency, const ICamera& camera, SelectionMode selected, bool show_items, bool include_triggers, bool show_water, bool geometry_mode) override;
         virtual void get_contained_transparent_triangles(ITransparencyBuffer& transparency, const ICamera& camera, SelectionMode selected, bool show_items, bool show_water) override;
         virtual AlternateMode alternate_mode() const override;
         virtual int16_t alternate_room() const override;
@@ -91,20 +91,7 @@ namespace trview
         /// @param collision_triangles The collision output vector.
         void process_collision_transparency(const std::vector<TransparentTriangle>& transparent_triangles, std::vector<Triangle>& collision_triangles);
 
-        /// Process the sectors in the level and find where there are walkable floors that have no matching geometry.
-        /// @param data The room data to check against.
-        /// @param room_vertices The actual room vertices.
-        /// @param output_vertices Where to store vertices.
-        /// @param output_indices Where to store indices.
-        /// @param collision_triangles Where to store collision triangles.
-        void process_unmatched_geometry(const trlevel::tr3_room_data& data, 
-            const std::vector<trlevel::tr_vertex>& room_vertices,
-            const std::vector<TransparentTriangle>& transparent_triangles,
-            std::vector<MeshVertex>& output_vertices,
-            std::vector<uint32_t>& output_indices,
-            std::vector<Triangle>& collision_triangles);
-
-        void generate_trle_mesh(const IMesh::Source& mesh_source);
+        void generate_all_geometry_mesh(const IMesh::Source& mesh_source);
 
         void add_centroid_to_pick(const IMesh& mesh, PickResult& geometry_result) const;
 
@@ -115,8 +102,7 @@ namespace trview
         std::vector<std::shared_ptr<IStaticMesh>> _static_meshes;
 
         std::shared_ptr<IMesh> _mesh;
-        std::shared_ptr<IMesh> _unmatched_mesh;
-        std::unordered_map<uint32_t, std::shared_ptr<IMesh>> _trle_meshes;
+        std::unordered_map<uint32_t, std::shared_ptr<IMesh>> _all_geometry_meshes;
         DirectX::SimpleMath::Matrix _room_offset;
         DirectX::SimpleMath::Matrix _inverted_room_offset;
 
@@ -141,7 +127,7 @@ namespace trview
         std::shared_ptr<ILevelTextureStorage> _texture_storage;
         std::vector<std::weak_ptr<ILight>> _lights;
         IMesh::Source _mesh_source;
-        std::vector<uint32_t> _trle_sector_rooms;
+        std::vector<uint32_t> _all_geometry_sector_rooms;
         std::function<std::shared_ptr<IMesh>()> _unmatched_mesh_generator;
 
         bool _visible{ true };

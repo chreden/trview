@@ -36,7 +36,7 @@ namespace trview
             MOCK_METHOD(void, set_item_visibility, (uint32_t, bool), (override));
             MOCK_METHOD(void, set_selected_trigger, (uint32_t), (override));
             MOCK_METHOD(void, set_selected_light, (uint32_t), (override));
-            MOCK_METHOD(void, set_show_hidden_geometry, (bool), (override));
+            MOCK_METHOD(void, set_show_geometry, (bool), (override));
             MOCK_METHOD(void, set_show_triggers, (bool), (override));
             MOCK_METHOD(void, set_show_water, (bool), (override));
             MOCK_METHOD(void, set_show_wireframe, (bool), (override));
@@ -49,15 +49,13 @@ namespace trview
             MOCK_METHOD(void, set_selected_item, (uint32_t), (override));
             MOCK_METHOD(void, set_light_visibility, (uint32_t, bool), (override));
             MOCK_METHOD(void, set_room_visibility, (uint32_t, bool), (override));
-            MOCK_METHOD(bool, show_hidden_geometry, (), (const, override));
+            MOCK_METHOD(bool, show_geometry, (), (const, override));
             MOCK_METHOD(bool, show_lights, (), (const, override));
             MOCK_METHOD(bool, show_triggers, (), (const, override));
             MOCK_METHOD(bool, show_items, (), (const, override));
             MOCK_METHOD(const ILevelTextureStorage&, texture_storage, (), (const, override));
             MOCK_METHOD(std::vector<std::weak_ptr<ITrigger>>, triggers, (), (const, override));
             MOCK_METHOD(trlevel::LevelVersion, version, (), (const, override));
-            MOCK_METHOD(bool, use_trle_colours, (), (const, override));
-            MOCK_METHOD(void, set_use_trle_colours, (bool), (override));
             MOCK_METHOD(MapColours, map_colours, (), (const, override));
             MOCK_METHOD(void, set_map_colours, (const MapColours&), (override));
         };

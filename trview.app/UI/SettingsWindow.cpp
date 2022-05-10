@@ -104,7 +104,7 @@ namespace trview
                     add_special("Default", MapColours::Special::Default);
                     add_colour("Portal", SectorFlag::Portal);
                     add_colour("Wall", SectorFlag::Wall);
-                    add_special("TRLE Wall", MapColours::Special::TrleWall);
+                    add_special("Geometry Wall", MapColours::Special::GeometryWall);
                     add_colour("Trigger", SectorFlag::Trigger);
                     add_colour("Death", SectorFlag::Death);
                     add_colour("Minecart Left", SectorFlag::MinecartLeft);

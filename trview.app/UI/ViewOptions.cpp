@@ -7,14 +7,13 @@ namespace trview
     {
         _toggles[IViewer::Options::highlight] = false;
         _toggles[IViewer::Options::triggers] = true;
-        _toggles[IViewer::Options::hidden_geometry] = false;
+        _toggles[IViewer::Options::geometry] = false;
         _toggles[IViewer::Options::water] = true;
         _toggles[IViewer::Options::depth_enabled] = false;
         _toggles[IViewer::Options::wireframe] = false;
         _toggles[IViewer::Options::show_bounding_boxes] = false;
         _toggles[IViewer::Options::lights] = false;
         _toggles[IViewer::Options::flip] = false;
-        _toggles[IViewer::Options::trle_colours] = false;
         _toggles[IViewer::Options::items] = true;
     }
 
@@ -55,9 +54,8 @@ namespace trview
                 ImGui::PopItemWidth();
                 ImGui::TableNextRow();
                 add_toggle(IViewer::Options::wireframe);
-                add_toggle(IViewer::Options::hidden_geometry);
+                add_toggle(IViewer::Options::geometry);
                 ImGui::TableNextRow();
-                add_toggle(IViewer::Options::trle_colours);
                 if (!_use_alternate_groups)
                 {
                     ImGui::BeginDisabled(!_flip_enabled);

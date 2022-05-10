@@ -109,14 +109,13 @@ namespace trview
         void toggle_show_triggers();
         void set_show_items(bool show);
         void toggle_show_items();
-        void set_show_hidden_geometry(bool show);
-        void toggle_show_hidden_geometry();
+        void set_show_geometry(bool show);
+        void toggle_show_geometry();
         void toggle_show_lights();
         void set_show_water(bool show);
         void set_show_wireframe(bool show);
         void set_show_bounding_boxes(bool show);
         void set_show_lights(bool show);
-        void set_use_trle_colours(bool show);
         uint32_t room_from_pick(const PickResult& pick) const;
         void add_recent_orbit(const PickResult& pick);
         void select_previous_orbit();
