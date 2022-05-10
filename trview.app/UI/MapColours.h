@@ -15,7 +15,7 @@ namespace trview
             NoSpace,
             RoomAbove,
             RoomBelow,
-            TrleWall
+            GeometryWall
         };
 
         std::unordered_map<SectorFlag, Colour> override_colours() const;

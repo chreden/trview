@@ -50,7 +50,7 @@ namespace trview
 
         std::unordered_map<std::string, std::function<void(bool)>> toggles;
         toggles[Options::highlight] = [this](bool) { toggle_highlight(); };
-        toggles[Options::hidden_geometry] = [this](bool value) { set_show_hidden_geometry(value); };
+        toggles[Options::geometry] = [this](bool value) { set_show_geometry(value); };
         toggles[Options::water] = [this](bool value) { set_show_water(value); };
         toggles[Options::wireframe] = [this](bool value) { set_show_wireframe(value); };
         toggles[Options::triggers] = [this](bool value) { set_show_triggers(value); };
@@ -58,7 +58,6 @@ namespace trview
         toggles[Options::flip] = [this](bool value) { set_alternate_mode(value); };
         toggles[Options::depth_enabled] = [this](bool value) { if (_level) { _level->set_highlight_mode(ILevel::RoomHighlightMode::Neighbours, value); } };
         toggles[Options::lights] = [this](bool value) { set_show_lights(value); };
-        toggles[Options::trle_colours] = [this](bool value) { set_use_trle_colours(value); };
         toggles[Options::items] = [this](bool value) { set_show_items(value); };
 
         std::unordered_map<std::string, std::function<void(int32_t)>> scalars;
@@ -360,7 +359,7 @@ namespace trview
         });
         add_shortcut(false, 'I', [&]() { toggle_show_items(); });
         add_shortcut(false, 'T', [&]() { toggle_show_triggers(); });
-        add_shortcut(false, 'G', [&]() { toggle_show_hidden_geometry(); });
+        add_shortcut(false, 'G', [&]() { toggle_show_geometry(); });
         add_shortcut(false, VK_OEM_MINUS, [&]() { select_previous_orbit(); });
         add_shortcut(false, VK_OEM_PLUS, [&]() { select_next_orbit(); });
         add_shortcut(false, VK_F1, [&]() { _ui->toggle_settings_visibility(); });
@@ -522,12 +521,11 @@ namespace trview
         _token_store += _level->on_level_changed += [&]() { _scene_changed = true; };
 
         _level->set_show_triggers(_ui->toggle(Options::triggers));
-        _level->set_show_hidden_geometry(_ui->toggle(Options::hidden_geometry));
+        _level->set_show_geometry(_ui->toggle(Options::geometry));
         _level->set_show_water(_ui->toggle(Options::water));
         _level->set_show_wireframe(_ui->toggle(Options::wireframe)); 
         _level->set_show_bounding_boxes(_ui->toggle(Options::show_bounding_boxes));
         _level->set_show_lights(_ui->toggle(Options::lights));
-        _level->set_use_trle_colours(_ui->toggle(Options::trle_colours));
         _level->set_show_items(_ui->toggle(Options::items));
 
         // Set up the views.
@@ -1017,20 +1015,20 @@ namespace trview
         }
     }
 
-    void Viewer::set_show_hidden_geometry(bool show)
+    void Viewer::set_show_geometry(bool show)
     {
         if (_level)
         {
-            _level->set_show_hidden_geometry(show);
-            _ui->set_toggle(Options::hidden_geometry, show);
+            _level->set_show_geometry(show);
+            _ui->set_toggle(Options::geometry, show);
         }
     }
 
-    void Viewer::toggle_show_hidden_geometry()
+    void Viewer::toggle_show_geometry()
     {
         if (_level)
         {
-            set_show_hidden_geometry(!_level->show_hidden_geometry());
+            set_show_geometry(!_level->show_geometry());
         }
     }
 
@@ -1074,15 +1072,6 @@ namespace trview
         {
             _level->set_show_lights(show);
             _ui->set_toggle(Options::lights, show);
-        }
-    }
-
-    void Viewer::set_use_trle_colours(bool show)
-    {
-        if (_level)
-        {
-            _level->set_use_trle_colours(show);
-            _ui->set_toggle(Options::trle_colours, show);
         }
     }
 

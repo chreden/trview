@@ -246,10 +246,10 @@ namespace trview
         // that need to be rendered in the second pass.
         for (const auto& room : rooms)
         {
-            room.room.render(camera, room.selection_mode, _show_items, _show_hidden_geometry, _show_water, _use_trle_colours, visible_set);
+            room.room.render(camera, room.selection_mode, _show_items, _show_water, _show_geometry, visible_set);
             if (_regenerate_transparency)
             {
-                room.room.get_transparent_triangles(*_transparency, camera, room.selection_mode, _show_items, _show_triggers, _show_water, _use_trle_colours);
+                room.room.get_transparent_triangles(*_transparency, camera, room.selection_mode, _show_items, _show_triggers, _show_water, _show_geometry);
             }
 
             // If this is an alternate room, render the items from the original room in the sample places.
@@ -594,9 +594,8 @@ namespace trview
                 PickFilter::Geometry |
                 filter_flag(PickFilter::Entities, _show_items) |
                 PickFilter::StaticMeshes |
-                filter_flag(PickFilter::TrleGeometry, _use_trle_colours) |
+                filter_flag(PickFilter::AllGeometry, _show_geometry) |
                 filter_flag(PickFilter::Triggers, _show_triggers) |
-                filter_flag(PickFilter::HiddenGeometry, _show_hidden_geometry) |
                 filter_flag(PickFilter::Lights, _show_lights)));
             if (!is_alternate_mismatch(room.room) && room.room.alternate_mode() == IRoom::AlternateMode::IsAlternate)
             {
@@ -720,15 +719,16 @@ namespace trview
         on_level_changed();
     }
 
-    void Level::set_show_hidden_geometry(bool show)
+    void Level::set_show_geometry(bool show)
     {
-        _show_hidden_geometry = show;
+        _show_geometry = show;
+        _regenerate_transparency = true;
         on_level_changed();
     }
 
-    bool Level::show_hidden_geometry() const
+    bool Level::show_geometry() const
     {
-        return _show_hidden_geometry;
+        return _show_geometry;
     }
 
     void Level::set_show_water(bool show)
@@ -793,18 +793,6 @@ namespace trview
         on_level_changed();
     }
 
-    void Level::set_use_trle_colours(bool value)
-    {
-        _use_trle_colours = value;
-        _regenerate_transparency = true;
-        on_level_changed();
-    }
-
-    bool Level::use_trle_colours() const
-    {
-        return _use_trle_colours;
-    }
-
     const ILevelTextureStorage& Level::texture_storage() const
     {
         return *_texture_storage;
@@ -859,7 +847,7 @@ namespace trview
             }
 
             const auto entity_pos = entity->bounding_box().Center;
-            const auto result = _rooms[entity->room()]->pick(Vector3(entity_pos.x, entity_pos.y, entity_pos.z), Vector3(0, 1, 0), PickFilter::Geometry | PickFilter::HiddenGeometry | PickFilter::StaticMeshes);
+            const auto result = _rooms[entity->room()]->pick(Vector3(entity_pos.x, entity_pos.y, entity_pos.z), Vector3(0, 1, 0), PickFilter::Geometry | PickFilter::StaticMeshes);
             if (result.hit)
             {
                 const auto new_height = result.position.y - entity->bounding_box().Extents.y;
@@ -966,7 +954,7 @@ namespace trview
     void Level::set_map_colours(const MapColours& map_colours)
     {
         _map_colours = map_colours;
-        on_trle_colours_changed();
+        on_geometry_colours_changed();
     }
 
     bool find_item_by_type_id(const ILevel& level, uint32_t type_id, Item& output_item)

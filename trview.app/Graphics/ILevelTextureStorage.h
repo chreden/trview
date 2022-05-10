@@ -28,7 +28,7 @@ namespace trview
 
         virtual DirectX::SimpleMath::Color palette_from_texture(uint32_t texture) const = 0;
 
-        virtual graphics::Texture trle_texture() const = 0;
+        virtual graphics::Texture geometry_texture() const = 0;
     };
 }
 

@@ -20,14 +20,13 @@ namespace trview
             inline static const std::string depth = "##DepthValue";
             inline static const std::string depth_enabled = "Depth";
             inline static const std::string flip = "Flip";
-            inline static const std::string hidden_geometry = "Geometry";
+            inline static const std::string geometry = "Geometry";
             inline static const std::string highlight = "Highlight";
             inline static const std::string show_bounding_boxes = "Bounds";
             inline static const std::string triggers = "Triggers";
             inline static const std::string water = "Water";
             inline static const std::string wireframe = "Wireframe";
             inline static const std::string lights = "Lights";
-            inline static const std::string trle_colours = "TRLE Colours";
             inline static const std::string items = "Items";
         };
 

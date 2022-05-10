@@ -441,7 +441,7 @@ TEST(Room, RendersContainedEntities)
     auto entity = mock_shared<MockEntity>();
     EXPECT_CALL(*entity, render).Times(1);
     room->add_entity(entity);
-    room->render(NiceMock<MockCamera>{}, IRoom::SelectionMode::NotSelected, true, true, true, false, {});
+    room->render(NiceMock<MockCamera>{}, IRoom::SelectionMode::NotSelected, true, true, false, {});
 }
 
 /// <summary>
@@ -453,7 +453,7 @@ TEST(Room, DoesNotRenderContainedEntitiesWhenShowItemsDisabled)
     auto entity = mock_shared<MockEntity>();
     EXPECT_CALL(*entity, render).Times(0);
     room->add_entity(entity);
-    room->render(NiceMock<MockCamera>{}, IRoom::SelectionMode::NotSelected, false, true, true, false, {});
+    room->render(NiceMock<MockCamera>{}, IRoom::SelectionMode::NotSelected, false, true, false, {});
 }
 
 /// <summary>

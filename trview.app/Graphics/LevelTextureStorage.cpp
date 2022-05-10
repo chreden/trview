@@ -40,7 +40,7 @@ namespace trview
             pixels[y * 256] = 0xff000000;
             pixels[y * 256 + 255] = 0xff000000;
         }
-        _trle_texture = graphics::Texture(*device, 256, 256, pixels);
+        _geometry_texture = graphics::Texture(*device, 256, 256, pixels);
 
         determine_texture_mode();
     }
@@ -128,8 +128,8 @@ namespace trview
     {
     }
 
-    graphics::Texture LevelTextureStorage::trle_texture() const
+    graphics::Texture LevelTextureStorage::geometry_texture() const
     {
-        return _trle_texture;
+        return _geometry_texture;
     }
 }

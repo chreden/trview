@@ -258,14 +258,14 @@ TEST(Level, PickUsesCorrectOptionalFilters)
 
     auto room = mock_shared<MockRoom>();
     ON_CALL(*room, visible).WillByDefault(Return(true));
-    EXPECT_CALL(*room, pick(A<const Vector3&>(), A<const Vector3&>(), PickFilter::Geometry | PickFilter::Entities | PickFilter::StaticMeshes | PickFilter::Triggers | PickFilter::HiddenGeometry | PickFilter::Lights)).Times(1);
+    EXPECT_CALL(*room, pick(A<const Vector3&>(), A<const Vector3&>(), PickFilter::Geometry | PickFilter::Entities | PickFilter::StaticMeshes | PickFilter::Triggers | PickFilter::AllGeometry | PickFilter::Lights)).Times(1);
 
     auto level = register_test_module()
         .with_level(std::move(mock_level_ptr))
         .with_room_source([&](auto&&...) { return room; })
         .build();
     level->set_show_triggers(true);
-    level->set_show_hidden_geometry(true);
+    level->set_show_geometry(true);
     level->set_show_lights(true);
 
     NiceMock<MockCamera> camera;
@@ -286,7 +286,7 @@ TEST(Level, PickUsesCorrectMinimalFilters)
         .with_room_source([&](auto&&...) { return room; })
         .build();
     level->set_show_triggers(false);
-    level->set_show_hidden_geometry(false);
+    level->set_show_geometry(false);
     level->set_show_items(false);
 
     NiceMock<MockCamera> camera;
@@ -380,7 +380,7 @@ TEST(Level, ItemsNotRenderedWhenDisabled)
     auto shader_storage = mock_shared<MockShaderStorage>();
     EXPECT_CALL(*shader_storage, get).WillRepeatedly(Return(&shader));
 
-    EXPECT_CALL(*room, render(A<const ICamera&>(), A<IRoom::SelectionMode>(), false, A<bool>(), A<bool>(), A<bool>(), A<const std::unordered_set<uint32_t>&>())).Times(1);
+    EXPECT_CALL(*room, render(A<const ICamera&>(), A<IRoom::SelectionMode>(), false, A<bool>(), A<bool>(), A<const std::unordered_set<uint32_t>&>())).Times(1);
     EXPECT_CALL(*room, render_contained(A<const ICamera&>(), A<IRoom::SelectionMode>(), false, A<bool>())).Times(1);
 
     auto level = register_test_module()
@@ -413,7 +413,7 @@ TEST(Level, ItemsRenderedWhenEnabled)
     auto shader_storage = mock_shared<MockShaderStorage>();
     EXPECT_CALL(*shader_storage, get).WillRepeatedly(Return(&shader));
 
-    EXPECT_CALL(*room, render(A<const ICamera&>(), A<IRoom::SelectionMode>(), true, A<bool>(), A<bool>(), A<bool>(), A<const std::unordered_set<uint32_t>&>())).Times(1);
+    EXPECT_CALL(*room, render(A<const ICamera&>(), A<IRoom::SelectionMode>(), true, A<bool>(), A<bool>(), A<const std::unordered_set<uint32_t>&>())).Times(1);
     EXPECT_CALL(*room, render_contained(A<const ICamera&>(), A<IRoom::SelectionMode>(), true, A<bool>())).Times(1);
 
     auto level = register_test_module()
@@ -466,7 +466,7 @@ TEST(Level, RoomNotRenderedWhenNotVisible)
     auto shader_storage = mock_shared<MockShaderStorage>();
     EXPECT_CALL(*shader_storage, get).WillRepeatedly(Return(&shader));
 
-    EXPECT_CALL(*room, render(A<const ICamera&>(), A<IRoom::SelectionMode>(), true, A<bool>(), A<bool>(), A<bool>(), A<const std::unordered_set<uint32_t>&>())).Times(0);
+    EXPECT_CALL(*room, render(A<const ICamera&>(), A<IRoom::SelectionMode>(), true, A<bool>(), A<bool>(), A<const std::unordered_set<uint32_t>&>())).Times(0);
     EXPECT_CALL(*room, render_contained(A<const ICamera&>(), A<IRoom::SelectionMode>(), true, A<bool>())).Times(0);
 
     auto level = register_test_module()

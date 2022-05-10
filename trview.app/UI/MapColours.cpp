@@ -25,7 +25,7 @@ namespace trview
             { MapColours::Special::NoSpace, { 0.2f, 0.2f, 0.9f } },
             { MapColours::Special::RoomAbove, { 0.0f, 0.0f, 0.0f } },
             { MapColours::Special::RoomBelow, { 0.6f, 0.0f, 0.0f, 0.0f } },
-            { MapColours::Special::TrleWall, { 0.0f, 0.6f, 0.15f } }
+            { MapColours::Special::GeometryWall, { 0.0f, 0.6f, 0.15f } }
         };
     }
 
