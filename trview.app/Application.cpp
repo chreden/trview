@@ -675,15 +675,61 @@ namespace trview
         // Temporary log rendering:
         if (ImGui::Begin("Log"))
         {
-            for (const auto& message : _log->messages())
+            // One tab for each topic + all
+            if (ImGui::BeginTabBar("topics", ImGuiTabBarFlags_None))
             {
-                std::string activities;
-                for (const auto& activity : message.activity)
+                if (ImGui::BeginTabItem("All"))
                 {
-                    activities += "[" + activity + "]";
+                    if (ImGui::BeginChild("allmessages"))
+                    {
+                        for (const auto& message : _log->messages())
+                        {
+                            std::string activities;
+                            for (const auto& activity : message.activity)
+                            {
+                                activities += "[" + activity + "]";
+                            }
+
+                            ImGui::Text("[%s] [%s] %s - %s", message.topic, message.timestamp.c_str(), activities.c_str(), message.text.c_str());
+                        }
+                        ImGui::EndChild();
+                    }
+                    ImGui::EndTabItem();
                 }
 
-                ImGui::Text("[%s][%s]%s - %s", message.timestamp.c_str(), message.topic.c_str(), activities.c_str(), message.text.c_str());
+                for (const auto& topic : _log->topics())
+                {
+                    if (ImGui::BeginTabItem(topic.c_str()))
+                    {
+                        if (ImGui::BeginTabBar((topic + "-activities").c_str(), ImGuiTabBarFlags_None))
+                        {
+                            for (const auto& activity : _log->activities(topic))
+                            {
+                                if (ImGui::BeginTabItem(activity.c_str()))
+                                {
+                                    if (ImGui::BeginChild((topic + "-" + activity).c_str()))
+                                    {
+                                        for (const auto& message : _log->messages(topic, activity))
+                                        {
+                                            std::string activities;
+                                            for (auto iter = message.activity.begin() + 1; iter != message.activity.end(); ++iter)
+                                            {
+                                                activities += "[" + *iter + "]";
+                                            }
+
+                                            ImGui::Text("[%s] %s - %s", message.timestamp.c_str(), activities.c_str(), message.text.c_str());
+                                        }
+                                        ImGui::EndChild();
+                                    }
+                                    ImGui::EndTabItem();
+                                }
+                            }
+                        }
+                        ImGui::EndTabItem();
+                    }
+                }
+
+                ImGui::EndTabBar();
             }
         }
         ImGui::End();

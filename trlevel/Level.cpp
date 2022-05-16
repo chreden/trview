@@ -327,7 +327,10 @@ namespace trlevel
         : _log(log)
     {
         // Load the level from the file.
-        trview::Activity activity(log, "IO", "Load Level");
+        auto last_index = std::min(filename.find_last_of('\\'), filename.find_last_of('/'));
+        auto name = last_index == filename.npos ? filename : filename.substr(std::min(last_index + 1, filename.size()));
+
+        trview::Activity activity(log, "IO", "Load Level " + name);
 
         try
         {
