@@ -152,6 +152,7 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClCompile Include="Windows\IViewer.cpp" />
     <ClCompile Include="Windows\LightsWindow.cpp" />
     <ClCompile Include="Windows\LightsWindowManager.cpp" />
+    <ClCompile Include="Windows\Log\LogWindow.cpp" />
     <ClCompile Include="Windows\RoomsWindow.cpp" />
     <ClCompile Include="Windows\RoomsWindowManager.cpp" />
     <ClCompile Include="Windows\RouteWindow.cpp" />
@@ -336,6 +337,8 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClInclude Include="Windows\IViewer.h" />
     <ClInclude Include="Windows\LightsWindow.h" />
     <ClInclude Include="Windows\LightsWindowManager.h" />
+    <ClInclude Include="Windows\Log\ILogWindow.h" />
+    <ClInclude Include="Windows\Log\LogWindow.h" />
     <ClInclude Include="Windows\RoomsWindow.h" />
     <ClInclude Include="Windows\RoomsWindowManager.h" />
     <ClInclude Include="Windows\RouteWindow.h" />
