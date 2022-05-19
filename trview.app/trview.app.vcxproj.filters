@@ -378,6 +378,9 @@
     <ClCompile Include="Windows\Log\LogWindow.cpp">
       <Filter>Windows\Log</Filter>
     </ClCompile>
+    <ClCompile Include="Windows\Log\LogWindowManager.cpp">
+      <Filter>Windows\Log</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera\Camera.h">
@@ -929,6 +932,15 @@
     </ClInclude>
     <ClInclude Include="Windows\Log\LogWindow.h">
       <Filter>Windows\Log</Filter>
+    </ClInclude>
+    <ClInclude Include="Windows\Log\ILogWindowManager.h">
+      <Filter>Windows\Log</Filter>
+    </ClInclude>
+    <ClInclude Include="Windows\Log\LogWindowManager.h">
+      <Filter>Windows\Log</Filter>
+    </ClInclude>
+    <ClInclude Include="Mocks\Windows\ILogWindowManager.h">
+      <Filter>Mocks\Windows</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

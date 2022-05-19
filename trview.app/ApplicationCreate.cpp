@@ -51,6 +51,8 @@
 #include "Windows/RoomsWindowManager.h"
 #include "Windows/TriggersWindowManager.h"
 #include "Windows/Viewer.h"
+#include "Windows/Log/LogWindow.h"
+#include "Windows/Log/LogWindowManager.h"
 #include "UI/DX11ImGuiBackend.h"
 
 namespace trview
@@ -181,6 +183,8 @@ namespace trview
         auto lights_window_source = [=]() { return std::make_shared<LightsWindow>(clipboard); };
 
         auto log = std::make_shared<Log>();
+        auto log_window_source = [=]() { return std::make_shared<LogWindow>(log); };
+
         auto trlevel_source = [=](auto&& filename) { return std::make_unique<trlevel::Level>(filename, log); };
 
         return std::make_unique<Application>(
@@ -204,6 +208,6 @@ namespace trview
             files,
             std::make_unique<DX11ImGuiBackend>(window, device),
             std::make_unique<LightsWindowManager>(window, shortcuts, lights_window_source),
-            log);
+            std::make_unique<LogWindowManager>(window, shortcuts, log_window_source));
     }
 }

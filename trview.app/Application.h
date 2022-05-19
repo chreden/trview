@@ -2,7 +2,6 @@
 
 #include <trview.common/Window.h>
 #include <trview.common/Timer.h>
-#include <trview.common/Logs/ILog.h>
 
 #include <trlevel/ILevel.h>
 
@@ -24,6 +23,7 @@
 #include <trview.app/Lua/Lua.h>
 #include <trview.common/Windows/IDialogs.h>
 #include <trview.common/Windows/IShortcuts.h>
+#include "Windows/Log/ILogWindowManager.h"
 #include "UI/IImGuiBackend.h"
 
 struct ImFont;
@@ -61,7 +61,7 @@ namespace trview
             std::shared_ptr<IFiles> files,
             std::unique_ptr<IImGuiBackend> imgui_backend,
             std::unique_ptr<ILightsWindowManager> lights_window_manager,
-            const std::shared_ptr<ILog>& log);
+            std::unique_ptr<ILogWindowManager> log_window_manager);
         virtual ~Application();
         /// Attempt to open the specified level file.
         /// @param filename The level file to open.
@@ -135,7 +135,7 @@ namespace trview
 
         std::unique_ptr<IImGuiBackend> _imgui_backend;
         std::string _imgui_ini_filename;
-        std::shared_ptr<ILog> _log;
+        std::unique_ptr<ILogWindowManager> _log_windows;
     };
 
     Window create_window(HINSTANCE hInstance, int command_show);

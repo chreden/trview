@@ -87,13 +87,13 @@ namespace trview
         std::shared_ptr<IFiles> files,
         std::unique_ptr<IImGuiBackend> imgui_backend,
         std::unique_ptr<ILightsWindowManager> lights_window_manager,
-        const std::shared_ptr<ILog>& log)
+        std::unique_ptr<ILogWindowManager> log_window_manager)
         : MessageHandler(application_window), _instance(GetModuleHandle(nullptr)),
         _file_dropper(std::move(file_dropper)), _level_switcher(std::move(level_switcher)), _recent_files(std::move(recent_files)), _update_checker(std::move(update_checker)),
         _view_menu(window()), _settings_loader(std::move(settings_loader)), _trlevel_source(trlevel_source), _viewer(std::move(viewer)), _route_source(route_source),
         _route(route_source()), _shortcuts(shortcuts), _items_windows(std::move(items_window_manager)),
         _triggers_windows(std::move(triggers_window_manager)), _route_window(std::move(route_window_manager)), _rooms_windows(std::move(rooms_window_manager)), _level_source(level_source),
-        _dialogs(dialogs), _files(files), _timer(default_time_source()), _imgui_backend(std::move(imgui_backend)), _lights_windows(std::move(lights_window_manager)), _log(log)
+        _dialogs(dialogs), _files(files), _timer(default_time_source()), _imgui_backend(std::move(imgui_backend)), _lights_windows(std::move(lights_window_manager)), _log_windows(std::move(log_window_manager))
     {
         SetWindowLongPtr(window(), GWLP_USERDATA, reinterpret_cast<LONG_PTR>(_imgui_backend.get()));
 
@@ -671,83 +671,7 @@ namespace trview
         _rooms_windows->render();
         _route_window->render();
         _lights_windows->render();
-
-        // Temporary log rendering:
-        if (ImGui::Begin("Log"))
-        {
-            // One tab for each topic + all
-            if (ImGui::BeginTabBar("topics", ImGuiTabBarFlags_None))
-            {
-                if (ImGui::BeginTabItem("All"))
-                {
-                    if (ImGui::BeginChild("allmessages"))
-                    {
-                        for (const auto& message : _log->messages())
-                        {
-                            std::string activities;
-                            for (const auto& activity : message.activity)
-                            {
-                                activities += "[" + activity + "]";
-                            }
-
-                            ImGui::Text("[%s] [%s] %s - %s", message.topic, message.timestamp.c_str(), activities.c_str(), message.text.c_str());
-                        }
-                    }
-                    ImGui::EndChild();
-                    ImGui::EndTabItem();
-                }
-
-                for (const auto& topic : _log->topics())
-                {
-                    if (ImGui::BeginTabItem(topic.c_str()))
-                    {
-                        if (ImGui::BeginTabBar((topic + "-activities").c_str(), ImGuiTabBarFlags_None))
-                        {
-                            for (const auto& activity : _log->activities(topic))
-                            {
-                                if (ImGui::BeginTabItem(activity.c_str()))
-                                {
-                                    if (ImGui::BeginChild((topic + "-" + activity).c_str()))
-                                    {
-                                        for (const auto& message : _log->messages(topic, activity))
-                                        {
-                                            std::string activities;
-                                            for (auto iter = message.activity.begin() + 1; iter != message.activity.end(); ++iter)
-                                            {
-                                                activities += "[" + *iter + "]";
-                                            }
-
-                                            auto get_colour = [&]()
-                                            {
-                                                switch (message.status)
-                                                {
-                                                case Message::Status::Warning:
-                                                    return ImVec4(1, 1, 0, 1);
-                                                case Message::Status::Error:
-                                                    return ImVec4(1, 0, 0, 1);
-                                                }
-                                                return ImVec4(1, 1, 1, 1);
-                                            };
-
-                                            ImGui::PushStyleColor(ImGuiCol_Text, get_colour());
-                                            ImGui::Text("[%s] %s - %s", message.timestamp.c_str(), activities.c_str(), message.text.c_str());
-                                            ImGui::PopStyleColor();
-                                        }
-                                    }
-                                    ImGui::EndChild();
-                                    ImGui::EndTabItem();
-                                }
-                            }
-                            ImGui::EndTabBar();
-                        }
-                        ImGui::EndTabItem();
-                    }
-                }
-
-                ImGui::EndTabBar();
-            }
-        }
-        ImGui::End();
+        _log_windows->render();
 
         ImGui::PopFont();
         ImGui::Render();
