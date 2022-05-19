@@ -692,8 +692,8 @@ namespace trview
 
                             ImGui::Text("[%s] [%s] %s - %s", message.topic, message.timestamp.c_str(), activities.c_str(), message.text.c_str());
                         }
-                        ImGui::EndChild();
                     }
+                    ImGui::EndChild();
                     ImGui::EndTabItem();
                 }
 
@@ -717,13 +717,28 @@ namespace trview
                                                 activities += "[" + *iter + "]";
                                             }
 
+                                            auto get_colour = [&]()
+                                            {
+                                                switch (message.status)
+                                                {
+                                                case Message::Status::Warning:
+                                                    return ImVec4(1, 1, 0, 1);
+                                                case Message::Status::Error:
+                                                    return ImVec4(1, 0, 0, 1);
+                                                }
+                                                return ImVec4(1, 1, 1, 1);
+                                            };
+
+                                            ImGui::PushStyleColor(ImGuiCol_Text, get_colour());
                                             ImGui::Text("[%s] %s - %s", message.timestamp.c_str(), activities.c_str(), message.text.c_str());
+                                            ImGui::PopStyleColor();
                                         }
-                                        ImGui::EndChild();
                                     }
+                                    ImGui::EndChild();
                                     ImGui::EndTabItem();
                                 }
                             }
+                            ImGui::EndTabBar();
                         }
                         ImGui::EndTabItem();
                     }

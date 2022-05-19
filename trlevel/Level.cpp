@@ -351,7 +351,6 @@ namespace trlevel
 
             if (raw_version == 0x63345254)
             {
-                activity.log("Level is encrypted, aborting");
                 throw LevelEncryptedException();
             }
 
@@ -391,10 +390,12 @@ namespace trlevel
         }
         catch (const LevelEncryptedException&)
         {
+            activity.log(trview::Message::Status::Error, "Level is encrypted, aborting");
             throw;
         }
-        catch (const std::exception&)
+        catch (const std::exception& e)
         {
+            activity.log(trview::Message::Status::Error, std::format("Level failed to load: {}", e.what()));
             throw LevelLoadException();
         }
     }

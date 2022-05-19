@@ -1,9 +1,9 @@
 #pragma once
 
+#include "ILog.h"
+
 namespace trview
 {
-    struct ILog;
-
     class Activity
     {
     public:
@@ -26,6 +26,7 @@ namespace trview
         Activity operator=(const Activity&) = delete;
         ~Activity();
         void log(const std::string& text);
+        void log(Message::Status status, const std::string& text);
     private:
         std::shared_ptr<ILog> _log;
         std::string _topic;

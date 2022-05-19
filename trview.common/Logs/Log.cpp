@@ -1,6 +1,6 @@
 #include "Log.h"
-#include <sstream>
 #include <set>
+#include <format>
 
 namespace trview
 {
@@ -8,20 +8,19 @@ namespace trview
     {
     }
 
-    void Log::log(const std::string& topic, const std::string& activity, const std::string& text)
+    void Log::log(Message::Status status, const std::string& topic, const std::string& activity, const std::string& text)
     {
-        log(topic, std::vector<std::string>{ activity }, text);
+        log(status, topic, std::vector<std::string>{ activity }, text);
     }
 
-    void Log::log(const std::string& topic, const std::vector<std::string>& activity, const std::string& text)
+    void Log::log(Message::Status status, const std::string& topic, const std::vector<std::string>& activity, const std::string& text)
     {
-        // TODO: Make this nicer
         SYSTEMTIME time;
         GetLocalTime(&time);
-        std::stringstream stream;
-        stream << time.wDay << "-" << time.wMonth << "-" << time.wYear << " " << time.wHour << ":" << time.wMinute << ":" << time.wSecond;
-
-        _messages.push_back({ stream.str(), topic, activity, text });
+        _messages.push_back({
+            status,
+            std::format("{:02d}-{:02d}-{} {:02d}:{:02d}:{:02d}", time.wDay, time.wMonth, time.wYear, time.wHour, time.wMinute, time.wSecond),
+            topic, activity, text });
     }
 
     std::vector<Message> Log::messages() const
