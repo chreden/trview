@@ -30,7 +30,6 @@
     <ClCompile Include="Elements\StaticMeshTests.cpp" />
     <ClCompile Include="Elements\TriggerTests.cpp" />
     <ClCompile Include="Elements\TypeNameLookupTests.cpp" />
-    <ClCompile Include="FileDropperTests.cpp" />
     <ClCompile Include="Filters\FiltersTests.cpp" />
     <ClCompile Include="FreeCameraTests.cpp" />
     <ClCompile Include="Graphics\LevelTextureStorageTests.cpp" />
@@ -42,7 +41,7 @@
     <ClCompile Include="Menus\MenuDetectorTests.cpp" />
     <ClCompile Include="NullImGuiBackend.cpp" />
     <ClCompile Include="OrbitCameraTests.cpp" />
-    <ClCompile Include="RecentFilesTests.cpp" />
+    <ClCompile Include="FileMenuTests.cpp" />
     <ClCompile Include="RoomsWindowManagerTests.cpp" />
     <ClCompile Include="RoomsWindowTests.cpp" />
     <ClCompile Include="RouteWindowTests.cpp" />

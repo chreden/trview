@@ -31,9 +31,7 @@
 #include "Graphics/MeshStorage.h"
 #include "Graphics/SelectionRenderer.h"
 #include "Graphics/SectorHighlight.h"
-#include "Menus/FileDropper.h"
-#include "Menus/LevelSwitcher.h"
-#include "Menus/RecentFiles.h"
+#include "Menus/FileMenu.h"
 #include "Menus/UpdateChecker.h"
 #include "Routing/Waypoint.h"
 #include "Settings/SettingsLoader.h"
@@ -191,10 +189,8 @@ namespace trview
             window,
             std::make_unique<UpdateChecker>(window),
             std::make_unique<SettingsLoader>(files),
-            std::make_unique<FileDropper>(window),
             trlevel_source,
-            std::make_unique<LevelSwitcher>(window),
-            std::make_unique<RecentFiles>(window),
+            std::make_unique<FileMenu>(window, shortcuts, dialogs),
             std::move(viewer),
             route_source,
             shortcuts,

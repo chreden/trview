@@ -26,7 +26,6 @@
 #define ID_FILE_SWITCHLEVEL             32774
 #define ID_WINDOWS_ROOMS                32775
 #define ID_HELP_GITHUB                  32776
-#define ID_ACCEL_FILE_OPEN              32777
 #define ID_HELP_DISCORD                 32778
 #define ID_WINDOWS_ITEMS                32779
 #define IDR_SELECTION_SHADER            32780
@@ -43,6 +42,7 @@
 #define ID_WINDOWS_LIGHTS               33018
 #define ID_WINDOWS_RESET_LAYOUT         33019
 #define ID_WINDOWS_LOG                  33020
+#define ID_FILE_RELOAD                  33021
 
 // Next default values for new objects
 // 

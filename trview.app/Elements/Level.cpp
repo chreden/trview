@@ -957,6 +957,18 @@ namespace trview
         on_geometry_colours_changed();
     }
 
+    uint32_t Level::selected_light() const
+    {
+        auto light = _selected_light.lock();
+        return light ? light->number() : 0u;
+    }
+
+    uint32_t Level::selected_trigger() const
+    {
+        auto trigger = _selected_trigger.lock();
+        return trigger ? trigger->number() : 0u;
+    }
+
     bool find_item_by_type_id(const ILevel& level, uint32_t type_id, Item& output_item)
     {
         const auto& items = level.items();

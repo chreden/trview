@@ -61,15 +61,6 @@
     <ClCompile Include="Menus\DirectoryListing.cpp">
       <Filter>Menus</Filter>
     </ClCompile>
-    <ClCompile Include="Menus\FileDropper.cpp">
-      <Filter>Menus</Filter>
-    </ClCompile>
-    <ClCompile Include="Menus\LevelSwitcher.cpp">
-      <Filter>Menus</Filter>
-    </ClCompile>
-    <ClCompile Include="Menus\RecentFiles.cpp">
-      <Filter>Menus</Filter>
-    </ClCompile>
     <ClCompile Include="Menus\ViewMenu.cpp">
       <Filter>Menus</Filter>
     </ClCompile>
@@ -189,15 +180,6 @@
     </ClCompile>
     <ClCompile Include="Settings\SettingsLoader.cpp">
       <Filter>Settings</Filter>
-    </ClCompile>
-    <ClCompile Include="Menus\IFileDropper.cpp">
-      <Filter>Menus</Filter>
-    </ClCompile>
-    <ClCompile Include="Menus\ILevelSwitcher.cpp">
-      <Filter>Menus</Filter>
-    </ClCompile>
-    <ClCompile Include="Menus\IRecentFiles.cpp">
-      <Filter>Menus</Filter>
     </ClCompile>
     <ClCompile Include="Windows\IViewer.cpp">
       <Filter>Windows</Filter>
@@ -375,6 +357,9 @@
     <ClCompile Include="Elements\Level.cpp">
       <Filter>Elements\Level</Filter>
     </ClCompile>
+    <ClCompile Include="Menus\FileMenu.cpp">
+      <Filter>Menus</Filter>
+    </ClCompile>
     <ClCompile Include="Windows\Log\LogWindow.cpp">
       <Filter>Windows\Log</Filter>
     </ClCompile>
@@ -447,15 +432,6 @@
       <Filter>UI</Filter>
     </ClInclude>
     <ClInclude Include="Menus\DirectoryListing.h">
-      <Filter>Menus</Filter>
-    </ClInclude>
-    <ClInclude Include="Menus\FileDropper.h">
-      <Filter>Menus</Filter>
-    </ClInclude>
-    <ClInclude Include="Menus\LevelSwitcher.h">
-      <Filter>Menus</Filter>
-    </ClInclude>
-    <ClInclude Include="Menus\RecentFiles.h">
       <Filter>Menus</Filter>
     </ClInclude>
     <ClInclude Include="Menus\ViewMenu.h">
@@ -600,24 +576,6 @@
     </ClInclude>
     <ClInclude Include="Mocks\Settings\ISettingsLoader.h">
       <Filter>Mocks\Settings</Filter>
-    </ClInclude>
-    <ClInclude Include="Menus\IFileDropper.h">
-      <Filter>Menus</Filter>
-    </ClInclude>
-    <ClInclude Include="Mocks\Menus\IFileDropper.h">
-      <Filter>Mocks\Menus</Filter>
-    </ClInclude>
-    <ClInclude Include="Menus\ILevelSwitcher.h">
-      <Filter>Menus</Filter>
-    </ClInclude>
-    <ClInclude Include="Mocks\Menus\ILevelSwitcher.h">
-      <Filter>Mocks\Menus</Filter>
-    </ClInclude>
-    <ClInclude Include="Menus\IRecentFiles.h">
-      <Filter>Menus</Filter>
-    </ClInclude>
-    <ClInclude Include="Mocks\Menus\IRecentFiles.h">
-      <Filter>Mocks\Menus</Filter>
     </ClInclude>
     <ClInclude Include="Windows\IViewer.h">
       <Filter>Windows</Filter>
@@ -923,6 +881,15 @@
     </ClInclude>
     <ClInclude Include="Elements\Level.h">
       <Filter>Elements\Level</Filter>
+    </ClInclude>
+    <ClInclude Include="Menus\FileMenu.h">
+      <Filter>Menus</Filter>
+    </ClInclude>
+    <ClInclude Include="Menus\IFileMenu.h">
+      <Filter>Menus</Filter>
+    </ClInclude>
+    <ClInclude Include="Mocks\Menus\IFileMenu.h">
+      <Filter>Mocks\Menus</Filter>
     </ClInclude>
     <ClInclude Include="Windows\Log\ILogWindow.h">
       <Filter>Windows\Log</Filter>

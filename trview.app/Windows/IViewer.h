@@ -81,9 +81,7 @@ namespace trview
 
         virtual void present(bool vsync) = 0;
 
-        /// Attempt to open the specified level file.
-        /// @param filename The level file to open.
-        virtual void open(ILevel* level) = 0;
+        virtual void open(ILevel* level, ILevel::OpenMode open_mode) = 0;
 
         virtual void set_settings(const UserSettings& settings) = 0;
 

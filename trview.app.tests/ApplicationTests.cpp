@@ -1,9 +1,7 @@
 #include <trview.app/Application.h>
 #include <trview.app/Mocks/Elements/ILevel.h>
 #include <trview.app/Mocks/Menus/IUpdateChecker.h>
-#include <trview.app/Mocks/Menus/IFileDropper.h>
-#include <trview.app/Mocks/Menus/ILevelSwitcher.h>
-#include <trview.app/Mocks/Menus/IRecentFiles.h>
+#include <trview.app/Mocks/Menus/IFileMenu.h>
 #include <trview.app/Mocks/Routing/IRoute.h>
 #include <trview.app/Mocks/Settings/ISettingsLoader.h>
 #include <trview.app/Mocks/Settings/IStartupOptions.h>
@@ -54,10 +52,8 @@ namespace
             Window window{ create_test_window(L"ApplicationTests") };
             std::unique_ptr<IUpdateChecker> update_checker{ mock_unique<MockUpdateChecker>() };
             std::unique_ptr<ISettingsLoader> settings_loader{ mock_unique<MockSettingsLoader>() };
-            std::unique_ptr<IFileDropper> file_dropper{ mock_unique<MockFileDropper>() };
             trlevel::ILevel::Source trlevel_source{ [](auto&&...) { return mock_unique<trlevel::mocks::MockLevel>(); } };
-            std::unique_ptr<ILevelSwitcher> level_switcher{ mock_unique<MockLevelSwitcher>() };
-            std::unique_ptr<IRecentFiles> recent_files{ mock_unique<MockRecentFiles>() };
+            std::unique_ptr<IFileMenu> file_menu{ mock_unique<MockFileMenu>() };
             std::unique_ptr<IViewer> viewer{ mock_unique<MockViewer>() };
             IRoute::Source route_source{ [](auto&&...) { return mock_shared<MockRoute>(); } };
             std::shared_ptr<MockShortcuts> shortcuts{ mock_shared<MockShortcuts>() };
@@ -76,8 +72,8 @@ namespace
             std::unique_ptr<Application> build()
             {
                 EXPECT_CALL(*shortcuts, add_shortcut).WillRepeatedly([&](auto, auto) -> Event<>&{ return shortcut_handler; });
-                return std::make_unique<Application>(window, std::move(update_checker), std::move(settings_loader), std::move(file_dropper),
-                    trlevel_source, std::move(level_switcher), std::move(recent_files), std::move(viewer), route_source, shortcuts,
+                return std::make_unique<Application>(window, std::move(update_checker), std::move(settings_loader),
+                    trlevel_source, std::move(file_menu), std::move(viewer), route_source, shortcuts,
                     std::move(items_window_manager), std::move(triggers_window_manager), std::move(route_window_manager), std::move(rooms_window_manager),
                     level_source, startup_options, dialogs, files, std::move(imgui_backend), std::move(lights_window_manager), std::move(log_window_manager));
             }
@@ -85,12 +81,6 @@ namespace
             test_module& with_dialogs(std::shared_ptr<IDialogs> dialogs)
             {
                 this->dialogs = dialogs;
-                return *this;
-            }
-
-            test_module& with_file_dropper(std::unique_ptr<IFileDropper> file_dropper)
-            {
-                this->file_dropper = std::move(file_dropper);
                 return *this;
             }
 
@@ -106,15 +96,9 @@ namespace
                 return *this;
             }
 
-            test_module& with_level_switcher(std::unique_ptr<ILevelSwitcher> level_switcher)
+            test_module& with_file_menu(std::unique_ptr<IFileMenu> file_menu)
             {
-                this->level_switcher = std::move(level_switcher);
-                return *this;
-            }
-
-            test_module& with_recent_files(std::unique_ptr<IRecentFiles> recent_files)
-            {
-                this->recent_files = std::move(recent_files);
+                this->file_menu = std::move(file_menu);
                 return *this;
             }
 
@@ -215,48 +199,26 @@ TEST(Application, SettingsLoadedAndSaved)
     auto application = register_test_module().with_settings_loader(std::move(settings_loader_ptr)).build();
 }
 
-TEST(Application, FileDropperOpensFile)
+TEST(Application, LevelLoadedOnFileOpen)
 {
-    auto [file_dropper_ptr, file_dropper] = create_mock<MockFileDropper>();
+    auto [file_menu_ptr, file_menu] = create_mock<MockFileMenu>();
     std::optional<std::string> called;
     auto trlevel_source = [&](auto&& filename)-> std::unique_ptr<trlevel::ILevel> { called = filename; throw std::exception(); };
-    auto application = register_test_module().with_file_dropper(std::move(file_dropper_ptr)).with_trlevel_source(trlevel_source).build();
-    file_dropper.on_file_dropped("test_path.tr2");
-    ASSERT_TRUE(called.has_value());
-    ASSERT_EQ(called.value(), "test_path.tr2");
-}
-
-TEST(Application, LevelLoadedOnSwitchLevel)
-{
-    auto [level_switcher_ptr, level_switcher] = create_mock<MockLevelSwitcher>();
-    std::optional<std::string> called;
-    auto trlevel_source = [&](auto&& filename)-> std::unique_ptr<trlevel::ILevel> { called = filename; throw std::exception(); };
-    auto application = register_test_module().with_trlevel_source(trlevel_source).with_level_switcher(std::move(level_switcher_ptr)).build();
-    level_switcher.on_switch_level("test_path.tr2");
-    ASSERT_TRUE(called.has_value());
-    ASSERT_EQ(called.value(), "test_path.tr2");
-}
-
-TEST(Application, LevelLoadedOnRecentFileOpen)
-{
-    auto [recent_files_ptr, recent_files] = create_mock<MockRecentFiles>();
-    std::optional<std::string> called;
-    auto trlevel_source = [&](auto&& filename)-> std::unique_ptr<trlevel::ILevel> { called = filename; throw std::exception(); };
-    auto application = register_test_module().with_trlevel_source(trlevel_source).with_recent_files(std::move(recent_files_ptr)).build();
-    recent_files.on_file_open("test_path.tr2");
+    auto application = register_test_module().with_trlevel_source(trlevel_source).with_file_menu(std::move(file_menu_ptr)).build();
+    file_menu.on_file_open("test_path.tr2");
     ASSERT_TRUE(called.has_value());
     ASSERT_EQ(called.value(), "test_path.tr2");
 }
 
 TEST(Application, RecentFilesUpdatedOnFileOpen)
 {
-    auto [recent_files_ptr, recent_files] = create_mock<MockRecentFiles>();
-    EXPECT_CALL(recent_files, set_recent_files(std::list<std::string>{})).Times(1);
-    EXPECT_CALL(recent_files, set_recent_files(std::list<std::string>{"test_path.tr2"})).Times(1);
+    auto [file_menu_ptr, file_menu] = create_mock<MockFileMenu>();
+    EXPECT_CALL(file_menu, set_recent_files(std::list<std::string>{})).Times(1);
+    EXPECT_CALL(file_menu, set_recent_files(std::list<std::string>{"test_path.tr2"})).Times(1);
     std::optional<std::string> called;
     auto trlevel_source = [&](auto&& filename) { called = filename; return mock_unique<trlevel::mocks::MockLevel>(); };
-    auto application = register_test_module().with_trlevel_source(trlevel_source).with_recent_files(std::move(recent_files_ptr)).build();
-    application->open("test_path.tr2");
+    auto application = register_test_module().with_trlevel_source(trlevel_source).with_file_menu(std::move(file_menu_ptr)).build();
+    application->open("test_path.tr2", ILevel::OpenMode::Full);
     ASSERT_TRUE(called.has_value());
     ASSERT_EQ(called.value(), "test_path.tr2");
 }
@@ -266,9 +228,9 @@ TEST(Application, FileOpenedInViewer)
     auto [viewer_ptr, viewer] = create_mock<MockViewer>();
     std::optional<std::string> called;
     auto trlevel_source = [&](auto&& filename) { called = filename; return mock_unique<trlevel::mocks::MockLevel>(); };
-    EXPECT_CALL(viewer, open(NotNull())).Times(1);
+    EXPECT_CALL(viewer, open(NotNull(), ILevel::OpenMode::Full)).Times(1);
     auto application = register_test_module().with_trlevel_source(trlevel_source).with_viewer(std::move(viewer_ptr)).build();
-    application->open("test_path.tr2");
+    application->open("test_path.tr2", ILevel::OpenMode::Full);
     ASSERT_TRUE(called.has_value());
     ASSERT_EQ(called.value(), "test_path.tr2");
 }
@@ -302,7 +264,7 @@ TEST(Application, WindowContentsResetBeforeViewerLoaded)
     EXPECT_CALL(lights_window_manager, set_lights(A<const std::vector<std::weak_ptr<ILight>>&>())).Times(1).WillOnce([&](auto) { events.push_back("lights_lights"); });
     EXPECT_CALL(*route, clear()).Times(1).WillOnce([&] { events.push_back("route_clear"); });
     EXPECT_CALL(*route, set_unsaved(false)).Times(1);
-    EXPECT_CALL(viewer, open(NotNull())).Times(1).WillOnce([&](auto) { events.push_back("viewer"); });
+    EXPECT_CALL(viewer, open(NotNull(), ILevel::OpenMode::Full)).Times(1).WillOnce([&](auto&&...) { events.push_back("viewer"); });
 
     auto application = register_test_module()
         .with_trlevel_source(trlevel_source)
@@ -314,7 +276,7 @@ TEST(Application, WindowContentsResetBeforeViewerLoaded)
         .with_rooms_window_manager(std::move(rooms_window_manager_ptr))
         .with_lights_window_manager(std::move(lights_window_manager_ptr))
         .build();
-    application->open("test_path.tr2");
+    application->open("test_path.tr2", ILevel::OpenMode::Full);
 
     ASSERT_TRUE(called.has_value());
     ASSERT_EQ(called.value(), "test_path.tr2");
@@ -405,7 +367,7 @@ TEST(Application, DialogShownOnOpenWithUnsavedRouteBlocksOpen)
         .with_dialogs(dialogs)
         .with_trlevel_source(trlevel_source)
         .build();
-    application->open("");
+    application->open("", ILevel::OpenMode::Full);
 
     ASSERT_EQ(times_called, 0);
 }
@@ -425,7 +387,7 @@ TEST(Application, DialogShownOnOpenWithUnsavedRouteAllowsOpen)
         .with_dialogs(dialogs)
         .with_trlevel_source(trlevel_source)
         .build();
-    application->open("");
+    application->open("", ILevel::OpenMode::Full);
 
     ASSERT_EQ(times_called, 1);
 }
@@ -439,58 +401,6 @@ TEST(Application, ClosingEventCalled)
     ASSERT_TRUE(closing_called);
 }
 
-TEST(Application, FileOpenOpensFile)
-{
-    int32_t times_called = 0;
-    auto trlevel_source = [&](auto&&...) { ++times_called; return mock_unique<trlevel::mocks::MockLevel>(); };
-
-    auto dialogs = mock_shared<MockDialogs>();
-    EXPECT_CALL(*dialogs, open_file).Times(1).WillRepeatedly(Return(IDialogs::FileResult{ "filename" }));
-
-    auto application = register_test_module().with_trlevel_source(trlevel_source).with_dialogs(dialogs).build();
-    application->process_message(WM_COMMAND, MAKEWPARAM(ID_FILE_OPEN, 0), 0);
-
-    ASSERT_EQ(times_called, 1);
-}
-
-TEST(Application, FileOpenDoesNotOpenFileWhenCancelled)
-{
-    int32_t times_called = 0;
-    auto trlevel_source = [&](auto&&...) { ++times_called; return mock_unique<trlevel::mocks::MockLevel>(); };
-    auto dialogs = mock_shared<MockDialogs>();
-    EXPECT_CALL(*dialogs, open_file).Times(1);
-
-    auto application = register_test_module().with_trlevel_source(trlevel_source).with_dialogs(dialogs).build();
-    application->process_message(WM_COMMAND, MAKEWPARAM(ID_FILE_OPEN, 0), 0);
-
-    ASSERT_EQ(times_called, 0);
-}
-
-TEST(Application, FileOpenAcceleratorOpensFile)
-{
-    int32_t times_called = 0;
-    auto trlevel_source = [&](auto&&...) { ++times_called; return mock_unique<trlevel::mocks::MockLevel>(); };
-    auto dialogs = mock_shared<MockDialogs>();
-    EXPECT_CALL(*dialogs, open_file).Times(1).WillRepeatedly(Return(IDialogs::FileResult{ "filename" }));
-
-    auto application = register_test_module().with_trlevel_source(trlevel_source).with_dialogs(dialogs).build();
-    application->process_message(WM_COMMAND, MAKEWPARAM(ID_ACCEL_FILE_OPEN, 0), 0);
-
-    ASSERT_EQ(times_called, 1);
-}
-
-TEST(Application, FileOpenAcceleratorDoesNotOpenFileWhenCancelled)
-{
-    int32_t times_called = 0;
-    auto trlevel_source = [&](auto&&...) { ++times_called; return mock_unique<trlevel::mocks::MockLevel>(); };
-    auto dialogs = mock_shared<MockDialogs>();
-    EXPECT_CALL(*dialogs, open_file).Times(1);
-
-    auto application = register_test_module().with_trlevel_source(trlevel_source).with_dialogs(dialogs).build();
-    application->process_message(WM_COMMAND, MAKEWPARAM(ID_ACCEL_FILE_OPEN, 0), 0);
-
-    ASSERT_EQ(times_called, 0);
-}
 
 TEST(Application, ExportRouteSavesFile)
 {
@@ -655,7 +565,7 @@ TEST(Application, RoomsWindowRoomVisibilityCaptured)
         .with_level_source(level_source)
         .build();
 
-    application->open("");
+    application->open("", ILevel::OpenMode::Full);
 
     auto room = mock_shared<MockRoom>();
     rooms_window_manager.on_room_visibility(room, true);
@@ -674,8 +584,18 @@ TEST(Application, ViewerRoomVisibilityCaptured)
         .with_level_source(level_source)
         .build();
 
-    application->open("");
+    application->open("", ILevel::OpenMode::Full);
 
     auto room = mock_shared<MockRoom>();
     viewer.on_room_visibility(room, true);
+}
+
+TEST(Application, ReloadLevel)
+{
+    auto [file_menu_ptr, file_menu] = create_mock<MockFileMenu>();
+    auto application = register_test_module()
+        .with_file_menu(std::move(file_menu_ptr))
+        .build();
+    file_menu_ptr->on_reload();
+    FAIL();
 }

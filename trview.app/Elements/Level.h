@@ -92,6 +92,8 @@ namespace trview
         virtual void set_room_visibility(uint32_t index, bool state) override;
         virtual MapColours map_colours() const override;
         virtual void set_map_colours(const MapColours& map_colours) override;
+        virtual uint32_t selected_light() const override;
+        virtual uint32_t selected_trigger() const override;
     private:
         void generate_rooms(const trlevel::ILevel& level, const IRoom::Source& room_source, const IMeshStorage& mesh_storage);
         void generate_triggers(const ITrigger::Source& trigger_source);

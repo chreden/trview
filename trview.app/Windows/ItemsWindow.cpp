@@ -18,6 +18,7 @@ namespace trview
     void ItemsWindow::set_items(const std::vector<Item>& items)
     {
         _all_items = items;
+        _triggered_by.clear();
         setup_filters();
     }
 
