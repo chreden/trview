@@ -9,8 +9,16 @@
     <ClCompile Include="PointTests.cpp" />
     <ClCompile Include="ColourTests.cpp" />
     <ClCompile Include="stdafx.cpp" />
+    <ClCompile Include="Logs\LogTests.cpp">
+      <Filter>Logs</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Logs">
+      <UniqueIdentifier>{8d233b1f-9428-4100-a22c-652cdde937c2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
 </Project>
