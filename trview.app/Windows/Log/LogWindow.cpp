@@ -1,5 +1,6 @@
 #include "LogWindow.h"
 #include <format>
+#include <sstream>
 
 namespace trview
 {
@@ -7,8 +8,8 @@ namespace trview
     {
     }
 
-    LogWindow::LogWindow(const std::shared_ptr<ILog>& log)
-        : _log(log)
+    LogWindow::LogWindow(const std::shared_ptr<ILog>& log, const std::shared_ptr<IDialogs>& dialogs, const std::shared_ptr<IFiles>& files)
+        : _log(log), _dialogs(dialogs), _files(files)
     {
     }
 
@@ -32,6 +33,11 @@ namespace trview
             {
                 if (ImGui::BeginTabItem("All"))
                 {
+                    if (ImGui::Button("Save"))
+                    {
+                        save_to_file(_log->messages(), 0);
+                    }
+
                     if (ImGui::BeginChild("allmessages"))
                     {
                         for (const auto& message : _log->messages())
@@ -59,6 +65,12 @@ namespace trview
                             {
                                 if (ImGui::BeginTabItem(activity.c_str()))
                                 {
+                                    if (ImGui::Button("Save"))
+                                    {
+                                        save_to_file(_log->messages(topic, activity), 1);
+                                    }
+                                    
+                                    ImGui::Separator();
                                     if (ImGui::BeginChild((topic + "-" + activity).c_str()))
                                     {
                                         for (const auto& message : _log->messages(topic, activity))
@@ -107,6 +119,28 @@ namespace trview
     void LogWindow::set_number(int32_t number)
     {
         _id = std::format("Log {}", number);
+    }
+
+    void LogWindow::save_to_file(const std::vector<Message>& messages, int level_offset)
+    {
+        auto result = _dialogs->save_file(L"Save log", { { L"Log File", { L"*.txt" } } }, 1);
+        if (!result.has_value())
+        {
+            return;
+        }
+
+        std::stringstream stream;
+        std::for_each(messages.begin(), messages.end(),
+            [&stream, level_offset](auto&& message)
+            {
+                std::string activities;
+                for (uint32_t i = level_offset; i < message.activity.size(); ++i)
+                {
+                    activities += "[" + message.activity[i] + "]";
+                }
+                stream << std::format("[{}] {} - {}", message.timestamp, activities, message.text) << '\n';
+            });
+        _files->save_file(result.value().filename, stream.str());
     }
 }
 

@@ -183,7 +183,7 @@ namespace trview
         auto lights_window_source = [=]() { return std::make_shared<LightsWindow>(clipboard); };
 
         auto log = std::make_shared<Log>();
-        auto log_window_source = [=]() { return std::make_shared<LogWindow>(log); };
+        auto log_window_source = [=]() { return std::make_shared<LogWindow>(log, dialogs, files); };
 
         auto trlevel_source = [=](auto&& filename) { return std::make_unique<trlevel::Level>(filename, log); };
 
