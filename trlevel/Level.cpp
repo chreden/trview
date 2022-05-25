@@ -237,11 +237,14 @@ namespace trlevel
 
         void load_tr5_room(trview::Activity& activity, std::istream& file, tr3_room& room)
         {
+            activity.log("Reading room data information");
             skip_xela(file);
             uint32_t room_data_size = read<uint32_t>(file);
             const uint32_t room_start = static_cast<uint32_t>(file.tellg());
             const uint32_t room_end = room_start + room_data_size;
+            activity.log(std::format("Reading room data information. Data Size: {}", room_data_size));
 
+            activity.log("Reading room header");
             const auto header = read<tr5_room_header>(file);
 
             // Copy useful data from the header to the room.
@@ -254,13 +257,18 @@ namespace trlevel
             room.water_scheme = header.water_scheme;
             room.alternate_room = header.alternate_room;
             room.flags = header.flags;
+            activity.log("Read room header");
 
             // The offsets start measuring from this position, after all the header information.
             const uint32_t data_start = static_cast<uint32_t>(file.tellg());
 
+            activity.log(std::format("Reading {} lights", header.num_lights));
             room.lights = convert_lights(read_vector<tr5_room_light>(file, header.num_lights));
+
+            activity.log(std::format("Reading {} fog bulbs", header.num_fog_bulbs));
             auto fog_bulbs = read_vector<tr5_fog_bulb>(file, header.num_fog_bulbs);
 
+            activity.log("Converting lights to fog buibs");
             uint32_t fog_bulb = 0;
             for (auto& light : room.lights)
             {
@@ -273,22 +281,30 @@ namespace trlevel
             }
 
             file.seekg(data_start + header.start_sd_offset, std::ios::beg);
+
+            activity.log(std::format("Reading {} sectors ({} x {})", room.num_x_sectors * room.num_z_sectors, room.num_x_sectors, room.num_z_sectors));
             room.sector_list = read_vector<tr_room_sector>(file, room.num_z_sectors * room.num_x_sectors);
+            activity.log("Reading room portals");
             room.portals = read_vector<uint16_t, tr_room_portal>(file);
+            activity.log(std::format("Read {} room portals", room.portals.size()));
 
             // Separator
             skip(file, 2);
 
             file.seekg(data_start + header.end_portal_offset, std::ios::beg);
+            activity.log(std::format("Reading {} static meshes", header.num_static_meshes));
             room.static_meshes = read_vector<tr3_room_staticmesh>(file, header.num_static_meshes);
 
             file.seekg(data_start + header.layer_offset, std::ios::beg);
+            activity.log(std::format("Reading {} layers", header.num_layers));
             auto layers = read_vector<tr5_room_layer>(file, header.num_layers);
 
             file.seekg(data_start + header.poly_offset, std::ios::beg);
             uint16_t vertex_offset = 0;
+            int32_t layer_number = 0;
             for (const auto& layer : layers)
             {
+                activity.log(std::format("Reading {} rectangles for layer {}", layer.num_rectangles, layer_number));
                 auto rects = read_vector<tr4_mesh_face4>(file, layer.num_rectangles);
                 for (auto& rect : rects)
                 {
@@ -299,6 +315,7 @@ namespace trlevel
                 }
                 std::copy(rects.begin(), rects.end(), std::back_inserter(room.data.rectangles));
 
+                activity.log(std::format("Reading {} triangles for layer {}", layer.num_triangles, layer_number));
                 auto tris = read_vector<tr4_mesh_face3>(file, layer.num_triangles);
                 for (auto& tri : tris)
                 {
@@ -310,13 +327,17 @@ namespace trlevel
                 std::copy(tris.begin(), tris.end(), std::back_inserter(room.data.triangles));
 
                 vertex_offset += layer.num_vertices;
+                ++layer_number;
             }
 
             file.seekg(data_start + header.vertices_offset, std::ios::beg);
+            layer_number = 0;
             for (const auto& layer : layers)
             {
+                activity.log(std::format("Reading {} vertices for layer {}", layer.num_vertices, layer_number));
                 auto verts = convert_vertices(read_vector<tr5_room_vertex>(file, layer.num_vertices));
                 std::copy(verts.begin(), verts.end(), std::back_inserter(room.data.vertices));
+                ++layer_number;
             }
 
             file.seekg(room_end, std::ios::beg);
