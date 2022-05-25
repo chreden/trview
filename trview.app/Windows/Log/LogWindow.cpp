@@ -38,7 +38,7 @@ namespace trview
                         save_to_file(_log->messages(), 0);
                     }
 
-                    if (ImGui::BeginChild("allmessages"))
+                    if (ImGui::BeginChild("allmessages", ImVec2(), false, ImGuiWindowFlags_HorizontalScrollbar))
                     {
                         for (const auto& message : _log->messages())
                         {
@@ -71,7 +71,7 @@ namespace trview
                                     }
                                     
                                     ImGui::Separator();
-                                    if (ImGui::BeginChild((topic + "-" + activity).c_str()))
+                                    if (ImGui::BeginChild((topic + "-" + activity).c_str(), ImVec2(), false, ImGuiWindowFlags_HorizontalScrollbar))
                                     {
                                         for (const auto& message : _log->messages(topic, activity))
                                         {
