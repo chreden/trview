@@ -1,5 +1,5 @@
 #include "RouteWindowManager.h"
-#include <trview.app/Windows/WindowIDs.h>
+#include "../Resources/resource.h"
 
 namespace trview
 {
@@ -11,7 +11,7 @@ namespace trview
 
     std::optional<int> RouteWindowManager::process_message(UINT message, WPARAM wParam, LPARAM)
     {
-        if (message == WM_COMMAND && LOWORD(wParam) == ID_APP_WINDOWS_ROUTE)
+        if (message == WM_COMMAND && LOWORD(wParam) == ID_WINDOWS_ROUTE)
         {
             create_window();
         }

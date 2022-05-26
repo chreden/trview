@@ -2,8 +2,7 @@
 // Microsoft Visual C++ generated include file.
 // Used by trview.rc
 //
-#include "../Windows/WindowIDs.h"
-
+#define IDC_STATIC                      -1
 #define IDC_MYICON                      2
 #define IDD_TRVIEW_DIALOG               102
 #define IDS_APP_TITLE                   103
@@ -22,27 +21,26 @@
 #define IDR_TYPE_NAMES                  149
 #define IDR_ACTIONS                     150
 #define ID_FILE_OPEN                    32771
-#define ID_FILE_OPENRECENT              ID_APP_FILE_OPENRECENT
+#define ID_FILE_OPENRECENT              32772
 #define ID_EXIT                         32773
-#define ID_FILE_SWITCHLEVEL             ID_APP_FILE_SWITCHLEVEL
+#define ID_FILE_SWITCHLEVEL             32774
+#define ID_WINDOWS_ROOMS                32775
 #define ID_HELP_GITHUB                  32776
 #define ID_ACCEL_FILE_OPEN              32777
 #define ID_HELP_DISCORD                 32778
-#define ID_WINDOWS_ITEMS                ID_APP_WINDOWS_ITEMS
+#define ID_WINDOWS_ITEMS                32779
 #define IDR_SELECTION_SHADER            32780
-#define ID_WINDOWS_TRIGGERS             ID_APP_WINDOWS_TRIGGERS 
-#define ID_WINDOWS_ROUTE                ID_APP_WINDOWS_ROUTE
-#define ID_VIEW_MINIMAP                 ID_APP_VIEW_MINIMAP
-#define ID_VIEW_TOOLTIP                 ID_APP_VIEW_TOOLTIP
-#define ID_VIEW_UI                      ID_APP_VIEW_UI
-#define ID_VIEW_COMPASS                 ID_APP_VIEW_COMPASS
-#define ID_VIEW_SELECTION               ID_APP_VIEW_SELECTION
-#define ID_VIEW_ROUTE                   ID_APP_VIEW_ROUTE
-#define ID_VIEW_TOOLS                   ID_APP_VIEW_TOOLS
-#define ID_VIEW_UNHIDE_ALL              ID_APP_VIEW_UNHIDE_ALL
-#define ID_WINDOWS_LIGHTS               ID_APP_WINDOWS_LIGHTS
-#define IDC_STATIC                      -1
-#define ID_WINDOWS_ROOMS                ID_APP_WINDOWS_ROOMS
+#define ID_WINDOWS_TRIGGERS             32782 
+#define ID_WINDOWS_ROUTE                32784
+#define ID_VIEW_MINIMAP                 32786
+#define ID_VIEW_TOOLTIP                 32787
+#define ID_VIEW_UI                      32788
+#define ID_VIEW_COMPASS                 32789
+#define ID_VIEW_SELECTION               32790
+#define ID_VIEW_ROUTE                   32791
+#define ID_VIEW_TOOLS                   32792
+#define ID_VIEW_UNHIDE_ALL              32799
+#define ID_WINDOWS_LIGHTS               33018
 #define ID_WINDOWS_RESET_LAYOUT         33019
 #define ID_WINDOWS_LOG                  33020
 

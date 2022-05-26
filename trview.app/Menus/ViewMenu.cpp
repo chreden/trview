@@ -1,5 +1,5 @@
 #include "ViewMenu.h"
-#include <trview.app/Windows/WindowIDs.h>
+#include "../Resources/resource.h"
 
 namespace trview
 {
@@ -47,13 +47,13 @@ namespace trview
     {
         // Set all of the items to be initially visible.
         HMENU menu = GetMenu(window);
-        set_checked(menu, ID_APP_VIEW_MINIMAP, true);
-        set_checked(menu, ID_APP_VIEW_TOOLTIP, true);
-        set_checked(menu, ID_APP_VIEW_UI, true);
-        set_checked(menu, ID_APP_VIEW_COMPASS, true);
-        set_checked(menu, ID_APP_VIEW_SELECTION, true);
-        set_checked(menu, ID_APP_VIEW_ROUTE, true);
-        set_checked(menu, ID_APP_VIEW_TOOLS, true);
+        set_checked(menu, ID_VIEW_MINIMAP, true);
+        set_checked(menu, ID_VIEW_TOOLTIP, true);
+        set_checked(menu, ID_VIEW_UI, true);
+        set_checked(menu, ID_VIEW_COMPASS, true);
+        set_checked(menu, ID_VIEW_SELECTION, true);
+        set_checked(menu, ID_VIEW_ROUTE, true);
+        set_checked(menu, ID_VIEW_TOOLS, true);
     }
 
     std::optional<int> ViewMenu::process_message(UINT message, WPARAM wParam, LPARAM)
@@ -69,45 +69,45 @@ namespace trview
 
         switch (id)
         {
-            case ID_APP_VIEW_MINIMAP:
+            case ID_VIEW_MINIMAP:
             {
                 on_show_minimap(enable);
                 break;
             }
-            case ID_APP_VIEW_TOOLTIP:
+            case ID_VIEW_TOOLTIP:
             {
                 on_show_tooltip(enable);
                 break;
             }
-            case ID_APP_VIEW_COMPASS:
+            case ID_VIEW_COMPASS:
             {
                 on_show_compass(enable);
                 break;
             }
-            case ID_APP_VIEW_SELECTION:
+            case ID_VIEW_SELECTION:
             {
                 on_show_selection(enable);
                 break;
             }
-            case ID_APP_VIEW_ROUTE:
+            case ID_VIEW_ROUTE:
             {
                 on_show_route(enable);
                 break;
             }
-            case ID_APP_VIEW_TOOLS:
+            case ID_VIEW_TOOLS:
             {
                 on_show_tools(enable);
                 break;
             }
-            case ID_APP_VIEW_UI:
+            case ID_VIEW_UI:
             {
                 // If the UI element is toggled, then enable/disable all other elements.
-                set_enabled(menu, ID_APP_VIEW_MINIMAP, enable);
-                set_enabled(menu, ID_APP_VIEW_TOOLTIP, enable);
-                set_enabled(menu, ID_APP_VIEW_COMPASS, enable);
-                set_enabled(menu, ID_APP_VIEW_SELECTION, enable);
-                set_enabled(menu, ID_APP_VIEW_ROUTE, enable);
-                set_enabled(menu, ID_APP_VIEW_TOOLS, enable);
+                set_enabled(menu, ID_VIEW_MINIMAP, enable);
+                set_enabled(menu, ID_VIEW_TOOLTIP, enable);
+                set_enabled(menu, ID_VIEW_COMPASS, enable);
+                set_enabled(menu, ID_VIEW_SELECTION, enable);
+                set_enabled(menu, ID_VIEW_ROUTE, enable);
+                set_enabled(menu, ID_VIEW_TOOLS, enable);
                 on_show_ui(enable);
 
                 // Raise event to disable all other elements as they are sub-elements of the UI. However, do not alter
@@ -124,16 +124,16 @@ namespace trview
                 else
                 {
                     // Return the states of the settings to what they were before the main UI toggle was changed.
-                    on_show_minimap(is_checked(menu, ID_APP_VIEW_MINIMAP));
-                    on_show_tooltip(is_checked(menu, ID_APP_VIEW_TOOLTIP));
-                    on_show_compass(is_checked(menu, ID_APP_VIEW_COMPASS));
-                    on_show_selection(is_checked(menu, ID_APP_VIEW_SELECTION));
-                    on_show_route(is_checked(menu, ID_APP_VIEW_ROUTE));
-                    on_show_tools(is_checked(menu, ID_APP_VIEW_TOOLS));
+                    on_show_minimap(is_checked(menu, ID_VIEW_MINIMAP));
+                    on_show_tooltip(is_checked(menu, ID_VIEW_TOOLTIP));
+                    on_show_compass(is_checked(menu, ID_VIEW_COMPASS));
+                    on_show_selection(is_checked(menu, ID_VIEW_SELECTION));
+                    on_show_route(is_checked(menu, ID_VIEW_ROUTE));
+                    on_show_tools(is_checked(menu, ID_VIEW_TOOLS));
                 }
                 break;
             }
-            case ID_APP_VIEW_UNHIDE_ALL:
+            case ID_VIEW_UNHIDE_ALL:
             {
                 on_unhide_all();
                 return {};

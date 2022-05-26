@@ -350,7 +350,6 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClInclude Include="Windows\TriggersWindow.h" />
     <ClInclude Include="Windows\TriggersWindowManager.h" />
     <ClInclude Include="Windows\Viewer.h" />
-    <ClInclude Include="Windows\WindowIDs.h" />
     <ClInclude Include="Windows\WindowManager.h" />
     <ClInclude Include="Windows\WindowManager.hpp" />
     <ClInclude Include="Windows\WindowResizer.h" />

@@ -461,9 +461,6 @@
     <ClInclude Include="Menus\ViewMenu.h">
       <Filter>Menus</Filter>
     </ClInclude>
-    <ClInclude Include="Windows\WindowIDs.h">
-      <Filter>Windows</Filter>
-    </ClInclude>
     <ClInclude Include="Windows\WindowResizer.h">
       <Filter>Windows</Filter>
     </ClInclude>

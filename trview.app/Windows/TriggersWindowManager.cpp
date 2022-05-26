@@ -1,5 +1,5 @@
 #include "TriggersWindowManager.h"
-#include <trview.app/Windows/WindowIDs.h>
+#include "../Resources/resource.h"
 
 namespace trview
 {
@@ -11,7 +11,7 @@ namespace trview
 
     std::optional<int> TriggersWindowManager::process_message(UINT message, WPARAM wParam, LPARAM)
     {
-        if (message == WM_COMMAND && LOWORD(wParam) == ID_APP_WINDOWS_TRIGGERS)
+        if (message == WM_COMMAND && LOWORD(wParam) == ID_WINDOWS_TRIGGERS)
         {
             create_window();
         }
