@@ -29,7 +29,7 @@ namespace trview
         if (ImGui::Begin(_id.c_str(), &stay_open))
         {
             // One tab for each topic + all
-            if (ImGui::BeginTabBar("topics", ImGuiTabBarFlags_None))
+            if (ImGui::BeginTabBar("topics", ImGuiTabBarFlags_FittingPolicyScroll))
             {
                 if (ImGui::BeginTabItem("All"))
                 {
@@ -59,7 +59,7 @@ namespace trview
                 {
                     if (ImGui::BeginTabItem(topic.c_str()))
                     {
-                        if (ImGui::BeginTabBar((topic + "-activities").c_str(), ImGuiTabBarFlags_None))
+                        if (ImGui::BeginTabBar((topic + "-activities").c_str(), ImGuiTabBarFlags_FittingPolicyScroll))
                         {
                             for (const auto& activity : _log->activities(topic))
                             {
@@ -69,7 +69,7 @@ namespace trview
                                     {
                                         save_to_file(_log->messages(topic, activity), 1);
                                     }
-                                    
+
                                     ImGui::Separator();
                                     if (ImGui::BeginChild((topic + "-" + activity).c_str(), ImVec2(), false, ImGuiWindowFlags_HorizontalScrollbar))
                                     {
