@@ -189,6 +189,12 @@ namespace
                 this->level_source = level_source;
                 return *this;
             }
+
+            test_module& with_log_window_manager(std::unique_ptr<ILogWindowManager> log_window_manager)
+            {
+                this->log_window_manager = std::move(log_window_manager);
+                return *this;
+            }
         };
         return test_module{};
     }
@@ -560,6 +566,8 @@ TEST(Application, WindowManagersAndViewerRendered)
     EXPECT_CALL(triggers_window_manager, render).Times(1);
     auto [lights_window_manager_ptr, lights_window_manager] = create_mock<MockLightsWindowManager>();
     EXPECT_CALL(lights_window_manager, render).Times(1);
+    auto [log_window_manager_ptr, log_window_manager] = create_mock<MockLogWindowManager>();
+    EXPECT_CALL(log_window_manager, render).Times(1);
     auto [viewer_ptr, viewer] = create_mock<MockViewer>();
     EXPECT_CALL(viewer, render).Times(1);
     auto files = mock_shared<MockFiles>();
@@ -571,6 +579,7 @@ TEST(Application, WindowManagersAndViewerRendered)
         .with_rooms_window_manager(std::move(rooms_window_manager_ptr))
         .with_triggers_window_manager(std::move(triggers_window_manager_ptr))
         .with_lights_window_manager(std::move(lights_window_manager_ptr))
+        .with_log_window_manager(std::move(log_window_manager_ptr))
         .with_viewer(std::move(viewer_ptr))
         .with_files(files)
         .build();

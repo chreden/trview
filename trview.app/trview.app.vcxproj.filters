@@ -939,6 +939,9 @@
     <ClInclude Include="Mocks\Windows\ILogWindowManager.h">
       <Filter>Mocks\Windows</Filter>
     </ClInclude>
+    <ClInclude Include="Mocks\Windows\ILogWindow.h">
+      <Filter>Mocks\Windows</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Windows">

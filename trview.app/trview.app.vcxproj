@@ -269,6 +269,7 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClInclude Include="Mocks\Windows\IItemsWindowManager.h" />
     <ClInclude Include="Mocks\Windows\ILightsWindow.h" />
     <ClInclude Include="Mocks\Windows\ILightsWindowManager.h" />
+    <ClInclude Include="Mocks\Windows\ILogWindow.h" />
     <ClInclude Include="Mocks\Windows\ILogWindowManager.h" />
     <ClInclude Include="Mocks\Windows\IRoomsWindow.h" />
     <ClInclude Include="Mocks\Windows\IRoomsWindowManager.h" />

@@ -15,8 +15,7 @@ namespace trview
 
     std::weak_ptr<ILogWindow> LogWindowManager::create_window()
     {
-        auto log_window = _log_window_source();
-        return add_window(log_window);
+        return add_window(_log_window_source());
     }
 
     void LogWindowManager::render()

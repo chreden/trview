@@ -1,5 +1,6 @@
 #pragma once
 
+#include <trview.common/MessageHandler.h>
 #include "../WindowManager.h"
 #include "ILogWindowManager.h"
 #include "ILogWindow.h"
