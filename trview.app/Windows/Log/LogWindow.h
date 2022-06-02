@@ -10,6 +10,13 @@ namespace trview
     class LogWindow final : public ILogWindow
     {
     public:
+        struct Names
+        {
+            const static inline std::string topics_tabs{ "topics" };
+            const static inline std::string all_topic{ "All" };
+            const static inline std::string save{ "Save" };
+        };
+
         explicit LogWindow(const std::shared_ptr<ILog>& log, const std::shared_ptr<IDialogs>& dialogs, const std::shared_ptr<IFiles>& files);
         virtual ~LogWindow() = default;
         virtual void render() override;
