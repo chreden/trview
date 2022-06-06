@@ -24,6 +24,18 @@ namespace trview
 
     bool LogWindow::render_log_window()
     {
+        const auto get_colour = [&](auto&& message)
+        {
+            switch (message.status)
+            {
+            case Message::Status::Warning:
+                return ImVec4(1, 1, 0, 1);
+            case Message::Status::Error:
+                return ImVec4(1, 0, 0, 1);
+            }
+            return ImVec4(1, 1, 1, 1);
+        };
+
         bool stay_open = true;
         ImGui::PushStyleVar(ImGuiStyleVar_WindowMinSize, ImVec2(520, 400));
         if (ImGui::Begin(_id.c_str(), &stay_open))
@@ -48,7 +60,9 @@ namespace trview
                                 activities += "[" + activity + "]";
                             }
 
+                            ImGui::PushStyleColor(ImGuiCol_Text, get_colour(message));
                             ImGui::Text("[%s] [%s] %s - %s", message.topic.c_str(), message.timestamp.c_str(), activities.c_str(), message.text.c_str());
+                            ImGui::PopStyleColor();
                         }
                     }
                     ImGui::EndChild();
@@ -81,19 +95,7 @@ namespace trview
                                                 activities += "[" + *iter + "]";
                                             }
 
-                                            auto get_colour = [&]()
-                                            {
-                                                switch (message.status)
-                                                {
-                                                case Message::Status::Warning:
-                                                    return ImVec4(1, 1, 0, 1);
-                                                case Message::Status::Error:
-                                                    return ImVec4(1, 0, 0, 1);
-                                                }
-                                                return ImVec4(1, 1, 1, 1);
-                                            };
-
-                                            ImGui::PushStyleColor(ImGuiCol_Text, get_colour());
+                                            ImGui::PushStyleColor(ImGuiCol_Text, get_colour(message));
                                             ImGui::Text("[%s] %s - %s", message.timestamp.c_str(), activities.c_str(), message.text.c_str());
                                             ImGui::PopStyleColor();
                                         }

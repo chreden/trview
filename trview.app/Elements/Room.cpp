@@ -3,6 +3,8 @@
 #include <trview.app/Camera/ICamera.h>
 #include <trview.app/Elements/ILevel.h>
 #include <trview.common/Algorithms.h>
+#include <format>
+#include <trview.common/Logs/Activity.h>
 
 using namespace DirectX::SimpleMath;
 
@@ -40,6 +42,7 @@ namespace trview
         const IMeshStorage& mesh_storage,
         uint32_t index,
         const ILevel& parent_level,
+        const Activity& activity,
         const IStaticMesh::MeshSource& static_mesh_mesh_source,
         const IStaticMesh::PositionSource& static_mesh_position_source,
         const ISector::Source& sector_source)
@@ -65,7 +68,7 @@ namespace trview
         generate_sectors(level, room, sector_source);
         generate_geometry(level.get_version(), mesh_source, room);
         generate_adjacency();
-        generate_static_meshes(mesh_source, level, room, mesh_storage, static_mesh_mesh_source, static_mesh_position_source);
+        generate_static_meshes(mesh_source, level, room, mesh_storage, static_mesh_mesh_source, static_mesh_position_source, activity);
 
         _token_store += _level.on_geometry_colours_changed += [&]() { _all_geometry_meshes.clear(); };
     }
@@ -276,13 +279,18 @@ namespace trview
     }
 
     void Room::generate_static_meshes(const IMesh::Source& mesh_source, const trlevel::ILevel& level, const trlevel::tr3_room& room, const IMeshStorage& mesh_storage,
-        const IStaticMesh::MeshSource& static_mesh_mesh_source, const IStaticMesh::PositionSource& static_mesh_position_source)
+        const IStaticMesh::MeshSource& static_mesh_mesh_source, const IStaticMesh::PositionSource& static_mesh_position_source, const Activity& activity)
     {
         for (uint32_t i = 0; i < room.static_meshes.size(); ++i)
         {
             auto room_mesh = room.static_meshes[i];
             auto level_static_mesh = level.get_static_mesh(room_mesh.mesh_id);
-            _static_meshes.push_back(static_mesh_mesh_source(room_mesh, level_static_mesh, mesh_storage.mesh(level_static_mesh.Mesh)));
+            if (!level_static_mesh.has_value())
+            {
+                activity.log(trview::Message::Status::Error, std::format("Static Mesh {} was requested but not found", room_mesh.mesh_id));
+                continue;
+            }
+            _static_meshes.push_back(static_mesh_mesh_source(room_mesh, level_static_mesh.value(), mesh_storage.mesh(level_static_mesh.value().Mesh)));
         }
 
         // Also read the room sprites - they're similar enough for now.

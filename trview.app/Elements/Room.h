@@ -19,6 +19,7 @@
 #include "IRoom.h"
 
 #include <trview.common/TokenStore.h>
+#include <trview.common/Logs/ILog.h>
 
 namespace trview
 {
@@ -32,6 +33,7 @@ namespace trview
             const IMeshStorage& mesh_storage,
             uint32_t index,
             const ILevel& parent_level,
+            const Activity& activity,
             const IStaticMesh::MeshSource& static_mesh_mesh_source,
             const IStaticMesh::PositionSource& static_mesh_position_source,
             const ISector::Source& sector_source);
@@ -79,7 +81,7 @@ namespace trview
         void generate_geometry(trlevel::LevelVersion level_version, const IMesh::Source& mesh_source, const trlevel::tr3_room& room);
         void generate_adjacency();
         void generate_static_meshes(const IMesh::Source& mesh_source, const trlevel::ILevel& level, const trlevel::tr3_room& room, const IMeshStorage& mesh_storage,
-            const IStaticMesh::MeshSource& static_mesh_mesh_source, const IStaticMesh::PositionSource& static_mesh_position_source);
+            const IStaticMesh::MeshSource& static_mesh_mesh_source, const IStaticMesh::PositionSource& static_mesh_position_source, const Activity& activity);
         void render_contained(const ICamera& camera, const DirectX::SimpleMath::Color& colour, bool show_items);
         void get_contained_transparent_triangles(ITransparencyBuffer& transparency, const ICamera& camera, const DirectX::SimpleMath::Color& colour, bool show_items);
         void generate_sectors(const trlevel::ILevel& level, const trlevel::tr3_room& room, const ISector::Source& sector_source);

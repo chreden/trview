@@ -41,7 +41,8 @@ namespace trview
             const IEntity::AiSource& ai_source,
             const IRoom::Source& room_source,
             const ITrigger::Source& trigger_source,
-            const ILight::Source& light_source);
+            const ILight::Source& light_source,
+            const std::shared_ptr<ILog>& log);
         virtual ~Level() = default;
         virtual std::vector<RoomInfo> room_info() const override;
         virtual RoomInfo room_info(uint32_t room) const override;
@@ -177,6 +178,7 @@ namespace trview
         std::set<uint32_t> _alternate_groups;
         trlevel::LevelVersion _version;
         std::string _filename;
+        std::shared_ptr<ILog> _log;
     };
 
     /// Find the first item with the type id specified.

@@ -120,6 +120,8 @@ namespace trview
             return std::make_shared<Entity>(mesh_source, level, entity, mesh_storage, index);
         };
 
+        auto log = std::make_shared<Log>();
+
         auto bounding_mesh = create_cube_mesh(mesh_source);
         auto static_mesh_source = [=](auto&&... args) { return std::make_shared<StaticMesh>(args..., bounding_mesh); };
         auto static_mesh_position_source = [=](auto&&... args) { return std::make_shared<StaticMesh>(args...); };
@@ -144,7 +146,8 @@ namespace trview
                 ai_source,
                 room_source,
                 trigger_source,
-                light_source);
+                light_source,
+                log);
         };
 
         auto viewer_ui = std::make_unique<ViewerUI>(
@@ -182,7 +185,6 @@ namespace trview
         auto rooms_window_source = [=]() { return std::make_shared<RoomsWindow>(map_renderer_source, clipboard); };
         auto lights_window_source = [=]() { return std::make_shared<LightsWindow>(clipboard); };
 
-        auto log = std::make_shared<Log>();
         auto log_window_source = [=]() { return std::make_shared<LogWindow>(log, dialogs, files); };
 
         auto trlevel_source = [=](auto&& filename) { return std::make_unique<trlevel::Level>(filename, log); };
