@@ -1,5 +1,5 @@
 #include "RecentFiles.h"
-#include <trview.app/Windows/WindowIDs.h>
+#include "../Resources/resource.h"
 #include <trview.common/Strings.h>
 
 namespace trview
@@ -24,7 +24,7 @@ namespace trview
             info.cbSize = sizeof(info);
             info.fMask = MIIM_SUBMENU;
             info.hSubMenu = popup;
-            SetMenuItemInfo(menu, ID_APP_FILE_OPENRECENT, FALSE, &info);
+            SetMenuItemInfo(menu, ID_FILE_OPENRECENT, FALSE, &info);
             SetMenu(window, menu);
         }
     }

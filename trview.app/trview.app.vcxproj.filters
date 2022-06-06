@@ -375,6 +375,12 @@
     <ClCompile Include="Elements\Level.cpp">
       <Filter>Elements\Level</Filter>
     </ClCompile>
+    <ClCompile Include="Windows\Log\LogWindow.cpp">
+      <Filter>Windows\Log</Filter>
+    </ClCompile>
+    <ClCompile Include="Windows\Log\LogWindowManager.cpp">
+      <Filter>Windows\Log</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera\Camera.h">
@@ -454,9 +460,6 @@
     </ClInclude>
     <ClInclude Include="Menus\ViewMenu.h">
       <Filter>Menus</Filter>
-    </ClInclude>
-    <ClInclude Include="Windows\WindowIDs.h">
-      <Filter>Windows</Filter>
     </ClInclude>
     <ClInclude Include="Windows\WindowResizer.h">
       <Filter>Windows</Filter>
@@ -921,6 +924,24 @@
     <ClInclude Include="Elements\Level.h">
       <Filter>Elements\Level</Filter>
     </ClInclude>
+    <ClInclude Include="Windows\Log\ILogWindow.h">
+      <Filter>Windows\Log</Filter>
+    </ClInclude>
+    <ClInclude Include="Windows\Log\LogWindow.h">
+      <Filter>Windows\Log</Filter>
+    </ClInclude>
+    <ClInclude Include="Windows\Log\ILogWindowManager.h">
+      <Filter>Windows\Log</Filter>
+    </ClInclude>
+    <ClInclude Include="Windows\Log\LogWindowManager.h">
+      <Filter>Windows\Log</Filter>
+    </ClInclude>
+    <ClInclude Include="Mocks\Windows\ILogWindowManager.h">
+      <Filter>Mocks\Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="Mocks\Windows\ILogWindow.h">
+      <Filter>Mocks\Windows</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Windows">
@@ -1033,6 +1054,9 @@
     </Filter>
     <Filter Include="Elements\Level">
       <UniqueIdentifier>{9f0dcfc1-ab39-412a-92f2-2e75ae598aea}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Windows\Log">
+      <UniqueIdentifier>{d617ca7e-d7f1-4ea4-b6d6-ea63e358ff24}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

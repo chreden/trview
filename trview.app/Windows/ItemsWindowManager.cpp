@@ -1,5 +1,5 @@
 #include "ItemsWindowManager.h"
-#include <trview.app/Windows/WindowIDs.h>
+#include "../Resources/resource.h"
 
 namespace trview
 {
@@ -11,7 +11,7 @@ namespace trview
 
     std::optional<int> ItemsWindowManager::process_message(UINT message, WPARAM wParam, LPARAM)
     {
-        if (message == WM_COMMAND && LOWORD(wParam) == ID_APP_WINDOWS_ITEMS)
+        if (message == WM_COMMAND && LOWORD(wParam) == ID_WINDOWS_ITEMS)
         {
             create_window();
         }

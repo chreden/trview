@@ -1,7 +1,8 @@
 #include "Application.h"
 
-#include <trlevel/LevelLoader.h>
+#include <trlevel/Level.h>
 #include <trview.common/Files.h>
+#include <trview.common/Logs/Log.h>
 #include <trview.common/windows/Clipboard.h>
 #include <trview.common/Windows/Dialogs.h>
 #include <trview.common/Windows/Shell.h>
@@ -50,6 +51,8 @@
 #include "Windows/RoomsWindowManager.h"
 #include "Windows/TriggersWindowManager.h"
 #include "Windows/Viewer.h"
+#include "Windows/Log/LogWindow.h"
+#include "Windows/Log/LogWindowManager.h"
 #include "UI/DX11ImGuiBackend.h"
 
 namespace trview
@@ -179,12 +182,17 @@ namespace trview
         auto rooms_window_source = [=]() { return std::make_shared<RoomsWindow>(map_renderer_source, clipboard); };
         auto lights_window_source = [=]() { return std::make_shared<LightsWindow>(clipboard); };
 
+        auto log = std::make_shared<Log>();
+        auto log_window_source = [=]() { return std::make_shared<LogWindow>(log, dialogs, files); };
+
+        auto trlevel_source = [=](auto&& filename) { return std::make_unique<trlevel::Level>(filename, log); };
+
         return std::make_unique<Application>(
             window,
             std::make_unique<UpdateChecker>(window),
             std::make_unique<SettingsLoader>(files),
             std::make_unique<FileDropper>(window),
-            std::make_unique<trlevel::LevelLoader>(),
+            trlevel_source,
             std::make_unique<LevelSwitcher>(window),
             std::make_unique<RecentFiles>(window),
             std::move(viewer),
@@ -199,6 +207,7 @@ namespace trview
             dialogs,
             files,
             std::make_unique<DX11ImGuiBackend>(window, device),
-            std::make_unique<LightsWindowManager>(window, shortcuts, lights_window_source));
+            std::make_unique<LightsWindowManager>(window, shortcuts, lights_window_source),
+            std::make_unique<LogWindowManager>(window, shortcuts, log_window_source));
     }
 }

@@ -77,6 +77,8 @@
     <ClCompile Include="WindowResizerTests.cpp" />
     <ClCompile Include="Windows\LightsWindowManagerTests.cpp" />
     <ClCompile Include="Windows\LightsWindowTests.cpp" />
+    <ClCompile Include="Windows\LogWindowManagerTests.cpp" />
+    <ClCompile Include="Windows\LogWindowTests.cpp" />
     <ClCompile Include="Windows\RouteWindowManagerTests.cpp" />
     <ClCompile Include="Windows\ViewerTests.cpp" />
   </ItemGroup>

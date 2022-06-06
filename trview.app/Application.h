@@ -3,7 +3,7 @@
 #include <trview.common/Window.h>
 #include <trview.common/Timer.h>
 
-#include <trlevel/ILevelLoader.h>
+#include <trlevel/ILevel.h>
 
 #include <trview.app/Elements/ITypeNameLookup.h>
 #include <trview.app/Menus/IFileDropper.h>
@@ -23,6 +23,7 @@
 #include <trview.app/Lua/Lua.h>
 #include <trview.common/Windows/IDialogs.h>
 #include <trview.common/Windows/IShortcuts.h>
+#include "Windows/Log/ILogWindowManager.h"
 #include "UI/IImGuiBackend.h"
 
 struct ImFont;
@@ -44,7 +45,7 @@ namespace trview
             std::unique_ptr<IUpdateChecker> update_checker,
             std::unique_ptr<ISettingsLoader> settings_loader,
             std::unique_ptr<IFileDropper> file_dropper,
-            std::unique_ptr<trlevel::ILevelLoader> level_loader,
+            const trlevel::ILevel::Source& trlevel_source,
             std::unique_ptr<ILevelSwitcher> level_switcher,
             std::unique_ptr<IRecentFiles> recent_files,
             std::unique_ptr<IViewer> viewer,
@@ -59,7 +60,8 @@ namespace trview
             std::shared_ptr<IDialogs> dialogs,
             std::shared_ptr<IFiles> files,
             std::unique_ptr<IImGuiBackend> imgui_backend,
-            std::unique_ptr<ILightsWindowManager> lights_window_manager);
+            std::unique_ptr<ILightsWindowManager> lights_window_manager,
+            std::unique_ptr<ILogWindowManager> log_window_manager);
         virtual ~Application();
         /// Attempt to open the specified level file.
         /// @param filename The level file to open.
@@ -101,7 +103,7 @@ namespace trview
         std::unique_ptr<ISettingsLoader> _settings_loader;
         UserSettings _settings;
         std::unique_ptr<IFileDropper> _file_dropper;
-        std::unique_ptr<trlevel::ILevelLoader> _level_loader;
+        trlevel::ILevel::Source _trlevel_source;
         std::unique_ptr<ILevelSwitcher> _level_switcher;
         std::unique_ptr<IRecentFiles> _recent_files;
         std::unique_ptr<IUpdateChecker> _update_checker;
@@ -133,6 +135,7 @@ namespace trview
 
         std::unique_ptr<IImGuiBackend> _imgui_backend;
         std::string _imgui_ini_filename;
+        std::unique_ptr<ILogWindowManager> _log_windows;
     };
 
     Window create_window(HINSTANCE hInstance, int command_show);

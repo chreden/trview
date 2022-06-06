@@ -69,6 +69,7 @@ BEGIN
         MENUITEM "Roo&ms\tCtrl+M",              ID_WINDOWS_ROOMS
         MENUITEM "&Route\tCtrl+R",              ID_WINDOWS_ROUTE
         MENUITEM "&Lights\tCtrl+L"              ID_WINDOWS_LIGHTS
+        MENUITEM "Log"                          ID_WINDOWS_LOG
         MENUITEM SEPARATOR
         MENUITEM "Reset Layout"                 ID_WINDOWS_RESET_LAYOUT
     END

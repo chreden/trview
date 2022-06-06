@@ -71,7 +71,7 @@ namespace trview
         std::unique_ptr<IUpdateChecker> update_checker,
         std::unique_ptr<ISettingsLoader> settings_loader,
         std::unique_ptr<IFileDropper> file_dropper,
-        std::unique_ptr<trlevel::ILevelLoader> level_loader,
+        const trlevel::ILevel::Source& trlevel_source,
         std::unique_ptr<ILevelSwitcher> level_switcher,
         std::unique_ptr<IRecentFiles> recent_files,
         std::unique_ptr<IViewer> viewer,
@@ -86,13 +86,14 @@ namespace trview
         std::shared_ptr<IDialogs> dialogs,
         std::shared_ptr<IFiles> files,
         std::unique_ptr<IImGuiBackend> imgui_backend,
-        std::unique_ptr<ILightsWindowManager> lights_window_manager)
+        std::unique_ptr<ILightsWindowManager> lights_window_manager,
+        std::unique_ptr<ILogWindowManager> log_window_manager)
         : MessageHandler(application_window), _instance(GetModuleHandle(nullptr)),
         _file_dropper(std::move(file_dropper)), _level_switcher(std::move(level_switcher)), _recent_files(std::move(recent_files)), _update_checker(std::move(update_checker)),
-        _view_menu(window()), _settings_loader(std::move(settings_loader)), _level_loader(std::move(level_loader)), _viewer(std::move(viewer)), _route_source(route_source),
+        _view_menu(window()), _settings_loader(std::move(settings_loader)), _trlevel_source(trlevel_source), _viewer(std::move(viewer)), _route_source(route_source),
         _route(route_source()), _shortcuts(shortcuts), _items_windows(std::move(items_window_manager)),
         _triggers_windows(std::move(triggers_window_manager)), _route_window(std::move(route_window_manager)), _rooms_windows(std::move(rooms_window_manager)), _level_source(level_source),
-        _dialogs(dialogs), _files(files), _timer(default_time_source()), _imgui_backend(std::move(imgui_backend)), _lights_windows(std::move(lights_window_manager))
+        _dialogs(dialogs), _files(files), _timer(default_time_source()), _imgui_backend(std::move(imgui_backend)), _lights_windows(std::move(lights_window_manager)), _log_windows(std::move(log_window_manager))
     {
         SetWindowLongPtr(window(), GWLP_USERDATA, reinterpret_cast<LONG_PTR>(_imgui_backend.get()));
 
@@ -139,7 +140,7 @@ namespace trview
         std::unique_ptr<trlevel::ILevel> new_level;
         try
         {
-            new_level = _level_loader->load_level(filename);
+            new_level = _trlevel_source(filename);
         }
         catch (trlevel::LevelEncryptedException&)
         {
@@ -670,6 +671,7 @@ namespace trview
         _rooms_windows->render();
         _route_window->render();
         _lights_windows->render();
+        _log_windows->render();
 
         ImGui::PopFont();
         ImGui::Render();

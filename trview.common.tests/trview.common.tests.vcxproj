@@ -22,6 +22,7 @@
     <ClCompile Include="AlgorithmsTests.cpp" />
     <ClCompile Include="ColourTests.cpp" />
     <ClCompile Include="EventTests.cpp" />
+    <ClCompile Include="Logs\LogTests.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="PointTests.cpp" />
     <ClCompile Include="SizeTests.cpp" />

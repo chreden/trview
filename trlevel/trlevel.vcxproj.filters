@@ -7,17 +7,13 @@
     <ClInclude Include="LevelVersion.h" />
     <ClInclude Include="LevelLoadException.h" />
     <ClInclude Include="stdafx.h" />
-    <ClInclude Include="ILevelLoader.h" />
-    <ClInclude Include="LevelLoader.h" />
-    <ClInclude Include="Mocks\ILevelLoader.h">
-      <Filter>Mocks</Filter>
-    </ClInclude>
     <ClInclude Include="Mocks\ILevel.h">
       <Filter>Mocks</Filter>
     </ClInclude>
     <ClInclude Include="tr_lights.h" />
     <ClInclude Include="tr_rooms.h" />
     <ClInclude Include="LevelEncryptedException.h" />
+    <ClInclude Include="LevelVersion.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ILevel.cpp" />
@@ -25,8 +21,6 @@
     <ClCompile Include="trtypes.cpp" />
     <ClCompile Include="LevelVersion.cpp" />
     <ClCompile Include="stdafx.cpp" />
-    <ClCompile Include="LevelLoader.cpp" />
-    <ClCompile Include="ILevelLoader.cpp" />
     <ClCompile Include="tr_lights.cpp" />
   </ItemGroup>
   <ItemGroup>

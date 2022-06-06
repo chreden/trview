@@ -152,6 +152,8 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClCompile Include="Windows\IViewer.cpp" />
     <ClCompile Include="Windows\LightsWindow.cpp" />
     <ClCompile Include="Windows\LightsWindowManager.cpp" />
+    <ClCompile Include="Windows\Log\LogWindow.cpp" />
+    <ClCompile Include="Windows\Log\LogWindowManager.cpp" />
     <ClCompile Include="Windows\RoomsWindow.cpp" />
     <ClCompile Include="Windows\RoomsWindowManager.cpp" />
     <ClCompile Include="Windows\RouteWindow.cpp" />
@@ -267,6 +269,8 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClInclude Include="Mocks\Windows\IItemsWindowManager.h" />
     <ClInclude Include="Mocks\Windows\ILightsWindow.h" />
     <ClInclude Include="Mocks\Windows\ILightsWindowManager.h" />
+    <ClInclude Include="Mocks\Windows\ILogWindow.h" />
+    <ClInclude Include="Mocks\Windows\ILogWindowManager.h" />
     <ClInclude Include="Mocks\Windows\IRoomsWindow.h" />
     <ClInclude Include="Mocks\Windows\IRoomsWindowManager.h" />
     <ClInclude Include="Mocks\Windows\IRouteWindow.h" />
@@ -336,6 +340,10 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClInclude Include="Windows\IViewer.h" />
     <ClInclude Include="Windows\LightsWindow.h" />
     <ClInclude Include="Windows\LightsWindowManager.h" />
+    <ClInclude Include="Windows\Log\ILogWindow.h" />
+    <ClInclude Include="Windows\Log\ILogWindowManager.h" />
+    <ClInclude Include="Windows\Log\LogWindow.h" />
+    <ClInclude Include="Windows\Log\LogWindowManager.h" />
     <ClInclude Include="Windows\RoomsWindow.h" />
     <ClInclude Include="Windows\RoomsWindowManager.h" />
     <ClInclude Include="Windows\RouteWindow.h" />
@@ -343,7 +351,6 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClInclude Include="Windows\TriggersWindow.h" />
     <ClInclude Include="Windows\TriggersWindowManager.h" />
     <ClInclude Include="Windows\Viewer.h" />
-    <ClInclude Include="Windows\WindowIDs.h" />
     <ClInclude Include="Windows\WindowManager.h" />
     <ClInclude Include="Windows\WindowManager.hpp" />
     <ClInclude Include="Windows\WindowResizer.h" />
@@ -470,7 +477,7 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(SolutionDir);$(SolutionDir)external\DirectXTK\Inc;$(ProjectDir);$(SolutionDir)external\imgui</AdditionalIncludeDirectories>
       <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
-      <LanguageStandard>stdcpp20</LanguageStandard>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
       <ForcedIncludeFiles>stdafx.h</ForcedIncludeFiles>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <DiagnosticsFormat>Column</DiagnosticsFormat>
@@ -495,7 +502,7 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(SolutionDir);$(SolutionDir)external\DirectXTK\Inc;$(ProjectDir);$(SolutionDir)external\imgui</AdditionalIncludeDirectories>
       <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
-      <LanguageStandard>stdcpp20</LanguageStandard>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
       <ForcedIncludeFiles>stdafx.h</ForcedIncludeFiles>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <DiagnosticsFormat>Column</DiagnosticsFormat>
@@ -518,7 +525,7 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(SolutionDir);$(SolutionDir)external\DirectXTK\Inc;$(ProjectDir);$(SolutionDir)external\imgui</AdditionalIncludeDirectories>
       <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
-      <LanguageStandard>stdcpp20</LanguageStandard>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
       <ForcedIncludeFiles>stdafx.h</ForcedIncludeFiles>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <DiagnosticsFormat>Column</DiagnosticsFormat>
@@ -543,7 +550,7 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(SolutionDir);$(SolutionDir)external\DirectXTK\Inc;$(ProjectDir);$(SolutionDir)external\imgui</AdditionalIncludeDirectories>
       <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
-      <LanguageStandard>stdcpp20</LanguageStandard>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
       <ForcedIncludeFiles>stdafx.h</ForcedIncludeFiles>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <DiagnosticsFormat>Column</DiagnosticsFormat>

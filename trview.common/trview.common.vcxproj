@@ -25,12 +25,17 @@
     <ClInclude Include="Event.h" />
     <ClInclude Include="Files.h" />
     <ClInclude Include="JsonSerializers.h" />
+    <ClInclude Include="Logs\Activity.h" />
+    <ClInclude Include="Logs\ILog.h" />
+    <ClInclude Include="Logs\Log.h" />
+    <ClInclude Include="Logs\Message.h" />
     <ClInclude Include="Maths.h" />
     <ClInclude Include="IFiles.h" />
     <ClInclude Include="Json.h" />
     <ClInclude Include="Json.hpp" />
     <ClInclude Include="MessageHandler.h" />
     <ClInclude Include="Mocks\IFiles.h" />
+    <ClInclude Include="Mocks\Logs\ILog.h" />
     <ClInclude Include="Mocks\Windows\IClipboard.h" />
     <ClInclude Include="Mocks\Windows\IDialogs.h" />
     <ClInclude Include="Mocks\Windows\IShell.h" />
@@ -58,6 +63,8 @@
     <ClCompile Include="Files.cpp" />
     <ClCompile Include="IFiles.cpp" />
     <ClCompile Include="JsonSerializers.cpp" />
+    <ClCompile Include="Logs\Activity.cpp" />
+    <ClCompile Include="Logs\Log.cpp" />
     <ClCompile Include="MessageHandler.cpp" />
     <ClCompile Include="Point.cpp" />
     <ClCompile Include="Resources.cpp" />
@@ -158,7 +165,7 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
       <AdditionalIncludeDirectories>$(SolutionDir)external\DirectXTK\Inc;$(ProjectDir);$(SolutionDir)</AdditionalIncludeDirectories>
-      <LanguageStandard>stdcpp20</LanguageStandard>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
       <ForcedIncludeFiles>stdafx.h</ForcedIncludeFiles>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
     </ClCompile>
@@ -180,7 +187,7 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
       <AdditionalIncludeDirectories>$(SolutionDir)external\DirectXTK\Inc;$(ProjectDir);$(SolutionDir)</AdditionalIncludeDirectories>
-      <LanguageStandard>stdcpp20</LanguageStandard>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
       <ForcedIncludeFiles>stdafx.h</ForcedIncludeFiles>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
     </ClCompile>
@@ -204,7 +211,7 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
       <AdditionalIncludeDirectories>$(SolutionDir)external\DirectXTK\Inc;$(ProjectDir);$(SolutionDir)</AdditionalIncludeDirectories>
-      <LanguageStandard>stdcpp20</LanguageStandard>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
       <ForcedIncludeFiles>stdafx.h</ForcedIncludeFiles>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
@@ -230,7 +237,7 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
       <AdditionalIncludeDirectories>$(SolutionDir)external\DirectXTK\Inc;$(ProjectDir);$(SolutionDir)</AdditionalIncludeDirectories>
-      <LanguageStandard>stdcpp20</LanguageStandard>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
       <ForcedIncludeFiles>stdafx.h</ForcedIncludeFiles>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
