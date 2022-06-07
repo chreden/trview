@@ -323,3 +323,13 @@ TEST(Filters, And)
     ASSERT_FALSE(filters.match(Object().with_number(5)));
     ASSERT_FALSE(filters.match(Object().with_number(10)));
 }
+
+TEST(Filters, CheckboxShowsTooltip)
+{
+    Filters<Object> filters;
+    TestImgui imgui([&]() { filters.render(); });
+    ASSERT_EQ(imgui.find_window("##Tooltip_00"), nullptr);
+    imgui.hover_element(imgui.id("Debug##Default").id(Names::Enable));
+    ASSERT_NE(imgui.find_window("##Tooltip_00"), nullptr);
+}
+

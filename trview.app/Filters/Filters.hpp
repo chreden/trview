@@ -279,6 +279,12 @@ namespace trview
             _enabled = filter_enabled;
             _changed = true;
         }
+        if (ImGui::IsItemHovered())
+        {
+            ImGui::BeginTooltip();
+            ImGui::Text("Toggle filters");
+            ImGui::EndTooltip();
+        }
         ImGui::SameLine();
 
         if (ImGui::Button(Names::FiltersButton.c_str()))
