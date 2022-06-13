@@ -1205,4 +1205,14 @@ namespace trview
         }
         return {};
     }
+
+    DirectX::SimpleMath::Vector3 Viewer::target() const
+    {
+        return _target;
+    }
+
+    void Viewer::set_target(const DirectX::SimpleMath::Vector3& target)
+    {
+        _target = target;
+    }
 }

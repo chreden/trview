@@ -135,5 +135,9 @@ namespace trview
         virtual bool ui_input_active() const = 0;
 
         virtual void select_light(const std::weak_ptr<ILight>& light) = 0;
+
+        virtual DirectX::SimpleMath::Vector3 target() const = 0;
+
+        virtual void set_target(const DirectX::SimpleMath::Vector3& target) = 0;
     };
 }

@@ -90,6 +90,8 @@ namespace trview
         virtual std::optional<int> process_message(UINT message, WPARAM wParam, LPARAM lParam) override;
         const ICamera& current_camera() const;
         ICamera& current_camera();
+        virtual DirectX::SimpleMath::Vector3 target() const override;
+        virtual void set_target(const DirectX::SimpleMath::Vector3& target) override;
     private:
         void initialise_input();
         void toggle_highlight();

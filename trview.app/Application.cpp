@@ -697,10 +697,20 @@ namespace trview
         auto old_level = open(_level->filename(), ILevel::OpenMode::Reload);
         if (old_level)
         {
-            _level->set_selected_room(old_level->selected_room());
-            _level->set_selected_item(old_level->selected_item());
-            _level->set_selected_trigger(old_level->selected_trigger());
-            _level->set_selected_light(old_level->selected_light());
+            const Vector3 old_target = _viewer->target();
+            const bool old_auto_orbit = _settings.auto_orbit;
+            _settings.auto_orbit = false;
+            _viewer->set_settings(_settings);
+
+            // TODO: Don't assume that things exist.
+            select_item(_level->items()[old_level->selected_item()]);
+            select_trigger(_level->triggers()[old_level->selected_trigger()]);
+            select_room(old_level->selected_room());
+
+            _viewer->set_target(old_target);
+            _settings.auto_orbit = old_auto_orbit;
+            _viewer->set_settings(_settings);
+            
         }
     }
 
