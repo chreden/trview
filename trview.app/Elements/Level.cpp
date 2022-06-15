@@ -100,10 +100,13 @@ namespace trview
         return textures;
     }
 
-    uint32_t Level::selected_item() const
+    std::optional<uint32_t> Level::selected_item() const
     {
-        auto entity = _selected_item.lock();
-        return entity ? entity->index() : 0u;
+        if (auto item = _selected_item.lock())
+        {
+            return item->index();
+        }
+        return std::nullopt;
     }
 
     uint16_t Level::selected_room() const
@@ -962,16 +965,22 @@ namespace trview
         on_geometry_colours_changed();
     }
 
-    uint32_t Level::selected_light() const
+    std::optional<uint32_t> Level::selected_light() const
     {
-        auto light = _selected_light.lock();
-        return light ? light->number() : 0u;
+        if (auto light = _selected_light.lock())
+        {
+            return light->number();
+        }
+        return std::nullopt;
     }
 
-    uint32_t Level::selected_trigger() const
+    std::optional<uint32_t> Level::selected_trigger() const
     {
-        auto trigger = _selected_trigger.lock();
-        return trigger ? trigger->number() : 0u;
+        if (auto trigger = _selected_trigger.lock())
+        {
+            return trigger->number();
+        }
+        return std::nullopt;
     }
 
     bool find_item_by_type_id(const ILevel& level, uint32_t type_id, Item& output_item)

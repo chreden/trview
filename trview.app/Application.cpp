@@ -702,20 +702,30 @@ namespace trview
             _settings.auto_orbit = false;
             _viewer->set_settings(_settings);
 
-            select_item(old_level->items()[old_level->selected_item()]);
-
-            uint32_t selected_trigger = old_level->selected_trigger();
-            const auto triggers = _level->triggers();
-            if (selected_trigger < triggers.size())
+            auto selected_item = old_level->selected_item();
+            if (selected_item.has_value())
             {
-                select_trigger(triggers[selected_trigger]);
+                select_item(old_level->items()[selected_item.value()]);
             }
 
-            uint32_t selected_light = old_level->selected_light();
-            const auto lights = _level->lights();
-            if (selected_light < lights.size())
+            auto selected_trigger = old_level->selected_trigger();
+            if (selected_trigger.has_value())
             {
-                select_light(lights[selected_light]);
+                const auto triggers = _level->triggers();
+                if (selected_trigger.value() < triggers.size())
+                {
+                    select_trigger(triggers[selected_trigger.value()]);
+                }
+            }
+
+            auto selected_light = old_level->selected_light();
+            if (selected_light.has_value())
+            {
+                const auto lights = _level->lights();
+                if (selected_light.value() < lights.size())
+                {
+                    select_light(lights[selected_light.value()]);
+                }
             }
 
             select_room(old_level->selected_room());

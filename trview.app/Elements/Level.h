@@ -46,7 +46,7 @@ namespace trview
         virtual std::vector<RoomInfo> room_info() const override;
         virtual RoomInfo room_info(uint32_t room) const override;
         virtual std::vector<graphics::Texture> level_textures() const override;
-        virtual uint32_t selected_item() const override;
+        virtual std::optional<uint32_t> selected_item() const override;
         virtual uint16_t selected_room() const override;
         virtual std::vector<Item> items() const override;
         virtual uint32_t neighbour_depth() const override;
@@ -93,8 +93,8 @@ namespace trview
         virtual void set_room_visibility(uint32_t index, bool state) override;
         virtual MapColours map_colours() const override;
         virtual void set_map_colours(const MapColours& map_colours) override;
-        virtual uint32_t selected_light() const override;
-        virtual uint32_t selected_trigger() const override;
+        virtual std::optional<uint32_t> selected_light() const override;
+        virtual std::optional<uint32_t> selected_trigger() const override;
     private:
         void generate_rooms(const trlevel::ILevel& level, const IRoom::Source& room_source, const IMeshStorage& mesh_storage);
         void generate_triggers(const ITrigger::Source& trigger_source);

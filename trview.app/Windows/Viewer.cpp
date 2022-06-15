@@ -557,7 +557,9 @@ namespace trview
             {
                 _ui->set_selected_room(rooms[level->selected_room()].lock());
             }
-            _ui->set_selected_item(level->selected_item());
+            
+            auto selected_item = level->selected_item();
+            _ui->set_selected_item(selected_item.value_or(0));
 
             // Reset UI buttons
             _ui->set_max_rooms(static_cast<uint32_t>(rooms.size()));
