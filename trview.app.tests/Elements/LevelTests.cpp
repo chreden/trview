@@ -95,6 +95,18 @@ namespace
                 this->shader_storage = shader_storage;
                 return *this;
             }
+
+            test_module& with_light_source(const ILight::Source& light_source)
+            {
+                this->light_source = light_source;
+                return *this;
+            }
+
+            test_module& with_trigger_source(const ITrigger::Source& trigger_source)
+            {
+                this->trigger_source = trigger_source;
+                return *this;
+            }
         };
 
         return test_module{};
@@ -480,4 +492,88 @@ TEST(Level, RoomNotRenderedWhenNotVisible)
 
     NiceMock<MockCamera> camera;
     level->render(camera, false);
+}
+
+TEST(Level, SelectedItem)
+{
+    auto [mock_level_ptr, mock_level] = create_mock<trlevel::mocks::MockLevel>();
+    ON_CALL(mock_level, num_entities()).WillByDefault(Return(5));
+    ON_CALL(mock_level, num_rooms()).WillByDefault(Return(1));
+
+    uint32_t entity_source_called = 0;
+    auto level = register_test_module()
+        .with_level(std::move(mock_level_ptr))
+        .with_entity_source(
+            [&](auto&&...)
+            {
+                auto entity = mock_shared<MockEntity>();
+                ON_CALL(*entity, index).WillByDefault(Return(entity_source_called));
+                ++entity_source_called;
+                return entity;
+            })
+        .build();
+
+    ASSERT_EQ(level->selected_item(), std::nullopt);
+    level->set_selected_item(4);
+    ASSERT_TRUE(level->selected_item().has_value());
+    ASSERT_EQ(level->selected_item().value(), 4);
+}
+
+TEST(Level, SelectedLight)
+{
+    tr3_room room{ };
+    room.lights.resize(5);
+    auto [mock_level_ptr, mock_level] = create_mock<trlevel::mocks::MockLevel>();
+    ON_CALL(mock_level, num_rooms).WillByDefault(Return(1));
+    ON_CALL(mock_level, get_room).WillByDefault(Return(room));
+    
+    uint32_t light_source_called = 0;
+    auto level = register_test_module()
+        .with_level(std::move(mock_level_ptr))
+        .with_light_source(
+            [&](auto&&...)
+            {
+                auto light = mock_shared<MockLight>();
+                ON_CALL(*light, number).WillByDefault(Return(light_source_called));
+                ++light_source_called;
+                return light;
+            })
+        .build();
+    ASSERT_EQ(level->selected_light(), std::nullopt);
+    level->set_selected_light(4);
+    ASSERT_EQ(level->selected_light(), 4);
+}
+
+TEST(Level, SelectedTrigger)
+{
+    auto [mock_level_ptr, mock_level] = create_mock<trlevel::mocks::MockLevel>();
+    ON_CALL(mock_level, num_rooms()).WillByDefault(Return(1));
+
+    uint32_t trigger_source_called = 0;
+    auto level = register_test_module()
+        .with_level(std::move(mock_level_ptr))
+        .with_room_source(
+            [&](auto&&...)
+            {
+                auto room = mock_shared<MockRoom>();
+                std::vector<std::shared_ptr<ISector>> sectors;
+                auto sector = mock_shared<MockSector>();
+                ON_CALL(*sector, flags).WillByDefault(Return(SectorFlag::Trigger));
+                sectors.resize(5, sector);
+                ON_CALL(*room, sectors).WillByDefault(Return(sectors));
+                return room;
+            })
+        .with_trigger_source(
+            [&](auto&&...)
+            {
+                auto trigger = mock_shared<MockTrigger>();
+                ON_CALL(*trigger, number).WillByDefault(Return(trigger_source_called));
+                ++trigger_source_called;
+                return trigger;
+            })
+        .build();
+
+    ASSERT_EQ(level->selected_trigger(), std::nullopt);
+    level->set_selected_trigger(4);
+    ASSERT_EQ(level->selected_trigger(), 4);
 }
