@@ -232,8 +232,3 @@ TEST(ItemsWindowManager, WindowsUpdated)
     manager->create_window();
     manager->update(1.0f);
 }
-
-TEST(ItemsWindowManager, SelectedItemClearedAfterReload)
-{
-    FAIL();
-}
