@@ -49,6 +49,7 @@ namespace trview
         virtual uint32_t selected_item() const override;
         virtual uint16_t selected_room() const override;
         virtual std::vector<Item> items() const override;
+        virtual uint32_t neighbour_depth() const override;
         virtual uint32_t number_of_rooms() const override;
         virtual std::vector<std::weak_ptr<IRoom>> rooms() const override;
         virtual std::vector<std::weak_ptr<ITrigger>> triggers() const override;

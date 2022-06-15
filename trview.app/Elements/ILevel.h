@@ -49,6 +49,7 @@ namespace trview
         virtual std::vector<graphics::Texture> level_textures() const = 0;
         virtual std::vector<std::weak_ptr<ILight>> lights() const = 0;
         virtual MapColours map_colours() const = 0;
+        virtual uint32_t neighbour_depth() const = 0;
         /// Get the number of rooms in the level.
         virtual uint32_t number_of_rooms() const = 0;
         virtual void on_camera_moved() = 0;

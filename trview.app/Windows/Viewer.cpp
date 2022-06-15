@@ -574,10 +574,15 @@ namespace trview
         }
         else if (open_mode == ILevel::OpenMode::Reload && old_level)
         {
-            // _level->set_selected_room(old_level->selected_room());
-            // _level->set_selected_item(old_level->selected_item());
-            // _level->set_selected_trigger(old_level->selected_trigger());
-            // _level->set_selected_light(old_level->selected_light());
+            _level->set_alternate_mode(old_level->alternate_mode());
+            _level->set_neighbour_depth(old_level->neighbour_depth());
+            _level->set_highlight_mode(ILevel::RoomHighlightMode::Highlight, old_level->highlight_mode_enabled(ILevel::RoomHighlightMode::Highlight));
+            _level->set_highlight_mode(ILevel::RoomHighlightMode::Neighbours, old_level->highlight_mode_enabled(ILevel::RoomHighlightMode::Neighbours));
+
+            for (const auto& group : _level->alternate_groups())
+            {
+                _level->set_alternate_group(group, old_level->alternate_group(group));
+            }
         }
 
         _scene_changed = true;

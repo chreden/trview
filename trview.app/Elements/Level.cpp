@@ -116,6 +116,11 @@ namespace trview
         return _items;
     }
 
+    uint32_t Level::neighbour_depth() const
+    {
+        return _neighbour_depth;
+    }
+
     uint32_t Level::number_of_rooms() const
     {
         return static_cast<uint32_t>(_rooms.size());
