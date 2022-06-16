@@ -61,7 +61,7 @@ namespace trview
         virtual ~Application();
         /// Attempt to open the specified level file.
         /// @param filename The level file to open.
-        std::unique_ptr<ILevel> open(const std::string& filename, ILevel::OpenMode open_mode);
+        void open(const std::string& filename, ILevel::OpenMode open_mode);
         virtual std::optional<int> process_message(UINT message, WPARAM wParam, LPARAM lParam) override;
         virtual int run() override;
         void render();

@@ -125,11 +125,11 @@ namespace trview
         }
     }
 
-    std::unique_ptr<ILevel> Application::open(const std::string& filename, ILevel::OpenMode open_mode)
+    void Application::open(const std::string& filename, ILevel::OpenMode open_mode)
     {
         if (open_mode == ILevel::OpenMode::Full && !should_discard_changes())
         {
-            return nullptr;
+            return;
         }
 
         std::unique_ptr<trlevel::ILevel> new_level;
@@ -140,12 +140,12 @@ namespace trview
         catch (trlevel::LevelEncryptedException&)
         {
             _dialogs->message_box(L"Level is encrypted and cannot be loaded", L"Error", IDialogs::Buttons::OK);
-            return nullptr;
+            return;
         }
         catch (...)
         {
             _dialogs->message_box(L"Failed to load level", L"Error", IDialogs::Buttons::OK);
-            return nullptr;
+            return;
         }
 
         _file_menu->open_file(filename);
@@ -182,7 +182,46 @@ namespace trview
 
         _viewer->open(_level.get(), open_mode);
         _viewer->set_route(_route);
-        return std::move(old_level);
+
+        if (old_level && open_mode == ILevel::OpenMode::Reload)
+        {
+            const Vector3 old_target = _viewer->target();
+            const bool old_auto_orbit = _settings.auto_orbit;
+            _settings.auto_orbit = false;
+            _viewer->set_settings(_settings);
+
+            auto selected_item = old_level->selected_item();
+            if (selected_item.has_value())
+            {
+                select_item(old_level->items()[selected_item.value()]);
+            }
+
+            auto selected_trigger = old_level->selected_trigger();
+            if (selected_trigger.has_value())
+            {
+                const auto triggers = _level->triggers();
+                if (selected_trigger.value() < triggers.size())
+                {
+                    select_trigger(triggers[selected_trigger.value()]);
+                }
+            }
+
+            auto selected_light = old_level->selected_light();
+            if (selected_light.has_value())
+            {
+                const auto lights = _level->lights();
+                if (selected_light.value() < lights.size())
+                {
+                    select_light(lights[selected_light.value()]);
+                }
+            }
+
+            select_room(old_level->selected_room());
+
+            _viewer->set_target(old_target);
+            _settings.auto_orbit = old_auto_orbit;
+            _viewer->set_settings(_settings);
+        }
     }
 
     std::optional<int> Application::process_message(UINT message, WPARAM wParam, LPARAM)
@@ -693,47 +732,7 @@ namespace trview
         {
             return;
         }
-
-        auto old_level = open(_level->filename(), ILevel::OpenMode::Reload);
-        if (old_level)
-        {
-            const Vector3 old_target = _viewer->target();
-            const bool old_auto_orbit = _settings.auto_orbit;
-            _settings.auto_orbit = false;
-            _viewer->set_settings(_settings);
-
-            auto selected_item = old_level->selected_item();
-            if (selected_item.has_value())
-            {
-                select_item(old_level->items()[selected_item.value()]);
-            }
-
-            auto selected_trigger = old_level->selected_trigger();
-            if (selected_trigger.has_value())
-            {
-                const auto triggers = _level->triggers();
-                if (selected_trigger.value() < triggers.size())
-                {
-                    select_trigger(triggers[selected_trigger.value()]);
-                }
-            }
-
-            auto selected_light = old_level->selected_light();
-            if (selected_light.has_value())
-            {
-                const auto lights = _level->lights();
-                if (selected_light.value() < lights.size())
-                {
-                    select_light(lights[selected_light.value()]);
-                }
-            }
-
-            select_room(old_level->selected_room());
-
-            _viewer->set_target(old_target);
-            _settings.auto_orbit = old_auto_orbit;
-            _viewer->set_settings(_settings);
-        }
+        open(_level->filename(), ILevel::OpenMode::Reload);
     }
 
     Window create_window(HINSTANCE hInstance, int nCmdShow)

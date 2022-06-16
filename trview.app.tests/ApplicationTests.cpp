@@ -1,5 +1,6 @@
 #include <trview.app/Application.h>
 #include <trview.app/Mocks/Elements/ILevel.h>
+#include <trview.app/Mocks/Elements/ILight.h>
 #include <trview.app/Mocks/Menus/IUpdateChecker.h>
 #include <trview.app/Mocks/Menus/IFileMenu.h>
 #include <trview.app/Mocks/Routing/IRoute.h>
@@ -590,12 +591,110 @@ TEST(Application, ViewerRoomVisibilityCaptured)
     viewer.on_room_visibility(room, true);
 }
 
-TEST(Application, ReloadLevel)
+TEST(Application, LevelLoadedOnReload)
 {
     auto [file_menu_ptr, file_menu] = create_mock<MockFileMenu>();
+    std::vector<std::string> called;
+    auto trlevel_source = [&](auto&& filename)-> std::unique_ptr<trlevel::ILevel> { called.push_back(filename); return mock_unique<trlevel::mocks::MockLevel>(); };
+    ILevel::Source level_source = [](auto&&...) 
+    { 
+        auto [level_ptr, level] = create_mock<trview::mocks::MockLevel>();
+        ON_CALL(level, filename).WillByDefault(Return("reload.tr2"));
+        return std::move(level_ptr);
+    };
     auto application = register_test_module()
+        .with_trlevel_source(trlevel_source)
+        .with_level_source(level_source)
         .with_file_menu(std::move(file_menu_ptr))
         .build();
-    file_menu_ptr->on_reload();
-    FAIL();
+    file_menu.on_file_open("test_path.tr2");
+    file_menu.on_reload();
+    ASSERT_EQ(called.size(), 2);
+
+    std::vector<std::string> expected{ "test_path.tr2", "reload.tr2" };
+    ASSERT_EQ(called, expected);
+}
+
+TEST(Application, ReloadSyncsProperties)
+{
+    using DirectX::SimpleMath::Vector3;
+
+    std::vector<std::string> called;
+
+    auto [original_ptr, original] = create_mock<trview::mocks::MockLevel>();
+    auto [reloaded_ptr, reloaded] = create_mock<trview::mocks::MockLevel>();
+
+    std::vector<Item> items;
+    for (int i = 0; i < 5; ++i) 
+    {
+        items.push_back(Item(i, 0, 0, L"", 0, 0, {}, Vector3::Zero));
+    }
+    
+    std::vector<std::shared_ptr<ITrigger>> triggers;
+    for (int i = 0; i < 5; ++i)
+    {
+        auto trigger = mock_shared<MockTrigger>();
+        ON_CALL(*trigger, number).WillByDefault(Return(i));
+        triggers.push_back(trigger);
+    }
+    std::vector<std::weak_ptr<ITrigger>> triggers_weak;
+    for (const auto& t : triggers)
+    {
+        triggers_weak.push_back(t);
+    }
+
+    std::vector<std::shared_ptr<ILight>> lights;
+    for (int i = 0; i < 5; ++i)
+    {
+        auto light = mock_shared<MockLight>();
+        ON_CALL(*light, number).WillByDefault(Return(i));
+        lights.push_back(light);
+    }
+    std::vector<std::weak_ptr<ILight>> lights_weak;
+    for (const auto& l : lights)
+    {
+        lights_weak.push_back(l);
+    }
+
+    ON_CALL(original, items).WillByDefault(Return(items));
+    ON_CALL(original, selected_item).WillByDefault(Return(3));
+    ON_CALL(original, triggers).WillByDefault(Return(triggers_weak));
+    ON_CALL(original, selected_trigger).WillByDefault(Return(3));
+    ON_CALL(original, lights).WillByDefault(Return(lights_weak));
+    ON_CALL(original, selected_light).WillByDefault(Return(3));
+    ON_CALL(original, number_of_rooms).WillByDefault(Return(5));
+    ON_CALL(original, selected_room).WillByDefault(Return(3));
+
+    ON_CALL(reloaded, items).WillByDefault(Return(items));
+    EXPECT_CALL(reloaded, set_selected_item(3)).Times(1);
+    ON_CALL(reloaded, triggers).WillByDefault(Return(triggers_weak));
+    EXPECT_CALL(reloaded, set_selected_trigger(3)).Times(1);
+    ON_CALL(reloaded, lights).WillByDefault(Return(lights_weak));
+    EXPECT_CALL(reloaded, set_selected_light(3)).Times(1);
+    ON_CALL(reloaded, number_of_rooms).WillByDefault(Return(5));
+    EXPECT_CALL(reloaded, set_selected_room(0)).Times(AnyNumber());
+    EXPECT_CALL(reloaded, set_selected_room(3)).Times(1);
+
+    std::list<std::unique_ptr<ILevel>> levels;
+    levels.push_back(std::move(original_ptr));
+    levels.push_back(std::move(reloaded_ptr));
+
+    ILevel::Source level_source = [&](auto&&...)
+    {
+        auto level = std::move(levels.front());
+        levels.pop_front();
+        return std::move(level);
+    };
+
+    auto [viewer_ptr, viewer] = create_mock<MockViewer>();
+    ON_CALL(viewer, target).WillByDefault(Return(Vector3(1, 2, 3)));
+    EXPECT_CALL(viewer, set_target(Vector3(1, 2, 3))).Times(1);
+
+    auto application = register_test_module()
+        .with_level_source(level_source)
+        .with_viewer(std::move(viewer_ptr))
+        .build();
+
+    application->open("test.tr2", ILevel::OpenMode::Full);
+    application->open("test.tr2", ILevel::OpenMode::Reload);
 }
