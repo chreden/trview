@@ -794,7 +794,31 @@ TEST(Viewer, OrbitHereOrbitsWhenSettingDisabled)
     ASSERT_EQ(viewer->camera_mode(), CameraMode::Orbit);
 }
 
-TEST(Viewer, ReloadLevel)
+TEST(Viewer, ReloadLevelSyncProperties)
 {
-    FAIL();
+    std::set<uint32_t> groups{ 1, 2, 3 };
+
+    auto [original_ptr, original] = create_mock<MockLevel>();
+    EXPECT_CALL(original, alternate_mode).WillRepeatedly(Return(true));
+    EXPECT_CALL(original, neighbour_depth).WillRepeatedly(Return(6));
+    EXPECT_CALL(original, highlight_mode_enabled(ILevel::RoomHighlightMode::Highlight)).WillRepeatedly(Return(true));
+    EXPECT_CALL(original, highlight_mode_enabled(ILevel::RoomHighlightMode::Neighbours)).WillRepeatedly(Return(true));
+    EXPECT_CALL(original, alternate_group(1)).WillRepeatedly(Return(true));
+    EXPECT_CALL(original, alternate_group(2)).WillRepeatedly(Return(true));
+    EXPECT_CALL(original, alternate_group(3)).WillRepeatedly(Return(true));
+
+    auto [reloaded_ptr, reloaded] = create_mock<MockLevel>();
+    EXPECT_CALL(reloaded, set_alternate_mode(true)).Times(1);
+    EXPECT_CALL(reloaded, set_neighbour_depth(6)).Times(1);
+    EXPECT_CALL(reloaded, set_highlight_mode(ILevel::RoomHighlightMode::Neighbours, true)).Times(1);
+    EXPECT_CALL(reloaded, set_highlight_mode(ILevel::RoomHighlightMode::Highlight, true)).Times(1);
+    EXPECT_CALL(reloaded, set_alternate_group(1, true)).Times(1);
+    EXPECT_CALL(reloaded, set_alternate_group(2, true)).Times(1);
+    EXPECT_CALL(reloaded, set_alternate_group(3, true)).Times(1);
+    EXPECT_CALL(reloaded, alternate_groups).WillRepeatedly(Return(groups));
+
+    auto viewer = register_test_module().build();
+
+    viewer->open(&original, ILevel::OpenMode::Full);
+    viewer->open(&reloaded, ILevel::OpenMode::Reload);
 }
