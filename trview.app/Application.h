@@ -6,9 +6,7 @@
 #include <trlevel/ILevel.h>
 
 #include <trview.app/Elements/ITypeNameLookup.h>
-#include <trview.app/Menus/IFileDropper.h>
-#include <trview.app/Menus/ILevelSwitcher.h>
-#include <trview.app/Menus/IRecentFiles.h>
+#include <trview.app/Menus/IFileMenu.h>
 #include <trview.app/Menus/IUpdateChecker.h>
 #include <trview.app/Menus/ViewMenu.h>
 #include <trview.app/Routing/Route.h>
@@ -44,10 +42,8 @@ namespace trview
             const Window& application_window,
             std::unique_ptr<IUpdateChecker> update_checker,
             std::unique_ptr<ISettingsLoader> settings_loader,
-            std::unique_ptr<IFileDropper> file_dropper,
             const trlevel::ILevel::Source& trlevel_source,
-            std::unique_ptr<ILevelSwitcher> level_switcher,
-            std::unique_ptr<IRecentFiles> recent_files,
+            std::unique_ptr<IFileMenu> file_menu,
             std::unique_ptr<IViewer> viewer,
             const IRoute::Source& route_source,
             std::shared_ptr<IShortcuts> shortcuts,
@@ -65,7 +61,7 @@ namespace trview
         virtual ~Application();
         /// Attempt to open the specified level file.
         /// @param filename The level file to open.
-        void open(const std::string& filename);
+        void open(const std::string& filename, ILevel::OpenMode open_mode);
         virtual std::optional<int> process_message(UINT message, WPARAM wParam, LPARAM lParam) override;
         virtual int run() override;
         void render();
@@ -96,16 +92,15 @@ namespace trview
         // Lua
         void register_lua();
         bool should_discard_changes();
+        void reload();
 
         TokenStore _token_store;
 
         // Window message related components.
         std::unique_ptr<ISettingsLoader> _settings_loader;
         UserSettings _settings;
-        std::unique_ptr<IFileDropper> _file_dropper;
         trlevel::ILevel::Source _trlevel_source;
-        std::unique_ptr<ILevelSwitcher> _level_switcher;
-        std::unique_ptr<IRecentFiles> _recent_files;
+        std::unique_ptr<IFileMenu> _file_menu;
         std::unique_ptr<IUpdateChecker> _update_checker;
         ViewMenu _view_menu;
         std::shared_ptr<IShortcuts> _shortcuts;

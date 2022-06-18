@@ -115,7 +115,7 @@ TEST(Viewer, SelectItemRaisedForValidItem)
     EXPECT_CALL(level, items).WillRepeatedly([&]() { return items_list; });
 
     auto viewer = register_test_module().with_ui(std::move(ui_ptr)).build();
-    viewer->open(&level);
+    viewer->open(&level, ILevel::OpenMode::Full);
 
     std::optional<Item> raised_item;
     auto token = viewer->on_item_selected += [&raised_item](const auto& item) { raised_item = item; };
@@ -154,7 +154,7 @@ TEST(Viewer, ItemVisibilityRaisedForValidItem)
     auto [mouse_ptr, mouse] = create_mock<MockMouse>();
     auto viewer = register_test_module().with_ui(std::move(ui_ptr)).with_picking(std::move(picking_ptr)).with_mouse(std::move(mouse_ptr)).build();
 
-    viewer->open(&level);
+    viewer->open(&level, ILevel::OpenMode::Full);
 
     std::optional<std::tuple<Item, bool>> raised_item;
     auto token = viewer->on_item_visibility += [&raised_item](const auto& item, auto visible) { raised_item = { item, visible }; };
@@ -216,7 +216,7 @@ TEST(Viewer, SelectTriggerRaised)
     EXPECT_CALL(level, triggers).WillRepeatedly([&]() { return triggers_list; });
 
     auto viewer = register_test_module().with_ui(std::move(ui_ptr)).with_picking(std::move(picking_ptr)).with_mouse(std::move(mouse_ptr)).build();
-    viewer->open(&level);
+    viewer->open(&level, ILevel::OpenMode::Full);
     TestImgui imgui;
 
     std::optional<std::weak_ptr<ITrigger>> selected_trigger;
@@ -244,7 +244,7 @@ TEST(Viewer, TriggerVisibilityRaised)
     EXPECT_CALL(level, triggers).WillRepeatedly([&]() { return triggers_list; });
 
     auto viewer = register_test_module().with_ui(std::move(ui_ptr)).with_picking(std::move(picking_ptr)).with_mouse(std::move(mouse_ptr)).build();
-    viewer->open(&level);
+    viewer->open(&level, ILevel::OpenMode::Full);
 
     std::optional<std::tuple<std::weak_ptr<ITrigger>, bool>> raised_trigger;
     auto token = viewer->on_trigger_visibility += [&raised_trigger](const auto& trigger, auto visible) { raised_trigger = { trigger, visible }; };
@@ -305,7 +305,7 @@ TEST(Viewer, AddWaypointRaised)
 
     NiceMock<MockLevel> level;
     auto viewer = register_test_module().with_ui(std::move(ui_ptr)).with_picking(std::move(picking_ptr)).with_mouse(std::move(mouse_ptr)).build();
-    viewer->open(&level);
+    viewer->open(&level, ILevel::OpenMode::Full);
 
     std::optional<std::tuple<Vector3, Vector3, uint32_t, IWaypoint::Type, uint32_t>> added_waypoint;
     auto token = viewer->on_waypoint_added += [&added_waypoint](const auto& position, const auto& normal, uint32_t room, IWaypoint::Type type, uint32_t index)
@@ -337,7 +337,7 @@ TEST(Viewer, AddWaypointRaisedUsesItemPosition)
     EXPECT_CALL(level, items).WillRepeatedly([&]() { return items_list; });
 
     auto viewer = register_test_module().with_ui(std::move(ui_ptr)).with_picking(std::move(picking_ptr)).with_mouse(std::move(mouse_ptr)).build();
-    viewer->open(&level);
+    viewer->open(&level, ILevel::OpenMode::Full);
 
     std::optional<std::tuple<Vector3, Vector3, uint32_t, IWaypoint::Type, uint32_t>> added_waypoint;
     auto token = viewer->on_waypoint_added += [&added_waypoint](const auto& position, const auto& normal, uint32_t room, IWaypoint::Type type, uint32_t index)
@@ -507,7 +507,7 @@ TEST(Viewer, OrbitEnabledWhenRoomSelectedAndAutoOrbitEnabled)
     EXPECT_CALL(level, number_of_rooms).WillRepeatedly(Return(1));
     EXPECT_CALL(level, rooms).WillRepeatedly(Return(std::vector<std::weak_ptr<IRoom>>{ room }));
     EXPECT_CALL(level, room).WillRepeatedly(Return(room));
-    viewer->open(&level);
+    viewer->open(&level, ILevel::OpenMode::Full);
 
     viewer->set_camera_mode(CameraMode::Free);
     ASSERT_EQ(viewer->camera_mode(), CameraMode::Free);
@@ -534,7 +534,7 @@ TEST(Viewer, OrbitNotEnabledWhenRoomSelectedAndAutoOrbitDisabled)
     EXPECT_CALL(level, number_of_rooms).WillRepeatedly(Return(1));
     EXPECT_CALL(level, rooms).WillRepeatedly(Return(std::vector<std::weak_ptr<IRoom>>{ room }));
     EXPECT_CALL(level, room).WillRepeatedly(Return(room));
-    viewer->open(&level);
+    viewer->open(&level, ILevel::OpenMode::Full);
 
     viewer->set_camera_mode(CameraMode::Free);
     ASSERT_EQ(viewer->camera_mode(), CameraMode::Free);
@@ -579,7 +579,7 @@ TEST(Viewer, SetShowBoundingBox)
     EXPECT_CALL(ui, set_toggle(IViewer::Options::show_bounding_boxes, true)).Times(1);
     EXPECT_CALL(level, set_show_bounding_boxes(true)).Times(1);
 
-    viewer->open(&level);
+    viewer->open(&level, ILevel::OpenMode::Full);
     ui.on_toggle_changed(IViewer::Options::show_bounding_boxes, true);
 }
 
@@ -659,7 +659,7 @@ TEST(Viewer, DepthViewOptionUpdatesLevel)
     NiceMock<MockLevel> level;
     EXPECT_CALL(level, set_neighbour_depth(6)).Times(1);
     auto viewer = register_test_module().with_ui(std::move(ui_ptr)).build();
-    viewer->open(&level);
+    viewer->open(&level, ILevel::OpenMode::Full);
     ui.on_scalar_changed(IViewer::Options::depth, 6);
 }
 
@@ -674,7 +674,7 @@ TEST(Viewer, SetShowItems)
     EXPECT_CALL(ui, set_toggle(IViewer::Options::items, true)).Times(1);
     EXPECT_CALL(level, set_show_items(true)).Times(1);
 
-    viewer->open(&level);
+    viewer->open(&level, ILevel::OpenMode::Full);
     ui.on_toggle_changed(IViewer::Options::items, true);
 }
 
@@ -693,7 +693,7 @@ TEST(Viewer, SelectionRendered)
     auto route = mock_shared<MockRoute>();
     EXPECT_CALL(*route, render(A<const ICamera&>(), A<const ILevelTextureStorage&>(), true)).Times(1);
 
-    viewer->open(&level);
+    viewer->open(&level, ILevel::OpenMode::Full);
     viewer->set_route(route);
     viewer->render();
 }
@@ -714,7 +714,7 @@ TEST(Viewer, SelectionNotRendered)
     EXPECT_CALL(*route, render(A<const ICamera&>(), A<const ILevelTextureStorage&>(), false)).Times(1);
 
     viewer->set_show_selection(false);
-    viewer->open(&level);
+    viewer->open(&level, ILevel::OpenMode::Full);
     viewer->set_route(route);
     viewer->render();
 }
@@ -733,7 +733,7 @@ TEST(Viewer, LightVisibilityRaised)
     EXPECT_CALL(level, lights).WillRepeatedly([&]() { return lights_list; });
 
     auto viewer = register_test_module().with_ui(std::move(ui_ptr)).with_picking(std::move(picking_ptr)).with_mouse(std::move(mouse_ptr)).build();
-    viewer->open(&level);
+    viewer->open(&level, ILevel::OpenMode::Full);
 
     std::optional<std::tuple<std::weak_ptr<ILight>, bool>> raised_light;
     auto token = viewer->on_light_visibility += [&raised_light](const auto& light, auto visible) { raised_light = { light, visible }; };
@@ -761,7 +761,7 @@ TEST(Viewer, RoomVisibilityRaised)
     EXPECT_CALL(level, rooms).WillRepeatedly([&]() { return rooms_list; });
 
     auto viewer = register_test_module().with_ui(std::move(ui_ptr)).with_picking(std::move(picking_ptr)).with_mouse(std::move(mouse_ptr)).build();
-    viewer->open(&level);
+    viewer->open(&level, ILevel::OpenMode::Full);
 
     std::optional<std::tuple<std::weak_ptr<IRoom>, bool>> raised_room;
     auto token = viewer->on_room_visibility += [&raised_room](const auto& room, auto visible) { raised_room = { room, visible }; };
@@ -792,4 +792,33 @@ TEST(Viewer, OrbitHereOrbitsWhenSettingDisabled)
 
     ui.on_orbit();
     ASSERT_EQ(viewer->camera_mode(), CameraMode::Orbit);
+}
+
+TEST(Viewer, ReloadLevelSyncProperties)
+{
+    std::set<uint32_t> groups{ 1, 2, 3 };
+
+    auto [original_ptr, original] = create_mock<MockLevel>();
+    EXPECT_CALL(original, alternate_mode).WillRepeatedly(Return(true));
+    EXPECT_CALL(original, neighbour_depth).WillRepeatedly(Return(6));
+    EXPECT_CALL(original, highlight_mode_enabled(ILevel::RoomHighlightMode::Highlight)).WillRepeatedly(Return(true));
+    EXPECT_CALL(original, highlight_mode_enabled(ILevel::RoomHighlightMode::Neighbours)).WillRepeatedly(Return(true));
+    EXPECT_CALL(original, alternate_group(1)).WillRepeatedly(Return(true));
+    EXPECT_CALL(original, alternate_group(2)).WillRepeatedly(Return(true));
+    EXPECT_CALL(original, alternate_group(3)).WillRepeatedly(Return(true));
+
+    auto [reloaded_ptr, reloaded] = create_mock<MockLevel>();
+    EXPECT_CALL(reloaded, set_alternate_mode(true)).Times(1);
+    EXPECT_CALL(reloaded, set_neighbour_depth(6)).Times(1);
+    EXPECT_CALL(reloaded, set_highlight_mode(ILevel::RoomHighlightMode::Neighbours, true)).Times(1);
+    EXPECT_CALL(reloaded, set_highlight_mode(ILevel::RoomHighlightMode::Highlight, true)).Times(1);
+    EXPECT_CALL(reloaded, set_alternate_group(1, true)).Times(1);
+    EXPECT_CALL(reloaded, set_alternate_group(2, true)).Times(1);
+    EXPECT_CALL(reloaded, set_alternate_group(3, true)).Times(1);
+    EXPECT_CALL(reloaded, alternate_groups).WillRepeatedly(Return(groups));
+
+    auto viewer = register_test_module().build();
+
+    viewer->open(&original, ILevel::OpenMode::Full);
+    viewer->open(&reloaded, ILevel::OpenMode::Reload);
 }

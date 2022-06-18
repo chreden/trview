@@ -70,7 +70,7 @@ namespace trview
         virtual void render() override;
         virtual void render_ui() override;
         virtual void present(bool vsync) override;
-        virtual void open(ILevel* level) override;
+        virtual void open(ILevel* level, ILevel::OpenMode open_mode) override;
         virtual void set_settings(const UserSettings& settings) override;
         virtual void select_item(const Item& item) override;
         virtual void select_room(uint32_t room_number) override;
@@ -90,6 +90,8 @@ namespace trview
         virtual std::optional<int> process_message(UINT message, WPARAM wParam, LPARAM lParam) override;
         const ICamera& current_camera() const;
         ICamera& current_camera();
+        virtual DirectX::SimpleMath::Vector3 target() const override;
+        virtual void set_target(const DirectX::SimpleMath::Vector3& target) override;
     private:
         void initialise_input();
         void toggle_highlight();

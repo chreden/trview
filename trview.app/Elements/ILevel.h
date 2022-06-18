@@ -15,6 +15,12 @@ namespace trview
     {
         using Source = std::function<std::unique_ptr<ILevel>(std::unique_ptr<trlevel::ILevel>)>;
 
+        enum class OpenMode
+        {
+            Full,
+            Reload
+        };
+
         enum class RoomHighlightMode
         {
             None,
@@ -43,6 +49,7 @@ namespace trview
         virtual std::vector<graphics::Texture> level_textures() const = 0;
         virtual std::vector<std::weak_ptr<ILight>> lights() const = 0;
         virtual MapColours map_colours() const = 0;
+        virtual uint32_t neighbour_depth() const = 0;
         /// Get the number of rooms in the level.
         virtual uint32_t number_of_rooms() const = 0;
         virtual void on_camera_moved() = 0;
@@ -65,8 +72,10 @@ namespace trview
         virtual std::vector<RoomInfo> room_info() const = 0;
         virtual RoomInfo room_info(uint32_t room) const = 0;
         virtual std::vector<std::weak_ptr<IRoom>> rooms() const = 0;
-        virtual uint32_t selected_item() const = 0;
+        virtual std::optional<uint32_t> selected_item() const = 0;
+        virtual std::optional<uint32_t> selected_light() const = 0;
         virtual uint16_t selected_room() const = 0;
+        virtual std::optional<uint32_t> selected_trigger() const = 0;
         // Set whether to render the alternate mode (the flipmap) or the regular room.
         // enabled: Whether to render the flipmap.
         virtual void set_alternate_mode(bool enabled) = 0;

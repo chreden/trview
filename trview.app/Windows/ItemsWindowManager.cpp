@@ -43,6 +43,7 @@ namespace trview
     void ItemsWindowManager::set_items(const std::vector<Item>& items)
     {
         _items = items;
+        _selected_item.reset();
         for (auto& window : _windows)
         {
             window.second->clear_selected_item();

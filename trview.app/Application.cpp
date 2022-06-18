@@ -70,10 +70,8 @@ namespace trview
     Application::Application(const Window& application_window,
         std::unique_ptr<IUpdateChecker> update_checker,
         std::unique_ptr<ISettingsLoader> settings_loader,
-        std::unique_ptr<IFileDropper> file_dropper,
         const trlevel::ILevel::Source& trlevel_source,
-        std::unique_ptr<ILevelSwitcher> level_switcher,
-        std::unique_ptr<IRecentFiles> recent_files,
+        std::unique_ptr<IFileMenu> file_menu,
         std::unique_ptr<IViewer> viewer,
         const IRoute::Source& route_source,
         std::shared_ptr<IShortcuts> shortcuts,
@@ -89,9 +87,8 @@ namespace trview
         std::unique_ptr<ILightsWindowManager> lights_window_manager,
         std::unique_ptr<ILogWindowManager> log_window_manager)
         : MessageHandler(application_window), _instance(GetModuleHandle(nullptr)),
-        _file_dropper(std::move(file_dropper)), _level_switcher(std::move(level_switcher)), _recent_files(std::move(recent_files)), _update_checker(std::move(update_checker)),
-        _view_menu(window()), _settings_loader(std::move(settings_loader)), _trlevel_source(trlevel_source), _viewer(std::move(viewer)), _route_source(route_source),
-        _route(route_source()), _shortcuts(shortcuts), _items_windows(std::move(items_window_manager)),
+        _file_menu(std::move(file_menu)), _update_checker(std::move(update_checker)), _view_menu(window()), _settings_loader(std::move(settings_loader)), _trlevel_source(trlevel_source),
+        _viewer(std::move(viewer)), _route_source(route_source), _route(route_source()), _shortcuts(shortcuts), _items_windows(std::move(items_window_manager)),
         _triggers_windows(std::move(triggers_window_manager)), _route_window(std::move(route_window_manager)), _rooms_windows(std::move(rooms_window_manager)), _level_source(level_source),
         _dialogs(dialogs), _files(files), _timer(default_time_source()), _imgui_backend(std::move(imgui_backend)), _lights_windows(std::move(lights_window_manager)), _log_windows(std::move(log_window_manager))
     {
@@ -100,11 +97,9 @@ namespace trview
         _update_checker->check_for_updates();
         _settings = _settings_loader->load_user_settings();
 
-        _token_store += _file_dropper->on_file_dropped += [&](const auto& file) { open(file); };
-        _token_store += _level_switcher->on_switch_level += [=](const auto& file) { open(file); };
-
-        _recent_files->set_recent_files(_settings.recent_files);
-        _token_store += _recent_files->on_file_open += [=](const auto& file) { open(file); };
+        _file_menu->set_recent_files(_settings.recent_files);
+        _token_store += _file_menu->on_file_open += [=](const auto& file) { open(file, ILevel::OpenMode::Full); };
+        _token_store += _file_menu->on_reload += [=]() { reload(); };
 
         setup_shortcuts();
         setup_view_menu();
@@ -130,9 +125,9 @@ namespace trview
         }
     }
 
-    void Application::open(const std::string& filename)
+    void Application::open(const std::string& filename, ILevel::OpenMode open_mode)
     {
-        if (!should_discard_changes())
+        if (open_mode == ILevel::OpenMode::Full && !should_discard_changes())
         {
             return;
         }
@@ -153,12 +148,13 @@ namespace trview
             return;
         }
 
-        _level_switcher->open_file(filename);
+        _file_menu->open_file(filename);
         _settings.add_recent_file(filename);
-        _recent_files->set_recent_files(_settings.recent_files);
+        _file_menu->set_recent_files(_settings.recent_files);
         _settings_loader->save_user_settings(_settings);
         _viewer->set_settings(_settings);
 
+        auto old_level = std::move(_level);
         _level = _level_source(std::move(new_level));
         _level->set_filename(filename);
 
@@ -177,12 +173,55 @@ namespace trview
         _route_window->set_rooms(_level->rooms());
         _lights_windows->set_level_version(_level->version());
         _lights_windows->set_lights(_level->lights());
-        _route->clear();
-        _route->set_unsaved(false);
-        _route_window->set_route(_route.get());
+        if (open_mode == ILevel::OpenMode::Full)
+        {
+            _route->clear();
+            _route->set_unsaved(false);
+            _route_window->set_route(_route.get());
+        }
 
-        _viewer->open(_level.get());
+        _viewer->open(_level.get(), open_mode);
         _viewer->set_route(_route);
+
+        if (old_level && open_mode == ILevel::OpenMode::Reload)
+        {
+            const Vector3 old_target = _viewer->target();
+            const bool old_auto_orbit = _settings.auto_orbit;
+            _settings.auto_orbit = false;
+            _viewer->set_settings(_settings);
+
+            auto selected_item = old_level->selected_item();
+            if (selected_item.has_value())
+            {
+                select_item(old_level->items()[selected_item.value()]);
+            }
+
+            auto selected_trigger = old_level->selected_trigger();
+            if (selected_trigger.has_value())
+            {
+                const auto triggers = _level->triggers();
+                if (selected_trigger.value() < triggers.size())
+                {
+                    select_trigger(triggers[selected_trigger.value()]);
+                }
+            }
+
+            auto selected_light = old_level->selected_light();
+            if (selected_light.has_value())
+            {
+                const auto lights = _level->lights();
+                if (selected_light.value() < lights.size())
+                {
+                    select_light(lights[selected_light.value()]);
+                }
+            }
+
+            select_room(old_level->selected_room());
+
+            _viewer->set_target(old_target);
+            _settings.auto_orbit = old_auto_orbit;
+            _viewer->set_settings(_settings);
+        }
     }
 
     std::optional<int> Application::process_message(UINT message, WPARAM wParam, LPARAM)
@@ -199,16 +238,6 @@ namespace trview
                     case IDM_ABOUT:
                         DialogBox(GetModuleHandle(nullptr), MAKEINTRESOURCE(IDD_ABOUTBOX), window(), About);
                         break;
-                    case ID_FILE_OPEN:
-                    case ID_ACCEL_FILE_OPEN:
-                    {
-                        const auto filename = _dialogs->open_file(L"Open level", { { L"All Tomb Raider Files", { L"*.tr*", L"*.phd" } } }, OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST);
-                        if (filename.has_value())
-                        {
-                            open(filename.value().filename);
-                        }
-                        break;
-                    }
                     case ID_HELP_GITHUB:
                     {
                         ShellExecute(0, 0, L"https://github.com/chreden/trview", 0, 0, SW_SHOW);
@@ -341,7 +370,7 @@ namespace trview
         auto filename = startup_options.filename();
         if (!filename.empty())
         {
-            open(filename);
+            open(filename, ILevel::OpenMode::Full);
         }
     }
 
@@ -695,6 +724,15 @@ namespace trview
             return _dialogs->message_box(L"Route has unsaved changes. Do you want to continue and lose changes?", L"Unsaved Route Changes", IDialogs::Buttons::Yes_No);
         }
         return true;
+    }
+
+    void Application::reload()
+    {
+        if (!_level)
+        {
+            return;
+        }
+        open(_level->filename(), ILevel::OpenMode::Reload);
     }
 
     Window create_window(HINSTANCE hInstance, int nCmdShow)

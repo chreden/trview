@@ -11,7 +11,7 @@ namespace trview
             virtual ~MockViewer() = default;
             MOCK_METHOD(CameraMode, camera_mode, (), (const, override));
             MOCK_METHOD(void, render, (), (override));
-            MOCK_METHOD(void, open, (ILevel*), (override));
+            MOCK_METHOD(void, open, (ILevel*, ILevel::OpenMode), (override));
             MOCK_METHOD(void, set_settings, (const UserSettings&), (override));
             MOCK_METHOD(void, select_item, (const Item&), (override));
             MOCK_METHOD(void, select_room, (uint32_t), (override));
@@ -30,6 +30,8 @@ namespace trview
             MOCK_METHOD(bool, ui_input_active, (), (const, override));
             MOCK_METHOD(void, present, (bool), (override));
             MOCK_METHOD(void, render_ui, (), (override));
+            MOCK_METHOD(void, set_target, (const DirectX::SimpleMath::Vector3&), (override));
+            MOCK_METHOD(DirectX::SimpleMath::Vector3, target, (), (const, override));
         };
     }
 }

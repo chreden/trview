@@ -18,6 +18,7 @@ namespace trview
             MOCK_METHOD(std::vector<Item>, items, (), (const, override));
             MOCK_METHOD(std::vector<graphics::Texture>, level_textures, (), (const, override));
             MOCK_METHOD(std::vector<std::weak_ptr<ILight>>, lights, (), (const, override));
+            MOCK_METHOD(uint32_t, neighbour_depth, (), (const, override));
             MOCK_METHOD(uint32_t, number_of_rooms, (), (const, override));
             MOCK_METHOD(void, on_camera_moved, (), (override));
             MOCK_METHOD(PickResult, pick, (const ICamera&, const DirectX::SimpleMath::Vector3&, const DirectX::SimpleMath::Vector3&), (const, override));
@@ -27,8 +28,10 @@ namespace trview
             MOCK_METHOD(std::vector<RoomInfo>, room_info, (), (const, override));
             MOCK_METHOD(RoomInfo, room_info, (uint32_t), (const, override));
             MOCK_METHOD(std::vector<std::weak_ptr<IRoom>>, rooms, (), (const, override));
-            MOCK_METHOD(uint32_t, selected_item, (), (const, override));
+            MOCK_METHOD(std::optional<uint32_t>, selected_item, (), (const, override));
+            MOCK_METHOD(std::optional<uint32_t>, selected_light, (), (const, override));
             MOCK_METHOD(uint16_t, selected_room, (), (const, override));
+            MOCK_METHOD(std::optional<uint32_t>, selected_trigger, (), (const, override));
             MOCK_METHOD(void, set_alternate_mode, (bool), (override));
             MOCK_METHOD(void, set_alternate_group, (uint32_t, bool), (override));
             MOCK_METHOD(void, set_filename, (const std::string&), (override));

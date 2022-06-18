@@ -81,9 +81,7 @@ namespace trview
 
         virtual void present(bool vsync) = 0;
 
-        /// Attempt to open the specified level file.
-        /// @param filename The level file to open.
-        virtual void open(ILevel* level) = 0;
+        virtual void open(ILevel* level, ILevel::OpenMode open_mode) = 0;
 
         virtual void set_settings(const UserSettings& settings) = 0;
 
@@ -137,5 +135,9 @@ namespace trview
         virtual bool ui_input_active() const = 0;
 
         virtual void select_light(const std::weak_ptr<ILight>& light) = 0;
+
+        virtual DirectX::SimpleMath::Vector3 target() const = 0;
+
+        virtual void set_target(const DirectX::SimpleMath::Vector3& target) = 0;
     };
 }

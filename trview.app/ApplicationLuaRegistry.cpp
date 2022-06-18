@@ -11,13 +11,13 @@ namespace trview
             const auto recent_files = config.recent_files;
             if (i > 0 && i <= recent_files.size())
             {
-                open(*std::next(recent_files.begin(), i - 1));
+                open(*std::next(recent_files.begin(), i - 1), ILevel::OpenMode::Full);
             }
         };
 
         lua_registry.trview_open = [this](const std::string& path)
         {
-            open ( path );
+            open ( path, ILevel::OpenMode::Full );
         };
     }
 }

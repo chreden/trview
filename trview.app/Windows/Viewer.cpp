@@ -512,8 +512,9 @@ namespace trview
         current_camera().update(_timer.elapsed());
     }
 
-    void Viewer::open(ILevel* level)
+    void Viewer::open(ILevel* level, ILevel::OpenMode open_mode)
     {
+        ILevel* old_level = _level;
         _level = level;
 
         _token_store += _level->on_alternate_mode_selected += [&](bool enabled) { set_alternate_mode(enabled); };
@@ -530,45 +531,61 @@ namespace trview
 
         // Set up the views.
         auto rooms = _level->rooms();
-        _camera.reset();
 
-        // Reset UI buttons
-        _ui->set_max_rooms(static_cast<uint32_t>(rooms.size()));
-        _ui->set_toggle(Options::highlight, false);
-        _ui->set_use_alternate_groups(_level->version() >= trlevel::LevelVersion::Tomb4);
-        _ui->set_alternate_groups(_level->alternate_groups());
-        _ui->set_toggle(Options::flip, false);
-        _ui->set_flip_enabled(_level->any_alternates());
-
-        Item lara;
-        if (_settings.go_to_lara && find_item_by_type_id(*_level, 0u, lara))
+        if (open_mode == ILevel::OpenMode::Full || !old_level)
         {
-            on_item_selected(lara);
+            _camera.reset();
+            _ui->set_toggle(Options::highlight, false);
+            _ui->set_toggle(Options::flip, false);
+            _ui->set_toggle(Options::depth_enabled, false);
+            _ui->set_scalar(Options::depth, 1);
+            _measure->reset();
+            _recent_orbits.clear();
+            _recent_orbit_index = 0u;
+
+            Item lara;
+            if (_settings.go_to_lara && find_item_by_type_id(*_level, 0u, lara))
+            {
+                on_item_selected(lara);
+            }
+            else
+            {
+                on_room_selected(0);
+            }
+
+            if (level->selected_room() < rooms.size())
+            {
+                _ui->set_selected_room(rooms[level->selected_room()].lock());
+            }
+            
+            auto selected_item = level->selected_item();
+            _ui->set_selected_item(selected_item.value_or(0));
+
+            // Reset UI buttons
+            _ui->set_max_rooms(static_cast<uint32_t>(rooms.size()));
+            _ui->set_use_alternate_groups(_level->version() >= trlevel::LevelVersion::Tomb4);
+            _ui->set_alternate_groups(_level->alternate_groups());
+            _ui->set_flip_enabled(_level->any_alternates());
+
+            // Strip the last part of the path away.
+            const auto filename = _level->filename();
+            auto last_index = std::min(filename.find_last_of('\\'), filename.find_last_of('/'));
+            auto name = last_index == filename.npos ? filename : filename.substr(std::min(last_index + 1, filename.size()));
+            _ui->set_level(name, _level->version());
+            window().set_title("trview - " + name);
         }
-        else
+        else if (open_mode == ILevel::OpenMode::Reload && old_level)
         {
-            on_room_selected(0);
+            _level->set_alternate_mode(old_level->alternate_mode());
+            _level->set_neighbour_depth(old_level->neighbour_depth());
+            _level->set_highlight_mode(ILevel::RoomHighlightMode::Highlight, old_level->highlight_mode_enabled(ILevel::RoomHighlightMode::Highlight));
+            _level->set_highlight_mode(ILevel::RoomHighlightMode::Neighbours, old_level->highlight_mode_enabled(ILevel::RoomHighlightMode::Neighbours));
+
+            for (const auto& group : _level->alternate_groups())
+            {
+                _level->set_alternate_group(group, old_level->alternate_group(group));
+            }
         }
-
-        _ui->set_toggle(Options::depth_enabled, false);
-        _ui->set_scalar(Options::depth, 1);
-
-        if (level->selected_room() < rooms.size())
-        {
-            _ui->set_selected_room(rooms[level->selected_room()].lock());
-        }
-        _ui->set_selected_item(level->selected_item());
-
-        // Strip the last part of the path away.
-        const auto filename = _level->filename();
-        auto last_index = std::min(filename.find_last_of('\\'), filename.find_last_of('/'));
-        auto name = last_index == filename.npos ? filename : filename.substr(std::min(last_index + 1, filename.size()));
-        _ui->set_level(name, _level->version());
-        window().set_title("trview - " + name);
-        _measure->reset();
-
-        _recent_orbits.clear();
-        _recent_orbit_index = 0u;
 
         _scene_changed = true;
     }
@@ -1194,5 +1211,15 @@ namespace trview
             _camera_input.reset_input();
         }
         return {};
+    }
+
+    DirectX::SimpleMath::Vector3 Viewer::target() const
+    {
+        return _target;
+    }
+
+    void Viewer::set_target(const DirectX::SimpleMath::Vector3& target)
+    {
+        _target = target;
     }
 }
