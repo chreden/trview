@@ -147,8 +147,15 @@ namespace trview
 
                 if (node.Flags & 0x1)
                 {
-                    parent_world = world_stack.top();
-                    world_stack.pop();
+                    if (!world_stack.empty())
+                    {
+                        parent_world = world_stack.top();
+                        world_stack.pop();
+                    }
+                    else
+                    {
+                        parent_world = Matrix::Identity;
+                    }
                 }
                 if (node.Flags & 0x2)
                 {
