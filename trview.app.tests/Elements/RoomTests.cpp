@@ -11,6 +11,7 @@
 #include <trview.app/Mocks/Elements/ISector.h>
 #include <trview.app/Mocks/Elements/ITrigger.h>
 #include <trview.common/Algorithms.h>
+#include <trview.common/Mocks/Logs/ILog.h>
 
 using namespace trview;
 using namespace trview::mocks;
@@ -34,11 +35,12 @@ namespace
             IStaticMesh::MeshSource static_mesh_source{ [](auto&&...) { return mock_shared<MockStaticMesh>(); } };
             IStaticMesh::PositionSource static_mesh_position_source{ [](auto&&...) { return mock_shared<MockStaticMesh>(); } };
             ISector::Source sector_source{ [](auto&&...) { return mock_shared<MockSector>(); } };
+            std::shared_ptr<ILog> log{ mock_shared<MockLog>() };
 
             std::unique_ptr<Room> build()
             {
                 return std::make_unique<Room>(mesh_source, *tr_level, room, level_texture_storage, *mesh_storage,
-                    index, *level, static_mesh_source, static_mesh_position_source, sector_source);
+                    index, *level, Activity(log, "Level", "Room 0"), static_mesh_source, static_mesh_position_source, sector_source);
             }
 
             test_module& with_level(const std::shared_ptr<ILevel>& level)
@@ -74,6 +76,18 @@ namespace
             test_module& with_sector_source(const ISector::Source& sector_source)
             {
                 this->sector_source = sector_source;
+                return *this;
+            }
+
+            test_module& with_tr_level(const std::shared_ptr<trlevel::ILevel>& tr_level)
+            {
+                this->tr_level = tr_level;
+                return *this;
+            }
+
+            test_module& with_log(const std::shared_ptr<ILog>& log)
+            {
+                this->log = log;
                 return *this;
             }
         };
@@ -492,6 +506,9 @@ TEST(Room, SectorsCreated)
 /// </summary>
 TEST(Room, StaticMeshesLoaded)
 {
+    auto level = mock_shared<trlevel::mocks::MockLevel>();
+    ON_CALL(*level, get_static_mesh).WillByDefault(testing::Return(trlevel::tr_staticmesh{}));
+
     trlevel::tr3_room level_room;
     level_room.static_meshes.resize(2);
 
@@ -502,7 +519,7 @@ TEST(Room, StaticMeshesLoaded)
         return mock_shared<MockStaticMesh>();
     };
 
-    register_test_module().with_room(level_room).with_static_mesh_source(static_mesh_source).build();
+    register_test_module().with_room(level_room).with_static_mesh_source(static_mesh_source).with_tr_level(level).build();
     ASSERT_EQ(times_called, 2);
 }
 
@@ -591,6 +608,8 @@ TEST(Room, WaterDetected)
 
 TEST(Room, BoundingBoxesRendered)
 {
+    auto level = mock_shared<trlevel::mocks::MockLevel>();
+    ON_CALL(*level, get_static_mesh).WillByDefault(testing::Return(trlevel::tr_staticmesh{}));
     auto mesh = mock_shared<MockStaticMesh>();
     EXPECT_CALL(*mesh, render_bounding_box).Times(1);
     trlevel::tr3_room level_room;
@@ -598,6 +617,29 @@ TEST(Room, BoundingBoxesRendered)
     auto room = register_test_module()
         .with_room(level_room)
         .with_static_mesh_source([&](auto&&...) { return mesh; })
+        .with_tr_level(level)
+        .build();
+    room->render_bounding_boxes(NiceMock<MockCamera>{});
+}
+
+TEST(Room, MissingStaticMeshesIgnored)
+{
+    auto level = mock_shared<trlevel::mocks::MockLevel>();
+    EXPECT_CALL(*level, get_static_mesh(0)).Times(1).WillOnce(Return(std::nullopt));
+    EXPECT_CALL(*level, get_static_mesh(1)).Times(1).WillOnce(Return(trlevel::tr_staticmesh{}));
+    auto log = mock_shared<MockLog>();
+    EXPECT_CALL(*log, log(Message::Status::Information, "Level", std::vector<std::string>{ "Room 0" }, testing::A<const std::string&>())).Times(2);
+    EXPECT_CALL(*log, log(Message::Status::Error, "Level", std::vector<std::string>{ "Room 0" }, testing::A<const std::string&>())).Times(1);
+    auto mesh = mock_shared<MockStaticMesh>();
+    EXPECT_CALL(*mesh, render_bounding_box).Times(1);
+    trlevel::tr3_room level_room;
+    level_room.static_meshes.push_back({0, 0, 0, 0, 0, 0, 0});
+    level_room.static_meshes.push_back({0, 0, 0, 0, 0, 0, 1});
+    auto room = register_test_module()
+        .with_room(level_room)
+        .with_static_mesh_source([&](auto&&...) { return mesh; })
+        .with_tr_level(level)
+        .with_log(log)
         .build();
     room->render_bounding_boxes(NiceMock<MockCamera>{});
 }

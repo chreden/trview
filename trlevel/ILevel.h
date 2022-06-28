@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cstdint>
+#include <optional>
 #include "trtypes.h"
 #include "tr_rooms.h"
 #include "LevelVersion.h"
@@ -122,7 +123,7 @@ namespace trlevel
         // Get the static mesh at the specfied index.
         // index: The index of the model to get.
         // Returns: The model.
-        virtual tr_staticmesh get_static_mesh(uint32_t index) const = 0;
+        virtual std::optional<tr_staticmesh> get_static_mesh(uint32_t index) const = 0;
 
         /// Get the number of mesh pointers in the level.
         virtual uint32_t num_mesh_pointers() const = 0;
@@ -169,5 +170,7 @@ namespace trlevel
         /// @param type The type id to check.
         /// @returns The mesh index for the type.
         virtual int16_t get_mesh_from_type_id(int16_t type) const = 0;
+
+        virtual std::string name() const = 0;
     };
 }

@@ -122,7 +122,7 @@ namespace trlevel
         // Get the static mesh at the specfied index.
         // index: The mesh ID of the model to get.
         // Returns: The model.
-        virtual tr_staticmesh get_static_mesh(uint32_t mesh_id) const override;
+        virtual std::optional<tr_staticmesh> get_static_mesh(uint32_t mesh_id) const override;
 
         /// Get the number of mesh pointers in the level.
         virtual uint32_t num_mesh_pointers() const override;
@@ -169,6 +169,8 @@ namespace trlevel
         /// @param type The type id to check.
         /// @returns The mesh index for the type.
         virtual int16_t get_mesh_from_type_id(int16_t type) const override;
+
+        virtual std::string name() const override;
     private:
         void generate_meshes(const std::vector<uint16_t>& mesh_data);
 
@@ -208,5 +210,7 @@ namespace trlevel
         std::vector<uint16_t>                 _frames;
         std::vector<tr_sprite_texture>        _sprite_textures;
         std::vector<tr_sprite_sequence>       _sprite_sequences;
+
+        std::string _name;
     };
 }

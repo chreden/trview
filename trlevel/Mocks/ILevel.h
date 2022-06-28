@@ -32,7 +32,7 @@ namespace trlevel
             MOCK_METHOD(tr_model, get_model, (uint32_t), (const, override));
             MOCK_METHOD(bool, get_model_by_id, (uint32_t, tr_model&), (const, override));
             MOCK_METHOD(uint32_t, num_static_meshes, (), (const, override));
-            MOCK_METHOD(tr_staticmesh, get_static_mesh, (uint32_t), (const, override));
+            MOCK_METHOD(std::optional<tr_staticmesh>, get_static_mesh, (uint32_t), (const, override));
             MOCK_METHOD(uint32_t, num_mesh_pointers, (), (const, override));
             MOCK_METHOD(tr_mesh, get_mesh_by_pointer, (uint32_t), (const, override));
             MOCK_METHOD(std::vector<tr_meshtree_node>, get_meshtree, (uint32_t, uint32_t), (const, override));
@@ -42,6 +42,7 @@ namespace trlevel
             MOCK_METHOD(tr_sprite_texture, get_sprite_texture, (uint32_t), (const, override));
             MOCK_METHOD(bool, find_first_entity_by_type, (int16_t, tr2_entity&), (const, override));
             MOCK_METHOD(int16_t, get_mesh_from_type_id, (int16_t), (const, override));
+            MOCK_METHOD(std::string, name, (), (const, override));
         };
     }
 }

@@ -349,9 +349,9 @@ namespace trlevel
     {
         // Load the level from the file.
         auto last_index = std::min(filename.find_last_of('\\'), filename.find_last_of('/'));
-        auto name = last_index == filename.npos ? filename : filename.substr(std::min(last_index + 1, filename.size()));
+        _name = last_index == filename.npos ? filename : filename.substr(std::min(last_index + 1, filename.size()));
 
-        trview::Activity activity(log, "IO", "Load Level " + name);
+        trview::Activity activity(log, "IO", "Load Level " + _name);
 
         try
         {
@@ -647,9 +647,14 @@ namespace trlevel
         return static_cast<uint32_t>(_static_meshes.size());
     }
 
-    tr_staticmesh Level::get_static_mesh(uint32_t mesh_id) const
+    std::optional<tr_staticmesh> Level::get_static_mesh(uint32_t mesh_id) const
     {
-        return _static_meshes.find(mesh_id)->second;
+        auto mesh = _static_meshes.find(mesh_id);
+        if (mesh == _static_meshes.end())
+        {
+            return std::nullopt;
+        }
+        return mesh->second;
     }
 
     uint32_t Level::num_mesh_pointers() const
@@ -1164,5 +1169,10 @@ namespace trlevel
             return LaraSkinPostTR3;
         }
         return LaraSkinTR3;
+    }
+
+    std::string Level::name() const
+    {
+        return _name;
     }
 }

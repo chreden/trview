@@ -16,6 +16,7 @@
 #include <trview.app/Geometry/PickInfo.h>
 #include <trview.app/Graphics/ILevelTextureStorage.h>
 #include <trview.app/Graphics/IMeshStorage.h>
+#include <trview.common/Logs/Activity.h>
 
 namespace trview
 {
@@ -87,7 +88,7 @@ namespace trview
         /// Create a new implementation of <see cref="IRoom"/>.
         /// </summary>
         using Source = std::function<std::shared_ptr<IRoom>(const trlevel::ILevel&, const trlevel::tr3_room&,
-            const std::shared_ptr<ILevelTextureStorage>&, const IMeshStorage&, uint32_t, const ILevel&)>;
+            const std::shared_ptr<ILevelTextureStorage>&, const IMeshStorage&, uint32_t, const ILevel&, const Activity& activity)>;
         /// <summary>
         /// Destructor for <see cref="IRoom"/>.
         /// </summary>

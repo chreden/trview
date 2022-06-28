@@ -7,6 +7,7 @@
 #include <trview.app/Camera/ICamera.h>
 #include <trview.app/Elements/ITypeNameLookup.h>
 #include <trview.graphics/RasterizerStateStore.h>
+#include <format>
 
 using namespace DirectX;
 using namespace DirectX::SimpleMath;
@@ -25,9 +26,10 @@ namespace trview
         const IEntity::AiSource& ai_source,
         const IRoom::Source& room_source,
         const ITrigger::Source& trigger_source,
-        const ILight::Source& light_source)
+        const ILight::Source& light_source,
+        const std::shared_ptr<ILog>& log)
         : _device(device), _version(level->get_version()), _texture_storage(level_texture_storage),
-        _transparency(std::move(transparency_buffer)), _selection_renderer(std::move(selection_renderer))
+        _transparency(std::move(transparency_buffer)), _selection_renderer(std::move(selection_renderer)), _log(log)
     {
         _vertex_shader = shader_storage->get("level_vertex_shader");
         _pixel_shader = shader_storage->get("level_pixel_shader");
@@ -396,11 +398,13 @@ namespace trview
 
     void Level::generate_rooms(const trlevel::ILevel& level, const IRoom::Source& room_source, const IMeshStorage& mesh_storage)
     {
+        Activity generate_rooms_activity(_log, "Level", level.name());
         const auto num_rooms = level.num_rooms();
         for (uint32_t i = 0u; i < num_rooms; ++i)
         {
+            Activity room_activity(generate_rooms_activity, std::format("Room {}", i));
             auto room = level.get_room(i);
-            _rooms.push_back(room_source(level, room, _texture_storage, mesh_storage, i, *this));
+            _rooms.push_back(room_source(level, room, _texture_storage, mesh_storage, i, *this, room_activity));
         }
 
         std::set<uint32_t> alternate_groups;

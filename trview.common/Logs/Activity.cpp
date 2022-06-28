@@ -21,12 +21,12 @@ namespace trview
         _log->log(Message::Status::Information, _topic, _names, "Activity Ended");
     }
 
-    void Activity::log(const std::string& text)
+    void Activity::log(const std::string& text) const
     {
         _log->log(Message::Status::Information, _topic, _names, text);
     }
 
-    void Activity::log(Message::Status status, const std::string& text)
+    void Activity::log(Message::Status status, const std::string& text) const
     {
         _log->log(status, _topic, _names, text);
     }

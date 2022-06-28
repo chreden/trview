@@ -110,8 +110,8 @@ namespace trview
                             stream << L" " << command.index();
                             if (command_is_item(command.type()))
                             {
-                                const auto item = level.items()[command.index()];
-                                stream << L" - " << item.type();
+                                const auto items = level.items();
+                                stream << L" - " << (command.index() < items.size() ? items[command.index()].type() : L"No Item");
                             }
                         }
                     }
