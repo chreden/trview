@@ -138,6 +138,15 @@ namespace trview
         return rooms;
     }
 
+    std::weak_ptr<ITrigger> Level::trigger(uint32_t index) const
+    {
+        if (index < _triggers.size())
+        {
+            return {};
+        }
+        return _triggers[index];
+    }
+
     std::vector<std::weak_ptr<ITrigger>> Level::triggers() const
     {
         std::vector<std::weak_ptr<ITrigger>> triggers;

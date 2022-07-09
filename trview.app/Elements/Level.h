@@ -53,6 +53,7 @@ namespace trview
         virtual uint32_t neighbour_depth() const override;
         virtual uint32_t number_of_rooms() const override;
         virtual std::vector<std::weak_ptr<IRoom>> rooms() const override;
+        virtual std::weak_ptr<ITrigger> trigger(uint32_t index) const override;
         virtual std::vector<std::weak_ptr<ITrigger>> triggers() const override;
         virtual PickResult pick(const ICamera& camera, const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& direction) const override;
         virtual void render(const ICamera& camera, bool render_selection) override;

@@ -57,6 +57,7 @@ namespace trview
             MOCK_METHOD(bool, show_triggers, (), (const, override));
             MOCK_METHOD(bool, show_items, (), (const, override));
             MOCK_METHOD(const ILevelTextureStorage&, texture_storage, (), (const, override));
+            MOCK_METHOD(std::weak_ptr<ITrigger>, trigger, (uint32_t), (const, override));
             MOCK_METHOD(std::vector<std::weak_ptr<ITrigger>>, triggers, (), (const, override));
             MOCK_METHOD(trlevel::LevelVersion, version, (), (const, override));
             MOCK_METHOD(MapColours, map_colours, (), (const, override));

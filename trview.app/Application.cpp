@@ -199,11 +199,7 @@ namespace trview
             auto selected_trigger = old_level->selected_trigger();
             if (selected_trigger.has_value())
             {
-                const auto triggers = _level->triggers();
-                if (selected_trigger.value() < triggers.size())
-                {
-                    select_trigger(triggers[selected_trigger.value()]);
-                }
+                select_trigger(_level->trigger(selected_trigger.value()));
             }
 
             auto selected_light = old_level->selected_light();
@@ -537,6 +533,11 @@ namespace trview
         }
 
         auto trigger_ptr = trigger.lock();
+        if (!trigger_ptr)
+        {
+            return;
+        }
+
         select_room(trigger_ptr->room());
         _level->set_selected_trigger(trigger_ptr->number());
         _viewer->select_trigger(trigger);

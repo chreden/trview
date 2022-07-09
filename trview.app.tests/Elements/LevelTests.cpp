@@ -579,3 +579,23 @@ TEST(Level, SelectedTrigger)
     level->set_selected_trigger(4);
     ASSERT_EQ(level->selected_trigger(), 4);
 }
+
+TEST(Level, Trigger)
+{
+    FAIL();
+}
+
+TEST(Level, TriggerNotFound)
+{
+    FAIL();
+}
+
+TEST(Level, Item)
+{
+    FAIL();
+}
+
+TEST(Level, ItemNotFound)
+{
+    FAIL();
+}

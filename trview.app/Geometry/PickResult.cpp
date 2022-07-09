@@ -98,11 +98,10 @@ namespace trview
             }
             case PickResult::Type::Trigger:
             {
-                const auto trigger = level.triggers()[result.index];
-                if (auto trigger_ptr = trigger.lock())
+                if (auto trigger = level.trigger(result.index).lock())
                 {
-                    stream << trigger_type_name(trigger_ptr->type()) << L" " << result.index;
-                    for (const auto command : trigger_ptr->commands())
+                    stream << trigger_type_name(trigger->type()) << L" " << result.index;
+                    for (const auto command : trigger->commands())
                     {
                         stream << L"\n  " << command_type_name(command.type());
                         if (command_has_index(command.type()))

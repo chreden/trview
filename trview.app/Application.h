@@ -80,6 +80,10 @@ namespace trview
         void remove_waypoint(uint32_t index);
         void select_item(const Item& item);
         void select_room(uint32_t room);
+        /// <summary>
+        /// Select a trigger in the application. If the trigger is empty, nothing happens.
+        /// </summary>
+        /// <param name="trigger">The trigger.</param>
         void select_trigger(const std::weak_ptr<ITrigger>& trigger);
         void select_waypoint(uint32_t index);
         void select_next_waypoint();

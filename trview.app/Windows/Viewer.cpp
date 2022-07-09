@@ -119,7 +119,10 @@ namespace trview
             }
             else if (_context_pick.type == PickResult::Type::Trigger)
             {
-                _context_pick.position = _level->triggers()[_context_pick.index].lock()->position();
+                if (const auto trigger = _level->trigger(_context_pick.index).lock())
+                {
+                    _context_pick.position = trigger->position();
+                }
             }
             on_waypoint_added(_context_pick.position, _context_pick.triangle.normal, room_from_pick(_context_pick), type, _context_pick.index);
         };
@@ -137,7 +140,10 @@ namespace trview
             }
             else if (_context_pick.type == PickResult::Type::Trigger)
             {
-                _context_pick.position = _level->triggers()[_context_pick.index].lock()->position();
+                if (const auto trigger = _level->trigger(_context_pick.index).lock())
+                {
+                    _context_pick.position = trigger->position();
+                }
             }
 
             // Filter out non-wall normals - ceiling and floor normals should be vertical.
@@ -159,7 +165,7 @@ namespace trview
             }
             else if (_context_pick.type == PickResult::Type::Trigger)
             {
-                on_trigger_visibility(_level->triggers()[_context_pick.index], false);
+                on_trigger_visibility(_level->trigger(_context_pick.index), false);
             }
             else if (_context_pick.type == PickResult::Type::Light)
             {
@@ -300,7 +306,7 @@ namespace trview
                     }
                     else if (_current_pick.type == PickResult::Type::Trigger)
                     {
-                        auto trigger = _level->triggers()[_current_pick.index].lock();
+                        const auto trigger = _level->trigger(_current_pick.index).lock();
                         if (trigger && trigger->room() == _level->selected_room())
                         {
                             if (const auto room = _level->room(trigger->room()).lock())
@@ -1102,8 +1108,7 @@ namespace trview
             return _level->items()[pick.index].room();
         case PickResult::Type::Trigger:
         {
-            const auto trigger = _level->triggers()[pick.index].lock();
-            if (trigger)
+            if (const auto trigger = _level->trigger(pick.index).lock())
             {
                 return trigger->room();
             }
@@ -1164,7 +1169,7 @@ namespace trview
             on_item_selected(_level->items()[pick.index]);
             break;
         case PickResult::Type::Trigger:
-            on_trigger_selected(_level->triggers()[pick.index]);
+            on_trigger_selected(_level->trigger(pick.index));
             break;
         case PickResult::Type::Waypoint:
             on_waypoint_selected(pick.index);
