@@ -714,11 +714,8 @@ TEST(Viewer, LightVisibilityRaised)
     auto [mouse_ptr, mouse] = create_mock<MockMouse>();
 
     NiceMock<MockLevel> level;
-    std::vector<std::weak_ptr<ILight>> lights_list(101);
     auto light = mock_shared<MockLight>();
-    lights_list[100] = light;
-
-    EXPECT_CALL(level, lights).WillRepeatedly([&]() { return lights_list; });
+    EXPECT_CALL(level, light(100)).WillRepeatedly(Return(light));
 
     auto viewer = register_test_module().with_ui(std::move(ui_ptr)).with_picking(std::move(picking_ptr)).with_mouse(std::move(mouse_ptr)).build();
     viewer->open(&level, ILevel::OpenMode::Full);

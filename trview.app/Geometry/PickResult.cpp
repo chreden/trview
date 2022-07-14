@@ -122,10 +122,9 @@ namespace trview
             }
             case PickResult::Type::Light:
             {
-                const auto light = level.lights()[result.index];
-                if (auto light_ptr = light.lock())
+                if (const auto light = level.light(result.index).lock())
                 {
-                    stream << L"Light " << result.index << L" - " << light_type_name(light_ptr->type());
+                    stream << L"Light " << result.index << L" - " << light_type_name(light->type());
                 }
                 break;
             }

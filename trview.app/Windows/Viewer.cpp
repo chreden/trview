@@ -185,7 +185,7 @@ namespace trview
             }
             else if (_context_pick.type == PickResult::Type::Light)
             {
-                on_light_visibility(_level->lights()[_context_pick.index], false);
+                on_light_visibility(_level->light(_context_pick.index), false);
             }
             else if (_context_pick.type == PickResult::Type::Room)
             {
@@ -1204,7 +1204,7 @@ namespace trview
             on_waypoint_selected(pick.index);
             break;
         case PickResult::Type::Light:
-            on_light_selected(_level->lights()[pick.index]);
+            on_light_selected(_level->light(pick.index));
             break;
         }
     }
