@@ -49,6 +49,7 @@ namespace trview
         virtual std::vector<graphics::Texture> level_textures() const override;
         virtual std::optional<uint32_t> selected_item() const override;
         virtual uint16_t selected_room() const override;
+        virtual std::optional<Item> item(uint32_t index) const override;
         virtual std::vector<Item> items() const override;
         virtual uint32_t neighbour_depth() const override;
         virtual uint32_t number_of_rooms() const override;
@@ -90,6 +91,7 @@ namespace trview
         virtual trlevel::LevelVersion version() const override;
         virtual std::string filename() const override;
         virtual void set_filename(const std::string& filename) override;
+        virtual std::weak_ptr<ILight> light(uint32_t index) const override;
         virtual std::vector<std::weak_ptr<ILight>> lights() const override;
         virtual void set_light_visibility(uint32_t index, bool state) override;
         virtual void set_room_visibility(uint32_t index, bool state) override;

@@ -65,9 +65,13 @@ namespace trview
 
         _token_store += _ui->on_select_item += [&](uint32_t index)
         {
-            if (_level && index < _level->items().size())
+            if (_level)
             {
-                on_item_selected(_level->items()[index]);
+                const auto item = _level->item(index);
+                if (item.has_value())
+                {
+                    on_item_selected(item.value());
+                }
             }
         };
         _token_store += _ui->on_select_room += [&](uint32_t room) { on_room_selected(room); };
@@ -115,7 +119,11 @@ namespace trview
 
             if (_context_pick.type == PickResult::Type::Entity)
             {
-                _context_pick.position = _level->items()[_context_pick.index].position();
+                const auto item = _level->item(_context_pick.index);
+                if (item.has_value())
+                {
+                    _context_pick.position = item.value().position();
+                }
             }
             else if (_context_pick.type == PickResult::Type::Trigger)
             {
@@ -136,7 +144,11 @@ namespace trview
             }
             else if (_context_pick.type == PickResult::Type::Entity)
             {
-                _context_pick.position = _level->items()[_context_pick.index].position();
+                const auto item = _level->item(_context_pick.index);
+                if (item.has_value())
+                {
+                    _context_pick.position = item.value().position();
+                }
             }
             else if (_context_pick.type == PickResult::Type::Trigger)
             {
@@ -161,7 +173,11 @@ namespace trview
         {
             if (_context_pick.type == PickResult::Type::Entity)
             {
-                on_item_visibility(_level->items()[_context_pick.index], false);
+                const auto item = _level->item(_context_pick.index);
+                if (item.has_value())
+                {
+                    on_item_visibility(item.value(), false);
+                }
             }
             else if (_context_pick.type == PickResult::Type::Trigger)
             {
@@ -1105,7 +1121,14 @@ namespace trview
         case PickResult::Type::Room:
             return pick.index;
         case PickResult::Type::Entity:
-            return _level->items()[pick.index].room();
+        {
+            auto item = _level->item(pick.index);
+            if (item.has_value())
+            {
+                return item.value().room();
+            }
+            break;
+        }
         case PickResult::Type::Trigger:
         {
             if (const auto trigger = _level->trigger(pick.index).lock())
@@ -1166,8 +1189,14 @@ namespace trview
             }
             break;
         case PickResult::Type::Entity:
-            on_item_selected(_level->items()[pick.index]);
+        {
+            const auto item = _level->item(pick.index);
+            if (item.has_value())
+            {
+                on_item_selected(item.value());
+            }
             break;
+        }
         case PickResult::Type::Trigger:
             on_trigger_selected(_level->trigger(pick.index));
             break;

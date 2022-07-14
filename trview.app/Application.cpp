@@ -193,7 +193,11 @@ namespace trview
             auto selected_item = old_level->selected_item();
             if (selected_item.has_value())
             {
-                select_item(old_level->items()[selected_item.value()]);
+                const auto new_selected_item = _level->item(selected_item.value());
+                if (new_selected_item.has_value())
+                {
+                    select_item(new_selected_item.value());
+                }
             }
 
             auto selected_trigger = old_level->selected_trigger();
@@ -205,11 +209,7 @@ namespace trview
             auto selected_light = old_level->selected_light();
             if (selected_light.has_value())
             {
-                const auto lights = _level->lights();
-                if (selected_light.value() < lights.size())
-                {
-                    select_light(lights[selected_light.value()]);
-                }
+                select_light(_level->light(selected_light.value()));
             }
 
             select_room(old_level->selected_room());

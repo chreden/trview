@@ -599,3 +599,13 @@ TEST(Level, ItemNotFound)
 {
     FAIL();
 }
+
+TEST(Level, Light)
+{
+    FAIL();
+}
+
+TEST(Level, LightNotFound)
+{
+    FAIL();
+}

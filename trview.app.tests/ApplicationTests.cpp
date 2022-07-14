@@ -674,6 +674,9 @@ TEST(Application, ReloadSyncsProperties)
     ON_CALL(reloaded, number_of_rooms).WillByDefault(Return(5));
     EXPECT_CALL(reloaded, set_selected_room(0)).Times(AnyNumber());
     EXPECT_CALL(reloaded, set_selected_room(3)).Times(1);
+    EXPECT_CALL(reloaded, trigger).WillRepeatedly(Return(triggers_weak[3]));
+    EXPECT_CALL(reloaded, light).WillRepeatedly(Return(lights_weak[3]));
+    EXPECT_CALL(reloaded, item).WillRepeatedly(Return(items[3]));
 
     std::list<std::unique_ptr<ILevel>> levels;
     levels.push_back(std::move(original_ptr));

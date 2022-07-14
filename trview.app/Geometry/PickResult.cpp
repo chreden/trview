@@ -92,8 +92,11 @@ namespace trview
         {
             case PickResult::Type::Entity:
             {
-                const auto item = level.items()[result.index];
-                stream << L"Item " << result.index << L" - " << item.type();
+                const auto item = level.item(result.index);
+                if (item.has_value())
+                {
+                    stream << L"Item " << result.index << L" - " << item.value().type();
+                }
                 break;
             }
             case PickResult::Type::Trigger:
@@ -109,8 +112,8 @@ namespace trview
                             stream << L" " << command.index();
                             if (command_is_item(command.type()))
                             {
-                                const auto items = level.items();
-                                stream << L" - " << (command.index() < items.size() ? items[command.index()].type() : L"No Item");
+                                const auto item = level.item(command.index());
+                                stream << L" - " << (item.has_value() ? item.value().type() : L"No Item");
                             }
                         }
                     }
@@ -136,16 +139,20 @@ namespace trview
                 auto& waypoint = route.waypoint(result.index);
                 stream << L"Waypoint " << result.index;
 
-                const auto level_items = level.items();
-                const auto level_triggers = level.triggers();
-                if (waypoint.type() == IWaypoint::Type::Entity && waypoint.index() < level_items.size())
+                if (waypoint.type() == IWaypoint::Type::Entity)
                 {
-                    stream << L" - " << level_items[waypoint.index()].type();
+                    const auto item = level.item(waypoint.index());
+                    if (item.has_value())
+                    {
+                        stream << L" - " << item.value().type();
+                    }
                 }
-                else if (waypoint.type() == IWaypoint::Type::Trigger && waypoint.index() < level_triggers.size())
+                else if (waypoint.type() == IWaypoint::Type::Trigger)
                 {
-                    const auto trigger_ptr = level_triggers[waypoint.index()].lock();
-                    stream << L" - " << trigger_type_name(trigger_ptr->type()) << L" " << waypoint.index();
+                    if (const auto trigger = level.trigger(waypoint.index()).lock())
+                    {
+                        stream << L" - " << trigger_type_name(trigger->type()) << L" " << waypoint.index();
+                    }
                 }
 
                 const auto notes = waypoint.notes();
