@@ -110,9 +110,7 @@ TEST(Viewer, SelectItemRaisedForValidItem)
 
     Item item(123, 0, 0, L"Test", 0, 0, {}, Vector3::Zero);
     NiceMock<MockLevel> level;
-
-    std::vector<Item> items_list{ item };
-    EXPECT_CALL(level, items).WillRepeatedly([&]() { return items_list; });
+    EXPECT_CALL(level, item(123)).WillRepeatedly(Return(item));
 
     auto viewer = register_test_module().with_ui(std::move(ui_ptr)).build();
     viewer->open(&level, ILevel::OpenMode::Full);
@@ -120,7 +118,7 @@ TEST(Viewer, SelectItemRaisedForValidItem)
     std::optional<Item> raised_item;
     auto token = viewer->on_item_selected += [&raised_item](const auto& item) { raised_item = item; };
 
-    ui.on_select_item(0);
+    ui.on_select_item(123);
 
     ASSERT_TRUE(raised_item.has_value());
     ASSERT_EQ(raised_item.value().number(), 123);
@@ -145,9 +143,7 @@ TEST(Viewer, ItemVisibilityRaisedForValidItem)
 {
     Item item(123, 0, 0, L"Test", 0, 0, {}, Vector3::Zero);
     NiceMock<MockLevel> level;
-
-    std::vector<Item> items_list{ item };
-    EXPECT_CALL(level, items).WillRepeatedly([&]() { return items_list; });
+    EXPECT_CALL(level, item(123)).WillRepeatedly(Return(item));
 
     auto [ui_ptr, ui] = create_mock<MockViewerUI>();
     auto [picking_ptr, picking] = create_mock<MockPicking>();
@@ -159,7 +155,7 @@ TEST(Viewer, ItemVisibilityRaisedForValidItem)
     std::optional<std::tuple<Item, bool>> raised_item;
     auto token = viewer->on_item_visibility += [&raised_item](const auto& item, auto visible) { raised_item = { item, visible }; };
 
-    activate_context_menu(picking, mouse, PickResult::Type::Entity, 0);
+    activate_context_menu(picking, mouse, PickResult::Type::Entity, 123);
 
     ui.on_hide();
 
@@ -210,10 +206,7 @@ TEST(Viewer, SelectTriggerRaised)
 
     NiceMock<MockLevel> level;
     auto trigger = mock_shared<MockTrigger>();
-    std::vector<std::weak_ptr<ITrigger>> triggers_list(101);
-    triggers_list[100] = trigger;
-
-    EXPECT_CALL(level, triggers).WillRepeatedly([&]() { return triggers_list; });
+    EXPECT_CALL(level, trigger(100)).WillRepeatedly(Return(trigger));
 
     auto viewer = register_test_module().with_ui(std::move(ui_ptr)).with_picking(std::move(picking_ptr)).with_mouse(std::move(mouse_ptr)).build();
     viewer->open(&level, ILevel::OpenMode::Full);
@@ -237,11 +230,8 @@ TEST(Viewer, TriggerVisibilityRaised)
     auto [mouse_ptr, mouse] = create_mock<MockMouse>();
 
     NiceMock<MockLevel> level;
-    std::vector<std::weak_ptr<ITrigger>> triggers_list(101);
     auto trigger = mock_shared<MockTrigger>();
-    triggers_list[100] = trigger;
-
-    EXPECT_CALL(level, triggers).WillRepeatedly([&]() { return triggers_list; });
+    EXPECT_CALL(level, trigger(100)).WillRepeatedly(Return(trigger));
 
     auto viewer = register_test_module().with_ui(std::move(ui_ptr)).with_picking(std::move(picking_ptr)).with_mouse(std::move(mouse_ptr)).build();
     viewer->open(&level, ILevel::OpenMode::Full);
@@ -331,10 +321,8 @@ TEST(Viewer, AddWaypointRaisedUsesItemPosition)
     auto [mouse_ptr, mouse] = create_mock<MockMouse>();
 
     NiceMock<MockLevel> level;
-    std::vector<Item> items_list(51);
     Item item(50, 10, 0, L"Test", 0, 0, {}, Vector3::Zero);
-    items_list[50] = item;
-    EXPECT_CALL(level, items).WillRepeatedly([&]() { return items_list; });
+    EXPECT_CALL(level, item(50)).WillRepeatedly(Return(item));
 
     auto viewer = register_test_module().with_ui(std::move(ui_ptr)).with_picking(std::move(picking_ptr)).with_mouse(std::move(mouse_ptr)).build();
     viewer->open(&level, ILevel::OpenMode::Full);
@@ -726,11 +714,8 @@ TEST(Viewer, LightVisibilityRaised)
     auto [mouse_ptr, mouse] = create_mock<MockMouse>();
 
     NiceMock<MockLevel> level;
-    std::vector<std::weak_ptr<ILight>> lights_list(101);
     auto light = mock_shared<MockLight>();
-    lights_list[100] = light;
-
-    EXPECT_CALL(level, lights).WillRepeatedly([&]() { return lights_list; });
+    EXPECT_CALL(level, light(100)).WillRepeatedly(Return(light));
 
     auto viewer = register_test_module().with_ui(std::move(ui_ptr)).with_picking(std::move(picking_ptr)).with_mouse(std::move(mouse_ptr)).build();
     viewer->open(&level, ILevel::OpenMode::Full);
@@ -754,11 +739,8 @@ TEST(Viewer, RoomVisibilityRaised)
     auto [mouse_ptr, mouse] = create_mock<MockMouse>();
 
     NiceMock<MockLevel> level;
-    std::vector<std::weak_ptr<IRoom>> rooms_list(101);
     auto room = mock_shared<MockRoom>();
-    rooms_list[100] = room;
-
-    EXPECT_CALL(level, rooms).WillRepeatedly([&]() { return rooms_list; });
+    EXPECT_CALL(level, room(100)).WillRepeatedly(Return(room));
 
     auto viewer = register_test_module().with_ui(std::move(ui_ptr)).with_picking(std::move(picking_ptr)).with_mouse(std::move(mouse_ptr)).build();
     viewer->open(&level, ILevel::OpenMode::Full);

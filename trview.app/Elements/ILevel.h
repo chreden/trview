@@ -43,10 +43,12 @@ namespace trview
         virtual bool any_alternates() const = 0;
         virtual std::string filename() const = 0;
         virtual bool highlight_mode_enabled(RoomHighlightMode mode) const = 0;
+        virtual std::optional<Item> item(uint32_t index) const = 0;
         /// Get the items in this level.
         /// @returns All items in the level.
         virtual std::vector<Item> items() const = 0;
         virtual std::vector<graphics::Texture> level_textures() const = 0;
+        virtual std::weak_ptr<ILight> light(uint32_t index) const = 0;
         virtual std::vector<std::weak_ptr<ILight>> lights() const = 0;
         virtual MapColours map_colours() const = 0;
         virtual uint32_t neighbour_depth() const = 0;
@@ -107,8 +109,16 @@ namespace trview
         virtual bool show_triggers() const = 0;
         virtual bool show_items() const = 0;
         virtual const ILevelTextureStorage& texture_storage() const = 0;
+        /// <summary>
+        /// Get the trigger at the specific index.
+        /// </summary>
+        /// <param name="index">Trigger index.</param>
+        /// <returns>The trigger or an empty pointer.</returns>
+        virtual std::weak_ptr<ITrigger> trigger(uint32_t index) const = 0;
+        /// <summary>
         /// Get the triggers in this level.
-        /// @returns All triggers in the level.
+        /// </summary>
+        /// <returns>All triggers in the level.</returns>
         virtual std::vector<std::weak_ptr<ITrigger>> triggers() const = 0;
         virtual trlevel::LevelVersion version() const = 0;
         // Event raised when the level needs to change the selected room.

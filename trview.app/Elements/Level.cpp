@@ -116,6 +116,15 @@ namespace trview
         return _selected_room;
     }
 
+    std::optional<Item> Level::item(uint32_t index) const
+    {
+        if (index >= _items.size())
+        {
+            return std::nullopt;
+        }
+        return _items[index];
+    }
+
     std::vector<Item> Level::items() const
     {
         return _items;
@@ -136,6 +145,15 @@ namespace trview
         std::vector<std::weak_ptr<IRoom>> rooms;
         std::transform(_rooms.begin(), _rooms.end(), std::back_inserter(rooms), [](auto&& room) { return room; });;
         return rooms;
+    }
+
+    std::weak_ptr<ITrigger> Level::trigger(uint32_t index) const
+    {
+        if (index >= _triggers.size())
+        {
+            return {};
+        }
+        return _triggers[index];
     }
 
     std::vector<std::weak_ptr<ITrigger>> Level::triggers() const
@@ -880,6 +898,15 @@ namespace trview
                 _rooms[i]->add_light(_lights.back());
             }
         }
+    }
+
+    std::weak_ptr<ILight> Level::light(uint32_t index) const
+    {
+        if (index >= _lights.size())
+        {
+            return {};
+        }
+        return _lights[index];
     }
 
     std::vector<std::weak_ptr<ILight>> Level::lights() const
