@@ -578,6 +578,11 @@ namespace trview
         }
 
         auto light_ptr = light.lock();
+        if (!light_ptr)
+        {
+            return;
+        }
+
         select_room(light_ptr->room());
         _level->set_selected_light(light_ptr->number());
         _viewer->select_light(light);
