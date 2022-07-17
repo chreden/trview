@@ -739,11 +739,8 @@ TEST(Viewer, RoomVisibilityRaised)
     auto [mouse_ptr, mouse] = create_mock<MockMouse>();
 
     NiceMock<MockLevel> level;
-    std::vector<std::weak_ptr<IRoom>> rooms_list(101);
     auto room = mock_shared<MockRoom>();
-    rooms_list[100] = room;
-
-    EXPECT_CALL(level, rooms).WillRepeatedly([&]() { return rooms_list; });
+    EXPECT_CALL(level, room(100)).WillRepeatedly(Return(room));
 
     auto viewer = register_test_module().with_ui(std::move(ui_ptr)).with_picking(std::move(picking_ptr)).with_mouse(std::move(mouse_ptr)).build();
     viewer->open(&level, ILevel::OpenMode::Full);

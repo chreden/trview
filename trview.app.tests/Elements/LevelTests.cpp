@@ -582,30 +582,130 @@ TEST(Level, SelectedTrigger)
 
 TEST(Level, Trigger)
 {
-    FAIL();
+    auto [mock_level_ptr, mock_level] = create_mock<trlevel::mocks::MockLevel>();
+    ON_CALL(mock_level, num_rooms()).WillByDefault(Return(1));
+
+    uint32_t trigger_source_called = 0;
+    auto level = register_test_module()
+        .with_level(std::move(mock_level_ptr))
+        .with_room_source(
+            [&](auto&&...)
+            {
+                auto room = mock_shared<MockRoom>();
+                std::vector<std::shared_ptr<ISector>> sectors;
+                auto sector = mock_shared<MockSector>();
+                ON_CALL(*sector, flags).WillByDefault(Return(SectorFlag::Trigger));
+                sectors.resize(5, sector);
+                ON_CALL(*room, sectors).WillByDefault(Return(sectors));
+                return room;
+            })
+        .with_trigger_source(
+            [&](auto&&...)
+            {
+                auto trigger = mock_shared<MockTrigger>();
+                ON_CALL(*trigger, number).WillByDefault(Return(trigger_source_called));
+                ++trigger_source_called;
+                return trigger;
+            })
+        .build();
+
+    auto trigger = level->trigger(0).lock();
+    ASSERT_NE(trigger, nullptr);
+    ASSERT_EQ(trigger->number(), 0);
 }
 
 TEST(Level, TriggerNotFound)
 {
-    FAIL();
+    auto [mock_level_ptr, mock_level] = create_mock<trlevel::mocks::MockLevel>();
+    ON_CALL(mock_level, num_rooms()).WillByDefault(Return(1));
+
+    uint32_t trigger_source_called = 0;
+    auto level = register_test_module()
+        .with_level(std::move(mock_level_ptr))
+        .with_room_source(
+            [&](auto&&...)
+            {
+                auto room = mock_shared<MockRoom>();
+                std::vector<std::shared_ptr<ISector>> sectors;
+                auto sector = mock_shared<MockSector>();
+                ON_CALL(*sector, flags).WillByDefault(Return(SectorFlag::Trigger));
+                sectors.resize(5, sector);
+                ON_CALL(*room, sectors).WillByDefault(Return(sectors));
+                return room;
+            })
+        .with_trigger_source(
+            [&](auto&&...)
+            {
+                auto trigger = mock_shared<MockTrigger>();
+                ON_CALL(*trigger, number).WillByDefault(Return(trigger_source_called));
+                ++trigger_source_called;
+                return trigger;
+            })
+        .build();
+
+    auto trigger = level->trigger(10).lock();
+    ASSERT_EQ(trigger, nullptr);
 }
 
 TEST(Level, Item)
 {
-    FAIL();
+    tr2_entity entity{};
+    entity.Room = 0;
+    entity.TypeID = 123;
+
+    auto [mock_level_ptr, mock_level] = create_mock<trlevel::mocks::MockLevel>();
+    ON_CALL(mock_level, num_entities()).WillByDefault(Return(1));
+    ON_CALL(mock_level, get_entity(0)).WillByDefault(Return(entity));
+    ON_CALL(mock_level, num_rooms()).WillByDefault(Return(1));
+
+    auto level = register_test_module()
+        .with_level(std::move(mock_level_ptr))
+        .build();
+
+    auto item = level->item(0);
+    ASSERT_NE(item, std::nullopt);
+    ASSERT_EQ(item.value().type_id(), 123);
 }
 
 TEST(Level, ItemNotFound)
 {
-    FAIL();
+    auto [mock_level_ptr, mock_level] = create_mock<trlevel::mocks::MockLevel>();
+
+    auto level = register_test_module()
+        .with_level(std::move(mock_level_ptr))
+        .build();
+
+    auto item = level->item(0);
+    ASSERT_EQ(item, std::nullopt);
 }
 
 TEST(Level, Light)
 {
-    FAIL();
+    tr3_room room{ };
+    room.lights.resize(1);
+
+    auto [mock_level_ptr, mock_level] = create_mock<trlevel::mocks::MockLevel>();
+    ON_CALL(mock_level, num_rooms()).WillByDefault(Return(1));
+    ON_CALL(mock_level, get_room).WillByDefault(Return(room));
+
+    auto level = register_test_module()
+        .with_level(std::move(mock_level_ptr))
+        .build();
+
+    auto light = level->light(0).lock();
+    ASSERT_NE(light, nullptr);
+    ASSERT_EQ(light->number(), 0);
 }
 
 TEST(Level, LightNotFound)
 {
-    FAIL();
+    auto [mock_level_ptr, mock_level] = create_mock<trlevel::mocks::MockLevel>();
+    ON_CALL(mock_level, num_rooms()).WillByDefault(Return(1));
+
+    auto level = register_test_module()
+        .with_level(std::move(mock_level_ptr))
+        .build();
+
+    auto light = level->light(0).lock();
+    ASSERT_EQ(light, nullptr);
 }

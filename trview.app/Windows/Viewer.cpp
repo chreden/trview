@@ -189,7 +189,7 @@ namespace trview
             }
             else if (_context_pick.type == PickResult::Type::Room)
             {
-                on_room_visibility(_level->rooms()[_context_pick.index], false);
+                on_room_visibility(_level->room(_context_pick.index), false);
             }
         };
         _token_store += _ui->on_orbit += [&]()
