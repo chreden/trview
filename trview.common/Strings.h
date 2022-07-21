@@ -35,4 +35,11 @@ namespace trview
     /// <param name="value">The string to convert.</param>
     /// <returns>The converted string.</returns>
     std::string to_lowercase(const std::string& value);
+
+    /// <summary>
+    /// Get just the filename without the directory part of the path.
+    /// </summary>
+    /// <param name="path">Full path</param>
+    /// <returns>The filename.</returns>
+    std::string path_without_directory(const std::string& path);
 }

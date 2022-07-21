@@ -99,7 +99,7 @@ namespace trview
                 lua::set_integer(L, "NoFocusOnAppearing", ImGuiWindowFlags_NoFocusOnAppearing);
                 lua::set_integer(L, "NoBringToFrontOnFocus", ImGuiWindowFlags_NoBringToFrontOnFocus);
                 lua::set_integer(L, "AlwaysVerticalScrollbar", ImGuiWindowFlags_AlwaysVerticalScrollbar);
-                lua::set_integer(L, "AlwaysHoriztonalScrollbar", ImGuiWindowFlags_AlwaysHorizontalScrollbar);
+                lua::set_integer(L, "AlwaysHorizontalScrollbar", ImGuiWindowFlags_AlwaysHorizontalScrollbar);
                 lua::set_integer(L, "AlwaysUseWindowPadding", ImGuiWindowFlags_AlwaysUseWindowPadding);
                 lua::set_integer(L, "NoNavInputs", ImGuiWindowFlags_NoNavInputs);
                 lua::set_integer(L, "NoNavFocus", ImGuiWindowFlags_NoNavFocus);

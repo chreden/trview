@@ -2,6 +2,7 @@
 #include "LevelLoadException.h"
 #include "LevelEncryptedException.h"
 #include <format>
+#include <trview.common/Strings.h>
 
 namespace trlevel
 {
@@ -348,9 +349,7 @@ namespace trlevel
         : _log(log)
     {
         // Load the level from the file.
-        auto last_index = std::min(filename.find_last_of('\\'), filename.find_last_of('/'));
-        _name = last_index == filename.npos ? filename : filename.substr(std::min(last_index + 1, filename.size()));
-
+        _name = trview::path_without_directory(filename);
         trview::Activity activity(log, "IO", "Load Level " + _name);
 
         try

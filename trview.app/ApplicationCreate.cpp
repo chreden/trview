@@ -191,7 +191,7 @@ namespace trview
         auto trlevel_source = [=](auto&& filename) { return std::make_unique<trlevel::Level>(filename, log); };
 
         auto settings_loader = std::make_unique<SettingsLoader>(files);
-        auto plugin_source = [=](auto&&... args) { return std::make_unique<Plugin>(args...); };
+        auto plugin_source = [=](auto&&... args) { return std::make_unique<Plugin>(log, args...); };
         auto plugins = std::make_unique<Plugins>(window, shortcuts, plugin_source, files, settings_loader->load_user_settings());
 
         return std::make_unique<Application>(

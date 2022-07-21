@@ -50,7 +50,7 @@ namespace trview
             const auto data = _files->load_file(plugin_name);
             if (data.has_value())
             {
-                _plugins.push_back(_plugin_source(data.value()));
+                _plugins.push_back(_plugin_source(path_without_directory(plugin_name), data.value()));
             }
         }
     }

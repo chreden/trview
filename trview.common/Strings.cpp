@@ -49,4 +49,10 @@ namespace trview
         std::transform(value.begin(), value.end(), std::back_inserter(result), std::tolower);
         return result;
     }
+
+    std::string path_without_directory(const std::string& path)
+    {
+        auto last_index = std::min(path.find_last_of('\\'), path.find_last_of('/'));
+        return last_index == path.npos ? path : path.substr(std::min(last_index + 1, path.size()));
+    }
 }

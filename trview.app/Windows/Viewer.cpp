@@ -589,10 +589,7 @@ namespace trview
             _ui->set_alternate_groups(_level->alternate_groups());
             _ui->set_flip_enabled(_level->any_alternates());
 
-            // Strip the last part of the path away.
-            const auto filename = _level->filename();
-            auto last_index = std::min(filename.find_last_of('\\'), filename.find_last_of('/'));
-            auto name = last_index == filename.npos ? filename : filename.substr(std::min(last_index + 1, filename.size()));
+            const auto name = path_without_directory(_level->filename());
             _ui->set_level(name, _level->version());
             window().set_title("trview - " + name);
         }
