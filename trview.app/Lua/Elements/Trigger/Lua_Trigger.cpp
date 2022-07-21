@@ -48,10 +48,8 @@ namespace trview
             lua::set_integer(L, "number", trigger_ptr->number());
             lua::set_boolean(L, "onlyOnce", trigger_ptr->only_once());
             lua::set_integer(L, "timer", trigger_ptr->timer());
-            if (trigger_ptr->room() < current_level->number_of_rooms())
-            {
-                lua::create_room(L, current_level->rooms()[trigger_ptr->room()]);
-            }
+            lua::create_room(L, current_level->room(trigger_ptr->room()));
+            lua_setfield(L, -2, "room");
             lua::set_string(L, "type", to_utf8(trigger_type_name(trigger_ptr->type())));
         }
 
