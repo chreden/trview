@@ -435,7 +435,7 @@ namespace trlevel
                     *(uint8_t*)((int)data + i + 4)
                         = *(uint8_t*)((int)buffer + (uint32_t)(uint8_t)table2[i + (first >> ((char)x + 5U & 0x1f) & 0xf) * 0x32]);
                 }
-                
+
                 x = i;
                 if ((((char)data + 0x36U | (char)index + 0xb2U) & 3) != 0)
                 {
@@ -447,19 +447,10 @@ namespace trlevel
                 }
                 else
                 {
-                    data[13] ^= *reinterpret_cast<const uint32_t*>(&table[index + 50]);
-                    data[14] ^= *reinterpret_cast<const uint32_t*>(&table[index + 54]);
-                    data[15] ^= *reinterpret_cast<const uint32_t*>(&table[index + 58]);
-                    data[16] ^= *reinterpret_cast<const uint32_t*>(&table[index + 62]);
-                    data[17] ^= *reinterpret_cast<const uint32_t*>(&table[index + 66]);
-                    data[18] ^= *reinterpret_cast<const uint32_t*>(&table[index + 70]);
-                    data[19] ^= *reinterpret_cast<const uint32_t*>(&table[index + 74]);
-                    data[20] ^= *reinterpret_cast<const uint32_t*>(&table[index + 78]);
-                    data[21] ^= *reinterpret_cast<const uint32_t*>(&table[index + 82]);
-                    data[22] ^= *reinterpret_cast<const uint32_t*>(&table[index + 86]);
-                    data[23] ^= *reinterpret_cast<const uint32_t*>(&table[index + 90]);
-                    data[24] ^= *reinterpret_cast<const uint32_t*>(&table[index + 94]);
-                    data[25] ^= *reinterpret_cast<const uint32_t*>(&table[index + 98]);
+                    for (int z = 13; z < 26; ++z)
+                    {
+                        data[z] ^= *reinterpret_cast<const uint32_t*>(&table[index + 50 + (z - 13) * 4]);
+                    }
                 }
 
                 if (data = (uint32_t*)((int)p2 + first + 4), x = x2, x2 == 4)
