@@ -387,75 +387,6 @@ namespace trlevel
             0x2F, 0x1C, 0x28, 0x2B, 0x1B, 0x05, 0x17, 0x30, 0x18, 0x0C, 0x07, 0x18, 0x0A, 0x14, 0x06, 0x1C, 0x09, 0x10, 0x29, 0x26, 0x2B, 0x30, 0x2F, 0x23, 0x16, 0x08, 0x13, 0x20, 0x03, 0x1B, 0x2C, 0x1E, 0x24, 0x21, 0x22, 0x2E, 0x1D, 0x11, 0x27, 0x02, 0x05, 0x19, 0x04, 0x00, 0x25, 0x28, 0x12, 0x1A, 0x0E, 0x2A, 0x0F, 0x0B, 0x01, 0x31, 0x2D, 0x0D, 0x1F, 0x15, 0x0C, 0x17
         };
 
-        void encrypt(std::vector<uint8_t>& bytes)
-        {
-            // Remove the 'c' from TR4c
-            bytes[3] = 'c';
-
-            uint32_t* data = reinterpret_cast<uint32_t*>(&bytes[0xe]);
-            int x = 0;
-
-            uint8_t buffer[50];
-
-            do
-            {
-                uint32_t first = *data;
-                uint32_t* p2 = data + 1;
-                int x2 = x + 1;
-
-                int index = (first >> ((uint8_t)x2 & 0x1f) & 0xf) * 99;
-                if ((((char)data + 4 | (char)index + 0x80u) & 3) == 0)
-                {
-                    for (int z = 0; z < 12; ++z)
-                    {
-                        reinterpret_cast<uint32_t*>(buffer)[z]
-                            = data[z + 1] ^ *(uint32_t*)(&encryption_table[index + 4 * z]);
-                    }
-                    buffer[48] = encryption_table[index + 48] ^ *(uint8_t*)(data + 0xd);
-                    buffer[49] = encryption_table[index + 49] ^ *(uint8_t*)((int)data + 0x35);
-                }
-                else
-                {
-                    for (int y = 0; y < 50; ++y)
-                    {
-                        *(uint8_t*)((int)buffer + y) = *(uint8_t*)((int)data + y + 4) ^ encryption_table[y + index];
-                    }
-                }
-
-                int i = 0;
-                for (i = 0; i < 50; ++i)
-                {
-                    *(uint8_t*)((int)data + i + 4)
-                        = *(uint8_t*)((int)buffer + (uint32_t)(uint8_t)encryption_table2[i + (first >> ((char)x + 5U & 0x1f) & 0xf) * 0x32]);
-                }
-
-                x = i;
-                if ((((char)data + 0x36U | (char)index + 0xb2U) & 3) != 0)
-                {
-                    do {
-                        uint8_t* pbVar1 = (uint8_t*)((int)data + x + 4);
-                        *pbVar1 = *pbVar1 ^ encryption_table[x + index];
-                        x = x + 1;
-                    } while (x != 99);
-                }
-                else
-                {
-                    for (int z = 13; z < 26; ++z)
-                    {
-                        data[z] ^= *reinterpret_cast<const uint32_t*>(&encryption_table[index + 50 + (z - 13) * 4]);
-                    }
-                }
-
-                if (data = (uint32_t*)((int)p2 + first + 4), x = x2, x2 == 4)
-                {
-                    std::ofstream out("C:\\Users\\Chris\\AppData\\Local\\Temp\\Temper\\feoasadi\\encrypted.tr4", std::ios::out | std::ios::binary);
-                    out.write(reinterpret_cast<char*>(&bytes[0]), bytes.size());
-                    break;
-                }
-                
-            } while (true);
-        }
-
         void decrypt(std::vector<uint8_t>& bytes)
         {
             // Remove the 'c' from TR4c
@@ -514,8 +445,6 @@ namespace trlevel
 
                 if (data = (uint32_t*)((int)p2 + first + 4), x = x2, x2 == 4)
                 {
-                    std::ofstream out("C:\\Users\\Chris\\AppData\\Local\\Temp\\Temper\\feoasadi\\decrypted.tr4", std::ios::out | std::ios::binary);
-                    out.write(reinterpret_cast<char*>(&bytes[0]), bytes.size());
                     break;
                 }
 
