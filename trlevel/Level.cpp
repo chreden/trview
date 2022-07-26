@@ -471,47 +471,44 @@ namespace trlevel
                 uint32_t first = *data;
                 uint32_t* p2 = data + 1;
                 int x2 = x + 1;
-
                 int index = (first >> ((uint8_t)x2 & 0x1f) & 0xf) * 99;
-                if ((((char)data + 4 | (char)index + 0x80u) & 3) == 0)
-                {
-                    for (int z = 0; z < 12; ++z)
-                    {
-                        reinterpret_cast<uint32_t*>(buffer)[z]
-                            = data[z + 1] ^ *(uint32_t*)(&encryption_table[index + 4 * z]);
-                    }
-                    buffer[48] = encryption_table[index + 48] ^ *(uint8_t*)(data + 0xd);
-                    buffer[49] = encryption_table[index + 49] ^ *(uint8_t*)((int)data + 0x35);
-                }
-                else
-                {
-                    for (int y = 0; y < 50; ++y)
-                    {
-                        *(uint8_t*)((int)buffer + y) = *(uint8_t*)((int)data + y + 4) ^ encryption_table[y + index];
-                    }
-                }
 
-                int i = 0;
-                for (i = 0; i < 50; ++i)
-                {
-                    *(uint8_t*)((int)data + i + 4)
-                        = *(uint8_t*)((int)buffer - (uint32_t)(uint8_t)encryption_table2[i + (first >> ((char)x + 5U & 0x1f) & 0xf) * 0x32]);
-                }
-
-                x = i;
                 if ((((char)data + 0x36U | (char)index + 0xb2U) & 3) != 0)
                 {
-                    do {
-                        uint8_t* pbVar1 = (uint8_t*)((int)data + x + 4);
-                        *pbVar1 = *pbVar1 ^ encryption_table[x + index];
-                        x = x + 1;
-                    } while (x != 99);
+                    for (int w = 50; w < 99; ++w)
+                    {
+                        uint8_t* pbVar1 = (uint8_t*)((int)data + w + 4);
+                        *pbVar1 = *pbVar1 ^ encryption_table[w + index];
+                    }
                 }
                 else
                 {
                     for (int z = 13; z < 26; ++z)
                     {
                         data[z] ^= *reinterpret_cast<const uint32_t*>(&encryption_table[index + 50 + (z - 13) * 4]);
+                    }
+                }
+
+                for (int i = 0; i < 50; ++i)
+                {
+                    *(uint8_t*)((int)buffer + (uint32_t)(uint8_t)encryption_table2[i + (first >> ((char)x + 5U & 0x1f) & 0xf) * 0x32])
+                        = *(uint8_t*)((int)data + i + 4);
+                }
+                
+                if ((((char)data + 4 | (char)index + 0x80u) & 3) == 0)
+                {
+                    for (int z = 0; z < 12; ++z)
+                    {
+                        data[z + 1] = reinterpret_cast<uint32_t*>(buffer)[z] ^ *(uint32_t*)(&encryption_table[index + 4 * z]);
+                    }
+                    *(uint8_t*)(data + 0xd) = encryption_table[index + 48] ^ buffer[48];
+                    *(uint8_t*)((int)data + 0x35) = encryption_table[index + 49] ^ buffer[49];
+                }
+                else
+                {
+                    for (int y = 0; y < 50; ++y)
+                    {
+                        *(uint8_t*)((int)data + y + 4) = *(uint8_t*)((int)buffer + y) ^ encryption_table[y + index];
                     }
                 }
 
@@ -550,8 +547,6 @@ namespace trlevel
             std::vector<uint8_t> bytes(length, 0);
             original_file.read(reinterpret_cast<char*>(&bytes[0]), length);
 
-            encrypt(bytes);
-
             std::stringstream file(std::string(bytes.begin(), bytes.end()), std::ios::in | std::ios::binary);
 
             activity.log(std::format("Opened file \"{}\"", filename));
@@ -566,7 +561,7 @@ namespace trlevel
                 activity.log(std::format("File is encrypted, decrypting"));
                 decrypt(bytes);
 
-                file.seekg(0, std::ios::beg);
+                file = std::stringstream(std::string(bytes.begin(), bytes.end()), std::ios::in | std::ios::binary);
                 raw_version = read<uint32_t>(file);
                 _version = convert_level_version(raw_version);
                 activity.log(std::format("Version number is {:X} ({})", raw_version, to_string(_version)));
