@@ -1013,9 +1013,9 @@ namespace trlevel
 
         if (std::all_of(_textile32.begin(), _textile32.end(), is_blank))
         {
+            activity.log(trview::Message::Status::Warning, "32-bit textiles were all blank, discarding");
             _textile32.clear();
         }
-
 
         if (_version == LevelVersion::Tomb5)
         {
