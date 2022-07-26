@@ -999,6 +999,24 @@ namespace trlevel
         activity.log("Reading misc textiles");
         auto textile32_misc = read_vector_compressed<tr_textile32>(file, 2);
 
+        constexpr auto is_blank = [](const auto& t)
+        {
+            for (const uint32_t& v : t.Tile)
+            {
+                if (v)
+                {
+                    return false;
+                }
+            }
+            return true;
+        };
+
+        if (std::all_of(_textile32.begin(), _textile32.end(), is_blank))
+        {
+            _textile32.clear();
+        }
+
+
         if (_version == LevelVersion::Tomb5)
         {
             activity.log("Reading Lara type");
