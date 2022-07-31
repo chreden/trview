@@ -7,6 +7,7 @@
 
 #include "ILevel.h"
 #include "trtypes.h"
+#include "IDecrypter.h"
 
 #include <trview.common/Logs/ILog.h>
 #include <trview.common/Logs/Activity.h>
@@ -16,7 +17,7 @@ namespace trlevel
     class Level : public ILevel
     {
     public:
-        explicit Level(const std::string& filename, const std::shared_ptr<trview::ILog>& log);
+        explicit Level(const std::string& filename, const std::shared_ptr<IDecrypter>& decrypter, const std::shared_ptr<trview::ILog>& log);
 
         virtual ~Level();
 
