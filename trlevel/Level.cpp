@@ -344,7 +344,7 @@ namespace trlevel
         }
     }
 
-    Level::Level(const std::string& filename, const std::shared_ptr<IDecrypter>& decrypter, const std::shared_ptr<trview::ILog>& log)
+    Level::Level(const std::string& filename, const std::shared_ptr<trview::IFiles>& files, const std::shared_ptr<IDecrypter>& decrypter, const std::shared_ptr<trview::ILog>& log)
         : _log(log)
     {
         // Load the level from the file.
@@ -359,16 +359,13 @@ namespace trlevel
             auto converted = trview::to_utf16(filename);
             activity.log(std::format("Opening file \"{}\"", filename));
 
-            std::ifstream original_file;
-            original_file.exceptions(std::ifstream::failbit | std::ifstream::badbit | std::ifstream::eofbit);
-            original_file.open(converted.c_str(), std::ios::binary | std::ios::ate);
-            std::size_t length = original_file.tellg();
-            original_file.seekg(0, std::ios::beg);
+            auto bytes = files->load_file(filename);
+            if (!bytes.has_value())
+            {
+                throw LevelLoadException();
+            }
 
-            std::vector<uint8_t> bytes(length, 0);
-            original_file.read(reinterpret_cast<char*>(&bytes[0]), length);
-
-            std::stringstream file(std::string(bytes.begin(), bytes.end()), std::ios::in | std::ios::binary);
+            std::stringstream file(std::string(bytes.value().begin(), bytes.value().end()), std::ios::in | std::ios::binary);
 
             activity.log(std::format("Opened file \"{}\"", filename));
 
@@ -380,9 +377,9 @@ namespace trlevel
             if (raw_version == 0x63345254)
             {
                 activity.log(std::format("File is encrypted, decrypting"));
-                decrypter->decrypt(bytes);
+                decrypter->decrypt(bytes.value());
 
-                file = std::stringstream(std::string(bytes.begin(), bytes.end()), std::ios::in | std::ios::binary);
+                file = std::stringstream(std::string(bytes.value().begin(), bytes.value().end()), std::ios::in | std::ios::binary);
                 raw_version = read<uint32_t>(file);
                 _version = convert_level_version(raw_version);
                 activity.log(std::format("Version number is {:X} ({})", raw_version, to_string(_version)));

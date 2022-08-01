@@ -340,7 +340,7 @@ TEST(RouteWindow, AttachSaveButtonLoadsSave)
     EXPECT_CALL(*dialogs, open_file).Times(1).WillRepeatedly(Return(IDialogs::FileResult{ "filename" }));
 
     auto files = mock_shared<MockFiles>();
-    EXPECT_CALL(*files, load_file).Times(1).WillRepeatedly(Return(std::vector<uint8_t>{ 0x1, 0x2 }));
+    EXPECT_CALL(*files, load_file(A<const std::string&>())).Times(1).WillRepeatedly(Return(std::vector<uint8_t>{ 0x1, 0x2 }));
 
     NiceMock<MockWaypoint> waypoint;
     EXPECT_CALL(waypoint, set_save_file(std::vector<uint8_t>{ 0x1, 0x2 })).Times(1);
@@ -366,7 +366,7 @@ TEST(RouteWindow, AttachSaveButtonShowsMessageOnError)
     EXPECT_CALL(*dialogs, message_box).Times(1);
 
     auto files = mock_shared<MockFiles>();
-    EXPECT_CALL(*files, load_file).Times(1).WillRepeatedly(Throw(std::exception()));
+    EXPECT_CALL(*files, load_file(A<const std::string&>())).Times(1).WillRepeatedly(Throw(std::exception()));
 
     NiceMock<MockWaypoint> waypoint;
     NiceMock<MockRoute> route;
@@ -391,7 +391,7 @@ TEST(RouteWindow, AttachSaveButtonDoesNotLoadFileWhenCancelled)
     EXPECT_CALL(*dialogs, open_file).Times(1);
 
     auto files = mock_shared<MockFiles>();
-    EXPECT_CALL(*files, load_file).Times(0);
+    EXPECT_CALL(*files, load_file(A<const std::string&>())).Times(0);
 
     NiceMock<MockWaypoint> waypoint;
     NiceMock<MockRoute> route;

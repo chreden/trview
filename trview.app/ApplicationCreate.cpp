@@ -187,7 +187,7 @@ namespace trview
         auto log_window_source = [=]() { return std::make_shared<LogWindow>(log, dialogs, files); };
         auto decrypter = std::make_shared<trlevel::Decrypter>();
 
-        auto trlevel_source = [=](auto&& filename) { return std::make_unique<trlevel::Level>(filename, decrypter, log); };
+        auto trlevel_source = [=](auto&& filename) { return std::make_unique<trlevel::Level>(filename, files, decrypter, log); };
 
         return std::make_unique<Application>(
             window,

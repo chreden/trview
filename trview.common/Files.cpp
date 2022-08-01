@@ -51,8 +51,13 @@ namespace trview
 
     std::optional<std::vector<uint8_t>> Files::load_file(const std::string& filename) const
     {
+        return load_file(to_utf16(filename));
+    }
+
+    std::optional<std::vector<uint8_t>> Files::load_file(const std::wstring& filename) const
+    {
         std::ifstream infile;
-        infile.open(to_utf16(filename), std::ios::in | std::ios::binary | std::ios::ate);
+        infile.open(filename, std::ios::in | std::ios::binary | std::ios::ate);
         infile.exceptions(std::ifstream::failbit | std::ifstream::badbit | std::ifstream::eofbit);
 
         if (!infile.is_open())
@@ -63,7 +68,7 @@ namespace trview
         const auto length = infile.tellg();
         if (!length)
         {
-            return {{}};
+            return { {} };
         }
 
         infile.seekg(0, std::ios::beg);
