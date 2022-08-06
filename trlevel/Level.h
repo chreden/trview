@@ -7,16 +7,21 @@
 
 #include "ILevel.h"
 #include "trtypes.h"
+#include "IDecrypter.h"
 
 #include <trview.common/Logs/ILog.h>
 #include <trview.common/Logs/Activity.h>
+#include <trview.common/IFiles.h>
 
 namespace trlevel
 {
     class Level : public ILevel
     {
     public:
-        explicit Level(const std::string& filename, const std::shared_ptr<trview::ILog>& log);
+        explicit Level(const std::string& filename,
+            const std::shared_ptr<trview::IFiles>& files,
+            const std::shared_ptr<IDecrypter>& decrypter,
+            const std::shared_ptr<trview::ILog>& log);
 
         virtual ~Level();
 
@@ -175,7 +180,7 @@ namespace trlevel
         void generate_meshes(const std::vector<uint16_t>& mesh_data);
 
         // Load a Tomb Raider IV level.
-        void load_tr4(trview::Activity& activity, std::ifstream& file);
+        void load_tr4(trview::Activity& activity, std::istream& file);
 
         void load_level_data(trview::Activity& activity, std::istream& file);
 

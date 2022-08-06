@@ -344,7 +344,7 @@ namespace trlevel
         }
     }
 
-    Level::Level(const std::string& filename, const std::shared_ptr<trview::ILog>& log)
+    Level::Level(const std::string& filename, const std::shared_ptr<trview::IFiles>& files, const std::shared_ptr<IDecrypter>& decrypter, const std::shared_ptr<trview::ILog>& log)
         : _log(log)
     {
         // Load the level from the file.
@@ -359,9 +359,13 @@ namespace trlevel
             auto converted = trview::to_utf16(filename);
             activity.log(std::format("Opening file \"{}\"", filename));
 
-            std::ifstream file;
-            file.exceptions(std::ifstream::failbit | std::ifstream::badbit | std::ifstream::eofbit);
-            file.open(converted.c_str(), std::ios::binary);
+            auto bytes = files->load_file(filename);
+            if (!bytes.has_value())
+            {
+                throw LevelLoadException();
+            }
+
+            std::stringstream file(std::string(bytes.value().begin(), bytes.value().end()), std::ios::in | std::ios::binary);
 
             activity.log(std::format("Opened file \"{}\"", filename));
 
@@ -372,7 +376,13 @@ namespace trlevel
 
             if (raw_version == 0x63345254)
             {
-                throw LevelEncryptedException();
+                activity.log(std::format("File is encrypted, decrypting"));
+                decrypter->decrypt(bytes.value());
+
+                file = std::stringstream(std::string(bytes.value().begin(), bytes.value().end()), std::ios::in | std::ios::binary);
+                raw_version = read<uint32_t>(file);
+                _version = convert_level_version(raw_version);
+                activity.log(std::format("Version number is {:X} ({})", raw_version, to_string(_version)));
             }
 
             if (is_tr5(activity, _version, converted))
@@ -791,7 +801,7 @@ namespace trlevel
         return _sprite_textures[index];
     }
 
-    void Level::load_tr4(trview::Activity& activity, std::ifstream& file)
+    void Level::load_tr4(trview::Activity& activity, std::istream& file)
     {
         activity.log("Reading textile counts");
         uint16_t num_room_textiles = read<uint16_t>(file);
@@ -806,6 +816,24 @@ namespace trlevel
         _textile16 = read_vector_compressed<tr_textile16>(file, _num_textiles);
         activity.log("Reading misc textiles");
         auto textile32_misc = read_vector_compressed<tr_textile32>(file, 2);
+
+        constexpr auto is_blank = [](const auto& t)
+        {
+            for (const uint32_t& v : t.Tile)
+            {
+                if (v)
+                {
+                    return false;
+                }
+            }
+            return true;
+        };
+
+        if (std::all_of(_textile32.begin(), _textile32.end(), is_blank))
+        {
+            activity.log(trview::Message::Status::Warning, "32-bit textiles were all blank, discarding");
+            _textile32.clear();
+        }
 
         if (_version == LevelVersion::Tomb5)
         {

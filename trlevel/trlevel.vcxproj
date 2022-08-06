@@ -163,6 +163,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Decrypter.h" />
+    <ClInclude Include="IDecrypter.h" />
     <ClInclude Include="ILevel.h" />
     <ClInclude Include="Level.h" />
     <ClInclude Include="LevelEncryptedException.h" />
@@ -176,6 +178,7 @@
     <ClInclude Include="tr_rooms.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Decrypter.cpp" />
     <ClCompile Include="ILevel.cpp" />
     <ClCompile Include="Level.cpp" />
     <ClCompile Include="LevelVersion.cpp" />

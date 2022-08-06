@@ -426,7 +426,7 @@ TEST(Application, ImportRouteLoadsFile)
     auto [route_window_manager_ptr, route_window_manager] = create_mock<MockRouteWindowManager>();
     EXPECT_CALL(route_window_manager, set_route).Times(1);
     auto files = mock_shared<MockFiles>();
-    EXPECT_CALL(*files, load_file).Times(1).WillRepeatedly(Return<std::vector<uint8_t>>({ 0x7b, 0x7d }));;
+    EXPECT_CALL(*files, load_file(A<const std::string&>())).Times(1).WillRepeatedly(Return<std::vector<uint8_t>>({ 0x7b, 0x7d }));;
     auto route = mock_shared<MockRoute>();
     EXPECT_CALL(*route, set_unsaved(false)).Times(1);
 
