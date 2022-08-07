@@ -239,6 +239,14 @@ namespace trview
                     }
                 }
 
+                const auto index = index_of_selected();
+                if (index.has_value())
+                {
+                    const float item_pos_y = clipper.StartPosY + clipper.ItemsHeight * index.value();
+                    ImGui::SetScrollFromPosY(item_pos_y - ImGui::GetWindowPos().y);
+                }
+
+                clipper.End();
                 ImGui::EndTable();
             }
         }
@@ -494,5 +502,24 @@ namespace trview
                     ImGui::CalcTextSize(to_utf8(trigger_type_name(trigger_ptr->type())).c_str()).x);
             }
         }
+    }
+
+    std::optional<int> TriggersWindow::index_of_selected() const
+    {
+        const auto selected = _selected_trigger.lock();
+        if (selected && _scroll_to_trigger)
+        {
+            const auto found = std::find_if(_filtered_triggers.begin(), _filtered_triggers.end(),
+                [&](auto&& t)
+                {
+                    auto t_l = t.lock();
+                    return t_l && t_l->number() == selected->number();
+                });
+            if (found != _filtered_triggers.end())
+            {
+                return found - _filtered_triggers.begin();
+            }
+        }
+        return std::nullopt;
     }
 }
