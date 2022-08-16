@@ -49,6 +49,7 @@ namespace trview
         void setup_filters();
         void filter_triggers();
         void calculate_column_widths();
+        std::optional<int> index_of_selected() const;
 
         std::string _id{ "Triggers 0" };
         std::vector<Item> _all_items;
