@@ -123,11 +123,10 @@ namespace trview
                         on_background_colour(Colour(1.0f, _colour[0], _colour[1], _colour[2]));
                     }
 
-                    // Find the fonts that are available.
-                    if (ImGui::Button("Font!"))
+                    if (ImGui::InputInt("Font Size", &_font_size))
                     {
-                        HDC dc = GetDC(nullptr);
-                        EnumFontFamilies(dc, 
+                        _font_size = std::max(8, _font_size);
+                        on_font_size(_font_size);
                     }
 
                     ImGui::EndTabItem();

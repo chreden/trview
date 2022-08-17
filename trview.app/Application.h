@@ -135,6 +135,7 @@ namespace trview
         std::unique_ptr<IImGuiBackend> _imgui_backend;
         std::string _imgui_ini_filename;
         std::unique_ptr<ILogWindowManager> _log_windows;
+        bool _update_font{ true };
     };
 
     Window create_window(HINSTANCE hInstance, int command_show);

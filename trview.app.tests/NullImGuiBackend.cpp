@@ -12,6 +12,10 @@ namespace trview
             context->IO.DisplaySize = ImVec2(1920, 1080);
         }
 
+        void NullImGuiBackend::invalidate()
+        {
+        }
+
         void NullImGuiBackend::new_frame()
         {
             auto context = ImGui::GetCurrentContext();

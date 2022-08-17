@@ -30,6 +30,7 @@ namespace trview
         RandomizerSettings randomizer;
         uint32_t max_recent_files{ 10u };
         MapColours map_colours;
+        int font_size{ 12 };
 
         bool operator==(const UserSettings& other) const;
     };

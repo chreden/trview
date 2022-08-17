@@ -70,5 +70,6 @@ namespace trview
         int _max_recent_files{ 10 };
         float _colour[3];
         MapColours _colours;
+        int _font_size{ 12 };
     };
 }

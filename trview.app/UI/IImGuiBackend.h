@@ -6,6 +6,7 @@ namespace trview
     {
         virtual ~IImGuiBackend() = 0;
         virtual void initialise() = 0;
+        virtual void invalidate() = 0;
         virtual void new_frame() = 0;
         virtual void render() = 0;
         virtual void shutdown() = 0;

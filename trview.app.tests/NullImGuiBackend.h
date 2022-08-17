@@ -11,6 +11,7 @@ namespace trview
         public:
             virtual ~NullImGuiBackend() = default;
             virtual void initialise() override;
+            virtual void invalidate() override;
             virtual void new_frame() override;
             virtual void render() override;
             virtual void shutdown() override;

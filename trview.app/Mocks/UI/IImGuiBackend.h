@@ -10,6 +10,7 @@ namespace trview
         {
             virtual ~MockImGuiBackend() = default;
             MOCK_METHOD(void, initialise, (), (override));
+            MOCK_METHOD(void, invalidate, (), (override));
             MOCK_METHOD(void, new_frame, (), (override));
             MOCK_METHOD(void, render, (), (override));
             MOCK_METHOD(void, shutdown, (), (override));

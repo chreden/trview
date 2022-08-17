@@ -3,6 +3,8 @@
 
 #include "Resources/resource.h"
 
+#include <external/imgui/backends/imgui_impl_dx11.h>
+
 using namespace DirectX::SimpleMath;
 
 namespace trview
@@ -360,6 +362,7 @@ namespace trview
             {
                 _level->set_map_colours(settings.map_colours);
             }
+            _update_font = true;
         };
         _viewer->set_settings(_settings);
 
@@ -678,11 +681,20 @@ namespace trview
             // Setup Dear ImGui style
             ImGui::StyleColorsDark();
 
-            _font = io.Fonts->AddFontFromFileTTF((_files->fonts_directory() + "\\Arial.ttf").c_str(), 12.0f);
+            _font = io.Fonts->AddFontFromFileTTF((_files->fonts_directory() + "\\Arial.ttf").c_str(), _settings.font_size);
 
             // Setup Platform/Renderer backends
             _imgui_backend->initialise();
             _imgui_setup = true;
+        }
+
+        if (_update_font)
+        {
+            auto& io = ImGui::GetIO();
+            io.Fonts->Clear();
+            _font = io.Fonts->AddFontFromFileTTF((_files->fonts_directory() + "\\Arial.ttf").c_str(), _settings.font_size);
+            _imgui_backend->invalidate();
+            _update_font = false;
         }
 
         _timer.update();

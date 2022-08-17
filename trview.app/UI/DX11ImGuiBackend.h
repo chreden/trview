@@ -11,6 +11,7 @@ namespace trview
         DX11ImGuiBackend(const Window& window, const std::shared_ptr<graphics::IDevice>& device);
         virtual ~DX11ImGuiBackend() = default;
         virtual void initialise() override;
+        virtual void invalidate() override;
         virtual void new_frame() override;
         virtual void render() override;
         virtual void shutdown() override;

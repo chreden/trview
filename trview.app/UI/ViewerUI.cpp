@@ -172,6 +172,11 @@ namespace trview
             _settings.map_colours = colours;
             on_settings(_settings);
         };
+        _token_store += _settings_window->on_font_size += [&](int font_size)
+        {
+            _settings.font_size = font_size;
+            on_settings(_settings);
+        };
 
         _camera_position = std::make_unique<CameraPosition>();
         _camera_position->on_position_changed += on_camera_position;

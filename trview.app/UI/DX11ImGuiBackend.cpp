@@ -19,6 +19,11 @@ namespace trview
         _active = true;
     }
 
+    void DX11ImGuiBackend::invalidate()
+    {
+        ImGui_ImplDX11_InvalidateDeviceObjects();
+    }
+
     void DX11ImGuiBackend::new_frame()
     {
         ImGui_ImplDX11_NewFrame();
