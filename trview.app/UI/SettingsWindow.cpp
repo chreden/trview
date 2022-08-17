@@ -36,10 +36,6 @@ namespace trview
                         _max_recent_files = std::max(0, _max_recent_files);
                         on_max_recent_files(_max_recent_files);
                     }
-                    if (ImGui::ColorEdit3(Names::background_colour.c_str(), _colour))
-                    {
-                        on_background_colour(Colour(1.0f, _colour[0], _colour[1], _colour[2]));
-                    }
                     ImGui::EndTabItem();
                 }
 
@@ -117,6 +113,23 @@ namespace trview
                     add_special("No Space", MapColours::Special::NoSpace);
                     add_special("Room Above", MapColours::Special::RoomAbove);
                     add_special("Room Below", MapColours::Special::RoomBelow);
+                    ImGui::EndTabItem();
+                }
+
+                if (ImGui::BeginTabItem("Appearance"))
+                {
+                    if (ImGui::ColorEdit3(Names::background_colour.c_str(), _colour))
+                    {
+                        on_background_colour(Colour(1.0f, _colour[0], _colour[1], _colour[2]));
+                    }
+
+                    // Find the fonts that are available.
+                    if (ImGui::Button("Font!"))
+                    {
+                        HDC dc = GetDC(nullptr);
+                        EnumFontFamilies(dc, 
+                    }
+
                     ImGui::EndTabItem();
                 }
 
