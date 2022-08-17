@@ -391,6 +391,7 @@ namespace trview
         _settings_window->set_max_recent_files(settings.max_recent_files);
         _settings_window->set_background_colour(settings.background_colour);
         _settings_window->set_map_colours(settings.map_colours);
+        _settings_window->set_font_size(settings.font_size);
         _camera_position->set_display_degrees(settings.camera_display_degrees);
         _map_renderer->set_colours(settings.map_colours);
     }

@@ -229,4 +229,9 @@ namespace trview
     {
         _colours = colours;
     }
+
+    void SettingsWindow::set_font_size(int font_size)
+    {
+        _font_size = font_size;
+    }
 }

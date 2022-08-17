@@ -156,6 +156,7 @@ namespace trview
         virtual void set_max_recent_files(uint32_t value) = 0;
         virtual void set_background_colour(const Colour& colour) = 0;
         virtual void set_map_colours(const MapColours& colours) = 0;
+        virtual void set_font_size(int font_size) = 0;
         /// <summary>
         /// Toggle the visibility of the settings window.
         /// </summary>

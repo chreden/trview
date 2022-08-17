@@ -50,6 +50,7 @@ namespace trview
         virtual void set_max_recent_files(uint32_t value) override;
         virtual void set_background_colour(const Colour& colour) override;
         virtual void set_map_colours(const MapColours& colours) override;
+        virtual void set_font_size(int font_size) override;
         virtual void toggle_visibility() override;
     private:
         bool _visible{ false };
