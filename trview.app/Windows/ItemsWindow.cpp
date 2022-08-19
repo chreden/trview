@@ -157,7 +157,7 @@ namespace trview
                     ImGui::TableNextColumn();
                     ImGui::Text(std::to_string(item.type_id()).c_str());
                     ImGui::TableNextColumn();
-                    ImGui::Text(to_utf8(item.type()).c_str());
+                    ImGui::Text(item.type().c_str());
                     ImGui::TableNextColumn();
                     bool hidden = !item.visible();
                     ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0, 0));
@@ -219,7 +219,7 @@ namespace trview
                         return std::format("{:.0f}, {:.0f}, {:.0f}", pos.x, pos.y, pos.z);
                     };
 
-                    add_stat("Type", to_utf8(item.type()));
+                    add_stat("Type", item.type());
                     add_stat("#", std::to_string(item.number()));
                     add_stat("Position", position_text());
                     add_stat("Type ID", std::to_string(item.type_id()));
@@ -272,7 +272,7 @@ namespace trview
                     ImGui::TableNextColumn();
                     ImGui::Text(std::to_string(trigger_ptr->room()).c_str());
                     ImGui::TableNextColumn();
-                    ImGui::Text(to_utf8(trigger_type_name(trigger_ptr->type())).c_str());
+                    ImGui::Text(trigger_type_name(trigger_ptr->type()).c_str());
                 }
 
                 ImGui::EndTable();
@@ -341,9 +341,9 @@ namespace trview
         std::set<std::string> available_types;
         for (const auto& item : _all_items)
         {
-            available_types.insert(to_utf8(item.type()));
+            available_types.insert(item.type());
         }
-        _filters.add_getter<std::string>("Type", { available_types.begin(), available_types.end() }, [](auto&& item) { return to_utf8(item.type()); });
+        _filters.add_getter<std::string>("Type", { available_types.begin(), available_types.end() }, [](auto&& item) { return item.type(); });
         _filters.add_getter<float>("#", [](auto&& item) { return item.number(); });
         _filters.add_getter<float>("X", [](auto&& item) { return item.position().x * trlevel::Scale_X; });
         _filters.add_getter<float>("Y", [](auto&& item) { return item.position().y * trlevel::Scale_Y; });

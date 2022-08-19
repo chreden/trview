@@ -217,8 +217,8 @@ TEST(TriggersWindow, ItemSelectedRaised)
 
     std::vector<Item> items
     {
-        Item(0, 0, 0, L"Type", 0, 0, {}, DirectX::SimpleMath::Vector3::Zero),
-        Item(1, 0, 0, L"Type", 0, 0, {}, DirectX::SimpleMath::Vector3::Zero)
+        Item(0, 0, 0, "Type", 0, 0, {}, DirectX::SimpleMath::Vector3::Zero),
+        Item(1, 0, 0, "Type", 0, 0, {}, DirectX::SimpleMath::Vector3::Zero)
     };
 
     auto trigger = mock_shared<MockTrigger>()->with_commands({ Command(0, TriggerCommandType::Object, 1) });

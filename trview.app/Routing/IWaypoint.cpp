@@ -21,17 +21,17 @@ namespace trview
         return IWaypoint::Type::Position;
     }
 
-    std::wstring waypoint_type_to_string(IWaypoint::Type type)
+    std::string waypoint_type_to_string(IWaypoint::Type type)
     {
         switch (type)
         {
             case IWaypoint::Type::Entity:
-                return L"Entity";
+                return "Entity";
             case IWaypoint::Type::Position:
-                return L"Position";
+                return "Position";
             case IWaypoint::Type::Trigger:
-                return L"Trigger";
+                return "Trigger";
         }
-        return L"Unknown";
+        return "Unknown";
     }
 }

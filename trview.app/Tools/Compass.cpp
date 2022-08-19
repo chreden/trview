@@ -17,14 +17,14 @@ namespace trview
         const float View_Size = 200;
         const float Nodule_Size = 0.05f;
 
-        const std::unordered_map<Compass::Axis, std::wstring> axis_type_names
+        const std::unordered_map<Compass::Axis, std::string> axis_type_names
         {
-            { Compass::Axis::Pos_X, L"+X" },
-            { Compass::Axis::Pos_Y, L"+Y" },
-            { Compass::Axis::Pos_Z, L"+Z" },
-            { Compass::Axis::Neg_X, L"-X" },
-            { Compass::Axis::Neg_Y, L"-Y" },
-            { Compass::Axis::Neg_Z, L"-Z" },
+            { Compass::Axis::Pos_X, "+X" },
+            { Compass::Axis::Pos_Y, "+Y" },
+            { Compass::Axis::Pos_Z, "+Z" },
+            { Compass::Axis::Neg_X, "-X" },
+            { Compass::Axis::Neg_Y, "-Y" },
+            { Compass::Axis::Neg_Z, "-Z" },
         };
 
         const std::unordered_map<Compass::Axis, BoundingBox> nodule_boxes
@@ -135,12 +135,12 @@ namespace trview
         _visible = value;
     }
 
-    std::wstring axis_name(Compass::Axis axis)
+    std::string axis_name(Compass::Axis axis)
     {
         auto name = axis_type_names.find(axis);
         if (name == axis_type_names.end())
         {
-            return L"Unknown";
+            return "Unknown";
         }
         return name->second;
     }

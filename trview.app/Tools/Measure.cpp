@@ -92,11 +92,9 @@ namespace trview
         on_position(Point(point.x, point.y));
     }
 
-    std::wstring Measure::distance() const
+    std::string Measure::distance() const
     {
-        std::wstringstream stream;
-        stream << std::fixed << std::setprecision(2) << (_end.value() - _start.value()).Length();
-        return stream.str();
+        return std::format("{:.2f}", (_end.value() - _start.value()).Length());
     }
 
     bool Measure::measuring() const

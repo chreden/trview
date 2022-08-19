@@ -42,8 +42,8 @@ TEST(ItemsWindow, AddToRouteEventRaised)
 
     std::vector<Item> items
     {
-        Item(0, 0, 0, L"Type", 0, 0, {}, Vector3::Zero),
-        Item(1, 0, 0, L"Type", 0, 0, {}, Vector3::Zero)
+        Item(0, 0, 0, "Type", 0, 0, {}, Vector3::Zero),
+        Item(1, 0, 0, "Type", 0, 0, {}, Vector3::Zero)
     };
     window->set_items(items);
     window->set_selected_item(items[1]);
@@ -65,8 +65,8 @@ TEST(ItemsWindow, ItemSelectedNotRaisedWhenSyncItemDisabled)
 
     std::vector<Item> items
     {
-        Item(0, 0, 0, L"Type", 0, 0, {}, Vector3::Zero),
-        Item(1, 0, 0, L"Type", 0, 0, {}, Vector3::Zero)
+        Item(0, 0, 0, "Type", 0, 0, {}, Vector3::Zero),
+        Item(1, 0, 0, "Type", 0, 0, {}, Vector3::Zero)
     };
     window->set_items(items);
 
@@ -91,8 +91,8 @@ TEST(ItemsWindow, ItemSelectedRaisedWhenSyncItemEnabled)
 
     std::vector<Item> items
     {
-        Item(0, 0, 0, L"Type", 0, 0, {}, Vector3::Zero),
-        Item(1, 0, 0, L"Type", 0, 0, {}, Vector3::Zero)
+        Item(0, 0, 0, "Type", 0, 0, {}, Vector3::Zero),
+        Item(1, 0, 0, "Type", 0, 0, {}, Vector3::Zero)
     };
     window->set_items(items);
 
@@ -118,8 +118,8 @@ TEST(ItemsWindow, ItemVisibilityRaised)
 
     std::vector<Item> items
     {
-        Item(0, 0, 0, L"Type", 0, 0, {}, Vector3::Zero),
-        Item(1, 0, 0, L"Type", 0, 0, {}, Vector3::Zero)
+        Item(0, 0, 0, "Type", 0, 0, {}, Vector3::Zero),
+        Item(1, 0, 0, "Type", 0, 0, {}, Vector3::Zero)
     };
     window->set_items(items);
 
@@ -142,8 +142,8 @@ TEST(ItemsWindow, ItemsListNotFilteredWhenRoomSetAndTrackRoomDisabled)
 
     std::vector<Item> items
     {
-        Item(0, 55, 0, L"Type", 0, 0, {}, Vector3::Zero),
-        Item(1, 78, 0, L"Type", 0, 0, {}, Vector3::Zero)
+        Item(0, 55, 0, "Type", 0, 0, {}, Vector3::Zero),
+        Item(1, 78, 0, "Type", 0, 0, {}, Vector3::Zero)
     };
     window->set_items(items);
     window->set_current_room(78);
@@ -166,8 +166,8 @@ TEST(ItemsWindow, ItemsListFilteredWhenRoomSetAndTrackRoomEnabled)
 
     std::vector<Item> items
     {
-        Item(0, 55, 0, L"Type", 0, 0, {}, Vector3::Zero),
-        Item(1, 78, 0, L"Type", 0, 0, {}, Vector3::Zero)
+        Item(0, 55, 0, "Type", 0, 0, {}, Vector3::Zero),
+        Item(1, 78, 0, "Type", 0, 0, {}, Vector3::Zero)
     };
     window->set_items(items);
     window->set_current_room(78);
@@ -192,8 +192,8 @@ TEST(ItemsWindow, ItemsListPopulatedOnSet)
 
     std::vector<Item> items
     {
-        Item(0, 55, 0, L"Lara", 0, 0, {}, Vector3::Zero),
-        Item(1, 78, 0, L"Winston", 0, 0, {}, Vector3::Zero)
+        Item(0, 55, 0, "Lara", 0, 0, {}, Vector3::Zero),
+        Item(1, 78, 0, "Winston", 0, 0, {}, Vector3::Zero)
     };
     window->set_items(items);
 
@@ -214,8 +214,8 @@ TEST(ItemsWindow, ItemsListUpdatedWhenFiltered)
 
     std::vector<Item> items
     {
-        Item(0, 55, 0, L"Type", 0, 0, {}, Vector3::Zero),
-        Item(1, 78, 0, L"Type", 0, 0, {}, Vector3::Zero)
+        Item(0, 55, 0, "Type", 0, 0, {}, Vector3::Zero),
+        Item(1, 78, 0, "Type", 0, 0, {}, Vector3::Zero)
     };
     window->set_items(items);
     window->set_current_room(78);
@@ -241,8 +241,8 @@ TEST(ItemsWindow, ItemsListUpdatedWhenNotFiltered)
 
     std::vector<Item> items
     {
-        Item(0, 55, 0, L"Type", 0, 0, {}, Vector3::Zero),
-        Item(1, 78, 0, L"Type", 0, 0, {}, Vector3::Zero)
+        Item(0, 55, 0, "Type", 0, 0, {}, Vector3::Zero),
+        Item(1, 78, 0, "Type", 0, 0, {}, Vector3::Zero)
     };
     window->set_items(items);
     TestImgui imgui([&]() { window->render(); });
@@ -274,8 +274,8 @@ TEST(ItemsWindow, TriggersLoadedForItem)
     auto trigger2 = mock_shared<MockTrigger>()->with_number(1);
     std::vector<Item> items
     {
-        Item(0, 0, 0, L"Type", 0, 0, {}, Vector3::Zero),
-        Item(1, 0, 0, L"Type", 0, 0, { trigger1, trigger2 }, Vector3::Zero)
+        Item(0, 0, 0, "Type", 0, 0, {}, Vector3::Zero),
+        Item(1, 0, 0, "Type", 0, 0, { trigger1, trigger2 }, Vector3::Zero)
     };
     window->set_items(items);
     window->set_triggers({ trigger1, trigger2 });
@@ -303,8 +303,8 @@ TEST(ItemsWindow, TriggerSelectedEventRaised)
     auto trigger = mock_shared<MockTrigger>();
     std::vector<Item> items
     {
-        Item(0, 0, 0, L"Type", 0, 0, {}, Vector3::Zero),
-        Item(1, 0, 0, L"Type", 0, 0, { trigger }, Vector3::Zero)
+        Item(0, 0, 0, "Type", 0, 0, {}, Vector3::Zero),
+        Item(1, 0, 0, "Type", 0, 0, { trigger }, Vector3::Zero)
     };
     window->set_items(items);
     window->set_triggers({ trigger });
@@ -331,7 +331,7 @@ TEST(ItemsWindow, ClickStatShowsBubbleAndCopies)
 
     std::vector<Item> items
     {
-        Item(0, 0, 0, L"Test Type", 0, 0, {}, Vector3::Zero)
+        Item(0, 0, 0, "Test Type", 0, 0, {}, Vector3::Zero)
     };
     window->set_items(items);
     window->set_selected_item(items[0]);

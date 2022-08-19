@@ -57,7 +57,7 @@ TEST(ItemsWindowManager, AddToRouteEventRaised)
     auto created_window = manager->create_window().lock();
     ASSERT_NE(created_window, nullptr);
 
-    Item test_item(100, 10, 1, L"Lara", 0, 0, {}, DirectX::SimpleMath::Vector3::Zero);
+    Item test_item(100, 10, 1, "Lara", 0, 0, {}, DirectX::SimpleMath::Vector3::Zero);
     created_window->on_add_to_route(test_item);
 
     ASSERT_TRUE(raised_item.has_value());
@@ -74,7 +74,7 @@ TEST(ItemsWindowManager, ItemSelectedEventRaised)
     auto created_window = manager->create_window().lock();
     ASSERT_NE(created_window, nullptr);
 
-    Item test_item(100, 10, 1, L"Lara", 0, 0, {}, DirectX::SimpleMath::Vector3::Zero);
+    Item test_item(100, 10, 1, "Lara", 0, 0, {}, DirectX::SimpleMath::Vector3::Zero);
     created_window->on_item_selected(test_item);
 
     ASSERT_TRUE(raised_item.has_value());
@@ -91,7 +91,7 @@ TEST(ItemsWindowManager, ItemVisibilityEventRaised)
     auto created_window = manager->create_window().lock();
     ASSERT_NE(created_window, nullptr);
 
-    Item test_item(100, 10, 1, L"Lara", 0, 0, {}, DirectX::SimpleMath::Vector3::Zero);
+    Item test_item(100, 10, 1, "Lara", 0, 0, {}, DirectX::SimpleMath::Vector3::Zero);
     created_window->on_item_visibility(test_item, true);
 
     ASSERT_TRUE(raised_item.has_value());
@@ -128,8 +128,8 @@ TEST(ItemsWindowManager, SetItemsSetsItemsOnWindows)
 
     std::vector<Item> items
     {
-        Item(0, 0, 0, L"Type", 0, 0, {}, DirectX::SimpleMath::Vector3::Zero),
-        Item(1, 0, 0, L"Type", 0, 0, {}, DirectX::SimpleMath::Vector3::Zero)
+        Item(0, 0, 0, "Type", 0, 0, {}, DirectX::SimpleMath::Vector3::Zero),
+        Item(1, 0, 0, "Type", 0, 0, {}, DirectX::SimpleMath::Vector3::Zero)
     };
     manager->set_items(items);
 }
@@ -146,7 +146,7 @@ TEST(ItemsWindowManager, SetItemVisibilityUpdatesWindows)
 
     std::vector<Item> items
     {
-        Item(0, 0, 0, L"Type", 0, 0, {}, DirectX::SimpleMath::Vector3::Zero),
+        Item(0, 0, 0, "Type", 0, 0, {}, DirectX::SimpleMath::Vector3::Zero),
     };
     manager->set_items(items);
     manager->set_item_visible(items[0], false);
@@ -187,8 +187,8 @@ TEST(ItemsWindowManager, SetSelectedItemSetsSelectedItemOnWindows)
 
     std::vector<Item> items
     {
-        Item(0, 0, 0, L"Type", 0, 0, {}, DirectX::SimpleMath::Vector3::Zero),
-        Item(1, 1, 0, L"Type", 0, 0, {}, DirectX::SimpleMath::Vector3::Zero)
+        Item(0, 0, 0, "Type", 0, 0, {}, DirectX::SimpleMath::Vector3::Zero),
+        Item(1, 1, 0, "Type", 0, 0, {}, DirectX::SimpleMath::Vector3::Zero)
     };
     manager->set_items(items);
 
@@ -206,8 +206,8 @@ TEST(ItemsWindowManager, CreateWindowCreatesNewWindowWithSavedValues)
 
     std::vector<Item> items
     {
-        Item(0, 0, 0, L"Type", 0, 0, {}, DirectX::SimpleMath::Vector3::Zero),
-        Item(1, 1, 0, L"Type", 0, 0, {}, DirectX::SimpleMath::Vector3::Zero)
+        Item(0, 0, 0, "Type", 0, 0, {}, DirectX::SimpleMath::Vector3::Zero),
+        Item(1, 1, 0, "Type", 0, 0, {}, DirectX::SimpleMath::Vector3::Zero)
     };
 
     manager->set_items(items);

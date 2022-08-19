@@ -2,9 +2,9 @@
 
 namespace trview
 {
-    void Tooltip::set_text(const std::wstring& text)
+    void Tooltip::set_text(const std::string& text)
     {
-        _text = to_utf8(text);
+        _text = text;
     }
 
     void Tooltip::set_text_colour(const Colour& colour)

@@ -70,15 +70,14 @@ namespace trview
                 return;
             }
 
-            std::wstring text = L"X: " + std::to_wstring(sector->x()) + L", Z:" + std::to_wstring(sector->z()) + L"\n";
+            std::string text = std::format("X: {}, Z: {}\n", sector->x(), sector->z());
             if (has_flag(sector->flags(), SectorFlag::RoomAbove))
             {
-                text += L"Above: " + std::to_wstring(sector->room_above());
+                text += std::format("Above: {}", sector->room_above());
             }
             if (has_flag(sector->flags(), SectorFlag::RoomBelow))
             {
-                text += (has_flag(sector->flags(), SectorFlag::RoomAbove) ? L", " : L"") +
-                    std::wstring(L"Below: ") + std::to_wstring(sector->room_below());
+                text += std::format("{}Below: {}", has_flag(sector->flags(), SectorFlag::RoomAbove) ? ", " : "", sector->room_below());
             }
             _map_tooltip.set_text(text);
             _map_tooltip.set_visible(!text.empty());
@@ -521,7 +520,7 @@ namespace trview
                                     }
 
                                     ImGui::TableNextColumn();
-                                    ImGui::Text(to_utf8(item.type()).c_str());
+                                    ImGui::Text(item.type().c_str());
                                 }
                             }
 
@@ -595,7 +594,7 @@ namespace trview
                                     }
 
                                     ImGui::TableNextColumn();
-                                    ImGui::Text(to_utf8(trigger_type_name(trigger_ptr->type())).c_str());
+                                    ImGui::Text(trigger_type_name(trigger_ptr->type()).c_str());
                                 }
                             }
 
@@ -665,7 +664,7 @@ namespace trview
         {
             if (auto trigger_ptr = trigger.lock())
             {
-                available_trigger_types.insert(to_utf8(trigger_type_name(trigger_ptr->type())));
+                available_trigger_types.insert(trigger_type_name(trigger_ptr->type()));
             }
         }
         _filters.add_multi_getter<std::string>("Trigger Type", { available_trigger_types.begin(), available_trigger_types.end() }, [&](auto&& room)
@@ -676,7 +675,7 @@ namespace trview
                     const auto trigger_ptr = trigger.lock();
                     if (trigger_ptr && trigger_ptr->room() == room.number())
                     {
-                        results.push_back(to_utf8(trigger_type_name(trigger_ptr->type())));
+                        results.push_back(trigger_type_name(trigger_ptr->type()));
                     }
                 }
                 return results;
@@ -697,7 +696,7 @@ namespace trview
         std::set<std::string> available_item_types;
         for (const auto& item : _all_items)
         {
-            available_item_types.insert(to_utf8(item.type()));
+            available_item_types.insert(item.type());
         }
         _filters.add_multi_getter<std::string>("Item Type", { available_item_types.begin(), available_item_types.end() }, [&](auto&& room)
             {
@@ -706,7 +705,7 @@ namespace trview
                 {
                     if (item.room() == room.number())
                     {
-                        results.push_back(to_utf8(item.type()));
+                        results.push_back(item.type());
                     }
                 }
                 return results;

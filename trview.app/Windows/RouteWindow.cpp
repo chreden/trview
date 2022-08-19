@@ -192,7 +192,7 @@ namespace trview
                         return std::format("{:.0f}, {:.0f}, {:.0f}", p.x, p.y, p.z);
                     };
 
-                    add_stat("Type", to_utf8(waypoint_type_to_string(waypoint.type())));
+                    add_stat("Type", waypoint_type_to_string(waypoint.type()));
                     add_stat("Position", position_text(waypoint.position()));
                     add_stat("Room", std::to_string(waypoint.room()));
                     add_stat("Room Position", position_text(get_room_pos()));
@@ -265,10 +265,10 @@ namespace trview
                     }
 
                     ImGui::Text("Notes");
-                    std::string notes = to_utf8(waypoint.notes());
+                    std::string notes = waypoint.notes();
                     if (ImGui::InputTextMultiline(Names::notes.c_str(), &notes, ImVec2(-1, -1)))
                     {
-                        waypoint.set_notes(to_utf16(notes));
+                        waypoint.set_notes(notes);
                         _route->set_unsaved(true);
                     }
                 }
@@ -452,7 +452,7 @@ namespace trview
         {
             if (waypoint.index() < _all_items.size())
             {
-                return to_utf8(_all_items[waypoint.index()].type());
+                return _all_items[waypoint.index()].type();
             }
             else
             {
@@ -465,7 +465,7 @@ namespace trview
             {
                 if (auto trigger = _all_triggers[waypoint.index()].lock())
                 {
-                    return to_utf8(trigger_type_name(trigger->type()));
+                    return trigger_type_name(trigger->type());
                 }
             }
             else
@@ -473,6 +473,6 @@ namespace trview
                 return "Invalid trigger";
             }
         }
-        return to_utf8(waypoint_type_to_string(waypoint.type()));
+        return waypoint_type_to_string(waypoint.type());
     }
 }

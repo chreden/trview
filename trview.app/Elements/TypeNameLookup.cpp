@@ -38,7 +38,7 @@ namespace trview
                 auto name = element.at("name").get<std::string>();
                 type_names.insert({ element.at("id").get<uint32_t>(), 
                     {
-                        std::wstring(name.begin(), name.end()),
+                        name,
                         read_attribute<bool>(element, "pickup")
                     } });
             }
@@ -52,18 +52,18 @@ namespace trview
         load_game_types(LevelVersion::Tomb5);
     }
 
-    std::wstring TypeNameLookup::lookup_type_name(LevelVersion level_version, uint32_t type_id) const
+    std::string TypeNameLookup::lookup_type_name(LevelVersion level_version, uint32_t type_id) const
     {
         const auto& game_types = _type_names.find(level_version);
         if (game_types == _type_names.end())
         {
-            return std::to_wstring(type_id);
+            return std::to_string(type_id);
         }
 
         const auto found_type = game_types->second.find(type_id);
         if (found_type == game_types->second.end())
         {
-            return std::to_wstring(type_id);
+            return std::to_string(type_id);
         }
         return found_type->second.name;
     }

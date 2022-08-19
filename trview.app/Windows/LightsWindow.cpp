@@ -148,7 +148,7 @@ namespace trview
                     ImGui::TableNextColumn();
                     ImGui::Text(std::to_string(light->room()).c_str());
                     ImGui::TableNextColumn();
-                    ImGui::Text(to_utf8(light_type_name(light->type())).c_str());
+                    ImGui::Text(light_type_name(light->type()).c_str());
                     ImGui::TableNextColumn();
                     bool hidden = !light->visible();
                     ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0, 0));
@@ -213,7 +213,7 @@ namespace trview
                             " B:" + std::to_string(static_cast<int>(colour.b * 255));
                     };
 
-                    add_stat("Type", to_utf8(light_type_name(selected_light->type())));
+                    add_stat("Type", light_type_name(selected_light->type()));
                     add_stat("#", std::to_string(selected_light->number()));
                     add_stat("Room", std::to_string(selected_light->room()));
 
@@ -298,10 +298,10 @@ namespace trview
         {
             if (auto light_ptr = light.lock())
             {
-                available_types.insert(to_utf8(light_type_name(light_ptr->type())));
+                available_types.insert(light_type_name(light_ptr->type()));
             }
         }
-        _filters.add_getter<std::string>("Type", { available_types.begin(), available_types.end() }, [](auto&& light) { return to_utf8(light_type_name(light.type())); });
+        _filters.add_getter<std::string>("Type", { available_types.begin(), available_types.end() }, [](auto&& light) { return light_type_name(light.type()); });
         _filters.add_getter<float>("#", [](auto&& light) { return light.number(); });
         _filters.add_getter<float>("Room", [](auto&& light) { return light.room(); });
         _filters.add_getter<float>("X", [](auto&& light) { return light.position().x * trlevel::Scale_X; }, has_position);

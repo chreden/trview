@@ -11,7 +11,7 @@ namespace trview
     public:
         /// Set the tooltip text.
         /// @param text The text to show.
-        void set_text(const std::wstring& text);
+        void set_text(const std::string& text);
 
         /// Set the colour of the text.
         /// @param colour The text colour.

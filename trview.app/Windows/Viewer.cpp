@@ -290,7 +290,7 @@ namespace trview
                 }
                 else
                 {
-                    result.text = L"|....|";
+                    result.text = "|....|";
                 }
             }
         };
@@ -974,7 +974,6 @@ namespace trview
 
         _token_store += _camera_input.on_pan += [&](bool vertical, float x, float y)
         {
-            auto& io = ImGui::GetIO();
             if (_ui->is_cursor_over() || _camera_mode != CameraMode::Orbit)
             {
                 return;

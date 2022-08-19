@@ -627,7 +627,7 @@ TEST(Application, ReloadSyncsProperties)
     std::vector<Item> items;
     for (int i = 0; i < 5; ++i) 
     {
-        items.push_back(Item(i, 0, 0, L"", 0, 0, {}, Vector3::Zero));
+        items.push_back(Item(i, 0, 0, "", 0, 0, {}, Vector3::Zero));
     }
     
     std::vector<std::shared_ptr<ITrigger>> triggers;

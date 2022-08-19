@@ -191,15 +191,14 @@ namespace trview
                 return;
             }
 
-            std::wstring text = L"X: " + std::to_wstring(sector->x()) + L", Z:" + std::to_wstring(sector->z()) + L"\n";
+            std::string text = std::format("X: {}, Z: {}\n", sector->x(), sector->z());
             if (has_flag(sector->flags(), SectorFlag::RoomAbove))
             {
-                text += L"Above: " + std::to_wstring(sector->room_above());
+                text += std::format("Above: {}", sector->room_above());
             }
             if (has_flag(sector->flags(), SectorFlag::RoomBelow))
             {
-                text += (has_flag(sector->flags(), SectorFlag::RoomAbove) ? L", " : L"") +
-                    std::wstring(L"Below: ") + std::to_wstring(sector->room_below());
+                text += std::format("{}Below: {}", has_flag(sector->flags(), SectorFlag::RoomAbove) ? ", " : "", sector->room_below());
             }
             _map_tooltip->set_text(text);
             _map_tooltip->set_visible(!text.empty());
