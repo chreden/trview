@@ -139,7 +139,7 @@ namespace trview
                         _scroll_to_item = false;
                     }
 
-                    if (ImGui::Selectable((std::to_string(item.number()) + std::string("##") + std::to_string(item.number())).c_str(), &selected, ImGuiSelectableFlags_SpanAllColumns | ImGuiSelectableFlags_SelectOnNav | ImGuiTableFlags_SizingFixedFit))
+                    if (ImGui::Selectable(std::format("{0}##{0}", item.number()).c_str(), &selected, ImGuiSelectableFlags_SpanAllColumns | ImGuiSelectableFlags_SelectOnNav | ImGuiTableFlags_SizingFixedFit))
                     {
                         scroller.fix_scroll();
 
@@ -161,7 +161,7 @@ namespace trview
                     ImGui::TableNextColumn();
                     bool hidden = !item.visible();
                     ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0, 0));
-                    if (ImGui::Checkbox((std::string("##hide-") + std::to_string(item.number())).c_str(), &hidden))
+                    if (ImGui::Checkbox(std::format("##hide-{}", item.number()).c_str(), &hidden))
                     {
                         on_item_visibility(item, !hidden);
                     }

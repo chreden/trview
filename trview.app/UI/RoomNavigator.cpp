@@ -8,7 +8,7 @@ namespace trview
         if (ImGui::Begin("Room Navigator", nullptr, ImGuiWindowFlags_AlwaysAutoResize))
         {
             const uint32_t previous_selection = _selected_room;
-            if (ImGui::InputInt(std::string("of " + std::to_string(_max_rooms) +  "##roomnumber").c_str(), &_selected_room, 1, 10, ImGuiInputTextFlags_EnterReturnsTrue))
+            if (ImGui::InputInt(std::format("of {}##roomnumber", _max_rooms).c_str(), &_selected_room, 1, 10, ImGuiInputTextFlags_EnterReturnsTrue))
             {
                 _selected_room = std::clamp(_selected_room, 0, _max_rooms);
                 if (_selected_room != previous_selection)

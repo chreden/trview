@@ -45,7 +45,6 @@ namespace trview
     /// Get the trigger command type from a string.
     /// @param name The string to convert.
     /// @returns The trigger command type.
-    TriggerCommandType command_from_name(const std::wstring& name);
     TriggerCommandType command_from_name(const std::string& name);
 
     bool has_command(const ITrigger& trigger, TriggerCommandType type);

@@ -131,7 +131,7 @@ namespace trview
                         _scroll_to_light = false;
                     }
 
-                    if (ImGui::Selectable((std::to_string(light->number()) + std::string("##") + std::to_string(light->number())).c_str(), &selected, ImGuiSelectableFlags_SpanAllColumns | ImGuiSelectableFlags_SelectOnNav | ImGuiTableFlags_SizingFixedFit))
+                    if (ImGui::Selectable(std::format("{0}##{0}", light->number()).c_str(), &selected, ImGuiSelectableFlags_SpanAllColumns | ImGuiSelectableFlags_SelectOnNav | ImGuiTableFlags_SizingFixedFit))
                     {
                         scroller.fix_scroll();
 
@@ -152,7 +152,7 @@ namespace trview
                     ImGui::TableNextColumn();
                     bool hidden = !light->visible();
                     ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0, 0));
-                    if (ImGui::Checkbox((std::string("##hide-") + std::to_string(light->number())).c_str(), &hidden))
+                    if (ImGui::Checkbox(std::format("##hide-{}", light->number()).c_str(), &hidden))
                     {
                         on_light_visibility(light, !hidden);
                     }
@@ -208,9 +208,7 @@ namespace trview
 
                     auto format_colour = [](const Colour& colour)
                     {
-                        return "R:" + std::to_string(static_cast<int>(colour.r * 255)) +
-                            " G:" + std::to_string(static_cast<int>(colour.g * 255)) +
-                            " B:" + std::to_string(static_cast<int>(colour.b * 255));
+                        return std::format("R: {}, G: {}, B: {}", static_cast<int>(colour.r * 255), static_cast<int>(colour.g * 255), static_cast<int>(colour.b * 255));
                     };
 
                     add_stat("Type", light_type_name(selected_light->type()));

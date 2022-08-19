@@ -326,7 +326,7 @@ namespace trview
                         _scroll_to_room = false;
                     }
 
-                    if (ImGui::Selectable((std::to_string(room_ptr->number()) + std::string("##") + std::to_string(room_ptr->number())).c_str(), &selected, ImGuiSelectableFlags_SpanAllColumns | ImGuiSelectableFlags_SelectOnNav))
+                    if (ImGui::Selectable(std::format("{0}##{0}", room_ptr->number()).c_str(), &selected, ImGuiSelectableFlags_SpanAllColumns | ImGuiSelectableFlags_SelectOnNav))
                     {
                         scroller.fix_scroll();
                         _selected_room = room_ptr->number();
@@ -345,7 +345,7 @@ namespace trview
                     ImGui::TableNextColumn();
                     bool hidden = !room_ptr->visible();
                     ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0, 0));
-                    if (ImGui::Checkbox((std::string("##hide-") + std::to_string(room_ptr->number())).c_str(), &hidden))
+                    if (ImGui::Checkbox(std::format("##hide-{}", room_ptr->number()).c_str(), &hidden))
                     {
                         on_room_visibility(room, !hidden);
                     }
@@ -585,7 +585,7 @@ namespace trview
                                         _scroll_to_trigger = false;
                                     }
 
-                                    if (ImGui::Selectable((std::to_string(trigger_ptr->number()) + std::string("##") + std::to_string(trigger_ptr->number())).c_str(), &selected, ImGuiSelectableFlags_SpanAllColumns | ImGuiSelectableFlags_SelectOnNav))
+                                    if (ImGui::Selectable(std::format("{0}##{0}", trigger_ptr->number()).c_str(), &selected, ImGuiSelectableFlags_SpanAllColumns | ImGuiSelectableFlags_SelectOnNav))
                                     {
                                         scroller.fix_scroll();
                                         _local_selected_trigger = trigger_ptr;
