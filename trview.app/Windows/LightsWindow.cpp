@@ -1,5 +1,6 @@
 #include "LightsWindow.h"
 #include "../trview_imgui.h"
+#include <format>
 
 namespace trview
 {
@@ -212,26 +213,6 @@ namespace trview
                             " B:" + std::to_string(static_cast<int>(colour.b * 255));
                     };
 
-                    auto position_text = [](const auto& vec)
-                    {
-                        std::stringstream stream;
-                        stream << std::fixed << std::setprecision(0) <<
-                            vec.x * trlevel::Scale_X << ", " <<
-                            vec.y * trlevel::Scale_Y << ", " <<
-                            vec.z * trlevel::Scale_Z;
-                        return stream.str();
-                    };
-
-                    auto direction_text = [](const auto& vec)
-                    {
-                        std::stringstream stream;
-                        stream << std::fixed << std::setprecision(3) <<
-                            vec.x * trlevel::Scale_X << ", " <<
-                            vec.y * trlevel::Scale_Y << ", " <<
-                            vec.z * trlevel::Scale_Z;
-                        return stream.str();
-                    };
-
                     add_stat("Type", to_utf8(light_type_name(selected_light->type())));
                     add_stat("#", std::to_string(selected_light->number()));
                     add_stat("Room", std::to_string(selected_light->room()));
@@ -243,12 +224,14 @@ namespace trview
 
                     if (has_position(*selected_light))
                     {
-                        add_stat("Position", position_text(selected_light->position()));
+                        const auto pos = selected_light->position() * trlevel::Scale;
+                        add_stat("Position", std::format("{:.0f}, {:.0f}, {:.0f}", pos.x, pos.y, pos.z));
                     }
 
                     if (has_direction(*selected_light))
                     {
-                        add_stat("Direction", direction_text(selected_light->direction()));
+                        const auto dir = selected_light->direction() * trlevel::Scale;
+                        add_stat("Direction", std::format("{:.3f}, {:.3f}, {:.3f}", dir.x, dir.y, dir.z));
                     }
 
                     add_stat_with_condition("Intensity", intensity, has_intensity);

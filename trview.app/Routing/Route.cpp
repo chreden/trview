@@ -4,6 +4,7 @@
 #include <trview.common/Maths.h>
 #include <trview.common/Json.h>
 #include <trview.app/Elements/ILevel.h>
+#include <format>
 
 using namespace DirectX;
 using namespace DirectX::SimpleMath;
@@ -556,14 +557,10 @@ namespace trview
             nlohmann::json waypoint_json;
             waypoint_json["type"] = to_utf8(waypoint_type_to_string(waypoint.type()));
 
-            std::stringstream pos_string;
-            auto pos = waypoint.position();
-            pos_string << pos.x << "," << pos.y << "," << pos.z;
-            waypoint_json["position"] = pos_string.str();
-            std::stringstream normal_string;
-            auto normal = waypoint.normal();
-            normal_string << normal.x << "," << normal.y << "," << normal.z;
-            waypoint_json["normal"] = normal_string.str();
+            const auto pos = waypoint.position();
+            waypoint_json["position"] = std::format("{},{},{}", pos.x, pos.y, pos.z);
+            const auto normal = waypoint.normal();
+            waypoint_json["normal"] = std::format("{},{},{}", normal.x, normal.y, normal.z);
             waypoint_json["room"] = waypoint.room();
             waypoint_json["index"] = waypoint.index();
             waypoint_json["notes"] = to_utf8(waypoint.notes());

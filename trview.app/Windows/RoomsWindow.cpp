@@ -14,7 +14,7 @@ namespace trview
             using trlevel::LevelVersion;
             const auto add_flag = [&](const std::wstring& name, bool flag) 
             {
-                auto value = to_utf8(format_bool(flag));
+                auto value = std::format("{}", flag);
                 ImGui::TableNextColumn();
                 if (ImGui::Selectable(to_utf8(name).c_str(), false, ImGuiSelectableFlags_SpanAllColumns))
                 {

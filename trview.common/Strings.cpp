@@ -1,5 +1,6 @@
 #include "Strings.h"
 #include <algorithm>
+#include <format>
 
 namespace trview
 {
@@ -23,13 +24,6 @@ namespace trview
         return &output[0];
     }
 
-    std::wstring format_bool(bool value)
-    {
-        std::wstringstream stream;
-        stream << std::boolalpha << value;
-        return stream.str();
-    }
-
     std::wstring format_binary(uint16_t value)
     {
         std::wstringstream stream;
@@ -46,7 +40,7 @@ namespace trview
     std::string to_lowercase(const std::string& value)
     {
         std::string result;
-        std::transform(value.begin(), value.end(), std::back_inserter(result), std::tolower);
+        std::transform(value.begin(), value.end(), std::back_inserter(result), ::tolower);
         return result;
     }
 }

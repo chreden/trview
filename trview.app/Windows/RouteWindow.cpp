@@ -3,6 +3,7 @@
 #include <trview.common/Strings.h>
 #include <trview.common/Windows/IClipboard.h>
 #include "../trview_imgui.h"
+#include <format>
 
 namespace trview
 {
@@ -187,12 +188,8 @@ namespace trview
 
                     auto position_text = [](const auto& pos)
                     {
-                        std::stringstream stream;
-                        stream << std::fixed << std::setprecision(0) <<
-                            pos.x * trlevel::Scale_X << ", " <<
-                            pos.y * trlevel::Scale_Y << ", " <<
-                            pos.z * trlevel::Scale_Z;
-                        return stream.str();
+                        const auto p = pos * trlevel::Scale;
+                        return std::format("{:.0f}, {:.0f}, {:.0f}", p.x, p.y, p.z);
                     };
 
                     add_stat("Type", to_utf8(waypoint_type_to_string(waypoint.type())));

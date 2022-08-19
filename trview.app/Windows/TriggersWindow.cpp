@@ -1,6 +1,7 @@
 #include "TriggersWindow.h"
 #include <trview.common/Strings.h>
 #include "../trview_imgui.h"
+#include <format>
 
 namespace trview
 {
@@ -292,14 +293,10 @@ namespace trview
                         ImGui::Text(value.c_str());
                     };
 
-                    auto position_text = [&selected_trigger]()
+                    auto position_text = [=]()
                     {
-                        std::stringstream stream;
-                        stream << std::fixed << std::setprecision(0) <<
-                            selected_trigger->position().x * trlevel::Scale_X << ", " <<
-                            selected_trigger->position().y * trlevel::Scale_Y << ", " <<
-                            selected_trigger->position().z * trlevel::Scale_Z;
-                        return stream.str();
+                        const auto p = selected_trigger->position() * trlevel::Scale;
+                        return std::format("{:.0f}, {:.0f}, {:.0f}", p.x, p.y, p.z);
                     };
 
                     add_stat("Type", to_utf8(trigger_type_name(selected_trigger->type())));
@@ -307,7 +304,7 @@ namespace trview
                     add_stat("Position", position_text());
                     add_stat("Room", std::to_string(selected_trigger->room()));
                     add_stat("Flags", to_utf8(format_binary(selected_trigger->flags())));
-                    add_stat("Only once", to_utf8(format_bool(selected_trigger->only_once())));
+                    add_stat("Only once", std::format("{}", selected_trigger->only_once()));
                     add_stat("Timer", std::to_string(selected_trigger->timer()));
                 }
 

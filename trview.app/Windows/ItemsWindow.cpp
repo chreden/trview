@@ -215,12 +215,8 @@ namespace trview
 
                     auto position_text = [&item]()
                     {
-                        std::stringstream stream;
-                        stream << std::fixed << std::setprecision(0) <<
-                            item.position().x * trlevel::Scale_X << ", " <<
-                            item.position().y * trlevel::Scale_Y << ", " <<
-                            item.position().z * trlevel::Scale_Z;
-                        return stream.str();
+                        const auto pos = item.position() * trlevel::Scale;
+                        return std::format("{:.0f}, {:.0f}, {:.0f}", pos.x, pos.y, pos.z);
                     };
 
                     add_stat("Type", to_utf8(item.type()));
@@ -228,8 +224,8 @@ namespace trview
                     add_stat("Position", position_text());
                     add_stat("Type ID", std::to_string(item.type_id()));
                     add_stat("Room", std::to_string(item.room()));
-                    add_stat("Clear Body", to_utf8(format_bool(item.clear_body_flag())));
-                    add_stat("Invisible", to_utf8(format_bool(item.invisible_flag())));
+                    add_stat("Clear Body", std::format("{}", item.clear_body_flag()));
+                    add_stat("Invisible", std::format("{}", item.invisible_flag()));
                     add_stat("Flags", to_utf8(format_binary(item.activation_flags())));
                     add_stat("OCB", std::to_string(item.ocb()));
                 }
