@@ -26,7 +26,7 @@ namespace trview
         {
             if (!is_input_active())
             {
-                _go_to->set_name(L"Room");
+                _go_to->set_name("Room");
                 _go_to->toggle_visible(_selected_room);
             }
         };
@@ -35,7 +35,7 @@ namespace trview
         {
             if (!is_input_active())
             {
-                _go_to->set_name(L"Item");
+                _go_to->set_name("Item");
                 _go_to->toggle_visible(_selected_item);
             }
         };
@@ -53,7 +53,7 @@ namespace trview
         _go_to = std::make_unique<GoTo>();
         _token_store += _go_to->on_selected += [&](uint32_t index)
         {
-            if (_go_to->name() == L"Item")
+            if (_go_to->name() == "Item")
             {
                 on_select_item(index);
             }
@@ -64,10 +64,10 @@ namespace trview
         };
 
         _toolbar = std::make_unique<Toolbar>();
-        _toolbar->add_tool(L"Measure", L"|....|");
-        _token_store += _toolbar->on_tool_clicked += [this](const std::wstring& tool)
+        _toolbar->add_tool("Measure", "|....|");
+        _token_store += _toolbar->on_tool_clicked += [this](const std::string& tool)
         {
-            if (tool == L"Measure")
+            if (tool == "Measure")
             {
                 on_tool_selected(Tool::Measure);
             }
@@ -333,9 +333,7 @@ namespace trview
 
     void ViewerUI::set_measure_distance(float distance)
     {
-        std::wstringstream stream;
-        stream << std::fixed << std::setprecision(2) << distance;
-        _measure_text = to_utf8(stream.str());
+        _measure_text = std::format("{:.2f}", distance);
     }
 
     void ViewerUI::set_measure_position(const Point& position)

@@ -12,49 +12,49 @@ namespace trview
         void add_room_flags(IClipboard& clipboard, trlevel::LevelVersion version, const IRoom& room)
         {
             using trlevel::LevelVersion;
-            const auto add_flag = [&](const std::wstring& name, bool flag) 
+            const auto add_flag = [&](const std::string& name, bool flag) 
             {
                 auto value = std::format("{}", flag);
                 ImGui::TableNextColumn();
-                if (ImGui::Selectable(to_utf8(name).c_str(), false, ImGuiSelectableFlags_SpanAllColumns))
+                if (ImGui::Selectable(name.c_str(), false, ImGuiSelectableFlags_SpanAllColumns))
                 {
                     clipboard.write(to_utf16(value));
                 }
                 ImGui::TableNextColumn();
                 ImGui::Text(value.c_str());
             };
-            const auto add_flag_min = [&](LevelVersion min_version, const std::wstring& name, const std::wstring& alt_name, bool flag)
+            const auto add_flag_min = [&](LevelVersion min_version, const std::string& name, const std::string& alt_name, bool flag)
             {
                 add_flag(version >= min_version ? name : alt_name, flag);
             };
 
-            add_flag(L"Water", room.water());
-            add_flag(L"Bit 1", room.flag(IRoom::Flag::Bit1));
-            add_flag(L"Bit 2", room.flag(IRoom::Flag::Bit2));
-            add_flag_min(LevelVersion::Tomb2, L"Outside / 3", L"Bit 3", room.outside());
-            add_flag(L"Bit 4", room.flag(IRoom::Flag::Bit4));
-            add_flag_min(LevelVersion::Tomb2, L"Wind / 5", L"Bit 5", room.flag(IRoom::Flag::Wind));
-            add_flag(L"Bit 6", room.flag(IRoom::Flag::Bit6));
+            add_flag("Water", room.water());
+            add_flag("Bit 1", room.flag(IRoom::Flag::Bit1));
+            add_flag("Bit 2", room.flag(IRoom::Flag::Bit2));
+            add_flag_min(LevelVersion::Tomb2, "Outside / 3", "Bit 3", room.outside());
+            add_flag("Bit 4", room.flag(IRoom::Flag::Bit4));
+            add_flag_min(LevelVersion::Tomb2, "Wind / 5", "Bit 5", room.flag(IRoom::Flag::Wind));
+            add_flag("Bit 6", room.flag(IRoom::Flag::Bit6));
             if (version == LevelVersion::Tomb3)
             {
-                add_flag(L"Quicksand / 7", room.flag(IRoom::Flag::Quicksand));
+                add_flag("Quicksand / 7", room.flag(IRoom::Flag::Quicksand));
             }
             else if (version > LevelVersion::Tomb3)
             {
-                add_flag(L"Block Lens Flare / 7", room.flag(IRoom::Flag::NoLensFlare));
+                add_flag("Block Lens Flare / 7", room.flag(IRoom::Flag::NoLensFlare));
             }
             else
             {
-                add_flag(L"Bit 7", room.flag(IRoom::Flag::Bit7));
+                add_flag("Bit 7", room.flag(IRoom::Flag::Bit7));
             }
-            add_flag_min(LevelVersion::Tomb3, L"Caustics / 8", L"Bit 8", room.flag(IRoom::Flag::Caustics));
-            add_flag_min(LevelVersion::Tomb3, L"Reflectivity / 9", L"Bit 9", room.flag(IRoom::Flag::WaterReflectivity));
-            add_flag_min(LevelVersion::Tomb4, L"Snow (NGLE) / 10", L"Bit 10", room.flag(IRoom::Flag::Bit10));
-            add_flag_min(LevelVersion::Tomb4, L"D / Rain / 11", L"Bit 11", room.flag(IRoom::Flag::Bit11));
-            add_flag_min(LevelVersion::Tomb4, L"P / Cold / 12", L"Bit 12", room.flag(IRoom::Flag::Bit12));
-            add_flag(L"Bit 13", room.flag(IRoom::Flag::Bit13));
-            add_flag(L"Bit 14", room.flag(IRoom::Flag::Bit14));
-            add_flag(L"Bit 15", room.flag(IRoom::Flag::Bit15));
+            add_flag_min(LevelVersion::Tomb3, "Caustics / 8", "Bit 8", room.flag(IRoom::Flag::Caustics));
+            add_flag_min(LevelVersion::Tomb3, "Reflectivity / 9", "Bit 9", room.flag(IRoom::Flag::WaterReflectivity));
+            add_flag_min(LevelVersion::Tomb4, "Snow (NGLE) / 10", "Bit 10", room.flag(IRoom::Flag::Bit10));
+            add_flag_min(LevelVersion::Tomb4, "D / Rain / 11", "Bit 11", room.flag(IRoom::Flag::Bit11));
+            add_flag_min(LevelVersion::Tomb4, "P / Cold / 12", "Bit 12", room.flag(IRoom::Flag::Bit12));
+            add_flag("Bit 13", room.flag(IRoom::Flag::Bit13));
+            add_flag("Bit 14", room.flag(IRoom::Flag::Bit14));
+            add_flag("Bit 15", room.flag(IRoom::Flag::Bit15));
         }
     }
 

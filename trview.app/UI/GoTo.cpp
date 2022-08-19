@@ -14,12 +14,12 @@ namespace trview
         _shown = false;
     }
 
-    std::wstring GoTo::name() const
+    std::string GoTo::name() const
     {
         return _name;
     }
 
-    void GoTo::set_name(const std::wstring& name)
+    void GoTo::set_name(const std::string& name)
     {
         _name = name;
     }
@@ -31,7 +31,7 @@ namespace trview
             const auto viewport = ImGui::GetMainViewport();
             ImGui::SetNextWindowPos(viewport->Pos + viewport->Size * 0.5f, 0, ImVec2(0.5f, 0.5f));
 
-            const std::string id = (std::string("Go To ") + to_utf8(_name));
+            const std::string id = std::format("Go To {}", _name);
             if (!_shown)
             {
                 ImGui::OpenPopup(id.c_str());

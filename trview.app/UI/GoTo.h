@@ -29,14 +29,14 @@ namespace trview
         Event<uint32_t> on_selected;
 
         /// Get the name of the type of thing being selected.
-        std::wstring name() const;
+        std::string name() const;
 
         void render();
 
         /// Set the name of the type of thing that is being gone to.
-        void set_name(const std::wstring& name);
+        void set_name(const std::string& name);
     private:
-        std::wstring  _name;
+        std::string  _name;
         bool _visible{ false };
         int _index{ 0 };
         bool _shown{ false };

@@ -9,9 +9,9 @@ TEST(GoTo, Name)
     GoTo window;
     window.toggle_visible(0);
 
-    ASSERT_EQ(window.name(), L"");
-    window.set_name(L"Item");
-    ASSERT_EQ(window.name(), L"Item");
+    ASSERT_EQ(window.name(), "");
+    window.set_name("Item");
+    ASSERT_EQ(window.name(), "Item");
 
     TestImgui imgui([&]() { window.render(); });
     ASSERT_NE(imgui.find_window(imgui.popup_id("Go To Item").name()), nullptr);
@@ -21,7 +21,7 @@ TEST(GoTo, OnSelectedWithPlusRaised)
 {
     GoTo window;
     window.toggle_visible(0);
-    window.set_name(L"Item");
+    window.set_name("Item");
 
     std::optional<uint32_t> raised;
     auto token = window.on_selected += [&](auto value)
@@ -43,7 +43,7 @@ TEST(GoTo, OnSelectedWithMinusRaised)
 {
     GoTo window;
     window.toggle_visible(0);
-    window.set_name(L"Item");
+    window.set_name("Item");
 
     std::vector<uint32_t> raised;
     auto token = window.on_selected += [&](auto value)
@@ -68,7 +68,7 @@ TEST(GoTo, OnSelectedNotRaisedWhenMinusPressedAtZero)
 {
     GoTo window;
     window.toggle_visible(0);
-    window.set_name(L"Item");
+    window.set_name("Item");
 
     std::optional<uint32_t> raised;
     auto token = window.on_selected += [&](auto value)
@@ -89,7 +89,7 @@ TEST(GoTo, OnSelectedRaised)
 {
     GoTo window;
     window.toggle_visible(0);
-    window.set_name(L"Item");
+    window.set_name("Item");
 
     std::optional<uint32_t> raised;
     auto token = window.on_selected += [&](auto value)
@@ -114,7 +114,7 @@ TEST(GoTo, OnZeroSelectedRaised)
 {
     GoTo window;
     window.toggle_visible(0);
-    window.set_name(L"Item");
+    window.set_name("Item");
 
     std::optional<uint32_t> raised;
     auto token = window.on_selected += [&](auto value)
@@ -139,7 +139,7 @@ TEST(GoTo, OnSelectedNotRaisedWhenCancelled)
 {
     GoTo window;
     window.toggle_visible(0);
-    window.set_name(L"Item");
+    window.set_name("Item");
 
     std::optional<uint32_t> raised;
     auto token = window.on_selected += [&](auto value)
@@ -159,7 +159,7 @@ TEST(GoTo, OnSelectedNotRaisedOnNegative)
 {
     GoTo window;
     window.toggle_visible(0);
-    window.set_name(L"Item");
+    window.set_name("Item");
 
     std::optional<uint32_t> raised;
     auto token = window.on_selected += [&](auto value)
