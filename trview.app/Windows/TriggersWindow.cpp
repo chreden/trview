@@ -304,7 +304,7 @@ namespace trview
                     add_stat("#", std::to_string(selected_trigger->number()));
                     add_stat("Position", position_text());
                     add_stat("Room", std::to_string(selected_trigger->room()));
-                    add_stat("Flags", to_utf8(format_binary(selected_trigger->flags())));
+                    add_stat("Flags", format_binary(selected_trigger->flags()));
                     add_stat("Only once", std::format("{}", selected_trigger->only_once()));
                     add_stat("Timer", std::to_string(selected_trigger->timer()));
                 }
@@ -403,7 +403,7 @@ namespace trview
         _filters.add_getter<std::string>("Type", { available_types.begin(), available_types.end() }, [](auto&& trigger) { return trigger_type_name(trigger.type()); });
         _filters.add_getter<float>("#", [](auto&& trigger) { return trigger.number(); });
         _filters.add_getter<float>("Room", [](auto&& trigger) { return trigger.room(); });
-        _filters.add_getter<std::string>("Flags", [](auto&& trigger) { return to_utf8(format_binary(trigger.flags())); });
+        _filters.add_getter<std::string>("Flags", [](auto&& trigger) { return format_binary(trigger.flags()); });
         _filters.add_getter<bool>("Only once", [](auto&& trigger) { return trigger.only_once(); });
         _filters.add_getter<float>("Timer", [](auto&& trigger) { return trigger.timer(); });
 

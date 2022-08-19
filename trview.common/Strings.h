@@ -17,7 +17,7 @@ namespace trview
     /// Convert a value to a binary - only shows 5 bits.
     /// @param value The value to convert.
     /// @returns The converted string.
-    std::wstring format_binary(uint16_t value);
+    std::string format_binary(uint16_t value);
 
     /// Check whether text is a link.
     /// @param value The value to check.

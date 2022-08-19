@@ -226,7 +226,7 @@ namespace trview
                     add_stat("Room", std::to_string(item.room()));
                     add_stat("Clear Body", std::format("{}", item.clear_body_flag()));
                     add_stat("Invisible", std::format("{}", item.invisible_flag()));
-                    add_stat("Flags", to_utf8(format_binary(item.activation_flags())));
+                    add_stat("Flags", format_binary(item.activation_flags()));
                     add_stat("OCB", std::to_string(item.ocb()));
                 }
 
@@ -352,7 +352,7 @@ namespace trview
         _filters.add_getter<float>("Room", [](auto&& item) { return item.room(); });
         _filters.add_getter<bool>("Clear Body", [](auto&& item) { return item.clear_body_flag(); });
         _filters.add_getter<bool>("Invisible", [](auto&& item) { return item.invisible_flag(); });
-        _filters.add_getter<std::string>("Flags", [](auto&& item) { return to_utf8(format_binary(item.activation_flags())); });
+        _filters.add_getter<std::string>("Flags", [](auto&& item) { return format_binary(item.activation_flags()); });
         _filters.add_getter<float>("OCB", [](auto&& item) { return item.ocb(); });
         _filters.add_multi_getter<float>("Triggered By", [](auto&& item)
             {
