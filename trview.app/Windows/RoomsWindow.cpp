@@ -442,16 +442,17 @@ namespace trview
                         ImGui::Separator();
                     }
 
-                    auto add_stat = [&](const std::string& name, const std::string& value)
+                    auto add_stat = [&]<typename T>(const std::string& name, const T& value)
                     {
+                        const auto string_value = std::format("{}", value);
                         ImGui::TableNextColumn();
                         if (ImGui::Selectable(name.c_str(), false, ImGuiSelectableFlags_SpanAllColumns))
                         {
-                            _clipboard->write(to_utf16(value));
+                            _clipboard->write(to_utf16(string_value));
                             _tooltip_timer = 0.0f;
                         }
                         ImGui::TableNextColumn();
-                        ImGui::Text(value.c_str());
+                        ImGui::Text(string_value.c_str());
                     };
 
                     if (ImGui::BeginTable(Names::bottom.c_str(), 2))
@@ -466,15 +467,15 @@ namespace trview
                             ImGui::TableSetupColumn("Value");
                             ImGui::TableNextRow();
 
-                            add_stat("X", std::to_string(room->info().x));
-                            add_stat("Y", std::to_string(room->info().yBottom));
-                            add_stat("Z", std::to_string(room->info().z));
+                            add_stat("X", room->info().x);
+                            add_stat("Y", room->info().yBottom);
+                            add_stat("Z", room->info().z);
                             if (room->alternate_mode() != Room::AlternateMode::None)
                             {
-                                add_stat("Alternate", std::to_string(room->alternate_room()));
+                                add_stat("Alternate", room->alternate_room());
                                 if (room->alternate_group() != 0xff)
                                 {
-                                    add_stat("Alternate Group", std::to_string(room->alternate_group()));
+                                    add_stat("Alternate Group", room->alternate_group());
                                 }
                             }
                             add_room_flags(*_clipboard, _level_version, *room);

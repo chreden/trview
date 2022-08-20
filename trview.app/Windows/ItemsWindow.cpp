@@ -188,12 +188,22 @@ namespace trview
                 {
                     const auto& item = _selected_item.value();
 
-                    auto add_stat = [&](const std::string& name, const std::string& value)
+                    auto add_stat = [&]<typename T>(const std::string& name, const T&& value)
                     {
+                        constexpr auto get_string = [](auto &&v)
+                        {
+                            if constexpr (std::is_same<T, std::string>::value)
+                            {
+                                return v;
+                            }
+                            return std::format("{}", v);
+                        };
+
+                        const auto string_value = get_string(value);
                         ImGui::TableNextColumn();
                         if (ImGui::Selectable(name.c_str(), false, ImGuiSelectableFlags_SpanAllColumns))
                         {
-                            _clipboard->write(to_utf16(value));
+                            _clipboard->write(to_utf16(string_value));
                             _tooltip_timer = 0.0f;
                         }
                         if (ImGui::IsItemHovered() && _tips.find(name) != _tips.end())
@@ -202,15 +212,15 @@ namespace trview
                             ImGui::Text(_tips[name].c_str());
                             ImGui::EndTooltip();
                         }
-                        if (ImGui::IsItemHovered() && _tips.find(value) != _tips.end())
+                        if (ImGui::IsItemHovered() && _tips.find(string_value) != _tips.end())
                         {
                             ImGui::BeginTooltip();
-                            ImGui::Text(_tips[value].c_str());
+                            ImGui::Text(_tips[string_value].c_str());
                             ImGui::EndTooltip();
                         }
 
                         ImGui::TableNextColumn();
-                        ImGui::Text(value.c_str());
+                        ImGui::Text(string_value.c_str());
                     };
 
                     auto position_text = [&item]()
@@ -220,14 +230,14 @@ namespace trview
                     };
 
                     add_stat("Type", item.type());
-                    add_stat("#", std::to_string(item.number()));
+                    add_stat("#", item.number());
                     add_stat("Position", position_text());
-                    add_stat("Type ID", std::to_string(item.type_id()));
-                    add_stat("Room", std::to_string(item.room()));
-                    add_stat("Clear Body", std::format("{}", item.clear_body_flag()));
-                    add_stat("Invisible", std::format("{}", item.invisible_flag()));
+                    add_stat("Type ID", item.type_id());
+                    add_stat("Room", item.room());
+                    add_stat("Clear Body", item.clear_body_flag());
+                    add_stat("Invisible", item.invisible_flag());
                     add_stat("Flags", format_binary(item.activation_flags()));
-                    add_stat("OCB", std::to_string(item.ocb()));
+                    add_stat("OCB", item.ocb());
                 }
 
                 ImGui::EndTable();
