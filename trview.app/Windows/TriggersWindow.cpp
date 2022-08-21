@@ -282,16 +282,26 @@ namespace trview
                 auto selected_trigger = _selected_trigger.lock();
                 if (selected_trigger)
                 {
-                    auto add_stat = [&](const std::string& name, const std::string& value)
+                    auto add_stat = [&]<typename T>(const std::string& name, const T&& value)
                     {
+                        constexpr auto get_string = [](auto&& v)
+                        {
+                            if constexpr (std::is_same<T, std::string>::value)
+                            {
+                                return v;
+                            }
+                            return std::format("{}", v);
+                        };
+                        const auto string_value = get_string(value);
+
                         ImGui::TableNextColumn();
                         if (ImGui::Selectable(name.c_str(), false, ImGuiSelectableFlags_SpanAllColumns | ImGuiSelectableFlags_SelectOnNav))
                         {
-                            _clipboard->write(to_utf16(value));
+                            _clipboard->write(to_utf16(string_value));
                             _tooltip_timer = 0.0f;
                         }
                         ImGui::TableNextColumn();
-                        ImGui::Text(value.c_str());
+                        ImGui::Text(string_value.c_str());
                     };
 
                     auto position_text = [=]()
@@ -301,12 +311,12 @@ namespace trview
                     };
 
                     add_stat("Type", trigger_type_name(selected_trigger->type()));
-                    add_stat("#", std::to_string(selected_trigger->number()));
+                    add_stat("#", selected_trigger->number());
                     add_stat("Position", position_text());
-                    add_stat("Room", std::to_string(selected_trigger->room()));
+                    add_stat("Room", selected_trigger->room());
                     add_stat("Flags", format_binary(selected_trigger->flags()));
-                    add_stat("Only once", std::format("{}", selected_trigger->only_once()));
-                    add_stat("Timer", std::to_string(selected_trigger->timer()));
+                    add_stat("Only once", selected_trigger->only_once());
+                    add_stat("Timer", selected_trigger->timer());
                 }
 
                 ImGui::EndTable();

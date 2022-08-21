@@ -178,12 +178,22 @@ namespace trview
                 auto selected_light = _selected_light.lock();
                 if (selected_light)
                 {
-                    auto add_stat = [&](const std::string& name, const std::string& value, Colour colour = Colour::White)
+                    auto add_stat = [&]<typename T>(const std::string& name, const T&& value, Colour colour = Colour::White)
                     {
+                        constexpr auto get_string = [](auto&& v)
+                        {
+                            if constexpr (std::is_same<T, std::string>::value)
+                            {
+                                return v;
+                            }
+                            return std::format("{}", v);
+                        };
+                        const auto string_value = get_string(value);
+
                         ImGui::TableNextColumn();
                         if (ImGui::Selectable(name.c_str(), false, ImGuiSelectableFlags_SpanAllColumns | ImGuiSelectableFlags_SelectOnNav))
                         {
-                            _clipboard->write(to_utf16(value));
+                            _clipboard->write(to_utf16(string_value));
                             _tooltip_timer = 0.0f;
                         }
                         if (_level_version == trlevel::LevelVersion::Tomb4 && ImGui::IsItemHovered() && _tips.find(name) != _tips.end())
@@ -194,7 +204,7 @@ namespace trview
                         }
                         ImGui::TableNextColumn();
                         ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(colour.r, colour.g, colour.b, colour.a));
-                        ImGui::Text(value.c_str());
+                        ImGui::Text(string_value.c_str());
                         ImGui::PopStyleColor();
                     };
 
@@ -202,7 +212,7 @@ namespace trview
                     {
                         if (condition(*selected_light))
                         {
-                            add_stat(name, std::to_string(stat(*selected_light)));
+                            add_stat(name, stat(*selected_light));
                         }
                     };
 
@@ -212,8 +222,8 @@ namespace trview
                     };
 
                     add_stat("Type", light_type_name(selected_light->type()));
-                    add_stat("#", std::to_string(selected_light->number()));
-                    add_stat("Room", std::to_string(selected_light->room()));
+                    add_stat("#", selected_light->number());
+                    add_stat("Room", selected_light->room());
 
                     if (has_colour(*selected_light))
                     {

@@ -158,16 +158,27 @@ namespace trview
                     ImGui::TableSetupColumn("Value");
                     ImGui::TableNextRow();
 
-                    auto add_stat = [&](const std::string& name, const std::string& value)
+                    auto add_stat = [&]<typename T>(const std::string& name, const T&& value)
                     {
+                        constexpr auto get_string = [](auto&& v)
+                        {
+                            if constexpr (std::is_same<T, std::string>::value)
+                            {
+                                return v;
+                            }
+                            return std::format("{}", v);
+                        };
+
+                        const auto string_value = get_string(value);
+
                         ImGui::TableNextColumn();
                         if (ImGui::Selectable(name.c_str(), false, ImGuiSelectableFlags_SpanAllColumns))
                         {
-                            _clipboard->write(to_utf16(value));
+                            _clipboard->write(to_utf16(string_value));
                             _tooltip_timer = 0.0f;
                         }
                         ImGui::TableNextColumn();
-                        ImGui::Text(value.c_str());
+                        ImGui::Text(string_value.c_str());
                     };
 
                     auto get_room_pos = [&waypoint, this]()
@@ -194,7 +205,7 @@ namespace trview
 
                     add_stat("Type", waypoint_type_to_string(waypoint.type()));
                     add_stat("Position", position_text(waypoint.position()));
-                    add_stat("Room", std::to_string(waypoint.room()));
+                    add_stat("Room", waypoint.room());
                     add_stat("Room Position", position_text(get_room_pos()));
                     ImGui::EndTable();
                 }
