@@ -224,10 +224,7 @@ namespace trview
             current_camera().set_rotation_pitch(pitch);
         };
 
-        _token_store += _ui->on_command += [&](const auto& command)
-        {
-            lua_execute ( to_utf8 ( command ) );
-        };
+        _token_store += _ui->on_command += lua_execute;
 
         _ui->set_settings(_settings);
         _ui->set_camera_mode(CameraMode::Orbit);

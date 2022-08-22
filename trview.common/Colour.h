@@ -21,7 +21,7 @@ namespace trview
 
         Colour(uint32_t colour);
 
-        std::wstring code() const;
+        std::string code() const;
 
         operator DirectX::SimpleMath::Color() const;
 
@@ -45,7 +45,7 @@ namespace trview
         static Colour Cyan;
     };
 
-    Colour from_colour_code(const std::wstring& name);
+    Colour from_colour_code(const std::string& name);
     Colour from_named_colour(const std::string& name);
 
     Colour operator+(const Colour& left, const Colour& right);

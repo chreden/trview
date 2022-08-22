@@ -40,10 +40,10 @@ namespace trview
     {
     }
 
-    std::wstring Colour::code() const
+    std::string Colour::code() const
     {
         uint32_t value = *this;
-        return std::to_wstring(value);
+        return std::to_string(value);
     }
 
     Colour::operator DirectX::SimpleMath::Color() const
@@ -68,7 +68,7 @@ namespace trview
         return *this;
     }
 
-    Colour from_colour_code(const std::wstring& name)
+    Colour from_colour_code(const std::string& name)
     {
         uint32_t value = std::stoul(name);
         return Colour(

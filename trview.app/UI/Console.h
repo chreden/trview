@@ -15,9 +15,9 @@ namespace trview
 
         void render();
         bool visible() const;
-        void print(const std::wstring& text);
+        void print(const std::string& text);
         void set_visible(bool value);
-        Event<std::wstring> on_command;
+        Event<std::string> on_command;
     private:
         std::string _text;
         bool _visible{ false };

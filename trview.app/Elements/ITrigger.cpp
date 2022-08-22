@@ -21,7 +21,7 @@ namespace trview
             { TriggerType::Monkey, "Monkey" },
             { TriggerType::Skeleton, "Skeleton" },
             { TriggerType::Tightrope, "Tightrope" },
-            { TriggerType::Crawl, "Craw" },
+            { TriggerType::Crawl, "Crawl" },
             { TriggerType::Climb, "Climb"}
         };
 

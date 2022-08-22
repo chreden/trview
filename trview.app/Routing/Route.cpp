@@ -382,7 +382,7 @@ namespace trview
         auto route = route_source();
         if (json["colour"].is_string())
         {
-            route->set_colour(from_colour_code(to_utf16(json["colour"].get<std::string>())));
+            route->set_colour(from_colour_code(json["colour"].get<std::string>()));
         }
 
         for (const auto& waypoint : json["waypoints"])
@@ -547,7 +547,7 @@ namespace trview
     void export_trview_route(const IRoute& route, std::shared_ptr<IFiles>& files, const std::string& route_filename, const RandomizerSettings& randomizer_settings)
     {
         nlohmann::json json;
-        json["colour"] = to_utf8(route.colour().code());
+        json["colour"] = route.colour().code();
 
         std::vector<nlohmann::json> waypoints;
 

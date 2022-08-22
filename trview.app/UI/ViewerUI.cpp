@@ -445,7 +445,7 @@ namespace trview
         _settings_window->toggle_visibility();
     }
 
-    void ViewerUI::print_console(const std::wstring& text)
+    void ViewerUI::print_console(const std::string& text)
     {
         _console->print(text);
     }
