@@ -30,4 +30,12 @@ namespace trview
     /// <param name="value">The string to convert.</param>
     /// <returns>The converted string.</returns>
     std::string to_lowercase(const std::string& value);
+
+    /// <summary>
+    /// Converts to a string (or does nothing if it is already a string).
+    /// </summary>
+    template <typename T>
+    constexpr std::string get_string(T&& value);
 }
+
+#include "Strings.inl"

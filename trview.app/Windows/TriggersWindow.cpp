@@ -284,16 +284,7 @@ namespace trview
                 {
                     auto add_stat = [&]<typename T>(const std::string& name, const T&& value)
                     {
-                        constexpr auto get_string = [](auto&& v)
-                        {
-                            if constexpr (std::is_same<T, std::string>::value)
-                            {
-                                return v;
-                            }
-                            return std::format("{}", v);
-                        };
                         const auto string_value = get_string(value);
-
                         ImGui::TableNextColumn();
                         if (ImGui::Selectable(name.c_str(), false, ImGuiSelectableFlags_SpanAllColumns | ImGuiSelectableFlags_SelectOnNav))
                         {
