@@ -26,7 +26,7 @@ namespace trview
 
     std::string format_binary(uint16_t value)
     {
-        return std::format("{}", std::bitset<5>(value).to_string());
+        return std::bitset<5>(value).to_string();
     }
 
     bool is_link(const std::wstring& text)
