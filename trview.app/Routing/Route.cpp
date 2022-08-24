@@ -4,6 +4,7 @@
 #include <trview.common/Maths.h>
 #include <trview.common/Json.h>
 #include <trview.app/Elements/ILevel.h>
+#include <format>
 
 using namespace DirectX;
 using namespace DirectX::SimpleMath;
@@ -381,7 +382,7 @@ namespace trview
         auto route = route_source();
         if (json["colour"].is_string())
         {
-            route->set_colour(from_colour_code(to_utf16(json["colour"].get<std::string>())));
+            route->set_colour(from_colour_code(json["colour"].get<std::string>()));
         }
 
         for (const auto& waypoint : json["waypoints"])
@@ -398,7 +399,7 @@ namespace trview
             route->add(position, normal, room, type, index);
 
             auto& new_waypoint = route->waypoint(route->waypoints() - 1);
-            new_waypoint.set_notes(to_utf16(notes));
+            new_waypoint.set_notes(notes);
             new_waypoint.set_save_file(from_base64(waypoint.value("save", "")));
             new_waypoint.set_randomizer_settings(import_trview_randomizer_settings(waypoint, randomizer_settings));
         }
@@ -546,7 +547,7 @@ namespace trview
     void export_trview_route(const IRoute& route, std::shared_ptr<IFiles>& files, const std::string& route_filename, const RandomizerSettings& randomizer_settings)
     {
         nlohmann::json json;
-        json["colour"] = to_utf8(route.colour().code());
+        json["colour"] = route.colour().code();
 
         std::vector<nlohmann::json> waypoints;
 
@@ -554,19 +555,15 @@ namespace trview
         {
             const IWaypoint& waypoint = route.waypoint(i);
             nlohmann::json waypoint_json;
-            waypoint_json["type"] = to_utf8(waypoint_type_to_string(waypoint.type()));
+            waypoint_json["type"] = waypoint_type_to_string(waypoint.type());
 
-            std::stringstream pos_string;
-            auto pos = waypoint.position();
-            pos_string << pos.x << "," << pos.y << "," << pos.z;
-            waypoint_json["position"] = pos_string.str();
-            std::stringstream normal_string;
-            auto normal = waypoint.normal();
-            normal_string << normal.x << "," << normal.y << "," << normal.z;
-            waypoint_json["normal"] = normal_string.str();
+            const auto pos = waypoint.position();
+            waypoint_json["position"] = std::format("{},{},{}", pos.x, pos.y, pos.z);
+            const auto normal = waypoint.normal();
+            waypoint_json["normal"] = std::format("{},{},{}", normal.x, normal.y, normal.z);
             waypoint_json["room"] = waypoint.room();
             waypoint_json["index"] = waypoint.index();
-            waypoint_json["notes"] = to_utf8(waypoint.notes());
+            waypoint_json["notes"] = waypoint.notes();
 
             if (waypoint.has_save())
             {

@@ -39,7 +39,7 @@ namespace trview
 
         /// Get the current text version of the distance measured.
         /// @returns The text version of the distance.
-        virtual std::wstring distance() const = 0;
+        virtual std::string distance() const = 0;
 
         /// Get whether a distance is actively being measured.
         /// @returns True if start and end is set.

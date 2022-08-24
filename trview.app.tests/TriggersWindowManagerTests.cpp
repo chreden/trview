@@ -95,7 +95,7 @@ TEST(TriggersWindowManager, ItemSelectedEventRaised)
     auto created_window = manager->create_window().lock();
     ASSERT_NE(created_window, nullptr);
 
-    Item test_item(100, 10, 1, L"Lara", 0, 0, {}, DirectX::SimpleMath::Vector3::Zero);
+    Item test_item(100, 10, 1, "Lara", 0, 0, {}, DirectX::SimpleMath::Vector3::Zero);
     created_window->on_item_selected(test_item);
 
     ASSERT_TRUE(raised_item.has_value());
@@ -166,7 +166,7 @@ TEST(TriggersWindowManager, SetItemsSetsItemsOnWindows)
 
     std::vector<Item> items
     {
-        Item(0, 0, 0, L"Test Object", 0, 0, {}, DirectX::SimpleMath::Vector3::Zero),
+        Item(0, 0, 0, "Test Object", 0, 0, {}, DirectX::SimpleMath::Vector3::Zero),
     };
     manager->set_items(items);
 }

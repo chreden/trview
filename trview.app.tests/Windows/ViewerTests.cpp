@@ -108,7 +108,7 @@ TEST(Viewer, SelectItemRaisedForValidItem)
 {
     auto [ui_ptr, ui] = create_mock<MockViewerUI>();
 
-    Item item(123, 0, 0, L"Test", 0, 0, {}, Vector3::Zero);
+    Item item(123, 0, 0, "Test", 0, 0, {}, Vector3::Zero);
     NiceMock<MockLevel> level;
     EXPECT_CALL(level, item(123)).WillRepeatedly(Return(item));
 
@@ -141,7 +141,7 @@ TEST(Viewer, SelectItemNotRaisedForInvalidItem)
 /// Tests that the on_hide event from the UI is observed and forwarded when the item is valid.
 TEST(Viewer, ItemVisibilityRaisedForValidItem)
 {
-    Item item(123, 0, 0, L"Test", 0, 0, {}, Vector3::Zero);
+    Item item(123, 0, 0, "Test", 0, 0, {}, Vector3::Zero);
     NiceMock<MockLevel> level;
     EXPECT_CALL(level, item(123)).WillRepeatedly(Return(item));
 
@@ -321,7 +321,7 @@ TEST(Viewer, AddWaypointRaisedUsesItemPosition)
     auto [mouse_ptr, mouse] = create_mock<MockMouse>();
 
     NiceMock<MockLevel> level;
-    Item item(50, 10, 0, L"Test", 0, 0, {}, Vector3::Zero);
+    Item item(50, 10, 0, "Test", 0, 0, {}, Vector3::Zero);
     EXPECT_CALL(level, item(50)).WillRepeatedly(Return(item));
 
     auto viewer = register_test_module().with_ui(std::move(ui_ptr)).with_picking(std::move(picking_ptr)).with_mouse(std::move(mouse_ptr)).build();

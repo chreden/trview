@@ -1,5 +1,6 @@
 #include "TestImGuiId.h"
 #include <external/imgui/imgui_internal.h>
+#include <format>
 
 namespace trview
 {
@@ -7,26 +8,12 @@ namespace trview
     {
         TestImGuiId TestImGuiId::push_popup(const std::string& name) const
         {
-            auto context = ImGui::GetCurrentContext();
-            std::string popup_name;
-
-            std::stringstream stream;
-            stream << "##Popup_" << std::hex << std::setfill('0') << std::setw(8) << TestImGuiId("Debug##Default").id(name).id();
-            popup_name = stream.str();
-
-            return TestImGuiId(popup_name);
+            return TestImGuiId(std::format("##Popup_{:0>8x}", TestImGuiId("Debug##Default").id(name).id()));
         }
 
         TestImGuiId TestImGuiId::push_child(const std::string& name) const
         {
-            auto context = ImGui::GetCurrentContext();
-            auto id = GetID(name.c_str());
-
-            std::stringstream stream;
-            stream << _name << '/' << name << '_' << std::hex << std::uppercase << std::setfill('0') << std::setw(8) << id;
-            auto child_name = stream.str();
-
-            return TestImGuiId(child_name);
+            return TestImGuiId(std::format("{}/{}_{:0>8X}", _name, name, GetID(name.c_str())));
         }
 
         TestImGuiId TestImGuiId::push_override(const std::string& name) const
@@ -40,9 +27,7 @@ namespace trview
         {
             TestImGuiId copy = *this;
             auto new_id = copy.GetID(name.c_str());
-            std::stringstream stream;
-            stream << _name << '/' << name << '_' << std::hex << std::uppercase << std::setfill('0') << std::setw(8) << new_id;
-            copy._name = stream.str();
+            copy._name = std::format("{}/{}_{:0>8X}", _name, name, new_id);
             copy._stack.push_back(new_id);
             copy._hover_id = push_child(name).id();
             return copy;

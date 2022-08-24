@@ -67,7 +67,7 @@ namespace trview
         /// <summary>
         /// Get any notes associated with the waypoint.
         /// </summary>
-        virtual std::wstring notes() const = 0;
+        virtual std::string notes() const = 0;
         /// <summary>
         /// Get the room number that the waypoint is in.
         /// </summary>
@@ -86,7 +86,7 @@ namespace trview
         virtual std::vector<uint8_t> save_file() const = 0;
         /// Set the notes associated with the waypoint.
         /// @param notes The notes to save.
-        virtual void set_notes(const std::wstring& notes) = 0;
+        virtual void set_notes(const std::string& notes) = 0;
         /// Set the route colour for the waypoint blob.
         /// @param colour The colour of the route.
         virtual void set_route_colour(const Colour& colour) = 0;
@@ -115,5 +115,5 @@ namespace trview
     /// </summary>
     /// <param name="type">The type to convert.</param>
     /// <returns>The string value.</returns>
-    std::wstring waypoint_type_to_string(IWaypoint::Type type);
+    std::string waypoint_type_to_string(IWaypoint::Type type);
 }

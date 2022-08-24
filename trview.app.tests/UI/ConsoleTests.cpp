@@ -9,7 +9,7 @@ TEST(Console, CommandEventRaised)
     Console console;
     console.set_visible(true);
 
-    std::optional<std::wstring> raised;
+    std::optional<std::string> raised;
     auto token = console.on_command += [&](auto value)
     {
         raised = value;
@@ -23,7 +23,7 @@ TEST(Console, CommandEventRaised)
     imgui.render();
 
     ASSERT_TRUE(raised.has_value());
-    ASSERT_EQ(raised.value(), L"Test command");
+    ASSERT_EQ(raised.value(), "Test command");
     ASSERT_EQ(imgui.item_text(imgui.id("Console").id(Console::Names::input)), "");
 }
 
@@ -35,7 +35,7 @@ TEST(Console, PrintAddsLine)
     TestImgui imgui([&]() { console.render(); });
     ASSERT_EQ(imgui.item_text(imgui.id("Console").id(Console::Names::log)), "");
 
-    console.print(L"Test log entry");
+    console.print("Test log entry");
     imgui.render();
     ASSERT_EQ(imgui.item_text(imgui.id("Console").id(Console::Names::log)), "Test log entry");
 }

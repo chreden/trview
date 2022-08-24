@@ -35,18 +35,16 @@ namespace trview
     /// Get the string representation of the trigger type specified.
     /// @param type The type to test.
     /// @returns The string version of the enum.
-    std::wstring trigger_type_name(TriggerType type);
+    std::string trigger_type_name(TriggerType type);
 
     /// Get the string representation of the command type specified.
     /// @param type The type to test.
     /// @returns The string version of the enum.
-    std::wstring command_type_name(TriggerCommandType type);
-    std::string command_type_name_8(TriggerCommandType type);
+    std::string command_type_name(TriggerCommandType type);
 
     /// Get the trigger command type from a string.
     /// @param name The string to convert.
     /// @returns The trigger command type.
-    TriggerCommandType command_from_name(const std::wstring& name);
     TriggerCommandType command_from_name(const std::string& name);
 
     bool has_command(const ITrigger& trigger, TriggerCommandType type);

@@ -1,6 +1,7 @@
 #include "TestImgui.h"
 #include <trview.tests.common/Window.h>
 #include <trview.common/Strings.h>
+#include <format>
 
 using namespace trview::tests;
 
@@ -360,9 +361,7 @@ namespace trview
         TestImGuiId TestImgui::popup_id(const std::string& popup_name) const
         {
             auto id = TestImGuiId("Debug##Default").id(popup_name).id();
-            std::stringstream stream;
-            stream << "##Popup_" << std::hex << std::setfill('0') << std::setw(8) << id;
-            return TestImGuiId(stream.str());
+            return TestImGuiId(std::format("##Popup_{:0>8x}", id));
         }
     }
 }

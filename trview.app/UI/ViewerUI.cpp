@@ -26,7 +26,7 @@ namespace trview
         {
             if (!is_input_active())
             {
-                _go_to->set_name(L"Room");
+                _go_to->set_name("Room");
                 _go_to->toggle_visible(_selected_room);
             }
         };
@@ -35,7 +35,7 @@ namespace trview
         {
             if (!is_input_active())
             {
-                _go_to->set_name(L"Item");
+                _go_to->set_name("Item");
                 _go_to->toggle_visible(_selected_item);
             }
         };
@@ -53,7 +53,7 @@ namespace trview
         _go_to = std::make_unique<GoTo>();
         _token_store += _go_to->on_selected += [&](uint32_t index)
         {
-            if (_go_to->name() == L"Item")
+            if (_go_to->name() == "Item")
             {
                 on_select_item(index);
             }
@@ -64,10 +64,10 @@ namespace trview
         };
 
         _toolbar = std::make_unique<Toolbar>();
-        _toolbar->add_tool(L"Measure", L"|....|");
-        _token_store += _toolbar->on_tool_clicked += [this](const std::wstring& tool)
+        _toolbar->add_tool("Measure", "|....|");
+        _token_store += _toolbar->on_tool_clicked += [this](const std::string& tool)
         {
-            if (tool == L"Measure")
+            if (tool == "Measure")
             {
                 on_tool_selected(Tool::Measure);
             }
@@ -191,15 +191,14 @@ namespace trview
                 return;
             }
 
-            std::wstring text = L"X: " + std::to_wstring(sector->x()) + L", Z:" + std::to_wstring(sector->z()) + L"\n";
+            std::string text = std::format("X: {}, Z: {}\n", sector->x(), sector->z());
             if (has_flag(sector->flags(), SectorFlag::RoomAbove))
             {
-                text += L"Above: " + std::to_wstring(sector->room_above());
+                text += std::format("Above: {}", sector->room_above());
             }
             if (has_flag(sector->flags(), SectorFlag::RoomBelow))
             {
-                text += (has_flag(sector->flags(), SectorFlag::RoomAbove) ? L", " : L"") +
-                    std::wstring(L"Below: ") + std::to_wstring(sector->room_below());
+                text += std::format("{}Below: {}", has_flag(sector->flags(), SectorFlag::RoomAbove) ? ", " : "", sector->room_below());
             }
             _map_tooltip->set_text(text);
             _map_tooltip->set_visible(!text.empty());
@@ -334,9 +333,7 @@ namespace trview
 
     void ViewerUI::set_measure_distance(float distance)
     {
-        std::wstringstream stream;
-        stream << std::fixed << std::setprecision(2) << distance;
-        _measure_text = to_utf8(stream.str());
+        _measure_text = std::format("{:.2f}", distance);
     }
 
     void ViewerUI::set_measure_position(const Point& position)
@@ -448,7 +445,7 @@ namespace trview
         _settings_window->toggle_visibility();
     }
 
-    void ViewerUI::print_console(const std::wstring& text)
+    void ViewerUI::print_console(const std::string& text)
     {
         _console->print(text);
     }

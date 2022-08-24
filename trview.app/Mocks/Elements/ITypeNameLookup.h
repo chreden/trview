@@ -9,7 +9,7 @@ namespace trview
         struct MockTypeNameLookup : public ITypeNameLookup
         {
             virtual ~MockTypeNameLookup() = default;
-            MOCK_METHOD(std::wstring, lookup_type_name, (trlevel::LevelVersion, uint32_t), (const, override));
+            MOCK_METHOD(std::string, lookup_type_name, (trlevel::LevelVersion, uint32_t), (const, override));
             MOCK_METHOD(bool, is_pickup, (trlevel::LevelVersion, uint32_t), (const, override));
         };
     }

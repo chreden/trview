@@ -259,22 +259,22 @@ namespace trlevel
         return 0;
     }
 
-    std::wstring light_type_name(LightType type)
+    std::string light_type_name(LightType type)
     {
         switch (type)
         {
         case LightType::Sun:
-            return L"Sun";
+            return "Sun";
         case LightType::Point:
-            return L"Point";
+            return "Point";
         case LightType::Spot:
-            return L"Spot";
+            return "Spot";
         case LightType::Shadow:
-            return L"Shadow";
+            return "Shadow";
         case LightType::FogBulb:
-            return L"Fog Bulb";
+            return "Fog Bulb";
         }
-        return L"Unknown";
+        return "Unknown";
     }
 
     std::vector<tr_x_room_light> convert_lights(std::vector<tr_room_light> lights)

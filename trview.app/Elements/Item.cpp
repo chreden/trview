@@ -2,7 +2,7 @@
 
 namespace trview
 {
-    Item::Item(uint32_t number, uint32_t room, uint32_t type_id, const std::wstring& type, int32_t ocb, uint16_t flags, const std::vector<std::weak_ptr<ITrigger>>& triggers, const DirectX::SimpleMath::Vector3& position)
+    Item::Item(uint32_t number, uint32_t room, uint32_t type_id, const std::string& type, int32_t ocb, uint16_t flags, const std::vector<std::weak_ptr<ITrigger>>& triggers, const DirectX::SimpleMath::Vector3& position)
         : _number(number), _room(room), _type_id(type_id), _type(type), _ocb(ocb), _flags(flags), _triggers(triggers), _position(position)
     {
     }
@@ -22,7 +22,7 @@ namespace trview
         return _type_id;
     }
 
-    const std::wstring& Item::type() const
+    std::string Item::type() const
     {
         return _type;
     }

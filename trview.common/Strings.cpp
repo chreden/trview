@@ -1,5 +1,6 @@
 #include "Strings.h"
 #include <algorithm>
+#include <format>
 
 namespace trview
 {
@@ -23,19 +24,9 @@ namespace trview
         return &output[0];
     }
 
-    std::wstring format_bool(bool value)
+    std::string format_binary(uint16_t value)
     {
-        std::wstringstream stream;
-        stream << std::boolalpha << value;
-        return stream.str();
-    }
-
-    std::wstring format_binary(uint16_t value)
-    {
-        std::wstringstream stream;
-        stream << std::bitset<5>(value);
-        const auto result = stream.str();
-        return std::wstring(result.rbegin(), result.rend());
+        return std::bitset<5>(value).to_string();
     }
 
     bool is_link(const std::wstring& text)
@@ -46,7 +37,7 @@ namespace trview
     std::string to_lowercase(const std::string& value)
     {
         std::string result;
-        std::transform(value.begin(), value.end(), std::back_inserter(result), std::tolower);
+        std::transform(value.begin(), value.end(), std::back_inserter(result), ::tolower);
         return result;
     }
 }

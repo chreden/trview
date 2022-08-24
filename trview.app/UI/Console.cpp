@@ -7,13 +7,13 @@ namespace trview
         return _visible;
     }
 
-    void Console::print(const std::wstring& text)
+    void Console::print(const std::string& text)
     {
         if (!_text.empty())
         {
             _text += '\n';
         }
-        _text += to_utf8(text);
+        _text += text;
     }
 
     void Console::set_visible(bool value)
@@ -39,7 +39,7 @@ namespace trview
                 if (ImGui::InputText(Names::input.c_str(), &vec[0], vec.size(), ImGuiInputTextFlags_EnterReturnsTrue))
                 {
                     auto command = std::string(&vec[0]);
-                    on_command(to_utf16(command));
+                    on_command(command);
                 }
                 ImGui::PopItemWidth();
             }

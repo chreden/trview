@@ -224,10 +224,7 @@ namespace trview
             current_camera().set_rotation_pitch(pitch);
         };
 
-        _token_store += _ui->on_command += [&](const auto& command)
-        {
-            lua_execute ( to_utf8 ( command ) );
-        };
+        _token_store += _ui->on_command += lua_execute;
 
         _ui->set_settings(_settings);
         _ui->set_camera_mode(CameraMode::Orbit);
@@ -290,7 +287,7 @@ namespace trview
                 }
                 else
                 {
-                    result.text = L"|....|";
+                    result.text = "|....|";
                 }
             }
         };
@@ -974,7 +971,6 @@ namespace trview
 
         _token_store += _camera_input.on_pan += [&](bool vertical, float x, float y)
         {
-            auto& io = ImGui::GetIO();
             if (_ui->is_cursor_over() || _camera_mode != CameraMode::Orbit)
             {
                 return;

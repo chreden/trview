@@ -121,7 +121,7 @@ namespace trview
 
         lua_registry.print = [this] ( const std::string& text )
             {
-            _ui->print_console ( to_utf16 ( text ) );
+            _ui->print_console (text);
             };
 
         lua_registry.on_crazy = [this] () -> bool

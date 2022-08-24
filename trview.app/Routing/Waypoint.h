@@ -32,10 +32,10 @@ namespace trview
         virtual Type type() const override;
         virtual bool has_save() const override;
         virtual uint32_t index() const override;
-        virtual std::wstring notes() const override;
+        virtual std::string notes() const override;
         virtual uint32_t room() const override;
         virtual std::vector<uint8_t> save_file() const override;
-        virtual void set_notes(const std::wstring& notes) override;
+        virtual void set_notes(const std::string& notes) override;
         virtual void set_route_colour(const Colour& colour) override;
         virtual void set_save_file(const std::vector<uint8_t>& data) override;
         virtual DirectX::SimpleMath::Vector3 blob_position() const override;
@@ -47,7 +47,7 @@ namespace trview
     private:
         DirectX::SimpleMath::Matrix calculate_waypoint_rotation() const;
 
-        std::wstring _notes;
+        std::string _notes;
         std::vector<uint8_t> _save_data;
         DirectX::SimpleMath::Vector3 _position;
         DirectX::SimpleMath::Vector3 _normal;

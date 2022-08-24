@@ -14,15 +14,10 @@ namespace trview
     /// @returns The converted string.
     std::wstring to_utf16(const std::string& value);
 
-    /// Convert a boolean to true/false.
-    /// @param value The bool to convert.
-    /// @returns The converted string.
-    std::wstring format_bool(bool value);
-
     /// Convert a value to a binary - only shows 5 bits.
     /// @param value The value to convert.
     /// @returns The converted string.
-    std::wstring format_binary(uint16_t value);
+    std::string format_binary(uint16_t value);
 
     /// Check whether text is a link.
     /// @param value The value to check.
@@ -35,4 +30,12 @@ namespace trview
     /// <param name="value">The string to convert.</param>
     /// <returns>The converted string.</returns>
     std::string to_lowercase(const std::string& value);
+
+    /// <summary>
+    /// Converts to a string (or does nothing if it is already a string).
+    /// </summary>
+    template <typename T>
+    constexpr std::string get_string(T&& value);
 }
+
+#include "Strings.inl"

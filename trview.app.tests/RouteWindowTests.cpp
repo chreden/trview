@@ -140,7 +140,7 @@ TEST(RouteWindow, AddingWaypointNotesMarksRouteUnsaved)
     const Vector3 waypoint_pos{ 130, 250, 325 };
     NiceMock<MockWaypoint> waypoint;
     EXPECT_CALL(waypoint, position).WillRepeatedly(Return(waypoint_pos));
-    EXPECT_CALL(waypoint, set_notes(std::wstring(L"Test"))).Times(1);
+    EXPECT_CALL(waypoint, set_notes(std::string("Test"))).Times(1);
 
     NiceMock<MockRoute> route;
     EXPECT_CALL(route, waypoints).WillRepeatedly(Return(1));

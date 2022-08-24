@@ -46,7 +46,7 @@ namespace trview
     /// Get a string representation of a compass axis.
     /// @param axis The axis.
     /// @returns The name of the axis.
-    std::wstring axis_name(Compass::Axis axis);
+    std::string axis_name(Compass::Axis axis);
 
     /// Align a camera to a particular axis.
     /// @param camera The camera to adjust.

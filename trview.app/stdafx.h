@@ -21,6 +21,7 @@
 #include <unordered_map>
 #include <utility>
 #include <vector>
+#include <format>
 
 #include <SimpleMath.h>
 #include <DirectXCollision.h>

@@ -8,46 +8,46 @@ namespace trview
 {
     namespace
     {
-        std::wstring pick_type_to_string(PickResult::Type type)
+        std::string pick_type_to_string(PickResult::Type type)
         {
             switch (type)
             {
             case PickResult::Type::Entity:
-                return L"Item";
+                return "Item";
             case PickResult::Type::Trigger:
-                return L"Trigger";
+                return "Trigger";
             case PickResult::Type::Room:
-                return L"Room";
+                return "Room";
             case PickResult::Type::Waypoint:
-                return L"Waypoint";
+                return "Waypoint";
             case PickResult::Type::Light:
-                return L"Light";
+                return "Light";
             }
-            return L"?";
+            return "?";
         }
 
-        std::wstring axis_to_string(Compass::Axis axis)
+        std::string axis_to_string(Compass::Axis axis)
         {
             switch (axis)
             {
             case Compass::Axis::Pos_X:
-                return L"+X";
+                return "+X";
             case Compass::Axis::Pos_Y:
-                return L"+Y";
+                return "+Y";
             case Compass::Axis::Pos_Z:
-                return L"+Z";
+                return "+Z";
             case Compass::Axis::Neg_X:
-                return L"-X";
+                return "-X";
             case Compass::Axis::Neg_Y:
-                return L"-Y";
+                return "-Y";
             case Compass::Axis::Neg_Z:
-                return L"-Z";
+                return "-Z";
             }
-            return L"?";
+            return "?";
         }
     }
 
-    std::wstring pick_to_string(const PickResult& pick)
+    std::string pick_to_string(const PickResult& pick)
     {
         if (!pick.text.empty())
         {
@@ -59,7 +59,7 @@ namespace trview
             return axis_to_string(static_cast<Compass::Axis>(pick.index));
         }
 
-        return pick_type_to_string(pick.type) + L" " + std::to_wstring(pick.index);
+        return std::format("{} {}", pick_type_to_string(pick.type), pick.index);
     }
 
     Colour pick_to_colour(const PickResult& pick)
@@ -84,9 +84,9 @@ namespace trview
         return current;
     }
 
-    std::wstring generate_pick_message(const PickResult& result, const ILevel& level, const IRoute& route)
+    std::string generate_pick_message(const PickResult& result, const ILevel& level, const IRoute& route)
     {
-        std::wstringstream stream;
+        std::stringstream stream;
 
         switch (result.type)
         {
@@ -95,7 +95,7 @@ namespace trview
                 const auto item = level.item(result.index);
                 if (item.has_value())
                 {
-                    stream << L"Item " << result.index << L" - " << item.value().type();
+                    stream << "Item " << result.index << " - " << item.value().type();
                 }
                 break;
             }
@@ -103,17 +103,17 @@ namespace trview
             {
                 if (auto trigger = level.trigger(result.index).lock())
                 {
-                    stream << trigger_type_name(trigger->type()) << L" " << result.index;
+                    stream << trigger_type_name(trigger->type()) << " " << result.index;
                     for (const auto command : trigger->commands())
                     {
-                        stream << L"\n  " << command_type_name(command.type());
+                        stream << "\n  " << command_type_name(command.type());
                         if (command_has_index(command.type()))
                         {
-                            stream << L" " << command.index();
+                            stream << " " << command.index();
                             if (command_is_item(command.type()))
                             {
                                 const auto item = level.item(command.index());
-                                stream << L" - " << (item.has_value() ? item.value().type() : L"No Item");
+                                stream << " - " << (item.has_value() ? item.value().type() : "No Item");
                             }
                         }
                     }
@@ -124,7 +124,7 @@ namespace trview
             {
                 if (const auto light = level.light(result.index).lock())
                 {
-                    stream << L"Light " << result.index << L" - " << light_type_name(light->type());
+                    stream << "Light " << result.index << " - " << light_type_name(light->type());
                 }
                 break;
             }
@@ -136,28 +136,28 @@ namespace trview
             case PickResult::Type::Waypoint:
             {
                 auto& waypoint = route.waypoint(result.index);
-                stream << L"Waypoint " << result.index;
+                stream << "Waypoint " << result.index;
 
                 if (waypoint.type() == IWaypoint::Type::Entity)
                 {
                     const auto item = level.item(waypoint.index());
                     if (item.has_value())
                     {
-                        stream << L" - " << item.value().type();
+                        stream << " - " << item.value().type();
                     }
                 }
                 else if (waypoint.type() == IWaypoint::Type::Trigger)
                 {
                     if (const auto trigger = level.trigger(waypoint.index()).lock())
                     {
-                        stream << L" - " << trigger_type_name(trigger->type()) << L" " << waypoint.index();
+                        stream << " - " << trigger_type_name(trigger->type()) << " " << waypoint.index();
                     }
                 }
 
                 const auto notes = waypoint.notes();
                 if (!notes.empty())
                 {
-                    stream << L"\n\n" << notes;
+                    stream << "\n\n" << notes;
                 }
                 break;
             }

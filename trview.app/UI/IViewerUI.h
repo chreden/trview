@@ -91,7 +91,7 @@ namespace trview
         Event<float, float> on_camera_rotation;
 
         /// Event raised when user enters a command.
-        Event<std::wstring> on_command;
+        Event<std::string> on_command;
 
         /// <summary>
         /// Event raised when the user changes a toggle.
@@ -219,7 +219,7 @@ namespace trview
         /// Write the text to the console.
         /// </summary>
         /// <param name="text">The text to write.</param>
-        virtual void print_console(const std::wstring& text) = 0;
+        virtual void print_console(const std::string& text) = 0;
         /// <summary>
         /// Set whether the mid waypoint button is enabled.
         /// </summary>

@@ -157,5 +157,6 @@
     <None Include="Event.inl">
       <Filter>Events</Filter>
     </None>
+    <None Include="Strings.inl" />
   </ItemGroup>
 </Project>

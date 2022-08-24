@@ -112,7 +112,7 @@ namespace trview
         return _room;
     }
 
-    std::wstring Waypoint::notes() const
+    std::string Waypoint::notes() const
     {
         return _notes;
     }
@@ -122,7 +122,7 @@ namespace trview
         return _save_data;
     }
 
-    void Waypoint::set_notes(const std::wstring& notes)
+    void Waypoint::set_notes(const std::string& notes)
     {
         _notes = notes;
     }

@@ -139,7 +139,7 @@ namespace trview
                         _scroll_to_item = false;
                     }
 
-                    if (ImGui::Selectable((std::to_string(item.number()) + std::string("##") + std::to_string(item.number())).c_str(), &selected, ImGuiSelectableFlags_SpanAllColumns | ImGuiSelectableFlags_SelectOnNav | ImGuiTableFlags_SizingFixedFit))
+                    if (ImGui::Selectable(std::format("{0}##{0}", item.number()).c_str(), &selected, ImGuiSelectableFlags_SpanAllColumns | ImGuiSelectableFlags_SelectOnNav | ImGuiTableFlags_SizingFixedFit))
                     {
                         scroller.fix_scroll();
 
@@ -157,11 +157,11 @@ namespace trview
                     ImGui::TableNextColumn();
                     ImGui::Text(std::to_string(item.type_id()).c_str());
                     ImGui::TableNextColumn();
-                    ImGui::Text(to_utf8(item.type()).c_str());
+                    ImGui::Text(item.type().c_str());
                     ImGui::TableNextColumn();
                     bool hidden = !item.visible();
                     ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0, 0));
-                    if (ImGui::Checkbox((std::string("##hide-") + std::to_string(item.number())).c_str(), &hidden))
+                    if (ImGui::Checkbox(std::format("##hide-{}", item.number()).c_str(), &hidden))
                     {
                         on_item_visibility(item, !hidden);
                     }
@@ -188,12 +188,13 @@ namespace trview
                 {
                     const auto& item = _selected_item.value();
 
-                    auto add_stat = [&](const std::string& name, const std::string& value)
+                    auto add_stat = [&]<typename T>(const std::string& name, const T&& value)
                     {
+                        const auto string_value = get_string(value);
                         ImGui::TableNextColumn();
                         if (ImGui::Selectable(name.c_str(), false, ImGuiSelectableFlags_SpanAllColumns))
                         {
-                            _clipboard->write(to_utf16(value));
+                            _clipboard->write(to_utf16(string_value));
                             _tooltip_timer = 0.0f;
                         }
                         if (ImGui::IsItemHovered() && _tips.find(name) != _tips.end())
@@ -202,36 +203,32 @@ namespace trview
                             ImGui::Text(_tips[name].c_str());
                             ImGui::EndTooltip();
                         }
-                        if (ImGui::IsItemHovered() && _tips.find(value) != _tips.end())
+                        if (ImGui::IsItemHovered() && _tips.find(string_value) != _tips.end())
                         {
                             ImGui::BeginTooltip();
-                            ImGui::Text(_tips[value].c_str());
+                            ImGui::Text(_tips[string_value].c_str());
                             ImGui::EndTooltip();
                         }
 
                         ImGui::TableNextColumn();
-                        ImGui::Text(value.c_str());
+                        ImGui::Text(string_value.c_str());
                     };
 
                     auto position_text = [&item]()
                     {
-                        std::stringstream stream;
-                        stream << std::fixed << std::setprecision(0) <<
-                            item.position().x * trlevel::Scale_X << ", " <<
-                            item.position().y * trlevel::Scale_Y << ", " <<
-                            item.position().z * trlevel::Scale_Z;
-                        return stream.str();
+                        const auto pos = item.position() * trlevel::Scale;
+                        return std::format("{:.0f}, {:.0f}, {:.0f}", pos.x, pos.y, pos.z);
                     };
 
-                    add_stat("Type", to_utf8(item.type()));
-                    add_stat("#", std::to_string(item.number()));
+                    add_stat("Type", item.type());
+                    add_stat("#", item.number());
                     add_stat("Position", position_text());
-                    add_stat("Type ID", std::to_string(item.type_id()));
-                    add_stat("Room", std::to_string(item.room()));
-                    add_stat("Clear Body", to_utf8(format_bool(item.clear_body_flag())));
-                    add_stat("Invisible", to_utf8(format_bool(item.invisible_flag())));
-                    add_stat("Flags", to_utf8(format_binary(item.activation_flags())));
-                    add_stat("OCB", std::to_string(item.ocb()));
+                    add_stat("Type ID", item.type_id());
+                    add_stat("Room", item.room());
+                    add_stat("Clear Body", item.clear_body_flag());
+                    add_stat("Invisible", item.invisible_flag());
+                    add_stat("Flags", format_binary(item.activation_flags()));
+                    add_stat("OCB", item.ocb());
                 }
 
                 ImGui::EndTable();
@@ -276,7 +273,7 @@ namespace trview
                     ImGui::TableNextColumn();
                     ImGui::Text(std::to_string(trigger_ptr->room()).c_str());
                     ImGui::TableNextColumn();
-                    ImGui::Text(to_utf8(trigger_type_name(trigger_ptr->type())).c_str());
+                    ImGui::Text(trigger_type_name(trigger_ptr->type()).c_str());
                 }
 
                 ImGui::EndTable();
@@ -345,9 +342,9 @@ namespace trview
         std::set<std::string> available_types;
         for (const auto& item : _all_items)
         {
-            available_types.insert(to_utf8(item.type()));
+            available_types.insert(item.type());
         }
-        _filters.add_getter<std::string>("Type", { available_types.begin(), available_types.end() }, [](auto&& item) { return to_utf8(item.type()); });
+        _filters.add_getter<std::string>("Type", { available_types.begin(), available_types.end() }, [](auto&& item) { return item.type(); });
         _filters.add_getter<float>("#", [](auto&& item) { return item.number(); });
         _filters.add_getter<float>("X", [](auto&& item) { return item.position().x * trlevel::Scale_X; });
         _filters.add_getter<float>("Y", [](auto&& item) { return item.position().y * trlevel::Scale_Y; });
@@ -356,7 +353,7 @@ namespace trview
         _filters.add_getter<float>("Room", [](auto&& item) { return item.room(); });
         _filters.add_getter<bool>("Clear Body", [](auto&& item) { return item.clear_body_flag(); });
         _filters.add_getter<bool>("Invisible", [](auto&& item) { return item.invisible_flag(); });
-        _filters.add_getter<std::string>("Flags", [](auto&& item) { return to_utf8(format_binary(item.activation_flags())); });
+        _filters.add_getter<std::string>("Flags", [](auto&& item) { return format_binary(item.activation_flags()); });
         _filters.add_getter<float>("OCB", [](auto&& item) { return item.ocb(); });
         _filters.add_multi_getter<float>("Triggered By", [](auto&& item)
             {

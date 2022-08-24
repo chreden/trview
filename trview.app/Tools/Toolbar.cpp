@@ -2,9 +2,9 @@
 
 namespace trview
 {
-    void Toolbar::add_tool(const std::wstring& name, const std::wstring& text)
+    void Toolbar::add_tool(const std::string& name, const std::string& text)
     {
-        _tools.push_back(to_utf8(name));
+        _tools.push_back(name);
     }
 
     void Toolbar::render()
@@ -17,7 +17,7 @@ namespace trview
             {
                 if (ImGui::Button(tool.c_str()))
                 {
-                    on_tool_clicked(to_utf16(tool));
+                    on_tool_clicked(tool);
                 }
                 ImGui::SameLine();
             }
