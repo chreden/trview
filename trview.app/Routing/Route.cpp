@@ -208,7 +208,7 @@ namespace trview
         for (std::size_t i = 0; i < _waypoints.size(); ++i)
         {
             auto& waypoint = _waypoints[i];
-            waypoint->render(camera, texture_storage, Color(1.0f, 1.0f, 1.0f));
+            waypoint->render(camera, texture_storage, _stick_colour);
             if (!_randomizer_enabled && i < _waypoints.size() - 1)
             {
                 waypoint->render_join(*_waypoints[i + 1], camera, texture_storage, _colour);
@@ -218,7 +218,7 @@ namespace trview
         // Render selected waypoint...
         if (show_selection && _selected_index < _waypoints.size())
         {
-            _selection_renderer->render(camera, texture_storage, *_waypoints[_selected_index], Color(1.0f, 1.0f, 1.0f));
+            _selection_renderer->render(camera, texture_storage, *_waypoints[_selected_index], Colour::White);
         }
     }
 

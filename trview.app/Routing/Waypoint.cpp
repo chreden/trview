@@ -30,11 +30,11 @@ namespace trview
         light_direction.Normalize();
 
         auto pole_wvp = pole_world * camera.view_projection();
-        _mesh->render(pole_wvp, texture_storage, _stick_colour, 0.75f, light_direction);
+        _mesh->render(pole_wvp, texture_storage, colour, 0.75f, light_direction);
 
         // The light blob.
         auto blob_wvp = Matrix::CreateScale(PoleThickness, PoleThickness, PoleThickness) * Matrix::CreateTranslation(-Vector3(0, PoleLength + PoleThickness * 0.5f, 0)) * rotation * Matrix::CreateTranslation(_position) * camera.view_projection();
-        _mesh->render(blob_wvp, texture_storage, _route_colour);
+        _mesh->render(blob_wvp, texture_storage, colour == static_cast<Color>(Colour::Black) ? colour : static_cast<Color>(_route_colour));
     }
 
     void Waypoint::render_join(const IWaypoint& next_waypoint, const ICamera& camera, const ILevelTextureStorage& texture_storage, const Color& colour)
