@@ -67,5 +67,6 @@ namespace trview
         bool _scroll_to_waypoint{ false };
         std::optional<float> _tooltip_timer;
         bool _need_focus{ false };
+        bool _show_settings{ false };
     };
 }

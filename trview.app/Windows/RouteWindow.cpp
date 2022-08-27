@@ -29,11 +29,34 @@ namespace trview
 
         if (ImGui::BeginChild(Names::waypoint_list_panel.c_str(), ImVec2(150, 0), true))
         {
-            auto colour = _route ? _route->colour() : Colour::Green;
-            if (ImGui::ColorEdit3("##colour", &colour.r, ImGuiColorEditFlags_NoInputs))
+            if (ImGui::Button("Settings"))
             {
-                on_colour_changed(colour);
+                if (!_show_settings)
+                {
+                    ImGui::OpenPopup("SettingsPopup");
+                }
+                _show_settings = !_show_settings;
             }
+
+            if (_show_settings && ImGui::BeginPopup("SettingsPopup"))
+            {
+                auto colour = _route ? _route->colour() : Colour::Green;
+                if (ImGui::ColorEdit3("Blob##colour", &colour.r, ImGuiColorEditFlags_NoInputs))
+                {
+                    on_colour_changed(colour);
+                }
+                auto stick_colour = _route ? _route->stick_colour() : Colour::White;
+                if (ImGui::ColorEdit3("Stick##colour", &stick_colour.r, ImGuiColorEditFlags_NoInputs))
+                {
+                    on_stick_colour_changed(stick_colour);
+                }
+                ImGui::EndPopup();
+            }
+            else
+            {
+                _show_settings = false;
+            }
+
             ImGui::SameLine();
             if (ImGui::Button(Names::import_button.c_str()))
             {

@@ -247,9 +247,20 @@ namespace trview
         _randomizer_enabled = enabled;
     }
 
+    void Route::set_stick_colour(const Colour& colour)
+    {
+        _stick_colour = colour;
+        set_unsaved(true);
+    }
+
     void Route::set_unsaved(bool value)
     {
         _is_unsaved = value;
+    }
+
+    Colour Route::stick_colour() const 
+    {
+        return _stick_colour;
     }
 
     const IWaypoint& Route::waypoint(uint32_t index) const
@@ -383,6 +394,11 @@ namespace trview
         if (json["colour"].is_string())
         {
             route->set_colour(from_colour_code(json["colour"].get<std::string>()));
+        }
+
+        if (json["stick_colour"].is_string())
+        {
+            route->set_stick_colour(from_colour_code(json["stick_colour"].get<std::string>()));
         }
 
         for (const auto& waypoint : json["waypoints"])
@@ -548,6 +564,7 @@ namespace trview
     {
         nlohmann::json json;
         json["colour"] = route.colour().code();
+        json["stick_colour"] = route.stick_colour().code();
 
         std::vector<nlohmann::json> waypoints;
 

@@ -18,6 +18,8 @@ namespace trview
         /// Event raised when a route is exported.
         Event<std::string, bool> on_route_export;
 
+        Event<Colour> on_stick_colour_changed;
+
         /// Event raised when a waypoint is selected.
         Event<uint32_t> on_waypoint_selected;
 

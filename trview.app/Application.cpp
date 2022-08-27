@@ -446,6 +446,11 @@ namespace trview
             _route->set_colour(colour);
             _viewer->set_route(_route);
         };
+        _token_store += _route_window->on_stick_colour_changed += [&](const Colour& colour)
+        {
+            _route->set_stick_colour(colour);
+            _viewer->set_route(_route);
+        };
         _token_store += _route_window->on_waypoint_reordered += [&](int32_t from, int32_t to)
         {
             _route->move(from, to);
