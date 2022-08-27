@@ -128,7 +128,7 @@ namespace trview
         /// Set the colour for the stick.
         /// </summary>
         /// <param name="colour">The colour to use.</param>
-        virtual void set_stick_colour(const Colour& colour) = 0;
+        virtual void set_waypoint_colour(const Colour& colour) = 0;
         /// <summary>
         /// Set whether the route has unsaved changes.
         /// </summary>
@@ -137,7 +137,7 @@ namespace trview
         /// <summary>
         /// Get the colour to use for the stick.
         /// </summary>
-        virtual Colour stick_colour() const = 0;
+        virtual Colour waypoint_colour() const = 0;
         /// <summary>
         /// Get the waypoint at the specified index.
         /// </summary>

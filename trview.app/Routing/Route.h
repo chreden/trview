@@ -35,9 +35,9 @@ namespace trview
         virtual void select_waypoint(uint32_t index) override;
         virtual void set_colour(const Colour& colour) override;
         virtual void set_randomizer_enabled(bool enabled) override;
-        virtual void set_stick_colour(const Colour& colour) override;
+        virtual void set_waypoint_colour(const Colour& colour) override;
         virtual void set_unsaved(bool value) override;
-        virtual Colour stick_colour() const override;
+        virtual Colour waypoint_colour() const override;
         virtual const IWaypoint& waypoint(uint32_t index) const override;
         virtual IWaypoint& waypoint(uint32_t index) override;
         virtual uint32_t waypoints() const override;
@@ -49,7 +49,7 @@ namespace trview
         std::unique_ptr<ISelectionRenderer> _selection_renderer;
         uint32_t _selected_index{ 0u };
         Colour _colour{ Colour::Green };
-        Colour _stick_colour{ Colour::White };
+        Colour _waypoint_colour{ Colour::White };
         bool _is_unsaved{ false };
         bool _randomizer_enabled{ false };
     };

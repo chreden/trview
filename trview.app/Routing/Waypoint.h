@@ -38,7 +38,7 @@ namespace trview
         virtual void set_notes(const std::string& notes) override;
         virtual void set_route_colour(const Colour& colour) override;
         virtual void set_save_file(const std::vector<uint8_t>& data) override;
-        virtual void set_stick_colour(const Colour& colour) override;
+        virtual void set_waypoint_colour(const Colour& colour) override;
         virtual DirectX::SimpleMath::Vector3 blob_position() const override;
         virtual bool visible() const override;
         virtual void set_visible(bool value) override;
@@ -57,7 +57,7 @@ namespace trview
         uint32_t _index;
         uint32_t _room;
         Colour _route_colour;
-        Colour _stick_colour;
+        Colour _waypoint_colour;
         bool _visible{ true };
         WaypointRandomizerSettings _randomizer_settings;
     };    

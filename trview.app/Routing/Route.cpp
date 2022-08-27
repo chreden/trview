@@ -99,7 +99,7 @@ namespace trview
 
     void Route::add(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& normal, uint32_t room, IWaypoint::Type type, uint32_t type_index)
     {
-        _waypoints.push_back(_waypoint_source(position, normal, room, type, type_index, _colour, _stick_colour));
+        _waypoints.push_back(_waypoint_source(position, normal, room, type, type_index, _colour, _waypoint_colour));
         set_unsaved(true);
     }
 
@@ -137,7 +137,7 @@ namespace trview
 
     void Route::insert(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& normal, uint32_t room, uint32_t index, IWaypoint::Type type, uint32_t type_index)
     {
-        _waypoints.insert(_waypoints.begin() + index, _waypoint_source(position, normal, room, type, type_index, _colour, _stick_colour));
+        _waypoints.insert(_waypoints.begin() + index, _waypoint_source(position, normal, room, type, type_index, _colour, _waypoint_colour));
         set_unsaved(true);
     }
 
@@ -208,7 +208,7 @@ namespace trview
         for (std::size_t i = 0; i < _waypoints.size(); ++i)
         {
             auto& waypoint = _waypoints[i];
-            waypoint->render(camera, texture_storage, _stick_colour);
+            waypoint->render(camera, texture_storage, _waypoint_colour);
             if (!_randomizer_enabled && i < _waypoints.size() - 1)
             {
                 waypoint->render_join(*_waypoints[i + 1], camera, texture_storage, _colour);
@@ -247,12 +247,12 @@ namespace trview
         _randomizer_enabled = enabled;
     }
 
-    void Route::set_stick_colour(const Colour& colour)
+    void Route::set_waypoint_colour(const Colour& colour)
     {
-        _stick_colour = colour;
+        _waypoint_colour = colour;
         for (auto& waypoint : _waypoints)
         {
-            waypoint->set_stick_colour(colour);
+            waypoint->set_waypoint_colour(colour);
         }
         set_unsaved(true);
     }
@@ -262,9 +262,9 @@ namespace trview
         _is_unsaved = value;
     }
 
-    Colour Route::stick_colour() const 
+    Colour Route::waypoint_colour() const 
     {
-        return _stick_colour;
+        return _waypoint_colour;
     }
 
     const IWaypoint& Route::waypoint(uint32_t index) const
@@ -400,9 +400,9 @@ namespace trview
             route->set_colour(from_colour_code(json["colour"].get<std::string>()));
         }
 
-        if (json["stick_colour"].is_string())
+        if (json["waypoint_colour"].is_string())
         {
-            route->set_stick_colour(from_colour_code(json["stick_colour"].get<std::string>()));
+            route->set_waypoint_colour(from_colour_code(json["waypoint_colour"].get<std::string>()));
         }
 
         for (const auto& waypoint : json["waypoints"])
@@ -568,7 +568,7 @@ namespace trview
     {
         nlohmann::json json;
         json["colour"] = route.colour().code();
-        json["stick_colour"] = route.stick_colour().code();
+        json["stick_colour"] = route.waypoint_colour().code();
 
         std::vector<nlohmann::json> waypoints;
 

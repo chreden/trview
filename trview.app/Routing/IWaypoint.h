@@ -95,7 +95,7 @@ namespace trview
         /// <summary>
         /// Set the colour for the waypoint stick.
         /// </summary>
-        virtual void set_stick_colour(const Colour& colour) = 0;
+        virtual void set_waypoint_colour(const Colour& colour) = 0;
         /// <summary>
         /// Get the position of the blob on top of the waypoint pole for rendering.
         /// </summary>

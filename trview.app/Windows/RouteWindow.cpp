@@ -45,10 +45,10 @@ namespace trview
                 {
                     on_colour_changed(colour);
                 }
-                auto stick_colour = _route ? _route->stick_colour() : Colour::White;
-                if (ImGui::ColorEdit3("Waypoint##colour", &stick_colour.r, ImGuiColorEditFlags_NoInputs))
+                auto waypoint_colour = _route ? _route->waypoint_colour() : Colour::White;
+                if (ImGui::ColorEdit3("Waypoint##colour", &waypoint_colour.r, ImGuiColorEditFlags_NoInputs))
                 {
-                    on_stick_colour_changed(stick_colour);
+                    on_waypoint_colour_changed(waypoint_colour);
                 }
                 ImGui::EndPopup();
             }

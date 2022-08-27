@@ -30,6 +30,8 @@ namespace trview
         RandomizerSettings randomizer;
         uint32_t max_recent_files{ 10u };
         MapColours map_colours;
+        uint32_t route_colour{ Colour::Green };
+        uint32_t waypoint_colour{ Colour::White };
 
         bool operator==(const UserSettings& other) const;
     };

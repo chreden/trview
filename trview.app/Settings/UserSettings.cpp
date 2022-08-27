@@ -36,6 +36,8 @@ namespace trview
             camera_display_degrees == other.camera_display_degrees &&
             randomizer_tools == other.randomizer_tools &&
             recent_files == other.recent_files &&
-            max_recent_files == other.max_recent_files;
+            max_recent_files == other.max_recent_files &&
+            route_colour == other.route_colour &&
+            waypoint_colour == other.waypoint_colour;
     }
 }

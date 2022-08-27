@@ -21,7 +21,7 @@ namespace trview
         /// <summary>
         /// Event raised when the route stick colour has changed.
         /// </summary>
-        Event<Colour> on_stick_colour_changed;
+        Event<Colour> on_waypoint_colour_changed;
 
         /// Event raised when a waypoint is selected.
         Event<uint32_t> on_waypoint_selected;

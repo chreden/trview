@@ -15,8 +15,8 @@ namespace trview
         const float RopeThickness = 0.015f;
     }
 
-    Waypoint::Waypoint(std::shared_ptr<IMesh> mesh, const Vector3& position, const Vector3& normal, uint32_t room, Type type, uint32_t index, const Colour& route_colour, const Colour& stick_colour)
-        : _mesh(mesh), _position(position), _normal(normal), _type(type), _index(index), _room(room), _route_colour(route_colour), _stick_colour(stick_colour)
+    Waypoint::Waypoint(std::shared_ptr<IMesh> mesh, const Vector3& position, const Vector3& normal, uint32_t room, Type type, uint32_t index, const Colour& route_colour, const Colour& waypoint_colour)
+        : _mesh(mesh), _position(position), _normal(normal), _type(type), _index(index), _room(room), _route_colour(route_colour), _waypoint_colour(waypoint_colour)
     {
     }
 
@@ -137,9 +137,9 @@ namespace trview
         _save_data = data;
     }
 
-    void Waypoint::set_stick_colour(const Colour& colour)
+    void Waypoint::set_waypoint_colour(const Colour& colour)
     {
-        _stick_colour = colour;
+        _waypoint_colour = colour;
     }
 
     bool Waypoint::visible() const

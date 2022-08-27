@@ -172,6 +172,16 @@ namespace trview
             _settings.map_colours = colours;
             on_settings(_settings);
         };
+        _token_store += _settings_window->on_default_route_colour += [&](const Colour& colour)
+        {
+            _settings.route_colour = colour;
+            on_settings(_settings);
+        };
+        _token_store += _settings_window->on_default_waypoint_colour += [&](const Colour& colour)
+        {
+            _settings.waypoint_colour = colour;
+            on_settings(_settings);
+        };
 
         _camera_position = std::make_unique<CameraPosition>();
         _camera_position->on_position_changed += on_camera_position;
