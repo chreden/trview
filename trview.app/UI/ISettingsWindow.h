@@ -72,6 +72,10 @@ namespace trview
         Event<uint32_t> on_max_recent_files;
         Event<Colour> on_background_colour;
         Event<MapColours> on_minimap_colours;
+
+        Event<Colour> on_default_route_colour;
+        Event<Colour> on_default_waypoint_colour;
+
         virtual void render() = 0;
         /// <summary>
         /// Set the new value of the vsync setting. This will not raise the on_vsync event.

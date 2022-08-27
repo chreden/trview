@@ -41,12 +41,12 @@ namespace trview
             if (_show_settings && ImGui::BeginPopup("SettingsPopup"))
             {
                 auto colour = _route ? _route->colour() : Colour::Green;
-                if (ImGui::ColorEdit3("Blob##colour", &colour.r, ImGuiColorEditFlags_NoInputs))
+                if (ImGui::ColorEdit3("Route##colour", &colour.r, ImGuiColorEditFlags_NoInputs))
                 {
                     on_colour_changed(colour);
                 }
                 auto stick_colour = _route ? _route->stick_colour() : Colour::White;
-                if (ImGui::ColorEdit3("Stick##colour", &stick_colour.r, ImGuiColorEditFlags_NoInputs))
+                if (ImGui::ColorEdit3("Waypoint##colour", &stick_colour.r, ImGuiColorEditFlags_NoInputs))
                 {
                     on_stick_colour_changed(stick_colour);
                 }
