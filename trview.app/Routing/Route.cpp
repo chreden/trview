@@ -99,7 +99,7 @@ namespace trview
 
     void Route::add(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& normal, uint32_t room, IWaypoint::Type type, uint32_t type_index)
     {
-        _waypoints.push_back(_waypoint_source(position, normal, room, type, type_index, _colour));
+        _waypoints.push_back(_waypoint_source(position, normal, room, type, type_index, _colour, _stick_colour));
         set_unsaved(true);
     }
 
@@ -137,7 +137,7 @@ namespace trview
 
     void Route::insert(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& normal, uint32_t room, uint32_t index, IWaypoint::Type type, uint32_t type_index)
     {
-        _waypoints.insert(_waypoints.begin() + index, _waypoint_source(position, normal, room, type, type_index, _colour));
+        _waypoints.insert(_waypoints.begin() + index, _waypoint_source(position, normal, room, type, type_index, _colour, _stick_colour));
         set_unsaved(true);
     }
 
@@ -250,6 +250,10 @@ namespace trview
     void Route::set_stick_colour(const Colour& colour)
     {
         _stick_colour = colour;
+        for (auto& waypoint : _waypoints)
+        {
+            waypoint->set_stick_colour(colour);
+        }
         set_unsaved(true);
     }
 

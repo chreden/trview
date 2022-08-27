@@ -22,7 +22,7 @@ namespace trview
         /// <param name="type">The type of waypoint.</param>
         /// <param name="index">The index of the entity or trigger being referenced if this is a non-position type.</param>
         /// <param name="route_colour">The colour of the route.</param>
-        explicit Waypoint(std::shared_ptr<IMesh> mesh, const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& normal, uint32_t room, Type type, uint32_t index, const Colour& route_colour);
+        explicit Waypoint(std::shared_ptr<IMesh> mesh, const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& normal, uint32_t room, Type type, uint32_t index, const Colour& route_colour, const Colour& stick_colour);
         virtual ~Waypoint() = default;
         virtual void render(const ICamera& camera, const ILevelTextureStorage& texture_storage, const DirectX::SimpleMath::Color& colour) override;
         virtual void render_join(const IWaypoint& next_waypoint, const ICamera& camera, const ILevelTextureStorage& texture_storage, const DirectX::SimpleMath::Color& colour) override;
@@ -38,6 +38,7 @@ namespace trview
         virtual void set_notes(const std::string& notes) override;
         virtual void set_route_colour(const Colour& colour) override;
         virtual void set_save_file(const std::vector<uint8_t>& data) override;
+        virtual void set_stick_colour(const Colour& colour) override;
         virtual DirectX::SimpleMath::Vector3 blob_position() const override;
         virtual bool visible() const override;
         virtual void set_visible(bool value) override;
@@ -56,6 +57,7 @@ namespace trview
         uint32_t _index;
         uint32_t _room;
         Colour _route_colour;
+        Colour _stick_colour;
         bool _visible{ true };
         WaypointRandomizerSettings _randomizer_settings;
     };    

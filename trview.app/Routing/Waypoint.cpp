@@ -15,8 +15,8 @@ namespace trview
         const float RopeThickness = 0.015f;
     }
 
-    Waypoint::Waypoint(std::shared_ptr<IMesh> mesh, const Vector3& position, const Vector3& normal, uint32_t room, Type type, uint32_t index, const Colour& route_colour)
-        : _mesh(mesh), _position(position), _normal(normal), _type(type), _index(index), _room(room), _route_colour(route_colour)
+    Waypoint::Waypoint(std::shared_ptr<IMesh> mesh, const Vector3& position, const Vector3& normal, uint32_t room, Type type, uint32_t index, const Colour& route_colour, const Colour& stick_colour)
+        : _mesh(mesh), _position(position), _normal(normal), _type(type), _index(index), _room(room), _route_colour(route_colour), _stick_colour(stick_colour)
     {
     }
 
@@ -30,7 +30,7 @@ namespace trview
         light_direction.Normalize();
 
         auto pole_wvp = pole_world * camera.view_projection();
-        _mesh->render(pole_wvp, texture_storage, colour, 0.75f, light_direction);
+        _mesh->render(pole_wvp, texture_storage, _stick_colour, 0.75f, light_direction);
 
         // The light blob.
         auto blob_wvp = Matrix::CreateScale(PoleThickness, PoleThickness, PoleThickness) * Matrix::CreateTranslation(-Vector3(0, PoleLength + PoleThickness * 0.5f, 0)) * rotation * Matrix::CreateTranslation(_position) * camera.view_projection();
@@ -135,6 +135,11 @@ namespace trview
     void Waypoint::set_save_file(const std::vector<uint8_t>& data)
     {
         _save_data = data;
+    }
+
+    void Waypoint::set_stick_colour(const Colour& colour)
+    {
+        _stick_colour = colour;
     }
 
     bool Waypoint::visible() const

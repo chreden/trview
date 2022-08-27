@@ -49,6 +49,7 @@ namespace
         IWaypoint::Type type;
         uint32_t index;
         Colour colour;
+        Colour stick_colour;
     };
 
     /// <summary>
@@ -85,9 +86,9 @@ namespace
 TEST(Route, Add)
 {
     std::optional<WaypointDetails> waypoint_values;
-    auto source = [&](auto&& position, auto&& normal, auto&& room, auto&& type, auto&& index, auto&& colour)
+    auto source = [&](auto&&... args)
     {
-        waypoint_values = { position, normal, room, type, index, colour };
+        waypoint_values = { args... };
         return mock_unique<MockWaypoint>();
     };
 
@@ -105,9 +106,9 @@ TEST(Route, Add)
 TEST(Route, AddSpecificType)
 {
     std::optional<WaypointDetails> waypoint_values;
-    auto source = [&](auto&& position, auto&& normal, auto&& room, auto&& type, auto&& index, auto&& colour)
+    auto source = [&](auto&&... args)
     {
-        waypoint_values = { position, normal, room, type, index, colour };
+        waypoint_values = { args... };
         return mock_unique<MockWaypoint>();
     };
     auto route = register_test_module().with_waypoint_source(source).build();

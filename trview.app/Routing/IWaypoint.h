@@ -37,7 +37,7 @@ namespace trview
         /// <summary>
         /// Create a waypoint.
         /// </summary>
-        using Source = std::function<std::unique_ptr<IWaypoint>(const DirectX::SimpleMath::Vector3&, const DirectX::SimpleMath::Vector3&, uint32_t, Type, uint32_t, const Colour&)>;
+        using Source = std::function<std::unique_ptr<IWaypoint>(const DirectX::SimpleMath::Vector3&, const DirectX::SimpleMath::Vector3&, uint32_t, Type, uint32_t, const Colour&, const Colour&)>;
         /// <summary>
         /// Destructor for IWaypoint.
         /// </summary>
@@ -92,6 +92,10 @@ namespace trview
         virtual void set_route_colour(const Colour& colour) = 0;
         /// Set the contents of the attached save file.
         virtual void set_save_file(const std::vector<uint8_t>& data) = 0;
+        /// <summary>
+        /// Set the colour for the waypoint stick.
+        /// </summary>
+        virtual void set_stick_colour(const Colour& colour) = 0;
         /// <summary>
         /// Get the position of the blob on top of the waypoint pole for rendering.
         /// </summary>
