@@ -529,10 +529,22 @@ TEST(SettingsLoader, WaypointColourSaved)
 
 TEST(SettingsLoader, RouteColourLoaded)
 {
-    FAIL();
+    auto loader = setup_setting("{\"routecolour\":{\"a\":1.0,\"b\":1.0,\"g\":0.0,\"r\":0.0}}");
+    auto settings_blue = loader->load_user_settings();
+    ASSERT_EQ(settings_blue.route_colour, Colour::Blue);
+
+    auto loader_yellow = setup_setting("{\"routecolour\":{\"a\":1.0,\"b\":0.0,\"g\":1.0,\"r\":1.0}}");
+    auto settings_yellow = loader_yellow->load_user_settings();
+    ASSERT_EQ(settings_yellow.route_colour, Colour::Yellow);
 }
 
 TEST(SettingsLoader, WaypointColourLoaded)
 {
-    FAIL();
+    auto loader = setup_setting("{\"waypointcolour\":{\"a\":1.0,\"b\":1.0,\"g\":0.0,\"r\":0.0}}");
+    auto settings_blue = loader->load_user_settings();
+    ASSERT_EQ(settings_blue.waypoint_colour, Colour::Blue);
+
+    auto loader_yellow = setup_setting("{\"waypointcolour\":{\"a\":1.0,\"b\":0.0,\"g\":1.0,\"r\":1.0}}");
+    auto settings_yellow = loader_yellow->load_user_settings();
+    ASSERT_EQ(settings_yellow.waypoint_colour, Colour::Yellow);
 }
