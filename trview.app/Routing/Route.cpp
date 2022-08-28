@@ -568,7 +568,7 @@ namespace trview
     {
         nlohmann::json json;
         json["colour"] = route.colour().code();
-        json["stick_colour"] = route.waypoint_colour().code();
+        json["waypoint_colour"] = route.waypoint_colour().code();
 
         std::vector<nlohmann::json> waypoints;
 
