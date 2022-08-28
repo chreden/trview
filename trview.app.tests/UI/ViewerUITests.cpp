@@ -253,3 +253,22 @@ TEST(ViewerUI, OnMinimapColoursEventRaised)
     ASSERT_TRUE(raised);
 }
 
+TEST(ViewerUI, OnDefaultRouteColourEventRaised)
+{
+    FAIL();
+}
+
+TEST(ViewerUI, OnDefaultWaypointColourRaised)
+{
+    FAIL();
+}
+
+TEST(ViewerUI, SetDefaultRouteColourCalled)
+{
+    FAIL();
+}
+
+TEST(ViewerUI, SetDefaultWaypointColourCalled)
+{
+    FAIL();
+}

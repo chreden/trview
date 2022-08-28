@@ -506,3 +506,23 @@ TEST(SettingsLoader, MapColoursSaved)
     EXPECT_THAT(output, HasSubstr("\"special\":[[0,{\"a\":1.0,\"b\":0.0,\"g\":0.0,\"r\":1.0}]]"));
     EXPECT_THAT(output, HasSubstr("\"colours\":[[8,{\"a\":1.0,\"b\":1.0,\"g\":0.0,\"r\":0.0}]]"));
 }
+
+TEST(SettingsLoader, RouteColourSaved)
+{
+    FAIL();
+}
+
+TEST(SettingsLoader, WaypointColourSaved)
+{
+    FAIL();
+}
+
+TEST(SettingsLoader, RouteColourLoaded)
+{
+    FAIL();
+}
+
+TEST(SettingsLoader, WaypointColourLoaded)
+{
+    FAIL();
+}

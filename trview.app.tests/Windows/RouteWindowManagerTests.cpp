@@ -109,3 +109,13 @@ TEST(RouteWindowManager, WaypointReorderedEventRaised)
     ASSERT_EQ(std::get<0>(raised.value()), 1);
     ASSERT_EQ(std::get<1>(raised.value()), 2);
 }
+
+TEST(RouteWindowManager, OnColourChangeEventRaised)
+{
+    FAIL();
+}
+
+TEST(RouteWindowManager, OnWaypointColourChangedEventRaised)
+{
+    FAIL();
+}

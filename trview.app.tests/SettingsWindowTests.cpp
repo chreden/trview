@@ -633,3 +633,23 @@ TEST(SettingsWindow, OnMinimapColoursRaisedOnResetNormal)
     ASSERT_TRUE(map_colours.has_value());
     ASSERT_EQ(map_colours.value().override_colours().size(), 0.0f);
 }
+
+TEST(SettingsWindow, OnDefaultRouteColourRaised)
+{
+    FAIL();
+}
+
+TEST(SettingsWindow, OnDefaultWaypointColourRaised)
+{
+    FAIL();
+}
+
+TEST(SettingsWindow, SetDefaultRouteColourUpdatesColours)
+{
+    FAIL();
+}
+
+TEST(SettingsWindow, SetDefaultWaypointColourUpdatesColours)
+{
+    FAIL();
+}
