@@ -509,12 +509,22 @@ TEST(SettingsLoader, MapColoursSaved)
 
 TEST(SettingsLoader, RouteColourSaved)
 {
-    FAIL();
+    std::string output;
+    auto loader = setup_save_setting(output);
+    UserSettings settings;
+    settings.route_colour = Colour::Yellow;
+    loader->save_user_settings(settings);
+    EXPECT_THAT(output, HasSubstr("\"routecolour\":{\"a\":1.0,\"b\":0.0,\"g\":1.0,\"r\":1.0}"));
 }
 
 TEST(SettingsLoader, WaypointColourSaved)
 {
-    FAIL();
+    std::string output;
+    auto loader = setup_save_setting(output);
+    UserSettings settings;
+    settings.waypoint_colour = Colour::Yellow;
+    loader->save_user_settings(settings);
+    EXPECT_THAT(output, HasSubstr("\"waypointcolour\":{\"a\":1.0,\"b\":0.0,\"g\":1.0,\"r\":1.0}"));
 }
 
 TEST(SettingsLoader, RouteColourLoaded)

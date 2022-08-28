@@ -1,6 +1,7 @@
 #include "SettingsLoader.h"
 #include <trview.common/Json.h>
 #include <trview.common/Strings.h>
+#include <trview.common/JsonSerializers.h>
 
 namespace trview
 {
