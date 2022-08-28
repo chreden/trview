@@ -9,8 +9,6 @@ namespace trview
             return;
         }
 
-        ImGui::ShowStackToolWindow();
-
         const auto checkbox = [](const std::string& name, bool& setting, Event<bool>& event)
         {
             if (ImGui::Checkbox(name.c_str(), &setting))
