@@ -6,6 +6,7 @@
 #include <trview.app/Camera/ICamera.h>
 #include <trview.common/IFiles.h>
 #include <trview.app/Settings/RandomizerSettings.h>
+#include "../Settings/UserSettings.h"
 
 namespace trview
 {
@@ -15,7 +16,7 @@ namespace trview
     class Route final : public IRoute
     {
     public:
-        explicit Route(const std::unique_ptr<ISelectionRenderer> selection_renderer, const IWaypoint::Source& waypoint_source);
+        explicit Route(const std::unique_ptr<ISelectionRenderer> selection_renderer, const IWaypoint::Source& waypoint_source, const UserSettings& settings);
         virtual ~Route() = default;
         Route& operator=(const Route& other);
         virtual void add(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& normal, uint32_t room) override;

@@ -232,4 +232,14 @@ namespace trview
     {
         _colours = colours;
     }
+
+    void SettingsWindow::set_default_route_colour(const Colour& colour)
+    {
+        _default_route_colour = colour;
+    }
+
+    void SettingsWindow::set_default_waypoint_colour(const Colour& colour)
+    {
+        _default_waypoint_colour = colour;
+    }
 }

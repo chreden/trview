@@ -53,6 +53,8 @@ namespace trview
         virtual void set_background_colour(const Colour& colour) override;
         virtual void set_map_colours(const MapColours& colours) override;
         virtual void toggle_visibility() override;
+        virtual void set_default_route_colour(const Colour& colour) override;
+        virtual void set_default_waypoint_colour(const Colour& colour) override;
     private:
         bool _visible{ false };
         bool _vsync{ false };

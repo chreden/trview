@@ -72,6 +72,8 @@ namespace trview
         auto texture_storage = std::make_shared<TextureStorage>(device);
         auto shader_storage = std::make_shared<graphics::ShaderStorage>();
         auto font_factory = std::make_shared<graphics::FontFactory>();
+        auto files = std::make_shared<Files>();
+        auto settings_loader = std::make_shared<SettingsLoader>(files);
 
         Resource type_list = get_resource_memory(IDR_TYPE_NAMES, L"TEXT");
         auto type_name_lookup = std::make_shared<TypeNameLookup>(std::string(type_list.data, type_list.data + type_list.size));
@@ -106,7 +108,7 @@ namespace trview
         {
             return std::make_shared<Route>(
                 std::make_unique<SelectionRenderer>(device, shader_storage, std::make_unique<TransparencyBuffer>(device), render_target_source),
-                waypoint_source);
+                waypoint_source, settings_loader->load_user_settings());
         };
 
         auto entity_source = [=](auto&& level, auto&& entity, auto&& index, auto&& mesh_storage)
@@ -174,7 +176,6 @@ namespace trview
             device_window_source,
             std::make_unique<SectorHighlight>(mesh_source));
 
-        auto files = std::make_shared<Files>();
         auto dialogs = std::make_shared<Dialogs>(window);
         auto clipboard = std::make_shared<Clipboard>(window);
 
@@ -192,7 +193,7 @@ namespace trview
         return std::make_unique<Application>(
             window,
             std::make_unique<UpdateChecker>(window),
-            std::make_unique<SettingsLoader>(files),
+            settings_loader,
             trlevel_source,
             std::make_unique<FileMenu>(window, shortcuts, dialogs),
             std::move(viewer),

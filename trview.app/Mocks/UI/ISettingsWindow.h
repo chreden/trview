@@ -19,6 +19,8 @@ namespace trview
             MOCK_METHOD(void, set_auto_orbit, (bool), (override));
             MOCK_METHOD(void, set_camera_acceleration, (bool), (override));
             MOCK_METHOD(void, set_camera_acceleration_rate, (float), (override));
+            MOCK_METHOD(void, set_default_route_colour, (const Colour&), (override));
+            MOCK_METHOD(void, set_default_waypoint_colour, (const Colour&), (override));
             MOCK_METHOD(void, set_movement_speed, (float), (override));
             MOCK_METHOD(void, set_sensitivity, (float), (override));
             MOCK_METHOD(void, set_invert_vertical_pan, (bool), (override));

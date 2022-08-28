@@ -123,6 +123,16 @@ namespace trview
         /// <param name="value">The new 'camera acceleration rate' setting.</param>
         virtual void set_camera_acceleration_rate(float value) = 0;
         /// <summary>
+        /// Set the new value of the 'default route colour' setting. This will not raise the on_default_route_colour event.
+        /// </summary>
+        /// <param name="colour">The new 'default route colour' setting.</param>
+        virtual void set_default_route_colour(const Colour& colour) = 0;
+        /// <summary>
+        /// Set the new value of the 'default waypoint colour' setting. This will not raise the on_default_waypoint_colour event.
+        /// </summary>
+        /// <param name="colour">The new 'default waypoint colour' setting.</param>
+        virtual void set_default_waypoint_colour(const Colour& colour) = 0;
+        /// <summary>
         /// Set the movement speed slider to specified value.
         /// </summary>
         /// <param name="value">The movement speed between 0 and 1.</param>

@@ -20,6 +20,7 @@ namespace
         {
             std::unique_ptr<ISelectionRenderer> selection_renderer = mock_unique<MockSelectionRenderer>();
             IWaypoint::Source waypoint_source = [](auto&&...) { return mock_unique<MockWaypoint>(); };
+            UserSettings settings;
 
             test_module& with_selection_renderer(std::unique_ptr<ISelectionRenderer> selection_renderer)
             {
@@ -35,7 +36,7 @@ namespace
 
             std::unique_ptr<Route> build()
             {
-                return std::make_unique<Route>(std::move(selection_renderer), waypoint_source);
+                return std::make_unique<Route>(std::move(selection_renderer), waypoint_source, settings);
             }
         };
         return test_module{};
