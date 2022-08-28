@@ -361,3 +361,23 @@ TEST(Route, RenderDoesNotShowSelection)
     route->add(Vector3::Zero, Vector3::Down, 0);
     route->render(camera, texture_storage, false);
 }
+
+TEST(Route, AddWaypointUsesColours)
+{
+    FAIL();
+}
+
+TEST(Route, RouteUsesDefaultColours)
+{
+    FAIL();
+}
+
+TEST(Route, SetColourUpdatesWaypoints)
+{
+    FAIL();
+}
+
+TEST(Route, SetWaypointColourUpdatesWaypoints)
+{
+    FAIL();
+}
