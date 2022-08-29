@@ -129,11 +129,11 @@ namespace trview
             // Draw the regular faces of the item with a black colouring.
             const bool was_visible = selected_item.visible();
             selected_item.set_visible(true);
-            selected_item.render(camera, texture_storage, Color(0.0f, 0.0f, 0.0f));
+            selected_item.render(camera, texture_storage, IRenderable::SelectionFill);
 
             // Also render the transparent parts of the meshes, again with black.
             _transparency->reset();
-            selected_item.get_transparent_triangles(*_transparency, camera, Color(0.0f, 0.0f, 0.0f));
+            selected_item.get_transparent_triangles(*_transparency, camera, IRenderable::SelectionFill);
             _transparency->sort(camera.rendering_position());
             _transparency->render(camera, texture_storage, true);
             selected_item.set_visible(was_visible);
