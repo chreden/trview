@@ -15,9 +15,21 @@ namespace trview
         case CompareOp::BetweenInclusive:
             return 2;
         case CompareOp::Exists:
+        case CompareOp::NotExists:
             return 0;
         }
         return 1;
+    }
+
+    template <typename T>
+    bool Filters<T>::Filter::initial_state() const noexcept
+    {
+        switch (compare)
+        {
+        case CompareOp::NotExists:
+            return true;
+        }
+        return false;
     }
 
     template <typename T>
@@ -223,7 +235,7 @@ namespace trview
         Op op = Op::Or;
         for (const auto& filter : _filters)
         {
-            bool filter_result = false;
+            bool filter_result = filter.initial_state();
 
             const auto& getter = _getters.find(filter.key);
             if (getter != _getters.end())
@@ -244,7 +256,10 @@ namespace trview
                     if (!getter_predicate || getter_predicate(value))
                     {
                         const auto getter_values = multi_getter->second.function(value);
-                        filter_result = std::find_if(getter_values.begin(), getter_values.end(), [&](const auto& value) { return is_match(value, filter); }) != getter_values.end();
+                        if (!getter_values.empty())
+                        {
+                            filter_result = std::find_if(getter_values.begin(), getter_values.end(), [&](const auto& value) { return is_match(value, filter); }) != getter_values.end();
+                        }
                     }
                 }
             }
@@ -456,6 +471,7 @@ namespace trview
             {
                 auto ops = multi_getter->second.ops;
                 ops.push_back(CompareOp::Exists);
+                ops.push_back(CompareOp::NotExists);
                 return ops;
             }
         }
@@ -547,6 +563,8 @@ namespace trview
             return "between inclusive";
         case CompareOp::Exists:
             return "is present";
+        case CompareOp::NotExists:
+            return "is not present";
         }
         return "?";
     }
