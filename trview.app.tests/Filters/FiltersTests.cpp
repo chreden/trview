@@ -333,3 +333,28 @@ TEST(Filters, CheckboxShowsTooltip)
     ASSERT_NE(imgui.find_window("##Tooltip_00"), nullptr);
 }
 
+TEST(Filters, NotPresentFloat)
+{
+    Filters<Object> filters;
+    filters.add_multi_getter<float>("value", [](auto&& o) { return o.numbers; });
+
+    Filters<Object>::Filter present_float = make_filter().key("value").compare_op(CompareOp::NotExists);
+    filters.set_filters({ present_float });
+
+    ASSERT_FALSE(filters.match(Object().with_numbers({ 1, 3, 12, 15 })));
+    ASSERT_TRUE(filters.match(Object().with_numbers({ })));
+}
+
+TEST(Filters, NotPresentString)
+{
+    Filters<Object> filters;
+    filters.add_multi_getter<std::string>("value", [](auto&& o) { return o.texts; });
+
+    Filters<Object>::Filter present_string = make_filter().key("value").compare_op(CompareOp::NotExists);
+    filters.set_filters({ present_string });
+
+    ASSERT_FALSE(filters.match(Object().with_texts({ "test", "string" })));
+    ASSERT_TRUE(filters.match(Object().with_texts({ })));
+}
+
+

@@ -17,7 +17,8 @@ namespace trview
         LessThanOrEqual,
         Between,
         BetweenInclusive,
-        Exists
+        Exists,
+        NotExists
     };
 
     enum class Op
@@ -52,6 +53,7 @@ namespace trview
             Op op{ Op::And };
 
             int value_count() const noexcept;
+            bool initial_state() const noexcept;
         };
 
         /// <summary>
