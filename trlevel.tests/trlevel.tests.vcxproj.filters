@@ -3,8 +3,26 @@
   <ItemGroup>
     <ClCompile Include="DecrypterTests.cpp" />
     <ClCompile Include="pch.cpp" />
+    <ClCompile Include="Main.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
+    <ClInclude Include="resource.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Files">
+      <UniqueIdentifier>{d030ce7f-c449-48e0-81ae-4ca057dfe512}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Files\lake.trc">
+      <Filter>Files</Filter>
+    </None>
+    <None Include="Files\lake-enc.tr4">
+      <Filter>Files</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Resource.rc" />
   </ItemGroup>
 </Project>
