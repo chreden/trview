@@ -121,6 +121,7 @@ TEST(Level, LoadTypeNames)
     tr2_entity entity;
     entity.Room = 0;
     entity.TypeID = 123;
+    entity.Flags = 100;
 
     auto [mock_level_ptr, mock_level] = create_mock<trlevel::mocks::MockLevel>();
     EXPECT_CALL(mock_level, get_version).WillRepeatedly(Return(LevelVersion::Tomb2));
@@ -129,7 +130,7 @@ TEST(Level, LoadTypeNames)
     EXPECT_CALL(mock_level, get_entity(0)).WillRepeatedly(Return(entity));
 
     auto mock_type_name_lookup = mock_shared<MockTypeNameLookup>();
-    EXPECT_CALL(*mock_type_name_lookup, lookup_type_name(LevelVersion::Tomb2, 123));
+    EXPECT_CALL(*mock_type_name_lookup, lookup_type_name(LevelVersion::Tomb2, 123, 100));
     auto level = register_test_module().with_level(std::move(mock_level_ptr)).with_type_name_lookup(mock_type_name_lookup).build();
 }
 

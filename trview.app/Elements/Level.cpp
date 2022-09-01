@@ -529,7 +529,7 @@ namespace trview
                 }
             }
 
-            _items.push_back(Item(i, level_entity.Room, level_entity.TypeID, type_names.lookup_type_name(_version, level_entity.TypeID), 
+            _items.push_back(Item(i, level_entity.Room, level_entity.TypeID, type_names.lookup_type_name(_version, level_entity.TypeID, level_entity.Flags), 
                 version() >= trlevel::LevelVersion::Tomb4 ? level_entity.Intensity2 : 0, level_entity.Flags, relevant_triggers, level_entity.position()));
         }
 
@@ -541,7 +541,7 @@ namespace trview
             _rooms[entity->room()]->add_entity(entity);
             _entities.push_back(entity);
 
-            _items.push_back(Item(num_entities + i, ai_object.room, ai_object.type_id, type_names.lookup_type_name(_version, ai_object.type_id), ai_object.ocb,
+            _items.push_back(Item(num_entities + i, ai_object.room, ai_object.type_id, type_names.lookup_type_name(_version, ai_object.type_id, ai_object.flags), ai_object.ocb,
                 ai_object.flags, {}, ai_object.position()));
         }
     }

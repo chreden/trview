@@ -5,6 +5,18 @@ using namespace trlevel;
 
 namespace trview
 {
+    namespace
+    {
+        const std::unordered_map<int, std::string> mutant_names
+        {
+            { 0, "Winged Shooter" },
+            { 1, "Grounded Shooter" },
+            { 2, "Centaur" },
+            { 4, "Torso" },
+            { 8, "Grounded non-shooter" }
+        };
+    }
+
     TypeNameLookup::TypeNameLookup(const std::string& type_name_json)
     {
         auto json = nlohmann::json::parse(type_name_json.begin(), type_name_json.end());
@@ -52,7 +64,7 @@ namespace trview
         load_game_types(LevelVersion::Tomb5);
     }
 
-    std::string TypeNameLookup::lookup_type_name(LevelVersion level_version, uint32_t type_id) const
+    std::string TypeNameLookup::lookup_type_name(LevelVersion level_version, uint32_t type_id, uint32_t flags) const
     {
         const auto& game_types = _type_names.find(level_version);
         if (game_types == _type_names.end())
@@ -65,6 +77,15 @@ namespace trview
         {
             return std::to_string(type_id);
         }
+
+        // Special overrides for TR1
+        if (level_version == LevelVersion::Tomb1 && type_id == 163 || type_id == 181)
+        {
+            int mutant_type = (flags & 0x3E00) >> 9;
+            auto mutant_name = mutant_names.find(mutant_type);
+            return std::format("Mutant Egg ({})", mutant_name == mutant_names.end() ? "Big" : mutant_name->second);
+        }
+
         return found_type->second.name;
     }
 
