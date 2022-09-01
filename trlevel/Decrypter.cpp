@@ -94,7 +94,8 @@ namespace trlevel
             {
                 for (int z = 0; z < 12; ++z)
                 {
-                    data[z + 1] = reinterpret_cast<uint32_t*>(buffer)[z] ^ *(uint32_t*)(&encryption_table[index + 4 * z]);
+                    data[z + 1] = reinterpret_cast<uint32_t*>(buffer)[z] ^ 
+                        *reinterpret_cast<const uint32_t*>(&encryption_table[index + 4 * z]);
                 }
                 b_data[52] = encryption_table[index + 48] ^ buffer[48];
                 b_data[53] = encryption_table[index + 49] ^ buffer[49];
@@ -118,26 +119,25 @@ namespace trlevel
         bytes[3] = 'c';
 
         uint32_t* data = reinterpret_cast<uint32_t*>(&bytes[0xe]);
-        int x = 0;
 
         uint8_t buffer[50];
+        memset(buffer, 0, sizeof(buffer));
 
-        do
+        for (int x = 0; x < 4; ++x)
         {
+            uint8_t* b_data = reinterpret_cast<uint8_t*>(data);
             uint32_t first = *data;
-            uint32_t* p2 = data + 1;
-            int x2 = x + 1;
 
-            int index = (first >> ((uint8_t)x2 & 0x1f) & 0xf) * 99;
+            int index = (first >> ((uint8_t)(x + 1) & 0x1f) & 0xf) * 99;
             if ((((char)data + 4 | (char)index + 0x80u) & 3) == 0)
             {
                 for (int z = 0; z < 12; ++z)
                 {
                     reinterpret_cast<uint32_t*>(buffer)[z]
-                        = data[z + 1] ^ *(uint32_t*)(&encryption_table[index + 4 * z]);
+                        = data[z + 1] ^ *reinterpret_cast<const uint32_t*>(&encryption_table[index + 4 * z]);
                 }
-                buffer[48] = encryption_table[index + 48] ^ *(uint8_t*)(data + 0xd);
-                buffer[49] = encryption_table[index + 49] ^ *(uint8_t*)((std::size_t)data + 0x35);
+                buffer[48] = encryption_table[index + 48] ^ b_data[52];
+                buffer[49] = encryption_table[index + 49] ^ b_data[53];
             }
             else
             {
@@ -147,39 +147,31 @@ namespace trlevel
                 }
             }
 
-            int i = 0;
-            for (i = 0; i < 50; ++i)
+            for (int i = 0; i < 50; ++i)
             {
-                *(uint8_t*)((std::size_t)data + i + 4)
-                    = *(uint8_t*)((std::size_t)buffer + (uint32_t)(uint8_t)encryption_table2[i + (first >> ((char)x + 5U & 0x1f) & 0xf) * 0x32]);
+                b_data[i + 4] = buffer[encryption_table2[i + (first >> ((char)x + 5U & 0x1f) & 0xf) * 50]];
             }
 
-            x = i;
             if ((((char)data + 0x36U | (char)index + 0xb2U) & 3) != 0)
             {
-                do {
-                    uint8_t* pbVar1 = (uint8_t*)((std::size_t)data + x + 4);
-                    *pbVar1 = *pbVar1 ^ encryption_table[x + index];
-                    x = x + 1;
-                } while (x != 99);
+                for (int w = 50; w < 99; ++w)
+                {
+                    b_data[w + 4] ^= encryption_table[w + index];
+                }
             }
             else
             {
                 for (int z = 13; z < 25; ++z)
                 {
-                    uint32_t* p = reinterpret_cast<uint32_t*>(reinterpret_cast<char*>(data) + z * 4 + 2);
-                    *p = *p ^ *reinterpret_cast<const uint32_t*>(&encryption_table[index + (z * 4) - 2]);
+                    uint32_t* p = reinterpret_cast<uint32_t*>(&b_data[z * 4 + 2]);
+                    *p ^= *reinterpret_cast<const uint32_t*>(&encryption_table[index + (z * 4) - 2]);
                 }
 
-                *(uint8_t*)((std::size_t)data + 0x66) = *(uint8_t*)((std::size_t)data + 0x66) ^ encryption_table[index + 0x62];
+                b_data[102] ^= encryption_table[index + 98];
             }
 
-            if (data = (uint32_t*)((std::size_t)p2 + first + 4), x = x2, x2 == 4)
-            {
-                break;
-            }
-
-        } while (true);
+            data = reinterpret_cast<uint32_t*>(b_data + first + 8);
+        }
 
     }
 
