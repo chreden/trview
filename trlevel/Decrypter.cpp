@@ -67,7 +67,7 @@ namespace trlevel
 
             int index = (first >> (static_cast<uint8_t>(x + 1) & 0x1f) & 0xf) * 99;
 
-            if ((((char)data + 0x36U | (char)index + 0xb2U) & 3) != 0)
+            if ((((char)data + 54 | (char)index + 178) & 3) != 0)
             {
                 for (int w = 50; w < 99; ++w)
                 {
@@ -82,33 +82,32 @@ namespace trlevel
                     *p ^= *reinterpret_cast<const uint32_t*>(&encryption_table[index + (z * 4) - 2]);
                 }
 
-                b_data[0x66] ^= encryption_table[index + 0x62];
+                b_data[102] ^= encryption_table[index + 98];
             }
 
             for (int i = 0; i < 50; ++i)
             {
-                *(uint8_t*)((std::size_t)buffer + (uint32_t)(uint8_t)encryption_table2[i + (first >> ((char)x + 5U & 0x1f) & 0xf) * 0x32])
-                    = *(uint8_t*)((std::size_t)data + i + 4);
+                buffer[encryption_table2[i + (first >> ((char)x + 5U & 0x1f) & 0xf) * 50]] = b_data[i + 4];
             }
 
-            if ((((char)data + 4 | (char)index + 0x80u) & 3) == 0)
+            if ((((char)data + 4 | (char)index + 128) & 3) == 0)
             {
                 for (int z = 0; z < 12; ++z)
                 {
                     data[z + 1] = reinterpret_cast<uint32_t*>(buffer)[z] ^ *(uint32_t*)(&encryption_table[index + 4 * z]);
                 }
-                *(uint8_t*)(data + 0xd) = encryption_table[index + 48] ^ buffer[48];
-                *(uint8_t*)((std::size_t)data + 0x35) = encryption_table[index + 49] ^ buffer[49];
+                b_data[52] = encryption_table[index + 48] ^ buffer[48];
+                b_data[53] = encryption_table[index + 49] ^ buffer[49];
             }
             else
             {
                 for (int y = 0; y < 50; ++y)
                 {
-                    *(uint8_t*)((std::size_t)data + y + 4) = *(uint8_t*)((std::size_t)buffer + y) ^ encryption_table[y + index];
+                    b_data[y + 4] = buffer[y] ^ encryption_table[y + index];
                 }
             }
 
-            data = (uint32_t*)((std::size_t)(data + 1) + first + 4);
+            data = reinterpret_cast<uint32_t*>(b_data + first + 8);
         }
     }
 
