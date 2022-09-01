@@ -79,10 +79,13 @@ namespace trlevel
             }
             else
             {
-                for (int z = 13; z < 26; ++z)
+                for (int z = 13; z < 25; ++z)
                 {
-                    data[z] = data[z] ^ *reinterpret_cast<const uint32_t*>(&encryption_table[index + 50 + (z - 13) * 4]);
+                    uint32_t* p = reinterpret_cast<uint32_t*>(reinterpret_cast<char*>(data) + z * 4 + 2);
+                    *p = *p ^ *reinterpret_cast<const uint32_t*>(&encryption_table[index + (z * 4) - 2]);
                 }
+
+                *(uint8_t*)((int)data + 0x66) = *(uint8_t*)((int)data + 0x66) ^ encryption_table[index + 0x62];
             }
 
             for (int i = 0; i < 50; ++i)
