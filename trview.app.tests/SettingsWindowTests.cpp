@@ -633,3 +633,35 @@ TEST(SettingsWindow, OnMinimapColoursRaisedOnResetNormal)
     ASSERT_TRUE(map_colours.has_value());
     ASSERT_EQ(map_colours.value().override_colours().size(), 0.0f);
 }
+
+TEST(SettingsWindow, SetDefaultRouteColourUpdatesColours)
+{
+    SettingsWindow window;
+    window.toggle_visibility();
+
+    window.set_default_route_colour(Colour(0.5f, 0.75f, 1.0f));
+
+    tests::TestImgui imgui([&]() { window.render(); });
+    imgui.click_element(imgui.id("Settings").push("TabBar").id("Route"));
+    imgui.render();
+
+    ASSERT_THAT(imgui.item_text(imgui.id("Settings").push("TabBar").push("Route").push(SettingsWindow::Names::default_route_colour).id("##X")), HasSubstr("128"));
+    ASSERT_THAT(imgui.item_text(imgui.id("Settings").push("TabBar").push("Route").push(SettingsWindow::Names::default_route_colour).id("##Y")), HasSubstr("191"));
+    ASSERT_THAT(imgui.item_text(imgui.id("Settings").push("TabBar").push("Route").push(SettingsWindow::Names::default_route_colour).id("##Z")), HasSubstr("255"));
+}
+
+TEST(SettingsWindow, SetDefaultWaypointColourUpdatesColours)
+{
+    SettingsWindow window;
+    window.toggle_visibility();
+
+    window.set_default_waypoint_colour(Colour(0.5f, 0.75f, 1.0f));
+
+    tests::TestImgui imgui([&]() { window.render(); });
+    imgui.click_element(imgui.id("Settings").push("TabBar").id("Route"));
+    imgui.render();
+
+    ASSERT_THAT(imgui.item_text(imgui.id("Settings").push("TabBar").push("Route").push(SettingsWindow::Names::default_waypoint_colour).id("##X")), HasSubstr("128"));
+    ASSERT_THAT(imgui.item_text(imgui.id("Settings").push("TabBar").push("Route").push(SettingsWindow::Names::default_waypoint_colour).id("##Y")), HasSubstr("191"));
+    ASSERT_THAT(imgui.item_text(imgui.id("Settings").push("TabBar").push("Route").push(SettingsWindow::Names::default_waypoint_colour).id("##Z")), HasSubstr("255"));
+}

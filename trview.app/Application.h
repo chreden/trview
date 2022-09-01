@@ -41,7 +41,7 @@ namespace trview
         explicit Application(
             const Window& application_window,
             std::unique_ptr<IUpdateChecker> update_checker,
-            std::unique_ptr<ISettingsLoader> settings_loader,
+            std::shared_ptr<ISettingsLoader> settings_loader,
             const trlevel::ILevel::Source& trlevel_source,
             std::unique_ptr<IFileMenu> file_menu,
             std::unique_ptr<IViewer> viewer,
@@ -101,7 +101,7 @@ namespace trview
         TokenStore _token_store;
 
         // Window message related components.
-        std::unique_ptr<ISettingsLoader> _settings_loader;
+        std::shared_ptr<ISettingsLoader> _settings_loader;
         UserSettings _settings;
         trlevel::ILevel::Source _trlevel_source;
         std::unique_ptr<IFileMenu> _file_menu;

@@ -15,8 +15,8 @@ namespace trview
         const float RopeThickness = 0.015f;
     }
 
-    Waypoint::Waypoint(std::shared_ptr<IMesh> mesh, const Vector3& position, const Vector3& normal, uint32_t room, Type type, uint32_t index, const Colour& route_colour)
-        : _mesh(mesh), _position(position), _normal(normal), _type(type), _index(index), _room(room), _route_colour(route_colour)
+    Waypoint::Waypoint(std::shared_ptr<IMesh> mesh, const Vector3& position, const Vector3& normal, uint32_t room, Type type, uint32_t index, const Colour& route_colour, const Colour& waypoint_colour)
+        : _mesh(mesh), _position(position), _normal(normal), _type(type), _index(index), _room(room), _route_colour(route_colour), _waypoint_colour(waypoint_colour)
     {
     }
 
@@ -34,7 +34,7 @@ namespace trview
 
         // The light blob.
         auto blob_wvp = Matrix::CreateScale(PoleThickness, PoleThickness, PoleThickness) * Matrix::CreateTranslation(-Vector3(0, PoleLength + PoleThickness * 0.5f, 0)) * rotation * Matrix::CreateTranslation(_position) * camera.view_projection();
-        _mesh->render(blob_wvp, texture_storage, _route_colour);
+        _mesh->render(blob_wvp, texture_storage, colour == IRenderable::SelectionFill ? colour : static_cast<Color>(_route_colour));
     }
 
     void Waypoint::render_join(const IWaypoint& next_waypoint, const ICamera& camera, const ILevelTextureStorage& texture_storage, const Color& colour)
@@ -135,6 +135,11 @@ namespace trview
     void Waypoint::set_save_file(const std::vector<uint8_t>& data)
     {
         _save_data = data;
+    }
+
+    void Waypoint::set_waypoint_colour(const Colour& colour)
+    {
+        _waypoint_colour = colour;
     }
 
     bool Waypoint::visible() const

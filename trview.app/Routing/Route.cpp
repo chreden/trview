@@ -78,8 +78,8 @@ namespace trview
         }
     }
 
-    Route::Route(std::unique_ptr<ISelectionRenderer> selection_renderer, const IWaypoint::Source& waypoint_source)
-        : _selection_renderer(std::move(selection_renderer)), _waypoint_source(waypoint_source)
+    Route::Route(std::unique_ptr<ISelectionRenderer> selection_renderer, const IWaypoint::Source& waypoint_source, const UserSettings& settings)
+        : _selection_renderer(std::move(selection_renderer)), _waypoint_source(waypoint_source), _colour(settings.route_colour), _waypoint_colour(settings.waypoint_colour)
     {
     }
 
@@ -99,7 +99,7 @@ namespace trview
 
     void Route::add(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& normal, uint32_t room, IWaypoint::Type type, uint32_t type_index)
     {
-        _waypoints.push_back(_waypoint_source(position, normal, room, type, type_index, _colour));
+        _waypoints.push_back(_waypoint_source(position, normal, room, type, type_index, _colour, _waypoint_colour));
         set_unsaved(true);
     }
 
@@ -137,7 +137,7 @@ namespace trview
 
     void Route::insert(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& normal, uint32_t room, uint32_t index, IWaypoint::Type type, uint32_t type_index)
     {
-        _waypoints.insert(_waypoints.begin() + index, _waypoint_source(position, normal, room, type, type_index, _colour));
+        _waypoints.insert(_waypoints.begin() + index, _waypoint_source(position, normal, room, type, type_index, _colour, _waypoint_colour));
         set_unsaved(true);
     }
 
@@ -208,7 +208,7 @@ namespace trview
         for (std::size_t i = 0; i < _waypoints.size(); ++i)
         {
             auto& waypoint = _waypoints[i];
-            waypoint->render(camera, texture_storage, Color(1.0f, 1.0f, 1.0f));
+            waypoint->render(camera, texture_storage, _waypoint_colour);
             if (!_randomizer_enabled && i < _waypoints.size() - 1)
             {
                 waypoint->render_join(*_waypoints[i + 1], camera, texture_storage, _colour);
@@ -218,7 +218,7 @@ namespace trview
         // Render selected waypoint...
         if (show_selection && _selected_index < _waypoints.size())
         {
-            _selection_renderer->render(camera, texture_storage, *_waypoints[_selected_index], Color(1.0f, 1.0f, 1.0f));
+            _selection_renderer->render(camera, texture_storage, *_waypoints[_selected_index], Colour::White);
         }
     }
 
@@ -247,9 +247,24 @@ namespace trview
         _randomizer_enabled = enabled;
     }
 
+    void Route::set_waypoint_colour(const Colour& colour)
+    {
+        _waypoint_colour = colour;
+        for (auto& waypoint : _waypoints)
+        {
+            waypoint->set_waypoint_colour(colour);
+        }
+        set_unsaved(true);
+    }
+
     void Route::set_unsaved(bool value)
     {
         _is_unsaved = value;
+    }
+
+    Colour Route::waypoint_colour() const 
+    {
+        return _waypoint_colour;
     }
 
     const IWaypoint& Route::waypoint(uint32_t index) const
@@ -383,6 +398,11 @@ namespace trview
         if (json["colour"].is_string())
         {
             route->set_colour(from_colour_code(json["colour"].get<std::string>()));
+        }
+
+        if (json["waypoint_colour"].is_string())
+        {
+            route->set_waypoint_colour(from_colour_code(json["waypoint_colour"].get<std::string>()));
         }
 
         for (const auto& waypoint : json["waypoints"])
@@ -548,6 +568,7 @@ namespace trview
     {
         nlohmann::json json;
         json["colour"] = route.colour().code();
+        json["waypoint_colour"] = route.waypoint_colour().code();
 
         std::vector<nlohmann::json> waypoints;
 

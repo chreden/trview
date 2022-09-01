@@ -28,6 +28,11 @@ namespace trview
         Event<Colour> on_colour_changed;
 
         /// <summary>
+        /// Event raised when the route stick colour has been changed.
+        /// </summary>
+        Event<Colour> on_waypoint_colour_changed;
+
+        /// <summary>
         /// Event raised when a waypoint has moved from one index to another.
         /// </summary>
         Event<int32_t, int32_t> on_waypoint_reordered;

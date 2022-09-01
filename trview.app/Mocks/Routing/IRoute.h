@@ -27,6 +27,8 @@ namespace trview
             MOCK_METHOD(void, set_colour, (const Colour&), (override));
             MOCK_METHOD(void, set_randomizer_enabled, (bool), (override));
             MOCK_METHOD(void, set_unsaved, (bool), (override));
+            MOCK_METHOD(void, set_waypoint_colour, (const Colour&), (override));
+            MOCK_METHOD(Colour, waypoint_colour, (), (const, override));
             MOCK_METHOD(const IWaypoint&, waypoint, (uint32_t), (const, override));
             MOCK_METHOD(IWaypoint&, waypoint, (uint32_t), (override));
             MOCK_METHOD(uint32_t, waypoints, (), (const, override));

@@ -109,3 +109,39 @@ TEST(RouteWindowManager, WaypointReorderedEventRaised)
     ASSERT_EQ(std::get<0>(raised.value()), 1);
     ASSERT_EQ(std::get<1>(raised.value()), 2);
 }
+
+TEST(RouteWindowManager, OnColourChangeEventRaised)
+{
+    auto mock_window = mock_shared<MockRouteWindow>();
+    auto manager = register_test_module().with_window_source([&](auto&&...) { return mock_window; }).build();
+
+    std::optional<Colour> raised;
+    auto token = manager->on_colour_changed += [&](const Colour& colour)
+    {
+        raised = colour;
+    };
+
+    manager->create_window();
+    mock_window->on_colour_changed(Colour::Yellow);
+
+    ASSERT_TRUE(raised.has_value());
+    ASSERT_EQ(raised.value(), Colour::Yellow);
+}
+
+TEST(RouteWindowManager, OnWaypointColourChangedEventRaised)
+{
+    auto mock_window = mock_shared<MockRouteWindow>();
+    auto manager = register_test_module().with_window_source([&](auto&&...) { return mock_window; }).build();
+
+    std::optional<Colour> raised;
+    auto token = manager->on_waypoint_colour_changed += [&](const Colour& colour)
+    {
+        raised = colour;
+    };
+
+    manager->create_window();
+    mock_window->on_waypoint_colour_changed(Colour::Yellow);
+
+    ASSERT_TRUE(raised.has_value());
+    ASSERT_EQ(raised.value(), Colour::Yellow);
+}

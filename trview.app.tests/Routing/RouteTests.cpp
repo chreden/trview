@@ -20,6 +20,7 @@ namespace
         {
             std::unique_ptr<ISelectionRenderer> selection_renderer = mock_unique<MockSelectionRenderer>();
             IWaypoint::Source waypoint_source = [](auto&&...) { return mock_unique<MockWaypoint>(); };
+            UserSettings settings;
 
             test_module& with_selection_renderer(std::unique_ptr<ISelectionRenderer> selection_renderer)
             {
@@ -33,9 +34,15 @@ namespace
                 return *this;
             }
 
+            test_module& with_settings(const UserSettings& settings)
+            {
+                this->settings = settings;
+                return *this;
+            }
+
             std::unique_ptr<Route> build()
             {
-                return std::make_unique<Route>(std::move(selection_renderer), waypoint_source);
+                return std::make_unique<Route>(std::move(selection_renderer), waypoint_source, settings);
             }
         };
         return test_module{};
@@ -49,6 +56,7 @@ namespace
         IWaypoint::Type type;
         uint32_t index;
         Colour colour;
+        Colour waypoint_colour;
     };
 
     /// <summary>
@@ -85,9 +93,9 @@ namespace
 TEST(Route, Add)
 {
     std::optional<WaypointDetails> waypoint_values;
-    auto source = [&](auto&& position, auto&& normal, auto&& room, auto&& type, auto&& index, auto&& colour)
+    auto source = [&](auto&&... args)
     {
-        waypoint_values = { position, normal, room, type, index, colour };
+        waypoint_values = { args... };
         return mock_unique<MockWaypoint>();
     };
 
@@ -105,9 +113,9 @@ TEST(Route, Add)
 TEST(Route, AddSpecificType)
 {
     std::optional<WaypointDetails> waypoint_values;
-    auto source = [&](auto&& position, auto&& normal, auto&& room, auto&& type, auto&& index, auto&& colour)
+    auto source = [&](auto&&... args)
     {
-        waypoint_values = { position, normal, room, type, index, colour };
+        waypoint_values = { args... };
         return mock_unique<MockWaypoint>();
     };
     auto route = register_test_module().with_waypoint_source(source).build();
@@ -358,4 +366,63 @@ TEST(Route, RenderDoesNotShowSelection)
     auto route = register_test_module().with_selection_renderer(std::move(selection_renderer_ptr)).build();
     route->add(Vector3::Zero, Vector3::Down, 0);
     route->render(camera, texture_storage, false);
+}
+
+TEST(Route, AddWaypointUsesColours)
+{
+    UserSettings settings;
+    settings.route_colour = Colour::Red;
+    settings.waypoint_colour = Colour::Green;
+
+    std::optional<WaypointDetails> waypoint_values;
+    auto source = [&](auto&&... args)
+    {
+        waypoint_values = { args... };
+        return mock_unique<MockWaypoint>();
+    };
+
+    auto route = register_test_module().with_settings(settings).with_waypoint_source(source).build();
+    route->add(Vector3::Zero, Vector3::Zero, 0);
+
+    ASSERT_TRUE(waypoint_values.has_value());
+    ASSERT_EQ(waypoint_values.value().colour, Colour::Red);
+    ASSERT_EQ(waypoint_values.value().waypoint_colour, Colour::Green);
+}
+
+TEST(Route, RouteUsesDefaultColours)
+{
+    UserSettings settings;
+    settings.route_colour = Colour::Yellow;
+    settings.waypoint_colour = Colour::Cyan;
+    auto route = register_test_module().with_settings(settings).build();
+    ASSERT_EQ(route->colour(), settings.route_colour);
+    ASSERT_EQ(route->waypoint_colour(), settings.waypoint_colour);
+}
+
+TEST(Route, SetColourUpdatesWaypoints)
+{
+    auto [waypoint_ptr, waypoint] = create_mock<MockWaypoint>();
+    auto source = [&](auto&&... args)
+    {
+        return std::move(waypoint_ptr);
+    };
+
+    EXPECT_CALL(waypoint, set_route_colour(Colour::Yellow)).Times(1);
+    auto route = register_test_module().with_waypoint_source(source).build();
+    route->add(Vector3::Zero, Vector3::Zero, 0);
+    route->set_colour(Colour::Yellow);
+}
+
+TEST(Route, SetWaypointColourUpdatesWaypoints)
+{
+    auto [waypoint_ptr, waypoint] = create_mock<MockWaypoint>();
+    auto source = [&](auto&&... args)
+    {
+        return std::move(waypoint_ptr);
+    };
+
+    EXPECT_CALL(waypoint, set_waypoint_colour(Colour::Cyan)).Times(1);
+    auto route = register_test_module().with_waypoint_source(source).build();
+    route->add(Vector3::Zero, Vector3::Zero, 0);
+    route->set_waypoint_colour(Colour::Cyan);
 }

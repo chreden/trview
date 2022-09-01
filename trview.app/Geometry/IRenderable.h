@@ -31,5 +31,7 @@ namespace trview
 
         /// Set whether the object is visible.
         virtual void set_visible(bool value) = 0;
+
+        static const inline DirectX::SimpleMath::Color SelectionFill{ 0.0f, 0.0f, 0.0f, 0.999f };
     };
 }

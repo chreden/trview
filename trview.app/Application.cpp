@@ -69,7 +69,7 @@ namespace trview
 
     Application::Application(const Window& application_window,
         std::unique_ptr<IUpdateChecker> update_checker,
-        std::unique_ptr<ISettingsLoader> settings_loader,
+        std::shared_ptr<ISettingsLoader> settings_loader,
         const trlevel::ILevel::Source& trlevel_source,
         std::unique_ptr<IFileMenu> file_menu,
         std::unique_ptr<IViewer> viewer,
@@ -87,7 +87,7 @@ namespace trview
         std::unique_ptr<ILightsWindowManager> lights_window_manager,
         std::unique_ptr<ILogWindowManager> log_window_manager)
         : MessageHandler(application_window), _instance(GetModuleHandle(nullptr)),
-        _file_menu(std::move(file_menu)), _update_checker(std::move(update_checker)), _view_menu(window()), _settings_loader(std::move(settings_loader)), _trlevel_source(trlevel_source),
+        _file_menu(std::move(file_menu)), _update_checker(std::move(update_checker)), _view_menu(window()), _settings_loader(settings_loader), _trlevel_source(trlevel_source),
         _viewer(std::move(viewer)), _route_source(route_source), _route(route_source()), _shortcuts(shortcuts), _items_windows(std::move(items_window_manager)),
         _triggers_windows(std::move(triggers_window_manager)), _route_window(std::move(route_window_manager)), _rooms_windows(std::move(rooms_window_manager)), _level_source(level_source),
         _dialogs(dialogs), _files(files), _timer(default_time_source()), _imgui_backend(std::move(imgui_backend)), _lights_windows(std::move(lights_window_manager)), _log_windows(std::move(log_window_manager))
@@ -176,6 +176,8 @@ namespace trview
         if (open_mode == ILevel::OpenMode::Full)
         {
             _route->clear();
+            _route->set_colour(_settings.route_colour);
+            _route->set_waypoint_colour(_settings.waypoint_colour);
             _route->set_unsaved(false);
             _route_window->set_route(_route.get());
         }
@@ -444,6 +446,11 @@ namespace trview
         _token_store += _route_window->on_colour_changed += [&](const Colour& colour)
         {
             _route->set_colour(colour);
+            _viewer->set_route(_route);
+        };
+        _token_store += _route_window->on_waypoint_colour_changed += [&](const Colour& colour)
+        {
+            _route->set_waypoint_colour(colour);
             _viewer->set_route(_route);
         };
         _token_store += _route_window->on_waypoint_reordered += [&](int32_t from, int32_t to)

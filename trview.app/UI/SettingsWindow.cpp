@@ -120,6 +120,21 @@ namespace trview
                     ImGui::EndTabItem();
                 }
 
+                if (ImGui::BeginTabItem("Route"))
+                {
+                    if (ImGui::ColorEdit3(Names::default_route_colour.c_str(), &_default_route_colour.r))
+                    {
+                        on_default_route_colour(_default_route_colour);
+                    }
+
+                    if (ImGui::ColorEdit3(Names::default_waypoint_colour.c_str(), &_default_waypoint_colour.r))
+                    {
+                        on_default_waypoint_colour(_default_waypoint_colour);
+                    }
+
+                    ImGui::EndTabItem();
+                }
+
                 ImGui::EndTabBar();
             }
         }
@@ -216,5 +231,15 @@ namespace trview
     void SettingsWindow::set_map_colours(const MapColours& colours)
     {
         _colours = colours;
+    }
+
+    void SettingsWindow::set_default_route_colour(const Colour& colour)
+    {
+        _default_route_colour = colour;
+    }
+
+    void SettingsWindow::set_default_waypoint_colour(const Colour& colour)
+    {
+        _default_waypoint_colour = colour;
     }
 }

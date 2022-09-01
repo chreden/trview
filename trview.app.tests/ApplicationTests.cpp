@@ -701,3 +701,20 @@ TEST(Application, ReloadSyncsProperties)
     application->open("test.tr2", ILevel::OpenMode::Full);
     application->open("test.tr2", ILevel::OpenMode::Reload);
 }
+
+TEST(Application, RouteSetToDefaultColoursOnReset)
+{
+    UserSettings settings;
+    settings.route_colour = Colour::Yellow;
+    settings.waypoint_colour = Colour::Cyan;
+    auto route = mock_shared<MockRoute>();
+    EXPECT_CALL(*route, set_colour(Colour::Yellow)).Times(1);
+    EXPECT_CALL(*route, set_waypoint_colour(Colour::Cyan)).Times(1);
+    auto [settings_loader_ptr, settings_loader] = create_mock<MockSettingsLoader>();
+    ON_CALL(settings_loader, load_user_settings).WillByDefault(Return(settings));
+    auto application = register_test_module()
+        .with_settings_loader(std::move(settings_loader_ptr))
+        .with_route_source([&](auto&&...) {return route; })
+        .build();
+    application->open("test.tr2", ILevel::OpenMode::Full);
+}

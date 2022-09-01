@@ -6,6 +6,7 @@
 #include <trview.app/Camera/ICamera.h>
 #include <trview.common/IFiles.h>
 #include <trview.app/Settings/RandomizerSettings.h>
+#include "../Settings/UserSettings.h"
 
 namespace trview
 {
@@ -15,7 +16,7 @@ namespace trview
     class Route final : public IRoute
     {
     public:
-        explicit Route(const std::unique_ptr<ISelectionRenderer> selection_renderer, const IWaypoint::Source& waypoint_source);
+        explicit Route(const std::unique_ptr<ISelectionRenderer> selection_renderer, const IWaypoint::Source& waypoint_source, const UserSettings& settings);
         virtual ~Route() = default;
         Route& operator=(const Route& other);
         virtual void add(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& normal, uint32_t room) override;
@@ -35,7 +36,9 @@ namespace trview
         virtual void select_waypoint(uint32_t index) override;
         virtual void set_colour(const Colour& colour) override;
         virtual void set_randomizer_enabled(bool enabled) override;
+        virtual void set_waypoint_colour(const Colour& colour) override;
         virtual void set_unsaved(bool value) override;
+        virtual Colour waypoint_colour() const override;
         virtual const IWaypoint& waypoint(uint32_t index) const override;
         virtual IWaypoint& waypoint(uint32_t index) override;
         virtual uint32_t waypoints() const override;
@@ -47,6 +50,7 @@ namespace trview
         std::unique_ptr<ISelectionRenderer> _selection_renderer;
         uint32_t _selected_index{ 0u };
         Colour _colour{ Colour::Green };
+        Colour _waypoint_colour{ Colour::White };
         bool _is_unsaved{ false };
         bool _randomizer_enabled{ false };
     };

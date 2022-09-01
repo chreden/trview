@@ -29,6 +29,8 @@ namespace trview
             static inline const std::string acceleration = "Acceleration";
             static inline const std::string acceleration_rate = "Acceleration Rate";
             static inline const std::string background_colour = "Background Colour";
+            static inline const std::string default_route_colour = "Default Route Colour";
+            static inline const std::string default_waypoint_colour = "Default Waypoint Colour";
         };
 
         virtual ~SettingsWindow() = default;
@@ -51,6 +53,8 @@ namespace trview
         virtual void set_background_colour(const Colour& colour) override;
         virtual void set_map_colours(const MapColours& colours) override;
         virtual void toggle_visibility() override;
+        virtual void set_default_route_colour(const Colour& colour) override;
+        virtual void set_default_waypoint_colour(const Colour& colour) override;
     private:
         bool _visible{ false };
         bool _vsync{ false };
@@ -69,6 +73,8 @@ namespace trview
         float _movement_speed{ 1.0f };
         int _max_recent_files{ 10 };
         float _colour[3];
+        Colour _default_route_colour{ Colour::Green };
+        Colour _default_waypoint_colour{ Colour::White };
         MapColours _colours;
     };
 }

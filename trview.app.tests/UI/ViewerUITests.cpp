@@ -253,3 +253,58 @@ TEST(ViewerUI, OnMinimapColoursEventRaised)
     ASSERT_TRUE(raised);
 }
 
+TEST(ViewerUI, OnDefaultRouteColourEventRaised)
+{
+    auto [settings_window_ptr, settings_window] = create_mock<MockSettingsWindow>();
+    auto window = register_test_module().with_settings_window(std::move(settings_window_ptr)).build();
+
+    std::optional<UserSettings> raised;
+    auto token = window->on_settings += [&](auto&& settings)
+    {
+        raised = settings;
+    };
+
+    settings_window.on_default_route_colour(Colour::Yellow);
+
+    ASSERT_TRUE(raised.has_value());
+    ASSERT_EQ(raised.value().route_colour, Colour::Yellow);
+}
+
+TEST(ViewerUI, OnDefaultWaypointColourRaised)
+{
+    auto [settings_window_ptr, settings_window] = create_mock<MockSettingsWindow>();
+    auto window = register_test_module().with_settings_window(std::move(settings_window_ptr)).build();
+
+    std::optional<UserSettings> raised;
+    auto token = window->on_settings += [&](auto&& settings)
+    {
+        raised = settings;
+    };
+
+    settings_window.on_default_waypoint_colour(Colour::Yellow);
+
+    ASSERT_TRUE(raised.has_value());
+    ASSERT_EQ(raised.value().waypoint_colour, Colour::Yellow);
+}
+
+TEST(ViewerUI, SetDefaultRouteColourCalled)
+{
+    auto [settings_window_ptr, settings_window] = create_mock<MockSettingsWindow>();
+    auto window = register_test_module().with_settings_window(std::move(settings_window_ptr)).build();
+    EXPECT_CALL(settings_window, set_default_route_colour(Colour::Yellow)).Times(1);
+
+    UserSettings settings;
+    settings.route_colour = Colour::Yellow;
+    window->set_settings(settings);
+}
+
+TEST(ViewerUI, SetDefaultWaypointColourCalled)
+{
+    auto [settings_window_ptr, settings_window] = create_mock<MockSettingsWindow>();
+    auto window = register_test_module().with_settings_window(std::move(settings_window_ptr)).build();
+    EXPECT_CALL(settings_window, set_default_waypoint_colour(Colour::Yellow)).Times(1);
+
+    UserSettings settings;
+    settings.waypoint_colour = Colour::Yellow;
+    window->set_settings(settings);
+}
