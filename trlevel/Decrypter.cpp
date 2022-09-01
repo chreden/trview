@@ -73,7 +73,7 @@ namespace trlevel
             {
                 for (int w = 50; w < 99; ++w)
                 {
-                    uint8_t* pbVar1 = (uint8_t*)((int)data + w + 4);
+                    uint8_t* pbVar1 = (uint8_t*)((std::size_t)data + w + 4);
                     *pbVar1 = *pbVar1 ^ encryption_table[w + index];
                 }
             }
@@ -85,13 +85,13 @@ namespace trlevel
                     *p = *p ^ *reinterpret_cast<const uint32_t*>(&encryption_table[index + (z * 4) - 2]);
                 }
 
-                *(uint8_t*)((int)data + 0x66) = *(uint8_t*)((int)data + 0x66) ^ encryption_table[index + 0x62];
+                *(uint8_t*)((std::size_t)data + 0x66) = *(uint8_t*)((std::size_t)data + 0x66) ^ encryption_table[index + 0x62];
             }
 
             for (int i = 0; i < 50; ++i)
             {
-                *(uint8_t*)((int)buffer + (uint32_t)(uint8_t)encryption_table2[i + (first >> ((char)x + 5U & 0x1f) & 0xf) * 0x32])
-                    = *(uint8_t*)((int)data + i + 4);
+                *(uint8_t*)((std::size_t)buffer + (uint32_t)(uint8_t)encryption_table2[i + (first >> ((char)x + 5U & 0x1f) & 0xf) * 0x32])
+                    = *(uint8_t*)((std::size_t)data + i + 4);
             }
 
             if ((((char)data + 4 | (char)index + 0x80u) & 3) == 0)
@@ -101,17 +101,17 @@ namespace trlevel
                     data[z + 1] = reinterpret_cast<uint32_t*>(buffer)[z] ^ *(uint32_t*)(&encryption_table[index + 4 * z]);
                 }
                 *(uint8_t*)(data + 0xd) = encryption_table[index + 48] ^ buffer[48];
-                *(uint8_t*)((int)data + 0x35) = encryption_table[index + 49] ^ buffer[49];
+                *(uint8_t*)((std::size_t)data + 0x35) = encryption_table[index + 49] ^ buffer[49];
             }
             else
             {
                 for (int y = 0; y < 50; ++y)
                 {
-                    *(uint8_t*)((int)data + y + 4) = *(uint8_t*)((int)buffer + y) ^ encryption_table[y + index];
+                    *(uint8_t*)((std::size_t)data + y + 4) = *(uint8_t*)((std::size_t)buffer + y) ^ encryption_table[y + index];
                 }
             }
 
-            if (data = (uint32_t*)((int)p2 + first + 4), x = x2, x2 == 4)
+            if (data = (uint32_t*)((std::size_t)p2 + first + 4), x = x2, x2 == 4)
             {
                 break;
             }
@@ -145,28 +145,28 @@ namespace trlevel
                         = data[z + 1] ^ *(uint32_t*)(&encryption_table[index + 4 * z]);
                 }
                 buffer[48] = encryption_table[index + 48] ^ *(uint8_t*)(data + 0xd);
-                buffer[49] = encryption_table[index + 49] ^ *(uint8_t*)((int)data + 0x35);
+                buffer[49] = encryption_table[index + 49] ^ *(uint8_t*)((std::size_t)data + 0x35);
             }
             else
             {
                 for (int y = 0; y < 50; ++y)
                 {
-                    *(uint8_t*)((int)buffer + y) = *(uint8_t*)((int)data + y + 4) ^ encryption_table[y + index];
+                    *(uint8_t*)((std::size_t)buffer + y) = *(uint8_t*)((std::size_t)data + y + 4) ^ encryption_table[y + index];
                 }
             }
 
             int i = 0;
             for (i = 0; i < 50; ++i)
             {
-                *(uint8_t*)((int)data + i + 4)
-                    = *(uint8_t*)((int)buffer + (uint32_t)(uint8_t)encryption_table2[i + (first >> ((char)x + 5U & 0x1f) & 0xf) * 0x32]);
+                *(uint8_t*)((std::size_t)data + i + 4)
+                    = *(uint8_t*)((std::size_t)buffer + (uint32_t)(uint8_t)encryption_table2[i + (first >> ((char)x + 5U & 0x1f) & 0xf) * 0x32]);
             }
 
             x = i;
             if ((((char)data + 0x36U | (char)index + 0xb2U) & 3) != 0)
             {
                 do {
-                    uint8_t* pbVar1 = (uint8_t*)((int)data + x + 4);
+                    uint8_t* pbVar1 = (uint8_t*)((std::size_t)data + x + 4);
                     *pbVar1 = *pbVar1 ^ encryption_table[x + index];
                     x = x + 1;
                 } while (x != 99);
@@ -179,10 +179,10 @@ namespace trlevel
                     *p = *p ^ *reinterpret_cast<const uint32_t*>(&encryption_table[index + (z * 4) - 2]);
                 }
 
-                *(uint8_t*)((int)data + 0x66) = *(uint8_t*)((int)data + 0x66) ^ encryption_table[index + 0x62];
+                *(uint8_t*)((std::size_t)data + 0x66) = *(uint8_t*)((std::size_t)data + 0x66) ^ encryption_table[index + 0x62];
             }
 
-            if (data = (uint32_t*)((int)p2 + first + 4), x = x2, x2 == 4)
+            if (data = (uint32_t*)((std::size_t)p2 + first + 4), x = x2, x2 == 4)
             {
                 break;
             }
