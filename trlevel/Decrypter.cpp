@@ -56,35 +56,33 @@ namespace trlevel
         bytes[3] = 0;
 
         uint32_t* data = reinterpret_cast<uint32_t*>(&bytes[0xe]);
-        int x = 0;
 
         uint8_t buffer[50];
         memset(buffer, 0, sizeof(buffer));
 
-        do
+        for (int x = 0; x < 4; ++x)
         {
+            uint8_t* b_data = reinterpret_cast<uint8_t*>(data);
             uint32_t first = *data;
-            uint32_t* p2 = data + 1;
-            int x2 = x + 1;
-            int index = (first >> ((uint8_t)x2 & 0x1f) & 0xf) * 99;
+
+            int index = (first >> (static_cast<uint8_t>(x + 1) & 0x1f) & 0xf) * 99;
 
             if ((((char)data + 0x36U | (char)index + 0xb2U) & 3) != 0)
             {
                 for (int w = 50; w < 99; ++w)
                 {
-                    uint8_t* pbVar1 = (uint8_t*)((std::size_t)data + w + 4);
-                    *pbVar1 = *pbVar1 ^ encryption_table[w + index];
+                    b_data[w + 4] ^= encryption_table[w + index];
                 }
             }
             else
             {
                 for (int z = 13; z < 25; ++z)
                 {
-                    uint32_t* p = reinterpret_cast<uint32_t*>(reinterpret_cast<char*>(data) + z * 4 + 2);
-                    *p = *p ^ *reinterpret_cast<const uint32_t*>(&encryption_table[index + (z * 4) - 2]);
+                    uint32_t* p = reinterpret_cast<uint32_t*>(&b_data[z * 4 + 2]);
+                    *p ^= *reinterpret_cast<const uint32_t*>(&encryption_table[index + (z * 4) - 2]);
                 }
 
-                *(uint8_t*)((std::size_t)data + 0x66) = *(uint8_t*)((std::size_t)data + 0x66) ^ encryption_table[index + 0x62];
+                b_data[0x66] ^= encryption_table[index + 0x62];
             }
 
             for (int i = 0; i < 50; ++i)
@@ -110,12 +108,8 @@ namespace trlevel
                 }
             }
 
-            if (data = (uint32_t*)((std::size_t)p2 + first + 4), x = x2, x2 == 4)
-            {
-                break;
-            }
-
-        } while (true);
+            data = (uint32_t*)((std::size_t)(data + 1) + first + 4);
+        }
     }
 
 
