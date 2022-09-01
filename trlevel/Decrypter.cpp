@@ -56,7 +56,6 @@ namespace trlevel
         bytes[3] = 0;
 
         uint32_t* data = reinterpret_cast<uint32_t*>(&bytes[0xe]);
-        uint32_t first = *data;
         int x = 0;
 
         uint8_t buffer[50];
@@ -151,7 +150,7 @@ namespace trlevel
             {
                 for (int y = 0; y < 50; ++y)
                 {
-                    *(uint8_t*)((std::size_t)buffer + y) = *(uint8_t*)((std::size_t)data + y + 4) ^ encryption_table[y + index];
+                    buffer[y] = reinterpret_cast<uint8_t*>(data)[y + 4] ^ encryption_table[y + index];
                 }
             }
 
