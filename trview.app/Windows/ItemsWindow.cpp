@@ -85,7 +85,7 @@ namespace trview
 
     void ItemsWindow::render_items_list()
     {
-        if (ImGui::BeginChild(Names::item_list_panel.c_str(), ImVec2(280, 0), true))
+        if (ImGui::BeginChild(Names::item_list_panel.c_str(), ImVec2(290, 0), true))
         {
             _filters.render();
             ImGui::SameLine();
@@ -285,7 +285,7 @@ namespace trview
     bool ItemsWindow::render_items_window()
     {
         bool stay_open = true;
-        ImGui::PushStyleVar(ImGuiStyleVar_WindowMinSize, ImVec2(530, 500));
+        ImGui::PushStyleVar(ImGuiStyleVar_WindowMinSize, ImVec2(540, 500));
         if (ImGui::Begin(_id.c_str(), &stay_open))
         {
             render_items_list();
