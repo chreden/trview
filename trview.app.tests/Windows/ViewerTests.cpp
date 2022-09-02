@@ -100,6 +100,12 @@ namespace
                 this->mouse = std::move(mouse);
                 return *this;
             }
+
+            test_module& with_clipboard(std::shared_ptr<IClipboard> clipboard)
+            {
+                this->clipboard = clipboard;
+                return *this;
+            }
         };
         return test_module{};
     }
@@ -809,10 +815,32 @@ TEST(Viewer, ReloadLevelSyncProperties)
 
 TEST(Viewer, CopyPosition)
 {
-    FAIL();
+    auto [ui_ptr, ui] = create_mock<MockViewerUI>();
+    auto [picking_ptr, picking] = create_mock<MockPicking>();
+    auto [mouse_ptr, mouse] = create_mock<MockMouse>();
+    auto clipboard = mock_shared<MockClipboard>();
+
+    EXPECT_CALL(*clipboard, write(std::wstring(L"1024, 2048, 3072"))).Times(1);
+
+    auto viewer = register_test_module().with_ui(std::move(ui_ptr)).with_picking(std::move(picking_ptr)).with_clipboard(clipboard).with_mouse(std::move(mouse_ptr)).build();
+
+    activate_context_menu(picking, mouse, PickResult::Type::Room, 0, { 1, 2, 3 });
+
+    ui.on_copy(trview::IContextMenu::CopyType::Position);
 }
 
 TEST(Viewer, CopyRoom)
 {
-    FAIL();
+    auto [ui_ptr, ui] = create_mock<MockViewerUI>();
+    auto [picking_ptr, picking] = create_mock<MockPicking>();
+    auto [mouse_ptr, mouse] = create_mock<MockMouse>();
+    auto clipboard = mock_shared<MockClipboard>();
+
+    EXPECT_CALL(*clipboard, write(std::wstring(L"14"))).Times(1);
+
+    auto viewer = register_test_module().with_ui(std::move(ui_ptr)).with_picking(std::move(picking_ptr)).with_clipboard(clipboard).with_mouse(std::move(mouse_ptr)).build();
+
+    activate_context_menu(picking, mouse, PickResult::Type::Room, 14);
+
+    ui.on_copy(trview::IContextMenu::CopyType::Number);
 }

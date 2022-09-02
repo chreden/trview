@@ -311,5 +311,17 @@ TEST(ViewerUI, SetDefaultWaypointColourCalled)
 
 TEST(ViewerUI, OnCopyEventForwarded)
 {
-    FAIL();
+    auto [context_menu_ptr, context_menu] = create_mock<MockContextMenu>();
+    auto ui = register_test_module().with_context_menu(std::move(context_menu_ptr)).build();
+
+    std::optional<trview::IContextMenu::CopyType> raised;
+    auto token = ui->on_copy += [&](auto&& value)
+    {
+        raised = value;
+    };
+
+    context_menu.on_copy(trview::IContextMenu::CopyType::Position);
+
+    ASSERT_TRUE(raised);
+    ASSERT_EQ(raised, trview::IContextMenu::CopyType::Position);
 }
