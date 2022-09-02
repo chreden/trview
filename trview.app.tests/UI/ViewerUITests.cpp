@@ -308,3 +308,8 @@ TEST(ViewerUI, SetDefaultWaypointColourCalled)
     settings.waypoint_colour = Colour::Yellow;
     window->set_settings(settings);
 }
+
+TEST(ViewerUI, OnCopyEventForwarded)
+{
+    FAIL();
+}

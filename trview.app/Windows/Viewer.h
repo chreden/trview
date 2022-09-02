@@ -37,6 +37,7 @@
 #include <trview.common/Windows/Shortcuts.h>
 #include <trview.graphics/IDeviceWindow.h>
 #include <trview.app/Windows/IViewer.h>
+#include <trview.common/Windows/IClipboard.h>
 
 namespace trview
 {
@@ -64,7 +65,8 @@ namespace trview
             std::unique_ptr<IMeasure> measure,
             const graphics::IRenderTarget::SizeSource& render_target_source,
             const graphics::IDeviceWindow::Source& device_window_source,
-            std::unique_ptr<ISectorHighlight> sector_highlight);
+            std::unique_ptr<ISectorHighlight> sector_highlight,
+            const std::shared_ptr<IClipboard>& clipboard);
         virtual ~Viewer() = default;
         virtual CameraMode camera_mode() const override;
         virtual void render() override;
@@ -172,6 +174,8 @@ namespace trview
 
         std::vector<PickResult> _recent_orbits;
         std::size_t _recent_orbit_index{ 0u };
+
+        std::shared_ptr<IClipboard> _clipboard;
     };
 }
 

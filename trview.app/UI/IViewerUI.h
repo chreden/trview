@@ -7,8 +7,10 @@
 #include <trview.app/Elements/IRoom.h>
 #include <trview.app/Geometry/PickInfo.h>
 #include <trview.app/Settings/UserSettings.h>
+#include "IContextMenu.h"
 
 #include <trview.common/Event.h>
+
 
 namespace trview
 {
@@ -97,6 +99,11 @@ namespace trview
         /// Event raised when the user changes a toggle.
         /// </summary>
         Event<std::string, bool> on_toggle_changed;
+
+        /// <summary>
+        /// Event raised when the user has clicked a copy button.
+        /// </summary>
+        Event<IContextMenu::CopyType> on_copy;
 
         /// Render the UI.
         virtual void render() = 0;

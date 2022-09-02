@@ -16,11 +16,11 @@ namespace trview
     Viewer::Viewer(const Window& window, const std::shared_ptr<graphics::IDevice>& device, std::unique_ptr<IViewerUI> ui, std::unique_ptr<IPicking> picking,
         std::unique_ptr<input::IMouse> mouse, const std::shared_ptr<IShortcuts>& shortcuts, const std::shared_ptr<IRoute> route, const graphics::ISprite::Source& sprite_source,
         std::unique_ptr<ICompass> compass, std::unique_ptr<IMeasure> measure, const graphics::IRenderTarget::SizeSource& render_target_source, const graphics::IDeviceWindow::Source& device_window_source,
-        std::unique_ptr<ISectorHighlight> sector_highlight)
+        std::unique_ptr<ISectorHighlight> sector_highlight, const std::shared_ptr<IClipboard>& clipboard)
         : MessageHandler(window), _shortcuts(shortcuts), _camera(window.size()), _free_camera(window.size()), _timer(default_time_source()), _keyboard(window),
         _mouse(std::move(mouse)), _window_resizer(window), _alternate_group_toggler(window),
         _menu_detector(window), _device(device), _route(route), _ui(std::move(ui)), _picking(std::move(picking)), _compass(std::move(compass)), _measure(std::move(measure)),
-        _render_target_source(render_target_source), _sector_highlight(std::move(sector_highlight))
+        _render_target_source(render_target_source), _sector_highlight(std::move(sector_highlight)), _clipboard(clipboard)
     {
         apply_acceleration_settings();
 
@@ -222,6 +222,23 @@ namespace trview
         {
             current_camera().set_rotation_yaw(yaw);
             current_camera().set_rotation_pitch(pitch);
+        };
+        _token_store += _ui->on_copy += [&](auto type)
+        {
+            switch (type)
+            {
+                case IContextMenu::CopyType::Position:
+                {
+                    const auto pos = _context_pick.position * trlevel::Scale;
+                    _clipboard->write(to_utf16(std::format("{:.0f}, {:.0f}, {:.0f}", pos.x, pos.y, pos.z)));
+                    break;
+                }
+                case IContextMenu::CopyType::Number:
+                {
+                    _clipboard->write(std::to_wstring(_context_pick.index));
+                    break;
+                }
+            }
         };
 
         _token_store += _ui->on_command += lua_execute;

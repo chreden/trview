@@ -207,3 +207,13 @@ TEST(ContextMenu, AddMidWaypointNotRaisedWhenDisabled)
     ASSERT_FALSE(raised);
     ASSERT_TRUE(menu.visible());
 }
+
+TEST(ContextMenu, CopyPosition)
+{
+    FAIL();
+}
+
+TEST(ContextMenu, CopyRoom)
+{
+    FAIL();
+}
