@@ -161,6 +161,8 @@ namespace trview
             std::make_unique<ContextMenu>(),
             std::make_unique<CameraControls>());
 
+        auto clipboard = std::make_shared<Clipboard>(window);
+
         auto viewer = std::make_unique<Viewer>(
             window,
             device,
@@ -174,10 +176,10 @@ namespace trview
             std::make_unique<Measure>(device, mesh_source),
             render_target_source,
             device_window_source,
-            std::make_unique<SectorHighlight>(mesh_source));
+            std::make_unique<SectorHighlight>(mesh_source),
+            clipboard);
 
         auto dialogs = std::make_shared<Dialogs>(window);
-        auto clipboard = std::make_shared<Clipboard>(window);
 
         auto items_window_source = [=]() { return std::make_shared<ItemsWindow>(clipboard); };
         auto triggers_window_source = [=]() { return std::make_shared<TriggersWindow>(clipboard); };

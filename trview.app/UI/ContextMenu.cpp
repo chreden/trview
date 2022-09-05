@@ -28,6 +28,19 @@ namespace trview
                 on_hide();
             }
 
+            if (ImGui::BeginMenu(Names::copy.c_str()))
+            {
+                if (ImGui::MenuItem(Names::copy_position.c_str()))
+                {
+                    on_copy(CopyType::Position);
+                }
+                if (ImGui::MenuItem(Names::copy_number.c_str()))
+                {
+                    on_copy(CopyType::Number);
+                }
+                ImGui::EndMenu();
+            }
+
             ImGui::EndPopup();
         }
         else

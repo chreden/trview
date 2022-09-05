@@ -207,3 +207,41 @@ TEST(ContextMenu, AddMidWaypointNotRaisedWhenDisabled)
     ASSERT_FALSE(raised);
     ASSERT_TRUE(menu.visible());
 }
+
+TEST(ContextMenu, CopyPosition)
+{
+    ContextMenu menu;
+    menu.set_visible(true);
+
+    TestImgui imgui([&]() { menu.render(); });
+
+    std::optional<trview::IContextMenu::CopyType> raised;
+    auto token = menu.on_copy += [&raised](auto type) { raised = type; };
+
+    imgui.show_context_menu("Debug##Default");
+    imgui.hover_element(imgui.popup_id("void_context").id(ContextMenu::Names::copy));
+    imgui.click_element(imgui.id("##Menu_00").id(ContextMenu::Names::copy_position), true);
+    imgui.render();
+
+    ASSERT_TRUE(raised);
+    ASSERT_FALSE(menu.visible());
+}
+
+TEST(ContextMenu, CopyNumber)
+{
+    ContextMenu menu;
+    menu.set_visible(true);
+
+    TestImgui imgui([&]() { menu.render(); });
+
+    std::optional<trview::IContextMenu::CopyType> raised;
+    auto token = menu.on_copy += [&raised](auto type) { raised = type; };
+
+    imgui.show_context_menu("Debug##Default");
+    imgui.hover_element(imgui.popup_id("void_context").id(ContextMenu::Names::copy));
+    imgui.click_element(imgui.id("##Menu_00").id(ContextMenu::Names::copy_number), true);
+    imgui.render();
+
+    ASSERT_TRUE(raised);
+    ASSERT_FALSE(menu.visible());
+}

@@ -15,6 +15,9 @@ namespace trview
             static inline const std::string hide = "Hide";
             static inline const std::string orbit = "Orbit Here";
             static inline const std::string remove_waypoint = "Remove Waypoint";
+            static inline const std::string copy = "Copy";
+            static inline const std::string copy_position = "Position";
+            static inline const std::string copy_number = "Room/Object Number";
         };
 
         virtual ~ContextMenu() = default;

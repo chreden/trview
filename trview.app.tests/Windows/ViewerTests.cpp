@@ -19,6 +19,7 @@
 #include <trlevel/Mocks/ILevel.h>
 #include <trview.app/Mocks/Routing/IWaypoint.h>
 #include <trview.app/Mocks/Elements/ILight.h>
+#include <trview.common/Mocks/Windows/IClipboard.h>
 #include "TestImgui.h"
 
 using testing::A;
@@ -67,12 +68,13 @@ namespace
             IRenderTarget::SizeSource render_target_source{ [](auto&&...) { return mock_unique<MockRenderTarget>(); } };
             IDeviceWindow::Source device_window_source{ [](auto&&...) { return mock_unique<MockDeviceWindow>(); } };
             std::unique_ptr<ISectorHighlight> sector_highlight{ mock_unique<MockSectorHighlight>() };
+            std::shared_ptr<IClipboard> clipboard{ mock_shared<MockClipboard>() };
 
             std::unique_ptr<Viewer> build()
             {
                 EXPECT_CALL(*shortcuts, add_shortcut).WillRepeatedly([&](auto, auto) -> Event<>&{ return shortcut_handler; });
                 return std::make_unique<Viewer>(window, device, std::move(ui), std::move(picking), std::move(mouse), shortcuts, route, sprite_source,
-                    std::move(compass), std::move(measure), render_target_source, device_window_source, std::move(sector_highlight));
+                    std::move(compass), std::move(measure), render_target_source, device_window_source, std::move(sector_highlight), clipboard);
             }
 
             test_module& with_device(const std::shared_ptr<IDevice>& device)
@@ -96,6 +98,12 @@ namespace
             test_module& with_mouse(std::unique_ptr<IMouse> mouse)
             {
                 this->mouse = std::move(mouse);
+                return *this;
+            }
+
+            test_module& with_clipboard(std::shared_ptr<IClipboard> clipboard)
+            {
+                this->clipboard = clipboard;
                 return *this;
             }
         };
@@ -803,4 +811,36 @@ TEST(Viewer, ReloadLevelSyncProperties)
 
     viewer->open(&original, ILevel::OpenMode::Full);
     viewer->open(&reloaded, ILevel::OpenMode::Reload);
+}
+
+TEST(Viewer, CopyPosition)
+{
+    auto [ui_ptr, ui] = create_mock<MockViewerUI>();
+    auto [picking_ptr, picking] = create_mock<MockPicking>();
+    auto [mouse_ptr, mouse] = create_mock<MockMouse>();
+    auto clipboard = mock_shared<MockClipboard>();
+
+    EXPECT_CALL(*clipboard, write(std::wstring(L"1024, 2048, 3072"))).Times(1);
+
+    auto viewer = register_test_module().with_ui(std::move(ui_ptr)).with_picking(std::move(picking_ptr)).with_clipboard(clipboard).with_mouse(std::move(mouse_ptr)).build();
+
+    activate_context_menu(picking, mouse, PickResult::Type::Room, 0, { 1, 2, 3 });
+
+    ui.on_copy(trview::IContextMenu::CopyType::Position);
+}
+
+TEST(Viewer, CopyRoom)
+{
+    auto [ui_ptr, ui] = create_mock<MockViewerUI>();
+    auto [picking_ptr, picking] = create_mock<MockPicking>();
+    auto [mouse_ptr, mouse] = create_mock<MockMouse>();
+    auto clipboard = mock_shared<MockClipboard>();
+
+    EXPECT_CALL(*clipboard, write(std::wstring(L"14"))).Times(1);
+
+    auto viewer = register_test_module().with_ui(std::move(ui_ptr)).with_picking(std::move(picking_ptr)).with_clipboard(clipboard).with_mouse(std::move(mouse_ptr)).build();
+
+    activate_context_menu(picking, mouse, PickResult::Type::Room, 14);
+
+    ui.on_copy(trview::IContextMenu::CopyType::Number);
 }
