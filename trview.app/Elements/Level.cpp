@@ -64,6 +64,7 @@ namespace trview
         // Create the texture sampler state.
         _sampler_state = device->create_sampler_state(sampler_desc);
 
+        record_models(*level);
         generate_rooms(*level, room_source, *mesh_storage);
         generate_triggers(trigger_source);
         generate_entities(*level, *type_names, entity_source, ai_source, *mesh_storage);
@@ -1012,6 +1013,19 @@ namespace trview
             return trigger->number();
         }
         return std::nullopt;
+    }
+
+    bool Level::has_model(uint32_t type_id) const
+    {
+        return _models.find(type_id) != _models.end();
+    }
+
+    void Level::record_models(const trlevel::ILevel& level)
+    {
+        for (uint32_t i = 0; i < level.num_models(); ++i)
+        {
+            _models.insert(level.get_model(i).ID);
+        }
     }
 
     bool find_item_by_type_id(const ILevel& level, uint32_t type_id, Item& output_item)

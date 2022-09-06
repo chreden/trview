@@ -99,6 +99,7 @@ namespace trview
         virtual void set_map_colours(const MapColours& map_colours) override;
         virtual std::optional<uint32_t> selected_light() const override;
         virtual std::optional<uint32_t> selected_trigger() const override;
+        virtual bool has_model(uint32_t type_id) const override;
     private:
         void generate_rooms(const trlevel::ILevel& level, const IRoom::Source& room_source, const IMeshStorage& mesh_storage);
         void generate_triggers(const ITrigger::Source& trigger_source);
@@ -142,6 +143,7 @@ namespace trview
         bool is_alternate_group_set(uint16_t group) const;
         void apply_ocb_adjustment();
         void deduplicate_triangles();
+        void record_models(const trlevel::ILevel& level);
 
         std::shared_ptr<graphics::IDevice> _device;
         std::vector<std::shared_ptr<IRoom>>   _rooms;
@@ -185,6 +187,8 @@ namespace trview
         trlevel::LevelVersion _version;
         std::string _filename;
         std::shared_ptr<ILog> _log;
+
+        std::set<uint32_t> _models;
     };
 
     /// Find the first item with the type id specified.

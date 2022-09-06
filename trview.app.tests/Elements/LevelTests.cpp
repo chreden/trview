@@ -710,3 +710,15 @@ TEST(Level, LightNotFound)
     auto light = level->light(0).lock();
     ASSERT_EQ(light, nullptr);
 }
+
+TEST(Level, MeshSetBuilt)
+{
+    auto [mock_level_ptr, mock_level] = create_mock<trlevel::mocks::MockLevel>();
+    ON_CALL(mock_level, num_models()).WillByDefault(Return(1));
+    ON_CALL(mock_level, get_model(0)).WillByDefault(Return(trlevel::tr_model{ 100 }));
+
+    auto level = register_test_module().with_level(std::move(mock_level_ptr)).build();
+
+    ASSERT_TRUE(level->has_model(100));
+    ASSERT_FALSE(level->has_model(123));
+}

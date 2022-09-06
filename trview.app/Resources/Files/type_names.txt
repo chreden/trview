@@ -62,13 +62,13 @@
 				"name": "Raptor"
 			}, {
 				"id": 20,
-				"name": "Mutant"
+				"name": "Mutant (Winged)"
 			}, {
 				"id": 21,
-				"name": "Mutant Spawn"
+				"name": "Mutant (Shooter)"
 			}, {
 				"id": 22,
-				"name": "Mutant Spawn"
+				"name": "Mutant"
 			}, {
 				"id": 23,
 				"name": "Centaur"

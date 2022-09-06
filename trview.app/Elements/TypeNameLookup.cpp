@@ -1,5 +1,6 @@
 #include "TypeNameLookup.h"
 #include <trview.common/Json.h>
+#include "Item.h"
 
 using namespace trlevel;
 
@@ -9,16 +10,16 @@ namespace trview
     {
         const std::unordered_map<int, std::string> mutant_names
         {
-            { 0, "Winged" },
-            { 1, "Shooter" },
-            { 2, "Centaur" },
-            { 4, "Torso" },
-            { 8, "Grounded" }
+            { 20, "Winged" },
+            { 21, "Shooter" },
+            { 22, "Grounded" },
+            { 23, "Centaur" },
+            { 34, "Torso" }
         };
 
         std::string mutant_name(uint16_t flags)
         {
-            auto mutant_name = mutant_names.find((flags & 0x3E00) >> 9);
+            auto mutant_name = mutant_names.find(mutant_egg_contents((flags & 0x3E00) >> 9));
             return std::format("Mutant Egg ({})", mutant_name == mutant_names.end() ? "Winged" : mutant_name->second);
         }
     }
@@ -84,7 +85,7 @@ namespace trview
             return std::to_string(type_id);
         }
 
-        if (level_version == LevelVersion::Tomb1 && type_id == 163 || type_id == 181)
+        if (level_version == LevelVersion::Tomb1 && is_mutant_egg(type_id))
         {
             return mutant_name(flags);
         }

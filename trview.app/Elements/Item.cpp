@@ -66,4 +66,35 @@ namespace trview
     {
         _visible = value;
     }
+
+    bool is_mutant_egg(const Item& item)
+    {
+        return is_mutant_egg(item.type_id());
+    }
+
+    bool is_mutant_egg(uint32_t type_id)
+    {
+        return equals_any(type_id, 163, 181);
+    }
+
+    uint16_t mutant_egg_contents(const Item& item)
+    {
+        return mutant_egg_contents(item.activation_flags());
+    }
+
+    uint16_t mutant_egg_contents(uint16_t flags)
+    {
+        switch (flags)
+        {
+        case 1:
+            return 21; // Shooter
+        case 2:
+            return 23; // Centaur
+        case 4:
+            return 34; // Torso
+        case 8:
+            return 22; // Mutant
+        }
+        return 20; // Winged
+    }
 }

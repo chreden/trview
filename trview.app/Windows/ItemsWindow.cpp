@@ -11,6 +11,7 @@ namespace trview
         _tips["OCB"] = "Changes entity behaviour";
         _tips["Clear Body"] = "If true, removed when Bodybag is triggered";
         _tips["Trigger triggerer"] = "Disables the trigger on the same sector until this item is triggered";
+        _tips["Type*"] = "Mutant Egg spawn target is missing; egg will be empty";
 
         setup_filters();
     }
@@ -220,7 +221,14 @@ namespace trview
                         return std::format("{:.0f}, {:.0f}, {:.0f}", pos.x, pos.y, pos.z);
                     };
 
-                    add_stat("Type", item.type());
+                    auto is_bad_mutant_egg = [&]() 
+                    { 
+                        return _level_version == trlevel::LevelVersion::Tomb1 &&
+                            is_mutant_egg(item) &&
+                            !_model_checker(mutant_egg_contents(item));
+                    };
+
+                    add_stat(std::format("Type{}", is_bad_mutant_egg() ? "*" : ""), item.type());
                     add_stat("#", item.number());
                     add_stat("Position", position_text());
                     add_stat("Type ID", item.type_id());
@@ -367,5 +375,15 @@ namespace trview
                 }
                 return results;
             });
+    }
+
+    void ItemsWindow::set_level_version(trlevel::LevelVersion version)
+    {
+        _level_version = version;
+    }
+
+    void ItemsWindow::set_model_checker(const std::function<bool(uint32_t)>& checker)
+    {
+        _model_checker = checker;
     }
 }
