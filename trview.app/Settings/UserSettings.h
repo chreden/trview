@@ -32,6 +32,7 @@ namespace trview
         MapColours map_colours;
         Colour route_colour{ Colour::Green };
         Colour waypoint_colour{ Colour::White };
+        bool route_startup{ false };
 
         bool operator==(const UserSettings& other) const;
     };

@@ -548,3 +548,28 @@ TEST(SettingsLoader, WaypointColourLoaded)
     auto settings_yellow = loader_yellow->load_user_settings();
     ASSERT_EQ(settings_yellow.waypoint_colour, Colour::Yellow);
 }
+
+TEST(SettingsLoader, RouteStartupLoaded)
+{
+    auto loader = setup_setting("{\"routestartup\":false}");
+    auto settings = loader->load_user_settings();
+    ASSERT_EQ(settings.route_startup, false);
+
+    auto loader_true = setup_setting("{\"routestartup\":true}");
+    auto settings_true = loader_true->load_user_settings();
+    ASSERT_EQ(settings_true.route_startup, true);
+}
+
+TEST(SettingsLoader, RouteStartupSaved)
+{
+    std::string output;
+    auto loader = setup_save_setting(output);
+    UserSettings settings;
+    settings.route_startup = false;
+    loader->save_user_settings(settings);
+    EXPECT_THAT(output, HasSubstr("\"routestartup\":false"));
+
+    settings.route_startup = true;
+    loader->save_user_settings(settings);
+    EXPECT_THAT(output, HasSubstr("\"routestartup\":true"));
+}

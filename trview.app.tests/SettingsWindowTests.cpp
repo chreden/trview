@@ -665,3 +665,35 @@ TEST(SettingsWindow, SetDefaultWaypointColourUpdatesColours)
     ASSERT_THAT(imgui.item_text(imgui.id("Settings").push("TabBar").push("Route").push(SettingsWindow::Names::default_waypoint_colour).id("##Y")), HasSubstr("191"));
     ASSERT_THAT(imgui.item_text(imgui.id("Settings").push("TabBar").push("Route").push(SettingsWindow::Names::default_waypoint_colour).id("##Z")), HasSubstr("255"));
 }
+
+TEST(SettingsWindow, SetRouteWindowOnStartupUpdatesCheckbox)
+{
+    SettingsWindow window;
+    window.toggle_visibility();
+
+    TestImgui imgui([&]() { window.render(); });
+    ASSERT_FALSE(imgui.status_flags(imgui.id("Settings").push("TabBar").push("General").id(SettingsWindow::Names::route_startup)) & ImGuiItemStatusFlags_Checked);
+
+    window.set_route_startup(true);
+    imgui.render();
+    ASSERT_TRUE(imgui.status_flags(imgui.id("Settings").push("TabBar").push("General").id(SettingsWindow::Names::route_startup)) & ImGuiItemStatusFlags_Checked);
+}
+
+TEST(SettingsWindow, ClickingRouteWindowOnStartupRaisesEvent)
+{
+    SettingsWindow window;
+    window.toggle_visibility();
+
+    std::optional<bool> received_value;
+    auto token = window.on_route_startup += [&](bool value)
+    {
+        received_value = value;
+    };
+
+    TestImgui imgui([&]() { window.render(); });
+    ASSERT_FALSE(imgui.status_flags(imgui.id("Settings").push("TabBar").push("General").id(SettingsWindow::Names::route_startup)) & ImGuiItemStatusFlags_Checked);
+    imgui.click_element(imgui.id("Settings").push("TabBar").push("General").id(SettingsWindow::Names::route_startup));
+    ASSERT_TRUE(imgui.status_flags(imgui.id("Settings").push("TabBar").push("General").id(SettingsWindow::Names::route_startup)) & ImGuiItemStatusFlags_Checked);
+    ASSERT_EQ(received_value.has_value(), true);
+    ASSERT_TRUE(received_value.value());
+}

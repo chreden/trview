@@ -75,6 +75,7 @@ namespace trview
 
         Event<Colour> on_default_route_colour;
         Event<Colour> on_default_waypoint_colour;
+        Event<bool> on_route_startup;
 
         virtual void render() = 0;
         /// <summary>
@@ -169,6 +170,7 @@ namespace trview
         virtual void set_max_recent_files(uint32_t value) = 0;
         virtual void set_background_colour(const Colour& colour) = 0;
         virtual void set_map_colours(const MapColours& colours) = 0;
+        virtual void set_route_startup(bool value) = 0;
         /// <summary>
         /// Toggle the visibility of the settings window.
         /// </summary>

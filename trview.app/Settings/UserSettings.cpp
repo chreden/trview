@@ -38,6 +38,7 @@ namespace trview
             recent_files == other.recent_files &&
             max_recent_files == other.max_recent_files &&
             route_colour == other.route_colour &&
-            waypoint_colour == other.waypoint_colour;
+            waypoint_colour == other.waypoint_colour &&
+            route_startup == other.route_startup;
     }
 }

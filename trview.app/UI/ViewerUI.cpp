@@ -88,101 +88,35 @@ namespace trview
         _level_info = std::make_unique<LevelInfo>(*texture_storage);
         _token_store += _level_info->on_toggle_settings += [&]() { _settings_window->toggle_visibility(); };
 
-        _token_store += _settings_window->on_vsync += [&](bool value)
+        const auto forward_setting = [&]<typename T>(auto& event, T& target)
         {
-            _settings.vsync = value;
-            on_settings(_settings);
+            _token_store += event += [&](T value)
+            {
+                target = value;
+                on_settings(_settings);
+            };
         };
-        _token_store += _settings_window->on_go_to_lara += [&](bool value)
-        {
-            _settings.go_to_lara = value;
-            on_settings(_settings);
-        };
-        _token_store += _settings_window->on_invert_map_controls += [&](bool value)
-        {
-            _settings.invert_map_controls = value;
-            on_settings(_settings);
-        };
-        _token_store += _settings_window->on_items_startup += [&](bool value)
-        {
-            _settings.items_startup = value;
-            on_settings(_settings);
-        };
-        _token_store += _settings_window->on_triggers_startup += [&](bool value)
-        {
-            _settings.triggers_startup = value;
-            on_settings(_settings);
-        };
-        _token_store += _settings_window->on_rooms_startup += [&](bool value)
-        {
-            _settings.rooms_startup = value;
-            on_settings(_settings);
-        };
-        _token_store += _settings_window->on_auto_orbit += [&](bool value)
-        {
-            _settings.auto_orbit = value;
-            on_settings(_settings);
-        };
-        _token_store += _settings_window->on_invert_vertical_pan += [&](bool value)
-        {
-            _settings.invert_vertical_pan = value;
-            on_settings(_settings);
-        };
-        _token_store += _settings_window->on_sensitivity_changed += [&](float value)
-        {
-            _settings.camera_sensitivity = value;
-            on_settings(_settings);
-        };
-        _token_store += _settings_window->on_movement_speed_changed += [&](float value)
-        {
-            _settings.camera_movement_speed = value;
-            on_settings(_settings);
-        };
-        _token_store += _settings_window->on_camera_acceleration += [&](bool value)
-        {
-            _settings.camera_acceleration = value;
-            on_settings(_settings);
-        };
-        _token_store += _settings_window->on_camera_acceleration_rate += [&](float value)
-        {
-            _settings.camera_acceleration_rate = value;
-            on_settings(_settings);
-        };
-        _token_store += _settings_window->on_camera_display_degrees += [&](bool value)
-        {
-            _settings.camera_display_degrees = value;
-            on_settings(_settings);
-        };
-        _token_store += _settings_window->on_randomizer_tools += [&](bool value)
-        {
-            _settings.randomizer_tools = value;
-            on_settings(_settings);
-        };
-        _token_store += _settings_window->on_max_recent_files += [&](uint32_t value)
-        {
-            _settings.max_recent_files = value;
-            on_settings(_settings);
-        };
-        _token_store += _settings_window->on_background_colour += [&](Colour value)
-        {
-            _settings.background_colour = value;
-            on_settings(_settings);
-        };
-        _token_store += _settings_window->on_minimap_colours += [&](MapColours colours)
-        {
-            _settings.map_colours = colours;
-            on_settings(_settings);
-        };
-        _token_store += _settings_window->on_default_route_colour += [&](const Colour& colour)
-        {
-            _settings.route_colour = colour;
-            on_settings(_settings);
-        };
-        _token_store += _settings_window->on_default_waypoint_colour += [&](const Colour& colour)
-        {
-            _settings.waypoint_colour = colour;
-            on_settings(_settings);
-        };
+
+        forward_setting(_settings_window->on_vsync, _settings.vsync);
+        forward_setting(_settings_window->on_go_to_lara, _settings.go_to_lara);
+        forward_setting(_settings_window->on_invert_map_controls, _settings.invert_map_controls);
+        forward_setting(_settings_window->on_items_startup, _settings.items_startup);
+        forward_setting(_settings_window->on_triggers_startup, _settings.triggers_startup);
+        forward_setting(_settings_window->on_rooms_startup, _settings.rooms_startup);
+        forward_setting(_settings_window->on_auto_orbit, _settings.auto_orbit);
+        forward_setting(_settings_window->on_invert_vertical_pan, _settings.invert_vertical_pan);
+        forward_setting(_settings_window->on_sensitivity_changed, _settings.camera_sensitivity);
+        forward_setting(_settings_window->on_movement_speed_changed, _settings.camera_movement_speed);
+        forward_setting(_settings_window->on_camera_acceleration, _settings.camera_acceleration);
+        forward_setting(_settings_window->on_camera_acceleration_rate, _settings.camera_acceleration_rate);
+        forward_setting(_settings_window->on_camera_display_degrees, _settings.camera_display_degrees);
+        forward_setting(_settings_window->on_randomizer_tools, _settings.randomizer_tools);
+        forward_setting(_settings_window->on_max_recent_files, _settings.max_recent_files);
+        forward_setting(_settings_window->on_background_colour, _settings.background_colour);
+        forward_setting(_settings_window->on_minimap_colours, _settings.map_colours);
+        forward_setting(_settings_window->on_default_route_colour, _settings.route_colour);
+        forward_setting(_settings_window->on_default_waypoint_colour, _settings.waypoint_colour);
+        forward_setting(_settings_window->on_route_startup, _settings.route_startup);
 
         _camera_position = std::make_unique<CameraPosition>();
         _camera_position->on_position_changed += on_camera_position;
@@ -396,6 +330,7 @@ namespace trview
         _settings_window->set_map_colours(settings.map_colours);
         _settings_window->set_default_route_colour(settings.route_colour);
         _settings_window->set_default_waypoint_colour(settings.waypoint_colour);
+        _settings_window->set_route_startup(settings.route_startup);
         _camera_position->set_display_degrees(settings.camera_display_degrees);
         _map_renderer->set_colours(settings.map_colours);
     }

@@ -43,6 +43,7 @@ namespace trview
             read_attribute(json, settings.map_colours, "mapcolours");
             read_attribute(json, settings.route_colour, "routecolour");
             read_attribute(json, settings.waypoint_colour, "waypointcolour");
+            read_attribute(json, settings.route_startup, "routestartup");
 
             settings.recent_files.resize(std::min<std::size_t>(settings.recent_files.size(), settings.max_recent_files));
         }
@@ -99,6 +100,7 @@ namespace trview
             json["mapcolours"] = settings.map_colours;
             json["routecolour"] = settings.route_colour;
             json["waypointcolour"] = settings.waypoint_colour;
+            json["routestartup"] = settings.route_startup;
             _files->save_file(file_path, json.dump());
         }
         catch (...)

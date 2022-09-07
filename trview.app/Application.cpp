@@ -425,6 +425,11 @@ namespace trview
 
     void Application::setup_route_window()
     {
+        if (_settings.route_startup)
+        {
+            _route_window->create_window();
+        }
+
         _token_store += _route_window->on_waypoint_selected += [&](auto index) { select_waypoint(index); };
         _token_store += _route_window->on_item_selected += [&](const auto& item) { select_item(item); };
         _token_store += _route_window->on_trigger_selected += [&](const auto& trigger) { select_trigger(trigger); };

@@ -720,3 +720,31 @@ TEST(Application, RouteSetToDefaultColoursOnReset)
         .build();
     application->open("test.tr2", ILevel::OpenMode::Full);
 }
+
+TEST(Application, RouteWindowCreatedOnStartup)
+{
+    UserSettings settings;
+    settings.route_startup = true;
+    auto [settings_loader_ptr, settings_loader] = create_mock<MockSettingsLoader>();
+    ON_CALL(settings_loader, load_user_settings).WillByDefault(Return(settings));
+    auto [route_window_manager_ptr, route_window_manager] = create_mock<MockRouteWindowManager>();
+    EXPECT_CALL(route_window_manager, create_window).Times(1);
+    auto application = register_test_module()
+        .with_settings_loader(std::move(settings_loader_ptr))
+        .with_route_window_manager(std::move(route_window_manager_ptr))
+        .build();
+}
+
+TEST(Application, RouteWindowNotCreatedOnStartup)
+{
+    UserSettings settings;
+    settings.route_startup = false;
+    auto [settings_loader_ptr, settings_loader] = create_mock<MockSettingsLoader>();
+    ON_CALL(settings_loader, load_user_settings).WillByDefault(Return(settings));
+    auto [route_window_manager_ptr, route_window_manager] = create_mock<MockRouteWindowManager>();
+    EXPECT_CALL(route_window_manager, create_window).Times(0);
+    auto application = register_test_module()
+        .with_settings_loader(std::move(settings_loader_ptr))
+        .with_route_window_manager(std::move(route_window_manager_ptr))
+        .build();
+}
