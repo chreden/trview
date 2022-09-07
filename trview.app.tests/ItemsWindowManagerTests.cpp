@@ -7,6 +7,7 @@
 using namespace trview;
 using namespace trview::tests;
 using namespace trview::mocks;
+using testing::A;
 
 namespace
 {
@@ -231,4 +232,41 @@ TEST(ItemsWindowManager, WindowsUpdated)
     auto manager = register_test_module().with_window_source([&](auto&&...) { return mock_window; }).build();
     manager->create_window();
     manager->update(1.0f);
+}
+
+TEST(ItemsWindowManager, CreateWindowPassesLevelVersion)
+{
+    auto mock_window = mock_shared<MockItemsWindow>();
+    EXPECT_CALL(*mock_window, set_level_version(trlevel::LevelVersion::Tomb4)).Times(1);
+    auto manager = register_test_module().with_window_source([&](auto&&...) { return mock_window; }).build();
+    manager->set_level_version(trlevel::LevelVersion::Tomb4);
+    manager->create_window();
+}
+
+TEST(ItemsWindowManager, SetLevelVersionUpdatesWindows)
+{
+    auto mock_window = mock_shared<MockItemsWindow>();
+    EXPECT_CALL(*mock_window, set_level_version(trlevel::LevelVersion::Unknown)).Times(1);
+    EXPECT_CALL(*mock_window, set_level_version(trlevel::LevelVersion::Tomb4)).Times(1);
+    auto manager = register_test_module().with_window_source([&](auto&&...) { return mock_window; }).build();
+    manager->create_window();
+    manager->set_level_version(trlevel::LevelVersion::Tomb4);
+}
+
+TEST(ItemsWindowManager, CreateWindowPassesModelChecker)
+{
+    auto mock_window = mock_shared<MockItemsWindow>();
+    EXPECT_CALL(*mock_window, set_model_checker(A<const std::function<bool (uint32_t)>&>())).Times(1);
+    auto manager = register_test_module().with_window_source([&](auto&&...) { return mock_window; }).build();
+    manager->set_model_checker([](auto) {return true; });
+    manager->create_window();
+}
+
+TEST(ItemsWindowManager, SetModelCheckerUpdatesWindows)
+{
+    auto mock_window = mock_shared<MockItemsWindow>();
+    EXPECT_CALL(*mock_window, set_model_checker(A<const std::function<bool(uint32_t)>&>())).Times(2);
+    auto manager = register_test_module().with_window_source([&](auto&&...) { return mock_window; }).build();
+    manager->create_window();
+    manager->set_model_checker([](auto) {return true; });
 }

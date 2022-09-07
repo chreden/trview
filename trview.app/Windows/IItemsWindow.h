@@ -64,6 +64,10 @@ namespace trview
         virtual void update(float delta) = 0;
 
         virtual void set_number(int32_t number) = 0;
+
+        virtual void set_level_version(trlevel::LevelVersion version) = 0;
+
+        virtual void set_model_checker(const std::function<bool(uint32_t)>& checker) = 0;
     };
 }
 

@@ -14,6 +14,7 @@ namespace trview
             MOCK_METHOD(bool, alternate_mode, (), (const, override));
             MOCK_METHOD(bool, any_alternates, (), (const, override));
             MOCK_METHOD(std::string, filename, (), (const, override));
+            MOCK_METHOD(bool, has_model, (uint32_t), (const, override));
             MOCK_METHOD(bool, highlight_mode_enabled, (RoomHighlightMode), (const, override));
             MOCK_METHOD(std::optional<Item>, item, (uint32_t), (const, override));
             MOCK_METHOD(std::vector<Item>, items, (), (const, override));

@@ -33,6 +33,8 @@ namespace trview
         items_window->set_items(_items);
         items_window->set_triggers(_triggers);
         items_window->set_current_room(_current_room);
+        items_window->set_level_version(_level_version);
+        items_window->set_model_checker(_model_checker);
         if (_selected_item.has_value())
         {
             items_window->set_selected_item(_selected_item.value());
@@ -62,6 +64,24 @@ namespace trview
         for (auto& window : _windows)
         {
             window.second->update_item(*found);
+        }
+    }
+
+    void ItemsWindowManager::set_level_version(trlevel::LevelVersion version)
+    {
+        _level_version = version;
+        for (auto& window : _windows)
+        {
+            window.second->set_level_version(version);
+        }
+    }
+
+    void ItemsWindowManager::set_model_checker(const std::function<bool(uint32_t)>& checker)
+    {
+        _model_checker = checker;
+        for (auto& window : _windows)
+        {
+            window.second->set_model_checker(checker);
         }
     }
 

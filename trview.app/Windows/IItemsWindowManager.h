@@ -32,6 +32,10 @@ namespace trview
         /// @param visible Whether the item is visible.
         virtual void set_item_visible(const Item& item, bool visible) = 0;
 
+        virtual void set_level_version(trlevel::LevelVersion version) = 0;
+
+        virtual void set_model_checker(const std::function<bool (uint32_t)>& checker) = 0;
+
         /// Set the triggers to use in the windows.
         /// @param triggers The triggers in the level.
         virtual void set_triggers(const std::vector<std::weak_ptr<ITrigger>>& triggers) = 0;

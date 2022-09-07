@@ -81,4 +81,9 @@ namespace trview
         uint16_t _flags{ 0u };
         bool _visible{ true };
     };
+
+    bool is_mutant_egg(const Item& item);
+    bool is_mutant_egg(uint32_t type_id);
+    uint16_t mutant_egg_contents(const Item& item);
+    uint16_t mutant_egg_contents(uint16_t flags);
 }

@@ -39,6 +39,8 @@ namespace trview
         virtual std::optional<Item> selected_item() const override;
         virtual void update(float delta) override;
         virtual void set_number(int32_t number) override;
+        virtual void set_level_version(trlevel::LevelVersion version) override;
+        virtual void set_model_checker(const std::function<bool(uint32_t)>& checker) override;
     private:
         void set_track_room(bool value);
         void set_sync_item(bool value);
@@ -64,5 +66,7 @@ namespace trview
         bool _scroll_to_item{ false };
 
         Filters<Item> _filters;
+        trlevel::LevelVersion _level_version{ trlevel::LevelVersion::Unknown };
+        std::function<bool(uint32_t)> _model_checker;
     };
 }

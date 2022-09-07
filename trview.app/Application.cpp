@@ -162,6 +162,8 @@ namespace trview
 
         _items_windows->set_items(_level->items());
         _items_windows->set_triggers(_level->triggers());
+        _items_windows->set_level_version(_level->version());
+        _items_windows->set_model_checker([&](uint32_t id) { return _level->has_model(id); });
         _triggers_windows->set_items(_level->items());
         _triggers_windows->set_triggers(_level->triggers());
         _rooms_windows->set_level_version(_level->version());

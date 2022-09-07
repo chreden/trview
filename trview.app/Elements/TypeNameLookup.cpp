@@ -1,10 +1,29 @@
 #include "TypeNameLookup.h"
 #include <trview.common/Json.h>
+#include "Item.h"
 
 using namespace trlevel;
 
 namespace trview
 {
+    namespace
+    {
+        const std::unordered_map<int, std::string> mutant_names
+        {
+            { 20, "Winged" },
+            { 21, "Shooter" },
+            { 22, "Grounded" },
+            { 23, "Centaur" },
+            { 34, "Torso" }
+        };
+
+        std::string mutant_name(uint16_t flags)
+        {
+            auto mutant_name = mutant_names.find(mutant_egg_contents((flags & 0x3E00) >> 9));
+            return std::format("Mutant Egg ({})", mutant_name == mutant_names.end() ? "Winged" : mutant_name->second);
+        }
+    }
+
     TypeNameLookup::TypeNameLookup(const std::string& type_name_json)
     {
         auto json = nlohmann::json::parse(type_name_json.begin(), type_name_json.end());
@@ -52,7 +71,7 @@ namespace trview
         load_game_types(LevelVersion::Tomb5);
     }
 
-    std::string TypeNameLookup::lookup_type_name(LevelVersion level_version, uint32_t type_id) const
+    std::string TypeNameLookup::lookup_type_name(LevelVersion level_version, uint32_t type_id, uint32_t flags) const
     {
         const auto& game_types = _type_names.find(level_version);
         if (game_types == _type_names.end())
@@ -65,6 +84,12 @@ namespace trview
         {
             return std::to_string(type_id);
         }
+
+        if (level_version == LevelVersion::Tomb1 && is_mutant_egg(type_id))
+        {
+            return mutant_name(flags);
+        }
+
         return found_type->second.name;
     }
 

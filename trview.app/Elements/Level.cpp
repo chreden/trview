@@ -64,6 +64,7 @@ namespace trview
         // Create the texture sampler state.
         _sampler_state = device->create_sampler_state(sampler_desc);
 
+        record_models(*level);
         generate_rooms(*level, room_source, *mesh_storage);
         generate_triggers(trigger_source);
         generate_entities(*level, *type_names, entity_source, ai_source, *mesh_storage);
@@ -529,7 +530,7 @@ namespace trview
                 }
             }
 
-            _items.push_back(Item(i, level_entity.Room, level_entity.TypeID, type_names.lookup_type_name(_version, level_entity.TypeID), 
+            _items.push_back(Item(i, level_entity.Room, level_entity.TypeID, type_names.lookup_type_name(_version, level_entity.TypeID, level_entity.Flags), 
                 version() >= trlevel::LevelVersion::Tomb4 ? level_entity.Intensity2 : 0, level_entity.Flags, relevant_triggers, level_entity.position()));
         }
 
@@ -541,7 +542,7 @@ namespace trview
             _rooms[entity->room()]->add_entity(entity);
             _entities.push_back(entity);
 
-            _items.push_back(Item(num_entities + i, ai_object.room, ai_object.type_id, type_names.lookup_type_name(_version, ai_object.type_id), ai_object.ocb,
+            _items.push_back(Item(num_entities + i, ai_object.room, ai_object.type_id, type_names.lookup_type_name(_version, ai_object.type_id, ai_object.flags), ai_object.ocb,
                 ai_object.flags, {}, ai_object.position()));
         }
     }
@@ -1012,6 +1013,19 @@ namespace trview
             return trigger->number();
         }
         return std::nullopt;
+    }
+
+    bool Level::has_model(uint32_t type_id) const
+    {
+        return _models.find(type_id) != _models.end();
+    }
+
+    void Level::record_models(const trlevel::ILevel& level)
+    {
+        for (uint32_t i = 0; i < level.num_models(); ++i)
+        {
+            _models.insert(level.get_model(i).ID);
+        }
     }
 
     bool find_item_by_type_id(const ILevel& level, uint32_t type_id, Item& output_item)
