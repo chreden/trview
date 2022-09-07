@@ -11,6 +11,12 @@ namespace trview
     {
         void add_recent_file(const std::string& file);
 
+        struct RecentRoute
+        {
+            std::string route_path;
+            bool is_rando;
+        };
+
         std::list<std::string>  recent_files;
         float camera_sensitivity{ 0 };
         float camera_movement_speed{ 0.5f };
@@ -33,6 +39,7 @@ namespace trview
         Colour route_colour{ Colour::Green };
         Colour waypoint_colour{ Colour::White };
         bool route_startup{ false };
+        std::unordered_map<std::string, RecentRoute> recent_routes;
 
         bool operator==(const UserSettings& other) const;
     };

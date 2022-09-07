@@ -97,6 +97,7 @@ namespace trview
         void register_lua();
         bool should_discard_changes();
         void reload();
+        void import_route(const std::string& path, bool is_rando);
 
         TokenStore _token_store;
 

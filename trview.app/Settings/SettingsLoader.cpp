@@ -5,6 +5,18 @@
 
 namespace trview
 {
+    void to_json(nlohmann::json& json, const UserSettings::RecentRoute& item)
+    {
+        json["route_path"] = item.route_path;
+        json["is_rando"] = item.is_rando;
+    }
+
+    void from_json(const nlohmann::json& json, UserSettings::RecentRoute& item)
+    {
+        item.route_path = read_attribute<std::string>(json, "route_path");
+        item.is_rando = read_attribute<bool>(json, "is_rando");
+    }
+
     SettingsLoader::SettingsLoader(const std::shared_ptr<IFiles>& files)
         : _files(files)
     {
@@ -44,6 +56,7 @@ namespace trview
             read_attribute(json, settings.route_colour, "routecolour");
             read_attribute(json, settings.waypoint_colour, "waypointcolour");
             read_attribute(json, settings.route_startup, "routestartup");
+            read_attribute(json, settings.recent_routes, "recentroutes");
 
             settings.recent_files.resize(std::min<std::size_t>(settings.recent_files.size(), settings.max_recent_files));
         }
@@ -101,6 +114,7 @@ namespace trview
             json["routecolour"] = settings.route_colour;
             json["waypointcolour"] = settings.waypoint_colour;
             json["routestartup"] = settings.route_startup;
+            json["recentroutes"] = settings.recent_routes;
             _files->save_file(file_path, json.dump());
         }
         catch (...)

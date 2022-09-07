@@ -573,3 +573,21 @@ TEST(SettingsLoader, RouteStartupSaved)
     loader->save_user_settings(settings);
     EXPECT_THAT(output, HasSubstr("\"routestartup\":true"));
 }
+
+TEST(SettingsLoader, RecentRoutesLoaded)
+{
+    auto loader = setup_setting("{\"recentroutes\":{\"path.tr2\":{\"is_rando\":true,\"route_path\":\"route.tvr\"}}}");
+    auto settings = loader->load_user_settings();
+    ASSERT_EQ(settings.recent_routes["path.tr2"].route_path, "route.tvr");
+    ASSERT_EQ(settings.recent_routes["path.tr2"].is_rando, true);
+}
+
+TEST(SettingsLoader, RecentRoutesSaved)
+{
+    std::string output;
+    auto loader = setup_save_setting(output);
+    UserSettings settings;
+    settings.recent_routes["path.tr2"] = { "route.tvr", true };
+    loader->save_user_settings(settings);
+    EXPECT_THAT(output, HasSubstr("\"recentroutes\":{\"path.tr2\":{\"is_rando\":true,\"route_path\":\"route.tvr\"}}"));
+}
