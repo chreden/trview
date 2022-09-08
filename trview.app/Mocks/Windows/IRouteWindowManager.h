@@ -19,6 +19,7 @@ namespace trview
             MOCK_METHOD(void, update, (float), (override));
             MOCK_METHOD(void, set_randomizer_enabled, (bool), (override));
             MOCK_METHOD(void, set_randomizer_settings, (const RandomizerSettings&), (override));
+            MOCK_METHOD(bool, is_window_open, (), (const, override));
         };
     }
 }

@@ -145,3 +145,27 @@ TEST(RouteWindowManager, OnWaypointColourChangedEventRaised)
     ASSERT_TRUE(raised.has_value());
     ASSERT_EQ(raised.value(), Colour::Yellow);
 }
+
+TEST(RouteWindowManager, OnWindowCreatedEventRaised)
+{
+    auto manager = register_test_module().build();
+
+    bool raised = false;
+    auto token = manager->on_window_created += [&]() { raised = true; };
+
+    manager->create_window();
+
+    ASSERT_TRUE(raised);
+}
+
+TEST(RouteWindowManager, IsWindowOpen)
+{
+    auto mock_window = mock_shared<MockRouteWindow>();
+    auto manager = register_test_module().with_window_source([&](auto&&...) { return mock_window; }).build();
+    ASSERT_FALSE(manager->is_window_open());
+    manager->create_window();
+    ASSERT_TRUE(manager->is_window_open());
+    mock_window->on_window_closed();
+    manager->render();
+    ASSERT_FALSE(manager->is_window_open());
+}

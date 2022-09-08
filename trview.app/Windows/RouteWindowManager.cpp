@@ -50,6 +50,7 @@ namespace trview
             _route_window->set_route(_route);
         }
         _route_window->select_waypoint(_selected_waypoint);
+        on_window_created();
     }
 
     void RouteWindowManager::render()
@@ -137,5 +138,10 @@ namespace trview
         {
             _route_window->set_randomizer_settings(settings);
         }
+    }
+
+    bool RouteWindowManager::is_window_open() const
+    {
+        return _route_window.get();
     }
 }
