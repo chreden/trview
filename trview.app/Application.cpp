@@ -222,6 +222,11 @@ namespace trview
             _settings.auto_orbit = old_auto_orbit;
             _viewer->set_settings(_settings);
         }
+        else
+        {
+            _recent_route_prompted = false;
+            open_recent_route();
+        }
     }
 
     std::optional<int> Application::process_message(UINT message, WPARAM wParam, LPARAM)
@@ -428,21 +433,16 @@ namespace trview
         _token_store += _route_window->on_waypoint_selected += [&](auto index) { select_waypoint(index); };
         _token_store += _route_window->on_item_selected += [&](const auto& item) { select_item(item); };
         _token_store += _route_window->on_trigger_selected += [&](const auto& trigger) { select_trigger(trigger); };
-        _token_store += _route_window->on_route_import += [&](const std::string& path, bool is_rando)
-        {
-            auto route = import_route(_route_source, _files, path, _level.get(), _settings.randomizer, is_rando);
-            if (route)
-            {
-                _route = route;
-                _route_window->set_route(_route.get());
-                _route->set_randomizer_enabled(_settings.randomizer_tools);
-                _viewer->set_route(_route);
-            }
-        };
+        _token_store += _route_window->on_route_import += [&](const std::string& path, bool is_rando) { this->import_route(path, is_rando); };
         _token_store += _route_window->on_route_export += [&](const std::string& path, bool is_rando)
         {
             export_route(*_route, _files, path, _level ? _level->filename() : "", _settings.randomizer, is_rando);
             _route->set_unsaved(false);
+            if (_level)
+            {
+                _settings.recent_routes[_level->filename()] = { path, is_rando };
+                _viewer->set_settings(_settings);
+            }
         };
         _token_store += _route_window->on_waypoint_deleted += [&](auto index) { remove_waypoint(index); };
         _token_store += _route_window->on_colour_changed += [&](const Colour& colour)
@@ -463,6 +463,12 @@ namespace trview
         _route_window->set_randomizer_enabled(_settings.randomizer_tools);
         _route->set_randomizer_enabled(_settings.randomizer_tools);
         _route_window->set_randomizer_settings(_settings.randomizer);
+        _token_store += _route_window->on_window_created += [&]() { open_recent_route(); };
+
+        if (_settings.route_startup)
+        {
+            _route_window->create_window();
+        }
     }
 
     void Application::setup_lights_windows()
@@ -748,6 +754,44 @@ namespace trview
             return;
         }
         open(_level->filename(), ILevel::OpenMode::Reload);
+    }
+
+    void Application::import_route(const std::string& path, bool is_rando)
+    {
+        auto route = trview::import_route(_route_source, _files, path, _level.get(), _settings.randomizer, is_rando);
+        if (route)
+        {
+            _route = route;
+            _route_window->set_route(_route.get());
+            _route->set_randomizer_enabled(_settings.randomizer_tools);
+            _viewer->set_route(_route);
+            if (_level)
+            {
+                _settings.recent_routes[_level->filename()] = { path, is_rando };
+                _viewer->set_settings(_settings);
+            }
+        }
+    }
+
+    void Application::open_recent_route()
+    {
+        if (!_level || _recent_route_prompted || !_route_window->is_window_open())
+        {
+            return;
+        }
+
+        const auto recent_route = _settings.recent_routes.find(_level->filename());
+        if (recent_route != _settings.recent_routes.end() &&
+            _dialogs->message_box(L"Reopen last used route for this level?", L"Reopen route", IDialogs::Buttons::Yes_No))
+        {
+            this->import_route(recent_route->second.route_path, recent_route->second.is_rando);
+        }
+        else
+        {
+            _settings.recent_routes.erase(_level->filename());
+            _viewer->set_settings(_settings);
+        }
+        _recent_route_prompted = true;
     }
 
     Window create_window(HINSTANCE hInstance, int nCmdShow)

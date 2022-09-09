@@ -97,6 +97,8 @@ namespace trview
         void register_lua();
         bool should_discard_changes();
         void reload();
+        void import_route(const std::string& path, bool is_rando);
+        void open_recent_route();
 
         TokenStore _token_store;
 
@@ -135,6 +137,7 @@ namespace trview
         std::unique_ptr<IImGuiBackend> _imgui_backend;
         std::string _imgui_ini_filename;
         std::unique_ptr<ILogWindowManager> _log_windows;
+        bool _recent_route_prompted{ false };
     };
 
     Window create_window(HINSTANCE hInstance, int command_show);

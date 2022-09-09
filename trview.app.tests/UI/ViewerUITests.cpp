@@ -325,3 +325,32 @@ TEST(ViewerUI, OnCopyEventForwarded)
     ASSERT_TRUE(raised);
     ASSERT_EQ(raised, trview::IContextMenu::CopyType::Position);
 }
+
+TEST(ViewerUI, OnRouteStartupEventRaised)
+{
+    auto [settings_window_ptr, settings_window] = create_mock<MockSettingsWindow>();
+    auto ui = register_test_module().with_settings_window(std::move(settings_window_ptr)).build();
+
+    std::optional<UserSettings> settings;
+    auto token = ui->on_settings += [&](auto raised)
+    {
+        settings = raised;
+    };
+
+    settings_window.on_route_startup(true);
+
+    ASSERT_TRUE(settings);
+    ASSERT_TRUE(settings.value().route_startup);
+}
+
+TEST(ViewerUI, SetRouteStartupUpdatesSettingsWindow)
+{
+    auto [settings_window_ptr, settings_window] = create_mock<MockSettingsWindow>();
+    EXPECT_CALL(settings_window, set_route_startup(true)).Times(1);
+
+    auto ui = register_test_module().with_settings_window(std::move(settings_window_ptr)).build();
+
+    UserSettings settings{};
+    settings.route_startup = true;
+    ui->set_settings(settings);
+}

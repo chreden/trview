@@ -169,7 +169,7 @@ namespace
                 return *this;
             }
 
-            test_module& with_level_source(ILevel::Source& level_source)
+            test_module& with_level_source(ILevel::Source level_source)
             {
                 this->level_source = level_source;
                 return *this;
@@ -719,4 +719,127 @@ TEST(Application, RouteSetToDefaultColoursOnReset)
         .with_route_source([&](auto&&...) {return route; })
         .build();
     application->open("test.tr2", ILevel::OpenMode::Full);
+}
+
+TEST(Application, RouteWindowCreatedOnStartup)
+{
+    UserSettings settings;
+    settings.route_startup = true;
+    auto [settings_loader_ptr, settings_loader] = create_mock<MockSettingsLoader>();
+    ON_CALL(settings_loader, load_user_settings).WillByDefault(Return(settings));
+    auto [route_window_manager_ptr, route_window_manager] = create_mock<MockRouteWindowManager>();
+    EXPECT_CALL(route_window_manager, create_window).Times(1);
+    auto application = register_test_module()
+        .with_settings_loader(std::move(settings_loader_ptr))
+        .with_route_window_manager(std::move(route_window_manager_ptr))
+        .build();
+}
+
+TEST(Application, RouteWindowNotCreatedOnStartup)
+{
+    UserSettings settings;
+    settings.route_startup = false;
+    auto [settings_loader_ptr, settings_loader] = create_mock<MockSettingsLoader>();
+    ON_CALL(settings_loader, load_user_settings).WillByDefault(Return(settings));
+    auto [route_window_manager_ptr, route_window_manager] = create_mock<MockRouteWindowManager>();
+    EXPECT_CALL(route_window_manager, create_window).Times(0);
+    auto application = register_test_module()
+        .with_settings_loader(std::move(settings_loader_ptr))
+        .with_route_window_manager(std::move(route_window_manager_ptr))
+        .build();
+}
+
+TEST(Application, RecentRouteLoaded)
+{
+    UserSettings settings;
+    settings.recent_routes["test.tr2"] = { "test.tvr", false };
+    auto [settings_loader_ptr, settings_loader] = create_mock<MockSettingsLoader>();
+    ON_CALL(settings_loader, load_user_settings).WillByDefault(Return(settings));
+    auto dialogs = mock_shared<MockDialogs>();
+    EXPECT_CALL(*dialogs, message_box(std::wstring(L"Reopen last used route for this level?"), std::wstring(L"Reopen route"), IDialogs::Buttons::Yes_No)).Times(1).WillOnce(Return(true));
+    auto route = mock_shared<MockRoute>();
+    auto [viewer_ptr, viewer] = create_mock<MockViewer>();
+    EXPECT_CALL(viewer, set_route(std::shared_ptr<IRoute>(route))).Times(1);
+    UserSettings called_settings{};
+    EXPECT_CALL(viewer, set_settings).Times(AtLeast(1)).WillRepeatedly(SaveArg<0>(&called_settings));
+    auto [level_ptr, level] = create_mock<trview::mocks::MockLevel>();
+    ON_CALL(level, filename).WillByDefault(Return("test.tr2"));
+    auto [route_window_manager_ptr, route_window_manager] = create_mock<MockRouteWindowManager>();
+    ON_CALL(route_window_manager, is_window_open).WillByDefault(Return(true));
+
+    auto application = register_test_module()
+        .with_settings_loader(std::move(settings_loader_ptr))
+        .with_dialogs(dialogs)
+        .with_viewer(std::move(viewer_ptr))
+        .with_route_source([&](auto&&...) {return route; })
+        .with_level_source([&](auto&&...) { return std::move(level_ptr); })
+        .with_route_window_manager(std::move(route_window_manager_ptr))
+        .build();
+    
+    application->open("test.tr2", ILevel::OpenMode::Full);
+
+    ASSERT_EQ(called_settings.recent_routes["test.tr2"].route_path, "test.tvr");
+}
+
+TEST(Application, RecentRouteNotLoaded)
+{
+    UserSettings settings;
+    settings.recent_routes["test.tr2"] = { "test.tvr", false };
+    auto [settings_loader_ptr, settings_loader] = create_mock<MockSettingsLoader>();
+    ON_CALL(settings_loader, load_user_settings).WillByDefault(Return(settings));
+    auto dialogs = mock_shared<MockDialogs>();
+    EXPECT_CALL(*dialogs, message_box(std::wstring(L"Reopen last used route for this level?"), std::wstring(L"Reopen route"), IDialogs::Buttons::Yes_No)).Times(1).WillOnce(Return(false));
+    auto [viewer_ptr, viewer] = create_mock<MockViewer>();
+    UserSettings called_settings{};
+    EXPECT_CALL(viewer, set_settings).Times(AtLeast(1)).WillRepeatedly(SaveArg<0>(&called_settings));
+    auto [level_ptr, level] = create_mock<trview::mocks::MockLevel>();
+    ON_CALL(level, filename).WillByDefault(Return("test.tr2"));
+    auto [route_window_manager_ptr, route_window_manager] = create_mock<MockRouteWindowManager>();
+    ON_CALL(route_window_manager, is_window_open).WillByDefault(Return(true));
+
+    auto application = register_test_module()
+        .with_settings_loader(std::move(settings_loader_ptr))
+        .with_dialogs(dialogs)
+        .with_viewer(std::move(viewer_ptr))
+        .with_level_source([&](auto&&...) { return std::move(level_ptr); })
+        .with_route_window_manager(std::move(route_window_manager_ptr))
+        .build();
+
+    application->open("test.tr2", ILevel::OpenMode::Full);
+
+    ASSERT_TRUE(called_settings.recent_routes.empty());
+}
+
+TEST(Application, RecentRouteLoadedOnWindowOpened)
+{
+    UserSettings settings;
+    settings.recent_routes["test.tr2"] = { "test.tvr", false };
+    auto [settings_loader_ptr, settings_loader] = create_mock<MockSettingsLoader>();
+    ON_CALL(settings_loader, load_user_settings).WillByDefault(Return(settings));
+    auto dialogs = mock_shared<MockDialogs>();
+    EXPECT_CALL(*dialogs, message_box(std::wstring(L"Reopen last used route for this level?"), std::wstring(L"Reopen route"), IDialogs::Buttons::Yes_No)).Times(1).WillOnce(Return(true));
+    auto route = mock_shared<MockRoute>();
+    auto [viewer_ptr, viewer] = create_mock<MockViewer>();
+    EXPECT_CALL(viewer, set_route(std::shared_ptr<IRoute>(route))).Times(1);
+    UserSettings called_settings{};
+    EXPECT_CALL(viewer, set_settings).Times(AtLeast(1)).WillRepeatedly(SaveArg<0>(&called_settings));
+    auto [level_ptr, level] = create_mock<trview::mocks::MockLevel>();
+    ON_CALL(level, filename).WillByDefault(Return("test.tr2"));
+    auto [route_window_manager_ptr, route_window_manager] = create_mock<MockRouteWindowManager>();
+
+    auto application = register_test_module()
+        .with_settings_loader(std::move(settings_loader_ptr))
+        .with_dialogs(dialogs)
+        .with_viewer(std::move(viewer_ptr))
+        .with_route_source([&](auto&&...) {return route; })
+        .with_level_source([&](auto&&...) { return std::move(level_ptr); })
+        .with_route_window_manager(std::move(route_window_manager_ptr))
+        .build();
+
+    application->open("test.tr2", ILevel::OpenMode::Full);
+
+    ON_CALL(route_window_manager, is_window_open).WillByDefault(Return(true));
+    route_window_manager.on_window_created();
+
+    ASSERT_EQ(called_settings.recent_routes["test.tr2"].route_path, "test.tvr");
 }

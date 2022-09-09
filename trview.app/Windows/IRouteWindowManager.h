@@ -40,6 +40,8 @@ namespace trview
         /// </summary>
         Event<int32_t, int32_t> on_waypoint_reordered;
 
+        Event<> on_window_created;
+
         /// Render all of the route windows.
         virtual void render() = 0;
 
@@ -76,5 +78,7 @@ namespace trview
         /// </summary>
         /// <param name="settings">The settings.</param>
         virtual void set_randomizer_settings(const RandomizerSettings& settings) = 0;
+
+        virtual bool is_window_open() const = 0;
     };
 }

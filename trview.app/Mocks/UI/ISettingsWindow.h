@@ -30,6 +30,7 @@ namespace trview
             MOCK_METHOD(void, set_background_colour, (const Colour&), (override));
             MOCK_METHOD(void, set_map_colours, (const MapColours&), (override));
             MOCK_METHOD(void, toggle_visibility, (), (override));
+            MOCK_METHOD(void, set_route_startup, (bool), (override));
         };
     }
 }

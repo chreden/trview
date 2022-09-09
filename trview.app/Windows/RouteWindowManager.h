@@ -24,6 +24,7 @@ namespace trview
         virtual void update(float delta) override;
         virtual void set_randomizer_enabled(bool value) override;
         virtual void set_randomizer_settings(const RandomizerSettings& settings) override;
+        virtual bool is_window_open() const override;
     private:
         TokenStore _token_store;
         std::shared_ptr<IRouteWindow> _route_window;
