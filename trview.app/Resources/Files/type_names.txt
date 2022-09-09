@@ -424,6 +424,9 @@
 				"id": 143,
 				"name": "Scion Piece"
 			}, {
+				"id": 144,
+				"name": "Scion Piece"
+			}, {
 				"id": 145,
 				"name": "Scion"
 			}, {
