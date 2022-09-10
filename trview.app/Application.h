@@ -99,6 +99,8 @@ namespace trview
         void reload();
         void import_route(const std::string& path, bool is_rando);
         void open_recent_route();
+        void save_window_placement();
+        void load_window_placement();
 
         TokenStore _token_store;
 

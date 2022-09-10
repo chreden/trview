@@ -112,6 +112,8 @@ namespace trview
 
         register_lua();
         lua_init(&lua_registry);
+
+        load_window_placement();
     }
 
     Application::~Application()
@@ -315,13 +317,14 @@ namespace trview
                 }
             }
 
+            save_window_placement();
             render();
             Sleep(1);
         }
 
         return (int)msg.wParam;
     }
-
+        
     void Application::setup_view_menu()
     {
         _token_store += _view_menu.on_show_minimap += [&](bool show) { _viewer->set_show_minimap(show); };
@@ -792,6 +795,35 @@ namespace trview
             _viewer->set_settings(_settings);
         }
         _recent_route_prompted = true;
+    }
+
+    void Application::save_window_placement()
+    {
+        WINDOWPLACEMENT placement{};
+        placement.length = sizeof(placement);
+        if (GetWindowPlacement(window(), &placement))
+        {
+            _settings.window_placement =
+            {
+                placement.showCmd,
+                placement.ptMinPosition.x, placement.ptMinPosition.y,
+                placement.ptMaxPosition.x, placement.ptMaxPosition.y,
+                placement.rcNormalPosition.left, placement.rcNormalPosition.top, placement.rcNormalPosition.right, placement.rcNormalPosition.bottom
+            };
+        }
+    }
+
+    void Application::load_window_placement()
+    {
+        const auto& p = _settings.window_placement;
+
+        WINDOWPLACEMENT placement{};
+        placement.length = sizeof(placement);
+        placement.showCmd = p.show_cmd;
+        placement.ptMinPosition = { p.min_x, p.min_y };
+        placement.ptMaxPosition = { p.max_x, p.max_y };
+        placement.rcNormalPosition = { p.normal_left, p.normal_top, p.normal_right, p.normal_bottom };
+        SetWindowPlacement(window(), &placement);
     }
 
     Window create_window(HINSTANCE hInstance, int nCmdShow)

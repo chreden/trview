@@ -11,10 +11,36 @@ namespace trview
         json["is_rando"] = item.is_rando;
     }
 
+    void to_json(nlohmann::json& json, const UserSettings::WindowPlacement& placement)
+    {
+        json["show_cmd"] = placement.show_cmd;
+        json["min_x"] = placement.min_x;
+        json["min_y"] = placement.min_y;
+        json["max_x"] = placement.max_x;
+        json["max_y"] = placement.max_y;
+        json["normal_left"] = placement.normal_left;
+        json["normal_top"] = placement.normal_top;
+        json["normal_right"] = placement.normal_right;
+        json["normal_bottom"] = placement.normal_bottom;
+    }
+
     void from_json(const nlohmann::json& json, UserSettings::RecentRoute& item)
     {
         item.route_path = read_attribute<std::string>(json, "route_path");
         item.is_rando = read_attribute<bool>(json, "is_rando");
+    }
+
+    void from_json(const nlohmann::json& json, UserSettings::WindowPlacement& placement)
+    {
+        placement.show_cmd = read_attribute<uint32_t>(json, "show_cmd");
+        placement.min_x = read_attribute<int32_t>(json, "min_x");
+        placement.min_y = read_attribute<int32_t>(json, "min_y");
+        placement.max_x = read_attribute<int32_t>(json, "max_x");
+        placement.max_y = read_attribute<int32_t>(json, "max_y");
+        placement.normal_left = read_attribute<int32_t>(json, "normal_left");
+        placement.normal_top = read_attribute<int32_t>(json, "normal_top");
+        placement.normal_right = read_attribute<int32_t>(json, "normal_right");
+        placement.normal_bottom = read_attribute<int32_t>(json, "normal_bottom");
     }
 
     SettingsLoader::SettingsLoader(const std::shared_ptr<IFiles>& files)
@@ -58,6 +84,7 @@ namespace trview
             read_attribute(json, settings.route_startup, "routestartup");
             read_attribute(json, settings.recent_routes, "recentroutes");
             read_attribute(json, settings.fov, "fov");
+            read_attribute(json, settings.window_placement, "window_placement");
 
             settings.recent_files.resize(std::min<std::size_t>(settings.recent_files.size(), settings.max_recent_files));
         }
@@ -117,6 +144,7 @@ namespace trview
             json["routestartup"] = settings.route_startup;
             json["recentroutes"] = settings.recent_routes;
             json["fov"] = settings.fov;
+            json["window_placement"] = settings.window_placement;
             _files->save_file(file_path, json.dump());
         }
         catch (...)
