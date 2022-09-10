@@ -1,8 +1,10 @@
 #include <trview.app/UI/ContextMenu.h>
+#include <trview.app/Mocks/Elements/ITrigger.h>
 #include "TestImgui.h"
 
 using namespace trview;
 using namespace trview::tests;
+using namespace trview::mocks;
 
 TEST(ContextMenu, AddWaypointRaised)
 {
@@ -244,4 +246,30 @@ TEST(ContextMenu, CopyNumber)
 
     ASSERT_TRUE(raised);
     ASSERT_FALSE(menu.visible());
+}
+
+TEST(ContextMenu, TriggeredBy)
+{
+    ContextMenu menu;
+    menu.set_visible(true);
+
+    TestImgui imgui([&]() { menu.render(); });
+
+    auto trigger = mock_shared<MockTrigger>();
+    ON_CALL(*trigger, number).WillByDefault(testing::Return(100));
+    ON_CALL(*trigger, type).WillByDefault(testing::Return(TriggerType::Trigger));
+
+    menu.set_triggered_by({ trigger });
+
+    std::optional<std::weak_ptr<ITrigger>> raised;
+    auto token = menu.on_trigger_selected += [&raised](auto type) { raised = type; };
+
+    imgui.show_context_menu("Debug##Default");
+    imgui.hover_element(imgui.popup_id("void_context").id(ContextMenu::Names::triggered_by));
+    imgui.click_element(imgui.id("##Menu_00").id("Trigger 100"), true);
+    imgui.render();
+
+    ASSERT_TRUE(raised);
+    ASSERT_FALSE(menu.visible());
+    ASSERT_EQ(raised.value().lock(), trigger);
 }
