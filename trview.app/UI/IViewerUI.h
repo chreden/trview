@@ -105,6 +105,8 @@ namespace trview
         /// </summary>
         Event<IContextMenu::CopyType> on_copy;
 
+        Event<std::weak_ptr<ITrigger>> on_select_trigger;
+
         /// Render the UI.
         virtual void render() = 0;
 
@@ -250,5 +252,10 @@ namespace trview
         /// <param name="name">The name of the variable.</param>
         /// <returns>The state of the variable.</returns>
         virtual bool toggle(const std::string& name) const = 0;
+        /// <summary>
+        /// Set the triggers that trigger the item in the context menu.
+        /// </summary>
+        /// <param name="triggers"></param>
+        virtual void set_triggered_by(const std::vector<std::weak_ptr<ITrigger>> triggers) = 0;
     };
 }

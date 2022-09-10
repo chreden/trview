@@ -844,3 +844,8 @@ TEST(Viewer, CopyRoom)
 
     ui.on_copy(trview::IContextMenu::CopyType::Number);
 }
+
+TEST(Viewer, SetTriggeredBy)
+{
+    FAIL();
+}
