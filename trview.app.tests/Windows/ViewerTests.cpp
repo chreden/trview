@@ -856,5 +856,8 @@ TEST(Viewer, SetTriggeredBy)
 
     auto viewer = register_test_module().with_ui(std::move(ui_ptr)).with_picking(std::move(picking_ptr)).with_clipboard(clipboard).with_mouse(std::move(mouse_ptr)).build();
 
+    auto level = mock_shared<MockLevel>();
+    viewer->open(level.get(), ILevel::OpenMode::Full);
+
     activate_context_menu(picking, mouse, PickResult::Type::Entity, 14);
 }
