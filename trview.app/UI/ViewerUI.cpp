@@ -419,7 +419,7 @@ namespace trview
         return _view_options->toggle(name);
     }
 
-    void ViewerUI::set_triggered_by(const std::vector<std::weak_ptr<ITrigger>> triggers)
+    void ViewerUI::set_triggered_by(const std::vector<std::weak_ptr<ITrigger>>& triggers)
     {
         _context_menu->set_triggered_by(triggers);
     }

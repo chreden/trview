@@ -69,7 +69,7 @@ namespace trview
         virtual void set_scalar(const std::string& name, int32_t value) override;
         virtual void set_toggle(const std::string& name, bool value) override;
         virtual bool toggle(const std::string& name) const override;
-        virtual void set_triggered_by(const std::vector<std::weak_ptr<ITrigger>> triggers) override;
+        virtual void set_triggered_by(const std::vector<std::weak_ptr<ITrigger>>& triggers) override;
     private:
         void generate_tool_window();
 
