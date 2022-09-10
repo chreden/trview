@@ -847,5 +847,14 @@ TEST(Viewer, CopyRoom)
 
 TEST(Viewer, SetTriggeredBy)
 {
-    FAIL();
+    auto [ui_ptr, ui] = create_mock<MockViewerUI>();
+    auto [picking_ptr, picking] = create_mock<MockPicking>();
+    auto [mouse_ptr, mouse] = create_mock<MockMouse>();
+    auto clipboard = mock_shared<MockClipboard>();
+
+    EXPECT_CALL(ui, set_triggered_by).Times(1);
+
+    auto viewer = register_test_module().with_ui(std::move(ui_ptr)).with_picking(std::move(picking_ptr)).with_clipboard(clipboard).with_mouse(std::move(mouse_ptr)).build();
+
+    activate_context_menu(picking, mouse, PickResult::Type::Entity, 14);
 }
