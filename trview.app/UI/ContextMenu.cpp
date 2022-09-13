@@ -41,6 +41,21 @@ namespace trview
                 ImGui::EndMenu();
             }
 
+            if (ImGui::BeginMenu(Names::triggered_by.c_str(), !_triggered_by.empty()))
+            {
+                for (const auto& trigger : _triggered_by)
+                {
+                    if (const auto trigger_ptr = trigger.lock())
+                    {
+                        if (ImGui::MenuItem(std::format("{} {}", trigger_type_name(trigger_ptr->type()), trigger_ptr->number()).c_str()))
+                        {
+                            on_trigger_selected(trigger);
+                        }
+                    }
+                }
+                ImGui::EndMenu();
+            }
+
             ImGui::EndPopup();
         }
         else
@@ -72,5 +87,10 @@ namespace trview
     bool ContextMenu::visible() const
     {
         return _visible;
+    }
+
+    void ContextMenu::set_triggered_by(const std::vector<std::weak_ptr<ITrigger>>& triggers)
+    {
+        _triggered_by = triggers;
     }
 }

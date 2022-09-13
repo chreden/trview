@@ -18,6 +18,7 @@ namespace trview
             static inline const std::string copy = "Copy";
             static inline const std::string copy_position = "Position";
             static inline const std::string copy_number = "Room/Object Number";
+            static inline const std::string triggered_by = "Triggered By";
         };
 
         virtual ~ContextMenu() = default;
@@ -27,11 +28,13 @@ namespace trview
         virtual void set_hide_enabled(bool value) override;
         virtual void set_mid_waypoint_enabled(bool value) override;
         virtual bool visible() const override;
+        virtual void set_triggered_by(const std::vector<std::weak_ptr<ITrigger>>& triggers) override;
     private:
         bool _remove_enabled{ false };
         bool _hide_enabled{ false };
         bool _mid_enabled{ false };
         bool _can_show{ false };
         bool _visible{ false };
+        std::vector<std::weak_ptr<ITrigger>> _triggered_by;
     };
 }

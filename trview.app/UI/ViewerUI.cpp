@@ -82,6 +82,7 @@ namespace trview
         _context_menu->on_orbit_here += on_orbit;
         _context_menu->on_hide += on_hide;
         _context_menu->on_copy += on_copy;
+        _context_menu->on_trigger_selected += on_select_trigger;
         _context_menu->set_remove_enabled(false);
         _context_menu->set_hide_enabled(false);
 
@@ -416,5 +417,10 @@ namespace trview
     bool ViewerUI::toggle(const std::string& name) const
     {
         return _view_options->toggle(name);
+    }
+
+    void ViewerUI::set_triggered_by(const std::vector<std::weak_ptr<ITrigger>>& triggers)
+    {
+        _context_menu->set_triggered_by(triggers);
     }
 }

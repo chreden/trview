@@ -240,8 +240,8 @@ namespace trview
                 }
             }
         };
-
         _token_store += _ui->on_command += lua_execute;
+        _ui->on_select_trigger += on_trigger_selected;
 
         _ui->set_settings(_settings);
         _ui->set_camera_mode(CameraMode::Orbit);
@@ -528,6 +528,16 @@ namespace trview
                 _ui->set_remove_waypoint_enabled(_current_pick.type == PickResult::Type::Waypoint);
                 _ui->set_hide_enabled(equals_any(_current_pick.type, PickResult::Type::Entity, PickResult::Type::Trigger, PickResult::Type::Light, PickResult::Type::Room));
                 _ui->set_mid_waypoint_enabled(_current_pick.type == PickResult::Type::Room && _current_pick.triangle.normal.y < 0);
+
+                if (_current_pick.type == PickResult::Type::Entity)
+                {
+                    const auto item = _level->item(_current_pick.index);
+                    _ui->set_triggered_by(item ? item.value().triggers() : std::vector<std::weak_ptr<ITrigger>>{});
+                }
+                else 
+                {
+                    _ui->set_triggered_by({});
+                }
             }
         };
     }

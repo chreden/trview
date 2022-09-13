@@ -354,3 +354,34 @@ TEST(ViewerUI, SetRouteStartupUpdatesSettingsWindow)
     settings.route_startup = true;
     ui->set_settings(settings);
 }
+
+TEST(ViewerUI, OnTriggerSelectedEventForwarded)
+{
+    auto [context_menu_ptr, context_menu] = create_mock<MockContextMenu>();
+    auto ui = register_test_module().with_context_menu(std::move(context_menu_ptr)).build();
+
+    std::optional<std::weak_ptr<ITrigger>> raised;
+    auto token = ui->on_select_trigger += [&](auto trigger)
+    {
+        raised = trigger;
+    };
+
+    auto expected = mock_shared<MockTrigger>();
+    context_menu.on_trigger_selected(expected);
+
+
+    ASSERT_TRUE(raised);
+    auto raised_ptr = raised.value().lock();
+    ASSERT_TRUE(raised_ptr);
+    ASSERT_EQ(raised_ptr.get(), expected.get());
+}
+
+TEST(ViewerUI, SetTriggeredByUpdatesContextMenu)
+{
+    auto [context_menu_ptr, context_menu] = create_mock<MockContextMenu>();
+    auto ui = register_test_module().with_context_menu(std::move(context_menu_ptr)).build();
+    std::vector<std::weak_ptr<ITrigger>> actual;
+    EXPECT_CALL(context_menu, set_triggered_by).Times(1);
+
+    ui->set_triggered_by({ mock_shared<MockTrigger>() });
+}

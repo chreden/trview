@@ -1,5 +1,7 @@
 #pragma once
 
+#include "../Elements/ITrigger.h"
+
 namespace trview
 {
     struct IContextMenu
@@ -35,6 +37,10 @@ namespace trview
         /// Event raised when the user has clicked a copy button.
         /// </summary>
         Event<CopyType> on_copy;
+        /// <summary>
+        /// Event raised when a trigger has been selected.
+        /// </summary>
+        Event<std::weak_ptr<ITrigger>> on_trigger_selected;
         virtual void render() = 0;
         /// <summary>
         /// Set the context menu to visible.
@@ -61,5 +67,10 @@ namespace trview
         /// </summary>
         /// <param name="value">Whether the button is enabled.</param>
         virtual void set_mid_waypoint_enabled(bool value) = 0;
+        /// <summary>
+        /// Set the triggers that trigger the item in the context menu.
+        /// </summary>
+        /// <param name="triggers"></param>
+        virtual void set_triggered_by(const std::vector<std::weak_ptr<ITrigger>>& triggers) = 0;
     };
 }
