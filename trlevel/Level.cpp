@@ -862,11 +862,6 @@ namespace trlevel
             load_level_data(activity, file);
         }
 
-        if (_version == LevelVersion::Tomb5)
-        {
-            skip(file, 6);
-        }
-
         activity.log("Reading sound sample count");
         uint32_t num_sound_samples = read<uint32_t>(file);
         std::vector<tr4_sample> sound_samples(num_sound_samples);
@@ -1169,9 +1164,16 @@ namespace trlevel
             activity.log(std::format("Read {} sound data", sound_data.size()));
         }
 
-        activity.log("Reading sample indices");
-        std::vector<uint32_t> sample_indices = read_vector<uint32_t, uint32_t>(file);
-        activity.log(std::format("Read {} sample indices", sample_indices.size()));
+        if (_version < LevelVersion::Tomb4)
+        {
+            activity.log("Reading sample indices");
+            std::vector<uint32_t> sample_indices = read_vector<uint32_t, uint32_t>(file);
+            activity.log(std::format("Read {} sample indices", sample_indices.size()));
+        }
+        else
+        {
+            skip(file, 6);
+        }
     }
 
     bool Level::find_first_entity_by_type(int16_t type, tr2_entity& entity) const
