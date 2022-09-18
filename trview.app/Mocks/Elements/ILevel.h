@@ -14,6 +14,8 @@ namespace trview
             MOCK_METHOD(std::set<uint32_t>, alternate_groups, (), (const, override));
             MOCK_METHOD(bool, alternate_mode, (), (const, override));
             MOCK_METHOD(bool, any_alternates, (), (const, override));
+            MOCK_METHOD(std::weak_ptr<ICameraSink>, camera_sink, (uint32_t), (const, override));
+            MOCK_METHOD(std::vector<std::weak_ptr<ICameraSink>>, camera_sinks, (), (const, override));
             MOCK_METHOD(std::string, filename, (), (const, override));
             MOCK_METHOD(bool, has_model, (uint32_t), (const, override));
             MOCK_METHOD(std::vector<uint16_t>, floor_data, (), (const, override));

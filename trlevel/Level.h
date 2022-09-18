@@ -176,6 +176,9 @@ namespace trlevel
         virtual int16_t get_mesh_from_type_id(int16_t type) const override;
 
         virtual std::string name() const override;
+
+        virtual uint32_t num_cameras() const override;
+        virtual tr_camera get_camera(uint32_t index) const override;
     private:
         void generate_meshes(const std::vector<uint16_t>& mesh_data);
 
@@ -217,5 +220,7 @@ namespace trlevel
         std::vector<tr_sprite_sequence>       _sprite_sequences;
 
         std::string _name;
+
+        std::vector<tr_camera> _cameras;
     };
 }

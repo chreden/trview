@@ -33,6 +33,7 @@ namespace trview
             static inline const std::string default_waypoint_colour = "Default Waypoint Colour";
             static inline const std::string route_startup = "Open Route Window at startup";
             static inline const std::string fov = "Camera FOV";
+            static inline const std::string camera_sink_startup = "Open Camera/Sink Window at startup";
             static inline const std::string reset_fov = "Reset##Fov";
         };
 
@@ -60,6 +61,7 @@ namespace trview
         virtual void set_default_waypoint_colour(const Colour& colour) override;
         virtual void set_route_startup(bool value) override;
         virtual void set_fov(float value) override;
+        virtual void set_camera_sink_startup(bool value) override;
     private:
         bool _visible{ false };
         bool _vsync{ false };
@@ -83,5 +85,6 @@ namespace trview
         MapColours _colours;
         bool _route_startup{ false };
         float _fov{ 45 };
+        bool _camera_sink_startup{ false };
     };
 }

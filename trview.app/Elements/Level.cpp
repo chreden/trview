@@ -45,7 +45,8 @@ namespace trview
         const ITrigger::Source& trigger_source,
         const ILight::Source& light_source,
         const std::shared_ptr<ILog>& log,
-        const graphics::IBuffer::ConstantSource& buffer_source)
+        const graphics::IBuffer::ConstantSource& buffer_source,
+        const ICameraSink::Source& camera_sink_source)
         : _device(device), _version(level->get_version()), _texture_storage(level_texture_storage),
         _transparency(std::move(transparency_buffer)), _selection_renderer(std::move(selection_renderer)), _log(log),
         _floor_data(level->get_floor_data_all())
@@ -90,6 +91,7 @@ namespace trview
         generate_triggers(trigger_source);
         generate_entities(*level, *type_names, entity_source, ai_source, *mesh_storage);
         generate_lights(*level, light_source);
+        generate_camera_sinks(*level, camera_sink_source);
 
         for (auto& room : _rooms)
         {
@@ -1067,6 +1069,30 @@ namespace trview
         for (uint32_t i = 0; i < level.num_models(); ++i)
         {
             _models.insert(level.get_model(i).ID);
+        }
+    }
+
+    std::weak_ptr<ICameraSink> Level::camera_sink(uint32_t index) const
+    {
+        if (index >= _camera_sinks.size())
+        {
+            return {};
+        }
+        return _camera_sinks[index];
+    }
+
+    std::vector<std::weak_ptr<ICameraSink>> Level::camera_sinks() const
+    {
+        std::vector<std::weak_ptr<ICameraSink>> camera_sinks;
+        std::transform(_camera_sinks.begin(), _camera_sinks.end(), std::back_inserter(camera_sinks), [](const auto& camera_sink) { return camera_sink; });
+        return camera_sinks;
+    }
+
+    void Level::generate_camera_sinks(const trlevel::ILevel& level, const ICameraSink::Source& camera_sink_source)
+    {
+        for (uint32_t i = 0u; i < level.num_cameras(); ++i)
+        {
+            _camera_sinks.push_back(camera_sink_source(i, level.get_camera(i)));
         }
     }
 

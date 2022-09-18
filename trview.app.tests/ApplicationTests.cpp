@@ -15,6 +15,7 @@
 #include <trview.app/Mocks/Windows/ILightsWindowManager.h>
 #include <trview.app/Mocks/Windows/ILogWindowManager.h>
 #include <trview.app/Mocks/Windows/ITexturesWindowManager.h>
+#include <trview.app/Mocks/Windows/ICameraSinkWindowManager.h>
 #include <trview.common/Mocks/Windows/IShortcuts.h>
 #include <trview.common/Mocks/Windows/IDialogs.h>
 #include <trview.common/Mocks/IFiles.h>
@@ -71,6 +72,7 @@ namespace
             std::unique_ptr<ILightsWindowManager> lights_window_manager{ mock_unique<MockLightsWindowManager>() };
             std::unique_ptr<ILogWindowManager> log_window_manager{ mock_unique<MockLogWindowManager>() };
             std::unique_ptr<ITexturesWindowManager> textures_window_manager{ mock_unique<MockTexturesWindowManager>() };
+            std::unique_ptr<ICameraSinkWindowManager> camera_sink_window_manager{ mock_unique<MockCameraSinkWindowManager>() };
 
             std::unique_ptr<Application> build()
             {
@@ -79,7 +81,7 @@ namespace
                     trlevel_source, std::move(file_menu), std::move(viewer), route_source, shortcuts,
                     std::move(items_window_manager), std::move(triggers_window_manager), std::move(route_window_manager), std::move(rooms_window_manager),
                     level_source, startup_options, dialogs, files, std::move(imgui_backend), std::move(lights_window_manager), std::move(log_window_manager),
-                    std::move(textures_window_manager));
+                    std::move(textures_window_manager), std::move(camera_sink_window_manager));
             }
 
             test_module& with_dialogs(std::shared_ptr<IDialogs> dialogs)

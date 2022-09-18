@@ -1010,8 +1010,8 @@ namespace trlevel
         // Need to do something about that, instead of just crashing.
 
         activity.log("Reading cameras");
-        std::vector<tr_camera> cameras = read_vector<uint32_t, tr_camera>(file);
-        activity.log(std::format("Read {} cameras", cameras.size()));
+        _cameras = read_vector<uint32_t, tr_camera>(file);
+        activity.log(std::format("Read {} cameras", _cameras.size()));
 
         if (_version >= LevelVersion::Tomb4)
         {
@@ -1214,5 +1214,15 @@ namespace trlevel
     std::string Level::name() const
     {
         return _name;
+    }
+
+    uint32_t Level::num_cameras() const
+    {
+        return static_cast<uint32_t>(_cameras.size());
+    }
+
+    tr_camera Level::get_camera(uint32_t index) const
+    {
+        return _cameras[index];
     }
 }

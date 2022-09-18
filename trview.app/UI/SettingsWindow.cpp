@@ -35,6 +35,7 @@ namespace trview
                     checkbox(Names::triggers_startup, _triggers_startup, on_triggers_startup);
                     checkbox(Names::rooms_startup, _rooms_startup, on_rooms_startup);
                     checkbox(Names::route_startup, _route_startup, on_route_startup);
+                    checkbox(Names::camera_sink_startup, _camera_sink_startup, on_camera_sink_startup);
                     checkbox(Names::randomizer_tools, _randomizer_tools, on_randomizer_tools);
                     if (ImGui::InputInt(Names::max_recent_files.c_str(), &_max_recent_files))
                     {
@@ -266,5 +267,10 @@ namespace trview
     void SettingsWindow::set_fov(float value)
     {
         _fov = value;
+    }
+
+    void SettingsWindow::set_camera_sink_startup(bool value)
+    {
+        _camera_sink_startup = value;
     }
 }

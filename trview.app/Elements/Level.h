@@ -12,7 +12,6 @@
 #include <trview.app/Graphics/ISelectionRenderer.h>
 #include <trview.app/Graphics/IMeshStorage.h>
 #include <trview.graphics/IRenderTarget.h>
-#include <trview.graphics/Texture.h>
 #include <trview.graphics/IBuffer.h>
 
 namespace trview
@@ -44,7 +43,8 @@ namespace trview
             const ITrigger::Source& trigger_source,
             const ILight::Source& light_source,
             const std::shared_ptr<ILog>& log,
-            const graphics::IBuffer::ConstantSource& buffer_source);
+            const graphics::IBuffer::ConstantSource& buffer_source,
+            const ICameraSink::Source& camera_sink_source);
         virtual ~Level() = default;
         virtual std::vector<RoomInfo> room_info() const override;
         virtual RoomInfo room_info(uint32_t room) const override;
@@ -104,6 +104,8 @@ namespace trview
         virtual std::optional<uint32_t> selected_light() const override;
         virtual std::optional<uint32_t> selected_trigger() const override;
         virtual bool has_model(uint32_t type_id) const override;
+        virtual std::weak_ptr<ICameraSink> camera_sink(uint32_t index) const override;
+        virtual std::vector<std::weak_ptr<ICameraSink>> camera_sinks() const override;
     private:
         void generate_rooms(const trlevel::ILevel& level, const IRoom::Source& room_source, const IMeshStorage& mesh_storage);
         void generate_triggers(const ITrigger::Source& trigger_source);
@@ -111,6 +113,7 @@ namespace trview
         void regenerate_neighbours();
         void generate_neighbours(std::set<uint16_t>& results, uint16_t selected_room, int32_t max_depth);
         void generate_lights(const trlevel::ILevel& level, const ILight::Source& light_source);
+        void generate_camera_sinks(const trlevel::ILevel& level, const ICameraSink::Source& camera_sink_source);
 
         // Render the rooms in the level.
         // context: The device context.
@@ -155,6 +158,7 @@ namespace trview
         std::vector<std::shared_ptr<IEntity>> _entities;
         std::vector<Item> _items;
         std::vector<std::shared_ptr<ILight>> _lights;
+        std::vector<std::shared_ptr<ICameraSink>> _camera_sinks;
 
         graphics::IShader*          _vertex_shader;
         graphics::IShader*          _pixel_shader;

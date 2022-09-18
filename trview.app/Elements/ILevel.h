@@ -6,6 +6,7 @@
 #include <trview.app/Elements/IRoom.h>
 #include <trview.app/Elements/IEntity.h>
 #include <trview.app/Elements/ILight.h>
+#include "CameraSink/ICameraSink.h"
 #include <trview.common/Event.h>
 #include "../UI/MapColours.h"
 
@@ -41,6 +42,8 @@ namespace trview
         /// Determines if there are any flipmaps in the level.
         /// @returns True if there are flipmaps.
         virtual bool any_alternates() const = 0;
+        virtual std::weak_ptr<ICameraSink> camera_sink(uint32_t index) const = 0;
+        virtual std::vector<std::weak_ptr<ICameraSink>> camera_sinks() const = 0;
         virtual std::string filename() const = 0;
         virtual bool has_model(uint32_t type_id) const = 0;
         virtual std::vector<uint16_t> floor_data() const = 0;

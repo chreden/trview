@@ -252,11 +252,20 @@
     <ClCompile Include="Mocks\Mocks.cpp">
       <Filter>Mocks</Filter>
     </ClCompile>
+    <ClCompile Include="Elements\CameraSink\CameraSink.cpp">
+      <Filter>Elements\CameraSink</Filter>
+    </ClCompile>
     <ClCompile Include="Windows\Textures\TexturesWindow.cpp">
       <Filter>Windows\Textures</Filter>
     </ClCompile>
+    <ClCompile Include="Windows\CameraSink\CameraSinkWindowManager.cpp">
+      <Filter>Windows\CameraSink</Filter>
+    </ClCompile>
     <ClCompile Include="Windows\Textures\TexturesWindowManager.cpp">
       <Filter>Windows\Textures</Filter>
+    </ClCompile>
+    <ClCompile Include="Windows\CameraSink\CameraSinkWindow.cpp">
+      <Filter>Windows\CameraSink</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -804,22 +813,46 @@
     <ClInclude Include="Elements\RenderFilter.h">
       <Filter>Elements</Filter>
     </ClInclude>
+    <ClInclude Include="Elements\CameraSink\ICameraSink.h">
+      <Filter>Elements\CameraSink</Filter>
+    </ClInclude>
     <ClInclude Include="Windows\Textures\ITexturesWindow.h">
       <Filter>Windows\Textures</Filter>
+    </ClInclude>      
+    <ClInclude Include="Elements\CameraSink\CameraSink.h">
+      <Filter>Elements\CameraSink</Filter>
     </ClInclude>
     <ClInclude Include="Windows\Textures\ITexturesWindowManager.h">
       <Filter>Windows\Textures</Filter>
     </ClInclude>
+    <ClInclude Include="Mocks\Elements\ICameraSink.h">
+      <Filter>Mocks\Elements</Filter>
+    </ClInclude>
     <ClInclude Include="Windows\Textures\TexturesWindow.h">
       <Filter>Windows\Textures</Filter>
+    </ClInclude>
+    <ClInclude Include="Windows\CameraSink\ICameraSinkWindowManager.h">
+      <Filter>Windows\CameraSink</Filter>
     </ClInclude>
     <ClInclude Include="Windows\Textures\TexturesWindowManager.h">
       <Filter>Windows\Textures</Filter>
     </ClInclude>
+    <ClInclude Include="Windows\CameraSink\ICameraSinkWindow.h">
+      <Filter>Windows\CameraSink</Filter>
+    </ClInclude>
     <ClInclude Include="Mocks\Windows\ITexturesWindowManager.h">
       <Filter>Mocks\Windows</Filter>
     </ClInclude>
+    <ClInclude Include="Windows\CameraSink\CameraSinkWindowManager.h">
+      <Filter>Windows\CameraSink</Filter>
+    </ClInclude>
     <ClInclude Include="Mocks\Windows\ITexturesWindow.h">
+      <Filter>Mocks\Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="Windows\CameraSink\CameraSinkWindow.h">
+      <Filter>Windows\CameraSink</Filter>
+    </ClInclude>
+    <ClInclude Include="Mocks\Windows\ICameraSinkWindowManager.h">
       <Filter>Mocks\Windows</Filter>
     </ClInclude>
   </ItemGroup>
@@ -940,6 +973,12 @@
     </Filter>
     <Filter Include="Windows\Textures">
       <UniqueIdentifier>{36446548-876c-425f-ad6c-ea61b062a959}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Elements\CameraSink">
+      <UniqueIdentifier>{13d4d034-0684-4dd7-b379-accd1fcc5dca}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Windows\CameraSink">
+      <UniqueIdentifier>{0fb465bf-4265-479e-9d44-1218e1561a71}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

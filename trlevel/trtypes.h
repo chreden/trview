@@ -276,6 +276,11 @@ namespace trlevel
         int32_t  z;
         int16_t  Room;
         uint16_t Flag;
+
+        DirectX::SimpleMath::Vector3 position() const
+        {
+            return DirectX::SimpleMath::Vector3(static_cast<float>(x), static_cast<float>(y), static_cast<float>(z)) / Scale;
+        }
     };
 
     struct tr4_flyby_camera
