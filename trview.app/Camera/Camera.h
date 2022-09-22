@@ -39,6 +39,7 @@ namespace trview
         virtual const Size view_size() const override;
         virtual float zoom() const override;
         virtual bool idle_rotation() const override;
+        virtual void set_fov(float value) override;
 
         /// Event raised when the view of the camera has changed.
         Event<> on_view_changed;
@@ -59,6 +60,7 @@ namespace trview
         const float default_pitch = -0.78539f;
         const float default_yaw = 0.0f;
         const float default_zoom = 8.0f;
+        static constexpr float default_fov = 0.785398163f;
 
         DirectX::SimpleMath::Vector3 _position;
         DirectX::SimpleMath::Vector3 _forward;
@@ -79,5 +81,6 @@ namespace trview
         std::optional<float> _target_rotation_yaw;
         std::optional<float> _target_rotation_pitch;
         float _ortho_size{ 10.0f };
+        float _fov{ default_fov };
     };
 }

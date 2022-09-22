@@ -127,7 +127,7 @@ namespace trview
         void select_pick(const PickResult& pick);
 
         void register_lua();
-        void apply_acceleration_settings();
+        void apply_camera_settings();
 
         const std::shared_ptr<graphics::IDevice> _device;
         const std::shared_ptr<IShortcuts>& _shortcuts;

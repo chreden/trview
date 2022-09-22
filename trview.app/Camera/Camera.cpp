@@ -211,8 +211,8 @@ namespace trview
         if (_projection_mode == ProjectionMode::Perspective)
         {
             float aspect_ratio = _view_size.width / _view_size.height;
-            _projection = XMMatrixPerspectiveFovRH(XM_PIDIV4, aspect_ratio, 0.1f, 10000.0f);
-            _projection_lh = XMMatrixPerspectiveFovLH(XM_PIDIV4, aspect_ratio, 0.1f, 10000.0f);
+            _projection = XMMatrixPerspectiveFovRH(_fov, aspect_ratio, 0.1f, 10000.0f);
+            _projection_lh = XMMatrixPerspectiveFovLH(_fov, aspect_ratio, 0.1f, 10000.0f);
         }
         else if (_projection_mode == ProjectionMode::Orthographic)
         {
@@ -247,5 +247,11 @@ namespace trview
     bool Camera::idle_rotation() const
     {
         return !_last_rotation.has_value() || _last_rotation.value() > 0.3f;
+    }
+
+    void Camera::set_fov(float value)
+    {
+        _fov = value;
+        calculate_projection_matrix();
     }
 }

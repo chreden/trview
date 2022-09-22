@@ -40,6 +40,7 @@ namespace trview
         Colour waypoint_colour{ Colour::White };
         bool route_startup{ false };
         std::unordered_map<std::string, RecentRoute> recent_routes;
+        float fov{ 0.785398163f };
 
         bool operator==(const UserSettings& other) const;
     };

@@ -31,6 +31,7 @@ namespace trview
             MOCK_METHOD(const Size, view_size, (), (const, override));
             MOCK_METHOD(float, zoom, (), (const, override));
             MOCK_METHOD(bool, idle_rotation, (), (const, override));
+            MOCK_METHOD(void, set_fov, (float), (override));
         };
     }
 }
