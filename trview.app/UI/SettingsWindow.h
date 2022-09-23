@@ -81,6 +81,6 @@ namespace trview
         Colour _default_waypoint_colour{ Colour::White };
         MapColours _colours;
         bool _route_startup{ false };
-        float _fov{ 0.785398163f };
+        float _fov{ 45 };
     };
 }

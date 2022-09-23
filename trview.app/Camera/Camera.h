@@ -60,7 +60,7 @@ namespace trview
         const float default_pitch = -0.78539f;
         const float default_yaw = 0.0f;
         const float default_zoom = 8.0f;
-        static constexpr float default_fov = 0.785398163f;
+        static constexpr float default_fov = 45;
 
         DirectX::SimpleMath::Vector3 _position;
         DirectX::SimpleMath::Vector3 _forward;

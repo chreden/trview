@@ -64,11 +64,11 @@ namespace trview
                     }
                     if (ImGui::Button("Reset##Fov"))
                     {
-                        _fov = 0.785398163f;
+                        _fov = 45;
                         on_camera_fov(_fov);
                     }
                     ImGui::SameLine();
-                    if (ImGui::SliderFloat(Names::fov.c_str(), &_fov, 0.1f, 3.141592654f))
+                    if (ImGui::SliderFloat(Names::fov.c_str(), &_fov, 1, 179))
                     {
                         on_camera_fov(_fov);
                     }
