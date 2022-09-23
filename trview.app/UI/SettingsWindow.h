@@ -33,6 +33,7 @@ namespace trview
             static inline const std::string default_waypoint_colour = "Default Waypoint Colour";
             static inline const std::string route_startup = "Open Route Window at startup";
             static inline const std::string fov = "Camera FOV";
+            static inline const std::string reset_fov = "Reset##Fov";
         };
 
         virtual ~SettingsWindow() = default;

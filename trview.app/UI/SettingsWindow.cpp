@@ -62,7 +62,7 @@ namespace trview
                     {
                         on_camera_acceleration_rate(_acceleration_rate);
                     }
-                    if (ImGui::Button("Reset##Fov"))
+                    if (ImGui::Button(Names::reset_fov.c_str()))
                     {
                         _fov = 45;
                         on_camera_fov(_fov);
