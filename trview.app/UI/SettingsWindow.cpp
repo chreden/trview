@@ -68,7 +68,7 @@ namespace trview
                         on_camera_fov(_fov);
                     }
                     ImGui::SameLine();
-                    if (ImGui::SliderFloat(Names::fov.c_str(), &_fov, 1, 179))
+                    if (ImGui::SliderFloat(Names::fov.c_str(), &_fov, 10, 145))
                     {
                         on_camera_fov(_fov);
                     }
