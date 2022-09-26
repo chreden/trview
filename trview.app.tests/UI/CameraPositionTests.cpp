@@ -177,3 +177,26 @@ TEST(CameraPosition, RotationsCorrectlyConverted)
     ASSERT_FLOAT_EQ(std::get<0>(value.value()), 1.5707963267948966192313216916398);
     ASSERT_FLOAT_EQ(std::get<1>(value.value()), 2);
 }
+
+TEST(CameraPosition, YawRemovesNegatives)
+{
+    CameraPosition subject;
+    subject.set_rotation(-1.5707963267948966192313216916398, 1);
+
+    TestImgui imgui([&]() { subject.render(); });
+
+    std::optional<std::tuple<float, float>> value;
+    auto token = subject.on_rotation_changed += [&](auto yaw, auto pitch)
+    {
+        value = { yaw, pitch };
+    };
+
+    imgui.click_element(imgui.id("Camera Position").id(CameraPosition::Names::pitch));
+    imgui.enter_text("0");
+    imgui.press_key(ImGuiKey_Enter);
+
+    ASSERT_TRUE(value);
+    ASSERT_FLOAT_EQ(std::get<0>(value.value()), 4.7123889803846898576939650749193);
+    ASSERT_FLOAT_EQ(std::get<1>(value.value()), 0);
+}
+
