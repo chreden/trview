@@ -55,6 +55,10 @@ namespace trview
 
     void CameraPosition::set_rotation(float yaw, float pitch)
     {
+        if (yaw < 0)
+        {
+            yaw += maths::Pi2;
+        }
         _rotation_yaw = _display_degrees ? DirectX::XMConvertToDegrees(yaw) : yaw;
         _rotation_pitch = _display_degrees ? DirectX::XMConvertToDegrees(pitch) : pitch;
     }
