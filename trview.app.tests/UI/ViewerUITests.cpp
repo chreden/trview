@@ -385,3 +385,34 @@ TEST(ViewerUI, SetTriggeredByUpdatesContextMenu)
 
     ui->set_triggered_by({ mock_shared<MockTrigger>() });
 }
+
+
+TEST(ViewerUI, FovEventRaised)
+{
+    auto [settings_window_ptr, settings_window] = create_mock<MockSettingsWindow>();
+    auto ui = register_test_module().with_settings_window(std::move(settings_window_ptr)).build();
+
+    std::optional<UserSettings> settings;
+    auto token = ui->on_settings += [&](auto raised)
+    {
+        settings = raised;
+    };
+
+    settings_window.on_camera_fov(1.0f);
+
+    ASSERT_TRUE(settings);
+    ASSERT_EQ(settings.value().fov, 1.0f);
+}
+
+TEST(ViewerUI, SetFovUpdatesSettingsWindow)
+{
+    auto [settings_window_ptr, settings_window] = create_mock<MockSettingsWindow>();
+    EXPECT_CALL(settings_window, set_fov(1.0f)).Times(1);
+
+    auto ui = register_test_module().with_settings_window(std::move(settings_window_ptr)).build();
+
+    UserSettings settings{};
+    settings.fov = 1.0f;
+    ui->set_settings(settings);
+}
+

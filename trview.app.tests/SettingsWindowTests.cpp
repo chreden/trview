@@ -697,3 +697,80 @@ TEST(SettingsWindow, ClickingRouteWindowOnStartupRaisesEvent)
     ASSERT_EQ(received_value.has_value(), true);
     ASSERT_TRUE(received_value.value());
 }
+
+TEST(SettingsWindow, SetFovUpdatesSlider)
+{
+    SettingsWindow window;
+    window.toggle_visibility();
+
+    TestImgui imgui([&]() { window.render(); });
+    imgui.click_element(imgui.id("Settings").push("TabBar").id("Camera"));
+    imgui.render();
+
+    ASSERT_EQ(imgui.item_text(imgui.id("Settings").push("TabBar").push("Camera").id(SettingsWindow::Names::fov)), "45.000");
+
+    std::optional<float> received_value;
+    auto token = window.on_camera_fov += [&](float value)
+    {
+        received_value = value;
+    };
+
+    window.set_fov(0.5f);
+    imgui.render();
+    ASSERT_EQ(imgui.item_text(imgui.id("Settings").push("TabBar").push("Camera").id(SettingsWindow::Names::fov)), "0.500");
+    ASSERT_FALSE(received_value.has_value());
+}
+
+
+TEST(SettingsWindow, ClickingFovRaisesEvent)
+{
+    SettingsWindow window;
+    window.toggle_visibility();
+
+    TestImgui imgui([&]() { window.render(); });
+    imgui.click_element(imgui.id("Settings").push("TabBar").id("Camera"));
+    imgui.render();
+
+    const auto fov_id = imgui.id("Settings").push("TabBar").push("Camera").id(SettingsWindow::Names::fov);
+
+    ASSERT_EQ(imgui.item_text(fov_id), "45.000");
+
+    std::optional<float> received_value;
+    auto token = window.on_camera_fov += [&](float value)
+    {
+        received_value = value;
+    };
+
+    imgui.mouse_down_element(fov_id, fov_id);
+
+    ASSERT_EQ(imgui.item_text(fov_id), "10.000");
+    ASSERT_TRUE(received_value.has_value());
+    ASSERT_EQ(received_value.value(), 10.0f);
+}
+
+TEST(SettingsWindow, ClickingResetFovRaisesEvent)
+{
+    SettingsWindow window;
+    window.toggle_visibility();
+    window.set_fov(10.0f);
+
+    TestImgui imgui([&]() { window.render(); });
+    imgui.click_element(imgui.id("Settings").push("TabBar").id("Camera"));
+    imgui.render();
+
+    const auto fov_id = imgui.id("Settings").push("TabBar").push("Camera").id(SettingsWindow::Names::fov);
+
+    ASSERT_EQ(imgui.item_text(fov_id), "10.000");
+
+    std::optional<float> received_value;
+    auto token = window.on_camera_fov += [&](float value)
+    {
+        received_value = value;
+    };
+
+    imgui.click_element(imgui.id("Settings").push("TabBar").push("Camera").id(SettingsWindow::Names::reset_fov));
+
+    ASSERT_EQ(imgui.item_text(fov_id), "45.000");
+    ASSERT_TRUE(received_value.has_value());
+    ASSERT_EQ(received_value.value(), 45.0f);
+}
