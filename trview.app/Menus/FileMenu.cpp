@@ -81,8 +81,8 @@ namespace trview
 
         _token_store += shortcuts->add_shortcut(false, VK_F5) += [&]() { on_reload(); };
         _token_store += shortcuts->add_shortcut(true, 'O') += [&]() { choose_file(); };
-        _token_store += shortcuts->add_shortcut(false, VK_F7) += [&]() { previous_directory_file(); };
-        _token_store += shortcuts->add_shortcut(false, VK_F8) += [&]() { next_directory_file();  };
+        _token_store += shortcuts->add_shortcut(false, VK_F6) += [&]() { previous_directory_file(); };
+        _token_store += shortcuts->add_shortcut(false, VK_F7) += [&]() { next_directory_file();  };
     }
 
     std::optional<int> FileMenu::process_message(UINT message, WPARAM wParam, LPARAM lParam)
@@ -182,8 +182,7 @@ namespace trview
         {
             return;
         }
-        ++iter;
-        if (iter == _file_switcher_list.end())
+        if (++iter == _file_switcher_list.end())
         {
             return;
         }
