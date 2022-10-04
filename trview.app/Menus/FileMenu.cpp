@@ -81,6 +81,8 @@ namespace trview
 
         _token_store += shortcuts->add_shortcut(false, VK_F5) += [&]() { on_reload(); };
         _token_store += shortcuts->add_shortcut(true, 'O') += [&]() { choose_file(); };
+        _token_store += shortcuts->add_shortcut(false, VK_F7) += [&]() { previous_directory_file(); };
+        _token_store += shortcuts->add_shortcut(false, VK_F8) += [&]() { next_directory_file();  };
     }
 
     std::optional<int> FileMenu::process_message(UINT message, WPARAM wParam, LPARAM lParam)
@@ -123,6 +125,8 @@ namespace trview
 
     void FileMenu::open_file(const std::string& filename)
     {
+        _opened_file = filename;
+
         const std::size_t pos = filename.find_last_of("\\/");
         const std::string folder = filename.substr(0, pos);
 
@@ -156,5 +160,33 @@ namespace trview
         {
             on_file_open(filename.value().filename);
         }
+    }
+
+    void FileMenu::previous_directory_file()
+    {
+        auto iter = std::find_if(_file_switcher_list.begin(), _file_switcher_list.end(),
+            [&](const auto& f) { return f.path == _opened_file; });
+        if (iter == _file_switcher_list.end() || iter == _file_switcher_list.begin())
+        {
+            return;
+        }
+        --iter;
+        on_file_open(iter->path);
+    }
+
+    void FileMenu::next_directory_file()
+    {
+        auto iter = std::find_if(_file_switcher_list.begin(), _file_switcher_list.end(),
+            [&](const auto& f) { return f.path == _opened_file; });
+        if (iter == _file_switcher_list.end())
+        {
+            return;
+        }
+        ++iter;
+        if (iter == _file_switcher_list.end())
+        {
+            return;
+        }
+        on_file_open(iter->path);
     }
 }

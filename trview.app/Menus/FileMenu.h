@@ -17,11 +17,14 @@ namespace trview
         virtual void set_recent_files(const std::list<std::string>& files) override;
     private:
         void choose_file();
+        void next_directory_file();
+        void previous_directory_file();
 
         TokenStore _token_store;
         std::shared_ptr<IDialogs> _dialogs;
         HMENU             _directory_listing_menu;
         std::vector<std::string> _recent_files;
         std::vector<File> _file_switcher_list;
+        std::string _opened_file;
     };
 }
