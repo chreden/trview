@@ -1,6 +1,7 @@
 #include <trview.app/Menus/FileMenu.h>
 #include <trview.common/Mocks/Windows/IShortcuts.h>
 #include <trview.common/Mocks/Windows/IDialogs.h>
+#include <trview.common/Mocks/IFiles.h>
 #include <trview.app/Resources/resource.h>
 
 using namespace trlevel::mocks;
@@ -13,6 +14,8 @@ namespace
 {
     Event<> f5_shortcut;
     Event<> ctrl_o_shortcut;
+    Event<> f6_shortcut;
+    Event<> f7_shortcut;
 
     auto register_test_module()
     {
@@ -21,12 +24,15 @@ namespace
             trview::Window window{ create_test_window(L"FileMenuTests") };
             std::shared_ptr<MockShortcuts> shortcuts{ mock_shared<MockShortcuts>() };
             std::shared_ptr<MockDialogs> dialogs{ mock_shared<MockDialogs>() };
+            std::shared_ptr<IFiles> files{ mock_shared<MockFiles>() };
 
             std::unique_ptr<FileMenu> build()
             {
                 ON_CALL(*shortcuts, add_shortcut(false, VK_F5)).WillByDefault([&](auto, auto) -> Event<>&{ return f5_shortcut; });
                 ON_CALL(*shortcuts, add_shortcut(true, 'O')).WillByDefault([&](auto, auto) -> Event<>&{ return ctrl_o_shortcut; });
-                return std::make_unique<FileMenu>(window, shortcuts, dialogs);
+                ON_CALL(*shortcuts, add_shortcut(false, VK_F6)).WillByDefault([&](auto, auto) -> Event<>&{ return f6_shortcut; });
+                ON_CALL(*shortcuts, add_shortcut(false, VK_F7)).WillByDefault([&](auto, auto) -> Event<>&{ return f7_shortcut; });
+                return std::make_unique<FileMenu>(window, shortcuts, dialogs, files);
             }
 
             test_module& with_window(const trview::Window& window)
@@ -44,6 +50,12 @@ namespace
             test_module& with_shortcuts(const std::shared_ptr<MockShortcuts>& shortcuts)
             {
                 this->shortcuts = shortcuts;
+                return *this;
+            }
+
+            test_module& with_files(const std::shared_ptr<MockFiles>& files)
+            {
+                this->files = files;
                 return *this;
             }
         };
@@ -161,4 +173,46 @@ TEST(FileMenu, ReloadUsingShortcut)
     auto token = menu->on_reload += [&]() { raised = true; };
     f5_shortcut();
     ASSERT_TRUE(raised);
+}
+
+TEST(FileMenu, PreviousFile)
+{
+    auto files = mock_shared<MockFiles>();
+    std::vector<IFiles::File> filenames{ { "file1", "file1", 0 }, { "file2", "file2", 0 } };
+    EXPECT_CALL(*files, get_files).Times(1).WillOnce(Return(filenames));
+
+    auto menu = register_test_module().with_files(files).build();
+
+    std::optional<std::string> raised;
+    auto token = menu->on_file_open += [&](const auto& f)
+    {
+        raised = f;
+    };
+
+    menu->open_file("file2");
+
+    f6_shortcut();
+    ASSERT_TRUE(raised);
+    ASSERT_EQ(raised.value(), "file1");
+}
+
+TEST(FileMenu, NextFile)
+{
+    auto files = mock_shared<MockFiles>();
+    std::vector<IFiles::File> filenames{ { "file1", "file1", 0 }, { "file2", "file2", 0 } };
+    EXPECT_CALL(*files, get_files).Times(1).WillOnce(Return(filenames));
+
+    auto menu = register_test_module().with_files(files).build();
+
+    std::optional<std::string> raised;
+    auto token = menu->on_file_open += [&](const auto& f)
+    {
+        raised = f;
+    };
+
+    menu->open_file("file1");
+
+    f7_shortcut();
+    ASSERT_TRUE(raised);
+    ASSERT_EQ(raised.value(), "file2");
 }

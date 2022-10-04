@@ -79,7 +79,6 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClCompile Include="trview_imgui.cpp" />
     <ClCompile Include="Lua\Lua.cpp" />
     <ClCompile Include="Menus\AlternateGroupToggler.cpp" />
-    <ClCompile Include="Menus\DirectoryListing.cpp" />
     <ClCompile Include="Menus\IUpdateChecker.cpp" />
     <ClCompile Include="Menus\MenuDetector.cpp" />
     <ClCompile Include="Menus\UpdateChecker.cpp" />
@@ -215,7 +214,6 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClInclude Include="Graphics\TextureStorage.h" />
     <ClInclude Include="Lua\Lua.h" />
     <ClInclude Include="Menus\AlternateGroupToggler.h" />
-    <ClInclude Include="Menus\DirectoryListing.h" />
     <ClInclude Include="Menus\FileMenu.h" />
     <ClInclude Include="Menus\IFileMenu.h" />
     <ClInclude Include="Menus\IUpdateChecker.h" />
