@@ -22,7 +22,7 @@ namespace trview
         _menu_detector(window), _device(device), _route(route), _ui(std::move(ui)), _picking(std::move(picking)), _compass(std::move(compass)), _measure(std::move(measure)),
         _render_target_source(render_target_source), _sector_highlight(std::move(sector_highlight)), _clipboard(clipboard)
     {
-        apply_acceleration_settings();
+        apply_camera_settings();
 
         _scene_target = _render_target_source(static_cast<uint32_t>(window.size().width), static_cast<uint32_t>(window.size().height), graphics::IRenderTarget::DepthStencilMode::Enabled);
         _scene_sprite = sprite_source(window.size());
@@ -1232,16 +1232,18 @@ namespace trview
         }
     }
 
-    void Viewer::apply_acceleration_settings()
+    void Viewer::apply_camera_settings()
     {
         _free_camera.set_acceleration_settings(_settings.camera_acceleration, _settings.camera_acceleration_rate);
+        _free_camera.set_fov(_settings.fov);
+        _camera.set_fov(_settings.fov);
     }
 
     void Viewer::set_settings(const UserSettings& settings)
     {
         _settings = settings;
         _ui->set_settings(_settings);
-        apply_acceleration_settings();
+        apply_camera_settings();
         _scene_changed = true;
     }
 

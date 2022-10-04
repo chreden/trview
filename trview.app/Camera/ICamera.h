@@ -99,5 +99,7 @@ namespace trview
         virtual float zoom() const = 0;
 
         virtual bool idle_rotation() const = 0;
+
+        virtual void set_fov(float value) = 0;
     };
 }

@@ -62,6 +62,16 @@ namespace trview
                     {
                         on_camera_acceleration_rate(_acceleration_rate);
                     }
+                    if (ImGui::Button(Names::reset_fov.c_str()))
+                    {
+                        _fov = 45;
+                        on_camera_fov(_fov);
+                    }
+                    ImGui::SameLine();
+                    if (ImGui::SliderFloat(Names::fov.c_str(), &_fov, 10, 145))
+                    {
+                        on_camera_fov(_fov);
+                    }
                     ImGui::EndTabItem();
                 }
 
@@ -247,5 +257,10 @@ namespace trview
     void SettingsWindow::set_route_startup(bool value)
     {
         _route_startup = value;
+    }
+
+    void SettingsWindow::set_fov(float value)
+    {
+        _fov = value;
     }
 }

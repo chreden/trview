@@ -591,3 +591,20 @@ TEST(SettingsLoader, RecentRoutesSaved)
     loader->save_user_settings(settings);
     EXPECT_THAT(output, HasSubstr("\"recentroutes\":{\"path.tr2\":{\"is_rando\":true,\"route_path\":\"route.tvr\"}}"));
 }
+
+TEST(SettingsLoader, FovLoaded)
+{
+    auto loader = setup_setting("{\"fov\":10.0}");
+    auto settings = loader->load_user_settings();
+    ASSERT_EQ(settings.fov, 10.0f);
+}
+
+TEST(SettingsLoader, FovSaved)
+{
+    std::string output;
+    auto loader = setup_save_setting(output);
+    UserSettings settings;
+    settings.fov = 10.0f;
+    loader->save_user_settings(settings);
+    EXPECT_THAT(output, HasSubstr("\"fov\":10.0"));
+}
