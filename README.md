@@ -47,6 +47,9 @@ CTRL + I    | New Items window
 CTRL + M    | New Rooms window
 CTRL + L    | New Lights window
 F1          | Toggle settings window
+F5          | Reload current level
+F6          | Load previous level in directory
+F7          | Load next level in directory
 F           | Free camera
 G           | Toggle geometry mode
 H           | Toggle room highlighting
