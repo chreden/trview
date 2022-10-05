@@ -116,11 +116,6 @@ namespace trview
 
             if (find == INVALID_HANDLE_VALUE)
             {
-                DWORD error = GetLastError();
-                if (error != ERROR_FILE_NOT_FOUND)
-                {
-                    throw std::runtime_error("could not open directory listing");
-                }
                 continue;
             }
 
