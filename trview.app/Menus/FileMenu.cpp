@@ -177,10 +177,11 @@ namespace trview
     {
         auto iter = std::find_if(_file_switcher_list.begin(), _file_switcher_list.end(),
             [&](const auto& f) { return f.path == _opened_file; });
-        if (++iter == _file_switcher_list.end())
+        if (iter == _file_switcher_list.end())
         {
             return;
         }
+        ++iter;
         on_file_open(iter->path);
     }
 }
