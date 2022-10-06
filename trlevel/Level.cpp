@@ -437,9 +437,13 @@ namespace trlevel
 
     void Level::generate_meshes(const std::vector<uint16_t>& mesh_data)
     {
+        if (_mesh_data.empty())
+        {
+            return;
+        }
+
         // As well as reading the actual mesh data, generate a map of mesh_pointer to 
         // mesh. It seems that a lot of the pointers point to the same mesh.
-
         std::string data(reinterpret_cast<const char*>(&mesh_data[0]), mesh_data.size() * sizeof(uint16_t));
         std::istringstream stream(data, std::ios::binary);
         stream.exceptions(std::istream::failbit | std::istream::badbit | std::istream::eofbit);
@@ -879,6 +883,12 @@ namespace trlevel
     {
         // Read unused value.
         read<uint32_t>(file);
+
+        if (file.eof())
+        {
+            // VICT.TR2 ends here.
+            return;
+        }
 
         activity.log("Reading number of rooms");
         uint32_t num_rooms = 0;
