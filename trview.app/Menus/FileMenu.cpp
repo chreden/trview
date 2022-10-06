@@ -71,8 +71,8 @@ namespace trview
     {
     }
 
-    FileMenu::FileMenu(const Window& window, const std::shared_ptr<IShortcuts>& shortcuts, const std::shared_ptr<IDialogs>& dialogs)
-        : MessageHandler(window), _dialogs(dialogs), _directory_listing_menu(create_directory_listing_menu(window))
+    FileMenu::FileMenu(const Window& window, const std::shared_ptr<IShortcuts>& shortcuts, const std::shared_ptr<IDialogs>& dialogs, const std::shared_ptr<IFiles>& files)
+        : MessageHandler(window), _dialogs(dialogs), _directory_listing_menu(create_directory_listing_menu(window)), _files(files)
     {
         DragAcceptFiles(window, TRUE);
 
@@ -81,6 +81,8 @@ namespace trview
 
         _token_store += shortcuts->add_shortcut(false, VK_F5) += [&]() { on_reload(); };
         _token_store += shortcuts->add_shortcut(true, 'O') += [&]() { choose_file(); };
+        _token_store += shortcuts->add_shortcut(false, VK_F6) += [&]() { previous_directory_file(); };
+        _token_store += shortcuts->add_shortcut(false, VK_F7) += [&]() { next_directory_file();  };
     }
 
     std::optional<int> FileMenu::process_message(UINT message, WPARAM wParam, LPARAM lParam)
@@ -98,7 +100,7 @@ namespace trview
             }
             else if (wmId >= ID_SWITCHFILE_BASE && wmId <= (ID_SWITCHFILE_BASE + GetMenuItemCount(_directory_listing_menu)))
             {
-                const trview::File& f = _file_switcher_list.at(wmId - ID_SWITCHFILE_BASE);
+                const auto& f = _file_switcher_list.at(wmId - ID_SWITCHFILE_BASE);
                 on_file_open(f.path);
             }
             else if (wmId == ID_FILE_RELOAD)
@@ -123,11 +125,12 @@ namespace trview
 
     void FileMenu::open_file(const std::string& filename)
     {
+        _opened_file = filename;
+
         const std::size_t pos = filename.find_last_of("\\/");
         const std::string folder = filename.substr(0, pos);
 
-        DirectoryListing dir_lister(folder);
-        _file_switcher_list = dir_lister.GetFiles();
+        _file_switcher_list = _files->get_files(folder, default_file_pattern);
 
         // Enable menu when populating in case it's not enabled
         EnableMenuItem(GetMenu(window()), ID_FILE_SWITCHLEVEL, MF_ENABLED);
@@ -156,5 +159,29 @@ namespace trview
         {
             on_file_open(filename.value().filename);
         }
+    }
+
+    void FileMenu::previous_directory_file()
+    {
+        auto iter = std::find_if(_file_switcher_list.begin(), _file_switcher_list.end(),
+            [&](const auto& f) { return f.path == _opened_file; });
+        if (iter == _file_switcher_list.end() || iter == _file_switcher_list.begin())
+        {
+            return;
+        }
+        --iter;
+        on_file_open(iter->path);
+    }
+
+    void FileMenu::next_directory_file()
+    {
+        auto iter = std::find_if(_file_switcher_list.begin(), _file_switcher_list.end(),
+            [&](const auto& f) { return f.path == _opened_file; });
+        if (iter == _file_switcher_list.end())
+        {
+            return;
+        }
+        ++iter;
+        on_file_open(iter->path);
     }
 }

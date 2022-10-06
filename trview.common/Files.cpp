@@ -90,4 +90,45 @@ namespace trview
         outfile.open(to_utf16(filename), std::ios::out);
         outfile << text;
     }
+
+    std::vector<IFiles::File> Files::get_files(const std::string& folder, const std::string& pattern) const
+    {
+        std::vector<std::wstring> patterns;
+        std::size_t index = 0;
+        do
+        {
+            std::size_t next = pattern.find(',', index);
+            patterns.push_back(to_utf16(pattern.substr(index, next - index)));
+            index = ++next;
+        } while (index);
+
+        return get_files(to_utf16(folder), patterns);
+    }
+
+    std::vector<IFiles::File> Files::get_files(const std::wstring& folder, const std::vector<std::wstring>& patterns) const
+    {
+        std::vector<File> data;
+
+        for (const auto& pattern : patterns)
+        {
+            WIN32_FIND_DATA fd;
+            HANDLE find = FindFirstFile((folder + pattern).c_str(), &fd);
+
+            if (find == INVALID_HANDLE_VALUE)
+            {
+                continue;
+            }
+
+            do
+            {
+                if (!(fd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY))
+                {
+                    File file{ to_utf8(folder + L"\\" + fd.cFileName), to_utf8(fd.cFileName), fd.nFileSizeLow };
+                    data.push_back(file);
+                }
+            } while (FindNextFile(find, &fd) != 0);
+        }
+
+        return data;
+    }
 }

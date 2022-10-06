@@ -197,7 +197,7 @@ namespace trview
             std::make_unique<UpdateChecker>(window),
             settings_loader,
             trlevel_source,
-            std::make_unique<FileMenu>(window, shortcuts, dialogs),
+            std::make_unique<FileMenu>(window, shortcuts, dialogs, files),
             std::move(viewer),
             route_source,
             shortcuts,

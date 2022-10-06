@@ -58,9 +58,6 @@
     <ClCompile Include="UI\ContextMenu.cpp">
       <Filter>UI</Filter>
     </ClCompile>
-    <ClCompile Include="Menus\DirectoryListing.cpp">
-      <Filter>Menus</Filter>
-    </ClCompile>
     <ClCompile Include="Menus\ViewMenu.cpp">
       <Filter>Menus</Filter>
     </ClCompile>
@@ -430,9 +427,6 @@
     </ClInclude>
     <ClInclude Include="UI\ContextMenu.h">
       <Filter>UI</Filter>
-    </ClInclude>
-    <ClInclude Include="Menus\DirectoryListing.h">
-      <Filter>Menus</Filter>
     </ClInclude>
     <ClInclude Include="Menus\ViewMenu.h">
       <Filter>Menus</Filter>
