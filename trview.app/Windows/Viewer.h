@@ -170,7 +170,6 @@ namespace trview
         std::unique_ptr<graphics::IRenderTarget> _scene_target;
         std::unique_ptr<graphics::ISprite> _scene_sprite;
         bool _scene_changed{ true };
-        bool _mouse_changed{ true };
 
         std::vector<PickResult> _recent_orbits;
         std::size_t _recent_orbit_index{ 0u };
