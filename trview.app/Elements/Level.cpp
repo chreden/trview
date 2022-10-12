@@ -275,10 +275,10 @@ namespace trview
         // that need to be rendered in the second pass.
         for (const auto& room : rooms)
         {
-            room.room.render(camera, room.selection_mode, _show_items, _show_water, _show_geometry, visible_set);
+            room.room.render(camera, room.selection_mode, _show_rooms, _show_items, _show_water, _show_geometry, visible_set);
             if (_regenerate_transparency)
             {
-                room.room.get_transparent_triangles(*_transparency, camera, room.selection_mode, _show_items, _show_triggers, _show_water, _show_geometry);
+                room.room.get_transparent_triangles(*_transparency, camera, room.selection_mode, _show_rooms, _show_items, _show_triggers, _show_water, _show_geometry);
             }
 
             // If this is an alternate room, render the items from the original room in the sample places.
@@ -622,9 +622,9 @@ namespace trview
         for (auto& room : rooms)
         {
             choose(room.room.pick(position, direction,
-                PickFilter::Geometry |
+                filter_flag(PickFilter::Geometry, _show_rooms) |
                 filter_flag(PickFilter::Entities, _show_items) |
-                PickFilter::StaticMeshes |
+                filter_flag(PickFilter::StaticMeshes, _show_rooms) |
                 filter_flag(PickFilter::AllGeometry, _show_geometry) |
                 filter_flag(PickFilter::Triggers, _show_triggers) |
                 filter_flag(PickFilter::Lights, _show_lights)));
@@ -793,6 +793,13 @@ namespace trview
     void Level::set_show_items(bool show)
     {
         _show_items = show;
+        _regenerate_transparency = true;
+        on_level_changed();
+    }
+
+    void Level::set_show_rooms(bool show)
+    {
+        _show_rooms = show;
         _regenerate_transparency = true;
         on_level_changed();
     }

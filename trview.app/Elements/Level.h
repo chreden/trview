@@ -81,6 +81,7 @@ namespace trview
         virtual void set_show_bounding_boxes(bool show) override;
         virtual void set_show_lights(bool show) override;
         virtual void set_show_items(bool show) override;
+        virtual void set_show_rooms(bool show) override;
         virtual bool show_lights() const override;
         virtual bool show_triggers() const override;
         virtual bool show_items() const override;
@@ -181,6 +182,7 @@ namespace trview
         bool _show_lights{ false };
         bool _show_items{ true };
         bool _show_geometry { false };
+        bool _show_rooms{ true };
 
         std::unique_ptr<ISelectionRenderer> _selection_renderer;
         std::set<uint32_t> _alternate_groups;

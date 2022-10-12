@@ -161,7 +161,7 @@ namespace trview
         /// <param name="include_triggers">Whether to include triggers in the output.</param>
         /// <param name="show_water">Whether to render water effects.</param>
         /// <param name="geometry_mode">Whether Geometry mode is enabled.</param>
-        virtual void get_transparent_triangles(ITransparencyBuffer& transparency, const ICamera& camera, SelectionMode selected, bool show_items, bool include_triggers, bool show_water, bool geometry_mode) = 0;
+        virtual void get_transparent_triangles(ITransparencyBuffer& transparency, const ICamera& camera, SelectionMode selected, bool show_room, bool show_items, bool include_triggers, bool show_water, bool geometry_mode) = 0;
         /// <summary>
         /// Checks whether the room has the specified flag.
         /// </summary>
@@ -216,11 +216,12 @@ namespace trview
         /// </summary>
         /// <param name="camera">The current viewpoint.</param>
         /// <param name="selected">Whether the room is selected.</param>
+        /// <param name="show_room">Whether to show room geometry.</param>
         /// <param name="show_items">Whether to render items.</param>
         /// <param name="show_water">Whether to render water effects.</param>
         /// <param name="geometry_mode">Whether to render in geometry mode.</param>
         /// <param name="visible_rooms">The rooms that are currently being rendered.</param>
-        virtual void render(const ICamera& camera, SelectionMode selected, bool show_items, bool show_water, bool geometry_mode, const std::unordered_set<uint32_t>& visible_rooms) = 0;
+        virtual void render(const ICamera& camera, SelectionMode selected, bool show_room, bool show_items, bool show_water, bool geometry_mode, const std::unordered_set<uint32_t>& visible_rooms) = 0;
         /// <summary>
         /// Render the bounding boxes in the room.
         /// </summary>

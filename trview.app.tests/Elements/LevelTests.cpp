@@ -395,7 +395,7 @@ TEST(Level, ItemsNotRenderedWhenDisabled)
     auto shader_storage = mock_shared<MockShaderStorage>();
     EXPECT_CALL(*shader_storage, get).WillRepeatedly(Return(&shader));
 
-    EXPECT_CALL(*room, render(A<const ICamera&>(), A<IRoom::SelectionMode>(), false, A<bool>(), A<bool>(), A<const std::unordered_set<uint32_t>&>())).Times(1);
+    EXPECT_CALL(*room, render(A<const ICamera&>(), A<IRoom::SelectionMode>(), A<bool>(), false, A<bool>(), A<bool>(), A<const std::unordered_set<uint32_t>&>())).Times(1);
     EXPECT_CALL(*room, render_contained(A<const ICamera&>(), A<IRoom::SelectionMode>(), false, A<bool>())).Times(1);
 
     auto level = register_test_module()
@@ -428,7 +428,7 @@ TEST(Level, ItemsRenderedWhenEnabled)
     auto shader_storage = mock_shared<MockShaderStorage>();
     EXPECT_CALL(*shader_storage, get).WillRepeatedly(Return(&shader));
 
-    EXPECT_CALL(*room, render(A<const ICamera&>(), A<IRoom::SelectionMode>(), true, A<bool>(), A<bool>(), A<const std::unordered_set<uint32_t>&>())).Times(1);
+    EXPECT_CALL(*room, render(A<const ICamera&>(), A<IRoom::SelectionMode>(), true, A<bool>(), A<bool>(), A<bool>(), A<const std::unordered_set<uint32_t>&>())).Times(1);
     EXPECT_CALL(*room, render_contained(A<const ICamera&>(), A<IRoom::SelectionMode>(), true, A<bool>())).Times(1);
 
     auto level = register_test_module()
@@ -481,7 +481,7 @@ TEST(Level, RoomNotRenderedWhenNotVisible)
     auto shader_storage = mock_shared<MockShaderStorage>();
     EXPECT_CALL(*shader_storage, get).WillRepeatedly(Return(&shader));
 
-    EXPECT_CALL(*room, render(A<const ICamera&>(), A<IRoom::SelectionMode>(), true, A<bool>(), A<bool>(), A<const std::unordered_set<uint32_t>&>())).Times(0);
+    EXPECT_CALL(*room, render(A<const ICamera&>(), A<IRoom::SelectionMode>(), true, A<bool>(), A<bool>(), A<bool>(), A<const std::unordered_set<uint32_t>&>())).Times(0);
     EXPECT_CALL(*room, render_contained(A<const ICamera&>(), A<IRoom::SelectionMode>(), true, A<bool>())).Times(0);
 
     auto level = register_test_module()

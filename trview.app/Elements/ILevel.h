@@ -99,6 +99,7 @@ namespace trview
         virtual void set_show_bounding_boxes(bool show) = 0;
         virtual void set_show_lights(bool show) = 0;
         virtual void set_show_items(bool show) = 0;
+        virtual void set_show_rooms(bool show) = 0;
         virtual void set_trigger_visibility(uint32_t index, bool state) = 0;
         virtual void set_neighbour_depth(uint32_t depth) = 0;
         virtual void set_selected_room(uint16_t index) = 0;

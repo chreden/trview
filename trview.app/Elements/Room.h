@@ -43,7 +43,7 @@ namespace trview
         virtual RoomInfo info() const override;
         virtual std::set<uint16_t> neighbours() const override;
         virtual PickResult pick(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& direction, PickFilter filters = PickFilter::Default) const override;
-        virtual void render(const ICamera& camera, SelectionMode selected, bool show_items, bool show_water, bool geometry_mode, const std::unordered_set<uint32_t>& visible_rooms) override;
+        virtual void render(const ICamera& camera, SelectionMode selected, bool show_room, bool show_items, bool show_water, bool geometry_mode, const std::unordered_set<uint32_t>& visible_rooms) override;
         virtual void render_bounding_boxes(const ICamera& camera) override;
         virtual void render_lights(const ICamera& camera, const std::weak_ptr<ILight>& selected_light) override;
         virtual void render_contained(const ICamera& camera, SelectionMode selected, bool show_items, bool show_water) override;
@@ -52,7 +52,7 @@ namespace trview
         virtual void add_light(const std::weak_ptr<ILight>& light) override;
         virtual const std::vector<std::shared_ptr<ISector>> sectors() const override;
         virtual void generate_sector_triangles() override;
-        virtual void get_transparent_triangles(ITransparencyBuffer& transparency, const ICamera& camera, SelectionMode selected, bool show_items, bool include_triggers, bool show_water, bool geometry_mode) override;
+        virtual void get_transparent_triangles(ITransparencyBuffer& transparency, const ICamera& camera, SelectionMode selected, bool show_room, bool show_items, bool include_triggers, bool show_water, bool geometry_mode) override;
         virtual void get_contained_transparent_triangles(ITransparencyBuffer& transparency, const ICamera& camera, SelectionMode selected, bool show_items, bool show_water) override;
         virtual AlternateMode alternate_mode() const override;
         virtual int16_t alternate_room() const override;

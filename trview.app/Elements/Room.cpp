@@ -201,31 +201,34 @@ namespace trview
         return pick_results.front();
     }
 
-    void Room::render(const ICamera& camera, SelectionMode selected, bool show_items, bool show_water, bool geometry_mode, const std::unordered_set<uint32_t>& visible_rooms)
+    void Room::render(const ICamera& camera, SelectionMode selected, bool show_room, bool show_items, bool show_water, bool geometry_mode, const std::unordered_set<uint32_t>& visible_rooms)
     {
         Color colour = room_colour(water() && show_water, selected);
 
-        if (geometry_mode)
+        if (show_room)
         {
-            if (_all_geometry_meshes.empty())
+            if (geometry_mode)
             {
-                generate_all_geometry_mesh(_mesh_source);
-            }
-
-            for (const auto& mesh : _all_geometry_meshes)
-            {
-                if (mesh.first == _index || (visible_rooms.find(mesh.first) == visible_rooms.end() || _index < mesh.first))
+                if (_all_geometry_meshes.empty())
                 {
-                    mesh.second->render(_room_offset * camera.view_projection(), *_texture_storage, colour, 1.0f, Vector3::Zero, geometry_mode);
+                    generate_all_geometry_mesh(_mesh_source);
+                }
+
+                for (const auto& mesh : _all_geometry_meshes)
+                {
+                    if (mesh.first == _index || (visible_rooms.find(mesh.first) == visible_rooms.end() || _index < mesh.first))
+                    {
+                        mesh.second->render(_room_offset * camera.view_projection(), *_texture_storage, colour, 1.0f, Vector3::Zero, geometry_mode);
+                    }
                 }
             }
-        }
-        else
-        {
-            _mesh->render(_room_offset * camera.view_projection(), *_texture_storage, colour, 1.0f, Vector3::Zero);
-            for (const auto& mesh : _static_meshes)
+            else
             {
-                mesh->render(camera, *_texture_storage, colour);
+                _mesh->render(_room_offset * camera.view_projection(), *_texture_storage, colour, 1.0f, Vector3::Zero);
+                for (const auto& mesh : _static_meshes)
+                {
+                    mesh->render(camera, *_texture_storage, colour);
+                }
             }
         }
 
@@ -412,20 +415,23 @@ namespace trview
         }
     }
 
-    void Room::get_transparent_triangles(ITransparencyBuffer& transparency, const ICamera& camera, SelectionMode selected, bool show_items, bool include_triggers, bool show_water, bool geometry_mode)
+    void Room::get_transparent_triangles(ITransparencyBuffer& transparency, const ICamera& camera, SelectionMode selected, bool show_room, bool show_items, bool include_triggers, bool show_water, bool geometry_mode)
     {
         Color colour = room_colour(water() && show_water, selected);
 
-        if (!geometry_mode)
+        if (show_room)
         {
-            for (const auto& triangle : _mesh->transparent_triangles())
+            if (!geometry_mode)
             {
-                transparency.add(triangle.transform(_room_offset, colour));
-            }
+                for (const auto& triangle : _mesh->transparent_triangles())
+                {
+                    transparency.add(triangle.transform(_room_offset, colour));
+                }
 
-            for (const auto& static_mesh : _static_meshes)
-            {
-                static_mesh->get_transparent_triangles(transparency, camera, colour);
+                for (const auto& static_mesh : _static_meshes)
+                {
+                    static_mesh->get_transparent_triangles(transparency, camera, colour);
+                }
             }
         }
 
