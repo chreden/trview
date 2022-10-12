@@ -16,13 +16,19 @@ namespace trview
 
     void Picking::pick(const ICamera& camera)
     {
+        const auto window_size = _window.size();
+        const Point mouse_pos = client_cursor_position(_window);
+        if (mouse_pos.x < 0 || mouse_pos.x > window_size.width ||
+            mouse_pos.y < 0 || mouse_pos.y > window_size.height)
+        {
+            on_pick({}, {});
+        }
+
         Vector3 position = camera.position();
         const auto world = Matrix::CreateTranslation(position);
         const auto projection = camera.projection();
         const auto view = camera.view();
-        const auto window_size = _window.size();
 
-        const Point mouse_pos = client_cursor_position(_window);
         Vector3 direction = XMVector3Unproject(Vector3(mouse_pos.x, mouse_pos.y, 1), 0, 0,
             window_size.width, window_size.height, 0, 1.0f, projection, view, world);
         direction.Normalize();

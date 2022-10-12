@@ -641,12 +641,7 @@ namespace trview
         _timer.update();
         update_camera();
 
-        if (_mouse_changed || _scene_changed)
-        {
-            _picking->pick(current_camera());
-            _mouse_changed = false;
-        }
-
+        _picking->pick(current_camera());
         _device->begin();
         _main_window->begin();
         _main_window->clear(Colour(_settings.background_colour));
@@ -933,7 +928,7 @@ namespace trview
 
         _token_store += _mouse->mouse_down += [&](auto button) { _camera_input.mouse_down(button); };
         _token_store += _mouse->mouse_up += [&](auto button) { _camera_input.mouse_up(button); };
-        _token_store += _mouse->mouse_move += [&](long x, long y) { _mouse_changed = true; _camera_input.mouse_move(x, y); };
+        _token_store += _mouse->mouse_move += [&](long x, long y) { _camera_input.mouse_move(x, y); };
         _token_store += _mouse->mouse_wheel += [&](int16_t scroll) 
         {
             if (window_under_cursor() == window())
