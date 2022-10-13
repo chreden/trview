@@ -722,3 +722,14 @@ TEST(Level, MeshSetBuilt)
     ASSERT_TRUE(level->has_model(100));
     ASSERT_FALSE(level->has_model(123));
 }
+
+TEST(Level, SetShowRoomsRaisesLevelChangedEvent)
+{
+    auto level = register_test_module().build();
+
+    uint32_t times_called = 0;
+    auto token = level->on_level_changed += [&](auto&&...) { ++times_called; };
+
+    level->set_show_rooms(true);
+    ASSERT_EQ(times_called, 1u);
+}
