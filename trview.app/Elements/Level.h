@@ -176,7 +176,7 @@ namespace trview
         bool _regenerate_transparency{ true };
         bool _alternate_mode{ false };
         bool _show_wireframe{ false };
-        RenderFilter _render_filters{ RenderFilter::Triggers | RenderFilter::Water | RenderFilter::Entities | RenderFilter::Rooms };
+        RenderFilter _render_filters{ RenderFilter::Default };
 
         std::unique_ptr<ISelectionRenderer> _selection_renderer;
         std::set<uint32_t> _alternate_groups;

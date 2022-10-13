@@ -1,7 +1,5 @@
 #pragma once
 
-#include <trview.common/Algorithms.h>
-
 namespace trview
 {
     /// <summary>
