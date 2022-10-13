@@ -1,5 +1,7 @@
 #pragma once
 
+#include <trview.common/Algorithms.h>
+
 namespace trview
 {
     /// <summary>
@@ -17,6 +19,4 @@ namespace trview
         All = 0xffffffff,
         Default = All & ~(AllGeometry)
     };
-
-    PickFilter filter_flag(PickFilter filter, bool condition);
 }

@@ -36,6 +36,12 @@ namespace trview
 
     template <Enum T>
     constexpr T operator ~ (T left) noexcept;
+
+    template <Enum T>
+    constexpr T filter_flag(T filter, bool condition) noexcept;
+
+    template <Enum T>
+    constexpr T set_flag(T value, T flag, bool condition) noexcept;
 }
 
 #include "Algorithms.hpp"

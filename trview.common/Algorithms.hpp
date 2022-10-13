@@ -66,4 +66,20 @@ namespace trview
         using under_t = std::underlying_type_t<T>;
         return static_cast<T>(~static_cast<under_t>(left));
     }
+
+    template <Enum T>
+    constexpr T filter_flag(T filter, bool condition) noexcept
+    {
+        return condition ? filter : T::None;
+    }
+
+    template <Enum T>
+    constexpr T set_flag(T value, T flag, bool condition) noexcept
+    {
+        if (condition)
+        {
+            return value | flag;
+        }
+        return value & ~flag;
+    }
 }

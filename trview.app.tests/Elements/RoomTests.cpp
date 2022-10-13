@@ -192,7 +192,7 @@ TEST(Room, GetTransparentTriangles)
     room->add_trigger(trigger);
     NiceMock<MockTransparencyBuffer> transparency;
     NiceMock<MockCamera> camera;
-    room->get_transparent_triangles(transparency, camera, IRoom::SelectionMode::NotSelected, true, true, true, true, false);
+    room->get_transparent_triangles(transparency, camera, IRoom::SelectionMode::NotSelected, RenderFilter::Default);
 }
 
 /// <summary>
@@ -209,7 +209,7 @@ TEST(Room, GetTransparentTrianglesWithoutItems)
     room->add_trigger(trigger);
     NiceMock<MockTransparencyBuffer> transparency;
     NiceMock<MockCamera> camera;
-    room->get_transparent_triangles(transparency, camera, IRoom::SelectionMode::NotSelected, true, false, true, true, false);
+    room->get_transparent_triangles(transparency, camera, IRoom::SelectionMode::NotSelected, set_flag(RenderFilter::Default, RenderFilter::Entities, false));
 }
 
 /// <summary>
@@ -226,7 +226,7 @@ TEST(Room, GetTransparentTrianglesWithoutTriggers)
     room->add_trigger(trigger);
     NiceMock<MockTransparencyBuffer> transparency;
     NiceMock<MockCamera> camera;
-    room->get_transparent_triangles(transparency, camera, IRoom::SelectionMode::NotSelected, true, true, false, true, false);
+    room->get_transparent_triangles(transparency, camera, IRoom::SelectionMode::NotSelected, set_flag(RenderFilter::Default, RenderFilter::Triggers, false));
 }
 
 /// <summary>
@@ -243,7 +243,7 @@ TEST(Room, GetTransparentTrianglesFromContents)
     room->add_trigger(trigger);
     NiceMock<MockTransparencyBuffer> transparency;
     NiceMock<MockCamera> camera;
-    room->get_contained_transparent_triangles(transparency, camera, IRoom::SelectionMode::NotSelected, true, true);
+    room->get_contained_transparent_triangles(transparency, camera, IRoom::SelectionMode::NotSelected, RenderFilter::Default);
 }
 
 /// <summary>
@@ -455,7 +455,7 @@ TEST(Room, RendersContainedEntities)
     auto entity = mock_shared<MockEntity>();
     EXPECT_CALL(*entity, render).Times(1);
     room->add_entity(entity);
-    room->render(NiceMock<MockCamera>{}, IRoom::SelectionMode::NotSelected, true, true, true, false, {});
+    room->render(NiceMock<MockCamera>{}, IRoom::SelectionMode::NotSelected, RenderFilter::Entities, {});
 }
 
 /// <summary>
@@ -467,7 +467,7 @@ TEST(Room, DoesNotRenderContainedEntitiesWhenShowItemsDisabled)
     auto entity = mock_shared<MockEntity>();
     EXPECT_CALL(*entity, render).Times(0);
     room->add_entity(entity);
-    room->render(NiceMock<MockCamera>{}, IRoom::SelectionMode::NotSelected, true, false, true, false, {});
+    room->render(NiceMock<MockCamera>{}, IRoom::SelectionMode::NotSelected, set_flag(RenderFilter::Default, RenderFilter::Entities, false), {});
 }
 
 /// <summary>
