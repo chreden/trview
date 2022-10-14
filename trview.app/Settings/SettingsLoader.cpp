@@ -144,7 +144,10 @@ namespace trview
             json["routestartup"] = settings.route_startup;
             json["recentroutes"] = settings.recent_routes;
             json["fov"] = settings.fov;
-            json["window_placement"] = settings.window_placement;
+            if (settings.window_placement)
+            {
+                json["window_placement"] = settings.window_placement.value();
+            }
             _files->save_file(file_path, json.dump());
         }
         catch (...)

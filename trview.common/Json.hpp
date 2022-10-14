@@ -30,4 +30,13 @@ namespace trview
             destination = json[attribute_name].get<T>();
         }
     }
+
+    template <typename T>
+    void read_attribute(const nlohmann::json& json, std::optional<T>& destination, const std::string& attribute_name)
+    {
+        if (json.count(attribute_name) != 0)
+        {
+            destination = json[attribute_name].get<T>();
+        }
+    }
 }

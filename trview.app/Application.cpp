@@ -815,8 +815,12 @@ namespace trview
 
     void Application::load_window_placement()
     {
-        const auto& p = _settings.window_placement;
+        if (!_settings.window_placement)
+        {
+            return;
+        }
 
+        const auto p = _settings.window_placement.value();
         WINDOWPLACEMENT placement{};
         placement.length = sizeof(placement);
         placement.showCmd = p.show_cmd;

@@ -52,7 +52,7 @@ namespace trview
         Colour route_colour{ Colour::Green };
         Colour waypoint_colour{ Colour::White };
         bool route_startup{ false };
-        WindowPlacement window_placement;
+        std::optional<WindowPlacement> window_placement;
         std::unordered_map<std::string, RecentRoute> recent_routes;
         float fov{ 45 };
 
