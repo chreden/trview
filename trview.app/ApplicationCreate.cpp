@@ -58,22 +58,86 @@ namespace trview
 {
     namespace
     {
-        template <typename T>
-        std::shared_ptr<T> create_shared(auto&&... args)
+        const std::wstring window_class{ L"TRVIEW" };
+        const std::wstring window_title{ L"trview" };
+
+        LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         {
-            return std::make_shared<T>(args...);
+            LONG_PTR ptr = GetWindowLongPtr(hWnd, GWLP_USERDATA);
+            IImGuiBackend* backend = reinterpret_cast<IImGuiBackend*>(ptr);
+            if (backend && backend->window_procedure(hWnd, message, wParam, lParam))
+            {
+                return true;
+            }
+            return DefWindowProc(hWnd, message, wParam, lParam);
+        }
+
+        ATOM register_class(HINSTANCE hInstance)
+        {
+            WNDCLASSEXW wcex;
+
+            wcex.cbSize = sizeof(WNDCLASSEX);
+
+            wcex.style = CS_HREDRAW | CS_VREDRAW;
+            wcex.lpfnWndProc = WndProc;
+            wcex.cbClsExtra = 0;
+            wcex.cbWndExtra = 0;
+            wcex.hInstance = hInstance;
+            wcex.hIcon = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_TRVIEW));
+            wcex.hCursor = LoadCursor(nullptr, IDC_ARROW);
+            wcex.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);
+            wcex.lpszMenuName = MAKEINTRESOURCEW(IDC_TRVIEW);
+            wcex.lpszClassName = window_class.c_str();
+            wcex.hIconSm = LoadIcon(wcex.hInstance, MAKEINTRESOURCE(IDI_SMALL));
+
+            return RegisterClassExW(&wcex);
+        }
+
+        Window create_window(HINSTANCE hInstance, int nCmdShow, const UserSettings& settings)
+        {
+            register_class(hInstance);
+
+            HWND window = CreateWindowW(window_class.c_str(), window_title.c_str(), WS_OVERLAPPEDWINDOW,
+                CW_USEDEFAULT, 0, CW_USEDEFAULT, 0, nullptr, nullptr, hInstance, nullptr);
+
+            if (!window)
+            {
+                return nullptr;
+            }
+
+            if (settings.window_placement)
+            {
+                const auto p = settings.window_placement.value();
+                WINDOWPLACEMENT placement{};
+                placement.length = sizeof(placement);
+                placement.showCmd = p.show_cmd;
+                placement.ptMinPosition = { p.min_x, p.min_y };
+                placement.ptMaxPosition = { p.max_x, p.max_y };
+                placement.rcNormalPosition = { p.normal_left, p.normal_top, p.normal_right, p.normal_bottom };
+                SetWindowPlacement(window, &placement);
+            }
+            else
+            {
+                ShowWindow(window, nCmdShow);
+            }
+
+            UpdateWindow(window);
+
+            return window;
         }
     }
 
-    std::unique_ptr<IApplication> create_application(const Window& window, const std::wstring& command_line)
+    std::unique_ptr<IApplication> create_application(HINSTANCE hInstance, int command_show, const std::wstring& command_line)
     {
+        auto files = std::make_shared<Files>();
+        auto settings_loader = std::make_shared<SettingsLoader>(files);
+        auto window = create_window(hInstance, command_show, settings_loader->load_user_settings());
+
         auto device = std::make_shared<graphics::Device>();
         auto shortcuts = std::make_shared<Shortcuts>(window);
         auto texture_storage = std::make_shared<TextureStorage>(device);
         auto shader_storage = std::make_shared<graphics::ShaderStorage>();
         auto font_factory = std::make_shared<graphics::FontFactory>();
-        auto files = std::make_shared<Files>();
-        auto settings_loader = std::make_shared<SettingsLoader>(files);
 
         Resource type_list = get_resource_memory(IDR_TYPE_NAMES, L"TEXT");
         auto type_name_lookup = std::make_shared<TypeNameLookup>(std::string(type_list.data, type_list.data + type_list.size));

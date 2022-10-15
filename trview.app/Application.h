@@ -100,7 +100,6 @@ namespace trview
         void import_route(const std::string& path, bool is_rando);
         void open_recent_route();
         void save_window_placement();
-        void load_window_placement();
 
         TokenStore _token_store;
 
@@ -142,6 +141,5 @@ namespace trview
         bool _recent_route_prompted{ false };
     };
 
-    Window create_window(HINSTANCE hInstance, int command_show);
-    std::unique_ptr<IApplication> create_application(const Window& window, const std::wstring& command_line);
+    std::unique_ptr<IApplication> create_application(HINSTANCE hInstance, int command_show, const std::wstring& command_line);
 }

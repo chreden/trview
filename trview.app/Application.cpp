@@ -9,9 +9,6 @@ namespace trview
 {
     namespace
     {
-        const std::wstring window_class{ L"TRVIEW" };
-        const std::wstring window_title{ L"trview" };
-
         INT_PTR CALLBACK About(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
         {
             UNREFERENCED_PARAMETER(lParam);
@@ -28,38 +25,6 @@ namespace trview
                     break;
             }
             return (INT_PTR)FALSE;
-        }
-
-        LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
-        {
-            LONG_PTR ptr = GetWindowLongPtr(hWnd, GWLP_USERDATA);
-            IImGuiBackend* backend = reinterpret_cast<IImGuiBackend*>(ptr);
-            if (backend && backend->window_procedure(hWnd, message, wParam, lParam))
-            {
-                return true;
-            }
-            return DefWindowProc(hWnd, message, wParam, lParam);
-        }
-
-        ATOM register_class(HINSTANCE hInstance)
-        {
-            WNDCLASSEXW wcex;
-
-            wcex.cbSize = sizeof(WNDCLASSEX);
-
-            wcex.style = CS_HREDRAW | CS_VREDRAW;
-            wcex.lpfnWndProc = WndProc;
-            wcex.cbClsExtra = 0;
-            wcex.cbWndExtra = 0;
-            wcex.hInstance = hInstance;
-            wcex.hIcon = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_TRVIEW));
-            wcex.hCursor = LoadCursor(nullptr, IDC_ARROW);
-            wcex.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);
-            wcex.lpszMenuName = MAKEINTRESOURCEW(IDC_TRVIEW);
-            wcex.lpszClassName = window_class.c_str();
-            wcex.hIconSm = LoadIcon(wcex.hInstance, MAKEINTRESOURCE(IDI_SMALL));
-
-            return RegisterClassExW(&wcex);
         }
     }
 
@@ -112,8 +77,6 @@ namespace trview
 
         register_lua();
         lua_init(&lua_registry);
-
-        load_window_placement();
     }
 
     Application::~Application()
@@ -811,40 +774,5 @@ namespace trview
                 placement.rcNormalPosition.left, placement.rcNormalPosition.top, placement.rcNormalPosition.right, placement.rcNormalPosition.bottom
             };
         }
-    }
-
-    void Application::load_window_placement()
-    {
-        if (!_settings.window_placement)
-        {
-            return;
-        }
-
-        const auto p = _settings.window_placement.value();
-        WINDOWPLACEMENT placement{};
-        placement.length = sizeof(placement);
-        placement.showCmd = p.show_cmd;
-        placement.ptMinPosition = { p.min_x, p.min_y };
-        placement.ptMaxPosition = { p.max_x, p.max_y };
-        placement.rcNormalPosition = { p.normal_left, p.normal_top, p.normal_right, p.normal_bottom };
-        SetWindowPlacement(window(), &placement);
-    }
-
-    Window create_window(HINSTANCE hInstance, int nCmdShow)
-    {
-        register_class(hInstance);
-
-        HWND window = CreateWindowW(window_class.c_str(), window_title.c_str(), WS_OVERLAPPEDWINDOW,
-            CW_USEDEFAULT, 0, CW_USEDEFAULT, 0, nullptr, nullptr, hInstance, nullptr);
-
-        if (!window)
-        {
-            return nullptr;
-        }
-
-        ShowWindow(window, nCmdShow);
-        UpdateWindow(window);
-
-        return window;
     }
 }

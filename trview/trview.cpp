@@ -28,7 +28,6 @@ void ImGuiTrviewTestEngineHook_RenderedText(ImGuiContext* ctx, ImGuiID id, const
 
 
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE, _In_ LPWSTR, _In_ int nCmdShow){
-    auto window = trview::create_window(hInstance, nCmdShow);
-    auto application = trview::create_application(window, GetCommandLine());
+    auto application = trview::create_application(hInstance, nCmdShow, GetCommandLine());
     return application->run();
 }
