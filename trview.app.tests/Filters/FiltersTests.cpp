@@ -12,6 +12,7 @@ namespace
         std::vector<float> numbers;
         std::string text;
         std::vector<std::string> texts;
+        std::optional<float> option;
 
         Object with_number(float value)
         {
@@ -36,6 +37,13 @@ namespace
             texts = value;
             return *this;
         }
+
+        Object with_option(float value)
+        {
+            option = value;
+            return *this;
+        }
+
     };
 
     auto make_filter()
@@ -357,4 +365,26 @@ TEST(Filters, NotPresentString)
     ASSERT_TRUE(filters.match(Object().with_texts({ })));
 }
 
+TEST(Filters, PresentSingleWithPredicate)
+{
+    Filters<Object> filters;
+    filters.add_getter<float>("option", [](auto&& o) { return o.option.value(); }, [](auto&& o) { return o.option.has_value(); });
 
+    Filters<Object>::Filter present = make_filter().key("option").compare_op(CompareOp::Exists);
+    filters.set_filters({ present });
+
+    ASSERT_TRUE(filters.match(Object().with_option(1.0f)));
+    ASSERT_FALSE(filters.match(Object()));
+}
+
+TEST(Filters, NotPresentSingleWithPredicate)
+{
+    Filters<Object> filters;
+    filters.add_getter<float>("option", [](auto&& o) { return o.option.value(); }, [](auto&& o) { return o.option.has_value(); });
+
+    Filters<Object>::Filter present = make_filter().key("option").compare_op(CompareOp::NotExists);
+    filters.set_filters({ present });
+
+    ASSERT_TRUE(filters.match(Object()));
+    ASSERT_FALSE(filters.match(Object().with_option(1.0f)));
+}
