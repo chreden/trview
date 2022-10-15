@@ -1,28 +1,28 @@
 #include <trview.app/Application.h>
 #include <external/imgui/imgui_internal.h>
 
-void ImGuiTestEngineHook_ItemInfo(ImGuiContext* ctx, ImGuiID id, const char* label, ImGuiItemStatusFlags flags)
+void ImGuiTestEngineHook_ItemInfo(ImGuiContext*, ImGuiID, const char*, ImGuiItemStatusFlags)
 {
 }
 
-void ImGuiTestEngineHook_ItemAdd(ImGuiContext* ctx, const ImRect& bb, ImGuiID id)
+void ImGuiTestEngineHook_ItemAdd(ImGuiContext*, const ImRect&, ImGuiID)
 {
 }
 
-void ImGuiTestEngineHook_Log(ImGuiContext* ctx, const char* fmt, ...)
+void ImGuiTestEngineHook_Log(ImGuiContext*, const char*, ...)
 {
 }
 
-const char* ImGuiTestEngine_FindItemDebugLabel(ImGuiContext* ctx, ImGuiID id)
+const char* ImGuiTestEngine_FindItemDebugLabel(ImGuiContext*, ImGuiID)
 {
     return "";
 }
 
-void ImGuiTrviewTestEngineHook_ItemText(ImGuiContext* ctx, ImGuiID id, const char*)
+void ImGuiTrviewTestEngineHook_ItemText(ImGuiContext*, ImGuiID, const char*)
 {
 }
 
-void ImGuiTrviewTestEngineHook_RenderedText(ImGuiContext* ctx, ImGuiID id, const char*)
+void ImGuiTrviewTestEngineHook_RenderedText(ImGuiContext*, ImGuiID, const char*)
 {
 }
 
