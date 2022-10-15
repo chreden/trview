@@ -275,25 +275,25 @@ namespace trview
         // that need to be rendered in the second pass.
         for (const auto& room : rooms)
         {
-            room.room.render(camera, room.selection_mode, _show_items, _show_water, _show_geometry, visible_set);
+            room.room.render(camera, room.selection_mode, _render_filters, visible_set);
             if (_regenerate_transparency)
             {
-                room.room.get_transparent_triangles(*_transparency, camera, room.selection_mode, _show_items, _show_triggers, _show_water, _show_geometry);
+                room.room.get_transparent_triangles(*_transparency, camera, room.selection_mode, _render_filters);
             }
 
             // If this is an alternate room, render the items from the original room in the sample places.
             if (!is_alternate_mismatch(room.room) && room.room.alternate_mode() == IRoom::AlternateMode::IsAlternate)
             {
                 auto& original_room = _rooms[room.room.alternate_room()];
-                original_room->render_contained(camera, room.selection_mode, _show_items, _show_water);
+                original_room->render_contained(camera, room.selection_mode, _render_filters);
                 if (_regenerate_transparency)
                 {
-                    original_room->get_contained_transparent_triangles(*_transparency, camera, room.selection_mode, _show_items, _show_water);
+                    original_room->get_contained_transparent_triangles(*_transparency, camera, room.selection_mode, _render_filters);
                 }
             }
         }
 
-        if (_show_bounding_boxes)
+        if (has_flag(_render_filters, RenderFilter::BoundingBoxes))
         {
             const auto context = _device->context();
             graphics::RasterizerStateStore rasterizer_store(context);
@@ -308,7 +308,7 @@ namespace trview
             }
         }
 
-        if (_show_lights)
+        if (has_flag(_render_filters, RenderFilter::Lights))
         {
             for (const auto& room : rooms)
             {
@@ -348,7 +348,7 @@ namespace trview
             _selection_renderer->render(camera, *_texture_storage, *selected_item, Item_Outline);
         }
 
-        if (_show_triggers)
+        if (has_flag(_render_filters, RenderFilter::Triggers))
         {
             auto selected_trigger = _selected_trigger.lock();
             if (selected_trigger)
@@ -622,12 +622,12 @@ namespace trview
         for (auto& room : rooms)
         {
             choose(room.room.pick(position, direction,
-                PickFilter::Geometry |
-                filter_flag(PickFilter::Entities, _show_items) |
-                PickFilter::StaticMeshes |
-                filter_flag(PickFilter::AllGeometry, _show_geometry) |
-                filter_flag(PickFilter::Triggers, _show_triggers) |
-                filter_flag(PickFilter::Lights, _show_lights)));
+                filter_flag(PickFilter::Geometry, has_flag(_render_filters, RenderFilter::Rooms)) |
+                filter_flag(PickFilter::Entities, has_flag(_render_filters, RenderFilter::Entities)) |
+                filter_flag(PickFilter::StaticMeshes, has_flag(_render_filters, RenderFilter::Rooms)) |
+                filter_flag(PickFilter::AllGeometry, has_flag(_render_filters, RenderFilter::AllGeometry)) |
+                filter_flag(PickFilter::Triggers, has_flag(_render_filters, RenderFilter::Triggers)) |
+                filter_flag(PickFilter::Lights, has_flag(_render_filters, RenderFilter::Lights))));
             if (!is_alternate_mismatch(room.room) && room.room.alternate_mode() == IRoom::AlternateMode::IsAlternate)
             {
                 auto& original_room = _rooms[room.room.alternate_room()];
@@ -745,26 +745,26 @@ namespace trview
 
     void Level::set_show_triggers(bool show)
     {
-        _show_triggers = show;
+        _render_filters = set_flag(_render_filters, RenderFilter::Triggers, show);
         _regenerate_transparency = true;
         on_level_changed();
     }
 
     void Level::set_show_geometry(bool show)
     {
-        _show_geometry = show;
+        _render_filters = set_flag(_render_filters, RenderFilter::AllGeometry, show);
         _regenerate_transparency = true;
         on_level_changed();
     }
 
     bool Level::show_geometry() const
     {
-        return _show_geometry;
+        return has_flag(_render_filters, RenderFilter::AllGeometry);
     }
 
     void Level::set_show_water(bool show)
     {
-        _show_water = show;
+        _render_filters = set_flag(_render_filters, RenderFilter::Water, show);
         _regenerate_transparency = true;
         on_level_changed();
     }
@@ -778,38 +778,45 @@ namespace trview
 
     void Level::set_show_bounding_boxes(bool show)
     {
-        _show_bounding_boxes = show;
+        _render_filters = set_flag(_render_filters, RenderFilter::BoundingBoxes, show);
         _regenerate_transparency = true;
         on_level_changed();
     }
 
     void Level::set_show_lights(bool show)
     {
-        _show_lights = show;
+        _render_filters = set_flag(_render_filters, RenderFilter::Lights, show);
         _regenerate_transparency = true;
         on_level_changed();
     }
 
     void Level::set_show_items(bool show)
     {
-        _show_items = show;
+        _render_filters = set_flag(_render_filters, RenderFilter::Entities, show);
+        _regenerate_transparency = true;
+        on_level_changed();
+    }
+
+    void Level::set_show_rooms(bool show)
+    {
+        _render_filters = set_flag(_render_filters, RenderFilter::Rooms, show);
         _regenerate_transparency = true;
         on_level_changed();
     }
 
     bool Level::show_triggers() const
     {
-        return _show_triggers;
+        return has_flag(_render_filters, RenderFilter::Triggers);
     }
 
     bool Level::show_lights() const
     {
-        return _show_lights;
+        return has_flag(_render_filters, RenderFilter::Lights);
     }
 
     bool Level::show_items() const
     {
-        return _show_items;
+        return has_flag(_render_filters, RenderFilter::Entities);
     }
 
     void Level::set_selected_trigger(uint32_t number)

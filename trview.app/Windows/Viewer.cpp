@@ -59,6 +59,7 @@ namespace trview
         toggles[Options::depth_enabled] = [this](bool value) { if (_level) { _level->set_highlight_mode(ILevel::RoomHighlightMode::Neighbours, value); } };
         toggles[Options::lights] = [this](bool value) { set_show_lights(value); };
         toggles[Options::items] = [this](bool value) { set_show_items(value); };
+        toggles[Options::rooms] = [this](bool value) { set_show_rooms(value); };
 
         std::unordered_map<std::string, std::function<void(int32_t)>> scalars;
         scalars[Options::depth] = [this](int32_t value) { if (_level) { _level->set_neighbour_depth(value); } };
@@ -574,6 +575,7 @@ namespace trview
         _level->set_show_bounding_boxes(_ui->toggle(Options::show_bounding_boxes));
         _level->set_show_lights(_ui->toggle(Options::lights));
         _level->set_show_items(_ui->toggle(Options::items));
+        _level->set_show_rooms(_ui->toggle(Options::rooms));
 
         // Set up the views.
         auto rooms = _level->rooms();
@@ -1275,5 +1277,14 @@ namespace trview
     void Viewer::set_target(const DirectX::SimpleMath::Vector3& target)
     {
         _target = target;
+    }
+
+    void Viewer::set_show_rooms(bool show)
+    {
+        if (_level)
+        {
+            _level->set_show_rooms(show);
+            _ui->set_toggle(Options::rooms, show);
+        }
     }
 }

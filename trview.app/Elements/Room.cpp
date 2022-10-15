@@ -201,35 +201,38 @@ namespace trview
         return pick_results.front();
     }
 
-    void Room::render(const ICamera& camera, SelectionMode selected, bool show_items, bool show_water, bool geometry_mode, const std::unordered_set<uint32_t>& visible_rooms)
+    void Room::render(const ICamera& camera, SelectionMode selected, RenderFilter render_filter, const std::unordered_set<uint32_t>& visible_rooms)
     {
-        Color colour = room_colour(water() && show_water, selected);
+        Color colour = room_colour(water() && has_flag(render_filter, RenderFilter::Water), selected);
 
-        if (geometry_mode)
+        if (has_flag(render_filter, RenderFilter::Rooms))
         {
-            if (_all_geometry_meshes.empty())
+            if (has_flag(render_filter, RenderFilter::AllGeometry))
             {
-                generate_all_geometry_mesh(_mesh_source);
-            }
-
-            for (const auto& mesh : _all_geometry_meshes)
-            {
-                if (mesh.first == _index || (visible_rooms.find(mesh.first) == visible_rooms.end() || _index < mesh.first))
+                if (_all_geometry_meshes.empty())
                 {
-                    mesh.second->render(_room_offset * camera.view_projection(), *_texture_storage, colour, 1.0f, Vector3::Zero, geometry_mode);
+                    generate_all_geometry_mesh(_mesh_source);
+                }
+
+                for (const auto& mesh : _all_geometry_meshes)
+                {
+                    if (mesh.first == _index || (visible_rooms.find(mesh.first) == visible_rooms.end() || _index < mesh.first))
+                    {
+                        mesh.second->render(_room_offset * camera.view_projection(), *_texture_storage, colour, 1.0f, Vector3::Zero, has_flag(render_filter, RenderFilter::AllGeometry));
+                    }
+                }
+            }
+            else
+            {
+                _mesh->render(_room_offset * camera.view_projection(), *_texture_storage, colour, 1.0f, Vector3::Zero);
+                for (const auto& mesh : _static_meshes)
+                {
+                    mesh->render(camera, *_texture_storage, colour);
                 }
             }
         }
-        else
-        {
-            _mesh->render(_room_offset * camera.view_projection(), *_texture_storage, colour, 1.0f, Vector3::Zero);
-            for (const auto& mesh : _static_meshes)
-            {
-                mesh->render(camera, *_texture_storage, colour);
-            }
-        }
 
-        render_contained(camera, colour, show_items);
+        render_contained(camera, colour, render_filter);
     }
 
     void Room::render_bounding_boxes(const ICamera& camera)
@@ -256,15 +259,15 @@ namespace trview
         }
     }
 
-    void Room::render_contained(const ICamera& camera, SelectionMode selected, bool show_items, bool show_water)
+    void Room::render_contained(const ICamera& camera, SelectionMode selected, RenderFilter render_filter)
     {
-        Color colour = room_colour(water() && show_water, selected);
-        render_contained(camera, colour, show_items);
+        Color colour = room_colour(water() && has_flag(render_filter, RenderFilter::Water), selected);
+        render_contained(camera, colour, render_filter);
     }
 
-    void Room::render_contained(const ICamera& camera, const Color& colour, bool show_items)
+    void Room::render_contained(const ICamera& camera, const Color& colour, RenderFilter render_filter)
     {
-        if (!show_items)
+        if (!has_flag(render_filter, RenderFilter::Entities))
         {
             return;
         }
@@ -412,24 +415,27 @@ namespace trview
         }
     }
 
-    void Room::get_transparent_triangles(ITransparencyBuffer& transparency, const ICamera& camera, SelectionMode selected, bool show_items, bool include_triggers, bool show_water, bool geometry_mode)
+    void Room::get_transparent_triangles(ITransparencyBuffer& transparency, const ICamera& camera, SelectionMode selected, RenderFilter render_filter)
     {
-        Color colour = room_colour(water() && show_water, selected);
+        Color colour = room_colour(water() && has_flag(render_filter, RenderFilter::Water), selected);
 
-        if (!geometry_mode)
+        if (has_flag(render_filter, RenderFilter::Rooms))
         {
-            for (const auto& triangle : _mesh->transparent_triangles())
+            if (!has_flag(render_filter, RenderFilter::AllGeometry))
             {
-                transparency.add(triangle.transform(_room_offset, colour));
-            }
+                for (const auto& triangle : _mesh->transparent_triangles())
+                {
+                    transparency.add(triangle.transform(_room_offset, colour));
+                }
 
-            for (const auto& static_mesh : _static_meshes)
-            {
-                static_mesh->get_transparent_triangles(transparency, camera, colour);
+                for (const auto& static_mesh : _static_meshes)
+                {
+                    static_mesh->get_transparent_triangles(transparency, camera, colour);
+                }
             }
         }
 
-        if (include_triggers)
+        if (has_flag(render_filter, RenderFilter::Triggers))
         {
             for (const auto& trigger_pair : _triggers)
             {
@@ -440,18 +446,18 @@ namespace trview
             }
         }
 
-        get_contained_transparent_triangles(transparency, camera, colour, show_items);
+        get_contained_transparent_triangles(transparency, camera, colour, render_filter);
     }
 
-    void Room::get_contained_transparent_triangles(ITransparencyBuffer& transparency, const ICamera& camera, SelectionMode selected, bool show_items, bool show_water)
+    void Room::get_contained_transparent_triangles(ITransparencyBuffer& transparency, const ICamera& camera, SelectionMode selected, RenderFilter render_filter)
     {
-        Color colour = room_colour(water() && show_water, selected);
-        get_contained_transparent_triangles(transparency, camera, colour, show_items);
+        Color colour = room_colour(water() && has_flag(render_filter, RenderFilter::Water), selected);
+        get_contained_transparent_triangles(transparency, camera, colour, render_filter);
     }
 
-    void Room::get_contained_transparent_triangles(ITransparencyBuffer& transparency, const ICamera& camera, const Color& colour, bool show_items)
+    void Room::get_contained_transparent_triangles(ITransparencyBuffer& transparency, const ICamera& camera, const Color& colour, RenderFilter render_filter)
     {
-        if (!show_items)
+        if (!has_flag(render_filter, RenderFilter::Entities))
         {
             return;
         }

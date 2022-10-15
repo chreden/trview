@@ -15,6 +15,7 @@ namespace trview
         _toggles[IViewer::Options::lights] = false;
         _toggles[IViewer::Options::flip] = false;
         _toggles[IViewer::Options::items] = true;
+        _toggles[IViewer::Options::rooms] = true;
     }
 
     void ViewOptions::render()
@@ -42,6 +43,8 @@ namespace trview
                 ImGui::TableNextRow();
                 add_toggle(IViewer::Options::show_bounding_boxes);
                 add_toggle(IViewer::Options::highlight);
+                ImGui::TableNextRow();
+                add_toggle(IViewer::Options::rooms);
                 ImGui::TableNextRow();
                 add_toggle(IViewer::Options::depth_enabled);
                 ImGui::TableNextColumn();

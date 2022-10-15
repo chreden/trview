@@ -223,9 +223,6 @@
     <ClCompile Include="Elements\ISector.cpp">
       <Filter>Elements</Filter>
     </ClCompile>
-    <ClCompile Include="Elements\PickFilter.cpp">
-      <Filter>Elements</Filter>
-    </ClCompile>
     <ClCompile Include="Routing\Action.cpp">
       <Filter>Routing</Filter>
     </ClCompile>
@@ -902,6 +899,9 @@
     </ClInclude>
     <ClInclude Include="Mocks\Windows\ILogWindow.h">
       <Filter>Mocks\Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="Elements\RenderFilter.h">
+      <Filter>Elements</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

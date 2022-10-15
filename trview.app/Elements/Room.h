@@ -43,17 +43,17 @@ namespace trview
         virtual RoomInfo info() const override;
         virtual std::set<uint16_t> neighbours() const override;
         virtual PickResult pick(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& direction, PickFilter filters = PickFilter::Default) const override;
-        virtual void render(const ICamera& camera, SelectionMode selected, bool show_items, bool show_water, bool geometry_mode, const std::unordered_set<uint32_t>& visible_rooms) override;
+        virtual void render(const ICamera& camera, SelectionMode selected, RenderFilter render_filter, const std::unordered_set<uint32_t>& visible_rooms) override;
         virtual void render_bounding_boxes(const ICamera& camera) override;
         virtual void render_lights(const ICamera& camera, const std::weak_ptr<ILight>& selected_light) override;
-        virtual void render_contained(const ICamera& camera, SelectionMode selected, bool show_items, bool show_water) override;
+        virtual void render_contained(const ICamera& camera, SelectionMode selected, RenderFilter render_filter) override;
         virtual void add_entity(const std::weak_ptr<IEntity>& entity) override;
         virtual void add_trigger(const std::weak_ptr<ITrigger>& trigger) override;
         virtual void add_light(const std::weak_ptr<ILight>& light) override;
         virtual const std::vector<std::shared_ptr<ISector>> sectors() const override;
         virtual void generate_sector_triangles() override;
-        virtual void get_transparent_triangles(ITransparencyBuffer& transparency, const ICamera& camera, SelectionMode selected, bool show_items, bool include_triggers, bool show_water, bool geometry_mode) override;
-        virtual void get_contained_transparent_triangles(ITransparencyBuffer& transparency, const ICamera& camera, SelectionMode selected, bool show_items, bool show_water) override;
+        virtual void get_transparent_triangles(ITransparencyBuffer& transparency, const ICamera& camera, SelectionMode selected, RenderFilter render_filter) override;
+        virtual void get_contained_transparent_triangles(ITransparencyBuffer& transparency, const ICamera& camera, SelectionMode selected, RenderFilter render_filter) override;
         virtual AlternateMode alternate_mode() const override;
         virtual int16_t alternate_room() const override;
         virtual int16_t alternate_group() const override;
@@ -82,8 +82,8 @@ namespace trview
         void generate_adjacency();
         void generate_static_meshes(const IMesh::Source& mesh_source, const trlevel::ILevel& level, const trlevel::tr3_room& room, const IMeshStorage& mesh_storage,
             const IStaticMesh::MeshSource& static_mesh_mesh_source, const IStaticMesh::PositionSource& static_mesh_position_source, const Activity& activity);
-        void render_contained(const ICamera& camera, const DirectX::SimpleMath::Color& colour, bool show_items);
-        void get_contained_transparent_triangles(ITransparencyBuffer& transparency, const ICamera& camera, const DirectX::SimpleMath::Color& colour, bool show_items);
+        void render_contained(const ICamera& camera, const DirectX::SimpleMath::Color& colour, RenderFilter render_filter);
+        void get_contained_transparent_triangles(ITransparencyBuffer& transparency, const ICamera& camera, const DirectX::SimpleMath::Color& colour, RenderFilter render_filter);
         void generate_sectors(const trlevel::ILevel& level, const trlevel::tr3_room& room, const ISector::Source& sector_source);
         ISector* get_trigger_sector(int32_t x, int32_t z);
         uint32_t get_sector_id(int32_t x, int32_t z) const;

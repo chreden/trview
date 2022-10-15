@@ -81,6 +81,7 @@ namespace trview
         virtual void set_show_bounding_boxes(bool show) override;
         virtual void set_show_lights(bool show) override;
         virtual void set_show_items(bool show) override;
+        virtual void set_show_rooms(bool show) override;
         virtual bool show_lights() const override;
         virtual bool show_triggers() const override;
         virtual bool show_items() const override;
@@ -174,13 +175,8 @@ namespace trview
 
         bool _regenerate_transparency{ true };
         bool _alternate_mode{ false };
-        bool _show_triggers{ true };
-        bool _show_water{ true };
         bool _show_wireframe{ false };
-        bool _show_bounding_boxes{ false };
-        bool _show_lights{ false };
-        bool _show_items{ true };
-        bool _show_geometry { false };
+        RenderFilter _render_filters{ RenderFilter::Default };
 
         std::unique_ptr<ISelectionRenderer> _selection_renderer;
         std::set<uint32_t> _alternate_groups;

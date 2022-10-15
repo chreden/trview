@@ -28,6 +28,7 @@ namespace trview
             inline static const std::string wireframe = "Wireframe";
             inline static const std::string lights = "Lights";
             inline static const std::string items = "Items";
+            inline static const std::string rooms = "Rooms";
         };
 
         virtual ~IViewer() = 0;

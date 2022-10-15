@@ -49,7 +49,6 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClCompile Include="Elements\ILevel.cpp" />
     <ClCompile Include="Elements\Level.cpp" />
     <ClCompile Include="Elements\Light.cpp" />
-    <ClCompile Include="Elements\PickFilter.cpp" />
     <ClCompile Include="Elements\Room.cpp" />
     <ClCompile Include="Elements\Sector.cpp" />
     <ClCompile Include="Elements\StaticMesh.cpp" />
@@ -180,6 +179,7 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClInclude Include="Elements\Level.h" />
     <ClInclude Include="Elements\Light.h" />
     <ClInclude Include="Elements\PickFilter.h" />
+    <ClInclude Include="Elements\RenderFilter.h" />
     <ClInclude Include="Elements\Room.h" />
     <ClInclude Include="Elements\RoomInfo.h" />
     <ClInclude Include="Elements\Sector.h" />
