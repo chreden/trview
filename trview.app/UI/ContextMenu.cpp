@@ -2,6 +2,10 @@
 
 namespace trview
 {
+    IContextMenu::~IContextMenu()
+    {
+    }
+
     void ContextMenu::render()
     {
         if (_can_show && ImGui::BeginPopupContextVoid())

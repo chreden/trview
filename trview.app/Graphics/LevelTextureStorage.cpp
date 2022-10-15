@@ -3,6 +3,10 @@
 
 namespace trview
 {
+    ILevelTextureStorage::~ILevelTextureStorage()
+    {
+    }
+
     LevelTextureStorage::LevelTextureStorage(const std::shared_ptr<graphics::IDevice>& device, std::unique_ptr<ITextureStorage> texture_storage, const trlevel::ILevel& level)
         : _texture_storage(std::move(texture_storage)), _version(level.get_version())
     {

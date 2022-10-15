@@ -2,6 +2,10 @@
 
 namespace trview
 {
+    ISettingsWindow::~ISettingsWindow()
+    {
+    }
+
     void SettingsWindow::render()
     {
         if (!_visible)

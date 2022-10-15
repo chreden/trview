@@ -3,6 +3,10 @@
 
 namespace trview
 {
+    IStartupOptions::~IStartupOptions()
+    {
+    }
+
     StartupOptions::StartupOptions(const CommandLine& command_line)
     {
         int number_of_arguments = 0;

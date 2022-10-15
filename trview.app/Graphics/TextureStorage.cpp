@@ -3,6 +3,10 @@
 
 namespace trview
 {
+    ITextureStorage::~ITextureStorage()
+    {
+    }
+
     TextureStorage::TextureStorage(const std::shared_ptr<graphics::IDevice>& device)
         : _device(device)
     {

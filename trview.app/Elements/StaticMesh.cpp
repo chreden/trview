@@ -6,6 +6,10 @@ namespace trview
 {
     using namespace DirectX::SimpleMath;
 
+    IStaticMesh::~IStaticMesh()
+    {
+    }
+
     StaticMesh::StaticMesh(const trlevel::tr3_room_staticmesh& static_mesh, const trlevel::tr_staticmesh& level_static_mesh, const std::shared_ptr<IMesh>& mesh, const std::shared_ptr<IMesh>& bounding_mesh)
         : _mesh(mesh),
         _visibility_min(level_static_mesh.VisibilityBox.MinX, level_static_mesh.VisibilityBox.MinY, level_static_mesh.VisibilityBox.MinZ),

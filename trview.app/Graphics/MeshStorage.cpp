@@ -2,6 +2,10 @@
 
 namespace trview
 {
+    IMeshStorage::~IMeshStorage()
+    {
+    }
+
     MeshStorage::MeshStorage(const IMesh::Source& mesh_source, const trlevel::ILevel& level, const ILevelTextureStorage& texture_storage)
     {
         const uint32_t pointers = level.num_mesh_pointers();

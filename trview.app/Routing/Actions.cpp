@@ -3,6 +3,10 @@
 
 namespace trview
 {
+    IActions::~IActions()
+    {
+    }
+
     Actions::Actions(const std::string& actions_json)
     {
         auto json = nlohmann::json::parse(actions_json.begin(), actions_json.end());

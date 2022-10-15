@@ -8,6 +8,10 @@ namespace trview
         const DWORD id_update_available = 30000;
     }
 
+    IUpdateChecker::~IUpdateChecker()
+    {
+    }
+
     UpdateChecker::UpdateChecker(const Window& window)
         : MessageHandler(window)
     {

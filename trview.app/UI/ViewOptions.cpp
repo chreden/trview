@@ -3,6 +3,10 @@
 
 namespace trview
 {
+    IViewOptions::~IViewOptions()
+    {
+    }
+
     ViewOptions::ViewOptions()
     {
         _toggles[IViewer::Options::highlight] = false;

@@ -5,6 +5,10 @@
 
 namespace trview
 {
+    IItemsWindow::~IItemsWindow()
+    {
+    }
+
     ItemsWindow::ItemsWindow(const std::shared_ptr<IClipboard>& clipboard)
         : _clipboard(clipboard)
     {

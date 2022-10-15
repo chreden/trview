@@ -344,6 +344,10 @@ namespace trlevel
         }
     }
 
+    ILevel::~ILevel()
+    {
+    }
+
     Level::Level(const std::string& filename, const std::shared_ptr<trview::IFiles>& files, const std::shared_ptr<IDecrypter>& decrypter, const std::shared_ptr<trview::ILog>& log)
         : _log(log)
     {

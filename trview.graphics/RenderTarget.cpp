@@ -20,6 +20,10 @@ namespace trview
             }
         }
 
+        IRenderTarget::~IRenderTarget()
+        {
+        }
+
         // Create a render target of the specified dimensions. The new render target will
         // have its pixels initialised to zero.
         // device: The D3D device.

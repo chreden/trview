@@ -3,6 +3,10 @@
 
 namespace trview
 {
+    ITriggersWindowManager::~ITriggersWindowManager()
+    {
+    }
+
     TriggersWindowManager::TriggersWindowManager(const Window& window, const std::shared_ptr<IShortcuts>& shortcuts, const ITriggersWindow::Source& triggers_window_source)
         : _triggers_window_source(triggers_window_source), MessageHandler(window)
     {

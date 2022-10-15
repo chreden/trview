@@ -27,6 +27,9 @@ namespace trview
             }
         }
 
+        IFont::~IFont()
+        {
+        }
 
         Font::Font(const std::shared_ptr<SpriteFont>& font, TextAlignment text_alignment, ParagraphAlignment paragraph_alignment)
             : _font(font), _text_alignment(text_alignment), _paragraph_alignment(paragraph_alignment)

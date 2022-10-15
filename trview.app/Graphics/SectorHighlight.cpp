@@ -9,6 +9,10 @@ namespace trview
         const Color Highlight_Colour{ 1, 1, 0 };
     }
 
+    ISectorHighlight::~ISectorHighlight()
+    {
+    }
+
     SectorHighlight::SectorHighlight(const IMesh::Source& mesh_source)
         : _mesh_source(mesh_source)
     {

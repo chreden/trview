@@ -4,6 +4,10 @@
 
 namespace trview
 {
+    ILightsWindow::~ILightsWindow()
+    {
+    }
+
     LightsWindow::LightsWindow(const std::shared_ptr<IClipboard>& clipboard)
         : _clipboard(clipboard)
     {

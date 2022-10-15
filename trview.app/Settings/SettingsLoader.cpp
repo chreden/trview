@@ -5,6 +5,10 @@
 
 namespace trview
 {
+    ISettingsLoader::~ISettingsLoader()
+    {
+    }
+
     void to_json(nlohmann::json& json, const UserSettings::RecentRoute& item)
     {
         json["route_path"] = item.route_path;

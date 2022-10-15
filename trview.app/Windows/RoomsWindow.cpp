@@ -58,6 +58,10 @@ namespace trview
         }
     }
 
+    IRoomsWindow::~IRoomsWindow()
+    {
+    }
+
     RoomsWindow::RoomsWindow(const IMapRenderer::Source& map_renderer_source, const std::shared_ptr<IClipboard>& clipboard)
         : _map_renderer(map_renderer_source(Size(341, 341))), _clipboard(clipboard)
     {

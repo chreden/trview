@@ -64,13 +64,6 @@
     <ClCompile Include="DeviceWindow.cpp" />
     <ClCompile Include="Font.cpp" />
     <ClCompile Include="FontFactory.cpp" />
-    <ClCompile Include="IDevice.cpp" />
-    <ClCompile Include="IDeviceWindow.cpp" />
-    <ClCompile Include="IFont.cpp" />
-    <ClCompile Include="IFontFactory.cpp" />
-    <ClCompile Include="IRenderTarget.cpp" />
-    <ClCompile Include="IShaderStorage.cpp" />
-    <ClCompile Include="ISprite.cpp" />
     <ClCompile Include="JsonSerializers.cpp" />
     <ClCompile Include="PixelShader.cpp" />
     <ClCompile Include="PixelShaderStore.cpp" />

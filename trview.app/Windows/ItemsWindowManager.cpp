@@ -3,6 +3,10 @@
 
 namespace trview
 {
+    IItemsWindowManager::~IItemsWindowManager()
+    {
+    }
+
     ItemsWindowManager::ItemsWindowManager(const Window& window, const std::shared_ptr<IShortcuts>& shortcuts, const IItemsWindow::Source& items_window_source)
         : _items_window_source(items_window_source), MessageHandler(window)
     {

@@ -19,6 +19,10 @@ namespace trview
         };
     }
 
+    IFiles::~IFiles()
+    {
+    }
+
     std::string Files::appdata_directory() const
     {
         SafePath path;

@@ -7,6 +7,10 @@
 
 namespace trview
 {
+    IViewerUI::~IViewerUI()
+    {
+    }
+
     ViewerUI::ViewerUI(const Window& window, const std::shared_ptr<ITextureStorage>& texture_storage,
         const std::shared_ptr<IShortcuts>& shortcuts,
         const IMapRenderer::Source& map_renderer_source,

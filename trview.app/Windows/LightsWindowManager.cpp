@@ -3,6 +3,10 @@
 
 namespace trview
 {
+    ILightsWindowManager::~ILightsWindowManager()
+    {
+    }
+
     LightsWindowManager::LightsWindowManager(const Window& window, const std::shared_ptr<IShortcuts>& shortcuts, const ILightsWindow::Source& lights_window_source)
         : _lights_window_source(lights_window_source), MessageHandler(window)
     {

@@ -104,26 +104,13 @@
       <Filter>Windows</Filter>
     </ClCompile>
     <ClCompile Include="stdafx.cpp" />
-    <ClCompile Include="Windows\IShortcuts.cpp">
-      <Filter>Windows</Filter>
-    </ClCompile>
-    <ClCompile Include="Windows\IClipboard.cpp">
-      <Filter>Windows</Filter>
-    </ClCompile>
-    <ClCompile Include="Windows\IDialogs.cpp">
-      <Filter>Windows</Filter>
-    </ClCompile>
     <ClCompile Include="Windows\Dialogs.cpp">
       <Filter>Windows</Filter>
     </ClCompile>
     <ClCompile Include="Files.cpp" />
-    <ClCompile Include="IFiles.cpp" />
     <ClCompile Include="Resources.cpp" />
     <ClCompile Include="JsonSerializers.cpp" />
     <ClCompile Include="Windows\Shell.cpp">
-      <Filter>Windows</Filter>
-    </ClCompile>
-    <ClCompile Include="Windows\IShell.cpp">
       <Filter>Windows</Filter>
     </ClCompile>
     <ClCompile Include="Logs\Log.cpp">

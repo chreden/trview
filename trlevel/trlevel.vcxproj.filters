@@ -18,7 +18,6 @@
     <ClInclude Include="Decrypter.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="ILevel.cpp" />
     <ClCompile Include="Level.cpp" />
     <ClCompile Include="trtypes.cpp" />
     <ClCompile Include="LevelVersion.cpp" />

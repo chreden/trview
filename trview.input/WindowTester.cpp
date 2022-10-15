@@ -4,6 +4,10 @@ namespace trview
 {
     namespace input
     {
+        IWindowTester::~IWindowTester()
+        {
+        }
+
         WindowTester::WindowTester(const Window& window)
             : MessageHandler(window)
         {

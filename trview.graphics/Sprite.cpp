@@ -19,6 +19,10 @@ namespace trview
             };
         }
 
+        ISprite::~ISprite()
+        {
+        }
+
         Sprite::Sprite(const std::shared_ptr<IDevice>& device, const std::shared_ptr<IShaderStorage>& shader_storage, const Size& host_size)
             : _device(device), _host_size(host_size)
         {

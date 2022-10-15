@@ -5,6 +5,10 @@
 
 namespace trview
 {
+    ITriggersWindow::~ITriggersWindow()
+    {
+    }
+
     TriggersWindow::TriggersWindow(const std::shared_ptr<IClipboard>& clipboard)
         : _clipboard(clipboard)
     {
