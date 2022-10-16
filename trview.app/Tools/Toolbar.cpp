@@ -2,7 +2,7 @@
 
 namespace trview
 {
-    void Toolbar::add_tool(const std::string& name, const std::string& text)
+    void Toolbar::add_tool(const std::string& name)
     {
         _tools.push_back(name);
     }

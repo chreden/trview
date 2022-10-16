@@ -13,8 +13,7 @@ namespace trview
     public:
         /// Add a new tool to the toolbar.
         /// @param name The name of the tool
-        /// @param text The text to show in the button.
-        void add_tool(const std::string& name, const std::string& text);
+        void add_tool(const std::string& name);
 
         void render();
 

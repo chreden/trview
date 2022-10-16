@@ -68,7 +68,7 @@ namespace trview
         };
 
         _toolbar = std::make_unique<Toolbar>();
-        _toolbar->add_tool("Measure", "|....|");
+        _toolbar->add_tool("Measure");
         _token_store += _toolbar->on_tool_clicked += [this](const std::string& tool)
         {
             if (tool == "Measure")
