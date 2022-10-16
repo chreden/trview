@@ -1,7 +1,14 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
+    <ClInclude Include="Size.h" />
     <ClInclude Include="Timer.h" />
+    <ClInclude Include="Window.h" />
+    <ClInclude Include="Point.h" />
+    <ClInclude Include="Colour.h" />
+    <ClInclude Include="MessageHandler.h">
+      <Filter>Windows</Filter>
+    </ClInclude>
     <ClInclude Include="Event.h">
       <Filter>Events</Filter>
     </ClInclude>
@@ -9,6 +16,9 @@
       <Filter>Events</Filter>
     </ClInclude>
     <ClInclude Include="Strings.h" />
+    <ClInclude Include="Windows\Clipboard.h">
+      <Filter>Windows</Filter>
+    </ClInclude>
     <ClInclude Include="Windows\Shortcuts.h">
       <Filter>Windows</Filter>
     </ClInclude>
@@ -22,11 +32,20 @@
     <ClInclude Include="Windows\IShortcuts.h">
       <Filter>Windows</Filter>
     </ClInclude>
+    <ClInclude Include="Windows\IClipboard.h">
+      <Filter>Windows</Filter>
+    </ClInclude>
     <ClInclude Include="Mocks\Windows\IClipboard.h">
       <Filter>Mocks\Windows</Filter>
     </ClInclude>
     <ClInclude Include="Json.h" />
     <ClInclude Include="Json.hpp" />
+    <ClInclude Include="Windows\IDialogs.h">
+      <Filter>Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="Windows\Dialogs.h">
+      <Filter>Windows</Filter>
+    </ClInclude>
     <ClInclude Include="Mocks\Windows\IDialogs.h">
       <Filter>Mocks\Windows</Filter>
     </ClInclude>
@@ -100,26 +119,6 @@
     <ClCompile Include="Logs\Activity.cpp">
       <Filter>Logs</Filter>
     </ClCompile>
-    <ClCompile Include="trview.common.ixx" />
-    <ClCompile Include="Colour.ixx" />
-    <ClCompile Include="Window.ixx" />
-    <ClCompile Include="MessageHandler.ixx">
-      <Filter>Windows</Filter>
-    </ClCompile>
-    <ClCompile Include="Windows\IDialogs.ixx">
-      <Filter>Windows</Filter>
-    </ClCompile>
-    <ClCompile Include="Point.ixx" />
-    <ClCompile Include="Windows\Dialogs.ixx">
-      <Filter>Windows</Filter>
-    </ClCompile>
-    <ClCompile Include="Windows\IClipboard.ixx">
-      <Filter>Windows</Filter>
-    </ClCompile>
-    <ClCompile Include="Windows\Clipboard.ixx">
-      <Filter>Windows</Filter>
-    </ClCompile>
-    <ClCompile Include="Size.ixx" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Windows">

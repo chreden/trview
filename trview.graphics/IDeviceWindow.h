@@ -3,8 +3,7 @@
 #include <memory>
 #include <wrl/client.h>
 #include <d3d11.h>
-
-import trview.common;
+#include <trview.common/Window.h>
 
 namespace trview
 {

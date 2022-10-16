@@ -4,6 +4,8 @@
 #include <trlevel/Decrypter.h>
 #include <trview.common/Files.h>
 #include <trview.common/Logs/Log.h>
+#include <trview.common/windows/Clipboard.h>
+#include <trview.common/Windows/Dialogs.h>
 #include <trview.common/Windows/Shell.h>
 
 #include <trview.graphics/ShaderStorage.h>
@@ -51,8 +53,6 @@
 #include "Windows/Log/LogWindow.h"
 #include "Windows/Log/LogWindowManager.h"
 #include "UI/DX11ImGuiBackend.h"
-
-import trview.common;
 
 namespace trview
 {

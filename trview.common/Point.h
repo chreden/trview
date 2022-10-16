@@ -1,8 +1,8 @@
-export module trview.common:Point;
+#pragma once
 
 namespace trview
 {
-    export struct Point
+    struct Point
     {
         Point();
 

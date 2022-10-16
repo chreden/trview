@@ -3,12 +3,12 @@
 /// 
 /// A floating point based two dimensional size.
 
-export module trview.common:Size;
+#pragma once
 
 namespace trview
 {
     /// A two dimensional size.
-    export struct Size
+    struct Size
     {
         /// Create a new size with width and height initialised to zero.
         Size();

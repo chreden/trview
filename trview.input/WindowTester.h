@@ -1,10 +1,7 @@
 #pragma once
 
-#include <optional>
+#include <trview.common/MessageHandler.h>
 #include "IWindowTester.h"
-#include <Windows.h>
-
-import trview.common;
 
 namespace trview
 {

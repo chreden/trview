@@ -7,14 +7,11 @@
 #pragma once
 
 #include <trview.common/Event.h>
+#include <trview.common/MessageHandler.h>
 #include <cstdint>
-#include <optional>
 
 #include "IMouse.h"
 #include "IWindowTester.h"
-#include <Windows.h>
-
-import trview.common;
 
 namespace trview
 {

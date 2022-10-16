@@ -2,9 +2,8 @@
 
 #include <trview.common/Logs/ILog.h>
 #include <trview.common/IFiles.h>
+#include <trview.common/Windows/IDialogs.h>
 #include "ILogWindow.h"
-
-import trview.common;
 
 namespace trview
 {

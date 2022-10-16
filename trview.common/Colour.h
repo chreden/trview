@@ -1,10 +1,10 @@
-export module trview.common:Colour;
+#pragma once
 
 #include <external/DirectXTK/Inc/SimpleMath.h>
 
 namespace trview
 {
-    export struct Colour final
+    struct Colour final
     {
         Colour();
 
@@ -45,10 +45,10 @@ namespace trview
         static Colour Cyan;
     };
 
-    export Colour from_colour_code(const std::string& name);
-    export Colour from_named_colour(const std::string& name);
+    Colour from_colour_code(const std::string& name);
+    Colour from_named_colour(const std::string& name);
 
-    export Colour operator+(const Colour& left, const Colour& right);
+    Colour operator+(const Colour& left, const Colour& right);
 
-    export bool operator==(const Colour& left, const Colour& right);
+    bool operator==(const Colour& left, const Colour& right);
 }

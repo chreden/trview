@@ -5,8 +5,6 @@
 #include <trview.input/WindowTester.h>
 #include <trview.common/Windows/Shortcuts.h>
 
-import trview.common;
-
 namespace trview
 {
     IViewerUI::~IViewerUI()

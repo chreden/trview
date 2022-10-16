@@ -1,6 +1,7 @@
 #include "RouteWindow.h"
 #include <trview.app/Routing/Route.h>
 #include <trview.common/Strings.h>
+#include <trview.common/Windows/IClipboard.h>
 #include "../trview_imgui.h"
 #include <format>
 

@@ -1,8 +1,8 @@
 #pragma once
 
+#include <trview.common/Size.h>
+#include <trview.common/Point.h>
 #include <SimpleMath.h>
-
-import trview.common;
 
 namespace trview
 {

@@ -1,12 +1,13 @@
-export module trview.common:IDialogs;
+#pragma once
 
-import <optional>;
-import <string>;
-import <vector>;
+#include <optional>
+#include <string>
+#include <vector>
+#include "../Window.h"
 
 namespace trview
 {
-    export struct IDialogs
+    struct IDialogs
     {
         enum class Buttons
         {
@@ -27,7 +28,7 @@ namespace trview
             std::vector<std::wstring> file_types;
         };
 
-        virtual ~IDialogs() = default;
+        virtual ~IDialogs() = 0;
         /// <summary>
         /// Show a modal message box.
         /// </summary>

@@ -4,11 +4,10 @@
 #include <memory>
 #include <optional>
 
+#include <trview.common/MessageHandler.h>
 #include <trview.common/Windows/IShortcuts.h>
 #include "ITriggersWindowManager.h"
 #include "WindowManager.h"
-
-import trview.common;
 
 namespace trview
 {

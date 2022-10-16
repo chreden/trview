@@ -12,8 +12,8 @@
 #include <cstdint>
 #include <vector>
 #include <trview.graphics/Device.h>
-
-import trview.common;
+#include <trview.common/Colour.h>
+#include <trview.common/Size.h>
 
 namespace trview
 {

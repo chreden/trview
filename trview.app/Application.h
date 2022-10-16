@@ -1,7 +1,6 @@
 #pragma once
 
-import trview.common;
-
+#include <trview.common/Window.h>
 #include <trview.common/Timer.h>
 
 #include <trlevel/ILevel.h>
@@ -20,13 +19,12 @@ import trview.common;
 #include <trview.app/Windows/ILightsWindowManager.h>
 #include <trview.app/Windows/IViewer.h>
 #include <trview.app/Lua/Lua.h>
+#include <trview.common/Windows/IDialogs.h>
 #include <trview.common/Windows/IShortcuts.h>
 #include "Windows/Log/ILogWindowManager.h"
 #include "UI/IImGuiBackend.h"
 
 struct ImFont;
-
-import trview.common;
 
 namespace trview
 {

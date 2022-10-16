@@ -1,6 +1,5 @@
+#include <trview.common/Point.h>
 #include <trview.common/JsonSerializers.h>
-
-import trview.common;
 
 using namespace trview;
 

@@ -3,11 +3,11 @@
 
 #pragma once
 
+#include <trview.common/Windows/IClipboard.h>
 #include "../Filters/Filters.h"
+
 #include "IItemsWindow.h"
 #include "../Elements/Item.h"
-
-import trview.common;
 
 namespace trview
 {

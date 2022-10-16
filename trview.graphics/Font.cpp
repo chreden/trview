@@ -1,7 +1,7 @@
 #include "Font.h"
 #include "Texture.h"
-
-import trview.common;
+#include <trview.common/Size.h>
+#include <trview.common/Colour.h>
 
 using namespace Microsoft::WRL;
 using namespace DirectX;

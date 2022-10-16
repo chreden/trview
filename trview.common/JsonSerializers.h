@@ -2,7 +2,9 @@
 
 #include <external/nlohmann/json.hpp>
 
-import trview.common;
+#include "Point.h"
+#include "Size.h"
+#include "Colour.h"
 
 namespace trview
 {

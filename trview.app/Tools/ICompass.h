@@ -3,7 +3,8 @@
 #include <trview.app/Graphics/ILevelTextureStorage.h>
 #include <trview.app/Camera/Camera.h>
 
-import trview.common;
+#include <trview.common/Point.h>
+#include <trview.common/Size.h>
 
 namespace trview
 {

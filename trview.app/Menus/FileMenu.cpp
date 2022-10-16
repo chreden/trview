@@ -1,8 +1,6 @@
 #include "FileMenu.h"
 #include "../Resources/resource.h"
 
-import trview.common;
-
 namespace trview
 {
     namespace

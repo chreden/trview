@@ -1,8 +1,7 @@
+#include <trview.common/Size.h>
 #include <trview.common/JsonSerializers.h>
 
 using namespace trview;
-
-import trview.common;
 
 TEST(Size, LoadFromJson)
 {

@@ -1,5 +1,4 @@
-module;
-module trview.common:Size;
+#include "Size.h"
 
 namespace trview
 {

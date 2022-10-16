@@ -1,5 +1,4 @@
-module;
-module trview.common:MessageHandler;
+#include "MessageHandler.h"
 
 namespace trview
 {

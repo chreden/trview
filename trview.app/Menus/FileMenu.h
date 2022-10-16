@@ -1,10 +1,9 @@
 #pragma once
 
 #include <trview.common/TokenStore.h>
+#include <trview.common/MessageHandler.h>
 #include <trview.common/IFiles.h>
 #include "IFileMenu.h"
-
-import trview.common;
 
 namespace trview
 {

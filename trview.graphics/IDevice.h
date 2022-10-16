@@ -4,8 +4,7 @@
 #include <wrl/client.h>
 #include <d3d11.h>
 #include <optional>
-
-import trview.common;
+#include <trview.common/Window.h>
 
 namespace trview
 {

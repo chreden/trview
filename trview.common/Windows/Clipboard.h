@@ -1,11 +1,10 @@
-export module trview.common:Clipboard;
+#pragma once
 
-import :IClipboard;
-import :Window;
+#include "IClipboard.h"
 
 namespace trview
 {
-    export class Clipboard final : public IClipboard
+    class Clipboard final : public IClipboard
     {
     public:
         explicit Clipboard(const Window& window);

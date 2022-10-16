@@ -3,9 +3,8 @@
 #include <map>
 #include <variant>
 #include <SimpleMath.h>
+#include <trview.common/Colour.h>
 #include <trview.app/Geometry/IRenderable.h>
-
-import trview.common;
 
 namespace trview
 {

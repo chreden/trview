@@ -2,9 +2,8 @@
 
 #include <thread>
 #include <string>
+#include <trview.common/MessageHandler.h>
 #include "IUpdateChecker.h"
-
-import trview.common;
 
 namespace trview
 {

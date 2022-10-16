@@ -1,12 +1,13 @@
-export module trview.common:IClipboard;
+#pragma once
 
+#include "../Window.h"
 #include <string>
 
 namespace trview
 {
-    export struct IClipboard
+    struct IClipboard
     {
-        virtual ~IClipboard() = default;
+        virtual ~IClipboard() = 0;
         virtual std::wstring read() const = 0;
         virtual void write(const std::wstring& text) = 0;
     };

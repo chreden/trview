@@ -1,9 +1,8 @@
 #pragma once
 
+#include <trview.common/Window.h>
 #include <trview.common/Event.h>
 #include <trview.app/Elements/ILight.h>
-
-import trview.common;
 
 namespace trview
 {

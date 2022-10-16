@@ -2,8 +2,6 @@
 #include <trview.input/WindowTester.h>
 #include <trview.tests.common/Window.h>
 
-import trview.common;
-
 using namespace trview::tests;
 using namespace trview::input;
 

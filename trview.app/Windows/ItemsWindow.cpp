@@ -1,5 +1,6 @@
 #include "ItemsWindow.h"
 #include <trview.common/Strings.h>
+#include <trview.common/Windows/Clipboard.h>
 #include "../trview_imgui.h"
 
 namespace trview

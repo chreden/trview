@@ -5,11 +5,11 @@
 #include <trview.app/Routing/IWaypoint.h>
 #include <trview.app/Elements/Item.h>
 #include <trview.app/Elements/Room.h>
+#include <trview.common/Windows/IClipboard.h>
+#include <trview.common/Windows/IDialogs.h>
 #include <trview.common/IFiles.h>
 #include "IRouteWindow.h"
 #include <trview.common/Windows/IShell.h>
-
-import trview.common;
 
 namespace trview
 {

@@ -1,8 +1,7 @@
 #pragma once
 
 #include <string>
-
-import trview.common;
+#include <trview.common/Colour.h>
 
 namespace trview
 {
