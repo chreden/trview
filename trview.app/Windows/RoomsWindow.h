@@ -2,7 +2,6 @@
 
 #include "IRoomsWindow.h"
 
-#include <trview.common/Windows/IClipboard.h>
 #include <trview.common/TokenStore.h>
 
 #include "../UI/Tooltip.h"
@@ -10,6 +9,7 @@
 #include "../UI/IMapRenderer.h"
 #include "../Filters/Filters.h"
 
+import trview.common;
 
 namespace trview
 {

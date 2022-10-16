@@ -1,4 +1,6 @@
-#include "Window.h"
+module;
+module trview.common:Window;
+
 #include "Strings.h"
 
 namespace trview

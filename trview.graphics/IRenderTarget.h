@@ -4,8 +4,9 @@
 #include <d3d11.h>
 #include <wrl/client.h>
 #include <SimpleMath.h>
-#include <trview.common/Size.h>
 #include "Texture.h"
+
+import trview.common;
 
 namespace trview
 {

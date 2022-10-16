@@ -3,10 +3,11 @@
 #include <d3d11.h>
 #include <wrl/client.h>
 
+import trview.common;
+
 namespace trview
 {
     struct Colour;
-    struct Size;
 
     namespace graphics
     {

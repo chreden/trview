@@ -1,7 +1,9 @@
 #pragma once
 
 #include <string>
-#include <trview.common/Window.h>
+#include <Windows.h>
+
+import trview.common;
 
 namespace trview
 {

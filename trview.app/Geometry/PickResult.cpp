@@ -1,8 +1,9 @@
 #include "PickResult.h"
 #include <trview.app/Tools/Compass.h>
-#include <trview.common/Colour.h>
 #include "../Elements/ILevel.h"
 #include "../Routing/IRoute.h"
+
+import trview.common;
 
 namespace trview
 {

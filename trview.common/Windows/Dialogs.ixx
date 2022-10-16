@@ -1,10 +1,12 @@
-#pragma once
+export module trview.common:Dialogs;
 
-#include "IDialogs.h"
+import <optional>;
+import :IDialogs;
+import :Window;
 
 namespace trview
 {
-    class Dialogs final : public IDialogs
+    export class Dialogs final : public IDialogs
     {
     public:
         explicit Dialogs(const Window& window);

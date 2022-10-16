@@ -5,6 +5,8 @@
 #include "RandomizerSettings.h"
 #include "../UI/MapColours.h"
 
+import trview.common;
+
 namespace trview
 {
     struct UserSettings

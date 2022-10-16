@@ -1,9 +1,10 @@
 #pragma once
 
-#include <trview.common/Windows/IClipboard.h>
 #include "../Elements/ILight.h"
 #include "ILightsWindow.h"
 #include "../Filters/Filters.h"
+
+import trview.common;
 
 namespace trview
 {

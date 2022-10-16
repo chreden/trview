@@ -1,7 +1,8 @@
 #pragma once
 
 #include <trview.common/Event.h>
-#include <trview.common/Window.h>
+
+import trview.common;
 
 namespace trview
 {

@@ -8,7 +8,9 @@
 
 #include <cstdint>
 #include <trview.common/Event.h>
-#include <trview.common/MessageHandler.h>
+#include <Windows.h>
+
+import trview.common;
 
 namespace trview
 {

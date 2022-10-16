@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../../Windows/IClipboard.h"
+import trview.common;
 
 namespace trview
 {

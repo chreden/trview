@@ -1,6 +1,6 @@
 #pragma once
 
-#include <trview.common/Window.h>
+import trview.common;
 
 namespace trview
 {

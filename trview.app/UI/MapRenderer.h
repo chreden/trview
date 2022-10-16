@@ -12,14 +12,14 @@
 #include <trview.graphics/Sprite.h>
 #include <trview.app/Elements/Types.h>
 #include <trview.graphics/Texture.h>
-#include <trview.common/Point.h>
-#include <trview.common/Size.h>
 #include <trview.app/Elements/Room.h>
 #include <trview.graphics/RenderTarget.h>
 #include <trview.graphics/FontFactory.h>
 #include <trview.graphics/IFont.h>
 
 #include "IMapRenderer.h"
+
+import trview.common;
 
 namespace trview
 {

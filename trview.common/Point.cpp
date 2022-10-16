@@ -1,4 +1,5 @@
-#include "Point.h"
+module;
+module trview.common:Point;
 
 namespace trview
 {

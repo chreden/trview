@@ -1,4 +1,9 @@
-#include "Dialogs.h"
+module;
+module trview.common:Dialogs;
+
+import :IDialogs;
+import :Window;
+
 #include "Strings.h"
 #include <commdlg.h>
 
@@ -59,10 +64,6 @@ namespace trview
             final_filter += L'\0';
             return final_filter;
         }
-    }
-
-    IDialogs::~IDialogs()
-    {
     }
 
     Dialogs::Dialogs(const Window& window)

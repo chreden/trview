@@ -18,7 +18,6 @@
 
 namespace trview
 {
-    struct Size;
     struct Colour;
 
     namespace graphics

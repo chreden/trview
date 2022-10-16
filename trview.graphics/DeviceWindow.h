@@ -3,11 +3,11 @@
 
 #pragma once
 
-#include <trview.common/Window.h>
-#include <trview.common/Colour.h>
 #include "IRenderTarget.h"
 #include "IDevice.h"
 #include "IDeviceWindow.h"
+
+import trview.common;
 
 namespace trview
 {

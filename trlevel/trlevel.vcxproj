@@ -194,6 +194,9 @@
     <ProjectReference Include="..\external\zlib\contrib\vstudio\vc14\zlibstat.vcxproj">
       <Project>{745dec58-ebb3-47a9-a9b8-4c6627c01bf8}</Project>
     </ProjectReference>
+    <ProjectReference Include="..\trview.common\trview.common.vcxproj">
+      <Project>{d0633291-23a6-4b3f-9a5e-e94d20f66a07}</Project>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

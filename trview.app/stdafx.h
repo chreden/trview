@@ -43,18 +43,12 @@
 #include <external/imgui/misc/cpp/imgui_stdlib.h>
 
 #include <trview.common/Algorithms.h>
-#include <trview.common/Colour.h>
 #include <trview.common/Event.h>
 #include <trview.common/Json.h>
 #include <trview.common/Maths.h>
-#include <trview.common/MessageHandler.h>
-#include <trview.common/Point.h>
 #include <trview.common/Resources.h>
-#include <trview.common/Size.h>
 #include <trview.common/Strings.h>
 #include <trview.common/Timer.h>
-#include <trview.common/Window.h>
-#include <trview.common/Windows/IDialogs.h>
 #include <trview.common/Windows/IShortcuts.h>
 #include <trview.graphics/RasterizerStateStore.h>
 #include <trview.graphics/IDevice.h>

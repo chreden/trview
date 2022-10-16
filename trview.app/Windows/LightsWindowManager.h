@@ -1,10 +1,11 @@
 #pragma once
 
 #include <trview.common/Windows/IShortcuts.h>
-#include <trview.common/MessageHandler.h>
 #include "ILightsWindow.h"
 #include "ILightsWindowManager.h"
 #include "WindowManager.h"
+
+import trview.common;
 
 namespace trview
 {

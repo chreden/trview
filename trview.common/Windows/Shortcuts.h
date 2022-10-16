@@ -1,8 +1,9 @@
 #pragma once
 
 #include "IShortcuts.h"
-#include "../MessageHandler.h"
 #include "../Event.h"
+
+import trview.common;
 
 namespace trview
 {

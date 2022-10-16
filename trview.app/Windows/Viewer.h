@@ -11,7 +11,6 @@
 #include <string>
 
 #include <trview.common/Timer.h>
-#include <trview.common/Window.h>
 #include <trview.graphics/IDevice.h>
 #include <trview.input/Keyboard.h>
 #include <trview.input/IMouse.h>
@@ -37,7 +36,8 @@
 #include <trview.common/Windows/Shortcuts.h>
 #include <trview.graphics/IDeviceWindow.h>
 #include <trview.app/Windows/IViewer.h>
-#include <trview.common/Windows/IClipboard.h>
+
+import trview.common;
 
 namespace trview
 {

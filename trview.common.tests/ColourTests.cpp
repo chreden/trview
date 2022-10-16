@@ -1,5 +1,6 @@
-#include <trview.common/Colour.h>
 #include <trview.common/JsonSerializers.h>
+
+import trview.common;
 
 using namespace trview;
 

@@ -7,10 +7,11 @@
 #include <memory>
 #include <optional>
 
-#include <trview.common/MessageHandler.h>
 #include <trview.common/Windows/Shortcuts.h>
 #include "IItemsWindowManager.h"
 #include "WindowManager.h"
+
+import trview.common;
 
 namespace trview
 {

@@ -1,9 +1,10 @@
 #pragma once
 
 #include <trview.app/Windows/IRouteWindowManager.h>
-#include <trview.common/MessageHandler.h>
 #include <trview.common/TokenStore.h>
 #include <trview.common/Windows/Shortcuts.h>
+
+import trview.common;
 
 namespace trview
 {

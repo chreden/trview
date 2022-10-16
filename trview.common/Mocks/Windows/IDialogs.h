@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../../Windows/IDialogs.h"
+import trview.common;
 
 namespace trview
 {
