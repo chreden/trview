@@ -50,7 +50,7 @@ namespace trview
     template <typename value_type>
     void Filters<T>::add_getter(const std::string& key, const std::function<value_type(const T&)>& getter, const std::function<bool(const T&)>& predicate)
     {
-        add_getter(key, available_options<value_type>(), getter, {});
+        add_getter(key, available_options<value_type>(), getter, predicate);
     }
 
     template <typename T>
@@ -462,7 +462,13 @@ namespace trview
         const auto& getter = _getters.find(key);
         if (getter != _getters.end())
         {
-            return getter->second.ops;
+            auto ops = getter->second.ops;
+            if (getter->second.predicate)
+            {
+                ops.push_back(CompareOp::Exists);
+                ops.push_back(CompareOp::NotExists);
+            }
+            return ops;
         }
         else
         {

@@ -442,14 +442,21 @@ namespace trview
                         ImGui::Separator();
                     }
 
-                    auto add_stat = [&]<typename T>(const std::string& name, const T&& value)
+                    auto add_stat = [&]<typename T>(const std::string & name, const T && value, std::function<void()> click = {})
                     {
                         const auto string_value = get_string(value);
                         ImGui::TableNextColumn();
                         if (ImGui::Selectable(name.c_str(), false, ImGuiSelectableFlags_SpanAllColumns))
                         {
-                            _clipboard->write(to_utf16(string_value));
-                            _tooltip_timer = 0.0f;
+                            if (click)
+                            {
+                                click();
+                            }
+                            else
+                            {
+                                _clipboard->write(to_utf16(string_value));
+                                _tooltip_timer = 0.0f;
+                            }
                         }
                         ImGui::TableNextColumn();
                         ImGui::Text(string_value.c_str());
@@ -472,7 +479,7 @@ namespace trview
                             add_stat("Z", room->info().z);
                             if (room->alternate_mode() != Room::AlternateMode::None)
                             {
-                                add_stat("Alternate", room->alternate_room());
+                                add_stat("Alternate", room->alternate_room(), [this, room]() { on_room_selected(room->alternate_room()); });
                                 if (room->alternate_group() != 0xff)
                                 {
                                     add_stat("Alternate Group", room->alternate_group());
@@ -727,5 +734,7 @@ namespace trview
         _filters.add_getter<bool>("Bit 13", [](auto&& room) { return room.flag(IRoom::Flag::Bit13); });
         _filters.add_getter<bool>("Bit 14", [](auto&& room) { return room.flag(IRoom::Flag::Bit14); });
         _filters.add_getter<bool>("Bit 15", [](auto&& room) { return room.flag(IRoom::Flag::Bit15); });
+        _filters.add_getter<float>("Alternate", [](auto&& room) { return room.alternate_room(); }, [](auto&& room) { return room.alternate_mode() != IRoom::AlternateMode::None; });
+        _filters.add_getter<float>("Alternate Group", [](auto&& room) { return room.alternate_group(); }, [](auto&& room) { return room.alternate_mode() != IRoom::AlternateMode::None; });
     }
 }
