@@ -8,6 +8,7 @@ using testing::Return;
 using testing::A;
 using testing::SaveArg;
 using testing::HasSubstr;
+using testing::Not;
 
 namespace
 {
@@ -607,4 +608,45 @@ TEST(SettingsLoader, FovSaved)
     settings.fov = 10.0f;
     loader->save_user_settings(settings);
     EXPECT_THAT(output, HasSubstr("\"fov\":10.0"));
+}
+
+TEST(SettingsLoader, WindowPlacementLoaded)
+{
+    auto loader = setup_setting("{\"window_placement\":{\"max_x\":-1,\"max_y\":-1,\"min_x\":-1,\"min_y\":-1,\"normal_bottom\":1000,\"normal_left\":500,\"normal_right\":2000,\"normal_top\":200,\"show_cmd\":10}}");
+    auto settings = loader->load_user_settings();
+    ASSERT_TRUE(settings.window_placement);
+    auto placement = settings.window_placement.value();
+    ASSERT_EQ(placement.max_x, -1);
+    ASSERT_EQ(placement.max_y, -1);
+    ASSERT_EQ(placement.min_x, -1);
+    ASSERT_EQ(placement.min_y, -1);
+    ASSERT_EQ(placement.normal_bottom, 1000);
+    ASSERT_EQ(placement.normal_left, 500);
+    ASSERT_EQ(placement.normal_right, 2000);
+    ASSERT_EQ(placement.normal_top, 200);
+    ASSERT_EQ(placement.show_cmd, 10);
+}
+
+TEST(SettingsLoader, WindowPlacementSaved)
+{
+    std::string output;
+    auto loader = setup_save_setting(output);
+    UserSettings settings;
+    const UserSettings::WindowPlacement placement =
+    {
+        10, -1, -1, -1, -1, 500, 200, 2000, 1000
+    };
+    settings.window_placement = placement;
+    loader->save_user_settings(settings);
+    EXPECT_THAT(output, HasSubstr("\"window_placement\":{\"max_x\":-1,\"max_y\":-1,\"min_x\":-1,\"min_y\":-1,\"normal_bottom\":1000,\"normal_left\":500,\"normal_right\":2000,\"normal_top\":200,\"show_cmd\":10}"));
+}
+
+TEST(SettingsLoader, WindowPlacementNotSavedIfMissing)
+{
+    std::string output;
+    auto loader = setup_save_setting(output);
+    UserSettings settings;
+    settings.window_placement.reset();
+    loader->save_user_settings(settings);
+    EXPECT_THAT(output, Not(HasSubstr("window_placement")));
 }
