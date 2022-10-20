@@ -14,7 +14,20 @@ namespace trview
         struct RecentRoute
         {
             std::string route_path;
-            bool is_rando;
+            bool is_rando{ false };
+        };
+
+        struct WindowPlacement
+        {
+            uint32_t show_cmd;
+            int32_t min_x;
+            int32_t min_y;
+            int32_t max_x;
+            int32_t max_y;
+            int32_t normal_left;
+            int32_t normal_top;
+            int32_t normal_right;
+            int32_t normal_bottom;
         };
 
         std::list<std::string>  recent_files;
@@ -39,6 +52,7 @@ namespace trview
         Colour route_colour{ Colour::Green };
         Colour waypoint_colour{ Colour::White };
         bool route_startup{ false };
+        std::optional<WindowPlacement> window_placement;
         std::unordered_map<std::string, RecentRoute> recent_routes;
         float fov{ 45 };
 

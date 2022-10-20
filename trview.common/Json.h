@@ -5,6 +5,8 @@
 #include <external/nlohmann/json.hpp>
 #pragma warning(pop)
 
+#include <optional>
+
 namespace trview
 {
     template <typename T>
@@ -15,6 +17,9 @@ namespace trview
 
     template <typename T>
     void read_attribute(const nlohmann::json& json, T& destination, const std::string& attribute_name);
+
+    template <typename T>
+    void read_attribute(const nlohmann::json& json, std::optional<T>& destination, const std::string& attribute_name);
 }
 
 #include "Json.hpp"

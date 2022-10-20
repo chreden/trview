@@ -263,3 +263,4 @@ __pycache__/
 trview.app/Resources/Generated/*.cso
 
 lau/drm
+*.ipch
