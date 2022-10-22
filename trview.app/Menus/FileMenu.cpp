@@ -181,7 +181,9 @@ namespace trview
         {
             return;
         }
-        ++iter;
-        on_file_open(iter->path);
+        if (++iter != _file_switcher_list.end())
+        {
+            on_file_open(iter->path);
+        }
     }
 }
