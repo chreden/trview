@@ -116,10 +116,10 @@ namespace trview
                 imgui_sort(_all_items,
                     {
                         [](auto&& l, auto&& r) { return l.number() < r.number(); },
-                        [](auto&& l, auto&& r) { return l.room() < r.room(); },
-                        [](auto&& l, auto&& r) { return l.type_id() < r.type_id(); },
-                        [](auto&& l, auto&& r) { return l.type() < r.type(); },
-                        [](auto&& l, auto&& r) { return l.visible() < r.visible(); }
+                        [](auto&& l, auto&& r) { return std::tuple(l.room(), l.number()) < std::tuple(r.room(), r.number()); },
+                        [](auto&& l, auto&& r) { return std::tuple(l.type_id(), l.number()) < std::tuple(r.type_id(), r.number()); },
+                        [](auto&& l, auto&& r) { return std::tuple(l.type(), l.number()) < std::tuple(r.type(), r.number()); },
+                        [](auto&& l, auto&& r) { return std::tuple(l.visible(), l.number()) < std::tuple(r.visible(), r.number()); }
                     });
 
                 for (const auto& item : _all_items)
@@ -257,8 +257,8 @@ namespace trview
                 imgui_sort_weak(_triggered_by,
                     {
                         [](auto&& l, auto&& r) { return l.number() < r.number(); },
-                        [](auto&& l, auto&& r) { return l.room() < r.room(); },
-                        [](auto&& l, auto&& r) { return l.type() < r.type(); },
+                        [](auto&& l, auto&& r) { return std::tuple(l.room(), l.number()) < std::tuple(r.room(), r.number()); },
+                        [](auto&& l, auto&& r) { return std::tuple(l.type(), l.number()) < std::tuple(r.type(), r.number()); },
                     });
 
                 for (auto& trigger : _triggered_by)

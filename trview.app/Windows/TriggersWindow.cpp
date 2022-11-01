@@ -188,9 +188,9 @@ namespace trview
                 imgui_sort_weak(_filtered_triggers,
                     {
                         [](auto&& l, auto&& r) { return l.number() < r.number(); },
-                        [](auto&& l, auto&& r) { return l.room() < r.room(); },
-                        [](auto&& l, auto&& r) { return l.type() < r.type(); },
-                        [](auto&& l, auto&& r) { return l.visible() < r.visible(); }
+                        [](auto&& l, auto&& r) { return std::tuple(l.room(), l.number()) < std::tuple(r.room(), r.number()); },
+                        [](auto&& l, auto&& r) { return std::tuple(l.type(), l.number()) < std::tuple(r.type(), r.number()); },
+                        [](auto&& l, auto&& r) { return std::tuple(l.visible(), l.number()) < std::tuple(r.visible(), r.number()); }
                     });
 
                 ImGuiListClipper clipper;
@@ -327,9 +327,9 @@ namespace trview
 
                 imgui_sort(_local_selected_trigger_commands,
                     {
-                        [](auto&& l, auto&& r) { return l.type() < r.type(); },
+                        [](auto&& l, auto&& r) { return std::tuple(l.type(), l.index()) < std::tuple(r.type(), r.index()); },
                         [](auto&& l, auto&& r) { return l.index() < r.index(); },
-                        [&](auto&& l, auto&& r) { return get_command_display(l) < get_command_display(r); },
+                        [&](auto&& l, auto&& r) { return std::tuple(get_command_display(l), l.index()) < std::tuple(get_command_display(r), r.index()); },
                     });
 
                 for (auto& command : _local_selected_trigger_commands)

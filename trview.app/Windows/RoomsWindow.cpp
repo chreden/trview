@@ -501,7 +501,7 @@ namespace trview
                             imgui_sort(_all_items,
                                 {
                                     [](auto&& l, auto&& r) { return l.number() < r.number(); },
-                                    [](auto&& l, auto&& r) { return l.type() < r.type(); },
+                                    [](auto&& l, auto&& r) { return std::tuple(l.type(), l.number()) < std::tuple(r.type(), r.number()); },
                                 });
                             
                             for (const auto& item : _all_items)
@@ -573,7 +573,7 @@ namespace trview
                             imgui_sort_weak(_all_triggers,
                                 {
                                     [](auto&& l, auto&& r) { return l.number() < r.number(); },
-                                    [&](auto&& l, auto&& r) { return l.type() < r.type(); }
+                                    [&](auto&& l, auto&& r) { return std::tuple(l.type(), l.number()) < std::tuple(r.type(), r.number()); }
                                 });
 
                             for (const auto& trigger : _all_triggers)
