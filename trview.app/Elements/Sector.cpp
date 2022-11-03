@@ -65,10 +65,11 @@ namespace trview
             switch (floor & 0x1f)
             {
             case 0x1:
-                _portal = level.get_floor_data(++cur_index) & 0xFF;
+            {
+                _portal = level.get_floor_data(++cur_index);
                 _flags |= SectorFlag::Portal;
-                break; 
-
+                break;
+            }
             case 0x2: 
             {
                 _floor_slant = level.get_floor_data(++cur_index);

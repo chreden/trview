@@ -65,7 +65,9 @@ namespace trview
         SectorFlag _flags{ SectorFlag::None };
 
         // Holds the "wall portal" that this sector points to - this is the id of the room 
-        std::uint8_t _portal, _room_above, _room_below;
+        std::uint16_t _portal;
+        std::uint8_t _room_above;
+        std::uint8_t _room_below;
 
         // Holds slope data 
         std::uint16_t _floor_slant{ 0 }, _ceiling_slant{ 0 };
