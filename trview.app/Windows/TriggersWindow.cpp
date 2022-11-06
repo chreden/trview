@@ -479,6 +479,12 @@ namespace trview
                          (!_selected_commands.empty() && !has_any_command(*trigger_ptr, _selected_commands)));
             });
         _need_filtering = false;
+
+        auto specs = ImGui::TableGetSortSpecs();
+        if (specs)
+        {
+            specs->SpecsDirty = true;
+        }
     }
 
     void TriggersWindow::calculate_column_widths()
