@@ -480,8 +480,7 @@ namespace trview
             });
         _need_filtering = false;
 
-        auto specs = ImGui::TableGetSortSpecs();
-        if (specs)
+        if (auto specs = ImGui::TableGetSortSpecs())
         {
             specs->SpecsDirty = true;
         }
