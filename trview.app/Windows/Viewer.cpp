@@ -1315,4 +1315,9 @@ namespace trview
             Matrix::CreateTranslation(room_info.x / trlevel::Scale_X, 0, room_info.z / trlevel::Scale_Z));
         _scene_changed = true;
     }
+
+    void Viewer::set_scene_changed()
+    {
+        _scene_changed = true;
+    }
 }

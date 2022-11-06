@@ -42,6 +42,7 @@ namespace trview
         _route_window->on_waypoint_selected += on_waypoint_selected;
         _route_window->on_waypoint_deleted += on_waypoint_deleted;
         _route_window->on_waypoint_reordered += on_waypoint_reordered;
+        _route_window->on_waypoint_changed += on_waypoint_changed;
         _token_store += _route_window->on_window_closed += [&]() { _closing = true; };
 
         _route_window->set_randomizer_settings(_randomizer_settings);

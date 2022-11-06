@@ -106,6 +106,8 @@ namespace trview
         virtual DirectX::SimpleMath::Vector3 normal() const = 0;
         virtual WaypointRandomizerSettings randomizer_settings() const = 0;
         virtual void set_randomizer_settings(const WaypointRandomizerSettings& settings) = 0;
+
+        virtual void set_position(const DirectX::SimpleMath::Vector3& position) = 0;
     };
 
     /// <summary>

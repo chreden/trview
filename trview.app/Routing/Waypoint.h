@@ -45,6 +45,7 @@ namespace trview
         virtual DirectX::SimpleMath::Vector3 normal() const override;
         virtual WaypointRandomizerSettings randomizer_settings() const override;
         virtual void set_randomizer_settings(const WaypointRandomizerSettings& settings) override;
+        virtual void set_position(const DirectX::SimpleMath::Vector3& position) override;
     private:
         DirectX::SimpleMath::Matrix calculate_waypoint_rotation() const;
 

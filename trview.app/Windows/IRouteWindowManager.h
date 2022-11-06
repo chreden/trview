@@ -35,6 +35,8 @@ namespace trview
         /// Event raised when a waypoint is deleted.
         Event<uint32_t> on_waypoint_deleted;
 
+        Event<> on_waypoint_changed;
+
         /// <summary>
         /// Event raised when a waypoint has moved from one index to another.
         /// </summary>

@@ -221,10 +221,18 @@ namespace trview
                     };
 
                     add_stat("Type", waypoint_type_to_string(waypoint.type()));
-                    add_stat("Position", position_text(waypoint.position()));
                     add_stat("Room", waypoint.room());
+
                     add_stat("Room Position", position_text(get_room_pos()));
                     ImGui::EndTable();
+                }
+
+                const auto pos = waypoint.position();
+                int pos_value[3] = { pos.x * trlevel::Scale, pos.y * trlevel::Scale, pos.z * trlevel::Scale };
+                if (ImGui::DragScalarN("Position", ImGuiDataType_S32, pos_value, 3))
+                {
+                    waypoint.set_position(Vector3(pos_value[0], pos_value[1], pos_value[2]) / trlevel::Scale);
+                    on_waypoint_changed();
                 }
 
                 const std::string save_text = waypoint.has_save() ? "SAVEGAME.0" : Names::attach_save.c_str();

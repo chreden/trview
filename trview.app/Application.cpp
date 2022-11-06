@@ -431,6 +431,10 @@ namespace trview
             _route->move(from, to);
             _viewer->set_route(_route);
         };
+        _token_store += _route_window->on_waypoint_changed += [&]()
+        {
+            _viewer->set_scene_changed();
+        };
         _route_window->set_randomizer_enabled(_settings.randomizer_tools);
         _route->set_randomizer_enabled(_settings.randomizer_tools);
         _route_window->set_randomizer_settings(_settings.randomizer);
