@@ -916,8 +916,12 @@ namespace trview
             const auto other_room = _level.room(portal.direct->portal()).lock();
             const auto diff = (position() - other_room->position()) + Vector3(x2, 0, z2);
             const int other_id = diff.x * other_room->num_z_sectors() + diff.z;
-            portal.target = other_room->sectors()[other_id];
-            portal.offset = Vector3(x2, 0, z2) - diff;
+            const auto sectors = other_room->sectors();
+            if (other_id < sectors.size())
+            {
+                portal.target = sectors[other_id];
+                portal.offset = Vector3(x2, 0, z2) - diff;
+            }
         }
 
         return portal;
