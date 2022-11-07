@@ -26,7 +26,7 @@ namespace trview
         if (specs && specs->SpecsDirty)
         {
             std::sort(container.begin(), container.end(),
-                [&](const auto& l, const auto& r) -> int
+                [&](const auto& l, const auto& r) -> bool
                 {
                     const auto& callback = callbacks[specs->Specs[0].ColumnIndex];
                     const auto result = callback(*l.lock(), *r.lock());
