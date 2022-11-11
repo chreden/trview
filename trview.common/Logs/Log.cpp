@@ -60,4 +60,9 @@ namespace trview
         }
         return { all_activities.begin(), all_activities.end() };
     }
+
+    void Log::clear()
+    {
+        _messages.clear();
+    }
 }

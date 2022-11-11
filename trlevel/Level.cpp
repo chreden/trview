@@ -347,6 +347,9 @@ namespace trlevel
     Level::Level(const std::string& filename, const std::shared_ptr<trview::IFiles>& files, const std::shared_ptr<IDecrypter>& decrypter, const std::shared_ptr<trview::ILog>& log)
         : _log(log)
     {
+        // Clear the log before loading the level so we don't keep accumulating memory.
+        _log->clear();
+
         // Load the level from the file.
         auto last_index = std::min(filename.find_last_of('\\'), filename.find_last_of('/'));
         _name = last_index == filename.npos ? filename : filename.substr(std::min(last_index + 1, filename.size()));
