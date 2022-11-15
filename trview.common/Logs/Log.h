@@ -15,6 +15,7 @@ namespace trview
         virtual std::vector<Message> messages(const std::string& topic, const std::string& activity) const override;
         virtual std::vector<std::string> topics() const override;
         virtual std::vector<std::string> activities(const std::string& topic) const override;
+        virtual void clear() override;
     private:
         std::vector<Message> _messages;
     };

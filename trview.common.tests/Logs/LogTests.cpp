@@ -44,3 +44,12 @@ TEST(Log, AllMessages)
     auto messages = log.messages();
     ASSERT_EQ(messages.size(), 3);
 }
+
+TEST(Log, Clear)
+{
+    Log log;
+    log.log(Message::Status::Information, "topic", "activity", "text");
+    ASSERT_EQ(log.messages().size(), 1);
+    log.clear();
+    ASSERT_EQ(log.messages().size(), 0);
+}

@@ -15,6 +15,7 @@ namespace trview
             MOCK_METHOD(std::vector<Message>, messages, (const std::string&, const std::string&), (const, override));
             MOCK_METHOD(std::vector<std::string>, topics, (), (const, override));
             MOCK_METHOD(std::vector<std::string>, activities, (const std::string&), (const, override));
+            MOCK_METHOD(void, clear, (), (override));
         };
     }
 }

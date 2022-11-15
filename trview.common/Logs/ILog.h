@@ -13,5 +13,6 @@ namespace trview
         virtual std::vector<Message> messages(const std::string& topic, const std::string& activity) const = 0;
         virtual std::vector<std::string> topics() const = 0;
         virtual std::vector<std::string> activities(const std::string& topic) const = 0;
+        virtual void clear() = 0;
     };
 }
