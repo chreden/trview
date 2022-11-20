@@ -117,6 +117,7 @@ Highlight           | Highlight the currently selected room
 Triggers            | Toggle trigger visibility
 Geometry            | Toggle geometry mode
 Water               | Toggle water in water rooms
+Rooms               | Toggle rendering of room geometry
 Depth               | Toggle depth mode. This will show the currently selected depth of neighbours of the current room.
 Depth Selector      | Choose the depth of neighbours to show
 Wireframe           | Enable wireframe rendering mode
@@ -267,7 +268,9 @@ Z|Z position of the camera in level space|
 
 ## Context Menu
 
-![Context Menu](doc/context_menu.png)
+Normal | Copy | Triggered By
+---|---
+![Context Menu](doc/context_menu.png) | ![Context Menu](doc/context_menu_copy.png) | ![Context Menu](doc/context_menu_triggered_by.png) 
 
 The context menu is opened by right clicking in the 3D view.
 
@@ -278,6 +281,8 @@ Add Mid Waypoint|Add a new route waypoint at the centre of the square that was c
 Remove Waypoint|Remove the clicked waypoint from the route. This is only available when a waypoint was clicked.
 Orbit Here|Switch the camera to orbit mode and orbit around the position that was right clicked when the context menu was opened.
 Hide|Hide the clicked entity or trigger. This can be unhidden from the view menu or the items or triggers window. This is only available if an item or trigger was clicked.
+Copy|Copy the position of the click or the entity number to the clipboard.
+Triggered By|Shows the triggers that trigger an entity. Clicking an entry will select the trigger.
 
 ## Menus
 
@@ -523,9 +528,11 @@ Shows the list of waypoints in the current route and allows them to be edited an
 
 ![Route Window](doc/route.png)
 
-## Route Colour
+## Settings
 
-Clicking on the coloured square will show a colour picker dialog. The colour you choose will be used for the waypoints in the 3D view.
+![Route Window Settings](doc/route_settings.png)
+
+Clicking on the settings button will allow you to change route and waypoint colours. Clicking on each coloured square will show a colour picker dialog. The colours you choose will be used in the 3D view.
 
 ## Import
 
@@ -662,8 +669,9 @@ Different comparison operators are available depending on the data type of the s
 | Between   | &cross; | &check; | &cross; | 2 |
 | Between inclusive   | &cross; | &check; | &cross; | 2 |
 | Is Present*  | &check; | &check; | &check; | 0 |
+| Is not Present | &check; | &check; | &check; | 0 |
 
-If the value is a multi value property such as `Triggered By` on an `Item` then an additional operation `is present` is available. This will return true if there are any values for that property on the item being tested.
+If the value is a multi value property such as `Triggered By` on an `Item` then two additional operations: `is present` and `is not present` are available. This will return whether there are any values for that property on the item being tested.
 
 ## Combining Filters
 
