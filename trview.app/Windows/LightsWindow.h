@@ -52,5 +52,6 @@ namespace trview
         uint32_t _current_room{ 0u };
         std::unordered_map<std::string, std::string> _tips;
         Filters<ILight> _filters;
+        bool _force_sort{ false };
     };
 }

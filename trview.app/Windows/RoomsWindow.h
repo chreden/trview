@@ -84,5 +84,6 @@ namespace trview
         graphics::Texture _map_texture;
 
         Filters<IRoom> _filters;
+        bool _force_sort{ false };
     };
 }

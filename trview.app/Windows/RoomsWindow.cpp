@@ -138,6 +138,7 @@ namespace trview
         _all_rooms = rooms;
         _current_room = 0xffffffff;
         generate_filters();
+        _force_sort = true;
     }
 
     void RoomsWindow::set_selected_item(const Item& item)
@@ -230,6 +231,7 @@ namespace trview
             render_rooms_list();
             ImGui::SameLine();
             render_room_details();
+            _force_sort = false;
 
             if (_tooltip_timer.has_value())
             {
@@ -304,7 +306,7 @@ namespace trview
                         [&](auto&& l, auto&& r) { return item_count(l) < item_count(r); },
                         [&](auto&& l, auto&& r) { return trigger_count(l) < trigger_count(r); },
                         [&](auto&& l, auto&& r) { return l.visible() < r.visible(); }
-                    });
+                    }, _force_sort);
 
                 for (const auto& room : _all_rooms)
                 {
@@ -392,7 +394,7 @@ namespace trview
                         float remainder = (341 - _map_texture.size().height) * 0.5f;
                         ImGui::SetCursorPosX(std::round((ImGui::GetWindowSize().x - _map_texture.size().width) * 0.5f));
                         ImGui::SetCursorPosY(ImGui::GetCursorPosY() + std::floor(remainder));
-                        
+
                         const auto io = ImGui::GetIO();
                         if (io.WantCaptureMouse)
                         {
@@ -502,7 +504,7 @@ namespace trview
                                 {
                                     [](auto&& l, auto&& r) { return l.number() < r.number(); },
                                     [](auto&& l, auto&& r) { return std::tuple(l.type(), l.number()) < std::tuple(r.type(), r.number()); },
-                                });
+                                }, _force_sort);
                             
                             for (const auto& item : _all_items)
                             {
@@ -574,7 +576,7 @@ namespace trview
                                 {
                                     [](auto&& l, auto&& r) { return l.number() < r.number(); },
                                     [&](auto&& l, auto&& r) { return std::tuple(l.type(), l.number()) < std::tuple(r.type(), r.number()); }
-                                });
+                                }, _force_sort);
 
                             for (const auto& trigger : _all_triggers)
                             {

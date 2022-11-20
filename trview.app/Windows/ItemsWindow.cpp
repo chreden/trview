@@ -21,6 +21,7 @@ namespace trview
         _all_items = items;
         _triggered_by.clear();
         setup_filters();
+        _force_sort = true;
     }
 
     void ItemsWindow::update_item(const Item& item)
@@ -120,7 +121,7 @@ namespace trview
                         [](auto&& l, auto&& r) { return std::tuple(l.type_id(), l.number()) < std::tuple(r.type_id(), r.number()); },
                         [](auto&& l, auto&& r) { return std::tuple(l.type(), l.number()) < std::tuple(r.type(), r.number()); },
                         [](auto&& l, auto&& r) { return std::tuple(l.visible(), l.number()) < std::tuple(r.visible(), r.number()); }
-                    });
+                    }, _force_sort);
 
                 for (const auto& item : _all_items)
                 {
@@ -259,7 +260,7 @@ namespace trview
                         [](auto&& l, auto&& r) { return l.number() < r.number(); },
                         [](auto&& l, auto&& r) { return std::tuple(l.room(), l.number()) < std::tuple(r.room(), r.number()); },
                         [](auto&& l, auto&& r) { return std::tuple(l.type(), l.number()) < std::tuple(r.type(), r.number()); },
-                    });
+                    }, _force_sort);
 
                 for (auto& trigger : _triggered_by)
                 {
@@ -299,6 +300,7 @@ namespace trview
             render_items_list();
             ImGui::SameLine();
             render_item_details();
+            _force_sort = false;
 
             if (_tooltip_timer.has_value())
             {
@@ -342,6 +344,7 @@ namespace trview
     {
         _selected_item = item;
         _triggered_by = item.triggers();
+        _force_sort = true;
     }
 
     void ItemsWindow::setup_filters()
