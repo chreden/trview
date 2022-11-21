@@ -575,7 +575,7 @@ namespace trview
                             imgui_sort_weak(_all_triggers,
                                 {
                                     [](auto&& l, auto&& r) { return l.number() < r.number(); },
-                                    [&](auto&& l, auto&& r) { return std::tuple(l.type(), l.number()) < std::tuple(r.type(), r.number()); }
+                                    [&](auto&& l, auto&& r) { return std::tuple(trigger_type_name(l.type()), l.number()) < std::tuple(trigger_type_name(r.type()), r.number()); }
                                 }, _force_sort);
 
                             for (const auto& trigger : _all_triggers)
