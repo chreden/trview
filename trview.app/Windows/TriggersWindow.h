@@ -76,5 +76,6 @@ namespace trview
         bool _need_filtering{ true };
         float _required_number_width{ 0.0f };
         float _required_type_width{ 0.0f };
+        bool _force_sort{ false };
     };
 }

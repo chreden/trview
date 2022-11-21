@@ -68,5 +68,6 @@ namespace trview
         Filters<Item> _filters;
         trlevel::LevelVersion _level_version{ trlevel::LevelVersion::Unknown };
         std::function<bool(uint32_t)> _model_checker;
+        bool _force_sort{ false };
     };
 }

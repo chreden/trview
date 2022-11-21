@@ -41,6 +41,7 @@ namespace trview
     {
         _all_lights = lights;
         setup_filters();
+        _force_sort = true;
     }
 
     void LightsWindow::set_selected_light(const std::weak_ptr<ILight>& light)
@@ -108,9 +109,9 @@ namespace trview
                     {
                         [](auto&& l, auto&& r) { return l.number() < r.number(); },
                         [](auto&& l, auto&& r) { return std::tuple(l.room(), l.number()) < std::tuple(r.room(), r.number()); },
-                        [](auto&& l, auto&& r) { return std::tuple(l.type(), l.number()) < std::tuple(r.type(), r.number()); },
+                        [](auto&& l, auto&& r) { return std::tuple(light_type_name(l.type()), l.number()) < std::tuple(light_type_name(r.type()), r.number()); },
                         [](auto&& l, auto&& r) { return std::tuple(l.visible(), l.number()) < std::tuple(r.visible(), r.number()); }
-                    });
+                    }, _force_sort);
 
                 for (const auto& light_ptr : _all_lights)
                 {
@@ -261,6 +262,7 @@ namespace trview
             render_lights_list();
             ImGui::SameLine();
             render_light_details();
+            _force_sort = false;
 
             if (_tooltip_timer.has_value())
             {

@@ -15,7 +15,8 @@ namespace trview
     {
         _all_triggers = triggers;
 
-        _selected_commands.clear();
+        const std::string existing_command = _selected_command < _all_commands.size() ? _all_commands[_selected_command] : "All";
+
         std::set<TriggerCommandType> command_set;
         for (const auto& trigger : triggers)
         {
@@ -28,6 +29,12 @@ namespace trview
         std::vector<std::string> all_commands{ "All", "Flipmaps" };
         std::transform(command_set.begin(), command_set.end(), std::back_inserter(all_commands), command_type_name);
         _all_commands = all_commands;
+
+        auto reselected_command = std::find(_all_commands.begin(), _all_commands.end(), existing_command);
+        if (reselected_command != _all_commands.end())
+        {
+            _selected_command = reselected_command - _all_commands.begin();
+        }
 
         setup_filters();
         _need_filtering = true;
@@ -189,9 +196,9 @@ namespace trview
                     {
                         [](auto&& l, auto&& r) { return l.number() < r.number(); },
                         [](auto&& l, auto&& r) { return std::tuple(l.room(), l.number()) < std::tuple(r.room(), r.number()); },
-                        [](auto&& l, auto&& r) { return std::tuple(l.type(), l.number()) < std::tuple(r.type(), r.number()); },
+                        [](auto&& l, auto&& r) { return std::tuple(trigger_type_name(l.type()), l.number()) < std::tuple(trigger_type_name(r.type()), r.number()); },
                         [](auto&& l, auto&& r) { return std::tuple(l.visible(), l.number()) < std::tuple(r.visible(), r.number()); }
-                    });
+                    }, _force_sort);
 
                 ImGuiListClipper clipper;
                 clipper.Begin(_filtered_triggers.size());
@@ -327,10 +334,10 @@ namespace trview
 
                 imgui_sort(_local_selected_trigger_commands,
                     {
-                        [](auto&& l, auto&& r) { return std::tuple(l.type(), l.index()) < std::tuple(r.type(), r.index()); },
+                        [](auto&& l, auto&& r) { return std::tuple(command_type_name(l.type()), l.index()) < std::tuple(command_type_name(r.type()), r.index()); },
                         [](auto&& l, auto&& r) { return l.index() < r.index(); },
                         [&](auto&& l, auto&& r) { return std::tuple(get_command_display(l), l.index()) < std::tuple(get_command_display(r), r.index()); },
-                    });
+                    }, _force_sort);
 
                 for (auto& command : _local_selected_trigger_commands)
                 {
@@ -366,6 +373,7 @@ namespace trview
             render_triggers_list();
             ImGui::SameLine();
             render_trigger_details();
+            _force_sort = false;
 
             if (_tooltip_timer.has_value())
             {
@@ -479,11 +487,7 @@ namespace trview
                          (!_selected_commands.empty() && !has_any_command(*trigger_ptr, _selected_commands)));
             });
         _need_filtering = false;
-
-        if (auto specs = ImGui::TableGetSortSpecs())
-        {
-            specs->SpecsDirty = true;
-        }
+        _force_sort = true;
     }
 
     void TriggersWindow::calculate_column_widths()
