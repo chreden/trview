@@ -19,7 +19,6 @@ namespace trview
 
         struct WindowPlacement
         {
-            uint32_t show_cmd;
             int32_t min_x;
             int32_t min_y;
             int32_t max_x;
