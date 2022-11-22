@@ -70,7 +70,7 @@ namespace trview
         _inverted_room_offset = _room_offset.Invert();
 
         generate_sectors(level, room, sector_source);
-        generate_geometry(level.get_version(), mesh_source, room);
+        generate_geometry(mesh_source, room);
         generate_adjacency();
         generate_static_meshes(mesh_source, level, room, mesh_storage, static_mesh_mesh_source, static_mesh_position_source, activity);
 
@@ -336,7 +336,7 @@ namespace trview
         }
     }
 
-    void Room::generate_geometry(trlevel::LevelVersion level_version, const IMesh::Source& mesh_source, const trlevel::tr3_room& room)
+    void Room::generate_geometry(const IMesh::Source& mesh_source, const trlevel::tr3_room& room)
     {
         std::vector<trlevel::tr_vertex> room_vertices;
         std::transform(room.data.vertices.begin(), room.data.vertices.end(), std::back_inserter(room_vertices),
@@ -350,8 +350,8 @@ namespace trview
         
         std::vector<Triangle> collision_triangles;
 
-        process_textured_rectangles(level_version, room.data.rectangles, room_vertices, *_texture_storage, vertices, indices, transparent_triangles, collision_triangles, false);
-        process_textured_triangles(level_version, room.data.triangles, room_vertices, *_texture_storage, vertices, indices, transparent_triangles, collision_triangles, false);
+        process_textured_rectangles(room.data.rectangles, room_vertices, *_texture_storage, vertices, indices, transparent_triangles, collision_triangles, false);
+        process_textured_triangles(room.data.triangles, room_vertices, *_texture_storage, vertices, indices, transparent_triangles, collision_triangles, false);
         process_collision_transparency(transparent_triangles, collision_triangles);
 
         _mesh = mesh_source(vertices, indices, std::vector<uint32_t>{}, transparent_triangles, collision_triangles);
@@ -915,7 +915,7 @@ namespace trview
 
         portal.direct = _sectors[id];
         portal.direct_room = std::const_pointer_cast<IRoom>(shared_from_this());
-        if (has_flag(portal.direct->flags(), SectorFlag::Portal))
+        if (has_flag(portal.direct->flags(), SectorFlag::Portal) && portal.direct->portal() != 0xff)
         {
             const auto other_room = _level.room(portal.direct->portal()).lock();
             const auto diff = (position() - other_room->position()) + Vector3(static_cast<float>(x2), 0, static_cast<float>(z2));
