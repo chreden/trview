@@ -624,7 +624,6 @@ TEST(SettingsLoader, WindowPlacementLoaded)
     ASSERT_EQ(placement.normal_left, 500);
     ASSERT_EQ(placement.normal_right, 2000);
     ASSERT_EQ(placement.normal_top, 200);
-    ASSERT_EQ(placement.show_cmd, 10);
 }
 
 TEST(SettingsLoader, WindowPlacementSaved)
@@ -634,11 +633,11 @@ TEST(SettingsLoader, WindowPlacementSaved)
     UserSettings settings;
     const UserSettings::WindowPlacement placement =
     {
-        10, -1, -1, -1, -1, 500, 200, 2000, 1000
+        -1, -1, -1, -1, 500, 200, 2000, 1000
     };
     settings.window_placement = placement;
     loader->save_user_settings(settings);
-    EXPECT_THAT(output, HasSubstr("\"window_placement\":{\"max_x\":-1,\"max_y\":-1,\"min_x\":-1,\"min_y\":-1,\"normal_bottom\":1000,\"normal_left\":500,\"normal_right\":2000,\"normal_top\":200,\"show_cmd\":10}"));
+    EXPECT_THAT(output, HasSubstr("\"window_placement\":{\"max_x\":-1,\"max_y\":-1,\"min_x\":-1,\"min_y\":-1,\"normal_bottom\":1000,\"normal_left\":500,\"normal_right\":2000,\"normal_top\":200}"));
 }
 
 TEST(SettingsLoader, WindowPlacementNotSavedIfMissing)

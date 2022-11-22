@@ -768,7 +768,6 @@ namespace trview
         {
             _settings.window_placement =
             {
-                placement.showCmd,
                 placement.ptMinPosition.x, placement.ptMinPosition.y,
                 placement.ptMaxPosition.x, placement.ptMaxPosition.y,
                 placement.rcNormalPosition.left, placement.rcNormalPosition.top, placement.rcNormalPosition.right, placement.rcNormalPosition.bottom

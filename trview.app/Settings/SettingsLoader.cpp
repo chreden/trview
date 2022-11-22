@@ -13,7 +13,6 @@ namespace trview
 
     void to_json(nlohmann::json& json, const UserSettings::WindowPlacement& placement)
     {
-        json["show_cmd"] = placement.show_cmd;
         json["min_x"] = placement.min_x;
         json["min_y"] = placement.min_y;
         json["max_x"] = placement.max_x;
@@ -32,7 +31,6 @@ namespace trview
 
     void from_json(const nlohmann::json& json, UserSettings::WindowPlacement& placement)
     {
-        placement.show_cmd = read_attribute<uint32_t>(json, "show_cmd");
         placement.min_x = read_attribute<int32_t>(json, "min_x");
         placement.min_y = read_attribute<int32_t>(json, "min_y");
         placement.max_x = read_attribute<int32_t>(json, "max_x");

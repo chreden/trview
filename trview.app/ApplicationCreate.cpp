@@ -110,7 +110,7 @@ namespace trview
                 const auto p = settings.window_placement.value();
                 WINDOWPLACEMENT placement{};
                 placement.length = sizeof(placement);
-                placement.showCmd = p.show_cmd;
+                placement.showCmd = SW_SHOW;
                 placement.ptMinPosition = { p.min_x, p.min_y };
                 placement.ptMaxPosition = { p.max_x, p.max_y };
                 placement.rcNormalPosition = { p.normal_left, p.normal_top, p.normal_right, p.normal_bottom };
