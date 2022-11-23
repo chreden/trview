@@ -27,9 +27,6 @@
     <ClInclude Include="Inc\SpriteBatch.h">
       <Filter>Inc</Filter>
     </ClInclude>
-    <ClInclude Include="Inc\PrimitiveBatch.h">
-      <Filter>Inc</Filter>
-    </ClInclude>
     <ClInclude Include="Inc\SpriteFont.h">
       <Filter>Inc</Filter>
     </ClInclude>
@@ -116,16 +113,10 @@
     <ClCompile Include="Src\SpriteBatch.cpp">
       <Filter>Src</Filter>
     </ClCompile>
-    <ClCompile Include="Src\PrimitiveBatch.cpp">
-      <Filter>Src</Filter>
-    </ClCompile>
     <ClCompile Include="Src\SpriteFont.cpp">
       <Filter>Src</Filter>
     </ClCompile>
     <ClCompile Include="Src\VertexTypes.cpp">
-      <Filter>Src</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\BasicEffect.cpp">
       <Filter>Src</Filter>
     </ClCompile>
     <ClCompile Include="Src\EffectCommon.cpp">
@@ -134,28 +125,10 @@
     <ClCompile Include="Src\EffectFactory.cpp">
       <Filter>Src</Filter>
     </ClCompile>
-    <ClCompile Include="Src\SkinnedEffect.cpp">
-      <Filter>Src</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\AlphaTestEffect.cpp">
-      <Filter>Src</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\DualTextureEffect.cpp">
-      <Filter>Src</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\EnvironmentMapEffect.cpp">
-      <Filter>Src</Filter>
-    </ClCompile>
     <ClCompile Include="Src\DDSTextureLoader.cpp">
       <Filter>Src</Filter>
     </ClCompile>
     <ClCompile Include="Src\WICTextureLoader.cpp">
-      <Filter>Src</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\DGSLEffect.cpp">
-      <Filter>Src</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\DGSLEffectFactory.cpp">
       <Filter>Src</Filter>
     </ClCompile>
     <ClCompile Include="Src\BinaryReader.cpp">
@@ -166,21 +139,6 @@
     </ClCompile>
     <ClCompile Include="Src\Geometry.cpp">
       <Filter>Src\Shared</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\NormalMapEffect.cpp">
-      <Filter>Src</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\BasicPostProcess.cpp">
-      <Filter>Src</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\PBREffect.cpp">
-      <Filter>Src</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\DebugEffect.cpp">
-      <Filter>Src</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\PBREffectFactory.cpp">
-      <Filter>Src</Filter>
     </ClCompile>
     <ClCompile Include="Src\BufferHelpers.cpp">
       <Filter>Src</Filter>
@@ -196,33 +154,6 @@
     <None Include="Src\Shaders\SpriteEffect.fx">
       <Filter>Src\Shaders</Filter>
     </None>
-    <None Include="Src\Shaders\BasicEffect.fx">
-      <Filter>Src\Shaders</Filter>
-    </None>
-    <None Include="Src\Shaders\AlphaTestEffect.fx">
-      <Filter>Src\Shaders</Filter>
-    </None>
-    <None Include="Src\Shaders\DualTextureEffect.fx">
-      <Filter>Src\Shaders</Filter>
-    </None>
-    <None Include="Src\Shaders\EnvironmentMapEffect.fx">
-      <Filter>Src\Shaders</Filter>
-    </None>
-    <None Include="Src\Shaders\SkinnedEffect.fx">
-      <Filter>Src\Shaders</Filter>
-    </None>
-    <None Include="Src\Shaders\DGSLEffect.fx">
-      <Filter>Src\Shaders</Filter>
-    </None>
-    <None Include="Src\Shaders\DGSLPhong.hlsl">
-      <Filter>Src\Shaders</Filter>
-    </None>
-    <None Include="Src\Shaders\DGSLUnlit.hlsl">
-      <Filter>Src\Shaders</Filter>
-    </None>
-    <None Include="Src\Shaders\DGSLLambert.hlsl">
-      <Filter>Src\Shaders</Filter>
-    </None>
     <None Include="Src\TeapotData.inc">
       <Filter>Src\Shared</Filter>
     </None>
@@ -235,26 +166,11 @@
     <None Include="Src\Shaders\Structures.fxh">
       <Filter>Src\Shaders\Shared</Filter>
     </None>
-    <None Include="Src\Shaders\NormalMapEffect.fx">
-      <Filter>Src\Shaders</Filter>
-    </None>
-    <None Include="Src\Shaders\PostProcess.fx">
-      <Filter>Src\Shaders</Filter>
-    </None>
-    <None Include="Src\Shaders\ToneMap.fx">
-      <Filter>Src\Shaders</Filter>
-    </None>
     <None Include="Src\Shaders\Utilities.fxh">
       <Filter>Src\Shaders\Shared</Filter>
     </None>
-    <None Include="Src\Shaders\PBREffect.fx">
-      <Filter>Src\Shaders</Filter>
-    </None>
     <None Include="Src\Shaders\PBRCommon.fxh">
       <Filter>Src\Shaders\Shared</Filter>
-    </None>
-    <None Include="Src\Shaders\DebugEffect.fx">
-      <Filter>Src\Shaders</Filter>
     </None>
     <None Include="Src\Shaders\PixelPacking_Velocity.hlsli">
       <Filter>Src\Shaders\Shared</Filter>

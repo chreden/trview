@@ -30,7 +30,6 @@
     <ClInclude Include="Inc\SimpleMath.h" />
     <ClInclude Include="Inc\SimpleMath.inl" />
     <ClInclude Include="Inc\SpriteBatch.h" />
-    <ClInclude Include="Inc\PrimitiveBatch.h" />
     <ClInclude Include="Inc\SpriteFont.h" />
     <ClInclude Include="Inc\VertexTypes.h" />
     <ClInclude Include="Inc\WICTextureLoader.h" />
@@ -49,25 +48,14 @@
     <ClInclude Include="Src\vbo.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Src\AlphaTestEffect.cpp" />
-    <ClCompile Include="Src\BasicEffect.cpp" />
-    <ClCompile Include="Src\BasicPostProcess.cpp" />
     <ClCompile Include="Src\BufferHelpers.cpp" />
     <ClCompile Include="Src\CommonStates.cpp" />
     <ClCompile Include="Src\DDSTextureLoader.cpp" />
-    <ClCompile Include="Src\DebugEffect.cpp" />
-    <ClCompile Include="Src\DGSLEffect.cpp" />
-    <ClCompile Include="Src\DGSLEffectFactory.cpp" />
     <ClCompile Include="Src\DirectXHelpers.cpp" />
-    <ClCompile Include="Src\DualTextureEffect.cpp" />
     <ClCompile Include="Src\BinaryReader.cpp" />
     <ClCompile Include="Src\EffectCommon.cpp" />
     <ClCompile Include="Src\EffectFactory.cpp" />
-    <ClCompile Include="Src\EnvironmentMapEffect.cpp" />
     <ClCompile Include="Src\Geometry.cpp" />
-    <ClCompile Include="Src\NormalMapEffect.cpp" />
-    <ClCompile Include="Src\PBREffect.cpp" />
-    <ClCompile Include="Src\PBREffectFactory.cpp" />
     <ClCompile Include="Src\pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
@@ -75,9 +63,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="Src\SimpleMath.cpp" />
-    <ClCompile Include="Src\SkinnedEffect.cpp" />
     <ClCompile Include="Src\SpriteBatch.cpp" />
-    <ClCompile Include="Src\PrimitiveBatch.cpp" />
     <ClCompile Include="Src\SpriteFont.cpp" />
     <ClCompile Include="Src\VertexTypes.cpp" />
     <ClCompile Include="Src\WICTextureLoader.cpp" />
@@ -94,60 +80,6 @@
     <None Include="Src\Shaders\Structures.fxh" />
     <None Include="Src\Shaders\Utilities.fxh" />
     <None Include="Src\TeapotData.inc" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Src\Shaders\BasicEffect.fx">
-      <FileType>Document</FileType>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Src\Shaders\AlphaTestEffect.fx">
-      <FileType>Document</FileType>
-    </None>
-    <None Include="Src\Shaders\DualTextureEffect.fx">
-      <FileType>Document</FileType>
-    </None>
-    <None Include="Src\Shaders\EnvironmentMapEffect.fx">
-      <FileType>Document</FileType>
-    </None>
-    <None Include="Src\Shaders\SkinnedEffect.fx">
-      <FileType>Document</FileType>
-    </None>
-    <None Include="Src\Shaders\DGSLEffect.fx">
-      <FileType>Document</FileType>
-    </None>
-    <None Include="Src\Shaders\DGSLLambert.hlsl">
-      <FileType>Document</FileType>
-    </None>
-    <None Include="Src\Shaders\DGSLPhong.hlsl">
-      <FileType>Document</FileType>
-    </None>
-    <None Include="Src\Shaders\DGSLUnlit.hlsl">
-      <FileType>Document</FileType>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Src\Shaders\NormalMapEffect.fx">
-      <FileType>Document</FileType>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Src\Shaders\PostProcess.fx">
-      <FileType>Document</FileType>
-    </None>
-    <None Include="Src\Shaders\ToneMap.fx">
-      <FileType>Document</FileType>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Src\Shaders\PBREffect.fx">
-      <FileType>Document</FileType>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Src\Shaders\DebugEffect.fx">
-      <FileType>Document</FileType>
-    </None>
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{A11566D3-4081-42C9-94C5-F4057EDD9D50}</ProjectGuid>
