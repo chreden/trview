@@ -1,5 +1,7 @@
 #pragma once
 
+#include <memory>
+
 #include <trview.common/Window.h>
 
 namespace trview
