@@ -93,9 +93,6 @@
     <ClCompile Include="ViewportStore.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\external\DirectXTK\DirectXTK_Desktop.vcxproj">
-      <Project>{a11566d3-4081-42c9-94c5-f4057edd9d50}</Project>
-    </ProjectReference>
     <ProjectReference Include="..\trview.common\trview.common.vcxproj">
       <Project>{d0633291-23a6-4b3f-9a5e-e94d20f66a07}</Project>
     </ProjectReference>
@@ -174,7 +171,7 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
       <AdditionalIncludeDirectories>$(SolutionDir);$(SolutionDir)external\DirectXTK\Inc;$(ProjectDir)</AdditionalIncludeDirectories>
-      <LanguageStandard>stdcpp20</LanguageStandard>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
       <ForcedIncludeFiles>stdafx.h</ForcedIncludeFiles>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
     </ClCompile>
@@ -193,7 +190,7 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
       <AdditionalIncludeDirectories>$(SolutionDir);$(SolutionDir)external\DirectXTK\Inc;$(ProjectDir)</AdditionalIncludeDirectories>
-      <LanguageStandard>stdcpp20</LanguageStandard>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
       <ForcedIncludeFiles>stdafx.h</ForcedIncludeFiles>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
     </ClCompile>
@@ -214,7 +211,7 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
       <AdditionalIncludeDirectories>$(SolutionDir);$(SolutionDir)external\DirectXTK\Inc;$(ProjectDir)</AdditionalIncludeDirectories>
-      <LanguageStandard>stdcpp20</LanguageStandard>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
       <ForcedIncludeFiles>stdafx.h</ForcedIncludeFiles>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
@@ -237,7 +234,7 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
       <AdditionalIncludeDirectories>$(SolutionDir);$(SolutionDir)external\DirectXTK\Inc;$(ProjectDir)</AdditionalIncludeDirectories>
-      <LanguageStandard>stdcpp20</LanguageStandard>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
       <ForcedIncludeFiles>stdafx.h</ForcedIncludeFiles>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
