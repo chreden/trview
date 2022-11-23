@@ -1,7 +1,7 @@
 //--------------------------------------------------------------------------------------
 // File: GraphicsMemory.cpp
 //
-// Copyright (c) Microsoft Corporation. All rights reserved.
+// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 //
 // http://go.microsoft.com/fwlink/?LinkId=248929
@@ -32,7 +32,7 @@ public:
     {
         if (s_graphicsMemory)
         {
-            throw std::exception("GraphicsMemory is a singleton");
+            throw std::logic_error("GraphicsMemory is a singleton");
         }
 
         s_graphicsMemory = this;
@@ -56,7 +56,7 @@ public:
         s_graphicsMemory = nullptr;
     }
 
-    void Initialize(_In_ ID3D11DeviceX* device, UINT backBufferCount)
+    void Initialize(_In_ ID3D11DeviceX* device, unsigned int backBufferCount)
     {
         assert(device != nullptr);
         mDevice = device;
@@ -110,10 +110,10 @@ public:
             }
 
             mGrfxMemory = VirtualAlloc(nullptr, mPageSize,
-                                       MEM_LARGE_PAGES | MEM_GRAPHICS | MEM_RESERVE | MEM_COMMIT,
-                                       PAGE_WRITECOMBINE | PAGE_READWRITE | PAGE_GPU_READONLY);
+                MEM_LARGE_PAGES | MEM_GRAPHICS | MEM_RESERVE | MEM_COMMIT,
+                PAGE_WRITECOMBINE | PAGE_READWRITE | PAGE_GPU_READONLY);
             if (!mGrfxMemory)
-                throw  std::bad_alloc();
+                throw std::bad_alloc();
         }
 
         size_t mPageSize;
@@ -180,12 +180,12 @@ public:
 
         void Clear()
         {
-            for (auto it = mPages.begin(); it != mPages.end(); ++it)
+            for (auto& it : mPages)
             {
-                if (it->mGrfxMemory)
+                if (it.mGrfxMemory)
                 {
-                    VirtualFree(it->mGrfxMemory, 0, MEM_RELEASE);
-                    it->mGrfxMemory = nullptr;
+                    VirtualFree(it.mGrfxMemory, 0, MEM_RELEASE);
+                    it.mGrfxMemory = nullptr;
                 }
             }
 
@@ -222,24 +222,30 @@ public:
     {
         if (s_graphicsMemory)
         {
-            throw std::exception("GraphicsMemory is a singleton");
+            throw std::logic_error("GraphicsMemory is a singleton");
         }
 
         s_graphicsMemory = this;
     }
+
+    Impl(Impl&&) = default;
+    Impl& operator= (Impl&&) = default;
+
+    Impl(Impl const&) = delete;
+    Impl& operator= (Impl const&) = delete;
 
     ~Impl()
     {
         s_graphicsMemory = nullptr;
     }
 
-    void Initialize(_In_ ID3D11Device* device, UINT backBufferCount)
+    void Initialize(_In_ ID3D11Device* device, unsigned int backBufferCount) noexcept
     {
         UNREFERENCED_PARAMETER(device);
         UNREFERENCED_PARAMETER(backBufferCount);
     }
 
-    void* Allocate(_In_opt_ ID3D11DeviceContext* context, size_t size, int alignment)
+    void* Allocate(_In_opt_ ID3D11DeviceContext* context, size_t size, int alignment) noexcept
     {
         UNREFERENCED_PARAMETER(context);
         UNREFERENCED_PARAMETER(size);
@@ -247,7 +253,7 @@ public:
         return nullptr;
     }
 
-    void Commit()
+    void Commit() noexcept
     {
     }
 
@@ -267,9 +273,9 @@ GraphicsMemory::Impl* GraphicsMemory::Impl::s_graphicsMemory = nullptr;
 
 // Public constructor.
 #if defined(_XBOX_ONE) && defined(_TITLE)
-GraphicsMemory::GraphicsMemory(_In_ ID3D11DeviceX* device, UINT backBufferCount)
+GraphicsMemory::GraphicsMemory(_In_ ID3D11DeviceX* device, unsigned int backBufferCount)
 #else
-GraphicsMemory::GraphicsMemory(_In_ ID3D11Device* device, UINT backBufferCount)
+GraphicsMemory::GraphicsMemory(_In_ ID3D11Device* device, unsigned int backBufferCount)
 #endif
     : pImpl(std::make_unique<Impl>(this))
 {
@@ -295,9 +301,7 @@ GraphicsMemory& GraphicsMemory::operator= (GraphicsMemory&& moveFrom) noexcept
 
 
 // Public destructor.
-GraphicsMemory::~GraphicsMemory()
-{
-}
+GraphicsMemory::~GraphicsMemory() = default;
 
 
 void* GraphicsMemory::Allocate(_In_opt_ ID3D11DeviceContext* context, size_t size, int alignment)
@@ -315,7 +319,7 @@ void GraphicsMemory::Commit()
 GraphicsMemory& GraphicsMemory::Get()
 {
     if (!Impl::s_graphicsMemory || !Impl::s_graphicsMemory->mOwner)
-        throw std::exception("GraphicsMemory singleton not created");
+        throw std::logic_error("GraphicsMemory singleton not created");
 
     return *Impl::s_graphicsMemory->mOwner;
 }

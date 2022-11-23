@@ -93,9 +93,6 @@
     <ClCompile Include="ViewportStore.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\external\DirectXTK\DirectXTK_Desktop_2017.vcxproj">
-      <Project>{e0b52ae7-e160-4d32-bf3f-910b785e5a8e}</Project>
-    </ProjectReference>
     <ProjectReference Include="..\trview.common\trview.common.vcxproj">
       <Project>{d0633291-23a6-4b3f-9a5e-e94d20f66a07}</Project>
     </ProjectReference>

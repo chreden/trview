@@ -1,6 +1,6 @@
 // DirectXTK MakeSpriteFont tool
 //
-// Copyright (c) Microsoft Corporation. All rights reserved.
+// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 //
 // http://go.microsoft.com/fwlink/?LinkId=248929
@@ -32,6 +32,7 @@ namespace MakeSpriteFont
         FL11_1,
         FL12_0,
         FL12_1,
+        FL12_2,
     }
 
 
