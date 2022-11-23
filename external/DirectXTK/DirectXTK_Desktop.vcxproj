@@ -24,9 +24,6 @@
     <ClInclude Include="Inc\DDSTextureLoader.h" />
     <ClInclude Include="Inc\DirectXHelpers.h" />
     <ClInclude Include="Inc\Effects.h" />
-    <ClInclude Include="Inc\GamePad.h" />
-    <ClInclude Include="Inc\Keyboard.h" />
-    <ClInclude Include="Inc\Mouse.h" />
     <ClInclude Include="Inc\SimpleMath.h" />
     <ClInclude Include="Inc\SimpleMath.inl" />
     <ClInclude Include="Inc\SpriteBatch.h" />
@@ -70,15 +67,8 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="README.md" />
-    <None Include="Src\Shaders\Common.fxh" />
     <None Include="Src\Shaders\CompileShaders.cmd" />
-    <None Include="Src\Shaders\Lighting.fxh" />
-    <None Include="Src\Shaders\PBRCommon.fxh" />
-    <None Include="Src\Shaders\PixelPacking_Velocity.hlsli" />
-    <None Include="Src\Shaders\Skinning.fxh" />
     <None Include="Src\Shaders\SpriteEffect.fx" />
-    <None Include="Src\Shaders\Structures.fxh" />
-    <None Include="Src\Shaders\Utilities.fxh" />
     <None Include="Src\TeapotData.inc" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

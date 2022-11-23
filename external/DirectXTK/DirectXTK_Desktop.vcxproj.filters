@@ -16,9 +16,6 @@
     <Filter Include="Src\Shaders">
       <UniqueIdentifier>{28d5fa16-99e2-471c-8cd8-2020e81f0024}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Src\Shaders\Shared">
-      <UniqueIdentifier>{34676173-31f5-4435-b90d-a0ad4f7d163c}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Inc\CommonStates.h">
@@ -50,15 +47,6 @@
     </ClInclude>
     <ClInclude Include="Inc\DirectXHelpers.h">
       <Filter>Inc</Filter>
-    </ClInclude>
-    <ClInclude Include="Inc\GamePad.h">
-      <Filter>Inc\Shared</Filter>
-    </ClInclude>
-    <ClInclude Include="Inc\Keyboard.h">
-      <Filter>Inc\Shared</Filter>
-    </ClInclude>
-    <ClInclude Include="Inc\Mouse.h">
-      <Filter>Inc\Shared</Filter>
     </ClInclude>
     <ClInclude Include="Inc\SimpleMath.inl">
       <Filter>Inc\Shared</Filter>
@@ -157,27 +145,6 @@
     <None Include="Src\TeapotData.inc">
       <Filter>Src\Shared</Filter>
     </None>
-    <None Include="Src\Shaders\Common.fxh">
-      <Filter>Src\Shaders\Shared</Filter>
-    </None>
-    <None Include="Src\Shaders\Lighting.fxh">
-      <Filter>Src\Shaders\Shared</Filter>
-    </None>
-    <None Include="Src\Shaders\Structures.fxh">
-      <Filter>Src\Shaders\Shared</Filter>
-    </None>
-    <None Include="Src\Shaders\Utilities.fxh">
-      <Filter>Src\Shaders\Shared</Filter>
-    </None>
-    <None Include="Src\Shaders\PBRCommon.fxh">
-      <Filter>Src\Shaders\Shared</Filter>
-    </None>
-    <None Include="Src\Shaders\PixelPacking_Velocity.hlsli">
-      <Filter>Src\Shaders\Shared</Filter>
-    </None>
     <None Include="README.md" />
-    <None Include="Src\Shaders\Skinning.fxh">
-      <Filter>Src\Shaders\Shared</Filter>
-    </None>
   </ItemGroup>
 </Project>
