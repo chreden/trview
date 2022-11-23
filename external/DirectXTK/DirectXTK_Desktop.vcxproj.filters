@@ -57,37 +57,25 @@
     <ClInclude Include="Src\AlignedNew.h">
       <Filter>Src\Shared</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Bezier.h">
-      <Filter>Src\Shared</Filter>
-    </ClInclude>
     <ClInclude Include="Src\BinaryReader.h">
       <Filter>Src\Shared</Filter>
     </ClInclude>
     <ClInclude Include="Src\DDS.h">
       <Filter>Src\Shared</Filter>
     </ClInclude>
-    <ClInclude Include="Src\DemandCreate.h">
-      <Filter>Src\Shared</Filter>
-    </ClInclude>
     <ClInclude Include="Src\PlatformHelpers.h">
       <Filter>Src\Shared</Filter>
     </ClInclude>
-    <ClInclude Include="Src\SDKMesh.h">
-      <Filter>Src\Shared</Filter>
-    </ClInclude>
     <ClInclude Include="Src\SharedResourcePool.h">
-      <Filter>Src\Shared</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\vbo.h">
-      <Filter>Src\Shared</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Geometry.h">
       <Filter>Src\Shared</Filter>
     </ClInclude>
     <ClInclude Include="Src\LoaderHelpers.h">
       <Filter>Src\Shared</Filter>
     </ClInclude>
     <ClInclude Include="Inc\BufferHelpers.h">
+      <Filter>Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\DemandCreate.h">
       <Filter>Inc</Filter>
     </ClInclude>
   </ItemGroup>
@@ -125,9 +113,6 @@
     <ClCompile Include="Src\SimpleMath.cpp">
       <Filter>Src\Shared</Filter>
     </ClCompile>
-    <ClCompile Include="Src\Geometry.cpp">
-      <Filter>Src\Shared</Filter>
-    </ClCompile>
     <ClCompile Include="Src\BufferHelpers.cpp">
       <Filter>Src</Filter>
     </ClCompile>
@@ -141,9 +126,6 @@
     </None>
     <None Include="Src\Shaders\SpriteEffect.fx">
       <Filter>Src\Shaders</Filter>
-    </None>
-    <None Include="Src\TeapotData.inc">
-      <Filter>Src\Shared</Filter>
     </None>
     <None Include="README.md" />
   </ItemGroup>

@@ -31,18 +31,14 @@
     <ClInclude Include="Inc\VertexTypes.h" />
     <ClInclude Include="Inc\WICTextureLoader.h" />
     <ClInclude Include="Src\AlignedNew.h" />
-    <ClInclude Include="Src\Bezier.h" />
     <ClInclude Include="Src\BinaryReader.h" />
     <ClInclude Include="Src\DemandCreate.h" />
     <ClInclude Include="Src\EffectCommon.h" />
-    <ClInclude Include="Src\Geometry.h" />
     <ClInclude Include="Src\LoaderHelpers.h" />
     <ClInclude Include="Src\pch.h" />
     <ClInclude Include="Src\PlatformHelpers.h" />
-    <ClInclude Include="Src\SDKMesh.h" />
     <ClInclude Include="Src\SharedResourcePool.h" />
     <ClInclude Include="Src\DDS.h" />
-    <ClInclude Include="Src\vbo.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Src\BufferHelpers.cpp" />
@@ -52,7 +48,6 @@
     <ClCompile Include="Src\BinaryReader.cpp" />
     <ClCompile Include="Src\EffectCommon.cpp" />
     <ClCompile Include="Src\EffectFactory.cpp" />
-    <ClCompile Include="Src\Geometry.cpp" />
     <ClCompile Include="Src\pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
@@ -69,7 +64,6 @@
     <None Include="README.md" />
     <None Include="Src\Shaders\CompileShaders.cmd" />
     <None Include="Src\Shaders\SpriteEffect.fx" />
-    <None Include="Src\TeapotData.inc" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{A11566D3-4081-42C9-94C5-F4057EDD9D50}</ProjectGuid>
