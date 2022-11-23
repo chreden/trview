@@ -2,6 +2,8 @@
 
 #include <cstdint>
 #include <optional>
+#include <memory>
+
 #include "trtypes.h"
 #include "tr_rooms.h"
 #include "LevelVersion.h"

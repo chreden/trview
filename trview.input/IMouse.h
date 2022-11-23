@@ -1,5 +1,8 @@
 #pragma once
 
+#include <cstdint>
+#include <memory>
+
 #include <trview.common/Event.h>
 #include <trview.common/Window.h>
 
