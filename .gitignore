@@ -265,4 +265,4 @@ trview.app/Resources/Generated/*.cso
 lau/drm
 *.ipch
 
-DirectXTK/Src/Shaders/Compiled/*
+external/DirectXTK/Src/Shaders/Compiled/*
