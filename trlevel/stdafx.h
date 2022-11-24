@@ -14,6 +14,8 @@
 #include <algorithm>
 #include <iterator>
 
+#define NOMINMAX
+
 #include <external/zlib/zlib.h>
 #include <SimpleMath.h>
 
