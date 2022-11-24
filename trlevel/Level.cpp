@@ -869,14 +869,7 @@ namespace trlevel
             load_level_data(activity, file);
         }
 
-        activity.log("Reading sound sample count");
-        uint32_t num_sound_samples = read<uint32_t>(file);
-        std::vector<tr4_sample> sound_samples(num_sound_samples);
-        activity.log(std::format("Reading {} sound samples", num_sound_samples));
-        for (uint32_t i = 0; i < num_sound_samples; ++i)
-        {
-            sound_samples[i].sound_data = read_compressed(file);
-        }
+        activity.log("Skipping sound samples");
 
         activity.log("Generating meshes");
         generate_meshes(_mesh_data);
