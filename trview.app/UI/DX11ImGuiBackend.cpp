@@ -7,6 +7,10 @@ extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg
 
 namespace trview
 {
+    IImGuiBackend::~IImGuiBackend()
+    {
+    }
+
     DX11ImGuiBackend::DX11ImGuiBackend(const Window& window, const std::shared_ptr<graphics::IDevice>& device)
         : _window(window), _device(device)
     {

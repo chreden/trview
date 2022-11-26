@@ -9,6 +9,10 @@ using namespace DirectX::SimpleMath;
 
 namespace trview
 {
+    ITransparencyBuffer::~ITransparencyBuffer()
+    {
+    }
+
     TransparencyBuffer::TransparencyBuffer(const std::shared_ptr<graphics::IDevice>& device)
         : _device(device), _untextured(create_texture(*device, Colour::White))
     {

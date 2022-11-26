@@ -14,6 +14,10 @@ using namespace DirectX::SimpleMath;
 
 namespace trview
 {
+    ILevel::~ILevel()
+    {
+    }
+
     Level::Level(const std::shared_ptr<graphics::IDevice>& device,
         const std::shared_ptr<graphics::IShaderStorage>& shader_storage,
         std::unique_ptr<trlevel::ILevel> level,

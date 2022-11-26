@@ -61,6 +61,10 @@ namespace trview
         }
     }
 
+    IDialogs::~IDialogs()
+    {
+    }
+
     Dialogs::Dialogs(const Window& window)
         : _window(window)
     {

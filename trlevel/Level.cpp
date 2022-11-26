@@ -5,6 +5,10 @@
 
 namespace trlevel
 {
+    ILevel::~ILevel()
+    {
+    }
+
     namespace
     {
         const float PiMul2 = 6.283185307179586476925286766559f;

@@ -36,6 +36,10 @@ namespace trview
         }; 
     }
 
+    ISelectionRenderer::~ISelectionRenderer()
+    {
+    }
+
     SelectionRenderer::SelectionRenderer(const std::shared_ptr<graphics::IDevice>& device, const std::shared_ptr<graphics::IShaderStorage>& shader_storage, std::unique_ptr<ITransparencyBuffer> transparency, const graphics::IRenderTarget::SizeSource& render_target_source)
         : _device(device), _transparency(std::move(transparency)), _render_target_source(render_target_source)
     {

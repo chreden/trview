@@ -8,6 +8,10 @@ namespace trview
 {
     namespace graphics
     {
+        IDevice::~IDevice()
+        {
+        }
+
         Device::Device()
         {
             D3D11CreateDevice(nullptr, D3D_DRIVER_TYPE_HARDWARE, nullptr, D3D11_CREATE_DEVICE_BGRA_SUPPORT, nullptr, 0,

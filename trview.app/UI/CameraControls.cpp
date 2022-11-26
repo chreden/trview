@@ -2,6 +2,10 @@
 
 namespace trview
 {
+    ICameraControls::~ICameraControls()
+    {
+    }
+
     // Set the current camera mode and raise the on_mode_selected event.
     // mode: The new camera mode.
     void CameraControls::change_mode(CameraMode mode)

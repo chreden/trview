@@ -4,6 +4,10 @@
 
 namespace trview
 {
+    IRoomsWindowManager::~IRoomsWindowManager()
+    {
+    }
+
     RoomsWindowManager::RoomsWindowManager(const Window& window, const std::shared_ptr<IShortcuts>& shortcuts, const IRoomsWindow::Source& rooms_window_source)
         : MessageHandler(window), _rooms_window_source(rooms_window_source)
     {

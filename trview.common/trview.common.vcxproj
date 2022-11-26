@@ -61,7 +61,6 @@
     <ClCompile Include="Colour.cpp" />
     <ClCompile Include="EventToken.cpp" />
     <ClCompile Include="Files.cpp" />
-    <ClCompile Include="IFiles.cpp" />
     <ClCompile Include="JsonSerializers.cpp" />
     <ClCompile Include="Logs\Activity.cpp" />
     <ClCompile Include="Logs\Log.cpp" />
@@ -81,10 +80,6 @@
     <ClCompile Include="Window.cpp" />
     <ClCompile Include="Windows\Clipboard.cpp" />
     <ClCompile Include="Windows\Dialogs.cpp" />
-    <ClCompile Include="Windows\IClipboard.cpp" />
-    <ClCompile Include="Windows\IDialogs.cpp" />
-    <ClCompile Include="Windows\IShell.cpp" />
-    <ClCompile Include="Windows\IShortcuts.cpp" />
     <ClCompile Include="Windows\Shell.cpp" />
     <ClCompile Include="Windows\Shortcuts.cpp" />
   </ItemGroup>
