@@ -10,6 +10,10 @@ namespace trview
 {
     namespace graphics
     {
+        IFontFactory::~IFontFactory()
+        {
+        }
+
         void FontFactory::store(const std::string& key, const std::shared_ptr<DirectX::SpriteFont>& font)
         {
             _cache.insert({ to_lowercase(key), font });

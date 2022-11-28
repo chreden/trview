@@ -4,9 +4,7 @@
     <ClCompile Include="Mouse.cpp" />
     <ClCompile Include="Keyboard.cpp" />
     <ClCompile Include="WindowTester.cpp" />
-    <ClCompile Include="IWindowTester.cpp" />
     <ClCompile Include="stdafx.cpp" />
-    <ClCompile Include="IMouse.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Mouse.h" />

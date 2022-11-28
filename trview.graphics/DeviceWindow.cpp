@@ -7,6 +7,10 @@ namespace trview
 {
     namespace graphics
     {
+        IDeviceWindow::~IDeviceWindow()
+        {
+        }
+
         DeviceWindow::DeviceWindow(const std::shared_ptr<IDevice>& device, const IRenderTarget::TextureSource& source, const Window& window)
             : _device(device), _render_target_source(source)
         {

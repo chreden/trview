@@ -9,6 +9,10 @@ using namespace DirectX::SimpleMath;
 
 namespace trview
 {
+    IPicking::~IPicking()
+    {
+    }
+
     Picking::Picking(const Window& window)
         : _window(window)
     {

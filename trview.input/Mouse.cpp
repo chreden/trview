@@ -10,6 +10,10 @@ namespace trview
             const uint32_t ClickDelta = 200;
         }
 
+        IMouse::~IMouse()
+        {
+        }
+
         Mouse::Mouse(const Window& window, std::unique_ptr<IWindowTester>&& window_tester)
             : MessageHandler(window), _window_tester(std::move(window_tester))
         {

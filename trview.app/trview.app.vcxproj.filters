@@ -10,9 +10,6 @@
     <ClCompile Include="Camera\FreeCamera.cpp">
       <Filter>Camera</Filter>
     </ClCompile>
-    <ClCompile Include="Camera\ICamera.cpp">
-      <Filter>Camera</Filter>
-    </ClCompile>
     <ClCompile Include="Camera\OrbitCamera.cpp">
       <Filter>Camera</Filter>
     </ClCompile>
@@ -79,12 +76,6 @@
     <ClCompile Include="Geometry\PickResult.cpp">
       <Filter>Geometry</Filter>
     </ClCompile>
-    <ClCompile Include="Graphics\ILevelTextureStorage.cpp">
-      <Filter>Graphics</Filter>
-    </ClCompile>
-    <ClCompile Include="Graphics\ITextureStorage.cpp">
-      <Filter>Graphics</Filter>
-    </ClCompile>
     <ClCompile Include="Graphics\SectorHighlight.cpp">
       <Filter>Graphics</Filter>
     </ClCompile>
@@ -127,16 +118,10 @@
     <ClCompile Include="Elements\StaticMesh.cpp">
       <Filter>Elements</Filter>
     </ClCompile>
-    <ClCompile Include="Graphics\IMeshStorage.cpp">
-      <Filter>Graphics</Filter>
-    </ClCompile>
     <ClCompile Include="Graphics\MeshStorage.cpp">
       <Filter>Graphics</Filter>
     </ClCompile>
     <ClCompile Include="Elements\TypeNameLookup.cpp">
-      <Filter>Elements</Filter>
-    </ClCompile>
-    <ClCompile Include="Elements\ITypeNameLookup.cpp">
       <Filter>Elements</Filter>
     </ClCompile>
     <ClCompile Include="Menus\MenuDetector.cpp">
@@ -163,38 +148,8 @@
     </ClCompile>
     <ClCompile Include="Application.cpp" />
     <ClCompile Include="ApplicationLuaRegistry.cpp" />
-    <ClCompile Include="UI\IViewerUI.cpp">
-      <Filter>UI</Filter>
-    </ClCompile>
-    <ClCompile Include="Geometry\IPicking.cpp">
-      <Filter>Geometry</Filter>
-    </ClCompile>
-    <ClCompile Include="Menus\IUpdateChecker.cpp">
-      <Filter>Menus</Filter>
-    </ClCompile>
-    <ClCompile Include="Settings\ISettingsLoader.cpp">
-      <Filter>Settings</Filter>
-    </ClCompile>
     <ClCompile Include="Settings\SettingsLoader.cpp">
       <Filter>Settings</Filter>
-    </ClCompile>
-    <ClCompile Include="Windows\IViewer.cpp">
-      <Filter>Windows</Filter>
-    </ClCompile>
-    <ClCompile Include="Routing\IRoute.cpp">
-      <Filter>Routing</Filter>
-    </ClCompile>
-    <ClCompile Include="Tools\ICompass.cpp">
-      <Filter>Tools</Filter>
-    </ClCompile>
-    <ClCompile Include="Tools\IMeasure.cpp">
-      <Filter>Tools</Filter>
-    </ClCompile>
-    <ClCompile Include="Graphics\ISelectionRenderer.cpp">
-      <Filter>Graphics</Filter>
-    </ClCompile>
-    <ClCompile Include="Geometry\ITransparencyBuffer.cpp">
-      <Filter>Geometry</Filter>
     </ClCompile>
     <ClCompile Include="Geometry\IMesh.cpp">
       <Filter>Geometry</Filter>
@@ -202,22 +157,10 @@
     <ClCompile Include="Geometry\Matrix.cpp">
       <Filter>Geometry</Filter>
     </ClCompile>
-    <ClCompile Include="Graphics\ISectorHighlight.cpp">
-      <Filter>Graphics</Filter>
-    </ClCompile>
-    <ClCompile Include="Elements\IEntity.cpp">
-      <Filter>Elements</Filter>
-    </ClCompile>
     <ClCompile Include="Settings\StartupOptions.cpp">
       <Filter>Settings</Filter>
     </ClCompile>
-    <ClCompile Include="Settings\IStartupOptions.cpp">
-      <Filter>Settings</Filter>
-    </ClCompile>
     <ClCompile Include="Elements\ITrigger.cpp">
-      <Filter>Elements</Filter>
-    </ClCompile>
-    <ClCompile Include="Elements\IStaticMesh.cpp">
       <Filter>Elements</Filter>
     </ClCompile>
     <ClCompile Include="Elements\ISector.cpp">
@@ -229,20 +172,8 @@
     <ClCompile Include="Routing\Actions.cpp">
       <Filter>Routing</Filter>
     </ClCompile>
-    <ClCompile Include="Routing\IActions.cpp">
-      <Filter>Routing</Filter>
-    </ClCompile>
     <ClCompile Include="Routing\IWaypoint.cpp">
       <Filter>Routing</Filter>
-    </ClCompile>
-    <ClCompile Include="UI\IViewOptions.cpp">
-      <Filter>UI</Filter>
-    </ClCompile>
-    <ClCompile Include="UI\IContextMenu.cpp">
-      <Filter>UI</Filter>
-    </ClCompile>
-    <ClCompile Include="UI\ICameraControls.cpp">
-      <Filter>UI</Filter>
     </ClCompile>
     <ClCompile Include="Settings\RandomizerSettings.cpp">
       <Filter>Settings</Filter>
@@ -251,23 +182,11 @@
       <Filter>Resources</Filter>
     </ClCompile>
     <ClCompile Include="trview_imgui.cpp" />
-    <ClCompile Include="Windows\ILightsWindow.cpp">
-      <Filter>Windows\Lights</Filter>
-    </ClCompile>
-    <ClCompile Include="Windows\ILightsWindowManager.cpp">
-      <Filter>Windows\Lights</Filter>
-    </ClCompile>
     <ClCompile Include="Windows\LightsWindowManager.cpp">
       <Filter>Windows\Lights</Filter>
     </ClCompile>
     <ClCompile Include="Windows\LightsWindow.cpp">
       <Filter>Windows\Lights</Filter>
-    </ClCompile>
-    <ClCompile Include="Windows\IItemsWindow.cpp">
-      <Filter>Windows\Items</Filter>
-    </ClCompile>
-    <ClCompile Include="Windows\IItemsWindowManager.cpp">
-      <Filter>Windows\Items</Filter>
     </ClCompile>
     <ClCompile Include="Windows\ItemsWindow.cpp">
       <Filter>Windows\Items</Filter>
@@ -275,23 +194,11 @@
     <ClCompile Include="Windows\ItemsWindowManager.cpp">
       <Filter>Windows\Items</Filter>
     </ClCompile>
-    <ClCompile Include="Windows\ITriggersWindow.cpp">
-      <Filter>Windows\Triggers</Filter>
-    </ClCompile>
-    <ClCompile Include="Windows\ITriggersWindowManager.cpp">
-      <Filter>Windows\Triggers</Filter>
-    </ClCompile>
     <ClCompile Include="Windows\TriggersWindow.cpp">
       <Filter>Windows\Triggers</Filter>
     </ClCompile>
     <ClCompile Include="Windows\TriggersWindowManager.cpp">
       <Filter>Windows\Triggers</Filter>
-    </ClCompile>
-    <ClCompile Include="Windows\IRoomsWindow.cpp">
-      <Filter>Windows\Rooms</Filter>
-    </ClCompile>
-    <ClCompile Include="Windows\IRoomsWindowManager.cpp">
-      <Filter>Windows\Rooms</Filter>
     </ClCompile>
     <ClCompile Include="Windows\RoomsWindow.cpp">
       <Filter>Windows\Rooms</Filter>
@@ -299,26 +206,14 @@
     <ClCompile Include="Windows\RoomsWindowManager.cpp">
       <Filter>Windows\Rooms</Filter>
     </ClCompile>
-    <ClCompile Include="Windows\IRouteWindow.cpp">
-      <Filter>Windows\Route</Filter>
-    </ClCompile>
-    <ClCompile Include="Windows\IRouteWindowManager.cpp">
-      <Filter>Windows\Route</Filter>
-    </ClCompile>
     <ClCompile Include="Windows\RouteWindow.cpp">
       <Filter>Windows\Route</Filter>
     </ClCompile>
     <ClCompile Include="Windows\RouteWindowManager.cpp">
       <Filter>Windows\Route</Filter>
     </ClCompile>
-    <ClCompile Include="UI\IImGuiBackend.cpp">
-      <Filter>UI</Filter>
-    </ClCompile>
     <ClCompile Include="UI\DX11ImGuiBackend.cpp">
       <Filter>UI</Filter>
-    </ClCompile>
-    <ClCompile Include="UI\IMapRenderer.cpp">
-      <Filter>UI\Minimap</Filter>
     </ClCompile>
     <ClCompile Include="UI\MapRenderer.cpp">
       <Filter>UI\Minimap</Filter>
@@ -332,21 +227,12 @@
     <ClCompile Include="UI\MapColours.cpp">
       <Filter>UI\Minimap</Filter>
     </ClCompile>
-    <ClCompile Include="UI\ISettingsWindow.cpp">
-      <Filter>UI\Settings</Filter>
-    </ClCompile>
     <ClCompile Include="UI\SettingsWindow.cpp">
       <Filter>UI\Settings</Filter>
     </ClCompile>
     <ClCompile Include="ApplicationCreate.cpp" />
-    <ClCompile Include="Elements\IRoom.cpp">
-      <Filter>Elements\Room</Filter>
-    </ClCompile>
     <ClCompile Include="Elements\Room.cpp">
       <Filter>Elements\Room</Filter>
-    </ClCompile>
-    <ClCompile Include="Elements\ILevel.cpp">
-      <Filter>Elements\Level</Filter>
     </ClCompile>
     <ClCompile Include="Elements\Level.cpp">
       <Filter>Elements\Level</Filter>

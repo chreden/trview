@@ -16,6 +16,10 @@ namespace trview
         }
     }
 
+    ICamera::~ICamera()
+    {
+    }
+
     Camera::Camera(const Size& size)
         : _view_size(size), _forward(Vector3::Forward), _up(Vector3::Down), _position(Vector3::Zero)
     {

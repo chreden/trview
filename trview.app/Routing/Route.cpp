@@ -78,6 +78,10 @@ namespace trview
         }
     }
 
+    IRoute::~IRoute()
+    {
+    }
+
     Route::Route(std::unique_ptr<ISelectionRenderer> selection_renderer, const IWaypoint::Source& waypoint_source, const UserSettings& settings)
         : _selection_renderer(std::move(selection_renderer)), _waypoint_source(waypoint_source), _colour(settings.route_colour), _waypoint_colour(settings.waypoint_colour)
     {

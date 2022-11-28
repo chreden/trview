@@ -35,6 +35,10 @@ namespace trview
         }
     }
 
+    IRoom::~IRoom()
+    {
+    }
+
     Room::Room(const IMesh::Source& mesh_source,
         const trlevel::ILevel& level, 
         const trlevel::tr3_room& room,

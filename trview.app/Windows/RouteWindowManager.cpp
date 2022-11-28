@@ -3,6 +3,10 @@
 
 namespace trview
 {
+    IRouteWindowManager::~IRouteWindowManager()
+    {
+    }
+
     RouteWindowManager::RouteWindowManager(const Window& window, const std::shared_ptr<IShortcuts>& shortcuts, const IRouteWindow::Source& route_window_source)
         : MessageHandler(window), _route_window_source(route_window_source)
     {

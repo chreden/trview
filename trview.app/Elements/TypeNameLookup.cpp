@@ -24,6 +24,10 @@ namespace trview
         }
     }
 
+    ITypeNameLookup::~ITypeNameLookup()
+    {
+    }
+
     TypeNameLookup::TypeNameLookup(const std::string& type_name_json)
     {
         auto json = nlohmann::json::parse(type_name_json.begin(), type_name_json.end());
