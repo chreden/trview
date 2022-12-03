@@ -205,7 +205,7 @@ namespace trview
                     }, _force_sort);
 
                 ImGuiListClipper clipper;
-                clipper.Begin(_filtered_triggers.size());
+                clipper.Begin(std::ssize(_filtered_triggers));
 
                 while (clipper.Step())
                 {

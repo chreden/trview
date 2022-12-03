@@ -360,16 +360,16 @@ namespace trview
             available_types.insert(item.type());
         }
         _filters.add_getter<std::string>("Type", { available_types.begin(), available_types.end() }, [](auto&& item) { return item.type(); });
-        _filters.add_getter<float>("#", [](auto&& item) { return item.number(); });
+        _filters.add_getter<float>("#", [](auto&& item) { return static_cast<float>(item.number()); });
         _filters.add_getter<float>("X", [](auto&& item) { return item.position().x * trlevel::Scale_X; });
         _filters.add_getter<float>("Y", [](auto&& item) { return item.position().y * trlevel::Scale_Y; });
         _filters.add_getter<float>("Z", [](auto&& item) { return item.position().z * trlevel::Scale_Z; });
-        _filters.add_getter<float>("Type ID", [](auto&& item) { return item.type_id(); });
-        _filters.add_getter<float>("Room", [](auto&& item) { return item.room(); });
+        _filters.add_getter<float>("Type ID", [](auto&& item) { return static_cast<float>(item.type_id()); });
+        _filters.add_getter<float>("Room", [](auto&& item) { return static_cast<float>(item.room()); });
         _filters.add_getter<bool>("Clear Body", [](auto&& item) { return item.clear_body_flag(); });
         _filters.add_getter<bool>("Invisible", [](auto&& item) { return item.invisible_flag(); });
         _filters.add_getter<std::string>("Flags", [](auto&& item) { return format_binary(item.activation_flags()); });
-        _filters.add_getter<float>("OCB", [](auto&& item) { return item.ocb(); });
+        _filters.add_getter<float>("OCB", [](auto&& item) { return static_cast<float>(item.ocb()); });
         _filters.add_multi_getter<float>("Triggered By", [](auto&& item)
             {
                 std::vector<float> results;

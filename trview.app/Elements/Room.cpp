@@ -900,10 +900,10 @@ namespace trview
         if (sector->room_above() != 0xff)
         {
             const auto other_room = _level.room(sector->room_above()).lock();
-            const auto diff = (position() - other_room->position()) + Vector3(x1, 0, z1);
+            const auto diff = (position() - other_room->position()) + Vector3(static_cast<float>(x1), 0, static_cast<float>(z1));
             const int other_id = diff.x * other_room->num_z_sectors() + diff.z;
             portal.sector_above = other_room->sectors()[other_id];
-            portal.above_offset = Vector3(x1, 0, z1) - diff;
+            portal.above_offset = Vector3(static_cast<float>(x1), 0, static_cast<float>(z1)) - diff;
             portal.room_above = other_room;
         }
 
