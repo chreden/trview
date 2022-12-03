@@ -649,9 +649,9 @@ namespace trview
     void RoomsWindow::generate_filters()
     {
         _filters.clear_all_getters();
-        _filters.add_getter<float>("X", [](auto&& room) { return room.info().x; });
-        _filters.add_getter<float>("Y", [](auto&& room) { return room.info().yBottom; });
-        _filters.add_getter<float>("Z", [](auto&& room) { return room.info().z; });
+        _filters.add_getter<float>("X", [](auto&& room) { return static_cast<float>(room.info().x); });
+        _filters.add_getter<float>("Y", [](auto&& room) { return static_cast<float>(room.info().yBottom); });
+        _filters.add_getter<float>("Z", [](auto&& room) { return static_cast<float>(room.info().z); });
         _filters.add_multi_getter<float>("Neighbours", [](auto&& room)
             {
                 std::vector<float> results;

@@ -208,7 +208,7 @@ namespace trview
                                 return waypoint.position();
                             }
                             const auto info = room->info();
-                            const Vector3 bottom_left = Vector3(info.x, info.yBottom, info.z) / trlevel::Scale_X;
+                            const Vector3 bottom_left = Vector3(static_cast<float>(info.x), static_cast<float>(info.yBottom), static_cast<float>(info.z)) / trlevel::Scale_X;
                             return waypoint.position() - bottom_left;
                         }
                         return waypoint.position();

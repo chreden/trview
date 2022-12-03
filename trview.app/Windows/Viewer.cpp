@@ -314,7 +314,7 @@ namespace trview
             }
         };
 
-        _token_store += _picking->on_pick += [&](PickInfo pickInfo, PickResult result)
+        _token_store += _picking->on_pick += [&](PickInfo, PickResult result)
         {
             _current_pick = result;
 

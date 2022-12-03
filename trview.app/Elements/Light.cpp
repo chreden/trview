@@ -74,7 +74,7 @@ namespace trview
             {
                 _mesh->render(
                     Matrix::CreateScale(0.05f) * 
-                    Matrix::CreateTranslation(_position + step * i) *
+                    Matrix::CreateTranslation(_position + step * static_cast<float>(i)) *
                     camera.view_projection(), texture_storage, _colour, 1.0f, light_direction);
             }
         }

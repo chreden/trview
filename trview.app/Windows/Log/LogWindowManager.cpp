@@ -23,7 +23,7 @@ namespace trview
         WindowManager::render();
     }
 
-    std::optional<int> LogWindowManager::process_message(UINT message, WPARAM wParam, LPARAM lParam)
+    std::optional<int> LogWindowManager::process_message(UINT message, WPARAM wParam, LPARAM)
     {
         if (message == WM_COMMAND && LOWORD(wParam) == ID_WINDOWS_LOG)
         {
