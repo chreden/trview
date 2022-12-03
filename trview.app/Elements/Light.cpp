@@ -55,7 +55,6 @@ namespace trview
         }
 
         auto world = Matrix::CreateScale(0.25f) * Matrix::CreateTranslation(_position);
-        auto wvp = world * camera.view_projection();
         auto light_direction = Vector3::TransformNormal(camera.position() - _position, world.Invert());
         light_direction.Normalize();
 
@@ -70,12 +69,13 @@ namespace trview
             d.Normalize();
 
             const int steps = 4;
-            const auto step = d * (1.0f / static_cast<float>(steps));
+            const Vector3 step = d * (1.0f / static_cast<float>(steps));
             for (int i = 1; i <= steps; ++i)
             {
-                auto world = Matrix::CreateScale(0.05f) * Matrix::CreateTranslation(_position + step * i);
-                auto wvp = world * camera.view_projection();
-                _mesh->render(wvp, texture_storage, _colour, 1.0f, light_direction);
+                _mesh->render(
+                    Matrix::CreateScale(0.05f) * 
+                    Matrix::CreateTranslation(_position + step * i) *
+                    camera.view_projection(), texture_storage, _colour, 1.0f, light_direction);
             }
         }
     }

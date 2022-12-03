@@ -181,7 +181,7 @@ TEST(CameraPosition, RotationsCorrectlyConverted)
 TEST(CameraPosition, YawRemovesNegatives)
 {
     CameraPosition subject;
-    subject.set_rotation(-1.5707963267948966192313216916398, 1);
+    subject.set_rotation(-1.5707963267f, 1);
 
     TestImgui imgui([&]() { subject.render(); });
 

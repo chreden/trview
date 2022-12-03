@@ -41,7 +41,7 @@ namespace trlevel
                 Colour(tr5_fog.colour.r, tr5_fog.colour.g, tr5_fog.colour.b) :
                 Colour(tr5.colour.r, tr5.colour.g, tr5.colour.b);
         }
-        Colour::Transparent;
+        return Colour::Transparent;
     }
 
     LightType tr_x_room_light::type() const

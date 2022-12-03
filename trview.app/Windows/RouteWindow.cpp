@@ -409,10 +409,8 @@ namespace trview
                             b.second.default_value : waypoint_settings[b.first]);
                     if (ImGui::Checkbox(b.second.display.c_str(), &value))
                     {
-                        auto& waypoint = _route->waypoint(_selected_index);
-                        auto settings = waypoint.randomizer_settings();
-                        settings[b.first] = value;
-                        waypoint.set_randomizer_settings(settings);
+                        waypoint_settings[b.first] = value;
+                        waypoint.set_randomizer_settings(waypoint_settings);
                         _route->set_unsaved(true);
                     }
                 }
