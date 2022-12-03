@@ -172,9 +172,8 @@ namespace trview
         virtual void set_minimap_highlight(uint16_t x, uint16_t z) = 0;
 
         /// Set the current pick result.
-        /// @param info The parameters for the pick.
         /// @param pick_result The pick result.
-        virtual void set_pick(const PickInfo& info, const PickResult& pick_result) = 0;
+        virtual void set_pick(const PickResult& pick_result) = 0;
 
         /// Set whether the user can click the remove waypoint button.
         /// "param value Whether the button is enabled.

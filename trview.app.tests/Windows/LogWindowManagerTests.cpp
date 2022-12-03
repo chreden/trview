@@ -8,14 +8,11 @@ using namespace trview::mocks;
 
 namespace
 {
-    Event<> shortcut_handler;
-
     auto register_test_module()
     {
         struct test_module
         {
             Window window{ create_test_window(L"LogWindowManagerTests") };
-            std::shared_ptr<MockShortcuts> shortcuts{ mock_shared<MockShortcuts>() };
             ILogWindow::Source window_source{ [](auto&&...) { return mock_shared<MockLogWindow>(); } };
 
             test_module& with_window_source(const ILogWindow::Source& source)
@@ -24,20 +21,9 @@ namespace
                 return *this;
             }
 
-            test_module& with_shortcuts(const std::shared_ptr<MockShortcuts>& shortcuts)
-            {
-                this->shortcuts = shortcuts;
-                return *this;
-            }
-
-            test_module()
-            {
-                EXPECT_CALL(*shortcuts, add_shortcut).WillRepeatedly([&](auto, auto) -> Event<>&{ return shortcut_handler; });
-            }
-
             std::unique_ptr<LogWindowManager> build()
             {
-                return std::make_unique<LogWindowManager>(window, shortcuts, window_source);
+                return std::make_unique<LogWindowManager>(window, window_source);
             }
         };
 

@@ -297,7 +297,7 @@ namespace trview
         _map_renderer->set_highlight(x, z);
     }
 
-    void ViewerUI::set_pick(const PickInfo& info, const PickResult& result)
+    void ViewerUI::set_pick(const PickResult& result)
     {
         // TODO: Context menu visible?
         _tooltip->set_visible(result.hit && _show_tooltip && !_context_menu->visible());

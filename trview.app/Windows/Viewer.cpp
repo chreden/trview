@@ -322,7 +322,7 @@ namespace trview
             {
                 result.text = generate_pick_message(result, *_level, *_route);
             }
-            _ui->set_pick(pickInfo, result);
+            _ui->set_pick(result);
 
             // Highlight sectors in the minimap.
             if (_level)

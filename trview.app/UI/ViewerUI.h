@@ -51,7 +51,7 @@ namespace trview
         virtual void set_measure_distance(float distance) override;
         virtual void set_measure_position(const Point& position) override;
         virtual void set_minimap_highlight(uint16_t x, uint16_t z) override;
-        virtual void set_pick(const PickInfo& info, const PickResult& pick_result) override;
+        virtual void set_pick(const PickResult& pick_result) override;
         virtual void set_remove_waypoint_enabled(bool value) override;
         virtual void set_selected_item(uint32_t index) override;
         virtual void set_selected_room(const std::shared_ptr<IRoom>& room) override;
