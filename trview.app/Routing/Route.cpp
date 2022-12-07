@@ -367,7 +367,7 @@ namespace trview
             int x = location["X"];
             int y = location["Y"];
             int z = location["Z"];
-            int room_number = location["Room"];
+            uint32_t room_number = location["Room"];
 
             // If the room space attribute is true then the coordinate must be transformed.
             if (read_attribute<bool>(location, "IsInRoomSpace", false))
@@ -385,7 +385,7 @@ namespace trview
                 y = room->info().yBottom - y;
             }
 
-            route->add(Vector3(x, y, z) / 1024.0f, Vector3::Down, room_number, IWaypoint::Type::Position, 0);
+            route->add(Vector3(static_cast<float>(x), static_cast<float>(y), static_cast<float>(z)) / 1024.0f, Vector3::Down, room_number, IWaypoint::Type::Position, 0);
             auto& new_waypoint = route->waypoint(route->waypoints() - 1);
             new_waypoint.set_randomizer_settings(import_randomizer_settings(location, randomizer_settings));
         }

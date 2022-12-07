@@ -59,9 +59,9 @@ TEST(RouteWindow, WaypointRoomPositionCalculatedCorrectly)
     auto window = register_test_module().build();
 
     RoomInfo info {};
-    info.x = room_pos.x;
-    info.yBottom = room_pos.y;
-    info.z = room_pos.z;
+    info.x = static_cast<int32_t>(room_pos.x);
+    info.yBottom = static_cast<int32_t>(room_pos.y);
+    info.z = static_cast<int32_t>(room_pos.z);
 
     auto room = mock_shared<MockRoom>();
     EXPECT_CALL(*room, info).WillRepeatedly(Return(info));

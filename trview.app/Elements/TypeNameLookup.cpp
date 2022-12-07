@@ -75,7 +75,7 @@ namespace trview
         load_game_types(LevelVersion::Tomb5);
     }
 
-    std::string TypeNameLookup::lookup_type_name(LevelVersion level_version, uint32_t type_id, uint32_t flags) const
+    std::string TypeNameLookup::lookup_type_name(LevelVersion level_version, uint32_t type_id, uint16_t flags) const
     {
         const auto& game_types = _type_names.find(level_version);
         if (game_types == _type_names.end())

@@ -332,7 +332,7 @@ namespace trview
                         _scroll_to_room = false;
                     }
 
-                    if (ImGui::Selectable(std::format("{0}##{0}", room_ptr->number()).c_str(), &selected, ImGuiSelectableFlags_SpanAllColumns | ImGuiSelectableFlags_SelectOnNav))
+                    if (ImGui::Selectable(std::format("{0}##{0}", room_ptr->number()).c_str(), &selected, ImGuiSelectableFlags_SpanAllColumns | static_cast<int>(ImGuiSelectableFlags_SelectOnNav)))
                     {
                         scroller.fix_scroll();
                         _selected_room = room_ptr->number();
@@ -525,7 +525,7 @@ namespace trview
                                         _scroll_to_item = false;
                                     }
 
-                                    if (ImGui::Selectable(std::to_string(item.number()).c_str(), &selected, ImGuiSelectableFlags_SpanAllColumns | ImGuiSelectableFlags_SelectOnNav))
+                                    if (ImGui::Selectable(std::to_string(item.number()).c_str(), &selected, ImGuiSelectableFlags_SpanAllColumns | static_cast<int>(ImGuiSelectableFlags_SelectOnNav)))
                                     {
                                         scroller.fix_scroll();
                                         _local_selected_item = item;
@@ -554,7 +554,7 @@ namespace trview
                                 ImGui::TableNextRow();
                                 ImGui::TableNextColumn();
                                 bool selected = false;
-                                if (ImGui::Selectable(std::to_string(neighbour).c_str(), &selected, ImGuiSelectableFlags_SpanAllColumns | ImGuiSelectableFlags_SelectOnNav))
+                                if (ImGui::Selectable(std::to_string(neighbour).c_str(), &selected, ImGuiSelectableFlags_SpanAllColumns | static_cast<int>(ImGuiSelectableFlags_SelectOnNav)))
                                 {
                                     _selected_room = neighbour;
                                     if (_sync_room)
@@ -599,7 +599,7 @@ namespace trview
                                         _scroll_to_trigger = false;
                                     }
 
-                                    if (ImGui::Selectable(std::format("{0}##{0}", trigger_ptr->number()).c_str(), &selected, ImGuiSelectableFlags_SpanAllColumns | ImGuiSelectableFlags_SelectOnNav))
+                                    if (ImGui::Selectable(std::format("{0}##{0}", trigger_ptr->number()).c_str(), &selected, ImGuiSelectableFlags_SpanAllColumns | static_cast<int>(ImGuiSelectableFlags_SelectOnNav)))
                                     {
                                         scroller.fix_scroll();
                                         _local_selected_trigger = trigger_ptr;
@@ -667,7 +667,7 @@ namespace trview
                     const auto trigger_ptr = trigger.lock();
                     if (trigger_ptr && trigger_ptr->room() == room.number())
                     {
-                        results.push_back(trigger_ptr->number());
+                        results.push_back(static_cast<float>(trigger_ptr->number()));
                     }
                 }
                 return results;
@@ -701,7 +701,7 @@ namespace trview
                 {
                     if (item.room() == room.number())
                     {
-                        results.push_back(item.number());
+                        results.push_back(static_cast<float>(item.number()));
                     }
                 }
                 return results;

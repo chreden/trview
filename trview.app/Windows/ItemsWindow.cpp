@@ -145,7 +145,7 @@ namespace trview
                         _scroll_to_item = false;
                     }
 
-                    if (ImGui::Selectable(std::format("{0}##{0}", item.number()).c_str(), &selected, ImGuiSelectableFlags_SpanAllColumns | ImGuiSelectableFlags_SelectOnNav | ImGuiTableFlags_SizingFixedFit))
+                    if (ImGui::Selectable(std::format("{0}##{0}", item.number()).c_str(), &selected, ImGuiSelectableFlags_SpanAllColumns | static_cast<int>(ImGuiSelectableFlags_SelectOnNav)))
                     {
                         scroller.fix_scroll();
 
@@ -277,7 +277,7 @@ namespace trview
                     ImGui::TableNextRow();
                     ImGui::TableNextColumn();
                     bool selected = _selected_trigger.lock() == trigger_ptr;
-                    if (ImGui::Selectable(std::to_string(trigger_ptr->number()).c_str(), &selected, ImGuiSelectableFlags_SpanAllColumns | ImGuiSelectableFlags_SelectOnNav))
+                    if (ImGui::Selectable(std::to_string(trigger_ptr->number()).c_str(), &selected, ImGuiSelectableFlags_SpanAllColumns | static_cast<int>(ImGuiSelectableFlags_SelectOnNav)))
                     {
                         _selected_trigger = trigger;
                         set_track_room(false);
@@ -377,7 +377,7 @@ namespace trview
                 {
                     if (auto trigger_ptr = trigger.lock())
                     {
-                        results.push_back(trigger_ptr->number());
+                        results.push_back(static_cast<float>(trigger_ptr->number()));
                     }
                 }
                 return results;

@@ -869,11 +869,11 @@ namespace trview
         };
 
         std::unordered_map<uint32_t, MeshPart> mesh_parts;
-        uint32_t base = 0u;
+        std::size_t base = 0u;
         for (const auto& sector : _sectors)
         {
             const auto tris = sector->triangles();
-            for (uint32_t i = 0; i < tris.size(); ++i)
+            for (std::size_t i = 0; i < tris.size(); ++i)
             {
                 const auto& tri = tris[i];
                 auto& part = mesh_parts[_all_geometry_sector_rooms[base + i]];
@@ -901,7 +901,7 @@ namespace trview
         {
             const auto other_room = _level.room(sector->room_above()).lock();
             const auto diff = (position() - other_room->position()) + Vector3(static_cast<float>(x1), 0, static_cast<float>(z1));
-            const int other_id = diff.x * other_room->num_z_sectors() + diff.z;
+            const int other_id = static_cast<int>(diff.x * other_room->num_z_sectors() + diff.z);
             portal.sector_above = other_room->sectors()[other_id];
             portal.above_offset = Vector3(static_cast<float>(x1), 0, static_cast<float>(z1)) - diff;
             portal.room_above = other_room;
@@ -918,13 +918,13 @@ namespace trview
         if (has_flag(portal.direct->flags(), SectorFlag::Portal))
         {
             const auto other_room = _level.room(portal.direct->portal()).lock();
-            const auto diff = (position() - other_room->position()) + Vector3(x2, 0, z2);
-            const int other_id = diff.x * other_room->num_z_sectors() + diff.z;
+            const auto diff = (position() - other_room->position()) + Vector3(static_cast<float>(x2), 0, static_cast<float>(z2));
+            const int other_id = static_cast<int>(diff.x * other_room->num_z_sectors() + diff.z);
             const auto sectors = other_room->sectors();
             if (other_id < sectors.size())
             {
                 portal.target = sectors[other_id];
-                portal.offset = Vector3(x2, 0, z2) - diff;
+                portal.offset = Vector3(static_cast<float>(x2), 0, static_cast<float>(z2)) - diff;
             }
         }
 

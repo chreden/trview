@@ -94,8 +94,8 @@ namespace trview
                 }
             }
 
-            int32_t move_from = -1;
-            int32_t move_to = -1;
+            std::optional<uint32_t> move_from;
+            std::optional<uint32_t> move_to;
 
             if (ImGui::BeginTable("##waypointslist", 2, ImGuiTableFlags_ScrollY | ImGuiTableFlags_SizingFixedFit, ImVec2(-1, -1)))
             {
@@ -121,7 +121,7 @@ namespace trview
                             _scroll_to_waypoint = false;
                         }
 
-                        if (ImGui::Selectable(std::to_string(i).c_str(), &selected, ImGuiSelectableFlags_SpanAllColumns | ImGuiSelectableFlags_SelectOnNav))
+                        if (ImGui::Selectable(std::to_string(i).c_str(), &selected, ImGuiSelectableFlags_SpanAllColumns | static_cast<int>(ImGuiSelectableFlags_SelectOnNav)))
                         {
                             scroller.fix_scroll();
 
@@ -159,12 +159,12 @@ namespace trview
                 ImGui::EndTable();
             }
 
-            if (move_from != -1 && move_to != -1)
+            if (move_from && move_to)
             {
-                on_waypoint_reordered(move_from, move_to);
-                if (_selected_index == move_from)
+                on_waypoint_reordered(move_from.value(), move_to.value());
+                if (_selected_index == move_from.value())
                 {
-                    on_waypoint_selected(move_to);
+                    on_waypoint_selected(move_to.value());
                 }
             }
         }

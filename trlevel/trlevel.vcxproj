@@ -178,7 +178,12 @@
     <ClInclude Include="tr_rooms.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Decrypter.cpp" />
+    <ClCompile Include="Decrypter.cpp">
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">4302</DisableSpecificWarnings>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">4302</DisableSpecificWarnings>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">4302</DisableSpecificWarnings>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Release|x64'">4302</DisableSpecificWarnings>
+    </ClCompile>
     <ClCompile Include="Level.cpp" />
     <ClCompile Include="LevelVersion.cpp" />
     <ClCompile Include="stdafx.cpp">
