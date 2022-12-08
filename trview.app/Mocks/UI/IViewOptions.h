@@ -8,7 +8,8 @@ namespace trview
     {
         struct MockViewOptions : public IViewOptions
         {
-            virtual ~MockViewOptions() = default;
+            MockViewOptions();
+            virtual ~MockViewOptions();
             MOCK_METHOD(void, set_alternate_group, (uint32_t, bool), (override));
             MOCK_METHOD(void, set_alternate_groups, (const std::set<uint32_t>&), (override));
             MOCK_METHOD(void, set_scalar, (const std::string&, int32_t), (override));

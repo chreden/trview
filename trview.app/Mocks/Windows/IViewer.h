@@ -8,7 +8,8 @@ namespace trview
     {
         struct MockViewer : public IViewer
         {
-            virtual ~MockViewer() = default;
+            MockViewer();
+            virtual ~MockViewer();
             MOCK_METHOD(CameraMode, camera_mode, (), (const, override));
             MOCK_METHOD(void, render, (), (override));
             MOCK_METHOD(void, open, (ILevel*, ILevel::OpenMode), (override));

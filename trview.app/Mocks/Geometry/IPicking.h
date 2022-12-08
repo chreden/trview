@@ -8,7 +8,8 @@ namespace trview
     {
         struct MockPicking : public IPicking
         {
-            virtual ~MockPicking() = default;
+            MockPicking();
+            virtual ~MockPicking();
             MOCK_METHOD(void, pick, (const ICamera&), (override));
         };
     }

@@ -8,7 +8,8 @@ namespace trview
     {
         struct MockRoomsWindow : public IRoomsWindow
         {
-            virtual ~MockRoomsWindow() = default;
+            MockRoomsWindow();
+            virtual ~MockRoomsWindow();
             MOCK_METHOD(void, clear_selected_trigger, (), (override));
             MOCK_METHOD(void, render, (), (override));
             MOCK_METHOD(void, set_current_room, (uint32_t), (override));

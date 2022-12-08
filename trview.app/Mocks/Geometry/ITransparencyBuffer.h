@@ -8,7 +8,8 @@ namespace trview
     {
         struct MockTransparencyBuffer : public ITransparencyBuffer
         {
-            virtual ~MockTransparencyBuffer() = default;
+            MockTransparencyBuffer();
+            virtual ~MockTransparencyBuffer();
             MOCK_METHOD(void, add, (const TransparentTriangle&), (override));
             MOCK_METHOD(void, sort, (const DirectX::SimpleMath::Vector3&), (override));
             MOCK_METHOD(void, render, (const ICamera&, const ILevelTextureStorage&, bool), (override));

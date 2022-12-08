@@ -8,7 +8,8 @@ namespace trview
     {
         struct MockSector : public ISector
         {
-            virtual ~MockSector() = default;
+            MockSector();
+            virtual ~MockSector();
             MOCK_METHOD(std::uint16_t, portal, (), (const, override));
             MOCK_METHOD(int, id, (), (const, override));
             MOCK_METHOD(std::set<std::uint16_t>, neighbours, (), (const, override));

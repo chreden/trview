@@ -8,7 +8,8 @@ namespace trview
     {
         struct MockRoute : public IRoute
         {
-            virtual ~MockRoute() = default;
+            MockRoute();
+            virtual ~MockRoute();
             MOCK_METHOD(void, add, (const DirectX::SimpleMath::Vector3&, const DirectX::SimpleMath::Vector3&, uint32_t), (override));
             MOCK_METHOD(void, add, (const DirectX::SimpleMath::Vector3&, const DirectX::SimpleMath::Vector3&, uint32_t, IWaypoint::Type, uint32_t), (override));
             MOCK_METHOD(void, clear, (), (override));

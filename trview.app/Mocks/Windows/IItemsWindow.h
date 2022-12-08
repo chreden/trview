@@ -8,7 +8,8 @@ namespace trview
     {
         struct MockItemsWindow : public IItemsWindow
         {
-            virtual ~MockItemsWindow() = default;
+            MockItemsWindow();
+            virtual ~MockItemsWindow();
             MOCK_METHOD(void, set_items, (const std::vector<Item>&), (override));
             MOCK_METHOD(void, update_item, (const Item&), (override));
             MOCK_METHOD(void, render, (), (override));

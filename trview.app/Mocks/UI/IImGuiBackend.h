@@ -8,7 +8,8 @@ namespace trview
     {
         struct MockImGuiBackend : public IImGuiBackend
         {
-            virtual ~MockImGuiBackend() = default;
+            MockImGuiBackend();
+            virtual ~MockImGuiBackend();
             MOCK_METHOD(void, initialise, (), (override));
             MOCK_METHOD(void, new_frame, (), (override));
             MOCK_METHOD(void, render, (), (override));

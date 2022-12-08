@@ -8,7 +8,8 @@ namespace trview
     {
         struct MockWaypoint : public IWaypoint
         {
-            virtual ~MockWaypoint() = default;
+            MockWaypoint();
+            virtual ~MockWaypoint();
             MOCK_METHOD(DirectX::BoundingBox, bounding_box, (), (const, override));
             MOCK_METHOD(DirectX::SimpleMath::Vector3, position, (), (const, override));
             MOCK_METHOD(Type, type, (), (const, override));

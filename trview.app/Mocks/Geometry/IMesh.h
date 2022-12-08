@@ -8,7 +8,8 @@ namespace trview
     {
         struct MockMesh : public IMesh
         {
-            virtual ~MockMesh() = default;
+            MockMesh();
+            virtual ~MockMesh();
             MOCK_METHOD(void, render, (const DirectX::SimpleMath::Matrix&, const ILevelTextureStorage&, const DirectX::SimpleMath::Color&, float, DirectX::SimpleMath::Vector3, bool), (override));
             MOCK_METHOD(std::vector<TransparentTriangle>, transparent_triangles, (), (const, override));
             MOCK_METHOD(const DirectX::BoundingBox&, bounding_box, (), (const, override));

@@ -8,7 +8,8 @@ namespace trview
     {
         struct MockMeasure : public IMeasure
         {
-            virtual ~MockMeasure() = default;
+            MockMeasure();
+            virtual ~MockMeasure();
             MOCK_METHOD(void, reset, (), (override));
             MOCK_METHOD(bool, add, (const DirectX::SimpleMath::Vector3&), (override));
             MOCK_METHOD(void, set, (const DirectX::SimpleMath::Vector3&), (override));

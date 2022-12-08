@@ -8,7 +8,8 @@ namespace trview
     {
         struct MockLight : public ILight, public std::enable_shared_from_this<MockLight>
         {
-            virtual ~MockLight() = default;
+            MockLight();
+            virtual ~MockLight();
             MOCK_METHOD(void, render, (const ICamera&, const ILevelTextureStorage&, const DirectX::SimpleMath::Color&), (override));
             MOCK_METHOD(void, get_transparent_triangles, (ITransparencyBuffer&, const ICamera&, const DirectX::SimpleMath::Color&), (override));
             MOCK_METHOD(bool, visible, (), (const, override));
