@@ -10,7 +10,8 @@ namespace trview
         {
             struct MockRenderTarget : public IRenderTarget
             {
-                virtual ~MockRenderTarget() = default;
+                MockRenderTarget();
+                virtual ~MockRenderTarget();
                 MOCK_METHOD(void, clear, (const DirectX::SimpleMath::Color& colour), (override));
                 MOCK_METHOD(void, apply, (), (override));
                 MOCK_METHOD(Texture, texture, (), (const, override));

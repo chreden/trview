@@ -10,7 +10,8 @@ namespace trview
         {
             struct MockD3D11DeviceContext : public ID3D11DeviceContext
             {
-                virtual ~MockD3D11DeviceContext() = default;
+                MockD3D11DeviceContext();
+                virtual ~MockD3D11DeviceContext();
 
                 // IUnknown
                 MOCK_METHOD(HRESULT, QueryInterface, (REFIID riid, void** ppvObject), (Calltype(STDMETHODCALLTYPE), override));

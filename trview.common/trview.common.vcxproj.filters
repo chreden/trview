@@ -119,6 +119,9 @@
     <ClCompile Include="Logs\Activity.cpp">
       <Filter>Logs</Filter>
     </ClCompile>
+    <ClCompile Include="Mocks\Mocks.cpp">
+      <Filter>Mocks</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Windows">

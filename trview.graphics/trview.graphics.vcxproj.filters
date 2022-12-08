@@ -169,6 +169,9 @@
       <Filter>Rasterizer</Filter>
     </ClCompile>
     <ClCompile Include="JsonSerializers.cpp" />
+    <ClCompile Include="Mocks\Mocks.cpp">
+      <Filter>Mocks</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Shaders">

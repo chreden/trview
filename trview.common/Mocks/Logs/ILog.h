@@ -8,7 +8,8 @@ namespace trview
     {
         struct MockLog : public ILog
         {
-            virtual ~MockLog() = default;
+            MockLog();
+            virtual ~MockLog();
             MOCK_METHOD(void, log, (Message::Status, const std::string&, const std::string&, const std::string&), (override));
             MOCK_METHOD(void, log, (Message::Status, const std::string&, const std::vector<std::string>&, const std::string&), (override));
             MOCK_METHOD(std::vector<Message>, messages, (), (const, override));
