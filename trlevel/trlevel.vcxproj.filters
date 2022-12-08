@@ -24,6 +24,9 @@
     <ClCompile Include="stdafx.cpp" />
     <ClCompile Include="tr_lights.cpp" />
     <ClCompile Include="Decrypter.cpp" />
+    <ClCompile Include="Mocks\MockLevel.cpp">
+      <Filter>Mocks</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Mocks">
