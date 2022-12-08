@@ -199,7 +199,7 @@ TEST(ItemsWindow, ItemsListPopulatedOnSet)
 
     TestImgui imgui([&]() { window->render(); });
 
-    for (auto i = 0; i < items.size(); ++i)
+    for (std::size_t i = 0; i < items.size(); ++i)
     {
         const auto& item = items[i];
         ASSERT_TRUE(imgui.element_present(imgui.id("Items 0")

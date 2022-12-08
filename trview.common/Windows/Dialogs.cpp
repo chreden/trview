@@ -28,7 +28,7 @@ namespace trview
         std::wstring combine_filters(const std::wstring& filter, const std::vector<std::wstring>& file_types)
         {
             std::wstring final_filter = filter + L'\0';
-            for (auto i = 0; i < file_types.size(); ++i)
+            for (std::size_t i = 0u; i < file_types.size(); ++i)
             {
                 final_filter += file_types[i];
                 if (i < file_types.size() - 1)
@@ -46,7 +46,7 @@ namespace trview
             for (const auto& filter : filters)
             {
                 final_filter += filter.name + L'\0';
-                for (auto i = 0; i < filter.file_types.size(); ++i)
+                for (std::size_t i = 0; i < filter.file_types.size(); ++i)
                 {
                     final_filter += filter.file_types[i];
                     if (i < filter.file_types.size() - 1)

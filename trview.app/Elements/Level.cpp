@@ -973,13 +973,13 @@ namespace trview
             all_data.push_back(data);
         }
 
-        for (auto r = 0; r < _rooms.size(); ++r)
+        for (auto r = 0u; r < _rooms.size(); ++r)
         {
             for (const auto& neighbour : _rooms[r]->neighbours())
             {
-                for (auto t = 0; t < all_data[r].room_triangles.size(); ++t)
+                for (auto t = 0u; t < all_data[r].room_triangles.size(); ++t)
                 {
-                    for (auto t2 = 0; t2 < all_data[neighbour].room_triangles.size(); ++t2)
+                    for (auto t2 = 0u; t2 < all_data[neighbour].room_triangles.size(); ++t2)
                     {
                         if (all_data[r].room_triangles[t] == all_data[neighbour].room_triangles[t2])
                         {

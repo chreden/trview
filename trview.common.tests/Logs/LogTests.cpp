@@ -26,7 +26,7 @@ TEST(Log, TopicAndActivityFilter)
     log.log(Message::Status::Information, "topic", "activity 2", "text");
     log.log(Message::Status::Warning, "topic", "activity 2", "text 2");
     auto messages = log.messages("topic", "activity 2");
-    ASSERT_EQ(messages.size(), 2);
+    ASSERT_EQ(messages.size(), 2u);
     ASSERT_EQ(messages[0].text, "text");
     ASSERT_EQ(messages[0].status, Message::Status::Information);
     ASSERT_EQ(messages[0].topic, "topic");
@@ -42,14 +42,14 @@ TEST(Log, AllMessages)
     log.log(Message::Status::Information, "topic", "activity 2", "text");
     log.log(Message::Status::Warning, "topic", "activity 2", "text 2");
     auto messages = log.messages();
-    ASSERT_EQ(messages.size(), 3);
+    ASSERT_EQ(messages.size(), 3u);
 }
 
 TEST(Log, Clear)
 {
     Log log;
     log.log(Message::Status::Information, "topic", "activity", "text");
-    ASSERT_EQ(log.messages().size(), 1);
+    ASSERT_EQ(log.messages().size(), 1u);
     log.clear();
-    ASSERT_EQ(log.messages().size(), 0);
+    ASSERT_EQ(log.messages().size(), 0u);
 }

@@ -28,7 +28,7 @@ namespace trview
             const std::array<std::string, 3> mode_items{ "Orbit", "Free", "Axis" };
             if (ImGui::BeginCombo(Names::mode.c_str(), mode_items[static_cast<uint32_t>(_mode)].c_str()))
             {
-                for (int n = 0; n < mode_items.size(); ++n)
+                for (std::size_t n = 0; n < mode_items.size(); ++n)
                 {
                     bool is_selected = _mode == static_cast<CameraMode>(n);
                     if (ImGui::Selectable(mode_items[n].c_str(), is_selected))
@@ -47,7 +47,7 @@ namespace trview
             const std::array<std::string, 2> projection_items{ "Perspective", "Orthographic" };
             if (ImGui::BeginCombo(Names::projection_mode.c_str(), projection_items[static_cast<uint32_t>(_projection_mode)].c_str()))
             {
-                for (int n = 0; n < projection_items.size(); ++n)
+                for (std::size_t n = 0; n < projection_items.size(); ++n)
                 {
                     bool is_selected = _projection_mode == static_cast<ProjectionMode>(n);
                     if (ImGui::Selectable(projection_items[n].c_str(), is_selected))
