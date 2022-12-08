@@ -328,7 +328,7 @@ namespace trview
                     if (!setting.second.options.empty() && json.count(setting.first) && json[setting.first].is_number())
                     {
                         const auto index = json[setting.first].get<int>();
-                        result[setting.first] = setting.second.options[std::max(0, std::min<int>(index, setting.second.options.size() - 1))];
+                        result[setting.first] = setting.second.options[std::max(0, std::min<int>(index, static_cast<int>(setting.second.options.size() - 1)))];
                     }
                     else
                     {
@@ -563,7 +563,8 @@ namespace trview
         }
 
         auto trimmed = level_filename.substr(level_filename.find_last_of("/\\") + 1);
-        std::transform(trimmed.begin(), trimmed.end(), trimmed.begin(), ::toupper);
+        std::transform(trimmed.begin(), trimmed.end(), trimmed.begin(),
+            [](unsigned char c) { return static_cast<char>(std::toupper(c)); });
         json[trimmed] = waypoints;
         files->save_file(route_filename, json.dump(2, ' '));
     }

@@ -37,7 +37,7 @@ namespace trview
         auto reselected_command = std::find(_all_commands.begin(), _all_commands.end(), existing_command);
         if (reselected_command != _all_commands.end())
         {
-            _selected_command = reselected_command - _all_commands.begin();
+            _selected_command = static_cast<uint32_t>(reselected_command - _all_commands.begin());
         }
 
         setup_filters();
@@ -173,7 +173,7 @@ namespace trview
                         {
                             _selected_commands.push_back(command_from_name(_all_commands[n]));
                         }
-                        _selected_command = n;
+                        _selected_command = static_cast<uint32_t>(n);
                         _need_filtering = true;
                     }
 
@@ -205,7 +205,7 @@ namespace trview
                     }, _force_sort);
 
                 ImGuiListClipper clipper;
-                clipper.Begin(std::ssize(_filtered_triggers));
+                clipper.Begin(static_cast<int>(std::ssize(_filtered_triggers)));
 
                 while (clipper.Step())
                 {
@@ -529,7 +529,7 @@ namespace trview
                 });
             if (found != _filtered_triggers.end())
             {
-                return found - _filtered_triggers.begin();
+                return static_cast<int>(found - _filtered_triggers.begin());
             }
         }
         return std::nullopt;

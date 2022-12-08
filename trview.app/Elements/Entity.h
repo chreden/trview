@@ -45,7 +45,7 @@ namespace trview
         virtual void adjust_y(float amount) override;
         virtual bool needs_ocb_adjustment() const override;
     private:
-        Entity(const IMesh::Source& mesh_source, const IMeshStorage& mesh_storage, const trlevel::ILevel& level, uint32_t room, uint32_t index, uint32_t type_id, const DirectX::SimpleMath::Vector3& position, int32_t angle, int32_t ocb, bool is_pickup);
+        Entity(const IMesh::Source& mesh_source, const IMeshStorage& mesh_storage, const trlevel::ILevel& level, uint16_t room, uint32_t index, uint16_t type_id, const DirectX::SimpleMath::Vector3& position, int32_t angle, int32_t ocb, bool is_pickup);
 
         void load_meshes(const trlevel::ILevel& level, int16_t type_id, const IMeshStorage& mesh_storage);
         void load_model(const trlevel::tr_model& model, const trlevel::ILevel& level);
