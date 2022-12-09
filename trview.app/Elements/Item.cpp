@@ -74,7 +74,7 @@ namespace trview
 
     bool is_mutant_egg(uint32_t type_id)
     {
-        return equals_any(type_id, 163, 181);
+        return equals_any(type_id, 163u, 181u);
     }
 
     uint16_t mutant_egg_contents(const Item& item)

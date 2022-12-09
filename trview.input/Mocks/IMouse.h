@@ -10,7 +10,8 @@ namespace trview
         {
             struct MockMouse : public IMouse
             {
-                virtual ~MockMouse() = default;
+                MockMouse();
+                virtual ~MockMouse();
                 MOCK_METHOD(long, x, (), (const, override));
                 MOCK_METHOD(long, y, (), (const, override));
             };

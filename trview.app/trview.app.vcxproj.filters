@@ -246,6 +246,9 @@
     <ClCompile Include="Windows\Log\LogWindowManager.cpp">
       <Filter>Windows\Log</Filter>
     </ClCompile>
+    <ClCompile Include="Mocks\Mocks.cpp">
+      <Filter>Mocks</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera\Camera.h">

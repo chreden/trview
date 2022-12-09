@@ -5,6 +5,9 @@
     <ClCompile Include="Keyboard.cpp" />
     <ClCompile Include="WindowTester.cpp" />
     <ClCompile Include="stdafx.cpp" />
+    <ClCompile Include="Mocks\Mocks.cpp">
+      <Filter>Mocks</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Mouse.h" />

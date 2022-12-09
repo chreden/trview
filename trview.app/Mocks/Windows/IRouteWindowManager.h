@@ -8,7 +8,8 @@ namespace trview
     {
         struct MockRouteWindowManager : public IRouteWindowManager
         {
-            virtual ~MockRouteWindowManager() = default;
+            MockRouteWindowManager();
+            virtual ~MockRouteWindowManager();
             MOCK_METHOD(void, render, (), (override));
             MOCK_METHOD(void, set_route, (IRoute*), (override));
             MOCK_METHOD(void, create_window, (), (override));

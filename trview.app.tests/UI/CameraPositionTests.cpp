@@ -79,8 +79,8 @@ TEST(CameraPosition, RotationEventRaised)
     imgui.press_key(ImGuiKey_Enter);
 
     ASSERT_EQ(times_called, 2);
-    ASSERT_FLOAT_EQ(new_yaw, 1.5707964);
-    ASSERT_FLOAT_EQ(new_pitch, 3.1415927);
+    ASSERT_FLOAT_EQ(new_yaw, 1.5707964f);
+    ASSERT_FLOAT_EQ(new_pitch, 3.1415927f);
 }
 
 TEST(CameraPosition, RotationUpdated)
@@ -174,14 +174,14 @@ TEST(CameraPosition, RotationsCorrectlyConverted)
     imgui.press_key(ImGuiKey_Enter);
 
     ASSERT_TRUE(value.has_value());
-    ASSERT_FLOAT_EQ(std::get<0>(value.value()), 1.5707963267948966192313216916398);
-    ASSERT_FLOAT_EQ(std::get<1>(value.value()), 2);
+    ASSERT_FLOAT_EQ(std::get<0>(value.value()), 1.570796326f);
+    ASSERT_FLOAT_EQ(std::get<1>(value.value()), 2.0f);
 }
 
 TEST(CameraPosition, YawRemovesNegatives)
 {
     CameraPosition subject;
-    subject.set_rotation(-1.5707963267948966192313216916398, 1);
+    subject.set_rotation(-1.5707963267f, 1);
 
     TestImgui imgui([&]() { subject.render(); });
 
@@ -196,7 +196,7 @@ TEST(CameraPosition, YawRemovesNegatives)
     imgui.press_key(ImGuiKey_Enter);
 
     ASSERT_TRUE(value);
-    ASSERT_FLOAT_EQ(std::get<0>(value.value()), 4.7123889803846898576939650749193);
+    ASSERT_FLOAT_EQ(std::get<0>(value.value()), 4.71238898f);
     ASSERT_FLOAT_EQ(std::get<1>(value.value()), 0);
 }
 

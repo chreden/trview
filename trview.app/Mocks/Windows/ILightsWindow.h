@@ -8,7 +8,8 @@ namespace trview
     {
         struct MockLightsWindow : public ILightsWindow
         {
-            virtual ~MockLightsWindow() = default;
+            MockLightsWindow();
+            virtual ~MockLightsWindow();
             MOCK_METHOD(void, clear_selected_light, (), (override));
             MOCK_METHOD(void, render, (), (override));
             MOCK_METHOD(void, update, (float), (override));

@@ -136,7 +136,7 @@ namespace trview
                         _scroll_to_light = false;
                     }
 
-                    if (ImGui::Selectable(std::format("{0}##{0}", light->number()).c_str(), &selected, ImGuiSelectableFlags_SpanAllColumns | ImGuiSelectableFlags_SelectOnNav | ImGuiTableFlags_SizingFixedFit))
+                    if (ImGui::Selectable(std::format("{0}##{0}", light->number()).c_str(), &selected, ImGuiSelectableFlags_SpanAllColumns | static_cast<int>(ImGuiSelectableFlags_SelectOnNav)))
                     {
                         scroller.fix_scroll();
 
@@ -187,7 +187,7 @@ namespace trview
                     {
                         const auto string_value = get_string(value);
                         ImGui::TableNextColumn();
-                        if (ImGui::Selectable(name.c_str(), false, ImGuiSelectableFlags_SpanAllColumns | ImGuiSelectableFlags_SelectOnNav))
+                        if (ImGui::Selectable(name.c_str(), false, ImGuiSelectableFlags_SpanAllColumns | static_cast<int>(ImGuiSelectableFlags_SelectOnNav)))
                         {
                             _clipboard->write(to_utf16(string_value));
                             _tooltip_timer = 0.0f;
@@ -307,19 +307,19 @@ namespace trview
             }
         }
         _filters.add_getter<std::string>("Type", { available_types.begin(), available_types.end() }, [](auto&& light) { return light_type_name(light.type()); });
-        _filters.add_getter<float>("#", [](auto&& light) { return light.number(); });
-        _filters.add_getter<float>("Room", [](auto&& light) { return light.room(); });
+        _filters.add_getter<float>("#", [](auto&& light) { return static_cast<float>(light.number()); });
+        _filters.add_getter<float>("Room", [](auto&& light) { return static_cast<float>(light.room()); });
         _filters.add_getter<float>("X", [](auto&& light) { return light.position().x * trlevel::Scale_X; }, has_position);
         _filters.add_getter<float>("Y", [](auto&& light) { return light.position().y * trlevel::Scale_Y; }, has_position);
         _filters.add_getter<float>("Z", [](auto&& light) { return light.position().z * trlevel::Scale_Z; }, has_position);
-        _filters.add_getter<float>("Intensity", [](auto&& light) { return light.intensity(); }, has_intensity);
-        _filters.add_getter<float>("Fade", [](auto&& light) { return light.fade(); }, has_fade);
+        _filters.add_getter<float>("Intensity", [](auto&& light) { return static_cast<float>(light.intensity()); }, has_intensity);
+        _filters.add_getter<float>("Fade", [](auto&& light) { return static_cast<float>(light.fade()); }, has_fade);
 
         if (_level_version >= trlevel::LevelVersion::Tomb3)
         {
-            _filters.add_getter<float>("R", [](auto&& light) { return static_cast<int>(light.colour().r * 255.0f); }, has_colour);
-            _filters.add_getter<float>("G", [](auto&& light) { return static_cast<int>(light.colour().g * 255.0f); }, has_colour);
-            _filters.add_getter<float>("B", [](auto&& light) { return static_cast<int>(light.colour().b * 255.0f); }, has_colour);
+            _filters.add_getter<float>("R", [](auto&& light) { return std::floor(light.colour().r * 255.0f); }, has_colour);
+            _filters.add_getter<float>("G", [](auto&& light) { return std::floor(light.colour().g * 255.0f); }, has_colour);
+            _filters.add_getter<float>("B", [](auto&& light) { return std::floor(light.colour().b * 255.0f); }, has_colour);
             _filters.add_getter<float>("DX", [](auto&& light) { return light.direction().x * trlevel::Scale_X; }, has_direction);
             _filters.add_getter<float>("DY", [](auto&& light) { return light.direction().y * trlevel::Scale_Y; }, has_direction);
             _filters.add_getter<float>("DZ", [](auto&& light) { return light.direction().z * trlevel::Scale_Z; }, has_direction);

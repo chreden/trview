@@ -38,7 +38,8 @@ namespace trview
     std::string to_lowercase(const std::string& value)
     {
         std::string result;
-        std::transform(value.begin(), value.end(), std::back_inserter(result), ::tolower);
+        std::transform(value.begin(), value.end(), std::back_inserter(result),
+            [](unsigned char c) { return static_cast<char>(std::tolower(c)); });
         return result;
     }
 }

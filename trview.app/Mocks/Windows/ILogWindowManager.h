@@ -8,7 +8,8 @@ namespace trview
     {
         struct MockLogWindowManager : public ILogWindowManager
         {
-            virtual ~MockLogWindowManager() = default;
+            MockLogWindowManager();
+            virtual ~MockLogWindowManager();
             MOCK_METHOD(std::weak_ptr<ILogWindow>, create_window, (), (override));
             MOCK_METHOD(void, render, (), (override));
         };

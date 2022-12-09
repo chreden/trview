@@ -459,7 +459,7 @@ namespace trview
             {
                 if (has_flag(sector->flags(), SectorFlag::Trigger))
                 {
-                    _triggers.push_back(trigger_source(_triggers.size(), i, sector->x(), sector->z(), sector->trigger(), _version));
+                    _triggers.push_back(trigger_source(static_cast<uint32_t>(_triggers.size()), i, sector->x(), sector->z(), sector->trigger(), _version));
                     room->add_trigger(_triggers.back());
                 }
             }
@@ -906,7 +906,7 @@ namespace trview
             auto room = level.get_room(i);
             for (const auto& light : room.lights)
             {
-                _lights.push_back(light_source(_lights.size(), i, light));
+                _lights.push_back(light_source(static_cast<uint32_t>(_lights.size()), i, light));
                 _rooms[i]->add_light(_lights.back());
             }
         }
@@ -967,19 +967,19 @@ namespace trview
                         t2.room = room->number();
                         return t2; 
                     });
-                data.sector_tri_counts.push_back(tris.size());
+                data.sector_tri_counts.push_back(static_cast<uint32_t>(tris.size()));
             }
             data.triangle_rooms.resize(data.room_triangles.size(), room->number());
             all_data.push_back(data);
         }
 
-        for (auto r = 0; r < _rooms.size(); ++r)
+        for (auto r = 0u; r < _rooms.size(); ++r)
         {
             for (const auto& neighbour : _rooms[r]->neighbours())
             {
-                for (auto t = 0; t < all_data[r].room_triangles.size(); ++t)
+                for (auto t = 0u; t < all_data[r].room_triangles.size(); ++t)
                 {
-                    for (auto t2 = 0; t2 < all_data[neighbour].room_triangles.size(); ++t2)
+                    for (auto t2 = 0u; t2 < all_data[neighbour].room_triangles.size(); ++t2)
                     {
                         if (all_data[r].room_triangles[t] == all_data[neighbour].room_triangles[t2])
                         {

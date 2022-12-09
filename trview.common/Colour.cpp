@@ -1,5 +1,6 @@
 #include "Colour.h"
 #include <trview.common/Json.h>
+#include <trview.common/Strings.h>
 
 namespace trview
 {
@@ -80,8 +81,7 @@ namespace trview
 
     Colour from_named_colour(const std::string& name)
     {
-        std::string lowercase_name;
-        std::transform(name.begin(), name.end(), std::back_inserter(lowercase_name), ::tolower);
+        std::string lowercase_name = to_lowercase(name);;
         if (lowercase_name == "black") { return Colour::Black; }
         if (lowercase_name == "grey") { return Colour::Grey; }
         if (lowercase_name == "lightgrey") { return Colour::LightGrey; }

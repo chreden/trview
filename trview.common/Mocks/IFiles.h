@@ -8,7 +8,8 @@ namespace trview
     {
         struct MockFiles : public IFiles
         {
-            virtual ~MockFiles() = default;
+            MockFiles();
+            virtual ~MockFiles();
             MOCK_METHOD(std::string, appdata_directory, (), (const, override));
             MOCK_METHOD(std::string, fonts_directory, (), (const, override));
             MOCK_METHOD(bool, create_directory, (const std::string&), (const, override));

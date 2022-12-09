@@ -8,7 +8,8 @@ namespace trview
     {
         struct MockMeshStorage : public IMeshStorage
         {
-            virtual ~MockMeshStorage() = default;
+            MockMeshStorage();
+            virtual ~MockMeshStorage();
             MOCK_METHOD(std::shared_ptr<IMesh>, mesh, (uint32_t), (const, override));
         };
     }

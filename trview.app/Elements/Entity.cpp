@@ -73,7 +73,7 @@ namespace trview
     {
     }
 
-    Entity::Entity(const IMesh::Source& mesh_source, const IMeshStorage& mesh_storage, const trlevel::ILevel& level, uint32_t room, uint32_t index, uint32_t type_id,
+    Entity::Entity(const IMesh::Source& mesh_source, const IMeshStorage& mesh_storage, const trlevel::ILevel& level, uint16_t room, uint32_t index, uint16_t type_id,
         const Vector3& position, int32_t angle, int32_t ocb, bool is_pickup)
         : _room(room), _index(index)
     {

@@ -8,7 +8,8 @@ namespace trview
     {
         struct MockCamera : public ICamera
         {
-            virtual ~MockCamera() = default;
+            MockCamera();
+            virtual ~MockCamera();
             MOCK_METHOD(DirectX::SimpleMath::Vector3, forward, (), (const, override));
             MOCK_METHOD(const DirectX::BoundingFrustum, frustum, (), (const, override));
             MOCK_METHOD(DirectX::SimpleMath::Vector3, position, (), (const, override));

@@ -11,7 +11,8 @@ namespace trview
             class MockShaderStorage : public IShaderStorage
             {
             public:
-                virtual ~MockShaderStorage() = default;
+                MockShaderStorage();
+                virtual ~MockShaderStorage();
                 MOCK_METHOD(void, add, (const std::string&, std::unique_ptr<IShader>));
                 MOCK_METHOD(IShader*, get, (const std::string&), (const));
             };

@@ -8,7 +8,8 @@ namespace trview
     {
         struct MockFileMenu : public IFileMenu
         {
-            virtual ~MockFileMenu() = default;
+            MockFileMenu();
+            virtual ~MockFileMenu();
             MOCK_METHOD(void, open_file, (const std::string&), (override));
             MOCK_METHOD(void, set_recent_files, (const std::list<std::string>&), (override));
         };

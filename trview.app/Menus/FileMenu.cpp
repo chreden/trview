@@ -85,7 +85,7 @@ namespace trview
         _token_store += shortcuts->add_shortcut(false, VK_F7) += [&]() { next_directory_file();  };
     }
 
-    std::optional<int> FileMenu::process_message(UINT message, WPARAM wParam, LPARAM lParam)
+    std::optional<int> FileMenu::process_message(UINT message, WPARAM wParam, LPARAM)
     {
         if (message == WM_COMMAND)
         {

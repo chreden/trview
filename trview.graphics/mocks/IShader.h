@@ -1,5 +1,7 @@
 #pragma once
 
+#include "../IShader.h"
+
 namespace trview
 {
     namespace graphics
@@ -8,7 +10,8 @@ namespace trview
         {
             struct MockShader : public IShader
             {
-                virtual ~MockShader() = default;
+                MockShader();
+                virtual ~MockShader();
                 MOCK_METHOD(void, apply, (const Microsoft::WRL::ComPtr<ID3D11DeviceContext>&), (override));
             };
         }

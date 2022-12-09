@@ -8,7 +8,8 @@ namespace trview
     {
         struct MockCompass : public ICompass
         {
-            virtual ~MockCompass() = default;
+            MockCompass();
+            virtual ~MockCompass();
             MOCK_METHOD(void, render, (const ICamera&, const ILevelTextureStorage&), (override));
             MOCK_METHOD(bool, pick, (const Point&, const Size&, Axis&), (override));
             MOCK_METHOD(void, set_visible, (bool), (override));

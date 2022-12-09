@@ -7,7 +7,7 @@ namespace trview
     {
     }
 
-    LogWindowManager::LogWindowManager(const Window& window, const std::shared_ptr<IShortcuts>& shortcuts, const ILogWindow::Source& log_window_source)
+    LogWindowManager::LogWindowManager(const Window& window, const ILogWindow::Source& log_window_source)
         : _log_window_source(log_window_source), MessageHandler(window)
     {
 
@@ -23,7 +23,7 @@ namespace trview
         WindowManager::render();
     }
 
-    std::optional<int> LogWindowManager::process_message(UINT message, WPARAM wParam, LPARAM lParam)
+    std::optional<int> LogWindowManager::process_message(UINT message, WPARAM wParam, LPARAM)
     {
         if (message == WM_COMMAND && LOWORD(wParam) == ID_WINDOWS_LOG)
         {

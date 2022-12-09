@@ -94,8 +94,8 @@ namespace trview
                 }
             }
 
-            int32_t move_from = -1;
-            int32_t move_to = -1;
+            std::optional<uint32_t> move_from;
+            std::optional<uint32_t> move_to;
 
             if (ImGui::BeginTable("##waypointslist", 2, ImGuiTableFlags_ScrollY | ImGuiTableFlags_SizingFixedFit, ImVec2(-1, -1)))
             {
@@ -121,7 +121,7 @@ namespace trview
                             _scroll_to_waypoint = false;
                         }
 
-                        if (ImGui::Selectable(std::to_string(i).c_str(), &selected, ImGuiSelectableFlags_SpanAllColumns | ImGuiSelectableFlags_SelectOnNav))
+                        if (ImGui::Selectable(std::to_string(i).c_str(), &selected, ImGuiSelectableFlags_SpanAllColumns | static_cast<int>(ImGuiSelectableFlags_SelectOnNav)))
                         {
                             scroller.fix_scroll();
 
@@ -159,12 +159,12 @@ namespace trview
                 ImGui::EndTable();
             }
 
-            if (move_from != -1 && move_to != -1)
+            if (move_from && move_to)
             {
-                on_waypoint_reordered(move_from, move_to);
-                if (_selected_index == move_from)
+                on_waypoint_reordered(move_from.value(), move_to.value());
+                if (_selected_index == move_from.value())
                 {
-                    on_waypoint_selected(move_to);
+                    on_waypoint_selected(move_to.value());
                 }
             }
         }
@@ -208,7 +208,7 @@ namespace trview
                                 return waypoint.position();
                             }
                             const auto info = room->info();
-                            const Vector3 bottom_left = Vector3(info.x, info.yBottom, info.z) / trlevel::Scale_X;
+                            const Vector3 bottom_left = Vector3(static_cast<float>(info.x), static_cast<float>(info.yBottom), static_cast<float>(info.z)) / trlevel::Scale_X;
                             return waypoint.position() - bottom_left;
                         }
                         return waypoint.position();
@@ -409,10 +409,8 @@ namespace trview
                             b.second.default_value : waypoint_settings[b.first]);
                     if (ImGui::Checkbox(b.second.display.c_str(), &value))
                     {
-                        auto& waypoint = _route->waypoint(_selected_index);
-                        auto settings = waypoint.randomizer_settings();
-                        settings[b.first] = value;
-                        waypoint.set_randomizer_settings(settings);
+                        waypoint_settings[b.first] = value;
+                        waypoint.set_randomizer_settings(waypoint_settings);
                         _route->set_unsaved(true);
                     }
                 }

@@ -328,7 +328,7 @@ namespace trview
                     if (!setting.second.options.empty() && json.count(setting.first) && json[setting.first].is_number())
                     {
                         const auto index = json[setting.first].get<int>();
-                        result[setting.first] = setting.second.options[std::max(0, std::min<int>(index, setting.second.options.size() - 1))];
+                        result[setting.first] = setting.second.options[std::max(0, std::min<int>(index, static_cast<int>(setting.second.options.size() - 1)))];
                     }
                     else
                     {
@@ -367,7 +367,7 @@ namespace trview
             int x = location["X"];
             int y = location["Y"];
             int z = location["Z"];
-            int room_number = location["Room"];
+            uint32_t room_number = location["Room"];
 
             // If the room space attribute is true then the coordinate must be transformed.
             if (read_attribute<bool>(location, "IsInRoomSpace", false))
@@ -385,7 +385,7 @@ namespace trview
                 y = room->info().yBottom - y;
             }
 
-            route->add(Vector3(x, y, z) / 1024.0f, Vector3::Down, room_number, IWaypoint::Type::Position, 0);
+            route->add(Vector3(static_cast<float>(x), static_cast<float>(y), static_cast<float>(z)) / 1024.0f, Vector3::Down, room_number, IWaypoint::Type::Position, 0);
             auto& new_waypoint = route->waypoint(route->waypoints() - 1);
             new_waypoint.set_randomizer_settings(import_randomizer_settings(location, randomizer_settings));
         }
@@ -563,7 +563,8 @@ namespace trview
         }
 
         auto trimmed = level_filename.substr(level_filename.find_last_of("/\\") + 1);
-        std::transform(trimmed.begin(), trimmed.end(), trimmed.begin(), ::toupper);
+        std::transform(trimmed.begin(), trimmed.end(), trimmed.begin(),
+            [](unsigned char c) { return static_cast<char>(std::toupper(c)); });
         json[trimmed] = waypoints;
         files->save_file(route_filename, json.dump(2, ' '));
     }

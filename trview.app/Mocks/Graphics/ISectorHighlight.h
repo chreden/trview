@@ -8,7 +8,8 @@ namespace trview
     {
         struct MockSectorHighlight : public ISectorHighlight
         {
-            virtual ~MockSectorHighlight() = default;
+            MockSectorHighlight();
+            virtual ~MockSectorHighlight();
             MOCK_METHOD(void, set_sector, (const std::shared_ptr<ISector>&, const DirectX::SimpleMath::Matrix&), (override));
             MOCK_METHOD(void, render, (const ICamera&, const ILevelTextureStorage&), (override));
         };

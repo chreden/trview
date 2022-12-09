@@ -8,7 +8,8 @@ namespace trview
     {
         struct MockShortcuts : public IShortcuts
         {
-            virtual ~MockShortcuts() = default;
+            MockShortcuts();
+            virtual ~MockShortcuts();
             MOCK_METHOD(Event<>&, add_shortcut, (bool, uint16_t));
             MOCK_METHOD(std::vector<Shortcut>, shortcuts, (), (const));
         };

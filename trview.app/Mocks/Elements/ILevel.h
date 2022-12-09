@@ -8,7 +8,8 @@ namespace trview
     {
         struct MockLevel : public ILevel
         {
-            virtual ~MockLevel() = default;
+            MockLevel();
+            virtual ~MockLevel();
             MOCK_METHOD(bool, alternate_group, (uint32_t), (const, override));
             MOCK_METHOD(std::set<uint32_t>, alternate_groups, (), (const, override));
             MOCK_METHOD(bool, alternate_mode, (), (const, override));

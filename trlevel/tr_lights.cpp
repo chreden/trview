@@ -10,13 +10,13 @@ namespace trlevel
         switch (level_version)
         {
         case LevelVersion::Tomb1:
-            return Vector3(tr1.x, tr1.y, tr1.z) / Scale_X;
+            return Vector3(static_cast<float>(tr1.x), static_cast<float>(tr1.y), static_cast<float>(tr1.z)) / Scale_X;
         case LevelVersion::Tomb2:
-            return Vector3(tr2.x, tr2.y, tr2.z) / Scale_X;
+            return Vector3(static_cast<float>(tr2.x), static_cast<float>(tr2.y), static_cast<float>(tr2.z)) / Scale_X;
         case LevelVersion::Tomb3:
             return tr3.position();
         case LevelVersion::Tomb4:
-            return Vector3(tr4.x, tr4.y, tr4.z) / Scale_X;
+            return Vector3(static_cast<float>(tr4.x), static_cast<float>(tr4.y), static_cast<float>(tr4.z)) / Scale_X;
         case LevelVersion::Tomb5:
             return type() == LightType::FogBulb ? 
                 Vector3(tr5_fog.position.x, tr5_fog.position.y, tr5_fog.position.z) / Scale_X :
@@ -41,7 +41,7 @@ namespace trlevel
                 Colour(tr5_fog.colour.r, tr5_fog.colour.g, tr5_fog.colour.b) :
                 Colour(tr5.colour.r, tr5.colour.g, tr5.colour.b);
         }
-        Colour::Transparent;
+        return Colour::Transparent;
     }
 
     LightType tr_x_room_light::type() const

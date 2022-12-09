@@ -8,7 +8,8 @@ namespace trview
     {
         struct MockShell : public IShell
         {
-            virtual ~MockShell() = default;
+            MockShell();
+            virtual ~MockShell();
             MOCK_METHOD(void, open, (const std::wstring&), (override));
         };
     }

@@ -8,7 +8,8 @@ namespace trview
     {
         struct MockEntity : public IEntity
         {
-            virtual ~MockEntity() = default;
+            MockEntity();
+            virtual ~MockEntity();
             MOCK_METHOD(void, render, (const ICamera&, const ILevelTextureStorage&, const DirectX::SimpleMath::Color&), (override));
             MOCK_METHOD(void, get_transparent_triangles, (ITransparencyBuffer&, const ICamera&, const DirectX::SimpleMath::Color&), (override));
             MOCK_METHOD(bool, visible, (), (const, override));

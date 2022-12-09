@@ -8,7 +8,8 @@ namespace trview
     {
         struct MockUpdateChecker : public IUpdateChecker
         {
-            virtual ~MockUpdateChecker() = default;
+            MockUpdateChecker();
+            virtual ~MockUpdateChecker();
             MOCK_METHOD(void, check_for_updates, (), (override));
         };
     }

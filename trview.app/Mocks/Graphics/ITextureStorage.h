@@ -8,7 +8,8 @@ namespace trview
     {
         struct MockTextureStorage : public ITextureStorage
         {
-            virtual ~MockTextureStorage() = default;
+            MockTextureStorage();
+            virtual ~MockTextureStorage();
             MOCK_METHOD(graphics::Texture, coloured, (uint32_t), (const, override));
             MOCK_METHOD(graphics::Texture, lookup, (const std::string&), (const, override));
             MOCK_METHOD(void, store, (const std::string&, const graphics::Texture&), (override));

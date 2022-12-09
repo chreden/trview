@@ -8,7 +8,8 @@ namespace trview
     {
         struct MockSelectionRenderer : public ISelectionRenderer
         {
-            virtual ~MockSelectionRenderer() = default;
+            MockSelectionRenderer();
+            virtual ~MockSelectionRenderer();
             MOCK_METHOD(void, render, (const ICamera&, const ILevelTextureStorage&, IRenderable&, const DirectX::SimpleMath::Color&), (override));
         };
     }

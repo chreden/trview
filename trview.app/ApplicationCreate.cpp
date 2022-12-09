@@ -275,6 +275,6 @@ namespace trview
             files,
             std::make_unique<DX11ImGuiBackend>(window, device),
             std::make_unique<LightsWindowManager>(window, shortcuts, lights_window_source),
-            std::make_unique<LogWindowManager>(window, shortcuts, log_window_source));
+            std::make_unique<LogWindowManager>(window, log_window_source));
     }
 }

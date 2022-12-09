@@ -9,6 +9,8 @@ namespace trview
         struct MockItemsWindowManager : public IItemsWindowManager
         {
         public:
+            MockItemsWindowManager();
+            virtual ~MockItemsWindowManager();
             MOCK_METHOD(void, render, (), (override));
             MOCK_METHOD(void, set_items, (const std::vector<Item>&), (override));
             MOCK_METHOD(void, set_item_visible, (const Item&, bool), (override));

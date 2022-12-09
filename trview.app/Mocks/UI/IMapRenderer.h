@@ -8,7 +8,8 @@ namespace trview
     {
         struct MockMapRenderer : public IMapRenderer
         {
-            virtual ~MockMapRenderer() = default;
+            MockMapRenderer();
+            virtual ~MockMapRenderer();
             MOCK_METHOD(void, render, (), (override));
             MOCK_METHOD(void, load, (const std::shared_ptr<trview::IRoom>&), (override));
             MOCK_METHOD(std::uint16_t, area, (), (const, override));

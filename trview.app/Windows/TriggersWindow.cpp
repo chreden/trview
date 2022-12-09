@@ -37,7 +37,7 @@ namespace trview
         auto reselected_command = std::find(_all_commands.begin(), _all_commands.end(), existing_command);
         if (reselected_command != _all_commands.end())
         {
-            _selected_command = reselected_command - _all_commands.begin();
+            _selected_command = static_cast<uint32_t>(reselected_command - _all_commands.begin());
         }
 
         setup_filters();
@@ -157,7 +157,7 @@ namespace trview
             std::string preview_command = _selected_command < _all_commands.size() ? _all_commands[_selected_command] : "";
             if (ImGui::BeginCombo(Names::command_filter.c_str(), preview_command.c_str()))
             {
-                for (int n = 0; n < _all_commands.size(); ++n)
+                for (std::size_t n = 0; n < _all_commands.size(); ++n)
                 {
                     bool is_selected = _selected_command == n;
                     if (ImGui::Selectable(_all_commands[n].c_str(), is_selected))
@@ -173,7 +173,7 @@ namespace trview
                         {
                             _selected_commands.push_back(command_from_name(_all_commands[n]));
                         }
-                        _selected_command = n;
+                        _selected_command = static_cast<uint32_t>(n);
                         _need_filtering = true;
                     }
 
@@ -205,7 +205,7 @@ namespace trview
                     }, _force_sort);
 
                 ImGuiListClipper clipper;
-                clipper.Begin(_filtered_triggers.size());
+                clipper.Begin(static_cast<int>(std::ssize(_filtered_triggers)));
 
                 while (clipper.Step())
                 {
@@ -225,7 +225,7 @@ namespace trview
                         }
 
                         
-                        if (ImGui::Selectable(std::format("{0}##{0}", trigger_ptr->number()).c_str(), &selected, ImGuiSelectableFlags_SpanAllColumns | ImGuiSelectableFlags_SelectOnNav))
+                        if (ImGui::Selectable(std::format("{0}##{0}", trigger_ptr->number()).c_str(), &selected, ImGuiSelectableFlags_SpanAllColumns | static_cast<int>(ImGuiSelectableFlags_SelectOnNav)))
                         {
                             scroller.fix_scroll();
                             set_local_selected_trigger(trigger_ptr);
@@ -297,7 +297,7 @@ namespace trview
                     {
                         const auto string_value = get_string(value);
                         ImGui::TableNextColumn();
-                        if (ImGui::Selectable(name.c_str(), false, ImGuiSelectableFlags_SpanAllColumns | ImGuiSelectableFlags_SelectOnNav))
+                        if (ImGui::Selectable(name.c_str(), false, ImGuiSelectableFlags_SpanAllColumns | static_cast<int>(ImGuiSelectableFlags_SelectOnNav)))
                         {
                             _clipboard->write(to_utf16(string_value));
                             _tooltip_timer = 0.0f;
@@ -348,7 +348,7 @@ namespace trview
                     ImGui::TableNextRow();
                     ImGui::TableNextColumn();
                     bool selected = false;
-                    if (ImGui::Selectable(std::format("{}##{}", command_type_name(command.type()), command.number()).c_str(), &selected, ImGuiSelectableFlags_SpanAllColumns | ImGuiSelectableFlags_SelectOnNav))
+                    if (ImGui::Selectable(std::format("{}##{}", command_type_name(command.type()), command.number()).c_str(), &selected, ImGuiSelectableFlags_SpanAllColumns | static_cast<int>(ImGuiSelectableFlags_SelectOnNav)))
                     {
                         if (command.type() == TriggerCommandType::LookAtItem || command.type() == TriggerCommandType::Object && command.index() < _all_items.size())
                         {
@@ -414,11 +414,11 @@ namespace trview
             }
         }
         _filters.add_getter<std::string>("Type", { available_types.begin(), available_types.end() }, [](auto&& trigger) { return trigger_type_name(trigger.type()); });
-        _filters.add_getter<float>("#", [](auto&& trigger) { return trigger.number(); });
-        _filters.add_getter<float>("Room", [](auto&& trigger) { return trigger.room(); });
+        _filters.add_getter<float>("#", [](auto&& trigger) { return static_cast<float>(trigger.number()); });
+        _filters.add_getter<float>("Room", [](auto&& trigger) { return static_cast<float>(trigger.room()); });
         _filters.add_getter<std::string>("Flags", [](auto&& trigger) { return format_binary(trigger.flags()); });
         _filters.add_getter<bool>("Only once", [](auto&& trigger) { return trigger.only_once(); });
-        _filters.add_getter<float>("Timer", [](auto&& trigger) { return trigger.timer(); });
+        _filters.add_getter<float>("Timer", [](auto&& trigger) { return static_cast<float>(trigger.timer()); });
 
         auto all_trigger_indices = [](TriggerCommandType type, const auto& trigger)
         {
@@ -529,7 +529,7 @@ namespace trview
                 });
             if (found != _filtered_triggers.end())
             {
-                return found - _filtered_triggers.begin();
+                return static_cast<int>(found - _filtered_triggers.begin());
             }
         }
         return std::nullopt;

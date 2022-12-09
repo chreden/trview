@@ -638,8 +638,8 @@ namespace trview
     Triangulation read_triangulation(const trlevel::ILevel& level, uint16_t floor, std::uint16_t& cur_index)
     {
         // Not sure what to do with h1 and h2 values yet.
-        const int16_t h2 = (floor & 0x7C00) >> 10;
-        const int16_t h1 = (floor & 0x03E0) >> 5;
+        // const int16_t h2 = (floor & 0x7C00) >> 10;
+        // const int16_t h1 = (floor & 0x03E0) >> 5;
         const int16_t function = (floor & 0x001F);
 
         ISector::TriangulationDirection direction{ ISector::TriangulationDirection::None };

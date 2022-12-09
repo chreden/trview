@@ -68,7 +68,7 @@ namespace trview
         };
 
         _toolbar = std::make_unique<Toolbar>();
-        _toolbar->add_tool("Measure", "|....|");
+        _toolbar->add_tool("Measure");
         _token_store += _toolbar->on_tool_clicked += [this](const std::string& tool)
         {
             if (tool == "Measure")
@@ -297,7 +297,7 @@ namespace trview
         _map_renderer->set_highlight(x, z);
     }
 
-    void ViewerUI::set_pick(const PickInfo& info, const PickResult& result)
+    void ViewerUI::set_pick(const PickResult& result)
     {
         // TODO: Context menu visible?
         _tooltip->set_visible(result.hit && _show_tooltip && !_context_menu->visible());

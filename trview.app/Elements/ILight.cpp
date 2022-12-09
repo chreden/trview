@@ -85,12 +85,12 @@ namespace trview
 
     float fade(const ILight& light)
     {
-        return light.fade();
+        return static_cast<float>(light.fade());
     }
 
     float intensity(const ILight& light)
     {
-        return light.intensity();
+        return static_cast<float>(light.intensity());
     }
 
     float hotspot(const ILight& light)

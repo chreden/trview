@@ -8,7 +8,8 @@ namespace trview
     {
         struct MockLightsWindowManager : public ILightsWindowManager
         {
-            virtual ~MockLightsWindowManager() = default;
+            MockLightsWindowManager();
+            virtual ~MockLightsWindowManager();
             MOCK_METHOD(void, set_lights, (const std::vector<std::weak_ptr<ILight>>&), (override));
             MOCK_METHOD(std::weak_ptr<ILightsWindow>, create_window, (), (override));
             MOCK_METHOD(void, render, (), (override));
