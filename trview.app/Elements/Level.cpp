@@ -1050,4 +1050,16 @@ namespace trview
         output_item = *found_item;
         return true;
     }
+
+    bool find_last_item_by_type_id(const ILevel& level, uint32_t type_id, Item& output_item)
+    {
+        const auto& items = level.items();
+        auto found_item = std::find_if(items.rbegin(), items.rend(), [=](const auto& item) { return item.type_id() == type_id; });
+        if (found_item == items.rend())
+        {
+            return false;
+        }
+        output_item = *found_item;
+        return true;
+    }
 }

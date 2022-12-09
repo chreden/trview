@@ -596,7 +596,7 @@ namespace trview
             _recent_orbit_index = 0u;
 
             Item lara;
-            if (_settings.go_to_lara && find_item_by_type_id(*_level, 0u, lara))
+            if (_settings.go_to_lara && find_last_item_by_type_id(*_level, 0u, lara))
             {
                 on_item_selected(lara);
             }
