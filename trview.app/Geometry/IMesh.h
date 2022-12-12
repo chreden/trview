@@ -33,13 +33,12 @@ namespace trview
     };
 
     /// Create a new mesh based on the contents of the mesh specified.
-    /// @param level_version The level version - affects texture index
     /// @param mesh The level mesh to generate.
     /// @param source The mesh source function.
     /// @param texture_storage The textures for the level.
     /// @param transparent_collision Whether to include transparent triangles in collision triangles.
     /// @returns The new mesh.
-    std::shared_ptr<IMesh> create_mesh(trlevel::LevelVersion level_version, const trlevel::tr_mesh& mesh, const IMesh::Source& source, const ILevelTextureStorage& texture_storage, bool transparent_collision = true);
+    std::shared_ptr<IMesh> create_mesh(const trlevel::tr_mesh& mesh, const IMesh::Source& source, const ILevelTextureStorage& texture_storage, bool transparent_collision = true);
 
     /// Create a new cube mesh.
     std::shared_ptr<IMesh> create_cube_mesh(const IMesh::Source& source);
@@ -76,7 +75,6 @@ namespace trview
         SpriteOffsetMode offset_mode);
 
     /// Convert the textured rectangles into collections required to create a mesh.
-    /// @param level_version The level version - affects texture index.
     /// @param rectangles The rectangles from the mesh or room geometry.
     /// @param input_vertices The vertices that the rectangle indices refer to.
     /// @param texture_storage The texture storage for the level.
@@ -86,7 +84,6 @@ namespace trview
     /// @param collision_triangles The collection to add collision triangles to.
     /// @param transparent_collision Whether to add transparent rectangles as collision triangles.
     void process_textured_rectangles(
-        trlevel::LevelVersion level_version,
         const std::vector<trlevel::tr4_mesh_face4>& rectangles,
         const std::vector<trlevel::tr_vertex>& input_vertices,
         const ILevelTextureStorage& texture_storage,
@@ -106,7 +103,6 @@ namespace trview
     /// @param collision_triangles The collection to add collision triangles to.
     /// @param transparent_collision Whether to add transparent rectangles as collision triangles.
     void process_textured_triangles(
-        trlevel::LevelVersion level_version,
         const std::vector<trlevel::tr4_mesh_face3>& triangles,
         const std::vector<trlevel::tr_vertex>& input_vertices,
         const ILevelTextureStorage& texture_storage,
