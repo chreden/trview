@@ -877,3 +877,27 @@ TEST(Viewer, SetShowRooms)
     viewer->open(&level, ILevel::OpenMode::Full);
     ui.on_toggle_changed(IViewer::Options::rooms, true);
 }
+
+TEST(Viewer, GoToLaraSelectsLast)
+{
+    auto [level_ptr, level] = create_mock<MockLevel>();
+    auto viewer = register_test_module().build();
+
+    const std::vector<Item> items
+    {
+        Item { 0, 0, 0, "Lara", 0, 0, {}, {} },
+        Item { 1, 0, 0, "Lara", 0, 0, {}, {} }
+    };
+    ON_CALL(level, items).WillByDefault(Return(items));
+
+    std::optional<Item> selected;
+    auto token = viewer->on_item_selected += [&](const auto& item)
+    {
+        selected = item;
+    };
+
+    viewer->open(&level, ILevel::OpenMode::Full);
+
+    ASSERT_TRUE(selected);
+    ASSERT_EQ(selected.value().number(), 1u);
+}

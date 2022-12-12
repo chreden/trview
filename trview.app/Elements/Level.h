@@ -193,4 +193,13 @@ namespace trview
     /// @param output_item The item to output the result into.
     /// @returns True if the item was found.
     bool find_item_by_type_id(const ILevel& level, uint32_t type_id, Item& output_item);
+
+    /// <summary>
+    /// Find the last item with the type id specified.
+    /// </summary>
+    /// <param name="level">The level to search.</param>
+    /// <param name="type_id">The type id to search for.</param>
+    /// <param name="output_item">The item to output the result into.</param>
+    /// <returns>True if the item was found.</returns>
+    bool find_last_item_by_type_id(const ILevel& level, uint32_t type_id, Item& output_item);
 }
