@@ -14,6 +14,11 @@ namespace trview
         {
             std::vector<uint32_t> data = level.get_textile(i);
             _tiles.emplace_back(*device, 256, 256, data);
+            for (auto& d : data)
+            {
+                d |= 0xff000000;
+            }
+            _opaque_tiles.emplace_back(*device, 256, 256, data);
         }
 
         // Copy object textures locally from the level.
@@ -68,6 +73,11 @@ namespace trview
     graphics::Texture LevelTextureStorage::texture(uint32_t tile_index) const
     {
         return _tiles[tile_index];
+    }
+
+    graphics::Texture LevelTextureStorage::opaque_texture(uint32_t tile_index) const
+    {
+        return _opaque_tiles[tile_index];
     }
 
     graphics::Texture LevelTextureStorage::coloured(uint32_t colour) const
@@ -135,5 +145,10 @@ namespace trview
     graphics::Texture LevelTextureStorage::geometry_texture() const
     {
         return _geometry_texture;
+    }
+
+    uint32_t LevelTextureStorage::num_object_textures() const
+    {
+        return static_cast<uint32_t>(_object_textures.size());
     }
 }
