@@ -12,6 +12,7 @@
 #include <trview.graphics/FontFactory.h>
 #include <trview.graphics/DeviceWindow.h>
 #include <trview.graphics/RenderTarget.h>
+#include <trview.graphics/Buffer.h>
 #include <trview.input/WindowTester.h>
 
 #include "Resources/resource.h"
@@ -198,6 +199,7 @@ namespace trview
 
         const auto light_mesh = create_sphere_mesh(mesh_source, 24, 24);
         auto light_source = [=](auto&&... args) { return std::make_shared<Light>(light_mesh, args...); };
+        auto buffer_source = [=](auto&&... args) { return std::make_unique<graphics::Buffer>(device, args...); };
 
         auto level_source = [=](auto&& level)
         {
@@ -214,7 +216,8 @@ namespace trview
                 room_source,
                 trigger_source,
                 light_source,
-                log);
+                log,
+                buffer_source);
         };
 
         auto viewer_ui = std::make_unique<ViewerUI>(

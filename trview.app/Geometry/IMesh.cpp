@@ -209,6 +209,7 @@ namespace trview
     {
         using namespace trlevel;
 
+        uint16_t previous_texture = 0;
         for (const auto& rect : rectangles)
         {
             std::array<Vector3, 4> verts;
@@ -217,7 +218,12 @@ namespace trview
                 verts[i] = convert_vertex(input_vertices[rect.vertices[i]]);
             }
 
-            const uint16_t texture = rect.texture & Texture_Mask;
+            uint16_t texture = rect.texture & Texture_Mask;
+            if (texture >= texture_storage.num_object_textures())
+            {
+                texture = previous_texture;
+            }
+            previous_texture = texture;
 
             std::array<Vector2, 4> uvs;
             for (auto i = 0u; i < uvs.size(); ++i)
@@ -297,6 +303,7 @@ namespace trview
         std::vector<Triangle>& collision_triangles,
         bool transparent_collision)
     {
+        uint16_t previous_texture = 0;
         for (const auto& tri : triangles)
         {
             std::array<Vector3, 3> verts;
@@ -305,8 +312,13 @@ namespace trview
                 verts[i] = convert_vertex(input_vertices[tri.vertices[i]]);
             }
 
-            // Select UVs - otherwise they will be 0.
-            const uint16_t texture = tri.texture & Texture_Mask;
+            uint16_t texture = tri.texture & Texture_Mask;
+            if (texture >= texture_storage.num_object_textures())
+            {
+                texture = previous_texture;
+            }
+            previous_texture = texture;
+
             std::array<Vector2, 3> uvs;
             for (auto i = 0u; i < uvs.size(); ++i)
             {

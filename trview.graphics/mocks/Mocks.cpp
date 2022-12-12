@@ -32,6 +32,7 @@ namespace testing
 #include "IShader.h"
 #include "IShaderStorage.h"
 #include "ISprite.h"
+#include "IBuffer.h"
 
 namespace trview
 {
@@ -65,6 +66,9 @@ namespace trview
 
             MockSprite::MockSprite() {}
             MockSprite::~MockSprite() {}
+
+            MockBuffer::MockBuffer() {}
+            MockBuffer::~MockBuffer() {}
         }
     }
 }

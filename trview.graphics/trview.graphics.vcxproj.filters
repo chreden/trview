@@ -111,6 +111,15 @@
       <Filter>Mocks</Filter>
     </ClInclude>
     <ClInclude Include="JsonSerializers.h" />
+    <ClInclude Include="IBuffer.h">
+      <Filter>Buffer</Filter>
+    </ClInclude>
+    <ClInclude Include="Buffer.h">
+      <Filter>Buffer</Filter>
+    </ClInclude>
+    <ClInclude Include="mocks\IBuffer.h">
+      <Filter>Mocks</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="PixelShader.cpp">
@@ -172,6 +181,9 @@
     <ClCompile Include="Mocks\Mocks.cpp">
       <Filter>Mocks</Filter>
     </ClCompile>
+    <ClCompile Include="Buffer.cpp">
+      <Filter>Buffer</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Shaders">
@@ -204,5 +216,13 @@
     <Filter Include="Mocks\D3D">
       <UniqueIdentifier>{5a5fdaf9-9583-4d9a-8809-e38269df4bfd}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Buffer">
+      <UniqueIdentifier>{b68f0cbd-a3d1-4736-bb51-2a72974a2394}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="IBuffer.inl">
+      <Filter>Buffer</Filter>
+    </None>
   </ItemGroup>
 </Project>

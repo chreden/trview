@@ -16,6 +16,7 @@
 #include <trview.graphics/mocks/IShader.h>
 #include <trview.common/Algorithms.h>
 #include <trview.common/Mocks/Logs/ILog.h>
+#include <trview.graphics/mocks/IBuffer.h>
 
 using namespace trview;
 using namespace trview::mocks;
@@ -49,11 +50,12 @@ namespace
             ITrigger::Source trigger_source{ [](auto&&...) {return mock_shared<MockTrigger>(); } };
             ILight::Source light_source{ [](auto&&...) { return std::make_shared<MockLight>(); } };
             std::shared_ptr<ILog> log{ mock_shared<MockLog>() };
+            graphics::IBuffer::ConstantSource buffer_source{ [](auto&&...) { return mock_unique<MockBuffer>(); } };
 
             std::unique_ptr<Level> build()
             {
                 return std::make_unique<Level>(device, shader_storage, std::move(level), level_texture_storage, std::move(mesh_storage), std::move(transparency_buffer),
-                    std::move(selection_renderer), type_name_lookup, entity_source, ai_source, room_source, trigger_source, light_source, log);
+                    std::move(selection_renderer), type_name_lookup, entity_source, ai_source, room_source, trigger_source, light_source, log, buffer_source);
             }
 
             test_module& with_type_name_lookup(const std::shared_ptr<ITypeNameLookup>& type_name_lookup)

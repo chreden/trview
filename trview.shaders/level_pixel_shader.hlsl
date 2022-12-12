@@ -1,3 +1,8 @@
+cbuffer cb : register(b0)
+{
+    bool disable_transparency;
+}
+
 struct PixelInput
 {
     float4 position : SV_POSITION;
@@ -10,5 +15,10 @@ SamplerState samplerState;
 
 float4 main(PixelInput input) : SV_TARGET
 {
-    return tex.Sample(samplerState, input.uv) * input.colour;
+    float4 output = tex.Sample(samplerState, input.uv) * input.colour;
+    if (disable_transparency)
+    {
+        output.a = 1.0f;
+    }
+    return output;
 }
