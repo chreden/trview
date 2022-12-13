@@ -46,7 +46,7 @@ TEST(TexturesWindowManager, SetTextureStoragePassesToWindows)
     auto manager = register_test_module().with_window_source([&](auto&&...) { return mock_window; }).build();
     manager->create_window();
 
-    EXPECT_CALL(*mock_window, set_texture_storage).Times(2);
+    EXPECT_CALL(*mock_window, set_texture_storage).Times(1);
     manager->set_texture_storage(mock_shared<MockLevelTextureStorage>());
 }
 
