@@ -25,10 +25,9 @@ namespace trview
         {
             ImGui::Checkbox(Names::transparency_checkbox.c_str(), &_transparency);
 
-            const int32_t max_textures = std::max(0, (_texture_storage ? static_cast<int32_t>(_texture_storage->num_tiles()) : 0) - 1);
             if (ImGui::InputInt(Names::tile.c_str(), &_index))
             {
-                _index = std::clamp(_index, 0, max_textures);
+                clamp_index();
             }
 
             if (_texture_storage && _index < static_cast<int32_t>(_texture_storage->num_tiles()))
@@ -50,5 +49,12 @@ namespace trview
     void TexturesWindow::set_texture_storage(const std::shared_ptr<ILevelTextureStorage>& texture_storage)
     {
         _texture_storage = texture_storage;
+        clamp_index();
+    }
+
+    void TexturesWindow::clamp_index()
+    {
+        const int32_t max_textures = std::max(0, (_texture_storage ? static_cast<int32_t>(_texture_storage->num_tiles()) : 0) - 1);
+        _index = std::clamp(_index, 0, max_textures);
     }
 }

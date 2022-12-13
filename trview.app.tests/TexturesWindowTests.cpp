@@ -73,3 +73,25 @@ TEST(TexturesWindow, ChangeTile)
     imgui.enter_text("1");
     imgui.press_key(ImGuiKey_Enter);
 }
+
+TEST(TexturesWindow, IndexClampedOnSet)
+{
+    auto window = register_test_module().build();
+
+    auto storage = mock_shared<MockLevelTextureStorage>();
+    ON_CALL(*storage, num_tiles).WillByDefault(Return(2));
+    window->set_texture_storage(storage);
+
+    TestImgui imgui([&]() { window->render(); });
+    imgui.click_element(imgui.id("Textures 0")
+        .id(TexturesWindow::Names::tile));
+    imgui.enter_text("1");
+    imgui.press_key(ImGuiKey_Enter);
+
+    ON_CALL(*storage, num_tiles).WillByDefault(Return(1));
+    window->set_texture_storage(storage);
+
+    imgui.render();
+
+    ASSERT_EQ("0", imgui.item_text(imgui.id("Textures 0").id(TexturesWindow::Names::tile)));
+}

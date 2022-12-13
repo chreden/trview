@@ -19,6 +19,7 @@ namespace trview
         virtual void set_texture_storage(const std::shared_ptr<ILevelTextureStorage>& texture_storage) override;
     private:
         bool render_textures_window();
+        void clamp_index();
 
         std::shared_ptr<ILevelTextureStorage> _texture_storage;
         std::string _id{ "Textures 0" };
