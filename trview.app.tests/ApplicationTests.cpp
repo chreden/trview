@@ -14,6 +14,7 @@
 #include <trview.app/Mocks/Windows/IRoomsWindowManager.h>
 #include <trview.app/Mocks/Windows/ILightsWindowManager.h>
 #include <trview.app/Mocks/Windows/ILogWindowManager.h>
+#include <trview.app/Mocks/Windows/ITexturesWindowManager.h>
 #include <trview.common/Mocks/Windows/IShortcuts.h>
 #include <trview.common/Mocks/Windows/IDialogs.h>
 #include <trview.common/Mocks/IFiles.h>
@@ -69,6 +70,7 @@ namespace
             std::unique_ptr<IImGuiBackend> imgui_backend{ std::make_unique<NullImGuiBackend>() };
             std::unique_ptr<ILightsWindowManager> lights_window_manager{ mock_unique<MockLightsWindowManager>() };
             std::unique_ptr<ILogWindowManager> log_window_manager{ mock_unique<MockLogWindowManager>() };
+            std::unique_ptr<ITexturesWindowManager> textures_window_manager{ mock_unique<MockTexturesWindowManager>() };
 
             std::unique_ptr<Application> build()
             {
@@ -76,7 +78,8 @@ namespace
                 return std::make_unique<Application>(window, std::move(update_checker), std::move(settings_loader),
                     trlevel_source, std::move(file_menu), std::move(viewer), route_source, shortcuts,
                     std::move(items_window_manager), std::move(triggers_window_manager), std::move(route_window_manager), std::move(rooms_window_manager),
-                    level_source, startup_options, dialogs, files, std::move(imgui_backend), std::move(lights_window_manager), std::move(log_window_manager));
+                    level_source, startup_options, dialogs, files, std::move(imgui_backend), std::move(lights_window_manager), std::move(log_window_manager),
+                    std::move(textures_window_manager));
             }
 
             test_module& with_dialogs(std::shared_ptr<IDialogs> dialogs)
@@ -180,6 +183,12 @@ namespace
                 this->log_window_manager = std::move(log_window_manager);
                 return *this;
             }
+
+            test_module& with_textures_window_manager(std::unique_ptr<ITexturesWindowManager> textures_window_manager)
+            {
+                this->textures_window_manager = std::move(textures_window_manager);
+                return *this;
+            }
         };
         return test_module{};
     }
@@ -246,6 +255,7 @@ TEST(Application, WindowContentsResetBeforeViewerLoaded)
     auto [triggers_window_manager_ptr, triggers_window_manager] = create_mock<MockTriggersWindowManager>();
     auto [route_window_manager_ptr, route_window_manager] = create_mock<MockRouteWindowManager>();
     auto [lights_window_manager_ptr, lights_window_manager] = create_mock<MockLightsWindowManager>();
+    auto [textures_window_manager_ptr, textures_window_manager] = create_mock<MockTexturesWindowManager>();
     auto route = mock_shared<MockRoute>();
 
     std::vector<std::string> events;
@@ -267,6 +277,7 @@ TEST(Application, WindowContentsResetBeforeViewerLoaded)
     EXPECT_CALL(lights_window_manager, set_lights(A<const std::vector<std::weak_ptr<ILight>>&>())).Times(1).WillOnce([&](auto) { events.push_back("lights_lights"); });
     EXPECT_CALL(*route, clear()).Times(1).WillOnce([&] { events.push_back("route_clear"); });
     EXPECT_CALL(*route, set_unsaved(false)).Times(1);
+    EXPECT_CALL(textures_window_manager, set_texture_storage).Times(1).WillOnce([&](auto) { events.push_back("textures"); });
     EXPECT_CALL(viewer, open(NotNull(), ILevel::OpenMode::Full)).Times(1).WillOnce([&](auto&&...) { events.push_back("viewer"); });
 
     auto application = register_test_module()
@@ -278,13 +289,14 @@ TEST(Application, WindowContentsResetBeforeViewerLoaded)
         .with_route_window_manager(std::move(route_window_manager_ptr))
         .with_rooms_window_manager(std::move(rooms_window_manager_ptr))
         .with_lights_window_manager(std::move(lights_window_manager_ptr))
+        .with_textures_window_manager(std::move(textures_window_manager_ptr))
         .build();
     application->open("test_path.tr2", ILevel::OpenMode::Full);
 
     ASSERT_TRUE(called.has_value());
     ASSERT_EQ(called.value(), "test_path.tr2");
 
-    ASSERT_EQ(events.size(), 17);
+    ASSERT_EQ(events.size(), 18);
     ASSERT_EQ(events.back(), "viewer");
 }
 
@@ -481,6 +493,8 @@ TEST(Application, WindowManagersAndViewerRendered)
     EXPECT_CALL(lights_window_manager, render).Times(1);
     auto [log_window_manager_ptr, log_window_manager] = create_mock<MockLogWindowManager>();
     EXPECT_CALL(log_window_manager, render).Times(1);
+    auto [textures_window_manager_ptr, textures_window_manager] = create_mock<MockTexturesWindowManager>();
+    EXPECT_CALL(textures_window_manager, render).Times(1);
     auto [viewer_ptr, viewer] = create_mock<MockViewer>();
     EXPECT_CALL(viewer, render).Times(1);
     auto files = mock_shared<MockFiles>();
@@ -493,6 +507,7 @@ TEST(Application, WindowManagersAndViewerRendered)
         .with_triggers_window_manager(std::move(triggers_window_manager_ptr))
         .with_lights_window_manager(std::move(lights_window_manager_ptr))
         .with_log_window_manager(std::move(log_window_manager_ptr))
+        .with_textures_window_manager(std::move(textures_window_manager_ptr))
         .with_viewer(std::move(viewer_ptr))
         .with_files(files)
         .build();

@@ -249,6 +249,12 @@
     <ClCompile Include="Mocks\Mocks.cpp">
       <Filter>Mocks</Filter>
     </ClCompile>
+    <ClCompile Include="Windows\Textures\TexturesWindow.cpp">
+      <Filter>Windows\Textures</Filter>
+    </ClCompile>
+    <ClCompile Include="Windows\Textures\TexturesWindowManager.cpp">
+      <Filter>Windows\Textures</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera\Camera.h">
@@ -792,6 +798,24 @@
     <ClInclude Include="Elements\RenderFilter.h">
       <Filter>Elements</Filter>
     </ClInclude>
+    <ClInclude Include="Windows\Textures\ITexturesWindow.h">
+      <Filter>Windows\Textures</Filter>
+    </ClInclude>
+    <ClInclude Include="Windows\Textures\ITexturesWindowManager.h">
+      <Filter>Windows\Textures</Filter>
+    </ClInclude>
+    <ClInclude Include="Windows\Textures\TexturesWindow.h">
+      <Filter>Windows\Textures</Filter>
+    </ClInclude>
+    <ClInclude Include="Windows\Textures\TexturesWindowManager.h">
+      <Filter>Windows\Textures</Filter>
+    </ClInclude>
+    <ClInclude Include="Mocks\Windows\ITexturesWindowManager.h">
+      <Filter>Mocks\Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="Mocks\Windows\ITexturesWindow.h">
+      <Filter>Mocks\Windows</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Windows">
@@ -907,6 +931,9 @@
     </Filter>
     <Filter Include="Windows\Log">
       <UniqueIdentifier>{d617ca7e-d7f1-4ea4-b6d6-ea63e358ff24}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Windows\Textures">
+      <UniqueIdentifier>{36446548-876c-425f-ad6c-ea61b062a959}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

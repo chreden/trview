@@ -63,6 +63,8 @@
     </ClCompile>
     <ClCompile Include="TestImgui.cpp" />
     <ClCompile Include="TestImGuiId.cpp" />
+    <ClCompile Include="TexturesWindowManagerTests.cpp" />
+    <ClCompile Include="TexturesWindowTests.cpp" />
     <ClCompile Include="TriggersWindowManagerTests.cpp" />
     <ClCompile Include="TriggersWindowTests.cpp" />
     <ClCompile Include="UI\CameraControlsTests.cpp" />

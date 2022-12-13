@@ -337,6 +337,7 @@ namespace trview
         {
             context->RSSetState(_wireframe_rasterizer.Get());
         }
+
         // Render the triangles that the transparency buffer has produced.
         _transparency->render(camera, *_texture_storage.get());
     }
@@ -835,9 +836,9 @@ namespace trview
         on_level_changed();
     }
 
-    const ILevelTextureStorage& Level::texture_storage() const
+    std::shared_ptr<ILevelTextureStorage> Level::texture_storage() const
     {
-        return *_texture_storage;
+        return _texture_storage;
     }
 
     std::set<uint32_t> Level::alternate_groups() const

@@ -87,7 +87,7 @@ namespace trview
         virtual bool show_items() const override;
         virtual void set_selected_trigger(uint32_t number) override;
         virtual void set_selected_light(uint32_t number) override;
-        virtual const ILevelTextureStorage& texture_storage() const override;
+        virtual std::shared_ptr<ILevelTextureStorage> texture_storage() const override;
         virtual std::set<uint32_t> alternate_groups() const override;
         virtual trlevel::LevelVersion version() const override;
         virtual std::string filename() const override;

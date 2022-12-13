@@ -53,6 +53,8 @@
 #include "Windows/Log/LogWindow.h"
 #include "Windows/Log/LogWindowManager.h"
 #include "UI/DX11ImGuiBackend.h"
+#include "Windows/Textures/TexturesWindowManager.h"
+#include "Windows/Textures/TexturesWindow.h"
 
 namespace trview
 {
@@ -255,6 +257,7 @@ namespace trview
         auto decrypter = std::make_shared<trlevel::Decrypter>();
 
         auto trlevel_source = [=](auto&& filename) { return std::make_unique<trlevel::Level>(filename, files, decrypter, log); };
+        auto textures_window_source = [=]() { return std::make_shared<TexturesWindow>(); };
 
         return std::make_unique<Application>(
             window,
@@ -275,6 +278,7 @@ namespace trview
             files,
             std::make_unique<DX11ImGuiBackend>(window, device),
             std::make_unique<LightsWindowManager>(window, shortcuts, lights_window_source),
-            std::make_unique<LogWindowManager>(window, log_window_source));
+            std::make_unique<LogWindowManager>(window, log_window_source),
+            std::make_unique<TexturesWindowManager>(window, textures_window_source));
     }
 }

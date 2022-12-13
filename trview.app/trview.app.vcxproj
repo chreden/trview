@@ -119,6 +119,8 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClCompile Include="Windows\RoomsWindowManager.cpp" />
     <ClCompile Include="Windows\RouteWindow.cpp" />
     <ClCompile Include="Windows\RouteWindowManager.cpp" />
+    <ClCompile Include="Windows\Textures\TexturesWindow.cpp" />
+    <ClCompile Include="Windows\Textures\TexturesWindowManager.cpp" />
     <ClCompile Include="Windows\TriggersWindow.cpp" />
     <ClCompile Include="Windows\TriggersWindowManager.cpp" />
     <ClCompile Include="Windows\Viewer.cpp" />
@@ -230,6 +232,8 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClInclude Include="Mocks\Windows\IRoomsWindowManager.h" />
     <ClInclude Include="Mocks\Windows\IRouteWindow.h" />
     <ClInclude Include="Mocks\Windows\IRouteWindowManager.h" />
+    <ClInclude Include="Mocks\Windows\ITexturesWindow.h" />
+    <ClInclude Include="Mocks\Windows\ITexturesWindowManager.h" />
     <ClInclude Include="Mocks\Windows\ITriggersWindow.h" />
     <ClInclude Include="Mocks\Windows\ITriggersWindowManager.h" />
     <ClInclude Include="Mocks\Windows\IViewer.h" />
@@ -303,6 +307,10 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClInclude Include="Windows\RoomsWindowManager.h" />
     <ClInclude Include="Windows\RouteWindow.h" />
     <ClInclude Include="Windows\RouteWindowManager.h" />
+    <ClInclude Include="Windows\Textures\ITexturesWindow.h" />
+    <ClInclude Include="Windows\Textures\ITexturesWindowManager.h" />
+    <ClInclude Include="Windows\Textures\TexturesWindow.h" />
+    <ClInclude Include="Windows\Textures\TexturesWindowManager.h" />
     <ClInclude Include="Windows\TriggersWindow.h" />
     <ClInclude Include="Windows\TriggersWindowManager.h" />
     <ClInclude Include="Windows\Viewer.h" />

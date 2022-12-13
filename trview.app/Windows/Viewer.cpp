@@ -700,17 +700,18 @@ namespace trview
             const auto& camera = current_camera();
 
             _level->render(camera, _show_selection);
-            _sector_highlight->render(camera, _level->texture_storage());
+            auto texture_storage = _level->texture_storage();
 
-            _measure->render(camera, _level->texture_storage());
+            _sector_highlight->render(camera, *texture_storage);
+            _measure->render(camera, *texture_storage);
 
             if (_show_route)
             {
-                _route->render(camera, _level->texture_storage(), _show_selection);
+                _route->render(camera, *texture_storage, _show_selection);
             }
 
             _level->render_transparency(camera);
-            _compass->render(camera, _level->texture_storage());
+            _compass->render(camera, *texture_storage);
         }
     }
 

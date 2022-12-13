@@ -161,6 +161,12 @@
     <ClCompile Include="Elements\SectorTests.cpp">
       <Filter>Elements</Filter>
     </ClCompile>
+    <ClCompile Include="TexturesWindowTests.cpp">
+      <Filter>Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="TexturesWindowManagerTests.cpp">
+      <Filter>Windows</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Input">

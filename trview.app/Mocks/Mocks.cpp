@@ -46,6 +46,8 @@
 #include "Windows/ITriggersWindow.h"
 #include "Windows/ITriggersWindowManager.h"
 #include "Windows/IViewer.h"
+#include "Windows/ITexturesWindowManager.h"
+#include "Windows/ITexturesWindow.h"
 
 namespace trview
 {
@@ -185,5 +187,11 @@ namespace trview
 
         MockViewer::MockViewer() {}
         MockViewer::~MockViewer() {}
+
+        MockTexturesWindowManager::MockTexturesWindowManager() {}
+        MockTexturesWindowManager::~MockTexturesWindowManager() {}
+
+        MockTexturesWindow::MockTexturesWindow() {}
+        MockTexturesWindow::~MockTexturesWindow() {}
     }
 }

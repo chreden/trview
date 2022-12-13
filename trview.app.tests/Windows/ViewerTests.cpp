@@ -682,9 +682,9 @@ TEST(Viewer, SelectionRendered)
 
     auto viewer = register_test_module().with_device(device).build();
 
-    NiceMock<MockLevelTextureStorage> texture_storage;
+    auto texture_storage = mock_shared<MockLevelTextureStorage>();
     NiceMock<MockLevel> level;
-    ON_CALL(level, texture_storage).WillByDefault(testing::ReturnRef(texture_storage));
+    ON_CALL(level, texture_storage).WillByDefault(testing::Return(texture_storage));
     EXPECT_CALL(level, render(A<const ICamera&>(), true)).Times(1);
     auto route = mock_shared<MockRoute>();
     EXPECT_CALL(*route, render(A<const ICamera&>(), A<const ILevelTextureStorage&>(), true)).Times(1);
@@ -702,9 +702,9 @@ TEST(Viewer, SelectionNotRendered)
 
     auto viewer = register_test_module().with_device(device).build();
 
-    NiceMock<MockLevelTextureStorage> texture_storage;
+    auto texture_storage = mock_shared<MockLevelTextureStorage>();
     NiceMock<MockLevel> level;
-    ON_CALL(level, texture_storage).WillByDefault(testing::ReturnRef(texture_storage));
+    ON_CALL(level, texture_storage).WillByDefault(testing::Return(texture_storage));
     EXPECT_CALL(level, render(A<const ICamera&>(), false)).Times(1);
     auto route = mock_shared<MockRoute>();
     EXPECT_CALL(*route, render(A<const ICamera&>(), A<const ILevelTextureStorage&>(), false)).Times(1);
