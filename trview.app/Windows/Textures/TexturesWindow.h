@@ -7,6 +7,12 @@ namespace trview
     class TexturesWindow final : public ITexturesWindow
     {
     public:
+        struct Names
+        {
+            static inline const std::string transparency_checkbox = "Transparency";
+            static inline const std::string tile = "Tile";
+        };
+
         virtual ~TexturesWindow() = default;
         virtual void render() override;
         virtual void set_number(int32_t number) override;

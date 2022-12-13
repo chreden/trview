@@ -813,6 +813,9 @@
     <ClInclude Include="Mocks\Windows\ITexturesWindowManager.h">
       <Filter>Mocks\Windows</Filter>
     </ClInclude>
+    <ClInclude Include="Mocks\Windows\ITexturesWindow.h">
+      <Filter>Mocks\Windows</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Windows">
