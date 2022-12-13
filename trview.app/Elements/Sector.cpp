@@ -332,6 +332,11 @@ namespace trview
     {
         const auto add_neighbour = [&](std::uint16_t room)
         {
+            if (room == 0xff || room >= level.num_rooms())
+            {
+                return;
+            }
+
             const auto &r = level.get_room(room);
             if (r.alternate_room != -1)
             {

@@ -646,7 +646,9 @@ namespace trview
             return nullptr;
         }
 
-        auto room = _level.room(sector->portal()).lock();
+        auto room =
+            sector->portal() != 0xff ?
+            _level.room(sector->portal()).lock() : nullptr;
         if (!room)
         {
             return nullptr;
