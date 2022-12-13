@@ -15,7 +15,6 @@ using testing::AtLeast;
 using testing::Exactly;
 using testing::NiceMock;
 using testing::SaveArg;
-using testing::SaveArgPointee;
 using namespace trview::graphics::mocks;
 
 TEST(LevelTextureStorage, PaletteLoadedTomb1)
