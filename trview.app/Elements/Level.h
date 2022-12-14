@@ -13,6 +13,7 @@
 #include <trview.app/Graphics/IMeshStorage.h>
 #include <trview.graphics/IRenderTarget.h>
 #include <trview.graphics/Texture.h>
+#include <trview.graphics/IBuffer.h>
 
 namespace trview
 {
@@ -42,7 +43,8 @@ namespace trview
             const IRoom::Source& room_source,
             const ITrigger::Source& trigger_source,
             const ILight::Source& light_source,
-            const std::shared_ptr<ILog>& log);
+            const std::shared_ptr<ILog>& log,
+            const graphics::IBuffer::ConstantSource& buffer_source);
         virtual ~Level() = default;
         virtual std::vector<RoomInfo> room_info() const override;
         virtual RoomInfo room_info(uint32_t room) const override;
@@ -158,6 +160,7 @@ namespace trview
         Microsoft::WRL::ComPtr<ID3D11SamplerState> _sampler_state;
         Microsoft::WRL::ComPtr<ID3D11RasterizerState> _default_rasterizer;
         Microsoft::WRL::ComPtr<ID3D11RasterizerState> _wireframe_rasterizer;
+        std::unique_ptr<graphics::IBuffer> _pixel_shader_data;
 
         std::set<RoomHighlightMode> _room_highlight_modes;
         

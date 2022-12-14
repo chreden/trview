@@ -97,6 +97,11 @@ namespace trview
     DirectX::SimpleMath::Vector2 LevelTextureStorage::uv(uint32_t texture_index, uint32_t uv_index) const
     {
         using namespace DirectX::SimpleMath;
+        if (texture_index >= _object_textures.size())
+        {
+            return Vector2::Zero;
+        }
+
         const auto& vert = _object_textures[texture_index].Vertices[uv_index];
 
         if (_texture_mode == TextureMode::Official)

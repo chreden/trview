@@ -14,6 +14,19 @@ using namespace DirectX::SimpleMath;
 
 namespace trview
 {
+    namespace
+    {
+#pragma warning(push)
+#pragma warning(disable : 4324)
+#pragma pack(push, 16)
+        __declspec(align(16)) struct PixelShaderData
+        {
+            bool disable_transparency;
+        };
+#pragma pack(pop)
+#pragma warning(pop)
+    }
+
     ILevel::~ILevel()
     {
     }
@@ -31,7 +44,8 @@ namespace trview
         const IRoom::Source& room_source,
         const ITrigger::Source& trigger_source,
         const ILight::Source& light_source,
-        const std::shared_ptr<ILog>& log)
+        const std::shared_ptr<ILog>& log,
+        const graphics::IBuffer::ConstantSource& buffer_source)
         : _device(device), _version(level->get_version()), _texture_storage(level_texture_storage),
         _transparency(std::move(transparency_buffer)), _selection_renderer(std::move(selection_renderer)), _log(log)
     {
@@ -64,6 +78,8 @@ namespace trview
         rasterizer_desc.CullMode = D3D11_CULL_BACK;
         rasterizer_desc.DepthClipEnable = true;
         _wireframe_rasterizer = device->create_rasterizer_state(rasterizer_desc);
+
+        _pixel_shader_data = buffer_source(sizeof(PixelShaderData));
 
         // Create the texture sampler state.
         _sampler_state = device->create_sampler_state(sampler_desc);
@@ -247,7 +263,12 @@ namespace trview
             _vertex_shader->apply(context);
             _pixel_shader->apply(context);
 
+            graphics::set_data(*_pixel_shader_data, context, PixelShaderData{ true });
+            _pixel_shader_data->apply(context, graphics::IBuffer::ApplyTo::PS);
+
             render_rooms(camera);
+
+            graphics::set_data(*_pixel_shader_data, context, PixelShaderData{ false });
         }
 
         if (render_selection)
@@ -337,6 +358,9 @@ namespace trview
         {
             context->RSSetState(_wireframe_rasterizer.Get());
         }
+
+        graphics::set_data(*_pixel_shader_data, context, PixelShaderData{ false });
+        _pixel_shader_data->apply(context, graphics::IBuffer::ApplyTo::PS);
 
         // Render the triangles that the transparency buffer has produced.
         _transparency->render(camera, *_texture_storage.get());
