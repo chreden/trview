@@ -163,6 +163,10 @@ namespace trview
             return value != filter.value;
         case CompareOp::Exists:
             return true;
+        case CompareOp::StartsWith:
+            return value.starts_with(filter.value);
+        case CompareOp::EndsWith:
+            return value.ends_with(filter.value);
         }
         return false;
     }
@@ -360,7 +364,7 @@ namespace trview
                 }
                 ImGui::SameLine();
 
-                if (has_options(filter.key))
+                if (has_options(filter.key) && filter.compare != CompareOp::StartsWith && filter.compare != CompareOp::EndsWith)
                 {
                     auto available_options = options_for_key(filter.key);
                     if (filter.value_count() > 0 && ImGui::BeginCombo((Names::FilterValue + std::to_string(i)).c_str(), filter.value.c_str()))
@@ -571,6 +575,10 @@ namespace trview
             return "is present";
         case CompareOp::NotExists:
             return "is not present";
+        case CompareOp::StartsWith:
+            return "starts with";
+        case CompareOp::EndsWith:
+            return "ends with";
         }
         return "?";
     }
@@ -593,7 +601,9 @@ namespace trview
         return
         {
             CompareOp::Equal,
-            CompareOp::NotEqual
+            CompareOp::NotEqual,
+            CompareOp::StartsWith,
+            CompareOp::EndsWith
         };
     }
 

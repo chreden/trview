@@ -18,7 +18,9 @@ namespace trview
         Between,
         BetweenInclusive,
         Exists,
-        NotExists
+        NotExists,
+        StartsWith,
+        EndsWith
     };
 
     enum class Op
