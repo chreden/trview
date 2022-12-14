@@ -304,6 +304,32 @@ TEST(Filters, PresentString)
     ASSERT_FALSE(filters.match(Object().with_texts({ })));
 }
 
+TEST(Filters, StartsWithString)
+{
+    Filters<Object> filters;
+    filters.add_getter<std::string>("value", [](auto&& o) { return o.text; });
+
+    Filters<Object>::Filter starts_with_string = make_filter().key("value").compare_op(CompareOp::StartsWith).value("fir");
+    filters.set_filters({ starts_with_string });
+
+    ASSERT_TRUE(filters.match(Object().with_text("first")));
+    ASSERT_FALSE(filters.match(Object().with_text("second")));
+    ASSERT_FALSE(filters.match(Object().with_text("FIRST")));
+}
+
+TEST(Filters, EndsWithString)
+{
+    Filters<Object> filters;
+    filters.add_getter<std::string>("value", [](auto&& o) { return o.text; });
+
+    Filters<Object>::Filter ends_with_string = make_filter().key("value").compare_op(CompareOp::EndsWith).value("st");
+    filters.set_filters({ ends_with_string });
+
+    ASSERT_TRUE(filters.match(Object().with_text("first")));
+    ASSERT_FALSE(filters.match(Object().with_text("second")));
+    ASSERT_FALSE(filters.match(Object().with_text("FIRST")));
+}
+
 TEST(Filters, Or)
 {
     Filters<Object> filters;
