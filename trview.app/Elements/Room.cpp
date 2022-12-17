@@ -904,9 +904,13 @@ namespace trview
             const auto other_room = _level.room(sector->room_above()).lock();
             const auto diff = (position() - other_room->position()) + Vector3(static_cast<float>(x1), 0, static_cast<float>(z1));
             const int other_id = static_cast<int>(diff.x * other_room->num_z_sectors() + diff.z);
-            portal.sector_above = other_room->sectors()[other_id];
-            portal.above_offset = Vector3(static_cast<float>(x1), 0, static_cast<float>(z1)) - diff;
-            portal.room_above = other_room;
+            const auto sectors = other_room->sectors();
+            if (other_id >= 0 && other_id < std::ssize(sectors))
+            {
+                portal.sector_above = other_room->sectors()[other_id];
+                portal.above_offset = Vector3(static_cast<float>(x1), 0, static_cast<float>(z1)) - diff;
+                portal.room_above = other_room;
+            }
         }
 
         const auto id = get_sector_id(x2, z2);
@@ -923,7 +927,7 @@ namespace trview
             const auto diff = (position() - other_room->position()) + Vector3(static_cast<float>(x2), 0, static_cast<float>(z2));
             const int other_id = static_cast<int>(diff.x * other_room->num_z_sectors() + diff.z);
             const auto sectors = other_room->sectors();
-            if (other_id < std::ssize(sectors))
+            if (other_id >= 0 && other_id < std::ssize(sectors))
             {
                 portal.target = sectors[other_id];
                 portal.offset = Vector3(static_cast<float>(x2), 0, static_cast<float>(z2)) - diff;

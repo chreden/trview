@@ -32,7 +32,7 @@ namespace trview
             MOCK_METHOD(bool, is_ceiling, (), (const, override));
 
             MOCK_METHOD(void, generate_triangles, (), (override));
-            MOCK_METHOD(void, add_triangle, (const ISector::Portal&, const Triangle&), (override));
+            MOCK_METHOD(void, add_triangle, (const ISector::Portal&, const Triangle&, std::unordered_set<uint32_t>), (override));
             MOCK_METHOD(void, add_flag, (SectorFlag), (override));
         };
     }
