@@ -225,7 +225,7 @@ namespace trview
 
         if (index == 0)
         {
-            result.commands.push_back(Floordata::Command(Floordata::Command::Function::None, { floordata[index] }, FloordataMeanings::None, items));
+            result.commands.push_back(Floordata::Command(Floordata::Command::Function::None, { floordata[index] }, meanings, items));
             return result;
         }
         
