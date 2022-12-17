@@ -34,7 +34,7 @@ namespace trview
     Sector::parse(const trlevel::ILevel& level)
     {
         // Basic sector items 
-        if (_sector.floor == -127 && _sector.ceiling == -127)
+        if (_sector.floor == _sector.ceiling)
             _flags |= SectorFlag::Wall;
         if (_room_above != 0xFF)
             _flags |= SectorFlag::RoomAbove;
@@ -541,8 +541,10 @@ namespace trview
         }
     }
 
-    void Sector::add_triangle(const ISector::Portal& portal, const Triangle& triangle)
+    void Sector::add_triangle(const ISector::Portal& portal, const Triangle& triangle, std::unordered_set<uint32_t> visited_rooms)
     {
+        visited_rooms.insert(_room);
+
         // If the triangle goes above the top of the room and there is a room above then
         // split the triangles and send them to the above room. The remainder is added to
         // this room.
@@ -559,7 +561,8 @@ namespace trview
 
             add_triangle(tri);
 
-            if (portal.sector_above)
+            if (portal.sector_above && 
+                visited_rooms.find(portal.sector_above->room()) == visited_rooms.end())
             {
                 Triangle offcut = triangle;
                 offcut.uv0.y = offcut.v0.y = std::min(offcut.v0.y, portal.direct_room->y_top());
@@ -572,7 +575,7 @@ namespace trview
 
                 auto above_portal = portal.room_above->sector_portal(portal.sector_above->x(), portal.sector_above->z(),
                     portal.sector_above->x(), portal.sector_above->z());
-                portal.sector_above->add_triangle(above_portal, offcut);
+                portal.sector_above->add_triangle(above_portal, offcut, visited_rooms);
             }
         }
         else if (triangle.v0.y > portal.direct_room->y_bottom() ||
@@ -615,7 +618,7 @@ namespace trview
         auto triangles = quad.triangles();
         for (const auto& triangle : triangles)
         {
-            add_triangle(portal, triangle);
+            add_triangle(portal, triangle, {});
         }
     }
 

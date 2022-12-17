@@ -2,6 +2,7 @@
 
 #include <array>
 #include <set>
+#include <unordered_set>
 #include <vector>
 #include <SimpleMath.h>
 #include "Types.h"
@@ -121,7 +122,7 @@ namespace trview
 
         // New triangle generation to include TRLE mode.
         virtual void generate_triangles() = 0;
-        virtual void add_triangle(const ISector::Portal& portal, const Triangle& triangle) = 0;
+        virtual void add_triangle(const ISector::Portal& portal, const Triangle& triangle, std::unordered_set<uint32_t> visited_rooms) = 0;
         virtual void add_flag(SectorFlag flag) = 0;
     };
 }
