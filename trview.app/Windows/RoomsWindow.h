@@ -58,8 +58,7 @@ namespace trview
         void render_items_tab(const std::shared_ptr<IRoom>& room);
         void render_triggers_tab(const std::shared_ptr<IRoom>& room);
         void render_floordata_tab(const std::shared_ptr<IRoom>& room);
-
-        void render_simple();
+        void set_selected_sector(const std::shared_ptr<ISector>& sector);
 
         std::vector<std::weak_ptr<IRoom>> _all_rooms;
         std::vector<Item> _all_items;
@@ -97,6 +96,6 @@ namespace trview
         std::vector<uint16_t> _floordata;
         bool _simple_mode{ true };
         bool _in_floordata_mode{ false };
-        std::shared_ptr<ISector> _selected_sector;
+        std::weak_ptr<ISector> _selected_sector;
     };
 }

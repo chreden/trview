@@ -98,7 +98,7 @@ namespace trview
             return;
         }
 
-        _selected_sector.reset();
+        set_selected_sector(nullptr);
         _current_room = room;
         _scroll_to_room = true;
         if (_sync_room && _current_room < _all_rooms.size())
@@ -145,7 +145,7 @@ namespace trview
         _current_room = 0xffffffff;
         generate_filters();
         _force_sort = true;
-        _selected_sector.reset();
+        set_selected_sector(nullptr);
     }
 
     void RoomsWindow::set_selected_item(const Item& item)
@@ -417,7 +417,7 @@ namespace trview
                                 {
                                     if (_in_floordata_mode)
                                     {
-                                        _selected_sector = sector;
+                                        set_selected_sector(sector);
                                     }
                                     else
                                     {
@@ -795,16 +795,6 @@ namespace trview
     void RoomsWindow::render_floordata_tab(const std::shared_ptr<IRoom>&)
     {
         ImGui::Checkbox(Names::simple_mode.c_str(), &_simple_mode);
-        render_simple();
-    }
-
-    void RoomsWindow::set_floordata(const std::vector<uint16_t>& data)
-    {
-        _floordata = data;
-    }
-
-    void RoomsWindow::render_simple()
-    {
         if (ImGui::BeginTable("##floordata", _simple_mode ? 2 : 3, ImGuiTableFlags_ScrollY | ImGuiTableFlags_SizingStretchProp))
         {
             ImGui::TableSetupColumn("#");
@@ -816,11 +806,12 @@ namespace trview
             ImGui::TableSetupScrollFreeze(1, 1);
             ImGui::TableHeadersRow();
 
-            if (_selected_sector)
+            auto selected_sector = _selected_sector.lock();
+            if (selected_sector)
             {
-                const Floordata floordata = parse_floordata(_floordata, _selected_sector->floordata_index(), FloordataMeanings::Generate, _all_items);
+                const Floordata floordata = parse_floordata(_floordata, selected_sector->floordata_index(), FloordataMeanings::Generate, _all_items);
 
-                uint32_t index = _selected_sector->floordata_index();
+                uint32_t index = selected_sector->floordata_index();
                 for (const auto& command : floordata.commands)
                 {
                     for (std::size_t i = 0; i < command.data.size(); ++i)
@@ -840,5 +831,16 @@ namespace trview
             }
             ImGui::EndTable();
         }
+    }
+
+    void RoomsWindow::set_floordata(const std::vector<uint16_t>& data)
+    {
+        _floordata = data;
+    }
+
+    void RoomsWindow::set_selected_sector(const std::shared_ptr<ISector>& sector)
+    {
+        _selected_sector = sector;
+        _map_renderer->set_selection(sector);
     }
 }

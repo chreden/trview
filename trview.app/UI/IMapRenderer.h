@@ -62,5 +62,7 @@ namespace trview
         virtual void set_render_mode(RenderMode mode) = 0;
 
         virtual void set_colours(const MapColours& colours) = 0;
+
+        virtual void set_selection(const std::shared_ptr<ISector>& sector) = 0;
     };
 }
