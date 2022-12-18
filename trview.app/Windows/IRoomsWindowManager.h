@@ -19,6 +19,8 @@ namespace trview
 
         Event<std::weak_ptr<IRoom>, bool> on_room_visibility;
 
+        Event<std::weak_ptr<ISector>> on_sector_hover;
+
         /// Render all of the rooms windows.
         virtual void render() = 0;
 

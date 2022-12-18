@@ -29,6 +29,8 @@ namespace trview
 
         Event<std::weak_ptr<IRoom>, bool> on_room_visibility;
 
+        Event<std::weak_ptr<ISector>> on_sector_hover;
+
         /// Clear the selected trigger.
         virtual void clear_selected_trigger() = 0;
 

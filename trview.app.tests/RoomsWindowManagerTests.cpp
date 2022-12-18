@@ -133,3 +133,38 @@ TEST(RoomsWindowManager, OnRoomVisibilityRaised)
     ASSERT_EQ(std::get<0>(raised.value()).lock(), room);
     ASSERT_TRUE(std::get<1>(raised.value()));
 }
+
+TEST(RoomsWindowManager, SetFloordataPassedToWindows)
+{
+    auto mock_window = mock_shared<MockRoomsWindow>();
+    EXPECT_CALL(*mock_window, set_floordata).Times(2);
+    auto manager = register_test_module().with_window_source([&](auto&&...) { return mock_window; }).build();
+    manager->create_window();
+    manager->set_floordata({});
+}
+
+TEST(RoomsWindowManager, FloordataPassedToNewWindows)
+{
+    auto mock_window = mock_shared<MockRoomsWindow>();
+    EXPECT_CALL(*mock_window, set_floordata).Times(1);
+    auto manager = register_test_module().with_window_source([&](auto&&...) { return mock_window; }).build();
+    manager->create_window();
+}
+
+TEST(RoomsWindowManager, OnSectorHoverRaised)
+{
+    auto manager = register_test_module().build();
+    auto sector = mock_shared<MockSector>();
+
+    std::weak_ptr<ISector> raised;
+    auto token = manager->on_sector_hover += [&](auto&& value)
+    {
+        raised = value;
+    };
+
+    auto window = manager->create_window().lock();
+    ASSERT_NE(window, nullptr);
+
+    window->on_sector_hover(sector);
+    ASSERT_EQ(raised.lock(), sector);
+}

@@ -411,6 +411,7 @@ namespace trview
                             _map_renderer->set_cursor_position(Point(adjusted.x, adjusted.y));
 
                             auto sector = _map_renderer->sector_at_cursor();
+                            on_sector_hover(sector);
                             if (sector)
                             {
                                 if (io.MouseClicked[0])

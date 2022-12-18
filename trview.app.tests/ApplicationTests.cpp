@@ -269,6 +269,7 @@ TEST(Application, WindowContentsResetBeforeViewerLoaded)
     EXPECT_CALL(rooms_window_manager, set_level_version(A<trlevel::LevelVersion>())).Times(1).WillOnce([&](auto) { events.push_back("rooms_version"); });
     EXPECT_CALL(rooms_window_manager, set_items(A<const std::vector<Item>&>())).Times(1).WillOnce([&](auto) { events.push_back("rooms_items"); });
     EXPECT_CALL(rooms_window_manager, set_triggers(A<const std::vector<std::weak_ptr<ITrigger>>&>())).Times(1).WillOnce([&](auto) { events.push_back("rooms_triggers"); });
+    EXPECT_CALL(rooms_window_manager, set_floordata(A<const std::vector<uint16_t>&>())).Times(1).WillOnce([&](auto) { events.push_back("rooms_floordata"); });
     EXPECT_CALL(rooms_window_manager, set_rooms(A<const std::vector<std::weak_ptr<IRoom>>&>())).Times(1).WillOnce([&](auto) { events.push_back("rooms_rooms"); });
     EXPECT_CALL(route_window_manager, set_items(A<const std::vector<Item>&>())).Times(1).WillOnce([&](auto) { events.push_back("route_items"); });
     EXPECT_CALL(route_window_manager, set_triggers(A<const std::vector<std::weak_ptr<ITrigger>>&>())).Times(1).WillOnce([&](auto) { events.push_back("route_triggers"); });
@@ -296,7 +297,7 @@ TEST(Application, WindowContentsResetBeforeViewerLoaded)
     ASSERT_TRUE(called.has_value());
     ASSERT_EQ(called.value(), "test_path.tr2");
 
-    ASSERT_EQ(events.size(), 18);
+    ASSERT_EQ(events.size(), 19);
     ASSERT_EQ(events.back(), "viewer");
 }
 
@@ -857,4 +858,19 @@ TEST(Application, RecentRouteLoadedOnWindowOpened)
     route_window_manager.on_window_created();
 
     ASSERT_EQ(called_settings.recent_routes["test.tr2"].route_path, "test.tvr");
+}
+
+TEST(Application, SectorHoverForwarded)
+{
+    auto [viewer_ptr, viewer] = create_mock<MockViewer>();
+    EXPECT_CALL(viewer, select_sector).Times(1);
+
+    auto [rooms_window_manager_ptr, rooms_window_manager] = create_mock<MockRoomsWindowManager>();
+
+    auto application = register_test_module()
+        .with_viewer(std::move(viewer_ptr))
+        .with_rooms_window_manager(std::move(rooms_window_manager_ptr))
+        .build();
+
+    rooms_window_manager.on_sector_hover(mock_shared<MockSector>());
 }

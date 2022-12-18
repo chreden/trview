@@ -23,7 +23,7 @@ namespace trview
             static inline const std::string properties_tab = "Properties##Properties Tab";
             static inline const std::string rooms_panel = "Rooms List";
             static inline const std::string rooms_list = "##roomslist";
-            static inline const std::string simple_mode = "Simple";
+            static inline const std::string simple_mode = "Raw";
         };
 
         /// Create a rooms window as a child of the specified window.
