@@ -20,7 +20,7 @@ namespace trview
         {
             static inline const std::string details_panel = "Room Details";
             static inline const std::string properties = "Properties";
-            static inline const std::string bottom = "##bottom";
+            static inline const std::string properties_tab = "Properties##Properties Tab";
             static inline const std::string rooms_panel = "Rooms List";
             static inline const std::string rooms_list = "##roomslist";
             static inline const std::string simple_mode = "Simple";

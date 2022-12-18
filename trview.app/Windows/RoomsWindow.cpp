@@ -460,7 +460,7 @@ namespace trview
 
                     if (ImGui::BeginTabBar("TabBar"))
                     {
-                        if (ImGui::BeginTabItem("Properties"))
+                        if (ImGui::BeginTabItem(Names::properties_tab.c_str()))
                         {
                             render_properties_tab(room);
                             ImGui::EndTabItem();

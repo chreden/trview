@@ -68,7 +68,7 @@ namespace trview
                 case Function::Portal:
                 {
                     _flags |= SectorFlag::Portal;
-                    _portal = command.data[1] & 0xFF;
+                    _portal = command.data[1];
                     break;
                 }
                 case Function::FloorSlant:

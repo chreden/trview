@@ -13,8 +13,8 @@ TEST(Sector, HighNumberedPortal)
 {
     NiceMock<trlevel::mocks::MockLevel> level;
     ON_CALL(level, num_floor_data).WillByDefault(Return(3));
-    EXPECT_CALL(level, get_floor_data(1)).WillRepeatedly(Return(0x8001));
-    EXPECT_CALL(level, get_floor_data(2)).WillRepeatedly(Return(378));
+    std::vector<uint16_t> floor_data{ 0x0000, 0x8001, 378 };
+    EXPECT_CALL(level, get_floor_data_all).WillRepeatedly(Return(floor_data));
 
     tr3_room tr_room{};
     tr_room.num_x_sectors = 1;
