@@ -6,6 +6,8 @@
 #include <trview.graphics/ViewportStore.h>
 #include <trview.common/Strings.h>
 
+using namespace DirectX::SimpleMath;
+
 namespace trview
 {
     namespace
@@ -102,16 +104,7 @@ namespace trview
         _token_store += _ui->on_camera_reset += [&]() { _camera.reset(); };
         _token_store += _ui->on_camera_mode += [&](CameraMode mode) { set_camera_mode(mode); };
         _token_store += _ui->on_camera_projection_mode += [&](ProjectionMode mode) { set_camera_projection_mode(mode); };
-        _token_store += _ui->on_sector_hover += [&](const std::shared_ptr<ISector>& sector)
-        {
-            if (_level)
-            {
-                const auto room_info = _level->room_info(_level->selected_room());
-                _sector_highlight->set_sector(sector,
-                    DirectX::SimpleMath::Matrix::CreateTranslation(room_info.x / trlevel::Scale_X, 0, room_info.z / trlevel::Scale_Z));
-                _scene_changed = true;
-            }
-        };
+        _token_store += _ui->on_sector_hover += [&](const std::shared_ptr<ISector>& sector) { set_sector_highlight(sector); };
         _token_store += _ui->on_add_waypoint += [&]()
         {
             auto type = _context_pick.type == PickResult::Type::Entity ? IWaypoint::Type::Entity : _context_pick.type == PickResult::Type::Trigger ? IWaypoint::Type::Trigger : IWaypoint::Type::Position;
@@ -255,7 +248,10 @@ namespace trview
         _token_store += _measure->on_position += [&](auto pos) { _ui->set_measure_position(pos); };
         _token_store += _measure->on_distance += [&](float distance) { _ui->set_measure_distance(distance); };
 
-        _token_store += _picking->pick_sources += [&](PickInfo, PickResult& result) { result.stop = !should_pick(); };
+        _token_store += _picking->pick_sources += [&](PickInfo, PickResult& result) 
+        {
+            result.stop = !should_pick();
+        };
         _token_store += _picking->pick_sources += [&](PickInfo info, PickResult& result)
         {
             if (result.stop || _active_tool != Tool::None)
@@ -323,6 +319,11 @@ namespace trview
                 result.text = generate_pick_message(result, *_level, *_route);
             }
             _ui->set_pick(result);
+
+            if (result.stop)
+            {
+                return;
+            }
 
             // Highlight sectors in the minimap.
             if (_level)
@@ -684,7 +685,7 @@ namespace trview
     bool Viewer::should_pick() const
     {
         const auto window = this->window();
-        return !(!_level || window_under_cursor() != window || window_is_minimised(window) || _ui->is_cursor_over() || cursor_outside_window(window));
+        return _level && window_under_cursor() == window && !window_is_minimised(window) && !_ui->is_cursor_over() && !cursor_outside_window(window);
     }
 
     void Viewer::render_scene()
@@ -1291,5 +1292,27 @@ namespace trview
             _level->set_show_rooms(show);
             _ui->set_toggle(Options::rooms, show);
         }
+    }
+
+    void Viewer::select_sector(const std::weak_ptr<ISector>& sector)
+    {
+        if (auto sector_ptr = sector.lock())
+        {
+            set_sector_highlight(sector_ptr);
+            _ui->set_minimap_highlight(sector_ptr->x(), sector_ptr->z());
+        }
+    }
+
+    void Viewer::set_sector_highlight(const std::shared_ptr<ISector>& sector)
+    {
+        if (!_level)
+        {
+            return;
+        }
+
+        const auto room_info = _level->room_info(_level->selected_room());
+        _sector_highlight->set_sector(sector,
+            Matrix::CreateTranslation(room_info.x / trlevel::Scale_X, 0, room_info.z / trlevel::Scale_Z));
+        _scene_changed = true;
     }
 }

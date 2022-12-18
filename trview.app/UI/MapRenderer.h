@@ -88,6 +88,7 @@ namespace trview
 
         virtual void set_render_mode(RenderMode mode) override;
         virtual void set_colours(const MapColours& colours) override;
+        virtual void set_selection(const std::shared_ptr<ISector>& sector) override;
     private:
         // Determines the position (on screen) to draw a sector 
         Point get_position(const ISector& sector); 
@@ -131,11 +132,12 @@ namespace trview
         const float                         _DRAW_MARGIN = 30.0f; 
         const float                         _DRAW_SCALE = 17.0f; 
 
-        std::optional<std::pair<uint16_t, uint16_t>> _selected_sector;
+        std::optional<std::pair<uint16_t, uint16_t>> _highlighted_sector;
         std::unique_ptr<graphics::IFont> _font;
         std::shared_ptr<ISector> _previous_sector;
         Microsoft::WRL::ComPtr<ID3D11DepthStencilState> _depth_stencil_state;
         RenderMode _render_mode{ RenderMode::Screen };
         MapColours _colours;
+        std::weak_ptr<ISector> _selected_sector;
     };
 };

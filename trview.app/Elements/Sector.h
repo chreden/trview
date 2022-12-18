@@ -45,6 +45,7 @@ namespace trview
         virtual uint32_t room() const override;
         virtual TriangulationDirection triangulation_function() const override;
         virtual std::vector<Triangle> triangles() const override;
+        virtual uint32_t floordata_index() const override;
         /// Determines whether this is a walkable floor.
         virtual bool is_floor() const override;
         virtual bool is_wall() const override;
@@ -100,6 +101,7 @@ namespace trview
 
         std::set<uint16_t> _neighbours;
 
+        uint32_t _floordata_index;
         trlevel::tr_room_info _info;
         std::vector<Triangle> _triangles;
         const IRoom& _room_ptr;
@@ -112,5 +114,5 @@ namespace trview
     /// <param name="floor">The current floordata value.</param>
     /// <param name="cur_index">The current floordata index - this will be updated.</param>
     /// <returns>Triangulation data.</returns>
-    Triangulation read_triangulation(const trlevel::ILevel& level, uint16_t floor, std::uint16_t& cur_index);
+    Triangulation parse_triangulation(uint16_t floor, uint16_t data);
 }

@@ -95,6 +95,7 @@ namespace trview
         void set_trigger_visibility(const std::weak_ptr<ITrigger>& trigger, bool visible);
         void set_light_visibility(const std::weak_ptr<ILight>& light, bool visible);
         void set_room_visibility(const std::weak_ptr<IRoom>& room, bool visible);
+        void select_sector(const std::weak_ptr<ISector>& sector);
         // Lua
         void register_lua();
         bool should_discard_changes();

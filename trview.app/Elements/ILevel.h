@@ -43,6 +43,7 @@ namespace trview
         virtual bool any_alternates() const = 0;
         virtual std::string filename() const = 0;
         virtual bool has_model(uint32_t type_id) const = 0;
+        virtual std::vector<uint16_t> floor_data() const = 0;
         virtual bool highlight_mode_enabled(RoomHighlightMode mode) const = 0;
         virtual std::optional<Item> item(uint32_t index) const = 0;
         /// Get the items in this level.

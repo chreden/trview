@@ -26,6 +26,7 @@ namespace trview
             MOCK_METHOD(Point, first, (), (const, override));
             MOCK_METHOD(void, set_render_mode, (RenderMode), (override));
             MOCK_METHOD(void, set_colours, (const MapColours&), (override));
+            MOCK_METHOD(void, set_selection, (const std::shared_ptr<ISector>&), (override));
         };
     }
 }

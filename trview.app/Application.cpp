@@ -136,6 +136,7 @@ namespace trview
         _rooms_windows->set_level_version(_level->version());
         _rooms_windows->set_items(_level->items());
         _rooms_windows->set_triggers(_level->triggers());
+        _rooms_windows->set_floordata(_level->floor_data());
         _rooms_windows->set_rooms(_level->rooms());
         _route_window->set_items(_level->items());
         _route_window->set_triggers(_level->triggers());
@@ -395,6 +396,7 @@ namespace trview
         _token_store += _rooms_windows->on_item_selected += [this](const auto& item) { select_item(item); };
         _token_store += _rooms_windows->on_trigger_selected += [this](const auto& trigger) { select_trigger(trigger); };
         _token_store += _rooms_windows->on_room_visibility += [this](const auto& room, bool value) { set_room_visibility(room, value); };
+        _token_store += _rooms_windows->on_sector_hover += [this](const auto& sector) { select_sector(sector); };
     }
 
     void Application::setup_route_window()
@@ -630,6 +632,11 @@ namespace trview
                 _level->set_room_visibility(room_ptr->number(), visible);
             }
         }
+    }
+
+    void Application::select_sector(const std::weak_ptr<ISector>& sector)
+    {
+        _viewer->select_sector(sector);
     }
 
     void Application::render()

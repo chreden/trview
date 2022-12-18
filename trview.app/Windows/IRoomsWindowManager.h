@@ -19,6 +19,8 @@ namespace trview
 
         Event<std::weak_ptr<IRoom>, bool> on_room_visibility;
 
+        Event<std::weak_ptr<ISector>> on_sector_hover;
+
         /// Render all of the rooms windows.
         virtual void render() = 0;
 
@@ -57,5 +59,7 @@ namespace trview
         /// </summary>
         /// <param name="delta">Elapsed time since previous update.</param>
         virtual void update(float delta) = 0;
+
+        virtual void set_floordata(const std::vector<uint16_t>& data) = 0;
     };
 }

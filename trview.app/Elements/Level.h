@@ -94,6 +94,7 @@ namespace trview
         virtual trlevel::LevelVersion version() const override;
         virtual std::string filename() const override;
         virtual void set_filename(const std::string& filename) override;
+        virtual std::vector<uint16_t> floor_data() const override;
         virtual std::weak_ptr<ILight> light(uint32_t index) const override;
         virtual std::vector<std::weak_ptr<ILight>> lights() const override;
         virtual void set_light_visibility(uint32_t index, bool state) override;
@@ -186,7 +187,7 @@ namespace trview
         trlevel::LevelVersion _version;
         std::string _filename;
         std::shared_ptr<ILog> _log;
-
+        std::vector<uint16_t> _floor_data;
         std::set<uint32_t> _models;
     };
 

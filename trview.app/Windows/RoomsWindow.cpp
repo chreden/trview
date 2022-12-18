@@ -4,6 +4,7 @@
 #include <trview.app/Elements/ITrigger.h>
 #include <trview.common/Strings.h>
 #include "../trview_imgui.h"
+#include "../Elements/Floordata.h"
 
 namespace trview
 {
@@ -97,6 +98,7 @@ namespace trview
             return;
         }
 
+        set_selected_sector(nullptr);
         _current_room = room;
         _scroll_to_room = true;
         if (_sync_room && _current_room < _all_rooms.size())
@@ -143,6 +145,7 @@ namespace trview
         _current_room = 0xffffffff;
         generate_filters();
         _force_sort = true;
+        set_selected_sector(nullptr);
     }
 
     void RoomsWindow::set_selected_item(const Item& item)
@@ -408,33 +411,41 @@ namespace trview
                             _map_renderer->set_cursor_position(Point(adjusted.x, adjusted.y));
 
                             auto sector = _map_renderer->sector_at_cursor();
+                            on_sector_hover(sector);
                             if (sector)
                             {
                                 if (io.MouseClicked[0])
                                 {
-                                    if (has_flag(sector->flags(), SectorFlag::Portal))
+                                    if (_in_floordata_mode)
                                     {
-                                        on_room_selected(sector->portal());
-                                    }
-                                    else if (sector->room_below() != 0xff)
-                                    {
-                                        on_room_selected(sector->room_below());
+                                        set_selected_sector(sector);
                                     }
                                     else
                                     {
-                                        // Select triggers
-                                        for (const auto& trigger : _all_triggers)
+                                        if (has_flag(sector->flags(), SectorFlag::Portal))
                                         {
-                                            auto trigger_ptr = trigger.lock();
-                                            if (trigger_ptr && trigger_ptr->room() == _current_room && trigger_ptr->sector_id() == sector->id())
+                                            on_room_selected(sector->portal());
+                                        }
+                                        else if (sector->room_below() != 0xff)
+                                        {
+                                            on_room_selected(sector->room_below());
+                                        }
+                                        else
+                                        {
+                                            // Select triggers
+                                            for (const auto& trigger : _all_triggers)
                                             {
-                                                on_trigger_selected(trigger);
-                                                break;
+                                                auto trigger_ptr = trigger.lock();
+                                                if (trigger_ptr && trigger_ptr->room() == _current_room && trigger_ptr->sector_id() == sector->id())
+                                                {
+                                                    on_trigger_selected(trigger);
+                                                    break;
+                                                }
                                             }
                                         }
                                     }
                                 }
-                                else if (io.MouseClicked[1])
+                                else if (io.MouseClicked[1] && !_in_floordata_mode)
                                 {
                                     if (sector->room_above() != 0xff)
                                     {
@@ -448,174 +459,45 @@ namespace trview
                         ImGui::Separator();
                     }
 
-                    auto add_stat = [&]<typename T>(const std::string & name, const T && value, std::function<void()> click = {})
+                    if (ImGui::BeginTabBar("TabBar"))
                     {
-                        const auto string_value = get_string(value);
-                        ImGui::TableNextColumn();
-                        if (ImGui::Selectable(name.c_str(), false, ImGuiSelectableFlags_SpanAllColumns))
+                        if (ImGui::BeginTabItem(Names::properties_tab.c_str()))
                         {
-                            if (click)
-                            {
-                                click();
-                            }
-                            else
-                            {
-                                _clipboard->write(to_utf16(string_value));
-                                _tooltip_timer = 0.0f;
-                            }
-                        }
-                        ImGui::TableNextColumn();
-                        ImGui::Text(string_value.c_str());
-                    };
-
-                    if (ImGui::BeginTable(Names::bottom.c_str(), 2))
-                    {
-                        ImGui::TableNextRow();
-                        ImGui::TableNextColumn();
-
-                        ImGui::Text("Properties");
-                        if (ImGui::BeginTable(Names::properties.c_str(), 2, ImGuiTableFlags_ScrollY | ImGuiTableFlags_SizingFixedFit, ImVec2(0, 150)))
-                        {
-                            ImGui::TableSetupColumn("Name");
-                            ImGui::TableSetupColumn("Value");
-                            ImGui::TableNextRow();
-
-                            add_stat("X", room->info().x);
-                            add_stat("Y", room->info().yBottom);
-                            add_stat("Z", room->info().z);
-                            if (room->alternate_mode() != Room::AlternateMode::None)
-                            {
-                                add_stat("Alternate", room->alternate_room(), [this, room]() { on_room_selected(room->alternate_room()); });
-                                if (room->alternate_group() != 0xff)
-                                {
-                                    add_stat("Alternate Group", room->alternate_group());
-                                }
-                            }
-                            add_room_flags(*_clipboard, _level_version, *room);
-                            ImGui::EndTable();
+                            render_properties_tab(room);
+                            ImGui::EndTabItem();
                         }
 
-                        ImGui::TableNextColumn();
-                        ImGui::Text("Items");
-                        if (ImGui::BeginTable("Items", 2, ImGuiTableFlags_Sortable | ImGuiTableFlags_ScrollY | ImGuiTableFlags_SizingFixedFit, ImVec2(0, 150)))
+                        if (ImGui::BeginTabItem("Neigbours"))
                         {
-                            ImGui::TableSetupColumn("#");
-                            ImGui::TableSetupColumn("Type");
-                            ImGui::TableSetupScrollFreeze(1, 1);
-                            ImGui::TableHeadersRow();
-
-                            imgui_sort(_all_items,
-                                {
-                                    [](auto&& l, auto&& r) { return l.number() < r.number(); },
-                                    [](auto&& l, auto&& r) { return std::tuple(l.type(), l.number()) < std::tuple(r.type(), r.number()); },
-                                }, _force_sort);
-                            
-                            for (const auto& item : _all_items)
-                            {
-                                if (item.room() == room->number())
-                                {
-                                    ImGui::TableNextRow();
-                                    ImGui::TableNextColumn();
-                                    bool selected = _local_selected_item.has_value() && _local_selected_item.value().number() == item.number();
-                                    
-                                    ImGuiScroller scroller;
-                                    if (selected && _scroll_to_item)
-                                    {
-                                        scroller.scroll_to_item();
-                                        _scroll_to_item = false;
-                                    }
-
-                                    if (ImGui::Selectable(std::to_string(item.number()).c_str(), &selected, ImGuiSelectableFlags_SpanAllColumns | static_cast<int>(ImGuiSelectableFlags_SelectOnNav)))
-                                    {
-                                        scroller.fix_scroll();
-                                        _local_selected_item = item;
-                                        on_item_selected(item);
-                                        _scroll_to_item = false;
-                                    }
-
-                                    ImGui::TableNextColumn();
-                                    ImGui::Text(item.type().c_str());
-                                }
-                            }
-
-                            ImGui::EndTable();
+                            render_neighbours_tab(room);
+                            ImGui::EndTabItem();
                         }
 
-                        ImGui::TableNextColumn();
-                        ImGui::Text("Neighbours");
-                        if (ImGui::BeginTable("Neighbours", 1, ImGuiTableFlags_ScrollY | ImGuiTableFlags_SizingFixedFit, ImVec2(0, 150)))
+                        if (ImGui::BeginTabItem("Items"))
                         {
-                            ImGui::TableSetupColumn("#");
-                            ImGui::TableSetupScrollFreeze(1, 1);
-                            ImGui::TableHeadersRow();
-
-                            for (auto& neighbour : room->neighbours())
-                            {
-                                ImGui::TableNextRow();
-                                ImGui::TableNextColumn();
-                                bool selected = false;
-                                if (ImGui::Selectable(std::to_string(neighbour).c_str(), &selected, ImGuiSelectableFlags_SpanAllColumns | static_cast<int>(ImGuiSelectableFlags_SelectOnNav)))
-                                {
-                                    _selected_room = neighbour;
-                                    if (_sync_room)
-                                    {
-                                        on_room_selected(neighbour);
-                                    }
-                                }
-                            }
-
-                            ImGui::EndTable();
+                            render_items_tab(room);
+                            ImGui::EndTabItem();
                         }
 
-                        ImGui::TableNextColumn();
-                        ImGui::Text("Triggers");
-                        if (ImGui::BeginTable("Triggers", 2, ImGuiTableFlags_Sortable | ImGuiTableFlags_ScrollY | ImGuiTableFlags_SizingFixedFit, ImVec2(0, 150)))
+                        if (ImGui::BeginTabItem("Triggers"))
                         {
-                            ImGui::TableSetupColumn("#");
-                            ImGui::TableSetupColumn("Type");
-                            ImGui::TableSetupScrollFreeze(1, 1);
-                            ImGui::TableHeadersRow();
-
-                            imgui_sort_weak(_all_triggers,
-                                {
-                                    [](auto&& l, auto&& r) { return l.number() < r.number(); },
-                                    [&](auto&& l, auto&& r) { return std::tuple(trigger_type_name(l.type()), l.number()) < std::tuple(trigger_type_name(r.type()), r.number()); }
-                                }, _force_sort);
-
-                            for (const auto& trigger : _all_triggers)
-                            {
-                                const auto trigger_ptr = trigger.lock();
-                                if (trigger_ptr->room() == room->number())
-                                {
-                                    ImGui::TableNextRow();
-                                    ImGui::TableNextColumn();
-                                    const auto local_selection = _local_selected_trigger.lock();
-                                    bool selected = local_selection && local_selection->number() == trigger_ptr->number();
-                                    
-                                    ImGuiScroller scroller;
-                                    if (selected && _scroll_to_trigger)
-                                    {
-                                        scroller.scroll_to_item();
-                                        _scroll_to_trigger = false;
-                                    }
-
-                                    if (ImGui::Selectable(std::format("{0}##{0}", trigger_ptr->number()).c_str(), &selected, ImGuiSelectableFlags_SpanAllColumns | static_cast<int>(ImGuiSelectableFlags_SelectOnNav)))
-                                    {
-                                        scroller.fix_scroll();
-                                        _local_selected_trigger = trigger_ptr;
-                                        on_trigger_selected(trigger);
-                                        _scroll_to_trigger = false;
-                                    }
-
-                                    ImGui::TableNextColumn();
-                                    ImGui::Text(trigger_type_name(trigger_ptr->type()).c_str());
-                                }
-                            }
-
-                            ImGui::EndTable();
+                            render_triggers_tab(room);
+                            ImGui::EndTabItem();
                         }
 
-                        ImGui::EndTable();
+                        if (ImGui::BeginTabItem("Floordata"))
+                        {
+                            _in_floordata_mode = true;
+                            render_floordata_tab(room);
+                            ImGui::EndTabItem();
+                        }
+                        else
+                        {
+                            _in_floordata_mode = false;
+                        }
+
+
+                        ImGui::EndTabBar();
                     }
                 }
             }
@@ -742,5 +624,252 @@ namespace trview
         _filters.add_getter<bool>("Bit 15", [](auto&& room) { return room.flag(IRoom::Flag::Bit15); });
         _filters.add_getter<float>("Alternate", [](auto&& room) { return room.alternate_room(); }, [](auto&& room) { return room.alternate_mode() != IRoom::AlternateMode::None; });
         _filters.add_getter<float>("Alternate Group", [](auto&& room) { return room.alternate_group(); }, [](auto&& room) { return room.alternate_mode() != IRoom::AlternateMode::None; });
+    }
+
+    void RoomsWindow::render_properties_tab(const std::shared_ptr<IRoom>& room)
+    {
+        const auto add_stat = [&]<typename T>(const std::string & name, const T && value, std::function<void()> click = {})
+        {
+            const auto string_value = get_string(value);
+            ImGui::TableNextColumn();
+            if (ImGui::Selectable(name.c_str(), false, ImGuiSelectableFlags_SpanAllColumns))
+            {
+                if (click)
+                {
+                    click();
+                }
+                else
+                {
+                    _clipboard->write(to_utf16(string_value));
+                    _tooltip_timer = 0.0f;
+                }
+            }
+            ImGui::TableNextColumn();
+            ImGui::Text(string_value.c_str());
+        };
+
+        if (ImGui::BeginTable(Names::properties.c_str(), 2, ImGuiTableFlags_ScrollY | ImGuiTableFlags_SizingStretchSame))
+        {
+            ImGui::TableSetupColumn("Name");
+            ImGui::TableSetupColumn("Value");
+            ImGui::TableNextRow();
+
+            add_stat("X", room->info().x);
+            add_stat("Y", room->info().yBottom);
+            add_stat("Z", room->info().z);
+            if (room->alternate_mode() != Room::AlternateMode::None)
+            {
+                add_stat("Alternate", room->alternate_room(), [this, room]() { on_room_selected(room->alternate_room()); });
+                if (room->alternate_group() != 0xff)
+                {
+                    add_stat("Alternate Group", room->alternate_group());
+                }
+            }
+            add_room_flags(*_clipboard, _level_version, *room);
+            ImGui::EndTable();
+        }
+    }
+
+    void RoomsWindow::render_neighbours_tab(const std::shared_ptr<IRoom>& room)
+    {
+        if (ImGui::BeginTable("Neighbours", 1, ImGuiTableFlags_ScrollY | ImGuiTableFlags_SizingStretchProp))
+        {
+            ImGui::TableSetupColumn("#");
+            ImGui::TableSetupScrollFreeze(1, 1);
+            ImGui::TableHeadersRow();
+
+            for (auto& neighbour : room->neighbours())
+            {
+                ImGui::TableNextRow();
+                ImGui::TableNextColumn();
+                bool selected = false;
+                if (ImGui::Selectable(std::to_string(neighbour).c_str(), &selected, ImGuiSelectableFlags_SpanAllColumns | static_cast<int>(ImGuiSelectableFlags_SelectOnNav)))
+                {
+                    _selected_room = neighbour;
+                    if (_sync_room)
+                    {
+                        on_room_selected(neighbour);
+                    }
+                }
+            }
+
+            ImGui::EndTable();
+        }
+    }
+
+    void RoomsWindow::render_items_tab(const std::shared_ptr<IRoom>& room)
+    {
+        if (ImGui::BeginTable("Items", 2, ImGuiTableFlags_Sortable | ImGuiTableFlags_SizingStretchProp | ImGuiTableFlags_ScrollY))
+        {
+            ImGui::TableSetupColumn("#");
+            ImGui::TableSetupColumn("Type");
+            ImGui::TableSetupScrollFreeze(1, 1);
+            ImGui::TableHeadersRow();
+
+            imgui_sort(_all_items,
+                {
+                    [](auto&& l, auto&& r) { return l.number() < r.number(); },
+                    [](auto&& l, auto&& r) { return std::tuple(l.type(), l.number()) < std::tuple(r.type(), r.number()); },
+                }, _force_sort);
+
+            for (const auto& item : _all_items)
+            {
+                if (item.room() == room->number())
+                {
+                    ImGui::TableNextRow();
+                    ImGui::TableNextColumn();
+                    bool selected = _local_selected_item.has_value() && _local_selected_item.value().number() == item.number();
+
+                    ImGuiScroller scroller;
+                    if (selected && _scroll_to_item)
+                    {
+                        scroller.scroll_to_item();
+                        _scroll_to_item = false;
+                    }
+
+                    if (ImGui::Selectable(std::to_string(item.number()).c_str(), &selected, ImGuiSelectableFlags_SpanAllColumns | static_cast<int>(ImGuiSelectableFlags_SelectOnNav)))
+                    {
+                        scroller.fix_scroll();
+                        _local_selected_item = item;
+                        on_item_selected(item);
+                        _scroll_to_item = false;
+                    }
+
+                    ImGui::TableNextColumn();
+                    ImGui::Text(item.type().c_str());
+                }
+            }
+
+            ImGui::EndTable();
+        }
+    }
+
+    void RoomsWindow::render_triggers_tab(const std::shared_ptr<IRoom>& room)
+    {
+        if (ImGui::BeginTable("Triggers", 2, ImGuiTableFlags_Sortable | ImGuiTableFlags_SizingStretchProp | ImGuiTableFlags_ScrollY))
+        {
+            ImGui::TableSetupColumn("#");
+            ImGui::TableSetupColumn("Type");
+            ImGui::TableSetupScrollFreeze(1, 1);
+            ImGui::TableHeadersRow();
+
+            imgui_sort_weak(_all_triggers,
+                {
+                    [](auto&& l, auto&& r) { return l.number() < r.number(); },
+                    [&](auto&& l, auto&& r) { return std::tuple(trigger_type_name(l.type()), l.number()) < std::tuple(trigger_type_name(r.type()), r.number()); }
+                }, _force_sort);
+
+            for (const auto& trigger : _all_triggers)
+            {
+                const auto trigger_ptr = trigger.lock();
+                if (trigger_ptr->room() == room->number())
+                {
+                    ImGui::TableNextRow();
+                    ImGui::TableNextColumn();
+                    const auto local_selection = _local_selected_trigger.lock();
+                    bool selected = local_selection && local_selection->number() == trigger_ptr->number();
+
+                    ImGuiScroller scroller;
+                    if (selected && _scroll_to_trigger)
+                    {
+                        scroller.scroll_to_item();
+                        _scroll_to_trigger = false;
+                    }
+
+                    if (ImGui::Selectable(std::format("{0}##{0}", trigger_ptr->number()).c_str(), &selected, ImGuiSelectableFlags_SpanAllColumns | static_cast<int>(ImGuiSelectableFlags_SelectOnNav)))
+                    {
+                        scroller.fix_scroll();
+                        _local_selected_trigger = trigger_ptr;
+                        on_trigger_selected(trigger);
+                        _scroll_to_trigger = false;
+                    }
+
+                    ImGui::TableNextColumn();
+                    ImGui::Text(trigger_type_name(trigger_ptr->type()).c_str());
+                }
+            }
+
+            ImGui::EndTable();
+        }
+    }
+
+    void RoomsWindow::render_floordata_tab(const std::shared_ptr<IRoom>&)
+    {
+        ImGui::Checkbox(Names::simple_mode.c_str(), &_simple_mode);
+
+        auto selected_sector = _selected_sector.lock();
+        if (!selected_sector)
+        {
+            ImGui::Text("Select a sector to view floordata");
+        }
+        else if (ImGui::BeginTable("##floordata", _simple_mode ? 2 : 3, ImGuiTableFlags_ScrollY | ImGuiTableFlags_SizingStretchProp))
+        {
+            ImGui::TableSetupColumn("#");
+            ImGui::TableSetupColumn("Value");
+            if (!_simple_mode)
+            {
+                ImGui::TableSetupColumn("Meaning");
+            }
+            ImGui::TableSetupScrollFreeze(1, 1);
+            ImGui::TableHeadersRow();
+
+            if (selected_sector)
+            {
+                const Floordata floordata = parse_floordata(_floordata, selected_sector->floordata_index(), FloordataMeanings::Generate, _all_items);
+
+                uint32_t index = selected_sector->floordata_index();
+                for (const auto& command : floordata.commands)
+                {
+                    for (std::size_t i = 0; i < command.data.size(); ++i, ++index)
+                    {
+                        ImGui::TableNextRow();
+                        ImGui::TableNextColumn();
+                        bool selected = _selected_floordata == index;
+                        if (ImGui::Selectable(std::format("{}", index).c_str(), &selected, ImGuiSelectableFlags_SpanAllColumns))
+                        {
+                            _selected_floordata = index;
+                        }
+                        if (ImGui::BeginPopupContextItem())
+                        {
+                            if (ImGui::MenuItem("Copy"))
+                            {
+                                _clipboard->write(to_utf16(std::format("{} {:04X} {}", index, command.data[i],
+                                    _simple_mode ? "" : command.meanings[i])));
+                            }
+                            if (ImGui::MenuItem("Copy All"))
+                            {
+                                std::string data;
+                                for (uint32_t d = 0; d < command.data.size(); ++d)
+                                {
+                                    data += std::format("{} {:04X} {}\n", index, command.data[d],
+                                        _simple_mode ? "" : command.meanings[d]);
+                                }
+                                _clipboard->write(to_utf16(data));
+                            }
+                            ImGui::EndPopup();
+                        }
+                        ImGui::TableNextColumn();
+                        ImGui::Text("%04X", command.data[i]);
+                        if (!_simple_mode)
+                        {
+                            ImGui::TableNextColumn();
+                            ImGui::Text(command.meanings[i].c_str());
+                        }
+                    }
+                }
+            }
+            ImGui::EndTable();
+        }
+    }
+
+    void RoomsWindow::set_floordata(const std::vector<uint16_t>& data)
+    {
+        _floordata = data;
+    }
+
+    void RoomsWindow::set_selected_sector(const std::shared_ptr<ISector>& sector)
+    {
+        _selected_sector = sector;
+        _map_renderer->set_selection(sector);
     }
 }

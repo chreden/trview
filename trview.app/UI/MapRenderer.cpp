@@ -75,9 +75,9 @@ namespace trview
             // If the cursor is over the tile, then negate colour 
             Point first = tile.position, last = Point(tile.size.width, tile.size.height) + tile.position;
             if (_cursor.is_between(first, last) ||
-                (_selected_sector.has_value() &&
-                    _selected_sector.value().first == tile.sector->x() &&
-                    _selected_sector.value().second == tile.sector->z()))
+                (_highlighted_sector.has_value() &&
+                    _highlighted_sector.value().first == tile.sector->x() &&
+                    _highlighted_sector.value().second == tile.sector->z()))
             {
                 draw_color.Negate();
                 text_color.Negate();
@@ -115,6 +115,14 @@ namespace trview
             if (has_flag(tile.sector->flags(), SectorFlag::Portal))
             {
                 _font->render(context, std::to_wstring(tile.sector->portal()), tile.position.x - 1, tile.position.y, tile.size.width, tile.size.height, text_color);
+            }
+
+            if (_selected_sector.lock() == tile.sector)
+            {
+                draw(tile.position, { tile.size.width, 1.0f }, Colour::Yellow);
+                draw(tile.position + Point(0, 1.0f), { 1.0f, tile.size.height - 2.0f }, Colour::Yellow);
+                draw(tile.position + Point(0, tile.size.height - 1.0f), { tile.size.width, 1.0f }, Colour::Yellow);
+                draw(tile.position + Point(tile.size.width - 1.0f, 1.0f), { 1.0f, tile.size.height - 2.0f }, Colour::Yellow);
             }
         });
     }
@@ -274,9 +282,9 @@ namespace trview
 
     void MapRenderer::clear_highlight()
     {
-        if (_selected_sector.has_value())
+        if (_highlighted_sector.has_value())
         {
-            _selected_sector.reset();
+            _highlighted_sector.reset();
             _force_redraw = true;
         }
     }
@@ -284,12 +292,12 @@ namespace trview
     void MapRenderer::set_highlight(uint16_t x, uint16_t z)
     {
         if (x > _columns || z > _rows ||
-            (_selected_sector.has_value() && x == _selected_sector.value().first && z == _selected_sector.value().second))
+            (_highlighted_sector.has_value() && x == _highlighted_sector.value().first && z == _highlighted_sector.value().second))
         {
             return;
         }
 
-        _selected_sector = { x, z };
+        _highlighted_sector = { x, z };
         _force_redraw = true;
     }
 
@@ -307,6 +315,12 @@ namespace trview
     void MapRenderer::set_colours(const MapColours& colours)
     {
         _colours = colours;
+        _force_redraw = true;
+    }
+
+    void MapRenderer::set_selection(const std::shared_ptr<ISector>& sector)
+    {
+        _selected_sector = sector;
         _force_redraw = true;
     }
 };

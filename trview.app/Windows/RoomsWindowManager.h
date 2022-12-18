@@ -41,6 +41,7 @@ namespace trview
         virtual void set_triggers(const std::vector<std::weak_ptr<ITrigger>>& triggers) override;
         virtual std::weak_ptr<IRoomsWindow> create_window() override;
         virtual void update(float delta) override;
+        virtual void set_floordata(const std::vector<uint16_t>& data) override;
     private:
         std::vector<Item> _all_items;
         std::vector<std::weak_ptr<IRoom>> _all_rooms;
@@ -51,6 +52,7 @@ namespace trview
         IRoomsWindow::Source _rooms_window_source;
         trlevel::LevelVersion _level_version{ trlevel::LevelVersion::Unknown };
         MapColours _map_colours;
+        std::vector<uint16_t> _floordata;
     };
 }
 

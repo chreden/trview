@@ -37,6 +37,7 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClCompile Include="Camera\FreeCamera.cpp" />
     <ClCompile Include="Camera\OrbitCamera.cpp" />
     <ClCompile Include="Elements\Entity.cpp" />
+    <ClCompile Include="Elements\Floordata.cpp" />
     <ClCompile Include="Elements\ILight.cpp" />
     <ClCompile Include="Elements\ISector.cpp" />
     <ClCompile Include="Elements\Item.cpp" />
@@ -137,6 +138,7 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClInclude Include="Camera\OrbitCamera.h" />
     <ClInclude Include="Camera\ProjectionMode.h" />
     <ClInclude Include="Elements\Entity.h" />
+    <ClInclude Include="Elements\Floordata.h" />
     <ClInclude Include="Elements\IEntity.h" />
     <ClInclude Include="Elements\ILevel.h" />
     <ClInclude Include="Elements\ILight.h" />

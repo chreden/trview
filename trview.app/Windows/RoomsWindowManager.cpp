@@ -114,17 +114,28 @@ namespace trview
         rooms_window->on_item_selected += on_item_selected;
         rooms_window->on_trigger_selected += on_trigger_selected;
         rooms_window->on_room_visibility += on_room_visibility;
+        rooms_window->on_sector_hover += on_sector_hover;
         rooms_window->set_level_version(_level_version);
         rooms_window->set_items(_all_items);
         rooms_window->set_triggers(_all_triggers);
         rooms_window->set_rooms(_all_rooms);
         rooms_window->set_current_room(_current_room);
         rooms_window->set_map_colours(_map_colours);
+        rooms_window->set_floordata(_floordata);
         return add_window(rooms_window);
     }
 
     void RoomsWindowManager::update(float delta)
     {
         WindowManager::update(delta);
+    }
+
+    void RoomsWindowManager::set_floordata(const std::vector<uint16_t>& data)
+    {
+        _floordata = data;
+        for (auto& window : _windows)
+        {
+            window.second->set_floordata(data);
+        }
     }
 }
