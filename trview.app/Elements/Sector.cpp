@@ -36,7 +36,7 @@ namespace trview
     Sector::parse(const trlevel::ILevel& level)
     {
         // Basic sector items 
-        if (_sector.floor == _sector.ceiling)
+        if (_sector.floor == -127 && _sector.ceiling == -127)
             _flags |= SectorFlag::Wall;
         if (_room_above != 0xFF)
             _flags |= SectorFlag::RoomAbove;

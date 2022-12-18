@@ -97,5 +97,6 @@ namespace trview
         bool _simple_mode{ true };
         bool _in_floordata_mode{ false };
         std::weak_ptr<ISector> _selected_sector;
+        uint32_t _selected_floordata{ 0 };
     };
 }

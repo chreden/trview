@@ -445,7 +445,7 @@ namespace trview
                                         }
                                     }
                                 }
-                                else if (io.MouseClicked[1])
+                                else if (io.MouseClicked[1] && !_in_floordata_mode)
                                 {
                                     if (sector->room_above() != 0xff)
                                     {
@@ -796,7 +796,13 @@ namespace trview
     void RoomsWindow::render_floordata_tab(const std::shared_ptr<IRoom>&)
     {
         ImGui::Checkbox(Names::simple_mode.c_str(), &_simple_mode);
-        if (ImGui::BeginTable("##floordata", _simple_mode ? 2 : 3, ImGuiTableFlags_ScrollY | ImGuiTableFlags_SizingStretchProp))
+
+        auto selected_sector = _selected_sector.lock();
+        if (!selected_sector)
+        {
+            ImGui::Text("Select a sector to view floordata");
+        }
+        else if (ImGui::BeginTable("##floordata", _simple_mode ? 2 : 3, ImGuiTableFlags_ScrollY | ImGuiTableFlags_SizingStretchProp))
         {
             ImGui::TableSetupColumn("#");
             ImGui::TableSetupColumn("Value");
@@ -807,7 +813,6 @@ namespace trview
             ImGui::TableSetupScrollFreeze(1, 1);
             ImGui::TableHeadersRow();
 
-            auto selected_sector = _selected_sector.lock();
             if (selected_sector)
             {
                 const Floordata floordata = parse_floordata(_floordata, selected_sector->floordata_index(), FloordataMeanings::Generate, _all_items);
@@ -815,11 +820,34 @@ namespace trview
                 uint32_t index = selected_sector->floordata_index();
                 for (const auto& command : floordata.commands)
                 {
-                    for (std::size_t i = 0; i < command.data.size(); ++i)
+                    for (std::size_t i = 0; i < command.data.size(); ++i, ++index)
                     {
                         ImGui::TableNextRow();
                         ImGui::TableNextColumn();
-                        ImGui::Text(std::format("{}", index++).c_str());
+                        bool selected = _selected_floordata == index;
+                        if (ImGui::Selectable(std::format("{}", index).c_str(), &selected, ImGuiSelectableFlags_SpanAllColumns))
+                        {
+                            _selected_floordata = index;
+                        }
+                        if (ImGui::BeginPopupContextItem())
+                        {
+                            if (ImGui::MenuItem("Copy"))
+                            {
+                                _clipboard->write(to_utf16(std::format("{} {:04X} {}", index, command.data[i],
+                                    _simple_mode ? "" : command.meanings[i])));
+                            }
+                            if (ImGui::MenuItem("Copy All"))
+                            {
+                                std::string data;
+                                for (uint32_t d = 0; d < command.data.size(); ++d)
+                                {
+                                    data += std::format("{} {:04X} {}\n", index, command.data[d],
+                                        _simple_mode ? "" : command.meanings[d]);
+                                }
+                                _clipboard->write(to_utf16(data));
+                            }
+                            ImGui::EndPopup();
+                        }
                         ImGui::TableNextColumn();
                         ImGui::Text("%04X", command.data[i]);
                         if (!_simple_mode)
