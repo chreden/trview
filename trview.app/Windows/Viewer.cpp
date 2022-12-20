@@ -614,12 +614,6 @@ namespace trview
             auto selected_item = level->selected_item();
             _ui->set_selected_item(selected_item.value_or(0));
 
-            // Reset UI buttons
-            _ui->set_max_rooms(static_cast<uint32_t>(rooms.size()));
-            _ui->set_use_alternate_groups(_level->version() >= trlevel::LevelVersion::Tomb4);
-            _ui->set_alternate_groups(_level->alternate_groups());
-            _ui->set_flip_enabled(_level->any_alternates());
-
             // Strip the last part of the path away.
             const auto filename = _level->filename();
             auto last_index = std::min(filename.find_last_of('\\'), filename.find_last_of('/'));
@@ -639,6 +633,12 @@ namespace trview
                 _level->set_alternate_group(group, old_level->alternate_group(group));
             }
         }
+
+        // Reset UI buttons
+        _ui->set_max_rooms(static_cast<uint32_t>(rooms.size()));
+        _ui->set_use_alternate_groups(_level->version() >= trlevel::LevelVersion::Tomb4);
+        _ui->set_alternate_groups(_level->alternate_groups());
+        _ui->set_flip_enabled(_level->any_alternates());
 
         _scene_changed = true;
     }
