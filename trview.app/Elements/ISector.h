@@ -126,4 +126,6 @@ namespace trview
         virtual void add_triangle(const ISector::Portal& portal, const Triangle& triangle, std::unordered_set<uint32_t> visited_rooms) = 0;
         virtual void add_flag(SectorFlag flag) = 0;
     };
+
+    bool is_no_space(SectorFlag flags);
 }

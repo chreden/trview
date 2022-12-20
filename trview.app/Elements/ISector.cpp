@@ -99,4 +99,9 @@ namespace trview
         results.push_back(Triangle(v[0], v[3], v[1], uv[0], uv[3], uv[1], type, room));
         return results;
     }
+
+    bool is_no_space(SectorFlag flags)
+    {
+        return !has_flag(flags, SectorFlag::Portal) && (has_flag(flags, SectorFlag::Wall) && has_flag(flags, SectorFlag::FloorSlant));
+    }
 }
