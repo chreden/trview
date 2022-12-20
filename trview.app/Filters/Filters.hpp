@@ -623,6 +623,16 @@ namespace trview
         };
     }
 
+    template <>
+    constexpr std::vector<CompareOp> compare_ops<bool>() noexcept
+    {
+        return
+        {
+            CompareOp::Equal,
+            CompareOp::NotEqual,
+        };
+    }
+
     template <typename T>
     constexpr std::vector<std::string> available_options() noexcept
     {

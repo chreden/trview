@@ -1,6 +1,7 @@
 #include "MapColours.h"
 #include "../Elements/Types.h"
 #include <trview.common/JsonSerializers.h>
+#include "../Elements/ISector.h"
 
 namespace trview
 {
@@ -69,7 +70,7 @@ namespace trview
         int minimum_flag_enabled = -1;
         Colour draw_color = colour(Special::Default);
 
-        if (!has_flag(flags, SectorFlag::Portal) && (has_flag(flags, SectorFlag::Wall) && has_flag(flags, SectorFlag::FloorSlant))) // is it no-space?
+        if (is_no_space(flags))
         {
             return colour(Special::NoSpace);
         }

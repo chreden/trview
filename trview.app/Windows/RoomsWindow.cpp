@@ -10,6 +10,18 @@ namespace trview
 {
     namespace
     {
+        bool room_is_no_space(const IRoom& room)
+        {
+            for (const auto& sector : room.sectors())
+            {
+                if (is_no_space(sector->flags()))
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
         void add_room_flags(IClipboard& clipboard, trlevel::LevelVersion version, const IRoom& room)
         {
             using trlevel::LevelVersion;
@@ -56,6 +68,7 @@ namespace trview
             add_flag("Bit 13", room.flag(IRoom::Flag::Bit13));
             add_flag("Bit 14", room.flag(IRoom::Flag::Bit14));
             add_flag("Bit 15", room.flag(IRoom::Flag::Bit15));
+            add_flag("No Space", room_is_no_space(room));
         }
     }
 
@@ -624,6 +637,7 @@ namespace trview
         _filters.add_getter<bool>("Bit 15", [](auto&& room) { return room.flag(IRoom::Flag::Bit15); });
         _filters.add_getter<float>("Alternate", [](auto&& room) { return room.alternate_room(); }, [](auto&& room) { return room.alternate_mode() != IRoom::AlternateMode::None; });
         _filters.add_getter<float>("Alternate Group", [](auto&& room) { return room.alternate_group(); }, [](auto&& room) { return room.alternate_mode() != IRoom::AlternateMode::None; });
+        _filters.add_getter<bool>("No Space", room_is_no_space);
     }
 
     void RoomsWindow::render_properties_tab(const std::shared_ptr<IRoom>& room)
