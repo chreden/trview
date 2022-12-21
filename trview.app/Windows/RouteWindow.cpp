@@ -235,7 +235,7 @@ namespace trview
                     on_waypoint_changed();
                 }
 
-                if (ImGui::BeginPopupContextItem())
+                if (ImGui::BeginPopupContextItem("Position"))
                 {
                     if (ImGui::MenuItem("Copy"))
                     {
@@ -324,6 +324,8 @@ namespace trview
 
     bool RouteWindow::render_route_window()
     {
+        ImGui::ShowStackToolWindow();
+
         bool stay_open = true;
         ImGui::PushStyleVar(ImGuiStyleVar_WindowMinSize, ImVec2(420, 500));
         if (ImGui::Begin("Route", &stay_open))
