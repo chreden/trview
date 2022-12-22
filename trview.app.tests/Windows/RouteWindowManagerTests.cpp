@@ -169,3 +169,19 @@ TEST(RouteWindowManager, IsWindowOpen)
     manager->render();
     ASSERT_FALSE(manager->is_window_open());
 }
+
+TEST(RouteWindowManager, WaypointChangedRaised)
+{
+    auto mock_window = mock_shared<MockRouteWindow>();
+    auto manager = register_test_module().with_window_source([&](auto&&...) { return mock_window; }).build();
+
+    bool raised = false;
+    auto token = manager->on_waypoint_changed += [&]()
+    {
+        raised = true;
+    };
+
+    manager->create_window();
+    mock_window->on_waypoint_changed();
+    ASSERT_TRUE(raised);
+}

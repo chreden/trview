@@ -874,3 +874,18 @@ TEST(Application, SectorHoverForwarded)
 
     rooms_window_manager.on_sector_hover(mock_shared<MockSector>());
 }
+
+TEST(Application, WaypointChangedUpdatesViewer)
+{
+    auto [viewer_ptr, viewer] = create_mock<MockViewer>();
+    EXPECT_CALL(viewer, set_scene_changed).Times(1);
+
+    auto [route_window_manager_ptr, route_window_manager] = create_mock<MockRouteWindowManager>();
+
+    auto application = register_test_module()
+        .with_viewer(std::move(viewer_ptr))
+        .with_route_window_manager(std::move(route_window_manager_ptr))
+        .build();
+
+    route_window_manager.on_waypoint_changed();
+}

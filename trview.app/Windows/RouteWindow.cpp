@@ -221,10 +221,27 @@ namespace trview
                     };
 
                     add_stat("Type", waypoint_type_to_string(waypoint.type()));
-                    add_stat("Position", position_text(waypoint.position()));
                     add_stat("Room", waypoint.room());
+
                     add_stat("Room Position", position_text(get_room_pos()));
                     ImGui::EndTable();
+                }
+
+                const auto pos = waypoint.position();
+                int pos_value[3] = { static_cast<int>(pos.x * trlevel::Scale), static_cast<int>(pos.y * trlevel::Scale), static_cast<int>(pos.z * trlevel::Scale) };
+                if (ImGui::DragScalarN("Position", ImGuiDataType_S32, pos_value, 3))
+                {
+                    waypoint.set_position(Vector3(static_cast<float>(pos_value[0]), static_cast<float>(pos_value[1]), static_cast<float>(pos_value[2])) / trlevel::Scale);
+                    on_waypoint_changed();
+                }
+
+                if (ImGui::BeginPopupContextItem("Position"))
+                {
+                    if (ImGui::MenuItem("Copy"))
+                    {
+                        _clipboard->write(to_utf16(std::format("{},{},{}", pos_value[0], pos_value[1], pos_value[2])));
+                    }
+                    ImGui::EndPopup();
                 }
 
                 const std::string save_text = waypoint.has_save() ? "SAVEGAME.0" : Names::attach_save.c_str();

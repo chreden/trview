@@ -85,31 +85,6 @@ TEST(RouteWindow, WaypointRoomPositionCalculatedCorrectly)
     ASSERT_THAT(rendered, Contains("30720, 51200, 25600"));
 }
 
-TEST(RouteWindow, PositionValuesCopiedToClipboard)
-{
-    auto clipboard = mock_shared<MockClipboard>();
-    EXPECT_CALL(*clipboard, write(std::wstring(L"133120, 256000, 332800"))).Times(1);
-
-    auto window = register_test_module().with_clipboard(clipboard).build();
-
-    const Vector3 waypoint_pos{ 130, 250, 325 };
-    NiceMock<MockWaypoint> waypoint;
-    EXPECT_CALL(waypoint, position).WillRepeatedly(Return(waypoint_pos));
-
-    NiceMock<MockRoute> route;
-    EXPECT_CALL(route, waypoints).WillRepeatedly(Return(1));
-    EXPECT_CALL(route, waypoint(An<uint32_t>())).WillRepeatedly(ReturnRef(waypoint));
-
-    window->set_route(&route);
-    window->select_waypoint(0);
-
-    TestImgui imgui([&]() { window->render(); });
-    imgui.click_element(imgui.id("Route")
-        .push_child(RouteWindow::Names::waypoint_details_panel)
-        .push(RouteWindow::Names::waypoint_stats)
-        .id("Position"));
-}
-
 TEST(RouteWindow, RoomPositionValuesCopiedToClipboard)
 {
     auto clipboard = mock_shared<MockClipboard>();

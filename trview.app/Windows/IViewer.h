@@ -142,5 +142,6 @@ namespace trview
         virtual void set_target(const DirectX::SimpleMath::Vector3& target) = 0;
 
         virtual void select_sector(const std::weak_ptr<ISector>& sector) = 0;
+        virtual void set_scene_changed() = 0;
     };
 }

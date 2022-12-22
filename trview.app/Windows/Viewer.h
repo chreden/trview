@@ -95,6 +95,7 @@ namespace trview
         virtual DirectX::SimpleMath::Vector3 target() const override;
         virtual void set_target(const DirectX::SimpleMath::Vector3& target) override;
         virtual void select_sector(const std::weak_ptr<ISector>& sector) override;
+        virtual void set_scene_changed() override;
     private:
         void initialise_input();
         void toggle_highlight();

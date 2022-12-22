@@ -166,5 +166,10 @@ namespace trview
     {
         _randomizer_settings = settings;
     }
+
+    void Waypoint::set_position(const DirectX::SimpleMath::Vector3& position)
+    {
+        _position = position;
+    }
 }
 

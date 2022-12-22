@@ -32,6 +32,8 @@ namespace trview
         /// </summary>
         Event<Colour> on_waypoint_colour_changed;
 
+        Event<> on_waypoint_changed;
+
         /// <summary>
         /// Event raised when a waypoint has moved from one index to another.
         /// </summary>
