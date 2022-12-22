@@ -9,6 +9,7 @@ namespace trview
     {
         const std::map<SectorFlag, Colour> default_colours = {
             { SectorFlag::Portal, { 0.0f, 0.0f, 0.0f } },
+            { SectorFlag::SpecialWall, { 0.0f, 0.5f, 0.0f } },
             { SectorFlag::Wall, { 0.4f, 0.4f, 0.4f } },
             { SectorFlag::Trigger, { 1.0f, 0.3f, 0.7f } },
             { SectorFlag::Death, { 0.9f, 0.1f, 0.1f } },
@@ -18,7 +19,7 @@ namespace trview
             { SectorFlag::ClimbableNorth, { 0.6f, 0.0f, 0.9f, 0.0f } },
             { SectorFlag::ClimbableSouth, { 0.6f, 0.0f, 0.9f, 0.0f } },
             { SectorFlag::ClimbableEast, { 0.6f, 0.0f, 0.9f, 0.0f } },
-            { SectorFlag::ClimbableWest, { 0.6f, 0.0f, 0.9f, 0.0f } },
+            { SectorFlag::ClimbableWest, { 0.6f, 0.0f, 0.9f, 0.0f } }
         };
 
         const std::unordered_map<MapColours::Special, Colour> default_special_colours = {

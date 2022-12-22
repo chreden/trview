@@ -90,6 +90,12 @@ namespace trview
             // In the future I'd like to just draw a hollow square instead.
             const float thickness = _DRAW_SCALE / 4;
 
+            if (has_flag(tile.sector->flags(), SectorFlag::Wall) && has_flag(tile.sector->flags(), SectorFlag::Portal))
+            {
+                const auto colour = _colours.colour(has_flag(tile.sector->flags(), SectorFlag::SpecialWall) ? SectorFlag::SpecialWall : SectorFlag::Wall);
+                draw(tile.position, tile.size / 4.0f, colour);
+            }
+
             if (has_flag(tile.sector->flags(), SectorFlag::ClimbableNorth))
                 draw(tile.position, Size(tile.size.width, thickness), _colours.colour(SectorFlag::ClimbableNorth));
             if (has_flag(tile.sector->flags(), SectorFlag::ClimbableEast))
