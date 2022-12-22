@@ -72,6 +72,12 @@ namespace trview
             Color text_color = Colour::White;
             Color draw_color = _colours.colour_from_flags_field(tile.sector->flags());
 
+            // Special case for special walls.
+            if (has_flag(tile.sector->flags(), SectorFlag::Wall) && has_flag(tile.sector->flags(), SectorFlag::SpecialWall))
+            {
+                draw_color = _colours.colour(SectorFlag::SpecialWall);
+            }
+
             // If the cursor is over the tile, then negate colour 
             Point first = tile.position, last = Point(tile.size.width, tile.size.height) + tile.position;
             if (_cursor.is_between(first, last) ||
