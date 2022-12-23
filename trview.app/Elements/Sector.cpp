@@ -37,7 +37,14 @@ namespace trview
     {
         // Basic sector items 
         if (_sector.floor == -127 && _sector.ceiling == -127)
+        {
             _flags |= SectorFlag::Wall;
+            const auto info = level.get_room(_room);
+            if ((_x > 0 && _z > 0) && (_x < info.num_x_sectors - 1 && _z < info.num_z_sectors - 1))
+            {
+                _flags |= SectorFlag::SpecialWall;
+            }
+        }
         if (_room_above != 0xFF)
             _flags |= SectorFlag::RoomAbove;
         if (_room_below != 0xFF)

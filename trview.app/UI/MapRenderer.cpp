@@ -72,6 +72,12 @@ namespace trview
             Color text_color = Colour::White;
             Color draw_color = _colours.colour_from_flags_field(tile.sector->flags());
 
+            // Special case for special walls.
+            if (has_flag(tile.sector->flags(), SectorFlag::Wall) && has_flag(tile.sector->flags(), SectorFlag::SpecialWall))
+            {
+                draw_color = _colours.colour(SectorFlag::SpecialWall);
+            }
+
             // If the cursor is over the tile, then negate colour 
             Point first = tile.position, last = Point(tile.size.width, tile.size.height) + tile.position;
             if (_cursor.is_between(first, last) ||
@@ -89,6 +95,12 @@ namespace trview
             // Draw climbable walls. This draws 4 separate lines - one per climbable edge. 
             // In the future I'd like to just draw a hollow square instead.
             const float thickness = _DRAW_SCALE / 4;
+
+            if (has_flag(tile.sector->flags(), SectorFlag::Wall) && has_flag(tile.sector->flags(), SectorFlag::Portal))
+            {
+                const auto colour = _colours.colour(has_flag(tile.sector->flags(), SectorFlag::SpecialWall) ? SectorFlag::SpecialWall : SectorFlag::Wall);
+                draw(tile.position, tile.size / 4.0f, colour);
+            }
 
             if (has_flag(tile.sector->flags(), SectorFlag::ClimbableNorth))
                 draw(tile.position, Size(tile.size.width, thickness), _colours.colour(SectorFlag::ClimbableNorth));

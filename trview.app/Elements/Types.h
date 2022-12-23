@@ -22,7 +22,8 @@ namespace trview
         RoomAbove = 0x800, // There is a ceiling portal above
         RoomBelow = 0x1000, // There is a floor portal 
         MinecartLeft = 0x2000, // Minecart turns left, Trigger Triggerer in TR4+
-        MinecartRight = 0x4000, // Minecart turns right
+        MinecartRight = 0x4000, // Minecart turns right,
+        SpecialWall = 0x8000,
         Climbable = ClimbableNorth | ClimbableEast | ClimbableSouth | ClimbableWest
     };
 
