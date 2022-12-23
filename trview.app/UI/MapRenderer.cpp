@@ -72,8 +72,10 @@ namespace trview
             Color text_color = Colour::White;
             Color draw_color = _colours.colour_from_flags_field(tile.sector->flags());
 
-            // Special case for special walls.
-            if (has_flag(tile.sector->flags(), SectorFlag::Wall) && has_flag(tile.sector->flags(), SectorFlag::SpecialWall))
+            // Special case for special walls (and no space)
+            if (!is_no_space(tile.sector->flags()) &&
+                has_flag(tile.sector->flags(), SectorFlag::Wall) &&
+                has_flag(tile.sector->flags(), SectorFlag::SpecialWall))
             {
                 draw_color = _colours.colour(SectorFlag::SpecialWall);
             }
@@ -96,7 +98,7 @@ namespace trview
             // In the future I'd like to just draw a hollow square instead.
             const float thickness = _DRAW_SCALE / 4;
 
-            if (has_flag(tile.sector->flags(), SectorFlag::Wall) && has_flag(tile.sector->flags(), SectorFlag::Portal))
+            if (has_flag(tile.sector->flags(), SectorFlag::Wall) && (has_flag(tile.sector->flags(), SectorFlag::Portal) || is_no_space(tile.sector->flags())))
             {
                 const auto colour = _colours.colour(has_flag(tile.sector->flags(), SectorFlag::SpecialWall) ? SectorFlag::SpecialWall : SectorFlag::Wall);
                 draw(tile.position, tile.size / 4.0f, colour);
