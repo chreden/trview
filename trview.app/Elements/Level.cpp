@@ -1092,7 +1092,7 @@ namespace trview
     {
         for (uint32_t i = 0u; i < level.num_cameras(); ++i)
         {
-            auto camera_sink = level.get_camera(i);
+            const auto camera_sink = level.get_camera(i);
             uint16_t inferred_room = 0;
             const Vector3 point = Vector3(
                 static_cast<float>(camera_sink.x),

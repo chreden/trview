@@ -785,6 +785,16 @@ namespace trview
         {
             _camera_sink_windows->create_window();
         }
+
+        _token_store += _camera_sink_windows->on_camera_sink_selected += [this](const auto& sink)
+        { 
+            const auto sink_ptr = sink.lock();
+            if (sink_ptr)
+            {
+                _viewer->set_target(sink_ptr->position());
+                _viewer->set_scene_changed();
+            }
+        };
     }
 
     void Application::save_window_placement()

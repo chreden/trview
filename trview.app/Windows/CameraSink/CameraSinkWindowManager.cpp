@@ -16,6 +16,8 @@ namespace trview
     {
         auto window = _camera_sink_window_source();
         window->set_camera_sinks(_camera_sinks);
+        window->on_camera_sink_selected += on_camera_sink_selected;
+        window->on_camera_sink_visibility += on_camera_sink_visibility;
         return add_window(window);
     }
 
