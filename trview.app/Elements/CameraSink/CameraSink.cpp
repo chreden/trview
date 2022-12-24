@@ -4,8 +4,8 @@ using namespace DirectX::SimpleMath;
 
 namespace trview
 {
-    CameraSink::CameraSink(uint32_t number, const trlevel::tr_camera& camera)
-        : _number(number), _position(camera.position()), _room(camera.Room), _flag(camera.Flag)
+    CameraSink::CameraSink(uint32_t number, const trlevel::tr_camera& camera, uint16_t inferred_room)
+        : _number(number), _position(camera.position()), _room(camera.Room), _flag(camera.Flag), _inferred_room(inferred_room)
     {
     }
 
@@ -20,6 +20,11 @@ namespace trview
 
     void CameraSink::get_transparent_triangles(ITransparencyBuffer&, const ICamera&, const Color&)
     {
+    }
+
+    uint16_t CameraSink::inferred_room() const
+    {
+        return _inferred_room;
     }
 
     uint32_t CameraSink::number() const

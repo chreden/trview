@@ -203,6 +203,7 @@ namespace trview
                         add_stat("Flag", selected->flag());
                         add_stat("Strength", selected->room());
                         add_stat("Box Index", selected->flag());
+                        add_stat("Inferred Room", selected->inferred_room());
 
                         ImGui::EndTable();
                     }

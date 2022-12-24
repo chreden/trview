@@ -1092,7 +1092,20 @@ namespace trview
     {
         for (uint32_t i = 0u; i < level.num_cameras(); ++i)
         {
-            _camera_sinks.push_back(camera_sink_source(i, level.get_camera(i)));
+            auto camera_sink = level.get_camera(i);
+            uint16_t inferred_room = 0;
+            const Vector3 point = Vector3(
+                static_cast<float>(camera_sink.x),
+                static_cast<float>(camera_sink.y),
+                static_cast<float>(camera_sink.z)) / trlevel::Scale;
+            for (const auto& room : _rooms)
+            {
+                if (room->bounding_box().Contains(point))
+                {
+                    inferred_room = static_cast<uint16_t>(room->number());
+                }
+            }
+            _camera_sinks.push_back(camera_sink_source(i, camera_sink, inferred_room));
         }
     }
 
