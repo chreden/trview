@@ -146,9 +146,8 @@ namespace trview
     {
         if (ImGui::BeginChild(Names::details_panel.c_str(), ImVec2(230, 0), true))
         {
-            ImGui::Text("Camera/Sink Details");
             auto selected = _selected_camera_sink.lock();
-            if (selected)
+            if (selected && ImGui::BeginTabBar("TabBar"))
             {
                 const auto add_stat = [&]<typename T>(const std::string & name, const T && value)
                 {
@@ -169,45 +168,49 @@ namespace trview
                     ImGui::Text(string_value.c_str());
                 };
 
-                if (ImGui::BeginTable(Names::stats_listbox.c_str(), 2, 0, ImVec2(-1, 0)))
+                if (ImGui::BeginTabItem("Camera"))
                 {
-                    ImGui::TableSetupColumn("Name");
-                    ImGui::TableSetupColumn("Value");
-                    ImGui::TableNextRow();
+                    if (ImGui::BeginTable(Names::stats_listbox.c_str(), 2, 0, ImVec2(-1, 0)))
+                    {
+                        ImGui::TableSetupColumn("Name");
+                        ImGui::TableSetupColumn("Value");
+                        ImGui::TableNextRow();
 
-                    add_stat("#", selected->number());
-                    const auto pos = selected->position() * trlevel::Scale;
-                    add_stat("Position", std::format("{:.0f}, {:.0f}, {:.0f}", pos.x, pos.y, pos.z));
-                    add_stat("Flag", selected->flag());
+                        add_stat("#", selected->number());
+                        const auto pos = selected->position() * trlevel::Scale;
+                        add_stat("Position", std::format("{:.0f}, {:.0f}, {:.0f}", pos.x, pos.y, pos.z));
+                        add_stat("Flag", selected->flag());
+                        add_stat("Room", selected->room());
+                        add_stat("Persistent", selected->flag() & 0x1);
 
-                    ImGui::EndTable();
+                        ImGui::EndTable();
+                    }
+
+                    ImGui::EndTabItem();
                 }
 
-                ImGui::Text("Camera Details");
-                if (ImGui::BeginTable(Names::camera_listbox.c_str(), 2, 0, ImVec2(-1, 0)))
+                if (ImGui::BeginTabItem("Sink"))
                 {
-                    ImGui::TableSetupColumn("Name");
-                    ImGui::TableSetupColumn("Value");
-                    ImGui::TableNextRow();
+                    if (ImGui::BeginTable(Names::stats_listbox.c_str(), 2, 0, ImVec2(-1, 0)))
+                    {
+                        ImGui::TableSetupColumn("Name");
+                        ImGui::TableSetupColumn("Value");
+                        ImGui::TableNextRow();
 
-                    add_stat("Room", selected->room());
-                    add_stat("Persistent", selected->flag() & 0x1);
+                        add_stat("#", selected->number());
+                        const auto pos = selected->position() * trlevel::Scale;
+                        add_stat("Position", std::format("{:.0f}, {:.0f}, {:.0f}", pos.x, pos.y, pos.z));
+                        add_stat("Flag", selected->flag());
+                        add_stat("Strength", selected->room());
+                        add_stat("Box Index", selected->flag());
 
-                    ImGui::EndTable();
+                        ImGui::EndTable();
+                    }
+
+                    ImGui::EndTabItem();
                 }
 
-                ImGui::Text("Sink Details");
-                if (ImGui::BeginTable(Names::sink_listbox.c_str(), 2, 0, ImVec2(-1, 0)))
-                {
-                    ImGui::TableSetupColumn("Name");
-                    ImGui::TableSetupColumn("Value");
-                    ImGui::TableNextRow();
-
-                    add_stat("Strength", selected->room());
-                    add_stat("Box Index", selected->flag());
-
-                    ImGui::EndTable();
-                }
+                ImGui::EndTabBar();
             }
         }
         ImGui::EndChild();
