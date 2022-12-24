@@ -17,6 +17,8 @@ namespace trview
             MOCK_METHOD(void, render, (const ICamera&, const ILevelTextureStorage&, const DirectX::SimpleMath::Color&), (override));
             MOCK_METHOD(uint16_t, room, (), (const, override));
             MOCK_METHOD(void, set_visible, (bool), (override));
+            MOCK_METHOD(void, set_type, (Type), (override));
+            MOCK_METHOD(Type, type, (), (const, override));
             MOCK_METHOD(bool, visible, (), (const, override));
         };
     }

@@ -56,9 +56,19 @@ namespace trview
         return _room;
     }
 
+    void CameraSink::set_type(Type type)
+    {
+        _type = type;
+    }
+
     void CameraSink::set_visible(bool value)
     {
         _visible = value;
+    }
+
+    CameraSink::Type CameraSink::type() const
+    {
+        return _type;
     }
 
     bool CameraSink::visible() const

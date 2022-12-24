@@ -7,6 +7,12 @@ namespace trview
 {
     struct ICameraSink : public IRenderable
     {
+        enum class Type
+        {
+            Camera,
+            Sink
+        };
+
         using Source = std::function<std::shared_ptr<ICameraSink>(uint32_t index, const trlevel::tr_camera& camera, uint16_t inferred_room)>;
 
         virtual ~ICameraSink() = 0;
@@ -15,5 +21,7 @@ namespace trview
         virtual uint32_t number() const = 0;
         virtual DirectX::SimpleMath::Vector3 position() const = 0;
         virtual uint16_t room() const = 0;
+        virtual Type type() const = 0;
+        virtual void set_type(Type type) = 0;
     };
 }

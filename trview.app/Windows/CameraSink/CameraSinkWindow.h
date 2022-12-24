@@ -42,7 +42,7 @@ namespace trview
         std::shared_ptr<IClipboard> _clipboard;
         Filters<ICameraSink> _filters;
         bool _track_room{ false };
-        bool _sync{ false };
+        bool _sync{ true };
         bool _scroll_to{ false };
         std::optional<float> _tooltip_timer;
     };
