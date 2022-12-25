@@ -869,6 +869,12 @@ namespace trview
         on_level_changed();
     }
 
+    void Level::set_selected_camera_sink(uint32_t number)
+    {
+        _selected_camera_sink = _camera_sinks[number];
+        on_level_changed();
+    }
+
     std::shared_ptr<ILevelTextureStorage> Level::texture_storage() const
     {
         return _texture_storage;

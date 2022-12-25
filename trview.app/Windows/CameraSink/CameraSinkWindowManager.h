@@ -14,8 +14,10 @@ namespace trview
         virtual std::weak_ptr<ICameraSinkWindow> create_window() override;
         virtual void render() override;
         virtual void set_camera_sinks(const std::vector<std::weak_ptr<ICameraSink>>& camera_sinks);
+        virtual void set_selected_camera_sink(const std::weak_ptr<ICameraSink>& camera_sink);
     private:
         ICameraSinkWindow::Source _camera_sink_window_source;
         std::vector<std::weak_ptr<ICameraSink>> _camera_sinks;
+        std::weak_ptr<ICameraSink> _selected_camera_sink;
     };
 }

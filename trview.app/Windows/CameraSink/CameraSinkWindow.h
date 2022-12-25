@@ -26,6 +26,7 @@ namespace trview
         virtual void render() override;
         virtual void set_number(int32_t number) override;
         virtual void set_camera_sinks(const std::vector<std::weak_ptr<ICameraSink>>& camera_sinks) override;
+        virtual void set_selected_camera_sink(const std::weak_ptr<ICameraSink>& camera_sink) override;
     private:
         bool render_camera_sink_window();
         void set_track_room(bool value);

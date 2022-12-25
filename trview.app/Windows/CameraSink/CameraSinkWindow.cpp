@@ -228,4 +228,14 @@ namespace trview
         }
         ImGui::EndChild();
     }
+
+    void CameraSinkWindow::set_selected_camera_sink(const std::weak_ptr<ICameraSink>& camera_sink)
+    {
+        _global_selected_camera_sink = camera_sink;
+        if (_sync)
+        {
+            _scroll_to = true;
+            set_local_selected_camera_sink(camera_sink);
+        }
+    }
 }

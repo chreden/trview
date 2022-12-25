@@ -143,5 +143,7 @@ namespace trview
 
         virtual void select_sector(const std::weak_ptr<ISector>& sector) = 0;
         virtual void set_scene_changed() = 0;
+
+        virtual void select_camera_sink(const std::weak_ptr<ICameraSink>& camera_sink) = 0;
     };
 }

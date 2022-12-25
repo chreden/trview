@@ -788,13 +788,7 @@ namespace trview
 
         _token_store += _camera_sink_windows->on_camera_sink_selected += [this](const auto& sink)
         { 
-            const auto sink_ptr = sink.lock();
-            if (sink_ptr)
-            {
-                select_room(actual_room(*sink_ptr));
-                _viewer->set_target(sink_ptr->position());
-                _viewer->set_scene_changed();
-            }
+            select_camera_sink(sink);
         };
     }
 
@@ -811,5 +805,24 @@ namespace trview
                 placement.rcNormalPosition.left, placement.rcNormalPosition.top, placement.rcNormalPosition.right, placement.rcNormalPosition.bottom
             };
         }
+    }
+
+    void Application::select_camera_sink(const std::weak_ptr<ICameraSink>& camera_sink)
+    {
+        if (!_level)
+        {
+            return;
+        }
+
+        auto camera_sink_ptr = camera_sink.lock();
+        if (!camera_sink_ptr)
+        {
+            return;
+        }
+
+        select_room(camera_sink_ptr->room());
+        _level->set_selected_camera_sink(camera_sink_ptr->number());
+        _viewer->select_camera_sink(camera_sink);
+        _camera_sink_windows->set_selected_camera_sink(camera_sink);
     }
 }

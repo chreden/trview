@@ -1320,4 +1320,15 @@ namespace trview
     {
         _scene_changed = true;
     }
+
+    void Viewer::select_camera_sink(const std::weak_ptr<ICameraSink>& camera_sink)
+    {
+        auto camera_sink_ptr = camera_sink.lock();
+        _target = camera_sink_ptr->position();
+        if (_settings.auto_orbit)
+        {
+            set_camera_mode(CameraMode::Orbit);
+        }
+        _scene_changed = true;
+    }
 }

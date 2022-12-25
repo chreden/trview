@@ -818,7 +818,7 @@
     </ClInclude>
     <ClInclude Include="Windows\Textures\ITexturesWindow.h">
       <Filter>Windows\Textures</Filter>
-    </ClInclude>      
+    </ClInclude>
     <ClInclude Include="Elements\CameraSink\CameraSink.h">
       <Filter>Elements\CameraSink</Filter>
     </ClInclude>
@@ -853,6 +853,9 @@
       <Filter>Windows\CameraSink</Filter>
     </ClInclude>
     <ClInclude Include="Mocks\Windows\ICameraSinkWindowManager.h">
+      <Filter>Mocks\Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="Mocks\Windows\ICameraSinkWindow.h">
       <Filter>Mocks\Windows</Filter>
     </ClInclude>
   </ItemGroup>

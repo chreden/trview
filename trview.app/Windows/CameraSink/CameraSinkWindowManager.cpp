@@ -16,6 +16,7 @@ namespace trview
     {
         auto window = _camera_sink_window_source();
         window->set_camera_sinks(_camera_sinks);
+        window->set_selected_camera_sink(_selected_camera_sink);
         window->on_camera_sink_selected += on_camera_sink_selected;
         window->on_camera_sink_visibility += on_camera_sink_visibility;
         return add_window(window);
@@ -41,6 +42,15 @@ namespace trview
         for (auto& window : _windows)
         {
             window.second->set_camera_sinks(_camera_sinks);
+        }
+    }
+
+    void CameraSinkWindowManager::set_selected_camera_sink(const std::weak_ptr<ICameraSink>& camera_sink)
+    {
+        _selected_camera_sink = camera_sink;
+        for (auto& window : _windows)
+        {
+            window.second->set_selected_camera_sink(_selected_camera_sink);
         }
     }
 }
