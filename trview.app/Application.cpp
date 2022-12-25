@@ -791,6 +791,7 @@ namespace trview
             const auto sink_ptr = sink.lock();
             if (sink_ptr)
             {
+                select_room(actual_room(*sink_ptr));
                 _viewer->set_target(sink_ptr->position());
                 _viewer->set_scene_changed();
             }

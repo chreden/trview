@@ -4,8 +4,8 @@ using namespace DirectX::SimpleMath;
 
 namespace trview
 {
-    CameraSink::CameraSink(uint32_t number, const trlevel::tr_camera& camera, Type type, const std::vector<uint16_t>& inferred_rooms)
-        : _number(number), _position(camera.position()), _room(camera.Room), _flag(camera.Flag), _inferred_rooms(inferred_rooms), _type(type)
+    CameraSink::CameraSink(const std::shared_ptr<IMesh>& mesh, uint32_t number, const trlevel::tr_camera& camera, Type type, const std::vector<uint16_t>& inferred_rooms)
+        : _mesh(mesh), _number(number), _position(camera.position()), _room(camera.Room), _flag(camera.Flag), _inferred_rooms(inferred_rooms), _type(type)
     {
     }
 
@@ -37,18 +37,18 @@ namespace trview
         return _position;
     }
 
-    void CameraSink::render(const ICamera&, const ILevelTextureStorage&, const Color&)
+    void CameraSink::render(const ICamera& camera, const ILevelTextureStorage& texture_storage, const Color&)
     {
         if (!_visible)
         {
             return;
         }
 
-        // auto world = Matrix::CreateScale(0.25f) * Matrix::CreateTranslation(_position);
-        // auto wvp = world * camera.view_projection();
-        // auto light_direction = Vector3::TransformNormal(camera.position() - _position, world.Invert());
-        // light_direction.Normalize();
-        // _mesh->render(wvp, texture_storage, _colour, 1.0f, light_direction);
+        auto world = Matrix::CreateScale(0.25f) * Matrix::CreateTranslation(_position);
+        auto wvp = world * camera.view_projection();
+        auto light_direction = Vector3::TransformNormal(camera.position() - _position, world.Invert());
+        light_direction.Normalize();
+        _mesh->render(wvp, texture_storage, Colour::Magenta, 1.0f, light_direction);
     }
 
     uint16_t CameraSink::room() const
@@ -74,6 +74,11 @@ namespace trview
     bool CameraSink::visible() const
     {
         return _visible;
+    }
+
+    uint16_t actual_room(const ICameraSink& camera_sink)
+    {
+        return camera_sink.type() == ICameraSink::Type::Camera ? camera_sink.room() : camera_sink.inferred_rooms().front();
     }
 
     std::string to_string(ICameraSink::Type type)

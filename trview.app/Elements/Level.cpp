@@ -345,6 +345,11 @@ namespace trview
             }
         }
 
+        for (const auto& room : rooms)
+        {
+            room.room.render_camera_sinks(camera);
+        }
+
         if (_regenerate_transparency)
         {
             // Sort the accumulated transparent triangles farthest to nearest.
@@ -1127,7 +1132,12 @@ namespace trview
                     }
                 }
             }
-            _camera_sinks.push_back(camera_sink_source(i, camera_sink, type, { std::from_range, inferred_rooms }));
+
+            const uint16_t room_to_use = is_camera ? camera_sink.Room : inferred_rooms.empty() ? 0u : inferred_rooms.front();
+
+            auto new_camera_sink = camera_sink_source(i, camera_sink, type, { std::from_range, inferred_rooms });
+            _camera_sinks.push_back(new_camera_sink);
+            _rooms[room_to_use]->add_camera_sink(new_camera_sink);
         }
     }
 

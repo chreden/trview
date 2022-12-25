@@ -46,10 +46,12 @@ namespace trview
         virtual void render(const ICamera& camera, SelectionMode selected, RenderFilter render_filter, const std::unordered_set<uint32_t>& visible_rooms) override;
         virtual void render_bounding_boxes(const ICamera& camera) override;
         virtual void render_lights(const ICamera& camera, const std::weak_ptr<ILight>& selected_light) override;
+        virtual void render_camera_sinks(const ICamera& camera) override;
         virtual void render_contained(const ICamera& camera, SelectionMode selected, RenderFilter render_filter) override;
         virtual void add_entity(const std::weak_ptr<IEntity>& entity) override;
         virtual void add_trigger(const std::weak_ptr<ITrigger>& trigger) override;
         virtual void add_light(const std::weak_ptr<ILight>& light) override;
+        virtual void add_camera_sink(const std::weak_ptr<ICameraSink>& camera_sink) override;
         virtual const std::vector<std::shared_ptr<ISector>> sectors() const override;
         virtual void generate_sector_triangles() override;
         virtual void get_transparent_triangles(ITransparencyBuffer& transparency, const ICamera& camera, SelectionMode selected, RenderFilter render_filter) override;
@@ -133,5 +135,7 @@ namespace trview
         std::function<std::shared_ptr<IMesh>()> _unmatched_mesh_generator;
 
         bool _visible{ true };
+        
+        std::vector<std::weak_ptr<ICameraSink>> _camera_sinks;
     };
 }

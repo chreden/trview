@@ -263,6 +263,17 @@ namespace trview
         }
     }
 
+    void Room::render_camera_sinks(const ICamera& camera)
+    {
+        for (const auto& camera_sink : _camera_sinks)
+        {
+            if (auto camera_sink_ptr = camera_sink.lock())
+            {
+                camera_sink_ptr->render(camera, *_texture_storage, Colour::White);
+            }
+        }
+    }
+
     void Room::render_contained(const ICamera& camera, SelectionMode selected, RenderFilter render_filter)
     {
         Color colour = room_colour(water() && has_flag(render_filter, RenderFilter::Water), selected);
@@ -408,6 +419,11 @@ namespace trview
             }
             light_ptr->set_position(centre() + Vector3(0, 0, 0.25f * suns));
         }
+    }
+
+    void Room::add_camera_sink(const std::weak_ptr<ICameraSink>& camera_sink)
+    {
+        _camera_sinks.push_back(camera_sink);
     }
 
     void Room::generate_sectors(const trlevel::ILevel& level, const trlevel::tr3_room& room, const ISector::Source& sector_source)

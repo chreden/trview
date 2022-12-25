@@ -1,13 +1,14 @@
 #pragma once
 
 #include "ICameraSink.h"
+#include "../../Geometry/IMesh.h"
 
 namespace trview
 {
     class CameraSink final : public ICameraSink
     {
     public:
-        explicit CameraSink(uint32_t number, const trlevel::tr_camera& camera, Type type, const std::vector<uint16_t>& inferred_rooms);
+        explicit CameraSink(const std::shared_ptr<IMesh>& mesh, uint32_t number, const trlevel::tr_camera& camera, Type type, const std::vector<uint16_t>& inferred_rooms);
         virtual ~CameraSink() = default;
         virtual uint16_t flag() const override;
         virtual void get_transparent_triangles(ITransparencyBuffer& transparency, const ICamera& camera, const DirectX::SimpleMath::Color& colour) override;
@@ -28,5 +29,6 @@ namespace trview
         std::vector<uint16_t> _inferred_rooms{ 0 };
         bool _visible{ true };
         Type _type{ Type::Camera };
+        std::shared_ptr<IMesh> _mesh;
     };
 }

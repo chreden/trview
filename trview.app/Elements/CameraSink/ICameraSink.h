@@ -25,5 +25,6 @@ namespace trview
         virtual void set_type(Type type) = 0;
     };
 
+    uint16_t actual_room(const ICameraSink& camera_sink);
     std::string to_string(ICameraSink::Type type);
 }

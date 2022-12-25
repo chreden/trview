@@ -18,6 +18,7 @@
 #include <trview.app/Graphics/IMeshStorage.h>
 #include <trview.common/Logs/Activity.h>
 #include "RenderFilter.h"
+#include "CameraSink/ICameraSink.h"
 
 namespace trview
 {
@@ -105,10 +106,14 @@ namespace trview
         /// <param name="trigger">The <see cref="ITrigger"/> to add.</param>
         virtual void add_trigger(const std::weak_ptr<ITrigger>& trigger) = 0;
         /// <summary>
-        /// Add the specified <see cref="ILight"/> to the light. The room will not take ownership of this light.
+        /// Add the specified <see cref="ILight"/> to the room. The room will not take ownership of this light.
         /// </summary>
         /// <param name="light"></param>
         virtual void add_light(const std::weak_ptr<ILight>& light) = 0;
+        /// <summary>
+        /// Add the specified <see cref="ICameraSink"/> to the room. The room will not take ownership of this camera/sink.
+        /// </summary>
+        virtual void add_camera_sink(const std::weak_ptr<ICameraSink>& camera_sink) = 0;
         /// <summary>
         /// Gets the alternate group number for the room. A value of -1 indicates that the room is not part of an alternate group.
         /// </summary>
@@ -227,6 +232,8 @@ namespace trview
         /// </summary>
         /// <param name="camera">The current viewpoint.</param>
         virtual void render_lights(const ICamera& camera, const std::weak_ptr<ILight>& selected_light) = 0;
+
+        virtual void render_camera_sinks(const ICamera& camera) = 0;
         /// <summary>
         /// Render the contents of the room.
         /// </summary>
