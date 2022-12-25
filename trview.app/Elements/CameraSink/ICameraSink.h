@@ -24,4 +24,6 @@ namespace trview
         virtual Type type() const = 0;
         virtual void set_type(Type type) = 0;
     };
+
+    std::string to_string(ICameraSink::Type type);
 }

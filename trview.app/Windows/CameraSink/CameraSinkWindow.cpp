@@ -86,10 +86,10 @@ namespace trview
                 set_sync(sync);
             }
 
-            if (ImGui::BeginTable(Names::camera_sink_list.c_str(), 2, ImGuiTableFlags_SizingStretchSame | ImGuiTableFlags_Sortable | ImGuiTableFlags_ScrollY, ImVec2(-1, -1)))
+            if (ImGui::BeginTable(Names::camera_sink_list.c_str(), 3, ImGuiTableFlags_SizingStretchSame | ImGuiTableFlags_Sortable | ImGuiTableFlags_ScrollY, ImVec2(-1, -1)))
             {
                 ImGui::TableSetupColumn("#");
-                // ImGui::TableSetupColumn("Room");
+                ImGui::TableSetupColumn("Type");
                 // ImGui::TableSetupColumn("ID");
                 ImGui::TableSetupColumn("Hide");
                 ImGui::TableSetupScrollFreeze(1, 1);
@@ -97,7 +97,7 @@ namespace trview
 
                 for (const auto& camera_sink_ptr : _all_camera_sinks)
                 {
-                    const auto& camera_sink = camera_sink_ptr.lock();
+                    const auto camera_sink = camera_sink_ptr.lock();
                     // TODO: Filters, selected room.
 
                     ImGui::TableNextRow();
@@ -125,6 +125,10 @@ namespace trview
                     }
 
                     ImGui::SetItemAllowOverlap();
+
+                    ImGui::TableNextColumn();
+                    ImGui::Text(to_string(camera_sink->type()).c_str());
+
                     ImGui::TableNextColumn();
 
                     bool hidden = !camera_sink->visible();
@@ -168,8 +172,7 @@ namespace trview
                     ImGui::Text(string_value.c_str());
                 };
 
-                if (ImGui::BeginCombo("Type",
-                    selected->type() == ICameraSink::Type::Camera ? "Camera" : "Sink"))
+                if (ImGui::BeginCombo("Type", to_string(selected->type()).c_str()))
                 {
                     bool camera_selected = selected->type() == ICameraSink::Type::Camera;
                     if (ImGui::Selectable("Camera##type", &camera_selected))

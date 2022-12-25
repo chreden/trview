@@ -80,4 +80,16 @@ namespace trview
     {
         return _visible;
     }
+
+    std::string to_string(ICameraSink::Type type)
+    {
+        switch (type)
+        {
+        case ICameraSink::Type::Camera:
+            return "Camera";
+        case ICameraSink::Type::Sink:
+            return "Sink";
+        }
+        return "?";
+    }
 }
