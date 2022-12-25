@@ -956,4 +956,22 @@ namespace trview
     {
         _visible = visible;
     }
+
+    std::shared_ptr<ISector> sector_from_point(const IRoom& room, const Vector3& point)
+    {
+        const auto info = room.info();
+        const auto extents = Vector3(room.num_x_sectors(), (info.yBottom - info.yTop) / trlevel::Scale, room.num_z_sectors()) * 0.5f;
+        const auto box = DirectX::BoundingBox(room.centre(), extents);
+        if (!box.Contains(point))
+        {
+            return nullptr;
+        }
+
+        const auto min_bounds = room.centre() - extents;
+        const auto offset = point - min_bounds;
+        int32_t x = static_cast<int32_t>(offset.x);
+        int32_t z = static_cast<int32_t>(offset.z);
+        const std::size_t id = static_cast<std::size_t>(x) * room.num_z_sectors() + z;
+        return room.sectors()[id];
+    }
 }

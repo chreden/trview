@@ -193,7 +193,6 @@ namespace trview
                     add_stat("#", selected->number());
                     const auto pos = selected->position() * trlevel::Scale;
                     add_stat("Position", std::format("{:.0f}, {:.0f}, {:.0f}", pos.x, pos.y, pos.z));
-                    add_stat("Flag", selected->flag());
 
                     if (selected->type() == ICameraSink::Type::Camera)
                     {
@@ -205,7 +204,17 @@ namespace trview
                     {
                         add_stat("Strength", selected->room());
                         add_stat("Box Index", selected->flag());
-                        add_stat("Inferred Room", selected->inferred_room());
+                        std::string inferred_rooms;
+                        auto rooms = selected->inferred_rooms();
+                        for (auto i = 0u; i < rooms.size(); ++i)
+                        {
+                            inferred_rooms += std::to_string(rooms[i]);
+                            if (i != rooms.size() - 1)
+                            {
+                                inferred_rooms += ",";
+                            }
+                        }
+                        add_stat("Inferred Room", inferred_rooms.c_str());
                     }
 
                     ImGui::EndTable();

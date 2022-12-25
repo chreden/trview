@@ -8,6 +8,7 @@
 #include <trview.app/Elements/ITypeNameLookup.h>
 #include <trview.graphics/RasterizerStateStore.h>
 #include <format>
+#include <ranges>
 
 using namespace DirectX;
 using namespace DirectX::SimpleMath;
@@ -1093,19 +1094,27 @@ namespace trview
         for (uint32_t i = 0u; i < level.num_cameras(); ++i)
         {
             const auto camera_sink = level.get_camera(i);
-            uint16_t inferred_room = 0;
             const Vector3 point = Vector3(
                 static_cast<float>(camera_sink.x),
                 static_cast<float>(camera_sink.y),
                 static_cast<float>(camera_sink.z)) / trlevel::Scale;
+
+            std::deque<uint16_t> inferred_rooms;
             for (const auto& room : _rooms)
             {
-                if (room->bounding_box().Contains(point))
+                if (std::shared_ptr<ISector> sector = sector_from_point(*room, point))
                 {
-                    inferred_room = static_cast<uint16_t>(room->number());
+                    if (sector->is_portal())
+                    {
+                        inferred_rooms.push_back(static_cast<uint16_t>(room->number()));
+                    }
+                    else
+                    {
+                        inferred_rooms.push_front(static_cast<uint16_t>(room->number()));
+                    }
                 }
             }
-            _camera_sinks.push_back(camera_sink_source(i, camera_sink, inferred_room));
+            _camera_sinks.push_back(camera_sink_source(i, camera_sink, { std::from_range, inferred_rooms }));
         }
     }
 

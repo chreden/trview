@@ -298,5 +298,13 @@ namespace trview
         /// </summary>
         virtual void set_visible(bool visible) = 0;
     };
+
+    /// <summary>
+    /// Find the sector in the room that contains the provided point, or nullptr.
+    /// </summary>
+    /// <param name="room">The room to search.</param>
+    /// <param name="point">The point to test.</param>
+    /// <returns>The sector or nullptr if no match.</returns>
+    std::shared_ptr<ISector> sector_from_point(const IRoom& room, const DirectX::SimpleMath::Vector3& point);
 }
 
