@@ -7,7 +7,7 @@ namespace trview
     class CameraSink final : public ICameraSink
     {
     public:
-        explicit CameraSink(uint32_t number, const trlevel::tr_camera& camera, const std::vector<uint16_t>& inferred_rooms);
+        explicit CameraSink(uint32_t number, const trlevel::tr_camera& camera, Type type, const std::vector<uint16_t>& inferred_rooms);
         virtual ~CameraSink() = default;
         virtual uint16_t flag() const override;
         virtual void get_transparent_triangles(ITransparencyBuffer& transparency, const ICamera& camera, const DirectX::SimpleMath::Color& colour) override;

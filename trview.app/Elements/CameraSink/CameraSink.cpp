@@ -1,17 +1,12 @@
 #include "CameraSink.h"
-#include <ranges>
 
 using namespace DirectX::SimpleMath;
 
 namespace trview
 {
-    CameraSink::CameraSink(uint32_t number, const trlevel::tr_camera& camera, const std::vector<uint16_t>& inferred_rooms)
-        : _number(number), _position(camera.position()), _room(camera.Room), _flag(camera.Flag), _inferred_rooms(inferred_rooms)
+    CameraSink::CameraSink(uint32_t number, const trlevel::tr_camera& camera, Type type, const std::vector<uint16_t>& inferred_rooms)
+        : _number(number), _position(camera.position()), _room(camera.Room), _flag(camera.Flag), _inferred_rooms(inferred_rooms), _type(type)
     {
-        if (!std::ranges::contains(_inferred_rooms, _room))
-        {
-            _type = Type::Sink;
-        }
     }
 
     ICameraSink::~ICameraSink()

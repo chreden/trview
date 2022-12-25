@@ -13,7 +13,7 @@ namespace trview
             Sink
         };
 
-        using Source = std::function<std::shared_ptr<ICameraSink>(uint32_t index, const trlevel::tr_camera& camera, const std::vector<uint16_t>& inferred_rooms)>;
+        using Source = std::function<std::shared_ptr<ICameraSink>(uint32_t, const trlevel::tr_camera&, Type, const std::vector<uint16_t>& inferred_rooms)>;
 
         virtual ~ICameraSink() = 0;
         virtual uint16_t flag() const = 0;

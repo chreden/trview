@@ -1099,22 +1099,35 @@ namespace trview
                 static_cast<float>(camera_sink.y),
                 static_cast<float>(camera_sink.z)) / trlevel::Scale;
 
-            std::deque<uint16_t> inferred_rooms;
-            for (const auto& room : _rooms)
-            {
-                if (std::shared_ptr<ISector> sector = sector_from_point(*room, point))
+            const bool is_camera = std::ranges::any_of(_triggers, [=](auto&& trigger)
                 {
-                    if (sector->is_portal())
+                    return std::ranges::any_of(trigger->commands(), [=](const Command& command)
+                        {
+                            return command.type() == TriggerCommandType::Camera && command.index() == i;
+                        });
+                });
+
+            std::deque<uint16_t> inferred_rooms;
+
+            const ICameraSink::Type type = is_camera ? ICameraSink::Type::Camera : ICameraSink::Type::Sink;
+            if (type == ICameraSink::Type::Sink)
+            {
+                for (const auto& room : _rooms)
+                {
+                    if (std::shared_ptr<ISector> sector = sector_from_point(*room, point))
                     {
-                        inferred_rooms.push_back(static_cast<uint16_t>(room->number()));
-                    }
-                    else
-                    {
-                        inferred_rooms.push_front(static_cast<uint16_t>(room->number()));
+                        if (sector->is_portal())
+                        {
+                            inferred_rooms.push_back(static_cast<uint16_t>(room->number()));
+                        }
+                        else
+                        {
+                            inferred_rooms.push_front(static_cast<uint16_t>(room->number()));
+                        }
                     }
                 }
             }
-            _camera_sinks.push_back(camera_sink_source(i, camera_sink, { std::from_range, inferred_rooms }));
+            _camera_sinks.push_back(camera_sink_source(i, camera_sink, type, { std::from_range, inferred_rooms }));
         }
     }
 
