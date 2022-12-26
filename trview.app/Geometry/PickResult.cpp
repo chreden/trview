@@ -22,6 +22,8 @@ namespace trview
                 return "Waypoint";
             case PickResult::Type::Light:
                 return "Light";
+            case PickResult::Type::CameraSink:
+                return "Camera/Sink";
             }
             return "?";
         }
@@ -164,6 +166,14 @@ namespace trview
             case PickResult::Type::Compass:
             {
                 stream << result.text;
+                break;
+            }
+            case PickResult::Type::CameraSink:
+            {
+                if (const auto camera_sink = level.camera_sink(result.index).lock())
+                {
+                    stream << to_string(camera_sink->type()) << " " << result.index;
+                }
                 break;
             }
         }

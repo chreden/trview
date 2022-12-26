@@ -137,6 +137,24 @@ namespace trview
             }
         }
 
+        if (has_flag(filters, PickFilter::CameraSinks) && pick_results.empty())
+        {
+            for (const auto& camera_sink : _camera_sinks)
+            {
+                auto camera_sink_ptr = camera_sink.lock();
+                if (!camera_sink_ptr || !camera_sink_ptr->visible())
+                {
+                    continue;
+                }
+
+                auto camera_sink_result = camera_sink_ptr->pick(position, direction);
+                if (camera_sink_result.hit)
+                {
+                    pick_results.push_back(camera_sink_result);
+                }
+            }
+        }
+
         if (has_flag(filters, PickFilter::Triggers) && pick_results.empty())
         {
             for (const auto& trigger_pair : _triggers)

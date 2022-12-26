@@ -1232,6 +1232,9 @@ namespace trview
         case PickResult::Type::Light:
             on_light_selected(_level->light(pick.index));
             break;
+        case PickResult::Type::CameraSink:
+            on_camera_sink_selected(_level->camera_sink(pick.index));
+            break;
         }
     }
 

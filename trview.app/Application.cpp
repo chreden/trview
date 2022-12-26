@@ -331,6 +331,7 @@ namespace trview
         _token_store += _viewer->on_waypoint_added += [this](const auto& position, const auto& normal, auto room, auto type, auto index) { add_waypoint(position, normal, room, type, index); };
         _token_store += _viewer->on_waypoint_selected += [this](auto index) { select_waypoint(index); };
         _token_store += _viewer->on_waypoint_removed += [this](auto index) { remove_waypoint(index); };
+        _token_store += _viewer->on_camera_sink_selected += [this](const auto& camera_sink) { select_camera_sink(camera_sink); };
         _token_store += _viewer->on_settings += [this](auto&& settings)
         {
             _settings = settings;

@@ -73,6 +73,8 @@ namespace trview
         /// Event raised when the viewer wants to add a waypoint.
         Event<DirectX::SimpleMath::Vector3, DirectX::SimpleMath::Vector3, uint32_t, IWaypoint::Type, uint32_t> on_waypoint_added;
 
+        Event<std::weak_ptr<ICameraSink>> on_camera_sink_selected;
+
         virtual CameraMode camera_mode() const = 0;
 
         /// Render the viewer.

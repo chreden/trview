@@ -14,6 +14,7 @@ namespace trview
         virtual void get_transparent_triangles(ITransparencyBuffer& transparency, const ICamera& camera, const DirectX::SimpleMath::Color& colour) override;
         virtual std::vector<uint16_t> inferred_rooms() const override;
         virtual uint32_t number() const override;
+        virtual PickResult pick(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& direction) const override;
         virtual DirectX::SimpleMath::Vector3 position() const override;
         virtual void render(const ICamera& camera, const ILevelTextureStorage& texture_storage, const DirectX::SimpleMath::Color& colour) override;
         virtual uint16_t room() const override;

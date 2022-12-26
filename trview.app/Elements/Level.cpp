@@ -665,7 +665,8 @@ namespace trview
                 filter_flag(PickFilter::StaticMeshes, has_flag(_render_filters, RenderFilter::Rooms)) |
                 filter_flag(PickFilter::AllGeometry, has_flag(_render_filters, RenderFilter::AllGeometry)) |
                 filter_flag(PickFilter::Triggers, has_flag(_render_filters, RenderFilter::Triggers)) |
-                filter_flag(PickFilter::Lights, has_flag(_render_filters, RenderFilter::Lights))));
+                filter_flag(PickFilter::Lights, has_flag(_render_filters, RenderFilter::Lights)) |
+                PickFilter::CameraSinks));
             if (!is_alternate_mismatch(room.room) && room.room.alternate_mode() == IRoom::AlternateMode::IsAlternate)
             {
                 auto& original_room = _rooms[room.room.alternate_room()];

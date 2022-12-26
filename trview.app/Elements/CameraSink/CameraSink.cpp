@@ -32,6 +32,26 @@ namespace trview
         return _number;
     }
 
+    PickResult CameraSink::pick(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& direction) const
+    {
+        PickResult result{};
+        result.type = PickResult::Type::CameraSink;
+        result.index = _number;
+
+        DirectX::BoundingBox box;
+        DirectX::BoundingBox::CreateFromPoints(box,
+            _position - Vector3(0.125f, 0.125f, 0.125f),
+            _position + Vector3(0.125f, 0.125f, 0.125f));
+
+        if (box.Intersects(position, direction, result.distance))
+        {
+            result.hit = true;
+            result.position = position + direction * result.distance;
+        }
+
+        return result;
+    }
+
     Vector3 CameraSink::position() const
     {
         return _position;

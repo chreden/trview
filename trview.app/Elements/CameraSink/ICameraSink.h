@@ -2,6 +2,7 @@
 
 #include <trlevel/trtypes.h>
 #include "../../Geometry/IRenderable.h"
+#include "../../Geometry/PickResult.h"
 
 namespace trview
 {
@@ -19,6 +20,7 @@ namespace trview
         virtual uint16_t flag() const = 0;
         virtual std::vector<uint16_t> inferred_rooms() const = 0;
         virtual uint32_t number() const = 0;
+        virtual PickResult pick(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& direction) const = 0;
         virtual DirectX::SimpleMath::Vector3 position() const = 0;
         virtual uint16_t room() const = 0;
         virtual Type type() const = 0;
