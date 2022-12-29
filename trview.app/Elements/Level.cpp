@@ -988,6 +988,13 @@ namespace trview
         on_level_changed();
     }
 
+    void Level::set_camera_sink_visibility(uint32_t index, bool state)
+    {
+        _camera_sinks[index]->set_visible(state);
+        _regenerate_transparency = true;
+        on_level_changed();
+    }
+
     void Level::deduplicate_triangles()
     {
         struct TriangleData

@@ -315,6 +315,7 @@ namespace trview
             for (const auto& trigger : _level->triggers()) { set_trigger_visibility(trigger, true); }
             for (const auto& light : _level->lights()) { set_light_visibility(light, true); }
             for (const auto& room : _level->rooms()) { set_room_visibility(room, true); }
+            for (const auto& camera_sink : _level->camera_sinks()) { set_camera_sink_visibility(camera_sink, true); }
         };
     }
 
@@ -642,6 +643,22 @@ namespace trview
         }
     }
 
+    void Application::set_camera_sink_visibility(const std::weak_ptr<ICameraSink>& camera_sink, bool visible)
+    {
+        if (!_level)
+        {
+            return;
+        }
+
+        if (const auto camera_sink_ptr = camera_sink.lock())
+        {
+            if (camera_sink_ptr->visible() != visible)
+            {
+                _level->set_camera_sink_visibility(camera_sink_ptr->number(), visible);
+            }
+        }
+    }
+
     void Application::select_sector(const std::weak_ptr<ISector>& sector)
     {
         _viewer->select_sector(sector);
@@ -790,6 +807,10 @@ namespace trview
         _token_store += _camera_sink_windows->on_camera_sink_selected += [this](const auto& sink)
         { 
             select_camera_sink(sink);
+        };
+        _token_store += _camera_sink_windows->on_camera_sink_visibility += [this](const auto& cs, bool value) 
+        {
+            set_camera_sink_visibility(cs, value);
         };
     }
 

@@ -100,6 +100,7 @@ namespace trview
         virtual std::vector<std::weak_ptr<ILight>> lights() const override;
         virtual void set_light_visibility(uint32_t index, bool state) override;
         virtual void set_room_visibility(uint32_t index, bool state) override;
+        virtual void set_camera_sink_visibility(uint32_t index, bool state) override;
         virtual MapColours map_colours() const override;
         virtual void set_map_colours(const MapColours& map_colours) override;
         virtual std::optional<uint32_t> selected_light() const override;
