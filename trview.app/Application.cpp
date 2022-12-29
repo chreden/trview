@@ -518,6 +518,7 @@ namespace trview
         _rooms_windows->set_room(room);
         _triggers_windows->set_room(room);
         _lights_windows->set_room(room);
+        _camera_sink_windows->set_room(room);
     }
 
     void Application::select_trigger(const std::weak_ptr<ITrigger>& trigger)

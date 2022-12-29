@@ -3,6 +3,18 @@
 
 namespace trview
 {
+    namespace
+    {
+        bool matching_room(ICameraSink& camera_sink, uint32_t room)
+        {
+            if (camera_sink.type() == ICameraSink::Type::Camera)
+            {
+                return camera_sink.room() == room;
+            }
+            return std::ranges::contains(camera_sink.inferred_rooms(), static_cast<uint16_t>(room));
+        }
+    }
+
     ICameraSinkWindow::~ICameraSinkWindow()
     {
     }
@@ -90,7 +102,6 @@ namespace trview
             {
                 ImGui::TableSetupColumn("#");
                 ImGui::TableSetupColumn("Type");
-                // ImGui::TableSetupColumn("ID");
                 ImGui::TableSetupColumn("Hide");
                 ImGui::TableSetupScrollFreeze(1, 1);
                 ImGui::TableHeadersRow();
@@ -98,7 +109,11 @@ namespace trview
                 for (const auto& camera_sink_ptr : _all_camera_sinks)
                 {
                     const auto camera_sink = camera_sink_ptr.lock();
-                    // TODO: Filters, selected room.
+
+                    if (_track_room && !matching_room(*camera_sink, _current_room) || !_filters.match(*camera_sink))
+                    {
+                        continue;
+                    }
 
                     ImGui::TableNextRow();
                     ImGui::TableNextColumn();
@@ -237,5 +252,10 @@ namespace trview
             _scroll_to = true;
             set_local_selected_camera_sink(camera_sink);
         }
+    }
+
+    void CameraSinkWindow::set_current_room(uint32_t room)
+    {
+        _current_room = room;
     }
 }

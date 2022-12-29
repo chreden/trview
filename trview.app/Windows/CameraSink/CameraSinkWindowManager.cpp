@@ -17,6 +17,7 @@ namespace trview
         auto window = _camera_sink_window_source();
         window->set_camera_sinks(_camera_sinks);
         window->set_selected_camera_sink(_selected_camera_sink);
+        window->set_current_room(_current_room);
         window->on_camera_sink_selected += on_camera_sink_selected;
         window->on_camera_sink_visibility += on_camera_sink_visibility;
         return add_window(window);
@@ -51,6 +52,15 @@ namespace trview
         for (auto& window : _windows)
         {
             window.second->set_selected_camera_sink(_selected_camera_sink);
+        }
+    }
+
+    void CameraSinkWindowManager::set_room(uint32_t room)
+    {
+        _current_room = room;
+        for (auto& window : _windows)
+        {
+            window.second->set_current_room(_current_room);
         }
     }
 }

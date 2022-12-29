@@ -13,6 +13,7 @@ namespace trview
         virtual void set_camera_sinks(const std::vector<std::weak_ptr<ICameraSink>>& camera_sinks) = 0;
         virtual void set_number(int32_t number) = 0;
         virtual void set_selected_camera_sink(const std::weak_ptr<ICameraSink>& camera_sink) = 0;
+        virtual void set_current_room(uint32_t room) = 0;
         /// <summary>
         /// Event raised when the window is closed.
         /// </summary>
