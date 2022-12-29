@@ -345,9 +345,12 @@ namespace trview
             }
         }
 
-        for (const auto& room : rooms)
+        if (has_flag(_render_filters, RenderFilter::CameraSinks))
         {
-            room.room.render_camera_sinks(camera);
+            for (const auto& room : rooms)
+            {
+                room.room.render_camera_sinks(camera);
+            }
         }
 
         if (_regenerate_transparency)
@@ -666,7 +669,7 @@ namespace trview
                 filter_flag(PickFilter::AllGeometry, has_flag(_render_filters, RenderFilter::AllGeometry)) |
                 filter_flag(PickFilter::Triggers, has_flag(_render_filters, RenderFilter::Triggers)) |
                 filter_flag(PickFilter::Lights, has_flag(_render_filters, RenderFilter::Lights)) |
-                PickFilter::CameraSinks));
+                filter_flag(PickFilter::CameraSinks, has_flag(_render_filters, RenderFilter::CameraSinks))));
             if (!is_alternate_mismatch(room.room) && room.room.alternate_mode() == IRoom::AlternateMode::IsAlternate)
             {
                 auto& original_room = _rooms[room.room.alternate_room()];
@@ -1153,6 +1156,13 @@ namespace trview
             _camera_sinks.push_back(new_camera_sink);
             _rooms[room_to_use]->add_camera_sink(new_camera_sink);
         }
+    }
+
+    void Level::set_show_camera_sinks(bool show)
+    {
+        _render_filters = set_flag(_render_filters, RenderFilter::CameraSinks, show);
+        _regenerate_transparency = true;
+        on_level_changed();
     }
 
     bool find_item_by_type_id(const ILevel& level, uint32_t type_id, Item& output_item)

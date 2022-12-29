@@ -29,6 +29,7 @@ namespace trview
             inline static const std::string lights = "Lights";
             inline static const std::string items = "Items";
             inline static const std::string rooms = "Rooms";
+            inline static const std::string camera_sinks = "Camera/Sink";
         };
 
         virtual ~IViewer() = 0;

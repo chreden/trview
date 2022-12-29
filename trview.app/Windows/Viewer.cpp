@@ -66,6 +66,7 @@ namespace trview
         toggles[Options::lights] = [this](bool value) { set_show_lights(value); };
         toggles[Options::items] = [this](bool value) { set_show_items(value); };
         toggles[Options::rooms] = [this](bool value) { set_show_rooms(value); };
+        toggles[Options::camera_sinks] = [this](bool value) { set_show_camera_sinks(value); };
 
         std::unordered_map<std::string, std::function<void(int32_t)>> scalars;
         scalars[Options::depth] = [this](int32_t value) { if (_level) { _level->set_neighbour_depth(value); } };
@@ -1333,5 +1334,14 @@ namespace trview
             set_camera_mode(CameraMode::Orbit);
         }
         _scene_changed = true;
+    }
+
+    void Viewer::set_show_camera_sinks(bool show)
+    {
+        if (_level)
+        {
+            _level->set_show_camera_sinks(show);
+            _ui->set_toggle(Options::camera_sinks, show);
+        }
     }
 }
