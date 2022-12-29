@@ -25,6 +25,12 @@ namespace trview
             DirectX::SimpleMath::Vector3 light_direction = DirectX::SimpleMath::Vector3::Zero,
             bool geometry_mode = false) = 0;
 
+        virtual void render(const DirectX::SimpleMath::Matrix& world_view_projection,
+            const graphics::Texture& replacement_texture,
+            const DirectX::SimpleMath::Color& colour,
+            float light_intensity = 1.0f,
+            DirectX::SimpleMath::Vector3 light_direction = DirectX::SimpleMath::Vector3::Zero) = 0;
+
         virtual std::vector<TransparentTriangle> transparent_triangles() const = 0;
 
         virtual const DirectX::BoundingBox& bounding_box() const = 0;

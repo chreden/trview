@@ -336,6 +336,8 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ResourceCompile Include="Resources\trview.app.rc" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="Resources\Files\camera.png" />
+    <Image Include="Resources\Files\sink.png" />
     <Image Include="Resources\Files\small.ico" />
     <Image Include="Resources\Files\tomb1.png" />
     <Image Include="Resources\Files\tomb2.png" />

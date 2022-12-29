@@ -43,41 +43,42 @@ namespace trview
     {
         const std::vector<MeshVertex> vertices
         {
+            // Body:
             // + y
             { { -0.5, 0.5f, -0.5 }, Vector3::Down, { 0, 0 }, { 1.0f, 1.0f, 1.0f } },       // 2
-            { { 0.5, 0.5f, -0.5 }, Vector3::Down, { 0, 0 }, { 1.0f, 1.0f, 1.0f } },        // 1
-            { { 0.5, 0.5f, 0.5 }, Vector3::Down, { 0, 0 }, { 1.0f, 1.0f, 1.0f } },         // 0
-            { { -0.5, 0.5f, 0.5 }, Vector3::Down, { 0, 0 }, { 1.0f, 1.0f, 1.0f } },        // 3
+            { { 0.5, 0.5f, -0.5 }, Vector3::Down, { 1, 0 }, { 1.0f, 1.0f, 1.0f } },        // 1
+            { { 0.5, 0.5f, 0.5 }, Vector3::Down, { 1, 1 }, { 1.0f, 1.0f, 1.0f } },         // 0
+            { { -0.5, 0.5f, 0.5 }, Vector3::Down, { 0, 1 }, { 1.0f, 1.0f, 1.0f } },        // 3
 
             // +x
             { { 0.5, -0.5f, -0.5 }, Vector3::Left, { 0, 0 }, { 1.0f, 1.0f, 1.0f } },       // 5
-            { { 0.5, -0.5f, 0.5 }, Vector3::Left, { 0, 0 }, { 1.0f, 1.0f, 1.0f } },        // 4
-            { { 0.5, 0.5f, 0.5 }, Vector3::Left, { 0, 0 }, { 1.0f, 1.0f, 1.0f } },         // 0
-            { { 0.5, 0.5f, -0.5 }, Vector3::Left, { 0, 0 }, { 1.0f, 1.0f, 1.0f } },        // 1
+            { { 0.5, -0.5f, 0.5 }, Vector3::Left, { 1, 0 }, { 1.0f, 1.0f, 1.0f } },        // 4
+            { { 0.5, 0.5f, 0.5 }, Vector3::Left, { 1, 1 }, { 1.0f, 1.0f, 1.0f } },         // 0
+            { { 0.5, 0.5f, -0.5 }, Vector3::Left, { 0, 1 }, { 1.0f, 1.0f, 1.0f } },        // 1
 
             // -x 
-            { { -0.5, 0.5f, -0.5 }, Vector3::Right, { 0, 0 }, { 1.0f, 1.0f, 1.0f } },       // 2
-            { { -0.5, 0.5f, 0.5 }, Vector3::Right, { 0, 0 }, { 1.0f, 1.0f, 1.0f } },        // 3
+            { { -0.5, 0.5f, -0.5 }, Vector3::Right, { 1, 1 }, { 1.0f, 1.0f, 1.0f } },       // 2
+            { { -0.5, 0.5f, 0.5 }, Vector3::Right, { 0, 1 }, { 1.0f, 1.0f, 1.0f } },        // 3
             { { -0.5, -0.5f, 0.5 }, Vector3::Right, { 0, 0 }, { 1.0f, 1.0f, 1.0f } },       // 7
-            { { -0.5, -0.5f, -0.5 }, Vector3::Right, { 0, 0 }, { 1.0f, 1.0f, 1.0f } },      // 6
+            { { -0.5, -0.5f, -0.5 }, Vector3::Right, { 1, 0 }, { 1.0f, 1.0f, 1.0f } },      // 6
 
             // +z
-            { { 0.5, 0.5f, 0.5 }, Vector3::Forward, { 0, 0 }, { 1.0f, 1.0f, 1.0f } },         // 0
+            { { 0.5, 0.5f, 0.5 }, Vector3::Forward, { 0, 1 }, { 1.0f, 1.0f, 1.0f } },         // 0
             { { 0.5, -0.5f, 0.5 }, Vector3::Forward, { 0, 0 }, { 1.0f, 1.0f, 1.0f } },        // 4
-            { { -0.5, 0.5f, 0.5 }, Vector3::Forward, { 0, 0 }, { 1.0f, 1.0f, 1.0f } },        // 3
-            { { -0.5, -0.5f, 0.5 }, Vector3::Forward, { 0, 0 }, { 1.0f, 1.0f, 1.0f } },       // 7
+            { { -0.5, 0.5f, 0.5 }, Vector3::Forward, { 1, 1 }, { 1.0f, 1.0f, 1.0f } },        // 3
+            { { -0.5, -0.5f, 0.5 }, Vector3::Forward, { 1, 0 }, { 1.0f, 1.0f, 1.0f } },       // 7
 
             // -z
-            { { 0.5, -0.5f, -0.5 }, Vector3::Backward, { 0, 0 }, { 1.0f, 1.0f, 1.0f } },       // 5
-            { { 0.5, 0.5f, -0.5 }, Vector3::Backward, { 0, 0 }, { 1.0f, 1.0f, 1.0f } },        // 1
-            { { -0.5, 0.5f, -0.5 }, Vector3::Backward, { 0, 0 }, { 1.0f, 1.0f, 1.0f } },       // 2
+            { { 0.5, -0.5f, -0.5 }, Vector3::Backward, { 1, 0 }, { 1.0f, 1.0f, 1.0f } },       // 5
+            { { 0.5, 0.5f, -0.5 }, Vector3::Backward, { 1, 1 }, { 1.0f, 1.0f, 1.0f } },        // 1
+            { { -0.5, 0.5f, -0.5 }, Vector3::Backward, { 0, 1 }, { 1.0f, 1.0f, 1.0f } },       // 2
             { { -0.5, -0.5f, -0.5 }, Vector3::Backward, { 0, 0 }, { 1.0f, 1.0f, 1.0f } },      // 6
 
             // -y
-            { { 0.5, -0.5f, 0.5 }, Vector3::Up, { 0, 0 }, { 1.0f, 1.0f, 1.0f } },        // 4
-            { { 0.5, -0.5f, -0.5 }, Vector3::Up, { 0, 0 }, { 1.0f, 1.0f, 1.0f } },       // 5
-            { { -0.5, -0.5f, -0.5 }, Vector3::Up, { 0, 0 }, { 1.0f, 1.0f, 1.0f } },      // 6
-            { { -0.5, -0.5f, 0.5 }, Vector3::Up, { 0, 0 }, { 1.0f, 1.0f, 1.0f } }        // 7
+            { { 0.5, -0.5f, 0.5 }, Vector3::Up, { 1, 0 }, { 1.0f, 1.0f, 1.0f } },        // 4
+            { { 0.5, -0.5f, -0.5 }, Vector3::Up, { 1, 1 }, { 1.0f, 1.0f, 1.0f } },       // 5
+            { { -0.5, -0.5f, -0.5 }, Vector3::Up, { 0, 1 }, { 1.0f, 1.0f, 1.0f } },      // 6
+            { { -0.5, -0.5f, 0.5 }, Vector3::Up, { 0, 0 }, { 1.0f, 1.0f, 1.0f } },        // 7
         };
 
         const std::vector<uint32_t> indices
@@ -90,7 +91,14 @@ namespace trview
             20, 21, 22, 22, 23, 20  // -y
         };
 
-        return source(vertices, std::vector<std::vector<uint32_t>>(), indices, std::vector<TransparentTriangle>(), std::vector<Triangle>());
+        std::vector<Triangle> triangles;
+        for (std::size_t i = 0; i < indices.size() / 3; ++i)
+        {
+            auto base = i * 3;
+            triangles.push_back(Triangle(vertices[indices[base]].pos, vertices[indices[base + 1]].pos, vertices[indices[base + 2]].pos));
+        }
+
+        return source(vertices, std::vector<std::vector<uint32_t>>(), indices, std::vector<TransparentTriangle>(), triangles);
     }
 
     std::shared_ptr<IMesh> create_sphere_mesh(const IMesh::Source& source, uint32_t stacks, uint32_t slices)

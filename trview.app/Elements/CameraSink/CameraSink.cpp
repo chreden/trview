@@ -4,9 +4,12 @@ using namespace DirectX::SimpleMath;
 
 namespace trview
 {
-    CameraSink::CameraSink(const std::shared_ptr<IMesh>& mesh, uint32_t number, const trlevel::tr_camera& camera, Type type, const std::vector<uint16_t>& inferred_rooms)
+    CameraSink::CameraSink(const std::shared_ptr<IMesh>& mesh, const std::shared_ptr<ITextureStorage>& texture_storage, 
+        uint32_t number, const trlevel::tr_camera& camera, Type type, const std::vector<uint16_t>& inferred_rooms)
         : _mesh(mesh), _number(number), _position(camera.position()), _room(camera.Room), _flag(camera.Flag), _inferred_rooms(inferred_rooms), _type(type)
     {
+        _camera_texture = texture_storage->lookup("camera_texture");
+        _sink_texture = texture_storage->lookup("sink_texture");
     }
 
     ICameraSink::~ICameraSink()
@@ -38,15 +41,17 @@ namespace trview
         result.type = PickResult::Type::CameraSink;
         result.index = _number;
 
-        DirectX::BoundingBox box;
-        DirectX::BoundingBox::CreateFromPoints(box,
-            _position - Vector3(0.125f, 0.125f, 0.125f),
-            _position + Vector3(0.125f, 0.125f, 0.125f));
+        auto world = Matrix::CreateScale(0.25f) * Matrix::CreateTranslation(_position);
+        auto transform = world.Invert();
+        auto transformed_position = Vector3::Transform(position, transform);
+        auto transformed_direction = Vector3::TransformNormal(direction, transform);
 
-        if (box.Intersects(position, direction, result.distance))
+        auto mesh_result = _mesh->pick(transformed_position, transformed_direction);
+        if (mesh_result.hit)
         {
             result.hit = true;
-            result.position = position + direction * result.distance;
+            result.distance = mesh_result.distance;
+            result.position = position + direction * mesh_result.distance;
         }
 
         return result;
@@ -57,7 +62,7 @@ namespace trview
         return _position;
     }
 
-    void CameraSink::render(const ICamera& camera, const ILevelTextureStorage& texture_storage, const Color&)
+    void CameraSink::render(const ICamera& camera, const ILevelTextureStorage&, const Color&)
     {
         if (!_visible)
         {
@@ -68,7 +73,7 @@ namespace trview
         auto wvp = world * camera.view_projection();
         auto light_direction = Vector3::TransformNormal(camera.position() - _position, world.Invert());
         light_direction.Normalize();
-        _mesh->render(wvp, texture_storage, Colour::Magenta, 1.0f, light_direction);
+        _mesh->render(wvp, type() == Type::Camera ? _camera_texture : _sink_texture, Colour::White, 1.0f, light_direction);
     }
 
     uint16_t CameraSink::room() const

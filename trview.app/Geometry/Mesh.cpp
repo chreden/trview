@@ -159,6 +159,37 @@ namespace trview
         }
     }
 
+    void Mesh::render(const Matrix& world_view_projection, const graphics::Texture& replacement_texture, const DirectX::SimpleMath::Color& colour, float light_intensity, Vector3 light_direction)
+    {
+        // There are no vertices.
+        if (!_vertex_buffer)
+        {
+            return;
+        }
+
+        auto context = _device->context();
+
+        D3D11_MAPPED_SUBRESOURCE mapped_resource;
+        memset(&mapped_resource, 0, sizeof(mapped_resource));
+
+        MeshData data{ world_view_projection, colour, Vector4(light_direction.x, light_direction.y, light_direction.z, 1), light_intensity, light_direction != Vector3::Zero };
+        context->Map(_matrix_buffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mapped_resource);
+        memcpy(mapped_resource.pData, &data, sizeof(data));
+        context->Unmap(_matrix_buffer.Get(), 0);
+
+        UINT stride = sizeof(MeshVertex);
+        UINT offset = 0;
+        context->IASetVertexBuffers(0, 1, _vertex_buffer.GetAddressOf(), &stride, &offset);
+        context->VSSetConstantBuffers(0, 1, _matrix_buffer.GetAddressOf());
+
+        if (_untextured_index_count)
+        {
+            context->PSSetShaderResources(0, 1, replacement_texture.view().GetAddressOf());
+            context->IASetIndexBuffer(_untextured_index_buffer.Get(), DXGI_FORMAT_R32_UINT, 0);
+            context->DrawIndexed(_untextured_index_count, 0, 0);
+        }
+    }
+
     std::vector<TransparentTriangle> Mesh::transparent_triangles() const
     {
         return _transparent_triangles;

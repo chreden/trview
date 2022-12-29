@@ -205,7 +205,7 @@ namespace trview
         auto buffer_source = [=](auto&&... args) { return std::make_unique<graphics::Buffer>(device, args...); };
 
         auto camera_mesh = create_cube_mesh(mesh_source);
-        auto camera_sink_source = [=](auto&&... args) { return std::make_shared<CameraSink>(camera_mesh, args...); };
+        auto camera_sink_source = [=](auto&&... args) { return std::make_shared<CameraSink>(camera_mesh, texture_storage, args...); };
 
         auto level_source = [=](auto&& level)
         {

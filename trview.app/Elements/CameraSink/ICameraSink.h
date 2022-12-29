@@ -3,6 +3,7 @@
 #include <trlevel/trtypes.h>
 #include "../../Geometry/IRenderable.h"
 #include "../../Geometry/PickResult.h"
+#include "../../Geometry/IMesh.h"
 
 namespace trview
 {
