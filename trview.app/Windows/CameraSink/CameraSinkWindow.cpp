@@ -55,10 +55,10 @@ namespace trview
         {
             _sync = value;
             _scroll_to = true;
-            // if (_sync && _global_selected_camera_sink.has_value())
-            // {
-            //     set_selected_item(_global_selected_item.value());
-            // }
+            if (_sync && _global_selected_camera_sink.lock())
+            {
+                set_selected_camera_sink(_global_selected_camera_sink);
+            }
         }
     }
     
