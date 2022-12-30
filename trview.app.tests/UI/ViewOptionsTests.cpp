@@ -369,3 +369,33 @@ TEST(ViewOptions, RoomsCheckboxUpdated)
     imgui.render();
     ASSERT_FALSE(imgui.status_flags(imgui.id("View Options").push(ViewOptions::Names::flags).id(IViewer::Options::rooms)) & ImGuiItemStatusFlags_Checked);
 }
+
+TEST(ViewOptions, CameraSinksCheckboxToggle)
+{
+    ViewOptions view_options;
+
+    std::optional<std::tuple<std::string, bool>> clicked;
+    auto token = view_options.on_toggle_changed += [&](const std::string& name, bool value)
+    {
+        clicked = { name, value };
+    };
+
+    tests::TestImgui imgui([&]() { view_options.render(); });
+    imgui.click_element(imgui.id("View Options").push(ViewOptions::Names::flags).id(IViewer::Options::camera_sinks));
+
+    ASSERT_TRUE(clicked.has_value());
+    ASSERT_EQ(std::get<0>(clicked.value()), IViewer::Options::camera_sinks);
+    ASSERT_TRUE(std::get<1>(clicked.value()));
+}
+
+TEST(ViewOptions, CameraSinksCheckboxUpdated)
+{
+    ViewOptions view_options;
+
+    tests::TestImgui imgui([&]() { view_options.render(); });
+    ASSERT_FALSE(imgui.status_flags(imgui.id("View Options").push(ViewOptions::Names::flags).id(IViewer::Options::camera_sinks)) & ImGuiItemStatusFlags_Checked);
+
+    view_options.set_toggle(IViewer::Options::camera_sinks, true);
+    imgui.render();
+    ASSERT_TRUE(imgui.status_flags(imgui.id("View Options").push(ViewOptions::Names::flags).id(IViewer::Options::camera_sinks)) & ImGuiItemStatusFlags_Checked);
+}

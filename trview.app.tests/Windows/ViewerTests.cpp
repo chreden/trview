@@ -930,3 +930,18 @@ TEST(Viewer, CameraSinkVisibilityRaisedForValidItem)
     ASSERT_EQ(std::get<0>(raised.value()), cs);
     ASSERT_FALSE(std::get<1>(raised.value()));
 }
+
+TEST(Viewer, SetShowCameraSinks)
+{
+    auto [ui_ptr, ui] = create_mock<MockViewerUI>();
+    auto [level_ptr, level] = create_mock<MockLevel>();
+    auto viewer = register_test_module().with_ui(std::move(ui_ptr)).build();
+
+    EXPECT_CALL(level, set_show_camera_sinks(false)).Times(1);
+    EXPECT_CALL(ui, set_toggle(testing::A<const std::string&>(), testing::A<bool>())).Times(testing::AtLeast(0));
+    EXPECT_CALL(ui, set_toggle(IViewer::Options::camera_sinks, true)).Times(1);
+    EXPECT_CALL(level, set_show_camera_sinks(true)).Times(1);
+
+    viewer->open(&level, ILevel::OpenMode::Full);
+    ui.on_toggle_changed(IViewer::Options::camera_sinks, true);
+}
