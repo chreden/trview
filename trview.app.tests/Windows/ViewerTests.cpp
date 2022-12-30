@@ -5,6 +5,7 @@
 #include <trview.app/Mocks/Elements/ILevel.h>
 #include <trview.app/Mocks/Elements/IRoom.h>
 #include <trview.app/Mocks/Elements/ITrigger.h>
+#include <trview.app/Mocks/Elements/ICameraSink.h>
 #include <trview.app/Mocks/Geometry/IPicking.h>
 #include <trview.app/Mocks/UI/IViewerUI.h>
 #include <trview.app/Mocks/Routing/IRoute.h>
@@ -900,4 +901,32 @@ TEST(Viewer, GoToLaraSelectsLast)
 
     ASSERT_TRUE(selected);
     ASSERT_EQ(selected.value().number(), 1u);
+}
+
+TEST(Viewer, CameraSinkVisibilityRaisedForValidItem)
+{
+    auto cs = mock_shared<MockCameraSink>();
+    NiceMock<MockLevel> level;
+    EXPECT_CALL(level, camera_sink(123)).WillRepeatedly(Return(cs));
+
+    auto [ui_ptr, ui] = create_mock<MockViewerUI>();
+    auto [picking_ptr, picking] = create_mock<MockPicking>();
+    auto [mouse_ptr, mouse] = create_mock<MockMouse>();
+    auto viewer = register_test_module().with_ui(std::move(ui_ptr)).with_picking(std::move(picking_ptr)).with_mouse(std::move(mouse_ptr)).build();
+
+    viewer->open(&level, ILevel::OpenMode::Full);
+
+    std::optional<std::tuple<std::shared_ptr<ICameraSink>, bool>> raised;
+    auto token = viewer->on_camera_sink_visibility += [&raised](const auto& camera_sink, auto visible)
+    { 
+        raised = { camera_sink.lock(), visible };
+    };
+
+    activate_context_menu(picking, mouse, PickResult::Type::CameraSink, 123);
+
+    ui.on_hide();
+
+    ASSERT_TRUE(raised.has_value());
+    ASSERT_EQ(std::get<0>(raised.value()), cs);
+    ASSERT_FALSE(std::get<1>(raised.value()));
 }
