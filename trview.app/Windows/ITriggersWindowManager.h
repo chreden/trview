@@ -19,6 +19,8 @@ namespace trview
         /// Event raised when the 'add to route' button is pressed in one of the trigger windows.
         Event<std::weak_ptr<ITrigger>> on_add_to_route;
 
+        Event<uint32_t> on_camera_sink_selected;
+
         /// Render all of the triggers windows.
         virtual void render() = 0;
 

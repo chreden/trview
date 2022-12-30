@@ -29,6 +29,11 @@ namespace trview
         /// Event raised when the window is closed.
         Event<> on_window_closed;
 
+        /// <summary>
+        /// Event raised when a camera/sinkm is selected in the list.
+        /// </summary>
+        Event<uint32_t> on_camera_sink_selected;
+
         /// Clear the currently selected trigger from the details panel.
         virtual void clear_selected_trigger() = 0;
 

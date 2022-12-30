@@ -387,6 +387,19 @@ namespace trview
                 add_waypoint(trigger_ptr->position(), Vector3::Down, trigger_ptr->room(), IWaypoint::Type::Trigger, trigger_ptr->number());
             }
         };
+        _token_store += _triggers_windows->on_camera_sink_selected += [this](const auto& camera_sink)
+        {
+            if (!_level)
+            {
+                return;
+            }
+
+            const auto sinks = _level->camera_sinks();
+            if (camera_sink < sinks.size())
+            {
+                select_camera_sink(sinks[camera_sink]);
+            }
+        };
     }
 
     void Application::setup_rooms_windows()

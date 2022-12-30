@@ -355,6 +355,11 @@ namespace trview
                             set_track_room(false);
                             on_item_selected(_all_items[command.index()]);
                         }
+                        else if (equals_any(command.type(), TriggerCommandType::UnderwaterCurrent, TriggerCommandType::Camera))
+                        {
+                            set_track_room(false);
+                            on_camera_sink_selected(command.index());
+                        }
                     }
                     ImGui::TableNextColumn();
                     ImGui::Text(std::to_string(command.index()).c_str());
