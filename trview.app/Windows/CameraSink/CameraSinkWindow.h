@@ -50,7 +50,6 @@ namespace trview
         bool _track_room{ false };
         bool _sync{ true };
         bool _scroll_to{ false };
-        std::optional<float> _tooltip_timer;
         uint32_t _current_room{ 0u };
         bool _force_sort{ false };
         std::vector<std::weak_ptr<ITrigger>> _all_triggers;

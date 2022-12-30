@@ -226,10 +226,14 @@ namespace trview
             {
                 const auto string_value = get_string(value);
                 ImGui::TableNextColumn();
-                if (ImGui::Selectable(name.c_str(), false, ImGuiSelectableFlags_SpanAllColumns | static_cast<int>(ImGuiSelectableFlags_SelectOnNav)))
+                ImGui::Selectable(name.c_str(), false, ImGuiSelectableFlags_SpanAllColumns | static_cast<int>(ImGuiSelectableFlags_SelectOnNav));
+                if (ImGui::BeginPopupContextItem())
                 {
-                    _clipboard->write(to_utf16(string_value));
-                    _tooltip_timer = 0.0f;
+                    if (ImGui::MenuItem("Copy"))
+                    {
+                        _clipboard->write(to_utf16(string_value));
+                    }
+                    ImGui::EndPopup();
                 }
                 if (_tips.find(name) != _tips.end())
                 {
