@@ -88,6 +88,19 @@ namespace trview
     void CameraSinkWindow::set_local_selected_camera_sink(const std::weak_ptr<ICameraSink>& camera_sink)
     {
         _selected_camera_sink = camera_sink;
+        // Temporary:
+        _triggered_by.clear();
+        if (auto cs = camera_sink.lock())
+        {
+            for (const auto& trigger : _all_triggers)
+            {
+                const auto trigger_ptr = trigger.lock();
+                if (std::ranges::any_of(trigger_ptr->commands(), [&](const auto& command) { return command.index() == cs->number() && equals_any(command.type(), TriggerCommandType::UnderwaterCurrent, TriggerCommandType::Camera); }))
+                {
+                    _triggered_by.push_back(trigger);
+                }
+            }
+        }
     }
 
     void CameraSinkWindow::render_list()
@@ -203,82 +216,114 @@ namespace trview
 
     void CameraSinkWindow::render_details()
     {
-        if (ImGui::BeginChild(Names::details_panel.c_str(), ImVec2(230, 0), true))
+        auto selected = _selected_camera_sink.lock();
+        if (ImGui::BeginChild(Names::details_panel.c_str(), ImVec2(230, 0), true) && selected)
         {
-            auto selected = _selected_camera_sink.lock();
-            if (selected && ImGui::BeginTabBar("TabBar"))
+            const auto add_stat = [&]<typename T>(const std::string & name, const T && value)
             {
-                const auto add_stat = [&]<typename T>(const std::string & name, const T && value)
+                const auto string_value = get_string(value);
+                ImGui::TableNextColumn();
+                if (ImGui::Selectable(name.c_str(), false, ImGuiSelectableFlags_SpanAllColumns | static_cast<int>(ImGuiSelectableFlags_SelectOnNav)))
                 {
-                    const auto string_value = get_string(value);
-                    ImGui::TableNextColumn();
-                    if (ImGui::Selectable(name.c_str(), false, ImGuiSelectableFlags_SpanAllColumns | static_cast<int>(ImGuiSelectableFlags_SelectOnNav)))
-                    {
-                        _clipboard->write(to_utf16(string_value));
-                        _tooltip_timer = 0.0f;
-                    }
-                    if (_tips.find(name) != _tips.end())
-                    {
-                        ImGui::BeginTooltip();
-                        ImGui::Text(_tips[name].c_str());
-                        ImGui::EndTooltip();
-                    }
-                    ImGui::TableNextColumn();
-                    ImGui::Text(string_value.c_str());
-                };
+                    _clipboard->write(to_utf16(string_value));
+                    _tooltip_timer = 0.0f;
+                }
+                if (_tips.find(name) != _tips.end())
+                {
+                    ImGui::BeginTooltip();
+                    ImGui::Text(_tips[name].c_str());
+                    ImGui::EndTooltip();
+                }
+                ImGui::TableNextColumn();
+                ImGui::Text(string_value.c_str());
+            };
 
-                if (ImGui::BeginCombo("Type", to_string(selected->type()).c_str()))
+            if (ImGui::BeginCombo("Type", to_string(selected->type()).c_str()))
+            {
+                bool camera_selected = selected->type() == ICameraSink::Type::Camera;
+                if (ImGui::Selectable("Camera##type", &camera_selected))
                 {
-                    bool camera_selected = selected->type() == ICameraSink::Type::Camera;
-                    if (ImGui::Selectable("Camera##type", &camera_selected))
+                    selected->set_type(ICameraSink::Type::Camera);
+                }
+                bool sink_selected = selected->type() == ICameraSink::Type::Sink;
+                if (ImGui::Selectable("Sink##type", &sink_selected))
+                {
+                    selected->set_type(ICameraSink::Type::Sink);
+                }
+                ImGui::EndCombo();
+            }
+
+            if (ImGui::BeginTable(Names::stats_listbox.c_str(), 2, 0, ImVec2(-1, 0)))
+            {
+                ImGui::TableSetupColumn("Name");
+                ImGui::TableSetupColumn("Value");
+                ImGui::TableNextRow();
+
+                add_stat("#", selected->number());
+                const auto pos = selected->position() * trlevel::Scale;
+                add_stat("Position", std::format("{:.0f}, {:.0f}, {:.0f}", pos.x, pos.y, pos.z));
+
+                if (selected->type() == ICameraSink::Type::Camera)
+                {
+                    add_stat("Flag", selected->flag());
+                    add_stat("Room", selected->room());
+                    add_stat("Persistent", selected->flag() & 0x1);
+                }
+                else
+                {
+                    add_stat("Strength", selected->room());
+                    add_stat("Box Index", selected->flag());
+                    std::string inferred_rooms;
+                    auto rooms = selected->inferred_rooms();
+                    for (auto i = 0u; i < rooms.size(); ++i)
                     {
-                        selected->set_type(ICameraSink::Type::Camera);
+                        inferred_rooms += std::to_string(rooms[i]);
+                        if (i != rooms.size() - 1)
+                        {
+                            inferred_rooms += ",";
+                        }
                     }
-                    bool sink_selected = selected->type() == ICameraSink::Type::Sink;
-                    if (ImGui::Selectable("Sink##type", &sink_selected))
-                    {
-                        selected->set_type(ICameraSink::Type::Sink);
-                    }
-                    ImGui::EndCombo();
+                    add_stat("Inferred Room", inferred_rooms.c_str());
                 }
 
-                if (ImGui::BeginTable(Names::stats_listbox.c_str(), 2, 0, ImVec2(-1, 0)))
+                ImGui::EndTable();
+
+                ImGui::Spacing();
+
+                ImGui::Text("Triggered By");
+                if (ImGui::BeginTable(Names::triggers_list.c_str(), 3, ImGuiTableFlags_ScrollY | ImGuiTableFlags_Sortable | ImGuiTableFlags_SizingFixedFit, ImVec2(-1, -1)))
                 {
-                    ImGui::TableSetupColumn("Name");
-                    ImGui::TableSetupColumn("Value");
-                    ImGui::TableNextRow();
+                    ImGui::TableSetupColumn("#");
+                    ImGui::TableSetupColumn("Room");
+                    ImGui::TableSetupColumn("Type");
+                    ImGui::TableSetupScrollFreeze(1, 1);
+                    ImGui::TableHeadersRow();
 
-                    add_stat("#", selected->number());
-                    const auto pos = selected->position() * trlevel::Scale;
-                    add_stat("Position", std::format("{:.0f}, {:.0f}, {:.0f}", pos.x, pos.y, pos.z));
-
-                    if (selected->type() == ICameraSink::Type::Camera)
+                    for (auto& trigger : _triggered_by)
                     {
-                        add_stat("Flag", selected->flag());
-                        add_stat("Room", selected->room());
-                        add_stat("Persistent", selected->flag() & 0x1);
-                    }
-                    else
-                    {
-                        add_stat("Strength", selected->room());
-                        add_stat("Box Index", selected->flag());
-                        std::string inferred_rooms;
-                        auto rooms = selected->inferred_rooms();
-                        for (auto i = 0u; i < rooms.size(); ++i)
+                        auto trigger_ptr = trigger.lock();
+                        if (!trigger_ptr)
                         {
-                            inferred_rooms += std::to_string(rooms[i]);
-                            if (i != rooms.size() - 1)
-                            {
-                                inferred_rooms += ",";
-                            }
+                            continue;
                         }
-                        add_stat("Inferred Room", inferred_rooms.c_str());
+
+                        ImGui::TableNextRow();
+                        ImGui::TableNextColumn();
+                        bool trigger_selected = _selected_trigger.lock() == trigger_ptr;
+                        if (ImGui::Selectable(std::to_string(trigger_ptr->number()).c_str(), &trigger_selected, ImGuiSelectableFlags_SpanAllColumns | static_cast<int>(ImGuiSelectableFlags_SelectOnNav)))
+                        {
+                            _selected_trigger = trigger;
+                            set_track_room(false);
+                            on_trigger_selected(trigger);
+                        }
+                        ImGui::TableNextColumn();
+                        ImGui::Text(std::to_string(trigger_ptr->room()).c_str());
+                        ImGui::TableNextColumn();
+                        ImGui::Text(trigger_type_name(trigger_ptr->type()).c_str());
                     }
 
                     ImGui::EndTable();
                 }
-
-                ImGui::EndTabBar();
             }
         }
         ImGui::EndChild();
@@ -297,5 +342,10 @@ namespace trview
     void CameraSinkWindow::set_current_room(uint32_t room)
     {
         _current_room = room;
+    }
+
+    void CameraSinkWindow::set_triggers(const std::vector<std::weak_ptr<ITrigger>>& triggers)
+    {
+        _all_triggers = triggers;
     }
 }

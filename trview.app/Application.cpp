@@ -146,6 +146,7 @@ namespace trview
         _lights_windows->set_level_version(_level->version());
         _lights_windows->set_lights(_level->lights());
         _camera_sink_windows->set_camera_sinks(_level->camera_sinks());
+        _camera_sink_windows->set_triggers(_level->triggers());
         if (open_mode == ILevel::OpenMode::Full)
         {
             _route->clear();
@@ -804,15 +805,9 @@ namespace trview
         {
             _camera_sink_windows->create_window();
         }
-
-        _token_store += _camera_sink_windows->on_camera_sink_selected += [this](const auto& sink)
-        { 
-            select_camera_sink(sink);
-        };
-        _token_store += _camera_sink_windows->on_camera_sink_visibility += [this](const auto& cs, bool value) 
-        {
-            set_camera_sink_visibility(cs, value);
-        };
+        _token_store += _camera_sink_windows->on_camera_sink_selected += [this](const auto& sink) {  select_camera_sink(sink); };
+        _token_store += _camera_sink_windows->on_camera_sink_visibility += [this](const auto& cs, bool value) { set_camera_sink_visibility(cs, value); };
+        _token_store += _camera_sink_windows->on_trigger_selected += [this](const auto& trigger) { select_trigger(trigger); };
     }
 
     void Application::save_window_placement()
