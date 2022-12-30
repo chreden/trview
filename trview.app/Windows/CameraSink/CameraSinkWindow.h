@@ -37,6 +37,7 @@ namespace trview
         void set_local_selected_camera_sink(const std::weak_ptr<ICameraSink>& camera_sink);
         void render_list();
         void render_details();
+        void setup_filters();
 
         std::string _id{ "Camera/Sink 0" };
         std::vector<std::weak_ptr<ICameraSink>> _all_camera_sinks;

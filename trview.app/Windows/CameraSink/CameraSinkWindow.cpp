@@ -23,6 +23,16 @@ namespace trview
             const auto inferred_rooms = camera_sink.inferred_rooms();
             return inferred_rooms.empty() ? 0u : std::ranges::min(camera_sink.inferred_rooms());
         }
+
+        bool is_camera(const ICameraSink& camera_sink)
+        {
+            return camera_sink.type() == ICameraSink::Type::Camera;
+        }
+
+        bool is_sink(const ICameraSink& camera_sink)
+        {
+            return camera_sink.type() == ICameraSink::Type::Sink;
+        }
     }
 
     ICameraSinkWindow::~ICameraSinkWindow()
@@ -32,6 +42,7 @@ namespace trview
     CameraSinkWindow::CameraSinkWindow(const std::shared_ptr<IClipboard>& clipboard)
         : _clipboard(clipboard)
     {
+        setup_filters();
     }
 
     void CameraSinkWindow::render()
@@ -349,5 +360,50 @@ namespace trview
     void CameraSinkWindow::set_triggers(const std::vector<std::weak_ptr<ITrigger>>& triggers)
     {
         _all_triggers = triggers;
+    }
+
+    void CameraSinkWindow::setup_filters()
+    {
+        _filters.clear_all_getters();
+
+        // All:
+        std::set<std::string> available_types{ "Camera", "Sink" };
+        _filters.add_getter<std::string>("Type", { available_types.begin(), available_types.end() }, [](auto&& camera_sink) { return to_string(camera_sink.type()); });
+        _filters.add_getter<float>("#", [](auto&& camera_sink) { return static_cast<float>(camera_sink.number()); });
+        _filters.add_getter<float>("X", [](auto&& camera_sink) { return camera_sink.position().x * trlevel::Scale_X; });
+        _filters.add_getter<float>("Y", [](auto&& camera_sink) { return camera_sink.position().y * trlevel::Scale_Y; });
+        _filters.add_getter<float>("Z", [](auto&& camera_sink) { return camera_sink.position().z * trlevel::Scale_Z; });
+        _filters.add_multi_getter<float>("Room", [](auto&& camera_sink) -> std::vector<float>
+            {
+                if (camera_sink.type() == ICameraSink::Type::Camera)
+                {
+                    return { static_cast<float>(camera_sink.room()) };
+                }
+                return std::views::transform(
+                    camera_sink.inferred_rooms(),
+                    [](const auto& r) { return static_cast<float>(r); }) |
+                    std::ranges::to<std::vector>();
+            });
+        _filters.add_multi_getter<float>("Triggered By", [&](auto&& camera_sink)
+            {
+                std::vector<float> results;
+                for (const auto& trigger : _all_triggers)
+                {
+                    const auto trigger_ptr = trigger.lock();
+                    if (std::ranges::any_of(trigger_ptr->commands(), [&](const auto& command) { return command.index() == camera_sink.number() && equals_any(command.type(), TriggerCommandType::UnderwaterCurrent, TriggerCommandType::Camera); }))
+                    {
+                        results.push_back(static_cast<float>(trigger_ptr->number()));
+                    }
+                }
+                return results;
+            });
+        
+        // Camera:
+        _filters.add_getter<float>("Flag", [](auto&& camera_sink) { return static_cast<float>(camera_sink.flag()); }, is_camera);
+        _filters.add_getter<bool>("Persistent", [](auto&& camera_sink) { return (camera_sink.flag() & 0x1) == 1; }, is_camera);
+        
+        // Sink:
+        _filters.add_getter<float>("Strength", [](auto&& camera_sink) { return static_cast<float>(camera_sink.room()); }, is_sink);
+        _filters.add_getter<float>("Box Index", [](auto&& camera_sink) { return static_cast<float>(camera_sink.flag()); }, is_sink);
     }
 }
