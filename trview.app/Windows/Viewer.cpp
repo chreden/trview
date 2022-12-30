@@ -582,6 +582,7 @@ namespace trview
         _level->set_show_lights(_ui->toggle(Options::lights));
         _level->set_show_items(_ui->toggle(Options::items));
         _level->set_show_rooms(_ui->toggle(Options::rooms));
+        _level->set_show_camera_sinks(_ui->toggle(Options::camera_sinks));
 
         // Set up the views.
         auto rooms = _level->rooms();

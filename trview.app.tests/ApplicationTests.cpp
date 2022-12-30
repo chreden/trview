@@ -1,6 +1,7 @@
 #include <trview.app/Application.h>
 #include <trview.app/Mocks/Elements/ILevel.h>
 #include <trview.app/Mocks/Elements/ILight.h>
+#include <trview.app/Mocks/Elements/ICameraSink.h>
 #include <trview.app/Mocks/Menus/IUpdateChecker.h>
 #include <trview.app/Mocks/Menus/IFileMenu.h>
 #include <trview.app/Mocks/Routing/IRoute.h>
@@ -189,6 +190,12 @@ namespace
             test_module& with_textures_window_manager(std::unique_ptr<ITexturesWindowManager> textures_window_manager)
             {
                 this->textures_window_manager = std::move(textures_window_manager);
+                return *this;
+            }
+
+            test_module& with_camera_sink_window_manager(std::unique_ptr<ICameraSinkWindowManager> camera_sink_window_manager)
+            {
+                this->camera_sink_window_manager = std::move(camera_sink_window_manager);
                 return *this;
             }
         };
@@ -498,6 +505,8 @@ TEST(Application, WindowManagersAndViewerRendered)
     EXPECT_CALL(log_window_manager, render).Times(1);
     auto [textures_window_manager_ptr, textures_window_manager] = create_mock<MockTexturesWindowManager>();
     EXPECT_CALL(textures_window_manager, render).Times(1);
+    auto [camera_sink_window_manager_ptr, camera_sink_window_manager] = create_mock<MockCameraSinkWindowManager>();
+    EXPECT_CALL(camera_sink_window_manager, render).Times(1);
     auto [viewer_ptr, viewer] = create_mock<MockViewer>();
     EXPECT_CALL(viewer, render).Times(1);
     auto files = mock_shared<MockFiles>();
@@ -511,6 +520,7 @@ TEST(Application, WindowManagersAndViewerRendered)
         .with_lights_window_manager(std::move(lights_window_manager_ptr))
         .with_log_window_manager(std::move(log_window_manager_ptr))
         .with_textures_window_manager(std::move(textures_window_manager_ptr))
+        .with_camera_sink_window_manager(std::move(camera_sink_window_manager_ptr))
         .with_viewer(std::move(viewer_ptr))
         .with_files(files)
         .build();
@@ -890,4 +900,77 @@ TEST(Application, WaypointChangedUpdatesViewer)
         .build();
 
     route_window_manager.on_waypoint_changed();
+}
+
+TEST(Application, ViewerUpdatedWhenCameraSinkTypeChanges)
+{
+    auto [camera_sink_window_manager_ptr, camera_sink_window_manager] = create_mock<MockCameraSinkWindowManager>();
+    auto [viewer_ptr, viewer] = create_mock<MockViewer>();
+    EXPECT_CALL(viewer, set_scene_changed).Times(1);
+
+    auto application = register_test_module()
+        .with_camera_sink_window_manager(std::move(camera_sink_window_manager_ptr))
+        .with_viewer(std::move(viewer_ptr))
+        .build();
+
+    camera_sink_window_manager.on_camera_sink_type_changed();
+}
+
+TEST(Application, CameraSinksWindowCreatedOnStartup)
+{
+    UserSettings settings;
+    settings.camera_sink_startup = true;
+    auto [settings_loader_ptr, settings_loader] = create_mock<MockSettingsLoader>();
+    ON_CALL(settings_loader, load_user_settings).WillByDefault(Return(settings));
+    auto [camera_sink_window_manager_ptr, camera_sink_window_manager] = create_mock<MockCameraSinkWindowManager>();
+    EXPECT_CALL(camera_sink_window_manager, create_window).Times(1);
+    auto application = register_test_module()
+        .with_settings_loader(std::move(settings_loader_ptr))
+        .with_camera_sink_window_manager(std::move(camera_sink_window_manager_ptr))
+        .build();
+}
+
+TEST(Application, CameraSinkSelectedEventForwarded)
+{
+    auto [camera_sink_window_manager_ptr, camera_sink_window_manager] = create_mock<MockCameraSinkWindowManager>();
+    auto [level_ptr, level] = create_mock<trview::mocks::MockLevel>();
+    EXPECT_CALL(level, set_selected_camera_sink).Times(1);
+
+    auto application = register_test_module()
+        .with_camera_sink_window_manager(std::move(camera_sink_window_manager_ptr))
+        .with_level_source([&](auto&&...) { return std::move(level_ptr); })
+        .build();
+
+    application->open("test_path.tr2", ILevel::OpenMode::Full);
+    camera_sink_window_manager.on_camera_sink_selected(mock_shared<MockCameraSink>());
+}
+
+TEST(Application, CameraSinkVisibilityEventForwarded)
+{
+    auto [camera_sink_window_manager_ptr, camera_sink_window_manager] = create_mock<MockCameraSinkWindowManager>();
+    auto [level_ptr, level] = create_mock<trview::mocks::MockLevel>();
+    EXPECT_CALL(level, set_camera_sink_visibility).Times(1);
+
+    auto application = register_test_module()
+        .with_camera_sink_window_manager(std::move(camera_sink_window_manager_ptr))
+        .with_level_source([&](auto&&...) { return std::move(level_ptr); })
+        .build();
+
+    application->open("test_path.tr2", ILevel::OpenMode::Full);
+    camera_sink_window_manager.on_camera_sink_visibility(mock_shared<MockCameraSink>(), true);
+}
+
+TEST(Application, TriggerSelectedFromCameraSinkWindow)
+{
+    auto [camera_sink_window_manager_ptr, camera_sink_window_manager] = create_mock<MockCameraSinkWindowManager>();
+    auto [level_ptr, level] = create_mock<trview::mocks::MockLevel>();
+    EXPECT_CALL(level, set_selected_trigger).Times(1);
+
+    auto application = register_test_module()
+        .with_camera_sink_window_manager(std::move(camera_sink_window_manager_ptr))
+        .with_level_source([&](auto&&...) { return std::move(level_ptr); })
+        .build();
+
+    application->open("test_path.tr2", ILevel::OpenMode::Full);
+    camera_sink_window_manager.on_trigger_selected(mock_shared<MockTrigger>());
 }
