@@ -244,3 +244,22 @@ TEST(TriggersWindowManager, WindowsUpdated)
     manager->update(1.0f);
 }
 
+TEST(TriggersWindowManager, CameraSinkSelectedRaised)
+{
+    auto mock_window = mock_shared<MockTriggersWindow>();
+    auto manager = register_test_module().with_window_source([&](auto&&...) { return mock_window; }).build();
+
+    std::optional<uint32_t> raised;
+    auto token = manager->on_camera_sink_selected += [&](auto index)
+    {
+        raised = index;
+    };
+
+    manager->create_window();
+
+    mock_window->on_camera_sink_selected(100);
+
+    ASSERT_TRUE(raised);
+    ASSERT_EQ(raised.value(), 100u);
+}
+
