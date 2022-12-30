@@ -244,11 +244,13 @@ namespace trview
                 if (ImGui::Selectable("Camera##type", &camera_selected))
                 {
                     selected->set_type(ICameraSink::Type::Camera);
+                    on_camera_sink_type_changed();
                 }
                 bool sink_selected = selected->type() == ICameraSink::Type::Sink;
                 if (ImGui::Selectable("Sink##type", &sink_selected))
                 {
                     selected->set_type(ICameraSink::Type::Sink);
+                    on_camera_sink_type_changed();
                 }
                 ImGui::EndCombo();
             }

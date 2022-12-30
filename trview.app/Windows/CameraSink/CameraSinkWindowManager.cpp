@@ -22,6 +22,7 @@ namespace trview
         window->on_camera_sink_selected += on_camera_sink_selected;
         window->on_camera_sink_visibility += on_camera_sink_visibility;
         window->on_trigger_selected += on_trigger_selected;
+        window->on_camera_sink_type_changed += on_camera_sink_type_changed;
         return add_window(window);
     }
 
