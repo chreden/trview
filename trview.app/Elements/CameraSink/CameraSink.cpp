@@ -1,5 +1,6 @@
 #include "CameraSink.h"
 
+using namespace DirectX;
 using namespace DirectX::SimpleMath;
 
 namespace trview
@@ -38,20 +39,16 @@ namespace trview
     PickResult CameraSink::pick(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& direction) const
     {
         PickResult result{};
-        result.type = PickResult::Type::CameraSink;
-        result.index = _number;
+        BoundingBox cube(_position, Vector3(0.125f, 0.125f, 0.125f));
 
-        auto world = Matrix::CreateScale(0.25f) * Matrix::CreateTranslation(_position);
-        auto transform = world.Invert();
-        auto transformed_position = Vector3::Transform(position, transform);
-        auto transformed_direction = Vector3::TransformNormal(direction, transform);
-
-        auto mesh_result = _mesh->pick(transformed_position, transformed_direction);
-        if (mesh_result.hit)
+        float distance = 0;
+        if (cube.Intersects(position, direction, distance))
         {
+            result.distance = distance;
             result.hit = true;
-            result.distance = mesh_result.distance;
-            result.position = position + direction * mesh_result.distance;
+            result.index = _number;
+            result.position = position + direction * distance;
+            result.type = PickResult::Type::CameraSink;
         }
 
         return result;

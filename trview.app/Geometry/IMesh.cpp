@@ -91,14 +91,7 @@ namespace trview
             20, 21, 22, 22, 23, 20  // -y
         };
 
-        std::vector<Triangle> triangles;
-        for (std::size_t i = 0; i < indices.size() / 3; ++i)
-        {
-            auto base = i * 3;
-            triangles.push_back(Triangle(vertices[indices[base]].pos, vertices[indices[base + 1]].pos, vertices[indices[base + 2]].pos));
-        }
-
-        return source(vertices, std::vector<std::vector<uint32_t>>(), indices, std::vector<TransparentTriangle>(), triangles);
+        return source(vertices, std::vector<std::vector<uint32_t>>(), indices, std::vector<TransparentTriangle>(), {});
     }
 
     std::shared_ptr<IMesh> create_sphere_mesh(const IMesh::Source& source, uint32_t stacks, uint32_t slices)
