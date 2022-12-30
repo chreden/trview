@@ -13,6 +13,16 @@ namespace trview
             }
             return std::ranges::contains(camera_sink.inferred_rooms(), static_cast<uint16_t>(room));
         }
+
+        uint32_t primary_room(const ICameraSink& camera_sink)
+        {
+            if (camera_sink.type() == ICameraSink::Type::Camera)
+            {
+                return camera_sink.room();
+            }
+            const auto inferred_rooms = camera_sink.inferred_rooms();
+            return inferred_rooms.empty() ? 0u : std::ranges::min(camera_sink.inferred_rooms());
+        }
     }
 
     ICameraSinkWindow::~ICameraSinkWindow()
@@ -41,6 +51,7 @@ namespace trview
     void CameraSinkWindow::set_camera_sinks(const std::vector<std::weak_ptr<ICameraSink>>& camera_sinks)
     {
         _all_camera_sinks = camera_sinks;
+        _force_sort = true;
     }
 
     bool CameraSinkWindow::render_camera_sink_window()
@@ -98,13 +109,22 @@ namespace trview
                 set_sync(sync);
             }
 
-            if (ImGui::BeginTable(Names::camera_sink_list.c_str(), 3, ImGuiTableFlags_SizingStretchSame | ImGuiTableFlags_Sortable | ImGuiTableFlags_ScrollY, ImVec2(-1, -1)))
+            if (ImGui::BeginTable(Names::camera_sink_list.c_str(), 4, ImGuiTableFlags_SizingStretchSame | ImGuiTableFlags_Sortable | ImGuiTableFlags_ScrollY, ImVec2(-1, -1)))
             {
                 ImGui::TableSetupColumn("#");
                 ImGui::TableSetupColumn("Type");
+                ImGui::TableSetupColumn("Room");
                 ImGui::TableSetupColumn("Hide");
                 ImGui::TableSetupScrollFreeze(1, 1);
                 ImGui::TableHeadersRow();
+
+                imgui_sort_weak(_all_camera_sinks,
+                    {
+                        [](auto&& l, auto&& r) { return l.number() < r.number(); },
+                        [](auto&& l, auto&& r) { return std::tuple(to_string(l.type()), l.number()) < std::tuple(to_string(r.type()), r.number()); },
+                        [](auto&& l, auto&& r) { return std::tuple(primary_room(l), l.number()) < std::tuple(primary_room(r), r.number()); },
+                        [](auto&& l, auto&& r) { return std::tuple(l.visible(), l.number()) < std::tuple(r.visible(), r.number()); }
+                    }, _force_sort);
 
                 for (const auto& camera_sink_ptr : _all_camera_sinks)
                 {
@@ -143,6 +163,26 @@ namespace trview
 
                     ImGui::TableNextColumn();
                     ImGui::Text(to_string(camera_sink->type()).c_str());
+
+                    ImGui::TableNextColumn();
+                    if (camera_sink->type() == ICameraSink::Type::Camera)
+                    {
+                        ImGui::Text(std::format("{}", camera_sink->room()).c_str());
+                    }
+                    else
+                    {
+                        auto rooms = camera_sink->inferred_rooms();
+                        std::stringstream stream;
+                        if (!rooms.empty())
+                        {
+                            stream << rooms[0];
+                        }
+                        for (std::size_t i = 1; i < rooms.size(); ++i)
+                        {
+                            stream << "," << rooms[i];
+                        }
+                        ImGui::Text(stream.str().c_str());
+                    }
 
                     ImGui::TableNextColumn();
 

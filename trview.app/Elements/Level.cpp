@@ -1150,11 +1150,17 @@ namespace trview
                 }
             }
 
-            const uint16_t room_to_use = is_camera ? camera_sink.Room : inferred_rooms.empty() ? 0u : inferred_rooms.front();
-
             auto new_camera_sink = camera_sink_source(i, camera_sink, type, { std::from_range, inferred_rooms });
             _camera_sinks.push_back(new_camera_sink);
-            _rooms[room_to_use]->add_camera_sink(new_camera_sink);
+
+            if (is_camera)
+            {
+                _rooms[camera_sink.Room]->add_camera_sink(new_camera_sink);
+            }
+            else
+            {
+                std::ranges::for_each(inferred_rooms, [&](auto&& r) { _rooms[r]->add_camera_sink(new_camera_sink); });
+            }
         }
     }
 
