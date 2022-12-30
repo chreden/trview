@@ -21,6 +21,8 @@
   <ItemGroup>
     <ClCompile Include="AlternateGroupTogglerTests.cpp" />
     <ClCompile Include="ApplicationTests.cpp" />
+    <ClCompile Include="CameraSinkWindowManagerTests.cpp" />
+    <ClCompile Include="CameraSinkWindowTests.cpp" />
     <ClCompile Include="Camera\CameraInputTests.cpp" />
     <ClCompile Include="ContextMenuTests.cpp" />
     <ClCompile Include="Elements\EntityTests.cpp" />
