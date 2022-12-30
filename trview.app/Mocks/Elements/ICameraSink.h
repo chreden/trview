@@ -21,6 +21,7 @@ namespace trview
             MOCK_METHOD(void, set_type, (Type), (override));
             MOCK_METHOD(Type, type, (), (const, override));
             MOCK_METHOD(bool, visible, (), (const, override));
+            MOCK_METHOD(std::vector<std::weak_ptr<ITrigger>>, triggers, (), (const, override));
         };
     }
 }

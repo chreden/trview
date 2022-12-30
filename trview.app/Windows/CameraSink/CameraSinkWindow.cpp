@@ -99,18 +99,10 @@ namespace trview
     void CameraSinkWindow::set_local_selected_camera_sink(const std::weak_ptr<ICameraSink>& camera_sink)
     {
         _selected_camera_sink = camera_sink;
-        // Temporary:
         _triggered_by.clear();
         if (auto cs = camera_sink.lock())
         {
-            for (const auto& trigger : _all_triggers)
-            {
-                const auto trigger_ptr = trigger.lock();
-                if (std::ranges::any_of(trigger_ptr->commands(), [&](const auto& command) { return command.index() == cs->number() && equals_any(command.type(), TriggerCommandType::UnderwaterCurrent, TriggerCommandType::Camera); }))
-                {
-                    _triggered_by.push_back(trigger);
-                }
-            }
+            _triggered_by = cs->triggers();
         }
     }
 
@@ -387,13 +379,10 @@ namespace trview
         _filters.add_multi_getter<float>("Triggered By", [&](auto&& camera_sink)
             {
                 std::vector<float> results;
-                for (const auto& trigger : _all_triggers)
+                for (const auto& trigger : camera_sink.triggers())
                 {
                     const auto trigger_ptr = trigger.lock();
-                    if (std::ranges::any_of(trigger_ptr->commands(), [&](const auto& command) { return command.index() == camera_sink.number() && equals_any(command.type(), TriggerCommandType::UnderwaterCurrent, TriggerCommandType::Camera); }))
-                    {
-                        results.push_back(static_cast<float>(trigger_ptr->number()));
-                    }
+                    results.push_back(static_cast<float>(trigger_ptr->number()));
                 }
                 return results;
             });

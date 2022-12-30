@@ -5,8 +5,8 @@ using namespace DirectX::SimpleMath;
 namespace trview
 {
     CameraSink::CameraSink(const std::shared_ptr<IMesh>& mesh, const std::shared_ptr<ITextureStorage>& texture_storage, 
-        uint32_t number, const trlevel::tr_camera& camera, Type type, const std::vector<uint16_t>& inferred_rooms)
-        : _mesh(mesh), _number(number), _position(camera.position()), _room(camera.Room), _flag(camera.Flag), _inferred_rooms(inferred_rooms), _type(type)
+        uint32_t number, const trlevel::tr_camera& camera, Type type, const std::vector<uint16_t>& inferred_rooms, const std::vector<std::weak_ptr<ITrigger>>& triggers)
+        : _mesh(mesh), _number(number), _position(camera.position()), _room(camera.Room), _flag(camera.Flag), _inferred_rooms(inferred_rooms), _type(type), _triggers(triggers)
     {
         _camera_texture = texture_storage->lookup("camera_texture");
         _sink_texture = texture_storage->lookup("sink_texture");
@@ -99,6 +99,11 @@ namespace trview
     bool CameraSink::visible() const
     {
         return _visible;
+    }
+
+    std::vector<std::weak_ptr<ITrigger>> CameraSink::triggers() const
+    {
+        return _triggers;
     }
 
     uint16_t actual_room(const ICameraSink& camera_sink)

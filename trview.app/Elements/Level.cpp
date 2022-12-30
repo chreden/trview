@@ -1150,7 +1150,16 @@ namespace trview
                 }
             }
 
-            auto new_camera_sink = camera_sink_source(i, camera_sink, type, { std::from_range, inferred_rooms });
+            std::vector<std::weak_ptr<ITrigger>> relevant_triggers;
+            for (const auto& trigger : _triggers)
+            {
+                if (std::ranges::any_of(trigger->commands(), [&](const auto& command) { return command.index() == i && equals_any(command.type(), TriggerCommandType::UnderwaterCurrent, TriggerCommandType::Camera); }))
+                {
+                    relevant_triggers.push_back(trigger);
+                }
+            }
+
+            auto new_camera_sink = camera_sink_source(i, camera_sink, type, { std::from_range, inferred_rooms }, relevant_triggers);
             _camera_sinks.push_back(new_camera_sink);
 
             if (is_camera)
