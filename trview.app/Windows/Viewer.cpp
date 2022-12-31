@@ -545,6 +545,11 @@ namespace trview
                     const auto item = _level->item(_current_pick.index);
                     _ui->set_triggered_by(item ? item.value().triggers() : std::vector<std::weak_ptr<ITrigger>>{});
                 }
+                else if (_current_pick.type == PickResult::Type::CameraSink)
+                {
+                    const auto camera_sink = _level->camera_sink(_current_pick.index).lock();
+                    _ui->set_triggered_by(camera_sink ? camera_sink->triggers() : std::vector<std::weak_ptr<ITrigger>>{});
+                }
                 else 
                 {
                     _ui->set_triggered_by({});
