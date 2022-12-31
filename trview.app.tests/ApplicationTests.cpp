@@ -265,6 +265,7 @@ TEST(Application, WindowContentsResetBeforeViewerLoaded)
     auto [route_window_manager_ptr, route_window_manager] = create_mock<MockRouteWindowManager>();
     auto [lights_window_manager_ptr, lights_window_manager] = create_mock<MockLightsWindowManager>();
     auto [textures_window_manager_ptr, textures_window_manager] = create_mock<MockTexturesWindowManager>();
+    auto [camera_sink_window_manager_ptr, camera_sink_window_manager] = create_mock<MockCameraSinkWindowManager>();
     auto route = mock_shared<MockRoute>();
 
     std::vector<std::string> events;
@@ -285,6 +286,8 @@ TEST(Application, WindowContentsResetBeforeViewerLoaded)
     EXPECT_CALL(route_window_manager, set_rooms(A<const std::vector<std::weak_ptr<IRoom>>&>())).Times(1).WillOnce([&](auto) { events.push_back("route_rooms"); });
     EXPECT_CALL(route_window_manager, set_route(A<IRoute*>())).Times(1).WillOnce([&](auto) { events.push_back("route_route"); });
     EXPECT_CALL(lights_window_manager, set_lights(A<const std::vector<std::weak_ptr<ILight>>&>())).Times(1).WillOnce([&](auto) { events.push_back("lights_lights"); });
+    EXPECT_CALL(camera_sink_window_manager, set_camera_sinks).Times(1).WillOnce([&](auto) { events.push_back("camera_sinks_camera_sinks"); });
+    EXPECT_CALL(camera_sink_window_manager, set_triggers).Times(1).WillOnce([&](auto) { events.push_back("camera_sinks_triggers"); });
     EXPECT_CALL(*route, clear()).Times(1).WillOnce([&] { events.push_back("route_clear"); });
     EXPECT_CALL(*route, set_unsaved(false)).Times(1);
     EXPECT_CALL(textures_window_manager, set_texture_storage).Times(1).WillOnce([&](auto) { events.push_back("textures"); });
@@ -300,13 +303,14 @@ TEST(Application, WindowContentsResetBeforeViewerLoaded)
         .with_rooms_window_manager(std::move(rooms_window_manager_ptr))
         .with_lights_window_manager(std::move(lights_window_manager_ptr))
         .with_textures_window_manager(std::move(textures_window_manager_ptr))
+        .with_camera_sink_window_manager(std::move(camera_sink_window_manager_ptr))
         .build();
     application->open("test_path.tr2", ILevel::OpenMode::Full);
 
     ASSERT_TRUE(called.has_value());
     ASSERT_EQ(called.value(), "test_path.tr2");
 
-    ASSERT_EQ(events.size(), 19);
+    ASSERT_EQ(events.size(), 21);
     ASSERT_EQ(events.back(), "viewer");
 }
 
@@ -973,4 +977,21 @@ TEST(Application, TriggerSelectedFromCameraSinkWindow)
 
     application->open("test_path.tr2", ILevel::OpenMode::Full);
     camera_sink_window_manager.on_trigger_selected(mock_shared<MockTrigger>());
+}
+
+TEST(Application, CameraSinkSelectedFromTriggersWindow)
+{
+    auto sink = mock_shared<MockCameraSink>();
+    auto [triggers_window_manager_ptr, triggers_window_manager] = create_mock<MockTriggersWindowManager>();
+    auto [level_ptr, level] = create_mock<trview::mocks::MockLevel>();
+    EXPECT_CALL(level, set_selected_camera_sink).Times(1);
+    ON_CALL(level, camera_sinks).WillByDefault(testing::Return(std::vector<std::weak_ptr<ICameraSink>>{ sink }));
+
+    auto application = register_test_module()
+        .with_triggers_window_manager(std::move(triggers_window_manager_ptr))
+        .with_level_source([&](auto&&...) { return std::move(level_ptr); })
+        .build();
+
+    application->open("test_path.tr2", ILevel::OpenMode::Full);
+    triggers_window_manager.on_camera_sink_selected(0);
 }
