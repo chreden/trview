@@ -6,7 +6,7 @@ namespace trview
 {
     namespace mocks
     {
-        struct MockCameraSink : public ICameraSink
+        struct MockCameraSink : public ICameraSink, public std::enable_shared_from_this<MockCameraSink>
         {
             virtual ~MockCameraSink() = default;
             MOCK_METHOD(uint16_t, box_index, (), (const, override));
@@ -25,6 +25,30 @@ namespace trview
             MOCK_METHOD(Type, type, (), (const, override));
             MOCK_METHOD(bool, visible, (), (const, override));
             MOCK_METHOD(std::vector<std::weak_ptr<ITrigger>>, triggers, (), (const, override));
+
+            std::shared_ptr<MockCameraSink> with_number(uint32_t number)
+            {
+                ON_CALL(*this, number).WillByDefault(testing::Return(number));
+                return shared_from_this();
+            }
+
+            std::shared_ptr<MockCameraSink> with_triggers(const std::vector<std::weak_ptr<ITrigger>>& triggers)
+            {
+                ON_CALL(*this, triggers).WillByDefault(testing::Return(triggers));
+                return shared_from_this();
+            }
+
+            std::shared_ptr<MockCameraSink> with_type(ICameraSink::Type type)
+            {
+                ON_CALL(*this, type).WillByDefault(testing::Return(type));
+                return shared_from_this();
+            }
+
+            std::shared_ptr<MockCameraSink> with_room(uint16_t room)
+            {
+                ON_CALL(*this, room).WillByDefault(testing::Return(room));
+                return shared_from_this();
+            }
         };
     }
 }

@@ -17,9 +17,8 @@ namespace trview
             static inline const std::string list_panel = "Camera/Sink List";
             static inline const std::string details_panel = "Camera/Sink Details";
             static inline const std::string stats_listbox = "Stats";
-            static inline const std::string camera_listbox = "Camera";
-            static inline const std::string sink_listbox = "Sink";
             static inline const std::string triggers_list = "##triggeredby";
+            static inline const std::string type = "Type";
         };
 
         explicit CameraSinkWindow(const std::shared_ptr<IClipboard>& clipboard);

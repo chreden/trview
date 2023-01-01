@@ -68,6 +68,7 @@ namespace trview
     bool CameraSinkWindow::render_camera_sink_window()
     {
         bool stay_open = true;
+        ImGui::PushStyleVar(ImGuiStyleVar_WindowMinSize, ImVec2(485, 500));
         if (ImGui::Begin(_id.c_str(), &stay_open))
         {
             render_list();
@@ -75,6 +76,7 @@ namespace trview
             render_details();
         }
         ImGui::End();
+        ImGui::PopStyleVar();
         return stay_open;
     }
 
@@ -245,7 +247,7 @@ namespace trview
                 ImGui::Text(string_value.c_str());
             };
 
-            if (ImGui::BeginCombo("Type", to_string(selected->type()).c_str()))
+            if (ImGui::BeginCombo(Names::type.c_str(), to_string(selected->type()).c_str()))
             {
                 bool camera_selected = selected->type() == ICameraSink::Type::Camera;
                 if (ImGui::Selectable("Camera##type", &camera_selected))
