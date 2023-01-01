@@ -276,12 +276,12 @@ namespace trview
                 {
                     add_stat("Flag", selected->flag());
                     add_stat("Room", selected->room());
-                    add_stat("Persistent", selected->flag() & 0x1);
+                    add_stat("Persistent", selected->persistent());
                 }
                 else
                 {
-                    add_stat("Strength", selected->room());
-                    add_stat("Box Index", selected->flag());
+                    add_stat("Strength", selected->strength());
+                    add_stat("Box Index", selected->box_index());
                     std::string inferred_rooms;
                     auto rooms = selected->inferred_rooms();
                     for (auto i = 0u; i < rooms.size(); ++i)

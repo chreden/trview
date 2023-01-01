@@ -11,16 +11,19 @@ namespace trview
         explicit CameraSink(const std::shared_ptr<IMesh>& mesh, const std::shared_ptr<ITextureStorage>& texture_storage,
             uint32_t number, const trlevel::tr_camera& camera, Type type, const std::vector<uint16_t>& inferred_rooms, const std::vector<std::weak_ptr<ITrigger>>& triggers);
         virtual ~CameraSink() = default;
+        virtual uint16_t box_index() const override;
         virtual uint16_t flag() const override;
         virtual void get_transparent_triangles(ITransparencyBuffer& transparency, const ICamera& camera, const DirectX::SimpleMath::Color& colour) override;
         virtual std::vector<uint16_t> inferred_rooms() const override;
         virtual uint32_t number() const override;
+        virtual bool persistent() const override;
         virtual PickResult pick(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& direction) const override;
         virtual DirectX::SimpleMath::Vector3 position() const override;
         virtual void render(const ICamera& camera, const ILevelTextureStorage& texture_storage, const DirectX::SimpleMath::Color& colour) override;
         virtual uint16_t room() const override;
         virtual void set_type(Type type) override;
         virtual void set_visible(bool value) override;
+        virtual uint16_t strength() const override;
         virtual Type type() const override;
         virtual bool visible() const override;
         virtual std::vector<std::weak_ptr<ITrigger>> triggers() const override;

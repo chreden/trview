@@ -17,6 +17,11 @@ namespace trview
     {
     }
 
+    uint16_t CameraSink::box_index() const
+    {
+        return _flag;
+    }
+
     uint16_t CameraSink::flag() const
     {
         return _flag;
@@ -34,6 +39,11 @@ namespace trview
     uint32_t CameraSink::number() const
     {
         return _number;
+    }
+
+    bool CameraSink::persistent() const
+    {
+        return (_flag & 0x1) == 1;
     }
 
     PickResult CameraSink::pick(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& direction) const
@@ -86,6 +96,11 @@ namespace trview
     void CameraSink::set_visible(bool value)
     {
         _visible = value;
+    }
+
+    uint16_t CameraSink::strength() const
+    {
+        return _room;
     }
 
     CameraSink::Type CameraSink::type() const
