@@ -310,6 +310,13 @@ namespace trview
                     ImGui::TableSetupScrollFreeze(1, 1);
                     ImGui::TableHeadersRow();
 
+                    imgui_sort_weak(_triggered_by,
+                        {
+                            [](auto&& l, auto&& r) { return l.number() < r.number(); },
+                            [](auto&& l, auto&& r) { return std::tuple(l.room(), l.number()) < std::tuple(r.room(), r.number()); },
+                            [](auto&& l, auto&& r) { return std::tuple(trigger_type_name(l.type()), l.number()) < std::tuple(trigger_type_name(r.type()), r.number()); },
+                        }, _force_sort);
+
                     for (auto& trigger : _triggered_by)
                     {
                         auto trigger_ptr = trigger.lock();
@@ -353,11 +360,6 @@ namespace trview
     void CameraSinkWindow::set_current_room(uint32_t room)
     {
         _current_room = room;
-    }
-
-    void CameraSinkWindow::set_triggers(const std::vector<std::weak_ptr<ITrigger>>& triggers)
-    {
-        _all_triggers = triggers;
     }
 
     void CameraSinkWindow::setup_filters()

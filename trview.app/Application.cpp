@@ -146,7 +146,6 @@ namespace trview
         _lights_windows->set_level_version(_level->version());
         _lights_windows->set_lights(_level->lights());
         _camera_sink_windows->set_camera_sinks(_level->camera_sinks());
-        _camera_sink_windows->set_triggers(_level->triggers());
         if (open_mode == ILevel::OpenMode::Full)
         {
             _route->clear();

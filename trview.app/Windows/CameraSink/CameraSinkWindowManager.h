@@ -17,12 +17,10 @@ namespace trview
         virtual void set_camera_sinks(const std::vector<std::weak_ptr<ICameraSink>>& camera_sinks) override;
         virtual void set_selected_camera_sink(const std::weak_ptr<ICameraSink>& camera_sink) override;
         virtual void set_room(uint32_t room) override;
-        virtual void set_triggers(const std::vector<std::weak_ptr<ITrigger>>& triggers) override;
     private:
         ICameraSinkWindow::Source _camera_sink_window_source;
         std::vector<std::weak_ptr<ICameraSink>> _camera_sinks;
         std::weak_ptr<ICameraSink> _selected_camera_sink;
         uint32_t _current_room{ 0u };
-        std::vector<std::weak_ptr<ITrigger>> _all_triggers;
     };
 }

@@ -28,7 +28,6 @@ namespace trview
         virtual void set_camera_sinks(const std::vector<std::weak_ptr<ICameraSink>>& camera_sinks) override;
         virtual void set_selected_camera_sink(const std::weak_ptr<ICameraSink>& camera_sink) override;
         virtual void set_current_room(uint32_t room) override;
-        virtual void set_triggers(const std::vector<std::weak_ptr<ITrigger>>& triggers) override;
     private:
         bool render_camera_sink_window();
         void set_track_room(bool value);
@@ -51,7 +50,6 @@ namespace trview
         bool _scroll_to{ false };
         uint32_t _current_room{ 0u };
         bool _force_sort{ false };
-        std::vector<std::weak_ptr<ITrigger>> _all_triggers;
         std::vector<std::weak_ptr<ITrigger>> _triggered_by;
     };
 }

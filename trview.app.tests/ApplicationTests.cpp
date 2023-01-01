@@ -287,7 +287,6 @@ TEST(Application, WindowContentsResetBeforeViewerLoaded)
     EXPECT_CALL(route_window_manager, set_route(A<IRoute*>())).Times(1).WillOnce([&](auto) { events.push_back("route_route"); });
     EXPECT_CALL(lights_window_manager, set_lights(A<const std::vector<std::weak_ptr<ILight>>&>())).Times(1).WillOnce([&](auto) { events.push_back("lights_lights"); });
     EXPECT_CALL(camera_sink_window_manager, set_camera_sinks).Times(1).WillOnce([&](auto) { events.push_back("camera_sinks_camera_sinks"); });
-    EXPECT_CALL(camera_sink_window_manager, set_triggers).Times(1).WillOnce([&](auto) { events.push_back("camera_sinks_triggers"); });
     EXPECT_CALL(*route, clear()).Times(1).WillOnce([&] { events.push_back("route_clear"); });
     EXPECT_CALL(*route, set_unsaved(false)).Times(1);
     EXPECT_CALL(textures_window_manager, set_texture_storage).Times(1).WillOnce([&](auto) { events.push_back("textures"); });
@@ -310,7 +309,7 @@ TEST(Application, WindowContentsResetBeforeViewerLoaded)
     ASSERT_TRUE(called.has_value());
     ASSERT_EQ(called.value(), "test_path.tr2");
 
-    ASSERT_EQ(events.size(), 21);
+    ASSERT_EQ(events.size(), 20);
     ASSERT_EQ(events.back(), "viewer");
 }
 

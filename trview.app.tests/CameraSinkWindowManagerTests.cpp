@@ -55,7 +55,6 @@ TEST(CameraSinkWindowManager, WindowCreated)
     EXPECT_CALL(*window, set_current_room).Times(1);
     EXPECT_CALL(*window, set_selected_camera_sink).Times(1);
     EXPECT_CALL(*window, set_camera_sinks).Times(1);
-    EXPECT_CALL(*window, set_triggers).Times(1);
     manager->create_window();
 }
 
@@ -93,18 +92,6 @@ TEST(CameraSinkWindowManager, RoomForwarded)
     manager->create_window();
     EXPECT_CALL(*window, set_current_room).Times(1);
     manager->set_room(0);
-}
-
-TEST(CameraSinkWindowManager, TriggersForwarded)
-{
-    auto window = mock_shared<MockCameraSinkWindow>();
-    auto manager = register_test_module()
-        .with_window_source([&]() { return window; })
-        .build();
-
-    manager->create_window();
-    EXPECT_CALL(*window, set_triggers).Times(1);
-    manager->set_triggers({});
 }
 
 TEST(CameraSinkWindowManager, SelectedSinkRaised)
