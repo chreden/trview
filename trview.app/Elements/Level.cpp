@@ -1180,6 +1180,15 @@ namespace trview
         on_level_changed();
     }
 
+    std::optional<uint32_t> Level::selected_camera_sink() const
+    {
+        if (auto camera_sink = _selected_camera_sink.lock())
+        {
+            return camera_sink->number();
+        }
+        return std::nullopt;
+    }
+
     bool find_item_by_type_id(const ILevel& level, uint32_t type_id, Item& output_item)
     {
         const auto& items = level.items();

@@ -188,6 +188,12 @@ namespace trview
                 select_light(_level->light(selected_light.value()));
             }
 
+            auto selected_camera_sink = old_level->selected_camera_sink();
+            if (selected_camera_sink.has_value())
+            {
+                select_camera_sink(_level->camera_sink(selected_camera_sink.value()));
+            }
+
             select_room(old_level->selected_room());
 
             _viewer->set_target(old_target);

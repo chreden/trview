@@ -109,6 +109,7 @@ namespace trview
         virtual std::weak_ptr<ICameraSink> camera_sink(uint32_t index) const override;
         virtual std::vector<std::weak_ptr<ICameraSink>> camera_sinks() const override;
         virtual void set_show_camera_sinks(bool show) override;
+        virtual std::optional<uint32_t> selected_camera_sink() const override;
     private:
         void generate_rooms(const trlevel::ILevel& level, const IRoom::Source& room_source, const IMeshStorage& mesh_storage);
         void generate_triggers(const ITrigger::Source& trigger_source);

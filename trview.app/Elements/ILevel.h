@@ -81,6 +81,7 @@ namespace trview
         virtual std::vector<std::weak_ptr<IRoom>> rooms() const = 0;
         virtual std::optional<uint32_t> selected_item() const = 0;
         virtual std::optional<uint32_t> selected_light() const = 0;
+        virtual std::optional<uint32_t> selected_camera_sink() const = 0;
         virtual uint16_t selected_room() const = 0;
         virtual std::optional<uint32_t> selected_trigger() const = 0;
         // Set whether to render the alternate mode (the flipmap) or the regular room.
