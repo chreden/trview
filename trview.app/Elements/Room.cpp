@@ -1006,6 +1006,11 @@ namespace trview
         int32_t x = static_cast<int32_t>(offset.x);
         int32_t z = static_cast<int32_t>(offset.z);
         const std::size_t id = static_cast<std::size_t>(x) * room.num_z_sectors() + z;
-        return room.sectors()[id];
+        const auto sectors = room.sectors();
+        if (id < sectors.size())
+        {
+            return sectors[id];
+        }
+        return {};
     }
 }

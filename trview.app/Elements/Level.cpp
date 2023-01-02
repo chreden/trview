@@ -1138,7 +1138,7 @@ namespace trview
                 {
                     if (std::shared_ptr<ISector> sector = sector_from_point(*room, point))
                     {
-                        if (sector->is_portal())
+                        if (sector && sector->is_portal())
                         {
                             inferred_rooms.push_back(static_cast<uint16_t>(room->number()));
                         }
