@@ -778,6 +778,14 @@ namespace trview
                 BoundingBox::CreateMerged(_bounding_box, _bounding_box, entity_ptr->bounding_box());
             }
         }
+
+        for (const auto& camera_sink : _camera_sinks)
+        {
+            if (auto camera_sink_ptr = camera_sink.lock())
+            {
+                BoundingBox::CreateMerged(_bounding_box, _bounding_box, camera_sink_ptr->bounding_box());
+            }
+        }
     }
 
     bool Room::outside() const

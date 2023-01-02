@@ -17,6 +17,11 @@ namespace trview
     {
     }
 
+    DirectX::BoundingBox CameraSink::bounding_box() const
+    {
+        return BoundingBox(_position, Vector3(0.125f, 0.125f, 0.125f));
+    }
+
     uint16_t CameraSink::box_index() const
     {
         return _flag;

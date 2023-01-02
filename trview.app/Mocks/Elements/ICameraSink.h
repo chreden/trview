@@ -9,6 +9,7 @@ namespace trview
         struct MockCameraSink : public ICameraSink, public std::enable_shared_from_this<MockCameraSink>
         {
             virtual ~MockCameraSink() = default;
+            MOCK_METHOD(DirectX::BoundingBox, bounding_box, (), (const, override));
             MOCK_METHOD(uint16_t, box_index, (), (const, override));
             MOCK_METHOD(uint16_t, flag, (), (const, override));
             MOCK_METHOD(void, get_transparent_triangles, (ITransparencyBuffer&, const ICamera&, const DirectX::SimpleMath::Color&), (override));
