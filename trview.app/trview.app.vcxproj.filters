@@ -267,6 +267,12 @@
     <ClCompile Include="Windows\CameraSink\CameraSinkWindow.cpp">
       <Filter>Windows\CameraSink</Filter>
     </ClCompile>
+    <ClCompile Include="Lua\trview\trview.cpp">
+      <Filter>Lua\trview</Filter>
+    </ClCompile>
+    <ClCompile Include="Lua\Elements\Level\Lua_Level.cpp">
+      <Filter>Lua\Elements\Level</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera\Camera.h">
@@ -849,11 +855,17 @@
     <ClInclude Include="Mocks\Windows\ITexturesWindow.h">
       <Filter>Mocks\Windows</Filter>
     </ClInclude>
+    <ClInclude Include="Lua\trview\trview.h">
+      <Filter>Lua\trview</Filter>
+    <ClInclude>
     <ClInclude Include="Windows\CameraSink\CameraSinkWindow.h">
       <Filter>Windows\CameraSink</Filter>
     </ClInclude>
     <ClInclude Include="Mocks\Windows\ICameraSinkWindowManager.h">
       <Filter>Mocks\Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="Lua\Elements\Level\Lua_Level.h">
+      <Filter>Lua\Elements\Level</Filter>
     </ClInclude>
     <ClInclude Include="Mocks\Windows\ICameraSinkWindow.h">
       <Filter>Mocks\Windows</Filter>
@@ -981,6 +993,15 @@
     </Filter>
     <Filter Include="Windows\Textures">
       <UniqueIdentifier>{36446548-876c-425f-ad6c-ea61b062a959}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Lua\trview">
+      <UniqueIdentifier>{59194b9b-8854-4c78-9e5b-fba92e6aae93}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Lua\Elements">
+      <UniqueIdentifier>{6169b956-33a5-481f-9554-b71de754cd16}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Lua\Elements\Level">
+      <UniqueIdentifier>{874fd843-0324-4aef-a0ac-d6304389db43}</UniqueIdentifier>
     </Filter>
     <Filter Include="Elements\CameraSink">
       <UniqueIdentifier>{13d4d034-0684-4dd7-b379-accd1fcc5dca}</UniqueIdentifier>

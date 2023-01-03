@@ -1,5 +1,6 @@
 #include "Lua.h"
 #include <trview.common/Strings.h>
+#include "trview/trview.h"
 
 namespace trview
 {
@@ -254,6 +255,8 @@ namespace trview
 
         // utility
         lua_register ( L, "print", print );
+
+        lua::trview_register(L);
 
         state = L;
     }
