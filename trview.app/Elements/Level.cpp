@@ -8,6 +8,7 @@
 #include <trview.app/Elements/ITypeNameLookup.h>
 #include <trview.graphics/RasterizerStateStore.h>
 #include <format>
+#include <ranges>
 
 using namespace DirectX;
 using namespace DirectX::SimpleMath;
@@ -45,7 +46,8 @@ namespace trview
         const ITrigger::Source& trigger_source,
         const ILight::Source& light_source,
         const std::shared_ptr<ILog>& log,
-        const graphics::IBuffer::ConstantSource& buffer_source)
+        const graphics::IBuffer::ConstantSource& buffer_source,
+        const ICameraSink::Source& camera_sink_source)
         : _device(device), _version(level->get_version()), _texture_storage(level_texture_storage),
         _transparency(std::move(transparency_buffer)), _selection_renderer(std::move(selection_renderer)), _log(log),
         _floor_data(level->get_floor_data_all())
@@ -90,6 +92,7 @@ namespace trview
         generate_triggers(trigger_source);
         generate_entities(*level, *type_names, entity_source, ai_source, *mesh_storage);
         generate_lights(*level, light_source);
+        generate_camera_sinks(*level, camera_sink_source);
 
         for (auto& room : _rooms)
         {
@@ -339,6 +342,14 @@ namespace trview
             for (const auto& room : rooms)
             {
                 room.room.render_lights(camera, _selected_light);
+            }
+        }
+
+        if (has_flag(_render_filters, RenderFilter::CameraSinks))
+        {
+            for (const auto& room : rooms)
+            {
+                room.room.render_camera_sinks(camera);
             }
         }
 
@@ -657,7 +668,8 @@ namespace trview
                 filter_flag(PickFilter::StaticMeshes, has_flag(_render_filters, RenderFilter::Rooms)) |
                 filter_flag(PickFilter::AllGeometry, has_flag(_render_filters, RenderFilter::AllGeometry)) |
                 filter_flag(PickFilter::Triggers, has_flag(_render_filters, RenderFilter::Triggers)) |
-                filter_flag(PickFilter::Lights, has_flag(_render_filters, RenderFilter::Lights))));
+                filter_flag(PickFilter::Lights, has_flag(_render_filters, RenderFilter::Lights)) |
+                filter_flag(PickFilter::CameraSinks, has_flag(_render_filters, RenderFilter::CameraSinks))));
             if (!is_alternate_mismatch(room.room) && room.room.alternate_mode() == IRoom::AlternateMode::IsAlternate)
             {
                 auto& original_room = _rooms[room.room.alternate_room()];
@@ -861,6 +873,12 @@ namespace trview
         on_level_changed();
     }
 
+    void Level::set_selected_camera_sink(uint32_t number)
+    {
+        _selected_camera_sink = _camera_sinks[number];
+        on_level_changed();
+    }
+
     std::shared_ptr<ILevelTextureStorage> Level::texture_storage() const
     {
         return _texture_storage;
@@ -973,6 +991,13 @@ namespace trview
         on_level_changed();
     }
 
+    void Level::set_camera_sink_visibility(uint32_t index, bool state)
+    {
+        _camera_sinks[index]->set_visible(state);
+        _regenerate_transparency = true;
+        on_level_changed();
+    }
+
     void Level::deduplicate_triangles()
     {
         struct TriangleData
@@ -1068,6 +1093,100 @@ namespace trview
         {
             _models.insert(level.get_model(i).ID);
         }
+    }
+
+    std::weak_ptr<ICameraSink> Level::camera_sink(uint32_t index) const
+    {
+        if (index >= _camera_sinks.size())
+        {
+            return {};
+        }
+        return _camera_sinks[index];
+    }
+
+    std::vector<std::weak_ptr<ICameraSink>> Level::camera_sinks() const
+    {
+        std::vector<std::weak_ptr<ICameraSink>> camera_sinks;
+        std::transform(_camera_sinks.begin(), _camera_sinks.end(), std::back_inserter(camera_sinks), [](const auto& camera_sink) { return camera_sink; });
+        return camera_sinks;
+    }
+
+    void Level::generate_camera_sinks(const trlevel::ILevel& level, const ICameraSink::Source& camera_sink_source)
+    {
+        for (uint32_t i = 0u; i < level.num_cameras(); ++i)
+        {
+            const auto camera_sink = level.get_camera(i);
+            const Vector3 point = Vector3(
+                static_cast<float>(camera_sink.x),
+                static_cast<float>(camera_sink.y),
+                static_cast<float>(camera_sink.z)) / trlevel::Scale;
+
+            const bool is_camera = std::ranges::any_of(_triggers, [=](auto&& trigger)
+                {
+                    return std::ranges::any_of(trigger->commands(), [=](const Command& command)
+                        {
+                            return command.type() == TriggerCommandType::Camera && command.index() == i;
+                        });
+                });
+
+            std::deque<uint16_t> inferred_rooms;
+
+            const ICameraSink::Type type = is_camera ? ICameraSink::Type::Camera : ICameraSink::Type::Sink;
+            if (type == ICameraSink::Type::Sink)
+            {
+                for (const auto& room : _rooms)
+                {
+                    if (std::shared_ptr<ISector> sector = sector_from_point(*room, point))
+                    {
+                        if (sector && sector->is_portal())
+                        {
+                            inferred_rooms.push_back(static_cast<uint16_t>(room->number()));
+                        }
+                        else
+                        {
+                            inferred_rooms.push_front(static_cast<uint16_t>(room->number()));
+                        }
+                    }
+                }
+            }
+
+            std::vector<std::weak_ptr<ITrigger>> relevant_triggers;
+            for (const auto& trigger : _triggers)
+            {
+                if (std::ranges::any_of(trigger->commands(), [&](const auto& command) { return command.index() == i && equals_any(command.type(), TriggerCommandType::UnderwaterCurrent, TriggerCommandType::Camera); }))
+                {
+                    relevant_triggers.push_back(trigger);
+                }
+            }
+
+            auto new_camera_sink = camera_sink_source(i, camera_sink, type, { std::from_range, inferred_rooms }, relevant_triggers);
+            _camera_sinks.push_back(new_camera_sink);
+
+            if (is_camera)
+            {
+                _rooms[camera_sink.Room]->add_camera_sink(new_camera_sink);
+            }
+            else
+            {
+                std::ranges::for_each(inferred_rooms, [&](auto&& r) { _rooms[r]->add_camera_sink(new_camera_sink); });
+            }
+        }
+    }
+
+    void Level::set_show_camera_sinks(bool show)
+    {
+        _render_filters = set_flag(_render_filters, RenderFilter::CameraSinks, show);
+        _regenerate_transparency = true;
+        on_level_changed();
+    }
+
+    std::optional<uint32_t> Level::selected_camera_sink() const
+    {
+        if (auto camera_sink = _selected_camera_sink.lock())
+        {
+            return camera_sink->number();
+        }
+        return std::nullopt;
     }
 
     bool find_item_by_type_id(const ILevel& level, uint32_t type_id, Item& output_item)

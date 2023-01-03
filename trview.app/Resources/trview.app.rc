@@ -70,6 +70,7 @@ BEGIN
         MENUITEM "Roo&ms\tCtrl+M",              ID_WINDOWS_ROOMS
         MENUITEM "&Route\tCtrl+R",              ID_WINDOWS_ROUTE
         MENUITEM "&Lights\tCtrl+L"              ID_WINDOWS_LIGHTS
+        MENUITEM "Camera/Sink"                  ID_WINDOWS_CAMERA_SINK
         MENUITEM "Log"                          ID_WINDOWS_LOG
         MENUITEM "Textures"                     ID_WINDOWS_TEXTURES
         MENUITEM SEPARATOR
@@ -241,6 +242,8 @@ TOMB2_ICON          TEXTURE                     "Files\\tomb2.png"
 TOMB3_ICON          TEXTURE                     "Files\\tomb3.png"
 TOMB4_ICON          TEXTURE                     "Files\\tomb4.png"
 TOMB5_ICON          TEXTURE                     "Files\\tomb5.png"
+CAMERA_TEXTURE      TEXTURE                     "Files\\camera.png"
+SINK_TEXTURE        TEXTURE                     "Files\\sink.png"
 
 
 /////////////////////////////////////////////////////////////////////////////

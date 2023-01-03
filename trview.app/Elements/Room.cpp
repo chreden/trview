@@ -137,6 +137,24 @@ namespace trview
             }
         }
 
+        if (has_flag(filters, PickFilter::CameraSinks) && pick_results.empty())
+        {
+            for (const auto& camera_sink : _camera_sinks)
+            {
+                auto camera_sink_ptr = camera_sink.lock();
+                if (!camera_sink_ptr || !camera_sink_ptr->visible())
+                {
+                    continue;
+                }
+
+                auto camera_sink_result = camera_sink_ptr->pick(position, direction);
+                if (camera_sink_result.hit)
+                {
+                    pick_results.push_back(camera_sink_result);
+                }
+            }
+        }
+
         if (has_flag(filters, PickFilter::Triggers) && pick_results.empty())
         {
             for (const auto& trigger_pair : _triggers)
@@ -259,6 +277,17 @@ namespace trview
                 {
                     light_ptr->render_direction(camera, *_texture_storage);
                 }
+            }
+        }
+    }
+
+    void Room::render_camera_sinks(const ICamera& camera)
+    {
+        for (const auto& camera_sink : _camera_sinks)
+        {
+            if (auto camera_sink_ptr = camera_sink.lock())
+            {
+                camera_sink_ptr->render(camera, *_texture_storage, Colour::White);
             }
         }
     }
@@ -408,6 +437,11 @@ namespace trview
             }
             light_ptr->set_position(centre() + Vector3(0, 0, 0.25f * suns));
         }
+    }
+
+    void Room::add_camera_sink(const std::weak_ptr<ICameraSink>& camera_sink)
+    {
+        _camera_sinks.push_back(camera_sink);
     }
 
     void Room::generate_sectors(const trlevel::ILevel& level, const trlevel::tr3_room& room, const ISector::Source& sector_source)
@@ -744,6 +778,14 @@ namespace trview
                 BoundingBox::CreateMerged(_bounding_box, _bounding_box, entity_ptr->bounding_box());
             }
         }
+
+        for (const auto& camera_sink : _camera_sinks)
+        {
+            if (auto camera_sink_ptr = camera_sink.lock())
+            {
+                BoundingBox::CreateMerged(_bounding_box, _bounding_box, camera_sink_ptr->bounding_box());
+            }
+        }
     }
 
     bool Room::outside() const
@@ -955,5 +997,28 @@ namespace trview
     void Room::set_visible(bool visible)
     {
         _visible = visible;
+    }
+
+    std::shared_ptr<ISector> sector_from_point(const IRoom& room, const Vector3& point)
+    {
+        const auto info = room.info();
+        const auto extents = Vector3(room.num_x_sectors(), (info.yBottom - info.yTop) / trlevel::Scale, room.num_z_sectors()) * 0.5f;
+        const auto box = DirectX::BoundingBox(room.centre(), extents);
+        if (!box.Contains(point))
+        {
+            return nullptr;
+        }
+
+        const auto min_bounds = room.centre() - extents;
+        const auto offset = point - min_bounds;
+        int32_t x = static_cast<int32_t>(offset.x);
+        int32_t z = static_cast<int32_t>(offset.z);
+        const std::size_t id = static_cast<std::size_t>(x) * room.num_z_sectors() + z;
+        const auto sectors = room.sectors();
+        if (id < sectors.size())
+        {
+            return sectors[id];
+        }
+        return {};
     }
 }

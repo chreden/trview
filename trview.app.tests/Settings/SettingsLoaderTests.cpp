@@ -649,3 +649,28 @@ TEST(SettingsLoader, WindowPlacementNotSavedIfMissing)
     loader->save_user_settings(settings);
     EXPECT_THAT(output, Not(HasSubstr("window_placement")));
 }
+
+TEST(SettingsLoader, CameraSinkStartupLoaded)
+{
+    auto loader = setup_setting("{\"camera_sink_startup\":false}");
+    auto settings = loader->load_user_settings();
+    ASSERT_EQ(settings.camera_sink_startup, false);
+
+    auto loader_true = setup_setting("{\"camera_sink_startup\":true}");
+    auto settings_true = loader_true->load_user_settings();
+    ASSERT_EQ(settings_true.camera_sink_startup, true);
+}
+
+TEST(SettingsLoader, CameraSinkStartupSaved)
+{
+    std::string output;
+    auto loader = setup_save_setting(output);
+    UserSettings settings;
+    settings.camera_sink_startup = false;
+    loader->save_user_settings(settings);
+    EXPECT_THAT(output, HasSubstr("\"camera_sink_startup\":false"));
+
+    settings.camera_sink_startup = true;
+    loader->save_user_settings(settings);
+    EXPECT_THAT(output, HasSubstr("\"camera_sink_startup\":true"));
+}

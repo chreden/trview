@@ -48,6 +48,8 @@
 #include "Windows/IViewer.h"
 #include "Windows/ITexturesWindowManager.h"
 #include "Windows/ITexturesWindow.h"
+#include "Windows/ICameraSinkWindow.h"
+#include "Windows/ICameraSinkWindowManager.h"
 
 namespace trview
 {
@@ -193,5 +195,11 @@ namespace trview
 
         MockTexturesWindow::MockTexturesWindow() {}
         MockTexturesWindow::~MockTexturesWindow() {}
+
+        MockCameraSinkWindowManager::MockCameraSinkWindowManager() {}
+        MockCameraSinkWindowManager::~MockCameraSinkWindowManager() {}
+
+        MockCameraSinkWindow::MockCameraSinkWindow() {}
+        MockCameraSinkWindow::~MockCameraSinkWindow() {}
     }
 }

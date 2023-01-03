@@ -96,6 +96,7 @@ namespace trview
         virtual void set_target(const DirectX::SimpleMath::Vector3& target) override;
         virtual void select_sector(const std::weak_ptr<ISector>& sector) override;
         virtual void set_scene_changed() override;
+        virtual void select_camera_sink(const std::weak_ptr<ICameraSink>& camera_sink) override;
     private:
         void initialise_input();
         void toggle_highlight();
@@ -131,6 +132,7 @@ namespace trview
         void register_lua();
         void apply_camera_settings();
         void set_sector_highlight(const std::shared_ptr<ISector>& sector);
+        void set_show_camera_sinks(bool show);
 
         const std::shared_ptr<graphics::IDevice> _device;
         const std::shared_ptr<IShortcuts>& _shortcuts;

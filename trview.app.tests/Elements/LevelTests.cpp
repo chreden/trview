@@ -11,6 +11,7 @@
 #include <trview.app/Mocks/Elements/IRoom.h>
 #include <trview.app/Mocks/Elements/ITrigger.h>
 #include <trview.app/Mocks/Elements/ILight.h>
+#include <trview.app/Mocks/Elements/ICameraSink.h>
 #include <trview.app/Mocks/Camera/ICamera.h>
 #include <trview.graphics/mocks/D3D/ID3D11DeviceContext.h>
 #include <trview.graphics/mocks/IShader.h>
@@ -40,7 +41,7 @@ namespace
             std::shared_ptr<graphics::IShaderStorage> shader_storage{ mock_shared<MockShaderStorage>() };
             std::unique_ptr<trlevel::ILevel> level{ mock_unique<trlevel::mocks::MockLevel>() };
             std::shared_ptr<ILevelTextureStorage> level_texture_storage{ mock_shared<MockLevelTextureStorage>() };
-            std::unique_ptr<IMeshStorage> mesh_storage { mock_unique<MockMeshStorage>() };
+            std::unique_ptr<IMeshStorage> mesh_storage{ mock_unique<MockMeshStorage>() };
             std::unique_ptr<ITransparencyBuffer> transparency_buffer{ mock_unique<MockTransparencyBuffer>() };
             std::unique_ptr<ISelectionRenderer> selection_renderer{ mock_unique<MockSelectionRenderer>() };
             std::shared_ptr<ITypeNameLookup> type_name_lookup{ mock_shared<MockTypeNameLookup>() };
@@ -51,11 +52,12 @@ namespace
             ILight::Source light_source{ [](auto&&...) { return std::make_shared<MockLight>(); } };
             std::shared_ptr<ILog> log{ mock_shared<MockLog>() };
             graphics::IBuffer::ConstantSource buffer_source{ [](auto&&...) { return mock_unique<MockBuffer>(); } };
+            ICameraSink::Source camera_sink_source{ [](auto&&...) { return mock_shared<MockCameraSink>(); } };
 
             std::unique_ptr<Level> build()
             {
                 return std::make_unique<Level>(device, shader_storage, std::move(level), level_texture_storage, std::move(mesh_storage), std::move(transparency_buffer),
-                    std::move(selection_renderer), type_name_lookup, entity_source, ai_source, room_source, trigger_source, light_source, log, buffer_source);
+                    std::move(selection_renderer), type_name_lookup, entity_source, ai_source, room_source, trigger_source, light_source, log, buffer_source, camera_sink_source);
             }
 
             test_module& with_type_name_lookup(const std::shared_ptr<ITypeNameLookup>& type_name_lookup)
@@ -734,4 +736,70 @@ TEST(Level, SetShowRoomsRaisesLevelChangedEvent)
 
     level->set_show_rooms(true);
     ASSERT_EQ(times_called, 1u);
+}
+
+TEST(Level, CameraSinksNotRenderedWhenDisabled)
+{
+    auto [mock_level_ptr, mock_level] = create_mock<trlevel::mocks::MockLevel>();
+    EXPECT_CALL(mock_level, num_rooms()).WillRepeatedly(Return(1));
+    auto room = mock_shared<MockRoom>();
+    ON_CALL(*room, visible).WillByDefault(Return(true));
+    ON_CALL(*room, alternate_mode).WillByDefault(Return(IRoom::AlternateMode::IsAlternate));
+
+    auto device = mock_shared<MockDevice>();
+    Microsoft::WRL::ComPtr<ID3D11DeviceContext> context{ new NiceMock<MockD3D11DeviceContext>() };
+    EXPECT_CALL(*device, context).WillRepeatedly(Return(context));
+
+    NiceMock<MockShader> shader;
+    auto shader_storage = mock_shared<MockShaderStorage>();
+    EXPECT_CALL(*shader_storage, get).WillRepeatedly(Return(&shader));
+
+    EXPECT_CALL(*room, render(A<const ICamera&>(), A<IRoom::SelectionMode>(), set_flag(RenderFilter::Default, RenderFilter::CameraSinks, false), A<const std::unordered_set<uint32_t>&>())).Times(1);
+    EXPECT_CALL(*room, render_contained(A<const ICamera&>(), A<IRoom::SelectionMode>(), set_flag(RenderFilter::Default, RenderFilter::CameraSinks, false))).Times(1);
+
+    auto level = register_test_module()
+        .with_device(device)
+        .with_shader_storage(shader_storage)
+        .with_level(std::move(mock_level_ptr))
+        .with_room_source([&](auto&&...) { return room; })
+        .build();
+
+    level->set_alternate_mode(true);
+    level->set_show_camera_sinks(false);
+
+    NiceMock<MockCamera> camera;
+    level->render(camera, false);
+}
+
+TEST(Level, CameraSinksRenderedWhenEnabled)
+{
+    auto [mock_level_ptr, mock_level] = create_mock<trlevel::mocks::MockLevel>();
+    EXPECT_CALL(mock_level, num_rooms()).WillRepeatedly(Return(1));
+    auto room = mock_shared<MockRoom>();
+    ON_CALL(*room, visible).WillByDefault(Return(true));
+    ON_CALL(*room, alternate_mode).WillByDefault(Return(IRoom::AlternateMode::IsAlternate));
+
+    auto device = mock_shared<MockDevice>();
+    Microsoft::WRL::ComPtr<ID3D11DeviceContext> context{ new NiceMock<MockD3D11DeviceContext>() };
+    EXPECT_CALL(*device, context).WillRepeatedly(Return(context));
+
+    NiceMock<MockShader> shader;
+    auto shader_storage = mock_shared<MockShaderStorage>();
+    EXPECT_CALL(*shader_storage, get).WillRepeatedly(Return(&shader));
+
+    EXPECT_CALL(*room, render(A<const ICamera&>(), A<IRoom::SelectionMode>(), set_flag(RenderFilter::Default, RenderFilter::CameraSinks, true), A<const std::unordered_set<uint32_t>&>())).Times(1);
+    EXPECT_CALL(*room, render_contained(A<const ICamera&>(), A<IRoom::SelectionMode>(), set_flag(RenderFilter::Default, RenderFilter::CameraSinks, true))).Times(1);
+
+    auto level = register_test_module()
+        .with_device(device)
+        .with_shader_storage(shader_storage)
+        .with_level(std::move(mock_level_ptr))
+        .with_room_source([&](auto&&...) { return room; })
+        .build();
+
+    NiceMock<MockCamera> camera;
+
+    level->set_alternate_mode(true);
+    level->set_show_camera_sinks(true);
+    level->render(camera, false);
 }

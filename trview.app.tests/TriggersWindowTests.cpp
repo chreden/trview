@@ -306,3 +306,23 @@ TEST(TriggersWindow, ClickStatShowsBubble)
     imgui.click_element(id);
     ASSERT_NE(imgui.find_window("##Tooltip_00"), nullptr);
 }
+
+TEST(TriggersWindow, CameraSinkSelectedRaised)
+{
+    auto window = register_test_module().build();
+
+    std::optional<uint32_t> raised;
+    auto token = window->on_camera_sink_selected += [&raised](const auto& index) { raised = index; };
+
+    auto trigger = mock_shared<MockTrigger>()->with_commands({ Command(0, TriggerCommandType::Camera, 100) });
+    window->set_triggers({ trigger });
+    window->set_selected_trigger(trigger);
+
+    TestImgui imgui([&]() { window->render(); });
+    imgui.click_element_with_hover(imgui.id("Triggers 0")
+        .push_child(TriggersWindow::Names::details_panel)
+        .push(TriggersWindow::Names::commands_list).id("Camera##0"));
+
+    ASSERT_TRUE(raised);
+    ASSERT_EQ(raised.value(), 100u);
+}

@@ -416,3 +416,31 @@ TEST(ViewerUI, SetFovUpdatesSettingsWindow)
     ui->set_settings(settings);
 }
 
+TEST(ViewerUI, OnCameraSinkStartupEventRaised)
+{
+    auto [settings_window_ptr, settings_window] = create_mock<MockSettingsWindow>();
+    auto ui = register_test_module().with_settings_window(std::move(settings_window_ptr)).build();
+
+    std::optional<UserSettings> settings;
+    auto token = ui->on_settings += [&](auto raised)
+    {
+        settings = raised;
+    };
+
+    settings_window.on_camera_sink_startup(true);
+
+    ASSERT_TRUE(settings);
+    ASSERT_TRUE(settings.value().camera_sink_startup);
+}
+
+TEST(ViewerUI, SetCameraSinkStartupUpdatesSettingsWindow)
+{
+    auto [settings_window_ptr, settings_window] = create_mock<MockSettingsWindow>();
+    EXPECT_CALL(settings_window, set_camera_sink_startup(true)).Times(1);
+
+    auto ui = register_test_module().with_settings_window(std::move(settings_window_ptr)).build();
+
+    UserSettings settings{};
+    settings.camera_sink_startup = true;
+    ui->set_settings(settings);
+}

@@ -51,13 +51,14 @@ namespace trview
         std::unique_ptr<IImGuiBackend> imgui_backend,
         std::unique_ptr<ILightsWindowManager> lights_window_manager,
         std::unique_ptr<ILogWindowManager> log_window_manager,
-        std::unique_ptr<ITexturesWindowManager> textures_window_manager)
+        std::unique_ptr<ITexturesWindowManager> textures_window_manager,
+        std::unique_ptr<ICameraSinkWindowManager> camera_sink_window_manager)
         : MessageHandler(application_window), _instance(GetModuleHandle(nullptr)),
         _file_menu(std::move(file_menu)), _update_checker(std::move(update_checker)), _view_menu(window()), _settings_loader(settings_loader), _trlevel_source(trlevel_source),
         _viewer(std::move(viewer)), _route_source(route_source), _route(route_source()), _shortcuts(shortcuts), _items_windows(std::move(items_window_manager)),
         _triggers_windows(std::move(triggers_window_manager)), _route_window(std::move(route_window_manager)), _rooms_windows(std::move(rooms_window_manager)), _level_source(level_source),
         _dialogs(dialogs), _files(files), _timer(default_time_source()), _imgui_backend(std::move(imgui_backend)), _lights_windows(std::move(lights_window_manager)), _log_windows(std::move(log_window_manager)),
-        _textures_windows(std::move(textures_window_manager))
+        _textures_windows(std::move(textures_window_manager)), _camera_sink_windows(std::move(camera_sink_window_manager))
     {
         SetWindowLongPtr(window(), GWLP_USERDATA, reinterpret_cast<LONG_PTR>(_imgui_backend.get()));
 
@@ -75,6 +76,7 @@ namespace trview
         setup_rooms_windows();
         setup_route_window();
         setup_lights_windows();
+        setup_camera_sink_windows();
         setup_viewer(*startup_options);
 
         register_lua();
@@ -143,6 +145,7 @@ namespace trview
         _route_window->set_rooms(_level->rooms());
         _lights_windows->set_level_version(_level->version());
         _lights_windows->set_lights(_level->lights());
+        _camera_sink_windows->set_camera_sinks(_level->camera_sinks());
         if (open_mode == ILevel::OpenMode::Full)
         {
             _route->clear();
@@ -183,6 +186,12 @@ namespace trview
             if (selected_light.has_value())
             {
                 select_light(_level->light(selected_light.value()));
+            }
+
+            auto selected_camera_sink = old_level->selected_camera_sink();
+            if (selected_camera_sink.has_value())
+            {
+                select_camera_sink(_level->camera_sink(selected_camera_sink.value()));
             }
 
             select_room(old_level->selected_room());
@@ -312,6 +321,7 @@ namespace trview
             for (const auto& trigger : _level->triggers()) { set_trigger_visibility(trigger, true); }
             for (const auto& light : _level->lights()) { set_light_visibility(light, true); }
             for (const auto& room : _level->rooms()) { set_room_visibility(room, true); }
+            for (const auto& camera_sink : _level->camera_sinks()) { set_camera_sink_visibility(camera_sink, true); }
         };
     }
 
@@ -325,9 +335,11 @@ namespace trview
         _token_store += _viewer->on_light_selected += [this](const auto& light) { select_light(light); };
         _token_store += _viewer->on_light_visibility += [this](const auto& light, bool value) { set_light_visibility(light, value); };
         _token_store += _viewer->on_room_visibility += [this](const auto& room, bool value) { set_room_visibility(room, value); };
+        _token_store += _viewer->on_camera_sink_visibility += [this](const auto& camera_sink, bool value) { set_camera_sink_visibility(camera_sink, value); };
         _token_store += _viewer->on_waypoint_added += [this](const auto& position, const auto& normal, auto room, auto type, auto index) { add_waypoint(position, normal, room, type, index); };
         _token_store += _viewer->on_waypoint_selected += [this](auto index) { select_waypoint(index); };
         _token_store += _viewer->on_waypoint_removed += [this](auto index) { remove_waypoint(index); };
+        _token_store += _viewer->on_camera_sink_selected += [this](const auto& camera_sink) { select_camera_sink(camera_sink); };
         _token_store += _viewer->on_settings += [this](auto&& settings)
         {
             _settings = settings;
@@ -379,6 +391,19 @@ namespace trview
             if (auto trigger_ptr = trigger.lock())
             {
                 add_waypoint(trigger_ptr->position(), Vector3::Down, trigger_ptr->room(), IWaypoint::Type::Trigger, trigger_ptr->number());
+            }
+        };
+        _token_store += _triggers_windows->on_camera_sink_selected += [this](const auto& camera_sink)
+        {
+            if (!_level)
+            {
+                return;
+            }
+
+            const auto sinks = _level->camera_sinks();
+            if (camera_sink < sinks.size())
+            {
+                select_camera_sink(sinks[camera_sink]);
             }
         };
     }
@@ -513,6 +538,7 @@ namespace trview
         _rooms_windows->set_room(room);
         _triggers_windows->set_room(room);
         _lights_windows->set_room(room);
+        _camera_sink_windows->set_room(room);
     }
 
     void Application::select_trigger(const std::weak_ptr<ITrigger>& trigger)
@@ -638,6 +664,22 @@ namespace trview
         }
     }
 
+    void Application::set_camera_sink_visibility(const std::weak_ptr<ICameraSink>& camera_sink, bool visible)
+    {
+        if (!_level)
+        {
+            return;
+        }
+
+        if (const auto camera_sink_ptr = camera_sink.lock())
+        {
+            if (camera_sink_ptr->visible() != visible)
+            {
+                _level->set_camera_sink_visibility(camera_sink_ptr->number(), visible);
+            }
+        }
+    }
+
     void Application::select_sector(const std::weak_ptr<ISector>& sector)
     {
         _viewer->select_sector(sector);
@@ -703,6 +745,7 @@ namespace trview
         _lights_windows->render();
         _log_windows->render();
         _textures_windows->render();
+        _camera_sink_windows->render();
 
         ImGui::PopFont();
         ImGui::Render();
@@ -775,6 +818,18 @@ namespace trview
         _recent_route_prompted = true;
     }
 
+    void Application::setup_camera_sink_windows()
+    {
+        if (_settings.camera_sink_startup)
+        {
+            _camera_sink_windows->create_window();
+        }
+        _token_store += _camera_sink_windows->on_camera_sink_selected += [this](const auto& sink) {  select_camera_sink(sink); };
+        _token_store += _camera_sink_windows->on_camera_sink_visibility += [this](const auto& cs, bool value) { set_camera_sink_visibility(cs, value); };
+        _token_store += _camera_sink_windows->on_trigger_selected += [this](const auto& trigger) { select_trigger(trigger); };
+        _token_store += _camera_sink_windows->on_camera_sink_type_changed += [this]() { _viewer->set_scene_changed(); };
+    }
+
     void Application::save_window_placement()
     {
         WINDOWPLACEMENT placement{};
@@ -788,5 +843,24 @@ namespace trview
                 placement.rcNormalPosition.left, placement.rcNormalPosition.top, placement.rcNormalPosition.right, placement.rcNormalPosition.bottom
             };
         }
+    }
+
+    void Application::select_camera_sink(const std::weak_ptr<ICameraSink>& camera_sink)
+    {
+        if (!_level)
+        {
+            return;
+        }
+
+        auto camera_sink_ptr = camera_sink.lock();
+        if (!camera_sink_ptr)
+        {
+            return;
+        }
+
+        select_room(camera_sink_ptr->room());
+        _level->set_selected_camera_sink(camera_sink_ptr->number());
+        _viewer->select_camera_sink(camera_sink);
+        _camera_sink_windows->set_selected_camera_sink(camera_sink);
     }
 }

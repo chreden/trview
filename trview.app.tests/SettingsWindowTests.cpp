@@ -774,3 +774,35 @@ TEST(SettingsWindow, ClickingResetFovRaisesEvent)
     ASSERT_TRUE(received_value.has_value());
     ASSERT_EQ(received_value.value(), 45.0f);
 }
+
+TEST(SettingsWindow, SetCameraSinkWindowOnStartupUpdatesCheckbox)
+{
+    SettingsWindow window;
+    window.toggle_visibility();
+
+    TestImgui imgui([&]() { window.render(); });
+    ASSERT_FALSE(imgui.status_flags(imgui.id("Settings").push("TabBar").push("General").id(SettingsWindow::Names::camera_sink_startup)) & ImGuiItemStatusFlags_Checked);
+
+    window.set_camera_sink_startup(true);
+    imgui.render();
+    ASSERT_TRUE(imgui.status_flags(imgui.id("Settings").push("TabBar").push("General").id(SettingsWindow::Names::camera_sink_startup)) & ImGuiItemStatusFlags_Checked);
+}
+
+TEST(SettingsWindow, ClickingCameraSinkWindowOnStartupRaisesEvent)
+{
+    SettingsWindow window;
+    window.toggle_visibility();
+
+    std::optional<bool> received_value;
+    auto token = window.on_camera_sink_startup += [&](bool value)
+    {
+        received_value = value;
+    };
+
+    TestImgui imgui([&]() { window.render(); });
+    ASSERT_FALSE(imgui.status_flags(imgui.id("Settings").push("TabBar").push("General").id(SettingsWindow::Names::camera_sink_startup)) & ImGuiItemStatusFlags_Checked);
+    imgui.click_element(imgui.id("Settings").push("TabBar").push("General").id(SettingsWindow::Names::camera_sink_startup));
+    ASSERT_TRUE(imgui.status_flags(imgui.id("Settings").push("TabBar").push("General").id(SettingsWindow::Names::camera_sink_startup)) & ImGuiItemStatusFlags_Checked);
+    ASSERT_EQ(received_value.has_value(), true);
+    ASSERT_TRUE(received_value.value());
+}

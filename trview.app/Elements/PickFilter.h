@@ -14,6 +14,7 @@ namespace trview
         AllGeometry = 0x8,
         StaticMeshes = 0x10,
         Lights = 0x20,
+        CameraSinks = 0x40,
         All = 0xffffffff,
         Default = All & ~(AllGeometry)
     };

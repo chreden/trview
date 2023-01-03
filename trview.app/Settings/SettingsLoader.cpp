@@ -86,6 +86,7 @@ namespace trview
             read_attribute(json, settings.route_startup, "routestartup");
             read_attribute(json, settings.recent_routes, "recentroutes");
             read_attribute(json, settings.fov, "fov");
+            read_attribute(json, settings.camera_sink_startup, "camera_sink_startup");
             read_attribute(json, settings.window_placement, "window_placement");
 
             settings.recent_files.resize(std::min<std::size_t>(settings.recent_files.size(), settings.max_recent_files));
@@ -146,6 +147,7 @@ namespace trview
             json["routestartup"] = settings.route_startup;
             json["recentroutes"] = settings.recent_routes;
             json["fov"] = settings.fov;
+            json["camera_sink_startup"] = settings.camera_sink_startup;
             if (settings.window_placement)
             {
                 json["window_placement"] = settings.window_placement.value();

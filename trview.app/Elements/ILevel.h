@@ -6,6 +6,7 @@
 #include <trview.app/Elements/IRoom.h>
 #include <trview.app/Elements/IEntity.h>
 #include <trview.app/Elements/ILight.h>
+#include "CameraSink/ICameraSink.h"
 #include <trview.common/Event.h>
 #include "../UI/MapColours.h"
 
@@ -41,6 +42,8 @@ namespace trview
         /// Determines if there are any flipmaps in the level.
         /// @returns True if there are flipmaps.
         virtual bool any_alternates() const = 0;
+        virtual std::weak_ptr<ICameraSink> camera_sink(uint32_t index) const = 0;
+        virtual std::vector<std::weak_ptr<ICameraSink>> camera_sinks() const = 0;
         virtual std::string filename() const = 0;
         virtual bool has_model(uint32_t type_id) const = 0;
         virtual std::vector<uint16_t> floor_data() const = 0;
@@ -78,6 +81,7 @@ namespace trview
         virtual std::vector<std::weak_ptr<IRoom>> rooms() const = 0;
         virtual std::optional<uint32_t> selected_item() const = 0;
         virtual std::optional<uint32_t> selected_light() const = 0;
+        virtual std::optional<uint32_t> selected_camera_sink() const = 0;
         virtual uint16_t selected_room() const = 0;
         virtual std::optional<uint32_t> selected_trigger() const = 0;
         // Set whether to render the alternate mode (the flipmap) or the regular room.
@@ -93,6 +97,7 @@ namespace trview
         virtual void set_map_colours(const MapColours& map_colours) = 0;
         virtual void set_selected_trigger(uint32_t number) = 0;
         virtual void set_selected_light(uint32_t number) = 0;
+        virtual void set_selected_camera_sink(uint32_t number) = 0;
         virtual void set_show_geometry(bool show) = 0;
         virtual void set_show_triggers(bool show) = 0;
         virtual void set_show_water(bool show) = 0;
@@ -101,12 +106,14 @@ namespace trview
         virtual void set_show_lights(bool show) = 0;
         virtual void set_show_items(bool show) = 0;
         virtual void set_show_rooms(bool show) = 0;
+        virtual void set_show_camera_sinks(bool show) = 0;
         virtual void set_trigger_visibility(uint32_t index, bool state) = 0;
         virtual void set_neighbour_depth(uint32_t depth) = 0;
         virtual void set_selected_room(uint16_t index) = 0;
         virtual void set_selected_item(uint32_t index) = 0;
         virtual void set_light_visibility(uint32_t index, bool state) = 0;
         virtual void set_room_visibility(uint32_t index, bool state) = 0;
+        virtual void set_camera_sink_visibility(uint32_t index, bool state) = 0;
         virtual bool show_geometry() const = 0;
         virtual bool show_lights() const = 0;
         virtual bool show_triggers() const = 0;

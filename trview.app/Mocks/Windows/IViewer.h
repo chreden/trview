@@ -20,6 +20,7 @@ namespace trview
             MOCK_METHOD(void, select_sector, (const std::weak_ptr<ISector>&), (override));
             MOCK_METHOD(void, select_trigger, (const std::weak_ptr<ITrigger>&), (override));
             MOCK_METHOD(void, select_waypoint, (const IWaypoint&), (override));
+            MOCK_METHOD(void, select_camera_sink, (const std::weak_ptr<ICameraSink>&), (override));
             MOCK_METHOD(void, set_camera_mode, (CameraMode), (override));
             MOCK_METHOD(void, set_route, (const std::shared_ptr<IRoute>&), (override));
             MOCK_METHOD(void, set_show_compass, (bool), (override));

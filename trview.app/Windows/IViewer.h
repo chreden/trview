@@ -29,6 +29,7 @@ namespace trview
             inline static const std::string lights = "Lights";
             inline static const std::string items = "Items";
             inline static const std::string rooms = "Rooms";
+            inline static const std::string camera_sinks = "Camera/Sink";
         };
 
         virtual ~IViewer() = 0;
@@ -64,6 +65,8 @@ namespace trview
 
         Event<std::weak_ptr<IRoom>, bool> on_room_visibility;
 
+        Event<std::weak_ptr<ICameraSink>, bool> on_camera_sink_visibility;
+
         /// Event raised when the viewer wants to select a waypoint.
         Event<uint32_t> on_waypoint_selected;
 
@@ -72,6 +75,8 @@ namespace trview
 
         /// Event raised when the viewer wants to add a waypoint.
         Event<DirectX::SimpleMath::Vector3, DirectX::SimpleMath::Vector3, uint32_t, IWaypoint::Type, uint32_t> on_waypoint_added;
+
+        Event<std::weak_ptr<ICameraSink>> on_camera_sink_selected;
 
         virtual CameraMode camera_mode() const = 0;
 
@@ -143,5 +148,7 @@ namespace trview
 
         virtual void select_sector(const std::weak_ptr<ISector>& sector) = 0;
         virtual void set_scene_changed() = 0;
+
+        virtual void select_camera_sink(const std::weak_ptr<ICameraSink>& camera_sink) = 0;
     };
 }

@@ -10,6 +10,7 @@
 #include <trview.app/Mocks/Elements/IStaticMesh.h>
 #include <trview.app/Mocks/Elements/ISector.h>
 #include <trview.app/Mocks/Elements/ITrigger.h>
+#include <trview.app/Mocks/Elements/ICameraSink.h>
 #include <trview.common/Algorithms.h>
 #include <trview.common/Mocks/Logs/ILog.h>
 
@@ -642,4 +643,13 @@ TEST(Room, MissingStaticMeshesIgnored)
         .with_log(log)
         .build();
     room->render_bounding_boxes(NiceMock<MockCamera>{});
+}
+
+TEST(Room, RendersContainedCameraSinks)
+{
+    auto room = register_test_module().build();
+    auto camera_sink = mock_shared<MockCameraSink>();
+    EXPECT_CALL(*camera_sink, render).Times(1);
+    room->add_camera_sink(camera_sink);
+    room->render_camera_sinks(NiceMock<MockCamera>{});
 }

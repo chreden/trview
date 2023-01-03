@@ -13,6 +13,7 @@ namespace trview
             MOCK_METHOD(void, add_entity, (const std::weak_ptr<IEntity>&), (override));
             MOCK_METHOD(void, add_light, (const std::weak_ptr<ILight>&), (override));
             MOCK_METHOD(void, add_trigger, (const std::weak_ptr<ITrigger>&), (override));
+            MOCK_METHOD(void, add_camera_sink, (const std::weak_ptr<ICameraSink>&), (override));
             MOCK_METHOD(int16_t, alternate_group, (), (const, override));
             MOCK_METHOD(AlternateMode, alternate_mode, (), (const, override));
             MOCK_METHOD(int16_t, alternate_room, (), (const, override));
@@ -33,6 +34,7 @@ namespace trview
             MOCK_METHOD(void, render, (const ICamera&, SelectionMode, RenderFilter, const std::unordered_set<uint32_t>&), (override));
             MOCK_METHOD(void, render_bounding_boxes, (const ICamera&), (override));
             MOCK_METHOD(void, render_lights, (const ICamera&, const std::weak_ptr<ILight>&), (override));
+            MOCK_METHOD(void, render_camera_sinks, (const ICamera&), (override));
             MOCK_METHOD(void, render_contained, (const ICamera&, SelectionMode, RenderFilter), (override));;
             MOCK_METHOD(const std::vector<std::shared_ptr<ISector>>, sectors, (), (const, override));
             MOCK_METHOD(void, set_is_alternate, (int16_t), (override));

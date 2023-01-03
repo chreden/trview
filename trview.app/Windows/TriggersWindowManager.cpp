@@ -34,6 +34,7 @@ namespace trview
         triggers_window->on_trigger_selected += on_trigger_selected;
         triggers_window->on_trigger_visibility += on_trigger_visibility;
         triggers_window->on_add_to_route += on_add_to_route;
+        triggers_window->on_camera_sink_selected += on_camera_sink_selected;
         triggers_window->set_items(_items);
         triggers_window->set_triggers(_triggers);
         triggers_window->set_current_room(_current_room);

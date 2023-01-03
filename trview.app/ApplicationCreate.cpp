@@ -21,6 +21,7 @@
 #include "Resources/DefaultFonts.h"
 
 #include "Elements/TypeNameLookup.h"
+#include "Elements/CameraSink/CameraSink.h"
 #include "Elements/Entity.h"
 #include "Elements/Light.h"
 #include "Elements/StaticMesh.h"
@@ -56,6 +57,8 @@
 #include "UI/DX11ImGuiBackend.h"
 #include "Windows/Textures/TexturesWindowManager.h"
 #include "Windows/Textures/TexturesWindow.h"
+#include "Windows/CameraSink/CameraSinkWindowManager.h"
+#include "Windows/CameraSink/CameraSinkWindow.h"
 
 namespace trview
 {
@@ -201,6 +204,9 @@ namespace trview
         auto light_source = [=](auto&&... args) { return std::make_shared<Light>(light_mesh, args...); };
         auto buffer_source = [=](auto&&... args) { return std::make_unique<graphics::Buffer>(device, args...); };
 
+        auto camera_mesh = create_cube_mesh(mesh_source);
+        auto camera_sink_source = [=](auto&&... args) { return std::make_shared<CameraSink>(camera_mesh, texture_storage, args...); };
+
         auto level_source = [=](auto&& level)
         {
             auto level_texture_storage = std::make_shared<LevelTextureStorage>(device, std::make_unique<TextureStorage>(device), *level);
@@ -217,7 +223,8 @@ namespace trview
                 trigger_source,
                 light_source,
                 log,
-                buffer_source);
+                buffer_source,
+                camera_sink_source);
         };
 
         auto viewer_ui = std::make_unique<ViewerUI>(
@@ -257,6 +264,8 @@ namespace trview
         auto lights_window_source = [=]() { return std::make_shared<LightsWindow>(clipboard); };
 
         auto log_window_source = [=]() { return std::make_shared<LogWindow>(log, dialogs, files); };
+        auto camera_sink_window_source = [=]() { return std::make_shared<CameraSinkWindow>(clipboard); };
+
         auto decrypter = std::make_shared<trlevel::Decrypter>();
 
         auto trlevel_source = [=](auto&& filename) { return std::make_unique<trlevel::Level>(filename, files, decrypter, log); };
@@ -282,6 +291,7 @@ namespace trview
             std::make_unique<DX11ImGuiBackend>(window, device),
             std::make_unique<LightsWindowManager>(window, shortcuts, lights_window_source),
             std::make_unique<LogWindowManager>(window, log_window_source),
-            std::make_unique<TexturesWindowManager>(window, textures_window_source));
+            std::make_unique<TexturesWindowManager>(window, textures_window_source),
+            std::make_unique<CameraSinkWindowManager>(window, camera_sink_window_source));
     }
 }

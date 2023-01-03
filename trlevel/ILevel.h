@@ -174,5 +174,8 @@ namespace trlevel
         virtual int16_t get_mesh_from_type_id(int16_t type) const = 0;
 
         virtual std::string name() const = 0;
+
+        virtual uint32_t num_cameras() const = 0;
+        virtual tr_camera get_camera(uint32_t index) const = 0;
     };
 }

@@ -20,6 +20,7 @@ namespace trview
         _toggles[IViewer::Options::flip] = false;
         _toggles[IViewer::Options::items] = true;
         _toggles[IViewer::Options::rooms] = true;
+        _toggles[IViewer::Options::camera_sinks] = false;
     }
 
     void ViewOptions::render()
@@ -49,6 +50,7 @@ namespace trview
                 add_toggle(IViewer::Options::highlight);
                 ImGui::TableNextRow();
                 add_toggle(IViewer::Options::rooms);
+                add_toggle(IViewer::Options::camera_sinks);
                 ImGui::TableNextRow();
                 add_toggle(IViewer::Options::depth_enabled);
                 ImGui::TableNextColumn();

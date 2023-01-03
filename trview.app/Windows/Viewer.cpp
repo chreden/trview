@@ -66,6 +66,7 @@ namespace trview
         toggles[Options::lights] = [this](bool value) { set_show_lights(value); };
         toggles[Options::items] = [this](bool value) { set_show_items(value); };
         toggles[Options::rooms] = [this](bool value) { set_show_rooms(value); };
+        toggles[Options::camera_sinks] = [this](bool value) { set_show_camera_sinks(value); };
 
         std::unordered_map<std::string, std::function<void(int32_t)>> scalars;
         scalars[Options::depth] = [this](int32_t value) { if (_level) { _level->set_neighbour_depth(value); } };
@@ -188,6 +189,10 @@ namespace trview
             else if (_context_pick.type == PickResult::Type::Room)
             {
                 on_room_visibility(_level->room(_context_pick.index), false);
+            }
+            else if (_context_pick.type == PickResult::Type::CameraSink)
+            {
+                on_camera_sink_visibility(_level->camera_sink(_context_pick.index), false);
             }
         };
         _token_store += _ui->on_orbit += [&]()
@@ -532,13 +537,18 @@ namespace trview
                 _ui->set_show_context_menu(true);
                 _camera_input.reset(true);
                 _ui->set_remove_waypoint_enabled(_current_pick.type == PickResult::Type::Waypoint);
-                _ui->set_hide_enabled(equals_any(_current_pick.type, PickResult::Type::Entity, PickResult::Type::Trigger, PickResult::Type::Light, PickResult::Type::Room));
+                _ui->set_hide_enabled(equals_any(_current_pick.type, PickResult::Type::Entity, PickResult::Type::Trigger, PickResult::Type::Light, PickResult::Type::Room, PickResult::Type::CameraSink));
                 _ui->set_mid_waypoint_enabled(_current_pick.type == PickResult::Type::Room && _current_pick.triangle.normal.y < 0);
 
                 if (_current_pick.type == PickResult::Type::Entity)
                 {
                     const auto item = _level->item(_current_pick.index);
                     _ui->set_triggered_by(item ? item.value().triggers() : std::vector<std::weak_ptr<ITrigger>>{});
+                }
+                else if (_current_pick.type == PickResult::Type::CameraSink)
+                {
+                    const auto camera_sink = _level->camera_sink(_current_pick.index).lock();
+                    _ui->set_triggered_by(camera_sink ? camera_sink->triggers() : std::vector<std::weak_ptr<ITrigger>>{});
                 }
                 else 
                 {
@@ -581,6 +591,7 @@ namespace trview
         _level->set_show_lights(_ui->toggle(Options::lights));
         _level->set_show_items(_ui->toggle(Options::items));
         _level->set_show_rooms(_ui->toggle(Options::rooms));
+        _level->set_show_camera_sinks(_ui->toggle(Options::camera_sinks));
 
         // Set up the views.
         auto rooms = _level->rooms();
@@ -1232,6 +1243,9 @@ namespace trview
         case PickResult::Type::Light:
             on_light_selected(_level->light(pick.index));
             break;
+        case PickResult::Type::CameraSink:
+            on_camera_sink_selected(_level->camera_sink(pick.index));
+            break;
         }
     }
 
@@ -1319,5 +1333,25 @@ namespace trview
     void Viewer::set_scene_changed()
     {
         _scene_changed = true;
+    }
+
+    void Viewer::select_camera_sink(const std::weak_ptr<ICameraSink>& camera_sink)
+    {
+        auto camera_sink_ptr = camera_sink.lock();
+        _target = camera_sink_ptr->position();
+        if (_settings.auto_orbit)
+        {
+            set_camera_mode(CameraMode::Orbit);
+        }
+        _scene_changed = true;
+    }
+
+    void Viewer::set_show_camera_sinks(bool show)
+    {
+        if (_level)
+        {
+            _level->set_show_camera_sinks(show);
+            _ui->set_toggle(Options::camera_sinks, show);
+        }
     }
 }

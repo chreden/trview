@@ -36,6 +36,7 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClCompile Include="Camera\CameraMode.cpp" />
     <ClCompile Include="Camera\FreeCamera.cpp" />
     <ClCompile Include="Camera\OrbitCamera.cpp" />
+    <ClCompile Include="Elements\CameraSink\CameraSink.cpp" />
     <ClCompile Include="Elements\Entity.cpp" />
     <ClCompile Include="Elements\Floordata.cpp" />
     <ClCompile Include="Elements\ILight.cpp" />
@@ -110,6 +111,8 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClCompile Include="UI\Tooltip.cpp" />
     <ClCompile Include="UI\ViewerUI.cpp" />
     <ClCompile Include="UI\ViewOptions.cpp" />
+    <ClCompile Include="Windows\CameraSink\CameraSinkWindow.cpp" />
+    <ClCompile Include="Windows\CameraSink\CameraSinkWindowManager.cpp" />
     <ClCompile Include="Windows\ItemsWindow.cpp" />
     <ClCompile Include="Windows\ItemsWindowManager.cpp" />
     <ClCompile Include="Windows\LightsWindow.cpp" />
@@ -137,6 +140,8 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClInclude Include="Camera\ICamera.h" />
     <ClInclude Include="Camera\OrbitCamera.h" />
     <ClInclude Include="Camera\ProjectionMode.h" />
+    <ClInclude Include="Elements\CameraSink\CameraSink.h" />
+    <ClInclude Include="Elements\CameraSink\ICameraSink.h" />
     <ClInclude Include="Elements\Entity.h" />
     <ClInclude Include="Elements\Floordata.h" />
     <ClInclude Include="Elements\IEntity.h" />
@@ -193,6 +198,7 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClInclude Include="Menus\UpdateChecker.h" />
     <ClInclude Include="Menus\ViewMenu.h" />
     <ClInclude Include="Mocks\Camera\ICamera.h" />
+    <ClInclude Include="Mocks\Elements\ICameraSink.h" />
     <ClInclude Include="Mocks\Elements\IEntity.h" />
     <ClInclude Include="Mocks\Elements\ILevel.h" />
     <ClInclude Include="Mocks\Elements\ILight.h" />
@@ -224,6 +230,8 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClInclude Include="Mocks\UI\ISettingsWindow.h" />
     <ClInclude Include="Mocks\UI\IViewerUI.h" />
     <ClInclude Include="Mocks\UI\IViewOptions.h" />
+    <ClInclude Include="Mocks\Windows\ICameraSinkWindow.h" />
+    <ClInclude Include="Mocks\Windows\ICameraSinkWindowManager.h" />
     <ClInclude Include="Mocks\Windows\IItemsWindow.h" />
     <ClInclude Include="Mocks\Windows\IItemsWindowManager.h" />
     <ClInclude Include="Mocks\Windows\ILightsWindow.h" />
@@ -286,6 +294,10 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClInclude Include="UI\Tooltip.h" />
     <ClInclude Include="UI\ViewerUI.h" />
     <ClInclude Include="UI\ViewOptions.h" />
+    <ClInclude Include="Windows\CameraSink\CameraSinkWindow.h" />
+    <ClInclude Include="Windows\CameraSink\CameraSinkWindowManager.h" />
+    <ClInclude Include="Windows\CameraSink\ICameraSinkWindow.h" />
+    <ClInclude Include="Windows\CameraSink\ICameraSinkWindowManager.h" />
     <ClInclude Include="Windows\IItemsWindow.h" />
     <ClInclude Include="Windows\IItemsWindowManager.h" />
     <ClInclude Include="Windows\ILightsWindow.h" />
@@ -324,6 +336,8 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ResourceCompile Include="Resources\trview.app.rc" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="Resources\Files\camera.png" />
+    <Image Include="Resources\Files\sink.png" />
     <Image Include="Resources\Files\small.ico" />
     <Image Include="Resources\Files\tomb1.png" />
     <Image Include="Resources\Files\tomb2.png" />

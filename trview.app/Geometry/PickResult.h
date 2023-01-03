@@ -20,7 +20,8 @@ namespace trview
             Waypoint,
             Compass,
             StaticMesh,
-            Light
+            Light,
+            CameraSink
         };
 
         bool                         hit{ false };
