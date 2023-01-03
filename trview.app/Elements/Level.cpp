@@ -1129,7 +1129,8 @@ namespace trview
                         });
                 });
 
-            std::deque<uint16_t> inferred_rooms;
+            std::vector<uint16_t> in_space_rooms;
+            std::vector<uint16_t> in_portal_rooms;
 
             const ICameraSink::Type type = is_camera ? ICameraSink::Type::Camera : ICameraSink::Type::Sink;
             if (type == ICameraSink::Type::Sink)
@@ -1140,11 +1141,11 @@ namespace trview
                     {
                         if (sector && sector->is_portal())
                         {
-                            inferred_rooms.push_back(static_cast<uint16_t>(room->number()));
+                            in_portal_rooms.push_back(static_cast<uint16_t>(room->number()));
                         }
                         else
                         {
-                            inferred_rooms.push_front(static_cast<uint16_t>(room->number()));
+                            in_space_rooms.push_back(static_cast<uint16_t>(room->number()));
                         }
                     }
                 }
@@ -1159,7 +1160,9 @@ namespace trview
                 }
             }
 
-            auto new_camera_sink = camera_sink_source(i, camera_sink, type, { std::from_range, inferred_rooms }, relevant_triggers);
+            const std::vector<uint16_t> inferred_rooms{ in_space_rooms.empty() ? in_portal_rooms : in_space_rooms };
+
+            auto new_camera_sink = camera_sink_source(i, camera_sink, type, inferred_rooms, relevant_triggers);
             _camera_sinks.push_back(new_camera_sink);
 
             if (is_camera)
