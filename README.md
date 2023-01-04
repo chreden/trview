@@ -660,6 +660,8 @@ Hide | Whether to hide this camera/sink in the viewer
 
 ## Camera/Sink Details
 
+The type of the camera/sink can be swapped between camera and sink to see the different interpretation of the values.
+
 Stat | Camera/Sink Type
 --- | ---
 Type | All
