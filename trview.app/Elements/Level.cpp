@@ -1192,6 +1192,11 @@ namespace trview
         return std::nullopt;
     }
 
+    bool Level::show_camera_sinks() const
+    {
+        return has_flag(_render_filters, RenderFilter::CameraSinks);
+    }
+
     bool find_item_by_type_id(const ILevel& level, uint32_t type_id, Item& output_item)
     {
         const auto& items = level.items();
