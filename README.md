@@ -46,6 +46,7 @@ CTRL + T    | New Triggers window
 CTRL + I    | New Items window
 CTRL + M    | New Rooms window
 CTRL + L    | New Lights window
+CTRL + K    | New Camera/Sink window
 F1          | Toggle settings window
 F5          | Reload current level
 F6          | Load previous level in directory
@@ -54,6 +55,7 @@ F           | Free camera
 G           | Toggle geometry mode
 H           | Toggle room highlighting
 L           | Toggle lights visibility
+K           | Toggle camera/sink visibility
 O           | Orbit camera
 P           | Toggle flipmap
 T           | Toggle trigger visibility
@@ -579,6 +581,7 @@ Shows and allows editing of the notes associated with this waypoint.
 The selected waypoint will have its details shown in the right panel. The notes for the route can be edited by typing in the 'Notes' text area.
 
 # Lights Window
+_Shortcut: Ctrl + L_
 
 ![Lights Window](doc/lights.png)
 
@@ -633,6 +636,50 @@ Sun|TR3+
 Shadow|TR4+
 Fog Bulb|TR4+
 
+# Camera/Sink Window
+_Shortcut: Ctrl + K_
+
+![Camera/Sink Window](doc/camera-sink.png)
+
+## Options
+
+Input|Action
+---|------
+Filters | Open the [filters] editor. The checkbox toggles whether configured filters are applied.
+Track Room          | Whether to show the camera/sinks that are in the currently selected room
+Sync | Whether the camera/sink selected in the window will be synced with the camera/sink selected in the view (bidirectional)
+
+## Camera/Sink List
+
+Column | Meaning
+---|---
+\# | The camera/sink number
+Room | The number of the room that the camera/sink is in
+Type | The type name of the camera/sink
+Hide | Whether to hide this camera/sink in the viewer
+
+## Camera/Sink Details
+
+Stat | Camera/Sink Type
+--- | ---
+Type | All
+\# | All
+Position | All
+Room | Camera
+Persistent | Camera
+Strength | Sink
+Box Index | Sink
+Inferred Room | Sink
+
+## Triggered By
+The `Triggered By` list shows the triggers that can trigger the camera/sink. Clicking a trigger in the list will select that trigger.
+
+Column | Meaning
+---|---
+\# | The trigger number
+Room | The number of the room that the trigger is in
+Type | The type name of the trigger
+
 
 # Filters
 
@@ -641,6 +688,7 @@ Filters can used and combined to build a query to find items based on their prop
 - `Triggers`
 - `Lights`
 - `Rooms`
+- `Camera/Sink`
 
 ## Using Filters
 
