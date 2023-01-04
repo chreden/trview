@@ -7,9 +7,10 @@ namespace trview
     {
     }
 
-    CameraSinkWindowManager::CameraSinkWindowManager(const Window& window, const ICameraSinkWindow::Source& camera_sink_window_source)
+    CameraSinkWindowManager::CameraSinkWindowManager(const Window& window, const std::shared_ptr<IShortcuts>& shortcuts, const ICameraSinkWindow::Source& camera_sink_window_source)
         : _camera_sink_window_source(camera_sink_window_source), MessageHandler(window)
     {
+        _token_store += shortcuts->add_shortcut(true, 'K') += [&]() { create_window(); };
     }
 
     std::weak_ptr<ICameraSinkWindow> CameraSinkWindowManager::create_window()
