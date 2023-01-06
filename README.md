@@ -270,8 +270,8 @@ Z|Z position of the camera in level space|
 
 ## Context Menu
 
-Normal | Copy | Triggered By
----|---
+Normal|Copy|Triggered By
+---|---|---
 ![Context Menu](doc/context_menu.png) | ![Context Menu](doc/context_menu_copy.png) | ![Context Menu](doc/context_menu_triggered_by.png) 
 
 The context menu is opened by right clicking in the 3D view.
