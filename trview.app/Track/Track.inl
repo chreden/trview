@@ -1,5 +1,7 @@
 #pragma once
 
+#include <trview.common/Algorithms.h>
+
 namespace trview
 {
     template <Type... Args>
@@ -21,8 +23,10 @@ namespace trview
         {
             for (Subject& v : state)
             {
-                if (ImGui::Checkbox(to_string(v.type).c_str(), &v.value))
+                bool value = v.value;
+                if (ImGui::Checkbox(to_string(v.type).c_str(), &value) && value != v.value)
                 {
+                    v.value = value;
                     v.on_toggle(v.value);
                 }
             }
@@ -61,5 +65,22 @@ namespace trview
             }
         }
         return false;
+    }
+
+    template <Type... Args>
+    template <Type T>
+    Event<bool>& Track<Args...>::on_toggle()
+    {
+        static_assert(equals_any(T, Args...), "Type is not being tracked");
+
+        for (auto& subject : state)
+        {
+            if (subject.type == T)
+            {
+                return subject.on_toggle;
+            }
+        }
+
+        throw std::exception();
     }
 }

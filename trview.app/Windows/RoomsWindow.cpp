@@ -102,6 +102,14 @@ namespace trview
         };
 
         generate_filters();
+
+        _token_store += _track.on_toggle<Type::Item>() += [&](bool value)
+        {
+            if (value && _global_selected_item.has_value())
+            {
+                set_selected_item(_global_selected_item.value());
+            }
+        };
     }
 
     void RoomsWindow::set_current_room(uint32_t room)
@@ -164,7 +172,8 @@ namespace trview
     void RoomsWindow::set_selected_item(const Item& item)
     {
         _global_selected_item = item;
-        if (_track_item)
+        // if (_track_item)
+        if (_track.enabled(Type::Item))
         {
             _local_selected_item = item;
             _selected_room = item.room();
