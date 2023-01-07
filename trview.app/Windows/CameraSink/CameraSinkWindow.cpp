@@ -127,11 +127,11 @@ namespace trview
                 set_sync(sync);
             }
 
-            if (ImGui::BeginTable(Names::camera_sink_list.c_str(), 4, ImGuiTableFlags_SizingStretchSame | ImGuiTableFlags_Sortable | ImGuiTableFlags_ScrollY, ImVec2(-1, -1)))
+            if (ImGui::BeginTable(Names::camera_sink_list.c_str(), 4, ImGuiTableFlags_SizingFixedFit | ImGuiTableFlags_Sortable | ImGuiTableFlags_ScrollY, ImVec2(-1, -1)))
             {
                 ImGui::TableSetupColumn("#");
-                ImGui::TableSetupColumn("Type");
                 ImGui::TableSetupColumn("Room");
+                ImGui::TableSetupColumn("Type");
                 ImGui::TableSetupColumn("Hide");
                 ImGui::TableSetupScrollFreeze(1, 1);
                 ImGui::TableHeadersRow();
@@ -139,8 +139,8 @@ namespace trview
                 imgui_sort_weak(_all_camera_sinks,
                     {
                         [](auto&& l, auto&& r) { return l.number() < r.number(); },
-                        [](auto&& l, auto&& r) { return std::tuple(to_string(l.type()), l.number()) < std::tuple(to_string(r.type()), r.number()); },
                         [](auto&& l, auto&& r) { return std::tuple(primary_room(l), l.number()) < std::tuple(primary_room(r), r.number()); },
+                        [](auto&& l, auto&& r) { return std::tuple(to_string(l.type()), l.number()) < std::tuple(to_string(r.type()), r.number()); },
                         [](auto&& l, auto&& r) { return std::tuple(l.visible(), l.number()) < std::tuple(r.visible(), r.number()); }
                     }, _force_sort);
 
@@ -180,9 +180,6 @@ namespace trview
                     ImGui::SetItemAllowOverlap();
 
                     ImGui::TableNextColumn();
-                    ImGui::Text(to_string(camera_sink->type()).c_str());
-
-                    ImGui::TableNextColumn();
                     if (camera_sink->type() == ICameraSink::Type::Camera)
                     {
                         ImGui::Text(std::format("{}", camera_sink->room()).c_str());
@@ -201,6 +198,9 @@ namespace trview
                         }
                         ImGui::Text(stream.str().c_str());
                     }
+
+                    ImGui::TableNextColumn();
+                    ImGui::Text(to_string(camera_sink->type()).c_str());
 
                     ImGui::TableNextColumn();
 

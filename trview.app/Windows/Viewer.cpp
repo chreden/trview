@@ -419,6 +419,7 @@ namespace trview
             _camera.set_zoom(8.f);
         });
         add_shortcut(false, 'L', [&]() { toggle_show_lights(); });
+        add_shortcut(false, 'K', [&]() { toggle_show_camera_sinks(); });
 
         _token_store += _keyboard.on_key_down += [&](uint16_t key, bool control, bool)
         {
@@ -1352,6 +1353,14 @@ namespace trview
         {
             _level->set_show_camera_sinks(show);
             _ui->set_toggle(Options::camera_sinks, show);
+        }
+    }
+
+    void Viewer::toggle_show_camera_sinks()
+    {
+        if (_level)
+        {
+            set_show_camera_sinks(!_level->show_camera_sinks());
         }
     }
 }

@@ -9,11 +9,14 @@ using namespace trview::mocks;
 
 namespace
 {
+    Event<> shortcut_handler;
+
     auto register_test_module()
     {
         struct test_module
         {
             Window window{ create_test_window(L"CameraSinkWindowManagerTests") };
+            std::shared_ptr<MockShortcuts> shortcuts{ mock_shared<MockShortcuts>() };
             ICameraSinkWindow::Source window_source{ [](auto&&...) { return mock_shared<MockCameraSinkWindow>(); } };
 
             test_module& with_window_source(const ICameraSinkWindow::Source& source)
@@ -22,9 +25,20 @@ namespace
                 return *this;
             }
 
+            test_module& with_shortcuts(const std::shared_ptr<MockShortcuts>& shortcuts)
+            {
+                this->shortcuts = shortcuts;
+                return *this;
+            }
+
+            test_module()
+            {
+                EXPECT_CALL(*shortcuts, add_shortcut).WillRepeatedly([&](auto, auto) -> Event<>&{ return shortcut_handler; });
+            }
+
             std::unique_ptr<CameraSinkWindowManager> build()
             {
-                return std::make_unique<CameraSinkWindowManager>(window, window_source);
+                return std::make_unique<CameraSinkWindowManager>(window, shortcuts, window_source);
             }
         };
 
@@ -179,5 +193,12 @@ TEST(CameraSinkWindowManager, CameraSinkTypeChangedRaised)
     manager->on_camera_sink_type_changed();
 
     ASSERT_TRUE(raised);
+}
+
+TEST(CameraSinkWindowManager, CreateCameraSinkWindowKeyboardShortcut)
+{
+    auto shortcuts = mock_shared<MockShortcuts>();
+    EXPECT_CALL(*shortcuts, add_shortcut(true, 'K')).Times(1).WillOnce([&](auto, auto) -> Event<>&{ return shortcut_handler; });
+    auto manager = register_test_module().with_shortcuts(shortcuts).build();
 }
 

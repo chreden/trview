@@ -70,7 +70,7 @@ BEGIN
         MENUITEM "Roo&ms\tCtrl+M",              ID_WINDOWS_ROOMS
         MENUITEM "&Route\tCtrl+R",              ID_WINDOWS_ROUTE
         MENUITEM "&Lights\tCtrl+L"              ID_WINDOWS_LIGHTS
-        MENUITEM "Camera/Sink"                  ID_WINDOWS_CAMERA_SINK
+        MENUITEM "Camera/Sink\tCtrl+K"          ID_WINDOWS_CAMERA_SINK
         MENUITEM "Log"                          ID_WINDOWS_LOG
         MENUITEM "Textures"                     ID_WINDOWS_TEXTURES
         MENUITEM SEPARATOR
