@@ -4,7 +4,9 @@
 #pragma once
 
 #include <trview.common/Windows/IClipboard.h>
+#include <trview.common/TokenStore.h>
 #include "../Filters/Filters.h"
+#include "../Track/Track.h"
 
 #include "ITriggersWindow.h"
 #include "../Elements/Item.h"
@@ -40,7 +42,6 @@ namespace trview
         virtual std::weak_ptr<ITrigger> selected_trigger() const override;
         virtual void update(float delta) override;
     private:
-        void set_track_room(bool value);
         void set_sync_trigger(bool value);
         void render_triggers_list();
         void render_trigger_details();
@@ -56,8 +57,7 @@ namespace trview
         std::vector<std::weak_ptr<ITrigger>> _all_triggers;
         std::vector<std::weak_ptr<ITrigger>> _filtered_triggers;
 
-        /// Whether the trigger window is tracking the current room.
-        bool _track_room{ false };
+        TokenStore _token_store;
         /// The current room number selected for tracking.
         uint32_t _current_room{ 0u };
         /// Whether the room tracking filter has been applied.
@@ -77,5 +77,6 @@ namespace trview
         float _required_number_width{ 0.0f };
         float _required_type_width{ 0.0f };
         bool _force_sort{ false };
+        Track<Type::Room> _track;
     };
 }

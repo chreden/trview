@@ -1,5 +1,7 @@
 #pragma once
 
+#include <ranges>
+
 #include <trview.common/Algorithms.h>
 
 namespace trview
@@ -7,10 +9,15 @@ namespace trview
     template <Type... Args>
     void Track<Args...>::render()
     {
-        bool filter_enabled = true;
-        if (ImGui::Checkbox("##TrackEnable", &filter_enabled))
+        if (ImGui::Checkbox("##TrackEnable", &_enabled))
         {
-            _enabled = filter_enabled;
+            std::ranges::for_each(state, [=](auto& s) { s.on_toggle(s.value && _enabled); });
+        }
+        if (ImGui::IsItemHovered())
+        {
+            ImGui::BeginTooltip();
+            ImGui::Text("Toggle tracking");
+            ImGui::EndTooltip();
         }
         ImGui::SameLine();
 
@@ -27,7 +34,7 @@ namespace trview
                 if (ImGui::Checkbox(to_string(v.type).c_str(), &value) && value != v.value)
                 {
                     v.value = value;
-                    v.on_toggle(v.value);
+                    v.on_toggle(v.value && _enabled);
                 }
             }
             ImGui::EndPopup();
@@ -59,6 +66,11 @@ namespace trview
     bool Track<Args...>::enabled() const
     {
         static_assert(equals_any(T, Args...), "Type is not being tracked");
+
+        if (!_enabled)
+        {
+            return false;
+        }
 
         for (const auto& subject : state)
         {

@@ -861,6 +861,8 @@
     <ClInclude Include="Track\Track.h">
       <Filter>Track</Filter>
     </ClInclude>
+    <ClInclude Include="Type.h" />
+    <ClInclude Include="Type.inl" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Windows">

@@ -4,6 +4,7 @@
 #include "../Elements/ILight.h"
 #include "ILightsWindow.h"
 #include "../Filters/Filters.h"
+#include "../Track/Track.h"
 
 namespace trview
 {
@@ -32,7 +33,6 @@ namespace trview
         virtual void set_current_room(uint32_t room) override;
     private:
         void set_sync_light(bool value);
-        void set_track_room(bool value);
         void set_local_selected_light(const std::weak_ptr<ILight>& light);
         void render_lights_list();
         void render_light_details();
@@ -42,7 +42,6 @@ namespace trview
         std::vector<std::weak_ptr<ILight>> _all_lights;
         std::shared_ptr<IClipboard> _clipboard;
         bool _sync_light{ true };
-        bool _track_room{ false };
         trlevel::LevelVersion _level_version{ trlevel::LevelVersion::Tomb5 };
         std::optional<float> _tooltip_timer;
         std::string _id{ "Lights 0" };
@@ -53,5 +52,6 @@ namespace trview
         std::unordered_map<std::string, std::string> _tips;
         Filters<ILight> _filters;
         bool _force_sort{ false };
+        Track<Type::Room> _track;
     };
 }
