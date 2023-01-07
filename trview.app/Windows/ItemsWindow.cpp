@@ -56,11 +56,6 @@ namespace trview
         _current_room = room;
     }
 
-    void ItemsWindow::set_track_room(bool value)
-    {
-        _track_room = value;
-    }
-
     void ItemsWindow::set_sync_item(bool value)
     {
         if (_sync_item != value)
@@ -94,13 +89,10 @@ namespace trview
         if (ImGui::BeginChild(Names::item_list_panel.c_str(), ImVec2(290, 0), true))
         {
             _filters.render();
-            ImGui::SameLine();
 
-            bool track_room = _track_room;
-            if (ImGui::Checkbox(Names::track_room.c_str(), &track_room))
-            {
-                set_track_room(track_room);
-            }
+            ImGui::SameLine();
+            _track.render();
+
             ImGui::SameLine();
             bool sync_item = _sync_item;
             if (ImGui::Checkbox(Names::sync_item.c_str(), &sync_item))
@@ -129,7 +121,7 @@ namespace trview
 
                 for (const auto& item : _all_items)
                 {
-                    if (_track_room && item.room() != _current_room || !_filters.match(item))
+                    if (_track.enabled<Type::Room>() && item.room() != _current_room || !_filters.match(item))
                     {
                         continue;
                     }
@@ -280,7 +272,7 @@ namespace trview
                     if (ImGui::Selectable(std::to_string(trigger_ptr->number()).c_str(), &selected, ImGuiSelectableFlags_SpanAllColumns | static_cast<int>(ImGuiSelectableFlags_SelectOnNav)))
                     {
                         _selected_trigger = trigger;
-                        set_track_room(false);
+                        _track.set_enabled<Type::Room>(false);
                         on_trigger_selected(trigger);
                     }
                     ImGui::TableNextColumn();

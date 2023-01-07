@@ -86,4 +86,20 @@ namespace trview
 
         throw std::exception();
     }
+
+    template <Type... Args>
+    template <Type T>
+    void Track<Args...>::set_enabled(bool value)
+    {
+        static_assert(equals_any(T, Args...), "Type is not being tracked");
+
+        for (auto& subject : state)
+        {
+            if (subject.type == T && subject.value != value)
+            {
+                subject.value = value;
+                subject.on_toggle(subject.value);
+            }
+        }
+    }
 }

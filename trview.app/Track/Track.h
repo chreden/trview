@@ -39,6 +39,8 @@ namespace trview
         bool enabled() const;
         template <Type T>
         Event<bool>& on_toggle();
+        template <Type T>
+        void set_enabled(bool value);
     private:
         void toggle_visible();
 
