@@ -46,8 +46,6 @@ namespace trview
         virtual void set_floordata(const std::vector<uint16_t>& data) override;
     private:
         void set_sync_room(bool value);
-        void set_track_item(bool value);
-        void set_track_trigger(bool value);
         void render_rooms_list();
         void render_room_details();
         bool render_rooms_window();
@@ -59,15 +57,12 @@ namespace trview
         void render_triggers_tab(const std::shared_ptr<IRoom>& room);
         void render_floordata_tab(const std::shared_ptr<IRoom>& room);
         void set_selected_sector(const std::shared_ptr<ISector>& sector);
-        void toggle_track_visible();
 
         std::vector<std::weak_ptr<IRoom>> _all_rooms;
         std::vector<Item> _all_items;
         std::vector<std::weak_ptr<ITrigger>> _all_triggers;
 
         bool _sync_room{ true };
-        bool _track_item{ false };
-        bool _track_trigger{ false };
         
         std::optional<Item> _global_selected_item;
         std::optional<Item> _local_selected_item;

@@ -110,6 +110,10 @@ namespace trview
                 set_selected_item(_global_selected_item.value());
             }
         };
+        _token_store += _track.on_toggle<Type::Trigger>() += [&](bool)
+        {
+            set_selected_trigger(_global_selected_trigger);
+        };
     }
 
     void RoomsWindow::set_current_room(uint32_t room)
@@ -172,8 +176,7 @@ namespace trview
     void RoomsWindow::set_selected_item(const Item& item)
     {
         _global_selected_item = item;
-        // if (_track_item)
-        if (_track.enabled(Type::Item))
+        if (_track.enabled<Type::Item>())
         {
             _local_selected_item = item;
             _selected_room = item.room();
@@ -189,7 +192,7 @@ namespace trview
     void RoomsWindow::set_selected_trigger(const std::weak_ptr<ITrigger>& trigger)
     {
         _global_selected_trigger = trigger;
-        if (_track_trigger)
+        if (_track.enabled<Type::Trigger>())
         {
             _local_selected_trigger = trigger;
             if (const auto trigger_ptr = trigger.lock())
@@ -218,27 +221,6 @@ namespace trview
         {
             _sync_room = value;
             set_current_room(_current_room);
-        }
-    }
-
-    void RoomsWindow::set_track_item(bool value)
-    {
-        if (_track_item != value)
-        {
-            _track_item = value;
-            if (_track_item && _global_selected_item.has_value())
-            {
-                set_selected_item(_global_selected_item.value());
-            }
-        }
-    }
-
-    void RoomsWindow::set_track_trigger(bool value)
-    {
-        if (_track_trigger != value)
-        {
-            _track_trigger = value;
-            set_selected_trigger(_global_selected_trigger);
         }
     }
 
@@ -276,62 +258,21 @@ namespace trview
         return stay_open;
     }
 
-    void RoomsWindow::toggle_track_visible()
-    {
-        // if (!_show_track)
-        // {
-        //     ImGui::OpenPopup("Track");
-        // }
-        // _show_track = !_show_track;
-    }
-
     void RoomsWindow::render_rooms_list()
     {
         if (ImGui::BeginChild(Names::rooms_panel.c_str(), ImVec2(270, 0), true))
         {
             _filters.render();
+
             ImGui::SameLine();
             bool sync_room = _sync_room;
             if (ImGui::Checkbox("Sync##syncroom", &sync_room))
             {
                 set_sync_room(sync_room);
             }
-            ImGui::SameLine();
 
+            ImGui::SameLine();
             _track.render();
-            /*
-            bool filter_enabled = true;
-            if (ImGui::Checkbox("##TrackEnable", &filter_enabled))
-            {
-                // _enabled = filter_enabled;
-                // _changed = true;
-            }
-            ImGui::SameLine();
-
-            if (ImGui::Button("Track##track"))
-            {
-                toggle_track_visible();
-            }
-
-            if (_show_track && ImGui::BeginPopup("Track"))
-            {
-                bool track_item = _track_item;
-                if (ImGui::Checkbox("Item##trackitem", &track_item))
-                {
-                    set_track_item(track_item);
-                }
-                bool track_trigger = _track_trigger;
-                if (ImGui::Checkbox("Trigger##tracktrigger", &track_trigger))
-                {
-                    set_track_trigger(track_trigger);
-                }
-
-                ImGui::EndPopup();
-            }
-            else
-            {
-                _show_track = false;
-            }*/
 
             if (ImGui::BeginTable(Names::rooms_list.c_str(), 4, ImGuiTableFlags_Sortable | ImGuiTableFlags_ScrollY | ImGuiTableFlags_SizingFixedSame, ImVec2(-1, -1)))
             {

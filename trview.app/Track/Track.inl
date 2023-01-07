@@ -55,11 +55,14 @@ namespace trview
     }
 
     template <Type... Args>
-    bool Track<Args...>::enabled(Type type) const
+    template <Type T>
+    bool Track<Args...>::enabled() const
     {
+        static_assert(equals_any(T, Args...), "Type is not being tracked");
+
         for (const auto& subject : state)
         {
-            if (subject.type == type)
+            if (subject.type == T)
             {
                 return subject.value;
             }
