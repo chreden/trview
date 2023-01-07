@@ -858,6 +858,9 @@
     <ClInclude Include="Mocks\Windows\ICameraSinkWindow.h">
       <Filter>Mocks\Windows</Filter>
     </ClInclude>
+    <ClInclude Include="Track\Track.h">
+      <Filter>Track</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Windows">
@@ -983,6 +986,9 @@
     <Filter Include="Windows\CameraSink">
       <UniqueIdentifier>{0fb465bf-4265-479e-9d44-1218e1561a71}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Track">
+      <UniqueIdentifier>{895fbf3e-9030-4fa9-8c33-158d155fe655}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Resources\Files\tomb1.png">
@@ -1036,6 +1042,9 @@
     </None>
     <None Include="Resources\Files\Fonts\arial7.bin">
       <Filter>Resources\Files\Fonts</Filter>
+    </None>
+    <None Include="Track\Track.inl">
+      <Filter>Track</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>

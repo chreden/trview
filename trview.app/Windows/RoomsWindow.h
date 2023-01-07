@@ -9,7 +9,7 @@
 #include "../Elements/Item.h"
 #include "../UI/IMapRenderer.h"
 #include "../Filters/Filters.h"
-
+#include "../Track/Track.h"
 
 namespace trview
 {
@@ -59,6 +59,7 @@ namespace trview
         void render_triggers_tab(const std::shared_ptr<IRoom>& room);
         void render_floordata_tab(const std::shared_ptr<IRoom>& room);
         void set_selected_sector(const std::shared_ptr<ISector>& sector);
+        void toggle_track_visible();
 
         std::vector<std::weak_ptr<IRoom>> _all_rooms;
         std::vector<Item> _all_items;
@@ -98,5 +99,6 @@ namespace trview
         bool _in_floordata_mode{ false };
         std::weak_ptr<ISector> _selected_sector;
         uint32_t _selected_floordata{ 0 };
+        Track<Type::Item, Type::Trigger> _track;
     };
 }

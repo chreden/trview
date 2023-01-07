@@ -267,39 +267,62 @@ namespace trview
         return stay_open;
     }
 
+    void RoomsWindow::toggle_track_visible()
+    {
+        // if (!_show_track)
+        // {
+        //     ImGui::OpenPopup("Track");
+        // }
+        // _show_track = !_show_track;
+    }
+
     void RoomsWindow::render_rooms_list()
     {
         if (ImGui::BeginChild(Names::rooms_panel.c_str(), ImVec2(270, 0), true))
         {
-            if (ImGui::BeginTable("##controls", 2, 0, ImVec2(-1, 0)))
+            _filters.render();
+            ImGui::SameLine();
+            bool sync_room = _sync_room;
+            if (ImGui::Checkbox("Sync##syncroom", &sync_room))
             {
-                ImGui::TableNextRow();
-                ImGui::TableNextColumn();
+                set_sync_room(sync_room);
+            }
+            ImGui::SameLine();
 
-                _filters.render();
-                ImGui::TableNextColumn();
+            _track.render();
+            /*
+            bool filter_enabled = true;
+            if (ImGui::Checkbox("##TrackEnable", &filter_enabled))
+            {
+                // _enabled = filter_enabled;
+                // _changed = true;
+            }
+            ImGui::SameLine();
 
-                bool sync_room = _sync_room;
-                if (ImGui::Checkbox("Sync##syncroom", &sync_room))
-                {
-                    set_sync_room(sync_room);
-                }
-                ImGui::TableNextColumn();
+            if (ImGui::Button("Track##track"))
+            {
+                toggle_track_visible();
+            }
 
+            if (_show_track && ImGui::BeginPopup("Track"))
+            {
                 bool track_item = _track_item;
-                if (ImGui::Checkbox("Track Item##trackitem", &track_item))
+                if (ImGui::Checkbox("Item##trackitem", &track_item))
                 {
                     set_track_item(track_item);
                 }
-                ImGui::TableNextColumn();
-
                 bool track_trigger = _track_trigger;
-                if (ImGui::Checkbox("Track Trigger##tracktrigger", &track_trigger))
+                if (ImGui::Checkbox("Trigger##tracktrigger", &track_trigger))
                 {
                     set_track_trigger(track_trigger);
                 }
-                ImGui::EndTable();
+
+                ImGui::EndPopup();
             }
+            else
+            {
+                _show_track = false;
+            }*/
 
             if (ImGui::BeginTable(Names::rooms_list.c_str(), 4, ImGuiTableFlags_Sortable | ImGuiTableFlags_ScrollY | ImGuiTableFlags_SizingFixedSame, ImVec2(-1, -1)))
             {
