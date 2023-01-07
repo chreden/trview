@@ -664,9 +664,9 @@ The type of the camera/sink can be swapped between camera and sink to see the di
 
 Stat | Camera/Sink Type
 --- | ---
-Type | All
-\# | All
-Position | All
+Type | Both
+\# | Both
+Position | Both
 Room | Camera
 Persistent | Camera
 Strength | Sink
