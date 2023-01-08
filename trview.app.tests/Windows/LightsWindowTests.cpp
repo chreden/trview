@@ -98,9 +98,8 @@ TEST(LightsWindow, LightListFilteredWhenRoomSetAndTrackRoomEnabled)
     window->set_current_room(78);
 
     TestImgui imgui([&]() { window->render(); });
-    imgui.click_element(imgui.id("Lights 0")
-        .push_child(LightsWindow ::Names::light_list_panel)
-        .id(LightsWindow::Names::track_room));
+    imgui.click_element(imgui.id("Lights 0").push_child(LightsWindow::Names::light_list_panel).id(Track<>::Names::Button));
+    imgui.click_element(imgui.popup_id(imgui.id("Lights 0").push_child(LightsWindow::Names::light_list_panel), Track<>::Names::Popup).id("Room"));
 
     imgui.reset();
     imgui.render();

@@ -9,7 +9,7 @@ namespace trview
     template <Type... Args>
     void Track<Args...>::render()
     {
-        if (ImGui::Checkbox("##TrackEnable", &_enabled))
+        if (ImGui::Checkbox(Names::Enable.c_str(), &_enabled))
         {
             std::ranges::for_each(state, [=](auto& s) { s.on_toggle(s.value && _enabled); });
         }
@@ -21,12 +21,12 @@ namespace trview
         }
         ImGui::SameLine();
 
-        if (ImGui::Button("Track##track"))
+        if (ImGui::Button(Names::Button.c_str()))
         {
             toggle_visible();
         }
 
-        if (_show && ImGui::BeginPopup("Track"))
+        if (_show && ImGui::BeginPopup(Names::Popup.c_str()))
         {
             for (Subject& v : state)
             {

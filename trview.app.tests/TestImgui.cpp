@@ -358,10 +358,15 @@ namespace trview
             return TestImGuiId(window_name);
         }
 
+        TestImGuiId TestImgui::popup_id(const TestImGuiId& parent, const std::string& popup_name) const
+        {
+            auto id = parent.id(popup_name).id();
+            return TestImGuiId(std::format("##Popup_{:0>8x}", id));
+        }
+
         TestImGuiId TestImgui::popup_id(const std::string& popup_name) const
         {
-            auto id = TestImGuiId("Debug##Default").id(popup_name).id();
-            return TestImGuiId(std::format("##Popup_{:0>8x}", id));
+            return popup_id(TestImGuiId("Debug##Default"), popup_name);
         }
     }
 }

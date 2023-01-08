@@ -8,6 +8,13 @@ namespace trview
     class Track
     {
     public:
+        struct Names
+        {
+            static const inline std::string Enable = "##TrackEnable";
+            static const inline std::string Button = "Track##track";
+            static const inline std::string Popup = "Track";
+        };
+
         void render();
         bool enabled() const;
         template <Type T>

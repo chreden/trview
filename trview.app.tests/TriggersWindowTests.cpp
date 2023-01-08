@@ -114,10 +114,11 @@ TEST(TriggersWindow, TriggersListFilteredWhenRoomSetAndTrackRoomEnabled)
         .push(TriggersWindow::Names::triggers_list)
         .id("1##1")));
 
+    imgui.click_element(imgui.id("Triggers 0").push_child(TriggersWindow::Names::trigger_list_panel).id(Track<>::Names::Button));
+    imgui.click_element(imgui.popup_id(imgui.id("Triggers 0").push_child(TriggersWindow::Names::trigger_list_panel), Track<>::Names::Popup).id("Room"));
+    imgui.press_key(ImGuiKey_Escape);
     imgui.reset();
-    imgui.click_element(imgui.id("Triggers 0")
-        .push_child(TriggersWindow::Names::trigger_list_panel)
-        .id(TriggersWindow::Names::track_room));
+    imgui.render();
 
     ASSERT_FALSE(imgui.element_present(imgui.id("Triggers 0")
         .push_child(TriggersWindow::Names::trigger_list_panel)

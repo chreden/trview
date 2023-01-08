@@ -13,7 +13,6 @@ namespace trview
         struct Names
         {
             static inline const std::string sync = "Sync";
-            static inline const std::string track_room = "Track Room";
             static inline const std::string camera_sink_list = "##camerasinklist";
             static inline const std::string list_panel = "Camera/Sink List";
             static inline const std::string details_panel = "Camera/Sink Details";
