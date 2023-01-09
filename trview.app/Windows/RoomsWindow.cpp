@@ -459,13 +459,13 @@ namespace trview
                             ImGui::EndTabItem();
                         }
 
-                        if (ImGui::BeginTabItem("Items"))
+                        if (ImGui::BeginTabItem("Items", 0, _scroll_to_item ? ImGuiTabItemFlags_SetSelected : 0))
                         {
                             render_items_tab(room);
                             ImGui::EndTabItem();
                         }
 
-                        if (ImGui::BeginTabItem("Triggers"))
+                        if (ImGui::BeginTabItem("Triggers", 0, _scroll_to_trigger ? ImGuiTabItemFlags_SetSelected : 0))
                         {
                             render_triggers_tab(room);
                             ImGui::EndTabItem();

@@ -94,6 +94,6 @@ namespace trview
         bool _in_floordata_mode{ false };
         std::weak_ptr<ISector> _selected_sector;
         uint32_t _selected_floordata{ 0 };
-        Track<Type::Item, Type::Trigger> _track;
+        Track<Type::Item, Type::Trigger, Type::Light, Type::CameraSink> _track;
     };
 }
