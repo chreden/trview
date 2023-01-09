@@ -44,6 +44,8 @@ namespace trview
         virtual void update(float delta) override;
         virtual void set_number(int32_t number) override;
         virtual void set_floordata(const std::vector<uint16_t>& data) override;
+        virtual void set_selected_light(const std::weak_ptr<ILight>& light) override;
+        virtual void set_selected_camera_sink(const std::weak_ptr<ICameraSink>& camera_sink) override;
     private:
         void set_sync_room(bool value);
         void render_rooms_list();
@@ -57,10 +59,14 @@ namespace trview
         void render_triggers_tab(const std::shared_ptr<IRoom>& room);
         void render_floordata_tab(const std::shared_ptr<IRoom>& room);
         void set_selected_sector(const std::shared_ptr<ISector>& sector);
+        void render_camera_sink_tab(const std::shared_ptr<IRoom>& room);
+        void render_lights_tab(const std::shared_ptr<IRoom>& room);
 
         std::vector<std::weak_ptr<IRoom>> _all_rooms;
         std::vector<Item> _all_items;
         std::vector<std::weak_ptr<ITrigger>> _all_triggers;
+        std::vector<std::weak_ptr<ILight>> _all_lights;
+        std::vector<std::weak_ptr<ICameraSink>> _all_camera_sinks;
 
         bool _sync_room{ true };
         
@@ -71,6 +77,14 @@ namespace trview
         std::weak_ptr<ITrigger> _global_selected_trigger;
         std::weak_ptr<ITrigger> _local_selected_trigger;
         bool _scroll_to_trigger{ false };
+
+        std::weak_ptr<ILight> _global_selected_light;
+        std::weak_ptr<ILight> _local_selected_light;
+        bool _scroll_to_light{ false };
+
+        std::weak_ptr<ICameraSink> _global_selected_camera_sink;
+        std::weak_ptr<ICameraSink> _local_selected_camera_sink;
+        bool _scroll_to_camera_sink{ false };
 
         uint32_t _current_room{ 0u };
         uint32_t _selected_room{ 0u };
