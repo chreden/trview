@@ -265,14 +265,14 @@ namespace trview
             _filters.render();
 
             ImGui::SameLine();
+            _track.render();
+
+            ImGui::SameLine();
             bool sync_room = _sync_room;
             if (ImGui::Checkbox("Sync##syncroom", &sync_room))
             {
                 set_sync_room(sync_room);
             }
-
-            ImGui::SameLine();
-            _track.render();
 
             if (ImGui::BeginTable(Names::rooms_list.c_str(), 4, ImGuiTableFlags_Sortable | ImGuiTableFlags_ScrollY | ImGuiTableFlags_SizingFixedSame, ImVec2(-1, -1)))
             {
