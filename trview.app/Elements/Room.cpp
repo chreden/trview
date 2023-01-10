@@ -1004,6 +1004,11 @@ namespace trview
         return _lights;
     }
 
+    std::vector<std::weak_ptr<ICameraSink>> Room::camera_sinks() const
+    {
+        return _camera_sinks;
+    }
+
     std::shared_ptr<ISector> sector_from_point(const IRoom& room, const Vector3& point)
     {
         const auto info = room.info();

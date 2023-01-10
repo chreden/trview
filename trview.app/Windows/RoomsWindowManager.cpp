@@ -124,7 +124,6 @@ namespace trview
         rooms_window->set_current_room(_current_room);
         rooms_window->set_map_colours(_map_colours);
         rooms_window->set_floordata(_floordata);
-        rooms_window->set_camera_sinks(_all_camera_sinks);
         if (_selected_item.has_value())
         {
             rooms_window->set_selected_item(_selected_item.value());
@@ -164,17 +163,6 @@ namespace trview
         for (auto& window : _windows)
         {
             window.second->set_selected_camera_sink(camera_sink);
-        }
-    }
-
-    void RoomsWindowManager::set_camera_sinks(const std::vector<std::weak_ptr<ICameraSink>>& camera_sinks)
-    {
-        _all_camera_sinks = camera_sinks;
-        _selected_camera_sink.reset();
-        for (auto& window : _windows)
-        {
-            window.second->clear_selected_camera_sink();
-            window.second->set_camera_sinks(_all_camera_sinks);
         }
     }
 }

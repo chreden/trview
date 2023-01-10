@@ -65,6 +65,5 @@ namespace trview
         virtual void set_floordata(const std::vector<uint16_t>& data) = 0;
         virtual void set_selected_light(const std::weak_ptr<ILight>& light) = 0;
         virtual void set_selected_camera_sink(const std::weak_ptr<ICameraSink>& camera_sink) = 0;
-        virtual void set_camera_sinks(const std::vector<std::weak_ptr<ICameraSink>>& camera_sinks) = 0;
     };
 }

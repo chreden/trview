@@ -305,6 +305,7 @@ namespace trview
         /// </summary>
         virtual void set_visible(bool visible) = 0;
         virtual std::vector<std::weak_ptr<ILight>> lights() const = 0;
+        virtual std::vector<std::weak_ptr<ICameraSink>> camera_sinks() const = 0;
     };
 
     /// <summary>

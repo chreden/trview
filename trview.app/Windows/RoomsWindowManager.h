@@ -44,7 +44,6 @@ namespace trview
         virtual void set_floordata(const std::vector<uint16_t>& data) override;
         virtual void set_selected_light(const std::weak_ptr<ILight>& light) override;
         virtual void set_selected_camera_sink(const std::weak_ptr<ICameraSink>& camera_sink) override;
-        virtual void set_camera_sinks(const std::vector<std::weak_ptr<ICameraSink>>& camera_sinks) override;
     private:
         std::vector<Item> _all_items;
         std::vector<std::weak_ptr<IRoom>> _all_rooms;

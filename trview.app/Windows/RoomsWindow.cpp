@@ -127,7 +127,7 @@ namespace trview
         _scroll_to_room = true;
         if (_sync_room && _current_room < _all_rooms.size())
         {
-            _selected_room = _current_room;
+            select_room(_current_room);
             load_room_details(_current_room);
         }
     }
@@ -180,7 +180,7 @@ namespace trview
         if (_track.enabled<Type::Item>())
         {
             _local_selected_item = item;
-            _selected_room = item.room();
+            select_room(item.room());
             _scroll_to_room = true;
             _scroll_to_item = true;
             if (!_sync_room)
@@ -198,7 +198,7 @@ namespace trview
             _local_selected_trigger = trigger;
             if (const auto trigger_ptr = trigger.lock())
             {
-                _selected_room = trigger_ptr->room();
+                select_room(trigger_ptr->room());
                 _scroll_to_room = true;
                 _scroll_to_trigger = true;
                 if (!_sync_room)
@@ -325,7 +325,7 @@ namespace trview
                     if (ImGui::Selectable(std::format("{0}##{0}", room_ptr->number()).c_str(), &selected, ImGuiSelectableFlags_SpanAllColumns | static_cast<int>(ImGuiSelectableFlags_SelectOnNav)))
                     {
                         scroller.fix_scroll();
-                        _selected_room = room_ptr->number();
+                        select_room(room_ptr->number());
                         _map_renderer->load(room_ptr);
                         if (_sync_room)
                         {
@@ -474,7 +474,7 @@ namespace trview
 
                         if (ImGui::BeginTabItem("Camera/Sink", 0, _scroll_to_camera_sink ? ImGuiTabItemFlags_SetSelected : 0))
                         {
-                            render_camera_sink_tab(room);
+                            render_camera_sink_tab();
                             ImGui::EndTabItem();
                         }
 
@@ -685,7 +685,7 @@ namespace trview
                 bool selected = false;
                 if (ImGui::Selectable(std::to_string(neighbour).c_str(), &selected, ImGuiSelectableFlags_SpanAllColumns | static_cast<int>(ImGuiSelectableFlags_SelectOnNav)))
                 {
-                    _selected_room = neighbour;
+                    select_room(neighbour);
                     if (_sync_room)
                     {
                         on_room_selected(neighbour);
@@ -881,7 +881,7 @@ namespace trview
             _local_selected_light = light;
             if (const auto light_ptr = light.lock())
             {
-                _selected_room = light_ptr->room();
+                select_room(light_ptr->room());
                 _scroll_to_room = true;
                 _scroll_to_light = true;
                 if (!_sync_room)
@@ -900,7 +900,7 @@ namespace trview
             _local_selected_camera_sink = camera_sink;
             if (const auto camera_sink_ptr = camera_sink.lock())
             {
-                _selected_room = actual_room(*camera_sink_ptr);
+                select_room(actual_room(*camera_sink_ptr));
                 _scroll_to_room = true;
                 _scroll_to_camera_sink = true;
                 if (!_sync_room)
@@ -911,7 +911,7 @@ namespace trview
         }
     }
 
-    void RoomsWindow::render_camera_sink_tab(const std::shared_ptr<IRoom>& room)
+    void RoomsWindow::render_camera_sink_tab()
     {
         if (ImGui::BeginTable("Camera/Sinks", 2, ImGuiTableFlags_Sortable | ImGuiTableFlags_SizingStretchProp | ImGuiTableFlags_ScrollY))
         {
@@ -920,16 +920,15 @@ namespace trview
             ImGui::TableSetupScrollFreeze(1, 1);
             ImGui::TableHeadersRow();
 
-            imgui_sort_weak(_all_camera_sinks,
+            imgui_sort_weak(_camera_sinks,
                 {
                     [](auto&& l, auto&& r) { return l.number() < r.number(); },
                     [&](auto&& l, auto&& r) { return std::tuple(to_string(l.type()), l.number()) < std::tuple(to_string(r.type()), r.number()); }
                 }, _force_sort);
 
-            for (const auto& camera_sink : _all_camera_sinks)
+            for (const auto& camera_sink : _camera_sinks)
             {
-                const auto camera_sink_ptr = camera_sink.lock();
-                if (actual_room(*camera_sink_ptr) == room->number())
+                if (const auto camera_sink_ptr = camera_sink.lock())
                 {
                     ImGui::TableNextRow();
                     ImGui::TableNextColumn();
@@ -1024,7 +1023,7 @@ namespace trview
     {
         _global_selected_camera_sink.reset();
         _local_selected_camera_sink.reset();
-        _all_camera_sinks = camera_sinks;
+        _camera_sinks = camera_sinks;
     }
 
     void RoomsWindow::set_lights(const std::vector<std::weak_ptr<ILight>>& lights)
@@ -1032,5 +1031,23 @@ namespace trview
         _global_selected_light.reset();
         _local_selected_light.reset();
         _lights = lights;
+    }
+
+    void RoomsWindow::select_room(uint32_t room)
+    {
+        _selected_room = room;
+        if (room < _all_rooms.size())
+        {
+            if (auto room_ptr = _all_rooms[room].lock())
+            {
+                _lights = room_ptr->lights();
+                _camera_sinks = room_ptr->camera_sinks();
+            }
+        }
+        else
+        {
+            _lights.clear();
+            _camera_sinks.clear();
+        }
     }
 }
