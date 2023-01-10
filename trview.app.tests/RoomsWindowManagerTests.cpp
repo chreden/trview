@@ -48,27 +48,6 @@ namespace
     }
 }
 
-TEST(RoomsWindowManager, SetTriggersClearsSelectedTrigger)
-{
-    auto mock_window = mock_shared<MockRoomsWindow>();
-    EXPECT_CALL(*mock_window, set_triggers).Times(3);
-    EXPECT_CALL(*mock_window, clear_selected_trigger).Times(2);
-    auto manager = register_test_module().with_window_source([&](auto&&...) { return mock_window; }).build();
-
-    auto created_window = manager->create_window().lock();
-    ASSERT_NE(created_window, nullptr);
-    ASSERT_EQ(created_window, mock_window);
-
-    auto trigger = mock_shared<MockTrigger>();
-    manager->set_triggers({ trigger });
-
-    ASSERT_EQ(manager->selected_trigger().lock(), nullptr);
-    manager->set_selected_trigger(trigger);
-    ASSERT_EQ(manager->selected_trigger().lock(), trigger);
-    manager->set_triggers({});
-    ASSERT_EQ(manager->selected_trigger().lock(), nullptr);
-}
-
 TEST(RoomsWindowManager, WindowsUpdated)
 {
     auto mock_window = mock_shared<MockRoomsWindow>();

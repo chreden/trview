@@ -195,10 +195,10 @@ namespace trview
         _global_selected_trigger = trigger;
         if (_track.enabled<Type::Trigger>())
         {
-            _local_selected_trigger = trigger;
             if (const auto trigger_ptr = trigger.lock())
             {
                 select_room(trigger_ptr->room());
+                _local_selected_trigger = trigger;
                 _scroll_to_room = true;
                 _scroll_to_trigger = true;
                 if (!_sync_room)
@@ -881,10 +881,10 @@ namespace trview
         _global_selected_light = light;
         if (_track.enabled<Type::Light>())
         {
-            _local_selected_light = light;
             if (const auto light_ptr = light.lock())
             {
                 select_room(light_ptr->room());
+                _local_selected_light = light;
                 _scroll_to_room = true;
                 _scroll_to_light = true;
                 if (!_sync_room)
@@ -900,10 +900,10 @@ namespace trview
         _global_selected_camera_sink = camera_sink;
         if (_track.enabled<Type::CameraSink>())
         {
-            _local_selected_camera_sink = camera_sink;
             if (const auto camera_sink_ptr = camera_sink.lock())
             {
                 select_room(actual_room(*camera_sink_ptr));
+                _local_selected_camera_sink = camera_sink;
                 _scroll_to_room = true;
                 _scroll_to_camera_sink = true;
                 if (!_sync_room)
@@ -1052,6 +1052,7 @@ namespace trview
         {
             _lights.clear();
             _camera_sinks.clear();
+            _triggers.clear();
         }
     }
 }
