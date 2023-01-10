@@ -1006,4 +1006,30 @@ namespace trview
             ImGui::EndTable();
         }
     }
+
+    void RoomsWindow::clear_selected_light()
+    {
+        _local_selected_light.reset();
+        _global_selected_light.reset();
+    }
+
+    void RoomsWindow::clear_selected_camera_sink()
+    {
+        _local_selected_camera_sink.reset();
+        _global_selected_camera_sink.reset();
+    }
+
+    void RoomsWindow::set_camera_sinks(const std::vector<std::weak_ptr<ICameraSink>>& camera_sinks)
+    {
+        _global_selected_camera_sink.reset();
+        _local_selected_camera_sink.reset();
+        _all_camera_sinks = camera_sinks;
+    }
+
+    void RoomsWindow::set_lights(const std::vector<std::weak_ptr<ILight>>& lights)
+    {
+        _global_selected_light.reset();
+        _local_selected_light.reset();
+        _all_lights = lights;
+    }
 }

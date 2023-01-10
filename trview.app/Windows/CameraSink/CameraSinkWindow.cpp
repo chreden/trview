@@ -47,7 +47,6 @@ namespace trview
 
     void CameraSinkWindow::render()
     {
-        ImGui::ShowStackToolWindow();
         if (!render_camera_sink_window())
         {
             on_window_closed();
