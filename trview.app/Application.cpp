@@ -141,7 +141,6 @@ namespace trview
         _rooms_windows->set_floordata(_level->floor_data());
         _rooms_windows->set_rooms(_level->rooms());
         _rooms_windows->set_camera_sinks(_level->camera_sinks());
-        _rooms_windows->set_lights(_level->lights());
         _route_window->set_items(_level->items());
         _route_window->set_triggers(_level->triggers());
         _route_window->set_rooms(_level->rooms());

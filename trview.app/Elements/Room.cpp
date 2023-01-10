@@ -999,6 +999,11 @@ namespace trview
         _visible = visible;
     }
 
+    std::vector<std::weak_ptr<ILight>> Room::lights() const
+    {
+        return _lights;
+    }
+
     std::shared_ptr<ISector> sector_from_point(const IRoom& room, const Vector3& point)
     {
         const auto info = room.info();

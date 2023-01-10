@@ -304,6 +304,7 @@ namespace trview
         /// Sets whether the room is visible.
         /// </summary>
         virtual void set_visible(bool visible) = 0;
+        virtual std::vector<std::weak_ptr<ILight>> lights() const = 0;
     };
 
     /// <summary>

@@ -125,7 +125,6 @@ namespace trview
         rooms_window->set_map_colours(_map_colours);
         rooms_window->set_floordata(_floordata);
         rooms_window->set_camera_sinks(_all_camera_sinks);
-        rooms_window->set_lights(_all_lights);
         if (_selected_item.has_value())
         {
             rooms_window->set_selected_item(_selected_item.value());
@@ -176,17 +175,6 @@ namespace trview
         {
             window.second->clear_selected_camera_sink();
             window.second->set_camera_sinks(_all_camera_sinks);
-        }
-    }
-
-    void RoomsWindowManager::set_lights(const std::vector<std::weak_ptr<ILight>>& lights)
-    {
-        _all_lights = lights;
-        _selected_light.reset();
-        for (auto& window : _windows)
-        {
-            window.second->clear_selected_light();
-            window.second->set_lights(_all_lights);
         }
     }
 }

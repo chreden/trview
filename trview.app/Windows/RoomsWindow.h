@@ -49,7 +49,6 @@ namespace trview
         virtual void clear_selected_light() override;
         virtual void clear_selected_camera_sink() override;
         virtual void set_camera_sinks(const std::vector<std::weak_ptr<ICameraSink>>& camera_sinks) override;
-        virtual void set_lights(const std::vector<std::weak_ptr<ILight>>& lights) override;
     private:
         void set_sync_room(bool value);
         void render_rooms_list();
@@ -64,12 +63,13 @@ namespace trview
         void render_floordata_tab(const std::shared_ptr<IRoom>& room);
         void set_selected_sector(const std::shared_ptr<ISector>& sector);
         void render_camera_sink_tab(const std::shared_ptr<IRoom>& room);
-        void render_lights_tab(const std::shared_ptr<IRoom>& room);
+        void render_lights_tab();
+        void set_lights(const std::vector<std::weak_ptr<ILight>>& lights);
 
         std::vector<std::weak_ptr<IRoom>> _all_rooms;
         std::vector<Item> _all_items;
         std::vector<std::weak_ptr<ITrigger>> _all_triggers;
-        std::vector<std::weak_ptr<ILight>> _all_lights;
+        std::vector<std::weak_ptr<ILight>> _lights;
         std::vector<std::weak_ptr<ICameraSink>> _all_camera_sinks;
 
         bool _sync_room{ true };

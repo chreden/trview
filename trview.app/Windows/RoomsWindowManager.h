@@ -45,7 +45,6 @@ namespace trview
         virtual void set_selected_light(const std::weak_ptr<ILight>& light) override;
         virtual void set_selected_camera_sink(const std::weak_ptr<ICameraSink>& camera_sink) override;
         virtual void set_camera_sinks(const std::vector<std::weak_ptr<ICameraSink>>& camera_sinks) override;
-        virtual void set_lights(const std::vector<std::weak_ptr<ILight>>& lights) override;
     private:
         std::vector<Item> _all_items;
         std::vector<std::weak_ptr<IRoom>> _all_rooms;
@@ -58,7 +57,6 @@ namespace trview
         MapColours _map_colours;
         std::vector<uint16_t> _floordata;
         std::vector<std::weak_ptr<ICameraSink>> _all_camera_sinks;
-        std::vector<std::weak_ptr<ILight>> _all_lights;
         std::weak_ptr<ICameraSink> _selected_camera_sink;
         std::weak_ptr<ILight> _selected_light;
     };

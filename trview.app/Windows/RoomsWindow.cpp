@@ -142,7 +142,9 @@ namespace trview
             });
         if (room != _all_rooms.end())
         {
-            _map_renderer->load(room->lock());
+            auto room_ptr = room->lock();
+            set_lights(room_ptr->lights());
+            _map_renderer->load(room_ptr);
         }
     }
 
@@ -478,7 +480,7 @@ namespace trview
 
                         if (ImGui::BeginTabItem("Lights", 0, _scroll_to_light ? ImGuiTabItemFlags_SetSelected : 0))
                         {
-                            render_lights_tab(room);
+                            render_lights_tab();
                             ImGui::EndTabItem();
                         }
 
@@ -958,7 +960,7 @@ namespace trview
         }
     }
     
-    void RoomsWindow::render_lights_tab(const std::shared_ptr<IRoom>&room)
+    void RoomsWindow::render_lights_tab()
     {
         if (ImGui::BeginTable("Lights", 2, ImGuiTableFlags_Sortable | ImGuiTableFlags_SizingStretchProp | ImGuiTableFlags_ScrollY))
         {
@@ -967,16 +969,15 @@ namespace trview
             ImGui::TableSetupScrollFreeze(1, 1);
             ImGui::TableHeadersRow();
 
-            imgui_sort_weak(_all_lights,
+            imgui_sort_weak(_lights,
                 {
                     [](auto&& l, auto&& r) { return l.number() < r.number(); },
                     [&](auto&& l, auto&& r) { return std::tuple(light_type_name(l.type()), l.number()) < std::tuple(light_type_name(r.type()), r.number()); }
                 }, _force_sort);
 
-            for (const auto& light : _all_lights)
+            for (const auto& light : _lights)
             {
-                const auto light_ptr = light.lock();
-                if (light_ptr->room() == room->number())
+                if (auto light_ptr = light.lock())
                 {
                     ImGui::TableNextRow();
                     ImGui::TableNextColumn();
@@ -1030,6 +1031,6 @@ namespace trview
     {
         _global_selected_light.reset();
         _local_selected_light.reset();
-        _all_lights = lights;
+        _lights = lights;
     }
 }
