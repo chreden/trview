@@ -38,7 +38,6 @@ namespace trview
         virtual void set_rooms(const std::vector<std::weak_ptr<IRoom>>& items) override;
         virtual void set_selected_item(const Item& item) override;
         virtual void set_selected_trigger(const std::weak_ptr<ITrigger>& trigger) override;
-        virtual void set_triggers(const std::vector<std::weak_ptr<ITrigger>>& triggers) override;
         virtual std::weak_ptr<IRoomsWindow> create_window() override;
         virtual void update(float delta) override;
         virtual void set_floordata(const std::vector<uint16_t>& data) override;
@@ -47,7 +46,6 @@ namespace trview
     private:
         std::vector<Item> _all_items;
         std::vector<std::weak_ptr<IRoom>> _all_rooms;
-        std::vector<std::weak_ptr<ITrigger>> _all_triggers;
         uint32_t _current_room{ 0u };
         std::weak_ptr<ITrigger> _selected_trigger;
         std::optional<Item> _selected_item;

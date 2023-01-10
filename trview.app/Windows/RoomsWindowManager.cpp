@@ -96,17 +96,6 @@ namespace trview
         }
     }
 
-    void RoomsWindowManager::set_triggers(const std::vector<std::weak_ptr<ITrigger>>& triggers)
-    {
-        _all_triggers = triggers;
-        _selected_trigger.reset();
-        for (auto& window : _windows)
-        {
-            window.second->clear_selected_trigger();
-            window.second->set_triggers(_all_triggers);
-        }
-    }
-
     std::weak_ptr<IRoomsWindow> RoomsWindowManager::create_window()
     {
         auto rooms_window = _rooms_window_source();
@@ -119,7 +108,6 @@ namespace trview
         rooms_window->on_camera_sink_selected += on_camera_sink_selected;
         rooms_window->set_level_version(_level_version);
         rooms_window->set_items(_all_items);
-        rooms_window->set_triggers(_all_triggers);
         rooms_window->set_rooms(_all_rooms);
         rooms_window->set_current_room(_current_room);
         rooms_window->set_map_colours(_map_colours);

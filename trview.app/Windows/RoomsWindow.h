@@ -40,7 +40,6 @@ namespace trview
         virtual void set_rooms(const std::vector<std::weak_ptr<IRoom>>& rooms) override;
         virtual void set_selected_item(const Item& item) override;
         virtual void set_selected_trigger(const std::weak_ptr<ITrigger>& trigger) override;
-        virtual void set_triggers(const std::vector<std::weak_ptr<ITrigger>>& triggers) override;
         virtual void update(float delta) override;
         virtual void set_number(int32_t number) override;
         virtual void set_floordata(const std::vector<uint16_t>& data) override;
@@ -58,18 +57,19 @@ namespace trview
         void render_properties_tab(const std::shared_ptr<IRoom>& room);
         void render_neighbours_tab(const std::shared_ptr<IRoom>& room);
         void render_items_tab(const std::shared_ptr<IRoom>& room);
-        void render_triggers_tab(const std::shared_ptr<IRoom>& room);
+        void render_triggers_tab();
         void render_floordata_tab(const std::shared_ptr<IRoom>& room);
         void set_selected_sector(const std::shared_ptr<ISector>& sector);
         void render_camera_sink_tab();
         void render_lights_tab();
+        void set_triggers(const std::vector<std::weak_ptr<ITrigger>>& triggers);
         void set_lights(const std::vector<std::weak_ptr<ILight>>& lights);
         void set_camera_sinks(const std::vector<std::weak_ptr<ICameraSink>>& camera_sinks);
         void select_room(uint32_t room);
 
         std::vector<std::weak_ptr<IRoom>> _all_rooms;
         std::vector<Item> _all_items;
-        std::vector<std::weak_ptr<ITrigger>> _all_triggers;
+        std::vector<std::weak_ptr<ITrigger>> _triggers;
         std::vector<std::weak_ptr<ILight>> _lights;
         std::vector<std::weak_ptr<ICameraSink>> _camera_sinks;
 

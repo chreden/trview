@@ -213,7 +213,7 @@ namespace trview
     {
         _global_selected_trigger.reset();
         _local_selected_trigger.reset();
-        _all_triggers = triggers;
+        _triggers = triggers;
     }
 
     void RoomsWindow::set_sync_room(bool value)
@@ -291,7 +291,7 @@ namespace trview
 
                 auto trigger_count = [&](const IRoom& room)
                 {
-                    return std::count_if(_all_triggers.begin(), _all_triggers.end(), [&room](const auto& trigger) { return trigger.lock()->room() == room.number(); });
+                    return room.triggers().size();
                 };
 
                 imgui_sort_weak(_all_rooms,
@@ -420,10 +420,10 @@ namespace trview
                                         else
                                         {
                                             // Select triggers
-                                            for (const auto& trigger : _all_triggers)
+                                            for (const auto& trigger : _triggers)
                                             {
                                                 auto trigger_ptr = trigger.lock();
-                                                if (trigger_ptr && trigger_ptr->room() == _current_room && trigger_ptr->sector_id() == sector->id())
+                                                if (trigger_ptr && trigger_ptr->sector_id() == sector->id())
                                                 {
                                                     on_trigger_selected(trigger);
                                                     break;
@@ -468,7 +468,7 @@ namespace trview
 
                         if (ImGui::BeginTabItem("Triggers", 0, _scroll_to_trigger ? ImGuiTabItemFlags_SetSelected : 0))
                         {
-                            render_triggers_tab(room);
+                            render_triggers_tab();
                             ImGui::EndTabItem();
                         }
 
@@ -543,10 +543,9 @@ namespace trview
         _filters.add_multi_getter<float>("Trigger Index", [&](auto&& room)
             {
                 std::vector<float> results;
-                for (const auto& trigger : _all_triggers)
+                for (const auto& trigger : room.triggers())
                 {
-                    const auto trigger_ptr = trigger.lock();
-                    if (trigger_ptr && trigger_ptr->room() == room.number())
+                    if (const auto trigger_ptr = trigger.lock())
                     {
                         results.push_back(static_cast<float>(trigger_ptr->number()));
                     }
@@ -555,20 +554,25 @@ namespace trview
             });
 
         std::set<std::string> available_trigger_types;
-        for (const auto& trigger : _all_triggers)
+        for (const auto& room : _all_rooms)
         {
-            if (auto trigger_ptr = trigger.lock())
+            if (auto room_ptr = room.lock())
             {
-                available_trigger_types.insert(trigger_type_name(trigger_ptr->type()));
+                for (const auto& trigger : room_ptr->triggers())
+                {
+                    if (auto trigger_ptr = trigger.lock())
+                    {
+                        available_trigger_types.insert(trigger_type_name(trigger_ptr->type()));
+                    }
+                }
             }
         }
         _filters.add_multi_getter<std::string>("Trigger Type", { available_trigger_types.begin(), available_trigger_types.end() }, [&](auto&& room)
             {
                 std::vector<std::string> results;
-                for (const auto& trigger : _all_triggers)
+                for (const auto& trigger : room.triggers())
                 {
-                    const auto trigger_ptr = trigger.lock();
-                    if (trigger_ptr && trigger_ptr->room() == room.number())
+                    if (const auto trigger_ptr = trigger.lock())
                     {
                         results.push_back(trigger_type_name(trigger_ptr->type()));
                     }
@@ -744,7 +748,7 @@ namespace trview
         }
     }
 
-    void RoomsWindow::render_triggers_tab(const std::shared_ptr<IRoom>& room)
+    void RoomsWindow::render_triggers_tab()
     {
         if (ImGui::BeginTable("Triggers", 2, ImGuiTableFlags_Sortable | ImGuiTableFlags_SizingStretchProp | ImGuiTableFlags_ScrollY))
         {
@@ -753,16 +757,15 @@ namespace trview
             ImGui::TableSetupScrollFreeze(1, 1);
             ImGui::TableHeadersRow();
 
-            imgui_sort_weak(_all_triggers,
+            imgui_sort_weak(_triggers,
                 {
                     [](auto&& l, auto&& r) { return l.number() < r.number(); },
                     [&](auto&& l, auto&& r) { return std::tuple(trigger_type_name(l.type()), l.number()) < std::tuple(trigger_type_name(r.type()), r.number()); }
                 }, _force_sort);
 
-            for (const auto& trigger : _all_triggers)
+            for (const auto& trigger : _triggers)
             {
-                const auto trigger_ptr = trigger.lock();
-                if (trigger_ptr->room() == room->number())
+                if (const auto trigger_ptr = trigger.lock())
                 {
                     ImGui::TableNextRow();
                     ImGui::TableNextColumn();
@@ -1040,8 +1043,9 @@ namespace trview
         {
             if (auto room_ptr = _all_rooms[room].lock())
             {
-                _lights = room_ptr->lights();
-                _camera_sinks = room_ptr->camera_sinks();
+                set_triggers(room_ptr->triggers());
+                set_lights(room_ptr->lights());
+                set_camera_sinks(room_ptr->camera_sinks());
             }
         }
         else
