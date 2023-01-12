@@ -482,33 +482,36 @@ namespace trview
                 }
                 else if (std::shared_ptr<ISector> sector = _ui->current_minimap_sector())
                 {
-                    // Select the trigger (if it is a trigger).
-                    const auto triggers = _level->triggers();
-                    auto trigger = std::find_if(triggers.begin(), triggers.end(),
-                        [&](auto t)
+                    if (!ImGui::IsWindowHovered(ImGuiHoveredFlags_AnyWindow))
                     {
-                        const auto t_ptr = t.lock();
-                        return t_ptr->room() == sector->room() && t_ptr->sector_id() == sector->id();
-                    });
+                        // Select the trigger (if it is a trigger).
+                        const auto triggers = _level->triggers();
+                        auto trigger = std::find_if(triggers.begin(), triggers.end(),
+                            [&](auto t)
+                            {
+                                const auto t_ptr = t.lock();
+                                return t_ptr->room() == sector->room() && t_ptr->sector_id() == sector->id();
+                            });
 
-                    if (trigger == triggers.end() || (GetAsyncKeyState(VK_CONTROL) & 0x8000))
-                    {
-                        if (has_flag(sector->flags(), SectorFlag::Portal))
+                        if (trigger == triggers.end() || (GetAsyncKeyState(VK_CONTROL) & 0x8000))
                         {
-                            on_room_selected(sector->portal());
+                            if (has_flag(sector->flags(), SectorFlag::Portal))
+                            {
+                                on_room_selected(sector->portal());
+                            }
+                            else if (!_settings.invert_map_controls && has_flag(sector->flags(), SectorFlag::RoomBelow))
+                            {
+                                on_room_selected(sector->room_below());
+                            }
+                            else if (_settings.invert_map_controls && has_flag(sector->flags(), SectorFlag::RoomAbove))
+                            {
+                                on_room_selected(sector->room_above());
+                            }
                         }
-                        else if (!_settings.invert_map_controls && has_flag(sector->flags(), SectorFlag::RoomBelow))
+                        else
                         {
-                            on_room_selected(sector->room_below());
+                            on_trigger_selected(*trigger);
                         }
-                        else if (_settings.invert_map_controls && has_flag(sector->flags(), SectorFlag::RoomAbove))
-                        {
-                            on_room_selected(sector->room_above());
-                        }
-                    }
-                    else
-                    {
-                        on_trigger_selected(*trigger);
                     }
                 }
             }
@@ -516,15 +519,18 @@ namespace trview
             {
                 _ui->set_show_context_menu(false);
 
-                if (auto sector = _ui->current_minimap_sector())
+                if (!ImGui::IsWindowHovered(ImGuiHoveredFlags_AnyWindow))
                 {
-                    if (!_settings.invert_map_controls && has_flag(sector->flags(), SectorFlag::RoomAbove))
+                    if (auto sector = _ui->current_minimap_sector())
                     {
-                        on_room_selected(sector->room_above());
-                    }
-                    else if (_settings.invert_map_controls && has_flag(sector->flags(), SectorFlag::RoomBelow))
-                    {
-                        on_room_selected(sector->room_below());
+                        if (!_settings.invert_map_controls && has_flag(sector->flags(), SectorFlag::RoomAbove))
+                        {
+                            on_room_selected(sector->room_above());
+                        }
+                        else if (_settings.invert_map_controls && has_flag(sector->flags(), SectorFlag::RoomBelow))
+                        {
+                            on_room_selected(sector->room_below());
+                        }
                     }
                 }
             }
