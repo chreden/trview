@@ -1039,20 +1039,20 @@ namespace trview
     void RoomsWindow::select_room(uint32_t room)
     {
         _selected_room = room;
-        if (room < _all_rooms.size())
+        for (const auto& r : _all_rooms)
         {
-            if (auto room_ptr = _all_rooms[room].lock())
+            auto room_ptr = r.lock();
+            if (room_ptr && room_ptr->number() == _selected_room)
             {
                 set_triggers(room_ptr->triggers());
                 set_lights(room_ptr->lights());
                 set_camera_sinks(room_ptr->camera_sinks());
+                return;
             }
         }
-        else
-        {
-            _lights.clear();
-            _camera_sinks.clear();
-            _triggers.clear();
-        }
+
+        _lights.clear();
+        _camera_sinks.clear();
+        _triggers.clear();
     }
 }
