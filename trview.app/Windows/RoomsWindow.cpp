@@ -402,7 +402,7 @@ namespace trview
                         ImGui::SetCursorPosY(ImGui::GetCursorPosY() + std::floor(remainder));
 
                         const auto io = ImGui::GetIO();
-                        if (io.WantCaptureMouse)
+                        if (io.WantCaptureMouse && ImGui::IsWindowHovered(ImGuiHoveredFlags_None))
                         {
                             const auto mouse_pos = io.MousePos;
                             auto top_left = ImGui::GetCursorScreenPos();
