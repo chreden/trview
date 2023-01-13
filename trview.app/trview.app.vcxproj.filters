@@ -857,7 +857,7 @@
     </ClInclude>
     <ClInclude Include="Lua\trview\trview.h">
       <Filter>Lua\trview</Filter>
-    <ClInclude>
+    </ClInclude>
     <ClInclude Include="Windows\CameraSink\CameraSinkWindow.h">
       <Filter>Windows\CameraSink</Filter>
     </ClInclude>
