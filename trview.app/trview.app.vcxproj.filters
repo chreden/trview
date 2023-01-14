@@ -855,9 +855,7 @@
     <ClInclude Include="Mocks\Windows\ITexturesWindow.h">
       <Filter>Mocks\Windows</Filter>
     </ClInclude>
-    <ClInclude Include="Lua\trview\trview.h">
-      <Filter>Lua\trview</Filter>
-    </ClInclude>
+    <ClInclude Include="Lua\trview\trview.h" Filter="Lua\trview" />
     <ClInclude Include="Windows\CameraSink\CameraSinkWindow.h">
       <Filter>Windows\CameraSink</Filter>
     </ClInclude>
