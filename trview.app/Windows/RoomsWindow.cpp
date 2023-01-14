@@ -143,7 +143,6 @@ namespace trview
         if (room != _all_rooms.end())
         {
             auto room_ptr = room->lock();
-            set_lights(room_ptr->lights());
             _map_renderer->load(room_ptr);
         }
     }
@@ -169,6 +168,9 @@ namespace trview
     {
         _all_rooms = rooms;
         _current_room = 0xffffffff;
+        _triggers.clear();
+        _lights.clear();
+        _camera_sinks.clear();
         generate_filters();
         _force_sort = true;
         set_selected_sector(nullptr);
