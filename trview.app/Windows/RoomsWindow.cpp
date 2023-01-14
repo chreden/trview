@@ -211,7 +211,6 @@ namespace trview
 
     void RoomsWindow::set_triggers(const std::vector<std::weak_ptr<ITrigger>>& triggers)
     {
-        _global_selected_trigger.reset();
         _local_selected_trigger.reset();
         _triggers = triggers;
     }
@@ -1024,14 +1023,12 @@ namespace trview
 
     void RoomsWindow::set_camera_sinks(const std::vector<std::weak_ptr<ICameraSink>>& camera_sinks)
     {
-        _global_selected_camera_sink.reset();
         _local_selected_camera_sink.reset();
         _camera_sinks = camera_sinks;
     }
 
     void RoomsWindow::set_lights(const std::vector<std::weak_ptr<ILight>>& lights)
     {
-        _global_selected_light.reset();
         _local_selected_light.reset();
         _lights = lights;
     }
