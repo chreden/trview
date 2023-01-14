@@ -220,7 +220,14 @@ namespace trview
         if (_sync_room != value)
         {
             _sync_room = value;
-            set_current_room(_current_room);
+            uint32_t room = _current_room;
+            if (_sync_room)
+            {
+                // Force room to be different to current room so that the
+                // room details are loaded.
+                _current_room = 0xffffffff;
+            }
+            set_current_room(room);
         }
     }
 
