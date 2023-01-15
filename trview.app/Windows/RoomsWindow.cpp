@@ -182,14 +182,15 @@ namespace trview
         _global_selected_item = item;
         if (_track.enabled<Type::Item>())
         {
-            _local_selected_item = item;
-            select_room(item.room());
-            _scroll_to_room = true;
-            _scroll_to_item = true;
-            if (!_sync_room)
+            if (_selected_room != _current_room)
             {
+                select_room(item.room());
+                _scroll_to_room = true;
                 load_room_details(item.room());
             }
+
+            _local_selected_item = item;
+            _scroll_to_item = true;
         }
     }
 
@@ -200,14 +201,15 @@ namespace trview
         {
             if (const auto trigger_ptr = trigger.lock())
             {
-                select_room(trigger_ptr->room());
-                _local_selected_trigger = trigger;
-                _scroll_to_room = true;
-                _scroll_to_trigger = true;
-                if (!_sync_room)
+                if (_selected_room != _current_room)
                 {
+                    select_room(trigger_ptr->room());
+                    _scroll_to_room = true;
                     load_room_details(trigger_ptr->room());
                 }
+
+                _local_selected_trigger = trigger;
+                _scroll_to_trigger = true;
             }
         }
     }
@@ -893,14 +895,15 @@ namespace trview
         {
             if (const auto light_ptr = light.lock())
             {
-                select_room(light_ptr->room());
-                _local_selected_light = light;
-                _scroll_to_room = true;
-                _scroll_to_light = true;
-                if (!_sync_room)
+                if (_selected_room != _current_room)
                 {
+                    select_room(light_ptr->room());
+                    _scroll_to_room = true;
                     load_room_details(light_ptr->room());
                 }
+
+                _local_selected_light = light;
+                _scroll_to_light = true;
             }
         }
     }
@@ -912,14 +915,15 @@ namespace trview
         {
             if (const auto camera_sink_ptr = camera_sink.lock())
             {
-                select_room(actual_room(*camera_sink_ptr));
-                _local_selected_camera_sink = camera_sink;
-                _scroll_to_room = true;
-                _scroll_to_camera_sink = true;
-                if (!_sync_room)
+                if (_selected_room != _current_room)
                 {
+                    select_room(actual_room(*camera_sink_ptr));
+                    _scroll_to_room = true;
                     load_room_details(actual_room(*camera_sink_ptr));
                 }
+
+                _local_selected_camera_sink = camera_sink;
+                _scroll_to_camera_sink = true;
             }
         }
     }
