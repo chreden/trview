@@ -152,6 +152,7 @@ namespace trview
         _all_items = items;
         _global_selected_item.reset();
         _local_selected_item.reset();
+        _force_sort = true;
     }
 
     void RoomsWindow::set_level_version(trlevel::LevelVersion version)
@@ -215,6 +216,7 @@ namespace trview
     {
         _local_selected_trigger.reset();
         _triggers = triggers;
+        _force_sort = true;
     }
 
     void RoomsWindow::set_sync_room(bool value)
@@ -1034,12 +1036,14 @@ namespace trview
     {
         _local_selected_camera_sink.reset();
         _camera_sinks = camera_sinks;
+        _force_sort = true;
     }
 
     void RoomsWindow::set_lights(const std::vector<std::weak_ptr<ILight>>& lights)
     {
         _local_selected_light.reset();
         _lights = lights;
+        _force_sort = true;
     }
 
     void RoomsWindow::select_room(uint32_t room)
