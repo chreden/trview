@@ -80,11 +80,6 @@ namespace trview
         return stay_open;
     }
 
-    void CameraSinkWindow::set_track_room(bool value)
-    {
-        _track_room = value;
-    }
-
     void CameraSinkWindow::set_sync(bool value)
     {
         if (_sync != value)
@@ -115,11 +110,7 @@ namespace trview
             _filters.render();
             ImGui::SameLine();
 
-            bool track_room = _track_room;
-            if (ImGui::Checkbox(Names::track_room.c_str(), &track_room))
-            {
-                set_track_room(track_room);
-            }
+            _track.render();
             ImGui::SameLine();
             bool sync = _sync;
             if (ImGui::Checkbox(Names::sync.c_str(), &sync))
@@ -148,7 +139,7 @@ namespace trview
                 {
                     const auto camera_sink = camera_sink_ptr.lock();
 
-                    if (_track_room && !matching_room(*camera_sink, _current_room) || !_filters.match(*camera_sink))
+                    if (_track.enabled<Type::Room>() && !matching_room(*camera_sink, _current_room) || !_filters.match(*camera_sink))
                     {
                         continue;
                     }
@@ -331,7 +322,7 @@ namespace trview
                         if (ImGui::Selectable(std::to_string(trigger_ptr->number()).c_str(), &trigger_selected, ImGuiSelectableFlags_SpanAllColumns | static_cast<int>(ImGuiSelectableFlags_SelectOnNav)))
                         {
                             _selected_trigger = trigger;
-                            set_track_room(false);
+                            _track.set_enabled<Type::Room>(false);
                             on_trigger_selected(trigger);
                         }
                         ImGui::TableNextColumn();

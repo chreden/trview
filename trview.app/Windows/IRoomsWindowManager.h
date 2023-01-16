@@ -20,6 +20,8 @@ namespace trview
         Event<std::weak_ptr<IRoom>, bool> on_room_visibility;
 
         Event<std::weak_ptr<ISector>> on_sector_hover;
+        Event<std::weak_ptr<ILight>> on_light_selected;
+        Event<std::weak_ptr<ICameraSink>> on_camera_sink_selected;
 
         /// Render all of the rooms windows.
         virtual void render() = 0;
@@ -48,10 +50,6 @@ namespace trview
         /// @param trigger The trigger currently selected.
         virtual void set_selected_trigger(const std::weak_ptr<ITrigger>& trigger) = 0;
 
-        /// Set the triggers in the level.
-        /// @param triggers The triggers in the level.
-        virtual void set_triggers(const std::vector<std::weak_ptr<ITrigger>>& triggers) = 0;
-
         /// Create a new rooms window.
         virtual std::weak_ptr<IRoomsWindow> create_window() = 0;
         /// <summary>
@@ -61,5 +59,7 @@ namespace trview
         virtual void update(float delta) = 0;
 
         virtual void set_floordata(const std::vector<uint16_t>& data) = 0;
+        virtual void set_selected_light(const std::weak_ptr<ILight>& light) = 0;
+        virtual void set_selected_camera_sink(const std::weak_ptr<ICameraSink>& camera_sink) = 0;
     };
 }

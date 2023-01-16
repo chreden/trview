@@ -53,6 +53,7 @@ namespace trview
             ImGuiWindow* find_window(const std::string& name) const;
             ImGuiWindow* find_window(ImGuiID id) const;
             TestImGuiId id(const std::string& window_name) const;
+            TestImGuiId popup_id(const TestImGuiId& parent, const std::string& popup_name) const;
             TestImGuiId popup_id(const std::string& popup_name) const;
         private:
             void click_element_internal(TestImGuiId test_id, bool show_context_menu, TestImGuiId active_override, bool hover);

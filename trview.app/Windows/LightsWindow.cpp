@@ -76,11 +76,6 @@ namespace trview
         }
     }
 
-    void LightsWindow::set_track_room(bool value)
-    {
-        _track_room = value;
-    }
-
     void LightsWindow::render_lights_list() 
     {
         if (ImGui::BeginChild(Names::light_list_panel.c_str(), ImVec2(230, 0), true))
@@ -88,11 +83,7 @@ namespace trview
             _filters.render();
             ImGui::SameLine();
 
-            bool track_room = _track_room;
-            if (ImGui::Checkbox(Names::track_room.c_str(), &track_room))
-            {
-                set_track_room(track_room);
-            }
+            _track.render();
             ImGui::SameLine();
             bool sync_light = _sync_light;
             if (ImGui::Checkbox(Names::sync_light.c_str(), &sync_light))
@@ -120,7 +111,7 @@ namespace trview
                 for (const auto& light_ptr : _all_lights)
                 {
                     const auto& light = light_ptr.lock();
-                    if (_track_room && light->room() != _current_room || !_filters.match(*light))
+                    if (_track.enabled<Type::Room>() && light->room() != _current_room || !_filters.match(*light))
                     {
                         continue;
                     }

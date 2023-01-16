@@ -13,6 +13,20 @@ namespace trview
         : _clipboard(clipboard)
     {
         setup_filters();
+
+        _token_store += _track.on_toggle<Type::Room>() += [&](bool value)
+        {
+            _need_filtering = true;
+            if (value)
+            {
+                set_current_room(_current_room);
+            }
+            else
+            {
+                _filter_applied = false;
+                set_triggers(_all_triggers);
+            }
+        };
     }
 
     void TriggersWindow::set_triggers(const std::vector<std::weak_ptr<ITrigger>>& triggers)
@@ -85,24 +99,6 @@ namespace trview
         }
     }
 
-    void TriggersWindow::set_track_room(bool value)
-    {
-        if (_track_room != value)
-        {
-            _track_room = value;
-            _need_filtering = true;
-            if (_track_room)
-            {
-                set_current_room(_current_room);
-            }
-            else
-            {
-                _filter_applied = false;
-                set_triggers(_all_triggers);
-            }
-        }
-    }
-
     void TriggersWindow::set_items(const std::vector<Item>& items)
     {
         _all_items = items;
@@ -141,11 +137,7 @@ namespace trview
             _filters.render();
             ImGui::SameLine();
 
-            bool track_room = _track_room;
-            if (ImGui::Checkbox(Names::track_room.c_str(), &track_room))
-            {
-                set_track_room(track_room);
-            }
+            _track.render();
             ImGui::SameLine();
             bool sync_trigger = _sync_trigger;
             if (ImGui::Checkbox(Names::sync_trigger.c_str(), &sync_trigger))
@@ -352,12 +344,12 @@ namespace trview
                     {
                         if (command.type() == TriggerCommandType::LookAtItem || command.type() == TriggerCommandType::Object && command.index() < _all_items.size())
                         {
-                            set_track_room(false);
+                            _track.set_enabled<Type::Room>(false);
                             on_item_selected(_all_items[command.index()]);
                         }
                         else if (equals_any(command.type(), TriggerCommandType::UnderwaterCurrent, TriggerCommandType::Camera))
                         {
-                            set_track_room(false);
+                            _track.set_enabled<Type::Room>(false);
                             on_camera_sink_selected(command.index());
                         }
                     }
@@ -492,7 +484,7 @@ namespace trview
             [&](const auto& trigger)
             {
                 const auto trigger_ptr = trigger.lock();
-                return !((_track_room && trigger_ptr->room() != _current_room || !_filters.match(*trigger_ptr)) ||
+                return !((_track.enabled<Type::Room>() && trigger_ptr->room() != _current_room || !_filters.match(*trigger_ptr)) ||
                          (!_selected_commands.empty() && !has_any_command(*trigger_ptr, _selected_commands)));
             });
         _need_filtering = false;

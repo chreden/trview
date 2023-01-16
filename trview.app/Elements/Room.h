@@ -79,6 +79,9 @@ namespace trview
         virtual DirectX::SimpleMath::Vector3 position() const override;
         virtual bool visible() const override;
         virtual void set_visible(bool visible) override;
+        virtual std::vector<std::weak_ptr<ILight>> lights() const override;
+        virtual std::vector<std::weak_ptr<ICameraSink>> camera_sinks() const override;
+        virtual std::vector<std::weak_ptr<ITrigger>> triggers() const override;
     private:
         void generate_geometry(const IMesh::Source& mesh_source, const trlevel::tr3_room& room);
         void generate_adjacency();

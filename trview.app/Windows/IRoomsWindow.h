@@ -4,6 +4,8 @@
 #include <trview.common/Event.h>
 #include <trview.app/Elements/Item.h>
 #include <trview.app/Elements/ITrigger.h>
+#include "../Elements/CameraSink/ICameraSink.h"
+#include "../Elements/ILight.h"
 #include <trview.app/Elements/IRoom.h>
 #include "../UI/MapColours.h"
 
@@ -30,6 +32,9 @@ namespace trview
         Event<std::weak_ptr<IRoom>, bool> on_room_visibility;
 
         Event<std::weak_ptr<ISector>> on_sector_hover;
+
+        Event<std::weak_ptr<ILight>> on_light_selected;
+        Event<std::weak_ptr<ICameraSink>> on_camera_sink_selected;
 
         /// Clear the selected trigger.
         virtual void clear_selected_trigger() = 0;
@@ -64,9 +69,6 @@ namespace trview
         /// @param trigger The trigger currently selected.
         virtual void set_selected_trigger(const std::weak_ptr<ITrigger>& trigger) = 0;
 
-        /// Set the triggers in the level.
-        /// @param triggers The triggers in the level.
-        virtual void set_triggers(const std::vector<std::weak_ptr<ITrigger>>& triggers) = 0;
         /// <summary>
         /// Update the window.
         /// </summary>
@@ -76,5 +78,11 @@ namespace trview
         virtual void set_number(int32_t number) = 0;
 
         virtual void set_floordata(const std::vector<uint16_t>& data) = 0;
+
+        virtual void set_selected_light(const std::weak_ptr<ILight>& light) = 0;
+        virtual void set_selected_camera_sink(const std::weak_ptr<ICameraSink>& camera_sink) = 0;
+
+        virtual void clear_selected_light() = 0;
+        virtual void clear_selected_camera_sink() = 0;
     };
 }

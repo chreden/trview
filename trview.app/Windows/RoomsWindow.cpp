@@ -102,6 +102,17 @@ namespace trview
         };
 
         generate_filters();
+
+        _token_store += _track.on_toggle<Type::Item>() += [&](bool value)
+        {
+            if (value && _global_selected_item.has_value())
+            {
+                set_selected_item(_global_selected_item.value());
+            }
+        };
+        _token_store += _track.on_toggle<Type::Trigger>() += [&](bool) { set_selected_trigger(_global_selected_trigger); };
+        _token_store += _track.on_toggle<Type::Light>() += [&](bool) { set_selected_light(_global_selected_light); };
+        _token_store += _track.on_toggle<Type::CameraSink>() += [&](bool) { set_selected_camera_sink(_global_selected_camera_sink); };
     }
 
     void RoomsWindow::set_current_room(uint32_t room)
@@ -116,7 +127,7 @@ namespace trview
         _scroll_to_room = true;
         if (_sync_room && _current_room < _all_rooms.size())
         {
-            _selected_room = _current_room;
+            select_room(_current_room);
             load_room_details(_current_room);
         }
     }
@@ -131,7 +142,8 @@ namespace trview
             });
         if (room != _all_rooms.end())
         {
-            _map_renderer->load(room->lock());
+            auto room_ptr = room->lock();
+            _map_renderer->load(room_ptr);
         }
     }
 
@@ -140,6 +152,7 @@ namespace trview
         _all_items = items;
         _global_selected_item.reset();
         _local_selected_item.reset();
+        _force_sort = true;
     }
 
     void RoomsWindow::set_level_version(trlevel::LevelVersion version)
@@ -156,6 +169,9 @@ namespace trview
     {
         _all_rooms = rooms;
         _current_room = 0xffffffff;
+        _triggers.clear();
+        _lights.clear();
+        _camera_sinks.clear();
         generate_filters();
         _force_sort = true;
         set_selected_sector(nullptr);
@@ -164,43 +180,45 @@ namespace trview
     void RoomsWindow::set_selected_item(const Item& item)
     {
         _global_selected_item = item;
-        if (_track_item)
+        if (_track.enabled<Type::Item>())
         {
-            _local_selected_item = item;
-            _selected_room = item.room();
-            _scroll_to_room = true;
-            _scroll_to_item = true;
-            if (!_sync_room)
+            if (_selected_room != _current_room)
             {
+                select_room(item.room());
+                _scroll_to_room = true;
                 load_room_details(item.room());
             }
+
+            _local_selected_item = item;
+            _scroll_to_item = true;
         }
     }
 
     void RoomsWindow::set_selected_trigger(const std::weak_ptr<ITrigger>& trigger)
     {
         _global_selected_trigger = trigger;
-        if (_track_trigger)
+        if (_track.enabled<Type::Trigger>())
         {
-            _local_selected_trigger = trigger;
             if (const auto trigger_ptr = trigger.lock())
             {
-                _selected_room = trigger_ptr->room();
-                _scroll_to_room = true;
-                _scroll_to_trigger = true;
-                if (!_sync_room)
+                if (_selected_room != _current_room)
                 {
+                    select_room(trigger_ptr->room());
+                    _scroll_to_room = true;
                     load_room_details(trigger_ptr->room());
                 }
+
+                _local_selected_trigger = trigger;
+                _scroll_to_trigger = true;
             }
         }
     }
 
     void RoomsWindow::set_triggers(const std::vector<std::weak_ptr<ITrigger>>& triggers)
     {
-        _global_selected_trigger.reset();
         _local_selected_trigger.reset();
-        _all_triggers = triggers;
+        _triggers = triggers;
+        _force_sort = true;
     }
 
     void RoomsWindow::set_sync_room(bool value)
@@ -208,28 +226,14 @@ namespace trview
         if (_sync_room != value)
         {
             _sync_room = value;
-            set_current_room(_current_room);
-        }
-    }
-
-    void RoomsWindow::set_track_item(bool value)
-    {
-        if (_track_item != value)
-        {
-            _track_item = value;
-            if (_track_item && _global_selected_item.has_value())
+            uint32_t room = _current_room;
+            if (_sync_room)
             {
-                set_selected_item(_global_selected_item.value());
+                // Force room to be different to current room so that the
+                // room details are loaded.
+                _current_room = 0xffffffff;
             }
-        }
-    }
-
-    void RoomsWindow::set_track_trigger(bool value)
-    {
-        if (_track_trigger != value)
-        {
-            _track_trigger = value;
-            set_selected_trigger(_global_selected_trigger);
+            set_current_room(room);
         }
     }
 
@@ -271,34 +275,16 @@ namespace trview
     {
         if (ImGui::BeginChild(Names::rooms_panel.c_str(), ImVec2(270, 0), true))
         {
-            if (ImGui::BeginTable("##controls", 2, 0, ImVec2(-1, 0)))
+            _filters.render();
+
+            ImGui::SameLine();
+            _track.render();
+
+            ImGui::SameLine();
+            bool sync_room = _sync_room;
+            if (ImGui::Checkbox("Sync##syncroom", &sync_room))
             {
-                ImGui::TableNextRow();
-                ImGui::TableNextColumn();
-
-                _filters.render();
-                ImGui::TableNextColumn();
-
-                bool sync_room = _sync_room;
-                if (ImGui::Checkbox("Sync##syncroom", &sync_room))
-                {
-                    set_sync_room(sync_room);
-                }
-                ImGui::TableNextColumn();
-
-                bool track_item = _track_item;
-                if (ImGui::Checkbox("Track Item##trackitem", &track_item))
-                {
-                    set_track_item(track_item);
-                }
-                ImGui::TableNextColumn();
-
-                bool track_trigger = _track_trigger;
-                if (ImGui::Checkbox("Track Trigger##tracktrigger", &track_trigger))
-                {
-                    set_track_trigger(track_trigger);
-                }
-                ImGui::EndTable();
+                set_sync_room(sync_room);
             }
 
             if (ImGui::BeginTable(Names::rooms_list.c_str(), 4, ImGuiTableFlags_Sortable | ImGuiTableFlags_ScrollY | ImGuiTableFlags_SizingFixedSame, ImVec2(-1, -1)))
@@ -317,7 +303,7 @@ namespace trview
 
                 auto trigger_count = [&](const IRoom& room)
                 {
-                    return std::count_if(_all_triggers.begin(), _all_triggers.end(), [&room](const auto& trigger) { return trigger.lock()->room() == room.number(); });
+                    return room.triggers().size();
                 };
 
                 imgui_sort_weak(_all_rooms,
@@ -351,7 +337,7 @@ namespace trview
                     if (ImGui::Selectable(std::format("{0}##{0}", room_ptr->number()).c_str(), &selected, ImGuiSelectableFlags_SpanAllColumns | static_cast<int>(ImGuiSelectableFlags_SelectOnNav)))
                     {
                         scroller.fix_scroll();
-                        _selected_room = room_ptr->number();
+                        select_room(room_ptr->number());
                         _map_renderer->load(room_ptr);
                         if (_sync_room)
                         {
@@ -446,10 +432,10 @@ namespace trview
                                         else
                                         {
                                             // Select triggers
-                                            for (const auto& trigger : _all_triggers)
+                                            for (const auto& trigger : _triggers)
                                             {
                                                 auto trigger_ptr = trigger.lock();
-                                                if (trigger_ptr && trigger_ptr->room() == _current_room && trigger_ptr->sector_id() == sector->id())
+                                                if (trigger_ptr && trigger_ptr->sector_id() == sector->id())
                                                 {
                                                     on_trigger_selected(trigger);
                                                     break;
@@ -480,21 +466,33 @@ namespace trview
                             ImGui::EndTabItem();
                         }
 
-                        if (ImGui::BeginTabItem("Neigbours"))
+                        if (ImGui::BeginTabItem("Neighbours"))
                         {
                             render_neighbours_tab(room);
                             ImGui::EndTabItem();
                         }
 
-                        if (ImGui::BeginTabItem("Items"))
+                        if (ImGui::BeginTabItem("Items", 0, _scroll_to_item ? ImGuiTabItemFlags_SetSelected : 0))
                         {
                             render_items_tab(room);
                             ImGui::EndTabItem();
                         }
 
-                        if (ImGui::BeginTabItem("Triggers"))
+                        if (ImGui::BeginTabItem("Triggers", 0, _scroll_to_trigger ? ImGuiTabItemFlags_SetSelected : 0))
                         {
-                            render_triggers_tab(room);
+                            render_triggers_tab();
+                            ImGui::EndTabItem();
+                        }
+
+                        if (ImGui::BeginTabItem("Camera/Sink", 0, _scroll_to_camera_sink ? ImGuiTabItemFlags_SetSelected : 0))
+                        {
+                            render_camera_sink_tab();
+                            ImGui::EndTabItem();
+                        }
+
+                        if (ImGui::BeginTabItem("Lights", 0, _scroll_to_light ? ImGuiTabItemFlags_SetSelected : 0))
+                        {
+                            render_lights_tab();
                             ImGui::EndTabItem();
                         }
 
@@ -557,10 +555,9 @@ namespace trview
         _filters.add_multi_getter<float>("Trigger Index", [&](auto&& room)
             {
                 std::vector<float> results;
-                for (const auto& trigger : _all_triggers)
+                for (const auto& trigger : room.triggers())
                 {
-                    const auto trigger_ptr = trigger.lock();
-                    if (trigger_ptr && trigger_ptr->room() == room.number())
+                    if (const auto trigger_ptr = trigger.lock())
                     {
                         results.push_back(static_cast<float>(trigger_ptr->number()));
                     }
@@ -569,20 +566,25 @@ namespace trview
             });
 
         std::set<std::string> available_trigger_types;
-        for (const auto& trigger : _all_triggers)
+        for (const auto& room : _all_rooms)
         {
-            if (auto trigger_ptr = trigger.lock())
+            if (auto room_ptr = room.lock())
             {
-                available_trigger_types.insert(trigger_type_name(trigger_ptr->type()));
+                for (const auto& trigger : room_ptr->triggers())
+                {
+                    if (auto trigger_ptr = trigger.lock())
+                    {
+                        available_trigger_types.insert(trigger_type_name(trigger_ptr->type()));
+                    }
+                }
             }
         }
         _filters.add_multi_getter<std::string>("Trigger Type", { available_trigger_types.begin(), available_trigger_types.end() }, [&](auto&& room)
             {
                 std::vector<std::string> results;
-                for (const auto& trigger : _all_triggers)
+                for (const auto& trigger : room.triggers())
                 {
-                    const auto trigger_ptr = trigger.lock();
-                    if (trigger_ptr && trigger_ptr->room() == room.number())
+                    if (const auto trigger_ptr = trigger.lock())
                     {
                         results.push_back(trigger_type_name(trigger_ptr->type()));
                     }
@@ -699,7 +701,7 @@ namespace trview
                 bool selected = false;
                 if (ImGui::Selectable(std::to_string(neighbour).c_str(), &selected, ImGuiSelectableFlags_SpanAllColumns | static_cast<int>(ImGuiSelectableFlags_SelectOnNav)))
                 {
-                    _selected_room = neighbour;
+                    select_room(neighbour);
                     if (_sync_room)
                     {
                         on_room_selected(neighbour);
@@ -758,7 +760,7 @@ namespace trview
         }
     }
 
-    void RoomsWindow::render_triggers_tab(const std::shared_ptr<IRoom>& room)
+    void RoomsWindow::render_triggers_tab()
     {
         if (ImGui::BeginTable("Triggers", 2, ImGuiTableFlags_Sortable | ImGuiTableFlags_SizingStretchProp | ImGuiTableFlags_ScrollY))
         {
@@ -767,16 +769,15 @@ namespace trview
             ImGui::TableSetupScrollFreeze(1, 1);
             ImGui::TableHeadersRow();
 
-            imgui_sort_weak(_all_triggers,
+            imgui_sort_weak(_triggers,
                 {
                     [](auto&& l, auto&& r) { return l.number() < r.number(); },
                     [&](auto&& l, auto&& r) { return std::tuple(trigger_type_name(l.type()), l.number()) < std::tuple(trigger_type_name(r.type()), r.number()); }
                 }, _force_sort);
 
-            for (const auto& trigger : _all_triggers)
+            for (const auto& trigger : _triggers)
             {
-                const auto trigger_ptr = trigger.lock();
-                if (trigger_ptr->room() == room->number())
+                if (const auto trigger_ptr = trigger.lock())
                 {
                     ImGui::TableNextRow();
                     ImGui::TableNextColumn();
@@ -885,5 +886,187 @@ namespace trview
     {
         _selected_sector = sector;
         _map_renderer->set_selection(sector);
+    }
+
+    void RoomsWindow::set_selected_light(const std::weak_ptr<ILight>& light)
+    {
+        _global_selected_light = light;
+        if (_track.enabled<Type::Light>())
+        {
+            if (const auto light_ptr = light.lock())
+            {
+                if (_selected_room != _current_room)
+                {
+                    select_room(light_ptr->room());
+                    _scroll_to_room = true;
+                    load_room_details(light_ptr->room());
+                }
+
+                _local_selected_light = light;
+                _scroll_to_light = true;
+            }
+        }
+    }
+    
+    void RoomsWindow::set_selected_camera_sink(const std::weak_ptr<ICameraSink>& camera_sink)
+    {
+        _global_selected_camera_sink = camera_sink;
+        if (_track.enabled<Type::CameraSink>())
+        {
+            if (const auto camera_sink_ptr = camera_sink.lock())
+            {
+                if (_selected_room != _current_room)
+                {
+                    select_room(actual_room(*camera_sink_ptr));
+                    _scroll_to_room = true;
+                    load_room_details(actual_room(*camera_sink_ptr));
+                }
+
+                _local_selected_camera_sink = camera_sink;
+                _scroll_to_camera_sink = true;
+            }
+        }
+    }
+
+    void RoomsWindow::render_camera_sink_tab()
+    {
+        if (ImGui::BeginTable("Camera/Sinks", 2, ImGuiTableFlags_Sortable | ImGuiTableFlags_SizingStretchProp | ImGuiTableFlags_ScrollY))
+        {
+            ImGui::TableSetupColumn("#");
+            ImGui::TableSetupColumn("Type");
+            ImGui::TableSetupScrollFreeze(1, 1);
+            ImGui::TableHeadersRow();
+
+            imgui_sort_weak(_camera_sinks,
+                {
+                    [](auto&& l, auto&& r) { return l.number() < r.number(); },
+                    [&](auto&& l, auto&& r) { return std::tuple(to_string(l.type()), l.number()) < std::tuple(to_string(r.type()), r.number()); }
+                }, _force_sort);
+
+            for (const auto& camera_sink : _camera_sinks)
+            {
+                if (const auto camera_sink_ptr = camera_sink.lock())
+                {
+                    ImGui::TableNextRow();
+                    ImGui::TableNextColumn();
+                    const auto local_selection = _local_selected_camera_sink.lock();
+                    bool selected = local_selection && local_selection->number() == camera_sink_ptr->number();
+
+                    ImGuiScroller scroller;
+                    if (selected && _scroll_to_camera_sink)
+                    {
+                        scroller.scroll_to_item();
+                        _scroll_to_camera_sink = false;
+                    }
+
+                    if (ImGui::Selectable(std::format("{0}##{0}", camera_sink_ptr->number()).c_str(), &selected, ImGuiSelectableFlags_SpanAllColumns | static_cast<int>(ImGuiSelectableFlags_SelectOnNav)))
+                    {
+                        scroller.fix_scroll();
+                        _local_selected_camera_sink = camera_sink_ptr;
+                        on_camera_sink_selected(camera_sink);
+                        _scroll_to_camera_sink = false;
+                    }
+
+                    ImGui::TableNextColumn();
+                    ImGui::Text(to_string(camera_sink_ptr->type()).c_str());
+                }
+            }
+
+            ImGui::EndTable();
+        }
+    }
+    
+    void RoomsWindow::render_lights_tab()
+    {
+        if (ImGui::BeginTable("Lights", 2, ImGuiTableFlags_Sortable | ImGuiTableFlags_SizingStretchProp | ImGuiTableFlags_ScrollY))
+        {
+            ImGui::TableSetupColumn("#");
+            ImGui::TableSetupColumn("Type");
+            ImGui::TableSetupScrollFreeze(1, 1);
+            ImGui::TableHeadersRow();
+
+            imgui_sort_weak(_lights,
+                {
+                    [](auto&& l, auto&& r) { return l.number() < r.number(); },
+                    [&](auto&& l, auto&& r) { return std::tuple(light_type_name(l.type()), l.number()) < std::tuple(light_type_name(r.type()), r.number()); }
+                }, _force_sort);
+
+            for (const auto& light : _lights)
+            {
+                if (auto light_ptr = light.lock())
+                {
+                    ImGui::TableNextRow();
+                    ImGui::TableNextColumn();
+                    const auto local_selection = _local_selected_light.lock();
+                    bool selected = local_selection && local_selection->number() == light_ptr->number();
+
+                    ImGuiScroller scroller;
+                    if (selected && _scroll_to_light)
+                    {
+                        scroller.scroll_to_item();
+                        _scroll_to_light = false;
+                    }
+
+                    if (ImGui::Selectable(std::format("{0}##{0}", light_ptr->number()).c_str(), &selected, ImGuiSelectableFlags_SpanAllColumns | static_cast<int>(ImGuiSelectableFlags_SelectOnNav)))
+                    {
+                        scroller.fix_scroll();
+                        _local_selected_light = light_ptr;
+                        on_light_selected(light);
+                        _scroll_to_light = false;
+                    }
+
+                    ImGui::TableNextColumn();
+                    ImGui::Text(light_type_name(light_ptr->type()).c_str());
+                }
+            }
+
+            ImGui::EndTable();
+        }
+    }
+
+    void RoomsWindow::clear_selected_light()
+    {
+        _local_selected_light.reset();
+        _global_selected_light.reset();
+    }
+
+    void RoomsWindow::clear_selected_camera_sink()
+    {
+        _local_selected_camera_sink.reset();
+        _global_selected_camera_sink.reset();
+    }
+
+    void RoomsWindow::set_camera_sinks(const std::vector<std::weak_ptr<ICameraSink>>& camera_sinks)
+    {
+        _local_selected_camera_sink.reset();
+        _camera_sinks = camera_sinks;
+        _force_sort = true;
+    }
+
+    void RoomsWindow::set_lights(const std::vector<std::weak_ptr<ILight>>& lights)
+    {
+        _local_selected_light.reset();
+        _lights = lights;
+        _force_sort = true;
+    }
+
+    void RoomsWindow::select_room(uint32_t room)
+    {
+        _selected_room = room;
+        for (const auto& r : _all_rooms)
+        {
+            auto room_ptr = r.lock();
+            if (room_ptr && room_ptr->number() == _selected_room)
+            {
+                set_triggers(room_ptr->triggers());
+                set_lights(room_ptr->lights());
+                set_camera_sinks(room_ptr->camera_sinks());
+                return;
+            }
+        }
+
+        _lights.clear();
+        _camera_sinks.clear();
+        _triggers.clear();
     }
 }

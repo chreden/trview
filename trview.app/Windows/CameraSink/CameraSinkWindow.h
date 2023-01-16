@@ -2,6 +2,7 @@
 
 #include <trview.common/Windows/IClipboard.h>
 #include "../../Filters/Filters.h"
+#include "../../Track/Track.h"
 #include "ICameraSinkWindow.h"
 
 namespace trview
@@ -12,7 +13,6 @@ namespace trview
         struct Names
         {
             static inline const std::string sync = "Sync";
-            static inline const std::string track_room = "Track Room";
             static inline const std::string camera_sink_list = "##camerasinklist";
             static inline const std::string list_panel = "Camera/Sink List";
             static inline const std::string details_panel = "Camera/Sink Details";
@@ -30,7 +30,6 @@ namespace trview
         virtual void set_current_room(uint32_t room) override;
     private:
         bool render_camera_sink_window();
-        void set_track_room(bool value);
         void set_sync(bool value);
         void set_local_selected_camera_sink(const std::weak_ptr<ICameraSink>& camera_sink);
         void render_list();
@@ -45,11 +44,11 @@ namespace trview
         std::shared_ptr<IClipboard> _clipboard;
         Filters<ICameraSink> _filters;
         std::weak_ptr<ITrigger> _selected_trigger;
-        bool _track_room{ false };
         bool _sync{ true };
         bool _scroll_to{ false };
         uint32_t _current_room{ 0u };
         bool _force_sort{ false };
         std::vector<std::weak_ptr<ITrigger>> _triggered_by;
+        Track<Type::Room> _track;
     };
 }

@@ -96,17 +96,6 @@ namespace trview
         }
     }
 
-    void RoomsWindowManager::set_triggers(const std::vector<std::weak_ptr<ITrigger>>& triggers)
-    {
-        _all_triggers = triggers;
-        _selected_trigger.reset();
-        for (auto& window : _windows)
-        {
-            window.second->clear_selected_trigger();
-            window.second->set_triggers(_all_triggers);
-        }
-    }
-
     std::weak_ptr<IRoomsWindow> RoomsWindowManager::create_window()
     {
         auto rooms_window = _rooms_window_source();
@@ -115,13 +104,21 @@ namespace trview
         rooms_window->on_trigger_selected += on_trigger_selected;
         rooms_window->on_room_visibility += on_room_visibility;
         rooms_window->on_sector_hover += on_sector_hover;
+        rooms_window->on_light_selected += on_light_selected;
+        rooms_window->on_camera_sink_selected += on_camera_sink_selected;
         rooms_window->set_level_version(_level_version);
         rooms_window->set_items(_all_items);
-        rooms_window->set_triggers(_all_triggers);
         rooms_window->set_rooms(_all_rooms);
         rooms_window->set_current_room(_current_room);
         rooms_window->set_map_colours(_map_colours);
         rooms_window->set_floordata(_floordata);
+        if (_selected_item.has_value())
+        {
+            rooms_window->set_selected_item(_selected_item.value());
+        }
+        rooms_window->set_selected_trigger(_selected_trigger);
+        rooms_window->set_selected_camera_sink(_selected_camera_sink);
+        rooms_window->set_selected_light(_selected_light);
         return add_window(rooms_window);
     }
 
@@ -136,6 +133,24 @@ namespace trview
         for (auto& window : _windows)
         {
             window.second->set_floordata(data);
+        }
+    }
+
+    void RoomsWindowManager::set_selected_light(const std::weak_ptr<ILight>& light)
+    {
+        _selected_light = light;
+        for (auto& window : _windows)
+        {
+            window.second->set_selected_light(light);
+        }
+    }
+
+    void RoomsWindowManager::set_selected_camera_sink(const std::weak_ptr<ICameraSink>& camera_sink)
+    {
+        _selected_camera_sink = camera_sink;
+        for (auto& window : _windows)
+        {
+            window.second->set_selected_camera_sink(camera_sink);
         }
     }
 }

@@ -174,9 +174,9 @@ TEST(ItemsWindow, ItemsListFilteredWhenRoomSetAndTrackRoomEnabled)
 
     TestImgui imgui([&]() { window->render(); });
 
-    imgui.click_element(imgui.id("Items 0")
-        .push_child(ItemsWindow::Names::item_list_panel)
-        .id(ItemsWindow::Names::track_room));
+    imgui.click_element(imgui.id("Items 0").push_child(ItemsWindow::Names::item_list_panel).id(Track<>::Names::Button));
+    imgui.click_element(imgui.popup_id(imgui.id("Items 0").push_child(ItemsWindow::Names::item_list_panel), Track<>::Names::Popup).id("Room"));
+    imgui.press_key(ImGuiKey_Escape);
 
     imgui.click_element_with_hover(imgui.id("Items 0")
         .push_child(ItemsWindow::Names::item_list_panel)
@@ -221,9 +221,8 @@ TEST(ItemsWindow, ItemsListUpdatedWhenFiltered)
     window->set_current_room(78);
 
     TestImgui imgui([&]() { window->render(); });
-    imgui.click_element(imgui.id("Items 0")
-        .push_child(ItemsWindow::Names::item_list_panel)
-        .id(ItemsWindow::Names::track_room));
+    imgui.click_element(imgui.id("Items 0").push_child(ItemsWindow::Names::item_list_panel).id(Track<>::Names::Button));
+    imgui.click_element(imgui.popup_id(imgui.id("Items 0").push_child(ItemsWindow::Names::item_list_panel), Track<>::Names::Popup).id("Room"));
     imgui.reset();
     imgui.render();
 

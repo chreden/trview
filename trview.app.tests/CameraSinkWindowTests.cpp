@@ -147,9 +147,8 @@ TEST(CameraSinkWindow, CameraSinkListFilteredWhenRoomSetAndTrackRoomEnabled)
     window->set_current_room(78);
 
     TestImgui imgui([&]() { window->render(); });
-    imgui.click_element(imgui.id("Camera/Sink 0")
-        .push_child(CameraSinkWindow::Names::list_panel)
-        .id(CameraSinkWindow::Names::track_room));
+    imgui.click_element(imgui.id("Camera/Sink 0").push_child(CameraSinkWindow::Names::list_panel).id(Track<>::Names::Button));
+    imgui.click_element(imgui.popup_id(imgui.id("Camera/Sink 0").push_child(CameraSinkWindow::Names::list_panel), Track<>::Names::Popup).id("Room"));
 
     imgui.reset();
     imgui.render();

@@ -9,7 +9,7 @@
 #include "../Elements/Item.h"
 #include "../UI/IMapRenderer.h"
 #include "../Filters/Filters.h"
-
+#include "../Track/Track.h"
 
 namespace trview
 {
@@ -40,14 +40,15 @@ namespace trview
         virtual void set_rooms(const std::vector<std::weak_ptr<IRoom>>& rooms) override;
         virtual void set_selected_item(const Item& item) override;
         virtual void set_selected_trigger(const std::weak_ptr<ITrigger>& trigger) override;
-        virtual void set_triggers(const std::vector<std::weak_ptr<ITrigger>>& triggers) override;
         virtual void update(float delta) override;
         virtual void set_number(int32_t number) override;
         virtual void set_floordata(const std::vector<uint16_t>& data) override;
+        virtual void set_selected_light(const std::weak_ptr<ILight>& light) override;
+        virtual void set_selected_camera_sink(const std::weak_ptr<ICameraSink>& camera_sink) override;
+        virtual void clear_selected_light() override;
+        virtual void clear_selected_camera_sink() override;
     private:
         void set_sync_room(bool value);
-        void set_track_item(bool value);
-        void set_track_trigger(bool value);
         void render_rooms_list();
         void render_room_details();
         bool render_rooms_window();
@@ -56,17 +57,23 @@ namespace trview
         void render_properties_tab(const std::shared_ptr<IRoom>& room);
         void render_neighbours_tab(const std::shared_ptr<IRoom>& room);
         void render_items_tab(const std::shared_ptr<IRoom>& room);
-        void render_triggers_tab(const std::shared_ptr<IRoom>& room);
+        void render_triggers_tab();
         void render_floordata_tab(const std::shared_ptr<IRoom>& room);
         void set_selected_sector(const std::shared_ptr<ISector>& sector);
+        void render_camera_sink_tab();
+        void render_lights_tab();
+        void set_triggers(const std::vector<std::weak_ptr<ITrigger>>& triggers);
+        void set_lights(const std::vector<std::weak_ptr<ILight>>& lights);
+        void set_camera_sinks(const std::vector<std::weak_ptr<ICameraSink>>& camera_sinks);
+        void select_room(uint32_t room);
 
         std::vector<std::weak_ptr<IRoom>> _all_rooms;
         std::vector<Item> _all_items;
-        std::vector<std::weak_ptr<ITrigger>> _all_triggers;
+        std::vector<std::weak_ptr<ITrigger>> _triggers;
+        std::vector<std::weak_ptr<ILight>> _lights;
+        std::vector<std::weak_ptr<ICameraSink>> _camera_sinks;
 
         bool _sync_room{ true };
-        bool _track_item{ false };
-        bool _track_trigger{ false };
         
         std::optional<Item> _global_selected_item;
         std::optional<Item> _local_selected_item;
@@ -75,6 +82,14 @@ namespace trview
         std::weak_ptr<ITrigger> _global_selected_trigger;
         std::weak_ptr<ITrigger> _local_selected_trigger;
         bool _scroll_to_trigger{ false };
+
+        std::weak_ptr<ILight> _global_selected_light;
+        std::weak_ptr<ILight> _local_selected_light;
+        bool _scroll_to_light{ false };
+
+        std::weak_ptr<ICameraSink> _global_selected_camera_sink;
+        std::weak_ptr<ICameraSink> _local_selected_camera_sink;
+        bool _scroll_to_camera_sink{ false };
 
         uint32_t _current_room{ 0u };
         uint32_t _selected_room{ 0u };
@@ -98,5 +113,6 @@ namespace trview
         bool _in_floordata_mode{ false };
         std::weak_ptr<ISector> _selected_sector;
         uint32_t _selected_floordata{ 0 };
+        Track<Type::Item, Type::Trigger, Type::Light, Type::CameraSink> _track;
     };
 }

@@ -49,6 +49,10 @@ namespace trview
             MOCK_METHOD(DirectX::SimpleMath::Vector3, position, (), (const, override));
             MOCK_METHOD(bool, visible, (), (const, override));
             MOCK_METHOD(void, set_visible, (bool visible), (override));
+            MOCK_METHOD(std::vector<std::weak_ptr<ILight>>, lights, (), (const, override));
+            MOCK_METHOD(std::vector<std::weak_ptr<ICameraSink>>, camera_sinks, (), (const, override));
+            MOCK_METHOD(std::vector<std::weak_ptr<ITrigger>>, triggers, (), (const, override));
+
 
             std::shared_ptr<MockRoom> with_number(uint32_t number)
             {

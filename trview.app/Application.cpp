@@ -137,7 +137,6 @@ namespace trview
         _triggers_windows->set_triggers(_level->triggers());
         _rooms_windows->set_level_version(_level->version());
         _rooms_windows->set_items(_level->items());
-        _rooms_windows->set_triggers(_level->triggers());
         _rooms_windows->set_floordata(_level->floor_data());
         _rooms_windows->set_rooms(_level->rooms());
         _route_window->set_items(_level->items());
@@ -422,6 +421,8 @@ namespace trview
         _token_store += _rooms_windows->on_trigger_selected += [this](const auto& trigger) { select_trigger(trigger); };
         _token_store += _rooms_windows->on_room_visibility += [this](const auto& room, bool value) { set_room_visibility(room, value); };
         _token_store += _rooms_windows->on_sector_hover += [this](const auto& sector) { select_sector(sector); };
+        _token_store += _rooms_windows->on_camera_sink_selected += [this](const auto& camera_sink) { select_camera_sink(camera_sink); };
+        _token_store += _rooms_windows->on_light_selected += [this](const auto& light) { select_light(light); };
     }
 
     void Application::setup_route_window()
@@ -603,6 +604,7 @@ namespace trview
         _level->set_selected_light(light_ptr->number());
         _viewer->select_light(light);
         _lights_windows->set_selected_light(light);
+        _rooms_windows->set_selected_light(light);
     }
 
     void Application::set_item_visibility(const Item& item, bool visible)
@@ -858,9 +860,10 @@ namespace trview
             return;
         }
 
-        select_room(camera_sink_ptr->room());
+        select_room(actual_room(*camera_sink_ptr));
         _level->set_selected_camera_sink(camera_sink_ptr->number());
         _viewer->select_camera_sink(camera_sink);
         _camera_sink_windows->set_selected_camera_sink(camera_sink);
+        _rooms_windows->set_selected_camera_sink(camera_sink);
     }
 }

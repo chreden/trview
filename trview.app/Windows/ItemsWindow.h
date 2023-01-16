@@ -8,6 +8,7 @@
 
 #include "IItemsWindow.h"
 #include "../Elements/Item.h"
+#include "../Track/Track.h"
 
 namespace trview
 {
@@ -19,7 +20,6 @@ namespace trview
         {
             static inline const std::string add_to_route_button = "Add to Route";
             static inline const std::string sync_item = "Sync";
-            static inline const std::string track_room = "Track Room";
             static inline const std::string items_list = "##itemslist";
             static inline const std::string item_list_panel = "Item List";
             static inline const std::string details_panel = "Item Details";
@@ -42,7 +42,6 @@ namespace trview
         virtual void set_level_version(trlevel::LevelVersion version) override;
         virtual void set_model_checker(const std::function<bool(uint32_t)>& checker) override;
     private:
-        void set_track_room(bool value);
         void set_sync_item(bool value);
         void render_items_list();
         void render_item_details();
@@ -53,7 +52,6 @@ namespace trview
         std::string _id{ "Items 0" };
         std::vector<Item> _all_items;
         std::vector<std::weak_ptr<ITrigger>> _all_triggers;
-        bool _track_room{ false };
         uint32_t _current_room{ 0u };
         bool _sync_item{ true };
         std::shared_ptr<IClipboard> _clipboard;
@@ -69,5 +67,6 @@ namespace trview
         trlevel::LevelVersion _level_version{ trlevel::LevelVersion::Unknown };
         std::function<bool(uint32_t)> _model_checker;
         bool _force_sort{ false };
+        Track<Type::Room> _track;
     };
 }

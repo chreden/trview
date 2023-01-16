@@ -38,14 +38,14 @@ namespace trview
         virtual void set_rooms(const std::vector<std::weak_ptr<IRoom>>& items) override;
         virtual void set_selected_item(const Item& item) override;
         virtual void set_selected_trigger(const std::weak_ptr<ITrigger>& trigger) override;
-        virtual void set_triggers(const std::vector<std::weak_ptr<ITrigger>>& triggers) override;
         virtual std::weak_ptr<IRoomsWindow> create_window() override;
         virtual void update(float delta) override;
         virtual void set_floordata(const std::vector<uint16_t>& data) override;
+        virtual void set_selected_light(const std::weak_ptr<ILight>& light) override;
+        virtual void set_selected_camera_sink(const std::weak_ptr<ICameraSink>& camera_sink) override;
     private:
         std::vector<Item> _all_items;
         std::vector<std::weak_ptr<IRoom>> _all_rooms;
-        std::vector<std::weak_ptr<ITrigger>> _all_triggers;
         uint32_t _current_room{ 0u };
         std::weak_ptr<ITrigger> _selected_trigger;
         std::optional<Item> _selected_item;
@@ -53,6 +53,9 @@ namespace trview
         trlevel::LevelVersion _level_version{ trlevel::LevelVersion::Unknown };
         MapColours _map_colours;
         std::vector<uint16_t> _floordata;
+        std::vector<std::weak_ptr<ICameraSink>> _all_camera_sinks;
+        std::weak_ptr<ICameraSink> _selected_camera_sink;
+        std::weak_ptr<ILight> _selected_light;
     };
 }
 
