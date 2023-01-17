@@ -21,5 +21,6 @@ namespace trview
     private:
         std::string _text;
         bool _visible{ false };
+        bool _need_focus{ false };
     };
 }
