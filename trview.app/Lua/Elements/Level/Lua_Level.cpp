@@ -59,6 +59,11 @@ namespace trview
                     lua_pushinteger(L, static_cast<int>(current_level->version()));
                     return 1;
                 }
+                else if (key == "filename")
+                {
+                    lua_pushstring(L, current_level->filename().c_str());
+                    return 1;
+                }
                 return 0;
             }
 
