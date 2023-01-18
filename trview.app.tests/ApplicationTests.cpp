@@ -9,11 +9,8 @@
 #include <trview.app/Mocks/Settings/IStartupOptions.h>
 #include <trview.app/Mocks/UI/IImGuiBackend.h>
 #include <trview.app/Mocks/Windows/IViewer.h>
-#include <trview.app/Mocks/Windows/IItemsWindowManager.h>
 #include <trview.app/Mocks/Windows/ITriggersWindowManager.h>
 #include <trview.app/Mocks/Windows/IRouteWindowManager.h>
-#include <trview.app/Mocks/Windows/IRoomsWindowManager.h>
-#include <trview.app/Mocks/Windows/ILightsWindowManager.h>
 #include <trview.app/Mocks/Windows/ILogWindowManager.h>
 #include <trview.app/Mocks/Windows/ITexturesWindowManager.h>
 #include <trview.app/Mocks/Windows/ICameraSinkWindowManager.h>
@@ -25,6 +22,7 @@
 #include "NullImGuiBackend.h"
 #include <trview.common/Strings.h>
 #include "TestImgui.h"
+#include <trview.app/Mocks/Windows/IWindows.h>
 
 using namespace trview;
 using namespace trview::tests;
@@ -61,16 +59,13 @@ namespace
             std::unique_ptr<IViewer> viewer{ mock_unique<MockViewer>() };
             IRoute::Source route_source{ [](auto&&...) { return mock_shared<MockRoute>(); } };
             std::shared_ptr<MockShortcuts> shortcuts{ mock_shared<MockShortcuts>() };
-            std::unique_ptr<IItemsWindowManager> items_window_manager{ mock_unique<MockItemsWindowManager>() };
-            std::unique_ptr<ITriggersWindowManager> triggers_window_manager{ mock_unique<MockTriggersWindowManager>() };
+            std::unique_ptr<IWindows> windows{ mock_unique<MockWindows>() };
             std::unique_ptr<IRouteWindowManager> route_window_manager{ mock_unique<MockRouteWindowManager>() };
-            std::unique_ptr<IRoomsWindowManager> rooms_window_manager{ mock_unique<MockRoomsWindowManager>() };
             ILevel::Source level_source{ [](auto&&...) { return mock_unique<trview::mocks::MockLevel>(); } };
             std::shared_ptr<IStartupOptions> startup_options{ mock_shared<MockStartupOptions>() };
             std::shared_ptr<IDialogs> dialogs{ mock_shared<MockDialogs>() };
             std::shared_ptr<IFiles> files{ mock_shared<MockFiles>() };
             std::unique_ptr<IImGuiBackend> imgui_backend{ std::make_unique<NullImGuiBackend>() };
-            std::unique_ptr<ILightsWindowManager> lights_window_manager{ mock_unique<MockLightsWindowManager>() };
             std::unique_ptr<ILogWindowManager> log_window_manager{ mock_unique<MockLogWindowManager>() };
             std::unique_ptr<ITexturesWindowManager> textures_window_manager{ mock_unique<MockTexturesWindowManager>() };
             std::unique_ptr<ICameraSinkWindowManager> camera_sink_window_manager{ mock_unique<MockCameraSinkWindowManager>() };
@@ -80,20 +75,14 @@ namespace
                 EXPECT_CALL(*shortcuts, add_shortcut).WillRepeatedly([&](auto, auto) -> Event<>&{ return shortcut_handler; });
                 return std::make_unique<Application>(window, std::move(update_checker), std::move(settings_loader),
                     trlevel_source, std::move(file_menu), std::move(viewer), route_source, shortcuts,
-                    std::move(items_window_manager), std::move(triggers_window_manager), std::move(route_window_manager), std::move(rooms_window_manager),
-                    level_source, startup_options, dialogs, files, std::move(imgui_backend), std::move(lights_window_manager), std::move(log_window_manager),
-                    std::move(textures_window_manager), std::move(camera_sink_window_manager));
+                    std::move(windows), std::move(route_window_manager), level_source, startup_options, dialogs, files,
+                    std::move(imgui_backend), std::move(log_window_manager), std::move(textures_window_manager),
+                    std::move(camera_sink_window_manager));
             }
 
             test_module& with_dialogs(std::shared_ptr<IDialogs> dialogs)
             {
                 this->dialogs = dialogs;
-                return *this;
-            }
-
-            test_module& with_items_window_manager(std::unique_ptr<IItemsWindowManager> items_window_manager)
-            {
-                this->items_window_manager = std::move(items_window_manager);
                 return *this;
             }
 
@@ -106,12 +95,6 @@ namespace
             test_module& with_file_menu(std::unique_ptr<IFileMenu> file_menu)
             {
                 this->file_menu = std::move(file_menu);
-                return *this;
-            }
-
-            test_module& with_rooms_window_manager(std::unique_ptr<IRoomsWindowManager> rooms_window_manager)
-            {
-                this->rooms_window_manager = std::move(rooms_window_manager);
                 return *this;
             }
 
@@ -139,15 +122,9 @@ namespace
                 return *this;
             }
 
-            test_module& with_triggers_window_manager(std::unique_ptr<ITriggersWindowManager> triggers_window_manager)
+            test_module& with_windows(std::unique_ptr<IWindows> windows)
             {
-                this->triggers_window_manager = std::move(triggers_window_manager);
-                return *this;
-            }
-
-            test_module& with_lights_window_manager(std::unique_ptr<ILightsWindowManager> lights_window_manager)
-            {
-                this->lights_window_manager = std::move(lights_window_manager);
+                this->windows = std::move(windows);
                 return *this;
             }
 
@@ -259,32 +236,19 @@ TEST(Application, WindowContentsResetBeforeViewerLoaded)
     std::optional<std::string> called;
     auto trlevel_source = [&](auto&& filename) { called = filename; return mock_unique<trlevel::mocks::MockLevel>(); };
     auto [viewer_ptr, viewer] = create_mock<MockViewer>();
-    auto [items_window_manager_ptr, items_window_manager] = create_mock<MockItemsWindowManager>();
-    auto [rooms_window_manager_ptr, rooms_window_manager] = create_mock<MockRoomsWindowManager>();
-    auto [triggers_window_manager_ptr, triggers_window_manager] = create_mock<MockTriggersWindowManager>();
+    auto [windows_ptr, windows] = create_mock<MockWindows>();
     auto [route_window_manager_ptr, route_window_manager] = create_mock<MockRouteWindowManager>();
-    auto [lights_window_manager_ptr, lights_window_manager] = create_mock<MockLightsWindowManager>();
     auto [textures_window_manager_ptr, textures_window_manager] = create_mock<MockTexturesWindowManager>();
     auto [camera_sink_window_manager_ptr, camera_sink_window_manager] = create_mock<MockCameraSinkWindowManager>();
     auto route = mock_shared<MockRoute>();
 
     std::vector<std::string> events;
 
-    EXPECT_CALL(items_window_manager, set_items(A<const std::vector<Item>&>())).Times(1).WillOnce([&](auto) { events.push_back("items_items"); });
-    EXPECT_CALL(items_window_manager, set_triggers(A<const std::vector<std::weak_ptr<ITrigger>>&>())).Times(1).WillOnce([&](auto) { events.push_back("items_triggers"); });
-    EXPECT_CALL(items_window_manager, set_level_version(A<trlevel::LevelVersion>())).Times(1).WillOnce([&](auto) { events.push_back("items_version"); });
-    EXPECT_CALL(items_window_manager, set_model_checker(A<const std::function<bool (uint32_t)>&>())).Times(1).WillOnce([&](auto) { events.push_back("items_model_checker"); });
-    EXPECT_CALL(triggers_window_manager, set_items(A<const std::vector<Item>&>())).Times(1).WillOnce([&](auto) { events.push_back("triggers_items"); });
-    EXPECT_CALL(triggers_window_manager, set_triggers(A<const std::vector<std::weak_ptr<ITrigger>>&>())).Times(1).WillOnce([&](auto) { events.push_back("triggers_triggers"); });
-    EXPECT_CALL(rooms_window_manager, set_level_version(A<trlevel::LevelVersion>())).Times(1).WillOnce([&](auto) { events.push_back("rooms_version"); });
-    EXPECT_CALL(rooms_window_manager, set_items(A<const std::vector<Item>&>())).Times(1).WillOnce([&](auto) { events.push_back("rooms_items"); });
-    EXPECT_CALL(rooms_window_manager, set_floordata(A<const std::vector<uint16_t>&>())).Times(1).WillOnce([&](auto) { events.push_back("rooms_floordata"); });
-    EXPECT_CALL(rooms_window_manager, set_rooms(A<const std::vector<std::weak_ptr<IRoom>>&>())).Times(1).WillOnce([&](auto) { events.push_back("rooms_rooms"); });
+    EXPECT_CALL(windows, set_level(A<std::shared_ptr<ILevel>>())).Times(1).WillOnce([&](auto) { events.push_back("windows_level"); });
     EXPECT_CALL(route_window_manager, set_items(A<const std::vector<Item>&>())).Times(1).WillOnce([&](auto) { events.push_back("route_items"); });
     EXPECT_CALL(route_window_manager, set_triggers(A<const std::vector<std::weak_ptr<ITrigger>>&>())).Times(1).WillOnce([&](auto) { events.push_back("route_triggers"); });
     EXPECT_CALL(route_window_manager, set_rooms(A<const std::vector<std::weak_ptr<IRoom>>&>())).Times(1).WillOnce([&](auto) { events.push_back("route_rooms"); });
     EXPECT_CALL(route_window_manager, set_route(A<IRoute*>())).Times(1).WillOnce([&](auto) { events.push_back("route_route"); });
-    EXPECT_CALL(lights_window_manager, set_lights(A<const std::vector<std::weak_ptr<ILight>>&>())).Times(1).WillOnce([&](auto) { events.push_back("lights_lights"); });
     EXPECT_CALL(camera_sink_window_manager, set_camera_sinks).Times(1).WillOnce([&](auto) { events.push_back("camera_sinks_camera_sinks"); });
     EXPECT_CALL(*route, clear()).Times(1).WillOnce([&] { events.push_back("route_clear"); });
     EXPECT_CALL(*route, set_unsaved(false)).Times(1);
@@ -295,11 +259,8 @@ TEST(Application, WindowContentsResetBeforeViewerLoaded)
         .with_trlevel_source(trlevel_source)
         .with_viewer(std::move(viewer_ptr))
         .with_route_source([&](auto&&...) {return route; })
-        .with_items_window_manager(std::move(items_window_manager_ptr))
-        .with_triggers_window_manager(std::move(triggers_window_manager_ptr))
+        .with_windows(std::move(windows_ptr))
         .with_route_window_manager(std::move(route_window_manager_ptr))
-        .with_rooms_window_manager(std::move(rooms_window_manager_ptr))
-        .with_lights_window_manager(std::move(lights_window_manager_ptr))
         .with_textures_window_manager(std::move(textures_window_manager_ptr))
         .with_camera_sink_window_manager(std::move(camera_sink_window_manager_ptr))
         .build();
@@ -308,7 +269,7 @@ TEST(Application, WindowContentsResetBeforeViewerLoaded)
     ASSERT_TRUE(called.has_value());
     ASSERT_EQ(called.value(), "test_path.tr2");
 
-    ASSERT_EQ(events.size(), 19);
+    ASSERT_EQ(events.size(), 9);
     ASSERT_EQ(events.back(), "viewer");
 }
 
@@ -469,23 +430,14 @@ TEST(Application, WindowManagersUpdated)
 {
     auto [route_window_manager_ptr, route_window_manager] = create_mock<MockRouteWindowManager>();
     EXPECT_CALL(route_window_manager, update).Times(1);
-    auto [items_window_manager_ptr, items_window_manager] = create_mock<MockItemsWindowManager>();
-    EXPECT_CALL(items_window_manager, update).Times(1);
-    auto [rooms_window_manager_ptr, rooms_window_manager] = create_mock<MockRoomsWindowManager>();
-    EXPECT_CALL(rooms_window_manager, update).Times(1);
-    auto [triggers_window_manager_ptr, triggers_window_manager] = create_mock<MockTriggersWindowManager>();
-    EXPECT_CALL(triggers_window_manager, update).Times(1);
-    auto [lights_window_manager_ptr, lights_window_manager] = create_mock<MockLightsWindowManager>();
-    EXPECT_CALL(lights_window_manager, update).Times(1);
+    auto [windows_ptr, windows] = create_mock<MockWindows>();
+    EXPECT_CALL(windows, update).Times(1);
     auto files = mock_shared<MockFiles>();
     EXPECT_CALL(*files, fonts_directory()).Times(1).WillRepeatedly(Return(fonts_directory()));
 
     auto application = register_test_module()
         .with_route_window_manager(std::move(route_window_manager_ptr))
-        .with_items_window_manager(std::move(items_window_manager_ptr))
-        .with_rooms_window_manager(std::move(rooms_window_manager_ptr))
-        .with_triggers_window_manager(std::move(triggers_window_manager_ptr))
-        .with_lights_window_manager(std::move(lights_window_manager_ptr))
+        .with_windows(std::move(windows_ptr))
         .with_files(files)
         .build();
     application->render();
@@ -495,14 +447,8 @@ TEST(Application, WindowManagersAndViewerRendered)
 {
     auto [route_window_manager_ptr, route_window_manager] = create_mock<MockRouteWindowManager>();
     EXPECT_CALL(route_window_manager, render).Times(1);
-    auto [items_window_manager_ptr, items_window_manager] = create_mock<MockItemsWindowManager>();
-    EXPECT_CALL(items_window_manager, render).Times(1);
-    auto [rooms_window_manager_ptr, rooms_window_manager] = create_mock<MockRoomsWindowManager>();
-    EXPECT_CALL(rooms_window_manager, render).Times(1);
-    auto [triggers_window_manager_ptr, triggers_window_manager] = create_mock<MockTriggersWindowManager>();
-    EXPECT_CALL(triggers_window_manager, render).Times(1);
-    auto [lights_window_manager_ptr, lights_window_manager] = create_mock<MockLightsWindowManager>();
-    EXPECT_CALL(lights_window_manager, render).Times(1);
+    auto [windows_ptr, windows] = create_mock<MockWindows>();
+    EXPECT_CALL(windows, render).Times(1);
     auto [log_window_manager_ptr, log_window_manager] = create_mock<MockLogWindowManager>();
     EXPECT_CALL(log_window_manager, render).Times(1);
     auto [textures_window_manager_ptr, textures_window_manager] = create_mock<MockTexturesWindowManager>();
@@ -516,10 +462,7 @@ TEST(Application, WindowManagersAndViewerRendered)
 
     auto application = register_test_module()
         .with_route_window_manager(std::move(route_window_manager_ptr))
-        .with_items_window_manager(std::move(items_window_manager_ptr))
-        .with_rooms_window_manager(std::move(rooms_window_manager_ptr))
-        .with_triggers_window_manager(std::move(triggers_window_manager_ptr))
-        .with_lights_window_manager(std::move(lights_window_manager_ptr))
+        .with_windows(std::move(windows_ptr))
         .with_log_window_manager(std::move(log_window_manager_ptr))
         .with_textures_window_manager(std::move(textures_window_manager_ptr))
         .with_camera_sink_window_manager(std::move(camera_sink_window_manager_ptr))
@@ -543,30 +486,6 @@ TEST(Application, WaypointReorderedMovesWaypoint)
     route_window_manager.on_waypoint_reordered(1, 2);
 }
 
-TEST(Application, MapColoursSetOnRoomWindow)
-{
-    auto [rooms_window_manager_ptr, rooms_window_manager] = create_mock<MockRoomsWindowManager>();
-    EXPECT_CALL(rooms_window_manager, set_map_colours).Times(1);
-
-    auto application = register_test_module()
-        .with_rooms_window_manager(std::move(rooms_window_manager_ptr))
-        .build();
-}
-
-TEST(Application, MapColoursSetOnSettingsChanged)
-{
-    auto [rooms_window_manager_ptr, rooms_window_manager] = create_mock<MockRoomsWindowManager>();
-    EXPECT_CALL(rooms_window_manager, set_map_colours).Times(2);
-    auto [viewer_ptr, viewer] = create_mock<MockViewer>();
-
-    auto application = register_test_module()
-        .with_rooms_window_manager(std::move(rooms_window_manager_ptr))
-        .with_viewer(std::move(viewer_ptr))
-        .build();
-
-    viewer.on_settings(UserSettings());
-}
-
 TEST(Application, ResetLayout)
 {
     auto files = mock_shared<MockFiles>();
@@ -585,23 +504,23 @@ TEST(Application, ResetLayout)
     ASSERT_EQ(ImGui::GetIO().IniFilename, nullptr);
 }
 
-TEST(Application, RoomsWindowRoomVisibilityCaptured)
+TEST(Application, RoomVisibilityCaptured)
 {
-    auto [rooms_window_manager_ptr, rooms_window_manager] = create_mock<MockRoomsWindowManager>();
+    auto [windows_ptr, windows] = create_mock<MockWindows>();
     auto [level_ptr, level] = create_mock<trview::mocks::MockLevel>();
     EXPECT_CALL(level, set_room_visibility(0, true)).Times(1);
 
     ILevel::Source level_source = [&](auto&&...) { return std::move(level_ptr); };
 
     auto application = register_test_module()
-        .with_rooms_window_manager(std::move(rooms_window_manager_ptr))
+        .with_windows(std::move(windows_ptr))
         .with_level_source(level_source)
         .build();
 
     application->open("", ILevel::OpenMode::Full);
 
     auto room = mock_shared<MockRoom>();
-    rooms_window_manager.on_room_visibility(room, true);
+    windows.on_room_visibility(room, true);
 }
 
 TEST(Application, ViewerRoomVisibilityCaptured)
@@ -879,14 +798,14 @@ TEST(Application, SectorHoverForwarded)
     auto [viewer_ptr, viewer] = create_mock<MockViewer>();
     EXPECT_CALL(viewer, select_sector).Times(1);
 
-    auto [rooms_window_manager_ptr, rooms_window_manager] = create_mock<MockRoomsWindowManager>();
+    auto [windows_ptr, windows] = create_mock<MockWindows>();
 
     auto application = register_test_module()
         .with_viewer(std::move(viewer_ptr))
-        .with_rooms_window_manager(std::move(rooms_window_manager_ptr))
+        .with_windows(std::move(windows_ptr))
         .build();
 
-    rooms_window_manager.on_sector_hover(mock_shared<MockSector>());
+    windows.on_sector_selected(mock_shared<MockSector>());
 }
 
 TEST(Application, WaypointChangedUpdatesViewer)
@@ -977,19 +896,19 @@ TEST(Application, TriggerSelectedFromCameraSinkWindow)
     camera_sink_window_manager.on_trigger_selected(mock_shared<MockTrigger>());
 }
 
-TEST(Application, CameraSinkSelectedFromTriggersWindow)
+TEST(Application, CameraSinkSelectedFromWindows)
 {
     auto sink = mock_shared<MockCameraSink>();
-    auto [triggers_window_manager_ptr, triggers_window_manager] = create_mock<MockTriggersWindowManager>();
+    auto [windows_ptr, windows] = create_mock<MockWindows>();
     auto [level_ptr, level] = create_mock<trview::mocks::MockLevel>();
     EXPECT_CALL(level, set_selected_camera_sink).Times(1);
     ON_CALL(level, camera_sinks).WillByDefault(testing::Return(std::vector<std::weak_ptr<ICameraSink>>{ sink }));
 
     auto application = register_test_module()
-        .with_triggers_window_manager(std::move(triggers_window_manager_ptr))
+        .with_windows(std::move(windows_ptr))
         .with_level_source([&](auto&&...) { return std::move(level_ptr); })
         .build();
 
     application->open("test_path.tr2", ILevel::OpenMode::Full);
-    triggers_window_manager.on_camera_sink_selected(0);
+    windows.on_camera_sink_selected(sink);
 }

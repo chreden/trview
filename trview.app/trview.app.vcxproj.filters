@@ -267,6 +267,9 @@
     <ClCompile Include="Windows\CameraSink\CameraSinkWindow.cpp">
       <Filter>Windows\CameraSink</Filter>
     </ClCompile>
+    <ClCompile Include="Windows\Windows.cpp">
+      <Filter>Windows</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera\Camera.h">
@@ -863,6 +866,15 @@
     </ClInclude>
     <ClInclude Include="Type.h" />
     <ClInclude Include="Type.inl" />
+    <ClInclude Include="Windows\Windows.h">
+      <Filter>Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="Windows\IWindows.h">
+      <Filter>Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="Mocks\Windows\IWindows.h">
+      <Filter>Mocks\Windows</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Windows">

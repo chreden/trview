@@ -59,6 +59,7 @@
 #include "Windows/Textures/TexturesWindow.h"
 #include "Windows/CameraSink/CameraSinkWindowManager.h"
 #include "Windows/CameraSink/CameraSinkWindow.h"
+#include "Windows/Windows.h"
 
 namespace trview
 {
@@ -211,7 +212,7 @@ namespace trview
         {
             auto level_texture_storage = std::make_shared<LevelTextureStorage>(device, std::make_unique<TextureStorage>(device), *level);
             auto mesh_storage = std::make_unique<MeshStorage>(mesh_source, *level, *level_texture_storage);
-            return std::make_unique<Level>(device, shader_storage, std::move(level),
+            return std::make_shared<Level>(device, shader_storage, std::move(level),
                 level_texture_storage,
                 std::move(mesh_storage),
                 std::make_unique<TransparencyBuffer>(device),
@@ -280,16 +281,17 @@ namespace trview
             std::move(viewer),
             route_source,
             shortcuts,
-            std::make_unique<ItemsWindowManager>(window, shortcuts, items_window_source),
-            std::make_unique<TriggersWindowManager>(window, shortcuts, triggers_window_source),
+            std::make_unique<Windows>(
+                std::make_unique<ItemsWindowManager>(window, shortcuts, items_window_source),
+                std::make_unique<LightsWindowManager>(window, shortcuts, lights_window_source),
+                std::make_unique<RoomsWindowManager>(window, shortcuts, rooms_window_source),
+                std::make_unique<TriggersWindowManager>(window, shortcuts, triggers_window_source)),
             std::make_unique<RouteWindowManager>(window, shortcuts, route_window_source),
-            std::make_unique<RoomsWindowManager>(window, shortcuts, rooms_window_source),
             level_source,
             std::make_shared<StartupOptions>(command_line),
             dialogs,
             files,
             std::make_unique<DX11ImGuiBackend>(window, device),
-            std::make_unique<LightsWindowManager>(window, shortcuts, lights_window_source),
             std::make_unique<LogWindowManager>(window, log_window_source),
             std::make_unique<TexturesWindowManager>(window, textures_window_source),
             std::make_unique<CameraSinkWindowManager>(window, shortcuts, camera_sink_window_source));
