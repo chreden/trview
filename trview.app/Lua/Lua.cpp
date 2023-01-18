@@ -290,4 +290,9 @@ namespace trview
             lua_call ( state, 0, 0 );
         }
     }
+
+    lua_State* lua_get_state()
+    {
+        return state;
+    }
 }
