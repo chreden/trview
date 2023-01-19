@@ -81,11 +81,10 @@ namespace trview
             }
 
             // If the cursor is over the tile, then negate colour 
-            Point first = tile.position, last = Point(tile.size.width, tile.size.height) + tile.position;
-            if (_cursor.is_between(first, last) ||
-                (_highlighted_sector.has_value() &&
-                    _highlighted_sector.value().first == tile.sector->x() &&
-                    _highlighted_sector.value().second == tile.sector->z()))
+            if (tile.sector == _previous_sector ||
+                 (_highlighted_sector.has_value() &&
+                     _highlighted_sector.value().first == tile.sector->x() &&
+                     _highlighted_sector.value().second == tile.sector->z()))
             {
                 draw_color.Negate();
                 text_color.Negate();
@@ -223,8 +222,8 @@ namespace trview
         auto sector = sector_at_cursor();
         if(sector != _previous_sector)
         {
-            on_sector_hover(sector);
             _previous_sector = sector;
+            on_sector_hover(sector);
         }
     }
 
@@ -335,6 +334,12 @@ namespace trview
     void MapRenderer::set_selection(const std::shared_ptr<ISector>& sector)
     {
         _selected_sector = sector;
+        _force_redraw = true;
+    }
+
+    void MapRenderer::clear_hovered_sector()
+    {
+        _previous_sector.reset();
         _force_redraw = true;
     }
 };

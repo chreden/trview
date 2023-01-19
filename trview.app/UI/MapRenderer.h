@@ -89,6 +89,7 @@ namespace trview
         virtual void set_render_mode(RenderMode mode) override;
         virtual void set_colours(const MapColours& colours) override;
         virtual void set_selection(const std::shared_ptr<ISector>& sector) override;
+        virtual void clear_hovered_sector() override;
     private:
         // Determines the position (on screen) to draw a sector 
         Point get_position(const ISector& sector); 
