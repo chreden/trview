@@ -804,6 +804,9 @@ The console window will log diagnostic messages in the future and can be used to
 
 The input box allows you to enter Lua scripts.
 
+# Lua Bindings
+trview has [Lua bindings](doc/lua/index.md) that can currently be used in the console and will be usable by plugins in the future.
+
 # Licenses
 
 ## Lua

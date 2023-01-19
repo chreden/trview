@@ -1,5 +1,6 @@
 #include "Application.h"
 #include <trlevel/LevelEncryptedException.h>
+#include "Lua/trview/trview.h"
 
 #include "Resources/resource.h"
 
@@ -204,6 +205,8 @@ namespace trview
             _recent_route_prompted = false;
             open_recent_route();
         }
+
+        lua::set_current_level(_level.get());
     }
 
     std::optional<int> Application::process_message(UINT message, WPARAM wParam, LPARAM)

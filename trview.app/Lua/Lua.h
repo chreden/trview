@@ -70,4 +70,5 @@ namespace trview
     void lua_init ( LuaFunctionRegistry * reg );
     void lua_execute ( const std::string& command );
     void lua_fire_event ( LuaEvent type );
+    lua_State* lua_get_state();
 }

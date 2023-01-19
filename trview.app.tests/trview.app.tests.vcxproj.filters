@@ -176,6 +176,9 @@
     <ClCompile Include="Elements\CameraSinkTests.cpp">
       <Filter>Elements</Filter>
     </ClCompile>
+    <ClCompile Include="Lua\Elements\Lua_LevelTests.cpp">
+      <Filter>Lua\Elements</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Input">
@@ -210,6 +213,12 @@
     </Filter>
     <Filter Include="Filters">
       <UniqueIdentifier>{ab42e6fa-def3-4b06-8902-61c45b15dfda}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Lua">
+      <UniqueIdentifier>{523c59ce-5d18-4115-91a5-f32e97a5160a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Lua\Elements">
+      <UniqueIdentifier>{de0633ad-2e3e-49f3-89b7-807134869b6a}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
