@@ -2,6 +2,7 @@
 #include "../../../Elements/ILevel.h"
 #include "../Level/Lua_Level.h"
 #include "../../Lua.h"
+#include "../Room/Lua_Room.h"
 
 namespace trview
 {
@@ -39,8 +40,7 @@ namespace trview
                 }
                 else if (key == "room")
                 {
-                    // TODO: Room
-                    lua_newtable(L);
+                    create_room(L, level->room(item.value().room()).lock());
                     return 1;
                 }
 

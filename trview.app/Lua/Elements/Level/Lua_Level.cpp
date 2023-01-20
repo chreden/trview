@@ -1,6 +1,7 @@
 #include "Lua_Level.h"
 #include "../../Lua.h"
 #include "../../../Elements/ILevel.h"
+#include "../Room/Lua_Room.h"
 #include "../Item/Lua_Item.h"
 
 namespace trview
@@ -53,7 +54,14 @@ namespace trview
                 else if (key == "rooms")
                 {
                     lua_newtable(L);
-                    // TODO: Rooms
+                    int index = 1;
+                    for (const auto& room : current_level->rooms())
+                    {
+                        lua_pushnumber(L, index);
+                        create_room(L, room.lock());
+                        lua_settable(L, -3);
+                        ++index;
+                    }
                     return 1;
                 }
                 else if (key == "triggers")

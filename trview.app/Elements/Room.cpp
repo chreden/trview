@@ -1041,4 +1041,20 @@ namespace trview
         }
         return {};
     }
+
+    std::string to_string(IRoom::AlternateMode mode)
+    {
+        switch (mode)
+        {
+        case IRoom::AlternateMode::HasAlternate:
+            return "has_alternate";
+            break;
+        case IRoom::AlternateMode::IsAlternate:
+            return "is_alternate";
+            break;
+        default:
+            return "none";
+            break;
+        }
+    }
 }

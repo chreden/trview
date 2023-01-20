@@ -64,6 +64,7 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClCompile Include="Graphics\TextureStorage.cpp" />
     <ClCompile Include="Lua\Elements\Item\Lua_Item.cpp" />
     <ClCompile Include="Lua\Elements\Level\Lua_Level.cpp" />
+    <ClCompile Include="Lua\Elements\Room\Lua_Room.cpp" />
     <ClCompile Include="Lua\trview\trview.cpp" />
     <ClCompile Include="Menus\FileMenu.cpp" />
     <ClCompile Include="Mocks\Mocks.cpp">
@@ -100,6 +101,7 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClCompile Include="Tools\Measure.cpp" />
     <ClCompile Include="Tools\Toolbar.cpp" />
     <ClInclude Include="Lua\Elements\Item\Lua_Item.h" />
+    <ClInclude Include="Lua\Elements\Room\Lua_Room.h" />
     <ClInclude Include="Type.inl">
       <FileType>Document</FileType>
     </ClInclude>

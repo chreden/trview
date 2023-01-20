@@ -316,5 +316,7 @@ namespace trview
     /// <param name="point">The point to test.</param>
     /// <returns>The sector or nullptr if no match.</returns>
     std::shared_ptr<ISector> sector_from_point(const IRoom& room, const DirectX::SimpleMath::Vector3& point);
+
+    std::string to_string(IRoom::AlternateMode mode);
 }
 
