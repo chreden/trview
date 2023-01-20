@@ -10,7 +10,7 @@ namespace trview
         {
             MockRoom();
             virtual ~MockRoom();
-            MOCK_METHOD(void, add_entity, (const std::weak_ptr<IEntity>&), (override));
+            MOCK_METHOD(void, add_entity, (const std::weak_ptr<IItem>&), (override));
             MOCK_METHOD(void, add_light, (const std::weak_ptr<ILight>&), (override));
             MOCK_METHOD(void, add_trigger, (const std::weak_ptr<ITrigger>&), (override));
             MOCK_METHOD(void, add_camera_sink, (const std::weak_ptr<ICameraSink>&), (override));

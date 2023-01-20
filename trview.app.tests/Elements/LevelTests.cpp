@@ -7,7 +7,7 @@
 #include <trview.app/Mocks/Graphics/IMeshStorage.h>
 #include <trview.app/Mocks/Graphics/ISelectionRenderer.h>
 #include <trview.app/Mocks/Elements/ITypeNameLookup.h>
-#include <trview.app/Mocks/Elements/IEntity.h>
+#include <trview.app/Mocks/Elements/IItem.h>
 #include <trview.app/Mocks/Elements/IRoom.h>
 #include <trview.app/Mocks/Elements/ITrigger.h>
 #include <trview.app/Mocks/Elements/ILight.h>
@@ -45,8 +45,8 @@ namespace
             std::unique_ptr<ITransparencyBuffer> transparency_buffer{ mock_unique<MockTransparencyBuffer>() };
             std::unique_ptr<ISelectionRenderer> selection_renderer{ mock_unique<MockSelectionRenderer>() };
             std::shared_ptr<ITypeNameLookup> type_name_lookup{ mock_shared<MockTypeNameLookup>() };
-            IEntity::EntitySource entity_source{ [](auto&&...) { return mock_shared<MockEntity>(); } };
-            IEntity::AiSource ai_source{ [](auto&&...) { return mock_shared<MockEntity>(); } };
+            IItem::EntitySource entity_source{ [](auto&&...) { return mock_shared<MockItem>(); } };
+            IItem::AiSource ai_source{ [](auto&&...) { return mock_shared<MockItem>(); } };
             IRoom::Source room_source{ [](auto&&...) { return mock_shared<MockRoom>(); } };
             ITrigger::Source trigger_source{ [](auto&&...) {return mock_shared<MockTrigger>(); } };
             ILight::Source light_source{ [](auto&&...) { return std::make_shared<MockLight>(); } };
@@ -72,13 +72,13 @@ namespace
                 return *this;
             }
 
-            test_module& with_entity_source(const IEntity::EntitySource& entity_source)
+            test_module& with_entity_source(const IItem::EntitySource& entity_source)
             {
                 this->entity_source = entity_source;
                 return *this;
             }
 
-            test_module& with_ai_source(const IEntity::AiSource& ai_source)
+            test_module& with_ai_source(const IItem::AiSource& ai_source)
             {
                 this->ai_source = ai_source;
                 return *this;
@@ -162,13 +162,13 @@ TEST(Level, LoadFromEntitySources)
             [&](auto&&...)
             {
                 ++entity_source_called;
-                return mock_shared<MockEntity>();
+                return mock_shared<MockItem>();
             })
         .with_ai_source(
             [&](auto&&...)
             {
                 ++ai_source_called;
-                return mock_shared<MockEntity>();
+                return mock_shared<MockItem>();
             }).build();
 
     ASSERT_EQ(entity_source_called, 1);
@@ -214,7 +214,7 @@ TEST(Level, OcbAdjustmentsPerformedWhenNeeded)
             [&](auto&&...)
             {
                 ++entity_source_called;
-                auto entity = mock_shared<MockEntity>();
+                auto entity = mock_shared<MockItem>();
                 EXPECT_CALL(*entity, needs_ocb_adjustment).WillRepeatedly(Return(true));
                 EXPECT_CALL(*entity, adjust_y).Times(1);
                 return entity;
@@ -243,7 +243,7 @@ TEST(Level, OcbAdjustmentsNotPerformedWhenNotNeeded)
             [&](auto&&...)
             {
                 ++entity_source_called;
-                auto entity = mock_shared<MockEntity>();
+                auto entity = mock_shared<MockItem>();
                 EXPECT_CALL(*entity, needs_ocb_adjustment).WillRepeatedly(Return(false));
                 EXPECT_CALL(*entity, adjust_y).Times(0);
                 return entity;
@@ -513,7 +513,7 @@ TEST(Level, SelectedItem)
         .with_entity_source(
             [&](auto&&...)
             {
-                auto entity = mock_shared<MockEntity>();
+                auto entity = mock_shared<MockItem>();
                 ON_CALL(*entity, index).WillByDefault(Return(entity_source_called));
                 ++entity_source_called;
                 return entity;

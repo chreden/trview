@@ -48,7 +48,7 @@ namespace testing
 #include <trview.app/Mocks/Graphics/ISelectionRenderer.h>
 #include <trview.app/Mocks/Graphics/ITextureStorage.h>
 #include <trview.app/Mocks/Geometry/ITransparencyBuffer.h>
-#include <trview.app/Mocks/Elements/IEntity.h>
+#include <trview.app/Mocks/Elements/IItem.h>
 #include <trview.app/Mocks/Elements/ILevel.h>
 #include <trview.app/Mocks/Elements/IRoom.h>
 #include <trview.app/Mocks/Elements/ISector.h>

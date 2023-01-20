@@ -2,7 +2,7 @@
 #include <gmock/gmock.h>
 
 #include "Camera/ICamera.h"
-#include "Elements/IEntity.h"
+#include "Elements/IItem.h"
 #include "Elements/ILevel.h"
 #include "Elements/ILight.h"
 #include "Elements/IRoom.h"
@@ -58,8 +58,8 @@ namespace trview
         MockCamera::MockCamera() {}
         MockCamera::~MockCamera() {}
 
-        MockEntity::MockEntity() {}
-        MockEntity::~MockEntity() {}
+        MockItem::MockItem() {}
+        MockItem::~MockItem() {}
 
         MockLevel::MockLevel() {}
         MockLevel::~MockLevel() {}

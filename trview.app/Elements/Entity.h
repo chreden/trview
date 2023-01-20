@@ -9,7 +9,7 @@
 #include <trview.app/Geometry/PickResult.h>
 #include <trview.app/Geometry/IRenderable.h>
 #include <trview.app/Geometry/IMesh.h>
-#include "IEntity.h"
+#include "IItem.h"
 
 namespace trlevel
 {
@@ -25,7 +25,7 @@ namespace trview
     struct ILevelTextureStorage;
     struct ICamera;
 
-    class Entity final : public IEntity
+    class Entity final : public IItem
     {
     public:
         explicit Entity(const IMesh::Source& mesh_source, const trlevel::ILevel& level, const trlevel::tr2_entity& entity, const IMeshStorage& mesh_storage, uint32_t index, bool is_pickup);

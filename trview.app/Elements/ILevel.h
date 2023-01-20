@@ -4,7 +4,7 @@
 #include <trview.app/Elements/Item.h>
 #include <trview.app/Elements/ITrigger.h>
 #include <trview.app/Elements/IRoom.h>
-#include <trview.app/Elements/IEntity.h>
+#include "IItem.h"
 #include <trview.app/Elements/ILight.h>
 #include "CameraSink/ICameraSink.h"
 #include <trview.common/Event.h>

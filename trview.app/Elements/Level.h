@@ -37,8 +37,8 @@ namespace trview
             std::unique_ptr<ITransparencyBuffer> transparency_buffer,
             std::unique_ptr<ISelectionRenderer> selection_renderer,
             std::shared_ptr<ITypeNameLookup> type_names,
-            const IEntity::EntitySource& entity_source,
-            const IEntity::AiSource& ai_source,
+            const IItem::EntitySource& entity_source,
+            const IItem::AiSource& ai_source,
             const IRoom::Source& room_source,
             const ITrigger::Source& trigger_source,
             const ILight::Source& light_source,
@@ -114,7 +114,7 @@ namespace trview
     private:
         void generate_rooms(const trlevel::ILevel& level, const IRoom::Source& room_source, const IMeshStorage& mesh_storage);
         void generate_triggers(const ITrigger::Source& trigger_source);
-        void generate_entities(const trlevel::ILevel& level, const ITypeNameLookup& type_names, const IEntity::EntitySource& entity_source, const IEntity::AiSource& ai_source, const IMeshStorage& mesh_storage);
+        void generate_entities(const trlevel::ILevel& level, const ITypeNameLookup& type_names, const IItem::EntitySource& entity_source, const IItem::AiSource& ai_source, const IMeshStorage& mesh_storage);
         void regenerate_neighbours();
         void generate_neighbours(std::set<uint16_t>& results, uint16_t selected_room, int32_t max_depth);
         void generate_lights(const trlevel::ILevel& level, const ILight::Source& light_source);
@@ -160,7 +160,7 @@ namespace trview
         std::shared_ptr<graphics::IDevice> _device;
         std::vector<std::shared_ptr<IRoom>>   _rooms;
         std::vector<std::shared_ptr<ITrigger>> _triggers;
-        std::vector<std::shared_ptr<IEntity>> _entities;
+        std::vector<std::shared_ptr<IItem>> _entities;
         std::vector<Item> _items;
         std::vector<std::shared_ptr<ILight>> _lights;
         std::vector<std::shared_ptr<ICameraSink>> _camera_sinks;
@@ -175,7 +175,7 @@ namespace trview
         std::set<RoomHighlightMode> _room_highlight_modes;
         
         uint16_t           _selected_room{ 0u };
-        std::weak_ptr<IEntity> _selected_item;
+        std::weak_ptr<IItem> _selected_item;
         std::weak_ptr<ITrigger> _selected_trigger;
         std::weak_ptr<ILight> _selected_light;
         std::weak_ptr<ICameraSink> _selected_camera_sink;

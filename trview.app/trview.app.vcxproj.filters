@@ -568,10 +568,10 @@
     <ClInclude Include="Mocks\Windows\IRoomsWindow.h">
       <Filter>Mocks\Windows</Filter>
     </ClInclude>
-    <ClInclude Include="Elements\IEntity.h">
+    <ClInclude Include="Elements\IItem.h">
       <Filter>Elements</Filter>
     </ClInclude>
-    <ClInclude Include="Mocks\Elements\IEntity.h">
+    <ClInclude Include="Mocks\Elements\IItem.h">
       <Filter>Mocks\Elements</Filter>
     </ClInclude>
     <ClInclude Include="Mocks\Elements\IRoom.h">

@@ -149,7 +149,7 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClInclude Include="Elements\CameraSink\ICameraSink.h" />
     <ClInclude Include="Elements\Entity.h" />
     <ClInclude Include="Elements\Floordata.h" />
-    <ClInclude Include="Elements\IEntity.h" />
+    <ClInclude Include="Elements\IItem.h" />
     <ClInclude Include="Elements\ILevel.h" />
     <ClInclude Include="Elements\ILight.h" />
     <ClInclude Include="Elements\IRoom.h" />
@@ -206,7 +206,7 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClInclude Include="Menus\ViewMenu.h" />
     <ClInclude Include="Mocks\Camera\ICamera.h" />
     <ClInclude Include="Mocks\Elements\ICameraSink.h" />
-    <ClInclude Include="Mocks\Elements\IEntity.h" />
+    <ClInclude Include="Mocks\Elements\IItem.h" />
     <ClInclude Include="Mocks\Elements\ILevel.h" />
     <ClInclude Include="Mocks\Elements\ILight.h" />
     <ClInclude Include="Mocks\Elements\IRoom.h" />

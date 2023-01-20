@@ -40,8 +40,8 @@ namespace trview
         std::unique_ptr<ITransparencyBuffer> transparency_buffer,
         std::unique_ptr<ISelectionRenderer> selection_renderer,
         std::shared_ptr<ITypeNameLookup> type_names,
-        const IEntity::EntitySource& entity_source,
-        const IEntity::AiSource& ai_source,
+        const IItem::EntitySource& entity_source,
+        const IItem::AiSource& ai_source,
         const IRoom::Source& room_source,
         const ITrigger::Source& trigger_source,
         const ILight::Source& light_source,
@@ -552,7 +552,7 @@ namespace trview
         deduplicate_triangles();
     }
 
-    void Level::generate_entities(const trlevel::ILevel& level, const ITypeNameLookup& type_names, const IEntity::EntitySource& entity_source, const IEntity::AiSource& ai_source, const IMeshStorage& mesh_storage)
+    void Level::generate_entities(const trlevel::ILevel& level, const ITypeNameLookup& type_names, const IItem::EntitySource& entity_source, const IItem::AiSource& ai_source, const IMeshStorage& mesh_storage)
     {
         const uint32_t num_entities = level.num_entities();
         for (uint32_t i = 0; i < num_entities; ++i)

@@ -5,7 +5,7 @@
 #include <trview.app/Mocks/Geometry/ITransparencyBuffer.h>
 #include <trview.app/Mocks/Graphics/ILevelTextureStorage.h>
 #include <trview.app/Mocks/Graphics/IMeshStorage.h>
-#include <trview.app/Mocks/Elements/IEntity.h>
+#include <trview.app/Mocks/Elements/IItem.h>
 #include <trview.app/Mocks/Elements/ILevel.h>
 #include <trview.app/Mocks/Elements/IStaticMesh.h>
 #include <trview.app/Mocks/Elements/ISector.h>
@@ -151,7 +151,7 @@ TEST(Room, BoundingBoxIncorporatesContents)
     level_room.info.yTop = -1024;
     auto room = register_test_module().with_room(level_room).build();
 
-    auto entity = mock_shared<MockEntity>();
+    auto entity = mock_shared<MockItem>();
     EXPECT_CALL(*entity, bounding_box).WillOnce(Return(BoundingBox(Vector3(1.0f, -1.0f, 1.0f), Vector3(0.5f, 0.5f, 0.5f))));
     room->add_entity(entity);
     room->update_bounding_box();
@@ -185,7 +185,7 @@ TEST(Room, CentreCalculated)
 TEST(Room, GetTransparentTriangles)
 {
     auto room = register_test_module().build();
-    auto entity = mock_shared<MockEntity>();
+    auto entity = mock_shared<MockItem>();
     EXPECT_CALL(*entity, get_transparent_triangles).Times(1);
     auto trigger = mock_shared<MockTrigger>();
     EXPECT_CALL(*trigger, get_transparent_triangles).Times(1);
@@ -202,7 +202,7 @@ TEST(Room, GetTransparentTriangles)
 TEST(Room, GetTransparentTrianglesWithoutItems)
 {
     auto room = register_test_module().build();
-    auto entity = mock_shared<MockEntity>();
+    auto entity = mock_shared<MockItem>();
     EXPECT_CALL(*entity, get_transparent_triangles).Times(0);
     auto trigger = mock_shared<MockTrigger>();
     EXPECT_CALL(*trigger, get_transparent_triangles).Times(1);
@@ -219,7 +219,7 @@ TEST(Room, GetTransparentTrianglesWithoutItems)
 TEST(Room, GetTransparentTrianglesWithoutTriggers)
 {
     auto room = register_test_module().build();
-    auto entity = mock_shared<MockEntity>();
+    auto entity = mock_shared<MockItem>();
     EXPECT_CALL(*entity, get_transparent_triangles).Times(1);
     auto trigger = mock_shared<MockTrigger>();
     EXPECT_CALL(*trigger, get_transparent_triangles).Times(0);
@@ -236,7 +236,7 @@ TEST(Room, GetTransparentTrianglesWithoutTriggers)
 TEST(Room, GetTransparentTrianglesFromContents)
 {
     auto room = register_test_module().build();
-    auto entity = mock_shared<MockEntity>();
+    auto entity = mock_shared<MockItem>();
     EXPECT_CALL(*entity, get_transparent_triangles).Times(1);
     auto trigger = mock_shared<MockTrigger>();
     EXPECT_CALL(*trigger, get_transparent_triangles).Times(0);
@@ -339,7 +339,7 @@ TEST(Room, PickTestsEntities)
     using namespace DirectX::SimpleMath;
 
     auto room = register_test_module().build();
-    auto entity = mock_shared<MockEntity>();
+    auto entity = mock_shared<MockItem>();
     ON_CALL(*entity, visible).WillByDefault(Return(true));
     EXPECT_CALL(*entity, pick).Times(1).WillOnce(Return(PickResult{ true, 0, {}, {}, PickResult::Type::Entity, 10 }));
     room->add_entity(entity);
@@ -379,12 +379,12 @@ TEST(Room, PickChoosesClosest)
     using namespace DirectX::SimpleMath;
 
     auto room = register_test_module().build();
-    auto entity = mock_shared<MockEntity>();
+    auto entity = mock_shared<MockItem>();
     ON_CALL(*entity, visible).WillByDefault(Return(true));
     EXPECT_CALL(*entity, pick).Times(1).WillOnce(Return(PickResult{ true, 0.5f, {}, {}, PickResult::Type::Entity, 5 }));
     room->add_entity(entity);
 
-    auto entity2 = mock_shared<MockEntity>();
+    auto entity2 = mock_shared<MockItem>();
     ON_CALL(*entity2, visible).WillByDefault(Return(true));
     EXPECT_CALL(*entity2, pick).Times(1).WillOnce(Return(PickResult{ true, 1.0f, {}, {}, PickResult::Type::Entity, 10 }));
     room->add_entity(entity2);
@@ -405,7 +405,7 @@ TEST(Room, PickChoosesEntityOverTrigger)
     using namespace DirectX::SimpleMath;
 
     auto room = register_test_module().build();
-    auto entity = mock_shared<MockEntity>();
+    auto entity = mock_shared<MockItem>();
     ON_CALL(*entity, visible).WillByDefault(Return(true));
     EXPECT_CALL(*entity, pick).Times(1).WillOnce(Return(PickResult{ true, 1.0f, {}, {}, PickResult::Type::Entity, 5 }));
     room->add_entity(entity);
@@ -453,7 +453,7 @@ TEST(Room, QuicksandNotDetectedBeforeTR3)
 TEST(Room, RendersContainedEntities)
 {
     auto room = register_test_module().build();
-    auto entity = mock_shared<MockEntity>();
+    auto entity = mock_shared<MockItem>();
     EXPECT_CALL(*entity, render).Times(1);
     room->add_entity(entity);
     room->render(NiceMock<MockCamera>{}, IRoom::SelectionMode::NotSelected, RenderFilter::Entities, {});
@@ -465,7 +465,7 @@ TEST(Room, RendersContainedEntities)
 TEST(Room, DoesNotRenderContainedEntitiesWhenShowItemsDisabled)
 {
     auto room = register_test_module().build();
-    auto entity = mock_shared<MockEntity>();
+    auto entity = mock_shared<MockItem>();
     EXPECT_CALL(*entity, render).Times(0);
     room->add_entity(entity);
     room->render(NiceMock<MockCamera>{}, IRoom::SelectionMode::NotSelected, set_flag(RenderFilter::Default, RenderFilter::Entities, false), {});

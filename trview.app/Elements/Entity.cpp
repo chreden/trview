@@ -58,7 +58,7 @@ namespace trview
         }
     }
 
-    IEntity::~IEntity()
+    IItem::~IItem()
     {
     }
 
