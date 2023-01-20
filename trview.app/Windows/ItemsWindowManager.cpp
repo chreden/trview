@@ -39,14 +39,11 @@ namespace trview
         items_window->set_current_room(_current_room);
         items_window->set_level_version(_level_version);
         items_window->set_model_checker(_model_checker);
-        if (_selected_item.has_value())
-        {
-            items_window->set_selected_item(_selected_item.value());
-        }
+        items_window->set_selected_item(_selected_item);
         return add_window(items_window);
     }
 
-    void ItemsWindowManager::set_items(const std::vector<Item>& items)
+    void ItemsWindowManager::set_items(const std::vector<std::weak_ptr<IItem>>& items)
     {
         _items = items;
         _selected_item.reset();
@@ -54,20 +51,6 @@ namespace trview
         {
             window.second->clear_selected_item();
             window.second->set_items(items);
-        }
-    }
-
-    void ItemsWindowManager::set_item_visible(const Item& item, bool visible)
-    {
-        auto found = std::find_if(_items.begin(), _items.end(), [&item](const auto& l) { return l.number() == item.number(); });
-        if (found == _items.end())
-        {
-            return;
-        }
-        found->set_visible(visible);
-        for (auto& window : _windows)
-        {
-            window.second->update_item(*found);
         }
     }
 
@@ -107,7 +90,7 @@ namespace trview
         }
     }
 
-    void ItemsWindowManager::set_selected_item(const Item& item)
+    void ItemsWindowManager::set_selected_item(std::weak_ptr<IItem> item)
     {
         _selected_item = item;
         for (auto& window : _windows)

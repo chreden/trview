@@ -131,7 +131,7 @@ namespace trview
     {
         if (auto item = _selected_item.lock())
         {
-            return item->index();
+            return item->number();
         }
         return std::nullopt;
     }
@@ -557,11 +557,6 @@ namespace trview
         const uint32_t num_entities = level.num_entities();
         for (uint32_t i = 0; i < num_entities; ++i)
         {
-            auto level_entity = level.get_entity(i);
-            auto entity = entity_source(level, level_entity, i, mesh_storage);
-            _rooms[entity->room()]->add_entity(entity);
-            _entities.push_back(entity);
-
             std::vector<std::weak_ptr<ITrigger>> relevant_triggers;
             for (const auto& trigger : _triggers)
             {
@@ -570,6 +565,11 @@ namespace trview
                     relevant_triggers.push_back(trigger);
                 }
             }
+
+            auto level_entity = level.get_entity(i);
+            auto entity = entity_source(level, level_entity, i, relevant_triggers, mesh_storage);
+            _rooms[entity->room()]->add_entity(entity);
+            _entities.push_back(entity);
 
             _items.push_back(Item(i, level_entity.Room, level_entity.TypeID, type_names.lookup_type_name(_version, level_entity.TypeID, level_entity.Flags), 
                 version() >= trlevel::LevelVersion::Tomb4 ? level_entity.Intensity2 : 0, level_entity.Flags, relevant_triggers, level_entity.position()));

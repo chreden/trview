@@ -375,7 +375,10 @@ namespace trview
         _token_store += _items_windows->on_trigger_selected += [this](const auto& trigger) { select_trigger(trigger); };
         _token_store += _items_windows->on_add_to_route += [this](const auto& item)
         {
-            add_waypoint(item.position(), Vector3::Down, item.room(), IWaypoint::Type::Entity, item.number());
+            if (auto item_ptr = item.lock())
+            {
+                add_waypoint(item_ptr->position(), Vector3::Down, item_ptr->room(), IWaypoint::Type::Entity, item_ptr->number());
+            }
         };
     }
 
@@ -515,14 +518,20 @@ namespace trview
         }
     }
 
-    void Application::select_item(const Item& item)
+    void Application::select_item(std::weak_ptr<IItem> item)
     {
-        if (!_level || item.number() >= _level->items().size())
+        if (!_level)
         {
             return;
         }
 
-        select_room(item.room());
+        auto item_ptr = item.lock();
+        if (!item_ptr)
+        {
+            return;
+        }
+
+        select_room(item_ptr->room());
         _level->set_selected_item(item.number());
         _viewer->select_item(item);
         _items_windows->set_selected_item(item);
@@ -618,7 +627,7 @@ namespace trview
         }
 
         _level->set_item_visibility(item.number(), visible);
-        _items_windows->set_item_visible(item, visible);
+        // _items_windows->set_item_visible(item, visible);
     }
 
     void Application::set_trigger_visibility(const std::weak_ptr<ITrigger>& trigger, bool visible)

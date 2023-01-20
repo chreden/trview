@@ -183,7 +183,9 @@ namespace trview
 
         auto entity_source = [=](auto&& level, auto&& entity, auto&& index, auto&& mesh_storage)
         {
-            return std::make_shared<Entity>(mesh_source, level, entity, mesh_storage, index, type_name_lookup->is_pickup(level.get_version(), entity.TypeID));
+            return std::make_shared<Entity>(mesh_source, level, entity, mesh_storage, index, 
+                type_name_lookup->lookup_type_name(level.get_version(), entity.TypeID, entity.Flags),
+                type_name_lookup->is_pickup(level.get_version(), entity.TypeID));
         };
 
         auto ai_source = [=](auto&& level, auto&& entity, auto&& index, auto&& mesh_storage)

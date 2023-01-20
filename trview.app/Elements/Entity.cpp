@@ -62,20 +62,20 @@ namespace trview
     {
     }
 
-    Entity::Entity(const IMesh::Source& mesh_source, const trlevel::ILevel& level, const trlevel::tr2_entity& entity, const IMeshStorage& mesh_storage, uint32_t index, bool is_pickup)
-        : Entity(mesh_source, mesh_storage, level, entity.Room, index, entity.TypeID, entity.position(), entity.Angle, entity.Intensity2, is_pickup)
+    Entity::Entity(const IMesh::Source& mesh_source, const trlevel::ILevel& level, const trlevel::tr2_entity& entity, const IMeshStorage& mesh_storage, uint32_t number, const std::string& type, const std::vector<std::weak_ptr<ITrigger>>& triggers, bool is_pickup)
+        : Entity(mesh_source, mesh_storage, level, entity.Room, number, entity.TypeID, entity.position(), entity.Angle, entity.Intensity2, type, triggers, entity.Flags, is_pickup)
     {
         
     }
 
-    Entity::Entity(const IMesh::Source& mesh_source, const trlevel::ILevel& level, const trlevel::tr4_ai_object& entity, const IMeshStorage& mesh_storage, uint32_t index)
-        : Entity(mesh_source, mesh_storage, level, entity.room, index, entity.type_id, entity.position(), entity.angle, entity.ocb, false)
+    Entity::Entity(const IMesh::Source& mesh_source, const trlevel::ILevel& level, const trlevel::tr4_ai_object& entity, const IMeshStorage& mesh_storage, uint32_t number, const std::string& type, const std::vector<std::weak_ptr<ITrigger>>& triggers)
+        : Entity(mesh_source, mesh_storage, level, entity.room, number, entity.type_id, entity.position(), entity.angle, entity.ocb, type, triggers, entity.flags, false)
     {
     }
 
-    Entity::Entity(const IMesh::Source& mesh_source, const IMeshStorage& mesh_storage, const trlevel::ILevel& level, uint16_t room, uint32_t index, uint16_t type_id,
-        const Vector3& position, int32_t angle, int32_t ocb, bool is_pickup)
-        : _room(room), _index(index)
+    Entity::Entity(const IMesh::Source& mesh_source, const IMeshStorage& mesh_storage, const trlevel::ILevel& level, uint16_t room, uint32_t number, uint16_t type_id,
+        const Vector3& position, int32_t angle, int32_t ocb, const std::string& type, const std::vector<std::weak_ptr<ITrigger>>& triggers, uint16_t flags, bool is_pickup)
+        : _room(room), _number(number), _type(type), _triggers(triggers), _type_id(type_id), _ocb(ocb), _flags(flags)
     {
         // Extract the meshes required from the model.
         load_meshes(level, type_id, mesh_storage);
@@ -206,9 +206,9 @@ namespace trview
         return _room;
     }
 
-    uint32_t Entity::index() const
+    uint32_t Entity::number() const
     {
-        return _index;
+        return _number;
     }
 
     void Entity::get_transparent_triangles(ITransparencyBuffer& transparency, const ICamera& camera, const DirectX::SimpleMath::Color& colour)
@@ -251,7 +251,7 @@ namespace trview
             PickResult result;
             result.hit = true;
             result.type = PickResult::Type::Entity;
-            result.index = _index;
+            result.index = _number;
             result.distance = box_distance;
             result.position = position + direction * box_distance;
             return result;
@@ -281,7 +281,7 @@ namespace trview
 
         PickResult result;
         result.type = PickResult::Type::Entity;
-        result.index = _index;
+        result.index = _number;
 
         for (auto i : pick_meshes)
         {
@@ -396,5 +396,76 @@ namespace trview
     bool Entity::needs_ocb_adjustment() const
     {
         return _needs_ocb_adjustment;
+    }
+
+    std::string Entity::type() const
+    {
+        return _type;
+    }
+
+    std::vector<std::weak_ptr<ITrigger>> Entity::triggers() const
+    {
+        return _triggers;
+    }
+
+    uint32_t Entity::type_id() const
+    {
+        return _type_id;
+    }
+
+    int32_t Entity::ocb() const
+    {
+        return _ocb;
+    }
+
+    uint16_t Entity::activation_flags() const
+    {
+        return (_flags & 0x3E00) >> 9;
+    }
+
+    bool Entity::clear_body_flag() const
+    {
+        return (_flags & 0x8000) != 0;
+    }
+
+    bool Entity::invisible_flag() const
+    {
+        return (_flags & 0x100) != 0;
+    }
+
+    Vector3 Entity::position() const
+    {
+        return _position;
+    }
+
+    bool is_mutant_egg(const IItem& item)
+    {
+        return is_mutant_egg(item.type_id());
+    }
+
+    bool is_mutant_egg(uint32_t type_id)
+    {
+        return equals_any(type_id, 163u, 181u);
+    }
+
+    uint16_t mutant_egg_contents(const IItem& item)
+    {
+        return mutant_egg_contents(item.activation_flags());
+    }
+
+    uint16_t mutant_egg_contents(uint16_t flags)
+    {
+        switch (flags)
+        {
+        case 1:
+            return 21; // Shooter
+        case 2:
+            return 23; // Centaur
+        case 4:
+            return 34; // Torso
+        case 8:
+            return 22; // Mutant
+        }
+        return 20; // Winged
     }
 }

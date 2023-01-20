@@ -83,7 +83,7 @@ namespace trview
         // Entity manipulation
         void add_waypoint(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& normal, uint32_t room, IWaypoint::Type type, uint32_t index);
         void remove_waypoint(uint32_t index);
-        void select_item(const Item& item);
+        void select_item(std::weak_ptr<IItem> item);
         void select_room(uint32_t room);
         /// <summary>
         /// Select a trigger in the application. If the trigger is empty, nothing happens.

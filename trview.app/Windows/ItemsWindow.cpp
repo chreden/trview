@@ -20,24 +20,12 @@ namespace trview
         setup_filters();
     }
 
-    void ItemsWindow::set_items(const std::vector<Item>& items)
+    void ItemsWindow::set_items(const std::vector<std::weak_ptr<IItem>>& items)
     {
         _all_items = items;
         _triggered_by.clear();
         setup_filters();
         _force_sort = true;
-    }
-
-    void ItemsWindow::update_item(const Item& item)
-    {
-        for (auto& i : _all_items)
-        {
-            if (i.number() == item.number())
-            {
-                i = item;
-                break;
-            }
-        }
     }
 
     void ItemsWindow::set_triggers(const std::vector<std::weak_ptr<ITrigger>>& triggers)
@@ -62,14 +50,14 @@ namespace trview
         {
             _sync_item = value;
             _scroll_to_item = true;
-            if (_sync_item && _global_selected_item.has_value())
+            if (_sync_item && _global_selected_item.lock())
             {
-                set_selected_item(_global_selected_item.value());
+                set_selected_item(_global_selected_item);
             }
         }
     }
 
-    void ItemsWindow::set_selected_item(const Item& item)
+    void ItemsWindow::set_selected_item(std::weak_ptr<IItem> item)
     {
         _global_selected_item = item;
         if (_sync_item)
@@ -79,7 +67,7 @@ namespace trview
         }
     }
 
-    std::optional<Item> ItemsWindow::selected_item() const
+    std::weak_ptr<IItem> ItemsWindow::selected_item() const
     {
         return _selected_item;
     }
@@ -110,7 +98,7 @@ namespace trview
                 ImGui::TableSetupScrollFreeze(1, 1);
                 ImGui::TableHeadersRow();
 
-                imgui_sort(_all_items,
+                imgui_sort_weak(_all_items,
                     {
                         [](auto&& l, auto&& r) { return l.number() < r.number(); },
                         [](auto&& l, auto&& r) { return std::tuple(l.room(), l.number()) < std::tuple(r.room(), r.number()); },
@@ -121,14 +109,16 @@ namespace trview
 
                 for (const auto& item : _all_items)
                 {
-                    if (_track.enabled<Type::Room>() && item.room() != _current_room || !_filters.match(item))
+                    auto item_ptr = item.lock();
+                    if (!item_ptr || (_track.enabled<Type::Room>() && item_ptr->room() != _current_room || !_filters.match(*item_ptr)))
                     {
                         continue;
                     }
 
                     ImGui::TableNextRow();
                     ImGui::TableNextColumn();
-                    bool selected = _selected_item.has_value() && _selected_item.value().number() == item.number();
+                    auto selected_item = _selected_item.lock();
+                    bool selected = selected_item && selected_item == item_ptr;
 
                     ImGuiScroller scroller;
                     if (selected && _scroll_to_item)
@@ -137,7 +127,7 @@ namespace trview
                         _scroll_to_item = false;
                     }
 
-                    if (ImGui::Selectable(std::format("{0}##{0}", item.number()).c_str(), &selected, ImGuiSelectableFlags_SpanAllColumns | static_cast<int>(ImGuiSelectableFlags_SelectOnNav)))
+                    if (ImGui::Selectable(std::format("{0}##{0}", item_ptr->number()).c_str(), &selected, ImGuiSelectableFlags_SpanAllColumns | static_cast<int>(ImGuiSelectableFlags_SelectOnNav)))
                     {
                         scroller.fix_scroll();
 
@@ -151,15 +141,15 @@ namespace trview
 
                     ImGui::SetItemAllowOverlap();
                     ImGui::TableNextColumn();
-                    ImGui::Text(std::to_string(item.room()).c_str());
+                    ImGui::Text(std::to_string(item_ptr->room()).c_str());
                     ImGui::TableNextColumn();
-                    ImGui::Text(std::to_string(item.type_id()).c_str());
+                    ImGui::Text(std::to_string(item_ptr->type_id()).c_str());
                     ImGui::TableNextColumn();
-                    ImGui::Text(item.type().c_str());
+                    ImGui::Text(item_ptr->type().c_str());
                     ImGui::TableNextColumn();
-                    bool hidden = !item.visible();
+                    bool hidden = !item_ptr->visible();
                     ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0, 0));
-                    if (ImGui::Checkbox(std::format("##hide-{}", item.number()).c_str(), &hidden))
+                    if (ImGui::Checkbox(std::format("##hide-{}", item_ptr->number()).c_str(), &hidden))
                     {
                         on_item_visibility(item, !hidden);
                     }
@@ -182,10 +172,8 @@ namespace trview
                 ImGui::TableSetupColumn("Value");
                 ImGui::TableNextRow();
 
-                if (_selected_item.has_value())
+                if (auto item = _selected_item.lock())
                 {
-                    const auto& item = _selected_item.value();
-
                     auto add_stat = [&]<typename T>(const std::string& name, const T&& value)
                     {
                         const auto string_value = get_string(value);
@@ -214,33 +202,33 @@ namespace trview
 
                     auto position_text = [&item]()
                     {
-                        const auto pos = item.position() * trlevel::Scale;
+                        const auto pos = item->position() * trlevel::Scale;
                         return std::format("{:.0f}, {:.0f}, {:.0f}", pos.x, pos.y, pos.z);
                     };
 
                     auto is_bad_mutant_egg = [&]() 
                     { 
                         return _level_version == trlevel::LevelVersion::Tomb1 &&
-                            is_mutant_egg(item) &&
-                            !_model_checker(mutant_egg_contents(item));
+                            is_mutant_egg(*item) &&
+                            !_model_checker(mutant_egg_contents(*item));
                     };
 
-                    add_stat(std::format("Type{}", is_bad_mutant_egg() ? "*" : ""), item.type());
-                    add_stat("#", item.number());
+                    add_stat(std::format("Type{}", is_bad_mutant_egg() ? "*" : ""), item->type());
+                    add_stat("#", item->number());
                     add_stat("Position", position_text());
-                    add_stat("Type ID", item.type_id());
-                    add_stat("Room", item.room());
-                    add_stat("Clear Body", item.clear_body_flag());
-                    add_stat("Invisible", item.invisible_flag());
-                    add_stat("Flags", format_binary(item.activation_flags()));
-                    add_stat("OCB", item.ocb());
+                    add_stat("Type ID", item->type_id());
+                    add_stat("Room", item->room());
+                    add_stat("Clear Body", item->clear_body_flag());
+                    add_stat("Invisible", item->invisible_flag());
+                    add_stat("Flags", format_binary(item->activation_flags()));
+                    add_stat("OCB", item->ocb());
                 }
 
                 ImGui::EndTable();
             }
             if (ImGui::Button(Names::add_to_route_button.c_str(), ImVec2(-1, 30)))
             {
-                on_add_to_route(_selected_item.value());
+                on_add_to_route(_selected_item);
             }
             ImGui::Text("Triggered By");
             if (ImGui::BeginTable(Names::triggers_list.c_str(), 3, ImGuiTableFlags_ScrollY | ImGuiTableFlags_Sortable | ImGuiTableFlags_SizingFixedFit, ImVec2(-1, -1)))
@@ -336,10 +324,13 @@ namespace trview
         _id = "Items " + std::to_string(number);
     }
 
-    void ItemsWindow::set_local_selected_item(const Item& item)
+    void ItemsWindow::set_local_selected_item(std::weak_ptr<IItem> item)
     {
         _selected_item = item;
-        _triggered_by = item.triggers();
+        if (auto selected = _selected_item.lock())
+        {
+            _triggered_by = selected->triggers();
+        }
         _force_sort = true;
     }
 
@@ -349,7 +340,10 @@ namespace trview
         std::set<std::string> available_types;
         for (const auto& item : _all_items)
         {
-            available_types.insert(item.type());
+            if (auto item_ptr = item.lock())
+            {
+                available_types.insert(item_ptr->type());
+            }
         }
         _filters.add_getter<std::string>("Type", { available_types.begin(), available_types.end() }, [](auto&& item) { return item.type(); });
         _filters.add_getter<float>("#", [](auto&& item) { return static_cast<float>(item.number()); });

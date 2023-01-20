@@ -94,7 +94,7 @@ namespace trview
         /// Select the specified item.
         /// @param item The item to select.
         /// @remarks This will not raise the on_item_selected event.
-        virtual void select_item(const Item& item) = 0;
+        virtual void select_item(const std::weak_ptr<IItem>& item) = 0;
 
         /// Select the specified room.
         /// @param room The room to select.

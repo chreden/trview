@@ -28,12 +28,12 @@ namespace trview
     class Entity final : public IItem
     {
     public:
-        explicit Entity(const IMesh::Source& mesh_source, const trlevel::ILevel& level, const trlevel::tr2_entity& entity, const IMeshStorage& mesh_storage, uint32_t index, bool is_pickup);
-        explicit Entity(const IMesh::Source& mesh_source, const trlevel::ILevel& level, const trlevel::tr4_ai_object& entity, const IMeshStorage& mesh_storage, uint32_t index);
+        explicit Entity(const IMesh::Source& mesh_source, const trlevel::ILevel& level, const trlevel::tr2_entity& entity, const IMeshStorage& mesh_storage, uint32_t number, const std::string& type, const std::vector<std::weak_ptr<ITrigger>>& triggers, bool is_pickup);
+        explicit Entity(const IMesh::Source& mesh_source, const trlevel::ILevel& level, const trlevel::tr4_ai_object& entity, const IMeshStorage& mesh_storage, uint32_t number, const std::string& type, const std::vector<std::weak_ptr<ITrigger>>& triggers);
         virtual ~Entity() = default;
         virtual void render(const ICamera& camera, const ILevelTextureStorage& texture_storage, const DirectX::SimpleMath::Color& colour) override;
         virtual uint16_t room() const override;
-        virtual uint32_t index() const override;
+        virtual uint32_t number() const override;
 
         virtual void get_transparent_triangles(ITransparencyBuffer& transparency, const ICamera& camera, const DirectX::SimpleMath::Color& colour) override;
 
@@ -44,8 +44,16 @@ namespace trview
         virtual void set_visible(bool value) override;
         virtual void adjust_y(float amount) override;
         virtual bool needs_ocb_adjustment() const override;
+        std::string type() const override;
+        std::vector<std::weak_ptr<ITrigger>> triggers() const override;
+        uint32_t type_id() const override;
+        int32_t ocb() const override;
+        uint16_t activation_flags() const override;
+        bool clear_body_flag() const override;
+        bool invisible_flag() const override;
+        DirectX::SimpleMath::Vector3 position() const override;
     private:
-        Entity(const IMesh::Source& mesh_source, const IMeshStorage& mesh_storage, const trlevel::ILevel& level, uint16_t room, uint32_t index, uint16_t type_id, const DirectX::SimpleMath::Vector3& position, int32_t angle, int32_t ocb, bool is_pickup);
+        Entity(const IMesh::Source& mesh_source, const IMeshStorage& mesh_storage, const trlevel::ILevel& level, uint16_t room, uint32_t number, uint16_t type_id, const DirectX::SimpleMath::Vector3& position, int32_t angle, int32_t ocb, const std::string& type, const std::vector<std::weak_ptr<ITrigger>>& triggers, uint16_t flags, bool is_pickup);
 
         void load_meshes(const trlevel::ILevel& level, int16_t type_id, const IMeshStorage& mesh_storage);
         void load_model(const trlevel::tr_model& model, const trlevel::ILevel& level);
@@ -57,7 +65,7 @@ namespace trview
         std::shared_ptr<IMesh>                    _sprite_mesh;
         std::vector<DirectX::SimpleMath::Matrix>  _world_transforms;
         uint16_t                                  _room;
-        uint32_t                                  _index;
+        uint32_t                                  _number;
 
         // Bits for sprites.
         DirectX::SimpleMath::Matrix               _scale;
@@ -68,5 +76,11 @@ namespace trview
         std::vector<DirectX::BoundingOrientedBox> _oriented_boxes;
         bool                                      _visible{ true };
         bool _needs_ocb_adjustment{ false };
+
+        std::string _type;
+        std::vector<std::weak_ptr<ITrigger>> _triggers;
+        uint32_t _type_id{ 0u };
+        int32_t _ocb{ 0u };
+        uint16_t _flags{ 0u };
     };
 }

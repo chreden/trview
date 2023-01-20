@@ -10,27 +10,22 @@ namespace trview
         virtual ~IItemsWindowManager() = 0;
 
         /// Event raised when an item is selected in one of the item windows.
-        Event<Item> on_item_selected;
+        Event<std::weak_ptr<IItem>> on_item_selected;
 
-        Event<Item, bool> on_item_visibility;
+        Event<std::weak_ptr<IItem>, bool> on_item_visibility;
 
         /// Event raised when a trigger is selected in one of the item windows.
         Event<std::weak_ptr<ITrigger>> on_trigger_selected;
 
         /// Event raised when the 'add to route' button is pressed in one of the item windows.
-        Event<Item> on_add_to_route;
+        Event<std::weak_ptr<IItem>> on_add_to_route;
 
         /// Render all of the item windows.
         virtual void render() = 0;
 
         /// Set the items to use in the windows.
         /// @param items The items in the level.
-        virtual void set_items(const std::vector<Item>& items) = 0;
-
-        /// Set whether an item is visible.
-        /// @param item The item.
-        /// @param visible Whether the item is visible.
-        virtual void set_item_visible(const Item& item, bool visible) = 0;
+        virtual void set_items(const std::vector<std::weak_ptr<IItem>>& items) = 0;
 
         virtual void set_level_version(trlevel::LevelVersion version) = 0;
 
@@ -46,7 +41,7 @@ namespace trview
 
         /// Set the currently selected item.
         /// @param item The selected item.
-        virtual void set_selected_item(const Item& item) = 0;
+        virtual void set_selected_item(std::weak_ptr<IItem> item) = 0;
 
         /// Create a new items window.
         virtual std::weak_ptr<IItemsWindow> create_window() = 0;

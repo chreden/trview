@@ -61,9 +61,6 @@
     <ClCompile Include="Windows\WindowResizer.cpp">
       <Filter>Windows</Filter>
     </ClCompile>
-    <ClCompile Include="Elements\Item.cpp">
-      <Filter>Elements</Filter>
-    </ClCompile>
     <ClCompile Include="Elements\Sector.cpp">
       <Filter>Elements</Filter>
     </ClCompile>
@@ -343,9 +340,6 @@
     </ClInclude>
     <ClInclude Include="Windows\WindowResizer.h">
       <Filter>Windows</Filter>
-    </ClInclude>
-    <ClInclude Include="Elements\Item.h">
-      <Filter>Elements</Filter>
     </ClInclude>
     <ClInclude Include="Elements\Sector.h">
       <Filter>Elements</Filter>

@@ -816,15 +816,18 @@ namespace trview
         }
     }
 
-    void Viewer::select_item(const Item& item)
+    void Viewer::select_item(const std::weak_ptr<IItem>& item)
     {
-        _target = item.position();
-        _ui->set_selected_item(item.number());
-        if (_settings.auto_orbit)
+        if (auto item_ptr = item.lock())
         {
-            set_camera_mode(CameraMode::Orbit);
+            _target = item_ptr->position();
+            _ui->set_selected_item(item_ptr->number());
+            if (_settings.auto_orbit)
+            {
+                set_camera_mode(CameraMode::Orbit);
+            }
+            _scene_changed = true;
         }
-        _scene_changed = true;
     }
 
     void Viewer::select_trigger(const std::weak_ptr<ITrigger>& trigger)

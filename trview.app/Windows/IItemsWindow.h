@@ -3,8 +3,8 @@
 #include <vector>
 #include <optional>
 #include <trview.common/Event.h>
-#include <trview.app/Elements/Item.h>
-#include <trview.app/Elements/ITrigger.h>
+#include "../Elements/IItem.h"
+#include "../Elements/ITrigger.h"
 
 namespace trview
 {
@@ -15,26 +15,23 @@ namespace trview
         virtual ~IItemsWindow() = 0;
 
         /// Event raised when an item is selected in the list.
-        Event<Item> on_item_selected;
+        Event<std::weak_ptr<IItem>> on_item_selected;
 
         /// Event raised when an item visibility is changed.
-        Event<Item, bool> on_item_visibility;
+        Event<std::weak_ptr<IItem>, bool> on_item_visibility;
 
         /// Event raised when a trigger is selected in the list.
         Event<std::weak_ptr<ITrigger>> on_trigger_selected;
 
         /// Event raised when the 'add to route' button is pressed.
-        Event<Item> on_add_to_route;
+        Event<std::weak_ptr<IItem>> on_add_to_route;
 
         /// Event raised when the window is closed.
         Event<> on_window_closed;
 
         /// Set the items to display in the window.
         /// @param items The items to show.
-        virtual void set_items(const std::vector<Item>& items) = 0;
-
-        /// Update the items - this doesn't reset the filters.
-        virtual void update_item(const Item& items) = 0;
+        virtual void set_items(const std::vector<std::weak_ptr<IItem>>& items) = 0;
 
         /// Render the window.
         virtual void render() = 0;
@@ -52,11 +49,11 @@ namespace trview
 
         /// Set the selected item.
         /// @param item The selected item.
-        virtual void set_selected_item(const Item& item) = 0;
+        virtual void set_selected_item(std::weak_ptr<IItem> item) = 0;
 
         /// Get the selected item.
         /// @returns The selected item, if present.
-        virtual std::optional<Item> selected_item() const = 0;
+        virtual std::weak_ptr<IItem> selected_item() const = 0;
         /// <summary>
         /// Update the window.
         /// </summary>

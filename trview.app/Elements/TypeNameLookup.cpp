@@ -1,6 +1,6 @@
 #include "TypeNameLookup.h"
 #include <trview.common/Json.h>
-#include "Item.h"
+#include "IItem.h"
 
 using namespace trlevel;
 
