@@ -24,6 +24,7 @@
 #include "Elements/CameraSink/CameraSink.h"
 #include "Elements/Entity.h"
 #include "Elements/Light.h"
+#include "Elements/Trigger.h"
 #include "Elements/StaticMesh.h"
 #include "Elements/Sector.h"
 #include "Graphics/TextureStorage.h"
@@ -181,16 +182,17 @@ namespace trview
                 waypoint_source, settings_loader->load_user_settings());
         };
 
-        auto entity_source = [=](auto&& level, auto&& entity, auto&& index, auto&& mesh_storage)
+        auto entity_source = [=](auto&& level, auto&& entity, auto&& index, auto&& triggers, auto&& mesh_storage)
         {
             return std::make_shared<Entity>(mesh_source, level, entity, mesh_storage, index, 
                 type_name_lookup->lookup_type_name(level.get_version(), entity.TypeID, entity.Flags),
+                triggers,
                 type_name_lookup->is_pickup(level.get_version(), entity.TypeID));
         };
 
         auto ai_source = [=](auto&& level, auto&& entity, auto&& index, auto&& mesh_storage)
         {
-            return std::make_shared<Entity>(mesh_source, level, entity, mesh_storage, index);
+            return std::make_shared<Entity>(mesh_source, level, entity, mesh_storage, index, type_name_lookup->lookup_type_name(level.get_version(), entity.type_id, entity.flags), std::vector<std::weak_ptr<ITrigger>>{});
         };
 
         auto log = std::make_shared<Log>();
@@ -218,7 +220,6 @@ namespace trview
                 std::move(mesh_storage),
                 std::make_unique<TransparencyBuffer>(device),
                 std::make_unique<SelectionRenderer>(device, shader_storage, std::make_unique<TransparencyBuffer>(device), render_target_source),
-                type_name_lookup,
                 entity_source,
                 ai_source,
                 room_source,

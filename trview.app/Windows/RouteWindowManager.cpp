@@ -81,7 +81,7 @@ namespace trview
         }
     }
 
-    void RouteWindowManager::set_items(const std::vector<Item>& items)
+    void RouteWindowManager::set_items(const std::vector<std::weak_ptr<IItem>>& items)
     {
         _all_items = items;
 

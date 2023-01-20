@@ -2,9 +2,9 @@
 #pragma once
 
 #include <trview.common/Event.h>
-#include <trview.app/Routing/IWaypoint.h>
-#include <trview.app/Elements/Item.h>
-#include <trview.app/Elements/Room.h>
+#include "../Routing/IWaypoint.h"
+#include "../Elements/IItem.h"
+#include "../Elements/Room.h"
 #include <trview.common/Windows/IClipboard.h>
 #include <trview.common/Windows/IDialogs.h>
 #include <trview.common/IFiles.h>
@@ -39,7 +39,7 @@ namespace trview
         virtual void render() override;
         virtual void set_route(IRoute* route) override;
         virtual void select_waypoint(uint32_t index) override;
-        virtual void set_items(const std::vector<Item>& items) override;
+        virtual void set_items(const std::vector<std::weak_ptr<IItem>>& items) override;
         virtual void set_rooms(const std::vector<std::weak_ptr<IRoom>>& rooms) override;
         virtual void set_triggers(const std::vector<std::weak_ptr<ITrigger>>& triggers) override;
         virtual void focus() override;
@@ -54,7 +54,7 @@ namespace trview
         std::string waypoint_text(const IWaypoint& waypoint) const;
 
         IRoute* _route{ nullptr };
-        std::vector<Item> _all_items;
+        std::vector<std::weak_ptr<IItem>> _all_items;
         std::vector<std::weak_ptr<IRoom>> _all_rooms;
         std::vector<std::weak_ptr<ITrigger>> _all_triggers;
         IWaypoint::Type _selected_type{ IWaypoint::Type::Position };

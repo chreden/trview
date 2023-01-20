@@ -368,7 +368,7 @@ namespace trview
 
     /// Set the items to that are in the level.
     /// @param items The items to show.
-    void RouteWindow::set_items(const std::vector<Item>& items)
+    void RouteWindow::set_items(const std::vector<std::weak_ptr<IItem>>& items)
     {
         _all_items = items;
     }
@@ -495,7 +495,12 @@ namespace trview
         {
             if (waypoint.index() < _all_items.size())
             {
-                return _all_items[waypoint.index()].type();
+                auto item = _all_items[waypoint.index()].lock();
+                if (item)
+                {
+                    return item->type();
+                }
+                return "Invalid entity";
             }
             else
             {

@@ -1,10 +1,9 @@
 #pragma once
 
 #include <vector>
-#include <optional>
 #include <trview.common/Event.h>
-#include <trview.app/Elements/Item.h>
-#include <trview.app/Elements/ITrigger.h>
+#include "../Elements/IItem.h"
+#include "../Elements/ITrigger.h"
 
 namespace trview
 {
@@ -21,7 +20,7 @@ namespace trview
         Event<std::weak_ptr<ITrigger>, bool> on_trigger_visibility;
 
         /// Event raised when an item is selected in the list.
-        Event<Item> on_item_selected;
+        Event<std::weak_ptr<IItem>> on_item_selected;
 
         /// Event raised when the 'add to route' button is pressed.
         Event<std::weak_ptr<ITrigger>> on_add_to_route;
@@ -46,7 +45,7 @@ namespace trview
         /// @param room The current room number.
         virtual void set_current_room(uint32_t room) = 0;
 
-        virtual void set_items(const std::vector<Item>& items) = 0;
+        virtual void set_items(const std::vector<std::weak_ptr<IItem>>& items) = 0;
 
         virtual void set_number(int32_t number) = 0;
 

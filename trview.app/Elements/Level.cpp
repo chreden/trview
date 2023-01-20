@@ -5,7 +5,6 @@
 
 #include <trview.app/Graphics/LevelTextureStorage.h>
 #include <trview.app/Camera/ICamera.h>
-#include <trview.app/Elements/ITypeNameLookup.h>
 #include <trview.graphics/RasterizerStateStore.h>
 #include <format>
 #include <ranges>
@@ -39,7 +38,6 @@ namespace trview
         std::unique_ptr<IMeshStorage> mesh_storage,
         std::unique_ptr<ITransparencyBuffer> transparency_buffer,
         std::unique_ptr<ISelectionRenderer> selection_renderer,
-        std::shared_ptr<ITypeNameLookup> type_names,
         const IItem::EntitySource& entity_source,
         const IItem::AiSource& ai_source,
         const IRoom::Source& room_source,
@@ -90,7 +88,7 @@ namespace trview
         record_models(*level);
         generate_rooms(*level, room_source, *mesh_storage);
         generate_triggers(trigger_source);
-        generate_entities(*level, *type_names, entity_source, ai_source, *mesh_storage);
+        generate_entities(*level, entity_source, ai_source, *mesh_storage);
         generate_lights(*level, light_source);
         generate_camera_sinks(*level, camera_sink_source);
 
@@ -141,18 +139,20 @@ namespace trview
         return _selected_room;
     }
 
-    std::optional<Item> Level::item(uint32_t index) const
+    std::weak_ptr<IItem> Level::item(uint32_t index) const
     {
-        if (index >= _items.size())
+        if (index >= _entities.size())
         {
-            return std::nullopt;
+            return {};
         }
-        return _items[index];
+        return _entities[index];
     }
 
-    std::vector<Item> Level::items() const
+    std::vector<std::weak_ptr<IItem>> Level::items() const
     {
-        return _items;
+        std::vector<std::weak_ptr<IItem>> entities;
+        std::transform(_entities.begin(), _entities.end(), std::back_inserter(entities), [](auto&& entity) { return entity; });;
+        return entities;
     }
 
     uint32_t Level::neighbour_depth() const
@@ -552,7 +552,7 @@ namespace trview
         deduplicate_triangles();
     }
 
-    void Level::generate_entities(const trlevel::ILevel& level, const ITypeNameLookup& type_names, const IItem::EntitySource& entity_source, const IItem::AiSource& ai_source, const IMeshStorage& mesh_storage)
+    void Level::generate_entities(const trlevel::ILevel& level, const IItem::EntitySource& entity_source, const IItem::AiSource& ai_source, const IMeshStorage& mesh_storage)
     {
         const uint32_t num_entities = level.num_entities();
         for (uint32_t i = 0; i < num_entities; ++i)
@@ -570,9 +570,6 @@ namespace trview
             auto entity = entity_source(level, level_entity, i, relevant_triggers, mesh_storage);
             _rooms[entity->room()]->add_entity(entity);
             _entities.push_back(entity);
-
-            _items.push_back(Item(i, level_entity.Room, level_entity.TypeID, type_names.lookup_type_name(_version, level_entity.TypeID, level_entity.Flags), 
-                version() >= trlevel::LevelVersion::Tomb4 ? level_entity.Intensity2 : 0, level_entity.Flags, relevant_triggers, level_entity.position()));
         }
 
         const uint32_t num_ai_objects = level.num_ai_objects();
@@ -582,9 +579,6 @@ namespace trview
             auto entity = ai_source(level, ai_object, num_entities + i, mesh_storage);
             _rooms[entity->room()]->add_entity(entity);
             _entities.push_back(entity);
-
-            _items.push_back(Item(num_entities + i, ai_object.room, ai_object.type_id, type_names.lookup_type_name(_version, ai_object.type_id, ai_object.flags), ai_object.ocb,
-                ai_object.flags, {}, ai_object.position()));
         }
     }
 
@@ -698,7 +692,6 @@ namespace trview
 
     void Level::set_item_visibility(uint32_t index, bool state)
     {
-        _items[index].set_visible(state);
         _entities[index]->set_visible(state);
         _regenerate_transparency = true;
         on_level_changed();
@@ -1197,10 +1190,14 @@ namespace trview
         return has_flag(_render_filters, RenderFilter::CameraSinks);
     }
 
-    bool find_item_by_type_id(const ILevel& level, uint32_t type_id, Item& output_item)
+    bool find_item_by_type_id(const ILevel& level, uint32_t type_id, std::weak_ptr<IItem>& output_item)
     {
         const auto& items = level.items();
-        auto found_item = std::find_if(items.begin(), items.end(), [=](const auto& item) { return item.type_id() == type_id; });
+        auto found_item = std::find_if(items.begin(), items.end(), [=](const auto& item)
+            {
+                auto i = item.lock();
+                return i && i->type_id() == type_id; 
+            });
         if (found_item == items.end())
         {
             return false;
@@ -1209,10 +1206,14 @@ namespace trview
         return true;
     }
 
-    bool find_last_item_by_type_id(const ILevel& level, uint32_t type_id, Item& output_item)
+    bool find_last_item_by_type_id(const ILevel& level, uint32_t type_id, std::weak_ptr<IItem>& output_item)
     {
         const auto& items = level.items();
-        auto found_item = std::find_if(items.rbegin(), items.rend(), [=](const auto& item) { return item.type_id() == type_id; });
+        auto found_item = std::find_if(items.rbegin(), items.rend(), [=](const auto& item)
+            {
+                auto i = item.lock();
+                return i && i->type_id() == type_id;
+            });
         if (found_item == items.rend())
         {
             return false;

@@ -1,6 +1,5 @@
 #include "RoomsWindow.h"
 #include <trview.app/Elements/IRoom.h>
-#include <trview.app/Elements/Item.h>
 #include <trview.app/Elements/ITrigger.h>
 #include <trview.common/Strings.h>
 #include "../trview_imgui.h"
@@ -105,9 +104,9 @@ namespace trview
 
         _token_store += _track.on_toggle<Type::Item>() += [&](bool value)
         {
-            if (value && _global_selected_item.has_value())
+            if (value && _global_selected_item.lock())
             {
-                set_selected_item(_global_selected_item.value());
+                set_selected_item(_global_selected_item);
             }
         };
         _token_store += _track.on_toggle<Type::Trigger>() += [&](bool) { set_selected_trigger(_global_selected_trigger); };
@@ -147,7 +146,7 @@ namespace trview
         }
     }
 
-    void RoomsWindow::set_items(const std::vector<Item>& items)
+    void RoomsWindow::set_items(const std::vector<std::weak_ptr<IItem>>& items)
     {
         _all_items = items;
         _global_selected_item.reset();
@@ -177,16 +176,19 @@ namespace trview
         set_selected_sector(nullptr);
     }
 
-    void RoomsWindow::set_selected_item(const Item& item)
+    void RoomsWindow::set_selected_item(const std::weak_ptr<IItem>& item)
     {
         _global_selected_item = item;
         if (_track.enabled<Type::Item>())
         {
             if (_selected_room != _current_room)
             {
-                select_room(item.room());
-                _scroll_to_room = true;
-                load_room_details(item.room());
+                if (auto item_ptr = item.lock())
+                {
+                    select_room(item_ptr->room());
+                    _scroll_to_room = true;
+                    load_room_details(item_ptr->room());
+                }
             }
 
             _local_selected_item = item;
@@ -298,7 +300,14 @@ namespace trview
 
                 auto item_count = [&](const IRoom& room)
                 {
-                    return std::count_if(_all_items.begin(), _all_items.end(), [&room](const auto& item) { return item.room() == room.number(); });
+                    return std::count_if(_all_items.begin(), _all_items.end(), [&room](const auto& item)
+                        {
+                            if (auto i = item.lock())
+                            {
+                                return i->room() == room.number();
+                            }
+                            return false;
+                        });
                 };
 
                 auto trigger_count = [&](const IRoom& room)
@@ -596,9 +605,12 @@ namespace trview
                 std::vector<float> results;
                 for (const auto& item : _all_items)
                 {
-                    if (item.room() == room.number())
+                    if (const auto item_ptr = item.lock())
                     {
-                        results.push_back(static_cast<float>(item.number()));
+                        if (item_ptr->room() == room.number())
+                        {
+                            results.push_back(static_cast<float>(item_ptr->number()));
+                        }
                     }
                 }
                 return results;
@@ -607,16 +619,22 @@ namespace trview
         std::set<std::string> available_item_types;
         for (const auto& item : _all_items)
         {
-            available_item_types.insert(item.type());
+            if (auto item_ptr = item.lock())
+            {
+                available_item_types.insert(item_ptr->type());
+            }
         }
         _filters.add_multi_getter<std::string>("Item Type", { available_item_types.begin(), available_item_types.end() }, [&](auto&& room)
             {
                 std::vector<std::string> results;
                 for (const auto& item : _all_items)
                 {
-                    if (item.room() == room.number())
+                    if (auto item_ptr = item.lock())
                     {
-                        results.push_back(item.type());
+                        if (item_ptr->room() == room.number())
+                        {
+                            results.push_back(item_ptr->type());
+                        }
                     }
                 }
                 return results;
@@ -722,7 +740,7 @@ namespace trview
             ImGui::TableSetupScrollFreeze(1, 1);
             ImGui::TableHeadersRow();
 
-            imgui_sort(_all_items,
+            imgui_sort_weak(_all_items,
                 {
                     [](auto&& l, auto&& r) { return l.number() < r.number(); },
                     [](auto&& l, auto&& r) { return std::tuple(l.type(), l.number()) < std::tuple(r.type(), r.number()); },
@@ -730,29 +748,33 @@ namespace trview
 
             for (const auto& item : _all_items)
             {
-                if (item.room() == room->number())
+                if (auto item_ptr = item.lock())
                 {
-                    ImGui::TableNextRow();
-                    ImGui::TableNextColumn();
-                    bool selected = _local_selected_item.has_value() && _local_selected_item.value().number() == item.number();
-
-                    ImGuiScroller scroller;
-                    if (selected && _scroll_to_item)
+                    if (item_ptr->room() == room->number())
                     {
-                        scroller.scroll_to_item();
-                        _scroll_to_item = false;
-                    }
+                        ImGui::TableNextRow();
+                        ImGui::TableNextColumn();
+                        auto selected_item = _local_selected_item.lock();
+                        bool selected = selected_item && selected_item == item_ptr;
 
-                    if (ImGui::Selectable(std::to_string(item.number()).c_str(), &selected, ImGuiSelectableFlags_SpanAllColumns | static_cast<int>(ImGuiSelectableFlags_SelectOnNav)))
-                    {
-                        scroller.fix_scroll();
-                        _local_selected_item = item;
-                        on_item_selected(item);
-                        _scroll_to_item = false;
-                    }
+                        ImGuiScroller scroller;
+                        if (selected && _scroll_to_item)
+                        {
+                            scroller.scroll_to_item();
+                            _scroll_to_item = false;
+                        }
 
-                    ImGui::TableNextColumn();
-                    ImGui::Text(item.type().c_str());
+                        if (ImGui::Selectable(std::to_string(item_ptr->number()).c_str(), &selected, ImGuiSelectableFlags_SpanAllColumns | static_cast<int>(ImGuiSelectableFlags_SelectOnNav)))
+                        {
+                            scroller.fix_scroll();
+                            _local_selected_item = item;
+                            on_item_selected(item);
+                            _scroll_to_item = false;
+                        }
+
+                        ImGui::TableNextColumn();
+                        ImGui::Text(item_ptr->type().c_str());
+                    }
                 }
             }
 

@@ -33,7 +33,7 @@ namespace trview
         return _selected_trigger;
     }
 
-    void RoomsWindowManager::set_items(const std::vector<Item>& items)
+    void RoomsWindowManager::set_items(const std::vector<std::weak_ptr<IItem>>& items)
     {
         _all_items = items;
         for (auto& window : _windows)
@@ -78,7 +78,7 @@ namespace trview
         }
     }
 
-    void RoomsWindowManager::set_selected_item(const Item& item)
+    void RoomsWindowManager::set_selected_item(const std::weak_ptr<IItem>& item)
     {
         _selected_item = item;
         for (auto& window : _windows)
@@ -112,10 +112,7 @@ namespace trview
         rooms_window->set_current_room(_current_room);
         rooms_window->set_map_colours(_map_colours);
         rooms_window->set_floordata(_floordata);
-        if (_selected_item.has_value())
-        {
-            rooms_window->set_selected_item(_selected_item.value());
-        }
+        rooms_window->set_selected_item(_selected_item);
         rooms_window->set_selected_trigger(_selected_trigger);
         rooms_window->set_selected_camera_sink(_selected_camera_sink);
         rooms_window->set_selected_light(_selected_light);

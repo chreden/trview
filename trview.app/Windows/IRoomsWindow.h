@@ -2,7 +2,7 @@
 
 #include <cstdint>
 #include <trview.common/Event.h>
-#include <trview.app/Elements/Item.h>
+#include "../Elements/IItem.h"
 #include <trview.app/Elements/ITrigger.h>
 #include "../Elements/CameraSink/ICameraSink.h"
 #include "../Elements/ILight.h"
@@ -21,7 +21,7 @@ namespace trview
         Event<uint32_t> on_room_selected;
 
         /// Event raised when the user has selected an item in the room window.
-        Event<Item> on_item_selected;
+        Event<std::weak_ptr<IItem>> on_item_selected;
 
         /// Event raised when the user has selected a trigger in the room window.
         Event<std::weak_ptr<ITrigger>> on_trigger_selected;
@@ -48,7 +48,7 @@ namespace trview
 
         /// Set the items in the level.
         /// @param items The items in the level.
-        virtual void set_items(const std::vector<Item>& items) = 0;
+        virtual void set_items(const std::vector<std::weak_ptr<IItem>>& items) = 0;
         /// <summary>
         /// Set the level version. This will control which information is displayed.
         /// </summary>
@@ -63,7 +63,7 @@ namespace trview
 
         /// Set the item currently selected in the viewer.
         /// @param item The item currently selected.
-        virtual void set_selected_item(const Item& item) = 0;
+        virtual void set_selected_item(const std::weak_ptr<IItem>& item) = 0;
 
         /// Set the trigger currently selected in the viewer.
         /// @param trigger The trigger currently selected.

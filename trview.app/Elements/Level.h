@@ -36,7 +36,6 @@ namespace trview
             std::unique_ptr<IMeshStorage> mesh_storage,
             std::unique_ptr<ITransparencyBuffer> transparency_buffer,
             std::unique_ptr<ISelectionRenderer> selection_renderer,
-            std::shared_ptr<ITypeNameLookup> type_names,
             const IItem::EntitySource& entity_source,
             const IItem::AiSource& ai_source,
             const IRoom::Source& room_source,
@@ -51,8 +50,8 @@ namespace trview
         virtual std::vector<graphics::Texture> level_textures() const override;
         virtual std::optional<uint32_t> selected_item() const override;
         virtual uint16_t selected_room() const override;
-        virtual std::optional<Item> item(uint32_t index) const override;
-        virtual std::vector<Item> items() const override;
+        virtual std::weak_ptr<IItem> item(uint32_t index) const override;
+        virtual std::vector<std::weak_ptr<IItem>> items() const override;
         virtual uint32_t neighbour_depth() const override;
         virtual uint32_t number_of_rooms() const override;
         virtual std::vector<std::weak_ptr<IRoom>> rooms() const override;
@@ -114,7 +113,7 @@ namespace trview
     private:
         void generate_rooms(const trlevel::ILevel& level, const IRoom::Source& room_source, const IMeshStorage& mesh_storage);
         void generate_triggers(const ITrigger::Source& trigger_source);
-        void generate_entities(const trlevel::ILevel& level, const ITypeNameLookup& type_names, const IItem::EntitySource& entity_source, const IItem::AiSource& ai_source, const IMeshStorage& mesh_storage);
+        void generate_entities(const trlevel::ILevel& level, const IItem::EntitySource& entity_source, const IItem::AiSource& ai_source, const IMeshStorage& mesh_storage);
         void regenerate_neighbours();
         void generate_neighbours(std::set<uint16_t>& results, uint16_t selected_room, int32_t max_depth);
         void generate_lights(const trlevel::ILevel& level, const ILight::Source& light_source);
@@ -161,7 +160,6 @@ namespace trview
         std::vector<std::shared_ptr<IRoom>>   _rooms;
         std::vector<std::shared_ptr<ITrigger>> _triggers;
         std::vector<std::shared_ptr<IItem>> _entities;
-        std::vector<Item> _items;
         std::vector<std::shared_ptr<ILight>> _lights;
         std::vector<std::shared_ptr<ICameraSink>> _camera_sinks;
 
@@ -206,7 +204,7 @@ namespace trview
     /// @param type_id The type id to search for.
     /// @param output_item The item to output the result into.
     /// @returns True if the item was found.
-    bool find_item_by_type_id(const ILevel& level, uint32_t type_id, Item& output_item);
+    bool find_item_by_type_id(const ILevel& level, uint32_t type_id, std::weak_ptr<IItem>& output_item);
 
     /// <summary>
     /// Find the last item with the type id specified.
@@ -215,5 +213,5 @@ namespace trview
     /// <param name="type_id">The type id to search for.</param>
     /// <param name="output_item">The item to output the result into.</param>
     /// <returns>True if the item was found.</returns>
-    bool find_last_item_by_type_id(const ILevel& level, uint32_t type_id, Item& output_item);
+    bool find_last_item_by_type_id(const ILevel& level, uint32_t type_id, std::weak_ptr<IItem>& output_item);
 }

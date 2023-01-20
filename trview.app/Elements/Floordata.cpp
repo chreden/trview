@@ -3,7 +3,7 @@
 
 namespace trview
 {
-    Floordata::Command::Command(Function type, const std::vector<uint16_t>& data, FloordataMeanings meanings, const std::vector<Item>& items)
+    Floordata::Command::Command(Function type, const std::vector<uint16_t>& data, FloordataMeanings meanings, const std::vector<std::weak_ptr<IItem>>& items)
         : type(type), data(data)
     {
         if (meanings == FloordataMeanings::Generate)
@@ -12,7 +12,7 @@ namespace trview
         }
     }
 
-    void Floordata::Command::create_meanings(const std::vector<Item>& items)
+    void Floordata::Command::create_meanings(const std::vector<std::weak_ptr<IItem>>& items)
     {
         // Parse the data to create the meanings.
         const uint16_t subfunction = (data[0] & 0x7F00) >> 8;
@@ -84,8 +84,10 @@ namespace trview
                                 meaning += " " + std::to_string(index);
                                 if (command_is_item(action) && index < items.size())
                                 {
-                                    const auto item = items[index];
-                                    meaning += " - " + item.type();
+                                    if (const auto item = items[index].lock())
+                                    {
+                                        meaning += " - " + item->type();
+                                    }
                                 }
                             }
 
@@ -215,11 +217,11 @@ namespace trview
 
     Floordata parse_floordata(const std::vector<uint16_t>& floordata, uint32_t index, FloordataMeanings meanings)
     {
-        return parse_floordata(floordata, index, meanings, std::vector<Item>{});
+        return parse_floordata(floordata, index, meanings, {});
     }
 
 
-    Floordata parse_floordata(const std::vector<uint16_t>& floordata, uint32_t index, FloordataMeanings meanings, const std::vector<Item>& items)
+    Floordata parse_floordata(const std::vector<uint16_t>& floordata, uint32_t index, FloordataMeanings meanings, const std::vector<std::weak_ptr<IItem>>& items)
     {
         Floordata result;
 

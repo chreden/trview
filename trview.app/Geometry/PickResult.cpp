@@ -94,10 +94,9 @@ namespace trview
         {
             case PickResult::Type::Entity:
             {
-                const auto item = level.item(result.index);
-                if (item.has_value())
+                if (const auto item = level.item(result.index).lock())
                 {
-                    stream << "Item " << result.index << " - " << item.value().type();
+                    stream << "Item " << result.index << " - " << item->type();
                 }
                 break;
             }
@@ -114,8 +113,8 @@ namespace trview
                             stream << " " << command.index();
                             if (command_is_item(command.type()))
                             {
-                                const auto item = level.item(command.index());
-                                stream << " - " << (item.has_value() ? item.value().type() : "No Item");
+                                const auto item = level.item(command.index()).lock();
+                                stream << " - " << (item ? item->type() : "No Item");
                             }
                         }
                     }
@@ -142,10 +141,9 @@ namespace trview
 
                 if (waypoint.type() == IWaypoint::Type::Entity)
                 {
-                    const auto item = level.item(waypoint.index());
-                    if (item.has_value())
+                    if (const auto item = level.item(waypoint.index()).lock())
                     {
-                        stream << " - " << item.value().type();
+                        stream << " - " << item->type();
                     }
                 }
                 else if (waypoint.type() == IWaypoint::Type::Trigger)

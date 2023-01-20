@@ -27,7 +27,6 @@ namespace trview
         virtual std::optional<int> process_message(UINT message, WPARAM wParam, LPARAM lParam) override;
         virtual void render() override;
         virtual void set_items(const std::vector<std::weak_ptr<IItem>>& items) override;
-        virtual void set_item_visible(std::weak_ptr<IItem> item, bool visible) override;
         virtual void set_level_version(trlevel::LevelVersion version) override;
         virtual void set_model_checker(const std::function<bool(uint32_t)>& checker) override;
         virtual void set_triggers(const std::vector<std::weak_ptr<ITrigger>>& triggers) override;

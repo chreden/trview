@@ -63,7 +63,7 @@ namespace trview
     }
 
     Entity::Entity(const IMesh::Source& mesh_source, const trlevel::ILevel& level, const trlevel::tr2_entity& entity, const IMeshStorage& mesh_storage, uint32_t number, const std::string& type, const std::vector<std::weak_ptr<ITrigger>>& triggers, bool is_pickup)
-        : Entity(mesh_source, mesh_storage, level, entity.Room, number, entity.TypeID, entity.position(), entity.Angle, entity.Intensity2, type, triggers, entity.Flags, is_pickup)
+        : Entity(mesh_source, mesh_storage, level, entity.Room, number, entity.TypeID, entity.position(), entity.Angle, level.get_version() >= trlevel::LevelVersion::Tomb4 ? entity.Intensity2 : 0, type, triggers, entity.Flags, is_pickup)
     {
         
     }
@@ -94,8 +94,9 @@ namespace trview
         {
             _world = Matrix::CreateTranslation(position);
             _sprite_mesh = create_sprite_mesh(mesh_source, level.get_sprite_texture(sprite.Offset), _scale, _offset, SpriteOffsetMode::Entity);
-            _position = position;
         }
+
+        _position = position;
 
         generate_bounding_box();
         apply_ocb_adjustment(level.get_version(), ocb, is_pickup);

@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Types.h"
-#include "Item.h"
+#include "IItem.h"
 
 namespace trview
 {
@@ -41,13 +41,13 @@ namespace trview
                 MinecartRight_Mapper
             };
 
-            explicit Command(Function type, const std::vector<uint16_t>& data, FloordataMeanings meanings, const std::vector<Item>& items);
+            explicit Command(Function type, const std::vector<uint16_t>& data, FloordataMeanings meanings, const std::vector<std::weak_ptr<IItem>>& items);
 
             Function type;
             std::vector<uint16_t> data;
             std::vector<std::string> meanings;
         private:
-            void create_meanings(const std::vector<Item>& items);
+            void create_meanings(const std::vector<std::weak_ptr<IItem>>& items);
         };
 
         std::vector<Command> commands;
@@ -62,5 +62,5 @@ namespace trview
     /// <returns>The parsed floor data.</returns>
     Floordata parse_floordata(const std::vector<uint16_t>& floordata, uint32_t index, FloordataMeanings meanings);
 
-    Floordata parse_floordata(const std::vector<uint16_t>& floordata, uint32_t index, FloordataMeanings meanings, const std::vector<Item>& items);
+    Floordata parse_floordata(const std::vector<uint16_t>& floordata, uint32_t index, FloordataMeanings meanings, const std::vector<std::weak_ptr<IItem>>& items);
 }

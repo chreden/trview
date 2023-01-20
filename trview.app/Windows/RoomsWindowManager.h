@@ -9,7 +9,7 @@
 
 #include <trview.common/MessageHandler.h>
 #include <trview.common/Windows/IShortcuts.h>
-#include "../Elements/Item.h"
+#include "../Elements/IItem.h"
 #include "IRoomsWindowManager.h"
 #include "WindowManager.h"
 
@@ -31,12 +31,12 @@ namespace trview
         virtual std::optional<int> process_message(UINT message, WPARAM wParam, LPARAM lParam) override;
         virtual void render() override;
         std::weak_ptr<ITrigger> selected_trigger() const;
-        virtual void set_items(const std::vector<Item>& items) override;
+        virtual void set_items(const std::vector<std::weak_ptr<IItem>>& items) override;
         virtual void set_level_version(trlevel::LevelVersion version) override;
         virtual void set_map_colours(const MapColours& colours) override;
         virtual void set_room(uint32_t room) override;
         virtual void set_rooms(const std::vector<std::weak_ptr<IRoom>>& items) override;
-        virtual void set_selected_item(const Item& item) override;
+        virtual void set_selected_item(const std::weak_ptr<IItem>& item) override;
         virtual void set_selected_trigger(const std::weak_ptr<ITrigger>& trigger) override;
         virtual std::weak_ptr<IRoomsWindow> create_window() override;
         virtual void update(float delta) override;
@@ -44,11 +44,11 @@ namespace trview
         virtual void set_selected_light(const std::weak_ptr<ILight>& light) override;
         virtual void set_selected_camera_sink(const std::weak_ptr<ICameraSink>& camera_sink) override;
     private:
-        std::vector<Item> _all_items;
+        std::vector<std::weak_ptr<IItem>> _all_items;
         std::vector<std::weak_ptr<IRoom>> _all_rooms;
         uint32_t _current_room{ 0u };
         std::weak_ptr<ITrigger> _selected_trigger;
-        std::optional<Item> _selected_item;
+        std::weak_ptr<IItem> _selected_item;
         IRoomsWindow::Source _rooms_window_source;
         trlevel::LevelVersion _level_version{ trlevel::LevelVersion::Unknown };
         MapColours _map_colours;

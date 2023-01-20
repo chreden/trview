@@ -9,7 +9,7 @@ namespace trview
         virtual ~ITriggersWindowManager() = 0;
 
         /// Event raised when an item is selected in one of the trigger windows.
-        Event<Item> on_item_selected;
+        Event<std::weak_ptr<IItem>> on_item_selected;
 
         Event<std::weak_ptr<ITrigger>, bool> on_trigger_visibility;
 
@@ -26,7 +26,7 @@ namespace trview
 
         /// Set the items to use in the windows.
         /// @param items The items in the level.
-        virtual void set_items(const std::vector<Item>& items) = 0;
+        virtual void set_items(const std::vector<std::weak_ptr<IItem>>& items) = 0;
 
         /// Set the triggers to use in the windows.
         /// @param triggers The triggers in the level.
