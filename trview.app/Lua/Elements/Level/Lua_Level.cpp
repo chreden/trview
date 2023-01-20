@@ -1,6 +1,7 @@
 #include "Lua_Level.h"
 #include "../../Lua.h"
 #include "../../../Elements/ILevel.h"
+#include "../Item/Lua_Item.h"
 
 namespace trview
 {
@@ -33,7 +34,14 @@ namespace trview
                 else if (key == "items")
                 {
                     lua_newtable(L);
-                    // TODO: Items
+                    int index = 1;
+                    for (const auto& item : current_level->items())
+                    {
+                        lua_pushnumber(L, index);
+                        create_item(L, item);
+                        lua_settable(L, -3);
+                        ++index;
+                    }
                     return 1;
                 }
                 else if (key == "lights")
@@ -86,6 +94,11 @@ namespace trview
             luaL_setfuncs(L, level_lib, 0);
             lua_pushvalue(L, -1);
             lua_setmetatable(L, -2);
+        }
+
+        ILevel* level_current_level()
+        {
+            return current_level;
         }
 
         void level_set_current_level(ILevel* level)

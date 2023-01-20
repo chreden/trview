@@ -267,6 +267,9 @@
     <ClCompile Include="Lua\Elements\Level\Lua_Level.cpp">
       <Filter>Lua\Elements\Level</Filter>
     </ClCompile>
+    <ClCompile Include="Lua\Elements\Item\Lua_Item.cpp">
+      <Filter>Lua\Elements\Item</Filter>
+    </ClCompile>
     <ClCompile Include="Elements\Item.cpp">
       <Filter>Elements\Item</Filter>
     </ClCompile>
@@ -861,6 +864,9 @@
     </ClInclude>
     <ClInclude Include="Type.h" />
     <ClInclude Include="Type.inl" />
+    <ClInclude Include="Lua\Elements\Item\Lua_Item.h">
+      <Filter>Lua\Elements\Item</Filter>
+    </ClInclude>
     <ClInclude Include="Elements\Item.h">
       <Filter>Elements\Item</Filter>
     </ClInclude>
@@ -1003,6 +1009,9 @@
     </Filter>
     <Filter Include="Track">
       <UniqueIdentifier>{895fbf3e-9030-4fa9-8c33-158d155fe655}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Lua\Elements\Item">
+      <UniqueIdentifier>{ea79c6fd-3a30-48a0-9862-5f18492d6e64}</UniqueIdentifier>
     </Filter>
     <Filter Include="Elements\Item">
       <UniqueIdentifier>{85b61b5c-df65-4d5d-9cc3-9ec05bf007cd}</UniqueIdentifier>
