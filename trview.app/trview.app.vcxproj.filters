@@ -109,7 +109,7 @@
     <ClCompile Include="Graphics\TextureStorage.cpp">
       <Filter>Graphics</Filter>
     </ClCompile>
-    <ClCompile Include="Elements\Entity.cpp">
+    <ClCompile Include="Elements\Item.cpp">
       <Filter>Elements</Filter>
     </ClCompile>
     <ClCompile Include="Elements\StaticMesh.cpp">
@@ -401,7 +401,7 @@
     <ClInclude Include="Graphics\TextureStorage.h">
       <Filter>Graphics</Filter>
     </ClInclude>
-    <ClInclude Include="Elements\Entity.h">
+    <ClInclude Include="Elements\Item.h">
       <Filter>Elements</Filter>
     </ClInclude>
     <ClInclude Include="Elements\StaticMesh.h">

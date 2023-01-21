@@ -22,7 +22,7 @@
 
 #include "Elements/TypeNameLookup.h"
 #include "Elements/CameraSink/CameraSink.h"
-#include "Elements/Entity.h"
+#include "Elements/Item.h"
 #include "Elements/Light.h"
 #include "Elements/Trigger.h"
 #include "Elements/StaticMesh.h"
@@ -184,7 +184,7 @@ namespace trview
 
         auto entity_source = [=](auto&& level, auto&& entity, auto&& index, auto&& triggers, auto&& mesh_storage)
         {
-            return std::make_shared<Entity>(mesh_source, level, entity, mesh_storage, index, 
+            return std::make_shared<Item>(mesh_source, level, entity, mesh_storage, index,
                 type_name_lookup->lookup_type_name(level.get_version(), entity.TypeID, entity.Flags),
                 triggers,
                 type_name_lookup->is_pickup(level.get_version(), entity.TypeID));
@@ -192,7 +192,7 @@ namespace trview
 
         auto ai_source = [=](auto&& level, auto&& entity, auto&& index, auto&& mesh_storage)
         {
-            return std::make_shared<Entity>(mesh_source, level, entity, mesh_storage, index, type_name_lookup->lookup_type_name(level.get_version(), entity.type_id, entity.flags), std::vector<std::weak_ptr<ITrigger>>{});
+            return std::make_shared<Item>(mesh_source, level, entity, mesh_storage, index, type_name_lookup->lookup_type_name(level.get_version(), entity.type_id, entity.flags), std::vector<std::weak_ptr<ITrigger>>{});
         };
 
         auto log = std::make_shared<Log>();

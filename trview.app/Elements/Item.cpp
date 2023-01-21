@@ -1,4 +1,4 @@
-#include "Entity.h"
+#include "Item.h"
 
 #include <trview.app/Graphics/ILevelTextureStorage.h>
 #include <trview.app/Graphics/IMeshStorage.h>
@@ -62,18 +62,18 @@ namespace trview
     {
     }
 
-    Entity::Entity(const IMesh::Source& mesh_source, const trlevel::ILevel& level, const trlevel::tr2_entity& entity, const IMeshStorage& mesh_storage, uint32_t number, const std::string& type, const std::vector<std::weak_ptr<ITrigger>>& triggers, bool is_pickup)
-        : Entity(mesh_source, mesh_storage, level, entity.Room, number, entity.TypeID, entity.position(), entity.Angle, level.get_version() >= trlevel::LevelVersion::Tomb4 ? entity.Intensity2 : 0, type, triggers, entity.Flags, is_pickup)
+    Item::Item(const IMesh::Source& mesh_source, const trlevel::ILevel& level, const trlevel::tr2_entity& entity, const IMeshStorage& mesh_storage, uint32_t number, const std::string& type, const std::vector<std::weak_ptr<ITrigger>>& triggers, bool is_pickup)
+        : Item(mesh_source, mesh_storage, level, entity.Room, number, entity.TypeID, entity.position(), entity.Angle, level.get_version() >= trlevel::LevelVersion::Tomb4 ? entity.Intensity2 : 0, type, triggers, entity.Flags, is_pickup)
     {
         
     }
 
-    Entity::Entity(const IMesh::Source& mesh_source, const trlevel::ILevel& level, const trlevel::tr4_ai_object& entity, const IMeshStorage& mesh_storage, uint32_t number, const std::string& type, const std::vector<std::weak_ptr<ITrigger>>& triggers)
-        : Entity(mesh_source, mesh_storage, level, entity.room, number, entity.type_id, entity.position(), entity.angle, entity.ocb, type, triggers, entity.flags, false)
+    Item::Item(const IMesh::Source& mesh_source, const trlevel::ILevel& level, const trlevel::tr4_ai_object& entity, const IMeshStorage& mesh_storage, uint32_t number, const std::string& type, const std::vector<std::weak_ptr<ITrigger>>& triggers)
+        : Item(mesh_source, mesh_storage, level, entity.room, number, entity.type_id, entity.position(), entity.angle, entity.ocb, type, triggers, entity.flags, false)
     {
     }
 
-    Entity::Entity(const IMesh::Source& mesh_source, const IMeshStorage& mesh_storage, const trlevel::ILevel& level, uint16_t room, uint32_t number, uint16_t type_id,
+    Item::Item(const IMesh::Source& mesh_source, const IMeshStorage& mesh_storage, const trlevel::ILevel& level, uint16_t room, uint32_t number, uint16_t type_id,
         const Vector3& position, int32_t angle, int32_t ocb, const std::string& type, const std::vector<std::weak_ptr<ITrigger>>& triggers, uint16_t flags, bool is_pickup)
         : _room(room), _number(number), _type(type), _triggers(triggers), _type_id(type_id), _ocb(ocb), _flags(flags)
     {
@@ -102,7 +102,7 @@ namespace trview
         apply_ocb_adjustment(level.get_version(), ocb, is_pickup);
     }
 
-    void Entity::load_meshes(const trlevel::ILevel& level, int16_t type_id, const IMeshStorage& mesh_storage)
+    void Item::load_meshes(const trlevel::ILevel& level, int16_t type_id, const IMeshStorage& mesh_storage)
     {
         trlevel::tr_model model;
         if (level.get_model_by_id(level.get_mesh_from_type_id(type_id), model))
@@ -115,7 +115,7 @@ namespace trview
         }
     }
 
-    void Entity::load_model(const trlevel::tr_model& model, const trlevel::ILevel& level)
+    void Item::load_model(const trlevel::tr_model& model, const trlevel::ILevel& level)
     {
         using namespace DirectX;
         using namespace DirectX::SimpleMath;
@@ -180,7 +180,7 @@ namespace trview
         }
     }
 
-    void Entity::render(const ICamera& camera, const ILevelTextureStorage& texture_storage, const DirectX::SimpleMath::Color& colour)
+    void Item::render(const ICamera& camera, const ILevelTextureStorage& texture_storage, const DirectX::SimpleMath::Color& colour)
     {
         if (!_visible)
         {
@@ -202,17 +202,17 @@ namespace trview
         }
     }
 
-    uint16_t Entity::room() const
+    uint16_t Item::room() const
     {
         return _room;
     }
 
-    uint32_t Entity::number() const
+    uint32_t Item::number() const
     {
         return _number;
     }
 
-    void Entity::get_transparent_triangles(ITransparencyBuffer& transparency, const ICamera& camera, const DirectX::SimpleMath::Color& colour)
+    void Item::get_transparent_triangles(ITransparencyBuffer& transparency, const ICamera& camera, const DirectX::SimpleMath::Color& colour)
     {
         if (!_visible)
         {
@@ -237,7 +237,7 @@ namespace trview
         }
     }
 
-    PickResult Entity::pick(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& direction) const
+    PickResult Item::pick(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& direction) const
     {
         // Check against some sort of bounding box (based on the mesh?)
         // Test against bounding box for the room first, to avoid more expensive mesh-ray intersection
@@ -304,7 +304,7 @@ namespace trview
         return result;
     }
 
-    void Entity::generate_bounding_box()
+    void Item::generate_bounding_box()
     {
         using namespace DirectX;
 
@@ -348,7 +348,7 @@ namespace trview
         BoundingBox::CreateFromPoints(_bounding_box, corners.size(), &corners[0], sizeof(Vector3));
     }
 
-    void Entity::apply_ocb_adjustment(trlevel::LevelVersion version, uint32_t ocb, bool is_pickup)
+    void Item::apply_ocb_adjustment(trlevel::LevelVersion version, uint32_t ocb, bool is_pickup)
     {
         if (!is_pickup || !needs_adjustment(version, ocb))
         {
@@ -367,22 +367,22 @@ namespace trview
         _needs_ocb_adjustment = true;
     }
 
-    DirectX::BoundingBox Entity::bounding_box() const
+    DirectX::BoundingBox Item::bounding_box() const
     {
         return _bounding_box;
     }
 
-    bool Entity::visible() const
+    bool Item::visible() const
     {
         return _visible;
     }
 
-    void Entity::set_visible(bool value)
+    void Item::set_visible(bool value)
     {
         _visible = value;
     }
 
-    void Entity::adjust_y(float amount)
+    void Item::adjust_y(float amount)
     {
         auto offset = Matrix::CreateTranslation(0, amount, 0);
         _world *= offset;
@@ -394,47 +394,47 @@ namespace trview
         _bounding_box.Transform(_bounding_box, offset);
     }
 
-    bool Entity::needs_ocb_adjustment() const
+    bool Item::needs_ocb_adjustment() const
     {
         return _needs_ocb_adjustment;
     }
 
-    std::string Entity::type() const
+    std::string Item::type() const
     {
         return _type;
     }
 
-    std::vector<std::weak_ptr<ITrigger>> Entity::triggers() const
+    std::vector<std::weak_ptr<ITrigger>> Item::triggers() const
     {
         return _triggers;
     }
 
-    uint32_t Entity::type_id() const
+    uint32_t Item::type_id() const
     {
         return _type_id;
     }
 
-    int32_t Entity::ocb() const
+    int32_t Item::ocb() const
     {
         return _ocb;
     }
 
-    uint16_t Entity::activation_flags() const
+    uint16_t Item::activation_flags() const
     {
         return (_flags & 0x3E00) >> 9;
     }
 
-    bool Entity::clear_body_flag() const
+    bool Item::clear_body_flag() const
     {
         return (_flags & 0x8000) != 0;
     }
 
-    bool Entity::invisible_flag() const
+    bool Item::invisible_flag() const
     {
         return (_flags & 0x100) != 0;
     }
 
-    Vector3 Entity::position() const
+    Vector3 Item::position() const
     {
         return _position;
     }
