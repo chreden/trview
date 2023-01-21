@@ -41,7 +41,7 @@ namespace trview
 
         /// Set the currently selected item.
         /// @param item The selected item.
-        virtual void set_selected_item(std::weak_ptr<IItem> item) = 0;
+        virtual void set_selected_item(const std::weak_ptr<IItem>& item) = 0;
 
         /// Create a new items window.
         virtual std::weak_ptr<IItemsWindow> create_window() = 0;

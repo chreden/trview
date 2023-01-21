@@ -34,7 +34,7 @@ namespace trview
         virtual void set_triggers(const std::vector<std::weak_ptr<ITrigger>>& triggers) override;
         virtual void clear_selected_item() override;
         virtual void set_current_room(uint32_t room) override;
-        virtual void set_selected_item(std::weak_ptr<IItem> item) override;
+        virtual void set_selected_item(const std::weak_ptr<IItem>& item) override;
         virtual std::weak_ptr<IItem> selected_item() const override;
         virtual void update(float delta) override;
         virtual void set_number(int32_t number) override;

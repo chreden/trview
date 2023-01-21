@@ -57,7 +57,7 @@ namespace trview
         }
     }
 
-    void ItemsWindow::set_selected_item(std::weak_ptr<IItem> item)
+    void ItemsWindow::set_selected_item(const std::weak_ptr<IItem>& item)
     {
         _global_selected_item = item;
         if (_sync_item)

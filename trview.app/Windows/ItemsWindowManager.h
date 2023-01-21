@@ -31,7 +31,7 @@ namespace trview
         virtual void set_model_checker(const std::function<bool(uint32_t)>& checker) override;
         virtual void set_triggers(const std::vector<std::weak_ptr<ITrigger>>& triggers) override;
         virtual void set_room(uint32_t room) override;
-        virtual void set_selected_item(std::weak_ptr<IItem> item) override;
+        virtual void set_selected_item(const std::weak_ptr<IItem>& item) override;
         virtual std::weak_ptr<IItemsWindow> create_window() override;
         virtual void update(float delta) override;
     private:

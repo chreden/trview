@@ -49,7 +49,7 @@ namespace trview
 
         /// Set the selected item.
         /// @param item The selected item.
-        virtual void set_selected_item(std::weak_ptr<IItem> item) = 0;
+        virtual void set_selected_item(const std::weak_ptr<IItem>& item) = 0;
 
         /// Get the selected item.
         /// @returns The selected item, if present.

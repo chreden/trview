@@ -90,7 +90,7 @@ namespace trview
         }
     }
 
-    void ItemsWindowManager::set_selected_item(std::weak_ptr<IItem> item)
+    void ItemsWindowManager::set_selected_item(const std::weak_ptr<IItem>& item)
     {
         _selected_item = item;
         for (auto& window : _windows)
