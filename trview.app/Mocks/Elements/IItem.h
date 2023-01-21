@@ -1,12 +1,13 @@
 #pragma once
 
 #include "../../Elements/IItem.h"
+#include <memory>
 
 namespace trview
 {
     namespace mocks
     {
-        struct MockItem : public IItem
+        struct MockItem : public IItem, public std::enable_shared_from_this<MockItem>
         {
             MockItem();
             virtual ~MockItem();
@@ -28,6 +29,42 @@ namespace trview
             MOCK_METHOD(bool, clear_body_flag, (), (const, override));
             MOCK_METHOD(bool, invisible_flag, (), (const, override));
             MOCK_METHOD(DirectX::SimpleMath::Vector3, position, (), (const, override));
+
+            std::shared_ptr<MockItem> with_number(uint32_t number)
+            {
+                ON_CALL(*this, number).WillByDefault(testing::Return(number));
+                return shared_from_this();
+            }
+
+            std::shared_ptr<MockItem> with_room(uint16_t number)
+            {
+                ON_CALL(*this, room).WillByDefault(testing::Return(number));
+                return shared_from_this();
+            }
+
+            std::shared_ptr<MockItem> with_type_id(uint32_t type_id)
+            {
+                ON_CALL(*this, type_id).WillByDefault(testing::Return(type_id));
+                return shared_from_this();
+            }
+
+            std::shared_ptr<MockItem> with_activation_flags(uint16_t flags)
+            {
+                ON_CALL(*this, activation_flags).WillByDefault(testing::Return(flags));
+                return shared_from_this();
+            }
+
+            std::shared_ptr<MockItem> with_triggers(const std::vector<std::weak_ptr<ITrigger>>& triggers)
+            {
+                ON_CALL(*this, triggers).WillByDefault(testing::Return(triggers));
+                return shared_from_this();
+            }
+
+            std::shared_ptr<MockItem> with_visible(bool value)
+            {
+                ON_CALL(*this, visible).WillByDefault(testing::Return(value));
+                return shared_from_this();
+            }
         };
     }
 }

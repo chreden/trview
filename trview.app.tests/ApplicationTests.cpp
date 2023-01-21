@@ -25,6 +25,7 @@
 #include "NullImGuiBackend.h"
 #include <trview.common/Strings.h>
 #include "TestImgui.h"
+#include <ranges>
 
 using namespace trview;
 using namespace trview::tests;
@@ -270,17 +271,17 @@ TEST(Application, WindowContentsResetBeforeViewerLoaded)
 
     std::vector<std::string> events;
 
-    EXPECT_CALL(items_window_manager, set_items(A<const std::vector<Item>&>())).Times(1).WillOnce([&](auto) { events.push_back("items_items"); });
+    EXPECT_CALL(items_window_manager, set_items(A<const std::vector<std::weak_ptr<IItem>>&>())).Times(1).WillOnce([&](auto) { events.push_back("items_items"); });
     EXPECT_CALL(items_window_manager, set_triggers(A<const std::vector<std::weak_ptr<ITrigger>>&>())).Times(1).WillOnce([&](auto) { events.push_back("items_triggers"); });
     EXPECT_CALL(items_window_manager, set_level_version(A<trlevel::LevelVersion>())).Times(1).WillOnce([&](auto) { events.push_back("items_version"); });
     EXPECT_CALL(items_window_manager, set_model_checker(A<const std::function<bool (uint32_t)>&>())).Times(1).WillOnce([&](auto) { events.push_back("items_model_checker"); });
-    EXPECT_CALL(triggers_window_manager, set_items(A<const std::vector<Item>&>())).Times(1).WillOnce([&](auto) { events.push_back("triggers_items"); });
+    EXPECT_CALL(triggers_window_manager, set_items(A<const std::vector<std::weak_ptr<IItem>>&>())).Times(1).WillOnce([&](auto) { events.push_back("triggers_items"); });
     EXPECT_CALL(triggers_window_manager, set_triggers(A<const std::vector<std::weak_ptr<ITrigger>>&>())).Times(1).WillOnce([&](auto) { events.push_back("triggers_triggers"); });
     EXPECT_CALL(rooms_window_manager, set_level_version(A<trlevel::LevelVersion>())).Times(1).WillOnce([&](auto) { events.push_back("rooms_version"); });
-    EXPECT_CALL(rooms_window_manager, set_items(A<const std::vector<Item>&>())).Times(1).WillOnce([&](auto) { events.push_back("rooms_items"); });
+    EXPECT_CALL(rooms_window_manager, set_items(A<const std::vector<std::weak_ptr<IItem>>&>())).Times(1).WillOnce([&](auto) { events.push_back("rooms_items"); });
     EXPECT_CALL(rooms_window_manager, set_floordata(A<const std::vector<uint16_t>&>())).Times(1).WillOnce([&](auto) { events.push_back("rooms_floordata"); });
     EXPECT_CALL(rooms_window_manager, set_rooms(A<const std::vector<std::weak_ptr<IRoom>>&>())).Times(1).WillOnce([&](auto) { events.push_back("rooms_rooms"); });
-    EXPECT_CALL(route_window_manager, set_items(A<const std::vector<Item>&>())).Times(1).WillOnce([&](auto) { events.push_back("route_items"); });
+    EXPECT_CALL(route_window_manager, set_items(A<const std::vector<std::weak_ptr<IItem>>&>())).Times(1).WillOnce([&](auto) { events.push_back("route_items"); });
     EXPECT_CALL(route_window_manager, set_triggers(A<const std::vector<std::weak_ptr<ITrigger>>&>())).Times(1).WillOnce([&](auto) { events.push_back("route_triggers"); });
     EXPECT_CALL(route_window_manager, set_rooms(A<const std::vector<std::weak_ptr<IRoom>>&>())).Times(1).WillOnce([&](auto) { events.push_back("route_rooms"); });
     EXPECT_CALL(route_window_manager, set_route(A<IRoute*>())).Times(1).WillOnce([&](auto) { events.push_back("route_route"); });
@@ -656,11 +657,12 @@ TEST(Application, ReloadSyncsProperties)
     auto [original_ptr, original] = create_mock<trview::mocks::MockLevel>();
     auto [reloaded_ptr, reloaded] = create_mock<trview::mocks::MockLevel>();
 
-    std::vector<Item> items;
+    std::vector<std::shared_ptr<IItem>> items;
     for (int i = 0; i < 5; ++i) 
     {
-        items.push_back(Item(i, 0, 0, "", 0, 0, {}, Vector3::Zero));
+        items.push_back(mock_shared<MockItem>()->with_number(i));
     }
+    std::vector<std::weak_ptr<IItem>> items_weak{ std::from_range, items };
     
     std::vector<std::shared_ptr<ITrigger>> triggers;
     for (int i = 0; i < 5; ++i)
@@ -688,7 +690,7 @@ TEST(Application, ReloadSyncsProperties)
         lights_weak.push_back(l);
     }
 
-    ON_CALL(original, items).WillByDefault(Return(items));
+    ON_CALL(original, items).WillByDefault(Return(items_weak));
     ON_CALL(original, selected_item).WillByDefault(Return(3));
     ON_CALL(original, triggers).WillByDefault(Return(triggers_weak));
     ON_CALL(original, selected_trigger).WillByDefault(Return(3));
@@ -697,7 +699,7 @@ TEST(Application, ReloadSyncsProperties)
     ON_CALL(original, number_of_rooms).WillByDefault(Return(5));
     ON_CALL(original, selected_room).WillByDefault(Return(3));
 
-    ON_CALL(reloaded, items).WillByDefault(Return(items));
+    ON_CALL(reloaded, items).WillByDefault(Return(items_weak));
     EXPECT_CALL(reloaded, set_selected_item(3)).Times(1);
     ON_CALL(reloaded, triggers).WillByDefault(Return(triggers_weak));
     EXPECT_CALL(reloaded, set_selected_trigger(3)).Times(1);

@@ -44,7 +44,6 @@ namespace
             std::unique_ptr<IMeshStorage> mesh_storage{ mock_unique<MockMeshStorage>() };
             std::unique_ptr<ITransparencyBuffer> transparency_buffer{ mock_unique<MockTransparencyBuffer>() };
             std::unique_ptr<ISelectionRenderer> selection_renderer{ mock_unique<MockSelectionRenderer>() };
-            std::shared_ptr<ITypeNameLookup> type_name_lookup{ mock_shared<MockTypeNameLookup>() };
             IItem::EntitySource entity_source{ [](auto&&...) { return mock_shared<MockItem>(); } };
             IItem::AiSource ai_source{ [](auto&&...) { return mock_shared<MockItem>(); } };
             IRoom::Source room_source{ [](auto&&...) { return mock_shared<MockRoom>(); } };
@@ -57,13 +56,7 @@ namespace
             std::unique_ptr<Level> build()
             {
                 return std::make_unique<Level>(device, shader_storage, std::move(level), level_texture_storage, std::move(mesh_storage), std::move(transparency_buffer),
-                    std::move(selection_renderer), type_name_lookup, entity_source, ai_source, room_source, trigger_source, light_source, log, buffer_source, camera_sink_source);
-            }
-
-            test_module& with_type_name_lookup(const std::shared_ptr<ITypeNameLookup>& type_name_lookup)
-            {
-                this->type_name_lookup = type_name_lookup;
-                return *this;
+                    std::move(selection_renderer), entity_source, ai_source, room_source, trigger_source, light_source, log, buffer_source, camera_sink_source);
             }
 
             test_module& with_level(std::unique_ptr<trlevel::ILevel>&& level)
@@ -117,25 +110,6 @@ namespace
 
         return test_module{};
     }
-}
-
-// Tests that the level class loads the type names with the correct level version.
-TEST(Level, LoadTypeNames)
-{
-    tr2_entity entity;
-    entity.Room = 0;
-    entity.TypeID = 123;
-    entity.Flags = 100;
-
-    auto [mock_level_ptr, mock_level] = create_mock<trlevel::mocks::MockLevel>();
-    EXPECT_CALL(mock_level, get_version).WillRepeatedly(Return(LevelVersion::Tomb2));
-    EXPECT_CALL(mock_level, num_rooms()).WillRepeatedly(Return(1));
-    EXPECT_CALL(mock_level, num_entities()).WillRepeatedly(Return(1));
-    EXPECT_CALL(mock_level, get_entity(0)).WillRepeatedly(Return(entity));
-
-    auto mock_type_name_lookup = mock_shared<MockTypeNameLookup>();
-    EXPECT_CALL(*mock_type_name_lookup, lookup_type_name(LevelVersion::Tomb2, 123, 100));
-    auto level = register_test_module().with_level(std::move(mock_level_ptr)).with_type_name_lookup(mock_type_name_lookup).build();
 }
 
 TEST(Level, LoadFromEntitySources)
@@ -514,7 +488,7 @@ TEST(Level, SelectedItem)
             [&](auto&&...)
             {
                 auto entity = mock_shared<MockItem>();
-                ON_CALL(*entity, index).WillByDefault(Return(entity_source_called));
+                ON_CALL(*entity, number).WillByDefault(Return(entity_source_called));
                 ++entity_source_called;
                 return entity;
             })
@@ -667,9 +641,8 @@ TEST(Level, Item)
         .with_level(std::move(mock_level_ptr))
         .build();
 
-    auto item = level->item(0);
-    ASSERT_NE(item, std::nullopt);
-    ASSERT_EQ(item.value().type_id(), 123);
+    auto item = level->item(0).lock();
+    ASSERT_TRUE(item);
 }
 
 TEST(Level, ItemNotFound)
@@ -680,8 +653,8 @@ TEST(Level, ItemNotFound)
         .with_level(std::move(mock_level_ptr))
         .build();
 
-    auto item = level->item(0);
-    ASSERT_EQ(item, std::nullopt);
+    auto item = level->item(0).lock();
+    ASSERT_FALSE(item);
 }
 
 TEST(Level, Light)

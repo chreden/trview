@@ -21,10 +21,12 @@ namespace
             trlevel::tr2_entity entity{};
             uint32_t index{ 0u };
             bool is_pickup{ false };
+            std::string type{ "Lara" };
+            std::vector<std::weak_ptr<ITrigger>> triggers;
 
             std::unique_ptr<Entity> build()
             {
-                return std::make_unique<Entity>(mesh_source, *level, entity, *mesh_storage, index, is_pickup);
+                return std::make_unique<Entity>(mesh_source, *level, entity, *mesh_storage, index, type, triggers, is_pickup);
             }
 
             test_module& with_level(const std::shared_ptr<trlevel::ILevel>& level)

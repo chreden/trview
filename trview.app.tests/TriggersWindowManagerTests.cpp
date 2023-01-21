@@ -89,17 +89,17 @@ TEST(TriggersWindowManager, ItemSelectedEventRaised)
 {
     auto manager = register_test_module().build();
 
-    std::optional<Item> raised_item;
-    auto token = manager->on_item_selected += [&raised_item](const auto& item) { raised_item = item; };
+    std::shared_ptr<IItem> raised_item;
+    auto token = manager->on_item_selected += [&raised_item](const auto& item) { raised_item = item.lock(); };
 
     auto created_window = manager->create_window().lock();
     ASSERT_NE(created_window, nullptr);
 
-    Item test_item(100, 10, 1, "Lara", 0, 0, {}, DirectX::SimpleMath::Vector3::Zero);
+    auto test_item = mock_shared<MockItem>();
     created_window->on_item_selected(test_item);
 
-    ASSERT_TRUE(raised_item.has_value());
-    ASSERT_EQ(raised_item.value().number(), 100);
+    ASSERT_TRUE(raised_item);
+    ASSERT_EQ(raised_item, test_item);
 }
 
 TEST(TriggersWindowManager, TriggerSelectedEventRaised)
@@ -164,11 +164,7 @@ TEST(TriggersWindowManager, SetItemsSetsItemsOnWindows)
     ASSERT_NE(created_window, nullptr);
     ASSERT_EQ(created_window, mock_window);
 
-    std::vector<Item> items
-    {
-        Item(0, 0, 0, "Test Object", 0, 0, {}, DirectX::SimpleMath::Vector3::Zero),
-    };
-    manager->set_items(items);
+    manager->set_items({});
 }
 
 TEST(TriggersWindowManager, SetTriggersSetsTriggersOnWindows)

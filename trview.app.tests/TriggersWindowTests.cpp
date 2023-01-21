@@ -213,17 +213,17 @@ TEST(TriggersWindow, ItemSelectedRaised)
 {
     auto window = register_test_module().build();
 
-    std::optional<Item> raised_item;
-    auto token = window->on_item_selected += [&raised_item](const auto& item) { raised_item = item; };
+    std::shared_ptr<IItem> raised_item;
+    auto token = window->on_item_selected += [&raised_item](const auto& item) { raised_item = item.lock(); };
 
-    std::vector<Item> items
+    std::vector<std::shared_ptr<IItem>> items
     {
-        Item(0, 0, 0, "Type", 0, 0, {}, DirectX::SimpleMath::Vector3::Zero),
-        Item(1, 0, 0, "Type", 0, 0, {}, DirectX::SimpleMath::Vector3::Zero)
+        mock_shared<MockItem>()->with_number(0),
+        mock_shared<MockItem>()->with_number(1)
     };
 
     auto trigger = mock_shared<MockTrigger>()->with_commands({ Command(0, TriggerCommandType::Object, 1) });
-    window->set_items(items);
+    window->set_items({ std::from_range, items });
     window->set_triggers({ trigger });
     window->set_selected_trigger(trigger);
 

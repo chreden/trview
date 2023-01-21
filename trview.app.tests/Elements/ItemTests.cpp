@@ -1,12 +1,16 @@
-#include <trview.app/Elements/Item.h>
+#include <trview.app/Elements/IItem.h>
+#include <trview.app/Mocks/Elements/IItem.h>
+#include <trview.tests.common/Mocks.h>
 
 using namespace trview;
+using namespace trview::mocks;
+using namespace trview::tests;
 
 TEST(Item, IsMutantEgg)
 {
-    ASSERT_TRUE(is_mutant_egg(Item(0, 0, 163, "", 0, 0, {}, {})));
-    ASSERT_TRUE(is_mutant_egg(Item(0, 0, 181, "", 0, 0, {}, {})));
-    ASSERT_FALSE(is_mutant_egg(Item(0, 0, 0, "", 0, 0, {}, {})));
+    ASSERT_TRUE(is_mutant_egg(*mock_shared<MockItem>()->with_type_id(163)));
+    ASSERT_TRUE(is_mutant_egg(*mock_shared<MockItem>()->with_type_id(181)));
+    ASSERT_FALSE(is_mutant_egg(*mock_shared<MockItem>()->with_type_id(0)));
 }
 
 TEST(Item, IsMutantEggId)
@@ -18,13 +22,12 @@ TEST(Item, IsMutantEggId)
 
 TEST(Item, MutantEggContents)
 {
-    ASSERT_EQ(20, mutant_egg_contents(Item(0, 0, 163, "", 0, 0 << 9, {}, {})));
-    ASSERT_EQ(21, mutant_egg_contents(Item(0, 0, 163, "", 0, 1 << 9, {}, {})));
-    ASSERT_EQ(23, mutant_egg_contents(Item(0, 0, 163, "", 0, 2 << 9, {}, {})));
-    ASSERT_EQ(34, mutant_egg_contents(Item(0, 0, 163, "", 0, 4 << 9, {}, {})));
-    ASSERT_EQ(22, mutant_egg_contents(Item(0, 0, 163, "", 0, 8 << 9, {}, {})));
-
-    ASSERT_EQ(20, mutant_egg_contents(Item(0, 0, 163, "", 0, 1851, {}, {})));
+    ASSERT_EQ(20, mutant_egg_contents(*mock_shared<MockItem>()->with_type_id(163)->with_activation_flags(0)));
+    ASSERT_EQ(21, mutant_egg_contents(*mock_shared<MockItem>()->with_type_id(163)->with_activation_flags(1)));
+    ASSERT_EQ(23, mutant_egg_contents(*mock_shared<MockItem>()->with_type_id(163)->with_activation_flags(2)));
+    ASSERT_EQ(34, mutant_egg_contents(*mock_shared<MockItem>()->with_type_id(163)->with_activation_flags(4)));
+    ASSERT_EQ(22, mutant_egg_contents(*mock_shared<MockItem>()->with_type_id(163)->with_activation_flags(8)));
+    ASSERT_EQ(20, mutant_egg_contents(*mock_shared<MockItem>()->with_type_id(163)->with_activation_flags(1851)));
 }
 
 TEST(Item, MutantEggContentsFlags)

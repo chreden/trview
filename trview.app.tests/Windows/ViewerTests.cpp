@@ -117,20 +117,20 @@ TEST(Viewer, SelectItemRaisedForValidItem)
 {
     auto [ui_ptr, ui] = create_mock<MockViewerUI>();
 
-    Item item(123, 0, 0, "Test", 0, 0, {}, Vector3::Zero);
+    auto item = mock_shared<MockItem>();
     NiceMock<MockLevel> level;
     EXPECT_CALL(level, item(123)).WillRepeatedly(Return(item));
 
     auto viewer = register_test_module().with_ui(std::move(ui_ptr)).build();
     viewer->open(&level, ILevel::OpenMode::Full);
 
-    std::optional<Item> raised_item;
-    auto token = viewer->on_item_selected += [&raised_item](const auto& item) { raised_item = item; };
+    std::shared_ptr<IItem> raised_item;
+    auto token = viewer->on_item_selected += [&raised_item](const auto& item) { raised_item = item.lock(); };
 
     ui.on_select_item(123);
 
-    ASSERT_TRUE(raised_item.has_value());
-    ASSERT_EQ(raised_item.value().number(), 123);
+    ASSERT_TRUE(raised_item);
+    ASSERT_EQ(raised_item, item);
 }
 
 /// Tests that the on_hide event from the UI is observed but not forwarded when the item is invalid.
@@ -139,18 +139,18 @@ TEST(Viewer, SelectItemNotRaisedForInvalidItem)
     auto [ui_ptr, ui] = create_mock<MockViewerUI>();
     auto viewer = register_test_module().with_ui(std::move(ui_ptr)).build();
 
-    std::optional<Item> raised_item;
-    auto token = viewer->on_item_selected += [&raised_item](const auto& item) { raised_item = item; };
+    std::shared_ptr<IItem> raised_item;
+    auto token = viewer->on_item_selected += [&raised_item](const auto& item) { raised_item = item.lock(); };
 
     ui.on_select_item(0);
 
-    ASSERT_FALSE(raised_item.has_value());
+    ASSERT_FALSE(raised_item);
 }
 
 /// Tests that the on_hide event from the UI is observed and forwarded when the item is valid.
 TEST(Viewer, ItemVisibilityRaisedForValidItem)
 {
-    Item item(123, 0, 0, "Test", 0, 0, {}, Vector3::Zero);
+    auto item = mock_shared<MockItem>();
     NiceMock<MockLevel> level;
     EXPECT_CALL(level, item(123)).WillRepeatedly(Return(item));
 
@@ -162,15 +162,15 @@ TEST(Viewer, ItemVisibilityRaisedForValidItem)
 
     viewer->open(&level, ILevel::OpenMode::Full);
 
-    std::optional<std::tuple<Item, bool>> raised_item;
-    auto token = viewer->on_item_visibility += [&raised_item](const auto& item, auto visible) { raised_item = { item, visible }; };
+    std::optional<std::tuple<std::shared_ptr<IItem>, bool>> raised_item;
+    auto token = viewer->on_item_visibility += [&raised_item](const auto& item, auto visible) { raised_item = { item.lock(), visible }; };
 
     activate_context_menu(picking, mouse, PickResult::Type::Entity, 123);
 
     ui.on_hide();
 
     ASSERT_TRUE(raised_item.has_value());
-    ASSERT_EQ(std::get<0>(raised_item.value()).number(), 123);
+    ASSERT_EQ(std::get<0>(raised_item.value()), item);
     ASSERT_FALSE(std::get<1>(raised_item.value()));
 }
 
@@ -335,7 +335,8 @@ TEST(Viewer, AddWaypointRaisedUsesItemPosition)
     TestImgui imgui;
 
     NiceMock<MockLevel> level;
-    Item item(50, 10, 0, "Test", 0, 0, {}, Vector3::Zero);
+    auto item = mock_shared<MockItem>()->with_room(10)->with_number(50);
+
     EXPECT_CALL(level, item(50)).WillRepeatedly(Return(item));
 
     auto viewer = register_test_module().with_ui(std::move(ui_ptr)).with_picking(std::move(picking_ptr)).with_mouse(std::move(mouse_ptr)).build();
@@ -388,7 +389,7 @@ TEST(Viewer, OrbitEnabledWhenItemSelectedAndAutoOrbitEnabled)
     viewer->set_camera_mode(CameraMode::Free);
     ASSERT_EQ(viewer->camera_mode(), CameraMode::Free);
 
-    viewer->select_item({});
+    viewer->select_item(mock_shared<MockItem>());
     ASSERT_EQ(viewer->camera_mode(), CameraMode::Orbit);
 }
 
@@ -897,23 +898,20 @@ TEST(Viewer, GoToLaraSelectsLast)
     auto [level_ptr, level] = create_mock<MockLevel>();
     auto viewer = register_test_module().build();
 
-    const std::vector<Item> items
-    {
-        Item { 0, 0, 0, "Lara", 0, 0, {}, {} },
-        Item { 1, 0, 0, "Lara", 0, 0, {}, {} }
-    };
-    ON_CALL(level, items).WillByDefault(Return(items));
+    auto item1 = mock_shared<MockItem>();
+    auto item2 = mock_shared<MockItem>();
+    ON_CALL(level, items).WillByDefault(Return(std::vector<std::weak_ptr<IItem>>{ item1, item2 }));
 
-    std::optional<Item> selected;
+    std::shared_ptr<IItem> selected;
     auto token = viewer->on_item_selected += [&](const auto& item)
     {
-        selected = item;
+        selected = item.lock();
     };
 
     viewer->open(&level, ILevel::OpenMode::Full);
 
     ASSERT_TRUE(selected);
-    ASSERT_EQ(selected.value().number(), 1u);
+    ASSERT_EQ(selected, item2);
 }
 
 TEST(Viewer, CameraSinkVisibilityRaisedForValidItem)
