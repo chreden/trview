@@ -6,7 +6,7 @@
 #include <trview.common/TokenStore.h>
 
 #include "../UI/Tooltip.h"
-#include "../Elements/Item.h"
+#include "../Elements/IItem.h"
 #include "../UI/IMapRenderer.h"
 #include "../Filters/Filters.h"
 #include "../Track/Track.h"
@@ -34,11 +34,11 @@ namespace trview
         virtual void clear_selected_trigger() override;
         virtual void render() override;
         virtual void set_current_room(uint32_t room) override;
-        virtual void set_items(const std::vector<Item>& items) override;
+        virtual void set_items(const std::vector<std::weak_ptr<IItem>>& items) override;
         virtual void set_level_version(trlevel::LevelVersion version) override;
         virtual void set_map_colours(const MapColours& colours) override;
         virtual void set_rooms(const std::vector<std::weak_ptr<IRoom>>& rooms) override;
-        virtual void set_selected_item(const Item& item) override;
+        virtual void set_selected_item(const std::weak_ptr<IItem>& item) override;
         virtual void set_selected_trigger(const std::weak_ptr<ITrigger>& trigger) override;
         virtual void update(float delta) override;
         virtual void set_number(int32_t number) override;
@@ -68,15 +68,15 @@ namespace trview
         void select_room(uint32_t room);
 
         std::vector<std::weak_ptr<IRoom>> _all_rooms;
-        std::vector<Item> _all_items;
+        std::vector<std::weak_ptr<IItem>> _all_items;
         std::vector<std::weak_ptr<ITrigger>> _triggers;
         std::vector<std::weak_ptr<ILight>> _lights;
         std::vector<std::weak_ptr<ICameraSink>> _camera_sinks;
 
         bool _sync_room{ true };
-        
-        std::optional<Item> _global_selected_item;
-        std::optional<Item> _local_selected_item;
+
+        std::weak_ptr<IItem> _global_selected_item;
+        std::weak_ptr<IItem> _local_selected_item;
         bool _scroll_to_item{ false };
 
         std::weak_ptr<ITrigger> _global_selected_trigger;

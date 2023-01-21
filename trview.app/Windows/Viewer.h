@@ -74,7 +74,7 @@ namespace trview
         virtual void present(bool vsync) override;
         virtual void open(ILevel* level, ILevel::OpenMode open_mode) override;
         virtual void set_settings(const UserSettings& settings) override;
-        virtual void select_item(const Item& item) override;
+        virtual void select_item(const std::weak_ptr<IItem>& item) override;
         virtual void select_room(uint32_t room_number) override;
         virtual void select_trigger(const std::weak_ptr<ITrigger>& trigger) override;
         virtual void select_waypoint(const IWaypoint& waypoint) override;

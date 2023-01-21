@@ -83,7 +83,7 @@ namespace trview
         // Entity manipulation
         void add_waypoint(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& normal, uint32_t room, IWaypoint::Type type, uint32_t index);
         void remove_waypoint(uint32_t index);
-        void select_item(const Item& item);
+        void select_item(std::weak_ptr<IItem> item);
         void select_room(uint32_t room);
         /// <summary>
         /// Select a trigger in the application. If the trigger is empty, nothing happens.
@@ -95,7 +95,7 @@ namespace trview
         void select_previous_waypoint();
         void select_light(const std::weak_ptr<ILight>& light);
         void select_camera_sink(const std::weak_ptr<ICameraSink>& camera_sink);
-        void set_item_visibility(const Item& item, bool visible);
+        void set_item_visibility(const std::weak_ptr<IItem>& item, bool visible);
         void set_trigger_visibility(const std::weak_ptr<ITrigger>& trigger, bool visible);
         void set_light_visibility(const std::weak_ptr<ILight>& light, bool visible);
         void set_room_visibility(const std::weak_ptr<IRoom>& room, bool visible);

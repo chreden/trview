@@ -7,7 +7,7 @@
 #include "../Filters/Filters.h"
 
 #include "IItemsWindow.h"
-#include "../Elements/Item.h"
+#include "../Elements/IItem.h"
 #include "../Track/Track.h"
 
 namespace trview
@@ -30,13 +30,12 @@ namespace trview
         explicit ItemsWindow(const std::shared_ptr<IClipboard>& clipboard);
         virtual ~ItemsWindow() = default;
         virtual void render() override;
-        virtual void set_items(const std::vector<Item>& items) override;
-        virtual void update_item(const Item& items) override;
+        virtual void set_items(const std::vector<std::weak_ptr<IItem>>& items) override;
         virtual void set_triggers(const std::vector<std::weak_ptr<ITrigger>>& triggers) override;
         virtual void clear_selected_item() override;
         virtual void set_current_room(uint32_t room) override;
-        virtual void set_selected_item(const Item& item) override;
-        virtual std::optional<Item> selected_item() const override;
+        virtual void set_selected_item(const std::weak_ptr<IItem>& item) override;
+        virtual std::weak_ptr<IItem> selected_item() const override;
         virtual void update(float delta) override;
         virtual void set_number(int32_t number) override;
         virtual void set_level_version(trlevel::LevelVersion version) override;
@@ -46,11 +45,11 @@ namespace trview
         void render_items_list();
         void render_item_details();
         bool render_items_window();
-        void set_local_selected_item(const Item& item);
+        void set_local_selected_item(std::weak_ptr<IItem> item);
         void setup_filters();
 
         std::string _id{ "Items 0" };
-        std::vector<Item> _all_items;
+        std::vector<std::weak_ptr<IItem>> _all_items;
         std::vector<std::weak_ptr<ITrigger>> _all_triggers;
         uint32_t _current_room{ 0u };
         bool _sync_item{ true };
@@ -58,12 +57,12 @@ namespace trview
         std::unordered_map<std::string, std::string> _tips;
         std::optional<float> _tooltip_timer;
         std::weak_ptr<ITrigger> _selected_trigger;
-        std::optional<Item> _selected_item;
-        std::optional<Item> _global_selected_item;
+        std::weak_ptr<IItem> _selected_item;
+        std::weak_ptr<IItem> _global_selected_item;
         std::vector<std::weak_ptr<ITrigger>> _triggered_by;
         bool _scroll_to_item{ false };
 
-        Filters<Item> _filters;
+        Filters<IItem> _filters;
         trlevel::LevelVersion _level_version{ trlevel::LevelVersion::Unknown };
         std::function<bool(uint32_t)> _model_checker;
         bool _force_sort{ false };

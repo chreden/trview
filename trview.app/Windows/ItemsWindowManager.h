@@ -26,20 +26,19 @@ namespace trview
         virtual ~ItemsWindowManager() = default;
         virtual std::optional<int> process_message(UINT message, WPARAM wParam, LPARAM lParam) override;
         virtual void render() override;
-        virtual void set_items(const std::vector<Item>& items) override;
-        virtual void set_item_visible(const Item& item, bool visible) override;
+        virtual void set_items(const std::vector<std::weak_ptr<IItem>>& items) override;
         virtual void set_level_version(trlevel::LevelVersion version) override;
         virtual void set_model_checker(const std::function<bool(uint32_t)>& checker) override;
         virtual void set_triggers(const std::vector<std::weak_ptr<ITrigger>>& triggers) override;
         virtual void set_room(uint32_t room) override;
-        virtual void set_selected_item(const Item& item) override;
+        virtual void set_selected_item(const std::weak_ptr<IItem>& item) override;
         virtual std::weak_ptr<IItemsWindow> create_window() override;
         virtual void update(float delta) override;
     private:
-        std::vector<Item> _items;
+        std::vector<std::weak_ptr<IItem>> _items;
         std::vector<std::weak_ptr<ITrigger>> _triggers;
         uint32_t _current_room{ 0u };
-        std::optional<Item> _selected_item;
+        std::weak_ptr<IItem> _selected_item;
         IItemsWindow::Source _items_window_source;
         trlevel::LevelVersion _level_version{ trlevel::LevelVersion::Unknown };
         std::function<bool(uint32_t)> _model_checker;

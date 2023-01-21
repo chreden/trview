@@ -9,7 +9,7 @@
 #include "../Track/Track.h"
 
 #include "ITriggersWindow.h"
-#include "../Elements/Item.h"
+#include "../Elements/IItem.h"
 #include "../Elements/ITrigger.h"
 
 namespace trview
@@ -37,7 +37,7 @@ namespace trview
         virtual void set_current_room(uint32_t room) override;
         virtual void set_number(int32_t number) override;
         virtual void set_selected_trigger(const std::weak_ptr<ITrigger>& trigger) override;
-        virtual void set_items(const std::vector<Item>& items) override;
+        virtual void set_items(const std::vector<std::weak_ptr<IItem>>& items) override;
         virtual std::weak_ptr<ITrigger> selected_trigger() const override;
         virtual void update(float delta) override;
     private:
@@ -52,7 +52,7 @@ namespace trview
         std::optional<int> index_of_selected() const;
 
         std::string _id{ "Triggers 0" };
-        std::vector<Item> _all_items;
+        std::vector<std::weak_ptr<IItem>> _all_items;
         std::vector<std::weak_ptr<ITrigger>> _all_triggers;
         std::vector<std::weak_ptr<ITrigger>> _filtered_triggers;
 

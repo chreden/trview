@@ -71,9 +71,6 @@
     <ClCompile Include="Elements\RoomTests.cpp">
       <Filter>Elements</Filter>
     </ClCompile>
-    <ClCompile Include="Elements\EntityTests.cpp">
-      <Filter>Elements</Filter>
-    </ClCompile>
     <ClCompile Include="Routing\ActionsTests.cpp">
       <Filter>Routing</Filter>
     </ClCompile>

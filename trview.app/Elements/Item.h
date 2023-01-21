@@ -1,89 +1,86 @@
 #pragma once
 
 #include <cstdint>
-#include <string>
-#include "Trigger.h"
+#include <SimpleMath.h>
+
+#include <memory>
+#include <vector>
+
+#include <trview.app/Geometry/PickResult.h>
+#include <trview.app/Geometry/IRenderable.h>
+#include <trview.app/Geometry/IMesh.h>
+#include "IItem.h"
+
+namespace trlevel
+{
+    struct ILevel;
+    struct tr2_entity;
+    struct tr_model;
+    struct tr_sprite_sequence;
+}
 
 namespace trview
 {
-    /// An item in a level.
-    class Item final
+    struct IMeshStorage;
+    struct ILevelTextureStorage;
+    struct ICamera;
+
+    class Item final : public IItem
     {
     public:
-        /// Default constructor for item.
-        Item() = default;
+        explicit Item(const IMesh::Source& mesh_source, const trlevel::ILevel& level, const trlevel::tr2_entity& entity, const IMeshStorage& mesh_storage, uint32_t number, const std::string& type, const std::vector<std::weak_ptr<ITrigger>>& triggers, bool is_pickup);
+        explicit Item(const IMesh::Source& mesh_source, const trlevel::ILevel& level, const trlevel::tr4_ai_object& entity, const IMeshStorage& mesh_storage, uint32_t number, const std::string& type, const std::vector<std::weak_ptr<ITrigger>>& triggers);
+        virtual ~Item() = default;
+        virtual void render(const ICamera& camera, const ILevelTextureStorage& texture_storage, const DirectX::SimpleMath::Color& colour) override;
+        virtual uint16_t room() const override;
+        virtual uint32_t number() const override;
 
-        /// Create an item.
-        /// @param number The item number in the level.
-        /// @param room The room number the item is in.
-        /// @param type_id The type number of the item.
-        /// @param type The type name of the item.
-        /// @param ocb The OCB value of the item.
-        /// @param flags The flags for the entity.
-        /// @param triggers The triggers that affect this entity.
-        /// @param position The position of the entity.
-        explicit Item(uint32_t number, uint32_t room, const uint32_t type_id, const std::string& type, int32_t ocb, uint16_t flags, const std::vector<std::weak_ptr<ITrigger>>& triggers, const DirectX::SimpleMath::Vector3& position);
+        virtual void get_transparent_triangles(ITransparencyBuffer& transparency, const ICamera& camera, const DirectX::SimpleMath::Color& colour) override;
 
-        /// Get the item number.
-        /// @returns The item number.
-        uint32_t number() const;
+        virtual PickResult pick(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& direction) const override;
+        virtual DirectX::BoundingBox bounding_box() const override;
 
-        /// Get the room number.
-        /// @returns The room the item is in.
-        uint32_t room() const;
-
-        /// Get the type id of the item.
-        /// @returns The type of the item.
-        uint32_t type_id() const;
-
-        /// Get the type name of the item.
-        /// @returns The type name of the item.
-        std::string type() const;
-
-        /// Get the OCB value of the item.
-        /// @returns The OCB value of the item.
-        int32_t ocb() const;
-
-        /// Get the activation flags for the entity.
-        /// @returns The activation flags.
-        uint16_t activation_flags() const;
-
-        /// Get whether the clear_body flag is set.
-        /// @returns Whether clear_body is set.
-        bool clear_body_flag() const;
-
-        /// Get whether the invisible_flag is set.
-        /// @returns Whether invisible flag is set.
-        bool invisible_flag() const;
-
-        /// Get the triggers that affect this object.
-        /// @returns The triggers.
-        std::vector<std::weak_ptr<ITrigger>> triggers() const;
-
-        /// Get the position of the entity.
-        DirectX::SimpleMath::Vector3 position() const;
-
-        /// Get whether the item is visible.
-        /// @returns Whether the item is visible.
-        bool visible() const;
-
-        /// Set whether the item is visible.
-        /// @param value Whether the item is visible.
-        void set_visible(bool value);
+        virtual bool visible() const override;
+        virtual void set_visible(bool value) override;
+        virtual void adjust_y(float amount) override;
+        virtual bool needs_ocb_adjustment() const override;
+        std::string type() const override;
+        std::vector<std::weak_ptr<ITrigger>> triggers() const override;
+        uint32_t type_id() const override;
+        int32_t ocb() const override;
+        uint16_t activation_flags() const override;
+        bool clear_body_flag() const override;
+        bool invisible_flag() const override;
+        DirectX::SimpleMath::Vector3 position() const override;
     private:
-        std::vector<std::weak_ptr<ITrigger>> _triggers;
-        DirectX::SimpleMath::Vector3 _position;
-        uint32_t _number{ 0u };
-        uint32_t _room{ 0u };
-        uint32_t _type_id{ 0u };
-        std::string _type;
-        uint32_t _ocb{ 0u };
-        uint16_t _flags{ 0u };
-        bool _visible{ true };
-    };
+        Item(const IMesh::Source& mesh_source, const IMeshStorage& mesh_storage, const trlevel::ILevel& level, uint16_t room, uint32_t number, uint16_t type_id, const DirectX::SimpleMath::Vector3& position, int32_t angle, int32_t ocb, const std::string& type, const std::vector<std::weak_ptr<ITrigger>>& triggers, uint16_t flags, bool is_pickup);
 
-    bool is_mutant_egg(const Item& item);
-    bool is_mutant_egg(uint32_t type_id);
-    uint16_t mutant_egg_contents(const Item& item);
-    uint16_t mutant_egg_contents(uint16_t flags);
+        void load_meshes(const trlevel::ILevel& level, int16_t type_id, const IMeshStorage& mesh_storage);
+        void load_model(const trlevel::tr_model& model, const trlevel::ILevel& level);
+        void generate_bounding_box();
+        void apply_ocb_adjustment(trlevel::LevelVersion version, uint32_t ocb, bool is_pickup);
+
+        DirectX::SimpleMath::Matrix               _world;
+        std::vector<std::shared_ptr<IMesh>>       _meshes;
+        std::shared_ptr<IMesh>                    _sprite_mesh;
+        std::vector<DirectX::SimpleMath::Matrix>  _world_transforms;
+        uint16_t                                  _room;
+        uint32_t                                  _number;
+
+        // Bits for sprites.
+        DirectX::SimpleMath::Matrix               _scale;
+        DirectX::SimpleMath::Matrix               _offset;
+        DirectX::SimpleMath::Vector3              _position;
+
+        DirectX::BoundingBox                      _bounding_box;
+        std::vector<DirectX::BoundingOrientedBox> _oriented_boxes;
+        bool                                      _visible{ true };
+        bool _needs_ocb_adjustment{ false };
+
+        std::string _type;
+        std::vector<std::weak_ptr<ITrigger>> _triggers;
+        uint32_t _type_id{ 0u };
+        int32_t _ocb{ 0u };
+        uint16_t _flags{ 0u };
+    };
 }

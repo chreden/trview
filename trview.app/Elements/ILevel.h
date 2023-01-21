@@ -1,10 +1,10 @@
 #pragma once
 
 #include <SimpleMath.h>
-#include <trview.app/Elements/Item.h>
-#include <trview.app/Elements/ITrigger.h>
-#include <trview.app/Elements/IRoom.h>
-#include <trview.app/Elements/IEntity.h>
+#include "../Elements/IItem.h"
+#include "../Elements/ITrigger.h"
+#include "../Elements/IRoom.h"
+#include "IItem.h"
 #include <trview.app/Elements/ILight.h>
 #include "CameraSink/ICameraSink.h"
 #include <trview.common/Event.h>
@@ -48,10 +48,10 @@ namespace trview
         virtual bool has_model(uint32_t type_id) const = 0;
         virtual std::vector<uint16_t> floor_data() const = 0;
         virtual bool highlight_mode_enabled(RoomHighlightMode mode) const = 0;
-        virtual std::optional<Item> item(uint32_t index) const = 0;
+        virtual std::weak_ptr<IItem> item(uint32_t index) const = 0;
         /// Get the items in this level.
         /// @returns All items in the level.
-        virtual std::vector<Item> items() const = 0;
+        virtual std::vector<std::weak_ptr<IItem>> items() const = 0;
         virtual std::vector<graphics::Texture> level_textures() const = 0;
         virtual std::weak_ptr<ILight> light(uint32_t index) const = 0;
         virtual std::vector<std::weak_ptr<ILight>> lights() const = 0;

@@ -4,12 +4,12 @@
 #include <SimpleMath.h>
 
 #include <trview.common/Event.h>
-#include <trview.app/Elements/Item.h>
-#include <trview.app/Elements/ITrigger.h>
-#include <trview.app/Elements/ILevel.h>
-#include <trview.app/Routing/IRoute.h>
-#include <trview.app/Settings/UserSettings.h>
-#include <trview.app/Camera/CameraMode.h>
+#include "../Elements/IItem.h"
+#include "../Elements/ITrigger.h"
+#include "../Elements/ILevel.h"
+#include "../Routing/IRoute.h"
+#include "../Settings/UserSettings.h"
+#include "../Camera/CameraMode.h"
 
 namespace trview
 {
@@ -39,10 +39,10 @@ namespace trview
         Event<UserSettings> on_settings;
 
         /// Event raised when the viwer wants to select an item.
-        Event<Item> on_item_selected;
+        Event<std::weak_ptr<IItem>> on_item_selected;
 
         /// Event raised when the viewer wants to change the visibility of an item.
-        Event<Item, bool> on_item_visibility;
+        Event<std::weak_ptr<IItem>, bool> on_item_visibility;
 
         /// Event raised when the viewer wants to select a room.
         Event<uint32_t> on_room_selected;
@@ -94,7 +94,7 @@ namespace trview
         /// Select the specified item.
         /// @param item The item to select.
         /// @remarks This will not raise the on_item_selected event.
-        virtual void select_item(const Item& item) = 0;
+        virtual void select_item(const std::weak_ptr<IItem>& item) = 0;
 
         /// Select the specified room.
         /// @param room The room to select.

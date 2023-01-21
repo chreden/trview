@@ -48,7 +48,7 @@ namespace trview
         virtual void render_lights(const ICamera& camera, const std::weak_ptr<ILight>& selected_light) override;
         virtual void render_camera_sinks(const ICamera& camera) override;
         virtual void render_contained(const ICamera& camera, SelectionMode selected, RenderFilter render_filter) override;
-        virtual void add_entity(const std::weak_ptr<IEntity>& entity) override;
+        virtual void add_entity(const std::weak_ptr<IItem>& entity) override;
         virtual void add_trigger(const std::weak_ptr<ITrigger>& trigger) override;
         virtual void add_light(const std::weak_ptr<ILight>& light) override;
         virtual void add_camera_sink(const std::weak_ptr<ICameraSink>& camera_sink) override;
@@ -115,7 +115,7 @@ namespace trview
 
         DirectX::BoundingBox  _bounding_box;
 
-        std::vector<std::weak_ptr<IEntity>> _entities;
+        std::vector<std::weak_ptr<IItem>> _entities;
 
         // Maps a sector to its sector ID 
         std::vector<std::shared_ptr<ISector>> _sectors; 

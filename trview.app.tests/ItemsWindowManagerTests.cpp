@@ -52,51 +52,51 @@ TEST(ItemsWindowManager, AddToRouteEventRaised)
 {
     auto manager = register_test_module().build();
 
-    std::optional<Item> raised_item;
-    auto token = manager->on_add_to_route += [&raised_item](const auto& item) { raised_item = item; };
+    std::shared_ptr<IItem> raised_item;
+    auto token = manager->on_add_to_route += [&raised_item](const auto& item) { raised_item = item.lock(); };
 
     auto created_window = manager->create_window().lock();
     ASSERT_NE(created_window, nullptr);
 
-    Item test_item(100, 10, 1, "Lara", 0, 0, {}, DirectX::SimpleMath::Vector3::Zero);
+    auto test_item = mock_shared<MockItem>();
     created_window->on_add_to_route(test_item);
 
-    ASSERT_TRUE(raised_item.has_value());
-    ASSERT_EQ(raised_item.value().number(), 100);
+    ASSERT_TRUE(raised_item);
+    ASSERT_EQ(raised_item, test_item);
 }
 
 TEST(ItemsWindowManager, ItemSelectedEventRaised)
 {
     auto manager = register_test_module().build();
 
-    std::optional<Item> raised_item;
-    auto token = manager->on_item_selected += [&raised_item](const auto& item) { raised_item = item; };
+    std::shared_ptr<IItem> raised_item;
+    auto token = manager->on_item_selected += [&raised_item](const auto& item) { raised_item = item.lock(); };
 
     auto created_window = manager->create_window().lock();
     ASSERT_NE(created_window, nullptr);
 
-    Item test_item(100, 10, 1, "Lara", 0, 0, {}, DirectX::SimpleMath::Vector3::Zero);
+    auto test_item = mock_shared<MockItem>();
     created_window->on_item_selected(test_item);
 
-    ASSERT_TRUE(raised_item.has_value());
-    ASSERT_EQ(raised_item.value().number(), 100);
+    ASSERT_TRUE(raised_item);
+    ASSERT_EQ(raised_item, test_item);
 }
 
 TEST(ItemsWindowManager, ItemVisibilityEventRaised)
 {
     auto manager = register_test_module().build();
 
-    std::optional<std::tuple<Item, bool>> raised_item;
-    auto token = manager->on_item_visibility += [&raised_item](const auto& item, bool state) { raised_item = { item, state }; };
+    std::optional<std::tuple<std::shared_ptr<IItem>, bool>> raised_item;
+    auto token = manager->on_item_visibility += [&raised_item](const auto& item, bool state) { raised_item = { item.lock(), state }; };
 
     auto created_window = manager->create_window().lock();
     ASSERT_NE(created_window, nullptr);
 
-    Item test_item(100, 10, 1, "Lara", 0, 0, {}, DirectX::SimpleMath::Vector3::Zero);
+    auto test_item = mock_shared<MockItem>();
     created_window->on_item_visibility(test_item, true);
 
-    ASSERT_TRUE(raised_item.has_value());
-    ASSERT_EQ(std::get<0>(raised_item.value()).number(), 100);
+    ASSERT_TRUE(raised_item);
+    ASSERT_EQ(std::get<0>(raised_item.value()), test_item);
     ASSERT_EQ(std::get<1>(raised_item.value()), true);
 }
 
@@ -127,30 +127,7 @@ TEST(ItemsWindowManager, SetItemsSetsItemsOnWindows)
     ASSERT_NE(created_window, nullptr);
     ASSERT_EQ(created_window, mock_window);
 
-    std::vector<Item> items
-    {
-        Item(0, 0, 0, "Type", 0, 0, {}, DirectX::SimpleMath::Vector3::Zero),
-        Item(1, 0, 0, "Type", 0, 0, {}, DirectX::SimpleMath::Vector3::Zero)
-    };
-    manager->set_items(items);
-}
-
-TEST(ItemsWindowManager, SetItemVisibilityUpdatesWindows)
-{
-    auto mock_window = mock_shared<MockItemsWindow>();
-    EXPECT_CALL(*mock_window, update_item).Times(1);
-    auto manager = register_test_module().with_window_source([&](auto&&...) { return mock_window; }).build();
-
-    auto created_window = manager->create_window().lock();
-    ASSERT_NE(created_window, nullptr);
-    ASSERT_EQ(created_window, mock_window);
-
-    std::vector<Item> items
-    {
-        Item(0, 0, 0, "Type", 0, 0, {}, DirectX::SimpleMath::Vector3::Zero),
-    };
-    manager->set_items(items);
-    manager->set_item_visible(items[0], false);
+    manager->set_items({});
 }
 
 TEST(ItemsWindowManager, SetTriggersSetsTriggersOnWindows)
@@ -183,20 +160,13 @@ TEST(ItemsWindowManager, SetRoomSetsRoomOnWindows)
 TEST(ItemsWindowManager, SetSelectedItemSetsSelectedItemOnWindows)
 {
     auto mock_window = mock_shared<MockItemsWindow>();
-    EXPECT_CALL(*mock_window, set_selected_item).Times(1);
+    EXPECT_CALL(*mock_window, set_selected_item).Times(2);
     auto manager = register_test_module().with_window_source([&](auto&&...) { return mock_window; }).build();
-
-    std::vector<Item> items
-    {
-        Item(0, 0, 0, "Type", 0, 0, {}, DirectX::SimpleMath::Vector3::Zero),
-        Item(1, 1, 0, "Type", 0, 0, {}, DirectX::SimpleMath::Vector3::Zero)
-    };
-    manager->set_items(items);
 
     auto created_window = manager->create_window().lock();
     ASSERT_NE(created_window, nullptr);
     ASSERT_EQ(created_window, mock_window);
-    manager->set_selected_item(items[1]);
+    manager->set_selected_item(mock_shared<MockItem>());
 }
 
 TEST(ItemsWindowManager, CreateWindowCreatesNewWindowWithSavedValues)
@@ -204,14 +174,6 @@ TEST(ItemsWindowManager, CreateWindowCreatesNewWindowWithSavedValues)
     auto mock_window = mock_shared<MockItemsWindow>();
     EXPECT_CALL(*mock_window, set_items).Times(1);
     auto manager = register_test_module().with_window_source([&](auto&&...) { return mock_window; }).build();
-
-    std::vector<Item> items
-    {
-        Item(0, 0, 0, "Type", 0, 0, {}, DirectX::SimpleMath::Vector3::Zero),
-        Item(1, 1, 0, "Type", 0, 0, {}, DirectX::SimpleMath::Vector3::Zero)
-    };
-
-    manager->set_items(items);
 
     auto created_window = manager->create_window().lock();
     ASSERT_NE(created_window, nullptr);

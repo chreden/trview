@@ -61,9 +61,6 @@
     <ClCompile Include="Windows\WindowResizer.cpp">
       <Filter>Windows</Filter>
     </ClCompile>
-    <ClCompile Include="Elements\Item.cpp">
-      <Filter>Elements</Filter>
-    </ClCompile>
     <ClCompile Include="Elements\Sector.cpp">
       <Filter>Elements</Filter>
     </ClCompile>
@@ -111,9 +108,6 @@
     </ClCompile>
     <ClCompile Include="Graphics\TextureStorage.cpp">
       <Filter>Graphics</Filter>
-    </ClCompile>
-    <ClCompile Include="Elements\Entity.cpp">
-      <Filter>Elements</Filter>
     </ClCompile>
     <ClCompile Include="Elements\StaticMesh.cpp">
       <Filter>Elements</Filter>
@@ -273,6 +267,9 @@
     <ClCompile Include="Lua\Elements\Level\Lua_Level.cpp">
       <Filter>Lua\Elements\Level</Filter>
     </ClCompile>
+    <ClCompile Include="Elements\Item.cpp">
+      <Filter>Elements\Item</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera\Camera.h">
@@ -344,9 +341,6 @@
     <ClInclude Include="Windows\WindowResizer.h">
       <Filter>Windows</Filter>
     </ClInclude>
-    <ClInclude Include="Elements\Item.h">
-      <Filter>Elements</Filter>
-    </ClInclude>
     <ClInclude Include="Elements\Sector.h">
       <Filter>Elements</Filter>
     </ClInclude>
@@ -406,9 +400,6 @@
     </ClInclude>
     <ClInclude Include="Graphics\TextureStorage.h">
       <Filter>Graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="Elements\Entity.h">
-      <Filter>Elements</Filter>
     </ClInclude>
     <ClInclude Include="Elements\StaticMesh.h">
       <Filter>Elements</Filter>
@@ -568,10 +559,7 @@
     <ClInclude Include="Mocks\Windows\IRoomsWindow.h">
       <Filter>Mocks\Windows</Filter>
     </ClInclude>
-    <ClInclude Include="Elements\IEntity.h">
-      <Filter>Elements</Filter>
-    </ClInclude>
-    <ClInclude Include="Mocks\Elements\IEntity.h">
+    <ClInclude Include="Mocks\Elements\IItem.h">
       <Filter>Mocks\Elements</Filter>
     </ClInclude>
     <ClInclude Include="Mocks\Elements\IRoom.h">
@@ -873,6 +861,12 @@
     </ClInclude>
     <ClInclude Include="Type.h" />
     <ClInclude Include="Type.inl" />
+    <ClInclude Include="Elements\Item.h">
+      <Filter>Elements\Item</Filter>
+    </ClInclude>
+    <ClInclude Include="Elements\IItem.h">
+      <Filter>Elements\Item</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Windows">
@@ -1009,6 +1003,9 @@
     </Filter>
     <Filter Include="Track">
       <UniqueIdentifier>{895fbf3e-9030-4fa9-8c33-158d155fe655}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Elements\Item">
+      <UniqueIdentifier>{85b61b5c-df65-4d5d-9cc3-9ec05bf007cd}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

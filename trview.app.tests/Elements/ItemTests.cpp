@@ -1,12 +1,97 @@
 #include <trview.app/Elements/Item.h>
+#include <trview.app/Mocks/Elements/IItem.h>
+#include <trview.app/Mocks/Geometry/IMesh.h>
+#include <trview.app/Mocks/Graphics/IMeshStorage.h>
+#include <trlevel/Mocks/ILevel.h>
+#include <trview.tests.common/Mocks.h>
 
 using namespace trview;
+using namespace trview::mocks;
+using namespace trview::tests;
+using testing::Return;
+
+namespace
+{
+    auto register_test_module()
+    {
+        struct test_module
+        {
+            std::shared_ptr<trlevel::ILevel> level{ mock_shared<trlevel::mocks::MockLevel>() };
+            IMesh::Source mesh_source = [](auto&&...) { return mock_shared<MockMesh>(); };
+            std::shared_ptr<IMeshStorage> mesh_storage = mock_shared<MockMeshStorage>();
+            trlevel::tr2_entity entity{};
+            uint32_t index{ 0u };
+            bool is_pickup{ false };
+            std::string type{ "Lara" };
+            std::vector<std::weak_ptr<ITrigger>> triggers;
+
+            std::unique_ptr<Item> build()
+            {
+                return std::make_unique<Item>(mesh_source, *level, entity, *mesh_storage, index, type, triggers, is_pickup);
+            }
+
+            test_module& with_level(const std::shared_ptr<trlevel::ILevel>& level)
+            {
+                this->level = level;
+                return *this;
+            }
+
+            test_module& with_pickup(bool value)
+            {
+                this->is_pickup = value;
+                return *this;
+            }
+
+            test_module& with_entity(const trlevel::tr2_entity& entity)
+            {
+                this->entity = entity;
+                return *this;
+            }
+        };
+        return test_module{};
+    }
+}
+
+TEST(Item, OcbAdjustmentTrueForPickup)
+{
+    auto level = mock_shared<trlevel::mocks::MockLevel>();
+    EXPECT_CALL(*level, get_version).WillRepeatedly(Return(trlevel::LevelVersion::Tomb4));
+    auto entity = register_test_module().with_level(level).with_pickup(true).build();
+    ASSERT_TRUE(entity->needs_ocb_adjustment());
+}
+
+TEST(Item, OcbAdjustmentFalseForNonPickup)
+{
+    auto level = mock_shared<trlevel::mocks::MockLevel>();
+    EXPECT_CALL(*level, get_version).WillRepeatedly(Return(trlevel::LevelVersion::Tomb4));
+    auto entity = register_test_module().with_level(level).with_pickup(false).build();
+    ASSERT_FALSE(entity->needs_ocb_adjustment());
+}
+
+TEST(Item, OcbAdjustmentFalseForPickupWithNonMatchingOCB)
+{
+    auto level = mock_shared<trlevel::mocks::MockLevel>();
+    EXPECT_CALL(*level, get_version).WillRepeatedly(Return(trlevel::LevelVersion::Tomb4));
+    trlevel::tr2_entity tr2_entity{};
+    tr2_entity.Intensity2 = 1;
+    auto entity = register_test_module().with_level(level).with_entity(tr2_entity).with_pickup(true).build();
+    ASSERT_FALSE(entity->needs_ocb_adjustment());
+}
+
+TEST(Item, OcbAdjustmentNotDonePreTR4)
+{
+    auto level = mock_shared<trlevel::mocks::MockLevel>();
+    EXPECT_CALL(*level, get_version).WillRepeatedly(Return(trlevel::LevelVersion::Tomb3));
+    auto entity = register_test_module().with_level(level).with_pickup(true).build();
+    ASSERT_FALSE(entity->needs_ocb_adjustment());
+}
+
 
 TEST(Item, IsMutantEgg)
 {
-    ASSERT_TRUE(is_mutant_egg(Item(0, 0, 163, "", 0, 0, {}, {})));
-    ASSERT_TRUE(is_mutant_egg(Item(0, 0, 181, "", 0, 0, {}, {})));
-    ASSERT_FALSE(is_mutant_egg(Item(0, 0, 0, "", 0, 0, {}, {})));
+    ASSERT_TRUE(is_mutant_egg(*mock_shared<MockItem>()->with_type_id(163)));
+    ASSERT_TRUE(is_mutant_egg(*mock_shared<MockItem>()->with_type_id(181)));
+    ASSERT_FALSE(is_mutant_egg(*mock_shared<MockItem>()->with_type_id(0)));
 }
 
 TEST(Item, IsMutantEggId)
@@ -18,13 +103,12 @@ TEST(Item, IsMutantEggId)
 
 TEST(Item, MutantEggContents)
 {
-    ASSERT_EQ(20, mutant_egg_contents(Item(0, 0, 163, "", 0, 0 << 9, {}, {})));
-    ASSERT_EQ(21, mutant_egg_contents(Item(0, 0, 163, "", 0, 1 << 9, {}, {})));
-    ASSERT_EQ(23, mutant_egg_contents(Item(0, 0, 163, "", 0, 2 << 9, {}, {})));
-    ASSERT_EQ(34, mutant_egg_contents(Item(0, 0, 163, "", 0, 4 << 9, {}, {})));
-    ASSERT_EQ(22, mutant_egg_contents(Item(0, 0, 163, "", 0, 8 << 9, {}, {})));
-
-    ASSERT_EQ(20, mutant_egg_contents(Item(0, 0, 163, "", 0, 1851, {}, {})));
+    ASSERT_EQ(20, mutant_egg_contents(*mock_shared<MockItem>()->with_type_id(163)->with_activation_flags(0)));
+    ASSERT_EQ(21, mutant_egg_contents(*mock_shared<MockItem>()->with_type_id(163)->with_activation_flags(1)));
+    ASSERT_EQ(23, mutant_egg_contents(*mock_shared<MockItem>()->with_type_id(163)->with_activation_flags(2)));
+    ASSERT_EQ(34, mutant_egg_contents(*mock_shared<MockItem>()->with_type_id(163)->with_activation_flags(4)));
+    ASSERT_EQ(22, mutant_egg_contents(*mock_shared<MockItem>()->with_type_id(163)->with_activation_flags(8)));
+    ASSERT_EQ(20, mutant_egg_contents(*mock_shared<MockItem>()->with_type_id(163)->with_activation_flags(1851)));
 }
 
 TEST(Item, MutantEggContentsFlags)

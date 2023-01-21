@@ -24,14 +24,14 @@ namespace trview
         virtual std::optional<int> process_message(UINT message, WPARAM wParam, LPARAM lParam) override;
         virtual void render() override;
         const std::weak_ptr<ITrigger> selected_trigger() const;
-        virtual void set_items(const std::vector<Item>& items) override;
+        virtual void set_items(const std::vector<std::weak_ptr<IItem>>& items) override;
         virtual void set_triggers(const std::vector<std::weak_ptr<ITrigger>>& triggers) override;
         virtual void set_room(uint32_t room) override;
         virtual void set_selected_trigger(const std::weak_ptr<ITrigger>& trigger) override;
         virtual std::weak_ptr<ITriggersWindow> create_window() override;
         virtual void update(float delta) override;
     private:
-        std::vector<Item> _items;
+        std::vector<std::weak_ptr<IItem>> _items;
         std::vector<std::weak_ptr<ITrigger>> _triggers;
         uint32_t _current_room{ 0u };
         std::weak_ptr<ITrigger> _selected_trigger;

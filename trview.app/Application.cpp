@@ -169,10 +169,9 @@ namespace trview
             auto selected_item = old_level->selected_item();
             if (selected_item.has_value())
             {
-                const auto new_selected_item = _level->item(selected_item.value());
-                if (new_selected_item.has_value())
+                if (const auto new_selected_item = _level->item(selected_item.value()).lock())
                 {
-                    select_item(new_selected_item.value());
+                    select_item(new_selected_item);
                 }
             }
 
@@ -319,7 +318,7 @@ namespace trview
                 return;
             }
 
-            for (const auto& item : _level->items()) { if (!item.visible()) { set_item_visibility(item, true); } }
+            for (const auto& item : _level->items()) { set_item_visibility(item, true); }
             for (const auto& trigger : _level->triggers()) { set_trigger_visibility(trigger, true); }
             for (const auto& light : _level->lights()) { set_light_visibility(light, true); }
             for (const auto& room : _level->rooms()) { set_room_visibility(room, true); }
@@ -375,7 +374,10 @@ namespace trview
         _token_store += _items_windows->on_trigger_selected += [this](const auto& trigger) { select_trigger(trigger); };
         _token_store += _items_windows->on_add_to_route += [this](const auto& item)
         {
-            add_waypoint(item.position(), Vector3::Down, item.room(), IWaypoint::Type::Entity, item.number());
+            if (auto item_ptr = item.lock())
+            {
+                add_waypoint(item_ptr->position(), Vector3::Down, item_ptr->room(), IWaypoint::Type::Entity, item_ptr->number());
+            }
         };
     }
 
@@ -515,15 +517,21 @@ namespace trview
         }
     }
 
-    void Application::select_item(const Item& item)
+    void Application::select_item(std::weak_ptr<IItem> item)
     {
-        if (!_level || item.number() >= _level->items().size())
+        if (!_level)
         {
             return;
         }
 
-        select_room(item.room());
-        _level->set_selected_item(item.number());
+        auto item_ptr = item.lock();
+        if (!item_ptr)
+        {
+            return;
+        }
+
+        select_room(item_ptr->room());
+        _level->set_selected_item(item_ptr->number());
         _viewer->select_item(item);
         _items_windows->set_selected_item(item);
         _rooms_windows->set_selected_item(item);
@@ -610,15 +618,20 @@ namespace trview
         _rooms_windows->set_selected_light(light);
     }
 
-    void Application::set_item_visibility(const Item& item, bool visible)
+    void Application::set_item_visibility(const std::weak_ptr<IItem>& item, bool visible)
     {
         if (!_level)
         {
             return;
         }
 
-        _level->set_item_visibility(item.number(), visible);
-        _items_windows->set_item_visible(item, visible);
+        if (const auto item_ptr = item.lock())
+        {
+            if (item_ptr->visible() != visible)
+            {
+                _level->set_item_visibility(item_ptr->number(), visible);
+            }
+        }
     }
 
     void Application::set_trigger_visibility(const std::weak_ptr<ITrigger>& trigger, bool visible)

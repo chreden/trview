@@ -27,7 +27,7 @@ namespace trview
         Event<uint32_t> on_waypoint_selected;
 
         /// Event raised when an item is selected.
-        Event<Item> on_item_selected;
+        Event<std::weak_ptr<IItem>> on_item_selected;
 
         /// Event raised when a trigger is selected.
         Event<std::weak_ptr<ITrigger>> on_trigger_selected;
@@ -56,7 +56,7 @@ namespace trview
 
         /// Set the items to that are in the level.
         /// @param items The items to show.
-        virtual void set_items(const std::vector<Item>& items) = 0;
+        virtual void set_items(const std::vector<std::weak_ptr<IItem>>& items) = 0;
 
         virtual void set_rooms(const std::vector<std::weak_ptr<IRoom>>& rooms) = 0;
 

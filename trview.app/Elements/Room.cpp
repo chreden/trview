@@ -401,7 +401,7 @@ namespace trview
         });
     }
 
-    void Room::add_entity(const std::weak_ptr<IEntity>& entity)
+    void Room::add_entity(const std::weak_ptr<IItem>& entity)
     {
         _entities.push_back(entity);
     }

@@ -75,10 +75,9 @@ namespace trview
         {
             if (_level)
             {
-                const auto item = _level->item(index);
-                if (item.has_value())
+                if (const auto item = _level->item(index).lock())
                 {
-                    on_item_selected(item.value());
+                    on_item_selected(item);
                 }
             }
         };
@@ -118,10 +117,9 @@ namespace trview
 
             if (_context_pick.type == PickResult::Type::Entity)
             {
-                const auto item = _level->item(_context_pick.index);
-                if (item.has_value())
+                if (const auto item = _level->item(_context_pick.index).lock())
                 {
-                    _context_pick.position = item.value().position();
+                    _context_pick.position = item->position();
                 }
             }
             else if (_context_pick.type == PickResult::Type::Trigger)
@@ -143,10 +141,9 @@ namespace trview
             }
             else if (_context_pick.type == PickResult::Type::Entity)
             {
-                const auto item = _level->item(_context_pick.index);
-                if (item.has_value())
+                if (const auto item = _level->item(_context_pick.index).lock())
                 {
-                    _context_pick.position = item.value().position();
+                    _context_pick.position = item->position();
                 }
             }
             else if (_context_pick.type == PickResult::Type::Trigger)
@@ -172,10 +169,9 @@ namespace trview
         {
             if (_context_pick.type == PickResult::Type::Entity)
             {
-                const auto item = _level->item(_context_pick.index);
-                if (item.has_value())
+                if (const auto item = _level->item(_context_pick.index).lock())
                 {
-                    on_item_visibility(item.value(), false);
+                    on_item_visibility(item, false);
                 }
             }
             else if (_context_pick.type == PickResult::Type::Trigger)
@@ -549,8 +545,8 @@ namespace trview
 
                 if (_current_pick.type == PickResult::Type::Entity)
                 {
-                    const auto item = _level->item(_current_pick.index);
-                    _ui->set_triggered_by(item ? item.value().triggers() : std::vector<std::weak_ptr<ITrigger>>{});
+                    const auto item = _level->item(_current_pick.index).lock();
+                    _ui->set_triggered_by(item ? item->triggers() : std::vector<std::weak_ptr<ITrigger>>{});
                 }
                 else if (_current_pick.type == PickResult::Type::CameraSink)
                 {
@@ -614,7 +610,7 @@ namespace trview
             _recent_orbits.clear();
             _recent_orbit_index = 0u;
 
-            Item lara;
+            std::weak_ptr<IItem> lara;
             if (_settings.go_to_lara && find_last_item_by_type_id(*_level, 0u, lara))
             {
                 on_item_selected(lara);
@@ -816,15 +812,18 @@ namespace trview
         }
     }
 
-    void Viewer::select_item(const Item& item)
+    void Viewer::select_item(const std::weak_ptr<IItem>& item)
     {
-        _target = item.position();
-        _ui->set_selected_item(item.number());
-        if (_settings.auto_orbit)
+        if (auto item_ptr = item.lock())
         {
-            set_camera_mode(CameraMode::Orbit);
+            _target = item_ptr->position();
+            _ui->set_selected_item(item_ptr->number());
+            if (_settings.auto_orbit)
+            {
+                set_camera_mode(CameraMode::Orbit);
+            }
+            _scene_changed = true;
         }
-        _scene_changed = true;
     }
 
     void Viewer::select_trigger(const std::weak_ptr<ITrigger>& trigger)
@@ -1166,10 +1165,9 @@ namespace trview
             return pick.index;
         case PickResult::Type::Entity:
         {
-            auto item = _level->item(pick.index);
-            if (item.has_value())
+            if (auto item = _level->item(pick.index).lock())
             {
-                return item.value().room();
+                return item->room();
             }
             break;
         }
@@ -1234,10 +1232,9 @@ namespace trview
             break;
         case PickResult::Type::Entity:
         {
-            const auto item = _level->item(pick.index);
-            if (item.has_value())
+            if (const auto item = _level->item(pick.index).lock())
             {
-                on_item_selected(item.value());
+                on_item_selected(item);
             }
             break;
         }

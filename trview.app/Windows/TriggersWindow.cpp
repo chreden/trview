@@ -99,7 +99,7 @@ namespace trview
         }
     }
 
-    void TriggersWindow::set_items(const std::vector<Item>& items)
+    void TriggersWindow::set_items(const std::vector<std::weak_ptr<IItem>>& items)
     {
         _all_items = items;
     }
@@ -266,7 +266,10 @@ namespace trview
             {
                 if (command.index() < _all_items.size())
                 {
-                    return _all_items[command.index()].type();
+                    if (auto item = _all_items[command.index()].lock())
+                    {
+                        return item->type();
+                    }
                 }
                 return std::string("No Item");
             }

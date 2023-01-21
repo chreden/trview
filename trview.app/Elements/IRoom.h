@@ -6,7 +6,7 @@
 #include <vector>
 #include <unordered_set>
 #include <SimpleMath.h>
-#include <trview.app/Elements/IEntity.h>
+#include "IItem.h"
 #include <trview.app/Elements/ISector.h>
 #include <trview.app/Elements/ITrigger.h>
 #include <trview.app/Elements/RoomInfo.h>
@@ -99,7 +99,7 @@ namespace trview
         /// Add the specified <see cref="IEntity"/> to the room. The room will not take ownership of this entity.
         /// </summary>
         /// <param name="entity">The <see cref="IEntity"/> to add.</param>
-        virtual void add_entity(const std::weak_ptr<IEntity>& entity) = 0;
+        virtual void add_entity(const std::weak_ptr<IItem>& entity) = 0;
         /// <summary>
         /// Add the specified <see cref="ITrigger"/> to the room. The room will not take ownership of this trigger.
         /// </summary>
