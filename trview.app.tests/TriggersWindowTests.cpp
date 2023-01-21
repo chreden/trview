@@ -230,11 +230,12 @@ TEST(TriggersWindow, ItemSelectedRaised)
     TestImgui imgui([&]() { window->render(); });
     imgui.click_element_with_hover(imgui.id("Triggers 0")
         .push_child(TriggersWindow::Names::details_panel)
-        .push(TriggersWindow::Names::commands_list).id("1##1"));
+        .push(TriggersWindow::Names::commands_list).id("Item##0"));
 
     auto selected = window->selected_trigger().lock();
     ASSERT_NE(selected, nullptr);
     ASSERT_EQ(selected, trigger);
+    ASSERT_EQ(raised_item, items[1]);
 }
 
 TEST(TriggersWindow, FlipmapsFiltersAllFlipTriggers)
