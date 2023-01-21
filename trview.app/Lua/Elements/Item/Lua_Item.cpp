@@ -10,37 +10,23 @@ namespace trview
     {
         namespace
         {
-            std::optional<Item> get_item(lua_State* L, ILevel* level)
-            {
-                lua_getfield(L, -1, "number");
-                uint32_t item_number = static_cast<uint32_t>(lua_tointeger(L, -1));
-                lua_pop(L, 1);
-                return level->item(item_number);
-            }
+            std::unordered_map<IItem**, std::shared_ptr<IItem>> items;
 
             int item_index(lua_State* L)
             {
-                ILevel* level = level_current_level();
-                if (!level)
-                {
-                    return 0;
-                }
-
-                auto item = get_item(L, level);
-                if (!item)
-                {
-                    return 0;
-                }
+                IItem* item = *static_cast<IItem**>(lua_touserdata(L, 1));
 
                 const std::string key = lua_tostring(L, 2);
                 if (key == "visible")
                 {
-                    lua_pushboolean(L, item.value().visible());
+                    lua_pushboolean(L, item->visible());
                     return 1;
                 }
                 else if (key == "room")
                 {
-                    create_room(L, level->room(item.value().room()).lock());
+                    // Todo: Get the level somehow.
+                    // create_room(L, level->room(item.value().room()).lock());
+                    lua_pushnil(L);
                     return 1;
                 }
 
@@ -49,51 +35,49 @@ namespace trview
 
             int item_newindex(lua_State* L)
             {
-                ILevel* level = level_current_level();
-                if (!level)
-                {
-                    return 0;
-                }
-
-                lua_getfield(L, 1, "number");
-                uint32_t item_number = static_cast<uint32_t>(lua_tointeger(L, -1));
-                lua_pop(L, 1);
-
-                auto item = level->item(item_number);
-                if (!item)
-                {
-                    return 0;
-                }
+                IItem* item = *static_cast<IItem**>(lua_touserdata(L, 1));
 
                 const std::string key = lua_tostring(L, 2);
                 if (key == "visible")
                 {
                     bool visibility = lua_toboolean(L, -1);
-                    level->set_item_visibility(item_number, visibility);
+                    // TODO: Do this through level, or notify level in some way?
+                    item->set_visible(visibility);
                     return 0;
                 }
 
                 return 0;
             }
 
-            constexpr struct luaL_Reg item_lib[] =
+            int item_gc(lua_State* L)
             {
-                { "__index", item_index },
-                { "__newindex", item_newindex },
-                { NULL, NULL },
-            };
+                IItem** userdata = static_cast<IItem**>(lua_touserdata(L, 1));
+                items.erase(userdata);
+                return 0;
+            }
         }
 
-        void create_item(lua_State* L, const Item& item)
+        void create_item(lua_State* L, std::shared_ptr<IItem> item)
         {
+            if (!item)
+            {
+                lua_pushnil(L);
+                return;
+            }
+
+            IItem** userdata = static_cast<IItem**>(lua_newuserdata(L, sizeof(item.get())));
+            *userdata = item.get();
+            items[userdata] = item;
+
             lua_newtable(L);
-
-            lua_pushinteger(L, item.number());
-            lua_setfield(L, -2, "number");
-
-            luaL_setfuncs(L, item_lib, 0);
-            lua_pushvalue(L, -1);
+            lua_pushcfunction(L, item_index);
+            lua_setfield(L, -2, "__index");
+            lua_pushcfunction(L, item_newindex);
+            lua_setfield(L, -2, "__newindex");
+            lua_pushcfunction(L, item_gc);
+            lua_setfield(L, -2, "__gc");
             lua_setmetatable(L, -2);
+
             /*
             // TODO: Room
             lua_pushinteger(L, item.type_id());

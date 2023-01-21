@@ -39,7 +39,7 @@ namespace trview
                     for (const auto& item : current_level->items())
                     {
                         lua_pushnumber(L, index);
-                        create_item(L, item);
+                        create_item(L, item.lock());
                         lua_settable(L, -3);
                         ++index;
                     }
