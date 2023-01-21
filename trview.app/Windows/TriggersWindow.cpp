@@ -111,8 +111,6 @@ namespace trview
 
     void TriggersWindow::render()
     {
-        ImGui::ShowStackToolWindow();
-
         if (!render_triggers_window())
         {
             on_window_closed();
