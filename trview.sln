@@ -102,6 +102,17 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "trlevel.tests", "trlevel.te
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DirectXTK_Desktop", "external\DirectXTK\DirectXTK_Desktop.vcxproj", "{A11566D3-4081-42C9-94C5-F4057EDD9D50}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "lua", "lua", "{D6B95B54-7EBF-4D18-AE50-F82BD0B7CA62}"
+	ProjectSection(SolutionItems) = preProject
+		doc\lua\index.md = doc\lua\index.md
+		doc\lua\item.md = doc\lua\item.md
+		doc\lua\level.md = doc\lua\level.md
+		doc\lua\room.md = doc\lua\room.md
+		doc\lua\trigger.md = doc\lua\trigger.md
+		doc\lua\trview.md = doc\lua\trview.md
+		doc\lua\vector3.md = doc\lua\vector3.md
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -291,6 +302,7 @@ Global
 		{A01CD1C0-7CDB-4562-A6B1-2655E9BA2B64} = {B3A7F8A1-CC61-4082-BFF5-A072AF85754C}
 		{9A66D582-DCDB-46FA-988B-50C7AC0C19EB} = {B3A7F8A1-CC61-4082-BFF5-A072AF85754C}
 		{A11566D3-4081-42C9-94C5-F4057EDD9D50} = {14424861-057E-431A-97B1-0F482C6DD4E0}
+		{D6B95B54-7EBF-4D18-AE50-F82BD0B7CA62} = {B3A7F8A1-CC61-4082-BFF5-A072AF85754C}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {E1BD837F-81FB-40A7-879E-E411807799F4}
