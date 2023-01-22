@@ -5,9 +5,10 @@
 
 namespace trview
 {
+    struct IApplication;
+
     namespace lua
     {
-        void trview_register(lua_State* L);
-        void set_current_level(ILevel* level);
+        void trview_register(lua_State* L, IApplication* application);
     }
 }

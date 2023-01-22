@@ -439,6 +439,16 @@ namespace trview
         return _position;
     }
 
+    void Item::set_level(const std::weak_ptr<ILevel>& level)
+    {
+        _level = level;
+    }
+
+    std::weak_ptr<ILevel> Item::level() const
+    {
+        return _level;
+    }
+
     bool is_mutant_egg(const IItem& item)
     {
         return is_mutant_egg(item.type_id());

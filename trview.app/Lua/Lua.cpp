@@ -228,7 +228,7 @@ namespace trview
         { NULL, NULL },
     };
 
-    void lua_init ( LuaFunctionRegistry* reg )
+    void lua_init(LuaFunctionRegistry* reg, IApplication* application)
     {
         op = reg;
         lua_State* L = luaL_newstate ();
@@ -256,7 +256,7 @@ namespace trview
         // utility
         lua_register ( L, "print", print );
 
-        lua::trview_register(L);
+        lua::trview_register(L, application);
 
         state = L;
     }

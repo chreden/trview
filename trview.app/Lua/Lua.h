@@ -8,6 +8,8 @@
 
 namespace trview
 {
+    struct IApplication;
+
     enum class LuaEvent
     {
         ON_RENDER,
@@ -67,7 +69,7 @@ namespace trview
 
     extern LuaFunctionRegistry lua_registry;
 
-    void lua_init ( LuaFunctionRegistry * reg );
+    void lua_init(LuaFunctionRegistry * reg, IApplication* application);
     void lua_execute ( const std::string& command );
     void lua_fire_event ( LuaEvent type );
     lua_State* lua_get_state();

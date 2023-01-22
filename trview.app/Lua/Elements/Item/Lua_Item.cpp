@@ -17,16 +17,52 @@ namespace trview
                 IItem* item = *static_cast<IItem**>(lua_touserdata(L, 1));
 
                 const std::string key = lua_tostring(L, 2);
-                if (key == "visible")
+                if (key == "activation_flags")
                 {
-                    lua_pushboolean(L, item->visible());
+                    lua_pushinteger(L, item->activation_flags());
+                    return 1;
+                }
+                else if (key == "number")
+                {
+                    lua_pushinteger(L, item->number());
+                    return 1;
+                }
+                else if (key == "ocb")
+                {
+                    lua_pushinteger(L, item->ocb());
                     return 1;
                 }
                 else if (key == "room")
                 {
-                    // Todo: Get the level somehow.
-                    // create_room(L, level->room(item.value().room()).lock());
-                    lua_pushnil(L);
+                    if (auto level = item->level().lock())
+                    {
+                        create_room(L, level->room(item->room()).lock());
+                    }
+                    else
+                    {
+                        lua_pushnil(L);
+                    }
+                    return 1;
+                }
+                else if (key == "triggered_by")
+                {
+                    // TODO: Triggers
+                    lua_newtable(L);
+                    return 1;
+                }
+                else if (key == "type")
+                {
+                    lua_pushstring(L, item->type().c_str());
+                    return 1;
+                }
+                else if (key == "type_id")
+                {
+                    lua_pushinteger(L, item->type_id());
+                    return 1;
+                }
+                else if (key == "visible")
+                {
+                    lua_pushboolean(L, item->visible());
                     return 1;
                 }
 
@@ -78,24 +114,8 @@ namespace trview
             lua_setfield(L, -2, "__gc");
             lua_setmetatable(L, -2);
 
-            /*
-            // TODO: Room
-            lua_pushinteger(L, item.type_id());
-            lua_setfield(L, -2, "type_id");
-
-            lua_pushstring(L, item.type().c_str());
-            lua_setfield(L, -2, "type");
-
-            lua_pushinteger(L, item.ocb());
-            lua_setfield(L, -2, "ocb");
-
-            lua_pushinteger(L, item.activation_flags());
-            lua_setfield(L, -2, "activation_flags");
-            */
             // TODO: Specific flags
-            // TODO: Triggers
             // TODO: Position
-            // TODO: Visible
         }
     }
 }
