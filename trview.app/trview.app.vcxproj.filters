@@ -1082,6 +1082,9 @@
     <None Include="Track\Track.inl">
       <Filter>Track</Filter>
     </None>
+    <None Include="Lua\Lua.inl">
+      <Filter>Lua</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Resources\trview.app.rc">

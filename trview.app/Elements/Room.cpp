@@ -1017,7 +1017,12 @@ namespace trview
             triggers.push_back(t.second);
         }
         return triggers;
-    };
+    }
+
+    std::vector<std::weak_ptr<IItem>> Room::items() const
+    {
+        return _entities;
+    }
 
     std::shared_ptr<ISector> sector_from_point(const IRoom& room, const Vector3& point)
     {

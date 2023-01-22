@@ -31,16 +31,7 @@ namespace trview
                 }
                 else if (key == "items")
                 {
-                    lua_newtable(L);
-                    int index = 1;
-                    for (const auto& item : level->items())
-                    {
-                        lua_pushnumber(L, index);
-                        create_item(L, item.lock());
-                        lua_settable(L, -3);
-                        ++index;
-                    }
-                    return 1;
+                    return push_list(L, level->items(), { create_item });
                 }
                 else if (key == "lights")
                 {
@@ -50,16 +41,7 @@ namespace trview
                 }
                 else if (key == "rooms")
                 {
-                    lua_newtable(L);
-                    int index = 1;
-                    for (const auto& room : level->rooms())
-                    {
-                        lua_pushnumber(L, index);
-                        create_room(L, room.lock());
-                        lua_settable(L, -3);
-                        ++index;
-                    }
-                    return 1;
+                    return push_list(L, level->rooms(), { create_room });
                 }
                 else if (key == "triggers")
                 {
@@ -93,7 +75,7 @@ namespace trview
             }
         }
 
-        void create_level(lua_State* L, const std::shared_ptr<ILevel>& level)
+        int create_level(lua_State* L, const std::shared_ptr<ILevel>& level)
         {
             if (!level)
             {
@@ -113,6 +95,7 @@ namespace trview
             lua_pushcfunction(L, level_gc);
             lua_setfield(L, -2, "__gc");
             lua_setmetatable(L, -2);
+            return 1;
         }
     }
 }

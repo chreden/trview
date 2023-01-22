@@ -1,6 +1,6 @@
 #include "Lua_Room.h"
 #include "../../../Elements/ILevel.h"
-#include "../Level/Lua_Level.h"
+#include "../Item/Lua_Item.h"
 #include "../../Lua.h"
 
 namespace trview
@@ -20,6 +20,10 @@ namespace trview
                 {
                     lua_pushstring(L, to_string(room->alternate_mode()).c_str());
                     return 1;
+                }
+                else if (key == "items")
+                {
+                    return push_list(L, room->items(), { create_item });
                 }
                 else if (key == "lights")
                 {

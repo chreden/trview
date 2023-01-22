@@ -15,8 +15,7 @@ namespace trview
                 const std::string key = lua_tostring(L, 2);
                 if (key == "level")
                 {
-                    create_level(L, application->current_level().lock());
-                    return 1;
+                    return create_level(L, application->current_level().lock());
                 }
                 return 0;
             }

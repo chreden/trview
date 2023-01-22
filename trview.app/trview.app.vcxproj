@@ -361,6 +361,7 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <Image Include="trview.ico" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Lua\Lua.inl" />
     <None Include="Track\Track.inl" />
     <Text Include="Resources\Files\actions.json">
       <FileType>Document</FileType>

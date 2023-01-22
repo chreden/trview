@@ -76,9 +76,10 @@ namespace trview
                 const std::string key = lua_tostring(L, 2);
                 if (key == "visible")
                 {
-                    bool visibility = lua_toboolean(L, -1);
-                    // TODO: Do this through level, or notify level in some way?
-                    item->set_visible(visibility);
+                    if (auto level = item->level().lock())
+                    {
+                        level->set_item_visibility(item->number(), lua_toboolean(L, -1));
+                    }
                     return 0;
                 }
 
@@ -93,7 +94,7 @@ namespace trview
             }
         }
 
-        void create_item(lua_State* L, std::shared_ptr<IItem> item)
+        void create_item(lua_State* L, const std::shared_ptr<IItem>& item)
         {
             if (!item)
             {

@@ -52,6 +52,7 @@ namespace trview
             MOCK_METHOD(std::vector<std::weak_ptr<ILight>>, lights, (), (const, override));
             MOCK_METHOD(std::vector<std::weak_ptr<ICameraSink>>, camera_sinks, (), (const, override));
             MOCK_METHOD(std::vector<std::weak_ptr<ITrigger>>, triggers, (), (const, override));
+            MOCK_METHOD(std::vector<std::weak_ptr<IItem>>, items, (), (const, override));
 
 
             std::shared_ptr<MockRoom> with_number(uint32_t number)

@@ -82,6 +82,7 @@ namespace trview
         virtual std::vector<std::weak_ptr<ILight>> lights() const override;
         virtual std::vector<std::weak_ptr<ICameraSink>> camera_sinks() const override;
         virtual std::vector<std::weak_ptr<ITrigger>> triggers() const override;
+        std::vector<std::weak_ptr<IItem>> items() const override;
     private:
         void generate_geometry(const IMesh::Source& mesh_source, const trlevel::tr3_room& room);
         void generate_adjacency();
