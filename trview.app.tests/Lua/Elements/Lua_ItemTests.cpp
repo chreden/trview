@@ -25,8 +25,7 @@ TEST(Lua_Item, ActivationFlags)
 
 TEST(Lua_Item, Number)
 {
-    auto item = mock_shared<MockItem>();
-    EXPECT_CALL(*item, number).WillOnce(Return(123));
+    auto item = mock_shared<MockItem>()->with_number(123);
 
     lua_State* L = luaL_newstate();
     lua::create_item(L, item);
@@ -75,14 +74,11 @@ TEST(Lua_Item, Position)
 
 TEST(Lua_Item, Room)
 {
-    auto room = mock_shared<MockRoom>();
-    EXPECT_CALL(*room, number).WillRepeatedly(Return(100));
-
+    auto room = mock_shared<MockRoom>()->with_number(100);
     auto level = mock_shared<MockLevel>();
     EXPECT_CALL(*level, room).WillRepeatedly(Return(room));
 
-    auto item = mock_shared<MockItem>();
-    EXPECT_CALL(*item, room).WillRepeatedly(Return(100));
+    auto item = mock_shared<MockItem>()->with_number(100);
     EXPECT_CALL(*item, level).WillRepeatedly(Return(level));
 
     lua_State* L = luaL_newstate();
@@ -98,10 +94,8 @@ TEST(Lua_Item, Room)
 
 TEST(Lua_Item, TriggeredBy)
 {
-    auto trigger1 = mock_shared<MockTrigger>();
-    EXPECT_CALL(*trigger1, number).WillRepeatedly(Return(100));
-    auto trigger2 = mock_shared<MockTrigger>();
-    EXPECT_CALL(*trigger2, number).WillRepeatedly(Return(200));
+    auto trigger1 = mock_shared<MockTrigger>()->with_number(100);
+    auto trigger2 = mock_shared<MockTrigger>()->with_number(200);
 
     auto item = mock_shared<MockItem>();
     EXPECT_CALL(*item, triggers).WillRepeatedly(Return(std::vector<std::weak_ptr<ITrigger>>{ trigger1, trigger2 }));
@@ -134,7 +128,7 @@ TEST(Lua_Item, Type)
 
     ASSERT_EQ(0, luaL_dostring(L, "return i.type"));
     ASSERT_EQ(LUA_TSTRING, lua_type(L, -1));
-    ASSERT_EQ(std::string("Lara"), lua_tostring(L, -1));
+    ASSERT_STREQ("Lara", lua_tostring(L, -1));
 }
 
 TEST(Lua_Item, TypeId)
@@ -163,4 +157,19 @@ TEST(Lua_Item, Visible)
     ASSERT_EQ(0, luaL_dostring(L, "return i.visible"));
     ASSERT_EQ(LUA_TBOOLEAN, lua_type(L, -1));
     ASSERT_EQ(true, lua_toboolean(L, -1));
+}
+
+TEST(Lua_Item, SetVisible)
+{
+    auto level = mock_shared<MockLevel>();
+    EXPECT_CALL(*level, set_item_visibility(100, true));
+
+    auto item = mock_shared<MockItem>()->with_number(100);
+    EXPECT_CALL(*item, level).WillRepeatedly(Return(level));
+
+    lua_State* L = luaL_newstate();
+    lua::create_item(L, item);
+    lua_setglobal(L, "i");
+
+    ASSERT_EQ(0, luaL_dostring(L, "i.visible = true"));
 }
