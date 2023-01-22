@@ -182,6 +182,9 @@
     <ClCompile Include="Lua\Elements\Lua_RoomTests.cpp">
       <Filter>Lua\Elements</Filter>
     </ClCompile>
+    <ClCompile Include="Lua\Elements\Lua_TriggerTests.cpp">
+      <Filter>Lua\Elements</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Input">
