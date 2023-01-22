@@ -40,13 +40,27 @@ namespace trview
                     lua_newtable(L);
                     return 1;
                 }
+                else if (key == "visible")
+                {
+                    lua_pushboolean(L, room->visible());
+                    return 1;
+                }
 
                 return 0;
             }
 
-            int room_newindex(lua_State*)
+            int room_newindex(lua_State* L)
             {
-                // IRoom* room = *static_cast<IRoom**>(lua_touserdata(L, 1));
+                IRoom* room = *static_cast<IRoom**>(lua_touserdata(L, 1));
+
+                const std::string key = lua_tostring(L, 2);
+                if (key == "visible")
+                {
+                    if (auto level = room->level().lock())
+                    {
+                        level->set_room_visibility(room->number(), lua_toboolean(L, -1));
+                    }
+                }
 
                 return 0;
             }

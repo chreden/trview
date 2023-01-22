@@ -67,6 +67,7 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClCompile Include="Lua\Elements\Room\Lua_Room.cpp" />
     <ClCompile Include="Lua\Elements\Trigger\Lua_Trigger.cpp" />
     <ClCompile Include="Lua\trview\trview.cpp" />
+    <ClCompile Include="Lua\Vector3.cpp" />
     <ClCompile Include="Menus\FileMenu.cpp" />
     <ClCompile Include="Mocks\Mocks.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">/bigobj %(AdditionalOptions)</AdditionalOptions>
@@ -104,6 +105,7 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClInclude Include="Lua\Elements\Item\Lua_Item.h" />
     <ClInclude Include="Lua\Elements\Room\Lua_Room.h" />
     <ClInclude Include="Lua\Elements\Trigger\Lua_Trigger.h" />
+    <ClInclude Include="Lua\Vector3.h" />
     <ClInclude Include="Type.inl">
       <FileType>Document</FileType>
     </ClInclude>

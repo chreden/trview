@@ -308,6 +308,8 @@ namespace trview
         virtual std::vector<std::weak_ptr<ICameraSink>> camera_sinks() const = 0;
         virtual std::vector<std::weak_ptr<ITrigger>> triggers() const = 0;
         virtual std::vector<std::weak_ptr<IItem>> items() const = 0;
+        virtual void set_level(const std::weak_ptr<ILevel>& level) = 0;
+        virtual std::weak_ptr<ILevel> level() const = 0;
     };
 
     /// <summary>

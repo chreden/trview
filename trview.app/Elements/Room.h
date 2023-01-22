@@ -83,6 +83,8 @@ namespace trview
         virtual std::vector<std::weak_ptr<ICameraSink>> camera_sinks() const override;
         virtual std::vector<std::weak_ptr<ITrigger>> triggers() const override;
         std::vector<std::weak_ptr<IItem>> items() const override;
+        void set_level(const std::weak_ptr<ILevel>& level) override;
+        std::weak_ptr<ILevel> level() const override;
     private:
         void generate_geometry(const IMesh::Source& mesh_source, const trlevel::tr3_room& room);
         void generate_adjacency();
@@ -131,7 +133,7 @@ namespace trview
         TokenStore _token_store;
         std::unordered_map<uint32_t, std::weak_ptr<ITrigger>> _triggers;
         uint16_t _flags{ 0 };
-        const ILevel& _level;
+        const ILevel& _parent_level;
         std::shared_ptr<ILevelTextureStorage> _texture_storage;
         std::vector<std::weak_ptr<ILight>> _lights;
         IMesh::Source _mesh_source;
@@ -141,5 +143,6 @@ namespace trview
         bool _visible{ true };
         
         std::vector<std::weak_ptr<ICameraSink>> _camera_sinks;
+        std::weak_ptr<ILevel> _level;
     };
 }

@@ -4,6 +4,7 @@
 #include "../Level/Lua_Level.h"
 #include "../Room/Lua_Room.h"
 #include "../Trigger/Lua_Trigger.h"
+#include "../../Vector3.h"
 
 namespace trview
 {
@@ -32,6 +33,10 @@ namespace trview
                 {
                     lua_pushinteger(L, item->ocb());
                     return 1;
+                }
+                else if (key == "position")
+                {
+                    return create_vector3(L, item->position() * trlevel::Scale);
                 }
                 else if (key == "room")
                 {

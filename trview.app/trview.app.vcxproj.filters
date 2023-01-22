@@ -279,6 +279,9 @@
     <ClCompile Include="Lua\Elements\Trigger\Lua_Trigger.cpp">
       <Filter>Lua\Elements\Trigger</Filter>
     </ClCompile>
+    <ClCompile Include="Lua\Vector3.cpp">
+      <Filter>Lua</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera\Camera.h">
@@ -884,6 +887,9 @@
     </ClInclude>
     <ClInclude Include="Lua\Elements\Trigger\Lua_Trigger.h">
       <Filter>Lua\Elements\Trigger</Filter>
+    </ClInclude>
+    <ClInclude Include="Lua\Vector3.h">
+      <Filter>Lua</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -29,6 +29,8 @@ namespace trview
             MOCK_METHOD(PickResult, pick, (const DirectX::SimpleMath::Vector3&, const DirectX::SimpleMath::Vector3&), (const, override));
             MOCK_METHOD(void, set_position, (const DirectX::SimpleMath::Vector3&), (override));
             MOCK_METHOD(DirectX::SimpleMath::Vector3, position, (), (const, override));
+            MOCK_METHOD(void, set_level, (const std::weak_ptr<ILevel>&), (override));
+            MOCK_METHOD(std::weak_ptr<ILevel>, level, (), (const, override));
 
             std::shared_ptr<MockTrigger> with_number(uint32_t number)
             {
