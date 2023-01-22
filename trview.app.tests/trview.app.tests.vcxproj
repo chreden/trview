@@ -41,6 +41,7 @@
     <ClCompile Include="Graphics\TextureStorage.cpp" />
     <ClCompile Include="ItemsWindowManagerTests.cpp" />
     <ClCompile Include="ItemsWindowTests.cpp" />
+    <ClCompile Include="Lua\Elements\Lua_ItemTests.cpp" />
     <ClCompile Include="Lua\Elements\Lua_LevelTests.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Menus\MenuDetectorTests.cpp" />

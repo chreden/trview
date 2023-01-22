@@ -1,0 +1,166 @@
+#include <trview.app/Lua/Elements/Item/Lua_Item.h>
+#include <trview.app/Mocks/Elements/IItem.h>
+#include <trview.tests.common/Mocks.h>
+#include <external/lua/src/lua.hpp>
+
+using namespace trview;
+using namespace trview::mocks;
+using namespace trview::tests;
+using namespace testing;
+using namespace DirectX::SimpleMath;
+
+TEST(Lua_Item, ActivationFlags)
+{
+    auto item = mock_shared<MockItem>();
+    EXPECT_CALL(*item, activation_flags).WillOnce(Return(123));
+
+    lua_State* L = luaL_newstate();
+    lua::create_item(L, item);
+    lua_setglobal(L, "i");
+
+    ASSERT_EQ(0, luaL_dostring(L, "return i.activation_flags"));
+    ASSERT_EQ(LUA_TNUMBER, lua_type(L, -1));
+    ASSERT_EQ(123, lua_tointeger(L, -1));
+}
+
+TEST(Lua_Item, Number)
+{
+    auto item = mock_shared<MockItem>();
+    EXPECT_CALL(*item, number).WillOnce(Return(123));
+
+    lua_State* L = luaL_newstate();
+    lua::create_item(L, item);
+    lua_setglobal(L, "i");
+
+    ASSERT_EQ(0, luaL_dostring(L, "return i.number"));
+    ASSERT_EQ(LUA_TNUMBER, lua_type(L, -1));
+    ASSERT_EQ(123, lua_tointeger(L, -1));
+}
+
+TEST(Lua_Item, Ocb)
+{
+    auto item = mock_shared<MockItem>();
+    EXPECT_CALL(*item, ocb).WillOnce(Return(123));
+
+    lua_State* L = luaL_newstate();
+    lua::create_item(L, item);
+    lua_setglobal(L, "i");
+
+    ASSERT_EQ(0, luaL_dostring(L, "return i.ocb"));
+    ASSERT_EQ(LUA_TNUMBER, lua_type(L, -1));
+    ASSERT_EQ(123, lua_tointeger(L, -1));
+}
+
+TEST(Lua_Item, Position)
+{
+    auto item = mock_shared<MockItem>();
+    EXPECT_CALL(*item, position).WillRepeatedly(Return(Vector3(1, 2, 3)));
+
+    lua_State* L = luaL_newstate();
+    lua::create_item(L, item);
+    lua_setglobal(L, "i");
+
+    ASSERT_EQ(0, luaL_dostring(L, "return i.position"));
+    ASSERT_EQ(LUA_TTABLE, lua_type(L, -1));
+    ASSERT_EQ(0, luaL_dostring(L, "return i.position.x"));
+    ASSERT_EQ(LUA_TNUMBER, lua_type(L, -1));
+    ASSERT_DOUBLE_EQ(1024.0, lua_tonumber(L, -1));
+    ASSERT_EQ(0, luaL_dostring(L, "return i.position.y"));
+    ASSERT_EQ(LUA_TNUMBER, lua_type(L, -1));
+    ASSERT_DOUBLE_EQ(2048.0, lua_tonumber(L, -1));
+    ASSERT_EQ(0, luaL_dostring(L, "return i.position.z"));
+    ASSERT_EQ(LUA_TNUMBER, lua_type(L, -1));
+    ASSERT_DOUBLE_EQ(3072.0, lua_tonumber(L, -1));
+}
+
+TEST(Lua_Item, Room)
+{
+    auto room = mock_shared<MockRoom>();
+    EXPECT_CALL(*room, number).WillRepeatedly(Return(100));
+
+    auto level = mock_shared<MockLevel>();
+    EXPECT_CALL(*level, room).WillRepeatedly(Return(room));
+
+    auto item = mock_shared<MockItem>();
+    EXPECT_CALL(*item, room).WillRepeatedly(Return(100));
+    EXPECT_CALL(*item, level).WillRepeatedly(Return(level));
+
+    lua_State* L = luaL_newstate();
+    lua::create_item(L, item);
+    lua_setglobal(L, "i");
+
+    ASSERT_EQ(0, luaL_dostring(L, "return i.room"));
+    ASSERT_EQ(LUA_TUSERDATA, lua_type(L, -1));
+    ASSERT_EQ(0, luaL_dostring(L, "return i.room.number"));
+    ASSERT_EQ(LUA_TNUMBER, lua_type(L, -1));
+    ASSERT_EQ(100, lua_tonumber(L, -1));
+}
+
+TEST(Lua_Item, TriggeredBy)
+{
+    auto trigger1 = mock_shared<MockTrigger>();
+    EXPECT_CALL(*trigger1, number).WillRepeatedly(Return(100));
+    auto trigger2 = mock_shared<MockTrigger>();
+    EXPECT_CALL(*trigger2, number).WillRepeatedly(Return(200));
+
+    auto item = mock_shared<MockItem>();
+    EXPECT_CALL(*item, triggers).WillRepeatedly(Return(std::vector<std::weak_ptr<ITrigger>>{ trigger1, trigger2 }));
+
+    lua_State* L = luaL_newstate();
+    lua::create_item(L, item);
+    lua_setglobal(L, "i");
+
+    ASSERT_EQ(0, luaL_dostring(L, "return i.triggered_by"));
+    ASSERT_EQ(LUA_TTABLE, lua_type(L, -1));
+    ASSERT_EQ(0, luaL_dostring(L, "return #i.triggered_by"));
+    ASSERT_EQ(LUA_TNUMBER, lua_type(L, -1));
+    ASSERT_EQ(2, lua_tointeger(L, -1));
+    ASSERT_EQ(0, luaL_dostring(L, "return i.triggered_by[1].number"));
+    ASSERT_EQ(LUA_TNUMBER, lua_type(L, -1));
+    ASSERT_EQ(100, lua_tointeger(L, -1));
+    ASSERT_EQ(0, luaL_dostring(L, "return i.triggered_by[2].number"));
+    ASSERT_EQ(LUA_TNUMBER, lua_type(L, -1));
+    ASSERT_EQ(200, lua_tointeger(L, -1));
+}
+
+TEST(Lua_Item, Type)
+{
+    auto item = mock_shared<MockItem>();
+    EXPECT_CALL(*item, type).WillOnce(Return("Lara"));
+
+    lua_State* L = luaL_newstate();
+    lua::create_item(L, item);
+    lua_setglobal(L, "i");
+
+    ASSERT_EQ(0, luaL_dostring(L, "return i.type"));
+    ASSERT_EQ(LUA_TSTRING, lua_type(L, -1));
+    ASSERT_EQ(std::string("Lara"), lua_tostring(L, -1));
+}
+
+TEST(Lua_Item, TypeId)
+{
+    auto item = mock_shared<MockItem>();
+    EXPECT_CALL(*item, type_id).WillOnce(Return(123));
+
+    lua_State* L = luaL_newstate();
+    lua::create_item(L, item);
+    lua_setglobal(L, "i");
+
+    ASSERT_EQ(0, luaL_dostring(L, "return i.type_id"));
+    ASSERT_EQ(LUA_TNUMBER, lua_type(L, -1));
+    ASSERT_EQ(123, lua_tointeger(L, -1));
+}
+
+TEST(Lua_Item, Visible)
+{
+    auto item = mock_shared<MockItem>();
+    EXPECT_CALL(*item, visible).WillOnce(Return(true));
+
+    lua_State* L = luaL_newstate();
+    lua::create_item(L, item);
+    lua_setglobal(L, "i");
+
+    ASSERT_EQ(0, luaL_dostring(L, "return i.visible"));
+    ASSERT_EQ(LUA_TBOOLEAN, lua_type(L, -1));
+    ASSERT_EQ(true, lua_toboolean(L, -1));
+}
