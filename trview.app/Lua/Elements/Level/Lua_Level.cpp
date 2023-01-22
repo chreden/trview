@@ -80,7 +80,7 @@ namespace trview
             if (!level)
             {
                 lua_pushnil(L);
-                return;
+                return 1;
             }
 
             ILevel** userdata = static_cast<ILevel**>(lua_newuserdata(L, sizeof(level.get())));

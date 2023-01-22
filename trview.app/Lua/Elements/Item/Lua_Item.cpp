@@ -1,8 +1,9 @@
 #include "Lua_Item.h"
+#include "../../Lua.h"
 #include "../../../Elements/ILevel.h"
 #include "../Level/Lua_Level.h"
-#include "../../Lua.h"
 #include "../Room/Lua_Room.h"
+#include "../Trigger/Lua_Trigger.h"
 
 namespace trview
 {
@@ -46,9 +47,7 @@ namespace trview
                 }
                 else if (key == "triggered_by")
                 {
-                    // TODO: Triggers
-                    lua_newtable(L);
-                    return 1;
+                    return push_list(L, item->triggers(), { create_trigger });
                 }
                 else if (key == "type")
                 {

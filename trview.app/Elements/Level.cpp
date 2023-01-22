@@ -1196,6 +1196,11 @@ namespace trview
         {
             ent->set_level(shared_from_this());
         }
+
+        for (auto& trigger : _triggers)
+        {
+            trigger->set_level(shared_from_this());
+        }
     }
 
     bool find_item_by_type_id(const ILevel& level, uint32_t type_id, std::weak_ptr<IItem>& output_item)
