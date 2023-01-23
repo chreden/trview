@@ -2,6 +2,7 @@
 #include "../../../Elements/ILevel.h"
 #include "../Item/Lua_Item.h"
 #include "../Trigger/Lua_Trigger.h"
+#include "../Sector/Lua_Sector.h"
 #include "../../Lua.h"
 
 namespace trview
@@ -35,6 +36,10 @@ namespace trview
                 {
                     lua_pushinteger(L, room->number());
                     return 1;
+                }
+                else if (key == "sectors")
+                {
+                    return push_list(L, room->sectors(), { create_sector });
                 }
                 else if (key == "triggers")
                 {
