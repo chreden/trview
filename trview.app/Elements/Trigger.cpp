@@ -156,4 +156,14 @@ namespace trview
     {
         _visible = value;
     }
+
+    void Trigger::set_level(const std::weak_ptr<ILevel>& level)
+    {
+        _level = level;
+    }
+
+    std::weak_ptr<ILevel> Trigger::level() const
+    {
+        return _level;
+    }
 }

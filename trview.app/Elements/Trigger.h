@@ -32,6 +32,8 @@ namespace trview
         virtual void get_transparent_triangles(ITransparencyBuffer& transparency, const ICamera& camera, const DirectX::SimpleMath::Color& colour) override;
         virtual bool visible() const override;
         virtual void set_visible(bool value) override;
+        void set_level(const std::weak_ptr<ILevel>& level) override;
+        std::weak_ptr<ILevel> level() const override;
     private:
         std::vector<uint16_t> _objects;
         std::vector<Command> _commands;
@@ -49,5 +51,6 @@ namespace trview
         uint16_t _sector_id;
         bool _visible{ true };
         trlevel::LevelVersion _level_version{ trlevel::LevelVersion::Unknown };
+        std::weak_ptr<ILevel> _level;
     };
 }

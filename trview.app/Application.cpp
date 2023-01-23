@@ -81,7 +81,7 @@ namespace trview
         setup_viewer(*startup_options);
 
         register_lua();
-        lua_init(&lua_registry);
+        lua_init(&lua_registry, this);
     }
 
     Application::~Application()
@@ -124,8 +124,9 @@ namespace trview
         _settings_loader->save_user_settings(_settings);
         _viewer->set_settings(_settings);
 
-        auto old_level = std::move(_level);
+        auto old_level = _level;
         _level = _level_source(std::move(new_level));
+        _level->initialise();
         _level->set_filename(filename);
 
         _level->set_map_colours(_settings.map_colours);
@@ -204,8 +205,6 @@ namespace trview
             _recent_route_prompted = false;
             open_recent_route();
         }
-
-        lua::set_current_level(_level.get());
     }
 
     std::optional<int> Application::process_message(UINT message, WPARAM wParam, LPARAM)
@@ -881,5 +880,10 @@ namespace trview
         _viewer->select_camera_sink(camera_sink);
         _camera_sink_windows->set_selected_camera_sink(camera_sink);
         _rooms_windows->set_selected_camera_sink(camera_sink);
+    }
+
+    std::weak_ptr<ILevel> Application::current_level() const
+    {
+        return _level;
     }
 }

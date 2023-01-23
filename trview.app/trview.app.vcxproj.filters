@@ -267,8 +267,20 @@
     <ClCompile Include="Lua\Elements\Level\Lua_Level.cpp">
       <Filter>Lua\Elements\Level</Filter>
     </ClCompile>
+    <ClCompile Include="Lua\Elements\Item\Lua_Item.cpp">
+      <Filter>Lua\Elements\Item</Filter>
+    </ClCompile>
+    <ClCompile Include="Lua\Elements\Room\Lua_Room.cpp">
+      <Filter>Lua\Elements\Room</Filter>
+    </ClCompile>
     <ClCompile Include="Elements\Item.cpp">
       <Filter>Elements\Item</Filter>
+    </ClCompile>
+    <ClCompile Include="Lua\Elements\Trigger\Lua_Trigger.cpp">
+      <Filter>Lua\Elements\Trigger</Filter>
+    </ClCompile>
+    <ClCompile Include="Lua\Vector3.cpp">
+      <Filter>Lua</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -861,11 +873,23 @@
     </ClInclude>
     <ClInclude Include="Type.h" />
     <ClInclude Include="Type.inl" />
+    <ClInclude Include="Lua\Elements\Item\Lua_Item.h">
+      <Filter>Lua\Elements\Item</Filter>
+    </ClInclude>
+    <ClInclude Include="Lua\Elements\Room\Lua_Room.h">
+      <Filter>Lua\Elements\Room</Filter>
+    </ClInclude>
     <ClInclude Include="Elements\Item.h">
       <Filter>Elements\Item</Filter>
     </ClInclude>
     <ClInclude Include="Elements\IItem.h">
       <Filter>Elements\Item</Filter>
+    </ClInclude>
+    <ClInclude Include="Lua\Elements\Trigger\Lua_Trigger.h">
+      <Filter>Lua\Elements\Trigger</Filter>
+    </ClInclude>
+    <ClInclude Include="Lua\Vector3.h">
+      <Filter>Lua</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1004,8 +1028,17 @@
     <Filter Include="Track">
       <UniqueIdentifier>{895fbf3e-9030-4fa9-8c33-158d155fe655}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Lua\Elements\Item">
+      <UniqueIdentifier>{ea79c6fd-3a30-48a0-9862-5f18492d6e64}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Lua\Elements\Room">
+      <UniqueIdentifier>{80448327-8af3-4738-961e-77bda4e963d0}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Elements\Item">
       <UniqueIdentifier>{85b61b5c-df65-4d5d-9cc3-9ec05bf007cd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Lua\Elements\Trigger">
+      <UniqueIdentifier>{f81db82b-9195-47f1-ba38-25bdcc6e67ae}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -1063,6 +1096,9 @@
     </None>
     <None Include="Track\Track.inl">
       <Filter>Track</Filter>
+    </None>
+    <None Include="Lua\Lua.inl">
+      <Filter>Lua</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>

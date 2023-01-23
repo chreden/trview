@@ -8,7 +8,6 @@ namespace trview
 
     namespace lua
     {
-        void create_level(lua_State* L, ILevel* level);
-        void level_set_current_level(ILevel* level);
+        int create_level(lua_State* L, const std::shared_ptr<ILevel>& level);
     }
 }

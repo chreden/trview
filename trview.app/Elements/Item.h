@@ -52,6 +52,8 @@ namespace trview
         bool clear_body_flag() const override;
         bool invisible_flag() const override;
         DirectX::SimpleMath::Vector3 position() const override;
+        void set_level(const std::weak_ptr<ILevel>& level) override;
+        std::weak_ptr<ILevel> level() const override;
     private:
         Item(const IMesh::Source& mesh_source, const IMeshStorage& mesh_storage, const trlevel::ILevel& level, uint16_t room, uint32_t number, uint16_t type_id, const DirectX::SimpleMath::Vector3& position, int32_t angle, int32_t ocb, const std::string& type, const std::vector<std::weak_ptr<ITrigger>>& triggers, uint16_t flags, bool is_pickup);
 
@@ -82,5 +84,7 @@ namespace trview
         uint32_t _type_id{ 0u };
         int32_t _ocb{ 0u };
         uint16_t _flags{ 0u };
+
+        std::weak_ptr<ILevel> _level;
     };
 }

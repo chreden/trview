@@ -14,7 +14,7 @@ namespace trview
 {
     struct ILevel
     {
-        using Source = std::function<std::unique_ptr<ILevel>(std::unique_ptr<trlevel::ILevel>)>;
+        using Source = std::function<std::shared_ptr<ILevel>(std::unique_ptr<trlevel::ILevel>)>;
 
         enum class OpenMode
         {
@@ -132,6 +132,10 @@ namespace trview
         /// <returns>All triggers in the level.</returns>
         virtual std::vector<std::weak_ptr<ITrigger>> triggers() const = 0;
         virtual trlevel::LevelVersion version() const = 0;
+        /// <summary>
+        /// Perform extra post-load initialisation.
+        /// </summary>
+        virtual void initialise() = 0;
         // Event raised when the level needs to change the selected room.
         Event<uint16_t> on_room_selected;
         // Event raised when the level needs to change the alternate mode.

@@ -34,6 +34,7 @@ namespace trview
     {
         virtual ~IApplication() = 0;
         virtual int run() = 0;
+        virtual std::weak_ptr<ILevel> current_level() const = 0;
         Event<> on_closing;
     };
 
@@ -69,6 +70,7 @@ namespace trview
         virtual std::optional<int> process_message(UINT message, WPARAM wParam, LPARAM lParam) override;
         virtual int run() override;
         void render();
+        std::weak_ptr<ILevel> current_level() const override;
     private:
         // Window setup functions.
         void setup_view_menu();
@@ -125,7 +127,7 @@ namespace trview
 
         // Level data components
         std::unique_ptr<ITypeNameLookup> _type_name_lookup;
-        std::unique_ptr<ILevel> _level;
+        std::shared_ptr<ILevel> _level;
         ILevel::Source _level_source;
 
         // Routing and tools.

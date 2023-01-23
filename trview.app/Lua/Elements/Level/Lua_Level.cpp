@@ -1,6 +1,9 @@
 #include "Lua_Level.h"
 #include "../../Lua.h"
 #include "../../../Elements/ILevel.h"
+#include "../Room/Lua_Room.h"
+#include "../Item/Lua_Item.h"
+#include "../Trigger/Lua_Trigger.h"
 
 namespace trview
 {
@@ -8,14 +11,11 @@ namespace trview
     {
         namespace
         {
-            ILevel* current_level = nullptr;
+            std::unordered_map<ILevel**, std::shared_ptr<ILevel>> levels;
 
             int level_index(lua_State* L)
             {
-                if (!current_level)
-                {
-                    return 0;
-                }
+                ILevel* level = *static_cast<ILevel**>(lua_touserdata(L, 1));
 
                 const std::string key = lua_tostring(L, 2);
                 if (key == "cameras_and_sinks")
@@ -32,9 +32,7 @@ namespace trview
                 }
                 else if (key == "items")
                 {
-                    lua_newtable(L);
-                    // TODO: Items
-                    return 1;
+                    return push_list(L, level->items(), { create_item });
                 }
                 else if (key == "lights")
                 {
@@ -44,53 +42,59 @@ namespace trview
                 }
                 else if (key == "rooms")
                 {
-                    lua_newtable(L);
-                    // TODO: Rooms
-                    return 1;
+                    return push_list(L, level->rooms(), { create_room });
                 }
                 else if (key == "triggers")
                 {
-                    lua_newtable(L);
-                    // TODO: Triggers
-                    return 1;
+                    return push_list(L, level->triggers(), { create_trigger });
                 }
                 else if (key == "version")
                 {
-                    lua_pushinteger(L, static_cast<int>(current_level->version()));
+                    lua_pushinteger(L, static_cast<int>(level->version()));
                     return 1;
                 }
                 else if (key == "filename")
                 {
-                    lua_pushstring(L, current_level->filename().c_str());
+                    lua_pushstring(L, level->filename().c_str());
                     return 1;
                 }
                 return 0;
             }
 
-            constexpr struct luaL_Reg level_lib[] =
+            int level_newindex(lua_State*)
             {
-                { "__index", level_index },
-                { NULL, NULL },
-            };
+                return 0;
+            }
+
+            int level_gc(lua_State* L)
+            {
+                ILevel** userdata = static_cast<ILevel**>(lua_touserdata(L, 1));
+                levels.erase(userdata);
+                return 0;
+            }
         }
 
-        void create_level(lua_State* L, ILevel* level)
+        int create_level(lua_State* L, const std::shared_ptr<ILevel>& level)
         {
             if (!level)
             {
                 lua_pushnil(L);
-                return;
+                return 1;
             }
 
-            lua_newtable(L);
-            luaL_setfuncs(L, level_lib, 0);
-            lua_pushvalue(L, -1);
-            lua_setmetatable(L, -2);
-        }
+            ILevel** userdata = static_cast<ILevel**>(lua_newuserdata(L, sizeof(level.get())));
+            *userdata = level.get();
+            levels[userdata] = level;
 
-        void level_set_current_level(ILevel* level)
-        {
-            current_level = level;
+            lua_newtable(L);
+            lua_pushcfunction(L, level_index);
+            lua_setfield(L, -2, "__index");
+            lua_pushcfunction(L, level_newindex);
+            lua_setfield(L, -2, "__newindex");
+            lua_pushcfunction(L, level_gc);
+            lua_setfield(L, -2, "__gc");
+            lua_setmetatable(L, -2);
+            return 1;
         }
     }
 }

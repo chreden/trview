@@ -42,6 +42,8 @@ namespace trview
         virtual bool clear_body_flag() const = 0;
         virtual bool invisible_flag() const = 0;
         virtual DirectX::SimpleMath::Vector3 position() const = 0;
+        virtual void set_level(const std::weak_ptr<ILevel>& level) = 0;
+        virtual std::weak_ptr<ILevel> level() const = 0;
     };
 
     bool is_mutant_egg(const IItem& item);

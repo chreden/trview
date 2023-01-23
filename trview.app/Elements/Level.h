@@ -26,7 +26,7 @@ namespace trview
         struct IShader;
     }
 
-    class Level final : public ILevel
+    class Level final : public ILevel, public std::enable_shared_from_this<ILevel>
     {
     public:
         Level(const std::shared_ptr<graphics::IDevice>& device,
@@ -110,6 +110,7 @@ namespace trview
         virtual void set_show_camera_sinks(bool show) override;
         virtual std::optional<uint32_t> selected_camera_sink() const override;
         virtual bool show_camera_sinks() const override;
+        void initialise() override;
     private:
         void generate_rooms(const trlevel::ILevel& level, const IRoom::Source& room_source, const IMeshStorage& mesh_storage);
         void generate_triggers(const ITrigger::Source& trigger_source);

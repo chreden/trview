@@ -307,6 +307,9 @@ namespace trview
         virtual std::vector<std::weak_ptr<ILight>> lights() const = 0;
         virtual std::vector<std::weak_ptr<ICameraSink>> camera_sinks() const = 0;
         virtual std::vector<std::weak_ptr<ITrigger>> triggers() const = 0;
+        virtual std::vector<std::weak_ptr<IItem>> items() const = 0;
+        virtual void set_level(const std::weak_ptr<ILevel>& level) = 0;
+        virtual std::weak_ptr<ILevel> level() const = 0;
     };
 
     /// <summary>
@@ -316,5 +319,7 @@ namespace trview
     /// <param name="point">The point to test.</param>
     /// <returns>The sector or nullptr if no match.</returns>
     std::shared_ptr<ISector> sector_from_point(const IRoom& room, const DirectX::SimpleMath::Vector3& point);
+
+    std::string to_string(IRoom::AlternateMode mode);
 }
 

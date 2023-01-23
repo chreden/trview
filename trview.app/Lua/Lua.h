@@ -8,6 +8,8 @@
 
 namespace trview
 {
+    struct IApplication;
+
     enum class LuaEvent
     {
         ON_RENDER,
@@ -67,8 +69,16 @@ namespace trview
 
     extern LuaFunctionRegistry lua_registry;
 
-    void lua_init ( LuaFunctionRegistry * reg );
+    void lua_init(LuaFunctionRegistry * reg, IApplication* application);
     void lua_execute ( const std::string& command );
     void lua_fire_event ( LuaEvent type );
     lua_State* lua_get_state();
+
+    namespace lua
+    {
+        template <typename T>
+        int push_list(lua_State* L, const std::vector<std::weak_ptr<T>>& range, const std::function<void(lua_State*, const std::shared_ptr<T>&)>& func);
+    }
 }
+
+#include "Lua.inl"
