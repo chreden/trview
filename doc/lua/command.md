@@ -1,6 +1,6 @@
-# Trigger
+# Command
 
-The Trigger library provides information about a trigger in a [level](level.md).
+Commands are used in [Triggers](trigger.md)
 
 # Properties
 | Name | Type | Mode | Description |
