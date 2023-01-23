@@ -37,7 +37,7 @@ namespace trview
             }
         }
 
-        void create_room(lua_State* L, std::shared_ptr<ICameraSink> camera_sink)
+        void create_camera_sink(lua_State* L, std::shared_ptr<ICameraSink> camera_sink)
         {
             if (!camera_sink)
             {
