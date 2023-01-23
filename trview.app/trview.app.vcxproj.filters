@@ -285,6 +285,9 @@
     <ClCompile Include="Lua\Elements\Sector\Lua_Sector.cpp">
       <Filter>Lua\Elements\Sector</Filter>
     </ClCompile>
+    <ClCompile Include="Lua\Elements\CameraSink\Lua_CameraSink.cpp">
+      <Filter>Lua\Elements\CameraSink</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera\Camera.h">
@@ -897,6 +900,9 @@
     <ClInclude Include="Lua\Elements\Sector\Lua_Sector.h">
       <Filter>Lua\Elements\Sector</Filter>
     </ClInclude>
+    <ClInclude Include="Lua\Elements\CameraSink\Lua_CameraSink.h">
+      <Filter>Lua\Elements\CameraSink</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Windows">
@@ -1054,6 +1060,9 @@
     </Filter>
     <Filter Include="Lua\Elements\Sector">
       <UniqueIdentifier>{0c4eda64-2a03-4632-958d-e0daa9a704c7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Lua\Elements\CameraSink">
+      <UniqueIdentifier>{28aff890-b705-48ec-a878-b695fff35b43}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
