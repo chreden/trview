@@ -6,7 +6,7 @@ namespace trview
 {
     namespace mocks
     {
-        struct MockSector : public ISector
+        struct MockSector : public ISector, public std::enable_shared_from_this<MockSector>
         {
             MockSector();
             virtual ~MockSector();
@@ -35,6 +35,12 @@ namespace trview
             MOCK_METHOD(void, generate_triangles, (), (override));
             MOCK_METHOD(void, add_triangle, (const ISector::Portal&, const Triangle&, std::unordered_set<uint32_t>), (override));
             MOCK_METHOD(void, add_flag, (SectorFlag), (override));
+
+            std::shared_ptr<MockSector> with_id(uint32_t number)
+            {
+                ON_CALL(*this, id).WillByDefault(testing::Return(number));
+                return shared_from_this();
+            }
         };
     }
 }

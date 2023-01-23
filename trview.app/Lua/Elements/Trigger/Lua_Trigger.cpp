@@ -2,6 +2,9 @@
 #include "../../Lua.h"
 #include "../../../Elements/ITrigger.h"
 #include "../../../Elements/ILevel.h"
+#include "../../Vector3.h"
+#include "../Room/Lua_Room.h"
+#include "../Sector/Lua_Sector.h"
 
 namespace trview
 {
@@ -11,14 +14,86 @@ namespace trview
         {
             std::unordered_map<ITrigger**, std::shared_ptr<ITrigger>> triggers;
 
+            void create_command(lua_State* L, const Command& command)
+            {
+                lua_newtable(L);
+                lua_pushinteger(L, command.number());
+                lua_setfield(L, -2, "number");
+                lua_pushinteger(L, command.index());
+                lua_setfield(L, -2, "index");
+                lua_pushstring(L, command_type_name(command.type()).c_str());
+                lua_setfield(L, -2, "type");
+            }
+
             int trigger_index(lua_State* L)
             {
                 ITrigger* trigger = *static_cast<ITrigger**>(lua_touserdata(L, 1));
 
                 const std::string key = lua_tostring(L, 2);
-                if (key == "number")
+                if (key == "commands")
+                {
+                    return push_list(L, trigger->commands(), { create_command });
+                }
+                else if (key == "flags")
+                {
+                    lua_pushinteger(L, trigger->flags());
+                    return 1;
+                }
+                else if (key == "number")
                 {
                     lua_pushinteger(L, trigger->number());
+                    return 1;
+                }
+                else if (key == "only_once")
+                {
+                    lua_pushboolean(L, trigger->only_once());
+                    return 1;
+                }
+                else if (key == "position")
+                {
+                    return create_vector3(L, trigger->position() * trlevel::Scale);
+                }
+                else if (key == "room")
+                {
+                    if (auto level = trigger->level().lock())
+                    {
+                        create_room(L, level->room(trigger->room()).lock());
+                    }
+                    else
+                    {
+                        lua_pushnil(L);
+                    }
+                    return 1;
+                }
+                else if (key == "sector")
+                {
+                    if (auto level = trigger->level().lock())
+                    {
+                        if (auto room = level->room(trigger->room()).lock())
+                        {
+                            const auto sectors = room->sectors();
+                            if (trigger->sector_id() < sectors.size())
+                            {
+                                return create_sector(L, sectors[trigger->sector_id()]);
+                            }
+                        }
+                    }
+                    lua_pushnil(L);
+                    return 1;
+                }
+                else if (key == "timer")
+                {
+                    lua_pushinteger(L, trigger->timer());
+                    return 1;
+                }
+                else if (key == "type")
+                {
+                    lua_pushstring(L, trigger_type_name(trigger->type()).c_str());
+                    return 1;
+                }
+                else if (key == "visible")
+                {
+                    lua_pushboolean(L, trigger->visible());
                     return 1;
                 }
 
