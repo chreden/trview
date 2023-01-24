@@ -3,6 +3,7 @@
 #include "../../../Elements/ILevel.h"
 #include "../Room/Lua_Room.h"
 #include "../Item/Lua_Item.h"
+#include "../CameraSink/Lua_CameraSink.h"
 #include "../Trigger/Lua_Trigger.h"
 
 namespace trview
@@ -20,9 +21,7 @@ namespace trview
                 const std::string key = lua_tostring(L, 2);
                 if (key == "cameras_and_sinks")
                 {
-                    lua_newtable(L);
-                    // TODO: Cameras/Sinks
-                    return 1;
+                    return push_list(L, level->camera_sinks(), { create_camera_sink });
                 }
                 else if (key == "floordata")
                 {

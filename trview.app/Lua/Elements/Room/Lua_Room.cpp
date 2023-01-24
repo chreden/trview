@@ -2,6 +2,8 @@
 #include "../../../Elements/ILevel.h"
 #include "../Item/Lua_Item.h"
 #include "../Trigger/Lua_Trigger.h"
+#include "../Sector/Lua_Sector.h"
+#include "../CameraSink/Lua_CameraSink.h"
 #include "../../Lua.h"
 
 namespace trview
@@ -22,6 +24,10 @@ namespace trview
                     lua_pushstring(L, to_string(room->alternate_mode()).c_str());
                     return 1;
                 }
+                else if (key == "cameras_and_sinks")
+                {
+                    return push_list(L, room->camera_sinks(), { create_camera_sink });
+                }
                 else if (key == "items")
                 {
                     return push_list(L, room->items(), { create_item });
@@ -35,6 +41,10 @@ namespace trview
                 {
                     lua_pushinteger(L, room->number());
                     return 1;
+                }
+                else if (key == "sectors")
+                {
+                    return push_list(L, room->sectors(), { create_sector });
                 }
                 else if (key == "triggers")
                 {

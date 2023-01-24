@@ -61,12 +61,6 @@
     <ClCompile Include="Windows\WindowResizer.cpp">
       <Filter>Windows</Filter>
     </ClCompile>
-    <ClCompile Include="Elements\Sector.cpp">
-      <Filter>Elements</Filter>
-    </ClCompile>
-    <ClCompile Include="Elements\Trigger.cpp">
-      <Filter>Elements</Filter>
-    </ClCompile>
     <ClCompile Include="Geometry\Picking.cpp">
       <Filter>Geometry</Filter>
     </ClCompile>
@@ -153,12 +147,6 @@
     </ClCompile>
     <ClCompile Include="Settings\StartupOptions.cpp">
       <Filter>Settings</Filter>
-    </ClCompile>
-    <ClCompile Include="Elements\ITrigger.cpp">
-      <Filter>Elements</Filter>
-    </ClCompile>
-    <ClCompile Include="Elements\ISector.cpp">
-      <Filter>Elements</Filter>
     </ClCompile>
     <ClCompile Include="Routing\Action.cpp">
       <Filter>Routing</Filter>
@@ -282,6 +270,24 @@
     <ClCompile Include="Lua\Vector3.cpp">
       <Filter>Lua</Filter>
     </ClCompile>
+    <ClCompile Include="Elements\ITrigger.cpp">
+      <Filter>Elements\Trigger</Filter>
+    </ClCompile>
+    <ClCompile Include="Elements\Trigger.cpp">
+      <Filter>Elements\Trigger</Filter>
+    </ClCompile>
+    <ClCompile Include="Elements\ISector.cpp">
+      <Filter>Elements\Sector</Filter>
+    </ClCompile>
+    <ClCompile Include="Elements\Sector.cpp">
+      <Filter>Elements\Sector</Filter>
+    </ClCompile>
+    <ClCompile Include="Lua\Elements\Sector\Lua_Sector.cpp">
+      <Filter>Lua\Elements\Sector</Filter>
+    </ClCompile>
+    <ClCompile Include="Lua\Elements\CameraSink\Lua_CameraSink.cpp">
+      <Filter>Lua\Elements\CameraSink</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera\Camera.h">
@@ -352,12 +358,6 @@
     </ClInclude>
     <ClInclude Include="Windows\WindowResizer.h">
       <Filter>Windows</Filter>
-    </ClInclude>
-    <ClInclude Include="Elements\Sector.h">
-      <Filter>Elements</Filter>
-    </ClInclude>
-    <ClInclude Include="Elements\Trigger.h">
-      <Filter>Elements</Filter>
     </ClInclude>
     <ClInclude Include="Elements\Types.h">
       <Filter>Elements</Filter>
@@ -586,9 +586,6 @@
     <ClInclude Include="Mocks\Settings\IStartupOptions.h">
       <Filter>Mocks\Settings</Filter>
     </ClInclude>
-    <ClInclude Include="Elements\ITrigger.h">
-      <Filter>Elements</Filter>
-    </ClInclude>
     <ClInclude Include="Mocks\Elements\ITrigger.h">
       <Filter>Mocks\Elements</Filter>
     </ClInclude>
@@ -597,9 +594,6 @@
     </ClInclude>
     <ClInclude Include="Mocks\Elements\IStaticMesh.h">
       <Filter>Mocks\Elements</Filter>
-    </ClInclude>
-    <ClInclude Include="Elements\ISector.h">
-      <Filter>Elements</Filter>
     </ClInclude>
     <ClInclude Include="Mocks\Elements\ISector.h">
       <Filter>Mocks\Elements</Filter>
@@ -891,6 +885,24 @@
     <ClInclude Include="Lua\Vector3.h">
       <Filter>Lua</Filter>
     </ClInclude>
+    <ClInclude Include="Elements\ITrigger.h">
+      <Filter>Elements\Trigger</Filter>
+    </ClInclude>
+    <ClInclude Include="Elements\Trigger.h">
+      <Filter>Elements\Trigger</Filter>
+    </ClInclude>
+    <ClInclude Include="Elements\ISector.h">
+      <Filter>Elements\Sector</Filter>
+    </ClInclude>
+    <ClInclude Include="Elements\Sector.h">
+      <Filter>Elements\Sector</Filter>
+    </ClInclude>
+    <ClInclude Include="Lua\Elements\Sector\Lua_Sector.h">
+      <Filter>Lua\Elements\Sector</Filter>
+    </ClInclude>
+    <ClInclude Include="Lua\Elements\CameraSink\Lua_CameraSink.h">
+      <Filter>Lua\Elements\CameraSink</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Windows">
@@ -1039,6 +1051,18 @@
     </Filter>
     <Filter Include="Lua\Elements\Trigger">
       <UniqueIdentifier>{f81db82b-9195-47f1-ba38-25bdcc6e67ae}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Elements\Trigger">
+      <UniqueIdentifier>{bb8313a8-9a48-4081-ba29-5dedf1637a60}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Elements\Sector">
+      <UniqueIdentifier>{9d838a05-7a9f-4522-81cf-1d1cef09756a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Lua\Elements\Sector">
+      <UniqueIdentifier>{0c4eda64-2a03-4632-958d-e0daa9a704c7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Lua\Elements\CameraSink">
+      <UniqueIdentifier>{28aff890-b705-48ec-a878-b695fff35b43}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

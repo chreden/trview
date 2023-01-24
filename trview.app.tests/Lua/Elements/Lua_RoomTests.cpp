@@ -86,6 +86,31 @@ TEST(Lua_Room, Number)
     ASSERT_EQ(123, lua_tointeger(L, -1));
 }
 
+TEST(Lua_Room, Sectors)
+{
+    auto sector1 = mock_shared<MockSector>()->with_id(100);
+    auto sector2 = mock_shared<MockSector>()->with_id(200);
+
+    auto room = mock_shared<MockRoom>();
+    EXPECT_CALL(*room, sectors).WillRepeatedly(Return(std::vector<std::shared_ptr<ISector>>{ sector1, sector2 }));
+
+    lua_State* L = luaL_newstate();
+    lua::create_room(L, room);
+    lua_setglobal(L, "r");
+
+    ASSERT_EQ(0, luaL_dostring(L, "return r.sectors"));
+    ASSERT_EQ(LUA_TTABLE, lua_type(L, -1));
+    ASSERT_EQ(0, luaL_dostring(L, "return #r.sectors"));
+    ASSERT_EQ(LUA_TNUMBER, lua_type(L, -1));
+    ASSERT_EQ(2, lua_tonumber(L, -1));
+    ASSERT_EQ(0, luaL_dostring(L, "return r.sectors[1].number"));
+    ASSERT_EQ(LUA_TNUMBER, lua_type(L, -1));
+    ASSERT_EQ(100, lua_tointeger(L, -1));
+    ASSERT_EQ(0, luaL_dostring(L, "return r.sectors[2].number"));
+    ASSERT_EQ(LUA_TNUMBER, lua_type(L, -1));
+    ASSERT_EQ(200, lua_tointeger(L, -1));
+}
+
 TEST(Lua_Room, Triggers)
 {
     auto trigger1 = mock_shared<MockTrigger>()->with_number(100);
