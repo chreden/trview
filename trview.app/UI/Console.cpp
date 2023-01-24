@@ -2,6 +2,11 @@
 
 namespace trview
 {
+    Console::Console(const std::shared_ptr<IFiles>& files)
+        : _files(files)
+    {
+    }
+
     bool Console::visible() const
     {
         return _visible;
@@ -25,6 +30,10 @@ namespace trview
     {
         if (_visible)
         {
+            if (_font)
+            {
+                ImGui::PushFont(_font);
+            }
             ImGui::PushStyleVar(ImGuiStyleVar_WindowMinSize, ImVec2(520, 400));
             if (ImGui::Begin("Console", &_visible))
             {
@@ -46,6 +55,19 @@ namespace trview
             }
             ImGui::End();
             ImGui::PopStyleVar();
+            if (_font)
+            {
+                ImGui::PopFont();
+            }
+        }
+    }
+
+    void Console::initialise_ui()
+    {
+        auto context = ImGui::GetCurrentContext();
+        if (context)
+        {
+            _font = context->IO.Fonts->AddFontFromFileTTF((_files->fonts_directory() + "\\Consola.ttf").c_str(), 14.0f);
         }
     }
 }

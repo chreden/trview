@@ -238,7 +238,8 @@ namespace trview
             std::make_unique<SettingsWindow>(),
             std::make_unique<ViewOptions>(),
             std::make_unique<ContextMenu>(),
-            std::make_unique<CameraControls>());
+            std::make_unique<CameraControls>(),
+            files);
 
         auto clipboard = std::make_shared<Clipboard>(window);
 

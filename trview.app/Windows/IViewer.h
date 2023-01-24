@@ -150,5 +150,7 @@ namespace trview
         virtual void set_scene_changed() = 0;
 
         virtual void select_camera_sink(const std::weak_ptr<ICameraSink>& camera_sink) = 0;
+
+        virtual void initialise_ui() = 0;
     };
 }

@@ -28,7 +28,8 @@ namespace trview
             std::unique_ptr<ISettingsWindow> settings_window,
             std::unique_ptr<IViewOptions> view_options,
             std::unique_ptr<IContextMenu> context_menu,
-            std::unique_ptr<ICameraControls> camera_controls);
+            std::unique_ptr<ICameraControls> camera_controls,
+            const std::shared_ptr<IFiles>& files);
         virtual ~ViewerUI() = default;
         virtual void clear_minimap_highlight() override;
         virtual std::shared_ptr<ISector> current_minimap_sector() const override;
@@ -70,6 +71,7 @@ namespace trview
         virtual void set_toggle(const std::string& name, bool value) override;
         virtual bool toggle(const std::string& name) const override;
         virtual void set_triggered_by(const std::vector<std::weak_ptr<ITrigger>>& triggers) override;
+        void initialise_ui() override;
     private:
         void generate_tool_window();
 

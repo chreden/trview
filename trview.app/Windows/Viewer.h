@@ -41,11 +41,6 @@
 
 namespace trview
 {
-    namespace graphics
-    {
-        class DeviceWindow;
-    }
-
     /// Class that coordinates all the parts of the application.
     class Viewer : public IViewer, public MessageHandler
     {
@@ -97,6 +92,7 @@ namespace trview
         virtual void select_sector(const std::weak_ptr<ISector>& sector) override;
         virtual void set_scene_changed() override;
         virtual void select_camera_sink(const std::weak_ptr<ICameraSink>& camera_sink) override;
+        void initialise_ui() override;
     private:
         void initialise_input();
         void toggle_highlight();

@@ -1,12 +1,14 @@
 #include <trview.app/UI/Console.h>
 #include "TestImgui.h"
+#include <trview.common/Mocks/IFiles.h>
 
 using namespace trview;
 using namespace trview::tests;
+using namespace trview::mocks;
 
 TEST(Console, CommandEventRaised)
 {
-    Console console;
+    Console console(mock_shared<MockFiles>());
     console.set_visible(true);
 
     std::optional<std::string> raised;
@@ -29,7 +31,7 @@ TEST(Console, CommandEventRaised)
 
 TEST(Console, PrintAddsLine)
 {
-    Console console;
+    Console console(mock_shared<MockFiles>());
     console.set_visible(true);
 
     TestImgui imgui([&]() { console.render(); });

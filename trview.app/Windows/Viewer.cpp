@@ -1366,4 +1366,9 @@ namespace trview
             set_show_camera_sinks(!_level->show_camera_sinks());
         }
     }
+
+    void Viewer::initialise_ui()
+    {
+        _ui->initialise_ui();
+    }
 }

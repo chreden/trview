@@ -734,6 +734,8 @@ namespace trview
 
             _font = io.Fonts->AddFontFromFileTTF((_files->fonts_directory() + "\\Arial.ttf").c_str(), 12.0f);
 
+            _viewer->initialise_ui();
+
             // Setup Platform/Renderer backends
             _imgui_backend->initialise();
             _imgui_setup = true;

@@ -17,7 +17,8 @@ namespace trview
         std::unique_ptr<ISettingsWindow> settings_window,
         std::unique_ptr<IViewOptions> view_options,
         std::unique_ptr<IContextMenu> context_menu,
-        std::unique_ptr<ICameraControls> camera_controls)
+        std::unique_ptr<ICameraControls> camera_controls,
+        const std::shared_ptr<IFiles>& files)
         : _mouse(window, std::make_unique<input::WindowTester>(window)), _window(window), _camera_controls(std::move(camera_controls)),
         _view_options(std::move(view_options)), _settings_window(std::move(settings_window)), _context_menu(std::move(context_menu))
     {
@@ -129,7 +130,7 @@ namespace trview
         _camera_position->on_position_changed += on_camera_position;
         _camera_position->on_rotation_changed += on_camera_rotation;
 
-        _console = std::make_unique<Console>();
+        _console = std::make_unique<Console>(files);
         _console->on_command += on_command;
 
         _map_renderer = map_renderer_source(window.size());
@@ -436,5 +437,10 @@ namespace trview
     void ViewerUI::set_triggered_by(const std::vector<std::weak_ptr<ITrigger>>& triggers)
     {
         _context_menu->set_triggered_by(triggers);
+    }
+
+    void ViewerUI::initialise_ui()
+    {
+        _console->initialise_ui();
     }
 }
