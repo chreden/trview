@@ -19,6 +19,7 @@ namespace trview
         void set_visible(bool value);
         Event<std::string> on_command;
     private:
+        std::array<char, 4096> _buffer;
         std::string _text;
         bool _visible{ false };
         bool _need_focus{ false };
