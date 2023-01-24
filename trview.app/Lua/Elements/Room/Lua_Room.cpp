@@ -24,6 +24,20 @@ namespace trview
                     lua_pushstring(L, to_string(room->alternate_mode()).c_str());
                     return 1;
                 }
+                else if (key == "alternate_group")
+                {
+                    lua_pushinteger(L, room->alternate_group());
+                    return 1;
+                }
+                else if (key == "alternate_room")
+                {
+                    if (auto level = room->level().lock())
+                    {
+                        return create_room(L, level->room(room->alternate_room()).lock());
+                    }
+                    lua_pushnil(L);
+                    return 1;
+                }
                 else if (key == "cameras_and_sinks")
                 {
                     return push_list(L, room->camera_sinks(), { create_camera_sink });
@@ -83,12 +97,12 @@ namespace trview
             }
         }
 
-        void create_room(lua_State* L, std::shared_ptr<IRoom> room)
+        int create_room(lua_State* L, std::shared_ptr<IRoom> room)
         {
             if (!room)
             {
                 lua_pushnil(L);
-                return;
+                return 1;
             }
 
             IRoom** userdata = static_cast<IRoom**>(lua_newuserdata(L, sizeof(room.get())));
@@ -103,6 +117,7 @@ namespace trview
             lua_pushcfunction(L, room_gc);
             lua_setfield(L, -2, "__gc");
             lua_setmetatable(L, -2);
+            return 1;
         }
     }
 }
