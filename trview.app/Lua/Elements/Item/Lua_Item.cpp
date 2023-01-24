@@ -42,12 +42,9 @@ namespace trview
                 {
                     if (auto level = item->level().lock())
                     {
-                        create_room(L, level->room(item->room()).lock());
+                        return create_room(L, level->room(item->room()).lock());
                     }
-                    else
-                    {
-                        lua_pushnil(L);
-                    }
+                    lua_pushnil(L);
                     return 1;
                 }
                 else if (key == "triggered_by")

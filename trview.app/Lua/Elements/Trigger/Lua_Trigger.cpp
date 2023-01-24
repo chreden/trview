@@ -57,12 +57,9 @@ namespace trview
                 {
                     if (auto level = trigger->level().lock())
                     {
-                        create_room(L, level->room(trigger->room()).lock());
+                        return create_room(L, level->room(trigger->room()).lock());
                     }
-                    else
-                    {
-                        lua_pushnil(L);
-                    }
+                    lua_pushnil(L);
                     return 1;
                 }
                 else if (key == "sector")
