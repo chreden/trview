@@ -43,17 +43,22 @@ namespace trview
         {
             if ( lua_isboolean ( L, i ) )
             {
-                oss << ( lua_toboolean ( L, i ) ? "true" : "false" ) << " ";
+                oss << ( lua_toboolean ( L, i ) ? "true" : "false" );
             }
             else if ( lua_isnoneornil(L, i) )
             {
-                oss << "nil "; 
+                oss << "nil"; 
             }
             else
             {
                 const char* const s = luaL_checkstring ( L, i );
-                if ( s )
-                    oss << lua_tostring ( L, i ) << " ";
+                if (s)
+                    oss << lua_tostring(L, i);
+            }
+
+            if (i != nargs)
+            {
+                oss << " ";
             }
         }
 

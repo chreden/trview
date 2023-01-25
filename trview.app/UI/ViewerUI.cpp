@@ -396,10 +396,6 @@ namespace trview
         _settings_window->toggle_visibility();
     }
 
-    void ViewerUI::print_console(const std::string&)
-    {
-    }
-
     void ViewerUI::set_mid_waypoint_enabled(bool value)
     {
         _context_menu->set_mid_waypoint_enabled(value);

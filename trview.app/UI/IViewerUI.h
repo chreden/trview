@@ -221,11 +221,6 @@ namespace trview
         virtual void toggle_settings_visibility() = 0;
 
         /// <summary>
-        /// Write the text to the console.
-        /// </summary>
-        /// <param name="text">The text to write.</param>
-        virtual void print_console(const std::string& text) = 0;
-        /// <summary>
         /// Set whether the mid waypoint button is enabled.
         /// </summary>
         /// <param name="value">Whether the button is enabled.</param>

@@ -201,6 +201,12 @@ namespace
                 this->camera_sink_window_manager = std::move(camera_sink_window_manager);
                 return *this;
             }
+
+            test_module& with_console_manager(std::unique_ptr<IConsoleManager> console_manager)
+            {
+                this->console_manager = std::move(console_manager);
+                return *this;
+            }
         };
         return test_module{};
     }
@@ -512,6 +518,9 @@ TEST(Application, WindowManagersAndViewerRendered)
     EXPECT_CALL(textures_window_manager, render).Times(1);
     auto [camera_sink_window_manager_ptr, camera_sink_window_manager] = create_mock<MockCameraSinkWindowManager>();
     EXPECT_CALL(camera_sink_window_manager, render).Times(1);
+    auto [console_manager_ptr, console_manager] = create_mock<MockConsoleManager>();
+    EXPECT_CALL(console_manager, render).Times(1);
+    EXPECT_CALL(console_manager, initialise_ui).Times(1);
     auto [viewer_ptr, viewer] = create_mock<MockViewer>();
     EXPECT_CALL(viewer, render).Times(1);
     auto files = mock_shared<MockFiles>();
@@ -526,6 +535,7 @@ TEST(Application, WindowManagersAndViewerRendered)
         .with_log_window_manager(std::move(log_window_manager_ptr))
         .with_textures_window_manager(std::move(textures_window_manager_ptr))
         .with_camera_sink_window_manager(std::move(camera_sink_window_manager_ptr))
+        .with_console_manager(std::move(console_manager_ptr))
         .with_viewer(std::move(viewer_ptr))
         .with_files(files)
         .build();
@@ -996,4 +1006,32 @@ TEST(Application, CameraSinkSelectedFromTriggersWindow)
 
     application->open("test_path.tr2", ILevel::OpenMode::Full);
     triggers_window_manager.on_camera_sink_selected(0);
+}
+
+TEST(Application, CommandExecutedFromConsoleWindow)
+{
+    auto [console_manager_ptr, console_manager] = create_mock<MockConsoleManager>();
+    auto application = register_test_module()
+        .with_console_manager(std::move(console_manager_ptr))
+        .build();
+
+    console_manager.on_command("x = 100");
+
+    lua_State* L = lua_get_state();
+
+    ASSERT_EQ(0, luaL_dostring(L, "return x"));
+    ASSERT_EQ(LUA_TNUMBER, lua_type(L, -1));
+    ASSERT_EQ(100, lua_tointeger(L, -1));
+}
+
+TEST(Application, PrintRoutedToConsoleManager)
+{
+    auto [console_manager_ptr, console_manager] = create_mock<MockConsoleManager>();
+    EXPECT_CALL(console_manager, print(std::string("Hello"))).Times(1);
+
+    auto application = register_test_module()
+        .with_console_manager(std::move(console_manager_ptr))
+        .build();
+
+    console_manager.on_command("print(\"Hello\")");
 }

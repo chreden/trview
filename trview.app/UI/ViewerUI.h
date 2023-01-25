@@ -63,7 +63,6 @@ namespace trview
         virtual void set_visible(bool value) override;
         virtual bool show_context_menu() const override;
         virtual void toggle_settings_visibility() override;
-        virtual void print_console(const std::string& text) override;
         virtual void set_mid_waypoint_enabled(bool value) override;
         virtual void set_scalar(const std::string& name, int32_t value) override;
         virtual void set_toggle(const std::string& name, bool value) override;
