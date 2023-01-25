@@ -28,7 +28,7 @@ namespace trview
 
     std::optional<int> ConsoleManager::process_message(UINT message, WPARAM wParam, LPARAM)
     {
-        if (message == WM_COMMAND && LOWORD(wParam) == ID_WINDOWS_TEXTURES)
+        if (message == WM_COMMAND && LOWORD(wParam) == ID_WINDOWS_CONSOLE)
         {
             create_window();
         }
