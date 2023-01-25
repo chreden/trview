@@ -9,7 +9,6 @@ using namespace trview::mocks;
 TEST(Console, CommandEventRaised)
 {
     Console console(mock_shared<MockFiles>(), mock_shared<MockDialogs>());
-    console.set_visible(true);
 
     std::optional<std::string> raised;
     auto token = console.on_command += [&](auto value)
@@ -32,7 +31,6 @@ TEST(Console, CommandEventRaised)
 TEST(Console, PrintAddsLine)
 {
     Console console(mock_shared<MockFiles>(), mock_shared<MockDialogs>());
-    console.set_visible(true);
 
     TestImgui imgui([&]() { console.render(); });
     ASSERT_EQ(imgui.item_text(imgui.id("Console").id(Console::Names::log)), "");
