@@ -23,6 +23,34 @@ TEST(Lua_Item, ActivationFlags)
     ASSERT_EQ(123, lua_tointeger(L, -1));
 }
 
+TEST(Lua_Item, ClearBody)
+{
+    auto item = mock_shared<MockItem>();
+    EXPECT_CALL(*item, clear_body_flag).WillOnce(Return(true));
+
+    lua_State* L = luaL_newstate();
+    lua::create_item(L, item);
+    lua_setglobal(L, "i");
+
+    ASSERT_EQ(0, luaL_dostring(L, "return i.clear_body"));
+    ASSERT_EQ(LUA_TBOOLEAN, lua_type(L, -1));
+    ASSERT_EQ(true, lua_toboolean(L, -1));
+}
+
+TEST(Lua_Item, Invisible)
+{
+    auto item = mock_shared<MockItem>();
+    EXPECT_CALL(*item, invisible_flag).WillOnce(Return(true));
+
+    lua_State* L = luaL_newstate();
+    lua::create_item(L, item);
+    lua_setglobal(L, "i");
+
+    ASSERT_EQ(0, luaL_dostring(L, "return i.invisible"));
+    ASSERT_EQ(LUA_TBOOLEAN, lua_type(L, -1));
+    ASSERT_EQ(true, lua_toboolean(L, -1));
+}
+
 TEST(Lua_Item, Number)
 {
     auto item = mock_shared<MockItem>()->with_number(123);
