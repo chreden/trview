@@ -35,8 +35,30 @@ namespace trview
                 ImGui::PushFont(_font);
             }
             ImGui::PushStyleVar(ImGuiStyleVar_WindowMinSize, ImVec2(520, 400));
-            if (ImGui::Begin("Console", &_visible))
+            if (ImGui::Begin("Console", &_visible, ImGuiWindowFlags_MenuBar))
             {
+                if (ImGui::BeginMenuBar())
+                {
+                    if (ImGui::BeginMenu("File"))
+                    {
+                        if (ImGui::MenuItem("Open", "CTRL+O"))
+                        {
+                            
+                        }
+                        ImGui::EndMenu();
+                    }
+
+                    if (ImGui::BeginMenu("Edit"))
+                    {
+                        if (ImGui::MenuItem("Clear"))
+                        {
+                            _text.clear();
+                        }
+                        ImGui::EndMenu();
+                    }
+                    ImGui::EndMenuBar();
+                }
+
                 ImGui::InputTextMultiline(Names::log.c_str(), const_cast<char*>(_text.c_str()), _text.size(), ImVec2(-1, -25), ImGuiInputTextFlags_ReadOnly);
                 if (ImGui::IsWindowAppearing() || _need_focus)
                 {
