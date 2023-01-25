@@ -17,7 +17,7 @@ TEST(Console, CommandEventRaised)
     };
 
     TestImgui imgui([&]() { console.render(); });
-    imgui.click_element(imgui.id("Console").id(Console::Names::input));
+    imgui.click_element(imgui.id("Console 0").id(Console::Names::input));
     imgui.enter_text("Test command");
     imgui.press_key(ImGuiKey_Enter);
     imgui.reset();
@@ -25,7 +25,7 @@ TEST(Console, CommandEventRaised)
 
     ASSERT_TRUE(raised.has_value());
     ASSERT_EQ(raised.value(), "Test command");
-    ASSERT_EQ(imgui.item_text(imgui.id("Console").id(Console::Names::input)), "");
+    ASSERT_EQ(imgui.item_text(imgui.id("Console 0").id(Console::Names::input)), "");
 }
 
 TEST(Console, PrintAddsLine)
@@ -33,9 +33,9 @@ TEST(Console, PrintAddsLine)
     Console console(mock_shared<MockFiles>(), mock_shared<MockDialogs>());
 
     TestImgui imgui([&]() { console.render(); });
-    ASSERT_EQ(imgui.item_text(imgui.id("Console").id(Console::Names::log)), "");
+    ASSERT_EQ(imgui.item_text(imgui.id("Console 0").id(Console::Names::log)), "");
 
     console.print("Test log entry");
     imgui.render();
-    ASSERT_EQ(imgui.item_text(imgui.id("Console").id(Console::Names::log)), "Test log entry");
+    ASSERT_EQ(imgui.item_text(imgui.id("Console 0").id(Console::Names::log)), "Test log entry");
 }
