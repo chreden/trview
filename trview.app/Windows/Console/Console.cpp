@@ -1,7 +1,18 @@
 #include "Console.h"
+#include <external/imgui/imgui_internal.h>
 
 namespace trview
 {
+    namespace
+    {
+        std::string escape(const std::string& value)
+        {
+            std::string escaped = value;
+            std::replace(escaped.begin(), escaped.end(), '\\', '/');
+            return escaped;
+        }
+    }
+
     IConsole::~IConsole()
     {
     }
@@ -48,11 +59,29 @@ namespace trview
                         const auto filename = _dialogs->open_file(L"Open Lua file", { { L"Lua files", { L"*.lua" } } }, OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST);
                         if (filename)
                         {
-                            auto escaped = filename.value().filename;
-                            std::replace(escaped.begin(), escaped.end(), '\\', '/');
-                            on_command(std::format("dofile(\"{}\")", escaped));
+                            on_command(std::format("dofile(\"{}\")", escape(filename.value().filename)));
+                            std::erase(_recent_files, filename.value().filename);
+                            _recent_files.push_back(filename.value().filename);
                         }
                     }
+
+                    if (ImGui::BeginMenu("Open Recent", !_recent_files.empty()))
+                    {
+                        for (auto iter = _recent_files.rbegin(); iter != _recent_files.rend(); ++iter)
+                        {
+                            if (ImGui::MenuItem(iter->c_str()))
+                            {
+                                const std::string text = *iter;
+                                on_command(std::format("dofile(\"{}\")", escape(text)));
+                                std::erase(_recent_files, text);
+                                _recent_files.push_back(text);
+                                break;
+                            }
+                        }
+
+                        ImGui::EndMenu();
+                    }
+
                     ImGui::EndMenu();
                 }
 
