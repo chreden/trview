@@ -7,8 +7,8 @@ namespace trview
     {
     }
 
-    ConsoleManager::ConsoleManager(const Window& window, const std::shared_ptr<IShortcuts>& shortcuts, const IConsole::Source& console_source)
-        : MessageHandler(window), _console_source(console_source)
+    ConsoleManager::ConsoleManager(const Window& window, const std::shared_ptr<IShortcuts>& shortcuts, const IConsole::Source& console_source, const std::shared_ptr<IFiles>& files)
+        : MessageHandler(window), _console_source(console_source), _files(files)
     {
         _token_store += shortcuts->add_shortcut(false, VK_F11) += [&]() { create_window(); };
     }
@@ -22,6 +22,7 @@ namespace trview
     {
         auto window = _console_source();
         window->on_command += on_command;
+        window->set_font(_font);
         return add_window(window);
     }
 
@@ -36,9 +37,15 @@ namespace trview
 
     void ConsoleManager::initialise_ui()
     {
+        auto context = ImGui::GetCurrentContext();
+        if (context)
+        {
+            _font = context->IO.Fonts->AddFontFromFileTTF((_files->fonts_directory() + "\\Consola.ttf").c_str(), 14.0f);
+        }
+
         for (auto& window : _windows)
         {
-            window.second->initialise_ui();
+            window.second->set_font(_font);
         }
     }
 

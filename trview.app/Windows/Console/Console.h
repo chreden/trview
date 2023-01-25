@@ -21,7 +21,7 @@ namespace trview
 
         void render() override;
         void set_number(int32_t number) override;
-        void initialise_ui() override;
+        void set_font(ImFont* font) override;
         void print(const std::string& text) override;
     private:
         bool render_console();

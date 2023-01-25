@@ -86,13 +86,9 @@ namespace trview
         return stay_open;
     }
 
-    void Console::initialise_ui()
+    void Console::set_font(ImFont* font)
     {
-        auto context = ImGui::GetCurrentContext();
-        if (context)
-        {
-            _font = context->IO.Fonts->AddFontFromFileTTF((_files->fonts_directory() + "\\Consola.ttf").c_str(), 14.0f);
-        }
+        _font = font;
     }
 
     void Console::set_number(int32_t number)

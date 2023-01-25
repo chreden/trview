@@ -299,6 +299,6 @@ namespace trview
             std::make_unique<LogWindowManager>(window, log_window_source),
             std::make_unique<TexturesWindowManager>(window, textures_window_source),
             std::make_unique<CameraSinkWindowManager>(window, shortcuts, camera_sink_window_source),
-            std::make_unique<ConsoleManager>(window, shortcuts, console_source));
+            std::make_unique<ConsoleManager>(window, shortcuts, console_source, files));
     }
 }
