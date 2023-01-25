@@ -40,6 +40,17 @@ namespace trview
         }
     }
 
+    int Console::callback(ImGuiInputTextCallbackData* data)
+    {
+        auto instance = static_cast<Console*>(data->UserData);
+        if (instance->_go_to_eol)
+        {
+            data->CursorPos = static_cast<int32_t>(instance->_buffer.size());
+            instance->_go_to_eol = false;
+        }
+        return 0;
+    }
+
     bool Console::render_console()
     {
         bool stay_open = true;
@@ -48,7 +59,7 @@ namespace trview
             ImGui::PushFont(_font);
         }
         ImGui::PushStyleVar(ImGuiStyleVar_WindowMinSize, ImVec2(520, 400));
-        if (ImGui::Begin(_id.c_str(), &stay_open, ImGuiWindowFlags_MenuBar))
+        if (ImGui::Begin(_id.c_str(), &stay_open, ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoNavInputs))
         {
             if (ImGui::BeginMenuBar())
             {
@@ -103,14 +114,53 @@ namespace trview
                 _need_focus = false;
             }
             ImGui::PushItemWidth(-1);
-            if (ImGui::InputText(Names::input.c_str(), &_buffer[0], _buffer.size(), ImGuiInputTextFlags_EnterReturnsTrue))
-            {
+            if (ImGui::InputText(Names::input.c_str(), &_buffer, ImGuiInputTextFlags_EnterReturnsTrue | ImGuiInputTextFlags_CallbackAlways, callback, this))
+            { 
                 _need_focus = true;
                 auto command = std::string(_buffer.data());
+                print(std::format("> {}", command));
                 on_command(command);
-                std::ranges::fill(_buffer, '\0');
+                _command_history.push_back(command);
+                _command_history_index = static_cast<int32_t>(_command_history.size());
+                _buffer.clear();
             }
             ImGui::PopItemWidth();
+
+            bool focused = ImGui::IsItemFocused();
+            if (focused)
+            {
+                if (ImGui::IsKeyPressed(ImGuiKey_UpArrow))
+                {
+                    if (--_command_history_index >= 0)
+                    {
+                        _buffer = _command_history[_command_history_index];
+                    }
+                    else
+                    {
+                        _command_history_index = -1;
+                        _buffer.clear();
+                    }
+                    _need_focus = true;
+                    _go_to_eol = true;
+                    ImGui::ClearActiveID();
+                }
+
+                if (ImGui::IsKeyPressed(ImGuiKey_DownArrow))
+                {
+                    if (++_command_history_index < static_cast<int32_t>(_command_history.size()))
+                    {
+                        _buffer = _command_history[_command_history_index];
+                    }
+                    else
+                    {
+                        _command_history_index = static_cast<int32_t>(_command_history.size());
+                        _buffer.clear();
+                    }
+                    _need_focus = true;
+                    _go_to_eol = true;
+                    ImGui::ClearActiveID();
+                }
+            }
         }
         ImGui::End();
         ImGui::PopStyleVar();

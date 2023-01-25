@@ -24,15 +24,19 @@ namespace trview
         void set_font(ImFont* font) override;
         void print(const std::string& text) override;
     private:
+        static int callback(ImGuiInputTextCallbackData* data);
         bool render_console();
 
-        std::array<char, 4096> _buffer{};
+        std::string _buffer;
         std::shared_ptr<IFiles> _files;
         std::shared_ptr<IDialogs> _dialogs;
         std::string _text;
         bool _need_focus{ false };
+        bool _go_to_eol{ false };
         ImFont* _font{ nullptr };
         std::string _id{ "Console 0" };
         std::vector<std::string> _recent_files;
+        std::vector<std::string> _command_history;
+        int32_t _command_history_index{ 0 };
     };
 }
