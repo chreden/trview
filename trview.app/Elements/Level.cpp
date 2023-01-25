@@ -913,6 +913,10 @@ namespace trview
 
     std::weak_ptr<IRoom> Level::room(uint32_t id) const
     {
+        if (id >= _rooms.size())
+        {
+            return {};
+        }
         return _rooms[id];
     }
 

@@ -33,6 +33,55 @@ TEST(Lua_Room, AlternateMode)
     ASSERT_STREQ("is_alternate", lua_tostring(L, -1));
 }
 
+TEST(Lua_Room, AlternateGroup)
+{
+    auto room = mock_shared<MockRoom>()->with_alternate_group(5);
+
+    lua_State* L = luaL_newstate();
+    lua::create_room(L, room);
+    lua_setglobal(L, "r");
+
+    ASSERT_EQ(0, luaL_dostring(L, "return r.alternate_group"));
+    ASSERT_EQ(LUA_TNUMBER, lua_type(L, -1));
+    ASSERT_EQ(5, lua_tointeger(L, -1));
+}
+
+TEST(Lua_Room, AlternateRoom)
+{
+    auto alternate = mock_shared<MockRoom>()->with_number(5);
+
+    auto level = mock_shared<MockLevel>();
+    ON_CALL(*level, room(5)).WillByDefault(Return(alternate));
+
+    auto room = mock_shared<MockRoom>()->with_alternate_room(5);
+    ON_CALL(*room, level).WillByDefault(Return(level));
+
+    lua_State* L = luaL_newstate();
+    lua::create_room(L, room);
+    lua_setglobal(L, "r");
+
+    ASSERT_EQ(0, luaL_dostring(L, "return r.alternate_room"));
+    ASSERT_EQ(LUA_TUSERDATA, lua_type(L, -1));
+    ASSERT_EQ(0, luaL_dostring(L, "return r.alternate_room.number"));
+    ASSERT_EQ(LUA_TNUMBER, lua_type(L, -1));
+    ASSERT_EQ(5, lua_tointeger(L, -1));
+}
+
+TEST(Lua_Room, CamerasAndSinks)
+{
+    auto room = mock_shared<MockRoom>();
+
+    lua_State* L = luaL_newstate();
+    lua::create_room(L, room);
+    lua_setglobal(L, "r");
+
+    ASSERT_EQ(0, luaL_dostring(L, "return r.cameras_and_sinks"));
+    ASSERT_EQ(LUA_TTABLE, lua_type(L, -1));
+    ASSERT_EQ(0, luaL_dostring(L, "return #r.cameras_and_sinks"));
+    ASSERT_EQ(LUA_TNUMBER, lua_type(L, -1));
+    ASSERT_EQ(0, lua_tointeger(L, -1));
+}
+
 TEST(Lua_Room, Items)
 {
     auto item1 = mock_shared<MockItem>()->with_number(100);
