@@ -115,7 +115,6 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     </ClInclude>
     <ClCompile Include="UI\CameraControls.cpp" />
     <ClCompile Include="UI\CameraPosition.cpp" />
-    <ClCompile Include="UI\Console.cpp" />
     <ClCompile Include="UI\ContextMenu.cpp" />
     <ClCompile Include="UI\DX11ImGuiBackend.cpp" />
     <ClCompile Include="UI\GoTo.cpp" />
@@ -129,6 +128,7 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClCompile Include="UI\ViewOptions.cpp" />
     <ClCompile Include="Windows\CameraSink\CameraSinkWindow.cpp" />
     <ClCompile Include="Windows\CameraSink\CameraSinkWindowManager.cpp" />
+    <ClCompile Include="Windows\Console\Console.cpp" />
     <ClCompile Include="Windows\ItemsWindow.cpp" />
     <ClCompile Include="Windows\ItemsWindowManager.cpp" />
     <ClCompile Include="Windows\LightsWindow.cpp" />
@@ -294,7 +294,6 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClInclude Include="Type.h" />
     <ClInclude Include="UI\CameraControls.h" />
     <ClInclude Include="UI\CameraPosition.h" />
-    <ClInclude Include="UI\Console.h" />
     <ClInclude Include="UI\ContextMenu.h" />
     <ClInclude Include="UI\DX11ImGuiBackend.h" />
     <ClInclude Include="UI\GoTo.h" />
@@ -317,6 +316,7 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClInclude Include="Windows\CameraSink\CameraSinkWindowManager.h" />
     <ClInclude Include="Windows\CameraSink\ICameraSinkWindow.h" />
     <ClInclude Include="Windows\CameraSink\ICameraSinkWindowManager.h" />
+    <ClInclude Include="Windows\Console\Console.h" />
     <ClInclude Include="Windows\IItemsWindow.h" />
     <ClInclude Include="Windows\IItemsWindowManager.h" />
     <ClInclude Include="Windows\ILightsWindow.h" />

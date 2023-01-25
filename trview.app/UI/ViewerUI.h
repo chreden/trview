@@ -3,7 +3,7 @@
 #include <trview.app/Tools/Toolbar.h>
 #include <trview.app/UI/ICameraControls.h>
 #include <trview.app/UI/CameraPosition.h>
-#include <trview.app/UI/Console.h>
+#include <trview.app/Windows/Console/Console.h>
 #include <trview.app/UI/IContextMenu.h>
 #include <trview.app/UI/GoTo.h>
 #include <trview.app/UI/IViewerUI.h>

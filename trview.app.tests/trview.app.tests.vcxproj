@@ -76,7 +76,6 @@
     <ClCompile Include="TriggersWindowTests.cpp" />
     <ClCompile Include="UI\CameraControlsTests.cpp" />
     <ClCompile Include="UI\CameraPositionTests.cpp" />
-    <ClCompile Include="UI\ConsoleTests.cpp" />
     <ClCompile Include="UI\GoToTests.cpp" />
     <ClCompile Include="UI\LevelInfoTests.cpp" />
     <ClCompile Include="UI\MapColoursTests.cpp" />
@@ -85,6 +84,7 @@
     <ClCompile Include="UI\ViewOptionsTests.cpp" />
     <ClCompile Include="ViewMenuTests.cpp" />
     <ClCompile Include="WindowResizerTests.cpp" />
+    <ClCompile Include="Windows\ConsoleTests.cpp" />
     <ClCompile Include="Windows\LightsWindowManagerTests.cpp" />
     <ClCompile Include="Windows\LightsWindowTests.cpp" />
     <ClCompile Include="Windows\LogWindowManagerTests.cpp" />

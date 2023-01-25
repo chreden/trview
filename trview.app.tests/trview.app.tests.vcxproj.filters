@@ -107,9 +107,6 @@
     <ClCompile Include="UI\GoToTests.cpp">
       <Filter>UI</Filter>
     </ClCompile>
-    <ClCompile Include="UI\ConsoleTests.cpp">
-      <Filter>UI</Filter>
-    </ClCompile>
     <ClCompile Include="UI\RoomNavigatorTests.cpp">
       <Filter>UI</Filter>
     </ClCompile>
@@ -187,6 +184,9 @@
     </ClCompile>
     <ClCompile Include="Lua\Elements\Lua_SectorTests.cpp">
       <Filter>Lua\Elements</Filter>
+    </ClCompile>
+    <ClCompile Include="Windows\ConsoleTests.cpp">
+      <Filter>Windows</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -1,4 +1,4 @@
-#include <trview.app/UI/Console.h>
+#include <trview.app/Windows/Console/Console.h>
 #include "TestImgui.h"
 #include <trview.common/Mocks/IFiles.h>
 
