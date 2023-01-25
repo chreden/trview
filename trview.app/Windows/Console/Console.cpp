@@ -45,7 +45,13 @@ namespace trview
                 {
                     if (ImGui::MenuItem("Open"))
                     {
-
+                        const auto filename = _dialogs->open_file(L"Open Lua file", { { L"Lua files", { L"*.lua" } } }, OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST);
+                        if (filename)
+                        {
+                            auto escaped = filename.value().filename;
+                            std::replace(escaped.begin(), escaped.end(), '\\', '/');
+                            on_command(std::format("dofile(\"{}\")", escaped));
+                        }
                     }
                     ImGui::EndMenu();
                 }
