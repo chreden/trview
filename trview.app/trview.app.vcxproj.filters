@@ -919,6 +919,9 @@
     <ClInclude Include="Windows\Console\Console.h">
       <Filter>Windows\Console</Filter>
     </ClInclude>
+    <ClInclude Include="Mocks\Windows\IConsole.h">
+      <Filter>Mocks\Windows</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Windows">
