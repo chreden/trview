@@ -285,6 +285,9 @@
     <ClCompile Include="Lua\Elements\CameraSink\Lua_CameraSink.cpp">
       <Filter>Lua\Elements\CameraSink</Filter>
     </ClCompile>
+    <ClCompile Include="Windows\Console\ConsoleManager.cpp">
+      <Filter>Windows\Console</Filter>
+    </ClCompile>
     <ClCompile Include="Windows\Console\Console.cpp">
       <Filter>Windows\Console</Filter>
     </ClCompile>
@@ -899,6 +902,19 @@
     </ClInclude>
     <ClInclude Include="Lua\Elements\CameraSink\Lua_CameraSink.h">
       <Filter>Lua\Elements\CameraSink</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\Console.h" />
+    <ClInclude Include="Windows\Console\IConsole.h">
+      <Filter>Windows\Console</Filter>
+    </ClInclude>
+    <ClInclude Include="Windows\Console\IConsoleManager.h">
+      <Filter>Windows\Console</Filter>
+    </ClInclude>
+    <ClInclude Include="Windows\Console\ConsoleManager.h">
+      <Filter>Windows\Console</Filter>
+    </ClInclude>
+    <ClInclude Include="Mocks\Windows\IConsoleManager.h">
+      <Filter>Mocks\Windows</Filter>
     </ClInclude>
     <ClInclude Include="Windows\Console\Console.h">
       <Filter>Windows\Console</Filter>

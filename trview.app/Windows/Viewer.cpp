@@ -239,7 +239,6 @@ namespace trview
                 }
             }
         };
-        _token_store += _ui->on_command += lua_execute;
         _ui->on_select_trigger += on_trigger_selected;
 
         _ui->set_settings(_settings);
@@ -1365,10 +1364,5 @@ namespace trview
         {
             set_show_camera_sinks(!_level->show_camera_sinks());
         }
-    }
-
-    void Viewer::initialise_ui()
-    {
-        _ui->initialise_ui();
     }
 }

@@ -45,6 +45,7 @@
 #define ID_FILE_RELOAD                  33021
 #define ID_WINDOWS_TEXTURES             33022
 #define ID_WINDOWS_CAMERA_SINK          33023
+#define ID_WINDOWS_CONSOLE              33024
 
 // Next default values for new objects
 // 

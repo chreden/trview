@@ -26,6 +26,7 @@
 #include <trview.common/Strings.h>
 #include "TestImgui.h"
 #include <ranges>
+#include <trview.app/Mocks/Windows/IConsoleManager.h>
 
 using namespace trview;
 using namespace trview::tests;
@@ -75,6 +76,7 @@ namespace
             std::unique_ptr<ILogWindowManager> log_window_manager{ mock_unique<MockLogWindowManager>() };
             std::unique_ptr<ITexturesWindowManager> textures_window_manager{ mock_unique<MockTexturesWindowManager>() };
             std::unique_ptr<ICameraSinkWindowManager> camera_sink_window_manager{ mock_unique<MockCameraSinkWindowManager>() };
+            std::unique_ptr<IConsoleManager> console_manager{ mock_unique<MockConsoleManager>() };
 
             std::unique_ptr<Application> build()
             {
@@ -83,7 +85,7 @@ namespace
                     trlevel_source, std::move(file_menu), std::move(viewer), route_source, shortcuts,
                     std::move(items_window_manager), std::move(triggers_window_manager), std::move(route_window_manager), std::move(rooms_window_manager),
                     level_source, startup_options, dialogs, files, std::move(imgui_backend), std::move(lights_window_manager), std::move(log_window_manager),
-                    std::move(textures_window_manager), std::move(camera_sink_window_manager));
+                    std::move(textures_window_manager), std::move(camera_sink_window_manager), std::move(console_manager));
             }
 
             test_module& with_dialogs(std::shared_ptr<IDialogs> dialogs)

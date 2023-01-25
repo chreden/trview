@@ -119,11 +119,6 @@ namespace trview
                 }
             };
 
-        lua_registry.print = [this] ( const std::string& text )
-            {
-            _ui->print_console (text);
-            };
-
         lua_registry.on_crazy = [this] () -> bool
             {
             const int result = MessageBox ( 

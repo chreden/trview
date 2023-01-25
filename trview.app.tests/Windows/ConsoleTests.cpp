@@ -8,7 +8,7 @@ using namespace trview::mocks;
 
 TEST(Console, CommandEventRaised)
 {
-    Console console(mock_shared<MockFiles>());
+    Console console(mock_shared<MockFiles>(), mock_shared<MockDialogs>());
     console.set_visible(true);
 
     std::optional<std::string> raised;
@@ -31,7 +31,7 @@ TEST(Console, CommandEventRaised)
 
 TEST(Console, PrintAddsLine)
 {
-    Console console(mock_shared<MockFiles>());
+    Console console(mock_shared<MockFiles>(), mock_shared<MockDialogs>());
     console.set_visible(true);
 
     TestImgui imgui([&]() { console.render(); });

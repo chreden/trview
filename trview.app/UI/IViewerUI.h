@@ -92,9 +92,6 @@ namespace trview
         /// </summary>
         Event<float, float> on_camera_rotation;
 
-        /// Event raised when user enters a command.
-        Event<std::string> on_command;
-
         /// <summary>
         /// Event raised when the user changes a toggle.
         /// </summary>
@@ -256,7 +253,5 @@ namespace trview
         /// </summary>
         /// <param name="triggers"></param>
         virtual void set_triggered_by(const std::vector<std::weak_ptr<ITrigger>>& triggers) = 0;
-
-        virtual void initialise_ui() = 0;
     };
 }

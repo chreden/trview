@@ -3,7 +3,6 @@
 #include <trview.app/Tools/Toolbar.h>
 #include <trview.app/UI/ICameraControls.h>
 #include <trview.app/UI/CameraPosition.h>
-#include <trview.app/Windows/Console/Console.h>
 #include <trview.app/UI/IContextMenu.h>
 #include <trview.app/UI/GoTo.h>
 #include <trview.app/UI/IViewerUI.h>
@@ -28,8 +27,7 @@ namespace trview
             std::unique_ptr<ISettingsWindow> settings_window,
             std::unique_ptr<IViewOptions> view_options,
             std::unique_ptr<IContextMenu> context_menu,
-            std::unique_ptr<ICameraControls> camera_controls,
-            const std::shared_ptr<IFiles>& files);
+            std::unique_ptr<ICameraControls> camera_controls);
         virtual ~ViewerUI() = default;
         virtual void clear_minimap_highlight() override;
         virtual std::shared_ptr<ISector> current_minimap_sector() const override;
@@ -71,7 +69,6 @@ namespace trview
         virtual void set_toggle(const std::string& name, bool value) override;
         virtual bool toggle(const std::string& name) const override;
         virtual void set_triggered_by(const std::vector<std::weak_ptr<ITrigger>>& triggers) override;
-        void initialise_ui() override;
     private:
         void generate_tool_window();
 
@@ -91,7 +88,6 @@ namespace trview
         std::unique_ptr<IMapRenderer> _map_renderer;
         std::unique_ptr<Tooltip> _map_tooltip;
         std::unique_ptr<Tooltip> _tooltip;
-        std::unique_ptr<Console> _console;
         bool _show_tooltip{ true };
         bool _show_measure{ false };
         std::string _measure_text;
