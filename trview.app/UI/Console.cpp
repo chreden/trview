@@ -41,7 +41,7 @@ namespace trview
                 {
                     if (ImGui::BeginMenu("File"))
                     {
-                        if (ImGui::MenuItem("Open", "CTRL+O"))
+                        if (ImGui::MenuItem("Open"))
                         {
                             
                         }
