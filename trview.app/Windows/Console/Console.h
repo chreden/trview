@@ -3,7 +3,7 @@
 #include "IConsole.h"
 
 #include <trview.common/Event.h>
-#include <trview.common/IFiles.h>
+#include <trview.common/Windows/IDialogs.h>
 
 namespace trview
 {
@@ -16,7 +16,7 @@ namespace trview
             static const inline std::string input = "##input";
         };
 
-        explicit Console(const std::shared_ptr<IFiles>& files, const std::shared_ptr<IDialogs>& dialogs);
+        explicit Console(const std::shared_ptr<IDialogs>& dialogs);
         virtual ~Console() = default;
 
         void render() override;
@@ -28,7 +28,6 @@ namespace trview
         bool render_console();
 
         std::string _buffer;
-        std::shared_ptr<IFiles> _files;
         std::shared_ptr<IDialogs> _dialogs;
         std::string _text;
         bool _need_focus{ false };

@@ -275,7 +275,7 @@ namespace trview
 
         auto trlevel_source = [=](auto&& filename) { return std::make_unique<trlevel::Level>(filename, files, decrypter, log); };
         auto textures_window_source = [=]() { return std::make_shared<TexturesWindow>(); };
-        auto console_source = [=]() { return std::make_shared<Console>(files, dialogs); };
+        auto console_source = [=]() { return std::make_shared<Console>(dialogs); };
 
         return std::make_unique<Application>(
             window,

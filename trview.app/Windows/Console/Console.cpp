@@ -17,8 +17,8 @@ namespace trview
     {
     }
 
-    Console::Console(const std::shared_ptr<IFiles>& files, const std::shared_ptr<IDialogs>& dialogs)
-        : _files(files), _dialogs(dialogs)
+    Console::Console(const std::shared_ptr<IDialogs>& dialogs)
+        : _dialogs(dialogs)
     {
     }
 
@@ -53,6 +53,8 @@ namespace trview
 
     bool Console::render_console()
     {
+        ImGui::ShowStackToolWindow();
+
         bool stay_open = true;
         if (_font)
         {
