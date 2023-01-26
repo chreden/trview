@@ -53,8 +53,6 @@ namespace trview
 
     bool Console::render_console()
     {
-        ImGui::ShowStackToolWindow();
-
         bool stay_open = true;
         if (_font)
         {
