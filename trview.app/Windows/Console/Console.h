@@ -26,6 +26,7 @@ namespace trview
     private:
         static int callback(ImGuiInputTextCallbackData* data);
         bool render_console();
+        void add_command(const std::string& command);
 
         std::string _buffer;
         std::shared_ptr<IDialogs> _dialogs;

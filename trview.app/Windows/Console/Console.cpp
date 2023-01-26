@@ -120,11 +120,7 @@ namespace trview
                 auto command = std::string(_buffer.data());
                 print(std::format("> {}", command));
                 on_command(command);
-                if (_command_history.empty() || _command_history.back() != command)
-                {
-                    _command_history.push_back(command);
-                }
-                _command_history_index = static_cast<int32_t>(_command_history.size());
+                add_command(command);
                 _buffer.clear();
             }
             ImGui::PopItemWidth();
@@ -182,5 +178,16 @@ namespace trview
     void Console::set_number(int32_t number)
     {
         _id = "Console " + std::to_string(number);
+    }
+
+    void Console::add_command(const std::string& command)
+    {
+        auto existing = std::ranges::find(_command_history, command);
+        if (existing != _command_history.end())
+        {
+            _command_history.erase(existing);
+        }
+        _command_history.push_back(command);
+        _command_history_index = static_cast<int32_t>(_command_history.size());
     }
 }
