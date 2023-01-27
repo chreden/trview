@@ -53,13 +53,14 @@ namespace trview
         std::unique_ptr<ILightsWindowManager> lights_window_manager,
         std::unique_ptr<ILogWindowManager> log_window_manager,
         std::unique_ptr<ITexturesWindowManager> textures_window_manager,
-        std::unique_ptr<ICameraSinkWindowManager> camera_sink_window_manager)
+        std::unique_ptr<ICameraSinkWindowManager> camera_sink_window_manager,
+        std::unique_ptr<IConsoleManager> console_manager)
         : MessageHandler(application_window), _instance(GetModuleHandle(nullptr)),
         _file_menu(std::move(file_menu)), _update_checker(std::move(update_checker)), _view_menu(window()), _settings_loader(settings_loader), _trlevel_source(trlevel_source),
         _viewer(std::move(viewer)), _route_source(route_source), _route(route_source()), _shortcuts(shortcuts), _items_windows(std::move(items_window_manager)),
         _triggers_windows(std::move(triggers_window_manager)), _route_window(std::move(route_window_manager)), _rooms_windows(std::move(rooms_window_manager)), _level_source(level_source),
         _dialogs(dialogs), _files(files), _timer(default_time_source()), _imgui_backend(std::move(imgui_backend)), _lights_windows(std::move(lights_window_manager)), _log_windows(std::move(log_window_manager)),
-        _textures_windows(std::move(textures_window_manager)), _camera_sink_windows(std::move(camera_sink_window_manager))
+        _textures_windows(std::move(textures_window_manager)), _camera_sink_windows(std::move(camera_sink_window_manager)), _console_manager(std::move(console_manager))
     {
         SetWindowLongPtr(window(), GWLP_USERDATA, reinterpret_cast<LONG_PTR>(_imgui_backend.get()));
 
@@ -79,9 +80,15 @@ namespace trview
         setup_lights_windows();
         setup_camera_sink_windows();
         setup_viewer(*startup_options);
+        _token_store += _console_manager->on_command += lua_execute;
 
         register_lua();
         lua_init(&lua_registry, this);
+
+        lua_registry.print = [this](const std::string& text)
+        {
+            _console_manager->print(text);
+        };
     }
 
     Application::~Application()
@@ -734,6 +741,8 @@ namespace trview
 
             _font = io.Fonts->AddFontFromFileTTF((_files->fonts_directory() + "\\Arial.ttf").c_str(), 12.0f);
 
+            _console_manager->initialise_ui();
+
             // Setup Platform/Renderer backends
             _imgui_backend->initialise();
             _imgui_setup = true;
@@ -763,6 +772,7 @@ namespace trview
         _log_windows->render();
         _textures_windows->render();
         _camera_sink_windows->render();
+        _console_manager->render();
 
         ImGui::PopFont();
         ImGui::Render();

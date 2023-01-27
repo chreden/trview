@@ -41,11 +41,6 @@
 
 namespace trview
 {
-    namespace graphics
-    {
-        class DeviceWindow;
-    }
-
     /// Class that coordinates all the parts of the application.
     class Viewer : public IViewer, public MessageHandler
     {

@@ -60,6 +60,8 @@
 #include "Windows/Textures/TexturesWindow.h"
 #include "Windows/CameraSink/CameraSinkWindowManager.h"
 #include "Windows/CameraSink/CameraSinkWindow.h"
+#include "Windows/Console/ConsoleManager.h"
+#include "Windows/Console/Console.h"
 
 namespace trview
 {
@@ -273,6 +275,7 @@ namespace trview
 
         auto trlevel_source = [=](auto&& filename) { return std::make_unique<trlevel::Level>(filename, files, decrypter, log); };
         auto textures_window_source = [=]() { return std::make_shared<TexturesWindow>(); };
+        auto console_source = [=]() { return std::make_shared<Console>(dialogs); };
 
         return std::make_unique<Application>(
             window,
@@ -295,6 +298,7 @@ namespace trview
             std::make_unique<LightsWindowManager>(window, shortcuts, lights_window_source),
             std::make_unique<LogWindowManager>(window, log_window_source),
             std::make_unique<TexturesWindowManager>(window, textures_window_source),
-            std::make_unique<CameraSinkWindowManager>(window, shortcuts, camera_sink_window_source));
+            std::make_unique<CameraSinkWindowManager>(window, shortcuts, camera_sink_window_source),
+            std::make_unique<ConsoleManager>(window, shortcuts, console_source, files));
     }
 }

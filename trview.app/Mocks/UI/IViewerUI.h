@@ -42,7 +42,6 @@ namespace trview
             MOCK_METHOD(void, set_visible, (bool), (override));
             MOCK_METHOD(bool, show_context_menu, (), (const, override));
             MOCK_METHOD(void, toggle_settings_visibility, (), (override));
-            MOCK_METHOD(void, print_console, (const std::string&), (override));
             MOCK_METHOD(void, set_mid_waypoint_enabled, (bool), (override));
             MOCK_METHOD(void, set_toggle, (const std::string&, bool), (override));
             MOCK_METHOD(bool, toggle, (const std::string&), (const, override));

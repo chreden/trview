@@ -3,7 +3,6 @@
 #include <trview.app/Tools/Toolbar.h>
 #include <trview.app/UI/ICameraControls.h>
 #include <trview.app/UI/CameraPosition.h>
-#include <trview.app/UI/Console.h>
 #include <trview.app/UI/IContextMenu.h>
 #include <trview.app/UI/GoTo.h>
 #include <trview.app/UI/IViewerUI.h>
@@ -64,7 +63,6 @@ namespace trview
         virtual void set_visible(bool value) override;
         virtual bool show_context_menu() const override;
         virtual void toggle_settings_visibility() override;
-        virtual void print_console(const std::string& text) override;
         virtual void set_mid_waypoint_enabled(bool value) override;
         virtual void set_scalar(const std::string& name, int32_t value) override;
         virtual void set_toggle(const std::string& name, bool value) override;
@@ -89,7 +87,6 @@ namespace trview
         std::unique_ptr<IMapRenderer> _map_renderer;
         std::unique_ptr<Tooltip> _map_tooltip;
         std::unique_ptr<Tooltip> _tooltip;
-        std::unique_ptr<Console> _console;
         bool _show_tooltip{ true };
         bool _show_measure{ false };
         std::string _measure_text;

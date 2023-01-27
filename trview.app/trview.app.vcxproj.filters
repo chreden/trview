@@ -115,9 +115,6 @@
     <ClCompile Include="Menus\MenuDetector.cpp">
       <Filter>Menus</Filter>
     </ClCompile>
-    <ClCompile Include="UI\Console.cpp">
-      <Filter>UI</Filter>
-    </ClCompile>
     <ClCompile Include="Lua\Lua.cpp">
       <Filter>Lua</Filter>
     </ClCompile>
@@ -288,6 +285,12 @@
     <ClCompile Include="Lua\Elements\CameraSink\Lua_CameraSink.cpp">
       <Filter>Lua\Elements\CameraSink</Filter>
     </ClCompile>
+    <ClCompile Include="Windows\Console\ConsoleManager.cpp">
+      <Filter>Windows\Console</Filter>
+    </ClCompile>
+    <ClCompile Include="Windows\Console\Console.cpp">
+      <Filter>Windows\Console</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera\Camera.h">
@@ -433,9 +436,6 @@
     </ClInclude>
     <ClInclude Include="Camera\ProjectionMode.h">
       <Filter>Camera</Filter>
-    </ClInclude>
-    <ClInclude Include="UI\Console.h">
-      <Filter>UI</Filter>
     </ClInclude>
     <ClInclude Include="Lua\Lua.h">
       <Filter>Lua</Filter>
@@ -903,6 +903,25 @@
     <ClInclude Include="Lua\Elements\CameraSink\Lua_CameraSink.h">
       <Filter>Lua\Elements\CameraSink</Filter>
     </ClInclude>
+    <ClInclude Include="UI\Console.h" />
+    <ClInclude Include="Windows\Console\IConsole.h">
+      <Filter>Windows\Console</Filter>
+    </ClInclude>
+    <ClInclude Include="Windows\Console\IConsoleManager.h">
+      <Filter>Windows\Console</Filter>
+    </ClInclude>
+    <ClInclude Include="Windows\Console\ConsoleManager.h">
+      <Filter>Windows\Console</Filter>
+    </ClInclude>
+    <ClInclude Include="Mocks\Windows\IConsoleManager.h">
+      <Filter>Mocks\Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="Windows\Console\Console.h">
+      <Filter>Windows\Console</Filter>
+    </ClInclude>
+    <ClInclude Include="Mocks\Windows\IConsole.h">
+      <Filter>Mocks\Windows</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Windows">
@@ -1063,6 +1082,9 @@
     </Filter>
     <Filter Include="Lua\Elements\CameraSink">
       <UniqueIdentifier>{28aff890-b705-48ec-a878-b695fff35b43}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Windows\Console">
+      <UniqueIdentifier>{46a92d83-7768-4f01-a434-55680853fdae}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

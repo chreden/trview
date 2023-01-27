@@ -110,12 +110,15 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClInclude Include="Lua\Elements\Sector\Lua_Sector.h" />
     <ClInclude Include="Lua\Elements\Trigger\Lua_Trigger.h" />
     <ClInclude Include="Lua\Vector3.h" />
+    <ClCompile Include="Windows\Console\Console.cpp" />
+    <ClCompile Include="Windows\Console\ConsoleManager.cpp" />
+    <ClInclude Include="Mocks\Windows\IConsole.h" />
+    <ClInclude Include="Mocks\Windows\IConsoleManager.h" />
     <ClInclude Include="Type.inl">
       <FileType>Document</FileType>
     </ClInclude>
     <ClCompile Include="UI\CameraControls.cpp" />
     <ClCompile Include="UI\CameraPosition.cpp" />
-    <ClCompile Include="UI\Console.cpp" />
     <ClCompile Include="UI\ContextMenu.cpp" />
     <ClCompile Include="UI\DX11ImGuiBackend.cpp" />
     <ClCompile Include="UI\GoTo.cpp" />
@@ -146,6 +149,10 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClCompile Include="Windows\Viewer.cpp" />
     <ClCompile Include="Windows\ViewerLuaRegistry.cpp" />
     <ClCompile Include="Windows\WindowResizer.cpp" />
+    <ClInclude Include="Windows\Console\Console.h" />
+    <ClInclude Include="Windows\Console\ConsoleManager.h" />
+    <ClInclude Include="Windows\Console\IConsole.h" />
+    <ClInclude Include="Windows\Console\IConsoleManager.h" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application.h" />

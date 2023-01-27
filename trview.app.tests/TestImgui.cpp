@@ -105,7 +105,7 @@ namespace trview
             ImGui::DestroyContext(_context);
         }
 
-        void TestImgui::click_element_internal(TestImGuiId test_id, bool show_context_menu, TestImGuiId active_override, bool hover)
+        void TestImgui::click_element_internal(TestImGuiId test_id, bool show_context_menu, TestImGuiId active_override, bool hover, bool release)
         {
             const auto window = find_window(test_id.root());
             const auto id = test_id.id();
@@ -123,11 +123,13 @@ namespace trview
                     _context->ActiveId = active_override.id();
                 }
 
-                if (show_context_menu)
+                if (show_context_menu || release)
                 {
                     _context->IO.MouseReleased[0] = true;
                     _context->IO.MouseDownDurationPrev[0] = _context->IO.KeyRepeatDelay;
-
+                }
+                if (show_context_menu)
+                {
                     _context->CurrentWindow = find_window("Debug##Default");
                     _context->MouseViewport = window->Viewport;
                 }
@@ -141,12 +143,17 @@ namespace trview
 
         void TestImgui::click_element(TestImGuiId test_id, bool show_context_menu, TestImGuiId active_override)
         {
-            click_element_internal(test_id, show_context_menu, active_override, false);
+            click_element_internal(test_id, show_context_menu, active_override, false, false);
+        }
+
+        void TestImgui::click_element_with_release(TestImGuiId test_id, bool show_context_menu, TestImGuiId active_override)
+        {
+            click_element_internal(test_id, show_context_menu, active_override, false, true);
         }
 
         void TestImgui::click_element_with_hover(TestImGuiId test_id, bool show_context_menu, TestImGuiId active_override)
         {
-            click_element_internal(test_id, show_context_menu, active_override, true);
+            click_element_internal(test_id, show_context_menu, active_override, true, false);
         }
 
         void TestImgui::hover_element(TestImGuiId test_id)
@@ -155,6 +162,7 @@ namespace trview
             const auto id = test_id.id();
             const auto hover_on_element = [&]()
             {
+                _context->NavDisableMouseHover = false;
                 _context->HoveredWindow = window;
                 _tracking_id = id;
                 const auto bb = _element_rects[id];
@@ -208,6 +216,7 @@ namespace trview
         {
             const auto type_into_element = [&]()
             {
+                _context->IO.ClearInputKeys();
                 _context->IO.KeysData[key].Down = true;
                 _context->IO.KeysData[key].DownDuration = 0.5f;
                 _context->IO.DeltaTime = 1.0f;

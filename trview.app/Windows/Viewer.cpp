@@ -239,7 +239,6 @@ namespace trview
                 }
             }
         };
-        _token_store += _ui->on_command += lua_execute;
         _ui->on_select_trigger += on_trigger_selected;
 
         _ui->set_settings(_settings);

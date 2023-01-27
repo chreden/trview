@@ -44,14 +44,6 @@ namespace trview
             }
         };
 
-        _token_store += shortcuts->add_shortcut(false, VK_F11) += [&]()
-        {
-            if (!is_input_active())
-            {
-                _console->set_visible(!_console->visible());
-            }
-        };
-
         generate_tool_window();
 
         _go_to = std::make_unique<GoTo>();
@@ -128,9 +120,6 @@ namespace trview
         _camera_position = std::make_unique<CameraPosition>();
         _camera_position->on_position_changed += on_camera_position;
         _camera_position->on_rotation_changed += on_camera_rotation;
-
-        _console = std::make_unique<Console>();
-        _console->on_command += on_command;
 
         _map_renderer = map_renderer_source(window.size());
         _token_store += _map_renderer->on_sector_hover += [this](const std::shared_ptr<ISector>& sector)
@@ -215,7 +204,6 @@ namespace trview
         _context_menu->render();
         _go_to->render();
         _level_info->render();
-        _console->render();
         _toolbar->render();
 
         if (_show_measure)
@@ -406,11 +394,6 @@ namespace trview
     void ViewerUI::toggle_settings_visibility()
     {
         _settings_window->toggle_visibility();
-    }
-
-    void ViewerUI::print_console(const std::string& text)
-    {
-        _console->print(text);
     }
 
     void ViewerUI::set_mid_waypoint_enabled(bool value)

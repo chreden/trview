@@ -50,6 +50,8 @@
 #include "Windows/ITexturesWindow.h"
 #include "Windows/ICameraSinkWindow.h"
 #include "Windows/ICameraSinkWindowManager.h"
+#include "Windows/IConsoleManager.h"
+#include "Windows/IConsole.h"
 
 namespace trview
 {
@@ -201,5 +203,11 @@ namespace trview
 
         MockCameraSinkWindow::MockCameraSinkWindow() {}
         MockCameraSinkWindow::~MockCameraSinkWindow() {}
+
+        MockConsoleManager::MockConsoleManager() {}
+        MockConsoleManager::~MockConsoleManager() {}
+
+        MockConsole::MockConsole() {}
+        MockConsole::~MockConsole() {}
     }
 }

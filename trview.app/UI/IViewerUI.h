@@ -92,9 +92,6 @@ namespace trview
         /// </summary>
         Event<float, float> on_camera_rotation;
 
-        /// Event raised when user enters a command.
-        Event<std::string> on_command;
-
         /// <summary>
         /// Event raised when the user changes a toggle.
         /// </summary>
@@ -223,11 +220,6 @@ namespace trview
         /// Toggle the visibility of the settings window.
         virtual void toggle_settings_visibility() = 0;
 
-        /// <summary>
-        /// Write the text to the console.
-        /// </summary>
-        /// <param name="text">The text to write.</param>
-        virtual void print_console(const std::string& text) = 0;
         /// <summary>
         /// Set whether the mid waypoint button is enabled.
         /// </summary>

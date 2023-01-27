@@ -24,6 +24,7 @@ namespace trview
 
             void mouse_down_element(TestImGuiId id, TestImGuiId active_override = TestImGuiId());
             void click_element(TestImGuiId id, bool show_context_menu = false, TestImGuiId active_override = TestImGuiId());
+            void click_element_with_release(TestImGuiId id, bool show_context_menu = false, TestImGuiId active_override = TestImGuiId());
             void click_element_with_hover(TestImGuiId id, bool show_context_menu = false, TestImGuiId active_override = TestImGuiId());
             void hover_element(TestImGuiId id);
             void enter_text(const std::string& text);
@@ -56,7 +57,7 @@ namespace trview
             TestImGuiId popup_id(const TestImGuiId& parent, const std::string& popup_name) const;
             TestImGuiId popup_id(const std::string& popup_name) const;
         private:
-            void click_element_internal(TestImGuiId test_id, bool show_context_menu, TestImGuiId active_override, bool hover);
+            void click_element_internal(TestImGuiId test_id, bool show_context_menu, TestImGuiId active_override, bool hover, bool release);
             RenderCallback _render_callback;
             std::unordered_map<ImGuiID, ImRect> _element_rects;
             std::unordered_map<ImGuiID, ImGuiItemStatusFlags> _status_flags;
