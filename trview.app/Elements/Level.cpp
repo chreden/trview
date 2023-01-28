@@ -1129,21 +1129,17 @@ namespace trview
             std::vector<uint16_t> in_space_rooms;
             std::vector<uint16_t> in_portal_rooms;
 
-            const ICameraSink::Type type = is_camera ? ICameraSink::Type::Camera : ICameraSink::Type::Sink;
-            if (type == ICameraSink::Type::Sink)
+            for (const auto& room : _rooms)
             {
-                for (const auto& room : _rooms)
+                if (std::shared_ptr<ISector> sector = sector_from_point(*room, point))
                 {
-                    if (std::shared_ptr<ISector> sector = sector_from_point(*room, point))
+                    if (sector && sector->is_portal())
                     {
-                        if (sector && sector->is_portal())
-                        {
-                            in_portal_rooms.push_back(static_cast<uint16_t>(room->number()));
-                        }
-                        else
-                        {
-                            in_space_rooms.push_back(static_cast<uint16_t>(room->number()));
-                        }
+                        in_portal_rooms.push_back(static_cast<uint16_t>(room->number()));
+                    }
+                    else
+                    {
+                        in_space_rooms.push_back(static_cast<uint16_t>(room->number()));
                     }
                 }
             }
@@ -1159,6 +1155,7 @@ namespace trview
 
             const std::vector<uint16_t> inferred_rooms{ in_space_rooms.empty() ? in_portal_rooms : in_space_rooms };
 
+            const ICameraSink::Type type = is_camera ? ICameraSink::Type::Camera : ICameraSink::Type::Sink;
             auto new_camera_sink = camera_sink_source(i, camera_sink, type, inferred_rooms, relevant_triggers);
             _camera_sinks.push_back(new_camera_sink);
 
