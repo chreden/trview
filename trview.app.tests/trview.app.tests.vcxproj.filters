@@ -191,6 +191,9 @@
     <ClCompile Include="Windows\ConsoleManagerTests.cpp">
       <Filter>Windows</Filter>
     </ClCompile>
+    <ClCompile Include="Lua\Elements\Lua_CameraSinkTests.cpp">
+      <Filter>Lua\Elements</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Input">

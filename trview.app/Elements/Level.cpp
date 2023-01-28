@@ -1206,6 +1206,11 @@ namespace trview
             trigger->set_level(shared_from_this());
         }
 
+        for (auto& camera_sink : _camera_sinks)
+        {
+            camera_sink->set_level(shared_from_this());
+        }
+
         for (auto& room : _rooms)
         {
             room->set_level(shared_from_this());
