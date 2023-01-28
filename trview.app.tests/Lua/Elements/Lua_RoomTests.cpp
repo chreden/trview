@@ -1,5 +1,6 @@
 #include <trview.app/Lua/Elements/Room/Lua_Room.h>
 #include <trview.app/Mocks/Elements/IRoom.h>
+#include <trview.app/Mocks/Elements/ICameraSink.h>
 #include <trview.tests.common/Mocks.h>
 #include <external/lua/src/lua.hpp>
 
@@ -69,7 +70,11 @@ TEST(Lua_Room, AlternateRoom)
 
 TEST(Lua_Room, CamerasAndSinks)
 {
+    auto cs1 = mock_shared<MockCameraSink>()->with_number(1);
+    auto cs2 = mock_shared<MockCameraSink>()->with_number(2);
+
     auto room = mock_shared<MockRoom>();
+    EXPECT_CALL(*room, camera_sinks).WillRepeatedly(Return(std::vector<std::weak_ptr<ICameraSink>>{ cs1, cs2 }));
 
     lua_State* L = luaL_newstate();
     lua::create_room(L, room);
@@ -79,7 +84,13 @@ TEST(Lua_Room, CamerasAndSinks)
     ASSERT_EQ(LUA_TTABLE, lua_type(L, -1));
     ASSERT_EQ(0, luaL_dostring(L, "return #r.cameras_and_sinks"));
     ASSERT_EQ(LUA_TNUMBER, lua_type(L, -1));
-    ASSERT_EQ(0, lua_tointeger(L, -1));
+    ASSERT_EQ(2, lua_tointeger(L, -1));
+    ASSERT_EQ(0, luaL_dostring(L, "return r.cameras_and_sinks[1].number"));
+    ASSERT_EQ(LUA_TNUMBER, lua_type(L, -1));
+    ASSERT_EQ(1, lua_tointeger(L, -1));
+    ASSERT_EQ(0, luaL_dostring(L, "return r.cameras_and_sinks[2].number"));
+    ASSERT_EQ(LUA_TNUMBER, lua_type(L, -1));
+    ASSERT_EQ(2, lua_tointeger(L, -1));
 }
 
 TEST(Lua_Room, Items)
