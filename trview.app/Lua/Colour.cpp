@@ -1,4 +1,4 @@
-#include "Color.h"
+#include "Colour.h"
 #include "Lua.h"
 
 using namespace DirectX::SimpleMath;
@@ -7,7 +7,7 @@ namespace trview
 {
     namespace lua
     {
-        int create_color(lua_State* L, const Color& value)
+        int create_colour(lua_State* L, const Color& value)
         {
             lua_newtable(L);
             lua_pushnumber(L, value.R());

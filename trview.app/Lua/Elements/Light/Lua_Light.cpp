@@ -4,7 +4,7 @@
 #include "../Level/Lua_Level.h"
 #include "../Room/Lua_Room.h"
 #include "../../Vector3.h"
-#include "../../Color.h"
+#include "../../Colour.h"
 
 namespace trview
 {
@@ -19,9 +19,9 @@ namespace trview
                 ILight* light = *static_cast<ILight**>(lua_touserdata(L, 1));
 
                 const std::string key = lua_tostring(L, 2);
-                if (key == "color")
+                if (key == "colour")
                 {
-                    return create_color(L, light->colour());
+                    return create_colour(L, light->colour());
                 }
                 else if (key == "cutoff")
                 {

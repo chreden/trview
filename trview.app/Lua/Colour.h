@@ -6,6 +6,6 @@ namespace trview
 {
     namespace lua
     {
-        int create_color(lua_State* L, const DirectX::SimpleMath::Color& value);
+        int create_colour(lua_State* L, const DirectX::SimpleMath::Color& value);
     }
 }

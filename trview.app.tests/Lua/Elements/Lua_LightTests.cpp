@@ -9,7 +9,7 @@ using namespace trview::tests;
 using namespace testing;
 using namespace DirectX::SimpleMath;
 
-TEST(Lua_Light, Color)
+TEST(Lua_Light, Colour)
 {
     auto light = mock_shared<MockLight>();
     EXPECT_CALL(*light, colour).WillRepeatedly(Return(Color(1, 2, 3, 4)));
@@ -18,18 +18,18 @@ TEST(Lua_Light, Color)
     lua::create_light(L, light);
     lua_setglobal(L, "l");
 
-    ASSERT_EQ(0, luaL_dostring(L, "return l.color"));
+    ASSERT_EQ(0, luaL_dostring(L, "return l.colour"));
     ASSERT_EQ(LUA_TTABLE, lua_type(L, -1));
-    ASSERT_EQ(0, luaL_dostring(L, "return l.color.r"));
+    ASSERT_EQ(0, luaL_dostring(L, "return l.colour.r"));
     ASSERT_EQ(LUA_TNUMBER, lua_type(L, -1));
     ASSERT_DOUBLE_EQ(1.0, lua_tonumber(L, -1));
-    ASSERT_EQ(0, luaL_dostring(L, "return l.color.g"));
+    ASSERT_EQ(0, luaL_dostring(L, "return l.colour.g"));
     ASSERT_EQ(LUA_TNUMBER, lua_type(L, -1));
     ASSERT_DOUBLE_EQ(2.0, lua_tonumber(L, -1));
-    ASSERT_EQ(0, luaL_dostring(L, "return l.color.b"));
+    ASSERT_EQ(0, luaL_dostring(L, "return l.colour.b"));
     ASSERT_EQ(LUA_TNUMBER, lua_type(L, -1));
     ASSERT_DOUBLE_EQ(3.0, lua_tonumber(L, -1));
-    ASSERT_EQ(0, luaL_dostring(L, "return l.color.a"));
+    ASSERT_EQ(0, luaL_dostring(L, "return l.colour.a"));
     ASSERT_EQ(LUA_TNUMBER, lua_type(L, -1));
     ASSERT_DOUBLE_EQ(4.0, lua_tonumber(L, -1));
 }

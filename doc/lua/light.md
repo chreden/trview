@@ -14,14 +14,14 @@ The Light library provides information about a light in a [level](level.md). Dep
 
 | Name | Type | Mode | Description |
 | ---- | ---- | ---- | ---- |
-| color | [Color](color.md) | R | Light color (TR3-5 only) |
+| colour | [Colour](colour.md) | R | Light colour (TR3-5 only) |
 | direction | [Vector3](vector3.md) | R | Direction vector of the light. Reversed in game. |
 
 # Point Properties
 
 | Name | Type | Mode | Description |
 | ---- | ---- | ---- | ---- |
-| color | [Color](color.md) | R | Light color (TR3-5 only) |
+| colour | [Colour](colour.md) | R | Light colour (TR3-5 only) |
 | fade | number | R | Fade value (TR1-3 only) |
 | falloff | number | R | Falloff value (TR4-5 only) |
 | hotspot | number | R | Hotspot value (TR4-5) |
@@ -32,7 +32,7 @@ The Light library provides information about a light in a [level](level.md). Dep
 
 | Name | Type | Mode | Description |
 | ---- | ---- | ---- | ---- |
-| color | [Color](color.md) | R | Light color (TR3-5 only) |
+| colour | [Colour](colour.md) | R | Light colour (TR3-5 only) |
 | cutoff | number | R | Cutoff value (TR4 only) |
 | direction | [Vector3](vector3.md) | R | Direction vector of the light. Reversed in game. |
 | fade | number | R | Fade value (TR1-3 only) |
@@ -58,7 +58,7 @@ The Light library provides information about a light in a [level](level.md). Dep
 
 | Name | Type | Mode | Description |
 | ---- | ---- | ---- | ---- |
-| color | [Color](color.md) | R | Light color (TR5 only) |
+| colour | [Colour](colour.md) | R | Light colour (TR5 only) |
 | density | number | R | Density value |
 | intensity | number | R | Intensity value (TR1-4 only) |
 | position | [Vector3](vector3.md) | R | Position of the object in game units
