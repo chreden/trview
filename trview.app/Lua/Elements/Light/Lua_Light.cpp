@@ -37,6 +37,11 @@ namespace trview
                 {
                     return create_vector3(L, light->direction());
                 }
+                else if (key == "fade")
+                {
+                    lua_pushnumber(L, fade(*light));
+                    return 1;
+                }
                 else if (key == "falloff")
                 {
                     lua_pushnumber(L, falloff(*light));

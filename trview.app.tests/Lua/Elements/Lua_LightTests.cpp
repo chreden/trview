@@ -84,6 +84,20 @@ TEST(Lua_Light, Direction)
     ASSERT_DOUBLE_EQ(3.0, lua_tonumber(L, -1));
 }
 
+TEST(Lua_Light, Fade)
+{
+    auto light = mock_shared<MockLight>();
+    EXPECT_CALL(*light, fade).WillOnce(Return(123.0f));
+
+    lua_State* L = luaL_newstate();
+    lua::create_light(L, light);
+    lua_setglobal(L, "l");
+
+    ASSERT_EQ(0, luaL_dostring(L, "return l.fade"));
+    ASSERT_EQ(LUA_TNUMBER, lua_type(L, -1));
+    ASSERT_EQ(123, lua_tonumber(L, -1));
+}
+
 TEST(Lua_Light, Falloff)
 {
     auto light = mock_shared<MockLight>();
