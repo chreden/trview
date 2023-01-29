@@ -1,7 +1,8 @@
 #include <trview.app/Lua/Elements/Sector/Lua_Sector.h>
 #include <trview.app/Mocks/Elements/ISector.h>
 #include <trview.tests.common/Mocks.h>
-#include <external/lua/src/lua.hpp>
+#include <external/lua/src/lua.h>
+#include <external/lua/src/lauxlib.h>
 
 using namespace trview;
 using namespace trview::mocks;
