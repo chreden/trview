@@ -294,7 +294,7 @@
     <ClCompile Include="Lua\Elements\Light\Lua_Light.cpp">
       <Filter>Lua\Elements\Light</Filter>
     </ClCompile>
-    <ClCompile Include="Lua\Color.cpp">
+    <ClCompile Include="Lua\Colour.cpp">
       <Filter>Lua</Filter>
     </ClCompile>
   </ItemGroup>
@@ -931,7 +931,7 @@
     <ClInclude Include="Lua\Elements\Light\Lua_Light.h">
       <Filter>Lua\Elements\Light</Filter>
     </ClInclude>
-    <ClInclude Include="Lua\Color.h">
+    <ClInclude Include="Lua\Colour.h">
       <Filter>Lua</Filter>
     </ClInclude>
   </ItemGroup>
