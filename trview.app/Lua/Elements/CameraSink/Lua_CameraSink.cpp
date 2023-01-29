@@ -100,7 +100,7 @@ namespace trview
                                 camera_sink->set_type(ICameraSink::Type::Camera);
                                 level->on_level_changed();
                             }
-                            else if (type == "Camera")
+                            else if (type == "Sink")
                             {
                                 camera_sink->set_type(ICameraSink::Type::Sink);
                                 level->on_level_changed();
