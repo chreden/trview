@@ -95,8 +95,24 @@ namespace trview
                         if (type_str)
                         {
                             std::string type = type_str;
-                            camera_sink->set_type(type == "Camera" ? ICameraSink::Type::Camera : ICameraSink::Type::Sink);
-                            level->on_level_changed();
+                            if (type == "Camera")
+                            {
+                                camera_sink->set_type(ICameraSink::Type::Camera);
+                                level->on_level_changed();
+                            }
+                            else if (type == "Camera")
+                            {
+                                camera_sink->set_type(ICameraSink::Type::Sink);
+                                level->on_level_changed();
+                            }
+                            else
+                            {
+                                return luaL_error(L, "%s is not a valid type for Camera/Sink. Valid values are \"Camera\" and \"Sink\"", type.c_str());
+                            }
+                        }
+                        else
+                        {
+                            return luaL_error(L, "nil is not a valid type for Camera/Sink. Valid values are \"Camera\" and \"Sink\"");
                         }
                     }
                 }
