@@ -125,9 +125,6 @@ namespace trview
             lua_pushcfunction(L, item_gc);
             lua_setfield(L, -2, "__gc");
             lua_setmetatable(L, -2);
-
-            // TODO: Specific flags
-            // TODO: Position
         }
     }
 }
