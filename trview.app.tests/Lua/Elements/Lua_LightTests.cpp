@@ -87,7 +87,7 @@ TEST(Lua_Light, Direction)
 TEST(Lua_Light, Fade)
 {
     auto light = mock_shared<MockLight>();
-    EXPECT_CALL(*light, fade).WillOnce(Return(123.0f));
+    EXPECT_CALL(*light, fade).WillOnce(Return(123));
 
     lua_State* L = luaL_newstate();
     lua::create_light(L, light);
