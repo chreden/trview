@@ -41,6 +41,7 @@
     <ClCompile Include="Graphics\TextureStorage.cpp" />
     <ClCompile Include="ItemsWindowManagerTests.cpp" />
     <ClCompile Include="ItemsWindowTests.cpp" />
+    <ClCompile Include="Lua\Elements\Lua_CameraSinkTests.cpp" />
     <ClCompile Include="Lua\Elements\Lua_ItemTests.cpp" />
     <ClCompile Include="Lua\Elements\Lua_LevelTests.cpp" />
     <ClCompile Include="Lua\Elements\Lua_LightTests.cpp" />

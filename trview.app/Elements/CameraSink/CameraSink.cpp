@@ -36,6 +36,11 @@ namespace trview
     {
     }
 
+    std::weak_ptr<ILevel> CameraSink::level() const
+    {
+        return _level;
+    }
+
     std::vector<uint16_t> CameraSink::inferred_rooms() const
     {
         return _inferred_rooms;
@@ -93,6 +98,11 @@ namespace trview
         return _room;
     }
 
+    void CameraSink::set_level(const std::weak_ptr<ILevel>& level)
+    {
+        _level = level;
+    }
+
     void CameraSink::set_type(Type type)
     {
         _type = type;
@@ -125,7 +135,12 @@ namespace trview
 
     uint16_t actual_room(const ICameraSink& camera_sink)
     {
-        return camera_sink.type() == ICameraSink::Type::Camera ? camera_sink.room() : camera_sink.inferred_rooms().front();
+        if (camera_sink.type() == ICameraSink::Type::Camera)
+        {
+            return camera_sink.room();
+        }
+        const auto inferred = camera_sink.inferred_rooms();
+        return inferred.empty() ? 0 : inferred.front();
     }
 
     std::string to_string(ICameraSink::Type type)

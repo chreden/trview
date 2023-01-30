@@ -15,6 +15,7 @@ namespace trview
         virtual uint16_t box_index() const override;
         virtual uint16_t flag() const override;
         virtual void get_transparent_triangles(ITransparencyBuffer& transparency, const ICamera& camera, const DirectX::SimpleMath::Color& colour) override;
+        std::weak_ptr<ILevel> level() const override;
         virtual std::vector<uint16_t> inferred_rooms() const override;
         virtual uint32_t number() const override;
         virtual bool persistent() const override;
@@ -22,6 +23,7 @@ namespace trview
         virtual DirectX::SimpleMath::Vector3 position() const override;
         virtual void render(const ICamera& camera, const ILevelTextureStorage& texture_storage, const DirectX::SimpleMath::Color& colour) override;
         virtual uint16_t room() const override;
+        void set_level(const std::weak_ptr<ILevel>& level) override;
         virtual void set_type(Type type) override;
         virtual void set_visible(bool value) override;
         virtual uint16_t strength() const override;
@@ -38,6 +40,7 @@ namespace trview
         Type _type{ Type::Camera };
         std::shared_ptr<IMesh> _mesh;
         std::vector<std::weak_ptr<ITrigger>> _triggers;
+        std::weak_ptr<ILevel> _level;
 
         graphics::Texture _camera_texture;
         graphics::Texture _sink_texture;
