@@ -14,6 +14,7 @@ namespace trview
             MOCK_METHOD(void, get_transparent_triangles, (ITransparencyBuffer&, const ICamera&, const DirectX::SimpleMath::Color&), (override));
             MOCK_METHOD(bool, visible, (), (const, override));
             MOCK_METHOD(void, set_visible, (bool), (override));
+            MOCK_METHOD(std::weak_ptr<ILevel>, level, (), (const, override));
             MOCK_METHOD(uint32_t, number, (), (const, override));
             MOCK_METHOD(DirectX::SimpleMath::Vector3, position, (), (const, override));
             MOCK_METHOD(Colour, colour, (), (const, override));
@@ -32,6 +33,7 @@ namespace trview
             MOCK_METHOD(float, cutoff, (), (const, override));
             MOCK_METHOD(float, radius, (), (const override));
             MOCK_METHOD(float, density, (), (const, override));
+            MOCK_METHOD(void, set_level, (const std::weak_ptr<ILevel>&), (override));
             MOCK_METHOD(void, set_position, (const DirectX::SimpleMath::Vector3&), (override));
             MOCK_METHOD(void, render_direction, (const ICamera&, const ILevelTextureStorage&), (override));
             MOCK_METHOD(trlevel::LevelVersion, level_version, (), (const, override));

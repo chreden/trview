@@ -18,6 +18,7 @@ namespace trview
         virtual int32_t intensity() const override;
         virtual int32_t fade() const override;
         virtual DirectX::SimpleMath::Vector3 direction() const override;
+        std::weak_ptr<ILevel> level() const override;
         virtual PickResult pick(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& direction) const override;
         virtual void render(const ICamera& camera, const ILevelTextureStorage& texture_storage, const DirectX::SimpleMath::Color& colour) override;
         virtual void render_direction(const ICamera& camera, const ILevelTextureStorage& texture_storage) override;
@@ -33,11 +34,12 @@ namespace trview
         virtual float cutoff() const override;
         virtual float radius() const override;
         virtual float density() const override;
+        void set_level(const std::weak_ptr<ILevel>& level) override;
         virtual void set_position(const DirectX::SimpleMath::Vector3& position) override;
         virtual trlevel::LevelVersion level_version() const override;
     private:
-
         std::shared_ptr<IMesh> _mesh;
+        std::weak_ptr<ILevel> _level;
 
         uint32_t _number;
         uint32_t _room;

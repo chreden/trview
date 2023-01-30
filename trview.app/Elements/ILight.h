@@ -20,6 +20,7 @@ namespace trview
         virtual int32_t intensity() const = 0;
         virtual int32_t fade() const = 0;
         virtual DirectX::SimpleMath::Vector3 direction() const = 0;
+        virtual std::weak_ptr<ILevel> level() const = 0;
         virtual PickResult pick(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& direction) const = 0;
         virtual float in() const = 0;
         virtual float out() const = 0;
@@ -30,6 +31,7 @@ namespace trview
         virtual float cutoff() const = 0;
         virtual float radius() const = 0;
         virtual float density() const = 0;
+        virtual void set_level(const std::weak_ptr<ILevel>& level) = 0;
         virtual void set_position(const DirectX::SimpleMath::Vector3& position) = 0;
         virtual void render_direction(const ICamera& camera, const ILevelTextureStorage& texture_storage) = 0;
         virtual trlevel::LevelVersion level_version() const = 0;

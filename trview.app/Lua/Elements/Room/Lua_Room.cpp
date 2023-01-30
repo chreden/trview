@@ -4,6 +4,7 @@
 #include "../Trigger/Lua_Trigger.h"
 #include "../Sector/Lua_Sector.h"
 #include "../CameraSink/Lua_CameraSink.h"
+#include "../Light/Lua_Light.h"
 #include "../../Lua.h"
 
 namespace trview
@@ -48,8 +49,7 @@ namespace trview
                 }
                 else if (key == "lights")
                 {
-                    lua_newtable(L);
-                    return 1;
+                    return push_list(L, room->lights(), { create_light });
                 }
                 else if (key == "number")
                 {

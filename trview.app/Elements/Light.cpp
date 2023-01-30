@@ -114,6 +114,11 @@ namespace trview
         return _direction;
     }
 
+    std::weak_ptr<ILevel> Light::level() const
+    {
+        return _level;
+    }
+
     PickResult Light::pick(const Vector3& position, const Vector3& direction) const
     {
         PickResult result;
@@ -175,6 +180,11 @@ namespace trview
     float Light::density() const
     {
         return _density;
+    }
+
+    void Light::set_level(const std::weak_ptr<ILevel>& level)
+    {
+        _level = level;
     }
 
     void Light::set_position(const Vector3& position)

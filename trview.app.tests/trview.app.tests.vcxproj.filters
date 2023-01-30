@@ -194,6 +194,9 @@
     <ClCompile Include="Lua\Elements\Lua_CameraSinkTests.cpp">
       <Filter>Lua\Elements</Filter>
     </ClCompile>
+    <ClCompile Include="Lua\Elements\Lua_LightTests.cpp">
+      <Filter>Lua\Elements</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Input">

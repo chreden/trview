@@ -291,6 +291,12 @@
     <ClCompile Include="Windows\Console\Console.cpp">
       <Filter>Windows\Console</Filter>
     </ClCompile>
+    <ClCompile Include="Lua\Elements\Light\Lua_Light.cpp">
+      <Filter>Lua\Elements\Light</Filter>
+    </ClCompile>
+    <ClCompile Include="Lua\Colour.cpp">
+      <Filter>Lua</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera\Camera.h">
@@ -922,6 +928,12 @@
     <ClInclude Include="Mocks\Windows\IConsole.h">
       <Filter>Mocks\Windows</Filter>
     </ClInclude>
+    <ClInclude Include="Lua\Elements\Light\Lua_Light.h">
+      <Filter>Lua\Elements\Light</Filter>
+    </ClInclude>
+    <ClInclude Include="Lua\Colour.h">
+      <Filter>Lua</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Windows">
@@ -1085,6 +1097,9 @@
     </Filter>
     <Filter Include="Windows\Console">
       <UniqueIdentifier>{46a92d83-7768-4f01-a434-55680853fdae}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Lua\Elements\Light">
+      <UniqueIdentifier>{79ff7d81-36c4-49d6-9aa4-053931d3d2b7}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
