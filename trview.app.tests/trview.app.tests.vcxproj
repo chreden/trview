@@ -43,6 +43,7 @@
     <ClCompile Include="ItemsWindowTests.cpp" />
     <ClCompile Include="Lua\Elements\Lua_ItemTests.cpp" />
     <ClCompile Include="Lua\Elements\Lua_LevelTests.cpp" />
+    <ClCompile Include="Lua\Elements\Lua_LightTests.cpp" />
     <ClCompile Include="Lua\Elements\Lua_RoomTests.cpp" />
     <ClCompile Include="Lua\Elements\Lua_SectorTests.cpp" />
     <ClCompile Include="Lua\Elements\Lua_TriggerTests.cpp" />

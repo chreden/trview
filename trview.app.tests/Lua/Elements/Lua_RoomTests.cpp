@@ -1,5 +1,6 @@
 #include <trview.app/Lua/Elements/Room/Lua_Room.h>
 #include <trview.app/Mocks/Elements/IRoom.h>
+#include <trview.app/Mocks/Elements/ILight.h>
 #include <trview.tests.common/Mocks.h>
 #include <external/lua/src/lua.hpp>
 
@@ -109,7 +110,11 @@ TEST(Lua_Room, Items)
 
 TEST(Lua_Room, Lights)
 {
+    auto light1 = mock_shared<MockLight>()->with_number(100);
+    auto light2 = mock_shared<MockLight>()->with_number(200);
+
     auto room = mock_shared<MockRoom>();
+    EXPECT_CALL(*room, lights).WillRepeatedly(Return(std::vector<std::weak_ptr<ILight>>{ light1, light2 }));
 
     lua_State* L = luaL_newstate();
     lua::create_room(L, room);
@@ -119,7 +124,13 @@ TEST(Lua_Room, Lights)
     ASSERT_EQ(LUA_TTABLE, lua_type(L, -1));
     ASSERT_EQ(0, luaL_dostring(L, "return #r.lights"));
     ASSERT_EQ(LUA_TNUMBER, lua_type(L, -1));
-    ASSERT_EQ(0, lua_tointeger(L, -1));
+    ASSERT_EQ(2, lua_tonumber(L, -1));
+    ASSERT_EQ(0, luaL_dostring(L, "return r.lights[1].number"));
+    ASSERT_EQ(LUA_TNUMBER, lua_type(L, -1));
+    ASSERT_EQ(100, lua_tonumber(L, -1));
+    ASSERT_EQ(0, luaL_dostring(L, "return r.lights[2].number"));
+    ASSERT_EQ(LUA_TNUMBER, lua_type(L, -1));
+    ASSERT_EQ(200, lua_tonumber(L, -1));
 }
 
 TEST(Lua_Room, Number)
@@ -213,3 +224,4 @@ TEST(Lua_Room, SetVisible)
 
     ASSERT_EQ(0, luaL_dostring(L, "r.visible = true"));
 }
+

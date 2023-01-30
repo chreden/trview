@@ -9,7 +9,7 @@ The Level library provides information about the currently loaded Level in trvie
 | filename | string | R | The path of the level file |
 | floordata | Table | R | All floordata |
 | items | [Item](item.md)[] | R | All items |
-| lights | table of Lights | R | All lights |
-| rooms | [Room](room.md) | R | All rooms |
-| triggers | [Trigger](trigger.md) | R | All triggers |
+| lights | [Light](light.md)[] | R | All lights |
+| rooms | [Room](room.md)[] | R | All rooms |
+| triggers | [Trigger](trigger.md)[] | R | All triggers |
 | version | number | R | The game number for which this level was made |

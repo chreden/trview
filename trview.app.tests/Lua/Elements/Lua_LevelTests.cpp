@@ -1,5 +1,6 @@
 #include <trview.app/Lua/Elements/Level/Lua_Level.h>
 #include <trview.app/Mocks/Elements/ILevel.h>
+#include <trview.app/Mocks/Elements/ILight.h>
 #include <trview.tests.common/Mocks.h>
 #include <external/lua/src/lua.hpp>
 
@@ -72,7 +73,10 @@ TEST(Lua_Level, Items)
 
 TEST(Lua_Level, Lights)
 {
+    auto light1 = mock_shared<MockLight>()->with_number(100);
+    auto light2 = mock_shared<MockLight>()->with_number(200);
     auto level = mock_shared<MockLevel>();
+    EXPECT_CALL(*level, lights).WillRepeatedly(Return(std::vector<std::weak_ptr<ILight>>{ light1, light2 }));
 
     lua_State* L = luaL_newstate();
     lua::create_level(L, level);
@@ -80,6 +84,15 @@ TEST(Lua_Level, Lights)
 
     ASSERT_EQ(0, luaL_dostring(L, "return l.lights"));
     ASSERT_EQ(LUA_TTABLE, lua_type(L, -1));
+    ASSERT_EQ(0, luaL_dostring(L, "return #l.lights"));
+    ASSERT_EQ(LUA_TNUMBER, lua_type(L, -1));
+    ASSERT_EQ(2, lua_tonumber(L, -1));
+    ASSERT_EQ(0, luaL_dostring(L, "return l.lights[1].number"));
+    ASSERT_EQ(LUA_TNUMBER, lua_type(L, -1));
+    ASSERT_EQ(100, lua_tonumber(L, -1));
+    ASSERT_EQ(0, luaL_dostring(L, "return l.lights[2].number"));
+    ASSERT_EQ(LUA_TNUMBER, lua_type(L, -1));
+    ASSERT_EQ(200, lua_tonumber(L, -1));
 }
 
 TEST(Lua_Level, Rooms)
