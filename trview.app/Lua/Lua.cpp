@@ -1,6 +1,7 @@
 #include "Lua.h"
 #include <trview.common/Strings.h>
 #include "trview/trview.h"
+#include <external/lua/src/lualib.h>
 
 namespace trview
 {

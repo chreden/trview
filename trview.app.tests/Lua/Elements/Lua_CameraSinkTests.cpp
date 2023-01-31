@@ -1,7 +1,8 @@
 #include <trview.app/Lua/Elements/CameraSink/Lua_CameraSink.h>
 #include <trview.app/Mocks/Elements/ICameraSink.h>
 #include <trview.tests.common/Mocks.h>
-#include <external/lua/src/lua.hpp>
+#include <external/lua/src/lua.h>
+#include <external/lua/src/lauxlib.h>
 
 using namespace trview;
 using namespace trview::mocks;

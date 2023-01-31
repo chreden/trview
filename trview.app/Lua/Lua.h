@@ -1,6 +1,7 @@
 #pragma once
 
-#include <external/lua/src/lua.hpp>
+#include <external/lua/src/lua.h>
+#include <external/lua/src/lauxlib.h>
 #include <string>
 #include <trview.common/Event.h>
 
