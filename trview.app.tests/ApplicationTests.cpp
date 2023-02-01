@@ -1035,3 +1035,38 @@ TEST(Application, PrintRoutedToConsoleManager)
 
     console_manager.on_command("print(\"Hello\")");
 }
+
+TEST(Application, SetCurrentLevelPrompt)
+{
+    auto level = mock_shared<trview::mocks::MockLevel>();
+    auto dialogs = mock_shared<MockDialogs>();
+    EXPECT_CALL(*dialogs, message_box).Times(0);
+
+    auto [viewer_ptr, viewer] = create_mock<MockViewer>();
+    EXPECT_CALL(viewer, open).Times(1);
+
+    auto application = register_test_module()
+        .with_dialogs(dialogs)
+        .with_viewer(std::move(viewer_ptr))
+        .build();
+
+    application->set_current_level(level, ILevel::OpenMode::Full, true);
+}
+
+TEST(Application, SetCurrentLevelNoPrompt)
+{
+    auto level = mock_shared<trview::mocks::MockLevel>();
+    auto dialogs = mock_shared<MockDialogs>();
+    EXPECT_CALL(*dialogs, message_box).Times(0);
+
+    auto [viewer_ptr, viewer] = create_mock<MockViewer>();
+    EXPECT_CALL(viewer, open).Times(1);
+
+    auto application = register_test_module()
+        .with_dialogs(dialogs)
+        .with_viewer(std::move(viewer_ptr))
+        .build();
+
+    application->set_current_level(level, ILevel::OpenMode::Full, false);
+}
+
