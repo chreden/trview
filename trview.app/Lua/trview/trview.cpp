@@ -62,10 +62,6 @@ namespace trview
                         {
                             application->set_current_level(level, ILevel::OpenMode::Full, true);
                         }
-                        catch (trlevel::LevelEncryptedException&)
-                        {
-                            luaL_error(L, "Level is encrypted and cannot be loaded");
-                        }
                         catch (UserCancelledException&)
                         {
                             luaL_error(L, "User cancelled level loading");
