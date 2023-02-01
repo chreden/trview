@@ -2,6 +2,7 @@
 #include "../Elements/Level/Lua_Level.h"
 #include "../../Application.h"
 #include <trlevel/LevelEncryptedException.h>
+#include "../../UserCancelledException.h"
 
 namespace trview
 {
@@ -48,8 +49,33 @@ namespace trview
                 return 0;
             }
 
-            int trview_newindex(lua_State*)
+            int trview_newindex(lua_State* L)
             {
+                IApplication* application = *static_cast<IApplication**>(lua_touserdata(L, 1));
+
+                const std::string key = lua_tostring(L, 2);
+                if (key == "level")
+                {
+                    if (auto level = to_level(L, -1))
+                    {
+                        try
+                        {
+                            application->set_current_level(level, ILevel::OpenMode::Full, true);
+                        }
+                        catch (trlevel::LevelEncryptedException&)
+                        {
+                            luaL_error(L, "Level is encrypted and cannot be loaded");
+                        }
+                        catch (UserCancelledException&)
+                        {
+                            luaL_error(L, "User cancelled level loading");
+                        }
+                        catch (...)
+                        {
+                            luaL_error(L, "Failed to load level");
+                        }
+                    }
+                }
                 return 0;
             }
         }
@@ -66,8 +92,6 @@ namespace trview
             lua_setfield(L, -2, "__newindex");
             lua_setmetatable(L, -2);
             lua_setglobal(L, "trview");
-
-            register_level(L);
         }
     }
 }

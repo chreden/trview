@@ -94,5 +94,17 @@ namespace trview
             lua_setmetatable(L, -2);
             return 1;
         }
+
+        std::shared_ptr<ILevel> to_level(lua_State* L, int index)
+        {
+            luaL_checktype(L, index, LUA_TUSERDATA);
+            ILevel** userdata = static_cast<ILevel**>(lua_touserdata(L, index));
+            auto found = levels.find(userdata);
+            if (found == levels.end())
+            {
+                return {};
+            }
+            return found->second;
+        }
     }
 }

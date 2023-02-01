@@ -934,6 +934,7 @@
     <ClInclude Include="Lua\Colour.h">
       <Filter>Lua</Filter>
     </ClInclude>
+    <ClInclude Include="UserCancelledException.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Windows">
