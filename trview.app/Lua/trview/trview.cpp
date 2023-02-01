@@ -1,6 +1,7 @@
 #include "trview.h"
 #include "../Elements/Level/Lua_Level.h"
 #include "../../Application.h"
+#include <trlevel/LevelEncryptedException.h>
 
 namespace trview
 {
@@ -8,6 +9,28 @@ namespace trview
     {
         namespace
         {
+            int trview_load(lua_State* L)
+            {
+                IApplication* application = *static_cast<IApplication**>(lua_touserdata(L, 1));
+
+                luaL_checktype(L, -1, LUA_TSTRING);
+                const char* filename = lua_tostring(L, -1);
+
+                try
+                {
+                    return create_level(L, application->load(filename));
+                }
+                catch (trlevel::LevelEncryptedException&)
+                {
+                    luaL_error(L, "Level is encrypted and cannot be loaded (%s)", filename);
+                }
+                catch (...)
+                {
+                    luaL_error(L, "Failed to load level (%s)", filename);
+                }
+                return 0;
+            }
+
             int trview_index(lua_State* L)
             {
                 IApplication* application = *static_cast<IApplication**>(lua_touserdata(L, 1));
@@ -16,6 +39,11 @@ namespace trview
                 if (key == "level")
                 {
                     return create_level(L, application->current_level().lock());
+                }
+                else if (key == "load")
+                {
+                    lua_pushcfunction(L, trview_load);
+                    return 1;
                 }
                 return 0;
             }
@@ -38,6 +66,8 @@ namespace trview
             lua_setfield(L, -2, "__newindex");
             lua_setmetatable(L, -2);
             lua_setglobal(L, "trview");
+
+            register_level(L);
         }
     }
 }

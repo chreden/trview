@@ -109,10 +109,10 @@ namespace trview
             return;
         }
 
-        std::unique_ptr<trlevel::ILevel> new_level;
+        auto old_level = _level;
         try
         {
-            new_level = _trlevel_source(filename);
+            _level = load(filename);
         }
         catch (trlevel::LevelEncryptedException&)
         {
@@ -130,11 +130,6 @@ namespace trview
         _file_menu->set_recent_files(_settings.recent_files);
         _settings_loader->save_user_settings(_settings);
         _viewer->set_settings(_settings);
-
-        auto old_level = _level;
-        _level = _level_source(std::move(new_level));
-        _level->initialise();
-        _level->set_filename(filename);
 
         _level->set_map_colours(_settings.map_colours);
 
@@ -895,5 +890,14 @@ namespace trview
     std::weak_ptr<ILevel> Application::current_level() const
     {
         return _level;
+    }
+
+    std::shared_ptr<ILevel> Application::load(const std::string& filename)
+    {
+        std::unique_ptr<trlevel::ILevel> new_level = _trlevel_source(filename);
+        auto level = _level_source(std::move(new_level));
+        level->initialise();
+        level->set_filename(filename);
+        return level;
     }
 }
