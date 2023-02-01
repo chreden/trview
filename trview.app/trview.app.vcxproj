@@ -116,6 +116,7 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClInclude Include="Lua\Vector3.h" />
     <ClCompile Include="Windows\Console\Console.cpp" />
     <ClCompile Include="Windows\Console\ConsoleManager.cpp" />
+    <ClInclude Include="Mocks\IApplication.h" />
     <ClInclude Include="Mocks\Windows\IConsole.h" />
     <ClInclude Include="Mocks\Windows\IConsoleManager.h" />
     <ClInclude Include="Type.inl">

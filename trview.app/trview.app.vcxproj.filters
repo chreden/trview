@@ -935,6 +935,9 @@
       <Filter>Lua</Filter>
     </ClInclude>
     <ClInclude Include="UserCancelledException.h" />
+    <ClInclude Include="Mocks\IApplication.h">
+      <Filter>Mocks</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Windows">
