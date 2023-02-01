@@ -17,7 +17,7 @@ namespace trview
 
             int room_index(lua_State* L)
             {
-                IRoom* room = *static_cast<IRoom**>(lua_touserdata(L, 1));
+                auto room = lua::get_self<IRoom>(L);
 
                 const std::string key = lua_tostring(L, 2);
                 if (key == "alternate_mode")
@@ -75,7 +75,7 @@ namespace trview
 
             int room_newindex(lua_State* L)
             {
-                IRoom* room = *static_cast<IRoom**>(lua_touserdata(L, 1));
+                auto room = lua::get_self<IRoom>(L);
 
                 const std::string key = lua_tostring(L, 2);
                 if (key == "visible")
@@ -91,6 +91,7 @@ namespace trview
 
             int room_gc(lua_State*L)
             {
+                luaL_checktype(L, 1, LUA_TUSERDATA);
                 IRoom** userdata = static_cast<IRoom**>(lua_touserdata(L, 1));
                 rooms.erase(userdata);
                 return 0;

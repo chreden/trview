@@ -27,7 +27,7 @@ namespace trview
 
             int trigger_index(lua_State* L)
             {
-                ITrigger* trigger = *static_cast<ITrigger**>(lua_touserdata(L, 1));
+                auto trigger = lua::get_self<ITrigger>(L);
 
                 const std::string key = lua_tostring(L, 2);
                 if (key == "commands")
@@ -99,7 +99,7 @@ namespace trview
 
             int trigger_newindex(lua_State* L)
             {
-                ITrigger* trigger = *static_cast<ITrigger**>(lua_touserdata(L, 1));
+                auto trigger = lua::get_self<ITrigger>(L);
 
                 const std::string key = lua_tostring(L, 2);
                 if (key == "visible")
@@ -115,6 +115,7 @@ namespace trview
 
             int trigger_gc(lua_State* L)
             {
+                luaL_checktype(L, 1, LUA_TUSERDATA);
                 ITrigger** userdata = static_cast<ITrigger**>(lua_touserdata(L, 1));
                 triggers.erase(userdata);
                 return 0;

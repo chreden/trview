@@ -16,7 +16,7 @@ namespace trview
 
             int light_index(lua_State* L)
             {
-                ILight* light = *static_cast<ILight**>(lua_touserdata(L, 1));
+                auto light = lua::get_self<ILight>(L);
 
                 const std::string key = lua_tostring(L, 2);
                 if (key == "colour")
@@ -121,7 +121,7 @@ namespace trview
 
             int light_newindex(lua_State* L)
             {
-                ILight* light = *static_cast<ILight**>(lua_touserdata(L, 1));
+                auto light = lua::get_self<ILight>(L);
 
                 const std::string key = lua_tostring(L, 2);
                 if (key == "visible")
@@ -138,6 +138,7 @@ namespace trview
 
             int light_gc(lua_State* L)
             {
+                luaL_checktype(L, 1, LUA_TUSERDATA);
                 ILight** userdata = static_cast<ILight**>(lua_touserdata(L, 1));
                 lights.erase(userdata);
                 return 0;

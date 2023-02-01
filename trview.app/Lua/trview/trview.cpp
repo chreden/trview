@@ -12,7 +12,7 @@ namespace trview
         {
             int trview_load(lua_State* L)
             {
-                IApplication* application = *static_cast<IApplication**>(lua_touserdata(L, 1));
+                auto application = lua::get_self<IApplication>(L);
 
                 luaL_checktype(L, -1, LUA_TSTRING);
                 const char* filename = lua_tostring(L, -1);
@@ -34,7 +34,7 @@ namespace trview
 
             int trview_index(lua_State* L)
             {
-                IApplication* application = *static_cast<IApplication**>(lua_touserdata(L, 1));
+                auto application = lua::get_self<IApplication>(L);
 
                 const std::string key = lua_tostring(L, 2);
                 if (key == "level")
@@ -51,7 +51,7 @@ namespace trview
 
             int trview_newindex(lua_State* L)
             {
-                IApplication* application = *static_cast<IApplication**>(lua_touserdata(L, 1));
+                auto application = lua::get_self<IApplication>(L);
 
                 const std::string key = lua_tostring(L, 2);
                 if (key == "level")
