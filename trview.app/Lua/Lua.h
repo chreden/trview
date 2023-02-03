@@ -82,6 +82,9 @@ namespace trview
 
         template <typename T>
         int push_list(lua_State* L, const std::vector<T>& range, const std::function<void(lua_State*, const T&)>& func);
+
+        template <typename T>
+        T* get_self(lua_State* L);
     }
 }
 

@@ -52,6 +52,7 @@
 #include "Windows/ICameraSinkWindowManager.h"
 #include "Windows/IConsoleManager.h"
 #include "Windows/IConsole.h"
+#include "IApplication.h"
 
 namespace trview
 {
@@ -209,5 +210,8 @@ namespace trview
 
         MockConsole::MockConsole() {}
         MockConsole::~MockConsole() {}
+
+        MockApplication::MockApplication() {}
+        MockApplication::~MockApplication() {}
     }
 }

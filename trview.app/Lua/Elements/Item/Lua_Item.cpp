@@ -16,7 +16,7 @@ namespace trview
 
             int item_index(lua_State* L)
             {
-                IItem* item = *static_cast<IItem**>(lua_touserdata(L, 1));
+                auto item = lua::get_self<IItem>(L);
 
                 const std::string key = lua_tostring(L, 2);
                 if (key == "activation_flags")
@@ -82,7 +82,7 @@ namespace trview
 
             int item_newindex(lua_State* L)
             {
-                IItem* item = *static_cast<IItem**>(lua_touserdata(L, 1));
+                auto item = lua::get_self<IItem>(L);
 
                 const std::string key = lua_tostring(L, 2);
                 if (key == "visible")
@@ -99,6 +99,7 @@ namespace trview
 
             int item_gc(lua_State* L)
             {
+                luaL_checktype(L, 1, LUA_TUSERDATA);
                 IItem** userdata = static_cast<IItem**>(lua_touserdata(L, 1));
                 items.erase(userdata);
                 return 0;

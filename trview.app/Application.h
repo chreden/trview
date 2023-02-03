@@ -36,6 +36,8 @@ namespace trview
         virtual ~IApplication() = 0;
         virtual int run() = 0;
         virtual std::weak_ptr<ILevel> current_level() const = 0;
+        virtual std::shared_ptr<ILevel> load(const std::string& filename) = 0;
+        virtual void set_current_level(const std::shared_ptr<ILevel>& level, ILevel::OpenMode open_mode, bool prompt_user) = 0;
         Event<> on_closing;
     };
 
@@ -73,6 +75,8 @@ namespace trview
         virtual int run() override;
         void render();
         std::weak_ptr<ILevel> current_level() const override;
+        std::shared_ptr<ILevel> load(const std::string& filename) override;
+        void set_current_level(const std::shared_ptr<ILevel>& level, ILevel::OpenMode open_mode, bool prompt_user) override;
     private:
         // Window setup functions.
         void setup_view_menu();

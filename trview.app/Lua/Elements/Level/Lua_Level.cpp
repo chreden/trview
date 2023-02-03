@@ -17,7 +17,7 @@ namespace trview
 
             int level_index(lua_State* L)
             {
-                ILevel* level = *static_cast<ILevel**>(lua_touserdata(L, 1));
+                auto level = lua::get_self<ILevel>(L);
 
                 const std::string key = lua_tostring(L, 2);
                 if (key == "cameras_and_sinks")
@@ -66,6 +66,7 @@ namespace trview
 
             int level_gc(lua_State* L)
             {
+                luaL_checktype(L, 1, LUA_TUSERDATA);
                 ILevel** userdata = static_cast<ILevel**>(lua_touserdata(L, 1));
                 levels.erase(userdata);
                 return 0;
@@ -93,6 +94,18 @@ namespace trview
             lua_setfield(L, -2, "__gc");
             lua_setmetatable(L, -2);
             return 1;
+        }
+
+        std::shared_ptr<ILevel> to_level(lua_State* L, int index)
+        {
+            luaL_checktype(L, index, LUA_TUSERDATA);
+            ILevel** userdata = static_cast<ILevel**>(lua_touserdata(L, index));
+            auto found = levels.find(userdata);
+            if (found == levels.end())
+            {
+                return {};
+            }
+            return found->second;
         }
     }
 }

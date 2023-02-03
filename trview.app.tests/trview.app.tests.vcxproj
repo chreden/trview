@@ -48,6 +48,7 @@
     <ClCompile Include="Lua\Elements\Lua_RoomTests.cpp" />
     <ClCompile Include="Lua\Elements\Lua_SectorTests.cpp" />
     <ClCompile Include="Lua\Elements\Lua_TriggerTests.cpp" />
+    <ClCompile Include="Lua\Lua_trviewTests.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Menus\MenuDetectorTests.cpp" />
     <ClCompile Include="NullImGuiBackend.cpp" />

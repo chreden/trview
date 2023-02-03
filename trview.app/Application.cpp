@@ -1,5 +1,6 @@
 #include "Application.h"
 #include <trlevel/LevelEncryptedException.h>
+#include "UserCancelledException.h"
 #include "Lua/trview/trview.h"
 
 #include "Resources/resource.h"
@@ -109,108 +110,28 @@ namespace trview
             return;
         }
 
-        std::unique_ptr<trlevel::ILevel> new_level;
         try
         {
-            new_level = _trlevel_source(filename);
+            auto level = load(filename);
+            _settings.add_recent_file(filename);
+            _file_menu->set_recent_files(_settings.recent_files);
+            _settings_loader->save_user_settings(_settings);
+            _viewer->set_settings(_settings);
+            set_current_level(level, open_mode, false);
         }
         catch (trlevel::LevelEncryptedException&)
         {
             _dialogs->message_box(L"Level is encrypted and cannot be loaded", L"Error", IDialogs::Buttons::OK);
             return;
         }
+        catch (UserCancelledException&)
+        {
+            return;
+        }
         catch (...)
         {
             _dialogs->message_box(L"Failed to load level", L"Error", IDialogs::Buttons::OK);
             return;
-        }
-
-        _file_menu->open_file(filename);
-        _settings.add_recent_file(filename);
-        _file_menu->set_recent_files(_settings.recent_files);
-        _settings_loader->save_user_settings(_settings);
-        _viewer->set_settings(_settings);
-
-        auto old_level = _level;
-        _level = _level_source(std::move(new_level));
-        _level->initialise();
-        _level->set_filename(filename);
-
-        _level->set_map_colours(_settings.map_colours);
-
-        _items_windows->set_items(_level->items());
-        _items_windows->set_triggers(_level->triggers());
-        _items_windows->set_level_version(_level->version());
-        _items_windows->set_model_checker([&](uint32_t id) { return _level->has_model(id); });
-        _triggers_windows->set_items(_level->items());
-        _triggers_windows->set_triggers(_level->triggers());
-        _rooms_windows->set_level_version(_level->version());
-        _rooms_windows->set_items(_level->items());
-        _rooms_windows->set_floordata(_level->floor_data());
-        _rooms_windows->set_rooms(_level->rooms());
-        _route_window->set_items(_level->items());
-        _route_window->set_triggers(_level->triggers());
-        _route_window->set_rooms(_level->rooms());
-        _lights_windows->set_level_version(_level->version());
-        _lights_windows->set_lights(_level->lights());
-        _camera_sink_windows->set_camera_sinks(_level->camera_sinks());
-        if (open_mode == ILevel::OpenMode::Full)
-        {
-            _route->clear();
-            _route->set_colour(_settings.route_colour);
-            _route->set_waypoint_colour(_settings.waypoint_colour);
-            _route->set_unsaved(false);
-            _route_window->set_route(_route.get());
-        }
-        _textures_windows->set_texture_storage(_level->texture_storage());
-
-        _viewer->open(_level.get(), open_mode);
-        _viewer->set_route(_route);
-
-        if (old_level && open_mode == ILevel::OpenMode::Reload)
-        {
-            const Vector3 old_target = _viewer->target();
-            const bool old_auto_orbit = _settings.auto_orbit;
-            _settings.auto_orbit = false;
-            _viewer->set_settings(_settings);
-
-            auto selected_item = old_level->selected_item();
-            if (selected_item.has_value())
-            {
-                if (const auto new_selected_item = _level->item(selected_item.value()).lock())
-                {
-                    select_item(new_selected_item);
-                }
-            }
-
-            auto selected_trigger = old_level->selected_trigger();
-            if (selected_trigger.has_value())
-            {
-                select_trigger(_level->trigger(selected_trigger.value()));
-            }
-
-            auto selected_light = old_level->selected_light();
-            if (selected_light.has_value())
-            {
-                select_light(_level->light(selected_light.value()));
-            }
-
-            auto selected_camera_sink = old_level->selected_camera_sink();
-            if (selected_camera_sink.has_value())
-            {
-                select_camera_sink(_level->camera_sink(selected_camera_sink.value()));
-            }
-
-            select_room(old_level->selected_room());
-
-            _viewer->set_target(old_target);
-            _settings.auto_orbit = old_auto_orbit;
-            _viewer->set_settings(_settings);
-        }
-        else
-        {
-            _recent_route_prompted = false;
-            open_recent_route();
         }
     }
 
@@ -895,5 +816,103 @@ namespace trview
     std::weak_ptr<ILevel> Application::current_level() const
     {
         return _level;
+    }
+
+    std::shared_ptr<ILevel> Application::load(const std::string& filename)
+    {
+        std::unique_ptr<trlevel::ILevel> new_level = _trlevel_source(filename);
+        auto level = _level_source(std::move(new_level));
+        level->initialise();
+        level->set_filename(filename);
+        return level;
+    }
+
+    void Application::set_current_level(const std::shared_ptr<ILevel>& level, ILevel::OpenMode open_mode, bool prompt_user)
+    {
+        if (prompt_user && open_mode == ILevel::OpenMode::Full && !should_discard_changes())
+        {
+            throw UserCancelledException();
+        }
+
+        auto old_level = _level;
+        _level = level;
+
+        _file_menu->open_file(level->filename());
+        _level->set_map_colours(_settings.map_colours);
+
+        _items_windows->set_items(_level->items());
+        _items_windows->set_triggers(_level->triggers());
+        _items_windows->set_level_version(_level->version());
+        _items_windows->set_model_checker([&](uint32_t id) { return _level->has_model(id); });
+        _triggers_windows->set_items(_level->items());
+        _triggers_windows->set_triggers(_level->triggers());
+        _rooms_windows->set_level_version(_level->version());
+        _rooms_windows->set_items(_level->items());
+        _rooms_windows->set_floordata(_level->floor_data());
+        _rooms_windows->set_rooms(_level->rooms());
+        _route_window->set_items(_level->items());
+        _route_window->set_triggers(_level->triggers());
+        _route_window->set_rooms(_level->rooms());
+        _lights_windows->set_level_version(_level->version());
+        _lights_windows->set_lights(_level->lights());
+        _camera_sink_windows->set_camera_sinks(_level->camera_sinks());
+        if (open_mode == ILevel::OpenMode::Full)
+        {
+            _route->clear();
+            _route->set_colour(_settings.route_colour);
+            _route->set_waypoint_colour(_settings.waypoint_colour);
+            _route->set_unsaved(false);
+            _route_window->set_route(_route.get());
+        }
+        _textures_windows->set_texture_storage(_level->texture_storage());
+
+        _viewer->open(_level.get(), open_mode);
+        _viewer->set_route(_route);
+
+        if (old_level && open_mode == ILevel::OpenMode::Reload)
+        {
+            const Vector3 old_target = _viewer->target();
+            const bool old_auto_orbit = _settings.auto_orbit;
+            _settings.auto_orbit = false;
+            _viewer->set_settings(_settings);
+
+            auto selected_item = old_level->selected_item();
+            if (selected_item.has_value())
+            {
+                if (const auto new_selected_item = _level->item(selected_item.value()).lock())
+                {
+                    select_item(new_selected_item);
+                }
+            }
+
+            auto selected_trigger = old_level->selected_trigger();
+            if (selected_trigger.has_value())
+            {
+                select_trigger(_level->trigger(selected_trigger.value()));
+            }
+
+            auto selected_light = old_level->selected_light();
+            if (selected_light.has_value())
+            {
+                select_light(_level->light(selected_light.value()));
+            }
+
+            auto selected_camera_sink = old_level->selected_camera_sink();
+            if (selected_camera_sink.has_value())
+            {
+                select_camera_sink(_level->camera_sink(selected_camera_sink.value()));
+            }
+
+            select_room(old_level->selected_room());
+
+            _viewer->set_target(old_target);
+            _settings.auto_orbit = old_auto_orbit;
+            _viewer->set_settings(_settings);
+        }
+        else
+        {
+            _recent_route_prompted = false;
+            open_recent_route();
+        }
     }
 }

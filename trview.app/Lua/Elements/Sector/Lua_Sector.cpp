@@ -14,7 +14,7 @@ namespace trview
 
             int sector_index(lua_State* L)
             {
-                ISector* sector = *static_cast<ISector**>(lua_touserdata(L, 1));
+                auto sector = lua::get_self<ISector>(L);
 
                 const std::string key = lua_tostring(L, 2);
                 if (key == "number")
@@ -28,13 +28,14 @@ namespace trview
 
             int sector_newindex(lua_State* L)
             {
-                ISector* sector = *static_cast<ISector**>(lua_touserdata(L, 1));
+                auto sector = lua::get_self<ISector>(L);
                 sector;
                 return 0;
             }
 
             int sector_gc(lua_State* L)
             {
+                luaL_checktype(L, 1, LUA_TUSERDATA);
                 ISector** userdata = static_cast<ISector**>(lua_touserdata(L, 1));
                 sectors.erase(userdata);
                 return 0;

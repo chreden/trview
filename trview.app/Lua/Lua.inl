@@ -33,5 +33,12 @@ namespace trview
             }
             return 1;
         }
+
+        template <typename T>
+        T* get_self(lua_State* L)
+        {
+            luaL_checktype(L, 1, LUA_TUSERDATA);
+            return *static_cast<T**>(lua_touserdata(L, 1));
+        }
     }
 }

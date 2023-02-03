@@ -15,7 +15,7 @@ namespace trview
 
             int camera_sink_index(lua_State* L)
             {
-                ICameraSink* camera_sink = *static_cast<ICameraSink**>(lua_touserdata(L, 1));
+                auto camera_sink = lua::get_self<ICameraSink>(L);
                 const std::string key = lua_tostring(L, 2);
                 if (key == "box_index")
                 {
@@ -84,7 +84,7 @@ namespace trview
 
             int camera_sink_newindex(lua_State* L)
             {
-                ICameraSink* camera_sink = *static_cast<ICameraSink**>(lua_touserdata(L, 1));
+                auto camera_sink = lua::get_self<ICameraSink>(L);
 
                 const std::string key = lua_tostring(L, 2);
                 if (key == "type")
@@ -129,6 +129,7 @@ namespace trview
 
             int camera_sink_gc(lua_State* L)
             {
+                luaL_checktype(L, 1, LUA_TUSERDATA);
                 ICameraSink** userdata = static_cast<ICameraSink**>(lua_touserdata(L, 1));
                 camera_sinks.erase(userdata);
                 return 0;
