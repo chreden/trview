@@ -9,5 +9,6 @@ namespace trview
     namespace lua
     {
         int create_room(lua_State* L, std::shared_ptr<IRoom> room);
+        std::shared_ptr<IRoom> to_room(lua_State* L, int index);
     }
 }

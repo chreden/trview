@@ -584,6 +584,7 @@ namespace trview
         _token_store += _level->on_alternate_mode_selected += [&](bool enabled) { set_alternate_mode(enabled); };
         _token_store += _level->on_alternate_group_selected += [&](uint16_t group, bool enabled) { set_alternate_group(group, enabled); };
         _token_store += _level->on_level_changed += [&]() { _scene_changed = true; };
+        _token_store += _level->on_room_selected += [&](uint16_t room) { select_room(room); };
 
         _level->set_show_triggers(_ui->toggle(Options::triggers));
         _level->set_show_geometry(_ui->toggle(Options::geometry));

@@ -120,5 +120,17 @@ namespace trview
             lua_setmetatable(L, -2);
             return 1;
         }
+
+        std::shared_ptr<IRoom> to_room(lua_State* L, int index)
+        {
+            luaL_checktype(L, index, LUA_TUSERDATA);
+            IRoom** userdata = static_cast<IRoom**>(lua_touserdata(L, index));
+            auto found = rooms.find(userdata);
+            if (found == rooms.end())
+            {
+                return {};
+            }
+            return found->second;
+        }
     }
 }

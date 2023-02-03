@@ -230,6 +230,7 @@ namespace trview
         }
 
         on_level_changed();
+        on_room_selected(index);
     }
 
     void Level::set_selected_item(uint32_t index)

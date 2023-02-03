@@ -65,12 +65,15 @@ namespace trview
 
             int level_newindex(lua_State* L)
             {
-                ILevel* level = *static_cast<ILevel**>(lua_touserdata(L, 1));
+                auto level = lua::get_self<ILevel>(L);
 
                 const std::string key = lua_tostring(L, 2);
                 if (key == "selected_room")
                 {
-                    
+                    if (auto room = to_room(L, -1))
+                    {
+                        level->set_selected_room(static_cast<uint16_t>(room->number()));
+                    }
                 }
 
                 return 0;
