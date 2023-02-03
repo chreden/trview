@@ -113,7 +113,6 @@ namespace trview
         try
         {
             auto level = load(filename);
-            _file_menu->open_file(filename);
             _settings.add_recent_file(filename);
             _file_menu->set_recent_files(_settings.recent_files);
             _settings_loader->save_user_settings(_settings);
@@ -838,6 +837,7 @@ namespace trview
         auto old_level = _level;
         _level = level;
 
+        _file_menu->open_file(level->filename());
         _level->set_map_colours(_settings.map_colours);
 
         _items_windows->set_items(_level->items());
