@@ -5,13 +5,6 @@ namespace trview
 {
     void Viewer::register_lua ()
     {
-        lua_registry.trview_currentroom = [this] () -> int
-            {
-            if ( _level )
-                return _level->selected_room ();
-            return 0;
-            };
-
         lua_registry.trview_currentroom_set = [this] ( int room )
             {
             select_room ( room );

@@ -24,9 +24,6 @@ namespace trview
         // trview.open (path), opens a new level file
         std::function<void ( const std::string& )> trview_open;
 
-        // review.room, gets the current room 
-        std::function<int ()> trview_currentroom;
-
         // trview.room = integer, sets the current room we are looking at
         std::function<void ( int )> trview_currentroom_set;
 

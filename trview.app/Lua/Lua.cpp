@@ -115,12 +115,7 @@ namespace trview
     {
         const std::string key = lua_tostring ( L, 2 );
 
-        if ( key == "currentroom" )
-        {
-            int room = static_cast<long long> (op->trview_currentroom ());
-            lua_pushinteger ( L, room );
-        }
-        else if ( key == "flip" )
+        if ( key == "flip" )
         {
             bool flip = op->trview_flip ();
             lua_pushboolean ( L, flip );

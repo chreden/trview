@@ -42,6 +42,10 @@ namespace trview
                 {
                     return push_list(L, level->rooms(), { create_room });
                 }
+                else if (key == "selected_room")
+                {
+                    return create_room(L, level->room(level->selected_room()).lock());
+                }
                 else if (key == "triggers")
                 {
                     return push_list(L, level->triggers(), { create_trigger });
@@ -59,8 +63,16 @@ namespace trview
                 return 0;
             }
 
-            int level_newindex(lua_State*)
+            int level_newindex(lua_State* L)
             {
+                ILevel* level = *static_cast<ILevel**>(lua_touserdata(L, 1));
+
+                const std::string key = lua_tostring(L, 2);
+                if (key == "selected_room")
+                {
+                    
+                }
+
                 return 0;
             }
 
