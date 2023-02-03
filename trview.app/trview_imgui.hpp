@@ -22,6 +22,8 @@ namespace trview
     template < typename T >
     void imgui_sort_weak(std::vector<std::weak_ptr<T>>& container, std::vector<std::function<bool(const T&, const T&)>> callbacks, bool force_sort)
     {
+        container.erase(std::remove_if(container.begin(), container.end(), [](auto& e) { return e.lock() == nullptr; }), container.end());
+
         auto specs = ImGui::TableGetSortSpecs();
         if (specs && (specs->SpecsDirty || force_sort))
         {
