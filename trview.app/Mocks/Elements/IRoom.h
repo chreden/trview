@@ -15,6 +15,7 @@ namespace trview
             MOCK_METHOD(void, add_trigger, (const std::weak_ptr<ITrigger>&), (override));
             MOCK_METHOD(void, add_camera_sink, (const std::weak_ptr<ICameraSink>&), (override));
             MOCK_METHOD(int16_t, alternate_group, (), (const, override));
+            MOCK_METHOD(DirectX::SimpleMath::Color, ambient, (), (const, override));
             MOCK_METHOD(int16_t, ambient_intensity_1, (), (const, override));
             MOCK_METHOD(int16_t, ambient_intensity_2, (), (const, override));
             MOCK_METHOD(AlternateMode, alternate_mode, (), (const, override));

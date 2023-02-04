@@ -664,6 +664,12 @@ namespace trview
             _filters.add_getter<float>("Ambient Intensity 2", [](auto&& room) { return room.ambient_intensity_2(); });
             _filters.add_getter<float>("Light Mode", [](auto&& room) { return room.light_mode(); });
         }
+        else
+        {
+            _filters.add_getter<float>("Ambient R", [](auto&& room) { return room.ambient().R(); });
+            _filters.add_getter<float>("Ambient G", [](auto&& room) { return room.ambient().G(); });
+            _filters.add_getter<float>("Ambient B", [](auto&& room) { return room.ambient().B(); });
+        }
     }
 
     void RoomsWindow::render_properties_tab(const std::shared_ptr<IRoom>& room)
