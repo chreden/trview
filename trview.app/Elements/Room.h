@@ -86,6 +86,9 @@ namespace trview
         void set_level(const std::weak_ptr<ILevel>& level) override;
         std::weak_ptr<ILevel> level() const override;
         DirectX::SimpleMath::Color ambient() const override;
+        int16_t ambient_intensity_1() const override;
+        int16_t ambient_intensity_2() const override;
+        int16_t light_mode() const override;
     private:
         void generate_geometry(const IMesh::Source& mesh_source, const trlevel::tr3_room& room);
         void generate_adjacency();
@@ -146,5 +149,8 @@ namespace trview
         std::vector<std::weak_ptr<ICameraSink>> _camera_sinks;
         std::weak_ptr<ILevel> _level;
         DirectX::SimpleMath::Color _ambient{ 1.0f, 1.0f, 1.0f };
+        int16_t _ambient_intensity_1;
+        int16_t _ambient_intensity_2;
+        int16_t _light_mode;
     };
 }

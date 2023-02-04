@@ -15,6 +15,8 @@ namespace trview
             MOCK_METHOD(void, add_trigger, (const std::weak_ptr<ITrigger>&), (override));
             MOCK_METHOD(void, add_camera_sink, (const std::weak_ptr<ICameraSink>&), (override));
             MOCK_METHOD(int16_t, alternate_group, (), (const, override));
+            MOCK_METHOD(int16_t, ambient_intensity_1, (), (const, override));
+            MOCK_METHOD(int16_t, ambient_intensity_2, (), (const, override));
             MOCK_METHOD(AlternateMode, alternate_mode, (), (const, override));
             MOCK_METHOD(int16_t, alternate_room, (), (const, override));
             MOCK_METHOD(DirectX::BoundingBox, bounding_box, (), (const, override));
@@ -24,6 +26,7 @@ namespace trview
             MOCK_METHOD(void, get_contained_transparent_triangles, (ITransparencyBuffer&, const ICamera&, SelectionMode, RenderFilter), (override));
             MOCK_METHOD(void, get_transparent_triangles, (ITransparencyBuffer&, const ICamera&, SelectionMode, RenderFilter), (override));
             MOCK_METHOD(RoomInfo, info, (), (const, override));
+            MOCK_METHOD(int16_t, light_mode, (), (const, override));
             MOCK_METHOD(std::set<uint16_t>, neighbours, (), (const, override));
             MOCK_METHOD(uint16_t, num_x_sectors, (), (const, override));
             MOCK_METHOD(uint16_t, num_z_sectors, (), (const, override));

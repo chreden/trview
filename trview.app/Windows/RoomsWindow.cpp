@@ -658,6 +658,12 @@ namespace trview
         _filters.add_getter<float>("Alternate", [](auto&& room) { return room.alternate_room(); }, [](auto&& room) { return room.alternate_mode() != IRoom::AlternateMode::None; });
         _filters.add_getter<float>("Alternate Group", [](auto&& room) { return room.alternate_group(); }, [](auto&& room) { return room.alternate_mode() != IRoom::AlternateMode::None; });
         _filters.add_getter<bool>("No Space", room_is_no_space);
+        if (_level_version < trlevel::LevelVersion::Tomb4)
+        {
+            _filters.add_getter<float>("Ambient Intensity 1", [](auto&& room) { return room.ambient_intensity_1(); });
+            _filters.add_getter<float>("Ambient Intensity 2", [](auto&& room) { return room.ambient_intensity_2(); });
+            _filters.add_getter<float>("Light Mode", [](auto&& room) { return room.light_mode(); });
+        }
     }
 
     void RoomsWindow::render_properties_tab(const std::shared_ptr<IRoom>& room)
@@ -705,7 +711,13 @@ namespace trview
                 return std::format("R: {}, G: {}, B: {}", static_cast<int>(colour.r * 255), static_cast<int>(colour.g * 255), static_cast<int>(colour.b * 255));
             };
 
-            if (_level_version >= trlevel::LevelVersion::Tomb4)
+            if (_level_version < trlevel::LevelVersion::Tomb4)
+            {
+                add_stat("Ambient Intensity 1", room->ambient_intensity_1());
+                add_stat("Ambient Intensity 2", room->ambient_intensity_2());
+                add_stat("Light Mode", room->light_mode());
+            }
+            else
             {
                 add_stat("Ambient", format_colour(room->ambient()));
             }
