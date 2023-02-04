@@ -24,15 +24,6 @@ namespace trview
         // trview.open (path), opens a new level file
         std::function<void ( const std::string& )> trview_open;
 
-        // trview.room = integer, sets the current room we are looking at
-        std::function<void ( int )> trview_currentroom_set;
-
-        // trview.flip, gets the current flip status true | false
-        std::function<bool ()> trview_flip;
-
-        // trview.flip = true | false, sets whether we are "flipped"
-        std::function<void ( bool )> trview_flip_set;
-        
         // camera.currentmode, gets the current camera mode as either "orbit" | "free" | "axis"
         std::function<std::string ()> camera_currentmode;
 

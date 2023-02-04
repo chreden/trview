@@ -5,21 +5,6 @@ namespace trview
 {
     void Viewer::register_lua ()
     {
-        lua_registry.trview_currentroom_set = [this] ( int room )
-            {
-            select_room ( room );
-            };
-
-        lua_registry.trview_flip = [this] () -> bool
-            {
-            return _level && _level->alternate_mode ();
-            };
-
-        lua_registry.trview_flip_set = [this] ( bool flip )
-            {
-            set_alternate_mode ( flip );
-            };
-
         lua_registry.camera_currentmode = [this] () -> std::string
             {
             switch ( _camera_mode )

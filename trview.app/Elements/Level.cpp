@@ -709,6 +709,11 @@ namespace trview
     // enabled: Whether to render the flipmap.
     void Level::set_alternate_mode(bool enabled)
     {
+        if (_alternate_mode == enabled)
+        {
+            return;
+        }
+
         _alternate_mode = enabled;
         _regenerate_transparency = true;
 
@@ -721,6 +726,7 @@ namespace trview
         }
 
         on_level_changed();
+        on_alternate_mode_selected(enabled);
     }
 
     void Level::set_alternate_group(uint32_t group, bool enabled)

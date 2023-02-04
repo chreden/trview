@@ -110,41 +110,6 @@ namespace trview
         return 0;
     }
 
-    // trview.__index
-    static int trview_index ( lua_State* L )
-    {
-        const std::string key = lua_tostring ( L, 2 );
-
-        if ( key == "flip" )
-        {
-            bool flip = op->trview_flip ();
-            lua_pushboolean ( L, flip );
-        }
-        else
-            return 0;
-
-        return 1;
-    }
-
-    // trview.__newindex
-    static int trview_newindex ( lua_State* L )
-    {
-        const std::string key = lua_tostring ( L, 2 );
-
-        if ( key == "currentroom" )
-        {
-            int room = static_cast<int>(luaL_checkinteger ( L, 3 ));
-            op->trview_currentroom_set ( room );
-        }
-        else if ( key == "flip" )
-        {
-            bool flip = lua_toboolean ( L, 3 );
-            op->trview_flip_set ( flip );
-        }
-
-        return 0;
-    }
-
     // camera.__index
     static int camera_index ( lua_State* L )
     {
@@ -217,8 +182,6 @@ namespace trview
     {
         { "open", trview_open },
         { "recent", trview_recent },
-        { "__index", trview_index },
-        { "__newindex", trview_newindex },
         { NULL, NULL },
     };
 

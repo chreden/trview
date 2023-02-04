@@ -5,6 +5,7 @@ The Level library provides information about the currently loaded Level in trvie
 # Properties
 | Name | Type | Mode | Description |
 | ---- | ---- | ---- | ---- |
+| alternate_mode | boolean | RW | Whether the level flipmap is enabled (TR1-3) |
 | cameras_and_sinks | [CameraSink](camera_sink.md)[] | R | All cameras/sinks in the level |
 | filename | string | R | The path of the level file |
 | floordata | Table | R | All floordata |

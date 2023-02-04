@@ -24,6 +24,11 @@ namespace trview
                 {
                     return push_list(L, level->camera_sinks(), { create_camera_sink });
                 }
+                else if (key == "alternate_mode")
+                {
+                    lua_pushboolean(L, level->alternate_mode());
+                    return 1;
+                }
                 else if (key == "floordata")
                 {
                     lua_newtable(L);
@@ -68,7 +73,12 @@ namespace trview
                 auto level = lua::get_self<ILevel>(L);
 
                 const std::string key = lua_tostring(L, 2);
-                if (key == "selected_room")
+                if (key == "alternate_mode")
+                {
+                    luaL_checktype(L, -1, LUA_TBOOLEAN);
+                    level->set_alternate_mode(lua_toboolean(L, -1));
+                }
+                else if (key == "selected_room")
                 {
                     if (auto room = to_room(L, -1))
                     {

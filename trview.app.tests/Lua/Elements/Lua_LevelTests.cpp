@@ -12,6 +12,32 @@ using namespace trview::tests;
 using namespace trview::mocks;
 using namespace testing;
 
+TEST(Lua_Level, AlternateMode)
+{
+    auto level = mock_shared<MockLevel>();
+    EXPECT_CALL(*level, alternate_mode).WillRepeatedly(Return(true));
+
+    lua_State* L = luaL_newstate();
+    lua::create_level(L, level);
+    lua_setglobal(L, "l");
+
+    ASSERT_EQ(0, luaL_dostring(L, "return l.alternate_mode"));
+    ASSERT_EQ(LUA_TBOOLEAN, lua_type(L, -1));
+    ASSERT_EQ(true, lua_toboolean(L, -1));
+}
+
+TEST(Lua_Level, SetAlternateMode)
+{
+    auto level = mock_shared<MockLevel>();
+    EXPECT_CALL(*level, set_alternate_mode(true));
+
+    lua_State* L = luaL_newstate();
+    lua::create_level(L, level);
+    lua_setglobal(L, "l");
+
+    ASSERT_EQ(0, luaL_dostring(L, "l.alternate_mode = true"));
+}
+
 TEST(Lua_Level, CamerasAndSinks)
 {
     auto cs1 = mock_shared<MockCameraSink>()->with_number(1);
