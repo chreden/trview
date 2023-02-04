@@ -699,6 +699,16 @@ namespace trview
                     add_stat("Alternate Group", room->alternate_group());
                 }
             }
+
+            auto format_colour = [](const Colour& colour)
+            {
+                return std::format("R: {}, G: {}, B: {}", static_cast<int>(colour.r * 255), static_cast<int>(colour.g * 255), static_cast<int>(colour.b * 255));
+            };
+
+            if (_level_version >= trlevel::LevelVersion::Tomb4)
+            {
+                add_stat("Ambient", format_colour(room->ambient()));
+            }
             add_room_flags(*_clipboard, _level_version, *room);
             ImGui::EndTable();
         }

@@ -157,8 +157,8 @@ namespace trlevel
             if (version == LevelVersion::Tomb4)
             {
                 activity.log("Reading room colour");
-                room.room_colour = read<uint32_t>(file);
-                activity.log(std::format("Read room colour {:X}", room.room_colour));
+                room.colour = read<uint32_t>(file);
+                activity.log(std::format("Read room colour {:X}", room.colour));
             }
             else
             {

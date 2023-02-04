@@ -39,7 +39,5 @@ namespace trlevel
         uint16_t water_scheme;
         uint8_t reverb_info;
         uint8_t alternate_group{ 0xff };
-
-        uint32_t room_colour;
     };
 }

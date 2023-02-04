@@ -59,7 +59,8 @@ namespace trview
         _flags(room.flags),
         _parent_level(parent_level),
         _texture_storage(texture_storage),
-        _mesh_source(mesh_source)
+        _mesh_source(mesh_source),
+        _ambient(room.colour)
     {
         // Can only determine HasAlternate or normal at this point. After all rooms have been loaded,
         // the level can fix up the rooms so that they know if they are alternates of another room
@@ -1032,6 +1033,11 @@ namespace trview
     std::weak_ptr<ILevel> Room::level() const
     {
         return _level;
+    }
+
+    DirectX::SimpleMath::Color Room::ambient() const
+    {
+        return _ambient;
     }
 
     std::shared_ptr<ISector> sector_from_point(const IRoom& room, const Vector3& point)

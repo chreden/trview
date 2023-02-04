@@ -130,6 +130,11 @@ namespace trview
         /// <returns>The alternate room number.</returns>
         virtual int16_t alternate_room() const = 0;
         /// <summary>
+        /// Gets the ambient colour for this room.
+        /// </summary>
+        /// <returns>The ambient colour.</returns>
+        virtual DirectX::SimpleMath::Color ambient() const = 0;
+        /// <summary>
         /// Gets the bounding box of the room. The bounding box is pre-transformed to the coordinates of the room.
         /// </summary>
         /// <returns>The transformed room bounding box.</returns>
