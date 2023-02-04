@@ -65,7 +65,7 @@ namespace trview
         int push_list_p(lua_State* L, std::ranges::input_range auto&& range, Func&& func);
 
         template <typename Func>
-        int push_list(lua_State* L, const std::ranges::input_range auto&& range, Func&& func);
+        int push_list(lua_State* L, std::ranges::input_range auto&& range, Func&& func);
 
         template <typename T>
         T* get_self(lua_State* L);

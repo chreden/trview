@@ -20,7 +20,7 @@ namespace trview
         }
 
         template <typename Func>
-        int push_list(lua_State* L, const std::ranges::input_range auto&& range, Func&& func)
+        int push_list(lua_State* L, std::ranges::input_range auto&& range, Func&& func)
         {
             lua_newtable(L);
             int index = 1;
