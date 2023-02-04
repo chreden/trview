@@ -2,7 +2,6 @@
 
 ## Contents
 1. [register](#register)
-2. [trview](#trview)
 3. [camera](#camera)
 
 ## register
@@ -20,21 +19,6 @@ register.onrender(function()
     if camera.mode ~= "orbit" then camera.mode = "orbit" end
     camera.yaw = camera.yaw + 0.01
 end)</pre>
-
-## trview
-Functions to manipulate the trview application.
-
-### trview.open (string)
-Opens the provided path as a new level.
-
-### trview.recent (int)
-Opens one of the recent loaded files. The index provided is 1-based, so 1 is the most recent file.
-
-### trview.flip
-Gets or sets the current flip status of the loaded level. You can use `trview.flip = true` to enable flip, for example.
-
-### trview.currentroom
-Gets or sets the current room in the loaded level.
 
 ## camera
 
