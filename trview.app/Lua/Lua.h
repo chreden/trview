@@ -21,9 +21,6 @@ namespace trview
         // trview.openrecent (integer), opens a new level file from the recent files list, indexed by parameter
         std::function<void (int)> trview_openrecent;
 
-        // trview.open (path), opens a new level file
-        std::function<void ( const std::string& )> trview_open;
-
         // camera.currentmode, gets the current camera mode as either "orbit" | "free" | "axis"
         std::function<std::string ()> camera_currentmode;
 

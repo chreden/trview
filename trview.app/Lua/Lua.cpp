@@ -91,14 +91,6 @@ namespace trview
         return add_callback ( L, LuaEvent::ON_RENDER );
     }
 
-    // trview.open (str) - opens a new file in the viewer
-    static int trview_open ( lua_State* L )
-    {
-        const char* filename = luaL_checkstring ( L, 1 );
-        op->trview_open ( filename );
-        return 0;
-    }
-
     // trview.recent (int) - opens a recent file indexed by parameter
     static int trview_recent ( lua_State* L )
     {
@@ -180,7 +172,6 @@ namespace trview
 
     static const struct luaL_Reg trview_lib[] =
     {
-        { "open", trview_open },
         { "recent", trview_recent },
         { NULL, NULL },
     };
