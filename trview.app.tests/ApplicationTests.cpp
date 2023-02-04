@@ -27,6 +27,7 @@
 #include "TestImgui.h"
 #include <ranges>
 #include <trview.app/Mocks/Windows/IConsoleManager.h>
+#include <trview.app/Mocks/Lua/ILua.h>
 
 using namespace trview;
 using namespace trview::tests;
@@ -77,6 +78,7 @@ namespace
             std::unique_ptr<ITexturesWindowManager> textures_window_manager{ mock_unique<MockTexturesWindowManager>() };
             std::unique_ptr<ICameraSinkWindowManager> camera_sink_window_manager{ mock_unique<MockCameraSinkWindowManager>() };
             std::unique_ptr<IConsoleManager> console_manager{ mock_unique<MockConsoleManager>() };
+            std::unique_ptr<ILua> lua{ mock_unique<MockLua>() };
 
             std::unique_ptr<Application> build()
             {
@@ -85,7 +87,8 @@ namespace
                     trlevel_source, std::move(file_menu), std::move(viewer), route_source, shortcuts,
                     std::move(items_window_manager), std::move(triggers_window_manager), std::move(route_window_manager), std::move(rooms_window_manager),
                     level_source, startup_options, dialogs, files, std::move(imgui_backend), std::move(lights_window_manager), std::move(log_window_manager),
-                    std::move(textures_window_manager), std::move(camera_sink_window_manager), std::move(console_manager));
+                    std::move(textures_window_manager), std::move(camera_sink_window_manager), std::move(console_manager),
+                    std::move(lua));
             }
 
             test_module& with_dialogs(std::shared_ptr<IDialogs> dialogs)
@@ -205,6 +208,12 @@ namespace
             test_module& with_console_manager(std::unique_ptr<IConsoleManager> console_manager)
             {
                 this->console_manager = std::move(console_manager);
+                return *this;
+            }
+
+            test_module& with_lua(std::unique_ptr<ILua> lua)
+            {
+                this->lua = std::move(lua);
                 return *this;
             }
         };
@@ -1011,29 +1020,29 @@ TEST(Application, CameraSinkSelectedFromTriggersWindow)
 TEST(Application, CommandExecutedFromConsoleWindow)
 {
     auto [console_manager_ptr, console_manager] = create_mock<MockConsoleManager>();
+    auto [lua_ptr, lua] = create_mock<MockLua>();
+    EXPECT_CALL(lua, execute("x = 100")).Times(1);
+
     auto application = register_test_module()
         .with_console_manager(std::move(console_manager_ptr))
+        .with_lua(std::move(lua_ptr))
         .build();
 
     console_manager.on_command("x = 100");
-
-    lua_State* L = lua_get_state();
-
-    ASSERT_EQ(0, luaL_dostring(L, "return x"));
-    ASSERT_EQ(LUA_TNUMBER, lua_type(L, -1));
-    ASSERT_EQ(100, lua_tointeger(L, -1));
 }
 
 TEST(Application, PrintRoutedToConsoleManager)
 {
     auto [console_manager_ptr, console_manager] = create_mock<MockConsoleManager>();
+    auto [lua_ptr, lua] = create_mock<MockLua>();
     EXPECT_CALL(console_manager, print(std::string("Hello"))).Times(1);
 
     auto application = register_test_module()
         .with_console_manager(std::move(console_manager_ptr))
+        .with_lua(std::move(lua_ptr))
         .build();
 
-    console_manager.on_command("print(\"Hello\")");
+    lua.on_print("Hello");
 }
 
 TEST(Application, SetCurrentLevelPrompt)

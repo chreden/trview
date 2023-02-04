@@ -112,10 +112,12 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClInclude Include="Lua\Elements\Room\Lua_Room.h" />
     <ClInclude Include="Lua\Elements\Sector\Lua_Sector.h" />
     <ClInclude Include="Lua\Elements\Trigger\Lua_Trigger.h" />
+    <ClInclude Include="Lua\ILua.h" />
     <ClInclude Include="Lua\Vector3.h" />
     <ClCompile Include="Windows\Console\Console.cpp" />
     <ClCompile Include="Windows\Console\ConsoleManager.cpp" />
     <ClInclude Include="Mocks\IApplication.h" />
+    <ClInclude Include="Mocks\Lua\ILua.h" />
     <ClInclude Include="Mocks\Windows\IConsole.h" />
     <ClInclude Include="Mocks\Windows\IConsoleManager.h" />
     <ClInclude Include="Type.inl">
@@ -151,7 +153,6 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClCompile Include="Windows\TriggersWindow.cpp" />
     <ClCompile Include="Windows\TriggersWindowManager.cpp" />
     <ClCompile Include="Windows\Viewer.cpp" />
-    <ClCompile Include="Windows\ViewerLuaRegistry.cpp" />
     <ClCompile Include="Windows\WindowResizer.cpp" />
     <ClInclude Include="UserCancelledException.h" />
     <ClInclude Include="Windows\Console\Console.h" />

@@ -370,8 +370,6 @@ namespace trview
             _timer.reset();
             _camera_input.reset();
         };
-
-        register_lua();
     }
 
     void Viewer::initialise_input()
@@ -682,8 +680,6 @@ namespace trview
         _scene_sprite->render(_scene_target->texture(), 0, 0, window().size().width, window().size().height);
         _ui->set_camera_position(current_camera().position());
         _ui->set_camera_rotation(current_camera().rotation_yaw(), current_camera().rotation_pitch());
-
-        lua_fire_event ( LuaEvent::ON_RENDER );
     }
 
     void Viewer::render_ui()
