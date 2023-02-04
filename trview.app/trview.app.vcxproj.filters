@@ -132,7 +132,6 @@
       <Filter>Resources</Filter>
     </ClCompile>
     <ClCompile Include="Application.cpp" />
-    <ClCompile Include="ApplicationLuaRegistry.cpp" />
     <ClCompile Include="Settings\SettingsLoader.cpp">
       <Filter>Settings</Filter>
     </ClCompile>

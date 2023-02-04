@@ -91,17 +91,6 @@ namespace trview
         return add_callback ( L, LuaEvent::ON_RENDER );
     }
 
-    // trview.recent (int) - opens a recent file indexed by parameter
-    static int trview_recent ( lua_State* L )
-    {
-        auto index = static_cast<int> (luaL_checkinteger ( L, 1 ));
-        if ( index <= 0 )
-            return luaL_error ( L, "provided index %d is not a positive integer", index );
-
-        op->trview_openrecent ( index );
-        return 0;
-    }
-
     // camera.__index
     static int camera_index ( lua_State* L )
     {
@@ -170,12 +159,6 @@ namespace trview
         { NULL, NULL },
     };
 
-    static const struct luaL_Reg trview_lib[] =
-    {
-        { "recent", trview_recent },
-        { NULL, NULL },
-    };
-
     static const struct luaL_Reg camera_lib[] =
     {
         { "__index", camera_index },
@@ -195,12 +178,6 @@ namespace trview
         // register
         luaL_newlib ( L, register_lib );
         lua_setglobal ( L, "register" ); 
-
-        // trview 
-        luaL_newlib ( L, trview_lib );
-        lua_pushvalue ( L, -1 );
-        lua_setmetatable ( L, -2 );
-        lua_setglobal ( L, "trview" );
 
         // camera 
         luaL_newlib ( L, camera_lib );
@@ -249,5 +226,14 @@ namespace trview
     lua_State* lua_get_state()
     {
         return state;
+    }
+
+    namespace lua
+    {
+        int push_string(lua_State* L, const std::string& text)
+        {
+            lua_pushstring(L, text.c_str());
+            return 1;
+        }
     }
 }

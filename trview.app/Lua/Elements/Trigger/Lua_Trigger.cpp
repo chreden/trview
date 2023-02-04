@@ -32,7 +32,7 @@ namespace trview
                 const std::string key = lua_tostring(L, 2);
                 if (key == "commands")
                 {
-                    return push_list(L, trigger->commands(), { create_command });
+                    return push_list(L, trigger->commands(), create_command);
                 }
                 else if (key == "flags")
                 {

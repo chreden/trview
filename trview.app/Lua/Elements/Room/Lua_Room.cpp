@@ -41,15 +41,15 @@ namespace trview
                 }
                 else if (key == "cameras_and_sinks")
                 {
-                    return push_list(L, room->camera_sinks(), { create_camera_sink });
+                    return push_list_p(L, room->camera_sinks(), create_camera_sink);
                 }
                 else if (key == "items")
                 {
-                    return push_list(L, room->items(), { create_item });
+                    return push_list_p(L, room->items(), create_item);
                 }
                 else if (key == "lights")
                 {
-                    return push_list(L, room->lights(), { create_light });
+                    return push_list_p(L, room->lights(), create_light);
                 }
                 else if (key == "number")
                 {
@@ -58,11 +58,11 @@ namespace trview
                 }
                 else if (key == "sectors")
                 {
-                    return push_list(L, room->sectors(), { create_sector });
+                    return push_list(L, room->sectors(), create_sector);
                 }
                 else if (key == "triggers")
                 {
-                    return push_list(L, room->triggers(), { create_trigger });
+                    return push_list_p(L, room->triggers(), create_trigger);
                 }
                 else if (key == "visible")
                 {

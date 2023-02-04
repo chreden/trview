@@ -4,8 +4,8 @@ namespace trview
 {
     namespace lua
     {
-        template <typename T>
-        int push_list(lua_State* L, const std::vector<std::weak_ptr<T>>& range, const std::function<void(lua_State*, const std::shared_ptr<T>&)>& func)
+        template <typename Func>
+        int push_list_p(lua_State* L, std::ranges::input_range auto&& range, Func&& func)
         {
             lua_newtable(L);
             int index = 1;
@@ -19,8 +19,8 @@ namespace trview
             return 1;
         }
 
-        template <typename T>
-        int push_list(lua_State* L, const std::vector<T>& range, const std::function<void(lua_State*, const T&)>& func)
+        template <typename Func>
+        int push_list(lua_State* L, const std::ranges::input_range auto&& range, Func&& func)
         {
             lua_newtable(L);
             int index = 1;

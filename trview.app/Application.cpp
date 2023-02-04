@@ -83,7 +83,6 @@ namespace trview
         setup_viewer(*startup_options);
         _token_store += _console_manager->on_command += lua_execute;
 
-        register_lua();
         lua_init(&lua_registry, this);
 
         lua_registry.print = [this](const std::string& text)
@@ -914,5 +913,10 @@ namespace trview
             _recent_route_prompted = false;
             open_recent_route();
         }
+    }
+
+    UserSettings Application::settings() const
+    {
+        return _settings;
     }
 }

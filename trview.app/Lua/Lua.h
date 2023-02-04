@@ -18,9 +18,6 @@ namespace trview
 
     struct LuaFunctionRegistry
     {
-        // trview.openrecent (integer), opens a new level file from the recent files list, indexed by parameter
-        std::function<void (int)> trview_openrecent;
-
         // camera.currentmode, gets the current camera mode as either "orbit" | "free" | "axis"
         std::function<std::string ()> camera_currentmode;
 
@@ -62,11 +59,13 @@ namespace trview
 
     namespace lua
     {
-        template <typename T>
-        int push_list(lua_State* L, const std::vector<std::weak_ptr<T>>& range, const std::function<void(lua_State*, const std::shared_ptr<T>&)>& func);
+        int push_string(lua_State* L, const std::string& text);
 
-        template <typename T>
-        int push_list(lua_State* L, const std::vector<T>& range, const std::function<void(lua_State*, const T&)>& func);
+        template <typename Func>
+        int push_list_p(lua_State* L, std::ranges::input_range auto&& range, Func&& func);
+
+        template <typename Func>
+        int push_list(lua_State* L, const std::ranges::input_range auto&& range, Func&& func);
 
         template <typename T>
         T* get_self(lua_State* L);

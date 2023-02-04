@@ -59,7 +59,7 @@ namespace trview
                 }
                 else if (key == "triggered_by")
                 {
-                    return push_list(L, item->triggers(), { create_trigger });
+                    return push_list_p(L, item->triggers(), create_trigger);
                 }
                 else if (key == "type")
                 {

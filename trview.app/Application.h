@@ -38,6 +38,7 @@ namespace trview
         virtual std::weak_ptr<ILevel> current_level() const = 0;
         virtual std::shared_ptr<ILevel> load(const std::string& filename) = 0;
         virtual void set_current_level(const std::shared_ptr<ILevel>& level, ILevel::OpenMode open_mode, bool prompt_user) = 0;
+        virtual UserSettings settings() const = 0;
         Event<> on_closing;
     };
 
@@ -77,6 +78,7 @@ namespace trview
         std::weak_ptr<ILevel> current_level() const override;
         std::shared_ptr<ILevel> load(const std::string& filename) override;
         void set_current_level(const std::shared_ptr<ILevel>& level, ILevel::OpenMode open_mode, bool prompt_user) override;
+        UserSettings settings() const override;
     private:
         // Window setup functions.
         void setup_view_menu();
@@ -109,8 +111,6 @@ namespace trview
         void set_room_visibility(const std::weak_ptr<IRoom>& room, bool visible);
         void set_camera_sink_visibility(const std::weak_ptr<ICameraSink>& camera_sink, bool visible);
         void select_sector(const std::weak_ptr<ISector>& sector);
-        // Lua
-        void register_lua();
         bool should_discard_changes();
         void reload();
         void import_route(const std::string& path, bool is_rando);

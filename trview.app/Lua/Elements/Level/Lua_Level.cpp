@@ -22,7 +22,7 @@ namespace trview
                 const std::string key = lua_tostring(L, 2);
                 if (key == "cameras_and_sinks")
                 {
-                    return push_list(L, level->camera_sinks(), { create_camera_sink });
+                    return push_list_p(L, level->camera_sinks(), create_camera_sink);
                 }
                 else if (key == "alternate_mode")
                 {
@@ -37,15 +37,15 @@ namespace trview
                 }
                 else if (key == "items")
                 {
-                    return push_list(L, level->items(), { create_item });
+                    return push_list_p(L, level->items(), create_item);
                 }
                 else if (key == "lights")
                 {
-                    return push_list(L, level->lights(), { create_light });
+                    return push_list_p(L, level->lights(), create_light);
                 }
                 else if (key == "rooms")
                 {
-                    return push_list(L, level->rooms(), { create_room });
+                    return push_list_p(L, level->rooms(), create_room);
                 }
                 else if (key == "selected_room")
                 {
@@ -53,7 +53,7 @@ namespace trview
                 }
                 else if (key == "triggers")
                 {
-                    return push_list(L, level->triggers(), { create_trigger });
+                    return push_list_p(L, level->triggers(), create_trigger);
                 }
                 else if (key == "version")
                 {
