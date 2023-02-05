@@ -65,6 +65,8 @@ namespace trview
         _ambient_intensity_2(room.ambient_intensity_2),
         _light_mode(room.light_mode)
     {
+        _ambient.a = 1.0f;
+
         // Can only determine HasAlternate or normal at this point. After all rooms have been loaded,
         // the level can fix up the rooms so that they know if they are alternates of another room
         // (IsAlternate).
@@ -1038,7 +1040,7 @@ namespace trview
         return _level;
     }
 
-    DirectX::SimpleMath::Color Room::ambient() const
+    Colour Room::ambient() const
     {
         return _ambient;
     }

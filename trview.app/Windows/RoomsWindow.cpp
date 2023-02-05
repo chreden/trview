@@ -666,9 +666,9 @@ namespace trview
         }
         else
         {
-            _filters.add_getter<float>("Ambient R", [](auto&& room) { return room.ambient().R(); });
-            _filters.add_getter<float>("Ambient G", [](auto&& room) { return room.ambient().G(); });
-            _filters.add_getter<float>("Ambient B", [](auto&& room) { return room.ambient().B(); });
+            _filters.add_getter<float>("Ambient R", [](auto&& room) { return room.ambient().r; });
+            _filters.add_getter<float>("Ambient G", [](auto&& room) { return room.ambient().g; });
+            _filters.add_getter<float>("Ambient B", [](auto&& room) { return room.ambient().b; });
         }
     }
 
@@ -726,6 +726,10 @@ namespace trview
             else
             {
                 add_stat("Ambient", format_colour(room->ambient()));
+                auto ambient = room->ambient();
+                ImGui::SameLine();
+                ImGui::SetCursorPosY(ImGui::GetCursorPosY() - 2.0f);
+                ImGui::ColorButton("##ambientbutton", ImVec4(ambient.r, ambient.g, ambient.b, 1.0f), 0, ImVec2(16, 16));
             }
             add_room_flags(*_clipboard, _level_version, *room);
             ImGui::EndTable();

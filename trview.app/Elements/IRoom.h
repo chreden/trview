@@ -133,7 +133,7 @@ namespace trview
         /// Gets the ambient colour for this room.
         /// </summary>
         /// <returns>The ambient colour.</returns>
-        virtual DirectX::SimpleMath::Color ambient() const = 0;
+        virtual Colour ambient() const = 0;
         virtual int16_t ambient_intensity_1() const = 0;
         virtual int16_t ambient_intensity_2() const = 0;
         /// <summary>
