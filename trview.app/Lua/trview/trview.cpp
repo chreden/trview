@@ -46,6 +46,10 @@ namespace trview
                     lua_pushcfunction(L, trview_load);
                     return 1;
                 }
+                else if (key == "recent_files")
+                {
+                    return push_list(L, application->settings().recent_files, push_string);
+                }
                 return 0;
             }
 

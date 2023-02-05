@@ -1,4 +1,5 @@
 #include <trview.app/Lua/Elements/Level/Lua_Level.h>
+#include <trview.app/Lua/Elements/Room/Lua_Room.h>
 #include <trview.app/Mocks/Elements/ILevel.h>
 #include <trview.app/Mocks/Elements/ICameraSink.h>
 #include <trview.app/Mocks/Elements/ILight.h>
@@ -10,6 +11,32 @@ using namespace trview;
 using namespace trview::tests;
 using namespace trview::mocks;
 using namespace testing;
+
+TEST(Lua_Level, AlternateMode)
+{
+    auto level = mock_shared<MockLevel>();
+    EXPECT_CALL(*level, alternate_mode).WillRepeatedly(Return(true));
+
+    lua_State* L = luaL_newstate();
+    lua::create_level(L, level);
+    lua_setglobal(L, "l");
+
+    ASSERT_EQ(0, luaL_dostring(L, "return l.alternate_mode"));
+    ASSERT_EQ(LUA_TBOOLEAN, lua_type(L, -1));
+    ASSERT_EQ(true, lua_toboolean(L, -1));
+}
+
+TEST(Lua_Level, SetAlternateMode)
+{
+    auto level = mock_shared<MockLevel>();
+    EXPECT_CALL(*level, set_alternate_mode(true));
+
+    lua_State* L = luaL_newstate();
+    lua::create_level(L, level);
+    lua_setglobal(L, "l");
+
+    ASSERT_EQ(0, luaL_dostring(L, "l.alternate_mode = true"));
+}
 
 TEST(Lua_Level, CamerasAndSinks)
 {
@@ -132,6 +159,39 @@ TEST(Lua_Level, Rooms)
     ASSERT_EQ(0, luaL_dostring(L, "return l.rooms[2].number"));
     ASSERT_EQ(LUA_TNUMBER, lua_type(L, -1));
     ASSERT_EQ(200, lua_tonumber(L, -1));
+}
+
+TEST(Lua_Level, SelectedRoom)
+{
+    auto room = mock_shared<MockRoom>()->with_number(200);
+    auto level = mock_shared<MockLevel>();
+    EXPECT_CALL(*level, room(200)).WillRepeatedly(Return(room));
+    EXPECT_CALL(*level, selected_room).WillRepeatedly(Return(200));
+
+    lua_State* L = luaL_newstate();
+    lua::create_level(L, level);
+    lua_setglobal(L, "l");
+
+    ASSERT_EQ(0, luaL_dostring(L, "return l.selected_room"));
+    ASSERT_EQ(LUA_TUSERDATA, lua_type(L, -1));
+    ASSERT_EQ(0, luaL_dostring(L, "return l.selected_room.number"));
+    ASSERT_EQ(LUA_TNUMBER, lua_type(L, -1));
+    ASSERT_EQ(200, lua_tonumber(L, -1));
+}
+
+TEST(Lua_Level, SetSelectedRoom)
+{
+    auto room = mock_shared<MockRoom>()->with_number(200);
+    auto level = mock_shared<MockLevel>();
+    EXPECT_CALL(*level, set_selected_room(200));
+
+    lua_State* L = luaL_newstate();
+    lua::create_level(L, level);
+    lua_setglobal(L, "l");
+    lua::create_room(L, room);
+    lua_setglobal(L, "r");
+
+    ASSERT_EQ(0, luaL_dostring(L, "l.selected_room = r"));
 }
 
 TEST(Lua_Level, Triggers)

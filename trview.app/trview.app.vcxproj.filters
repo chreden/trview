@@ -122,9 +122,6 @@
     <ClCompile Include="Windows\Viewer.cpp">
       <Filter>Windows</Filter>
     </ClCompile>
-    <ClCompile Include="Windows\ViewerLuaRegistry.cpp">
-      <Filter>Windows</Filter>
-    </ClCompile>
     <ClCompile Include="Resources\DefaultShaders.cpp">
       <Filter>Resources</Filter>
     </ClCompile>
@@ -132,7 +129,6 @@
       <Filter>Resources</Filter>
     </ClCompile>
     <ClCompile Include="Application.cpp" />
-    <ClCompile Include="ApplicationLuaRegistry.cpp" />
     <ClCompile Include="Settings\SettingsLoader.cpp">
       <Filter>Settings</Filter>
     </ClCompile>
@@ -938,6 +934,12 @@
     <ClInclude Include="Mocks\IApplication.h">
       <Filter>Mocks</Filter>
     </ClInclude>
+    <ClInclude Include="Lua\ILua.h">
+      <Filter>Lua</Filter>
+    </ClInclude>
+    <ClInclude Include="Mocks\Lua\ILua.h">
+      <Filter>Mocks\Lua</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Windows">
@@ -1104,6 +1106,9 @@
     </Filter>
     <Filter Include="Lua\Elements\Light">
       <UniqueIdentifier>{79ff7d81-36c4-49d6-9aa4-053931d3d2b7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Mocks\Lua">
+      <UniqueIdentifier>{b429775f-3bb8-497e-9dd5-d695d6fc7db5}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

@@ -35,7 +35,7 @@ namespace trview
                         std::ranges::transform(camera_sink->inferred_rooms(),
                             std::back_inserter(inferred_rooms),
                             [&level](const auto& r) { return level->room(r); });
-                        return push_list(L, inferred_rooms, { create_room });
+                        return push_list_p(L, inferred_rooms, create_room);
                     }
                 }
                 else if (key == "number")
@@ -72,7 +72,7 @@ namespace trview
                 }
                 else if (key == "triggered_by")
                 {
-                    return push_list(L, camera_sink->triggers(), { create_trigger });
+                    return push_list_p(L, camera_sink->triggers(), create_trigger);
                 }
                 else if (key == "visible")
                 {

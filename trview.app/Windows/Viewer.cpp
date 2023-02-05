@@ -370,8 +370,6 @@ namespace trview
             _timer.reset();
             _camera_input.reset();
         };
-
-        register_lua();
     }
 
     void Viewer::initialise_input()
@@ -584,6 +582,7 @@ namespace trview
         _token_store += _level->on_alternate_mode_selected += [&](bool enabled) { set_alternate_mode(enabled); };
         _token_store += _level->on_alternate_group_selected += [&](uint16_t group, bool enabled) { set_alternate_group(group, enabled); };
         _token_store += _level->on_level_changed += [&]() { _scene_changed = true; };
+        _token_store += _level->on_room_selected += [&](uint16_t room) { select_room(room); };
 
         _level->set_show_triggers(_ui->toggle(Options::triggers));
         _level->set_show_geometry(_ui->toggle(Options::geometry));
@@ -681,8 +680,6 @@ namespace trview
         _scene_sprite->render(_scene_target->texture(), 0, 0, window().size().width, window().size().height);
         _ui->set_camera_position(current_camera().position());
         _ui->set_camera_rotation(current_camera().rotation_yaw(), current_camera().rotation_pitch());
-
-        lua_fire_event ( LuaEvent::ON_RENDER );
     }
 
     void Viewer::render_ui()

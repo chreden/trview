@@ -124,7 +124,6 @@ namespace trview
         void select_next_orbit();
         void select_pick(const PickResult& pick);
         void set_show_rooms(bool show);
-        void register_lua();
         void apply_camera_settings();
         void set_sector_highlight(const std::shared_ptr<ISector>& sector);
         void set_show_camera_sinks(bool show);

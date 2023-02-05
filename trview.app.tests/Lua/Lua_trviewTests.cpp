@@ -28,6 +28,27 @@ TEST(Lua_trview, Level)
     ASSERT_STREQ("test.tr2", lua_tostring(L, -1));
 }
 
+TEST(Lua_trview, RecentFiles)
+{
+    UserSettings settings{};
+    settings.recent_files = { "test1.tr2", "test2.tr2" };
+
+    auto application = mock_shared<MockApplication>();
+    EXPECT_CALL(*application, settings).WillRepeatedly(Return(settings));
+
+    lua_State* L = luaL_newstate();
+    lua::trview_register(L, application.get());
+
+    ASSERT_EQ(0, luaL_dostring(L, "return trview.recent_files"));
+    ASSERT_EQ(LUA_TTABLE, lua_type(L, -1));
+    ASSERT_EQ(0, luaL_dostring(L, "return trview.recent_files[1]"));
+    ASSERT_EQ(LUA_TSTRING, lua_type(L, -1));
+    ASSERT_STREQ("test1.tr2", lua_tostring(L, -1));
+    ASSERT_EQ(0, luaL_dostring(L, "return trview.recent_files[2]"));
+    ASSERT_EQ(LUA_TSTRING, lua_type(L, -1));
+    ASSERT_STREQ("test2.tr2", lua_tostring(L, -1));
+}
+
 TEST(Lua_trview, SetLevel)
 {
     auto application = mock_shared<MockApplication>();

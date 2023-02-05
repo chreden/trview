@@ -4,84 +4,33 @@
 #include <external/lua/src/lauxlib.h>
 #include <string>
 #include <trview.common/Event.h>
-
 #include <functional>
+#include "ILua.h"
 
 namespace trview
 {
     struct IApplication;
 
-    enum class LuaEvent
+    class Lua final : public ILua
     {
-        ON_RENDER,
+    public:
+        Lua();
+        ~Lua();
+        void execute(const std::string& command) override;
+        void initialise(IApplication* application) override;
+    private:
+        lua_State* L{ nullptr };
     };
-
-    struct LuaFunctionRegistry
-    {
-        // trview.openrecent (integer), opens a new level file from the recent files list, indexed by parameter
-        std::function<void (int)> trview_openrecent;
-
-        // trview.open (path), opens a new level file
-        std::function<void ( const std::string& )> trview_open;
-
-        // review.room, gets the current room 
-        std::function<int ()> trview_currentroom;
-
-        // trview.room = integer, sets the current room we are looking at
-        std::function<void ( int )> trview_currentroom_set;
-
-        // trview.flip, gets the current flip status true | false
-        std::function<bool ()> trview_flip;
-
-        // trview.flip = true | false, sets whether we are "flipped"
-        std::function<void ( bool )> trview_flip_set;
-        
-        // camera.currentmode, gets the current camera mode as either "orbit" | "free" | "axis"
-        std::function<std::string ()> camera_currentmode;
-
-        // camera.currentmode = "orbit" | "free" | "axis"
-        std::function<void ( const std::string& )> camera_currentmode_set;
-
-        // camera.x, camera.y, camera.z
-        std::function<std::map<std::string, float> ()> camera_position;
-
-        // camera.x = N, camera.y = N, camera.z = N
-        std::function<void ( const std::map<std::string, float>& )> camera_position_set;
-
-        // camera.yaw => integer
-        std::function<double ()> camera_yaw;
-
-        // camera.yaw = N
-        std::function<void ( double )> camera_yaw_set;
-
-        // camera.pitch => integer 
-        std::function<double ()> camera_pitch;
-
-        // camera.pitch = N
-        std::function<void ( double )> camera_pitch_set;
-
-        // print() override        
-        std::function<void ( const std::string& )>  print;
-
-        // called when a lua script has gone crazy and may be stuck 
-        // should return T/F for whether to kill the script
-        std::function<bool ()> on_crazy;
-    }; 
-
-    extern LuaFunctionRegistry lua_registry;
-
-    void lua_init(LuaFunctionRegistry * reg, IApplication* application);
-    void lua_execute ( const std::string& command );
-    void lua_fire_event ( LuaEvent type );
-    lua_State* lua_get_state();
 
     namespace lua
     {
-        template <typename T>
-        int push_list(lua_State* L, const std::vector<std::weak_ptr<T>>& range, const std::function<void(lua_State*, const std::shared_ptr<T>&)>& func);
+        int push_string(lua_State* L, const std::string& text);
 
-        template <typename T>
-        int push_list(lua_State* L, const std::vector<T>& range, const std::function<void(lua_State*, const T&)>& func);
+        template <typename Func>
+        int push_list_p(lua_State* L, std::ranges::input_range auto&& range, Func&& func);
+
+        template <typename Func>
+        int push_list(lua_State* L, std::ranges::input_range auto&& range, Func&& func);
 
         template <typename T>
         T* get_self(lua_State* L);

@@ -22,7 +22,12 @@ namespace trview
                 const std::string key = lua_tostring(L, 2);
                 if (key == "cameras_and_sinks")
                 {
-                    return push_list(L, level->camera_sinks(), { create_camera_sink });
+                    return push_list_p(L, level->camera_sinks(), create_camera_sink);
+                }
+                else if (key == "alternate_mode")
+                {
+                    lua_pushboolean(L, level->alternate_mode());
+                    return 1;
                 }
                 else if (key == "floordata")
                 {
@@ -32,19 +37,23 @@ namespace trview
                 }
                 else if (key == "items")
                 {
-                    return push_list(L, level->items(), { create_item });
+                    return push_list_p(L, level->items(), create_item);
                 }
                 else if (key == "lights")
                 {
-                    return push_list(L, level->lights(), { create_light });
+                    return push_list_p(L, level->lights(), create_light);
                 }
                 else if (key == "rooms")
                 {
-                    return push_list(L, level->rooms(), { create_room });
+                    return push_list_p(L, level->rooms(), create_room);
+                }
+                else if (key == "selected_room")
+                {
+                    return create_room(L, level->room(level->selected_room()).lock());
                 }
                 else if (key == "triggers")
                 {
-                    return push_list(L, level->triggers(), { create_trigger });
+                    return push_list_p(L, level->triggers(), create_trigger);
                 }
                 else if (key == "version")
                 {
@@ -59,8 +68,24 @@ namespace trview
                 return 0;
             }
 
-            int level_newindex(lua_State*)
+            int level_newindex(lua_State* L)
             {
+                auto level = lua::get_self<ILevel>(L);
+
+                const std::string key = lua_tostring(L, 2);
+                if (key == "alternate_mode")
+                {
+                    luaL_checktype(L, -1, LUA_TBOOLEAN);
+                    level->set_alternate_mode(lua_toboolean(L, -1));
+                }
+                else if (key == "selected_room")
+                {
+                    if (auto room = to_room(L, -1))
+                    {
+                        level->set_selected_room(static_cast<uint16_t>(room->number()));
+                    }
+                }
+
                 return 0;
             }
 
