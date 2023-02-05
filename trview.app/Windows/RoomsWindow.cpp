@@ -723,9 +723,17 @@ namespace trview
             if (_level_version < trlevel::LevelVersion::Tomb4)
             {
                 add_stat("Ambient Intensity", room->ambient_intensity_1());
+                float ambient_intensity = 1.0f - static_cast<float>(room->ambient_intensity_1()) / static_cast<float>(0x1fff);
+                ImGui::SameLine();
+                ImGui::SetCursorPosY(ImGui::GetCursorPosY() - 2.0f);
+                ImGui::ColorButton("##ambientintensitybutton", ImVec4(ambient_intensity, ambient_intensity, ambient_intensity, 1.0f), 0, ImVec2(16, 16));
                 if (_level_version > trlevel::LevelVersion::Tomb1)
                 {
                     add_stat("Ambient Intensity 2", room->ambient_intensity_2());
+                    float ambient_intensity2 = 1.0f - static_cast<float>(room->ambient_intensity_2()) / static_cast<float>(0x1fff);
+                    ImGui::SameLine();
+                    ImGui::SetCursorPosY(ImGui::GetCursorPosY() - 2.0f);
+                    ImGui::ColorButton("##ambientintensity2button", ImVec4(ambient_intensity2, ambient_intensity2, ambient_intensity2, 1.0f), 0, ImVec2(16, 16));
                     add_stat("Light Mode", room->light_mode());
                 }
             }
