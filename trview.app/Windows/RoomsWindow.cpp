@@ -660,9 +660,12 @@ namespace trview
         _filters.add_getter<bool>("No Space", room_is_no_space);
         if (_level_version < trlevel::LevelVersion::Tomb4)
         {
-            _filters.add_getter<float>("Ambient Intensity 1", [](auto&& room) { return room.ambient_intensity_1(); });
-            _filters.add_getter<float>("Ambient Intensity 2", [](auto&& room) { return room.ambient_intensity_2(); });
-            _filters.add_getter<float>("Light Mode", [](auto&& room) { return room.light_mode(); });
+            _filters.add_getter<float>("Ambient Intensity", [](auto&& room) { return room.ambient_intensity_1(); });
+            if (_level_version > trlevel::LevelVersion::Tomb1)
+            {
+                _filters.add_getter<float>("Ambient Intensity 2", [](auto&& room) { return room.ambient_intensity_2(); });
+                _filters.add_getter<float>("Light Mode", [](auto&& room) { return room.light_mode(); });
+            }
         }
         else
         {
@@ -719,9 +722,12 @@ namespace trview
 
             if (_level_version < trlevel::LevelVersion::Tomb4)
             {
-                add_stat("Ambient Intensity 1", room->ambient_intensity_1());
-                add_stat("Ambient Intensity 2", room->ambient_intensity_2());
-                add_stat("Light Mode", room->light_mode());
+                add_stat("Ambient Intensity", room->ambient_intensity_1());
+                if (_level_version > trlevel::LevelVersion::Tomb1)
+                {
+                    add_stat("Ambient Intensity 2", room->ambient_intensity_2());
+                    add_stat("Light Mode", room->light_mode());
+                }
             }
             else
             {
