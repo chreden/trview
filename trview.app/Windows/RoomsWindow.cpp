@@ -69,6 +69,11 @@ namespace trview
             add_flag("Bit 15", room.flag(IRoom::Flag::Bit15));
             add_flag("No Space", room_is_no_space(room));
         }
+
+        float ambient_percentage(int16_t ambient)
+        {
+            return 1.0f - static_cast<float>(ambient) / static_cast<float>(0x1fff);
+        }
     }
 
     IRoomsWindow::~IRoomsWindow()
@@ -661,9 +666,11 @@ namespace trview
         if (_level_version < trlevel::LevelVersion::Tomb4)
         {
             _filters.add_getter<float>("Ambient Intensity", [](auto&& room) { return room.ambient_intensity_1(); });
+            _filters.add_getter<float>("Ambient Intensity %", [](auto&& room) { return ambient_percentage(room.ambient_intensity_1()) * 100.0f; });
             if (_level_version > trlevel::LevelVersion::Tomb1)
             {
                 _filters.add_getter<float>("Ambient Intensity 2", [](auto&& room) { return room.ambient_intensity_2(); });
+                _filters.add_getter<float>("Ambient Intensity 2 %", [](auto&& room) { return ambient_percentage(room.ambient_intensity_2()) * 100.0f; });
                 _filters.add_getter<float>("Light Mode", [](auto&& room) { return room.light_mode(); });
             }
         }
@@ -723,7 +730,7 @@ namespace trview
             if (_level_version < trlevel::LevelVersion::Tomb4)
             {
                 add_stat("Ambient Intensity", room->ambient_intensity_1());
-                float ambient_intensity = 1.0f - static_cast<float>(room->ambient_intensity_1()) / static_cast<float>(0x1fff);
+                float ambient_intensity = ambient_percentage(room->ambient_intensity_1());
                 ImGui::SameLine();
                 ImGui::Text("%.2f%%", ambient_intensity * 100.0f);
                 ImGui::SameLine();
@@ -732,9 +739,9 @@ namespace trview
                 if (_level_version > trlevel::LevelVersion::Tomb1)
                 {
                     add_stat("Ambient Intensity 2", room->ambient_intensity_2());
-                    float ambient_intensity2 = 1.0f - static_cast<float>(room->ambient_intensity_2()) / static_cast<float>(0x1fff);
+                    float ambient_intensity2 = ambient_percentage(room->ambient_intensity_2());
                     ImGui::SameLine();
-                    ImGui::Text("%.2f%%", ambient_intensity * 100.0f);
+                    ImGui::Text("%.2f%%", ambient_intensity2 * 100.0f);
                     ImGui::SameLine();
                     ImGui::SetCursorPosY(ImGui::GetCursorPosY() - 2.0f);
                     ImGui::ColorButton("##ambientintensity2button", ImVec4(ambient_intensity2, ambient_intensity2, ambient_intensity2, 1.0f), 0, ImVec2(16, 16));
