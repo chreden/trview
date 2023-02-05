@@ -1098,4 +1098,20 @@ namespace trview
             break;
         }
     }
+
+    std::string light_mode_name(int16_t light_mode)
+    {
+        switch (light_mode)
+        {
+        case 0:
+            return "Default";
+        case 1:
+            return "Flickering";
+        case 2:
+            return "Fade";
+        case 3:
+            return "Sunset";
+        }
+        return "Unknown";
+    }
 }

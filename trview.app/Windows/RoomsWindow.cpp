@@ -669,8 +669,11 @@ namespace trview
             _filters.add_getter<float>("Ambient Intensity %", [](auto&& room) { return ambient_percentage(room.ambient_intensity_1()) * 100.0f; });
             if (_level_version > trlevel::LevelVersion::Tomb1)
             {
-                _filters.add_getter<float>("Ambient Intensity 2", [](auto&& room) { return room.ambient_intensity_2(); });
-                _filters.add_getter<float>("Ambient Intensity 2 %", [](auto&& room) { return ambient_percentage(room.ambient_intensity_2()) * 100.0f; });
+                if (_level_version == trlevel::LevelVersion::Tomb2)
+                {
+                    _filters.add_getter<float>("Ambient Intensity 2", [](auto&& room) { return room.ambient_intensity_2(); });
+                    _filters.add_getter<float>("Ambient Intensity 2 %", [](auto&& room) { return ambient_percentage(room.ambient_intensity_2()) * 100.0f; });
+                }
                 _filters.add_getter<float>("Light Mode", [](auto&& room) { return room.light_mode(); });
             }
         }
@@ -738,14 +741,17 @@ namespace trview
                 ImGui::ColorButton("##ambientintensitybutton", ImVec4(ambient_intensity, ambient_intensity, ambient_intensity, 1.0f), 0, ImVec2(16, 16));
                 if (_level_version > trlevel::LevelVersion::Tomb1)
                 {
-                    add_stat("Ambient Intensity 2", room->ambient_intensity_2());
-                    float ambient_intensity2 = ambient_percentage(room->ambient_intensity_2());
-                    ImGui::SameLine();
-                    ImGui::Text("%.2f%%", ambient_intensity2 * 100.0f);
-                    ImGui::SameLine();
-                    ImGui::SetCursorPosY(ImGui::GetCursorPosY() - 2.0f);
-                    ImGui::ColorButton("##ambientintensity2button", ImVec4(ambient_intensity2, ambient_intensity2, ambient_intensity2, 1.0f), 0, ImVec2(16, 16));
-                    add_stat("Light Mode", room->light_mode());
+                    if (_level_version == trlevel::LevelVersion::Tomb2)
+                    {
+                        add_stat("Ambient Intensity 2", room->ambient_intensity_2());
+                        float ambient_intensity2 = ambient_percentage(room->ambient_intensity_2());
+                        ImGui::SameLine();
+                        ImGui::Text("%.2f%%", ambient_intensity2 * 100.0f);
+                        ImGui::SameLine();
+                        ImGui::SetCursorPosY(ImGui::GetCursorPosY() - 2.0f);
+                        ImGui::ColorButton("##ambientintensity2button", ImVec4(ambient_intensity2, ambient_intensity2, ambient_intensity2, 1.0f), 0, ImVec2(16, 16));
+                    }
+                    add_stat("Light Mode", std::format("{} ({})", room->light_mode(), light_mode_name(room->light_mode())));
                 }
             }
             else

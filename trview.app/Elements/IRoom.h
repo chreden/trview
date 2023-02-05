@@ -329,5 +329,7 @@ namespace trview
     std::shared_ptr<ISector> sector_from_point(const IRoom& room, const DirectX::SimpleMath::Vector3& point);
 
     std::string to_string(IRoom::AlternateMode mode);
+
+    std::string light_mode_name(int16_t light_mode);
 }
 
