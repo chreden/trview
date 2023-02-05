@@ -59,8 +59,14 @@ namespace trview
         _flags(room.flags),
         _parent_level(parent_level),
         _texture_storage(texture_storage),
-        _mesh_source(mesh_source)
+        _mesh_source(mesh_source),
+        _ambient(room.colour),
+        _ambient_intensity_1(room.ambient_intensity_1),
+        _ambient_intensity_2(room.ambient_intensity_2),
+        _light_mode(room.light_mode)
     {
+        _ambient.a = 1.0f;
+
         // Can only determine HasAlternate or normal at this point. After all rooms have been loaded,
         // the level can fix up the rooms so that they know if they are alternates of another room
         // (IsAlternate).
@@ -1034,6 +1040,26 @@ namespace trview
         return _level;
     }
 
+    Colour Room::ambient() const
+    {
+        return _ambient;
+    }
+
+    int16_t Room::ambient_intensity_1() const
+    {
+        return _ambient_intensity_1;
+    }
+
+    int16_t Room::ambient_intensity_2() const
+    {
+        return _ambient_intensity_2;
+    }
+
+    int16_t Room::light_mode() const
+    {
+        return _light_mode;
+    }
+
     std::shared_ptr<ISector> sector_from_point(const IRoom& room, const Vector3& point)
     {
         const auto info = room.info();
@@ -1071,5 +1097,21 @@ namespace trview
             return "none";
             break;
         }
+    }
+
+    std::string light_mode_name(int16_t light_mode)
+    {
+        switch (light_mode)
+        {
+        case 0:
+            return "Default";
+        case 1:
+            return "Flickering";
+        case 2:
+            return "Fade";
+        case 3:
+            return "Sunset";
+        }
+        return "Unknown";
     }
 }

@@ -69,6 +69,11 @@ namespace trview
             add_flag("Bit 15", room.flag(IRoom::Flag::Bit15));
             add_flag("No Space", room_is_no_space(room));
         }
+
+        float ambient_percentage(int16_t ambient)
+        {
+            return 1.0f - static_cast<float>(ambient) / static_cast<float>(0x1fff);
+        }
     }
 
     IRoomsWindow::~IRoomsWindow()
@@ -658,6 +663,26 @@ namespace trview
         _filters.add_getter<float>("Alternate", [](auto&& room) { return room.alternate_room(); }, [](auto&& room) { return room.alternate_mode() != IRoom::AlternateMode::None; });
         _filters.add_getter<float>("Alternate Group", [](auto&& room) { return room.alternate_group(); }, [](auto&& room) { return room.alternate_mode() != IRoom::AlternateMode::None; });
         _filters.add_getter<bool>("No Space", room_is_no_space);
+        if (_level_version < trlevel::LevelVersion::Tomb4)
+        {
+            _filters.add_getter<float>("Ambient Intensity", [](auto&& room) { return room.ambient_intensity_1(); });
+            _filters.add_getter<float>("Ambient Intensity %", [](auto&& room) { return ambient_percentage(room.ambient_intensity_1()) * 100.0f; });
+            if (_level_version > trlevel::LevelVersion::Tomb1)
+            {
+                if (_level_version == trlevel::LevelVersion::Tomb2)
+                {
+                    _filters.add_getter<float>("Ambient Intensity 2", [](auto&& room) { return room.ambient_intensity_2(); });
+                    _filters.add_getter<float>("Ambient Intensity 2 %", [](auto&& room) { return ambient_percentage(room.ambient_intensity_2()) * 100.0f; });
+                }
+                _filters.add_getter<float>("Light Mode", [](auto&& room) { return room.light_mode(); });
+            }
+        }
+        else
+        {
+            _filters.add_getter<float>("Ambient R", [](auto&& room) { return room.ambient().r; });
+            _filters.add_getter<float>("Ambient G", [](auto&& room) { return room.ambient().g; });
+            _filters.add_getter<float>("Ambient B", [](auto&& room) { return room.ambient().b; });
+        }
     }
 
     void RoomsWindow::render_properties_tab(const std::shared_ptr<IRoom>& room)
@@ -698,6 +723,44 @@ namespace trview
                 {
                     add_stat("Alternate Group", room->alternate_group());
                 }
+            }
+
+            auto format_colour = [](const Colour& colour)
+            {
+                return std::format("R: {}, G: {}, B: {}", static_cast<int>(colour.r * 255), static_cast<int>(colour.g * 255), static_cast<int>(colour.b * 255));
+            };
+
+            if (_level_version < trlevel::LevelVersion::Tomb4)
+            {
+                add_stat("Ambient Intensity", room->ambient_intensity_1());
+                float ambient_intensity = ambient_percentage(room->ambient_intensity_1());
+                ImGui::SameLine();
+                ImGui::Text("%.2f%%", ambient_intensity * 100.0f);
+                ImGui::SameLine();
+                ImGui::SetCursorPosY(ImGui::GetCursorPosY() - 2.0f);
+                ImGui::ColorButton("##ambientintensitybutton", ImVec4(ambient_intensity, ambient_intensity, ambient_intensity, 1.0f), 0, ImVec2(16, 16));
+                if (_level_version > trlevel::LevelVersion::Tomb1)
+                {
+                    if (_level_version == trlevel::LevelVersion::Tomb2)
+                    {
+                        add_stat("Ambient Intensity 2", room->ambient_intensity_2());
+                        float ambient_intensity2 = ambient_percentage(room->ambient_intensity_2());
+                        ImGui::SameLine();
+                        ImGui::Text("%.2f%%", ambient_intensity2 * 100.0f);
+                        ImGui::SameLine();
+                        ImGui::SetCursorPosY(ImGui::GetCursorPosY() - 2.0f);
+                        ImGui::ColorButton("##ambientintensity2button", ImVec4(ambient_intensity2, ambient_intensity2, ambient_intensity2, 1.0f), 0, ImVec2(16, 16));
+                    }
+                    add_stat("Light Mode", std::format("{} ({})", room->light_mode(), light_mode_name(room->light_mode())));
+                }
+            }
+            else
+            {
+                add_stat("Ambient", format_colour(room->ambient()));
+                auto ambient = room->ambient();
+                ImGui::SameLine();
+                ImGui::SetCursorPosY(ImGui::GetCursorPosY() - 2.0f);
+                ImGui::ColorButton("##ambientbutton", ImVec4(ambient.r, ambient.g, ambient.b, 1.0f), 0, ImVec2(16, 16));
             }
             add_room_flags(*_clipboard, _level_version, *room);
             ImGui::EndTable();

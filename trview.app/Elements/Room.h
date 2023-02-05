@@ -27,7 +27,7 @@ namespace trview
     {
     public:
         explicit Room(const IMesh::Source& mesh_source,
-            const trlevel::ILevel& level, 
+            const trlevel::ILevel& level,
             const trlevel::tr3_room& room,
             std::shared_ptr<ILevelTextureStorage> texture_storage,
             const IMeshStorage& mesh_storage,
@@ -85,6 +85,10 @@ namespace trview
         std::vector<std::weak_ptr<IItem>> items() const override;
         void set_level(const std::weak_ptr<ILevel>& level) override;
         std::weak_ptr<ILevel> level() const override;
+        Colour ambient() const override;
+        int16_t ambient_intensity_1() const override;
+        int16_t ambient_intensity_2() const override;
+        int16_t light_mode() const override;
     private:
         void generate_geometry(const IMesh::Source& mesh_source, const trlevel::tr3_room& room);
         void generate_adjacency();
@@ -121,10 +125,10 @@ namespace trview
         std::vector<std::weak_ptr<IItem>> _entities;
 
         // Maps a sector to its sector ID 
-        std::vector<std::shared_ptr<ISector>> _sectors; 
+        std::vector<std::shared_ptr<ISector>> _sectors;
 
         // Number of sectors for both X and Z (required by map renderer) 
-        std::uint16_t       _num_x_sectors, _num_z_sectors; 
+        std::uint16_t       _num_x_sectors, _num_z_sectors;
 
         int16_t              _alternate_room;
         int16_t              _alternate_group;
@@ -141,8 +145,12 @@ namespace trview
         std::function<std::shared_ptr<IMesh>()> _unmatched_mesh_generator;
 
         bool _visible{ true };
-        
+
         std::vector<std::weak_ptr<ICameraSink>> _camera_sinks;
         std::weak_ptr<ILevel> _level;
+        Colour _ambient{ 1.0f, 1.0f, 1.0f };
+        int16_t _ambient_intensity_1;
+        int16_t _ambient_intensity_2;
+        int16_t _light_mode;
     };
 }

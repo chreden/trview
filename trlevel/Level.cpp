@@ -157,8 +157,8 @@ namespace trlevel
             if (version == LevelVersion::Tomb4)
             {
                 activity.log("Reading room colour");
-                room.room_colour = read<uint32_t>(file);
-                activity.log(std::format("Read room colour {:X}", room.room_colour));
+                room.colour = read<uint32_t>(file);
+                activity.log(std::format("Read room colour {:X}", room.colour));
             }
             else
             {
@@ -166,7 +166,7 @@ namespace trlevel
                 room.ambient_intensity_1 = read<int16_t>(file);
                 activity.log(std::format("Read ambient intensity 1: {}", room.ambient_intensity_1));
 
-                if (version > LevelVersion::Tomb1)
+                if (version == LevelVersion::Tomb2)
                 {
                     activity.log("Reading ambient intensity 2");
                     room.ambient_intensity_2 = read<int16_t>(file);
@@ -174,7 +174,8 @@ namespace trlevel
                 }
             }
 
-            if (version == LevelVersion::Tomb2)
+            if (version == LevelVersion::Tomb2 ||
+                version == LevelVersion::Tomb3)
             {
                 activity.log("Reading light mode");
                 room.light_mode = read<int16_t>(file);

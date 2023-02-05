@@ -130,6 +130,13 @@ namespace trview
         /// <returns>The alternate room number.</returns>
         virtual int16_t alternate_room() const = 0;
         /// <summary>
+        /// Gets the ambient colour for this room.
+        /// </summary>
+        /// <returns>The ambient colour.</returns>
+        virtual Colour ambient() const = 0;
+        virtual int16_t ambient_intensity_1() const = 0;
+        virtual int16_t ambient_intensity_2() const = 0;
+        /// <summary>
         /// Gets the bounding box of the room. The bounding box is pre-transformed to the coordinates of the room.
         /// </summary>
         /// <returns>The transformed room bounding box.</returns>
@@ -176,6 +183,7 @@ namespace trview
         /// </summary>
         /// <returns>The room info.</returns>
         virtual RoomInfo info() const = 0;
+        virtual int16_t light_mode() const = 0;
         /// <summary>
         /// Get the neighbours of this room. This a set of room numbers that border this room based on sector information.
         /// </summary>
@@ -321,5 +329,7 @@ namespace trview
     std::shared_ptr<ISector> sector_from_point(const IRoom& room, const DirectX::SimpleMath::Vector3& point);
 
     std::string to_string(IRoom::AlternateMode mode);
+
+    std::string light_mode_name(int16_t light_mode);
 }
 
