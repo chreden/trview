@@ -344,9 +344,9 @@ namespace trview
                     else if (_current_pick.type == PickResult::Type::Trigger)
                     {
                         const auto trigger = _level->trigger(_current_pick.index).lock();
-                        if (trigger && trigger->room() == _level->selected_room())
+                        if (trigger && trigger_room(trigger) == _level->selected_room())
                         {
-                            if (const auto room = _level->room(trigger->room()).lock())
+                            if (const auto room = trigger->room().lock())
                             {
                                 info = room->info();
                             }
@@ -486,7 +486,7 @@ namespace trview
                             [&](auto t)
                             {
                                 const auto t_ptr = t.lock();
-                                return t_ptr->room() == room && t_ptr->sector_id() == sector->id();
+                                return t_ptr && trigger_room(t_ptr) == room && t_ptr->sector_id() == sector->id();
                             });
 
                         if (trigger == triggers.end() || (GetAsyncKeyState(VK_CONTROL) & 0x8000))
@@ -1180,7 +1180,7 @@ namespace trview
         {
             if (auto item = _level->item(pick.index).lock())
             {
-                return item->room();
+                return item_room(item);
             }
             break;
         }
@@ -1188,7 +1188,7 @@ namespace trview
         {
             if (const auto trigger = _level->trigger(pick.index).lock())
             {
-                return trigger->room();
+                return trigger_room(trigger);
             }
             break;
         }

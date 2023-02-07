@@ -6,6 +6,8 @@
 
 namespace trview
 {
+    struct IRoom;
+
     /// <summary>
     /// A waypoint is an entry in a route.
     /// </summary>
@@ -67,7 +69,7 @@ namespace trview
         std::shared_ptr<IMesh> _mesh;
         Type _type;
         uint32_t _index;
-        uint32_t _room;
+        uint32_t _room_number;
         Colour _route_colour;
         Colour _waypoint_colour;
         bool _visible{ true };
@@ -76,5 +78,6 @@ namespace trview
 
         mutable std::weak_ptr<IItem> _item;
         mutable std::weak_ptr<ITrigger> _trigger;
+        mutable std::weak_ptr<IRoom> _room;
     };
 }

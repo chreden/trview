@@ -92,8 +92,8 @@ TEST(LightsWindow, OnLightVisibilityRaised)
 TEST(LightsWindow, LightListFilteredWhenRoomSetAndTrackRoomEnabled)
 {
     auto window = register_test_module().build();
-    auto light1 = mock_shared<MockLight>()->with_number(0)->with_room(56);
-    auto light2 = mock_shared<MockLight>()->with_number(1)->with_room(78);
+    auto light1 = mock_shared<MockLight>()->with_number(0)->with_room(mock_shared<MockRoom>()->with_number(56));
+    auto light2 = mock_shared<MockLight>()->with_number(1)->with_room(mock_shared<MockRoom>()->with_number(78));
     window->set_lights({ light1, light2 });
     window->set_current_room(78);
 
@@ -115,8 +115,8 @@ TEST(LightsWindow, LightListFilteredWhenRoomSetAndTrackRoomEnabled)
 TEST(LightsWindow, LightsListNotFilteredWhenRoomSetAndTrackRoomDisabled)
 {
     auto window = register_test_module().build();
-    auto light1 = mock_shared<MockLight>()->with_number(0)->with_room(56);
-    auto light2 = mock_shared<MockLight>()->with_number(1)->with_room(78);
+    auto light1 = mock_shared<MockLight>()->with_number(0)->with_room(mock_shared<MockRoom>()->with_number(56));
+    auto light2 = mock_shared<MockLight>()->with_number(1)->with_room(mock_shared<MockRoom>()->with_number(78));
     window->set_lights({ light1, light2 });
     window->set_current_room(78);
 

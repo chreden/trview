@@ -55,24 +55,16 @@ namespace trview
                 }
                 else if (key == "room")
                 {
-                    if (auto level = trigger->level().lock())
-                    {
-                        return create_room(L, level->room(trigger->room()).lock());
-                    }
-                    lua_pushnil(L);
-                    return 1;
+                    return create_room(L, trigger->room().lock());
                 }
                 else if (key == "sector")
                 {
-                    if (auto level = trigger->level().lock())
+                    if (auto room = trigger->room().lock())
                     {
-                        if (auto room = level->room(trigger->room()).lock())
+                        const auto sectors = room->sectors();
+                        if (trigger->sector_id() < sectors.size())
                         {
-                            const auto sectors = room->sectors();
-                            if (trigger->sector_id() < sectors.size())
-                            {
-                                return create_sector(L, sectors[trigger->sector_id()]);
-                            }
+                            return create_sector(L, sectors[trigger->sector_id()]);
                         }
                     }
                     lua_pushnil(L);

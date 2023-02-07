@@ -104,11 +104,8 @@ TEST(Lua_Trigger, Position)
 TEST(Lua_Trigger, Room)
 {
     auto room = mock_shared<MockRoom>()->with_number(100);
-    auto level = mock_shared<MockLevel>();
-    EXPECT_CALL(*level, room).WillRepeatedly(Return(room));
-
     auto trigger = mock_shared<MockTrigger>()->with_number(100);
-    EXPECT_CALL(*trigger, level).WillRepeatedly(Return(level));
+    EXPECT_CALL(*trigger, room).WillRepeatedly(Return(room));
 
     lua_State* L = luaL_newstate();
     lua::create_trigger(L, trigger);
@@ -128,11 +125,8 @@ TEST(Lua_Trigger, Sector)
     auto room = mock_shared<MockRoom>()->with_number(100);
     EXPECT_CALL(*room, sectors).WillRepeatedly(Return(std::vector<std::shared_ptr<ISector>>{ sector }));
 
-    auto level = mock_shared<MockLevel>();
-    EXPECT_CALL(*level, room).WillRepeatedly(Return(room));
-
     auto trigger = mock_shared<MockTrigger>()->with_number(100);
-    EXPECT_CALL(*trigger, level).WillRepeatedly(Return(level));
+    EXPECT_CALL(*trigger, room).WillRepeatedly(Return(room));
 
     lua_State* L = luaL_newstate();
     lua::create_trigger(L, trigger);

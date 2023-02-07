@@ -475,14 +475,13 @@ namespace trview
 
     void Level::generate_triggers(const ITrigger::Source& trigger_source)
     {
-        for (auto i = 0u; i < _rooms.size(); ++i)
+        for (const auto& room : _rooms)
         {
-            const auto& room = _rooms[i];
             for (auto sector : room->sectors())
             {
                 if (has_flag(sector->flags(), SectorFlag::Trigger))
                 {
-                    auto trigger = trigger_source(static_cast<uint32_t>(_triggers.size()), i, sector->x(), sector->z(), sector->trigger_info(), _version, shared_from_this());
+                    auto trigger = trigger_source(static_cast<uint32_t>(_triggers.size()), room, sector->x(), sector->z(), sector->trigger_info(), _version, shared_from_this());
                     _triggers.push_back(trigger);
                     sector->set_trigger(trigger);
                     room->add_trigger(trigger);
@@ -561,8 +560,13 @@ namespace trview
             }
 
             auto level_entity = level.get_entity(i);
-            auto entity = entity_source(level, level_entity, i, relevant_triggers, mesh_storage, shared_from_this());
-            _rooms[entity->room()]->add_entity(entity);
+            auto containing_room = room(level_entity.Room);
+            auto entity = entity_source(level, level_entity, i, relevant_triggers, mesh_storage, shared_from_this(), containing_room);
+
+            if (auto room = containing_room.lock())
+            {
+                room->add_entity(entity);
+            }
             _entities.push_back(entity);
         }
 
@@ -570,8 +574,12 @@ namespace trview
         for (uint32_t i = 0; i < num_ai_objects; ++i)
         {
             auto ai_object = level.get_ai_object(i);
-            auto entity = ai_source(level, ai_object, num_entities + i, mesh_storage, shared_from_this());
-            _rooms[entity->room()]->add_entity(entity);
+            auto containing_room = room(ai_object.room);
+            auto entity = ai_source(level, ai_object, num_entities + i, mesh_storage, shared_from_this(), containing_room);
+            if (auto room = containing_room.lock())
+            {
+                room->add_entity(entity);
+            }
             _entities.push_back(entity);
         }
     }
@@ -942,11 +950,14 @@ namespace trview
             }
 
             const auto entity_pos = entity->bounding_box().Center;
-            const auto result = _rooms[entity->room()]->pick(Vector3(entity_pos.x, entity_pos.y, entity_pos.z), Vector3(0, 1, 0), PickFilter::Geometry | PickFilter::StaticMeshes);
-            if (result.hit)
+            if (auto room = entity->room().lock())
             {
-                const auto new_height = result.position.y - entity->bounding_box().Extents.y;
-                entity->adjust_y(new_height - entity_pos.y);
+                const auto result = room->pick(Vector3(entity_pos.x, entity_pos.y, entity_pos.z), Vector3(0, 1, 0), PickFilter::Geometry | PickFilter::StaticMeshes);
+                if (result.hit)
+                {
+                    const auto new_height = result.position.y - entity->bounding_box().Extents.y;
+                    entity->adjust_y(new_height - entity_pos.y);
+                }
             }
         }
     }
@@ -961,11 +972,14 @@ namespace trview
         const auto num_rooms = level.num_rooms();
         for (uint32_t i = 0u; i < num_rooms; ++i)
         {
-            auto room = level.get_room(i);
-            for (const auto& light : room.lights)
+            auto containing_room = room(i);
+            for (const auto& light : level.get_room(i).lights)
             {
-                _lights.push_back(light_source(static_cast<uint32_t>(_lights.size()), i, light, shared_from_this()));
-                _rooms[i]->add_light(_lights.back());
+                _lights.push_back(light_source(static_cast<uint32_t>(_lights.size()), containing_room, light, shared_from_this()));
+                if (auto room = containing_room.lock())
+                {
+                    room->add_light(_lights.back());
+                }
             }
         }
     }

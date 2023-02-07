@@ -10,6 +10,8 @@
 #include <trlevel/ILevel.h>
 #include <trlevel/trtypes.h>
 
+#include "IRoom.h"
+
 using namespace Microsoft::WRL;
 using namespace DirectX;
 using namespace DirectX::SimpleMath;
@@ -62,18 +64,18 @@ namespace trview
     {
     }
 
-    Item::Item(const IMesh::Source& mesh_source, const trlevel::ILevel& level, const trlevel::tr2_entity& entity, const IMeshStorage& mesh_storage, const std::weak_ptr<ILevel>& owning_level, uint32_t number, const std::string& type, const std::vector<std::weak_ptr<ITrigger>>& triggers, bool is_pickup)
-        : Item(mesh_source, mesh_storage, level, owning_level, entity.Room, number, entity.TypeID, entity.position(), entity.Angle, level.get_version() >= trlevel::LevelVersion::Tomb4 ? entity.Intensity2 : 0, type, triggers, entity.Flags, is_pickup)
+    Item::Item(const IMesh::Source& mesh_source, const trlevel::ILevel& level, const trlevel::tr2_entity& entity, const IMeshStorage& mesh_storage, const std::weak_ptr<ILevel>& owning_level, uint32_t number, const std::string& type, const std::vector<std::weak_ptr<ITrigger>>& triggers, bool is_pickup, const std::weak_ptr<IRoom>& room)
+        : Item(mesh_source, mesh_storage, level, owning_level, room, number, entity.TypeID, entity.position(), entity.Angle, level.get_version() >= trlevel::LevelVersion::Tomb4 ? entity.Intensity2 : 0, type, triggers, entity.Flags, is_pickup)
     {
         
     }
 
-    Item::Item(const IMesh::Source& mesh_source, const trlevel::ILevel& level, const trlevel::tr4_ai_object& entity, const IMeshStorage& mesh_storage, const std::weak_ptr<ILevel>& owning_level, uint32_t number, const std::string& type, const std::vector<std::weak_ptr<ITrigger>>& triggers)
-        : Item(mesh_source, mesh_storage, level, owning_level, entity.room, number, entity.type_id, entity.position(), entity.angle, entity.ocb, type, triggers, entity.flags, false)
+    Item::Item(const IMesh::Source& mesh_source, const trlevel::ILevel& level, const trlevel::tr4_ai_object& entity, const IMeshStorage& mesh_storage, const std::weak_ptr<ILevel>& owning_level, uint32_t number, const std::string& type, const std::vector<std::weak_ptr<ITrigger>>& triggers, const std::weak_ptr<IRoom>& room)
+        : Item(mesh_source, mesh_storage, level, owning_level, room, number, entity.type_id, entity.position(), entity.angle, entity.ocb, type, triggers, entity.flags, false)
     {
     }
 
-    Item::Item(const IMesh::Source& mesh_source, const IMeshStorage& mesh_storage, const trlevel::ILevel& level, const std::weak_ptr<ILevel>& owning_level, uint16_t room, uint32_t number, uint16_t type_id,
+    Item::Item(const IMesh::Source& mesh_source, const IMeshStorage& mesh_storage, const trlevel::ILevel& level, const std::weak_ptr<ILevel>& owning_level, const std::weak_ptr<IRoom>& room, uint32_t number, uint16_t type_id,
         const Vector3& position, int32_t angle, int32_t ocb, const std::string& type, const std::vector<std::weak_ptr<ITrigger>>& triggers, uint16_t flags, bool is_pickup)
         : _room(room), _number(number), _type(type), _triggers(triggers), _type_id(type_id), _ocb(ocb), _flags(flags), _level(owning_level), _angle(angle)
     {
@@ -202,7 +204,7 @@ namespace trview
         }
     }
 
-    uint16_t Item::room() const
+    std::weak_ptr<IRoom> Item::room() const
     {
         return _room;
     }
@@ -478,5 +480,23 @@ namespace trview
             return 22; // Mutant
         }
         return 20; // Winged
+    }
+
+    uint32_t item_room(const std::shared_ptr<IItem>& item)
+    {
+        if (!item)
+        {
+            return 0u;
+        }
+        return item_room(*item);
+    }
+
+    uint32_t item_room(const IItem& item)
+    {
+        if (auto room = item.room().lock())
+        {
+            return room->number();
+        }
+        return 0u;
     }
 }

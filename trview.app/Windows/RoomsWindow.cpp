@@ -190,9 +190,10 @@ namespace trview
             {
                 if (auto item_ptr = item.lock())
                 {
-                    select_room(item_ptr->room());
+                    const auto room_number = item_room(item_ptr);
+                    select_room(room_number);
                     _scroll_to_room = true;
-                    load_room_details(item_ptr->room());
+                    load_room_details(room_number);
                 }
             }
 
@@ -210,9 +211,9 @@ namespace trview
             {
                 if (_selected_room != _current_room)
                 {
-                    select_room(trigger_ptr->room());
+                    select_room(trigger_room(trigger_ptr));
                     _scroll_to_room = true;
-                    load_room_details(trigger_ptr->room());
+                    load_room_details(trigger_room(trigger_ptr));
                 }
 
                 _local_selected_trigger = trigger;
@@ -309,7 +310,7 @@ namespace trview
                         {
                             if (auto i = item.lock())
                             {
-                                return i->room() == room.number();
+                                return i->room().lock().get() == &room;
                             }
                             return false;
                         });
@@ -612,7 +613,7 @@ namespace trview
                 {
                     if (const auto item_ptr = item.lock())
                     {
-                        if (item_ptr->room() == room.number())
+                        if (item_ptr->room().lock().get() == &room)
                         {
                             results.push_back(static_cast<float>(item_ptr->number()));
                         }
@@ -636,7 +637,7 @@ namespace trview
                 {
                     if (auto item_ptr = item.lock())
                     {
-                        if (item_ptr->room() == room.number())
+                        if (item_ptr->room().lock().get() == &room)
                         {
                             results.push_back(item_ptr->type());
                         }
@@ -813,7 +814,7 @@ namespace trview
             {
                 if (auto item_ptr = item.lock())
                 {
-                    if (item_ptr->room() == room->number())
+                    if (item_ptr->room().lock() == room)
                     {
                         ImGui::TableNextRow();
                         ImGui::TableNextColumn();
@@ -982,9 +983,9 @@ namespace trview
             {
                 if (_selected_room != _current_room)
                 {
-                    select_room(light_ptr->room());
+                    select_room(light_room(light_ptr));
                     _scroll_to_room = true;
-                    load_room_details(light_ptr->room());
+                    load_room_details(light_room(light_ptr));
                 }
 
                 _local_selected_light = light;

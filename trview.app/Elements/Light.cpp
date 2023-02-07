@@ -1,11 +1,12 @@
 #include "Light.h"
+#include "IRoom.h"
 
 namespace trview
 {
     using namespace DirectX;
     using namespace DirectX::SimpleMath;
 
-    Light::Light(const std::shared_ptr<IMesh>& mesh, uint32_t number, uint32_t room, const trlevel::tr_x_room_light& light, const std::weak_ptr<ILevel>& level)
+    Light::Light(const std::shared_ptr<IMesh>& mesh, uint32_t number, const std::weak_ptr<IRoom>& room, const trlevel::tr_x_room_light& light, const std::weak_ptr<ILevel>& level)
         : _mesh(mesh), _number(number), _room(room), _position(light.position()), _colour(light.colour()), _type(light.type()),
         _intensity(light.intensity()), _fade(light.fade()), _direction(light.direction()), _in(light.in()), _out(light.out()),
         _rad_in(light.rad_in()), _rad_out(light.rad_out()), _length(light.length()), _cutoff(light.cutoff()), _range(light.range()),
@@ -23,7 +24,7 @@ namespace trview
         return _colour;
     }
 
-    uint32_t Light::room() const
+    std::weak_ptr<IRoom> Light::room() const
     {
         return _room;
     }
@@ -190,5 +191,23 @@ namespace trview
     trlevel::LevelVersion Light::level_version() const
     {
         return _level_version;
+    }
+
+    uint32_t light_room(const std::shared_ptr<ILight>& light)
+    {
+        if (!light)
+        {
+            return 0u;
+        }
+        return light_room(*light);
+    }
+
+    uint32_t light_room(const ILight& light)
+    {
+        if (auto room = light.room().lock())
+        {
+            return room->number();
+        }
+        return 0u;
     }
 }

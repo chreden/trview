@@ -118,13 +118,8 @@ TEST(Lua_Item, Position)
 
 TEST(Lua_Item, Room)
 {
-    auto room = mock_shared<MockRoom>()->with_number(100);
-    auto level = mock_shared<MockLevel>();
-    EXPECT_CALL(*level, room).WillRepeatedly(Return(room));
-
-    auto item = mock_shared<MockItem>()->with_number(100);
-    EXPECT_CALL(*item, level).WillRepeatedly(Return(level));
-
+    auto item = mock_shared<MockItem>()->with_number(100)->with_room(mock_shared<MockRoom>()->with_number(100));
+    
     lua_State* L = luaL_newstate();
     lua::create_item(L, item);
     lua_setglobal(L, "i");

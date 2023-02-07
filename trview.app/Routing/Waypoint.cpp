@@ -19,7 +19,7 @@ namespace trview
     }
 
     Waypoint::Waypoint(std::shared_ptr<IMesh> mesh, const Vector3& position, const Vector3& normal, uint32_t room, Type type, uint32_t index, const Colour& route_colour, const Colour& waypoint_colour)
-        : _mesh(mesh), _position(position), _normal(normal), _type(type), _index(index), _room(room), _route_colour(route_colour), _waypoint_colour(waypoint_colour)
+        : _mesh(mesh), _position(position), _normal(normal), _type(type), _index(index), _room_number(room), _route_colour(route_colour), _waypoint_colour(waypoint_colour)
     {
     }
 
@@ -132,7 +132,7 @@ namespace trview
 
     uint32_t Waypoint::room() const
     {
-        return _room;
+        return _room_number;
     }
 
     std::string Waypoint::notes() const
@@ -155,7 +155,8 @@ namespace trview
         _item = item;
         if (auto new_item = _item.lock())
         {
-            set_properties(Type::Entity, new_item->number(), new_item->room(), new_item->position());
+            const auto room = new_item->room().lock();
+            set_properties(Type::Entity, new_item->number(), room ? room->number() : 0, new_item->position());
         }
     }
 
@@ -184,7 +185,8 @@ namespace trview
         _trigger = trigger;
         if (auto new_trigger = _trigger.lock())
         {
-            set_properties(Type::Trigger, new_trigger->number(), new_trigger->room(), new_trigger->position());
+            const auto room = new_trigger->room().lock();
+            set_properties(Type::Trigger, new_trigger->number(), room ? room->number() : 0, new_trigger->position());
         }
     }
 
@@ -257,7 +259,7 @@ namespace trview
     {
         _type = type;
         _index = index;
-        _room = room;
+        _room_number = room;
         _position = position;
         on_changed();
     }
@@ -270,7 +272,7 @@ namespace trview
 
     void Waypoint::set_room_number(uint32_t room)
     {
-        _room = room;
+        _room_number = room;
         on_changed();
     }
 }

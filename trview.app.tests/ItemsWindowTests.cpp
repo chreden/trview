@@ -142,8 +142,8 @@ TEST(ItemsWindow, ItemsListNotFilteredWhenRoomSetAndTrackRoomDisabled)
 
     std::vector<std::shared_ptr<MockItem>> items
     {
-        mock_shared<MockItem>()->with_number(0)->with_room(55),
-        mock_shared<MockItem>()->with_number(1)->with_room(78)
+        mock_shared<MockItem>()->with_number(0)->with_room(mock_shared<MockRoom>()->with_number(55)),
+        mock_shared<MockItem>()->with_number(1)->with_room(mock_shared<MockRoom>()->with_number(78))
     };
     window->set_items({ std::from_range, items });
     window->set_current_room(78);
@@ -166,8 +166,8 @@ TEST(ItemsWindow, ItemsListFilteredWhenRoomSetAndTrackRoomEnabled)
 
     std::vector<std::shared_ptr<MockItem>> items
     {
-        mock_shared<MockItem>()->with_number(0)->with_room(55),
-        mock_shared<MockItem>()->with_number(1)->with_room(78)
+        mock_shared<MockItem>()->with_number(0)->with_room(mock_shared<MockRoom>()->with_number(55)),
+        mock_shared<MockItem>()->with_number(1)->with_room(mock_shared<MockRoom>()->with_number(78))
     };
     window->set_items({ std::from_range, items });
     window->set_current_room(78);
@@ -213,8 +213,8 @@ TEST(ItemsWindow, ItemsListUpdatedWhenFiltered)
 
     std::vector<std::shared_ptr<MockItem>> items
     {
-        mock_shared<MockItem>()->with_number(0)->with_room(55),
-        mock_shared<MockItem>()->with_number(1)->with_room(78)
+        mock_shared<MockItem>()->with_number(0)->with_room(mock_shared<MockRoom>()->with_number(55)),
+        mock_shared<MockItem>()->with_number(1)->with_room(mock_shared<MockRoom>()->with_number(78))
     };
     window->set_items({ std::from_range, items });
     window->set_current_room(78);
@@ -239,8 +239,8 @@ TEST(ItemsWindow, ItemsListUpdatedWhenNotFiltered)
 
     std::vector<std::shared_ptr<MockItem>> items
     {
-        mock_shared<MockItem>()->with_number(0)->with_room(55)->with_visible(true),
-        mock_shared<MockItem>()->with_number(1)->with_room(78)->with_visible(true)
+        mock_shared<MockItem>()->with_number(0)->with_room(mock_shared<MockRoom>()->with_number(55))->with_visible(true),
+        mock_shared<MockItem>()->with_number(1)->with_room(mock_shared<MockRoom>()->with_number(78))->with_visible(true)
     };
     window->set_items({ std::from_range, items });
     TestImgui imgui([&]() { window->render(); });

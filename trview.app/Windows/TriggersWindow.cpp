@@ -191,7 +191,7 @@ namespace trview
                 imgui_sort_weak(_filtered_triggers,
                     {
                         [](auto&& l, auto&& r) { return l.number() < r.number(); },
-                        [](auto&& l, auto&& r) { return std::tuple(l.room(), l.number()) < std::tuple(r.room(), r.number()); },
+                        [](auto&& l, auto&& r) { return std::tuple(trigger_room(l), l.number()) < std::tuple(trigger_room(r), r.number()); },
                         [](auto&& l, auto&& r) { return std::tuple(trigger_type_name(l.type()), l.number()) < std::tuple(trigger_type_name(r.type()), r.number()); },
                         [](auto&& l, auto&& r) { return std::tuple(l.visible(), l.number()) < std::tuple(r.visible(), r.number()); }
                     }, _force_sort);
@@ -230,7 +230,7 @@ namespace trview
 
                         ImGui::SetItemAllowOverlap();
                         ImGui::TableNextColumn();
-                        ImGui::Text(std::to_string(trigger_ptr->room()).c_str());
+                        ImGui::Text(std::to_string(trigger_room(trigger_ptr)).c_str());
                         ImGui::TableNextColumn();
                         ImGui::Text(trigger_type_name(trigger_ptr->type()).c_str());
                         ImGui::TableNextColumn();
@@ -310,7 +310,7 @@ namespace trview
                     add_stat("Type", trigger_type_name(selected_trigger->type()));
                     add_stat("#", selected_trigger->number());
                     add_stat("Position", position_text());
-                    add_stat("Room", selected_trigger->room());
+                    add_stat("Room", trigger_room(selected_trigger));
                     add_stat("Flags", format_binary(selected_trigger->flags()));
                     add_stat("Only once", selected_trigger->only_once());
                     add_stat("Timer", selected_trigger->timer());
@@ -415,7 +415,7 @@ namespace trview
         }
         _filters.add_getter<std::string>("Type", { available_types.begin(), available_types.end() }, [](auto&& trigger) { return trigger_type_name(trigger.type()); });
         _filters.add_getter<float>("#", [](auto&& trigger) { return static_cast<float>(trigger.number()); });
-        _filters.add_getter<float>("Room", [](auto&& trigger) { return static_cast<float>(trigger.room()); });
+        _filters.add_getter<float>("Room", [](auto&& trigger) { return static_cast<float>(trigger_room(trigger)); });
         _filters.add_getter<std::string>("Flags", [](auto&& trigger) { return format_binary(trigger.flags()); });
         _filters.add_getter<bool>("Only once", [](auto&& trigger) { return trigger.only_once(); });
         _filters.add_getter<float>("Timer", [](auto&& trigger) { return static_cast<float>(trigger.timer()); });
@@ -487,7 +487,7 @@ namespace trview
             [&](const auto& trigger)
             {
                 const auto trigger_ptr = trigger.lock();
-                return !((_track.enabled<Type::Room>() && trigger_ptr->room() != _current_room || !_filters.match(*trigger_ptr)) ||
+                return !((_track.enabled<Type::Room>() && trigger_room(trigger_ptr) != _current_room || !_filters.match(*trigger_ptr)) ||
                          (!_selected_commands.empty() && !has_any_command(*trigger_ptr, _selected_commands)));
             });
         _need_filtering = false;

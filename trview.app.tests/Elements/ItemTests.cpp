@@ -2,6 +2,7 @@
 #include <trview.app/Mocks/Elements/IItem.h>
 #include <trview.app/Mocks/Geometry/IMesh.h>
 #include <trview.app/Mocks/Graphics/IMeshStorage.h>
+#include <trview.app/Mocks/Elements/IRoom.h>
 #include <trlevel/Mocks/ILevel.h>
 #include <trview.tests.common/Mocks.h>
 
@@ -25,10 +26,11 @@ namespace
             std::string type{ "Lara" };
             std::vector<std::weak_ptr<ITrigger>> triggers;
             std::shared_ptr<ILevel> owning_level{ mock_shared<MockLevel>() };
+            std::shared_ptr<IRoom> room { mock_shared<MockRoom>() };
 
             std::unique_ptr<Item> build()
             {
-                return std::make_unique<Item>(mesh_source, *level, entity, *mesh_storage, owning_level, index, type, triggers, is_pickup);
+                return std::make_unique<Item>(mesh_source, *level, entity, *mesh_storage, owning_level, index, type, triggers, is_pickup, room);
             }
 
             test_module& with_level(const std::shared_ptr<trlevel::ILevel>& level)

@@ -1,4 +1,5 @@
 #include <trview.app/Elements/Light.h>
+#include <trview.app/Mocks/Elements/IRoom.h>
 
 using namespace trlevel;
 using namespace trview;
@@ -14,7 +15,7 @@ namespace
         {
             std::shared_ptr<IMesh> mesh{ mock_shared<MockMesh>() };
             uint32_t number{ 0u };
-            uint32_t room{ 0u };
+            std::shared_ptr<IRoom> room{ mock_shared<MockRoom>() };
             tr_x_room_light light{};
             std::shared_ptr<trview::ILevel> level{ mock_shared<MockLevel>() };
 

@@ -267,10 +267,11 @@ namespace trview
                 {
                     if (auto item = to_item(L, -1))
                     {
+                        const auto room = item->room().lock();
                         auto waypoint = waypoint_source(
                                 item->position(),
                                 normal,
-                                item->room(),
+                                room ? room->number() : 0,
                                 IWaypoint::Type::Entity,
                                 item->number(),
                                 Colour::White,
@@ -289,10 +290,11 @@ namespace trview
                 {
                     if (auto trigger = to_trigger(L, -1))
                     {
+                        const auto room = trigger->room().lock();
                         auto waypoint = waypoint_source(
                                 trigger->position(),
                                 normal,
-                                trigger->room(),
+                                room ? room->number() : 0,
                                 IWaypoint::Type::Entity,
                                 trigger->number(),
                                 Colour::White,

@@ -16,7 +16,7 @@ namespace trview
             MOCK_METHOD(bool, visible, (), (const, override));
             MOCK_METHOD(void, set_visible, (bool), (override));
             MOCK_METHOD(uint32_t, number, (), (const, override));
-            MOCK_METHOD(uint16_t, room, (), (const, override));
+            MOCK_METHOD(std::weak_ptr<IRoom>, room, (), (const, override));
             MOCK_METHOD(PickResult, pick, (const DirectX::SimpleMath::Vector3&, const DirectX::SimpleMath::Vector3&), (const, override));
             MOCK_METHOD(DirectX::BoundingBox, bounding_box, (), (const, override));
             MOCK_METHOD(void, adjust_y, (float), (override));
@@ -38,9 +38,9 @@ namespace trview
                 return shared_from_this();
             }
 
-            std::shared_ptr<MockItem> with_room(uint16_t number)
+            std::shared_ptr<MockItem> with_room(std::shared_ptr<IRoom> room)
             {
-                ON_CALL(*this, room).WillByDefault(testing::Return(number));
+                ON_CALL(*this, room).WillByDefault(testing::Return(room));
                 return shared_from_this();
             }
 

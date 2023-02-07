@@ -332,10 +332,11 @@ TEST(Viewer, AddWaypointRaisedUsesItemPosition)
     auto [ui_ptr, ui] = create_mock<MockViewerUI>();
     auto [picking_ptr, picking] = create_mock<MockPicking>();
     auto [mouse_ptr, mouse] = create_mock<MockMouse>();
+    auto room = mock_shared<MockRoom>()->with_number(10);
     TestImgui imgui;
 
     NiceMock<MockLevel> level;
-    auto item = mock_shared<MockItem>()->with_room(10)->with_number(50);
+    auto item = mock_shared<MockItem>()->with_room(room)->with_number(50);
 
     EXPECT_CALL(level, item(50)).WillRepeatedly(Return(item));
 

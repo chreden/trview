@@ -189,17 +189,18 @@ namespace trview
                 waypoint_source, settings_loader->load_user_settings());
         };
 
-        auto entity_source = [=](auto&& level, auto&& entity, auto&& index, auto&& triggers, auto&& mesh_storage, auto&& owning_level)
+        auto entity_source = [=](auto&& level, auto&& entity, auto&& index, auto&& triggers, auto&& mesh_storage, auto&& owning_level, auto&& room)
         {
             return std::make_shared<Item>(mesh_source, level, entity, mesh_storage, owning_level, index,
                 type_name_lookup->lookup_type_name(level.get_version(), entity.TypeID, entity.Flags),
                 triggers,
-                type_name_lookup->is_pickup(level.get_version(), entity.TypeID));
+                type_name_lookup->is_pickup(level.get_version(), entity.TypeID),
+                room);
         };
 
-        auto ai_source = [=](auto&& level, auto&& entity, auto&& index, auto&& mesh_storage, auto&& owning_level)
+        auto ai_source = [=](auto&& level, auto&& entity, auto&& index, auto&& mesh_storage, auto&& owning_level, auto&& room)
         {
-            return std::make_shared<Item>(mesh_source, level, entity, mesh_storage, owning_level, index, type_name_lookup->lookup_type_name(level.get_version(), entity.type_id, entity.flags), std::vector<std::weak_ptr<ITrigger>>{});
+            return std::make_shared<Item>(mesh_source, level, entity, mesh_storage, owning_level, index, type_name_lookup->lookup_type_name(level.get_version(), entity.type_id, entity.flags), std::vector<std::weak_ptr<ITrigger>>{}, room);
         };
 
         auto log = std::make_shared<Log>();

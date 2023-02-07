@@ -8,14 +8,16 @@
 
 namespace trview
 {
+    struct IRoom;
+
     struct ILight : public IRenderable
     {
-        using Source = std::function<std::shared_ptr<ILight>(uint32_t, uint32_t, const trlevel::tr_x_room_light&, const std::weak_ptr<ILevel>&)>;
+        using Source = std::function<std::shared_ptr<ILight>(uint32_t, const std::weak_ptr<IRoom>&, const trlevel::tr_x_room_light&, const std::weak_ptr<ILevel>&)>;
         virtual ~ILight() = 0;
         virtual uint32_t number() const = 0;
         virtual DirectX::SimpleMath::Vector3 position() const = 0;
         virtual Colour colour() const = 0;
-        virtual uint32_t room() const = 0;
+        virtual std::weak_ptr<IRoom> room() const = 0;
         virtual trlevel::LightType type() const = 0;
         virtual int32_t intensity() const = 0;
         virtual int32_t fade() const = 0;
@@ -63,4 +65,7 @@ namespace trview
     float range(const ILight& light);
     float density(const ILight& light);
     float radius(const ILight& light);
+
+    uint32_t light_room(const std::shared_ptr<ILight>& light);
+    uint32_t light_room(const ILight& light);
 }
