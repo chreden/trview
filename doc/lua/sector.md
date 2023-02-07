@@ -1,6 +1,6 @@
 # Sector
 
-The Sector library provides information about a sector in a [level](level.md).
+The Sector library provides information about a sector in a [Level](level.md)/[Room](room.md).
 
 # Properties
 | Name | Type | Mode | Description |
