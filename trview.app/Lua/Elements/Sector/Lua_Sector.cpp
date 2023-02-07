@@ -22,6 +22,16 @@ namespace trview
                     lua_pushinteger(L, sector->id());
                     return 1;
                 }
+                else if (key == "x")
+                {
+                    lua_pushinteger(L, sector->x());
+                    return 1;
+                }
+                else if (key == "z")
+                {
+                    lua_pushinteger(L, sector->z());
+                    return 1;
+                }
 
                 return 0;
             }
