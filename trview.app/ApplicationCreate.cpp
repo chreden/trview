@@ -217,19 +217,24 @@ namespace trview
         {
             auto level_texture_storage = std::make_shared<LevelTextureStorage>(device, std::make_unique<TextureStorage>(device), *level);
             auto mesh_storage = std::make_unique<MeshStorage>(mesh_source, *level, *level_texture_storage);
-            return std::make_shared<Level>(device, shader_storage, std::move(level),
+            auto new_level = std::make_shared<Level>(
+                device, 
+                shader_storage, 
                 level_texture_storage,
-                std::move(mesh_storage),
                 std::make_unique<TransparencyBuffer>(device),
                 std::make_unique<SelectionRenderer>(device, shader_storage, std::make_unique<TransparencyBuffer>(device), render_target_source),
+                log,
+                buffer_source);
+            new_level->initialise(
+                std::move(level),
+                std::move(mesh_storage),
                 entity_source,
                 ai_source,
                 room_source,
                 trigger_source,
                 light_source,
-                log,
-                buffer_source,
                 camera_sink_source);
+            return new_level;
         };
 
         auto viewer_ui = std::make_unique<ViewerUI>(

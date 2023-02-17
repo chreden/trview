@@ -31,19 +31,11 @@ namespace trview
     public:
         Level(const std::shared_ptr<graphics::IDevice>& device,
             const std::shared_ptr<graphics::IShaderStorage>& shader_storage,
-            std::unique_ptr<trlevel::ILevel> level,
             std::shared_ptr<ILevelTextureStorage> level_texture_storage,
-            std::unique_ptr<IMeshStorage> mesh_storage,
             std::unique_ptr<ITransparencyBuffer> transparency_buffer,
             std::unique_ptr<ISelectionRenderer> selection_renderer,
-            const IItem::EntitySource& entity_source,
-            const IItem::AiSource& ai_source,
-            const IRoom::Source& room_source,
-            const ITrigger::Source& trigger_source,
-            const ILight::Source& light_source,
             const std::shared_ptr<ILog>& log,
-            const graphics::IBuffer::ConstantSource& buffer_source,
-            const ICameraSink::Source& camera_sink_source);
+            const graphics::IBuffer::ConstantSource& buffer_source);
         virtual ~Level() = default;
         virtual std::vector<RoomInfo> room_info() const override;
         virtual RoomInfo room_info(uint32_t room) const override;
@@ -110,7 +102,15 @@ namespace trview
         virtual void set_show_camera_sinks(bool show) override;
         virtual std::optional<uint32_t> selected_camera_sink() const override;
         virtual bool show_camera_sinks() const override;
-        void initialise() override;
+        void initialise(
+            std::unique_ptr<trlevel::ILevel> level,
+            std::unique_ptr<IMeshStorage> mesh_storage,
+            const IItem::EntitySource& entity_source,
+            const IItem::AiSource& ai_source,
+            const IRoom::Source& room_source,
+            const ITrigger::Source& trigger_source,
+            const ILight::Source& light_source,
+            const ICameraSink::Source& camera_sink_source);
     private:
         void generate_rooms(const trlevel::ILevel& level, const IRoom::Source& room_source, const IMeshStorage& mesh_storage);
         void generate_triggers(const ITrigger::Source& trigger_source);

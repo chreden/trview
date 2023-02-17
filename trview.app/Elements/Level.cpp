@@ -33,22 +33,13 @@ namespace trview
 
     Level::Level(const std::shared_ptr<graphics::IDevice>& device,
         const std::shared_ptr<graphics::IShaderStorage>& shader_storage,
-        std::unique_ptr<trlevel::ILevel> level,
         std::shared_ptr<ILevelTextureStorage> level_texture_storage,
-        std::unique_ptr<IMeshStorage> mesh_storage,
         std::unique_ptr<ITransparencyBuffer> transparency_buffer,
         std::unique_ptr<ISelectionRenderer> selection_renderer,
-        const IItem::EntitySource& entity_source,
-        const IItem::AiSource& ai_source,
-        const IRoom::Source& room_source,
-        const ITrigger::Source& trigger_source,
-        const ILight::Source& light_source,
         const std::shared_ptr<ILog>& log,
-        const graphics::IBuffer::ConstantSource& buffer_source,
-        const ICameraSink::Source& camera_sink_source)
-        : _device(device), _version(level->get_version()), _texture_storage(level_texture_storage),
-        _transparency(std::move(transparency_buffer)), _selection_renderer(std::move(selection_renderer)), _log(log),
-        _floor_data(level->get_floor_data_all())
+        const graphics::IBuffer::ConstantSource& buffer_source)
+        : _device(device), _texture_storage(level_texture_storage),
+        _transparency(std::move(transparency_buffer)), _selection_renderer(std::move(selection_renderer)), _log(log)
     {
         _vertex_shader = shader_storage->get("level_vertex_shader");
         _pixel_shader = shader_storage->get("level_pixel_shader");
@@ -84,20 +75,6 @@ namespace trview
 
         // Create the texture sampler state.
         _sampler_state = device->create_sampler_state(sampler_desc);
-
-        record_models(*level);
-        generate_rooms(*level, room_source, *mesh_storage);
-        generate_triggers(trigger_source);
-        generate_entities(*level, entity_source, ai_source, *mesh_storage);
-        generate_lights(*level, light_source);
-        generate_camera_sinks(*level, camera_sink_source);
-
-        for (auto& room : _rooms)
-        {
-            room->update_bounding_box();
-        }
-
-        apply_ocb_adjustment();
     }
 
     std::vector<RoomInfo> Level::room_info() const
@@ -1198,8 +1175,32 @@ namespace trview
         return has_flag(_render_filters, RenderFilter::CameraSinks);
     }
 
-    void Level::initialise()
+    void Level::initialise(std::unique_ptr<trlevel::ILevel> level,
+        std::unique_ptr<IMeshStorage> mesh_storage,
+        const IItem::EntitySource& entity_source,
+        const IItem::AiSource& ai_source,
+        const IRoom::Source& room_source,
+        const ITrigger::Source& trigger_source,
+        const ILight::Source& light_source,
+        const ICameraSink::Source& camera_sink_source)
     {
+        _version = level->get_version();
+        _floor_data = level->get_floor_data_all();
+
+        record_models(*level);
+        generate_rooms(*level, room_source, *mesh_storage);
+        generate_triggers(trigger_source);
+        generate_entities(*level, entity_source, ai_source, *mesh_storage);
+        generate_lights(*level, light_source);
+        generate_camera_sinks(*level, camera_sink_source);
+
+        for (auto& room : _rooms)
+        {
+            room->update_bounding_box();
+        }
+
+        apply_ocb_adjustment();
+
         for (auto& ent : _entities)
         {
             ent->set_level(shared_from_this());

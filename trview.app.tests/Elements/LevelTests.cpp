@@ -53,10 +53,11 @@ namespace
             graphics::IBuffer::ConstantSource buffer_source{ [](auto&&...) { return mock_unique<MockBuffer>(); } };
             ICameraSink::Source camera_sink_source{ [](auto&&...) { return mock_shared<MockCameraSink>(); } };
 
-            std::unique_ptr<Level> build()
+            std::shared_ptr<Level> build()
             {
-                return std::make_unique<Level>(device, shader_storage, std::move(level), level_texture_storage, std::move(mesh_storage), std::move(transparency_buffer),
-                    std::move(selection_renderer), entity_source, ai_source, room_source, trigger_source, light_source, log, buffer_source, camera_sink_source);
+                auto new_level = std::make_shared<Level>(device, shader_storage, level_texture_storage, std::move(transparency_buffer), std::move(selection_renderer), log, buffer_source);
+                new_level->initialise(std::move(level), std::move(mesh_storage), entity_source, ai_source, room_source, trigger_source, light_source, camera_sink_source);
+                return new_level;
             }
 
             test_module& with_level(std::unique_ptr<trlevel::ILevel>&& level)
