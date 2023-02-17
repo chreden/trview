@@ -41,7 +41,7 @@ namespace
             std::unique_ptr<Room> build()
             {
                 return std::make_unique<Room>(mesh_source, *tr_level, room, level_texture_storage, *mesh_storage,
-                    index, *level, Activity(log, "Level", "Room 0"), static_mesh_source, static_mesh_position_source, sector_source);
+                    index, level, Activity(log, "Level", "Room 0"), static_mesh_source, static_mesh_position_source, sector_source);
             }
 
             test_module& with_level(const std::shared_ptr<ILevel>& level)

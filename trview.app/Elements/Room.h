@@ -32,7 +32,7 @@ namespace trview
             std::shared_ptr<ILevelTextureStorage> texture_storage,
             const IMeshStorage& mesh_storage,
             uint32_t index,
-            const ILevel& parent_level,
+            const std::weak_ptr<ILevel>& parent_level,
             const Activity& activity,
             const IStaticMesh::MeshSource& static_mesh_mesh_source,
             const IStaticMesh::PositionSource& static_mesh_position_source,
@@ -83,7 +83,6 @@ namespace trview
         virtual std::vector<std::weak_ptr<ICameraSink>> camera_sinks() const override;
         virtual std::vector<std::weak_ptr<ITrigger>> triggers() const override;
         std::vector<std::weak_ptr<IItem>> items() const override;
-        void set_level(const std::weak_ptr<ILevel>& level) override;
         std::weak_ptr<ILevel> level() const override;
         Colour ambient() const override;
         int16_t ambient_intensity_1() const override;
@@ -137,7 +136,6 @@ namespace trview
         TokenStore _token_store;
         std::unordered_map<uint32_t, std::weak_ptr<ITrigger>> _triggers;
         uint16_t _flags{ 0 };
-        const ILevel& _parent_level;
         std::shared_ptr<ILevelTextureStorage> _texture_storage;
         std::vector<std::weak_ptr<ILight>> _lights;
         IMesh::Source _mesh_source;

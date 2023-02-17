@@ -90,7 +90,7 @@ namespace trview
         /// Create a new implementation of <see cref="IRoom"/>.
         /// </summary>
         using Source = std::function<std::shared_ptr<IRoom>(const trlevel::ILevel&, const trlevel::tr3_room&,
-            const std::shared_ptr<ILevelTextureStorage>&, const IMeshStorage&, uint32_t, const ILevel&, const Activity& activity)>;
+            const std::shared_ptr<ILevelTextureStorage>&, const IMeshStorage&, uint32_t, const std::weak_ptr<ILevel>&, const Activity& activity)>;
         /// <summary>
         /// Destructor for <see cref="IRoom"/>.
         /// </summary>
@@ -316,7 +316,6 @@ namespace trview
         virtual std::vector<std::weak_ptr<ICameraSink>> camera_sinks() const = 0;
         virtual std::vector<std::weak_ptr<ITrigger>> triggers() const = 0;
         virtual std::vector<std::weak_ptr<IItem>> items() const = 0;
-        virtual void set_level(const std::weak_ptr<ILevel>& level) = 0;
         virtual std::weak_ptr<ILevel> level() const = 0;
     };
 

@@ -442,7 +442,7 @@ namespace trview
         {
             Activity room_activity(generate_rooms_activity, std::format("Room {}", i));
             auto room = level.get_room(i);
-            _rooms.push_back(room_source(level, room, _texture_storage, mesh_storage, i, *this, room_activity));
+            _rooms.push_back(room_source(level, room, _texture_storage, mesh_storage, i, shared_from_this(), room_activity));
         }
 
         std::set<uint32_t> alternate_groups;
@@ -1214,11 +1214,6 @@ namespace trview
         for (auto& camera_sink : _camera_sinks)
         {
             camera_sink->set_level(shared_from_this());
-        }
-
-        for (auto& room : _rooms)
-        {
-            room->set_level(shared_from_this());
         }
 
         for (auto& light : _lights)
