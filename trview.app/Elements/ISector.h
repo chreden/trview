@@ -112,7 +112,7 @@ namespace trview
         virtual std::array<float, 4> ceiling_corners() const = 0;
         virtual DirectX::SimpleMath::Vector3 corner(Corner corner) const = 0;
         virtual DirectX::SimpleMath::Vector3 ceiling(Corner corner) const = 0;
-        virtual uint32_t room() const = 0;
+        virtual std::weak_ptr<IRoom> room() const = 0;
         virtual TriangulationDirection triangulation_function() const = 0;
         virtual std::vector<Triangle> triangles() const = 0;
         virtual bool is_floor() const = 0;

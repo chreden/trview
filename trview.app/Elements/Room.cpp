@@ -458,7 +458,7 @@ namespace trview
         for (auto i = 0u; i < room.sector_list.size(); ++i)
         {
             const trlevel::tr_room_sector &sector = room.sector_list[i];
-            _sectors.push_back(sector_source(level, room, sector, i, _index, *this));
+            _sectors.push_back(sector_source(level, room, sector, i, *this));
         }
     }
 
