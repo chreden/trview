@@ -936,7 +936,7 @@ namespace trview
             auto room = level.get_room(i);
             for (const auto& light : room.lights)
             {
-                _lights.push_back(light_source(static_cast<uint32_t>(_lights.size()), i, light));
+                _lights.push_back(light_source(static_cast<uint32_t>(_lights.size()), i, light, shared_from_this()));
                 _rooms[i]->add_light(_lights.back());
             }
         }
@@ -1209,11 +1209,6 @@ namespace trview
         for (auto& camera_sink : _camera_sinks)
         {
             camera_sink->set_level(shared_from_this());
-        }
-
-        for (auto& light : _lights)
-        {
-            light->set_level(shared_from_this());
         }
     }
 

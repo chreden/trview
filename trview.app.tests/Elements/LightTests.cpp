@@ -16,10 +16,11 @@ namespace
             uint32_t number{ 0u };
             uint32_t room{ 0u };
             tr_x_room_light light{};
+            std::shared_ptr<trview::ILevel> level{ mock_shared<MockLevel>() };
 
             Light build()
             {
-                return Light(mesh, number, room, light);
+                return Light(mesh, number, room, light, level);
             }
 
             test_module& with_light(const tr_x_room_light& light)

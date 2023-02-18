@@ -5,11 +5,11 @@ namespace trview
     using namespace DirectX;
     using namespace DirectX::SimpleMath;
 
-    Light::Light(const std::shared_ptr<IMesh>& mesh, uint32_t number, uint32_t room, const trlevel::tr_x_room_light& light)
+    Light::Light(const std::shared_ptr<IMesh>& mesh, uint32_t number, uint32_t room, const trlevel::tr_x_room_light& light, const std::weak_ptr<ILevel>& level)
         : _mesh(mesh), _number(number), _room(room), _position(light.position()), _colour(light.colour()), _type(light.type()),
         _intensity(light.intensity()), _fade(light.fade()), _direction(light.direction()), _in(light.in()), _out(light.out()),
         _rad_in(light.rad_in()), _rad_out(light.rad_out()), _length(light.length()), _cutoff(light.cutoff()), _range(light.range()),
-        _radius(light.radius()), _density(light.density()), _level_version(light.level_version)
+        _radius(light.radius()), _density(light.density()), _level_version(light.level_version), _level(level)
     {
     }
 
@@ -180,11 +180,6 @@ namespace trview
     float Light::density() const
     {
         return _density;
-    }
-
-    void Light::set_level(const std::weak_ptr<ILevel>& level)
-    {
-        _level = level;
     }
 
     void Light::set_position(const Vector3& position)

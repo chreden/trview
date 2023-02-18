@@ -10,7 +10,7 @@ namespace trview
 {
     struct ILight : public IRenderable
     {
-        using Source = std::function<std::shared_ptr<ILight>(uint32_t, uint32_t, const trlevel::tr_x_room_light&)>;
+        using Source = std::function<std::shared_ptr<ILight>(uint32_t, uint32_t, const trlevel::tr_x_room_light&, const std::weak_ptr<ILevel>&)>;
         virtual ~ILight() = 0;
         virtual uint32_t number() const = 0;
         virtual DirectX::SimpleMath::Vector3 position() const = 0;
@@ -31,7 +31,6 @@ namespace trview
         virtual float cutoff() const = 0;
         virtual float radius() const = 0;
         virtual float density() const = 0;
-        virtual void set_level(const std::weak_ptr<ILevel>& level) = 0;
         virtual void set_position(const DirectX::SimpleMath::Vector3& position) = 0;
         virtual void render_direction(const ICamera& camera, const ILevelTextureStorage& texture_storage) = 0;
         virtual trlevel::LevelVersion level_version() const = 0;
