@@ -545,7 +545,7 @@ namespace trview
             }
 
             auto level_entity = level.get_entity(i);
-            auto entity = entity_source(level, level_entity, i, relevant_triggers, mesh_storage);
+            auto entity = entity_source(level, level_entity, i, relevant_triggers, mesh_storage, shared_from_this());
             _rooms[entity->room()]->add_entity(entity);
             _entities.push_back(entity);
         }
@@ -554,7 +554,7 @@ namespace trview
         for (uint32_t i = 0; i < num_ai_objects; ++i)
         {
             auto ai_object = level.get_ai_object(i);
-            auto entity = ai_source(level, ai_object, num_entities + i, mesh_storage);
+            auto entity = ai_source(level, ai_object, num_entities + i, mesh_storage, shared_from_this());
             _rooms[entity->room()]->add_entity(entity);
             _entities.push_back(entity);
         }
@@ -1200,11 +1200,6 @@ namespace trview
         }
 
         apply_ocb_adjustment();
-
-        for (auto& ent : _entities)
-        {
-            ent->set_level(shared_from_this());
-        }
 
         for (auto& trigger : _triggers)
         {
