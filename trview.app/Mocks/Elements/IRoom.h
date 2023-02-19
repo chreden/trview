@@ -77,6 +77,12 @@ namespace trview
                 ON_CALL(*this, alternate_room).WillByDefault(testing::Return(alternate));
                 return shared_from_this();
             }
+
+            std::shared_ptr<MockRoom> with_level(const std::weak_ptr<ILevel>& level)
+            {
+                ON_CALL(*this, level).WillByDefault(testing::Return(level));
+                return shared_from_this();
+            }
         };
     }
 }

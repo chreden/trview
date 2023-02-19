@@ -120,6 +120,22 @@ TEST(Lua_Room, Items)
     ASSERT_EQ(200, lua_tointeger(L, -1));
 }
 
+TEST(Lua_Room, Level)
+{
+    auto level = mock_shared<MockLevel>()->with_version(trlevel::LevelVersion::Tomb4);
+    auto room = mock_shared<MockRoom>()->with_level(level);
+
+    lua_State* L = luaL_newstate();
+    lua::create_room(L, room);
+    lua_setglobal(L, "r");
+
+    ASSERT_EQ(0, luaL_dostring(L, "return r.level"));
+    ASSERT_EQ(LUA_TUSERDATA, lua_type(L, -1));
+    ASSERT_EQ(0, luaL_dostring(L, "return r.level.version"));
+    ASSERT_EQ(LUA_TNUMBER, lua_type(L, -1));
+    ASSERT_EQ(4, lua_tointeger(L, -1));
+}
+
 TEST(Lua_Room, Lights)
 {
     auto light1 = mock_shared<MockLight>()->with_number(100);

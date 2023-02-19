@@ -6,6 +6,7 @@
 #include "../CameraSink/Lua_CameraSink.h"
 #include "../Light/Lua_Light.h"
 #include "../../Lua.h"
+#include "../Level/Lua_Level.h"
 
 namespace trview
 {
@@ -46,6 +47,10 @@ namespace trview
                 else if (key == "items")
                 {
                     return push_list_p(L, room->items(), create_item);
+                }
+                else if (key == "level")
+                {
+                    return create_level(L, room->level().lock());
                 }
                 else if (key == "lights")
                 {

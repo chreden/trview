@@ -11,7 +11,7 @@ namespace trview
     class Trigger final : public ITrigger
     {
     public:
-        explicit Trigger(uint32_t number, uint32_t room, uint16_t x, uint16_t z, const TriggerInfo& trigger_info, trlevel::LevelVersion level_version, const IMesh::TransparentSource& mesh_source);
+        explicit Trigger(uint32_t number, uint32_t room, uint16_t x, uint16_t z, const TriggerInfo& trigger_info, trlevel::LevelVersion level_version, const std::weak_ptr<ILevel>& level, const IMesh::TransparentSource& mesh_source);
         virtual ~Trigger() = default;
         virtual uint32_t number() const override;
         virtual uint32_t room() const override;
@@ -32,7 +32,6 @@ namespace trview
         virtual void get_transparent_triangles(ITransparencyBuffer& transparency, const ICamera& camera, const DirectX::SimpleMath::Color& colour) override;
         virtual bool visible() const override;
         virtual void set_visible(bool value) override;
-        void set_level(const std::weak_ptr<ILevel>& level) override;
         std::weak_ptr<ILevel> level() const override;
     private:
         std::vector<uint16_t> _objects;

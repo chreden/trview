@@ -474,7 +474,7 @@ namespace trview
             {
                 if (has_flag(sector->flags(), SectorFlag::Trigger))
                 {
-                    _triggers.push_back(trigger_source(static_cast<uint32_t>(_triggers.size()), i, sector->x(), sector->z(), sector->trigger(), _version));
+                    _triggers.push_back(trigger_source(static_cast<uint32_t>(_triggers.size()), i, sector->x(), sector->z(), sector->trigger(), _version, shared_from_this()));
                     room->add_trigger(_triggers.back());
                 }
             }
@@ -1200,11 +1200,6 @@ namespace trview
         }
 
         apply_ocb_adjustment();
-
-        for (auto& trigger : _triggers)
-        {
-            trigger->set_level(shared_from_this());
-        }
     }
 
     bool find_item_by_type_id(const ILevel& level, uint32_t type_id, std::weak_ptr<IItem>& output_item)

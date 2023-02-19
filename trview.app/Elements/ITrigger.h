@@ -13,7 +13,7 @@ namespace trview
 
     struct ITrigger : public IRenderable
     {
-        using Source = std::function<std::shared_ptr<ITrigger>(uint32_t, uint32_t, uint16_t, uint16_t, const TriggerInfo&, trlevel::LevelVersion)>;
+        using Source = std::function<std::shared_ptr<ITrigger>(uint32_t, uint32_t, uint16_t, uint16_t, const TriggerInfo&, trlevel::LevelVersion, const std::weak_ptr<ILevel>&)>;
 
         virtual ~ITrigger() = 0;
         virtual uint32_t number() const = 0;
@@ -31,7 +31,6 @@ namespace trview
         virtual PickResult pick(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& direction) const = 0;
         virtual void set_position(const DirectX::SimpleMath::Vector3& position) = 0;
         virtual DirectX::SimpleMath::Vector3 position() const = 0;
-        virtual void set_level(const std::weak_ptr<ILevel>& level) = 0;
         virtual std::weak_ptr<ILevel> level() const = 0;
     };
 
