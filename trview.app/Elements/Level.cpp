@@ -1140,7 +1140,7 @@ namespace trview
             const std::vector<uint16_t> inferred_rooms{ in_space_rooms.empty() ? in_portal_rooms : in_space_rooms };
 
             const ICameraSink::Type type = is_camera ? ICameraSink::Type::Camera : ICameraSink::Type::Sink;
-            auto new_camera_sink = camera_sink_source(i, camera_sink, type, inferred_rooms, relevant_triggers);
+            auto new_camera_sink = camera_sink_source(i, camera_sink, type, inferred_rooms, relevant_triggers, shared_from_this());
             _camera_sinks.push_back(new_camera_sink);
 
             if (is_camera)
@@ -1204,11 +1204,6 @@ namespace trview
         for (auto& trigger : _triggers)
         {
             trigger->set_level(shared_from_this());
-        }
-
-        for (auto& camera_sink : _camera_sinks)
-        {
-            camera_sink->set_level(shared_from_this());
         }
     }
 
