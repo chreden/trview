@@ -29,6 +29,7 @@ namespace trview
             _text += '\n';
         }
         _text += text;
+        _need_scroll = true;
     }
 
     void Console::render()
@@ -108,6 +109,15 @@ namespace trview
             }
 
             ImGui::InputTextMultiline(Names::log.c_str(), const_cast<char*>(_text.c_str()), _text.size(), ImVec2(-1, -25), ImGuiInputTextFlags_ReadOnly);
+            if (ImGui::BeginChild(Names::log.c_str()))
+            {
+                if (_need_scroll)
+                {
+                    ImGui::SetScrollHereY(1.0f);
+                    _need_scroll = false;
+                }
+                ImGui::EndChild();
+            }
             if (ImGui::IsWindowAppearing() || _need_focus)
             {
                 ImGui::SetKeyboardFocusHere();

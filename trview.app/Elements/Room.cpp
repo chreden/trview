@@ -45,7 +45,7 @@ namespace trview
         std::shared_ptr<ILevelTextureStorage> texture_storage,
         const IMeshStorage& mesh_storage,
         uint32_t index,
-        const ILevel& parent_level,
+        const std::weak_ptr<ILevel>& parent_level,
         const Activity& activity,
         const IStaticMesh::MeshSource& static_mesh_mesh_source,
         const IStaticMesh::PositionSource& static_mesh_position_source,
@@ -57,7 +57,7 @@ namespace trview
         _num_z_sectors(room.num_z_sectors),
         _index(index),
         _flags(room.flags),
-        _parent_level(parent_level),
+        _level(parent_level),
         _texture_storage(texture_storage),
         _mesh_source(mesh_source),
         _ambient(room.colour),
@@ -80,7 +80,10 @@ namespace trview
         generate_adjacency();
         generate_static_meshes(mesh_source, level, room, mesh_storage, static_mesh_mesh_source, static_mesh_position_source, activity);
 
-        _token_store += _parent_level.on_geometry_colours_changed += [&]() { _all_geometry_meshes.clear(); };
+        if (auto parent = _level.lock())
+        {
+            _token_store += parent->on_geometry_colours_changed += [&]() { _all_geometry_meshes.clear(); };
+        }
     }
 
     RoomInfo Room::info() const
@@ -686,9 +689,10 @@ namespace trview
             return nullptr;
         }
 
+        auto level = _level.lock();
         auto room =
-            sector->portal() != 0xff ?
-            _parent_level.room(sector->portal()).lock() : nullptr;
+            sector->portal() != 0xff && level ?
+            level->room(sector->portal()).lock() : nullptr;
         if (!room)
         {
             return nullptr;
@@ -806,7 +810,14 @@ namespace trview
 
     bool Room::quicksand() const
     {
-        return _parent_level.version() == trlevel::LevelVersion::Tomb3 && (_flags & 0x80);
+        if (auto level = _level.lock())
+        {
+            if (level->version() != trlevel::LevelVersion::Tomb3)
+            {
+                return false;
+            }
+        }
+        return (_flags & 0x80);
     }
 
     const std::vector<std::shared_ptr<ISector>> Room::sectors() const
@@ -888,7 +899,13 @@ namespace trview
     {
         // TODO: Split into meshes for the main room and then for adjacent rooms. If the adjacent room is being rendered
         // then only one room needs to render that part. This can be decided based on which room has the lower room number.
-        const auto colours = _parent_level.map_colours();
+        auto level = _level.lock();
+        if (!level)
+        {
+            return;
+        }
+
+        const auto colours = level->map_colours();
 
         auto tri_colour = [&](const ISector::Triangle& tri) -> Colour
         {
@@ -946,10 +963,17 @@ namespace trview
     ISector::Portal Room::sector_portal(int x1, int z1, int x2, int z2) const
     {
         ISector::Portal portal;
+
+        auto level = _level.lock();
+        if (!level)
+        {
+            return portal;
+        }
+
         auto sector = _sectors[get_sector_id(x1, z1)];
         if (sector->room_above() != 0xff)
         {
-            const auto other_room = _parent_level.room(sector->room_above()).lock();
+            const auto other_room = level->room(sector->room_above()).lock();
             const auto diff = (position() - other_room->position()) + Vector3(static_cast<float>(x1), 0, static_cast<float>(z1));
             const int other_id = static_cast<int>(diff.x * other_room->num_z_sectors() + diff.z);
             const auto sectors = other_room->sectors();
@@ -971,7 +995,7 @@ namespace trview
         portal.direct_room = std::const_pointer_cast<IRoom>(shared_from_this());
         if (has_flag(portal.direct->flags(), SectorFlag::Portal) && portal.direct->portal() != 0xff)
         {
-            const auto other_room = _parent_level.room(portal.direct->portal()).lock();
+            const auto other_room = level->room(portal.direct->portal()).lock();
             const auto diff = (position() - other_room->position()) + Vector3(static_cast<float>(x2), 0, static_cast<float>(z2));
             const int other_id = static_cast<int>(diff.x * other_room->num_z_sectors() + diff.z);
             const auto sectors = other_room->sectors();
@@ -1028,11 +1052,6 @@ namespace trview
     std::vector<std::weak_ptr<IItem>> Room::items() const
     {
         return _entities;
-    }
-
-    void Room::set_level(const std::weak_ptr<ILevel>& level)
-    {
-        _level = level;
     }
 
     std::weak_ptr<ILevel> Room::level() const

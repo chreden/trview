@@ -19,10 +19,11 @@ namespace
             tr_camera camera{};
             std::vector<uint16_t> inferred_rooms;
             std::vector<std::weak_ptr<ITrigger>> triggers;
+            std::shared_ptr<trview::ILevel> level{ mock_shared<MockLevel>() };
 
             CameraSink build()
             {
-                return CameraSink(mesh, texture_storage, number, camera, type, inferred_rooms, triggers);
+                return CameraSink(mesh, texture_storage, number, camera, type, inferred_rooms, triggers, level);
             }
 
             test_module& with_camera_sink(const tr_camera& camera)

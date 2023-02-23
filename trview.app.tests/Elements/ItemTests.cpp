@@ -24,10 +24,11 @@ namespace
             bool is_pickup{ false };
             std::string type{ "Lara" };
             std::vector<std::weak_ptr<ITrigger>> triggers;
+            std::shared_ptr<ILevel> owning_level{ mock_shared<MockLevel>() };
 
             std::unique_ptr<Item> build()
             {
-                return std::make_unique<Item>(mesh_source, *level, entity, *mesh_storage, index, type, triggers, is_pickup);
+                return std::make_unique<Item>(mesh_source, *level, entity, *mesh_storage, owning_level, index, type, triggers, is_pickup);
             }
 
             test_module& with_level(const std::shared_ptr<trlevel::ILevel>& level)

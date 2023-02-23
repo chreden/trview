@@ -6,7 +6,7 @@ namespace trview
 {
     namespace mocks
     {
-        struct MockLevel : public ILevel
+        struct MockLevel : public ILevel, public std::enable_shared_from_this<MockLevel>
         {
             MockLevel();
             virtual ~MockLevel();
@@ -75,7 +75,12 @@ namespace trview
             MOCK_METHOD(void, set_camera_sink_visibility, (uint32_t, bool), (override));
             MOCK_METHOD(void, set_show_camera_sinks, (bool), (override));
             MOCK_METHOD(std::optional<uint32_t>, selected_camera_sink, (), (const, override));
-            MOCK_METHOD(void, initialise, (), (override));
+
+            std::shared_ptr<MockLevel> with_version(trlevel::LevelVersion version)
+            {
+                ON_CALL(*this, version).WillByDefault(testing::Return(version));
+                return shared_from_this();
+            }
         };
     }
 }

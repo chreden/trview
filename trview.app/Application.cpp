@@ -818,7 +818,6 @@ namespace trview
     {
         std::unique_ptr<trlevel::ILevel> new_level = _trlevel_source(filename);
         auto level = _level_source(std::move(new_level));
-        level->initialise();
         level->set_filename(filename);
         return level;
     }

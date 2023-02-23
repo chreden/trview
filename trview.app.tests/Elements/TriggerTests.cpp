@@ -19,10 +19,11 @@ namespace
             TriggerInfo trigger_info{};
             trlevel::LevelVersion level_version{ trlevel::LevelVersion::Tomb3 };
             IMesh::TransparentSource mesh_source{ [](auto&&...) { return mock_shared<MockMesh>(); } };
+            std::shared_ptr<trview::ILevel> level{ mock_shared<MockLevel>() };
 
             std::unique_ptr<Trigger> build()
             {
-                return std::make_unique<Trigger>(number, room, x, z, trigger_info, level_version, mesh_source);
+                return std::make_unique<Trigger>(number, room, x, z, trigger_info, level_version, level, mesh_source);
             }
 
             test_module& with_info(const TriggerInfo& info)

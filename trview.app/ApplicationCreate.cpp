@@ -184,17 +184,17 @@ namespace trview
                 waypoint_source, settings_loader->load_user_settings());
         };
 
-        auto entity_source = [=](auto&& level, auto&& entity, auto&& index, auto&& triggers, auto&& mesh_storage)
+        auto entity_source = [=](auto&& level, auto&& entity, auto&& index, auto&& triggers, auto&& mesh_storage, auto&& owning_level)
         {
-            return std::make_shared<Item>(mesh_source, level, entity, mesh_storage, index,
+            return std::make_shared<Item>(mesh_source, level, entity, mesh_storage, owning_level, index,
                 type_name_lookup->lookup_type_name(level.get_version(), entity.TypeID, entity.Flags),
                 triggers,
                 type_name_lookup->is_pickup(level.get_version(), entity.TypeID));
         };
 
-        auto ai_source = [=](auto&& level, auto&& entity, auto&& index, auto&& mesh_storage)
+        auto ai_source = [=](auto&& level, auto&& entity, auto&& index, auto&& mesh_storage, auto&& owning_level)
         {
-            return std::make_shared<Item>(mesh_source, level, entity, mesh_storage, index, type_name_lookup->lookup_type_name(level.get_version(), entity.type_id, entity.flags), std::vector<std::weak_ptr<ITrigger>>{});
+            return std::make_shared<Item>(mesh_source, level, entity, mesh_storage, owning_level, index, type_name_lookup->lookup_type_name(level.get_version(), entity.type_id, entity.flags), std::vector<std::weak_ptr<ITrigger>>{});
         };
 
         auto log = std::make_shared<Log>();
@@ -217,19 +217,24 @@ namespace trview
         {
             auto level_texture_storage = std::make_shared<LevelTextureStorage>(device, std::make_unique<TextureStorage>(device), *level);
             auto mesh_storage = std::make_unique<MeshStorage>(mesh_source, *level, *level_texture_storage);
-            return std::make_shared<Level>(device, shader_storage, std::move(level),
+            auto new_level = std::make_shared<Level>(
+                device, 
+                shader_storage, 
                 level_texture_storage,
-                std::move(mesh_storage),
                 std::make_unique<TransparencyBuffer>(device),
                 std::make_unique<SelectionRenderer>(device, shader_storage, std::make_unique<TransparencyBuffer>(device), render_target_source),
+                log,
+                buffer_source);
+            new_level->initialise(
+                std::move(level),
+                std::move(mesh_storage),
                 entity_source,
                 ai_source,
                 room_source,
                 trigger_source,
                 light_source,
-                log,
-                buffer_source,
                 camera_sink_source);
+            return new_level;
         };
 
         auto viewer_ui = std::make_unique<ViewerUI>(

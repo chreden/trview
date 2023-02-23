@@ -57,7 +57,6 @@ namespace trview
             MOCK_METHOD(std::vector<std::weak_ptr<ICameraSink>>, camera_sinks, (), (const, override));
             MOCK_METHOD(std::vector<std::weak_ptr<ITrigger>>, triggers, (), (const, override));
             MOCK_METHOD(std::vector<std::weak_ptr<IItem>>, items, (), (const, override));
-            MOCK_METHOD(void, set_level, (const std::weak_ptr<ILevel>&), (override));
             MOCK_METHOD(std::weak_ptr<ILevel>, level, (), (const, override));
 
 
@@ -76,6 +75,12 @@ namespace trview
             std::shared_ptr<MockRoom> with_alternate_room(int16_t alternate)
             {
                 ON_CALL(*this, alternate_room).WillByDefault(testing::Return(alternate));
+                return shared_from_this();
+            }
+
+            std::shared_ptr<MockRoom> with_level(const std::weak_ptr<ILevel>& level)
+            {
+                ON_CALL(*this, level).WillByDefault(testing::Return(level));
                 return shared_from_this();
             }
         };

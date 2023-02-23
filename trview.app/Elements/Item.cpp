@@ -62,20 +62,20 @@ namespace trview
     {
     }
 
-    Item::Item(const IMesh::Source& mesh_source, const trlevel::ILevel& level, const trlevel::tr2_entity& entity, const IMeshStorage& mesh_storage, uint32_t number, const std::string& type, const std::vector<std::weak_ptr<ITrigger>>& triggers, bool is_pickup)
-        : Item(mesh_source, mesh_storage, level, entity.Room, number, entity.TypeID, entity.position(), entity.Angle, level.get_version() >= trlevel::LevelVersion::Tomb4 ? entity.Intensity2 : 0, type, triggers, entity.Flags, is_pickup)
+    Item::Item(const IMesh::Source& mesh_source, const trlevel::ILevel& level, const trlevel::tr2_entity& entity, const IMeshStorage& mesh_storage, const std::weak_ptr<ILevel>& owning_level, uint32_t number, const std::string& type, const std::vector<std::weak_ptr<ITrigger>>& triggers, bool is_pickup)
+        : Item(mesh_source, mesh_storage, level, owning_level, entity.Room, number, entity.TypeID, entity.position(), entity.Angle, level.get_version() >= trlevel::LevelVersion::Tomb4 ? entity.Intensity2 : 0, type, triggers, entity.Flags, is_pickup)
     {
         
     }
 
-    Item::Item(const IMesh::Source& mesh_source, const trlevel::ILevel& level, const trlevel::tr4_ai_object& entity, const IMeshStorage& mesh_storage, uint32_t number, const std::string& type, const std::vector<std::weak_ptr<ITrigger>>& triggers)
-        : Item(mesh_source, mesh_storage, level, entity.room, number, entity.type_id, entity.position(), entity.angle, entity.ocb, type, triggers, entity.flags, false)
+    Item::Item(const IMesh::Source& mesh_source, const trlevel::ILevel& level, const trlevel::tr4_ai_object& entity, const IMeshStorage& mesh_storage, const std::weak_ptr<ILevel>& owning_level, uint32_t number, const std::string& type, const std::vector<std::weak_ptr<ITrigger>>& triggers)
+        : Item(mesh_source, mesh_storage, level, owning_level, entity.room, number, entity.type_id, entity.position(), entity.angle, entity.ocb, type, triggers, entity.flags, false)
     {
     }
 
-    Item::Item(const IMesh::Source& mesh_source, const IMeshStorage& mesh_storage, const trlevel::ILevel& level, uint16_t room, uint32_t number, uint16_t type_id,
+    Item::Item(const IMesh::Source& mesh_source, const IMeshStorage& mesh_storage, const trlevel::ILevel& level, const std::weak_ptr<ILevel>& owning_level, uint16_t room, uint32_t number, uint16_t type_id,
         const Vector3& position, int32_t angle, int32_t ocb, const std::string& type, const std::vector<std::weak_ptr<ITrigger>>& triggers, uint16_t flags, bool is_pickup)
-        : _room(room), _number(number), _type(type), _triggers(triggers), _type_id(type_id), _ocb(ocb), _flags(flags)
+        : _room(room), _number(number), _type(type), _triggers(triggers), _type_id(type_id), _ocb(ocb), _flags(flags), _level(owning_level)
     {
         // Extract the meshes required from the model.
         load_meshes(level, type_id, mesh_storage);
@@ -437,11 +437,6 @@ namespace trview
     Vector3 Item::position() const
     {
         return _position;
-    }
-
-    void Item::set_level(const std::weak_ptr<ILevel>& level)
-    {
-        _level = level;
     }
 
     std::weak_ptr<ILevel> Item::level() const

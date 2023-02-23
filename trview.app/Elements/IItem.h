@@ -15,9 +15,9 @@ namespace trview
     struct IItem : public IRenderable
     {
         using EntitySource =
-            std::function<std::shared_ptr<IItem> (const trlevel::ILevel&, const trlevel::tr2_entity&, uint32_t, const std::vector<std::weak_ptr<ITrigger>>&, const IMeshStorage&)>;
+            std::function<std::shared_ptr<IItem> (const trlevel::ILevel&, const trlevel::tr2_entity&, uint32_t, const std::vector<std::weak_ptr<ITrigger>>&, const IMeshStorage&, const std::weak_ptr<ILevel>&)>;
         using AiSource =
-            std::function<std::shared_ptr<IItem>(const trlevel::ILevel&, const trlevel::tr4_ai_object&, uint32_t, const IMeshStorage&)>;
+            std::function<std::shared_ptr<IItem>(const trlevel::ILevel&, const trlevel::tr4_ai_object&, uint32_t, const IMeshStorage&, const std::weak_ptr<ILevel>&)>;
 
         virtual ~IItem() = 0;
         virtual uint32_t number() const = 0;
@@ -42,7 +42,6 @@ namespace trview
         virtual bool clear_body_flag() const = 0;
         virtual bool invisible_flag() const = 0;
         virtual DirectX::SimpleMath::Vector3 position() const = 0;
-        virtual void set_level(const std::weak_ptr<ILevel>& level) = 0;
         virtual std::weak_ptr<ILevel> level() const = 0;
     };
 

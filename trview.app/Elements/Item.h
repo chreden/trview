@@ -28,8 +28,8 @@ namespace trview
     class Item final : public IItem
     {
     public:
-        explicit Item(const IMesh::Source& mesh_source, const trlevel::ILevel& level, const trlevel::tr2_entity& entity, const IMeshStorage& mesh_storage, uint32_t number, const std::string& type, const std::vector<std::weak_ptr<ITrigger>>& triggers, bool is_pickup);
-        explicit Item(const IMesh::Source& mesh_source, const trlevel::ILevel& level, const trlevel::tr4_ai_object& entity, const IMeshStorage& mesh_storage, uint32_t number, const std::string& type, const std::vector<std::weak_ptr<ITrigger>>& triggers);
+        explicit Item(const IMesh::Source& mesh_source, const trlevel::ILevel& level, const trlevel::tr2_entity& entity, const IMeshStorage& mesh_storage, const std::weak_ptr<ILevel>& owning_level, uint32_t number, const std::string& type, const std::vector<std::weak_ptr<ITrigger>>& triggers, bool is_pickup);
+        explicit Item(const IMesh::Source& mesh_source, const trlevel::ILevel& level, const trlevel::tr4_ai_object& entity, const IMeshStorage& mesh_storage, const std::weak_ptr<ILevel>& owning_level, uint32_t number, const std::string& type, const std::vector<std::weak_ptr<ITrigger>>& triggers);
         virtual ~Item() = default;
         virtual void render(const ICamera& camera, const ILevelTextureStorage& texture_storage, const DirectX::SimpleMath::Color& colour) override;
         virtual uint16_t room() const override;
@@ -52,10 +52,9 @@ namespace trview
         bool clear_body_flag() const override;
         bool invisible_flag() const override;
         DirectX::SimpleMath::Vector3 position() const override;
-        void set_level(const std::weak_ptr<ILevel>& level) override;
         std::weak_ptr<ILevel> level() const override;
     private:
-        Item(const IMesh::Source& mesh_source, const IMeshStorage& mesh_storage, const trlevel::ILevel& level, uint16_t room, uint32_t number, uint16_t type_id, const DirectX::SimpleMath::Vector3& position, int32_t angle, int32_t ocb, const std::string& type, const std::vector<std::weak_ptr<ITrigger>>& triggers, uint16_t flags, bool is_pickup);
+        Item(const IMesh::Source& mesh_source, const IMeshStorage& mesh_storage, const trlevel::ILevel& level, const std::weak_ptr<ILevel>& owning_level, uint16_t room, uint32_t number, uint16_t type_id, const DirectX::SimpleMath::Vector3& position, int32_t angle, int32_t ocb, const std::string& type, const std::vector<std::weak_ptr<ITrigger>>& triggers, uint16_t flags, bool is_pickup);
 
         void load_meshes(const trlevel::ILevel& level, int16_t type_id, const IMeshStorage& mesh_storage);
         void load_model(const trlevel::tr_model& model, const trlevel::ILevel& level);

@@ -6,8 +6,10 @@ using namespace DirectX::SimpleMath;
 namespace trview
 {
     CameraSink::CameraSink(const std::shared_ptr<IMesh>& mesh, const std::shared_ptr<ITextureStorage>& texture_storage, 
-        uint32_t number, const trlevel::tr_camera& camera, Type type, const std::vector<uint16_t>& inferred_rooms, const std::vector<std::weak_ptr<ITrigger>>& triggers)
-        : _mesh(mesh), _number(number), _position(camera.position()), _room(camera.Room), _flag(camera.Flag), _inferred_rooms(inferred_rooms), _type(type), _triggers(triggers)
+        uint32_t number, const trlevel::tr_camera& camera, Type type, const std::vector<uint16_t>& inferred_rooms, const std::vector<std::weak_ptr<ITrigger>>& triggers,
+        const std::weak_ptr<ILevel>& level)
+        : _mesh(mesh), _number(number), _position(camera.position()), _room(camera.Room), _flag(camera.Flag), _inferred_rooms(inferred_rooms), _type(type), _triggers(triggers),
+        _level(level)
     {
         _camera_texture = texture_storage->lookup("camera_texture");
         _sink_texture = texture_storage->lookup("sink_texture");
@@ -96,11 +98,6 @@ namespace trview
     uint16_t CameraSink::room() const
     {
         return _room;
-    }
-
-    void CameraSink::set_level(const std::weak_ptr<ILevel>& level)
-    {
-        _level = level;
     }
 
     void CameraSink::set_type(Type type)

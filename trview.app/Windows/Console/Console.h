@@ -33,6 +33,7 @@ namespace trview
         std::string _text;
         bool _need_focus{ false };
         bool _go_to_eol{ false };
+        bool _need_scroll{ false };
         ImFont* _font{ nullptr };
         std::string _id{ "Console 0" };
         std::vector<std::string> _recent_files;
