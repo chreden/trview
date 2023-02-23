@@ -23,9 +23,56 @@ namespace trview
                     lua_pushinteger(L, sector->id());
                     return 1;
                 }
+                else if (key == "portal")
+                {
+                    if (sector->is_portal())
+                    {
+                        if (auto room = sector->room().lock())
+                        {
+                            if (auto level = room->level().lock())
+                            {
+                                return create_room(L, level->room(sector->portal()).lock());
+                            }
+                        }
+                    }
+                    lua_pushnil(L);
+                }
                 else if (key == "room")
                 {
-                    create_room(L, sector->room().lock());
+                    return create_room(L, sector->room().lock());
+                }
+                else if (key == "room_above")
+                {
+                    if (sector->room_above() != 0xff)
+                    {
+                        if (auto room = sector->room().lock())
+                        {
+                            if (auto level = room->level().lock())
+                            {
+                                return create_room(L, level->room(sector->room_above()).lock());
+                            }
+                        }
+                    }
+                    lua_pushnil(L);
+                }
+                else if (key == "room_below")
+                {
+                    if (sector->room_below() != 0xff)
+                    {
+                        if (auto room = sector->room().lock())
+                        {
+                            if (auto level = room->level().lock())
+                            {
+                                return create_room(L, level->room(sector->room_below()).lock());
+                            }
+                        }
+                    }
+                    lua_pushnil(L);
+                }
+                else if (key == "trigger")
+                {
+                    // TODO: Trigger
+                    lua_pushnil(L);
                 }
                 else if (key == "x")
                 {
