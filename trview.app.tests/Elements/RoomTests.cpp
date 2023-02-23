@@ -38,10 +38,11 @@ namespace
             ISector::Source sector_source{ [](auto&&...) { return mock_shared<MockSector>(); } };
             std::shared_ptr<ILog> log{ mock_shared<MockLog>() };
 
-            std::unique_ptr<Room> build()
+            std::shared_ptr<Room> build()
             {
-                return std::make_unique<Room>(mesh_source, *tr_level, room, level_texture_storage, *mesh_storage,
-                    index, level, Activity(log, "Level", "Room 0"), static_mesh_source, static_mesh_position_source, sector_source);
+                auto new_room = std::make_shared<Room>(room, mesh_source, level_texture_storage, index, level);
+                new_room->initialise(*tr_level, room, *mesh_storage, static_mesh_source, static_mesh_position_source, sector_source, Activity(log, "Level", "Room 0"));
+                return new_room;
             }
 
             test_module& with_level(const std::shared_ptr<ILevel>& level)

@@ -25,7 +25,7 @@ namespace trview
                 }
                 else if (key == "room")
                 {
-                    create_room(L, sector->room());
+                    create_room(L, sector->room().lock());
                 }
                 else if (key == "x")
                 {

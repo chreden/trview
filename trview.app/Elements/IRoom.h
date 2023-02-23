@@ -330,5 +330,6 @@ namespace trview
     std::string to_string(IRoom::AlternateMode mode);
 
     std::string light_mode_name(int16_t light_mode);
+    uint32_t room_number(const std::weak_ptr<IRoom>& room);
 }
 

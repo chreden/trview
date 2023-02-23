@@ -16,7 +16,7 @@ namespace trview
     struct ISector
     {
         using Source = std::function<std::shared_ptr<ISector>(const trlevel::ILevel&, const trlevel::tr3_room&,
-            const trlevel::tr_room_sector&, int, uint32_t, const IRoom&)>;
+            const trlevel::tr_room_sector&, int, const std::weak_ptr<IRoom>&)>;
 
         enum class TriangulationDirection
         {

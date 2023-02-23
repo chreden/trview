@@ -20,7 +20,7 @@ namespace trview
     {
     public:
         // Constructs sector object and parses floor data automatically 
-        Sector(const trlevel::ILevel &level, const trlevel::tr3_room& room, const trlevel::tr_room_sector &sector, int sector_id, uint32_t room_number, const std::weak_ptr<IRoom>& room_ptr);
+        Sector(const trlevel::ILevel& level, const trlevel::tr3_room& room, const trlevel::tr_room_sector& sector, int sector_id, const std::weak_ptr<IRoom>& room_ptr);
         virtual ~Sector() = default;
         // Returns the id of the room that this floor data points to 
         virtual std::uint16_t portal() const override;

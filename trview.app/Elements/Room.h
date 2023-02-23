@@ -26,17 +26,11 @@ namespace trview
     class Room final : public IRoom, public std::enable_shared_from_this<IRoom>
     {
     public:
-        explicit Room(const IMesh::Source& mesh_source,
-            const trlevel::ILevel& level,
-            const trlevel::tr3_room& room,
+        explicit Room(const trlevel::tr3_room& room,
+            const IMesh::Source& mesh_source,
             std::shared_ptr<ILevelTextureStorage> texture_storage,
-            const IMeshStorage& mesh_storage,
             uint32_t index,
-            const std::weak_ptr<ILevel>& parent_level,
-            const Activity& activity,
-            const IStaticMesh::MeshSource& static_mesh_mesh_source,
-            const IStaticMesh::PositionSource& static_mesh_position_source,
-            const ISector::Source& sector_source);
+            const std::weak_ptr<ILevel>& parent_level);
 
         Room(const Room&) = delete;
         Room& operator=(const Room&) = delete;
@@ -88,6 +82,13 @@ namespace trview
         int16_t ambient_intensity_1() const override;
         int16_t ambient_intensity_2() const override;
         int16_t light_mode() const override;
+        void initialise(const trlevel::ILevel& level,
+            const trlevel::tr3_room& room,
+            const IMeshStorage& mesh_storage,
+            const IStaticMesh::MeshSource& static_mesh_mesh_source,
+            const IStaticMesh::PositionSource& static_mesh_position_source,
+            const ISector::Source& sector_source,
+            const Activity& activity);
     private:
         void generate_geometry(const IMesh::Source& mesh_source, const trlevel::tr3_room& room);
         void generate_adjacency();

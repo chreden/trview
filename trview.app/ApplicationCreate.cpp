@@ -203,7 +203,13 @@ namespace trview
         auto static_mesh_source = [=](auto&&... args) { return std::make_shared<StaticMesh>(args..., bounding_mesh); };
         auto static_mesh_position_source = [=](auto&&... args) { return std::make_shared<StaticMesh>(args...); };
         auto sector_source = [=](auto&&... args) { return std::make_shared<Sector>(args...); };
-        auto room_source = [=](auto&&... args) { return std::make_shared<Room>( mesh_source, args..., static_mesh_source, static_mesh_position_source, sector_source); };
+        auto room_source = [=](const trlevel::ILevel& level, const trlevel::tr3_room& room,
+            const std::shared_ptr<ILevelTextureStorage>& texture_storage, const IMeshStorage& mesh_storage, uint32_t index, const std::weak_ptr<ILevel>& parent_level, const Activity& activity)
+        {
+            auto new_room = std::make_shared<Room>(room, mesh_source, texture_storage, index, parent_level);
+            new_room->initialise(level, room, mesh_storage, static_mesh_source, static_mesh_position_source, sector_source, activity);
+            return new_room;
+        };
         auto trigger_source = [=](auto&&... args) { return std::make_shared<Trigger>(args..., mesh_transparent_source); };
 
         const auto light_mesh = create_sphere_mesh(mesh_source, 24, 24);

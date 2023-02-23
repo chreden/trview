@@ -39,17 +39,11 @@ namespace trview
     {
     }
 
-    Room::Room(const IMesh::Source& mesh_source,
-        const trlevel::ILevel& level, 
-        const trlevel::tr3_room& room,
+    Room::Room(const trlevel::tr3_room& room,
+        const IMesh::Source& mesh_source,
         std::shared_ptr<ILevelTextureStorage> texture_storage,
-        const IMeshStorage& mesh_storage,
         uint32_t index,
-        const std::weak_ptr<ILevel>& parent_level,
-        const Activity& activity,
-        const IStaticMesh::MeshSource& static_mesh_mesh_source,
-        const IStaticMesh::PositionSource& static_mesh_position_source,
-        const ISector::Source& sector_source)
+        const std::weak_ptr<ILevel>& parent_level)
         : _info { room.info.x, 0, room.info.z, room.info.yBottom, room.info.yTop }, 
         _alternate_room(room.alternate_room),
         _alternate_group(room.alternate_group),
@@ -75,15 +69,20 @@ namespace trview
         _room_offset = Matrix::CreateTranslation(room.info.x / trlevel::Scale_X, 0, room.info.z / trlevel::Scale_Z);
         _inverted_room_offset = _room_offset.Invert();
 
-        generate_sectors(level, room, sector_source);
-        generate_geometry(mesh_source, room);
-        generate_adjacency();
-        generate_static_meshes(mesh_source, level, room, mesh_storage, static_mesh_mesh_source, static_mesh_position_source, activity);
-
         if (auto parent = _level.lock())
         {
             _token_store += parent->on_geometry_colours_changed += [&]() { _all_geometry_meshes.clear(); };
         }
+    }
+
+    void Room::initialise(const trlevel::ILevel& level, const trlevel::tr3_room& room, const IMeshStorage& mesh_storage,
+        const IStaticMesh::MeshSource& static_mesh_mesh_source, const IStaticMesh::PositionSource& static_mesh_position_source,
+        const ISector::Source& sector_source, const Activity& activity)
+    {
+        generate_sectors(level, room, sector_source);
+        generate_geometry(_mesh_source, room);
+        generate_adjacency();
+        generate_static_meshes(_mesh_source, level, room, mesh_storage, static_mesh_mesh_source, static_mesh_position_source, activity);
     }
 
     RoomInfo Room::info() const
@@ -458,7 +457,7 @@ namespace trview
         for (auto i = 0u; i < room.sector_list.size(); ++i)
         {
             const trlevel::tr_room_sector &sector = room.sector_list[i];
-            _sectors.push_back(sector_source(level, room, sector, i, *this));
+            _sectors.push_back(sector_source(level, room, sector, i, shared_from_this()));
         }
     }
 
@@ -1132,5 +1131,14 @@ namespace trview
             return "Sunset";
         }
         return "Unknown";
+    }
+
+    uint32_t room_number(const std::weak_ptr<IRoom>& room)
+    {
+        if (auto room_ptr = room.lock())
+        {
+            return room_ptr->number();
+        }
+        return 0u;
     }
 }

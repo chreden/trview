@@ -490,14 +490,17 @@ namespace trview
         {
             if (has_flag(sector->flags(), SectorFlag::MonkeySwing) && sector->room_above() != 0xff)
             {
-                auto portal = _rooms[sector->room()]->sector_portal(sector->x(), sector->z(), -1, -1);
-                if (has_flag(portal.sector_above->flags(), SectorFlag::MonkeySwing))
+                if (auto room = sector->room().lock())
                 {
-                    return;
-                }
+                    auto portal = room->sector_portal(sector->x(), sector->z(), -1, -1);
+                    if (has_flag(portal.sector_above->flags(), SectorFlag::MonkeySwing))
+                    {
+                        return;
+                    }
 
-                portal.sector_above->add_flag(SectorFlag::MonkeySwing);
-                add_monkey_swing(portal.sector_above);
+                    portal.sector_above->add_flag(SectorFlag::MonkeySwing);
+                    add_monkey_swing(portal.sector_above);
+                }
             }
         };
 
@@ -506,9 +509,12 @@ namespace trview
         {
             if (has_any_flag(sector->flags(), SectorFlag::ClimbableNorth, SectorFlag::ClimbableSouth, SectorFlag::ClimbableWest, SectorFlag::ClimbableEast) && sector->room_above() != 0xff)
             {
-                auto portal = _rooms[sector->room()]->sector_portal(sector->x(), sector->z(), -1, -1);
-                portal.sector_above->add_flag(sector->flags() & SectorFlag::Climbable);
-                add_ladders(portal.sector_above);
+                if (auto room = sector->room().lock())
+                {
+                    auto portal = room->sector_portal(sector->x(), sector->z(), -1, -1);
+                    portal.sector_above->add_flag(sector->flags() & SectorFlag::Climbable);
+                    add_ladders(portal.sector_above);
+                }
             }
         };
 
