@@ -122,12 +122,12 @@ namespace trview
             }
         }
 
-        void create_trigger(lua_State* L, const std::shared_ptr<ITrigger>& trigger)
+        int create_trigger(lua_State* L, const std::shared_ptr<ITrigger>& trigger)
         {
             if (!trigger)
             {
                 lua_pushnil(L);
-                return;
+                return 1;
             }
 
             ITrigger** userdata = static_cast<ITrigger**>(lua_newuserdata(L, sizeof(trigger.get())));
@@ -142,6 +142,7 @@ namespace trview
             lua_pushcfunction(L, trigger_gc);
             lua_setfield(L, -2, "__gc");
             lua_setmetatable(L, -2);
+            return 1;
         }
     }
 }

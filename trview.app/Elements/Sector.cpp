@@ -100,16 +100,16 @@ namespace trview
 
                     // Basic trigger setup 
                     const std::uint16_t setup = command.data[++index];
-                    _trigger.timer = setup & 0xFF;
-                    _trigger.oneshot = (setup & 0x100) >> 8;
-                    _trigger.mask = (setup & 0x3E00) >> 9;
-                    _trigger.sector_id = _sector_id;
+                    _trigger_info.timer = setup & 0xFF;
+                    _trigger_info.oneshot = (setup & 0x100) >> 8;
+                    _trigger_info.mask = (setup & 0x3E00) >> 9;
+                    _trigger_info.sector_id = _sector_id;
 
                     // Type of the trigger, e.g. Pad, Switch, etc.
-                    _trigger.type = static_cast<TriggerType>(subfunction);
+                    _trigger_info.type = static_cast<TriggerType>(subfunction);
 
                     bool continue_processing = true;
-                    if (_trigger.type == TriggerType::Key || _trigger.type == TriggerType::Switch)
+                    if (_trigger_info.type == TriggerType::Key || _trigger_info.type == TriggerType::Switch)
                     {
                         // The next element is the lock or switch - ignore.
                         auto reference = command.data[++index];
@@ -127,7 +127,7 @@ namespace trview
                             {
                                 trigger_command = command.data[index];
                                 auto action = static_cast<TriggerCommandType>((trigger_command & 0x7C00) >> 10);
-                                _trigger.commands.emplace_back(action, static_cast<uint16_t>(trigger_command & 0x3FF));
+                                _trigger_info.commands.emplace_back(action, static_cast<uint16_t>(trigger_command & 0x3FF));
                                 if (action == TriggerCommandType::Camera || action == TriggerCommandType::Flyby)
                                 {
                                     // Camera has another uint16_t - skip for now.
@@ -209,9 +209,9 @@ namespace trview
         return _flags;
     }
 
-    TriggerInfo Sector::trigger() const
+    TriggerInfo Sector::trigger_info() const
     {
-        return _trigger;
+        return _trigger_info;
     }
 
     uint16_t Sector::x() const
@@ -673,6 +673,16 @@ namespace trview
     void Sector::add_flag(SectorFlag flag)
     {
         _flags |= flag;
+    }
+
+    void Sector::set_trigger(const std::weak_ptr<ITrigger>& trigger)
+    {
+        _trigger = trigger;
+    }
+
+    std::weak_ptr<ITrigger> Sector::trigger() const
+    {
+        return _trigger;
     }
 
     Triangulation parse_triangulation(uint16_t floor, uint16_t data)

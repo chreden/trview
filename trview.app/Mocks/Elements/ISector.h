@@ -17,7 +17,7 @@ namespace trview
             MOCK_METHOD(std::uint16_t, room_above, (), (const, override));
             MOCK_METHOD(SectorFlag, flags, (), (const, override));
             MOCK_METHOD(uint32_t, floordata_index, (), (const, override));
-            MOCK_METHOD(TriggerInfo, trigger, (), (const, override));
+            MOCK_METHOD(TriggerInfo, trigger_info, (), (const, override));
             MOCK_METHOD(uint16_t, x, (), (const, override));
             MOCK_METHOD(uint16_t, z, (), (const, override));
             MOCK_METHOD((std::array<float, 4>), corners, (), (const, override));
@@ -35,6 +35,8 @@ namespace trview
             MOCK_METHOD(void, generate_triangles, (), (override));
             MOCK_METHOD(void, add_triangle, (const ISector::Portal&, const Triangle&, std::unordered_set<uint32_t>), (override));
             MOCK_METHOD(void, add_flag, (SectorFlag), (override));
+            MOCK_METHOD(void, set_trigger, (const std::weak_ptr<ITrigger>&), (override));
+            MOCK_METHOD(std::weak_ptr<ITrigger>, trigger, (), (const, override));
 
             std::shared_ptr<MockSector> with_id(uint32_t number)
             {

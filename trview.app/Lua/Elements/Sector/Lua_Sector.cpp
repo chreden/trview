@@ -71,8 +71,7 @@ namespace trview
                 }
                 else if (key == "trigger")
                 {
-                    // TODO: Trigger
-                    lua_pushnil(L);
+                    return create_trigger(L, sector->trigger().lock());
                 }
                 else if (key == "x")
                 {

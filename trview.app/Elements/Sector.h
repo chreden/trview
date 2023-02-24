@@ -35,7 +35,7 @@ namespace trview
         // Holds "Function" enum bitwise values 
         virtual SectorFlag flags() const override;
         /// Get trigger information for the sector.
-        virtual TriggerInfo trigger() const override;
+        virtual TriggerInfo trigger_info() const override;
         virtual uint16_t x() const override;
         virtual uint16_t z() const override;
         virtual std::array<float, 4> corners() const override;
@@ -54,6 +54,8 @@ namespace trview
         virtual void generate_triangles() override;
         virtual void add_triangle(const ISector::Portal& portal, const Triangle& triangle, std::unordered_set<uint32_t> visited_rooms) override;
         virtual void add_flag(SectorFlag flag) override;
+        void set_trigger(const std::weak_ptr<ITrigger>& trigger) override;
+        std::weak_ptr<ITrigger> trigger() const override;
     private:
         bool parse(const trlevel::ILevel& level);
         void parse_slope();
@@ -74,7 +76,8 @@ namespace trview
         std::uint16_t _floor_slant{ 0 }, _ceiling_slant{ 0 };
 
         // Holds trigger data 
-        TriggerInfo _trigger;
+        TriggerInfo _trigger_info;
+        std::weak_ptr<ITrigger> _trigger;
 
         // ID of the sector 
         uint16_t _sector_id; 

@@ -12,6 +12,7 @@
 namespace trview
 {
     struct IRoom;
+    struct ITrigger;
 
     struct ISector
     {
@@ -105,7 +106,7 @@ namespace trview
         virtual std::uint16_t room_below() const = 0;
         virtual std::uint16_t room_above() const = 0;
         virtual SectorFlag flags() const = 0;
-        virtual TriggerInfo trigger() const = 0;
+        virtual TriggerInfo trigger_info() const = 0;
         virtual uint16_t x() const = 0;
         virtual uint16_t z() const = 0;
         virtual std::array<float, 4> corners() const = 0;
@@ -125,6 +126,9 @@ namespace trview
         virtual void generate_triangles() = 0;
         virtual void add_triangle(const ISector::Portal& portal, const Triangle& triangle, std::unordered_set<uint32_t> visited_rooms) = 0;
         virtual void add_flag(SectorFlag flag) = 0;
+
+        virtual void set_trigger(const std::weak_ptr<ITrigger>& trigger) = 0;
+        virtual std::weak_ptr<ITrigger> trigger() const = 0;
     };
 
     bool is_no_space(SectorFlag flags);

@@ -474,8 +474,10 @@ namespace trview
             {
                 if (has_flag(sector->flags(), SectorFlag::Trigger))
                 {
-                    _triggers.push_back(trigger_source(static_cast<uint32_t>(_triggers.size()), i, sector->x(), sector->z(), sector->trigger(), _version, shared_from_this()));
-                    room->add_trigger(_triggers.back());
+                    auto trigger = trigger_source(static_cast<uint32_t>(_triggers.size()), i, sector->x(), sector->z(), sector->trigger_info(), _version, shared_from_this());
+                    _triggers.push_back(trigger);
+                    sector->set_trigger(trigger);
+                    room->add_trigger(trigger);
                 }
             }
         }
