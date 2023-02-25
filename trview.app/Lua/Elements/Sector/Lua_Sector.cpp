@@ -13,12 +13,37 @@ namespace trview
         {
             std::unordered_map<ISector**, std::shared_ptr<ISector>> sectors;
 
+            int sector_hasflag(lua_State* L)
+            {
+                auto sector = lua::get_self<ISector>(L);
+
+                luaL_checktype(L, -1, LUA_TNUMBER);
+                long long flags = lua_tointeger(L, -1);
+
+                return static_cast<long long>(sector->flags()) & flags;
+            }
+
             int sector_index(lua_State* L)
             {
                 auto sector = lua::get_self<ISector>(L);
 
                 const std::string key = lua_tostring(L, 2);
-                if (key == "number")
+                if (key == "flags")
+                {
+                    lua_pushinteger(L, static_cast<int>(sector->flags()));
+                    return 1;
+                }
+                else if (key == "floordata")
+                {
+                    lua_pushnil(L);
+                    return 1;
+                }
+                else if (key == "has_flag")
+                {
+                    lua_pushcfunction(L, sector_hasflag);
+                    return 1;
+                }
+                else if (key == "number")
                 {
                     lua_pushinteger(L, sector->id());
                     return 1;
@@ -124,6 +149,33 @@ namespace trview
             lua_setfield(L, -2, "__gc");
             lua_setmetatable(L, -2);
             return 1;
+        }
+
+        void sector_register(lua_State* L)
+        {
+            lua_newtable(L);
+            create_enum<SectorFlag>(L, "Flags", 
+            {
+                { "None", SectorFlag::None },
+                { "Portal", SectorFlag::Portal },
+                { "Wall", SectorFlag::Wall },
+                { "Trigger", SectorFlag::Trigger },
+                { "Death", SectorFlag::Death },
+                { "FloorSlant", SectorFlag::FloorSlant },
+                { "CeilingSlant", SectorFlag::CeilingSlant },
+                { "ClimbableNorth", SectorFlag::ClimbableNorth },
+                { "ClimbableEast", SectorFlag::ClimbableEast },
+                { "ClimbableSouth", SectorFlag::ClimbableSouth },
+                { "ClimbableWest", SectorFlag::ClimbableWest },
+                { "MonkeySwing", SectorFlag::MonkeySwing },
+                { "RoomAbove", SectorFlag::RoomAbove },
+                { "RoomBelow", SectorFlag::RoomBelow },
+                { "MinecartLeft", SectorFlag::MinecartLeft },
+                { "MinecartRight", SectorFlag::MinecartRight },
+                { "SpecialWall", SectorFlag::SpecialWall },
+                { "Climbable", SectorFlag::Climbable }
+            });
+            lua_setglobal(L, "Sector");
         }
     }
 }

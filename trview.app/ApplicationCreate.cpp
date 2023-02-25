@@ -202,7 +202,7 @@ namespace trview
         auto bounding_mesh = create_cube_mesh(mesh_source);
         auto static_mesh_source = [=](auto&&... args) { return std::make_shared<StaticMesh>(args..., bounding_mesh); };
         auto static_mesh_position_source = [=](auto&&... args) { return std::make_shared<StaticMesh>(args...); };
-        auto sector_source = [=](auto&&... args) { return std::make_shared<Sector>(args...); };
+        auto sector_source = [=](auto&&... args) { return std::make_shared<Sector>(std::forward<decltype(args)>(args)...); };
         auto room_source = [=](const trlevel::ILevel& level, const trlevel::tr3_room& room,
             const std::shared_ptr<ILevelTextureStorage>& texture_storage, const IMeshStorage& mesh_storage, uint32_t index, const std::weak_ptr<ILevel>& parent_level, const Activity& activity)
         {
