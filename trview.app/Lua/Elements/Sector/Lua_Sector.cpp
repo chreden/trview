@@ -64,11 +64,6 @@ namespace trview
                     lua_pushinteger(L, static_cast<int>(sector->flags()));
                     return 1;
                 }
-                else if (key == "floordata")
-                {
-                    lua_pushnil(L);
-                    return 1;
-                }
                 else if (key == "has_flag")
                 {
                     lua_pushcfunction(L, sector_hasflag);

@@ -61,11 +61,6 @@ TEST(Lua_Sector, Flags)
     ASSERT_EQ(1, lua_tointeger(L, -1));
 }
 
-TEST(Lua_Sector, Floordata)
-{
-    FAIL();
-}
-
 TEST(Lua_Sector, HasFlag)
 {
     auto sector = mock_shared<MockSector>()->with_flags(SectorFlag::Portal);

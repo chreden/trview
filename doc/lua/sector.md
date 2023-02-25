@@ -6,7 +6,6 @@ The Sector library provides information about a sector in a [Level](level.md)/[R
 | Name | Type | Mode | Description |
 | ---- | ---- | ---- | ---- |
 | flags | [Flags](#flags)| R | Sector flags |
-| floordata | | R | Floordata values |
 | number | number | R | Sector number |
 | portal | [Room](room.md) | R | Destination room for portal or `nil` |
 | room | [Room](room.md) | R | Room that the sector is in |
