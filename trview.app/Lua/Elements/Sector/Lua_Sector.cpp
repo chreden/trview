@@ -20,7 +20,8 @@ namespace trview
                 luaL_checktype(L, -1, LUA_TNUMBER);
                 long long flags = lua_tointeger(L, -1);
 
-                return static_cast<long long>(sector->flags()) & flags;
+                lua_pushboolean(L, static_cast<long long>(sector->flags()) & flags);
+                return 1;
             }
 
             int sector_index(lua_State* L)
@@ -28,7 +29,37 @@ namespace trview
                 auto sector = lua::get_self<ISector>(L);
 
                 const std::string key = lua_tostring(L, 2);
-                if (key == "flags")
+                if (key == "above")
+                {
+                    if (sector->room_above() != 0xff)
+                    {
+                        if (auto room = sector->room().lock())
+                        {
+                            if (auto level = room->level().lock())
+                            {
+                                return create_room(L, level->room(sector->room_above()).lock());
+                            }
+                        }
+                    }
+                    lua_pushnil(L);
+                    return 1;
+                }
+                else if (key == "below")
+                {
+                    if (sector->room_below() != 0xff)
+                    {
+                        if (auto room = sector->room().lock())
+                        {
+                            if (auto level = room->level().lock())
+                            {
+                                return create_room(L, level->room(sector->room_below()).lock());
+                            }
+                        }
+                    }
+                    lua_pushnil(L);
+                    return 1;
+                }
+                else if (key == "flags")
                 {
                     lua_pushinteger(L, static_cast<int>(sector->flags()));
                     return 1;
@@ -65,34 +96,6 @@ namespace trview
                 else if (key == "room")
                 {
                     return create_room(L, sector->room().lock());
-                }
-                else if (key == "room_above")
-                {
-                    if (sector->room_above() != 0xff)
-                    {
-                        if (auto room = sector->room().lock())
-                        {
-                            if (auto level = room->level().lock())
-                            {
-                                return create_room(L, level->room(sector->room_above()).lock());
-                            }
-                        }
-                    }
-                    lua_pushnil(L);
-                }
-                else if (key == "room_below")
-                {
-                    if (sector->room_below() != 0xff)
-                    {
-                        if (auto room = sector->room().lock())
-                        {
-                            if (auto level = room->level().lock())
-                            {
-                                return create_room(L, level->room(sector->room_below()).lock());
-                            }
-                        }
-                    }
-                    lua_pushnil(L);
                 }
                 else if (key == "trigger")
                 {

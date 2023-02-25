@@ -1,6 +1,7 @@
 #include <trview.app/Application.h>
 #include <trview.app/Mocks/Elements/ILevel.h>
 #include <trview.app/Mocks/Elements/ILight.h>
+#include <trview.app/Mocks/Elements/ISector.h>
 #include <trview.app/Mocks/Elements/ICameraSink.h>
 #include <trview.app/Mocks/Menus/IUpdateChecker.h>
 #include <trview.app/Mocks/Menus/IFileMenu.h>

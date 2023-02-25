@@ -1,5 +1,6 @@
 #include <trview.app/Lua/Elements/Trigger/Lua_Trigger.h>
 #include <trview.app/Mocks/Elements/ITrigger.h>
+#include <trview.app/Mocks/Elements/ISector.h>
 #include <trview.tests.common/Mocks.h>
 #include <external/lua/src/lua.h>
 #include <external/lua/src/lauxlib.h>

@@ -38,9 +38,57 @@ namespace trview
             MOCK_METHOD(void, set_trigger, (const std::weak_ptr<ITrigger>&), (override));
             MOCK_METHOD(std::weak_ptr<ITrigger>, trigger, (), (const, override));
 
+            std::shared_ptr<MockSector> with_flags(SectorFlag flags)
+            {
+                ON_CALL(*this, flags).WillByDefault(testing::Return(flags));
+                return shared_from_this();
+            }
+
+            std::shared_ptr<MockSector> with_room_above(uint16_t above)
+            {
+                ON_CALL(*this, room_above).WillByDefault(testing::Return(above));
+                return shared_from_this();
+            }
+
+            std::shared_ptr<MockSector> with_room_below(uint16_t below)
+            {
+                ON_CALL(*this, room_below).WillByDefault(testing::Return(below));
+                return shared_from_this();
+            }
+
             std::shared_ptr<MockSector> with_id(uint32_t number)
             {
                 ON_CALL(*this, id).WillByDefault(testing::Return(number));
+                return shared_from_this();
+            }
+
+            std::shared_ptr<MockSector> with_portal(uint16_t portal)
+            {
+                ON_CALL(*this, portal).WillByDefault(testing::Return(portal));
+                return shared_from_this();
+            }
+
+            std::shared_ptr<MockSector> with_room(const std::weak_ptr<IRoom>& room)
+            {
+                ON_CALL(*this, room).WillByDefault(testing::Return(room));
+                return shared_from_this();
+            }
+
+            std::shared_ptr<MockSector> with_trigger(const std::weak_ptr<ITrigger>& trigger)
+            {
+                ON_CALL(*this, trigger).WillByDefault(testing::Return(trigger));
+                return shared_from_this();
+            }
+
+            std::shared_ptr<MockSector> with_x(uint16_t x)
+            {
+                ON_CALL(*this, x).WillByDefault(testing::Return(x));
+                return shared_from_this();
+            }
+
+            std::shared_ptr<MockSector> with_z(uint16_t z)
+            {
+                ON_CALL(*this, z).WillByDefault(testing::Return(z));
                 return shared_from_this();
             }
         };

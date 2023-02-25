@@ -51,7 +51,6 @@ namespace testing
 #include <trview.app/Mocks/Elements/IItem.h>
 #include <trview.app/Mocks/Elements/ILevel.h>
 #include <trview.app/Mocks/Elements/IRoom.h>
-#include <trview.app/Mocks/Elements/ISector.h>
 #include <trview.app/Mocks/Elements/IStaticMesh.h>
 #include <trview.app/Mocks/Elements/ITrigger.h>
 #include <trview.app/Mocks/Elements/ITypeNameLookup.h>
