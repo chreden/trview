@@ -331,7 +331,7 @@ namespace trview
         return _room_ptr;
     }
 
-    ISector::TriangulationDirection Sector::triangulation_function() const
+    ISector::TriangulationDirection Sector::triangulation() const
     {
         return _triangulation_function;
     }
@@ -685,7 +685,7 @@ namespace trview
         return _trigger;
     }
 
-    ISector::TriangulationDirection Sector::ceiling_triangulation_function() const
+    ISector::TriangulationDirection Sector::ceiling_triangulation() const
     {
         return _ceiling_triangulation_function;
     }

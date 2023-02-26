@@ -25,7 +25,7 @@ namespace trview
             MOCK_METHOD((DirectX::SimpleMath::Vector3), corner, (Corner), (const, override));
             MOCK_METHOD((DirectX::SimpleMath::Vector3), ceiling, (Corner), (const, override));
             MOCK_METHOD(std::weak_ptr<IRoom>, room, (), (const, override));
-            MOCK_METHOD(TriangulationDirection, triangulation_function, (), (const, override));
+            MOCK_METHOD(TriangulationDirection, triangulation, (), (const, override));
             MOCK_METHOD(std::vector<Triangle>, triangles, (), (const, override));
             MOCK_METHOD(bool, is_floor, (), (const, override));
             MOCK_METHOD(bool, is_wall, (), (const, override));
@@ -37,7 +37,13 @@ namespace trview
             MOCK_METHOD(void, add_flag, (SectorFlag), (override));
             MOCK_METHOD(void, set_trigger, (const std::weak_ptr<ITrigger>&), (override));
             MOCK_METHOD(std::weak_ptr<ITrigger>, trigger, (), (const, override));
-            MOCK_METHOD(TriangulationDirection, ceiling_triangulation_function, (), (const, override));
+            MOCK_METHOD(TriangulationDirection, ceiling_triangulation, (), (const, override));
+
+            std::shared_ptr<MockSector> with_ceiling_triangulation(ISector::TriangulationDirection triangulation)
+            {
+                ON_CALL(*this, ceiling_triangulation).WillByDefault(testing::Return(triangulation));
+                return shared_from_this();
+            }
 
             std::shared_ptr<MockSector> with_flags(SectorFlag flags)
             {
@@ -72,6 +78,12 @@ namespace trview
             std::shared_ptr<MockSector> with_room(const std::weak_ptr<IRoom>& room)
             {
                 ON_CALL(*this, room).WillByDefault(testing::Return(room));
+                return shared_from_this();
+            }
+
+            std::shared_ptr<MockSector> with_triangulation(ISector::TriangulationDirection triangulation)
+            {
+                ON_CALL(*this, triangulation).WillByDefault(testing::Return(triangulation));
                 return shared_from_this();
             }
 

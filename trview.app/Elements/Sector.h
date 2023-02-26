@@ -43,7 +43,7 @@ namespace trview
         virtual DirectX::SimpleMath::Vector3 corner(Corner corner) const override;
         virtual DirectX::SimpleMath::Vector3 ceiling(Corner corner) const override;
         std::weak_ptr<IRoom> room() const override;
-        virtual TriangulationDirection triangulation_function() const override;
+        virtual TriangulationDirection triangulation() const override;
         virtual std::vector<Triangle> triangles() const override;
         virtual uint32_t floordata_index() const override;
         /// Determines whether this is a walkable floor.
@@ -56,7 +56,7 @@ namespace trview
         virtual void add_flag(SectorFlag flag) override;
         void set_trigger(const std::weak_ptr<ITrigger>& trigger) override;
         std::weak_ptr<ITrigger> trigger() const override;
-        TriangulationDirection ceiling_triangulation_function() const override;
+        TriangulationDirection ceiling_triangulation() const override;
     private:
         bool parse(const trlevel::ILevel& level);
         void parse_slope();

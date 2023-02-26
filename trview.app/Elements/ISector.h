@@ -114,7 +114,7 @@ namespace trview
         virtual DirectX::SimpleMath::Vector3 corner(Corner corner) const = 0;
         virtual DirectX::SimpleMath::Vector3 ceiling(Corner corner) const = 0;
         virtual std::weak_ptr<IRoom> room() const = 0;
-        virtual TriangulationDirection triangulation_function() const = 0;
+        virtual TriangulationDirection triangulation() const = 0;
         virtual std::vector<Triangle> triangles() const = 0;
         virtual bool is_floor() const = 0;
         virtual bool is_wall() const = 0;
@@ -130,7 +130,7 @@ namespace trview
         virtual void set_trigger(const std::weak_ptr<ITrigger>& trigger) = 0;
         virtual std::weak_ptr<ITrigger> trigger() const = 0;
 
-        virtual TriangulationDirection ceiling_triangulation_function() const = 0;
+        virtual TriangulationDirection ceiling_triangulation() const = 0;
     };
 
     bool is_no_space(SectorFlag flags);

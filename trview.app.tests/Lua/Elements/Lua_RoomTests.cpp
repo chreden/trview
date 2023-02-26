@@ -203,7 +203,18 @@ TEST(Lua_Room, NumZSectors)
 
 TEST(Lua_Room, Sector)
 {
-    FAIL();
+    auto sector = mock_shared<MockSector>()->with_id(123);
+    auto room = mock_shared<MockRoom>();
+    EXPECT_CALL(*room, sector(0, 1)).WillRepeatedly(Return(sector));
+
+    lua_State* L = luaL_newstate();
+    lua::create_room(L, room);
+    lua_setglobal(L, "r");
+
+    ASSERT_EQ(0, luaL_dostring(L, "return r:sector(1, 2)"));
+    ASSERT_EQ(LUA_TUSERDATA, lua_type(L, -1));
+    ASSERT_EQ(0, luaL_dostring(L, "return r:sector(1, 2).number"));
+    ASSERT_EQ(123, lua_tointeger(L, -1));
 }
 
 TEST(Lua_Room, Sectors)

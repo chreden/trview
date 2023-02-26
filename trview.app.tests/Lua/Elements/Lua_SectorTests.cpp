@@ -56,7 +56,15 @@ TEST(Lua_Sector, CeilingCorners)
 
 TEST(Lua_Sector, CeilingTriangulation)
 {
-    FAIL();
+    auto sector = mock_shared<MockSector>()->with_ceiling_triangulation(ISector::TriangulationDirection::NeSw);
+
+    lua_State* L = luaL_newstate();
+    lua::create_sector(L, sector);
+    lua_setglobal(L, "s");
+
+    ASSERT_EQ(0, luaL_dostring(L, "return s.ceiling_triangulation"));
+    ASSERT_EQ(LUA_TSTRING, lua_type(L, -1));
+    ASSERT_STREQ("NESW", lua_tostring(L, -1));
 }
 
 TEST(Lua_Sector, Corners)
@@ -184,5 +192,13 @@ TEST(Lua_Sector, Z)
 
 TEST(Lua_Sector, Triangulation)
 {
-    FAIL();
+    auto sector = mock_shared<MockSector>()->with_triangulation(ISector::TriangulationDirection::NeSw);
+
+    lua_State* L = luaL_newstate();
+    lua::create_sector(L, sector);
+    lua_setglobal(L, "s");
+
+    ASSERT_EQ(0, luaL_dostring(L, "return s.triangulation"));
+    ASSERT_EQ(LUA_TSTRING, lua_type(L, -1));
+    ASSERT_STREQ("NESW", lua_tostring(L, -1));
 }

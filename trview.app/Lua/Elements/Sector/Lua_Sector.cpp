@@ -108,7 +108,7 @@ namespace trview
                 }
                 else if (key == "ceiling_triangulation")
                 {
-                    lua_pushstring(L, to_string(sector->ceiling_triangulation_function()).c_str());
+                    lua_pushstring(L, to_string(sector->ceiling_triangulation()).c_str());
                     return 1;
                 }
                 else if (key == "corners")
@@ -160,7 +160,7 @@ namespace trview
                 }
                 else if (key == "triangulation")
                 {
-                    lua_pushstring(L, to_string(sector->triangulation_function()).c_str());
+                    lua_pushstring(L, to_string(sector->triangulation()).c_str());
                     return 1;
                 }
                 else if (key == "trigger")
