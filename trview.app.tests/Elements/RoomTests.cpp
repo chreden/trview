@@ -657,5 +657,17 @@ TEST(Room, RendersContainedCameraSinks)
 
 TEST(Room, Sector)
 {
-    FAIL();
+    trlevel::tr3_room level_room;
+    level_room.num_x_sectors = 2;
+    level_room.num_z_sectors = 2;
+    level_room.sector_list.resize(4);
+    auto room = register_test_module().with_room(level_room).build();
+
+    auto sector = room->sector(1, 1);
+    auto s = sector.lock();
+    ASSERT_TRUE(s);
+
+    sector = room->sector(2, 2);
+    s = sector.lock();
+    ASSERT_FALSE(s);
 }

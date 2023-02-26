@@ -51,7 +51,33 @@ TEST(Lua_Sector, Below)
 
 TEST(Lua_Sector, CeilingCorners)
 {
-    FAIL();
+    auto room = mock_shared<MockRoom>();
+    std::array<float, 4> corners
+    {
+        0.0f, 0.25f, 0.5f, 0.75f
+    };
+
+    auto sector = mock_shared<MockSector>()->with_room(room);
+    ON_CALL(*sector, ceiling_corners).WillByDefault(Return(corners));
+
+    lua_State* L = luaL_newstate();
+    lua::create_sector(L, sector);
+    lua_setglobal(L, "s");
+
+    ASSERT_EQ(0, luaL_dostring(L, "return s.ceiling_corners"));
+    ASSERT_EQ(LUA_TTABLE, lua_type(L, -1));
+    ASSERT_EQ(0, luaL_dostring(L, "return s.ceiling_corners[1]"));
+    ASSERT_EQ(LUA_TNUMBER, lua_type(L, -1));
+    ASSERT_EQ(0, lua_tointeger(L, -1));
+    ASSERT_EQ(0, luaL_dostring(L, "return s.ceiling_corners[2]"));
+    ASSERT_EQ(LUA_TNUMBER, lua_type(L, -1));
+    ASSERT_EQ(1, lua_tointeger(L, -1));
+    ASSERT_EQ(0, luaL_dostring(L, "return s.ceiling_corners[3]"));
+    ASSERT_EQ(LUA_TNUMBER, lua_type(L, -1));
+    ASSERT_EQ(2, lua_tointeger(L, -1));
+    ASSERT_EQ(0, luaL_dostring(L, "return s.ceiling_corners[4]"));
+    ASSERT_EQ(LUA_TNUMBER, lua_type(L, -1));
+    ASSERT_EQ(3, lua_tointeger(L, -1));
 }
 
 TEST(Lua_Sector, CeilingTriangulation)
@@ -72,7 +98,7 @@ TEST(Lua_Sector, Corners)
     auto room = mock_shared<MockRoom>();
     std::array<float, 4> corners
     {
-        0.0f, 0.0f, 0.0f, 0.0f
+        0.0f, -0.25f, -0.5f, -0.75f
     };
 
     auto sector = mock_shared<MockSector>()->with_room(room);
