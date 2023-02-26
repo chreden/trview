@@ -54,6 +54,11 @@ TEST(Lua_Sector, CeilingCorners)
     FAIL();
 }
 
+TEST(Lua_Sector, CeilingTriangulation)
+{
+    FAIL();
+}
+
 TEST(Lua_Sector, Corners)
 {
     FAIL();
@@ -175,4 +180,9 @@ TEST(Lua_Sector, Z)
     ASSERT_EQ(0, luaL_dostring(L, "return s.z"));
     ASSERT_EQ(LUA_TNUMBER, lua_type(L, -1));
     ASSERT_EQ(123, lua_tointeger(L, -1));
+}
+
+TEST(Lua_Sector, Triangulation)
+{
+    FAIL();
 }

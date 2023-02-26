@@ -56,6 +56,7 @@ namespace trview
         virtual void add_flag(SectorFlag flag) override;
         void set_trigger(const std::weak_ptr<ITrigger>& trigger) override;
         std::weak_ptr<ITrigger> trigger() const override;
+        TriangulationDirection ceiling_triangulation_function() const override;
     private:
         bool parse(const trlevel::ILevel& level);
         void parse_slope();
@@ -99,9 +100,9 @@ namespace trview
         std::weak_ptr<IRoom> _room_ptr;
 
         std::optional<Triangulation> _floor_triangulation;
-        TriangulationDirection _triangulation_function{ TriangulationDirection::NwSe };
+        TriangulationDirection _triangulation_function{ TriangulationDirection::None };
         std::optional<Triangulation> _ceiling_triangulation;
-        TriangulationDirection _ceiling_triangulation_function{ TriangulationDirection::NwSe };
+        TriangulationDirection _ceiling_triangulation_function{ TriangulationDirection::None };
 
         std::set<uint16_t> _neighbours;
 

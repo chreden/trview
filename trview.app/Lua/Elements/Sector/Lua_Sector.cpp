@@ -106,6 +106,11 @@ namespace trview
                     lua_rawseti(L, -2, 4);
                     return 1;
                 }
+                else if (key == "ceiling_triangulation")
+                {
+                    lua_pushstring(L, to_string(sector->ceiling_triangulation_function()).c_str());
+                    return 1;
+                }
                 else if (key == "corners")
                 {
                     lua_newtable(L);
@@ -152,6 +157,11 @@ namespace trview
                 else if (key == "room")
                 {
                     return create_room(L, sector->room().lock());
+                }
+                else if (key == "triangulation")
+                {
+                    lua_pushstring(L, to_string(sector->triangulation_function()).c_str());
+                    return 1;
                 }
                 else if (key == "trigger")
                 {

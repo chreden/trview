@@ -37,6 +37,7 @@ namespace trview
             MOCK_METHOD(void, add_flag, (SectorFlag), (override));
             MOCK_METHOD(void, set_trigger, (const std::weak_ptr<ITrigger>&), (override));
             MOCK_METHOD(std::weak_ptr<ITrigger>, trigger, (), (const, override));
+            MOCK_METHOD(TriangulationDirection, ceiling_triangulation_function, (), (const, override));
 
             std::shared_ptr<MockSector> with_flags(SectorFlag flags)
             {

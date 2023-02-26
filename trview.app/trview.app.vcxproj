@@ -105,6 +105,7 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClCompile Include="Tools\Compass.cpp" />
     <ClCompile Include="Tools\Measure.cpp" />
     <ClCompile Include="Tools\Toolbar.cpp" />
+    <ClInclude Include="Elements\ISector.hpp" />
     <ClInclude Include="Lua\Colour.h" />
     <ClInclude Include="Lua\Elements\CameraSink\Lua_CameraSink.h" />
     <ClInclude Include="Lua\Elements\Item\Lua_Item.h" />

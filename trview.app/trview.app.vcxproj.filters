@@ -940,6 +940,9 @@
     <ClInclude Include="Mocks\Lua\ILua.h">
       <Filter>Mocks\Lua</Filter>
     </ClInclude>
+    <ClInclude Include="Elements\ISector.hpp">
+      <Filter>Elements\Sector</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Windows">

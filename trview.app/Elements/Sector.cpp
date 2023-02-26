@@ -685,6 +685,11 @@ namespace trview
         return _trigger;
     }
 
+    ISector::TriangulationDirection Sector::ceiling_triangulation_function() const
+    {
+        return _ceiling_triangulation_function;
+    }
+
     Triangulation parse_triangulation(uint16_t floor, uint16_t data)
     {
         // Not sure what to do with h1 and h2 values yet.

@@ -129,7 +129,13 @@ namespace trview
 
         virtual void set_trigger(const std::weak_ptr<ITrigger>& trigger) = 0;
         virtual std::weak_ptr<ITrigger> trigger() const = 0;
+
+        virtual TriangulationDirection ceiling_triangulation_function() const = 0;
     };
 
     bool is_no_space(SectorFlag flags);
+    constexpr std::string to_string(ISector::TriangulationDirection direction);
 }
+
+#include "ISector.hpp"
+
