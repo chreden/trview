@@ -1,5 +1,6 @@
 #include <trview.app/Lua/Elements/Sector/Lua_Sector.h>
 #include <trview.app/Mocks/Elements/ISector.h>
+#include <trview.app/Mocks/Elements/IRoom.h>
 #include <trview.tests.common/Mocks.h>
 #include <external/lua/src/lua.h>
 #include <external/lua/src/lauxlib.h>

@@ -46,6 +46,7 @@ namespace trview
         virtual void add_trigger(const std::weak_ptr<ITrigger>& trigger) override;
         virtual void add_light(const std::weak_ptr<ILight>& light) override;
         virtual void add_camera_sink(const std::weak_ptr<ICameraSink>& camera_sink) override;
+        std::weak_ptr<ISector> sector(int32_t x, int32_t z) const override;
         virtual const std::vector<std::shared_ptr<ISector>> sectors() const override;
         virtual void generate_sector_triangles() override;
         virtual void get_transparent_triangles(ITransparencyBuffer& transparency, const ICamera& camera, SelectionMode selected, RenderFilter render_filter) override;

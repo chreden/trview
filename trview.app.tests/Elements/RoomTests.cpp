@@ -654,3 +654,8 @@ TEST(Room, RendersContainedCameraSinks)
     room->add_camera_sink(camera_sink);
     room->render_camera_sinks(NiceMock<MockCamera>{});
 }
+
+TEST(Room, Sector)
+{
+    FAIL();
+}

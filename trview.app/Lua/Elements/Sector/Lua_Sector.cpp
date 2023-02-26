@@ -14,7 +14,7 @@ namespace trview
         {
             std::unordered_map<ISector**, std::shared_ptr<ISector>> sectors;
 
-            std::array<int, 4> to_clicks(ISector* sector, const std::array<float, 4>& corners)
+            std::array<int, 4> to_corner_clicks(ISector* sector, const std::array<float, 4>& corners)
             {
                 float base = 0;
                 if (auto room = sector->room().lock())
@@ -27,6 +27,22 @@ namespace trview
                     static_cast<int>((corners[1] - base) / -0.25f),
                     static_cast<int>((corners[2] - base) / -0.25f),
                     static_cast<int>((corners[3] - base) / -0.25f )
+                };
+            }
+
+            std::array<int, 4> to_ceiling_corner_clicks(ISector* sector, const std::array<float, 4>& corners)
+            {
+                float base = 0;
+                if (auto room = sector->room().lock())
+                {
+                    base = room->info().yTop / trlevel::Scale;
+                }
+                return
+                {
+                    static_cast<int>((corners[0] - base) / 0.25f),
+                    static_cast<int>((corners[1] - base) / 0.25f),
+                    static_cast<int>((corners[2] - base) / 0.25f),
+                    static_cast<int>((corners[3] - base) / 0.25f)
                 };
             }
 
@@ -79,21 +95,21 @@ namespace trview
                 else if (key == "ceiling_corners")
                 {
                     lua_newtable(L);
-                    const auto ceilings = sector->ceiling_corners();
-                    lua_pushinteger(L, static_cast<int>(ceilings[0] * trlevel::Scale));
+                    const auto corners = to_ceiling_corner_clicks(sector, sector->ceiling_corners());
+                    lua_pushinteger(L, corners[0]);
                     lua_rawseti(L, -2, 1);
-                    lua_pushinteger(L, static_cast<int>(ceilings[1] * trlevel::Scale));
+                    lua_pushinteger(L, corners[1]);
                     lua_rawseti(L, -2, 2);
-                    lua_pushinteger(L, static_cast<int>(ceilings[2] * trlevel::Scale));
+                    lua_pushinteger(L, corners[2]);
                     lua_rawseti(L, -2, 3);
-                    lua_pushinteger(L, static_cast<int>(ceilings[3] * trlevel::Scale));
+                    lua_pushinteger(L, corners[3]);
                     lua_rawseti(L, -2, 4);
                     return 1;
                 }
                 else if (key == "corners")
                 {
                     lua_newtable(L);
-                    const auto corners = to_clicks(sector, sector->corners());
+                    const auto corners = to_corner_clicks(sector, sector->corners());
                     lua_pushinteger(L, corners[0]);
                     lua_rawseti(L, -2, 1);
                     lua_pushinteger(L, corners[1]);

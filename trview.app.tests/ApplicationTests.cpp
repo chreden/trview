@@ -18,6 +18,7 @@
 #include <trview.app/Mocks/Windows/ILogWindowManager.h>
 #include <trview.app/Mocks/Windows/ITexturesWindowManager.h>
 #include <trview.app/Mocks/Windows/ICameraSinkWindowManager.h>
+#include <trview.app/Mocks/Elements/IRoom.h>
 #include <trview.common/Mocks/Windows/IShortcuts.h>
 #include <trview.common/Mocks/Windows/IDialogs.h>
 #include <trview.common/Mocks/IFiles.h>

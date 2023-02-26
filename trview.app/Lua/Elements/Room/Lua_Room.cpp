@@ -18,21 +18,10 @@ namespace trview
 
             int get_sector(lua_State* L)
             {
-                auto room = lua::get_self<IRoom>(L);
-
-                auto x = lua_tointeger(L, 2) - 1;
-                auto z = lua_tointeger(L, 3) - 1;
-
-                auto sectors = room->sectors();
-                auto id = x * room->num_z_sectors() + z;
-
-                if (id >= 0 && id < std::ssize(sectors))
-                {
-                    return create_sector(L, sectors[id]);
-                }
-
-                lua_pushnil(L);
-                return 1;
+                const auto room = lua::get_self<IRoom>(L);
+                const auto x = static_cast<int32_t>(lua_tointeger(L, 2) - 1);
+                const auto z = static_cast<int32_t>(lua_tointeger(L, 3) - 1);
+                return create_sector(L, room->sector(x, z).lock());
             }
 
             int room_index(lua_State* L)

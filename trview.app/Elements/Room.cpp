@@ -819,6 +819,16 @@ namespace trview
         return (_flags & 0x80);
     }
 
+    std::weak_ptr<ISector> Room::sector(int32_t x, int32_t z) const
+    {
+        const auto id = get_sector_id(x, z);
+        if (id < _sectors.size())
+        {
+            return _sectors[id];
+        }
+        return {};
+    }
+
     const std::vector<std::shared_ptr<ISector>> Room::sectors() const
     {
         return _sectors; 

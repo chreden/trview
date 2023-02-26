@@ -5,6 +5,7 @@
 #include <trview.app/Mocks/Geometry/IMesh.h>
 #include <trview.app/Mocks/Elements/ITrigger.h>
 #include <trview.app/Mocks/Elements/ISector.h>
+#include <trview.app/Mocks/Elements/IRoom.h>
 
 using namespace trview;
 using namespace trview::mocks;
