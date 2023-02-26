@@ -201,6 +201,11 @@ TEST(Lua_Room, NumZSectors)
     ASSERT_EQ(123, lua_tointeger(L, -1));
 }
 
+TEST(Lua_Room, Sector)
+{
+    FAIL();
+}
+
 TEST(Lua_Room, Sectors)
 {
     auto sector1 = mock_shared<MockSector>()->with_id(100);

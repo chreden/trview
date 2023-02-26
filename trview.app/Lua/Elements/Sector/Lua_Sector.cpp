@@ -4,6 +4,7 @@
 #include "../Trigger/Lua_Trigger.h"
 #include "../Room/Lua_Room.h"
 #include "../../Lua.h"
+#include <trview.common/Algorithms.h>
 
 namespace trview
 {
@@ -12,6 +13,22 @@ namespace trview
         namespace
         {
             std::unordered_map<ISector**, std::shared_ptr<ISector>> sectors;
+
+            std::array<int, 4> to_clicks(ISector* sector, const std::array<float, 4>& corners)
+            {
+                float base = 0;
+                if (auto room = sector->room().lock())
+                {
+                    base = room->info().yBottom / trlevel::Scale;
+                }
+                return
+                {
+                    static_cast<int>((corners[0] - base) / -0.25f),
+                    static_cast<int>((corners[1] - base) / -0.25f),
+                    static_cast<int>((corners[2] - base) / -0.25f),
+                    static_cast<int>((corners[3] - base) / -0.25f )
+                };
+            }
 
             int sector_hasflag(lua_State* L)
             {
@@ -76,14 +93,14 @@ namespace trview
                 else if (key == "corners")
                 {
                     lua_newtable(L);
-                    const auto corners = sector->corners();
-                    lua_pushinteger(L, static_cast<int>(corners[0] * trlevel::Scale));
+                    const auto corners = to_clicks(sector, sector->corners());
+                    lua_pushinteger(L, corners[0]);
                     lua_rawseti(L, -2, 1);
-                    lua_pushinteger(L, static_cast<int>(corners[1] * trlevel::Scale));
+                    lua_pushinteger(L, corners[1]);
                     lua_rawseti(L, -2, 2);
-                    lua_pushinteger(L, static_cast<int>(corners[2] * trlevel::Scale));
+                    lua_pushinteger(L, corners[2]);
                     lua_rawseti(L, -2, 3);
-                    lua_pushinteger(L, static_cast<int>(corners[3] * trlevel::Scale));
+                    lua_pushinteger(L, corners[3]);
                     lua_rawseti(L, -2, 4);
                     return 1;
                 }

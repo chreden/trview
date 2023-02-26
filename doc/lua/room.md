@@ -17,3 +17,8 @@ The Room library provides information about a room in a [level](level.md).
 | triggers | [Trigger](trigger.md)[] | R | Triggers in the room |
 | visible | boolean | RW | Whether the room is visible in the viewer |
 
+# Functions
+
+| Name | Returns | Parameters | Description |
+| ---- | ------- | ---------- | ----------- |
+| sector | [Sector](sector.md) | number x, number y | Gets the sector at the x and z indices, 1 based |
