@@ -66,6 +66,18 @@ namespace trview
                 return shared_from_this();
             }
 
+            std::shared_ptr<MockRoom> with_num_x_sectors(uint16_t number)
+            {
+                ON_CALL(*this, num_x_sectors).WillByDefault(testing::Return(number));
+                return shared_from_this();
+            }
+
+            std::shared_ptr<MockRoom> with_num_z_sectors(uint16_t number)
+            {
+                ON_CALL(*this, num_z_sectors).WillByDefault(testing::Return(number));
+                return shared_from_this();
+            }
+
             std::shared_ptr<MockRoom> with_alternate_group(int16_t group)
             {
                 ON_CALL(*this, alternate_group).WillByDefault(testing::Return(group));

@@ -48,6 +48,16 @@ TEST(Lua_Sector, Below)
     ASSERT_EQ(10, lua_tointeger(L, -1));
 }
 
+TEST(Lua_Sector, CeilingCorners)
+{
+    FAIL();
+}
+
+TEST(Lua_Sector, Corners)
+{
+    FAIL();
+}
+
 TEST(Lua_Sector, Flags)
 {
     auto sector = mock_shared<MockSector>()->with_flags(SectorFlag::Portal);

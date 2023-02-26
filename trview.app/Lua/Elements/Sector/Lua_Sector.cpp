@@ -59,6 +59,34 @@ namespace trview
                     lua_pushnil(L);
                     return 1;
                 }
+                else if (key == "ceiling_corners")
+                {
+                    lua_newtable(L);
+                    const auto ceilings = sector->ceiling_corners();
+                    lua_pushinteger(L, static_cast<int>(ceilings[0] * trlevel::Scale));
+                    lua_rawseti(L, -2, 1);
+                    lua_pushinteger(L, static_cast<int>(ceilings[1] * trlevel::Scale));
+                    lua_rawseti(L, -2, 2);
+                    lua_pushinteger(L, static_cast<int>(ceilings[2] * trlevel::Scale));
+                    lua_rawseti(L, -2, 3);
+                    lua_pushinteger(L, static_cast<int>(ceilings[3] * trlevel::Scale));
+                    lua_rawseti(L, -2, 4);
+                    return 1;
+                }
+                else if (key == "corners")
+                {
+                    lua_newtable(L);
+                    const auto corners = sector->corners();
+                    lua_pushinteger(L, static_cast<int>(corners[0] * trlevel::Scale));
+                    lua_rawseti(L, -2, 1);
+                    lua_pushinteger(L, static_cast<int>(corners[1] * trlevel::Scale));
+                    lua_rawseti(L, -2, 2);
+                    lua_pushinteger(L, static_cast<int>(corners[2] * trlevel::Scale));
+                    lua_rawseti(L, -2, 3);
+                    lua_pushinteger(L, static_cast<int>(corners[3] * trlevel::Scale));
+                    lua_rawseti(L, -2, 4);
+                    return 1;
+                }
                 else if (key == "flags")
                 {
                     lua_pushinteger(L, static_cast<int>(sector->flags()));

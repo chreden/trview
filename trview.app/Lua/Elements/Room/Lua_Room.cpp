@@ -61,6 +61,16 @@ namespace trview
                     lua_pushinteger(L, room->number());
                     return 1;
                 }
+                else if (key == "num_x_sectors")
+                {
+                    lua_pushinteger(L, room->num_x_sectors());
+                    return 1;
+                }
+                else if (key == "num_z_sectors")
+                {
+                    lua_pushinteger(L, room->num_z_sectors());
+                    return 1;
+                }
                 else if (key == "sectors")
                 {
                     return push_list(L, room->sectors(), create_sector);
