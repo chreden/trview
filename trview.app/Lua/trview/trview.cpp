@@ -3,6 +3,7 @@
 #include "../../Application.h"
 #include <trlevel/LevelEncryptedException.h>
 #include "../../UserCancelledException.h"
+#include "../Elements/Sector/Lua_Sector.h"
 
 namespace trview
 {
@@ -92,6 +93,8 @@ namespace trview
             lua_setfield(L, -2, "__newindex");
             lua_setmetatable(L, -2);
             lua_setglobal(L, "trview");
+
+            sector_register(L);
         }
     }
 }

@@ -26,17 +26,11 @@ namespace trview
     class Room final : public IRoom, public std::enable_shared_from_this<IRoom>
     {
     public:
-        explicit Room(const IMesh::Source& mesh_source,
-            const trlevel::ILevel& level,
-            const trlevel::tr3_room& room,
+        explicit Room(const trlevel::tr3_room& room,
+            const IMesh::Source& mesh_source,
             std::shared_ptr<ILevelTextureStorage> texture_storage,
-            const IMeshStorage& mesh_storage,
             uint32_t index,
-            const std::weak_ptr<ILevel>& parent_level,
-            const Activity& activity,
-            const IStaticMesh::MeshSource& static_mesh_mesh_source,
-            const IStaticMesh::PositionSource& static_mesh_position_source,
-            const ISector::Source& sector_source);
+            const std::weak_ptr<ILevel>& parent_level);
 
         Room(const Room&) = delete;
         Room& operator=(const Room&) = delete;
@@ -52,6 +46,7 @@ namespace trview
         virtual void add_trigger(const std::weak_ptr<ITrigger>& trigger) override;
         virtual void add_light(const std::weak_ptr<ILight>& light) override;
         virtual void add_camera_sink(const std::weak_ptr<ICameraSink>& camera_sink) override;
+        std::weak_ptr<ISector> sector(int32_t x, int32_t z) const override;
         virtual const std::vector<std::shared_ptr<ISector>> sectors() const override;
         virtual void generate_sector_triangles() override;
         virtual void get_transparent_triangles(ITransparencyBuffer& transparency, const ICamera& camera, SelectionMode selected, RenderFilter render_filter) override;
@@ -88,6 +83,13 @@ namespace trview
         int16_t ambient_intensity_1() const override;
         int16_t ambient_intensity_2() const override;
         int16_t light_mode() const override;
+        void initialise(const trlevel::ILevel& level,
+            const trlevel::tr3_room& room,
+            const IMeshStorage& mesh_storage,
+            const IStaticMesh::MeshSource& static_mesh_mesh_source,
+            const IStaticMesh::PositionSource& static_mesh_position_source,
+            const ISector::Source& sector_source,
+            const Activity& activity);
     private:
         void generate_geometry(const IMesh::Source& mesh_source, const trlevel::tr3_room& room);
         void generate_adjacency();

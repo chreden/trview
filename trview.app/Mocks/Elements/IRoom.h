@@ -40,6 +40,7 @@ namespace trview
             MOCK_METHOD(void, render_lights, (const ICamera&, const std::weak_ptr<ILight>&), (override));
             MOCK_METHOD(void, render_camera_sinks, (const ICamera&), (override));
             MOCK_METHOD(void, render_contained, (const ICamera&, SelectionMode, RenderFilter), (override));;
+            MOCK_METHOD(std::weak_ptr<ISector>, sector, (int32_t, int32_t), (const, override));
             MOCK_METHOD(const std::vector<std::shared_ptr<ISector>>, sectors, (), (const, override));
             MOCK_METHOD(void, set_is_alternate, (int16_t), (override));
             MOCK_METHOD(std::weak_ptr<ITrigger>, trigger_at, (int32_t, int32_t), (const, override));
@@ -63,6 +64,18 @@ namespace trview
             std::shared_ptr<MockRoom> with_number(uint32_t number)
             {
                 ON_CALL(*this, number).WillByDefault(testing::Return(number));
+                return shared_from_this();
+            }
+
+            std::shared_ptr<MockRoom> with_num_x_sectors(uint16_t number)
+            {
+                ON_CALL(*this, num_x_sectors).WillByDefault(testing::Return(number));
+                return shared_from_this();
+            }
+
+            std::shared_ptr<MockRoom> with_num_z_sectors(uint16_t number)
+            {
+                ON_CALL(*this, num_z_sectors).WillByDefault(testing::Return(number));
                 return shared_from_this();
             }
 

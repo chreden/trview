@@ -38,10 +38,11 @@ namespace
             ISector::Source sector_source{ [](auto&&...) { return mock_shared<MockSector>(); } };
             std::shared_ptr<ILog> log{ mock_shared<MockLog>() };
 
-            std::unique_ptr<Room> build()
+            std::shared_ptr<Room> build()
             {
-                return std::make_unique<Room>(mesh_source, *tr_level, room, level_texture_storage, *mesh_storage,
-                    index, level, Activity(log, "Level", "Room 0"), static_mesh_source, static_mesh_position_source, sector_source);
+                auto new_room = std::make_shared<Room>(room, mesh_source, level_texture_storage, index, level);
+                new_room->initialise(*tr_level, room, *mesh_storage, static_mesh_source, static_mesh_position_source, sector_source, Activity(log, "Level", "Room 0"));
+                return new_room;
             }
 
             test_module& with_level(const std::shared_ptr<ILevel>& level)
@@ -652,4 +653,21 @@ TEST(Room, RendersContainedCameraSinks)
     EXPECT_CALL(*camera_sink, render).Times(1);
     room->add_camera_sink(camera_sink);
     room->render_camera_sinks(NiceMock<MockCamera>{});
+}
+
+TEST(Room, Sector)
+{
+    trlevel::tr3_room level_room;
+    level_room.num_x_sectors = 2;
+    level_room.num_z_sectors = 2;
+    level_room.sector_list.resize(4);
+    auto room = register_test_module().with_room(level_room).build();
+
+    auto sector = room->sector(1, 1);
+    auto s = sector.lock();
+    ASSERT_TRUE(s);
+
+    sector = room->sector(2, 2);
+    s = sector.lock();
+    ASSERT_FALSE(s);
 }

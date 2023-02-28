@@ -2,6 +2,7 @@
 #include <trview.app/Mocks/Elements/IRoom.h>
 #include <trview.app/Mocks/Elements/ICameraSink.h>
 #include <trview.app/Mocks/Elements/ILight.h>
+#include <trview.app/Mocks/Elements/ISector.h>
 #include <trview.tests.common/Mocks.h>
 #include <external/lua/src/lua.h>
 #include <external/lua/src/lauxlib.h>
@@ -171,6 +172,48 @@ TEST(Lua_Room, Number)
 
     ASSERT_EQ(0, luaL_dostring(L, "return r.number"));
     ASSERT_EQ(LUA_TNUMBER, lua_type(L, -1));
+    ASSERT_EQ(123, lua_tointeger(L, -1));
+}
+
+TEST(Lua_Room, NumXSectors)
+{
+    auto room = mock_shared<MockRoom>()->with_num_x_sectors(123);
+
+    lua_State* L = luaL_newstate();
+    lua::create_room(L, room);
+    lua_setglobal(L, "r");
+
+    ASSERT_EQ(0, luaL_dostring(L, "return r.num_x_sectors"));
+    ASSERT_EQ(LUA_TNUMBER, lua_type(L, -1));
+    ASSERT_EQ(123, lua_tointeger(L, -1));
+}
+
+TEST(Lua_Room, NumZSectors)
+{
+    auto room = mock_shared<MockRoom>()->with_num_z_sectors(123);
+
+    lua_State* L = luaL_newstate();
+    lua::create_room(L, room);
+    lua_setglobal(L, "r");
+
+    ASSERT_EQ(0, luaL_dostring(L, "return r.num_z_sectors"));
+    ASSERT_EQ(LUA_TNUMBER, lua_type(L, -1));
+    ASSERT_EQ(123, lua_tointeger(L, -1));
+}
+
+TEST(Lua_Room, Sector)
+{
+    auto sector = mock_shared<MockSector>()->with_id(123);
+    auto room = mock_shared<MockRoom>();
+    EXPECT_CALL(*room, sector(0, 1)).WillRepeatedly(Return(sector));
+
+    lua_State* L = luaL_newstate();
+    lua::create_room(L, room);
+    lua_setglobal(L, "r");
+
+    ASSERT_EQ(0, luaL_dostring(L, "return r:sector(1, 2)"));
+    ASSERT_EQ(LUA_TUSERDATA, lua_type(L, -1));
+    ASSERT_EQ(0, luaL_dostring(L, "return r:sector(1, 2).number"));
     ASSERT_EQ(123, lua_tointeger(L, -1));
 }
 

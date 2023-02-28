@@ -8,6 +8,6 @@ namespace trview
 
     namespace lua
     {
-        void create_trigger(lua_State* L, const std::shared_ptr<ITrigger>& trigger);
+        int create_trigger(lua_State* L, const std::shared_ptr<ITrigger>& trigger);
     }
 }

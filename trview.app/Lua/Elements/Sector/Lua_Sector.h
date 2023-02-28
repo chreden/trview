@@ -9,5 +9,6 @@ namespace trview
     namespace lua
     {
         int create_sector(lua_State* L, std::shared_ptr<ISector> sector);
+        void sector_register(lua_State* L);
     }
 }

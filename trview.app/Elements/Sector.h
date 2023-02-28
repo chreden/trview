@@ -20,7 +20,7 @@ namespace trview
     {
     public:
         // Constructs sector object and parses floor data automatically 
-        Sector(const trlevel::ILevel &level, const trlevel::tr3_room& room, const trlevel::tr_room_sector &sector, int sector_id, uint32_t room_number, const IRoom& room_ptr);
+        Sector(const trlevel::ILevel& level, const trlevel::tr3_room& room, const trlevel::tr_room_sector& sector, int sector_id, const std::weak_ptr<IRoom>& room_ptr);
         virtual ~Sector() = default;
         // Returns the id of the room that this floor data points to 
         virtual std::uint16_t portal() const override;
@@ -35,15 +35,15 @@ namespace trview
         // Holds "Function" enum bitwise values 
         virtual SectorFlag flags() const override;
         /// Get trigger information for the sector.
-        virtual TriggerInfo trigger() const override;
+        virtual TriggerInfo trigger_info() const override;
         virtual uint16_t x() const override;
         virtual uint16_t z() const override;
         virtual std::array<float, 4> corners() const override;
         virtual std::array<float, 4> ceiling_corners() const override;
         virtual DirectX::SimpleMath::Vector3 corner(Corner corner) const override;
         virtual DirectX::SimpleMath::Vector3 ceiling(Corner corner) const override;
-        virtual uint32_t room() const override;
-        virtual TriangulationDirection triangulation_function() const override;
+        std::weak_ptr<IRoom> room() const override;
+        virtual TriangulationDirection triangulation() const override;
         virtual std::vector<Triangle> triangles() const override;
         virtual uint32_t floordata_index() const override;
         /// Determines whether this is a walkable floor.
@@ -54,6 +54,9 @@ namespace trview
         virtual void generate_triangles() override;
         virtual void add_triangle(const ISector::Portal& portal, const Triangle& triangle, std::unordered_set<uint32_t> visited_rooms) override;
         virtual void add_flag(SectorFlag flag) override;
+        void set_trigger(const std::weak_ptr<ITrigger>& trigger) override;
+        std::weak_ptr<ITrigger> trigger() const override;
+        TriangulationDirection ceiling_triangulation() const override;
     private:
         bool parse(const trlevel::ILevel& level);
         void parse_slope();
@@ -74,7 +77,8 @@ namespace trview
         std::uint16_t _floor_slant{ 0 }, _ceiling_slant{ 0 };
 
         // Holds trigger data 
-        TriggerInfo _trigger;
+        TriggerInfo _trigger_info;
+        std::weak_ptr<ITrigger> _trigger;
 
         // ID of the sector 
         uint16_t _sector_id; 
@@ -93,18 +97,18 @@ namespace trview
         std::array<float, 4> _ceiling_corners;
 
         uint32_t _room;
+        std::weak_ptr<IRoom> _room_ptr;
 
         std::optional<Triangulation> _floor_triangulation;
-        TriangulationDirection _triangulation_function{ TriangulationDirection::NwSe };
+        TriangulationDirection _triangulation_function{ TriangulationDirection::None };
         std::optional<Triangulation> _ceiling_triangulation;
-        TriangulationDirection _ceiling_triangulation_function{ TriangulationDirection::NwSe };
+        TriangulationDirection _ceiling_triangulation_function{ TriangulationDirection::None };
 
         std::set<uint16_t> _neighbours;
 
         uint32_t _floordata_index;
         trlevel::tr_room_info _info;
         std::vector<Triangle> _triangles;
-        const IRoom& _room_ptr;
     };
 
     /// <summary>

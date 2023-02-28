@@ -12,6 +12,7 @@
 #include <trview.app/Mocks/Elements/ITrigger.h>
 #include <trview.app/Mocks/Elements/ILight.h>
 #include <trview.app/Mocks/Elements/ICameraSink.h>
+#include <trview.app/Mocks/Elements/ISector.h>
 #include <trview.app/Mocks/Camera/ICamera.h>
 #include <trview.graphics/mocks/D3D/ID3D11DeviceContext.h>
 #include <trview.graphics/mocks/IShader.h>

@@ -12,11 +12,12 @@
 namespace trview
 {
     struct IRoom;
+    struct ITrigger;
 
     struct ISector
     {
         using Source = std::function<std::shared_ptr<ISector>(const trlevel::ILevel&, const trlevel::tr3_room&,
-            const trlevel::tr_room_sector&, int, uint32_t, const IRoom&)>;
+            const trlevel::tr_room_sector&, int, const std::weak_ptr<IRoom>&)>;
 
         enum class TriangulationDirection
         {
@@ -100,20 +101,20 @@ namespace trview
 
         virtual ~ISector() = 0;
         virtual std::uint16_t portal() const = 0;
-        virtual inline int id() const = 0;
+        virtual int id() const = 0;
         virtual std::set<std::uint16_t> neighbours() const = 0;
-        virtual inline std::uint16_t room_below() const = 0;
-        virtual inline std::uint16_t room_above() const = 0;
+        virtual std::uint16_t room_below() const = 0;
+        virtual std::uint16_t room_above() const = 0;
         virtual SectorFlag flags() const = 0;
-        virtual TriggerInfo trigger() const = 0;
+        virtual TriggerInfo trigger_info() const = 0;
         virtual uint16_t x() const = 0;
         virtual uint16_t z() const = 0;
         virtual std::array<float, 4> corners() const = 0;
         virtual std::array<float, 4> ceiling_corners() const = 0;
         virtual DirectX::SimpleMath::Vector3 corner(Corner corner) const = 0;
         virtual DirectX::SimpleMath::Vector3 ceiling(Corner corner) const = 0;
-        virtual uint32_t room() const = 0;
-        virtual TriangulationDirection triangulation_function() const = 0;
+        virtual std::weak_ptr<IRoom> room() const = 0;
+        virtual TriangulationDirection triangulation() const = 0;
         virtual std::vector<Triangle> triangles() const = 0;
         virtual bool is_floor() const = 0;
         virtual bool is_wall() const = 0;
@@ -125,7 +126,16 @@ namespace trview
         virtual void generate_triangles() = 0;
         virtual void add_triangle(const ISector::Portal& portal, const Triangle& triangle, std::unordered_set<uint32_t> visited_rooms) = 0;
         virtual void add_flag(SectorFlag flag) = 0;
+
+        virtual void set_trigger(const std::weak_ptr<ITrigger>& trigger) = 0;
+        virtual std::weak_ptr<ITrigger> trigger() const = 0;
+
+        virtual TriangulationDirection ceiling_triangulation() const = 0;
     };
 
     bool is_no_space(SectorFlag flags);
+    constexpr std::string to_string(ISector::TriangulationDirection direction);
 }
+
+#include "ISector.hpp"
+

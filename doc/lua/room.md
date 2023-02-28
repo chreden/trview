@@ -13,7 +13,14 @@ The Room library provides information about a room in a [level](level.md).
 | level | [Level](level.md) | R | The level that the room is in |
 | lights | [Light](light.md)[] | R | Lights in the room |
 | number | number | R | Room number |
+| num_x_sectors | number | R | Number of sectors in the x dimension |
+| num_z_sectors | number | R | Number of sectors in the z dimension |
 | sectors | [Sector](sector.md)[] | R | Sectors in the room
 | triggers | [Trigger](trigger.md)[] | R | Triggers in the room |
 | visible | boolean | RW | Whether the room is visible in the viewer |
 
+# Functions
+
+| Name | Returns | Parameters | Description |
+| ---- | ------- | ---------- | ----------- |
+| sector | [Sector](sector.md) | number x, number y | Gets the sector at the x and z indices, 1 based |

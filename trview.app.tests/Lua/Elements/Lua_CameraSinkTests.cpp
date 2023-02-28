@@ -1,5 +1,6 @@
 #include <trview.app/Lua/Elements/CameraSink/Lua_CameraSink.h>
 #include <trview.app/Mocks/Elements/ICameraSink.h>
+#include <trview.app/Mocks/Elements/IRoom.h>
 #include <trview.tests.common/Mocks.h>
 #include <external/lua/src/lua.h>
 #include <external/lua/src/lauxlib.h>

@@ -249,6 +249,7 @@ namespace trview
         /// <param name="selected">Whether the room is selected.</param>
         /// <param name="render_filter">What to render.</param>
         virtual void render_contained(const ICamera& camera, SelectionMode selected, RenderFilter render_filter) = 0;
+        virtual std::weak_ptr<ISector> sector(int32_t x, int32_t z) const = 0;
         /// <summary>
         /// Gets all sectors in the room.
         /// </summary>
@@ -330,5 +331,6 @@ namespace trview
     std::string to_string(IRoom::AlternateMode mode);
 
     std::string light_mode_name(int16_t light_mode);
+    uint32_t room_number(const std::weak_ptr<IRoom>& room);
 }
 

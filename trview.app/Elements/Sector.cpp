@@ -7,8 +7,8 @@ using namespace DirectX::SimpleMath;
 
 namespace trview
 {
-    Sector::Sector(const trlevel::ILevel &level, const trlevel::tr3_room& room, const trlevel::tr_room_sector &sector, int sector_id, uint32_t room_number, const IRoom& room_ptr)
-        : _sector(sector), _sector_id(static_cast<uint16_t>(sector_id)), _room_above(sector.room_above), _room_below(sector.room_below), _room(room_number), _info(room.info), _room_ptr(room_ptr),
+    Sector::Sector(const trlevel::ILevel& level, const trlevel::tr3_room& room, const trlevel::tr_room_sector& sector, int sector_id, const std::weak_ptr<IRoom>& room_ptr)
+        : _sector(sector), _sector_id(static_cast<uint16_t>(sector_id)), _room_above(sector.room_above), _room_below(sector.room_below), _room(room_number(room_ptr)), _info(room.info), _room_ptr(room_ptr),
         _floordata_index(sector.floordata_index)
     {
         _x = static_cast<int16_t>(sector_id / room.num_z_sectors);
@@ -100,16 +100,16 @@ namespace trview
 
                     // Basic trigger setup 
                     const std::uint16_t setup = command.data[++index];
-                    _trigger.timer = setup & 0xFF;
-                    _trigger.oneshot = (setup & 0x100) >> 8;
-                    _trigger.mask = (setup & 0x3E00) >> 9;
-                    _trigger.sector_id = _sector_id;
+                    _trigger_info.timer = setup & 0xFF;
+                    _trigger_info.oneshot = (setup & 0x100) >> 8;
+                    _trigger_info.mask = (setup & 0x3E00) >> 9;
+                    _trigger_info.sector_id = _sector_id;
 
                     // Type of the trigger, e.g. Pad, Switch, etc.
-                    _trigger.type = static_cast<TriggerType>(subfunction);
+                    _trigger_info.type = static_cast<TriggerType>(subfunction);
 
                     bool continue_processing = true;
-                    if (_trigger.type == TriggerType::Key || _trigger.type == TriggerType::Switch)
+                    if (_trigger_info.type == TriggerType::Key || _trigger_info.type == TriggerType::Switch)
                     {
                         // The next element is the lock or switch - ignore.
                         auto reference = command.data[++index];
@@ -127,7 +127,7 @@ namespace trview
                             {
                                 trigger_command = command.data[index];
                                 auto action = static_cast<TriggerCommandType>((trigger_command & 0x7C00) >> 10);
-                                _trigger.commands.emplace_back(action, static_cast<uint16_t>(trigger_command & 0x3FF));
+                                _trigger_info.commands.emplace_back(action, static_cast<uint16_t>(trigger_command & 0x3FF));
                                 if (action == TriggerCommandType::Camera || action == TriggerCommandType::Flyby)
                                 {
                                     // Camera has another uint16_t - skip for now.
@@ -209,9 +209,9 @@ namespace trview
         return _flags;
     }
 
-    TriggerInfo Sector::trigger() const
+    TriggerInfo Sector::trigger_info() const
     {
-        return _trigger;
+        return _trigger_info;
     }
 
     uint16_t Sector::x() const
@@ -326,12 +326,12 @@ namespace trview
         return Vector3::Zero;
     }
 
-    uint32_t Sector::room() const
+    std::weak_ptr<IRoom> Sector::room() const
     {
-        return _room;
+        return _room_ptr;
     }
 
-    ISector::TriangulationDirection Sector::triangulation_function() const
+    ISector::TriangulationDirection Sector::triangulation() const
     {
         return _triangulation_function;
     }
@@ -404,11 +404,17 @@ namespace trview
     {
         auto& tris = _triangles;
 
-        const auto self = _room_ptr.sector_portal(_x, _z, _x, _z);
-        const auto north = _room_ptr.sector_portal(_x, _z, _x, _z + 1);
-        const auto south = _room_ptr.sector_portal(_x, _z, _x, _z - 1);
-        const auto east = _room_ptr.sector_portal(_x, _z, _x + 1, _z);
-        const auto west = _room_ptr.sector_portal(_x, _z, _x - 1, _z);
+        auto room = _room_ptr.lock();
+        if (!room)
+        {
+            return;
+        }
+
+        const auto self = room->sector_portal(_x, _z, _x, _z);
+        const auto north = room->sector_portal(_x, _z, _x, _z + 1);
+        const auto south = room->sector_portal(_x, _z, _x, _z - 1);
+        const auto east = room->sector_portal(_x, _z, _x + 1, _z);
+        const auto west = room->sector_portal(_x, _z, _x - 1, _z);
 
         const SectorFlag ceiling_flags = _flags & ~(SectorFlag::Death | SectorFlag::Climbable);
         const SectorFlag floor_flags = _flags & ~(SectorFlag::MonkeySwing | SectorFlag::Climbable);
@@ -584,21 +590,24 @@ namespace trview
 
             add_triangle(tri);
 
-            if (portal.sector_above && 
-                visited_rooms.find(portal.sector_above->room()) == visited_rooms.end())
+            if (portal.sector_above)
             {
-                Triangle offcut = triangle;
-                offcut.uv0.y = offcut.v0.y = std::min(offcut.v0.y, portal.direct_room->y_top());
-                offcut.uv1.y = offcut.v1.y = std::min(offcut.v1.y, portal.direct_room->y_top());
-                offcut.uv2.y = offcut.v2.y = std::min(offcut.v2.y, portal.direct_room->y_top());
+                auto above = portal.sector_above->room().lock();
+                if (visited_rooms.find(above->number()) == visited_rooms.end())
+                {
+                    Triangle offcut = triangle;
+                    offcut.uv0.y = offcut.v0.y = std::min(offcut.v0.y, portal.direct_room->y_top());
+                    offcut.uv1.y = offcut.v1.y = std::min(offcut.v1.y, portal.direct_room->y_top());
+                    offcut.uv2.y = offcut.v2.y = std::min(offcut.v2.y, portal.direct_room->y_top());
 
-                offcut.v0 -= portal.above_offset;
-                offcut.v1 -= portal.above_offset;
-                offcut.v2 -= portal.above_offset;
+                    offcut.v0 -= portal.above_offset;
+                    offcut.v1 -= portal.above_offset;
+                    offcut.v2 -= portal.above_offset;
 
-                auto above_portal = portal.room_above->sector_portal(portal.sector_above->x(), portal.sector_above->z(),
-                    portal.sector_above->x(), portal.sector_above->z());
-                portal.sector_above->add_triangle(above_portal, offcut, visited_rooms);
+                    auto above_portal = portal.room_above->sector_portal(portal.sector_above->x(), portal.sector_above->z(),
+                        portal.sector_above->x(), portal.sector_above->z());
+                    portal.sector_above->add_triangle(above_portal, offcut, visited_rooms);
+                }
             }
         }
         else if (triangle.v0.y > portal.direct_room->y_bottom() ||
@@ -664,6 +673,21 @@ namespace trview
     void Sector::add_flag(SectorFlag flag)
     {
         _flags |= flag;
+    }
+
+    void Sector::set_trigger(const std::weak_ptr<ITrigger>& trigger)
+    {
+        _trigger = trigger;
+    }
+
+    std::weak_ptr<ITrigger> Sector::trigger() const
+    {
+        return _trigger;
+    }
+
+    ISector::TriangulationDirection Sector::ceiling_triangulation() const
+    {
+        return _ceiling_triangulation_function;
     }
 
     Triangulation parse_triangulation(uint16_t floor, uint16_t data)

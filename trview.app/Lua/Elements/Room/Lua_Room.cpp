@@ -16,6 +16,14 @@ namespace trview
         {
             std::unordered_map<IRoom**, std::shared_ptr<IRoom>> rooms;
 
+            int get_sector(lua_State* L)
+            {
+                const auto room = lua::get_self<IRoom>(L);
+                const auto x = static_cast<int32_t>(lua_tointeger(L, 2) - 1);
+                const auto z = static_cast<int32_t>(lua_tointeger(L, 3) - 1);
+                return create_sector(L, room->sector(x, z).lock());
+            }
+
             int room_index(lua_State* L)
             {
                 auto room = lua::get_self<IRoom>(L);
@@ -59,6 +67,21 @@ namespace trview
                 else if (key == "number")
                 {
                     lua_pushinteger(L, room->number());
+                    return 1;
+                }
+                else if (key == "num_x_sectors")
+                {
+                    lua_pushinteger(L, room->num_x_sectors());
+                    return 1;
+                }
+                else if (key == "num_z_sectors")
+                {
+                    lua_pushinteger(L, room->num_z_sectors());
+                    return 1;
+                }
+                else if (key == "sector")
+                {
+                    lua_pushcfunction(L, get_sector);
                     return 1;
                 }
                 else if (key == "sectors")

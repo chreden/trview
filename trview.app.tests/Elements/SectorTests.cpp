@@ -1,6 +1,7 @@
 #include <trview.app/Elements/Sector.h>
 #include <trlevel/Mocks/ILevel.h>
 #include <trview.app/Mocks/Elements/IRoom.h>
+#include <trview.tests.common/Mocks.h>
 
 using namespace trview;
 using namespace trview::mocks;
@@ -20,9 +21,9 @@ TEST(Sector, HighNumberedPortal)
     tr_room.num_x_sectors = 1;
     tr_room.num_z_sectors = 1;
     tr_room_sector sector { 1, 0xffff, 255, 0, 255, 0 };
-    NiceMock<MockRoom> room;
+    auto room = trview::tests::mock_shared<MockRoom>();
 
-    Sector s(level, tr_room, sector, 0, 0, room);
+    Sector s(level, tr_room, sector, 0, room);
 
     ASSERT_EQ(s.portal(), 378);
 }

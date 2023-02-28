@@ -34,6 +34,19 @@ namespace trview
 
         template <typename T>
         T* get_self(lua_State* L);
+
+        template <typename T>
+        struct EnumValue
+        {
+            std::string name;
+            T value;
+        };
+
+        template <typename T>
+        void set_enum_value(lua_State* L, const EnumValue<T>& value);
+        
+        template <typename T>
+        void create_enum(lua_State* L, const std::string& name, const std::vector<EnumValue<T>>& values);
     }
 }
 
