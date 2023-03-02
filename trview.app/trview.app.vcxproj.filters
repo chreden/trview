@@ -296,6 +296,9 @@
     <ClCompile Include="Plugins\Plugins.cpp">
       <Filter>Plugins</Filter>
     </ClCompile>
+    <ClCompile Include="Plugins\Plugin.cpp">
+      <Filter>Plugins</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera\Camera.h">
@@ -954,6 +957,12 @@
     </ClInclude>
     <ClInclude Include="Mocks\Plugins\IPlugins.h">
       <Filter>Mocks\Plugins</Filter>
+    </ClInclude>
+    <ClInclude Include="Plugins\IPlugin.h">
+      <Filter>Plugins</Filter>
+    </ClInclude>
+    <ClInclude Include="Plugins\Plugin.h">
+      <Filter>Plugins</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

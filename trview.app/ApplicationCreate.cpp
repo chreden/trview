@@ -63,6 +63,7 @@
 #include "Windows/Console/ConsoleManager.h"
 #include "Windows/Console/Console.h"
 #include "Plugins/Plugins.h"
+#include "Plugins/Plugin.h"
 
 namespace trview
 {
@@ -289,6 +290,8 @@ namespace trview
         auto textures_window_source = [=]() { return std::make_shared<TexturesWindow>(); };
         auto console_source = [=]() { return std::make_shared<Console>(dialogs); };
 
+        auto plugin_source = [=](auto&&... args) { return std::make_unique<Plugin>(args...); };
+
         return std::make_unique<Application>(
             window,
             std::make_unique<UpdateChecker>(window),
@@ -313,6 +316,6 @@ namespace trview
             std::make_unique<CameraSinkWindowManager>(window, shortcuts, camera_sink_window_source),
             std::make_unique<ConsoleManager>(window, shortcuts, console_source, files),
             std::make_unique<Lua>(),
-            std::make_unique<Plugins>());
+            std::make_unique<Plugins>(files, plugin_source, settings_loader->load_user_settings()));
     }
 }
