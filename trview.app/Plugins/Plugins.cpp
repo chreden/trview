@@ -12,14 +12,10 @@ namespace trview
     {
         for (const auto& directory : settings.plugin_directories)
         {
-            const auto plugins = files->get_files(directory, "\\*.zip");
+            const auto plugins = files->get_directories(directory);
             for (const auto& plugin : plugins)
             {
-                const auto bytes = files->load_file(plugin.path);
-                if (bytes)
-                {
-                    _plugins.push_back(plugin_source(bytes.value()));
-                }
+                _plugins.push_back(plugin_source(plugin.path));
             }
         }
     }

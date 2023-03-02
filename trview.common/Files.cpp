@@ -109,6 +109,32 @@ namespace trview
         return get_files(to_utf16(folder), patterns);
     }
 
+    std::vector<IFiles::Directory> Files::get_directories(const std::string& folder) const
+    {
+        std::vector<Directory> data;
+        
+        std::wstring folder_w = to_utf16(folder);
+
+        WIN32_FIND_DATA fd;
+        HANDLE find = FindFirstFile((folder_w + L"\\*").c_str(), &fd);
+
+        if (find != INVALID_HANDLE_VALUE)
+        {
+            do
+            {
+                if ((fd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) &&
+                    std::wstring(fd.cFileName) != L"." &&
+                    std::wstring(fd.cFileName) != L"..")
+                {
+                    Directory directory{ to_utf8(folder_w + L"\\" + fd.cFileName), to_utf8(fd.cFileName) };
+                    data.push_back(directory);
+                }
+            } while (FindNextFile(find, &fd) != 0);
+        }
+
+        return data;
+    }
+
     std::vector<IFiles::File> Files::get_files(const std::wstring& folder, const std::vector<std::wstring>& patterns) const
     {
         std::vector<File> data;

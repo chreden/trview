@@ -6,8 +6,9 @@ namespace trview
     {
     }
 
-    Plugin::Plugin(const std::vector<uint8_t>& bytes)
+    Plugin::Plugin(const std::shared_ptr<IFiles>& files, const std::string& path)
     {
-        bytes;
+        files;
+        path;
     }
 }

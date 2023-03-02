@@ -19,6 +19,7 @@ namespace trview
             MOCK_METHOD(void, save_file, (const std::string&, const std::vector<uint8_t>&), (const, override));
             MOCK_METHOD(void, save_file, (const std::string&, const std::string&), (const, override));
             MOCK_METHOD(std::vector<File>, get_files, (const std::string&, const std::string&), (const, override));
+            MOCK_METHOD(std::vector<Directory>, get_directories, (const std::string&), (const, override));
         };
     }
 }

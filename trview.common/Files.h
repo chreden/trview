@@ -17,6 +17,7 @@ namespace trview
         virtual void save_file(const std::string& filename, const std::vector<uint8_t>& bytes) const override;
         virtual void save_file(const std::string& filename, const std::string& text) const override;
         virtual std::vector<File> get_files(const std::string& folder, const std::string& pattern) const override;
+        std::vector<Directory> get_directories(const std::string& folder) const override;
     private:
         std::vector<File> get_files(const std::wstring& folder, const std::vector<std::wstring>& patterns) const;
     };
