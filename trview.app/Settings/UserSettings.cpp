@@ -41,6 +41,7 @@ namespace trview
             waypoint_colour == other.waypoint_colour &&
             route_startup == other.route_startup &&
             fov == other.fov &&
-            camera_sink_startup == other.camera_sink_startup;
+            camera_sink_startup == other.camera_sink_startup &&
+            plugin_directories == other.plugin_directories;
     }
 }

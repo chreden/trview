@@ -88,6 +88,7 @@ namespace trview
             read_attribute(json, settings.fov, "fov");
             read_attribute(json, settings.camera_sink_startup, "camera_sink_startup");
             read_attribute(json, settings.window_placement, "window_placement");
+            read_attribute(json, settings.plugin_directories, "plugin_directories");
 
             settings.recent_files.resize(std::min<std::size_t>(settings.recent_files.size(), settings.max_recent_files));
         }
@@ -152,6 +153,7 @@ namespace trview
             {
                 json["window_placement"] = settings.window_placement.value();
             }
+            json["plugin_directories"] = settings.plugin_directories;
             _files->save_file(file_path, json.dump());
         }
         catch (...)

@@ -55,6 +55,7 @@ namespace trview
         bool camera_sink_startup{ false };
         std::unordered_map<std::string, RecentRoute> recent_routes;
         float fov{ 45 };
+        std::vector<std::string> plugin_directories;
 
         bool operator==(const UserSettings& other) const;
     };
