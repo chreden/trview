@@ -62,6 +62,7 @@
 #include "Windows/CameraSink/CameraSinkWindow.h"
 #include "Windows/Console/ConsoleManager.h"
 #include "Windows/Console/Console.h"
+#include "Plugins/Plugins.h"
 
 namespace trview
 {
@@ -311,6 +312,7 @@ namespace trview
             std::make_unique<TexturesWindowManager>(window, textures_window_source),
             std::make_unique<CameraSinkWindowManager>(window, shortcuts, camera_sink_window_source),
             std::make_unique<ConsoleManager>(window, shortcuts, console_source, files),
-            std::make_unique<Lua>());
+            std::make_unique<Lua>(),
+            std::make_unique<Plugins>());
     }
 }

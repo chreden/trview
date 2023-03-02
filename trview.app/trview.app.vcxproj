@@ -78,6 +78,7 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">/bigobj %(AdditionalOptions)</AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">/bigobj %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
+    <ClCompile Include="Plugins\Plugins.cpp" />
     <ClCompile Include="trview_imgui.cpp" />
     <ClCompile Include="Lua\Lua.cpp" />
     <ClCompile Include="Menus\AlternateGroupToggler.cpp" />
@@ -119,8 +120,11 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClCompile Include="Windows\Console\ConsoleManager.cpp" />
     <ClInclude Include="Mocks\IApplication.h" />
     <ClInclude Include="Mocks\Lua\ILua.h" />
+    <ClInclude Include="Mocks\Plugins\IPlugins.h" />
     <ClInclude Include="Mocks\Windows\IConsole.h" />
     <ClInclude Include="Mocks\Windows\IConsoleManager.h" />
+    <ClInclude Include="Plugins\IPlugins.h" />
+    <ClInclude Include="Plugins\Plugins.h" />
     <ClInclude Include="Type.inl">
       <FileType>Document</FileType>
     </ClInclude>

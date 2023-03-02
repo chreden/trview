@@ -26,6 +26,7 @@
 #include "UI/IImGuiBackend.h"
 #include "Windows/CameraSink/ICameraSinkWindowManager.h"
 #include "Windows/Console/IConsoleManager.h"
+#include "Plugins/IPlugins.h"
 
 struct ImFont;
 
@@ -68,7 +69,8 @@ namespace trview
             std::unique_ptr<ITexturesWindowManager> textures_window_manager,
             std::unique_ptr<ICameraSinkWindowManager> camera_sink_window_manager,
             std::unique_ptr<IConsoleManager> console_manager,
-            std::unique_ptr<ILua> lua);
+            std::unique_ptr<ILua> lua,
+            std::unique_ptr<IPlugins> plugins);
         virtual ~Application();
         /// Attempt to open the specified level file.
         /// @param filename The level file to open.
@@ -161,6 +163,7 @@ namespace trview
         std::unique_ptr<ICameraSinkWindowManager> _camera_sink_windows;
         std::unique_ptr<IConsoleManager> _console_manager;
         std::unique_ptr<ILua> _lua;
+        std::unique_ptr<IPlugins> _plugins;
     };
 
     std::unique_ptr<IApplication> create_application(HINSTANCE hInstance, int command_show, const std::wstring& command_line);

@@ -293,6 +293,9 @@
     <ClCompile Include="Lua\Colour.cpp">
       <Filter>Lua</Filter>
     </ClCompile>
+    <ClCompile Include="Plugins\Plugins.cpp">
+      <Filter>Plugins</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera\Camera.h">
@@ -943,6 +946,15 @@
     <ClInclude Include="Elements\ISector.hpp">
       <Filter>Elements\Sector</Filter>
     </ClInclude>
+    <ClInclude Include="Plugins\IPlugins.h">
+      <Filter>Plugins</Filter>
+    </ClInclude>
+    <ClInclude Include="Plugins\Plugins.h">
+      <Filter>Plugins</Filter>
+    </ClInclude>
+    <ClInclude Include="Mocks\Plugins\IPlugins.h">
+      <Filter>Mocks\Plugins</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Windows">
@@ -1112,6 +1124,12 @@
     </Filter>
     <Filter Include="Mocks\Lua">
       <UniqueIdentifier>{b429775f-3bb8-497e-9dd5-d695d6fc7db5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Plugins">
+      <UniqueIdentifier>{f95b89aa-bd86-4c72-abba-f28bbaeff895}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Mocks\Plugins">
+      <UniqueIdentifier>{cee4bb35-cf7f-4ea4-9731-8987d2592ada}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

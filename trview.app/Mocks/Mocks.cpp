@@ -54,6 +54,7 @@
 #include "Windows/IConsole.h"
 #include "IApplication.h"
 #include "Lua/ILua.h"
+#include "Plugins/IPlugins.h"
 
 namespace trview
 {
@@ -217,5 +218,8 @@ namespace trview
 
         MockLua::MockLua() {}
         MockLua::~MockLua() {}
+
+        MockPlugins::MockPlugins() {}
+        MockPlugins::~MockPlugins() {}
     }
 }
