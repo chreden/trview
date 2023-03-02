@@ -55,6 +55,7 @@
 #include "IApplication.h"
 #include "Lua/ILua.h"
 #include "Plugins/IPlugins.h"
+#include "Plugins/IPlugin.h"
 
 namespace trview
 {
@@ -221,5 +222,8 @@ namespace trview
 
         MockPlugins::MockPlugins() {}
         MockPlugins::~MockPlugins() {}
+
+        MockPlugin::MockPlugin() {}
+        MockPlugin::~MockPlugin() {}
     }
 }

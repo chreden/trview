@@ -964,6 +964,9 @@
     <ClInclude Include="Plugins\Plugin.h">
       <Filter>Plugins</Filter>
     </ClInclude>
+    <ClInclude Include="Mocks\Plugins\IPlugin.h">
+      <Filter>Mocks\Plugins</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Windows">
