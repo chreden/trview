@@ -35,4 +35,8 @@ namespace trview
     {
         _id = std::format("Plugins {}", number);
     }
+
+    void PluginsWindow::update(float)
+    {
+    }
 }

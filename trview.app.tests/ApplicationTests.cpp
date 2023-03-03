@@ -31,6 +31,7 @@
 #include <trview.app/Mocks/Windows/IConsoleManager.h>
 #include <trview.app/Mocks/Lua/ILua.h>
 #include <trview.app/Mocks/Plugins/IPlugins.h>
+#include <trview.app/Mocks/Windows/IPluginsWindowManager.h>
 
 using namespace trview;
 using namespace trview::tests;
@@ -82,7 +83,8 @@ namespace
             std::unique_ptr<ICameraSinkWindowManager> camera_sink_window_manager{ mock_unique<MockCameraSinkWindowManager>() };
             std::unique_ptr<IConsoleManager> console_manager{ mock_unique<MockConsoleManager>() };
             std::unique_ptr<ILua> lua{ mock_unique<MockLua>() };
-            std::unique_ptr<IPlugins> plugins{ mock_unique<MockPlugins>() };
+            std::shared_ptr<IPlugins> plugins{ mock_shared<MockPlugins>() };
+            std::shared_ptr<IPluginsWindowManager> plugins_window_manager{ mock_shared<MockPluginsWindowManager>() };
 
             std::unique_ptr<Application> build()
             {
@@ -92,7 +94,7 @@ namespace
                     std::move(items_window_manager), std::move(triggers_window_manager), std::move(route_window_manager), std::move(rooms_window_manager),
                     level_source, startup_options, dialogs, files, std::move(imgui_backend), std::move(lights_window_manager), std::move(log_window_manager),
                     std::move(textures_window_manager), std::move(camera_sink_window_manager), std::move(console_manager),
-                    std::move(lua), std::move(plugins));
+                    std::move(lua), plugins, plugins_window_manager);
             }
 
             test_module& with_dialogs(std::shared_ptr<IDialogs> dialogs)

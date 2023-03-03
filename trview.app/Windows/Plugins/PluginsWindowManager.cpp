@@ -1,15 +1,25 @@
 #include "PluginsWindowManager.h"
+#include "../../Resources/resource.h"
 
 namespace trview
 {
-    PluginsWindowManager::PluginsWindowManager(const Window& window, const std::shared_ptr<IShortcuts>&, const IPluginsWindow::Source& plugins_window_source, const std::weak_ptr<IPlugins>& plugins)
-        : MessageHandler(window), _source(plugins_window_source), _plugins(plugins)
+    IPluginsWindowManager::~IPluginsWindowManager()
     {
     }
 
-    std::optional<int> PluginsWindowManager::process_message(UINT, WPARAM, LPARAM)
+    PluginsWindowManager::PluginsWindowManager(const Window& window, const std::shared_ptr<IShortcuts>& shortcuts, const IPluginsWindow::Source& plugins_window_source)
+        : MessageHandler(window), _source(plugins_window_source)
     {
-        return std::nullopt;
+        _token_store += shortcuts->add_shortcut(true, 'P') += [&]() { create_window(); };
+    }
+
+    std::optional<int> PluginsWindowManager::process_message(UINT message, WPARAM wParam, LPARAM)
+    {
+        if (message == WM_COMMAND && LOWORD(wParam) == ID_WINDOWS_PLUGINS)
+        {
+            create_window();
+        }
+        return {};
     }
 
     void PluginsWindowManager::render()

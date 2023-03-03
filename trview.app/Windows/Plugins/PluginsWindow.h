@@ -12,6 +12,7 @@ namespace trview
         virtual ~PluginsWindow() = default;
         void render() override;
         void set_number(int32_t number) override;
+        void update(float dt) override;
     private:
         bool render_plugins_window();
 
