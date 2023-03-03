@@ -84,7 +84,7 @@ namespace
             std::unique_ptr<IConsoleManager> console_manager{ mock_unique<MockConsoleManager>() };
             std::unique_ptr<ILua> lua{ mock_unique<MockLua>() };
             std::shared_ptr<IPlugins> plugins{ mock_shared<MockPlugins>() };
-            std::shared_ptr<IPluginsWindowManager> plugins_window_manager{ mock_shared<MockPluginsWindowManager>() };
+            std::unique_ptr<IPluginsWindowManager> plugins_window_manager{ mock_unique<MockPluginsWindowManager>() };
 
             std::unique_ptr<Application> build()
             {
@@ -94,7 +94,7 @@ namespace
                     std::move(items_window_manager), std::move(triggers_window_manager), std::move(route_window_manager), std::move(rooms_window_manager),
                     level_source, startup_options, dialogs, files, std::move(imgui_backend), std::move(lights_window_manager), std::move(log_window_manager),
                     std::move(textures_window_manager), std::move(camera_sink_window_manager), std::move(console_manager),
-                    std::move(lua), plugins, plugins_window_manager);
+                    std::move(lua), plugins, std::move(plugins_window_manager));
             }
 
             test_module& with_dialogs(std::shared_ptr<IDialogs> dialogs)

@@ -18,8 +18,10 @@ namespace trview
         std::string author() const override;
         std::string description() const override;
         void initialise(IApplication* application) override;
+        std::string path() const override;
     private:
         std::unique_ptr<ILua> _lua;
+        std::string _path;
         std::string _name{ "Unknown" };
         std::string _author{ "Unknown" };
         std::string _description;

@@ -20,6 +20,13 @@ namespace trview
         }
     }
 
+    std::vector<std::weak_ptr<IPlugin>> Plugins::plugins() const
+    {
+        std::vector<std::weak_ptr<IPlugin>> plugins;
+        std::transform(_plugins.begin(), _plugins.end(), std::back_inserter(plugins), [](auto&& plugin) { return plugin; });
+        return plugins;
+    }
+
     void Plugins::initialise(IApplication* application)
     {
         for (auto& plugin : _plugins)

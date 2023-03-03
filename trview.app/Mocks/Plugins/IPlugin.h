@@ -14,6 +14,7 @@ namespace trview
             MOCK_METHOD(std::string, author, (), (const, override));
             MOCK_METHOD(std::string, description, (), (const, override));
             MOCK_METHOD(void, initialise, (IApplication*), (override));
+            MOCK_METHOD(std::string, path, (), (const, override));
         };
     }
 }

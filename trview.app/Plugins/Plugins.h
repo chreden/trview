@@ -14,8 +14,9 @@ namespace trview
             const IPlugin::Source& plugin_source,
             const UserSettings& settings);
         virtual ~Plugins() = default;
+        std::vector<std::weak_ptr<IPlugin>> plugins() const override;
         void initialise(IApplication* application) override;
     private:
-        std::vector<std::unique_ptr<IPlugin>> _plugins;
+        std::vector<std::shared_ptr<IPlugin>> _plugins;
     };
 }

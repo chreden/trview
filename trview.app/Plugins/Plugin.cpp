@@ -9,7 +9,7 @@ namespace trview
     Plugin::Plugin(const std::shared_ptr<IFiles>& files,
         std::unique_ptr<ILua> lua,
         const std::string& path)
-        : _lua(std::move(lua))
+        : _lua(std::move(lua)), _path(path)
     {
         auto manifest = files->load_file(path + "\\manifest.json");
         if (manifest)
@@ -48,6 +48,11 @@ namespace trview
     std::string Plugin::description() const
     {
         return _description;
+    }
+
+    std::string Plugin::path() const
+    {
+        return _path;
     }
 
     void Plugin::initialise(IApplication* application)
