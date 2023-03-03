@@ -2,6 +2,7 @@
 #include <trview.common/Mocks/IFiles.h>
 #include <trview.tests.common/Mocks.hpp>
 #include <trview.app/Mocks/Lua/ILua.h>
+#include <trview.app/Mocks/IApplication.h>
 
 using namespace trview;
 using namespace trview::mocks;
@@ -26,4 +27,14 @@ TEST(Plugin, ManifestLoaded)
     ASSERT_EQ(plugin.name(), "Test Plugin");
     ASSERT_EQ(plugin.author(), "Test Author");
     ASSERT_EQ(plugin.description(), "Test Description");
+}
+
+TEST(Plugin, Initialise)
+{
+    auto application = mock_unique<MockApplication>();
+    auto [lua_ptr, lua] = create_mock<MockLua>();
+    EXPECT_CALL(lua, initialise(application.get()));
+
+    Plugin plugin(mock_shared<MockFiles>(), std::move(lua_ptr), "test");
+    plugin.initialise(application.get());
 }
