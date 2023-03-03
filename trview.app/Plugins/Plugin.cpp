@@ -27,6 +27,12 @@ namespace trview
 
             }
         }
+
+        _script = path + "\\plugin.lua";
+        _token_store += _lua->on_print += [&](const std::string& message)
+        {
+            _messages.push_back(message);
+        };
     }
 
     std::string Plugin::name() const
@@ -47,5 +53,6 @@ namespace trview
     void Plugin::initialise(IApplication* application)
     {
         _lua->initialise(application);
+        _lua->do_file(_script);
     }
 }

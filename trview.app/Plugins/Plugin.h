@@ -1,5 +1,6 @@
 #pragma once
 
+#include <trview.common/TokenStore.h>
 #include <trview.common/IFiles.h>
 #include "IPlugin.h"
 #include "../Lua/ILua.h"
@@ -22,5 +23,8 @@ namespace trview
         std::string _name{ "Unknown" };
         std::string _author{ "Unknown" };
         std::string _description;
+        std::string _script;
+        std::vector<std::string> _messages;
+        TokenStore _token_store;
     };
 }

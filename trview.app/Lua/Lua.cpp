@@ -58,6 +58,15 @@ namespace trview
         lua_close(L);
     }
 
+    void Lua::do_file(const std::string& file)
+    {
+        if (luaL_dofile(L, file.c_str()) != LUA_OK)
+        {
+            std::string msg = lua_tostring(L, -1);
+            on_print(msg);
+        }
+    }
+
     void Lua::execute(const std::string& command)
     {
         if (luaL_dostring(L, command.c_str()) != LUA_OK)
