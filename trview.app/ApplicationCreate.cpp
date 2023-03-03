@@ -290,7 +290,7 @@ namespace trview
         auto textures_window_source = [=]() { return std::make_shared<TexturesWindow>(); };
         auto console_source = [=]() { return std::make_shared<Console>(dialogs); };
 
-        auto plugin_source = [=](auto&&... args) { return std::make_unique<Plugin>(files, args...); };
+        auto plugin_source = [=](auto&&... args) { return std::make_unique<Plugin>(files, std::make_unique<Lua>(), args...); };
 
         return std::make_unique<Application>(
             window,

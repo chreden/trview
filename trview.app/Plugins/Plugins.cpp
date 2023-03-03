@@ -19,4 +19,12 @@ namespace trview
             }
         }
     }
+
+    void Plugins::initialise(IApplication* application)
+    {
+        for (auto& plugin : _plugins)
+        {
+            plugin->initialise(application);
+        }
+    }
 }

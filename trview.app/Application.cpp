@@ -87,6 +87,7 @@ namespace trview
         _token_store += _console_manager->on_command += [&](const auto& command) { _lua->execute(command); };
         _token_store += _lua->on_print += [&](const auto& text) { _console_manager->print(text); };
         _lua->initialise(this);
+        _plugins->initialise(this);
     }
 
     Application::~Application()

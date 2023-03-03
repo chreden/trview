@@ -10,6 +10,7 @@ namespace trview
         {
             MockPlugins();
             virtual ~MockPlugins();
+            MOCK_METHOD(void, initialise, (IApplication*), (override));
         };
     }
 }
