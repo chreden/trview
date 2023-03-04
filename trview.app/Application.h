@@ -18,7 +18,6 @@
 #include <trview.app/Windows/ITriggersWindowManager.h>
 #include <trview.app/Windows/ILightsWindowManager.h>
 #include <trview.app/Windows/IViewer.h>
-#include <trview.app/Lua/Lua.h>
 #include <trview.common/Windows/IDialogs.h>
 #include <trview.common/Windows/IShortcuts.h>
 #include "Windows/Log/ILogWindowManager.h"
@@ -70,7 +69,6 @@ namespace trview
             std::unique_ptr<ITexturesWindowManager> textures_window_manager,
             std::unique_ptr<ICameraSinkWindowManager> camera_sink_window_manager,
             std::unique_ptr<IConsoleManager> console_manager,
-            std::unique_ptr<ILua> lua,
             std::shared_ptr<IPlugins> plugins,
             std::unique_ptr<IPluginsWindowManager> plugins_window_manager);
         virtual ~Application();
@@ -164,7 +162,6 @@ namespace trview
         std::unique_ptr<ITexturesWindowManager> _textures_windows;
         std::unique_ptr<ICameraSinkWindowManager> _camera_sink_windows;
         std::unique_ptr<IConsoleManager> _console_manager;
-        std::unique_ptr<ILua> _lua;
         std::shared_ptr<IPlugins> _plugins;
         std::unique_ptr<IPluginsWindowManager> _plugins_windows;
     };

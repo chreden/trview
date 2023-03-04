@@ -288,13 +288,17 @@ namespace trview
 
         auto decrypter = std::make_shared<trlevel::Decrypter>();
 
+        auto plugin_source = [=](auto&&... args) { return std::make_shared<Plugin>(files, std::make_unique<Lua>(), args...); };
+        auto plugins = std::make_shared<Plugins>(
+            files, 
+            std::make_shared<Plugin>(std::make_unique<Lua>(), "Default", "trview", "Default Lua plugin for trview"),
+            plugin_source,
+            settings_loader->load_user_settings());
+        auto plugins_window_source = [=]() { return std::make_shared<PluginsWindow>(plugins, std::make_shared<Shell>()); };
+
         auto trlevel_source = [=](auto&& filename) { return std::make_unique<trlevel::Level>(filename, files, decrypter, log); };
         auto textures_window_source = [=]() { return std::make_shared<TexturesWindow>(); };
-        auto console_source = [=]() { return std::make_shared<Console>(dialogs); };
-
-        auto plugin_source = [=](auto&&... args) { return std::make_shared<Plugin>(files, std::make_unique<Lua>(), args...); };
-        auto plugins = std::make_shared<Plugins>(files, plugin_source, settings_loader->load_user_settings());
-        auto plugins_window_source = [=]() { return std::make_shared<PluginsWindow>(plugins, std::make_shared<Shell>()); };
+        auto console_source = [=]() { return std::make_shared<Console>(dialogs, plugins); };
 
         return std::make_unique<Application>(
             window,
@@ -319,7 +323,6 @@ namespace trview
             std::make_unique<TexturesWindowManager>(window, textures_window_source),
             std::make_unique<CameraSinkWindowManager>(window, shortcuts, camera_sink_window_source),
             std::make_unique<ConsoleManager>(window, shortcuts, console_source, files),
-            std::make_unique<Lua>(),
             plugins,
             std::make_unique<PluginsWindowManager>(window, shortcuts, plugins_window_source));
     }

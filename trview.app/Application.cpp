@@ -56,7 +56,6 @@ namespace trview
         std::unique_ptr<ITexturesWindowManager> textures_window_manager,
         std::unique_ptr<ICameraSinkWindowManager> camera_sink_window_manager,
         std::unique_ptr<IConsoleManager> console_manager,
-        std::unique_ptr<ILua> lua,
         std::shared_ptr<IPlugins> plugins,
         std::unique_ptr<IPluginsWindowManager> plugins_window_manager)
         : MessageHandler(application_window), _instance(GetModuleHandle(nullptr)),
@@ -65,7 +64,7 @@ namespace trview
         _triggers_windows(std::move(triggers_window_manager)), _route_window(std::move(route_window_manager)), _rooms_windows(std::move(rooms_window_manager)), _level_source(level_source),
         _dialogs(dialogs), _files(files), _timer(default_time_source()), _imgui_backend(std::move(imgui_backend)), _lights_windows(std::move(lights_window_manager)), _log_windows(std::move(log_window_manager)),
         _textures_windows(std::move(textures_window_manager)), _camera_sink_windows(std::move(camera_sink_window_manager)), _console_manager(std::move(console_manager)),
-        _lua(std::move(lua)), _plugins(plugins), _plugins_windows(std::move(plugins_window_manager))
+        _plugins(plugins), _plugins_windows(std::move(plugins_window_manager))
     {
         SetWindowLongPtr(window(), GWLP_USERDATA, reinterpret_cast<LONG_PTR>(_imgui_backend.get()));
 
@@ -85,9 +84,6 @@ namespace trview
         setup_lights_windows();
         setup_camera_sink_windows();
         setup_viewer(*startup_options);
-        _token_store += _console_manager->on_command += [&](const auto& command) { _lua->execute(command); };
-        _token_store += _lua->on_print += [&](const auto& text) { _console_manager->print(text); };
-        _lua->initialise(this);
         _plugins->initialise(this);
     }
 

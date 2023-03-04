@@ -53,39 +53,11 @@ namespace
     }
 }
 
-TEST(ConsoleManager, OnCommandEventRaised)
-{
-    auto window = mock_shared<MockConsole>();
-
-    auto manager = register_test_module().with_window_source([&]() { return window; }).build();
-
-    std::optional<std::string> raised;
-    auto token = manager->on_command += [&](const auto& command)
-    {
-        raised = command;
-    };
-
-    manager->create_window();
-    window->on_command("Hello");
-
-    ASSERT_TRUE(raised);
-    ASSERT_EQ(raised.value(), "Hello");
-}
-
 TEST(ConsoleManager, CreateConsoleKeyboardShortcut)
 {
     auto shortcuts = mock_shared<MockShortcuts>();
     EXPECT_CALL(*shortcuts, add_shortcut(false, VK_F11)).Times(1).WillOnce([&](auto, auto) -> Event<>&{ return shortcut_handler; });
     auto manager = register_test_module().with_shortcuts(shortcuts).build();
-}
-
-TEST(ConsoleManager, PrintForwarded)
-{
-    auto window = mock_shared<MockConsole>();
-    EXPECT_CALL(*window, print("Hello")).Times(1);
-    auto manager = register_test_module().with_window_source([&]() { return window; }).build();
-    manager->create_window();
-    manager->print("Hello");
 }
 
 TEST(ConsoleManager, InitialiseUiForwarded)

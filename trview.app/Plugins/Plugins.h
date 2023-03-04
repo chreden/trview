@@ -11,6 +11,7 @@ namespace trview
     {
     public:
         explicit Plugins(const std::shared_ptr<IFiles>& files,
+            const std::shared_ptr<IPlugin>& default_plugin,
             const IPlugin::Source& plugin_source,
             const UserSettings& settings);
         virtual ~Plugins() = default;

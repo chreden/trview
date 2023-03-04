@@ -17,19 +17,23 @@ namespace trview
     {
     }
 
-    Console::Console(const std::shared_ptr<IDialogs>& dialogs)
-        : _dialogs(dialogs)
+    Console::Console(const std::shared_ptr<IDialogs>& dialogs, const std::weak_ptr<IPlugins>& plugins)
+        : _dialogs(dialogs), _plugins(plugins)
     {
-    }
-
-    void Console::print(const std::string& text)
-    {
-        if (!_text.empty())
+        if (auto plugins_ptr = _plugins.lock())
         {
-            _text += '\n';
+            for (const auto& plugin : plugins_ptr->plugins())
+            {
+                if (auto plugin_ptr = plugin.lock())
+                {
+                    auto raw = plugin_ptr.get();
+                    _token_store += plugin_ptr->on_message += [raw, this](const std::string&)
+                    {
+                        _need_scroll.insert(raw);
+                    };
+                }
+            }
         }
-        _text += text;
-        _need_scroll = true;
     }
 
     void Console::render()
@@ -69,9 +73,9 @@ namespace trview
                     if (ImGui::MenuItem("Open"))
                     {
                         const auto filename = _dialogs->open_file(L"Open Lua file", { { L"Lua files", { L"*.lua" } } }, OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST);
-                        if (filename)
+                        if (auto plugin = _selected_plugin.lock())
                         {
-                            on_command(std::format("dofile(\"{}\")", escape(filename.value().filename)));
+                            plugin->do_file(escape(filename.value().filename));
                             std::erase(_recent_files, filename.value().filename);
                             _recent_files.push_back(filename.value().filename);
                         }
@@ -83,10 +87,13 @@ namespace trview
                         {
                             if (ImGui::MenuItem(iter->c_str()))
                             {
-                                const std::string text = *iter;
-                                on_command(std::format("dofile(\"{}\")", escape(text)));
-                                std::erase(_recent_files, text);
-                                _recent_files.push_back(text);
+                                if (auto plugin = _selected_plugin.lock())
+                                {
+                                    const std::string text = *iter;
+                                    plugin->do_file(escape(text));
+                                    std::erase(_recent_files, text);
+                                    _recent_files.push_back(text);
+                                }
                                 break;
                             }
                         }
@@ -101,20 +108,74 @@ namespace trview
                 {
                     if (ImGui::MenuItem("Clear"))
                     {
-                        _text.clear();
+                        if (auto plugin = _selected_plugin.lock())
+                        {
+                            plugin->clear_messages();
+                        }
                     }
                     ImGui::EndMenu();
                 }
                 ImGui::EndMenuBar();
             }
 
-            ImGui::InputTextMultiline(Names::log.c_str(), const_cast<char*>(_text.c_str()), _text.size(), ImVec2(-1, -25), ImGuiInputTextFlags_ReadOnly);
+            if (ImGui::BeginTabBar("TabBar"))
+            {
+                if (auto plugins = _plugins.lock())
+                {
+                    for (const auto& plugin : plugins->plugins())
+                    {
+                        if (auto p = plugin.lock())
+                        {
+                            render_plugin_logs(p);
+                        }
+                    }
+                }
+                ImGui::EndTabBar();
+            }
+        }
+        ImGui::End();
+        ImGui::PopStyleVar();
+        if (_font)
+        {
+            ImGui::PopFont();
+        }
+        return stay_open;
+    }
+
+    void Console::set_font(ImFont* font)
+    {
+        _font = font;
+    }
+
+    void Console::set_number(int32_t number)
+    {
+        _id = "Console " + std::to_string(number);
+    }
+
+    void Console::add_command(const std::string& command)
+    {
+        auto existing = std::ranges::find(_command_history, command);
+        if (existing != _command_history.end())
+        {
+            _command_history.erase(existing);
+        }
+        _command_history.push_back(command);
+        _command_history_index = static_cast<int32_t>(_command_history.size());
+    }
+
+    void Console::render_plugin_logs(const std::shared_ptr<IPlugin>& plugin)
+    {
+        if (ImGui::BeginTabItem(plugin->name().c_str()))
+        {
+            _selected_plugin = plugin;
+
+            auto text = plugin->messages();
+            ImGui::InputTextMultiline(Names::log.c_str(), &text, ImVec2(-1, -25), ImGuiInputTextFlags_ReadOnly);
             if (ImGui::BeginChild(Names::log.c_str()))
             {
-                if (_need_scroll)
+                if (need_scroll(plugin))
                 {
                     ImGui::SetScrollHereY(1.0f);
-                    _need_scroll = false;
                 }
                 ImGui::EndChild();
             }
@@ -125,11 +186,11 @@ namespace trview
             }
             ImGui::PushItemWidth(-1);
             if (ImGui::InputText(Names::input.c_str(), &_buffer, ImGuiInputTextFlags_EnterReturnsTrue | ImGuiInputTextFlags_CallbackAlways, callback, this))
-            { 
+            {
                 _need_focus = true;
                 auto command = std::string(_buffer.data());
-                print(std::format("> {}", command));
-                on_command(command);
+                plugin->add_message(std::format("> {}", command));
+                plugin->execute(command);
                 add_command(command);
                 _buffer.clear();
             }
@@ -170,34 +231,18 @@ namespace trview
                     ImGui::ClearActiveID();
                 }
             }
+            ImGui::EndTabItem();
         }
-        ImGui::End();
-        ImGui::PopStyleVar();
-        if (_font)
+    }
+
+    bool Console::need_scroll(const std::shared_ptr<IPlugin>& plugin)
+    {
+        auto iter = std::ranges::find(_need_scroll, plugin.get());
+        if (iter == _need_scroll.end())
         {
-            ImGui::PopFont();
+            return false;
         }
-        return stay_open;
-    }
-
-    void Console::set_font(ImFont* font)
-    {
-        _font = font;
-    }
-
-    void Console::set_number(int32_t number)
-    {
-        _id = "Console " + std::to_string(number);
-    }
-
-    void Console::add_command(const std::string& command)
-    {
-        auto existing = std::ranges::find(_command_history, command);
-        if (existing != _command_history.end())
-        {
-            _command_history.erase(existing);
-        }
-        _command_history.push_back(command);
-        _command_history_index = static_cast<int32_t>(_command_history.size());
+        _need_scroll.erase(*iter);
+        return true;
     }
 }

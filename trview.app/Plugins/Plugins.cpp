@@ -7,9 +7,12 @@ namespace trview
     }
 
     Plugins::Plugins(const std::shared_ptr<IFiles>& files,
+        const std::shared_ptr<IPlugin>& default_plugin,
         const IPlugin::Source& plugin_source,
         const UserSettings& settings)
     {
+        _plugins.push_back(default_plugin);
+
         for (const auto& directory : settings.plugin_directories)
         {
             const auto plugins = files->get_directories(directory);

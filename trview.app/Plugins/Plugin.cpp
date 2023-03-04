@@ -6,6 +6,12 @@ namespace trview
     {
     }
 
+    Plugin::Plugin(std::unique_ptr<ILua> lua, const std::string& name, const std::string& author, const std::string& description)
+        : _lua(std::move(lua)), _name(name), _author(author), _description(description)
+    {
+        register_print();
+    }
+
     Plugin::Plugin(const std::shared_ptr<IFiles>& files,
         std::unique_ptr<ILua> lua,
         const std::string& path)
@@ -29,10 +35,12 @@ namespace trview
         }
 
         _script = path + "\\plugin.lua";
-        _token_store += _lua->on_print += [&](const std::string& message)
-        {
-            _messages.push_back(message);
-        };
+        register_print();
+    }
+
+    void Plugin::register_print()
+    {
+        _token_store += _lua->on_print += [&](const std::string& message) { add_message(message); };
     }
 
     std::string Plugin::name() const
@@ -58,6 +66,39 @@ namespace trview
     void Plugin::initialise(IApplication* application)
     {
         _lua->initialise(application);
-        _lua->do_file(_script);
+        if (!_script.empty())
+        {
+            _lua->do_file(_script);
+        }
+    }
+
+    std::string Plugin::messages() const
+    {
+        return _messages;
+    }
+
+    void Plugin::execute(const std::string& command)
+    {
+        _lua->execute(command);
+    }
+
+    void Plugin::add_message(const std::string& message)
+    {
+        if (!_messages.empty())
+        {
+            _messages += '\n';
+        }
+        _messages += message;
+        on_message(message);
+    }
+
+    void Plugin::do_file(const std::string& path)
+    {
+        _lua->do_file(path);
+    }
+
+    void Plugin::clear_messages()
+    {
+        _messages.clear();
     }
 }

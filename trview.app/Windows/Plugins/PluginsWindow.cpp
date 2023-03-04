@@ -27,9 +27,9 @@ namespace trview
         {
             if (ImGui::BeginTable("Plugins", 4, ImGuiTableFlags_SizingStretchProp))
             {
+                ImGui::TableSetupColumn("Location");
                 ImGui::TableSetupColumn("Name");
                 ImGui::TableSetupColumn("Author");
-                ImGui::TableSetupColumn("Location");
                 ImGui::TableSetupColumn("Description");
                 ImGui::TableSetupScrollFreeze(1, 1);
                 ImGui::TableHeadersRow();
@@ -42,14 +42,14 @@ namespace trview
                         {
                             ImGui::TableNextRow();
                             ImGui::TableNextColumn();
-                            ImGui::Text(plugin->name().c_str());
-                            ImGui::TableNextColumn();
-                            ImGui::Text(plugin->author().c_str());
-                            ImGui::TableNextColumn();
-                            if (ImGui::Button(std::format("Open##{}", plugin->name()).c_str()))
+                            if (!plugin->path().empty() && ImGui::Button(std::format("Open##{}", plugin->name()).c_str()))
                             {
                                 _shell->open(to_utf16(plugin->path()));
                             }
+                            ImGui::TableNextColumn();
+                            ImGui::Text(plugin->name().c_str());
+                            ImGui::TableNextColumn();
+                            ImGui::Text(plugin->author().c_str());
                             ImGui::TableNextColumn();
                             ImGui::Text(plugin->description().c_str());
                         }

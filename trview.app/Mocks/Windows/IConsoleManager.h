@@ -13,7 +13,6 @@ namespace trview
             MOCK_METHOD(void, render, (), (override));
             MOCK_METHOD(std::weak_ptr<IConsole>, create_window, (), (override));
             MOCK_METHOD(void, initialise_ui, (), (override));
-            MOCK_METHOD(void, print, (const std::string&), (override));
         };
     }
 }

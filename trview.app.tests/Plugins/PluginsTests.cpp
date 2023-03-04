@@ -24,7 +24,7 @@ TEST(Plugins, PluginsLoaded)
     EXPECT_CALL(*files, get_directories("dir"))
         .WillRepeatedly(testing::Return(std::vector<IFiles::Directory>{ { "plugindir", "plugindir_friendly" } }));
 
-    Plugins plugins(files, source, settings);
+    Plugins plugins(files, mock_shared<MockPlugin>(), source, settings);
 
     ASSERT_TRUE(raised);
     ASSERT_EQ(raised.value(), "plugindir");
@@ -40,7 +40,7 @@ TEST(Plugins, Initialise)
     EXPECT_CALL(*files, get_directories("dir"))
         .WillRepeatedly(testing::Return(std::vector<IFiles::Directory>{ { "plugindir", "plugindir_friendly" } }));
 
-    Plugins plugins(files, source, settings);
+    Plugins plugins(files, mock_shared<MockPlugin>(), source, settings);
 
     auto application = mock_unique<MockApplication>();
     EXPECT_CALL(plugin, initialise(application.get())).Times(1);
