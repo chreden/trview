@@ -47,6 +47,7 @@ CTRL + I    | New Items window
 CTRL + M    | New Rooms window
 CTRL + L    | New Lights window
 CTRL + K    | New Camera/Sink window
+CTRL + P    | New Plugins window
 F1          | Toggle settings window
 F5          | Reload current level
 F6          | Load previous level in directory
