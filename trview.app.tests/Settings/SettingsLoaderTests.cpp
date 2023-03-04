@@ -674,3 +674,22 @@ TEST(SettingsLoader, CameraSinkStartupSaved)
     loader->save_user_settings(settings);
     EXPECT_THAT(output, HasSubstr("\"camera_sink_startup\":true"));
 }
+
+TEST(SettingsLoader, PluginDirectoriesSaved)
+{
+    std::string output;
+    auto loader = setup_save_setting(output);
+    UserSettings settings;
+    settings.plugin_directories = { "path1", "path2" };
+    loader->save_user_settings(settings);
+    EXPECT_THAT(output, HasSubstr("\"plugin_directories\":[\"path1\",\"path2\"]"));
+}
+
+TEST(SettingsLoader, PluginDirectoriesLoaded)
+{
+    auto loader = setup_setting("{\"plugin_directories\":[\"path1\",\"path2\"]}");
+    auto settings = loader->load_user_settings();
+    const std::vector<std::string> expected{ "path1", "path2" };
+    ASSERT_EQ(settings.plugin_directories, expected);
+}
+

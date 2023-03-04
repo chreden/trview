@@ -7,7 +7,7 @@
 
 namespace trview
 {
-    struct Plugin final : public IPlugin
+    class Plugin final : public IPlugin
     {
     public:
         explicit Plugin(std::unique_ptr<ILua> lua, const std::string& name, const std::string& author, const std::string& description);

@@ -206,6 +206,9 @@
     <ClCompile Include="Plugins\PluginsTests.cpp">
       <Filter>Plugins</Filter>
     </ClCompile>
+    <ClCompile Include="PluginsWindowManagerTests.cpp">
+      <Filter>Windows</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Input">

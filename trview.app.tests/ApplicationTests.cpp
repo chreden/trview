@@ -215,6 +215,18 @@ namespace
                 this->console_manager = std::move(console_manager);
                 return *this;
             }
+
+            test_module& with_plugins(std::shared_ptr<IPlugins> plugins)
+            {
+                this->plugins = plugins;
+                return *this;
+            }
+
+            test_module& with_plugins_window_manager(std::unique_ptr<IPluginsWindowManager> plugins_window_manager)
+            {
+                this->plugins_window_manager = std::move(plugins_window_manager);
+                return *this;
+            }
         };
         return test_module{};
     }
@@ -529,6 +541,9 @@ TEST(Application, WindowManagersAndViewerRendered)
     auto [console_manager_ptr, console_manager] = create_mock<MockConsoleManager>();
     EXPECT_CALL(console_manager, render).Times(1);
     EXPECT_CALL(console_manager, initialise_ui).Times(1);
+    auto [plugins_window_manager_ptr, plugins_window_manager] = create_mock<MockPluginsWindowManager>();
+    EXPECT_CALL(plugins_window_manager, render).Times(1);
+
     auto [viewer_ptr, viewer] = create_mock<MockViewer>();
     EXPECT_CALL(viewer, render).Times(1);
     auto files = mock_shared<MockFiles>();
@@ -544,6 +559,7 @@ TEST(Application, WindowManagersAndViewerRendered)
         .with_textures_window_manager(std::move(textures_window_manager_ptr))
         .with_camera_sink_window_manager(std::move(camera_sink_window_manager_ptr))
         .with_console_manager(std::move(console_manager_ptr))
+        .with_plugins_window_manager(std::move(plugins_window_manager_ptr))
         .with_viewer(std::move(viewer_ptr))
         .with_files(files)
         .build();
@@ -1050,3 +1066,12 @@ TEST(Application, SetCurrentLevelNoPrompt)
     application->set_current_level(level, ILevel::OpenMode::Full, false);
 }
 
+TEST(Application, PluginsInitialised)
+{
+    auto plugins = mock_shared<MockPlugins>();
+    EXPECT_CALL(*plugins, initialise).Times(1);
+
+    auto application = register_test_module()
+        .with_plugins(plugins)
+        .build();
+}

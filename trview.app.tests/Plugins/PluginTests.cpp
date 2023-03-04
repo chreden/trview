@@ -38,3 +38,43 @@ TEST(Plugin, Initialise)
     Plugin plugin(mock_shared<MockFiles>(), std::move(lua_ptr), "test");
     plugin.initialise(application.get());
 }
+
+TEST(Plugin, Execute)
+{
+    auto [lua_ptr, lua] = create_mock<MockLua>();
+    EXPECT_CALL(lua, execute("test"));
+
+    Plugin plugin(mock_shared<MockFiles>(), std::move(lua_ptr), "test");
+    plugin.execute("test");
+}
+
+TEST(Plugin, PrintRegistered)
+{
+    auto [lua_ptr, lua] = create_mock<MockLua>();
+
+    Plugin plugin(mock_shared<MockFiles>(), std::move(lua_ptr), "test");
+
+    lua.on_print("test");
+
+    ASSERT_EQ(plugin.messages(), "test");
+}
+
+TEST(Plugin, AddAndClearMessages)
+{
+    Plugin plugin(mock_shared<MockFiles>(), mock_unique<MockLua>(), "test");
+
+    plugin.add_message("test");
+    plugin.add_message("test2");
+    ASSERT_EQ(plugin.messages(), "test\ntest2");
+    plugin.clear_messages();
+    ASSERT_EQ(plugin.messages(), "");
+}
+
+TEST(Plugin, DoFile)
+{
+    auto [lua_ptr, lua] = create_mock<MockLua>();
+    EXPECT_CALL(lua, do_file("test.lua")).Times(1);
+
+    Plugin plugin(mock_shared<MockFiles>(), std::move(lua_ptr), "test");
+    plugin.do_file("test.lua");
+}

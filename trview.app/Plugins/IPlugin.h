@@ -9,7 +9,6 @@ namespace trview
 
     struct IPlugin
     {
-        using DefaultSource = std::function<std::shared_ptr<IPlugin>()>;
         using Source = std::function<std::shared_ptr<IPlugin>(const std::string& directory)>;
 
         virtual ~IPlugin() = 0;
