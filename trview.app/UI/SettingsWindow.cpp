@@ -184,7 +184,7 @@ namespace trview
                         ImGui::TableNextColumn();
                         if (ImGui::Button("Add"))
                         {
-                            if (auto path = _dialogs->open_folder(L""))
+                            if (auto path = _dialogs->open_folder())
                             {
                                 _plugin_directories.push_back(path.value());
                                 on_plugin_directories(_plugin_directories);

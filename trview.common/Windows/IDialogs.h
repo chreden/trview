@@ -46,7 +46,7 @@ namespace trview
         /// <returns>The open file result if one was selected or an empty optional.</returns>
         virtual std::optional<FileResult> open_file(const std::wstring& title, const std::vector<FileFilter>& filters, uint32_t flags) const = 0;
 
-        virtual std::optional<std::string> open_folder(const std::wstring& title) const = 0;
+        virtual std::optional<std::string> open_folder() const = 0;
         /// <summary>
         /// Prompt the user to select a file to save.
         /// </summary>

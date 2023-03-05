@@ -103,7 +103,7 @@ namespace trview
         return {};
     }
 
-    std::optional<std::string> Dialogs::open_folder(const std::wstring&) const
+    std::optional<std::string> Dialogs::open_folder() const
     {
         ComPtr<IFileDialog> file_dialog;
         if (SUCCEEDED(CoCreateInstance(CLSID_FileOpenDialog, NULL, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(file_dialog.GetAddressOf()))))
