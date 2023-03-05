@@ -22,10 +22,12 @@ namespace trview
 
     bool PluginsWindow::render_plugins_window()
     {
+        ImGui::ShowStackToolWindow();
+
         bool stay_open = true;
         if (ImGui::Begin(_id.c_str(), &stay_open))
         {
-            if (ImGui::BeginTable("Plugins", 4, ImGuiTableFlags_SizingStretchProp))
+            if (ImGui::BeginTable(Names::plugins_list.c_str(), 4, ImGuiTableFlags_SizingStretchProp))
             {
                 ImGui::TableSetupColumn("Location");
                 ImGui::TableSetupColumn("Name");

@@ -9,6 +9,11 @@ namespace trview
     class PluginsWindow final : public IPluginsWindow
     {
     public:
+        struct Names
+        {
+            static inline const std::string plugins_list = "Plugins";
+        };
+
         explicit PluginsWindow(const std::weak_ptr<IPlugins>& plugins, const std::shared_ptr<IShell>& shell);
         virtual ~PluginsWindow() = default;
         void render() override;

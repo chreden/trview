@@ -61,6 +61,8 @@ TEST(PluginsWindowManager, WindowCreatedOnCommand)
 TEST(PluginsWindowManager, WindowCreated)
 {
     auto window = mock_shared<MockPluginsWindow>();
+    EXPECT_CALL(*window, set_number(1)).Times(1);
+
     auto manager = register_test_module()
         .with_window_source([&]() { return window; })
         .build();
