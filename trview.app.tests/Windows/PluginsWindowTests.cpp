@@ -60,6 +60,7 @@ TEST(PluginsWindow, DirectoryOpened)
 
     TestImgui imgui([&]() { window->render(); });
     imgui.click_element(imgui.id("Plugins 0")
-        .push(PluginsWindow::Names::)
+        .push(PluginsWindow::Names::plugins_list)
         .id(std::format("Open##{}", "Plugin Name").c_str()));
 }
+
