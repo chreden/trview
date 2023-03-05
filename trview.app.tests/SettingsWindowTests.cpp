@@ -856,7 +856,7 @@ TEST(SettingsWindow, OpenPluginDirectories)
     imgui.click_element(imgui.id("Settings").push("TabBar").push("Plugins").push("Directories").id("Open##0"));
 }
 
-TEST(SettingsWindow, DeletePluginDirectories)
+TEST(SettingsWindow, RemovePluginDirectories)
 {
     auto window = register_test_module().build();
     std::optional<std::vector<std::string>> raised;
@@ -870,7 +870,7 @@ TEST(SettingsWindow, DeletePluginDirectories)
 
     TestImgui imgui([&]() { window->render(); });
     imgui.click_element(imgui.id("Settings").push("TabBar").id("Plugins"));
-    imgui.click_element(imgui.id("Settings").push("TabBar").push("Plugins").push("Directories").id("Delete##0"));
+    imgui.click_element(imgui.id("Settings").push("TabBar").push("Plugins").push("Directories").id("Remove##0"));
 
     const std::vector<std::string> expected;
     ASSERT_TRUE(raised);

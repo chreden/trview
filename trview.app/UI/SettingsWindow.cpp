@@ -166,7 +166,7 @@ namespace trview
                         {
                             ImGui::TableNextRow();
                             ImGui::TableNextColumn();
-                            if (ImGui::Button(std::format("Delete##{}", i).c_str()))
+                            if (ImGui::Button(std::format("Remove##{}", i).c_str()))
                             {
                                 _plugin_directories.erase(_plugin_directories.begin() + i);
                                 on_plugin_directories(_plugin_directories);
