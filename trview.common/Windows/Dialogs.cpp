@@ -1,6 +1,10 @@
 #include "Dialogs.h"
 #include "Strings.h"
 #include <commdlg.h>
+#include <ShlObj.h>
+#include <wrl/client.h>
+
+using namespace Microsoft::WRL;
 
 namespace trview
 {
@@ -97,6 +101,32 @@ namespace trview
             return IDialogs::FileResult{ trview::to_utf8(ofn.lpstrFile), static_cast<int>(ofn.nFilterIndex) };
         }
         return {};
+    }
+
+    std::optional<std::string> Dialogs::open_folder(const std::wstring&) const
+    {
+        ComPtr<IFileDialog> file_dialog;
+        if (SUCCEEDED(CoCreateInstance(CLSID_FileOpenDialog, NULL, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(file_dialog.GetAddressOf()))))
+        {
+            DWORD dwOptions;
+            if (SUCCEEDED(file_dialog->GetOptions(&dwOptions)))
+            {
+                file_dialog->SetOptions(dwOptions | FOS_PICKFOLDERS);
+            }
+            if (SUCCEEDED(file_dialog->Show(NULL)))
+            {
+                ComPtr<IShellItem> shell_item;
+                if (SUCCEEDED(file_dialog->GetResult(shell_item.GetAddressOf())))
+                {
+                    wchar_t* name = nullptr;
+                    if (SUCCEEDED(shell_item->GetDisplayName(SIGDN_DESKTOPABSOLUTEPARSING, &name)))
+                    {
+                        return to_utf8(name);
+                    }
+                }
+            }
+        }
+        return std::nullopt;
     }
 
     std::optional<IDialogs::FileResult> Dialogs::save_file(const std::wstring& title, const std::vector<FileFilter>& filters, uint32_t filter_index) const

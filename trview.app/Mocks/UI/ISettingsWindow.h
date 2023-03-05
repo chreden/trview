@@ -34,6 +34,7 @@ namespace trview
             MOCK_METHOD(void, set_route_startup, (bool), (override));
             MOCK_METHOD(void, set_fov, (float), (override));
             MOCK_METHOD(void, set_camera_sink_startup, (bool), (override));
+            MOCK_METHOD(void, set_plugin_directories, (const std::vector<std::string>&), (override));
         };
     }
 }

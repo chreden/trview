@@ -1,35 +1,70 @@
-#include <trview.app/UI/SettingsWindow.h>
+#include <trview.app/UI/Settingswindow.h>
 #include "TestImgui.h"
+
+#include <trview.common/Mocks/Windows/IShell.h>
+#include <trview.common/Mocks/Windows/IDialogs.h>
 
 using namespace trview;
 using namespace trview::tests;
 using namespace testing;
+using namespace trview::mocks;
+
+namespace
+{
+    auto register_test_module()
+    {
+        struct test_module
+        {
+            std::shared_ptr<IDialogs> dialogs{ mock_shared<MockDialogs>() };
+            std::shared_ptr<IShell> shell{ mock_shared<MockShell>() };
+
+            std::unique_ptr<SettingsWindow> build()
+            {
+                return std::make_unique<SettingsWindow>(dialogs, shell);
+            }
+
+            test_module& with_dialogs(const std::shared_ptr<IDialogs>& dialogs)
+            {
+                this->dialogs = dialogs;
+                return *this;
+            }
+
+            test_module& with_shell(const std::shared_ptr<IShell>& shell)
+            {
+                this->shell = shell;
+                return *this;
+            }
+        };
+
+        return test_module{};
+    }
+}
 
 TEST(SettingsWindow, SetVSyncUpdatesCheckbox)
 {
-    SettingsWindow window;
-    window.toggle_visibility();
+    auto window = register_test_module().build();
+    window->toggle_visibility();
 
-    TestImgui imgui([&]() { window.render(); });
+    TestImgui imgui([&]() { window->render(); });
     ASSERT_FALSE(imgui.status_flags(imgui.id("Settings").push("TabBar").push("General").id(SettingsWindow::Names::vsync)) & ImGuiItemStatusFlags_Checked);
 
-    window.set_vsync(true);
+    window->set_vsync(true);
     imgui.render();
     ASSERT_TRUE(imgui.status_flags(imgui.id("Settings").push("TabBar").push("General").id(SettingsWindow::Names::vsync)) & ImGuiItemStatusFlags_Checked);
 }
 
 TEST(SettingsWindow, ClickingVSyncRaisesEvent)
 {
-    SettingsWindow window;
-    window.toggle_visibility();
+    auto window = register_test_module().build();
+    window->toggle_visibility();
 
     std::optional<bool> received_value;
-    auto token = window.on_vsync += [&](bool value)
+    auto token = window->on_vsync += [&](bool value)
     {
         received_value = value;
     };
 
-    TestImgui imgui([&]() { window.render(); });
+    TestImgui imgui([&]() { window->render(); });
     ASSERT_FALSE(imgui.status_flags(imgui.id("Settings").push("TabBar").push("General").id(SettingsWindow::Names::vsync)) & ImGuiItemStatusFlags_Checked);
     imgui.click_element(imgui.id("Settings").push("TabBar").push("General").id(SettingsWindow::Names::vsync));
     ASSERT_TRUE(imgui.status_flags(imgui.id("Settings").push("TabBar").push("General").id(SettingsWindow::Names::vsync)) & ImGuiItemStatusFlags_Checked);
@@ -39,29 +74,29 @@ TEST(SettingsWindow, ClickingVSyncRaisesEvent)
 
 TEST(SettingsWindow, SetGoToLaraUpdatesCheckbox)
 {
-    SettingsWindow window;
-    window.toggle_visibility();
+    auto window = register_test_module().build();
+    window->toggle_visibility();
 
-    TestImgui imgui([&]() { window.render(); });
+    TestImgui imgui([&]() { window->render(); });
     ASSERT_FALSE(imgui.status_flags(imgui.id("Settings").push("TabBar").push("General").id(SettingsWindow::Names::go_to_lara)) & ImGuiItemStatusFlags_Checked);
 
-    window.set_go_to_lara(true);
+    window->set_go_to_lara(true);
     imgui.render();
     ASSERT_TRUE(imgui.status_flags(imgui.id("Settings").push("TabBar").push("General").id(SettingsWindow::Names::go_to_lara)) & ImGuiItemStatusFlags_Checked);
 }
 
 TEST(SettingsWindow, ClickingGoToLaraRaisesEvent)
 {
-    SettingsWindow window;
-    window.toggle_visibility();
+    auto window = register_test_module().build();
+    window->toggle_visibility();
 
     std::optional<bool> received_value;
-    auto token = window.on_go_to_lara += [&](bool value)
+    auto token = window->on_go_to_lara += [&](bool value)
     {
         received_value = value;
     };
 
-    TestImgui imgui([&]() { window.render(); });
+    TestImgui imgui([&]() { window->render(); });
     ASSERT_FALSE(imgui.status_flags(imgui.id("Settings").push("TabBar").push("General").id(SettingsWindow::Names::go_to_lara)) & ImGuiItemStatusFlags_Checked);
     imgui.click_element(imgui.id("Settings").push("TabBar").push("General").id(SettingsWindow::Names::go_to_lara));
     ASSERT_TRUE(imgui.status_flags(imgui.id("Settings").push("TabBar").push("General").id(SettingsWindow::Names::go_to_lara)) & ImGuiItemStatusFlags_Checked);
@@ -71,32 +106,32 @@ TEST(SettingsWindow, ClickingGoToLaraRaisesEvent)
 
 TEST(SettingsWindow, SetInvertMapControlsUpdatesCheckbox)
 {
-    SettingsWindow window;
-    window.toggle_visibility();
+    auto window = register_test_module().build();
+    window->toggle_visibility();
 
-    TestImgui imgui([&]() { window.render(); });
+    TestImgui imgui([&]() { window->render(); });
     imgui.click_element(imgui.id("Settings").push("TabBar").id("Minimap"));
     imgui.render();
 
     ASSERT_FALSE(imgui.status_flags(imgui.id("Settings").push("TabBar").push("Minimap").id(SettingsWindow::Names::invert_map_controls)) & ImGuiItemStatusFlags_Checked);
 
-    window.set_invert_map_controls(true);
+    window->set_invert_map_controls(true);
     imgui.render();
     ASSERT_TRUE(imgui.status_flags(imgui.id("Settings").push("TabBar").push("Minimap").id(SettingsWindow::Names::invert_map_controls)) & ImGuiItemStatusFlags_Checked);
 }
 
 TEST(SettingsWindow, ClickingInvertMapControlsRaisesEvent)
 {
-    SettingsWindow window;
-    window.toggle_visibility();
+    auto window = register_test_module().build();
+    window->toggle_visibility();
 
     std::optional<bool> received_value;
-    auto token = window.on_invert_map_controls += [&](bool value)
+    auto token = window->on_invert_map_controls += [&](bool value)
     {
         received_value = value;
     };
 
-    TestImgui imgui([&]() { window.render(); });
+    TestImgui imgui([&]() { window->render(); });
     imgui.click_element(imgui.id("Settings").push("TabBar").id("Minimap"));
     imgui.render();
 
@@ -109,29 +144,29 @@ TEST(SettingsWindow, ClickingInvertMapControlsRaisesEvent)
 
 TEST(SettingsWindow, SetItemsWindowOnStartupUpdatesCheckbox)
 {
-    SettingsWindow window;
-    window.toggle_visibility();
+    auto window = register_test_module().build();
+    window->toggle_visibility();
 
-    TestImgui imgui([&]() { window.render(); });
+    TestImgui imgui([&]() { window->render(); });
     ASSERT_FALSE(imgui.status_flags(imgui.id("Settings").push("TabBar").push("General").id(SettingsWindow::Names::items_startup)) & ImGuiItemStatusFlags_Checked);
 
-    window.set_items_startup(true);
+    window->set_items_startup(true);
     imgui.render();
     ASSERT_TRUE(imgui.status_flags(imgui.id("Settings").push("TabBar").push("General").id(SettingsWindow::Names::items_startup)) & ImGuiItemStatusFlags_Checked);
 }
 
 TEST(SettingsWindow, ClickingItemsWindowOnStartupRaisesEvent)
 {
-    SettingsWindow window;
-    window.toggle_visibility();
+    auto window = register_test_module().build();
+    window->toggle_visibility();
 
     std::optional<bool> received_value;
-    auto token = window.on_items_startup += [&](bool value)
+    auto token = window->on_items_startup += [&](bool value)
     {
         received_value = value;
     };
 
-    TestImgui imgui([&]() { window.render(); });
+    TestImgui imgui([&]() { window->render(); });
     ASSERT_FALSE(imgui.status_flags(imgui.id("Settings").push("TabBar").push("General").id(SettingsWindow::Names::items_startup)) & ImGuiItemStatusFlags_Checked);
     imgui.click_element(imgui.id("Settings").push("TabBar").push("General").id(SettingsWindow::Names::items_startup));
     ASSERT_TRUE(imgui.status_flags(imgui.id("Settings").push("TabBar").push("General").id(SettingsWindow::Names::items_startup)) & ImGuiItemStatusFlags_Checked);
@@ -141,29 +176,29 @@ TEST(SettingsWindow, ClickingItemsWindowOnStartupRaisesEvent)
 
 TEST(SettingsWindow, SetTriggersWindowOnStartupUpdatesCheckbox)
 {
-    SettingsWindow window;
-    window.toggle_visibility();
+    auto window = register_test_module().build();
+    window->toggle_visibility();
 
-    TestImgui imgui([&]() { window.render(); });
+    TestImgui imgui([&]() { window->render(); });
     ASSERT_FALSE(imgui.status_flags(imgui.id("Settings").push("TabBar").push("General").id(SettingsWindow::Names::triggers_startup)) & ImGuiItemStatusFlags_Checked);
 
-    window.set_triggers_startup(true);
+    window->set_triggers_startup(true);
     imgui.render();
     ASSERT_TRUE(imgui.status_flags(imgui.id("Settings").push("TabBar").push("General").id(SettingsWindow::Names::triggers_startup)) & ImGuiItemStatusFlags_Checked);
 }
 
 TEST(SettingsWindow, ClickingTriggersWindowOnStartupRaisesEvent)
 {
-    SettingsWindow window;
-    window.toggle_visibility();
+    auto window = register_test_module().build();
+    window->toggle_visibility();
 
     std::optional<bool> received_value;
-    auto token = window.on_triggers_startup += [&](bool value)
+    auto token = window->on_triggers_startup += [&](bool value)
     {
         received_value = value;
     };
 
-    TestImgui imgui([&]() { window.render(); });
+    TestImgui imgui([&]() { window->render(); });
     ASSERT_FALSE(imgui.status_flags(imgui.id("Settings").push("TabBar").push("General").id(SettingsWindow::Names::triggers_startup)) & ImGuiItemStatusFlags_Checked);
     imgui.click_element(imgui.id("Settings").push("TabBar").push("General").id(SettingsWindow::Names::triggers_startup));
     ASSERT_TRUE(imgui.status_flags(imgui.id("Settings").push("TabBar").push("General").id(SettingsWindow::Names::triggers_startup)) & ImGuiItemStatusFlags_Checked);
@@ -173,29 +208,29 @@ TEST(SettingsWindow, ClickingTriggersWindowOnStartupRaisesEvent)
 
 TEST(SettingsWindow, SetRoomsWindowOnStartupUpdatesCheckbox)
 {
-    SettingsWindow window;
-    window.toggle_visibility();
+    auto window = register_test_module().build();
+    window->toggle_visibility();
 
-    TestImgui imgui([&]() { window.render(); });
+    TestImgui imgui([&]() { window->render(); });
     ASSERT_FALSE(imgui.status_flags(imgui.id("Settings").push("TabBar").push("General").id(SettingsWindow::Names::rooms_startup )) & ImGuiItemStatusFlags_Checked);
 
-    window.set_rooms_startup(true);
+    window->set_rooms_startup(true);
     imgui.render();
     ASSERT_TRUE(imgui.status_flags(imgui.id("Settings").push("TabBar").push("General").id(SettingsWindow::Names::rooms_startup )) & ImGuiItemStatusFlags_Checked);
 }
 
 TEST(SettingsWindow, ClickingRoomsWindowOnStartupRaisesEvent)
 {
-    SettingsWindow window;
-    window.toggle_visibility();
+    auto window = register_test_module().build();
+    window->toggle_visibility();
 
     std::optional<bool> received_value;
-    auto token = window.on_rooms_startup += [&](bool value)
+    auto token = window->on_rooms_startup += [&](bool value)
     {
         received_value = value;
     };
 
-    TestImgui imgui([&]() { window.render(); });
+    TestImgui imgui([&]() { window->render(); });
     ASSERT_FALSE(imgui.status_flags(imgui.id("Settings").push("TabBar").push("General").id(SettingsWindow::Names::rooms_startup )) & ImGuiItemStatusFlags_Checked);
     imgui.click_element(imgui.id("Settings").push("TabBar").push("General").id(SettingsWindow::Names::rooms_startup ));
     ASSERT_TRUE(imgui.status_flags(imgui.id("Settings").push("TabBar").push("General").id(SettingsWindow::Names::rooms_startup )) & ImGuiItemStatusFlags_Checked);
@@ -205,31 +240,31 @@ TEST(SettingsWindow, ClickingRoomsWindowOnStartupRaisesEvent)
 
 TEST(SettingsWindow, SetOrbitUpdatesCheckbox)
 {
-    SettingsWindow window;
-    window.toggle_visibility();
+    auto window = register_test_module().build();
+    window->toggle_visibility();
 
-    TestImgui imgui([&]() { window.render(); });
+    TestImgui imgui([&]() { window->render(); });
     imgui.click_element(imgui.id("Settings").push("TabBar").id("Camera"));
     imgui.render();
     ASSERT_FALSE(imgui.status_flags(imgui.id("Settings").push("TabBar").push("Camera").id(SettingsWindow::Names::auto_orbit )) & ImGuiItemStatusFlags_Checked);
 
-    window.set_auto_orbit(true);
+    window->set_auto_orbit(true);
     imgui.render();
     ASSERT_TRUE(imgui.status_flags(imgui.id("Settings").push("TabBar").push("Camera").id(SettingsWindow::Names::auto_orbit )) & ImGuiItemStatusFlags_Checked);
 }
 
 TEST(SettingsWindow, ClickingOrbitRaisesEvent)
 {
-    SettingsWindow window;
-    window.toggle_visibility();
+    auto window = register_test_module().build();
+    window->toggle_visibility();
 
     std::optional<bool> received_value;
-    auto token = window.on_auto_orbit += [&](bool value)
+    auto token = window->on_auto_orbit += [&](bool value)
     {
         received_value = value;
     };
 
-    TestImgui imgui([&]() { window.render(); });
+    TestImgui imgui([&]() { window->render(); });
     imgui.click_element(imgui.id("Settings").push("TabBar").id("Camera"));
     imgui.render();
     ASSERT_FALSE(imgui.status_flags(imgui.id("Settings").push("TabBar").push("Camera").id(SettingsWindow::Names::auto_orbit )) & ImGuiItemStatusFlags_Checked);
@@ -241,31 +276,31 @@ TEST(SettingsWindow, ClickingOrbitRaisesEvent)
 
 TEST(SettingsWindow, SetInvertVerticalPanUpdatesCheckbox)
 {
-    SettingsWindow window;
-    window.toggle_visibility();
+    auto window = register_test_module().build();
+    window->toggle_visibility();
 
-    TestImgui imgui([&]() { window.render(); });
+    TestImgui imgui([&]() { window->render(); });
     imgui.click_element(imgui.id("Settings").push("TabBar").id("Camera"));
     imgui.render();
     ASSERT_FALSE(imgui.status_flags(imgui.id("Settings").push("TabBar").push("Camera").id(SettingsWindow::Names::invert_vertical_pan )) & ImGuiItemStatusFlags_Checked);
 
-    window.set_invert_vertical_pan(true);
+    window->set_invert_vertical_pan(true);
     imgui.render();
     ASSERT_TRUE(imgui.status_flags(imgui.id("Settings").push("TabBar").push("Camera").id(SettingsWindow::Names::invert_vertical_pan )) & ImGuiItemStatusFlags_Checked);
 }
 
 TEST(SettingsWindow, ClickingInvertVerticalPanRaisesEvent)
 {
-    SettingsWindow window;
-    window.toggle_visibility();
+    auto window = register_test_module().build();
+    window->toggle_visibility();
 
     std::optional<bool> received_value;
-    auto token = window.on_invert_vertical_pan += [&](bool value)
+    auto token = window->on_invert_vertical_pan += [&](bool value)
     {
         received_value = value;
     };
 
-    TestImgui imgui([&]() { window.render(); });
+    TestImgui imgui([&]() { window->render(); });
     imgui.click_element(imgui.id("Settings").push("TabBar").id("Camera"));
     imgui.render();
     ASSERT_FALSE(imgui.status_flags(imgui.id("Settings").push("TabBar").push("Camera").id(SettingsWindow::Names::invert_vertical_pan )) & ImGuiItemStatusFlags_Checked);
@@ -277,22 +312,22 @@ TEST(SettingsWindow, ClickingInvertVerticalPanRaisesEvent)
 
 TEST(SettingsWindow, SetMovementSpeedUpdatesSlider)
 {
-    SettingsWindow window;
-    window.toggle_visibility();
+    auto window = register_test_module().build();
+    window->toggle_visibility();
 
-    TestImgui imgui([&]() { window.render(); });
+    TestImgui imgui([&]() { window->render(); });
     imgui.click_element(imgui.id("Settings").push("TabBar").id("Camera"));
     imgui.render();
 
     ASSERT_EQ(imgui.item_text(imgui.id("Settings").push("TabBar").push("Camera").id(SettingsWindow::Names::movement_speed)), "1.000");
 
     std::optional<bool> received_value;
-    auto token = window.on_movement_speed_changed += [&](bool value)
+    auto token = window->on_movement_speed_changed += [&](bool value)
     {
         received_value = value;
     };
 
-    window.set_movement_speed(0.5f);
+    window->set_movement_speed(0.5f);
     imgui.render();
     ASSERT_EQ(imgui.item_text(imgui.id("Settings").push("TabBar").push("Camera").id(SettingsWindow::Names::movement_speed)), "0.500");
     ASSERT_FALSE(received_value.has_value());
@@ -300,10 +335,10 @@ TEST(SettingsWindow, SetMovementSpeedUpdatesSlider)
 
 TEST(SettingsWindow, ClickingMovementSpeedRaisesEvent)
 {
-    SettingsWindow window;
-    window.toggle_visibility();
+    auto window = register_test_module().build();
+    window->toggle_visibility();
 
-    TestImgui imgui([&]() { window.render(); });
+    TestImgui imgui([&]() { window->render(); });
     imgui.click_element(imgui.id("Settings").push("TabBar").id("Camera"));
     imgui.render();
 
@@ -312,7 +347,7 @@ TEST(SettingsWindow, ClickingMovementSpeedRaisesEvent)
     ASSERT_EQ(imgui.item_text(movement_speed_id), "1.000");
 
     std::optional<float> received_value;
-    auto token = window.on_movement_speed_changed += [&](float value)
+    auto token = window->on_movement_speed_changed += [&](float value)
     {
         received_value = value;
     };
@@ -326,22 +361,22 @@ TEST(SettingsWindow, ClickingMovementSpeedRaisesEvent)
 
 TEST(SettingsWindow, SetSensitivitySlider)
 {
-    SettingsWindow window;
-    window.toggle_visibility();
+    auto window = register_test_module().build();
+    window->toggle_visibility();
 
-    TestImgui imgui([&]() { window.render(); });
+    TestImgui imgui([&]() { window->render(); });
     imgui.click_element(imgui.id("Settings").push("TabBar").id("Camera"));
     imgui.render();
 
     ASSERT_EQ(imgui.item_text(imgui.id("Settings").push("TabBar").push("Camera").id(SettingsWindow::Names::sensitivity)), "1.000");
 
     std::optional<bool> received_value;
-    auto token = window.on_sensitivity_changed += [&](bool value)
+    auto token = window->on_sensitivity_changed += [&](bool value)
     {
         received_value = value;
     };
 
-    window.set_sensitivity(0.5f);
+    window->set_sensitivity(0.5f);
     imgui.render();
     ASSERT_EQ(imgui.item_text(imgui.id("Settings").push("TabBar").push("Camera").id(SettingsWindow::Names::sensitivity)), "0.500");
     ASSERT_FALSE(received_value.has_value());
@@ -349,10 +384,10 @@ TEST(SettingsWindow, SetSensitivitySlider)
 
 TEST(SettingsWindow, ClickingSensitivityRaisesEvent)
 {
-    SettingsWindow window;
-    window.toggle_visibility();
+    auto window = register_test_module().build();
+    window->toggle_visibility();
 
-    TestImgui imgui([&]() { window.render(); });
+    TestImgui imgui([&]() { window->render(); });
     imgui.click_element(imgui.id("Settings").push("TabBar").id("Camera"));
     imgui.render();
 
@@ -361,7 +396,7 @@ TEST(SettingsWindow, ClickingSensitivityRaisesEvent)
     ASSERT_EQ(imgui.item_text(sensitivity_id), "1.000");
 
     std::optional<float> received_value;
-    auto token = window.on_sensitivity_changed += [&](float value)
+    auto token = window->on_sensitivity_changed += [&](float value)
     {
         received_value = value;
     };
@@ -375,31 +410,31 @@ TEST(SettingsWindow, ClickingSensitivityRaisesEvent)
 
 TEST(SettingsWindow, SetAccelerationUpdatesCheckbox)
 {
-    SettingsWindow window;
-    window.toggle_visibility();
+    auto window = register_test_module().build();
+    window->toggle_visibility();
 
-    TestImgui imgui([&]() { window.render(); });
+    TestImgui imgui([&]() { window->render(); });
     imgui.click_element(imgui.id("Settings").push("TabBar").id("Camera"));
     imgui.render();
     ASSERT_FALSE(imgui.status_flags(imgui.id("Settings").push("TabBar").push("Camera").id(SettingsWindow::Names::acceleration )) & ImGuiItemStatusFlags_Checked);
 
-    window.set_camera_acceleration(true);
+    window->set_camera_acceleration(true);
     imgui.render();
     ASSERT_TRUE(imgui.status_flags(imgui.id("Settings").push("TabBar").push("Camera").id(SettingsWindow::Names::acceleration )) & ImGuiItemStatusFlags_Checked);
 }
 
 TEST(SettingsWindow, ClickingAccelerationRaisesEvent)
 {
-    SettingsWindow window;
-    window.toggle_visibility();
+    auto window = register_test_module().build();
+    window->toggle_visibility();
 
     std::optional<bool> received_value;
-    auto token = window.on_camera_acceleration += [&](bool value)
+    auto token = window->on_camera_acceleration += [&](bool value)
     {
         received_value = value;
     };
 
-    TestImgui imgui([&]() { window.render(); });
+    TestImgui imgui([&]() { window->render(); });
     imgui.click_element(imgui.id("Settings").push("TabBar").id("Camera"));
     imgui.render();
     ASSERT_FALSE(imgui.status_flags(imgui.id("Settings").push("TabBar").push("Camera").id(SettingsWindow::Names::acceleration )) & ImGuiItemStatusFlags_Checked);
@@ -411,22 +446,22 @@ TEST(SettingsWindow, ClickingAccelerationRaisesEvent)
 
 TEST(SettingsWindow, SetAccelerationRateUpdatesSlider)
 {
-    SettingsWindow window;
-    window.toggle_visibility();
+    auto window = register_test_module().build();
+    window->toggle_visibility();
 
-    TestImgui imgui([&]() { window.render(); });
+    TestImgui imgui([&]() { window->render(); });
     imgui.click_element(imgui.id("Settings").push("TabBar").id("Camera"));
     imgui.render();
 
     ASSERT_EQ(imgui.item_text(imgui.id("Settings").push("TabBar").push("Camera").id(SettingsWindow::Names::acceleration_rate)), "1.000");
 
     std::optional<bool> received_value;
-    auto token = window.on_camera_acceleration_rate += [&](bool value)
+    auto token = window->on_camera_acceleration_rate += [&](bool value)
     {
         received_value = value;
     };
 
-    window.set_camera_acceleration_rate(0.5f);
+    window->set_camera_acceleration_rate(0.5f);
     imgui.render();
     ASSERT_EQ(imgui.item_text(imgui.id("Settings").push("TabBar").push("Camera").id(SettingsWindow::Names::acceleration_rate)), "0.500");
     ASSERT_FALSE(received_value.has_value());
@@ -435,10 +470,10 @@ TEST(SettingsWindow, SetAccelerationRateUpdatesSlider)
 
 TEST(SettingsWindow, ClickingAccelerationRateRaisesEvent)
 {
-    SettingsWindow window;
-    window.toggle_visibility();
+    auto window = register_test_module().build();
+    window->toggle_visibility();
 
-    TestImgui imgui([&]() { window.render(); });
+    TestImgui imgui([&]() { window->render(); });
     imgui.click_element(imgui.id("Settings").push("TabBar").id("Camera"));
     imgui.render();
 
@@ -447,7 +482,7 @@ TEST(SettingsWindow, ClickingAccelerationRateRaisesEvent)
     ASSERT_EQ(imgui.item_text(acceleration_rate_id), "1.000");
 
     std::optional<float> received_value;
-    auto token = window.on_camera_acceleration_rate += [&](float value)
+    auto token = window->on_camera_acceleration_rate += [&](float value)
     {
         received_value = value;
     };
@@ -461,31 +496,31 @@ TEST(SettingsWindow, ClickingAccelerationRateRaisesEvent)
 
 TEST(SettingsWindow, ClickingCameraDegreesRaisesEvent)
 {
-    SettingsWindow window;
-    window.toggle_visibility();
+    auto window = register_test_module().build();
+    window->toggle_visibility();
 
-    TestImgui imgui([&]() { window.render(); });
+    TestImgui imgui([&]() { window->render(); });
     imgui.click_element(imgui.id("Settings").push("TabBar").id("Camera"));
     imgui.render();
     ASSERT_FALSE(imgui.status_flags(imgui.id("Settings").push("TabBar").push("Camera").id(SettingsWindow::Names::camera_display_degrees )) & ImGuiItemStatusFlags_Checked);
 
-    window.set_camera_display_degrees(true);
+    window->set_camera_display_degrees(true);
     imgui.render();
     ASSERT_TRUE(imgui.status_flags(imgui.id("Settings").push("TabBar").push("Camera").id(SettingsWindow::Names::camera_display_degrees )) & ImGuiItemStatusFlags_Checked);
 }
 
 TEST(SettingsWindow, SetCameraDegreesUpdatesCheckbox)
 {
-    SettingsWindow window;
-    window.toggle_visibility();
+    auto window = register_test_module().build();
+    window->toggle_visibility();
 
     std::optional<bool> received_value;
-    auto token = window.on_camera_display_degrees += [&](bool value)
+    auto token = window->on_camera_display_degrees += [&](bool value)
     {
         received_value = value;
     };
 
-    TestImgui imgui([&]() { window.render(); });
+    TestImgui imgui([&]() { window->render(); });
     imgui.click_element(imgui.id("Settings").push("TabBar").id("Camera"));
     imgui.render();
     ASSERT_FALSE(imgui.status_flags(imgui.id("Settings").push("TabBar").push("Camera").id(SettingsWindow::Names::camera_display_degrees )) & ImGuiItemStatusFlags_Checked);
@@ -498,29 +533,29 @@ TEST(SettingsWindow, SetCameraDegreesUpdatesCheckbox)
 
 TEST(SettingsWindow, ClickingRandomizerToolsRaisesEvent)
 {
-    SettingsWindow window;
-    window.toggle_visibility();
+    auto window = register_test_module().build();
+    window->toggle_visibility();
 
-    TestImgui imgui([&]() { window.render(); });
+    TestImgui imgui([&]() { window->render(); });
     ASSERT_FALSE(imgui.status_flags(imgui.id("Settings").push("TabBar").push("General").id(SettingsWindow::Names::randomizer_tools )) & ImGuiItemStatusFlags_Checked);
 
-    window.set_randomizer_tools(true);
+    window->set_randomizer_tools(true);
     imgui.render();
     ASSERT_TRUE(imgui.status_flags(imgui.id("Settings").push("TabBar").push("General").id(SettingsWindow::Names::randomizer_tools )) & ImGuiItemStatusFlags_Checked);
 }
 
 TEST(SettingsWindow, SetRandomizerToolsUpdatesCheckbox)
 {
-    SettingsWindow window;
-    window.toggle_visibility();
+    auto window = register_test_module().build();
+    window->toggle_visibility();
 
     std::optional<bool> received_value;
-    auto token = window.on_randomizer_tools += [&](bool value)
+    auto token = window->on_randomizer_tools += [&](bool value)
     {
         received_value = value;
     };
 
-    TestImgui imgui([&]() { window.render(); });
+    TestImgui imgui([&]() { window->render(); });
     ASSERT_FALSE(imgui.status_flags(imgui.id("Settings").push("TabBar").push("General").id(SettingsWindow::Names::randomizer_tools )) & ImGuiItemStatusFlags_Checked);
     imgui.click_element(imgui.id("Settings").push("TabBar").push("General").id(SettingsWindow::Names::randomizer_tools ));
     ASSERT_TRUE(imgui.status_flags(imgui.id("Settings").push("TabBar").push("General").id(SettingsWindow::Names::randomizer_tools )) & ImGuiItemStatusFlags_Checked);
@@ -530,16 +565,16 @@ TEST(SettingsWindow, SetRandomizerToolsUpdatesCheckbox)
 
 TEST(SettingsWindow, ChangingMaxRecentFilesRaisesEvent)
 {
-    SettingsWindow window;
-    window.toggle_visibility();
+    auto window = register_test_module().build();
+    window->toggle_visibility();
 
     std::optional<uint32_t> received_value;
-    auto token = window.on_max_recent_files += [&](uint32_t value)
+    auto token = window->on_max_recent_files += [&](uint32_t value)
     {
         received_value = value;
     };
 
-    tests::TestImgui imgui([&]() { window.render(); });
+    tests::TestImgui imgui([&]() { window->render(); });
     imgui.click_element(imgui.id("Settings").push("TabBar").push("General").push(SettingsWindow::Names::max_recent_files).id("+"));
 
     ASSERT_TRUE(received_value.has_value());
@@ -548,23 +583,23 @@ TEST(SettingsWindow, ChangingMaxRecentFilesRaisesEvent)
 
 TEST(SettingsWindow, SetMaxRecentFilesUpdatesNumericUpDown)
 {
-    SettingsWindow window;
-    window.toggle_visibility();
+    auto window = register_test_module().build();
+    window->toggle_visibility();
 
-    tests::TestImgui imgui([&]() { window.render(); });
+    tests::TestImgui imgui([&]() { window->render(); });
     ASSERT_EQ(imgui.item_text(imgui.id("Settings").push("TabBar").push("General").id(SettingsWindow::Names::max_recent_files )), "10");
 
-    window.set_max_recent_files(5);
+    window->set_max_recent_files(5);
     imgui.render();
     ASSERT_EQ(imgui.item_text(imgui.id("Settings").push("TabBar").push("General").id(SettingsWindow::Names::max_recent_files )), "5");
 }
 
 TEST(SettingsWindow, SetMapColoursUpdatesColours)
 {
-    SettingsWindow window;
-    window.toggle_visibility();
+    auto window = register_test_module().build();
+    window->toggle_visibility();
 
-    tests::TestImgui imgui([&]() { window.render(); });
+    tests::TestImgui imgui([&]() { window->render(); });
     imgui.click_element(imgui.id("Settings").push("TabBar").id("Minimap"));
     imgui.render();
 
@@ -575,7 +610,7 @@ TEST(SettingsWindow, SetMapColoursUpdatesColours)
 
     MapColours colours;
     colours.set_colour(MapColours::Special::Default, Colour(0.25f, 0.5f, 0.75f, 1.0f));
-    window.set_map_colours(colours);
+    window->set_map_colours(colours);
     imgui.render();
 
     ASSERT_THAT(imgui.item_text(imgui.id("Settings").push("TabBar").push("Minimap").push("Default").id("##X")), HasSubstr("128"));
@@ -586,20 +621,20 @@ TEST(SettingsWindow, SetMapColoursUpdatesColours)
 
 TEST(SettingsWindow, OnMinimapColoursRaisedOnResetSpecial)
 {
-    SettingsWindow window;
-    window.toggle_visibility();
+    auto window = register_test_module().build();
+    window->toggle_visibility();
 
     MapColours colours;
     colours.set_colour(MapColours::Special::Default, Colour::Red);
-    window.set_map_colours(colours);
+    window->set_map_colours(colours);
 
     std::optional<MapColours> map_colours;
-    auto token = window.on_minimap_colours += [&](const auto& colours)
+    auto token = window->on_minimap_colours += [&](const auto& colours)
     {
         map_colours = colours;
     };
 
-    tests::TestImgui imgui([&]() { window.render(); });
+    tests::TestImgui imgui([&]() { window->render(); });
     imgui.click_element(imgui.id("Settings").push("TabBar").id("Minimap"));
     imgui.render();
 
@@ -611,20 +646,20 @@ TEST(SettingsWindow, OnMinimapColoursRaisedOnResetSpecial)
 
 TEST(SettingsWindow, OnMinimapColoursRaisedOnResetNormal)
 {
-    SettingsWindow window;
-    window.toggle_visibility();
+    auto window = register_test_module().build();
+    window->toggle_visibility();
 
     MapColours colours;
     colours.set_colour(SectorFlag::Death, Colour::Blue);
-    window.set_map_colours(colours);
+    window->set_map_colours(colours);
 
     std::optional<MapColours> map_colours;
-    auto token = window.on_minimap_colours += [&](const auto& colours)
+    auto token = window->on_minimap_colours += [&](const auto& colours)
     {
         map_colours = colours;
     };
 
-    tests::TestImgui imgui([&]() { window.render(); });
+    tests::TestImgui imgui([&]() { window->render(); });
     imgui.click_element(imgui.id("Settings").push("TabBar").id("Minimap"));
     imgui.render();
 
@@ -636,12 +671,12 @@ TEST(SettingsWindow, OnMinimapColoursRaisedOnResetNormal)
 
 TEST(SettingsWindow, SetDefaultRouteColourUpdatesColours)
 {
-    SettingsWindow window;
-    window.toggle_visibility();
+    auto window = register_test_module().build();
+    window->toggle_visibility();
 
-    window.set_default_route_colour(Colour(0.5f, 0.75f, 1.0f));
+    window->set_default_route_colour(Colour(0.5f, 0.75f, 1.0f));
 
-    tests::TestImgui imgui([&]() { window.render(); });
+    tests::TestImgui imgui([&]() { window->render(); });
     imgui.click_element(imgui.id("Settings").push("TabBar").id("Route"));
     imgui.render();
 
@@ -652,12 +687,12 @@ TEST(SettingsWindow, SetDefaultRouteColourUpdatesColours)
 
 TEST(SettingsWindow, SetDefaultWaypointColourUpdatesColours)
 {
-    SettingsWindow window;
-    window.toggle_visibility();
+    auto window = register_test_module().build();
+    window->toggle_visibility();
 
-    window.set_default_waypoint_colour(Colour(0.5f, 0.75f, 1.0f));
+    window->set_default_waypoint_colour(Colour(0.5f, 0.75f, 1.0f));
 
-    tests::TestImgui imgui([&]() { window.render(); });
+    tests::TestImgui imgui([&]() { window->render(); });
     imgui.click_element(imgui.id("Settings").push("TabBar").id("Route"));
     imgui.render();
 
@@ -668,29 +703,29 @@ TEST(SettingsWindow, SetDefaultWaypointColourUpdatesColours)
 
 TEST(SettingsWindow, SetRouteWindowOnStartupUpdatesCheckbox)
 {
-    SettingsWindow window;
-    window.toggle_visibility();
+    auto window = register_test_module().build();
+    window->toggle_visibility();
 
-    TestImgui imgui([&]() { window.render(); });
+    TestImgui imgui([&]() { window->render(); });
     ASSERT_FALSE(imgui.status_flags(imgui.id("Settings").push("TabBar").push("General").id(SettingsWindow::Names::route_startup)) & ImGuiItemStatusFlags_Checked);
 
-    window.set_route_startup(true);
+    window->set_route_startup(true);
     imgui.render();
     ASSERT_TRUE(imgui.status_flags(imgui.id("Settings").push("TabBar").push("General").id(SettingsWindow::Names::route_startup)) & ImGuiItemStatusFlags_Checked);
 }
 
 TEST(SettingsWindow, ClickingRouteWindowOnStartupRaisesEvent)
 {
-    SettingsWindow window;
-    window.toggle_visibility();
+    auto window = register_test_module().build();
+    window->toggle_visibility();
 
     std::optional<bool> received_value;
-    auto token = window.on_route_startup += [&](bool value)
+    auto token = window->on_route_startup += [&](bool value)
     {
         received_value = value;
     };
 
-    TestImgui imgui([&]() { window.render(); });
+    TestImgui imgui([&]() { window->render(); });
     ASSERT_FALSE(imgui.status_flags(imgui.id("Settings").push("TabBar").push("General").id(SettingsWindow::Names::route_startup)) & ImGuiItemStatusFlags_Checked);
     imgui.click_element(imgui.id("Settings").push("TabBar").push("General").id(SettingsWindow::Names::route_startup));
     ASSERT_TRUE(imgui.status_flags(imgui.id("Settings").push("TabBar").push("General").id(SettingsWindow::Names::route_startup)) & ImGuiItemStatusFlags_Checked);
@@ -700,22 +735,22 @@ TEST(SettingsWindow, ClickingRouteWindowOnStartupRaisesEvent)
 
 TEST(SettingsWindow, SetFovUpdatesSlider)
 {
-    SettingsWindow window;
-    window.toggle_visibility();
+    auto window = register_test_module().build();
+    window->toggle_visibility();
 
-    TestImgui imgui([&]() { window.render(); });
+    TestImgui imgui([&]() { window->render(); });
     imgui.click_element(imgui.id("Settings").push("TabBar").id("Camera"));
     imgui.render();
 
     ASSERT_EQ(imgui.item_text(imgui.id("Settings").push("TabBar").push("Camera").id(SettingsWindow::Names::fov)), "45.000");
 
     std::optional<float> received_value;
-    auto token = window.on_camera_fov += [&](float value)
+    auto token = window->on_camera_fov += [&](float value)
     {
         received_value = value;
     };
 
-    window.set_fov(0.5f);
+    window->set_fov(0.5f);
     imgui.render();
     ASSERT_EQ(imgui.item_text(imgui.id("Settings").push("TabBar").push("Camera").id(SettingsWindow::Names::fov)), "0.500");
     ASSERT_FALSE(received_value.has_value());
@@ -724,10 +759,10 @@ TEST(SettingsWindow, SetFovUpdatesSlider)
 
 TEST(SettingsWindow, ClickingFovRaisesEvent)
 {
-    SettingsWindow window;
-    window.toggle_visibility();
+    auto window = register_test_module().build();
+    window->toggle_visibility();
 
-    TestImgui imgui([&]() { window.render(); });
+    TestImgui imgui([&]() { window->render(); });
     imgui.click_element(imgui.id("Settings").push("TabBar").id("Camera"));
     imgui.render();
 
@@ -736,7 +771,7 @@ TEST(SettingsWindow, ClickingFovRaisesEvent)
     ASSERT_EQ(imgui.item_text(fov_id), "45.000");
 
     std::optional<float> received_value;
-    auto token = window.on_camera_fov += [&](float value)
+    auto token = window->on_camera_fov += [&](float value)
     {
         received_value = value;
     };
@@ -750,11 +785,11 @@ TEST(SettingsWindow, ClickingFovRaisesEvent)
 
 TEST(SettingsWindow, ClickingResetFovRaisesEvent)
 {
-    SettingsWindow window;
-    window.toggle_visibility();
-    window.set_fov(10.0f);
+    auto window = register_test_module().build();
+    window->toggle_visibility();
+    window->set_fov(10.0f);
 
-    TestImgui imgui([&]() { window.render(); });
+    TestImgui imgui([&]() { window->render(); });
     imgui.click_element(imgui.id("Settings").push("TabBar").id("Camera"));
     imgui.render();
 
@@ -763,7 +798,7 @@ TEST(SettingsWindow, ClickingResetFovRaisesEvent)
     ASSERT_EQ(imgui.item_text(fov_id), "10.000");
 
     std::optional<float> received_value;
-    auto token = window.on_camera_fov += [&](float value)
+    auto token = window->on_camera_fov += [&](float value)
     {
         received_value = value;
     };
@@ -777,32 +812,91 @@ TEST(SettingsWindow, ClickingResetFovRaisesEvent)
 
 TEST(SettingsWindow, SetCameraSinkWindowOnStartupUpdatesCheckbox)
 {
-    SettingsWindow window;
-    window.toggle_visibility();
+    auto window = register_test_module().build();
+    window->toggle_visibility();
 
-    TestImgui imgui([&]() { window.render(); });
+    TestImgui imgui([&]() { window->render(); });
     ASSERT_FALSE(imgui.status_flags(imgui.id("Settings").push("TabBar").push("General").id(SettingsWindow::Names::camera_sink_startup)) & ImGuiItemStatusFlags_Checked);
 
-    window.set_camera_sink_startup(true);
+    window->set_camera_sink_startup(true);
     imgui.render();
     ASSERT_TRUE(imgui.status_flags(imgui.id("Settings").push("TabBar").push("General").id(SettingsWindow::Names::camera_sink_startup)) & ImGuiItemStatusFlags_Checked);
 }
 
 TEST(SettingsWindow, ClickingCameraSinkWindowOnStartupRaisesEvent)
 {
-    SettingsWindow window;
-    window.toggle_visibility();
+    auto window = register_test_module().build();
+    window->toggle_visibility();
 
     std::optional<bool> received_value;
-    auto token = window.on_camera_sink_startup += [&](bool value)
+    auto token = window->on_camera_sink_startup += [&](bool value)
     {
         received_value = value;
     };
 
-    TestImgui imgui([&]() { window.render(); });
+    TestImgui imgui([&]() { window->render(); });
     ASSERT_FALSE(imgui.status_flags(imgui.id("Settings").push("TabBar").push("General").id(SettingsWindow::Names::camera_sink_startup)) & ImGuiItemStatusFlags_Checked);
     imgui.click_element(imgui.id("Settings").push("TabBar").push("General").id(SettingsWindow::Names::camera_sink_startup));
     ASSERT_TRUE(imgui.status_flags(imgui.id("Settings").push("TabBar").push("General").id(SettingsWindow::Names::camera_sink_startup)) & ImGuiItemStatusFlags_Checked);
     ASSERT_EQ(received_value.has_value(), true);
     ASSERT_TRUE(received_value.value());
+}
+
+TEST(SettingsWindow, OpenPluginDirectories)
+{
+    auto shell = mock_shared<MockShell>();
+    EXPECT_CALL(*shell, open(std::wstring(L"path"))).Times(1);
+
+    auto window = register_test_module().with_shell(shell).build();
+    window->toggle_visibility();
+    window->set_plugin_directories({ "path" });
+
+    TestImgui imgui([&]() { window->render(); });
+    imgui.click_element(imgui.id("Settings").push("TabBar").id("Plugins"));
+    imgui.click_element(imgui.id("Settings").push("TabBar").push("Plugins").push("Directories").id("Open##0"));
+}
+
+TEST(SettingsWindow, DeletePluginDirectories)
+{
+    auto window = register_test_module().build();
+    std::optional<std::vector<std::string>> raised;
+    auto token = window->on_plugin_directories += [&](const auto& value)
+    {
+        raised = value;
+    };
+
+    window->toggle_visibility();
+    window->set_plugin_directories({ "path" });
+
+    TestImgui imgui([&]() { window->render(); });
+    imgui.click_element(imgui.id("Settings").push("TabBar").id("Plugins"));
+    imgui.click_element(imgui.id("Settings").push("TabBar").push("Plugins").push("Directories").id("Delete##0"));
+
+    const std::vector<std::string> expected;
+    ASSERT_TRUE(raised);
+    ASSERT_EQ(raised.value(), expected);
+}
+
+TEST(SettingsWindow, AddPluginDirectories)
+{
+    auto dialogs = mock_shared<MockDialogs>();
+    ON_CALL(*dialogs, open_folder).WillByDefault(Return("test"));
+
+    auto window = register_test_module().with_dialogs(dialogs).build();
+
+    std::optional<std::vector<std::string>> raised;
+    auto token = window->on_plugin_directories += [&](const auto& value)
+    {
+        raised = value;
+    };
+
+    window->toggle_visibility();
+
+    TestImgui imgui([&]() { window->render(); });
+    imgui.click_element(imgui.id("Settings").push("TabBar").id("Plugins"));
+    imgui.click_element(imgui.id("Settings").push("TabBar").push("Plugins").push("Directories").id("Add"));
+
+    const std::vector<std::string> expected{ "test" };
+    ASSERT_TRUE(raised);
+    ASSERT_EQ(raised.value(), expected);
 }

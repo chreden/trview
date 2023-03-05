@@ -22,8 +22,6 @@ namespace trview
 
     bool PluginsWindow::render_plugins_window()
     {
-        ImGui::ShowStackToolWindow();
-
         bool stay_open = true;
         if (ImGui::Begin(_id.c_str(), &stay_open))
         {

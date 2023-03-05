@@ -116,6 +116,7 @@ namespace trview
         forward_setting(_settings_window->on_route_startup, _settings.route_startup);
         forward_setting(_settings_window->on_camera_fov, _settings.fov);
         forward_setting(_settings_window->on_camera_sink_startup, _settings.camera_sink_startup);
+        forward_setting(_settings_window->on_plugin_directories, _settings.plugin_directories);
 
         _camera_position = std::make_unique<CameraPosition>();
         _camera_position->on_position_changed += on_camera_position;
@@ -334,6 +335,7 @@ namespace trview
         _settings_window->set_route_startup(settings.route_startup);
         _settings_window->set_fov(settings.fov);
         _settings_window->set_camera_sink_startup(settings.camera_sink_startup);
+        _settings_window->set_plugin_directories(settings.plugin_directories);
         _camera_position->set_display_degrees(settings.camera_display_degrees);
         _map_renderer->set_colours(settings.map_colours);
     }
