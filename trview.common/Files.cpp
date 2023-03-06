@@ -60,25 +60,32 @@ namespace trview
 
     std::optional<std::vector<uint8_t>> Files::load_file(const std::wstring& filename) const
     {
-        std::ifstream infile;
-        infile.open(filename, std::ios::in | std::ios::binary | std::ios::ate);
-        infile.exceptions(std::ifstream::failbit | std::ifstream::badbit | std::ifstream::eofbit);
-
-        if (!infile.is_open())
+        try
         {
-            return {};
-        }
+            std::ifstream infile;
+            infile.open(filename, std::ios::in | std::ios::binary | std::ios::ate);
+            infile.exceptions(std::ifstream::failbit | std::ifstream::badbit | std::ifstream::eofbit);
 
-        const auto length = infile.tellg();
-        if (!length)
+            if (!infile.is_open())
+            {
+                return std::nullopt;
+            }
+
+            const auto length = infile.tellg();
+            if (!length)
+            {
+                return { {} };
+            }
+
+            infile.seekg(0, std::ios::beg);
+            std::vector<uint8_t> bytes(static_cast<uint32_t>(length));
+            infile.read(reinterpret_cast<char*>(&bytes[0]), length);
+            return bytes;
+        }
+        catch(...)
         {
-            return { {} };
+            return std::nullopt;
         }
-
-        infile.seekg(0, std::ios::beg);
-        std::vector<uint8_t> bytes(static_cast<uint32_t>(length));
-        infile.read(reinterpret_cast<char*>(&bytes[0]), length);
-        return bytes;
     }
 
     void Files::save_file(const std::string& filename, const std::vector<uint8_t>& bytes) const
