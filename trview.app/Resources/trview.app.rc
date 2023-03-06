@@ -74,6 +74,7 @@ BEGIN
         MENUITEM "Log"                          ID_WINDOWS_LOG
         MENUITEM "Textures"                     ID_WINDOWS_TEXTURES
         MENUITEM "Console\tF11"                 ID_WINDOWS_CONSOLE
+        MENUITEM "Plugins\tCtrl+P"              ID_WINDOWS_PLUGINS
         MENUITEM SEPARATOR
         MENUITEM "Reset Layout"                 ID_WINDOWS_RESET_LAYOUT
     END

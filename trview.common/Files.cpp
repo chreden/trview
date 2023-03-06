@@ -60,25 +60,32 @@ namespace trview
 
     std::optional<std::vector<uint8_t>> Files::load_file(const std::wstring& filename) const
     {
-        std::ifstream infile;
-        infile.open(filename, std::ios::in | std::ios::binary | std::ios::ate);
-        infile.exceptions(std::ifstream::failbit | std::ifstream::badbit | std::ifstream::eofbit);
-
-        if (!infile.is_open())
+        try
         {
-            return {};
-        }
+            std::ifstream infile;
+            infile.open(filename, std::ios::in | std::ios::binary | std::ios::ate);
+            infile.exceptions(std::ifstream::failbit | std::ifstream::badbit | std::ifstream::eofbit);
 
-        const auto length = infile.tellg();
-        if (!length)
+            if (!infile.is_open())
+            {
+                return std::nullopt;
+            }
+
+            const auto length = infile.tellg();
+            if (!length)
+            {
+                return { {} };
+            }
+
+            infile.seekg(0, std::ios::beg);
+            std::vector<uint8_t> bytes(static_cast<uint32_t>(length));
+            infile.read(reinterpret_cast<char*>(&bytes[0]), length);
+            return bytes;
+        }
+        catch(...)
         {
-            return { {} };
+            return std::nullopt;
         }
-
-        infile.seekg(0, std::ios::beg);
-        std::vector<uint8_t> bytes(static_cast<uint32_t>(length));
-        infile.read(reinterpret_cast<char*>(&bytes[0]), length);
-        return bytes;
     }
 
     void Files::save_file(const std::string& filename, const std::vector<uint8_t>& bytes) const
@@ -107,6 +114,32 @@ namespace trview
         } while (index);
 
         return get_files(to_utf16(folder), patterns);
+    }
+
+    std::vector<IFiles::Directory> Files::get_directories(const std::string& folder) const
+    {
+        std::vector<Directory> data;
+        
+        std::wstring folder_w = to_utf16(folder);
+
+        WIN32_FIND_DATA fd;
+        HANDLE find = FindFirstFile((folder_w + L"\\*").c_str(), &fd);
+
+        if (find != INVALID_HANDLE_VALUE)
+        {
+            do
+            {
+                if ((fd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) &&
+                    std::wstring(fd.cFileName) != L"." &&
+                    std::wstring(fd.cFileName) != L"..")
+                {
+                    Directory directory{ to_utf8(folder_w + L"\\" + fd.cFileName), to_utf8(fd.cFileName) };
+                    data.push_back(directory);
+                }
+            } while (FindNextFile(find, &fd) != 0);
+        }
+
+        return data;
     }
 
     std::vector<IFiles::File> Files::get_files(const std::wstring& folder, const std::vector<std::wstring>& patterns) const

@@ -293,6 +293,18 @@
     <ClCompile Include="Lua\Colour.cpp">
       <Filter>Lua</Filter>
     </ClCompile>
+    <ClCompile Include="Plugins\Plugins.cpp">
+      <Filter>Plugins</Filter>
+    </ClCompile>
+    <ClCompile Include="Plugins\Plugin.cpp">
+      <Filter>Plugins</Filter>
+    </ClCompile>
+    <ClCompile Include="Windows\Plugins\PluginsWindow.cpp">
+      <Filter>Windows\Plugins</Filter>
+    </ClCompile>
+    <ClCompile Include="Windows\Plugins\PluginsWindowManager.cpp">
+      <Filter>Windows\Plugins</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera\Camera.h">
@@ -943,6 +955,42 @@
     <ClInclude Include="Elements\ISector.hpp">
       <Filter>Elements\Sector</Filter>
     </ClInclude>
+    <ClInclude Include="Plugins\IPlugins.h">
+      <Filter>Plugins</Filter>
+    </ClInclude>
+    <ClInclude Include="Plugins\Plugins.h">
+      <Filter>Plugins</Filter>
+    </ClInclude>
+    <ClInclude Include="Mocks\Plugins\IPlugins.h">
+      <Filter>Mocks\Plugins</Filter>
+    </ClInclude>
+    <ClInclude Include="Plugins\IPlugin.h">
+      <Filter>Plugins</Filter>
+    </ClInclude>
+    <ClInclude Include="Plugins\Plugin.h">
+      <Filter>Plugins</Filter>
+    </ClInclude>
+    <ClInclude Include="Mocks\Plugins\IPlugin.h">
+      <Filter>Mocks\Plugins</Filter>
+    </ClInclude>
+    <ClInclude Include="Windows\Plugins\IPluginsWindow.h">
+      <Filter>Windows\Plugins</Filter>
+    </ClInclude>
+    <ClInclude Include="Windows\Plugins\IPluginsWindowManager.h">
+      <Filter>Windows\Plugins</Filter>
+    </ClInclude>
+    <ClInclude Include="Windows\Plugins\PluginsWindowManager.h">
+      <Filter>Windows\Plugins</Filter>
+    </ClInclude>
+    <ClInclude Include="Windows\Plugins\PluginsWindow.h">
+      <Filter>Windows\Plugins</Filter>
+    </ClInclude>
+    <ClInclude Include="Mocks\Windows\IPluginsWindow.h">
+      <Filter>Mocks\Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="Mocks\Windows\IPluginsWindowManager.h">
+      <Filter>Mocks\Windows</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Windows">
@@ -1112,6 +1160,15 @@
     </Filter>
     <Filter Include="Mocks\Lua">
       <UniqueIdentifier>{b429775f-3bb8-497e-9dd5-d695d6fc7db5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Plugins">
+      <UniqueIdentifier>{f95b89aa-bd86-4c72-abba-f28bbaeff895}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Mocks\Plugins">
+      <UniqueIdentifier>{cee4bb35-cf7f-4ea4-9731-8987d2592ada}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Windows\Plugins">
+      <UniqueIdentifier>{d29ff2e9-21f4-4cb4-bb21-ad9f933bde3f}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

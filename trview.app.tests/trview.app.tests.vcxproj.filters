@@ -200,6 +200,18 @@
     <ClCompile Include="Lua\Lua_trviewTests.cpp">
       <Filter>Lua</Filter>
     </ClCompile>
+    <ClCompile Include="Plugins\PluginTests.cpp">
+      <Filter>Plugins</Filter>
+    </ClCompile>
+    <ClCompile Include="Plugins\PluginsTests.cpp">
+      <Filter>Plugins</Filter>
+    </ClCompile>
+    <ClCompile Include="PluginsWindowManagerTests.cpp">
+      <Filter>Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="Windows\PluginsWindowTests.cpp">
+      <Filter>Windows</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Input">
@@ -240,6 +252,9 @@
     </Filter>
     <Filter Include="Lua\Elements">
       <UniqueIdentifier>{de0633ad-2e3e-49f3-89b7-807134869b6a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Plugins">
+      <UniqueIdentifier>{faba3579-8283-4b3a-824b-2cb84ad0234b}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

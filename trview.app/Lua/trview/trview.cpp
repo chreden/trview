@@ -4,6 +4,7 @@
 #include <trlevel/LevelEncryptedException.h>
 #include "../../UserCancelledException.h"
 #include "../Elements/Sector/Lua_Sector.h"
+#include "Lua/Lua.h"
 
 namespace trview
 {

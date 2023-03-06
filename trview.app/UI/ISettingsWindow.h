@@ -78,6 +78,7 @@ namespace trview
         Event<bool> on_route_startup;
         Event<float> on_camera_fov;
         Event<bool> on_camera_sink_startup;
+        Event<std::vector<std::string>> on_plugin_directories;
 
         virtual void render() = 0;
         /// <summary>
@@ -175,6 +176,7 @@ namespace trview
         virtual void set_route_startup(bool value) = 0;
         virtual void set_fov(float value) = 0;
         virtual void set_camera_sink_startup(bool value) = 0;
+        virtual void set_plugin_directories(const std::vector<std::string>& directories) = 0;
         /// <summary>
         /// Toggle the visibility of the settings window.
         /// </summary>

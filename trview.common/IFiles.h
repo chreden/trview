@@ -16,6 +16,12 @@ namespace trview
             uint32_t size;
         };
 
+        struct Directory
+        {
+            std::string path;
+            std::string friendly_name;
+        };
+
         virtual ~IFiles() = 0;
         virtual std::string appdata_directory() const = 0;
         virtual std::string fonts_directory() const = 0;
@@ -26,5 +32,6 @@ namespace trview
         virtual void save_file(const std::string& filename, const std::vector<uint8_t>& bytes) const = 0;
         virtual void save_file(const std::string& filename, const std::string& text) const = 0;
         virtual std::vector<File> get_files(const std::string& folder, const std::string& pattern) const = 0;
+        virtual std::vector<Directory> get_directories(const std::string& folder) const = 0;
     };
 }

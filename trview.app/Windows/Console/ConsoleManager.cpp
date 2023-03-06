@@ -21,7 +21,6 @@ namespace trview
     std::weak_ptr<IConsole> ConsoleManager::create_window()
     {
         auto window = _console_source();
-        window->on_command += on_command;
         window->set_font(_font);
         return add_window(window);
     }
@@ -46,14 +45,6 @@ namespace trview
         for (auto& window : _windows)
         {
             window.second->set_font(_font);
-        }
-    }
-
-    void ConsoleManager::print(const std::string& text)
-    {
-        for (auto& window : _windows)
-        {
-            window.second->print(text);
         }
     }
 }

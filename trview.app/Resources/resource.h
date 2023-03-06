@@ -46,6 +46,7 @@
 #define ID_WINDOWS_TEXTURES             33022
 #define ID_WINDOWS_CAMERA_SINK          33023
 #define ID_WINDOWS_CONSOLE              33024
+#define ID_WINDOWS_PLUGINS              33025
 
 // Next default values for new objects
 // 

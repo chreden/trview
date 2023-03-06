@@ -12,9 +12,7 @@ namespace trview
         virtual void render() = 0;
         virtual void set_number(int32_t number) = 0;
         virtual void set_font(ImFont* font) = 0;
-        virtual void print(const std::string& text) = 0;
 
         Event<> on_window_closed;
-        Event<std::string> on_command;
     };
 }

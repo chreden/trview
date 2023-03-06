@@ -5,6 +5,9 @@
 
 #include "ISettingsWindow.h"
 
+#include <trview.common/Windows/IShell.h>
+#include <trview.common/Windows/IDialogs.h>
+
 namespace trview
 {
     /// UI window for program level settings.
@@ -37,6 +40,7 @@ namespace trview
             static inline const std::string reset_fov = "Reset##Fov";
         };
 
+        explicit SettingsWindow(const std::shared_ptr<IDialogs>& dialogs, const std::shared_ptr<IShell>& shell);
         virtual ~SettingsWindow() = default;
         virtual void render() override;
         virtual void set_vsync(bool value) override;
@@ -62,7 +66,10 @@ namespace trview
         virtual void set_route_startup(bool value) override;
         virtual void set_fov(float value) override;
         virtual void set_camera_sink_startup(bool value) override;
+        void set_plugin_directories(const std::vector<std::string>& directories) override;
     private:
+        std::shared_ptr<IDialogs> _dialogs;
+        std::shared_ptr<IShell> _shell;
         bool _visible{ false };
         bool _vsync{ false };
         bool _go_to_lara{ false };
@@ -86,5 +93,6 @@ namespace trview
         bool _route_startup{ false };
         float _fov{ 45 };
         bool _camera_sink_startup{ false };
+        std::vector<std::string> _plugin_directories;
     };
 }

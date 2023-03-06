@@ -16,6 +16,7 @@ namespace trview
     public:
         Lua();
         ~Lua();
+        void do_file(const std::string& file) override;
         void execute(const std::string& command) override;
         void initialise(IApplication* application) override;
     private:

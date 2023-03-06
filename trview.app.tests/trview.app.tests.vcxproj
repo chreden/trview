@@ -54,6 +54,9 @@
     <ClCompile Include="NullImGuiBackend.cpp" />
     <ClCompile Include="OrbitCameraTests.cpp" />
     <ClCompile Include="FileMenuTests.cpp" />
+    <ClCompile Include="PluginsWindowManagerTests.cpp" />
+    <ClCompile Include="Plugins\PluginsTests.cpp" />
+    <ClCompile Include="Plugins\PluginTests.cpp" />
     <ClCompile Include="RoomsWindowManagerTests.cpp" />
     <ClCompile Include="RoomsWindowTests.cpp" />
     <ClCompile Include="RouteWindowTests.cpp" />
@@ -93,6 +96,7 @@
     <ClCompile Include="Windows\LightsWindowTests.cpp" />
     <ClCompile Include="Windows\LogWindowManagerTests.cpp" />
     <ClCompile Include="Windows\LogWindowTests.cpp" />
+    <ClCompile Include="Windows\PluginsWindowTests.cpp" />
     <ClCompile Include="Windows\RouteWindowManagerTests.cpp" />
     <ClCompile Include="Windows\ViewerTests.cpp" />
   </ItemGroup>

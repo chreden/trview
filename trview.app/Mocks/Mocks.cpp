@@ -54,6 +54,10 @@
 #include "Windows/IConsole.h"
 #include "IApplication.h"
 #include "Lua/ILua.h"
+#include "Plugins/IPlugins.h"
+#include "Plugins/IPlugin.h"
+#include "Mocks/Windows/IPluginsWindow.h"
+#include "Mocks/Windows/IPluginsWindowManager.h"
 
 namespace trview
 {
@@ -217,5 +221,17 @@ namespace trview
 
         MockLua::MockLua() {}
         MockLua::~MockLua() {}
+
+        MockPlugins::MockPlugins() {}
+        MockPlugins::~MockPlugins() {}
+
+        MockPlugin::MockPlugin() {}
+        MockPlugin::~MockPlugin() {}
+
+        MockPluginsWindow::MockPluginsWindow() {}
+        MockPluginsWindow::~MockPluginsWindow() {}
+
+        MockPluginsWindowManager::MockPluginsWindowManager() {}
+        MockPluginsWindowManager::~MockPluginsWindowManager() {}
     }
 }

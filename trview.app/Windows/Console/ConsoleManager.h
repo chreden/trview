@@ -19,7 +19,6 @@ namespace trview
         std::weak_ptr<IConsole> create_window() override;
         std::optional<int> process_message(UINT message, WPARAM wParam, LPARAM lParam) override;
         void initialise_ui() override;
-        void print(const std::string& text) override;
     private:
         IConsole::Source _console_source;
         std::shared_ptr<IFiles> _files;

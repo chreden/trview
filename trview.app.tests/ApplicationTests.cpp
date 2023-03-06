@@ -30,6 +30,8 @@
 #include <ranges>
 #include <trview.app/Mocks/Windows/IConsoleManager.h>
 #include <trview.app/Mocks/Lua/ILua.h>
+#include <trview.app/Mocks/Plugins/IPlugins.h>
+#include <trview.app/Mocks/Windows/IPluginsWindowManager.h>
 
 using namespace trview;
 using namespace trview::tests;
@@ -80,7 +82,8 @@ namespace
             std::unique_ptr<ITexturesWindowManager> textures_window_manager{ mock_unique<MockTexturesWindowManager>() };
             std::unique_ptr<ICameraSinkWindowManager> camera_sink_window_manager{ mock_unique<MockCameraSinkWindowManager>() };
             std::unique_ptr<IConsoleManager> console_manager{ mock_unique<MockConsoleManager>() };
-            std::unique_ptr<ILua> lua{ mock_unique<MockLua>() };
+            std::shared_ptr<IPlugins> plugins{ mock_shared<MockPlugins>() };
+            std::unique_ptr<IPluginsWindowManager> plugins_window_manager{ mock_unique<MockPluginsWindowManager>() };
 
             std::unique_ptr<Application> build()
             {
@@ -90,7 +93,7 @@ namespace
                     std::move(items_window_manager), std::move(triggers_window_manager), std::move(route_window_manager), std::move(rooms_window_manager),
                     level_source, startup_options, dialogs, files, std::move(imgui_backend), std::move(lights_window_manager), std::move(log_window_manager),
                     std::move(textures_window_manager), std::move(camera_sink_window_manager), std::move(console_manager),
-                    std::move(lua));
+                    plugins, std::move(plugins_window_manager));
             }
 
             test_module& with_dialogs(std::shared_ptr<IDialogs> dialogs)
@@ -213,9 +216,15 @@ namespace
                 return *this;
             }
 
-            test_module& with_lua(std::unique_ptr<ILua> lua)
+            test_module& with_plugins(std::shared_ptr<IPlugins> plugins)
             {
-                this->lua = std::move(lua);
+                this->plugins = plugins;
+                return *this;
+            }
+
+            test_module& with_plugins_window_manager(std::unique_ptr<IPluginsWindowManager> plugins_window_manager)
+            {
+                this->plugins_window_manager = std::move(plugins_window_manager);
                 return *this;
             }
         };
@@ -532,6 +541,9 @@ TEST(Application, WindowManagersAndViewerRendered)
     auto [console_manager_ptr, console_manager] = create_mock<MockConsoleManager>();
     EXPECT_CALL(console_manager, render).Times(1);
     EXPECT_CALL(console_manager, initialise_ui).Times(1);
+    auto [plugins_window_manager_ptr, plugins_window_manager] = create_mock<MockPluginsWindowManager>();
+    EXPECT_CALL(plugins_window_manager, render).Times(1);
+
     auto [viewer_ptr, viewer] = create_mock<MockViewer>();
     EXPECT_CALL(viewer, render).Times(1);
     auto files = mock_shared<MockFiles>();
@@ -547,6 +559,7 @@ TEST(Application, WindowManagersAndViewerRendered)
         .with_textures_window_manager(std::move(textures_window_manager_ptr))
         .with_camera_sink_window_manager(std::move(camera_sink_window_manager_ptr))
         .with_console_manager(std::move(console_manager_ptr))
+        .with_plugins_window_manager(std::move(plugins_window_manager_ptr))
         .with_viewer(std::move(viewer_ptr))
         .with_files(files)
         .build();
@@ -1019,34 +1032,6 @@ TEST(Application, CameraSinkSelectedFromTriggersWindow)
     triggers_window_manager.on_camera_sink_selected(0);
 }
 
-TEST(Application, CommandExecutedFromConsoleWindow)
-{
-    auto [console_manager_ptr, console_manager] = create_mock<MockConsoleManager>();
-    auto [lua_ptr, lua] = create_mock<MockLua>();
-    EXPECT_CALL(lua, execute("x = 100")).Times(1);
-
-    auto application = register_test_module()
-        .with_console_manager(std::move(console_manager_ptr))
-        .with_lua(std::move(lua_ptr))
-        .build();
-
-    console_manager.on_command("x = 100");
-}
-
-TEST(Application, PrintRoutedToConsoleManager)
-{
-    auto [console_manager_ptr, console_manager] = create_mock<MockConsoleManager>();
-    auto [lua_ptr, lua] = create_mock<MockLua>();
-    EXPECT_CALL(console_manager, print(std::string("Hello"))).Times(1);
-
-    auto application = register_test_module()
-        .with_console_manager(std::move(console_manager_ptr))
-        .with_lua(std::move(lua_ptr))
-        .build();
-
-    lua.on_print("Hello");
-}
-
 TEST(Application, SetCurrentLevelPrompt)
 {
     auto level = mock_shared<trview::mocks::MockLevel>();
@@ -1081,3 +1066,12 @@ TEST(Application, SetCurrentLevelNoPrompt)
     application->set_current_level(level, ILevel::OpenMode::Full, false);
 }
 
+TEST(Application, PluginsInitialised)
+{
+    auto plugins = mock_shared<MockPlugins>();
+    EXPECT_CALL(*plugins, initialise).Times(1);
+
+    auto application = register_test_module()
+        .with_plugins(plugins)
+        .build();
+}
