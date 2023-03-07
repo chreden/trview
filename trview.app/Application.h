@@ -38,6 +38,7 @@ namespace trview
         virtual int run() = 0;
         virtual std::weak_ptr<ILevel> current_level() const = 0;
         virtual std::shared_ptr<ILevel> load(const std::string& filename) = 0;
+        virtual std::vector<std::string> local_levels() const = 0;
         virtual void set_current_level(const std::shared_ptr<ILevel>& level, ILevel::OpenMode open_mode, bool prompt_user) = 0;
         virtual UserSettings settings() const = 0;
         Event<> on_closing;
@@ -80,6 +81,7 @@ namespace trview
         void render();
         std::weak_ptr<ILevel> current_level() const override;
         std::shared_ptr<ILevel> load(const std::string& filename) override;
+        std::vector<std::string> local_levels() const override;
         void set_current_level(const std::shared_ptr<ILevel>& level, ILevel::OpenMode open_mode, bool prompt_user) override;
         UserSettings settings() const override;
     private:

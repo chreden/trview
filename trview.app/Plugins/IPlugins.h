@@ -11,5 +11,6 @@ namespace trview
         virtual ~IPlugins() = 0;
         virtual std::vector<std::weak_ptr<IPlugin>> plugins() const = 0;
         virtual void initialise(IApplication* application) = 0;
+        virtual void render_ui() = 0;
     };
 }

@@ -209,6 +209,9 @@
     <ProjectReference Include="..\trview.lau\trview.lau.vcxproj">
       <Project>{2ac76373-f9a6-426d-b732-80e6bd6bfab4}</Project>
     </ProjectReference>
+    <ProjectReference Include="..\trview.lua.imgui\trview.lua.imgui.vcxproj">
+      <Project>{cdbc4705-e8e2-4c5c-a1a6-ea66fe4b699b}</Project>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

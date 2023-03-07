@@ -118,6 +118,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "lua", "lua", "{D6B95B54-7EB
 		doc\lua\vector3.md = doc\lua\vector3.md
 	EndProjectSection
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "trview.lua.imgui", "trview.lua.imgui\trview.lua.imgui.vcxproj", "{CDBC4705-E8E2-4C5C-A1A6-EA66FE4B699B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -292,6 +294,14 @@ Global
 		{A11566D3-4081-42C9-94C5-F4057EDD9D50}.Release|x64.Build.0 = Release|x64
 		{A11566D3-4081-42C9-94C5-F4057EDD9D50}.Release|x86.ActiveCfg = Release|Win32
 		{A11566D3-4081-42C9-94C5-F4057EDD9D50}.Release|x86.Build.0 = Release|Win32
+		{CDBC4705-E8E2-4C5C-A1A6-EA66FE4B699B}.Debug|x64.ActiveCfg = Debug|x64
+		{CDBC4705-E8E2-4C5C-A1A6-EA66FE4B699B}.Debug|x64.Build.0 = Debug|x64
+		{CDBC4705-E8E2-4C5C-A1A6-EA66FE4B699B}.Debug|x86.ActiveCfg = Debug|Win32
+		{CDBC4705-E8E2-4C5C-A1A6-EA66FE4B699B}.Debug|x86.Build.0 = Debug|Win32
+		{CDBC4705-E8E2-4C5C-A1A6-EA66FE4B699B}.Release|x64.ActiveCfg = Release|x64
+		{CDBC4705-E8E2-4C5C-A1A6-EA66FE4B699B}.Release|x64.Build.0 = Release|x64
+		{CDBC4705-E8E2-4C5C-A1A6-EA66FE4B699B}.Release|x86.ActiveCfg = Release|Win32
+		{CDBC4705-E8E2-4C5C-A1A6-EA66FE4B699B}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

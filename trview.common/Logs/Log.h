@@ -2,6 +2,7 @@
 
 #include "ILog.h"
 #include "Message.h"
+#include <mutex>
 
 namespace trview
 {
@@ -18,5 +19,6 @@ namespace trview
         virtual void clear() override;
     private:
         std::vector<Message> _messages;
+        mutable std::mutex _mutex;
     };
 }

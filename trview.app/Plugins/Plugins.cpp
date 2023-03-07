@@ -37,4 +37,9 @@ namespace trview
             plugin->initialise(application);
         }
     }
+
+    void Plugins::render_ui()
+    {
+        std::ranges::for_each(_plugins, [](auto&& p) { p->render_ui(); });
+    }
 }

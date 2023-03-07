@@ -214,6 +214,7 @@ namespace trview
     {
         _selected_item = _entities[index];
         on_level_changed();
+        on_item_selected(_selected_item);
     }
 
     void Level::set_neighbour_depth(uint32_t depth)

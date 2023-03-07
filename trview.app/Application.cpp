@@ -691,6 +691,7 @@ namespace trview
         _camera_sink_windows->render();
         _console_manager->render();
         _plugins_windows->render();
+        _plugins->render_ui();
 
         ImGui::PopFont();
         ImGui::Render();
@@ -915,5 +916,10 @@ namespace trview
     UserSettings Application::settings() const
     {
         return _settings;
+    }
+
+    std::vector<std::string> Application::local_levels() const
+    {
+        return _file_menu->local_levels();
     }
 }

@@ -8,6 +8,7 @@ namespace trview
 {
     namespace lua
     {
-        void create_item(lua_State* L, const std::shared_ptr<IItem>& item);
+        int create_item(lua_State* L, const std::shared_ptr<IItem>& item);
+        std::shared_ptr<IItem> to_item(lua_State* L, int index);
     }
 }

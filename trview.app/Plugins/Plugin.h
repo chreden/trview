@@ -26,6 +26,7 @@ namespace trview
         void do_file(const std::string& path) override;
         void clear_messages() override;
         void reload() override;
+        void render_ui() override;
     private:
         void load();
         void load_script();

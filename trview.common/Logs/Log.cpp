@@ -17,6 +17,7 @@ namespace trview
     {
         SYSTEMTIME time;
         GetLocalTime(&time);
+        std::lock_guard lock{ _mutex };
         _messages.push_back({
             status,
             std::format("{:02d}-{:02d}-{} {:02d}:{:02d}:{:02d}", time.wDay, time.wMonth, time.wYear, time.wHour, time.wMinute, time.wSecond),
@@ -25,22 +26,27 @@ namespace trview
 
     std::vector<Message> Log::messages() const
     {
+        std::lock_guard lock{ _mutex };
         return _messages;
     }
 
     std::vector<Message> Log::messages(const std::string& topic, const std::string& activity) const 
     {
         std::vector<Message> messages;
-        std::copy_if(_messages.begin(), _messages.end(), std::back_inserter(messages),
-            [&](const auto& m) { return m.topic == topic &&
-                                        !m.activity.empty() &&
-                                        m.activity[0] == activity; });
+        {
+            std::lock_guard lock{ _mutex };
+            std::copy_if(_messages.begin(), _messages.end(), std::back_inserter(messages),
+                [&](const auto& m) { return m.topic == topic &&
+                !m.activity.empty() &&
+                m.activity[0] == activity; });
+        }
         return messages;
     }
 
     std::vector<std::string> Log::topics() const
     {
         std::set<std::string> all_topics;
+        std::lock_guard lock{ _mutex };
         for (const auto& message : _messages)
         {
             all_topics.insert(message.topic);
@@ -51,6 +57,7 @@ namespace trview
     std::vector<std::string> Log::activities(const std::string& topic) const
     {
         std::set<std::string> all_activities;
+        std::lock_guard lock{ _mutex };
         for (const auto& message : _messages)
         {
             if (message.topic == topic && !message.activity.empty())
@@ -63,6 +70,7 @@ namespace trview
 
     void Log::clear()
     {
+        std::lock_guard lock{ _mutex };
         _messages.clear();
     }
 }
