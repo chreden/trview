@@ -83,7 +83,7 @@ TEST(Plugin, DoFile)
 TEST(Plugin, Reload)
 {
     auto [lua_ptr, lua] = create_mock<MockLua>();
-    EXPECT_CALL(lua, do_file("test.lua")).Times(1);
+    EXPECT_CALL(lua, do_file("test\\plugin.lua")).Times(1);
 
     Plugin plugin(mock_shared<MockFiles>(), std::move(lua_ptr), "test");
     plugin.reload();
