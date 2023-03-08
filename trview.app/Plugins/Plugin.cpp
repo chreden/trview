@@ -90,23 +90,26 @@ namespace trview
 
     void Plugin::load()
     {
-        auto manifest = _files->load_file(_path + "\\manifest.json");
-        if (manifest)
+        if (_files)
         {
-            try
+            auto manifest = _files->load_file(_path + "\\manifest.json");
+            if (manifest)
             {
-                auto manifest_json = nlohmann::json::parse(manifest.value().begin(), manifest.value().end());
+                try
+                {
+                    auto manifest_json = nlohmann::json::parse(manifest.value().begin(), manifest.value().end());
 
-                read_attribute(manifest_json, _name, "name");
-                read_attribute(manifest_json, _author, "author");
-                read_attribute(manifest_json, _description, "description");
-            }
-            catch (...)
-            {
+                    read_attribute(manifest_json, _name, "name");
+                    read_attribute(manifest_json, _author, "author");
+                    read_attribute(manifest_json, _description, "description");
+                }
+                catch (...)
+                {
 
+                }
             }
+            _script = _path + "\\plugin.lua";
         }
-        _script = _path + "\\plugin.lua";
     }
 
     void Plugin::load_script()

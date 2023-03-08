@@ -48,7 +48,7 @@ namespace trview
                                 _shell->open(to_utf16(plugin->path()));
                             }
                             ImGui::TableNextColumn();
-                            if (ImGui::Button(std::format("Reload##{}", plugin->name()).c_str()))
+                            if (!plugin->path().empty() && ImGui::Button(std::format("Reload##{}", plugin->name()).c_str()))
                             {
                                 plugin->reload();
                             }
