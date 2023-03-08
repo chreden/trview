@@ -22,6 +22,7 @@ namespace trview
         virtual void add_message(const std::string& message) = 0;
         virtual void do_file(const std::string& path) = 0;
         virtual void clear_messages() = 0;
+        virtual void reload() = 0;
 
         Event<std::string> on_message;
     };

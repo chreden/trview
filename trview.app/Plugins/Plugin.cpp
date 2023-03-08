@@ -15,27 +15,10 @@ namespace trview
     Plugin::Plugin(const std::shared_ptr<IFiles>& files,
         std::unique_ptr<ILua> lua,
         const std::string& path)
-        : _lua(std::move(lua)), _path(path)
+        : _lua(std::move(lua)), _path(path), _files(files)
     {
-        auto manifest = files->load_file(path + "\\manifest.json");
-        if (manifest)
-        {
-            try
-            {
-                auto manifest_json = nlohmann::json::parse(manifest.value().begin(), manifest.value().end());
-
-                read_attribute(manifest_json, _name, "name");
-                read_attribute(manifest_json, _author, "author");
-                read_attribute(manifest_json, _description, "description");
-            }
-            catch (...)
-            {
-
-            }
-        }
-
-        _script = path + "\\plugin.lua";
         register_print();
+        load();
     }
 
     void Plugin::register_print()
@@ -66,10 +49,7 @@ namespace trview
     void Plugin::initialise(IApplication* application)
     {
         _lua->initialise(application);
-        if (!_script.empty())
-        {
-            _lua->do_file(_script);
-        }
+        load_script();
     }
 
     std::string Plugin::messages() const
@@ -100,5 +80,40 @@ namespace trview
     void Plugin::clear_messages()
     {
         _messages.clear();
+    }
+
+    void Plugin::reload()
+    {
+        load();
+        load_script();
+    }
+
+    void Plugin::load()
+    {
+        auto manifest = _files->load_file(_path + "\\manifest.json");
+        if (manifest)
+        {
+            try
+            {
+                auto manifest_json = nlohmann::json::parse(manifest.value().begin(), manifest.value().end());
+
+                read_attribute(manifest_json, _name, "name");
+                read_attribute(manifest_json, _author, "author");
+                read_attribute(manifest_json, _description, "description");
+            }
+            catch (...)
+            {
+
+            }
+        }
+        _script = _path + "\\plugin.lua";
+    }
+
+    void Plugin::load_script()
+    {
+        if (!_script.empty())
+        {
+            _lua->do_file(_script);
+        }
     }
 }

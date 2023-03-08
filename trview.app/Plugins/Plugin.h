@@ -25,9 +25,13 @@ namespace trview
         void add_message(const std::string& message) override;
         void do_file(const std::string& path) override;
         void clear_messages() override;
+        void reload() override;
     private:
+        void load();
+        void load_script();
         void register_print();
 
+        std::shared_ptr<IFiles> _files;
         std::unique_ptr<ILua> _lua;
         std::string _path;
         std::string _name{ "Unknown" };
