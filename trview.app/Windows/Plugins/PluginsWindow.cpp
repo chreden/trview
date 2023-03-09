@@ -25,9 +25,10 @@ namespace trview
         bool stay_open = true;
         if (ImGui::Begin(_id.c_str(), &stay_open))
         {
-            if (ImGui::BeginTable(Names::plugins_list.c_str(), 4, ImGuiTableFlags_SizingStretchProp))
+            if (ImGui::BeginTable(Names::plugins_list.c_str(), 5, ImGuiTableFlags_SizingStretchProp))
             {
                 ImGui::TableSetupColumn("Location");
+                ImGui::TableSetupColumn("Action");
                 ImGui::TableSetupColumn("Name");
                 ImGui::TableSetupColumn("Author");
                 ImGui::TableSetupColumn("Description");
@@ -45,6 +46,11 @@ namespace trview
                             if (!plugin->path().empty() && ImGui::Button(std::format("Open##{}", plugin->name()).c_str()))
                             {
                                 _shell->open(to_utf16(plugin->path()));
+                            }
+                            ImGui::TableNextColumn();
+                            if (!plugin->path().empty() && ImGui::Button(std::format("Reload##{}", plugin->name()).c_str()))
+                            {
+                                plugin->reload();
                             }
                             ImGui::TableNextColumn();
                             ImGui::Text(plugin->name().c_str());

@@ -64,3 +64,23 @@ TEST(PluginsWindow, DirectoryOpened)
         .id(std::format("Open##{}", "Plugin Name").c_str()));
 }
 
+TEST(PluginsWindow, PluginReloaded)
+{
+    auto plugin = mock_shared<MockPlugin>();
+    ON_CALL(*plugin, name).WillByDefault(Return("Plugin Name"));
+    ON_CALL(*plugin, path).WillByDefault(Return("test_path"));
+    EXPECT_CALL(*plugin, reload).Times(1);
+
+    auto plugins = mock_shared<MockPlugins>();
+    ON_CALL(*plugins, plugins).WillByDefault(Return(std::vector<std::weak_ptr<IPlugin>> { plugin }));
+
+    auto window = register_test_module()
+        .with_plugins(plugins)
+        .build();
+
+    TestImgui imgui([&]() { window->render(); });
+    imgui.click_element(imgui.id("Plugins 0")
+        .push(PluginsWindow::Names::plugins_list)
+        .id(std::format("Reload##{}", "Plugin Name").c_str()));
+}
+

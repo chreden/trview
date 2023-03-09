@@ -20,6 +20,7 @@ namespace trview
             MOCK_METHOD(void, add_message, (const std::string&), (override));
             MOCK_METHOD(void, do_file, (const std::string&), (override));
             MOCK_METHOD(void, clear_messages, (), (override));
+            MOCK_METHOD(void, reload, (), (override));
         };
     }
 }
