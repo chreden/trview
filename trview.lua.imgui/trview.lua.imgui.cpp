@@ -47,7 +47,7 @@ namespace trview
                 luaL_checktype(L, -1, LUA_TBOOLEAN);
 
                 bool checked = lua_toboolean(L, -1);
-                bool result = ImGui::Checkbox(lua_tostring(L, -1), &checked);
+                bool result = ImGui::Checkbox(lua_tostring(L, -2), &checked);
                 
                 lua_pushboolean(L, result);
                 lua_pushboolean(L, checked);
