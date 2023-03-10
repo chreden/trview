@@ -69,7 +69,6 @@ namespace trview
 
             int begin(lua_State* L)
             {
-                luaL_checktype(L, 1, LUA_TTABLE);
                 const auto name = get_string(L, 1, "name");
                 const auto open = get_optional_bool(L, 1, "open");
                 bool is_open = open.value_or(true);
@@ -90,7 +89,6 @@ namespace trview
 
             int button(lua_State* L)
             {
-                luaL_checktype(L, 1, LUA_TTABLE);
                 const auto label = get_string(L, 1, "label");
                 bool result = ImGui::Button(label.c_str(), ImVec2(0, 0));
                 lua_pushboolean(L, result);
@@ -99,11 +97,10 @@ namespace trview
 
             int checkbox(lua_State* L)
             {
-                luaL_checktype(L, 1, LUA_TTABLE);
                 const auto label = get_string(L, 1, "label");
                 auto checked = get_bool(L, 1, "checked");
                 bool result = ImGui::Checkbox(label.c_str(), &checked);
-                
+
                 lua_pushboolean(L, result);
                 lua_pushboolean(L, checked);
                 return 2;
@@ -111,7 +108,6 @@ namespace trview
 
             int text(lua_State* L)
             {
-                luaL_checktype(L, 1, LUA_TTABLE);
                 auto text = get_string(L, 1, "text");
                 ImGui::Text(text.c_str());
                 return 0;
@@ -119,7 +115,6 @@ namespace trview
 
             int begin_table(lua_State* L)
             {
-                luaL_checktype(L, 1, LUA_TTABLE);
                 auto id = get_string(L, 1, "id");
                 auto column = get_integer(L, 1, "column");
                 bool result = ImGui::BeginTable(id.c_str(), column);
