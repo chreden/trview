@@ -81,9 +81,23 @@ namespace trview
                 return 2;
             }
 
-            int finish(lua_State* L)
+            int begin_child(lua_State* L)
+            {
+                const auto name = get_string(L, 1, "name");
+                bool result = ImGui::BeginChild(name.c_str());
+                lua_pushboolean(L, result);
+                return 1;
+            }
+
+            int end(lua_State* L)
             {
                 ImGui::End();
+                return 0;
+            }
+
+            int end_child(lua_State* L)
+            {
+                ImGui::EndChild();
                 return 0;
             }
 
@@ -117,7 +131,7 @@ namespace trview
             {
                 auto id = get_string(L, 1, "id");
                 auto column = get_integer(L, 1, "column");
-                bool result = ImGui::BeginTable(id.c_str(), column);
+                bool result = ImGui::BeginTable(id.c_str(), column, ImGuiTableFlags_ScrollY);
                 lua_pushboolean(L, result);
                 return 1;
             }
@@ -154,6 +168,15 @@ namespace trview
                 ImGui::TableSetupScrollFreeze(cols, rows);
                 return 0;
             }
+
+            int selectable(lua_State* L)
+            {
+                const auto label = get_string(L, 1, "label");
+                auto selected = get_bool(L, 1, "selected");
+                bool result = ImGui::Selectable(label.c_str(), &selected, ImGuiSelectableFlags_SpanAllColumns);
+                lua_pushboolean(L, result);
+                return 1;
+            }
         }
 
         void imgui_register(lua_State* L)
@@ -162,8 +185,12 @@ namespace trview
             // Windows
             lua_pushcfunction(L, begin);
             lua_setfield(L, -2, "Begin");
-            lua_pushcfunction(L, finish);
+            lua_pushcfunction(L, begin_child);
+            lua_setfield(L, -2, "BeginChild");
+            lua_pushcfunction(L, end);
             lua_setfield(L, -2, "End");
+            lua_pushcfunction(L, end_child);
+            lua_setfield(L, -2, "EndChild");
             // Buttons
             lua_pushcfunction(L, button);
             lua_setfield(L, -2, "Button");
@@ -186,6 +213,9 @@ namespace trview
             lua_setfield(L, -2, "TableHeadersRow");
             lua_pushcfunction(L, table_setup_scroll_freeze);
             lua_setfield(L, -2, "TableSetupScrollFreeze");
+            // Selectable
+            lua_pushcfunction(L, selectable);
+            lua_setfield(L, -2, "Selectable");
 
             lua_setglobal(L, "ImGui");
         }

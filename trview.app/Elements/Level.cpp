@@ -188,33 +188,40 @@ namespace trview
 
     void Level::set_selected_room(uint16_t index)
     { 
-        _selected_room = index;
-        regenerate_neighbours();
-
-        // If the user has selected a room that is or has an alternate mode, raise the event that the
-        // alternate mode needs to change so that the correct rooms can be rendered.
-        const auto& room = *_rooms[index];
-        if (is_alternate_mismatch(room))
+        if (_selected_room != index)
         {
-            if (version() >= trlevel::LevelVersion::Tomb4)
-            {
-                on_alternate_group_selected(room.alternate_group(), !is_alternate_group_set(room.alternate_group()));
-            }
-            else
-            {
-                on_alternate_mode_selected(!_alternate_mode);
-            }
-        }
+            _selected_room = index;
+            regenerate_neighbours();
 
-        on_level_changed();
-        on_room_selected(index);
+            // If the user has selected a room that is or has an alternate mode, raise the event that the
+            // alternate mode needs to change so that the correct rooms can be rendered.
+            const auto& room = *_rooms[index];
+            if (is_alternate_mismatch(room))
+            {
+                if (version() >= trlevel::LevelVersion::Tomb4)
+                {
+                    on_alternate_group_selected(room.alternate_group(), !is_alternate_group_set(room.alternate_group()));
+                }
+                else
+                {
+                    on_alternate_mode_selected(!_alternate_mode);
+                }
+            }
+
+            on_level_changed();
+            on_room_selected(index);
+        }
     }
 
     void Level::set_selected_item(uint32_t index)
     {
-        _selected_item = _entities[index];
-        on_level_changed();
-        on_item_selected(_selected_item);
+        const auto selected_item = _entities[index];
+        if (_selected_item.lock() != selected_item)
+        {
+            _selected_item = selected_item;
+            on_level_changed();
+            on_item_selected(_selected_item);
+        }
     }
 
     void Level::set_neighbour_depth(uint32_t depth)

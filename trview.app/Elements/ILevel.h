@@ -134,7 +134,7 @@ namespace trview
         virtual trlevel::LevelVersion version() const = 0;
         Event<std::weak_ptr<IItem>> on_item_selected;
         // Event raised when the level needs to change the selected room.
-        Event<uint16_t> on_room_selected;
+        Event<uint32_t> on_room_selected;
         // Event raised when the level needs to change the alternate mode.
         Event<bool> on_alternate_mode_selected;
         /// Event raised when the level needs to change the alternate group mode.
