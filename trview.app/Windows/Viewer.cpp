@@ -580,9 +580,16 @@ namespace trview
         ILevel* old_level = _level;
         _level = level;
 
-        _token_store += _level->on_alternate_mode_selected += [&](bool enabled) { set_alternate_mode(enabled); };
-        _token_store += _level->on_alternate_group_selected += [&](uint16_t group, bool enabled) { set_alternate_group(group, enabled); };
-        _token_store += _level->on_level_changed += [&]() { _scene_changed = true; };
+        _level_token_store.clear();
+        if (old_level)
+        {
+            old_level->on_room_selected -= on_room_selected;
+            old_level->on_item_selected -= on_item_selected;
+        }
+
+        _level_token_store += _level->on_alternate_mode_selected += [&](bool enabled) { set_alternate_mode(enabled); };
+        _level_token_store += _level->on_alternate_group_selected += [&](uint16_t group, bool enabled) { set_alternate_group(group, enabled); };
+        _level_token_store += _level->on_level_changed += [&]() { _scene_changed = true; };
         _level->on_room_selected += on_room_selected;
         _level->on_item_selected += on_item_selected;
 

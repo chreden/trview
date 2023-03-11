@@ -826,6 +826,11 @@ namespace trview
 
     void Application::set_current_level(const std::shared_ptr<ILevel>& level, ILevel::OpenMode open_mode, bool prompt_user)
     {
+        if (level == _level)
+        {
+            return;
+        }
+
         if (prompt_user && open_mode == ILevel::OpenMode::Full && !should_discard_changes())
         {
             throw UserCancelledException();
