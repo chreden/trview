@@ -9,6 +9,7 @@
 #include <external/imgui/imgui_internal.h>
 #include <optional>
 #include <string>
+#include <vector>
 
 namespace trview
 {
@@ -90,6 +91,27 @@ namespace trview
                     index += lua_gettop(L) + 1;
                 }
                 lua_pushinteger(L, value);
+                lua_setfield(L, index, name.c_str());
+            }
+
+            struct EnumValue
+            {
+                std::string name;
+                int value;
+            };
+
+            void set_enum(lua_State* L, const std::string& name, int index, const std::vector<EnumValue>& values)
+            {
+                if (index < 0)
+                {
+                    index += lua_gettop(L) + 1;
+                }
+
+                lua_newtable(L);
+                for (const auto& v : values)
+                {
+                    set_integer(L, -1, v.name.c_str(), v.value);
+                }
                 lua_setfield(L, index, name.c_str());
             }
 
@@ -244,22 +266,23 @@ namespace trview
             lua_pushcfunction(L, selectable);
             lua_setfield(L, -2, "Selectable");
 
-            lua_newtable(L);
-            set_integer(L, -1, "None", ImGuiSelectableFlags_None);
-            set_integer(L, -1, "DontClosePopups", ImGuiSelectableFlags_DontClosePopups);
-            set_integer(L, -1, "SpanAllColumns", ImGuiSelectableFlags_SpanAllColumns);
-            set_integer(L, -1, "AllowDoubleClick", ImGuiSelectableFlags_AllowDoubleClick);
-            set_integer(L, -1, "Disabled", ImGuiSelectableFlags_Disabled);
-            set_integer(L, -1, "AllowItemOverlap", ImGuiSelectableFlags_AllowItemOverlap);
-            set_integer(L, -1, "NoHoldingActiveID", ImGuiSelectableFlags_NoHoldingActiveID);
-            set_integer(L, -1, "SelectOnNav", ImGuiSelectableFlags_SelectOnNav);
-            set_integer(L, -1, "SelectOnClick", ImGuiSelectableFlags_SelectOnClick);
-            set_integer(L, -1, "SelectOnRelease", ImGuiSelectableFlags_SelectOnRelease);
-            set_integer(L, -1, "SpanAvailWidth", ImGuiSelectableFlags_SpanAvailWidth);
-            set_integer(L, -1, "DrawHoveredWhenHeld", ImGuiSelectableFlags_DrawHoveredWhenHeld);
-            set_integer(L, -1, "SetNavIdOnHover", ImGuiSelectableFlags_SetNavIdOnHover);
-            set_integer(L, -1, "NoPadWithHalfSpacing", ImGuiSelectableFlags_NoPadWithHalfSpacing);
-            lua_setfield(L, -2, "SelectableFlags");
+            set_enum(L, "SelectableFlags", -1, 
+                {
+                    { "None", ImGuiSelectableFlags_None },
+                    { "DontClosePopups", ImGuiSelectableFlags_DontClosePopups },
+                    { "SpanAllColumns", ImGuiSelectableFlags_SpanAllColumns },
+                    { "AllowDoubleClick", ImGuiSelectableFlags_AllowDoubleClick },
+                    { "Disabled", ImGuiSelectableFlags_Disabled },
+                    { "AllowItemOverlap", ImGuiSelectableFlags_AllowItemOverlap },
+                    { "NoHoldingActiveID", ImGuiSelectableFlags_NoHoldingActiveID },
+                    { "SelectOnNav", ImGuiSelectableFlags_SelectOnNav },
+                    { "SelectOnClick", ImGuiSelectableFlags_SelectOnClick },
+                    { "SelectOnRelease", ImGuiSelectableFlags_SelectOnRelease },
+                    { "SpanAvailWidth", ImGuiSelectableFlags_SpanAvailWidth },
+                    { "DrawHoveredWhenHeld", ImGuiSelectableFlags_DrawHoveredWhenHeld },
+                    { "SetNavIdOnHover", ImGuiSelectableFlags_SetNavIdOnHover },
+                    { "NoPadWithHalfSpacing", ImGuiSelectableFlags_NoPadWithHalfSpacing }
+                });
 
             lua_setglobal(L, "ImGui");
         }
