@@ -6,6 +6,7 @@
 #include "trview.lua.imgui.h"
 
 #include <external/imgui/imgui.h>
+#include <external/imgui/imgui_internal.h>
 #include <optional>
 #include <string>
 
@@ -47,6 +48,21 @@ namespace trview
                 return value;
             }
 
+            std::optional<int> get_optional_integer(lua_State* L, int index, const std::string& name)
+            {
+                luaL_checktype(L, index, LUA_TTABLE);
+                lua_getfield(L, index, name.c_str());
+                if (lua_isnil(L, -1))
+                {
+                    lua_pop(L, 1);
+                    return std::nullopt;
+                }
+                luaL_checktype(L, -1, LUA_TNUMBER);
+                int value = lua_tointeger(L, -1);
+                lua_pop(L, 1);
+                return value;
+            }
+
             int get_integer(lua_State* L, int index, const std::string& name)
             {
                 luaL_checktype(L, index, LUA_TTABLE);
@@ -65,6 +81,16 @@ namespace trview
                 std::string value = lua_tostring(L, -1);
                 lua_pop(L, 1);
                 return value;
+            }
+
+            void set_integer(lua_State* L, int index, const std::string& name, int value)
+            {
+                if (index < 0)
+                {
+                    index += lua_gettop(L) + 1;
+                }
+                lua_pushinteger(L, value);
+                lua_setfield(L, index, name.c_str());
             }
 
             int begin(lua_State* L)
@@ -173,7 +199,8 @@ namespace trview
             {
                 const auto label = get_string(L, 1, "label");
                 auto selected = get_bool(L, 1, "selected");
-                bool result = ImGui::Selectable(label.c_str(), &selected, ImGuiSelectableFlags_SpanAllColumns);
+                auto flags = get_optional_integer(L, 1, "flags");
+                bool result = ImGui::Selectable(label.c_str(), &selected, flags.value_or(ImGuiSelectableFlags_None));
                 lua_pushboolean(L, result);
                 return 1;
             }
@@ -216,6 +243,23 @@ namespace trview
             // Selectable
             lua_pushcfunction(L, selectable);
             lua_setfield(L, -2, "Selectable");
+
+            lua_newtable(L);
+            set_integer(L, -1, "None", ImGuiSelectableFlags_None);
+            set_integer(L, -1, "DontClosePopups", ImGuiSelectableFlags_DontClosePopups);
+            set_integer(L, -1, "SpanAllColumns", ImGuiSelectableFlags_SpanAllColumns);
+            set_integer(L, -1, "AllowDoubleClick", ImGuiSelectableFlags_AllowDoubleClick);
+            set_integer(L, -1, "Disabled", ImGuiSelectableFlags_Disabled);
+            set_integer(L, -1, "AllowItemOverlap", ImGuiSelectableFlags_AllowItemOverlap);
+            set_integer(L, -1, "NoHoldingActiveID", ImGuiSelectableFlags_NoHoldingActiveID);
+            set_integer(L, -1, "SelectOnNav", ImGuiSelectableFlags_SelectOnNav);
+            set_integer(L, -1, "SelectOnClick", ImGuiSelectableFlags_SelectOnClick);
+            set_integer(L, -1, "SelectOnRelease", ImGuiSelectableFlags_SelectOnRelease);
+            set_integer(L, -1, "SpanAvailWidth", ImGuiSelectableFlags_SpanAvailWidth);
+            set_integer(L, -1, "DrawHoveredWhenHeld", ImGuiSelectableFlags_DrawHoveredWhenHeld);
+            set_integer(L, -1, "SetNavIdOnHover", ImGuiSelectableFlags_SetNavIdOnHover);
+            set_integer(L, -1, "NoPadWithHalfSpacing", ImGuiSelectableFlags_NoPadWithHalfSpacing);
+            lua_setfield(L, -2, "SelectableFlags");
 
             lua_setglobal(L, "ImGui");
         }
