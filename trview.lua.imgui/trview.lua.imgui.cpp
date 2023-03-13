@@ -119,11 +119,12 @@ namespace trview
             {
                 const auto name = get_string(L, 1, "name");
                 const auto open = get_optional_bool(L, 1, "open");
+                const auto flags = get_optional_integer(L, 1, "flags");
                 bool is_open = open.value_or(true);
                 bool result = ImGui::Begin(
                     name.c_str(),
                     open.has_value() ? &is_open : nullptr,
-                    0);
+                    flags.value_or(ImGuiWindowFlags_None));
                 lua_pushboolean(L, result);
                 lua_pushboolean(L, is_open);
                 return 2;
@@ -177,9 +178,10 @@ namespace trview
 
             int begin_table(lua_State* L)
             {
-                auto id = get_string(L, 1, "id");
-                auto column = get_integer(L, 1, "column");
-                bool result = ImGui::BeginTable(id.c_str(), column, ImGuiTableFlags_ScrollY);
+                const auto id = get_string(L, 1, "id");
+                const auto column = get_integer(L, 1, "column");
+                const auto flags = get_optional_integer(L, 1, "flags");
+                bool result = ImGui::BeginTable(id.c_str(), column, flags.value_or(ImGuiTableFlags_None));
                 lua_pushboolean(L, result);
                 return 1;
             }
@@ -226,6 +228,21 @@ namespace trview
                 lua_pushboolean(L, result);
                 return 1;
             }
+
+            int begin_combo(lua_State* L)
+            {
+                const auto label = get_string(L, 1, "label");
+                const auto preview_value = get_string(L, 1, "preview_value");
+                const auto flags = get_optional_integer(L, 1, "flags");
+                bool result = ImGui::BeginCombo(label.c_str(), preview_value.c_str(), flags.value_or(ImGuiComboFlags_None));
+                lua_pushboolean(L, result);
+                return 1;
+            }
+
+            int end_combo(lua_State* L)
+            {
+                ImGui::EndCombo();
+            }
         }
 
         void imgui_register(lua_State* L)
@@ -240,12 +257,57 @@ namespace trview
             lua_setfield(L, -2, "End");
             lua_pushcfunction(L, end_child);
             lua_setfield(L, -2, "EndChild");
+
+            set_enum(L, "WindowFlags", -1,
+                {
+                    { "None", ImGuiWindowFlags_None },
+                    { "NoTitleBar", ImGuiWindowFlags_NoTitleBar },
+                    { "NoResize", ImGuiWindowFlags_NoResize },
+                    { "NoMove", ImGuiWindowFlags_NoMove },
+                    { "NoScrollbar", ImGuiWindowFlags_NoScrollbar },
+                    { "NoScrollWithMouse", ImGuiWindowFlags_NoScrollWithMouse },
+                    { "NoCollapse", ImGuiWindowFlags_NoCollapse },
+                    { "AlwaysAutoResize", ImGuiWindowFlags_AlwaysAutoResize },
+                    { "NoBackground", ImGuiWindowFlags_NoBackground },
+                    { "NoSavedSettings", ImGuiWindowFlags_NoSavedSettings },
+                    { "NoMouseInputs", ImGuiWindowFlags_NoMouseInputs },
+                    { "MenuBar", ImGuiWindowFlags_MenuBar },
+                    { "HorizontalScrollbar", ImGuiWindowFlags_HorizontalScrollbar },
+                    { "NoFocusOnAppearing", ImGuiWindowFlags_NoFocusOnAppearing },
+                    { "NoBringToFrontOnFocus", ImGuiWindowFlags_NoBringToFrontOnFocus },
+                    { "AlwaysVerticalScrollbar", ImGuiWindowFlags_AlwaysVerticalScrollbar },
+                    { "AlwaysHorizontalScrollbar", ImGuiWindowFlags_AlwaysHorizontalScrollbar },
+                    { "AlwaysUseWindowPadding", ImGuiWindowFlags_AlwaysUseWindowPadding },
+                    { "NoNavInputs", ImGuiWindowFlags_NoNavInputs },
+                    { "NoNavFocus", ImGuiWindowFlags_NoNavFocus },
+                    { "UnsavedDocument", ImGuiWindowFlags_UnsavedDocument },
+                    { "NoDocking", ImGuiWindowFlags_NoDocking }
+                });
+
             // Buttons
             lua_pushcfunction(L, button);
             lua_setfield(L, -2, "Button");
             // Checkbox
             lua_pushcfunction(L, checkbox);
             lua_setfield(L, -2, "Checkbox");
+            // Combo
+            lua_pushcfunction(L, begin_combo);
+            lua_setfield(L, -2, "BeginCombo");
+            lua_pushcfunction(L, end_combo);
+            lua_setfield(L, -2, "EndCombo");
+
+            set_enum(L, "ComboFlags", -1,
+                {
+                    { "None", ImGuiComboFlags_None },
+                    { "PopupAlignLeft", ImGuiComboFlags_PopupAlignLeft },
+                    { "HeightSmall", ImGuiComboFlags_HeightSmall },
+                    { "HeightRegular", ImGuiComboFlags_HeightRegular },
+                    { "HeightLarge", ImGuiComboFlags_HeightLarge },
+                    { "HeightLargest", ImGuiComboFlags_HeightLargest },
+                    { "NoArrowButton", ImGuiComboFlags_NoArrowButton },
+                    { "NoPreview", ImGuiComboFlags_NoPreview }
+                });
+
             // Text
             lua_pushcfunction(L, text);
             lua_setfield(L, -2, "Text");
@@ -262,6 +324,73 @@ namespace trview
             lua_setfield(L, -2, "TableHeadersRow");
             lua_pushcfunction(L, table_setup_scroll_freeze);
             lua_setfield(L, -2, "TableSetupScrollFreeze");
+
+            set_enum(L, "TableFlags", -1,
+                {
+                    { "None", ImGuiTableFlags_None },
+                    { "Resizable", ImGuiTableFlags_Resizable },
+                    { "Reorderable", ImGuiTableFlags_Reorderable },
+                    { "Hideable", ImGuiTableFlags_Hideable },
+                    { "Sortable", ImGuiTableFlags_Sortable },
+                    { "NoSavedSettings", ImGuiTableFlags_NoSavedSettings },
+                    { "ContextMenuInBody", ImGuiTableFlags_ContextMenuInBody },
+                    { "RowBg", ImGuiTableFlags_RowBg },
+                    { "BordersInnerH", ImGuiTableFlags_BordersInnerH },
+                    { "BordersOuterH", ImGuiTableFlags_BordersOuterH },
+                    { "BordersInnerV", ImGuiTableFlags_BordersInnerV },
+                    { "BordersOuterV", ImGuiTableFlags_BordersOuterV },
+                    { "BordersH", ImGuiTableFlags_BordersH },
+                    { "BordersV", ImGuiTableFlags_BordersV },
+                    { "BordersInner", ImGuiTableFlags_BordersInner },
+                    { "BordersOuter", ImGuiTableFlags_BordersOuter },
+                    { "Borders", ImGuiTableFlags_Borders },
+                    { "NoBordersInBody", ImGuiTableFlags_NoBordersInBody },
+                    { "NoBordersInBodyUntilResize", ImGuiTableFlags_NoBordersInBodyUntilResize },
+                    { "SizingFixedFit", ImGuiTableFlags_SizingFixedFit },
+                    { "SizingFixedSame", ImGuiTableFlags_SizingFixedSame },
+                    { "SizingStretchProp", ImGuiTableFlags_SizingStretchProp },
+                    { "SizingStretchSame", ImGuiTableFlags_SizingStretchSame },
+                    { "NoHostExtendX", ImGuiTableFlags_NoHostExtendX },
+                    { "NoHostExtendY", ImGuiTableFlags_NoHostExtendY },
+                    { "NoKeepColumnsVisible", ImGuiTableFlags_NoKeepColumnsVisible },
+                    { "PreciseWidths", ImGuiTableFlags_PreciseWidths },
+                    { "NoClip", ImGuiTableFlags_NoClip },
+                    { "PadOuterX", ImGuiTableFlags_PadOuterX },
+                    { "NoPadOuterX", ImGuiTableFlags_NoPadOuterX },
+                    { "NoPadInnerX", ImGuiTableFlags_NoPadInnerX },
+                    { "ScrollX", ImGuiTableFlags_ScrollX },
+                    { "ScrollY", ImGuiTableFlags_ScrollY },
+                    { "SortMulti", ImGuiTableFlags_SortMulti },
+                    { "SortTristate", ImGuiTableFlags_SortTristate }
+                });
+
+            set_enum(L, "TableColumnFlags", -1,
+                {
+                    { "None", ImGuiTableColumnFlags_None },
+                    { "Disabled", ImGuiTableColumnFlags_Disabled },
+                    { "DefaultHide", ImGuiTableColumnFlags_DefaultHide },
+                    { "DefaultSort", ImGuiTableColumnFlags_DefaultSort },
+                    { "WidthStretch", ImGuiTableColumnFlags_WidthStretch },
+                    { "WidthFixed", ImGuiTableColumnFlags_WidthFixed },
+                    { "NoResize", ImGuiTableColumnFlags_NoResize },
+                    { "NoReorder", ImGuiTableColumnFlags_NoReorder },
+                    { "NoHide", ImGuiTableColumnFlags_NoHide },
+                    { "NoClip", ImGuiTableColumnFlags_NoClip },
+                    { "NoSort", ImGuiTableColumnFlags_NoSort },
+                    { "NoSortAscending", ImGuiTableColumnFlags_NoSortAscending },
+                    { "NoSortDescending", ImGuiTableColumnFlags_NoSortDescending },
+                    { "NoHeaderLabel", ImGuiTableColumnFlags_NoHeaderLabel },
+                    { "NoHeaderWidth", ImGuiTableColumnFlags_NoHeaderWidth },
+                    { "PreferSortAscending", ImGuiTableColumnFlags_PreferSortAscending },
+                    { "PreferSortDescending", ImGuiTableColumnFlags_PreferSortDescending },
+                    { "IndentEnable", ImGuiTableColumnFlags_IndentEnable },
+                    { "IndentDisable", ImGuiTableColumnFlags_IndentDisable },
+                    { "IsEnabled", ImGuiTableColumnFlags_IsEnabled },
+                    { "IsVisible", ImGuiTableColumnFlags_IsVisible },
+                    { "IsSorted", ImGuiTableColumnFlags_IsSorted },
+                    { "IsHovered", ImGuiTableColumnFlags_IsHovered }
+                });
+
             // Selectable
             lua_pushcfunction(L, selectable);
             lua_setfield(L, -2, "Selectable");
