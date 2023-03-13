@@ -64,7 +64,7 @@ namespace trview
     /// @param offset The output offset.
     std::shared_ptr<IMesh> create_sprite_mesh(
         const IMesh::Source& source,
-        const trlevel::tr_sprite_texture& sprite,
+        const std::optional<trlevel::tr_sprite_texture>& sprite,
         DirectX::SimpleMath::Matrix& scale,
         DirectX::SimpleMath::Vector3& offset,
         SpriteOffsetMode offset_mode);
@@ -75,7 +75,7 @@ namespace trview
     /// @param scale The output scale matrix.
     std::shared_ptr<IMesh> create_sprite_mesh(
         const IMesh::Source& source,
-        const trlevel::tr_sprite_texture& sprite,
+        const std::optional<trlevel::tr_sprite_texture>& sprite,
         DirectX::SimpleMath::Matrix& scale,
         DirectX::SimpleMath::Matrix& offset,
         SpriteOffsetMode offset_mode);

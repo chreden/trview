@@ -162,7 +162,7 @@ namespace trlevel
         // Get the sprite texture with the specified ID.
         // index: The index of the sprite texture to get.
         // Returns: The sprite texture.
-        virtual tr_sprite_texture get_sprite_texture(uint32_t index) const override;
+        virtual std::optional<tr_sprite_texture> get_sprite_texture(uint32_t index) const override;
 
         /// Find the first entity with the specified type.
         /// @param type The type ID of the entity.
