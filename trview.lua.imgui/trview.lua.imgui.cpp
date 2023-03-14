@@ -249,6 +249,13 @@ namespace trview
             int end_combo(lua_State* L)
             {
                 ImGui::EndCombo();
+                return 0;
+            }
+
+            int same_line(lua_State* L)
+            {
+                ImGui::SameLine();
+                return 0;
             }
         }
 
@@ -447,6 +454,9 @@ namespace trview
                     { "SetNavIdOnHover", ImGuiSelectableFlags_SetNavIdOnHover },
                     { "NoPadWithHalfSpacing", ImGuiSelectableFlags_NoPadWithHalfSpacing }
                 });
+
+            lua_pushcfunction(L, same_line);
+            lua_setfield(L, -2, "SameLine");
 
             lua_setglobal(L, "ImGui");
         }

@@ -120,6 +120,11 @@ namespace trview
         }
     }
 
+    void Plugin::render_toolbar()
+    {
+        _lua->execute("if render_toolbar ~= nil then render_toolbox() end");
+    }
+
     void Plugin::render_ui()
     {
         _lua->execute("if render_ui ~= nil then render_ui() end");

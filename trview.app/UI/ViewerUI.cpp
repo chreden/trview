@@ -17,9 +17,10 @@ namespace trview
         std::unique_ptr<ISettingsWindow> settings_window,
         std::unique_ptr<IViewOptions> view_options,
         std::unique_ptr<IContextMenu> context_menu,
-        std::unique_ptr<ICameraControls> camera_controls)
+        std::unique_ptr<ICameraControls> camera_controls,
+        std::unique_ptr<IToolbar> toolbar)
         : _mouse(window, std::make_unique<input::WindowTester>(window)), _window(window), _camera_controls(std::move(camera_controls)),
-        _view_options(std::move(view_options)), _settings_window(std::move(settings_window)), _context_menu(std::move(context_menu))
+        _view_options(std::move(view_options)), _settings_window(std::move(settings_window)), _context_menu(std::move(context_menu)), _toolbar(std::move(toolbar))
     {
         _token_store += _mouse.mouse_move += [&](long, long)
         {
@@ -59,7 +60,6 @@ namespace trview
             }
         };
 
-        _toolbar = std::make_unique<Toolbar>();
         _toolbar->add_tool("Measure");
         _token_store += _toolbar->on_tool_clicked += [this](const std::string& tool)
         {

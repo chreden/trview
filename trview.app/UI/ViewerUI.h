@@ -1,6 +1,6 @@
 #pragma once
 
-#include <trview.app/Tools/Toolbar.h>
+#include <trview.app/Tools/IToolbar.h>
 #include <trview.app/UI/ICameraControls.h>
 #include <trview.app/UI/CameraPosition.h>
 #include <trview.app/UI/IContextMenu.h>
@@ -27,7 +27,8 @@ namespace trview
             std::unique_ptr<ISettingsWindow> settings_window,
             std::unique_ptr<IViewOptions> view_options,
             std::unique_ptr<IContextMenu> context_menu,
-            std::unique_ptr<ICameraControls> camera_controls);
+            std::unique_ptr<ICameraControls> camera_controls,
+            std::unique_ptr<IToolbar> toolbar);
         virtual ~ViewerUI() = default;
         virtual void clear_minimap_highlight() override;
         virtual std::shared_ptr<ISector> current_minimap_sector() const override;
@@ -79,7 +80,7 @@ namespace trview
         std::unique_ptr<GoTo> _go_to;
         std::unique_ptr<RoomNavigator> _room_navigator;
         std::unique_ptr<IViewOptions> _view_options;
-        std::unique_ptr<Toolbar> _toolbar;
+        std::unique_ptr<IToolbar> _toolbar;
         std::unique_ptr<LevelInfo> _level_info;
         std::unique_ptr<ISettingsWindow> _settings_window;
         std::unique_ptr<ICameraControls> _camera_controls;

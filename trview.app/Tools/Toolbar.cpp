@@ -2,6 +2,15 @@
 
 namespace trview
 {
+    IToolbar::~IToolbar()
+    {
+    }
+
+    Toolbar::Toolbar(const std::weak_ptr<IPlugins>& plugins)
+        : _plugins(plugins)
+    {
+    }
+
     void Toolbar::add_tool(const std::string& name)
     {
         _tools.push_back(name);
@@ -20,6 +29,18 @@ namespace trview
                     on_tool_clicked(tool);
                 }
                 ImGui::SameLine();
+            }
+
+            if (auto plugins = _plugins.lock())
+            {
+                for (const auto plugin_ptr : plugins->plugins())
+                {
+                    if (auto plugin = plugin_ptr.lock())
+                    {
+                        plugin->render_toolbar();
+                    }
+                    ImGui::SameLine();
+                }
             }
         }
         ImGui::End();
