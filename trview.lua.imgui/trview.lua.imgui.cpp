@@ -153,7 +153,8 @@ namespace trview
             int button(lua_State* L)
             {
                 const auto label = get_string(L, 1, "label");
-                bool result = ImGui::Button(label.c_str(), ImVec2(0, 0));
+                const auto flags = get_optional_integer(L, 1, "flags");
+                bool result = ImGui::ButtonEx(label.c_str(), ImVec2(0, 0), flags.value_or(ImGuiButtonFlags_None));
                 lua_pushboolean(L, result);
                 return 1;
             }
@@ -203,6 +204,12 @@ namespace trview
             {
                 lua_pushboolean(L, ImGui::TableNextColumn());
                 return 1;
+            }
+
+            int table_next_row(lua_State* L)
+            {
+                ImGui::TableNextRow();
+                return 0;
             }
 
             int table_headers_row(lua_State* L)
@@ -287,6 +294,32 @@ namespace trview
             // Buttons
             lua_pushcfunction(L, button);
             lua_setfield(L, -2, "Button");
+
+            set_enum(L, "ButtonFlags", -1,
+                {
+                    { "None", ImGuiButtonFlags_None },
+                    { "MouseButtonLeft", ImGuiButtonFlags_MouseButtonLeft },
+                    { "MouseButtonRight", ImGuiButtonFlags_MouseButtonRight },
+                    { "MouseButtonMiddle", ImGuiButtonFlags_MouseButtonMiddle },
+                    { "PressedOnClick", ImGuiButtonFlags_PressedOnClick },
+                    { "PressedOnClickRelease", ImGuiButtonFlags_PressedOnClickRelease },
+                    { "PressedOnClickReleaseAnywhere", ImGuiButtonFlags_PressedOnClickReleaseAnywhere },
+                    { "PressedOnRelease", ImGuiButtonFlags_PressedOnRelease },
+                    { "PressedOnDoubleClick", ImGuiButtonFlags_PressedOnDoubleClick },
+                    { "PressedOnDragDropHold", ImGuiButtonFlags_PressedOnDragDropHold },
+                    { "Repeat", ImGuiButtonFlags_Repeat },
+                    { "FlattenChildren", ImGuiButtonFlags_FlattenChildren },
+                    { "AllowItemOverlap", ImGuiButtonFlags_AllowItemOverlap },
+                    { "DontClosePopups", ImGuiButtonFlags_DontClosePopups },
+                    { "AlignTextBaseLine", ImGuiButtonFlags_AlignTextBaseLine },
+                    { "NoKeyModifiers", ImGuiButtonFlags_NoKeyModifiers },
+                    { "NoHoldingActiveId", ImGuiButtonFlags_NoHoldingActiveId },
+                    { "NoNavFocus", ImGuiButtonFlags_NoNavFocus },
+                    { "NoHoveredOnFocus", ImGuiButtonFlags_NoHoveredOnFocus },
+                    { "PressedOnMask_", ImGuiButtonFlags_PressedOnMask_ },
+                    { "PressedOnDefault_", ImGuiButtonFlags_PressedOnDefault_ },
+                });
+
             // Checkbox
             lua_pushcfunction(L, checkbox);
             lua_setfield(L, -2, "Checkbox");
@@ -322,6 +355,8 @@ namespace trview
             lua_setfield(L, -2, "TableSetupColumn");
             lua_pushcfunction(L, table_headers_row);
             lua_setfield(L, -2, "TableHeadersRow");
+            lua_pushcfunction(L, table_next_row);
+            lua_setfield(L, -2, "TableNextRow");
             lua_pushcfunction(L, table_setup_scroll_freeze);
             lua_setfield(L, -2, "TableSetupScrollFreeze");
 
