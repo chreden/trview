@@ -133,7 +133,8 @@ namespace trview
             int begin_child(lua_State* L)
             {
                 const auto name = get_string(L, 1, "name");
-                bool result = ImGui::BeginChild(name.c_str());
+                const auto flags = get_optional_integer(L, 1, "flags");
+                bool result = ImGui::BeginChild(name.c_str(), ImVec2(0,0), false, flags.value_or(ImGuiWindowFlags_None));
                 lua_pushboolean(L, result);
                 return 1;
             }
@@ -196,7 +197,8 @@ namespace trview
             int table_setup_column(lua_State* L)
             {
                 const auto label = get_string(L, 1, "label");
-                ImGui::TableSetupColumn(label.c_str());
+                const auto flags = get_optional_integer(L, 1, "flags");
+                ImGui::TableSetupColumn(label.c_str(), flags.value_or(ImGuiTableColumnFlags_None));
                 return 0;
             }
 
