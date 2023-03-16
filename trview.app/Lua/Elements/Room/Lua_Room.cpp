@@ -7,6 +7,7 @@
 #include "../Light/Lua_Light.h"
 #include "../../Lua.h"
 #include "../Level/Lua_Level.h"
+#include "../StaticMesh/Lua_StaticMesh.h"
 
 namespace trview
 {
@@ -87,6 +88,10 @@ namespace trview
                 else if (key == "sectors")
                 {
                     return push_list(L, room->sectors(), create_sector);
+                }
+                else if (key == "static_meshes")
+                {
+                    return push_list_p(L, room->static_meshes(), create_static_mesh);
                 }
                 else if (key == "triggers")
                 {

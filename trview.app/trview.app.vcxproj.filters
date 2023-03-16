@@ -305,6 +305,9 @@
     <ClCompile Include="Windows\Plugins\PluginsWindowManager.cpp">
       <Filter>Windows\Plugins</Filter>
     </ClCompile>
+    <ClCompile Include="Lua\Elements\StaticMesh\Lua_StaticMesh.cpp">
+      <Filter>Lua\Elements\StaticMesh</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera\Camera.h">
@@ -991,6 +994,9 @@
     <ClInclude Include="Mocks\Windows\IPluginsWindowManager.h">
       <Filter>Mocks\Windows</Filter>
     </ClInclude>
+    <ClInclude Include="Lua\Elements\StaticMesh\Lua_StaticMesh.h">
+      <Filter>Lua\Elements\StaticMesh</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Windows">
@@ -1169,6 +1175,9 @@
     </Filter>
     <Filter Include="Windows\Plugins">
       <UniqueIdentifier>{d29ff2e9-21f4-4cb4-bb21-ad9f933bde3f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Lua\Elements\StaticMesh">
+      <UniqueIdentifier>{1c97c422-edd8-4e71-bcde-67006f8e48cf}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

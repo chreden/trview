@@ -59,6 +59,7 @@ namespace trview
             MOCK_METHOD(std::vector<std::weak_ptr<ITrigger>>, triggers, (), (const, override));
             MOCK_METHOD(std::vector<std::weak_ptr<IItem>>, items, (), (const, override));
             MOCK_METHOD(std::weak_ptr<ILevel>, level, (), (const, override));
+            MOCK_METHOD(std::vector<std::weak_ptr<IStaticMesh>>, static_meshes, (), (const));
 
 
             std::shared_ptr<MockRoom> with_number(uint32_t number)

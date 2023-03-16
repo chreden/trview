@@ -1210,6 +1210,16 @@ namespace trview
         apply_ocb_adjustment();
     }
 
+    std::vector<std::weak_ptr<IStaticMesh>> Level::static_meshes() const
+    {
+        std::vector<std::weak_ptr<IStaticMesh>> results;
+        for (const auto& room : _rooms)
+        {
+            results.append_range(room->static_meshes());
+        }
+        return results;
+    }
+
     bool find_item_by_type_id(const ILevel& level, uint32_t type_id, std::weak_ptr<IItem>& output_item)
     {
         const auto& items = level.items();

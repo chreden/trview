@@ -1088,6 +1088,11 @@ namespace trview
         return _light_mode;
     }
 
+    std::vector<std::weak_ptr<IStaticMesh>> Room::static_meshes() const
+    {
+        return { std::from_range, _static_meshes };
+    }
+
     std::shared_ptr<ISector> sector_from_point(const IRoom& room, const Vector3& point)
     {
         const auto info = room.info();

@@ -4,6 +4,7 @@
 #include "../Elements/IItem.h"
 #include "../Elements/ITrigger.h"
 #include "../Elements/IRoom.h"
+#include "../Elements/IStaticMesh.h"
 #include "IItem.h"
 #include <trview.app/Elements/ILight.h>
 #include "CameraSink/ICameraSink.h"
@@ -119,6 +120,7 @@ namespace trview
         virtual bool show_lights() const = 0;
         virtual bool show_triggers() const = 0;
         virtual bool show_items() const = 0;
+        virtual std::vector<std::weak_ptr<IStaticMesh>> static_meshes() const = 0;
         virtual std::shared_ptr<ILevelTextureStorage> texture_storage() const = 0;
         /// <summary>
         /// Get the trigger at the specific index.

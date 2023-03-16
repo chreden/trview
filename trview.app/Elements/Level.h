@@ -111,6 +111,7 @@ namespace trview
             const ITrigger::Source& trigger_source,
             const ILight::Source& light_source,
             const ICameraSink::Source& camera_sink_source);
+        std::vector<std::weak_ptr<IStaticMesh>> static_meshes() const override;
     private:
         void generate_rooms(const trlevel::ILevel& level, const IRoom::Source& room_source, const IMeshStorage& mesh_storage);
         void generate_triggers(const ITrigger::Source& trigger_source);
