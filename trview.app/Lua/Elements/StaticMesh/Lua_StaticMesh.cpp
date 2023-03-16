@@ -1,5 +1,6 @@
 #include "Lua_StaticMesh.h"
 #include "../../Lua.h"
+#include "../../Vector3.h"
 
 namespace trview
 {
@@ -13,8 +14,10 @@ namespace trview
             {
                 auto static_mesh = lua::get_self<IStaticMesh>(L);
                 const std::string key = lua_tostring(L, 2);
-                key;
-                static_mesh;
+                if (key == "position")
+                {
+                    return create_vector3(L, static_mesh->position() * trlevel::Scale);
+                }
                 return 0;
             }
 

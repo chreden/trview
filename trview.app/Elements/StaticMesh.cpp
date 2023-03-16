@@ -85,4 +85,9 @@ namespace trview
         result.position = Vector3::Transform(result.position, _world);
         return result;
     }
+
+    Vector3 StaticMesh::position() const
+    {
+        return _position;
+    }
 }

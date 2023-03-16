@@ -14,6 +14,8 @@ namespace trview
         virtual void render_bounding_box(const ICamera& camera, const ILevelTextureStorage& texture_storage, const DirectX::SimpleMath::Color& colour) override;
         virtual void get_transparent_triangles(ITransparencyBuffer& transparency, const ICamera& camera, const DirectX::SimpleMath::Color& colour) override;
         virtual PickResult pick(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& direction) const override;
+
+        DirectX::SimpleMath::Vector3 position() const override;
     private:
         float                        _rotation;
         DirectX::SimpleMath::Vector3 _position;
