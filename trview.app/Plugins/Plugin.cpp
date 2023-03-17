@@ -122,7 +122,7 @@ namespace trview
 
     void Plugin::render_toolbar()
     {
-        _lua->execute("if render_toolbar ~= nil then render_toolbox() end");
+        _lua->execute("if render_toolbar ~= nil then render_toolbar() end");
     }
 
     void Plugin::render_ui()
