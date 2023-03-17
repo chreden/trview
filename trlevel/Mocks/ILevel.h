@@ -41,7 +41,7 @@ namespace trlevel
             MOCK_METHOD(tr2_frame, get_frame, (uint32_t, uint32_t), (const, override));
             MOCK_METHOD(LevelVersion, get_version, (), (const, override));
             MOCK_METHOD(bool, get_sprite_sequence_by_id, (int32_t, tr_sprite_sequence&), (const, override));
-            MOCK_METHOD(tr_sprite_texture, get_sprite_texture, (uint32_t), (const, override));
+            MOCK_METHOD(std::optional<tr_sprite_texture>, get_sprite_texture, (uint32_t), (const, override));
             MOCK_METHOD(bool, find_first_entity_by_type, (int16_t, tr2_entity&), (const, override));
             MOCK_METHOD(int16_t, get_mesh_from_type_id, (int16_t), (const, override));
             MOCK_METHOD(std::string, name, (), (const, override));
