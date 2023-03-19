@@ -1,6 +1,7 @@
 #include "Lua_StaticMesh.h"
 #include "../../Lua.h"
 #include "../../Vector3.h"
+#include "../Room/Lua_Room.h"
 
 namespace trview
 {
@@ -17,6 +18,10 @@ namespace trview
                 if (key == "position")
                 {
                     return create_vector3(L, static_mesh->position() * trlevel::Scale);
+                }
+                else if (key == "room")
+                {
+                    return create_room(L, static_mesh->room().lock());
                 }
                 return 0;
             }

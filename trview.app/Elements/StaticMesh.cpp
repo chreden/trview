@@ -10,7 +10,7 @@ namespace trview
     {
     }
 
-    StaticMesh::StaticMesh(const trlevel::tr3_room_staticmesh& static_mesh, const trlevel::tr_staticmesh& level_static_mesh, const std::shared_ptr<IMesh>& mesh, const std::shared_ptr<IMesh>& bounding_mesh)
+    StaticMesh::StaticMesh(const trlevel::tr3_room_staticmesh& static_mesh, const trlevel::tr_staticmesh& level_static_mesh, const std::shared_ptr<IMesh>& mesh, const std::weak_ptr<IRoom>& room, const std::shared_ptr<IMesh>& bounding_mesh)
         : _mesh(mesh),
         _visibility_min(level_static_mesh.VisibilityBox.MinX, level_static_mesh.VisibilityBox.MinY, level_static_mesh.VisibilityBox.MinZ),
         _visibility_max(level_static_mesh.VisibilityBox.MaxX, level_static_mesh.VisibilityBox.MaxY, level_static_mesh.VisibilityBox.MaxZ),
@@ -18,14 +18,15 @@ namespace trview
         _collision_max(level_static_mesh.CollisionBox.MaxX / trlevel::Scale_X, level_static_mesh.CollisionBox.MaxY / trlevel::Scale_Y, level_static_mesh.CollisionBox.MaxZ / trlevel::Scale_Z),
         _position(static_mesh.x / trlevel::Scale_X, static_mesh.y / trlevel::Scale_Y, static_mesh.z / trlevel::Scale_Z),
         _rotation(static_mesh.rotation / 16384.0f * DirectX::XM_PIDIV2),
-        _bounding_mesh(bounding_mesh)
+        _bounding_mesh(bounding_mesh),
+        _room(room)
     {
         using namespace DirectX::SimpleMath;
         _world = Matrix::CreateRotationY(_rotation) * Matrix::CreateTranslation(_position);
     }
 
-    StaticMesh::StaticMesh(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Matrix& scale, std::shared_ptr<IMesh> mesh)
-        : _position(position), _sprite_mesh(mesh), _rotation(0), _scale(scale)
+    StaticMesh::StaticMesh(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Matrix& scale, std::shared_ptr<IMesh> mesh, const std::weak_ptr<IRoom>& room)
+        : _position(position), _sprite_mesh(mesh), _rotation(0), _scale(scale), _room(room)
     {
         using namespace DirectX::SimpleMath;
         _world = Matrix::CreateRotationY(_rotation) * Matrix::CreateTranslation(_position);
@@ -89,5 +90,10 @@ namespace trview
     Vector3 StaticMesh::position() const
     {
         return _position;
+    }
+
+    std::weak_ptr<IRoom> StaticMesh::room() const
+    {
+        return _room;
     }
 }

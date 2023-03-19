@@ -103,9 +103,6 @@
     <ClCompile Include="Graphics\TextureStorage.cpp">
       <Filter>Graphics</Filter>
     </ClCompile>
-    <ClCompile Include="Elements\StaticMesh.cpp">
-      <Filter>Elements</Filter>
-    </ClCompile>
     <ClCompile Include="Graphics\MeshStorage.cpp">
       <Filter>Graphics</Filter>
     </ClCompile>
@@ -308,6 +305,9 @@
     <ClCompile Include="Lua\Elements\StaticMesh\Lua_StaticMesh.cpp">
       <Filter>Lua\Elements\StaticMesh</Filter>
     </ClCompile>
+    <ClCompile Include="Elements\StaticMesh.cpp">
+      <Filter>Elements\StaticMesh</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera\Camera.h">
@@ -432,9 +432,6 @@
     </ClInclude>
     <ClInclude Include="Graphics\TextureStorage.h">
       <Filter>Graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="Elements\StaticMesh.h">
-      <Filter>Elements</Filter>
     </ClInclude>
     <ClInclude Include="Graphics\IMeshStorage.h">
       <Filter>Graphics</Filter>
@@ -605,9 +602,6 @@
     </ClInclude>
     <ClInclude Include="Mocks\Elements\ITrigger.h">
       <Filter>Mocks\Elements</Filter>
-    </ClInclude>
-    <ClInclude Include="Elements\IStaticMesh.h">
-      <Filter>Elements</Filter>
     </ClInclude>
     <ClInclude Include="Mocks\Elements\IStaticMesh.h">
       <Filter>Mocks\Elements</Filter>
@@ -997,6 +991,12 @@
     <ClInclude Include="Lua\Elements\StaticMesh\Lua_StaticMesh.h">
       <Filter>Lua\Elements\StaticMesh</Filter>
     </ClInclude>
+    <ClInclude Include="Elements\IStaticMesh.h">
+      <Filter>Elements\StaticMesh</Filter>
+    </ClInclude>
+    <ClInclude Include="Elements\StaticMesh.h">
+      <Filter>Elements\StaticMesh</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Windows">
@@ -1178,6 +1178,9 @@
     </Filter>
     <Filter Include="Lua\Elements\StaticMesh">
       <UniqueIdentifier>{1c97c422-edd8-4e71-bcde-67006f8e48cf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Elements\StaticMesh">
+      <UniqueIdentifier>{ba89e27a-d235-497c-85cb-d257f1994e69}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
