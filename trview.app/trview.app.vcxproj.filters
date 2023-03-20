@@ -308,6 +308,9 @@
     <ClCompile Include="Elements\StaticMesh.cpp">
       <Filter>Elements\StaticMesh</Filter>
     </ClCompile>
+    <ClCompile Include="Lua\BoundingBox.cpp">
+      <Filter>Lua</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera\Camera.h">
@@ -997,6 +1000,9 @@
     <ClInclude Include="Elements\StaticMesh.h">
       <Filter>Elements\StaticMesh</Filter>
     </ClInclude>
+    <ClInclude Include="Lua\BoundingBox.h">
+      <Filter>Lua</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Windows">
@@ -1241,6 +1247,9 @@
     </None>
     <None Include="Lua\Lua.inl">
       <Filter>Lua</Filter>
+    </None>
+    <None Include="Elements\IStaticMesh.inl">
+      <Filter>Elements\StaticMesh</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>

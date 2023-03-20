@@ -212,6 +212,9 @@
     <ClCompile Include="Windows\PluginsWindowTests.cpp">
       <Filter>Windows</Filter>
     </ClCompile>
+    <ClCompile Include="Lua\Elements\Lua_StaticMeshTests.cpp">
+      <Filter>Lua\Elements</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Input">

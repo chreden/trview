@@ -347,7 +347,7 @@ namespace trview
             auto vertex = room.data.vertices[room_sprite.vertex].vertex;
             auto pos = Vector3(vertex.x / trlevel::Scale_X, vertex.y / trlevel::Scale_Y, vertex.z / trlevel::Scale_Z);
             pos = Vector3::Transform(pos, _room_offset) + offset;
-            _static_meshes.push_back(static_mesh_position_source(pos, scale, sprite_mesh, shared_from_this()));
+            _static_meshes.push_back(static_mesh_position_source(room_sprite, pos, scale, sprite_mesh, shared_from_this()));
         }
     }
 
