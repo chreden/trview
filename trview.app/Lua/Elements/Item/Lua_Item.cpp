@@ -106,12 +106,12 @@ namespace trview
             }
         }
 
-        void create_item(lua_State* L, const std::shared_ptr<IItem>& item)
+        int create_item(lua_State* L, const std::shared_ptr<IItem>& item)
         {
             if (!item)
             {
                 lua_pushnil(L);
-                return;
+                return 1;
             }
 
             IItem** userdata = static_cast<IItem**>(lua_newuserdata(L, sizeof(item.get())));
@@ -126,6 +126,19 @@ namespace trview
             lua_pushcfunction(L, item_gc);
             lua_setfield(L, -2, "__gc");
             lua_setmetatable(L, -2);
+            return 1;
+        }
+
+        std::shared_ptr<IItem> to_item(lua_State* L, int index)
+        {
+            luaL_checktype(L, index, LUA_TUSERDATA);
+            IItem** userdata = static_cast<IItem**>(lua_touserdata(L, index));
+            auto found = items.find(userdata);
+            if (found == items.end())
+            {
+                return {};
+            }
+            return found->second;
         }
     }
 }

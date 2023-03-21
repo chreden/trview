@@ -47,6 +47,16 @@ namespace trview
                 {
                     return push_list_p(L, level->rooms(), create_room);
                 }
+                else if (key == "selected_item")
+                {
+                    auto item = level->selected_item();
+                    if (item)
+                    {
+                        return create_item(L, level->item(item.value()).lock());
+                    }
+                    lua_pushnil(L);
+                    return 1;
+                }
                 else if (key == "selected_room")
                 {
                     return create_room(L, level->room(level->selected_room()).lock());
@@ -77,6 +87,13 @@ namespace trview
                 {
                     luaL_checktype(L, -1, LUA_TBOOLEAN);
                     level->set_alternate_mode(lua_toboolean(L, -1));
+                }
+                else if (key == "selected_item")
+                {
+                    if (auto item = to_item(L, -1))
+                    {
+                        level->set_selected_item(item->number());
+                    }
                 }
                 else if (key == "selected_room")
                 {

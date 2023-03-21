@@ -109,3 +109,26 @@ TEST(Event, TokenExpiryRemovesToken)
     event();
     ASSERT_EQ(1, times_called);
 }
+
+TEST(Event, RemoveEvent)
+{
+    int value = 0;
+    int times_called = 0;
+
+    Event<int> first, second;
+    first += second;
+    auto token = second += [&](int parameter)
+    {
+        ++times_called;
+        value = parameter;
+    };
+    first(100);
+
+    ASSERT_EQ(1, times_called);
+    ASSERT_EQ(100, value);
+
+    first -= second;
+
+    ASSERT_EQ(1, times_called);
+    ASSERT_EQ(100, value);
+}

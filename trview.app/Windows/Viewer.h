@@ -146,6 +146,7 @@ namespace trview
         PickResult _current_pick;
         WindowResizer _window_resizer;
         TokenStore _token_store;
+        TokenStore _level_token_store;
         AlternateGroupToggler _alternate_group_toggler;
         DirectX::SimpleMath::Vector3 _target;
         bool _show_selection{ true };

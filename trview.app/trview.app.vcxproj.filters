@@ -991,6 +991,12 @@
     <ClInclude Include="Mocks\Windows\IPluginsWindowManager.h">
       <Filter>Mocks\Windows</Filter>
     </ClInclude>
+    <ClInclude Include="Tools\IToolbar.h">
+      <Filter>Tools</Filter>
+    </ClInclude>
+    <ClInclude Include="Mocks\Tools\IToolbar.h">
+      <Filter>Mocks\Tools</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Windows">

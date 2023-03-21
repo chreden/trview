@@ -9,6 +9,9 @@ namespace trview
     struct IFileMenu
     {
         virtual ~IFileMenu() = 0;
+
+        virtual std::vector<std::string> local_levels() const = 0;
+
         /// <summary>
         /// Open the specified file. This will populate the switcher menu.
         /// </summary>

@@ -26,6 +26,14 @@ namespace trview
     }
 
     template <typename... Args>
+    Event<Args...>& Event<Args...>::operator -= (Event<Args...>& listener)
+    {
+        std::erase(_listener_events, &listener);
+        std::erase(listener._subscriptions, this);
+        return *this;
+    }
+
+    template <typename... Args>
     void Event<Args...>::operator()(Args... arguments)
     {
         for (const auto& listener : _listeners)

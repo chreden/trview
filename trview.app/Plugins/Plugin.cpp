@@ -119,4 +119,14 @@ namespace trview
             _lua->do_file(_script);
         }
     }
+
+    void Plugin::render_toolbar()
+    {
+        _lua->execute("if render_toolbar ~= nil then render_toolbar() end");
+    }
+
+    void Plugin::render_ui()
+    {
+        _lua->execute("if render_ui ~= nil then render_ui() end");
+    }
 }

@@ -186,4 +186,14 @@ namespace trview
             on_file_open(iter->path);
         }
     }
+
+    std::vector<std::string> FileMenu::local_levels() const
+    {
+        std::vector<std::string> files;
+        for (const auto& f : _file_switcher_list)
+        {
+            files.push_back(f.path);
+        }
+        return files;
+    }
 }

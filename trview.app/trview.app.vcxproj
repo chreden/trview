@@ -123,6 +123,7 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClInclude Include="Mocks\Lua\ILua.h" />
     <ClInclude Include="Mocks\Plugins\IPlugin.h" />
     <ClInclude Include="Mocks\Plugins\IPlugins.h" />
+    <ClInclude Include="Mocks\Tools\IToolbar.h" />
     <ClInclude Include="Mocks\Windows\IConsole.h" />
     <ClInclude Include="Mocks\Windows\IConsoleManager.h" />
     <ClInclude Include="Mocks\Windows\IPluginsWindow.h" />
@@ -131,6 +132,7 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClInclude Include="Plugins\IPlugins.h" />
     <ClInclude Include="Plugins\Plugin.h" />
     <ClInclude Include="Plugins\Plugins.h" />
+    <ClInclude Include="Tools\IToolbar.h" />
     <ClInclude Include="Type.inl">
       <FileType>Document</FileType>
     </ClInclude>
