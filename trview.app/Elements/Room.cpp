@@ -334,7 +334,7 @@ namespace trview
                 activity.log(trview::Message::Status::Error, std::format("Static Mesh {} was requested but not found", room_mesh.mesh_id));
                 continue;
             }
-            _static_meshes.push_back(static_mesh_mesh_source(room_mesh, level_static_mesh.value(), mesh_storage.mesh(level_static_mesh.value().Mesh)));
+            _static_meshes.push_back(static_mesh_mesh_source(room_mesh, level_static_mesh.value(), mesh_storage.mesh(level_static_mesh.value().Mesh), shared_from_this()));
         }
 
         // Also read the room sprites - they're similar enough for now.
@@ -347,7 +347,7 @@ namespace trview
             auto vertex = room.data.vertices[room_sprite.vertex].vertex;
             auto pos = Vector3(vertex.x / trlevel::Scale_X, vertex.y / trlevel::Scale_Y, vertex.z / trlevel::Scale_Z);
             pos = Vector3::Transform(pos, _room_offset) + offset;
-            _static_meshes.push_back(static_mesh_position_source(pos, scale, sprite_mesh));
+            _static_meshes.push_back(static_mesh_position_source(room_sprite, pos, scale, sprite_mesh, shared_from_this()));
         }
     }
 
@@ -1086,6 +1086,11 @@ namespace trview
     int16_t Room::light_mode() const
     {
         return _light_mode;
+    }
+
+    std::vector<std::weak_ptr<IStaticMesh>> Room::static_meshes() const
+    {
+        return { std::from_range, _static_meshes };
     }
 
     std::shared_ptr<ISector> sector_from_point(const IRoom& room, const Vector3& point)

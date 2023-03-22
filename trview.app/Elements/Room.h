@@ -90,6 +90,7 @@ namespace trview
             const IStaticMesh::PositionSource& static_mesh_position_source,
             const ISector::Source& sector_source,
             const Activity& activity);
+        std::vector<std::weak_ptr<IStaticMesh>> static_meshes() const override;
     private:
         void generate_geometry(const IMesh::Source& mesh_source, const trlevel::tr3_room& room);
         void generate_adjacency();

@@ -6,6 +6,7 @@
 #include "../CameraSink/Lua_CameraSink.h"
 #include "../Trigger/Lua_Trigger.h"
 #include "../Light/Lua_Light.h"
+#include "../StaticMesh/Lua_StaticMesh.h"
 
 namespace trview
 {
@@ -27,6 +28,11 @@ namespace trview
                 else if (key == "alternate_mode")
                 {
                     lua_pushboolean(L, level->alternate_mode());
+                    return 1;
+                }
+                else if (key == "filename")
+                {
+                    lua_pushstring(L, level->filename().c_str());
                     return 1;
                 }
                 else if (key == "floordata")
@@ -61,6 +67,10 @@ namespace trview
                 {
                     return create_room(L, level->room(level->selected_room()).lock());
                 }
+                else if (key == "static_meshes")
+                {
+                    return push_list_p(L, level->static_meshes(), create_static_mesh);
+                }
                 else if (key == "triggers")
                 {
                     return push_list_p(L, level->triggers(), create_trigger);
@@ -70,11 +80,7 @@ namespace trview
                     lua_pushinteger(L, static_cast<int>(level->version()));
                     return 1;
                 }
-                else if (key == "filename")
-                {
-                    lua_pushstring(L, level->filename().c_str());
-                    return 1;
-                }
+                
                 return 0;
             }
 

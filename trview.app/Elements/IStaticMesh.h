@@ -10,16 +10,35 @@ namespace trview
 {
     struct ILevelTextureStorage;
     struct ITransparencyBuffer;
+    struct IRoom;
 
     struct IStaticMesh
     {
-        using PositionSource = std::function<std::shared_ptr<IStaticMesh>(const DirectX::SimpleMath::Vector3&, const DirectX::SimpleMath::Matrix&, std::shared_ptr<IMesh>)>;
-        using MeshSource = std::function<std::shared_ptr<IStaticMesh>(const trlevel::tr3_room_staticmesh&, const trlevel::tr_staticmesh&, const std::shared_ptr<IMesh>&)>;
+        enum class Type
+        {
+            Mesh,
+            Sprite
+        };
+
+        using PositionSource = std::function<std::shared_ptr<IStaticMesh>(const trlevel::tr_room_sprite&, const DirectX::SimpleMath::Vector3&, const DirectX::SimpleMath::Matrix&, std::shared_ptr<IMesh>, const std::shared_ptr<IRoom>&)>;
+        using MeshSource = std::function<std::shared_ptr<IStaticMesh>(const trlevel::tr3_room_staticmesh&, const trlevel::tr_staticmesh&, const std::shared_ptr<IMesh>&, const std::shared_ptr<IRoom>&)>;
 
         virtual ~IStaticMesh() = 0;
         virtual void render(const ICamera& camera, const ILevelTextureStorage& texture_storage, const DirectX::SimpleMath::Color& colour) = 0;
         virtual void render_bounding_box(const ICamera& camera, const ILevelTextureStorage& texture_storage, const DirectX::SimpleMath::Color& colour) = 0;
         virtual void get_transparent_triangles(ITransparencyBuffer& transparency, const ICamera& camera, const DirectX::SimpleMath::Color& colour) = 0;
         virtual PickResult pick(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& direction) const = 0;
+
+        virtual DirectX::SimpleMath::Vector3 position() const = 0;
+        virtual std::weak_ptr<IRoom> room() const = 0;
+        virtual float rotation() const = 0;
+        virtual DirectX::BoundingBox visibility() const = 0;
+        virtual DirectX::BoundingBox collision() const = 0;
+        virtual Type type() const = 0;
+        virtual uint16_t id() const = 0;
     };
+
+    constexpr std::string to_string(IStaticMesh::Type type) noexcept;
 }
+
+#include "IStaticMesh.inl"

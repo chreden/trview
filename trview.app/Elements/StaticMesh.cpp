@@ -4,28 +4,40 @@
 
 namespace trview
 {
+    using namespace DirectX;
     using namespace DirectX::SimpleMath;
+
+    namespace
+    {
+        BoundingBox from_box(const trlevel::tr_bounding_box& box)
+        {
+            BoundingBox output;
+            BoundingBox::CreateFromPoints(output,
+                Vector3(box.MinX, box.MinY, box.MinZ),
+                Vector3(box.MaxX, box.MaxY, box.MaxZ));
+            return output;
+        }
+    }
 
     IStaticMesh::~IStaticMesh()
     {
     }
 
-    StaticMesh::StaticMesh(const trlevel::tr3_room_staticmesh& static_mesh, const trlevel::tr_staticmesh& level_static_mesh, const std::shared_ptr<IMesh>& mesh, const std::shared_ptr<IMesh>& bounding_mesh)
+    StaticMesh::StaticMesh(const trlevel::tr3_room_staticmesh& static_mesh, const trlevel::tr_staticmesh& level_static_mesh, const std::shared_ptr<IMesh>& mesh, const std::weak_ptr<IRoom>& room, const std::shared_ptr<IMesh>& bounding_mesh)
         : _mesh(mesh),
-        _visibility_min(level_static_mesh.VisibilityBox.MinX, level_static_mesh.VisibilityBox.MinY, level_static_mesh.VisibilityBox.MinZ),
-        _visibility_max(level_static_mesh.VisibilityBox.MaxX, level_static_mesh.VisibilityBox.MaxY, level_static_mesh.VisibilityBox.MaxZ),
-        _collision_min(level_static_mesh.CollisionBox.MinX / trlevel::Scale_X, level_static_mesh.CollisionBox.MinY / trlevel::Scale_Y, level_static_mesh.CollisionBox.MinZ / trlevel::Scale_Z),
-        _collision_max(level_static_mesh.CollisionBox.MaxX / trlevel::Scale_X, level_static_mesh.CollisionBox.MaxY / trlevel::Scale_Y, level_static_mesh.CollisionBox.MaxZ / trlevel::Scale_Z),
+        _visibility(from_box(level_static_mesh.VisibilityBox)),
+        _collision(from_box(level_static_mesh.CollisionBox)),
         _position(static_mesh.x / trlevel::Scale_X, static_mesh.y / trlevel::Scale_Y, static_mesh.z / trlevel::Scale_Z),
         _rotation(static_mesh.rotation / 16384.0f * DirectX::XM_PIDIV2),
-        _bounding_mesh(bounding_mesh)
+        _bounding_mesh(bounding_mesh),
+        _room(room),
+        _mesh_texture_id(static_mesh.mesh_id)
     {
-        using namespace DirectX::SimpleMath;
         _world = Matrix::CreateRotationY(_rotation) * Matrix::CreateTranslation(_position);
     }
 
-    StaticMesh::StaticMesh(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Matrix& scale, std::shared_ptr<IMesh> mesh)
-        : _position(position), _sprite_mesh(mesh), _rotation(0), _scale(scale)
+    StaticMesh::StaticMesh(const trlevel::tr_room_sprite& room_sprite, const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Matrix& scale, std::shared_ptr<IMesh> mesh, const std::weak_ptr<IRoom>& room)
+        : _position(position), _sprite_mesh(mesh), _rotation(0), _scale(scale), _room(room), _mesh_texture_id(room_sprite.texture)
     {
         using namespace DirectX::SimpleMath;
         _world = Matrix::CreateRotationY(_rotation) * Matrix::CreateTranslation(_position);
@@ -48,8 +60,8 @@ namespace trview
     {
         if (!_sprite_mesh)
         {
-            const auto size = (_collision_max - _collision_min);
-            const auto adjust = _collision_min + size * 0.5f;
+            const auto size = (_collision.Extents * 2.0f) / trlevel::Scale;
+            const auto adjust = _collision.Center / trlevel::Scale;
             const auto wvp = Matrix::CreateScale(size) * Matrix::CreateTranslation(adjust) * _world * camera.view_projection();
             _bounding_mesh->render(wvp, texture_storage, colour);
         }
@@ -84,5 +96,40 @@ namespace trview
         PickResult result = _mesh->pick(Vector3::Transform(position, _world.Invert()), direction);
         result.position = Vector3::Transform(result.position, _world);
         return result;
+    }
+
+    Vector3 StaticMesh::position() const
+    {
+        return _position;
+    }
+
+    std::weak_ptr<IRoom> StaticMesh::room() const
+    {
+        return _room;
+    }
+
+    DirectX::BoundingBox StaticMesh::visibility() const
+    {
+        return _visibility;
+    }
+
+    DirectX::BoundingBox StaticMesh::collision() const
+    {
+        return _collision;
+    }
+
+    float StaticMesh::rotation() const
+    {
+        return _rotation;
+    }
+
+    IStaticMesh::Type StaticMesh::type() const
+    {
+        return _mesh ? Type::Mesh : Type::Sprite;
+    }
+
+    uint16_t StaticMesh::id() const
+    {
+        return _mesh_texture_id;
     }
 }
