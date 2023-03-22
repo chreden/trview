@@ -1003,6 +1003,12 @@
     <ClInclude Include="Lua\BoundingBox.h">
       <Filter>Lua</Filter>
     </ClInclude>
+    <ClInclude Include="Tools\IToolbar.h">
+      <Filter>Tools</Filter>
+    </ClInclude>
+    <ClInclude Include="Mocks\Tools\IToolbar.h">
+      <Filter>Mocks\Tools</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Windows">

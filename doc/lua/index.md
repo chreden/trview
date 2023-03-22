@@ -1,7 +1,11 @@
 # Lua Bindings
 
+# Plugins System
+- [Plugins](plugins.md)
+
 # Libraries
 
+- [ImGui](imgui.md)
 - [item](item.md)
 - [level](level.md)
 - [room](room.md)

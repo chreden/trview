@@ -18,6 +18,7 @@ namespace trview
             const std::shared_ptr<IDialogs>& dialogs,
             const std::shared_ptr<IFiles>& files);
         virtual ~FileMenu() = default;
+        std::vector<std::string> local_levels() const override;
         virtual std::optional<int> process_message(UINT message, WPARAM wParam, LPARAM lParam) override;
         virtual void open_file(const std::string& filename) override;
         virtual void set_recent_files(const std::list<std::string>& files) override;

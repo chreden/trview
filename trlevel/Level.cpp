@@ -808,9 +808,13 @@ namespace trlevel
         return true;
     }
 
-    tr_sprite_texture Level::get_sprite_texture(uint32_t index) const
+    std::optional<tr_sprite_texture> Level::get_sprite_texture(uint32_t index) const
     {
-        return _sprite_textures[index];
+        if (index < _sprite_textures.size())
+        {
+            return _sprite_textures[index];
+        }
+        return std::nullopt;
     }
 
     void Level::load_tr4(trview::Activity& activity, std::istream& file)

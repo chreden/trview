@@ -543,6 +543,8 @@ TEST(Application, WindowManagersAndViewerRendered)
     EXPECT_CALL(console_manager, initialise_ui).Times(1);
     auto [plugins_window_manager_ptr, plugins_window_manager] = create_mock<MockPluginsWindowManager>();
     EXPECT_CALL(plugins_window_manager, render).Times(1);
+    auto plugins = mock_shared<MockPlugins>();
+    EXPECT_CALL(*plugins, render_ui).Times(1);
 
     auto [viewer_ptr, viewer] = create_mock<MockViewer>();
     EXPECT_CALL(viewer, render).Times(1);
@@ -562,6 +564,7 @@ TEST(Application, WindowManagersAndViewerRendered)
         .with_plugins_window_manager(std::move(plugins_window_manager_ptr))
         .with_viewer(std::move(viewer_ptr))
         .with_files(files)
+        .with_plugins(plugins)
         .build();
     application->render();
 }
@@ -1074,4 +1077,18 @@ TEST(Application, PluginsInitialised)
     auto application = register_test_module()
         .with_plugins(plugins)
         .build();
+}
+
+TEST(Application, LocalLevels)
+{
+    std::vector<std::string> files{ "test", "test2" };
+    auto [file_menu_ptr, file_menu] = create_mock<MockFileMenu>();
+    EXPECT_CALL(file_menu, local_levels).WillRepeatedly(Return(files));
+
+    auto application = register_test_module()
+        .with_file_menu(std::move(file_menu_ptr))
+        .build();
+
+    auto result = application->local_levels();
+    ASSERT_EQ(result, files);
 }

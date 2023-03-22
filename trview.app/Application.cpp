@@ -691,6 +691,7 @@ namespace trview
         _camera_sink_windows->render();
         _console_manager->render();
         _plugins_windows->render();
+        _plugins->render_ui();
 
         ImGui::PopFont();
         ImGui::Render();
@@ -825,6 +826,11 @@ namespace trview
 
     void Application::set_current_level(const std::shared_ptr<ILevel>& level, ILevel::OpenMode open_mode, bool prompt_user)
     {
+        if (level == _level)
+        {
+            return;
+        }
+
         if (prompt_user && open_mode == ILevel::OpenMode::Full && !should_discard_changes())
         {
             throw UserCancelledException();
@@ -915,5 +921,10 @@ namespace trview
     UserSettings Application::settings() const
     {
         return _settings;
+    }
+
+    std::vector<std::string> Application::local_levels() const
+    {
+        return _file_menu->local_levels();
     }
 }

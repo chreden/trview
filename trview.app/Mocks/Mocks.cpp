@@ -58,6 +58,7 @@
 #include "Plugins/IPlugin.h"
 #include "Mocks/Windows/IPluginsWindow.h"
 #include "Mocks/Windows/IPluginsWindowManager.h"
+#include "Mocks/Tools/IToolbar.h"
 
 namespace trview
 {
@@ -233,5 +234,8 @@ namespace trview
 
         MockPluginsWindowManager::MockPluginsWindowManager() {}
         MockPluginsWindowManager::~MockPluginsWindowManager() {}
+
+        MockToolbar::MockToolbar() {}
+        MockToolbar::~MockToolbar() {}
     }
 }

@@ -9,6 +9,7 @@ namespace trview
     {
     public:
         TokenStore& operator += (EventBase::Token&& token);
+        void clear();
     private:
         std::vector<EventBase::Token> _tokens;
     };

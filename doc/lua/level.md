@@ -12,6 +12,7 @@ The Level library provides information about the currently loaded Level in trvie
 | items | [Item](item.md)[] | R | All items |
 | lights | [Light](light.md)[] | R | All lights |
 | rooms | [Room](room.md)[] | R | All rooms |
+| selected_item | [Item](item.md) | RW | Currently selected item |
 | selected_room | [Room](room.md) | RW | Currently selected room |
 | static_meshes | [StaticMesh](staticmesh.md)[] | R | All static meshes |
 | triggers | [Trigger](trigger.md)[] | R | All triggers |

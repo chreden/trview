@@ -2,6 +2,7 @@
 #include <trview.common/Strings.h>
 #include "trview/trview.h"
 #include <external/lua/src/lualib.h>
+#include <trview.lua.imgui/trview.lua.imgui.h>
 
 namespace trview
 {
@@ -83,6 +84,7 @@ namespace trview
         lua_pushcclosure(L, print, 1);
         lua_setglobal(L, "print");
         lua::trview_register(L, application);
+        lua::imgui_register(L);
     }
 
     namespace lua

@@ -64,6 +64,13 @@ namespace trview
         /// @param listener The event that will be raised when the event is raised.
         Event<Args...>& operator += (Event<Args...>& listener);
 
+        /// <summary>
+        /// Remove an event listener from this event.
+        /// </summary>
+        /// <param name="listener">The listener to remove.</param>
+        /// <returns>The event.</returns>
+        Event<Args...>& operator -= (Event<Args...>& listener);
+
         /// Add a function as a listener to this event.
         /// @param listener The function that will be called when the event is raised.
         Token operator += (std::function<void(Args...)> listener);
