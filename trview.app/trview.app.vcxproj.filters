@@ -311,6 +311,9 @@
     <ClCompile Include="Lua\BoundingBox.cpp">
       <Filter>Lua</Filter>
     </ClCompile>
+    <ClCompile Include="Lua\Route\Lua_Route.cpp">
+      <Filter>Lua\Route</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera\Camera.h">
@@ -1009,6 +1012,9 @@
     <ClInclude Include="Mocks\Tools\IToolbar.h">
       <Filter>Mocks\Tools</Filter>
     </ClInclude>
+    <ClInclude Include="Lua\Route\Lua_Route.h">
+      <Filter>Lua\Route</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Windows">
@@ -1149,9 +1155,6 @@
     <Filter Include="Lua\Elements\Item">
       <UniqueIdentifier>{ea79c6fd-3a30-48a0-9862-5f18492d6e64}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Lua\Elements\Room">
-      <UniqueIdentifier>{80448327-8af3-4738-961e-77bda4e963d0}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Elements\Item">
       <UniqueIdentifier>{85b61b5c-df65-4d5d-9cc3-9ec05bf007cd}</UniqueIdentifier>
     </Filter>
@@ -1193,6 +1196,12 @@
     </Filter>
     <Filter Include="Elements\StaticMesh">
       <UniqueIdentifier>{ba89e27a-d235-497c-85cb-d257f1994e69}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Lua\Elements\Room">
+      <UniqueIdentifier>{80448327-8af3-4738-961e-77bda4e963d0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Lua\Route">
+      <UniqueIdentifier>{28f7b23c-bc43-40bc-a3a1-f2f742269f65}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
