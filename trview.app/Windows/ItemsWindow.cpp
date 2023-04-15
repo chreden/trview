@@ -234,8 +234,8 @@ namespace trview
                     add_stat(std::format("Type{}", is_bad_mutant_egg() ? "*" : ""), item->type());
                     add_stat("#", item->number());
                     add_stat("Position", position_text());
-                    add_stat("Rotation", bound_rotation(item->angle()));
-                    add_stat("Rotation Degrees", bound_rotation(item->angle()) / 182);
+                    add_stat("Angle", bound_rotation(item->angle()));
+                    add_stat("Angle Degrees", bound_rotation(item->angle()) / 182);
                     add_stat("Type ID", item->type_id());
                     add_stat("Room", item->room());
                     add_stat("Clear Body", item->clear_body_flag());
@@ -370,8 +370,8 @@ namespace trview
         _filters.add_getter<float>("X", [](auto&& item) { return item.position().x * trlevel::Scale_X; });
         _filters.add_getter<float>("Y", [](auto&& item) { return item.position().y * trlevel::Scale_Y; });
         _filters.add_getter<float>("Z", [](auto&& item) { return item.position().z * trlevel::Scale_Z; });
-        _filters.add_getter<float>("Rotation", [](auto&& item) { return static_cast<float>(bound_rotation(item.angle())); });
-        _filters.add_getter<float>("Rotation Degrees", [](auto&& item) { return static_cast<float>(bound_rotation(item.angle()) / 182); });
+        _filters.add_getter<float>("Angle", [](auto&& item) { return static_cast<float>(bound_rotation(item.angle())); });
+        _filters.add_getter<float>("Angle Degrees", [](auto&& item) { return static_cast<float>(bound_rotation(item.angle()) / 182); });
         _filters.add_getter<float>("Type ID", [](auto&& item) { return static_cast<float>(item.type_id()); });
         _filters.add_getter<float>("Room", [](auto&& item) { return static_cast<float>(item.room()); });
         _filters.add_getter<bool>("Clear Body", [](auto&& item) { return item.clear_body_flag(); });
