@@ -5,6 +5,22 @@
 
 namespace trview
 {
+    int32_t bound_rotation(int32_t v, int32_t low, int32_t high)
+    {
+        const int32_t size = high - low;
+        if (v > high)
+        {
+            const int32_t extra = v - high;
+            return low + extra - (extra / size) * size;
+        }
+        else if (v < low)
+        {
+            const int32_t extra = low - v;
+            return high - (extra - (extra / size) * size);
+        }
+        return v;
+    }
+
     IItemsWindow::~IItemsWindow()
     {
     }
@@ -216,6 +232,8 @@ namespace trview
                     add_stat(std::format("Type{}", is_bad_mutant_egg() ? "*" : ""), item->type());
                     add_stat("#", item->number());
                     add_stat("Position", position_text());
+                    add_stat("Rotation", bound_rotation(item->rotation(), 0, 65535));
+                    add_stat("Rotation Degrees", bound_rotation(item->rotation(), 0, 65535) / 182);
                     add_stat("Type ID", item->type_id());
                     add_stat("Room", item->room());
                     add_stat("Clear Body", item->clear_body_flag());
@@ -350,6 +368,8 @@ namespace trview
         _filters.add_getter<float>("X", [](auto&& item) { return item.position().x * trlevel::Scale_X; });
         _filters.add_getter<float>("Y", [](auto&& item) { return item.position().y * trlevel::Scale_Y; });
         _filters.add_getter<float>("Z", [](auto&& item) { return item.position().z * trlevel::Scale_Z; });
+        _filters.add_getter<float>("Rotation", [](auto&& item) { return static_cast<float>(bound_rotation(item.rotation(), 0, 65535)); });
+        _filters.add_getter<float>("Rotation Degrees", [](auto&& item) { return static_cast<float>(bound_rotation(item.rotation(), 0, 65535) / 182); });
         _filters.add_getter<float>("Type ID", [](auto&& item) { return static_cast<float>(item.type_id()); });
         _filters.add_getter<float>("Room", [](auto&& item) { return static_cast<float>(item.room()); });
         _filters.add_getter<bool>("Clear Body", [](auto&& item) { return item.clear_body_flag(); });
