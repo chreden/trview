@@ -30,7 +30,7 @@ namespace trview
             MOCK_METHOD(bool, invisible_flag, (), (const, override));
             MOCK_METHOD(DirectX::SimpleMath::Vector3, position, (), (const, override));
             MOCK_METHOD(std::weak_ptr<ILevel>, level, (), (const, override));
-            MOCK_METHOD(int32_t, rotation, (), (const, override));
+            MOCK_METHOD(int32_t, angle, (), (const, override));
 
             std::shared_ptr<MockItem> with_number(uint32_t number)
             {
