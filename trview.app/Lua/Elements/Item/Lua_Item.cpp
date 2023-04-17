@@ -24,6 +24,11 @@ namespace trview
                     lua_pushinteger(L, item->activation_flags());
                     return 1;
                 }
+                else if (key == "angle")
+                {
+                    lua_pushinteger(L, item->angle());
+                    return 1;
+                }
                 else if (key == "clear_body")
                 {
                     lua_pushboolean(L, item->clear_body_flag());

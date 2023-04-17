@@ -25,6 +25,20 @@ TEST(Lua_Item, ActivationFlags)
     ASSERT_EQ(123, lua_tointeger(L, -1));
 }
 
+TEST(Lua_Item, Angle)
+{
+    auto item = mock_shared<MockItem>();
+    EXPECT_CALL(*item, angle).WillOnce(Return(123));
+
+    lua_State* L = luaL_newstate();
+    lua::create_item(L, item);
+    lua_setglobal(L, "i");
+
+    ASSERT_EQ(0, luaL_dostring(L, "return i.angle"));
+    ASSERT_EQ(LUA_TNUMBER, lua_type(L, -1));
+    ASSERT_EQ(123, lua_tointeger(L, -1));
+}
+
 TEST(Lua_Item, ClearBody)
 {
     auto item = mock_shared<MockItem>();
