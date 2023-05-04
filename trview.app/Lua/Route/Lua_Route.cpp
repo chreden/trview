@@ -26,7 +26,7 @@ namespace trview
 
                 if (key == "add")
                 {
-
+                    
                 }
                 else if (key == "colour")
                 {

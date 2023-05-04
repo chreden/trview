@@ -64,3 +64,27 @@ TEST(Lua_trview, SetLevel)
 
     ASSERT_EQ(0, luaL_dostring(L, "trview.level = l"));
 }
+
+TEST(Lua_trview, Route)
+{
+    auto application = mock_shared<MockApplication>();
+    auto route = mock_shared<MockRoute>();
+    EXPECT_CALL(*application, route).Times(1).WillRepeatedly(Return(route));
+
+    lua_State* L = luaL_newstate();
+    lua::trview_register(L, application.get(), []() { return mock_shared<MockRoute>(); });
+
+    ASSERT_EQ(0, luaL_dostring(L, "return trview.route"));
+    ASSERT_EQ(LUA_TUSERDATA, lua_type(L, -1));
+}
+
+TEST(Lua_trview, SetRoute)
+{
+    auto application = mock_shared<MockApplication>();
+    EXPECT_CALL(*application, set_route).Times(1);
+
+    lua_State* L = luaL_newstate();
+    lua::trview_register(L, application.get(), []() { return mock_shared<MockRoute>(); });
+
+    ASSERT_EQ(0, luaL_dostring(L, "trview.route = Route.new()"));
+}

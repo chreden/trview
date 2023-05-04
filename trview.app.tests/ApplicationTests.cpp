@@ -312,7 +312,7 @@ TEST(Application, WindowContentsResetBeforeViewerLoaded)
     EXPECT_CALL(route_window_manager, set_items(A<const std::vector<std::weak_ptr<IItem>>&>())).Times(1).WillOnce([&](auto) { events.push_back("route_items"); });
     EXPECT_CALL(route_window_manager, set_triggers(A<const std::vector<std::weak_ptr<ITrigger>>&>())).Times(1).WillOnce([&](auto) { events.push_back("route_triggers"); });
     EXPECT_CALL(route_window_manager, set_rooms(A<const std::vector<std::weak_ptr<IRoom>>&>())).Times(1).WillOnce([&](auto) { events.push_back("route_rooms"); });
-    EXPECT_CALL(route_window_manager, set_route(A<IRoute*>())).Times(1).WillOnce([&](auto) { events.push_back("route_route"); });
+    EXPECT_CALL(route_window_manager, set_route(A<IRoute*>())).Times(2).WillOnce([&](auto) { events.push_back("route_route"); });
     EXPECT_CALL(lights_window_manager, set_lights(A<const std::vector<std::weak_ptr<ILight>>&>())).Times(1).WillOnce([&](auto) { events.push_back("lights_lights"); });
     EXPECT_CALL(camera_sink_window_manager, set_camera_sinks).Times(1).WillOnce([&](auto) { events.push_back("camera_sinks_camera_sinks"); });
     EXPECT_CALL(*route, clear()).Times(1).WillOnce([&] { events.push_back("route_clear"); });
@@ -477,9 +477,9 @@ TEST(Application, ExportRouteSavesFile)
 TEST(Application, ImportRouteLoadsFile)
 {
     auto [viewer_ptr, viewer] = create_mock <MockViewer>();
-    EXPECT_CALL(viewer, set_route).Times(1);
+    EXPECT_CALL(viewer, set_route).Times(2);
     auto [route_window_manager_ptr, route_window_manager] = create_mock<MockRouteWindowManager>();
-    EXPECT_CALL(route_window_manager, set_route).Times(1);
+    EXPECT_CALL(route_window_manager, set_route).Times(2);
     auto files = mock_shared<MockFiles>();
     EXPECT_CALL(*files, load_file(A<const std::string&>())).Times(1).WillRepeatedly(Return<std::vector<uint8_t>>({ 0x7b, 0x7d }));;
     auto route = mock_shared<MockRoute>();
@@ -830,7 +830,7 @@ TEST(Application, RecentRouteLoaded)
     EXPECT_CALL(*dialogs, message_box(std::wstring(L"Reopen last used route for this level?"), std::wstring(L"Reopen route"), IDialogs::Buttons::Yes_No)).Times(1).WillOnce(Return(true));
     auto route = mock_shared<MockRoute>();
     auto [viewer_ptr, viewer] = create_mock<MockViewer>();
-    EXPECT_CALL(viewer, set_route(std::shared_ptr<IRoute>(route))).Times(1);
+    EXPECT_CALL(viewer, set_route(std::shared_ptr<IRoute>(route))).Times(2);
     UserSettings called_settings{};
     EXPECT_CALL(viewer, set_settings).Times(AtLeast(1)).WillRepeatedly(SaveArg<0>(&called_settings));
     auto [level_ptr, level] = create_mock<trview::mocks::MockLevel>();
@@ -891,7 +891,7 @@ TEST(Application, RecentRouteLoadedOnWindowOpened)
     EXPECT_CALL(*dialogs, message_box(std::wstring(L"Reopen last used route for this level?"), std::wstring(L"Reopen route"), IDialogs::Buttons::Yes_No)).Times(1).WillOnce(Return(true));
     auto route = mock_shared<MockRoute>();
     auto [viewer_ptr, viewer] = create_mock<MockViewer>();
-    EXPECT_CALL(viewer, set_route(std::shared_ptr<IRoute>(route))).Times(1);
+    EXPECT_CALL(viewer, set_route(std::shared_ptr<IRoute>(route))).Times(2);
     UserSettings called_settings{};
     EXPECT_CALL(viewer, set_settings).Times(AtLeast(1)).WillRepeatedly(SaveArg<0>(&called_settings));
     auto [level_ptr, level] = create_mock<trview::mocks::MockLevel>();

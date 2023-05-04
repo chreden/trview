@@ -122,7 +122,7 @@ namespace trview
                 }
                 else if (key == "route")
                 {
-                    application->set_route(to_route(L, 2));
+                    application->set_route(to_route(L, -1));
                 }
                 return 0;
             }
