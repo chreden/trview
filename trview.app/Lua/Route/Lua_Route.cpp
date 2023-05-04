@@ -45,11 +45,11 @@ namespace trview
 
                 if (key == "colour")
                 {
-                    route->set_colour(to_colour(L, -1));
+                    route->set_colour(to_colour(L, 3));
                 }
                 else if (key == "waypoint_colour")
                 {
-                    route->set_waypoint_colour(to_colour(L, -1));
+                    route->set_waypoint_colour(to_colour(L, 3));
                 }
 
                 return 0;
@@ -85,6 +85,18 @@ namespace trview
             lua_setfield(L, -2, "__gc");
             lua_setmetatable(L, -2);
             return 1;
+        }
+
+        std::shared_ptr<IRoute> to_route(lua_State* L, int index)
+        {
+            luaL_checktype(L, index, LUA_TUSERDATA);
+            IRoute** userdata = static_cast<IRoute**>(lua_touserdata(L, index));
+            auto found = routes.find(userdata);
+            if (found == routes.end())
+            {
+                return {};
+            }
+            return found->second;
         }
 
         int route_new(lua_State* L)

@@ -244,6 +244,7 @@ namespace trview
             waypoint->set_route_colour(colour);
         }
         set_unsaved(true);
+        on_changed();
     }
 
     void Route::set_randomizer_enabled(bool enabled)
@@ -259,6 +260,7 @@ namespace trview
             waypoint->set_waypoint_colour(colour);
         }
         set_unsaved(true);
+        on_changed();
     }
 
     void Route::set_unsaved(bool value)

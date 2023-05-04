@@ -33,5 +33,21 @@ namespace trview
             float a = static_cast<float>(lua_tonumber(L, -1));
             return Colour(a, r, g, b);
         }
+
+        int colour_new(lua_State* L)
+        {
+            float r = static_cast<float>(lua_tonumber(L, 1));
+            float g = static_cast<float>(lua_tonumber(L, 2));
+            float b = static_cast<float>(lua_tonumber(L, 3));
+            return create_colour(L, Colour(r, g, b));
+        }
+
+        void colour_register(lua_State* L)
+        {
+            lua_newtable(L);
+            lua_pushcfunction(L, colour_new);
+            lua_setfield(L, -2, "new");
+            lua_setglobal(L, "Colour");
+        }
     }
 }

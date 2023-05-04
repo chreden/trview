@@ -5,6 +5,7 @@
 #include "../../UserCancelledException.h"
 #include "../Elements/Sector/Lua_Sector.h"
 #include "../Route/Lua_Route.h"
+#include "../Colour.h"
 #include "Lua/Lua.h"
 
 #include <future>
@@ -89,6 +90,10 @@ namespace trview
                 {
                     return push_list(L, application->settings().recent_files, push_string);
                 }
+                else if (key == "route")
+                {
+                    return create_route(L, application->route());
+                }
                 return 0;
             }
 
@@ -115,6 +120,10 @@ namespace trview
                         }
                     }
                 }
+                else if (key == "route")
+                {
+                    application->set_route(to_route(L, 2));
+                }
                 return 0;
             }
         }
@@ -134,6 +143,7 @@ namespace trview
 
             sector_register(L);
             route_register(L, route_source);
+            colour_register(L);
         }
     }
 }
