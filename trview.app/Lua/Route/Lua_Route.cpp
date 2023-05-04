@@ -12,6 +12,13 @@ namespace trview
             std::unordered_map<IRoute**, std::shared_ptr<IRoute>> routes;
             IRoute::Source route_source;
 
+            int route_clear(lua_State* L)
+            {
+                auto route = lua::get_self<IRoute>(L);
+                route->clear();
+                return 0;
+            }
+
             int route_index(lua_State* L)
             {
                 auto route = lua::get_self<IRoute>(L);
@@ -27,8 +34,8 @@ namespace trview
                 }
                 else if (key == "clear")
                 {
-                    route->clear();
-                    return 0;
+                    lua_pushcfunction(L, route_clear);
+                    return 1;
                 }
                 else if (key == "waypoint_colour")
                 {

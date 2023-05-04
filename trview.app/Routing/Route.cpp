@@ -120,6 +120,7 @@ namespace trview
         }
         _waypoints.clear();
         _selected_index = 0u;
+        on_changed();
     }
 
     void Route::insert(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& normal, uint32_t room, uint32_t index)
