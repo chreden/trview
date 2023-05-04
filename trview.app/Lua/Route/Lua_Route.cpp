@@ -1,6 +1,7 @@
 #include "Lua_Route.h"
 #include "../Lua.h"
 #include "../../Routing/Route.h"
+#include "../Colour.h"
 
 namespace trview
 {
@@ -16,8 +17,23 @@ namespace trview
                 auto route = lua::get_self<IRoute>(L);
                 const std::string key = lua_tostring(L, 2);
 
-                route;
-                key;
+                if (key == "add")
+                {
+
+                }
+                else if (key == "colour")
+                {
+                    return create_colour(L, route->colour());
+                }
+                else if (key == "clear")
+                {
+                    route->clear();
+                    return 0;
+                }
+                else if (key == "waypoint_colour")
+                {
+                    return create_colour(L, route->waypoint_colour());
+                }
 
                 return 0;
             }
@@ -27,8 +43,14 @@ namespace trview
                 auto route = lua::get_self<IRoute>(L);
                 const std::string key = lua_tostring(L, 2);
 
-                route;
-                key;
+                if (key == "colour")
+                {
+                    route->set_colour(to_colour(L, -1));
+                }
+                else if (key == "waypoint_colour")
+                {
+                    route->set_waypoint_colour(to_colour(L, -1));
+                }
 
                 return 0;
             }
