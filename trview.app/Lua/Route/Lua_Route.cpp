@@ -1,5 +1,6 @@
 #include "Lua_Route.h"
 #include "../Lua.h"
+#include "../../Routing/Route.h"
 
 namespace trview
 {
@@ -8,6 +9,7 @@ namespace trview
         namespace
         {
             std::unordered_map<IRoute**, std::shared_ptr<IRoute>> routes;
+            IRoute::Source route_source;
 
             int route_index(lua_State* L)
             {
@@ -61,6 +63,21 @@ namespace trview
             lua_setfield(L, -2, "__gc");
             lua_setmetatable(L, -2);
             return 1;
+        }
+
+        int route_new(lua_State* L)
+        {
+            return create_route(L, route_source());
+        }
+
+        void route_register(lua_State* L, const IRoute::Source& source)
+        {
+            route_source = source;
+
+            lua_newtable(L);
+            lua_pushcfunction(L, route_new);
+            lua_setfield(L, -2, "new");
+            lua_setglobal(L, "Route");
         }
     }
 }

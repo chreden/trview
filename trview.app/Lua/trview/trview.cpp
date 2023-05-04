@@ -4,6 +4,7 @@
 #include <trlevel/LevelEncryptedException.h>
 #include "../../UserCancelledException.h"
 #include "../Elements/Sector/Lua_Sector.h"
+#include "../Route/Lua_Route.h"
 #include "Lua/Lua.h"
 
 #include <future>
@@ -118,7 +119,7 @@ namespace trview
             }
         }
 
-        void trview_register(lua_State* L, IApplication* application)
+        void trview_register(lua_State* L, IApplication* application, const IRoute::Source& route_source)
         {
             IApplication** userdata = static_cast<IApplication**>(lua_newuserdata(L, sizeof(application)));
             *userdata = application;
@@ -132,6 +133,7 @@ namespace trview
             lua_setglobal(L, "trview");
 
             sector_register(L);
+            route_register(L, route_source);
         }
     }
 }

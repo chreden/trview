@@ -4,6 +4,7 @@
 #include <trview.tests.common/Mocks.h>
 #include <external/lua/src/lua.h>
 #include <external/lua/src/lauxlib.h>
+#include <trview.app/Mocks/Routing/IRoute.h>
 
 using namespace trview;
 using namespace trview::mocks;
@@ -19,7 +20,7 @@ TEST(Lua_trview, Level)
     EXPECT_CALL(*application, current_level).WillRepeatedly(Return(level));
 
     lua_State* L = luaL_newstate();
-    lua::trview_register(L, application.get());
+    lua::trview_register(L, application.get(), []() { return mock_shared<MockRoute>(); });
 
     ASSERT_EQ(0, luaL_dostring(L, "return trview.level"));
     ASSERT_EQ(LUA_TUSERDATA, lua_type(L, -1));
@@ -37,7 +38,7 @@ TEST(Lua_trview, RecentFiles)
     EXPECT_CALL(*application, settings).WillRepeatedly(Return(settings));
 
     lua_State* L = luaL_newstate();
-    lua::trview_register(L, application.get());
+    lua::trview_register(L, application.get(), []() { return mock_shared<MockRoute>(); });
 
     ASSERT_EQ(0, luaL_dostring(L, "return trview.recent_files"));
     ASSERT_EQ(LUA_TTABLE, lua_type(L, -1));
@@ -55,7 +56,7 @@ TEST(Lua_trview, SetLevel)
     EXPECT_CALL(*application, set_current_level).Times(1);
 
     lua_State* L = luaL_newstate();
-    lua::trview_register(L, application.get());
+    lua::trview_register(L, application.get(), []() { return mock_shared<MockRoute>(); });
 
     auto level = mock_shared<MockLevel>();
     lua::create_level(L, level);

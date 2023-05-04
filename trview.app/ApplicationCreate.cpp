@@ -251,10 +251,10 @@ namespace trview
         auto dialogs = std::make_shared<Dialogs>(window);
         auto shell = std::make_shared<Shell>();
 
-        auto plugin_source = [=](auto&&... args) { return std::make_shared<Plugin>(files, std::make_unique<Lua>(), args...); };
+        auto plugin_source = [=](auto&&... args) { return std::make_shared<Plugin>(files, std::make_unique<Lua>(route_source), args...); };
         auto plugins = std::make_shared<Plugins>(
             files,
-            std::make_shared<Plugin>(std::make_unique<Lua>(), "Default", "trview", "Default Lua plugin for trview"),
+            std::make_shared<Plugin>(std::make_unique<Lua>(route_source), "Default", "trview", "Default Lua plugin for trview"),
             plugin_source,
             settings_loader->load_user_settings());
         auto plugins_window_source = [=]() { return std::make_shared<PluginsWindow>(plugins, shell); };
