@@ -1,7 +1,12 @@
 #include "Lua_Route.h"
 #include "../Lua.h"
 #include "../../Routing/Route.h"
+#include "../Elements/Item/Lua_Item.h"
+#include "../Elements/Trigger/Lua_Trigger.h"
+#include "../../Elements/ITrigger.h"
 #include "../Colour.h"
+
+using namespace DirectX::SimpleMath;
 
 namespace trview
 {
@@ -12,21 +17,66 @@ namespace trview
             std::unordered_map<IRoute**, std::shared_ptr<IRoute>> routes;
             IRoute::Source route_source;
 
+            int route_add(lua_State* L)
+            {
+                auto route = get_self<IRoute>(L);
+
+                // TODO: Position
+                if (LUA_TUSERDATA == lua_getfield(L, 2, "item"))
+                {
+                    if (auto item = to_item(L, -1))
+                    {
+                        route->add(
+                            item->position(),
+                            Vector3::Down,
+                            item->room(),
+                            IWaypoint::Type::Entity,
+                            item->number());
+                    }
+                    return 0;
+                }
+                else
+                {
+                    lua_pop(L, 1);
+                }
+
+                if (LUA_TUSERDATA == lua_getfield(L, 2, "trigger"))
+                {
+                    if (auto trigger = to_trigger(L, -1))
+                    {
+                        route->add(
+                            trigger->position(),
+                            Vector3::Down,
+                            trigger->room(),
+                            IWaypoint::Type::Trigger,
+                            trigger->number());
+                    }
+                    return 0;
+                }
+                else
+                {
+                    lua_pop(L, 1);
+                }
+
+                return 0;
+            }
+
             int route_clear(lua_State* L)
             {
-                auto route = lua::get_self<IRoute>(L);
+                auto route = get_self<IRoute>(L);
                 route->clear();
                 return 0;
             }
 
             int route_index(lua_State* L)
             {
-                auto route = lua::get_self<IRoute>(L);
+                auto route = get_self<IRoute>(L);
                 const std::string key = lua_tostring(L, 2);
 
                 if (key == "add")
                 {
-                    
+                    lua_pushcfunction(L, route_add);
+                    return 1;
                 }
                 else if (key == "colour")
                 {
@@ -47,7 +97,7 @@ namespace trview
 
             int route_newindex(lua_State* L)
             {
-                auto route = lua::get_self<IRoute>(L);
+                auto route = get_self<IRoute>(L);
                 const std::string key = lua_tostring(L, 2);
 
                 if (key == "colour")
