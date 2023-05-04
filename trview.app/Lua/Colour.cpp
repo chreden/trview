@@ -23,13 +23,13 @@ namespace trview
 
         Colour to_colour(lua_State* L, int index)
         {
-            lua_getfield(L, 1, "r");
+            lua_getfield(L, index, "r");
             float r = static_cast<float>(lua_tonumber(L, -1));
-            lua_getfield(L, 1, "g");
+            lua_getfield(L, index, "g");
             float g = static_cast<float>(lua_tonumber(L, -1));
-            lua_getfield(L, 1, "b");
+            lua_getfield(L, index, "b");
             float b = static_cast<float>(lua_tonumber(L, -1));
-            lua_getfield(L, 1, "a");
+            lua_getfield(L, index, "a");
             float a = static_cast<float>(lua_tonumber(L, -1));
             return Colour(a, r, g, b);
         }
