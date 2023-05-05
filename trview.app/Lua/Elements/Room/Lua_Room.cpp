@@ -165,5 +165,13 @@ namespace trview
             }
             return found->second;
         }
+
+        std::shared_ptr<IRoom> to_room(lua_State* L, int index, const std::string& field_name)
+        {
+            lua_getfield(L, index, field_name.c_str());
+            auto room = to_room(L, -1);
+            lua_pop(L, 1);
+            return room;
+        }
     }
 }

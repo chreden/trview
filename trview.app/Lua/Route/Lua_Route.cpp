@@ -3,6 +3,8 @@
 #include "../../Routing/Route.h"
 #include "../Elements/Item/Lua_Item.h"
 #include "../Elements/Trigger/Lua_Trigger.h"
+#include "../Elements/Room/Lua_Room.h"
+#include "../Vector3.h"
 #include "../../Elements/ITrigger.h"
 #include "../Colour.h"
 
@@ -20,15 +22,15 @@ namespace trview
             int route_add(lua_State* L)
             {
                 auto route = get_self<IRoute>(L);
+                const Vector3 normal = to_vector3(L, 2, "normal", Vector3::Down);
 
-                // TODO: Position
                 if (LUA_TUSERDATA == lua_getfield(L, 2, "item"))
                 {
                     if (auto item = to_item(L, -1))
                     {
                         route->add(
                             item->position(),
-                            Vector3::Down,
+                            normal,
                             item->room(),
                             IWaypoint::Type::Entity,
                             item->number());
@@ -46,7 +48,7 @@ namespace trview
                     {
                         route->add(
                             trigger->position(),
-                            Vector3::Down,
+                            normal,
                             trigger->room(),
                             IWaypoint::Type::Trigger,
                             trigger->number());
@@ -58,6 +60,21 @@ namespace trview
                     lua_pop(L, 1);
                 }
 
+                if (LUA_TTABLE == lua_getfield(L, 2, "position"))
+                {
+                    Vector3 position = to_vector3(L, -1);
+                    if (auto room = to_room(L, 2, "room"))
+                    {
+                        route->add(position, normal, room->number());
+                    }
+                    else
+                    {
+                        luaL_error(L, "Room must be valid when using Position in Route:add");
+                    }
+                    return 0;
+                }
+
+                luaL_error(L, "One of item, trigger or position must be specified for Route:add");
                 return 0;
             }
 
