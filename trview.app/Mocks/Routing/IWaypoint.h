@@ -32,6 +32,8 @@ namespace trview
             MOCK_METHOD(WaypointRandomizerSettings, randomizer_settings, (), (const, override));
             MOCK_METHOD(void, set_randomizer_settings, (const WaypointRandomizerSettings&), (override));
             MOCK_METHOD(void, set_position, (const DirectX::SimpleMath::Vector3&), (override));
+            MOCK_METHOD(Colour, route_colour, (), (const, override));
+            MOCK_METHOD(Colour, waypoint_colour, (), (const, override));
             /// <summary>
             /// Index used for testing ordering.
             /// </summary>

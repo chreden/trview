@@ -15,7 +15,7 @@ namespace trview
     class Lua final : public ILua
     {
     public:
-        explicit Lua(const IRoute::Source& route_source);
+        explicit Lua(const IRoute::Source& route_source, const IWaypoint::Source& waypoint_source);
         ~Lua();
         void do_file(const std::string& file) override;
         void execute(const std::string& command) override;
@@ -23,6 +23,7 @@ namespace trview
     private:
         lua_State* L{ nullptr };
         IRoute::Source _route_source;
+        IWaypoint::Source _waypoint_source;
     };
 
     namespace lua

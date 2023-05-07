@@ -171,5 +171,15 @@ namespace trview
     {
         _position = position;
     }
+
+    Colour Waypoint::route_colour() const
+    {
+        return _route_colour;
+    }
+
+    Colour Waypoint::waypoint_colour() const
+    {
+        return _waypoint_colour;
+    }
 }
 

@@ -4,6 +4,7 @@
 #include "../Elements/Item/Lua_Item.h"
 #include "../Elements/Trigger/Lua_Trigger.h"
 #include "../Elements/Room/Lua_Room.h"
+#include "Lua_Waypoint.h"
 #include "../Vector3.h"
 #include "../../Elements/ITrigger.h"
 #include "../Colour.h"
@@ -22,59 +23,7 @@ namespace trview
             int route_add(lua_State* L)
             {
                 auto route = get_self<IRoute>(L);
-                const Vector3 normal = to_vector3(L, 2, "normal", Vector3::Down);
-
-                if (LUA_TUSERDATA == lua_getfield(L, 2, "item"))
-                {
-                    if (auto item = to_item(L, -1))
-                    {
-                        route->add(
-                            item->position(),
-                            normal,
-                            item->room(),
-                            IWaypoint::Type::Entity,
-                            item->number());
-                    }
-                    return 0;
-                }
-                else
-                {
-                    lua_pop(L, 1);
-                }
-
-                if (LUA_TUSERDATA == lua_getfield(L, 2, "trigger"))
-                {
-                    if (auto trigger = to_trigger(L, -1))
-                    {
-                        route->add(
-                            trigger->position(),
-                            normal,
-                            trigger->room(),
-                            IWaypoint::Type::Trigger,
-                            trigger->number());
-                    }
-                    return 0;
-                }
-                else
-                {
-                    lua_pop(L, 1);
-                }
-
-                if (LUA_TTABLE == lua_getfield(L, 2, "position"))
-                {
-                    Vector3 position = to_vector3(L, -1);
-                    if (auto room = to_room(L, 2, "room"))
-                    {
-                        route->add(position, normal, room->number());
-                    }
-                    else
-                    {
-                        luaL_error(L, "Room must be valid when using Position in Route:add");
-                    }
-                    return 0;
-                }
-
-                luaL_error(L, "One of item, trigger or position must be specified for Route:add");
+                route->add(to_waypoint(L, 2));
                 return 0;
             }
 
@@ -136,6 +85,11 @@ namespace trview
                 routes.erase(userdata);
                 return 0;
             }
+
+            int route_new(lua_State* L)
+            {
+                return create_route(L, route_source());
+            }
         }
 
         int create_route(lua_State* L, const std::shared_ptr<IRoute>& route)
@@ -171,11 +125,6 @@ namespace trview
                 return {};
             }
             return found->second;
-        }
-
-        int route_new(lua_State* L)
-        {
-            return create_route(L, route_source());
         }
 
         void route_register(lua_State* L, const IRoute::Source& source)

@@ -314,6 +314,9 @@
     <ClCompile Include="Lua\Route\Lua_Route.cpp">
       <Filter>Lua\Route</Filter>
     </ClCompile>
+    <ClCompile Include="Lua\Route\Lua_Waypoint.cpp">
+      <Filter>Lua\Route</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera\Camera.h">
@@ -1013,6 +1016,9 @@
       <Filter>Mocks\Tools</Filter>
     </ClInclude>
     <ClInclude Include="Lua\Route\Lua_Route.h">
+      <Filter>Lua\Route</Filter>
+    </ClInclude>
+    <ClInclude Include="Lua\Route\Lua_Waypoint.h">
       <Filter>Lua\Route</Filter>
     </ClInclude>
   </ItemGroup>

@@ -11,6 +11,6 @@ namespace trview
 
     namespace lua
     {
-        void trview_register(lua_State* L, IApplication* application, const IRoute::Source& route_source);
+        void trview_register(lua_State* L, IApplication* application, const IRoute::Source& route_source, const IWaypoint::Source& waypoint_source);
     }
 }

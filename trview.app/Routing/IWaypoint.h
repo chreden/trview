@@ -37,7 +37,7 @@ namespace trview
         /// <summary>
         /// Create a waypoint.
         /// </summary>
-        using Source = std::function<std::unique_ptr<IWaypoint>(const DirectX::SimpleMath::Vector3&, const DirectX::SimpleMath::Vector3&, uint32_t, Type, uint32_t, const Colour&, const Colour&)>;
+        using Source = std::function<std::shared_ptr<IWaypoint>(const DirectX::SimpleMath::Vector3&, const DirectX::SimpleMath::Vector3&, uint32_t, Type, uint32_t, const Colour&, const Colour&)>;
         /// <summary>
         /// Destructor for IWaypoint.
         /// </summary>
@@ -106,8 +106,9 @@ namespace trview
         virtual DirectX::SimpleMath::Vector3 normal() const = 0;
         virtual WaypointRandomizerSettings randomizer_settings() const = 0;
         virtual void set_randomizer_settings(const WaypointRandomizerSettings& settings) = 0;
-
         virtual void set_position(const DirectX::SimpleMath::Vector3& position) = 0;
+        virtual Colour route_colour() const = 0;
+        virtual Colour waypoint_colour() const = 0;
     };
 
     /// <summary>

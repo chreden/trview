@@ -100,10 +100,14 @@ namespace trview
         add(position, normal, room, IWaypoint::Type::Position, 0u);
     }
 
-
     void Route::add(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& normal, uint32_t room, IWaypoint::Type type, uint32_t type_index)
     {
-        _waypoints.push_back(_waypoint_source(position, normal, room, type, type_index, _colour, _waypoint_colour));
+        add(_waypoint_source(position, normal, room, type, type_index, _colour, _waypoint_colour));
+    }
+
+    void Route::add(const std::shared_ptr<IWaypoint>& waypoint)
+    {
+        _waypoints.push_back(waypoint);
         set_unsaved(true);
     }
 

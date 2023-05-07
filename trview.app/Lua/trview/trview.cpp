@@ -5,6 +5,7 @@
 #include "../../UserCancelledException.h"
 #include "../Elements/Sector/Lua_Sector.h"
 #include "../Route/Lua_Route.h"
+#include "../Route/Lua_Waypoint.h"
 #include "../Colour.h"
 #include "Lua/Lua.h"
 
@@ -128,7 +129,9 @@ namespace trview
             }
         }
 
-        void trview_register(lua_State* L, IApplication* application, const IRoute::Source& route_source)
+        void trview_register(lua_State* L, IApplication* application,
+            const IRoute::Source& route_source,
+            const IWaypoint::Source& waypoint_source)
         {
             IApplication** userdata = static_cast<IApplication**>(lua_newuserdata(L, sizeof(application)));
             *userdata = application;
@@ -143,6 +146,7 @@ namespace trview
 
             sector_register(L);
             route_register(L, route_source);
+            waypoint_register(L, waypoint_source);
             colour_register(L);
         }
     }

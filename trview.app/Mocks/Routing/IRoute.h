@@ -12,6 +12,7 @@ namespace trview
             virtual ~MockRoute();
             MOCK_METHOD(void, add, (const DirectX::SimpleMath::Vector3&, const DirectX::SimpleMath::Vector3&, uint32_t), (override));
             MOCK_METHOD(void, add, (const DirectX::SimpleMath::Vector3&, const DirectX::SimpleMath::Vector3&, uint32_t, IWaypoint::Type, uint32_t), (override));
+            MOCK_METHOD(void, add, (const std::shared_ptr<IWaypoint>&), (override));
             MOCK_METHOD(void, clear, (), (override));
             MOCK_METHOD(Colour, colour, (), (const, override));
             MOCK_METHOD(void, insert, (const DirectX::SimpleMath::Vector3&, const DirectX::SimpleMath::Vector3&, uint32_t, uint32_t), (override));

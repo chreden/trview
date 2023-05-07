@@ -32,6 +32,8 @@ namespace trview
         /// <param name="type">The type of the waypoint.</param>
         /// <param name="type_index">The index of the referred to entity or trigger.</param>
         virtual void add(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& normal, uint32_t room, IWaypoint::Type type, uint32_t type_index) = 0;
+
+        virtual void add(const std::shared_ptr<IWaypoint>& waypoint) = 0;
         /// <summary>
         /// Remove all of the waypoints from the route.
         /// </summary>

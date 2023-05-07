@@ -21,6 +21,7 @@ namespace trview
         Route& operator=(const Route& other);
         virtual void add(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& normal, uint32_t room) override;
         virtual void add(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& normal, uint32_t room, IWaypoint::Type type, uint32_t type_index) override;
+        void add(const std::shared_ptr<IWaypoint>& waypoint) override;
         virtual void clear() override;
         virtual Colour colour() const override;
         virtual void insert(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& normal, uint32_t room, uint32_t index) override;
