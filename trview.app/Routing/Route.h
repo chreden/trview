@@ -40,8 +40,7 @@ namespace trview
         virtual void set_waypoint_colour(const Colour& colour) override;
         virtual void set_unsaved(bool value) override;
         virtual Colour waypoint_colour() const override;
-        virtual const IWaypoint& waypoint(uint32_t index) const override;
-        virtual IWaypoint& waypoint(uint32_t index) override;
+        virtual std::weak_ptr<IWaypoint> waypoint(uint32_t index) const override;
         virtual uint32_t waypoints() const override;
     private:
         uint32_t next_index() const;

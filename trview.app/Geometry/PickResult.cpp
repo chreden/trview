@@ -136,28 +136,30 @@ namespace trview
             }
             case PickResult::Type::Waypoint:
             {
-                auto& waypoint = route.waypoint(result.index);
-                stream << "Waypoint " << result.index;
+                if (auto waypoint = route.waypoint(result.index).lock())
+                {
+                    stream << "Waypoint " << result.index;
 
-                if (waypoint.type() == IWaypoint::Type::Entity)
-                {
-                    if (const auto item = level.item(waypoint.index()).lock())
+                    if (waypoint->type() == IWaypoint::Type::Entity)
                     {
-                        stream << " - " << item->type();
+                        if (const auto item = level.item(waypoint->index()).lock())
+                        {
+                            stream << " - " << item->type();
+                        }
                     }
-                }
-                else if (waypoint.type() == IWaypoint::Type::Trigger)
-                {
-                    if (const auto trigger = level.trigger(waypoint.index()).lock())
+                    else if (waypoint->type() == IWaypoint::Type::Trigger)
                     {
-                        stream << " - " << trigger_type_name(trigger->type()) << " " << waypoint.index();
+                        if (const auto trigger = level.trigger(waypoint->index()).lock())
+                        {
+                            stream << " - " << trigger_type_name(trigger->type()) << " " << waypoint->index();
+                        }
                     }
-                }
 
-                const auto notes = waypoint.notes();
-                if (!notes.empty())
-                {
-                    stream << "\n\n" << notes;
+                    const auto notes = waypoint->notes();
+                    if (!notes.empty())
+                    {
+                        stream << "\n\n" << notes;
+                    }
                 }
                 break;
             }

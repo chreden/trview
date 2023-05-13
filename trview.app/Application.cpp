@@ -499,11 +499,13 @@ namespace trview
 
     void Application::select_waypoint(uint32_t index)
     {
-        const auto& waypoint = _route->waypoint(index);
-        select_room(_route->waypoint(index).room());
-        _route->select_waypoint(index);
-        _viewer->select_waypoint(waypoint);
-        _route_window->select_waypoint(index);
+        if (auto waypoint = _route->waypoint(index).lock())
+        {
+            select_room(waypoint->room());
+            _route->select_waypoint(index);
+            _viewer->select_waypoint(waypoint);
+            _route_window->select_waypoint(index);
+        }
     }
 
     void Application::select_next_waypoint()
