@@ -3,6 +3,7 @@
 #include "trview/trview.h"
 #include <external/lua/src/lualib.h>
 #include <trview.lua.imgui/trview.lua.imgui.h>
+#include "Route/Lua_Waypoint.h"
 
 namespace trview
 {

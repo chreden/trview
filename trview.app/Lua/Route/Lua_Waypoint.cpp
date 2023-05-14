@@ -18,6 +18,7 @@ namespace trview
         {
             std::unordered_map<IWaypoint**, std::shared_ptr<IWaypoint>> waypoints;
             IWaypoint::Source waypoint_source;
+            UserSettings user_settings;
 
             int waypoint_index(lua_State* L)
             {
@@ -27,6 +28,44 @@ namespace trview
                 if (key == "colour")
                 {
                     return create_colour(L, waypoint->route_colour());
+                }
+                else if (key == "notes")
+                {
+                    lua_pushstring(L, waypoint->notes().c_str());
+                    return 1;
+                }
+                else if (key == "randomizer_settings")
+                {
+                    auto settings = waypoint->randomizer_settings();
+                    lua_newtable(L);
+
+                    for (const auto& setting : user_settings.randomizer.settings)
+                    {
+                        const auto value_to_set =
+                            settings.find(setting.first) == settings.end() ?
+                            setting.second.default_value : settings[setting.first];
+
+                        switch (setting.second.type)
+                        {
+                            case RandomizerSettings::Setting::Type::Boolean:
+                            {
+                                lua_pushboolean(L, std::get<bool>(value_to_set));
+                                break;
+                            }
+                            case RandomizerSettings::Setting::Type::String:
+                            {
+                                lua_pushstring(L, std::get<std::string>(value_to_set).c_str());
+                                break;
+                            }
+                            case RandomizerSettings::Setting::Type::Number:
+                            {
+                                lua_pushnumber(L, std::get<float>(value_to_set));
+                                break;
+                            }
+                        }
+                        lua_setfield(L, -2, setting.first.c_str());
+                    }
+                    return 1;
                 }
                 else if (key == "waypoint_colour")
                 {
@@ -45,6 +84,15 @@ namespace trview
                 {
                     waypoint->set_route_colour(to_colour(L, 3));
                 }
+                else if (key == "notes")
+                {
+                    luaL_checkstring(L, 3);
+                    waypoint->set_notes(lua_tostring(L, 3));
+                }
+                else if (key == "randomizer_settings")
+                {
+                    
+                }
                 else if (key == "waypoint_colour")
                 {
                     waypoint->set_waypoint_colour(to_colour(L, 3));
@@ -59,29 +107,6 @@ namespace trview
                 IWaypoint** userdata = static_cast<IWaypoint**>(lua_touserdata(L, 1));
                 waypoints.erase(userdata);
                 return 0;
-            }
-
-            int create_waypoint(lua_State* L, const std::shared_ptr<IWaypoint>& waypoint)
-            {
-                if (!waypoint)
-                {
-                    lua_pushnil(L);
-                    return 1;
-                }
-
-                IWaypoint** userdata = static_cast<IWaypoint**>(lua_newuserdata(L, sizeof(waypoint.get())));
-                *userdata = waypoint.get();
-                waypoints[userdata] = waypoint;
-
-                lua_newtable(L);
-                lua_pushcfunction(L, waypoint_index);
-                lua_setfield(L, -2, "__index");
-                lua_pushcfunction(L, waypoint_newindex);
-                lua_setfield(L, -2, "__newindex");
-                lua_pushcfunction(L, waypoint_gc);
-                lua_setfield(L, -2, "__gc");
-                lua_setmetatable(L, -2);
-                return 1;
             }
 
             int waypoint_new(lua_State* L)
@@ -177,6 +202,34 @@ namespace trview
                 return {};
             }
             return found->second;
+        }
+
+        int create_waypoint(lua_State* L, const std::shared_ptr<IWaypoint>& waypoint)
+        {
+            if (!waypoint)
+            {
+                lua_pushnil(L);
+                return 1;
+            }
+
+            IWaypoint** userdata = static_cast<IWaypoint**>(lua_newuserdata(L, sizeof(waypoint.get())));
+            *userdata = waypoint.get();
+            waypoints[userdata] = waypoint;
+
+            lua_newtable(L);
+            lua_pushcfunction(L, waypoint_index);
+            lua_setfield(L, -2, "__index");
+            lua_pushcfunction(L, waypoint_newindex);
+            lua_setfield(L, -2, "__newindex");
+            lua_pushcfunction(L, waypoint_gc);
+            lua_setfield(L, -2, "__gc");
+            lua_setmetatable(L, -2);
+            return 1;
+        }
+
+        void waypoint_set_settings(const UserSettings& new_settings)
+        {
+            user_settings = new_settings;
         }
     }
 }

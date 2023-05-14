@@ -57,6 +57,15 @@ namespace trview
                 {
                     return create_colour(L, route->waypoint_colour());
                 }
+                else if (key == "waypoints")
+                {
+                    std::vector<std::weak_ptr<IWaypoint>> waypoints;
+                    for (uint32_t i = 0; i < route->waypoints(); ++i)
+                    {
+                        waypoints.push_back(route->waypoint(i));
+                    }
+                    return push_list_p(L, waypoints, create_waypoint);
+                }
 
                 return 0;
             }

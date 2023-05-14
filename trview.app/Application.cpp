@@ -70,6 +70,7 @@ namespace trview
 
         _update_checker->check_for_updates();
         _settings = _settings_loader->load_user_settings();
+        lua::set_settings(_settings);
 
         set_route(route_source());
 
@@ -272,6 +273,7 @@ namespace trview
             _route_window->set_randomizer_enabled(settings.randomizer_tools);
             _route->set_randomizer_enabled(settings.randomizer_tools);
             _rooms_windows->set_map_colours(settings.map_colours);
+            lua::set_settings(settings);
             if (_level)
             {
                 _level->set_map_colours(settings.map_colours);

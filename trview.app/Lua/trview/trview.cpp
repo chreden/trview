@@ -149,5 +149,10 @@ namespace trview
             waypoint_register(L, waypoint_source);
             colour_register(L);
         }
+
+        void set_settings(const UserSettings& settings)
+        {
+            waypoint_set_settings(settings);
+        }
     }
 }

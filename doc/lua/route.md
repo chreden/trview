@@ -18,5 +18,5 @@ The Route library lets you create and edit routes.
 
 | Name | Returns | Parameters | Description |
 | ---- | ------- | ---------- | ----------- |
-| add | - | `{ Item item, Trigger trigger, Vector3 position, Vector3 normal, Room room }` | Adds either an [Item](item.md), [Trigger](trigger.md) or [Position](vector3.md) to the end of route, in that order of precedence. Only one needs to be provided. Normal is optional - if not provided the waypoint will be vertical. Room is required only if using Position. |
+| add | - | [Waypoint](waypoint.md) | Add the specified waypoint to the end of the route |
 | clear | - | - | Removes all waypoints in the route |

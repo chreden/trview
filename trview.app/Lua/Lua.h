@@ -7,6 +7,7 @@
 #include <functional>
 #include "ILua.h"
 #include "../Routing/IRoute.h"
+#include "../Settings/UserSettings.h"
 
 namespace trview
 {
