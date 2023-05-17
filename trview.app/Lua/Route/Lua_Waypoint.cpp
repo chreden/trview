@@ -91,7 +91,8 @@ namespace trview
                 }
                 else if (key == "randomizer_settings")
                 {
-                    
+                    luaL_checktype(L, LUA_TTABLE, 3);
+
                 }
                 else if (key == "waypoint_colour")
                 {

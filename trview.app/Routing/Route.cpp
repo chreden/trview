@@ -95,20 +95,21 @@ namespace trview
         return *this;
     }
 
-    void Route::add(const Vector3& position, const DirectX::SimpleMath::Vector3& normal, uint32_t room)
+    std::shared_ptr<IWaypoint> Route::add(const Vector3& position, const DirectX::SimpleMath::Vector3& normal, uint32_t room)
     {
-        add(position, normal, room, IWaypoint::Type::Position, 0u);
+        return add(position, normal, room, IWaypoint::Type::Position, 0u);
     }
 
-    void Route::add(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& normal, uint32_t room, IWaypoint::Type type, uint32_t type_index)
+    std::shared_ptr<IWaypoint> Route::add(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& normal, uint32_t room, IWaypoint::Type type, uint32_t type_index)
     {
-        add(_waypoint_source(position, normal, room, type, type_index, _colour, _waypoint_colour));
+        return add(_waypoint_source(position, normal, room, type, type_index, _colour, _waypoint_colour));
     }
 
-    void Route::add(const std::shared_ptr<IWaypoint>& waypoint)
+    std::shared_ptr<IWaypoint> Route::add(const std::shared_ptr<IWaypoint>& waypoint)
     {
         _waypoints.push_back(waypoint);
         set_unsaved(true);
+        return waypoint;
     }
 
     Colour Route::colour() const
@@ -131,7 +132,8 @@ namespace trview
     {
         if (index >= _waypoints.size())
         {
-            return add(position, normal, room, IWaypoint::Type::Position, 0u);
+            add(position, normal, room, IWaypoint::Type::Position, 0u);
+            return;
         }
         insert(position, normal, room, index, IWaypoint::Type::Position, 0u);
         set_unsaved(true);

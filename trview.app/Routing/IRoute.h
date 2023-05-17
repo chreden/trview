@@ -22,7 +22,7 @@ namespace trview
         /// <param name="position">The new waypoint.</param>
         /// <param name="normal">The normal to align the waypoint to.</param>
         /// <param name="room">The room the waypoint is in.</param>
-        virtual void add(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& normal, uint32_t room) = 0;
+        virtual std::shared_ptr<IWaypoint> add(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& normal, uint32_t room) = 0;
         /// <summary>
         /// Add a new waypoint to the end of the route.
         /// </summary>
@@ -31,9 +31,9 @@ namespace trview
         /// <param name="room">The room that waypoint is in.</param>
         /// <param name="type">The type of the waypoint.</param>
         /// <param name="type_index">The index of the referred to entity or trigger.</param>
-        virtual void add(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& normal, uint32_t room, IWaypoint::Type type, uint32_t type_index) = 0;
+        virtual std::shared_ptr<IWaypoint> add(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& normal, uint32_t room, IWaypoint::Type type, uint32_t type_index) = 0;
 
-        virtual void add(const std::shared_ptr<IWaypoint>& waypoint) = 0;
+        virtual std::shared_ptr<IWaypoint> add(const std::shared_ptr<IWaypoint>& waypoint) = 0;
         /// <summary>
         /// Remove all of the waypoints from the route.
         /// </summary>

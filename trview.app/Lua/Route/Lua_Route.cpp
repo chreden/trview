@@ -23,8 +23,7 @@ namespace trview
             int route_add(lua_State* L)
             {
                 auto route = get_self<IRoute>(L);
-                route->add(to_waypoint(L, 2));
-                return 0;
+                return create_waypoint(L, route->add(to_waypoint(L, 2)));
             }
 
             int route_clear(lua_State* L)
