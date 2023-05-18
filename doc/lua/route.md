@@ -6,6 +6,7 @@ The Route library lets you create and edit routes.
 | Name | Type | Mode | Description |
 | ---- | ---- | ---- | ---- |
 | colour | [Colour](colour.md) | RW | The route line colour |
+| waypoints | [Waypoint](waypoint.md)[] | RW | The route waypoints |
 | waypoint_colour | [Colour](colour.md) | RW | The default waypoint colour |
 
 # Non-Instance Functions

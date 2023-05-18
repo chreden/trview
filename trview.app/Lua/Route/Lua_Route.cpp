@@ -82,6 +82,25 @@ namespace trview
                 {
                     route->set_waypoint_colour(to_colour(L, 3));
                 }
+                else if (key == "waypoints")
+                {
+                    luaL_checktype(L, 3, LUA_TTABLE);
+
+                    std::vector<std::weak_ptr<IWaypoint>> waypoints;
+
+                    lua_pushnil(L);
+                    while (lua_next(L, 3) != 0)
+                    {
+                        waypoints.push_back(to_waypoint(L, -1));
+                        lua_pop(L, 1);
+                    }
+
+                    route->clear();
+                    for (const auto& waypoint : waypoints)
+                    {
+                        route->add(waypoint.lock());
+                    }
+                }
 
                 return 0;
             }

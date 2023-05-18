@@ -91,8 +91,94 @@ namespace trview
                 }
                 else if (key == "randomizer_settings")
                 {
-                    luaL_checktype(L, LUA_TTABLE, 3);
+                    luaL_checktype(L, 3, LUA_TTABLE);
 
+                    IWaypoint::WaypointRandomizerSettings new_settings;
+
+                    lua_pushnil(L);
+                    while (lua_next(L, 3) != 0)
+                    {
+                        luaL_checkstring(L, -2);
+                        std::string setting_key = lua_tostring(L, -2);
+
+                        const auto setting_iter = user_settings.randomizer.settings.find(setting_key);
+                        if (setting_iter == user_settings.randomizer.settings.end())
+                        {
+                            return luaL_error(L, "Setting %s is not a known Randomizer setting", setting_key.c_str());
+                        }
+
+                        const auto& setting = setting_iter->second;
+                        switch (setting.type)
+                        {
+                            case RandomizerSettings::Setting::Type::Boolean:
+                            {
+                                luaL_checktype(L, -1, LUA_TBOOLEAN);
+                                const bool value = static_cast<bool>(lua_toboolean(L, -1));
+
+                                if (setting.options.empty() ||
+                                    std::ranges::any_of(setting.options, [&](const auto& v)
+                                        {
+                                            return std::holds_alternative<bool>(v) && std::get<bool>(v) == value;
+                                        }))
+                                {
+                                    new_settings[setting_key] = value;
+                                }
+                                else
+                                {
+                                    return luaL_error(L, "%s was not a valid option for setting %s",
+                                        value ? "true" : "false",
+                                        setting_key.c_str());
+                                }
+                                
+                                break;
+                            }
+                            case RandomizerSettings::Setting::Type::String:
+                            {
+                                luaL_checktype(L, -1, LUA_TSTRING);
+                                const std::string value = lua_tostring(L, -1);
+
+                                if (setting.options.empty() ||
+                                    std::ranges::any_of(setting.options, [&](const auto& v) 
+                                        {
+                                            return std::holds_alternative<std::string>(v) && std::get<std::string>(v) == value;
+                                        }))
+                                {
+                                    new_settings[setting_key] = value;
+                                }
+                                else
+                                {
+                                    return luaL_error(L, "%s was not a valid option for setting %s",
+                                        value.c_str(),
+                                        setting_key.c_str());
+                                }
+                                break;
+                            }
+                            case RandomizerSettings::Setting::Type::Number:
+                            {
+                                luaL_checktype(L, -1, LUA_TNUMBER);
+                                const float value = static_cast<float>(lua_tonumber(L, -1));
+
+                                if (setting.options.empty() ||
+                                    std::ranges::any_of(setting.options, [&](const auto& v)
+                                        {
+                                            return std::holds_alternative<float>(v) && std::get<float>(v) == value;
+                                        }))
+                                {
+                                    new_settings[setting_key] = value;
+                                }
+                                else
+                                {
+                                    return luaL_error(L, "%f was not a valid option for setting %s",
+                                        value,
+                                        setting_key.c_str());
+                                }
+                                break;
+                            }
+                        }
+                        lua_pop(L, 1);
+                    }
+
+                    waypoint->set_randomizer_settings(new_settings);
                 }
                 else if (key == "waypoint_colour")
                 {
