@@ -8,6 +8,8 @@ The Waypoint library lets you create and edit route waypoints.
 | colour | [Colour](colour.md) | RW | The route line colour |
 | notes | string | RW | Notes for this waypoint |
 | randomizer_settings | Table | RW | The randomizer settings for this waypoint (map of `string` to (`boolean`, `number` or `string`)) |
+| room | number | R | The room number that the waypoint is in |
+| type | string | R | One of `Entity`, `Trigger`, `Position` |
 | waypoint_colour | [Colour](colour.md) | RW | The waypoint pole colour |
 
 # Non-Instance Functions

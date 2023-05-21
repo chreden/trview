@@ -67,6 +67,16 @@ namespace trview
                     }
                     return 1;
                 }
+                else if (key == "room")
+                {
+                    lua_pushinteger(L, waypoint->room());
+                    return 1;
+                }
+                else if (key == "type")
+                {
+                    lua_pushstring(L, waypoint_type_to_string(waypoint->type()).c_str());
+                    return 1;
+                }
                 else if (key == "waypoint_colour")
                 {
                     return create_colour(L, waypoint->waypoint_colour());
