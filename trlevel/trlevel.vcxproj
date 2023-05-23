@@ -203,6 +203,7 @@
     </ClCompile>
     <ClCompile Include="trtypes.cpp" />
     <ClCompile Include="tr_lights.cpp" />
+    <ClCompile Include="tr_rooms.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\external\zlib\contrib\vstudio\vc14\zlibstat.vcxproj">

@@ -5,9 +5,17 @@
 
 namespace trlevel
 {
+    struct trview_room_vertex
+    {
+        tr_vertex vertex;
+        int16_t lighting;
+        uint16_t attributes;
+        DirectX::SimpleMath::Color colour;
+    };
+
     struct tr3_room_data
     {
-        std::vector<tr3_room_vertex> vertices;
+        std::vector<trview_room_vertex> vertices;
         std::vector<tr4_mesh_face4> rectangles;
         std::vector<tr4_mesh_face3> triangles;
         std::vector<tr_room_sprite> sprites;
@@ -40,4 +48,9 @@ namespace trlevel
         uint8_t reverb_info;
         uint8_t alternate_group{ 0xff };
     };
+
+    std::vector<trview_room_vertex> convert_vertices(std::vector<tr_room_vertex> vertices);
+    std::vector<trview_room_vertex> convert_vertices(std::vector<tr2_room_vertex> vertices);
+    std::vector<trview_room_vertex> convert_vertices(std::vector<tr3_room_vertex> vertices);
+    std::vector<trview_room_vertex> convert_vertices(std::vector<tr5_room_vertex> vertices);
 }

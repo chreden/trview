@@ -375,10 +375,6 @@ namespace trview
 
     void Room::generate_geometry(const IMesh::Source& mesh_source, const trlevel::tr3_room& room)
     {
-        std::vector<trlevel::tr_vertex> room_vertices;
-        std::transform(room.data.vertices.begin(), room.data.vertices.end(), std::back_inserter(room_vertices),
-            [](const auto& v) { return v.vertex; });
-
         std::vector<MeshVertex> vertices;
         std::vector<TransparentTriangle> transparent_triangles;
 
@@ -387,8 +383,8 @@ namespace trview
         
         std::vector<Triangle> collision_triangles;
 
-        process_textured_rectangles(room.data.rectangles, room_vertices, *_texture_storage, vertices, indices, transparent_triangles, collision_triangles, false);
-        process_textured_triangles(room.data.triangles, room_vertices, *_texture_storage, vertices, indices, transparent_triangles, collision_triangles, false);
+        process_textured_rectangles(room.data.rectangles, room.data.vertices, *_texture_storage, vertices, indices, transparent_triangles, collision_triangles, false);
+        process_textured_triangles(room.data.triangles, room.data.vertices, *_texture_storage, vertices, indices, transparent_triangles, collision_triangles, false);
         process_collision_transparency(transparent_triangles, collision_triangles);
 
         _mesh = mesh_source(vertices, indices, std::vector<uint32_t>{}, transparent_triangles, collision_triangles);
