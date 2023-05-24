@@ -18,7 +18,7 @@ namespace trlevel
             const int32_t r = (colour & 0x7c00) >> 10;
             const int32_t g = (colour & 0x03E0) >> 5;
             const int32_t b = (colour & 0x001F);
-            return Color(r / 31.0f, g / 31.0f, b / 31.0f);
+            return Color(r / 16.5f, g / 16.5f, b / 16.5f);
         }
 
         constexpr Color to_colour(uint32_t colour) noexcept
