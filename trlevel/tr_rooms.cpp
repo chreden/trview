@@ -7,12 +7,18 @@ namespace trlevel
 {
     namespace
     {
+        /// <summary>
+        /// Convert TR1/2 brightness to Color.
+        /// </summary>
         constexpr Color lighting_to_colour(int16_t lighting) noexcept
         {
             const float value = 1.0f - static_cast<float>(lighting) / 8191.0f;
             return Color(value, value, value);
         }
 
+        /// <summary>
+        /// Convert TR3/4 colour to Color. Doubles values to look like PSX.
+        /// </summary>
         constexpr Color to_colour(uint16_t colour) noexcept
         {
             const int32_t r = (colour & 0x7c00) >> 10;
@@ -21,12 +27,15 @@ namespace trlevel
             return Color(r / 16.5f, g / 16.5f, b / 16.5f);
         }
 
+        /// <summary>
+        /// Convert TR5 colour to Color. Doubles values to look like PSX.
+        /// </summary>
         constexpr Color to_colour(uint32_t colour) noexcept
         {
             const int32_t r = (colour & 0x00ff0000) >> 16;
             const int32_t g = (colour & 0x0000ff00) >> 8;
             const int32_t b = (colour & 0x000000ff);
-            return Color(r / 255.0f, g / 255.0f, b / 255.0f);
+            return Color(r / 128.0f, g / 128.0f, b / 128.0f);
         }
     }
 
