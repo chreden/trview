@@ -13,6 +13,7 @@ namespace trview
         BoundingBoxes = 0x20,
         Lights = 0x40,
         CameraSinks = 0x80,
+        Lighting = 0x100,
         All = 0xffffffff,
         Default = Rooms | Entities | Triggers | Water
     };

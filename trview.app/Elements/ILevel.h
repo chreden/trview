@@ -104,6 +104,7 @@ namespace trview
         virtual void set_show_water(bool show) = 0;
         virtual void set_show_wireframe(bool show) = 0;
         virtual void set_show_bounding_boxes(bool show) = 0;
+        virtual void set_show_lighting(bool show) = 0;
         virtual void set_show_lights(bool show) = 0;
         virtual void set_show_items(bool show) = 0;
         virtual void set_show_rooms(bool show) = 0;
@@ -117,6 +118,7 @@ namespace trview
         virtual void set_camera_sink_visibility(uint32_t index, bool state) = 0;
         virtual bool show_camera_sinks() const = 0;
         virtual bool show_geometry() const = 0;
+        virtual bool show_lighting() const = 0;
         virtual bool show_lights() const = 0;
         virtual bool show_triggers() const = 0;
         virtual bool show_items() const = 0;

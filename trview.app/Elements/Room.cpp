@@ -254,7 +254,7 @@ namespace trview
             }
             else
             {
-                _mesh->render(_room_offset * camera.view_projection(), *_texture_storage, colour, 1.0f, Vector3::Zero, false, true);
+                _mesh->render(_room_offset * camera.view_projection(), *_texture_storage, colour, 1.0f, Vector3::Zero, false, !has_flag(render_filter, RenderFilter::Lighting));
                 for (const auto& mesh : _static_meshes)
                 {
                     mesh->render(camera, *_texture_storage, colour);
