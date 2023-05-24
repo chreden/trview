@@ -115,7 +115,7 @@ namespace trview
         _bounding_box.Center = minimum + half_size;
     }
 
-    void Mesh::render(const Matrix& world_view_projection, const ILevelTextureStorage& texture_storage, const Color& colour, float light_intensity, Vector3 light_direction, bool geometry_mode)
+    void Mesh::render(const Matrix& world_view_projection, const ILevelTextureStorage& texture_storage, const Color& colour, float light_intensity, Vector3 light_direction, bool geometry_mode, bool use_colour_override)
     {
         // There are no vertices.
         if (!_vertex_buffer)
@@ -128,7 +128,7 @@ namespace trview
         D3D11_MAPPED_SUBRESOURCE mapped_resource;
         memset(&mapped_resource, 0, sizeof(mapped_resource));
 
-        MeshData data{ world_view_projection, colour, Vector4(light_direction.x, light_direction.y, light_direction.z, 1), light_intensity, light_direction != Vector3::Zero };
+        MeshData data{ world_view_projection, colour, Vector4(light_direction.x, light_direction.y, light_direction.z, 1), light_intensity, light_direction != Vector3::Zero, use_colour_override };
         context->Map(_matrix_buffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mapped_resource); 
         memcpy(mapped_resource.pData, &data, sizeof(data));
         context->Unmap(_matrix_buffer.Get(), 0);

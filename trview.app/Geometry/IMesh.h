@@ -23,7 +23,8 @@ namespace trview
             const DirectX::SimpleMath::Color& colour,
             float light_intensity = 1.0f,
             DirectX::SimpleMath::Vector3 light_direction = DirectX::SimpleMath::Vector3::Zero,
-            bool geometry_mode = false) = 0;
+            bool geometry_mode = false,
+            bool use_colour_override = false) = 0;
 
         virtual void render(const DirectX::SimpleMath::Matrix& world_view_projection,
             const graphics::Texture& replacement_texture,
@@ -162,6 +163,8 @@ namespace trview
         DirectX::SimpleMath::Vector4 light_dir;
         float light_intensity{ 1.0f };
         int light_enabled{ 0 };
+        int colour_override_enabled{ 0 };
+        DirectX::SimpleMath::Vector4 colour_override { 1, 1, 1, 1 };
     };
 #pragma warning(pop)
 }
