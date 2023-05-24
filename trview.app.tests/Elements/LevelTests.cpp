@@ -778,3 +778,14 @@ TEST(Level, CameraSinksRenderedWhenEnabled)
     level->set_show_camera_sinks(true);
     level->render(camera, false);
 }
+
+TEST(Level, SetShowLightingRaisesLevelChangedEvent)
+{
+    auto level = register_test_module().build();
+
+    uint32_t times_called = 0;
+    auto token = level->on_level_changed += [&](auto&&...) { ++times_called; };
+
+    level->set_show_lighting(true);
+    ASSERT_EQ(times_called, 1u);
+}
