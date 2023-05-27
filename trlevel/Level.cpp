@@ -123,9 +123,13 @@ namespace trlevel
                 {
                     room.data.vertices = convert_vertices(read_vector<int16_t, tr_room_vertex>(file));
                 }
+                else if (version == LevelVersion::Tomb2)
+                {
+                    room.data.vertices = convert_vertices(read_vector<int16_t, tr2_room_vertex>(file));
+                }
                 else
                 {
-                    room.data.vertices = read_vector<int16_t, tr3_room_vertex>(file);
+                    room.data.vertices = convert_vertices(read_vector<int16_t, tr3_room_vertex>(file));
                 }
                 activity.log(std::format("Read {} vertices", room.data.vertices.size()));
 

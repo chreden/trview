@@ -67,6 +67,7 @@ namespace trview
         toggles[Options::items] = [this](bool value) { set_show_items(value); };
         toggles[Options::rooms] = [this](bool value) { set_show_rooms(value); };
         toggles[Options::camera_sinks] = [this](bool value) { set_show_camera_sinks(value); };
+        toggles[Options::lighting] = [this](bool value) { set_show_lighting(value); };
 
         std::unordered_map<std::string, std::function<void(int32_t)>> scalars;
         scalars[Options::depth] = [this](int32_t value) { if (_level) { _level->set_neighbour_depth(value); } };
@@ -412,6 +413,7 @@ namespace trview
             _camera.set_zoom(8.f);
         });
         add_shortcut(false, 'L', [&]() { toggle_show_lights(); });
+        add_shortcut(true, 'H', [&]() { toggle_show_lighting(); });
         add_shortcut(false, 'K', [&]() { toggle_show_camera_sinks(); });
 
         _token_store += _keyboard.on_key_down += [&](uint16_t key, bool control, bool)
@@ -602,6 +604,7 @@ namespace trview
         _level->set_show_items(_ui->toggle(Options::items));
         _level->set_show_rooms(_ui->toggle(Options::rooms));
         _level->set_show_camera_sinks(_ui->toggle(Options::camera_sinks));
+        _level->set_show_lighting(_ui->toggle(Options::lighting));
 
         // Set up the views.
         auto rooms = _level->rooms();
@@ -1369,6 +1372,23 @@ namespace trview
         if (_level)
         {
             set_show_camera_sinks(!_level->show_camera_sinks());
+        }
+    }
+
+    void Viewer::set_show_lighting(bool show)
+    {
+        if (_level)
+        {
+            _level->set_show_lighting(show);
+            _ui->set_toggle(Options::lighting, show);
+        }
+    }
+
+    void Viewer::toggle_show_lighting()
+    {
+        if (_level)
+        {
+            set_show_lighting(!_level->show_lighting());
         }
     }
 }

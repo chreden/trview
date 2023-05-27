@@ -23,7 +23,8 @@ namespace trview
             const DirectX::SimpleMath::Color& colour,
             float light_intensity = 1.0f,
             DirectX::SimpleMath::Vector3 light_direction = DirectX::SimpleMath::Vector3::Zero,
-            bool geometry_mode = false) = 0;
+            bool geometry_mode = false,
+            bool use_colour_override = false) = 0;
 
         virtual void render(const DirectX::SimpleMath::Matrix& world_view_projection,
             const graphics::Texture& replacement_texture,
@@ -91,7 +92,7 @@ namespace trview
     /// @param transparent_collision Whether to add transparent rectangles as collision triangles.
     void process_textured_rectangles(
         const std::vector<trlevel::tr4_mesh_face4>& rectangles,
-        const std::vector<trlevel::tr_vertex>& input_vertices,
+        const std::vector<trlevel::trview_room_vertex>& input_vertices,
         const ILevelTextureStorage& texture_storage,
         std::vector<MeshVertex>& output_vertices,
         std::vector<std::vector<uint32_t>>& output_indices,
@@ -110,7 +111,7 @@ namespace trview
     /// @param transparent_collision Whether to add transparent rectangles as collision triangles.
     void process_textured_triangles(
         const std::vector<trlevel::tr4_mesh_face3>& triangles,
-        const std::vector<trlevel::tr_vertex>& input_vertices,
+        const std::vector<trlevel::trview_room_vertex>& input_vertices,
         const ILevelTextureStorage& texture_storage,
         std::vector<MeshVertex>& output_vertices,
         std::vector<std::vector<uint32_t>>& output_indices,
@@ -127,7 +128,7 @@ namespace trview
     // collision_triangles: The collection to add collision triangles to.
     void process_coloured_rectangles(
         const std::vector<trlevel::tr_face4>& rectangles,
-        const std::vector<trlevel::tr_vertex>& input_vertices,
+        const std::vector<trlevel::trview_room_vertex>& input_vertices,
         const ILevelTextureStorage& texture_storage,
         std::vector<MeshVertex>& output_vertices,
         std::vector<uint32_t>& output_indices,
@@ -142,7 +143,7 @@ namespace trview
     // collision_triangles: The collection to add collision triangles to.
     void process_coloured_triangles(
         const std::vector<trlevel::tr_face3>& triangles,
-        const std::vector<trlevel::tr_vertex>& input_vertices,
+        const std::vector<trlevel::trview_room_vertex>& input_vertices,
         const ILevelTextureStorage& texture_storage,
         std::vector<MeshVertex>& output_vertices,
         std::vector<uint32_t>& output_indices,
@@ -162,6 +163,8 @@ namespace trview
         DirectX::SimpleMath::Vector4 light_dir;
         float light_intensity{ 1.0f };
         int light_enabled{ 0 };
+        int colour_override_enabled{ 0 };
+        DirectX::SimpleMath::Vector4 colour_override { 1, 1, 1, 1 };
     };
 #pragma warning(pop)
 }

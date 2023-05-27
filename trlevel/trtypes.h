@@ -431,6 +431,14 @@ namespace trlevel
         int16_t   lighting;
     };
 
+    struct tr2_room_vertex
+    {
+        tr_vertex vertex;
+        int16_t   lighting;
+        uint16_t  attributes;
+        int16_t  lighting2;
+    };
+
     struct tr3_room_vertex
     {
         tr_vertex   vertex;
@@ -696,16 +704,6 @@ namespace trlevel
 
     // Convert a 16 bit textile into a 32 bit argb value.
     uint32_t convert_textile16(uint16_t t);
-
-    // Convert a set of Tomb Raider I vertices into a vertex format compatible
-    // with Tomb Raider III (what the viewer is currently using).
-    std::vector<tr3_room_vertex> convert_vertices(std::vector<tr_room_vertex> vertices);
-
-    /// Convert a set of Tomb Raider 5 vertices into a vertex format compatible
-    /// with Tomb Raider III (what the viewer is currently using).
-    /// @param vertices The vertices to convert.
-    /// @return The converted vertices.
-    std::vector<tr3_room_vertex> convert_vertices(std::vector<tr5_room_vertex> vertices);
 
     // Convert a set of Tomb Raider I static meshes into a format compatible
     // with Tomb Raider III (what the viewer is currently using).

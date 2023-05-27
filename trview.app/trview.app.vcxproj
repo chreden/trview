@@ -519,6 +519,7 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <DiagnosticsFormat>Column</DiagnosticsFormat>
       <TreatWarningAsError>true</TreatWarningAsError>
+      <BuildStlModules>false</BuildStlModules>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -546,6 +547,7 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <DiagnosticsFormat>Column</DiagnosticsFormat>
       <TreatWarningAsError>true</TreatWarningAsError>
+      <BuildStlModules>false</BuildStlModules>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -571,6 +573,7 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <DiagnosticsFormat>Column</DiagnosticsFormat>
       <TreatWarningAsError>true</TreatWarningAsError>
+      <BuildStlModules>false</BuildStlModules>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -598,6 +601,7 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <DiagnosticsFormat>Column</DiagnosticsFormat>
       <TreatWarningAsError>true</TreatWarningAsError>
+      <BuildStlModules>false</BuildStlModules>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>

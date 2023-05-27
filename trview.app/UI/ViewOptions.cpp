@@ -21,6 +21,7 @@ namespace trview
         _toggles[IViewer::Options::items] = true;
         _toggles[IViewer::Options::rooms] = true;
         _toggles[IViewer::Options::camera_sinks] = false;
+        _toggles[IViewer::Options::lighting] = true;
     }
 
     void ViewOptions::render()
@@ -64,6 +65,8 @@ namespace trview
                 ImGui::TableNextRow();
                 add_toggle(IViewer::Options::wireframe);
                 add_toggle(IViewer::Options::geometry);
+                ImGui::TableNextRow();
+                add_toggle(IViewer::Options::lighting);
                 ImGui::TableNextRow();
                 if (!_use_alternate_groups)
                 {

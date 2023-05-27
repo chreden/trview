@@ -818,6 +818,13 @@ namespace trview
         on_level_changed();
     }
 
+    void Level::set_show_lighting(bool show)
+    {
+        _render_filters = set_flag(_render_filters, RenderFilter::Lighting, show);
+        _regenerate_transparency = true;
+        on_level_changed();
+    }
+
     void Level::set_show_lights(bool show)
     {
         _render_filters = set_flag(_render_filters, RenderFilter::Lights, show);
@@ -842,6 +849,11 @@ namespace trview
     bool Level::show_triggers() const
     {
         return has_flag(_render_filters, RenderFilter::Triggers);
+    }
+
+    bool Level::show_lighting() const
+    {
+        return has_flag(_render_filters, RenderFilter::Lighting);
     }
 
     bool Level::show_lights() const

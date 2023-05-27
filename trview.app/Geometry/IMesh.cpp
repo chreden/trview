@@ -85,10 +85,14 @@ namespace trview
         std::vector<TransparentTriangle> transparent_triangles;
         std::vector<Triangle> collision_triangles;
 
-        process_textured_rectangles(mesh.textured_rectangles, mesh.vertices, texture_storage, vertices, indices, transparent_triangles, collision_triangles, transparent_collision);
-        process_textured_triangles(mesh.textured_triangles, mesh.vertices, texture_storage, vertices, indices, transparent_triangles, collision_triangles, transparent_collision);
-        process_coloured_rectangles(mesh.coloured_rectangles, mesh.vertices, texture_storage, vertices, untextured_indices, collision_triangles);
-        process_coloured_triangles(mesh.coloured_triangles, mesh.vertices, texture_storage, vertices, untextured_indices, collision_triangles);
+        std::vector<trlevel::trview_room_vertex> in_vertices;
+        std::ranges::transform(mesh.vertices, std::back_inserter(in_vertices),
+            [](const auto& v) { return trlevel::trview_room_vertex { v, 0, 0, Color(1, 1, 1, 1) }; });
+
+        process_textured_rectangles(mesh.textured_rectangles, in_vertices, texture_storage, vertices, indices, transparent_triangles, collision_triangles, transparent_collision);
+        process_textured_triangles(mesh.textured_triangles, in_vertices, texture_storage, vertices, indices, transparent_triangles, collision_triangles, transparent_collision);
+        process_coloured_rectangles(mesh.coloured_rectangles, in_vertices, texture_storage, vertices, untextured_indices, collision_triangles);
+        process_coloured_triangles(mesh.coloured_triangles, in_vertices, texture_storage, vertices, untextured_indices, collision_triangles);
 
         return source(vertices, indices, untextured_indices, transparent_triangles, collision_triangles);
     }
@@ -222,7 +226,7 @@ namespace trview
 
     void process_textured_rectangles(
         const std::vector<trlevel::tr4_mesh_face4>& rectangles,
-        const std::vector<trlevel::tr_vertex>& input_vertices,
+        const std::vector<trlevel::trview_room_vertex>& input_vertices,
         const ILevelTextureStorage& texture_storage,
         std::vector<MeshVertex>& output_vertices,
         std::vector<std::vector<uint32_t>>& output_indices,
@@ -236,9 +240,11 @@ namespace trview
         for (const auto& rect : rectangles)
         {
             std::array<Vector3, 4> verts;
+            std::array<Color, 4> colors;
             for (int i = 0; i < 4; ++i)
             {
-                verts[i] = convert_vertex(input_vertices[rect.vertices[i]]);
+                verts[i] = convert_vertex(input_vertices[rect.vertices[i]].vertex);
+                colors[i] = input_vertices[rect.vertices[i]].colour;
             }
 
             uint16_t texture = rect.texture & Texture_Mask;
@@ -285,7 +291,7 @@ namespace trview
             const auto normal = calculate_normal(&verts[0]);
             for (int i = 0; i < 4; ++i)
             {
-                output_vertices.push_back({ verts[i], normal, uvs[i], Color(1,1,1,1) });
+                output_vertices.push_back({ verts[i], normal, uvs[i], colors[i] });
             }
 
             auto& tex_indices = output_indices[texture_storage.tile(texture)];
@@ -318,7 +324,7 @@ namespace trview
 
     void process_textured_triangles(
         const std::vector<trlevel::tr4_mesh_face3>& triangles,
-        const std::vector<trlevel::tr_vertex>& input_vertices,
+        const std::vector<trlevel::trview_room_vertex>& input_vertices,
         const ILevelTextureStorage& texture_storage,
         std::vector<MeshVertex>& output_vertices,
         std::vector<std::vector<uint32_t>>& output_indices,
@@ -330,9 +336,11 @@ namespace trview
         for (const auto& tri : triangles)
         {
             std::array<Vector3, 3> verts;
+            std::array<Color, 3> colors;
             for (int i = 0; i < 3; ++i)
             {
-                verts[i] = convert_vertex(input_vertices[tri.vertices[i]]);
+                verts[i] = convert_vertex(input_vertices[tri.vertices[i]].vertex);
+                colors[i] = input_vertices[tri.vertices[i]].colour;
             }
 
             uint16_t texture = tri.texture & Texture_Mask;
@@ -373,7 +381,7 @@ namespace trview
             const auto normal = calculate_normal(&verts[0]);
             for (int i = 0; i < 3; ++i)
             {
-                output_vertices.push_back({ verts[i], normal, uvs[i], Color(1,1,1,1) });
+                output_vertices.push_back({ verts[i], normal, uvs[i], colors[i] });
             }
 
             auto& tex_indices = output_indices[texture_storage.tile(texture)];
@@ -397,7 +405,7 @@ namespace trview
 
     void process_coloured_rectangles(
         const std::vector<trlevel::tr_face4>& rectangles,
-        const std::vector<trlevel::tr_vertex>& input_vertices,
+        const std::vector<trlevel::trview_room_vertex>& input_vertices,
         const ILevelTextureStorage& texture_storage,
         std::vector<MeshVertex>& output_vertices,
         std::vector<uint32_t>& output_indices,
@@ -409,9 +417,11 @@ namespace trview
             const bool double_sided = rect.texture & 0x8000;
 
             std::array<Vector3, 4> verts;
+            std::array<Color, 4> colors;
             for (int i = 0; i < 4; ++i)
             {
-                verts[i] = convert_vertex(input_vertices[rect.vertices[i]]);
+                verts[i] = convert_vertex(input_vertices[rect.vertices[i]].vertex);
+                colors[i] = input_vertices[rect.vertices[i]].colour;
             }
 
             const uint32_t base = static_cast<uint32_t>(output_vertices.size());
@@ -449,7 +459,7 @@ namespace trview
 
     void process_coloured_triangles(
         const std::vector<trlevel::tr_face3>& triangles,
-        const std::vector<trlevel::tr_vertex>& input_vertices,
+        const std::vector<trlevel::trview_room_vertex>& input_vertices,
         const ILevelTextureStorage& texture_storage,
         std::vector<MeshVertex>& output_vertices,
         std::vector<uint32_t>& output_indices,
@@ -461,9 +471,11 @@ namespace trview
             const bool double_sided = tri.texture & 0x8000;
 
             std::array<Vector3, 3> verts;
+            std::array<Color, 3> colors;
             for (int i = 0; i < 3; ++i)
             {
-                verts[i] = convert_vertex(input_vertices[tri.vertices[i]]);
+                verts[i] = convert_vertex(input_vertices[tri.vertices[i]].vertex);
+                colors[i] = input_vertices[tri.vertices[i]].colour;
             }
 
             const uint32_t base = static_cast<uint32_t>(output_vertices.size());

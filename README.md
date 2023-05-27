@@ -48,6 +48,7 @@ CTRL + M    | New Rooms window
 CTRL + L    | New Lights window
 CTRL + K    | New Camera/Sink window
 CTRL + P    | New Plugins window
+CTRL + H    | Toggle room lighting
 F1          | Toggle settings window
 F5          | Reload current level
 F6          | Load previous level in directory
@@ -126,6 +127,7 @@ Depth Selector      | Choose the depth of neighbours to show
 Wireframe           | Enable wireframe rendering mode
 Bounds              | Show static mesh bounding boxes
 Lights              | Toggle lights visibility
+Lighting            | Toggle using room lighting
 Flip                | Toggle the level flipmap (if present in the level). In TR4+ this will be a flipmap group selector.
 
 ## Room Navigator

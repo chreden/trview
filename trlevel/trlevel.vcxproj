@@ -95,6 +95,7 @@
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <AdditionalOptions>/utf-8</AdditionalOptions>
       <TreatWarningAsError>true</TreatWarningAsError>
+      <BuildStlModules>false</BuildStlModules>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -114,6 +115,7 @@
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <AdditionalOptions>/utf-8</AdditionalOptions>
       <TreatWarningAsError>true</TreatWarningAsError>
+      <BuildStlModules>false</BuildStlModules>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -135,6 +137,7 @@
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <AdditionalOptions>/utf-8</AdditionalOptions>
       <TreatWarningAsError>true</TreatWarningAsError>
+      <BuildStlModules>false</BuildStlModules>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -158,6 +161,7 @@
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <AdditionalOptions>/utf-8</AdditionalOptions>
       <TreatWarningAsError>true</TreatWarningAsError>
+      <BuildStlModules>false</BuildStlModules>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -199,6 +203,7 @@
     </ClCompile>
     <ClCompile Include="trtypes.cpp" />
     <ClCompile Include="tr_lights.cpp" />
+    <ClCompile Include="tr_rooms.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\external\zlib\contrib\vstudio\vc14\zlibstat.vcxproj">

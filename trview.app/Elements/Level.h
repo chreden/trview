@@ -72,9 +72,11 @@ namespace trview
         virtual void set_show_water(bool show) override;
         virtual void set_show_wireframe(bool show) override;
         virtual void set_show_bounding_boxes(bool show) override;
+        void set_show_lighting(bool show) override;
         virtual void set_show_lights(bool show) override;
         virtual void set_show_items(bool show) override;
         virtual void set_show_rooms(bool show) override;
+        bool show_lighting() const override;
         virtual bool show_lights() const override;
         virtual bool show_triggers() const override;
         virtual bool show_items() const override;

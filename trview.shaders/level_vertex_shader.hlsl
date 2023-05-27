@@ -5,6 +5,8 @@ cbuffer cb : register (b0)
     float4 light_dir;
     float light_intensity;
     int light_enable;
+    int use_colour_override;
+    float4 colour_override;
 }
 
 struct VertexInput
@@ -27,7 +29,16 @@ VertexOutput main( VertexInput input )
     VertexOutput output;
     output.position = mul(scale, input.position);
     output.uv = input.uv;
-    output.colour = input.colour * colour;
+    output.colour = colour;
+
+    if (use_colour_override)
+    {
+         output.colour *= colour_override;
+    }
+    else
+    {
+        output.colour *= input.colour;
+    }
 
     if (light_enable != 0)
     {

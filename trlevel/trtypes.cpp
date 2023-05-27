@@ -42,34 +42,6 @@ namespace trlevel
         return a << 24 | b << 16 | g << 8 | r;
     }
 
-    // Convert a set of Tomb Raider I vertices into a vertex format compatible
-    // with Tomb Raider III (what the viewer is currently using).
-    std::vector<tr3_room_vertex> convert_vertices(std::vector<tr_room_vertex> vertices)
-    {
-        std::vector<tr3_room_vertex> new_vertices;
-        new_vertices.reserve(vertices.size());
-        std::transform(vertices.begin(), vertices.end(),
-            std::back_inserter(new_vertices), [](const auto& vert)
-        {
-            tr3_room_vertex new_vertex { vert.vertex, vert.lighting, 0, 0xffff };
-            return new_vertex;
-        });
-        return new_vertices;
-    }
-
-    std::vector<tr3_room_vertex> convert_vertices(std::vector<tr5_room_vertex> vertices)
-    {
-        std::vector<tr3_room_vertex> new_vertices;
-        new_vertices.reserve(vertices.size());
-        std::transform(vertices.begin(), vertices.end(),
-            std::back_inserter(new_vertices), [](const auto& vert)
-        {
-            tr_vertex vertex{ static_cast<int16_t>(vert.vertex.x), static_cast<int16_t>(vert.vertex.y), static_cast<int16_t>(vert.vertex.z) };
-            return tr3_room_vertex { vertex, 0, 0, 0xffff };
-        });
-        return new_vertices;
-    }
-
     // Convert a set of Tomb Raider I static meshes into a format compatible
     // with Tomb Raider III (what the viewer is currently using).
     std::vector<tr3_room_staticmesh> convert_room_static_meshes(std::vector<tr_room_staticmesh> meshes)

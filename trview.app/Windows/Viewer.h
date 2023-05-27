@@ -128,6 +128,8 @@ namespace trview
         void set_sector_highlight(const std::shared_ptr<ISector>& sector);
         void set_show_camera_sinks(bool show);
         void toggle_show_camera_sinks();
+        void set_show_lighting(bool show);
+        void toggle_show_lighting();
 
         const std::shared_ptr<graphics::IDevice> _device;
         const std::shared_ptr<IShortcuts>& _shortcuts;

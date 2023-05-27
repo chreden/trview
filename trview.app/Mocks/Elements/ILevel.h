@@ -52,6 +52,7 @@ namespace trview
             MOCK_METHOD(void, set_show_water, (bool), (override));
             MOCK_METHOD(void, set_show_wireframe, (bool), (override));
             MOCK_METHOD(void, set_show_bounding_boxes, (bool), (override));
+            MOCK_METHOD(void, set_show_lighting, (bool), (override));
             MOCK_METHOD(void, set_show_lights, (bool), (override));
             MOCK_METHOD(void, set_show_items, (bool), (override));
             MOCK_METHOD(void, set_show_rooms, (bool), (override));
@@ -62,6 +63,7 @@ namespace trview
             MOCK_METHOD(void, set_light_visibility, (uint32_t, bool), (override));
             MOCK_METHOD(void, set_room_visibility, (uint32_t, bool), (override));
             MOCK_METHOD(bool, show_camera_sinks, (), (const, override));
+            MOCK_METHOD(bool, show_lighting, (), (const, override));
             MOCK_METHOD(bool, show_geometry, (), (const, override));
             MOCK_METHOD(bool, show_lights, (), (const, override));
             MOCK_METHOD(bool, show_triggers, (), (const, override));
