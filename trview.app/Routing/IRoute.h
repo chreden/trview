@@ -84,6 +84,7 @@ namespace trview
         /// </summary>
         /// <returns>True if there are unsaved changes.</returns>
         virtual bool is_unsaved() const = 0;
+        virtual std::weak_ptr<ILevel> level() const = 0;
         /// <summary>
         /// Move a waypoint from one index to another.
         /// </summary>
@@ -124,6 +125,7 @@ namespace trview
         /// </summary>
         /// <param name="colour">The colour to use.</param>
         virtual void set_colour(const Colour& colour) = 0;
+        virtual void set_level(const std::weak_ptr<ILevel>& level) = 0;
         /// <summary>
         /// Set whether randomizer tools are enabled.
         /// </summary>

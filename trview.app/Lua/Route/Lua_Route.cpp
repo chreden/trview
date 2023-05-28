@@ -4,6 +4,7 @@
 #include "../Elements/Item/Lua_Item.h"
 #include "../Elements/Trigger/Lua_Trigger.h"
 #include "../Elements/Room/Lua_Room.h"
+#include "../Elements/Level/Lua_Level.h"
 #include "Lua_Waypoint.h"
 #include "../Vector3.h"
 #include "../../Elements/ITrigger.h"
@@ -52,6 +53,10 @@ namespace trview
                     lua_pushcfunction(L, route_clear);
                     return 1;
                 }
+                else if (key == "level")
+                {
+                    return create_level(L, route->level().lock());
+                }
                 else if (key == "waypoint_colour")
                 {
                     return create_colour(L, route->waypoint_colour());
@@ -77,6 +82,10 @@ namespace trview
                 if (key == "colour")
                 {
                     route->set_colour(to_colour(L, 3));
+                }
+                else if (key == "level")
+                {
+                    route->set_level(to_level(L, 3));
                 }
                 else if (key == "waypoint_colour")
                 {

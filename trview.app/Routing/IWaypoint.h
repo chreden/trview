@@ -8,6 +8,8 @@
 
 namespace trview
 {
+    struct IRoute;
+
     /// <summary>
     /// A waypoint in a route.
     /// </summary>
@@ -87,6 +89,7 @@ namespace trview
         /// Set the notes associated with the waypoint.
         /// @param notes The notes to save.
         virtual void set_notes(const std::string& notes) = 0;
+        virtual void set_route(const std::weak_ptr<IRoute>& route) = 0;
         /// Set the route colour for the waypoint blob.
         /// @param colour The colour of the route.
         virtual void set_route_colour(const Colour& colour) = 0;

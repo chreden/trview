@@ -127,6 +127,11 @@ namespace trview
         _notes = notes;
     }
 
+    void Waypoint::set_route(const std::weak_ptr<IRoute>& route)
+    {
+        _route = route;
+    }
+
     void Waypoint::set_route_colour(const Colour& colour)
     {
         _route_colour = colour;

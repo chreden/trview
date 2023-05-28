@@ -36,6 +36,7 @@ namespace trview
         virtual uint32_t room() const override;
         virtual std::vector<uint8_t> save_file() const override;
         virtual void set_notes(const std::string& notes) override;
+        void set_route(const std::weak_ptr<IRoute>& route) override;
         virtual void set_route_colour(const Colour& colour) override;
         virtual void set_save_file(const std::vector<uint8_t>& data) override;
         virtual void set_waypoint_colour(const Colour& colour) override;
@@ -63,5 +64,6 @@ namespace trview
         Colour _waypoint_colour;
         bool _visible{ true };
         WaypointRandomizerSettings _randomizer_settings;
-    };    
+        std::weak_ptr<IRoute> _route;
+    };
 }

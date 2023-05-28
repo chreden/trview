@@ -108,6 +108,7 @@ namespace trview
     std::shared_ptr<IWaypoint> Route::add(const std::shared_ptr<IWaypoint>& waypoint)
     {
         _waypoints.push_back(waypoint);
+        waypoint->set_route(shared_from_this());
         set_unsaved(true);
         return waypoint;
     }
@@ -164,6 +165,11 @@ namespace trview
         return _is_unsaved;
     }
 
+    std::weak_ptr<ILevel> Route::level() const
+    {
+        return _level;
+    }
+
     void Route::move(int32_t from, int32_t to)
     {
         auto source = _waypoints[from];
@@ -206,6 +212,7 @@ namespace trview
         {
             return;
         }
+        _waypoints[index]->set_route({});
         _waypoints.erase(_waypoints.begin() + index);
         if (_selected_index >= index && _selected_index > 0)
         {
@@ -250,6 +257,13 @@ namespace trview
         {
             waypoint->set_route_colour(colour);
         }
+        set_unsaved(true);
+        on_changed();
+    }
+
+    void Route::set_level(const std::weak_ptr<ILevel>& level)
+    {
+        _level = level;
         set_unsaved(true);
         on_changed();
     }
