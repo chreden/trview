@@ -872,7 +872,7 @@ namespace trview
         _textures_windows->set_texture_storage(_level->texture_storage());
 
         _viewer->open(_level.get(), open_mode);
-        _viewer->set_route(_route);
+        set_route(_route);
 
         if (old_level && open_mode == ILevel::OpenMode::Reload)
         {
@@ -942,6 +942,7 @@ namespace trview
         _token_store += _route->on_changed += [&]() { if (_viewer) { _viewer->set_scene_changed(); } };
         _route_window->set_route(_route.get());
         _route->set_randomizer_enabled(_settings.randomizer_tools);
+        _route->set_level(_level);
         _viewer->set_route(_route);
     }
 }

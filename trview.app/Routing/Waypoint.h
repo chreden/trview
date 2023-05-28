@@ -34,6 +34,7 @@ namespace trview
         virtual uint32_t index() const override;
         virtual std::string notes() const override;
         virtual uint32_t room() const override;
+        std::weak_ptr<IRoute> route() const override;
         virtual std::vector<uint8_t> save_file() const override;
         virtual void set_notes(const std::string& notes) override;
         void set_route(const std::weak_ptr<IRoute>& route) override;

@@ -74,6 +74,7 @@ namespace trview
         /// Get the room number that the waypoint is in.
         /// </summary>
         virtual uint32_t room() const = 0;
+        virtual std::weak_ptr<IRoute> route() const = 0;
         /// <summary>
         /// Render the join between this waypoint and another.
         /// </summary>

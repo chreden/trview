@@ -117,6 +117,11 @@ namespace trview
         return _notes;
     }
 
+    std::weak_ptr<IRoute> Waypoint::route() const
+    {
+        return _route;
+    }
+
     std::vector<uint8_t> Waypoint::save_file() const
     {
         return _save_data;

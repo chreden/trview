@@ -7,6 +7,7 @@
 #include "../Elements/Room/Lua_Room.h"
 #include "../../Elements/ITrigger.h"
 #include "../../Elements/IRoom.h"
+#include "../../Elements/ILevel.h"
 
 using namespace DirectX::SimpleMath;
 
@@ -29,10 +30,36 @@ namespace trview
                 {
                     return create_colour(L, waypoint->route_colour());
                 }
+                else if (key == "item")
+                {
+                    if (waypoint->type() != IWaypoint::Type::Entity)
+                    {
+                        return luaL_error(L, "Waypoint was not of type Entity, was %s.",
+                            waypoint_type_to_string(waypoint->type()).c_str());
+                    }
+
+                    auto route = waypoint->route().lock();
+                    if (!route)
+                    {
+                        return luaL_error(L, "Waypoint must part of a route to retrieve item from waypoint.");
+                    }
+
+                    auto level = route->level().lock();
+                    if (!level)
+                    {
+                        return luaL_error(L, "Route must have level set to retreive item from waypoint.");
+                    }
+
+                    return create_item(L, level->item(waypoint->index()).lock());
+                }
                 else if (key == "notes")
                 {
                     lua_pushstring(L, waypoint->notes().c_str());
                     return 1;
+                }
+                else if (key == "position")
+                {
+                    return create_vector3(L, waypoint->position());
                 }
                 else if (key == "randomizer_settings")
                 {
@@ -71,6 +98,28 @@ namespace trview
                 {
                     lua_pushinteger(L, waypoint->room());
                     return 1;
+                }
+                else if (key == "trigger")
+                {
+                    if (waypoint->type() != IWaypoint::Type::Trigger)
+                    {
+                        return luaL_error(L, "Waypoint was not of type Trigger, was %s.",
+                            waypoint_type_to_string(waypoint->type()).c_str());
+                    }
+
+                    auto route = waypoint->route().lock();
+                    if (!route)
+                    {
+                        return luaL_error(L, "Waypoint must part of a route to retrieve trigger from waypoint.");
+                    }
+
+                    auto level = route->level().lock();
+                    if (!level)
+                    {
+                        return luaL_error(L, "Route must have level set to retreive trigger from waypoint.");
+                    }
+
+                    return create_trigger(L, level->trigger(waypoint->index()).lock());
                 }
                 else if (key == "type")
                 {
@@ -269,13 +318,11 @@ namespace trview
                     }
                     else
                     {
-                        luaL_error(L, "Room must be valid when using Position in Waypoint.new");
+                        return luaL_error(L, "Room must be valid when using Position in Waypoint.new");
                     }
-                    return 0;
                 }
 
-                luaL_error(L, "One of item, trigger or position must be specified for Waypoint.new");
-                return 0;
+                return luaL_error(L, "One of item, trigger or position must be specified for Waypoint.new");
             }
         }
 

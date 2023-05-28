@@ -149,7 +149,9 @@ namespace trview
 
     void Route::insert(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& normal, uint32_t room, uint32_t index, IWaypoint::Type type, uint32_t type_index)
     {
-        _waypoints.insert(_waypoints.begin() + index, _waypoint_source(position, normal, room, type, type_index, _colour, _waypoint_colour));
+        auto waypoint = _waypoint_source(position, normal, room, type, type_index, _colour, _waypoint_colour);
+        waypoint->set_route(shared_from_this());
+        _waypoints.insert(_waypoints.begin() + index, waypoint);
         set_unsaved(true);
     }
 
@@ -264,8 +266,6 @@ namespace trview
     void Route::set_level(const std::weak_ptr<ILevel>& level)
     {
         _level = level;
-        set_unsaved(true);
-        on_changed();
     }
 
     void Route::set_randomizer_enabled(bool enabled)

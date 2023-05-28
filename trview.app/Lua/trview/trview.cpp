@@ -60,13 +60,12 @@ namespace trview
                 }
                 catch (trlevel::LevelEncryptedException&)
                 {
-                    luaL_error(L, "Level is encrypted and cannot be loaded (%s)", "");
+                    return luaL_error(L, "Level is encrypted and cannot be loaded (%s)", "");
                 }
                 catch (std::exception&)
                 {
-                    luaL_error(L, "Failed to load level (%s)", "");
+                    return luaL_error(L, "Failed to load level (%s)", "");
                 }
-                return 0;
             }
 
             int trview_index(lua_State* L)
@@ -113,11 +112,11 @@ namespace trview
                         }
                         catch (UserCancelledException&)
                         {
-                            luaL_error(L, "User cancelled level loading");
+                            return luaL_error(L, "User cancelled level loading");
                         }
                         catch (...)
                         {
-                            luaL_error(L, "Failed to load level");
+                            return luaL_error(L, "Failed to load level");
                         }
                     }
                 }
