@@ -316,8 +316,7 @@ namespace trview
 
     void Route::bind_waypoint_targets()
     {
-        auto level = _level.lock();
-
+        const auto level = _level.lock();
         for (auto& waypoint : _waypoints)
         {
             switch (waypoint->type())
@@ -326,8 +325,7 @@ namespace trview
                 {
                     if (level)
                     {
-                        auto item = level->item(waypoint->index()).lock();
-                        waypoint->set_item(item);
+                        waypoint->set_item(level->item(waypoint->index()));
                     }
                     else
                     {
@@ -339,8 +337,7 @@ namespace trview
                 {
                     if (level)
                     {
-                        auto trigger = level->trigger(waypoint->index()).lock();
-                        waypoint->set_trigger(trigger);
+                        waypoint->set_trigger(level->trigger(waypoint->index()));
                     }
                     else
                     {

@@ -41,7 +41,7 @@ namespace trview
                 }
                 else if (key == "position")
                 {
-                    return create_vector3(L, waypoint->position());
+                    return create_vector3(L, waypoint->position() * trlevel::Scale);
                 }
                 else if (key == "randomizer_settings")
                 {
@@ -118,7 +118,7 @@ namespace trview
                 }
                 else if (key == "position")
                 {
-                    waypoint->set_position(to_vector3(L, 3));
+                    waypoint->set_position(to_vector3(L, 3) / trlevel::Scale);
                 }
                 else if (key == "randomizer_settings")
                 {

@@ -153,6 +153,11 @@ namespace trview
     void Waypoint::set_item(const std::weak_ptr<IItem>& item)
     {
         _item = item;
+        if (auto new_item = _item.lock())
+        {
+            _type = Type::Entity;
+            _index = new_item->number();
+        }
     }
 
     void Waypoint::set_notes(const std::string& notes)
@@ -178,6 +183,11 @@ namespace trview
     void Waypoint::set_trigger(const std::weak_ptr<ITrigger>& trigger)
     {
         _trigger = trigger;
+        if (auto new_trigger = _trigger.lock())
+        {
+            _type = Type::Trigger;
+            _index = new_trigger->number();
+        }
     }
 
     void Waypoint::set_waypoint_colour(const Colour& colour)
