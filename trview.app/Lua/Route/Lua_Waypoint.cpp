@@ -32,25 +32,7 @@ namespace trview
                 }
                 else if (key == "item")
                 {
-                    if (waypoint->type() != IWaypoint::Type::Entity)
-                    {
-                        return luaL_error(L, "Waypoint was not of type Entity, was %s.",
-                            waypoint_type_to_string(waypoint->type()).c_str());
-                    }
-
-                    auto route = waypoint->route().lock();
-                    if (!route)
-                    {
-                        return luaL_error(L, "Waypoint must part of a route to retrieve item from waypoint.");
-                    }
-
-                    auto level = route->level().lock();
-                    if (!level)
-                    {
-                        return luaL_error(L, "Route must have level set to retreive item from waypoint.");
-                    }
-
-                    return create_item(L, level->item(waypoint->index()).lock());
+                    return create_item(L, waypoint->item().lock());
                 }
                 else if (key == "notes")
                 {
@@ -101,25 +83,7 @@ namespace trview
                 }
                 else if (key == "trigger")
                 {
-                    if (waypoint->type() != IWaypoint::Type::Trigger)
-                    {
-                        return luaL_error(L, "Waypoint was not of type Trigger, was %s.",
-                            waypoint_type_to_string(waypoint->type()).c_str());
-                    }
-
-                    auto route = waypoint->route().lock();
-                    if (!route)
-                    {
-                        return luaL_error(L, "Waypoint must part of a route to retrieve trigger from waypoint.");
-                    }
-
-                    auto level = route->level().lock();
-                    if (!level)
-                    {
-                        return luaL_error(L, "Route must have level set to retreive trigger from waypoint.");
-                    }
-
-                    return create_trigger(L, level->trigger(waypoint->index()).lock());
+                    return create_trigger(L, waypoint->trigger().lock());
                 }
                 else if (key == "type")
                 {
@@ -143,10 +107,18 @@ namespace trview
                 {
                     waypoint->set_route_colour(to_colour(L, 3));
                 }
+                else if (key == "item")
+                {
+                    waypoint->set_item(to_item(L, 3));
+                }
                 else if (key == "notes")
                 {
                     luaL_checkstring(L, 3);
                     waypoint->set_notes(lua_tostring(L, 3));
+                }
+                else if (key == "position")
+                {
+                    waypoint->set_position(to_vector3(L, 3));
                 }
                 else if (key == "randomizer_settings")
                 {
@@ -239,6 +211,10 @@ namespace trview
 
                     waypoint->set_randomizer_settings(new_settings);
                 }
+                else if (key == "trigger")
+                {
+                    waypoint->set_trigger(to_trigger(L, 3));
+                }
                 else if (key == "waypoint_colour")
                 {
                     waypoint->set_waypoint_colour(to_colour(L, 3));
@@ -263,15 +239,16 @@ namespace trview
                 {
                     if (auto item = to_item(L, -1))
                     {
-                        return create_waypoint(L,
-                            waypoint_source(
+                        auto waypoint = waypoint_source(
                                 item->position(),
                                 normal,
                                 item->room(),
                                 IWaypoint::Type::Entity,
                                 item->number(),
                                 Colour::White,
-                                Colour::White));
+                                Colour::White);
+                        waypoint->set_item(item);
+                        return create_waypoint(L, waypoint);
                     }
                     return 0;
                 }
@@ -284,15 +261,16 @@ namespace trview
                 {
                     if (auto trigger = to_trigger(L, -1))
                     {
-                        return create_waypoint(L,
-                            waypoint_source(
+                        auto waypoint = waypoint_source(
                                 trigger->position(),
                                 normal,
                                 trigger->room(),
                                 IWaypoint::Type::Entity,
                                 trigger->number(),
                                 Colour::White,
-                                Colour::White));
+                                Colour::White);
+                        waypoint->set_trigger(trigger);
+                        return create_waypoint(L, waypoint);
                     }
                     return 0;
                 }
