@@ -56,6 +56,7 @@ namespace trview
         Colour route_colour() const override;
     private:
         DirectX::SimpleMath::Matrix calculate_waypoint_rotation() const;
+        void set_properties(Type type, uint32_t index, uint32_t room, const DirectX::SimpleMath::Vector3& position);
 
         std::string _notes;
         std::vector<uint8_t> _save_data;

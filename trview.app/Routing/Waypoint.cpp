@@ -155,8 +155,7 @@ namespace trview
         _item = item;
         if (auto new_item = _item.lock())
         {
-            _type = Type::Entity;
-            _index = new_item->number();
+            set_properties(Type::Entity, new_item->number(), new_item->room(), new_item->position());
         }
     }
 
@@ -185,8 +184,7 @@ namespace trview
         _trigger = trigger;
         if (auto new_trigger = _trigger.lock())
         {
-            _type = Type::Trigger;
-            _index = new_trigger->number();
+            set_properties(Type::Trigger, new_trigger->number(), new_trigger->room(), new_trigger->position());
         }
     }
 
@@ -253,6 +251,14 @@ namespace trview
     Colour Waypoint::waypoint_colour() const
     {
         return _waypoint_colour;
+    }
+
+    void Waypoint::set_properties(Type type, uint32_t index, uint32_t room, const DirectX::SimpleMath::Vector3& position)
+    {
+        _type = type;
+        _index = index;
+        _room = room;
+        _position = position;
     }
 }
 
