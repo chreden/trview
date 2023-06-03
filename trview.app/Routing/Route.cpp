@@ -266,6 +266,7 @@ namespace trview
     void Route::set_level(const std::weak_ptr<ILevel>& level)
     {
         _level = level;
+        bind_waypoint_targets();
     }
 
     void Route::set_randomizer_enabled(bool enabled)
@@ -311,6 +312,44 @@ namespace trview
     uint32_t Route::next_index() const
     {
         return _waypoints.empty() ? 0 : _selected_index + 1;
+    }
+
+    void Route::bind_waypoint_targets()
+    {
+        auto level = _level.lock();
+
+        for (auto& waypoint : _waypoints)
+        {
+            switch (waypoint->type())
+            {
+                case IWaypoint::Type::Entity:
+                {
+                    if (level)
+                    {
+                        auto item = level->item(waypoint->index()).lock();
+                        waypoint->set_item(item);
+                    }
+                    else
+                    {
+                        waypoint->set_item({});
+                    }
+                    break;
+                }
+                case IWaypoint::Type::Trigger:
+                {
+                    if (level)
+                    {
+                        auto trigger = level->trigger(waypoint->index()).lock();
+                        waypoint->set_trigger(trigger);
+                    }
+                    else
+                    {
+                        waypoint->set_trigger({});
+                    }
+                    break;
+                }
+            }
+        }
     }
 
     IWaypoint::WaypointRandomizerSettings import_randomizer_settings(const nlohmann::json& json, const RandomizerSettings& randomizer_settings)
