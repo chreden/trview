@@ -40,9 +40,9 @@ namespace
                 return *this;
             }
 
-            std::unique_ptr<Route> build()
+            std::shared_ptr<Route> build()
             {
-                return std::make_unique<Route>(std::move(selection_renderer), waypoint_source, settings);
+                return std::make_shared<Route>(std::move(selection_renderer), waypoint_source, settings);
             }
         };
         return test_module{};
