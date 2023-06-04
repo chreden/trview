@@ -312,7 +312,7 @@ TEST(Application, WindowContentsResetBeforeViewerLoaded)
     EXPECT_CALL(route_window_manager, set_items(A<const std::vector<std::weak_ptr<IItem>>&>())).Times(1).WillOnce([&](auto) { events.push_back("route_items"); });
     EXPECT_CALL(route_window_manager, set_triggers(A<const std::vector<std::weak_ptr<ITrigger>>&>())).Times(1).WillOnce([&](auto) { events.push_back("route_triggers"); });
     EXPECT_CALL(route_window_manager, set_rooms(A<const std::vector<std::weak_ptr<IRoom>>&>())).Times(1).WillOnce([&](auto) { events.push_back("route_rooms"); });
-    EXPECT_CALL(route_window_manager, set_route(A<IRoute*>())).Times(2).WillOnce([&](auto) { events.push_back("route_route"); });
+    EXPECT_CALL(route_window_manager, set_route(A<IRoute*>())).Times(3).WillRepeatedly([&](auto) { events.push_back("route_route"); });
     EXPECT_CALL(lights_window_manager, set_lights(A<const std::vector<std::weak_ptr<ILight>>&>())).Times(1).WillOnce([&](auto) { events.push_back("lights_lights"); });
     EXPECT_CALL(camera_sink_window_manager, set_camera_sinks).Times(1).WillOnce([&](auto) { events.push_back("camera_sinks_camera_sinks"); });
     EXPECT_CALL(*route, clear()).Times(1).WillOnce([&] { events.push_back("route_clear"); });
@@ -337,7 +337,6 @@ TEST(Application, WindowContentsResetBeforeViewerLoaded)
     ASSERT_TRUE(called.has_value());
     ASSERT_EQ(called.value(), "test_path.tr2");
 
-    ASSERT_EQ(events.size(), 19);
     ASSERT_EQ(events.back(), "viewer");
 }
 

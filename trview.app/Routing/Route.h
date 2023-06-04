@@ -47,6 +47,7 @@ namespace trview
     private:
         uint32_t next_index() const;
         void bind_waypoint_targets();
+        void bind_waypoint(IWaypoint& waypoint);
 
         IWaypoint::Source _waypoint_source;
         std::vector<std::shared_ptr<IWaypoint>> _waypoints;

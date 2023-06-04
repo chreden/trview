@@ -259,6 +259,7 @@ namespace trview
         _index = index;
         _room = room;
         _position = position;
+        on_changed();
     }
 }
 

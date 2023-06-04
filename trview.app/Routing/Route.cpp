@@ -108,7 +108,7 @@ namespace trview
     std::shared_ptr<IWaypoint> Route::add(const std::shared_ptr<IWaypoint>& waypoint)
     {
         _waypoints.push_back(waypoint);
-        waypoint->set_route(shared_from_this());
+        bind_waypoint(*waypoint);
         set_unsaved(true);
         return waypoint;
     }
@@ -150,7 +150,7 @@ namespace trview
     void Route::insert(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& normal, uint32_t room, uint32_t index, IWaypoint::Type type, uint32_t type_index)
     {
         auto waypoint = _waypoint_source(position, normal, room, type, type_index, _colour, _waypoint_colour);
-        waypoint->set_route(shared_from_this());
+        bind_waypoint(*waypoint);
         _waypoints.insert(_waypoints.begin() + index, waypoint);
         set_unsaved(true);
     }
@@ -347,6 +347,12 @@ namespace trview
                 }
             }
         }
+    }
+
+    void Route::bind_waypoint(IWaypoint& waypoint)
+    {
+        waypoint.set_route(shared_from_this());
+        waypoint.on_changed += on_changed;
     }
 
     IWaypoint::WaypointRandomizerSettings import_randomizer_settings(const nlohmann::json& json, const RandomizerSettings& randomizer_settings)
