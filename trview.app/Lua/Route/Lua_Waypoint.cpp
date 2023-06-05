@@ -219,6 +219,12 @@ namespace trview
 
                     waypoint->set_randomizer_settings(new_settings);
                 }
+                else if (key == "room_number")
+                {
+                    luaL_checkinteger(L, 3);
+                    waypoint->set_room_number(static_cast<uint32_t>(lua_tointeger(L, 3)));
+                    return 0;
+                }
                 else if (key == "trigger")
                 {
                     waypoint->set_trigger(to_trigger(L, 3));

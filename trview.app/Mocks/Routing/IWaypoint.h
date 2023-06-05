@@ -23,6 +23,7 @@ namespace trview
             MOCK_METHOD(void, set_item, (const std::weak_ptr<IItem>&), (override));
             MOCK_METHOD(void, set_normal, (const DirectX::SimpleMath::Vector3&), (override));
             MOCK_METHOD(void, set_notes, (const std::string&), (override));
+            MOCK_METHOD(void, set_room_number, (uint32_t), (override));
             MOCK_METHOD(void, set_route, (const std::weak_ptr<IRoute>&), (override));
             MOCK_METHOD(void, set_route_colour, (const Colour&), (override));
             MOCK_METHOD(void, set_waypoint_colour, (const Colour&), (override));

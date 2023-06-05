@@ -265,6 +265,13 @@ namespace trview
     void Waypoint::set_normal(const DirectX::SimpleMath::Vector3& normal)
     {
         _normal = normal;
+        on_changed();
+    }
+
+    void Waypoint::set_room_number(uint32_t room)
+    {
+        _room = room;
+        on_changed();
     }
 }
 

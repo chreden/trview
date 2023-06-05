@@ -127,7 +127,6 @@ namespace trview
         std::ranges::for_each(_waypoints, [this](auto&& w) { unbind_waypoint(*w); });
         _waypoints.clear();
         _selected_index = 0u;
-        on_changed();
     }
 
     void Route::insert(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& normal, uint32_t room, uint32_t index)
@@ -271,7 +270,6 @@ namespace trview
             waypoint->set_route_colour(colour);
         }
         set_unsaved(true);
-        on_changed();
     }
 
     void Route::set_level(const std::weak_ptr<ILevel>& level)
@@ -293,12 +291,12 @@ namespace trview
             waypoint->set_waypoint_colour(colour);
         }
         set_unsaved(true);
-        on_changed();
     }
 
     void Route::set_unsaved(bool value)
     {
         _is_unsaved = value;
+        on_changed();
     }
 
     Colour Route::waypoint_colour() const 
