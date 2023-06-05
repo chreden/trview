@@ -27,6 +27,13 @@ namespace trview
                 return create_waypoint(L, route->add(to_waypoint(L, 2)));
             }
 
+            int route_remove(lua_State* L)
+            {
+                auto route = get_self<IRoute>(L);
+                route->remove(to_waypoint(L, 2));
+                return 0;
+            }
+
             int route_clear(lua_State* L)
             {
                 auto route = get_self<IRoute>(L);
@@ -56,6 +63,11 @@ namespace trview
                 else if (key == "level")
                 {
                     return create_level(L, route->level().lock());
+                }
+                else if (key == "remove")
+                {
+                    lua_pushcfunction(L, route_remove);
+                    return 1;
                 }
                 else if (key == "waypoint_colour")
                 {

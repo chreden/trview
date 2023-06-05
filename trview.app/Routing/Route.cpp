@@ -124,6 +124,7 @@ namespace trview
         {
             set_unsaved(true);
         }
+        std::ranges::for_each(_waypoints, [this](auto&& w) { unbind_waypoint(*w); });
         _waypoints.clear();
         _selected_index = 0u;
         on_changed();
@@ -214,13 +215,23 @@ namespace trview
         {
             return;
         }
-        _waypoints[index]->set_route({});
+        unbind_waypoint(*_waypoints[index]);
         _waypoints.erase(_waypoints.begin() + index);
         if (_selected_index >= index && _selected_index > 0)
         {
             --_selected_index;
         }
         set_unsaved(true);
+    }
+
+    void Route::remove(const std::shared_ptr<IWaypoint>& waypoint)
+    {
+        auto found = std::ranges::find(_waypoints, waypoint);
+        if (found == _waypoints.end())
+        {
+            return;
+        }
+        remove(static_cast<uint32_t>(found - _waypoints.begin()));
     }
 
     void Route::render(const ICamera& camera, const ILevelTextureStorage& texture_storage, bool show_selection)
@@ -353,6 +364,12 @@ namespace trview
     {
         waypoint.set_route(shared_from_this());
         waypoint.on_changed += on_changed;
+    }
+
+    void Route::unbind_waypoint(IWaypoint& waypoint)
+    {
+        waypoint.set_route({});
+        waypoint.on_changed -= on_changed;
     }
 
     IWaypoint::WaypointRandomizerSettings import_randomizer_settings(const nlohmann::json& json, const RandomizerSettings& randomizer_settings)

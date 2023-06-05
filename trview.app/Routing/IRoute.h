@@ -103,6 +103,7 @@ namespace trview
         /// </summary>
         /// <param name="index">The index of the waypoint to remove.</param>
         virtual void remove(uint32_t index) = 0;
+        virtual void remove(const std::shared_ptr<IWaypoint>& waypoint) = 0;
         /// <summary>
         /// Render the route.
         /// </summary>

@@ -33,6 +33,7 @@ namespace trview
         virtual void move(int32_t left, int32_t right) override;
         virtual PickResult pick(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& direction) const override;
         virtual void remove(uint32_t index) override;
+        void remove(const std::shared_ptr<IWaypoint>& waypoint) override;
         virtual void render(const ICamera& camera, const ILevelTextureStorage& texture_storage, bool show_selection) override;
         virtual uint32_t selected_waypoint() const override;
         virtual void select_waypoint(uint32_t index) override;
@@ -48,6 +49,7 @@ namespace trview
         uint32_t next_index() const;
         void bind_waypoint_targets();
         void bind_waypoint(IWaypoint& waypoint);
+        void unbind_waypoint(IWaypoint& waypoint);
 
         IWaypoint::Source _waypoint_source;
         std::vector<std::shared_ptr<IWaypoint>> _waypoints;

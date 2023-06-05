@@ -21,4 +21,5 @@ The Route library lets you create and edit routes.
 | Name | Returns | Parameters | Description |
 | ---- | ------- | ---------- | ----------- |
 | add | [Waypoint](waypoint.md) | [Waypoint](waypoint.md) | Add the specified waypoint to the end of the route |
+| remove | - | [Waypoint](waypoint.md) | Remove the specified waypoint from the route |
 | clear | - | - | Removes all waypoints in the route |

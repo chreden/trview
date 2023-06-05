@@ -80,7 +80,7 @@ namespace trview
                     }
                     return 1;
                 }
-                else if (key == "room")
+                else if (key == "room_number")
                 {
                     lua_pushinteger(L, waypoint->room());
                     return 1;
