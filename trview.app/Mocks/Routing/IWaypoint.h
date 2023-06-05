@@ -21,6 +21,7 @@ namespace trview
             MOCK_METHOD(std::weak_ptr<IRoute>, route, (), (const, override));
             MOCK_METHOD(std::vector<uint8_t>, save_file, (), (const, override));
             MOCK_METHOD(void, set_item, (const std::weak_ptr<IItem>&), (override));
+            MOCK_METHOD(void, set_normal, (const DirectX::SimpleMath::Vector3&), (override));
             MOCK_METHOD(void, set_notes, (const std::string&), (override));
             MOCK_METHOD(void, set_route, (const std::weak_ptr<IRoute>&), (override));
             MOCK_METHOD(void, set_route_colour, (const Colour&), (override));

@@ -54,6 +54,7 @@ namespace trview
         std::weak_ptr<ITrigger> trigger() const override;
         Colour waypoint_colour() const override;
         Colour route_colour() const override;
+        void set_normal(const DirectX::SimpleMath::Vector3& normal) override;
     private:
         DirectX::SimpleMath::Matrix calculate_waypoint_rotation() const;
         void set_properties(Type type, uint32_t index, uint32_t room, const DirectX::SimpleMath::Vector3& position);

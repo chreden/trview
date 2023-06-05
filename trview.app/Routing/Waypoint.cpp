@@ -220,7 +220,7 @@ namespace trview
 
     void Waypoint::set_position(const DirectX::SimpleMath::Vector3& position)
     {
-        _position = position;
+        set_properties(Type::Position, 0, 0, position);
     }
 
     std::weak_ptr<ITrigger> Waypoint::trigger() const
@@ -260,6 +260,11 @@ namespace trview
         _room = room;
         _position = position;
         on_changed();
+    }
+
+    void Waypoint::set_normal(const DirectX::SimpleMath::Vector3& normal)
+    {
+        _normal = normal;
     }
 }
 

@@ -34,6 +34,10 @@ namespace trview
                 {
                     return create_item(L, waypoint->item().lock());
                 }
+                else if (key == "normal")
+                {
+                    return create_vector3(L, waypoint->normal());
+                }
                 else if (key == "notes")
                 {
                     lua_pushstring(L, waypoint->notes().c_str());
@@ -110,6 +114,10 @@ namespace trview
                 else if (key == "item")
                 {
                     waypoint->set_item(to_item(L, 3));
+                }
+                else if (key == "normal")
+                {
+                    waypoint->set_normal(to_vector3(L, 3));
                 }
                 else if (key == "notes")
                 {

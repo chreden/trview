@@ -7,12 +7,13 @@ The Waypoint library lets you create and edit route waypoints.
 | ---- | ---- | ---- | ---- |
 | colour | [Colour](colour.md) | RW | The route line colour |
 | item | [Item](item.md) | RW | The item that is the target of the waypoint |
+| normal | [Vector3](vector3.md) | RW | The normal that the waypoint pole is aligned to |
 | notes | string | RW | Notes for this waypoint |
 | position | [Vector3](vector3.md) | RW | The position that is the target of the waypoint |
 | randomizer_settings | Table | RW | The randomizer settings for this waypoint (map of `string` to (`boolean`, `number` or `string`)) |
 | room | number | R | The room number that the waypoint is in |
 | trigger | [Trigger](trigger.md) | RW | The trigger that is the target of the waypoint |
-| type | string | R | One of `Entity`, `Trigger`, `Position`. Entity refers to Item. |
+| type | string | R | One of `Item`, `Trigger`, `Position`. Can be changed by setting `item`, `trigger` or `position`.  |
 | waypoint_colour | [Colour](colour.md) | RW | The waypoint pole colour |
 
 # Non-Instance Functions

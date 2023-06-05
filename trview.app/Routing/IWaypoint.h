@@ -120,6 +120,7 @@ namespace trview
         virtual void set_position(const DirectX::SimpleMath::Vector3& position) = 0;
         virtual Colour route_colour() const = 0;
         virtual Colour waypoint_colour() const = 0;
+        virtual void set_normal(const DirectX::SimpleMath::Vector3& normal) = 0;
 
         Event<> on_changed;
     };
