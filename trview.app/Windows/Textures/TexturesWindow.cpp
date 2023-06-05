@@ -8,6 +8,11 @@ namespace trview
     {
     }
 
+    TexturesWindow::TexturesWindow(const std::shared_ptr<IDialogs>& dialogs, const std::shared_ptr<IFiles>& files)
+        : _dialogs(dialogs), _files(files)
+    {
+    }
+
     void TexturesWindow::render()
     {
         if (!render_textures_window())
@@ -32,6 +37,24 @@ namespace trview
 
             if (_texture_storage && _index < static_cast<int32_t>(_texture_storage->num_tiles()))
             {
+                // TODO: Make this per texture.
+                bool is_override = false;
+
+                ImGui::AlignTextToFramePadding();
+                ImGui::Checkbox("##Override", &is_override);
+                ImGui::SameLine();
+                if (ImGui::Button("Override"))
+                {
+                    // TODO: Ask for a file
+                    if (auto result = _dialogs->open_file(L"Select Texture", { { L"Texture", { L"*.*" }} }, OFN_FILEMUSTEXIST))
+                    {
+                        if (auto bytes = _files->load_file(result.value().filename))
+                        {
+                            
+                        }
+                    }
+                }
+
                 auto texture = _transparency ? _texture_storage->texture(_index) : _texture_storage->opaque_texture(_index);
                 ImGui::Image(texture.view().Get(), ImVec2(256, 256));
             }

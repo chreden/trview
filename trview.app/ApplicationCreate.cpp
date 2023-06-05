@@ -300,7 +300,7 @@ namespace trview
         auto decrypter = std::make_shared<trlevel::Decrypter>();
 
         auto trlevel_source = [=](auto&& filename) { return std::make_unique<trlevel::Level>(filename, files, decrypter, log); };
-        auto textures_window_source = [=]() { return std::make_shared<TexturesWindow>(); };
+        auto textures_window_source = [=]() { return std::make_shared<TexturesWindow>(dialogs, files); };
         auto console_source = [=]() { return std::make_shared<Console>(dialogs, plugins); };
 
         return std::make_unique<Application>(
