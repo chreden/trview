@@ -295,8 +295,8 @@ namespace trview
 
                 if (LUA_TTABLE == lua_getfield(L, 1, "position"))
                 {
-                    Vector3 position = to_vector3(L, -1);
-                    if (auto room = to_room(L, 2, "room"))
+                    const Vector3 position = to_vector3(L, -1) / trlevel::Scale;
+                    if (auto room = to_room(L, 1, "room"))
                     {
                         return create_waypoint(L,
                             waypoint_source(

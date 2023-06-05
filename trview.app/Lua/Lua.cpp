@@ -4,6 +4,7 @@
 #include <external/lua/src/lualib.h>
 #include <trview.lua.imgui/trview.lua.imgui.h>
 #include "Route/Lua_Waypoint.h"
+#include "Vector3.h"
 
 namespace trview
 {
@@ -85,6 +86,7 @@ namespace trview
         *userdata = this;
         lua_pushcclosure(L, print, 1);
         lua_setglobal(L, "print");
+        lua::vector3_register(L);
         lua::trview_register(L, application, _route_source, _waypoint_source);
         lua::imgui_register(L);
     }
