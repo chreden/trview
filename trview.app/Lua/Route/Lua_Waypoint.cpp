@@ -21,6 +21,20 @@ namespace trview
             IWaypoint::Source waypoint_source;
             UserSettings user_settings;
 
+            std::string waypoint_type_to_string_lua(IWaypoint::Type type)
+            {
+                switch (type)
+                {
+                case IWaypoint::Type::Entity:
+                    return "Item";
+                case IWaypoint::Type::Position:
+                    return "Position";
+                case IWaypoint::Type::Trigger:
+                    return "Trigger";
+                }
+                return "Unknown";
+            }
+
             int waypoint_index(lua_State* L)
             {
                 auto waypoint = get_self<IWaypoint>(L);
@@ -91,7 +105,7 @@ namespace trview
                 }
                 else if (key == "type")
                 {
-                    lua_pushstring(L, waypoint_type_to_string(waypoint->type()).c_str());
+                    lua_pushstring(L, waypoint_type_to_string_lua(waypoint->type()).c_str());
                     return 1;
                 }
                 else if (key == "waypoint_colour")
