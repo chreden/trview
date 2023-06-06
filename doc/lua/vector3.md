@@ -5,7 +5,7 @@
 | ---- | ---- | ---- | ---- |
 | x | number | RW | |
 | y | number | RW | |
-| z | number | RW | 
+| z | number | RW | |
 
 # Non-Instance Functions
 

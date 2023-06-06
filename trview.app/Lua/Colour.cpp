@@ -31,6 +31,7 @@ namespace trview
             float b = static_cast<float>(lua_tonumber(L, -1));
             lua_getfield(L, index, "a");
             float a = static_cast<float>(lua_tonumber(L, -1));
+            lua_pop(L, 4);
             return Colour(a, r, g, b);
         }
 

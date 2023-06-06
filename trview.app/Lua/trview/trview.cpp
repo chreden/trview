@@ -7,6 +7,7 @@
 #include "../Route/Lua_Route.h"
 #include "../Route/Lua_Waypoint.h"
 #include "../Colour.h"
+#include "../Vector3.h"
 #include "Lua/Lua.h"
 
 #include <future>
@@ -147,6 +148,7 @@ namespace trview
             route_register(L, route_source);
             waypoint_register(L, waypoint_source);
             colour_register(L);
+            vector3_register(L);
         }
 
         void set_settings(const UserSettings& settings)

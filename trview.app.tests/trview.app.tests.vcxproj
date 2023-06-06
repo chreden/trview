@@ -49,6 +49,7 @@
     <ClCompile Include="Lua\Elements\Lua_SectorTests.cpp" />
     <ClCompile Include="Lua\Elements\Lua_StaticMeshTests.cpp" />
     <ClCompile Include="Lua\Elements\Lua_TriggerTests.cpp" />
+    <ClCompile Include="Lua\Lua_ColourTests.cpp" />
     <ClCompile Include="Lua\Lua_trviewTests.cpp" />
     <ClCompile Include="Lua\Route\Lua_RouteTests.cpp" />
     <ClCompile Include="Main.cpp" />
