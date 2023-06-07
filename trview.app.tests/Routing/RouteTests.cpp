@@ -103,6 +103,7 @@ TEST(Route, Add)
     };
 
     auto route = register_test_module().with_waypoint_source(source).build();
+
     route->add(Vector3(0, 1, 0), Vector3::Down, 10);
 
     ASSERT_TRUE(route->is_unsaved());
@@ -111,6 +112,16 @@ TEST(Route, Add)
     ASSERT_EQ(waypoint_values.value().position, Vector3(0, 1, 0));
     ASSERT_EQ(waypoint_values.value().room, 10);
     ASSERT_EQ(waypoint_values.value().type, IWaypoint::Type::Position);
+}
+
+TEST(Route, AddBindsItem)
+{
+    FAIL();
+}
+
+TEST(Route, AddBindsTrigger)
+{
+    FAIL();
 }
 
 TEST(Route, AddSpecificType)

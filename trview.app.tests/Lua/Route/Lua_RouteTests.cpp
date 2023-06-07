@@ -9,6 +9,24 @@ using namespace trview::mocks;
 using namespace trview::tests;
 using namespace testing;
 
+
+TEST(Lua_Route, Add)
+{
+    FAIL();
+}
+
+TEST(Lua_Route, Clear)
+{
+    auto route = mock_shared<MockRoute>();
+    EXPECT_CALL(*route, clear).Times(1);
+
+    lua_State* L = luaL_newstate();
+    lua::create_route(L, route);
+    lua_setglobal(L, "r");
+
+    ASSERT_EQ(0, luaL_dostring(L, "r:clear()"));
+}
+
 TEST(Lua_Route, Colour)
 {
     auto route = mock_shared<MockRoute>();
@@ -32,6 +50,69 @@ TEST(Lua_Route, Colour)
     ASSERT_EQ(0, luaL_dostring(L, "return x.b"));
     ASSERT_EQ(LUA_TNUMBER, lua_type(L, -1));
     ASSERT_EQ(4.0f, lua_tonumber(L, -1));
+}
+
+TEST(Lua_Route, Level)
+{
+    FAIL();
+}
+
+TEST(Lua_Route, New)
+{
+    FAIL();
+}
+
+TEST(Lua_Route, Remove)
+{
+    FAIL();
+}
+
+TEST(Lua_Route, SetColour)
+{
+    Colour called_colour;
+    auto route = mock_shared<MockRoute>();
+    EXPECT_CALL(*route, set_colour).Times(1).WillRepeatedly(SaveArg<0>(&called_colour));
+
+    lua_State* L = luaL_newstate();
+    lua::colour_register(L);
+    lua::create_route(L, route);
+    lua_setglobal(L, "r");
+
+    ASSERT_EQ(0, luaL_dostring(L, "r.colour = Colour.new(1, 2, 3)"));
+
+    ASSERT_FLOAT_EQ(called_colour.r, 1.0f);
+    ASSERT_FLOAT_EQ(called_colour.g, 2.0f);
+    ASSERT_FLOAT_EQ(called_colour.b, 3.0f);
+    ASSERT_FLOAT_EQ(called_colour.a, 1.0f);
+}
+
+TEST(Lua_Route, SetLevel)
+{
+    FAIL();
+}
+
+TEST(Lua_Route, SetWaypointColour)
+{
+    Colour called_colour;
+    auto route = mock_shared<MockRoute>();
+    EXPECT_CALL(*route, set_waypoint_colour).Times(1).WillRepeatedly(SaveArg<0>(&called_colour));
+
+    lua_State* L = luaL_newstate();
+    lua::colour_register(L);
+    lua::create_route(L, route);
+    lua_setglobal(L, "r");
+
+    ASSERT_EQ(0, luaL_dostring(L, "r.waypoint_colour = Colour.new(1, 2, 3)"));
+
+    ASSERT_FLOAT_EQ(called_colour.r, 1.0f);
+    ASSERT_FLOAT_EQ(called_colour.g, 2.0f);
+    ASSERT_FLOAT_EQ(called_colour.b, 3.0f);
+    ASSERT_FLOAT_EQ(called_colour.a, 1.0f);
+}
+
+TEST(Lua_Route, SetWaypoints)
+{
+    FAIL();
 }
 
 TEST(Lua_Route, WaypointColour)
@@ -59,52 +140,7 @@ TEST(Lua_Route, WaypointColour)
     ASSERT_EQ(4.0f, lua_tonumber(L, -1));
 }
 
-TEST(Lua_Route, SetColour)
+TEST(Lua_Route, Waypoints)
 {
-    Colour called_colour;
-    auto route = mock_shared<MockRoute>();
-    EXPECT_CALL(*route, set_colour).Times(1).WillRepeatedly(SaveArg<0>(&called_colour));
-
-    lua_State* L = luaL_newstate();
-    lua::colour_register(L);
-    lua::create_route(L, route);
-    lua_setglobal(L, "r");
-
-    ASSERT_EQ(0, luaL_dostring(L, "r.colour = Colour.new(1, 2, 3)"));
-
-    ASSERT_FLOAT_EQ(called_colour.r, 1.0f);
-    ASSERT_FLOAT_EQ(called_colour.g, 2.0f);
-    ASSERT_FLOAT_EQ(called_colour.b, 3.0f);
-    ASSERT_FLOAT_EQ(called_colour.a, 1.0f);
-}
-
-TEST(Lua_Route, SetWaypointColour)
-{
-    Colour called_colour;
-    auto route = mock_shared<MockRoute>();
-    EXPECT_CALL(*route, set_waypoint_colour).Times(1).WillRepeatedly(SaveArg<0>(&called_colour));
-
-    lua_State* L = luaL_newstate();
-    lua::colour_register(L);
-    lua::create_route(L, route);
-    lua_setglobal(L, "r");
-
-    ASSERT_EQ(0, luaL_dostring(L, "r.waypoint_colour = Colour.new(1, 2, 3)"));
-
-    ASSERT_FLOAT_EQ(called_colour.r, 1.0f);
-    ASSERT_FLOAT_EQ(called_colour.g, 2.0f);
-    ASSERT_FLOAT_EQ(called_colour.b, 3.0f);
-    ASSERT_FLOAT_EQ(called_colour.a, 1.0f);
-}
-
-TEST(Lua_Route, Clear)
-{
-    auto route = mock_shared<MockRoute>();
-    EXPECT_CALL(*route, clear).Times(1);
-
-    lua_State* L = luaL_newstate();
-    lua::create_route(L, route);
-    lua_setglobal(L, "r");
-
-    ASSERT_EQ(0, luaL_dostring(L, "r:clear()"));
+    FAIL();
 }

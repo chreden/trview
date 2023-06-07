@@ -1,6 +1,6 @@
 # Route
 
-The Route library lets you create and edit routes.
+The Route library lets you create and edit routes. Routes need to be bound to a level for the references in waypoints to be correctly bound, unless they have been set directly. This can be done by setting the level property or making the route the current route in the application.
 
 # Properties
 | Name | Type | Mode | Description |

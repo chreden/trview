@@ -221,6 +221,12 @@
     <ClCompile Include="Lua\Lua_ColourTests.cpp">
       <Filter>Lua</Filter>
     </ClCompile>
+    <ClCompile Include="Lua\Route\Lua_WaypointTests.cpp">
+      <Filter>Lua\Route</Filter>
+    </ClCompile>
+    <ClCompile Include="Lua\Lua_Vector3Tests.cpp">
+      <Filter>Lua</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Input">

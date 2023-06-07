@@ -24,30 +24,21 @@ TEST(Waypoint, EmptySave)
     ASSERT_FALSE(waypoint.has_save());
 }
 
+TEST(Waypoint, Item)
+{
+    FAIL();
+}
+
+TEST(Waypoint, Normal)
+{
+    FAIL();
+}
+
 TEST(Waypoint, Notes)
 {
     Waypoint waypoint(mock_shared<MockMesh>(), Vector3(1, 2, 3), Vector3::Down, 12, IWaypoint::Type::Trigger, 23, Colour::Red, Colour::Green);
     waypoint.set_notes("Test notes\nNew line");
     ASSERT_EQ(waypoint.notes(), "Test notes\nNew line");
-}
-
-TEST(Waypoint, SaveFile)
-{
-    Waypoint waypoint(mock_shared<MockMesh>(), Vector3::Zero, Vector3::Down, 0, IWaypoint::Type::Position, 0, Colour::Red, Colour::Green);
-    ASSERT_FALSE(waypoint.has_save());
-    waypoint.set_save_file({ 0x1 });
-    ASSERT_TRUE(waypoint.has_save());
-    ASSERT_EQ(waypoint.save_file(), std::vector<uint8_t>{ 0x1 });
-}
-
-TEST(Waypoint, Visibility)
-{
-    Waypoint waypoint(mock_shared<MockMesh>(), Vector3::Zero, Vector3::Down, 0, IWaypoint::Type::Position, 0, Colour::Red, Colour::Green);
-    ASSERT_TRUE(waypoint.visible());
-    waypoint.set_visible(false);
-    ASSERT_FALSE(waypoint.visible());
-    waypoint.set_visible(true);
-    ASSERT_TRUE(waypoint.visible());
 }
 
 TEST(Waypoint, RandomizerProperties)
@@ -60,4 +51,43 @@ TEST(Waypoint, RandomizerProperties)
     auto updated = waypoint.randomizer_settings();
     ASSERT_EQ(existing.size(), 1);
     ASSERT_EQ(std::get<std::string>(updated["test1"]), "Test");
+}
+
+TEST(Waypoint, SaveFile)
+{
+    Waypoint waypoint(mock_shared<MockMesh>(), Vector3::Zero, Vector3::Down, 0, IWaypoint::Type::Position, 0, Colour::Red, Colour::Green);
+    ASSERT_FALSE(waypoint.has_save());
+    waypoint.set_save_file({ 0x1 });
+    ASSERT_TRUE(waypoint.has_save());
+    ASSERT_EQ(waypoint.save_file(), std::vector<uint8_t>{ 0x1 });
+}
+
+TEST(Waypoint, SetItem)
+{
+    FAIL();
+}
+
+TEST(Waypoint, SetNormal)
+{
+    FAIL();
+}
+
+TEST(Waypoint, SetTrigger)
+{
+    FAIL();
+}
+
+TEST(Waypoint, Trigger)
+{
+    FAIL();
+}
+
+TEST(Waypoint, Visibility)
+{
+    Waypoint waypoint(mock_shared<MockMesh>(), Vector3::Zero, Vector3::Down, 0, IWaypoint::Type::Position, 0, Colour::Red, Colour::Green);
+    ASSERT_TRUE(waypoint.visible());
+    waypoint.set_visible(false);
+    ASSERT_FALSE(waypoint.visible());
+    waypoint.set_visible(true);
+    ASSERT_TRUE(waypoint.visible());
 }
