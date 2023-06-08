@@ -168,8 +168,8 @@ TEST(Lua_Route, SetWaypoints)
     auto waypoint1 = mock_shared<MockWaypoint>();
     auto waypoint2 = mock_shared<MockWaypoint>();
     EXPECT_CALL(*route, clear);
-    EXPECT_CALL(*route, add(Eq<const std::shared_ptr<IWaypoint>&>(waypoint1)));
-    EXPECT_CALL(*route, add(Eq<const std::shared_ptr<IWaypoint>&>(waypoint2)));
+    EXPECT_CALL(*route, add(Eq(waypoint1)));
+    EXPECT_CALL(*route, add(Eq(waypoint2)));
 
     lua_State* L = luaL_newstate();
     lua::create_route(L, route);
