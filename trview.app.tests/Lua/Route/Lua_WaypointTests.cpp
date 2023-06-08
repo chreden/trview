@@ -102,13 +102,13 @@ TEST(Lua_Waypoint, Position)
     ASSERT_EQ(LUA_TTABLE, lua_type(L, -1));
     ASSERT_EQ(0, luaL_dostring(L, "return w.position.x"));
     ASSERT_EQ(LUA_TNUMBER, lua_type(L, -1));
-    ASSERT_EQ(1.0f, lua_tonumber(L, -1));
+    ASSERT_EQ(1024.0f, lua_tonumber(L, -1));
     ASSERT_EQ(0, luaL_dostring(L, "return w.position.y"));
     ASSERT_EQ(LUA_TNUMBER, lua_type(L, -1));
-    ASSERT_EQ(2.0f, lua_tonumber(L, -1));
+    ASSERT_EQ(2048.0f, lua_tonumber(L, -1));
     ASSERT_EQ(0, luaL_dostring(L, "return w.position.z"));
     ASSERT_EQ(LUA_TNUMBER, lua_type(L, -1));
-    ASSERT_EQ(3.0f, lua_tonumber(L, -1));
+    ASSERT_EQ(3072.0f, lua_tonumber(L, -1));
 }
 
 TEST(Lua_Waypoint, RandomizerSettings)
