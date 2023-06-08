@@ -145,5 +145,24 @@ namespace trview
             resource.As(&texture);
             return graphics::Texture{ texture, view };
         }
+
+        Texture load_texture_from_bytes(const IDevice& device, const std::vector<uint8_t>& bytes)
+        {
+            if (bytes.empty())
+            {
+                return {};
+            }
+
+            using namespace Microsoft::WRL;
+
+            ComPtr<ID3D11Resource> resource;
+            ComPtr<ID3D11ShaderResourceView> view;
+
+            DirectX::CreateWICTextureFromMemory(device.device().Get(), &bytes[0], bytes.size(), &resource, &view);
+
+            ComPtr<ID3D11Texture2D> texture;
+            resource.As(&texture);
+            return graphics::Texture{ texture, view };
+        }
     }
 }

@@ -119,5 +119,13 @@ namespace trview
         /// <param name="resource_name">The name of the texture in the resource file.</param>
         /// <returns>The texture loaded from the resource.</returns>
         Texture load_texture_from_resource(const IDevice& device, const std::wstring& resource_name);
+
+        /// <summary>
+        /// Load a specific texture with the specified ID from the embedded resource file.
+        /// </summary>
+        /// <param name="device">The Direct3D device to use to load the textures.</param>
+        /// <param name="bytes">The texture data.</param>
+        /// <returns>The texture loaded from the resource.</returns>
+        Texture load_texture_from_bytes(const IDevice& device, const std::vector<uint8_t>& bytes);
     }
 }

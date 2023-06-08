@@ -50,7 +50,8 @@ namespace trview
                     {
                         if (auto bytes = _files->load_file(result.value().filename))
                         {
-                            
+                            auto texture = _texture_storage->create(bytes.value());
+                            _texture_storage->set_override(_index, texture);
                         }
                     }
                 }

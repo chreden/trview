@@ -8,7 +8,7 @@ namespace trview
     }
 
     LevelTextureStorage::LevelTextureStorage(const std::shared_ptr<graphics::IDevice>& device, std::unique_ptr<ITextureStorage> texture_storage, const trlevel::ILevel& level)
-        : _texture_storage(std::move(texture_storage)), _version(level.get_version())
+        : _texture_storage(std::move(texture_storage)), _version(level.get_version()), _device(device)
     {
         for (uint32_t i = 0; i < level.num_textiles(); ++i)
         {
@@ -72,6 +72,11 @@ namespace trview
 
     graphics::Texture LevelTextureStorage::texture(uint32_t tile_index) const
     {
+        auto override = _overrides.find(tile_index);
+        if (override != _overrides.end())
+        {
+            return override->second;
+        }
         return _tiles[tile_index];
     }
 
@@ -155,5 +160,15 @@ namespace trview
     uint32_t LevelTextureStorage::num_object_textures() const
     {
         return static_cast<uint32_t>(_object_textures.size());
+    }
+
+    graphics::Texture LevelTextureStorage::create(const std::vector<uint8_t>& bytes)
+    {
+        return graphics::load_texture_from_bytes(*_device, bytes);
+    }
+
+    void LevelTextureStorage::set_override(uint32_t index, const graphics::Texture& texture)
+    {
+        _overrides[index] = texture;
     }
 }

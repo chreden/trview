@@ -29,9 +29,12 @@ namespace trview
         virtual DirectX::SimpleMath::Color palette_from_texture(uint32_t texture) const override;
         virtual graphics::Texture geometry_texture() const override;
         virtual uint32_t num_object_textures() const override;
+        graphics::Texture create(const std::vector<uint8_t>& bytes) override;
+        void set_override(uint32_t index, const graphics::Texture& texture) override;
     private:
         void determine_texture_mode();
 
+        std::shared_ptr<graphics::IDevice> _device;
         std::vector<graphics::Texture> _tiles;
         std::vector<graphics::Texture> _opaque_tiles;
         std::vector<trlevel::tr_object_texture> _object_textures;
@@ -47,5 +50,7 @@ namespace trview
         };
         TextureMode _texture_mode{ TextureMode::Official };
         graphics::Texture _geometry_texture;
+
+        std::unordered_map<uint32_t, graphics::Texture> _overrides;
     };
 }
