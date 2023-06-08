@@ -1,6 +1,13 @@
 #include <trview.app/Lua/Route/Lua_Waypoint.h>
 #include <trview.app/Lua/Colour.h>
 #include <trview.app/Lua/Vector3.h>
+#include <trview.app/Lua/Elements/Item/Lua_Item.h>
+#include <trview.app/Lua/Elements/Trigger/Lua_Trigger.h>
+#include <trview.app/Lua/Elements/Room/Lua_Room.h>
+#include <trview.app/Mocks/Elements/IRoom.h>
+#include <trview.app/Mocks/Elements/IItem.h>
+#include <trview.app/Mocks/Elements/ITrigger.h>
+#include <trview.app/Mocks/Routing/IWaypoint.h>
 #include <trview.tests.common/Mocks.h>
 #include <external/lua/src/lua.h>
 #include <external/lua/src/lauxlib.h>
@@ -35,7 +42,17 @@ TEST(Lua_Waypoint, Colour)
 
 TEST(Lua_Waypoint, Item)
 {
-    FAIL();
+    auto item = mock_shared<MockItem>();
+
+    auto waypoint = mock_shared<MockWaypoint>();
+    EXPECT_CALL(*waypoint, item).WillOnce(Return(item));
+
+    lua_State* L = luaL_newstate();
+    lua::create_waypoint(L, waypoint);
+    lua_setglobal(L, "w");
+
+    ASSERT_EQ(0, luaL_dostring(L, "return w.item"));
+    ASSERT_EQ(LUA_TUSERDATA, lua_type(L, -1));
 }
 
 TEST(Lua_Waypoint, Normal)
@@ -62,17 +79,58 @@ TEST(Lua_Waypoint, Normal)
 
 TEST(Lua_Waypoint, NewItem)
 {
-    FAIL();
+    auto waypoint = mock_shared<MockWaypoint>();
+    EXPECT_CALL(*waypoint, set_item).Times(1);
+
+    auto item = mock_shared<MockItem>();
+
+    lua_State* L = luaL_newstate();
+    lua::waypoint_register(L, [=](auto&&...) { return waypoint; });
+    lua::create_item(L, item);
+    lua_setglobal(L, "i");
+
+    ASSERT_EQ(0, luaL_dostring(L, "w = Waypoint.new({item=i})"));
+    ASSERT_EQ(0, luaL_dostring(L, "return w"));
+    ASSERT_EQ(LUA_TUSERDATA, lua_type(L, -1));
 }
 
 TEST(Lua_Waypoint, NewPosition)
 {
-    FAIL();
+    auto waypoint = mock_shared<MockWaypoint>();
+    auto room = mock_shared<MockRoom>();
+    EXPECT_CALL(*room, number);
+
+    std::optional<Vector3> position;
+
+    lua_State* L = luaL_newstate();
+    lua::vector3_register(L);
+    lua::create_room(L, room);
+    lua_setglobal(L, "r");
+    lua::waypoint_register(L, [&](auto&& pos, auto&&...) { position = pos; return waypoint; });
+
+    ASSERT_EQ(0, luaL_dostring(L, "w = Waypoint.new({position=Vector3.new(1024, 2048, 3072), room=r})"));
+    ASSERT_EQ(0, luaL_dostring(L, "return w"));
+    ASSERT_EQ(LUA_TUSERDATA, lua_type(L, -1));
+
+    ASSERT_TRUE(position);
+    ASSERT_EQ(position.value(), Vector3(1, 2, 3));
 }
 
 TEST(Lua_Waypoint, NewTrigger)
 {
-    FAIL();
+    auto waypoint = mock_shared<MockWaypoint>();
+    EXPECT_CALL(*waypoint, set_item).Times(1);
+
+    auto trigger = mock_shared<MockTrigger>();
+
+    lua_State* L = luaL_newstate();
+    lua::waypoint_register(L, [=](auto&&...) { return waypoint; });
+    lua::create_trigger(L, trigger);
+    lua_setglobal(L, "t");
+
+    ASSERT_EQ(0, luaL_dostring(L, "w = Waypoint.new({trigger=t})"));
+    ASSERT_EQ(0, luaL_dostring(L, "return w"));
+    ASSERT_EQ(LUA_TUSERDATA, lua_type(L, -1));
 }
 
 TEST(Lua_Waypoint, Notes)
@@ -113,7 +171,35 @@ TEST(Lua_Waypoint, Position)
 
 TEST(Lua_Waypoint, RandomizerSettings)
 {
-    FAIL();
+    UserSettings settings;
+    settings.randomizer.settings["test"] =
+    {
+        .type = RandomizerSettings::Setting::Type::String,
+    };
+    settings.randomizer.settings["test2"] =
+    {
+        .type = RandomizerSettings::Setting::Type::Number,
+        .default_value = 123.0f
+    };
+    lua::waypoint_set_settings(settings);
+    
+    IWaypoint::WaypointRandomizerSettings waypoint_settings;
+    waypoint_settings["test"] = "Test Setting";
+    auto waypoint = mock_shared<MockWaypoint>();
+    EXPECT_CALL(*waypoint, randomizer_settings).WillRepeatedly(Return(waypoint_settings));
+
+    lua_State* L = luaL_newstate();
+    lua::create_waypoint(L, waypoint);
+    lua_setglobal(L, "w");
+    
+    ASSERT_EQ(0, luaL_dostring(L, "return w.randomizer_settings"));
+    ASSERT_EQ(LUA_TTABLE, lua_type(L, -1));
+    ASSERT_EQ(0, luaL_dostring(L, "return w.randomizer_settings.test"));
+    ASSERT_EQ(LUA_TSTRING, lua_type(L, -1));
+    ASSERT_STREQ("Test Setting", lua_tostring(L, -1));
+    ASSERT_EQ(0, luaL_dostring(L, "return w.randomizer_settings.test2"));
+    ASSERT_EQ(LUA_TNUMBER, lua_type(L, -1));
+    ASSERT_EQ(123, lua_tonumber(L, -1));
 }
 
 TEST(Lua_Waypoint, RoomNumber)
@@ -132,12 +218,31 @@ TEST(Lua_Waypoint, RoomNumber)
 
 TEST(Lua_Waypoint, SetColour)
 {
-    FAIL();
+    auto waypoint = mock_shared<MockWaypoint>();
+    EXPECT_CALL(*waypoint, set_route_colour(Colour(1, 2, 3)));
+
+    lua_State* L = luaL_newstate();
+    lua::colour_register(L);
+    lua::create_waypoint(L, waypoint);
+    lua_setglobal(L, "w");
+
+    ASSERT_EQ(0, luaL_dostring(L, "w.colour = Colour.new(1, 2, 3)"));
 }
 
 TEST(Lua_Waypoint, SetItem)
 {
-    FAIL();
+    auto waypoint = mock_shared<MockWaypoint>();
+    auto item = mock_shared<MockItem>();
+
+    EXPECT_CALL(*waypoint, set_item).Times(1);
+
+    lua_State* L = luaL_newstate();
+    lua::create_waypoint(L, waypoint);
+    lua_setglobal(L, "w");
+    lua::create_item(L, item);
+    lua_setglobal(L, "i");
+
+    ASSERT_EQ(0, luaL_dostring(L, "w.item = i"));
 }
 
 TEST(Lua_Waypoint, SetNormal)
@@ -167,12 +272,43 @@ TEST(Lua_Waypoint, SetNotes)
 
 TEST(Lua_Waypoint, SetPosition)
 {
-    FAIL();
+    auto waypoint = mock_shared<MockWaypoint>();
+    EXPECT_CALL(*waypoint, set_position(Vector3(1, 2, 3)));
+
+    lua_State* L = luaL_newstate();
+    lua::vector3_register(L);
+    lua::create_waypoint(L, waypoint);
+    lua_setglobal(L, "w");
+
+    ASSERT_EQ(0, luaL_dostring(L, "w.position = Vector3.new(1024, 2048, 3072)"));
 }
 
 TEST(Lua_Waypoint, SetRandomizerSettings)
 {
-    FAIL();
+    UserSettings settings;
+    settings.randomizer.settings["test"] =
+    {
+        .type = RandomizerSettings::Setting::Type::String,
+    };
+    settings.randomizer.settings["test2"] =
+    {
+        .type = RandomizerSettings::Setting::Type::Number,
+        .default_value = 123.0f
+    };
+    lua::waypoint_set_settings(settings);
+
+    IWaypoint::WaypointRandomizerSettings called_settings;
+    auto waypoint = mock_shared<MockWaypoint>();
+    EXPECT_CALL(*waypoint, set_randomizer_settings).Times(AtLeast(1)).WillRepeatedly(SaveArg<0>(&called_settings));
+
+    lua_State* L = luaL_newstate();
+    lua::create_waypoint(L, waypoint);
+    lua_setglobal(L, "w");
+
+    ASSERT_EQ(0, luaL_dostring(L, "w.randomizer_settings = { test = \"Test string\", test2 = 150 }"));
+
+    ASSERT_EQ("Test string", std::get<std::string>(called_settings["test"]));
+    ASSERT_EQ(150.0f, std::get<float>(called_settings["test2"]));
 }
 
 TEST(Lua_Waypoint, SetRoomNumber)
@@ -189,17 +325,46 @@ TEST(Lua_Waypoint, SetRoomNumber)
 
 TEST(Lua_Waypoint, SetTrigger)
 {
-    FAIL();
+    auto waypoint = mock_shared<MockWaypoint>();
+    auto trigger = mock_shared<MockTrigger>();
+
+    EXPECT_CALL(*waypoint, set_item).Times(1);
+
+    lua_State* L = luaL_newstate();
+    lua::create_waypoint(L, waypoint);
+    lua_setglobal(L, "w");
+    lua::create_trigger(L, trigger);
+    lua_setglobal(L, "t");
+
+    ASSERT_EQ(0, luaL_dostring(L, "w.trigger = t"));
 }
 
 TEST(Lua_Waypoint, SetWaypointColour)
 {
-    FAIL();
+    auto waypoint = mock_shared<MockWaypoint>();
+    EXPECT_CALL(*waypoint, set_waypoint_colour(Colour(1, 2, 3)));
+
+    lua_State* L = luaL_newstate();
+    lua::colour_register(L);
+    lua::create_waypoint(L, waypoint);
+    lua_setglobal(L, "w");
+
+    ASSERT_EQ(0, luaL_dostring(L, "w.waypoint_colour = Colour.new(1, 2, 3)"));
 }
 
 TEST(Lua_Waypoint, Trigger)
 {
-    FAIL();
+    auto trigger = mock_shared<MockTrigger>();
+
+    auto waypoint = mock_shared<MockWaypoint>();
+    EXPECT_CALL(*waypoint, trigger).WillOnce(Return(trigger));
+
+    lua_State* L = luaL_newstate();
+    lua::create_waypoint(L, waypoint);
+    lua_setglobal(L, "w");
+
+    ASSERT_EQ(0, luaL_dostring(L, "return w.trigger"));
+    ASSERT_EQ(LUA_TUSERDATA, lua_type(L, -1));
 }
 
 TEST(Lua_Waypoint, Type)
