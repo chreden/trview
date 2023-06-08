@@ -41,7 +41,7 @@ namespace trview
 
         Vector3 to_vector3(lua_State* L, int index)
         {
-            const int field_index = index + lua_gettop(L) + 1;
+            const int field_index = index < 0 ? (index + lua_gettop(L) + 1) : index;
             lua_getfield(L, field_index, "x");
             const float x = static_cast<float>(lua_tonumber(L, -1));
             lua_getfield(L, field_index, "y");
