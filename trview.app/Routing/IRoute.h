@@ -3,6 +3,7 @@
 #include <cstdint>
 #include <trview.app/Routing/IWaypoint.h>
 #include <trview.app/Geometry/PickResult.h>
+#include <trview.common/Event.h>
 
 namespace trview
 {

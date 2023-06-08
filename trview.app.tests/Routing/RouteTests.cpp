@@ -114,14 +114,21 @@ TEST(Route, Add)
     ASSERT_EQ(waypoint_values.value().type, IWaypoint::Type::Position);
 }
 
-TEST(Route, AddBindsItem)
+TEST(Route, AddBindsWaypoint)
 {
-    FAIL();
-}
+    auto waypoint = mock_shared<MockWaypoint>();
+    EXPECT_CALL(*waypoint, set_route).Times(1);
 
-TEST(Route, AddBindsTrigger)
-{
-    FAIL();
+    auto route = register_test_module().build();
+
+    int raised_count = 0;
+    auto token = route->on_changed += [&]() { ++raised_count; };
+
+    route->add(waypoint);
+
+    ASSERT_EQ(raised_count, 1);
+    waypoint->on_changed();
+    ASSERT_EQ(raised_count, 2);
 }
 
 TEST(Route, AddSpecificType)
