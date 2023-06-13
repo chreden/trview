@@ -3,6 +3,7 @@
 #include <cstdint>
 #include <trview.app/Routing/IWaypoint.h>
 #include <trview.app/Geometry/PickResult.h>
+#include <trview.common/Event.h>
 
 namespace trview
 {
@@ -12,6 +13,9 @@ namespace trview
     struct IRoute
     {
         using Source = std::function<std::shared_ptr<IRoute>()>;
+
+        Event<> on_changed;
+
         virtual ~IRoute() = 0;
         /// <summary>
         /// Add a new waypoint to the end of the route.
@@ -19,7 +23,7 @@ namespace trview
         /// <param name="position">The new waypoint.</param>
         /// <param name="normal">The normal to align the waypoint to.</param>
         /// <param name="room">The room the waypoint is in.</param>
-        virtual void add(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& normal, uint32_t room) = 0;
+        virtual std::shared_ptr<IWaypoint> add(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& normal, uint32_t room) = 0;
         /// <summary>
         /// Add a new waypoint to the end of the route.
         /// </summary>
@@ -28,7 +32,9 @@ namespace trview
         /// <param name="room">The room that waypoint is in.</param>
         /// <param name="type">The type of the waypoint.</param>
         /// <param name="type_index">The index of the referred to entity or trigger.</param>
-        virtual void add(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& normal, uint32_t room, IWaypoint::Type type, uint32_t type_index) = 0;
+        virtual std::shared_ptr<IWaypoint> add(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& normal, uint32_t room, IWaypoint::Type type, uint32_t type_index) = 0;
+
+        virtual std::shared_ptr<IWaypoint> add(const std::shared_ptr<IWaypoint>& waypoint) = 0;
         /// <summary>
         /// Remove all of the waypoints from the route.
         /// </summary>
@@ -79,6 +85,7 @@ namespace trview
         /// </summary>
         /// <returns>True if there are unsaved changes.</returns>
         virtual bool is_unsaved() const = 0;
+        virtual std::weak_ptr<ILevel> level() const = 0;
         /// <summary>
         /// Move a waypoint from one index to another.
         /// </summary>
@@ -97,6 +104,7 @@ namespace trview
         /// </summary>
         /// <param name="index">The index of the waypoint to remove.</param>
         virtual void remove(uint32_t index) = 0;
+        virtual void remove(const std::shared_ptr<IWaypoint>& waypoint) = 0;
         /// <summary>
         /// Render the route.
         /// </summary>
@@ -119,6 +127,7 @@ namespace trview
         /// </summary>
         /// <param name="colour">The colour to use.</param>
         virtual void set_colour(const Colour& colour) = 0;
+        virtual void set_level(const std::weak_ptr<ILevel>& level) = 0;
         /// <summary>
         /// Set whether randomizer tools are enabled.
         /// </summary>
@@ -143,13 +152,7 @@ namespace trview
         /// </summary>
         /// <param name="index">The index to get.</param>
         /// <returns>The waypoint.</returns>
-        virtual const IWaypoint& waypoint(uint32_t index) const = 0;
-        /// <summary>
-        /// Get the waypoint at the specified index.
-        /// </summary>
-        /// <param name="index">The index to get.</param>
-        /// <returns>The waypoint.</returns>
-        virtual IWaypoint& waypoint(uint32_t index) = 0;
+        virtual std::weak_ptr<IWaypoint> waypoint(uint32_t index) const = 0;
         /// <summary>
         /// Get the number of waypoints in the route.
         /// </summary>

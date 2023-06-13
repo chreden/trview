@@ -8,6 +8,10 @@
 
 namespace trview
 {
+    struct IRoute;
+    struct IItem;
+    struct ITrigger;
+
     /// <summary>
     /// A waypoint in a route.
     /// </summary>
@@ -37,7 +41,8 @@ namespace trview
         /// <summary>
         /// Create a waypoint.
         /// </summary>
-        using Source = std::function<std::unique_ptr<IWaypoint>(const DirectX::SimpleMath::Vector3&, const DirectX::SimpleMath::Vector3&, uint32_t, Type, uint32_t, const Colour&, const Colour&)>;
+        using Source = std::function<std::shared_ptr<IWaypoint>(const DirectX::SimpleMath::Vector3&, const DirectX::SimpleMath::Vector3&, uint32_t, Type, uint32_t, const Colour&, const Colour&)>;
+
         /// <summary>
         /// Destructor for IWaypoint.
         /// </summary>
@@ -64,6 +69,7 @@ namespace trview
         /// Gets the index of the entity or trigger that the waypoint refers to.
         /// </summary>
         virtual uint32_t index() const = 0;
+        virtual std::weak_ptr<IItem> item() const = 0;
         /// <summary>
         /// Get any notes associated with the waypoint.
         /// </summary>
@@ -72,6 +78,7 @@ namespace trview
         /// Get the room number that the waypoint is in.
         /// </summary>
         virtual uint32_t room() const = 0;
+        virtual std::weak_ptr<IRoute> route() const = 0;
         /// <summary>
         /// Render the join between this waypoint and another.
         /// </summary>
@@ -84,18 +91,22 @@ namespace trview
         /// Get the contents of the attached save file.
         /// </summary>
         virtual std::vector<uint8_t> save_file() const = 0;
+        virtual void set_item(const std::weak_ptr<IItem>& item) = 0;
         /// Set the notes associated with the waypoint.
         /// @param notes The notes to save.
         virtual void set_notes(const std::string& notes) = 0;
+        virtual void set_route(const std::weak_ptr<IRoute>& route) = 0;
         /// Set the route colour for the waypoint blob.
         /// @param colour The colour of the route.
         virtual void set_route_colour(const Colour& colour) = 0;
         /// Set the contents of the attached save file.
         virtual void set_save_file(const std::vector<uint8_t>& data) = 0;
+        virtual void set_trigger(const std::weak_ptr<ITrigger>& trigger) = 0;
         /// <summary>
         /// Set the colour for the waypoint stick.
         /// </summary>
         virtual void set_waypoint_colour(const Colour& colour) = 0;
+        virtual std::weak_ptr<ITrigger> trigger() const = 0;
         /// <summary>
         /// Get the position of the blob on top of the waypoint pole for rendering.
         /// </summary>
@@ -106,8 +117,13 @@ namespace trview
         virtual DirectX::SimpleMath::Vector3 normal() const = 0;
         virtual WaypointRandomizerSettings randomizer_settings() const = 0;
         virtual void set_randomizer_settings(const WaypointRandomizerSettings& settings) = 0;
-
         virtual void set_position(const DirectX::SimpleMath::Vector3& position) = 0;
+        virtual Colour route_colour() const = 0;
+        virtual Colour waypoint_colour() const = 0;
+        virtual void set_normal(const DirectX::SimpleMath::Vector3& normal) = 0;
+        virtual void set_room_number(uint32_t room) = 0;
+
+        Event<> on_changed;
     };
 
     /// <summary>

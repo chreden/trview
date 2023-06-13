@@ -3,6 +3,7 @@
 #include "trview/trview.h"
 #include <external/lua/src/lualib.h>
 #include <trview.lua.imgui/trview.lua.imgui.h>
+#include "Route/Lua_Waypoint.h"
 
 namespace trview
 {
@@ -48,7 +49,8 @@ namespace trview
     {
     }
 
-    Lua::Lua()
+    Lua::Lua(const IRoute::Source& route_source, const IWaypoint::Source& waypoint_source)
+        : _route_source(route_source), _waypoint_source(waypoint_source)
     {
         L = luaL_newstate();
         luaL_openlibs(L);
@@ -83,7 +85,7 @@ namespace trview
         *userdata = this;
         lua_pushcclosure(L, print, 1);
         lua_setglobal(L, "print");
-        lua::trview_register(L, application);
+        lua::trview_register(L, application, _route_source, _waypoint_source);
         lua::imgui_register(L);
     }
 

@@ -6,6 +6,8 @@
 #include <trview.common/Event.h>
 #include <functional>
 #include "ILua.h"
+#include "../Routing/IRoute.h"
+#include "../Settings/UserSettings.h"
 
 namespace trview
 {
@@ -14,13 +16,15 @@ namespace trview
     class Lua final : public ILua
     {
     public:
-        Lua();
+        explicit Lua(const IRoute::Source& route_source, const IWaypoint::Source& waypoint_source);
         ~Lua();
         void do_file(const std::string& file) override;
         void execute(const std::string& command) override;
         void initialise(IApplication* application) override;
     private:
         lua_State* L{ nullptr };
+        IRoute::Source _route_source;
+        IWaypoint::Source _waypoint_source;
     };
 
     namespace lua

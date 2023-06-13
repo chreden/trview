@@ -108,52 +108,53 @@ namespace trview
                 {
                     for (uint32_t i = 0; i < _route->waypoints(); ++i)
                     {
-                        const auto& waypoint = _route->waypoint(i);
-
-                        ImGui::TableNextRow();
-                        ImGui::TableNextColumn();
-                        bool selected = _selected_index == i;
-
-                        ImGuiScroller scroller;
-                        if (selected && _scroll_to_waypoint)
+                        if (auto waypoint = _route->waypoint(i).lock())
                         {
-                            scroller.scroll_to_item();
-                            _scroll_to_waypoint = false;
-                        }
+                            ImGui::TableNextRow();
+                            ImGui::TableNextColumn();
+                            bool selected = _selected_index == i;
 
-                        if (ImGui::Selectable(std::to_string(i).c_str(), &selected, ImGuiSelectableFlags_SpanAllColumns | static_cast<int>(ImGuiSelectableFlags_SelectOnNav)))
-                        {
-                            scroller.fix_scroll();
-
-                            _selected_index = i;
-                            on_waypoint_selected(i);
-
-                            _scroll_to_waypoint = false;
-                        }
-
-                        ImGuiDragDropFlags src_flags = 0;
-                        src_flags |= ImGuiDragDropFlags_SourceNoDisableHover;
-                        src_flags |= ImGuiDragDropFlags_SourceNoHoldToOpenOthers;
-                        src_flags |= ImGuiDragDropFlags_SourceNoPreviewTooltip;
-                        if (ImGui::BeginDragDropSource(src_flags))
-                        {
-                            ImGui::SetDragDropPayload("RouteWindowWaypoint", &i, sizeof(int));
-                            ImGui::EndDragDropSource();
-                        }
-
-                        if (ImGui::BeginDragDropTarget())
-                        {
-                            ImGuiDragDropFlags target_flags = 0;
-                            if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("RouteWindowWaypoint", target_flags))
+                            ImGuiScroller scroller;
+                            if (selected && _scroll_to_waypoint)
                             {
-                                move_from = *(const int*)payload->Data;
-                                move_to = i;
+                                scroller.scroll_to_item();
+                                _scroll_to_waypoint = false;
                             }
-                            ImGui::EndDragDropTarget();
-                        }
 
-                        ImGui::TableNextColumn();
-                        ImGui::Text(waypoint_text(waypoint).c_str());
+                            if (ImGui::Selectable(std::to_string(i).c_str(), &selected, ImGuiSelectableFlags_SpanAllColumns | static_cast<int>(ImGuiSelectableFlags_SelectOnNav)))
+                            {
+                                scroller.fix_scroll();
+
+                                _selected_index = i;
+                                on_waypoint_selected(i);
+
+                                _scroll_to_waypoint = false;
+                            }
+
+                            ImGuiDragDropFlags src_flags = 0;
+                            src_flags |= ImGuiDragDropFlags_SourceNoDisableHover;
+                            src_flags |= ImGuiDragDropFlags_SourceNoHoldToOpenOthers;
+                            src_flags |= ImGuiDragDropFlags_SourceNoPreviewTooltip;
+                            if (ImGui::BeginDragDropSource(src_flags))
+                            {
+                                ImGui::SetDragDropPayload("RouteWindowWaypoint", &i, sizeof(int));
+                                ImGui::EndDragDropSource();
+                            }
+
+                            if (ImGui::BeginDragDropTarget())
+                            {
+                                ImGuiDragDropFlags target_flags = 0;
+                                if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("RouteWindowWaypoint", target_flags))
+                                {
+                                    move_from = *(const int*)payload->Data;
+                                    move_to = i;
+                                }
+                                ImGui::EndDragDropTarget();
+                            }
+
+                            ImGui::TableNextColumn();
+                            ImGui::Text(waypoint_text(*waypoint).c_str());
+                        }
                     }
                 }
                 ImGui::EndTable();
@@ -177,144 +178,145 @@ namespace trview
         {
             if (_route && _selected_index < _route->waypoints())
             {
-                auto& waypoint = _route->waypoint(_selected_index);
-
-                if (ImGui::BeginTable(Names::waypoint_stats.c_str(), 2, 0, ImVec2(-1, 80)))
+                if (auto waypoint = _route->waypoint(_selected_index).lock())
                 {
-                    ImGui::TableSetupColumn("Name");
-                    ImGui::TableSetupColumn("Value");
-                    ImGui::TableNextRow();
-
-                    auto add_stat = [&]<typename T>(const std::string& name, const T&& value)
+                    if (ImGui::BeginTable(Names::waypoint_stats.c_str(), 2, 0, ImVec2(-1, 80)))
                     {
-                        const auto string_value = get_string(value);
-                        ImGui::TableNextColumn();
-                        if (ImGui::Selectable(name.c_str(), false, ImGuiSelectableFlags_SpanAllColumns))
-                        {
-                            _clipboard->write(to_utf16(string_value));
-                            _tooltip_timer = 0.0f;
-                        }
-                        ImGui::TableNextColumn();
-                        ImGui::Text(string_value.c_str());
-                    };
+                        ImGui::TableSetupColumn("Name");
+                        ImGui::TableSetupColumn("Value");
+                        ImGui::TableNextRow();
 
-                    auto get_room_pos = [&waypoint, this]()
-                    {
-                        if (waypoint.room() < _all_rooms.size())
+                        auto add_stat = [&]<typename T>(const std::string & name, const T && value)
                         {
-                            const auto room = _all_rooms[waypoint.room()].lock();
-                            if (!room)
+                            const auto string_value = get_string(value);
+                            ImGui::TableNextColumn();
+                            if (ImGui::Selectable(name.c_str(), false, ImGuiSelectableFlags_SpanAllColumns))
                             {
-                                return waypoint.position();
+                                _clipboard->write(to_utf16(string_value));
+                                _tooltip_timer = 0.0f;
                             }
-                            const auto info = room->info();
-                            const Vector3 bottom_left = Vector3(static_cast<float>(info.x), static_cast<float>(info.yBottom), static_cast<float>(info.z)) / trlevel::Scale_X;
-                            return waypoint.position() - bottom_left;
-                        }
-                        return waypoint.position();
-                    };
+                            ImGui::TableNextColumn();
+                            ImGui::Text(string_value.c_str());
+                        };
 
-                    auto position_text = [](const auto& pos)
-                    {
-                        const auto p = pos * trlevel::Scale;
-                        return std::format("{:.0f}, {:.0f}, {:.0f}", p.x, p.y, p.z);
-                    };
-
-                    add_stat("Type", waypoint_type_to_string(waypoint.type()));
-                    add_stat("Room", waypoint.room());
-
-                    add_stat("Room Position", position_text(get_room_pos()));
-                    ImGui::EndTable();
-                }
-
-                const auto pos = waypoint.position();
-                int pos_value[3] = { static_cast<int>(pos.x * trlevel::Scale), static_cast<int>(pos.y * trlevel::Scale), static_cast<int>(pos.z * trlevel::Scale) };
-                if (ImGui::DragScalarN("Position", ImGuiDataType_S32, pos_value, 3))
-                {
-                    waypoint.set_position(Vector3(static_cast<float>(pos_value[0]), static_cast<float>(pos_value[1]), static_cast<float>(pos_value[2])) / trlevel::Scale);
-                    on_waypoint_changed();
-                }
-
-                if (ImGui::BeginPopupContextItem("Position"))
-                {
-                    if (ImGui::MenuItem("Copy"))
-                    {
-                        _clipboard->write(to_utf16(std::format("{},{},{}", pos_value[0], pos_value[1], pos_value[2])));
-                    }
-                    ImGui::EndPopup();
-                }
-
-                const std::string save_text = waypoint.has_save() ? "SAVEGAME.0" : Names::attach_save.c_str();
-                if (ImGui::Button(save_text.c_str(), ImVec2(-24, 18)))
-                {
-                    if (!waypoint.has_save())
-                    {
-                        const auto filename = _dialogs->open_file(L"Select Save", { { L"Savegame File", { L"*.*" } } }, OFN_FILEMUSTEXIST);
-                        if (filename.has_value())
+                        auto get_room_pos = [&waypoint, this]()
                         {
-                            // Load bytes from file.
-                            try
+                            if (waypoint->room() < _all_rooms.size())
                             {
-                                const auto bytes = _files->load_file(filename.value().filename);
-                                if (bytes.has_value() && !bytes.value().empty())
+                                const auto room = _all_rooms[waypoint->room()].lock();
+                                if (!room)
                                 {
-                                    waypoint.set_save_file(bytes.value());
-                                    _route->set_unsaved(true);
+                                    return waypoint->position();
+                                }
+                                const auto info = room->info();
+                                const Vector3 bottom_left = Vector3(static_cast<float>(info.x), static_cast<float>(info.yBottom), static_cast<float>(info.z)) / trlevel::Scale_X;
+                                return waypoint->position() - bottom_left;
+                            }
+                            return waypoint->position();
+                        };
+
+                        auto position_text = [](const auto& pos)
+                        {
+                            const auto p = pos * trlevel::Scale;
+                            return std::format("{:.0f}, {:.0f}, {:.0f}", p.x, p.y, p.z);
+                        };
+
+                        add_stat("Type", waypoint_type_to_string(waypoint->type()));
+                        add_stat("Room", waypoint->room());
+
+                        add_stat("Room Position", position_text(get_room_pos()));
+                        ImGui::EndTable();
+                    }
+
+                    const auto pos = waypoint->position();
+                    int pos_value[3] = { static_cast<int>(pos.x * trlevel::Scale), static_cast<int>(pos.y * trlevel::Scale), static_cast<int>(pos.z * trlevel::Scale) };
+                    if (ImGui::DragScalarN("Position", ImGuiDataType_S32, pos_value, 3))
+                    {
+                        waypoint->set_position(Vector3(static_cast<float>(pos_value[0]), static_cast<float>(pos_value[1]), static_cast<float>(pos_value[2])) / trlevel::Scale);
+                        on_waypoint_changed();
+                    }
+
+                    if (ImGui::BeginPopupContextItem("Position"))
+                    {
+                        if (ImGui::MenuItem("Copy"))
+                        {
+                            _clipboard->write(to_utf16(std::format("{},{},{}", pos_value[0], pos_value[1], pos_value[2])));
+                        }
+                        ImGui::EndPopup();
+                    }
+
+                    const std::string save_text = waypoint->has_save() ? "SAVEGAME.0" : Names::attach_save.c_str();
+                    if (ImGui::Button(save_text.c_str(), ImVec2(-24, 18)))
+                    {
+                        if (!waypoint->has_save())
+                        {
+                            const auto filename = _dialogs->open_file(L"Select Save", { { L"Savegame File", { L"*.*" } } }, OFN_FILEMUSTEXIST);
+                            if (filename.has_value())
+                            {
+                                // Load bytes from file.
+                                try
+                                {
+                                    const auto bytes = _files->load_file(filename.value().filename);
+                                    if (bytes.has_value() && !bytes.value().empty())
+                                    {
+                                        waypoint->set_save_file(bytes.value());
+                                        _route->set_unsaved(true);
+                                    }
+                                }
+                                catch (...)
+                                {
+                                    _dialogs->message_box(L"Failed to attach save", L"Error", IDialogs::Buttons::OK);
                                 }
                             }
-                            catch (...)
+                        }
+                        else
+                        {
+                            const auto filename = _dialogs->save_file(L"Export Save", { { L"Savegame File", { L"*.*" } } }, 1);
+                            if (filename.has_value())
                             {
-                                _dialogs->message_box(L"Failed to attach save", L"Error", IDialogs::Buttons::OK);
+                                try
+                                {
+                                    _files->save_file(filename.value().filename, waypoint->save_file());
+                                }
+                                catch (...)
+                                {
+                                    _dialogs->message_box(L"Failed to export save", L"Error", IDialogs::Buttons::OK);
+                                }
                             }
                         }
+                    }
+                    ImGui::SameLine();
+                    if (ImGui::Button(Names::clear_save.c_str(), ImVec2(-1, 0)))
+                    {
+                        if (waypoint->has_save())
+                        {
+                            waypoint->set_save_file({});
+                            _route->set_unsaved(true);
+                        }
+                    }
+
+                    if (ImGui::Button(Names::delete_waypoint.c_str(), ImVec2(-1, 0)))
+                    {
+                        on_waypoint_deleted(_selected_index);
                     }
                     else
                     {
-                        const auto filename = _dialogs->save_file(L"Export Save", { { L"Savegame File", { L"*.*" } } }, 1);
-                        if (filename.has_value())
+                        // Don't access the waypoint after it has been deleted - this is an issue with the window not
+                        // having temporary ownership of the waypoint - if it was shared_ptr it would be fine.
+
+                        if (_randomizer_enabled)
                         {
-                            try
-                            {
-                                _files->save_file(filename.value().filename, waypoint.save_file());
-                            }
-                            catch (...)
-                            {
-                                _dialogs->message_box(L"Failed to export save", L"Error", IDialogs::Buttons::OK);
-                            }
+                            ImGui::Text("Randomizer");
+                            load_randomiser_settings(*waypoint);
                         }
-                    }
-                }
-                ImGui::SameLine();
-                if (ImGui::Button(Names::clear_save.c_str(), ImVec2(-1,0)))
-                {
-                    if (waypoint.has_save())
-                    {
-                        waypoint.set_save_file({});
-                        _route->set_unsaved(true);
-                    }
-                }
 
-                if (ImGui::Button(Names::delete_waypoint.c_str(), ImVec2(-1, 0)))
-                {
-                    on_waypoint_deleted(_selected_index);
-                }
-                else
-                {
-                    // Don't access the waypoint after it has been deleted - this is an issue with the window not
-                    // having temporary ownership of the waypoint - if it was shared_ptr it would be fine.
-
-                    if (_randomizer_enabled)
-                    {
-                        ImGui::Text("Randomizer");
-                        load_randomiser_settings(waypoint);
-                    }
-
-                    ImGui::Text("Notes");
-                    std::string notes = waypoint.notes();
-                    if (ImGui::InputTextMultiline(Names::notes.c_str(), &notes, ImVec2(-1, -1)))
-                    {
-                        waypoint.set_notes(notes);
-                        _route->set_unsaved(true);
+                        ImGui::Text("Notes");
+                        std::string notes = waypoint->notes();
+                        if (ImGui::InputTextMultiline(Names::notes.c_str(), &notes, ImVec2(-1, -1)))
+                        {
+                            waypoint->set_notes(notes);
+                            _route->set_unsaved(true);
+                        }
                     }
                 }
             }

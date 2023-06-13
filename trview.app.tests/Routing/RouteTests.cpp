@@ -40,9 +40,9 @@ namespace
                 return *this;
             }
 
-            std::unique_ptr<Route> build()
+            std::shared_ptr<Route> build()
             {
-                return std::make_unique<Route>(std::move(selection_renderer), waypoint_source, settings);
+                return std::make_shared<Route>(std::move(selection_renderer), waypoint_source, settings);
             }
         };
         return test_module{};
@@ -84,7 +84,10 @@ namespace
         std::vector<uint32_t> waypoints;
         for (auto i = 0u; i < route.waypoints(); ++i)
         {
-            waypoints.push_back(static_cast<const MockWaypoint&>(route.waypoint(i)).test_index);
+            if (auto waypoint = route.waypoint(i).lock())
+            {
+                waypoints.push_back(std::static_pointer_cast<MockWaypoint>(waypoint)->test_index);
+            }
         }
         return waypoints;
     }
@@ -100,6 +103,7 @@ TEST(Route, Add)
     };
 
     auto route = register_test_module().with_waypoint_source(source).build();
+
     route->add(Vector3(0, 1, 0), Vector3::Down, 10);
 
     ASSERT_TRUE(route->is_unsaved());
@@ -108,6 +112,23 @@ TEST(Route, Add)
     ASSERT_EQ(waypoint_values.value().position, Vector3(0, 1, 0));
     ASSERT_EQ(waypoint_values.value().room, 10);
     ASSERT_EQ(waypoint_values.value().type, IWaypoint::Type::Position);
+}
+
+TEST(Route, AddBindsWaypoint)
+{
+    auto waypoint = mock_shared<MockWaypoint>();
+    EXPECT_CALL(*waypoint, set_route).Times(1);
+
+    auto route = register_test_module().build();
+
+    int raised_count = 0;
+    auto token = route->on_changed += [&]() { ++raised_count; };
+
+    route->add(waypoint);
+
+    ASSERT_EQ(raised_count, 1);
+    waypoint->on_changed();
+    ASSERT_EQ(raised_count, 2);
 }
 
 TEST(Route, AddSpecificType)
@@ -171,7 +192,6 @@ TEST(Route, InsertSpecificTypeAtPosition)
     route->insert(Vector3(0, 1, 0), Vector3::Down, 2, 1, IWaypoint::Type::Entity, 100);
     ASSERT_TRUE(route->is_unsaved());
     ASSERT_EQ(route->waypoints(), 3);
-    auto& waypoint = route->waypoint(1);
 
     const auto order = get_order(*route);
     const auto expected = std::vector<uint32_t>{ 0u, 2u, 1u };

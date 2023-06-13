@@ -32,12 +32,17 @@ namespace trview
         virtual Type type() const override;
         virtual bool has_save() const override;
         virtual uint32_t index() const override;
+        std::weak_ptr<IItem> item() const override;
         virtual std::string notes() const override;
         virtual uint32_t room() const override;
+        std::weak_ptr<IRoute> route() const override;
         virtual std::vector<uint8_t> save_file() const override;
+        void set_item(const std::weak_ptr<IItem>& item) override;
         virtual void set_notes(const std::string& notes) override;
+        void set_route(const std::weak_ptr<IRoute>& route) override;
         virtual void set_route_colour(const Colour& colour) override;
         virtual void set_save_file(const std::vector<uint8_t>& data) override;
+        void set_trigger(const std::weak_ptr<ITrigger>& trigger) override;
         virtual void set_waypoint_colour(const Colour& colour) override;
         virtual DirectX::SimpleMath::Vector3 blob_position() const override;
         virtual bool visible() const override;
@@ -46,8 +51,14 @@ namespace trview
         virtual WaypointRandomizerSettings randomizer_settings() const override;
         virtual void set_randomizer_settings(const WaypointRandomizerSettings& settings) override;
         virtual void set_position(const DirectX::SimpleMath::Vector3& position) override;
+        std::weak_ptr<ITrigger> trigger() const override;
+        Colour waypoint_colour() const override;
+        Colour route_colour() const override;
+        void set_normal(const DirectX::SimpleMath::Vector3& normal) override;
+        void set_room_number(uint32_t room) override;
     private:
         DirectX::SimpleMath::Matrix calculate_waypoint_rotation() const;
+        void set_properties(Type type, uint32_t index, uint32_t room, const DirectX::SimpleMath::Vector3& position);
 
         std::string _notes;
         std::vector<uint8_t> _save_data;
@@ -61,5 +72,9 @@ namespace trview
         Colour _waypoint_colour;
         bool _visible{ true };
         WaypointRandomizerSettings _randomizer_settings;
-    };    
+        std::weak_ptr<IRoute> _route;
+
+        mutable std::weak_ptr<IItem> _item;
+        mutable std::weak_ptr<ITrigger> _trigger;
+    };
 }

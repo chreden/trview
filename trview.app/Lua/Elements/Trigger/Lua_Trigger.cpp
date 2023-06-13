@@ -144,5 +144,17 @@ namespace trview
             lua_setmetatable(L, -2);
             return 1;
         }
+
+        std::shared_ptr<ITrigger> to_trigger(lua_State* L, int index)
+        {
+            luaL_checktype(L, index, LUA_TUSERDATA);
+            ITrigger** userdata = static_cast<ITrigger**>(lua_touserdata(L, index));
+            auto found = triggers.find(userdata);
+            if (found == triggers.end())
+            {
+                return {};
+            }
+            return found->second;
+        }
     }
 }

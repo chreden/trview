@@ -95,16 +95,22 @@ namespace trview
         return *this;
     }
 
-    void Route::add(const Vector3& position, const DirectX::SimpleMath::Vector3& normal, uint32_t room)
+    std::shared_ptr<IWaypoint> Route::add(const Vector3& position, const DirectX::SimpleMath::Vector3& normal, uint32_t room)
     {
-        add(position, normal, room, IWaypoint::Type::Position, 0u);
+        return add(position, normal, room, IWaypoint::Type::Position, 0u);
     }
 
-
-    void Route::add(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& normal, uint32_t room, IWaypoint::Type type, uint32_t type_index)
+    std::shared_ptr<IWaypoint> Route::add(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& normal, uint32_t room, IWaypoint::Type type, uint32_t type_index)
     {
-        _waypoints.push_back(_waypoint_source(position, normal, room, type, type_index, _colour, _waypoint_colour));
+        return add(_waypoint_source(position, normal, room, type, type_index, _colour, _waypoint_colour));
+    }
+
+    std::shared_ptr<IWaypoint> Route::add(const std::shared_ptr<IWaypoint>& waypoint)
+    {
+        _waypoints.push_back(waypoint);
+        bind_waypoint(*waypoint);
         set_unsaved(true);
+        return waypoint;
     }
 
     Colour Route::colour() const
@@ -118,6 +124,7 @@ namespace trview
         {
             set_unsaved(true);
         }
+        std::ranges::for_each(_waypoints, [this](auto&& w) { unbind_waypoint(*w); });
         _waypoints.clear();
         _selected_index = 0u;
     }
@@ -126,7 +133,8 @@ namespace trview
     {
         if (index >= _waypoints.size())
         {
-            return add(position, normal, room, IWaypoint::Type::Position, 0u);
+            add(position, normal, room, IWaypoint::Type::Position, 0u);
+            return;
         }
         insert(position, normal, room, index, IWaypoint::Type::Position, 0u);
         set_unsaved(true);
@@ -141,7 +149,9 @@ namespace trview
 
     void Route::insert(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& normal, uint32_t room, uint32_t index, IWaypoint::Type type, uint32_t type_index)
     {
-        _waypoints.insert(_waypoints.begin() + index, _waypoint_source(position, normal, room, type, type_index, _colour, _waypoint_colour));
+        auto waypoint = _waypoint_source(position, normal, room, type, type_index, _colour, _waypoint_colour);
+        bind_waypoint(*waypoint);
+        _waypoints.insert(_waypoints.begin() + index, waypoint);
         set_unsaved(true);
     }
 
@@ -155,6 +165,11 @@ namespace trview
     bool Route::is_unsaved() const
     {
         return _is_unsaved;
+    }
+
+    std::weak_ptr<ILevel> Route::level() const
+    {
+        return _level;
     }
 
     void Route::move(int32_t from, int32_t to)
@@ -199,12 +214,23 @@ namespace trview
         {
             return;
         }
+        unbind_waypoint(*_waypoints[index]);
         _waypoints.erase(_waypoints.begin() + index);
         if (_selected_index >= index && _selected_index > 0)
         {
             --_selected_index;
         }
         set_unsaved(true);
+    }
+
+    void Route::remove(const std::shared_ptr<IWaypoint>& waypoint)
+    {
+        auto found = std::ranges::find(_waypoints, waypoint);
+        if (found == _waypoints.end())
+        {
+            return;
+        }
+        remove(static_cast<uint32_t>(found - _waypoints.begin()));
     }
 
     void Route::render(const ICamera& camera, const ILevelTextureStorage& texture_storage, bool show_selection)
@@ -246,6 +272,12 @@ namespace trview
         set_unsaved(true);
     }
 
+    void Route::set_level(const std::weak_ptr<ILevel>& level)
+    {
+        _level = level;
+        bind_waypoint_targets();
+    }
+
     void Route::set_randomizer_enabled(bool enabled)
     {
         _randomizer_enabled = enabled;
@@ -264,6 +296,7 @@ namespace trview
     void Route::set_unsaved(bool value)
     {
         _is_unsaved = value;
+        on_changed();
     }
 
     Colour Route::waypoint_colour() const 
@@ -271,22 +304,13 @@ namespace trview
         return _waypoint_colour;
     }
 
-    const IWaypoint& Route::waypoint(uint32_t index) const
+    std::weak_ptr<IWaypoint> Route::waypoint(uint32_t index) const
     {
         if (index < _waypoints.size())
         {
-            return *_waypoints[index];
+            return _waypoints[index];
         }
-        throw std::range_error("Waypoint index out of range");
-    }
-
-    IWaypoint& Route::waypoint(uint32_t index)
-    {
-        if (index < _waypoints.size())
-        {
-            return *_waypoints[index];
-        }
-        throw std::range_error("Waypoint index out of range");
+        return {};
     }
 
     uint32_t Route::waypoints() const
@@ -297,6 +321,53 @@ namespace trview
     uint32_t Route::next_index() const
     {
         return _waypoints.empty() ? 0 : _selected_index + 1;
+    }
+
+    void Route::bind_waypoint_targets()
+    {
+        const auto level = _level.lock();
+        for (auto& waypoint : _waypoints)
+        {
+            switch (waypoint->type())
+            {
+                case IWaypoint::Type::Entity:
+                {
+                    if (level)
+                    {
+                        waypoint->set_item(level->item(waypoint->index()));
+                    }
+                    else
+                    {
+                        waypoint->set_item({});
+                    }
+                    break;
+                }
+                case IWaypoint::Type::Trigger:
+                {
+                    if (level)
+                    {
+                        waypoint->set_trigger(level->trigger(waypoint->index()));
+                    }
+                    else
+                    {
+                        waypoint->set_trigger({});
+                    }
+                    break;
+                }
+            }
+        }
+    }
+
+    void Route::bind_waypoint(IWaypoint& waypoint)
+    {
+        waypoint.set_route(shared_from_this());
+        waypoint.on_changed += on_changed;
+    }
+
+    void Route::unbind_waypoint(IWaypoint& waypoint)
+    {
+        waypoint.set_route({});
+        waypoint.on_changed -= on_changed;
     }
 
     IWaypoint::WaypointRandomizerSettings import_randomizer_settings(const nlohmann::json& json, const RandomizerSettings& randomizer_settings)
@@ -386,8 +457,10 @@ namespace trview
             }
 
             route->add(Vector3(static_cast<float>(x), static_cast<float>(y), static_cast<float>(z)) / 1024.0f, Vector3::Down, room_number, IWaypoint::Type::Position, 0);
-            auto& new_waypoint = route->waypoint(route->waypoints() - 1);
-            new_waypoint.set_randomizer_settings(import_randomizer_settings(location, randomizer_settings));
+            if (auto new_waypoint = route->waypoint(route->waypoints() - 1).lock())
+            {
+                new_waypoint->set_randomizer_settings(import_randomizer_settings(location, randomizer_settings));
+            }
         }
 
         route->set_unsaved(false);
@@ -422,10 +495,12 @@ namespace trview
 
             route->add(position, normal, room, type, index);
 
-            auto& new_waypoint = route->waypoint(route->waypoints() - 1);
-            new_waypoint.set_notes(notes);
-            new_waypoint.set_save_file(from_base64(waypoint.value("save", "")));
-            new_waypoint.set_randomizer_settings(import_trview_randomizer_settings(waypoint, randomizer_settings));
+            if (auto new_waypoint = route->waypoint(route->waypoints() - 1).lock())
+            {
+                new_waypoint->set_notes(notes);
+                new_waypoint->set_save_file(from_base64(waypoint.value("save", "")));
+                new_waypoint->set_randomizer_settings(import_trview_randomizer_settings(waypoint, randomizer_settings));
+            }
         }
 
         route->set_unsaved(false);
@@ -549,17 +624,19 @@ namespace trview
         std::vector<nlohmann::ordered_json> waypoints;
         for (uint32_t i = 0; i < route.waypoints(); ++i)
         {
-            const IWaypoint& waypoint = route.waypoint(i);
-            nlohmann::ordered_json waypoint_json;
+            if (auto waypoint = route.waypoint(i).lock())
+            {
+                nlohmann::ordered_json waypoint_json;
 
-            auto pos = waypoint.position();
-            waypoint_json["X"] = static_cast<int>(pos.x * 1024);
-            waypoint_json["Y"] = static_cast<int>(pos.y * 1024);
-            waypoint_json["Z"] = static_cast<int>(pos.z * 1024);
-            waypoint_json["Room"] = waypoint.room();
-            export_randomizer_settings(waypoint_json, randomizer_settings, waypoint);
+                auto pos = waypoint->position();
+                waypoint_json["X"] = static_cast<int>(pos.x * 1024);
+                waypoint_json["Y"] = static_cast<int>(pos.y * 1024);
+                waypoint_json["Z"] = static_cast<int>(pos.z * 1024);
+                waypoint_json["Room"] = waypoint->room();
+                export_randomizer_settings(waypoint_json, randomizer_settings, *waypoint);
 
-            waypoints.push_back(waypoint_json);
+                waypoints.push_back(waypoint_json);
+            }
         }
 
         auto trimmed = level_filename.substr(level_filename.find_last_of("/\\") + 1);
@@ -579,25 +656,27 @@ namespace trview
 
         for (uint32_t i = 0; i < route.waypoints(); ++i)
         {
-            const IWaypoint& waypoint = route.waypoint(i);
-            nlohmann::json waypoint_json;
-            waypoint_json["type"] = waypoint_type_to_string(waypoint.type());
-
-            const auto pos = waypoint.position();
-            waypoint_json["position"] = std::format("{},{},{}", pos.x, pos.y, pos.z);
-            const auto normal = waypoint.normal();
-            waypoint_json["normal"] = std::format("{},{},{}", normal.x, normal.y, normal.z);
-            waypoint_json["room"] = waypoint.room();
-            waypoint_json["index"] = waypoint.index();
-            waypoint_json["notes"] = waypoint.notes();
-
-            if (waypoint.has_save())
+            if (auto waypoint = route.waypoint(i).lock())
             {
-                waypoint_json["save"] = to_base64(waypoint.save_file());
-            }
-            export_trview_randomizer_settings(waypoint_json, randomizer_settings, waypoint);
+                nlohmann::json waypoint_json;
+                waypoint_json["type"] = waypoint_type_to_string(waypoint->type());
 
-            waypoints.push_back(waypoint_json);
+                const auto pos = waypoint->position();
+                waypoint_json["position"] = std::format("{},{},{}", pos.x, pos.y, pos.z);
+                const auto normal = waypoint->normal();
+                waypoint_json["normal"] = std::format("{},{},{}", normal.x, normal.y, normal.z);
+                waypoint_json["room"] = waypoint->room();
+                waypoint_json["index"] = waypoint->index();
+                waypoint_json["notes"] = waypoint->notes();
+
+                if (waypoint->has_save())
+                {
+                    waypoint_json["save"] = to_base64(waypoint->save_file());
+                }
+                export_trview_randomizer_settings(waypoint_json, randomizer_settings, *waypoint);
+
+                waypoints.push_back(waypoint_json);
+            }
         }
 
         json["waypoints"] = waypoints;

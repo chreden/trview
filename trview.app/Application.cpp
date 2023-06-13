@@ -60,7 +60,7 @@ namespace trview
         std::unique_ptr<IPluginsWindowManager> plugins_window_manager)
         : MessageHandler(application_window), _instance(GetModuleHandle(nullptr)),
         _file_menu(std::move(file_menu)), _update_checker(std::move(update_checker)), _view_menu(window()), _settings_loader(settings_loader), _trlevel_source(trlevel_source),
-        _viewer(std::move(viewer)), _route_source(route_source), _route(route_source()), _shortcuts(shortcuts), _items_windows(std::move(items_window_manager)),
+        _viewer(std::move(viewer)), _route_source(route_source), _shortcuts(shortcuts), _items_windows(std::move(items_window_manager)),
         _triggers_windows(std::move(triggers_window_manager)), _route_window(std::move(route_window_manager)), _rooms_windows(std::move(rooms_window_manager)), _level_source(level_source),
         _dialogs(dialogs), _files(files), _timer(default_time_source()), _imgui_backend(std::move(imgui_backend)), _lights_windows(std::move(lights_window_manager)), _log_windows(std::move(log_window_manager)),
         _textures_windows(std::move(textures_window_manager)), _camera_sink_windows(std::move(camera_sink_window_manager)), _console_manager(std::move(console_manager)),
@@ -70,6 +70,9 @@ namespace trview
 
         _update_checker->check_for_updates();
         _settings = _settings_loader->load_user_settings();
+        lua::set_settings(_settings);
+
+        set_route(route_source());
 
         _file_menu->set_recent_files(_settings.recent_files);
         _token_store += _file_menu->on_file_open += [=](const auto& file) { open(file, ILevel::OpenMode::Full); };
@@ -270,6 +273,7 @@ namespace trview
             _route_window->set_randomizer_enabled(settings.randomizer_tools);
             _route->set_randomizer_enabled(settings.randomizer_tools);
             _rooms_windows->set_map_colours(settings.map_colours);
+            lua::set_settings(settings);
             if (_level)
             {
                 _level->set_map_colours(settings.map_colours);
@@ -497,11 +501,13 @@ namespace trview
 
     void Application::select_waypoint(uint32_t index)
     {
-        const auto& waypoint = _route->waypoint(index);
-        select_room(_route->waypoint(index).room());
-        _route->select_waypoint(index);
-        _viewer->select_waypoint(waypoint);
-        _route_window->select_waypoint(index);
+        if (auto waypoint = _route->waypoint(index).lock())
+        {
+            select_room(waypoint->room());
+            _route->select_waypoint(index);
+            _viewer->select_waypoint(waypoint);
+            _route_window->select_waypoint(index);
+        }
     }
 
     void Application::select_next_waypoint()
@@ -731,10 +737,7 @@ namespace trview
         auto route = trview::import_route(_route_source, _files, path, _level.get(), _settings.randomizer, is_rando);
         if (route)
         {
-            _route = route;
-            _route_window->set_route(_route.get());
-            _route->set_randomizer_enabled(_settings.randomizer_tools);
-            _viewer->set_route(_route);
+            set_route(route);
             if (_level)
             {
                 _settings.recent_routes[_level->filename()] = { path, is_rando };
@@ -868,8 +871,8 @@ namespace trview
         }
         _textures_windows->set_texture_storage(_level->texture_storage());
 
+        set_route(_route);
         _viewer->open(_level.get(), open_mode);
-        _viewer->set_route(_route);
 
         if (old_level && open_mode == ILevel::OpenMode::Reload)
         {
@@ -926,5 +929,20 @@ namespace trview
     std::vector<std::string> Application::local_levels() const
     {
         return _file_menu->local_levels();
+    }
+
+    std::shared_ptr<IRoute> Application::route() const
+    {
+        return _route;
+    }
+
+    void Application::set_route(const std::shared_ptr<IRoute>& route)
+    {
+        _route = route;
+        _token_store += _route->on_changed += [&]() { if (_viewer) { _viewer->set_scene_changed(); } };
+        _route_window->set_route(_route.get());
+        _route->set_randomizer_enabled(_settings.randomizer_tools);
+        _route->set_level(_level);
+        _viewer->set_route(_route);
     }
 }

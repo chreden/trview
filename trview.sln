@@ -115,11 +115,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "lua", "lua", "{D6B95B54-7EB
 		doc\lua\light.md = doc\lua\light.md
 		doc\lua\plugins.md = doc\lua\plugins.md
 		doc\lua\room.md = doc\lua\room.md
+		doc\lua\route.md = doc\lua\route.md
 		doc\lua\sector.md = doc\lua\sector.md
 		doc\lua\staticmesh.md = doc\lua\staticmesh.md
 		doc\lua\trigger.md = doc\lua\trigger.md
 		doc\lua\trview.md = doc\lua\trview.md
 		doc\lua\vector3.md = doc\lua\vector3.md
+		doc\lua\waypoint.md = doc\lua\waypoint.md
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "trview.lua.imgui", "trview.lua.imgui\trview.lua.imgui.vcxproj", "{CDBC4705-E8E2-4C5C-A1A6-EA66FE4B699B}"

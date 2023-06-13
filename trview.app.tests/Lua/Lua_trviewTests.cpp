@@ -4,6 +4,7 @@
 #include <trview.tests.common/Mocks.h>
 #include <external/lua/src/lua.h>
 #include <external/lua/src/lauxlib.h>
+#include <trview.app/Mocks/Routing/IRoute.h>
 
 using namespace trview;
 using namespace trview::mocks;
@@ -19,7 +20,9 @@ TEST(Lua_trview, Level)
     EXPECT_CALL(*application, current_level).WillRepeatedly(Return(level));
 
     lua_State* L = luaL_newstate();
-    lua::trview_register(L, application.get());
+    lua::trview_register(L, application.get(), 
+        []() { return mock_shared<MockRoute>(); },
+        [](auto&&...) { return mock_shared<MockWaypoint>(); });
 
     ASSERT_EQ(0, luaL_dostring(L, "return trview.level"));
     ASSERT_EQ(LUA_TUSERDATA, lua_type(L, -1));
@@ -37,7 +40,9 @@ TEST(Lua_trview, RecentFiles)
     EXPECT_CALL(*application, settings).WillRepeatedly(Return(settings));
 
     lua_State* L = luaL_newstate();
-    lua::trview_register(L, application.get());
+    lua::trview_register(L, application.get(),
+        []() { return mock_shared<MockRoute>(); },
+        [](auto&&...) { return mock_shared<MockWaypoint>(); });
 
     ASSERT_EQ(0, luaL_dostring(L, "return trview.recent_files"));
     ASSERT_EQ(LUA_TTABLE, lua_type(L, -1));
@@ -55,11 +60,41 @@ TEST(Lua_trview, SetLevel)
     EXPECT_CALL(*application, set_current_level).Times(1);
 
     lua_State* L = luaL_newstate();
-    lua::trview_register(L, application.get());
+    lua::trview_register(L, application.get(),
+        []() { return mock_shared<MockRoute>(); },
+        [](auto&&...) { return mock_shared<MockWaypoint>(); });
 
     auto level = mock_shared<MockLevel>();
     lua::create_level(L, level);
     lua_setglobal(L, "l");
 
     ASSERT_EQ(0, luaL_dostring(L, "trview.level = l"));
+}
+
+TEST(Lua_trview, Route)
+{
+    auto application = mock_shared<MockApplication>();
+    auto route = mock_shared<MockRoute>();
+    EXPECT_CALL(*application, route).Times(1).WillRepeatedly(Return(route));
+
+    lua_State* L = luaL_newstate();
+    lua::trview_register(L, application.get(),
+        []() { return mock_shared<MockRoute>(); },
+        [](auto&&...) { return mock_shared<MockWaypoint>(); });
+
+    ASSERT_EQ(0, luaL_dostring(L, "return trview.route"));
+    ASSERT_EQ(LUA_TUSERDATA, lua_type(L, -1));
+}
+
+TEST(Lua_trview, SetRoute)
+{
+    auto application = mock_shared<MockApplication>();
+    EXPECT_CALL(*application, set_route).Times(1);
+
+    lua_State* L = luaL_newstate();
+    lua::trview_register(L, application.get(),
+        []() { return mock_shared<MockRoute>(); },
+        [](auto&&...) { return mock_shared<MockWaypoint>(); });
+
+    ASSERT_EQ(0, luaL_dostring(L, "trview.route = Route.new()"));
 }

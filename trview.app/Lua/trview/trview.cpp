@@ -4,6 +4,10 @@
 #include <trlevel/LevelEncryptedException.h>
 #include "../../UserCancelledException.h"
 #include "../Elements/Sector/Lua_Sector.h"
+#include "../Route/Lua_Route.h"
+#include "../Route/Lua_Waypoint.h"
+#include "../Colour.h"
+#include "../Vector3.h"
 #include "Lua/Lua.h"
 
 #include <future>
@@ -57,13 +61,12 @@ namespace trview
                 }
                 catch (trlevel::LevelEncryptedException&)
                 {
-                    luaL_error(L, "Level is encrypted and cannot be loaded (%s)", "");
+                    return luaL_error(L, "Level is encrypted and cannot be loaded (%s)", "");
                 }
                 catch (std::exception&)
                 {
-                    luaL_error(L, "Failed to load level (%s)", "");
+                    return luaL_error(L, "Failed to load level (%s)", "");
                 }
-                return 0;
             }
 
             int trview_index(lua_State* L)
@@ -88,6 +91,10 @@ namespace trview
                 {
                     return push_list(L, application->settings().recent_files, push_string);
                 }
+                else if (key == "route")
+                {
+                    return create_route(L, application->route());
+                }
                 return 0;
             }
 
@@ -106,19 +113,25 @@ namespace trview
                         }
                         catch (UserCancelledException&)
                         {
-                            luaL_error(L, "User cancelled level loading");
+                            return luaL_error(L, "User cancelled level loading");
                         }
                         catch (...)
                         {
-                            luaL_error(L, "Failed to load level");
+                            return luaL_error(L, "Failed to load level");
                         }
                     }
+                }
+                else if (key == "route")
+                {
+                    application->set_route(to_route(L, -1));
                 }
                 return 0;
             }
         }
 
-        void trview_register(lua_State* L, IApplication* application)
+        void trview_register(lua_State* L, IApplication* application,
+            const IRoute::Source& route_source,
+            const IWaypoint::Source& waypoint_source)
         {
             IApplication** userdata = static_cast<IApplication**>(lua_newuserdata(L, sizeof(application)));
             *userdata = application;
@@ -132,6 +145,15 @@ namespace trview
             lua_setglobal(L, "trview");
 
             sector_register(L);
+            route_register(L, route_source);
+            waypoint_register(L, waypoint_source);
+            colour_register(L);
+            vector3_register(L);
+        }
+
+        void set_settings(const UserSettings& settings)
+        {
+            waypoint_set_settings(settings);
         }
     }
 }

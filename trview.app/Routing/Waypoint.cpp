@@ -2,6 +2,9 @@
 #include <trview.app/Camera/ICamera.h>
 #include <trview.common/Maths.h>
 
+#include "IRoute.h"
+#include "../Elements/ILevel.h"
+
 using namespace DirectX;
 using namespace DirectX::SimpleMath;
 
@@ -107,6 +110,26 @@ namespace trview
         return _index;
     }
 
+    std::weak_ptr<IItem> Waypoint::item() const
+    {
+        if (auto existing = _item.lock())
+        {
+            return existing;
+        }
+
+        if (type() == IWaypoint::Type::Entity)
+        {
+            if (auto route = _route.lock())
+            {
+                if (auto level = route->level().lock())
+                {
+                    _item = level->item(index());
+                }
+            }
+        }
+        return _item;
+    }
+
     uint32_t Waypoint::room() const
     {
         return _room;
@@ -117,14 +140,33 @@ namespace trview
         return _notes;
     }
 
+    std::weak_ptr<IRoute> Waypoint::route() const
+    {
+        return _route;
+    }
+
     std::vector<uint8_t> Waypoint::save_file() const
     {
         return _save_data;
     }
 
+    void Waypoint::set_item(const std::weak_ptr<IItem>& item)
+    {
+        _item = item;
+        if (auto new_item = _item.lock())
+        {
+            set_properties(Type::Entity, new_item->number(), new_item->room(), new_item->position());
+        }
+    }
+
     void Waypoint::set_notes(const std::string& notes)
     {
         _notes = notes;
+    }
+
+    void Waypoint::set_route(const std::weak_ptr<IRoute>& route)
+    {
+        _route = route;
     }
 
     void Waypoint::set_route_colour(const Colour& colour)
@@ -135,6 +177,15 @@ namespace trview
     void Waypoint::set_save_file(const std::vector<uint8_t>& data)
     {
         _save_data = data;
+    }
+
+    void Waypoint::set_trigger(const std::weak_ptr<ITrigger>& trigger)
+    {
+        _trigger = trigger;
+        if (auto new_trigger = _trigger.lock())
+        {
+            set_properties(Type::Trigger, new_trigger->number(), new_trigger->room(), new_trigger->position());
+        }
     }
 
     void Waypoint::set_waypoint_colour(const Colour& colour)
@@ -169,7 +220,58 @@ namespace trview
 
     void Waypoint::set_position(const DirectX::SimpleMath::Vector3& position)
     {
+        set_properties(Type::Position, 0, 0, position);
+    }
+
+    std::weak_ptr<ITrigger> Waypoint::trigger() const
+    {
+        if (auto existing = _trigger.lock())
+        {
+            return existing;
+        }
+
+        if (type() == IWaypoint::Type::Trigger)
+        {
+            if (auto route = _route.lock())
+            {
+                if (auto level = route->level().lock())
+                {
+                    _trigger = level->trigger(index());
+                }
+            }
+        }
+        return _trigger;
+    }
+
+    Colour Waypoint::route_colour() const
+    {
+        return _route_colour;
+    }
+
+    Colour Waypoint::waypoint_colour() const
+    {
+        return _waypoint_colour;
+    }
+
+    void Waypoint::set_properties(Type type, uint32_t index, uint32_t room, const DirectX::SimpleMath::Vector3& position)
+    {
+        _type = type;
+        _index = index;
+        _room = room;
         _position = position;
+        on_changed();
+    }
+
+    void Waypoint::set_normal(const DirectX::SimpleMath::Vector3& normal)
+    {
+        _normal = normal;
+        on_changed();
+    }
+
+    void Waypoint::set_room_number(uint32_t room)
+    {
+        _room = room;
+        on_changed();
     }
 }
 

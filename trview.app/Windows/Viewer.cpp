@@ -836,23 +836,28 @@ namespace trview
 
     void Viewer::select_trigger(const std::weak_ptr<ITrigger>& trigger)
     {
-        auto trigger_ptr = trigger.lock();
-        _target = trigger_ptr->position();
-        if (_settings.auto_orbit)
+        if (auto trigger_ptr = trigger.lock())
         {
-            set_camera_mode(CameraMode::Orbit);
+            _target = trigger_ptr->position();
+            if (_settings.auto_orbit)
+            {
+                set_camera_mode(CameraMode::Orbit);
+            }
+            _scene_changed = true;
         }
-        _scene_changed = true;
     }
 
-    void Viewer::select_waypoint(const IWaypoint& waypoint)
+    void Viewer::select_waypoint(const std::weak_ptr<IWaypoint>& waypoint)
     {
-        _target = waypoint.position();
-        if (_settings.auto_orbit)
+        if (auto waypoint_ptr = waypoint.lock())
         {
-            set_camera_mode(CameraMode::Orbit);
+            _target = waypoint_ptr->position();
+            if (_settings.auto_orbit)
+            {
+                set_camera_mode(CameraMode::Orbit);
+            }
+            _scene_changed = true;
         }
-        _scene_changed = true;
     }
 
     void Viewer::set_route(const std::shared_ptr<IRoute>& route)
@@ -1188,7 +1193,13 @@ namespace trview
             break;
         }
         case PickResult::Type::Waypoint:
-            return _route->waypoint(pick.index).room();
+        {
+            if (const auto waypoint = _route->waypoint(pick.index).lock())
+            {
+                return waypoint->room();
+            }
+            break;
+        }
         }
         return _level->selected_room();
     }

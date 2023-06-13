@@ -215,6 +215,18 @@
     <ClCompile Include="Lua\Elements\Lua_StaticMeshTests.cpp">
       <Filter>Lua\Elements</Filter>
     </ClCompile>
+    <ClCompile Include="Lua\Route\Lua_RouteTests.cpp">
+      <Filter>Lua\Route</Filter>
+    </ClCompile>
+    <ClCompile Include="Lua\Lua_ColourTests.cpp">
+      <Filter>Lua</Filter>
+    </ClCompile>
+    <ClCompile Include="Lua\Route\Lua_WaypointTests.cpp">
+      <Filter>Lua\Route</Filter>
+    </ClCompile>
+    <ClCompile Include="Lua\Lua_Vector3Tests.cpp">
+      <Filter>Lua</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Input">
@@ -258,6 +270,9 @@
     </Filter>
     <Filter Include="Plugins">
       <UniqueIdentifier>{faba3579-8283-4b3a-824b-2cb84ad0234b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Lua\Route">
+      <UniqueIdentifier>{4b53f400-34b2-4124-9048-9a1c1fe82960}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
