@@ -1,5 +1,6 @@
 #include <trview.app/Windows/LightsWindow.h>
 #include <trview.app/Mocks/Elements/ILight.h>
+#include <trview.app/Mocks/Elements/IRoom.h>
 #include "TestImgui.h"
 
 using namespace trview;

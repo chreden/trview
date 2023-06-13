@@ -2,6 +2,7 @@
 #include <trview.app/Elements/Types.h>
 #include <trview.common/Mocks/Windows/IClipboard.h>
 #include <trview.app/Mocks/Elements/ITrigger.h>
+#include <trview.app/Mocks/Elements/IRoom.h>
 #include "TestImgui.h"
 
 using namespace trview;
