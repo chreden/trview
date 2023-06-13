@@ -503,7 +503,7 @@ namespace trview
     {
         if (auto waypoint = _route->waypoint(index).lock())
         {
-            select_room(waypoint->room());
+            select_room(waypoint->room_number());
             _route->select_waypoint(index);
             _viewer->select_waypoint(waypoint);
             _route_window->select_waypoint(index);

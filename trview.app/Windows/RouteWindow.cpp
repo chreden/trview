@@ -201,9 +201,9 @@ namespace trview
 
                         auto get_room_pos = [&waypoint, this]()
                         {
-                            if (waypoint->room() < _all_rooms.size())
+                            if (waypoint->room_number() < _all_rooms.size())
                             {
-                                const auto room = _all_rooms[waypoint->room()].lock();
+                                const auto room = _all_rooms[waypoint->room_number()].lock();
                                 if (!room)
                                 {
                                     return waypoint->position();
@@ -222,7 +222,7 @@ namespace trview
                         };
 
                         add_stat("Type", waypoint_type_to_string(waypoint->type()));
-                        add_stat("Room", waypoint->room());
+                        add_stat("Room", waypoint->room_number());
 
                         add_stat("Room Position", position_text(get_room_pos()));
                         ImGui::EndTable();

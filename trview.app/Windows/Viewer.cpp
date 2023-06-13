@@ -1196,7 +1196,7 @@ namespace trview
         {
             if (const auto waypoint = _route->waypoint(pick.index).lock())
             {
-                return waypoint->room();
+                return waypoint->room_number();
             }
             break;
         }

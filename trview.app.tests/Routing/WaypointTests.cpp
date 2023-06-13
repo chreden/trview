@@ -17,7 +17,7 @@ TEST(Waypoint, ConstructorProperties)
     Waypoint waypoint(mock_shared<MockMesh>(), Vector3(1, 2, 3), Vector3::Down, 12, IWaypoint::Type::Trigger, 23, Colour::Red, Colour::Green);
     ASSERT_EQ(waypoint.position(), Vector3(1, 2, 3));
     ASSERT_EQ(waypoint.normal(), Vector3::Down);
-    ASSERT_EQ(waypoint.room(), 12);
+    ASSERT_EQ(waypoint.room_number(), 12);
     ASSERT_EQ(waypoint.type(), IWaypoint::Type::Trigger);
     ASSERT_EQ(waypoint.index(), 23);
 }

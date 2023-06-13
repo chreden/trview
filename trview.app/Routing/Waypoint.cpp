@@ -130,8 +130,49 @@ namespace trview
         return _item;
     }
 
-    uint32_t Waypoint::room() const
+    std::weak_ptr<IRoom> Waypoint::room() const
     {
+        switch (type())
+        {
+            case Type::Entity:
+            {
+                if (auto item = this->item().lock())
+                {
+                    return item->room();
+                }
+                break;
+            }
+            case Type::Trigger:
+            {
+                if (auto trigger = this->trigger().lock())
+                {
+                    return trigger->room();
+                }
+                break;
+            }
+        }
+
+        if (auto existing = _room.lock())
+        {
+            return existing;
+        }
+
+        if (auto route = _route.lock())
+        {
+            if (auto level = route->level().lock())
+            {
+                _room = level->room(_room_number);
+            }
+        }
+        return _room;
+    }
+
+    uint32_t Waypoint::room_number() const
+    {
+        if (auto room = this->room().lock())
+        {
+            return room->number();
+        }
         return _room_number;
     }
 
@@ -273,6 +314,7 @@ namespace trview
     void Waypoint::set_room_number(uint32_t room)
     {
         _room_number = room;
+        _room.reset();
         on_changed();
     }
 }

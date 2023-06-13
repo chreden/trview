@@ -632,7 +632,7 @@ namespace trview
                 waypoint_json["X"] = static_cast<int>(pos.x * 1024);
                 waypoint_json["Y"] = static_cast<int>(pos.y * 1024);
                 waypoint_json["Z"] = static_cast<int>(pos.z * 1024);
-                waypoint_json["Room"] = waypoint->room();
+                waypoint_json["Room"] = waypoint->room_number();
                 export_randomizer_settings(waypoint_json, randomizer_settings, *waypoint);
 
                 waypoints.push_back(waypoint_json);
@@ -665,7 +665,7 @@ namespace trview
                 waypoint_json["position"] = std::format("{},{},{}", pos.x, pos.y, pos.z);
                 const auto normal = waypoint->normal();
                 waypoint_json["normal"] = std::format("{},{},{}", normal.x, normal.y, normal.z);
-                waypoint_json["room"] = waypoint->room();
+                waypoint_json["room"] = waypoint->room_number();
                 waypoint_json["index"] = waypoint->index();
                 waypoint_json["notes"] = waypoint->notes();
 

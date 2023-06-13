@@ -205,7 +205,7 @@ TEST(Lua_Waypoint, RandomizerSettings)
 TEST(Lua_Waypoint, RoomNumber)
 {
     auto waypoint = mock_shared<MockWaypoint>();
-    EXPECT_CALL(*waypoint, room).WillOnce(Return(123));
+    EXPECT_CALL(*waypoint, room_number).WillOnce(Return(123));
 
     lua_State* L = luaL_newstate();
     lua::create_waypoint(L, waypoint);

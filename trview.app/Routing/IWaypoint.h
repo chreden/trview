@@ -11,6 +11,7 @@ namespace trview
     struct IRoute;
     struct IItem;
     struct ITrigger;
+    struct IRoom;
 
     /// <summary>
     /// A waypoint in a route.
@@ -74,10 +75,11 @@ namespace trview
         /// Get any notes associated with the waypoint.
         /// </summary>
         virtual std::string notes() const = 0;
+        virtual std::weak_ptr<IRoom> room() const = 0;
         /// <summary>
         /// Get the room number that the waypoint is in.
         /// </summary>
-        virtual uint32_t room() const = 0;
+        virtual uint32_t room_number() const = 0;
         virtual std::weak_ptr<IRoute> route() const = 0;
         /// <summary>
         /// Render the join between this waypoint and another.

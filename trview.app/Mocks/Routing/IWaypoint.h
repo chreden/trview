@@ -17,7 +17,8 @@ namespace trview
             MOCK_METHOD(uint32_t, index, (), (const, override));
             MOCK_METHOD(std::weak_ptr<IItem>, item, (), (const, override));
             MOCK_METHOD(std::string, notes, (), (const, override));
-            MOCK_METHOD(uint32_t, room, (), (const, override));
+            MOCK_METHOD(std::weak_ptr<IRoom>, room, (), (const, override));
+            MOCK_METHOD(uint32_t, room_number, (), (const, override));
             MOCK_METHOD(std::weak_ptr<IRoute>, route, (), (const, override));
             MOCK_METHOD(std::vector<uint8_t>, save_file, (), (const, override));
             MOCK_METHOD(void, set_item, (const std::weak_ptr<IItem>&), (override));
