@@ -262,7 +262,7 @@ namespace trview
                 imgui_sort_weak(_triggered_by,
                     {
                         [](auto&& l, auto&& r) { return l.number() < r.number(); },
-                        [](auto&& l, auto&& r) { return std::tuple(l.room(), l.number()) < std::tuple(r.room(), r.number()); },
+                        [](auto&& l, auto&& r) { return std::tuple(trigger_room(l), l.number()) < std::tuple(trigger_room(r), r.number()); },
                         [](auto&& l, auto&& r) { return std::tuple(trigger_type_name(l.type()), l.number()) < std::tuple(trigger_type_name(r.type()), r.number()); },
                     }, _force_sort);
 
@@ -284,7 +284,7 @@ namespace trview
                         on_trigger_selected(trigger);
                     }
                     ImGui::TableNextColumn();
-                    ImGui::Text(std::to_string(trigger_ptr->room()).c_str());
+                    ImGui::Text(std::to_string(trigger_room(trigger_ptr)).c_str());
                     ImGui::TableNextColumn();
                     ImGui::Text(trigger_type_name(trigger_ptr->type()).c_str());
                 }

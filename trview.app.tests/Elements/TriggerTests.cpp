@@ -1,5 +1,6 @@
 #include <trview.app/Elements/Trigger.h>
 #include <trview.tests.common/Mocks.h>
+#include <trview.app/Mocks/Elements/IRoom.h>
 
 using namespace trlevel;
 using namespace trview;
@@ -13,7 +14,7 @@ namespace
         struct test_module
         {
             uint32_t number{ 0 };
-            uint32_t room{ 0 };
+            std::shared_ptr<IRoom> room { mock_shared<MockRoom>() };
             uint16_t x{ 0 };
             uint16_t z{ 0 };
             TriggerInfo trigger_info{};

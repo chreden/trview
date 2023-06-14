@@ -210,9 +210,9 @@ namespace trview
             {
                 if (_selected_room != _current_room)
                 {
-                    select_room(trigger_ptr->room());
+                    select_room(trigger_room(trigger_ptr));
                     _scroll_to_room = true;
-                    load_room_details(trigger_ptr->room());
+                    load_room_details(trigger_room(trigger_ptr));
                 }
 
                 _local_selected_trigger = trigger;

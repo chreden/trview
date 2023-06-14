@@ -2,6 +2,7 @@
 #include <trview.app/Elements/Types.h>
 #include <trview.common/Mocks/Windows/IClipboard.h>
 #include <trview.app/Mocks/Elements/ITrigger.h>
+#include <trview.app/Mocks/Elements/IRoom.h>
 #include "TestImgui.h"
 
 using namespace trview;
@@ -99,8 +100,8 @@ TEST(TriggersWindow, TriggersListFilteredWhenRoomSetAndTrackRoomEnabled)
 {
     auto window = register_test_module().build();
 
-    auto trigger1 = mock_shared<MockTrigger>()->with_number(0)->with_room(55);
-    auto trigger2 = mock_shared<MockTrigger>()->with_number(1)->with_room(78);
+    auto trigger1 = mock_shared<MockTrigger>()->with_number(0)->with_room(mock_shared<MockRoom>()->with_number(55));
+    auto trigger2 = mock_shared<MockTrigger>()->with_number(1)->with_room(mock_shared<MockRoom>()->with_number(78));
     window->set_triggers({ trigger1, trigger2 });
     window->set_current_room(78);
 

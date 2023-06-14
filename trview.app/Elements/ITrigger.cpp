@@ -1,4 +1,5 @@
 #include "ITrigger.h"
+#include "IRoom.h"
 
 namespace trview
 {
@@ -121,5 +122,23 @@ namespace trview
             return true;
         }
         return false;
+    }
+
+    uint32_t trigger_room(const std::shared_ptr<ITrigger>& trigger)
+    {
+        if (!trigger)
+        {
+            return 0u;
+        }
+        return trigger_room(*trigger);
+    }
+
+    uint32_t trigger_room(const ITrigger& trigger)
+    {
+        if (auto room = trigger.room().lock())
+        {
+            return room->number();
+        }
+        return 0u;
     }
 }

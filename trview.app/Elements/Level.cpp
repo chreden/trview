@@ -475,14 +475,13 @@ namespace trview
 
     void Level::generate_triggers(const ITrigger::Source& trigger_source)
     {
-        for (auto i = 0u; i < _rooms.size(); ++i)
+        for (const auto& room : _rooms)
         {
-            const auto& room = _rooms[i];
             for (auto sector : room->sectors())
             {
                 if (has_flag(sector->flags(), SectorFlag::Trigger))
                 {
-                    auto trigger = trigger_source(static_cast<uint32_t>(_triggers.size()), i, sector->x(), sector->z(), sector->trigger_info(), _version, shared_from_this());
+                    auto trigger = trigger_source(static_cast<uint32_t>(_triggers.size()), room, sector->x(), sector->z(), sector->trigger_info(), _version, shared_from_this());
                     _triggers.push_back(trigger);
                     sector->set_trigger(trigger);
                     room->add_trigger(trigger);

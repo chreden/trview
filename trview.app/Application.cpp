@@ -320,7 +320,7 @@ namespace trview
         {
             if (auto trigger_ptr = trigger.lock())
             {
-                add_waypoint(trigger_ptr->position(), Vector3::Down, trigger_ptr->room(), IWaypoint::Type::Trigger, trigger_ptr->number());
+                add_waypoint(trigger_ptr->position(), Vector3::Down, trigger_room(trigger_ptr), IWaypoint::Type::Trigger, trigger_ptr->number());
             }
         };
         _token_store += _triggers_windows->on_camera_sink_selected += [this](const auto& camera_sink)
@@ -492,7 +492,7 @@ namespace trview
             return;
         }
 
-        select_room(trigger_ptr->room());
+        select_room(trigger_room(trigger_ptr));
         _level->set_selected_trigger(trigger_ptr->number());
         _viewer->select_trigger(trigger);
         _triggers_windows->set_selected_trigger(trigger);
