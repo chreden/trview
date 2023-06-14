@@ -302,7 +302,7 @@ namespace trview
         {
             if (auto item_ptr = item.lock())
             {
-                add_waypoint(item_ptr->position(), Vector3::Down, item_ptr->room(), IWaypoint::Type::Entity, item_ptr->number());
+                add_waypoint(item_ptr->position(), Vector3::Down, item_room(item_ptr), IWaypoint::Type::Entity, item_ptr->number());
             }
         };
     }
@@ -456,7 +456,7 @@ namespace trview
             return;
         }
 
-        select_room(item_ptr->room());
+        select_room(item_room(item_ptr));
         _level->set_selected_item(item_ptr->number());
         _viewer->select_item(item);
         _items_windows->set_selected_item(item);

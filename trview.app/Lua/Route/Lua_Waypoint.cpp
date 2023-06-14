@@ -270,7 +270,7 @@ namespace trview
                         auto waypoint = waypoint_source(
                                 item->position(),
                                 normal,
-                                item->room(),
+                                item_room(item),
                                 IWaypoint::Type::Entity,
                                 item->number(),
                                 Colour::White,

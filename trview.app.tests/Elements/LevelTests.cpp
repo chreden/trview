@@ -176,14 +176,16 @@ TEST(Level, OcbAdjustmentsPerformedWhenNeeded)
     EXPECT_CALL(mock_level, num_rooms()).WillRepeatedly(Return(1));
     EXPECT_CALL(mock_level, num_entities()).WillRepeatedly(Return(1));
     int entity_source_called = 0;
+
+    auto room = mock_shared<MockRoom>();
+    PickResult result{};
+    result.hit = true;
+    EXPECT_CALL(*room, pick).WillRepeatedly(Return(result));
+    
     auto level = register_test_module().with_level(std::move(mock_level_ptr))
         .with_room_source(
             [&](auto&&...)
             {
-                auto room = mock_shared<MockRoom>();
-                PickResult result{};
-                result.hit = true;
-                EXPECT_CALL(*room, pick).WillRepeatedly(Return(result));
                 return room;
             })
         .with_entity_source(
@@ -193,6 +195,7 @@ TEST(Level, OcbAdjustmentsPerformedWhenNeeded)
                 auto entity = mock_shared<MockItem>();
                 EXPECT_CALL(*entity, needs_ocb_adjustment).WillRepeatedly(Return(true));
                 EXPECT_CALL(*entity, adjust_y).Times(1);
+                EXPECT_CALL(*entity, room).WillRepeatedly(Return(room));
                 return entity;
             }).build();
 

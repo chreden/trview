@@ -12,16 +12,18 @@
 namespace trview
 {
     struct ITrigger;
+    struct IRoom;
+
     struct IItem : public IRenderable
     {
         using EntitySource =
-            std::function<std::shared_ptr<IItem> (const trlevel::ILevel&, const trlevel::tr2_entity&, uint32_t, const std::vector<std::weak_ptr<ITrigger>>&, const IMeshStorage&, const std::weak_ptr<ILevel>&)>;
+            std::function<std::shared_ptr<IItem> (const trlevel::ILevel&, const trlevel::tr2_entity&, uint32_t, const std::vector<std::weak_ptr<ITrigger>>&, const IMeshStorage&, const std::weak_ptr<ILevel>&, const std::weak_ptr<IRoom>&)>;
         using AiSource =
-            std::function<std::shared_ptr<IItem>(const trlevel::ILevel&, const trlevel::tr4_ai_object&, uint32_t, const IMeshStorage&, const std::weak_ptr<ILevel>&)>;
+            std::function<std::shared_ptr<IItem>(const trlevel::ILevel&, const trlevel::tr4_ai_object&, uint32_t, const IMeshStorage&, const std::weak_ptr<ILevel>&, const std::weak_ptr<IRoom>&)>;
 
         virtual ~IItem() = 0;
         virtual uint32_t number() const = 0;
-        virtual uint16_t room() const = 0;
+        virtual std::weak_ptr<IRoom> room() const = 0;
         virtual PickResult pick(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& direction) const = 0;
         virtual DirectX::BoundingBox bounding_box() const = 0;
         /// <summary>
@@ -50,4 +52,6 @@ namespace trview
     bool is_mutant_egg(uint32_t type_id);
     uint16_t mutant_egg_contents(const IItem& item);
     uint16_t mutant_egg_contents(uint16_t flags);
+    uint32_t item_room(const std::shared_ptr<IItem>& item);
+    uint32_t item_room(const IItem& item);
 }
