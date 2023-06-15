@@ -18,7 +18,7 @@ namespace trview
             MOCK_METHOD(uint32_t, number, (), (const, override));
             MOCK_METHOD(DirectX::SimpleMath::Vector3, position, (), (const, override));
             MOCK_METHOD(Colour, colour, (), (const, override));
-            MOCK_METHOD(uint32_t, room, (), (const, override));
+            MOCK_METHOD(std::weak_ptr<IRoom>, room, (), (const, override));
             MOCK_METHOD(trlevel::LightType, type, (), (const, override));
             MOCK_METHOD(int32_t, intensity, (), (const, override));
             MOCK_METHOD(int32_t, fade, (), (const, override));
@@ -43,9 +43,9 @@ namespace trview
                 return shared_from_this();
             }
 
-            std::shared_ptr<MockLight> with_room(uint32_t number)
+            std::shared_ptr<MockLight> with_room(std::shared_ptr<IRoom> room)
             {
-                ON_CALL(*this, room).WillByDefault(testing::Return(number));
+                ON_CALL(*this, room).WillByDefault(testing::Return(room));
                 return shared_from_this();
             }
 

@@ -8,12 +8,12 @@ namespace trview
     class Light final : public ILight
     {
     public:
-        explicit Light(const std::shared_ptr<IMesh>& mesh, uint32_t number, uint32_t room, const trlevel::tr_x_room_light& light, const std::weak_ptr<ILevel>& level);
+        explicit Light(const std::shared_ptr<IMesh>& mesh, uint32_t number, const std::weak_ptr<IRoom>& room, const trlevel::tr_x_room_light& light, const std::weak_ptr<ILevel>& level);
         virtual ~Light() = default;
         virtual uint32_t number() const override;
         virtual DirectX::SimpleMath::Vector3 position() const override;
         virtual Colour colour() const override;
-        virtual uint32_t room() const override;
+        std::weak_ptr<IRoom> room() const override;
         virtual trlevel::LightType type() const override;
         virtual int32_t intensity() const override;
         virtual int32_t fade() const override;
@@ -41,7 +41,7 @@ namespace trview
         std::weak_ptr<ILevel> _level;
 
         uint32_t _number;
-        uint32_t _room;
+        std::weak_ptr<IRoom> _room;
         bool _visible{ true };
         DirectX::SimpleMath::Vector3 _position;
         Colour _colour;

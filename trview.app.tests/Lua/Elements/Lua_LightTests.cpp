@@ -298,11 +298,8 @@ TEST(Lua_Light, Range)
 TEST(Lua_Light, Room)
 {
     auto room = mock_shared<MockRoom>()->with_number(100);
-    auto level = mock_shared<MockLevel>();
-    EXPECT_CALL(*level, room).WillRepeatedly(Return(room));
-
     auto light = mock_shared<MockLight>()->with_number(100);
-    EXPECT_CALL(*light, level).WillRepeatedly(Return(level));
+    EXPECT_CALL(*light, room).WillRepeatedly(Return(room));
 
     lua_State* L = luaL_newstate();
     lua::create_light(L, light);
