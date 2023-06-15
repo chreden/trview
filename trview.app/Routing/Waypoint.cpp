@@ -184,7 +184,7 @@ namespace trview
         _trigger = trigger;
         if (auto new_trigger = _trigger.lock())
         {
-            set_properties(Type::Trigger, new_trigger->number(), new_trigger->room(), new_trigger->position());
+            set_properties(Type::Trigger, new_trigger->number(), trigger_room(new_trigger), new_trigger->position());
         }
     }
 

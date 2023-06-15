@@ -15,7 +15,7 @@ namespace trview
             MOCK_METHOD(bool, visible, (), (const, override));
             MOCK_METHOD(void, set_visible, (bool), (override));
             MOCK_METHOD(uint32_t, number, (), (const, override));
-            MOCK_METHOD(uint32_t, room, (), (const, override));
+            MOCK_METHOD(std::weak_ptr<IRoom>, room, (), (const, override));
             MOCK_METHOD(uint16_t, x, (), (const, override));
             MOCK_METHOD(uint16_t, z, (), (const, override));
             MOCK_METHOD(bool, triggers_item, (uint32_t index), (const, override));
@@ -37,7 +37,7 @@ namespace trview
                 return shared_from_this();
             }
 
-            std::shared_ptr<MockTrigger> with_room(uint32_t room)
+            std::shared_ptr<MockTrigger> with_room(std::shared_ptr<IRoom> room)
             {
                 ON_CALL(*this, room).WillByDefault(testing::Return(room));
                 return shared_from_this();

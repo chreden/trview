@@ -292,8 +292,8 @@ namespace trview
                         auto waypoint = waypoint_source(
                                 trigger->position(),
                                 normal,
-                                trigger->room(),
-                                IWaypoint::Type::Entity,
+                                trigger_room(trigger),
+                                IWaypoint::Type::Trigger,
                                 trigger->number(),
                                 Colour::White,
                                 Colour::White);

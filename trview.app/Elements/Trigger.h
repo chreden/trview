@@ -11,10 +11,10 @@ namespace trview
     class Trigger final : public ITrigger
     {
     public:
-        explicit Trigger(uint32_t number, uint32_t room, uint16_t x, uint16_t z, const TriggerInfo& trigger_info, trlevel::LevelVersion level_version, const std::weak_ptr<ILevel>& level, const IMesh::TransparentSource& mesh_source);
+        explicit Trigger(uint32_t number, const std::weak_ptr<IRoom>& room, uint16_t x, uint16_t z, const TriggerInfo& trigger_info, trlevel::LevelVersion level_version, const std::weak_ptr<ILevel>& level, const IMesh::TransparentSource& mesh_source);
         virtual ~Trigger() = default;
         virtual uint32_t number() const override;
-        virtual uint32_t room() const override;
+        std::weak_ptr<IRoom> room() const override;
         virtual uint16_t x() const override;
         virtual uint16_t z() const override;
         virtual bool triggers_item(uint32_t index) const override;
@@ -41,7 +41,7 @@ namespace trview
         IMesh::TransparentSource _mesh_source;
         TriggerType _type;
         uint32_t _number;
-        uint32_t _room;
+        std::weak_ptr<IRoom> _room;
         uint16_t _x;
         uint16_t _z;
         bool _only_once;
