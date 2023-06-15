@@ -974,7 +974,7 @@ namespace trview
             auto room = level.get_room(i);
             for (const auto& light : room.lights)
             {
-                _lights.push_back(light_source(static_cast<uint32_t>(_lights.size()), i, light, shared_from_this()));
+                _lights.push_back(light_source(static_cast<uint32_t>(_lights.size()), _rooms[i], light, shared_from_this()));
                 _rooms[i]->add_light(_lights.back());
             }
         }

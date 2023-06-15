@@ -539,7 +539,7 @@ namespace trview
             return;
         }
 
-        select_room(light_ptr->room());
+        select_room(light_room(light_ptr));
         _level->set_selected_light(light_ptr->number());
         _viewer->select_light(light);
         _lights_windows->set_selected_light(light);

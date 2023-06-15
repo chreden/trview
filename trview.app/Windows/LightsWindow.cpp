@@ -103,7 +103,7 @@ namespace trview
                 imgui_sort_weak(_all_lights,
                     {
                         [](auto&& l, auto&& r) { return l.number() < r.number(); },
-                        [](auto&& l, auto&& r) { return std::tuple(l.room(), l.number()) < std::tuple(r.room(), r.number()); },
+                        [](auto&& l, auto&& r) { return std::tuple(light_room(l), l.number()) < std::tuple(light_room(r), r.number()); },
                         [](auto&& l, auto&& r) { return std::tuple(light_type_name(l.type()), l.number()) < std::tuple(light_type_name(r.type()), r.number()); },
                         [](auto&& l, auto&& r) { return std::tuple(l.visible(), l.number()) < std::tuple(r.visible(), r.number()); }
                     }, _force_sort);
@@ -111,7 +111,7 @@ namespace trview
                 for (const auto& light_ptr : _all_lights)
                 {
                     const auto& light = light_ptr.lock();
-                    if (_track.enabled<Type::Room>() && light->room() != _current_room || !_filters.match(*light))
+                    if (_track.enabled<Type::Room>() && light_room(light) != _current_room || !_filters.match(*light))
                     {
                         continue;
                     }
@@ -142,7 +142,7 @@ namespace trview
 
                     ImGui::SetItemAllowOverlap();
                     ImGui::TableNextColumn();
-                    ImGui::Text(std::to_string(light->room()).c_str());
+                    ImGui::Text(std::to_string(light_room(light)).c_str());
                     ImGui::TableNextColumn();
                     ImGui::Text(light_type_name(light->type()).c_str());
                     ImGui::TableNextColumn();
@@ -210,7 +210,7 @@ namespace trview
 
                     add_stat("Type", light_type_name(selected_light->type()));
                     add_stat("#", selected_light->number());
-                    add_stat("Room", selected_light->room());
+                    add_stat("Room", light_room(selected_light));
 
                     if (has_colour(*selected_light))
                     {
@@ -299,7 +299,7 @@ namespace trview
         }
         _filters.add_getter<std::string>("Type", { available_types.begin(), available_types.end() }, [](auto&& light) { return light_type_name(light.type()); });
         _filters.add_getter<float>("#", [](auto&& light) { return static_cast<float>(light.number()); });
-        _filters.add_getter<float>("Room", [](auto&& light) { return static_cast<float>(light.room()); });
+        _filters.add_getter<float>("Room", [](auto&& light) { return static_cast<float>(light_room(light)); });
         _filters.add_getter<float>("X", [](auto&& light) { return light.position().x * trlevel::Scale_X; }, has_position);
         _filters.add_getter<float>("Y", [](auto&& light) { return light.position().y * trlevel::Scale_Y; }, has_position);
         _filters.add_getter<float>("Z", [](auto&& light) { return light.position().z * trlevel::Scale_Z; }, has_position);

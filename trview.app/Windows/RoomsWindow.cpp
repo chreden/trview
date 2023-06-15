@@ -982,9 +982,9 @@ namespace trview
             {
                 if (_selected_room != _current_room)
                 {
-                    select_room(light_ptr->room());
+                    select_room(light_room(light_ptr));
                     _scroll_to_room = true;
-                    load_room_details(light_ptr->room());
+                    load_room_details(light_room(light_ptr));
                 }
 
                 _local_selected_light = light;
