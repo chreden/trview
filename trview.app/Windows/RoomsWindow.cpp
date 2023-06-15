@@ -190,9 +190,9 @@ namespace trview
             {
                 if (auto item_ptr = item.lock())
                 {
-                    select_room(item_ptr->room());
+                    select_room(item_room(item_ptr));
                     _scroll_to_room = true;
-                    load_room_details(item_ptr->room());
+                    load_room_details(item_room(item_ptr));
                 }
             }
 
@@ -309,7 +309,7 @@ namespace trview
                         {
                             if (auto i = item.lock())
                             {
-                                return i->room() == room.number();
+                                return item_room(i) == room.number();
                             }
                             return false;
                         });
@@ -612,7 +612,7 @@ namespace trview
                 {
                     if (const auto item_ptr = item.lock())
                     {
-                        if (item_ptr->room() == room.number())
+                        if (item_room(item_ptr) == room.number())
                         {
                             results.push_back(static_cast<float>(item_ptr->number()));
                         }
@@ -636,7 +636,7 @@ namespace trview
                 {
                     if (auto item_ptr = item.lock())
                     {
-                        if (item_ptr->room() == room.number())
+                        if (item_room(item_ptr) == room.number())
                         {
                             results.push_back(item_ptr->type());
                         }
@@ -813,7 +813,7 @@ namespace trview
             {
                 if (auto item_ptr = item.lock())
                 {
-                    if (item_ptr->room() == room->number())
+                    if (item_room(item_ptr) == room->number())
                     {
                         ImGui::TableNextRow();
                         ImGui::TableNextColumn();

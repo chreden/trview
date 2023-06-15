@@ -119,7 +119,7 @@ namespace trview
                 imgui_sort_weak(_all_items,
                     {
                         [](auto&& l, auto&& r) { return l.number() < r.number(); },
-                        [](auto&& l, auto&& r) { return std::tuple(l.room(), l.number()) < std::tuple(r.room(), r.number()); },
+                        [](auto&& l, auto&& r) { return std::tuple(item_room(l), l.number()) < std::tuple(item_room(r), r.number()); },
                         [](auto&& l, auto&& r) { return std::tuple(l.type_id(), l.number()) < std::tuple(r.type_id(), r.number()); },
                         [](auto&& l, auto&& r) { return std::tuple(l.type(), l.number()) < std::tuple(r.type(), r.number()); },
                         [](auto&& l, auto&& r) { return std::tuple(l.visible(), l.number()) < std::tuple(r.visible(), r.number()); }
@@ -128,7 +128,7 @@ namespace trview
                 for (const auto& item : _all_items)
                 {
                     auto item_ptr = item.lock();
-                    if (!item_ptr || (_track.enabled<Type::Room>() && item_ptr->room() != _current_room || !_filters.match(*item_ptr)))
+                    if (!item_ptr || (_track.enabled<Type::Room>() && item_room(item_ptr) != _current_room || !_filters.match(*item_ptr)))
                     {
                         continue;
                     }
@@ -159,7 +159,7 @@ namespace trview
 
                     ImGui::SetItemAllowOverlap();
                     ImGui::TableNextColumn();
-                    ImGui::Text(std::to_string(item_ptr->room()).c_str());
+                    ImGui::Text(std::to_string(item_room(item_ptr)).c_str());
                     ImGui::TableNextColumn();
                     ImGui::Text(std::to_string(item_ptr->type_id()).c_str());
                     ImGui::TableNextColumn();
@@ -237,7 +237,7 @@ namespace trview
                     add_stat("Angle", bound_rotation(item->angle()));
                     add_stat("Angle Degrees", bound_rotation(item->angle()) / 182);
                     add_stat("Type ID", item->type_id());
-                    add_stat("Room", item->room());
+                    add_stat("Room", item_room(item));
                     add_stat("Clear Body", item->clear_body_flag());
                     add_stat("Invisible", item->invisible_flag());
                     add_stat("Flags", format_binary(item->activation_flags()));
@@ -373,7 +373,7 @@ namespace trview
         _filters.add_getter<float>("Angle", [](auto&& item) { return static_cast<float>(bound_rotation(item.angle())); });
         _filters.add_getter<float>("Angle Degrees", [](auto&& item) { return static_cast<float>(bound_rotation(item.angle()) / 182); });
         _filters.add_getter<float>("Type ID", [](auto&& item) { return static_cast<float>(item.type_id()); });
-        _filters.add_getter<float>("Room", [](auto&& item) { return static_cast<float>(item.room()); });
+        _filters.add_getter<float>("Room", [](auto&& item) { return static_cast<float>(item_room(item)); });
         _filters.add_getter<bool>("Clear Body", [](auto&& item) { return item.clear_body_flag(); });
         _filters.add_getter<bool>("Invisible", [](auto&& item) { return item.invisible_flag(); });
         _filters.add_getter<std::string>("Flags", [](auto&& item) { return format_binary(item.activation_flags()); });

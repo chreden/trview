@@ -155,7 +155,7 @@ namespace trview
         _item = item;
         if (auto new_item = _item.lock())
         {
-            set_properties(Type::Entity, new_item->number(), new_item->room(), new_item->position());
+            set_properties(Type::Entity, new_item->number(), item_room(new_item), new_item->position());
         }
     }
 

@@ -335,7 +335,7 @@ TEST(Viewer, AddWaypointRaisedUsesItemPosition)
     TestImgui imgui;
 
     NiceMock<MockLevel> level;
-    auto item = mock_shared<MockItem>()->with_room(10)->with_number(50);
+    auto item = mock_shared<MockItem>()->with_room(mock_shared<MockRoom>()->with_number(10))->with_number(50);
 
     EXPECT_CALL(level, item(50)).WillRepeatedly(Return(item));
 

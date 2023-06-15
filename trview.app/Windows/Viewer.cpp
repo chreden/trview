@@ -1180,7 +1180,7 @@ namespace trview
         {
             if (auto item = _level->item(pick.index).lock())
             {
-                return item->room();
+                return item_room(item);
             }
             break;
         }
