@@ -57,6 +57,23 @@ namespace trview
         {
             return camera_sink.type() == ICameraSink::Type::Sink;
         }
+
+        std::string inferred_rooms_text(const std::vector<std::weak_ptr<IRoom>>& rooms)
+        {
+            std::string inferred_rooms;
+            for (auto i = 0u; i < rooms.size(); ++i)
+            {
+                if (const auto room = rooms[i].lock())
+                {
+                    inferred_rooms += std::to_string(room->number());
+                    if (i != rooms.size() - 1)
+                    {
+                        inferred_rooms += ",";
+                    }
+                }
+            }
+            return inferred_rooms;
+        }
     }
 
     ICameraSinkWindow::~ICameraSinkWindow()
@@ -201,20 +218,7 @@ namespace trview
                     }
                     else
                     {
-                        std::string inferred_rooms;
-                        const auto rooms = camera_sink->inferred_rooms();
-                        for (auto i = 0u; i < rooms.size(); ++i)
-                        {
-                            if (const auto room = rooms[i].lock())
-                            {
-                                inferred_rooms += std::to_string(room->number());
-                                if (i != rooms.size() - 1)
-                                {
-                                    inferred_rooms += ",";
-                                }
-                            }
-                        }
-                        ImGui::Text(inferred_rooms.c_str());
+                        ImGui::Text(inferred_rooms_text(camera_sink->inferred_rooms()).c_str());
                     }
 
                     ImGui::TableNextColumn();
@@ -302,20 +306,7 @@ namespace trview
                 {
                     add_stat("Strength", selected->strength());
                     add_stat("Box Index", selected->box_index());
-                    std::string inferred_rooms;
-                    auto rooms = selected->inferred_rooms();
-                    for (auto i = 0u; i < rooms.size(); ++i)
-                    {
-                        if (const auto room = rooms[i].lock())
-                        {
-                            inferred_rooms += std::to_string(room->number());
-                            if (i != rooms.size() - 1)
-                            {
-                                inferred_rooms += ",";
-                            }
-                        }
-                    }
-                    add_stat("Inferred Room", inferred_rooms.c_str());
+                    add_stat("Inferred Room", inferred_rooms_text(selected->inferred_rooms()));
                 }
 
                 ImGui::EndTable();
