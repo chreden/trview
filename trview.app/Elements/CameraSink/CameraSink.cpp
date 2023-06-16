@@ -1,4 +1,5 @@
 #include "CameraSink.h"
+#include "../ILevel.h"
 
 using namespace DirectX;
 using namespace DirectX::SimpleMath;
@@ -6,11 +7,15 @@ using namespace DirectX::SimpleMath;
 namespace trview
 {
     CameraSink::CameraSink(const std::shared_ptr<IMesh>& mesh, const std::shared_ptr<ITextureStorage>& texture_storage, 
-        uint32_t number, const trlevel::tr_camera& camera, Type type, const std::vector<uint16_t>& inferred_rooms, const std::vector<std::weak_ptr<ITrigger>>& triggers,
+        uint32_t number, const trlevel::tr_camera& camera, Type type, const std::vector<std::weak_ptr<IRoom>>& inferred_rooms, const std::vector<std::weak_ptr<ITrigger>>& triggers,
         const std::weak_ptr<ILevel>& level)
-        : _mesh(mesh), _number(number), _position(camera.position()), _room(camera.Room), _flag(camera.Flag), _inferred_rooms(inferred_rooms), _type(type), _triggers(triggers),
+        : _mesh(mesh), _number(number), _position(camera.position()), _strength(camera.Room), _flag(camera.Flag), _inferred_rooms(inferred_rooms), _type(type), _triggers(triggers),
         _level(level)
     {
+        if (const auto new_level = _level.lock())
+        {
+            _room = new_level->room(camera.Room);
+        }
         _camera_texture = texture_storage->lookup("camera_texture");
         _sink_texture = texture_storage->lookup("sink_texture");
     }
@@ -43,7 +48,7 @@ namespace trview
         return _level;
     }
 
-    std::vector<uint16_t> CameraSink::inferred_rooms() const
+    std::vector<std::weak_ptr<IRoom>> CameraSink::inferred_rooms() const
     {
         return _inferred_rooms;
     }
@@ -95,7 +100,7 @@ namespace trview
         _mesh->render(wvp, type() == Type::Camera ? _camera_texture : _sink_texture, Colour::White, 1.0f, light_direction);
     }
 
-    uint16_t CameraSink::room() const
+    std::weak_ptr<IRoom> CameraSink::room() const
     {
         return _room;
     }
@@ -112,7 +117,7 @@ namespace trview
 
     uint16_t CameraSink::strength() const
     {
-        return _room;
+        return _strength;
     }
 
     CameraSink::Type CameraSink::type() const
@@ -130,14 +135,14 @@ namespace trview
         return _triggers;
     }
 
-    uint16_t actual_room(const ICameraSink& camera_sink)
+    std::weak_ptr<IRoom> actual_room(const ICameraSink& camera_sink)
     {
         if (camera_sink.type() == ICameraSink::Type::Camera)
         {
             return camera_sink.room();
         }
         const auto inferred = camera_sink.inferred_rooms();
-        return inferred.empty() ? 0 : inferred.front();
+        return inferred.empty() ? std::weak_ptr<IRoom>{} : inferred.front();
     }
 
     std::string to_string(ICameraSink::Type type)
