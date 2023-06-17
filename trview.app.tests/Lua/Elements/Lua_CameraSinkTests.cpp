@@ -43,14 +43,8 @@ TEST(Lua_CameraSink, InferredRooms)
 {
     auto room1 = mock_shared<MockRoom>()->with_number(100);
     auto room2 = mock_shared<MockRoom>()->with_number(200);
-
-    auto level = mock_shared<MockLevel>();
-    EXPECT_CALL(*level, room(100)).WillRepeatedly(Return(room1));
-    EXPECT_CALL(*level, room(200)).WillRepeatedly(Return(room2));
-
     auto cs = mock_shared<MockCameraSink>();
-    EXPECT_CALL(*cs, level).WillRepeatedly(Return(level));
-    EXPECT_CALL(*cs, inferred_rooms).WillRepeatedly(Return(std::vector<uint16_t>{ 100, 200 }));
+    EXPECT_CALL(*cs, inferred_rooms).WillRepeatedly(Return(std::vector<std::weak_ptr<IRoom>>{ room1, room2 }));
 
     lua_State* L = luaL_newstate();
     lua::create_camera_sink(L, cs);
@@ -122,12 +116,8 @@ TEST(Lua_CameraSink, Position)
 TEST(Lua_CameraSink, Room)
 {
     auto room = mock_shared<MockRoom>()->with_number(100);
-    auto level = mock_shared<MockLevel>();
-    EXPECT_CALL(*level, room(100)).WillRepeatedly(Return(room));
-
     auto cs = mock_shared<MockCameraSink>();
-    EXPECT_CALL(*cs, level).WillRepeatedly(Return(level));
-    EXPECT_CALL(*cs, room).WillRepeatedly(Return(100));
+    EXPECT_CALL(*cs, room).WillRepeatedly(Return(room));
 
     lua_State* L = luaL_newstate();
     lua::create_camera_sink(L, cs);

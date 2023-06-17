@@ -2,6 +2,7 @@
 #include <trview.app/Mocks/Elements/ICameraSink.h>
 #include <trview.common/Mocks/Windows/IClipboard.h>
 #include <trview.app/Mocks/Elements/ITrigger.h>
+#include <trview.app/Mocks/Elements/IRoom.h>
 #include "TestImgui.h"
 
 using namespace trview;
@@ -141,8 +142,8 @@ TEST(CameraSinkWindow, TriggerSelectedRaised)
 TEST(CameraSinkWindow, CameraSinkListFilteredWhenRoomSetAndTrackRoomEnabled)
 {
     auto window = register_test_module().build();
-    auto camera_sink1 = mock_shared<MockCameraSink>()->with_number(0)->with_room(56);
-    auto camera_sink2 = mock_shared<MockCameraSink>()->with_number(1)->with_room(78);
+    auto camera_sink1 = mock_shared<MockCameraSink>()->with_number(0)->with_room(mock_shared<MockRoom>()->with_number(56));
+    auto camera_sink2 = mock_shared<MockCameraSink>()->with_number(1)->with_room(mock_shared<MockRoom>()->with_number(78));
     window->set_camera_sinks({ camera_sink1, camera_sink2 });
     window->set_current_room(78);
 

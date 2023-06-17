@@ -1,5 +1,6 @@
 #include "CameraSinkWindow.h"
 #include "../../trview_imgui.h"
+#include "../../Elements/IRoom.h"
 
 namespace trview
 {
@@ -9,19 +10,42 @@ namespace trview
         {
             if (camera_sink.type() == ICameraSink::Type::Camera)
             {
-                return camera_sink.room() == room;
+                if (auto camera_room = camera_sink.room().lock())
+                {
+                    return camera_room->number() == room;
+                }
+                return false;
             }
-            return std::ranges::contains(camera_sink.inferred_rooms(), static_cast<uint16_t>(room));
+
+            const auto inferred = camera_sink.inferred_rooms();
+            return std::ranges::find_if(inferred, [=](auto&& r)
+                {
+                    if (auto inferred_room = r.lock())
+                    {
+                        return inferred_room->number() == room;
+                    }
+                    return false;
+                }) != inferred.end();
         }
 
         uint32_t primary_room(const ICameraSink& camera_sink)
         {
             if (camera_sink.type() == ICameraSink::Type::Camera)
             {
-                return camera_sink.room();
+                if (auto room = camera_sink.room().lock())
+                {
+                    return room->number();
+                }
+                return 0u;
             }
-            const auto inferred_rooms = camera_sink.inferred_rooms();
-            return inferred_rooms.empty() ? 0u : std::ranges::min(camera_sink.inferred_rooms());
+            
+            const auto inferred = camera_sink.inferred_rooms();
+            if (inferred.empty())
+            {
+                return 0u;
+            }
+            const auto view = inferred | std::views::transform([](auto&& r) { if (auto room = r.lock()) { return room->number(); } return 0u; });
+            return *std::ranges::min_element(view);
         }
 
         bool is_camera(const ICameraSink& camera_sink)
@@ -32,6 +56,23 @@ namespace trview
         bool is_sink(const ICameraSink& camera_sink)
         {
             return camera_sink.type() == ICameraSink::Type::Sink;
+        }
+
+        std::string inferred_rooms_text(const std::vector<std::weak_ptr<IRoom>>& rooms)
+        {
+            std::string inferred_rooms;
+            for (auto i = 0u; i < rooms.size(); ++i)
+            {
+                if (const auto room = rooms[i].lock())
+                {
+                    inferred_rooms += std::to_string(room->number());
+                    if (i != rooms.size() - 1)
+                    {
+                        inferred_rooms += ",";
+                    }
+                }
+            }
+            return inferred_rooms;
         }
     }
 
@@ -173,21 +214,11 @@ namespace trview
                     ImGui::TableNextColumn();
                     if (camera_sink->type() == ICameraSink::Type::Camera)
                     {
-                        ImGui::Text(std::format("{}", camera_sink->room()).c_str());
+                        ImGui::Text(std::format("{}", primary_room(*camera_sink)).c_str());
                     }
                     else
                     {
-                        auto rooms = camera_sink->inferred_rooms();
-                        std::stringstream stream;
-                        if (!rooms.empty())
-                        {
-                            stream << rooms[0];
-                        }
-                        for (std::size_t i = 1; i < rooms.size(); ++i)
-                        {
-                            stream << "," << rooms[i];
-                        }
-                        ImGui::Text(stream.str().c_str());
+                        ImGui::Text(inferred_rooms_text(camera_sink->inferred_rooms()).c_str());
                     }
 
                     ImGui::TableNextColumn();
@@ -268,24 +299,14 @@ namespace trview
                 if (selected->type() == ICameraSink::Type::Camera)
                 {
                     add_stat("Flag", selected->flag());
-                    add_stat("Room", selected->room());
+                    add_stat("Room", primary_room(*selected));
                     add_stat("Persistent", selected->persistent());
                 }
                 else
                 {
                     add_stat("Strength", selected->strength());
                     add_stat("Box Index", selected->box_index());
-                    std::string inferred_rooms;
-                    auto rooms = selected->inferred_rooms();
-                    for (auto i = 0u; i < rooms.size(); ++i)
-                    {
-                        inferred_rooms += std::to_string(rooms[i]);
-                        if (i != rooms.size() - 1)
-                        {
-                            inferred_rooms += ",";
-                        }
-                    }
-                    add_stat("Inferred Room", inferred_rooms.c_str());
+                    add_stat("Inferred Room", inferred_rooms_text(selected->inferred_rooms()));
                 }
 
                 ImGui::EndTable();
@@ -368,11 +389,11 @@ namespace trview
             {
                 if (camera_sink.type() == ICameraSink::Type::Camera)
                 {
-                    return { static_cast<float>(camera_sink.room()) };
+                    return { static_cast<float>(primary_room(camera_sink)) };
                 }
                 return std::views::transform(
                     camera_sink.inferred_rooms(),
-                    [](const auto& r) { return static_cast<float>(r); }) |
+                    [](const auto& r) { if (auto room = r.lock()) { return static_cast<float>(room->number()); } return 0.0f; }) |
                     std::ranges::to<std::vector>();
             });
         _filters.add_multi_getter<float>("Triggered By", [&](auto&& camera_sink)
@@ -391,7 +412,7 @@ namespace trview
         _filters.add_getter<bool>("Persistent", [](auto&& camera_sink) { return (camera_sink.flag() & 0x1) == 1; }, is_camera);
         
         // Sink:
-        _filters.add_getter<float>("Strength", [](auto&& camera_sink) { return static_cast<float>(camera_sink.room()); }, is_sink);
+        _filters.add_getter<float>("Strength", [](auto&& camera_sink) { return static_cast<float>(camera_sink.strength()); }, is_sink);
         _filters.add_getter<float>("Box Index", [](auto&& camera_sink) { return static_cast<float>(camera_sink.flag()); }, is_sink);
     }
 }

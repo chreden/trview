@@ -4,6 +4,8 @@
 
 namespace trview
 {
+    struct IRoom;
+
     namespace mocks
     {
         struct MockCameraSink : public ICameraSink, public std::enable_shared_from_this<MockCameraSink>
@@ -13,14 +15,14 @@ namespace trview
             MOCK_METHOD(uint16_t, box_index, (), (const, override));
             MOCK_METHOD(uint16_t, flag, (), (const, override));
             MOCK_METHOD(void, get_transparent_triangles, (ITransparencyBuffer&, const ICamera&, const DirectX::SimpleMath::Color&), (override));
-            MOCK_METHOD(std::vector<uint16_t>, inferred_rooms, (), (const, override));
+            MOCK_METHOD(std::vector<std::weak_ptr<IRoom>>, inferred_rooms, (), (const, override));
             MOCK_METHOD(std::weak_ptr<ILevel>, level, (), (const, override));
             MOCK_METHOD(uint32_t, number, (), (const, override));
             MOCK_METHOD(bool, persistent, (), (const, override));
             MOCK_METHOD(PickResult, pick, (const DirectX::SimpleMath::Vector3&, const DirectX::SimpleMath::Vector3&), (const, override));
             MOCK_METHOD(DirectX::SimpleMath::Vector3, position, (), (const, override));
             MOCK_METHOD(void, render, (const ICamera&, const ILevelTextureStorage&, const DirectX::SimpleMath::Color&), (override));
-            MOCK_METHOD(uint16_t, room, (), (const, override));
+            MOCK_METHOD(std::weak_ptr<IRoom>, room, (), (const, override));
             MOCK_METHOD(void, set_visible, (bool), (override));
             MOCK_METHOD(void, set_type, (Type), (override));
             MOCK_METHOD(uint16_t, strength, (), (const, override));
@@ -46,7 +48,7 @@ namespace trview
                 return shared_from_this();
             }
 
-            std::shared_ptr<MockCameraSink> with_room(uint16_t room)
+            std::shared_ptr<MockCameraSink> with_room(std::shared_ptr<IRoom> room)
             {
                 ON_CALL(*this, room).WillByDefault(testing::Return(room));
                 return shared_from_this();

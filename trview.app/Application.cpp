@@ -807,7 +807,8 @@ namespace trview
             return;
         }
 
-        select_room(actual_room(*camera_sink_ptr));
+        auto actual = actual_room(*camera_sink_ptr).lock();
+        select_room(actual ? actual->number() : 0u);
         _level->set_selected_camera_sink(camera_sink_ptr->number());
         _viewer->select_camera_sink(camera_sink);
         _camera_sink_windows->set_selected_camera_sink(camera_sink);

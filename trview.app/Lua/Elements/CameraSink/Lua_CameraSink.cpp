@@ -29,14 +29,7 @@ namespace trview
                 }
                 else if (key == "inferred_rooms")
                 {
-                    if (auto level = camera_sink->level().lock())
-                    {
-                        std::vector<std::weak_ptr<IRoom>> inferred_rooms;
-                        std::ranges::transform(camera_sink->inferred_rooms(),
-                            std::back_inserter(inferred_rooms),
-                            [&level](const auto& r) { return level->room(r); });
-                        return push_list_p(L, inferred_rooms, create_room);
-                    }
+                    return push_list_p(L, camera_sink->inferred_rooms(), create_room);
                 }
                 else if (key == "number")
                 {
@@ -55,10 +48,7 @@ namespace trview
                 }
                 else if (key == "room")
                 {
-                    if (auto level = camera_sink->level().lock())
-                    {
-                        return create_room(L, level->room(camera_sink->room()).lock());
-                    }
+                    return create_room(L, camera_sink->room().lock());
                 }
                 else if (key == "strength")
                 {

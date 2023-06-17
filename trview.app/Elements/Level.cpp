@@ -1148,8 +1148,8 @@ namespace trview
                         });
                 });
 
-            std::vector<uint16_t> in_space_rooms;
-            std::vector<uint16_t> in_portal_rooms;
+            std::vector<std::weak_ptr<IRoom>> in_space_rooms;
+            std::vector<std::weak_ptr<IRoom>> in_portal_rooms;
 
             for (const auto& room : _rooms)
             {
@@ -1157,11 +1157,11 @@ namespace trview
                 {
                     if (sector && sector->is_portal())
                     {
-                        in_portal_rooms.push_back(static_cast<uint16_t>(room->number()));
+                        in_portal_rooms.push_back(room);
                     }
                     else
                     {
-                        in_space_rooms.push_back(static_cast<uint16_t>(room->number()));
+                        in_space_rooms.push_back(room);
                     }
                 }
             }
@@ -1175,7 +1175,7 @@ namespace trview
                 }
             }
 
-            const std::vector<uint16_t> inferred_rooms{ in_space_rooms.empty() ? in_portal_rooms : in_space_rooms };
+            const std::vector<std::weak_ptr<IRoom>> inferred_rooms{ in_space_rooms.empty() ? in_portal_rooms : in_space_rooms };
 
             const ICameraSink::Type type = is_camera ? ICameraSink::Type::Camera : ICameraSink::Type::Sink;
             auto new_camera_sink = camera_sink_source(i, camera_sink, type, inferred_rooms, relevant_triggers, shared_from_this());
@@ -1183,11 +1183,20 @@ namespace trview
 
             if (is_camera)
             {
-                _rooms[camera_sink.Room]->add_camera_sink(new_camera_sink);
+                if (auto room = new_camera_sink->room().lock())
+                {
+                    room->add_camera_sink(new_camera_sink);
+                }
             }
             else
             {
-                std::ranges::for_each(inferred_rooms, [&](auto&& r) { _rooms[r]->add_camera_sink(new_camera_sink); });
+                std::ranges::for_each(inferred_rooms, [&](auto&& r)
+                    {
+                        if (auto room = r.lock())
+                        {
+                            room->add_camera_sink(new_camera_sink);
+                        }
+                    });
             }
         }
     }

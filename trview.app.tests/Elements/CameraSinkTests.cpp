@@ -1,4 +1,6 @@
 #include <trview.app/Elements/CameraSink/CameraSink.h>
+#include <trview.app/Mocks/Elements/IRoom.h>
+#include <trview.app/Mocks/Elements/ILevel.h>
 
 using namespace trlevel;
 using namespace trview;
@@ -17,7 +19,7 @@ namespace
             uint32_t number{ 0u };
             ICameraSink::Type type{ ICameraSink::Type::Camera };
             tr_camera camera{};
-            std::vector<uint16_t> inferred_rooms;
+            std::vector<std::weak_ptr<IRoom>> inferred_rooms;
             std::vector<std::weak_ptr<ITrigger>> triggers;
             std::shared_ptr<trview::ILevel> level{ mock_shared<MockLevel>() };
 
@@ -37,6 +39,12 @@ namespace
                 this->type = type;
                 return *this;
             }
+
+            test_module& with_level(std::shared_ptr<trview::ILevel> level)
+            {
+                this->level = level;
+                return *this;
+            }
         };
 
         return test_module{};
@@ -45,6 +53,10 @@ namespace
 
 TEST(CameraSink, Camera)
 {
+    auto room = mock_shared<MockRoom>();
+    auto level = mock_shared<MockLevel>();
+    EXPECT_CALL(*level, room(20)).WillRepeatedly(Return(room));
+
     tr_camera level_camera{};
     level_camera.x = 1024;
     level_camera.y = 2048;
@@ -54,13 +66,14 @@ TEST(CameraSink, Camera)
     auto camera_sink = register_test_module()
         .with_camera_sink(level_camera)
         .with_type(ICameraSink::Type::Camera)
+        .with_level(level)
         .build();
 
     ASSERT_EQ(camera_sink.type(), ICameraSink::Type::Camera);
     ASSERT_EQ(camera_sink.position(), Vector3(1, 2, 3));
     ASSERT_TRUE(camera_sink.persistent());
     ASSERT_EQ(camera_sink.flag(), 101);
-    ASSERT_EQ(camera_sink.room(), 20);
+    ASSERT_EQ(camera_sink.room().lock(), room);
 }
 
 TEST(CameraSink, Sink)

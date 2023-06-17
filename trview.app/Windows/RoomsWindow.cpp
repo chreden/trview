@@ -1002,9 +1002,11 @@ namespace trview
             {
                 if (_selected_room != _current_room)
                 {
-                    select_room(actual_room(*camera_sink_ptr));
+                    const auto actual = actual_room(*camera_sink_ptr).lock();
+                    const uint32_t actual_number = actual ? actual->number() : 0u;
+                    select_room(actual_number);
                     _scroll_to_room = true;
-                    load_room_details(actual_room(*camera_sink_ptr));
+                    load_room_details(actual_number);
                 }
 
                 _local_selected_camera_sink = camera_sink;
