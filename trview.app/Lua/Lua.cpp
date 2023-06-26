@@ -43,6 +43,17 @@ namespace trview
             self->on_print(oss.str());
             return 0;
         }
+
+        constexpr luaL_Reg loadedlibs[] = {
+          {LUA_GNAME, luaopen_base},
+          {LUA_LOADLIBNAME, luaopen_package},
+          {LUA_COLIBNAME, luaopen_coroutine},
+          {LUA_TABLIBNAME, luaopen_table},
+          {LUA_STRLIBNAME, luaopen_string},
+          {LUA_MATHLIBNAME, luaopen_math},
+          {LUA_UTF8LIBNAME, luaopen_utf8},
+          {LUA_DBLIBNAME, luaopen_debug}
+        };
     }
 
     ILua::~ILua()
@@ -53,7 +64,11 @@ namespace trview
         : _route_source(route_source), _waypoint_source(waypoint_source)
     {
         L = luaL_newstate();
-        luaL_openlibs(L);
+        for (const auto& lib : loadedlibs)
+        {
+            luaL_requiref(L, lib.name, lib.func, 1);
+            lua_pop(L, 1);
+        }
     }
 
     Lua::~Lua()
