@@ -41,6 +41,23 @@ namespace trview
                 return 0;
             }
 
+            int route_export(lua_State* L)
+            {
+                auto route = get_self<IRoute>(L);
+
+                if (LUA_TSTRING == lua_getfield(L, 1, "filename"))
+                {
+                    // TODO: Ask the user to confirm the export to the file specified.
+
+                }
+                else
+                {
+                    // TODO: Ask the user for a filename if none was provided.
+
+                }
+                return 0;
+            }
+
             int route_index(lua_State* L)
             {
                 auto route = get_self<IRoute>(L);
@@ -58,6 +75,11 @@ namespace trview
                 else if (key == "clear")
                 {
                     lua_pushcfunction(L, route_clear);
+                    return 1;
+                }
+                else if (key == "export")
+                {
+                    lua_pushcfunction(L, route_export);
                     return 1;
                 }
                 else if (key == "level")
