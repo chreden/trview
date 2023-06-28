@@ -21,5 +21,6 @@ The Route library lets you create and edit routes. Routes need to be bound to a 
 | Name | Returns | Parameters | Description |
 | ---- | ------- | ---------- | ----------- |
 | add | [Waypoint](waypoint.md) | [Waypoint](waypoint.md) | Add the specified waypoint to the end of the route |
-| remove | - | [Waypoint](waypoint.md) | Remove the specified waypoint from the route |
 | clear | - | - | Removes all waypoints in the route |
+| export | - | `[optional] { [optional] string filename, [optional] boolean is_randomizer }` | Export the route. If no parameters table is specified or the `filename` property is not set on the table the user will be prompted to choose a filename. If the `is_randomizer` setting is set to true in the parameters table then the file type will default to Randomizer locations. The option to export Randomizer settings will be available to the user if the Randomizer integration is enabled or if the `is_randomizer` parameter is true. |
+| remove | - | [Waypoint](waypoint.md) | Remove the specified waypoint from the route |
