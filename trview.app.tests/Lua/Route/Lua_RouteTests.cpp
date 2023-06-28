@@ -85,7 +85,7 @@ TEST(Lua_Route, New)
     auto route = mock_shared<MockRoute>();
 
     lua_State* L = luaL_newstate();
-    lua::route_register(L, [=](auto&&...) { return route; });
+    lua::route_register(L, [=](auto&&...) { return route; }, mock_shared<MockDialogs>(), mock_shared<MockFiles>());
 
     ASSERT_EQ(0, luaL_dostring(L, "r = Route.new() return r"));
     ASSERT_EQ(LUA_TUSERDATA, lua_type(L, -1));

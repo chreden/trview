@@ -9,6 +9,9 @@
 #include "../Routing/IRoute.h"
 #include "../Settings/UserSettings.h"
 
+#include <trview.common/Windows/IDialogs.h>
+#include <trview.common/IFiles.h>
+
 namespace trview
 {
     struct IApplication;
@@ -16,7 +19,7 @@ namespace trview
     class Lua final : public ILua
     {
     public:
-        explicit Lua(const IRoute::Source& route_source, const IWaypoint::Source& waypoint_source);
+        explicit Lua(const IRoute::Source& route_source, const IWaypoint::Source& waypoint_source, const std::shared_ptr<IDialogs>& dialogs, const std::shared_ptr<IFiles>& files);
         ~Lua();
         void do_file(const std::string& file) override;
         void execute(const std::string& command) override;
@@ -25,6 +28,8 @@ namespace trview
         lua_State* L{ nullptr };
         IRoute::Source _route_source;
         IWaypoint::Source _waypoint_source;
+        std::shared_ptr<IDialogs> _dialogs;
+        std::shared_ptr<IFiles> _files;
     };
 
     namespace lua

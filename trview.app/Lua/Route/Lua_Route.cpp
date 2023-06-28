@@ -5,6 +5,7 @@
 #include "../Elements/Trigger/Lua_Trigger.h"
 #include "../Elements/Room/Lua_Room.h"
 #include "../Elements/Level/Lua_Level.h"
+#include "../../Elements/ILevel.h"
 #include "Lua_Waypoint.h"
 #include "../Vector3.h"
 #include "../../Elements/ITrigger.h"
@@ -20,6 +21,9 @@ namespace trview
         {
             std::unordered_map<IRoute**, std::shared_ptr<IRoute>> routes;
             IRoute::Source route_source;
+            std::shared_ptr<IDialogs> dialogs;
+            std::shared_ptr<IFiles> files;
+            UserSettings user_settings;
 
             int route_add(lua_State* L)
             {
@@ -45,15 +49,50 @@ namespace trview
             {
                 auto route = get_self<IRoute>(L);
 
-                if (LUA_TSTRING == lua_getfield(L, 1, "filename"))
-                {
-                    // TODO: Ask the user to confirm the export to the file specified.
+                bool is_rando = false;
+                std::string filename;
 
+                if (lua_type(L, 1) == LUA_TTABLE)
+                {
+                    if (LUA_TBOOLEAN == lua_getfield(L, 2, "is_randomizer"))
+                    {
+                        is_rando = lua_toboolean(L, -1);
+                    }
+
+                    if (LUA_TSTRING == lua_getfield(L, 2, "filename"))
+                    {
+                        filename = lua_tostring(L, -1);
+                    }
+                }
+
+                std::string level_filename;
+                if (auto level = route->level().lock())
+                {
+                    level_filename = level->filename();
+                }
+
+                if (!filename.empty())
+                {
+                    if (dialogs->message_box(
+                        to_utf16(std::format("Allow script to export route to {}?", filename)),
+                        L"Route export",
+                        IDialogs::Buttons::Yes_No))
+                    {
+                        export_route(*route, files, filename, level_filename, user_settings.randomizer, is_rando);
+                    }
                 }
                 else
                 {
-                    // TODO: Ask the user for a filename if none was provided.
+                    std::vector<IDialogs::FileFilter> filters{ { L"trview route", { L"*.tvr" } } };
+                    if (user_settings.randomizer_tools || is_rando)
+                    {
+                        filters.push_back({ L"Randomizer Locations", { L"*.json" } });
+                    }
 
+                    if (const auto result = dialogs->save_file(L"Select location for route export", filters, is_rando ? 2 : 1))
+                    {
+                        export_route(*route, files, result.value().filename, level_filename, user_settings.randomizer, is_rando);
+                    }
                 }
                 return 0;
             }
@@ -197,14 +236,21 @@ namespace trview
             return found->second;
         }
 
-        void route_register(lua_State* L, const IRoute::Source& source)
+        void route_register(lua_State* L, const IRoute::Source& source, const std::shared_ptr<IDialogs>& dialogs_, const std::shared_ptr<IFiles>& files_)
         {
             route_source = source;
+            dialogs = dialogs_;
+            files = files_;
 
             lua_newtable(L);
             lua_pushcfunction(L, route_new);
             lua_setfield(L, -2, "new");
             lua_setglobal(L, "Route");
+        }
+
+        void route_set_settings(const UserSettings& new_settings)
+        {
+            user_settings = new_settings;
         }
     }
 }

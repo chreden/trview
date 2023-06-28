@@ -131,7 +131,9 @@ namespace trview
 
         void trview_register(lua_State* L, IApplication* application,
             const IRoute::Source& route_source,
-            const IWaypoint::Source& waypoint_source)
+            const IWaypoint::Source& waypoint_source,
+            const std::shared_ptr<IDialogs>& dialogs,
+            const std::shared_ptr<IFiles>& files)
         {
             IApplication** userdata = static_cast<IApplication**>(lua_newuserdata(L, sizeof(application)));
             *userdata = application;
@@ -145,7 +147,7 @@ namespace trview
             lua_setglobal(L, "trview");
 
             sector_register(L);
-            route_register(L, route_source);
+            route_register(L, route_source, dialogs, files);
             waypoint_register(L, waypoint_source);
             colour_register(L);
             vector3_register(L);
@@ -154,6 +156,7 @@ namespace trview
         void set_settings(const UserSettings& settings)
         {
             waypoint_set_settings(settings);
+            route_set_settings(settings);
         }
     }
 }
