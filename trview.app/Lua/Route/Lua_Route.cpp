@@ -97,6 +97,54 @@ namespace trview
                 return 0;
             }
 
+            int route_import(lua_State* L)
+            {
+                std::string filename;
+                bool is_rando = false;
+                std::shared_ptr<ILevel> level;
+
+                if (LUA_TTABLE == lua_type(L, 1))
+                {
+                    if (LUA_TBOOLEAN == lua_getfield(L, 1, "is_randomizer"))
+                    {
+                        is_rando = lua_toboolean(L, -1);
+                    }
+
+                    if (LUA_TSTRING == lua_getfield(L, 1, "filename"))
+                    {
+                        filename = lua_tostring(L, -1);
+                    }
+
+                    if (LUA_TUSERDATA == lua_getfield(L, 1, "level"))
+                    {
+                        level = to_level(L, -1);
+                    }
+                }
+
+                if (filename.empty())
+                {
+                    std::vector<IDialogs::FileFilter> filters{ { L"trview route", { L"*.tvr" } } };
+                    if (user_settings.randomizer_tools || is_rando)
+                    {
+                        filters.push_back({ L"Randomizer Locations", { L"*.json" } });
+                    }
+                    if (auto result = dialogs->open_file(L"Select route to import", filters, OFN_FILEMUSTEXIST))
+                    {
+                        auto route = import_route(
+                            route_source,
+                            files,
+                            result.value().filename,
+                            level.get(),
+                            user_settings.randomizer,
+                            result->filter_index == 2);
+                        return create_route(L, route);
+                    }
+                }
+
+                auto route = import_route(route_source, files, filename, level.get(), user_settings.randomizer, is_rando);
+                return create_route(L, route);
+            }
+
             int route_index(lua_State* L)
             {
                 auto route = get_self<IRoute>(L);
@@ -243,6 +291,8 @@ namespace trview
             files = files_;
 
             lua_newtable(L);
+            lua_pushcfunction(L, route_import);
+            lua_setfield(L, -2, "import");
             lua_pushcfunction(L, route_new);
             lua_setfield(L, -2, "new");
             lua_setglobal(L, "Route");
