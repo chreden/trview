@@ -15,6 +15,7 @@ The Route library lets you create and edit routes. Routes need to be bound to a 
 | Name | Returns | Parameters | Description |
 | ---- | ------- | ---------- | ----------- |
 | new | Route | - | Creates a new route |
+| import | Route | [optional] { [optional] string filename, [optional] boolean is_randomizer, [Level](level.md) level } | Imports a route. If no paramters are supplied or the `filename` property is empty the user will be prompted to choose a file to import. If `is_randomizer` is true then the import will default to Randomizer json files. The `level` parameter is required as the user may attempt to load a Randomizer json which will use the level to adjust some coordinates. If the filename is provided the user will only be prompted if they wish to allow the import. |
 
 # Functions
 
