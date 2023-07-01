@@ -84,6 +84,7 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     </ClCompile>
     <ClCompile Include="Plugins\Plugin.cpp" />
     <ClCompile Include="Plugins\Plugins.cpp" />
+    <ClCompile Include="Routing\RandomizerRoute.cpp" />
     <ClCompile Include="trview_imgui.cpp" />
     <ClCompile Include="Lua\Lua.cpp" />
     <ClCompile Include="Menus\AlternateGroupToggler.cpp" />
@@ -140,6 +141,8 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClInclude Include="Plugins\IPlugins.h" />
     <ClInclude Include="Plugins\Plugin.h" />
     <ClInclude Include="Plugins\Plugins.h" />
+    <ClInclude Include="Routing\IRandomizerRoute.h" />
+    <ClInclude Include="Routing\RandomizerRoute.h" />
     <ClInclude Include="Tools\IToolbar.h" />
     <ClInclude Include="Type.inl">
       <FileType>Document</FileType>

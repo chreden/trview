@@ -10,6 +10,7 @@
 #include <trview.app/Menus/IUpdateChecker.h>
 #include <trview.app/Menus/ViewMenu.h>
 #include <trview.app/Routing/Route.h>
+#include "Routing/IRandomizerRoute.h"
 #include <trview.app/Settings/ISettingsLoader.h>
 #include <trview.app/Settings/IStartupOptions.h>
 #include <trview.app/Windows/IItemsWindowManager.h>
@@ -73,7 +74,8 @@ namespace trview
             std::unique_ptr<ICameraSinkWindowManager> camera_sink_window_manager,
             std::unique_ptr<IConsoleManager> console_manager,
             std::shared_ptr<IPlugins> plugins,
-            std::unique_ptr<IPluginsWindowManager> plugins_window_manager);
+            std::unique_ptr<IPluginsWindowManager> plugins_window_manager,
+            const IRandomizerRoute::Source& randomizer_route_source);
         virtual ~Application();
         /// Attempt to open the specified level file.
         /// @param filename The level file to open.
@@ -170,6 +172,8 @@ namespace trview
         std::unique_ptr<IConsoleManager> _console_manager;
         std::shared_ptr<IPlugins> _plugins;
         std::unique_ptr<IPluginsWindowManager> _plugins_windows;
+
+        IRandomizerRoute::Source _randomizer_route_source;
     };
 
     std::unique_ptr<IApplication> create_application(HINSTANCE hInstance, int command_show, const std::wstring& command_line);

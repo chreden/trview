@@ -61,21 +61,6 @@ namespace trview
             }
             return Vector3(result[0], result[1], result[2]);
         }
-
-        nlohmann::ordered_json& find_element_case_insensitive(nlohmann::ordered_json& json, const std::string& target_key)
-        {
-            for (auto it = json.begin(); it != json.end(); ++it)
-            {
-                const auto& key = it.key();
-                if (key.size() == target_key.size() &&
-                    std::equal(key.begin(), key.end(), target_key.begin(),
-                        [](const auto& l, const auto& r) { return std::toupper(l) == std::toupper(r); }))
-                {
-                    return *it;
-                }
-            }
-            throw std::exception();
-        }
     }
 
     IRoute::~IRoute()
@@ -421,52 +406,6 @@ namespace trview
         return {};
     }
 
-    std::shared_ptr<IRoute> import_rando_route(const IRoute::Source& route_source, const std::vector<uint8_t>& data, const ILevel* const level, const RandomizerSettings& randomizer_settings)
-    {
-        if (!level)
-        {
-            return nullptr;
-        }
-
-        auto json = nlohmann::ordered_json::parse(data.begin(), data.end());
-        auto route = route_source();
-
-        const auto level_filename = level->filename();
-        auto trimmed = level_filename.substr(level_filename.find_last_of("/\\") + 1);
-        for (const auto& location : find_element_case_insensitive(json, trimmed))
-        {
-            int x = location["X"];
-            int y = location["Y"];
-            int z = location["Z"];
-            uint32_t room_number = location["Room"];
-
-            // If the room space attribute is true then the coordinate must be transformed.
-            if (read_attribute<bool>(location, "IsInRoomSpace", false))
-            {
-                if (room_number >= level->number_of_rooms())
-                {
-                    // Abandon adding this waypoint.
-                    continue;
-                }
-
-                // Adjust coordinates by room position.
-                auto room = level->room(room_number).lock();
-                x += room->info().x;
-                z += room->info().z;
-                y = room->info().yBottom - y;
-            }
-
-            route->add(Vector3(static_cast<float>(x), static_cast<float>(y), static_cast<float>(z)) / 1024.0f, Vector3::Down, room_number, IWaypoint::Type::Position, 0);
-            if (auto new_waypoint = route->waypoint(route->waypoints() - 1).lock())
-            {
-                new_waypoint->set_randomizer_settings(import_randomizer_settings(location, randomizer_settings));
-            }
-        }
-
-        route->set_unsaved(false);
-        return route;
-    }
-
     std::shared_ptr<IRoute> import_trview_route(const IRoute::Source& route_source, const std::vector<uint8_t>& data, const RandomizerSettings& randomizer_settings)
     {
         auto json = nlohmann::json::parse(data.begin(), data.end());
@@ -507,7 +446,7 @@ namespace trview
         return route;
     }
 
-    std::shared_ptr<IRoute> import_route(const IRoute::Source& route_source, const std::shared_ptr<IFiles>& files, const std::string& route_filename, const ILevel* const level, const RandomizerSettings& randomizer_settings, bool rando_import)
+    std::shared_ptr<IRoute> import_route(const IRoute::Source& route_source, const std::shared_ptr<IFiles>& files, const std::string& route_filename, const RandomizerSettings& randomizer_settings)
     {
         try
         {
@@ -517,11 +456,6 @@ namespace trview
                 return nullptr;
             }
 
-            if (rando_import)
-            {
-                return import_rando_route(route_source, data.value(), level, randomizer_settings);
-            }
-            
             return import_trview_route(route_source, data.value(), randomizer_settings);
         }
         catch (std::exception& e)

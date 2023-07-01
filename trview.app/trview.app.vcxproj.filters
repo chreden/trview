@@ -317,6 +317,9 @@
     <ClCompile Include="Lua\Route\Lua_Waypoint.cpp">
       <Filter>Lua\Route</Filter>
     </ClCompile>
+    <ClCompile Include="Routing\RandomizerRoute.cpp">
+      <Filter>Routing</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera\Camera.h">
@@ -1020,6 +1023,12 @@
     </ClInclude>
     <ClInclude Include="Lua\Route\Lua_Waypoint.h">
       <Filter>Lua\Route</Filter>
+    </ClInclude>
+    <ClInclude Include="Routing\RandomizerRoute.h">
+      <Filter>Routing</Filter>
+    </ClInclude>
+    <ClInclude Include="Routing\IRandomizerRoute.h">
+      <Filter>Routing</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

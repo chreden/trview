@@ -8,6 +8,7 @@
 
 #include "../../Elements/ILevel.h"
 #include "../../Routing/IRoute.h"
+#include "../../Routing/IRandomizerRoute.h"
 #include "../../Settings/UserSettings.h"
 
 namespace trview
@@ -19,6 +20,7 @@ namespace trview
         void trview_register(lua_State* L,
             IApplication* application,
             const IRoute::Source& route_source,
+            const IRandomizerRoute::Source& randomizer_route_source,
             const IWaypoint::Source& waypoint_source,
             const std::shared_ptr<IDialogs>& dialogs,
             const std::shared_ptr<IFiles>& files);

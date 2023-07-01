@@ -61,7 +61,4 @@ namespace trview
         bool _randomizer_enabled{ false };
         std::weak_ptr<ILevel> _level;
     };
-
-    std::shared_ptr<IRoute> import_route(const IRoute::Source& route_source, const std::shared_ptr<IFiles>& files, const std::string& route_filename, const ILevel* const level, const RandomizerSettings& randomizer_settings, bool rando_import);
-    void export_route(const IRoute& route, std::shared_ptr<IFiles>& files, const std::string& route_filename, const std::string& level_filename, const RandomizerSettings& randomizer_settings, bool rando_export);
 }

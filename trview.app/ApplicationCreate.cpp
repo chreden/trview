@@ -38,6 +38,7 @@
 #include "Menus/FileMenu.h"
 #include "Menus/UpdateChecker.h"
 #include "Routing/Waypoint.h"
+#include "Routing/RandomizerRoute.h"
 #include "Settings/SettingsLoader.h"
 #include "Settings/StartupOptions.h"
 #include "UI/CameraControls.h"
@@ -189,6 +190,13 @@ namespace trview
                 waypoint_source, settings_loader->load_user_settings());
         };
 
+        auto randomizer_route_source = [=]()
+        {
+            return std::make_shared<RandomizerRoute>(
+                route_source(),
+                waypoint_source);
+        };
+
         auto entity_source = [=](auto&& level, auto&& entity, auto&& index, auto&& triggers, auto&& mesh_storage, auto&& owning_level, auto&& room)
         {
             return std::make_shared<Item>(mesh_source, level, entity, mesh_storage, owning_level, index,
@@ -252,10 +260,10 @@ namespace trview
         auto dialogs = std::make_shared<Dialogs>(window);
         auto shell = std::make_shared<Shell>();
 
-        auto plugin_source = [=](auto&&... args) { return std::make_shared<Plugin>(files, std::make_unique<Lua>(route_source, waypoint_source, dialogs, files), args...); };
+        auto plugin_source = [=](auto&&... args) { return std::make_shared<Plugin>(files, std::make_unique<Lua>(route_source, randomizer_route_source, waypoint_source, dialogs, files), args...); };
         auto plugins = std::make_shared<Plugins>(
             files,
-            std::make_shared<Plugin>(std::make_unique<Lua>(route_source, waypoint_source, dialogs, files), "Default", "trview", "Default Lua plugin for trview"),
+            std::make_shared<Plugin>(std::make_unique<Lua>(route_source, randomizer_route_source, waypoint_source, dialogs, files), "Default", "trview", "Default Lua plugin for trview"),
             plugin_source,
             settings_loader->load_user_settings());
         auto plugins_window_source = [=]() { return std::make_shared<PluginsWindow>(plugins, shell); };
@@ -328,6 +336,7 @@ namespace trview
             std::make_unique<CameraSinkWindowManager>(window, shortcuts, camera_sink_window_source),
             std::make_unique<ConsoleManager>(window, shortcuts, console_source, files),
             plugins,
-            std::make_unique<PluginsWindowManager>(window, shortcuts, plugins_window_source));
+            std::make_unique<PluginsWindowManager>(window, shortcuts, plugins_window_source),
+            randomizer_route_source);
     }
 }

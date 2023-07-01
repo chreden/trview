@@ -4,6 +4,8 @@
 #include <trview.app/Routing/IWaypoint.h>
 #include <trview.app/Geometry/PickResult.h>
 #include <trview.common/Event.h>
+#include <trview.common/IFiles.h>
+#include "../Settings/RandomizerSettings.h"
 
 namespace trview
 {
@@ -159,4 +161,8 @@ namespace trview
         /// <returns>The number of waypoints in the route.</returns>
         virtual uint32_t waypoints() const = 0;
     };
+
+    std::shared_ptr<IRoute> import_route(const IRoute::Source& route_source, const std::shared_ptr<IFiles>& files, const std::string& route_filename, const RandomizerSettings& randomizer_settings);
+    IWaypoint::WaypointRandomizerSettings import_randomizer_settings(const nlohmann::json& json, const RandomizerSettings& randomizer_settings);
+    void export_route(const IRoute& route, std::shared_ptr<IFiles>& files, const std::string& route_filename, const std::string& level_filename, const RandomizerSettings& randomizer_settings, bool rando_export);
 }

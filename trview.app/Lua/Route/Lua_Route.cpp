@@ -1,6 +1,7 @@
 #include "Lua_Route.h"
 #include "../Lua.h"
-#include "../../Routing/Route.h"
+#include "../../Routing/IRoute.h"
+#include "../../Routing/IRandomizerRoute.h"
 #include "../Elements/Item/Lua_Item.h"
 #include "../Elements/Trigger/Lua_Trigger.h"
 #include "../Elements/Room/Lua_Room.h"
@@ -21,6 +22,7 @@ namespace trview
         {
             std::unordered_map<IRoute**, std::shared_ptr<IRoute>> routes;
             IRoute::Source route_source;
+            IRandomizerRoute::Source randomizer_route_source;
             std::shared_ptr<IDialogs> dialogs;
             std::shared_ptr<IFiles> files;
             UserSettings user_settings;
@@ -130,18 +132,23 @@ namespace trview
                     }
                     if (auto result = dialogs->open_file(L"Select route to import", filters, OFN_FILEMUSTEXIST))
                     {
-                        auto route = import_route(
-                            route_source,
-                            files,
-                            result.value().filename,
-                            level.get(),
-                            user_settings.randomizer,
-                            result->filter_index == 2);
-                        return create_route(L, route);
+                        is_rando = result->filter_index == 2;
+                        filename = result->filename;
+                    }
+                    else
+                    {
+                        lua_pushnil(L);
+                        return 1;
                     }
                 }
 
-                auto route = import_route(route_source, files, filename, level.get(), user_settings.randomizer, is_rando);
+                auto route = is_rando ?
+                    import_randomizer_route(randomizer_route_source, files, filename, user_settings.randomizer) :
+                    import_route(route_source, files, filename, user_settings.randomizer);
+                if (route)
+                {
+                    route->set_level(level);
+                }
                 return create_route(L, route);
             }
 
@@ -284,9 +291,10 @@ namespace trview
             return found->second;
         }
 
-        void route_register(lua_State* L, const IRoute::Source& source, const std::shared_ptr<IDialogs>& dialogs_, const std::shared_ptr<IFiles>& files_)
+        void route_register(lua_State* L, const IRoute::Source& source, const IRandomizerRoute::Source& randomizer_source, const std::shared_ptr<IDialogs>& dialogs_, const std::shared_ptr<IFiles>& files_)
         {
             route_source = source;
+            randomizer_route_source = randomizer_source;
             dialogs = dialogs_;
             files = files_;
 

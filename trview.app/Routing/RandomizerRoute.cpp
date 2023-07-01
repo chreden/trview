@@ -1,0 +1,229 @@
+#include "RandomizerRoute.h"
+#include "../Elements/ILevel.h"
+
+using namespace DirectX;
+using namespace DirectX::SimpleMath;
+
+namespace trview
+{
+    namespace
+    {
+        nlohmann::ordered_json& find_element_case_insensitive(nlohmann::ordered_json& json, const std::string& target_key)
+        {
+            for (auto it = json.begin(); it != json.end(); ++it)
+            {
+                const auto& key = it.key();
+                if (key.size() == target_key.size() &&
+                    std::equal(key.begin(), key.end(), target_key.begin(),
+                        [](const auto& l, const auto& r) { return std::toupper(l) == std::toupper(r); }))
+                {
+                    return *it;
+                }
+            }
+            throw std::exception();
+        }
+
+        std::shared_ptr<IRandomizerRoute> import_rando_route(const IRandomizerRoute::Source& route_source, const std::vector<uint8_t>& data, const RandomizerSettings& randomizer_settings)
+        {
+            auto json = nlohmann::ordered_json::parse(data.begin(), data.end());
+            auto route = route_source();
+
+            for (const auto& level : json.items())
+            {
+                for (const auto& location : level.value())
+                {
+                    int x = location["X"];
+                    int y = location["Y"];
+                    int z = location["Z"];
+                    uint32_t room_number = location["Room"];
+
+                    route->add(level.key(), Vector3(static_cast<float>(x), static_cast<float>(y), static_cast<float>(z)) / 1024.0f, Vector3::Down, room_number);
+                    if (auto new_waypoint = route->waypoint(route->waypoints() - 1).lock())
+                    {
+                        new_waypoint->set_randomizer_settings(import_randomizer_settings(location, randomizer_settings));
+                    }
+                }
+            }
+
+            route->set_unsaved(false);
+            return route;
+        }
+    }
+
+    IRandomizerRoute::~IRandomizerRoute()
+    {
+    }
+
+    RandomizerRoute::RandomizerRoute(const std::shared_ptr<IRoute>& inner_route, const IWaypoint::Source& waypoint_source)
+        : _route(inner_route), _waypoint_source(waypoint_source)
+    {
+    }
+
+    std::shared_ptr<IWaypoint> RandomizerRoute::add(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& normal, uint32_t room)
+    {
+        return _route->add(position, normal, room);
+    }
+
+    std::shared_ptr<IWaypoint> RandomizerRoute::add(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& normal, uint32_t room, IWaypoint::Type type, uint32_t type_index)
+    {
+        return _route->add(position, normal, room, type, type_index);
+    }
+
+    std::shared_ptr<IWaypoint> RandomizerRoute::add(const std::shared_ptr<IWaypoint>& waypoint)
+    {
+        return _route->add(waypoint);
+    }
+
+    std::shared_ptr<IWaypoint> RandomizerRoute::add(const std::string& level_name, const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& normal, uint32_t room_number)
+    {
+        auto waypoint = _waypoint_source(position, normal, room_number, IWaypoint::Type::Position, 0, _route->colour(), _route->waypoint_colour());
+        _waypoints[level_name].push_back(waypoint);
+        return waypoint;
+    }
+
+    void RandomizerRoute::clear()
+    {
+        return _route->clear();
+    }
+
+    Colour RandomizerRoute::colour() const
+    {
+        return _route->colour();
+    }
+
+    void RandomizerRoute::insert(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& normal, uint32_t room, uint32_t index)
+    {
+        return _route->insert(position, normal, room, index);
+    }
+
+    uint32_t RandomizerRoute::insert(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& normal, uint32_t room)
+    {
+        return _route->insert(position, normal, room);
+    }
+
+    void RandomizerRoute::insert(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& normal, uint32_t room, uint32_t index, IWaypoint::Type type, uint32_t type_index)
+    {
+        return _route->insert(position, normal, room, index, type, type_index);
+    }
+
+    uint32_t RandomizerRoute::insert(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& normal, uint32_t room, IWaypoint::Type type, uint32_t type_index)
+    {
+        return _route->insert(position, normal, room, type, type_index);
+    }
+
+    bool RandomizerRoute::is_unsaved() const
+    {
+        return _route->is_unsaved();
+    }
+
+    std::weak_ptr<ILevel> RandomizerRoute::level() const
+    {
+        return _route->level();
+    }
+
+    void RandomizerRoute::move(int32_t from, int32_t to)
+    {
+        return _route->move(from, to);
+    }
+
+    PickResult RandomizerRoute::pick(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& direction) const
+    {
+        return _route->pick(position, direction);
+    }
+
+    void RandomizerRoute::remove(uint32_t index)
+    {
+        return _route->remove(index);
+    }
+
+    void RandomizerRoute::remove(const std::shared_ptr<IWaypoint>& waypoint)
+    {
+        return _route->remove(waypoint);
+    }
+
+    void RandomizerRoute::render(const ICamera& camera, const ILevelTextureStorage& texture_storage, bool show_selection)
+    {
+        return _route->render(camera, texture_storage, show_selection);
+    }
+
+    uint32_t RandomizerRoute::selected_waypoint() const
+    {
+        return _route->selected_waypoint();
+    }
+
+    void RandomizerRoute::select_waypoint(uint32_t index)
+    {
+        return _route->select_waypoint(index);
+    }
+
+    void RandomizerRoute::set_colour(const Colour& colour)
+    {
+        return _route->set_colour(colour);
+    }
+
+    void RandomizerRoute::set_level(const std::weak_ptr<ILevel>& level)
+    {
+        _route->clear();
+        if (auto new_level = level.lock())
+        {
+            const auto filename = new_level->filename();
+            const auto trimmed = filename.substr(filename.find_last_of("/\\") + 1);
+            const auto found = _waypoints.find(trimmed);
+            if (found != _waypoints.end())
+            {
+                std::ranges::for_each(found->second, [this](auto&& w) { _route->add(w); });
+            }
+            _route->set_unsaved(false);
+        }
+        return _route->set_level(level);
+    }
+
+    void RandomizerRoute::set_randomizer_enabled(bool enabled)
+    {
+        return _route->set_randomizer_enabled(enabled);
+    }
+
+    void RandomizerRoute::set_waypoint_colour(const Colour& colour)
+    {
+        return _route->set_waypoint_colour(colour);
+    }
+
+    void RandomizerRoute::set_unsaved(bool value)
+    {
+        return _route->set_unsaved(value);
+    }
+
+    Colour RandomizerRoute::waypoint_colour() const
+    {
+        return _route->waypoint_colour();
+    }
+
+    std::weak_ptr<IWaypoint> RandomizerRoute::waypoint(uint32_t index) const
+    {
+        return _route->waypoint(index);
+    }
+
+    uint32_t RandomizerRoute::waypoints() const
+    {
+        return _route->waypoints();
+    }
+
+    std::shared_ptr<IRoute> import_randomizer_route(const IRandomizerRoute::Source& route_source, const std::shared_ptr<IFiles>& files, const std::string& route_filename, const RandomizerSettings& randomizer_settings)
+    {
+        try
+        {
+            auto data = files->load_file(route_filename);
+            if (!data.has_value())
+            {
+                return nullptr;
+            }
+
+            return import_rando_route(route_source, data.value(), randomizer_settings);
+        }
+        catch (std::exception& e)
+        {
+            MessageBoxA(0, e.what(), "Error", MB_OK);
+            return nullptr;
+        }
+    }
+}

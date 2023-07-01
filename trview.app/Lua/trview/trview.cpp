@@ -131,6 +131,7 @@ namespace trview
 
         void trview_register(lua_State* L, IApplication* application,
             const IRoute::Source& route_source,
+            const IRandomizerRoute::Source& randomizer_route_source,
             const IWaypoint::Source& waypoint_source,
             const std::shared_ptr<IDialogs>& dialogs,
             const std::shared_ptr<IFiles>& files)
@@ -147,7 +148,7 @@ namespace trview
             lua_setglobal(L, "trview");
 
             sector_register(L);
-            route_register(L, route_source, dialogs, files);
+            route_register(L, route_source, randomizer_route_source, dialogs, files);
             waypoint_register(L, waypoint_source);
             colour_register(L);
             vector3_register(L);
