@@ -51,6 +51,7 @@ namespace trview
         void render_waypoint_list();
         void render_waypoint_details();
         bool render_route_window();
+        void render_menu_bar();
         std::string waypoint_text(const IWaypoint& waypoint) const;
 
         IRoute* _route{ nullptr };

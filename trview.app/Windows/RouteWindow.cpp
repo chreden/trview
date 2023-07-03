@@ -33,67 +33,6 @@ namespace trview
 
         if (ImGui::BeginChild(Names::waypoint_list_panel.c_str(), ImVec2(150, 0), true))
         {
-            if (ImGui::Button("Settings"))
-            {
-                if (!_show_settings)
-                {
-                    ImGui::OpenPopup("SettingsPopup");
-                }
-                _show_settings = !_show_settings;
-            }
-
-            if (_show_settings && ImGui::BeginPopup("SettingsPopup"))
-            {
-                auto colour = _route ? _route->colour() : Colour::Green;
-                if (ImGui::ColorEdit3("Route##colour", &colour.r, ImGuiColorEditFlags_NoInputs))
-                {
-                    on_colour_changed(colour);
-                }
-                auto waypoint_colour = _route ? _route->waypoint_colour() : Colour::White;
-                if (ImGui::ColorEdit3("Waypoint##colour", &waypoint_colour.r, ImGuiColorEditFlags_NoInputs))
-                {
-                    on_waypoint_colour_changed(waypoint_colour);
-                }
-                ImGui::EndPopup();
-            }
-            else
-            {
-                _show_settings = false;
-            }
-
-            ImGui::SameLine();
-            if (ImGui::Button(Names::import_button.c_str()))
-            {
-                std::vector<IDialogs::FileFilter> filters{ { L"trview route", { L"*.tvr" } } };
-                if (_randomizer_enabled)
-                {
-                    filters.push_back({ L"Randomizer Locations", { L"*.json" } });
-                }
-
-                const auto filename = _dialogs->open_file(L"Import route", filters, OFN_FILEMUSTEXIST);
-                if (filename.has_value())
-                {
-                    on_route_import(filename.value().filename, filename.value().filter_index == 2);
-                }
-            }
-            ImGui::SameLine();
-            if (ImGui::Button(Names::export_button.c_str()))
-            {
-                std::vector<IDialogs::FileFilter> filters{ { L"trview route", { L"*.tvr" } } };
-                uint32_t filter_index = 1;
-                if (_randomizer_enabled)
-                {
-                    filters.push_back({ L"Randomizer Locations", { L"*.json" } });
-                    filter_index = 2;
-                }
-
-                const auto filename = _dialogs->save_file(L"Export route", filters, filter_index);
-                if (filename.has_value())
-                {
-                    on_route_export(filename.value().filename, filename.value().filter_index == 2);
-                }
-            }
-
             std::optional<uint32_t> move_from;
             std::optional<uint32_t> move_to;
 
@@ -328,8 +267,9 @@ namespace trview
     {
         bool stay_open = true;
         ImGui::PushStyleVar(ImGuiStyleVar_WindowMinSize, ImVec2(420, 500));
-        if (ImGui::Begin("Route", &stay_open))
+        if (ImGui::Begin("Route", &stay_open, ImGuiWindowFlags_MenuBar))
         {
+            render_menu_bar();
             render_waypoint_list();
             ImGui::SameLine();
             render_waypoint_details();
@@ -524,5 +464,87 @@ namespace trview
             }
         }
         return waypoint_type_to_string(waypoint.type());
+    }
+
+    void RouteWindow::render_menu_bar()
+    {
+        if (ImGui::BeginMenuBar())
+        {
+            if (ImGui::BeginMenu("File"))
+            {
+                if (ImGui::MenuItem("Open"))
+                {
+                    std::vector<IDialogs::FileFilter> filters{ { L"trview route", { L"*.tvr" } } };
+                    if (_randomizer_enabled)
+                    {
+                        filters.push_back({ L"Randomizer Locations", { L"*.json" } });
+                    }
+
+                    const auto filename = _dialogs->open_file(L"Import route", filters, OFN_FILEMUSTEXIST);
+                    if (filename.has_value())
+                    {
+                        on_route_import(filename.value().filename, filename.value().filter_index == 2);
+                    }
+                }
+
+                if (ImGui::MenuItem("Reload"))
+                {
+                    // TODO: Reload event
+                }
+
+                if (ImGui::MenuItem("Save"))
+                {
+                    // TODO: Save event
+                }
+
+                if (ImGui::MenuItem("Save As"))
+                {
+                    std::vector<IDialogs::FileFilter> filters{ { L"trview route", { L"*.tvr" } } };
+                    uint32_t filter_index = 1;
+                    if (_randomizer_enabled)
+                    {
+                        filters.push_back({ L"Randomizer Locations", { L"*.json" } });
+                        filter_index = 2;
+                    }
+
+                    const auto filename = _dialogs->save_file(L"Export route", filters, filter_index);
+                    if (filename.has_value())
+                    {
+                        on_route_export(filename.value().filename, filename.value().filter_index == 2);
+                    }
+                }
+                ImGui::EndMenu();
+            }
+
+            if (ImGui::MenuItem("Settings"))
+            {
+                if (!_show_settings)
+                {
+                    ImGui::OpenPopup("SettingsPopup");
+                }
+                _show_settings = !_show_settings;
+            }
+
+            if (_show_settings && ImGui::BeginPopup("SettingsPopup"))
+            {
+                auto colour = _route ? _route->colour() : Colour::Green;
+                if (ImGui::ColorEdit3("Route##colour", &colour.r, ImGuiColorEditFlags_NoInputs))
+                {
+                    on_colour_changed(colour);
+                }
+                auto waypoint_colour = _route ? _route->waypoint_colour() : Colour::White;
+                if (ImGui::ColorEdit3("Waypoint##colour", &waypoint_colour.r, ImGuiColorEditFlags_NoInputs))
+                {
+                    on_waypoint_colour_changed(waypoint_colour);
+                }
+                ImGui::EndPopup();
+            }
+            else
+            {
+                _show_settings = false;
+            }
+
+            ImGui::EndMenuBar();
+        }
     }
 }
