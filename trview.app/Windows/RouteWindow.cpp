@@ -185,53 +185,56 @@ namespace trview
                         ImGui::EndPopup();
                     }
 
-                    const std::string save_text = waypoint->has_save() ? "SAVEGAME.0" : Names::attach_save.c_str();
-                    if (ImGui::Button(save_text.c_str(), ImVec2(-24, 18)))
+                    if (!_randomizer_enabled)
                     {
-                        if (!waypoint->has_save())
+                        const std::string save_text = waypoint->has_save() ? "SAVEGAME.0" : Names::attach_save.c_str();
+                        if (ImGui::Button(save_text.c_str(), ImVec2(-24, 18)))
                         {
-                            const auto filename = _dialogs->open_file(L"Select Save", { { L"Savegame File", { L"*.*" } } }, OFN_FILEMUSTEXIST);
-                            if (filename.has_value())
+                            if (!waypoint->has_save())
                             {
-                                // Load bytes from file.
-                                try
+                                const auto filename = _dialogs->open_file(L"Select Save", { { L"Savegame File", { L"*.*" } } }, OFN_FILEMUSTEXIST);
+                                if (filename.has_value())
                                 {
-                                    const auto bytes = _files->load_file(filename.value().filename);
-                                    if (bytes.has_value() && !bytes.value().empty())
+                                    // Load bytes from file.
+                                    try
                                     {
-                                        waypoint->set_save_file(bytes.value());
-                                        route->set_unsaved(true);
+                                        const auto bytes = _files->load_file(filename.value().filename);
+                                        if (bytes.has_value() && !bytes.value().empty())
+                                        {
+                                            waypoint->set_save_file(bytes.value());
+                                            route->set_unsaved(true);
+                                        }
+                                    }
+                                    catch (...)
+                                    {
+                                        _dialogs->message_box(L"Failed to attach save", L"Error", IDialogs::Buttons::OK);
                                     }
                                 }
-                                catch (...)
-                                {
-                                    _dialogs->message_box(L"Failed to attach save", L"Error", IDialogs::Buttons::OK);
-                                }
                             }
-                        }
-                        else
-                        {
-                            const auto filename = _dialogs->save_file(L"Export Save", { { L"Savegame File", { L"*.*" } } }, 1);
-                            if (filename.has_value())
+                            else
                             {
-                                try
+                                const auto filename = _dialogs->save_file(L"Export Save", { { L"Savegame File", { L"*.*" } } }, 1);
+                                if (filename.has_value())
                                 {
-                                    _files->save_file(filename.value().filename, waypoint->save_file());
-                                }
-                                catch (...)
-                                {
-                                    _dialogs->message_box(L"Failed to export save", L"Error", IDialogs::Buttons::OK);
+                                    try
+                                    {
+                                        _files->save_file(filename.value().filename, waypoint->save_file());
+                                    }
+                                    catch (...)
+                                    {
+                                        _dialogs->message_box(L"Failed to export save", L"Error", IDialogs::Buttons::OK);
+                                    }
                                 }
                             }
                         }
-                    }
-                    ImGui::SameLine();
-                    if (ImGui::Button(Names::clear_save.c_str(), ImVec2(-1, 0)))
-                    {
-                        if (waypoint->has_save())
+                        ImGui::SameLine();
+                        if (ImGui::Button(Names::clear_save.c_str(), ImVec2(-1, 0)))
                         {
-                            waypoint->set_save_file({});
-                            route->set_unsaved(true);
+                            if (waypoint->has_save())
+                            {
+                                waypoint->set_save_file({});
+                                route->set_unsaved(true);
+                            }
                         }
                     }
 
@@ -243,19 +246,20 @@ namespace trview
                     {
                         // Don't access the waypoint after it has been deleted - this is an issue with the window not
                         // having temporary ownership of the waypoint - if it was shared_ptr it would be fine.
-
                         if (_randomizer_enabled)
                         {
                             ImGui::Text("Randomizer");
                             load_randomiser_settings(*waypoint);
                         }
-
-                        ImGui::Text("Notes");
-                        std::string notes = waypoint->notes();
-                        if (ImGui::InputTextMultiline(Names::notes.c_str(), &notes, ImVec2(-1, -1)))
+                        else
                         {
-                            waypoint->set_notes(notes);
-                            route->set_unsaved(true);
+                            ImGui::Text("Notes");
+                            std::string notes = waypoint->notes();
+                            if (ImGui::InputTextMultiline(Names::notes.c_str(), &notes, ImVec2(-1, -1)))
+                            {
+                                waypoint->set_notes(notes);
+                                route->set_unsaved(true);
+                            }
                         }
                     }
                 }
