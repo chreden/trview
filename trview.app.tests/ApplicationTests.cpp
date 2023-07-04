@@ -6,6 +6,7 @@
 #include <trview.app/Mocks/Menus/IUpdateChecker.h>
 #include <trview.app/Mocks/Menus/IFileMenu.h>
 #include <trview.app/Mocks/Routing/IRoute.h>
+#include <trview.app/Mocks/Routing/IRandomizerRoute.h>
 #include <trview.app/Mocks/Settings/ISettingsLoader.h>
 #include <trview.app/Mocks/Settings/IStartupOptions.h>
 #include <trview.app/Mocks/UI/IImGuiBackend.h>
@@ -84,6 +85,7 @@ namespace
             std::unique_ptr<IConsoleManager> console_manager{ mock_unique<MockConsoleManager>() };
             std::shared_ptr<IPlugins> plugins{ mock_shared<MockPlugins>() };
             std::unique_ptr<IPluginsWindowManager> plugins_window_manager{ mock_unique<MockPluginsWindowManager>() };
+            IRandomizerRoute::Source randomizer_route_source { [](auto&&...) { return mock_shared<MockRandomizerRoute>(); } };
 
             std::unique_ptr<Application> build()
             {
@@ -93,7 +95,7 @@ namespace
                     std::move(items_window_manager), std::move(triggers_window_manager), std::move(route_window_manager), std::move(rooms_window_manager),
                     level_source, startup_options, dialogs, files, std::move(imgui_backend), std::move(lights_window_manager), std::move(log_window_manager),
                     std::move(textures_window_manager), std::move(camera_sink_window_manager), std::move(console_manager),
-                    plugins, std::move(plugins_window_manager));
+                    plugins, std::move(plugins_window_manager), randomizer_route_source);
             }
 
             test_module& with_dialogs(std::shared_ptr<IDialogs> dialogs)
@@ -312,7 +314,7 @@ TEST(Application, WindowContentsResetBeforeViewerLoaded)
     EXPECT_CALL(route_window_manager, set_items(A<const std::vector<std::weak_ptr<IItem>>&>())).Times(1).WillOnce([&](auto) { events.push_back("route_items"); });
     EXPECT_CALL(route_window_manager, set_triggers(A<const std::vector<std::weak_ptr<ITrigger>>&>())).Times(1).WillOnce([&](auto) { events.push_back("route_triggers"); });
     EXPECT_CALL(route_window_manager, set_rooms(A<const std::vector<std::weak_ptr<IRoom>>&>())).Times(1).WillOnce([&](auto) { events.push_back("route_rooms"); });
-    EXPECT_CALL(route_window_manager, set_route(A<IRoute*>())).Times(3).WillRepeatedly([&](auto) { events.push_back("route_route"); });
+    EXPECT_CALL(route_window_manager, set_route(A<const std::weak_ptr<IRoute>&>())).Times(3).WillRepeatedly([&](auto) { events.push_back("route_route"); });
     EXPECT_CALL(lights_window_manager, set_lights(A<const std::vector<std::weak_ptr<ILight>>&>())).Times(1).WillOnce([&](auto) { events.push_back("lights_lights"); });
     EXPECT_CALL(camera_sink_window_manager, set_camera_sinks).Times(1).WillOnce([&](auto) { events.push_back("camera_sinks_camera_sinks"); });
     EXPECT_CALL(*route, clear()).Times(1).WillOnce([&] { events.push_back("route_clear"); });
@@ -459,6 +461,9 @@ TEST(Application, ClosingEventCalled)
 
 TEST(Application, ExportRouteSavesFile)
 {
+    auto dialogs = mock_shared<MockDialogs>();
+    EXPECT_CALL(*dialogs, save_file).Times(1).WillRepeatedly(Return(IDialogs::FileResult{ "filename", 0 }));
+
     auto [route_window_manager_ptr, route_window_manager] = create_mock<MockRouteWindowManager>();
     auto files = mock_shared<MockFiles>();
     EXPECT_CALL(*files, save_file(An<const std::string&>(), An<const std::string&>())).Times(1);
@@ -468,13 +473,18 @@ TEST(Application, ExportRouteSavesFile)
     auto application = register_test_module()
         .with_route_window_manager(std::move(route_window_manager_ptr))
         .with_route_source([&](auto&&...) {return route; })
-        .with_files(files).build();
+        .with_files(files)
+        .with_dialogs(dialogs)
+        .build();
 
-    route_window_manager.on_route_export("filename", false);
+    route_window_manager.on_route_save_as();
 }
 
-TEST(Application, ImportRouteLoadsFile)
+TEST(Application, OpenRouteLoadsFile)
 {
+    auto dialogs = mock_shared<MockDialogs>();
+    EXPECT_CALL(*dialogs, open_file).Times(1).WillRepeatedly(Return(IDialogs::FileResult{ "filename", 0 }));
+
     auto [viewer_ptr, viewer] = create_mock <MockViewer>();
     EXPECT_CALL(viewer, set_route).Times(2);
     auto [route_window_manager_ptr, route_window_manager] = create_mock<MockRouteWindowManager>();
@@ -488,9 +498,11 @@ TEST(Application, ImportRouteLoadsFile)
         .with_route_window_manager(std::move(route_window_manager_ptr))
         .with_route_source([&](auto&&...) {return route; })
         .with_viewer(std::move(viewer_ptr))
-        .with_files(files).build();
+        .with_files(files)
+        .with_dialogs(dialogs)
+        .build();
 
-    route_window_manager.on_route_import("filename", false);
+    route_window_manager.on_route_open();
 }
 
 TEST(Application, WindowManagersUpdated)

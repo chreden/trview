@@ -40,10 +40,13 @@ namespace trview
         Event<int32_t, int32_t> on_waypoint_reordered;
 
         /// Event raised when a route file is opened.
-        Event<std::string, bool> on_route_import;
+        Event<> on_route_open;
+
+        Event<> on_route_reload;
+        Event<> on_route_save;
 
         /// Event raised when a route is exported.
-        Event<std::string, bool> on_route_export;
+        Event<> on_route_save_as;
 
         /// Event raised when a waypoint is deleted.
         Event<uint32_t> on_waypoint_deleted;
@@ -56,7 +59,7 @@ namespace trview
 
         /// Load the waypoints from the route.
         /// @param route The route to load from.
-        virtual void set_route(IRoute* route) = 0;
+        virtual void set_route(const std::weak_ptr<IRoute>& route) = 0;
 
         /// Select the specified waypoint.
         /// @param index The index of the waypoint to select.

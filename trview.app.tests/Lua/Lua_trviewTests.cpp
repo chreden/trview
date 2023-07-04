@@ -5,6 +5,7 @@
 #include <external/lua/src/lua.h>
 #include <external/lua/src/lauxlib.h>
 #include <trview.app/Mocks/Routing/IRoute.h>
+#include <trview.app/Mocks/Routing/IRandomizerRoute.h>
 
 using namespace trview;
 using namespace trview::mocks;
@@ -22,6 +23,7 @@ TEST(Lua_trview, Level)
     lua_State* L = luaL_newstate();
     lua::trview_register(L, application.get(), 
         []() { return mock_shared<MockRoute>(); },
+        []() { return mock_shared<MockRandomizerRoute>(); },
         [](auto&&...) { return mock_shared<MockWaypoint>(); },
         mock_shared<MockDialogs>(),
         mock_shared<MockFiles>());
@@ -44,6 +46,7 @@ TEST(Lua_trview, RecentFiles)
     lua_State* L = luaL_newstate();
     lua::trview_register(L, application.get(),
         []() { return mock_shared<MockRoute>(); },
+        []() { return mock_shared<MockRandomizerRoute>(); },
         [](auto&&...) { return mock_shared<MockWaypoint>(); },
         mock_shared<MockDialogs>(),
         mock_shared<MockFiles>());
@@ -66,6 +69,7 @@ TEST(Lua_trview, SetLevel)
     lua_State* L = luaL_newstate();
     lua::trview_register(L, application.get(),
         []() { return mock_shared<MockRoute>(); },
+        []() { return mock_shared<MockRandomizerRoute>(); },
         [](auto&&...) { return mock_shared<MockWaypoint>(); },
         mock_shared<MockDialogs>(),
         mock_shared<MockFiles>());
@@ -86,6 +90,7 @@ TEST(Lua_trview, Route)
     lua_State* L = luaL_newstate();
     lua::trview_register(L, application.get(),
         []() { return mock_shared<MockRoute>(); },
+        []() { return mock_shared<MockRandomizerRoute>(); },
         [](auto&&...) { return mock_shared<MockWaypoint>(); },
         mock_shared<MockDialogs>(),
         mock_shared<MockFiles>());
@@ -102,6 +107,7 @@ TEST(Lua_trview, SetRoute)
     lua_State* L = luaL_newstate();
     lua::trview_register(L, application.get(),
         []() { return mock_shared<MockRoute>(); },
+        []() { return mock_shared<MockRandomizerRoute>(); },
         [](auto&&...) { return mock_shared<MockWaypoint>(); },
         mock_shared<MockDialogs>(),
         mock_shared<MockFiles>());

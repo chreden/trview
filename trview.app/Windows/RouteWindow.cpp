@@ -43,11 +43,11 @@ namespace trview
                 ImGui::TableSetupScrollFreeze(1, 1);
                 ImGui::TableHeadersRow();
 
-                if (_route) 
+                if (auto route = _route.lock()) 
                 {
-                    for (uint32_t i = 0; i < _route->waypoints(); ++i)
+                    for (uint32_t i = 0; i < route->waypoints(); ++i)
                     {
-                        if (auto waypoint = _route->waypoint(i).lock())
+                        if (auto waypoint = route->waypoint(i).lock())
                         {
                             ImGui::TableNextRow();
                             ImGui::TableNextColumn();
@@ -115,9 +115,10 @@ namespace trview
     {
         if (ImGui::BeginChild(Names::waypoint_details_panel.c_str(), ImVec2(), true))
         {
-            if (_route && _selected_index < _route->waypoints())
+            auto route = _route.lock();
+            if (route && _selected_index < route->waypoints())
             {
-                if (auto waypoint = _route->waypoint(_selected_index).lock())
+                if (auto waypoint = route->waypoint(_selected_index).lock())
                 {
                     if (ImGui::BeginTable(Names::waypoint_stats.c_str(), 2, 0, ImVec2(-1, 80)))
                     {
@@ -199,7 +200,7 @@ namespace trview
                                     if (bytes.has_value() && !bytes.value().empty())
                                     {
                                         waypoint->set_save_file(bytes.value());
-                                        _route->set_unsaved(true);
+                                        route->set_unsaved(true);
                                     }
                                 }
                                 catch (...)
@@ -230,7 +231,7 @@ namespace trview
                         if (waypoint->has_save())
                         {
                             waypoint->set_save_file({});
-                            _route->set_unsaved(true);
+                            route->set_unsaved(true);
                         }
                     }
 
@@ -254,7 +255,7 @@ namespace trview
                         if (ImGui::InputTextMultiline(Names::notes.c_str(), &notes, ImVec2(-1, -1)))
                         {
                             waypoint->set_notes(notes);
-                            _route->set_unsaved(true);
+                            route->set_unsaved(true);
                         }
                     }
                 }
@@ -296,7 +297,7 @@ namespace trview
         }
     }
 
-    void RouteWindow::set_route(IRoute* route) 
+    void RouteWindow::set_route(const std::weak_ptr<IRoute>& route) 
     {
         _route = route;
         _selected_index = 0u;
@@ -355,6 +356,7 @@ namespace trview
     void RouteWindow::load_randomiser_settings(IWaypoint& waypoint)
     {
         auto waypoint_settings = waypoint.randomizer_settings();
+        auto route = _route.lock();
 
         if (ImGui::BeginTable(Names::randomizer_flags.c_str(), 2))
         {
@@ -370,7 +372,7 @@ namespace trview
                     {
                         waypoint_settings[b.first] = value;
                         waypoint.set_randomizer_settings(waypoint_settings);
-                        _route->set_unsaved(true);
+                        route->set_unsaved(true);
                     }
                 }
             }
@@ -392,7 +394,7 @@ namespace trview
                             auto settings = waypoint.randomizer_settings();
                             settings[b.first] = text;
                             waypoint.set_randomizer_settings(settings);
-                            _route->set_unsaved(true);
+                            route->set_unsaved(true);
                         }
                     }
                     else
@@ -407,7 +409,7 @@ namespace trview
                                     auto settings = waypoint.randomizer_settings();
                                     settings[b.first] = option;
                                     waypoint.set_randomizer_settings(settings);
-                                    _route->set_unsaved(true);
+                                    route->set_unsaved(true);
                                 }
                             }
                             ImGui::EndCombo();
@@ -423,7 +425,7 @@ namespace trview
                         auto settings = waypoint.randomizer_settings();
                         settings[b.first] = number;
                         waypoint.set_randomizer_settings(settings);
-                        _route->set_unsaved(true);
+                        route->set_unsaved(true);
                     }
                     break;
                 }
@@ -474,44 +476,22 @@ namespace trview
             {
                 if (ImGui::MenuItem("Open"))
                 {
-                    std::vector<IDialogs::FileFilter> filters{ { L"trview route", { L"*.tvr" } } };
-                    if (_randomizer_enabled)
-                    {
-                        filters.push_back({ L"Randomizer Locations", { L"*.json" } });
-                    }
-
-                    const auto filename = _dialogs->open_file(L"Import route", filters, OFN_FILEMUSTEXIST);
-                    if (filename.has_value())
-                    {
-                        on_route_import(filename.value().filename, filename.value().filter_index == 2);
-                    }
+                    on_route_open();
                 }
 
                 if (ImGui::MenuItem("Reload"))
                 {
-                    // TODO: Reload event
+                    on_route_reload();
                 }
 
                 if (ImGui::MenuItem("Save"))
                 {
-                    // TODO: Save event
+                    on_route_save();
                 }
 
                 if (ImGui::MenuItem("Save As"))
                 {
-                    std::vector<IDialogs::FileFilter> filters{ { L"trview route", { L"*.tvr" } } };
-                    uint32_t filter_index = 1;
-                    if (_randomizer_enabled)
-                    {
-                        filters.push_back({ L"Randomizer Locations", { L"*.json" } });
-                        filter_index = 2;
-                    }
-
-                    const auto filename = _dialogs->save_file(L"Export route", filters, filter_index);
-                    if (filename.has_value())
-                    {
-                        on_route_export(filename.value().filename, filename.value().filter_index == 2);
-                    }
+                    on_route_save_as();
                 }
                 ImGui::EndMenu();
             }
@@ -527,12 +507,13 @@ namespace trview
 
             if (_show_settings && ImGui::BeginPopup("SettingsPopup"))
             {
-                auto colour = _route ? _route->colour() : Colour::Green;
+                auto route = _route.lock();
+                auto colour = route ? route->colour() : Colour::Green;
                 if (ImGui::ColorEdit3("Route##colour", &colour.r, ImGuiColorEditFlags_NoInputs))
                 {
                     on_colour_changed(colour);
                 }
-                auto waypoint_colour = _route ? _route->waypoint_colour() : Colour::White;
+                auto waypoint_colour = route ? route->waypoint_colour() : Colour::White;
                 if (ImGui::ColorEdit3("Waypoint##colour", &waypoint_colour.r, ImGuiColorEditFlags_NoInputs))
                 {
                     on_waypoint_colour_changed(waypoint_colour);

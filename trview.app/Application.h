@@ -124,7 +124,11 @@ namespace trview
         void select_sector(const std::weak_ptr<ISector>& sector);
         bool should_discard_changes();
         void reload();
+        void open_route();
+        void reload_route();
+        void save_route();
         void import_route(const std::string& path, bool is_rando);
+        void save_route_as();
         void open_recent_route();
         void save_window_placement();
 

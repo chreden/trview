@@ -68,12 +68,12 @@ TEST(RouteWindow, WaypointRoomPositionCalculatedCorrectly)
 
     auto waypoint = mock_shared<MockWaypoint>();
     EXPECT_CALL(*waypoint, position).WillRepeatedly(Return(waypoint_pos));
-    NiceMock<MockRoute> route;
-    EXPECT_CALL(route, waypoints).WillRepeatedly(Return(1));
-    EXPECT_CALL(route, waypoint(An<uint32_t>())).WillRepeatedly(Return(waypoint));
+    auto route = mock_shared<MockRoute>();
+    EXPECT_CALL(*route, waypoints).WillRepeatedly(Return(1));
+    EXPECT_CALL(*route, waypoint(An<uint32_t>())).WillRepeatedly(Return(waypoint));
 
     window->set_rooms({ room });
-    window->set_route(&route);
+    window->set_route(route);
 
     window->select_waypoint(0);
 
@@ -96,11 +96,11 @@ TEST(RouteWindow, RoomPositionValuesCopiedToClipboard)
     auto waypoint = mock_shared<MockWaypoint>();
     EXPECT_CALL(*waypoint, position).WillRepeatedly(Return(waypoint_pos));
 
-    NiceMock<MockRoute> route;
-    EXPECT_CALL(route, waypoints).WillRepeatedly(Return(1));
-    EXPECT_CALL(route, waypoint(An<uint32_t>())).WillRepeatedly(Return(waypoint));
+    auto route = mock_shared<MockRoute>();
+    EXPECT_CALL(*route, waypoints).WillRepeatedly(Return(1));
+    EXPECT_CALL(*route, waypoint(An<uint32_t>())).WillRepeatedly(Return(waypoint));
 
-    window->set_route(&route);
+    window->set_route(route);
     window->select_waypoint(0);
 
     TestImgui imgui([&]() { window->render(); });
@@ -117,13 +117,13 @@ TEST(RouteWindow, AddingWaypointNotesMarksRouteUnsaved)
     EXPECT_CALL(*waypoint, position).WillRepeatedly(Return(waypoint_pos));
     EXPECT_CALL(*waypoint, set_notes(std::string("Test"))).Times(1);
 
-    NiceMock<MockRoute> route;
-    EXPECT_CALL(route, waypoints).WillRepeatedly(Return(1));
-    EXPECT_CALL(route, waypoint(An<uint32_t>())).WillRepeatedly(Return(waypoint));
-    EXPECT_CALL(route, set_unsaved(true)).Times(1);
+    auto route = mock_shared<MockRoute>();
+    EXPECT_CALL(*route, waypoints).WillRepeatedly(Return(1));
+    EXPECT_CALL(*route, waypoint(An<uint32_t>())).WillRepeatedly(Return(waypoint));
+    EXPECT_CALL(*route, set_unsaved(true)).Times(1);
 
     auto window = register_test_module().build();
-    window->set_route(&route);
+    window->set_route(route);
     window->select_waypoint(0);
 
     TestImgui imgui([&]() { window->render(); });
@@ -139,13 +139,13 @@ TEST(RouteWindow, ClearSaveMarksRouteUnsaved)
     EXPECT_CALL(*waypoint, has_save).Times(AtLeast(1)).WillRepeatedly(Return(true));
     EXPECT_CALL(*waypoint, set_save_file(std::vector<uint8_t>())).Times(1);
 
-    NiceMock<MockRoute> route;
-    EXPECT_CALL(route, waypoints).WillRepeatedly(Return(1));
-    EXPECT_CALL(route, waypoint(An<uint32_t>())).WillRepeatedly(Return(waypoint));
-    EXPECT_CALL(route, set_unsaved(true)).Times(1);
+    auto route = mock_shared<MockRoute>();
+    EXPECT_CALL(*route, waypoints).WillRepeatedly(Return(1));
+    EXPECT_CALL(*route, waypoint(An<uint32_t>())).WillRepeatedly(Return(waypoint));
+    EXPECT_CALL(*route, set_unsaved(true)).Times(1);
 
     auto window = register_test_module().build();
-    window->set_route(&route);
+    window->set_route(route);
 
     TestImgui imgui([&]() { window->render(); });
     imgui.click_element(imgui.id("Route")
@@ -155,36 +155,23 @@ TEST(RouteWindow, ClearSaveMarksRouteUnsaved)
 
 TEST(RouteWindow, ExportRouteButtonRaisesEvent)
 {
-    auto dialogs = mock_shared<MockDialogs>();
-    EXPECT_CALL(*dialogs, save_file).Times(1).WillRepeatedly(Return(IDialogs::FileResult{ "filename", 0 }));
-
-    std::optional<std::string> file_raised;
-    auto window = register_test_module().with_dialogs(dialogs).build();
-    auto token = window->on_route_export += [&](const auto& filename, const auto& is_rando)
-    {
-        file_raised = filename;
-    };
+    bool file_raised = false;
+    auto window = register_test_module().build();
+    auto token = window->on_route_save_as += [&]() { file_raised = true; };
 
     TestImgui imgui([&]() { window->render(); });
     imgui.click_element(imgui.id("Route")
         .push_child(RouteWindow::Names::waypoint_list_panel)
         .id(RouteWindow::Names::export_button));
 
-    ASSERT_TRUE(file_raised.has_value());
-    ASSERT_EQ(file_raised, "filename");
+    ASSERT_TRUE(file_raised);
 }
 
 TEST(RouteWindow, ExportRouteButtonDoesNotRaiseEventWhenCancelled)
 {
-    auto dialogs = mock_shared<MockDialogs>();
-    EXPECT_CALL(*dialogs, save_file).Times(1);
-
     bool file_raised = false;
-    auto window = register_test_module().with_dialogs(dialogs).build();
-    auto token = window->on_route_export += [&](auto&&...)
-    {
-        file_raised = true;
-    };
+    auto window = register_test_module().build();
+    auto token = window->on_route_save_as += [&]() { file_raised = true; };
 
     TestImgui imgui([&]() { window->render(); });
     imgui.click_element(imgui.id("Route")
@@ -196,36 +183,23 @@ TEST(RouteWindow, ExportRouteButtonDoesNotRaiseEventWhenCancelled)
 
 TEST(RouteWindow, ImportRouteButtonRaisesEvent)
 {
-    auto dialogs = mock_shared<MockDialogs>();
-    EXPECT_CALL(*dialogs, open_file).Times(1).WillRepeatedly(Return(IDialogs::FileResult{ "filename" }));
-
-    std::optional<std::string> file_raised;
-    auto window = register_test_module().with_dialogs(dialogs).build();
-    auto token = window->on_route_import += [&](const auto& filename, bool is_rando)
-    {
-        file_raised = filename;
-    };
+    bool raised = false;
+    auto window = register_test_module().build();
+    auto token = window->on_route_open += [&]() { raised = true; };
 
     TestImgui imgui([&]() { window->render(); });
     imgui.click_element(imgui.id("Route")
         .push_child(RouteWindow::Names::waypoint_list_panel)
         .id(RouteWindow::Names::import_button));
 
-    ASSERT_TRUE(file_raised.has_value());
-    ASSERT_EQ(file_raised, "filename");
+    ASSERT_TRUE(raised);
 }
 
 TEST(RouteWindow, ImportRouteButtonDoesNotRaiseEventWhenCancelled)
 {
-    auto dialogs = mock_shared<MockDialogs>();
-    EXPECT_CALL(*dialogs, open_file).Times(1);
-
     bool file_raised = false;
-    auto window = register_test_module().with_dialogs(dialogs).build();
-    auto token = window->on_route_import += [&](const auto& filename, bool is_rando)
-    {
-        file_raised = true;
-    };
+    auto window = register_test_module().build();
+    auto token = window->on_route_save_as += [&]() { file_raised = true; };
     
     TestImgui imgui([&]() { window->render(); });
     imgui.click_element(imgui.id("Route")
@@ -247,12 +221,12 @@ TEST(RouteWindow, ExportSaveButtonSavesFile)
     EXPECT_CALL(*waypoint, has_save).Times(AtLeast(1)).WillRepeatedly(Return(true));
     EXPECT_CALL(*waypoint, save_file).Times(AtLeast(1)).WillRepeatedly(Return(std::vector<uint8_t>{ 0x1 }));
 
-    NiceMock<MockRoute> route;
-    EXPECT_CALL(route, waypoints).WillRepeatedly(Return(1));
-    EXPECT_CALL(route, waypoint(An<uint32_t>())).WillRepeatedly(Return(waypoint));
+    auto route = mock_shared<MockRoute>();
+    EXPECT_CALL(*route, waypoints).WillRepeatedly(Return(1));
+    EXPECT_CALL(*route, waypoint(An<uint32_t>())).WillRepeatedly(Return(waypoint));
 
     auto window = register_test_module().with_dialogs(dialogs).with_files(files).build();
-    window->set_route(&route);
+    window->set_route(route);
 
     TestImgui imgui([&]() { window->render(); });
     imgui.click_element(imgui.id("Route")
@@ -272,12 +246,12 @@ TEST(RouteWindow, ExportSaveButtonShowsErrorOnFailure)
     auto waypoint = mock_shared<MockWaypoint>();
     EXPECT_CALL(*waypoint, has_save).Times(AtLeast(1)).WillRepeatedly(Return(true));
     EXPECT_CALL(*waypoint, save_file).Times(AtLeast(1)).WillRepeatedly(Return(std::vector<uint8_t>{ 0x1 }));
-    NiceMock<MockRoute> route;
-    EXPECT_CALL(route, waypoints).WillRepeatedly(Return(1));
-    EXPECT_CALL(route, waypoint(An<uint32_t>())).WillRepeatedly(Return(waypoint));
+    auto route = mock_shared<MockRoute>();
+    EXPECT_CALL(*route, waypoints).WillRepeatedly(Return(1));
+    EXPECT_CALL(*route, waypoint(An<uint32_t>())).WillRepeatedly(Return(waypoint));
 
     auto window = register_test_module().with_dialogs(dialogs).with_files(files).build();
-    window->set_route(&route);
+    window->set_route(route);
 
     TestImgui imgui([&]() { window->render(); });
     imgui.click_element(imgui.id("Route")
@@ -296,12 +270,12 @@ TEST(RouteWindow, ExportSaveButtonDoesNotSaveFileWhenCancelled)
     auto waypoint = mock_shared<MockWaypoint>();
     EXPECT_CALL(*waypoint, has_save).Times(AtLeast(1)).WillRepeatedly(Return(true));
     EXPECT_CALL(*waypoint, save_file).Times(0);
-    NiceMock<MockRoute> route;
-    EXPECT_CALL(route, waypoints).WillRepeatedly(Return(1));
-    EXPECT_CALL(route, waypoint(An<uint32_t>())).WillRepeatedly(Return(waypoint));
+    auto route = mock_shared<MockRoute>();
+    EXPECT_CALL(*route, waypoints).WillRepeatedly(Return(1));
+    EXPECT_CALL(*route, waypoint(An<uint32_t>())).WillRepeatedly(Return(waypoint));
 
     auto window = register_test_module().with_dialogs(dialogs).with_files(files).build();
-    window->set_route(&route);
+    window->set_route(route);
 
     TestImgui imgui([&]() { window->render(); });
     imgui.click_element(imgui.id("Route")
@@ -320,13 +294,13 @@ TEST(RouteWindow, AttachSaveButtonLoadsSave)
     auto waypoint = mock_shared<MockWaypoint>();
     EXPECT_CALL(*waypoint, set_save_file(std::vector<uint8_t>{ 0x1, 0x2 })).Times(1);
 
-    NiceMock<MockRoute> route;
-    EXPECT_CALL(route, waypoints).WillRepeatedly(Return(1));
-    EXPECT_CALL(route, waypoint(An<uint32_t>())).WillRepeatedly(Return(waypoint));
-    EXPECT_CALL(route, set_unsaved(true)).Times(1);
+    auto route = mock_shared<MockRoute>();
+    EXPECT_CALL(*route, waypoints).WillRepeatedly(Return(1));
+    EXPECT_CALL(*route, waypoint(An<uint32_t>())).WillRepeatedly(Return(waypoint));
+    EXPECT_CALL(*route, set_unsaved(true)).Times(1);
 
     auto window = register_test_module().with_dialogs(dialogs).with_files(files).build();
-    window->set_route(&route);
+    window->set_route(route);
 
     TestImgui imgui([&]() { window->render(); });
     imgui.click_element(imgui.id("Route")
@@ -344,13 +318,13 @@ TEST(RouteWindow, AttachSaveButtonShowsMessageOnError)
     EXPECT_CALL(*files, load_file(A<const std::string&>())).Times(1).WillRepeatedly(Throw(std::exception()));
 
     auto waypoint = mock_shared<MockWaypoint>();
-    NiceMock<MockRoute> route;
-    EXPECT_CALL(route, waypoints).WillRepeatedly(Return(1));
-    EXPECT_CALL(route, waypoint(An<uint32_t>())).WillRepeatedly(Return(waypoint));
-    EXPECT_CALL(route, set_unsaved(true)).Times(0);
+    auto route = mock_shared<MockRoute>();
+    EXPECT_CALL(*route, waypoints).WillRepeatedly(Return(1));
+    EXPECT_CALL(*route, waypoint(An<uint32_t>())).WillRepeatedly(Return(waypoint));
+    EXPECT_CALL(*route, set_unsaved(true)).Times(0);
 
     auto window = register_test_module().with_dialogs(dialogs).with_files(files).build();
-    window->set_route(&route);
+    window->set_route(route);
 
     TestImgui imgui([&]() { window->render(); });
     imgui.click_element(imgui.id("Route")
@@ -369,13 +343,13 @@ TEST(RouteWindow, AttachSaveButtonDoesNotLoadFileWhenCancelled)
     EXPECT_CALL(*files, load_file(A<const std::string&>())).Times(0);
 
     auto waypoint = mock_shared<MockWaypoint>();
-    NiceMock<MockRoute> route;
-    EXPECT_CALL(route, waypoints).WillRepeatedly(Return(1));
-    EXPECT_CALL(route, waypoint(An<uint32_t>())).WillRepeatedly(Return(waypoint));
-    EXPECT_CALL(route, set_unsaved).Times(0);
+    auto route = mock_shared<MockRoute>();
+    EXPECT_CALL(*route, waypoints).WillRepeatedly(Return(1));
+    EXPECT_CALL(*route, waypoint(An<uint32_t>())).WillRepeatedly(Return(waypoint));
+    EXPECT_CALL(*route, set_unsaved).Times(0);
 
     auto window = register_test_module().with_dialogs(dialogs).with_files(files).build();
-    window->set_route(&route);
+    window->set_route(route);
 
     TestImgui imgui([&]() { window->render(); });
     imgui.click_element(imgui.id("Route")
@@ -389,10 +363,10 @@ TEST(RouteWindow, ClickStatShowsBubble)
     auto window = register_test_module().build();
 
     auto waypoint = mock_shared<MockWaypoint>();
-    NiceMock<MockRoute> route;
-    EXPECT_CALL(route, waypoints).WillRepeatedly(Return(1));
-    EXPECT_CALL(route, waypoint(An<uint32_t>())).WillRepeatedly(Return(waypoint));
-    window->set_route(&route);
+    auto route = mock_shared<MockRoute>();
+    EXPECT_CALL(*route, waypoints).WillRepeatedly(Return(1));
+    EXPECT_CALL(*route, waypoint(An<uint32_t>())).WillRepeatedly(Return(waypoint));
+    window->set_route(route);
     window->select_waypoint(0);
 
     TestImgui imgui([&]() { window->render(); });
@@ -412,10 +386,10 @@ TEST(RouteWindow, RandomizerPanelVisibleBasedOnSetting)
     window->set_randomizer_settings(settings);
 
     auto waypoint = mock_shared<MockWaypoint>();
-    NiceMock<MockRoute> route;
-    EXPECT_CALL(route, waypoints).WillRepeatedly(Return(1));
-    EXPECT_CALL(route, waypoint(An<uint32_t>())).WillRepeatedly(Return(waypoint));
-    window->set_route(&route);
+    auto route = mock_shared<MockRoute>();
+    EXPECT_CALL(*route, waypoints).WillRepeatedly(Return(1));
+    EXPECT_CALL(*route, waypoint(An<uint32_t>())).WillRepeatedly(Return(waypoint));
+    window->set_route(route);
     window->select_waypoint(0);
 
     TestImgui imgui([&]() { window->render(); });
@@ -436,10 +410,10 @@ TEST(RouteWindow, RandomizerPanelCreatesUIFromSettings)
     auto window = register_test_module().build();
 
     auto waypoint = mock_shared<MockWaypoint>();
-    NiceMock<MockRoute> route;
-    EXPECT_CALL(route, waypoints).WillRepeatedly(Return(1));
-    EXPECT_CALL(route, waypoint(An<uint32_t>())).WillRepeatedly(Return(waypoint));
-    window->set_route(&route);
+    auto route = mock_shared<MockRoute>();
+    EXPECT_CALL(*route, waypoints).WillRepeatedly(Return(1));
+    EXPECT_CALL(*route, waypoint(An<uint32_t>())).WillRepeatedly(Return(waypoint));
+    window->set_route(route);
     window->select_waypoint(0);
 
     RandomizerSettings settings;
@@ -475,11 +449,11 @@ TEST(RouteWindow, ToggleRandomizerBoolUpdatesWaypoint)
     IWaypoint::WaypointRandomizerSettings new_settings;
 
     auto waypoint = mock_shared<MockWaypoint>();
-    NiceMock<MockRoute> route;
-    EXPECT_CALL(route, waypoints).WillRepeatedly(Return(1));
-    EXPECT_CALL(route, waypoint(An<uint32_t>())).WillRepeatedly(Return(waypoint));
+    auto route = mock_shared<MockRoute>();
+    EXPECT_CALL(*route, waypoints).WillRepeatedly(Return(1));
+    EXPECT_CALL(*route, waypoint(An<uint32_t>())).WillRepeatedly(Return(waypoint));
     EXPECT_CALL(*waypoint, set_randomizer_settings(An<const IWaypoint::WaypointRandomizerSettings&>())).WillRepeatedly(SaveArg<0>(&new_settings));
-    window->set_route(&route);
+    window->set_route(route);
     window->select_waypoint(0);
 
     TestImgui imgui([&]() { window->render(); });
@@ -504,11 +478,11 @@ TEST(RouteWindow, ChooseRandomizerDropDownUpdatesWaypoint)
     IWaypoint::WaypointRandomizerSettings new_settings;
 
     auto waypoint = mock_shared<MockWaypoint>();
-    NiceMock<MockRoute> route;
-    EXPECT_CALL(route, waypoints).WillRepeatedly(Return(1));
-    EXPECT_CALL(route, waypoint(An<uint32_t>())).WillRepeatedly(Return(waypoint));
+    auto route = mock_shared<MockRoute>();
+    EXPECT_CALL(*route, waypoints).WillRepeatedly(Return(1));
+    EXPECT_CALL(*route, waypoint(An<uint32_t>())).WillRepeatedly(Return(waypoint));
     EXPECT_CALL(*waypoint, set_randomizer_settings(An<const IWaypoint::WaypointRandomizerSettings&>())).WillRepeatedly(SaveArg<0>(&new_settings));
-    window->set_route(&route);
+    window->set_route(route);
     window->select_waypoint(0);
 
     TestImgui imgui([&]() { window->render(); });
@@ -533,11 +507,11 @@ TEST(RouteWindow, SetRandomizerTextUpdatesWaypoint)
     IWaypoint::WaypointRandomizerSettings new_settings;
 
     auto waypoint = mock_shared<MockWaypoint>();
-    NiceMock<MockRoute> route;
-    EXPECT_CALL(route, waypoints).WillRepeatedly(Return(1));
-    EXPECT_CALL(route, waypoint(An<uint32_t>())).WillRepeatedly(Return(waypoint));
+    auto route = mock_shared<MockRoute>();
+    EXPECT_CALL(*route, waypoints).WillRepeatedly(Return(1));
+    EXPECT_CALL(*route, waypoint(An<uint32_t>())).WillRepeatedly(Return(waypoint));
     EXPECT_CALL(*waypoint, set_randomizer_settings(An<const IWaypoint::WaypointRandomizerSettings&>())).WillRepeatedly(SaveArg<0>(&new_settings));
-    window->set_route(&route);
+    window->set_route(route);
     window->select_waypoint(0);
 
     TestImgui imgui([&]() { window->render(); });
@@ -562,11 +536,11 @@ TEST(RouteWindow, SetRandomizerNumberUpdatesWaypoint)
     IWaypoint::WaypointRandomizerSettings new_settings;
 
     auto waypoint = mock_shared<MockWaypoint>();
-    NiceMock<MockRoute> route;
-    EXPECT_CALL(route, waypoints).WillRepeatedly(Return(1));
-    EXPECT_CALL(route, waypoint(An<uint32_t>())).WillRepeatedly(Return(waypoint));
+    auto route = mock_shared<MockRoute>();
+    EXPECT_CALL(*route, waypoints).WillRepeatedly(Return(1));
+    EXPECT_CALL(*route, waypoint(An<uint32_t>())).WillRepeatedly(Return(waypoint));
     EXPECT_CALL(*waypoint, set_randomizer_settings(An<const IWaypoint::WaypointRandomizerSettings&>())).WillRepeatedly(SaveArg<0>(&new_settings));
-    window->set_route(&route);
+    window->set_route(route);
     window->select_waypoint(0);
 
     TestImgui imgui([&]() { window->render(); });
@@ -583,10 +557,10 @@ TEST(RouteWindow, DeleteWaypointRaisesEvent)
 {
     auto window = register_test_module().build();
     auto waypoint = mock_shared<MockWaypoint>();
-    NiceMock<MockRoute> route;
-    EXPECT_CALL(route, waypoints).WillRepeatedly(Return(1));
-    EXPECT_CALL(route, waypoint(An<uint32_t>())).WillRepeatedly(Return(waypoint));
-    window->set_route(&route);
+    auto route = mock_shared<MockRoute>();
+    EXPECT_CALL(*route, waypoints).WillRepeatedly(Return(1));
+    EXPECT_CALL(*route, waypoint(An<uint32_t>())).WillRepeatedly(Return(waypoint));
+    window->set_route(route);
     window->select_waypoint(0);
 
     std::optional<uint32_t> raised;

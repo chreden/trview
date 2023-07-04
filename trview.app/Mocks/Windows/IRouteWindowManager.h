@@ -11,7 +11,7 @@ namespace trview
             MockRouteWindowManager();
             virtual ~MockRouteWindowManager();
             MOCK_METHOD(void, render, (), (override));
-            MOCK_METHOD(void, set_route, (IRoute*), (override));
+            MOCK_METHOD(void, set_route, (const std::weak_ptr<IRoute>&), (override));
             MOCK_METHOD(void, create_window, (), (override));
             MOCK_METHOD(void, set_items, (const std::vector<std::weak_ptr<IItem>>&), (override));
             MOCK_METHOD(void, set_rooms, (const std::vector<std::weak_ptr<IRoom>>&), (override));

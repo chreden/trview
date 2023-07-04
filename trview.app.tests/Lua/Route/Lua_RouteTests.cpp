@@ -4,6 +4,7 @@
 #include <external/lua/src/lua.h>
 #include <external/lua/src/lauxlib.h>
 #include <trview.app/Mocks/Routing/IRoute.h>
+#include <trview.app/Mocks/Routing/IRandomizerRoute.h>
 #include <trview.app/Mocks/Elements/ILevel.h>
 #include <trview.app/Lua/Route/Lua_Waypoint.h>
 #include <trview.app/Mocks/Routing/IWaypoint.h>
@@ -85,7 +86,7 @@ TEST(Lua_Route, New)
     auto route = mock_shared<MockRoute>();
 
     lua_State* L = luaL_newstate();
-    lua::route_register(L, [=](auto&&...) { return route; }, mock_shared<MockDialogs>(), mock_shared<MockFiles>());
+    lua::route_register(L, [=](auto&&...) { return route; }, [](auto&&...){ return mock_shared<MockRandomizerRoute>(); }, mock_shared<MockDialogs>(), mock_shared<MockFiles>());
 
     ASSERT_EQ(0, luaL_dostring(L, "r = Route.new() return r"));
     ASSERT_EQ(LUA_TUSERDATA, lua_type(L, -1));
