@@ -54,6 +54,8 @@ namespace trview
         /// Event raised when the window is closed.
         Event<> on_window_closed;
 
+        Event<std::string> on_level_switch;
+
         /// Render the window.
         virtual void render() = 0;
 

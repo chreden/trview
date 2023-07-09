@@ -22,6 +22,7 @@ namespace trview
         virtual std::optional<int> process_message(UINT message, WPARAM wParam, LPARAM lParam) override;
         virtual void open_file(const std::string& filename) override;
         virtual void set_recent_files(const std::list<std::string>& files) override;
+        void switch_to(const std::string& filename) override;
     private:
         void choose_file();
         void next_directory_file();

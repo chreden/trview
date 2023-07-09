@@ -1,5 +1,6 @@
 #include "FileMenu.h"
 #include "../Resources/resource.h"
+#include <ranges>
 
 namespace trview
 {
@@ -64,6 +65,11 @@ namespace trview
 
             DrawMenuBar(window);
             return directory_listing_menu;
+        }
+
+        std::string trimmed_level_name(const std::string& input)
+        {
+            return input.substr(input.find_last_of("/\\") + 1);
         }
     }
 
@@ -195,5 +201,19 @@ namespace trview
             files.push_back(f.path);
         }
         return files;
+    }
+
+    void FileMenu::switch_to(const std::string& filename)
+    {
+        const auto found = std::ranges::find_if(
+            _file_switcher_list,
+            [&](const auto& x) -> bool
+            {
+                return trimmed_level_name(x.friendly_name) == trimmed_level_name(filename);
+            });
+        if (found != _file_switcher_list.end())
+        {
+            on_file_open(found->path);
+        }
     }
 }

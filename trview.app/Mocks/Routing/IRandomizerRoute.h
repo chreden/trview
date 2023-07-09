@@ -17,6 +17,7 @@ namespace trview
             MOCK_METHOD(void, clear, (), (override));
             MOCK_METHOD(Colour, colour, (), (const, override));
             MOCK_METHOD(std::optional<std::string>, filename, (), (const, override));
+            MOCK_METHOD(std::vector<std::string>, filenames, (), (const, override));
             MOCK_METHOD(void, insert, (const DirectX::SimpleMath::Vector3&, const DirectX::SimpleMath::Vector3&, uint32_t, uint32_t), (override));
             MOCK_METHOD(uint32_t, insert, (const DirectX::SimpleMath::Vector3&, const DirectX::SimpleMath::Vector3&, uint32_t), (override));
             MOCK_METHOD(void, insert, (const DirectX::SimpleMath::Vector3&, const DirectX::SimpleMath::Vector3&, uint32_t, uint32_t, IWaypoint::Type, uint32_t), (override));

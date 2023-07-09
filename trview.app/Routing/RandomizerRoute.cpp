@@ -145,6 +145,11 @@ namespace trview
         return _filename;
     }
 
+    std::vector<std::string> RandomizerRoute::filenames() const
+    {
+        return _waypoints | std::views::keys | std::ranges::to<std::vector>();
+    }
+
     void RandomizerRoute::insert(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& normal, uint32_t room, uint32_t index)
     {
         return _route->insert(position, normal, room, index);

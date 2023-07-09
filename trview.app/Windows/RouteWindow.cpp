@@ -4,6 +4,8 @@
 #include <trview.common/Windows/IClipboard.h>
 #include "../trview_imgui.h"
 #include <format>
+#include "../Routing/IRandomizerRoute.h"
+#include "../Elements/ILevel.h"
 
 namespace trview
 {
@@ -12,6 +14,14 @@ namespace trview
     const std::string RouteWindow::Names::colour = "colour";
 
     using namespace graphics;
+
+    namespace
+    {
+        std::string trimmed_level_name(const std::string& input)
+        {
+            return input.substr(input.find_last_of("/\\") + 1);
+        }
+    }
 
     IRouteWindow::~IRouteWindow()
     {
@@ -31,8 +41,41 @@ namespace trview
             _need_focus = false;
         }
 
-        if (ImGui::BeginChild(Names::waypoint_list_panel.c_str(), ImVec2(150, 0), true))
+        const auto route = _route.lock();
+        auto rando_route = std::dynamic_pointer_cast<IRandomizerRoute>(route);
+
+        if (ImGui::BeginChild(Names::waypoint_list_panel.c_str(), ImVec2(rando_route ? 250 : 150.0f, 0), true))
         {
+            if (rando_route)
+            {
+                if (ImGui::BeginTable("##levellist", 1, ImGuiTableFlags_ScrollY, ImVec2(100, -1)))
+                {
+                    ImGui::TableSetupColumn("Name");
+                    ImGui::TableSetupScrollFreeze(1, 1);
+                    ImGui::TableHeadersRow();
+
+                    std::string selected_level;
+                    if (auto level = rando_route->level().lock())
+                    {
+                        selected_level = trimmed_level_name(level->filename());
+                    }
+
+                    for (const auto& file : rando_route->filenames())
+                    {
+                        ImGui::TableNextRow();
+                        ImGui::TableNextColumn();
+                        bool selected = file == selected_level;
+                        if (ImGui::Selectable(file.c_str(), &selected))
+                        {
+                            on_level_switch(file);
+                        }
+                    }
+
+                    ImGui::EndTable();
+                }
+                ImGui::SameLine();
+            }
+
             std::optional<uint32_t> move_from;
             std::optional<uint32_t> move_to;
 
@@ -43,7 +86,7 @@ namespace trview
                 ImGui::TableSetupScrollFreeze(1, 1);
                 ImGui::TableHeadersRow();
 
-                if (auto route = _route.lock()) 
+                if (route) 
                 {
                     for (uint32_t i = 0; i < route->waypoints(); ++i)
                     {

@@ -390,6 +390,7 @@ namespace trview
         _route->set_randomizer_enabled(_settings.randomizer_tools);
         _route_window->set_randomizer_settings(_settings.randomizer);
         _token_store += _route_window->on_window_created += [&]() { open_recent_route(); };
+        _token_store += _route_window->on_level_switch += [&](const auto& level) { _file_menu->switch_to(level); };
 
         if (_settings.route_startup)
         {
