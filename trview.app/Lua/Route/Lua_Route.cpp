@@ -132,7 +132,7 @@ namespace trview
                     }
                     if (auto result = dialogs->open_file(L"Select route to import", filters, OFN_FILEMUSTEXIST))
                     {
-                        is_rando = result->filter_index == 2;
+                        is_rando = result->filter_index == 2 || result->filename.ends_with(".json");
                         filename = result->filename;
                     }
                     else

@@ -23,6 +23,7 @@ namespace trview
         std::shared_ptr<IWaypoint> add(const std::string& level_name, const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& normal, uint32_t room_number) override;
         void clear() override;
         Colour colour() const override;
+        std::optional<std::string> filename() const override;
         void insert(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& normal, uint32_t room, uint32_t index) override;
         uint32_t insert(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& normal, uint32_t room) override;
         void insert(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& normal, uint32_t room, uint32_t index, IWaypoint::Type type, uint32_t type_index) override;
@@ -34,9 +35,11 @@ namespace trview
         void remove(uint32_t index) override;
         void remove(const std::shared_ptr<IWaypoint>& waypoint) override;
         void render(const ICamera& camera, const ILevelTextureStorage& texture_storage, bool show_selection) override;
+        void save(const std::shared_ptr<IFiles>& files, const UserSettings& settings) override;
         uint32_t selected_waypoint() const override;
         void select_waypoint(uint32_t index) override;
         void set_colour(const Colour& colour) override;
+        void set_filename(const std::string& filename) override;
         void set_level(const std::weak_ptr<ILevel>& level) override;
         void set_randomizer_enabled(bool enabled) override;
         void set_waypoint_colour(const Colour& colour) override;
@@ -48,5 +51,6 @@ namespace trview
         std::shared_ptr<IRoute> _route;
         std::map<std::string, std::vector<std::shared_ptr<IWaypoint>>> _waypoints;
         IWaypoint::Source _waypoint_source;
+        std::optional<std::string> _filename;
     };
 }

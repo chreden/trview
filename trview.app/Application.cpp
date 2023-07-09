@@ -737,7 +737,9 @@ namespace trview
         const auto filename = _dialogs->open_file(L"Import route", filters, OFN_FILEMUSTEXIST);
         if (filename)
         {
-            import_route(filename->filename, filename->filter_index == 2);
+            import_route(filename->filename,
+                filename->filter_index == 2 ||
+                filename->filename.ends_with(".json"));
         }
     }
 
@@ -748,7 +750,8 @@ namespace trview
 
     void Application::save_route()
     {
-        // TODO: Save the route in the current location.
+        // TODO: Prompt if the route didn't come from a file.
+        _route->save(_files, _settings);
     }
 
     void Application::import_route(const std::string& path, bool is_rando)
@@ -758,6 +761,7 @@ namespace trview
             trview::import_route(_route_source, _files, path, _settings.randomizer);
         if (route)
         {
+            route->set_filename(path);
             set_route(route);
             if (_level)
             {
@@ -783,6 +787,7 @@ namespace trview
             const bool is_rando = filename->filter_index == 2;
             export_route(*_route, _files, filename->filename, _level ? _level->filename() : "", _settings.randomizer, is_rando);
             _route->set_unsaved(false);
+            _route->set_filename(filename->filename);
             if (_level)
             {
                 _settings.recent_routes[_level->filename()] = { filename->filename, is_rando };

@@ -272,7 +272,18 @@ namespace trview
     {
         bool stay_open = true;
         ImGui::PushStyleVar(ImGuiStyleVar_WindowMinSize, ImVec2(420, 500));
-        if (ImGui::Begin("Route", &stay_open, ImGuiWindowFlags_MenuBar))
+
+        std::string window_title;
+        if (const auto route = _route.lock())
+        {
+            const auto filename = route->filename();
+            if (filename)
+            {
+                window_title = std::format(" - {}", filename.value());
+            }
+        }
+
+        if (ImGui::Begin(std::format("Route{}", window_title).c_str(), &stay_open, ImGuiWindowFlags_MenuBar))
         {
             render_menu_bar();
             render_waypoint_list();
@@ -483,7 +494,8 @@ namespace trview
                     on_route_open();
                 }
 
-                if (ImGui::MenuItem("Reload"))
+                const auto route = _route.lock();
+                if (ImGui::MenuItem("Reload", nullptr, nullptr, route && route->filename().has_value()))
                 {
                     on_route_reload();
                 }

@@ -1,6 +1,9 @@
 #pragma once
 
 #include <cstdint>
+#include <optional>
+#include <string>
+
 #include <trview.app/Routing/IWaypoint.h>
 #include <trview.app/Geometry/PickResult.h>
 #include <trview.common/Event.h>
@@ -9,6 +12,8 @@
 
 namespace trview
 {
+    struct UserSettings;
+
     /// <summary>
     /// A route is a series of waypoints with notes.
     /// </summary>
@@ -46,6 +51,7 @@ namespace trview
         /// </summary>
         /// <returns>The colour of the route.</returns>
         virtual Colour colour() const = 0;
+        virtual std::optional<std::string> filename() const = 0;
         /// <summary>
         /// Insert the new waypoint into the route.
         /// </summary>
@@ -114,6 +120,7 @@ namespace trview
         /// <param name="texture_storage">Texture storage for the mesh.</param>
         /// <param name="show_selection">Whether to show the selection outline.</param>
         virtual void render(const ICamera& camera, const ILevelTextureStorage& texture_storage, bool show_selection) = 0;
+        virtual void save(const std::shared_ptr<IFiles>& files, const UserSettings& settings) = 0;
         /// <summary>
         /// Get the index of the currently selected waypoint.
         /// </summary>
@@ -129,6 +136,7 @@ namespace trview
         /// </summary>
         /// <param name="colour">The colour to use.</param>
         virtual void set_colour(const Colour& colour) = 0;
+        virtual void set_filename(const std::string& filename) = 0;
         virtual void set_level(const std::weak_ptr<ILevel>& level) = 0;
         /// <summary>
         /// Set whether randomizer tools are enabled.

@@ -1,5 +1,6 @@
 #include "RandomizerRoute.h"
 #include "../Elements/ILevel.h"
+#include "../Settings/UserSettings.h"
 
 using namespace DirectX;
 using namespace DirectX::SimpleMath;
@@ -8,6 +9,11 @@ namespace trview
 {
     namespace
     {
+        std::string trimmed_level_name(const std::string& input)
+        {
+            return input.substr(input.find_last_of("/\\") + 1);
+        }
+
         nlohmann::ordered_json& find_element_case_insensitive(nlohmann::ordered_json& json, const std::string& target_key)
         {
             for (auto it = json.begin(); it != json.end(); ++it)
@@ -47,6 +53,49 @@ namespace trview
 
             route->set_unsaved(false);
             return route;
+        }
+
+        void export_randomizer_settings(nlohmann::ordered_json& json, const RandomizerSettings& randomizer_settings, const IWaypoint& waypoint)
+        {
+            auto waypoint_settings = waypoint.randomizer_settings();
+            for (const auto& setting : randomizer_settings.settings)
+            {
+                const auto value_to_set =
+                    waypoint_settings.find(setting.first) == waypoint_settings.end() ?
+                    setting.second.default_value : waypoint_settings[setting.first];
+
+                if (!setting.second.always_output && value_to_set == setting.second.default_value)
+                {
+                    continue;
+                }
+
+                switch (setting.second.type)
+                {
+                case RandomizerSettings::Setting::Type::Boolean:
+                {
+                    json[setting.first] = std::get<bool>(value_to_set);
+                    break;
+                }
+                case RandomizerSettings::Setting::Type::String:
+                {
+                    json[setting.first] = std::get<std::string>(value_to_set);
+                    break;
+                }
+                case RandomizerSettings::Setting::Type::Number:
+                {
+                    float value = std::get<float>(value_to_set);
+                    if (fabs(round(value) - value) < FLT_EPSILON)
+                    {
+                        json[setting.first] = static_cast<int>(round(value));
+                    }
+                    else
+                    {
+                        json[setting.first] = value;
+                    }
+                    break;
+                }
+                }
+            }
         }
     }
 
@@ -89,6 +138,11 @@ namespace trview
     Colour RandomizerRoute::colour() const
     {
         return _route->colour();
+    }
+
+    std::optional<std::string> RandomizerRoute::filename() const
+    {
+        return _filename;
     }
 
     void RandomizerRoute::insert(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& normal, uint32_t room, uint32_t index)
@@ -146,6 +200,55 @@ namespace trview
         return _route->render(camera, texture_storage, show_selection);
     }
 
+    void RandomizerRoute::save(const std::shared_ptr<IFiles>& files, const UserSettings& settings)
+    {
+        if (!_filename)
+        {
+            return;
+        }
+
+        // TODO: Standard route saving.
+        //. nlohmann::ordered_json json = try_load_route(files, route_filename);
+        nlohmann::ordered_json json;
+
+        // Sync the waypoints for the current route to the storage.
+        if (auto current_level = _route->level().lock())
+        {
+            std::vector<std::shared_ptr<IWaypoint>> waypoints;
+            for (auto i = 0u; i < _route->waypoints(); ++i)
+            {
+                if (auto waypoint = _route->waypoint(i).lock())
+                {
+                    waypoints.push_back(waypoint);
+                }
+                _waypoints[trimmed_level_name(current_level->filename())] = waypoints;
+            }
+        }
+
+        for (const auto& [level, waypoints] : _waypoints)
+        {
+            std::vector<nlohmann::ordered_json> waypoints_element;
+            for (const auto& waypoint : waypoints)
+            {
+                nlohmann::ordered_json waypoint_json;
+
+                auto pos = waypoint->position();
+                waypoint_json["X"] = static_cast<int>(pos.x * 1024);
+                waypoint_json["Y"] = static_cast<int>(pos.y * 1024);
+                waypoint_json["Z"] = static_cast<int>(pos.z * 1024);
+                waypoint_json["Room"] = waypoint->room();
+                export_randomizer_settings(waypoint_json, settings.randomizer, *waypoint);
+
+                waypoints_element.push_back(waypoint_json);
+            }
+
+            json[level] = waypoints_element;
+            files->save_file(_filename.value(), json.dump(2, ' '));
+        }
+
+        _route->set_unsaved(false);
+    }
+
     uint32_t RandomizerRoute::selected_waypoint() const
     {
         return _route->selected_waypoint();
@@ -161,14 +264,17 @@ namespace trview
         return _route->set_colour(colour);
     }
 
+    void RandomizerRoute::set_filename(const std::string& filename)
+    {
+        _filename = filename;
+    }
+
     void RandomizerRoute::set_level(const std::weak_ptr<ILevel>& level)
     {
         _route->clear();
         if (auto new_level = level.lock())
         {
-            const auto filename = new_level->filename();
-            const auto trimmed = filename.substr(filename.find_last_of("/\\") + 1);
-            const auto found = _waypoints.find(trimmed);
+            const auto found = _waypoints.find(trimmed_level_name(new_level->filename()));
             if (found != _waypoints.end())
             {
                 std::ranges::for_each(found->second, [this](auto&& w) { _route->add(w); });
