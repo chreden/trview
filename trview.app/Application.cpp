@@ -784,7 +784,7 @@ namespace trview
         const auto filename = _dialogs->save_file(L"Export route", filters, filter_index);
         if (filename.has_value())
         {
-            const bool is_rando = filename->filter_index == 2;
+            const bool is_rando = filename->filter_index == 2 || filename->filename.ends_with(".json");
             export_route(*_route, _files, filename->filename, _level ? _level->filename() : "", _settings.randomizer, is_rando);
             _route->set_unsaved(false);
             _route->set_filename(filename->filename);
