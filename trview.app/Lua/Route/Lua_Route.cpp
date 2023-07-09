@@ -80,7 +80,7 @@ namespace trview
                         L"Route export",
                         IDialogs::Buttons::Yes_No))
                     {
-                        export_route(*route, files, filename, level_filename, user_settings.randomizer, is_rando);
+                        export_route(*route, files, filename, level_filename, user_settings.randomizer, is_rando || filename.ends_with(".json"));
                     }
                 }
                 else
@@ -93,7 +93,7 @@ namespace trview
 
                     if (const auto result = dialogs->save_file(L"Select location for route export", filters, is_rando ? 2 : 1))
                     {
-                        export_route(*route, files, result.value().filename, level_filename, user_settings.randomizer, is_rando);
+                        export_route(*route, files, result.value().filename, level_filename, user_settings.randomizer, is_rando || result->filename.ends_with(".json"));
                     }
                 }
                 return 0;
