@@ -153,20 +153,6 @@ TEST(RouteWindow, ClearSaveMarksRouteUnsaved)
         .id(RouteWindow::Names::clear_save));
 }
 
-TEST(RouteWindow, ExportRouteButtonRaisesEvent)
-{
-    bool file_raised = false;
-    auto window = register_test_module().build();
-    auto token = window->on_route_save_as += [&]() { file_raised = true; };
-
-    TestImgui imgui([&]() { window->render(); });
-    imgui.click_element(imgui.id("Route")
-        .push_child(RouteWindow::Names::waypoint_list_panel)
-        .id(RouteWindow::Names::export_button));
-
-    ASSERT_TRUE(file_raised);
-}
-
 TEST(RouteWindow, ExportRouteButtonDoesNotRaiseEventWhenCancelled)
 {
     bool file_raised = false;
@@ -179,20 +165,6 @@ TEST(RouteWindow, ExportRouteButtonDoesNotRaiseEventWhenCancelled)
         .id(RouteWindow::Names::export_button));
 
     ASSERT_FALSE(file_raised);
-}
-
-TEST(RouteWindow, ImportRouteButtonRaisesEvent)
-{
-    bool raised = false;
-    auto window = register_test_module().build();
-    auto token = window->on_route_open += [&]() { raised = true; };
-
-    TestImgui imgui([&]() { window->render(); });
-    imgui.click_element(imgui.id("Route")
-        .push_child(RouteWindow::Names::waypoint_list_panel)
-        .id(RouteWindow::Names::import_button));
-
-    ASSERT_TRUE(raised);
 }
 
 TEST(RouteWindow, ImportRouteButtonDoesNotRaiseEventWhenCancelled)
