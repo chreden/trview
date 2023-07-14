@@ -289,7 +289,6 @@ namespace trview
             {
                 std::ranges::for_each(found->second, [this](auto&& w) { _route->add(w); });
             }
-            _route->set_unsaved(false);
         }
         return _route->set_level(level);
     }

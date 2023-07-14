@@ -104,7 +104,7 @@ namespace trview
 
     void Application::open(const std::string& filename, ILevel::OpenMode open_mode)
     {
-        if (open_mode == ILevel::OpenMode::Full && !should_discard_changes())
+        if (open_mode == ILevel::OpenMode::Full && !is_rando_route() && !should_discard_changes())
         {
             return;
         }
@@ -711,6 +711,11 @@ namespace trview
         _viewer->present(_settings.vsync);
     }
 
+    bool Application::is_rando_route() const
+    {
+        return std::dynamic_pointer_cast<IRandomizerRoute>(_route) != nullptr;
+    }
+
     bool Application::should_discard_changes()
     {
         if (_route->is_unsaved())
@@ -753,8 +758,14 @@ namespace trview
 
     void Application::save_route()
     {
-        // TODO: Prompt if the route didn't come from a file.
-        _route->save(_files, _settings);
+        if (!_route->filename())
+        {
+            save_route_as();
+        }
+        else
+        {
+            _route->save(_files, _settings);
+        }
     }
 
     void Application::import_route(const std::string& path, bool is_rando)
@@ -888,7 +899,7 @@ namespace trview
             return;
         }
 
-        if (prompt_user && open_mode == ILevel::OpenMode::Full && !should_discard_changes())
+        if (prompt_user && open_mode == ILevel::OpenMode::Full && !is_rando_route() && !should_discard_changes())
         {
             throw UserCancelledException();
         }
@@ -920,7 +931,10 @@ namespace trview
             _route->clear();
             _route->set_colour(_settings.route_colour);
             _route->set_waypoint_colour(_settings.waypoint_colour);
-            _route->set_unsaved(false);
+            if (!is_rando_route())
+            {
+                _route->set_unsaved(false);
+            }
             _route_window->set_route(_route);
         }
         _textures_windows->set_texture_storage(_level->texture_storage());

@@ -122,6 +122,7 @@ namespace trview
         void set_room_visibility(const std::weak_ptr<IRoom>& room, bool visible);
         void set_camera_sink_visibility(const std::weak_ptr<ICameraSink>& camera_sink, bool visible);
         void select_sector(const std::weak_ptr<ISector>& sector);
+        bool is_rando_route() const;
         bool should_discard_changes();
         void reload();
         void open_route();
