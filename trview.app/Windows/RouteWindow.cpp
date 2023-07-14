@@ -532,6 +532,27 @@ namespace trview
         {
             if (ImGui::BeginMenu("File"))
             {
+                if (_randomizer_enabled)
+                {
+                    if (ImGui::BeginMenu("New"))
+                    {
+                        if (ImGui::MenuItem("Route"))
+                        {
+                            on_new_route();
+                        }
+
+                        if (ImGui::MenuItem("Randomizer Route"))
+                        {
+                            on_new_randomizer_route();
+                        }
+                        ImGui::EndMenu();
+                    }
+                }
+                else if(ImGui::MenuItem("New"))
+                {
+                    on_new_route();
+                }
+
                 if (ImGui::MenuItem("Open"))
                 {
                     on_route_open();

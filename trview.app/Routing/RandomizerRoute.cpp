@@ -110,17 +110,23 @@ namespace trview
 
     std::shared_ptr<IWaypoint> RandomizerRoute::add(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& normal, uint32_t room)
     {
-        return _route->add(position, normal, room);
+        auto result = _route->add(position, normal, room);
+        update_waypoints();
+        return result;
     }
 
     std::shared_ptr<IWaypoint> RandomizerRoute::add(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& normal, uint32_t room, IWaypoint::Type type, uint32_t type_index)
     {
-        return _route->add(position, normal, room, type, type_index);
+        auto result = _route->add(position, normal, room, type, type_index);
+        update_waypoints();
+        return result;
     }
 
     std::shared_ptr<IWaypoint> RandomizerRoute::add(const std::shared_ptr<IWaypoint>& waypoint)
     {
-        return _route->add(waypoint);
+        auto result = _route->add(waypoint);
+        update_waypoints();
+        return result;
     }
 
     std::shared_ptr<IWaypoint> RandomizerRoute::add(const std::string& level_name, const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& normal, uint32_t room_number)
@@ -132,7 +138,8 @@ namespace trview
 
     void RandomizerRoute::clear()
     {
-        return _route->clear();
+        _route->clear();
+        update_waypoints();
     }
 
     Colour RandomizerRoute::colour() const
@@ -152,22 +159,28 @@ namespace trview
 
     void RandomizerRoute::insert(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& normal, uint32_t room, uint32_t index)
     {
-        return _route->insert(position, normal, room, index);
+        _route->insert(position, normal, room, index);
+        update_waypoints();
     }
 
     uint32_t RandomizerRoute::insert(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& normal, uint32_t room)
     {
-        return _route->insert(position, normal, room);
+        auto result = _route->insert(position, normal, room);
+        update_waypoints();
+        return result;
     }
 
     void RandomizerRoute::insert(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& normal, uint32_t room, uint32_t index, IWaypoint::Type type, uint32_t type_index)
     {
-        return _route->insert(position, normal, room, index, type, type_index);
+        _route->insert(position, normal, room, index, type, type_index);
+        update_waypoints();
     }
 
     uint32_t RandomizerRoute::insert(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& normal, uint32_t room, IWaypoint::Type type, uint32_t type_index)
     {
-        return _route->insert(position, normal, room, type, type_index);
+        auto result = _route->insert(position, normal, room, type, type_index);
+        update_waypoints();
+        return result;
     }
 
     bool RandomizerRoute::is_unsaved() const
@@ -182,7 +195,8 @@ namespace trview
 
     void RandomizerRoute::move(int32_t from, int32_t to)
     {
-        return _route->move(from, to);
+        _route->move(from, to);
+        update_waypoints();
     }
 
     PickResult RandomizerRoute::pick(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& direction) const
@@ -192,12 +206,14 @@ namespace trview
 
     void RandomizerRoute::remove(uint32_t index)
     {
-        return _route->remove(index);
+        _route->remove(index);
+        update_waypoints();
     }
 
     void RandomizerRoute::remove(const std::shared_ptr<IWaypoint>& waypoint)
     {
-        return _route->remove(waypoint);
+        _route->remove(waypoint);
+        update_waypoints();
     }
 
     void RandomizerRoute::render(const ICamera& camera, const ILevelTextureStorage& texture_storage, bool show_selection)
@@ -217,18 +233,7 @@ namespace trview
         nlohmann::ordered_json json;
 
         // Sync the waypoints for the current route to the storage.
-        if (auto current_level = _route->level().lock())
-        {
-            std::vector<std::shared_ptr<IWaypoint>> waypoints;
-            for (auto i = 0u; i < _route->waypoints(); ++i)
-            {
-                if (auto waypoint = _route->waypoint(i).lock())
-                {
-                    waypoints.push_back(waypoint);
-                }
-                _waypoints[trimmed_level_name(current_level->filename())] = waypoints;
-            }
-        }
+        update_waypoints();
 
         for (const auto& [level, waypoints] : _waypoints)
         {
@@ -317,6 +322,22 @@ namespace trview
     uint32_t RandomizerRoute::waypoints() const
     {
         return _route->waypoints();
+    }
+
+    void RandomizerRoute::update_waypoints()
+    {
+        if (auto current_level = _route->level().lock())
+        {
+            std::vector<std::shared_ptr<IWaypoint>> waypoints;
+            for (auto i = 0u; i < _route->waypoints(); ++i)
+            {
+                if (auto waypoint = _route->waypoint(i).lock())
+                {
+                    waypoints.push_back(waypoint);
+                }
+                _waypoints[trimmed_level_name(current_level->filename())] = waypoints;
+            }
+        }
     }
 
     std::shared_ptr<IRoute> import_randomizer_route(const IRandomizerRoute::Source& route_source, const std::shared_ptr<IFiles>& files, const std::string& route_filename, const RandomizerSettings& randomizer_settings)

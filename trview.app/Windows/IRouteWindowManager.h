@@ -48,6 +48,8 @@ namespace trview
         Event<> on_window_created;
 
         Event<std::string> on_level_switch;
+        Event<> on_new_route;
+        Event<> on_new_randomizer_route;
 
         /// Render all of the route windows.
         virtual void render() = 0;

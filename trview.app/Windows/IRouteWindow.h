@@ -56,6 +56,9 @@ namespace trview
 
         Event<std::string> on_level_switch;
 
+        Event<> on_new_route;
+        Event<> on_new_randomizer_route;
+
         /// Render the window.
         virtual void render() = 0;
 

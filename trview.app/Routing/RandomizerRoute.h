@@ -49,6 +49,8 @@ namespace trview
         std::weak_ptr<IWaypoint> waypoint(uint32_t index) const override;
         uint32_t waypoints() const override;
     private:
+        void update_waypoints();
+
         std::shared_ptr<IRoute> _route;
         std::map<std::string, std::vector<std::shared_ptr<IWaypoint>>> _waypoints;
         IWaypoint::Source _waypoint_source;
