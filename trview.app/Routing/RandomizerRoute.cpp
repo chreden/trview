@@ -290,7 +290,8 @@ namespace trview
                 std::ranges::for_each(found->second, [this](auto&& w) { _route->add(w); });
             }
         }
-        return _route->set_level(level);
+        _route->set_level(level);
+        _route->set_unsaved(false);
     }
 
     void RandomizerRoute::set_randomizer_enabled(bool enabled)

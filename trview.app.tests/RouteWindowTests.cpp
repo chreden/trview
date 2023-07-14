@@ -78,7 +78,7 @@ TEST(RouteWindow, WaypointRoomPositionCalculatedCorrectly)
     window->select_waypoint(0);
 
     TestImgui imgui([&]() { window->render(); });
-    auto rendered = imgui.rendered_text(imgui.id("Route")
+    auto rendered = imgui.rendered_text(imgui.id("Route###Route")
         .push_child(RouteWindow::Names::waypoint_details_panel)
         .id(RouteWindow::Names::waypoint_stats));
 
@@ -104,7 +104,7 @@ TEST(RouteWindow, RoomPositionValuesCopiedToClipboard)
     window->select_waypoint(0);
 
     TestImgui imgui([&]() { window->render(); });
-    imgui.click_element(imgui.id("Route")
+    imgui.click_element(imgui.id("Route###Route")
         .push_child(RouteWindow::Names::waypoint_details_panel)
         .push(RouteWindow::Names::waypoint_stats)
         .id("Room Position"));
@@ -127,7 +127,7 @@ TEST(RouteWindow, AddingWaypointNotesMarksRouteUnsaved)
     window->select_waypoint(0);
 
     TestImgui imgui([&]() { window->render(); });
-    imgui.click_element_with_hover(imgui.id("Route")
+    imgui.click_element_with_hover(imgui.id("Route###Route")
         .push_child(RouteWindow::Names::waypoint_details_panel)
         .push(RouteWindow::Names::notes).id(""));
     imgui.enter_text("Test");
@@ -148,7 +148,7 @@ TEST(RouteWindow, ClearSaveMarksRouteUnsaved)
     window->set_route(route);
 
     TestImgui imgui([&]() { window->render(); });
-    imgui.click_element(imgui.id("Route")
+    imgui.click_element(imgui.id("Route###Route")
         .push_child(RouteWindow::Names::waypoint_details_panel)
         .id(RouteWindow::Names::clear_save));
 }
@@ -160,7 +160,7 @@ TEST(RouteWindow, ExportRouteButtonDoesNotRaiseEventWhenCancelled)
     auto token = window->on_route_save_as += [&]() { file_raised = true; };
 
     TestImgui imgui([&]() { window->render(); });
-    imgui.click_element(imgui.id("Route")
+    imgui.click_element(imgui.id("Route###Route")
         .push_child(RouteWindow::Names::waypoint_list_panel)
         .id(RouteWindow::Names::export_button));
 
@@ -174,7 +174,7 @@ TEST(RouteWindow, ImportRouteButtonDoesNotRaiseEventWhenCancelled)
     auto token = window->on_route_save_as += [&]() { file_raised = true; };
     
     TestImgui imgui([&]() { window->render(); });
-    imgui.click_element(imgui.id("Route")
+    imgui.click_element(imgui.id("Route###Route")
         .push_child(RouteWindow::Names::waypoint_list_panel)
         .id(RouteWindow::Names::import_button));
 
@@ -201,7 +201,7 @@ TEST(RouteWindow, ExportSaveButtonSavesFile)
     window->set_route(route);
 
     TestImgui imgui([&]() { window->render(); });
-    imgui.click_element(imgui.id("Route")
+    imgui.click_element(imgui.id("Route###Route")
         .push_child(RouteWindow::Names::waypoint_details_panel)
         .id("SAVEGAME.0"));
 }
@@ -226,7 +226,7 @@ TEST(RouteWindow, ExportSaveButtonShowsErrorOnFailure)
     window->set_route(route);
 
     TestImgui imgui([&]() { window->render(); });
-    imgui.click_element(imgui.id("Route")
+    imgui.click_element(imgui.id("Route###Route")
         .push_child(RouteWindow::Names::waypoint_details_panel)
         .id("SAVEGAME.0"));
 }
@@ -250,7 +250,7 @@ TEST(RouteWindow, ExportSaveButtonDoesNotSaveFileWhenCancelled)
     window->set_route(route);
 
     TestImgui imgui([&]() { window->render(); });
-    imgui.click_element(imgui.id("Route")
+    imgui.click_element(imgui.id("Route###Route")
         .push_child(RouteWindow::Names::waypoint_details_panel)
         .id("SAVEGAME.0"));
 }
@@ -275,7 +275,7 @@ TEST(RouteWindow, AttachSaveButtonLoadsSave)
     window->set_route(route);
 
     TestImgui imgui([&]() { window->render(); });
-    imgui.click_element(imgui.id("Route")
+    imgui.click_element(imgui.id("Route###Route")
         .push_child(RouteWindow::Names::waypoint_details_panel)
         .id(RouteWindow::Names::attach_save));
 }
@@ -299,7 +299,7 @@ TEST(RouteWindow, AttachSaveButtonShowsMessageOnError)
     window->set_route(route);
 
     TestImgui imgui([&]() { window->render(); });
-    imgui.click_element(imgui.id("Route")
+    imgui.click_element(imgui.id("Route###Route")
         .push_child(RouteWindow::Names::waypoint_details_panel)
         .id(RouteWindow::Names::attach_save));
 
@@ -324,7 +324,7 @@ TEST(RouteWindow, AttachSaveButtonDoesNotLoadFileWhenCancelled)
     window->set_route(route);
 
     TestImgui imgui([&]() { window->render(); });
-    imgui.click_element(imgui.id("Route")
+    imgui.click_element(imgui.id("Route###Route")
         .push_child(RouteWindow::Names::waypoint_details_panel)
         .id(RouteWindow::Names::attach_save));
     ASSERT_FALSE(waypoint->has_save());
@@ -342,7 +342,7 @@ TEST(RouteWindow, ClickStatShowsBubble)
     window->select_waypoint(0);
 
     TestImgui imgui([&]() { window->render(); });
-    imgui.click_element(imgui.id("Route")
+    imgui.click_element(imgui.id("Route###Route")
         .push_child(RouteWindow::Names::waypoint_details_panel)
         .push(RouteWindow::Names::waypoint_stats)
         .id("Room Position"));
@@ -365,13 +365,13 @@ TEST(RouteWindow, RandomizerPanelVisibleBasedOnSetting)
     window->select_waypoint(0);
 
     TestImgui imgui([&]() { window->render(); });
-    ASSERT_FALSE(imgui.element_present(imgui.id("Route")
+    ASSERT_FALSE(imgui.element_present(imgui.id("Route###Route")
         .push_child(RouteWindow::Names::waypoint_details_panel)
         .push(RouteWindow::Names::randomizer_flags)
         .id("Test")));
     window->set_randomizer_enabled(true);
     imgui.render();
-    ASSERT_TRUE(imgui.element_present(imgui.id("Route")
+    ASSERT_TRUE(imgui.element_present(imgui.id("Route###Route")
         .push_child(RouteWindow::Names::waypoint_details_panel)
         .push(RouteWindow::Names::randomizer_flags)
         .id("Test")));
@@ -397,14 +397,14 @@ TEST(RouteWindow, RandomizerPanelCreatesUIFromSettings)
 
     TestImgui imgui([&]() { window->render(); });
 
-    ASSERT_TRUE(imgui.element_present(imgui.id("Route")
+    ASSERT_TRUE(imgui.element_present(imgui.id("Route###Route")
         .push_child(RouteWindow::Names::waypoint_details_panel)
         .push(RouteWindow::Names::randomizer_flags)
         .id("Test 1")));
-    ASSERT_TRUE(imgui.element_present(imgui.id("Route")
+    ASSERT_TRUE(imgui.element_present(imgui.id("Route###Route")
         .push_child(RouteWindow::Names::waypoint_details_panel)
         .id("Test 2")));
-    ASSERT_TRUE(imgui.element_present(imgui.id("Route")
+    ASSERT_TRUE(imgui.element_present(imgui.id("Route###Route")
         .push_child(RouteWindow::Names::waypoint_details_panel)
         .id("Test 3")));
 }
@@ -429,7 +429,7 @@ TEST(RouteWindow, ToggleRandomizerBoolUpdatesWaypoint)
     window->select_waypoint(0);
 
     TestImgui imgui([&]() { window->render(); });
-    imgui.click_element(imgui.id("Route")
+    imgui.click_element(imgui.id("Route###Route")
         .push_child(RouteWindow::Names::waypoint_details_panel)
         .push(RouteWindow::Names::randomizer_flags)
         .id("Test 1"));
@@ -458,7 +458,7 @@ TEST(RouteWindow, ChooseRandomizerDropDownUpdatesWaypoint)
     window->select_waypoint(0);
 
     TestImgui imgui([&]() { window->render(); });
-    imgui.click_element(imgui.id("Route")
+    imgui.click_element(imgui.id("Route###Route")
         .push_child(RouteWindow::Names::waypoint_details_panel)
         .id("Test 1"));
     imgui.click_element(imgui.id("##Combo_00").id("Two"));
@@ -487,7 +487,7 @@ TEST(RouteWindow, SetRandomizerTextUpdatesWaypoint)
     window->select_waypoint(0);
 
     TestImgui imgui([&]() { window->render(); });
-    imgui.click_element(imgui.id("Route")
+    imgui.click_element(imgui.id("Route###Route")
         .push_child(RouteWindow::Names::waypoint_details_panel)
         .id("Test 1"));
     imgui.enter_text("Two");
@@ -516,7 +516,7 @@ TEST(RouteWindow, SetRandomizerNumberUpdatesWaypoint)
     window->select_waypoint(0);
 
     TestImgui imgui([&]() { window->render(); });
-    imgui.click_element(imgui.id("Route")
+    imgui.click_element(imgui.id("Route###Route")
         .push_child(RouteWindow::Names::waypoint_details_panel)
         .id("Test 1"));
     imgui.enter_text("2");
@@ -542,7 +542,7 @@ TEST(RouteWindow, DeleteWaypointRaisesEvent)
     };
 
     TestImgui imgui([&]() { window->render(); });
-    imgui.click_element(imgui.id("Route")
+    imgui.click_element(imgui.id("Route###Route")
         .push_child(RouteWindow::Names::waypoint_details_panel)
         .id(RouteWindow::Names::delete_waypoint));
 

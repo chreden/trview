@@ -776,6 +776,7 @@ namespace trview
         if (route)
         {
             route->set_filename(path);
+            route->set_unsaved(false);
             set_route(route);
             if (_level)
             {
@@ -812,7 +813,7 @@ namespace trview
 
     void Application::open_recent_route()
     {
-        if (!_level || _recent_route_prompted || !_route_window->is_window_open())
+        if (!_level || _recent_route_prompted || !_route_window->is_window_open() || std::dynamic_pointer_cast<IRandomizerRoute>(_route) != nullptr)
         {
             return;
         }

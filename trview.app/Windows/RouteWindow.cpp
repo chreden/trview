@@ -326,7 +326,7 @@ namespace trview
             }
         }
 
-        if (ImGui::Begin(std::format("Route{}", window_title).c_str(), &stay_open, ImGuiWindowFlags_MenuBar))
+        if (ImGui::Begin(std::format("Route{}###Route", window_title).c_str(), &stay_open, ImGuiWindowFlags_MenuBar))
         {
             render_menu_bar();
             render_waypoint_list();
