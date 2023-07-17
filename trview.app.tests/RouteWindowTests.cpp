@@ -1,5 +1,6 @@
 #include <trview.app/Windows/RouteWindow.h>
 #include <trview.app/Mocks/Routing/IRoute.h>
+#include <trview.app/Mocks/Routing/IRandomizerRoute.h>
 #include <trview.app/Mocks/Elements/IRoom.h>
 #include <trview.common/Mocks/Windows/IClipboard.h>
 #include <trview.common/Mocks/Windows/IDialogs.h>
@@ -349,7 +350,7 @@ TEST(RouteWindow, ClickStatShowsBubble)
     ASSERT_NE(imgui.find_window("##Tooltip_00"), nullptr);
 }
 
-TEST(RouteWindow, RandomizerPanelVisibleBasedOnSetting)
+TEST(RouteWindow, RandomizerPanelVisibleBasedOnRouteType)
 {
     auto window = register_test_module().build();
 
@@ -369,7 +370,12 @@ TEST(RouteWindow, RandomizerPanelVisibleBasedOnSetting)
         .push_child(RouteWindow::Names::waypoint_details_panel)
         .push(RouteWindow::Names::randomizer_flags)
         .id("Test")));
-    window->set_randomizer_enabled(true);
+
+    auto rando_route = mock_shared<MockRandomizerRoute>();
+    EXPECT_CALL(*rando_route, waypoints).WillRepeatedly(Return(1));
+    EXPECT_CALL(*rando_route, waypoint(An<uint32_t>())).WillRepeatedly(Return(waypoint));
+    window->set_route(rando_route);
+
     imgui.render();
     ASSERT_TRUE(imgui.element_present(imgui.id("Route###Route")
         .push_child(RouteWindow::Names::waypoint_details_panel)
@@ -382,7 +388,7 @@ TEST(RouteWindow, RandomizerPanelCreatesUIFromSettings)
     auto window = register_test_module().build();
 
     auto waypoint = mock_shared<MockWaypoint>();
-    auto route = mock_shared<MockRoute>();
+    auto route = mock_shared<MockRandomizerRoute>();
     EXPECT_CALL(*route, waypoints).WillRepeatedly(Return(1));
     EXPECT_CALL(*route, waypoint(An<uint32_t>())).WillRepeatedly(Return(waypoint));
     window->set_route(route);
@@ -421,7 +427,7 @@ TEST(RouteWindow, ToggleRandomizerBoolUpdatesWaypoint)
     IWaypoint::WaypointRandomizerSettings new_settings;
 
     auto waypoint = mock_shared<MockWaypoint>();
-    auto route = mock_shared<MockRoute>();
+    auto route = mock_shared<MockRandomizerRoute>();
     EXPECT_CALL(*route, waypoints).WillRepeatedly(Return(1));
     EXPECT_CALL(*route, waypoint(An<uint32_t>())).WillRepeatedly(Return(waypoint));
     EXPECT_CALL(*waypoint, set_randomizer_settings(An<const IWaypoint::WaypointRandomizerSettings&>())).WillRepeatedly(SaveArg<0>(&new_settings));
@@ -450,7 +456,7 @@ TEST(RouteWindow, ChooseRandomizerDropDownUpdatesWaypoint)
     IWaypoint::WaypointRandomizerSettings new_settings;
 
     auto waypoint = mock_shared<MockWaypoint>();
-    auto route = mock_shared<MockRoute>();
+    auto route = mock_shared<MockRandomizerRoute>();
     EXPECT_CALL(*route, waypoints).WillRepeatedly(Return(1));
     EXPECT_CALL(*route, waypoint(An<uint32_t>())).WillRepeatedly(Return(waypoint));
     EXPECT_CALL(*waypoint, set_randomizer_settings(An<const IWaypoint::WaypointRandomizerSettings&>())).WillRepeatedly(SaveArg<0>(&new_settings));
@@ -479,7 +485,7 @@ TEST(RouteWindow, SetRandomizerTextUpdatesWaypoint)
     IWaypoint::WaypointRandomizerSettings new_settings;
 
     auto waypoint = mock_shared<MockWaypoint>();
-    auto route = mock_shared<MockRoute>();
+    auto route = mock_shared<MockRandomizerRoute>();
     EXPECT_CALL(*route, waypoints).WillRepeatedly(Return(1));
     EXPECT_CALL(*route, waypoint(An<uint32_t>())).WillRepeatedly(Return(waypoint));
     EXPECT_CALL(*waypoint, set_randomizer_settings(An<const IWaypoint::WaypointRandomizerSettings&>())).WillRepeatedly(SaveArg<0>(&new_settings));
@@ -508,7 +514,7 @@ TEST(RouteWindow, SetRandomizerNumberUpdatesWaypoint)
     IWaypoint::WaypointRandomizerSettings new_settings;
 
     auto waypoint = mock_shared<MockWaypoint>();
-    auto route = mock_shared<MockRoute>();
+    auto route = mock_shared<MockRandomizerRoute>();
     EXPECT_CALL(*route, waypoints).WillRepeatedly(Return(1));
     EXPECT_CALL(*route, waypoint(An<uint32_t>())).WillRepeatedly(Return(waypoint));
     EXPECT_CALL(*waypoint, set_randomizer_settings(An<const IWaypoint::WaypointRandomizerSettings&>())).WillRepeatedly(SaveArg<0>(&new_settings));

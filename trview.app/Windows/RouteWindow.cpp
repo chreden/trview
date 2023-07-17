@@ -228,7 +228,8 @@ namespace trview
                         ImGui::EndPopup();
                     }
 
-                    if (!_randomizer_enabled)
+                    const bool is_rando = std::dynamic_pointer_cast<IRandomizerRoute>(route) != nullptr;
+                    if (!is_rando)
                     {
                         const std::string save_text = waypoint->has_save() ? "SAVEGAME.0" : Names::attach_save.c_str();
                         if (ImGui::Button(save_text.c_str(), ImVec2(-24, 18)))
@@ -289,7 +290,7 @@ namespace trview
                     {
                         // Don't access the waypoint after it has been deleted - this is an issue with the window not
                         // having temporary ownership of the waypoint - if it was shared_ptr it would be fine.
-                        if (_randomizer_enabled)
+                        if (is_rando)
                         {
                             ImGui::Text("Randomizer");
                             load_randomiser_settings(*waypoint);
