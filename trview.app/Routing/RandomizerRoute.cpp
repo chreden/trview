@@ -228,11 +228,14 @@ namespace trview
             return;
         }
 
-        // TODO: Standard route saving.
-        //. nlohmann::ordered_json json = try_load_route(files, route_filename);
+        save_as(files, _filename.value(), settings);
+        _route->set_unsaved(false);
+    }
+
+    void RandomizerRoute::save_as(const std::shared_ptr<IFiles>& files, const std::string& filename, const UserSettings& settings)
+    {
         nlohmann::ordered_json json;
 
-        // Sync the waypoints for the current route to the storage.
         update_waypoints();
 
         for (const auto& [level, waypoints] : _waypoints)
@@ -253,10 +256,8 @@ namespace trview
             }
 
             json[level] = waypoints_element;
-            files->save_file(_filename.value(), json.dump(2, ' '));
+            files->save_file(filename, json.dump(2, ' '));
         }
-
-        _route->set_unsaved(false);
     }
 
     uint32_t RandomizerRoute::selected_waypoint() const

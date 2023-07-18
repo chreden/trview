@@ -465,15 +465,13 @@ TEST(Application, ExportRouteSavesFile)
     EXPECT_CALL(*dialogs, save_file).Times(1).WillRepeatedly(Return(IDialogs::FileResult{ "filename", 0 }));
 
     auto [route_window_manager_ptr, route_window_manager] = create_mock<MockRouteWindowManager>();
-    auto files = mock_shared<MockFiles>();
-    EXPECT_CALL(*files, save_file(An<const std::string&>(), An<const std::string&>())).Times(1);
     auto route = mock_shared<MockRoute>();
+    EXPECT_CALL(*route, save_as).Times(1);
     EXPECT_CALL(*route, set_unsaved(false)).Times(1);
 
     auto application = register_test_module()
         .with_route_window_manager(std::move(route_window_manager_ptr))
         .with_route_source([&](auto&&...) {return route; })
-        .with_files(files)
         .with_dialogs(dialogs)
         .build();
 

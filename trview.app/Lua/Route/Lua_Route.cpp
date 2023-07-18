@@ -51,26 +51,15 @@ namespace trview
             {
                 auto route = get_self<IRoute>(L);
 
-                bool is_rando = false;
+                bool is_rando = dynamic_cast<IRandomizerRoute*>(route) != nullptr;
                 std::string filename;
 
                 if (lua_type(L, 1) == LUA_TTABLE)
                 {
-                    if (LUA_TBOOLEAN == lua_getfield(L, 2, "is_randomizer"))
-                    {
-                        is_rando = lua_toboolean(L, -1);
-                    }
-
                     if (LUA_TSTRING == lua_getfield(L, 2, "filename"))
                     {
                         filename = lua_tostring(L, -1);
                     }
-                }
-
-                std::string level_filename;
-                if (auto level = route->level().lock())
-                {
-                    level_filename = level->filename();
                 }
 
                 if (!filename.empty())
@@ -80,20 +69,24 @@ namespace trview
                         L"Route export",
                         IDialogs::Buttons::Yes_No))
                     {
-                        export_route(*route, files, filename, level_filename, user_settings.randomizer, is_rando || filename.ends_with(".json"));
+                        route->save_as(files, filename, user_settings);
                     }
                 }
                 else
                 {
-                    std::vector<IDialogs::FileFilter> filters{ { L"trview route", { L"*.tvr" } } };
-                    if (user_settings.randomizer_tools || is_rando)
+                    std::vector<IDialogs::FileFilter> filters;
+                    if (is_rando)
                     {
-                        filters.push_back({ L"Randomizer Locations", { L"*.json" } });
+                        filters.push_back({ { L"Randomizer Locations", { L"*.json" } } });
+                    }
+                    else
+                    {
+                        filters.push_back({ { L"trview route", { L"*.tvr" } } });
                     }
 
-                    if (const auto result = dialogs->save_file(L"Select location for route export", filters, is_rando ? 2 : 1))
+                    if (const auto result = dialogs->save_file(L"Select location for route export", filters, 1))
                     {
-                        export_route(*route, files, result.value().filename, level_filename, user_settings.randomizer, is_rando || result->filename.ends_with(".json"));
+                        route->save_as(files, result->filename, user_settings);
                     }
                 }
                 return 0;

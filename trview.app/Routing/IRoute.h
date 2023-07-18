@@ -121,6 +121,7 @@ namespace trview
         /// <param name="show_selection">Whether to show the selection outline.</param>
         virtual void render(const ICamera& camera, const ILevelTextureStorage& texture_storage, bool show_selection) = 0;
         virtual void save(const std::shared_ptr<IFiles>& files, const UserSettings& settings) = 0;
+        virtual void save_as(const std::shared_ptr<IFiles>& files, const std::string& filename, const UserSettings& settings) = 0;
         /// <summary>
         /// Get the index of the currently selected waypoint.
         /// </summary>
@@ -172,5 +173,4 @@ namespace trview
 
     std::shared_ptr<IRoute> import_route(const IRoute::Source& route_source, const std::shared_ptr<IFiles>& files, const std::string& route_filename, const RandomizerSettings& randomizer_settings);
     IWaypoint::WaypointRandomizerSettings import_randomizer_settings(const nlohmann::json& json, const RandomizerSettings& randomizer_settings);
-    void export_route(const IRoute& route, std::shared_ptr<IFiles>& files, const std::string& route_filename, const std::string& level_filename, const RandomizerSettings& randomizer_settings, bool rando_export);
 }

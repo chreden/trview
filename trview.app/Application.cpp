@@ -788,19 +788,21 @@ namespace trview
 
     void Application::save_route_as()
     {
-        std::vector<IDialogs::FileFilter> filters{ { L"trview route", { L"*.tvr" } } };
-        uint32_t filter_index = 1;
-        if (_settings.randomizer_tools)
+        const bool is_rando = std::dynamic_pointer_cast<IRandomizerRoute>(_route) != nullptr;
+        std::vector<IDialogs::FileFilter> filters;
+        if (is_rando)
         {
-            filters.push_back({ L"Randomizer Locations", { L"*.json" } });
-            filter_index = 2;
+            filters.push_back({ { L"Randomizer Locations", { L"*.json" } } });
+        }
+        else
+        {
+            filters.push_back({ { L"trview route", { L"*.tvr" } } });
         }
 
-        const auto filename = _dialogs->save_file(L"Export route", filters, filter_index);
+        const auto filename = _dialogs->save_file(L"Export route", filters, 1);
         if (filename.has_value())
         {
-            const bool is_rando = filename->filter_index == 2 || filename->filename.ends_with(".json");
-            export_route(*_route, _files, filename->filename, _level ? _level->filename() : "", _settings.randomizer, is_rando);
+            _route->save_as(_files, filename->filename, _settings);
             _route->set_unsaved(false);
             _route->set_filename(filename->filename);
             if (_level)
