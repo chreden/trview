@@ -29,6 +29,48 @@ namespace trview
             throw std::exception();
         }
 
+        IWaypoint::WaypointRandomizerSettings import_randomizer_settings(const nlohmann::json& json, const RandomizerSettings& randomizer_settings)
+        {
+            IWaypoint::WaypointRandomizerSettings result;
+            for (const auto& setting : randomizer_settings.settings)
+            {
+                if (!json.count(setting.first))
+                {
+                    result[setting.first] = setting.second.default_value;
+                    continue;
+                }
+
+                switch (setting.second.type)
+                {
+                case RandomizerSettings::Setting::Type::Boolean:
+                {
+                    result[setting.first] = read_attribute<bool>(json, setting.first, std::get<bool>(setting.second.default_value));
+                    break;
+                }
+                case RandomizerSettings::Setting::Type::Number:
+                {
+                    result[setting.first] = read_attribute<float>(json, setting.first, std::get<float>(setting.second.default_value));
+                    break;
+                }
+                case RandomizerSettings::Setting::Type::String:
+                {
+                    // Covers the case where enum values are saved as integers.
+                    if (!setting.second.options.empty() && json.count(setting.first) && json[setting.first].is_number())
+                    {
+                        const auto index = json[setting.first].get<int>();
+                        result[setting.first] = setting.second.options[std::max(0, std::min<int>(index, static_cast<int>(setting.second.options.size() - 1)))];
+                    }
+                    else
+                    {
+                        result[setting.first] = read_attribute<std::string>(json, setting.first, std::get<std::string>(setting.second.default_value));
+                    }
+                    break;
+                }
+                }
+            }
+            return result;
+        }
+
         std::shared_ptr<IRandomizerRoute> import_rando_route(const IRandomizerRoute::Source& route_source, const std::vector<uint8_t>& data, const RandomizerSettings& randomizer_settings)
         {
             auto json = nlohmann::ordered_json::parse(data.begin(), data.end());

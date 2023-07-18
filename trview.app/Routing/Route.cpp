@@ -61,71 +61,6 @@ namespace trview
             }
             return Vector3(result[0], result[1], result[2]);
         }
-
-        /// <summary>
-        /// Export randomizer settings direct to a randomizer locations file.
-        /// </summary>
-        /// <param name="json">The json to write to.</param>
-        /// <param name="randomizer_settings">Randomzier setings and definitions.</param>
-        /// <param name="waypoint">The waypoint to save.</param>
-        void export_randomizer_settings(nlohmann::ordered_json& json, const RandomizerSettings& randomizer_settings, const IWaypoint& waypoint)
-        {
-            auto waypoint_settings = waypoint.randomizer_settings();
-            for (const auto& setting : randomizer_settings.settings)
-            {
-                const auto value_to_set =
-                    waypoint_settings.find(setting.first) == waypoint_settings.end() ?
-                    setting.second.default_value : waypoint_settings[setting.first];
-
-                if (!setting.second.always_output && value_to_set == setting.second.default_value)
-                {
-                    continue;
-                }
-
-                switch (setting.second.type)
-                {
-                case RandomizerSettings::Setting::Type::Boolean:
-                {
-                    json[setting.first] = std::get<bool>(value_to_set);
-                    break;
-                }
-                case RandomizerSettings::Setting::Type::String:
-                {
-                    json[setting.first] = std::get<std::string>(value_to_set);
-                    break;
-                }
-                case RandomizerSettings::Setting::Type::Number:
-                {
-                    float value = std::get<float>(value_to_set);
-                    if (fabs(round(value) - value) < FLT_EPSILON)
-                    {
-                        json[setting.first] = static_cast<int>(round(value));
-                    }
-                    else
-                    {
-                        json[setting.first] = value;
-                    }
-                    break;
-                }
-                }
-            }
-        }
-
-        /// <summary>
-        /// Export randomizer settings on waypoints so that they can be loaded by trview in the future.
-        /// </summary>
-        /// <param name="json">Json to write to.</param>
-        /// <param name="settings">Randomizer settings and definitions.</param>
-        /// <param name="waypoint">The waypoint to save.</param>
-        void export_trview_randomizer_settings(nlohmann::json& json, const RandomizerSettings& randomizer_settings, const IWaypoint& waypoint)
-        {
-            nlohmann::ordered_json randomizer_node;
-            export_randomizer_settings(randomizer_node, randomizer_settings, waypoint);
-            if (!randomizer_node.is_null())
-            {
-                json["randomizer"] = randomizer_node;
-            }
-        }
     }
 
     IRoute::~IRoute()
@@ -501,58 +436,7 @@ namespace trview
         waypoint.on_changed -= on_changed;
     }
 
-    IWaypoint::WaypointRandomizerSettings import_randomizer_settings(const nlohmann::json& json, const RandomizerSettings& randomizer_settings)
-    {
-        IWaypoint::WaypointRandomizerSettings result;
-        for (const auto& setting : randomizer_settings.settings)
-        {
-            if (!json.count(setting.first))
-            {
-                result[setting.first] = setting.second.default_value;
-                continue;
-            }
-
-            switch (setting.second.type)
-            {
-                case RandomizerSettings::Setting::Type::Boolean:
-                {
-                    result[setting.first] = read_attribute<bool>(json, setting.first, std::get<bool>(setting.second.default_value));
-                    break;
-                }
-                case RandomizerSettings::Setting::Type::Number:
-                {
-                    result[setting.first] = read_attribute<float>(json, setting.first, std::get<float>(setting.second.default_value));
-                    break;
-                }
-                case RandomizerSettings::Setting::Type::String:
-                {
-                    // Covers the case where enum values are saved as integers.
-                    if (!setting.second.options.empty() && json.count(setting.first) && json[setting.first].is_number())
-                    {
-                        const auto index = json[setting.first].get<int>();
-                        result[setting.first] = setting.second.options[std::max(0, std::min<int>(index, static_cast<int>(setting.second.options.size() - 1)))];
-                    }
-                    else
-                    {
-                        result[setting.first] = read_attribute<std::string>(json, setting.first, std::get<std::string>(setting.second.default_value));
-                    }
-                    break;
-                }
-            }
-        }
-        return result;
-    }
-
-    IWaypoint::WaypointRandomizerSettings import_trview_randomizer_settings(const nlohmann::json& json, const RandomizerSettings& randomizer_settings)
-    {
-        if (json.count("randomizer"))
-        {
-            return import_randomizer_settings(json["randomizer"], randomizer_settings);
-        }
-        return {};
-    }
-
-    std::shared_ptr<IRoute> import_trview_route(const IRoute::Source& route_source, const std::vector<uint8_t>& data, const RandomizerSettings& randomizer_settings)
+    std::shared_ptr<IRoute> import_trview_route(const IRoute::Source& route_source, const std::vector<uint8_t>& data)
     {
         auto json = nlohmann::json::parse(data.begin(), data.end());
 
@@ -584,7 +468,6 @@ namespace trview
             {
                 new_waypoint->set_notes(notes);
                 new_waypoint->set_save_file(from_base64(waypoint.value("save", "")));
-                new_waypoint->set_randomizer_settings(import_trview_randomizer_settings(waypoint, randomizer_settings));
             }
         }
 
@@ -592,7 +475,7 @@ namespace trview
         return route;
     }
 
-    std::shared_ptr<IRoute> import_route(const IRoute::Source& route_source, const std::shared_ptr<IFiles>& files, const std::string& route_filename, const RandomizerSettings& randomizer_settings)
+    std::shared_ptr<IRoute> import_route(const IRoute::Source& route_source, const std::shared_ptr<IFiles>& files, const std::string& route_filename)
     {
         try
         {
@@ -602,7 +485,7 @@ namespace trview
                 return nullptr;
             }
 
-            return import_trview_route(route_source, data.value(), randomizer_settings);
+            return import_trview_route(route_source, data.value());
         }
         catch (std::exception& e)
         {

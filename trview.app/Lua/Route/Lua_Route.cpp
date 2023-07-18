@@ -137,7 +137,7 @@ namespace trview
 
                 auto route = is_rando ?
                     import_randomizer_route(randomizer_route_source, files, filename, user_settings.randomizer) :
-                    import_route(route_source, files, filename, user_settings.randomizer);
+                    import_route(route_source, files, filename);
                 if (route)
                 {
                     route->set_level(level);

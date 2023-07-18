@@ -772,7 +772,7 @@ namespace trview
     {
         auto route = is_rando ?
             trview::import_randomizer_route(_randomizer_route_source, _files, path, _settings.randomizer) :
-            trview::import_route(_route_source, _files, path, _settings.randomizer);
+            trview::import_route(_route_source, _files, path);
         if (route)
         {
             route->set_filename(path);
@@ -799,7 +799,7 @@ namespace trview
             filters.push_back({ L"trview route", { L"*.tvr" } });
         }
 
-        const auto filename = _dialogs->save_file(L"Export route", filters, 1);
+        const auto filename = _dialogs->save_file(L"Save route", filters, 1);
         if (filename.has_value())
         {
             _route->save_as(_files, filename->filename, _settings);
