@@ -792,11 +792,11 @@ namespace trview
         std::vector<IDialogs::FileFilter> filters;
         if (is_rando)
         {
-            filters.push_back({ { L"Randomizer Locations", { L"*.json" } } });
+            filters.push_back({ L"Randomizer Locations", { L"*.json" }});
         }
         else
         {
-            filters.push_back({ { L"trview route", { L"*.tvr" } } });
+            filters.push_back({ L"trview route", { L"*.tvr" } });
         }
 
         const auto filename = _dialogs->save_file(L"Export route", filters, 1);
