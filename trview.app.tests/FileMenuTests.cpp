@@ -216,3 +216,23 @@ TEST(FileMenu, NextFile)
     ASSERT_TRUE(raised);
     ASSERT_EQ(raised.value(), "file2");
 }
+
+TEST(FileMenu, SwitchTo)
+{
+    auto files = mock_shared<MockFiles>();
+    std::vector<IFiles::File> filenames{ { "file1", "file1", 0 }, { "file2", "file2", 0 } };
+    EXPECT_CALL(*files, get_files).Times(1).WillOnce(Return(filenames));
+
+    auto menu = register_test_module().with_files(files).build();
+
+    std::optional<std::string> raised;
+    auto token = menu->on_file_open += [&](const auto& f)
+    {
+        raised = f;
+    };
+
+    menu->open_file("file1");
+    menu->switch_to("c:\\dir\\file2");
+    ASSERT_TRUE(raised);
+    ASSERT_EQ(raised.value(), "file2");
+}
