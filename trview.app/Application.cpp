@@ -73,7 +73,7 @@ namespace trview
         _settings = _settings_loader->load_user_settings();
         lua::set_settings(_settings);
 
-        set_route(route_source());
+        set_route(_settings.randomizer_tools ? randomizer_route_source() : route_source());
 
         _file_menu->set_recent_files(_settings.recent_files);
         _token_store += _file_menu->on_file_open += [=](const auto& file) { open(file, ILevel::OpenMode::Full); };
