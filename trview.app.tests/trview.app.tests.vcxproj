@@ -67,6 +67,7 @@
     <ClCompile Include="RouteWindowTests.cpp" />
     <ClCompile Include="Routing\ActionsTests.cpp" />
     <ClCompile Include="Routing\ActionTests.cpp" />
+    <ClCompile Include="Routing\RandomizerRouteTests.cpp" />
     <ClCompile Include="Routing\RouteTests.cpp" />
     <ClCompile Include="Routing\WaypointTests.cpp" />
     <ClCompile Include="SettingsWindowTests.cpp" />

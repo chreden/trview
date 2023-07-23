@@ -409,6 +409,11 @@ TEST(Route, AddWaypointUsesColours)
     ASSERT_EQ(waypoint_values.value().waypoint_colour, Colour::Green);
 }
 
+TEST(Route, Reload)
+{
+    FAIL();
+}
+
 TEST(Route, RouteUsesDefaultColours)
 {
     UserSettings settings;
@@ -417,6 +422,16 @@ TEST(Route, RouteUsesDefaultColours)
     auto route = register_test_module().with_settings(settings).build();
     ASSERT_EQ(route->colour(), settings.route_colour);
     ASSERT_EQ(route->waypoint_colour(), settings.waypoint_colour);
+}
+
+TEST(Route, Save)
+{
+    FAIL();
+}
+
+TEST(Route, SaveAs)
+{
+    FAIL();
 }
 
 TEST(Route, SetColourUpdatesWaypoints)
