@@ -107,6 +107,7 @@ namespace trview
         /// <param name="direction">The direction of the ray.</param>
         /// <returns>The pcik result.</returns>
         virtual PickResult pick(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& direction) const = 0;
+        virtual void reload() = 0;
         /// <summary>
         /// Remove the waypoint at the specified index.
         /// </summary>

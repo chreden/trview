@@ -246,6 +246,11 @@ namespace trview
         return _route->pick(position, direction);
     }
 
+    void RandomizerRoute::reload()
+    {
+        // TODO
+    }
+
     void RandomizerRoute::remove(uint32_t index)
     {
         _route->remove(index);

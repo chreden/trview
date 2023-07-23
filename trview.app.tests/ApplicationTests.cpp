@@ -134,6 +134,12 @@ namespace
                 return *this;
             }
 
+            test_module& with_randomizer_route_source(IRandomizerRoute::Source randomizer_route_source)
+            {
+                this->randomizer_route_source = randomizer_route_source;
+                return *this;
+            }
+
             test_module& with_route_window_manager(std::unique_ptr<IRouteWindowManager> route_window_manager)
             {
                 this->route_window_manager = std::move(route_window_manager);
@@ -1097,4 +1103,183 @@ TEST(Application, LocalLevels)
 
     auto result = application->local_levels();
     ASSERT_EQ(result, files);
+}
+
+TEST(Application, RouteOpen)
+{
+    UserSettings settings{ .randomizer_tools = true };
+    auto [settings_loader_ptr, settings_loader] = create_mock<MockSettingsLoader>();
+    ON_CALL(settings_loader, load_user_settings).WillByDefault(Return(settings));
+
+    auto files = mock_shared<MockFiles>();
+    ON_CALL(*files, load_file(A<const std::string&>())).WillByDefault(Return(std::vector<uint8_t>{0x7B, 0x7D}));
+
+    auto route = mock_shared<MockRoute>();
+    auto [route_window_manager_ptr, route_window_manager] = create_mock<MockRouteWindowManager>();
+    auto dialogs = mock_shared<MockDialogs>();
+    ON_CALL(*dialogs, open_file).WillByDefault(Return(IDialogs::FileResult{.filename = "test", .filter_index = 1 }));
+    auto application = register_test_module()
+        .with_settings_loader(std::move(settings_loader_ptr))
+        .with_route_window_manager(std::move(route_window_manager_ptr))
+        .with_route_source([=](auto&&...) { return route; })
+        .with_dialogs(dialogs)
+        .with_files(files)
+        .build();
+
+    route_window_manager.on_route_open();
+
+    ASSERT_EQ(application->route(), route);
+}
+
+TEST(Application, RouteOpenRandomizer)
+{
+    UserSettings settings{ .randomizer_tools = false };
+    auto [settings_loader_ptr, settings_loader] = create_mock<MockSettingsLoader>();
+    ON_CALL(settings_loader, load_user_settings).WillByDefault(Return(settings));
+
+    auto files = mock_shared<MockFiles>();
+    ON_CALL(*files, load_file(A<const std::string&>())).WillByDefault(Return(std::vector<uint8_t>{0x7B, 0x7D}));
+
+    auto route = mock_shared<MockRandomizerRoute>();
+    auto [route_window_manager_ptr, route_window_manager] = create_mock<MockRouteWindowManager>();
+    auto dialogs = mock_shared<MockDialogs>();
+    ON_CALL(*dialogs, open_file).WillByDefault(Return(IDialogs::FileResult{.filename = "test.json", .filter_index = 2 }));
+    auto application = register_test_module()
+        .with_settings_loader(std::move(settings_loader_ptr))
+        .with_route_window_manager(std::move(route_window_manager_ptr))
+        .with_randomizer_route_source([=](auto&&...) { return route; })
+        .with_dialogs(dialogs)
+        .with_files(files)
+        .build();
+
+    route_window_manager.on_route_open();
+
+    ASSERT_EQ(application->route(), route);
+}
+
+TEST(Application, RouteReload)
+{
+    auto route = mock_shared<MockRoute>();
+    EXPECT_CALL(*route, reload).Times(1);
+
+    auto [route_window_manager_ptr, route_window_manager] = create_mock<MockRouteWindowManager>();
+    auto application = register_test_module()
+        .with_route_window_manager(std::move(route_window_manager_ptr))
+        .with_route_source([=](auto&&...) { return route; })
+        .build();
+
+    route_window_manager.on_route_reload();
+}
+
+TEST(Application, RouteSave)
+{
+    auto route = mock_shared<MockRoute>();
+    ON_CALL(*route, filename).WillByDefault(Return("test"));
+    EXPECT_CALL(*route, save).Times(1);
+    EXPECT_CALL(*route, set_filename).Times(0);
+
+    auto [route_window_manager_ptr, route_window_manager] = create_mock<MockRouteWindowManager>();
+    auto application = register_test_module()
+        .with_route_window_manager(std::move(route_window_manager_ptr))
+        .with_route_source([=](auto&&...) { return route; })
+        .build();
+
+    route_window_manager.on_route_save();
+}
+
+TEST(Application, RouteSaveNoFilename)
+{
+    auto route = mock_shared<MockRoute>();
+    EXPECT_CALL(*route, save_as).Times(1);
+    EXPECT_CALL(*route, set_filename).Times(1);
+    EXPECT_CALL(*route, set_unsaved(false)).Times(1);
+
+    auto [route_window_manager_ptr, route_window_manager] = create_mock<MockRouteWindowManager>();
+    auto dialogs = mock_shared<MockDialogs>();
+    ON_CALL(*dialogs, save_file).WillByDefault(Return(IDialogs::FileResult{ .filename = "test", .filter_index = 1 }));
+
+    auto application = register_test_module()
+        .with_route_window_manager(std::move(route_window_manager_ptr))
+        .with_route_source([=](auto&&...) { return route; })
+        .with_dialogs(dialogs)
+        .build();
+
+    route_window_manager.on_route_save();
+}
+
+TEST(Application, RouteSaveAs)
+{
+    auto route = mock_shared<MockRoute>();
+    EXPECT_CALL(*route, save_as).Times(1);
+    EXPECT_CALL(*route, set_filename).Times(1);
+    EXPECT_CALL(*route, set_unsaved(false)).Times(1);
+
+    auto [route_window_manager_ptr, route_window_manager] = create_mock<MockRouteWindowManager>();
+    auto dialogs = mock_shared<MockDialogs>();
+    ON_CALL(*dialogs, save_file).WillByDefault(Return(IDialogs::FileResult{.filename = "test", .filter_index = 1 }));
+
+    auto application = register_test_module()
+        .with_route_window_manager(std::move(route_window_manager_ptr))
+        .with_route_source([=](auto&&...) { return route; })
+        .with_dialogs(dialogs)
+        .build();
+
+    route_window_manager.on_route_save_as();
+}
+
+TEST(Application, RouteLevelSwitch)
+{
+    auto [file_menu_ptr, file_menu] = create_mock<MockFileMenu>();
+    EXPECT_CALL(file_menu, switch_to("test1"));
+
+    auto [route_window_manager_ptr, route_window_manager] = create_mock<MockRouteWindowManager>();
+    auto application = register_test_module()
+        .with_file_menu(std::move(file_menu_ptr))
+        .with_route_window_manager(std::move(route_window_manager_ptr))
+        .build();
+      
+    route_window_manager.on_level_switch("test1");
+}
+
+TEST(Application, RouteNewRoute)
+{
+    std::size_t index = 0;
+    std::vector<std::shared_ptr<MockRoute>> routes
+    {
+        mock_shared<MockRoute>(),
+        mock_shared<MockRoute>()
+    };
+
+    auto [route_window_manager_ptr, route_window_manager] = create_mock<MockRouteWindowManager>();
+    EXPECT_CALL(route_window_manager, set_route).Times(2);
+    auto application = register_test_module()
+        .with_route_window_manager(std::move(route_window_manager_ptr))
+        .with_route_source([&](auto&&...) -> std::shared_ptr<IRoute>
+            {
+                if (index < routes.size())
+                {
+                    return routes[index++];
+                }
+                return {};
+            })
+        .build();
+
+    ASSERT_EQ(application->route(), routes[0]);
+    route_window_manager.on_new_route();
+    ASSERT_EQ(application->route(), routes[1]);
+}
+
+TEST(Application, RouteNewRandomizerRoute)
+{
+    auto route = mock_shared<MockRandomizerRoute>();
+    auto [route_window_manager_ptr, route_window_manager] = create_mock<MockRouteWindowManager>();
+    EXPECT_CALL(route_window_manager, set_route).Times(2);
+    auto application = register_test_module()
+        .with_route_window_manager(std::move(route_window_manager_ptr))
+        .with_randomizer_route_source([&](auto&&...) { return route; })
+        .build();
+
+    ASSERT_NE(application->route(), route);
+    route_window_manager.on_new_randomizer_route();
+    ASSERT_EQ(application->route(), route);
 }

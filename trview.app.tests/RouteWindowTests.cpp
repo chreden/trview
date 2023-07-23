@@ -555,3 +555,38 @@ TEST(RouteWindow, DeleteWaypointRaisesEvent)
     ASSERT_TRUE(raised.has_value());
     ASSERT_EQ(raised, 0);
 }
+
+TEST(RouteWindow, FileOpenRaisesEvent)
+{
+    FAIL();
+}
+
+TEST(RouteWindow, ReloadRaisesEvent)
+{
+    FAIL();
+}
+
+TEST(RouteWindow, SaveRaisesEvent)
+{
+    FAIL();
+}
+
+TEST(RouteWindow, SaveAsRaisesEvent)
+{
+    FAIL();
+}
+
+TEST(RouteWindow, LevelSwitchRaisesEvent)
+{
+    FAIL();
+}
+
+TEST(RouteWindow, NewRouteRaisesEvent)
+{
+    FAIL();
+}
+
+TEST(RouteWindow, NewRandomizerRouteRaisesEvent)
+{
+    FAIL();
+}

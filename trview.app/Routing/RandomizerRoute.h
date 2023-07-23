@@ -33,6 +33,7 @@ namespace trview
         std::weak_ptr<ILevel> level() const override;
         void move(int32_t from, int32_t to) override;
         PickResult pick(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& direction) const override;
+        void reload() override;
         void remove(uint32_t index) override;
         void remove(const std::shared_ptr<IWaypoint>& waypoint) override;
         void render(const ICamera& camera, const ILevelTextureStorage& texture_storage, bool show_selection) override;

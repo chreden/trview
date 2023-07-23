@@ -198,6 +198,11 @@ namespace trview
         return result;
     }
 
+    void Route::reload()
+    {
+        // TODO
+    }
+
     void Route::remove(uint32_t index)
     {
         if (index >= _waypoints.size())
