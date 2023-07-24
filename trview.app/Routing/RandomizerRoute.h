@@ -12,7 +12,7 @@ namespace trview
     /// Version of route that has a set of unbound waypoints that are eventually
     /// converted to bound ones. It then exposes the route through the interface.
     /// </summary>
-    class RandomizerRoute final : public IRandomizerRoute
+    class RandomizerRoute final : public IRandomizerRoute, public std::enable_shared_from_this<IRandomizerRoute>
     {
     public:
         explicit RandomizerRoute(const std::shared_ptr<IRoute>& inner_route, const IWaypoint::Source& waypoint_source);
@@ -33,7 +33,7 @@ namespace trview
         std::weak_ptr<ILevel> level() const override;
         void move(int32_t from, int32_t to) override;
         PickResult pick(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& direction) const override;
-        void reload() override;
+        void reload(const std::shared_ptr<IFiles>& files, const UserSettings& settings) override;
         void remove(uint32_t index) override;
         void remove(const std::shared_ptr<IWaypoint>& waypoint) override;
         void render(const ICamera& camera, const ILevelTextureStorage& texture_storage, bool show_selection) override;

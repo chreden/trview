@@ -753,7 +753,7 @@ namespace trview
 
     void Application::reload_route()
     {
-        _route->reload();
+        _route->reload(_files, _settings);
     }
 
     void Application::save_route()

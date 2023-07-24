@@ -11,6 +11,8 @@ using namespace trview::tests;
 using namespace DirectX::SimpleMath;
 using testing::Return;
 using testing::NiceMock;
+using testing::A;
+using testing::SaveArg;
 
 namespace
 {
@@ -426,12 +428,50 @@ TEST(Route, RouteUsesDefaultColours)
 
 TEST(Route, Save)
 {
-    FAIL();
+    auto route = register_test_module().build();
+    auto files = mock_shared<MockFiles>();
+
+    std::string contents;
+    EXPECT_CALL(*files, save_file("test.tvr", A<const std::string&>()))
+        .WillOnce(SaveArg<1>(&contents));
+
+    UserSettings settings{};
+
+    route->set_filename("test.tvr");
+    route->add(Vector3::Zero, Vector3::Down, 0);
+    route->add(Vector3::Zero, Vector3::Down, 1);
+    route->save(files, settings);
+
+    ASSERT_EQ(contents, "{\"colour\":\"4278255360\",\"waypoint_colour\":\"4294967295\",\"waypoints\":[{\"index\":0,\"normal\":\"0,0,0\",\"notes\":\"\",\"position\":\"0,0,0\",\"room\":0,\"type\":\"Position\"},{\"index\":0,\"normal\":\"0,0,0\",\"notes\":\"\",\"position\":\"0,0,0\",\"room\":0,\"type\":\"Position\"}]}");
+}
+
+TEST(Route, SaveNoFileName)
+{
+    auto route = register_test_module().build();
+    auto files = mock_shared<MockFiles>();
+
+    EXPECT_CALL(*files, save_file(A<const std::string&>(), A<const std::string&>())).Times(0);
+
+    UserSettings settings{};
+    route->save(files, settings);
 }
 
 TEST(Route, SaveAs)
 {
-    FAIL();
+    auto route = register_test_module().build();
+    auto files = mock_shared<MockFiles>();
+
+    std::string contents;
+    EXPECT_CALL(*files, save_file("test.tvr", A<const std::string&>()))
+        .WillOnce(SaveArg<1>(&contents));
+
+    UserSettings settings{};
+
+    route->add(Vector3::Zero, Vector3::Down, 0);
+    route->add(Vector3::Zero, Vector3::Down, 1);
+    route->save_as(files, "test.tvr", settings);
+
+    ASSERT_EQ(contents, "{\"colour\":\"4278255360\",\"waypoint_colour\":\"4294967295\",\"waypoints\":[{\"index\":0,\"normal\":\"0,0,0\",\"notes\":\"\",\"position\":\"0,0,0\",\"room\":0,\"type\":\"Position\"},{\"index\":0,\"normal\":\"0,0,0\",\"notes\":\"\",\"position\":\"0,0,0\",\"room\":0,\"type\":\"Position\"}]}");
 }
 
 TEST(Route, SetColourUpdatesWaypoints)

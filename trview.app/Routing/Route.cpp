@@ -61,6 +61,69 @@ namespace trview
             }
             return Vector3(result[0], result[1], result[2]);
         }
+
+        void import_trview_route(IRoute& route, const std::vector<uint8_t>& data)
+        {
+            auto json = nlohmann::json::parse(data.begin(), data.end());
+            if (json["colour"].is_string())
+            {
+                route.set_colour(from_colour_code(json["colour"].get<std::string>()));
+            }
+
+            if (json["waypoint_colour"].is_string())
+            {
+                route.set_waypoint_colour(from_colour_code(json["waypoint_colour"].get<std::string>()));
+            }
+
+            for (const auto& waypoint : json["waypoints"])
+            {
+                auto type_string = waypoint["type"].get<std::string>();
+                IWaypoint::Type type = waypoint_type_from_string(type_string);
+                Vector3 position = load_vector3(waypoint, "position", Vector3::Zero);
+                Vector3 normal = load_vector3(waypoint, "normal", Vector3::Down);
+
+                auto room = waypoint["room"].get<int>();
+                auto index = waypoint["index"].get<int>();
+                auto notes = waypoint["notes"].get<std::string>();
+
+                route.add(position, normal, room, type, index);
+
+                if (auto new_waypoint = route.waypoint(route.waypoints() - 1).lock())
+                {
+                    new_waypoint->set_notes(notes);
+                    new_waypoint->set_save_file(from_base64(waypoint.value("save", "")));
+                }
+            }
+        }
+
+
+        std::shared_ptr<IRoute> import_trview_route(const IRoute::Source& route_source, const std::vector<uint8_t>& data)
+        {
+            auto route = route_source();
+            import_trview_route(*route, data);
+            route->set_unsaved(false);
+            return route;
+        }
+
+        nlohmann::ordered_json try_load_route(std::shared_ptr<IFiles>& files, const std::string& route_filename)
+        {
+            try
+            {
+                auto data = files->load_file(route_filename);
+                if (!data.has_value())
+                {
+                    return nlohmann::ordered_json();
+                }
+
+                const auto data_bytes = data.value();
+                return nlohmann::ordered_json::parse(data_bytes.begin(), data_bytes.end());
+            }
+            catch (...)
+            {
+            }
+
+            return nlohmann::ordered_json();
+        }
     }
 
     IRoute::~IRoute()
@@ -198,9 +261,19 @@ namespace trview
         return result;
     }
 
-    void Route::reload()
+    void Route::reload(const std::shared_ptr<IFiles>& files, const UserSettings&)
     {
-        // TODO
+        if (!_filename)
+        {
+            return;
+        }
+
+        clear();
+        if (auto data = files->load_file(_filename.value()))
+        {
+            import_trview_route(*this, data.value());
+        }
+        set_unsaved(false);
     }
 
     void Route::remove(uint32_t index)
@@ -441,45 +514,6 @@ namespace trview
         waypoint.on_changed -= on_changed;
     }
 
-    std::shared_ptr<IRoute> import_trview_route(const IRoute::Source& route_source, const std::vector<uint8_t>& data)
-    {
-        auto json = nlohmann::json::parse(data.begin(), data.end());
-
-        auto route = route_source();
-        if (json["colour"].is_string())
-        {
-            route->set_colour(from_colour_code(json["colour"].get<std::string>()));
-        }
-
-        if (json["waypoint_colour"].is_string())
-        {
-            route->set_waypoint_colour(from_colour_code(json["waypoint_colour"].get<std::string>()));
-        }
-
-        for (const auto& waypoint : json["waypoints"])
-        {
-            auto type_string = waypoint["type"].get<std::string>();
-            IWaypoint::Type type = waypoint_type_from_string(type_string);
-            Vector3 position = load_vector3(waypoint, "position", Vector3::Zero);
-            Vector3 normal = load_vector3(waypoint, "normal", Vector3::Down);
-
-            auto room = waypoint["room"].get<int>();
-            auto index = waypoint["index"].get<int>();
-            auto notes = waypoint["notes"].get<std::string>();
-
-            route->add(position, normal, room, type, index);
-
-            if (auto new_waypoint = route->waypoint(route->waypoints() - 1).lock())
-            {
-                new_waypoint->set_notes(notes);
-                new_waypoint->set_save_file(from_base64(waypoint.value("save", "")));
-            }
-        }
-
-        route->set_unsaved(false);
-        return route;
-    }
-
     std::shared_ptr<IRoute> import_route(const IRoute::Source& route_source, const std::shared_ptr<IFiles>& files, const std::string& route_filename)
     {
         try
@@ -497,25 +531,5 @@ namespace trview
             MessageBoxA(0, e.what(), "Error", MB_OK);
             return nullptr;
         }
-    }
-
-    nlohmann::ordered_json try_load_route(std::shared_ptr<IFiles>& files, const std::string& route_filename)
-    {
-        try
-        {
-            auto data = files->load_file(route_filename);
-            if (!data.has_value())
-            {
-                return nlohmann::ordered_json();
-            }
-
-            const auto data_bytes = data.value();
-            return nlohmann::ordered_json::parse(data_bytes.begin(), data_bytes.end());
-        }
-        catch(...)
-        {
-        }
-        
-        return nlohmann::ordered_json();
     }
 }

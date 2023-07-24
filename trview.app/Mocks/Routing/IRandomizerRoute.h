@@ -26,7 +26,7 @@ namespace trview
             MOCK_METHOD(std::weak_ptr<ILevel>, level, (), (const, override));
             MOCK_METHOD(void, move, (int32_t, int32_t), (override));
             MOCK_METHOD(PickResult, pick, (const DirectX::SimpleMath::Vector3&, const DirectX::SimpleMath::Vector3&), (const, override));
-            MOCK_METHOD(void, reload, (), (override));
+            MOCK_METHOD(void, reload, (const std::shared_ptr<IFiles>&, const UserSettings&), (override));
             MOCK_METHOD(void, remove, (uint32_t), (override));
             MOCK_METHOD(void, remove, (const std::shared_ptr<IWaypoint>&), (override));
             MOCK_METHOD(void, render, (const ICamera&, const ILevelTextureStorage&, bool), (override));
