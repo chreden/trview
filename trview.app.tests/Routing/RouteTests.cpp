@@ -413,7 +413,20 @@ TEST(Route, AddWaypointUsesColours)
 
 TEST(Route, Reload)
 {
-    FAIL();
+    const std::string contents = "{\"colour\":\"4278255360\",\"waypoint_colour\":\"4294967295\",\"waypoints\":[{\"index\":0,\"normal\":\"0,0,0\",\"notes\":\"\",\"position\":\"0,0,0\",\"room\":0,\"type\":\"Position\"},{\"index\":0,\"normal\":\"0,0,0\",\"notes\":\"\",\"position\":\"0,0,0\",\"room\":0,\"type\":\"Position\"}]}";
+    std::vector<uint8_t> bytes = contents
+        | std::views::transform([](const auto v) { return static_cast<uint8_t>(v); })
+        | std::ranges::to<std::vector>();
+    UserSettings settings{};
+    auto files = mock_shared<MockFiles>();
+    EXPECT_CALL(*files, load_file(A<const std::string&>())).WillRepeatedly(Return(bytes));
+
+    auto route = register_test_module().build();
+
+    route->set_filename("test.tvr");
+    route->reload(files, settings);
+
+    ASSERT_EQ(route->waypoints(), 2);
 }
 
 TEST(Route, RouteUsesDefaultColours)
