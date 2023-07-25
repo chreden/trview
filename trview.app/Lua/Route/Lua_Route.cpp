@@ -92,6 +92,13 @@ namespace trview
                 return 0;
             }
 
+            int route_reload(lua_State* L)
+            {
+                auto route = get_self<IRoute>(L);
+                route->reload(files, user_settings);
+                return 0;
+            }
+
             int route_import(lua_State* L)
             {
                 std::string filename;
@@ -169,9 +176,19 @@ namespace trview
                     lua_pushcfunction(L, route_export);
                     return 1;
                 }
+                else if (key == "is_randomizer")
+                {
+                    lua_pushboolean(L, dynamic_cast<IRandomizerRoute*>(route) != nullptr);
+                    return 1;
+                }
                 else if (key == "level")
                 {
                     return create_level(L, route->level().lock());
+                }
+                else if (key == "reload")
+                {
+                    lua_pushcfunction(L, route_reload);
+                    return 1;
                 }
                 else if (key == "remove")
                 {
@@ -245,6 +262,16 @@ namespace trview
 
             int route_new(lua_State* L)
             {
+                if (lua_gettop(L) != 0 && lua_type(L, 1) == LUA_TTABLE)
+                {
+                    if (LUA_TBOOLEAN == lua_getfield(L, 1, "is_randomizer"))
+                    {
+                        if (lua_toboolean(L, -1))
+                        {
+                            return create_route(L, randomizer_route_source());
+                        }
+                    }
+                }
                 return create_route(L, route_source());
             }
         }

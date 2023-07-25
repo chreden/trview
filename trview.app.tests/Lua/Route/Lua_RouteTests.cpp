@@ -9,6 +9,7 @@
 #include <trview.app/Lua/Route/Lua_Waypoint.h>
 #include <trview.app/Mocks/Routing/IWaypoint.h>
 #include <trview.app/Lua/Elements/Level/Lua_Level.h>
+#include <trview.app/Mocks/Routing/IRandomizerRoute.h>
 
 using namespace trview;
 using namespace trview::mocks;
@@ -66,6 +67,28 @@ TEST(Lua_Route, Colour)
     ASSERT_EQ(4.0f, lua_tonumber(L, -1));
 }
 
+TEST(Lua_Route, IsRandomizer)
+{
+    auto rando_route = mock_shared<MockRandomizerRoute>();
+
+    lua_State* L = luaL_newstate();
+    lua::create_route(L, rando_route);
+    lua_setglobal(L, "r");
+
+    ASSERT_EQ(0, luaL_dostring(L, "x = r.is_randomizer return x"));
+    ASSERT_EQ(LUA_TBOOLEAN, lua_type(L, -1));
+    ASSERT_TRUE(lua_toboolean(L, -1));
+
+    auto route = mock_shared<MockRoute>();
+
+    lua::create_route(L, route);
+    lua_setglobal(L, "r");
+
+    ASSERT_EQ(0, luaL_dostring(L, "x = r.is_randomizer return x"));
+    ASSERT_EQ(LUA_TBOOLEAN, lua_type(L, -1));
+    ASSERT_FALSE(lua_toboolean(L, -1));
+}
+
 TEST(Lua_Route, Level)
 {
     auto level = mock_shared<MockLevel>();
@@ -93,6 +116,30 @@ TEST(Lua_Route, New)
     ASSERT_EQ(route.get(), *reinterpret_cast<void**>(lua_touserdata(L, -1)));
 }
 
+TEST(Lua_Route, NewRandoRoute)
+{
+    auto route = mock_shared<MockRandomizerRoute>();
+
+    lua_State* L = luaL_newstate();
+    lua::route_register(L, [](auto&&...) { return mock_shared<MockRoute>(); }, [=](auto&&...) { return route; }, mock_shared<MockDialogs>(), mock_shared<MockFiles>());
+
+    ASSERT_EQ(0, luaL_dostring(L, "r = Route.new({is_randomizer = true}) return r"));
+    ASSERT_EQ(LUA_TUSERDATA, lua_type(L, -1));
+    ASSERT_EQ(route.get(), *reinterpret_cast<void**>(lua_touserdata(L, -1)));
+}
+
+TEST(Lua_Route, Reload)
+{
+    auto route = mock_shared<MockRoute>();
+    EXPECT_CALL(*route, reload);
+
+    lua_State* L = luaL_newstate();
+    lua::create_route(L, route);
+    lua_setglobal(L, "r");
+
+    ASSERT_EQ(0, luaL_dostring(L, "r:reload()"));
+}
+
 TEST(Lua_Route, Remove)
 {
     auto route = mock_shared<MockRoute>();
@@ -105,6 +152,16 @@ TEST(Lua_Route, Remove)
     lua_setglobal(L, "r");
 
     ASSERT_EQ(0, luaL_dostring(L, "r:remove(w)"));
+}
+
+TEST(Lua_Route, Save)
+{
+    FAIL();
+}
+
+TEST(Lua_Route, SaveAs)
+{
+    FAIL();
 }
 
 TEST(Lua_Route, SetColour)
