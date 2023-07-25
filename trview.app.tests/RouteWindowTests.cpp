@@ -558,35 +558,161 @@ TEST(RouteWindow, DeleteWaypointRaisesEvent)
 
 TEST(RouteWindow, FileOpenRaisesEvent)
 {
-    FAIL();
+    auto window = register_test_module().build();
+
+    bool raised = false;
+    auto token = window->on_route_open += [&]()
+    {
+        raised = true;
+    };
+
+    TestImgui imgui([&]() { window->render(); });
+    imgui.render();
+
+    imgui.hover_element(imgui.id("Route###Route").push("##menubar").id("File"));
+    imgui.click_element(imgui.id("Route###Route").push("##menubar").id("File"));
+    imgui.hover_element(imgui.id("##Menu_00").id("Open"));
+    imgui.click_element_with_release(imgui.id("##Menu_00").id("Open"));
+
+    ASSERT_TRUE(raised);
 }
 
 TEST(RouteWindow, ReloadRaisesEvent)
 {
-    FAIL();
+    auto route = mock_shared<MockRoute>();
+    ON_CALL(*route, filename).WillByDefault(Return("test"));
+
+    auto window = register_test_module().build();
+    window->set_route(route);
+
+    bool raised = false;
+    auto token = window->on_route_reload += [&]()
+    {
+        raised = true;
+    };
+
+    TestImgui imgui([&]() { window->render(); });
+    imgui.render();
+
+    imgui.hover_element(imgui.id("Route###Route").push("##menubar").id("File"));
+    imgui.click_element(imgui.id("Route###Route").push("##menubar").id("File"));
+    imgui.hover_element(imgui.id("##Menu_00").id("Reload"));
+    imgui.click_element_with_release(imgui.id("##Menu_00").id("Reload"));
+
+    ASSERT_TRUE(raised);
 }
 
 TEST(RouteWindow, SaveRaisesEvent)
 {
-    FAIL();
+    auto window = register_test_module().build();
+
+    bool raised = false;
+    auto token = window->on_route_save += [&]()
+    {
+        raised = true;
+    };
+
+    TestImgui imgui([&]() { window->render(); });
+    imgui.render();
+
+    imgui.hover_element(imgui.id("Route###Route").push("##menubar").id("File"));
+    imgui.click_element(imgui.id("Route###Route").push("##menubar").id("File"));
+    imgui.hover_element(imgui.id("##Menu_00").id("Save"));
+    imgui.click_element_with_release(imgui.id("##Menu_00").id("Save"));
+
+    ASSERT_TRUE(raised);
 }
 
 TEST(RouteWindow, SaveAsRaisesEvent)
 {
-    FAIL();
+    auto window = register_test_module().build();
+
+    bool raised = false;
+    auto token = window->on_route_save_as += [&]()
+    {
+        raised = true;
+    };
+
+    TestImgui imgui([&]() { window->render(); });
+    imgui.render();
+
+    imgui.hover_element(imgui.id("Route###Route").push("##menubar").id("File"));
+    imgui.click_element(imgui.id("Route###Route").push("##menubar").id("File"));
+    imgui.hover_element(imgui.id("##Menu_00").id("Save"));
+    imgui.click_element_with_release(imgui.id("##Menu_00").id("Save As"));
+
+    ASSERT_TRUE(raised);
 }
 
 TEST(RouteWindow, LevelSwitchRaisesEvent)
 {
-    FAIL();
+    auto route = mock_shared<MockRandomizerRoute>();
+    ON_CALL(*route, filenames).WillByDefault(Return(std::vector<std::string>{ "test1", "test2" }));
+
+    auto window = register_test_module().build();
+    window->set_route(route);
+
+    std::optional<std::string> raised;
+    auto token = window->on_level_switch += [&](const auto& value)
+    {
+        raised = value;
+    };
+
+    TestImgui imgui([&]() { window->render(); });
+    imgui.render();
+
+    imgui.click_element_with_hover(imgui.id("Route###Route")
+        .push_child(RouteWindow::Names::waypoint_list_panel)
+        .push("##levellist").id("test2"));
+
+    ASSERT_TRUE(raised);
+    ASSERT_EQ(raised.value(), "test2");
 }
 
 TEST(RouteWindow, NewRouteRaisesEvent)
 {
-    FAIL();
+    auto window = register_test_module().build();
+
+    bool raised = false;
+    auto token = window->on_new_route += [&]()
+    {
+        raised = true;
+    };
+
+    TestImgui imgui([&]() { window->render(); });
+    imgui.render();
+
+    imgui.hover_element(imgui.id("Route###Route").push("##menubar").id("File"));
+    imgui.click_element(imgui.id("Route###Route").push("##menubar").id("File"));
+    imgui.hover_element(imgui.id("##Menu_00").id("New"));
+    imgui.click_element_with_release(imgui.id("##Menu_00").id("New"));
+    imgui.hover_element(imgui.id("##Menu_01").id("Route"));
+    imgui.click_element_with_release(imgui.id("##Menu_01").id("Route"));
+
+    ASSERT_TRUE(raised);
 }
 
 TEST(RouteWindow, NewRandomizerRouteRaisesEvent)
 {
-    FAIL();
+    auto window = register_test_module().build();
+
+    bool raised = false;
+    auto token = window->on_new_randomizer_route += [&]()
+    {
+        raised = true;
+    };
+
+    window->set_randomizer_enabled(true);
+
+    TestImgui imgui([&]() { window->render(); });
+    imgui.render();
+
+    imgui.hover_element(imgui.id("Route###Route").push("##menubar").id("File"));
+    imgui.click_element(imgui.id("Route###Route").push("##menubar").id("File"));
+    imgui.hover_element(imgui.id("##Menu_00").id("New"));
+    imgui.click_element_with_release(imgui.id("##Menu_00").id("New"));
+    imgui.hover_element(imgui.id("##Menu_01").id("Randomizer Route"));
+    imgui.click_element_with_release(imgui.id("##Menu_01").id("Randomizer Route"));
+
+    ASSERT_TRUE(raised);
 }
