@@ -156,12 +156,93 @@ TEST(Lua_Route, Remove)
 
 TEST(Lua_Route, Save)
 {
-    FAIL();
+    auto route = mock_shared<MockRoute>();
+    ON_CALL(*route, filename).WillByDefault(Return("test"));
+    EXPECT_CALL(*route, save).Times(1);
+
+    lua_State* L = luaL_newstate();
+    lua::create_route(L, route);
+    lua_setglobal(L, "r");
+
+    ASSERT_EQ(0, luaL_dostring(L, "r:save()"));
 }
 
-TEST(Lua_Route, SaveAs)
+TEST(Lua_Route, SaveNoFilename)
 {
-    FAIL();
+    auto route = mock_shared<MockRoute>();
+    EXPECT_CALL(*route, save).Times(0);
+    EXPECT_CALL(*route, set_filename).Times(0);
+
+    lua_State* L = luaL_newstate();
+    lua::create_route(L, route);
+    lua_setglobal(L, "r");
+
+    ASSERT_EQ(0, luaL_dostring(L, "r:save()"));
+}
+
+TEST(Lua_Route, SaveChooseFile)
+{
+    auto route = mock_shared<MockRoute>();
+    EXPECT_CALL(*route, save).Times(1);
+    EXPECT_CALL(*route, set_filename).Times(1);
+
+    auto dialogs = mock_shared<MockDialogs>();
+    EXPECT_CALL(*dialogs, save_file).WillRepeatedly(Return(IDialogs::FileResult{ .filename = "test", .filter_index = 1 }));
+
+    lua_State* L = luaL_newstate();
+    lua::create_route(L, route);
+    lua_setglobal(L, "r");
+
+    ASSERT_EQ(0, luaL_dostring(L, "r:save()"));
+}
+
+TEST(Lua_Route, SaveAsWithFileAllowed)
+{
+    auto route = mock_shared<MockRoute>();
+    EXPECT_CALL(*route, save_as).Times(1);
+    EXPECT_CALL(*route, set_filename).Times(1);
+
+    auto dialogs = mock_shared<MockDialogs>();
+    EXPECT_CALL(*dialogs, message_box).WillRepeatedly(Return(true));
+    EXPECT_CALL(*dialogs, save_file).WillRepeatedly(Return(IDialogs::FileResult{.filename = "test", .filter_index = 1 }));
+
+    lua_State* L = luaL_newstate();
+    lua::create_route(L, route);
+    lua_setglobal(L, "r");
+
+    ASSERT_EQ(0, luaL_dostring(L, "r:save_as()"));
+}
+
+TEST(Lua_Route, SaveAsWithFileRejected)
+{
+    auto route = mock_shared<MockRoute>();
+    EXPECT_CALL(*route, save_as).Times(0);
+    EXPECT_CALL(*route, set_filename).Times(0);
+
+    auto dialogs = mock_shared<MockDialogs>();
+    EXPECT_CALL(*dialogs, save_file).WillRepeatedly(Return(IDialogs::FileResult{.filename = "test", .filter_index = 1 }));
+
+    lua_State* L = luaL_newstate();
+    lua::create_route(L, route);
+    lua_setglobal(L, "r");
+
+    ASSERT_EQ(0, luaL_dostring(L, "r:save_as()"));
+}
+
+TEST(Lua_Route, SaveAsChoosesFile)
+{
+    auto route = mock_shared<MockRoute>();
+    EXPECT_CALL(*route, save_as).Times(1);
+    EXPECT_CALL(*route, set_filename).Times(1);
+
+    auto dialogs = mock_shared<MockDialogs>();
+    EXPECT_CALL(*dialogs, save_file).WillRepeatedly(Return(IDialogs::FileResult{.filename = "test", .filter_index = 1 }));
+
+    lua_State* L = luaL_newstate();
+    lua::create_route(L, route);
+    lua_setglobal(L, "r");
+
+    ASSERT_EQ(0, luaL_dostring(L, "r:save_as()"));
 }
 
 TEST(Lua_Route, SetColour)

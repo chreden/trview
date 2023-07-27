@@ -47,29 +47,18 @@ namespace trview
                 return 0;
             }
 
-            int route_export(lua_State* L)
+            std::optional<std::string> route_save_as(IRoute* route, const std::string& filename)
             {
-                auto route = get_self<IRoute>(L);
-
-                bool is_rando = dynamic_cast<IRandomizerRoute*>(route) != nullptr;
-                std::string filename;
-
-                if (lua_type(L, 1) == LUA_TTABLE)
-                {
-                    if (LUA_TSTRING == lua_getfield(L, 2, "filename"))
-                    {
-                        filename = lua_tostring(L, -1);
-                    }
-                }
-
+                const bool is_rando = dynamic_cast<IRandomizerRoute*>(route) != nullptr;
                 if (!filename.empty())
                 {
                     if (dialogs->message_box(
-                        to_utf16(std::format("Allow script to export route to {}?", filename)),
+                        to_utf16(std::format("Allow script to save route as {}?", filename)),
                         L"Route export",
                         IDialogs::Buttons::Yes_No))
                     {
                         route->save_as(files, filename, user_settings);
+                        return filename;
                     }
                 }
                 else
@@ -84,10 +73,44 @@ namespace trview
                         filters.push_back({ { L"trview route", { L"*.tvr" } } });
                     }
 
-                    if (const auto result = dialogs->save_file(L"Select location for route export", filters, 1))
+                    if (const auto result = dialogs->save_file(L"Select location to save route as", filters, 1))
                     {
                         route->save_as(files, result->filename, user_settings);
+                        return result->filename;
                     }
+                }
+
+                return std::nullopt;
+            }
+
+            int route_save_as(lua_State* L)
+            {
+                auto route = get_self<IRoute>(L);
+
+                std::string filename;
+
+                if (lua_type(L, 1) == LUA_TTABLE)
+                {
+                    if (LUA_TSTRING == lua_getfield(L, 2, "filename"))
+                    {
+                        filename = lua_tostring(L, -1);
+                    }
+                }
+
+                route_save_as(route, filename);
+                return 0;
+            }
+
+            int route_save(lua_State* L)
+            {
+                auto route = get_self<IRoute>(L);
+                if (route->filename())
+                {
+                    route->save(files, user_settings);
+                }
+                else if (auto result = route_save_as(route, {}))
+                {
+                    route->set_filename(result.value());
                 }
                 return 0;
             }
@@ -99,7 +122,7 @@ namespace trview
                 return 0;
             }
 
-            int route_import(lua_State* L)
+            int route_open(lua_State* L)
             {
                 std::string filename;
                 bool is_rando = false;
@@ -171,11 +194,6 @@ namespace trview
                     lua_pushcfunction(L, route_clear);
                     return 1;
                 }
-                else if (key == "export")
-                {
-                    lua_pushcfunction(L, route_export);
-                    return 1;
-                }
                 else if (key == "is_randomizer")
                 {
                     lua_pushboolean(L, dynamic_cast<IRandomizerRoute*>(route) != nullptr);
@@ -193,6 +211,16 @@ namespace trview
                 else if (key == "remove")
                 {
                     lua_pushcfunction(L, route_remove);
+                    return 1;
+                }
+                else if (key == "save")
+                {
+                    lua_pushcfunction(L, route_save);
+                    return 1;
+                }
+                else if (key == "save_as")
+                {
+                    lua_pushcfunction(L, route_save_as);
                     return 1;
                 }
                 else if (key == "waypoint_colour")
@@ -319,8 +347,8 @@ namespace trview
             files = files_;
 
             lua_newtable(L);
-            lua_pushcfunction(L, route_import);
-            lua_setfield(L, -2, "import");
+            lua_pushcfunction(L, route_open);
+            lua_setfield(L, -2, "open");
             lua_pushcfunction(L, route_new);
             lua_setfield(L, -2, "new");
             lua_setglobal(L, "Route");
