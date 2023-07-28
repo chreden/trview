@@ -66,11 +66,11 @@ namespace trview
                     std::vector<IDialogs::FileFilter> filters;
                     if (is_rando)
                     {
-                        filters.push_back({ { L"Randomizer Locations", { L"*.json" } } });
+                        filters.push_back({ L"Randomizer Locations", { L"*.json" } });
                     }
                     else
                     {
-                        filters.push_back({ { L"trview route", { L"*.tvr" } } });
+                        filters.push_back({ L"trview route", { L"*.tvr" } });
                     }
 
                     if (const auto result = dialogs->save_file(L"Select location to save route as", filters, 1))
