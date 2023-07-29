@@ -296,11 +296,11 @@ namespace trview
                     {
                         if (lua_toboolean(L, -1))
                         {
-                            return create_route(L, randomizer_route_source());
+                            return create_route(L, randomizer_route_source(std::nullopt));
                         }
                     }
                 }
-                return create_route(L, route_source());
+                return create_route(L, route_source(std::nullopt));
             }
         }
 

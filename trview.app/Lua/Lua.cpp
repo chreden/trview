@@ -80,8 +80,14 @@ namespace trview
     {
         if (luaL_dofile(L, file.c_str()) != LUA_OK)
         {
-            std::string msg = lua_tostring(L, -1);
-            on_print(msg);
+            if (lua_type(L, -1) == LUA_TSTRING)
+            {
+                on_print(lua_tostring(L, -1));
+            }
+            else
+            {
+                on_print("An error occurred");
+            }
         }
     }
 
@@ -89,8 +95,14 @@ namespace trview
     {
         if (luaL_dostring(L, command.c_str()) != LUA_OK)
         {
-            std::string msg = lua_tostring(L, -1);
-            on_print(msg);
+            if (lua_type(L, -1) == LUA_TSTRING)
+            {
+                on_print(lua_tostring(L, -1));
+            }
+            else
+            {
+                on_print("An error occurred");
+            }
         }
     }
 

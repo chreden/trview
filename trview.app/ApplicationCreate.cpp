@@ -183,18 +183,28 @@ namespace trview
         const auto waypoint_mesh = create_cube_mesh(mesh_source);
         auto waypoint_source = [=](auto&&... args) { return std::make_shared<Waypoint>(waypoint_mesh, args...); };
 
-        auto route_source = [=]()
+        auto route_source = [=](std::optional<IRoute::FileData> data)
         {
-            return std::make_shared<Route>(
+            auto new_route = std::make_shared<Route>(
                 std::make_unique<SelectionRenderer>(device, shader_storage, std::make_unique<TransparencyBuffer>(device), render_target_source),
                 waypoint_source, settings_loader->load_user_settings());
+            if (data)
+            {
+                new_route->import(data->data);
+            }
+            return new_route;
         };
 
-        auto randomizer_route_source = [=]()
+        auto randomizer_route_source = [=](std::optional<IRandomizerRoute::FileData> data)
         {
-            return std::make_shared<RandomizerRoute>(
-                route_source(),
+            auto new_route = std::make_shared<RandomizerRoute>(
+                route_source(std::nullopt),
                 waypoint_source);
+            if (data)
+            {
+                new_route->import(data->data, data->settings);
+            }
+            return new_route;
         };
 
         auto entity_source = [=](auto&& level, auto&& entity, auto&& index, auto&& triggers, auto&& mesh_storage, auto&& owning_level, auto&& room)
@@ -288,7 +298,7 @@ namespace trview
             std::make_unique<Picking>(window),
             std::make_unique<input::Mouse>(window, std::make_unique<input::WindowTester>(window)),
             shortcuts,
-            route_source(),
+            route_source(std::nullopt),
             sprite_source,
             std::make_unique<Compass>(device, sprite_source, render_target_source, mesh_source),
             std::make_unique<Measure>(device, mesh_source),

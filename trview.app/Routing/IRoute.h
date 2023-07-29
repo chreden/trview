@@ -3,6 +3,7 @@
 #include <cstdint>
 #include <optional>
 #include <string>
+#include <vector>
 
 #include <trview.app/Routing/IWaypoint.h>
 #include <trview.app/Geometry/PickResult.h>
@@ -19,7 +20,12 @@ namespace trview
     /// </summary>
     struct IRoute
     {
-        using Source = std::function<std::shared_ptr<IRoute>()>;
+        struct FileData final
+        {
+            std::vector<uint8_t> data;
+        };
+
+        using Source = std::function<std::shared_ptr<IRoute>(std::optional<FileData>)>;
 
         Event<> on_changed;
 

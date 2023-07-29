@@ -50,6 +50,8 @@ namespace trview
         virtual Colour waypoint_colour() const override;
         virtual std::weak_ptr<IWaypoint> waypoint(uint32_t index) const override;
         virtual uint32_t waypoints() const override;
+
+        void import(const std::vector<uint8_t>& data);
     private:
         uint32_t next_index() const;
         void bind_waypoint_targets();

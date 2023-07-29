@@ -71,31 +71,9 @@ namespace trview
             return result;
         }
 
-        void import_rando_route(IRandomizerRoute& route, const std::vector<uint8_t>& data, const RandomizerSettings& randomizer_settings)
-        {
-            auto json = nlohmann::ordered_json::parse(data.begin(), data.end());
-            for (const auto& level : json.items())
-            {
-                for (const auto& location : level.value())
-                {
-                    int x = location["X"];
-                    int y = location["Y"];
-                    int z = location["Z"];
-                    uint32_t room_number = location["Room"];
-
-                    route.add(level.key(), Vector3(static_cast<float>(x), static_cast<float>(y), static_cast<float>(z)) / 1024.0f, Vector3::Down, room_number);
-                    if (auto new_waypoint = route.waypoint(route.waypoints() - 1).lock())
-                    {
-                        new_waypoint->set_randomizer_settings(import_randomizer_settings(location, randomizer_settings));
-                    }
-                }
-            }
-        }
-
         std::shared_ptr<IRandomizerRoute> import_rando_route(const IRandomizerRoute::Source& route_source, const std::vector<uint8_t>& data, const RandomizerSettings& randomizer_settings)
         {
-            auto route = route_source();
-            import_rando_route(*route, data, randomizer_settings);
+            auto route = route_source(IRandomizerRoute::FileData{ .data = data, .settings = randomizer_settings });
             route->set_unsaved(false);
             return route;
         }
@@ -258,9 +236,8 @@ namespace trview
 
         if (auto data = files->load_file(_filename.value()))
         {
-            _route->clear();
-            _waypoints.clear();
-            import_rando_route(*this, data.value(), settings.randomizer);
+            import(data.value(), settings.randomizer);
+            set_level(_route->level());
         }
         set_unsaved(false);
     }
@@ -403,6 +380,28 @@ namespace trview
         }
     }
 
+    void RandomizerRoute::import(const std::vector<uint8_t>& data, const RandomizerSettings& randomizer_settings)
+    {
+        std::map<std::string, std::vector<std::shared_ptr<IWaypoint>>> new_waypoints;
+        auto json = nlohmann::ordered_json::parse(data.begin(), data.end());
+        for (const auto& level : json.items())
+        {
+            for (const auto& location : level.value())
+            {
+                int x = location["X"];
+                int y = location["Y"];
+                int z = location["Z"];
+                uint32_t room_number = location["Room"];
+
+                auto new_waypoint = _waypoint_source(Vector3(static_cast<float>(x), static_cast<float>(y), static_cast<float>(z)) / 1024.0f, Vector3::Down, room_number, IWaypoint::Type::Position, 0, _route->colour(), _route->waypoint_colour());
+                new_waypoint->set_randomizer_settings(import_randomizer_settings(location, randomizer_settings));
+                new_waypoints[level.key()].push_back(new_waypoint);
+            }
+        }
+        _route->clear();
+        _waypoints = new_waypoints;
+    }
+
     std::shared_ptr<IRoute> import_randomizer_route(const IRandomizerRoute::Source& route_source, const std::shared_ptr<IFiles>& files, const std::string& route_filename, const RandomizerSettings& randomizer_settings)
     {
         try
@@ -412,7 +411,6 @@ namespace trview
             {
                 return nullptr;
             }
-
             return import_rando_route(route_source, data.value(), randomizer_settings);
         }
         catch (std::exception& e)

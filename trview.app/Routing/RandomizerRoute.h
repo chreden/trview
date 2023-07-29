@@ -50,6 +50,8 @@ namespace trview
         Colour waypoint_colour() const override;
         std::weak_ptr<IWaypoint> waypoint(uint32_t index) const override;
         uint32_t waypoints() const override;
+
+        void import(const std::vector<uint8_t>& data, const RandomizerSettings& randomizer_settings);
     private:
         void update_waypoints();
 

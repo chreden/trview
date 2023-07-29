@@ -73,7 +73,7 @@ namespace trview
         _settings = _settings_loader->load_user_settings();
         lua::set_settings(_settings);
 
-        set_route(_settings.randomizer_tools ? randomizer_route_source() : route_source());
+        set_route(_settings.randomizer_tools ? randomizer_route_source(std::nullopt) : route_source(std::nullopt));
 
         _file_menu->set_recent_files(_settings.recent_files);
         _token_store += _file_menu->on_file_open += [=](const auto& file) { open(file, ILevel::OpenMode::Full); };
@@ -391,8 +391,8 @@ namespace trview
         _route_window->set_randomizer_settings(_settings.randomizer);
         _token_store += _route_window->on_window_created += [&]() { open_recent_route(); };
         _token_store += _route_window->on_level_switch += [&](const auto& level) { _file_menu->switch_to(level); };
-        _token_store += _route_window->on_new_route += [&]() { if (should_discard_changes()) { set_route(_route_source()); } };
-        _token_store += _route_window->on_new_randomizer_route += [&]() { if (should_discard_changes()) { set_route(_randomizer_route_source()); } };
+        _token_store += _route_window->on_new_route += [&]() { if (should_discard_changes()) { set_route(_route_source(std::nullopt)); } };
+        _token_store += _route_window->on_new_randomizer_route += [&]() { if (should_discard_changes()) { set_route(_randomizer_route_source(std::nullopt)); } };
 
         if (_settings.route_startup)
         {
@@ -753,7 +753,14 @@ namespace trview
 
     void Application::reload_route()
     {
-        _route->reload(_files, _settings);
+        try
+        {
+            _route->reload(_files, _settings);
+        }
+        catch (std::exception& e)
+        {
+            MessageBoxA(0, e.what(), "Error", MB_OK);
+        }
     }
 
     void Application::save_route()
@@ -802,13 +809,20 @@ namespace trview
         const auto filename = _dialogs->save_file(L"Save route", filters, 1);
         if (filename.has_value())
         {
-            _route->save_as(_files, filename->filename, _settings);
-            _route->set_unsaved(false);
-            _route->set_filename(filename->filename);
-            if (_level)
+            try
             {
-                _settings.recent_routes[_level->filename()] = { filename->filename, is_rando };
-                _viewer->set_settings(_settings);
+                _route->save_as(_files, filename->filename, _settings);
+                _route->set_unsaved(false);
+                _route->set_filename(filename->filename);
+                if (_level)
+                {
+                    _settings.recent_routes[_level->filename()] = { filename->filename, is_rando };
+                    _viewer->set_settings(_settings);
+                }
+            }
+            catch (std::exception& e)
+            {
+                MessageBoxA(0, e.what(), "Error saving route", MB_OK);
             }
         }
     }

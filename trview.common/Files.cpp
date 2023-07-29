@@ -91,6 +91,7 @@ namespace trview
     void Files::save_file(const std::string& filename, const std::vector<uint8_t>& bytes) const
     {
         std::ofstream outfile;
+        outfile.exceptions(std::ifstream::failbit | std::ifstream::badbit | std::ifstream::eofbit);
         outfile.open(to_utf16(filename), std::ios::out | std::ios::binary);
         outfile.write(reinterpret_cast<const char*>(&bytes[0]), bytes.size());
     }
@@ -98,6 +99,7 @@ namespace trview
     void Files::save_file(const std::string& filename, const std::string& text) const
     {
         std::ofstream outfile;
+        outfile.exceptions(std::ifstream::failbit | std::ifstream::badbit | std::ifstream::eofbit);
         outfile.open(to_utf16(filename), std::ios::out);
         outfile << text;
     }

@@ -3,6 +3,8 @@
 #include <external/lua/src/lua.h>
 #include <external/lua/src/lauxlib.h>
 #include <string>
+#include <vector>
+#include <cstdint>
 #include <trview.common/Event.h>
 #include <functional>
 #include "ILua.h"

@@ -22,8 +22,8 @@ TEST(Lua_trview, Level)
 
     lua_State* L = luaL_newstate();
     lua::trview_register(L, application.get(), 
-        []() { return mock_shared<MockRoute>(); },
-        []() { return mock_shared<MockRandomizerRoute>(); },
+        [](auto&&) { return mock_shared<MockRoute>(); },
+        [](auto&&) { return mock_shared<MockRandomizerRoute>(); },
         [](auto&&...) { return mock_shared<MockWaypoint>(); },
         mock_shared<MockDialogs>(),
         mock_shared<MockFiles>());
@@ -45,8 +45,8 @@ TEST(Lua_trview, RecentFiles)
 
     lua_State* L = luaL_newstate();
     lua::trview_register(L, application.get(),
-        []() { return mock_shared<MockRoute>(); },
-        []() { return mock_shared<MockRandomizerRoute>(); },
+        [](auto&&) { return mock_shared<MockRoute>(); },
+        [](auto&&) { return mock_shared<MockRandomizerRoute>(); },
         [](auto&&...) { return mock_shared<MockWaypoint>(); },
         mock_shared<MockDialogs>(),
         mock_shared<MockFiles>());
@@ -68,8 +68,8 @@ TEST(Lua_trview, SetLevel)
 
     lua_State* L = luaL_newstate();
     lua::trview_register(L, application.get(),
-        []() { return mock_shared<MockRoute>(); },
-        []() { return mock_shared<MockRandomizerRoute>(); },
+        [](auto&&) { return mock_shared<MockRoute>(); },
+        [](auto&&) { return mock_shared<MockRandomizerRoute>(); },
         [](auto&&...) { return mock_shared<MockWaypoint>(); },
         mock_shared<MockDialogs>(),
         mock_shared<MockFiles>());
@@ -89,8 +89,8 @@ TEST(Lua_trview, Route)
 
     lua_State* L = luaL_newstate();
     lua::trview_register(L, application.get(),
-        []() { return mock_shared<MockRoute>(); },
-        []() { return mock_shared<MockRandomizerRoute>(); },
+        [](auto&&) { return mock_shared<MockRoute>(); },
+        [](auto&&) { return mock_shared<MockRandomizerRoute>(); },
         [](auto&&...) { return mock_shared<MockWaypoint>(); },
         mock_shared<MockDialogs>(),
         mock_shared<MockFiles>());
@@ -106,8 +106,8 @@ TEST(Lua_trview, SetRoute)
 
     lua_State* L = luaL_newstate();
     lua::trview_register(L, application.get(),
-        []() { return mock_shared<MockRoute>(); },
-        []() { return mock_shared<MockRandomizerRoute>(); },
+        [](auto&&) { return mock_shared<MockRoute>(); },
+        [](auto&&) { return mock_shared<MockRandomizerRoute>(); },
         [](auto&&...) { return mock_shared<MockWaypoint>(); },
         mock_shared<MockDialogs>(),
         mock_shared<MockFiles>());

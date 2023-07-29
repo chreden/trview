@@ -62,45 +62,9 @@ namespace trview
             return Vector3(result[0], result[1], result[2]);
         }
 
-        void import_trview_route(IRoute& route, const std::vector<uint8_t>& data)
-        {
-            auto json = nlohmann::json::parse(data.begin(), data.end());
-            if (json["colour"].is_string())
-            {
-                route.set_colour(from_colour_code(json["colour"].get<std::string>()));
-            }
-
-            if (json["waypoint_colour"].is_string())
-            {
-                route.set_waypoint_colour(from_colour_code(json["waypoint_colour"].get<std::string>()));
-            }
-
-            for (const auto& waypoint : json["waypoints"])
-            {
-                auto type_string = waypoint["type"].get<std::string>();
-                IWaypoint::Type type = waypoint_type_from_string(type_string);
-                Vector3 position = load_vector3(waypoint, "position", Vector3::Zero);
-                Vector3 normal = load_vector3(waypoint, "normal", Vector3::Down);
-
-                auto room = waypoint["room"].get<int>();
-                auto index = waypoint["index"].get<int>();
-                auto notes = waypoint["notes"].get<std::string>();
-
-                route.add(position, normal, room, type, index);
-
-                if (auto new_waypoint = route.waypoint(route.waypoints() - 1).lock())
-                {
-                    new_waypoint->set_notes(notes);
-                    new_waypoint->set_save_file(from_base64(waypoint.value("save", "")));
-                }
-            }
-        }
-
-
         std::shared_ptr<IRoute> import_trview_route(const IRoute::Source& route_source, const std::vector<uint8_t>& data)
         {
-            auto route = route_source();
-            import_trview_route(*route, data);
+            auto route = route_source(IRoute::FileData {.data = data });
             route->set_unsaved(false);
             return route;
         }
@@ -268,10 +232,9 @@ namespace trview
             return;
         }
 
-        clear();
         if (auto data = files->load_file(_filename.value()))
         {
-            import_trview_route(*this, data.value());
+            import(data.value());
         }
         set_unsaved(false);
     }
@@ -514,6 +477,45 @@ namespace trview
         waypoint.on_changed -= on_changed;
     }
 
+    void Route::import(const std::vector<uint8_t>& data)
+    {
+        Colour new_route_colour = colour();
+        Colour new_waypoint_colour = waypoint_colour();
+
+        auto json = nlohmann::json::parse(data.begin(), data.end());
+        if (json["colour"].is_string())
+        {
+            new_route_colour = from_colour_code(json["colour"].get<std::string>());
+        }
+
+        if (json["waypoint_colour"].is_string())
+        {
+            new_waypoint_colour = from_colour_code(json["waypoint_colour"].get<std::string>());
+        }
+
+        std::vector<std::shared_ptr<IWaypoint>> new_waypoints;
+        for (const auto& waypoint : json["waypoints"])
+        {
+            auto type_string = waypoint["type"].get<std::string>();
+            IWaypoint::Type type = waypoint_type_from_string(type_string);
+            Vector3 position = load_vector3(waypoint, "position", Vector3::Zero);
+            Vector3 normal = load_vector3(waypoint, "normal", Vector3::Down);
+
+            auto room = waypoint["room"].get<int>();
+            auto index = waypoint["index"].get<int>();
+            auto notes = waypoint["notes"].get<std::string>();
+
+            auto new_waypoint = _waypoint_source(position, normal, room, type, index, new_route_colour, new_waypoint_colour);
+            new_waypoint->set_notes(notes);
+            new_waypoint->set_save_file(from_base64(waypoint.value("save", "")));
+            new_waypoints.push_back(new_waypoint);
+        }
+
+        set_colour(new_waypoint_colour);
+        set_waypoint_colour(new_waypoint_colour);
+        _waypoints = new_waypoints;
+    }
+
     std::shared_ptr<IRoute> import_route(const IRoute::Source& route_source, const std::shared_ptr<IFiles>& files, const std::string& route_filename)
     {
         try
@@ -523,7 +525,6 @@ namespace trview
             {
                 return nullptr;
             }
-
             return import_trview_route(route_source, data.value());
         }
         catch (std::exception& e)
