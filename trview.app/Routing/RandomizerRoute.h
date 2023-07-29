@@ -50,13 +50,22 @@ namespace trview
         Colour waypoint_colour() const override;
         std::weak_ptr<IWaypoint> waypoint(uint32_t index) const override;
         uint32_t waypoints() const override;
+        void move_level(const std::string& from, const std::string& to) override;
 
         void import(const std::vector<uint8_t>& data, const RandomizerSettings& randomizer_settings);
     private:
         void update_waypoints();
 
+        struct Waypoints final
+        {
+            std::string level_name;
+            std::vector<std::shared_ptr<IWaypoint>> waypoints;
+        };
+
+        Waypoints& get_waypoints(const std::string& name);
+
         std::shared_ptr<IRoute> _route;
-        std::map<std::string, std::vector<std::shared_ptr<IWaypoint>>> _waypoints;
+        std::vector<Waypoints> _waypoints;
         IWaypoint::Source _waypoint_source;
         std::optional<std::string> _filename;
     };

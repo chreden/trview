@@ -2,6 +2,8 @@
 #include "../Elements/ILevel.h"
 #include "../Settings/UserSettings.h"
 
+#include <algorithm>
+
 using namespace DirectX;
 using namespace DirectX::SimpleMath;
 
@@ -155,7 +157,7 @@ namespace trview
     std::shared_ptr<IWaypoint> RandomizerRoute::add(const std::string& level_name, const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& normal, uint32_t room_number)
     {
         auto waypoint = _waypoint_source(position, normal, room_number, IWaypoint::Type::Position, 0, _route->colour(), _route->waypoint_colour());
-        _waypoints[level_name].push_back(waypoint);
+        get_waypoints(level_name).waypoints.push_back(waypoint);
         return waypoint;
     }
 
@@ -177,7 +179,9 @@ namespace trview
 
     std::vector<std::string> RandomizerRoute::filenames() const
     {
-        return _waypoints | std::views::keys | std::ranges::to<std::vector>();
+        return _waypoints | 
+            std::views::transform([](const auto& w) { return w.level_name; }) |
+            std::ranges::to<std::vector>();
     }
 
     void RandomizerRoute::insert(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& normal, uint32_t room, uint32_t index)
@@ -272,12 +276,16 @@ namespace trview
 
     void RandomizerRoute::save_as(const std::shared_ptr<IFiles>& files, const std::string& filename, const UserSettings& settings)
     {
-        nlohmann::ordered_json json = nlohmann::json::object();
+        auto json = nlohmann::ordered_json::object();
 
         update_waypoints();
-
         for (const auto& [level, waypoints] : _waypoints)
         {
+            if (waypoints.empty())
+            {
+                continue;
+            }
+
             std::vector<nlohmann::ordered_json> waypoints_element;
             for (const auto& waypoint : waypoints)
             {
@@ -324,11 +332,8 @@ namespace trview
         _route->clear();
         if (auto new_level = level.lock())
         {
-            const auto found = _waypoints.find(trimmed_level_name(new_level->filename()));
-            if (found != _waypoints.end())
-            {
-                std::ranges::for_each(found->second, [this](auto&& w) { _route->add(w); });
-            }
+            const auto& found = get_waypoints(trimmed_level_name(new_level->filename()));
+            std::ranges::for_each(found.waypoints, [this](auto&& w) { _route->add(w); });
         }
         _route->set_level(level);
         _route->set_unsaved(false);
@@ -375,17 +380,28 @@ namespace trview
                 {
                     waypoints.push_back(waypoint);
                 }
-                _waypoints[trimmed_level_name(current_level->filename())] = waypoints;
+                get_waypoints(trimmed_level_name(current_level->filename())).waypoints = waypoints;
             }
+        }
+    }
+
+    void RandomizerRoute::move_level(const std::string& from, const std::string& to)
+    {
+        const auto from_iter = std::ranges::find_if(_waypoints, [&](const auto& w) { return w.level_name == from; });
+        const auto to_iter = std::ranges::find_if(_waypoints, [&](const auto& w) { return w.level_name == to; });
+        if (from_iter != _waypoints.end() && to_iter != _waypoints.end())
+        {
+            std::iter_swap(from_iter, to_iter);
         }
     }
 
     void RandomizerRoute::import(const std::vector<uint8_t>& data, const RandomizerSettings& randomizer_settings)
     {
-        std::map<std::string, std::vector<std::shared_ptr<IWaypoint>>> new_waypoints;
+        std::vector<Waypoints> new_waypoints;
         auto json = nlohmann::ordered_json::parse(data.begin(), data.end());
         for (const auto& level : json.items())
         {
+            Waypoints level_waypoints{ .level_name = level.key() };
             for (const auto& location : level.value())
             {
                 int x = location["X"];
@@ -395,11 +411,23 @@ namespace trview
 
                 auto new_waypoint = _waypoint_source(Vector3(static_cast<float>(x), static_cast<float>(y), static_cast<float>(z)) / 1024.0f, Vector3::Down, room_number, IWaypoint::Type::Position, 0, _route->colour(), _route->waypoint_colour());
                 new_waypoint->set_randomizer_settings(import_randomizer_settings(location, randomizer_settings));
-                new_waypoints[level.key()].push_back(new_waypoint);
+                level_waypoints.waypoints.push_back(new_waypoint);
             }
+            new_waypoints.push_back(level_waypoints);
         }
         _route->clear();
         _waypoints = new_waypoints;
+    }
+
+    RandomizerRoute::Waypoints& RandomizerRoute::get_waypoints(const std::string& name)
+    {
+        const auto found = std::ranges::find_if(_waypoints, [&](const auto& w) { return w.level_name == name; });
+        if (found != _waypoints.end())
+        {
+            return *found;
+        }
+        _waypoints.push_back({ .level_name = name });
+        return _waypoints.back();
     }
 
     std::shared_ptr<IRoute> import_randomizer_route(const IRandomizerRoute::Source& route_source, const std::shared_ptr<IFiles>& files, const std::string& route_filename, const RandomizerSettings& randomizer_settings)

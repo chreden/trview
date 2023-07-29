@@ -393,6 +393,13 @@ namespace trview
         _token_store += _route_window->on_level_switch += [&](const auto& level) { _file_menu->switch_to(level); };
         _token_store += _route_window->on_new_route += [&]() { if (should_discard_changes()) { set_route(_route_source(std::nullopt)); } };
         _token_store += _route_window->on_new_randomizer_route += [&]() { if (should_discard_changes()) { set_route(_randomizer_route_source(std::nullopt)); } };
+        _token_store += _route_window->on_level_reordered += [&](const std::string& from, const std::string& to)
+        {
+            if (auto rando = std::dynamic_pointer_cast<IRandomizerRoute>(_route))
+            {
+                rando->move_level(from, to);
+            }
+        };
 
         if (_settings.route_startup)
         {

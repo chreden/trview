@@ -58,6 +58,7 @@ namespace trview
 
         Event<> on_new_route;
         Event<> on_new_randomizer_route;
+        Event<std::string, std::string> on_level_reordered;
 
         /// Render the window.
         virtual void render() = 0;

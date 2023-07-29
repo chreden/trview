@@ -48,6 +48,7 @@ namespace trview
         _route_window->on_level_switch += on_level_switch;
         _route_window->on_new_route += on_new_route;
         _route_window->on_new_randomizer_route += on_new_randomizer_route;
+        _route_window->on_level_reordered += on_level_reordered;
         _token_store += _route_window->on_window_closed += [&]() { _closing = true; };
 
         _route_window->set_randomizer_settings(_randomizer_settings);

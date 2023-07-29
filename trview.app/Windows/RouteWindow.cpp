@@ -48,6 +48,9 @@ namespace trview
         {
             if (rando_route)
             {
+                std::optional<std::string> level_move_from;
+                std::optional<std::string> level_move_to;
+
                 if (ImGui::BeginTable("##levellist", 1, ImGuiTableFlags_ScrollY, ImVec2(100, -1)))
                 {
                     ImGui::TableSetupColumn("Name");
@@ -60,8 +63,10 @@ namespace trview
                         selected_level = trimmed_level_name(level->filename());
                     }
 
-                    for (const auto& file : rando_route->filenames())
+                    const auto filenames = rando_route->filenames();
+                    for (std::size_t i = 0; i < filenames.size(); ++i)
                     {
+                        const auto& file = filenames[i];
                         ImGui::TableNextRow();
                         ImGui::TableNextColumn();
                         bool selected = file == selected_level;
@@ -69,9 +74,35 @@ namespace trview
                         {
                             on_level_switch(file);
                         }
+
+                        ImGuiDragDropFlags src_flags = 0;
+                        src_flags |= ImGuiDragDropFlags_SourceNoDisableHover;
+                        src_flags |= ImGuiDragDropFlags_SourceNoHoldToOpenOthers;
+                        src_flags |= ImGuiDragDropFlags_SourceNoPreviewTooltip;
+                        if (ImGui::BeginDragDropSource(src_flags))
+                        {
+                            ImGui::SetDragDropPayload("RouteWindowLevel", &i, sizeof(i));
+                            ImGui::EndDragDropSource();
+                        }
+
+                        if (ImGui::BeginDragDropTarget())
+                        {
+                            ImGuiDragDropFlags target_flags = 0;
+                            if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("RouteWindowLevel", target_flags))
+                            {
+                                level_move_from = filenames[*reinterpret_cast<std::size_t*>(payload->Data)];
+                                level_move_to = file;
+                            }
+                            ImGui::EndDragDropTarget();
+                        }
                     }
 
                     ImGui::EndTable();
+
+                    if (level_move_from && level_move_to)
+                    {
+                        on_level_reordered(level_move_from.value(), level_move_to.value());
+                    }
                 }
                 ImGui::SameLine();
             }
