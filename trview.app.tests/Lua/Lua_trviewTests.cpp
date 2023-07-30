@@ -5,6 +5,7 @@
 #include <external/lua/src/lua.h>
 #include <external/lua/src/lauxlib.h>
 #include <trview.app/Mocks/Routing/IRoute.h>
+#include <trview.app/Mocks/Routing/IRandomizerRoute.h>
 
 using namespace trview;
 using namespace trview::mocks;
@@ -21,8 +22,11 @@ TEST(Lua_trview, Level)
 
     lua_State* L = luaL_newstate();
     lua::trview_register(L, application.get(), 
-        []() { return mock_shared<MockRoute>(); },
-        [](auto&&...) { return mock_shared<MockWaypoint>(); });
+        [](auto&&) { return mock_shared<MockRoute>(); },
+        [](auto&&) { return mock_shared<MockRandomizerRoute>(); },
+        [](auto&&...) { return mock_shared<MockWaypoint>(); },
+        mock_shared<MockDialogs>(),
+        mock_shared<MockFiles>());
 
     ASSERT_EQ(0, luaL_dostring(L, "return trview.level"));
     ASSERT_EQ(LUA_TUSERDATA, lua_type(L, -1));
@@ -41,8 +45,11 @@ TEST(Lua_trview, RecentFiles)
 
     lua_State* L = luaL_newstate();
     lua::trview_register(L, application.get(),
-        []() { return mock_shared<MockRoute>(); },
-        [](auto&&...) { return mock_shared<MockWaypoint>(); });
+        [](auto&&) { return mock_shared<MockRoute>(); },
+        [](auto&&) { return mock_shared<MockRandomizerRoute>(); },
+        [](auto&&...) { return mock_shared<MockWaypoint>(); },
+        mock_shared<MockDialogs>(),
+        mock_shared<MockFiles>());
 
     ASSERT_EQ(0, luaL_dostring(L, "return trview.recent_files"));
     ASSERT_EQ(LUA_TTABLE, lua_type(L, -1));
@@ -61,8 +68,11 @@ TEST(Lua_trview, SetLevel)
 
     lua_State* L = luaL_newstate();
     lua::trview_register(L, application.get(),
-        []() { return mock_shared<MockRoute>(); },
-        [](auto&&...) { return mock_shared<MockWaypoint>(); });
+        [](auto&&) { return mock_shared<MockRoute>(); },
+        [](auto&&) { return mock_shared<MockRandomizerRoute>(); },
+        [](auto&&...) { return mock_shared<MockWaypoint>(); },
+        mock_shared<MockDialogs>(),
+        mock_shared<MockFiles>());
 
     auto level = mock_shared<MockLevel>();
     lua::create_level(L, level);
@@ -79,8 +89,11 @@ TEST(Lua_trview, Route)
 
     lua_State* L = luaL_newstate();
     lua::trview_register(L, application.get(),
-        []() { return mock_shared<MockRoute>(); },
-        [](auto&&...) { return mock_shared<MockWaypoint>(); });
+        [](auto&&) { return mock_shared<MockRoute>(); },
+        [](auto&&) { return mock_shared<MockRandomizerRoute>(); },
+        [](auto&&...) { return mock_shared<MockWaypoint>(); },
+        mock_shared<MockDialogs>(),
+        mock_shared<MockFiles>());
 
     ASSERT_EQ(0, luaL_dostring(L, "return trview.route"));
     ASSERT_EQ(LUA_TUSERDATA, lua_type(L, -1));
@@ -93,8 +106,11 @@ TEST(Lua_trview, SetRoute)
 
     lua_State* L = luaL_newstate();
     lua::trview_register(L, application.get(),
-        []() { return mock_shared<MockRoute>(); },
-        [](auto&&...) { return mock_shared<MockWaypoint>(); });
+        [](auto&&) { return mock_shared<MockRoute>(); },
+        [](auto&&) { return mock_shared<MockRandomizerRoute>(); },
+        [](auto&&...) { return mock_shared<MockWaypoint>(); },
+        mock_shared<MockDialogs>(),
+        mock_shared<MockFiles>());
 
     ASSERT_EQ(0, luaL_dostring(L, "trview.route = Route.new()"));
 }

@@ -11,6 +11,8 @@ using namespace trview::tests;
 using namespace DirectX::SimpleMath;
 using testing::Return;
 using testing::NiceMock;
+using testing::A;
+using testing::SaveArg;
 
 namespace
 {
@@ -409,6 +411,24 @@ TEST(Route, AddWaypointUsesColours)
     ASSERT_EQ(waypoint_values.value().waypoint_colour, Colour::Green);
 }
 
+TEST(Route, Reload)
+{
+    const std::string contents = "{\"colour\":\"4278255360\",\"waypoint_colour\":\"4294967295\",\"waypoints\":[{\"index\":0,\"normal\":\"0,0,0\",\"notes\":\"\",\"position\":\"0,0,0\",\"room\":0,\"type\":\"Position\"},{\"index\":0,\"normal\":\"0,0,0\",\"notes\":\"\",\"position\":\"0,0,0\",\"room\":0,\"type\":\"Position\"}]}";
+    std::vector<uint8_t> bytes = contents
+        | std::views::transform([](const auto v) { return static_cast<uint8_t>(v); })
+        | std::ranges::to<std::vector>();
+    UserSettings settings{};
+    auto files = mock_shared<MockFiles>();
+    EXPECT_CALL(*files, load_file(A<const std::string&>())).WillRepeatedly(Return(bytes));
+
+    auto route = register_test_module().build();
+
+    route->set_filename("test.tvr");
+    route->reload(files, settings);
+
+    ASSERT_EQ(route->waypoints(), 2);
+}
+
 TEST(Route, RouteUsesDefaultColours)
 {
     UserSettings settings;
@@ -417,6 +437,54 @@ TEST(Route, RouteUsesDefaultColours)
     auto route = register_test_module().with_settings(settings).build();
     ASSERT_EQ(route->colour(), settings.route_colour);
     ASSERT_EQ(route->waypoint_colour(), settings.waypoint_colour);
+}
+
+TEST(Route, Save)
+{
+    auto route = register_test_module().build();
+    auto files = mock_shared<MockFiles>();
+
+    std::string contents;
+    EXPECT_CALL(*files, save_file("test.tvr", A<const std::string&>()))
+        .WillOnce(SaveArg<1>(&contents));
+
+    UserSettings settings{};
+
+    route->set_filename("test.tvr");
+    route->add(Vector3::Zero, Vector3::Down, 0);
+    route->add(Vector3::Zero, Vector3::Down, 1);
+    route->save(files, settings);
+
+    ASSERT_EQ(contents, "{\"colour\":\"4278255360\",\"waypoint_colour\":\"4294967295\",\"waypoints\":[{\"index\":0,\"normal\":\"0,0,0\",\"notes\":\"\",\"position\":\"0,0,0\",\"room\":0,\"type\":\"Position\"},{\"index\":0,\"normal\":\"0,0,0\",\"notes\":\"\",\"position\":\"0,0,0\",\"room\":0,\"type\":\"Position\"}]}");
+}
+
+TEST(Route, SaveNoFileName)
+{
+    auto route = register_test_module().build();
+    auto files = mock_shared<MockFiles>();
+
+    EXPECT_CALL(*files, save_file(A<const std::string&>(), A<const std::string&>())).Times(0);
+
+    UserSettings settings{};
+    route->save(files, settings);
+}
+
+TEST(Route, SaveAs)
+{
+    auto route = register_test_module().build();
+    auto files = mock_shared<MockFiles>();
+
+    std::string contents;
+    EXPECT_CALL(*files, save_file("test.tvr", A<const std::string&>()))
+        .WillOnce(SaveArg<1>(&contents));
+
+    UserSettings settings{};
+
+    route->add(Vector3::Zero, Vector3::Down, 0);
+    route->add(Vector3::Zero, Vector3::Down, 1);
+    route->save_as(files, "test.tvr", settings);
+
+    ASSERT_EQ(contents, "{\"colour\":\"4278255360\",\"waypoint_colour\":\"4294967295\",\"waypoints\":[{\"index\":0,\"normal\":\"0,0,0\",\"notes\":\"\",\"position\":\"0,0,0\",\"room\":0,\"type\":\"Position\"},{\"index\":0,\"normal\":\"0,0,0\",\"notes\":\"\",\"position\":\"0,0,0\",\"room\":0,\"type\":\"Position\"}]}");
 }
 
 TEST(Route, SetColourUpdatesWaypoints)

@@ -38,6 +38,7 @@
 #include "Menus/FileMenu.h"
 #include "Menus/UpdateChecker.h"
 #include "Routing/Waypoint.h"
+#include "Routing/RandomizerRoute.h"
 #include "Settings/SettingsLoader.h"
 #include "Settings/StartupOptions.h"
 #include "UI/CameraControls.h"
@@ -182,11 +183,28 @@ namespace trview
         const auto waypoint_mesh = create_cube_mesh(mesh_source);
         auto waypoint_source = [=](auto&&... args) { return std::make_shared<Waypoint>(waypoint_mesh, args...); };
 
-        auto route_source = [=]()
+        auto route_source = [=](std::optional<IRoute::FileData> data)
         {
-            return std::make_shared<Route>(
+            auto new_route = std::make_shared<Route>(
                 std::make_unique<SelectionRenderer>(device, shader_storage, std::make_unique<TransparencyBuffer>(device), render_target_source),
                 waypoint_source, settings_loader->load_user_settings());
+            if (data)
+            {
+                new_route->import(data->data);
+            }
+            return new_route;
+        };
+
+        auto randomizer_route_source = [=](std::optional<IRandomizerRoute::FileData> data)
+        {
+            auto new_route = std::make_shared<RandomizerRoute>(
+                route_source(std::nullopt),
+                waypoint_source);
+            if (data)
+            {
+                new_route->import(data->data, data->settings);
+            }
+            return new_route;
         };
 
         auto entity_source = [=](auto&& level, auto&& entity, auto&& index, auto&& triggers, auto&& mesh_storage, auto&& owning_level, auto&& room)
@@ -252,10 +270,10 @@ namespace trview
         auto dialogs = std::make_shared<Dialogs>(window);
         auto shell = std::make_shared<Shell>();
 
-        auto plugin_source = [=](auto&&... args) { return std::make_shared<Plugin>(files, std::make_unique<Lua>(route_source, waypoint_source), args...); };
+        auto plugin_source = [=](auto&&... args) { return std::make_shared<Plugin>(files, std::make_unique<Lua>(route_source, randomizer_route_source, waypoint_source, dialogs, files), args...); };
         auto plugins = std::make_shared<Plugins>(
             files,
-            std::make_shared<Plugin>(std::make_unique<Lua>(route_source, waypoint_source), "Default", "trview", "Default Lua plugin for trview"),
+            std::make_shared<Plugin>(std::make_unique<Lua>(route_source, randomizer_route_source, waypoint_source, dialogs, files), "Default", "trview", "Default Lua plugin for trview"),
             plugin_source,
             settings_loader->load_user_settings());
         auto plugins_window_source = [=]() { return std::make_shared<PluginsWindow>(plugins, shell); };
@@ -280,7 +298,7 @@ namespace trview
             std::make_unique<Picking>(window),
             std::make_unique<input::Mouse>(window, std::make_unique<input::WindowTester>(window)),
             shortcuts,
-            route_source(),
+            route_source(std::nullopt),
             sprite_source,
             std::make_unique<Compass>(device, sprite_source, render_target_source, mesh_source),
             std::make_unique<Measure>(device, mesh_source),
@@ -328,6 +346,7 @@ namespace trview
             std::make_unique<CameraSinkWindowManager>(window, shortcuts, camera_sink_window_source),
             std::make_unique<ConsoleManager>(window, shortcuts, console_source, files),
             plugins,
-            std::make_unique<PluginsWindowManager>(window, shortcuts, plugins_window_source));
+            std::make_unique<PluginsWindowManager>(window, shortcuts, plugins_window_source),
+            randomizer_route_source);
     }
 }

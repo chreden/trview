@@ -34,8 +34,10 @@ namespace trview
         // Otherwise create the window.
         _route_window = _route_window_source();
         _route_window->on_colour_changed += on_colour_changed;
-        _route_window->on_route_import += on_route_import;
-        _route_window->on_route_export += on_route_export;
+        _route_window->on_route_open += on_route_open;
+        _route_window->on_route_reload += on_route_reload;
+        _route_window->on_route_save += on_route_save;
+        _route_window->on_route_save_as += on_route_save_as;
         _route_window->on_item_selected += on_item_selected;
         _route_window->on_waypoint_colour_changed += on_waypoint_colour_changed;
         _route_window->on_trigger_selected += on_trigger_selected;
@@ -43,6 +45,10 @@ namespace trview
         _route_window->on_waypoint_deleted += on_waypoint_deleted;
         _route_window->on_waypoint_reordered += on_waypoint_reordered;
         _route_window->on_waypoint_changed += on_waypoint_changed;
+        _route_window->on_level_switch += on_level_switch;
+        _route_window->on_new_route += on_new_route;
+        _route_window->on_new_randomizer_route += on_new_randomizer_route;
+        _route_window->on_level_reordered += on_level_reordered;
         _token_store += _route_window->on_window_closed += [&]() { _closing = true; };
 
         _route_window->set_randomizer_settings(_randomizer_settings);
@@ -50,10 +56,7 @@ namespace trview
         _route_window->set_items(_all_items);
         _route_window->set_rooms(_all_rooms);
         _route_window->set_triggers(_all_triggers);
-        if (_route)
-        {
-            _route_window->set_route(_route);
-        }
+        _route_window->set_route(_route);
         _route_window->select_waypoint(_selected_waypoint);
         on_window_created();
     }
@@ -72,7 +75,7 @@ namespace trview
         }
     }
 
-    void RouteWindowManager::set_route(IRoute* route)
+    void RouteWindowManager::set_route(const std::weak_ptr<IRoute>& route)
     {
         _route = route;
         if (_route_window)

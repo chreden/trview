@@ -3,11 +3,17 @@
 #include <external/lua/src/lua.h>
 #include <external/lua/src/lauxlib.h>
 #include <string>
+#include <vector>
+#include <cstdint>
 #include <trview.common/Event.h>
 #include <functional>
 #include "ILua.h"
 #include "../Routing/IRoute.h"
+#include "../Routing/IRandomizerRoute.h"
 #include "../Settings/UserSettings.h"
+
+#include <trview.common/Windows/IDialogs.h>
+#include <trview.common/IFiles.h>
 
 namespace trview
 {
@@ -16,7 +22,7 @@ namespace trview
     class Lua final : public ILua
     {
     public:
-        explicit Lua(const IRoute::Source& route_source, const IWaypoint::Source& waypoint_source);
+        explicit Lua(const IRoute::Source& route_source, const IRandomizerRoute::Source& randomizer_route_source, const IWaypoint::Source& waypoint_source, const std::shared_ptr<IDialogs>& dialogs, const std::shared_ptr<IFiles>& files);
         ~Lua();
         void do_file(const std::string& file) override;
         void execute(const std::string& command) override;
@@ -24,7 +30,10 @@ namespace trview
     private:
         lua_State* L{ nullptr };
         IRoute::Source _route_source;
+        IRandomizerRoute::Source _randomizer_route_source;
         IWaypoint::Source _waypoint_source;
+        std::shared_ptr<IDialogs> _dialogs;
+        std::shared_ptr<IFiles> _files;
     };
 
     namespace lua

@@ -57,14 +57,15 @@ namespace trview
         std::unique_ptr<ICameraSinkWindowManager> camera_sink_window_manager,
         std::unique_ptr<IConsoleManager> console_manager,
         std::shared_ptr<IPlugins> plugins,
-        std::unique_ptr<IPluginsWindowManager> plugins_window_manager)
+        std::unique_ptr<IPluginsWindowManager> plugins_window_manager,
+        const IRandomizerRoute::Source& randomizer_route_source)
         : MessageHandler(application_window), _instance(GetModuleHandle(nullptr)),
         _file_menu(std::move(file_menu)), _update_checker(std::move(update_checker)), _view_menu(window()), _settings_loader(settings_loader), _trlevel_source(trlevel_source),
         _viewer(std::move(viewer)), _route_source(route_source), _shortcuts(shortcuts), _items_windows(std::move(items_window_manager)),
         _triggers_windows(std::move(triggers_window_manager)), _route_window(std::move(route_window_manager)), _rooms_windows(std::move(rooms_window_manager)), _level_source(level_source),
         _dialogs(dialogs), _files(files), _timer(default_time_source()), _imgui_backend(std::move(imgui_backend)), _lights_windows(std::move(lights_window_manager)), _log_windows(std::move(log_window_manager)),
         _textures_windows(std::move(textures_window_manager)), _camera_sink_windows(std::move(camera_sink_window_manager)), _console_manager(std::move(console_manager)),
-        _plugins(plugins), _plugins_windows(std::move(plugins_window_manager))
+        _plugins(plugins), _plugins_windows(std::move(plugins_window_manager)), _randomizer_route_source(randomizer_route_source)
     {
         SetWindowLongPtr(window(), GWLP_USERDATA, reinterpret_cast<LONG_PTR>(_imgui_backend.get()));
 
@@ -72,7 +73,7 @@ namespace trview
         _settings = _settings_loader->load_user_settings();
         lua::set_settings(_settings);
 
-        set_route(route_source());
+        set_route(_settings.randomizer_tools ? randomizer_route_source(std::nullopt) : route_source(std::nullopt));
 
         _file_menu->set_recent_files(_settings.recent_files);
         _token_store += _file_menu->on_file_open += [=](const auto& file) { open(file, ILevel::OpenMode::Full); };
@@ -103,7 +104,7 @@ namespace trview
 
     void Application::open(const std::string& filename, ILevel::OpenMode open_mode)
     {
-        if (open_mode == ILevel::OpenMode::Full && !should_discard_changes())
+        if (open_mode == ILevel::OpenMode::Full && !is_rando_route() && !should_discard_changes())
         {
             return;
         }
@@ -361,17 +362,10 @@ namespace trview
         _token_store += _route_window->on_waypoint_selected += [&](auto index) { select_waypoint(index); };
         _token_store += _route_window->on_item_selected += [&](const auto& item) { select_item(item); };
         _token_store += _route_window->on_trigger_selected += [&](const auto& trigger) { select_trigger(trigger); };
-        _token_store += _route_window->on_route_import += [&](const std::string& path, bool is_rando) { this->import_route(path, is_rando); };
-        _token_store += _route_window->on_route_export += [&](const std::string& path, bool is_rando)
-        {
-            export_route(*_route, _files, path, _level ? _level->filename() : "", _settings.randomizer, is_rando);
-            _route->set_unsaved(false);
-            if (_level)
-            {
-                _settings.recent_routes[_level->filename()] = { path, is_rando };
-                _viewer->set_settings(_settings);
-            }
-        };
+        _token_store += _route_window->on_route_open += [&]() { this->open_route(); };
+        _token_store += _route_window->on_route_reload += [&]() { this->reload_route(); };
+        _token_store += _route_window->on_route_save += [&]() { this->save_route(); };
+        _token_store += _route_window->on_route_save_as += [&]() { this->save_route_as(); };
         _token_store += _route_window->on_waypoint_deleted += [&](auto index) { remove_waypoint(index); };
         _token_store += _route_window->on_colour_changed += [&](const Colour& colour)
         {
@@ -396,6 +390,16 @@ namespace trview
         _route->set_randomizer_enabled(_settings.randomizer_tools);
         _route_window->set_randomizer_settings(_settings.randomizer);
         _token_store += _route_window->on_window_created += [&]() { open_recent_route(); };
+        _token_store += _route_window->on_level_switch += [&](const auto& level) { _file_menu->switch_to(level); };
+        _token_store += _route_window->on_new_route += [&]() { if (should_discard_changes()) { set_route(_route_source(std::nullopt)); } };
+        _token_store += _route_window->on_new_randomizer_route += [&]() { if (should_discard_changes()) { set_route(_randomizer_route_source(std::nullopt)); } };
+        _token_store += _route_window->on_level_reordered += [&](const std::string& from, const std::string& to)
+        {
+            if (auto rando = std::dynamic_pointer_cast<IRandomizerRoute>(_route))
+            {
+                rando->move_level(from, to);
+            }
+        };
 
         if (_settings.route_startup)
         {
@@ -427,14 +431,14 @@ namespace trview
     void Application::add_waypoint(const Vector3& position, const Vector3& normal, uint32_t room, IWaypoint::Type type, uint32_t index)
     {
         uint32_t new_index = _route->insert(position, normal, room, type, index);
-        _route_window->set_route(_route.get());
+        _route_window->set_route(_route);
         select_waypoint(new_index);
     }
 
     void Application::remove_waypoint(uint32_t index)
     {
         _route->remove(index);
-        _route_window->set_route(_route.get());
+        _route_window->set_route(_route);
         _viewer->set_route(_route);
 
         if (_route->waypoints() > 0)
@@ -714,6 +718,11 @@ namespace trview
         _viewer->present(_settings.vsync);
     }
 
+    bool Application::is_rando_route() const
+    {
+        return std::dynamic_pointer_cast<IRandomizerRoute>(_route) != nullptr;
+    }
+
     bool Application::should_discard_changes()
     {
         if (_route->is_unsaved())
@@ -732,11 +741,56 @@ namespace trview
         open(_level->filename(), ILevel::OpenMode::Reload);
     }
 
+    void Application::open_route()
+    {
+        std::vector<IDialogs::FileFilter> filters{ { L"trview route", { L"*.tvr" } } };
+        if (_settings.randomizer_tools)
+        {
+            filters.push_back({ L"Randomizer Locations", { L"*.json" } });
+        }
+
+        const auto filename = _dialogs->open_file(L"Import route", filters, OFN_FILEMUSTEXIST);
+        if (filename)
+        {
+            import_route(filename->filename,
+                filename->filter_index == 2 ||
+                filename->filename.ends_with(".json"));
+        }
+    }
+
+    void Application::reload_route()
+    {
+        try
+        {
+            _route->reload(_files, _settings);
+        }
+        catch (std::exception& e)
+        {
+            MessageBoxA(0, e.what(), "Error", MB_OK);
+        }
+    }
+
+    void Application::save_route()
+    {
+        if (!_route->filename())
+        {
+            save_route_as();
+        }
+        else
+        {
+            _route->save(_files, _settings);
+        }
+    }
+
     void Application::import_route(const std::string& path, bool is_rando)
     {
-        auto route = trview::import_route(_route_source, _files, path, _level.get(), _settings.randomizer, is_rando);
+        auto route = is_rando ?
+            trview::import_randomizer_route(_randomizer_route_source, _files, path, _settings.randomizer) :
+            trview::import_route(_route_source, _files, path);
         if (route)
         {
+            route->set_filename(path);
+            route->set_unsaved(false);
             set_route(route);
             if (_level)
             {
@@ -746,9 +800,43 @@ namespace trview
         }
     }
 
+    void Application::save_route_as()
+    {
+        const bool is_rando = std::dynamic_pointer_cast<IRandomizerRoute>(_route) != nullptr;
+        std::vector<IDialogs::FileFilter> filters;
+        if (is_rando)
+        {
+            filters.push_back({ L"Randomizer Locations", { L"*.json" }});
+        }
+        else
+        {
+            filters.push_back({ L"trview route", { L"*.tvr" } });
+        }
+
+        const auto filename = _dialogs->save_file(L"Save route", filters, 1);
+        if (filename.has_value())
+        {
+            try
+            {
+                _route->save_as(_files, filename->filename, _settings);
+                _route->set_unsaved(false);
+                _route->set_filename(filename->filename);
+                if (_level)
+                {
+                    _settings.recent_routes[_level->filename()] = { filename->filename, is_rando };
+                    _viewer->set_settings(_settings);
+                }
+            }
+            catch (std::exception& e)
+            {
+                MessageBoxA(0, e.what(), "Error saving route", MB_OK);
+            }
+        }
+    }
+
     void Application::open_recent_route()
     {
-        if (!_level || _recent_route_prompted || !_route_window->is_window_open())
+        if (!_level || _recent_route_prompted || !_route_window->is_window_open() || std::dynamic_pointer_cast<IRandomizerRoute>(_route) != nullptr)
         {
             return;
         }
@@ -835,7 +923,7 @@ namespace trview
             return;
         }
 
-        if (prompt_user && open_mode == ILevel::OpenMode::Full && !should_discard_changes())
+        if (prompt_user && open_mode == ILevel::OpenMode::Full && !is_rando_route() && !should_discard_changes())
         {
             throw UserCancelledException();
         }
@@ -867,8 +955,11 @@ namespace trview
             _route->clear();
             _route->set_colour(_settings.route_colour);
             _route->set_waypoint_colour(_settings.waypoint_colour);
-            _route->set_unsaved(false);
-            _route_window->set_route(_route.get());
+            if (!is_rando_route())
+            {
+                _route->set_unsaved(false);
+            }
+            _route_window->set_route(_route);
         }
         _textures_windows->set_texture_storage(_level->texture_storage());
 
@@ -941,7 +1032,7 @@ namespace trview
     {
         _route = route;
         _token_store += _route->on_changed += [&]() { if (_viewer) { _viewer->set_scene_changed(); } };
-        _route_window->set_route(_route.get());
+        _route_window->set_route(_route);
         _route->set_randomizer_enabled(_settings.randomizer_tools);
         _route->set_level(_level);
         _viewer->set_route(_route);

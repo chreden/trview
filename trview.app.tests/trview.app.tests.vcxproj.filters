@@ -227,6 +227,9 @@
     <ClCompile Include="Lua\Lua_Vector3Tests.cpp">
       <Filter>Lua</Filter>
     </ClCompile>
+    <ClCompile Include="Routing\RandomizerRouteTests.cpp">
+      <Filter>Routing</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Input">

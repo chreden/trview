@@ -185,3 +185,103 @@ TEST(RouteWindowManager, WaypointChangedRaised)
     mock_window->on_waypoint_changed();
     ASSERT_TRUE(raised);
 }
+
+TEST(RouteWindowManager, OnRouteOpenRaised)
+{
+    auto mock_window = mock_shared<MockRouteWindow>();
+    auto manager = register_test_module().with_window_source([&](auto&&...) { return mock_window; }).build();
+
+    bool raised = false;
+    auto token = manager->on_route_open += [&]() { raised = true; };
+
+    manager->create_window();
+    mock_window->on_route_open();
+
+    ASSERT_TRUE(raised);
+}
+
+TEST(RouteWindowManager, OnRouteReloadRaised)
+{
+    auto mock_window = mock_shared<MockRouteWindow>();
+    auto manager = register_test_module().with_window_source([&](auto&&...) { return mock_window; }).build();
+
+    bool raised = false;
+    auto token = manager->on_route_reload += [&]() { raised = true; };
+
+    manager->create_window();
+    mock_window->on_route_reload();
+
+    ASSERT_TRUE(raised);
+}
+
+TEST(RouteWindowManager, OnRouteSaveRaised)
+{
+    auto mock_window = mock_shared<MockRouteWindow>();
+    auto manager = register_test_module().with_window_source([&](auto&&...) { return mock_window; }).build();
+
+    bool raised = false;
+    auto token = manager->on_route_save += [&]() { raised = true; };
+
+    manager->create_window();
+    mock_window->on_route_save();
+
+    ASSERT_TRUE(raised);
+}
+
+TEST(RouteWindowManager, OnRouteSaveAsRaised)
+{
+    auto mock_window = mock_shared<MockRouteWindow>();
+    auto manager = register_test_module().with_window_source([&](auto&&...) { return mock_window; }).build();
+
+    bool raised = false;
+    auto token = manager->on_route_save_as += [&]() { raised = true; };
+
+    manager->create_window();
+    mock_window->on_route_save_as();
+
+    ASSERT_TRUE(raised);
+}
+
+TEST(RouteWindowManager, OnLevelSwitchRaised)
+{
+    auto mock_window = mock_shared<MockRouteWindow>();
+    auto manager = register_test_module().with_window_source([&](auto&&...) { return mock_window; }).build();
+
+    std::optional<std::string> filename;
+    auto token = manager->on_level_switch += [&](const auto& f) { filename = f; };
+
+    manager->create_window();
+    mock_window->on_level_switch("test1");
+
+    ASSERT_TRUE(filename);
+    ASSERT_EQ(filename.value(), "test1");
+}
+
+
+TEST(RouteWindowManager, OnNewRouteRaised)
+{
+    auto mock_window = mock_shared<MockRouteWindow>();
+    auto manager = register_test_module().with_window_source([&](auto&&...) { return mock_window; }).build();
+
+    bool raised = false;
+    auto token = manager->on_new_route += [&]() { raised = true; };
+
+    manager->create_window();
+    mock_window->on_new_route();
+
+    ASSERT_TRUE(raised);
+}
+
+TEST(RouteWindowManager, OnNewRandomizerRouteRaised)
+{
+    auto mock_window = mock_shared<MockRouteWindow>();
+    auto manager = register_test_module().with_window_source([&](auto&&...) { return mock_window; }).build();
+
+    bool raised = false;
+    auto token = manager->on_new_randomizer_route += [&]() { raised = true; };
+
+    manager->create_window();
+    mock_window->on_new_randomizer_route();
+
+    ASSERT_TRUE(raised);
+}

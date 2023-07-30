@@ -10,6 +10,7 @@
 #include <trview.app/Menus/IUpdateChecker.h>
 #include <trview.app/Menus/ViewMenu.h>
 #include <trview.app/Routing/Route.h>
+#include "Routing/IRandomizerRoute.h"
 #include <trview.app/Settings/ISettingsLoader.h>
 #include <trview.app/Settings/IStartupOptions.h>
 #include <trview.app/Windows/IItemsWindowManager.h>
@@ -73,7 +74,8 @@ namespace trview
             std::unique_ptr<ICameraSinkWindowManager> camera_sink_window_manager,
             std::unique_ptr<IConsoleManager> console_manager,
             std::shared_ptr<IPlugins> plugins,
-            std::unique_ptr<IPluginsWindowManager> plugins_window_manager);
+            std::unique_ptr<IPluginsWindowManager> plugins_window_manager,
+            const IRandomizerRoute::Source& randomizer_route_source);
         virtual ~Application();
         /// Attempt to open the specified level file.
         /// @param filename The level file to open.
@@ -120,9 +122,14 @@ namespace trview
         void set_room_visibility(const std::weak_ptr<IRoom>& room, bool visible);
         void set_camera_sink_visibility(const std::weak_ptr<ICameraSink>& camera_sink, bool visible);
         void select_sector(const std::weak_ptr<ISector>& sector);
+        bool is_rando_route() const;
         bool should_discard_changes();
         void reload();
+        void open_route();
+        void reload_route();
+        void save_route();
         void import_route(const std::string& path, bool is_rando);
+        void save_route_as();
         void open_recent_route();
         void save_window_placement();
 
@@ -170,6 +177,8 @@ namespace trview
         std::unique_ptr<IConsoleManager> _console_manager;
         std::shared_ptr<IPlugins> _plugins;
         std::unique_ptr<IPluginsWindowManager> _plugins_windows;
+
+        IRandomizerRoute::Source _randomizer_route_source;
     };
 
     std::unique_ptr<IApplication> create_application(HINSTANCE hInstance, int command_show, const std::wstring& command_line);

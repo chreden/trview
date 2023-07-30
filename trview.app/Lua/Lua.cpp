@@ -43,17 +43,32 @@ namespace trview
             self->on_print(oss.str());
             return 0;
         }
+
+        constexpr luaL_Reg loadedlibs[] = {
+          {LUA_GNAME, luaopen_base},
+          {LUA_LOADLIBNAME, luaopen_package},
+          {LUA_COLIBNAME, luaopen_coroutine},
+          {LUA_TABLIBNAME, luaopen_table},
+          {LUA_STRLIBNAME, luaopen_string},
+          {LUA_MATHLIBNAME, luaopen_math},
+          {LUA_UTF8LIBNAME, luaopen_utf8},
+          {LUA_DBLIBNAME, luaopen_debug}
+        };
     }
 
     ILua::~ILua()
     {
     }
 
-    Lua::Lua(const IRoute::Source& route_source, const IWaypoint::Source& waypoint_source)
-        : _route_source(route_source), _waypoint_source(waypoint_source)
+    Lua::Lua(const IRoute::Source& route_source, const IRandomizerRoute::Source& randomizer_route_source, const IWaypoint::Source& waypoint_source, const std::shared_ptr<IDialogs>& dialogs, const std::shared_ptr<IFiles>& files)
+        : _route_source(route_source), _randomizer_route_source(randomizer_route_source), _waypoint_source(waypoint_source), _dialogs(dialogs), _files(files)
     {
         L = luaL_newstate();
-        luaL_openlibs(L);
+        for (const auto& lib : loadedlibs)
+        {
+            luaL_requiref(L, lib.name, lib.func, 1);
+            lua_pop(L, 1);
+        }
     }
 
     Lua::~Lua()
@@ -65,8 +80,14 @@ namespace trview
     {
         if (luaL_dofile(L, file.c_str()) != LUA_OK)
         {
-            std::string msg = lua_tostring(L, -1);
-            on_print(msg);
+            if (lua_type(L, -1) == LUA_TSTRING)
+            {
+                on_print(lua_tostring(L, -1));
+            }
+            else
+            {
+                on_print("An error occurred");
+            }
         }
     }
 
@@ -74,8 +95,14 @@ namespace trview
     {
         if (luaL_dostring(L, command.c_str()) != LUA_OK)
         {
-            std::string msg = lua_tostring(L, -1);
-            on_print(msg);
+            if (lua_type(L, -1) == LUA_TSTRING)
+            {
+                on_print(lua_tostring(L, -1));
+            }
+            else
+            {
+                on_print("An error occurred");
+            }
         }
     }
 
@@ -85,7 +112,7 @@ namespace trview
         *userdata = this;
         lua_pushcclosure(L, print, 1);
         lua_setglobal(L, "print");
-        lua::trview_register(L, application, _route_source, _waypoint_source);
+        lua::trview_register(L, application, _route_source, _randomizer_route_source, _waypoint_source, _dialogs, _files);
         lua::imgui_register(L);
     }
 

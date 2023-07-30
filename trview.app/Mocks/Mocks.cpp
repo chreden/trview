@@ -22,6 +22,7 @@
 #include "Menus/IUpdateChecker.h"
 #include "Routing/IRoute.h"
 #include "Routing/IWaypoint.h"
+#include "Routing/IRandomizerRoute.h"
 #include "Settings/ISettingsLoader.h"
 #include "Settings/IStartupOptions.h"
 #include "Tools/ICompass.h"
@@ -123,6 +124,9 @@ namespace trview
 
         MockRoute::MockRoute() {}
         MockRoute::~MockRoute() {}
+
+        MockRandomizerRoute::MockRandomizerRoute() {}
+        MockRandomizerRoute::~MockRandomizerRoute() {}
 
         MockWaypoint::MockWaypoint() {}
         MockWaypoint::~MockWaypoint() {}

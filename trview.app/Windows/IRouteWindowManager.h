@@ -13,10 +13,13 @@ namespace trview
         Event<Colour> on_colour_changed;
 
         /// Event raised when a route is imported.
-        Event<std::string, bool> on_route_import;
+        Event<> on_route_open;
+
+        Event<> on_route_reload;
+        Event<> on_route_save;
 
         /// Event raised when a route is exported.
-        Event<std::string, bool> on_route_export;
+        Event<> on_route_save_as;
 
         /// <summary>
         /// Event raised when the route stick colour has changed.
@@ -44,12 +47,17 @@ namespace trview
 
         Event<> on_window_created;
 
+        Event<std::string> on_level_switch;
+        Event<> on_new_route;
+        Event<> on_new_randomizer_route;
+        Event<std::string, std::string> on_level_reordered;
+
         /// Render all of the route windows.
         virtual void render() = 0;
 
         /// Load the waypoints from the route.
         /// @param route The route to load from.
-        virtual void set_route(IRoute* route) = 0;
+        virtual void set_route(const std::weak_ptr<IRoute>& route) = 0;
 
         /// Create a new route window.
         virtual void create_window() = 0;

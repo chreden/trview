@@ -4,6 +4,8 @@
 #include <trview.common/Windows/IClipboard.h>
 #include "../trview_imgui.h"
 #include <format>
+#include "../Routing/IRandomizerRoute.h"
+#include "../Elements/ILevel.h"
 
 namespace trview
 {
@@ -12,6 +14,14 @@ namespace trview
     const std::string RouteWindow::Names::colour = "colour";
 
     using namespace graphics;
+
+    namespace
+    {
+        std::string trimmed_level_name(const std::string& input)
+        {
+            return input.substr(input.find_last_of("/\\") + 1);
+        }
+    }
 
     IRouteWindow::~IRouteWindow()
     {
@@ -31,67 +41,70 @@ namespace trview
             _need_focus = false;
         }
 
-        if (ImGui::BeginChild(Names::waypoint_list_panel.c_str(), ImVec2(150, 0), true))
+        const auto route = _route.lock();
+        auto rando_route = std::dynamic_pointer_cast<IRandomizerRoute>(route);
+
+        if (ImGui::BeginChild(Names::waypoint_list_panel.c_str(), ImVec2(rando_route ? 250 : 150.0f, 0), true))
         {
-            if (ImGui::Button("Settings"))
+            if (rando_route)
             {
-                if (!_show_settings)
-                {
-                    ImGui::OpenPopup("SettingsPopup");
-                }
-                _show_settings = !_show_settings;
-            }
+                std::optional<std::string> level_move_from;
+                std::optional<std::string> level_move_to;
 
-            if (_show_settings && ImGui::BeginPopup("SettingsPopup"))
-            {
-                auto colour = _route ? _route->colour() : Colour::Green;
-                if (ImGui::ColorEdit3("Route##colour", &colour.r, ImGuiColorEditFlags_NoInputs))
+                if (ImGui::BeginTable("##levellist", 1, ImGuiTableFlags_ScrollY, ImVec2(100, -1)))
                 {
-                    on_colour_changed(colour);
-                }
-                auto waypoint_colour = _route ? _route->waypoint_colour() : Colour::White;
-                if (ImGui::ColorEdit3("Waypoint##colour", &waypoint_colour.r, ImGuiColorEditFlags_NoInputs))
-                {
-                    on_waypoint_colour_changed(waypoint_colour);
-                }
-                ImGui::EndPopup();
-            }
-            else
-            {
-                _show_settings = false;
-            }
+                    ImGui::TableSetupColumn("Name");
+                    ImGui::TableSetupScrollFreeze(1, 1);
+                    ImGui::TableHeadersRow();
 
-            ImGui::SameLine();
-            if (ImGui::Button(Names::import_button.c_str()))
-            {
-                std::vector<IDialogs::FileFilter> filters{ { L"trview route", { L"*.tvr" } } };
-                if (_randomizer_enabled)
-                {
-                    filters.push_back({ L"Randomizer Locations", { L"*.json" } });
-                }
+                    std::string selected_level;
+                    if (auto level = rando_route->level().lock())
+                    {
+                        selected_level = trimmed_level_name(level->filename());
+                    }
 
-                const auto filename = _dialogs->open_file(L"Import route", filters, OFN_FILEMUSTEXIST);
-                if (filename.has_value())
-                {
-                    on_route_import(filename.value().filename, filename.value().filter_index == 2);
-                }
-            }
-            ImGui::SameLine();
-            if (ImGui::Button(Names::export_button.c_str()))
-            {
-                std::vector<IDialogs::FileFilter> filters{ { L"trview route", { L"*.tvr" } } };
-                uint32_t filter_index = 1;
-                if (_randomizer_enabled)
-                {
-                    filters.push_back({ L"Randomizer Locations", { L"*.json" } });
-                    filter_index = 2;
-                }
+                    const auto filenames = rando_route->filenames();
+                    for (std::size_t i = 0; i < filenames.size(); ++i)
+                    {
+                        const auto& file = filenames[i];
+                        ImGui::TableNextRow();
+                        ImGui::TableNextColumn();
+                        bool selected = file == selected_level;
+                        if (ImGui::Selectable(file.c_str(), &selected))
+                        {
+                            on_level_switch(file);
+                        }
 
-                const auto filename = _dialogs->save_file(L"Export route", filters, filter_index);
-                if (filename.has_value())
-                {
-                    on_route_export(filename.value().filename, filename.value().filter_index == 2);
+                        ImGuiDragDropFlags src_flags = 0;
+                        src_flags |= ImGuiDragDropFlags_SourceNoDisableHover;
+                        src_flags |= ImGuiDragDropFlags_SourceNoHoldToOpenOthers;
+                        src_flags |= ImGuiDragDropFlags_SourceNoPreviewTooltip;
+                        if (ImGui::BeginDragDropSource(src_flags))
+                        {
+                            ImGui::SetDragDropPayload("RouteWindowLevel", &i, sizeof(i));
+                            ImGui::EndDragDropSource();
+                        }
+
+                        if (ImGui::BeginDragDropTarget())
+                        {
+                            ImGuiDragDropFlags target_flags = 0;
+                            if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("RouteWindowLevel", target_flags))
+                            {
+                                level_move_from = filenames[*reinterpret_cast<std::size_t*>(payload->Data)];
+                                level_move_to = file;
+                            }
+                            ImGui::EndDragDropTarget();
+                        }
+                    }
+
+                    ImGui::EndTable();
+
+                    if (level_move_from && level_move_to)
+                    {
+                        on_level_reordered(level_move_from.value(), level_move_to.value());
+                    }
                 }
+                ImGui::SameLine();
             }
 
             std::optional<uint32_t> move_from;
@@ -104,11 +117,11 @@ namespace trview
                 ImGui::TableSetupScrollFreeze(1, 1);
                 ImGui::TableHeadersRow();
 
-                if (_route) 
+                if (route) 
                 {
-                    for (uint32_t i = 0; i < _route->waypoints(); ++i)
+                    for (uint32_t i = 0; i < route->waypoints(); ++i)
                     {
-                        if (auto waypoint = _route->waypoint(i).lock())
+                        if (auto waypoint = route->waypoint(i).lock())
                         {
                             ImGui::TableNextRow();
                             ImGui::TableNextColumn();
@@ -176,9 +189,10 @@ namespace trview
     {
         if (ImGui::BeginChild(Names::waypoint_details_panel.c_str(), ImVec2(), true))
         {
-            if (_route && _selected_index < _route->waypoints())
+            auto route = _route.lock();
+            if (route && _selected_index < route->waypoints())
             {
-                if (auto waypoint = _route->waypoint(_selected_index).lock())
+                if (auto waypoint = route->waypoint(_selected_index).lock())
                 {
                     if (ImGui::BeginTable(Names::waypoint_stats.c_str(), 2, 0, ImVec2(-1, 80)))
                     {
@@ -245,53 +259,57 @@ namespace trview
                         ImGui::EndPopup();
                     }
 
-                    const std::string save_text = waypoint->has_save() ? "SAVEGAME.0" : Names::attach_save.c_str();
-                    if (ImGui::Button(save_text.c_str(), ImVec2(-24, 18)))
+                    const bool is_rando = std::dynamic_pointer_cast<IRandomizerRoute>(route) != nullptr;
+                    if (!is_rando)
                     {
-                        if (!waypoint->has_save())
+                        const std::string save_text = waypoint->has_save() ? "SAVEGAME.0" : Names::attach_save.c_str();
+                        if (ImGui::Button(save_text.c_str(), ImVec2(-24, 18)))
                         {
-                            const auto filename = _dialogs->open_file(L"Select Save", { { L"Savegame File", { L"*.*" } } }, OFN_FILEMUSTEXIST);
-                            if (filename.has_value())
+                            if (!waypoint->has_save())
                             {
-                                // Load bytes from file.
-                                try
+                                const auto filename = _dialogs->open_file(L"Select Save", { { L"Savegame File", { L"*.*" } } }, OFN_FILEMUSTEXIST);
+                                if (filename.has_value())
                                 {
-                                    const auto bytes = _files->load_file(filename.value().filename);
-                                    if (bytes.has_value() && !bytes.value().empty())
+                                    // Load bytes from file.
+                                    try
                                     {
-                                        waypoint->set_save_file(bytes.value());
-                                        _route->set_unsaved(true);
+                                        const auto bytes = _files->load_file(filename.value().filename);
+                                        if (bytes.has_value() && !bytes.value().empty())
+                                        {
+                                            waypoint->set_save_file(bytes.value());
+                                            route->set_unsaved(true);
+                                        }
+                                    }
+                                    catch (...)
+                                    {
+                                        _dialogs->message_box(L"Failed to attach save", L"Error", IDialogs::Buttons::OK);
                                     }
                                 }
-                                catch (...)
-                                {
-                                    _dialogs->message_box(L"Failed to attach save", L"Error", IDialogs::Buttons::OK);
-                                }
                             }
-                        }
-                        else
-                        {
-                            const auto filename = _dialogs->save_file(L"Export Save", { { L"Savegame File", { L"*.*" } } }, 1);
-                            if (filename.has_value())
+                            else
                             {
-                                try
+                                const auto filename = _dialogs->save_file(L"Export Save", { { L"Savegame File", { L"*.*" } } }, 1);
+                                if (filename.has_value())
                                 {
-                                    _files->save_file(filename.value().filename, waypoint->save_file());
-                                }
-                                catch (...)
-                                {
-                                    _dialogs->message_box(L"Failed to export save", L"Error", IDialogs::Buttons::OK);
+                                    try
+                                    {
+                                        _files->save_file(filename.value().filename, waypoint->save_file());
+                                    }
+                                    catch (...)
+                                    {
+                                        _dialogs->message_box(L"Failed to export save", L"Error", IDialogs::Buttons::OK);
+                                    }
                                 }
                             }
                         }
-                    }
-                    ImGui::SameLine();
-                    if (ImGui::Button(Names::clear_save.c_str(), ImVec2(-1, 0)))
-                    {
-                        if (waypoint->has_save())
+                        ImGui::SameLine();
+                        if (ImGui::Button(Names::clear_save.c_str(), ImVec2(-1, 0)))
                         {
-                            waypoint->set_save_file({});
-                            _route->set_unsaved(true);
+                            if (waypoint->has_save())
+                            {
+                                waypoint->set_save_file({});
+                                route->set_unsaved(true);
+                            }
                         }
                     }
 
@@ -303,19 +321,20 @@ namespace trview
                     {
                         // Don't access the waypoint after it has been deleted - this is an issue with the window not
                         // having temporary ownership of the waypoint - if it was shared_ptr it would be fine.
-
-                        if (_randomizer_enabled)
+                        if (is_rando)
                         {
                             ImGui::Text("Randomizer");
                             load_randomiser_settings(*waypoint);
                         }
-
-                        ImGui::Text("Notes");
-                        std::string notes = waypoint->notes();
-                        if (ImGui::InputTextMultiline(Names::notes.c_str(), &notes, ImVec2(-1, -1)))
+                        else
                         {
-                            waypoint->set_notes(notes);
-                            _route->set_unsaved(true);
+                            ImGui::Text("Notes");
+                            std::string notes = waypoint->notes();
+                            if (ImGui::InputTextMultiline(Names::notes.c_str(), &notes, ImVec2(-1, -1)))
+                            {
+                                waypoint->set_notes(notes);
+                                route->set_unsaved(true);
+                            }
                         }
                     }
                 }
@@ -328,8 +347,20 @@ namespace trview
     {
         bool stay_open = true;
         ImGui::PushStyleVar(ImGuiStyleVar_WindowMinSize, ImVec2(420, 500));
-        if (ImGui::Begin("Route", &stay_open))
+
+        std::string window_title;
+        if (const auto route = _route.lock())
         {
+            const auto filename = route->filename();
+            if (filename)
+            {
+                window_title = std::format(" - {}", filename.value());
+            }
+        }
+
+        if (ImGui::Begin(std::format("Route{}###Route", window_title).c_str(), &stay_open, ImGuiWindowFlags_MenuBar))
+        {
+            render_menu_bar();
             render_waypoint_list();
             ImGui::SameLine();
             render_waypoint_details();
@@ -356,7 +387,7 @@ namespace trview
         }
     }
 
-    void RouteWindow::set_route(IRoute* route) 
+    void RouteWindow::set_route(const std::weak_ptr<IRoute>& route) 
     {
         _route = route;
         _selected_index = 0u;
@@ -415,6 +446,7 @@ namespace trview
     void RouteWindow::load_randomiser_settings(IWaypoint& waypoint)
     {
         auto waypoint_settings = waypoint.randomizer_settings();
+        auto route = _route.lock();
 
         if (ImGui::BeginTable(Names::randomizer_flags.c_str(), 2))
         {
@@ -430,7 +462,7 @@ namespace trview
                     {
                         waypoint_settings[b.first] = value;
                         waypoint.set_randomizer_settings(waypoint_settings);
-                        _route->set_unsaved(true);
+                        route->set_unsaved(true);
                     }
                 }
             }
@@ -452,7 +484,7 @@ namespace trview
                             auto settings = waypoint.randomizer_settings();
                             settings[b.first] = text;
                             waypoint.set_randomizer_settings(settings);
-                            _route->set_unsaved(true);
+                            route->set_unsaved(true);
                         }
                     }
                     else
@@ -467,7 +499,7 @@ namespace trview
                                     auto settings = waypoint.randomizer_settings();
                                     settings[b.first] = option;
                                     waypoint.set_randomizer_settings(settings);
-                                    _route->set_unsaved(true);
+                                    route->set_unsaved(true);
                                 }
                             }
                             ImGui::EndCombo();
@@ -483,7 +515,7 @@ namespace trview
                         auto settings = waypoint.randomizer_settings();
                         settings[b.first] = number;
                         waypoint.set_randomizer_settings(settings);
-                        _route->set_unsaved(true);
+                        route->set_unsaved(true);
                     }
                     break;
                 }
@@ -524,5 +556,88 @@ namespace trview
             }
         }
         return waypoint_type_to_string(waypoint.type());
+    }
+
+    void RouteWindow::render_menu_bar()
+    {
+        if (ImGui::BeginMenuBar())
+        {
+            if (ImGui::BeginMenu("File"))
+            {
+                if (_randomizer_enabled)
+                {
+                    if (ImGui::BeginMenu("New"))
+                    {
+                        if (ImGui::MenuItem("Route"))
+                        {
+                            on_new_route();
+                        }
+
+                        if (ImGui::MenuItem("Randomizer Route"))
+                        {
+                            on_new_randomizer_route();
+                        }
+                        ImGui::EndMenu();
+                    }
+                }
+                else if(ImGui::MenuItem("New"))
+                {
+                    on_new_route();
+                }
+
+                if (ImGui::MenuItem("Open"))
+                {
+                    on_route_open();
+                }
+
+                const auto route = _route.lock();
+                if (ImGui::MenuItem("Reload", nullptr, nullptr, route && route->filename().has_value()))
+                {
+                    on_route_reload();
+                }
+
+                if (ImGui::MenuItem("Save"))
+                {
+                    on_route_save();
+                }
+
+                if (ImGui::MenuItem("Save As"))
+                {
+                    on_route_save_as();
+                }
+                ImGui::EndMenu();
+            }
+
+            if (ImGui::MenuItem("Settings"))
+            {
+                if (!_show_settings)
+                {
+                    ImGui::OpenPopup("SettingsPopup");
+                }
+                _show_settings = !_show_settings;
+            }
+
+            if (_show_settings && ImGui::BeginPopup("SettingsPopup"))
+            {
+                auto route = _route.lock();
+                auto colour = route ? route->colour() : Colour::Green;
+                if (ImGui::ColorEdit3("Route##colour", &colour.r, ImGuiColorEditFlags_NoInputs))
+                {
+                    on_colour_changed(colour);
+                }
+                auto waypoint_colour = route ? route->waypoint_colour() : Colour::White;
+                if (ImGui::ColorEdit3("Waypoint##colour", &waypoint_colour.r, ImGuiColorEditFlags_NoInputs))
+                {
+                    on_waypoint_colour_changed(waypoint_colour);
+                }
+                ImGui::EndPopup();
+            }
+            else
+            {
+                _show_settings = false;
+            }
+
+            ImGui::EndMenuBar();
+        }
     }
 }

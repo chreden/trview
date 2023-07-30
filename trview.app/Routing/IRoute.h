@@ -1,18 +1,31 @@
 #pragma once
 
 #include <cstdint>
+#include <optional>
+#include <string>
+#include <vector>
+
 #include <trview.app/Routing/IWaypoint.h>
 #include <trview.app/Geometry/PickResult.h>
 #include <trview.common/Event.h>
+#include <trview.common/IFiles.h>
+#include "../Settings/RandomizerSettings.h"
 
 namespace trview
 {
+    struct UserSettings;
+
     /// <summary>
     /// A route is a series of waypoints with notes.
     /// </summary>
     struct IRoute
     {
-        using Source = std::function<std::shared_ptr<IRoute>()>;
+        struct FileData final
+        {
+            std::vector<uint8_t> data;
+        };
+
+        using Source = std::function<std::shared_ptr<IRoute>(std::optional<FileData>)>;
 
         Event<> on_changed;
 
@@ -44,6 +57,7 @@ namespace trview
         /// </summary>
         /// <returns>The colour of the route.</returns>
         virtual Colour colour() const = 0;
+        virtual std::optional<std::string> filename() const = 0;
         /// <summary>
         /// Insert the new waypoint into the route.
         /// </summary>
@@ -99,6 +113,7 @@ namespace trview
         /// <param name="direction">The direction of the ray.</param>
         /// <returns>The pcik result.</returns>
         virtual PickResult pick(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& direction) const = 0;
+        virtual void reload(const std::shared_ptr<IFiles>& files, const UserSettings& settings) = 0;
         /// <summary>
         /// Remove the waypoint at the specified index.
         /// </summary>
@@ -112,6 +127,8 @@ namespace trview
         /// <param name="texture_storage">Texture storage for the mesh.</param>
         /// <param name="show_selection">Whether to show the selection outline.</param>
         virtual void render(const ICamera& camera, const ILevelTextureStorage& texture_storage, bool show_selection) = 0;
+        virtual void save(const std::shared_ptr<IFiles>& files, const UserSettings& settings) = 0;
+        virtual void save_as(const std::shared_ptr<IFiles>& files, const std::string& filename, const UserSettings& settings) = 0;
         /// <summary>
         /// Get the index of the currently selected waypoint.
         /// </summary>
@@ -127,6 +144,7 @@ namespace trview
         /// </summary>
         /// <param name="colour">The colour to use.</param>
         virtual void set_colour(const Colour& colour) = 0;
+        virtual void set_filename(const std::string& filename) = 0;
         virtual void set_level(const std::weak_ptr<ILevel>& level) = 0;
         /// <summary>
         /// Set whether randomizer tools are enabled.
@@ -159,4 +177,6 @@ namespace trview
         /// <returns>The number of waypoints in the route.</returns>
         virtual uint32_t waypoints() const = 0;
     };
+
+    std::shared_ptr<IRoute> import_route(const IRoute::Source& route_source, const std::shared_ptr<IFiles>& files, const std::string& route_filename);
 }

@@ -1,21 +1,23 @@
 #pragma once
 
-#include "../../Routing/IRoute.h"
+#include "../../Routing/IRandomizerRoute.h"
 
 namespace trview
 {
     namespace mocks
     {
-        struct MockRoute : public IRoute
+        struct MockRandomizerRoute : public IRandomizerRoute
         {
-            MockRoute();
-            virtual ~MockRoute();
+            MockRandomizerRoute();
+            virtual ~MockRandomizerRoute();
             MOCK_METHOD(std::shared_ptr<IWaypoint>, add, (const DirectX::SimpleMath::Vector3&, const DirectX::SimpleMath::Vector3&, uint32_t), (override));
             MOCK_METHOD(std::shared_ptr<IWaypoint>, add, (const DirectX::SimpleMath::Vector3&, const DirectX::SimpleMath::Vector3&, uint32_t, IWaypoint::Type, uint32_t), (override));
             MOCK_METHOD(std::shared_ptr<IWaypoint>, add, (const std::shared_ptr<IWaypoint>&), (override));
+            MOCK_METHOD(std::shared_ptr<IWaypoint>, add, (const std::string&, const DirectX::SimpleMath::Vector3&, const DirectX::SimpleMath::Vector3&, uint32_t), (override));
             MOCK_METHOD(void, clear, (), (override));
             MOCK_METHOD(Colour, colour, (), (const, override));
             MOCK_METHOD(std::optional<std::string>, filename, (), (const, override));
+            MOCK_METHOD(std::vector<std::string>, filenames, (), (const, override));
             MOCK_METHOD(void, insert, (const DirectX::SimpleMath::Vector3&, const DirectX::SimpleMath::Vector3&, uint32_t, uint32_t), (override));
             MOCK_METHOD(uint32_t, insert, (const DirectX::SimpleMath::Vector3&, const DirectX::SimpleMath::Vector3&, uint32_t), (override));
             MOCK_METHOD(void, insert, (const DirectX::SimpleMath::Vector3&, const DirectX::SimpleMath::Vector3&, uint32_t, uint32_t, IWaypoint::Type, uint32_t), (override));
@@ -41,6 +43,7 @@ namespace trview
             MOCK_METHOD(Colour, waypoint_colour, (), (const, override));
             MOCK_METHOD(std::weak_ptr<IWaypoint>, waypoint, (uint32_t), (const, override));
             MOCK_METHOD(uint32_t, waypoints, (), (const, override));
+            MOCK_METHOD(void, move_level, (const std::string&, const std::string&));
         };
     }
 }
