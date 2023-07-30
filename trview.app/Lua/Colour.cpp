@@ -23,13 +23,14 @@ namespace trview
 
         Colour to_colour(lua_State* L, int index)
         {
-            lua_getfield(L, index, "r");
+            const int field_index = index < 0 ? (index + lua_gettop(L) + 1) : index;
+            lua_getfield(L, field_index, "r");
             float r = static_cast<float>(lua_tonumber(L, -1));
-            lua_getfield(L, index, "g");
+            lua_getfield(L, field_index, "g");
             float g = static_cast<float>(lua_tonumber(L, -1));
-            lua_getfield(L, index, "b");
+            lua_getfield(L, field_index, "b");
             float b = static_cast<float>(lua_tonumber(L, -1));
-            lua_getfield(L, index, "a");
+            lua_getfield(L, field_index, "a");
             float a = static_cast<float>(lua_tonumber(L, -1));
             lua_pop(L, 4);
             return Colour(a, r, g, b);
@@ -40,7 +41,8 @@ namespace trview
             float r = static_cast<float>(lua_tonumber(L, 1));
             float g = static_cast<float>(lua_tonumber(L, 2));
             float b = static_cast<float>(lua_tonumber(L, 3));
-            return create_colour(L, Colour(r, g, b));
+            float a = lua_gettop(L) >= 4 ? static_cast<float>(lua_tonumber(L, 4)) : 1.0f;
+            return create_colour(L, Colour(a, r, g, b));
         }
 
         void colour_register(lua_State* L)

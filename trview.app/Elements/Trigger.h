@@ -23,7 +23,9 @@ namespace trview
         virtual uint16_t flags() const override;
         virtual int16_t timer() const override;
         virtual uint16_t sector_id() const override;
+        Colour colour() const override;
         virtual const std::vector<Command> commands() const override;
+        void set_colour(const std::optional<Colour>& colour) override;
         virtual void set_triangles(const std::vector<TransparentTriangle>& transparent_triangles) override;
         virtual PickResult pick(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& direction) const override;
         virtual void set_position(const DirectX::SimpleMath::Vector3& position) override;
@@ -51,5 +53,6 @@ namespace trview
         bool _visible{ true };
         trlevel::LevelVersion _level_version{ trlevel::LevelVersion::Unknown };
         std::weak_ptr<ILevel> _level;
+        std::optional<Colour> _colour;
     };
 }

@@ -87,6 +87,8 @@ namespace trview
             Bit15 = 0x8000
         };
 
+        Event<> on_changed;
+
         /// <summary>
         /// Create a new implementation of <see cref="IRoom"/>.
         /// </summary>

@@ -13,6 +13,7 @@
 #include <trview.app/Graphics/IMeshStorage.h>
 #include <trview.graphics/IRenderTarget.h>
 #include <trview.graphics/IBuffer.h>
+#include <trview.common/TokenStore.h>
 
 namespace trview
 {
@@ -201,6 +202,7 @@ namespace trview
         std::shared_ptr<ILog> _log;
         std::vector<uint16_t> _floor_data;
         std::set<uint32_t> _models;
+        TokenStore _token_store;
     };
 
     /// Find the first item with the type id specified.

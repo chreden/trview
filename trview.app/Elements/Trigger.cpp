@@ -95,6 +95,17 @@ namespace trview
         return _sector_id;
     }
 
+    Colour Trigger::colour() const
+    {
+        return _colour.value_or(Trigger_Colour);
+    }
+
+    void Trigger::set_colour(const std::optional<Colour>& colour)
+    {
+        _colour = colour;
+        on_changed();
+    }
+
     void Trigger::set_triangles(const std::vector<TransparentTriangle>& transparent_triangles)
     {
         std::vector<Triangle> collision;
@@ -133,7 +144,7 @@ namespace trview
         using namespace DirectX::SimpleMath;
         for (auto& triangle : _mesh->transparent_triangles())
         {
-            transparency.add(triangle.transform(Matrix::Identity, colour));
+            transparency.add(triangle.transform(Matrix::Identity, _colour.value_or(colour)));
         }
     }
 

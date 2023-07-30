@@ -14,7 +14,11 @@ namespace trview
 
     struct ITrigger : public IRenderable
     {
+        const static inline Colour Trigger_Colour{ 0.5f, 1, 0, 1 };
+
         using Source = std::function<std::shared_ptr<ITrigger>(uint32_t, const std::weak_ptr<IRoom>&, uint16_t, uint16_t, const TriggerInfo&, trlevel::LevelVersion, const std::weak_ptr<ILevel>&)>;
+
+        Event<> on_changed;
 
         virtual ~ITrigger() = 0;
         virtual uint32_t number() const = 0;
@@ -27,7 +31,9 @@ namespace trview
         virtual uint16_t flags() const = 0;
         virtual int16_t timer() const = 0;
         virtual uint16_t sector_id() const = 0;
+        virtual Colour colour() const = 0;
         virtual const std::vector<Command> commands() const = 0;
+        virtual void set_colour(const std::optional<Colour>& colour) = 0;
         virtual void set_triangles(const std::vector<TransparentTriangle>& transparent_triangles) = 0;
         virtual PickResult pick(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& direction) const = 0;
         virtual void set_position(const DirectX::SimpleMath::Vector3& position) = 0;
