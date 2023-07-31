@@ -5,7 +5,7 @@ The Trigger library provides information about a trigger in a [level](level.md).
 # Properties
 | Name | Type | Mode | Description |
 | ---- | ---- | ---- | ---- |
-| colour | [Colour](colour.md) | RW | The colour for the trigger in the viewer |
+| colour | [Colour](colour.md) | RW | The colour for the trigger in the viewer. Setting this to `nil` will set it back to default. |
 | commands | [Command](command.md)[] | R | Commands for the trigger |
 | flags | number | R | |
 | number | number | R | Trigger number |
