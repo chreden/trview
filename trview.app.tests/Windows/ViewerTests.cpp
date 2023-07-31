@@ -1005,9 +1005,10 @@ TEST(Viewer, RoomSelectedForwarded)
     ASSERT_TRUE(raised);
     ASSERT_EQ(*raised, 123);
 
-    raised.reset();
     auto [new_level_ptr, new_level] = create_mock<MockLevel>();
     viewer->open(&new_level, ILevel::OpenMode::Full);
+
+    raised.reset();
     level.on_room_selected(456);
     ASSERT_FALSE(raised);
 }
