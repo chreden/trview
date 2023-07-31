@@ -319,13 +319,13 @@ namespace trview
                     ImGui::Text("Colour");
                     ImGui::TableNextColumn();
 
-                    if (ImGui::Button("Reset"))
+                    if (ImGui::Button(Names::reset_colour.c_str()))
                     {
                         selected_trigger->set_colour(std::nullopt);
                     }
                     ImGui::SameLine();
                     DirectX::SimpleMath::Color colour = selected_trigger->colour();
-                    if (ImGui::ColorEdit4("##colour", &colour.x, ImGuiColorEditFlags_NoInputs))
+                    if (ImGui::ColorEdit4(Names::colour.c_str(), &colour.x, ImGuiColorEditFlags_NoInputs))
                     {
                         selected_trigger->set_colour(colour);
                     }

@@ -59,3 +59,13 @@ TEST(Trigger, TimerSignedInTR4)
     auto trigger = register_test_module().with_level_version(LevelVersion::Tomb4).with_info(info).build();
     ASSERT_EQ(trigger->timer(), -8);
 }
+
+TEST(Trigger, Colour)
+{
+    auto trigger = register_test_module().build();
+    ASSERT_EQ(trigger->colour(), ITrigger::Trigger_Colour);
+    trigger->set_colour(Colour::Yellow);
+    ASSERT_EQ(trigger->colour(), Colour::Yellow);
+    trigger->set_colour(std::nullopt);
+    ASSERT_EQ(trigger->colour(), ITrigger::Trigger_Colour);
+}

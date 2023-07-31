@@ -329,3 +329,22 @@ TEST(TriggersWindow, CameraSinkSelectedRaised)
     ASSERT_TRUE(raised);
     ASSERT_EQ(raised.value(), 100u);
 }
+
+TEST(TriggersWindow, ResetColour)
+{
+    auto window = register_test_module().build();
+
+    auto trigger = mock_shared<MockTrigger>();
+    EXPECT_CALL(*trigger, set_colour(std::optional<Colour>{}));
+
+    std::vector<std::weak_ptr<ITrigger>> triggers{ trigger };
+
+    window->set_triggers(triggers);
+    window->set_selected_trigger(trigger);
+
+    TestImgui imgui([&]() { window->render(); });
+    imgui.click_element(imgui.id("Triggers 0")
+        .push_child(TriggersWindow::Names::details_panel)
+        .push(TriggersWindow::Names::trigger_stats)
+        .id(TriggersWindow::Names::reset_colour));
+}
