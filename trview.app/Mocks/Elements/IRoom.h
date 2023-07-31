@@ -97,6 +97,12 @@ namespace trview
                 ON_CALL(*this, level).WillByDefault(testing::Return(level));
                 return shared_from_this();
             }
+
+            std::shared_ptr<MockRoom> with_room_info(const RoomInfo& info)
+            {
+                ON_CALL(*this, info).WillByDefault(testing::Return(info));
+                return shared_from_this();
+            }
         };
     }
 }

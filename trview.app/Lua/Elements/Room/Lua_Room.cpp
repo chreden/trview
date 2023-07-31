@@ -8,6 +8,7 @@
 #include "../../Lua.h"
 #include "../Level/Lua_Level.h"
 #include "../StaticMesh/Lua_StaticMesh.h"
+#include "../../Vector3.h"
 
 namespace trview
 {
@@ -79,6 +80,11 @@ namespace trview
                 {
                     lua_pushinteger(L, room->num_z_sectors());
                     return 1;
+                }
+                else if (key == "position")
+                {
+                    const auto info = room->info();
+                    return create_vector3(L, DirectX::SimpleMath::Vector3(static_cast<float>(info.x), static_cast<float>(info.yBottom), static_cast<float>(info.z)));
                 }
                 else if (key == "sector")
                 {

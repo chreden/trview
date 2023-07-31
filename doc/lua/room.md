@@ -15,6 +15,7 @@ The Room library provides information about a room in a [level](level.md).
 | number | number | R | Room number |
 | num_x_sectors | number | R | Number of sectors in the x dimension |
 | num_z_sectors | number | R | Number of sectors in the z dimension |
+| position | [Vector3](vector3.md) | R | World position of the room |
 | sectors | [Sector](sector.md)[] | R | Sectors in the room
 | static_meshes | [StaticMesh](staticmesh.md)[] | R | Static meshes in the room |
 | triggers | [Trigger](trigger.md)[] | R | Triggers in the room |
