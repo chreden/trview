@@ -991,3 +991,67 @@ TEST(Viewer, SetShowLighting)
     ui.on_toggle_changed(IViewer::Options::lighting, true);
 }
 
+TEST(Viewer, RoomSelectedForwarded)
+{
+    auto [level_ptr, level] = create_mock<MockLevel>();
+    auto viewer = register_test_module().build();
+
+    std::optional<uint32_t> raised;
+    auto token = viewer->on_room_selected += [&](auto r) { raised = r; };
+
+    viewer->open(&level, ILevel::OpenMode::Full);
+    level.on_room_selected(123);
+
+    ASSERT_TRUE(raised);
+    ASSERT_EQ(*raised, 123);
+
+    raised.reset();
+    auto [new_level_ptr, new_level] = create_mock<MockLevel>();
+    viewer->open(&new_level, ILevel::OpenMode::Full);
+    level.on_room_selected(456);
+    ASSERT_FALSE(raised);
+}
+
+TEST(Viewer, ItemSelectedForwarded)
+{
+    auto item = mock_shared<MockItem>();
+
+    auto [level_ptr, level] = create_mock<MockLevel>();
+    auto viewer = register_test_module().build();
+
+    std::shared_ptr<IItem> raised;
+    auto token = viewer->on_item_selected += [&](auto i) { raised = i.lock(); };
+
+    viewer->open(&level, ILevel::OpenMode::Full);
+    level.on_item_selected(item);
+
+    ASSERT_EQ(raised, item);
+
+    raised.reset();
+    auto [new_level_ptr, new_level] = create_mock<MockLevel>();
+    viewer->open(&new_level, ILevel::OpenMode::Full);
+    level.on_item_selected(item);
+    ASSERT_EQ(raised, nullptr);
+}
+
+TEST(Viewer, TriggerSelectedForwarded)
+{
+    auto trigger = mock_shared<MockTrigger>();
+
+    auto [level_ptr, level] = create_mock<MockLevel>();
+    auto viewer = register_test_module().build();
+
+    std::shared_ptr<ITrigger> raised;
+    auto token = viewer->on_trigger_selected += [&](auto t) { raised = t.lock(); };
+
+    viewer->open(&level, ILevel::OpenMode::Full);
+    level.on_trigger_selected(trigger);
+
+    ASSERT_EQ(raised, trigger);
+
+    raised.reset();
+    auto [new_level_ptr, new_level] = create_mock<MockLevel>();
+    viewer->open(&new_level, ILevel::OpenMode::Full);
+    level.on_trigger_selected(trigger);
+    ASSERT_EQ(raised, nullptr);
+}

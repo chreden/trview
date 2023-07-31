@@ -587,6 +587,7 @@ namespace trview
         {
             old_level->on_room_selected -= on_room_selected;
             old_level->on_item_selected -= on_item_selected;
+            old_level->on_trigger_selected -= on_trigger_selected;
         }
 
         _level_token_store += _level->on_alternate_mode_selected += [&](bool enabled) { set_alternate_mode(enabled); };
@@ -594,6 +595,7 @@ namespace trview
         _level_token_store += _level->on_level_changed += [&]() { _scene_changed = true; };
         _level->on_room_selected += on_room_selected;
         _level->on_item_selected += on_item_selected;
+        _level->on_trigger_selected += on_trigger_selected;
 
         _level->set_show_triggers(_ui->toggle(Options::triggers));
         _level->set_show_geometry(_ui->toggle(Options::geometry));

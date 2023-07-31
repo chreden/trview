@@ -147,5 +147,6 @@ namespace trview
         /// items that are contained within.
         Event<> on_level_changed;
         mutable Event<> on_geometry_colours_changed;
+        Event<std::weak_ptr<ITrigger>> on_trigger_selected;
     };
 }

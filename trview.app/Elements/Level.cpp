@@ -875,8 +875,13 @@ namespace trview
 
     void Level::set_selected_trigger(uint32_t number)
     {
-        _selected_trigger = _triggers[number];
-        on_level_changed();
+        const auto selected_trigger = _triggers[number];
+        if (_selected_trigger.lock() != selected_trigger)
+        {
+            _selected_trigger = selected_trigger;
+            on_level_changed();
+            on_trigger_selected(_selected_trigger);
+        }
     }
 
     void Level::set_selected_light(uint32_t number)

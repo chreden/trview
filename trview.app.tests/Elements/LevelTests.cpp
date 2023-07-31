@@ -486,6 +486,8 @@ TEST(Level, SelectedItem)
     ON_CALL(mock_level, num_entities()).WillByDefault(Return(5));
     ON_CALL(mock_level, num_rooms()).WillByDefault(Return(1));
 
+    std::vector<std::shared_ptr<IItem>> items;
+
     uint32_t entity_source_called = 0;
     auto level = register_test_module()
         .with_level(std::move(mock_level_ptr))
@@ -495,14 +497,19 @@ TEST(Level, SelectedItem)
                 auto entity = mock_shared<MockItem>();
                 ON_CALL(*entity, number).WillByDefault(Return(entity_source_called));
                 ++entity_source_called;
+                items.push_back(entity);
                 return entity;
             })
         .build();
+
+    std::shared_ptr<IItem> raised;
+    auto token = level->on_item_selected += [&](auto t) { raised = t.lock(); };
 
     ASSERT_EQ(level->selected_item(), std::nullopt);
     level->set_selected_item(4);
     ASSERT_TRUE(level->selected_item().has_value());
     ASSERT_EQ(level->selected_item().value(), 4);
+    ASSERT_EQ(raised, items[4]);
 }
 
 TEST(Level, SelectedLight)
@@ -536,6 +543,8 @@ TEST(Level, SelectedTrigger)
     ON_CALL(mock_level, num_rooms()).WillByDefault(Return(1));
 
     uint32_t trigger_source_called = 0;
+    std::vector<std::shared_ptr<ITrigger>> triggers;
+
     auto level = register_test_module()
         .with_level(std::move(mock_level_ptr))
         .with_room_source(
@@ -555,13 +564,18 @@ TEST(Level, SelectedTrigger)
                 auto trigger = mock_shared<MockTrigger>();
                 ON_CALL(*trigger, number).WillByDefault(Return(trigger_source_called));
                 ++trigger_source_called;
+                triggers.push_back(trigger);
                 return trigger;
             })
         .build();
 
+    std::shared_ptr<ITrigger> raised;
+    auto token = level->on_trigger_selected += [&](auto t) { raised = t.lock(); };
+
     ASSERT_EQ(level->selected_trigger(), std::nullopt);
     level->set_selected_trigger(4);
     ASSERT_EQ(level->selected_trigger(), 4);
+    ASSERT_EQ(raised, triggers[4]);
 }
 
 TEST(Level, Trigger)

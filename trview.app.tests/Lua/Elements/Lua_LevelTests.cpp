@@ -1,5 +1,6 @@
 #include <trview.app/Lua/Elements/Level/Lua_Level.h>
 #include <trview.app/Lua/Elements/Room/Lua_Room.h>
+#include <trview.app/Lua/Elements/Trigger/Lua_Trigger.h>
 #include <trview.app/Mocks/Elements/ILevel.h>
 #include <trview.app/Mocks/Elements/ICameraSink.h>
 #include <trview.app/Mocks/Elements/ILight.h>
@@ -193,6 +194,39 @@ TEST(Lua_Level, SetSelectedRoom)
     lua_setglobal(L, "r");
 
     ASSERT_EQ(0, luaL_dostring(L, "l.selected_room = r"));
+}
+
+TEST(Lua_Level, SelectedTrigger)
+{
+    auto trigger = mock_shared<MockTrigger>()->with_number(200);
+    auto level = mock_shared<MockLevel>();
+    EXPECT_CALL(*level, trigger(200)).WillRepeatedly(Return(trigger));
+    EXPECT_CALL(*level, selected_trigger).WillRepeatedly(Return(200));
+
+    lua_State* L = luaL_newstate();
+    lua::create_level(L, level);
+    lua_setglobal(L, "l");
+
+    ASSERT_EQ(0, luaL_dostring(L, "return l.selected_trigger"));
+    ASSERT_EQ(LUA_TUSERDATA, lua_type(L, -1));
+    ASSERT_EQ(0, luaL_dostring(L, "return l.selected_trigger.number"));
+    ASSERT_EQ(LUA_TNUMBER, lua_type(L, -1));
+    ASSERT_EQ(200, lua_tonumber(L, -1));
+}
+
+TEST(Lua_Level, SetSelectedTrigger)
+{
+    auto trigger = mock_shared<MockTrigger>()->with_number(200);
+    auto level = mock_shared<MockLevel>();
+    EXPECT_CALL(*level, set_selected_trigger(200));
+
+    lua_State* L = luaL_newstate();
+    lua::create_level(L, level);
+    lua_setglobal(L, "l");
+    lua::create_trigger(L, trigger);
+    lua_setglobal(L, "t");
+
+    ASSERT_EQ(0, luaL_dostring(L, "l.selected_trigger = t"));
 }
 
 TEST(Lua_Level, Triggers)

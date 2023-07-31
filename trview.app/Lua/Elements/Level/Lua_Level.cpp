@@ -67,6 +67,16 @@ namespace trview
                 {
                     return create_room(L, level->room(level->selected_room()).lock());
                 }
+                else if (key == "selected_trigger")
+                {
+                    auto trigger = level->selected_trigger();
+                    if (trigger)
+                    {
+                        return create_trigger(L, level->trigger(trigger.value()).lock());
+                    }
+                    lua_pushnil(L);
+                    return 1;
+                }
                 else if (key == "static_meshes")
                 {
                     return push_list_p(L, level->static_meshes(), create_static_mesh);
@@ -106,6 +116,13 @@ namespace trview
                     if (auto room = to_room(L, -1))
                     {
                         level->set_selected_room(static_cast<uint16_t>(room->number()));
+                    }
+                }
+                else if (key == "selected_trigger")
+                {
+                    if (auto trigger = to_trigger(L, -1))
+                    {
+                        level->set_selected_trigger(trigger->number());
                     }
                 }
 
