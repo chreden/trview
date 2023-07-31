@@ -144,7 +144,7 @@ namespace trview
         using namespace DirectX::SimpleMath;
         for (auto& triangle : _mesh->transparent_triangles())
         {
-            transparency.add(triangle.transform(Matrix::Identity, _colour.value_or(colour)));
+            transparency.add(triangle.transform(Matrix::Identity, colour));
         }
     }
 

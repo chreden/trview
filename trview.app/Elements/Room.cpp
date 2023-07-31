@@ -483,7 +483,7 @@ namespace trview
             {
                 if (auto trigger = trigger_pair.second.lock())
                 {
-                    trigger->get_transparent_triangles(transparency, camera, ITrigger::Trigger_Colour);
+                    trigger->get_transparent_triangles(transparency, camera, trigger->colour());
                 }
             }
         }
