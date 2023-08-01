@@ -105,3 +105,11 @@ TEST(Waypoint, Visibility)
     waypoint.set_visible(true);
     ASSERT_TRUE(waypoint.visible());
 }
+
+TEST(Waypoint, SetPositionPreservesRoom)
+{
+    Waypoint waypoint(mock_shared<MockMesh>(), Vector3::Zero, Vector3::Down, 110, IWaypoint::Type::Position, 0, Colour::Red, Colour::Green);
+    ASSERT_EQ(110, waypoint.room());
+    waypoint.set_position(Vector3(100, 200, 300));
+    ASSERT_EQ(110, waypoint.room());
+}
