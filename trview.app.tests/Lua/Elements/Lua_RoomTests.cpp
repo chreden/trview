@@ -201,6 +201,26 @@ TEST(Lua_Room, NumZSectors)
     ASSERT_EQ(123, lua_tointeger(L, -1));
 }
 
+TEST(Lua_Room, Position)
+{
+    constexpr RoomInfo info{ .x = 1000, .z = 3000, .yBottom = 2000 };
+    auto room = mock_shared<MockRoom>()->with_room_info(info);
+
+    lua_State* L = luaL_newstate();
+    lua::create_room(L, room);
+    lua_setglobal(L, "r");
+
+    ASSERT_EQ(0, luaL_dostring(L, "return r.position.x"));
+    ASSERT_EQ(LUA_TNUMBER, lua_type(L, -1));
+    ASSERT_EQ(1000, lua_tonumber(L, -1));
+    ASSERT_EQ(0, luaL_dostring(L, "return r.position.y"));
+    ASSERT_EQ(LUA_TNUMBER, lua_type(L, -1));
+    ASSERT_EQ(2000, lua_tonumber(L, -1));
+    ASSERT_EQ(0, luaL_dostring(L, "return r.position.z"));
+    ASSERT_EQ(LUA_TNUMBER, lua_type(L, -1));
+    ASSERT_EQ(3000, lua_tonumber(L, -1));
+}
+
 TEST(Lua_Room, Sector)
 {
     auto sector = mock_shared<MockSector>()->with_id(123);
