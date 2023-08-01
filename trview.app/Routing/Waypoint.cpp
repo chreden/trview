@@ -220,7 +220,7 @@ namespace trview
 
     void Waypoint::set_position(const DirectX::SimpleMath::Vector3& position)
     {
-        set_properties(Type::Position, 0, 0, position);
+        set_properties(Type::Position, 0, _room, position);
     }
 
     std::weak_ptr<ITrigger> Waypoint::trigger() const
