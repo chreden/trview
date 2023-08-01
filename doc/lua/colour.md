@@ -4,7 +4,7 @@
 
 | Name | Returns | Parameters | Description |
 | ---- | ------- | ---------- | ----------- |
-| new | Colour | `number r, number g, number b` | Creates a new colour |
+| new | Colour | `number r, number g, number b, [optional] number a` | Creates a new colour |
 
 # Properties
 | Name | Type | Mode | Description |

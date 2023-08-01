@@ -449,8 +449,13 @@ namespace trview
         for (uint32_t i = 0u; i < num_rooms; ++i)
         {
             Activity room_activity(generate_rooms_activity, std::format("Room {}", i));
-            auto room = level.get_room(i);
-            _rooms.push_back(room_source(level, room, _texture_storage, mesh_storage, i, shared_from_this(), room_activity));
+            auto room = room_source(level, level.get_room(i), _texture_storage, mesh_storage, i, shared_from_this(), room_activity);
+            _token_store += room->on_changed += [&]() 
+            {
+                _regenerate_transparency = true; 
+                on_level_changed();
+            };
+            _rooms.push_back(room);
         }
 
         std::set<uint32_t> alternate_groups;

@@ -5,6 +5,7 @@
 #include "../../Vector3.h"
 #include "../Room/Lua_Room.h"
 #include "../Sector/Lua_Sector.h"
+#include "../../Colour.h"
 
 namespace trview
 {
@@ -30,7 +31,11 @@ namespace trview
                 auto trigger = lua::get_self<ITrigger>(L);
 
                 const std::string key = lua_tostring(L, 2);
-                if (key == "commands")
+                if (key == "colour")
+                {
+                    return create_colour(L, trigger->colour());
+                }
+                else if (key == "commands")
                 {
                     return push_list(L, trigger->commands(), create_command);
                 }
@@ -94,7 +99,16 @@ namespace trview
                 auto trigger = lua::get_self<ITrigger>(L);
 
                 const std::string key = lua_tostring(L, 2);
-                if (key == "visible")
+                if (key == "colour")
+                {
+                    std::optional<Colour> colour;
+                    if (lua_type(L, -1) != LUA_TNIL)
+                    {
+                        colour = to_colour(L, -1);
+                    }
+                    trigger->set_colour(colour);
+                }
+                else if (key == "visible")
                 {
                     if (auto level = trigger->level().lock())
                     {

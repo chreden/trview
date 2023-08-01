@@ -314,6 +314,21 @@ namespace trview
                     add_stat("Flags", format_binary(selected_trigger->flags()));
                     add_stat("Only once", selected_trigger->only_once());
                     add_stat("Timer", selected_trigger->timer());
+
+                    ImGui::TableNextColumn();
+                    ImGui::Text("Colour");
+                    ImGui::TableNextColumn();
+
+                    if (ImGui::Button(Names::reset_colour.c_str()))
+                    {
+                        selected_trigger->set_colour(std::nullopt);
+                    }
+                    ImGui::SameLine();
+                    DirectX::SimpleMath::Color colour = selected_trigger->colour();
+                    if (ImGui::ColorEdit4(Names::colour.c_str(), &colour.x, ImGuiColorEditFlags_NoInputs))
+                    {
+                        selected_trigger->set_colour(colour);
+                    }
                 }
 
                 ImGui::EndTable();
