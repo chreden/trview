@@ -9,7 +9,6 @@
 #include <trview.app/Geometry/PickResult.h>
 #include <trview.common/Event.h>
 #include <trview.common/IFiles.h>
-#include "../Settings/RandomizerSettings.h"
 
 namespace trview
 {
@@ -145,12 +144,8 @@ namespace trview
         /// <param name="colour">The colour to use.</param>
         virtual void set_colour(const Colour& colour) = 0;
         virtual void set_filename(const std::string& filename) = 0;
+        virtual void set_show_route_line(bool show) = 0;
         virtual void set_level(const std::weak_ptr<ILevel>& level) = 0;
-        /// <summary>
-        /// Set whether randomizer tools are enabled.
-        /// </summary>
-        /// <param name="enabled">Whether randomizer tools are enabled.</param>
-        virtual void set_randomizer_enabled(bool enabled) = 0;
         /// <summary>
         /// Set the colour for the stick.
         /// </summary>
@@ -161,6 +156,7 @@ namespace trview
         /// </summary>
         /// <param name="value">Whether the route has unsaved changes.</param>
         virtual void set_unsaved(bool value) = 0;
+        virtual bool show_route_line() const = 0;
         /// <summary>
         /// Get the colour to use for the stick.
         /// </summary>

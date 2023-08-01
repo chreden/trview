@@ -630,6 +630,11 @@ namespace trview
                 {
                     on_waypoint_colour_changed(waypoint_colour);
                 }
+                bool route_line = route->show_route_line();;
+                if (ImGui::Checkbox("Route Line", &route_line))
+                {
+                    route->set_show_route_line(route_line);
+                }
                 ImGui::EndPopup();
             }
             else

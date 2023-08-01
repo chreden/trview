@@ -327,7 +327,7 @@ TEST(Route, Render)
     route->render(camera, texture_storage, true);
 }
 
-TEST(Route, RenderDoesNotJoinWhenRandoEnabled)
+TEST(Route, RenderDoesNotJoinWhenRouteLineDisabled)
 {
     auto [selection_renderer_ptr, selection_renderer] = create_mock<MockSelectionRenderer>();
     EXPECT_CALL(selection_renderer, render).Times(1);
@@ -354,7 +354,7 @@ TEST(Route, RenderDoesNotJoinWhenRandoEnabled)
     };
 
     auto route = register_test_module().with_selection_renderer(std::move(selection_renderer_ptr)).with_waypoint_source(source).build();
-    route->set_randomizer_enabled(true);
+    route->set_show_route_line(false);
     route->add(Vector3::Zero, Vector3::Down, 0);
     route->add(Vector3::Zero, Vector3::Down, 0);
     route->add(Vector3::Zero, Vector3::Down, 0);

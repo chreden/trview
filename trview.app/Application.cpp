@@ -272,7 +272,6 @@ namespace trview
             _settings = settings;
             _viewer->set_settings(_settings);
             _route_window->set_randomizer_enabled(settings.randomizer_tools);
-            _route->set_randomizer_enabled(settings.randomizer_tools);
             _rooms_windows->set_map_colours(settings.map_colours);
             lua::set_settings(settings);
             if (_level)
@@ -387,7 +386,6 @@ namespace trview
             _viewer->set_scene_changed();
         };
         _route_window->set_randomizer_enabled(_settings.randomizer_tools);
-        _route->set_randomizer_enabled(_settings.randomizer_tools);
         _route_window->set_randomizer_settings(_settings.randomizer);
         _token_store += _route_window->on_window_created += [&]() { open_recent_route(); };
         _token_store += _route_window->on_level_switch += [&](const auto& level) { _file_menu->switch_to(level); };
@@ -1033,7 +1031,6 @@ namespace trview
         _route = route;
         _token_store += _route->on_changed += [&]() { if (_viewer) { _viewer->set_scene_changed(); } };
         _route_window->set_route(_route);
-        _route->set_randomizer_enabled(_settings.randomizer_tools);
         _route->set_level(_level);
         _viewer->set_route(_route);
     }

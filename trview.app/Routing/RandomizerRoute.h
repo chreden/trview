@@ -44,9 +44,10 @@ namespace trview
         void set_colour(const Colour& colour) override;
         void set_filename(const std::string& filename) override;
         void set_level(const std::weak_ptr<ILevel>& level) override;
-        void set_randomizer_enabled(bool enabled) override;
         void set_waypoint_colour(const Colour& colour) override;
         void set_unsaved(bool value) override;
+        void set_show_route_line(bool show) override;
+        bool show_route_line() const override;
         Colour waypoint_colour() const override;
         std::weak_ptr<IWaypoint> waypoint(uint32_t index) const override;
         uint32_t waypoints() const override;
