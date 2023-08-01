@@ -514,3 +514,16 @@ TEST(Route, SetWaypointColourUpdatesWaypoints)
     route->add(Vector3::Zero, Vector3::Zero, 0);
     route->set_waypoint_colour(Colour::Cyan);
 }
+
+TEST(Route, SetShowRouteLine)
+{
+    auto route = register_test_module().build();
+
+    bool raised = false;
+    auto token = route->on_changed += [&]() { raised = true; };
+
+    route->set_show_route_line(false);
+
+    ASSERT_TRUE(raised);
+    ASSERT_FALSE(route->show_route_line());
+}
