@@ -223,6 +223,11 @@ namespace trview
                     lua_pushcfunction(L, route_save_as);
                     return 1;
                 }
+                else if (key == "show_route_line")
+                {
+                    lua_pushboolean(L, route->show_route_line());
+                    return 1;
+                }
                 else if (key == "waypoint_colour")
                 {
                     return create_colour(L, route->waypoint_colour());
@@ -252,6 +257,10 @@ namespace trview
                 else if (key == "level")
                 {
                     route->set_level(to_level(L, 3));
+                }
+                else if (key == "show_route_line")
+                {
+                    route->set_show_route_line(lua_toboolean(L, 3));
                 }
                 else if (key == "waypoint_colour")
                 {

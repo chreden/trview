@@ -321,6 +321,32 @@ TEST(Lua_Route, SetWaypoints)
     ASSERT_EQ(0, luaL_dostring(L, "r.waypoints = { w1, w2 }"));
 }
 
+TEST(Lua_Route, SetShowRouteLine)
+{
+    auto route = mock_shared<MockRoute>();
+    EXPECT_CALL(*route, set_show_route_line(true));
+
+    lua_State* L = luaL_newstate();
+    lua::create_route(L, route);
+    lua_setglobal(L, "r");
+
+    ASSERT_EQ(0, luaL_dostring(L, "r.show_route_line = true"));
+}
+
+TEST(Lua_Route, ShowRouteLine)
+{
+    auto route = mock_shared<MockRoute>();
+    EXPECT_CALL(*route, show_route_line).WillOnce(Return(true));
+
+    lua_State* L = luaL_newstate();
+    lua::create_route(L, route);
+    lua_setglobal(L, "r");
+
+    ASSERT_EQ(0, luaL_dostring(L, "return r.show_route_line"));
+    ASSERT_EQ(LUA_TBOOLEAN, lua_type(L, -1));
+    ASSERT_TRUE(lua_toboolean(L, -1));
+}
+
 TEST(Lua_Route, WaypointColour)
 {
     auto route = mock_shared<MockRoute>();

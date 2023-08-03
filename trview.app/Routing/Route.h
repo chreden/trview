@@ -5,7 +5,6 @@
 #include <trview.app/Routing/IRoute.h>
 #include <trview.app/Camera/ICamera.h>
 #include <trview.common/IFiles.h>
-#include <trview.app/Settings/RandomizerSettings.h>
 #include "../Settings/UserSettings.h"
 
 namespace trview
@@ -44,9 +43,10 @@ namespace trview
         virtual void set_colour(const Colour& colour) override;
         void set_filename(const std::string& filename) override;
         void set_level(const std::weak_ptr<ILevel>& level) override;
-        virtual void set_randomizer_enabled(bool enabled) override;
         virtual void set_waypoint_colour(const Colour& colour) override;
         virtual void set_unsaved(bool value) override;
+        void set_show_route_line(bool show) override;
+        bool show_route_line() const override;
         virtual Colour waypoint_colour() const override;
         virtual std::weak_ptr<IWaypoint> waypoint(uint32_t index) const override;
         virtual uint32_t waypoints() const override;
@@ -65,8 +65,8 @@ namespace trview
         Colour _colour{ Colour::Green };
         Colour _waypoint_colour{ Colour::White };
         bool _is_unsaved{ false };
-        bool _randomizer_enabled{ false };
         std::weak_ptr<ILevel> _level;
         std::optional<std::string> _filename;
+        bool _show_route_line{ true };
     };
 }

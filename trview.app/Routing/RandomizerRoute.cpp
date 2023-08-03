@@ -131,6 +131,8 @@ namespace trview
     RandomizerRoute::RandomizerRoute(const std::shared_ptr<IRoute>& inner_route, const IWaypoint::Source& waypoint_source)
         : _route(inner_route), _waypoint_source(waypoint_source)
     {
+        _route->set_show_route_line(false);
+        _route->on_changed += on_changed;
     }
 
     std::shared_ptr<IWaypoint> RandomizerRoute::add(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& normal, uint32_t room)
@@ -339,11 +341,6 @@ namespace trview
         _route->set_unsaved(false);
     }
 
-    void RandomizerRoute::set_randomizer_enabled(bool enabled)
-    {
-        return _route->set_randomizer_enabled(enabled);
-    }
-
     void RandomizerRoute::set_waypoint_colour(const Colour& colour)
     {
         return _route->set_waypoint_colour(colour);
@@ -352,6 +349,16 @@ namespace trview
     void RandomizerRoute::set_unsaved(bool value)
     {
         return _route->set_unsaved(value);
+    }
+
+    void RandomizerRoute::set_show_route_line(bool show)
+    {
+        _route->set_show_route_line(show);
+    }
+
+    bool RandomizerRoute::show_route_line() const
+    {
+        return _route->show_route_line();
     }
 
     Colour RandomizerRoute::waypoint_colour() const
