@@ -255,8 +255,8 @@ namespace trview
             int waypoint_gc(lua_State* L)
             {
                 luaL_checktype(L, 1, LUA_TUSERDATA);
-                IWaypoint** userdata = static_cast<IWaypoint**>(lua_touserdata(L, 1));
-                waypoints.erase(userdata);
+                std::shared_ptr<IWaypoint>* userdata = static_cast<std::shared_ptr<IWaypoint>*>(lua_touserdata(L, 1));
+                userdata->reset();
                 return 0;
             }
 
@@ -370,13 +370,8 @@ namespace trview
         std::shared_ptr<IWaypoint> to_waypoint(lua_State* L, int index)
         {
             luaL_checktype(L, index, LUA_TUSERDATA);
-            IWaypoint** userdata = static_cast<IWaypoint**>(lua_touserdata(L, index));
-            auto found = waypoints.find(userdata);
-            if (found == waypoints.end())
-            {
-                return {};
-            }
-            return found->second;
+            std::shared_ptr<IWaypoint>* userdata = static_cast<std::shared_ptr<IWaypoint>*>(lua_touserdata(L, index));
+            return *userdata;
         }
 
         int create_waypoint(lua_State* L, const std::shared_ptr<IWaypoint>& waypoint)
@@ -387,9 +382,8 @@ namespace trview
                 return 1;
             }
 
-            IWaypoint** userdata = static_cast<IWaypoint**>(lua_newuserdata(L, sizeof(waypoint.get())));
-            *userdata = waypoint.get();
-            waypoints[userdata] = waypoint;
+            std::shared_ptr<IWaypoint>* userdata = static_cast<std::shared_ptr<IWaypoint>*>(lua_newuserdata(L, sizeof(std::shared_ptr<IWaypoint>)));
+            new (userdata) std::shared_ptr<IWaypoint>(waypoint);
 
             lua_newtable(L);
             lua_pushcfunction(L, waypoint_index);
