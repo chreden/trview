@@ -230,6 +230,9 @@
     <ClCompile Include="Routing\RandomizerRouteTests.cpp">
       <Filter>Routing</Filter>
     </ClCompile>
+    <ClCompile Include="Lua\Lua.cpp">
+      <Filter>Lua</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Input">
@@ -288,6 +291,9 @@
     </ClInclude>
     <ClInclude Include="TestImGuiId.h">
       <Filter>ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="Lua\Lua.h">
+      <Filter>Lua</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
