@@ -104,4 +104,18 @@ namespace trview
     {
         return !has_flag(flags, SectorFlag::Portal) && (has_flag(flags, SectorFlag::Wall) && has_flag(flags, SectorFlag::FloorSlant));
     }
+
+    uint32_t sector_room(const std::shared_ptr<ISector>& sector)
+    {
+        if (!sector)
+        {
+            return 0u;
+        }
+
+        if (auto room = sector->room().lock())
+        {
+            return room->number();
+        }
+        return 0u;
+    }
 }

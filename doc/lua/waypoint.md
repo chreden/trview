@@ -20,4 +20,4 @@ The Waypoint library lets you create and edit route waypoints.
 
 | Name | Returns | Parameters | Description |
 | ---- | ------- | ---------- | ----------- |
-| new | Waypoint | `{ Item item, Trigger trigger, Vector3 position, Vector3 normal, Room room }` | Creates an [Item](item.md), [Trigger](trigger.md) or [Position](vector3.md) waypoint, in that order of precedence. Only one needs to be provided. Normal is optional - if not provided the waypoint will be vertical. Room is required only if using Position. |
+| new | Waypoint | `{ Item item, Trigger trigger, Vector3 position, Vector3 normal, Room room, Sector sector }` | Creates an [Item](item.md), [Trigger](trigger.md) or [Position](vector3.md) waypoint, in that order of precedence. Only one needs to be provided. Normal is optional - if not provided the waypoint will be vertical. Room is required only if using Position. Sector can be used in place of Position to create a mid waypoint. |

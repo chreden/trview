@@ -253,6 +253,7 @@ namespace trview
         /// <param name="render_filter">What to render.</param>
         virtual void render_contained(const ICamera& camera, SelectionMode selected, RenderFilter render_filter) = 0;
         virtual std::weak_ptr<ISector> sector(int32_t x, int32_t z) const = 0;
+        virtual DirectX::SimpleMath::Vector3 sector_centroid(const std::weak_ptr<ISector>& sector) const = 0;
         /// <summary>
         /// Gets all sectors in the room.
         /// </summary>

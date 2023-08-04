@@ -8,6 +8,7 @@
 #include "../../Elements/ITrigger.h"
 #include "../../Elements/IRoom.h"
 #include "../../Elements/ILevel.h"
+#include "../Elements/Sector/Lua_Sector.h"
 
 using namespace DirectX::SimpleMath;
 
@@ -299,6 +300,30 @@ namespace trview
                                 Colour::White);
                         waypoint->set_trigger(trigger);
                         return create_waypoint(L, waypoint);
+                    }
+                    return 0;
+                }
+                else
+                {
+                    lua_pop(L, 1);
+                }
+
+                if (LUA_TUSERDATA == lua_getfield(L, 1, "sector"))
+                {
+                    if (auto sector = to_sector(L, -1))
+                    {
+                        if (const auto room = sector->room().lock())
+                        {
+                            auto waypoint = waypoint_source(
+                                room->sector_centroid(sector),
+                                normal,
+                                sector_room(sector),
+                                IWaypoint::Type::Position,
+                                0,
+                                Colour::White,
+                                Colour::White);
+                            return create_waypoint(L, waypoint);
+                        }
                     }
                     return 0;
                 }

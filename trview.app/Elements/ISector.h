@@ -135,6 +135,7 @@ namespace trview
 
     bool is_no_space(SectorFlag flags);
     constexpr std::string to_string(ISector::TriangulationDirection direction);
+    uint32_t sector_room(const std::shared_ptr<ISector>& sector);
 }
 
 #include "ISector.hpp"

@@ -246,5 +246,17 @@ namespace trview
             });
             lua_setglobal(L, "Sector");
         }
+
+        std::shared_ptr<ISector> to_sector(lua_State* L, int index)
+        {
+            luaL_checktype(L, index, LUA_TUSERDATA);
+            ISector** userdata = static_cast<ISector**>(lua_touserdata(L, index));
+            auto found = sectors.find(userdata);
+            if (found == sectors.end())
+            {
+                return {};
+            }
+            return found->second;
+        }
     }
 }
