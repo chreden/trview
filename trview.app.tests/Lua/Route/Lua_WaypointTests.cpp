@@ -2,10 +2,12 @@
 #include <trview.app/Lua/Colour.h>
 #include <trview.app/Lua/Vector3.h>
 #include <trview.app/Lua/Elements/Item/Lua_Item.h>
+#include <trview.app/Lua/Elements/Sector/Lua_Sector.h>
 #include <trview.app/Lua/Elements/Trigger/Lua_Trigger.h>
 #include <trview.app/Lua/Elements/Room/Lua_Room.h>
 #include <trview.app/Mocks/Elements/IRoom.h>
 #include <trview.app/Mocks/Elements/IItem.h>
+#include <trview.app/Mocks/Elements/ISector.h>
 #include <trview.app/Mocks/Elements/ITrigger.h>
 #include <trview.app/Mocks/Routing/IWaypoint.h>
 #include <trview.tests.common/Mocks.h>
@@ -109,6 +111,31 @@ TEST(Lua_Waypoint, NewPosition)
     lua::waypoint_register(L, [&](auto&& pos, auto&&...) { position = pos; return waypoint; });
 
     ASSERT_EQ(0, luaL_dostring(L, "w = Waypoint.new({position=Vector3.new(1024, 2048, 3072), room=r})"));
+    ASSERT_EQ(0, luaL_dostring(L, "return w"));
+    ASSERT_EQ(LUA_TUSERDATA, lua_type(L, -1));
+
+    ASSERT_TRUE(position);
+    ASSERT_EQ(position.value(), Vector3(1, 2, 3));
+}
+
+TEST(Lua_Waypoint, NewSector)
+{
+    auto waypoint = mock_shared<MockWaypoint>();
+    auto room = mock_shared<MockRoom>();
+
+    auto sector = mock_shared<MockSector>();
+    EXPECT_CALL(*sector, room).WillRepeatedly(Return(room));
+    EXPECT_CALL(*room, sector_centroid).WillRepeatedly(Return(Vector3(1, 2, 3)));
+
+    std::optional<Vector3> position;
+
+    lua_State* L = luaL_newstate();
+    lua::vector3_register(L);
+    lua::create_sector(L, sector);
+    lua_setglobal(L, "s");
+    lua::waypoint_register(L, [&](auto&& pos, auto&&...) { position = pos; return waypoint; });
+
+    ASSERT_EQ(0, luaL_dostring(L, "w = Waypoint.new({sector=s})"));
     ASSERT_EQ(0, luaL_dostring(L, "return w"));
     ASSERT_EQ(LUA_TUSERDATA, lua_type(L, -1));
 
