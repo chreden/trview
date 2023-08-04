@@ -832,9 +832,9 @@ namespace trview
         {
             return Vector3::Zero;
         }
-        
+
         const auto corners = sector_ptr->corners();
-        Vector3 centroid =
+        const Vector3 centroid =
         {
             static_cast<float>(sector_ptr->x()) + 0.5f,
             std::accumulate(corners.begin(), corners.end(), 0.0f) / 4.0f,
