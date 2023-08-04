@@ -6,6 +6,7 @@
 #include <trview.tests.common/Mocks.h>
 #include <external/lua/src/lua.h>
 #include <external/lua/src/lauxlib.h>
+#include "../Lua.h"
 
 using namespace trview;
 using namespace trview::mocks;
@@ -17,7 +18,7 @@ TEST(Lua_Room, AlternateMode)
 {
     auto room = mock_shared<MockRoom>();
 
-    lua_State* L = luaL_newstate();
+    LuaState L;
     lua::create_room(L, room);
     lua_setglobal(L, "r");
 
@@ -41,7 +42,7 @@ TEST(Lua_Room, AlternateGroup)
 {
     auto room = mock_shared<MockRoom>()->with_alternate_group(5);
 
-    lua_State* L = luaL_newstate();
+    LuaState L;
     lua::create_room(L, room);
     lua_setglobal(L, "r");
 
@@ -60,7 +61,7 @@ TEST(Lua_Room, AlternateRoom)
     auto room = mock_shared<MockRoom>()->with_alternate_room(5);
     ON_CALL(*room, level).WillByDefault(Return(level));
 
-    lua_State* L = luaL_newstate();
+    LuaState L;
     lua::create_room(L, room);
     lua_setglobal(L, "r");
 
@@ -79,7 +80,7 @@ TEST(Lua_Room, CamerasAndSinks)
     auto room = mock_shared<MockRoom>();
     EXPECT_CALL(*room, camera_sinks).WillRepeatedly(Return(std::vector<std::weak_ptr<ICameraSink>>{ cs1, cs2 }));
 
-    lua_State* L = luaL_newstate();
+    LuaState L;
     lua::create_room(L, room);
     lua_setglobal(L, "r");
 
@@ -104,7 +105,7 @@ TEST(Lua_Room, Items)
     auto room = mock_shared<MockRoom>();
     EXPECT_CALL(*room, items).WillRepeatedly(Return(std::vector<std::weak_ptr<IItem>>{ item1, item2 }));
 
-    lua_State* L = luaL_newstate();
+    LuaState L;
     lua::create_room(L, room);
     lua_setglobal(L, "r");
 
@@ -126,7 +127,7 @@ TEST(Lua_Room, Level)
     auto level = mock_shared<MockLevel>()->with_version(trlevel::LevelVersion::Tomb4);
     auto room = mock_shared<MockRoom>()->with_level(level);
 
-    lua_State* L = luaL_newstate();
+    LuaState L;
     lua::create_room(L, room);
     lua_setglobal(L, "r");
 
@@ -145,7 +146,7 @@ TEST(Lua_Room, Lights)
     auto room = mock_shared<MockRoom>();
     EXPECT_CALL(*room, lights).WillRepeatedly(Return(std::vector<std::weak_ptr<ILight>>{ light1, light2 }));
 
-    lua_State* L = luaL_newstate();
+    LuaState L;
     lua::create_room(L, room);
     lua_setglobal(L, "r");
 
@@ -166,7 +167,7 @@ TEST(Lua_Room, Number)
 {
     auto room = mock_shared<MockRoom>()->with_number(123);
 
-    lua_State* L = luaL_newstate();
+    LuaState L;
     lua::create_room(L, room);
     lua_setglobal(L, "r");
 
@@ -179,7 +180,7 @@ TEST(Lua_Room, NumXSectors)
 {
     auto room = mock_shared<MockRoom>()->with_num_x_sectors(123);
 
-    lua_State* L = luaL_newstate();
+    LuaState L;
     lua::create_room(L, room);
     lua_setglobal(L, "r");
 
@@ -192,7 +193,7 @@ TEST(Lua_Room, NumZSectors)
 {
     auto room = mock_shared<MockRoom>()->with_num_z_sectors(123);
 
-    lua_State* L = luaL_newstate();
+    LuaState L;
     lua::create_room(L, room);
     lua_setglobal(L, "r");
 
@@ -206,7 +207,7 @@ TEST(Lua_Room, Position)
     constexpr RoomInfo info{ .x = 1000, .z = 3000, .yBottom = 2000 };
     auto room = mock_shared<MockRoom>()->with_room_info(info);
 
-    lua_State* L = luaL_newstate();
+    LuaState L;
     lua::create_room(L, room);
     lua_setglobal(L, "r");
 
@@ -227,7 +228,7 @@ TEST(Lua_Room, Sector)
     auto room = mock_shared<MockRoom>();
     EXPECT_CALL(*room, sector(0, 1)).WillRepeatedly(Return(sector));
 
-    lua_State* L = luaL_newstate();
+    LuaState L;
     lua::create_room(L, room);
     lua_setglobal(L, "r");
 
@@ -245,7 +246,7 @@ TEST(Lua_Room, Sectors)
     auto room = mock_shared<MockRoom>();
     EXPECT_CALL(*room, sectors).WillRepeatedly(Return(std::vector<std::shared_ptr<ISector>>{ sector1, sector2 }));
 
-    lua_State* L = luaL_newstate();
+    LuaState L;
     lua::create_room(L, room);
     lua_setglobal(L, "r");
 
@@ -270,7 +271,7 @@ TEST(Lua_Room, Triggers)
     auto room = mock_shared<MockRoom>();
     EXPECT_CALL(*room, triggers).WillRepeatedly(Return(std::vector<std::weak_ptr<ITrigger>>{ trigger1, trigger2 }));
 
-    lua_State* L = luaL_newstate();
+    LuaState L;
     lua::create_room(L, room);
     lua_setglobal(L, "r");
 
@@ -292,7 +293,7 @@ TEST(Lua_Room, Visible)
     auto room = mock_shared<MockRoom>();
     EXPECT_CALL(*room, visible).WillOnce(Return(true));
 
-    lua_State* L = luaL_newstate();
+    LuaState L;
     lua::create_room(L, room);
     lua_setglobal(L, "r");
 
@@ -309,7 +310,7 @@ TEST(Lua_Room, SetVisible)
     auto room = mock_shared<MockRoom>()->with_number(100);
     EXPECT_CALL(*room, level).WillRepeatedly(Return(level));
 
-    lua_State* L = luaL_newstate();
+    LuaState L;
     lua::create_room(L, room);
     lua_setglobal(L, "r");
 
