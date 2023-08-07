@@ -4,6 +4,7 @@
 #include <trview.tests.common/Mocks.h>
 #include <external/lua/src/lua.h>
 #include <external/lua/src/lauxlib.h>
+#include "../Lua.h"
 
 using namespace trview;
 using namespace trview::mocks;
@@ -21,7 +22,7 @@ TEST(Lua_StaticMesh, Collision)
         Vector3(1024.0f, 2048.0f, 3072.0f));
     EXPECT_CALL(*static_mesh, collision).WillRepeatedly(Return(box));
 
-    lua_State* L = luaL_newstate();
+    LuaState L;
     lua::create_static_mesh(L, static_mesh);
     lua_setglobal(L, "s");
 
@@ -52,7 +53,7 @@ TEST(Lua_StaticMesh, Id)
     auto static_mesh = mock_shared<MockStaticMesh>();
     EXPECT_CALL(*static_mesh, id).WillRepeatedly(Return(123));
 
-    lua_State* L = luaL_newstate();
+    LuaState L;
     lua::create_static_mesh(L, static_mesh);
     lua_setglobal(L, "s");
 
@@ -66,7 +67,7 @@ TEST(Lua_StaticMesh, Position)
     auto static_mesh = mock_shared<MockStaticMesh>();
     EXPECT_CALL(*static_mesh, position).WillRepeatedly(Return(Vector3(1, 2, 3)));
 
-    lua_State* L = luaL_newstate();
+    LuaState L;
     lua::create_static_mesh(L, static_mesh);
     lua_setglobal(L, "s");
 
@@ -89,7 +90,7 @@ TEST(Lua_StaticMesh, Room)
     auto static_mesh = mock_shared<MockStaticMesh>();
     EXPECT_CALL(*static_mesh, room).WillRepeatedly(Return(room));
 
-    lua_State* L = luaL_newstate();
+    LuaState L;
     lua::create_static_mesh(L, static_mesh);
     lua_setglobal(L, "s");
 
@@ -105,7 +106,7 @@ TEST(Lua_StaticMesh, Rotation)
     auto static_mesh = mock_shared<MockStaticMesh>();
     EXPECT_CALL(*static_mesh, rotation).WillRepeatedly(Return(123.0f));
 
-    lua_State* L = luaL_newstate();
+    LuaState L;
     lua::create_static_mesh(L, static_mesh);
     lua_setglobal(L, "s");
 
@@ -119,7 +120,7 @@ TEST(Lua_StaticMesh, Type)
     auto static_mesh = mock_shared<MockStaticMesh>();
     ON_CALL(*static_mesh, type).WillByDefault(Return(IStaticMesh::Type::Mesh));
 
-    lua_State* L = luaL_newstate();
+    LuaState L;
     lua::create_static_mesh(L, static_mesh);
     lua_setglobal(L, "s");
 
@@ -143,7 +144,7 @@ TEST(Lua_StaticMesh, Visibility)
         Vector3(1024.0f, 2048.0f, 3072.0f));
     EXPECT_CALL(*static_mesh, visibility).WillRepeatedly(Return(box));
 
-    lua_State* L = luaL_newstate();
+    LuaState L;
     lua::create_static_mesh(L, static_mesh);
     lua_setglobal(L, "s");
 

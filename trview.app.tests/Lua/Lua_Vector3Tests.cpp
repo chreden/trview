@@ -1,6 +1,7 @@
 #include <trview.app/Lua/Vector3.h>
 #include <external/lua/src/lua.h>
 #include <external/lua/src/lauxlib.h>
+#include "Lua.h"
 
 using namespace trview;
 using namespace trview::tests;
@@ -8,7 +9,7 @@ using namespace testing;
 
 TEST(Lua_Vector3, New)
 {
-    lua_State* L = luaL_newstate();
+    LuaState L;
     lua::vector3_register(L);
 
     ASSERT_EQ(0, luaL_dostring(L, "x = Vector3.new() return x"));
@@ -26,7 +27,7 @@ TEST(Lua_Vector3, New)
 
 TEST(Lua_Vector3, NewXYZ)
 {
-    lua_State* L = luaL_newstate();
+    LuaState L;
     lua::vector3_register(L);
 
     ASSERT_EQ(0, luaL_dostring(L, "x = Vector3.new(1, 0.5, 0.25) return x"));

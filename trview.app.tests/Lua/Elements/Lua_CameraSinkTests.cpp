@@ -4,6 +4,7 @@
 #include <trview.tests.common/Mocks.h>
 #include <external/lua/src/lua.h>
 #include <external/lua/src/lauxlib.h>
+#include "../Lua.h"
 
 using namespace trview;
 using namespace trview::mocks;
@@ -16,7 +17,7 @@ TEST(Lua_CameraSink, BoxIndex)
     auto cs = mock_shared<MockCameraSink>();
     EXPECT_CALL(*cs, box_index).WillOnce(Return(123));
 
-    lua_State* L = luaL_newstate();
+    LuaState L;
     lua::create_camera_sink(L, cs);
     lua_setglobal(L, "c");
 
@@ -30,7 +31,7 @@ TEST(Lua_CameraSink, Flag)
     auto cs = mock_shared<MockCameraSink>();
     EXPECT_CALL(*cs, flag).WillOnce(Return(123));
 
-    lua_State* L = luaL_newstate();
+    LuaState L;
     lua::create_camera_sink(L, cs);
     lua_setglobal(L, "c");
 
@@ -46,7 +47,7 @@ TEST(Lua_CameraSink, InferredRooms)
     auto cs = mock_shared<MockCameraSink>();
     EXPECT_CALL(*cs, inferred_rooms).WillRepeatedly(Return(std::vector<std::weak_ptr<IRoom>>{ room1, room2 }));
 
-    lua_State* L = luaL_newstate();
+    LuaState L;
     lua::create_camera_sink(L, cs);
     lua_setglobal(L, "c");
 
@@ -68,7 +69,7 @@ TEST(Lua_CameraSink, Number)
     auto cs = mock_shared<MockCameraSink>();
     EXPECT_CALL(*cs, number).WillOnce(Return(123));
 
-    lua_State* L = luaL_newstate();
+    LuaState L;
     lua::create_camera_sink(L, cs);
     lua_setglobal(L, "c");
 
@@ -82,7 +83,7 @@ TEST(Lua_CameraSink, Persistent)
     auto cs = mock_shared<MockCameraSink>();
     EXPECT_CALL(*cs, persistent).WillOnce(Return(true));
 
-    lua_State* L = luaL_newstate();
+    LuaState L;
     lua::create_camera_sink(L, cs);
     lua_setglobal(L, "c");
 
@@ -96,7 +97,7 @@ TEST(Lua_CameraSink, Position)
     auto cs = mock_shared<MockCameraSink>();
     EXPECT_CALL(*cs, position).WillRepeatedly(Return(Vector3(1, 2, 3)));
 
-    lua_State* L = luaL_newstate();
+    LuaState L;
     lua::create_camera_sink(L, cs);
     lua_setglobal(L, "c");
 
@@ -119,7 +120,7 @@ TEST(Lua_CameraSink, Room)
     auto cs = mock_shared<MockCameraSink>();
     EXPECT_CALL(*cs, room).WillRepeatedly(Return(room));
 
-    lua_State* L = luaL_newstate();
+    LuaState L;
     lua::create_camera_sink(L, cs);
     lua_setglobal(L, "c");
 
@@ -135,7 +136,7 @@ TEST(Lua_CameraSink, Strength)
     auto cs = mock_shared<MockCameraSink>();
     EXPECT_CALL(*cs, strength).WillOnce(Return(123));
 
-    lua_State* L = luaL_newstate();
+    LuaState L;
     lua::create_camera_sink(L, cs);
     lua_setglobal(L, "c");
 
@@ -149,7 +150,7 @@ TEST(Lua_CameraSink, Type)
     auto cs = mock_shared<MockCameraSink>();
     EXPECT_CALL(*cs, type).WillOnce(Return(ICameraSink::Type::Camera));
 
-    lua_State* L = luaL_newstate();
+    LuaState L;
     lua::create_camera_sink(L, cs);
     lua_setglobal(L, "c");
 
@@ -171,7 +172,7 @@ TEST(Lua_CameraSink, TriggeredBy)
     auto cs = mock_shared<MockCameraSink>();
     EXPECT_CALL(*cs, triggers).WillRepeatedly(Return(std::vector<std::weak_ptr<ITrigger>>{ trigger1, trigger2 }));
 
-    lua_State* L = luaL_newstate();
+    LuaState L;
     lua::create_camera_sink(L, cs);
     lua_setglobal(L, "c");
 
@@ -193,7 +194,7 @@ TEST(Lua_CameraSink, Visible)
     auto cs = mock_shared<MockCameraSink>();
     EXPECT_CALL(*cs, visible).WillOnce(Return(true));
 
-    lua_State* L = luaL_newstate();
+    LuaState L;
     lua::create_camera_sink(L, cs);
     lua_setglobal(L, "c");
 
@@ -217,7 +218,7 @@ TEST(Lua_CameraSink, SetType)
     EXPECT_CALL(*cs, level).WillRepeatedly(Return(level));
     EXPECT_CALL(*cs, set_type(ICameraSink::Type::Sink)).Times(1);
 
-    lua_State* L = luaL_newstate();
+    LuaState L;
     lua::create_camera_sink(L, cs);
     lua_setglobal(L, "c");
 
@@ -237,7 +238,7 @@ TEST(Lua_CameraSink, SetVisible)
     auto cs = mock_shared<MockCameraSink>()->with_number(100);
     EXPECT_CALL(*cs, level).WillRepeatedly(Return(level));
 
-    lua_State* L = luaL_newstate();
+    LuaState L;
     lua::create_camera_sink(L, cs);
     lua_setglobal(L, "c");
 

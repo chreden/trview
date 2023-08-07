@@ -4,6 +4,7 @@
 #include <trview.tests.common/Mocks.h>
 #include <external/lua/src/lua.h>
 #include <external/lua/src/lauxlib.h>
+#include "../Lua.h"
 
 using namespace trview;
 using namespace trview::mocks;
@@ -16,7 +17,7 @@ TEST(Lua_Light, Colour)
     auto light = mock_shared<MockLight>();
     EXPECT_CALL(*light, colour).WillRepeatedly(Return(Color(1, 2, 3, 4)));
 
-    lua_State* L = luaL_newstate();
+    LuaState L;
     lua::create_light(L, light);
     lua_setglobal(L, "l");
 
@@ -41,7 +42,7 @@ TEST(Lua_Light, Cutoff)
     auto light = mock_shared<MockLight>();
     EXPECT_CALL(*light, cutoff).WillOnce(Return(123.0f));
 
-    lua_State* L = luaL_newstate();
+    LuaState L;
     lua::create_light(L, light);
     lua_setglobal(L, "l");
 
@@ -55,7 +56,7 @@ TEST(Lua_Light, Density)
     auto light = mock_shared<MockLight>();
     EXPECT_CALL(*light, density).WillOnce(Return(123.0f));
 
-    lua_State* L = luaL_newstate();
+    LuaState L;
     lua::create_light(L, light);
     lua_setglobal(L, "l");
 
@@ -69,7 +70,7 @@ TEST(Lua_Light, Direction)
     auto light = mock_shared<MockLight>();
     EXPECT_CALL(*light, direction).WillRepeatedly(Return(Vector3(1, 2, 3)));
 
-    lua_State* L = luaL_newstate();
+    LuaState L;
     lua::create_light(L, light);
     lua_setglobal(L, "l");
 
@@ -91,7 +92,7 @@ TEST(Lua_Light, Fade)
     auto light = mock_shared<MockLight>();
     EXPECT_CALL(*light, fade).WillOnce(Return(123));
 
-    lua_State* L = luaL_newstate();
+    LuaState L;
     lua::create_light(L, light);
     lua_setglobal(L, "l");
 
@@ -105,7 +106,7 @@ TEST(Lua_Light, Falloff)
     auto light = mock_shared<MockLight>();
     ON_CALL(*light, out).WillByDefault(Return(123.0f));
 
-    lua_State* L = luaL_newstate();
+    LuaState L;
     lua::create_light(L, light);
     lua_setglobal(L, "l");
 
@@ -130,7 +131,7 @@ TEST(Lua_Light, FalloffAngle)
     auto light = mock_shared<MockLight>();
     EXPECT_CALL(*light, out).WillOnce(Return(1.0f));
 
-    lua_State* L = luaL_newstate();
+    LuaState L;
     lua::create_light(L, light);
     lua_setglobal(L, "l");
 
@@ -150,7 +151,7 @@ TEST(Lua_Light, Hotspot)
     auto light = mock_shared<MockLight>();
     ON_CALL(*light, in).WillByDefault(Return(1.0f));
 
-    lua_State* L = luaL_newstate();
+    LuaState L;
     lua::create_light(L, light);
     lua_setglobal(L, "l");
 
@@ -180,7 +181,7 @@ TEST(Lua_Light, Intensity)
     auto light = mock_shared<MockLight>();
     EXPECT_CALL(*light, intensity).WillOnce(Return(123));
 
-    lua_State* L = luaL_newstate();
+    LuaState L;
     lua::create_light(L, light);
     lua_setglobal(L, "l");
 
@@ -194,7 +195,7 @@ TEST(Lua_Light, Length)
     auto light = mock_shared<MockLight>();
     EXPECT_CALL(*light, length).WillOnce(Return(123.0f));
 
-    lua_State* L = luaL_newstate();
+    LuaState L;
     lua::create_light(L, light);
     lua_setglobal(L, "l");
 
@@ -208,7 +209,7 @@ TEST(Lua_Light, Number)
     auto light = mock_shared<MockLight>();
     EXPECT_CALL(*light, number).WillOnce(Return(123));
 
-    lua_State* L = luaL_newstate();
+    LuaState L;
     lua::create_light(L, light);
     lua_setglobal(L, "l");
 
@@ -222,7 +223,7 @@ TEST(Lua_Light, Position)
     auto light = mock_shared<MockLight>();
     EXPECT_CALL(*light, position).WillRepeatedly(Return(Vector3(1, 2, 3)));
 
-    lua_State* L = luaL_newstate();
+    LuaState L;
     lua::create_light(L, light);
     lua_setglobal(L, "l");
 
@@ -244,7 +245,7 @@ TEST(Lua_Light, Radius)
     auto light = mock_shared<MockLight>();
     EXPECT_CALL(*light, cutoff).WillOnce(Return(123.0f));
 
-    lua_State* L = luaL_newstate();
+    LuaState L;
     lua::create_light(L, light);
     lua_setglobal(L, "l");
 
@@ -258,7 +259,7 @@ TEST(Lua_Light, RadIn)
     auto light = mock_shared<MockLight>();
     EXPECT_CALL(*light, rad_in).WillOnce(Return(1.0f));
 
-    lua_State* L = luaL_newstate();
+    LuaState L;
     lua::create_light(L, light);
     lua_setglobal(L, "l");
 
@@ -272,7 +273,7 @@ TEST(Lua_Light, RadOut)
     auto light = mock_shared<MockLight>();
     EXPECT_CALL(*light, rad_out).WillOnce(Return(1.0f));
 
-    lua_State* L = luaL_newstate();
+    LuaState L;
     lua::create_light(L, light);
     lua_setglobal(L, "l");
 
@@ -286,7 +287,7 @@ TEST(Lua_Light, Range)
     auto light = mock_shared<MockLight>();
     EXPECT_CALL(*light, range).WillOnce(Return(123.0f));
 
-    lua_State* L = luaL_newstate();
+    LuaState L;
     lua::create_light(L, light);
     lua_setglobal(L, "l");
 
@@ -301,7 +302,7 @@ TEST(Lua_Light, Room)
     auto light = mock_shared<MockLight>()->with_number(100);
     EXPECT_CALL(*light, room).WillRepeatedly(Return(room));
 
-    lua_State* L = luaL_newstate();
+    LuaState L;
     lua::create_light(L, light);
     lua_setglobal(L, "l");
 
@@ -317,7 +318,7 @@ TEST(Lua_Light, Type)
     auto light = mock_shared<MockLight>();
     EXPECT_CALL(*light, type).WillOnce(Return(trlevel::LightType::Point));
 
-    lua_State* L = luaL_newstate();
+    LuaState L;
     lua::create_light(L, light);
     lua_setglobal(L, "l");
 
@@ -331,7 +332,7 @@ TEST(Lua_Light, Visible)
     auto light = mock_shared<MockLight>();
     EXPECT_CALL(*light, visible).WillOnce(Return(true));
 
-    lua_State* L = luaL_newstate();
+    LuaState L;
     lua::create_light(L, light);
     lua_setglobal(L, "l");
 
@@ -349,7 +350,7 @@ TEST(Lua_Light, SetVisible)
     auto light = mock_shared<MockLight>()->with_number(100);
     EXPECT_CALL(*light, level).WillRepeatedly(Return(level));
 
-    lua_State* L = luaL_newstate();
+    LuaState L;
     lua::create_light(L, light);
     lua_setglobal(L, "l");
 

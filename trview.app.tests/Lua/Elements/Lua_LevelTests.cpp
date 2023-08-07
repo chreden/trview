@@ -8,6 +8,7 @@
 #include <trview.tests.common/Mocks.h>
 #include <external/lua/src/lua.h>
 #include <external/lua/src/lauxlib.h>
+#include "../Lua.h"
 
 using namespace trview;
 using namespace trview::tests;
@@ -19,7 +20,7 @@ TEST(Lua_Level, AlternateMode)
     auto level = mock_shared<MockLevel>();
     EXPECT_CALL(*level, alternate_mode).WillRepeatedly(Return(true));
 
-    lua_State* L = luaL_newstate();
+    LuaState L;
     lua::create_level(L, level);
     lua_setglobal(L, "l");
 
@@ -33,7 +34,7 @@ TEST(Lua_Level, SetAlternateMode)
     auto level = mock_shared<MockLevel>();
     EXPECT_CALL(*level, set_alternate_mode(true));
 
-    lua_State* L = luaL_newstate();
+    LuaState L;
     lua::create_level(L, level);
     lua_setglobal(L, "l");
 
@@ -48,7 +49,7 @@ TEST(Lua_Level, CamerasAndSinks)
     auto level = mock_shared<MockLevel>();
     EXPECT_CALL(*level, camera_sinks).WillRepeatedly(Return(std::vector<std::weak_ptr<ICameraSink>>{ cs1, cs2 }));
 
-    lua_State* L = luaL_newstate();
+    LuaState L;
     lua::create_level(L, level);
     lua_setglobal(L, "l");
 
@@ -70,7 +71,7 @@ TEST(Lua_Level, Filename)
     auto level = mock_shared<MockLevel>();
     ON_CALL(*level, filename).WillByDefault(testing::Return("test filename"));
 
-    lua_State* L = luaL_newstate();
+    LuaState L;
     lua::create_level(L, level);
     lua_setglobal(L, "l"); 
 
@@ -83,7 +84,7 @@ TEST(Lua_Level, Floordata)
 {
     auto level = mock_shared<MockLevel>();
 
-    lua_State* L = luaL_newstate();
+    LuaState L;
     lua::create_level(L, level);
     lua_setglobal(L, "l");
 
@@ -98,7 +99,7 @@ TEST(Lua_Level, Items)
     auto level = mock_shared<MockLevel>();
     EXPECT_CALL(*level, items).WillRepeatedly(Return(std::vector<std::weak_ptr<IItem>>{ item1, item2 }));
 
-    lua_State* L = luaL_newstate();
+    LuaState L;
     lua::create_level(L, level);
     lua_setglobal(L, "l");
 
@@ -122,7 +123,7 @@ TEST(Lua_Level, Lights)
     auto level = mock_shared<MockLevel>();
     EXPECT_CALL(*level, lights).WillRepeatedly(Return(std::vector<std::weak_ptr<ILight>>{ light1, light2 }));
 
-    lua_State* L = luaL_newstate();
+    LuaState L;
     lua::create_level(L, level);
     lua_setglobal(L, "l");
 
@@ -146,7 +147,7 @@ TEST(Lua_Level, Rooms)
     auto level = mock_shared<MockLevel>();
     EXPECT_CALL(*level, rooms).WillRepeatedly(Return(std::vector<std::weak_ptr<IRoom>>{ room1, room2 }));
 
-    lua_State* L = luaL_newstate();
+    LuaState L;
     lua::create_level(L, level);
     lua_setglobal(L, "l");
 
@@ -170,7 +171,7 @@ TEST(Lua_Level, SelectedRoom)
     EXPECT_CALL(*level, room(200)).WillRepeatedly(Return(room));
     EXPECT_CALL(*level, selected_room).WillRepeatedly(Return(200));
 
-    lua_State* L = luaL_newstate();
+    LuaState L;
     lua::create_level(L, level);
     lua_setglobal(L, "l");
 
@@ -187,7 +188,7 @@ TEST(Lua_Level, SetSelectedRoom)
     auto level = mock_shared<MockLevel>();
     EXPECT_CALL(*level, set_selected_room(200));
 
-    lua_State* L = luaL_newstate();
+    LuaState L;
     lua::create_level(L, level);
     lua_setglobal(L, "l");
     lua::create_room(L, room);
@@ -203,7 +204,7 @@ TEST(Lua_Level, SelectedTrigger)
     EXPECT_CALL(*level, trigger(200)).WillRepeatedly(Return(trigger));
     EXPECT_CALL(*level, selected_trigger).WillRepeatedly(Return(200));
 
-    lua_State* L = luaL_newstate();
+    LuaState L;
     lua::create_level(L, level);
     lua_setglobal(L, "l");
 
@@ -220,7 +221,7 @@ TEST(Lua_Level, SetSelectedTrigger)
     auto level = mock_shared<MockLevel>();
     EXPECT_CALL(*level, set_selected_trigger(200));
 
-    lua_State* L = luaL_newstate();
+    LuaState L;
     lua::create_level(L, level);
     lua_setglobal(L, "l");
     lua::create_trigger(L, trigger);
@@ -236,7 +237,7 @@ TEST(Lua_Level, Triggers)
     auto level = mock_shared<MockLevel>();
     EXPECT_CALL(*level, triggers).WillRepeatedly(Return(std::vector<std::weak_ptr<ITrigger>>{ trigger1, trigger2 }));
 
-    lua_State* L = luaL_newstate();
+    LuaState L;
     lua::create_level(L, level);
     lua_setglobal(L, "l");
 
@@ -258,7 +259,7 @@ TEST(Lua_Level, Version)
     auto level = mock_shared<MockLevel>();
     ON_CALL(*level, version).WillByDefault(testing::Return(trlevel::LevelVersion::Tomb4));
 
-    lua_State* L = luaL_newstate();
+    LuaState L;
     lua::create_level(L, level);
     lua_setglobal(L, "l");
 
