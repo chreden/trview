@@ -214,7 +214,6 @@ TEST(Lua_CameraSink, SetType)
     };
 
     auto cs = mock_shared<MockCameraSink>();
-    EXPECT_CALL(*cs, visible).WillOnce(Return(true));
     EXPECT_CALL(*cs, level).WillRepeatedly(Return(level));
     EXPECT_CALL(*cs, set_type(ICameraSink::Type::Sink)).Times(1);
 
