@@ -226,8 +226,8 @@ namespace trview
 
     void Sector::parse_slope()
     {
-        const int8_t x_slope = _floor_slant & 0x00ff;
-        const int8_t z_slope = _floor_slant >> 8;
+        const int8_t x_slope = tilt_x();
+        const int8_t z_slope = tilt_z();
 
         if (x_slope > 0)
         {
@@ -329,6 +329,16 @@ namespace trview
     std::weak_ptr<IRoom> Sector::room() const
     {
         return _room_ptr;
+    }
+
+    int8_t Sector::tilt_x() const
+    {
+        return static_cast<int8_t>(_floor_slant & 0x00ff);
+    }
+
+    int8_t Sector::tilt_z() const
+    {
+        return static_cast<int8_t>(_floor_slant >> 8);
     }
 
     ISector::TriangulationDirection Sector::triangulation() const

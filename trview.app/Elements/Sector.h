@@ -43,6 +43,8 @@ namespace trview
         virtual DirectX::SimpleMath::Vector3 corner(Corner corner) const override;
         virtual DirectX::SimpleMath::Vector3 ceiling(Corner corner) const override;
         std::weak_ptr<IRoom> room() const override;
+        int8_t tilt_x() const override;
+        int8_t tilt_z() const override;
         virtual TriangulationDirection triangulation() const override;
         virtual std::vector<Triangle> triangles() const override;
         virtual uint32_t floordata_index() const override;

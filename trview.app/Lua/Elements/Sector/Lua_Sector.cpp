@@ -156,6 +156,16 @@ namespace trview
                 {
                     return create_room(L, sector->room().lock());
                 }
+                else if (key == "tilt_x")
+                {
+                    lua_pushnumber(L, sector->tilt_x());
+                    return 1;
+                }
+                else if (key == "tilt_z")
+                {
+                    lua_pushnumber(L, sector->tilt_z());
+                    return 1;
+                }
                 else if (key == "triangulation")
                 {
                     lua_pushstring(L, to_string(sector->triangulation()).c_str());

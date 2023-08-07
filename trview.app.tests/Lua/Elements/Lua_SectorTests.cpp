@@ -255,3 +255,31 @@ TEST(Lua_Sector, Triangulation)
     ASSERT_EQ(LUA_TSTRING, lua_type(L, -1));
     ASSERT_STREQ("NESW", lua_tostring(L, -1));
 }
+
+TEST(Lua_Sector, TiltX)
+{
+    auto sector = mock_shared<MockSector>();
+    EXPECT_CALL(*sector, tilt_x).WillRepeatedly(Return(-3));
+
+    LuaState L;
+    lua::create_sector(L, sector);
+    lua_setglobal(L, "s");
+
+    ASSERT_EQ(0, luaL_dostring(L, "return s.tilt_x"));
+    ASSERT_EQ(LUA_TNUMBER, lua_type(L, -1));
+    ASSERT_EQ(-3, lua_tonumber(L, -1));
+}
+
+TEST(Lua_Sector, TiltZ)
+{
+    auto sector = mock_shared<MockSector>();
+    EXPECT_CALL(*sector, tilt_z).WillRepeatedly(Return(-3));
+
+    LuaState L;
+    lua::create_sector(L, sector);
+    lua_setglobal(L, "s");
+
+    ASSERT_EQ(0, luaL_dostring(L, "return s.tilt_z"));
+    ASSERT_EQ(LUA_TNUMBER, lua_type(L, -1));
+    ASSERT_EQ(-3, lua_tonumber(L, -1));
+}
