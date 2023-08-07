@@ -82,6 +82,13 @@ namespace trview
         }
 
         template <typename T>
+        T* get_self_raw(lua_State* L, int index)
+        {
+            luaL_checktype(L, index, LUA_TUSERDATA);
+            return *static_cast<T**>(lua_touserdata(L, index));
+        }
+
+        template <typename T>
         void set_self(lua_State* L, const std::shared_ptr<T>& self)
         {
             using Ptr = std::shared_ptr<T>;

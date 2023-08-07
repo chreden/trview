@@ -66,6 +66,9 @@ namespace trview
         std::shared_ptr<T> get_self(lua_State* L, int index = 1);
 
         template <typename T>
+        T* get_self_raw(lua_State* L, int index = 1);
+
+        template <typename T>
         void set_self(lua_State* L, const std::shared_ptr<T>& self);
 
         /// <summary>
