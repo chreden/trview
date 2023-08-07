@@ -14,6 +14,8 @@ The Sector library provides information about a sector in a [Level](level.md)/[R
 | number | number | R | Sector number |
 | portal | [Room](room.md) | R | Destination room for portal or `nil` |
 | room | [Room](room.md) | R | Room that the sector is in |
+| tilt_x | Number | R | X tilt value for the sector. Only check if `FloorSlant` flag is true |
+| tilt_z | Number | R | Z tilt value for the sector. Only check if `FloorSlant` flag is true |
 | triangulation | string | R | Triangulation direction (`None`/`NWSE`/`NESW`) |
 | trigger | [Trigger](trigger.md) | R | Trigger on this sector or `nil` |
 | x | number | R | Sector X location in room |
