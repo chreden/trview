@@ -20,7 +20,6 @@ namespace trview
     {
         namespace
         {
-            std::unordered_map<IRoute**, std::shared_ptr<IRoute>> routes;
             IRoute::Source route_source;
             IRandomizerRoute::Source randomizer_route_source;
             std::shared_ptr<IDialogs> dialogs;
@@ -47,9 +46,9 @@ namespace trview
                 return 0;
             }
 
-            std::optional<std::string> route_save_as(IRoute* route, const std::string& filename)
+            std::optional<std::string> route_save_as(const std::shared_ptr<IRoute>& route, const std::string& filename)
             {
-                const bool is_rando = dynamic_cast<IRandomizerRoute*>(route) != nullptr;
+                const bool is_rando = std::dynamic_pointer_cast<IRandomizerRoute>(route) != nullptr;
                 if (!filename.empty())
                 {
                     if (dialogs->message_box(
@@ -196,7 +195,7 @@ namespace trview
                 }
                 else if (key == "is_randomizer")
                 {
-                    lua_pushboolean(L, dynamic_cast<IRandomizerRoute*>(route) != nullptr);
+                    lua_pushboolean(L, std::dynamic_pointer_cast<IRandomizerRoute>(route) != nullptr);
                     return 1;
                 }
                 else if (key == "level")
@@ -289,14 +288,6 @@ namespace trview
                 return 0;
             }
 
-            int route_gc(lua_State* L)
-            {
-                luaL_checktype(L, 1, LUA_TUSERDATA);
-                IRoute** userdata = static_cast<IRoute**>(lua_touserdata(L, 1));
-                routes.erase(userdata);
-                return 0;
-            }
-
             int route_new(lua_State* L)
             {
                 if (lua_gettop(L) != 0 && lua_type(L, 1) == LUA_TTABLE)
@@ -315,37 +306,12 @@ namespace trview
 
         int create_route(lua_State* L, const std::shared_ptr<IRoute>& route)
         {
-            if (!route)
-            {
-                lua_pushnil(L);
-                return 1;
-            }
-
-            IRoute** userdata = static_cast<IRoute**>(lua_newuserdata(L, sizeof(route.get())));
-            *userdata = route.get();
-            routes[userdata] = route;
-
-            lua_newtable(L);
-            lua_pushcfunction(L, route_index);
-            lua_setfield(L, -2, "__index");
-            lua_pushcfunction(L, route_newindex);
-            lua_setfield(L, -2, "__newindex");
-            lua_pushcfunction(L, route_gc);
-            lua_setfield(L, -2, "__gc");
-            lua_setmetatable(L, -2);
-            return 1;
+            return create(L, route, route_index, route_newindex);
         }
 
         std::shared_ptr<IRoute> to_route(lua_State* L, int index)
         {
-            luaL_checktype(L, index, LUA_TUSERDATA);
-            IRoute** userdata = static_cast<IRoute**>(lua_touserdata(L, index));
-            auto found = routes.find(userdata);
-            if (found == routes.end())
-            {
-                return {};
-            }
-            return found->second;
+            return get_self<IRoute>(L, index);
         }
 
         void route_register(lua_State* L, const IRoute::Source& source, const IRandomizerRoute::Source& randomizer_source, const std::shared_ptr<IDialogs>& dialogs_, const std::shared_ptr<IFiles>& files_)

@@ -12,8 +12,6 @@ namespace trview
     {
         namespace
         {
-            std::unordered_map<ILight**, std::shared_ptr<ILight>> lights;
-
             int light_index(lua_State* L)
             {
                 auto light = lua::get_self<ILight>(L);
@@ -130,36 +128,11 @@ namespace trview
 
                 return 0;
             }
-
-            int light_gc(lua_State* L)
-            {
-                luaL_checktype(L, 1, LUA_TUSERDATA);
-                ILight** userdata = static_cast<ILight**>(lua_touserdata(L, 1));
-                lights.erase(userdata);
-                return 0;
-            }
         }
 
-        void create_light(lua_State* L, const std::shared_ptr<ILight>& light)
+        int create_light(lua_State* L, const std::shared_ptr<ILight>& light)
         {
-            if (!light)
-            {
-                lua_pushnil(L);
-                return;
-            }
-
-            ILight** userdata = static_cast<ILight**>(lua_newuserdata(L, sizeof(light.get())));
-            *userdata = light.get();
-            lights[userdata] = light;
-
-            lua_newtable(L);
-            lua_pushcfunction(L, light_index);
-            lua_setfield(L, -2, "__index");
-            lua_pushcfunction(L, light_newindex);
-            lua_setfield(L, -2, "__newindex");
-            lua_pushcfunction(L, light_gc);
-            lua_setfield(L, -2, "__gc");
-            lua_setmetatable(L, -2);
+            return create(L, light, light_index, light_newindex);
         }
     }
 }

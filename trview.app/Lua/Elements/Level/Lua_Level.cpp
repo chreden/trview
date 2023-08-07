@@ -14,8 +14,6 @@ namespace trview
     {
         namespace
         {
-            std::unordered_map<ILevel**, std::shared_ptr<ILevel>> levels;
-
             int level_index(lua_State* L)
             {
                 auto level = lua::get_self<ILevel>(L);
@@ -128,49 +126,16 @@ namespace trview
 
                 return 0;
             }
-
-            int level_gc(lua_State* L)
-            {
-                luaL_checktype(L, 1, LUA_TUSERDATA);
-                ILevel** userdata = static_cast<ILevel**>(lua_touserdata(L, 1));
-                levels.erase(userdata);
-                return 0;
-            }
         }
 
         int create_level(lua_State* L, const std::shared_ptr<ILevel>& level)
         {
-            if (!level)
-            {
-                lua_pushnil(L);
-                return 1;
-            }
-
-            ILevel** userdata = static_cast<ILevel**>(lua_newuserdata(L, sizeof(level.get())));
-            *userdata = level.get();
-            levels[userdata] = level;
-
-            lua_newtable(L);
-            lua_pushcfunction(L, level_index);
-            lua_setfield(L, -2, "__index");
-            lua_pushcfunction(L, level_newindex);
-            lua_setfield(L, -2, "__newindex");
-            lua_pushcfunction(L, level_gc);
-            lua_setfield(L, -2, "__gc");
-            lua_setmetatable(L, -2);
-            return 1;
+            return create(L, level, level_index, level_newindex);
         }
 
         std::shared_ptr<ILevel> to_level(lua_State* L, int index)
         {
-            luaL_checktype(L, index, LUA_TUSERDATA);
-            ILevel** userdata = static_cast<ILevel**>(lua_touserdata(L, index));
-            auto found = levels.find(userdata);
-            if (found == levels.end())
-            {
-                return {};
-            }
-            return found->second;
+            return get_self<ILevel>(L, index);
         }
     }
 }

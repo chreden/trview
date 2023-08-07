@@ -47,9 +47,6 @@ namespace trview
         int push_list(lua_State* L, std::ranges::input_range auto&& range, Func&& func);
 
         template <typename T>
-        T* get_self(lua_State* L);
-
-        template <typename T>
         struct EnumValue
         {
             std::string name;
@@ -61,6 +58,24 @@ namespace trview
         
         template <typename T>
         void create_enum(lua_State* L, const std::string& name, const std::vector<EnumValue<T>>& values);
+
+        template <typename T>
+        int create(lua_State* L, const std::shared_ptr<T>& self, lua_CFunction index, lua_CFunction new_index);
+
+        template <typename T>
+        std::shared_ptr<T> get_self(lua_State* L, int index = 1);
+
+        template <typename T>
+        void set_self(lua_State* L, const std::shared_ptr<T>& self);
+
+        /// <summary>
+        /// GC function for cleaning up a shared_ptr.
+        /// </summary>
+        /// <typeparam name="T">Pointed to type</typeparam>
+        /// <param name="L">Lua state</param>
+        /// <returns>Stack change.</returns>
+        template <typename T>
+        int gc(lua_State* L);
     }
 }
 

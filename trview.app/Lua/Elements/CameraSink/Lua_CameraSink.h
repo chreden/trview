@@ -8,6 +8,6 @@ namespace trview
 {
     namespace lua
     {
-        void create_camera_sink(lua_State* L, std::shared_ptr<ICameraSink> camera_sink);
+        int create_camera_sink(lua_State* L, std::shared_ptr<ICameraSink> camera_sink);
     }
 }

@@ -12,7 +12,7 @@ namespace trview
     {
         namespace
         {
-            std::array<int, 4> to_corner_clicks(ISector* sector, const std::array<float, 4>& corners)
+            std::array<int, 4> to_corner_clicks(const std::shared_ptr<ISector>& sector, const std::array<float, 4>& corners)
             {
                 float base = 0;
                 if (auto room = sector->room().lock())
@@ -28,7 +28,7 @@ namespace trview
                 };
             }
 
-            std::array<int, 4> to_ceiling_corner_clicks(ISector* sector, const std::array<float, 4>& corners)
+            std::array<int, 4> to_ceiling_corner_clicks(const std::shared_ptr<ISector>& sector, const std::array<float, 4>& corners)
             {
                 float base = 0;
                 if (auto room = sector->room().lock())
@@ -185,14 +185,6 @@ namespace trview
                 sector;
                 return 0;
             }
-
-            int sector_gc(lua_State* L)
-            {
-                luaL_checktype(L, 1, LUA_TUSERDATA);
-                std::shared_ptr<ISector>* userdata = static_cast<std::shared_ptr<ISector>*>(lua_touserdata(L, 1));
-                userdata->reset();
-                return 0;
-            }
         }
 
         int create_sector(lua_State* L, std::shared_ptr<ISector> sector)
@@ -203,15 +195,14 @@ namespace trview
                 return 1;
             }
 
-            std::shared_ptr<ISector>* userdata = static_cast<std::shared_ptr<ISector>*>(lua_newuserdata(L, sizeof(std::shared_ptr<ISector>)));
-            new (userdata) std::shared_ptr<ISector>(sector);
+            set_self(L, sector);
 
             lua_newtable(L);
             lua_pushcfunction(L, sector_index);
             lua_setfield(L, -2, "__index");
             lua_pushcfunction(L, sector_newindex);
             lua_setfield(L, -2, "__newindex");
-            lua_pushcfunction(L, sector_gc);
+            lua_pushcfunction(L, gc<ISector>);
             lua_setfield(L, -2, "__gc");
             lua_setmetatable(L, -2);
             return 1;
