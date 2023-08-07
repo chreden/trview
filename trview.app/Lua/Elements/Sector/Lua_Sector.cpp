@@ -12,8 +12,6 @@ namespace trview
     {
         namespace
         {
-            std::unordered_map<ISector**, std::shared_ptr<ISector>> sectors;
-
             std::array<int, 4> to_corner_clicks(ISector* sector, const std::array<float, 4>& corners)
             {
                 float base = 0;
@@ -191,8 +189,8 @@ namespace trview
             int sector_gc(lua_State* L)
             {
                 luaL_checktype(L, 1, LUA_TUSERDATA);
-                ISector** userdata = static_cast<ISector**>(lua_touserdata(L, 1));
-                sectors.erase(userdata);
+                std::shared_ptr<ISector>* userdata = static_cast<std::shared_ptr<ISector>*>(lua_touserdata(L, 1));
+                userdata->reset();
                 return 0;
             }
         }
@@ -205,9 +203,8 @@ namespace trview
                 return 1;
             }
 
-            ISector** userdata = static_cast<ISector**>(lua_newuserdata(L, sizeof(sector.get())));
-            *userdata = sector.get();
-            sectors[userdata] = sector;
+            std::shared_ptr<ISector>* userdata = static_cast<std::shared_ptr<ISector>*>(lua_newuserdata(L, sizeof(std::shared_ptr<ISector>)));
+            new (userdata) std::shared_ptr<ISector>(sector);
 
             lua_newtable(L);
             lua_pushcfunction(L, sector_index);
@@ -245,6 +242,13 @@ namespace trview
                 { "Climbable", SectorFlag::Climbable }
             });
             lua_setglobal(L, "Sector");
+        }
+
+        std::shared_ptr<ISector> to_sector(lua_State* L, int index)
+        {
+            luaL_checktype(L, index, LUA_TUSERDATA);
+            std::shared_ptr<ISector>* userdata = static_cast<std::shared_ptr<ISector>*>(lua_touserdata(L, index));
+            return *userdata;
         }
     }
 }

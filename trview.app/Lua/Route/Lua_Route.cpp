@@ -89,7 +89,7 @@ namespace trview
 
                 std::string filename;
 
-                if (lua_type(L, 1) == LUA_TTABLE)
+                if (lua_type(L, 2) == LUA_TTABLE)
                 {
                     if (LUA_TSTRING == lua_getfield(L, 2, "filename"))
                     {

@@ -49,6 +49,7 @@
     <ClCompile Include="Lua\Elements\Lua_SectorTests.cpp" />
     <ClCompile Include="Lua\Elements\Lua_StaticMeshTests.cpp" />
     <ClCompile Include="Lua\Elements\Lua_TriggerTests.cpp" />
+    <ClCompile Include="Lua\Lua.cpp" />
     <ClCompile Include="Lua\Lua_ColourTests.cpp" />
     <ClCompile Include="Lua\Lua_trviewTests.cpp" />
     <ClCompile Include="Lua\Lua_Vector3Tests.cpp" />
@@ -133,6 +134,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Lua\Lua.h" />
     <ClInclude Include="NullImGuiBackend.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="TestImgui.h" />

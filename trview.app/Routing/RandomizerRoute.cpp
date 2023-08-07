@@ -138,21 +138,30 @@ namespace trview
     std::shared_ptr<IWaypoint> RandomizerRoute::add(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& normal, uint32_t room)
     {
         auto result = _route->add(position, normal, room);
-        update_waypoints();
+        if (auto current_level = _route->level().lock())
+        {
+            get_waypoints(trimmed_level_name(current_level->filename())).waypoints.push_back(result);
+        }
         return result;
     }
 
     std::shared_ptr<IWaypoint> RandomizerRoute::add(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& normal, uint32_t room, IWaypoint::Type type, uint32_t type_index)
     {
         auto result = _route->add(position, normal, room, type, type_index);
-        update_waypoints();
+        if (auto current_level = _route->level().lock())
+        {
+            get_waypoints(trimmed_level_name(current_level->filename())).waypoints.push_back(result);
+        }
         return result;
     }
 
     std::shared_ptr<IWaypoint> RandomizerRoute::add(const std::shared_ptr<IWaypoint>& waypoint)
     {
         auto result = _route->add(waypoint);
-        update_waypoints();
+        if (auto current_level = _route->level().lock())
+        {
+            get_waypoints(trimmed_level_name(current_level->filename())).waypoints.push_back(result);
+        }
         return result;
     }
 

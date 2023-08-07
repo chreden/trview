@@ -6,6 +6,7 @@
 #include <external/lua/src/lua.h>
 #include <external/lua/src/lauxlib.h>
 #include <trview.app/Lua/Colour.h>
+#include "../Lua.h"
 
 using namespace trview;
 using namespace trview::mocks;
@@ -19,7 +20,7 @@ TEST(Lua_Trigger, Commands)
     auto trigger = mock_shared<MockTrigger>();
     EXPECT_CALL(*trigger, commands).WillRepeatedly(Return(std::vector<Command>{ command }));
 
-    lua_State* L = luaL_newstate();
+    LuaState L;
     lua::create_trigger(L, trigger);
     lua_setglobal(L, "t");
 
@@ -44,7 +45,7 @@ TEST(Lua_Trigger, Flags)
     auto trigger = mock_shared<MockTrigger>();
     EXPECT_CALL(*trigger, flags).WillRepeatedly(Return(123));
 
-    lua_State* L = luaL_newstate();
+    LuaState L;
     lua::create_trigger(L, trigger);
     lua_setglobal(L, "t");
 
@@ -57,7 +58,7 @@ TEST(Lua_Trigger, Number)
 {
     auto trigger = mock_shared<MockTrigger>()->with_number(123);
 
-    lua_State* L = luaL_newstate();
+    LuaState L;
     lua::create_trigger(L, trigger);
     lua_setglobal(L, "t");
 
@@ -71,7 +72,7 @@ TEST(Lua_Trigger, OnlyOnce)
     auto trigger = mock_shared<MockTrigger>();
     EXPECT_CALL(*trigger, only_once).WillRepeatedly(Return(true));
 
-    lua_State* L = luaL_newstate();
+    LuaState L;
     lua::create_trigger(L, trigger);
     lua_setglobal(L, "t");
 
@@ -85,7 +86,7 @@ TEST(Lua_Trigger, Position)
     auto trigger = mock_shared<MockTrigger>();
     EXPECT_CALL(*trigger, position).WillRepeatedly(Return(Vector3(1, 2, 3)));
 
-    lua_State* L = luaL_newstate();
+    LuaState L;
     lua::create_trigger(L, trigger);
     lua_setglobal(L, "t");
 
@@ -108,7 +109,7 @@ TEST(Lua_Trigger, Room)
     auto trigger = mock_shared<MockTrigger>()->with_number(100);
     EXPECT_CALL(*trigger, room).WillRepeatedly(Return(room));
 
-    lua_State* L = luaL_newstate();
+    LuaState L;
     lua::create_trigger(L, trigger);
     lua_setglobal(L, "t");
 
@@ -129,7 +130,7 @@ TEST(Lua_Trigger, Sector)
     auto trigger = mock_shared<MockTrigger>()->with_number(100);
     EXPECT_CALL(*trigger, room).WillRepeatedly(Return(room));
 
-    lua_State* L = luaL_newstate();
+    LuaState L;
     lua::create_trigger(L, trigger);
     lua_setglobal(L, "t");
 
@@ -145,7 +146,7 @@ TEST(Lua_Trigger, Timer)
     auto trigger = mock_shared<MockTrigger>();
     EXPECT_CALL(*trigger, timer).WillRepeatedly(Return(123));
 
-    lua_State* L = luaL_newstate();
+    LuaState L;
     lua::create_trigger(L, trigger);
     lua_setglobal(L, "t");
 
@@ -159,7 +160,7 @@ TEST(Lua_Trigger, Type)
     auto trigger = mock_shared<MockTrigger>();
     EXPECT_CALL(*trigger, type).WillRepeatedly(Return(TriggerType::HeavyTrigger));
 
-    lua_State* L = luaL_newstate();
+    LuaState L;
     lua::create_trigger(L, trigger);
     lua_setglobal(L, "t");
 
@@ -173,7 +174,7 @@ TEST(Lua_Trigger, Visible)
     auto trigger = mock_shared<MockTrigger>();
     EXPECT_CALL(*trigger, visible).WillRepeatedly(Return(true));
 
-    lua_State* L = luaL_newstate();
+    LuaState L;
     lua::create_trigger(L, trigger);
     lua_setglobal(L, "t");
 
@@ -190,7 +191,7 @@ TEST(Lua_Trigger, SetVisible)
     auto trigger = mock_shared<MockTrigger>()->with_number(100);
     EXPECT_CALL(*trigger, level).WillRepeatedly(Return(level));
 
-    lua_State* L = luaL_newstate();
+    LuaState L;
     lua::create_trigger(L, trigger);
     lua_setglobal(L, "t");
 
@@ -202,7 +203,7 @@ TEST(Lua_Trigger, Colour)
     auto trigger = mock_shared<MockTrigger>();
     EXPECT_CALL(*trigger, colour).WillRepeatedly(Return(trview::Colour(1,2,3,4)));
 
-    lua_State* L = luaL_newstate();
+    LuaState L;
     lua::create_trigger(L, trigger);
     lua_setglobal(L, "t");
 
@@ -228,7 +229,7 @@ TEST(Lua_Trigger, SetColourDefault)
     auto trigger = mock_shared<MockTrigger>();
     EXPECT_CALL(*trigger, set_colour).WillOnce(SaveArg<0>(&arg));
 
-    lua_State* L = luaL_newstate();
+    LuaState L;
     lua::create_trigger(L, trigger);
     lua_setglobal(L, "t");
 
@@ -242,7 +243,7 @@ TEST(Lua_Trigger, SetColour)
     auto trigger = mock_shared<MockTrigger>();
     EXPECT_CALL(*trigger, set_colour).WillOnce(SaveArg<0>(&arg));
 
-    lua_State* L = luaL_newstate();
+    LuaState L;
     lua::colour_register(L);
     lua::create_trigger(L, trigger);
     lua_setglobal(L, "t");

@@ -825,6 +825,24 @@ namespace trview
         return {};
     }
 
+    Vector3 Room::sector_centroid(const std::weak_ptr<ISector>& sector) const
+    {
+        auto sector_ptr = sector.lock();
+        if (!sector_ptr)
+        {
+            return Vector3::Zero;
+        }
+
+        const auto corners = sector_ptr->corners();
+        const Vector3 centroid =
+        {
+            static_cast<float>(sector_ptr->x()) + 0.5f,
+            std::accumulate(corners.begin(), corners.end(), 0.0f) / 4.0f,
+            static_cast<float>(sector_ptr->z()) + 0.5f
+        };
+        return Vector3::Transform(centroid, _room_offset);
+    }
+
     const std::vector<std::shared_ptr<ISector>> Room::sectors() const
     {
         return _sectors; 
