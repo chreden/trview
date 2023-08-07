@@ -11,8 +11,6 @@ namespace trview
     {
         namespace
         {
-            std::unordered_map<ICameraSink**, std::shared_ptr<ICameraSink>> camera_sinks;
-
             int camera_sink_index(lua_State* L)
             {
                 auto camera_sink = lua::get_self<ICameraSink>(L);
@@ -116,36 +114,11 @@ namespace trview
 
                 return 0;
             }
-
-            int camera_sink_gc(lua_State* L)
-            {
-                luaL_checktype(L, 1, LUA_TUSERDATA);
-                ICameraSink** userdata = static_cast<ICameraSink**>(lua_touserdata(L, 1));
-                camera_sinks.erase(userdata);
-                return 0;
-            }
         }
 
-        void create_camera_sink(lua_State* L, std::shared_ptr<ICameraSink> camera_sink)
+        int create_camera_sink(lua_State* L, std::shared_ptr<ICameraSink> camera_sink)
         {
-            if (!camera_sink)
-            {
-                lua_pushnil(L);
-                return;
-            }
-
-            ICameraSink** userdata = static_cast<ICameraSink**>(lua_newuserdata(L, sizeof(camera_sink.get())));
-            *userdata = camera_sink.get();
-            camera_sinks[userdata] = camera_sink;
-
-            lua_newtable(L);
-            lua_pushcfunction(L, camera_sink_index);
-            lua_setfield(L, -2, "__index");
-            lua_pushcfunction(L, camera_sink_newindex);
-            lua_setfield(L, -2, "__newindex");
-            lua_pushcfunction(L, camera_sink_gc);
-            lua_setfield(L, -2, "__gc");
-            lua_setmetatable(L, -2);
+            return create(L, camera_sink, camera_sink_index, camera_sink_newindex);
         }
     }
 }

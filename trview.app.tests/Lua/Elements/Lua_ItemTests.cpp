@@ -4,6 +4,7 @@
 #include <trview.tests.common/Mocks.h>
 #include <external/lua/src/lua.h>
 #include <external/lua/src/lauxlib.h>
+#include "../Lua.h"
 
 using namespace trview;
 using namespace trview::mocks;
@@ -16,7 +17,7 @@ TEST(Lua_Item, ActivationFlags)
     auto item = mock_shared<MockItem>();
     EXPECT_CALL(*item, activation_flags).WillOnce(Return(123));
 
-    lua_State* L = luaL_newstate();
+    LuaState L;
     lua::create_item(L, item);
     lua_setglobal(L, "i");
 
@@ -30,7 +31,7 @@ TEST(Lua_Item, Angle)
     auto item = mock_shared<MockItem>();
     EXPECT_CALL(*item, angle).WillOnce(Return(123));
 
-    lua_State* L = luaL_newstate();
+    LuaState L;
     lua::create_item(L, item);
     lua_setglobal(L, "i");
 
@@ -44,7 +45,7 @@ TEST(Lua_Item, ClearBody)
     auto item = mock_shared<MockItem>();
     EXPECT_CALL(*item, clear_body_flag).WillOnce(Return(true));
 
-    lua_State* L = luaL_newstate();
+    LuaState L;
     lua::create_item(L, item);
     lua_setglobal(L, "i");
 
@@ -58,7 +59,7 @@ TEST(Lua_Item, Invisible)
     auto item = mock_shared<MockItem>();
     EXPECT_CALL(*item, invisible_flag).WillOnce(Return(true));
 
-    lua_State* L = luaL_newstate();
+    LuaState L;
     lua::create_item(L, item);
     lua_setglobal(L, "i");
 
@@ -71,7 +72,7 @@ TEST(Lua_Item, Number)
 {
     auto item = mock_shared<MockItem>()->with_number(123);
 
-    lua_State* L = luaL_newstate();
+    LuaState L;
     lua::create_item(L, item);
     lua_setglobal(L, "i");
 
@@ -85,7 +86,7 @@ TEST(Lua_Item, Ocb)
     auto item = mock_shared<MockItem>();
     EXPECT_CALL(*item, ocb).WillOnce(Return(123));
 
-    lua_State* L = luaL_newstate();
+    LuaState L;
     lua::create_item(L, item);
     lua_setglobal(L, "i");
 
@@ -99,7 +100,7 @@ TEST(Lua_Item, Position)
     auto item = mock_shared<MockItem>();
     EXPECT_CALL(*item, position).WillRepeatedly(Return(Vector3(1, 2, 3)));
 
-    lua_State* L = luaL_newstate();
+    LuaState L;
     lua::create_item(L, item);
     lua_setglobal(L, "i");
 
@@ -122,7 +123,7 @@ TEST(Lua_Item, Room)
     auto item = mock_shared<MockItem>()->with_number(100);
     EXPECT_CALL(*item, room).WillRepeatedly(Return(room));
 
-    lua_State* L = luaL_newstate();
+    LuaState L;
     lua::create_item(L, item);
     lua_setglobal(L, "i");
 
@@ -141,7 +142,7 @@ TEST(Lua_Item, TriggeredBy)
     auto item = mock_shared<MockItem>();
     EXPECT_CALL(*item, triggers).WillRepeatedly(Return(std::vector<std::weak_ptr<ITrigger>>{ trigger1, trigger2 }));
 
-    lua_State* L = luaL_newstate();
+    LuaState L;
     lua::create_item(L, item);
     lua_setglobal(L, "i");
 
@@ -163,7 +164,7 @@ TEST(Lua_Item, Type)
     auto item = mock_shared<MockItem>();
     EXPECT_CALL(*item, type).WillOnce(Return("Lara"));
 
-    lua_State* L = luaL_newstate();
+    LuaState L;
     lua::create_item(L, item);
     lua_setglobal(L, "i");
 
@@ -177,7 +178,7 @@ TEST(Lua_Item, TypeId)
     auto item = mock_shared<MockItem>();
     EXPECT_CALL(*item, type_id).WillOnce(Return(123));
 
-    lua_State* L = luaL_newstate();
+    LuaState L;
     lua::create_item(L, item);
     lua_setglobal(L, "i");
 
@@ -191,7 +192,7 @@ TEST(Lua_Item, Visible)
     auto item = mock_shared<MockItem>();
     EXPECT_CALL(*item, visible).WillOnce(Return(true));
 
-    lua_State* L = luaL_newstate();
+    LuaState L;
     lua::create_item(L, item);
     lua_setglobal(L, "i");
 
@@ -208,7 +209,7 @@ TEST(Lua_Item, SetVisible)
     auto item = mock_shared<MockItem>()->with_number(100);
     EXPECT_CALL(*item, level).WillRepeatedly(Return(level));
 
-    lua_State* L = luaL_newstate();
+    LuaState L;
     lua::create_item(L, item);
     lua_setglobal(L, "i");
 

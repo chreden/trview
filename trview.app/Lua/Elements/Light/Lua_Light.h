@@ -8,6 +8,6 @@ namespace trview
 {
     namespace lua
     {
-        void create_light(lua_State* L, const std::shared_ptr<ILight>& light);
+        int create_light(lua_State* L, const std::shared_ptr<ILight>& light);
     }
 }

@@ -18,7 +18,6 @@ namespace trview
     {
         namespace
         {
-            std::unordered_map<IWaypoint**, std::shared_ptr<IWaypoint>> waypoints;
             IWaypoint::Source waypoint_source;
             UserSettings user_settings;
 
@@ -252,14 +251,6 @@ namespace trview
                 return 0;
             }
 
-            int waypoint_gc(lua_State* L)
-            {
-                luaL_checktype(L, 1, LUA_TUSERDATA);
-                std::shared_ptr<IWaypoint>* userdata = static_cast<std::shared_ptr<IWaypoint>*>(lua_touserdata(L, 1));
-                userdata->reset();
-                return 0;
-            }
-
             int waypoint_new(lua_State* L)
             {
                 const Vector3 normal = to_vector3(L, 1, "normal", Vector3::Down);
@@ -369,31 +360,12 @@ namespace trview
 
         std::shared_ptr<IWaypoint> to_waypoint(lua_State* L, int index)
         {
-            luaL_checktype(L, index, LUA_TUSERDATA);
-            std::shared_ptr<IWaypoint>* userdata = static_cast<std::shared_ptr<IWaypoint>*>(lua_touserdata(L, index));
-            return *userdata;
+            return get_self<IWaypoint>(L, index);
         }
 
         int create_waypoint(lua_State* L, const std::shared_ptr<IWaypoint>& waypoint)
         {
-            if (!waypoint)
-            {
-                lua_pushnil(L);
-                return 1;
-            }
-
-            std::shared_ptr<IWaypoint>* userdata = static_cast<std::shared_ptr<IWaypoint>*>(lua_newuserdata(L, sizeof(std::shared_ptr<IWaypoint>)));
-            new (userdata) std::shared_ptr<IWaypoint>(waypoint);
-
-            lua_newtable(L);
-            lua_pushcfunction(L, waypoint_index);
-            lua_setfield(L, -2, "__index");
-            lua_pushcfunction(L, waypoint_newindex);
-            lua_setfield(L, -2, "__newindex");
-            lua_pushcfunction(L, waypoint_gc);
-            lua_setfield(L, -2, "__gc");
-            lua_setmetatable(L, -2);
-            return 1;
+            return create(L, waypoint, waypoint_index, waypoint_newindex);
         }
 
         void waypoint_set_settings(const UserSettings& new_settings)

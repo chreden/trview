@@ -12,8 +12,6 @@ namespace trview
     {
         namespace
         {
-            std::unordered_map<IItem**, std::shared_ptr<IItem>> items;
-
             int item_index(lua_State* L)
             {
                 auto item = lua::get_self<IItem>(L);
@@ -96,49 +94,16 @@ namespace trview
 
                 return 0;
             }
-
-            int item_gc(lua_State* L)
-            {
-                luaL_checktype(L, 1, LUA_TUSERDATA);
-                IItem** userdata = static_cast<IItem**>(lua_touserdata(L, 1));
-                items.erase(userdata);
-                return 0;
-            }
         }
 
         int create_item(lua_State* L, const std::shared_ptr<IItem>& item)
         {
-            if (!item)
-            {
-                lua_pushnil(L);
-                return 1;
-            }
-
-            IItem** userdata = static_cast<IItem**>(lua_newuserdata(L, sizeof(item.get())));
-            *userdata = item.get();
-            items[userdata] = item;
-
-            lua_newtable(L);
-            lua_pushcfunction(L, item_index);
-            lua_setfield(L, -2, "__index");
-            lua_pushcfunction(L, item_newindex);
-            lua_setfield(L, -2, "__newindex");
-            lua_pushcfunction(L, item_gc);
-            lua_setfield(L, -2, "__gc");
-            lua_setmetatable(L, -2);
-            return 1;
+            return create(L, item, item_index, item_newindex);
         }
 
         std::shared_ptr<IItem> to_item(lua_State* L, int index)
         {
-            luaL_checktype(L, index, LUA_TUSERDATA);
-            IItem** userdata = static_cast<IItem**>(lua_touserdata(L, index));
-            auto found = items.find(userdata);
-            if (found == items.end())
-            {
-                return {};
-            }
-            return found->second;
+            return get_self<IItem>(L, index);
         }
     }
 }

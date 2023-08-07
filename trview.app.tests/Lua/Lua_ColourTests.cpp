@@ -1,12 +1,14 @@
 #include <trview.app/Lua/Colour.h>
 #include <external/lua/src/lua.h>
 #include <external/lua/src/lauxlib.h>
+#include "Lua.h"
 
 using namespace trview;
+using namespace trview::tests;
 
 TEST(Lua_Colour, New)
 {
-    lua_State* L = luaL_newstate();
+    LuaState L;
     lua::colour_register(L);
 
     ASSERT_EQ(0, luaL_dostring(L, "x = Colour.new(1, 0.5, 0.25) return x"));

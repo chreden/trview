@@ -16,8 +16,6 @@ namespace trview
     {
         namespace
         {
-            std::unordered_map<IRoom**, std::shared_ptr<IRoom>> rooms;
-
             int get_sector(lua_State* L)
             {
                 const auto room = lua::get_self<IRoom>(L);
@@ -127,49 +125,16 @@ namespace trview
 
                 return 0;
             }
-
-            int room_gc(lua_State*L)
-            {
-                luaL_checktype(L, 1, LUA_TUSERDATA);
-                IRoom** userdata = static_cast<IRoom**>(lua_touserdata(L, 1));
-                rooms.erase(userdata);
-                return 0;
-            }
         }
 
         int create_room(lua_State* L, std::shared_ptr<IRoom> room)
         {
-            if (!room)
-            {
-                lua_pushnil(L);
-                return 1;
-            }
-
-            IRoom** userdata = static_cast<IRoom**>(lua_newuserdata(L, sizeof(room.get())));
-            *userdata = room.get();
-            rooms[userdata] = room;
-
-            lua_newtable(L);
-            lua_pushcfunction(L, room_index);
-            lua_setfield(L, -2, "__index");
-            lua_pushcfunction(L, room_newindex);
-            lua_setfield(L, -2, "__newindex");
-            lua_pushcfunction(L, room_gc);
-            lua_setfield(L, -2, "__gc");
-            lua_setmetatable(L, -2);
-            return 1;
+            return create(L, room, room_index, room_newindex);
         }
 
         std::shared_ptr<IRoom> to_room(lua_State* L, int index)
         {
-            luaL_checktype(L, index, LUA_TUSERDATA);
-            IRoom** userdata = static_cast<IRoom**>(lua_touserdata(L, index));
-            auto found = rooms.find(userdata);
-            if (found == rooms.end())
-            {
-                return {};
-            }
-            return found->second;
+            return get_self<IRoom>(L, index);
         }
 
         std::shared_ptr<IRoom> to_room(lua_State* L, int index, const std::string& field_name)

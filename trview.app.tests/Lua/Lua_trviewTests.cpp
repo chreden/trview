@@ -6,6 +6,7 @@
 #include <external/lua/src/lauxlib.h>
 #include <trview.app/Mocks/Routing/IRoute.h>
 #include <trview.app/Mocks/Routing/IRandomizerRoute.h>
+#include "Lua.h"
 
 using namespace trview;
 using namespace trview::mocks;
@@ -20,7 +21,7 @@ TEST(Lua_trview, Level)
     auto application = mock_shared<MockApplication>();
     EXPECT_CALL(*application, current_level).WillRepeatedly(Return(level));
 
-    lua_State* L = luaL_newstate();
+    LuaState L;
     lua::trview_register(L, application.get(), 
         [](auto&&) { return mock_shared<MockRoute>(); },
         [](auto&&) { return mock_shared<MockRandomizerRoute>(); },
@@ -43,7 +44,7 @@ TEST(Lua_trview, RecentFiles)
     auto application = mock_shared<MockApplication>();
     EXPECT_CALL(*application, settings).WillRepeatedly(Return(settings));
 
-    lua_State* L = luaL_newstate();
+    LuaState L;
     lua::trview_register(L, application.get(),
         [](auto&&) { return mock_shared<MockRoute>(); },
         [](auto&&) { return mock_shared<MockRandomizerRoute>(); },
@@ -66,7 +67,7 @@ TEST(Lua_trview, SetLevel)
     auto application = mock_shared<MockApplication>();
     EXPECT_CALL(*application, set_current_level).Times(1);
 
-    lua_State* L = luaL_newstate();
+    LuaState L;
     lua::trview_register(L, application.get(),
         [](auto&&) { return mock_shared<MockRoute>(); },
         [](auto&&) { return mock_shared<MockRandomizerRoute>(); },
@@ -87,7 +88,7 @@ TEST(Lua_trview, Route)
     auto route = mock_shared<MockRoute>();
     EXPECT_CALL(*application, route).Times(1).WillRepeatedly(Return(route));
 
-    lua_State* L = luaL_newstate();
+    LuaState L;
     lua::trview_register(L, application.get(),
         [](auto&&) { return mock_shared<MockRoute>(); },
         [](auto&&) { return mock_shared<MockRandomizerRoute>(); },
@@ -104,7 +105,7 @@ TEST(Lua_trview, SetRoute)
     auto application = mock_shared<MockApplication>();
     EXPECT_CALL(*application, set_route).Times(1);
 
-    lua_State* L = luaL_newstate();
+    LuaState L;
     lua::trview_register(L, application.get(),
         [](auto&&) { return mock_shared<MockRoute>(); },
         [](auto&&) { return mock_shared<MockRandomizerRoute>(); },
