@@ -270,7 +270,7 @@ TEST(Lua_Sector, TiltX)
     ASSERT_EQ(-3, lua_tonumber(L, -1));
 }
 
-TEST(Lua_Sector, TiltX)
+TEST(Lua_Sector, TiltZ)
 {
     auto sector = mock_shared<MockSector>();
     EXPECT_CALL(*sector, tilt_z).WillRepeatedly(Return(-3));
