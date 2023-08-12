@@ -94,6 +94,18 @@ namespace trview
                     }
                     return 1;
                 }
+                else if (key == "room")
+                {
+                    if (auto route = waypoint->route().lock())
+                    {
+                        if (auto level = route->level().lock())
+                        {
+                            return create_room(L, level->room(waypoint->room()).lock());
+                        }
+                    }
+                    lua_pushnil(L);
+                    return 1;
+                }
                 else if (key == "room_number")
                 {
                     lua_pushinteger(L, waypoint->room());
@@ -232,6 +244,14 @@ namespace trview
                     }
 
                     waypoint->set_randomizer_settings(new_settings);
+                }
+                else if (key == "room")
+                {
+                    if (auto room = to_room(L, 3))
+                    {
+                        waypoint->set_room_number(room->number());
+                    }
+                    return 0;
                 }
                 else if (key == "room_number")
                 {
