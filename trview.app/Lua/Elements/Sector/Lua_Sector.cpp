@@ -5,6 +5,7 @@
 #include "../Room/Lua_Room.h"
 #include "../../Lua.h"
 #include <trview.common/Algorithms.h>
+#include "../../../Elements/Floordata.h"
 
 namespace trview
 {
@@ -126,6 +127,28 @@ namespace trview
                 else if (key == "flags")
                 {
                     lua_pushinteger(L, static_cast<int>(sector->flags()));
+                    return 1;
+                }
+                else if (key == "floordata")
+                {
+                    if (auto room = sector->room().lock())
+                    {
+                        if (auto level = room->level().lock())
+                        {
+                            const auto data = level->floor_data();
+                            if (sector->floordata_index() < data.size())
+                            {
+                                lua_newtable(L);
+                                push_list(L, 
+                                    parse_floordata(level->floor_data(), sector->floordata_index(), FloordataMeanings::None).commands
+                                    | std::views::transform([](auto& f) { return f.data; })
+                                    | std::views::join,
+                                    [](auto L, auto f) { lua_pushinteger(L, f); });
+                                return 1;
+                            }
+                        }
+                    }
+                    lua_pushnil(L);
                     return 1;
                 }
                 else if (key == "has_flag")
