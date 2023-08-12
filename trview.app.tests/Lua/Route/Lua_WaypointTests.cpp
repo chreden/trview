@@ -230,6 +230,30 @@ TEST(Lua_Waypoint, RandomizerSettings)
     ASSERT_EQ(123, lua_tonumber(L, -1));
 }
 
+TEST(Lua_Waypoint, Room)
+{
+    auto room = mock_shared<MockRoom>();
+    EXPECT_CALL(*room, number).WillRepeatedly(Return(123));
+    
+    auto level = mock_shared<MockLevel>();
+    EXPECT_CALL(*level, room(123)).WillRepeatedly(Return(room));
+
+    auto route = mock_shared<MockRoute>();
+    EXPECT_CALL(*route, level).WillOnce(Return(level));
+
+    auto waypoint = mock_shared<MockWaypoint>();
+    EXPECT_CALL(*waypoint, route).WillOnce(Return(route));
+    EXPECT_CALL(*waypoint, room).WillOnce(Return(123));
+
+    LuaState L;
+    lua::create_waypoint(L, waypoint);
+    lua_setglobal(L, "w");
+
+    ASSERT_EQ(0, luaL_dostring(L, "return w.room.number"));
+    ASSERT_EQ(LUA_TNUMBER, lua_type(L, -1));
+    ASSERT_EQ(123, lua_tointeger(L, -1));
+}
+
 TEST(Lua_Waypoint, RoomNumber)
 {
     auto waypoint = mock_shared<MockWaypoint>();
@@ -337,6 +361,23 @@ TEST(Lua_Waypoint, SetRandomizerSettings)
 
     ASSERT_EQ("Test string", std::get<std::string>(called_settings["test"]));
     ASSERT_EQ(150.0f, std::get<float>(called_settings["test2"]));
+}
+
+TEST(Lua_Waypoint, SetRoom)
+{
+    auto room = mock_shared<MockRoom>();
+    EXPECT_CALL(*room, number).WillRepeatedly(Return(123));
+
+    auto waypoint = mock_shared<MockWaypoint>();
+    EXPECT_CALL(*waypoint, set_room_number(123)).Times(1);
+
+    LuaState L;
+    lua::create_waypoint(L, waypoint);
+    lua_setglobal(L, "w");
+    lua::create_room(L, room);
+    lua_setglobal(L, "r");
+
+    ASSERT_EQ(0, luaL_dostring(L, "w.room = r"));
 }
 
 TEST(Lua_Waypoint, SetRoomNumber)
