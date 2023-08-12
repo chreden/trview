@@ -11,6 +11,7 @@ The Sector library provides information about a sector in a [Level](level.md)/[R
 | ceiling_triangulation | string | R | Ceiling triangulation direction (`None`/`NWSE`/`NESW`) |
 | corners | number[] | R | Height of corners in clicks above room floor |
 | flags | [Flags](#flags)| R | Sector flags |
+| floordata | Table of number | R | Raw floordata values for the sector |
 | number | number | R | Sector number |
 | portal | [Room](room.md) | R | Destination room for portal or `nil` |
 | room | [Room](room.md) | R | Room that the sector is in |
