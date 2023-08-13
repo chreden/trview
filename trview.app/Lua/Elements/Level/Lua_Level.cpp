@@ -35,8 +35,13 @@ namespace trview
                 }
                 else if (key == "floordata")
                 {
-                    lua_newtable(L);
-                    // TODO: Floordata
+                    const auto data = level->floor_data();
+                    lua_createtable(L, static_cast<int>(data.size()), 0);
+                    for (auto i = 0u; i < data.size(); ++i)
+                    {
+                        lua_pushinteger(L, data[i]);
+                        lua_rawseti(L, -2, i + 1);
+                    }
                     return 1;
                 }
                 else if (key == "items")

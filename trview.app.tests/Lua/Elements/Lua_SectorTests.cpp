@@ -138,6 +138,30 @@ TEST(Lua_Sector, Flags)
     ASSERT_EQ(1, lua_tointeger(L, -1));
 }
 
+TEST(Lua_Sector, Floordata)
+{
+    std::vector<uint16_t> data { 0, 0x8004, 0x3e00, 0x0005, 0x0001, 0x0002, 0x8003 };
+    auto level = mock_shared<MockLevel>();
+    EXPECT_CALL(*level, floor_data).WillRepeatedly(Return(data));
+    auto room = mock_shared<MockRoom>()->with_level(level);
+    auto sector = mock_shared<MockSector>()->with_room(room);
+    EXPECT_CALL(*sector, floordata_index).WillRepeatedly(Return(1));
+
+    LuaState L;
+    lua::create_sector(L, sector);
+    lua_setglobal(L, "s");
+
+    ASSERT_EQ(0, luaL_dostring(L, "return s.floordata"));
+    ASSERT_EQ(LUA_TTABLE, lua_type(L, -1));
+
+    for (std::size_t i = 1; i < data.size(); ++i)
+    {
+        lua_rawgeti(L, -1, i);
+        ASSERT_EQ(lua_tointeger(L, -1), data[i]);
+        lua_pop(L, 1);
+    }
+}
+
 TEST(Lua_Sector, HasFlag)
 {
     auto sector = mock_shared<MockSector>()->with_flags(SectorFlag::Portal);

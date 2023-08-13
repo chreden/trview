@@ -82,7 +82,9 @@ TEST(Lua_Level, Filename)
 
 TEST(Lua_Level, Floordata)
 {
+    std::vector<uint16_t> data { 0, 0x8004, 0x3e00, 0x0005, 0x0001, 0x0002, 0x8003 };
     auto level = mock_shared<MockLevel>();
+    EXPECT_CALL(*level, floor_data).WillRepeatedly(Return(data));
 
     LuaState L;
     lua::create_level(L, level);
@@ -90,6 +92,13 @@ TEST(Lua_Level, Floordata)
 
     ASSERT_EQ(0, luaL_dostring(L, "return l.floordata"));
     ASSERT_EQ(LUA_TTABLE, lua_type(L, -1));
+
+    for (std::size_t i = 0; i < data.size(); ++i)
+    {
+        lua_rawgeti(L, -1, i + 1);
+        ASSERT_EQ(lua_tointeger(L, -1), data[i]);
+        lua_pop(L, 1);
+    }
 }
 
 TEST(Lua_Level, Items)
