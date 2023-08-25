@@ -283,11 +283,12 @@ namespace trview
 
             void register_input(lua_State* L)
             {
-                lua_pushcfunction(L, input_text);
-                lua_setfield(L, -2, "InputText");
-
-                lua_pushcfunction(L, input_int);
-                lua_setfield(L, -2, "InputInt");
+                constexpr luaL_Reg funcs[] = {
+                    { "InputInt", input_int },
+                    { "InputText", input_text },
+                    { nullptr, nullptr }
+                };
+                luaL_setfuncs(L, funcs, 0);
             }
         }
 
