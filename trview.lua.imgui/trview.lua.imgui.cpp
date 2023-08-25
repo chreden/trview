@@ -7,6 +7,7 @@
 
 #include <external/imgui/imgui.h>
 #include <external/imgui/imgui_internal.h>
+#include <external/imgui/misc/cpp/imgui_stdlib.h>
 #include <optional>
 #include <string>
 #include <vector>
@@ -259,6 +260,35 @@ namespace trview
                 ImGui::SameLine();
                 return 0;
             }
+
+            int input_int(lua_State* L)
+            {
+                const auto label = get_string(L, 1, "label");
+                int out = 0;
+                bool result = ImGui::InputInt(label.c_str(), &out);
+                lua_pushboolean(L, result);
+                lua_pushinteger(L, out);
+                return 2;
+            }
+
+            int input_text(lua_State* L)
+            {
+                const auto label = get_string(L, 1, "label");
+                std::string out;
+                bool result = ImGui::InputText(label.c_str(), &out);
+                lua_pushboolean(L, result);
+                lua_pushstring(L, out.c_str());
+                return 2;
+            }
+
+            void register_input(lua_State* L)
+            {
+                lua_pushcfunction(L, input_text);
+                lua_setfield(L, -2, "InputText");
+
+                lua_pushcfunction(L, input_int);
+                lua_setfield(L, -2, "InputInt");
+            }
         }
 
         void imgui_register(lua_State* L)
@@ -459,6 +489,8 @@ namespace trview
 
             lua_pushcfunction(L, same_line);
             lua_setfield(L, -2, "SameLine");
+
+            register_input(L);
 
             lua_setglobal(L, "ImGui");
         }
