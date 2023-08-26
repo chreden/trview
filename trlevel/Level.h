@@ -187,17 +187,24 @@ namespace trlevel
 
         void load_level_data(trview::Activity& activity, std::istream& file);
 
+        Platform platform() const;
+        tr_textile4 get_textile4(uint32_t index) const;
+        tr_clut get_clut(uint32_t index) const;
+
         std::shared_ptr<trview::ILog> _log;
 
-        LevelVersion _version;
+        PlatformAndVersion _platform_and_version;
 
         std::vector<tr_colour>  _palette;
         std::vector<tr_colour4> _palette16;
 
         uint32_t                  _num_textiles;
+        std::vector<tr_textile4>  _textile4;
         std::vector<tr_textile8>  _textile8;
         std::vector<tr_textile16> _textile16;
         std::vector<tr_textile32> _textile32;
+        std::vector<tr_clut> _clut;
+        std::vector<std::pair<uint16_t, uint16_t>> _converted_t16;
 
         std::vector<tr3_room>          _rooms;
         std::vector<tr_object_texture> _object_textures;
