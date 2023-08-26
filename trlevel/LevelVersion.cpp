@@ -9,22 +9,18 @@ namespace trlevel
     // Returns: The level version.
     PlatformAndVersion convert_level_version(uint32_t version)
     {
-        switch (version)
+        switch (version & 0xff)
         {
         case 0x20:
-            return { .platform = Platform::PC, .version = LevelVersion::Tomb1 };
-        case 0xB020:
-            return { .platform = Platform::PSX, .version = LevelVersion::Tomb1 };
+            return { .platform = (version & 0xff00) ? Platform::PSX : Platform::PC, .version = LevelVersion::Tomb1 };
         case 0x2D:
             return { .platform = Platform::PC, .version = LevelVersion::Tomb2 };
-        case 0xFF180038:
-        case 0xFF080038:
-        case 0xFF180034:
+        case 0x34:
+        case 0x38:
             return { .platform = Platform::PC, .version = LevelVersion::Tomb3 }; 
-        case 0xffffffc8:
+        case 0xc8:
             return { .platform = Platform::PSX, .version = LevelVersion::Tomb3 };
-        case 0x00345254:
-        case 0x63345254:
+        case 0x54:
             return { .platform = Platform::PC, .version = LevelVersion::Tomb4 };
         }
         return { .platform = Platform::Unknown, .version = LevelVersion::Unknown };

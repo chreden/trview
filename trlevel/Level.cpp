@@ -149,6 +149,14 @@ namespace trlevel
                 activity.log("Reading sprites");
                 room.data.sprites = read_vector<int16_t, tr_room_sprite>(file);
                 activity.log(std::format("Read {} sprites", room.data.sprites.size()));
+
+                if (platform_and_version.platform == Platform::PSX)
+                {
+                    for (auto& rectangle : room.data.rectangles)
+                    {
+                        std::swap(rectangle.vertices[2], rectangle.vertices[3]);
+                    }
+                }
             }
 
             activity.log("Reading portals");
@@ -551,6 +559,8 @@ namespace trlevel
 
                 mesh.textured_rectangles = convert_rectangles(read_vector<int16_t, tr_face4>(stream));
                 mesh.textured_triangles = convert_triangles(read_vector<int16_t, tr_face3>(stream));
+                // mesh.coloured_rectangles = read_vector<int16_t, tr_face4>(stream);
+                // mesh.coloured_triangles = read_vector<int16_t, tr_face3>(stream);
                 // if (_platform_and_version.version == LevelVersion::Tomb2)
                 // {
                 //     for (auto& mesh : mesh.textured_rectangles)
@@ -1104,10 +1114,11 @@ namespace trlevel
             // If not, create new conversion
             _converted_t16.push_back(std::make_pair(tile, clut_id));
 
-            const tr_textile4& tile4 = get_textile4(tile);
-            const tr_clut& clut = get_clut(clut_id);
+            const tr_textile4 tile4 = get_textile4(tile);
+            const tr_clut clut = get_clut(clut_id);
             tr_textile16 tile16;
             for (int x = 0; x < 256; ++x)
+            {
                 for (int y = 0; y < 256; ++y)
                 {
                     const std::size_t pixel = (y * 256 + x);
@@ -1115,6 +1126,7 @@ namespace trlevel
                     const tr_rgba5551& colour = clut.Colour[(x % 2) ? index.b : index.a];
                     tile16.Tile[pixel] = (colour.Alpha << 15) | (colour.Red << 10) | (colour.Green << 5) | colour.Blue;
                 }
+            }
             _textile16.push_back(tile16);
             _num_textiles = static_cast<uint32_t>(_textile16.size());
             return static_cast<uint16_t>(_textile16.size() - 1);
@@ -1132,12 +1144,12 @@ namespace trlevel
                             tr_object_texture_psx new_texture = texture;
                             new_texture.Tile = convert_textile4(texture.Tile, texture.Clut);
                             new_texture.Clut = 0U; // Unneeded after conversion
-                            if (texture.x3 || texture.y3)
+                            if (new_texture.x3 || new_texture.y3)
                             {
                                 std::swap(new_texture.x2, new_texture.x3);
                                 std::swap(new_texture.y2, new_texture.y3);
                             }
-                            return texture;
+                            return new_texture;
                         })
                     | std::views::transform([&](const auto texture) -> tr_object_texture
                         {
