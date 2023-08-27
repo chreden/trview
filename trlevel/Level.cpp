@@ -549,35 +549,39 @@ namespace trlevel
                     }
                 }
 
-                // if (_version == LevelVersion::Tomb2 && normals_count > 0)
-                // {
-                //     const uint16_t face4_count = read<uint16_t>(stream);
-                //     _data->seekg(12 * face4_count, SEEK_CUR);
-                //     const uint16_t face3_count = read<uint16_t>(stream);
-                //     _data->seekg(10 * face4_count, SEEK_CUR);
-                // }
+                auto rectangles = read_vector<int16_t, tr_face4>(stream);
+                auto triangles = read_vector<int16_t, tr_face3>(stream);
 
-                mesh.textured_rectangles = convert_rectangles(read_vector<int16_t, tr_face4>(stream));
-                mesh.textured_triangles = convert_triangles(read_vector<int16_t, tr_face3>(stream));
-                // mesh.coloured_rectangles = read_vector<int16_t, tr_face4>(stream);
-                // mesh.coloured_triangles = read_vector<int16_t, tr_face3>(stream);
-                // if (_platform_and_version.version == LevelVersion::Tomb2)
-                // {
-                //     for (auto& mesh : mesh.textured_rectangles)
-                //     {
-                //         for (int i = 0; i < 4; ++i)
-                //         {
-                //             mesh.vertices[i] >>= 3;
-                //         }
-                //     }
-                //     for (auto& mesh : mesh.textured_triangles)
-                //     {
-                //         for (int i = 0; i < 3; ++i)
-                //         {
-                //             mesh.vertices[i] >>= 3;
-                //         }
-                //     }
-                // }
+                mesh.textured_rectangles = rectangles
+                    | std::views::filter([](const auto& rect) { return rect.texture > 255; })
+                    | std::views::transform([](const auto& rect) 
+                        {
+                            tr4_mesh_face4 new_face4;
+                            memcpy(new_face4.vertices, rect.vertices, sizeof(rect.vertices));
+                            new_face4.texture = rect.texture;
+                            new_face4.effects = 0;
+                            return new_face4;
+                        })
+                    | std::ranges::to<std::vector>();
+                mesh.textured_triangles = triangles
+                    | std::views::filter([](const auto& tri) { return tri.texture > 255; })
+                    | std::views::transform([](const auto& tri)
+                        {
+                            tr4_mesh_face3 new_face3;
+                            memcpy(new_face3.vertices, tri.vertices, sizeof(tri.vertices));
+                            new_face3.texture = tri.texture;
+                            new_face3.effects = 0;
+                            return new_face3;
+                        })
+                    | std::ranges::to<std::vector>();
+
+                mesh.coloured_rectangles = rectangles
+                    | std::views::filter([](const auto& rect) { return rect.texture < 256; })
+                    | std::ranges::to<std::vector>();
+
+                mesh.coloured_triangles = triangles
+                    | std::views::filter([](const auto& tri) { return tri.texture < 256; })
+                    | std::ranges::to<std::vector>();
             }
             else
             {
@@ -716,6 +720,16 @@ namespace trlevel
     tr_object_texture Level::get_object_texture(uint32_t index) const
     {
         return _object_textures[index];
+    }
+
+    std::vector<tr_object_texture_psx> Level::get_object_textures_psx() const
+    {
+        return _object_textures_psx;
+    }
+
+    std::vector<tr_clut> Level::get_clut() const
+    {
+        return _clut;
     }
 
     uint32_t Level::num_floor_data() const
@@ -1137,8 +1151,8 @@ namespace trlevel
             activity.log("Reading object textures");
             if (_platform_and_version.platform == Platform::PSX)
             {
-                auto textures = read_vector<uint32_t, tr_object_texture_psx>(file);
-                _object_textures = textures
+                _object_textures_psx = read_vector<uint32_t, tr_object_texture_psx>(file);
+                _object_textures = _object_textures_psx
                     | std::views::transform([&](const auto texture)
                         {
                             tr_object_texture_psx new_texture = texture;
@@ -1156,7 +1170,7 @@ namespace trlevel
                             return
                             {
                                 .Attribute = texture.Attribute,
-                                .TileAndFlag = texture.Tile,//convert_textile4(texture.Tile, texture.Clut),
+                                .TileAndFlag = texture.Tile,
                                 .Vertices = 
                                 {
                                     { 0, texture.x0, 0, texture.y0 },
@@ -1464,5 +1478,10 @@ namespace trlevel
     tr_clut Level::get_clut(uint32_t index) const
     {
         return _clut[index];
+    }
+
+    std::vector<tr_textile4> Level::get_textile4s() const
+    {
+        return _textile4;
     }
 }

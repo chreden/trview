@@ -40,6 +40,10 @@ namespace trview
         std::array<DirectX::SimpleMath::Color, 256> _palette;
         trlevel::LevelVersion _version;
 
+        std::vector<trlevel::tr_object_texture_psx> _object_textures_psx;
+        std::vector<trlevel::tr_clut> _clut;
+        std::vector<trlevel::tr_textile4> _textile4;
+
         enum class TextureMode
         {
             Official,

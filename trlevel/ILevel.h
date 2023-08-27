@@ -72,6 +72,10 @@ namespace trlevel
         // Returns: The object texture.
         virtual tr_object_texture get_object_texture(uint32_t index) const = 0;
 
+        virtual std::vector<tr_object_texture_psx> get_object_textures_psx() const = 0;
+        virtual std::vector<tr_clut> get_clut() const = 0;
+        virtual std::vector<tr_textile4> get_textile4s() const = 0;
+
         /// Get the number of floordata values in the level.
         /// @returns The number of floordata values.
         virtual uint32_t num_floor_data() const = 0;

@@ -80,6 +80,10 @@ namespace trlevel
         // Returns: The object texture.
         virtual tr_object_texture get_object_texture(uint32_t index) const override;
 
+        std::vector<tr_object_texture_psx> get_object_textures_psx() const override;
+        std::vector<tr_clut> get_clut() const override;
+        std::vector<tr_textile4> get_textile4s() const override;
+
         /// Get the number of floordata values in the level.
         /// @returns The number of floordata values.
         virtual uint32_t num_floor_data() const override;
@@ -208,6 +212,7 @@ namespace trlevel
 
         std::vector<tr3_room>          _rooms;
         std::vector<tr_object_texture> _object_textures;
+        std::vector<tr_object_texture_psx> _object_textures_psx;
         std::vector<uint16_t>          _floor_data;
         std::vector<tr_model>          _models;
         std::vector<tr2_entity>        _entities;

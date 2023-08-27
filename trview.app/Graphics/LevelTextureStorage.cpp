@@ -27,6 +27,10 @@ namespace trview
             _object_textures.push_back(level.get_object_texture(i));
         }
 
+        _object_textures_psx = level.get_object_textures_psx();
+        _clut = level.get_clut();
+        _textile4 = level.get_textile4s();
+
         if (_version < trlevel::LevelVersion::Tomb4)
         {
             using namespace DirectX::SimpleMath;
@@ -135,6 +139,24 @@ namespace trview
         {
             return _palette[texture >> 8];
         }
+
+        if (true)
+        {
+            const auto& object_texture = _object_textures_psx[texture];
+            const auto& tile = _textile4[object_texture.Tile];
+            const auto& clut = _clut[object_texture.Clut];
+
+            auto pixel = object_texture.x0 + object_texture.y0 * 256;
+            auto index = tile.Tile[pixel / 2];
+            auto colour = clut.Colour[object_texture.x0 % 2 ? index.b : index.a];
+            
+            float a = colour.Alpha;
+            float r = colour.Red / 31.0f;
+            float g = colour.Green / 31.0f;
+            float b = colour.Blue / 31.0f;
+            return Colour(a, r, g, b);
+        }
+
         return _palette[texture & 0xff];
     }
 
