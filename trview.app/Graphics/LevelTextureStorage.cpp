@@ -27,10 +27,6 @@ namespace trview
             _object_textures.push_back(level->get_object_texture(i));
         }
 
-        // _object_textures_psx = level->get_object_textures_psx();
-        // _clut = level->get_clut();
-        // _textile4 = level->get_textile4s();
-
         if (_version < trlevel::LevelVersion::Tomb4)
         {
             using namespace DirectX::SimpleMath;
@@ -144,9 +140,10 @@ namespace trview
         {
             if (auto level = _level.lock())
             {
-                auto colour = level->get_palette_entry(texture);
+                const auto colour = level->get_palette_entry(texture);
                 return DirectX::SimpleMath::Color(colour.Red / 255.f, colour.Green / 255.f, colour.Blue / 255.f, 1.0f);
             }
+            return Colour::Black;
         }
 
         return _palette[texture & 0xff];

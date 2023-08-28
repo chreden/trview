@@ -1,4 +1,5 @@
 #include "tr_lights.h"
+#include <ranges>
 
 namespace trlevel
 {
@@ -294,17 +295,15 @@ namespace trlevel
 
     std::vector<tr_x_room_light> convert_lights(std::vector<tr_room_light_psx> lights)
     {
-        std::vector<tr_x_room_light> new_lights;
-        new_lights.reserve(lights.size());
-        std::transform(lights.begin(), lights.end(),
-            std::back_inserter(new_lights), [](const auto& light)
-            {
-                tr_x_room_light new_light;
-                new_light.level_version = LevelVersion::Tomb1;
-                new_light.tr1 = { .x = light.x, .y = light.y, .z = light.z, .intensity = light.intensity, .fade = light.fade };
-                return new_light;
-            });
-        return new_lights;
+        return lights
+            | std::views::transform([](const auto& light)
+                {
+                    tr_x_room_light new_light;
+                    new_light.level_version = LevelVersion::Tomb1;
+                    new_light.tr1 = { .x = light.x, .y = light.y, .z = light.z, .intensity = light.intensity, .fade = light.fade };
+                    return new_light;
+                })
+            | std::ranges::to<std::vector>();
     }
 
     std::vector<tr_x_room_light> convert_lights(std::vector<tr2_room_light> lights)
