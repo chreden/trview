@@ -192,6 +192,8 @@ namespace trlevel
         tr_clut get_clut(uint32_t index) const;
         tr_colour4 colour_from_object_texture(uint32_t texture) const;
 
+        uint16_t convert_textile4(uint16_t tile, uint16_t clut_id);
+
         std::shared_ptr<trview::ILog> _log;
 
         PlatformAndVersion _platform_and_version;

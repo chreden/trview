@@ -1111,37 +1111,6 @@ namespace trlevel
             _static_meshes.insert({ mesh.ID, mesh });
         }
 
-        auto convert_textile4 = [this](uint16_t tile, uint16_t clut_id) -> uint16_t
-        {
-            // Check if we've already converted this tile + clut
-            for (auto i = _converted_t16.begin(); i < _converted_t16.end(); ++i)
-            {
-                if (i->first == tile && i->second == clut_id)
-                {
-                    return static_cast<uint16_t>(std::distance(_converted_t16.begin(), i));
-                }
-            }
-            // If not, create new conversion
-            _converted_t16.push_back(std::make_pair(tile, clut_id));
-
-            const tr_textile4 tile4 = get_textile4(tile);
-            const tr_clut clut = get_clut(clut_id);
-            tr_textile16 tile16;
-            for (int x = 0; x < 256; ++x)
-            {
-                for (int y = 0; y < 256; ++y)
-                {
-                    const std::size_t pixel = (y * 256 + x);
-                    const tr_colorindex4& index = tile4.Tile[pixel / 2];
-                    const tr_rgba5551& colour = clut.Colour[(x % 2) ? index.b : index.a];
-                    tile16.Tile[pixel] = (colour.Alpha << 15) | (colour.Red << 10) | (colour.Green << 5) | colour.Blue;
-                }
-            }
-            _textile16.push_back(tile16);
-            _num_textiles = static_cast<uint32_t>(_textile16.size());
-            return static_cast<uint16_t>(_textile16.size() - 1);
-        };
-
         if (get_version() < LevelVersion::Tomb3)
         {
             activity.log("Reading object textures");
@@ -1484,4 +1453,35 @@ namespace trlevel
             .Blue = static_cast<uint8_t>(std::min(1.0f, b) * 255)
         };
     }
+
+    uint16_t Level::convert_textile4(uint16_t tile, uint16_t clut_id)
+    {
+        // Check if we've already converted this tile + clut
+        for (auto i = _converted_t16.begin(); i < _converted_t16.end(); ++i)
+        {
+            if (i->first == tile && i->second == clut_id)
+            {
+                return static_cast<uint16_t>(std::distance(_converted_t16.begin(), i));
+            }
+        }
+        // If not, create new conversion
+        _converted_t16.push_back(std::make_pair(tile, clut_id));
+
+        const tr_textile4 tile4 = get_textile4(tile);
+        const tr_clut clut = get_clut(clut_id);
+        tr_textile16 tile16;
+        for (int x = 0; x < 256; ++x)
+        {
+            for (int y = 0; y < 256; ++y)
+            {
+                const std::size_t pixel = (y * 256 + x);
+                const tr_colorindex4& index = tile4.Tile[pixel / 2];
+                const tr_rgba5551& colour = clut.Colour[(x % 2) ? index.b : index.a];
+                tile16.Tile[pixel] = (colour.Alpha << 15) | (colour.Red << 10) | (colour.Green << 5) | colour.Blue;
+            }
+        }
+        _textile16.push_back(tile16);
+        _num_textiles = static_cast<uint32_t>(_textile16.size());
+        return static_cast<uint16_t>(_textile16.size() - 1);
+    };
 }
