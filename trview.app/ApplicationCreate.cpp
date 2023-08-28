@@ -245,7 +245,7 @@ namespace trview
 
         auto level_source = [=](auto&& level)
         {
-            auto level_texture_storage = std::make_shared<LevelTextureStorage>(device, std::make_unique<TextureStorage>(device), *level);
+            auto level_texture_storage = std::make_shared<LevelTextureStorage>(device, std::make_unique<TextureStorage>(device), level);
             auto mesh_storage = std::make_unique<MeshStorage>(mesh_source, *level, *level_texture_storage);
             auto new_level = std::make_shared<Level>(
                 device, 
@@ -256,7 +256,7 @@ namespace trview
                 log,
                 buffer_source);
             new_level->initialise(
-                std::move(level),
+                level,
                 std::move(mesh_storage),
                 entity_source,
                 ai_source,
@@ -318,7 +318,7 @@ namespace trview
 
         auto decrypter = std::make_shared<trlevel::Decrypter>();
 
-        auto trlevel_source = [=](auto&& filename) { return std::make_unique<trlevel::Level>(filename, files, decrypter, log); };
+        auto trlevel_source = [=](auto&& filename) { return std::make_shared<trlevel::Level>(filename, files, decrypter, log); };
         auto textures_window_source = [=]() { return std::make_shared<TexturesWindow>(); };
         auto console_source = [=]() { return std::make_shared<Console>(dialogs, plugins); };
 

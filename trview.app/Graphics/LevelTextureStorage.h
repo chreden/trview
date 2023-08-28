@@ -14,7 +14,7 @@ namespace trview
     class LevelTextureStorage final : public ILevelTextureStorage
     {
     public:
-        explicit LevelTextureStorage(const std::shared_ptr<graphics::IDevice>& device, std::unique_ptr<ITextureStorage> texture_storage, const trlevel::ILevel& level);
+        explicit LevelTextureStorage(const std::shared_ptr<graphics::IDevice>& device, std::unique_ptr<ITextureStorage> texture_storage, const std::shared_ptr<trlevel::ILevel>& level);
         virtual ~LevelTextureStorage() = default;
         virtual graphics::Texture texture(uint32_t tile_index) const override;
         virtual graphics::Texture opaque_texture(uint32_t texture_index) const override;
@@ -32,6 +32,8 @@ namespace trview
     private:
         void determine_texture_mode();
 
+        std::weak_ptr<trlevel::ILevel> _level;
+
         std::vector<graphics::Texture> _tiles;
         std::vector<graphics::Texture> _opaque_tiles;
         std::vector<trlevel::tr_object_texture> _object_textures;
@@ -39,10 +41,7 @@ namespace trview
         mutable graphics::Texture _untextured_texture;
         std::array<DirectX::SimpleMath::Color, 256> _palette;
         trlevel::LevelVersion _version;
-
-        std::vector<trlevel::tr_object_texture_psx> _object_textures_psx;
-        std::vector<trlevel::tr_clut> _clut;
-        std::vector<trlevel::tr_textile4> _textile4;
+        trlevel::Platform _platform;
 
         enum class TextureMode
         {

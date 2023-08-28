@@ -7,12 +7,12 @@ namespace trview
     {
     }
 
-    LevelTextureStorage::LevelTextureStorage(const std::shared_ptr<graphics::IDevice>& device, std::unique_ptr<ITextureStorage> texture_storage, const trlevel::ILevel& level)
-        : _texture_storage(std::move(texture_storage)), _version(level.get_version())
+    LevelTextureStorage::LevelTextureStorage(const std::shared_ptr<graphics::IDevice>& device, std::unique_ptr<ITextureStorage> texture_storage, const std::shared_ptr<trlevel::ILevel>& level)
+        : _texture_storage(std::move(texture_storage)), _version(level->get_version()), _level(level), _platform(level->platform())
     {
-        for (uint32_t i = 0; i < level.num_textiles(); ++i)
+        for (uint32_t i = 0; i < level->num_textiles(); ++i)
         {
-            std::vector<uint32_t> data = level.get_textile(i);
+            std::vector<uint32_t> data = level->get_textile(i);
             _tiles.emplace_back(*device, 256, 256, data);
             for (auto& d : data)
             {
@@ -22,21 +22,21 @@ namespace trview
         }
 
         // Copy object textures locally from the level.
-        for (uint32_t i = 0; i < level.num_object_textures(); ++i)
+        for (uint32_t i = 0; i < level->num_object_textures(); ++i)
         {
-            _object_textures.push_back(level.get_object_texture(i));
+            _object_textures.push_back(level->get_object_texture(i));
         }
 
-        _object_textures_psx = level.get_object_textures_psx();
-        _clut = level.get_clut();
-        _textile4 = level.get_textile4s();
+        // _object_textures_psx = level->get_object_textures_psx();
+        // _clut = level->get_clut();
+        // _textile4 = level->get_textile4s();
 
         if (_version < trlevel::LevelVersion::Tomb4)
         {
             using namespace DirectX::SimpleMath;
             for (uint32_t i = 0; i < 256; ++i)
             {
-                auto entry = level.get_palette_entry(i);
+                auto entry = level->get_palette_entry(i);
                 _palette[i] = Color(entry.Red / 255.f, entry.Green / 255.f, entry.Blue / 255.f, 1.0f);
             }
         }
@@ -140,21 +140,13 @@ namespace trview
             return _palette[texture >> 8];
         }
 
-        if (true)
+        if (_platform == trlevel::Platform::PSX)
         {
-            const auto& object_texture = _object_textures_psx[texture];
-            const auto& tile = _textile4[object_texture.Tile];
-            const auto& clut = _clut[object_texture.Clut];
-
-            auto pixel = object_texture.x0 + object_texture.y0 * 256;
-            auto index = tile.Tile[pixel / 2];
-            auto colour = clut.Colour[object_texture.x0 % 2 ? index.b : index.a];
-            
-            float a = colour.Alpha;
-            float r = colour.Red / 31.0f;
-            float g = colour.Green / 31.0f;
-            float b = colour.Blue / 31.0f;
-            return Colour(a, r, g, b);
+            if (auto level = _level.lock())
+            {
+                auto colour = level->get_palette_entry(texture);
+                return DirectX::SimpleMath::Color(colour.Red / 255.f, colour.Green / 255.f, colour.Blue / 255.f, 1.0f);
+            }
         }
 
         return _palette[texture & 0xff];

@@ -627,6 +627,12 @@ namespace trlevel
 
     tr_colour4 Level::get_palette_entry(uint32_t index) const
     {
+        if (_platform_and_version.platform == Platform::PSX &&
+            _platform_and_version.version == LevelVersion::Tomb1)
+        {
+            return colour_from_object_texture(index);
+        }
+
         if (index < _palette16.size())
         {
             return get_palette_entry_16(index);
@@ -720,16 +726,6 @@ namespace trlevel
     tr_object_texture Level::get_object_texture(uint32_t index) const
     {
         return _object_textures[index];
-    }
-
-    std::vector<tr_object_texture_psx> Level::get_object_textures_psx() const
-    {
-        return _object_textures_psx;
-    }
-
-    std::vector<tr_clut> Level::get_clut() const
-    {
-        return _clut;
     }
 
     uint32_t Level::num_floor_data() const
@@ -1480,8 +1476,25 @@ namespace trlevel
         return _clut[index];
     }
 
-    std::vector<tr_textile4> Level::get_textile4s() const
+    tr_colour4 Level::colour_from_object_texture(uint32_t texture) const
     {
-        return _textile4;
+        const auto& object_texture = _object_textures_psx[texture];
+        const auto& tile = _textile4[object_texture.Tile];
+        const auto& clut = _clut[object_texture.Clut];
+
+        auto pixel = object_texture.x0 + object_texture.y0 * 256;
+        auto index = tile.Tile[pixel / 2];
+        auto colour = clut.Colour[object_texture.x0 % 2 ? index.b : index.a];
+
+        float r = colour.Red / 31.0f;
+        float g = colour.Green / 31.0f;
+        float b = colour.Blue / 31.0f;
+
+        return tr_colour4
+        {
+            .Red = static_cast<uint8_t>(std::min(1.0f, r) * 255),
+            .Green = static_cast<uint8_t>(std::min(1.0f, g) * 255),
+            .Blue = static_cast<uint8_t>(std::min(1.0f, b) * 255)
+        };
     }
 }

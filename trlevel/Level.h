@@ -80,10 +80,6 @@ namespace trlevel
         // Returns: The object texture.
         virtual tr_object_texture get_object_texture(uint32_t index) const override;
 
-        std::vector<tr_object_texture_psx> get_object_textures_psx() const override;
-        std::vector<tr_clut> get_clut() const override;
-        std::vector<tr_textile4> get_textile4s() const override;
-
         /// Get the number of floordata values in the level.
         /// @returns The number of floordata values.
         virtual uint32_t num_floor_data() const override;
@@ -183,6 +179,7 @@ namespace trlevel
 
         virtual uint32_t num_cameras() const override;
         virtual tr_camera get_camera(uint32_t index) const override;
+        Platform platform() const override;
     private:
         void generate_meshes(const std::vector<uint16_t>& mesh_data);
 
@@ -191,9 +188,9 @@ namespace trlevel
 
         void load_level_data(trview::Activity& activity, std::istream& file);
 
-        Platform platform() const;
         tr_textile4 get_textile4(uint32_t index) const;
         tr_clut get_clut(uint32_t index) const;
+        tr_colour4 colour_from_object_texture(uint32_t texture) const;
 
         std::shared_ptr<trview::ILog> _log;
 

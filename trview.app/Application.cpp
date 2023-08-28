@@ -908,8 +908,7 @@ namespace trview
 
     std::shared_ptr<ILevel> Application::load(const std::string& filename)
     {
-        std::unique_ptr<trlevel::ILevel> new_level = _trlevel_source(filename);
-        auto level = _level_source(std::move(new_level));
+        auto level = _level_source(_trlevel_source(filename));
         level->set_filename(filename);
         return level;
     }

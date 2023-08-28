@@ -13,7 +13,7 @@ namespace trlevel
     // Interface that defines a level.
     struct ILevel
     {
-        using Source = std::function<std::unique_ptr<ILevel>(const std::string&)>;
+        using Source = std::function<std::shared_ptr<ILevel>(const std::string&)>;
 
         virtual ~ILevel() = 0;
 
@@ -71,10 +71,6 @@ namespace trlevel
         // index: The index of the texture to get.
         // Returns: The object texture.
         virtual tr_object_texture get_object_texture(uint32_t index) const = 0;
-
-        virtual std::vector<tr_object_texture_psx> get_object_textures_psx() const = 0;
-        virtual std::vector<tr_clut> get_clut() const = 0;
-        virtual std::vector<tr_textile4> get_textile4s() const = 0;
 
         /// Get the number of floordata values in the level.
         /// @returns The number of floordata values.
@@ -181,5 +177,7 @@ namespace trlevel
 
         virtual uint32_t num_cameras() const = 0;
         virtual tr_camera get_camera(uint32_t index) const = 0;
+
+        virtual Platform platform() const = 0;
     };
 }
