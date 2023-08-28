@@ -1177,19 +1177,6 @@ namespace trlevel
                             };
                         })
                     | std::ranges::to<std::vector>();
-                        /*
-
-                for (auto& texture : textures)
-                {
-                    texture.Tile = convert_textile4(texture.Tile, texture.Clut);
-                    texture.Clut = 0U; // Unneeded after conversion
-                    if (texture.x3 || texture.y3)
-                    {
-                        std::swap(texture.x2, texture.x3);
-                        std::swap(texture.y2, texture.y3);
-                    }
-                }
-                _level->_object_textures = convert_object_textures(textures);*/
             }
             else
             {
@@ -1341,9 +1328,9 @@ namespace trlevel
             activity.log("Read light map");
         }
 
-        if (_platform_and_version.platform == Platform::PSX)
+        if (_platform_and_version.platform == Platform::PSX &&
+            get_version() == LevelVersion::Tomb1)
         {
-            _palette.resize(256);
             return;
         }
 
