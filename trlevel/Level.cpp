@@ -1467,9 +1467,10 @@ namespace trlevel
         // If not, create new conversion
         _converted_t16.push_back(std::make_pair(tile, clut_id));
 
-        const tr_textile4 tile4 = get_textile4(tile);
-        const tr_clut clut = get_clut(clut_id);
-        tr_textile16 tile16;
+        const tr_textile4& tile4 = _textile4[tile];
+        const tr_clut& clut = _clut[clut_id];
+
+        tr_textile16& tile16 = _textile16.emplace_back();
         for (int x = 0; x < 256; ++x)
         {
             for (int y = 0; y < 256; ++y)
@@ -1480,7 +1481,6 @@ namespace trlevel
                 tile16.Tile[pixel] = (colour.Alpha << 15) | (colour.Red << 10) | (colour.Green << 5) | colour.Blue;
             }
         }
-        _textile16.push_back(tile16);
         _num_textiles = static_cast<uint32_t>(_textile16.size());
         return static_cast<uint16_t>(_textile16.size() - 1);
     };
