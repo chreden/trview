@@ -188,8 +188,6 @@ namespace trlevel
 
         void load_level_data(trview::Activity& activity, std::istream& file);
 
-        tr_textile4 get_textile4(uint32_t index) const;
-        tr_clut get_clut(uint32_t index) const;
         tr_colour4 colour_from_object_texture(uint32_t texture) const;
 
         uint16_t convert_textile4(uint16_t tile, uint16_t clut_id);

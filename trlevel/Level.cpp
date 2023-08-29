@@ -1422,29 +1422,30 @@ namespace trlevel
         return _platform_and_version.platform;
     }
 
-    tr_textile4 Level::get_textile4(uint32_t index) const
-    {
-        return _textile4[index];
-    }
-
-    tr_clut Level::get_clut(uint32_t index) const
-    {
-        return _clut[index];
-    }
-
     tr_colour4 Level::colour_from_object_texture(uint32_t texture) const
     {
+        if (texture >= _object_textures_psx.size())
+        {
+            return tr_colour4{ .Red = 0, .Green = 0, .Blue = 0 };
+        }
+
         const auto& object_texture = _object_textures_psx[texture];
+        if (object_texture.Tile >= _textile4.size() ||
+            object_texture.Clut >= _clut.size())
+        {
+            return tr_colour4{ .Red = 0, .Green = 0, .Blue = 0 };
+        }
+
         const auto& tile = _textile4[object_texture.Tile];
         const auto& clut = _clut[object_texture.Clut];
 
-        auto pixel = object_texture.x0 + object_texture.y0 * 256;
-        auto index = tile.Tile[pixel / 2];
-        auto colour = clut.Colour[object_texture.x0 % 2 ? index.b : index.a];
+        const auto pixel = object_texture.x0 + object_texture.y0 * 256;
+        const auto index = tile.Tile[pixel / 2];
+        const auto colour = clut.Colour[object_texture.x0 % 2 ? index.b : index.a];
 
-        float r = colour.Red / 31.0f;
-        float g = colour.Green / 31.0f;
-        float b = colour.Blue / 31.0f;
+        const float r = colour.Red / 31.0f;
+        const float g = colour.Green / 31.0f;
+        const float b = colour.Blue / 31.0f;
 
         return tr_colour4
         {
@@ -1467,20 +1468,27 @@ namespace trlevel
         // If not, create new conversion
         _converted_t16.push_back(std::make_pair(tile, clut_id));
 
-        const tr_textile4& tile4 = _textile4[tile];
-        const tr_clut& clut = _clut[clut_id];
-
         tr_textile16& tile16 = _textile16.emplace_back();
-        for (int x = 0; x < 256; ++x)
+        if (tile < _textile4.size() && clut_id < _clut.size())
         {
-            for (int y = 0; y < 256; ++y)
+            const tr_textile4& tile4 = _textile4[tile];
+            const tr_clut& clut = _clut[clut_id];
+            for (int x = 0; x < 256; ++x)
             {
-                const std::size_t pixel = (y * 256 + x);
-                const tr_colorindex4& index = tile4.Tile[pixel / 2];
-                const tr_rgba5551& colour = clut.Colour[(x % 2) ? index.b : index.a];
-                tile16.Tile[pixel] = (colour.Alpha << 15) | (colour.Red << 10) | (colour.Green << 5) | colour.Blue;
+                for (int y = 0; y < 256; ++y)
+                {
+                    const std::size_t pixel = (y * 256 + x);
+                    const tr_colorindex4& index = tile4.Tile[pixel / 2];
+                    const tr_rgba5551& colour = clut.Colour[(x % 2) ? index.b : index.a];
+                    tile16.Tile[pixel] = (colour.Alpha << 15) | (colour.Red << 10) | (colour.Green << 5) | colour.Blue;
+                }
             }
         }
+        else
+        {
+            memset(tile16.Tile, 0, sizeof(tile16.Tile));
+        }
+
         _num_textiles = static_cast<uint32_t>(_textile16.size());
         return static_cast<uint16_t>(_textile16.size() - 1);
     };
