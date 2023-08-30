@@ -549,8 +549,8 @@ namespace trlevel
                     }
                 }
 
-                auto rectangles = read_vector<int16_t, tr_face4>(stream);
-                auto triangles = read_vector<int16_t, tr_face3>(stream);
+                const auto rectangles = read_vector<int16_t, tr_face4>(stream);
+                const auto triangles = read_vector<int16_t, tr_face3>(stream);
 
                 mesh.textured_rectangles = rectangles
                     | std::views::filter([](const auto& rect) { return rect.texture > 255; })
