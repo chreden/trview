@@ -19,4 +19,16 @@ namespace trlevel
         }
         return "Unknown";
     }
+
+    constexpr std::string to_string(Platform platform) noexcept
+    {
+        switch (platform)
+        {
+        case Platform::PC:
+            return "PC";
+        case Platform::PSX:
+            return "PSX";
+        }
+        return "Unknown";
+    }
 }

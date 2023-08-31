@@ -106,7 +106,7 @@ namespace trview
         virtual std::optional<uint32_t> selected_camera_sink() const override;
         virtual bool show_camera_sinks() const override;
         void initialise(
-            std::unique_ptr<trlevel::ILevel> level,
+            std::shared_ptr<trlevel::ILevel> level,
             std::unique_ptr<IMeshStorage> mesh_storage,
             const IItem::EntitySource& entity_source,
             const IItem::AiSource& ai_source,

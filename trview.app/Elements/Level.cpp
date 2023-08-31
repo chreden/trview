@@ -1232,7 +1232,7 @@ namespace trview
         return has_flag(_render_filters, RenderFilter::CameraSinks);
     }
 
-    void Level::initialise(std::unique_ptr<trlevel::ILevel> level,
+    void Level::initialise(std::shared_ptr<trlevel::ILevel> level,
         std::unique_ptr<IMeshStorage> mesh_storage,
         const IItem::EntitySource& entity_source,
         const IItem::AiSource& ai_source,

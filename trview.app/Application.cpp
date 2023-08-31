@@ -127,9 +127,9 @@ namespace trview
         {
             return;
         }
-        catch (...)
+        catch (std::exception& e)
         {
-            _dialogs->message_box(L"Failed to load level", L"Error", IDialogs::Buttons::OK);
+            _dialogs->message_box(to_utf16(std::format("Failed to load level : {}", e.what())), L"Error", IDialogs::Buttons::OK);
             return;
         }
     }
@@ -908,8 +908,7 @@ namespace trview
 
     std::shared_ptr<ILevel> Application::load(const std::string& filename)
     {
-        std::unique_ptr<trlevel::ILevel> new_level = _trlevel_source(filename);
-        auto level = _level_source(std::move(new_level));
+        auto level = _level_source(_trlevel_source(filename));
         level->set_filename(filename);
         return level;
     }

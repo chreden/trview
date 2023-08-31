@@ -179,6 +179,7 @@ namespace trlevel
 
         virtual uint32_t num_cameras() const override;
         virtual tr_camera get_camera(uint32_t index) const override;
+        Platform platform() const override;
     private:
         void generate_meshes(const std::vector<uint16_t>& mesh_data);
 
@@ -187,20 +188,28 @@ namespace trlevel
 
         void load_level_data(trview::Activity& activity, std::istream& file);
 
+        tr_colour4 colour_from_object_texture(uint32_t texture) const;
+
+        uint16_t convert_textile4(uint16_t tile, uint16_t clut_id);
+
         std::shared_ptr<trview::ILog> _log;
 
-        LevelVersion _version;
+        PlatformAndVersion _platform_and_version;
 
         std::vector<tr_colour>  _palette;
         std::vector<tr_colour4> _palette16;
 
         uint32_t                  _num_textiles;
+        std::vector<tr_textile4>  _textile4;
         std::vector<tr_textile8>  _textile8;
         std::vector<tr_textile16> _textile16;
         std::vector<tr_textile32> _textile32;
+        std::vector<tr_clut> _clut;
+        std::vector<std::pair<uint16_t, uint16_t>> _converted_t16;
 
         std::vector<tr3_room>          _rooms;
         std::vector<tr_object_texture> _object_textures;
+        std::vector<tr_object_texture_psx> _object_textures_psx;
         std::vector<uint16_t>          _floor_data;
         std::vector<tr_model>          _models;
         std::vector<tr2_entity>        _entities;

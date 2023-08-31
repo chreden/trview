@@ -13,7 +13,7 @@ namespace trlevel
     // Interface that defines a level.
     struct ILevel
     {
-        using Source = std::function<std::unique_ptr<ILevel>(const std::string&)>;
+        using Source = std::function<std::shared_ptr<ILevel>(const std::string&)>;
 
         virtual ~ILevel() = 0;
 
@@ -177,5 +177,7 @@ namespace trlevel
 
         virtual uint32_t num_cameras() const = 0;
         virtual tr_camera get_camera(uint32_t index) const = 0;
+
+        virtual Platform platform() const = 0;
     };
 }

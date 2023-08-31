@@ -22,6 +22,19 @@ namespace trlevel
     constexpr float Scale_Y { 1024.0f };
     constexpr float Scale_Z { 1024.0f };
 
+    struct tr_rgba5551
+    {
+        uint16_t Red : 5,
+                 Green : 5,
+                 Blue : 5,
+                 Alpha : 1;
+    };
+
+    struct tr_clut
+    {
+        tr_rgba5551 Colour[16];
+    };
+
     struct tr_colour
     {
         uint8_t Red;
@@ -35,6 +48,16 @@ namespace trlevel
         uint8_t Green;
         uint8_t Blue;
         uint8_t Unused;
+    };
+
+    struct tr_colorindex4
+    {
+        uint8_t a : 4, b : 4;
+    };
+
+    struct tr_textile4
+    {
+        tr_colorindex4 Tile[256 * 256 / 2];
     };
 
     struct tr_textile8
@@ -74,6 +97,14 @@ namespace trlevel
         int16_t x;
         int16_t y;
         int16_t z;
+    };
+
+    struct tr_vertex_psx
+    {
+        int16_t x;
+        int16_t y;
+        int16_t z;
+        int16_t w;
     };
 
     struct tr5_vertex
@@ -228,6 +259,12 @@ namespace trlevel
         uint16_t Animation;    // Offset into Animations[]
     };
 
+    struct tr_model_psx
+    {
+        tr_model model;
+        uint16_t padding;
+    };
+
     struct tr5_model
     {
         tr_model model;
@@ -260,6 +297,20 @@ namespace trlevel
         int16_t TopSide;
         int16_t RightSide;
         int16_t BottomSide;
+    };
+
+    struct tr_sprite_texture_psx
+    {
+        int16_t LeftSide;
+        int16_t TopSide;
+        int16_t RightSide;
+        int16_t BottomSide;
+        uint16_t Clut;
+        uint16_t Tile;
+        uint8_t u0;
+        uint8_t v0;
+        uint8_t u1;
+        uint8_t v1;
     };
 
     struct tr_sprite_sequence  // 8 bytes
@@ -406,6 +457,22 @@ namespace trlevel
         tr_object_texture_vert Vertices[4]; // The four corners of the texture
     };
 
+    struct tr_object_texture_psx
+    {
+        uint8_t x0;
+        uint8_t y0;
+        uint16_t Clut;
+        uint8_t x1;
+        uint8_t y1;
+        uint16_t Tile : 14, : 2;
+        uint8_t x2;
+        uint8_t y2;
+        uint16_t Unknown;
+        uint8_t x3;
+        uint8_t y3;
+        uint16_t Attribute;
+    };
+
     struct tr4_object_texture // 38 bytes
     {
         uint16_t               Attribute;
@@ -490,6 +557,17 @@ namespace trlevel
         int32_t  y;
         int32_t  z;
         uint16_t intensity;
+        uint32_t fade;
+    };
+
+    // Version of the room_light structure used in Tomb Raider I PSX.
+    struct tr_room_light_psx
+    {
+        int32_t x;
+        int32_t y;
+        int32_t z;
+        uint16_t intensity;
+        uint16_t padding;
         uint32_t fade;
     };
 
@@ -585,6 +663,12 @@ namespace trlevel
         uint16_t rotation;
         uint16_t intensity;
         uint16_t mesh_id;
+    };
+
+    struct tr_room_staticmesh_psx
+    {
+        tr_room_staticmesh mesh;
+        uint16_t padding;
     };
 
     struct tr3_room_staticmesh 
@@ -709,6 +793,8 @@ namespace trlevel
     // with Tomb Raider III (what the viewer is currently using).
     std::vector<tr3_room_staticmesh> convert_room_static_meshes(std::vector<tr_room_staticmesh> meshes);
 
+    std::vector<tr3_room_staticmesh> convert_room_static_meshes(std::vector<tr_room_staticmesh_psx> meshes);
+
     // Convert a set of Tomb Raider I entities into a format compatible
     // with Tomb Raider III (what the viewer is currently using).
     std::vector<tr2_entity> convert_entities(std::vector<tr_entity> entities);
@@ -736,5 +822,8 @@ namespace trlevel
     /// @returns The converted room info.
     tr_room_info convert_room_info(const tr1_4_room_info& room_info);
 
+    std::vector<tr_model> convert_models(std::vector<tr_model_psx> models);
     std::vector<tr_model> convert_models(std::vector<tr5_model> models);
+
+    std::vector<tr_vertex> convert_vertices(std::vector<tr_vertex_psx> vertices);
 }

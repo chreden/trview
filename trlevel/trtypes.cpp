@@ -1,4 +1,5 @@
 #include "trtypes.h"
+#include <ranges>
 
 namespace trlevel
 {
@@ -55,6 +56,17 @@ namespace trlevel
             return new_mesh;
         });
         return new_meshes;
+    }
+
+    std::vector<tr3_room_staticmesh> convert_room_static_meshes(std::vector<tr_room_staticmesh_psx> meshes)
+    {
+        return meshes
+            | std::views::transform([](const auto& mesh)
+                {
+                    tr3_room_staticmesh new_mesh{ mesh.mesh.x, mesh.mesh.y, mesh.mesh.z, mesh.mesh.rotation, 0xffff, 0, mesh.mesh.mesh_id };
+                    return new_mesh;
+                })
+            | std::ranges::to<std::vector>();
     }
 
     // Convert a set of Tomb Raider I entities into a format compatible
@@ -140,6 +152,15 @@ namespace trlevel
         return new_info;
     }
 
+    std::vector<tr_model> convert_models(std::vector<tr_model_psx> models)
+    {
+        std::vector<tr_model> new_models;
+        new_models.reserve(models.size());
+        std::transform(models.begin(), models.end(),
+            std::back_inserter(new_models), [](const auto& model) { return model.model; });
+        return new_models;
+    }
+
     std::vector<tr_model> convert_models(std::vector<tr5_model> models)
     {
         std::vector<tr_model> new_models;
@@ -147,5 +168,12 @@ namespace trlevel
         std::transform(models.begin(), models.end(),
             std::back_inserter(new_models), [](const auto& model) { return model.model; });
         return new_models;
+    }
+
+    std::vector<tr_vertex> convert_vertices(std::vector<tr_vertex_psx> vertices)
+    {
+        return vertices
+            | std::views::transform([](const auto& vert) { return tr_vertex{ vert.x, vert.y, vert.z }; })
+            | std::ranges::to<std::vector>();
     }
 }
