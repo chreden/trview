@@ -127,9 +127,9 @@ namespace trview
         {
             return;
         }
-        catch (...)
+        catch (std::exception& e)
         {
-            _dialogs->message_box(L"Failed to load level", L"Error", IDialogs::Buttons::OK);
+            _dialogs->message_box(to_utf16(std::format("Failed to load level : {}", e.what())), L"Error", IDialogs::Buttons::OK);
             return;
         }
     }

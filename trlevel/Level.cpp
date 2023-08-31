@@ -415,6 +415,10 @@ namespace trlevel
             _platform_and_version = convert_level_version(raw_version);
 
             activity.log(std::format("Version number is {:X} ({}), Platform is {}", raw_version, to_string(get_version()), to_string(platform())));
+            if (_platform_and_version.version == LevelVersion::Unknown)
+            {
+                throw LevelLoadException(std::format("Unknown level version ({})", raw_version));
+            }
 
             if (raw_version == 0x63345254)
             {
@@ -491,7 +495,7 @@ namespace trlevel
         catch (const std::exception& e)
         {
             activity.log(trview::Message::Status::Error, std::format("Level failed to load: {}", e.what()));
-            throw LevelLoadException();
+            throw LevelLoadException(e.what());
         }
     }
 
