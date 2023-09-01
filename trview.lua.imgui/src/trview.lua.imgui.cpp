@@ -3,14 +3,14 @@
 
 #include "pch.h"
 #include "framework.h"
-#include "trview.lua.imgui.h"
+#include "../inc/trview.lua.imgui.h"
 
-#include <external/imgui/imgui.h>
-#include <external/imgui/imgui_internal.h>
-#include <external/imgui/misc/cpp/imgui_stdlib.h>
 #include <optional>
 #include <string>
 #include <vector>
+
+#include "trview.lua.imgui.input.h"
+#include "tables.h"
 
 namespace trview
 {
@@ -71,16 +71,6 @@ namespace trview
                 lua_getfield(L, index, name.c_str());
                 luaL_checktype(L, -1, LUA_TNUMBER);
                 int value = lua_tointeger(L, -1);
-                lua_pop(L, 1);
-                return value;
-            }
-
-            std::string get_string(lua_State* L, int index, const std::string& name)
-            {
-                luaL_checktype(L, index, LUA_TTABLE);
-                lua_getfield(L, index, name.c_str());
-                luaL_checktype(L, -1, LUA_TSTRING);
-                std::string value = lua_tostring(L, -1);
                 lua_pop(L, 1);
                 return value;
             }
@@ -259,36 +249,6 @@ namespace trview
             {
                 ImGui::SameLine();
                 return 0;
-            }
-
-            int input_int(lua_State* L)
-            {
-                const auto label = get_string(L, 1, "label");
-                int out = 0;
-                bool result = ImGui::InputInt(label.c_str(), &out);
-                lua_pushboolean(L, result);
-                lua_pushinteger(L, out);
-                return 2;
-            }
-
-            int input_text(lua_State* L)
-            {
-                const auto label = get_string(L, 1, "label");
-                std::string out;
-                bool result = ImGui::InputText(label.c_str(), &out);
-                lua_pushboolean(L, result);
-                lua_pushstring(L, out.c_str());
-                return 2;
-            }
-
-            void register_input(lua_State* L)
-            {
-                constexpr luaL_Reg funcs[] = {
-                    { "InputInt", input_int },
-                    { "InputText", input_text },
-                    { nullptr, nullptr }
-                };
-                luaL_setfuncs(L, funcs, 0);
             }
         }
 

@@ -2,7 +2,7 @@
 #include <trview.common/Strings.h>
 #include "trview/trview.h"
 #include <external/lua/src/lualib.h>
-#include <trview.lua.imgui/trview.lua.imgui.h>
+#include <trview.lua.imgui/inc/trview.lua.imgui.h>
 #include "Route/Lua_Waypoint.h"
 
 namespace trview
