@@ -53,7 +53,7 @@ namespace trlevel
         case LevelVersion::Tomb2:
             return LightType::Point;
         case LevelVersion::Tomb3:
-            return tr3.type;
+            return convert(tr3.type);
         case LevelVersion::Tomb4:
             return tr4.light_type;
         case LevelVersion::Tomb5:

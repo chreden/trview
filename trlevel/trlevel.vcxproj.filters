@@ -34,4 +34,7 @@
       <UniqueIdentifier>{761f107e-00af-4697-ba3e-3653c2e29391}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="trtypes.inl" />
+  </ItemGroup>
 </Project>

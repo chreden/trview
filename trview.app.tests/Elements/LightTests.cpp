@@ -82,7 +82,7 @@ TEST(Light, PointTR3)
     level_light.tr3.y = 2048;
     level_light.tr3.z = 3072;
     level_light.tr3.colour = { 64, 128, 255 };
-    level_light.tr3.type = LightType::Point;
+    level_light.tr3.type = LightTypeTR3::Point;
     auto light = register_test_module().with_light(level_light).build();
 
     ASSERT_EQ(light.colour(), Colour(0.250980407f, 0.501960814f, 1.0f));
@@ -100,7 +100,7 @@ TEST(Light, SunTR3)
     level_light.tr3.sun.ny = 2048;
     level_light.tr3.sun.nz = 3072;
     level_light.tr3.colour = { 64, 128, 255 };
-    level_light.tr3.type = LightType::Sun;
+    level_light.tr3.type = LightTypeTR3::Sun;
     auto light = register_test_module().with_light(level_light).build();
 
     ASSERT_EQ(light.colour(), Colour(0.250980407f, 0.501960814f, 1.0f));
