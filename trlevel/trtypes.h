@@ -8,6 +8,12 @@ namespace trlevel
 {
 #pragma pack(push, 1)
 
+    enum class LightTypeTR3 : uint8_t
+    {
+        Point = 0,
+        Sun = 1
+    };
+
     enum class LightType : uint8_t
     {
         Sun = 0,
@@ -598,7 +604,7 @@ namespace trlevel
         int32_t y;
         int32_t z;
         tr_colour colour;
-        LightType type;
+        LightTypeTR3 type;
         union
         {
             tr3_room_sun sun;
@@ -826,4 +832,8 @@ namespace trlevel
     std::vector<tr_model> convert_models(std::vector<tr5_model> models);
 
     std::vector<tr_vertex> convert_vertices(std::vector<tr_vertex_psx> vertices);
+
+    constexpr LightType convert(LightTypeTR3 type);
 }
+
+#include "trtypes.inl"
