@@ -21,8 +21,11 @@ namespace trview
             int input_float(lua_State* L)
             {
                 const auto label = get_string(L, 1, "label");
-                float out = 0.0f;
-                bool result = ImGui::InputFloat(label.c_str(), &out);
+                float out = get_float(L, 1, "value");
+                const auto step = get_optional_float(L, 1, "step");
+                const auto step_fast = get_optional_float(L, 1, "step_fast");
+                const auto format = get_optional_string(L, 1, "format");
+                bool result = ImGui::InputFloat(label.c_str(), &out, step.value_or(0.0f), step_fast.value_or(0.0f), format.value_or("%.3f").c_str());
                 lua_pushboolean(L, result);
                 lua_pushnumber(L, out);
                 return 2;
@@ -31,7 +34,11 @@ namespace trview
             int input_float2(lua_State* L)
             {
                 const auto label = get_string(L, 1, "label");
-                float values[2] { };
+                float values[2]
+                {
+                    get_float(L, 1, "value1"),
+                    get_float(L, 1, "value2")
+                };
                 bool result = ImGui::InputFloat2(label.c_str(), values);
                 lua_pushboolean(L, result);
                 lua_pushnumber(L, values[0]);
@@ -42,7 +49,12 @@ namespace trview
             int input_float3(lua_State* L)
             {
                 const auto label = get_string(L, 1, "label");
-                float values[3]{};
+                float values[3]
+                {
+                    get_float(L, 1, "value1"),
+                    get_float(L, 1, "value2"),
+                    get_float(L, 1, "value3")
+                };
                 bool result = ImGui::InputFloat3(label.c_str(), values);
                 lua_pushboolean(L, result);
                 lua_pushnumber(L, values[0]);
@@ -54,7 +66,13 @@ namespace trview
             int input_float4(lua_State* L)
             {
                 const auto label = get_string(L, 1, "label");
-                float values[4]{};
+                float values[4]
+                {
+                    get_float(L, 1, "value1"),
+                    get_float(L, 1, "value2"),
+                    get_float(L, 1, "value3"),
+                    get_float(L, 1, "value4")
+                };
                 bool result = ImGui::InputFloat4(label.c_str(), values);
                 lua_pushboolean(L, result);
                 lua_pushnumber(L, values[0]);
@@ -67,8 +85,10 @@ namespace trview
             int input_int(lua_State* L)
             {
                 const auto label = get_string(L, 1, "label");
-                int value = get_int(L, 1, "value");
-                bool result = ImGui::InputInt(label.c_str(), &value);
+                int value = get_integer(L, 1, "value");
+                const auto step = get_optional_integer(L, 1, "step");
+                const auto step_fast = get_optional_integer(L, 1, "step_fast");
+                bool result = ImGui::InputInt(label.c_str(), &value, step.value_or(1));
                 lua_pushboolean(L, result);
                 lua_pushinteger(L, value);
                 return 2;
@@ -79,8 +99,8 @@ namespace trview
                 const auto label = get_string(L, 1, "label");
                 int values[2]
                 {
-                    get_int(L, 1, "value1"),
-                    get_int(L, 1, "value2")
+                    get_integer(L, 1, "value1"),
+                    get_integer(L, 1, "value2")
                 };
                 bool result = ImGui::InputInt2(label.c_str(), values);
                 lua_pushboolean(L, result);
@@ -94,9 +114,9 @@ namespace trview
                 const auto label = get_string(L, 1, "label");
                 int values[3]
                 {
-                    get_int(L, 1, "value1"),
-                    get_int(L, 1, "value2"),
-                    get_int(L, 1, "value3")
+                    get_integer(L, 1, "value1"),
+                    get_integer(L, 1, "value2"),
+                    get_integer(L, 1, "value3")
                 };
                 bool result = ImGui::InputInt3(label.c_str(), values);
                 lua_pushboolean(L, result);
@@ -111,10 +131,10 @@ namespace trview
                 const auto label = get_string(L, 1, "label");
                 int values[4]
                 {
-                    get_int(L, 1, "value1"),
-                    get_int(L, 1, "value2"),
-                    get_int(L, 1, "value3"),
-                    get_int(L, 1, "value4")
+                    get_integer(L, 1, "value1"),
+                    get_integer(L, 1, "value2"),
+                    get_integer(L, 1, "value3"),
+                    get_integer(L, 1, "value4")
                 };
                 bool result = ImGui::InputInt4(label.c_str(), values);
                 lua_pushboolean(L, result);
