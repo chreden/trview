@@ -50,37 +50,6 @@ namespace trview
                 return value;
             }
 
-            void set_integer(lua_State* L, int index, const std::string& name, int value)
-            {
-                if (index < 0)
-                {
-                    index += lua_gettop(L) + 1;
-                }
-                lua_pushinteger(L, value);
-                lua_setfield(L, index, name.c_str());
-            }
-
-            struct EnumValue
-            {
-                std::string name;
-                int value;
-            };
-
-            void set_enum(lua_State* L, const std::string& name, int index, const std::vector<EnumValue>& values)
-            {
-                if (index < 0)
-                {
-                    index += lua_gettop(L) + 1;
-                }
-
-                lua_newtable(L);
-                for (const auto& v : values)
-                {
-                    set_integer(L, -1, v.name.c_str(), v.value);
-                }
-                lua_setfield(L, index, name.c_str());
-            }
-
             int begin(lua_State* L)
             {
                 const auto name = get_string(L, 1, "name");

@@ -12,7 +12,11 @@ namespace trview
             {
                 const auto label = get_string(L, 1, "label");
                 double out = 0.0;
-                bool result = ImGui::InputDouble(label.c_str(), &out);
+                const auto step = get_optional_double(L, 1, "step");
+                const auto step_fast = get_optional_double(L, 1, "step_fast");
+                const auto format = get_optional_string(L, 1, "format");
+                const auto flags = get_optional_integer(L, 1, "flags");
+                bool result = ImGui::InputDouble(label.c_str(), &out, step.value_or(0.0), step_fast.value_or(0.0), format.value_or("%.6f").c_str(), flags.value_or(ImGuiInputTextFlags_None));
                 lua_pushnumber(L, result);
                 lua_pushnumber(L, out);
                 return 2;
@@ -25,7 +29,8 @@ namespace trview
                 const auto step = get_optional_float(L, 1, "step");
                 const auto step_fast = get_optional_float(L, 1, "step_fast");
                 const auto format = get_optional_string(L, 1, "format");
-                bool result = ImGui::InputFloat(label.c_str(), &out, step.value_or(0.0f), step_fast.value_or(0.0f), format.value_or("%.3f").c_str());
+                const auto flags = get_optional_integer(L, 1, "flags");
+                bool result = ImGui::InputFloat(label.c_str(), &out, step.value_or(0.0f), step_fast.value_or(0.0f), format.value_or("%.3f").c_str(), flags.value_or(ImGuiInputTextFlags_None));
                 lua_pushboolean(L, result);
                 lua_pushnumber(L, out);
                 return 2;
@@ -39,7 +44,9 @@ namespace trview
                     get_float(L, 1, "value1"),
                     get_float(L, 1, "value2")
                 };
-                bool result = ImGui::InputFloat2(label.c_str(), values);
+                const auto format = get_optional_string(L, 1, "format");
+                const auto flags = get_optional_integer(L, 1, "flags");
+                bool result = ImGui::InputFloat2(label.c_str(), values, format.value_or("%.3f").c_str(), flags.value_or(ImGuiInputTextFlags_None));
                 lua_pushboolean(L, result);
                 lua_pushnumber(L, values[0]);
                 lua_pushnumber(L, values[1]);
@@ -55,7 +62,9 @@ namespace trview
                     get_float(L, 1, "value2"),
                     get_float(L, 1, "value3")
                 };
-                bool result = ImGui::InputFloat3(label.c_str(), values);
+                const auto format = get_optional_string(L, 1, "format");
+                const auto flags = get_optional_integer(L, 1, "flags");
+                bool result = ImGui::InputFloat3(label.c_str(), values, format.value_or("%.3f").c_str(), flags.value_or(ImGuiInputTextFlags_None));
                 lua_pushboolean(L, result);
                 lua_pushnumber(L, values[0]);
                 lua_pushnumber(L, values[1]);
@@ -73,7 +82,9 @@ namespace trview
                     get_float(L, 1, "value3"),
                     get_float(L, 1, "value4")
                 };
-                bool result = ImGui::InputFloat4(label.c_str(), values);
+                const auto format = get_optional_string(L, 1, "format");
+                const auto flags = get_optional_integer(L, 1, "flags");
+                bool result = ImGui::InputFloat4(label.c_str(), values, format.value_or("%.3f").c_str(), flags.value_or(ImGuiInputTextFlags_None));
                 lua_pushboolean(L, result);
                 lua_pushnumber(L, values[0]);
                 lua_pushnumber(L, values[1]);
@@ -88,7 +99,8 @@ namespace trview
                 int value = get_integer(L, 1, "value");
                 const auto step = get_optional_integer(L, 1, "step");
                 const auto step_fast = get_optional_integer(L, 1, "step_fast");
-                bool result = ImGui::InputInt(label.c_str(), &value, step.value_or(1));
+                const auto flags = get_optional_integer(L, 1, "flags");
+                bool result = ImGui::InputInt(label.c_str(), &value, step.value_or(1), step_fast.value_or(100), flags.value_or(ImGuiInputTextFlags_None));
                 lua_pushboolean(L, result);
                 lua_pushinteger(L, value);
                 return 2;
@@ -102,7 +114,8 @@ namespace trview
                     get_integer(L, 1, "value1"),
                     get_integer(L, 1, "value2")
                 };
-                bool result = ImGui::InputInt2(label.c_str(), values);
+                const auto flags = get_optional_integer(L, 1, "flags");
+                bool result = ImGui::InputInt2(label.c_str(), values, flags.value_or(ImGuiInputTextFlags_None));
                 lua_pushboolean(L, result);
                 lua_pushinteger(L, values[0]);
                 lua_pushinteger(L, values[1]);
@@ -118,7 +131,8 @@ namespace trview
                     get_integer(L, 1, "value2"),
                     get_integer(L, 1, "value3")
                 };
-                bool result = ImGui::InputInt3(label.c_str(), values);
+                const auto flags = get_optional_integer(L, 1, "flags");
+                bool result = ImGui::InputInt3(label.c_str(), values, flags.value_or(ImGuiInputTextFlags_None));
                 lua_pushboolean(L, result);
                 lua_pushinteger(L, values[0]);
                 lua_pushinteger(L, values[1]);
@@ -136,7 +150,8 @@ namespace trview
                     get_integer(L, 1, "value3"),
                     get_integer(L, 1, "value4")
                 };
-                bool result = ImGui::InputInt4(label.c_str(), values);
+                const auto flags = get_optional_integer(L, 1, "flags");
+                bool result = ImGui::InputInt4(label.c_str(), values, flags.value_or(ImGuiInputTextFlags_None));
                 lua_pushboolean(L, result);
                 lua_pushinteger(L, values[0]);
                 lua_pushinteger(L, values[1]);
@@ -159,7 +174,8 @@ namespace trview
             {
                 const auto label = get_string(L, 1, "label");
                 std::string out;
-                bool result = ImGui::InputText(label.c_str(), &out);
+                const auto flags = get_optional_integer(L, 1, "flags");
+                bool result = ImGui::InputText(label.c_str(), &out, flags.value_or(ImGuiInputTextFlags_None));
                 lua_pushboolean(L, result);
                 lua_pushstring(L, out.c_str());
                 return 2;
@@ -168,6 +184,32 @@ namespace trview
 
         void register_input(lua_State* L)
         {
+            // Callbacks are not yet implemented.
+            set_enum(L, "InputTextFlags", -1,
+                {
+                    { "None", ImGuiInputTextFlags_None },
+                    { "CharsDecimal", ImGuiInputTextFlags_CharsDecimal },
+                    { "CharsHexadecimal", ImGuiInputTextFlags_CharsHexadecimal },
+                    { "CharsUppercase", ImGuiInputTextFlags_CharsUppercase },
+                    { "CharsNoBlank", ImGuiInputTextFlags_CharsNoBlank },
+                    { "AutoSelectAll", ImGuiInputTextFlags_AutoSelectAll },
+                    { "EnterReturnsTrue", ImGuiInputTextFlags_EnterReturnsTrue },
+                    // { "CallbackCompletion", ImGuiInputTextFlags_CallbackCompletion },
+                    // { "CallbackHistory", ImGuiInputTextFlags_CallbackHistory },
+                    // { "CallbackAlways", ImGuiInputTextFlags_CallbackAlways },
+                    // { "CallbackCharFilter", ImGuiInputTextFlags_CallbackCharFilter },
+                    { "AllowTabInput", ImGuiInputTextFlags_AllowTabInput },
+                    { "CtrlEnterForNewLine", ImGuiInputTextFlags_CtrlEnterForNewLine },
+                    { "NoHorizontalScroll", ImGuiInputTextFlags_NoHorizontalScroll },
+                    { "AlwaysOverwrite", ImGuiInputTextFlags_AlwaysOverwrite },
+                    { "ReadOnly", ImGuiInputTextFlags_ReadOnly },
+                    { "Password", ImGuiInputTextFlags_Password },
+                    { "NoUndoRedo", ImGuiInputTextFlags_NoUndoRedo },
+                    { "CharsScientific", ImGuiInputTextFlags_CharsScientific },
+                    // { "CallbackResize", ImGuiInputTextFlags_CallbackResize },
+                    // { "CallbackEdit", ImGuiInputTextFlags_CallbackEdit }
+                });
+
             constexpr luaL_Reg funcs[] = {
                 { "InputDouble", input_double },
                 { "InputFloat", input_float },
@@ -178,8 +220,8 @@ namespace trview
                 { "InputInt2", input_int2 },
                 { "InputInt3", input_int3 },
                 { "InputInt4", input_int4 },
-                { "InputScalar", input_scalar },
-                { "InputScalarN", input_scalarN },
+                // { "InputScalar", input_scalar },
+                // { "InputScalarN", input_scalarN },
                 { "InputText", input_text },
                 { nullptr, nullptr }
             };
