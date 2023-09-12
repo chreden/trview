@@ -106,6 +106,7 @@ namespace trview
         rooms_window->on_sector_hover += on_sector_hover;
         rooms_window->on_light_selected += on_light_selected;
         rooms_window->on_camera_sink_selected += on_camera_sink_selected;
+        rooms_window->on_static_mesh_selected += on_static_mesh_selected;
         rooms_window->set_level_version(_level_version);
         rooms_window->set_items(_all_items);
         rooms_window->set_rooms(_all_rooms);

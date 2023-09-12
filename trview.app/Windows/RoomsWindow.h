@@ -66,12 +66,15 @@ namespace trview
         void set_lights(const std::vector<std::weak_ptr<ILight>>& lights);
         void set_camera_sinks(const std::vector<std::weak_ptr<ICameraSink>>& camera_sinks);
         void select_room(uint32_t room);
+        void render_statics_tab();
+        void set_static_meshes(const std::vector<std::weak_ptr<IStaticMesh>>& static_meshes);
 
         std::vector<std::weak_ptr<IRoom>> _all_rooms;
         std::vector<std::weak_ptr<IItem>> _all_items;
         std::vector<std::weak_ptr<ITrigger>> _triggers;
         std::vector<std::weak_ptr<ILight>> _lights;
         std::vector<std::weak_ptr<ICameraSink>> _camera_sinks;
+        std::vector<std::weak_ptr<IStaticMesh>> _static_meshes;
 
         bool _sync_room{ true };
 
@@ -90,6 +93,9 @@ namespace trview
         std::weak_ptr<ICameraSink> _global_selected_camera_sink;
         std::weak_ptr<ICameraSink> _local_selected_camera_sink;
         bool _scroll_to_camera_sink{ false };
+
+        std::weak_ptr<IStaticMesh> _local_selected_static_mesh;
+        bool _scroll_to_static_mesh{ false };
 
         uint32_t _current_room{ 0u };
         uint32_t _selected_room{ 0u };

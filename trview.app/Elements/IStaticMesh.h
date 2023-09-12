@@ -39,6 +39,9 @@ namespace trview
     };
 
     constexpr std::string to_string(IStaticMesh::Type type) noexcept;
+
+    uint32_t static_mesh_room(const std::shared_ptr<IStaticMesh>& static_mesh);
+    uint32_t static_mesh_room(const IStaticMesh& static_mesh);
 }
 
 #include "IStaticMesh.inl"

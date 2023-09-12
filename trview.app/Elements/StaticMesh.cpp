@@ -1,6 +1,7 @@
 #include "StaticMesh.h"
 #include <trview.app/Geometry/Matrix.h>
 #include <trview.app/Geometry/ITransparencyBuffer.h>
+#include "IRoom.h"
 
 namespace trview
 {
@@ -131,5 +132,23 @@ namespace trview
     uint16_t StaticMesh::id() const
     {
         return _mesh_texture_id;
+    }
+
+    uint32_t static_mesh_room(const std::shared_ptr<IStaticMesh>& static_mesh)
+    {
+        if (!static_mesh)
+        {
+            return 0u;
+        }
+        return static_mesh_room(*static_mesh);
+    }
+
+    uint32_t static_mesh_room(const IStaticMesh& static_mesh)
+    {
+        if (auto room = static_mesh.room().lock())
+        {
+            return room->number();
+        }
+        return 0u;
     }
 }

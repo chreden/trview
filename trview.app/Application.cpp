@@ -354,6 +354,7 @@ namespace trview
         _token_store += _rooms_windows->on_sector_hover += [this](const auto& sector) { select_sector(sector); };
         _token_store += _rooms_windows->on_camera_sink_selected += [this](const auto& camera_sink) { select_camera_sink(camera_sink); };
         _token_store += _rooms_windows->on_light_selected += [this](const auto& light) { select_light(light); };
+        _token_store += _rooms_windows->on_static_mesh_selected += [this](const auto& static_mesh) { select_static_mesh(static_mesh); };
     }
 
     void Application::setup_route_window()
@@ -1032,5 +1033,22 @@ namespace trview
         _route_window->set_route(_route);
         _route->set_level(_level);
         _viewer->set_route(_route);
+    }
+
+    void Application::select_static_mesh(const std::weak_ptr<IStaticMesh>& static_mesh)
+    {
+        if (!_level)
+        {
+            return;
+        }
+
+        auto static_mesh_ptr = static_mesh.lock();
+        if (!static_mesh_ptr)
+        {
+            return;
+        }
+
+        select_room(static_mesh_room(static_mesh_ptr));
+        _viewer->select_static_mesh(static_mesh_ptr);
     }
 }

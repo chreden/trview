@@ -132,6 +132,7 @@ namespace trview
         void save_route_as();
         void open_recent_route();
         void save_window_placement();
+        void select_static_mesh(const std::weak_ptr<IStaticMesh>& static_mesh);
 
         TokenStore _token_store;
 

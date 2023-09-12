@@ -521,6 +521,11 @@ namespace trview
                             _in_floordata_mode = false;
                         }
 
+                        if (ImGui::BeginTabItem("Statics"))
+                        {
+                            render_statics_tab();
+                            ImGui::EndTabItem();
+                        }
 
                         ImGui::EndTabBar();
                     }
@@ -1148,6 +1153,7 @@ namespace trview
                 set_triggers(room_ptr->triggers());
                 set_lights(room_ptr->lights());
                 set_camera_sinks(room_ptr->camera_sinks());
+                set_static_meshes(room_ptr->static_meshes());
                 return;
             }
         }
@@ -1155,5 +1161,57 @@ namespace trview
         _lights.clear();
         _camera_sinks.clear();
         _triggers.clear();
+        _static_meshes.clear();
+    }
+
+    void RoomsWindow::render_statics_tab()
+    {
+        if (ImGui::BeginTable("Statics", 2, ImGuiTableFlags_Sortable | ImGuiTableFlags_SizingStretchProp | ImGuiTableFlags_ScrollY))
+        {
+            ImGui::TableSetupColumn("#");
+            ImGui::TableSetupColumn("ID");
+            ImGui::TableSetupScrollFreeze(1, 1);
+            ImGui::TableHeadersRow();
+
+            uint32_t i = 0;
+            for (const auto& static_mesh : _static_meshes)
+            {
+                if (auto static_mesh_ptr = static_mesh.lock())
+                {
+                    ImGui::TableNextRow();
+                    ImGui::TableNextColumn();
+
+                    const auto local_selection = _local_selected_static_mesh.lock();
+                    bool selected = local_selection && local_selection == static_mesh_ptr;
+
+                    ImGuiScroller scroller;
+                    if (selected && _scroll_to_static_mesh)
+                    {
+                        scroller.scroll_to_item();
+                        _scroll_to_static_mesh = false;
+                    }
+
+                    if (ImGui::Selectable(std::format("{0}##{0}", i++).c_str(), &selected, ImGuiSelectableFlags_SpanAllColumns | static_cast<int>(ImGuiSelectableFlags_SelectOnNav)))
+                    {
+                        scroller.fix_scroll();
+                        _local_selected_static_mesh = static_mesh_ptr;
+                        on_static_mesh_selected(static_mesh);
+                        _scroll_to_static_mesh = false;
+                    }
+
+                    ImGui::TableNextColumn();
+                    ImGui::Text(std::format("{}", static_mesh_ptr->id()).c_str());
+                }
+            }
+
+            ImGui::EndTable();
+        }
+    }
+
+    void RoomsWindow::set_static_meshes(const std::vector<std::weak_ptr<IStaticMesh>>& static_meshes)
+    {
+        _local_selected_static_mesh.reset();
+        _static_meshes = static_meshes;
+        _force_sort = true;
     }
 }
