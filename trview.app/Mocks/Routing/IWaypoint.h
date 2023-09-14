@@ -42,6 +42,7 @@ namespace trview
             MOCK_METHOD(std::weak_ptr<ITrigger>, trigger, (), (const, override));
             MOCK_METHOD(Colour, route_colour, (), (const, override));
             MOCK_METHOD(Colour, waypoint_colour, (), (const, override));
+            MOCK_METHOD(DirectX::SimpleMath::Vector2, screen_position, (), (const, override));
             /// <summary>
             /// Index used for testing ordering.
             /// </summary>

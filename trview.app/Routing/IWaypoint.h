@@ -122,6 +122,7 @@ namespace trview
         virtual Colour waypoint_colour() const = 0;
         virtual void set_normal(const DirectX::SimpleMath::Vector3& normal) = 0;
         virtual void set_room_number(uint32_t room) = 0;
+        virtual DirectX::SimpleMath::Vector2 screen_position() const = 0;
 
         Event<> on_changed;
     };

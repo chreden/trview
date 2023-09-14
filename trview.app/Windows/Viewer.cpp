@@ -865,6 +865,7 @@ namespace trview
     void Viewer::set_route(const std::shared_ptr<IRoute>& route)
     {
         _route = route;
+        _ui->set_route(route);
         _scene_changed = true;
     }
 

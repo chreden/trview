@@ -4,9 +4,21 @@
 #include <trview.app/UI/ContextMenu.h>
 #include <trview.input/WindowTester.h>
 #include <trview.common/Windows/Shortcuts.h>
+#include "../Routing/IRoute.h"
+
+using namespace DirectX::SimpleMath;
 
 namespace trview
 {
+    namespace
+    {
+        template <typename PointType>
+        bool is_on_screen(const PointType& point, const ImGuiViewport& viewport)
+        {
+            return !(point.x < 0 || point.y < 0 || point.x > viewport.Size.x || point.y > viewport.Size.y);
+        }
+    }
+
     IViewerUI::~IViewerUI()
     {
     }
@@ -210,16 +222,18 @@ namespace trview
         if (_show_measure)
         {
             const auto vp = ImGui::GetMainViewport();
-            if (!(_measure_position.x < 0 || _measure_position.y < 0 || _measure_position.x > vp->Size.x || _measure_position.y > vp->Size.y))
+            if (is_on_screen(_measure_position, *vp))
             {
                 ImGui::SetNextWindowPos(vp->Pos + ImVec2(_measure_position.x, _measure_position.y));
-                if (ImGui::Begin("##measure", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_AlwaysAutoResize))
+                if (ImGui::Begin("##measure", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoInputs))
                 {
                     ImGui::Text(_measure_text.c_str());
                 }
                 ImGui::End();
             }
         }
+
+        render_route_notes();
     }
 
     void ViewerUI::set_alternate_group(uint32_t value, bool enabled)
@@ -421,5 +435,40 @@ namespace trview
     void ViewerUI::set_triggered_by(const std::vector<std::weak_ptr<ITrigger>>& triggers)
     {
         _context_menu->set_triggered_by(triggers);
+    }
+
+    void ViewerUI::set_route(const std::weak_ptr<IRoute>& route)
+    {
+        _route = route;
+    }
+
+    void ViewerUI::render_route_notes()
+    {
+        if (auto route = _route.lock())
+        {
+            const auto vp = ImGui::GetMainViewport();
+            for (auto i = 0u; i < route->waypoints(); ++i)
+            {
+                if (const auto waypoint = route->waypoint(i).lock())
+                {
+                    const auto notes = waypoint->notes();
+                    if (notes.empty())
+                    {
+                        continue;
+                    }
+
+                    const auto pos = waypoint->screen_position();
+                    if (is_on_screen(pos, *vp))
+                    {
+                        ImGui::SetNextWindowPos(vp->Pos + ImVec2(pos.x, pos.y));
+                        if (ImGui::Begin(std::format("##waypoint{}", i).c_str(), nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoInputs))
+                        {
+                            ImGui::Text(notes.c_str());
+                        }
+                        ImGui::End();
+                    }
+                }
+            }
+        }
     }
 }
