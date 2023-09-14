@@ -1283,3 +1283,20 @@ TEST(Application, RouteNewRandomizerRoute)
     route_window_manager.on_new_randomizer_route();
     ASSERT_EQ(application->route(), route);
 }
+
+TEST(Application, OnStaticMeshSelected)
+{
+    auto level = mock_shared<trview::mocks::MockLevel>();
+    auto static_mesh = mock_shared<MockStaticMesh>();
+    auto [rooms_window_manager_ptr, rooms_window_manager] = create_mock<MockRoomsWindowManager>();
+    auto [viewer_ptr, viewer] = create_mock<MockViewer>();
+    auto application = register_test_module()
+        .with_rooms_window_manager(std::move(rooms_window_manager_ptr))
+        .with_viewer(std::move(viewer_ptr))
+        .build();
+
+    application->set_current_level(level, ILevel::OpenMode::Full, false);
+
+    EXPECT_CALL(viewer, select_static_mesh).Times(1);
+    rooms_window_manager.on_static_mesh_selected(static_mesh);
+}
