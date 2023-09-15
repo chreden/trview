@@ -1409,4 +1409,17 @@ namespace trview
             set_show_lighting(!_level->show_lighting());
         }
     }
+
+    void Viewer::select_static_mesh(const std::weak_ptr<IStaticMesh>& static_mesh)
+    {
+        if (auto static_mesh_ptr = static_mesh.lock())
+        {
+            _target = static_mesh_ptr->position();
+            if (_settings.auto_orbit)
+            {
+                set_camera_mode(CameraMode::Orbit);
+            }
+            _scene_changed = true;
+        }
+    }
 }

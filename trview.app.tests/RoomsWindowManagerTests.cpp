@@ -6,6 +6,7 @@
 #include <trview.app/Mocks/Elements/ITrigger.h>
 #include <trview.app/Mocks/Elements/ISector.h>
 #include <trview.app/Mocks/Elements/IRoom.h>
+#include <trview.app/Mocks/Elements/IStaticMesh.h>
 
 using namespace trview;
 using namespace trview::mocks;
@@ -148,4 +149,22 @@ TEST(RoomsWindowManager, OnSectorHoverRaised)
 
     window->on_sector_hover(sector);
     ASSERT_EQ(raised.lock(), sector);
+}
+
+TEST(RoomsWindowManager, OnStaticMeshSelectedForwarded)
+{
+    auto manager = register_test_module().build();
+    auto static_mesh = mock_shared<MockStaticMesh>();
+
+    std::shared_ptr<IStaticMesh> raised;
+    auto token = manager->on_static_mesh_selected += [&](auto&& value)
+    {
+        raised = value.lock();
+    };
+
+    auto window = manager->create_window().lock();
+    ASSERT_NE(window, nullptr);
+
+    window->on_static_mesh_selected(static_mesh);
+    ASSERT_EQ(raised, static_mesh);
 }
