@@ -429,3 +429,34 @@ TEST(ViewOptions, LightingCheckboxUpdated)
     imgui.render();
     ASSERT_FALSE(imgui.status_flags(imgui.id("View Options").push(ViewOptions::Names::flags).id(IViewer::Options::lighting)) & ImGuiItemStatusFlags_Checked);
 }
+
+
+TEST(ViewOptions, NotesCheckboxToggle)
+{
+    ViewOptions view_options;
+
+    std::optional<std::tuple<std::string, bool>> clicked;
+    auto token = view_options.on_toggle_changed += [&](const std::string& name, bool value)
+        {
+            clicked = { name, value };
+        };
+
+    tests::TestImgui imgui([&]() { view_options.render(); });
+    imgui.click_element(imgui.id("View Options").push(ViewOptions::Names::flags).id(IViewer::Options::notes));
+
+    ASSERT_TRUE(clicked.has_value());
+    ASSERT_EQ(std::get<0>(clicked.value()), IViewer::Options::notes);
+    ASSERT_FALSE(std::get<1>(clicked.value()));
+}
+
+TEST(ViewOptions, NotesCheckboxUpdated)
+{
+    ViewOptions view_options;
+
+    tests::TestImgui imgui([&]() { view_options.render(); });
+    ASSERT_TRUE(imgui.status_flags(imgui.id("View Options").push(ViewOptions::Names::flags).id(IViewer::Options::notes)) & ImGuiItemStatusFlags_Checked);
+
+    view_options.set_toggle(IViewer::Options::notes, false);
+    imgui.render();
+    ASSERT_FALSE(imgui.status_flags(imgui.id("View Options").push(ViewOptions::Names::flags).id(IViewer::Options::notes)) & ImGuiItemStatusFlags_Checked);
+}
