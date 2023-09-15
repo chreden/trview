@@ -371,6 +371,8 @@ namespace trview
             _timer.reset();
             _camera_input.reset();
         };
+
+        _ui->set_route(_route);
     }
 
     void Viewer::initialise_input()
