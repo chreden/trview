@@ -445,34 +445,32 @@ namespace trview
 
     void ViewerUI::render_route_notes()
     {
-        if (!toggle(IViewer::Options::notes))
+        const auto route = _route.lock();
+        if (!route || !toggle(IViewer::Options::notes))
         {
             return;
         }
 
-        if (auto route = _route.lock())
+        const auto vp = ImGui::GetMainViewport();
+        for (auto i = 0u; i < route->waypoints(); ++i)
         {
-            const auto vp = ImGui::GetMainViewport();
-            for (auto i = 0u; i < route->waypoints(); ++i)
+            if (const auto waypoint = route->waypoint(i).lock())
             {
-                if (const auto waypoint = route->waypoint(i).lock())
+                const auto notes = waypoint->notes();
+                if (notes.empty())
                 {
-                    const auto notes = waypoint->notes();
-                    if (notes.empty())
-                    {
-                        continue;
-                    }
+                    continue;
+                }
 
-                    const auto pos = waypoint->screen_position();
-                    if (is_on_screen(pos, *vp))
+                const auto pos = waypoint->screen_position();
+                if (is_on_screen(pos, *vp))
+                {
+                    ImGui::SetNextWindowPos(vp->Pos + ImVec2(pos.x, pos.y));
+                    if (ImGui::Begin(std::format("##waypoint{}", i).c_str(), nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoInputs))
                     {
-                        ImGui::SetNextWindowPos(vp->Pos + ImVec2(pos.x, pos.y));
-                        if (ImGui::Begin(std::format("##waypoint{}", i).c_str(), nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoInputs))
-                        {
-                            ImGui::Text(notes.c_str());
-                        }
-                        ImGui::End();
+                        ImGui::Text(notes.c_str());
                     }
+                    ImGui::End();
                 }
             }
         }
