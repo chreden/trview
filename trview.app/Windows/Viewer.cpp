@@ -952,6 +952,11 @@ namespace trview
     void Viewer::resize_elements()
     {
         const auto size = window().size();
+        if (size == Size())
+        {
+            return;
+        }
+
         // Inform elements that need to know that the device has been resized.
         _camera.set_view_size(size);
         _free_camera.set_view_size(size);
