@@ -5,6 +5,7 @@
 #include <trview.input/WindowTester.h>
 #include <trview.common/Windows/Shortcuts.h>
 #include "../Routing/IRoute.h"
+#include "../Windows/IViewer.h"
 
 using namespace DirectX::SimpleMath;
 
@@ -444,6 +445,11 @@ namespace trview
 
     void ViewerUI::render_route_notes()
     {
+        if (!toggle(IViewer::Options::notes))
+        {
+            return;
+        }
+
         if (auto route = _route.lock())
         {
             const auto vp = ImGui::GetMainViewport();
