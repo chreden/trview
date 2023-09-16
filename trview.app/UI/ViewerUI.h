@@ -69,8 +69,10 @@ namespace trview
         virtual void set_toggle(const std::string& name, bool value) override;
         virtual bool toggle(const std::string& name) const override;
         virtual void set_triggered_by(const std::vector<std::weak_ptr<ITrigger>>& triggers) override;
+        void set_route(const std::weak_ptr<IRoute>& route) override;
     private:
         void generate_tool_window();
+        void render_route_notes();
 
         TokenStore _token_store;
         input::Mouse _mouse;
@@ -95,5 +97,6 @@ namespace trview
         bool _visible{ true };
         uint32_t _selected_room{ 0u };
         uint32_t _selected_item{ 0u };
+        std::weak_ptr<IRoute> _route;
     };
 }

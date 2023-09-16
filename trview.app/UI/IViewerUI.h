@@ -248,5 +248,7 @@ namespace trview
         /// </summary>
         /// <param name="triggers"></param>
         virtual void set_triggered_by(const std::vector<std::weak_ptr<ITrigger>>& triggers) = 0;
+
+        virtual void set_route(const std::weak_ptr<IRoute>& route) = 0;
     };
 }

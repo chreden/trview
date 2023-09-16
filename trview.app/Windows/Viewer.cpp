@@ -371,6 +371,8 @@ namespace trview
             _timer.reset();
             _camera_input.reset();
         };
+
+        _ui->set_route(_route);
     }
 
     void Viewer::initialise_input()
@@ -865,6 +867,7 @@ namespace trview
     void Viewer::set_route(const std::shared_ptr<IRoute>& route)
     {
         _route = route;
+        _ui->set_route(route);
         _scene_changed = true;
     }
 

@@ -38,6 +38,9 @@ namespace trview
         // The light blob.
         auto blob_wvp = Matrix::CreateScale(PoleThickness, PoleThickness, PoleThickness) * Matrix::CreateTranslation(-Vector3(0, PoleLength + PoleThickness * 0.5f, 0)) * rotation * Matrix::CreateTranslation(_position) * camera.view_projection();
         _mesh->render(blob_wvp, texture_storage, colour == IRenderable::SelectionFill ? colour : static_cast<Color>(_route_colour));
+
+        const auto window_size = camera.view_size();
+        _screen_position = XMVector3Project(blob_position(), 0, 0, window_size.width, window_size.height, 0, 1.0f, camera.projection(), camera.view(), Matrix::Identity);
     }
 
     void Waypoint::render_join(const IWaypoint& next_waypoint, const ICamera& camera, const ILevelTextureStorage& texture_storage, const Color& colour)
@@ -272,6 +275,11 @@ namespace trview
     {
         _room = room;
         on_changed();
+    }
+
+    Vector2 Waypoint::screen_position() const
+    {
+        return _screen_position;
     }
 }
 

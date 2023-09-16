@@ -56,6 +56,7 @@ namespace trview
         Colour route_colour() const override;
         void set_normal(const DirectX::SimpleMath::Vector3& normal) override;
         void set_room_number(uint32_t room) override;
+        DirectX::SimpleMath::Vector2 screen_position() const override;
     private:
         DirectX::SimpleMath::Matrix calculate_waypoint_rotation() const;
         void set_properties(Type type, uint32_t index, uint32_t room, const DirectX::SimpleMath::Vector3& position);
@@ -76,5 +77,7 @@ namespace trview
 
         mutable std::weak_ptr<IItem> _item;
         mutable std::weak_ptr<ITrigger> _trigger;
+
+        DirectX::SimpleMath::Vector2 _screen_position{ -1, -1 };
     };
 }

@@ -1056,3 +1056,11 @@ TEST(Viewer, TriggerSelectedForwarded)
     level.on_trigger_selected(trigger);
     ASSERT_EQ(raised, nullptr);
 }
+
+TEST(Viewer, SetRouteForwarded)
+{
+    auto [ui_ptr, ui] = create_mock<MockViewerUI>();
+    EXPECT_CALL(ui, set_route).Times(2);
+    auto viewer = register_test_module().with_ui(std::move(ui_ptr)).build();
+    viewer->set_route(mock_shared<MockRoute>());
+}
