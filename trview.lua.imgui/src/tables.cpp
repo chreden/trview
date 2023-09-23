@@ -5,6 +5,16 @@ namespace trview
 {
     namespace lua
     {
+        float get_double(lua_State* L, int index, const std::string& name)
+        {
+            luaL_checktype(L, index, LUA_TTABLE);
+            lua_getfield(L, index, name.c_str());
+            luaL_checktype(L, -1, LUA_TNUMBER);
+            double value = lua_tonumber(L, -1);
+            lua_pop(L, 1);
+            return value;
+        }
+
         float get_float(lua_State* L, int index, const std::string& name)
         {
             luaL_checktype(L, index, LUA_TTABLE);

@@ -10,6 +10,7 @@ namespace trview
 {
     namespace lua
     {
+        double get_double(lua_State* L, int index, const std::string& name);
         float get_float(lua_State* L, int index, const std::string& name);
         int get_integer(lua_State* L, int index, const std::string& name);
         std::optional<double> get_optional_double(lua_State* L, int index, const std::string& name);

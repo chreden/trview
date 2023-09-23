@@ -11,7 +11,7 @@ namespace trview
             int input_double(lua_State* L)
             {
                 const auto label = get_string(L, 1, "label");
-                double out = 0.0;
+                double out = get_double(L, 1, "value");
                 const auto step = get_optional_double(L, 1, "step");
                 const auto step_fast = get_optional_double(L, 1, "step_fast");
                 const auto format = get_optional_string(L, 1, "format");
@@ -173,7 +173,7 @@ namespace trview
             int input_text(lua_State* L)
             {
                 const auto label = get_string(L, 1, "label");
-                std::string out;
+                std::string out = get_string(L, 1, "value");
                 const auto flags = get_optional_integer(L, 1, "flags");
                 bool result = ImGui::InputText(label.c_str(), &out, flags.value_or(ImGuiInputTextFlags_None));
                 lua_pushboolean(L, result);
@@ -194,10 +194,10 @@ namespace trview
                     { "CharsNoBlank", ImGuiInputTextFlags_CharsNoBlank },
                     { "AutoSelectAll", ImGuiInputTextFlags_AutoSelectAll },
                     { "EnterReturnsTrue", ImGuiInputTextFlags_EnterReturnsTrue },
-                    // { "CallbackCompletion", ImGuiInputTextFlags_CallbackCompletion },
-                    // { "CallbackHistory", ImGuiInputTextFlags_CallbackHistory },
-                    // { "CallbackAlways", ImGuiInputTextFlags_CallbackAlways },
-                    // { "CallbackCharFilter", ImGuiInputTextFlags_CallbackCharFilter },
+                    { "CallbackCompletion", ImGuiInputTextFlags_CallbackCompletion },
+                    { "CallbackHistory", ImGuiInputTextFlags_CallbackHistory },
+                    { "CallbackAlways", ImGuiInputTextFlags_CallbackAlways },
+                    { "CallbackCharFilter", ImGuiInputTextFlags_CallbackCharFilter },
                     { "AllowTabInput", ImGuiInputTextFlags_AllowTabInput },
                     { "CtrlEnterForNewLine", ImGuiInputTextFlags_CtrlEnterForNewLine },
                     { "NoHorizontalScroll", ImGuiInputTextFlags_NoHorizontalScroll },
@@ -206,8 +206,8 @@ namespace trview
                     { "Password", ImGuiInputTextFlags_Password },
                     { "NoUndoRedo", ImGuiInputTextFlags_NoUndoRedo },
                     { "CharsScientific", ImGuiInputTextFlags_CharsScientific },
-                    // { "CallbackResize", ImGuiInputTextFlags_CallbackResize },
-                    // { "CallbackEdit", ImGuiInputTextFlags_CallbackEdit }
+                    { "CallbackResize", ImGuiInputTextFlags_CallbackResize },
+                    { "CallbackEdit", ImGuiInputTextFlags_CallbackEdit }
                 });
 
             constexpr luaL_Reg funcs[] = {
