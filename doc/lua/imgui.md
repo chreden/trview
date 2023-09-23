@@ -16,6 +16,16 @@ The ImGui library allows plugins to render UI elements.
 | EndChild ||||
 | EndCombo ||||
 | EndTable ||||
+| InputDouble | `boolean result, number value` |||
+| InputFloat | `boolean result, number value` |||
+| InputFloat2 | `boolean result, number value1, number value2` |||
+| InputFloat3 | `boolean result, number value1, number value2, number value3` |||
+| InputFloat4 | `boolean result, number value1, number value2, number value3, number value4` |||
+| InputInt | `boolean result, number value` |||
+| InputInt2 | `boolean result, number value1, number value2` |||
+| InputInt3 | `boolean result, number value1, number value2, number value3` |||
+| InputInt4 | `boolean result, number value1, number value2, number value3, number value4` |||
+| InputText | `boolean result, string value` |||
 | SameLine ||||
 | Selectable |`boolean result`|`{ string label, boolean selected, ImGuiSelectableFlags flags }`||
 | TableHeadersRow ||||
@@ -36,5 +46,25 @@ The ImGui library allows plugins to render UI elements.
 ## ImGuiTableColumnFlags
 
 ## ImGuiTableFlags
+
+## ImGuiTextFlags
+
+| Name |
+| ---- |
+| None |
+| CharsDecimal |
+| CharsHexadecimal |
+| CharsUppercase |
+| CharsNoBlank |
+| AutoSelectAll |
+| EnterReturnsTrue |
+| AllowTabInput |
+| CtrlEnterForNewLine |
+| NoHorizontalScroll |
+| AlwaysOverwrite |
+| ReadOnly |
+| Password |
+| NoUndoRedo |
+| CharsScientific |
 
 ## ImGuiButtonFlags
