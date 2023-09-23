@@ -5,7 +5,7 @@ namespace trview
 {
     namespace lua
     {
-        float get_double(lua_State* L, int index, const std::string& name)
+        double get_double(lua_State* L, int index, const std::string& name)
         {
             luaL_checktype(L, index, LUA_TTABLE);
             lua_getfield(L, index, name.c_str());
