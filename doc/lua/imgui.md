@@ -127,48 +127,48 @@ The ImGui library allows plugins to render UI elements.
 
 ## TableFlags
 
-| Name |
-| ---- |
-| None |
-| Resizable |
-| Reorderable |
-| Hideable |
-| Sortable |
-| NoSavedSettings |
-| ContextMenuInBody |
-| RowBg |
-| BordersInnerH |
-| BordersOuterH |
-| BordersInnerV |
-| BordersOuterV |
-| BordersH |
-| BordersV |
-| BordersInner |
-| BordersOuter |
-| Borders |
-| NoBordersInBody |
-| NoBordersInBodyUntilResize |
-| SizingFixedFit |
-| SizingFixedSame |
-| SizingStretchProp |
-| SizingStretchSame |
-| NoHostExtendX |
-| NoHostExtendY |
-| NoKeepColumnsVisible |
-| PreciseWidths |
-| NoClip |
-| PadOuterX |
-| NoPadOuterX |
-| NoPadInnerX |
-| ScrollX |
-| ScrollY |
-| SortMulti |
-| SortTristate |
+| Name | Notes |
+| ---- | ----- |
+| None ||
+| Resizable ||
+| Reorderable ||
+| Hideable ||
+| Sortable | Not yet implemented |
+| NoSavedSettings ||
+| ContextMenuInBody ||
+| RowBg ||
+| BordersInnerH ||
+| BordersOuterH ||
+| BordersInnerV ||
+| BordersOuterV ||
+| BordersH ||
+| BordersV ||
+| BordersInner ||
+| BordersOuter ||
+| Borders ||
+| NoBordersInBody ||
+| NoBordersInBodyUntilResize ||
+| SizingFixedFit ||
+| SizingFixedSame ||
+| SizingStretchProp ||
+| SizingStretchSame ||
+| NoHostExtendX ||
+| NoHostExtendY ||
+| NoKeepColumnsVisible ||
+| PreciseWidths ||
+| NoClip ||
+| PadOuterX ||
+| NoPadOuterX ||
+| NoPadInnerX ||
+| ScrollX ||
+| ScrollY ||
+| SortMulti | Not yet implemented |
+| SortTristate | Not yet implemented |
 
 ## InputTextFlags
 
 | Name | Notes |
-| ---- ||
+| ---- | ----- |
 | None ||
 | CharsDecimal ||
 | CharsHexadecimal ||
