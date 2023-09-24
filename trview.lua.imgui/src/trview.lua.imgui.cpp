@@ -3,13 +3,14 @@
 
 #include "pch.h"
 #include "framework.h"
-#include "trview.lua.imgui.h"
+#include "../inc/trview.lua.imgui.h"
 
-#include <external/imgui/imgui.h>
-#include <external/imgui/imgui_internal.h>
 #include <optional>
 #include <string>
 #include <vector>
+
+#include "trview.lua.imgui.input.h"
+#include "tables.h"
 
 namespace trview
 {
@@ -47,72 +48,6 @@ namespace trview
                 bool value = lua_toboolean(L, -1);
                 lua_pop(L, 1);
                 return value;
-            }
-
-            std::optional<int> get_optional_integer(lua_State* L, int index, const std::string& name)
-            {
-                luaL_checktype(L, index, LUA_TTABLE);
-                lua_getfield(L, index, name.c_str());
-                if (lua_isnil(L, -1))
-                {
-                    lua_pop(L, 1);
-                    return std::nullopt;
-                }
-                luaL_checktype(L, -1, LUA_TNUMBER);
-                int value = lua_tointeger(L, -1);
-                lua_pop(L, 1);
-                return value;
-            }
-
-            int get_integer(lua_State* L, int index, const std::string& name)
-            {
-                luaL_checktype(L, index, LUA_TTABLE);
-                lua_getfield(L, index, name.c_str());
-                luaL_checktype(L, -1, LUA_TNUMBER);
-                int value = lua_tointeger(L, -1);
-                lua_pop(L, 1);
-                return value;
-            }
-
-            std::string get_string(lua_State* L, int index, const std::string& name)
-            {
-                luaL_checktype(L, index, LUA_TTABLE);
-                lua_getfield(L, index, name.c_str());
-                luaL_checktype(L, -1, LUA_TSTRING);
-                std::string value = lua_tostring(L, -1);
-                lua_pop(L, 1);
-                return value;
-            }
-
-            void set_integer(lua_State* L, int index, const std::string& name, int value)
-            {
-                if (index < 0)
-                {
-                    index += lua_gettop(L) + 1;
-                }
-                lua_pushinteger(L, value);
-                lua_setfield(L, index, name.c_str());
-            }
-
-            struct EnumValue
-            {
-                std::string name;
-                int value;
-            };
-
-            void set_enum(lua_State* L, const std::string& name, int index, const std::vector<EnumValue>& values)
-            {
-                if (index < 0)
-                {
-                    index += lua_gettop(L) + 1;
-                }
-
-                lua_newtable(L);
-                for (const auto& v : values)
-                {
-                    set_integer(L, -1, v.name.c_str(), v.value);
-                }
-                lua_setfield(L, index, name.c_str());
             }
 
             int begin(lua_State* L)
@@ -459,6 +394,8 @@ namespace trview
 
             lua_pushcfunction(L, same_line);
             lua_setfield(L, -2, "SameLine");
+
+            register_input(L);
 
             lua_setglobal(L, "ImGui");
         }
