@@ -1,5 +1,5 @@
 #include "CameraPosition.h"
-#include <trlevel/ILevel.h>
+#include <trlevel/inc/ILevel.h>
 
 using namespace DirectX::SimpleMath;
 
