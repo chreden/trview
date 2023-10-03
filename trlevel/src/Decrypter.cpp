@@ -52,6 +52,9 @@ namespace trlevel
 
     void Decrypter::decrypt(std::vector<uint8_t>& bytes) const
     {
+#pragma warning(push)
+#pragma warning(disable: 4302)
+
         // Remove the 'c' from TR4c
         bytes[3] = 0;
 
@@ -110,11 +113,14 @@ namespace trlevel
 
             data = reinterpret_cast<uint32_t*>(b_data + first + 8);
         }
+#pragma warning(pop)
     }
 
 
     void Decrypter::encrypt(std::vector<uint8_t>& bytes) const
     {
+#pragma warning(push)
+#pragma warning(disable: 4302)
         // Remove the 'c' from TR4c
         bytes[3] = 'c';
 
@@ -172,7 +178,7 @@ namespace trlevel
 
             data = reinterpret_cast<uint32_t*>(b_data + first + 8);
         }
-
+#pragma warning(pop)
     }
 
 }

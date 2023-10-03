@@ -3,7 +3,7 @@
 #include <unordered_map>
 #include <cstdint>
 #include <memory>
-#include <trlevel/ILevel.h>
+#include <trlevel/inc/ILevel.h>
 #include "IMeshStorage.h"
 #include <trview.app/Geometry/IMesh.h>
 

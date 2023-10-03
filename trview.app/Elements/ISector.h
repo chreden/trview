@@ -6,8 +6,8 @@
 #include <vector>
 #include <SimpleMath.h>
 #include "Types.h"
-#include "trlevel/ILevel.h"
-#include "trlevel/trtypes.h"
+#include <trlevel/inc/ILevel.h>
+#include <trlevel/inc/trtypes.h>
 
 namespace trview
 {

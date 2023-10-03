@@ -1,8 +1,8 @@
 #include "Item.h"
 
 #include <trview.common/Algorithms.h>
-#include <trlevel/ILevel.h>
-#include <trlevel/trtypes.h>
+#include <trlevel/inc/ILevel.h>
+#include <trlevel/inc/trtypes.h>
 
 #include "../Graphics/ILevelTextureStorage.h"
 #include "../Graphics/IMeshStorage.h"

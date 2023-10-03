@@ -4,8 +4,8 @@
 #include <array>
 #include <memory>
 #include <SimpleMath.h>
-#include <trlevel/trtypes.h>
-#include <trlevel/ILevel.h>
+#include <trlevel/inc/trtypes.h>
+#include <trlevel/inc/ILevel.h>
 #include <trview.app/Graphics/ILevelTextureStorage.h>
 #include <trview.graphics/IDevice.h>
 

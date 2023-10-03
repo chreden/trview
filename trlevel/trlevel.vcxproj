@@ -171,39 +171,29 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="Decrypter.h" />
-    <ClInclude Include="IDecrypter.h" />
-    <ClInclude Include="ILevel.h" />
-    <ClInclude Include="Level.h" />
-    <ClInclude Include="LevelEncryptedException.h" />
-    <ClInclude Include="LevelLoadException.h" />
-    <ClInclude Include="LevelVersion.h" />
-    <ClInclude Include="LevelVersion.hpp" />
-    <ClInclude Include="Mocks\ILevel.h" />
-    <ClInclude Include="stdafx.h" />
-    <ClInclude Include="trtypes.h" />
-    <ClInclude Include="tr_lights.h" />
-    <ClInclude Include="tr_rooms.h" />
+    <ClInclude Include="inc\IDecrypter.h" />
+    <ClInclude Include="inc\ILevel.h" />
+    <ClInclude Include="inc\LevelEncryptedException.h" />
+    <ClInclude Include="inc\LevelLoadException.h" />
+    <ClInclude Include="inc\LevelVersion.h" />
+    <ClInclude Include="inc\LevelVersion.hpp" />
+    <ClInclude Include="inc\trtypes.h" />
+    <ClInclude Include="inc\tr_lights.h" />
+    <ClInclude Include="inc\tr_rooms.h" />
+    <ClInclude Include="Mocks\inc\ILevel.h" />
+    <ClInclude Include="src\Decrypter.h" />
+    <ClInclude Include="src\Level.h" />
+    <ClInclude Include="src\stdafx.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Decrypter.cpp">
-      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">4302</DisableSpecificWarnings>
-      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">4302</DisableSpecificWarnings>
-      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">4302</DisableSpecificWarnings>
-      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Release|x64'">4302</DisableSpecificWarnings>
-    </ClCompile>
-    <ClCompile Include="Level.cpp" />
-    <ClCompile Include="LevelVersion.cpp" />
-    <ClCompile Include="Mocks\MockLevel.cpp" />
-    <ClCompile Include="stdafx.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="trtypes.cpp" />
-    <ClCompile Include="tr_lights.cpp" />
-    <ClCompile Include="tr_rooms.cpp" />
+    <ClCompile Include="Mocks\src\MockLevel.cpp" />
+    <ClCompile Include="src\Decrypter.cpp" />
+    <ClCompile Include="src\Level.cpp" />
+    <ClCompile Include="src\LevelVersion.cpp" />
+    <ClCompile Include="src\stdafx.cpp" />
+    <ClCompile Include="src\trtypes.cpp" />
+    <ClCompile Include="src\tr_lights.cpp" />
+    <ClCompile Include="src\tr_rooms.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\external\zlib\contrib\vstudio\vc14\zlibstat.vcxproj">
@@ -211,7 +201,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="trtypes.inl" />
+    <None Include="inc\trtypes.inl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -1,6 +1,6 @@
-#include "../stdafx.h"
+#include "../../src/stdafx.h"
 #include <gmock/gmock.h>
-#include "ILevel.h"
+#include "../inc/ILevel.h"
 
 namespace trlevel
 {

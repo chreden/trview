@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../ILevel.h"
+#include "../../inc/ILevel.h"
 
 namespace trlevel
 {

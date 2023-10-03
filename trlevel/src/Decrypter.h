@@ -1,6 +1,6 @@
 #pragma once
 
-#include "IDecrypter.h"
+#include "../inc/IDecrypter.h"
 
 namespace trlevel
 {

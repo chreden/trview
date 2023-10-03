@@ -8,8 +8,8 @@
 #include <DirectXCollision.h>
 #include <SimpleMath.h>
 
-#include <trlevel/trtypes.h>
-#include <trlevel/ILevel.h>
+#include <trlevel/inc/trtypes.h>
+#include <trlevel/inc/ILevel.h>
 #include <trview.app/Geometry/ITransparencyBuffer.h>
 #include <trview.app/Geometry/IMesh.h>
 #include <trview.app/Elements/ISector.h>

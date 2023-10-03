@@ -5,9 +5,9 @@
 #include <vector>
 #include <unordered_map>
 
-#include "ILevel.h"
-#include "trtypes.h"
-#include "IDecrypter.h"
+#include "../inc/ILevel.h"
+#include "../inc/trtypes.h"
+#include "../inc/IDecrypter.h"
 
 #include <trview.common/Logs/ILog.h>
 #include <trview.common/Logs/Activity.h>

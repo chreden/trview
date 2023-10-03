@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "tr_rooms.h"
+#include "../inc/tr_rooms.h"
 
 using namespace DirectX::SimpleMath;
 

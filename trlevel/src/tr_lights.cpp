@@ -1,4 +1,4 @@
-#include "tr_lights.h"
+#include "../inc/tr_lights.h"
 #include <ranges>
 
 namespace trlevel

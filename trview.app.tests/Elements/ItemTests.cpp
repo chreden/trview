@@ -3,7 +3,7 @@
 #include <trview.app/Mocks/Elements/IRoom.h>
 #include <trview.app/Mocks/Geometry/IMesh.h>
 #include <trview.app/Mocks/Graphics/IMeshStorage.h>
-#include <trlevel/Mocks/ILevel.h>
+#include <trlevel/Mocks/inc/ILevel.h>
 #include <trview.tests.common/Mocks.h>
 
 using namespace trview;

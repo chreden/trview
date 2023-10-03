@@ -1,7 +1,7 @@
 #pragma once
 
 #include <vector>
-#include <trlevel/LevelVersion.h>
+#include <trlevel/inc/LevelVersion.h>
 #include "Action.h"
 
 namespace trview

@@ -1,5 +1,5 @@
 #include <trview.app/Elements/Sector.h>
-#include <trlevel/Mocks/ILevel.h>
+#include <trlevel/Mocks/inc/ILevel.h>
 #include <trview.app/Mocks/Elements/IRoom.h>
 #include <trview.tests.common/Mocks.h>
 

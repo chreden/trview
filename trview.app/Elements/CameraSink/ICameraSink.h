@@ -1,6 +1,6 @@
 #pragma once
 
-#include <trlevel/trtypes.h>
+#include <trlevel/inc/trtypes.h>
 #include "../../Geometry/IRenderable.h"
 #include "../../Geometry/PickResult.h"
 #include "../../Geometry/IMesh.h"

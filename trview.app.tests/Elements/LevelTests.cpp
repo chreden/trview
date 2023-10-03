@@ -1,5 +1,5 @@
 #include <trview.app/Elements/Level.h>
-#include <trlevel/Mocks/ILevel.h>
+#include <trlevel/Mocks/inc/ILevel.h>
 #include <trview.graphics/mocks/IDevice.h>
 #include <trview.graphics/mocks/IShaderStorage.h>
 #include <trview.app/Mocks/Geometry/ITransparencyBuffer.h>

@@ -1,4 +1,4 @@
-#include <trlevel/Mocks/ILevel.h>
+#include <trlevel/Mocks/inc/ILevel.h>
 #include <trview.app/Graphics/LevelTextureStorage.h>
 #include <trview.graphics/mocks/IDevice.h>
 #include <trview.app/Mocks/Graphics/ITextureStorage.h>

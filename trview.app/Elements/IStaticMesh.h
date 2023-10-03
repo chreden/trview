@@ -2,7 +2,7 @@
 
 #include <cstdint>
 #include <SimpleMath.h>
-#include <trlevel/trtypes.h>
+#include <trlevel/inc/trtypes.h>
 #include <trview.app/Camera/ICamera.h>
 #include <trview.app/Geometry/IMesh.h>
 

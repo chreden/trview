@@ -6,7 +6,7 @@
 #include <vector>
 #include <set>
 
-#include <trlevel/ILevel.h>
+#include <trlevel/inc/ILevel.h>
 #include <trview.app/Elements/ILevel.h>
 #include <trview.app/Geometry/ITransparencyBuffer.h>
 #include <trview.app/Graphics/ISelectionRenderer.h>

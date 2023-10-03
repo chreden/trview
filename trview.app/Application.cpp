@@ -1,5 +1,5 @@
 #include "Application.h"
-#include <trlevel/LevelEncryptedException.h>
+#include <trlevel/inc/LevelEncryptedException.h>
 #include "UserCancelledException.h"
 #include "Lua/trview/trview.h"
 

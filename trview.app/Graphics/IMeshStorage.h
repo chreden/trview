@@ -1,7 +1,7 @@
 #pragma once
 
 #include <cstdint>
-#include <trlevel/ILevel.h>
+#include <trlevel/inc/ILevel.h>
 #include <trview.app/Graphics/ILevelTextureStorage.h>
 
 namespace trview

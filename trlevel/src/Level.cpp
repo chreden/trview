@@ -1,6 +1,6 @@
 #include "Level.h"
-#include "LevelLoadException.h"
-#include "LevelEncryptedException.h"
+#include "../inc/LevelLoadException.h"
+#include "../inc/LevelEncryptedException.h"
 #include <format>
 #include <ranges>
 

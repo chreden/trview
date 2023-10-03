@@ -3,7 +3,7 @@
 #include <trview.common/Window.h>
 #include <trview.common/Timer.h>
 
-#include <trlevel/ILevel.h>
+#include <trlevel/inc/ILevel.h>
 
 #include <trview.app/Elements/ITypeNameLookup.h>
 #include <trview.app/Menus/IFileMenu.h>

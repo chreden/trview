@@ -1,8 +1,8 @@
 #pragma once
 
 #include <memory>
-#include <trlevel/trtypes.h>
-#include <trlevel/LevelVersion.h>
+#include <trlevel/inc/trtypes.h>
+#include <trlevel/inc/LevelVersion.h>
 #include <trview.graphics/IDevice.h>
 #include "IMesh.h"
 

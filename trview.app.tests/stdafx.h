@@ -38,7 +38,7 @@ namespace testing
 }
 
 // Mock headers
-#include <trlevel/Mocks/ILevel.h>
+#include <trlevel/Mocks/inc/ILevel.h>
 #include <trview.app/Mocks/Camera/ICamera.h>
 #include <trview.app/Mocks/Graphics/ILevelTextureStorage.h>
 #include <trview.app/Mocks/Geometry/IMesh.h>

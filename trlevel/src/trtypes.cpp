@@ -1,4 +1,4 @@
-#include "trtypes.h"
+#include "../inc/trtypes.h"
 #include <ranges>
 
 namespace trlevel

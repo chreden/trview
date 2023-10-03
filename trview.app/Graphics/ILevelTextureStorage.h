@@ -4,7 +4,7 @@
 
 #include "ITextureStorage.h"
 
-#include <trlevel/ILevel.h>
+#include <trlevel/inc/ILevel.h>
 
 namespace trview
 {

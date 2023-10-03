@@ -1,4 +1,4 @@
-#include <trlevel/Decrypter.h>
+#include <trlevel/src/Decrypter.h>
 #include <trview.common/Resources.h>
 #include "resource.h"
 #include <fstream>

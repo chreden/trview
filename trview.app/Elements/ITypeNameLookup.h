@@ -2,7 +2,7 @@
 
 #include <cstdint>
 #include <string>
-#include <trlevel/LevelVersion.h>
+#include <trlevel/inc/LevelVersion.h>
 
 namespace trview
 {

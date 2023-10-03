@@ -3,8 +3,8 @@
 #include <cstdint>
 #include <string>
 #include <external/DirectXTK/Inc/SimpleMath.h>
-#include <trlevel/ILevel.h>
-#include <trlevel/trtypes.h>
+#include <trlevel/inc/ILevel.h>
+#include <trlevel/inc/trtypes.h>
 #include "../Geometry/IRenderable.h"
 #include "../Geometry/PickResult.h"
 #include "../Graphics/IMeshStorage.h"

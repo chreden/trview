@@ -1,7 +1,7 @@
 #include "Application.h"
 
-#include <trlevel/Level.h>
-#include <trlevel/Decrypter.h>
+#include <trlevel/src/Level.h>
+#include <trlevel/src/Decrypter.h>
 #include <trview.common/Files.h>
 #include <trview.common/Logs/Log.h>
 #include <trview.common/windows/Clipboard.h>

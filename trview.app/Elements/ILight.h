@@ -4,7 +4,7 @@
 #include <external/DirectXTK/Inc/SimpleMath.h>
 #include <trview.app/Geometry/IRenderable.h>
 #include <trview.app/Geometry/PickResult.h>
-#include <trlevel/tr_lights.h>
+#include <trlevel/inc/tr_lights.h>
 
 namespace trview
 {

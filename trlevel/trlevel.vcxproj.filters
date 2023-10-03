@@ -1,40 +1,92 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClInclude Include="ILevel.h" />
-    <ClInclude Include="Level.h" />
-    <ClInclude Include="trtypes.h" />
-    <ClInclude Include="LevelVersion.h" />
-    <ClInclude Include="LevelLoadException.h" />
-    <ClInclude Include="stdafx.h" />
-    <ClInclude Include="Mocks\ILevel.h">
-      <Filter>Mocks</Filter>
+    <ClInclude Include="inc\IDecrypter.h">
+      <Filter>inc</Filter>
     </ClInclude>
-    <ClInclude Include="tr_lights.h" />
-    <ClInclude Include="tr_rooms.h" />
-    <ClInclude Include="LevelEncryptedException.h" />
-    <ClInclude Include="LevelVersion.hpp" />
-    <ClInclude Include="IDecrypter.h" />
-    <ClInclude Include="Decrypter.h" />
+    <ClInclude Include="inc\ILevel.h">
+      <Filter>inc</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\LevelEncryptedException.h">
+      <Filter>inc</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\LevelLoadException.h">
+      <Filter>inc</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\LevelVersion.h">
+      <Filter>inc</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\LevelVersion.hpp">
+      <Filter>inc</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\tr_lights.h">
+      <Filter>inc</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\tr_rooms.h">
+      <Filter>inc</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\trtypes.h">
+      <Filter>inc</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Decrypter.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Level.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\stdafx.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="Mocks\inc\ILevel.h">
+      <Filter>Mocks\inc</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Level.cpp" />
-    <ClCompile Include="trtypes.cpp" />
-    <ClCompile Include="LevelVersion.cpp" />
-    <ClCompile Include="stdafx.cpp" />
-    <ClCompile Include="tr_lights.cpp" />
-    <ClCompile Include="Decrypter.cpp" />
-    <ClCompile Include="Mocks\MockLevel.cpp">
-      <Filter>Mocks</Filter>
+    <ClCompile Include="src\Decrypter.cpp">
+      <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="tr_rooms.cpp" />
+    <ClCompile Include="src\Level.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\LevelVersion.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\stdafx.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\tr_lights.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\tr_rooms.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\trtypes.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="Mocks\src\MockLevel.cpp">
+      <Filter>Mocks\src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Mocks">
       <UniqueIdentifier>{761f107e-00af-4697-ba3e-3653c2e29391}</UniqueIdentifier>
     </Filter>
+    <Filter Include="inc">
+      <UniqueIdentifier>{faedb888-7307-4f86-a500-95a16c9605ba}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src">
+      <UniqueIdentifier>{0979b06b-75d7-4f1b-a349-d2edb8138169}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Mocks\inc">
+      <UniqueIdentifier>{26c12104-078b-4244-9293-85b1793dc863}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Mocks\src">
+      <UniqueIdentifier>{9392fbf0-ed51-464d-b6d8-4c1fa512a90f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <None Include="trtypes.inl" />
+    <None Include="inc\trtypes.inl">
+      <Filter>inc</Filter>
+    </None>
   </ItemGroup>
 </Project>

@@ -1,4 +1,4 @@
-#include "LevelVersion.h"
+#include "../inc/LevelVersion.h"
 
 namespace trlevel
 {

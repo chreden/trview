@@ -8,7 +8,7 @@
 
 #include <string>
 #include <unordered_map>
-#include <trlevel/LevelVersion.h>
+#include <trlevel/inc/LevelVersion.h>
 #include <trview.graphics/Texture.h>
 #include <trview.common/Event.h>
 #include <trview.app/Graphics/ITextureStorage.h>

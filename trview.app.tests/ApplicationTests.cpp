@@ -23,7 +23,7 @@
 #include <trview.common/Mocks/Windows/IShortcuts.h>
 #include <trview.common/Mocks/Windows/IDialogs.h>
 #include <trview.common/Mocks/IFiles.h>
-#include <trlevel/Mocks/ILevel.h>
+#include <trlevel/Mocks/inc/ILevel.h>
 #include <trview.app/Resources/resource.h>
 #include "NullImGuiBackend.h"
 #include <trview.common/Strings.h>

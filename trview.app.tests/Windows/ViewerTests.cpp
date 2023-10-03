@@ -17,7 +17,7 @@
 #include <trview.graphics/mocks/IDeviceWindow.h>
 #include <trview.app/Mocks/Geometry/IMesh.h>
 #include <trview.app/Mocks/Graphics/ISectorHighlight.h>
-#include <trlevel/Mocks/ILevel.h>
+#include <trlevel/Mocks/inc/ILevel.h>
 #include <trview.app/Mocks/Routing/IWaypoint.h>
 #include <trview.app/Mocks/Elements/ILight.h>
 #include <trview.common/Mocks/Windows/IClipboard.h>

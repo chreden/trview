@@ -1,7 +1,7 @@
 #include "trview.h"
 #include "../Elements/Level/Lua_Level.h"
 #include "../../Application.h"
-#include <trlevel/LevelEncryptedException.h>
+#include <trlevel/inc/LevelEncryptedException.h>
 #include "../../UserCancelledException.h"
 #include "../Elements/Sector/Lua_Sector.h"
 #include "../Route/Lua_Route.h"
