@@ -56,17 +56,14 @@ namespace trview
                 _go_to->set_name("Item");
                 _go_to->toggle_visible(_selected_item);
                 // if (auto level = _level.lock())
-                if (false)
+                if (auto level = _level)
                 {
-                    if (auto level = _level)
-                    {
-                        _go_to->set_items(
-                            level->items()
-                            | std::views::transform([](auto&& i) { return i.lock(); })
-                            | std::views::filter([](auto&& i) { return i != nullptr; })
-                            | std::views::transform([](auto&& i) -> GoTo::GoToItem { return { .number = i->number(), .name = i->type() }; })
-                            | std::ranges::to<std::vector>());
-                    }
+                    _go_to->set_items(
+                        level->items()
+                        | std::views::transform([](auto&& i) { return i.lock(); })
+                        | std::views::filter([](auto&& i) { return i != nullptr; })
+                        | std::views::transform([](auto&& i) -> GoTo::GoToItem { return { .number = i->number(), .name = i->type() }; })
+                        | std::ranges::to<std::vector>());
                 }
             }
         };

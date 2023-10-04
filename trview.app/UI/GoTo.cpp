@@ -51,7 +51,7 @@ namespace trview
                     ImGui::SetKeyboardFocusHere();
                 }
 
-                if (!_items.empty() && false)
+                if (!_items.empty())
                 {
                     std::string current_input = _current_input;
                     ImGui::InputText("##gotoentry", &current_input);
