@@ -46,6 +46,7 @@ namespace trview
             {
                 _go_to->set_name("Room");
                 _go_to->toggle_visible(_selected_room);
+                _go_to->set_items({});
             }
         };
 
@@ -73,6 +74,7 @@ namespace trview
         _go_to = std::make_unique<GoTo>();
         _token_store += _go_to->on_selected += [&](uint32_t index)
         {
+            _tooltip->set_visible(false);
             if (_go_to->name() == "Item")
             {
                 on_select_item(index);
@@ -217,7 +219,6 @@ namespace trview
             return;
         }
 
-        _tooltip->render();
         _map_tooltip->render();
         _map_renderer->render();
         _view_options->render();
@@ -229,6 +230,7 @@ namespace trview
         _go_to->render();
         _level_info->render();
         _toolbar->render();
+        _tooltip->render();
 
         if (_show_measure)
         {

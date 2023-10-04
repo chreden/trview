@@ -179,6 +179,8 @@ namespace trview
         std::size_t _recent_orbit_index{ 0u };
 
         std::shared_ptr<IClipboard> _clipboard;
+
+        Point _previous_mouse_pos;
     };
 }
 

@@ -676,7 +676,13 @@ namespace trview
         _timer.update();
         update_camera();
 
-        _picking->pick(current_camera());
+        const auto mouse_pos = client_cursor_position(window());
+        if (mouse_pos != _previous_mouse_pos)
+        {
+            _picking->pick(current_camera());
+        }
+        _previous_mouse_pos = mouse_pos;
+
         _device->begin();
         _main_window->begin();
         _main_window->clear(Colour(_settings.background_colour));
