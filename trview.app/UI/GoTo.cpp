@@ -1,4 +1,5 @@
 #include "GoTo.h"
+#include <charconv>
 
 namespace trview
 {
@@ -57,24 +58,37 @@ namespace trview
                     ImGui::InputText("##gotoentry", &current_input);
                     _current_input = current_input;
 
+                    bool any_selected = false;
                     if (!_current_input.empty())
                     {
+                        const auto make_upper = std::views::transform([](auto&& c) { return static_cast<char>(std::toupper(c)); }) | std::ranges::to<std::string>();
+                        const auto upper_input = _current_input | make_upper;
+                        std::optional<uint32_t> numeric_input;
+                        {
+                            uint32_t temp_numeric_input;
+                            if (std::from_chars(upper_input.data(), upper_input.data() + upper_input.size(), temp_numeric_input).ec == std::errc {})
+                            {
+                                numeric_input = temp_numeric_input;
+                            }
+                        }
                         const auto search_results = _items
-                            | std::views::filter([&](auto&& i) { return i.name.starts_with(_current_input); })
+                            | std::views::filter([&](auto&& i) { return (numeric_input && i.number == numeric_input.value()) || (i.name | make_upper).contains(upper_input); })
                             | std::ranges::to<std::vector>();
 
                         for (const auto& item : search_results)
                         {
-                            if (ImGui::Selectable(std::format("{} - {}", item.number, item.name).c_str(), false, ImGuiSelectableFlags_DontClosePopups | static_cast<int>(ImGuiSelectableFlags_SelectOnNav)))
+                            const auto item_id = std::format("{} - {}", item.number, item.name);
+                            if (ImGui::Selectable(item_id.c_str(), false, ImGuiSelectableFlags_DontClosePopups | static_cast<int>(ImGuiSelectableFlags_SelectOnNav)))
                             {
                                 on_selected(item.number);
                             }
+                            any_selected |= ImGui::GetCurrentContext()->NavId == ImGui::GetCurrentWindow()->GetID(item_id.c_str());
                         }
                     }
 
                     ImGui::EndPopup();
 
-                    if (ImGui::IsKeyPressed(ImGuiKey_Escape) || ImGui::IsKeyPressed(ImGuiKey_Enter) || ImGui::IsKeyPressed(ImGuiKey_KeypadEnter))
+                    if (ImGui::IsKeyPressed(ImGuiKey_Escape) || (any_selected && (ImGui::IsKeyPressed(ImGuiKey_Enter) || ImGui::IsKeyPressed(ImGuiKey_KeypadEnter))))
                     {
                         _visible = false;
                         ImGui::FocusWindow(nullptr);
