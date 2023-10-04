@@ -46,7 +46,8 @@ namespace trview
 
         /// Set the size of the host window.
         void set_host_size(const Size& size) override;
-        virtual void set_level(const std::string& name, trlevel::LevelVersion version) override;
+        void set_level(const std::string& name, ILevel* level) override;
+            // , const std::weak_ptr<ILevel>& level) override;
         virtual void set_max_rooms(uint32_t rooms) override;
         virtual void set_measure_distance(float distance) override;
         virtual void set_measure_position(const Point& position) override;
@@ -98,5 +99,7 @@ namespace trview
         uint32_t _selected_room{ 0u };
         uint32_t _selected_item{ 0u };
         std::weak_ptr<IRoute> _route;
+        // std::weak_ptr<ILevel> _level;
+        ILevel* _level;
     };
 }

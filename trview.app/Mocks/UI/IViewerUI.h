@@ -24,7 +24,8 @@ namespace trview
             MOCK_METHOD(void, set_flip_enabled, (bool), (override));
             MOCK_METHOD(void, set_hide_enabled, (bool), (override));
             MOCK_METHOD(void, set_host_size, (const Size&), (override));
-            MOCK_METHOD(void, set_level, (const std::string&, trlevel::LevelVersion), (override));
+            // MOCK_METHOD(void, set_level, (const std::string&, trlevel::LevelVersion), (override));
+            MOCK_METHOD(void, set_level, (const std::string&, ILevel*), (override));
             MOCK_METHOD(void, set_max_rooms, (uint32_t), (override));
             MOCK_METHOD(void, set_measure_distance, (float), (override));
             MOCK_METHOD(void, set_measure_position, (const Point&), (override));

@@ -55,6 +55,19 @@ namespace trview
             {
                 _go_to->set_name("Item");
                 _go_to->toggle_visible(_selected_item);
+                // if (auto level = _level.lock())
+                if (false)
+                {
+                    if (auto level = _level)
+                    {
+                        _go_to->set_items(
+                            level->items()
+                            | std::views::transform([](auto&& i) { return i.lock(); })
+                            | std::views::filter([](auto&& i) { return i != nullptr; })
+                            | std::views::transform([](auto&& i) -> GoTo::GoToItem { return { .number = i->number(), .name = i->type() }; })
+                            | std::ranges::to<std::vector>());
+                    }
+                }
             }
         };
 
@@ -282,10 +295,16 @@ namespace trview
         _map_renderer->set_window_size(size);
     }
 
-    void ViewerUI::set_level(const std::string& name, trlevel::LevelVersion version)
+    void ViewerUI::set_level(const std::string& name, ILevel* level)
+        // const std::weak_ptr<ILevel>& level)
     {
+        _level = level;
         _level_info->set_level(name);
-        _level_info->set_level_version(version);
+        // if (auto new_level = _level.lock())
+        auto new_level = _level;
+        {
+            _level_info->set_level_version(new_level->version());
+        }
     }
 
     void ViewerUI::set_max_rooms(uint32_t rooms)

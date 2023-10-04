@@ -646,7 +646,7 @@ namespace trview
             const auto filename = _level->filename();
             auto last_index = std::min(filename.find_last_of('\\'), filename.find_last_of('/'));
             auto name = last_index == filename.npos ? filename : filename.substr(std::min(last_index + 1, filename.size()));
-            _ui->set_level(name, _level->version());
+            _ui->set_level(name, _level);
             window().set_title("trview - " + name);
         }
         else if (open_mode == ILevel::OpenMode::Reload && old_level)

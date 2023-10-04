@@ -12,6 +12,7 @@ namespace trview
         _visible = !_visible;
         _index = value;
         _shown = false;
+        _current_input.clear();
     }
 
     std::string GoTo::name() const
@@ -22,6 +23,11 @@ namespace trview
     void GoTo::set_name(const std::string& name)
     {
         _name = name;
+    }
+
+    void GoTo::set_items(const std::vector<GoToItem>& items)
+    {
+        _items = items;
     }
 
     void GoTo::render()
@@ -45,24 +51,56 @@ namespace trview
                     ImGui::SetKeyboardFocusHere();
                 }
 
-                if (ImGui::InputInt("##gotoentry", &_index, 1, 100, ImGuiInputTextFlags_EnterReturnsTrue))
+                if (!_items.empty() && false)
                 {
-                    if (_index >= 0)
+                    std::string current_input = _current_input;
+                    ImGui::InputText("##gotoentry", &current_input);
+                    _current_input = current_input;
+
+                    if (!_current_input.empty())
                     {
-                        on_selected(_index);
+                        const auto search_results = _items
+                            | std::views::filter([&](auto&& i) { return i.name.starts_with(_current_input); })
+                            | std::ranges::to<std::vector>();
+
+                        for (const auto& item : search_results)
+                        {
+                            if (ImGui::Selectable(std::format("{} - {}", item.number, item.name).c_str(), false, ImGuiSelectableFlags_DontClosePopups | static_cast<int>(ImGuiSelectableFlags_SelectOnNav)))
+                            {
+                                on_selected(item.number);
+                            }
+                        }
+                    }
+
+                    ImGui::EndPopup();
+
+                    if (ImGui::IsKeyPressed(ImGuiKey_Escape) || ImGui::IsKeyPressed(ImGuiKey_Enter) || ImGui::IsKeyPressed(ImGuiKey_KeypadEnter))
+                    {
+                        _visible = false;
+                        ImGui::FocusWindow(nullptr);
                     }
                 }
-
-                ImGui::EndPopup();
-
-                if (ImGui::IsKeyPressed(ImGuiKey_Escape) || ImGui::IsKeyPressed(ImGuiKey_Enter) || ImGui::IsKeyPressed(ImGuiKey_KeypadEnter))
+                else
                 {
-                    if (!ImGui::IsKeyPressed(ImGuiKey_Escape) && _index >= 0)
+                    if (ImGui::InputInt("##gotoentry", &_index, 1, 100, ImGuiInputTextFlags_EnterReturnsTrue))
                     {
-                        on_selected(_index);
+                        if (_index >= 0)
+                        {
+                            on_selected(_index);
+                        }
                     }
-                    _visible = false;
-                    ImGui::FocusWindow(nullptr);
+
+                    ImGui::EndPopup();
+
+                    if (ImGui::IsKeyPressed(ImGuiKey_Escape) || ImGui::IsKeyPressed(ImGuiKey_Enter) || ImGui::IsKeyPressed(ImGuiKey_KeypadEnter))
+                    {
+                        if (!ImGui::IsKeyPressed(ImGuiKey_Escape) && _index >= 0)
+                        {
+                            on_selected(_index);
+                        }
+                        _visible = false;
+                        ImGui::FocusWindow(nullptr);
+                    }
                 }
             }
             else

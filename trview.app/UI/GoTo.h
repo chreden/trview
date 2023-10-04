@@ -17,6 +17,12 @@ namespace trview
     class GoTo final
     {
     public:
+        struct GoToItem final
+        {
+            uint32_t    number;
+            std::string name;
+        };
+
         /// Gets whether the window is currently visible.
         /// @returns True if the window is visible.
         bool visible() const;
@@ -35,10 +41,16 @@ namespace trview
 
         /// Set the name of the type of thing that is being gone to.
         void set_name(const std::string& name);
+
+        void set_items(const std::vector<GoToItem>& items);
     private:
         std::string  _name;
         bool _visible{ false };
         int _index{ 0 };
         bool _shown{ false };
+        std::vector<GoToItem> _items;
+
+        std::string _current_input;
+        std::optional<GoToItem> _current_item;
     };
 }

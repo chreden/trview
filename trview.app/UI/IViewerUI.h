@@ -149,7 +149,8 @@ namespace trview
         /// Set the level name and version.
         /// @param name The file.
         /// @param version The version of the level.
-        virtual void set_level(const std::string& name, trlevel::LevelVersion version) = 0;
+        virtual void set_level(const std::string& name, ILevel* level) = 0;
+            // , const std::weak_ptr<ILevel>& level) = 0;
 
         /// Set the maximum number of rooms in the level.
         /// @param rooms The number of rooms that are in the level.
