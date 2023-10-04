@@ -46,7 +46,16 @@ namespace trview
             {
                 _go_to->set_name("Room");
                 _go_to->toggle_visible(_selected_room);
-                _go_to->set_items({});
+                // if (auto level = _level.lock())
+                if (auto level = _level)
+                {
+                    _go_to->set_items(
+                        level->rooms()
+                        | std::views::transform([](auto&& r) { return r.lock(); })
+                        | std::views::filter([](auto&& r) { return r != nullptr; })
+                        | std::views::transform([](auto&& r) -> GoTo::GoToItem { return { .number = r->number(), .name = std::format("Room {}", r->number()) }; })
+                        | std::ranges::to<std::vector>());
+                }
             }
         };
 
