@@ -691,11 +691,12 @@ namespace trview
         update_camera();
 
         const auto mouse_pos = client_cursor_position(window());
-        if (mouse_pos != _previous_mouse_pos)
+        if (mouse_pos != _previous_mouse_pos || (_camera_moved || _camera_input.movement().LengthSquared() > 0))
         {
             _picking->pick(current_camera());
         }
         _previous_mouse_pos = mouse_pos;
+        _camera_moved = false;
 
         _device->begin();
         _main_window->begin();
@@ -788,6 +789,7 @@ namespace trview
             return;
         }
 
+        _camera_moved = true;
         if (camera_mode == CameraMode::Free || camera_mode == CameraMode::Axis)
         {
             _free_camera.set_alignment(camera_mode_to_alignment(camera_mode));
@@ -1023,6 +1025,7 @@ namespace trview
                 return;
             }
 
+            _camera_moved = true;
             _ui->set_show_context_menu(false);
 
             ICamera& camera = current_camera();
@@ -1043,7 +1046,8 @@ namespace trview
             {
                 return;
             }
-
+            
+            _camera_moved = true;
             if (_camera_mode == CameraMode::Orbit)
             {
                 _camera.set_zoom(_camera.zoom() + zoom);
@@ -1069,6 +1073,7 @@ namespace trview
                 return;
             }
 
+            _camera_moved = true;
             _ui->set_show_context_menu(false);
 
             ICamera& camera = current_camera();

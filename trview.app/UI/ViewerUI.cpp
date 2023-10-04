@@ -44,6 +44,7 @@ namespace trview
         {
             if (!is_input_active())
             {
+                _tooltip->set_visible(false);
                 _go_to->set_name("Room");
                 _go_to->toggle_visible();
                 if (auto level = _level.lock())
@@ -62,6 +63,7 @@ namespace trview
         {
             if (!is_input_active())
             {
+                _tooltip->set_visible(false);
                 _go_to->set_name("Item");
                 _go_to->toggle_visible();
                 if (auto level = _level.lock())

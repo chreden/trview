@@ -181,6 +181,7 @@ namespace trview
         std::shared_ptr<IClipboard> _clipboard;
 
         Point _previous_mouse_pos;
+        bool _camera_moved{ false };
     };
 }
 
