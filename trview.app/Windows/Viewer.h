@@ -67,7 +67,7 @@ namespace trview
         virtual void render() override;
         virtual void render_ui() override;
         virtual void present(bool vsync) override;
-        virtual void open(ILevel* level, ILevel::OpenMode open_mode) override;
+        void open(const std::weak_ptr<ILevel>& level, ILevel::OpenMode open_mode) override;
         virtual void set_settings(const UserSettings& settings) override;
         virtual void select_item(const std::weak_ptr<IItem>& item) override;
         virtual void select_room(uint32_t room_number) override;
@@ -135,7 +135,7 @@ namespace trview
         const std::shared_ptr<graphics::IDevice> _device;
         const std::shared_ptr<IShortcuts>& _shortcuts;
         std::unique_ptr<graphics::IDeviceWindow> _main_window;
-        ILevel* _level{ nullptr };
+        std::weak_ptr<ILevel> _level;
         Timer _timer;
         OrbitCamera _camera;
         FreeCamera _free_camera;

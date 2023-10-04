@@ -89,7 +89,7 @@ namespace trview
 
         virtual void present(bool vsync) = 0;
 
-        virtual void open(ILevel* level, ILevel::OpenMode open_mode) = 0;
+        virtual void open(const std::weak_ptr<ILevel>& level, ILevel::OpenMode open_mode) = 0;
 
         virtual void set_settings(const UserSettings& settings) = 0;
 

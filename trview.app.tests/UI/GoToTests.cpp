@@ -7,7 +7,7 @@ using namespace trview::tests;
 TEST(GoTo, Name)
 {
     GoTo window;
-    window.toggle_visible(0);
+    window.toggle_visible();
 
     ASSERT_EQ(window.name(), "");
     window.set_name("Item");
@@ -20,7 +20,7 @@ TEST(GoTo, Name)
 TEST(GoTo, OnSelectedWithPlusRaised)
 {
     GoTo window;
-    window.toggle_visible(0);
+    window.toggle_visible();
     window.set_name("Item");
 
     std::optional<uint32_t> raised;
@@ -42,7 +42,7 @@ TEST(GoTo, OnSelectedWithPlusRaised)
 TEST(GoTo, OnSelectedWithMinusRaised)
 {
     GoTo window;
-    window.toggle_visible(0);
+    window.toggle_visible();
     window.set_name("Item");
 
     std::vector<uint32_t> raised;
@@ -67,7 +67,7 @@ TEST(GoTo, OnSelectedWithMinusRaised)
 TEST(GoTo, OnSelectedNotRaisedWhenMinusPressedAtZero)
 {
     GoTo window;
-    window.toggle_visible(0);
+    window.toggle_visible();
     window.set_name("Item");
 
     std::optional<uint32_t> raised;
@@ -88,7 +88,7 @@ TEST(GoTo, OnSelectedNotRaisedWhenMinusPressedAtZero)
 TEST(GoTo, OnSelectedRaised)
 {
     GoTo window;
-    window.toggle_visible(0);
+    window.toggle_visible();
     window.set_name("Item");
 
     std::optional<uint32_t> raised;
@@ -113,7 +113,7 @@ TEST(GoTo, OnSelectedRaised)
 TEST(GoTo, OnZeroSelectedRaised)
 {
     GoTo window;
-    window.toggle_visible(0);
+    window.toggle_visible();
     window.set_name("Item");
 
     std::optional<uint32_t> raised;
@@ -138,7 +138,7 @@ TEST(GoTo, OnZeroSelectedRaised)
 TEST(GoTo, OnSelectedNotRaisedWhenCancelled)
 {
     GoTo window;
-    window.toggle_visible(0);
+    window.toggle_visible();
     window.set_name("Item");
 
     std::optional<uint32_t> raised;
@@ -158,7 +158,7 @@ TEST(GoTo, OnSelectedNotRaisedWhenCancelled)
 TEST(GoTo, OnSelectedNotRaisedOnNegative)
 {
     GoTo window;
-    window.toggle_visible(0);
+    window.toggle_visible();
     window.set_name("Item");
 
     std::optional<uint32_t> raised;

@@ -12,7 +12,7 @@ namespace trview
             virtual ~MockViewer();
             MOCK_METHOD(CameraMode, camera_mode, (), (const, override));
             MOCK_METHOD(void, render, (), (override));
-            MOCK_METHOD(void, open, (ILevel*, ILevel::OpenMode), (override));
+            MOCK_METHOD(void, open, (const std::weak_ptr<ILevel>&, ILevel::OpenMode), (override));
             MOCK_METHOD(void, set_settings, (const UserSettings&), (override));
             MOCK_METHOD(void, select_item, (const std::weak_ptr<IItem>&), (override));
             MOCK_METHOD(void, select_room, (uint32_t), (override));

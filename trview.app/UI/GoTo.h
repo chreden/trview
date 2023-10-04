@@ -28,7 +28,7 @@ namespace trview
         bool visible() const;
 
         /// Toggle whether the window is visible.
-        void toggle_visible(int32_t value);
+        void toggle_visible();
 
         /// Event raised when the user selects a new room. The newly selected room is passed as
         /// a parameter when the event is raised.
@@ -46,11 +46,8 @@ namespace trview
     private:
         std::string  _name;
         bool _visible{ false };
-        int _index{ 0 };
         bool _shown{ false };
         std::vector<GoToItem> _items;
-
         std::string _current_input;
-        std::optional<GoToItem> _current_item;
     };
 }

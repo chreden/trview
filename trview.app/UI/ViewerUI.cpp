@@ -45,9 +45,8 @@ namespace trview
             if (!is_input_active())
             {
                 _go_to->set_name("Room");
-                _go_to->toggle_visible(_selected_room);
-                // if (auto level = _level.lock())
-                if (auto level = _level)
+                _go_to->toggle_visible();
+                if (auto level = _level.lock())
                 {
                     _go_to->set_items(
                         level->rooms()
@@ -64,9 +63,8 @@ namespace trview
             if (!is_input_active())
             {
                 _go_to->set_name("Item");
-                _go_to->toggle_visible(_selected_item);
-                // if (auto level = _level.lock())
-                if (auto level = _level)
+                _go_to->toggle_visible();
+                if (auto level = _level.lock())
                 {
                     _go_to->set_items(
                         level->items()
@@ -303,13 +301,11 @@ namespace trview
         _map_renderer->set_window_size(size);
     }
 
-    void ViewerUI::set_level(const std::string& name, ILevel* level)
-        // const std::weak_ptr<ILevel>& level)
+    void ViewerUI::set_level(const std::string& name, const std::weak_ptr<ILevel>& level)
     {
         _level = level;
         _level_info->set_level(name);
-        // if (auto new_level = _level.lock())
-        auto new_level = _level;
+        if (auto new_level = _level.lock())
         {
             _level_info->set_level_version(new_level->version());
         }

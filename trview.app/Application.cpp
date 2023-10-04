@@ -962,7 +962,7 @@ namespace trview
         _textures_windows->set_texture_storage(_level->texture_storage());
 
         set_route(_route);
-        _viewer->open(_level.get(), open_mode);
+        _viewer->open(level, open_mode);
 
         if (old_level && open_mode == ILevel::OpenMode::Reload)
         {
