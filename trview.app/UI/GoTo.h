@@ -49,5 +49,6 @@ namespace trview
         bool _shown{ false };
         std::vector<GoToItem> _items;
         std::string _current_input;
+        bool _need_focus{ false };
     };
 }
