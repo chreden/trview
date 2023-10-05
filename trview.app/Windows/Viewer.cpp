@@ -62,7 +62,7 @@ namespace trview
         toggles[Options::triggers] = [this](bool value) { set_show_triggers(value); };
         toggles[Options::show_bounding_boxes] = [this](bool value) { set_show_bounding_boxes(value); };
         toggles[Options::flip] = [this](bool value) { set_alternate_mode(value); };
-        toggles[Options::depth_enabled] = [this](bool value) { if (_level) { _level->set_highlight_mode(ILevel::RoomHighlightMode::Neighbours, value); } };
+        toggles[Options::depth_enabled] = [this](bool value) { if (auto level = _level.lock()) { level->set_highlight_mode(ILevel::RoomHighlightMode::Neighbours, value); } };
         toggles[Options::lights] = [this](bool value) { set_show_lights(value); };
         toggles[Options::items] = [this](bool value) { set_show_items(value); };
         toggles[Options::rooms] = [this](bool value) { set_show_rooms(value); };
@@ -70,13 +70,13 @@ namespace trview
         toggles[Options::lighting] = [this](bool value) { set_show_lighting(value); };
 
         std::unordered_map<std::string, std::function<void(int32_t)>> scalars;
-        scalars[Options::depth] = [this](int32_t value) { if (_level) { _level->set_neighbour_depth(value); } };
+        scalars[Options::depth] = [this](int32_t value) { if (auto level = _level.lock()) { level->set_neighbour_depth(value); } };
 
         _token_store += _ui->on_select_item += [&](uint32_t index)
         {
-            if (_level)
+            if (auto level = _level.lock())
             {
-                if (const auto item = _level->item(index).lock())
+                if (const auto item = level->item(index).lock())
                 {
                     on_item_selected(item);
                 }
@@ -116,18 +116,21 @@ namespace trview
                 _context_pick.triangle.normal.Normalize();
             }
 
-            if (_context_pick.type == PickResult::Type::Entity)
+            if (auto level = _level.lock())
             {
-                if (const auto item = _level->item(_context_pick.index).lock())
+                if (_context_pick.type == PickResult::Type::Entity)
                 {
-                    _context_pick.position = item->position();
+                    if (const auto item = level->item(_context_pick.index).lock())
+                    {
+                        _context_pick.position = item->position();
+                    }
                 }
-            }
-            else if (_context_pick.type == PickResult::Type::Trigger)
-            {
-                if (const auto trigger = _level->trigger(_context_pick.index).lock())
+                else if (_context_pick.type == PickResult::Type::Trigger)
                 {
-                    _context_pick.position = trigger->position();
+                    if (const auto trigger = level->trigger(_context_pick.index).lock())
+                    {
+                        _context_pick.position = trigger->position();
+                    }
                 }
             }
             on_waypoint_added(_context_pick.position, _context_pick.triangle.normal, room_from_pick(_context_pick), type, _context_pick.index);
@@ -142,16 +145,22 @@ namespace trview
             }
             else if (_context_pick.type == PickResult::Type::Entity)
             {
-                if (const auto item = _level->item(_context_pick.index).lock())
+                if (const auto level = _level.lock())
                 {
-                    _context_pick.position = item->position();
+                    if (const auto item = level->item(_context_pick.index).lock())
+                    {
+                        _context_pick.position = item->position();
+                    }
                 }
             }
             else if (_context_pick.type == PickResult::Type::Trigger)
             {
-                if (const auto trigger = _level->trigger(_context_pick.index).lock())
+                if (const auto level = _level.lock())
                 {
-                    _context_pick.position = trigger->position();
+                    if (const auto trigger = level->trigger(_context_pick.index).lock())
+                    {
+                        _context_pick.position = trigger->position();
+                    }
                 }
             }
 
@@ -168,28 +177,28 @@ namespace trview
         _token_store += _ui->on_remove_waypoint += [&]() { on_waypoint_removed(_context_pick.index); };
         _token_store += _ui->on_hide += [&]()
         {
-            if (_context_pick.type == PickResult::Type::Entity)
+            if (auto level = _level.lock())
             {
-                if (const auto item = _level->item(_context_pick.index).lock())
+                if (_context_pick.type == PickResult::Type::Entity)
                 {
-                    on_item_visibility(item, false);
+                    on_item_visibility(level->item(_context_pick.index), false);
                 }
-            }
-            else if (_context_pick.type == PickResult::Type::Trigger)
-            {
-                on_trigger_visibility(_level->trigger(_context_pick.index), false);
-            }
-            else if (_context_pick.type == PickResult::Type::Light)
-            {
-                on_light_visibility(_level->light(_context_pick.index), false);
-            }
-            else if (_context_pick.type == PickResult::Type::Room)
-            {
-                on_room_visibility(_level->room(_context_pick.index), false);
-            }
-            else if (_context_pick.type == PickResult::Type::CameraSink)
-            {
-                on_camera_sink_visibility(_level->camera_sink(_context_pick.index), false);
+                else if (_context_pick.type == PickResult::Type::Trigger)
+                {
+                    on_trigger_visibility(level->trigger(_context_pick.index), false);
+                }
+                else if (_context_pick.type == PickResult::Type::Light)
+                {
+                    on_light_visibility(level->light(_context_pick.index), false);
+                }
+                else if (_context_pick.type == PickResult::Type::Room)
+                {
+                    on_room_visibility(level->room(_context_pick.index), false);
+                }
+                else if (_context_pick.type == PickResult::Type::CameraSink)
+                {
+                    on_camera_sink_visibility(level->camera_sink(_context_pick.index), false);
+                }
             }
         };
         _token_store += _ui->on_orbit += [&]()
@@ -280,11 +289,12 @@ namespace trview
         };
         _token_store += _picking->pick_sources += [&](PickInfo info, PickResult& result)
         {
-            if (result.stop || !_level)
+            const auto level = _level.lock();
+            if (result.stop || !level)
             {
                 return;
             }
-            result = nearest_result(result, _level->pick(current_camera(), info.position, info.direction));
+            result = nearest_result(result, level->pick(current_camera(), info.position, info.direction));
         };
         _token_store += _picking->pick_sources += [&](PickInfo info, PickResult& result)
         {
@@ -315,9 +325,10 @@ namespace trview
         {
             _current_pick = result;
 
-            if (_level && _route)
+            const auto level = _level.lock();
+            if (level && _route)
             {
-                result.text = generate_pick_message(result, *_level, *_route);
+                result.text = generate_pick_message(result, *level, *_route);
             }
             _ui->set_pick(result);
 
@@ -327,15 +338,15 @@ namespace trview
             }
 
             // Highlight sectors in the minimap.
-            if (_level)
+            if (level)
             {
                 std::optional<RoomInfo> info;
                 if (result.hit)
                 {
                     if (_current_pick.type == PickResult::Type::Room &&
-                        _current_pick.index == _level->selected_room())
+                        _current_pick.index == level->selected_room())
                     {
-                        const auto room = _level->room(_current_pick.index).lock();
+                        const auto room = level->room(_current_pick.index).lock();
                         if (room)
                         {
                             info = room->info();
@@ -343,8 +354,8 @@ namespace trview
                     }
                     else if (_current_pick.type == PickResult::Type::Trigger)
                     {
-                        const auto trigger = _level->trigger(_current_pick.index).lock();
-                        if (trigger && trigger_room(trigger) == _level->selected_room())
+                        const auto trigger = level->trigger(_current_pick.index).lock();
+                        if (trigger && trigger_room(trigger) == level->selected_room())
                         {
                             if (const auto room = trigger->room().lock())
                             {
@@ -479,11 +490,12 @@ namespace trview
                 }
                 else if (std::shared_ptr<ISector> sector = _ui->current_minimap_sector())
                 {
-                    if (!ImGui::IsWindowHovered(ImGuiHoveredFlags_AnyWindow))
+                    const auto level = _level.lock();
+                    if (level && !ImGui::IsWindowHovered(ImGuiHoveredFlags_AnyWindow))
                     {
                         uint32_t room = room_number(sector->room());
                         // Select the trigger (if it is a trigger).
-                        const auto triggers = _level->triggers();
+                        const auto triggers = level->triggers();
                         auto trigger = std::find_if(triggers.begin(), triggers.end(),
                             [&](auto t)
                             {
@@ -545,14 +557,15 @@ namespace trview
                 _ui->set_hide_enabled(equals_any(_current_pick.type, PickResult::Type::Entity, PickResult::Type::Trigger, PickResult::Type::Light, PickResult::Type::Room, PickResult::Type::CameraSink));
                 _ui->set_mid_waypoint_enabled(_current_pick.type == PickResult::Type::Room && _current_pick.triangle.normal.y < 0);
 
-                if (_current_pick.type == PickResult::Type::Entity)
+                const auto level = _level.lock();
+                if (_current_pick.type == PickResult::Type::Entity && level)
                 {
-                    const auto item = _level->item(_current_pick.index).lock();
+                    const auto item = level->item(_current_pick.index).lock();
                     _ui->set_triggered_by(item ? item->triggers() : std::vector<std::weak_ptr<ITrigger>>{});
                 }
-                else if (_current_pick.type == PickResult::Type::CameraSink)
+                else if (_current_pick.type == PickResult::Type::CameraSink && level)
                 {
-                    const auto camera_sink = _level->camera_sink(_current_pick.index).lock();
+                    const auto camera_sink = level->camera_sink(_current_pick.index).lock();
                     _ui->set_triggered_by(camera_sink ? camera_sink->triggers() : std::vector<std::weak_ptr<ITrigger>>{});
                 }
                 else 
@@ -570,18 +583,19 @@ namespace trview
             const float Speed = std::max(0.01f, _settings.camera_movement_speed) * _CAMERA_MOVEMENT_SPEED_MULTIPLIER;
             _free_camera.move(_camera_input.movement() * Speed, _timer.elapsed());
 
-            if (_level)
+            if (auto level = _level.lock())
             {
-                _level->on_camera_moved();
+                level->on_camera_moved();
             }
         }
 
         current_camera().update(_timer.elapsed());
     }
 
-    void Viewer::open(ILevel* level, ILevel::OpenMode open_mode)
+    void Viewer::open(const std::weak_ptr<ILevel>& level, ILevel::OpenMode open_mode)
     {
-        ILevel* old_level = _level;
+        auto old_level = _level.lock();
+        auto new_level = level.lock();
         _level = level;
 
         _level_token_store.clear();
@@ -592,26 +606,26 @@ namespace trview
             old_level->on_trigger_selected -= on_trigger_selected;
         }
 
-        _level_token_store += _level->on_alternate_mode_selected += [&](bool enabled) { set_alternate_mode(enabled); };
-        _level_token_store += _level->on_alternate_group_selected += [&](uint16_t group, bool enabled) { set_alternate_group(group, enabled); };
-        _level_token_store += _level->on_level_changed += [&]() { _scene_changed = true; };
-        _level->on_room_selected += on_room_selected;
-        _level->on_item_selected += on_item_selected;
-        _level->on_trigger_selected += on_trigger_selected;
+        _level_token_store += new_level->on_alternate_mode_selected += [&](bool enabled) { set_alternate_mode(enabled); };
+        _level_token_store += new_level->on_alternate_group_selected += [&](uint16_t group, bool enabled) { set_alternate_group(group, enabled); };
+        _level_token_store += new_level->on_level_changed += [&]() { _scene_changed = true; };
+        new_level->on_room_selected += on_room_selected;
+        new_level->on_item_selected += on_item_selected;
+        new_level->on_trigger_selected += on_trigger_selected;
 
-        _level->set_show_triggers(_ui->toggle(Options::triggers));
-        _level->set_show_geometry(_ui->toggle(Options::geometry));
-        _level->set_show_water(_ui->toggle(Options::water));
-        _level->set_show_wireframe(_ui->toggle(Options::wireframe)); 
-        _level->set_show_bounding_boxes(_ui->toggle(Options::show_bounding_boxes));
-        _level->set_show_lights(_ui->toggle( Options::lights));
-        _level->set_show_items(_ui->toggle(Options::items));
-        _level->set_show_rooms(_ui->toggle(Options::rooms));
-        _level->set_show_camera_sinks(_ui->toggle(Options::camera_sinks));
-        _level->set_show_lighting(_ui->toggle(Options::lighting));
+        new_level->set_show_triggers(_ui->toggle(Options::triggers));
+        new_level->set_show_geometry(_ui->toggle(Options::geometry));
+        new_level->set_show_water(_ui->toggle(Options::water));
+        new_level->set_show_wireframe(_ui->toggle(Options::wireframe));
+        new_level->set_show_bounding_boxes(_ui->toggle(Options::show_bounding_boxes));
+        new_level->set_show_lights(_ui->toggle(Options::lights));
+        new_level->set_show_items(_ui->toggle(Options::items));
+        new_level->set_show_rooms(_ui->toggle(Options::rooms));
+        new_level->set_show_camera_sinks(_ui->toggle(Options::camera_sinks));
+        new_level->set_show_lighting(_ui->toggle(Options::lighting));
 
         // Set up the views.
-        auto rooms = _level->rooms();
+        auto rooms = new_level->rooms();
 
         if (open_mode == ILevel::OpenMode::Full || !old_level)
         {
@@ -625,7 +639,7 @@ namespace trview
             _recent_orbit_index = 0u;
 
             std::weak_ptr<IItem> lara;
-            if (_settings.go_to_lara && find_last_item_by_type_id(*_level, 0u, lara))
+            if (_settings.go_to_lara && find_last_item_by_type_id(*new_level, 0u, lara))
             {
                 on_item_selected(lara);
             }
@@ -634,39 +648,39 @@ namespace trview
                 on_room_selected(0);
             }
 
-            if (level->selected_room() < rooms.size())
+            if (new_level->selected_room() < rooms.size())
             {
-                _ui->set_selected_room(rooms[level->selected_room()].lock());
+                _ui->set_selected_room(rooms[new_level->selected_room()].lock());
             }
             
-            auto selected_item = level->selected_item();
+            auto selected_item = new_level->selected_item();
             _ui->set_selected_item(selected_item.value_or(0));
 
             // Strip the last part of the path away.
-            const auto filename = _level->filename();
+            const auto filename = new_level->filename();
             auto last_index = std::min(filename.find_last_of('\\'), filename.find_last_of('/'));
             auto name = last_index == filename.npos ? filename : filename.substr(std::min(last_index + 1, filename.size()));
-            _ui->set_level(name, _level->version());
+            _ui->set_level(name, new_level);
             window().set_title("trview - " + name);
         }
         else if (open_mode == ILevel::OpenMode::Reload && old_level)
         {
-            _level->set_alternate_mode(old_level->alternate_mode());
-            _level->set_neighbour_depth(old_level->neighbour_depth());
-            _level->set_highlight_mode(ILevel::RoomHighlightMode::Highlight, old_level->highlight_mode_enabled(ILevel::RoomHighlightMode::Highlight));
-            _level->set_highlight_mode(ILevel::RoomHighlightMode::Neighbours, old_level->highlight_mode_enabled(ILevel::RoomHighlightMode::Neighbours));
+            new_level->set_alternate_mode(old_level->alternate_mode());
+            new_level->set_neighbour_depth(old_level->neighbour_depth());
+            new_level->set_highlight_mode(ILevel::RoomHighlightMode::Highlight, old_level->highlight_mode_enabled(ILevel::RoomHighlightMode::Highlight));
+            new_level->set_highlight_mode(ILevel::RoomHighlightMode::Neighbours, old_level->highlight_mode_enabled(ILevel::RoomHighlightMode::Neighbours));
 
-            for (const auto& group : _level->alternate_groups())
+            for (const auto& group : new_level->alternate_groups())
             {
-                _level->set_alternate_group(group, old_level->alternate_group(group));
+                new_level->set_alternate_group(group, old_level->alternate_group(group));
             }
         }
 
         // Reset UI buttons
         _ui->set_max_rooms(static_cast<uint32_t>(rooms.size()));
-        _ui->set_use_alternate_groups(_level->version() >= trlevel::LevelVersion::Tomb4);
-        _ui->set_alternate_groups(_level->alternate_groups());
-        _ui->set_flip_enabled(_level->any_alternates());
+        _ui->set_use_alternate_groups(new_level->version() >= trlevel::LevelVersion::Tomb4);
+        _ui->set_alternate_groups(new_level->alternate_groups());
+        _ui->set_flip_enabled(new_level->any_alternates());
 
         _scene_changed = true;
     }
@@ -676,7 +690,14 @@ namespace trview
         _timer.update();
         update_camera();
 
-        _picking->pick(current_camera());
+        const auto mouse_pos = client_cursor_position(window());
+        if (mouse_pos != _previous_mouse_pos || (_camera_moved || _camera_input.movement().LengthSquared() > 0))
+        {
+            _picking->pick(current_camera());
+        }
+        _previous_mouse_pos = mouse_pos;
+        _camera_moved = false;
+
         _device->begin();
         _main_window->begin();
         _main_window->clear(Colour(_settings.background_colour));
@@ -711,23 +732,24 @@ namespace trview
     bool Viewer::should_pick() const
     {
         const auto window = this->window();
-        return _level && window_under_cursor() == window && !window_is_minimised(window) && !_ui->is_cursor_over() && !cursor_outside_window(window);
+        const auto level = _level.lock();
+        return level && window_under_cursor() == window && !window_is_minimised(window) && !_ui->is_cursor_over() && !cursor_outside_window(window);
     }
 
     void Viewer::render_scene()
     {
-        if (_level)
+        if (auto level = _level.lock())
         {
             // Update the view matrix based on the room selected in the room window.
-            if (_level->number_of_rooms() > 0)
+            if (level->number_of_rooms() > 0)
             {
                 _camera.set_target(_target);
             }
             
             const auto& camera = current_camera();
 
-            _level->render(camera, _show_selection);
-            auto texture_storage = _level->texture_storage();
+            level->render(camera, _show_selection);
+            auto texture_storage = level->texture_storage();
 
             _sector_highlight->render(camera, *texture_storage);
             _measure->render(camera, *texture_storage);
@@ -737,7 +759,7 @@ namespace trview
                 _route->render(camera, *texture_storage, _show_selection);
             }
 
-            _level->render_transparency(camera);
+            level->render_transparency(camera);
             _compass->render(camera, *texture_storage);
         }
     }
@@ -767,6 +789,7 @@ namespace trview
             return;
         }
 
+        _camera_moved = true;
         if (camera_mode == CameraMode::Free || camera_mode == CameraMode::Axis)
         {
             _free_camera.set_alignment(camera_mode_to_alignment(camera_mode));
@@ -793,22 +816,23 @@ namespace trview
 
     void Viewer::toggle_highlight()
     {
-        if (_level)
+        if (auto level = _level.lock())
         {
-            bool new_value = !_level->highlight_mode_enabled(Level::RoomHighlightMode::Highlight);
-            _level->set_highlight_mode(Level::RoomHighlightMode::Highlight, new_value);
+            bool new_value = !level->highlight_mode_enabled(Level::RoomHighlightMode::Highlight);
+            level->set_highlight_mode(Level::RoomHighlightMode::Highlight, new_value);
             _ui->set_toggle(Options::highlight, new_value);
         }
     }
 
     void Viewer::select_room(uint32_t room_number)
     {
-        if (!_level || room_number >= _level->number_of_rooms())
+        const auto level = _level.lock();
+        if (!level || room_number >= level->number_of_rooms())
         {
             return;
         }
 
-        const auto room = _level->room(room_number).lock();
+        const auto room = level->room(room_number).lock();
         if (!room)
         {
             return;
@@ -917,37 +941,38 @@ namespace trview
 
     void Viewer::set_alternate_mode(bool enabled)
     {
-        if (_level)
+        if (auto level = _level.lock())
         {
             _was_alternate_select = true;
-            _level->set_alternate_mode(enabled);
+            level->set_alternate_mode(enabled);
             _ui->set_toggle(Options::flip, enabled);
         }
     }
 
     void Viewer::toggle_alternate_mode()
     {
-        if (_level && _level->any_alternates())
+        const auto level = _level.lock();
+        if (level && level->any_alternates())
         {
-            set_alternate_mode(!_level->alternate_mode());
+            set_alternate_mode(!level->alternate_mode());
         }
     }
 
     void Viewer::set_alternate_group(uint32_t group, bool enabled)
     {
-        if (_level)
+        if (auto level = _level.lock())
         {
             _was_alternate_select = true;
-            _level->set_alternate_group(group, enabled);
+            level->set_alternate_group(group, enabled);
             _ui->set_alternate_group(group, enabled);
         }
     }
 
     bool Viewer::alternate_group(uint32_t group) const
     {
-        if (_level)
+        if (const auto level = _level.lock())
         {
-            return _level->alternate_group(group);
+            return level->alternate_group(group);
         }
         return false;
     }
@@ -1000,6 +1025,7 @@ namespace trview
                 return;
             }
 
+            _camera_moved = true;
             _ui->set_show_context_menu(false);
 
             ICamera& camera = current_camera();
@@ -1008,9 +1034,9 @@ namespace trview
             const float sensitivity = low_sensitivity + (high_sensitivity - low_sensitivity) * _settings.camera_sensitivity;
             camera.set_rotation_yaw(camera.rotation_yaw() + x / sensitivity);
             camera.set_rotation_pitch(camera.rotation_pitch() - y / sensitivity);
-            if (_level)
+            if (auto level = _level.lock())
             {
-                _level->on_camera_moved();
+                level->on_camera_moved();
             }
         };
 
@@ -1020,21 +1046,22 @@ namespace trview
             {
                 return;
             }
-
+            
+            _camera_moved = true;
             if (_camera_mode == CameraMode::Orbit)
             {
                 _camera.set_zoom(_camera.zoom() + zoom);
-                if (_level)
+                if (auto level = _level.lock())
                 {
-                    _level->on_camera_moved();
+                    level->on_camera_moved();
                 }
             }
             else if (_free_camera.projection_mode() == ProjectionMode::Orthographic)
             {
                 _free_camera.set_zoom(_free_camera.zoom() + zoom);
-                if (_level)
+                if (auto level = _level.lock())
                 {
-                    _level->on_camera_moved();
+                    level->on_camera_moved();
                 }
             }
         };
@@ -1046,6 +1073,7 @@ namespace trview
                 return;
             }
 
+            _camera_moved = true;
             _ui->set_show_context_menu(false);
 
             ICamera& camera = current_camera();
@@ -1076,9 +1104,9 @@ namespace trview
                 _target += 0.05f * Vector3::Transform(Vector3(-x, y * (_settings.invert_vertical_pan ? -1.0f : 1.0f), 0), rotate);
             }
 
-            if (_level)
+            if (auto level = _level.lock())
             {
-                _level->on_camera_moved();
+                level->on_camera_moved();
             }
             _scene_changed = true;
         };
@@ -1088,117 +1116,124 @@ namespace trview
 
     void Viewer::set_show_triggers(bool show)
     {
-        if (_level)
+        if (auto level = _level.lock())
         {
-            _level->set_show_triggers(show);
+            level->set_show_triggers(show);
             _ui->set_toggle(Options::triggers, show);
         }
     }
 
     void Viewer::toggle_show_triggers()
     {
-        if (_level)
+        if (auto level = _level.lock())
         {
-            set_show_triggers(!_level->show_triggers());
+            set_show_triggers(!level->show_triggers());
         }
     }
 
     void Viewer::set_show_items(bool show)
     {
-        if (_level)
+        if (auto level = _level.lock())
         {
-            _level->set_show_items(show);
+            level->set_show_items(show);
             _ui->set_toggle(Options::items, show);
         }
     }
 
     void Viewer::toggle_show_items()
     {
-        if (_level)
+        if (auto level = _level.lock())
         {
-            set_show_items(!_level->show_items());
+            set_show_items(!level->show_items());
         }
     }
 
     void Viewer::set_show_geometry(bool show)
     {
-        if (_level)
+        if (auto level = _level.lock())
         {
-            _level->set_show_geometry(show);
+            level->set_show_geometry(show);
             _ui->set_toggle(Options::geometry, show);
         }
     }
 
     void Viewer::toggle_show_geometry()
     {
-        if (_level)
+        if (auto level = _level.lock())
         {
-            set_show_geometry(!_level->show_geometry());
+            set_show_geometry(!level->show_geometry());
         }
     }
 
     void Viewer::toggle_show_lights()
     {
-        if (_level)
+        if (auto level = _level.lock())
         {
-            set_show_lights(!_level->show_lights());
+            set_show_lights(!level->show_lights());
         }
     }
 
     void Viewer::set_show_water(bool show)
     {
-        if (_level)
+        if (auto level = _level.lock())
         {
-            _level->set_show_water(show);
+            level->set_show_water(show);
         }
     }
 
     void Viewer::set_show_wireframe(bool show)
     {
-        if (_level)
+        if (auto level = _level.lock())
         {
-            _level->set_show_wireframe(show);
+            level->set_show_wireframe(show);
             _ui->set_toggle(Options::wireframe, show);
         }
     }
 
     void Viewer::set_show_bounding_boxes(bool show)
     {
-        if (_level)
+        if (auto level = _level.lock())
         {
-            _level->set_show_bounding_boxes(show);
+            level->set_show_bounding_boxes(show);
             _ui->set_toggle(Options::show_bounding_boxes, show);
         }
     }
 
     void Viewer::set_show_lights(bool show)
     {
-        if (_level)
+        if (auto level = _level.lock())
         {
-            _level->set_show_lights(show);
+            level->set_show_lights(show);
             _ui->set_toggle(Options::lights, show);
         }
     }
 
     uint32_t Viewer::room_from_pick(const PickResult& pick) const
     {
+        const auto level = _level.lock();
         switch (pick.type)
         {
         case PickResult::Type::Room:
             return pick.index;
         case PickResult::Type::Entity:
         {
-            if (auto item = _level->item(pick.index).lock())
+            if (level)
             {
-                return item_room(item);
+                if (auto item = level->item(pick.index).lock())
+                {
+                    return item_room(item);
+                }
             }
             break;
         }
         case PickResult::Type::Trigger:
         {
-            if (const auto trigger = _level->trigger(pick.index).lock())
+            if (level)
             {
-                return trigger_room(trigger);
+                if (const auto trigger = level->trigger(pick.index).lock())
+                {
+                    return trigger_room(trigger);
+                }
             }
             break;
         }
@@ -1211,7 +1246,8 @@ namespace trview
             break;
         }
         }
-        return _level->selected_room();
+
+        return level ? level->selected_room() : 0u;
     }
 
     void Viewer::add_recent_orbit(const PickResult& pick)
@@ -1250,6 +1286,7 @@ namespace trview
 
     void Viewer::select_pick(const PickResult& pick)
     {
+        const auto level = _level.lock();
         switch (pick.type)
         {
         case PickResult::Type::Room:
@@ -1261,24 +1298,44 @@ namespace trview
             break;
         case PickResult::Type::Entity:
         {
-            if (const auto item = _level->item(pick.index).lock())
+            if (level)
             {
-                on_item_selected(item);
+                on_item_selected(level->item(pick.index));
             }
             break;
         }
         case PickResult::Type::Trigger:
-            on_trigger_selected(_level->trigger(pick.index));
+        {
+            if (level)
+            {
+                on_trigger_selected(level->trigger(pick.index));
+            }
             break;
+        }
         case PickResult::Type::Waypoint:
-            on_waypoint_selected(pick.index);
+        {
+            if (level)
+            {
+                on_waypoint_selected(pick.index);
+            }
             break;
+        }
         case PickResult::Type::Light:
-            on_light_selected(_level->light(pick.index));
+        {
+            if (level)
+            {
+                on_light_selected(level->light(pick.index));
+            }
             break;
+        }
         case PickResult::Type::CameraSink:
-            on_camera_sink_selected(_level->camera_sink(pick.index));
+        {
+            if (level)
+            {
+                on_camera_sink_selected(level->camera_sink(pick.index));
+            }
             break;
+        }
         }
     }
 
@@ -1334,9 +1391,9 @@ namespace trview
 
     void Viewer::set_show_rooms(bool show)
     {
-        if (_level)
+        if (auto level = _level.lock())
         {
-            _level->set_show_rooms(show);
+            level->set_show_rooms(show);
             _ui->set_toggle(Options::rooms, show);
         }
     }
@@ -1352,12 +1409,13 @@ namespace trview
 
     void Viewer::set_sector_highlight(const std::shared_ptr<ISector>& sector)
     {
-        if (!_level)
+        const auto level = _level.lock();
+        if (level)
         {
             return;
         }
 
-        const auto room_info = _level->room_info(_level->selected_room());
+        const auto room_info = level->room_info(level->selected_room());
         _sector_highlight->set_sector(sector,
             Matrix::CreateTranslation(room_info.x / trlevel::Scale_X, 0, room_info.z / trlevel::Scale_Z));
         _scene_changed = true;
@@ -1381,35 +1439,35 @@ namespace trview
 
     void Viewer::set_show_camera_sinks(bool show)
     {
-        if (_level)
+        if (auto level = _level.lock())
         {
-            _level->set_show_camera_sinks(show);
+            level->set_show_camera_sinks(show);
             _ui->set_toggle(Options::camera_sinks, show);
         }
     }
 
     void Viewer::toggle_show_camera_sinks()
     {
-        if (_level)
+        if (auto level = _level.lock())
         {
-            set_show_camera_sinks(!_level->show_camera_sinks());
+            set_show_camera_sinks(!level->show_camera_sinks());
         }
     }
 
     void Viewer::set_show_lighting(bool show)
     {
-        if (_level)
+        if (auto level = _level.lock())
         {
-            _level->set_show_lighting(show);
+            level->set_show_lighting(show);
             _ui->set_toggle(Options::lighting, show);
         }
     }
 
     void Viewer::toggle_show_lighting()
     {
-        if (_level)
+        if (auto level = _level.lock())
         {
-            set_show_lighting(!_level->show_lighting());
+            set_show_lighting(!level->show_lighting());
         }
     }
 

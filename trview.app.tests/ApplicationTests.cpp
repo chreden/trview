@@ -284,7 +284,7 @@ TEST(Application, FileOpenedInViewer)
     auto [viewer_ptr, viewer] = create_mock<MockViewer>();
     std::optional<std::string> called;
     auto trlevel_source = [&](auto&& filename) { called = filename; return mock_unique<trlevel::mocks::MockLevel>(); };
-    EXPECT_CALL(viewer, open(NotNull(), ILevel::OpenMode::Full)).Times(1);
+    EXPECT_CALL(viewer, open(A<const std::weak_ptr<ILevel>&>(), ILevel::OpenMode::Full)).Times(1);
     auto application = register_test_module().with_trlevel_source(trlevel_source).with_viewer(std::move(viewer_ptr)).build();
     application->open("test_path.tr2", ILevel::OpenMode::Full);
     ASSERT_TRUE(called.has_value());
@@ -326,7 +326,7 @@ TEST(Application, WindowContentsResetBeforeViewerLoaded)
     EXPECT_CALL(*route, clear()).Times(1).WillOnce([&] { events.push_back("route_clear"); });
     EXPECT_CALL(*route, set_unsaved(false)).Times(1);
     EXPECT_CALL(textures_window_manager, set_texture_storage).Times(1).WillOnce([&](auto) { events.push_back("textures"); });
-    EXPECT_CALL(viewer, open(NotNull(), ILevel::OpenMode::Full)).Times(1).WillOnce([&](auto&&...) { events.push_back("viewer"); });
+    EXPECT_CALL(viewer, open(A<const std::weak_ptr<ILevel>&>(), ILevel::OpenMode::Full)).Times(1).WillOnce([&](auto&&...) { events.push_back("viewer"); });
 
     auto application = register_test_module()
         .with_trlevel_source(trlevel_source)

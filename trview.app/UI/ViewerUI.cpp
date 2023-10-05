@@ -44,8 +44,18 @@ namespace trview
         {
             if (!is_input_active())
             {
+                _tooltip->set_visible(false);
                 _go_to->set_name("Room");
-                _go_to->toggle_visible(_selected_room);
+                _go_to->toggle_visible();
+                if (auto level = _level.lock())
+                {
+                    _go_to->set_items(
+                        level->rooms()
+                        | std::views::transform([](auto&& r) { return r.lock(); })
+                        | std::views::filter([](auto&& r) { return r != nullptr; })
+                        | std::views::transform([](auto&& r) -> GoTo::GoToItem { return { .number = r->number(), .name = std::format("Room {}", r->number()) }; })
+                        | std::ranges::to<std::vector>());
+                }
             }
         };
 
@@ -53,8 +63,18 @@ namespace trview
         {
             if (!is_input_active())
             {
+                _tooltip->set_visible(false);
                 _go_to->set_name("Item");
-                _go_to->toggle_visible(_selected_item);
+                _go_to->toggle_visible();
+                if (auto level = _level.lock())
+                {
+                    _go_to->set_items(
+                        level->items()
+                        | std::views::transform([](auto&& i) { return i.lock(); })
+                        | std::views::filter([](auto&& i) { return i != nullptr; })
+                        | std::views::transform([](auto&& i) -> GoTo::GoToItem { return { .number = i->number(), .name = i->type() }; })
+                        | std::ranges::to<std::vector>());
+                }
             }
         };
 
@@ -63,6 +83,7 @@ namespace trview
         _go_to = std::make_unique<GoTo>();
         _token_store += _go_to->on_selected += [&](uint32_t index)
         {
+            _tooltip->set_visible(false);
             if (_go_to->name() == "Item")
             {
                 on_select_item(index);
@@ -207,7 +228,6 @@ namespace trview
             return;
         }
 
-        _tooltip->render();
         _map_tooltip->render();
         _map_renderer->render();
         _view_options->render();
@@ -219,6 +239,7 @@ namespace trview
         _go_to->render();
         _level_info->render();
         _toolbar->render();
+        _tooltip->render();
 
         if (_show_measure)
         {
@@ -282,10 +303,14 @@ namespace trview
         _map_renderer->set_window_size(size);
     }
 
-    void ViewerUI::set_level(const std::string& name, trlevel::LevelVersion version)
+    void ViewerUI::set_level(const std::string& name, const std::weak_ptr<ILevel>& level)
     {
+        _level = level;
         _level_info->set_level(name);
-        _level_info->set_level_version(version);
+        if (auto new_level = _level.lock())
+        {
+            _level_info->set_level_version(new_level->version());
+        }
     }
 
     void ViewerUI::set_max_rooms(uint32_t rooms)

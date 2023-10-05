@@ -17,12 +17,18 @@ namespace trview
     class GoTo final
     {
     public:
+        struct GoToItem final
+        {
+            uint32_t    number;
+            std::string name;
+        };
+
         /// Gets whether the window is currently visible.
         /// @returns True if the window is visible.
         bool visible() const;
 
         /// Toggle whether the window is visible.
-        void toggle_visible(int32_t value);
+        void toggle_visible();
 
         /// Event raised when the user selects a new room. The newly selected room is passed as
         /// a parameter when the event is raised.
@@ -35,10 +41,14 @@ namespace trview
 
         /// Set the name of the type of thing that is being gone to.
         void set_name(const std::string& name);
+
+        void set_items(const std::vector<GoToItem>& items);
     private:
         std::string  _name;
         bool _visible{ false };
-        int _index{ 0 };
         bool _shown{ false };
+        std::vector<GoToItem> _items;
+        std::string _current_input;
+        bool _need_focus{ false };
     };
 }
