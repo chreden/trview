@@ -68,6 +68,7 @@ namespace trview
         toggles[Options::rooms] = [this](bool value) { set_show_rooms(value); };
         toggles[Options::camera_sinks] = [this](bool value) { set_show_camera_sinks(value); };
         toggles[Options::lighting] = [this](bool value) { set_show_lighting(value); };
+        toggles[Options::notes] = [](bool) {};
 
         const auto persist_toggle_value = [&](const std::string& name, bool value)
         {
