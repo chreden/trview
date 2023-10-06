@@ -378,6 +378,10 @@ namespace trview
         _settings_window->set_plugin_directories(settings.plugin_directories);
         _camera_position->set_display_degrees(settings.camera_display_degrees);
         _map_renderer->set_colours(settings.map_colours);
+        for (const auto& toggle : settings.toggles)
+        {
+            set_toggle(toggle.first, toggle.second);
+        }
     }
 
     void ViewerUI::set_selected_item(uint32_t index)

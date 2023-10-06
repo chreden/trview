@@ -68,6 +68,17 @@ namespace trview
         toggles[Options::rooms] = [this](bool value) { set_show_rooms(value); };
         toggles[Options::camera_sinks] = [this](bool value) { set_show_camera_sinks(value); };
         toggles[Options::lighting] = [this](bool value) { set_show_lighting(value); };
+        toggles[Options::notes] = [](bool) {};
+
+        const auto persist_toggle_value = [&](const std::string& name, bool value)
+        {
+            if (equals_any(name, Options::flip, Options::highlight, Options::depth_enabled))
+            {
+                return;
+            }
+            _settings.toggles[name] = value;
+            on_settings(_settings);
+        };
 
         std::unordered_map<std::string, std::function<void(int32_t)>> scalars;
         scalars[Options::depth] = [this](int32_t value) { if (auto level = _level.lock()) { level->set_neighbour_depth(value); } };
@@ -83,7 +94,7 @@ namespace trview
             }
         };
         _token_store += _ui->on_select_room += [&](uint32_t room) { on_room_selected(room); };
-        _token_store += _ui->on_toggle_changed += [this, toggles](const std::string& name, bool value)
+        _token_store += _ui->on_toggle_changed += [this, toggles, persist_toggle_value](const std::string& name, bool value)
         {
             auto toggle = toggles.find(name);
             if (toggle == toggles.end())
@@ -91,6 +102,7 @@ namespace trview
                 return;
             }
             toggle->second(value);
+            persist_toggle_value(name, value);
         };
         _token_store += _ui->on_alternate_group += [&](uint32_t group, bool value) { set_alternate_group(group, value); };
         _token_store += _ui->on_scalar_changed += [this, scalars](const std::string& name, int32_t value)

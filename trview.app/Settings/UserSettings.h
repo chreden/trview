@@ -56,6 +56,7 @@ namespace trview
         std::unordered_map<std::string, RecentRoute> recent_routes;
         float fov{ 45 };
         std::vector<std::string> plugin_directories;
+        std::unordered_map<std::string, bool> toggles;
 
         bool operator==(const UserSettings& other) const;
     };

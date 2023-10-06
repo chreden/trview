@@ -1067,3 +1067,20 @@ TEST(Viewer, SetRouteForwarded)
     auto viewer = register_test_module().with_ui(std::move(ui_ptr)).build();
     viewer->set_route(mock_shared<MockRoute>());
 }
+
+TEST(Viewer, ToggleSaved)
+{
+    auto [ui_ptr, ui] = create_mock<MockViewerUI>();
+    auto viewer = register_test_module().with_ui(std::move(ui_ptr)).build();
+    viewer->set_settings({});
+
+    std::optional<UserSettings> raised;
+    auto token = viewer->on_settings += [&](const auto& new_settings) { raised = new_settings; };
+
+    ui.on_toggle_changed(IViewer::Options::water, true);
+
+    const std::unordered_map<std::string, bool> expected { { IViewer::Options::water, true } };
+
+    ASSERT_TRUE(raised);
+    ASSERT_EQ(raised.value().toggles, expected);
+}

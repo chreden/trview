@@ -693,3 +693,20 @@ TEST(SettingsLoader, PluginDirectoriesLoaded)
     ASSERT_EQ(settings.plugin_directories, expected);
 }
 
+TEST(SettingsLoader, TogglesSaved)
+{
+    std::string output;
+    auto loader = setup_save_setting(output);
+    UserSettings settings;
+    settings.toggles = { { "test1", false }, { "test2", true } };
+    loader->save_user_settings(settings);
+    EXPECT_THAT(output, HasSubstr("\"toggles\":{\"test1\":false,\"test2\":true}"));
+}
+
+TEST(SettingsLoader, TogglesLoaded)
+{
+    auto loader = setup_setting("{\"toggles\":{\"test1\":false,\"test2\":true}}");
+    auto settings = loader->load_user_settings();
+    const std::unordered_map<std::string, bool> expected{ { "test1", false }, { "test2", true } };
+    ASSERT_EQ(settings.toggles, expected);
+}
