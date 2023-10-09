@@ -40,40 +40,29 @@ namespace trview
             _map_renderer->set_cursor_position(client_cursor_position(_window));
         };
 
-        _token_store += shortcuts->add_shortcut(true, 'G') += [&]()
+        _token_store += shortcuts->add_shortcut(true, 'F') += [&]()
         {
             if (!is_input_active())
             {
                 _tooltip->set_visible(false);
-                _go_to->set_name("Room");
                 _go_to->toggle_visible();
                 if (auto level = _level.lock())
                 {
-                    _go_to->set_items(
-                        level->rooms()
-                        | std::views::transform([](auto&& r) { return r.lock(); })
-                        | std::views::filter([](auto&& r) { return r != nullptr; })
-                        | std::views::transform([](auto&& r) -> GoTo::GoToItem { return { .number = r->number(), .name = std::format("Room {}", r->number()) }; })
-                        | std::ranges::to<std::vector>());
-                }
-            }
-        };
-
-        _token_store += shortcuts->add_shortcut(true, 'E') += [&]()
-        {
-            if (!is_input_active())
-            {
-                _tooltip->set_visible(false);
-                _go_to->set_name("Item");
-                _go_to->toggle_visible();
-                if (auto level = _level.lock())
-                {
-                    _go_to->set_items(
-                        level->items()
+                    auto items = level->items()
                         | std::views::transform([](auto&& i) { return i.lock(); })
                         | std::views::filter([](auto&& i) { return i != nullptr; })
-                        | std::views::transform([](auto&& i) -> GoTo::GoToItem { return { .number = i->number(), .name = i->type() }; })
-                        | std::ranges::to<std::vector>());
+                        | std::views::transform([](auto&& i) -> GoTo::GoToItem { return { .number = i->number(), .name = i->type(), .item = i }; })
+                        | std::ranges::to<std::vector>();
+
+                    const auto rooms = level->rooms()
+                        | std::views::transform([](auto&& r) { return r.lock(); })
+                        | std::views::filter([](auto&& r) { return r != nullptr; })
+                        | std::views::transform([](auto&& r) -> GoTo::GoToItem { return { .number = r->number(), .name = std::format("Room {}", r->number()), .item = r }; })
+                        | std::ranges::to<std::vector>();
+
+                    items.insert(items.end(), rooms.begin(), rooms.end());
+
+                    _go_to->set_items(items);
                 }
             }
         };
@@ -81,16 +70,18 @@ namespace trview
         generate_tool_window();
 
         _go_to = std::make_unique<GoTo>();
-        _token_store += _go_to->on_selected += [&](uint32_t index)
+        _token_store += _go_to->on_selected += [&](const GoTo::GoToItem& item)
         {
             _tooltip->set_visible(false);
-            if (_go_to->name() == "Item")
+            if (std::holds_alternative<std::weak_ptr<IItem>>(item.item))
             {
-                on_select_item(index);
+                const auto i = std::get<std::weak_ptr<IItem>>(item.item).lock();
+                on_select_item(i->number());
             }
-            else
+            else if (std::holds_alternative<std::weak_ptr<IRoom>>(item.item))
             {
-                on_select_room(index);
+                const auto r = std::get<std::weak_ptr<IRoom>>(item.item).lock();
+                on_select_room(r->number());
             }
         };
 

@@ -15,16 +15,6 @@ namespace trview
         _current_input.clear();
     }
 
-    std::string GoTo::name() const
-    {
-        return _name;
-    }
-
-    void GoTo::set_name(const std::string& name)
-    {
-        _name = name;
-    }
-
     void GoTo::set_items(const std::vector<GoToItem>& items)
     {
         _items = items;
@@ -37,7 +27,7 @@ namespace trview
             const auto viewport = ImGui::GetMainViewport();
             ImGui::SetNextWindowPos(viewport->Pos + ImVec2(viewport->Size.x * 0.5f, viewport->Size.y * 0.25f), 0, ImVec2(0.5f, 0.5f));
 
-            const std::string id = std::format("Go To {}", _name);
+            const std::string id = "Find";
             if (!_shown)
             {
                 ImGui::OpenPopup(id.c_str());
@@ -118,7 +108,7 @@ namespace trview
 
                             if (ImGui::Selectable(item_id.c_str(), false, ImGuiSelectableFlags_DontClosePopups | static_cast<int>(ImGuiSelectableFlags_SelectOnNav)))
                             {
-                                on_selected(item.number);
+                                on_selected(item);
                             }
 
                             any_selected |= ImGui::GetCurrentContext()->NavId == ImGui::GetCurrentWindow()->GetID(item_id.c_str());
