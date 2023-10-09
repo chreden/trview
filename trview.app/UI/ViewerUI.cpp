@@ -75,13 +75,11 @@ namespace trview
             _tooltip->set_visible(false);
             if (std::holds_alternative<std::weak_ptr<IItem>>(item.item))
             {
-                const auto i = std::get<std::weak_ptr<IItem>>(item.item).lock();
-                on_select_item(i->number());
+                on_select_item(std::get<std::weak_ptr<IItem>>(item.item));
             }
             else if (std::holds_alternative<std::weak_ptr<IRoom>>(item.item))
             {
-                const auto r = std::get<std::weak_ptr<IRoom>>(item.item).lock();
-                on_select_room(r->number());
+                on_select_room(std::get<std::weak_ptr<IRoom>>(item.item));
             }
         };
 
@@ -205,7 +203,13 @@ namespace trview
         _view_options->on_alternate_group += on_alternate_group;
 
         _room_navigator = std::make_unique<RoomNavigator>();
-        _room_navigator->on_room_selected += on_select_room;
+        _token_store += _room_navigator->on_room_selected += [&](const auto index)
+            {
+                if (auto level = _level.lock())
+                {
+                    on_select_room(level->room(index));
+                }
+            };
 
         _camera_controls->on_reset += on_camera_reset;
         _camera_controls->on_mode_selected += on_camera_mode;

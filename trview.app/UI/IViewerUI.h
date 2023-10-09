@@ -4,7 +4,6 @@
 
 #include <trview.app/Camera/CameraMode.h>
 #include <trview.app/Elements/ISector.h>
-#include <trview.app/Elements/IRoom.h>
 #include <trview.app/Geometry/PickInfo.h>
 #include <trview.app/Settings/UserSettings.h>
 #include "IContextMenu.h"
@@ -14,6 +13,9 @@
 
 namespace trview
 {
+    struct IRoom;
+    struct IItem;
+
     enum class Tool
     {
         None,
@@ -73,10 +75,10 @@ namespace trview
         Event<std::shared_ptr<ISector>> on_sector_hover;
 
         /// Event raised when an item is selected.
-        Event<uint32_t> on_select_item;
+        Event<std::weak_ptr<IItem>> on_select_item;
 
         /// Event raised when a room is selected.
-        Event<int32_t> on_select_room;
+        Event<std::weak_ptr<IRoom>> on_select_room;
 
         /// Event raised when the user settings are changed.
         Event<UserSettings> on_settings;

@@ -83,17 +83,14 @@ namespace trview
         std::unordered_map<std::string, std::function<void(int32_t)>> scalars;
         scalars[Options::depth] = [this](int32_t value) { if (auto level = _level.lock()) { level->set_neighbour_depth(value); } };
 
-        _token_store += _ui->on_select_item += [&](uint32_t index)
-        {
-            if (auto level = _level.lock())
+        _token_store += _ui->on_select_item += [&](const auto& item) { on_item_selected(item); };
+        _token_store += _ui->on_select_room += [&](const auto& room)
             {
-                if (const auto item = level->item(index).lock())
+                if (auto r = room.lock())
                 {
-                    on_item_selected(item);
+                    on_room_selected(r->number());
                 }
-            }
-        };
-        _token_store += _ui->on_select_room += [&](uint32_t room) { on_room_selected(room); };
+            };
         _token_store += _ui->on_toggle_changed += [this, toggles, persist_toggle_value](const std::string& name, bool value)
         {
             auto toggle = toggles.find(name);
