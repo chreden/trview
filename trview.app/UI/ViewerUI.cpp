@@ -54,12 +54,19 @@ namespace trview
                         | std::views::transform([](auto&& i) -> GoTo::GoToItem { return { .number = i->number(), .name = i->type(), .item = i }; })
                         | std::ranges::to<std::vector>();
 
+                    const auto triggers = level->triggers()
+                        | std::views::transform([](auto&& t) { return t.lock(); })
+                        | std::views::filter([](auto&& t) { return t != nullptr; })
+                        | std::views::transform([](auto&& t) -> GoTo::GoToItem { return { .number = t->number(), .name = std::format("Trigger {}", t->number()), .item = t }; })
+                        | std::ranges::to<std::vector>();
+
                     const auto rooms = level->rooms()
                         | std::views::transform([](auto&& r) { return r.lock(); })
                         | std::views::filter([](auto&& r) { return r != nullptr; })
                         | std::views::transform([](auto&& r) -> GoTo::GoToItem { return { .number = r->number(), .name = std::format("Room {}", r->number()), .item = r }; })
                         | std::ranges::to<std::vector>();
 
+                    items.insert(items.end(), triggers.begin(), triggers.end());
                     items.insert(items.end(), rooms.begin(), rooms.end());
 
                     _go_to->set_items(items);
@@ -76,6 +83,10 @@ namespace trview
             if (std::holds_alternative<std::weak_ptr<IItem>>(item.item))
             {
                 on_select_item(std::get<std::weak_ptr<IItem>>(item.item));
+            }
+            else if (std::holds_alternative<std::weak_ptr<ITrigger>>(item.item))
+            {
+                on_select_trigger(std::get<std::weak_ptr<ITrigger>>(item.item));
             }
             else if (std::holds_alternative<std::weak_ptr<IRoom>>(item.item))
             {

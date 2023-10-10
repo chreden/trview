@@ -15,6 +15,7 @@ namespace trview
 {
     struct IItem;
     struct IRoom;
+    struct ITrigger;
 
     /// This window presents the user with a box where they can enter the number of the thing
     /// that they want to go to. Then when they press enter, that will be the selected.
@@ -25,7 +26,7 @@ namespace trview
         {
             uint32_t    number;
             std::string name;
-            std::variant<std::weak_ptr<IItem>, std::weak_ptr<IRoom>> item;
+            std::variant<std::weak_ptr<IItem>, std::weak_ptr<IRoom>, std::weak_ptr<ITrigger>> item;
         };
 
         /// Gets whether the window is currently visible.
