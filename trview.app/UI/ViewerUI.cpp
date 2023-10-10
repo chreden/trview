@@ -48,7 +48,7 @@ namespace trview
                 _go_to->toggle_visible();
                 if (auto level = _level.lock())
                 {
-                    auto items = level->items()
+                    const auto items = level->items()
                         | std::views::transform([](auto&& i) { return i.lock(); })
                         | std::views::filter([](auto&& i) { return i != nullptr; })
                         | std::views::transform([](auto&& i) -> GoTo::GoToItem { return { .number = i->number(), .name = i->type(), .item = i }; })
@@ -66,10 +66,8 @@ namespace trview
                         | std::views::transform([](auto&& r) -> GoTo::GoToItem { return { .number = r->number(), .name = std::format("Room {}", r->number()), .item = r }; })
                         | std::ranges::to<std::vector>();
 
-                    items.insert(items.end(), triggers.begin(), triggers.end());
-                    items.insert(items.end(), rooms.begin(), rooms.end());
-
-                    _go_to->set_items(items);
+                    const auto all = { items, triggers, rooms };
+                    _go_to->set_items(std::views::join(all) | std::ranges::to<std::vector>());
                 }
             }
         };

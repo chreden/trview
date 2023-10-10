@@ -39,8 +39,7 @@ a level file using the File menu or drag and drop a level file onto the window.
 Key|Action
 ---|------
 CTRL + O    | Open file
-CTRL + G    | Show 'go to room' box
-CTRL + E    | Show 'go to item' box
+CTRL + F    | Show find window
 CTRL + R    | Open Route window
 CTRL + T    | New Triggers window
 CTRL + I    | New Items window
@@ -177,19 +176,12 @@ Orthographic mode can be useful when paired with the compass selector to choose 
 ### Reset
 Reset the orbit camera to default rotation.
 
-## Go To Room
-_Shortcut: Ctrl+G_
+## Find
+_Shortcut: Ctrl+F_
 
-Enter a room number and press enter to go to that room.
+Enter the number or name to search through all available items, triggers or rooms. The results will be presented below and selecting them with the arrow keys or clicking them will select them in the viewer.
 
-![Go To Room](doc/go_to_room.png)
-
-## Go To Item
-_Shortcut: Ctrl+E_
-
-Enter an item number and press enter to go to that item.
-
-![Go To Item](doc/go_to_item.png)
+![Find](doc/find.png)
 
 ## Minimap
 
