@@ -159,7 +159,7 @@ namespace trview
         _map_renderer = map_renderer_source(window.size());
         _token_store += _map_renderer->on_sector_hover += [this](const std::shared_ptr<ISector>& sector)
         {
-            if (ImGui::IsWindowHovered(ImGuiHoveredFlags_AnyWindow))
+            if (ImGui::GetCurrentContext() && ImGui::IsWindowHovered(ImGuiHoveredFlags_AnyWindow))
             {
                 _map_renderer->clear_hovered_sector();
                 return;
