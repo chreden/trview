@@ -3,6 +3,23 @@
 
 namespace trview
 {
+    std::string GoTo::GoToItem::type() const
+    {
+        if (std::holds_alternative<std::weak_ptr<IItem>>(item))
+        {
+            return "Item";
+        }
+        else if (std::holds_alternative<std::weak_ptr<ITrigger>>(item))
+        {
+            return "Trigger";
+        }
+        else if (std::holds_alternative<std::weak_ptr<IRoom>>(item))
+        {
+            return "Room";
+        }
+        return "?";
+    }
+
     bool GoTo::visible() const
     {
         return _visible;
@@ -97,7 +114,7 @@ namespace trview
                                 list_focused = true;
                             }
 
-                            const auto item_id = std::format("{} - {}", item.number, item.name);
+                            const auto item_id = std::format("{} {} - {}", item.type(), item.number, item.name);
                             if (first_item &&
                                 ImGui::GetCurrentContext()->NavId == ImGui::GetCurrentWindow()->GetID(item_id.c_str()) &&
                                 ImGui::IsKeyPressed(ImGuiKey_UpArrow))

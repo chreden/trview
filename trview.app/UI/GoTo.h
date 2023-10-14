@@ -27,6 +27,8 @@ namespace trview
             uint32_t    number;
             std::string name;
             std::variant<std::weak_ptr<IItem>, std::weak_ptr<IRoom>, std::weak_ptr<ITrigger>> item;
+
+            std::string type() const;
         };
 
         /// Gets whether the window is currently visible.
