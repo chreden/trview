@@ -119,7 +119,6 @@ TEST(Viewer, SelectItemRaisedForValidItem)
 
     auto item = mock_shared<MockItem>();
     auto level = mock_shared<MockLevel>();
-    EXPECT_CALL(*level, item(123)).WillRepeatedly(Return(item));
 
     auto viewer = register_test_module().with_ui(std::move(ui_ptr)).build();
     viewer->open(level, ILevel::OpenMode::Full);
@@ -127,24 +126,10 @@ TEST(Viewer, SelectItemRaisedForValidItem)
     std::shared_ptr<IItem> raised_item;
     auto token = viewer->on_item_selected += [&raised_item](const auto& item) { raised_item = item.lock(); };
 
-    ui.on_select_item(123);
+    ui.on_select_item(item);
 
     ASSERT_TRUE(raised_item);
     ASSERT_EQ(raised_item, item);
-}
-
-/// Tests that the on_hide event from the UI is observed but not forwarded when the item is invalid.
-TEST(Viewer, SelectItemNotRaisedForInvalidItem)
-{
-    auto [ui_ptr, ui] = create_mock<MockViewerUI>();
-    auto viewer = register_test_module().with_ui(std::move(ui_ptr)).build();
-
-    std::shared_ptr<IItem> raised_item;
-    auto token = viewer->on_item_selected += [&raised_item](const auto& item) { raised_item = item.lock(); };
-
-    ui.on_select_item(0);
-
-    ASSERT_FALSE(raised_item);
 }
 
 /// Tests that the on_hide event from the UI is observed and forwarded when the item is valid.
@@ -198,13 +183,14 @@ TEST(Viewer, SelectRoomRaised)
     auto [ui_ptr, ui] = create_mock<MockViewerUI>();
     auto viewer = register_test_module().with_ui(std::move(ui_ptr)).build();
 
+    auto room = mock_shared<MockRoom>()->with_number(100);
     std::optional<uint32_t> raised_room;
     auto token = viewer->on_room_selected += [&raised_room](const auto& room) { raised_room = room; };
 
-    ui.on_select_room(0);
+    ui.on_select_room(room);
 
     ASSERT_TRUE(raised_room.has_value());
-    ASSERT_EQ(raised_room.value(), 0u);
+    ASSERT_EQ(raised_room.value(), 100u);
 }
 
 /// Tests that the trigger selected event is raised when the user clicks on a trigger.

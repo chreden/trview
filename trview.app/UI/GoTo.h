@@ -7,11 +7,16 @@
 #pragma once
 
 #include <cstdint>
+#include <variant>
 #include <string>
 #include <trview.common/Event.h>
 
 namespace trview
 {
+    struct IItem;
+    struct IRoom;
+    struct ITrigger;
+
     /// This window presents the user with a box where they can enter the number of the thing
     /// that they want to go to. Then when they press enter, that will be the selected.
     class GoTo final
@@ -21,6 +26,9 @@ namespace trview
         {
             uint32_t    number;
             std::string name;
+            std::variant<std::weak_ptr<IItem>, std::weak_ptr<IRoom>, std::weak_ptr<ITrigger>> item;
+
+            std::string type() const;
         };
 
         /// Gets whether the window is currently visible.
@@ -32,19 +40,12 @@ namespace trview
 
         /// Event raised when the user selects a new room. The newly selected room is passed as
         /// a parameter when the event is raised.
-        Event<uint32_t> on_selected;
-
-        /// Get the name of the type of thing being selected.
-        std::string name() const;
+        Event<GoToItem> on_selected;
 
         void render();
 
-        /// Set the name of the type of thing that is being gone to.
-        void set_name(const std::string& name);
-
         void set_items(const std::vector<GoToItem>& items);
     private:
-        std::string  _name;
         bool _visible{ false };
         bool _shown{ false };
         std::vector<GoToItem> _items;
