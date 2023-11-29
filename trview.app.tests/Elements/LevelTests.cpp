@@ -180,7 +180,7 @@ TEST(Level, OcbAdjustmentsPerformedWhenNeeded)
     auto room = mock_shared<MockRoom>();
     PickResult result{};
     result.hit = true;
-    EXPECT_CALL(*room, pick).WillRepeatedly(Return(result));
+    EXPECT_CALL(*room, pick).WillRepeatedly(Return(std::vector<PickResult> { result }));
     
     auto level = register_test_module().with_level(std::move(mock_level_ptr))
         .with_room_source(
@@ -215,7 +215,7 @@ TEST(Level, OcbAdjustmentsNotPerformedWhenNotNeeded)
                 auto room = mock_shared<MockRoom>();
                 PickResult result{};
                 result.hit = true;
-                EXPECT_CALL(*room, pick).WillRepeatedly(Return(result));
+                EXPECT_CALL(*room, pick).WillRepeatedly(Return(std::vector<PickResult> { result }));
                 return room;
             })
         .with_entity_source(
