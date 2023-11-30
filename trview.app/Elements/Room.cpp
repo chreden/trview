@@ -94,7 +94,7 @@ namespace trview
         return _neighbours;
     }
 
-    PickResult Room::pick(const Vector3& position, const Vector3& direction, PickFilter filters) const
+    std::vector<PickResult> Room::pick(const Vector3& position, const Vector3& direction, PickFilter filters) const
     {
         using namespace DirectX::TriangleTests;
 
@@ -102,7 +102,7 @@ namespace trview
         float box_distance = 0;
         if (!_bounding_box.Intersects(position, direction, box_distance))
         {
-            return PickResult();
+            return {};
         }
 
         std::vector<PickResult> pick_results;
@@ -126,7 +126,7 @@ namespace trview
             }
         }
 
-        if (has_flag(filters, PickFilter::Lights) && pick_results.empty())
+        if (has_flag(filters, PickFilter::Lights))
         {
             for (const auto& light : _lights)
             {
@@ -144,7 +144,7 @@ namespace trview
             }
         }
 
-        if (has_flag(filters, PickFilter::CameraSinks) && pick_results.empty())
+        if (has_flag(filters, PickFilter::CameraSinks))
         {
             for (const auto& camera_sink : _camera_sinks)
             {
@@ -162,7 +162,7 @@ namespace trview
             }
         }
 
-        if (has_flag(filters, PickFilter::Triggers) && pick_results.empty())
+        if (has_flag(filters, PickFilter::Triggers))
         {
             for (const auto& trigger_pair : _triggers)
             {
@@ -219,15 +219,9 @@ namespace trview
             }
         }
 
-        if (pick_results.empty())
-        {
-            return PickResult();
-        }
-
-        // Choose the closest pick out of all results.
         std::sort(pick_results.begin(), pick_results.end(),
             [](const auto& l, const auto& r) { return l.distance < r.distance; });
-        return pick_results.front();
+        return pick_results;
     }
 
     void Room::render(const ICamera& camera, SelectionMode selected, RenderFilter render_filter, const std::unordered_set<uint32_t>& visible_rooms)

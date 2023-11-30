@@ -642,41 +642,53 @@ namespace trview
     // is also specified.
     PickResult Level::pick(const ICamera& camera, const Vector3& position, const Vector3& direction) const
     {
-        PickResult final_result;
-        
-        auto choose = [&](PickResult result)
+        std::vector<PickResult> results;
+        for (auto& room : get_rooms_to_render(camera))
         {
-            // Choose the nearest pick - but if the previous closest was trigger an entity should take priority over it.
-            if (result.hit && (result.distance < final_result.distance || (result.type == PickResult::Type::Entity && final_result.type == PickResult::Type::Trigger)))
-            {
-                final_result.hit = true;
-                final_result.distance = result.distance;
-                final_result.position = result.position;
-                final_result.centroid = result.centroid;
-                final_result.index = result.index;
-                final_result.type = result.type;
-                final_result.triangle = result.triangle;
-            }
-        };
-
-        auto rooms = get_rooms_to_render(camera);
-        for (auto& room : rooms)
-        {
-            choose(room.room.pick(position, direction,
+            for (const auto& result : room.room.pick(position, direction,
                 filter_flag(PickFilter::Geometry, has_flag(_render_filters, RenderFilter::Rooms)) |
                 filter_flag(PickFilter::Entities, has_flag(_render_filters, RenderFilter::Entities)) |
                 filter_flag(PickFilter::StaticMeshes, has_flag(_render_filters, RenderFilter::Rooms)) |
                 filter_flag(PickFilter::AllGeometry, has_flag(_render_filters, RenderFilter::AllGeometry)) |
                 filter_flag(PickFilter::Triggers, has_flag(_render_filters, RenderFilter::Triggers)) |
                 filter_flag(PickFilter::Lights, has_flag(_render_filters, RenderFilter::Lights)) |
-                filter_flag(PickFilter::CameraSinks, has_flag(_render_filters, RenderFilter::CameraSinks))));
+                filter_flag(PickFilter::CameraSinks, has_flag(_render_filters, RenderFilter::CameraSinks))))
+            {
+                results.push_back(result);
+            }
+
             if (!is_alternate_mismatch(room.room) && room.room.alternate_mode() == IRoom::AlternateMode::IsAlternate)
             {
-                auto& original_room = _rooms[room.room.alternate_room()];
-                choose(original_room->pick(position, direction, PickFilter::Entities));
+                const auto& original_room = _rooms[room.room.alternate_room()];
+                for (const auto& result : original_room->pick(position, direction, PickFilter::Entities))
+                {
+                    results.push_back(result);
+                }
             }
         }
-        return final_result;
+
+        std::sort(results.begin(), results.end(), [](const auto& l, const auto& r) { return l.distance < r.distance; });
+
+        std::optional<PickResult> actual_result;
+        if (!results.empty())
+        {
+            actual_result = results.front();
+        }
+
+        for (const auto& result : results)
+        {
+            if (result.type == PickResult::Type::Room)
+            {
+                return actual_result.value_or(result);
+            }
+
+            if (result.type == PickResult::Type::Entity)
+            {
+                actual_result = result;
+            }
+        }
+
+        return actual_result.value_or(PickResult {});
     }
 
     // Determines whether the room is currently being rendered.
@@ -962,10 +974,14 @@ namespace trview
             {
                 const auto entity_pos = entity->bounding_box().Center;
                 const auto result = room->pick(Vector3(entity_pos.x, entity_pos.y, entity_pos.z), Vector3(0, 1, 0), PickFilter::Geometry | PickFilter::StaticMeshes);
-                if (result.hit)
+                if (!result.empty())
                 {
-                    const auto new_height = result.position.y - entity->bounding_box().Extents.y;
-                    entity->adjust_y(new_height - entity_pos.y);
+                    const auto hit = result.front();
+                    if (hit.hit)
+                    {
+                        const auto new_height = hit.position.y - entity->bounding_box().Extents.y;
+                        entity->adjust_y(new_height - entity_pos.y);
+                    }
                 }
             }
         }

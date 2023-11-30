@@ -36,7 +36,7 @@ namespace trview
         Room& operator=(const Room&) = delete;
         virtual RoomInfo info() const override;
         virtual std::set<uint16_t> neighbours() const override;
-        virtual PickResult pick(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& direction, PickFilter filters = PickFilter::Default) const override;
+        virtual std::vector<PickResult> pick(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& direction, PickFilter filters = PickFilter::Default) const override;
         virtual void render(const ICamera& camera, SelectionMode selected, RenderFilter render_filter, const std::unordered_set<uint32_t>& visible_rooms) override;
         virtual void render_bounding_boxes(const ICamera& camera) override;
         virtual void render_lights(const ICamera& camera, const std::weak_ptr<ILight>& selected_light) override;
