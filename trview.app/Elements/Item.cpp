@@ -77,7 +77,7 @@ namespace trview
 
     Item::Item(const IMesh::Source& mesh_source, const IMeshStorage& mesh_storage, const trlevel::ILevel& level, const std::weak_ptr<ILevel>& owning_level, const std::weak_ptr<IRoom>& room, uint32_t number, uint16_t type_id,
         const Vector3& position, int32_t angle, int32_t ocb, const std::string& type, const std::vector<std::weak_ptr<ITrigger>>& triggers, uint16_t flags, bool is_pickup)
-        : _room(room), _number(number), _type(type), _triggers(triggers), _type_id(type_id), _ocb(ocb), _flags(flags), _level(owning_level), _angle(angle)
+        : _room(room), _number(number), _type(type), _triggers(triggers), _type_id(type_id), _ocb(ocb), _flags(flags), _level(owning_level), _angle(angle), _is_pickup(is_pickup)
     {
         // Extract the meshes required from the model.
         load_meshes(level, type_id, mesh_storage);
@@ -449,6 +449,11 @@ namespace trview
     int32_t Item::angle() const
     {
         return _angle;
+    }
+
+    bool Item::is_pickup() const
+    {
+        return _is_pickup;
     }
 
     bool is_mutant_egg(const IItem& item)

@@ -46,6 +46,7 @@ namespace trview
         virtual DirectX::SimpleMath::Vector3 position() const = 0;
         virtual std::weak_ptr<ILevel> level() const = 0;
         virtual int32_t angle() const = 0;
+        virtual bool is_pickup() const = 0;
     };
 
     bool is_mutant_egg(const IItem& item);

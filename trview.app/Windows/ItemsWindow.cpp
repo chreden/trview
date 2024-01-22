@@ -242,6 +242,7 @@ namespace trview
                     add_stat("Invisible", item->invisible_flag());
                     add_stat("Flags", format_binary(item->activation_flags()));
                     add_stat("OCB", item->ocb());
+                    add_stat("Is Pickup", item->is_pickup());
                 }
 
                 ImGui::EndTable();
@@ -390,6 +391,7 @@ namespace trview
                 }
                 return results;
             });
+        _filters.add_getter<bool>("Is Pickup", [](auto&& item) { return item.is_pickup(); });
     }
 
     void ItemsWindow::set_level_version(trlevel::LevelVersion version)
