@@ -2,7 +2,8 @@
 	"games": {
 		"tr1": [{
 				"id": 0,
-				"name": "Lara"
+				"name": "Lara",
+				"categories": [ "entity" ]
 			}, {
 				"id": 1,
 				"name": "LaraPistolsAnim"
@@ -387,6 +388,7 @@
 			}, {
 				"id": 129,
 				"name": "Key 1"
+				"categories": [ "pickup", "key" ]
 			}, {
 				"id": 130,
 				"name": "Key 2"

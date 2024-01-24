@@ -2,6 +2,7 @@
 
 #include "ITypeNameLookup.h"
 #include <unordered_map>
+#include <unordered_set>
 
 namespace trview
 {
@@ -17,6 +18,7 @@ namespace trview
         {
             std::string name;
             bool pickup{ false };
+            std::unordered_set<std::string> categories;
         };
 
         std::unordered_map<trlevel::LevelVersion, std::unordered_map<uint32_t, Type>> _type_names;

@@ -62,7 +62,8 @@ namespace trview
                 type_names.insert({ element.at("id").get<uint32_t>(), 
                     {
                         name,
-                        read_attribute<bool>(element, "pickup")
+                        read_attribute<bool>(element, "pickup"),
+                        read_attribute<std::unordered_set<std::string>>(element, "categories")
                     } });
             }
             _type_names.insert({ version, type_names });
