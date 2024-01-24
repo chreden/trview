@@ -55,7 +55,7 @@ namespace trview
                 return;
             }
 
-            std::unordered_map<uint32_t, Type> type_names;
+            std::unordered_map<uint32_t, TypeInfo> type_names;
             for (const auto& element : json["games"][game_name])
             {
                 auto name = element.at("name").get<std::string>();
@@ -112,5 +112,27 @@ namespace trview
             return false;
         }
         return found_type->second.pickup;
+    }
+
+    std::optional<TypeInfo> TypeNameLookup::lookup(trlevel::LevelVersion level_version, uint32_t type_id, int16_t flags) const
+    {
+        const auto& game_types = _type_names.find(level_version);
+        if (game_types == _type_names.end())
+        {
+            return std::nullopt;
+        }
+
+        const auto found_type = game_types->second.find(type_id);
+        if (found_type == game_types->second.end())
+        {
+            return std::nullopt;
+        }
+
+        TypeInfo result = found_type->second;
+        if (level_version == LevelVersion::Tomb1 && is_mutant_egg(type_id))
+        {
+            result.name = mutant_name(flags);
+        }
+        return result;
     }
 }

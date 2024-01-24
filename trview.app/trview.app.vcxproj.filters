@@ -1033,6 +1033,9 @@
     <ClInclude Include="Mocks\Routing\IRandomizerRoute.h">
       <Filter>Mocks\Routing</Filter>
     </ClInclude>
+    <ClInclude Include="Elements\TypeInfo.h">
+      <Filter>Elements</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Windows">
