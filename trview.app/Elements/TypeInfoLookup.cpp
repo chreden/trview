@@ -1,4 +1,4 @@
-#include "TypeNameLookup.h"
+#include "TypeInfoLookup.h"
 #include <trview.common/Json.h>
 #include "IItem.h"
 
@@ -24,11 +24,11 @@ namespace trview
         }
     }
 
-    ITypeNameLookup::~ITypeNameLookup()
+    ITypeInfoLookup::~ITypeInfoLookup()
     {
     }
 
-    TypeNameLookup::TypeNameLookup(const std::string& type_name_json)
+    TypeInfoLookup::TypeInfoLookup(const std::string& type_name_json)
     {
         auto json = nlohmann::json::parse(type_name_json.begin(), type_name_json.end());
         auto load_game_types = [&](LevelVersion version)
@@ -76,7 +76,7 @@ namespace trview
         load_game_types(LevelVersion::Tomb5);
     }
 
-    std::string TypeNameLookup::lookup_type_name(LevelVersion level_version, uint32_t type_id, uint16_t flags) const
+    std::string TypeInfoLookup::lookup_type_name(LevelVersion level_version, uint32_t type_id, uint16_t flags) const
     {
         const auto& game_types = _type_names.find(level_version);
         if (game_types == _type_names.end())
@@ -98,7 +98,7 @@ namespace trview
         return found_type->second.name;
     }
 
-    bool TypeNameLookup::is_pickup(trlevel::LevelVersion level_version, uint32_t type_id) const
+    bool TypeInfoLookup::is_pickup(trlevel::LevelVersion level_version, uint32_t type_id) const
     {
         const auto& game_types = _type_names.find(level_version);
         if (game_types == _type_names.end())
@@ -114,7 +114,7 @@ namespace trview
         return found_type->second.pickup;
     }
 
-    std::optional<TypeInfo> TypeNameLookup::lookup(trlevel::LevelVersion level_version, uint32_t type_id, int16_t flags) const
+    std::optional<TypeInfo> TypeInfoLookup::lookup(trlevel::LevelVersion level_version, uint32_t type_id, int16_t flags) const
     {
         const auto& game_types = _type_names.find(level_version);
         if (game_types == _type_names.end())

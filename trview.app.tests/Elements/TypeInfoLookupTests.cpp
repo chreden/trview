@@ -1,43 +1,43 @@
-#include <trview.app/Elements/TypeNameLookup.h>
+#include <trview.app/Elements/TypeInfoLookup.h>
 
 using namespace trview;
 using namespace trlevel;
 
 // Test that looking up an ID gives the correct result.
-TEST(TypeNameLookup, LookupTR1)
+TEST(TypeInfoLookup, LookupTR1)
 {
     std::string json = "{\"games\":{\"tr1\":[{\"id\":123,\"name\":\"Test Name\"}]}}";
 
-    TypeNameLookup lookup(json);
+    TypeInfoLookup lookup(json);
 
     ASSERT_EQ("Test Name", lookup.lookup_type_name(LevelVersion::Tomb1, 123, 0));
 }
 
 // Tests that if there are identical entries for different games, the correct result is returned.
-TEST(TypeNameLookup, LookupMultipleGames)
+TEST(TypeInfoLookup, LookupMultipleGames)
 {
     std::string json = "{\"games\":{\"tr1\":[{\"id\":123,\"name\":\"Test Name TR1\"}],\"tr2\":[{\"id\":123,\"name\":\"Test Name TR2\"}]}}";
 
-    TypeNameLookup lookup(json);
+    TypeInfoLookup lookup(json);
 
     ASSERT_EQ("Test Name TR1", lookup.lookup_type_name(LevelVersion::Tomb1, 123, 0));
     ASSERT_EQ("Test Name TR2", lookup.lookup_type_name(LevelVersion::Tomb2, 123, 0));
 }
 
 // Tests that if the name is missing, it still returns the number.
-TEST(TypeNameLookup, LookupMissingItem)
+TEST(TypeInfoLookup, LookupMissingItem)
 {
     std::string json = "{}";
 
-    TypeNameLookup lookup(json);
+    TypeInfoLookup lookup(json);
 
     ASSERT_EQ("123", lookup.lookup_type_name(LevelVersion::Tomb3, 123, 0));
 }
 
-TEST(TypeNameLookup, LookupNormalMutantEggs)
+TEST(TypeInfoLookup, LookupNormalMutantEggs)
 {
     std::string json = "{\"games\":{\"tr1\":[{\"id\":163,\"name\":\"Test Name 1\"}]}}";
-    TypeNameLookup lookup(json);
+    TypeInfoLookup lookup(json);
 
     auto winged = lookup.lookup_type_name(trlevel::LevelVersion::Tomb1, 163, 0);
     auto shooter = lookup.lookup_type_name(trlevel::LevelVersion::Tomb1, 163, 1 << 9);
@@ -54,10 +54,10 @@ TEST(TypeNameLookup, LookupNormalMutantEggs)
     ASSERT_EQ(def, "Mutant Egg (Winged)");
 }
 
-TEST(TypeNameLookup, LookupBigMutantEggs)
+TEST(TypeInfoLookup, LookupBigMutantEggs)
 {
     std::string json = "{\"games\":{\"tr1\":[{\"id\":181,\"name\":\"Test Name 2\"}]}}";
-    TypeNameLookup lookup(json);
+    TypeInfoLookup lookup(json);
 
     auto winged = lookup.lookup_type_name(trlevel::LevelVersion::Tomb1, 181, 0);
     auto shooter = lookup.lookup_type_name(trlevel::LevelVersion::Tomb1, 181, 1 << 9);
@@ -74,10 +74,10 @@ TEST(TypeNameLookup, LookupBigMutantEggs)
     ASSERT_EQ(def, "Mutant Egg (Winged)");
 }
 
-TEST(TypeNameLookup, LookupNormalMutantEggsTR2)
+TEST(TypeInfoLookup, LookupNormalMutantEggsTR2)
 {
     std::string json = "{\"games\":{\"tr1\":[{\"id\":163,\"name\":\"Test Name 1\"}],\"tr2\":[{\"id\":163,\"name\":\"Test Name 2\"}]}}";
-    TypeNameLookup lookup(json);
+    TypeInfoLookup lookup(json);
 
     auto winged = lookup.lookup_type_name(trlevel::LevelVersion::Tomb2, 163, 0);
 

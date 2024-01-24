@@ -106,7 +106,7 @@
     <ClCompile Include="Graphics\MeshStorage.cpp">
       <Filter>Graphics</Filter>
     </ClCompile>
-    <ClCompile Include="Elements\TypeNameLookup.cpp">
+    <ClCompile Include="Elements\TypeInfoLookup.cpp">
       <Filter>Elements</Filter>
     </ClCompile>
     <ClCompile Include="Menus\MenuDetector.cpp">
@@ -451,10 +451,10 @@
     <ClInclude Include="Graphics\MeshStorage.h">
       <Filter>Graphics</Filter>
     </ClInclude>
-    <ClInclude Include="Elements\TypeNameLookup.h">
+    <ClInclude Include="Elements\TypeInfoLookup.h">
       <Filter>Elements</Filter>
     </ClInclude>
-    <ClInclude Include="Elements\ITypeNameLookup.h">
+    <ClInclude Include="Elements\ITypeInfoLookup.h">
       <Filter>Elements</Filter>
     </ClInclude>
     <ClInclude Include="Menus\MenuDetector.h">
@@ -573,7 +573,7 @@
     <ClInclude Include="Mocks\Geometry\ITransparencyBuffer.h">
       <Filter>Mocks\Geometry</Filter>
     </ClInclude>
-    <ClInclude Include="Mocks\Elements\ITypeNameLookup.h">
+    <ClInclude Include="Mocks\Elements\ITypeInfoLookup.h">
       <Filter>Mocks\Elements</Filter>
     </ClInclude>
     <ClInclude Include="Geometry\IMesh.h">

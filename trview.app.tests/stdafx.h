@@ -52,7 +52,7 @@ namespace testing
 #include <trview.app/Mocks/Elements/ILevel.h>
 #include <trview.app/Mocks/Elements/IStaticMesh.h>
 #include <trview.app/Mocks/Elements/ITrigger.h>
-#include <trview.app/Mocks/Elements/ITypeNameLookup.h>
+#include <trview.app/Mocks/Elements/ITypeInfoLookup.h>
 #include <trview.app/Mocks/Menus/IUpdateChecker.h>
 #include <trview.app/Mocks/Routing/IRoute.h>
 #include <trview.app/Mocks/Routing/IWaypoint.h>

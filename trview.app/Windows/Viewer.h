@@ -31,7 +31,7 @@
 #include <trview.app/Geometry/IPicking.h>
 #include <trview.app/Graphics/ISectorHighlight.h>
 #include <trview.app/UI/IViewerUI.h>
-#include <trview.app/Elements/ITypeNameLookup.h>
+#include "../Elements/ITypeInfoLookup.h"
 #include <trview.app/Menus/MenuDetector.h>
 #include <trview.app/Lua/Lua.h>
 #include <trview.common/Windows/Shortcuts.h>

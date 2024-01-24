@@ -20,7 +20,7 @@
 #include "Resources/DefaultTextures.h"
 #include "Resources/DefaultFonts.h"
 
-#include "Elements/TypeNameLookup.h"
+#include "Elements/TypeInfoLookup.h"
 #include "Elements/CameraSink/CameraSink.h"
 #include "Elements/Item.h"
 #include "Elements/Light.h"
@@ -155,7 +155,7 @@ namespace trview
         auto font_factory = std::make_shared<graphics::FontFactory>();
 
         Resource type_list = get_resource_memory(IDR_TYPE_NAMES, L"TEXT");
-        auto type_name_lookup = std::make_shared<TypeNameLookup>(std::string(type_list.data, type_list.data + type_list.size));
+        auto type_info_lookup = std::make_shared<TypeInfoLookup>(std::string(type_list.data, type_list.data + type_list.size));
 
         load_default_shaders(device, shader_storage);
         load_default_fonts(device, font_factory);
@@ -210,15 +210,15 @@ namespace trview
         auto entity_source = [=](auto&& level, auto&& entity, auto&& index, auto&& triggers, auto&& mesh_storage, auto&& owning_level, auto&& room)
         {
             return std::make_shared<Item>(mesh_source, level, entity, mesh_storage, owning_level, index,
-                type_name_lookup->lookup_type_name(level.get_version(), entity.TypeID, entity.Flags),
+                type_info_lookup->lookup_type_name(level.get_version(), entity.TypeID, entity.Flags),
                 triggers,
-                type_name_lookup->is_pickup(level.get_version(), entity.TypeID),
+                type_info_lookup->is_pickup(level.get_version(), entity.TypeID),
                 room);
         };
 
         auto ai_source = [=](auto&& level, auto&& entity, auto&& index, auto&& mesh_storage, auto&& owning_level, auto&& room)
         {
-            return std::make_shared<Item>(mesh_source, level, entity, mesh_storage, owning_level, index, type_name_lookup->lookup_type_name(level.get_version(), entity.type_id, entity.flags), std::vector<std::weak_ptr<ITrigger>>{}, room);
+            return std::make_shared<Item>(mesh_source, level, entity, mesh_storage, owning_level, index, type_info_lookup->lookup_type_name(level.get_version(), entity.type_id, entity.flags), std::vector<std::weak_ptr<ITrigger>>{}, room);
         };
 
         auto log = std::make_shared<Log>();

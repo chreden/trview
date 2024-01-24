@@ -47,7 +47,7 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClCompile Include="Elements\Sector.cpp" />
     <ClCompile Include="Elements\StaticMesh.cpp" />
     <ClCompile Include="Elements\Trigger.cpp" />
-    <ClCompile Include="Elements\TypeNameLookup.cpp" />
+    <ClCompile Include="Elements\TypeInfoLookup.cpp" />
     <ClCompile Include="Geometry\IMesh.cpp" />
     <ClCompile Include="Geometry\IRenderable.cpp" />
     <ClCompile Include="Geometry\Matrix.cpp" />
@@ -208,7 +208,7 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClInclude Include="Elements\ISector.h" />
     <ClInclude Include="Elements\IStaticMesh.h" />
     <ClInclude Include="Elements\ITrigger.h" />
-    <ClInclude Include="Elements\ITypeNameLookup.h" />
+    <ClInclude Include="Elements\ITypeInfoLookup.h" />
     <ClInclude Include="Elements\Level.h" />
     <ClInclude Include="Elements\Light.h" />
     <ClInclude Include="Elements\PickFilter.h" />
@@ -218,7 +218,7 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClInclude Include="Elements\Sector.h" />
     <ClInclude Include="Elements\StaticMesh.h" />
     <ClInclude Include="Elements\Trigger.h" />
-    <ClInclude Include="Elements\TypeNameLookup.h" />
+    <ClInclude Include="Elements\TypeInfoLookup.h" />
     <ClInclude Include="Elements\Types.h" />
     <ClInclude Include="Filters\Filters.h" />
     <ClInclude Include="Filters\Filters.hpp" />
@@ -264,7 +264,7 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClInclude Include="Mocks\Elements\ISector.h" />
     <ClInclude Include="Mocks\Elements\IStaticMesh.h" />
     <ClInclude Include="Mocks\Elements\ITrigger.h" />
-    <ClInclude Include="Mocks\Elements\ITypeNameLookup.h" />
+    <ClInclude Include="Mocks\Elements\ITypeInfoLookup.h" />
     <ClInclude Include="Mocks\Geometry\IMesh.h" />
     <ClInclude Include="Mocks\Geometry\IPicking.h" />
     <ClInclude Include="Mocks\Geometry\ITransparencyBuffer.h" />

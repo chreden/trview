@@ -17,7 +17,7 @@
     <ClCompile Include="UI\CameraPositionTests.cpp">
       <Filter>UI</Filter>
     </ClCompile>
-    <ClCompile Include="Elements\TypeNameLookupTests.cpp">
+    <ClCompile Include="Elements\TypeInfoLookupTests.cpp">
       <Filter>Elements</Filter>
     </ClCompile>
     <ClCompile Include="Elements\LevelTests.cpp">

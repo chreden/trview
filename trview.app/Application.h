@@ -5,7 +5,7 @@
 
 #include <trlevel/ILevel.h>
 
-#include <trview.app/Elements/ITypeNameLookup.h>
+#include "Elements/ITypeInfoLookup.h"
 #include <trview.app/Menus/IFileMenu.h>
 #include <trview.app/Menus/IUpdateChecker.h>
 #include <trview.app/Menus/ViewMenu.h>
@@ -149,7 +149,7 @@ namespace trview
         HINSTANCE _instance{ nullptr };
 
         // Level data components
-        std::unique_ptr<ITypeNameLookup> _type_name_lookup;
+        std::unique_ptr<ITypeInfoLookup> _type_info_lookup;
         std::shared_ptr<ILevel> _level;
         ILevel::Source _level_source;
 
