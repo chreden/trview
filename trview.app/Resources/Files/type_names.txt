@@ -387,7 +387,7 @@
 				"name": "Midas Hand"
 			}, {
 				"id": 129,
-				"name": "Key 1"
+				"name": "Key 1",
 				"categories": [ "pickup", "key" ]
 			}, {
 				"id": 130,

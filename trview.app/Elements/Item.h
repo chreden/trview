@@ -56,6 +56,7 @@ namespace trview
         std::weak_ptr<ILevel> level() const override;
         int32_t angle() const override;
         bool is_pickup() const override;
+        std::unordered_set<std::string> categories() const override;
     private:
         Item(const IMesh::Source& mesh_source, const IMeshStorage& mesh_storage, const trlevel::ILevel& level, const std::weak_ptr<ILevel>& owning_level, const std::weak_ptr<IRoom>& room, uint32_t number, uint16_t type_id, const DirectX::SimpleMath::Vector3& position, int32_t angle, int32_t ocb, const TypeInfo& type, const std::vector<std::weak_ptr<ITrigger>>& triggers, uint16_t flags);
 
@@ -80,9 +81,7 @@ namespace trview
         std::vector<DirectX::BoundingOrientedBox> _oriented_boxes;
         bool                                      _visible{ true };
         bool _needs_ocb_adjustment{ false };
-        bool _is_pickup{ false };
-
-        std::string _type;
+        TypeInfo _type;
         std::vector<std::weak_ptr<ITrigger>> _triggers;
         uint32_t _type_id{ 0u };
         int32_t _ocb{ 0u };

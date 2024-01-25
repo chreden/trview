@@ -359,14 +359,25 @@ namespace trview
     {
         _filters.clear_all_getters();
         std::set<std::string> available_types;
+        std::set<std::string> available_categories;
         for (const auto& item : _all_items)
         {
             if (auto item_ptr = item.lock())
             {
                 available_types.insert(item_ptr->type());
+                available_categories.insert_range(item_ptr->categories());
             }
         }
         _filters.add_getter<std::string>("Type", { available_types.begin(), available_types.end() }, [](auto&& item) { return item.type(); });
+        _filters.add_multi_getter<std::string>("Category", { available_categories.begin(), available_categories.end() }, [](auto&& item)
+            {
+                std::vector<std::string> results;
+                for (const auto& category : item.categories())
+                {
+                    results.push_back(category);
+                }
+                return results;
+            });
         _filters.add_getter<float>("#", [](auto&& item) { return static_cast<float>(item.number()); });
         _filters.add_getter<float>("X", [](auto&& item) { return item.position().x * trlevel::Scale_X; });
         _filters.add_getter<float>("Y", [](auto&& item) { return item.position().y * trlevel::Scale_Y; });

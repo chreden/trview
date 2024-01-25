@@ -2,6 +2,7 @@
 
 #include <cstdint>
 #include <string>
+#include <unordered_set>
 #include <external/DirectXTK/Inc/SimpleMath.h>
 #include <trlevel/ILevel.h>
 #include <trlevel/trtypes.h>
@@ -47,6 +48,7 @@ namespace trview
         virtual std::weak_ptr<ILevel> level() const = 0;
         virtual int32_t angle() const = 0;
         virtual bool is_pickup() const = 0;
+        virtual std::unordered_set<std::string> categories() const = 0;
     };
 
     bool is_mutant_egg(const IItem& item);

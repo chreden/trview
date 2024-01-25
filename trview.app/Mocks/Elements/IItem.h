@@ -32,6 +32,7 @@ namespace trview
             MOCK_METHOD(std::weak_ptr<ILevel>, level, (), (const, override));
             MOCK_METHOD(int32_t, angle, (), (const, override));
             MOCK_METHOD(bool, is_pickup, (), (const, override));
+            MOCK_METHOD(std::unordered_set<std::string>, categories, (), (const, override));
 
             std::shared_ptr<MockItem> with_number(uint32_t number)
             {
