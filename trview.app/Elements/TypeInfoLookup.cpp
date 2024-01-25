@@ -76,28 +76,6 @@ namespace trview
         load_game_types(LevelVersion::Tomb5);
     }
 
-    std::string TypeInfoLookup::lookup_type_name(LevelVersion level_version, uint32_t type_id, uint16_t flags) const
-    {
-        const auto& game_types = _type_names.find(level_version);
-        if (game_types == _type_names.end())
-        {
-            return std::to_string(type_id);
-        }
-
-        const auto found_type = game_types->second.find(type_id);
-        if (found_type == game_types->second.end())
-        {
-            return std::to_string(type_id);
-        }
-
-        if (level_version == LevelVersion::Tomb1 && is_mutant_egg(type_id))
-        {
-            return mutant_name(flags);
-        }
-
-        return found_type->second.name;
-    }
-
     bool TypeInfoLookup::is_pickup(trlevel::LevelVersion level_version, uint32_t type_id) const
     {
         const auto& game_types = _type_names.find(level_version);
