@@ -76,22 +76,6 @@ namespace trview
         load_game_types(LevelVersion::Tomb5);
     }
 
-    bool TypeInfoLookup::is_pickup(trlevel::LevelVersion level_version, uint32_t type_id) const
-    {
-        const auto& game_types = _type_names.find(level_version);
-        if (game_types == _type_names.end())
-        {
-            return false;
-        }
-
-        const auto found_type = game_types->second.find(type_id);
-        if (found_type == game_types->second.end())
-        {
-            return false;
-        }
-        return found_type->second.pickup;
-    }
-
     TypeInfo TypeInfoLookup::lookup(trlevel::LevelVersion level_version, uint32_t type_id, int16_t flags) const
     {
         const auto& game_types = _type_names.find(level_version);

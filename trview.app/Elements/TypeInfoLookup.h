@@ -11,7 +11,6 @@ namespace trview
     public:
         explicit TypeInfoLookup(const std::string& type_name_json);
         virtual ~TypeInfoLookup() = default;
-        virtual bool is_pickup(trlevel::LevelVersion level_version, uint32_t type_id) const override;
         TypeInfo lookup(trlevel::LevelVersion level_version, uint32_t type_id, int16_t flags) const override;
     private:
         std::unordered_map<trlevel::LevelVersion, std::unordered_map<uint32_t, TypeInfo>> _type_names;
