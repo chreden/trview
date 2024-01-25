@@ -165,7 +165,8 @@
                 "categories": [ "Trap" ]
             }, {
                 "id": 41,
-                "name": "LiftingDoor"
+                "name": "LiftingDoor",
+                "categories": [ "Door", "Trapdoor" ]
             }, {
                 "id": 42,
                 "name": "Slamming Doors",
@@ -177,11 +178,11 @@
             }, {
                 "id": 44,
                 "name": "Hammer Handle",
-                "categories": [ "Puzzle" ]
+                "categories": [ "Trap" ]
             }, {
                 "id": 45,
                 "name": "Hammer Block",
-                "categories": [ "Puzzle" ]
+                "categories": [ "Trap" ]
             }, {
                 "id": 46,
                 "name": "Lightning Ball",
@@ -192,19 +193,19 @@
             }, {
                 "id": 48,
                 "name": "Pushable Block 1",
-                "categories": [ "Puzzle", "Movable" ]
+                "categories": [ "Movable" ]
             }, {
                 "id": 49,
                 "name": "Pushable Block 2",
-                "categories": [ "Puzzle", "Movable" ]
+                "categories": [ "Movable" ]
             }, {
                 "id": 50,
                 "name": "Pushable Block 3",
-                "categories": [ "Puzzle", "Movable" ]
+                "categories": [ "Movable" ]
             }, {
                 "id": 51,
                 "name": "Pushable Block 4",
-                "categories": [ "Puzzle", "Movable" ]
+                "categories": [ "Movable" ]
             }, {
                 "id": 52,
                 "name": "Moving Block"
@@ -406,16 +407,20 @@
                 "name": "Large medipack"
             }, {
                 "id": 110,
-                "name": "Puzzle 1"
+                "name": "Puzzle 1",
+                "categories": [ "Pickup", "Puzzle" ]
             }, {
                 "id": 111,
-                "name": "Puzzle 2"
+                "name": "Puzzle 2",
+                "categories": [ "Pickup", "Puzzle" ]
             }, {
                 "id": 112,
-                "name": "Puzzle 3"
+                "name": "Puzzle 3",
+                "categories": [ "Pickup", "Puzzle" ]
             }, {
                 "id": 113,
-                "name": "Puzzle 4"
+                "name": "Puzzle 4",
+                "categories": [ "Pickup", "Puzzle" ]
             }, {
                 "id": 114,
                 "name": "Puzzle 1"
@@ -430,37 +435,48 @@
                 "name": "Puzzle 4"
             }, {
                 "id": 118,
-                "name": "Slot 1"
+                "name": "Slot 1",
+                "categories": [ "Slot" ]
             }, {
                 "id": 119,
-                "name": "Slot 2"
+                "name": "Slot 2",
+                "categories": [ "Slot" ]
             }, {
                 "id": 120,
-                "name": "Slot 3"
+                "name": "Slot 3",
+                "categories": [ "Slot" ]
             }, {
                 "id": 121,
-                "name": "Slot 4"
+                "name": "Slot 4",
+                "categories": [ "Slot" ]
             }, {
                 "id": 122,
-                "name": "Slot 1 Done"
+                "name": "Slot 1 Done",
+                "categories": [ "Slot" ]
             }, {
                 "id": 123,
-                "name": "Slot 2 Done"
+                "name": "Slot 2 Done",
+                "categories": [ "Slot" ]
             }, {
                 "id": 124,
-                "name": "Slot 3 Done"
+                "name": "Slot 3 Done",
+                "categories": [ "Slot" ]
             }, {
                 "id": 125,
-                "name": "Slot 4 Done"
+                "name": "Slot 4 Done",
+                "categories": [ "Slot" ]
             }, {
                 "id": 126,
-                "name": "Lead Bar"
+                "name": "Lead Bar",
+                "categories": [ "Pickup", "Puzzle" ]
             }, {
                 "id": 127,
-                "name": "Lead Bar"
+                "name": "Lead Bar",
+                "categories": [ "Pickup", "Puzzle" ]
             }, {
                 "id": 128,
-                "name": "Midas Hand"
+                "name": "Midas Hand",
+                "categories": [ "Slot" ]
             }, {
                 "id": 129,
                 "name": "Key 1",
@@ -507,7 +523,8 @@
                 "categories": [ "Keyhole" ]
             }, {
                 "id": 143,
-                "name": "Scion Piece"
+                "name": "Scion Piece",
+                "categories": [ "Pickup" ]
             }, {
                 "id": 144,
                 "name": "Scion Piece"
@@ -516,10 +533,12 @@
                 "name": "Scion"
             }, {
                 "id": 146,
-                "name": "Scion"
+                "name": "Scion",
+                "categories": [ "Entity" ]
             }, {
                 "id": 147,
-                "name": "Scion Holder"
+                "name": "Scion Holder",
+                "categories": [ "Scenery" ]
             }, {
                 "id": 150,
                 "name": "ScionPiece2"
@@ -560,10 +579,12 @@
                 "name": "Gunflare"
             }, {
                 "id": 169,
-                "name": "Camera Target"
+                "name": "Camera Target",
+                "categories": [ "Effect" ]
             }, {
                 "id": 170,
-                "name": "Waterfall Mist"
+                "name": "Waterfall Mist",
+                "categories": [ "Effect", "Scenery" ]
             }, {
                 "id": 172,
                 "name": "MutantBullet"
@@ -592,13 +613,16 @@
                 "categories": [ "Trap" ]
             }, {
                 "id": 181,
-                "name": "MutantEggBig"
+                "name": "MutantEggBig",
+                "categories": [ "Entity" ]
             }, {
                 "id": 182,
-                "name": "Motorboat"
+                "name": "Motorboat",
+                "categories": [ "Scenery" ]
             }, {
                 "id": 183,
-                "name": "Earthquake"
+                "name": "Earthquake",
+                "categories": [ "Effect" ]
             }, {
                 "id": 189,
                 "name": "LaraPonytail"
