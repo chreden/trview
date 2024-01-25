@@ -22,15 +22,14 @@ namespace
             std::shared_ptr<IMeshStorage> mesh_storage = mock_shared<MockMeshStorage>();
             trlevel::tr2_entity entity{};
             uint32_t index{ 0u };
-            bool is_pickup{ false };
-            std::string type{ "Lara" };
+            TypeInfo type{ .name = "Lara", .pickup = false };
             std::vector<std::weak_ptr<ITrigger>> triggers;
             std::shared_ptr<ILevel> owning_level{ mock_shared<MockLevel>() };
             std::shared_ptr<IRoom> room { mock_shared<MockRoom>() };
 
             std::unique_ptr<Item> build()
             {
-                return std::make_unique<Item>(mesh_source, *level, entity, *mesh_storage, owning_level, index, type, triggers, is_pickup, room);
+                return std::make_unique<Item>(mesh_source, *level, entity, *mesh_storage, owning_level, index, type, triggers, room);
             }
 
             test_module& with_level(const std::shared_ptr<trlevel::ILevel>& level)
@@ -41,7 +40,7 @@ namespace
 
             test_module& with_pickup(bool value)
             {
-                this->is_pickup = value;
+                type.pickup = value;
                 return *this;
             }
 

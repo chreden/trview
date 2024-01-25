@@ -114,18 +114,18 @@ namespace trview
         return found_type->second.pickup;
     }
 
-    std::optional<TypeInfo> TypeInfoLookup::lookup(trlevel::LevelVersion level_version, uint32_t type_id, int16_t flags) const
+    TypeInfo TypeInfoLookup::lookup(trlevel::LevelVersion level_version, uint32_t type_id, int16_t flags) const
     {
         const auto& game_types = _type_names.find(level_version);
         if (game_types == _type_names.end())
         {
-            return std::nullopt;
+            return { .name = std::to_string(type_id) };
         }
 
         const auto found_type = game_types->second.find(type_id);
         if (found_type == game_types->second.end())
         {
-            return std::nullopt;
+            return { .name = std::to_string(type_id) };
         }
 
         TypeInfo result = found_type->second;
