@@ -27,6 +27,11 @@ namespace trview
                     lua_pushinteger(L, item->angle());
                     return 1;
                 }
+                else if (key == "categories")
+                {
+                    lua::push_list(L, item->categories(), [](auto&& L, auto&& s) { lua_pushstring(L, s.c_str()); });
+                    return 1;
+                }
                 else if (key == "clear_body")
                 {
                     lua_pushboolean(L, item->clear_body_flag());
@@ -88,7 +93,20 @@ namespace trview
                 auto item = lua::get_self<IItem>(L);
 
                 const std::string key = lua_tostring(L, 2);
-                if (key == "visible")
+                if (key == "categories")
+                {
+                    luaL_checktype(L, 3, LUA_TTABLE);
+
+                    std::unordered_set<std::string> categories;
+                    lua_pushnil(L);
+                    while (lua_next(L, 3) != 0)
+                    {
+                        categories.insert(lua_tostring(L, -1));
+                        lua_pop(L, 1);
+                    }
+                    item->set_categories(categories);
+                }
+                else if (key == "visible")
                 {
                     if (auto level = item->level().lock())
                     {

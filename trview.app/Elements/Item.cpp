@@ -461,6 +461,11 @@ namespace trview
         return _type.categories;
     }
 
+    void Item::set_categories(const std::unordered_set<std::string>& categories)
+    {
+        _type.categories = categories;
+    }
+
     bool is_mutant_egg(const IItem& item)
     {
         return is_mutant_egg(item.type_id());
