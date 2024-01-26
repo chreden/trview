@@ -40,6 +40,25 @@ TEST(Lua_Item, Angle)
     ASSERT_EQ(123, lua_tointeger(L, -1));
 }
 
+TEST(Lua_Item, Categories)
+{
+    auto item = mock_shared<MockItem>();
+    EXPECT_CALL(*item, categories).WillOnce(Return<std::unordered_set<std::string>>({ "One", "Two" }));
+
+    LuaState L;
+    lua::create_item(L, item);
+    lua_setglobal(L, "i");
+
+    ASSERT_EQ(0, luaL_dostring(L, "return i.categories"));
+    ASSERT_EQ(LUA_TTABLE, lua_type(L, -1));
+    ASSERT_EQ(0, luaL_dostring(L, "x = i.categories[1]"));
+    ASSERT_EQ(LUA_TSTRING, lua_type(L, -1));
+    ASSERT_EQ("One", lua_tostring(L, -1));
+    ASSERT_EQ(0, luaL_dostring(L, "x = i.categories[2]"));
+    ASSERT_EQ(LUA_TSTRING, lua_type(L, -1));
+    ASSERT_EQ("Two", lua_tostring(L, -1));
+}
+
 TEST(Lua_Item, ClearBody)
 {
     auto item = mock_shared<MockItem>();
@@ -201,6 +220,21 @@ TEST(Lua_Item, Visible)
     ASSERT_EQ(true, lua_toboolean(L, -1));
 }
 
+TEST(Lua_Item, SetCategories)
+{
+    std::unordered_set<std::string> categories;
+    auto item = mock_shared<MockItem>();
+    EXPECT_CALL(*item, set_categories).WillOnce(SaveArg<0>(&categories));
+
+    LuaState L;
+    lua::create_item(L, item);
+    lua_setglobal(L, "i");
+
+    ASSERT_EQ(0, luaL_dostring(L, "i.categories = { \"One\", \"Two\" }"));
+
+    const std::unordered_set<std::string> expected{ "One", "Two" };
+    ASSERT_EQ(categories, expected);
+}
 TEST(Lua_Item, SetVisible)
 {
     auto level = mock_shared<MockLevel>();
