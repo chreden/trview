@@ -49,6 +49,12 @@ namespace
                 this->entity = entity;
                 return *this;
             }
+
+            test_module& with_type_info(const TypeInfo& type_info)
+            {
+                this->type = type_info;
+                return *this;
+            }
         };
         return test_module{};
     }
@@ -121,4 +127,10 @@ TEST(Item, MutantEggContentsFlags)
     ASSERT_EQ(34, mutant_egg_contents(4));
     ASSERT_EQ(22, mutant_egg_contents(8));
     ASSERT_EQ(20, mutant_egg_contents(1851));
+}
+
+TEST(Item, PickupCategoryMarksPickup)
+{
+    auto item = register_test_module().with_type_info({ .pickup = false, .categories = { "Pickup" } }).build();
+    ASSERT_TRUE(item->is_pickup());
 }
