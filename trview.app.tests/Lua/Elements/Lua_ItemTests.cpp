@@ -43,7 +43,7 @@ TEST(Lua_Item, Angle)
 TEST(Lua_Item, Categories)
 {
     auto item = mock_shared<MockItem>();
-    EXPECT_CALL(*item, categories).WillOnce(Return<std::unordered_set<std::string>>({ "One", "Two" }));
+    EXPECT_CALL(*item, categories).WillRepeatedly(Return<std::unordered_set<std::string>>({ "One", "Two" }));
 
     LuaState L;
     lua::create_item(L, item);
@@ -51,12 +51,12 @@ TEST(Lua_Item, Categories)
 
     ASSERT_EQ(0, luaL_dostring(L, "return i.categories"));
     ASSERT_EQ(LUA_TTABLE, lua_type(L, -1));
-    ASSERT_EQ(0, luaL_dostring(L, "x = i.categories[1]"));
+    ASSERT_EQ(0, luaL_dostring(L, "return i.categories[1]"));
     ASSERT_EQ(LUA_TSTRING, lua_type(L, -1));
-    ASSERT_EQ("One", lua_tostring(L, -1));
-    ASSERT_EQ(0, luaL_dostring(L, "x = i.categories[2]"));
+    ASSERT_STREQ("One", lua_tostring(L, -1));
+    ASSERT_EQ(0, luaL_dostring(L, "return i.categories[2]"));
     ASSERT_EQ(LUA_TSTRING, lua_type(L, -1));
-    ASSERT_EQ("Two", lua_tostring(L, -1));
+    ASSERT_STREQ("Two", lua_tostring(L, -1));
 }
 
 TEST(Lua_Item, ClearBody)
