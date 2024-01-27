@@ -192,7 +192,7 @@ namespace trview
 
                 if (auto item = _selected_item.lock())
                 {
-                    auto add_stat = [&]<typename T>(const std::string& name, const T&& value)
+                    auto add_stat = [&]<typename T>(const std::string& name, T&& value)
                     {
                         const auto string_value = get_string(value);
                         ImGui::TableNextColumn();
@@ -242,7 +242,20 @@ namespace trview
                     add_stat("Invisible", item->invisible_flag());
                     add_stat("Flags", format_binary(item->activation_flags()));
                     add_stat("OCB", item->ocb());
-                    add_stat("Is Pickup", item->is_pickup());
+
+                    std::string category_text;
+                    auto categories = item->categories();
+                    auto iter = categories.begin();
+                    while (iter != categories.end())
+                    {
+                        category_text += *iter;
+                        ++iter;
+                        if (iter != categories.end())
+                        {
+                            category_text += ",";
+                        }
+                    }
+                    add_stat("Category", category_text);
                 }
 
                 ImGui::EndTable();
