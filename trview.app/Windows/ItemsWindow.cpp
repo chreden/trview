@@ -242,20 +242,7 @@ namespace trview
                     add_stat("Invisible", item->invisible_flag());
                     add_stat("Flags", format_binary(item->activation_flags()));
                     add_stat("OCB", item->ocb());
-
-                    std::string category_text;
-                    auto categories = item->categories();
-                    auto iter = categories.begin();
-                    while (iter != categories.end())
-                    {
-                        category_text += *iter;
-                        ++iter;
-                        if (iter != categories.end())
-                        {
-                            category_text += ",";
-                        }
-                    }
-                    add_stat("Category", category_text);
+                    add_stat("Category", join(item->categories()));
                 }
 
                 ImGui::EndTable();
