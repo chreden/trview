@@ -208,7 +208,8 @@
                 "categories": [ "Movable" ]
             }, {
                 "id": 52,
-                "name": "Moving Block"
+                "name": "Moving Block",
+                "categories": [ "Movable" ]
             }, {
                 "id": 53,
                 "name": "Falling Ceiling",
@@ -1626,7 +1627,8 @@
         ],
         "tr3": [{
                 "id": 0,
-                "name": "Lara"
+                "name": "Lara",
+                "categories": [ "Entity" ]
             }, {
                 "id": 1,
                 "name": "LaraPistolsAnim"
@@ -1662,100 +1664,131 @@
                 "name": "LaraUPVAnim"
             }, {
                 "id": 12,
-                "name": "UPV"
+                "name": "UPV",
+                "categories": [ "Vehicle" ]
             }, {
                 "id": 14,
-                "name": "Kayak"
+                "name": "Kayak",
+                "categories": [ "Vehicle" ]
             }, {
                 "id": 15,
-                "name": "Inflatable Boat"
+                "name": "Inflatable Boat",
+                "categories": [ "Vehicle" ]
             }, {
                 "id": 16,
-                "name": "Quadbike"
+                "name": "Quadbike",
+                "categories": [ "Vehicle" ]
             }, {
                 "id": 17,
-                "name": "Minecart"
+                "name": "Minecart",
+                "categories": [ "Vehicle" ]
             }, {
                 "id": 18,
-                "name": "Turret"
+                "name": "Turret",
+                "categories": [ "Entity" ]
             }, {
                 "id": 19,
-                "name": "UPV"
+                "name": "UPV",
+                "categories": [ "Vehicle" ]
             }, {
                 "id": 20,
-                "name": "Tribesman (Axe)"
+                "name": "Tribesman (Axe)",
+                "categories": [ "Entity" ]
             }, {
                 "id": 21,
-                "name": "Tribesman (Dart)"
+                "name": "Tribesman (Dart)",
+                "categories": [ "Entity" ]
             }, {
                 "id": 22,
-                "name": "Dog"
+                "name": "Dog",
+                "categories": [ "Entity" ]
             }, {
                 "id": 23,
-                "name": "Rat"
+                "name": "Rat",
+                "categories": [ "Entity" ]
             }, {
                 "id": 24,
                 "name": "Kill All Triggers"
             }, {
                 "id": 25,
-                "name": "Killer Whale"
+                "name": "Killer Whale",
+                "categories": [ "Entity" ]
             }, {
                 "id": 26,
-                "name": "Scuba Diver"
+                "name": "Scuba Diver",
+                "categories": [ "Entity" ]
             }, {
                 "id": 27,
-                "name": "Crow"
+                "name": "Crow",
+                "categories": [ "Entity" ]
             }, {
                 "id": 28,
-                "name": "Tiger"
+                "name": "Tiger",
+                "categories": [ "Entity" ]
             }, {
                 "id": 29,
-                "name": "Vulture"
+                "name": "Vulture",
+                "categories": [ "Entity" ]
             }, {
                 "id": 30,
-                "name": "Target"
+                "name": "Target",
+                "categories": [ "Entity" ]
             }, {
                 "id": 31,
-                "name": "Crawler Mutant"
+                "name": "Crawler Mutant",
+                "categories": [ "Entity" ]
             }, {
                 "id": 32,
-                "name": "Crocodile"
+                "name": "Crocodile",
+                "categories": [ "Entity" ]
             }, {
                 "id": 34,
-                "name": "Compsognathus"
+                "name": "Compsognathus",
+                "categories": [ "Entity" ]
             }, {
                 "id": 35,
-                "name": "Lizard"
+                "name": "Lizard",
+                "categories": [ "Entity" ]
             }, {
                 "id": 36,
-                "name": "Puna"
+                "name": "Puna",
+                "categories": [ "Entity" ]
             }, {
                 "id": 37,
-                "name": "Mercenary"
+                "name": "Mercenary",
+                "categories": [ "Entity" ]
             }, {
                 "id": 38,
-                "name": "Hanging Raptor"
+                "name": "Hanging Raptor",
+                "categories": [ "Entity", "Scenery" ]
             }, {
                 "id": 39,
-                "name": "RX-Tech Guy (Red)"
+                "name": "RX-Tech Guy (Red)",
+                "categories": [ "Entity" ]
             }, {
                 "id": 40,
-                "name": "RX-Tech Guy (White)"
+                "name": "RX-Tech Guy (White)",
+                "categories": [ "Entity" ]
             }, {
                 "id": 41,
-                "name": "Dog"
+                "name": "Dog",
+                "categories": [ "Entity" ]
             }, {
                 "id": 42,
-                "name": "Crawler Mutant"
+                "name": "Crawler Mutant",
+                "categories": [ "Entity" ]
             }, {
                 "id": 44,
-                "name": "Wasp"
+                "name": "Wasp",
+                "categories": [ "Entity" ]
             }, {
                 "id": 45,
-                "name": "Monster"
+                "name": "Monster",
+                "categories": [ "Entity" ]
             }, {
                 "id": 46,
-                "name": "Monster (Claw)"
+                "name": "Monster (Claw)",
+                "categories": [ "Entity" ]
             }, {
                 "id": 47,
                 "name": "Wasp Spawn"
@@ -1764,43 +1797,56 @@
                 "name": "Raptor Spawn"
             }, {
                 "id": 49,
-                "name": "Willard"
+                "name": "Willard",
+                "categories": [ "Entity" ]
             }, {
                 "id": 50,
-                "name": "Flamethrower Guy"
+                "name": "Flamethrower Guy",
+                "categories": [ "Entity" ]
             }, {
                 "id": 51,
-                "name": "Guard (MP5)"
+                "name": "Guard (MP5)",
+                "categories": [ "Entity" ]
             }, {
                 "id": 53,
-                "name": "Punk"
+                "name": "Punk",
+                "categories": [ "Entity" ]
             }, {
                 "id": 56,
-                "name": "Guard (Handgun)"
+                "name": "Guard (Handgun)",
+                "categories": [ "Entity" ]
             }, {
                 "id": 57,
-                "name": "Sophia Leigh"
+                "name": "Sophia Leigh",
+                "categories": [ "Entity" ]
             }, {
                 "id": 58,
-                "name": "Cleaner Robot"
+                "name": "Cleaner Robot",
+                "categories": [ "Entity" ]
             }, {
                 "id": 60,
-                "name": "MP (Baton)"
+                "name": "MP (Baton)",
+                "categories": [ "Entity" ]
             }, {
                 "id": 61,
-                "name": "MP (Handgun)"
+                "name": "MP (Handgun)",
+                "categories": [ "Entity" ]
             }, {
                 "id": 62,
-                "name": "Prisoner"
+                "name": "Prisoner",
+                "categories": [ "Entity" ]
             }, {
                 "id": 63,
-                "name": "MP (MP5)"
+                "name": "MP (MP5)",
+                "categories": [ "Entity" ]
             }, {
                 "id": 64,
-                "name": "Gun Turret"
+                "name": "Gun Turret",
+                "categories": [ "Entity" ]
             }, {
                 "id": 65,
-                "name": "Dam Guard"
+                "name": "Dam Guard",
+                "categories": [ "Entity" ]
             }, {
                 "id": 66,
                 "name": "Tripwire"
@@ -1812,16 +1858,20 @@
                 "name": "Killer Tripwire"
             }, {
                 "id": 69,
-                "name": "Cobra"
+                "name": "Cobra",
+                "categories": [ "Entity" ]
             }, {
                 "id": 70,
-                "name": "Shiva"
+                "name": "Shiva",
+                "categories": [ "Entity" ]
             }, {
                 "id": 71,
-                "name": "Monkey"
+                "name": "Monkey",
+                "categories": [ "Entity" ]
             }, {
                 "id": 73,
-                "name": "Tony"
+                "name": "Tony",
+                "categories": [ "Entity" ]
             }, {
                 "id": 74,
                 "name": "AI Guard"
@@ -1851,34 +1901,44 @@
                 "name": "Unknown"
             }, {
                 "id": 83,
-                "name": "Breakable tile"
+                "name": "Breakable tile",
+                "categories": [ "Trap" ]
             }, {
                 "id": 86,
-                "name": "Swinging Thing"
+                "name": "Swinging Thing",
+                "categories": [ "Trap" ]
             }, {
                 "id": 87,
-                "name": "Spikes"
+                "name": "Spikes",
+                "categories": [ "Trap" ]
             }, {
                 "id": 88,
-                "name": "Boulder"
+                "name": "Boulder",
+                "categories": [ "Trap" ]
             }, {
                 "id": 89,
-                "name": "Giant Boulder"
+                "name": "Giant Boulder",
+                "categories": [ "Trap" ]
             }, {
                 "id": 90,
-                "name": "Dart"
+                "name": "Dart",
+                "categories": [ "Trap" ]
             }, {
                 "id": 91,
-                "name": "Dart Emitter"
+                "name": "Dart Emitter",
+                "categories": [ "Trap" ]
             }, {
                 "id": 94,
-                "name": "Skeleton Trap"
+                "name": "Skeleton Trap",
+                "categories": [ "Trap" ]
             }, {
                 "id": 97,
-                "name": "Pushable Block 1"
+                "name": "Pushable Block 1",
+                "categories": [ "Movable" ]
             }, {
                 "id": 98,
-                "name": "Pushable Block 2"
+                "name": "Pushable Block 2",
+                "categories": [ "Movable" ]
             }, {
                 "id": 101,
                 "name": "Breakable Window"
@@ -1887,46 +1947,60 @@
                 "name": "Breakable Window"
             }, {
                 "id": 106,
-                "name": "Hook"
+                "name": "Hook",
+                "categories": [ "Trap" ]
             }, {
                 "id": 107,
-                "name": "Falling Ceiling"
+                "name": "Falling Ceiling",
+                "categories": [ "Trap" ]
             }, {
                 "id": 108,
-                "name": "Rolling Spindle"
+                "name": "Rolling Spindle",
+                "categories": [ "Trap" ]
             }, {
                 "id": 110,
-                "name": "Train"
+                "name": "Train",
+                "categories": [ "Trap" ]
             }, {
                 "id": 111,
-                "name": "Wall Blade"
+                "name": "Wall Blade",
+                "categories": [ "Trap" ]
             }, {
                 "id": 113,
-                "name": "Icicles"
+                "name": "Icicles",
+                "categories": [ "Trap" ]
             }, {
                 "id": 114,
-                "name": "Spike Wall"
+                "name": "Spike Wall",
+                "categories": [ "Trap" ]
             }, {
                 "id": 116,
-                "name": "Spike Wall (Vertical)"
+                "name": "Spike Wall (Vertical)",
+                "categories": [ "Trap" ]
             }, {
                 "id": 117,
-                "name": "Wheel Door"
+                "name": "Wheel Door",
+                "categories": [ "Door" ]
             }, {
                 "id": 118,
-                "name": "Small Switch"
+                "name": "Small Switch",
+                "categories": [ "Switch" ]
             }, {
                 "id": 119,
-                "name": "Propeller/Diver/Meteor"
+                "name": "Propeller/Diver/Meteor",
+                "categories": [ "Trap" ]
             }, {
                 "id": 120,
-                "name": "Fan"
+                "name": "Fan",
+                "categories": [ "Trap" ]
             }, {
                 "id": 121,
-                "name": "Stamper/Drum/Blades"
+                "name": "Stamper/Drum/Blades",
+                "categories": [ "Trap" ]
             }, {
                 "id": 122,
-                "name": "Shiva"
+                "name": "Shiva",
+                "categories": [ "Entity" ]
             }, {
                 "id": 123,
                 "name": "MonkeyMedipackMeshswap"
@@ -1938,58 +2012,76 @@
                 "name": "UIFrame"
             }, {
                 "id": 127,
-                "name": "Zipline"
+                "name": "Zipline",
+                "categories": [ "Vehicle" ]
             }, {
                 "id": 128,
-                "name": "Button"
+                "name": "Button",
+                "categories": [ "Switch" ]
             }, {
                 "id": 129,
-                "name": "Wall Switch"
+                "name": "Wall Switch",
+                "categories": [ "Switch" ]
             }, {
                 "id": 130,
-                "name": "Underwater Lever"
+                "name": "Underwater Lever",
+                "categories": [ "Switch" ]
             }, {
                 "id": 131,
-                "name": "Door 1"
+                "name": "Door 1",
+                "categories": [ "Door" ]
             }, {
                 "id": 132,
-                "name": "Door 2"
+                "name": "Door 2",
+                "categories": [ "Door" ]
             }, {
                 "id": 133,
-                "name": "Door 3"
+                "name": "Door 3",
+                "categories": [ "Door" ]
             }, {
                 "id": 134,
-                "name": "Door 4"
+                "name": "Door 4",
+                "categories": [ "Door" ]
             }, {
                 "id": 135,
-                "name": "Door 5"
+                "name": "Door 5",
+                "categories": [ "Door" ]
             }, {
                 "id": 136,
-                "name": "Door 6"
+                "name": "Door 6",
+                "categories": [ "Door" ]
             }, {
                 "id": 137,
-                "name": "Door 7"
+                "name": "Door 7",
+                "categories": [ "Door" ]
             }, {
                 "id": 138,
-                "name": "Door 8"
+                "name": "Door 8",
+                "categories": [ "Door" ]
             }, {
                 "id": 139,
-                "name": "Trapdoor 1"
+                "name": "Trapdoor 1",
+                "categories": [ "Door", "Trapdoor" ]
             }, {
                 "id": 140,
-                "name": "Trapdoor 2"
+                "name": "Trapdoor 2",
+                "categories": [ "Door", "Trapdoor" ]
             }, {
                 "id": 141,
-                "name": "Trapdoor 3"
+                "name": "Trapdoor 3",
+                "categories": [ "Door", "Trapdoor" ]
             }, {
                 "id": 142,
-                "name": "Bridge (Flat)"
+                "name": "Bridge (Flat)",
+                "categories": [ "Scenery" ]
             }, {
                 "id": 143,
-                "name": "Bridge (Tilt 1)"
+                "name": "Bridge (Tilt 1)",
+                "categories": [ "Scenery" ]
             }, {
                 "id": 144,
-                "name": "Bridge (Tilt 2)"
+                "name": "Bridge (Tilt 2)",
+                "categories": [ "Scenery" ]
             }, {
                 "id": 145,
                 "name": "PassportOpening"
@@ -2034,67 +2126,88 @@
                 "name": "Map"
             }, {
                 "id": 160,
-                "name": "Pistols"
+                "name": "Pistols",
+                "categories": [ "Pickup" ]
             }, {
                 "id": 161,
-                "name": "Shotgun"
+                "name": "Shotgun",
+                "categories": [ "Pickup" ]
             }, {
                 "id": 162,
-                "name": "Desert Eagle"
+                "name": "Desert Eagle",
+                "categories": [ "Pickup" ]
             }, {
                 "id": 163,
-                "name": "Uzis"
+                "name": "Uzis",
+                "categories": [ "Pickup" ]
             }, {
                 "id": 164,
-                "name": "Harpoon Gun"
+                "name": "Harpoon Gun",
+                "categories": [ "Pickup" ]
             }, {
                 "id": 165,
-                "name": "MP5"
+                "name": "MP5",
+                "categories": [ "Pickup" ]
             }, {
                 "id": 166,
-                "name": "Rocket Launcher"
+                "name": "Rocket Launcher",
+                "categories": [ "Pickup" ]
             }, {
                 "id": 167,
-                "name": "Grenade Launcher"
+                "name": "Grenade Launcher",
+                "categories": [ "Pickup" ]
             }, {
                 "id": 168,
-                "name": "PistolAmmoOnGround"
+                "name": "PistolAmmoOnGround",
+                "categories": [ "Pickup" ]
             }, {
                 "id": 169,
-                "name": "Shotgun shells"
+                "name": "Shotgun shells",
+                "categories": [ "Pickup" ]
             }, {
                 "id": 170,
-                "name": "Desert Eagle ammo"
+                "name": "Desert Eagle ammo",
+                "categories": [ "Pickup" ]
             }, {
                 "id": 171,
-                "name": "Uzi ammo"
+                "name": "Uzi ammo",
+                "categories": [ "Pickup" ]
             }, {
                 "id": 172,
-                "name": "Harpoons"
+                "name": "Harpoons",
+                "categories": [ "Pickup" ]
             }, {
                 "id": 173,
-                "name": "MP5 ammo"
+                "name": "MP5 ammo",
+                "categories": [ "Pickup" ]
             }, {
                 "id": 174,
-                "name": "Rocket"
+                "name": "Rocket",
+                "categories": [ "Pickup" ]
             }, {
                 "id": 175,
-                "name": "Grenades"
+                "name": "Grenades",
+                "categories": [ "Pickup" ]
             }, {
                 "id": 176,
-                "name": "Small Medipack"
+                "name": "Small Medipack",
+                "categories": [ "Pickup" ]
             }, {
                 "id": 177,
-                "name": "Large Medipack"
+                "name": "Large Medipack",
+                "categories": [ "Pickup" ]
             }, {
                 "id": 178,
-                "name": "Flares"
+                "name": "Flares",
+                "categories": [ "Pickup" ]
             }, {
                 "id": 179,
-                "name": "Flare"
+                "name": "Flare",
+                "categories": [ "Pickup" ]
             }, {
                 "id": 180,
-                "name": "Savegame Crystal"
+                "name": "Savegame Crystal",
+                "categories": [ "Pickup" ]
             }, {
                 "id": 181,
                 "name": "Sunglasses"
@@ -2169,16 +2282,20 @@
                 "name": "SavegameCrystalInventory"
             }, {
                 "id": 205,
-                "name": "Puzzle 1"
+                "name": "Puzzle 1",
+                "categories": [ "Pickup", "Puzzle" ]
             }, {
                 "id": 206,
-                "name": "Puzzle 2"
+                "name": "Puzzle 2",
+                "categories": [ "Pickup", "Puzzle" ]
             }, {
                 "id": 207,
-                "name": "Puzzle 3"
+                "name": "Puzzle 3",
+                "categories": [ "Pickup", "Puzzle" ]
             }, {
                 "id": 208,
-                "name": "Puzzle 4"
+                "name": "Puzzle 4",
+                "categories": [ "Pickup", "Puzzle" ]
             }, {
                 "id": 209,
                 "name": "Puzzle 1"
@@ -2193,16 +2310,20 @@
                 "name": "Puzzle 4"
             }, {
                 "id": 213,
-                "name": "Slot 1"
+                "name": "Slot 1",
+                "categories": [ "Slot" ]
             }, {
                 "id": 214,
-                "name": "Slot 2"
+                "name": "Slot 2",
+                "categories": [ "Slot" ]
             }, {
                 "id": 215,
-                "name": "Slot 3"
+                "name": "Slot 3",
+                "categories": [ "Slot" ]
             }, {
                 "id": 216,
-                "name": "Slot 4"
+                "name": "Slot 4",
+                "categories": [ "Slot" ]
             }, {
                 "id": 217,
                 "name": "Slot 1 Done"
@@ -2217,16 +2338,20 @@
                 "name": "Slot 4 Done"
             }, {
                 "id": 224,
-                "name": "Key 1"
+                "name": "Key 1",
+                "categories": [ "Key" ]
             }, {
                 "id": 225,
-                "name": "Key 2"
+                "name": "Key 2",
+                "categories": [ "Key" ]
             }, {
                 "id": 226,
-                "name": "Key 3"
+                "name": "Key 3",
+                "categories": [ "Key" ]
             }, {
                 "id": 227,
-                "name": "Key 4"
+                "name": "Key 4",
+                "categories": [ "Key" ]
             }, {
                 "id": 228,
                 "name": "Key 1"
@@ -2241,22 +2366,28 @@
                 "name": "Key 4"
             }, {
                 "id": 232,
-                "name": "Keyhole 1"
+                "name": "Keyhole 1",
+                "categories": [ "Keyhole" ]
             }, {
                 "id": 233,
-                "name": "Keyhole 2"
+                "name": "Keyhole 2",
+                "categories": [ "Keyhole" ]
             }, {
                 "id": 234,
-                "name": "Keyhole 3"
+                "name": "Keyhole 3",
+                "categories": [ "Keyhole" ]
             }, {
                 "id": 235,
-                "name": "Keyhole 4"
+                "name": "Keyhole 4",
+                "categories": [ "Keyhole" ]
             }, {
                 "id": 236,
-                "name": "Quest Item 1"
+                "name": "Quest Item 1",
+                "categories": [ "Pickup" ]
             }, {
                 "id": 237,
-                "name": "Quest Item 2"
+                "name": "Quest Item 2",
+                "categories": [ "Pickup" ]
             }, {
                 "id": 238,
                 "name": "QuestItem1"
@@ -2265,16 +2396,20 @@
                 "name": "QuestItem2"
             }, {
                 "id": 240,
-                "name": "Infada Stone"
+                "name": "Infada Stone",
+                "categories": [ "Pickup" ]
             }, {
                 "id": 241,
-                "name": "Element 115"
+                "name": "Element 115",
+                "categories": [ "Pickup" ]
             }, {
                 "id": 242,
-                "name": "Eye Of Isis"
+                "name": "Eye Of Isis",
+                "categories": [ "Pickup" ]
             }, {
                 "id": 243,
-                "name": "Ora Dagger"
+                "name": "Ora Dagger",
+                "categories": [ "Pickup" ]
             }, {
                 "id": 244,
                 "name": "InfadaStone"
@@ -2307,28 +2442,34 @@
                 "name": "Ora Dagger"
             }, {
                 "id": 282,
-                "name": "FireBreathingDragonStatue"
+                "name": "FireBreathingDragonStatue",
+                "categories": [ "Trap" ]
             }, {
                 "id": 285,
                 "name": "UnknownVisible285"
             }, {
                 "id": 287,
-                "name": "T-Rex"
+                "name": "T-Rex",
+                "categories": [ "Entity" ]
             }, {
                 "id": 288,
-                "name": "Raptor"
+                "name": "Raptor",
+                "categories": [ "Entity" ]
             }, {
                 "id": 291,
-                "name": "Moving Lasers"
+                "name": "Moving Lasers",
+                "categories": [ "Trap" ]
             }, {
                 "id": 292,
-                "name": "Electrified Field"
+                "name": "Electrified Field",
+                "categories": [ "Trap" ]
             }, {
                 "id": 294,
                 "name": "Shadow Sprite"
             }, {
                 "id": 295,
-                "name": "Detonator"
+                "name": "Detonator",
+                "categories": [ "Keyhole" ]
             }, {
                 "id": 296,
                 "name": "Misc Sprites"
@@ -2346,10 +2487,12 @@
                 "name": "MP5Gunflare"
             }, {
                 "id": 304,
-                "name": "Camera Target"
+                "name": "Camera Target",
+                "categories": [ "Effect" ]
             }, {
                 "id": 305,
-                "name": "Waterfall Mist"
+                "name": "Waterfall Mist",
+                "categories": [ "Effect" ]
             }, {
                 "id": 306,
                 "name": "HarpoonFlying2"
@@ -2370,7 +2513,8 @@
                 "name": "Smoke"
             }, {
                 "id": 314,
-                "name": "Movable Boom"
+                "name": "Movable Boom",
+                "categories": [ "Trap" ]
             }, {
                 "id": 315,
                 "name": "LaraSkin"
@@ -2382,34 +2526,44 @@
                 "name": "UnknownVisible317"
             }, {
                 "id": 318,
-                "name": "Alarm Light"
+                "name": "Alarm Light",
+                "categories": [ "Effect" ]
             }, {
                 "id": 319,
-                "name": "Light"
+                "name": "Light",
+                "categories": [ "Effect" ]
             }, {
                 "id": 321,
-                "name": "Light 2"
+                "name": "Light 2",
+                "categories": [ "Effect" ]
             }, {
                 "id": 322,
-                "name": "Pulsating Light"
+                "name": "Pulsating Light",
+                "categories": [ "Effect" ]
             }, {
                 "id": 324,
-                "name": "Red Light"
+                "name": "Red Light",
+                "categories": [ "Effect" ]
             }, {
                 "id": 325,
-                "name": "Green Light"
+                "name": "Green Light",
+                "categories": [ "Effect" ]
             }, {
                 "id": 326,
-                "name": "Blue Light"
+                "name": "Blue Light",
+                "categories": [ "Effect" ]
             }, {
                 "id": 327,
-                "name": "Light 3"
+                "name": "Light 3",
+                "categories": [ "Effect" ]
             }, {
                 "id": 328,
-                "name": "Light 4"
+                "name": "Light 4",
+                "categories": [ "Effect" ]
             }, {
                 "id": 330,
-                "name": "Fire"
+                "name": "Fire",
+                "categories": [ "Trap" ]
             }, {
                 "id": 331,
                 "name": "Alternate Fire"
@@ -2433,13 +2587,16 @@
                 "name": "Greenish Smoke"
             }, {
                 "id": 338,
-                "name": "Piranhas"
+                "name": "Piranhas",
+                "categories": [ "Trap" ]
             }, {
                 "id": 339,
-                "name": "Fish"
+                "name": "Fish",
+                "categories": [ "Scenery" ]
             }, {
                 "id": 347,
-                "name": "Bat Swarm"
+                "name": "Bat Swarm",
+                "categories": [ "Scenery" ]
             }, {
                 "id": 349,
                 "name": "Animating 1"
@@ -2472,16 +2629,19 @@
                 "name": "UnknownID358"
             }, {
                 "id": 360,
-                "name": "Winston"
+                "name": "Winston",
+                "categories": [ "Entity" ]
             }, {
                 "id": 361,
-                "name": "Winston (Camo)"
+                "name": "Winston (Camo)",
+                "categories": [ "Entity" ]
             }, {
                 "id": 362,
                 "name": "TimerFontGraphics"
             }, {
                 "id": 365,
-                "name": "Earthquake"
+                "name": "Earthquake",
+                "categories": [ "Effect" ]
             }, {
                 "id": 366,
                 "name": "YellowShellCasing"
@@ -2493,7 +2653,8 @@
                 "name": "Light Shaft"
             }, {
                 "id": 373,
-                "name": "Electrical Switch Box"
+                "name": "Electrical Switch Box",
+                "categories": [ "Effect", "Scenery" ]
             }
         ],
         "tr4": [{
