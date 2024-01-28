@@ -15,10 +15,6 @@ namespace trview
         /// </summary>
         std::string name;
         /// <summary>
-        /// Whether this is a pickup item - used for position adjustment.
-        /// </summary>
-        bool pickup{ false };
-        /// <summary>
         /// Any named categories that this item belongs to.
         /// </summary>
         std::unordered_set<std::string> categories;

@@ -453,7 +453,7 @@ namespace trview
 
     bool Item::is_pickup() const
     {
-        return _type.pickup || _type.categories.find("Pickup") != _type.categories.end();
+        return _type.categories.find("Pickup") != _type.categories.end();
     }
 
     std::unordered_set<std::string> Item::categories() const

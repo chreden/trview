@@ -3053,193 +3053,155 @@
             }, {
                 "id": 175,
                 "name": "Puzzle 1",
-                "categories": [ "Pickup", "Puzzle" ],
-                "pickup": true
+                "categories": [ "Pickup", "Puzzle" ]
             }, {
                 "id": 176,
                 "name": "Puzzle 2",
-                "categories": [ "Pickup", "Puzzle" ],
-                "pickup": true
+                "categories": [ "Pickup", "Puzzle" ]
             }, {
                 "id": 177,
                 "name": "Puzzle 3",
-                "categories": [ "Pickup", "Puzzle" ],
-                "pickup": true
+                "categories": [ "Pickup", "Puzzle" ]
             }, {
                 "id": 178,
                 "name": "Puzzle 4",
-                "categories": [ "Pickup", "Puzzle" ],
-                "pickup": true
+                "categories": [ "Pickup", "Puzzle" ]
             }, {
                 "id": 179,
                 "name": "Puzzle 5",
-                "categories": [ "Pickup", "Puzzle" ],
-                "pickup": true
+                "categories": [ "Pickup", "Puzzle" ]
             }, {
                 "id": 180,
                 "name": "Puzzle 6",
-                "categories": [ "Pickup", "Puzzle" ],
-                "pickup": true
+                "categories": [ "Pickup", "Puzzle" ]
             }, {
                 "id": 181,
                 "name": "Puzzle 7",
-                "categories": [ "Pickup", "Puzzle" ],
-                "pickup": true
+                "categories": [ "Pickup", "Puzzle" ]
             }, {
                 "id": 182,
                 "name": "Puzzle 8",
-                "categories": [ "Pickup", "Puzzle" ],
-                "pickup": true
+                "categories": [ "Pickup", "Puzzle" ]
             }, {
                 "id": 183,
                 "name": "Puzzle 9",
-                "categories": [ "Pickup", "Puzzle" ],
-                "pickup": true
+                "categories": [ "Pickup", "Puzzle" ]
             }, {
                 "id": 184,
                 "name": "Puzzle 10",
-                "categories": [ "Pickup", "Puzzle" ],
-                "pickup": true
+                "categories": [ "Pickup", "Puzzle" ]
             }, {
                 "id": 185,
                 "name": "Puzzle 11",
-                "categories": [ "Pickup", "Puzzle" ],
-                "pickup": true
+                "categories": [ "Pickup", "Puzzle" ]
             }, {
                 "id": 186,
                 "name": "Puzzle 12",
-                "categories": [ "Pickup", "Puzzle" ],
-                "pickup": true
+                "categories": [ "Pickup", "Puzzle" ]
             }, {
                 "id": 187,
                 "name": "Puzzle 1 Combo 1",
-                "categories": [ "Pickup", "Puzzle" ],
-                "pickup": true
+                "categories": [ "Pickup", "Puzzle" ]
             }, {
                 "id": 188,
                 "name": "Puzzle 1 Combo 2",
-                "categories": [ "Pickup", "Puzzle" ],
-                "pickup": true
+                "categories": [ "Pickup", "Puzzle" ]
             }, {
                 "id": 189,
                 "name": "Puzzle 2 Combo 1",
-                "categories": [ "Pickup", "Puzzle" ],
-                "pickup": true
+                "categories": [ "Pickup", "Puzzle" ]
             }, {
                 "id": 190,
                 "name": "Puzzle 2 Combo 2",
-                "categories": [ "Pickup", "Puzzle" ],
-                "pickup": true
+                "categories": [ "Pickup", "Puzzle" ]
             }, {
                 "id": 193,
                 "name": "Puzzle 4 Combo 1",
-                "categories": [ "Pickup", "Puzzle" ],
-                "pickup": true
+                "categories": [ "Pickup", "Puzzle" ]
             }, {
                 "id": 194,
                 "name": "Puzzle 4 Combo 2",
-                "categories": [ "Pickup", "Puzzle" ],
-                "pickup": true
+                "categories": [ "Pickup", "Puzzle" ]
             }, {
                 "id": 195,
                 "name": "Puzzle 5 Combo 1",
-                "categories": [ "Pickup", "Puzzle" ],
-                "pickup": true
+                "categories": [ "Pickup", "Puzzle" ]
             }, {
                 "id": 196,
                 "name": "Puzzle 5 Combo 2",
-                "categories": [ "Pickup", "Puzzle" ],
-                "pickup": true
+                "categories": [ "Pickup", "Puzzle" ]
             }, {
                 "id": 197,
                 "name": "Puzzle 6 Combo 1",
-                "categories": [ "Pickup", "Puzzle" ],
-                "pickup": true
+                "categories": [ "Pickup", "Puzzle" ]
             }, {
                 "id": 198,
                 "name": "Puzzle 6 Combo 2",
-                "categories": [ "Pickup", "Puzzle" ],
-                "pickup": true
+                "categories": [ "Pickup", "Puzzle" ]
             }, {
                 "id": 199,
                 "name": "Puzzle 7 Combo 1",
-                "categories": [ "Pickup", "Puzzle" ],
-                "pickup": true
+                "categories": [ "Pickup", "Puzzle" ]
             }, {
                 "id": 200,
                 "name": "Puzzle 7 Combo 2",
-                "categories": [ "Pickup", "Puzzle" ],
-                "pickup": true
+                "categories": [ "Pickup", "Puzzle" ]
             }, {
                 "id": 201,
                 "name": "Puzzle 8 Combo 1",
-                "categories": [ "Pickup", "Puzzle" ],
-                "pickup": true
+                "categories": [ "Pickup", "Puzzle" ]
             }, {
                 "id": 202,
                 "name": "Puzzle 8 Combo 2",
-                "categories": [ "Pickup", "Puzzle" ],
-                "pickup": true
+                "categories": [ "Pickup", "Puzzle" ]
             }, {
                 "id": 203,
                 "name": "Key 1",
-                "categories": [ "Pickup", "Key" ],
-                "pickup": true
+                "categories": [ "Pickup", "Key" ]
             }, {
                 "id": 204,
                 "name": "Key 2",
-                "categories": [ "Pickup", "Key" ],
-                "pickup": true
+                "categories": [ "Pickup", "Key" ]
             }, {
                 "id": 205,
                 "name": "Key 3",
-                "categories": [ "Pickup", "Key" ],
-                "pickup": true
+                "categories": [ "Pickup", "Key" ]
             }, {
                 "id": 206,
                 "name": "Key 4",
-                "categories": [ "Pickup", "Key" ],
-                "pickup": true
+                "categories": [ "Pickup", "Key" ]
             }, {
                 "id": 207,
                 "name": "Key 5",
-                "categories": [ "Pickup", "Key" ],
-                "pickup": true
+                "categories": [ "Pickup", "Key" ]
             }, {
                 "id": 208,
                 "name": "Key 6",
-                "categories": [ "Pickup", "Key" ],
-                "pickup": true
+                "categories": [ "Pickup", "Key" ]
             }, {
                 "id": 209,
                 "name": "Key 7",
-                "categories": [ "Pickup", "Key" ],
-                "pickup": true
+                "categories": [ "Pickup", "Key" ]
             }, {
                 "id": 210,
                 "name": "Key 8",
-                "categories": [ "Pickup", "Key" ],
-                "pickup": true
+                "categories": [ "Pickup", "Key" ]
             }, {
                 "id": 211,
                 "name": "Key 9",
-                "categories": [ "Pickup", "Key" ],
-                "pickup": true
+                "categories": [ "Pickup", "Key" ]
             }, {
                 "id": 212,
                 "name": "Key 10",
-                "categories": [ "Pickup", "Key" ],
-                "pickup": true
+                "categories": [ "Pickup", "Key" ]
             }, {
                 "id": 213,
                 "name": "Key 11",
-                "categories": [ "Pickup", "Key" ],
-                "pickup": true
+                "categories": [ "Pickup", "Key" ]
             }, {
                 "id": 214,
                 "name": "Key 12",
-                "categories": [ "Pickup", "Key" ],
-                "pickup": true
+                "categories": [ "Pickup", "Key" ]
             }, {
                 "id": 231,
                 "name": "Item 1"
@@ -3258,13 +3220,11 @@
             }, {
                 "id": 246,
                 "name": "Crowbar",
-                "categories": [ "Pickup" ],
-                "pickup": true
+                "categories": [ "Pickup" ]
             }, {
                 "id": 247,
                 "name": "Torch",
-                "categories": [ "Pickup" ],
-                "pickup": true
+                "categories": [ "Pickup" ]
             }, {
                 "id": 249,
                 "name": "Winding Key",
@@ -3396,13 +3356,11 @@
             }, {
                 "id": 296,
                 "name": "Waterskin 1",
-                "categories": [ "Pickup" ],
-                "pickup": true
+                "categories": [ "Pickup" ]
             }, {
                 "id": 300,
                 "name": "Waterskin 2",
-                "categories": [ "Pickup" ],
-                "pickup": true
+                "categories": [ "Pickup" ]
             }, {
                 "id": 306,
                 "name": "Switch 1",
@@ -3552,108 +3510,87 @@
             }, {
                 "id": 349,
                 "name": "Pistols",
-                "categories": [ "Pickup" ],
-                "pickup": true
+                "categories": [ "Pickup" ]
             }, {
                 "id": 350,
                 "name": "Pistol Ammo",
-                "categories": [ "Pickup" ],
-                "pickup": true
+                "categories": [ "Pickup" ]
             }, {
                 "id": 351,
                 "name": "Uzis",
-                "categories": [ "Pickup" ],
-                "pickup": true
+                "categories": [ "Pickup" ]
             }, {
                 "id": 352,
                 "name": "Uzi Ammo",
-                "categories": [ "Pickup" ],
-                "pickup": true
+                "categories": [ "Pickup" ]
             }, {
                 "id": 353,
                 "name": "Shotgun",
-                "categories": [ "Pickup" ],
-                "pickup": true
+                "categories": [ "Pickup" ]
             }, {
                 "id": 354,
                 "name": "Shotgun ammo (red)",
-                "categories": [ "Pickup" ],
-                "pickup": true
+                "categories": [ "Pickup" ]
             }, {
                 "id": 355,
                 "name": "Shotgun ammo (blue)",
-                "categories": [ "Pickup" ],
-                "pickup": true
+                "categories": [ "Pickup" ]
             }, {
                 "id": 356,
                 "name": "Crossbow",
-                "categories": [ "Pickup" ],
-                "pickup": true
+                "categories": [ "Pickup" ]
             }, {
                 "id": 357,
                 "name": "Bolts",
-                "categories": [ "Pickup" ],
-                "pickup": true
+                "categories": [ "Pickup" ]
             }, {
                 "id": 358,
                 "name": "Bolts (poison)",
-                "categories": [ "Pickup" ],
-                "pickup": true
+                "categories": [ "Pickup" ]
             }, {
                 "id": 359,
                 "name": "Bolts (explosive)",
-                "categories": [ "Pickup" ],
-                "pickup": true
+                "categories": [ "Pickup" ]
             }, {
                 "id": 361,
                 "name": "Grenade Launcher",
-                "categories": [ "Pickup" ],
-                "pickup": true
+                "categories": [ "Pickup" ]
             }, {
                 "id": 362,
                 "name": "Grenades",
-                "categories": [ "Pickup" ],
-                "pickup": true
+                "categories": [ "Pickup" ]
             }, {
                 "id": 363,
                 "name": "Grenades (super)",
-                "categories": [ "Pickup" ],
-                "pickup": true
+                "categories": [ "Pickup" ]
             }, {
                 "id": 364,
                 "name": "Grenades (flash)",
-                "categories": [ "Pickup" ],
-                "pickup": true
+                "categories": [ "Pickup" ]
             }, {
                 "id": 368,
                 "name": "Large medipack",
-                "categories": [ "Pickup" ],
-                "pickup": true
+                "categories": [ "Pickup" ]
             }, {
                 "id": 366,
                 "name": "Revolver",
-                "categories": [ "Pickup" ],
-                "pickup": true
+                "categories": [ "Pickup" ]
             }, {
                 "id": 367,
                 "name": "Revolver ammo",
-                "categories": [ "Pickup" ],
-                "pickup": true
+                "categories": [ "Pickup" ]
             }, {
                 "id": 369,
                 "name": "Small medipack",
-                "categories": [ "Pickup" ],
-                "pickup": true
+                "categories": [ "Pickup" ]
             }, {
                 "id": 370,
                 "name": "Lasersight",
-                "categories": [ "Pickup" ],
-                "pickup": true
+                "categories": [ "Pickup" ]
             }, {
                 "id": 373,
                 "name": "Flares",
-                "categories": [ "Pickup" ],
-                "pickup": true
+                "categories": [ "Pickup" ]
             }, {
                 "id": 375,
                 "name": "Compass"
@@ -3763,7 +3700,8 @@
         ],
         "tr5": [{
                 "id": 0,
-                "name": "Lara"
+                "name": "Lara",
+                "categories": [ "Entity" ]
             }, {
                 "id": 1,
                 "name": "LaraPistolsAnim"
@@ -3778,184 +3716,243 @@
                 "name": "LaraFlareAnim"
             }, {
                 "id": 33,
-                "name": "SWAT"
+                "name": "SWAT",
+                "categories": [ "Entity" ]
             }, {
                 "id": 35,
-                "name": "Advanced SWAT"
+                "name": "Advanced SWAT",
+                "categories": [ "Entity" ]
             }, {
                 "id": 36,
-                "name": "Advanced SWAT mip"
+                "name": "Advanced SWAT mip",
+                "categories": [ "Entity" ]
             }, {
                 "id": 37,
-                "name": "Guard"
+                "name": "Guard",
+                "categories": [ "Entity" ]
             }, {
                 "id": 38,
-                "name": "Blue Guard"
+                "name": "Blue Guard",
+                "categories": [ "Entity" ]
             }, {
                 "id": 39,
-                "name": "Two Gun"
+                "name": "Two Gun",
+                "categories": [ "Entity" ]
             }, {
                 "id": 40,
-                "name": "Two gun mip"
+                "name": "Two gun mip",
+                "categories": [ "Entity" ]
             }, {
                 "id": 41,
-                "name": "Dog"
+                "name": "Dog",
+                "categories": [ "Entity" ]
             }, {
                 "id": 42,
-                "name": "Dog mip"
+                "name": "Dog mip",
+                "categories": [ "Entity" ]
             }, {
                 "id": 43,
-                "name": "Crow"
+                "name": "Crow",
+                "categories": [ "Entity" ]
             }, {
                 "id": 44,
-                "name": "Crow mip"
+                "name": "Crow mip",
+                "categories": [ "Entity" ]
             }, {
                 "id": 45,
-                "name": "Larson"
+                "name": "Larson",
+                "categories": [ "Entity" ]
             }, {
                 "id": 46,
-                "name": "Larson mip"
+                "name": "Larson mip",
+                "categories": [ "Entity" ]
             }, {
                 "id": 48,
-                "name": "Pierre mip"
+                "name": "Pierre mip",
+                "categories": [ "Entity" ]
             }, {
                 "id": 49,
-                "name": "Soldier (MG)"
+                "name": "Soldier (MG)",
+                "categories": [ "Entity" ]
             }, {
                 "id": 50,
-                "name": "Soldier (MG) mip"
+                "name": "Soldier (MG) mip",
+                "categories": [ "Entity" ]
             }, {
                 "id": 51,
-                "name": "Soldier (Pistols)"
+                "name": "Soldier (Pistols)",
+                "categories": [ "Entity" ]
             }, {
                 "id": 54,
-                "name": "Sailor mip"
+                "name": "Sailor mip",
+                "categories": [ "Entity" ]
             }, {
                 "id": 56,
-                "name": "Sub Captain"
+                "name": "Sub Captain",
+                "categories": [ "Entity" ]
             }, {
                 "id": 57,
-                "name": "Lion"
+                "name": "Lion",
+                "categories": [ "Entity" ]
             }, {
                 "id": 59,
-                "name": "Gladiator"
+                "name": "Gladiator",
+                "categories": [ "Entity" ]
             }, {
                 "id": 61,
-                "name": "Soldier Statue"
+                "name": "Soldier Statue",
+                "categories": [ "Entity" ]
             }, {
                 "id": 63,
-                "name": "Hydra"
+                "name": "Hydra",
+                "categories": [ "Entity" ]
             }, {
                 "id": 64,
-                "name": "Hydra mip"
+                "name": "Hydra mip",
+                "categories": [ "Entity" ]
             }, {
                 "id": 65,
-                "name": "Guardian"
+                "name": "Guardian",
+                "categories": [ "Entity" ]
             }, {
                 "id": 67,
-                "name": "Cyborg"
+                "name": "Cyborg",
+                "categories": [ "Entity" ]
             }, {
                 "id": 69,
-                "name": "Scientist"
+                "name": "Scientist",
+                "categories": [ "Entity" ]
             }, {
                 "id": 71,
-                "name": "Will-o'-the-wisp"
+                "name": "Will-o'-the-wisp",
+                "categories": [ "Entity" ]
             }, {
                 "id": 73,
-                "name": "Skeleton"
+                "name": "Skeleton",
+                "categories": [ "Entity" ]
             }, {
                 "id": 77,
-                "name": "Maze Monster"
+                "name": "Maze Monster",
+                "categories": [ "Entity" ]
             }, {
                 "id": 79,
-                "name": "Water Monster"
+                "name": "Water Monster",
+                "categories": [ "Entity" ]
             }, {
                 "id": 81,
-                "name": "Attack Sub"
+                "name": "Attack Sub",
+                "categories": [ "Entity" ]
             }, {
                 "id": 83,
-                "name": "Sniper"
+                "name": "Sniper",
+                "categories": [ "Entity" ]
             }, {
                 "id": 85,
-                "name": "Dog"
+                "name": "Dog",
+                "categories": [ "Entity" ]
             }, {
                 "id": 86,
                 "name": "Ventilator"
             }, {
                 "id": 87,
-                "name": "Chef"
+                "name": "Chef",
+                "categories": [ "Entity" ]
             }, {
                 "id": 89,
-                "name": "Imp"
+                "name": "Imp",
+                "categories": [ "Entity" ]
             }, {
                 "id": 91,
-                "name": "Gunship"
+                "name": "Gunship",
+                "categories": [ "Entity" ]
             }, {
                 "id": 93,
-                "name": "Bats"
+                "name": "Bats",
+                "categories": [ "Entity" ]
             }, {
                 "id": 94,
-                "name": "Rats"
+                "name": "Rats",
+                "categories": [ "Entity" ]
             }, {
                 "id": 95,
-                "name": "Spiders"
+                "name": "Spiders",
+                "categories": [ "Entity" ]
             }, {
                 "id": 97,
-                "name": "Autogun"
+                "name": "Autogun",
+                "categories": [ "Entity" ]
             }, {
                 "id": 98,
-                "name": "Cables"
+                "name": "Cables",
+                "categories": [ "Entity" ]
             }, {
                 "id": 99,
-                "name": "Dart"
+                "name": "Dart",
+                "categories": [ "Trap" ]
             }, {
                 "id": 100,
-                "name": "Dart Emitter"
+                "name": "Dart Emitter",
+                "categories": [ "Trap" ]
             }, {
                 "id": 102,
-                "name": "Falling Ceiling"
+                "name": "Falling Ceiling",
+                "categories": [ "Trap" ]
             }, {
                 "id": 105,
-                "name": "Crumbling Floor"
+                "name": "Crumbling Floor",
+                "categories": [ "Trap" ]
             }, {
                 "id": 106,
-                "name": "Trapdoor 1"
+                "name": "Trapdoor 1",
+                "categories": [ "Trap" ]
             }, {
                 "id": 107,
-                "name": "Trapdoor 2"
+                "name": "Trapdoor 2",
+                "categories": [ "Trap" ]
             }, {
                 "id": 108,
-                "name": "Trapdoor 3"
+                "name": "Trapdoor 3",
+                "categories": [ "Trap" ]
             }, {
                 "id": 109,
-                "name": "Floor trapdoor 1"
+                "name": "Floor trapdoor 1",
+                "categories": [ "Trap" ]
             }, {
                 "id": 110,
-                "name": "Floor trapdoor 2"
+                "name": "Floor trapdoor 2",
+                "categories": [ "Trap" ]
             }, {
                 "id": 111,
-                "name": "Ceiling trapdoor"
+                "name": "Ceiling trapdoor",
+                "categories": [ "Trap" ]
             }, {
                 "id": 114,
-                "name": "Boulder"
+                "name": "Boulder",
+                "categories": [ "Trap" ]
             }, {
                 "id": 117,
-                "name": "Spikes"
+                "name": "Spikes",
+                "categories": [ "Trap" ]
             }, {
                 "id": 118,
-                "name": "Ram"
+                "name": "Ram",
+                "categories": [ "Trap" ]
             }, {
                 "id": 121,
-                "name": "Flame"
+                "name": "Flame",
+                "categories": [ "Trap" ]
             }, {
                 "id": 122,
-                "name": "Flame"
+                "name": "Flame",
+                "categories": [ "Trap" ]
             }, {
                 "id": 123,
-                "name": "Flame"
+                "name": "Flame",
+                "categories": [ "Trap" ]
             }, {
                 "id": 124,
-                "name": "Cooker Flame"
+                "name": "Cooker Flame",
+                "categories": [ "Trap" ]
             }, {
                 "id": 125,
                 "name": "Roots"
@@ -3985,19 +3982,24 @@
                 "name": "Expanding Platform"
             }, {
                 "id": 137,
-                "name": "Pushable 1"
+                "name": "Pushable 1",
+                "categories": [ "Movable" ]
             }, {
                 "id": 138,
-                "name": "Pushable 2"
+                "name": "Pushable 2",
+                "categories": [ "Movable" ]
             }, {
                 "id": 139,
-                "name": "Pushable 3"
+                "name": "Pushable 3",
+                "categories": [ "Movable" ]
             }, {
                 "id": 140,
-                "name": "Pushable 4"
+                "name": "Pushable 4",
+                "categories": [ "Movable" ]
             }, {
                 "id": 141,
-                "name": "Pushable 5"
+                "name": "Pushable 5",
+                "categories": [ "Movable" ]
             }, {
                 "id": 142,
                 "name": "The Claw"
@@ -4058,371 +4060,430 @@
             }, {
                 "id": 172,
                 "name": "Puzzle 1",
-                "pickup": true
+                "categories": [ "Pickup", "Puzzle" ]
             }, {
                 "id": 173,
                 "name": "Puzzle 2",
-                "pickup": true
+                "categories": [ "Pickup", "Puzzle" ]
             }, {
                 "id": 174,
                 "name": "Puzzle 3",
-                "pickup": true
+                "categories": [ "Pickup", "Puzzle" ]
             }, {
                 "id": 175,
                 "name": "Puzzle 4",
-                "pickup": true
+                "categories": [ "Pickup", "Puzzle" ]
             }, {
                 "id": 176,
                 "name": "Puzzle 5",
-                "pickup": true
+                "categories": [ "Pickup", "Puzzle" ]
             }, {
                 "id": 180,
                 "name": "Puzzle 1 Combo 1",
-                "pickup": true
+                "categories": [ "Pickup", "Puzzle" ]
             }, {
                 "id": 181,
                 "name": "Puzzle 1 Combo 2",
-                "pickup": true
+                "categories": [ "Pickup", "Puzzle" ]
             }, {
                 "id": 182,
                 "name": "Puzzle 2 Combo 1",
-                "pickup": true
+                "categories": [ "Pickup", "Puzzle" ]
             }, {
                 "id": 183,
                 "name": "Puzzle 2 Combo 2",
-                "pickup": true
+                "categories": [ "Pickup", "Puzzle" ]
             }, {
                 "id": 184,
                 "name": "Puzzle 3 Combo 1",
-                "pickup": true
+                "categories": [ "Pickup", "Puzzle" ]
             }, {
                 "id": 185,
                 "name": "Puzzle 3 Combo 2",
-                "pickup": true
+                "categories": [ "Pickup", "Puzzle" ]
             }, {
                 "id": 186,
                 "name": "Puzzle 4 Combo 1",
-                "pickup": true
+                "categories": [ "Pickup", "Puzzle" ]
             }, {
                 "id": 187,
                 "name": "Puzzle 4 Combo 2",
-                "pickup": true
+                "categories": [ "Pickup", "Puzzle" ]
             }, {
                 "id": 196,
                 "name": "Key 1",
-                "pickup": true
+                "categories": [ "Pickup", "Key" ]
             }, {
                 "id": 197,
                 "name": "Key 2",
-                "pickup": true
+                "categories": [ "Pickup", "Key" ]
             }, {
                 "id": 198,
                 "name": "Key 3",
-                "pickup": true
+                "categories": [ "Pickup", "Key" ]
             }, {
                 "id": 199,
                 "name": "Key 4",
-                "pickup": true
+                "categories": [ "Pickup", "Key" ]
             }, {
                 "id": 200,
                 "name": "Key 5",
-                "pickup": true
+                "categories": [ "Pickup", "Key" ]
             }, {
                 "id": 201,
                 "name": "Key 6",
-                "pickup": true
+                "categories": [ "Pickup", "Key" ]
             }, {
                 "id": 202,
                 "name": "Key 7",
-                "pickup": true
+                "categories": [ "Pickup", "Key" ]
             }, {
                 "id": 203,
                 "name": "Key 8",
-                "pickup": true
+                "categories": [ "Pickup", "Key" ]
             }, {
                 "id": 220,
                 "name": "Pickup 1",
-                "pickup": true
+                "categories": [ "Pickup" ]
             }, {
                 "id": 221,
                 "name": "Pickup 2",
-                "pickup": true
+                "categories": [ "Pickup" ]
             }, {
                 "id": 222,
                 "name": "Pickup 3",
-                "pickup": true
+                "categories": [ "Pickup" ]
             }, {
                 "id": 223,
                 "name": "Secret",
-                "pickup": true
+                "categories": [ "Pickup" ]
             }, {
                 "id": 235,
                 "name": "Bottle",
-                "pickup": true
+                "categories": [ "Pickup" ]
             }, {
                 "id": 236,
                 "name": "Cloth",
-                "pickup": true
+                "categories": [ "Pickup" ]
             }, {
                 "id": 240,
                 "name": "Crowbar",
-                "pickup": true
+                "categories": [ "Pickup" ]
             }, {
                 "id": 241,
                 "name": "Torch",
-                "pickup": true
+                "categories": [ "Pickup" ]
             }, {
                 "id": 242,
-                "name": "Slot 1"
+                "name": "Slot 1",
+                "categories": [ "Slot" ]
             }, {
                 "id": 243,
-                "name": "Slot 2"
+                "name": "Slot 2",
+                "categories": [ "Slot" ]
             }, {
                 "id": 244,
-                "name": "Slot 3"
+                "name": "Slot 3",
+                "categories": [ "Slot" ]
             }, {
                 "id": 245,
-                "name": "Slot 4"
+                "name": "Slot 4",
+                "categories": [ "Slot" ]
             }, {
                 "id": 246,
-                "name": "Slot 5"
+                "name": "Slot 5",
+                "categories": [ "Slot" ]
             }, {
                 "id": 247,
-                "name": "Slot 6"
+                "name": "Slot 6",
+                "categories": [ "Slot" ]
             }, {
                 "id": 248,
-                "name": "Slot 7"
+                "name": "Slot 7",
+                "categories": [ "Slot" ]
             }, {
                 "id": 249,
-                "name": "Slot 8"
+                "name": "Slot 8",
+                "categories": [ "Slot" ]
             }, {
                 "id": 250,
-                "name": "Slot 1 Done"
+                "name": "Slot 1 Done",
+                "categories": [ "Slot" ]
             }, {
                 "id": 251,
-                "name": "Slot 2 Done"
+                "name": "Slot 2 Done",
+                "categories": [ "Slot" ]
             }, {
                 "id": 252,
-                "name": "Slot 3 Done"
+                "name": "Slot 3 Done",
+                "categories": [ "Slot" ]
             }, {
                 "id": 253,
-                "name": "Slot 4 Done"
+                "name": "Slot 4 Done",
+                "categories": [ "Slot" ]
             }, {
                 "id": 254,
-                "name": "Slot 5 Done"
+                "name": "Slot 5 Done",
+                "categories": [ "Slot" ]
             }, {
                 "id": 255,
-                "name": "Slot 6 Done"
+                "name": "Slot 6 Done",
+                "categories": [ "Slot" ]
             }, {
                 "id": 256,
-                "name": "Slot 7 Done"
+                "name": "Slot 7 Done",
+                "categories": [ "Slot" ]
             }, {
                 "id": 257,
-                "name": "Slot 8 Done"
+                "name": "Slot 8 Done",
+                "categories": [ "Slot" ]
             }, {
                 "id": 258,
-                "name": "Keyhole 1"
+                "name": "Keyhole 1",
+                "categories": [ "Keyhole" ]
             }, {
                 "id": 259,
-                "name": "Keyhole 2"
+                "name": "Keyhole 2",
+                "categories": [ "Keyhole" ]
             }, {
                 "id": 260,
-                "name": "Keyhole 3"
+                "name": "Keyhole 3",
+                "categories": [ "Keyhole" ]
             }, {
                 "id": 261,
-                "name": "Keyhole 4"
+                "name": "Keyhole 4",
+                "categories": [ "Keyhole" ]
             }, {
                 "id": 262,
-                "name": "Keyhole 5"
+                "name": "Keyhole 5",
+                "categories": [ "Keyhole" ]
             }, {
                 "id": 263,
-                "name": "Keyhole 6"
+                "name": "Keyhole 6",
+                "categories": [ "Keyhole" ]
             }, {
                 "id": 264,
-                "name": "Keyhole 7"
+                "name": "Keyhole 7",
+                "categories": [ "Keyhole" ]
             }, {
                 "id": 265,
-                "name": "Keyhole 8"
+                "name": "Keyhole 8",
+                "categories": [ "Keyhole" ]
             }, {
                 "id": 266,
-                "name": "Switch 1"
+                "name": "Switch 1",
+                "categories": [ "Switch" ]
             }, {
                 "id": 267,
-                "name": "Switch 2"
+                "name": "Switch 2",
+                "categories": [ "Switch" ]
             }, {
                 "id": 268,
-                "name": "Switch 3"
+                "name": "Switch 3",
+                "categories": [ "Switch" ]
             }, {
                 "id": 269,
-                "name": "Switch 4"
+                "name": "Switch 4",
+                "categories": [ "Switch" ]
             }, {
                 "id": 270,
-                "name": "Switch 5"
+                "name": "Switch 5",
+                "categories": [ "Switch" ]
             }, {
                 "id": 271,
-                "name": "Switch 6"
+                "name": "Switch 6",
+                "categories": [ "Switch" ]
             }, {
                 "id": 272,
-                "name": "Shoot switch 1"
+                "name": "Shoot switch 1",
+                "categories": [ "Switch" ]
             }, {
                 "id": 273,
-                "name": "Shoot switch 2"
+                "name": "Shoot switch 2",
+                "categories": [ "Switch" ]
             }, {
                 "id": 274,
-                "name": "Switch 7"
+                "name": "Switch 7",
+                "categories": [ "Switch" ]
             }, {
                 "id": 278,
-                "name": "Cog Switch"
+                "name": "Cog Switch",
+                "categories": [ "Switch" ]
             }, {
                 "id": 280,
-                "name": "Jump Switch"
+                "name": "Jump Switch",
+                "categories": [ "Switch" ]
             }, {
                 "id": 282,
                 "name": "Pole"
             }, {
                 "id": 283,
-                "name": "Crow/Dove Switch"
+                "name": "Crow/Dove Switch",
+                "categories": [ "Switch" ]
             }, {
                 "id": 284,
-                "name": "Door 1"
+                "name": "Door 1",
+                "categories": [ "Door" ]
             }, {
                 "id": 286,
-                "name": "Door 2"
+                "name": "Door 2",
+                "categories": [ "Door" ]
             }, {
                 "id": 288,
-                "name": "Door 3"
+                "name": "Door 3",
+                "categories": [ "Door" ]
             }, {
                 "id": 290,
-                "name": "Door 4"
+                "name": "Door 4",
+                "categories": [ "Door" ]
             }, {
                 "id": 292,
-                "name": "Door 5"
+                "name": "Door 5",
+                "categories": [ "Door" ]
             }, {
                 "id": 294,
-                "name": "Door 6"
+                "name": "Door 6",
+                "categories": [ "Door" ]
             }, {
                 "id": 296,
-                "name": "Door 7"
+                "name": "Door 7",
+                "categories": [ "Door" ]
             }, {
                 "id": 298,
-                "name": "Door 8"
+                "name": "Door 8",
+                "categories": [ "Door" ]
             }, {
                 "id": 300,
-                "name": "Closed Door 1"
+                "name": "Closed Door 1",
+                "categories": [ "Door" ]
             }, {
                 "id": 302,
-                "name": "Closed Door 2"
+                "name": "Closed Door 2",
+                "categories": [ "Door" ]
             }, {
                 "id": 304,
-                "name": "Closed Door 3"
+                "name": "Closed Door 3",
+                "categories": [ "Door" ]
             }, {
                 "id": 306,
-                "name": "Closed Door 4"
+                "name": "Closed Door 4",
+                "categories": [ "Door" ]
             }, {
                 "id": 308,
-                "name": "Closed Door 5"
+                "name": "Closed Door 5",
+                "categories": [ "Door" ]
             }, {
                 "id": 310,
-                "name": "Closed Door 6"
+                "name": "Closed Door 6",
+                "categories": [ "Door" ]
             }, {
                 "id": 312,
-                "name": "Lift Doors 1"
+                "name": "Lift Doors 1",
+                "categories": [ "Door" ]
             }, {
                 "id": 314,
-                "name": "Lift Doors 2"
+                "name": "Lift Doors 2",
+                "categories": [ "Door" ]
             }, {
                 "id": 320,
-                "name": "Kick Door 1"
+                "name": "Kick Door 1",
+                "categories": [ "Door" ]
             }, {
                 "id": 326,
-                "name": "Double doors"
+                "name": "Double doors",
+                "categories": [ "Door" ]
             }, {
                 "id": 328,
-                "name": "Sequence Door 1"
+                "name": "Sequence Door 1",
+                "categories": [ "Door" ]
             }, {
                 "id": 329,
-                "name": "Sequence Switch 1"
+                "name": "Sequence Switch 1",
+                "categories": [ "Switch" ]
             }, {
                 "id": 330,
-                "name": "Sequence Switch 2"
+                "name": "Sequence Switch 2",
+                "categories": [ "Switch" ]
             }, {
                 "id": 331,
-                "name": "Sequence Switch 3"
+                "name": "Sequence Switch 3",
+                "categories": [ "Switch" ]
             }, {
                 "id": 332,
-                "name": "Steel Door"
+                "name": "Steel Door",
+                "categories": [ "Door" ]
             }, {
                 "id": 334,
                 "name": "Pistols",
-                "pickup": true
+                "categories": [ "Pickup" ]
             }, {
                 "id": 335,
                 "name": "Pistol  Ammo",
-                "pickup": true
+                "categories": [ "Pickup" ]
             }, {
                 "id": 336,
                 "name": "Uzis",
-                "pickup": true
+                "categories": [ "Pickup" ]
             }, {
                 "id": 337,
                 "name": "Uzi Ammo",
-                "pickup": true
+                "categories": [ "Pickup" ]
             }, {
                 "id": 338,
                 "name": "Shotgun",
-                "pickup": true
+                "categories": [ "Pickup" ]
             }, {
                 "id": 339,
                 "name": "Shotgun ammo (red)",
-                "pickup": true
+                "categories": [ "Pickup" ]
             }, {
                 "id": 340,
                 "name": "Shotgun ammo (blue)",
-                "pickup": true
+                "categories": [ "Pickup" ]
             }, {
                 "id": 341,
                 "name": "Grappling Gun",
-                "pickup": true
+                "categories": [ "Pickup" ]
             }, {
                 "id": 342,
                 "name": "Grappling Ammo",
-                "pickup": true
+                "categories": [ "Pickup" ]
             }, {
                 "id": 345,
                 "name": "HK",
-                "pickup": true
+                "categories": [ "Pickup" ]
             }, {
                 "id": 346,
                 "name": "HK Ammo",
-                "pickup": true
+                "categories": [ "Pickup" ]
             }, {
                 "id": 347,
                 "name": "Revolver",
-                "pickup": true
+                "categories": [ "Pickup" ]
             }, {
                 "id": 348,
                 "name": "Revolver ammo",
-                "pickup": true
+                "categories": [ "Pickup" ]
             },  {
                 "id": 349,
                 "name": "Large medipack",
-                "pickup": true
+                "categories": [ "Pickup" ]
             }, {
                 "id": 350,
                 "name": "Small medipack",
-                "pickup": true
+                "categories": [ "Pickup" ]
             }, {
                 "id": 351,
                 "name": "Lasersight",
-                "pickup": true
+                "categories": [ "Pickup" ]
             }, {
                 "id": 354,
                 "name": "Flare",
-                "pickup": true
+                "categories": [ "Pickup" ]
             }, {
                 "id": 355,
                 "name": "Flares",
-                "pickup": true
+                "categories": [ "Pickup" ]
             }, {
                 "id": 356,
                 "name": "Compass"
@@ -4494,13 +4555,16 @@
                 "name": "Raising Cog"
             }, {
                 "id": 390,
-                "name": "Lasers"
+                "name": "Lasers",
+                "categories": [ "Trap" ]
             }, {
                 "id": 391,
-                "name": "Steam lasers"
+                "name": "Steam lasers",
+                "categories": [ "Trap" ]
             }, {
                 "id": 392,
-                "name": "Floor Lasers"
+                "name": "Floor Lasers",
+                "categories": [ "Trap" ]
             }, {
                 "id": 394,
                 "name": "Trigger triggerer"
@@ -4635,13 +4699,16 @@
                 "name": "Animating 16 mip"
             }, {
                 "id": 448,
-                "name": "Bridge (Flat)"
+                "name": "Bridge (Flat)",
+                "categories": [ "Scenery" ]
             }, {
                 "id": 450,
-                "name": "Bridge (Tilt 1)"
+                "name": "Bridge (Tilt 1)",
+                "categories": [ "Scenery" ]
             }, {
                 "id": 452,
-                "name": "Bridge (Tilt 2)"
+                "name": "Bridge (Tilt 2)",
+                "categories": [ "Scenery" ]
             }
         ]
     }
