@@ -189,7 +189,8 @@
                 "categories": [ "Trap" ]
             }, {
                 "id": 47,
-                "name": "Barricade"
+                "name": "Barricade",
+                "categories": [ "Scenery" ]
             }, {
                 "id": 48,
                 "name": "Pushable Block 1",
@@ -289,13 +290,16 @@
                 "name": "LarasHomePolaroid"
             }, {
                 "id": 74,
-                "name": "Animating 1"
+                "name": "Animating 1",
+                "categories": [ "Scenery" ]
             }, {
                 "id": 75,
-                "name": "Animating 2"
+                "name": "Animating 2",
+                "categories": [ "Scenery" ]
             }, {
                 "id": 76,
-                "name": "Animating 3"
+                "name": "Animating 3",
+                "categories": [ "Scenery" ]
             }, {
                 "id": 77,
                 "name": "CutsceneActor1"
@@ -531,7 +535,8 @@
                 "name": "Scion Piece"
             }, {
                 "id": 145,
-                "name": "Scion"
+                "name": "Scion",
+                "categories": [ "Entity" ]
             }, {
                 "id": 146,
                 "name": "Scion",
@@ -950,7 +955,8 @@
                 "categories": [ "Trap" ]
             }, {
                 "id": 65,
-                "name": "Elevator"
+                "name": "Elevator",
+                "categories": [ "Movable" ]
             }, {
                 "id": 66,
                 "name": "Minisub",
@@ -1085,7 +1091,8 @@
                 "categories": [ "Trap" ]
             }, {
                 "id": 102,
-                "name": "Zipline"
+                "name": "Zipline",
+                "categories": [ "Vehicle" ]
             }, {
                 "id": 103,
                 "name": "Button",
@@ -1494,7 +1501,8 @@
                 "categories": [ "Effect" ]
             }, {
                 "id": 216,
-                "name": "BartoliHideoutClock"
+                "name": "BartoliHideoutClock",
+                "categories": [ "Effect" ]
             }, {
                 "id": 217,
                 "name": "Placeholder"
@@ -1532,7 +1540,8 @@
                 "categories": [ "Pickup", "Puzzle" ]
             }, {
                 "id": 228,
-                "name": "Helicopter"
+                "name": "Helicopter",
+                "categories": [ "Scenery" ]
             }, {
                 "id": 229,
                 "name": "Explosion"
@@ -1585,13 +1594,15 @@
                 "name": "LavaParticles"
             }, {
                 "id": 251,
-                "name": "Lava Emitter"
+                "name": "Lava Emitter",
+                "categories": [ "Trap" ]
             }, {
                 "id": 252,
                 "name": "Flame"
             }, {
                 "id": 253,
-                "name": "Flame Emitter"
+                "name": "Flame Emitter",
+                "categories": [ "Fire" ]
             }, {
                 "id": 254,
                 "name": "Skybox"
@@ -1600,29 +1611,36 @@
                 "name": "FontGraphics"
             }, {
                 "id": 256,
-                "name": "Monk"
+                "name": "Monk",
+                "categories": [ "Entity" ]
             }, {
                 "id": 257,
-                "name": "Doorbell"
+                "name": "Doorbell",
+                "categories": [ "Effect" ]
             }, {
                 "id": 258,
-                "name": "AlarmBell"
+                "name": "AlarmBell",
+                "categories": [ "Effect" ]
             }, {
                 "id": 259,
-                "name": "Helicopter"
+                "name": "Helicopter",
+                "categories": [ "Entity" ]
             }, {
                 "id": 260,
                 "name": "Winston",
                 "categories": [ "Entity" ]
             }, {
                 "id": 262,
-                "name": "LaraCutscenePlacement"
+                "name": "LaraCutscenePlacement",
+                "categories": [ "Scenery" ]
             }, {
                 "id": 263,
-                "name": "ShotgunAnimation"
+                "name": "ShotgunAnimation",
+                "categories": [ "Scenery" ]
             }, {
                 "id": 264,
-                "name": "Dragon (Emitter)"
+                "name": "Dragon (Emitter)",
+                "categories": [ "Entity" ]
             }
         ],
         "tr3": [{
@@ -1791,10 +1809,12 @@
                 "categories": [ "Entity" ]
             }, {
                 "id": 47,
-                "name": "Wasp Spawn"
+                "name": "Wasp Spawn",
+                "categories": [ "Entity" ]
             }, {
                 "id": 48,
-                "name": "Raptor Spawn"
+                "name": "Raptor Spawn",
+                "categories": [ "Entity" ]
             }, {
                 "id": 49,
                 "name": "Willard",
@@ -1855,7 +1875,8 @@
                 "name": "Electrified Wire"
             }, {
                 "id": 68,
-                "name": "Killer Tripwire"
+                "name": "Killer Tripwire",
+                "categories": [ "Trap" ]
             }, {
                 "id": 69,
                 "name": "Cobra",
@@ -1874,28 +1895,36 @@
                 "categories": [ "Entity" ]
             }, {
                 "id": 74,
-                "name": "AI Guard"
+                "name": "AI Guard",
+                "categories": [ "AI" ]
             }, {
                 "id": 75,
-                "name": "AI Ambush"
+                "name": "AI Ambush",
+                "categories": [ "AI" ]
             }, {
                 "id": 76,
-                "name": "AI Patrol 1"
+                "name": "AI Patrol 1",
+                "categories": [ "AI" ]
             }, {
                 "id": 77,
-                "name": "AI Modify"
+                "name": "AI Modify",
+                "categories": [ "AI" ]
             }, {
                 "id": 78,
-                "name": "AI Follow"
+                "name": "AI Follow",
+                "categories": [ "AI" ]
             }, {
                 "id": 79,
-                "name": "AI Patrol 2"
+                "name": "AI Patrol 2",
+                "categories": [ "AI" ]
             }, {
                 "id": 80,
-                "name": "AI Path"
+                "name": "AI Path",
+                "categories": [ "AI" ]
             }, {
                 "id": 81,
-                "name": "AI Check"
+                "name": "AI Check",
+                "categories": [ "AI" ]
             }, {
                 "id": 82,
                 "name": "Unknown"
@@ -1941,10 +1970,12 @@
                 "categories": [ "Movable" ]
             }, {
                 "id": 101,
-                "name": "Breakable Window"
+                "name": "Breakable Window",
+                "categories": [ "Scenery" ]
             }, {
                 "id": 102,
-                "name": "Breakable Window"
+                "name": "Breakable Window",
+                "categories": [ "Scenery" ]
             }, {
                 "id": 106,
                 "name": "Hook",
@@ -2507,10 +2538,12 @@
                 "name": "GrenadeSingle"
             }, {
                 "id": 312,
-                "name": "Missile"
+                "name": "Missile",
+                "categories": [ "Effect", "Scenery" ]
             }, {
                 "id": 313,
-                "name": "Smoke"
+                "name": "Smoke",
+                "categories": [ "Effect" ]
             }, {
                 "id": 314,
                 "name": "Movable Boom",
@@ -2566,25 +2599,32 @@
                 "categories": [ "Trap" ]
             }, {
                 "id": 331,
-                "name": "Alternate Fire"
+                "name": "Alternate Fire",
+                "categories": [ "Scenery", "Trap" ]
             }, {
                 "id": 332,
-                "name": "Alternate Fire 2"
+                "name": "Alternate Fire 2",
+                "categories": [ "Scenery", "Trap" ]
             }, {
                 "id": 333,
-                "name": "Fire 2"
+                "name": "Fire 2",
+                "categories": [ "Trap" ]
             }, {
                 "id": 334,
-                "name": "Smoke 2"
+                "name": "Smoke 2",
+                "categories": [ "Scenery" ]
             }, {
                 "id": 335,
-                "name": "Smoke 3"
+                "name": "Smoke 3",
+                "categories": [ "Scenery" ]
             }, {
                 "id": 336,
-                "name": "Smoke 4"
+                "name": "Smoke 4",
+                "categories": [ "Scenery" ]
             }, {
                 "id": 337,
-                "name": "Greenish Smoke"
+                "name": "Greenish Smoke",
+                "categories": [ "Effect" ]
             }, {
                 "id": 338,
                 "name": "Piranhas",
@@ -2599,22 +2639,28 @@
                 "categories": [ "Scenery" ]
             }, {
                 "id": 349,
-                "name": "Animating 1"
+                "name": "Animating 1",
+                "categories": [ "Scenery" ]
             }, {
                 "id": 350,
-                "name": "Animating 2"
+                "name": "Animating 2",
+                "categories": [ "Scenery" ]
             }, {
                 "id": 351,
-                "name": "Animating 3"
+                "name": "Animating 3",
+                "categories": [ "Scenery" ]
             }, {
                 "id": 352,
-                "name": "Animating 4"
+                "name": "Animating 4",
+                "categories": [ "Scenery" ]
             }, {
                 "id": 353,
-                "name": "Animating 5"
+                "name": "Animating 5",
+                "categories": [ "Scenery" ]
             }, {
                 "id": 354,
-                "name": "Animating 6"
+                "name": "Animating 6",
+                "categories": [ "Scenery" ]
             }, {
                 "id": 355,
                 "name": "Skybox"
@@ -2623,7 +2669,8 @@
                 "name": "FontGraphics"
             }, {
                 "id": 357,
-                "name": "Doorbell"
+                "name": "Doorbell",
+                "categories": [ "Effect" ]
             }, {
                 "id": 358,
                 "name": "UnknownID358"
@@ -2650,7 +2697,8 @@
                 "name": "RedShellCasing"
             }, {
                 "id": 370,
-                "name": "Light Shaft"
+                "name": "Light Shaft",
+                "categories": [ "Effect" ]
             }, {
                 "id": 373,
                 "name": "Electrical Switch Box",
