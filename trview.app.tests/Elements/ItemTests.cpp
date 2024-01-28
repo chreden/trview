@@ -22,7 +22,7 @@ namespace
             std::shared_ptr<IMeshStorage> mesh_storage = mock_shared<MockMeshStorage>();
             trlevel::tr2_entity entity{};
             uint32_t index{ 0u };
-            TypeInfo type{ .name = "Lara", .pickup = false };
+            TypeInfo type{ .name = "Lara" };
             std::vector<std::weak_ptr<ITrigger>> triggers;
             std::shared_ptr<ILevel> owning_level{ mock_shared<MockLevel>() };
             std::shared_ptr<IRoom> room { mock_shared<MockRoom>() };
@@ -40,7 +40,14 @@ namespace
 
             test_module& with_pickup(bool value)
             {
-                type.pickup = value;
+                if (value)
+                {
+                    type.categories.insert("Pickup");
+                }
+                else
+                {
+                    type.categories.erase("Pickup");
+                }
                 return *this;
             }
 
@@ -131,6 +138,6 @@ TEST(Item, MutantEggContentsFlags)
 
 TEST(Item, PickupCategoryMarksPickup)
 {
-    auto item = register_test_module().with_type_info({ .pickup = false, .categories = { "Pickup" } }).build();
+    auto item = register_test_module().with_type_info({ .categories = { "Pickup" } }).build();
     ASSERT_TRUE(item->is_pickup());
 }
