@@ -4567,28 +4567,36 @@
                 "name": "Electrical Light"
             }, {
                 "id": 378,
-                "name": "AIGuard"
+                "name": "AIGuard",
+                "categories": [ "AI" ]
             }, {
                 "id": 379,
-                "name": "AIAmbush"
+                "name": "AIAmbush",
+                "categories": [ "AI" ]
             }, {
                 "id": 380,
-                "name": "AIPatrol1"
+                "name": "AIPatrol1",
+                "categories": [ "AI" ]
             }, {
                 "id": 381,
-                "name": "AIModify"
+                "name": "AIModify",
+                "categories": [ "AI" ]
             }, {
                 "id": 382,
-                "name": "AIFollow"
+                "name": "AIFollow",
+                "categories": [ "AI" ]
             }, {
                 "id": 383,
-                "name": "AIPatrol2"
+                "name": "AIPatrol2",
+                "categories": [ "AI" ]
             }, {
                 "id": 384,
-                "name": "AI X1"
+                "name": "AI X1",
+                "categories": [ "AI" ]
             }, {
                 "id": 385,
-                "name": "AI X2"
+                "name": "AI X2",
+                "categories": [ "AI" ]
             }, {
                 "id": 386,
                 "name": "Lara Start Pos"
