@@ -42,11 +42,6 @@ namespace trview
                     lua_pushboolean(L, item->invisible_flag());
                     return 1;
                 }
-                else if (key == "is_pickup")
-                {
-                    lua_pushboolean(L, item->is_pickup());
-                    return 1;
-                }
                 else if (key == "number")
                 {
                     lua_pushinteger(L, item->number());

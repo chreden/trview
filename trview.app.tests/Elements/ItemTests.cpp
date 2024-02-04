@@ -135,9 +135,3 @@ TEST(Item, MutantEggContentsFlags)
     ASSERT_EQ(22, mutant_egg_contents(8));
     ASSERT_EQ(20, mutant_egg_contents(1851));
 }
-
-TEST(Item, PickupCategoryMarksPickup)
-{
-    auto item = register_test_module().with_type_info({ .categories = { "Pickup" } }).build();
-    ASSERT_TRUE(item->is_pickup());
-}

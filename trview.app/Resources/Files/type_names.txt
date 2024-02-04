@@ -302,16 +302,20 @@
                 "categories": [ "Scenery" ]
             }, {
                 "id": 77,
-                "name": "CutsceneActor1"
+                "name": "CutsceneActor1",
+                "categories": [ "Entity" ]
             }, {
                 "id": 78,
-                "name": "CutsceneActor2"
+                "name": "CutsceneActor2",
+                "categories": [ "Entity" ]
             }, {
                 "id": 79,
-                "name": "CutsceneActor3"
+                "name": "CutsceneActor3",
+                "categories": [ "Entity" ]
             }, {
                 "id": 80,
-                "name": "CutsceneActor4"
+                "name": "CutsceneActor4",
+                "categories": [ "Entity" ]
             }, {
                 "id": 81,
                 "name": "PassportClosed"
@@ -476,8 +480,7 @@
                 "categories": [ "Pickup", "Puzzle" ]
             }, {
                 "id": 127,
-                "name": "Lead Bar",
-                "categories": [ "Pickup", "Puzzle" ]
+                "name": "Lead Bar"
             }, {
                 "id": 128,
                 "name": "Midas Hand",
@@ -527,12 +530,21 @@
                 "name": "Keyhole 4",
                 "categories": [ "Keyhole" ]
             }, {
+                "id": 141,
+                "name": "Quest 1",
+                "categories": [ "Pickup" ]
+            }, {
+                "id": 142,
+                "name": "Quest 2",
+                "categories": [ "Pickup" ]
+            }, {
                 "id": 143,
                 "name": "Scion Piece",
                 "categories": [ "Pickup" ]
             }, {
                 "id": 144,
-                "name": "Scion Piece"
+                "name": "Scion Piece",
+                "categories": [ "Pickup" ]
             }, {
                 "id": 145,
                 "name": "Scion",
@@ -545,6 +557,12 @@
                 "id": 147,
                 "name": "Scion Holder",
                 "categories": [ "Scenery" ]
+            }, {
+                "id": 148,
+                "name": "Quest 1"
+            }, {
+                "id": 149,
+                "name": "Quest 2"
             }, {
                 "id": 150,
                 "name": "ScionPiece2"
@@ -569,7 +587,8 @@
                 "categories": [ "Entity" ]
             }, {
                 "id": 162,
-                "name": "Suspended Shack"
+                "name": "Suspended Shack",
+                "categories": [ "Scenery" ]
             }, {
                 "id": 163,
                 "name": "Mutant Egg (Big)",
@@ -2900,10 +2919,12 @@
                 "categories": [ "Entity" ]
             }, {
                 "id": 112,
-                "name": "Tile spinner"
+                "name": "Tile spinner",
+                "categories": [ "Puzzle" ]
             }, {
                 "id": 113,
-                "name": "Scales"
+                "name": "Scales",
+                "categories": [ "Slot" ]
             }, {
                 "id": 114,
                 "name": "Dart",
@@ -3010,13 +3031,16 @@
                 "categories": [ "Trap" ]
             }, {
                 "id": 146,
-                "name": "Rope"
+                "name": "Rope",
+                "categories": [ "Interactable" ]
             }, {
                 "id": 147,
-                "name": "Fire rope"
+                "name": "Fire rope",
+                "categories": [ "Puzzle" ]
             }, {
                 "id": 148,
-                "name": "Pole"
+                "name": "Pole",
+                "categories": [ "Interactable" ]
             }, {
                 "id": 150,
                 "name": "Platform"
@@ -3094,7 +3118,8 @@
                 "categories": [ "Trap" ]
             }, {
                 "id": 173,
-                "name": "Lightning conductor"
+                "name": "Lightning conductor",
+                "categories": [ "Trap" ]
             }, {
                 "id": 174,
                 "name": "Element Puzzle"
@@ -3252,19 +3277,24 @@
                 "categories": [ "Pickup", "Key" ]
             }, {
                 "id": 231,
-                "name": "Item 1"
+                "name": "Item 1",
+                "categories": [ "Pickup" ]
             }, {
                 "id": 232,
-                "name": "Item 2"
+                "name": "Item 2",
+                "categories": [ "Pickup" ]
             }, {
                 "id": 243,
-                "name": "Examine 1"
+                "name": "Examine 1",
+                "categories": [ "Pickup" ]
             }, {
                 "id": 244,
-                "name": "Examine 2"
+                "name": "Examine 2",
+                "categories": [ "Pickup" ]
             }, {
                 "id": 245,
-                "name": "Examine 3"
+                "name": "Examine 3",
+                "categories": [ "Pickup" ]
             }, {
                 "id": 246,
                 "name": "Crowbar",
@@ -3467,7 +3497,8 @@
                 "categories": [ "Switch" ]
             }, {
                 "id": 321,
-                "name": "Pulley"
+                "name": "Pulley",
+                "categories": [ "Switch" ]
             }, {
                 "id": 322,
                 "name": "Door 1",
@@ -3526,7 +3557,8 @@
                 "categories": [ "Scenery" ]
             }, {
                 "id": 339,
-                "name": "Sarcophagus"
+                "name": "Sarcophagus",
+                "categories": [ "Movable" ]
             }, {
                 "id": 340,
                 "name": "Sequence Door 1",

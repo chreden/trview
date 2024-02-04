@@ -55,7 +55,6 @@ namespace trview
         DirectX::SimpleMath::Vector3 position() const override;
         std::weak_ptr<ILevel> level() const override;
         int32_t angle() const override;
-        bool is_pickup() const override;
         std::unordered_set<std::string> categories() const override;
         void set_categories(const std::unordered_set<std::string>& categories) override;
     private:
@@ -65,6 +64,7 @@ namespace trview
         void load_model(const trlevel::tr_model& model, const trlevel::ILevel& level);
         void generate_bounding_box();
         void apply_ocb_adjustment(trlevel::LevelVersion version, uint32_t ocb, bool is_pickup);
+        bool is_pickup() const;
 
         DirectX::SimpleMath::Matrix               _world;
         std::vector<std::shared_ptr<IMesh>>       _meshes;

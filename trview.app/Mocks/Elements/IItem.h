@@ -31,7 +31,6 @@ namespace trview
             MOCK_METHOD(DirectX::SimpleMath::Vector3, position, (), (const, override));
             MOCK_METHOD(std::weak_ptr<ILevel>, level, (), (const, override));
             MOCK_METHOD(int32_t, angle, (), (const, override));
-            MOCK_METHOD(bool, is_pickup, (), (const, override));
             MOCK_METHOD(std::unordered_set<std::string>, categories, (), (const, override));
             MOCK_METHOD(void, set_categories, (const std::unordered_set<std::string>&), (override));
 

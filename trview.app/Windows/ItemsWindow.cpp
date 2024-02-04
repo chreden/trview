@@ -402,7 +402,6 @@ namespace trview
                 }
                 return results;
             });
-        _filters.add_getter<bool>("Is Pickup", [](auto&& item) { return item.is_pickup(); });
     }
 
     void ItemsWindow::set_level_version(trlevel::LevelVersion version)
