@@ -369,6 +369,7 @@ Clear Body | Whether to remove a dead body when a bodybag trigger is triggered
 Invisible | Whether this item is invisible
 Flags | Entity activation flags
 OCB | Used to change entity behaviour
+Categories | Categories to which the item is assigned
 
 ## Add To Route
 Clicking the `Add to Route` button will insert this item at the current position in the route.

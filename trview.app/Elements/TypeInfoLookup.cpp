@@ -1,4 +1,4 @@
-#include "TypeNameLookup.h"
+#include "TypeInfoLookup.h"
 #include <trview.common/Json.h>
 #include "IItem.h"
 
@@ -24,11 +24,11 @@ namespace trview
         }
     }
 
-    ITypeNameLookup::~ITypeNameLookup()
+    ITypeInfoLookup::~ITypeInfoLookup()
     {
     }
 
-    TypeNameLookup::TypeNameLookup(const std::string& type_name_json)
+    TypeInfoLookup::TypeInfoLookup(const std::string& type_name_json)
     {
         auto json = nlohmann::json::parse(type_name_json.begin(), type_name_json.end());
         auto load_game_types = [&](LevelVersion version)
@@ -55,14 +55,14 @@ namespace trview
                 return;
             }
 
-            std::unordered_map<uint32_t, Type> type_names;
+            std::unordered_map<uint32_t, TypeInfo> type_names;
             for (const auto& element : json["games"][game_name])
             {
                 auto name = element.at("name").get<std::string>();
                 type_names.insert({ element.at("id").get<uint32_t>(), 
                     {
                         name,
-                        read_attribute<bool>(element, "pickup")
+                        read_attribute<std::unordered_set<std::string>>(element, "categories")
                     } });
             }
             _type_names.insert({ version, type_names });
@@ -75,41 +75,25 @@ namespace trview
         load_game_types(LevelVersion::Tomb5);
     }
 
-    std::string TypeNameLookup::lookup_type_name(LevelVersion level_version, uint32_t type_id, uint16_t flags) const
+    TypeInfo TypeInfoLookup::lookup(trlevel::LevelVersion level_version, uint32_t type_id, int16_t flags) const
     {
         const auto& game_types = _type_names.find(level_version);
         if (game_types == _type_names.end())
         {
-            return std::to_string(type_id);
+            return { .name = std::to_string(type_id) };
         }
 
         const auto found_type = game_types->second.find(type_id);
         if (found_type == game_types->second.end())
         {
-            return std::to_string(type_id);
+            return { .name = std::to_string(type_id) };
         }
 
+        TypeInfo result = found_type->second;
         if (level_version == LevelVersion::Tomb1 && is_mutant_egg(type_id))
         {
-            return mutant_name(flags);
+            result.name = mutant_name(flags);
         }
-
-        return found_type->second.name;
-    }
-
-    bool TypeNameLookup::is_pickup(trlevel::LevelVersion level_version, uint32_t type_id) const
-    {
-        const auto& game_types = _type_names.find(level_version);
-        if (game_types == _type_names.end())
-        {
-            return false;
-        }
-
-        const auto found_type = game_types->second.find(type_id);
-        if (found_type == game_types->second.end())
-        {
-            return false;
-        }
-        return found_type->second.pickup;
+        return result;
     }
 }

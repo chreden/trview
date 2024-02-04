@@ -13,5 +13,20 @@ namespace trview
         }
         return std::format("{}", value);
     }
+
+    std::string join(std::ranges::input_range auto&& range)
+    {
+        std::string result;
+        auto iter = range.begin();
+        while (iter != range.end())
+        {
+            result += *iter;
+            if (++iter != range.end())
+            {
+                result += ",";
+            }
+        }
+        return result;
+    }
 }
 

@@ -64,19 +64,19 @@ namespace trview
     {
     }
 
-    Item::Item(const IMesh::Source& mesh_source, const trlevel::ILevel& level, const trlevel::tr2_entity& entity, const IMeshStorage& mesh_storage, const std::weak_ptr<ILevel>& owning_level, uint32_t number, const std::string& type, const std::vector<std::weak_ptr<ITrigger>>& triggers, bool is_pickup, const std::weak_ptr<IRoom>& room)
-        : Item(mesh_source, mesh_storage, level, owning_level, room, number, entity.TypeID, entity.position(), entity.Angle, level.get_version() >= trlevel::LevelVersion::Tomb4 ? entity.Intensity2 : 0, type, triggers, entity.Flags, is_pickup)
+    Item::Item(const IMesh::Source& mesh_source, const trlevel::ILevel& level, const trlevel::tr2_entity& entity, const IMeshStorage& mesh_storage, const std::weak_ptr<ILevel>& owning_level, uint32_t number, const TypeInfo& type, const std::vector<std::weak_ptr<ITrigger>>& triggers, const std::weak_ptr<IRoom>& room)
+        : Item(mesh_source, mesh_storage, level, owning_level, room, number, entity.TypeID, entity.position(), entity.Angle, level.get_version() >= trlevel::LevelVersion::Tomb4 ? entity.Intensity2 : 0, type, triggers, entity.Flags)
     {
         
     }
 
-    Item::Item(const IMesh::Source& mesh_source, const trlevel::ILevel& level, const trlevel::tr4_ai_object& entity, const IMeshStorage& mesh_storage, const std::weak_ptr<ILevel>& owning_level, uint32_t number, const std::string& type, const std::vector<std::weak_ptr<ITrigger>>& triggers, const std::weak_ptr<IRoom>& room)
-        : Item(mesh_source, mesh_storage, level, owning_level, room, number, entity.type_id, entity.position(), entity.angle, entity.ocb, type, triggers, entity.flags, false)
+    Item::Item(const IMesh::Source& mesh_source, const trlevel::ILevel& level, const trlevel::tr4_ai_object& entity, const IMeshStorage& mesh_storage, const std::weak_ptr<ILevel>& owning_level, uint32_t number, const TypeInfo& type, const std::vector<std::weak_ptr<ITrigger>>& triggers, const std::weak_ptr<IRoom>& room)
+        : Item(mesh_source, mesh_storage, level, owning_level, room, number, entity.type_id, entity.position(), entity.angle, entity.ocb, type, triggers, entity.flags)
     {
     }
 
     Item::Item(const IMesh::Source& mesh_source, const IMeshStorage& mesh_storage, const trlevel::ILevel& level, const std::weak_ptr<ILevel>& owning_level, const std::weak_ptr<IRoom>& room, uint32_t number, uint16_t type_id,
-        const Vector3& position, int32_t angle, int32_t ocb, const std::string& type, const std::vector<std::weak_ptr<ITrigger>>& triggers, uint16_t flags, bool is_pickup)
+        const Vector3& position, int32_t angle, int32_t ocb, const TypeInfo& type, const std::vector<std::weak_ptr<ITrigger>>& triggers, uint16_t flags)
         : _room(room), _number(number), _type(type), _triggers(triggers), _type_id(type_id), _ocb(ocb), _flags(flags), _level(owning_level), _angle(angle)
     {
         // Extract the meshes required from the model.
@@ -101,7 +101,7 @@ namespace trview
         _position = position;
 
         generate_bounding_box();
-        apply_ocb_adjustment(level.get_version(), ocb, is_pickup);
+        apply_ocb_adjustment(level.get_version(), ocb, is_pickup());
     }
 
     void Item::load_meshes(const trlevel::ILevel& level, int16_t type_id, const IMeshStorage& mesh_storage)
@@ -403,7 +403,7 @@ namespace trview
 
     std::string Item::type() const
     {
-        return _type;
+        return _type.name;
     }
 
     std::vector<std::weak_ptr<ITrigger>> Item::triggers() const
@@ -449,6 +449,21 @@ namespace trview
     int32_t Item::angle() const
     {
         return _angle;
+    }
+
+    bool Item::is_pickup() const
+    {
+        return _type.categories.find("Pickup") != _type.categories.end();
+    }
+
+    std::unordered_set<std::string> Item::categories() const
+    {
+        return _type.categories;
+    }
+
+    void Item::set_categories(const std::unordered_set<std::string>& categories)
+    {
+        _type.categories = categories;
     }
 
     bool is_mutant_egg(const IItem& item)

@@ -33,7 +33,7 @@
     <ClCompile Include="Elements\SectorTests.cpp" />
     <ClCompile Include="Elements\StaticMeshTests.cpp" />
     <ClCompile Include="Elements\TriggerTests.cpp" />
-    <ClCompile Include="Elements\TypeNameLookupTests.cpp" />
+    <ClCompile Include="Elements\TypeInfoLookupTests.cpp" />
     <ClCompile Include="Filters\FiltersTests.cpp" />
     <ClCompile Include="FreeCameraTests.cpp" />
     <ClCompile Include="Graphics\LevelTextureStorageTests.cpp" />

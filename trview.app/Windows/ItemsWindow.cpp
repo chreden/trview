@@ -192,7 +192,7 @@ namespace trview
 
                 if (auto item = _selected_item.lock())
                 {
-                    auto add_stat = [&]<typename T>(const std::string& name, const T&& value)
+                    auto add_stat = [&]<typename T>(const std::string& name, T&& value)
                     {
                         const auto string_value = get_string(value);
                         ImGui::TableNextColumn();
@@ -242,6 +242,7 @@ namespace trview
                     add_stat("Invisible", item->invisible_flag());
                     add_stat("Flags", format_binary(item->activation_flags()));
                     add_stat("OCB", item->ocb());
+                    add_stat("Category", join(item->categories()));
                 }
 
                 ImGui::EndTable();
@@ -358,14 +359,25 @@ namespace trview
     {
         _filters.clear_all_getters();
         std::set<std::string> available_types;
+        std::set<std::string> available_categories;
         for (const auto& item : _all_items)
         {
             if (auto item_ptr = item.lock())
             {
                 available_types.insert(item_ptr->type());
+                available_categories.insert_range(item_ptr->categories());
             }
         }
         _filters.add_getter<std::string>("Type", { available_types.begin(), available_types.end() }, [](auto&& item) { return item.type(); });
+        _filters.add_multi_getter<std::string>("Category", { available_categories.begin(), available_categories.end() }, [](auto&& item)
+            {
+                std::vector<std::string> results;
+                for (const auto& category : item.categories())
+                {
+                    results.push_back(category);
+                }
+                return results;
+            });
         _filters.add_getter<float>("#", [](auto&& item) { return static_cast<float>(item.number()); });
         _filters.add_getter<float>("X", [](auto&& item) { return item.position().x * trlevel::Scale_X; });
         _filters.add_getter<float>("Y", [](auto&& item) { return item.position().y * trlevel::Scale_Y; });

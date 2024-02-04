@@ -36,6 +36,8 @@ namespace trview
     /// </summary>
     template <typename T>
     constexpr std::string get_string(T&& value);
+
+    std::string join(std::ranges::input_range auto&& range);
 }
 
 #include "Strings.inl"

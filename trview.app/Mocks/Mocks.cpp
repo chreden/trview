@@ -9,7 +9,7 @@
 #include "Elements/ISector.h"
 #include "Elements/IStaticMesh.h"
 #include "Elements/ITrigger.h"
-#include "Elements/ITypeNameLookup.h"
+#include "Elements/ITypeInfoLookup.h"
 #include "Geometry/IMesh.h"
 #include "Geometry/IPicking.h"
 #include "Geometry/ITransparencyBuffer.h"
@@ -89,8 +89,8 @@ namespace trview
         MockTrigger::MockTrigger() {}
         MockTrigger::~MockTrigger() {}
 
-        MockTypeNameLookup::MockTypeNameLookup() {}
-        MockTypeNameLookup::~MockTypeNameLookup() {}
+        MockTypeInfoLookup::MockTypeInfoLookup() {}
+        MockTypeInfoLookup::~MockTypeInfoLookup() {}
 
         MockMesh::MockMesh() {}
         MockMesh::~MockMesh() {}

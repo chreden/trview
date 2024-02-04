@@ -6,7 +6,6 @@
 #include <trview.app/Mocks/Graphics/ILevelTextureStorage.h>
 #include <trview.app/Mocks/Graphics/IMeshStorage.h>
 #include <trview.app/Mocks/Graphics/ISelectionRenderer.h>
-#include <trview.app/Mocks/Elements/ITypeNameLookup.h>
 #include <trview.app/Mocks/Elements/IItem.h>
 #include <trview.app/Mocks/Elements/IRoom.h>
 #include <trview.app/Mocks/Elements/ITrigger.h>

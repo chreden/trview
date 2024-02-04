@@ -19,7 +19,6 @@ namespace trview
 {
     struct ILevelTextureStorage;
     struct ICamera;
-    struct ITypeNameLookup;
 
     namespace graphics
     {
