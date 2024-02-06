@@ -1419,7 +1419,7 @@ namespace trview
     void Viewer::set_sector_highlight(const std::shared_ptr<ISector>& sector)
     {
         const auto level = _level.lock();
-        if (level)
+        if (!level)
         {
             return;
         }

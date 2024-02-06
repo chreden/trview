@@ -21,6 +21,7 @@
 #include <trview.app/Mocks/Routing/IWaypoint.h>
 #include <trview.app/Mocks/Elements/ILight.h>
 #include <trview.common/Mocks/Windows/IClipboard.h>
+#include <trview.app/Mocks/Elements/ISector.h>
 #include "TestImgui.h"
 
 using testing::A;
@@ -105,6 +106,12 @@ namespace
             test_module& with_clipboard(std::shared_ptr<IClipboard> clipboard)
             {
                 this->clipboard = clipboard;
+                return *this;
+            }
+
+            test_module& with_sector_highlight(std::unique_ptr<ISectorHighlight> sector_highlight)
+            {
+                this->sector_highlight = std::move(sector_highlight);
                 return *this;
             }
         };
@@ -1069,4 +1076,18 @@ TEST(Viewer, ToggleSaved)
 
     ASSERT_TRUE(raised);
     ASSERT_EQ(raised.value().toggles, expected);
+}
+
+TEST(Viewer, SectorHighlightForwarded)
+{
+    auto [sector_highlight_ptr, sector_highlight] = create_mock<MockSectorHighlight>();
+    EXPECT_CALL(sector_highlight, set_sector).Times(1);
+
+    auto level = mock_shared<MockLevel>();
+
+    auto [ui_ptr, ui] = create_mock<MockViewerUI>();
+    auto viewer = register_test_module().with_ui(std::move(ui_ptr)).with_sector_highlight(std::move(sector_highlight_ptr)).build();
+
+    viewer->open(level, ILevel::OpenMode::Full);
+    ui.on_sector_hover(mock_shared<MockSector>());
 }
