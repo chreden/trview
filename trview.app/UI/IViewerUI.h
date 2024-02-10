@@ -252,9 +252,5 @@ namespace trview
         virtual void set_triggered_by(const std::vector<std::weak_ptr<ITrigger>>& triggers) = 0;
 
         virtual void set_route(const std::weak_ptr<IRoute>& route) = 0;
-        /// <summary>
-        /// Clear the currently loaded room from the minimap.
-        /// </summary>
-        virtual void unload_minimap() = 0;
     };
 }

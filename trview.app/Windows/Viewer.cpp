@@ -638,12 +638,18 @@ namespace trview
 
         if (open_mode == ILevel::OpenMode::Full || !old_level)
         {
+            // Strip the last part of the path away.
+            const auto filename = new_level->filename();
+            auto last_index = std::min(filename.find_last_of('\\'), filename.find_last_of('/'));
+            auto name = last_index == filename.npos ? filename : filename.substr(std::min(last_index + 1, filename.size()));
+            _ui->set_level(name, new_level);
+            window().set_title("trview - " + name);
+
             _camera.reset();
             _ui->set_toggle(Options::highlight, false);
             _ui->set_toggle(Options::flip, false);
             _ui->set_toggle(Options::depth_enabled, false);
             _ui->set_scalar(Options::depth, 1);
-            _ui->unload_minimap();
             _measure->reset();
             _recent_orbits.clear();
             _recent_orbit_index = 0u;
@@ -662,16 +668,9 @@ namespace trview
             {
                 _ui->set_selected_room(rooms[new_level->selected_room()].lock());
             }
-            
+
             auto selected_item = new_level->selected_item();
             _ui->set_selected_item(selected_item.value_or(0));
-
-            // Strip the last part of the path away.
-            const auto filename = new_level->filename();
-            auto last_index = std::min(filename.find_last_of('\\'), filename.find_last_of('/'));
-            auto name = last_index == filename.npos ? filename : filename.substr(std::min(last_index + 1, filename.size()));
-            _ui->set_level(name, new_level);
-            window().set_title("trview - " + name);
         }
         else if (open_mode == ILevel::OpenMode::Reload && old_level)
         {

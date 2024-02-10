@@ -311,6 +311,7 @@ namespace trview
     {
         _level = level;
         _level_info->set_level(name);
+        _map_renderer->load({});
         if (auto new_level = _level.lock())
         {
             _level_info->set_level_version(new_level->version());
@@ -474,11 +475,6 @@ namespace trview
     void ViewerUI::set_route(const std::weak_ptr<IRoute>& route)
     {
         _route = route;
-    }
-
-    void ViewerUI::unload_minimap()
-    {
-        _map_renderer->load({});
     }
 
     void ViewerUI::render_route_notes()
