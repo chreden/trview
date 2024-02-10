@@ -77,8 +77,6 @@ namespace trview
         virtual void render_transparency(const ICamera& camera) = 0;
         // Returns the room with ID provided 
         virtual std::weak_ptr<IRoom> room(uint32_t id) const = 0;
-        virtual std::vector<RoomInfo> room_info() const = 0;
-        virtual RoomInfo room_info(uint32_t room) const = 0;
         virtual std::vector<std::weak_ptr<IRoom>> rooms() const = 0;
         virtual std::optional<uint32_t> selected_item() const = 0;
         virtual std::optional<uint32_t> selected_light() const = 0;

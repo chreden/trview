@@ -1418,13 +1418,13 @@ namespace trview
 
     void Viewer::set_sector_highlight(const std::shared_ptr<ISector>& sector)
     {
-        const auto level = _level.lock();
-        if (!level)
+        const auto room = sector->room().lock();
+        if (!room)
         {
             return;
         }
-
-        const auto room_info = level->room_info(level->selected_room());
+        
+        const auto room_info = room->info();
         _sector_highlight->set_sector(sector,
             Matrix::CreateTranslation(room_info.x / trlevel::Scale_X, 0, room_info.z / trlevel::Scale_Z));
         _scene_changed = true;

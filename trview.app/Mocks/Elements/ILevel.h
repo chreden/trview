@@ -32,8 +32,6 @@ namespace trview
             MOCK_METHOD(void, render, (const ICamera&, bool), (override));
             MOCK_METHOD(void, render_transparency, (const ICamera&), (override));
             MOCK_METHOD(std::weak_ptr<IRoom>, room, (uint32_t), (const, override));
-            MOCK_METHOD(std::vector<RoomInfo>, room_info, (), (const, override));
-            MOCK_METHOD(RoomInfo, room_info, (uint32_t), (const, override));
             MOCK_METHOD(std::vector<std::weak_ptr<IRoom>>, rooms, (), (const, override));
             MOCK_METHOD(std::optional<uint32_t>, selected_item, (), (const, override));
             MOCK_METHOD(std::optional<uint32_t>, selected_light, (), (const, override));
