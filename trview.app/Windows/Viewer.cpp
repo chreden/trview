@@ -643,6 +643,7 @@ namespace trview
             _ui->set_toggle(Options::flip, false);
             _ui->set_toggle(Options::depth_enabled, false);
             _ui->set_scalar(Options::depth, 1);
+            _ui->unload_minimap();
             _measure->reset();
             _recent_orbits.clear();
             _recent_orbit_index = 0u;
@@ -1418,6 +1419,11 @@ namespace trview
 
     void Viewer::set_sector_highlight(const std::shared_ptr<ISector>& sector)
     {
+        if (!sector)
+        {
+            return;
+        }
+
         const auto room = sector->room().lock();
         if (!room)
         {

@@ -476,6 +476,11 @@ namespace trview
         _route = route;
     }
 
+    void ViewerUI::unload_minimap()
+    {
+        _map_renderer->load({});
+    }
+
     void ViewerUI::render_route_notes()
     {
         const auto route = _route.lock();
