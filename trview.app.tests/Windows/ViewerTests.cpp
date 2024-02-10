@@ -1089,5 +1089,8 @@ TEST(Viewer, SectorHighlightForwarded)
     auto viewer = register_test_module().with_ui(std::move(ui_ptr)).with_sector_highlight(std::move(sector_highlight_ptr)).build();
 
     viewer->open(level, ILevel::OpenMode::Full);
-    ui.on_sector_hover(mock_shared<MockSector>());
+
+    auto room = mock_shared<MockRoom>();
+    auto sector = mock_shared<MockSector>()->with_room(room);
+    ui.on_sector_hover(sector);
 }

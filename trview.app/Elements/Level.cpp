@@ -77,21 +77,6 @@ namespace trview
         _sampler_state = device->create_sampler_state(sampler_desc);
     }
 
-    std::vector<RoomInfo> Level::room_info() const
-    {
-        std::vector<RoomInfo> room_infos;
-        for (const auto& r : _rooms)
-        {
-            room_infos.push_back(r->info());
-        }
-        return room_infos;
-    }
-
-    RoomInfo Level::room_info(uint32_t room) const
-    {
-        return _rooms[room]->info();
-    }
-
     std::vector<graphics::Texture> Level::level_textures() const
     {
         std::vector<graphics::Texture> textures;

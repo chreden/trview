@@ -30,7 +30,7 @@ namespace trview
     void
     MapRenderer::render()
     {
-        if (!_render_target || !_visible)
+        if (!_render_target || !_visible || !_loaded)
         {
             return;
         }
@@ -146,9 +146,19 @@ namespace trview
         _sprite->render(_texture, p.x, p.y, s.width, s.height, c); 
     }
 
-    void
-    MapRenderer::load(const std::shared_ptr<trview::IRoom>& room)
+    void MapRenderer::load(const std::shared_ptr<trview::IRoom>& room)
     {
+        _tiles.clear();
+        _previous_sector.reset();
+        on_sector_hover(nullptr);
+        _force_redraw = true;
+
+        if (!room)
+        {
+            _loaded = false;
+            return;
+        }
+
         // Set window position and size 
         _columns = room->num_x_sectors();
         _rows = room->num_z_sectors();
@@ -156,18 +166,12 @@ namespace trview
         update_map_position(); 
         update_map_render_target();
 
-        // Load up sectors 
-        _tiles.clear(); 
-
         const auto& sectors = room->sectors(); 
         std::for_each(sectors.begin(), sectors.end(), 
             [&] (const auto& sector) 
         {
             _tiles.emplace_back(sector, get_position(*sector), get_size());
         });
-
-        _previous_sector.reset();
-        on_sector_hover(nullptr);
     }
 
     Point MapRenderer::get_position(const ISector& sector)

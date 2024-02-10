@@ -311,6 +311,7 @@ namespace trview
     {
         _level = level;
         _level_info->set_level(name);
+        _map_renderer->load({});
         if (auto new_level = _level.lock())
         {
             _level_info->set_level_version(new_level->version());

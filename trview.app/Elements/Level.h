@@ -37,8 +37,6 @@ namespace trview
             const std::shared_ptr<ILog>& log,
             const graphics::IBuffer::ConstantSource& buffer_source);
         virtual ~Level() = default;
-        virtual std::vector<RoomInfo> room_info() const override;
-        virtual RoomInfo room_info(uint32_t room) const override;
         virtual std::vector<graphics::Texture> level_textures() const override;
         virtual std::optional<uint32_t> selected_item() const override;
         virtual uint16_t selected_room() const override;
