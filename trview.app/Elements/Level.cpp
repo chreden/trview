@@ -724,7 +724,10 @@ namespace trview
         const auto& current_room = *_rooms[selected_room()];
         if (is_alternate_mismatch(current_room))
         {
-            on_room_selected(current_room.alternate_room());
+            if (auto level = current_room.level().lock())
+            {
+                on_room_selected(level->room(current_room.alternate_room()));
+            }
         }
 
         on_level_changed();
@@ -748,7 +751,10 @@ namespace trview
         const auto& current_room = *_rooms[selected_room()];
         if (is_alternate_mismatch(current_room))
         {
-            on_room_selected(current_room.alternate_room());
+            if (auto level = current_room.level().lock())
+            {
+                on_room_selected(level->room(current_room.alternate_room()));
+            }
         }
 
         on_level_changed();

@@ -102,6 +102,7 @@ namespace trview
         void setup_camera_sink_windows();
         void setup_shortcuts();
         // Entity manipulation
+        void add_waypoint(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& normal, std::weak_ptr<IRoom> room, IWaypoint::Type type, uint32_t index);
         void add_waypoint(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& normal, uint32_t room, IWaypoint::Type type, uint32_t index);
         void remove_waypoint(uint32_t index);
         void select_item(std::weak_ptr<IItem> item);

@@ -191,13 +191,12 @@ TEST(Viewer, SelectRoomRaised)
     auto viewer = register_test_module().with_ui(std::move(ui_ptr)).build();
 
     auto room = mock_shared<MockRoom>()->with_number(100);
-    std::optional<uint32_t> raised_room;
-    auto token = viewer->on_room_selected += [&raised_room](const auto& room) { raised_room = room; };
+    std::shared_ptr<IRoom> raised_room;
+    auto token = viewer->on_room_selected += [&raised_room](const auto& room) { raised_room = room.lock(); };
 
     ui.on_select_room(room);
 
-    ASSERT_TRUE(raised_room.has_value());
-    ASSERT_EQ(raised_room.value(), 100u);
+    ASSERT_EQ(raised_room, room);
 }
 
 /// Tests that the trigger selected event is raised when the user clicks on a trigger.
@@ -302,14 +301,17 @@ TEST(Viewer, AddWaypointRaised)
     auto [mouse_ptr, mouse] = create_mock<MockMouse>();
     TestImgui imgui;
 
+    auto room = mock_shared<MockRoom>();
     auto level = mock_shared<MockLevel>();
+    ON_CALL(*level, room(50)).WillByDefault(Return(room));
+
     auto viewer = register_test_module().with_ui(std::move(ui_ptr)).with_picking(std::move(picking_ptr)).with_mouse(std::move(mouse_ptr)).build();
     viewer->open(level, ILevel::OpenMode::Full);
 
-    std::optional<std::tuple<Vector3, Vector3, uint32_t, IWaypoint::Type, uint32_t>> added_waypoint;
-    auto token = viewer->on_waypoint_added += [&added_waypoint](const auto& position, const auto& normal, uint32_t room, IWaypoint::Type type, uint32_t index)
+    std::optional<std::tuple<Vector3, Vector3, std::shared_ptr<IRoom>, IWaypoint::Type, uint32_t>> added_waypoint;
+    auto token = viewer->on_waypoint_added += [&added_waypoint](const auto& position, const auto& normal, auto room, IWaypoint::Type type, uint32_t index)
     {
-        added_waypoint = { position, normal, room, type, index };
+        added_waypoint = { position, normal, room.lock(), type, index };
     };
 
     activate_context_menu(picking, mouse, PickResult::Type::Room, 50, Vector3(100, 200, 300));
@@ -318,7 +320,7 @@ TEST(Viewer, AddWaypointRaised)
 
     ASSERT_TRUE(added_waypoint.has_value());
     ASSERT_EQ(std::get<0>(added_waypoint.value()), Vector3(100, 200, 300));
-    ASSERT_EQ(std::get<2>(added_waypoint.value()), 50u);
+    ASSERT_EQ(std::get<2>(added_waypoint.value()), room);
     ASSERT_EQ(std::get<3>(added_waypoint.value()), IWaypoint::Type::Position);
     ASSERT_EQ(std::get<4>(added_waypoint.value()), 50u);
 }
@@ -330,18 +332,20 @@ TEST(Viewer, AddWaypointRaisedUsesItemPosition)
     auto [mouse_ptr, mouse] = create_mock<MockMouse>();
     TestImgui imgui;
 
+    auto room = mock_shared<MockRoom>()->with_number(10);
     auto level = mock_shared<MockLevel>();
-    auto item = mock_shared<MockItem>()->with_room(mock_shared<MockRoom>()->with_number(10))->with_number(50);
+    ON_CALL(*level, room(10)).WillByDefault(Return(room));
+    auto item = mock_shared<MockItem>()->with_room(room)->with_number(50);
 
     EXPECT_CALL(*level, item(50)).WillRepeatedly(Return(item));
 
     auto viewer = register_test_module().with_ui(std::move(ui_ptr)).with_picking(std::move(picking_ptr)).with_mouse(std::move(mouse_ptr)).build();
     viewer->open(level, ILevel::OpenMode::Full);
 
-    std::optional<std::tuple<Vector3, Vector3, uint32_t, IWaypoint::Type, uint32_t>> added_waypoint;
-    auto token = viewer->on_waypoint_added += [&added_waypoint](const auto& position, const auto& normal, uint32_t room, IWaypoint::Type type, uint32_t index)
+    std::optional<std::tuple<Vector3, Vector3, std::shared_ptr<IRoom>, IWaypoint::Type, uint32_t>> added_waypoint;
+    auto token = viewer->on_waypoint_added += [&added_waypoint](const auto& position, const auto& normal, auto room, IWaypoint::Type type, uint32_t index)
     {
-        added_waypoint = { position, normal, room, type, index };
+        added_waypoint = { position, normal, room.lock(), type, index };
     };
 
     activate_context_menu(picking, mouse, PickResult::Type::Entity, 50, Vector3(100, 200, 300));
@@ -350,7 +354,7 @@ TEST(Viewer, AddWaypointRaisedUsesItemPosition)
 
     ASSERT_TRUE(added_waypoint.has_value());
     ASSERT_EQ(std::get<0>(added_waypoint.value()), Vector3::Zero);
-    ASSERT_EQ(std::get<2>(added_waypoint.value()), 10u);
+    ASSERT_EQ(std::get<2>(added_waypoint.value()), room);
     ASSERT_EQ(std::get<3>(added_waypoint.value()), IWaypoint::Type::Entity);
     ASSERT_EQ(std::get<4>(added_waypoint.value()), 50u);
 }
@@ -755,7 +759,8 @@ TEST(Viewer, RoomVisibilityRaised)
     TestImgui imgui;
 
     auto level = mock_shared<MockLevel>();
-    auto room = mock_shared<MockRoom>();
+    auto room = mock_shared<MockRoom>()->with_number(100);
+    EXPECT_CALL(*level, room(0)).WillRepeatedly(Return(std::weak_ptr<IRoom>{}));
     EXPECT_CALL(*level, room(100)).WillRepeatedly(Return(room));
 
     auto viewer = register_test_module().with_ui(std::move(ui_ptr)).with_picking(std::move(picking_ptr)).with_mouse(std::move(mouse_ptr)).build();
@@ -991,21 +996,21 @@ TEST(Viewer, RoomSelectedForwarded)
 {
     auto level = mock_shared<MockLevel>();
     auto viewer = register_test_module().build();
+    auto room = mock_shared<MockRoom>();
 
-    std::optional<uint32_t> raised;
-    auto token = viewer->on_room_selected += [&](auto r) { raised = r; };
+    std::shared_ptr<IRoom> raised;
+    auto token = viewer->on_room_selected += [&](auto r) { raised = r.lock(); };
 
     viewer->open(level, ILevel::OpenMode::Full);
-    level->on_room_selected(123);
+    level->on_room_selected(room);
 
-    ASSERT_TRUE(raised);
-    ASSERT_EQ(*raised, 123);
+    ASSERT_EQ(raised, room);
 
     auto new_level = mock_shared<MockLevel>();
     viewer->open(new_level, ILevel::OpenMode::Full);
 
     raised.reset();
-    level->on_room_selected(456);
+    level->on_room_selected(room);
     ASSERT_FALSE(raised);
 }
 

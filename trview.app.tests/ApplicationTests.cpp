@@ -741,6 +741,8 @@ TEST(Application, ReloadSyncsProperties)
         lights_weak.push_back(l);
     }
 
+    auto room = mock_shared<MockRoom>()->with_number(3);
+
     ON_CALL(original, items).WillByDefault(Return(items_weak));
     ON_CALL(original, selected_item).WillByDefault(Return(3));
     ON_CALL(original, triggers).WillByDefault(Return(triggers_weak));
@@ -762,6 +764,7 @@ TEST(Application, ReloadSyncsProperties)
     EXPECT_CALL(reloaded, trigger).WillRepeatedly(Return(triggers_weak[3]));
     EXPECT_CALL(reloaded, light).WillRepeatedly(Return(lights_weak[3]));
     EXPECT_CALL(reloaded, item).WillRepeatedly(Return(items[3]));
+    EXPECT_CALL(reloaded, room(3)).WillRepeatedly(Return(room));
 
     std::list<std::unique_ptr<ILevel>> levels;
     levels.push_back(std::move(original_ptr));

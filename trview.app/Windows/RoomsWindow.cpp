@@ -4,6 +4,7 @@
 #include <trview.common/Strings.h>
 #include "../trview_imgui.h"
 #include "../Elements/Floordata.h"
+#include "../Elements/ILevel.h"
 
 namespace trview
 {
@@ -420,11 +421,17 @@ namespace trview
                                 {
                                     if (has_flag(sector->flags(), SectorFlag::Portal))
                                     {
-                                        on_room_selected(sector->portal());
+                                        if (auto level = room->level().lock())
+                                        {
+                                            on_room_selected(level->room(sector->portal()));
+                                        }
                                     }
                                     else if (sector->room_below() != 0xff)
                                     {
-                                        on_room_selected(sector->room_below());
+                                        if (auto level = room->level().lock())
+                                        {
+                                            on_room_selected(level->room(sector->room_below()));
+                                        }
                                     }
                                     else
                                     {
@@ -445,7 +452,10 @@ namespace trview
                             {
                                 if (sector->room_above() != 0xff)
                                 {
-                                    on_room_selected(sector->room_above());
+                                    if (auto level = room->level().lock())
+                                    {
+                                        on_room_selected(level->room(sector->room_above()));
+                                    }
                                 }
                             }
                         }
@@ -705,7 +715,13 @@ namespace trview
             add_stat("Z", room->info().z);
             if (room->alternate_mode() != Room::AlternateMode::None)
             {
-                add_stat("Alternate", room->alternate_room(), [this, room]() { on_room_selected(room->alternate_room()); });
+                add_stat("Alternate", room->alternate_room(), [this, room]() 
+                    { 
+                        if (auto level = room->level().lock())
+                        {
+                            on_room_selected(level->room(room->alternate_room()));
+                        }
+                    });
                 if (room->alternate_group() != 0xff)
                 {
                     add_stat("Alternate Group", room->alternate_group());
@@ -769,10 +785,15 @@ namespace trview
                 bool selected = false;
                 if (ImGui::Selectable(std::to_string(neighbour).c_str(), &selected, ImGuiSelectableFlags_SpanAllColumns | static_cast<int>(ImGuiSelectableFlags_SelectOnNav)))
                 {
-                    select_room(neighbour);
-                    if (_sync_room)
+                    auto level = room->level().lock();
+                    if (level)
                     {
-                        on_room_selected(neighbour);
+                        const auto neighbour_room = level->room(neighbour);
+                        select_room(neighbour_room);
+                        if (_sync_room)
+                        {
+                            on_room_selected(neighbour_room);
+                        }
                     }
                 }
             }

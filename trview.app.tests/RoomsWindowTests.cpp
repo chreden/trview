@@ -48,7 +48,7 @@ TEST(RoomsWindow, LevelVersionChangesFlags)
     auto window = register_test_module().build();
     window->set_level_version(trlevel::LevelVersion::Tomb1);
     window->set_rooms({ room });
-    window->set_current_room(0);
+    window->set_current_room(room);
 
     TestImgui imgui([&]() { window->render(); });
 
@@ -69,7 +69,7 @@ TEST(RoomsWindow, LevelVersionChangesFlags)
 
     window->set_level_version(trlevel::LevelVersion::Tomb3);
     window->set_rooms({ room });
-    window->set_current_room(0);
+    window->set_current_room(room);
 
     imgui.reset();
     imgui.render();

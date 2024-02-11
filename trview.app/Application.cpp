@@ -427,6 +427,12 @@ namespace trview
         add_shortcut(false, VK_DELETE, [&]() { remove_waypoint(_route->selected_waypoint()); });
     }
 
+    void Application::add_waypoint(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& normal, std::weak_ptr<IRoom> room, IWaypoint::Type type, uint32_t index)
+    {
+        const auto room_ptr = room.lock();
+        add_waypoint(position, normal, room_ptr ? room_ptr->number() : 0u, type, index);
+    }
+
     void Application::add_waypoint(const Vector3& position, const Vector3& normal, uint32_t room, IWaypoint::Type type, uint32_t index)
     {
         uint32_t new_index = _route->insert(position, normal, room, type, index);
