@@ -30,7 +30,7 @@ namespace trview
         virtual void set_selected_light(const std::weak_ptr<ILight>& light) override;
         virtual void set_level_version(trlevel::LevelVersion version) override;
         virtual void set_number(int32_t number) override;
-        virtual void set_current_room(uint32_t room) override;
+        void set_current_room(const std::weak_ptr<IRoom>& room) override;
     private:
         void set_sync_light(bool value);
         void set_local_selected_light(const std::weak_ptr<ILight>& light);
@@ -48,7 +48,7 @@ namespace trview
         bool _scroll_to_light{ false };
         std::weak_ptr<ILight> _selected_light;
         std::weak_ptr<ILight> _global_selected_light;
-        uint32_t _current_room{ 0u };
+        std::weak_ptr<IRoom> _current_room;
         std::unordered_map<std::string, std::string> _tips;
         Filters<ILight> _filters;
         bool _force_sort{ false };

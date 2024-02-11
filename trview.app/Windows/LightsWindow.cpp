@@ -113,7 +113,7 @@ namespace trview
                 for (const auto& light_ptr : _all_lights)
                 {
                     const auto& light = light_ptr.lock();
-                    if (_track.enabled<Type::Room>() && light_room(light) != _current_room || !_filters.match(*light))
+                    if (_track.enabled<Type::Room>() && light->room().lock() != _current_room.lock() || !_filters.match(*light))
                     {
                         continue;
                     }
@@ -285,7 +285,7 @@ namespace trview
         _selected_light = light;
     }
 
-    void LightsWindow::set_current_room(uint32_t room)
+    void LightsWindow::set_current_room(const std::weak_ptr<IRoom>& room)
     {
         _current_room = room;
     }

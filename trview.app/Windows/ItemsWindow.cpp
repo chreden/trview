@@ -58,7 +58,7 @@ namespace trview
         _triggered_by.clear();
     }
 
-    void ItemsWindow::set_current_room(uint32_t room)
+    void ItemsWindow::set_current_room(const std::weak_ptr<IRoom>& room)
     {
         _current_room = room;
     }
@@ -130,7 +130,7 @@ namespace trview
                 for (const auto& item : _all_items)
                 {
                     auto item_ptr = item.lock();
-                    if (!item_ptr || (_track.enabled<Type::Room>() && item_room(item_ptr) != _current_room || !_filters.match(*item_ptr)))
+                    if (!item_ptr || (_track.enabled<Type::Room>() && item_ptr->room().lock() != _current_room.lock() || !_filters.match(*item_ptr)))
                     {
                         continue;
                     }

@@ -58,7 +58,7 @@ namespace trview
         _local_selected_trigger_commands.clear();
     }
 
-    void TriggersWindow::set_current_room(uint32_t room)
+    void TriggersWindow::set_current_room(const std::weak_ptr<IRoom>& room)
     {
         _current_room = room;
         _need_filtering = true;
@@ -497,7 +497,7 @@ namespace trview
             [&](const auto& trigger)
             {
                 const auto trigger_ptr = trigger.lock();
-                return !((_track.enabled<Type::Room>() && trigger_room(trigger_ptr) != _current_room || !_filters.match(*trigger_ptr)) ||
+                return !((_track.enabled<Type::Room>() && trigger_ptr->room().lock() != _current_room.lock() || !_filters.match(*trigger_ptr)) ||
                          (!_selected_commands.empty() && !has_any_command(*trigger_ptr, _selected_commands)));
             });
         _need_filtering = false;

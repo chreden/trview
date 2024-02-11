@@ -156,13 +156,15 @@ void register_items_window_tests(ImGuiTestEngine* engine)
             std::shared_ptr<IItem> raised_item;
             auto token = context.ptr->on_item_selected += [&raised_item](const auto& item) { raised_item = item.lock(); };
 
+            auto room_78 = mock_shared<MockRoom>()->with_number(78);
+
             context.items =
             {
                 mock_shared<MockItem>()->with_number(0)->with_room(mock_shared<MockRoom>()->with_number(55)),
-                mock_shared<MockItem>()->with_number(1)->with_room(mock_shared<MockRoom>()->with_number(78))
+                mock_shared<MockItem>()->with_number(1)->with_room(room_78)
             };
             context.ptr->set_items({ std::from_range, context.items });
-            context.ptr->set_current_room(78);
+            context.ptr->set_current_room(room_78);
 
             ctx->ItemClick("Items 0/**/Track##track");
             ctx->ItemCheck("/**/Room");
@@ -184,13 +186,15 @@ void register_items_window_tests(ImGuiTestEngine* engine)
             std::shared_ptr<IItem> raised_item;
             auto token = context.ptr->on_item_selected += [&raised_item](const auto& item) { raised_item = item.lock(); };
 
+            auto room_78 = mock_shared<MockRoom>()->with_number(78);
+
             context.items =
             {
                 mock_shared<MockItem>()->with_number(0)->with_room(mock_shared<MockRoom>()->with_number(55)),
-                mock_shared<MockItem>()->with_number(1)->with_room(mock_shared<MockRoom>()->with_number(78))
+                mock_shared<MockItem>()->with_number(1)->with_room(room_78)
             };
             context.ptr->set_items({ std::from_range, context.items });
-            context.ptr->set_current_room(78);
+            context.ptr->set_current_room(room_78);
 
             ctx->ItemClick("Items 0/**/0##0");
 

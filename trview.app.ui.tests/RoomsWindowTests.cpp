@@ -70,7 +70,7 @@ void register_rooms_window_tests(ImGuiTestEngine* engine)
 
             context.ptr->set_level_version(trlevel::LevelVersion::Tomb1);
             context.ptr->set_rooms({ room });
-            context.ptr->set_current_room(0);
+            context.ptr->set_current_room(room);
 
             ctx->Yield();
             IM_CHECK_EQ(ctx->ItemExists("/**/Bit 7"), true);
@@ -82,7 +82,7 @@ void register_rooms_window_tests(ImGuiTestEngine* engine)
 
             context.ptr->set_level_version(trlevel::LevelVersion::Tomb3);
             context.ptr->set_rooms({ room });
-            context.ptr->set_current_room(0);
+            context.ptr->set_current_room(room);
             ctx->Yield();
 
             IM_CHECK_EQ(ctx->ItemExists("/**/Bit 7"), false);
@@ -137,7 +137,7 @@ void register_rooms_window_tests(ImGuiTestEngine* engine)
 
             context.ptr->set_level_version(trlevel::LevelVersion::Tomb1);
             context.ptr->set_rooms({ normal_room, death_room });
-            context.ptr->set_current_room(0);
+            context.ptr->set_current_room(normal_room);
 
             ctx->Yield();
             IM_CHECK_EQ(ctx->ItemExists("/**/0##0"), true);

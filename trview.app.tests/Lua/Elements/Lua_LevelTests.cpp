@@ -177,8 +177,7 @@ TEST(Lua_Level, SelectedRoom)
 {
     auto room = mock_shared<MockRoom>()->with_number(200);
     auto level = mock_shared<MockLevel>();
-    EXPECT_CALL(*level, room(200)).WillRepeatedly(Return(room));
-    EXPECT_CALL(*level, selected_room).WillRepeatedly(Return(200));
+    EXPECT_CALL(*level, selected_room).WillRepeatedly(Return(room));
 
     LuaState L;
     lua::create_level(L, level);
@@ -195,7 +194,8 @@ TEST(Lua_Level, SetSelectedRoom)
 {
     auto room = mock_shared<MockRoom>()->with_number(200);
     auto level = mock_shared<MockLevel>();
-    EXPECT_CALL(*level, set_selected_room(200));
+    std::weak_ptr<IRoom> called_room;
+    EXPECT_CALL(*level, set_selected_room).WillOnce(SaveArg<0>(&called_room));
 
     LuaState L;
     lua::create_level(L, level);
@@ -204,6 +204,7 @@ TEST(Lua_Level, SetSelectedRoom)
     lua_setglobal(L, "r");
 
     ASSERT_EQ(0, luaL_dostring(L, "l.selected_room = r"));
+    ASSERT_EQ(called_room.lock(), room);
 }
 
 TEST(Lua_Level, SelectedTrigger)

@@ -81,7 +81,7 @@ namespace trview
         virtual std::optional<uint32_t> selected_item() const = 0;
         virtual std::optional<uint32_t> selected_light() const = 0;
         virtual std::optional<uint32_t> selected_camera_sink() const = 0;
-        virtual uint16_t selected_room() const = 0;
+        virtual std::weak_ptr<IRoom> selected_room() const = 0;
         virtual std::optional<uint32_t> selected_trigger() const = 0;
         // Set whether to render the alternate mode (the flipmap) or the regular room.
         // enabled: Whether to render the flipmap.
@@ -109,7 +109,7 @@ namespace trview
         virtual void set_show_camera_sinks(bool show) = 0;
         virtual void set_trigger_visibility(uint32_t index, bool state) = 0;
         virtual void set_neighbour_depth(uint32_t depth) = 0;
-        virtual void set_selected_room(uint16_t index) = 0;
+        virtual void set_selected_room(const std::weak_ptr<IRoom>& room) = 0;
         virtual void set_selected_item(uint32_t index) = 0;
         virtual void set_light_visibility(uint32_t index, bool state) = 0;
         virtual void set_room_visibility(uint32_t index, bool state) = 0;
@@ -136,7 +136,7 @@ namespace trview
         virtual trlevel::LevelVersion version() const = 0;
         Event<std::weak_ptr<IItem>> on_item_selected;
         // Event raised when the level needs to change the selected room.
-        Event<uint32_t> on_room_selected;
+        Event<std::weak_ptr<IRoom>> on_room_selected;
         // Event raised when the level needs to change the alternate mode.
         Event<bool> on_alternate_mode_selected;
         /// Event raised when the level needs to change the alternate group mode.

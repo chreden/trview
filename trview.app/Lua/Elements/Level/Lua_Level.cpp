@@ -68,7 +68,7 @@ namespace trview
                 }
                 else if (key == "selected_room")
                 {
-                    return create_room(L, level->room(level->selected_room()).lock());
+                    return create_room(L, level->selected_room().lock());
                 }
                 else if (key == "selected_trigger")
                 {
@@ -118,7 +118,7 @@ namespace trview
                 {
                     if (auto room = to_room(L, -1))
                     {
-                        level->set_selected_room(static_cast<uint16_t>(room->number()));
+                        level->set_selected_room(room);
                     }
                 }
                 else if (key == "selected_trigger")

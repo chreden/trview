@@ -3,6 +3,7 @@
 #include <trview.app/Mocks/Windows/ITriggersWindow.h>
 #include <trview.common/Mocks/Windows/IShortcuts.h>
 #include <trview.app/Mocks/Elements/ITrigger.h>
+#include <trview.app/Mocks/Elements/IRoom.h>
 
 using namespace trview;
 using namespace trview::mocks;
@@ -212,7 +213,7 @@ TEST(TriggersWindowManager, SetRoomSetsRoomOnWindows)
     auto created_window = manager->create_window().lock();
     ASSERT_NE(created_window, nullptr);
     ASSERT_EQ(created_window, mock_window);
-    manager->set_room(1);
+    manager->set_room(mock_shared<MockRoom>());
 }
 
 TEST(TriggersWindowManager, SetSelectedTriggerSetsSelectedTriggerOnWindows)

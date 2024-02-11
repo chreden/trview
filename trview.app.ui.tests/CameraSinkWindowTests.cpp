@@ -57,10 +57,11 @@ void register_camera_sink_window_tests(ImGuiTestEngine* engine)
             auto& context = ctx->GetVars<CameraSinkWindowContext>();
             context.ptr = register_test_module().build();
 
+            auto room_78 = mock_shared<MockRoom>()->with_number(78);
             auto camera_sink1 = mock_shared<MockCameraSink>()->with_number(0)->with_room(mock_shared<MockRoom>()->with_number(56));
-            auto camera_sink2 = mock_shared<MockCameraSink>()->with_number(1)->with_room(mock_shared<MockRoom>()->with_number(78));
+            auto camera_sink2 = mock_shared<MockCameraSink>()->with_number(1)->with_room(room_78);
             context.ptr->set_camera_sinks({ camera_sink1, camera_sink2 });
-            context.ptr->set_current_room(78);
+            context.ptr->set_current_room(room_78);
             context.camera_sinks = { camera_sink1, camera_sink2 };
 
             ctx->ItemClick("/**/Track##track");

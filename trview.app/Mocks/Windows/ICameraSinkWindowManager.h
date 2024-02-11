@@ -14,7 +14,7 @@ namespace trview
             MOCK_METHOD(std::weak_ptr<ICameraSinkWindow>, create_window, (), (override));
             MOCK_METHOD(void, render, (), (override));
             MOCK_METHOD(void, set_selected_camera_sink, (const std::weak_ptr<ICameraSink>&), (override));
-            MOCK_METHOD(void, set_room, (uint32_t), (override));
+            MOCK_METHOD(void, set_room, (const std::weak_ptr<IRoom>&), (override));
         };
     }
 }

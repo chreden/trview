@@ -33,7 +33,7 @@ namespace trview
         virtual ~RoomsWindow() = default;
         virtual void clear_selected_trigger() override;
         virtual void render() override;
-        virtual void set_current_room(uint32_t room) override;
+        virtual void set_current_room(const std::weak_ptr<IRoom>& room) override;
         virtual void set_items(const std::vector<std::weak_ptr<IItem>>& items) override;
         virtual void set_level_version(trlevel::LevelVersion version) override;
         virtual void set_map_colours(const MapColours& colours) override;
@@ -52,7 +52,7 @@ namespace trview
         void render_rooms_list();
         void render_room_details();
         bool render_rooms_window();
-        void load_room_details(uint32_t room_number);
+        void load_room_details(std::weak_ptr<IRoom> room);
         void generate_filters();
         void render_properties_tab(const std::shared_ptr<IRoom>& room);
         void render_neighbours_tab(const std::shared_ptr<IRoom>& room);
@@ -65,7 +65,7 @@ namespace trview
         void set_triggers(const std::vector<std::weak_ptr<ITrigger>>& triggers);
         void set_lights(const std::vector<std::weak_ptr<ILight>>& lights);
         void set_camera_sinks(const std::vector<std::weak_ptr<ICameraSink>>& camera_sinks);
-        void select_room(uint32_t room);
+        void select_room(std::weak_ptr<IRoom> room);
         void render_statics_tab();
         void set_static_meshes(const std::vector<std::weak_ptr<IStaticMesh>>& static_meshes);
 
@@ -97,8 +97,8 @@ namespace trview
         std::weak_ptr<IStaticMesh> _local_selected_static_mesh;
         bool _scroll_to_static_mesh{ false };
 
-        uint32_t _current_room{ 0u };
-        uint32_t _selected_room{ 0u };
+        std::weak_ptr<IRoom> _current_room;
+        std::weak_ptr<IRoom> _selected_room;
 
         TokenStore _token_store;
         std::unique_ptr<IMapRenderer> _map_renderer;

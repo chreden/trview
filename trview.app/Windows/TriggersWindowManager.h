@@ -26,14 +26,14 @@ namespace trview
         const std::weak_ptr<ITrigger> selected_trigger() const;
         virtual void set_items(const std::vector<std::weak_ptr<IItem>>& items) override;
         virtual void set_triggers(const std::vector<std::weak_ptr<ITrigger>>& triggers) override;
-        virtual void set_room(uint32_t room) override;
+        void set_room(const std::weak_ptr<IRoom>& room) override;
         virtual void set_selected_trigger(const std::weak_ptr<ITrigger>& trigger) override;
         virtual std::weak_ptr<ITriggersWindow> create_window() override;
         virtual void update(float delta) override;
     private:
         std::vector<std::weak_ptr<IItem>> _items;
         std::vector<std::weak_ptr<ITrigger>> _triggers;
-        uint32_t _current_room{ 0u };
+        std::weak_ptr<IRoom> _current_room;
         std::weak_ptr<ITrigger> _selected_trigger;
         ITriggersWindow::Source _triggers_window_source;
     };

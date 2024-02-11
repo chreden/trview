@@ -96,7 +96,7 @@ namespace trview
         return std::nullopt;
     }
 
-    uint16_t Level::selected_room() const
+    std::weak_ptr<IRoom> Level::selected_room() const
     {
         return _selected_room;
     }
@@ -171,31 +171,31 @@ namespace trview
         return _room_highlight_modes.find(mode) != _room_highlight_modes.end();
     }
 
-    void Level::set_selected_room(uint16_t index)
+    void Level::set_selected_room(const std::weak_ptr<IRoom>& room)
     { 
-        if (_selected_room != index)
+        const auto room_ptr = room.lock();
+        if (_selected_room.lock() == room_ptr)
         {
-            _selected_room = index;
-            regenerate_neighbours();
-
-            // If the user has selected a room that is or has an alternate mode, raise the event that the
-            // alternate mode needs to change so that the correct rooms can be rendered.
-            const auto& room = *_rooms[index];
-            if (is_alternate_mismatch(room))
-            {
-                if (version() >= trlevel::LevelVersion::Tomb4)
-                {
-                    on_alternate_group_selected(room.alternate_group(), !is_alternate_group_set(room.alternate_group()));
-                }
-                else
-                {
-                    on_alternate_mode_selected(!_alternate_mode);
-                }
-            }
-
-            on_level_changed();
-            on_room_selected(index);
+            return;
         }
+
+        _selected_room = room;
+        regenerate_neighbours();
+
+        if (room_ptr && is_alternate_mismatch(*room_ptr))
+        {
+            if (version() >= trlevel::LevelVersion::Tomb4)
+            {
+                on_alternate_group_selected(room_ptr->alternate_group(), !is_alternate_group_set(room_ptr->alternate_group()));
+            }
+            else
+            {
+                on_alternate_mode_selected(!_alternate_mode);
+            }
+        }
+
+        on_level_changed();
+        on_room_selected(room);
     }
 
     void Level::set_selected_item(uint32_t index)
@@ -399,6 +399,7 @@ namespace trview
         };
 
         bool highlight = highlight_mode_enabled(RoomHighlightMode::Highlight);
+        const auto selected = _selected_room.lock();
         if (highlight_mode_enabled(RoomHighlightMode::Neighbours))
         {
             for (uint16_t i : _neighbours)
@@ -408,19 +409,19 @@ namespace trview
                 {
                     continue;
                 }
-                rooms.emplace_back(*room.get(), highlight ? (i == _selected_room ? IRoom::SelectionMode::Selected : IRoom::SelectionMode::NotSelected) : IRoom::SelectionMode::Selected, i);
+                rooms.emplace_back(*room.get(), highlight ? (room == selected ? IRoom::SelectionMode::Selected : IRoom::SelectionMode::NotSelected) : IRoom::SelectionMode::Selected, i);
             }
         }
         else
         {
             for (std::size_t i = 0; i < _rooms.size(); ++i)
             {
-                const auto& room = _rooms[i].get();
+                const auto& room = _rooms[i];
                 if (!room->visible() || is_alternate_mismatch(*room) || !in_view(*room))
                 {
                     continue;
                 }
-                rooms.emplace_back(*room, highlight ? (_selected_room == static_cast<uint16_t>(i) ? IRoom::SelectionMode::Selected : IRoom::SelectionMode::NotSelected) : IRoom::SelectionMode::Selected, static_cast<uint16_t>(i));
+                rooms.emplace_back(*room, highlight ? (room == selected ? IRoom::SelectionMode::Selected : IRoom::SelectionMode::NotSelected) : IRoom::SelectionMode::Selected, static_cast<uint16_t>(i));
             }
         }
 
@@ -604,9 +605,9 @@ namespace trview
     void Level::regenerate_neighbours()
     {
         _neighbours.clear();
-        if (_selected_room < number_of_rooms())
+        if (auto selected_room = _selected_room.lock())
         {
-            generate_neighbours(_neighbours, _selected_room, _neighbour_depth);
+            generate_neighbours(_neighbours, static_cast<uint16_t>(selected_room->number()), _neighbour_depth);
             _regenerate_transparency = true;
         }
     }
@@ -749,10 +750,13 @@ namespace trview
 
         // If the currently selected room is a room involved in flipmaps, select the alternate
         // room so that the user doesn't have an invisible room selected.
-        const auto& current_room = *_rooms[selected_room()];
-        if (is_alternate_mismatch(current_room))
+        const auto current_room = selected_room().lock();
+        if (current_room && is_alternate_mismatch(*current_room))
         {
-            on_room_selected(current_room.alternate_room());
+            if (auto level = current_room->level().lock())
+            {
+                on_room_selected(level->room(current_room->alternate_room()));
+            }
         }
 
         on_level_changed();
@@ -773,10 +777,13 @@ namespace trview
 
         // If the currently selected room is a room involved in flipmaps, select the alternate
         // room so that the user doesn't have an invisible room selected.
-        const auto& current_room = *_rooms[selected_room()];
-        if (is_alternate_mismatch(current_room))
+        const auto current_room = selected_room().lock();
+        if (current_room && is_alternate_mismatch(*current_room))
         {
-            on_room_selected(current_room.alternate_room());
+            if (auto level = current_room->level().lock())
+            {
+                on_room_selected(level->room(current_room->alternate_room()));
+            }
         }
 
         on_level_changed();
