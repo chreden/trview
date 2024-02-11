@@ -256,7 +256,7 @@ namespace trview
     {
         _token_store += _viewer->on_item_visibility += [this](const auto& item, bool value) { set_item_visibility(item, value); };
         _token_store += _viewer->on_item_selected += [this](const auto& item) { select_item(item); };
-        _token_store += _viewer->on_room_selected += [this](uint32_t room) { select_room(room); };
+        _token_store += _viewer->on_room_selected += [this](const auto& room) { select_room(room); };
         _token_store += _viewer->on_trigger_selected += [this](const auto& trigger) { select_trigger(trigger); };
         _token_store += _viewer->on_trigger_visibility += [this](const auto& trigger, bool value) { set_trigger_visibility(trigger, value); };
         _token_store += _viewer->on_light_selected += [this](const auto& light) { select_light(light); };
@@ -459,27 +459,28 @@ namespace trview
             return;
         }
 
-        select_room(item_room(item_ptr));
+        select_room(item_ptr->room());
         _level->set_selected_item(item_ptr->number());
         _viewer->select_item(item);
         _items_windows->set_selected_item(item);
         _rooms_windows->set_selected_item(item);
     }
 
-    void Application::select_room(uint32_t room)
+    void Application::select_room(std::weak_ptr<IRoom> room)
     {
-        if (!_level || room >= _level->number_of_rooms())
+        auto room_ptr = room.lock();
+        if (!_level || !room_ptr)
         {
             return;
         }
 
-        _level->set_selected_room(static_cast<uint16_t>(room));
-        _viewer->select_room(room);
-        _items_windows->set_room(room);
-        _rooms_windows->set_room(room);
-        _triggers_windows->set_room(room);
-        _lights_windows->set_room(room);
-        _camera_sink_windows->set_room(room);
+        _level->set_selected_room(static_cast<uint16_t>(room_ptr->number()));
+        _viewer->select_room(room_ptr->number());
+        _items_windows->set_room(room_ptr->number());
+        _rooms_windows->set_room(room_ptr->number());
+        _triggers_windows->set_room(room_ptr->number());
+        _lights_windows->set_room(room_ptr->number());
+        _camera_sink_windows->set_room(room_ptr->number());
     }
 
     void Application::select_trigger(const std::weak_ptr<ITrigger>& trigger)
@@ -495,7 +496,7 @@ namespace trview
             return;
         }
 
-        select_room(trigger_room(trigger_ptr));
+        select_room(trigger_ptr->room());
         _level->set_selected_trigger(trigger_ptr->number());
         _viewer->select_trigger(trigger);
         _triggers_windows->set_selected_trigger(trigger);
@@ -504,9 +505,14 @@ namespace trview
 
     void Application::select_waypoint(uint32_t index)
     {
+        if (!_level)
+        {
+            return;
+        }
+
         if (auto waypoint = _route->waypoint(index).lock())
         {
-            select_room(waypoint->room());
+            select_room(_level->room(waypoint->room()));
             _route->select_waypoint(index);
             _viewer->select_waypoint(waypoint);
             _route_window->select_waypoint(index);
@@ -542,7 +548,7 @@ namespace trview
             return;
         }
 
-        select_room(light_room(light_ptr));
+        select_room(light_ptr->room());
         _level->set_selected_light(light_ptr->number());
         _viewer->select_light(light);
         _lights_windows->set_selected_light(light);
@@ -894,8 +900,7 @@ namespace trview
             return;
         }
 
-        auto actual = actual_room(*camera_sink_ptr).lock();
-        select_room(actual ? actual->number() : 0u);
+        select_room(actual_room(*camera_sink_ptr));
         _level->set_selected_camera_sink(camera_sink_ptr->number());
         _viewer->select_camera_sink(camera_sink);
         _camera_sink_windows->set_selected_camera_sink(camera_sink);
@@ -998,7 +1003,7 @@ namespace trview
                 select_camera_sink(_level->camera_sink(selected_camera_sink.value()));
             }
 
-            select_room(old_level->selected_room());
+            select_room(_level->room(old_level->selected_room()));
 
             _viewer->set_target(old_target);
             _settings.auto_orbit = old_auto_orbit;
@@ -1048,7 +1053,7 @@ namespace trview
             return;
         }
 
-        select_room(static_mesh_room(static_mesh_ptr));
+        select_room(static_mesh_ptr->room());
         _viewer->select_static_mesh(static_mesh_ptr);
     }
 }

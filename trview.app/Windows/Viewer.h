@@ -119,7 +119,7 @@ namespace trview
         void set_show_wireframe(bool show);
         void set_show_bounding_boxes(bool show);
         void set_show_lights(bool show);
-        uint32_t room_from_pick(const PickResult& pick) const;
+        std::weak_ptr<IRoom> room_from_pick(const PickResult& pick) const;
         void add_recent_orbit(const PickResult& pick);
         void select_previous_orbit();
         void select_next_orbit();

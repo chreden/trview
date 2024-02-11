@@ -136,19 +136,9 @@ namespace trview
         }
     }
 
-    void RoomsWindow::load_room_details(uint32_t room_number)
+    void RoomsWindow::load_room_details(std::weak_ptr<IRoom> room)
     {
-        const auto room = std::find_if(_all_rooms.begin(), _all_rooms.end(),
-            [&](auto&& r)
-            {
-                const auto locked = r.lock();
-                return locked && locked->number() == room_number;
-            });
-        if (room != _all_rooms.end())
-        {
-            auto room_ptr = room->lock();
-            _map_renderer->load(room_ptr);
-        }
+        _map_renderer->load(room.lock());
     }
 
     void RoomsWindow::set_items(const std::vector<std::weak_ptr<IItem>>& items)
@@ -172,7 +162,7 @@ namespace trview
     void RoomsWindow::set_rooms(const std::vector<std::weak_ptr<IRoom>>& rooms)
     {
         _all_rooms = rooms;
-        _current_room = 0xffffffff;
+        _current_room.reset();
         _triggers.clear();
         _lights.clear();
         _camera_sinks.clear();
@@ -186,13 +176,13 @@ namespace trview
         _global_selected_item = item;
         if (_track.enabled<Type::Item>())
         {
-            if (_selected_room != _current_room)
+            if (_selected_room.lock()!= _current_room.lock())
             {
                 if (auto item_ptr = item.lock())
                 {
-                    select_room(item_room(item_ptr));
+                    select_room(item_ptr->room());
                     _scroll_to_room = true;
-                    load_room_details(item_room(item_ptr));
+                    load_room_details(item_ptr->room());
                 }
             }
 
@@ -208,11 +198,11 @@ namespace trview
         {
             if (const auto trigger_ptr = trigger.lock())
             {
-                if (_selected_room != _current_room)
+                if (_selected_room.lock() != _current_room.lock())
                 {
-                    select_room(trigger_room(trigger_ptr));
+                    select_room(trigger_ptr->room());
                     _scroll_to_room = true;
-                    load_room_details(trigger_room(trigger_ptr));
+                    load_room_details(trigger_ptr->room());
                 }
 
                 _local_selected_trigger = trigger;
@@ -233,12 +223,12 @@ namespace trview
         if (_sync_room != value)
         {
             _sync_room = value;
-            uint32_t room = _current_room;
+            auto room = _current_room;
             if (_sync_room)
             {
                 // Force room to be different to current room so that the
                 // room details are loaded.
-                _current_room = 0xffffffff;
+                _current_room.reset();
             }
             set_current_room(room);
         }
@@ -332,6 +322,7 @@ namespace trview
                         [&](auto&& l, auto&& r) { return l.visible() < r.visible(); }
                     }, _force_sort);
 
+                const auto selected_room = _selected_room.lock();
                 for (const auto& room : _all_rooms)
                 {
                     auto room_ptr = room.lock();
@@ -343,7 +334,7 @@ namespace trview
 
                     ImGui::TableNextRow();
                     ImGui::TableNextColumn();
-                    bool selected = room_ptr->number() == _selected_room;
+                    bool selected = room_ptr == selected_room;
 
                     ImGuiScroller scroller;
                     if (selected && _scroll_to_room)
@@ -355,7 +346,7 @@ namespace trview
                     if (ImGui::Selectable(std::format("{0}##{0}", room_ptr->number()).c_str(), &selected, ImGuiSelectableFlags_SpanAllColumns | static_cast<int>(ImGuiSelectableFlags_SelectOnNav)))
                     {
                         scroller.fix_scroll();
-                        select_room(room_ptr->number());
+                        select_room(room_ptr);
                         _map_renderer->load(room_ptr);
                         if (_sync_room)
                         {
@@ -387,154 +378,137 @@ namespace trview
 
     void RoomsWindow::render_room_details()
     {
-        auto current_room = [&]() -> std::weak_ptr<IRoom>
-        {
-            for (const auto& room : _all_rooms)
-            {
-                if (room.lock()->number() == _selected_room)
-                {
-                    return room;
-                }
-            }
-            return {};
-        };
-
-
         if (ImGui::BeginChild(Names::details_panel.c_str(), ImVec2(), true))
         {
-            if (_selected_room < _all_rooms.size())
+            if (auto room = _selected_room.lock())
             {
-                auto room = current_room().lock();
-                if (room)
+                if (_map_renderer->loaded())
                 {
-                    if (_map_renderer->loaded())
+                    _map_renderer->render();
+                    _map_texture = _map_renderer->texture();
+                    if (!_map_texture.has_content())
                     {
-                        _map_renderer->render();
-                        _map_texture = _map_renderer->texture();
-                        if (!_map_texture.has_content())
+                        return;
+                    }
+                    _map_renderer->set_window_size(_map_texture.size());
+
+                    float remainder = (341 - _map_texture.size().height) * 0.5f;
+                    ImGui::SetCursorPosX(std::round((ImGui::GetWindowSize().x - _map_texture.size().width) * 0.5f));
+                    ImGui::SetCursorPosY(ImGui::GetCursorPosY() + std::floor(remainder));
+
+                    const auto io = ImGui::GetIO();
+                    if (io.WantCaptureMouse && ImGui::IsWindowHovered(ImGuiHoveredFlags_None))
+                    {
+                        const auto mouse_pos = io.MousePos;
+                        auto top_left = ImGui::GetCursorScreenPos();
+                        auto adjusted = mouse_pos - top_left;
+                        _map_renderer->set_cursor_position(Point(adjusted.x, adjusted.y));
+
+                        auto sector = _map_renderer->sector_at_cursor();
+                        on_sector_hover(sector);
+                        if (sector)
                         {
-                            return;
-                        }
-                        _map_renderer->set_window_size(_map_texture.size());
-
-                        float remainder = (341 - _map_texture.size().height) * 0.5f;
-                        ImGui::SetCursorPosX(std::round((ImGui::GetWindowSize().x - _map_texture.size().width) * 0.5f));
-                        ImGui::SetCursorPosY(ImGui::GetCursorPosY() + std::floor(remainder));
-
-                        const auto io = ImGui::GetIO();
-                        if (io.WantCaptureMouse && ImGui::IsWindowHovered(ImGuiHoveredFlags_None))
-                        {
-                            const auto mouse_pos = io.MousePos;
-                            auto top_left = ImGui::GetCursorScreenPos();
-                            auto adjusted = mouse_pos - top_left;
-                            _map_renderer->set_cursor_position(Point(adjusted.x, adjusted.y));
-
-                            auto sector = _map_renderer->sector_at_cursor();
-                            on_sector_hover(sector);
-                            if (sector)
+                            if (io.MouseClicked[0])
                             {
-                                if (io.MouseClicked[0])
+                                if (_in_floordata_mode)
                                 {
-                                    if (_in_floordata_mode)
+                                    set_selected_sector(sector);
+                                }
+                                else
+                                {
+                                    if (has_flag(sector->flags(), SectorFlag::Portal))
                                     {
-                                        set_selected_sector(sector);
+                                        on_room_selected(sector->portal());
+                                    }
+                                    else if (sector->room_below() != 0xff)
+                                    {
+                                        on_room_selected(sector->room_below());
                                     }
                                     else
                                     {
-                                        if (has_flag(sector->flags(), SectorFlag::Portal))
+                                        // Select triggers
+                                        for (const auto& trigger : _triggers)
                                         {
-                                            on_room_selected(sector->portal());
-                                        }
-                                        else if (sector->room_below() != 0xff)
-                                        {
-                                            on_room_selected(sector->room_below());
-                                        }
-                                        else
-                                        {
-                                            // Select triggers
-                                            for (const auto& trigger : _triggers)
+                                            auto trigger_ptr = trigger.lock();
+                                            if (trigger_ptr && trigger_ptr->sector_id() == sector->id())
                                             {
-                                                auto trigger_ptr = trigger.lock();
-                                                if (trigger_ptr && trigger_ptr->sector_id() == sector->id())
-                                                {
-                                                    on_trigger_selected(trigger);
-                                                    break;
-                                                }
+                                                on_trigger_selected(trigger);
+                                                break;
                                             }
                                         }
                                     }
                                 }
-                                else if (io.MouseClicked[1] && !_in_floordata_mode)
+                            }
+                            else if (io.MouseClicked[1] && !_in_floordata_mode)
+                            {
+                                if (sector->room_above() != 0xff)
                                 {
-                                    if (sector->room_above() != 0xff)
-                                    {
-                                        on_room_selected(sector->room_above());
-                                    }
+                                    on_room_selected(sector->room_above());
                                 }
                             }
                         }
-                        ImGui::Image(_map_texture.view().Get(), ImVec2(_map_texture.size().width, _map_texture.size().height));
-                        ImGui::SetCursorPosY(ImGui::GetCursorPosY() + std::ceil(remainder));
-                        ImGui::Separator();
                     }
+                    ImGui::Image(_map_texture.view().Get(), ImVec2(_map_texture.size().width, _map_texture.size().height));
+                    ImGui::SetCursorPosY(ImGui::GetCursorPosY() + std::ceil(remainder));
+                    ImGui::Separator();
+                }
 
-                    if (ImGui::BeginTabBar("TabBar"))
+                if (ImGui::BeginTabBar("TabBar"))
+                {
+                    if (ImGui::BeginTabItem(Names::properties_tab.c_str()))
                     {
-                        if (ImGui::BeginTabItem(Names::properties_tab.c_str()))
-                        {
-                            render_properties_tab(room);
-                            ImGui::EndTabItem();
-                        }
-
-                        if (ImGui::BeginTabItem("Neighbours"))
-                        {
-                            render_neighbours_tab(room);
-                            ImGui::EndTabItem();
-                        }
-
-                        if (ImGui::BeginTabItem("Items", 0, _scroll_to_item ? ImGuiTabItemFlags_SetSelected : 0))
-                        {
-                            render_items_tab(room);
-                            ImGui::EndTabItem();
-                        }
-
-                        if (ImGui::BeginTabItem("Triggers", 0, _scroll_to_trigger ? ImGuiTabItemFlags_SetSelected : 0))
-                        {
-                            render_triggers_tab();
-                            ImGui::EndTabItem();
-                        }
-
-                        if (ImGui::BeginTabItem("Camera/Sink", 0, _scroll_to_camera_sink ? ImGuiTabItemFlags_SetSelected : 0))
-                        {
-                            render_camera_sink_tab();
-                            ImGui::EndTabItem();
-                        }
-
-                        if (ImGui::BeginTabItem("Lights", 0, _scroll_to_light ? ImGuiTabItemFlags_SetSelected : 0))
-                        {
-                            render_lights_tab();
-                            ImGui::EndTabItem();
-                        }
-
-                        if (ImGui::BeginTabItem("Floordata"))
-                        {
-                            _in_floordata_mode = true;
-                            render_floordata_tab(room);
-                            ImGui::EndTabItem();
-                        }
-                        else
-                        {
-                            _in_floordata_mode = false;
-                        }
-
-                        if (ImGui::BeginTabItem("Statics##Statics Tab"))
-                        {
-                            render_statics_tab();
-                            ImGui::EndTabItem();
-                        }
-
-                        ImGui::EndTabBar();
+                        render_properties_tab(room);
+                        ImGui::EndTabItem();
                     }
+
+                    if (ImGui::BeginTabItem("Neighbours"))
+                    {
+                        render_neighbours_tab(room);
+                        ImGui::EndTabItem();
+                    }
+
+                    if (ImGui::BeginTabItem("Items", 0, _scroll_to_item ? ImGuiTabItemFlags_SetSelected : 0))
+                    {
+                        render_items_tab(room);
+                        ImGui::EndTabItem();
+                    }
+
+                    if (ImGui::BeginTabItem("Triggers", 0, _scroll_to_trigger ? ImGuiTabItemFlags_SetSelected : 0))
+                    {
+                        render_triggers_tab();
+                        ImGui::EndTabItem();
+                    }
+
+                    if (ImGui::BeginTabItem("Camera/Sink", 0, _scroll_to_camera_sink ? ImGuiTabItemFlags_SetSelected : 0))
+                    {
+                        render_camera_sink_tab();
+                        ImGui::EndTabItem();
+                    }
+
+                    if (ImGui::BeginTabItem("Lights", 0, _scroll_to_light ? ImGuiTabItemFlags_SetSelected : 0))
+                    {
+                        render_lights_tab();
+                        ImGui::EndTabItem();
+                    }
+
+                    if (ImGui::BeginTabItem("Floordata"))
+                    {
+                        _in_floordata_mode = true;
+                        render_floordata_tab(room);
+                        ImGui::EndTabItem();
+                    }
+                    else
+                    {
+                        _in_floordata_mode = false;
+                    }
+
+                    if (ImGui::BeginTabItem("Statics##Statics Tab"))
+                    {
+                        render_statics_tab();
+                        ImGui::EndTabItem();
+                    }
+
+                    ImGui::EndTabBar();
                 }
             }
         }
@@ -1148,20 +1122,16 @@ namespace trview
         _force_sort = true;
     }
 
-    void RoomsWindow::select_room(uint32_t room)
+    void RoomsWindow::select_room(std::weak_ptr<IRoom> room)
     {
         _selected_room = room;
-        for (const auto& r : _all_rooms)
+        if (auto room_ptr = room.lock())
         {
-            auto room_ptr = r.lock();
-            if (room_ptr && room_ptr->number() == _selected_room)
-            {
-                set_triggers(room_ptr->triggers());
-                set_lights(room_ptr->lights());
-                set_camera_sinks(room_ptr->camera_sinks());
-                set_static_meshes(room_ptr->static_meshes());
-                return;
-            }
+            set_triggers(room_ptr->triggers());
+            set_lights(room_ptr->lights());
+            set_camera_sinks(room_ptr->camera_sinks());
+            set_static_meshes(room_ptr->static_meshes());
+            return;
         }
 
         _lights.clear();

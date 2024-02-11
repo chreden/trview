@@ -47,7 +47,7 @@ namespace trview
         Event<std::weak_ptr<IItem>, bool> on_item_visibility;
 
         /// Event raised when the viewer wants to select a room.
-        Event<uint32_t> on_room_selected;
+        Event<std::weak_ptr<IRoom>> on_room_selected;
 
         /// Event raised when the viewer wants to select a trigger.
         Event<std::weak_ptr<ITrigger>> on_trigger_selected;

@@ -84,13 +84,7 @@ namespace trview
         scalars[Options::depth] = [this](int32_t value) { if (auto level = _level.lock()) { level->set_neighbour_depth(value); } };
 
         _token_store += _ui->on_select_item += [&](const auto& item) { on_item_selected(item); };
-        _token_store += _ui->on_select_room += [&](const auto& room)
-            {
-                if (auto r = room.lock())
-                {
-                    on_room_selected(r->number());
-                }
-            };
+        _token_store += _ui->on_select_room += [&](const auto& room) { on_room_selected(room); };
         _token_store += _ui->on_toggle_changed += [this, toggles, persist_toggle_value](const std::string& name, bool value)
         {
             auto toggle = toggles.find(name);
@@ -516,15 +510,15 @@ namespace trview
                         {
                             if (has_flag(sector->flags(), SectorFlag::Portal))
                             {
-                                on_room_selected(sector->portal());
+                                on_room_selected(level->room(sector->portal()));
                             }
                             else if (!_settings.invert_map_controls && has_flag(sector->flags(), SectorFlag::RoomBelow))
                             {
-                                on_room_selected(sector->room_below());
+                                on_room_selected(level->room(sector->room_below()));
                             }
                             else if (_settings.invert_map_controls && has_flag(sector->flags(), SectorFlag::RoomAbove))
                             {
-                                on_room_selected(sector->room_above());
+                                on_room_selected(level->room(sector->room_above()));
                             }
                         }
                         else
@@ -542,13 +536,17 @@ namespace trview
                 {
                     if (auto sector = _ui->current_minimap_sector())
                     {
-                        if (!_settings.invert_map_controls && has_flag(sector->flags(), SectorFlag::RoomAbove))
+                        const auto level = _level.lock();
+                        if (level)
                         {
-                            on_room_selected(sector->room_above());
-                        }
-                        else if (_settings.invert_map_controls && has_flag(sector->flags(), SectorFlag::RoomBelow))
-                        {
-                            on_room_selected(sector->room_below());
+                            if (!_settings.invert_map_controls && has_flag(sector->flags(), SectorFlag::RoomAbove))
+                            {
+                                on_room_selected(level->room(sector->room_above()));
+                            }
+                            else if (_settings.invert_map_controls && has_flag(sector->flags(), SectorFlag::RoomBelow))
+                            {
+                                on_room_selected(level->room(sector->room_below()));
+                            }
                         }
                     }
                 }
@@ -661,7 +659,7 @@ namespace trview
             }
             else
             {
-                on_room_selected(0);
+                on_room_selected(new_level->room(0));
             }
 
             if (new_level->selected_room() < rooms.size())
@@ -1217,46 +1215,45 @@ namespace trview
         }
     }
 
-    uint32_t Viewer::room_from_pick(const PickResult& pick) const
+    std::weak_ptr<IRoom> Viewer::room_from_pick(const PickResult& pick) const
     {
         const auto level = _level.lock();
+        if (!level)
+        {
+            return {};
+        }
+
         switch (pick.type)
         {
-        case PickResult::Type::Room:
-            return pick.index;
-        case PickResult::Type::Entity:
-        {
-            if (level)
+            case PickResult::Type::Room:
+                return level->room(pick.index);
+            case PickResult::Type::Entity:
             {
                 if (auto item = level->item(pick.index).lock())
                 {
-                    return item_room(item);
+                    return item->room();
                 }
+                break;
             }
-            break;
-        }
-        case PickResult::Type::Trigger:
-        {
-            if (level)
+            case PickResult::Type::Trigger:
             {
                 if (const auto trigger = level->trigger(pick.index).lock())
                 {
-                    return trigger_room(trigger);
+                    return trigger->room();
                 }
+                break;
             }
-            break;
-        }
-        case PickResult::Type::Waypoint:
-        {
-            if (const auto waypoint = _route->waypoint(pick.index).lock())
+            case PickResult::Type::Waypoint:
             {
-                return waypoint->room();
+                if (const auto waypoint = _route->waypoint(pick.index).lock())
+                {
+                    return level->room(waypoint->room());
+                }
+                break;
             }
-            break;
-        }
         }
 
-        return level ? level->selected_room() : 0u;
+        return level->room(level->selected_room());
     }
 
     void Viewer::add_recent_orbit(const PickResult& pick)
@@ -1299,7 +1296,7 @@ namespace trview
         switch (pick.type)
         {
         case PickResult::Type::Room:
-            on_room_selected(pick.index);
+            on_room_selected(level->room(pick.index));
             if (pick.override_centre)
             {
                 _target = pick.position;
