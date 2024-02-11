@@ -9,7 +9,7 @@ namespace trview
         virtual ~IRoomsWindowManager() = 0;
 
         /// Event raised when the user has selected a room in the room window.
-        Event<uint32_t> on_room_selected;
+        Event<std::weak_ptr<IRoom>> on_room_selected;
 
         /// Event raised when the user has selected an item in the room window.
         Event<std::weak_ptr<IItem>> on_item_selected;
@@ -37,7 +37,7 @@ namespace trview
         virtual void set_map_colours(const MapColours& colours) = 0;
         /// Set the current room that the viewer is focusing on.
         /// @param room The current room.
-        virtual void set_room(uint32_t room) = 0;
+        virtual void set_room(const std::weak_ptr<IRoom>& room) = 0;
 
         /// Set the rooms to display in the window.
         /// @param rooms The rooms to show.

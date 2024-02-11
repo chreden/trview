@@ -119,9 +119,11 @@ namespace trview
         _token_store += _track.on_toggle<Type::CameraSink>() += [&](bool) { set_selected_camera_sink(_global_selected_camera_sink); };
     }
 
-    void RoomsWindow::set_current_room(uint32_t room)
+    void RoomsWindow::set_current_room(const std::weak_ptr<IRoom>& room)
     {
-        if (room == _current_room)
+        auto room_ptr = room.lock();
+        auto current = _current_room.lock();
+        if (room_ptr == current)
         {
             return;
         }
@@ -129,7 +131,7 @@ namespace trview
         set_selected_sector(nullptr);
         _current_room = room;
         _scroll_to_room = true;
-        if (_sync_room && _current_room < _all_rooms.size())
+        if (_sync_room && room_ptr)
         {
             select_room(_current_room);
             load_room_details(_current_room);
@@ -965,11 +967,11 @@ namespace trview
         {
             if (const auto light_ptr = light.lock())
             {
-                if (_selected_room != _current_room)
+                if (_selected_room.lock() != _current_room.lock())
                 {
-                    select_room(light_room(light_ptr));
+                    select_room(light_ptr->room());
                     _scroll_to_room = true;
-                    load_room_details(light_room(light_ptr));
+                    load_room_details(light_ptr->room());
                 }
 
                 _local_selected_light = light;
@@ -985,13 +987,12 @@ namespace trview
         {
             if (const auto camera_sink_ptr = camera_sink.lock())
             {
-                if (_selected_room != _current_room)
+                if (_selected_room.lock() != _current_room.lock())
                 {
-                    const auto actual = actual_room(*camera_sink_ptr).lock();
-                    const uint32_t actual_number = actual ? actual->number() : 0u;
-                    select_room(actual_number);
+                    const auto actual = actual_room(*camera_sink_ptr);
+                    select_room(actual);
                     _scroll_to_room = true;
-                    load_room_details(actual_number);
+                    load_room_details(actual);
                 }
 
                 _local_selected_camera_sink = camera_sink;

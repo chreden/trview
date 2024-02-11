@@ -34,7 +34,7 @@ namespace trview
         virtual void set_items(const std::vector<std::weak_ptr<IItem>>& items) override;
         virtual void set_level_version(trlevel::LevelVersion version) override;
         virtual void set_map_colours(const MapColours& colours) override;
-        virtual void set_room(uint32_t room) override;
+        virtual void set_room(const std::weak_ptr<IRoom>& room) override;
         virtual void set_rooms(const std::vector<std::weak_ptr<IRoom>>& items) override;
         virtual void set_selected_item(const std::weak_ptr<IItem>& item) override;
         virtual void set_selected_trigger(const std::weak_ptr<ITrigger>& trigger) override;
@@ -46,7 +46,7 @@ namespace trview
     private:
         std::vector<std::weak_ptr<IItem>> _all_items;
         std::vector<std::weak_ptr<IRoom>> _all_rooms;
-        uint32_t _current_room{ 0u };
+        std::weak_ptr<IRoom> _current_room;
         std::weak_ptr<ITrigger> _selected_trigger;
         std::weak_ptr<IItem> _selected_item;
         IRoomsWindow::Source _rooms_window_source;

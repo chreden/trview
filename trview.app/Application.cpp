@@ -469,7 +469,7 @@ namespace trview
     void Application::select_room(std::weak_ptr<IRoom> room)
     {
         auto room_ptr = room.lock();
-        if (!_level || !room_ptr)
+        if (!room_ptr)
         {
             return;
         }
@@ -477,7 +477,7 @@ namespace trview
         _level->set_selected_room(static_cast<uint16_t>(room_ptr->number()));
         _viewer->select_room(room_ptr->number());
         _items_windows->set_room(room_ptr->number());
-        _rooms_windows->set_room(room_ptr->number());
+        _rooms_windows->set_room(room_ptr);
         _triggers_windows->set_room(room_ptr->number());
         _lights_windows->set_room(room_ptr->number());
         _camera_sink_windows->set_room(room_ptr->number());

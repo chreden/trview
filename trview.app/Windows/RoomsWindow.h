@@ -33,7 +33,7 @@ namespace trview
         virtual ~RoomsWindow() = default;
         virtual void clear_selected_trigger() override;
         virtual void render() override;
-        virtual void set_current_room(uint32_t room) override;
+        virtual void set_current_room(const std::weak_ptr<IRoom>& room) override;
         virtual void set_items(const std::vector<std::weak_ptr<IItem>>& items) override;
         virtual void set_level_version(trlevel::LevelVersion version) override;
         virtual void set_map_colours(const MapColours& colours) override;

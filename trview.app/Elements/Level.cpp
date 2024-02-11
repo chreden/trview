@@ -180,12 +180,12 @@ namespace trview
 
             // If the user has selected a room that is or has an alternate mode, raise the event that the
             // alternate mode needs to change so that the correct rooms can be rendered.
-            const auto& room = *_rooms[index];
-            if (is_alternate_mismatch(room))
+            const auto room = _rooms[index];
+            if (is_alternate_mismatch(*room))
             {
                 if (version() >= trlevel::LevelVersion::Tomb4)
                 {
-                    on_alternate_group_selected(room.alternate_group(), !is_alternate_group_set(room.alternate_group()));
+                    on_alternate_group_selected(room->alternate_group(), !is_alternate_group_set(room->alternate_group()));
                 }
                 else
                 {
@@ -194,7 +194,7 @@ namespace trview
             }
 
             on_level_changed();
-            on_room_selected(index);
+            on_room_selected(room);
         }
     }
 

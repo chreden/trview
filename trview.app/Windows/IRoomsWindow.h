@@ -45,7 +45,7 @@ namespace trview
 
         /// Set the current room that the viewer is focusing on.
         /// @param room The current room.
-        virtual void set_current_room(uint32_t room) = 0;
+        virtual void set_current_room(const std::weak_ptr<IRoom>& room) = 0;
 
         /// Set the items in the level.
         /// @param items The items in the level.
