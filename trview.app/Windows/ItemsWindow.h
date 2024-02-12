@@ -33,7 +33,7 @@ namespace trview
         virtual void set_items(const std::vector<std::weak_ptr<IItem>>& items) override;
         virtual void set_triggers(const std::vector<std::weak_ptr<ITrigger>>& triggers) override;
         virtual void clear_selected_item() override;
-        virtual void set_current_room(uint32_t room) override;
+        void set_current_room(const std::weak_ptr<IRoom>& room) override;
         virtual void set_selected_item(const std::weak_ptr<IItem>& item) override;
         virtual std::weak_ptr<IItem> selected_item() const override;
         virtual void update(float delta) override;
@@ -51,7 +51,7 @@ namespace trview
         std::string _id{ "Items 0" };
         std::vector<std::weak_ptr<IItem>> _all_items;
         std::vector<std::weak_ptr<ITrigger>> _all_triggers;
-        uint32_t _current_room{ 0u };
+        std::weak_ptr<IRoom> _current_room;
         bool _sync_item{ true };
         std::shared_ptr<IClipboard> _clipboard;
         std::unordered_map<std::string, std::string> _tips;

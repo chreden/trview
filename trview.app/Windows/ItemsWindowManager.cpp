@@ -81,7 +81,7 @@ namespace trview
         }
     }
 
-    void ItemsWindowManager::set_room(uint32_t room)
+    void ItemsWindowManager::set_room(const std::weak_ptr<IRoom>& room)
     {
         _current_room = room;
         for (auto& window : _windows)

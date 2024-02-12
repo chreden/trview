@@ -36,7 +36,7 @@ namespace trview
         virtual void render() override;
         virtual void set_triggers(const std::vector<std::weak_ptr<ITrigger>>& triggers) override;
         virtual void clear_selected_trigger() override;
-        virtual void set_current_room(uint32_t room) override;
+        void set_current_room(const std::weak_ptr<IRoom>& room) override;
         virtual void set_number(int32_t number) override;
         virtual void set_selected_trigger(const std::weak_ptr<ITrigger>& trigger) override;
         virtual void set_items(const std::vector<std::weak_ptr<IItem>>& items) override;
@@ -59,8 +59,7 @@ namespace trview
         std::vector<std::weak_ptr<ITrigger>> _filtered_triggers;
 
         TokenStore _token_store;
-        /// The current room number selected for tracking.
-        uint32_t _current_room{ 0u };
+        std::weak_ptr<IRoom> _current_room;
         /// Whether the room tracking filter has been applied.
         bool _filter_applied{ false };
         bool _sync_trigger{ true };

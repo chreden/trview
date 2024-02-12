@@ -79,10 +79,11 @@ TEST(TriggersWindow, TriggersListNotFilteredWhenRoomSetAndTrackRoomDisabled)
 {
     auto window = register_test_module().build();
 
+    auto room_78 = mock_shared<MockRoom>()->with_number(78);
     auto trigger1 = mock_shared<MockTrigger>()->with_number(0);
     auto trigger2 = mock_shared<MockTrigger>()->with_number(1);
     window->set_triggers({ trigger1, trigger2 });
-    window->set_current_room(78);
+    window->set_current_room(room_78);
 
     TestImgui imgui([&]() { window->render(); });
 
@@ -100,10 +101,13 @@ TEST(TriggersWindow, TriggersListFilteredWhenRoomSetAndTrackRoomEnabled)
 {
     auto window = register_test_module().build();
 
-    auto trigger1 = mock_shared<MockTrigger>()->with_number(0)->with_room(mock_shared<MockRoom>()->with_number(55));
-    auto trigger2 = mock_shared<MockTrigger>()->with_number(1)->with_room(mock_shared<MockRoom>()->with_number(78));
+    auto room_55 = mock_shared<MockRoom>()->with_number(55);
+    auto room_78 = mock_shared<MockRoom>()->with_number(78);
+
+    auto trigger1 = mock_shared<MockTrigger>()->with_number(0)->with_room(room_55);
+    auto trigger2 = mock_shared<MockTrigger>()->with_number(1)->with_room(room_78);
     window->set_triggers({ trigger1, trigger2 });
-    window->set_current_room(78);
+    window->set_current_room(room_78);
 
     TestImgui imgui([&]() { window->render(); });
     ASSERT_TRUE(imgui.element_present(imgui.id("Triggers 0")

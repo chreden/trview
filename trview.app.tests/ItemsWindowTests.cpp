@@ -141,13 +141,16 @@ TEST(ItemsWindow, ItemsListNotFilteredWhenRoomSetAndTrackRoomDisabled)
     std::shared_ptr<IItem> raised_item;
     auto token = window->on_item_selected += [&raised_item](const auto& item) { raised_item = item.lock(); };
 
+    auto room_55 = mock_shared<MockRoom>()->with_number(55);
+    auto room_78 = mock_shared<MockRoom>()->with_number(78);
+
     std::vector<std::shared_ptr<MockItem>> items
     {
-        mock_shared<MockItem>()->with_number(0)->with_room(mock_shared<MockRoom>()->with_number(55)),
-        mock_shared<MockItem>()->with_number(1)->with_room(mock_shared<MockRoom>()->with_number(78))
+        mock_shared<MockItem>()->with_number(0)->with_room(room_55),
+        mock_shared<MockItem>()->with_number(1)->with_room(room_78)
     };
     window->set_items({ std::from_range, items });
-    window->set_current_room(78);
+    window->set_current_room(room_78);
 
     TestImgui imgui([&]() { window->render(); });
     imgui.click_element_with_hover(imgui.id("Items 0")
@@ -165,13 +168,16 @@ TEST(ItemsWindow, ItemsListFilteredWhenRoomSetAndTrackRoomEnabled)
     std::shared_ptr<IItem> raised_item;
     auto token = window->on_item_selected += [&raised_item](const auto& item) { raised_item = item.lock(); };
 
+    auto room_55 = mock_shared<MockRoom>()->with_number(55);
+    auto room_78 = mock_shared<MockRoom>()->with_number(78);
+
     std::vector<std::shared_ptr<MockItem>> items
     {
-        mock_shared<MockItem>()->with_number(0)->with_room(mock_shared<MockRoom>()->with_number(55)),
-        mock_shared<MockItem>()->with_number(1)->with_room(mock_shared<MockRoom>()->with_number(78))
+        mock_shared<MockItem>()->with_number(0)->with_room(room_55),
+        mock_shared<MockItem>()->with_number(1)->with_room(room_78)
     };
     window->set_items({ std::from_range, items });
-    window->set_current_room(78);
+    window->set_current_room(room_78);
 
     TestImgui imgui([&]() { window->render(); });
 
@@ -212,13 +218,16 @@ TEST(ItemsWindow, ItemsListUpdatedWhenFiltered)
 {
     auto window = register_test_module().build();
 
+    auto room_55 = mock_shared<MockRoom>()->with_number(55);
+    auto room_78 = mock_shared<MockRoom>()->with_number(78);
+
     std::vector<std::shared_ptr<MockItem>> items
     {
-        mock_shared<MockItem>()->with_number(0)->with_room(mock_shared<MockRoom>()->with_number(55)),
-        mock_shared<MockItem>()->with_number(1)->with_room(mock_shared<MockRoom>()->with_number(78))
+        mock_shared<MockItem>()->with_number(0)->with_room(room_55),
+        mock_shared<MockItem>()->with_number(1)->with_room(room_78)
     };
     window->set_items({ std::from_range, items });
-    window->set_current_room(78);
+    window->set_current_room(room_78);
 
     TestImgui imgui([&]() { window->render(); });
     imgui.click_element(imgui.id("Items 0").push_child(ItemsWindow::Names::item_list_panel).id(Track<>::Names::Button));

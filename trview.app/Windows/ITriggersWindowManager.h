@@ -32,9 +32,11 @@ namespace trview
         /// @param triggers The triggers in the level.
         virtual void set_triggers(const std::vector<std::weak_ptr<ITrigger>>& triggers) = 0;
 
+        /// <summary>
         /// Set the current room to filter trigger windows.
-        /// @param room The current room.
-        virtual void set_room(uint32_t room) = 0;
+        /// </summary>
+        /// <param name="room">The current room.</param>
+        virtual void set_room(const std::weak_ptr<IRoom>& room) = 0;
 
         /// Set the currently selected trigger.
         /// @param item The selected trigger.
