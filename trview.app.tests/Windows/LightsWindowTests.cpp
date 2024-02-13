@@ -93,10 +93,12 @@ TEST(LightsWindow, OnLightVisibilityRaised)
 TEST(LightsWindow, LightListFilteredWhenRoomSetAndTrackRoomEnabled)
 {
     auto window = register_test_module().build();
-    auto light1 = mock_shared<MockLight>()->with_number(0)->with_room(mock_shared<MockRoom>()->with_number(56));
-    auto light2 = mock_shared<MockLight>()->with_number(1)->with_room(mock_shared<MockRoom>()->with_number(78));
+    auto room_56 = mock_shared<MockRoom>()->with_number(56);
+    auto room_78 = mock_shared<MockRoom>()->with_number(78);
+    auto light1 = mock_shared<MockLight>()->with_number(0)->with_room(room_56);
+    auto light2 = mock_shared<MockLight>()->with_number(1)->with_room(room_78);
     window->set_lights({ light1, light2 });
-    window->set_current_room(78);
+    window->set_current_room(room_78);
 
     TestImgui imgui([&]() { window->render(); });
     imgui.click_element(imgui.id("Lights 0").push_child(LightsWindow::Names::light_list_panel).id(Track<>::Names::Button));
@@ -116,10 +118,12 @@ TEST(LightsWindow, LightListFilteredWhenRoomSetAndTrackRoomEnabled)
 TEST(LightsWindow, LightsListNotFilteredWhenRoomSetAndTrackRoomDisabled)
 {
     auto window = register_test_module().build();
-    auto light1 = mock_shared<MockLight>()->with_number(0)->with_room(mock_shared<MockRoom>()->with_number(56));
-    auto light2 = mock_shared<MockLight>()->with_number(1)->with_room(mock_shared<MockRoom>()->with_number(78));
+    auto room_56 = mock_shared<MockRoom>()->with_number(56);
+    auto room_78 = mock_shared<MockRoom>()->with_number(78);
+    auto light1 = mock_shared<MockLight>()->with_number(0)->with_room(room_56);
+    auto light2 = mock_shared<MockLight>()->with_number(1)->with_room(room_78);
     window->set_lights({ light1, light2 });
-    window->set_current_room(78);
+    window->set_current_room(room_78);
 
     TestImgui imgui([&]() { window->render(); });
     ASSERT_TRUE(imgui.element_present(imgui.id("Lights 0")

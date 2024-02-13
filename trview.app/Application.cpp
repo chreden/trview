@@ -485,7 +485,7 @@ namespace trview
         _items_windows->set_room(room_ptr);
         _rooms_windows->set_room(room_ptr);
         _triggers_windows->set_room(room_ptr);
-        _lights_windows->set_room(room_ptr->number());
+        _lights_windows->set_room(room_ptr);
         _camera_sink_windows->set_room(room_ptr->number());
     }
 

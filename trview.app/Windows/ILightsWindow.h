@@ -17,7 +17,7 @@ namespace trview
         virtual void set_selected_light(const std::weak_ptr<ILight>& light) = 0;
         virtual void set_level_version(trlevel::LevelVersion version) = 0;
         virtual void set_number(int32_t number) = 0;
-        virtual void set_current_room(uint32_t room) = 0;
+        virtual void set_current_room(const std::weak_ptr<IRoom>& room) = 0;
         /// <summary>
         /// Event raised when the window is closed.
         /// </summary>

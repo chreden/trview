@@ -1,6 +1,7 @@
 #include <trview.app/Windows/LightsWindowManager.h>
 #include <trview.app/Mocks/Windows/ILightsWindow.h>
 #include <trview.app/Mocks/Elements/ILight.h>
+#include <trview.app/Mocks/Elements/IRoom.h>
 
 using namespace trview;
 using namespace trview::tests;
@@ -163,21 +164,22 @@ TEST(LightsWindowManager, SetLevelVersionUpdatesNewWindows)
 TEST(LightsWindowManager, SetRoomUpdatesExistingWindows)
 {
     auto window = mock_shared<MockLightsWindow>();
-    EXPECT_CALL(*window, set_current_room(0)).Times(1);
-    EXPECT_CALL(*window, set_current_room(50)).Times(1);
+    auto room = mock_shared<MockRoom>();
+    EXPECT_CALL(*window, set_current_room).Times(2);
 
     auto manager = register_test_module().with_window_source([&]() { return window; }).build();
     manager->create_window();
-    manager->set_room(50);
+    manager->set_room(room);
 }
 
 TEST(LightsWindowManager, SetRoomUpdatesNewWindows)
 {
     auto window = mock_shared<MockLightsWindow>();
-    EXPECT_CALL(*window, set_current_room(50)).Times(1);
+    auto room = mock_shared<MockRoom>();
+    EXPECT_CALL(*window, set_current_room).Times(1);
 
     auto manager = register_test_module().with_window_source([&]() { return window; }).build();
-    manager->set_room(50);
+    manager->set_room(room);
     manager->create_window();
 }
 
