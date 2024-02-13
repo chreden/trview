@@ -831,23 +831,17 @@ namespace trview
         }
     }
 
-    void Viewer::select_room(uint32_t room_number)
+    void Viewer::select_room(const std::weak_ptr<IRoom>& room)
     {
-        const auto level = _level.lock();
-        if (!level || room_number >= level->number_of_rooms())
+        const auto room_ptr = room.lock();
+        if (!room_ptr)
         {
             return;
         }
 
-        const auto room = level->room(room_number).lock();
-        if (!room)
-        {
-            return;
-        }
-
-        _ui->set_selected_room(room);
         _was_alternate_select = false;
-        _target = room->centre();
+        _ui->set_selected_room(room_ptr);
+        _target = room_ptr->centre();
         _scene_changed = true;
         if (_settings.auto_orbit)
         {

@@ -98,10 +98,12 @@ namespace trview
         /// @remarks This will not raise the on_item_selected event.
         virtual void select_item(const std::weak_ptr<IItem>& item) = 0;
 
+        /// <summary>
         /// Select the specified room.
-        /// @param room The room to select.
-        /// @remarks This will not raise the on_room_selected event.
-        virtual void select_room(uint32_t room) = 0;
+        /// </summary>
+        /// <param name="room">The room to select</param>
+        /// <remarks>This will not raise the on_room_selected event.</remarks>
+        virtual void select_room(const std::weak_ptr<IRoom>& room) = 0;
 
         /// Select the specified trigger.
         /// @param trigger The trigger to select.

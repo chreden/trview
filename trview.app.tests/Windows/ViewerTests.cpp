@@ -505,18 +505,12 @@ TEST(Viewer, OrbitEnabledWhenRoomSelectedAndAutoOrbitEnabled)
     settings.auto_orbit = true;
     viewer->set_settings(settings);
 
-    auto level = mock_shared<MockLevel>();
     auto room = mock_shared<MockRoom>();
-
-    EXPECT_CALL(*level, number_of_rooms).WillRepeatedly(Return(1));
-    EXPECT_CALL(*level, rooms).WillRepeatedly(Return(std::vector<std::weak_ptr<IRoom>>{ room }));
-    EXPECT_CALL(*level, room).WillRepeatedly(Return(room));
-    viewer->open(level, ILevel::OpenMode::Full);
 
     viewer->set_camera_mode(CameraMode::Free);
     ASSERT_EQ(viewer->camera_mode(), CameraMode::Free);
 
-    viewer->select_room(0);
+    viewer->select_room(room);
     ASSERT_EQ(viewer->camera_mode(), CameraMode::Orbit);
 }
 
@@ -532,18 +526,12 @@ TEST(Viewer, OrbitNotEnabledWhenRoomSelectedAndAutoOrbitDisabled)
     settings.auto_orbit = false;
     viewer->set_settings(settings);
 
-    auto level = mock_shared<MockLevel>();
     auto room = mock_shared<MockRoom>();
-
-    EXPECT_CALL(*level, number_of_rooms).WillRepeatedly(Return(1));
-    EXPECT_CALL(*level, rooms).WillRepeatedly(Return(std::vector<std::weak_ptr<IRoom>>{ room }));
-    EXPECT_CALL(*level, room).WillRepeatedly(Return(room));
-    viewer->open(level, ILevel::OpenMode::Full);
 
     viewer->set_camera_mode(CameraMode::Free);
     ASSERT_EQ(viewer->camera_mode(), CameraMode::Free);
 
-    viewer->select_room(0);
+    viewer->select_room(room);
     ASSERT_EQ(viewer->camera_mode(), CameraMode::Free);
 }
 

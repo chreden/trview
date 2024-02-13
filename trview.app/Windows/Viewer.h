@@ -70,7 +70,7 @@ namespace trview
         void open(const std::weak_ptr<ILevel>& level, ILevel::OpenMode open_mode) override;
         virtual void set_settings(const UserSettings& settings) override;
         virtual void select_item(const std::weak_ptr<IItem>& item) override;
-        virtual void select_room(uint32_t room_number) override;
+        void select_room(const std::weak_ptr<IRoom>& room) override;
         virtual void select_trigger(const std::weak_ptr<ITrigger>& trigger) override;
         virtual void select_waypoint(const std::weak_ptr<IWaypoint>& waypoint) override;
         virtual void set_camera_mode(CameraMode camera_mode) override;
