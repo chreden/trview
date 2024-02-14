@@ -160,7 +160,7 @@ namespace trview
 
     void FileMenu::choose_file()
     {
-        const auto filename = _dialogs->open_file(L"Open level", { { L"All Tomb Raider Files", { L"*.tr*", L"*.phd", L"*.psx" } } }, OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST);
+        const auto filename = _dialogs->open_file(L"Open level", { { L"All Tomb Raider Files", { L"*.tr2", L"*.tr4", L"*.trc", L"*.phd", L"*.psx" } } }, OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST);
         if (filename.has_value())
         {
             on_file_open(filename.value().filename);
