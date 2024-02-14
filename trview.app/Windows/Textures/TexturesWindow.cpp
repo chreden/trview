@@ -1,6 +1,7 @@
 #include "TexturesWindow.h"
 #include "../../Graphics/ILevelTextureStorage.h"
 #include <format>
+#include <external/DirectXTK/Inc/DDSTextureLoader.h>
 
 namespace trview
 {
@@ -33,7 +34,20 @@ namespace trview
             if (_texture_storage && _index < static_cast<int32_t>(_texture_storage->num_tiles()))
             {
                 auto texture = _transparency ? _texture_storage->texture(_index) : _texture_storage->opaque_texture(_index);
-                ImGui::Image(texture.view().Get(), ImVec2(256, 256));
+
+                Microsoft::WRL::ComPtr<ID3D11Device> device;
+                Microsoft::WRL::ComPtr<ID3D11Resource> tex;
+                Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> srv;
+                texture.view()->GetDevice(device.GetAddressOf());
+                HRESULT hr = DirectX::CreateDDSTextureFromFile(
+                    device.Get(),
+                    L"C:/Program Files (x86)/Steam/SteamApps/common/Tomb Raider I-III Remastered/1/TEX/176.DDS",
+                    // L"C:\\Program Files(x86)\\Steam\\SteamApps\\common\\Tomb Raider I - III Remastered\\1\\TEX\\176.DDS",
+                    tex.GetAddressOf(),
+                    srv.GetAddressOf());
+                hr;
+                ImGui::Image(srv.Get(), ImVec2(256, 256));
+                // ImGui::Image(texture.view().Get(), ImVec2(256, 256));
             }
         }
         ImGui::End();
