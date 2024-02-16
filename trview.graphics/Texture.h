@@ -63,7 +63,7 @@ namespace trview
             /// @param pixels The pixel data to use to initialise the texture. This must contain at least as many elements as width x height.
             /// @param bind An optional parameter to specify the bind mode. By default this is set to Bind::Texture.
             /// @see Bind
-            Texture(const IDevice& device, uint32_t width, uint32_t height, const std::vector<uint32_t>& pixels, Bind bind = Bind::Texture);
+            Texture(const IDevice& device, uint32_t width, uint32_t height, const std::vector<uint32_t>& pixels, Bind bind = Bind::Texture, DXGI_FORMAT format = DXGI_FORMAT_UNKNOWN);
 
             /// Indicates whether this texture has any texture content.
             /// @returns True if the texture has content.
@@ -99,6 +99,8 @@ namespace trview
             /// </summary>
             std::string _name;
         };
+
+        Texture create_texture(const IDevice& device, uint32_t width, uint32_t height, const Colour& colour, DXGI_FORMAT format);
 
         /// Create a texture of the specified size filled with the specified colour.
         /// @param device The device to use.

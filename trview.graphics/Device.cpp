@@ -14,7 +14,7 @@ namespace trview
 
         Device::Device()
         {
-            D3D11CreateDevice(nullptr, D3D_DRIVER_TYPE_HARDWARE, nullptr, D3D11_CREATE_DEVICE_BGRA_SUPPORT, nullptr, 0,
+            D3D11CreateDevice(nullptr, D3D_DRIVER_TYPE_HARDWARE, nullptr, D3D11_CREATE_DEVICE_BGRA_SUPPORT | D3D11_CREATE_DEVICE_DEBUG, nullptr, 0,
                 D3D11_SDK_VERSION, &_device, nullptr, &_context);
 
             D3D11_BLEND_DESC desc;

@@ -180,17 +180,14 @@ namespace trlevel
         virtual uint32_t num_cameras() const override;
         virtual tr_camera get_camera(uint32_t index) const override;
         Platform platform() const override;
+        tr_remastered_textile get_remastered_textile(uint32_t index) const override;
     private:
         void generate_meshes(const std::vector<uint16_t>& mesh_data);
-
-        // Load a Tomb Raider IV level.
         void load_tr4(trview::Activity& activity, std::istream& file);
-
         void load_level_data(trview::Activity& activity, std::istream& file);
-
         tr_colour4 colour_from_object_texture(uint32_t texture) const;
-
         uint16_t convert_textile4(uint16_t tile, uint16_t clut_id);
+        void load_remastered_data(const std::string& filename, const std::shared_ptr<trview::IFiles>& files);
 
         void load_trg(const std::shared_ptr<trview::IFiles>& files, const std::string& filename);
 
@@ -233,5 +230,6 @@ namespace trlevel
         std::string _name;
 
         std::vector<tr_camera> _cameras;
+        std::vector<tr_remastered_textile> _remastered_textiles;
     };
 }

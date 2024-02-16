@@ -7,6 +7,7 @@
 #include "trtypes.h"
 #include "tr_rooms.h"
 #include "LevelVersion.h"
+#include "tr_remastered_types.h"
 
 namespace trlevel
 {
@@ -179,5 +180,7 @@ namespace trlevel
         virtual tr_camera get_camera(uint32_t index) const = 0;
 
         virtual Platform platform() const = 0;
+
+        virtual tr_remastered_textile get_remastered_textile(uint32_t index) const = 0;
     };
 }

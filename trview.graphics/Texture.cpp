@@ -51,7 +51,7 @@ namespace trview
         {
         }
 
-        Texture::Texture(const IDevice& device, uint32_t width, uint32_t height, const std::vector<uint32_t>& pixels, Bind bind)
+        Texture::Texture(const IDevice& device, uint32_t width, uint32_t height, const std::vector<uint32_t>& pixels, Bind bind, DXGI_FORMAT format)
         {
             D3D11_SUBRESOURCE_DATA srd;
             memset(&srd, 0, sizeof(srd));
@@ -63,7 +63,7 @@ namespace trview
             desc.Width = width;
             desc.Height = height;
             desc.MipLevels = desc.ArraySize = 1;
-            desc.Format = get_format(bind);
+            desc.Format = format == DXGI_FORMAT_UNKNOWN ? get_format(bind) : format;
             desc.SampleDesc.Count = 1;
             desc.Usage = D3D11_USAGE_DEFAULT;
             desc.BindFlags = get_bind_flags(bind);
@@ -112,6 +112,11 @@ namespace trview
         void Texture::set_name(const std::string& name)
         {
             _name = name;
+        }
+
+        Texture create_texture(const IDevice& device, uint32_t width, uint32_t height, const Colour& colour, DXGI_FORMAT format)
+        {
+            return Texture(device, width, height, std::vector<uint32_t>(width * height, colour), Texture::Bind::Texture, format);
         }
 
         Texture create_texture(const IDevice& device, uint32_t width, uint32_t height, const Colour& colour)

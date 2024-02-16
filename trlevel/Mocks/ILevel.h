@@ -48,6 +48,7 @@ namespace trlevel
             MOCK_METHOD(uint32_t, num_cameras, (), (const, override));
             MOCK_METHOD(tr_camera, get_camera, (uint32_t), (const, override));
             MOCK_METHOD(Platform, platform, (), (const, override));
+            MOCK_METHOD(tr_remastered_textile, get_remastered_textile, (uint32_t), (const, override));
         };
     }
 }

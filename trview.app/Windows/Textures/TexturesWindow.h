@@ -20,10 +20,14 @@ namespace trview
     private:
         bool render_textures_window();
         void clamp_index();
+        void clamp_remastered_index();
+        void render_og_textures();
+        void render_remastered_textures();
 
         std::shared_ptr<ILevelTextureStorage> _texture_storage;
         std::string _id{ "Textures 0" };
         int32_t _index{ 0u };
+        int32_t _remastered_index{ 0u };
         bool _transparency{ true };
     };
 }

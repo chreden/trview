@@ -23,6 +23,8 @@ namespace trview
             MOCK_METHOD(DirectX::SimpleMath::Color, palette_from_texture, (uint32_t), (const, override));
             MOCK_METHOD(graphics::Texture, geometry_texture, (), (const, override));
             MOCK_METHOD(uint32_t, num_object_textures, (), (const, override));
+            MOCK_METHOD(uint32_t, num_remastered_textures, (), (const, override));
+            MOCK_METHOD(graphics::Texture, remastered_texture, (uint32_t), (const, override));
         };
     }
 }

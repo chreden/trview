@@ -244,7 +244,7 @@ namespace trview
 
         auto level_source = [=](auto&& level)
         {
-            auto level_texture_storage = std::make_shared<LevelTextureStorage>(device, std::make_unique<TextureStorage>(device), level);
+            auto level_texture_storage = std::make_shared<LevelTextureStorage>(device, std::make_unique<TextureStorage>(device), level, files);
             auto mesh_storage = std::make_unique<MeshStorage>(mesh_source, *level, *level_texture_storage);
             auto new_level = std::make_shared<Level>(
                 device, 

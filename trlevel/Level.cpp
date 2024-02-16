@@ -682,6 +682,16 @@ namespace trlevel
             activity.log(trview::Message::Status::Error, std::format("Level failed to load: {}", e.what()));
             throw LevelLoadException(e.what());
         }
+
+        try
+        {
+            load_remastered_data(filename, files);
+        }
+        catch (const std::exception& e)
+        {
+            activity.log(trview::Message::Status::Error, std::format("Level remastered data failed to load: {}", e.what()));
+            throw LevelLoadException(e.what());
+        }
     }
 
     Level::~Level()
@@ -1880,4 +1890,70 @@ namespace trlevel
         _num_textiles = static_cast<uint32_t>(_textile16.size());
         return static_cast<uint16_t>(_textile16.size() - 1);
     };
+
+    std::string get_directory(const std::string& filename)
+    {
+        const auto last_fs = filename.find_last_of('/');
+        const auto last_bs = filename.find_last_of('\\');
+        const auto last = last_fs == filename.npos ? last_bs : last_fs;
+        return filename.substr(0, last);
+    }
+
+    std::string remove_extension(const std::string& name)
+    {
+        const auto last = name.find_last_of('.');
+        return name.substr(0, last);
+    }
+
+
+
+    void Level::load_remastered_data(const std::string& filename, const std::shared_ptr<trview::IFiles>& files)
+    {
+        // Detect whether there is remastered data adjacent to the level.
+        const auto folder = get_directory(filename);
+        const auto upper_folder = get_directory(folder);
+        const auto name = remove_extension(_name);
+        const auto tex_name = std::format("{}\\{}.TEX", folder, name);
+        if (const auto data = files->load_file(tex_name))
+        {
+            std::stringstream file(std::string(data.value().begin(), data.value().end()), std::ios::in | std::ios::binary);
+            
+            // Texture references - the files that will be used in the tiles.
+            const auto texture_references = read_vector<uint16_t, uint16_t>(file);
+
+            std::vector<tr_remastered_textile> tiles;
+
+            // Tile references - the indices
+            // for (uint16_t i = 0; i < _num_textiles; ++i)
+            // {
+            //     const auto tile_indices = read_vector<uint16_t>(file, 16);
+            //     tr_remastered_textile tile;
+            //     for (const auto& index : tile_indices)
+            //     {
+            //         if (index != 65535)
+            //         {
+            //             tile.paths.push_back(std::format("{}\\TEX\\{}.dds", upper_folder, texture_references[index]));
+            //         }
+            //     }
+            //     tiles.push_back(tile);
+            // }
+            for (uint16_t i = 0; i < _num_textiles; ++i)
+            {
+                tr_remastered_textile tile;
+                int base = i * 16;
+                for (int x = base; x < base + 16 && x < texture_references.size(); ++x)
+                {
+                    tile.paths.push_back(std::format("{}\\TEX\\{}.dds", upper_folder, texture_references[x]));
+                }
+                tiles.push_back(tile);
+            }
+
+            _remastered_textiles = tiles;
+        }
+    }
+
+    tr_remastered_textile Level::get_remastered_textile(uint32_t index) const
+    {
+        return _remastered_textiles[index];
+    }
 }
