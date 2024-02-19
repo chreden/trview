@@ -805,3 +805,28 @@ TEST(Level, SetShowLightingRaisesLevelChangedEvent)
     level->set_show_lighting(true);
     ASSERT_EQ(times_called, 1u);
 }
+
+TEST(Level, SkidooGenerated)
+{
+    const tr2_entity driver { .TypeID = 52 };
+    auto [mock_level_ptr, mock_level] = create_mock<trlevel::mocks::MockLevel>();
+    ON_CALL(mock_level, num_entities).WillByDefault(Return(1));
+    EXPECT_CALL(mock_level, get_entity(0)).WillRepeatedly(Return(driver));
+    ON_CALL(mock_level, get_version).WillByDefault(Return(trlevel::LevelVersion::Tomb2));
+
+    std::vector<tr2_entity> entities;
+
+    auto level = register_test_module()
+        .with_level(std::move(mock_level_ptr))
+        .with_entity_source(
+            [&](auto&& level, const trlevel::tr2_entity& type, auto&&...)
+            {
+                entities.push_back(type);
+                return mock_shared<MockItem>();
+            })
+        .build();
+
+    ASSERT_EQ(entities.size(), 2);
+    ASSERT_EQ(entities[0].TypeID, 52);
+    ASSERT_EQ(entities[1].TypeID, 51);
+}

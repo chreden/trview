@@ -537,6 +537,10 @@ namespace trview
 
     void Level::generate_entities(const trlevel::ILevel& level, const IItem::EntitySource& entity_source, const IItem::AiSource& ai_source, const IMeshStorage& mesh_storage)
     {
+        const int Entity_Black_Skidoo = 51;
+        const int Entity_Skidoo_Driver = 52;
+        std::vector<std::weak_ptr<IItem>> skidoo_drivers;
+
         const uint32_t num_entities = level.num_entities();
         for (uint32_t i = 0; i < num_entities; ++i)
         {
@@ -557,6 +561,11 @@ namespace trview
                 room->add_entity(entity);
             }
             _entities.push_back(entity);
+
+            if (level.get_version() == trlevel::LevelVersion::Tomb2 && level_entity.TypeID == Entity_Skidoo_Driver)
+            {
+                skidoo_drivers.push_back(entity);
+            }
         }
 
         const uint32_t num_ai_objects = level.num_ai_objects();
@@ -570,6 +579,25 @@ namespace trview
                 room->add_entity(entity);
             }
             _entities.push_back(entity);
+        }
+
+        for (const auto& driver : skidoo_drivers)
+        {
+            if (auto man = driver.lock())
+            {
+                auto level_entity = level.get_entity(man->number());
+                level_entity.TypeID = Entity_Black_Skidoo;
+                auto containing_room = man->room();
+                auto entity = entity_source(level, level_entity, static_cast<uint32_t>(_entities.size()), {}, mesh_storage, shared_from_this(), containing_room);
+                if (auto room = containing_room.lock())
+                {
+                    room->add_entity(entity);
+                }
+                auto categories = entity->categories();
+                categories.insert("Virtual");
+                entity->set_categories(categories);
+                _entities.push_back(entity);
+            }
         }
     }
 

@@ -514,4 +514,10 @@ namespace trview
         }
         return 0u;
     }
+
+    bool is_virtual(const IItem& item)
+    {
+        const auto categories = item.categories();
+        return categories.find("Virtual") != categories.end();
+    }
 }

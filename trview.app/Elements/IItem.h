@@ -57,4 +57,5 @@ namespace trview
     uint16_t mutant_egg_contents(uint16_t flags);
     uint32_t item_room(const std::shared_ptr<IItem>& item);
     uint32_t item_room(const IItem& item);
+    bool is_virtual(const IItem& item);
 }
