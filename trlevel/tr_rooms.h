@@ -2,6 +2,7 @@
 
 #include "trtypes.h"
 #include "tr_lights.h"
+#include "tr_remaster.h"
 
 namespace trlevel
 {
@@ -25,6 +26,7 @@ namespace trlevel
     {
         tr_room_info info;
         tr3_room_data data;
+        remaster::RoomData remaster_data;
 
         std::vector<tr_room_portal> portals;
 

@@ -183,6 +183,7 @@
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="trtypes.h" />
     <ClInclude Include="tr_lights.h" />
+    <ClInclude Include="tr_remaster.h" />
     <ClInclude Include="tr_rooms.h" />
   </ItemGroup>
   <ItemGroup>

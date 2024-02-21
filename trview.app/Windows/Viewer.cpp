@@ -69,6 +69,7 @@ namespace trview
         toggles[Options::camera_sinks] = [this](bool value) { set_show_camera_sinks(value); };
         toggles[Options::lighting] = [this](bool value) { set_show_lighting(value); };
         toggles[Options::notes] = [](bool) {};
+        toggles[Options::remaster] = [this](bool value) { set_remaster(value); };
 
         const auto persist_toggle_value = [&](const std::string& name, bool value)
         {
@@ -1497,5 +1498,15 @@ namespace trview
             }
             _scene_changed = true;
         }
+    }
+
+    void Viewer::set_remaster(bool show)
+    {
+        if (auto level = _level.lock())
+        {
+            level->set_show_remaster(show);
+            _ui->set_toggle(Options::remaster, show);
+        }
+        _scene_changed = true;
     }
 }

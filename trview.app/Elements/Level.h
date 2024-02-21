@@ -112,6 +112,7 @@ namespace trview
             const ILight::Source& light_source,
             const ICameraSink::Source& camera_sink_source);
         std::vector<std::weak_ptr<IStaticMesh>> static_meshes() const override;
+        void set_show_remaster(bool show) override;
     private:
         void generate_rooms(const trlevel::ILevel& level, const IRoom::Source& room_source, const IMeshStorage& mesh_storage);
         void generate_triggers(const ITrigger::Source& trigger_source);
@@ -190,6 +191,7 @@ namespace trview
         bool _regenerate_transparency{ true };
         bool _alternate_mode{ false };
         bool _show_wireframe{ false };
+        bool _show_remaster{ false };
         RenderFilter _render_filters{ RenderFilter::Default };
 
         std::unique_ptr<ISelectionRenderer> _selection_renderer;

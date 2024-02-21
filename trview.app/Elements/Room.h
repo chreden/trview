@@ -94,6 +94,7 @@ namespace trview
         std::vector<std::weak_ptr<IStaticMesh>> static_meshes() const override;
     private:
         void generate_geometry(const IMesh::Source& mesh_source, const trlevel::tr3_room& room);
+        void generate_remaster_geometry(const IMesh::Source& mesh_source, const trlevel::tr3_room& room);
         void generate_adjacency();
         void generate_static_meshes(const IMesh::Source& mesh_source, const trlevel::ILevel& level, const trlevel::tr3_room& room, const IMeshStorage& mesh_storage,
             const IStaticMesh::MeshSource& static_mesh_mesh_source, const IStaticMesh::PositionSource& static_mesh_position_source, const Activity& activity);
@@ -119,6 +120,7 @@ namespace trview
         std::vector<std::shared_ptr<IStaticMesh>> _static_meshes;
 
         std::shared_ptr<IMesh> _mesh;
+        std::shared_ptr<IMesh> _remaster_mesh;
         std::unordered_map<uint32_t, std::shared_ptr<IMesh>> _all_geometry_meshes;
         DirectX::SimpleMath::Matrix _room_offset;
         DirectX::SimpleMath::Matrix _inverted_room_offset;

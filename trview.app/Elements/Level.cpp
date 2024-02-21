@@ -1298,6 +1298,13 @@ namespace trview
         return results;
     }
 
+    void Level::set_show_remaster(bool show)
+    {
+        _render_filters = set_flag(_render_filters, RenderFilter::Remaster, show);
+        _regenerate_transparency = true;
+        on_level_changed();
+    }
+
     bool find_item_by_type_id(const ILevel& level, uint32_t type_id, std::weak_ptr<IItem>& output_item)
     {
         const auto& items = level.items();

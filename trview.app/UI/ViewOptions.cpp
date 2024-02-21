@@ -23,6 +23,7 @@ namespace trview
         _toggles[IViewer::Options::camera_sinks] = false;
         _toggles[IViewer::Options::lighting] = true;
         _toggles[IViewer::Options::notes] = true;
+        _toggles[IViewer::Options::remaster] = false;
     }
 
     void ViewOptions::render()
@@ -69,6 +70,8 @@ namespace trview
                 ImGui::TableNextRow();
                 add_toggle(IViewer::Options::lighting);
                 add_toggle(IViewer::Options::notes);
+                ImGui::TableNextRow();
+                add_toggle(IViewer::Options::remaster);
                 ImGui::TableNextRow();
                 if (!_use_alternate_groups)
                 {

@@ -497,47 +497,123 @@ namespace trlevel
             // if (auto trg = files->load_file("C:\\Program Files (x86)\\Steam\\SteamApps\\common\\Tomb Raider I-III Remastered\\1\\DATA\\LEVEL1.TRG"))
             if (auto trg = files->load_file("C:\\Program Files (x86)\\Steam\\SteamApps\\common\\Tomb Raider I-III Remastered\\1\\DATA\\CUT1.TRG"))
             {
-                struct TRG_Vertex
-                {
-                    short x;
-                    short y;
-                    short z;
-                    char unknown[14];
-                };
-
                 tr_mesh trg_mesh{ .centre = { 0, 0, 0 } };
 
                 std::stringstream trg_file(std::string(trg.value().begin(), trg.value().end()), std::ios::in | std::ios::binary);
-                trg_file.seekg(24688);
+                
+                skip(trg_file, 4);
+                uint32_t number_of_things = read<uint32_t>(trg_file);
+                skip(trg_file, 76);
+                skip(trg_file, number_of_things * 24);
+
+                std::vector<std::tuple<uint32_t, uint32_t>> room_indices;
+                for (auto& room : _rooms)
+                {
+                    skip(trg_file, 20);
+                    uint32_t start_index = read<uint32_t>(trg_file);
+                    uint32_t num_indices = read<uint32_t>(trg_file);
+                    uint32_t end_index = read<uint32_t>(trg_file);
+                    skip(trg_file, 12);
+                    uint32_t unknown = read<uint32_t>(trg_file);
+                    if (unknown & 2)
+                    {
+                        skip(trg_file, 72);
+                    }
+                    uint32_t unknown_2 = read<uint32_t>(trg_file);
+                    uint32_t unknown_3 = read<uint32_t>(trg_file);
+
+                    room_indices.push_back({ start_index, num_indices });
+
+                    room;
+                    end_index;
+                    unknown_2;
+                    unknown_3;
+                }
+
+                //trg_file.seekg(24688);
                 // trg_file.seekg(103504);
                 
+                skip(trg_file, 52);
+
                 uint32_t index_count = read<uint32_t>(trg_file);
                 uint32_t vert_count = read<uint32_t>(trg_file);
                 std::vector<uint32_t> indices = read_vector<uint32_t>(trg_file, index_count);
 
-                trg_mesh.vertices = read_vector<TRG_Vertex>(trg_file, vert_count)
-                    | std::views::transform([](const auto& v) -> tr_vertex { return { v.x, v.y, v.z }; })
+                const auto trg_vertices = read_vector<trlevel::remaster::Vertex>(trg_file, vert_count);
+
+                auto vertices = trg_vertices
+                    | std::views::transform([](const auto& v) -> tr_vertex { return { v.position.x, v.position.y, v.position.z }; })
                     | std::ranges::to<std::vector>();
 
-                for (std::size_t i = 0; i < indices.size() / 3; ++i)
+                // Temporary hack to replace the mesh with remastered mesh:
+                
+                //std::vector<std::tuple<uint32_t, uint32_t>> room_indices;
+                for (std::size_t r = 0; r < _rooms.size(); ++r)
                 {
-                    const auto base = i * 3;
-                    trg_mesh.textured_triangles.push_back(
-                        tr4_mesh_face3
-                        {
-                            .vertices = { static_cast<uint16_t>(indices[base]), static_cast<uint16_t>(indices[base + 1]), static_cast<uint16_t>(indices[base + 2]) },
-                            .texture = 6,
-                            .effects = 0
-                        });
+                    auto& room = _rooms[r];
+                    auto [start, count] = room_indices[r];
+
+                    // room.data.vertices.clear();
+                    // room.data.rectangles.clear();
+                    // room.data.triangles.clear();
+
+                    
+                    for (std::size_t i = 0; i < count / 3; ++i)
+                    {
+                        const auto base = start + i * 3;
+                        //const auto v_base = room.data.vertices.size();
+                        // trg_mesh.textured_triangles.push_back(
+
+                        // const auto& v = trg_vertices[indices[base]];
+                        // if (v.unknown[7] != -1)
+                        // {
+                        //     continue;
+                        // }
+
+                        const auto rm_v_base = static_cast<uint32_t>(room.remaster_data.vertices.size());
+
+                        room.remaster_data.vertices.push_back(trg_vertices[indices[base]]);
+                        room.remaster_data.vertices.push_back(trg_vertices[indices[base + 1]]);
+                        room.remaster_data.vertices.push_back(trg_vertices[indices[base + 2]]);
+                        room.remaster_data.triangles.push_back(
+                            remaster::Triangle {
+                                .vertices = { rm_v_base, rm_v_base + 1, rm_v_base + 2 },
+                                .texture = 6
+                            });
+                        /*
+                        room.data.vertices.push_back(
+                            {
+                                .vertex = vertices[indices[base]],
+                                .lighting = 0,
+                                .attributes = 0,
+                                .colour = trview::Colour::White
+                            });
+
+                        room.data.vertices.push_back(
+                            {
+                                .vertex = vertices[indices[base + 1]],
+                                .lighting = 0,
+                                .attributes = 0,
+                                .colour = trview::Colour::White
+                            });
+
+                        room.data.vertices.push_back(
+                            {
+                                .vertex = vertices[indices[base + 2]],
+                                .lighting = 0,
+                                .attributes = 0,
+                                .colour = trview::Colour::White
+                            });
+
+                        room.data.triangles.push_back(
+                            tr4_mesh_face3
+                            {
+                                .vertices = { static_cast<uint16_t>(v_base), static_cast<uint16_t>(v_base + 1), static_cast<uint16_t>(v_base + 2) },
+                                .texture = 6,
+                                .effects = 0
+                            });*/
+                    }
                 }
-
-                // trg_mesh.textured_triangles.resize(8000);
-
-                _mesh_pointers.push_back(0xdeadbeef);
-                _meshes.insert({ 0xdeadbeef, trg_mesh });
-
-                _models[0].NumMeshes = 1;
-                _models[0].StartingMesh = static_cast<uint16_t>(_meshes.size() - 1);
             }
         }
         catch (const LevelEncryptedException&)

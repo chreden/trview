@@ -247,7 +247,8 @@ namespace trview
             }
             else
             {
-                _mesh->render(_room_offset * camera.view_projection(), *_texture_storage, colour, 1.0f, Vector3::Zero, false, !has_flag(render_filter, RenderFilter::Lighting));
+                const auto room_mesh = (has_flag(render_filter, RenderFilter::Remaster) && _remaster_mesh) ? _remaster_mesh : _mesh;
+                room_mesh->render(_room_offset * camera.view_projection(), *_texture_storage, colour, 1.0f, Vector3::Zero, false, !has_flag(render_filter, RenderFilter::Lighting));
                 for (const auto& mesh : _static_meshes)
                 {
                     mesh->render(camera, *_texture_storage, colour);
@@ -384,6 +385,101 @@ namespace trview
 
         // Generate the bounding box based on the room dimensions.
         update_bounding_box();
+
+        if (!room.remaster_data.vertices.empty())
+        {
+            generate_remaster_geometry(mesh_source, room);
+        }
+    }
+
+    namespace
+    {
+        Vector3 convert_vertex(const trlevel::remaster::Vertex& vertex)
+        {
+            return Vector3(vertex.position.x / trlevel::Scale_X, vertex.position.y / trlevel::Scale_Y, vertex.position.z / trlevel::Scale_Z);
+        }
+    }
+
+    void Room::generate_remaster_geometry(const IMesh::Source& mesh_source, const trlevel::tr3_room& room)
+    {
+        std::vector<MeshVertex> output_vertices;
+        std::vector<std::vector<uint32_t>> output_indices(_texture_storage->num_tiles());
+
+        uint16_t previous_texture = 0;
+        for (const auto& tri : room.remaster_data.triangles)
+        {
+            std::array<Vector3, 3> verts;
+            std::array<Color, 3> colors;
+            for (int i = 0; i < 3; ++i)
+            {
+                verts[i] = convert_vertex(room.remaster_data.vertices[tri.vertices[i]]);
+                colors[i] = Colour::White; // input_vertices[tri.vertices[i]].colour;
+            }
+
+            uint16_t texture = static_cast<uint16_t>(tri.texture);// &Texture_Mask;
+            if (texture >= _texture_storage->num_object_textures())
+            {
+                texture = previous_texture;
+            }
+            previous_texture = texture;
+            
+            std::array<Vector2, 3> uvs;
+            /*
+            for (auto i = 0u; i < uvs.size(); ++i)
+            {
+                uvs[i] = texture_storage.uv(texture, i);
+            }
+
+            const bool double_sided = tri.texture & 0x8000;
+
+            TransparentTriangle::Mode transparency_mode;
+            if (determine_transparency(texture_storage.attribute(texture), tri.effects, transparency_mode))
+            {
+                transparent_triangles.emplace_back(verts[0], verts[1], verts[2], uvs[0], uvs[1], uvs[2], texture_storage.tile(texture), transparency_mode);
+                if (transparent_collision)
+                {
+                    collision_triangles.emplace_back(verts[0], verts[1], verts[2]);
+                }
+                if (double_sided)
+                {
+                    transparent_triangles.emplace_back(verts[2], verts[1], verts[0], uvs[2], uvs[1], uvs[0], texture_storage.tile(texture), transparency_mode);
+                    if (transparent_collision)
+                    {
+                        collision_triangles.emplace_back(verts[2], verts[1], verts[0]);
+                    }
+                }
+                continue;
+            }
+            */
+
+            const uint32_t base = static_cast<uint32_t>(output_vertices.size());
+            // const auto normal = calculate_normal(&verts[0]);
+            Vector3 normal{ };
+            for (int i = 0; i < 3; ++i)
+            {
+                output_vertices.push_back({ verts[i], normal, uvs[i], colors[i] });
+            }
+
+            auto& tex_indices = output_indices[_texture_storage->tile(texture)];
+            tex_indices.push_back(base);
+            tex_indices.push_back(base + 1);
+            tex_indices.push_back(base + 2);
+            /*
+            if (double_sided)
+            {
+                tex_indices.push_back(base + 2);
+                tex_indices.push_back(base + 1);
+                tex_indices.push_back(base);
+            }
+
+            collision_triangles.emplace_back(verts[0], verts[1], verts[2]);
+            if (double_sided)
+            {
+                collision_triangles.emplace_back(verts[2], verts[1], verts[0]);
+            }
+            */
+        }
+        _remaster_mesh = mesh_source(output_vertices, output_indices, std::vector<uint32_t>{}, {}, {});
     }
 
     void Room::generate_adjacency()
