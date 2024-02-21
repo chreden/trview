@@ -492,6 +492,53 @@ namespace trlevel
 
             load_level_data(activity, file);
             generate_meshes(_mesh_data);
+
+            // Make another mesh, item for TRG hack.
+            // if (auto trg = files->load_file("C:\\Program Files (x86)\\Steam\\SteamApps\\common\\Tomb Raider I-III Remastered\\1\\DATA\\LEVEL1.TRG"))
+            if (auto trg = files->load_file("C:\\Program Files (x86)\\Steam\\SteamApps\\common\\Tomb Raider I-III Remastered\\1\\DATA\\CUT1.TRG"))
+            {
+                struct TRG_Vertex
+                {
+                    short x;
+                    short y;
+                    short z;
+                    char unknown[14];
+                };
+
+                tr_mesh trg_mesh{ .centre = { 0, 0, 0 } };
+
+                std::stringstream trg_file(std::string(trg.value().begin(), trg.value().end()), std::ios::in | std::ios::binary);
+                trg_file.seekg(24688);
+                // trg_file.seekg(103504);
+                
+                uint32_t index_count = read<uint32_t>(trg_file);
+                uint32_t vert_count = read<uint32_t>(trg_file);
+                std::vector<uint32_t> indices = read_vector<uint32_t>(trg_file, index_count);
+
+                trg_mesh.vertices = read_vector<TRG_Vertex>(trg_file, vert_count)
+                    | std::views::transform([](const auto& v) -> tr_vertex { return { v.x, v.y, v.z }; })
+                    | std::ranges::to<std::vector>();
+
+                for (std::size_t i = 0; i < indices.size() / 3; ++i)
+                {
+                    const auto base = i * 3;
+                    trg_mesh.textured_triangles.push_back(
+                        tr4_mesh_face3
+                        {
+                            .vertices = { static_cast<uint16_t>(indices[base]), static_cast<uint16_t>(indices[base + 1]), static_cast<uint16_t>(indices[base + 2]) },
+                            .texture = 6,
+                            .effects = 0
+                        });
+                }
+
+                // trg_mesh.textured_triangles.resize(8000);
+
+                _mesh_pointers.push_back(0xdeadbeef);
+                _meshes.insert({ 0xdeadbeef, trg_mesh });
+
+                _models[0].NumMeshes = 1;
+                _models[0].StartingMesh = static_cast<uint16_t>(_meshes.size() - 1);
+            }
         }
         catch (const LevelEncryptedException&)
         {
