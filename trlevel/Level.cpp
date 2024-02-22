@@ -3,6 +3,7 @@
 #include "LevelEncryptedException.h"
 #include <format>
 #include <ranges>
+#include <set>
 
 namespace trlevel
 {
@@ -16,6 +17,180 @@ namespace trlevel
         const int16_t Lara = 0;
         const int16_t LaraSkinTR3 = 315;
         const int16_t LaraSkinPostTR3 = 8;
+
+        enum class TriggerType
+        {
+            Trigger, Pad, Switch, Key, Pickup, HeavyTrigger, Antipad, Combat, Dummy,
+            AntiTrigger, HeavySwitch, HeavyAntiTrigger, Monkey, Skeleton, Tightrope, Crawl, Climb
+        };
+
+        enum class TriggerCommandType
+        {
+            Object, Camera, UnderwaterCurrent, FlipMap, FlipOn, FlipOff, LookAtItem,
+            EndLevel, PlaySoundtrack, Flipeffect, SecretFound, ClearBodies, Flyby, Cutscene
+        };
+
+        struct Floordata
+        {
+            struct Command
+            {
+                enum class Function : uint16_t
+                {
+                    None,
+                    Portal,
+                    FloorSlant,
+                    CeilingSlant,
+                    Trigger,
+                    Death,
+                    ClimbableWall,
+                    Triangulation_Floor_NWSE,
+                    Triangulation_Floor_NESW,
+                    Triangulation_Ceiling_NW,
+                    Triangulation_Ceiling_NE,
+                    Triangulation_Floor_Collision_SW,
+                    Triangulation_Floor_Collision_NE,
+                    Triangulation_Floor_Collision_SE,
+                    Triangulation_Floor_Collision_NW,
+                    Triangulation_Ceiling_Collision_SW,
+                    Triangulation_Ceiling_Collision_NE,
+                    Triangulation_Ceiling_Collision_NW,
+                    Triangulation_Ceiling_Collision_SE,
+                    MonkeySwing,
+                    MinecartLeft_DeferredTrigger,
+                    MinecartRight_Mapper
+                };
+
+                explicit Command(Function type, const std::vector<uint16_t>& data);
+
+                Function type;
+                std::vector<uint16_t> data;
+                std::vector<std::string> meanings;
+            };
+
+            std::vector<Command> commands;
+            uint32_t size() const;
+        };
+
+        Floordata::Command::Command(Function type, const std::vector<uint16_t>& data)
+            : type(type), data(data)
+        {
+        }
+
+        uint32_t Floordata::size() const
+        {
+            uint32_t sum = 0;
+            for (const auto& command : commands)
+            {
+                sum += static_cast<uint32_t>(command.data.size());
+            }
+            return sum;
+        }
+
+        Floordata parse_floordata(const std::vector<uint16_t>& floordata, uint32_t index)
+        {
+            Floordata result;
+
+            if (index == 0)
+            {
+                result.commands.push_back(Floordata::Command(Floordata::Command::Function::None, { floordata[index] }));
+                return result;
+            }
+
+            while (true)
+            {
+                // Parse the floordata here.
+                const uint16_t floor = floordata[index];
+                Floordata::Command::Function function = static_cast<Floordata::Command::Function>(floor & 0x1f);
+                uint16_t subfunction = (floor & 0x7F00) >> 8;
+
+                using Function = Floordata::Command::Function;
+
+                std::vector<uint16_t> data;
+                data.push_back(floor);
+
+                switch (function)
+                {
+                case Function::Trigger:
+                {
+                    std::uint16_t trigger_command = 0;
+                    std::uint16_t setup = floordata[++index];
+                    data.push_back(setup);
+
+                    auto type = (TriggerType)subfunction;
+
+                    bool continue_processing = true;
+                    if (type == TriggerType::Key || type == TriggerType::Switch)
+                    {
+                        auto reference = floordata[++index];
+                        data.push_back(reference);
+                        continue_processing = (reference & 0x8000) == 0;
+                    }
+
+                    if (continue_processing)
+                    {
+                        do
+                        {
+                            if (++index < floordata.size())
+                            {
+                                trigger_command = floordata[index];
+                                data.push_back(trigger_command);
+                                auto action = static_cast<TriggerCommandType>((trigger_command & 0x7C00) >> 10);
+                                if (action == TriggerCommandType::Camera || action == TriggerCommandType::Flyby)
+                                {
+                                    // Camera has another uint16_t - skip for now.
+                                    trigger_command = floordata[++index];
+                                    data.push_back(trigger_command);
+                                }
+                            }
+
+                        } while (index < floordata.size() && !(trigger_command & 0x8000));
+                    }
+
+                    break;
+                }
+                case Function::Portal:
+                case Function::FloorSlant:
+                case Function::CeilingSlant:
+                case Function::Triangulation_Floor_NWSE:
+                case Function::Triangulation_Floor_NESW:
+                case Function::Triangulation_Floor_Collision_SW:
+                case Function::Triangulation_Floor_Collision_NE:
+                case Function::Triangulation_Floor_Collision_SE:
+                case Function::Triangulation_Floor_Collision_NW:
+                case Function::Triangulation_Ceiling_NW:
+                case Function::Triangulation_Ceiling_NE:
+                case Function::Triangulation_Ceiling_Collision_SW:
+                case Function::Triangulation_Ceiling_Collision_NE:
+                case Function::Triangulation_Ceiling_Collision_NW:
+                case Function::Triangulation_Ceiling_Collision_SE:
+                {
+                    data.push_back(floordata[++index]);
+                    break;
+                }
+                case Function::MonkeySwing:
+                case Function::MinecartLeft_DeferredTrigger:
+                case Function::MinecartRight_Mapper:
+                case Function::Death:
+                case Function::ClimbableWall:
+                {
+                    break;
+                }
+                }
+
+                result.commands.push_back(Floordata::Command(function, data));
+
+                if ((floor >> 15) || index == 0)
+                {
+                    break;
+                }
+                else
+                {
+                    ++index;
+                }
+            }
+
+            return result;
+        }
     }
 
     namespace
@@ -495,16 +670,63 @@ namespace trlevel
 
             // Make another mesh, item for TRG hack.
             // if (auto trg = files->load_file("C:\\Program Files (x86)\\Steam\\SteamApps\\common\\Tomb Raider I-III Remastered\\1\\DATA\\LEVEL1.TRG"))
-            if (auto trg = files->load_file("C:\\Program Files (x86)\\Steam\\SteamApps\\common\\Tomb Raider I-III Remastered\\1\\DATA\\CUT1.TRG"))
+
+            const auto trg_filename = std::format("{}.trg", filename.substr(0, filename.size() - 4));
+            if (auto trg = files->load_file(trg_filename))
+                //"C:\\Program Files (x86)\\Steam\\SteamApps\\common\\Tomb Raider I-III Remastered\\1\\DATA\\CUT2.TRG"))
             {
                 tr_mesh trg_mesh{ .centre = { 0, 0, 0 } };
 
                 std::stringstream trg_file(std::string(trg.value().begin(), trg.value().end()), std::ios::in | std::ios::binary);
-                
+
+                // TRG header:
                 skip(trg_file, 4);
-                uint32_t number_of_things = read<uint32_t>(trg_file);
-                skip(trg_file, 76);
-                skip(trg_file, number_of_things * 24);
+                uint32_t number_of_sectors = read<uint32_t>(trg_file);
+                number_of_sectors;
+
+                auto sum = 0;
+                for (const auto& room : _rooms)
+                {
+                    for (const auto& sector : room.sector_list)
+                    {
+                        const auto at = trg_file.tellg();
+                        const auto floordata = parse_floordata(_floor_data, sector.floordata_index);
+                        for (const auto& command : floordata.commands)
+                        {
+                            switch (command.type)
+                            {
+                                case Floordata::Command::Function::None:
+                                {
+                                    skip(trg_file, 4);
+                                    break;
+                                }
+                                case Floordata::Command::Function::FloorSlant:
+                                case Floordata::Command::Function::CeilingSlant:
+                                {
+                                    skip(trg_file, 12);
+                                    break;
+                                }
+                                case Floordata::Command::Function::Portal:
+                                {
+                                    skip(trg_file, 128);
+                                    break;
+                                }
+                                case Floordata::Command::Function::Trigger:
+                                {
+                                    skip(trg_file, 16);
+                                    break;
+                                }
+                                default:
+                                {
+                                    sum += 1000;
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+
+                auto location = trg_file.tellg();
 
                 std::vector<std::tuple<uint32_t, uint32_t>> room_indices;
                 for (auto& room : _rooms)
@@ -533,6 +755,7 @@ namespace trlevel
                 //trg_file.seekg(24688);
                 // trg_file.seekg(103504);
                 
+                auto current_location = trg_file.tellg();
                 skip(trg_file, 52);
 
                 uint32_t index_count = read<uint32_t>(trg_file);
@@ -541,35 +764,62 @@ namespace trlevel
 
                 const auto trg_vertices = read_vector<trlevel::remaster::Vertex>(trg_file, vert_count);
 
+                const auto all_textures_0 = trg_vertices
+                    | std::views::transform([](const auto& v) -> uint8_t { return v.unknown[0]; })
+                    | std::ranges::to<std::set>();
+                const auto all_textures_1 = trg_vertices
+                    | std::views::transform([](const auto& v) -> uint8_t { return v.unknown[1]; })
+                    | std::ranges::to<std::set>();
+                const auto all_textures_2 = trg_vertices
+                    | std::views::transform([](const auto& v) -> uint8_t { return v.unknown[2]; })
+                    | std::ranges::to<std::set>();
+                const auto all_textures_3 = trg_vertices
+                    | std::views::transform([](const auto& v) -> uint8_t { return v.unknown[3]; })
+                    | std::ranges::to<std::set>();
+                const auto all_textures_4 = trg_vertices
+                    | std::views::transform([](const auto& v) -> uint8_t { return v.unknown[4]; })
+                    | std::ranges::to<std::set>();
+                const auto all_textures_5 = trg_vertices
+                    | std::views::transform([](const auto& v) -> uint8_t { return v.unknown[5]; })
+                    | std::ranges::to<std::set>();
+                const auto all_textures_6 = trg_vertices
+                    | std::views::transform([](const auto& v) -> uint8_t { return v.unknown[6]; })
+                    | std::ranges::to<std::set>();
+                const auto all_textures_7 = trg_vertices
+                    | std::views::transform([](const auto& v) -> uint8_t { return v.unknown[7]; })
+                    | std::ranges::to<std::set>();
+                const auto all_textures_8 = trg_vertices
+                    | std::views::transform([](const auto& v) -> uint8_t { return v.unknown[8]; })
+                    | std::ranges::to<std::set>();
+                const auto all_textures_9 = trg_vertices
+                    | std::views::transform([](const auto& v) -> uint8_t { return v.unknown[9]; })
+                    | std::ranges::to<std::set>();
+                const auto all_textures_10 = trg_vertices
+                    | std::views::transform([](const auto& v) -> uint8_t { return v.unknown[10]; })
+                    | std::ranges::to<std::set>();
+                const auto all_textures_11 = trg_vertices
+                    | std::views::transform([](const auto& v) -> uint8_t { return v.unknown[11]; })
+                    | std::ranges::to<std::set>();
+                const auto all_textures_12 = trg_vertices
+                    | std::views::transform([](const auto& v) -> uint8_t { return v.unknown[12]; })
+                    | std::ranges::to<std::set>();
+                const auto all_textures_13 = trg_vertices
+                    | std::views::transform([](const auto& v) -> uint8_t { return v.unknown[13]; })
+                    | std::ranges::to<std::set>();
+
                 auto vertices = trg_vertices
                     | std::views::transform([](const auto& v) -> tr_vertex { return { v.position.x, v.position.y, v.position.z }; })
                     | std::ranges::to<std::vector>();
 
-                // Temporary hack to replace the mesh with remastered mesh:
-                
-                //std::vector<std::tuple<uint32_t, uint32_t>> room_indices;
+                // Generate mesh for remastered rooms
                 for (std::size_t r = 0; r < _rooms.size(); ++r)
                 {
                     auto& room = _rooms[r];
                     auto [start, count] = room_indices[r];
 
-                    // room.data.vertices.clear();
-                    // room.data.rectangles.clear();
-                    // room.data.triangles.clear();
-
-                    
                     for (std::size_t i = 0; i < count / 3; ++i)
                     {
                         const auto base = start + i * 3;
-                        //const auto v_base = room.data.vertices.size();
-                        // trg_mesh.textured_triangles.push_back(
-
-                        // const auto& v = trg_vertices[indices[base]];
-                        // if (v.unknown[7] != -1)
-                        // {
-                        //     continue;
-                        // }
-
                         const auto rm_v_base = static_cast<uint32_t>(room.remaster_data.vertices.size());
 
                         room.remaster_data.vertices.push_back(trg_vertices[indices[base]]);
@@ -580,38 +830,6 @@ namespace trlevel
                                 .vertices = { rm_v_base, rm_v_base + 1, rm_v_base + 2 },
                                 .texture = 6
                             });
-                        /*
-                        room.data.vertices.push_back(
-                            {
-                                .vertex = vertices[indices[base]],
-                                .lighting = 0,
-                                .attributes = 0,
-                                .colour = trview::Colour::White
-                            });
-
-                        room.data.vertices.push_back(
-                            {
-                                .vertex = vertices[indices[base + 1]],
-                                .lighting = 0,
-                                .attributes = 0,
-                                .colour = trview::Colour::White
-                            });
-
-                        room.data.vertices.push_back(
-                            {
-                                .vertex = vertices[indices[base + 2]],
-                                .lighting = 0,
-                                .attributes = 0,
-                                .colour = trview::Colour::White
-                            });
-
-                        room.data.triangles.push_back(
-                            tr4_mesh_face3
-                            {
-                                .vertices = { static_cast<uint16_t>(v_base), static_cast<uint16_t>(v_base + 1), static_cast<uint16_t>(v_base + 2) },
-                                .texture = 6,
-                                .effects = 0
-                            });*/
                     }
                 }
             }
