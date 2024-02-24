@@ -117,6 +117,8 @@ namespace trview
                 _context->HoveredId = id;
                 _context->IO.MousePos = ImVec2(bb.Min.y, bb.Min.y);
                 _context->IO.MouseClicked[0] = true;
+                _context->IO.MouseDown[0] = true;
+                _context->IO.MouseDownDuration[0] = 0.0f;
 
                 if (active_override.id() != 0)
                 {
@@ -134,7 +136,21 @@ namespace trview
                     _context->MouseViewport = window->Viewport;
                 }
             };
+            const auto release_on_element = [&]()
+            {
+                _context->HoveredWindow = hover ? find_window(test_id.hover()) : window;
+                _tracking_id = id;
+                const auto bb = _element_rects[id];
+                _context->HoveredId = id;
+                _context->IO.MousePos = ImVec2(bb.Min.y, bb.Min.y);
+                _context->IO.MouseClicked[0] = true;
+                _context->IO.MouseDown[0] = false;
+                _context->IO.MouseDownDuration[0] = 0.0f;
+                _context->IO.MouseReleased[0] = true;
+                _context->IO.MouseDownDurationPrev[0] = _context->IO.KeyRepeatDelay;
+            };
             render(click_on_element);
+            render(release_on_element);
 
             _tracking_id = 0;
             _context->IO.MouseClicked[0] = false;
