@@ -670,169 +670,7 @@ namespace trlevel
 
             // Make another mesh, item for TRG hack.
             // if (auto trg = files->load_file("C:\\Program Files (x86)\\Steam\\SteamApps\\common\\Tomb Raider I-III Remastered\\1\\DATA\\LEVEL1.TRG"))
-
-            const auto trg_filename = std::format("{}.trg", filename.substr(0, filename.size() - 4));
-            if (auto trg = files->load_file(trg_filename))
-                //"C:\\Program Files (x86)\\Steam\\SteamApps\\common\\Tomb Raider I-III Remastered\\1\\DATA\\CUT2.TRG"))
-            {
-                tr_mesh trg_mesh{ .centre = { 0, 0, 0 } };
-
-                std::stringstream trg_file(std::string(trg.value().begin(), trg.value().end()), std::ios::in | std::ios::binary);
-
-                // TRG header:
-                skip(trg_file, 4);
-                uint32_t number_of_sectors = read<uint32_t>(trg_file);
-                number_of_sectors;
-
-                auto sum = 0;
-                for (const auto& room : _rooms)
-                {
-                    for (const auto& sector : room.sector_list)
-                    {
-                        const auto at = trg_file.tellg();
-                        const auto floordata = parse_floordata(_floor_data, sector.floordata_index);
-                        for (const auto& command : floordata.commands)
-                        {
-                            switch (command.type)
-                            {
-                                case Floordata::Command::Function::None:
-                                {
-                                    skip(trg_file, 4);
-                                    break;
-                                }
-                                case Floordata::Command::Function::FloorSlant:
-                                case Floordata::Command::Function::CeilingSlant:
-                                {
-                                    skip(trg_file, 12);
-                                    break;
-                                }
-                                case Floordata::Command::Function::Portal:
-                                {
-                                    skip(trg_file, 128);
-                                    break;
-                                }
-                                case Floordata::Command::Function::Trigger:
-                                {
-                                    skip(trg_file, 16);
-                                    break;
-                                }
-                                default:
-                                {
-                                    sum += 1000;
-                                    break;
-                                }
-                            }
-                        }
-                    }
-                }
-
-                auto location = trg_file.tellg();
-
-                std::vector<std::tuple<uint32_t, uint32_t>> room_indices;
-                for (auto& room : _rooms)
-                {
-                    skip(trg_file, 20);
-                    uint32_t start_index = read<uint32_t>(trg_file);
-                    uint32_t num_indices = read<uint32_t>(trg_file);
-                    uint32_t end_index = read<uint32_t>(trg_file);
-                    skip(trg_file, 12);
-                    uint32_t unknown = read<uint32_t>(trg_file);
-                    if (unknown & 2)
-                    {
-                        skip(trg_file, 72);
-                    }
-                    uint32_t unknown_2 = read<uint32_t>(trg_file);
-                    uint32_t unknown_3 = read<uint32_t>(trg_file);
-
-                    room_indices.push_back({ start_index, num_indices });
-
-                    room;
-                    end_index;
-                    unknown_2;
-                    unknown_3;
-                }
-
-                //trg_file.seekg(24688);
-                // trg_file.seekg(103504);
-                
-                auto current_location = trg_file.tellg();
-                skip(trg_file, 52);
-
-                uint32_t index_count = read<uint32_t>(trg_file);
-                uint32_t vert_count = read<uint32_t>(trg_file);
-                std::vector<uint32_t> indices = read_vector<uint32_t>(trg_file, index_count);
-
-                const auto trg_vertices = read_vector<trlevel::remaster::Vertex>(trg_file, vert_count);
-
-                const auto all_textures_0 = trg_vertices
-                    | std::views::transform([](const auto& v) -> uint8_t { return v.unknown[0]; })
-                    | std::ranges::to<std::set>();
-                const auto all_textures_1 = trg_vertices
-                    | std::views::transform([](const auto& v) -> uint8_t { return v.unknown[1]; })
-                    | std::ranges::to<std::set>();
-                const auto all_textures_2 = trg_vertices
-                    | std::views::transform([](const auto& v) -> uint8_t { return v.unknown[2]; })
-                    | std::ranges::to<std::set>();
-                const auto all_textures_3 = trg_vertices
-                    | std::views::transform([](const auto& v) -> uint8_t { return v.unknown[3]; })
-                    | std::ranges::to<std::set>();
-                const auto all_textures_4 = trg_vertices
-                    | std::views::transform([](const auto& v) -> uint8_t { return v.unknown[4]; })
-                    | std::ranges::to<std::set>();
-                const auto all_textures_5 = trg_vertices
-                    | std::views::transform([](const auto& v) -> uint8_t { return v.unknown[5]; })
-                    | std::ranges::to<std::set>();
-                const auto all_textures_6 = trg_vertices
-                    | std::views::transform([](const auto& v) -> uint8_t { return v.unknown[6]; })
-                    | std::ranges::to<std::set>();
-                const auto all_textures_7 = trg_vertices
-                    | std::views::transform([](const auto& v) -> uint8_t { return v.unknown[7]; })
-                    | std::ranges::to<std::set>();
-                const auto all_textures_8 = trg_vertices
-                    | std::views::transform([](const auto& v) -> uint8_t { return v.unknown[8]; })
-                    | std::ranges::to<std::set>();
-                const auto all_textures_9 = trg_vertices
-                    | std::views::transform([](const auto& v) -> uint8_t { return v.unknown[9]; })
-                    | std::ranges::to<std::set>();
-                const auto all_textures_10 = trg_vertices
-                    | std::views::transform([](const auto& v) -> uint8_t { return v.unknown[10]; })
-                    | std::ranges::to<std::set>();
-                const auto all_textures_11 = trg_vertices
-                    | std::views::transform([](const auto& v) -> uint8_t { return v.unknown[11]; })
-                    | std::ranges::to<std::set>();
-                const auto all_textures_12 = trg_vertices
-                    | std::views::transform([](const auto& v) -> uint8_t { return v.unknown[12]; })
-                    | std::ranges::to<std::set>();
-                const auto all_textures_13 = trg_vertices
-                    | std::views::transform([](const auto& v) -> uint8_t { return v.unknown[13]; })
-                    | std::ranges::to<std::set>();
-
-                auto vertices = trg_vertices
-                    | std::views::transform([](const auto& v) -> tr_vertex { return { v.position.x, v.position.y, v.position.z }; })
-                    | std::ranges::to<std::vector>();
-
-                // Generate mesh for remastered rooms
-                for (std::size_t r = 0; r < _rooms.size(); ++r)
-                {
-                    auto& room = _rooms[r];
-                    auto [start, count] = room_indices[r];
-
-                    for (std::size_t i = 0; i < count / 3; ++i)
-                    {
-                        const auto base = start + i * 3;
-                        const auto rm_v_base = static_cast<uint32_t>(room.remaster_data.vertices.size());
-
-                        room.remaster_data.vertices.push_back(trg_vertices[indices[base]]);
-                        room.remaster_data.vertices.push_back(trg_vertices[indices[base + 1]]);
-                        room.remaster_data.vertices.push_back(trg_vertices[indices[base + 2]]);
-                        room.remaster_data.triangles.push_back(
-                            remaster::Triangle {
-                                .vertices = { rm_v_base, rm_v_base + 1, rm_v_base + 2 },
-                                .texture = 6
-                            });
-                    }
-                }
-            }
+            load_trg(files, filename);
         }
         catch (const LevelEncryptedException&)
         {
@@ -848,6 +686,204 @@ namespace trlevel
 
     Level::~Level()
     {
+    }
+
+    void Level::load_trg(const std::shared_ptr<trview::IFiles>& files, const std::string& filename)
+    {
+        const auto trg_filename = std::format("{}.trg", filename.substr(0, filename.size() - 4));
+        if (auto trg = files->load_file(trg_filename))
+            //"C:\\Program Files (x86)\\Steam\\SteamApps\\common\\Tomb Raider I-III Remastered\\1\\DATA\\CUT2.TRG"))
+        {
+            tr_mesh trg_mesh{ .centre = { 0, 0, 0 } };
+
+            std::stringstream trg_file(std::string(trg.value().begin(), trg.value().end()), std::ios::in | std::ios::binary);
+
+            // TRG header:
+            skip(trg_file, 4);
+            uint32_t number_of_sectors = read<uint32_t>(trg_file);
+            number_of_sectors;
+
+            // Temp fix 
+            if (true)
+            {
+                std::unordered_map<std::string, uint32_t> offsets
+                {
+                    // { "CUT1.PHD", 23724 },
+                    { "CUT1.PHD", 23744 },
+                    { "CUT2.PHD", 10048 },
+                    { "LEVEL1.PHD", 103504 }
+                };
+                trg_file.seekg(offsets[_name], std::ios::beg);
+            }
+            else
+            {
+                auto sum = 0;
+                for (const auto& room : _rooms)
+                {
+                    for (const auto& sector : room.sector_list)
+                    {
+                        const auto at = trg_file.tellg();
+                        const auto floordata = parse_floordata(_floor_data, sector.floordata_index);
+                        for (const auto& command : floordata.commands)
+                        {
+                            switch (command.type)
+                            {
+                            case Floordata::Command::Function::None:
+                            {
+                                skip(trg_file, 4);
+                                break;
+                            }
+                            case Floordata::Command::Function::FloorSlant:
+                            case Floordata::Command::Function::CeilingSlant:
+                            {
+                                skip(trg_file, 12);
+                                break;
+                            }
+                            case Floordata::Command::Function::Portal:
+                            {
+                                skip(trg_file, 128);
+                                break;
+                            }
+                            case Floordata::Command::Function::Trigger:
+                            {
+                                skip(trg_file, 16);
+                                break;
+                            }
+                            default:
+                            {
+                                sum += 1000;
+                                break;
+                            }
+                            }
+                        }
+                    }
+                }
+            }
+
+            auto location = trg_file.tellg();
+
+            skip(trg_file, 20);
+
+            std::vector<std::tuple<uint32_t, uint32_t>> room_indices;
+            for (auto& room : _rooms)
+            {
+                // skip(trg_file, 20);
+                uint32_t start_index = read<uint32_t>(trg_file);
+                uint32_t num_indices = read<uint32_t>(trg_file);
+                uint32_t end_index = read<uint32_t>(trg_file);
+                uint32_t unknown_1 = read<uint32_t>(trg_file);
+                uint32_t unknown_2 = read<uint32_t>(trg_file);
+                uint32_t unknown_3 = read<uint32_t>(trg_file);
+                uint32_t unknown_4 = read<uint32_t>(trg_file);
+                if (unknown_4 & 2)
+                {
+                    skip(trg_file, 72);
+                }
+                uint32_t unknown_5 = read<uint32_t>(trg_file);
+                uint32_t unknown_6 = read<uint32_t>(trg_file);
+
+                if (unknown_6 != 0)
+                {
+                    skip(trg_file, 20);
+                }
+
+                if (unknown_4 == 9)
+                {
+                    skip(trg_file, 8);
+                }
+
+                room_indices.push_back({ start_index, num_indices });
+
+                room;
+                end_index;
+                unknown_1;
+                unknown_2;
+                unknown_3;
+                unknown_5;
+            }
+
+            //trg_file.seekg(24688);
+            // trg_file.seekg(103504);
+
+            auto current_location = trg_file.tellg();
+            // skip(trg_file, 32);
+            skip(trg_file, 120);
+
+            uint32_t index_count = read<uint32_t>(trg_file);
+            uint32_t vert_count = read<uint32_t>(trg_file);
+            std::vector<uint32_t> indices = read_vector<uint32_t>(trg_file, index_count);
+
+            const auto trg_vertices = read_vector<trlevel::remaster::Vertex>(trg_file, vert_count);
+
+            const auto all_textures_0 = trg_vertices
+                | std::views::transform([](const auto& v) -> uint8_t { return v.unknown[0]; })
+                | std::ranges::to<std::set>();
+            const auto all_textures_1 = trg_vertices
+                | std::views::transform([](const auto& v) -> uint8_t { return v.unknown[1]; })
+                | std::ranges::to<std::set>();
+            const auto all_textures_2 = trg_vertices
+                | std::views::transform([](const auto& v) -> uint8_t { return v.unknown[2]; })
+                | std::ranges::to<std::set>();
+            const auto all_textures_3 = trg_vertices
+                | std::views::transform([](const auto& v) -> uint8_t { return v.unknown[3]; })
+                | std::ranges::to<std::set>();
+            const auto all_textures_4 = trg_vertices
+                | std::views::transform([](const auto& v) -> uint8_t { return v.unknown[4]; })
+                | std::ranges::to<std::set>();
+            const auto all_textures_5 = trg_vertices
+                | std::views::transform([](const auto& v) -> uint8_t { return v.unknown[5]; })
+                | std::ranges::to<std::set>();
+            const auto all_textures_6 = trg_vertices
+                | std::views::transform([](const auto& v) -> uint8_t { return v.unknown[6]; })
+                | std::ranges::to<std::set>();
+            const auto all_textures_7 = trg_vertices
+                | std::views::transform([](const auto& v) -> uint8_t { return v.unknown[7]; })
+                | std::ranges::to<std::set>();
+            const auto all_textures_8 = trg_vertices
+                | std::views::transform([](const auto& v) -> uint8_t { return v.unknown[8]; })
+                | std::ranges::to<std::set>();
+            const auto all_textures_9 = trg_vertices
+                | std::views::transform([](const auto& v) -> uint8_t { return v.unknown[9]; })
+                | std::ranges::to<std::set>();
+            const auto all_textures_10 = trg_vertices
+                | std::views::transform([](const auto& v) -> uint8_t { return v.unknown[10]; })
+                | std::ranges::to<std::set>();
+            const auto all_textures_11 = trg_vertices
+                | std::views::transform([](const auto& v) -> uint8_t { return v.unknown[11]; })
+                | std::ranges::to<std::set>();
+            const auto all_textures_12 = trg_vertices
+                | std::views::transform([](const auto& v) -> uint8_t { return v.unknown[12]; })
+                | std::ranges::to<std::set>();
+            const auto all_textures_13 = trg_vertices
+                | std::views::transform([](const auto& v) -> uint8_t { return v.unknown[13]; })
+                | std::ranges::to<std::set>();
+
+            auto vertices = trg_vertices
+                | std::views::transform([](const auto& v) -> tr_vertex { return { v.position.x, v.position.y, v.position.z }; })
+                | std::ranges::to<std::vector>();
+
+            // Generate mesh for remastered rooms
+            for (std::size_t r = 0; r < _rooms.size(); ++r)
+            {
+                auto& room = _rooms[r];
+                auto [start, count] = room_indices[r];
+
+                for (std::size_t i = 0; i < count / 3; ++i)
+                {
+                    const auto base = start + i * 3;
+                    const auto rm_v_base = static_cast<uint32_t>(room.remaster_data.vertices.size());
+
+                    room.remaster_data.vertices.push_back(trg_vertices[indices[base]]);
+                    room.remaster_data.vertices.push_back(trg_vertices[indices[base + 1]]);
+                    room.remaster_data.vertices.push_back(trg_vertices[indices[base + 2]]);
+                    room.remaster_data.triangles.push_back(
+                        remaster::Triangle {
+                        .vertices = { rm_v_base, rm_v_base + 1, rm_v_base + 2 },
+                            .texture = 6
+                    });
+                }
+            }
+        }
     }
 
     void Level::generate_meshes(const std::vector<uint16_t>& mesh_data)

@@ -192,6 +192,8 @@ namespace trlevel
 
         uint16_t convert_textile4(uint16_t tile, uint16_t clut_id);
 
+        void load_trg(const std::shared_ptr<trview::IFiles>& files, const std::string& filename);
+
         std::shared_ptr<trview::ILog> _log;
 
         PlatformAndVersion _platform_and_version;
