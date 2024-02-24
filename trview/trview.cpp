@@ -5,7 +5,7 @@ void ImGuiTestEngineHook_ItemInfo(ImGuiContext*, ImGuiID, const char*, ImGuiItem
 {
 }
 
-void ImGuiTestEngineHook_ItemAdd(ImGuiContext*, const ImRect&, ImGuiID)
+void ImGuiTestEngineHook_ItemAdd(ImGuiContext*, ImGuiID, const ImRect&, const ImGuiLastItemData*)
 {
 }
 

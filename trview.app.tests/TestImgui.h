@@ -1,6 +1,5 @@
 #pragma once
 
-#define IMGUI_DEFINE_MATH_OPERATORS
 #define IMGUI_ENABLE_TEST_ENGINE
 #include <external/imgui/imgui.h>
 #include <external/imgui/imgui_internal.h>

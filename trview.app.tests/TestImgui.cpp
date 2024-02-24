@@ -21,7 +21,7 @@ void ImGuiTestEngineHook_ItemInfo(ImGuiContext* ctx, ImGuiID id, const char* lab
     test->add_style_colours(id, colours);
 }
 
-void ImGuiTestEngineHook_ItemAdd(ImGuiContext* ctx, const ImRect& bb, ImGuiID id)
+void ImGuiTestEngineHook_ItemAdd(ImGuiContext* ctx, ImGuiID id, const ImRect& bb, const ImGuiLastItemData*)
 {
     TestImgui* test = static_cast<TestImgui*>(ctx->TestEngine);
     if (!test)
@@ -285,7 +285,8 @@ namespace trview
 
         ImGuiItemStatusFlags TestImgui::status_flags(TestImGuiId id) const
         {
-            return _status_flags.find(id.id())->second;
+            const auto found = _status_flags.find(id.id());
+            return found == _status_flags.end() ? ImGuiItemStatusFlags_None : found->second;
         }
 
         ImGuiItemFlags TestImgui::item_flags(TestImGuiId id) const
@@ -295,12 +296,14 @@ namespace trview
 
         std::string TestImgui::item_text(TestImGuiId id) const
         {
-            return _item_text.find(id.id())->second;
+            const auto found = _item_text.find(id.id());
+            return found == _item_text.end() ? std::string() : found->second;
         }
 
         std::vector<std::string> TestImgui::rendered_text(TestImGuiId id) const
         {
-            return _item_rendered_text.find(id.id())->second;
+            auto found = _item_rendered_text.find(id.id());
+            return found == _item_rendered_text.end() ? std::vector<std::string>{} : found->second;
         }
 
         void TestImgui::render(const std::function<void()>& pre_render_callback)

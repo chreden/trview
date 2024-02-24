@@ -253,7 +253,6 @@ namespace trview
                     { "PressedOnDragDropHold", ImGuiButtonFlags_PressedOnDragDropHold },
                     { "Repeat", ImGuiButtonFlags_Repeat },
                     { "FlattenChildren", ImGuiButtonFlags_FlattenChildren },
-                    { "AllowItemOverlap", ImGuiButtonFlags_AllowItemOverlap },
                     { "DontClosePopups", ImGuiButtonFlags_DontClosePopups },
                     { "AlignTextBaseLine", ImGuiButtonFlags_AlignTextBaseLine },
                     { "NoKeyModifiers", ImGuiButtonFlags_NoKeyModifiers },
@@ -387,7 +386,6 @@ namespace trview
                     { "SelectOnClick", ImGuiSelectableFlags_SelectOnClick },
                     { "SelectOnRelease", ImGuiSelectableFlags_SelectOnRelease },
                     { "SpanAvailWidth", ImGuiSelectableFlags_SpanAvailWidth },
-                    { "DrawHoveredWhenHeld", ImGuiSelectableFlags_DrawHoveredWhenHeld },
                     { "SetNavIdOnHover", ImGuiSelectableFlags_SetNavIdOnHover },
                     { "NoPadWithHalfSpacing", ImGuiSelectableFlags_NoPadWithHalfSpacing }
                 });

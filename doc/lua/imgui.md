@@ -93,7 +93,6 @@ The ImGui library allows plugins to render UI elements.
 | SelectOnClick |
 | SelectOnRelease |
 | SpanAvailWidth |
-| DrawHoveredWhenHeld |
 | SetNavIdOnHover |
 | NoPadWithHalfSpacing |
 
@@ -207,7 +206,6 @@ The ImGui library allows plugins to render UI elements.
 | PressedOnDragDropHold |
 | Repeat |
 | FlattenChildren |
-| AllowItemOverlap |
 | DontClosePopups |
 | AlignTextBaseLine |
 | NoKeyModifiers |
