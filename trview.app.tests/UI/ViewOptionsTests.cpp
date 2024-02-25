@@ -124,36 +124,6 @@ TEST(ViewOptions, WaterCheckboxUpdated)
     ASSERT_FALSE(imgui.status_flags(imgui.id("View Options").push(ViewOptions::Names::flags).id(IViewer::Options::water)) & ImGuiItemStatusFlags_Checked);
 }
 
-TEST(ViewOptions, DepthCheckboxToggle)
-{
-    ViewOptions view_options;
-
-    std::optional<std::tuple<std::string, bool>> clicked;
-    auto token = view_options.on_toggle_changed += [&](const std::string& name, bool value)
-    {
-        clicked = { name, value };
-    };
-
-    tests::TestImgui imgui([&]() { view_options.render(); });
-    imgui.click_element(imgui.id("View Options").push(ViewOptions::Names::flags).id(IViewer::Options::depth_enabled));
-
-    ASSERT_TRUE(clicked.has_value());
-    ASSERT_EQ(std::get<0>(clicked.value()), IViewer::Options::depth_enabled);
-    ASSERT_TRUE(std::get<1>(clicked.value()));
-}
-
-TEST(ViewOptions, DepthCheckboxUpdated)
-{
-    ViewOptions view_options;
-
-    tests::TestImgui imgui([&]() { view_options.render(); });
-    ASSERT_FALSE(imgui.status_flags(imgui.id("View Options").push(ViewOptions::Names::flags).id(IViewer::Options::depth_enabled)) & ImGuiItemStatusFlags_Checked);
-
-    view_options.set_toggle(IViewer::Options::depth_enabled, true);
-    imgui.render();
-    ASSERT_TRUE(imgui.status_flags(imgui.id("View Options").push(ViewOptions::Names::flags).id(IViewer::Options::depth_enabled)) & ImGuiItemStatusFlags_Checked);
-}
-
 TEST(ViewOptions, WireframeCheckboxToggle)
 {
     ViewOptions view_options;
@@ -182,79 +152,6 @@ TEST(ViewOptions, WireframeCheckboxUpdated)
     view_options.set_toggle(IViewer::Options::wireframe, true);
     imgui.render();
     ASSERT_TRUE(imgui.status_flags(imgui.id("View Options").push(ViewOptions::Names::flags).id(IViewer::Options::wireframe)) & ImGuiItemStatusFlags_Checked);
-}
-
-TEST(ViewOptions, BoundsCheckboxToggle)
-{
-    ViewOptions view_options;
-
-    std::optional<std::tuple<std::string, bool>> clicked;
-    auto token = view_options.on_toggle_changed += [&](const std::string& name, bool value)
-    {
-        clicked = { name, value };
-    };
-
-    tests::TestImgui imgui([&]() { view_options.render(); });
-    imgui.click_element(imgui.id("View Options").push(ViewOptions::Names::flags).id(IViewer::Options::show_bounding_boxes));
-
-    ASSERT_TRUE(clicked.has_value());
-    ASSERT_EQ(std::get<0>(clicked.value()), IViewer::Options::show_bounding_boxes);
-    ASSERT_TRUE(std::get<1>(clicked.value()));
-}
-
-TEST(ViewOptions, BoundsCheckboxUpdated)
-{
-    ViewOptions view_options;
-
-    tests::TestImgui imgui([&]() { view_options.render(); });
-    ASSERT_FALSE(imgui.status_flags(imgui.id("View Options").push(ViewOptions::Names::flags).id(IViewer::Options::show_bounding_boxes)) & ImGuiItemStatusFlags_Checked);
-
-    view_options.set_toggle(IViewer::Options::show_bounding_boxes, true);
-    imgui.render();
-    ASSERT_TRUE(imgui.status_flags(imgui.id("View Options").push(ViewOptions::Names::flags).id(IViewer::Options::show_bounding_boxes)) & ImGuiItemStatusFlags_Checked);
-}
-
-TEST(ViewOptions, FlipCheckboxToggle)
-{
-    ViewOptions view_options;
-    view_options.set_flip_enabled(true);
-
-    std::optional<std::tuple<std::string, bool>> clicked;
-    auto token = view_options.on_toggle_changed += [&](const std::string& name, bool value)
-    {
-        clicked = { name, value };
-    };
-
-    tests::TestImgui imgui([&]() { view_options.render(); });
-    imgui.click_element(imgui.id("View Options").push(ViewOptions::Names::flags).id(IViewer::Options::flip));
-
-    ASSERT_TRUE(clicked.has_value());
-    ASSERT_EQ(std::get<0>(clicked.value()), IViewer::Options::flip);
-    ASSERT_TRUE(std::get<1>(clicked.value()));
-}
-
-TEST(ViewOptions, FlipCheckboxUpdated)
-{
-    ViewOptions view_options;
-
-    tests::TestImgui imgui([&]() { view_options.render(); });
-    ASSERT_FALSE(imgui.status_flags(imgui.id("View Options").push(ViewOptions::Names::flags).id(IViewer::Options::flip)) & ImGuiItemStatusFlags_Checked);
-
-    view_options.set_toggle(IViewer::Options::flip, true);
-    imgui.render();
-    ASSERT_TRUE(imgui.status_flags(imgui.id("View Options").push(ViewOptions::Names::flags).id(IViewer::Options::flip)) & ImGuiItemStatusFlags_Checked);
-}
-
-TEST(ViewOptions, FlipCheckboxEnabled)
-{
-    ViewOptions view_options;
-
-    tests::TestImgui imgui([&]() { view_options.render(); });
-    ASSERT_TRUE(imgui.item_flags(imgui.id("View Options").push(ViewOptions::Names::flags).id(IViewer::Options::flip)) & ImGuiItemFlags_Disabled);
-
-    view_options.set_flip_enabled(true);
-    imgui.render();
-    ASSERT_FALSE(imgui.item_flags(imgui.id("View Options").push(ViewOptions::Names::flags).id(IViewer::Options::flip)) & ImGuiItemFlags_Disabled);
 }
 
 TEST(ViewOptions, FlipFlagsToggle)
@@ -368,36 +265,6 @@ TEST(ViewOptions, RoomsCheckboxUpdated)
     view_options.set_toggle(IViewer::Options::rooms, false);
     imgui.render();
     ASSERT_FALSE(imgui.status_flags(imgui.id("View Options").push(ViewOptions::Names::flags).id(IViewer::Options::rooms)) & ImGuiItemStatusFlags_Checked);
-}
-
-TEST(ViewOptions, CameraSinksCheckboxToggle)
-{
-    ViewOptions view_options;
-
-    std::optional<std::tuple<std::string, bool>> clicked;
-    auto token = view_options.on_toggle_changed += [&](const std::string& name, bool value)
-    {
-        clicked = { name, value };
-    };
-
-    tests::TestImgui imgui([&]() { view_options.render(); });
-    imgui.click_element(imgui.id("View Options").push(ViewOptions::Names::flags).id(IViewer::Options::camera_sinks));
-
-    ASSERT_TRUE(clicked.has_value());
-    ASSERT_EQ(std::get<0>(clicked.value()), IViewer::Options::camera_sinks);
-    ASSERT_TRUE(std::get<1>(clicked.value()));
-}
-
-TEST(ViewOptions, CameraSinksCheckboxUpdated)
-{
-    ViewOptions view_options;
-
-    tests::TestImgui imgui([&]() { view_options.render(); });
-    ASSERT_FALSE(imgui.status_flags(imgui.id("View Options").push(ViewOptions::Names::flags).id(IViewer::Options::camera_sinks)) & ImGuiItemStatusFlags_Checked);
-
-    view_options.set_toggle(IViewer::Options::camera_sinks, true);
-    imgui.render();
-    ASSERT_TRUE(imgui.status_flags(imgui.id("View Options").push(ViewOptions::Names::flags).id(IViewer::Options::camera_sinks)) & ImGuiItemStatusFlags_Checked);
 }
 
 TEST(ViewOptions, LightingCheckboxToggle)

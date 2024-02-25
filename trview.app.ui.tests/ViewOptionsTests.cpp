@@ -3,6 +3,8 @@
 
 #include "ViewOptionsTests.h"
 #include <imgui_te_context.h>
+#include <imgui_te_engine.h>
+#include <imgui_te_internal.h>
 #include <format>
 
 #include <trview.app/UI/ViewOptions.h>
@@ -64,7 +66,7 @@ void register_view_options_tests(ImGuiTestEngine* engine)
             IM_CHECK_EQ(ctx->ItemIsChecked("flags/Bounds"), false);
 
             view_options.set_toggle(IViewer::Options::show_bounding_boxes, true);
-            ctx->Yield(1);
+            ctx->Yield();
 
             IM_CHECK_EQ(ctx->ItemIsChecked("flags/Bounds"), true);
         });
@@ -98,9 +100,106 @@ void register_view_options_tests(ImGuiTestEngine* engine)
             IM_CHECK_EQ(ctx->ItemIsChecked("flags/Camera\\/Sink"), false);
 
             view_options.set_toggle(IViewer::Options::camera_sinks, true);
-            ctx->Yield(1);
+            ctx->Yield();
 
             IM_CHECK_EQ(ctx->ItemIsChecked("flags/Camera\\/Sink"), true);
         });
 
+    test<ViewOptions>(engine, "View Options", "Depth Checkbox Toggle",
+        [](ImGuiTestContext* ctx) { ctx->GetVars<ViewOptions>().render(); },
+        [](ImGuiTestContext* ctx)
+        {
+            auto& view_options = ctx->GetVars<ViewOptions>();
+            std::optional<std::tuple<std::string, bool>> clicked;
+            auto token = view_options.on_toggle_changed += [&](const std::string& name, bool value)
+            {
+                clicked = { name, value };
+            };
+
+            ctx->SetRef("View Options");
+            ctx->ItemCheck("flags/Depth");
+
+            IM_CHECK_EQ(clicked.has_value(), true);
+            IM_CHECK_EQ(std::get<0>(clicked.value()), IViewer::Options::depth_enabled);
+            IM_CHECK_EQ(std::get<1>(clicked.value()), true);
+        });
+
+    test<ViewOptions>(engine, "View Options", "Depth Checkbox Updated",
+        [](ImGuiTestContext* ctx) { ctx->GetVars<ViewOptions>().render(); },
+        [](ImGuiTestContext* ctx)
+        {
+            auto& view_options = ctx->GetVars<ViewOptions>();
+
+            ctx->SetRef("View Options");
+            IM_CHECK_EQ(ctx->ItemIsChecked("flags/Depth"), false);
+
+            view_options.set_toggle(IViewer::Options::depth_enabled, true);
+            ctx->Yield();
+
+            IM_CHECK_EQ(ctx->ItemIsChecked("flags/Depth"), true);
+        });
+
+    test<ViewOptions>(engine, "View Options", "Flip Checkbox Enabled",
+        [](ImGuiTestContext* ctx) { ctx->GetVars<ViewOptions>().render(); },
+        [](ImGuiTestContext* ctx)
+        {
+            auto& view_options = ctx->GetVars<ViewOptions>();
+            ctx->SetRef("View Options");
+            IM_CHECK_EQ((ctx->ItemInfo("flags/Flip")->InFlags & ImGuiItemFlags_Disabled) != 0, true);
+            view_options.set_flip_enabled(true);
+            ctx->Yield();
+            IM_CHECK_EQ((ctx->ItemInfo("flags/Flip")->InFlags & ImGuiItemFlags_Disabled) != 0, false);
+        });
+
+    test<ViewOptions>(engine, "View Options", "Flip Checkbox Hidden with Alternate Groups",
+        [](ImGuiTestContext* ctx) { ctx->GetVars<ViewOptions>().render(); },
+        [](ImGuiTestContext* ctx)
+        {
+            auto& view_options = ctx->GetVars<ViewOptions>();
+            view_options.set_use_alternate_groups(false);
+
+            ctx->SetRef("View Options");
+            IM_CHECK_EQ(ctx->ItemExists("flags/Flip"), true);
+            view_options.set_use_alternate_groups(true);
+            ctx->Engine->InfoTasks.clear_delete();
+            ctx->Yield();
+            IM_CHECK_EQ(ctx->ItemExists("flags/Flip"), false);
+        });
+
+    test<ViewOptions>(engine, "View Options", "Flip Checkbox Toggle",
+        [](ImGuiTestContext* ctx) { ctx->GetVars<ViewOptions>().render(); },
+        [](ImGuiTestContext* ctx)
+        {
+            auto& view_options = ctx->GetVars<ViewOptions>();
+            view_options.set_flip_enabled(true);
+
+            std::optional<std::tuple<std::string, bool>> clicked;
+            auto token = view_options.on_toggle_changed += [&](const std::string& name, bool value)
+            {
+                clicked = { name, value };
+            };
+
+            ctx->SetRef("View Options");
+            ctx->ItemCheck("flags/Flip");
+
+            IM_CHECK_EQ(clicked.has_value(), true);
+            IM_CHECK_EQ(std::get<0>(clicked.value()), IViewer::Options::flip);
+            IM_CHECK_EQ(std::get<1>(clicked.value()), true);
+        });
+
+    test<ViewOptions>(engine, "View Options", "Flip Checkbox Updated",
+        [](ImGuiTestContext* ctx) { ctx->GetVars<ViewOptions>().render(); },
+        [](ImGuiTestContext* ctx)
+        {
+            auto& view_options = ctx->GetVars<ViewOptions>();
+            view_options.set_flip_enabled(true);
+
+            ctx->SetRef("View Options");
+            IM_CHECK_EQ(ctx->ItemIsChecked("flags/Flip"), false);
+
+            view_options.set_toggle(IViewer::Options::flip, true);
+            ctx->Yield();
+
+            IM_CHECK_EQ(ctx->ItemIsChecked("flags/Flip"), true);
+        });
 }
