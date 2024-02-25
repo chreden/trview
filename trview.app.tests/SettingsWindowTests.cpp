@@ -1,8 +1,18 @@
 #include <trview.app/UI/Settingswindow.h>
+#define IMGUI_DEFINE_MATH_OPERATORS
+#define IMGUI_TEST_ENGINE_ENABLE_COROUTINE_STDTHREAD_IMPL 1
 #include "TestImgui.h"
 
 #include <trview.common/Mocks/Windows/IShell.h>
 #include <trview.common/Mocks/Windows/IDialogs.h>
+
+#include <trview.common/Strings.h>
+
+
+#include <imgui_te_engine.h>
+#include <imgui_app.h>
+#include <imgui_te_context.h>
+#include <imgui_te_ui.h>
 
 using namespace trview;
 using namespace trview::tests;
@@ -555,12 +565,198 @@ TEST(SettingsWindow, SetRandomizerToolsUpdatesCheckbox)
         received_value = value;
     };
 
+    ImGuiApp* app = ImGuiApp_ImplDefault_Create();
+
+    ImGui::CreateContext();
+    ImGuiIO& io = ImGui::GetIO();
+    io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
+    io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
+    io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
+
+    app->DpiAware = true;
+    app->Vsync = true;
+    app->InitCreateWindow(app, "My Application", ImVec2(1600, 1200));
+    app->InitBackends(app);
+
+    ImGuiTestEngine* engine = ImGuiTestEngine_CreateContext();
+    ImGuiTestEngineIO& test_io = ImGuiTestEngine_GetIO(engine);
+    test_io.ConfigVerboseLevel = ImGuiTestVerboseLevel_Info;
+    test_io.ConfigVerboseLevelOnError = ImGuiTestVerboseLevel_Debug;
+    test_io.ConfigRunSpeed = ImGuiTestRunSpeed_Cinematic; // Default to slowest mode in this demo
+    test_io.ScreenCaptureFunc = ImGuiApp_ScreenCaptureFunc;
+    test_io.ScreenCaptureUserData = (void*)app;
+    test_io.ConfigSavedSettings = false;
+
+    ImGuiTestEngine_Start(engine, ImGui::GetCurrentContext());
+    ImGuiTestEngine_InstallDefaultCrashHandler();
+
+    auto test = IM_REGISTER_TEST(engine, "SettingsWindow", "SetRandomizerToolsUpdatesCheckbox");
+    test->GuiFunc = [](ImGuiTestContext* ctx)
+    {
+
+    };
+    test->TestFunc = [](ImGuiTestContext* ctx)
+    {
+        ctx->SetRef("Settings");
+        ctx->ItemCheck("Enable Randomizer Tools");
+
+        // ctx->SetRef("My Window");           // Set a base path so we don't have to specify full path afterwards
+        // ctx->ItemClick("My Button");        // Click "My Button" inside "My Window"
+        // ctx->ItemCheck("Node/Checkbox");    // Open "Node", find "Checkbox", ensure it is checked if not checked already.
+        // ctx->ItemInputValue("Slider", 123); // Find "Slider" and set the value to 123
+        // IM_CHECK_EQ(app->SliderValue, 123); // Check value on app side
+
+        // ctx->MenuCheck("//Dear ImGui Demo/Tools/About Dear ImGui"); // Show Dear ImGui About Window (assume Demo window is open)
+    };
+
+    /*
+    *     TestImgui imgui([&]() { window->render(); });
+    ASSERT_FALSE(imgui.status_flags(imgui.id("Settings").push("TabBar").push("General").id(SettingsWindow::Names::randomizer_tools )) & ImGuiItemStatusFlags_Checked);
+    imgui.click_element(imgui.id("Settings").push("TabBar").push("General").id(SettingsWindow::Names::randomizer_tools ));
+    ASSERT_TRUE(imgui.status_flags(imgui.id("Settings").push("TabBar").push("General").id(SettingsWindow::Names::randomizer_tools )) & ImGuiItemStatusFlags_Checked);
+    ASSERT_EQ(received_value.has_value(), true);
+    ASSERT_TRUE(received_value.value());
+    * 
+    */ 
+
+    bool aborted = false;
+    while (!aborted)
+    {
+        if (!aborted && !app->NewFrame(app))
+            aborted = true;
+        if (app->Quit)
+            aborted = true;
+
+        if (aborted && ImGuiTestEngine_TryAbortEngine(engine))
+            break;
+
+        ImGui::NewFrame();
+
+        ImGuiTestEngine_ShowTestEngineWindows(engine, NULL);
+
+        window->render();
+        ImGui::Render();
+        app->Render(app);
+        // Post-swap handler is REQUIRED in order to support screen capture
+        ImGuiTestEngine_PostSwap(engine);
+    }
+
+    ImGuiTestEngine_Stop(engine);
+    app->ShutdownBackends(app);
+    app->ShutdownCloseWindow(app);
+    ImGui::DestroyContext();
+
+    // IMPORTANT: we need to destroy the Dear ImGui context BEFORE the test engine context, so .ini data may be saved.
+    ImGuiTestEngine_DestroyContext(engine);
+
+    app->Destroy(app);
+
+    /*
+    * 
+    * 
+    *    #include "imgui_app.h"
+        ImGuiApp* app = ImGuiApp_ImplDefault_Create();
+        app->DpiAware = true;
+        app->Vsync = true;
+        app->InitCreateWindow(app, "My Application", ImVec2(1600, 1200));
+        app->InitBackends(app);
+        while (true)
+        {
+            if (!app->NewFrame(app))
+                break;
+            ImGui::NewFrame();
+            [...]
+            ImGui::Render();
+            app->Render(app);
+        }
+        app->ShutdownBackends(app);
+        app->ShutdownCloseWindow(app);
+        ImGui::DestroyContext();
+        app->Destroy(app);
+    
+    */
+    /*
+    ImGui::CreateContext();
+    ImGuiIO& io = ImGui::GetIO();
+    io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
+    io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
+    io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
+    // context->TestEngineHookItems = true;
+    // context->TestEngine = this;
+
+    ImGuiTestEngine* engine = ImGuiTestEngine_CreateContext();
+    ImGuiTestEngineIO& test_io = ImGuiTestEngine_GetIO(engine);
+    test_io.ConfigVerboseLevel = ImGuiTestVerboseLevel_Info;
+    test_io.ConfigVerboseLevelOnError = ImGuiTestVerboseLevel_Debug;
+    test_io.ConfigSavedSettings = false;
+
+    auto context = ImGui::GetCurrentContext();
+    wchar_t* path = 0;
+    SHGetKnownFolderPath(FOLDERID_Fonts, 0, nullptr, &path);
+    auto font = context->IO.Fonts->AddFontFromFileTTF((trview::to_utf8(path) + "\\Arial.ttf").c_str(), 12.0f);
+    CoTaskMemFree(path);
+
+    context->IO.DisplaySize = ImVec2(1920, 1080);
+
+    ImGuiTestEngine_Start(engine, context);
+
+    auto test = IM_REGISTER_TEST(engine, "SettingsWindow", "SetRandomizerToolsUpdatesCheckbox");
+    test->TestFunc = [](ImGuiTestContext* ctx)
+    {
+        // ctx->SetRef("My Window");           // Set a base path so we don't have to specify full path afterwards
+        // ctx->ItemClick("My Button");        // Click "My Button" inside "My Window"
+        // ctx->ItemCheck("Node/Checkbox");    // Open "Node", find "Checkbox", ensure it is checked if not checked already.
+        // ctx->ItemInputValue("Slider", 123); // Find "Slider" and set the value to 123
+        // IM_CHECK_EQ(app->SliderValue, 123); // Check value on app side
+
+        // ctx->MenuCheck("//Dear ImGui Demo/Tools/About Dear ImGui"); // Show Dear ImGui About Window (assume Demo window is open)
+    };
+    
+    //auto x = ImGui::GetCurrentWindow();
+
+    while (true)
+    {
+        auto ctx = ImGui::GetCurrentContext();
+        unsigned char* data = 0;
+        int32_t width, height, bpp;
+        ctx->IO.Fonts->GetTexDataAsRGBA32(&data, &width, &height, &bpp);
+
+        // This will automatically call ImGuiTestEngine_PreNewFrame() to override user inputs when automation is active.
+        // This will automatically call ImGuiTestEngine_PostNewFrame() to new GuiFunc() and TestFunc() when active.
+        ImGui::NewFrame();
+        ImGui::PushFont(font);
+
+        // Optionally: show test engine UI to browse/run test from the UI
+        // ImGuiTestEngine_ShowTestEngineWindows();
+
+        // Rendering
+        // my_rendering_backend_swap();
+        window->render();
+
+        ImGui::PopFont();
+        ImGui::Render();
+
+        // Call after your rendering. This is mostly to support screen/video capturing features.
+        ImGuiTestEngine_PostSwap(engine);
+    }
+
+    // May block until TestFunc thread/coroutine joins
+    ImGuiTestEngine_Stop(engine);
+
+    // We shutdown the Dear ImGui context _before_ the test engine context, so .ini data may be saved.
+    ImGui::DestroyContext();
+    // ImGuiTestEngine_ShutdownContext(engine);
+
+    */
+    // auto test = IM_REGISTER_TEST(e
+    /*
     TestImgui imgui([&]() { window->render(); });
     ASSERT_FALSE(imgui.status_flags(imgui.id("Settings").push("TabBar").push("General").id(SettingsWindow::Names::randomizer_tools )) & ImGuiItemStatusFlags_Checked);
     imgui.click_element(imgui.id("Settings").push("TabBar").push("General").id(SettingsWindow::Names::randomizer_tools ));
     ASSERT_TRUE(imgui.status_flags(imgui.id("Settings").push("TabBar").push("General").id(SettingsWindow::Names::randomizer_tools )) & ImGuiItemStatusFlags_Checked);
     ASSERT_EQ(received_value.has_value(), true);
     ASSERT_TRUE(received_value.value());
+    */
 }
 
 TEST(SettingsWindow, ChangingMaxRecentFilesRaisesEvent)

@@ -91,9 +91,10 @@
       <WarningLevel>Level4</WarningLevel>
       <Optimization>Disabled</Optimization>
       <AdditionalIncludeDirectories>..;$(SolutionDir)\external\imgui;$(SolutionDir)\external\imgui\backends;..\imgui_test_suite\thirdparty\implot;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>_UNICODE;UNICODE;IMGUI_USER_CONFIG="imgui_test_suite/imgui_test_suite_imconfig.h";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_UNICODE;UNICODE;IMGUI_USER_CONFIG="imgui_test_suite/imgui_test_suite_imconfig.h";IMGUI_APP_WIN32_DX11;IMGUI_TEST_ENGINE_ENABLE_COROUTINE_STDTHREAD_IMPL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalOptions>%(AdditionalOptions) $(ClFlags)</AdditionalOptions>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -107,9 +108,10 @@
       <WarningLevel>Level4</WarningLevel>
       <Optimization>Disabled</Optimization>
       <AdditionalIncludeDirectories>..;$(SolutionDir)\external\imgui;$(SolutionDir)\external\imgui\backends;..\imgui_test_suite\thirdparty\implot;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>_UNICODE;UNICODE;IMGUI_USER_CONFIG="imgui_test_suite/imgui_test_suite_imconfig.h";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_UNICODE;UNICODE;IMGUI_USER_CONFIG="imgui_test_suite/imgui_test_suite_imconfig.h";IMGUI_APP_WIN32_DX11;IMGUI_TEST_ENGINE_ENABLE_COROUTINE_STDTHREAD_IMPL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalOptions>%(AdditionalOptions) $(ClFlags)</AdditionalOptions>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -126,9 +128,10 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <AdditionalIncludeDirectories>..;$(SolutionDir)\external\imgui;$(SolutionDir)\external\imgui\backends;..\imgui_test_suite\thirdparty\implot;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <BufferSecurityCheck>false</BufferSecurityCheck>
-      <PreprocessorDefinitions>_UNICODE;UNICODE;IMGUI_USER_CONFIG="imgui_test_suite/imgui_test_suite_imconfig.h";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_UNICODE;UNICODE;IMGUI_USER_CONFIG="imgui_test_suite/imgui_test_suite_imconfig.h";IMGUI_APP_WIN32_DX11;IMGUI_TEST_ENGINE_ENABLE_COROUTINE_STDTHREAD_IMPL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalOptions>%(AdditionalOptions) $(ClFlags)</AdditionalOptions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -147,9 +150,10 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <AdditionalIncludeDirectories>..;$(SolutionDir)\external\imgui;$(SolutionDir)\external\imgui\backends;..\imgui_test_suite\thirdparty\implot;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <BufferSecurityCheck>false</BufferSecurityCheck>
-      <PreprocessorDefinitions>_UNICODE;UNICODE;IMGUI_USER_CONFIG="imgui_test_suite/imgui_test_suite_imconfig.h";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_UNICODE;UNICODE;IMGUI_USER_CONFIG="imgui_test_suite/imgui_test_suite_imconfig.h";IMGUI_APP_WIN32_DX11;IMGUI_TEST_ENGINE_ENABLE_COROUTINE_STDTHREAD_IMPL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalOptions>%(AdditionalOptions) $(ClFlags)</AdditionalOptions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -161,6 +165,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="imgui_app.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="imgui_capture_tool.h" />
     <ClInclude Include="imgui_te_context.h" />
     <ClInclude Include="imgui_te_coroutine.h" />
@@ -175,6 +185,12 @@
     <ClInclude Include="thirdparty\Str\Str.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="imgui_app.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="imgui_capture_tool.cpp" />
     <ClCompile Include="imgui_te_context.cpp" />
     <ClCompile Include="imgui_te_coroutine.cpp" />

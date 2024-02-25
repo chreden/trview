@@ -4,7 +4,7 @@
 #include <format>
 
 using namespace trview::tests;
-
+/*
 void ImGuiTestEngineHook_ItemInfo(ImGuiContext* ctx, ImGuiID id, const char* label, ImGuiItemStatusFlags flags)
 {
     TestImgui* test = static_cast<TestImgui*>(ctx->TestEngine);
@@ -46,7 +46,7 @@ const char* ImGuiTestEngine_FindItemDebugLabel(ImGuiContext* ctx, ImGuiID id)
 {
     return "";
 }
-
+*/
 void ImGuiTrviewTestEngineHook_ItemText(ImGuiContext* ctx, ImGuiID id, const char* buf)
 {
     TestImgui* test = static_cast<TestImgui*>(ctx->TestEngine);

@@ -51,6 +51,7 @@
     <ClInclude Include="imgui_te_exporters.h">
       <Filter>imgui_test_engine</Filter>
     </ClInclude>
+    <ClInclude Include="imgui_app.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="imgui_te_context.cpp">
@@ -77,6 +78,7 @@
     <ClCompile Include="imgui_te_exporters.cpp">
       <Filter>imgui_test_engine</Filter>
     </ClCompile>
+    <ClCompile Include="imgui_app.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Natvis Include="thirdparty\Str\Str.natvis">

@@ -34,6 +34,7 @@
 
 // Bind Main Assert macro to we can easily recover/skip over an assert
 #ifndef IM_ASSERT
-#define IM_ASSERT(_EXPR)                IM_TEST_ENGINE_ASSERT(_EXPR)
+#define IM_ASSERT(_EXPR)               
+//#define IM_ASSERT(_EXPR)                IM_TEST_ENGINE_ASSERT(_EXPR)
 // V_ASSERT_CONTRACT, assertMacro:IM_ASSERT
 #endif

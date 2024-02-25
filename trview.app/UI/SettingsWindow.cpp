@@ -13,8 +13,6 @@ namespace trview
 
     void SettingsWindow::render()
     {
-        ImGui::ShowStackToolWindow();
-
         if (!_visible)
         {
             return;

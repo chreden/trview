@@ -126,6 +126,10 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "trview.lua.imgui", "trview.
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "imgui_test_engine", "external\imgui_test_engine\imgui_test_engine.vcxproj", "{E6FAC6EF-4B54-45C4-9E76-3B063B51D4B9}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "app_minimal", "external\app_minimal\app_minimal.vcxproj", "{16BDE790-9418-4217-9D2B-D51D56C15706}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "trview.app.ui.tests", "trview.app.ui.tests\trview.app.ui.tests.vcxproj", "{6C2653FE-19D4-4696-924F-C313ECBC69B2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -316,6 +320,22 @@ Global
 		{E6FAC6EF-4B54-45C4-9E76-3B063B51D4B9}.Release|x64.Build.0 = Release|x64
 		{E6FAC6EF-4B54-45C4-9E76-3B063B51D4B9}.Release|x86.ActiveCfg = Release|Win32
 		{E6FAC6EF-4B54-45C4-9E76-3B063B51D4B9}.Release|x86.Build.0 = Release|Win32
+		{16BDE790-9418-4217-9D2B-D51D56C15706}.Debug|x64.ActiveCfg = Debug|x64
+		{16BDE790-9418-4217-9D2B-D51D56C15706}.Debug|x64.Build.0 = Debug|x64
+		{16BDE790-9418-4217-9D2B-D51D56C15706}.Debug|x86.ActiveCfg = Debug|Win32
+		{16BDE790-9418-4217-9D2B-D51D56C15706}.Debug|x86.Build.0 = Debug|Win32
+		{16BDE790-9418-4217-9D2B-D51D56C15706}.Release|x64.ActiveCfg = Release|x64
+		{16BDE790-9418-4217-9D2B-D51D56C15706}.Release|x64.Build.0 = Release|x64
+		{16BDE790-9418-4217-9D2B-D51D56C15706}.Release|x86.ActiveCfg = Release|Win32
+		{16BDE790-9418-4217-9D2B-D51D56C15706}.Release|x86.Build.0 = Release|Win32
+		{6C2653FE-19D4-4696-924F-C313ECBC69B2}.Debug|x64.ActiveCfg = Debug|x64
+		{6C2653FE-19D4-4696-924F-C313ECBC69B2}.Debug|x64.Build.0 = Debug|x64
+		{6C2653FE-19D4-4696-924F-C313ECBC69B2}.Debug|x86.ActiveCfg = Debug|Win32
+		{6C2653FE-19D4-4696-924F-C313ECBC69B2}.Debug|x86.Build.0 = Debug|Win32
+		{6C2653FE-19D4-4696-924F-C313ECBC69B2}.Release|x64.ActiveCfg = Release|x64
+		{6C2653FE-19D4-4696-924F-C313ECBC69B2}.Release|x64.Build.0 = Release|x64
+		{6C2653FE-19D4-4696-924F-C313ECBC69B2}.Release|x86.ActiveCfg = Release|Win32
+		{6C2653FE-19D4-4696-924F-C313ECBC69B2}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -333,6 +353,7 @@ Global
 		{A11566D3-4081-42C9-94C5-F4057EDD9D50} = {14424861-057E-431A-97B1-0F482C6DD4E0}
 		{D6B95B54-7EBF-4D18-AE50-F82BD0B7CA62} = {B3A7F8A1-CC61-4082-BFF5-A072AF85754C}
 		{E6FAC6EF-4B54-45C4-9E76-3B063B51D4B9} = {14424861-057E-431A-97B1-0F482C6DD4E0}
+		{16BDE790-9418-4217-9D2B-D51D56C15706} = {14424861-057E-431A-97B1-0F482C6DD4E0}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {E1BD837F-81FB-40A7-879E-E411807799F4}
