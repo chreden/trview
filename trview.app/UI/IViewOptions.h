@@ -1,5 +1,6 @@
 #pragma once
 
+#include <set>
 #include <cstdint>
 #include <trview.common/Event.h>
 

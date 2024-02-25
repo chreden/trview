@@ -20,4 +20,6 @@
 // V_ASSERT_CONTRACT, assertMacro:IM_ASSERT
 #endif
 
+#define IMGUI_TEST_ENGINE_ENABLE_STD_FUNCTION 0
+
 #include <imgui_te_imconfig.h>

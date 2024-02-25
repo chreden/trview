@@ -2,6 +2,9 @@
 //
 
 #include <iostream>
+#include <optional>
+#include <string>
+#include <format>
 
 #define IMGUI_TEST_ENGINE_ENABLE_COROUTINE_STDTHREAD_IMPL 1
 
@@ -12,40 +15,14 @@
 #include <imgui_te_context.h>
 #include <imgui_te_ui.h>
 
+#include "trview_tests.h"
+
 void ImGuiTrviewTestEngineHook_ItemText(ImGuiContext* ctx, ImGuiID id, const char* buf)
 {
 }
 
 void ImGuiTrviewTestEngineHook_RenderedText(ImGuiContext* ctx, ImGuiID id, const char* buf)
 {
-}
-
-void register_view_options_tests(ImGuiTestEngine* engine)
-{
-    // Register tests
-    auto t = IM_REGISTER_TEST(engine, "demo_tests", "test1");
-    t->GuiFunc = [](ImGuiTestContext* ctx)
-    {
-        IM_UNUSED(ctx);
-        ImGui::Begin("Test Window", NULL, ImGuiWindowFlags_NoSavedSettings);
-        ImGui::Text("Hello, automation world");
-        ImGui::Button("Click Me");
-        if (ImGui::TreeNode("Node"))
-        {
-            static bool b = false;
-            ImGui::Checkbox("Checkbox", &b);
-            ImGui::TreePop();
-        }
-        ImGui::End();
-    };
-    t->TestFunc = [](ImGuiTestContext* ctx)
-    {
-        ctx->SetRef("Test Window");
-        ctx->ItemClick("Click Me");
-        ctx->ItemOpen("Node"); // Optional as ItemCheck("Node/Checkbox") can do it automatically
-        ctx->ItemCheck("Node/Checkbox");
-        ctx->ItemUncheck("Node/Checkbox");
-    };
 }
 
 int main()
@@ -94,7 +71,7 @@ int main()
     ImGuiTestEngine_Start(engine, ImGui::GetCurrentContext());
     ImGuiTestEngine_InstallDefaultCrashHandler();
 
-    register_view_options_tests(engine);
+    register_trview_tests(engine);
 
     // Main loop
     bool aborted = false;

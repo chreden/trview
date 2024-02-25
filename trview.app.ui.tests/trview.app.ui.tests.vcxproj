@@ -74,9 +74,9 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions);IMGUI_USER_CONFIG="imconfig.h"</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions);IMGUI_USER_CONFIG="trview_imconfig.h"</PreprocessorDefinitions>
       <ConformanceMode>false</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)external\shared;$(SolutionDir)external\imgui_test_engine;$(SolutionDir)external\imgui;$(SolutionDir)external\imgui\backends</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)external\shared;$(SolutionDir)external\imgui_test_engine;$(SolutionDir)external\imgui;$(SolutionDir)external\imgui\backends;$(ProjectDir);$(SolutionDir);$(SolutionDir)external\DirectXTK\Inc</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
@@ -92,9 +92,9 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions);IMGUI_USER_CONFIG="imconfig.h"</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions);IMGUI_USER_CONFIG="trview_imconfig.h"</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)external\shared;$(SolutionDir)external\imgui_test_engine;$(SolutionDir)external\imgui;$(SolutionDir)external\imgui\backends</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)external\shared;$(SolutionDir)external\imgui_test_engine;$(SolutionDir)external\imgui;$(SolutionDir)external\imgui\backends;$(ProjectDir);$(SolutionDir);$(SolutionDir)external\DirectXTK\Inc</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
@@ -108,32 +108,12 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <PrecompiledHeader>
-      </PrecompiledHeader>
-      <WarningLevel>Level3</WarningLevel>
-      <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>IMGUI_USER_CONFIG="trview_imconfig.h";%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..;$(SolutionDir)external\imgui;$(SolutionDir)external\imgui\backends;$(SolutionDir)external\imgui_test_suite\thirdparty\implot;%SDL2_DIR%\include;$(SolutionDir)external\shared;$(SolutionDir)external\imgui_test_engine;$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
-      <LanguageStandard>stdcpp20</LanguageStandard>
-      <AdditionalOptions>/bigobj %(AdditionalOptions)</AdditionalOptions>
-    </ClCompile>
-    <Link>
-      <SubSystem>Console</SubSystem>
-      <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>d3d11.lib;d3dcompiler.lib;dxgi.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>%SDL2_DIR%\lib\x64;</AdditionalLibraryDirectories>
-    </Link>
-  </ItemDefinitionGroup>
-  <!--
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions);IMGUI_USER_CONFIG="imconfig.h"</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions);IMGUI_USER_CONFIG="trview_imconfig.h"</PreprocessorDefinitions>
       <ConformanceMode>false</ConformanceMode>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>$(SolutionDir)external\shared;$(SolutionDir)external\imgui_test_engine;$(SolutionDir)external\imgui;$(SolutionDir)external\imgui\backends</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)external\shared;$(SolutionDir)external\imgui_test_engine;$(SolutionDir)external\imgui;$(SolutionDir)external\imgui\backends;$(ProjectDir);$(SolutionDir);$(SolutionDir)external\DirectXTK\Inc</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
@@ -143,16 +123,15 @@
       <AdditionalDependencies>d3d11.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
-  -->
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions);IMGUI_USER_CONFIG="imconfig.h"</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions);IMGUI_USER_CONFIG="trview_imconfig.h"</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)external\shared;$(SolutionDir)external\imgui_test_engine;$(SolutionDir)external\imgui;$(SolutionDir)external\imgui\backends</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)external\shared;$(SolutionDir)external\imgui_test_engine;$(SolutionDir)external\imgui;$(SolutionDir)external\imgui\backends;$(ProjectDir);$(SolutionDir);$(SolutionDir)external\DirectXTK\Inc</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
@@ -167,6 +146,8 @@
   <ItemGroup>
     <ClInclude Include="..\external\shared\imgui_app.h" />
     <ClInclude Include="trview_imconfig.h" />
+    <ClInclude Include="trview_tests.h" />
+    <ClInclude Include="ViewOptionsTests.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\external\imgui\imgui.cpp" />
@@ -177,10 +158,15 @@
     <ClCompile Include="..\external\imgui\misc\cpp\imgui_stdlib.cpp" />
     <ClCompile Include="..\external\shared\imgui_app.cpp" />
     <ClCompile Include="trview.app.ui.tests.cpp" />
+    <ClCompile Include="trview_tests.cpp" />
+    <ClCompile Include="ViewOptionsTests.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\external\imgui_test_engine\imgui_test_engine.vcxproj">
       <Project>{e6fac6ef-4b54-45c4-9e76-3b063b51d4b9}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\trview.app\trview.app.vcxproj">
+      <Project>{a087af08-5371-47de-a896-afa21dd9d383}</Project>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
