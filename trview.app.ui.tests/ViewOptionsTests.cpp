@@ -202,4 +202,55 @@ void register_view_options_tests(ImGuiTestEngine* engine)
 
             IM_CHECK_EQ(ctx->ItemIsChecked("flags/Flip"), true);
         });
+
+    test<ViewOptions>(engine, "View Options", "Flip Flags Toggle",
+        [](ImGuiTestContext* ctx) { ctx->GetVars<ViewOptions>().render(); },
+        [](ImGuiTestContext* ctx)
+        {
+            auto& view_options = ctx->GetVars<ViewOptions>();
+            view_options.set_use_alternate_groups(true);
+            view_options.set_alternate_groups({ 1, 3, 5 });
+
+            std::unordered_map<uint32_t, bool> raised;
+            auto token = view_options.on_alternate_group += [&](uint32_t group, bool state)
+            {
+                raised[group] = state;
+            };
+
+            ctx->SetRef("View Options");
+            ctx->ItemClick("3##3_flip");
+
+            IM_CHECK_EQ(raised.size(), 1);
+            IM_CHECK_EQ(raised[3], true);
+        });
+
+    test<ViewOptions>(engine, "View Options", "Flip Flags Updated",
+        [](ImGuiTestContext* ctx) { ctx->GetVars<ViewOptions>().render(); },
+        [](ImGuiTestContext* ctx)
+        {
+            auto& view_options = ctx->GetVars<ViewOptions>();
+            view_options.set_use_alternate_groups(true);
+            view_options.set_alternate_groups({ 1, 3, 5 });
+            view_options.set_alternate_group(3, true);
+
+            std::unordered_map<uint32_t, bool> raised;
+            auto token = view_options.on_alternate_group += [&](uint32_t group, bool state)
+            {
+                raised[group] = state;
+            };
+
+            ctx->SetRef("View Options");
+            ctx->ItemClick("3##3_flip");
+            IM_CHECK_EQ(raised.size(), 1);
+            IM_CHECK_EQ(raised[3], false);
+
+            ctx->Yield();
+            view_options.set_alternate_group(3, true);
+            raised.clear();
+
+            ctx->SetRef("View Options");
+            ctx->ItemClick("3##3_flip");
+            IM_CHECK_EQ(raised.size(), 1);
+            IM_CHECK_EQ(raised[3], false);
+        });
 }

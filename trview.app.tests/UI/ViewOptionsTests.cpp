@@ -154,30 +154,6 @@ TEST(ViewOptions, WireframeCheckboxUpdated)
     ASSERT_TRUE(imgui.status_flags(imgui.id("View Options").push(ViewOptions::Names::flags).id(IViewer::Options::wireframe)) & ImGuiItemStatusFlags_Checked);
 }
 
-TEST(ViewOptions, FlipFlagsToggle)
-{
-    ViewOptions view_options;
-
-    std::unordered_map<uint32_t, bool> raised;
-    auto token = view_options.on_alternate_group += [&](uint32_t group, bool state)
-    {
-        raised[group] = state;
-    };
-
-    view_options.set_use_alternate_groups(true);
-    view_options.set_alternate_groups({ 1, 3, 5 });
-
-    tests::TestImgui imgui([&]() { view_options.render(); });
-    auto original = imgui.style_colour(imgui.id("View Options").id("3##3_flip"), ImGuiCol_Button);
-    imgui.click_element(imgui.id("View Options").id("3##3_flip"));
-    imgui.render();
-
-    ASSERT_EQ(raised.size(), 1);
-    ASSERT_EQ(raised[3], true);
-    auto changed = imgui.style_colour(imgui.id("View Options").id("3##3_flip"), ImGuiCol_Button);
-    ASSERT_NE(original, changed);
-}
-
 TEST(ViewOptions, FlipFlagsUpdated)
 {
     ViewOptions view_options;
@@ -192,20 +168,6 @@ TEST(ViewOptions, FlipFlagsUpdated)
     auto changed = imgui.style_colour(imgui.id("View Options").id("3##3_flip"), ImGuiCol_Button);
     ASSERT_NE(original, changed);
 }
-
-TEST(ViewOptions, FlipCheckboxHiddenWithAlternateGroups)
-{
-    ViewOptions view_options;
-
-    tests::TestImgui imgui([&]() { view_options.render(); });
-    ASSERT_TRUE(imgui.element_present(imgui.id("View Options").push(ViewOptions::Names::flags).id(IViewer::Options::flip)));
-
-    view_options.set_use_alternate_groups(true);
-    imgui.reset();
-    imgui.render();
-    ASSERT_FALSE(imgui.element_present(imgui.id("View Options").push(ViewOptions::Names::flags).id(IViewer::Options::flip)));
-}
-
 TEST(ViewOptions, ItemsCheckboxToggle)
 {
     ViewOptions view_options;
@@ -223,19 +185,6 @@ TEST(ViewOptions, ItemsCheckboxToggle)
     ASSERT_EQ(std::get<0>(clicked.value()), IViewer::Options::items);
     ASSERT_FALSE(std::get<1>(clicked.value()));
 }
-
-TEST(ViewOptions, ItemsCheckboxUpdated)
-{
-    ViewOptions view_options;
-
-    tests::TestImgui imgui([&]() { view_options.render(); });
-    ASSERT_TRUE(imgui.status_flags(imgui.id("View Options").push(ViewOptions::Names::flags).id(IViewer::Options::items)) & ImGuiItemStatusFlags_Checked);
-
-    view_options.set_toggle(IViewer::Options::items, false);
-    imgui.render();
-    ASSERT_FALSE(imgui.status_flags(imgui.id("View Options").push(ViewOptions::Names::flags).id(IViewer::Options::items)) & ImGuiItemStatusFlags_Checked);
-}
-
 
 TEST(ViewOptions, RoomsCheckboxToggle)
 {
