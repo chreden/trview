@@ -92,9 +92,6 @@
     <ClCompile Include="Elements\StaticMeshTests.cpp">
       <Filter>Elements</Filter>
     </ClCompile>
-    <ClCompile Include="UI\ViewOptionsTests.cpp">
-      <Filter>UI</Filter>
-    </ClCompile>
     <ClCompile Include="Settings\SettingsLoaderTests.cpp">
       <Filter>Settings</Filter>
     </ClCompile>

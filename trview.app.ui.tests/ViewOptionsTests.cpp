@@ -139,6 +139,25 @@ void register_view_options_tests(ImGuiTestEngine* engine)
             IM_CHECK_EQ(ctx->ItemIsChecked("flags/Depth"), true);
         });
 
+    test<ViewOptions>(engine, "View Options", "Depth Value Updated",
+        [](ImGuiTestContext* ctx) { ctx->GetVars<ViewOptions>().render(); },
+        [](ImGuiTestContext* ctx)
+        {
+            auto& view_options = ctx->GetVars<ViewOptions>();
+            std::optional<std::tuple<std::string, int32_t>> clicked;
+            auto token = view_options.on_scalar_changed += [&](const std::string& name, int32_t value)
+            {
+                clicked = { name, value };
+            };
+
+            ctx->SetRef("View Options");
+            ctx->ItemClick("flags/##DepthValue/+");
+
+            IM_CHECK_EQ(clicked.has_value(), true);
+            IM_CHECK_EQ(std::get<0>(clicked.value()), IViewer::Options::depth);
+            IM_CHECK_EQ(std::get<1>(clicked.value()), 1);
+        });
+
     test<ViewOptions>(engine, "View Options", "Flip Checkbox Enabled",
         [](ImGuiTestContext* ctx) { ctx->GetVars<ViewOptions>().render(); },
         [](ImGuiTestContext* ctx)
@@ -252,5 +271,311 @@ void register_view_options_tests(ImGuiTestEngine* engine)
             ctx->ItemClick("3##3_flip");
             IM_CHECK_EQ(raised.size(), 1);
             IM_CHECK_EQ(raised[3], false);
+        });
+
+    test<ViewOptions>(engine, "View Options", "Hidden Geometry Checkbox Toggle",
+        [](ImGuiTestContext* ctx) { ctx->GetVars<ViewOptions>().render(); },
+        [](ImGuiTestContext* ctx)
+        {
+            auto& view_options = ctx->GetVars<ViewOptions>();
+            std::optional<std::tuple<std::string, bool>> clicked;
+            auto token = view_options.on_toggle_changed += [&](const std::string& name, bool value)
+            {
+                clicked = { name, value };
+            };
+
+            ctx->SetRef("View Options");
+            ctx->ItemCheck("flags/Geometry");
+
+            IM_CHECK_EQ(clicked.has_value(), true);
+            IM_CHECK_EQ(std::get<0>(clicked.value()), IViewer::Options::geometry);
+            IM_CHECK_EQ(std::get<1>(clicked.value()), true);
+        });
+
+    test<ViewOptions>(engine, "View Options", "Hidden Geometry Checkbox Updated",
+        [](ImGuiTestContext* ctx) { ctx->GetVars<ViewOptions>().render(); },
+        [](ImGuiTestContext* ctx)
+        {
+            auto& view_options = ctx->GetVars<ViewOptions>();
+
+            ctx->SetRef("View Options");
+            IM_CHECK_EQ(ctx->ItemIsChecked("flags/Geometry"), false);
+
+            view_options.set_toggle(IViewer::Options::geometry, true);
+            ctx->Yield();
+
+            IM_CHECK_EQ(ctx->ItemIsChecked("flags/Geometry"), true);
+        });
+
+    test<ViewOptions>(engine, "View Options", "Highlight Checkbox Toggle",
+        [](ImGuiTestContext* ctx) { ctx->GetVars<ViewOptions>().render(); },
+        [](ImGuiTestContext* ctx)
+        {
+            auto& view_options = ctx->GetVars<ViewOptions>();
+            std::optional<std::tuple<std::string, bool>> clicked;
+            auto token = view_options.on_toggle_changed += [&](const std::string& name, bool value)
+            {
+                clicked = { name, value };
+            };
+
+            ctx->SetRef("View Options");
+            ctx->ItemCheck("flags/Highlight");
+
+            IM_CHECK_EQ(clicked.has_value(), true);
+            IM_CHECK_EQ(std::get<0>(clicked.value()), IViewer::Options::highlight);
+            IM_CHECK_EQ(std::get<1>(clicked.value()), true);
+        });
+
+    test<ViewOptions>(engine, "View Options", "Highlight Checkbox Updated",
+        [](ImGuiTestContext* ctx) { ctx->GetVars<ViewOptions>().render(); },
+        [](ImGuiTestContext* ctx)
+        {
+            auto& view_options = ctx->GetVars<ViewOptions>();
+
+            ctx->SetRef("View Options");
+            IM_CHECK_EQ(ctx->ItemIsChecked("flags/Highlight"), false);
+
+            view_options.set_toggle(IViewer::Options::highlight, true);
+            ctx->Yield();
+
+            IM_CHECK_EQ(ctx->ItemIsChecked("flags/Highlight"), true);
+        });
+
+    test<ViewOptions>(engine, "View Options", "Items Checkbox Toggle",
+        [](ImGuiTestContext* ctx) { ctx->GetVars<ViewOptions>().render(); },
+        [](ImGuiTestContext* ctx)
+        {
+            auto& view_options = ctx->GetVars<ViewOptions>();
+            std::optional<std::tuple<std::string, bool>> clicked;
+            auto token = view_options.on_toggle_changed += [&](const std::string& name, bool value)
+            {
+                clicked = { name, value };
+            };
+
+            ctx->SetRef("View Options");
+            ctx->ItemUncheck("flags/Items");
+
+            IM_CHECK_EQ(clicked.has_value(), true);
+            IM_CHECK_EQ(std::get<0>(clicked.value()), IViewer::Options::items);
+            IM_CHECK_EQ(std::get<1>(clicked.value()), false);
+        });
+
+    test<ViewOptions>(engine, "View Options", "Items Checkbox Updated",
+        [](ImGuiTestContext* ctx) { ctx->GetVars<ViewOptions>().render(); },
+        [](ImGuiTestContext* ctx)
+        {
+            auto& view_options = ctx->GetVars<ViewOptions>();
+
+            ctx->SetRef("View Options");
+            IM_CHECK_EQ(ctx->ItemIsChecked("flags/Items"), true);
+
+            view_options.set_toggle(IViewer::Options::items, false);
+            ctx->Yield();
+
+            IM_CHECK_EQ(ctx->ItemIsChecked("flags/Items"), false);
+        });
+
+    test<ViewOptions>(engine, "View Options", "Lighting Checkbox Toggle",
+        [](ImGuiTestContext* ctx) { ctx->GetVars<ViewOptions>().render(); },
+        [](ImGuiTestContext* ctx)
+        {
+            auto& view_options = ctx->GetVars<ViewOptions>();
+            std::optional<std::tuple<std::string, bool>> clicked;
+            auto token = view_options.on_toggle_changed += [&](const std::string& name, bool value)
+            {
+                clicked = { name, value };
+            };
+
+            ctx->SetRef("View Options");
+            ctx->ItemUncheck("flags/Lighting");
+
+            IM_CHECK_EQ(clicked.has_value(), true);
+            IM_CHECK_EQ(std::get<0>(clicked.value()), IViewer::Options::lighting);
+            IM_CHECK_EQ(std::get<1>(clicked.value()), false);
+        });
+
+    test<ViewOptions>(engine, "View Options", "Lighting Checkbox Updated",
+        [](ImGuiTestContext* ctx) { ctx->GetVars<ViewOptions>().render(); },
+        [](ImGuiTestContext* ctx)
+        {
+            auto& view_options = ctx->GetVars<ViewOptions>();
+
+            ctx->SetRef("View Options");
+            IM_CHECK_EQ(ctx->ItemIsChecked("flags/Lighting"), true);
+
+            view_options.set_toggle(IViewer::Options::lighting, false);
+            ctx->Yield();
+
+            IM_CHECK_EQ(ctx->ItemIsChecked("flags/Lighting"), false);
+        });
+
+    test<ViewOptions>(engine, "View Options", "Notes Checkbox Toggle",
+        [](ImGuiTestContext* ctx) { ctx->GetVars<ViewOptions>().render(); },
+        [](ImGuiTestContext* ctx)
+        {
+            auto& view_options = ctx->GetVars<ViewOptions>();
+            std::optional<std::tuple<std::string, bool>> clicked;
+            auto token = view_options.on_toggle_changed += [&](const std::string& name, bool value)
+            {
+                clicked = { name, value };
+            };
+
+            ctx->SetRef("View Options");
+            ctx->ItemUncheck("flags/Notes");
+
+            IM_CHECK_EQ(clicked.has_value(), true);
+            IM_CHECK_EQ(std::get<0>(clicked.value()), IViewer::Options::notes);
+            IM_CHECK_EQ(std::get<1>(clicked.value()), false);
+        });
+
+    test<ViewOptions>(engine, "View Options", "Notes Checkbox Updated",
+        [](ImGuiTestContext* ctx) { ctx->GetVars<ViewOptions>().render(); },
+        [](ImGuiTestContext* ctx)
+        {
+            auto& view_options = ctx->GetVars<ViewOptions>();
+
+            ctx->SetRef("View Options");
+            IM_CHECK_EQ(ctx->ItemIsChecked("flags/Notes"), true);
+
+            view_options.set_toggle(IViewer::Options::notes, false);
+            ctx->Yield();
+
+            IM_CHECK_EQ(ctx->ItemIsChecked("flags/Notes"), false);
+        });
+
+    test<ViewOptions>(engine, "View Options", "Rooms Checkbox Toggle",
+        [](ImGuiTestContext* ctx) { ctx->GetVars<ViewOptions>().render(); },
+        [](ImGuiTestContext* ctx)
+        {
+            auto& view_options = ctx->GetVars<ViewOptions>();
+            std::optional<std::tuple<std::string, bool>> clicked;
+            auto token = view_options.on_toggle_changed += [&](const std::string& name, bool value)
+            {
+                clicked = { name, value };
+            };
+
+            ctx->SetRef("View Options");
+            ctx->ItemUncheck("flags/Rooms");
+
+            IM_CHECK_EQ(clicked.has_value(), true);
+            IM_CHECK_EQ(std::get<0>(clicked.value()), IViewer::Options::rooms);
+            IM_CHECK_EQ(std::get<1>(clicked.value()), false);
+        });
+
+    test<ViewOptions>(engine, "View Options", "Rooms Checkbox Updated",
+        [](ImGuiTestContext* ctx) { ctx->GetVars<ViewOptions>().render(); },
+        [](ImGuiTestContext* ctx)
+        {
+            auto& view_options = ctx->GetVars<ViewOptions>();
+
+            ctx->SetRef("View Options");
+            IM_CHECK_EQ(ctx->ItemIsChecked("flags/Rooms"), true);
+
+            view_options.set_toggle(IViewer::Options::rooms, false);
+            ctx->Yield();
+
+            IM_CHECK_EQ(ctx->ItemIsChecked("flags/Rooms"), false);
+        });
+
+    test<ViewOptions>(engine, "View Options", "Triggers Checkbox Toggle",
+        [](ImGuiTestContext* ctx) { ctx->GetVars<ViewOptions>().render(); },
+        [](ImGuiTestContext* ctx)
+        {
+            auto& view_options = ctx->GetVars<ViewOptions>();
+            std::optional<std::tuple<std::string, bool>> clicked;
+            auto token = view_options.on_toggle_changed += [&](const std::string& name, bool value)
+            {
+                clicked = { name, value };
+            };
+
+            ctx->SetRef("View Options");
+            ctx->ItemUncheck("flags/Triggers");
+
+            IM_CHECK_EQ(clicked.has_value(), true);
+            IM_CHECK_EQ(std::get<0>(clicked.value()), IViewer::Options::triggers);
+            IM_CHECK_EQ(std::get<1>(clicked.value()), false);
+        });
+
+    test<ViewOptions>(engine, "View Options", "Triggers Checkbox Updated",
+        [](ImGuiTestContext* ctx) { ctx->GetVars<ViewOptions>().render(); },
+        [](ImGuiTestContext* ctx)
+        {
+            auto& view_options = ctx->GetVars<ViewOptions>();
+
+            ctx->SetRef("View Options");
+            IM_CHECK_EQ(ctx->ItemIsChecked("flags/Triggers"), true);
+
+            view_options.set_toggle(IViewer::Options::triggers, false);
+            ctx->Yield();
+
+            IM_CHECK_EQ(ctx->ItemIsChecked("flags/Triggers"), false);
+        });
+
+    test<ViewOptions>(engine, "View Options", "Water Checkbox Toggle",
+        [](ImGuiTestContext* ctx) { ctx->GetVars<ViewOptions>().render(); },
+        [](ImGuiTestContext* ctx)
+        {
+            auto& view_options = ctx->GetVars<ViewOptions>();
+            std::optional<std::tuple<std::string, bool>> clicked;
+            auto token = view_options.on_toggle_changed += [&](const std::string& name, bool value)
+            {
+                clicked = { name, value };
+            };
+
+            ctx->SetRef("View Options");
+            ctx->ItemUncheck("flags/Water");
+
+            IM_CHECK_EQ(clicked.has_value(), true);
+            IM_CHECK_EQ(std::get<0>(clicked.value()), IViewer::Options::water);
+            IM_CHECK_EQ(std::get<1>(clicked.value()), false);
+        });
+
+    test<ViewOptions>(engine, "View Options", "Water Checkbox Updated",
+        [](ImGuiTestContext* ctx) { ctx->GetVars<ViewOptions>().render(); },
+        [](ImGuiTestContext* ctx)
+        {
+            auto& view_options = ctx->GetVars<ViewOptions>();
+
+            ctx->SetRef("View Options");
+            IM_CHECK_EQ(ctx->ItemIsChecked("flags/Water"), true);
+
+            view_options.set_toggle(IViewer::Options::water, false);
+            ctx->Yield();
+
+            IM_CHECK_EQ(ctx->ItemIsChecked("flags/Water"), false);
+        });
+
+    test<ViewOptions>(engine, "View Options", "Wireframe Checkbox Toggle",
+        [](ImGuiTestContext* ctx) { ctx->GetVars<ViewOptions>().render(); },
+        [](ImGuiTestContext* ctx)
+        {
+            auto& view_options = ctx->GetVars<ViewOptions>();
+            std::optional<std::tuple<std::string, bool>> clicked;
+            auto token = view_options.on_toggle_changed += [&](const std::string& name, bool value)
+            {
+                clicked = { name, value };
+            };
+
+            ctx->SetRef("View Options");
+            ctx->ItemCheck("flags/Wireframe");
+
+            IM_CHECK_EQ(clicked.has_value(), true);
+            IM_CHECK_EQ(std::get<0>(clicked.value()), IViewer::Options::wireframe);
+            IM_CHECK_EQ(std::get<1>(clicked.value()), true);
+        });
+
+    test<ViewOptions>(engine, "View Options", "Wireframe Checkbox Updated",
+        [](ImGuiTestContext* ctx) { ctx->GetVars<ViewOptions>().render(); },
+        [](ImGuiTestContext* ctx)
+        {
+            auto& view_options = ctx->GetVars<ViewOptions>();
+
+            ctx->SetRef("View Options");
+            IM_CHECK_EQ(ctx->ItemIsChecked("flags/Wireframe"), false);
+
+            view_options.set_toggle(IViewer::Options::wireframe, true);
+            ctx->Yield();
+
+            IM_CHECK_EQ(ctx->ItemIsChecked("flags/Wireframe"), true);
         });
 }
