@@ -3952,3 +3952,15 @@ void    ImGuiTestContext::PerfCapture(const char* category, const char* test_nam
 }
 
 //-------------------------------------------------------------------------
+
+std::string ItemText(ImGuiTestContext* ctx, ImGuiTestRef ref)
+{
+    for (const auto& t : ctx->Engine->Texts)
+    {
+        if (t.ID == ref.ID)
+        {
+            return t.text;
+        }
+    }
+    return std::string{};
+}

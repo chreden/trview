@@ -7,6 +7,8 @@
 #include "imgui_te_utils.h"         // ImMovingAverage
 #include "imgui_capture_tool.h"     // ImGuiCaptureTool  // FIXME
 
+#include <string>
+
 //-------------------------------------------------------------------------
 // FORWARD DECLARATIONS
 //-------------------------------------------------------------------------
@@ -124,6 +126,13 @@ struct ImGuiTestInputs
     float                       HostEscDownDuration = -1.0f;    // Maintain our own DownDuration for host/backend ESC key so we can abort.
 };
 
+// trview modification:
+struct TRViewImGuiText
+{
+    ImGuiID ID{ 0 };
+    std::string text;
+};
+
 // [Internal] Test Engine Context
 struct ImGuiTestEngine
 {
@@ -180,6 +189,9 @@ struct ImGuiTestEngine
     int                         ToolSlowDownMs = 100;
     ImGuiTestRunSpeed           BackupConfigRunSpeed = ImGuiTestRunSpeed_Fast;
     bool                        BackupConfigNoThrottle = false;
+
+    // TRView extras
+    ImVector<TRViewImGuiText>   Texts;
 
     // Functions
     ImGuiTestEngine();
