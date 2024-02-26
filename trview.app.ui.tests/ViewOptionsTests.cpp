@@ -10,33 +10,12 @@
 #include <trview.app/UI/ViewOptions.h>
 #include <trview.app/Windows/IViewer.h>
 
-namespace
-{
-    template <typename T>
-    void test(
-        ImGuiTestEngine* engine,
-        const char* category,
-        const char* name,
-        ImFuncPtr(ImGuiTestGuiFunc) gui_func,
-        ImFuncPtr(ImGuiTestTestFunc) test_func)
-    {
-        auto t = IM_REGISTER_TEST(engine, category, name);
-        t->SetVarsDataType<T>();
-        t->GuiFunc = gui_func;
-        t->TestFunc = test_func;
-    }
+#include "TestHelpers.h"
 
-    void checkbox_test(ImGuiTestEngine* engine, const char* name)
-    {
-
-    }
-}
-
+using namespace trview;
 
 void register_view_options_tests(ImGuiTestEngine* engine)
 {
-    using namespace trview;
-
     test<ViewOptions>(engine, "View Options", "Bounds Checkbox Toggle",
         [](ImGuiTestContext* ctx) { ctx->GetVars<ViewOptions>().render(); },
         [](ImGuiTestContext* ctx)
