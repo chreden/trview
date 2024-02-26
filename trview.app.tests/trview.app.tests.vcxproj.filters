@@ -95,9 +95,6 @@
     <ClCompile Include="Settings\SettingsLoaderTests.cpp">
       <Filter>Settings</Filter>
     </ClCompile>
-    <ClCompile Include="UI\CameraControlsTests.cpp">
-      <Filter>UI</Filter>
-    </ClCompile>
     <ClCompile Include="Settings\RandomizerSettingsTests.cpp">
       <Filter>Settings</Filter>
     </ClCompile>

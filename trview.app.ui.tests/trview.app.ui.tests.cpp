@@ -11,7 +11,8 @@
 #include <imgui.h>
 #include <imgui_internal.h>
 #include <imgui_app.h>
-// #include <imgui_te_engine.h>
+#include <imgui_te_engine.h>
+#include <imgui_te_internal.h>
 #include <imgui_te_context.h>
 #include <imgui_te_ui.h>
 
@@ -19,6 +20,19 @@
 
 void ImGuiTrviewTestEngineHook_ItemText(ImGuiContext* ctx, ImGuiID id, const char* buf)
 {
+    ImGuiTestEngine* engine = static_cast<ImGuiTestEngine*>(ctx->TestEngine);
+    if (engine)
+    {
+        for (auto& t : engine->Texts)
+        {
+            if (t.ID == id)
+            {
+                t.text = buf;
+                return;
+            }
+        }
+        engine->Texts.push_back({ id, buf });
+    }
 }
 
 void ImGuiTrviewTestEngineHook_RenderedText(ImGuiContext* ctx, ImGuiID id, const char* buf)

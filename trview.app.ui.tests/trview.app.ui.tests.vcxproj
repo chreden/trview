@@ -145,6 +145,8 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="..\external\shared\imgui_app.h" />
+    <ClInclude Include="CameraControlsTests.h" />
+    <ClInclude Include="TestHelpers.h" />
     <ClInclude Include="trview_imconfig.h" />
     <ClInclude Include="trview_tests.h" />
     <ClInclude Include="ViewOptionsTests.h" />
@@ -157,6 +159,7 @@
     <ClCompile Include="..\external\imgui\imgui_widgets.cpp" />
     <ClCompile Include="..\external\imgui\misc\cpp\imgui_stdlib.cpp" />
     <ClCompile Include="..\external\shared\imgui_app.cpp" />
+    <ClCompile Include="CameraControlsTests.cpp" />
     <ClCompile Include="trview.app.ui.tests.cpp" />
     <ClCompile Include="trview_tests.cpp" />
     <ClCompile Include="ViewOptionsTests.cpp" />
@@ -168,6 +171,9 @@
     <ProjectReference Include="..\trview.app\trview.app.vcxproj">
       <Project>{a087af08-5371-47de-a896-afa21dd9d383}</Project>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="TestHelpers.inl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
