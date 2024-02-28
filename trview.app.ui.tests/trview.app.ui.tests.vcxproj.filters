@@ -54,6 +54,9 @@
     <ClCompile Include="CameraControlsTests.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="RoomNavigatorTests.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\external\shared\imgui_app.h">
@@ -72,6 +75,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="CameraControlsTests.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="RoomNavigatorTests.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

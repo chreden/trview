@@ -146,6 +146,7 @@
   <ItemGroup>
     <ClInclude Include="..\external\shared\imgui_app.h" />
     <ClInclude Include="CameraControlsTests.h" />
+    <ClInclude Include="RoomNavigatorTests.h" />
     <ClInclude Include="TestHelpers.h" />
     <ClInclude Include="trview_imconfig.h" />
     <ClInclude Include="trview_tests.h" />
@@ -160,6 +161,7 @@
     <ClCompile Include="..\external\imgui\misc\cpp\imgui_stdlib.cpp" />
     <ClCompile Include="..\external\shared\imgui_app.cpp" />
     <ClCompile Include="CameraControlsTests.cpp" />
+    <ClCompile Include="RoomNavigatorTests.cpp" />
     <ClCompile Include="trview.app.ui.tests.cpp" />
     <ClCompile Include="trview_tests.cpp" />
     <ClCompile Include="ViewOptionsTests.cpp" />

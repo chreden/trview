@@ -1,9 +1,11 @@
 #include "trview_tests.h"
-#include "ViewOptionsTests.h"
 #include "CameraControlsTests.h"
+#include "RoomNavigatorTests.h"
+#include "ViewOptionsTests.h"
 
 void register_trview_tests(ImGuiTestEngine* engine)
 {
     register_camera_controls_tests(engine);
+    register_room_navigator_controls_tests(engine);
     register_view_options_tests(engine);
 }

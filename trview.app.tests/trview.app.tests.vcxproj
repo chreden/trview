@@ -98,7 +98,6 @@
     <ClCompile Include="UI\GoToTests.cpp" />
     <ClCompile Include="UI\LevelInfoTests.cpp" />
     <ClCompile Include="UI\MapColoursTests.cpp" />
-    <ClCompile Include="UI\RoomNavigatorTests.cpp" />
     <ClCompile Include="UI\ViewerUITests.cpp" />
     <ClCompile Include="ViewMenuTests.cpp" />
     <ClCompile Include="WindowResizerTests.cpp" />
