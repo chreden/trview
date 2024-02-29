@@ -1,20 +1,12 @@
 // trview.app.ui.tests.cpp : This file contains the 'main' function. Program execution begins and ends there.
 //
 
+#include "pch.h"
+
 #include <iostream>
 #include <optional>
 #include <string>
 #include <format>
-
-#define IMGUI_TEST_ENGINE_ENABLE_COROUTINE_STDTHREAD_IMPL 1
-
-#include <imgui.h>
-#include <imgui_internal.h>
-#include <imgui_app.h>
-#include <imgui_te_engine.h>
-#include <imgui_te_internal.h>
-#include <imgui_te_context.h>
-#include <imgui_te_ui.h>
 
 #include "trview_tests.h"
 

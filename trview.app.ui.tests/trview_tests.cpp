@@ -1,3 +1,4 @@
+#include "pch.h"
 #include "trview_tests.h"
 #include "CameraControlsTests.h"
 #include "RoomNavigatorTests.h"

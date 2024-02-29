@@ -1,14 +1,7 @@
-#include <windows.h>
-#undef Yield
-
+#include "pch.h"
 #include "CameraControlsTests.h"
-#include <imgui_te_context.h>
-#include <imgui_te_engine.h>
-#include <imgui_te_internal.h>
 
 #include <trview.app/UI/CameraControls.h>
-
-#include "TestHelpers.h"
 
 using namespace trview;
 

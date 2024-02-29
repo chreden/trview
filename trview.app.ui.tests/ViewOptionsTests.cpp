@@ -1,16 +1,9 @@
-#include <windows.h>
-#undef Yield
-
+#include "pch.h"
 #include "ViewOptionsTests.h"
-#include <imgui_te_context.h>
-#include <imgui_te_engine.h>
-#include <imgui_te_internal.h>
 #include <format>
 
 #include <trview.app/UI/ViewOptions.h>
 #include <trview.app/Windows/IViewer.h>
-
-#include "TestHelpers.h"
 
 using namespace trview;
 
