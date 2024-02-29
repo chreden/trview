@@ -13,4 +13,6 @@
 #include <imgui_te_internal.h>
 #include <imgui_te_ui.h>
 
+#include <trview.tests.common/Mocks.h>
+
 #include "TestHelpers.h"

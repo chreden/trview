@@ -95,25 +95,6 @@ TEST(SettingsWindow, SetGoToLaraUpdatesCheckbox)
     ASSERT_TRUE(imgui.status_flags(imgui.id("Settings").push("TabBar").push("General").id(SettingsWindow::Names::go_to_lara)) & ImGuiItemStatusFlags_Checked);
 }
 
-TEST(SettingsWindow, ClickingGoToLaraRaisesEvent)
-{
-    auto window = register_test_module().build();
-    window->toggle_visibility();
-
-    std::optional<bool> received_value;
-    auto token = window->on_go_to_lara += [&](bool value)
-    {
-        received_value = value;
-    };
-
-    TestImgui imgui([&]() { window->render(); });
-    ASSERT_FALSE(imgui.status_flags(imgui.id("Settings").push("TabBar").push("General").id(SettingsWindow::Names::go_to_lara)) & ImGuiItemStatusFlags_Checked);
-    imgui.click_element(imgui.id("Settings").push("TabBar").push("General").id(SettingsWindow::Names::go_to_lara));
-    ASSERT_TRUE(imgui.status_flags(imgui.id("Settings").push("TabBar").push("General").id(SettingsWindow::Names::go_to_lara)) & ImGuiItemStatusFlags_Checked);
-    ASSERT_EQ(received_value.has_value(), true);
-    ASSERT_TRUE(received_value.value());
-}
-
 TEST(SettingsWindow, SetInvertMapControlsUpdatesCheckbox)
 {
     auto window = register_test_module().build();
@@ -433,27 +414,6 @@ TEST(SettingsWindow, SetAccelerationUpdatesCheckbox)
     ASSERT_TRUE(imgui.status_flags(imgui.id("Settings").push("TabBar").push("Camera").id(SettingsWindow::Names::acceleration )) & ImGuiItemStatusFlags_Checked);
 }
 
-TEST(SettingsWindow, ClickingAccelerationRaisesEvent)
-{
-    auto window = register_test_module().build();
-    window->toggle_visibility();
-
-    std::optional<bool> received_value;
-    auto token = window->on_camera_acceleration += [&](bool value)
-    {
-        received_value = value;
-    };
-
-    TestImgui imgui([&]() { window->render(); });
-    imgui.click_element(imgui.id("Settings").push("TabBar").id("Camera"));
-    imgui.render();
-    ASSERT_FALSE(imgui.status_flags(imgui.id("Settings").push("TabBar").push("Camera").id(SettingsWindow::Names::acceleration )) & ImGuiItemStatusFlags_Checked);
-    imgui.click_element(imgui.id("Settings").push("TabBar").push("Camera").id(SettingsWindow::Names::acceleration ));
-    ASSERT_TRUE(imgui.status_flags(imgui.id("Settings").push("TabBar").push("Camera").id(SettingsWindow::Names::acceleration )) & ImGuiItemStatusFlags_Checked);
-    ASSERT_EQ(received_value.has_value(), true);
-    ASSERT_TRUE(received_value.value());
-}
-
 TEST(SettingsWindow, SetAccelerationRateUpdatesSlider)
 {
     auto window = register_test_module().build();
@@ -476,70 +436,6 @@ TEST(SettingsWindow, SetAccelerationRateUpdatesSlider)
     ASSERT_EQ(imgui.item_text(imgui.id("Settings").push("TabBar").push("Camera").id(SettingsWindow::Names::acceleration_rate)), "0.500");
     ASSERT_FALSE(received_value.has_value());
 }
-
-
-TEST(SettingsWindow, ClickingAccelerationRateRaisesEvent)
-{
-    auto window = register_test_module().build();
-    window->toggle_visibility();
-
-    TestImgui imgui([&]() { window->render(); });
-    imgui.click_element(imgui.id("Settings").push("TabBar").id("Camera"));
-    imgui.render();
-
-    const auto acceleration_rate_id = imgui.id("Settings").push("TabBar").push("Camera").id(SettingsWindow::Names::acceleration_rate);
-
-    ASSERT_EQ(imgui.item_text(acceleration_rate_id), "1.000");
-
-    std::optional<float> received_value;
-    auto token = window->on_camera_acceleration_rate += [&](float value)
-    {
-        received_value = value;
-    };
-
-    imgui.mouse_down_element(acceleration_rate_id, acceleration_rate_id);
-
-    ASSERT_EQ(imgui.item_text(acceleration_rate_id), "0.000");
-    ASSERT_TRUE(received_value.has_value());
-    ASSERT_EQ(received_value.value(), 0.0f);
-}
-
-TEST(SettingsWindow, ClickingCameraDegreesRaisesEvent)
-{
-    auto window = register_test_module().build();
-    window->toggle_visibility();
-
-    TestImgui imgui([&]() { window->render(); });
-    imgui.click_element(imgui.id("Settings").push("TabBar").id("Camera"));
-    imgui.render();
-    ASSERT_FALSE(imgui.status_flags(imgui.id("Settings").push("TabBar").push("Camera").id(SettingsWindow::Names::camera_display_degrees )) & ImGuiItemStatusFlags_Checked);
-
-    window->set_camera_display_degrees(true);
-    imgui.render();
-    ASSERT_TRUE(imgui.status_flags(imgui.id("Settings").push("TabBar").push("Camera").id(SettingsWindow::Names::camera_display_degrees )) & ImGuiItemStatusFlags_Checked);
-}
-
-TEST(SettingsWindow, SetCameraDegreesUpdatesCheckbox)
-{
-    auto window = register_test_module().build();
-    window->toggle_visibility();
-
-    std::optional<bool> received_value;
-    auto token = window->on_camera_display_degrees += [&](bool value)
-    {
-        received_value = value;
-    };
-
-    TestImgui imgui([&]() { window->render(); });
-    imgui.click_element(imgui.id("Settings").push("TabBar").id("Camera"));
-    imgui.render();
-    ASSERT_FALSE(imgui.status_flags(imgui.id("Settings").push("TabBar").push("Camera").id(SettingsWindow::Names::camera_display_degrees )) & ImGuiItemStatusFlags_Checked);
-    imgui.click_element(imgui.id("Settings").push("TabBar").push("Camera").id(SettingsWindow::Names::camera_display_degrees ));
-    ASSERT_TRUE(imgui.status_flags(imgui.id("Settings").push("TabBar").push("Camera").id(SettingsWindow::Names::camera_display_degrees )) & ImGuiItemStatusFlags_Checked);
-    ASSERT_EQ(received_value.has_value(), true);
-    ASSERT_TRUE(received_value.value());
-}
-
 
 TEST(SettingsWindow, ClickingRandomizerToolsRaisesEvent)
 {
@@ -759,24 +655,6 @@ TEST(SettingsWindow, SetRandomizerToolsUpdatesCheckbox)
     */
 }
 
-TEST(SettingsWindow, ChangingMaxRecentFilesRaisesEvent)
-{
-    auto window = register_test_module().build();
-    window->toggle_visibility();
-
-    std::optional<uint32_t> received_value;
-    auto token = window->on_max_recent_files += [&](uint32_t value)
-    {
-        received_value = value;
-    };
-
-    tests::TestImgui imgui([&]() { window->render(); });
-    imgui.click_element(imgui.id("Settings").push("TabBar").push("General").push(SettingsWindow::Names::max_recent_files).id("+"));
-
-    ASSERT_TRUE(received_value.has_value());
-    ASSERT_EQ(received_value.value(), 11);
-}
-
 TEST(SettingsWindow, SetMaxRecentFilesUpdatesNumericUpDown)
 {
     auto window = register_test_module().build();
@@ -952,33 +830,6 @@ TEST(SettingsWindow, SetFovUpdatesSlider)
     ASSERT_FALSE(received_value.has_value());
 }
 
-
-TEST(SettingsWindow, ClickingFovRaisesEvent)
-{
-    auto window = register_test_module().build();
-    window->toggle_visibility();
-
-    TestImgui imgui([&]() { window->render(); });
-    imgui.click_element(imgui.id("Settings").push("TabBar").id("Camera"));
-    imgui.render();
-
-    const auto fov_id = imgui.id("Settings").push("TabBar").push("Camera").id(SettingsWindow::Names::fov);
-
-    ASSERT_EQ(imgui.item_text(fov_id), "45.000");
-
-    std::optional<float> received_value;
-    auto token = window->on_camera_fov += [&](float value)
-    {
-        received_value = value;
-    };
-
-    imgui.mouse_down_element(fov_id, fov_id);
-
-    ASSERT_EQ(imgui.item_text(fov_id), "10.000");
-    ASSERT_TRUE(received_value.has_value());
-    ASSERT_EQ(received_value.value(), 10.0f);
-}
-
 TEST(SettingsWindow, ClickingResetFovRaisesEvent)
 {
     auto window = register_test_module().build();
@@ -1019,25 +870,6 @@ TEST(SettingsWindow, SetCameraSinkWindowOnStartupUpdatesCheckbox)
     ASSERT_TRUE(imgui.status_flags(imgui.id("Settings").push("TabBar").push("General").id(SettingsWindow::Names::camera_sink_startup)) & ImGuiItemStatusFlags_Checked);
 }
 
-TEST(SettingsWindow, ClickingCameraSinkWindowOnStartupRaisesEvent)
-{
-    auto window = register_test_module().build();
-    window->toggle_visibility();
-
-    std::optional<bool> received_value;
-    auto token = window->on_camera_sink_startup += [&](bool value)
-    {
-        received_value = value;
-    };
-
-    TestImgui imgui([&]() { window->render(); });
-    ASSERT_FALSE(imgui.status_flags(imgui.id("Settings").push("TabBar").push("General").id(SettingsWindow::Names::camera_sink_startup)) & ImGuiItemStatusFlags_Checked);
-    imgui.click_element(imgui.id("Settings").push("TabBar").push("General").id(SettingsWindow::Names::camera_sink_startup));
-    ASSERT_TRUE(imgui.status_flags(imgui.id("Settings").push("TabBar").push("General").id(SettingsWindow::Names::camera_sink_startup)) & ImGuiItemStatusFlags_Checked);
-    ASSERT_EQ(received_value.has_value(), true);
-    ASSERT_TRUE(received_value.value());
-}
-
 TEST(SettingsWindow, OpenPluginDirectories)
 {
     auto shell = mock_shared<MockShell>();
@@ -1069,30 +901,6 @@ TEST(SettingsWindow, RemovePluginDirectories)
     imgui.click_element(imgui.id("Settings").push("TabBar").push("Plugins").push("Directories").id("Remove##0"));
 
     const std::vector<std::string> expected;
-    ASSERT_TRUE(raised);
-    ASSERT_EQ(raised.value(), expected);
-}
-
-TEST(SettingsWindow, AddPluginDirectories)
-{
-    auto dialogs = mock_shared<MockDialogs>();
-    ON_CALL(*dialogs, open_folder).WillByDefault(Return("test"));
-
-    auto window = register_test_module().with_dialogs(dialogs).build();
-
-    std::optional<std::vector<std::string>> raised;
-    auto token = window->on_plugin_directories += [&](const auto& value)
-    {
-        raised = value;
-    };
-
-    window->toggle_visibility();
-
-    TestImgui imgui([&]() { window->render(); });
-    imgui.click_element(imgui.id("Settings").push("TabBar").id("Plugins"));
-    imgui.click_element(imgui.id("Settings").push("TabBar").push("Plugins").push("Directories").id("Add"));
-
-    const std::vector<std::string> expected{ "test" };
     ASSERT_TRUE(raised);
     ASSERT_EQ(raised.value(), expected);
 }

@@ -76,7 +76,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions);IMGUI_USER_CONFIG="trview_imconfig.h"</PreprocessorDefinitions>
       <ConformanceMode>false</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)external\shared;$(SolutionDir)external\imgui_test_engine;$(SolutionDir)external\imgui;$(SolutionDir)external\imgui\backends;$(ProjectDir);$(SolutionDir);$(SolutionDir)external\DirectXTK\Inc</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)external\shared;$(SolutionDir)external\imgui_test_engine;$(SolutionDir)external\imgui;$(SolutionDir)external\imgui\backends;$(ProjectDir);$(SolutionDir);$(SolutionDir)external\DirectXTK\Inc;$(SolutionDir)external\googletest\include;$(SolutionDir)external\googlemock\include</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <PrecompiledHeader>Use</PrecompiledHeader>
@@ -96,7 +96,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions);IMGUI_USER_CONFIG="trview_imconfig.h"</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)external\shared;$(SolutionDir)external\imgui_test_engine;$(SolutionDir)external\imgui;$(SolutionDir)external\imgui\backends;$(ProjectDir);$(SolutionDir);$(SolutionDir)external\DirectXTK\Inc</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)external\shared;$(SolutionDir)external\imgui_test_engine;$(SolutionDir)external\imgui;$(SolutionDir)external\imgui\backends;$(ProjectDir);$(SolutionDir);$(SolutionDir)external\DirectXTK\Inc;$(SolutionDir)external\googletest\include;$(SolutionDir)external\googlemock\include</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <PrecompiledHeader>Use</PrecompiledHeader>
@@ -117,7 +117,7 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions);IMGUI_USER_CONFIG="trview_imconfig.h"</PreprocessorDefinitions>
       <ConformanceMode>false</ConformanceMode>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>$(SolutionDir)external\shared;$(SolutionDir)external\imgui_test_engine;$(SolutionDir)external\imgui;$(SolutionDir)external\imgui\backends;$(ProjectDir);$(SolutionDir);$(SolutionDir)external\DirectXTK\Inc</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)external\shared;$(SolutionDir)external\imgui_test_engine;$(SolutionDir)external\imgui;$(SolutionDir)external\imgui\backends;$(ProjectDir);$(SolutionDir);$(SolutionDir)external\DirectXTK\Inc;$(SolutionDir)external\googletest\include;$(SolutionDir)external\googlemock\include</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <PrecompiledHeader>Use</PrecompiledHeader>
@@ -137,7 +137,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions);IMGUI_USER_CONFIG="trview_imconfig.h"</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)external\shared;$(SolutionDir)external\imgui_test_engine;$(SolutionDir)external\imgui;$(SolutionDir)external\imgui\backends;$(ProjectDir);$(SolutionDir);$(SolutionDir)external\DirectXTK\Inc</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)external\shared;$(SolutionDir)external\imgui_test_engine;$(SolutionDir)external\imgui;$(SolutionDir)external\imgui\backends;$(ProjectDir);$(SolutionDir);$(SolutionDir)external\DirectXTK\Inc;$(SolutionDir)external\googletest\include;$(SolutionDir)external\googlemock\include</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <PrecompiledHeader>Use</PrecompiledHeader>
@@ -219,6 +219,15 @@
     <ClCompile Include="ViewOptionsTests.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\external\DirectXTK\DirectXTK_Desktop.vcxproj">
+      <Project>{a11566d3-4081-42c9-94c5-f4057edd9d50}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\external\googlemock\googlemock.vcxproj">
+      <Project>{6e37091e-954c-4654-9b42-5980410791f4}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\external\googletest\googletest.vcxproj">
+      <Project>{eafd7489-57e3-4b6d-a704-f7c5ef640434}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\external\imgui_test_engine\imgui_test_engine.vcxproj">
       <Project>{e6fac6ef-4b54-45c4-9e76-3b063b51d4b9}</Project>
     </ProjectReference>
