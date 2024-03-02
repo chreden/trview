@@ -78,7 +78,6 @@
     <ClCompile Include="Routing\RandomizerRouteTests.cpp" />
     <ClCompile Include="Routing\RouteTests.cpp" />
     <ClCompile Include="Routing\WaypointTests.cpp" />
-    <ClCompile Include="SettingsWindowTests.cpp" />
     <ClCompile Include="Settings\RandomizerSettingsTests.cpp" />
     <ClCompile Include="Settings\SettingsLoaderTests.cpp" />
     <ClCompile Include="Settings\StartupOptionsTests.cpp" />
@@ -96,7 +95,6 @@
     <ClCompile Include="TriggersWindowTests.cpp" />
     <ClCompile Include="UI\CameraPositionTests.cpp" />
     <ClCompile Include="UI\GoToTests.cpp" />
-    <ClCompile Include="UI\LevelInfoTests.cpp" />
     <ClCompile Include="UI\MapColoursTests.cpp" />
     <ClCompile Include="UI\ViewerUITests.cpp" />
     <ClCompile Include="ViewMenuTests.cpp" />

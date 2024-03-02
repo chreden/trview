@@ -16,3 +16,18 @@
 #include <trview.tests.common/Mocks.h>
 
 #include "TestHelpers.h"
+
+template <typename T>
+struct MockWrapper
+{
+    std::unique_ptr<T> ptr;
+};
+
+template <typename T>
+void render(const MockWrapper<T>& wrapper)
+{
+    if (wrapper.ptr)
+    {
+        wrapper.ptr->render();
+    }
+}

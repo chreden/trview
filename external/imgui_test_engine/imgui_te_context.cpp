@@ -3964,3 +3964,15 @@ std::string ItemText(ImGuiTestContext* ctx, ImGuiTestRef ref)
     }
     return std::string{};
 }
+
+std::string RenderedText(ImGuiTestContext* ctx, ImGuiTestRef ref)
+{
+    for (const auto& t : ctx->Engine->RenderedTexts)
+    {
+        if (t.ID == ref.ID)
+        {
+            return t.text;
+        }
+    }
+    return std::string{};
+}

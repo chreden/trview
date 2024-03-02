@@ -7,6 +7,7 @@
 #include "imgui_te_utils.h"         // ImMovingAverage
 #include "imgui_capture_tool.h"     // ImGuiCaptureTool  // FIXME
 
+#include <vector>
 #include <string>
 
 //-------------------------------------------------------------------------
@@ -191,7 +192,8 @@ struct ImGuiTestEngine
     bool                        BackupConfigNoThrottle = false;
 
     // TRView extras
-    ImVector<TRViewImGuiText>   Texts;
+    std::vector<TRViewImGuiText>   Texts;
+    std::vector<TRViewImGuiText>   RenderedTexts;
 
     // Functions
     ImGuiTestEngine();

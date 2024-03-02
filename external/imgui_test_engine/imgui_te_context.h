@@ -610,6 +610,7 @@ template<> inline void ImGuiTestEngineUtil_appendf_auto(ImGuiTextBuffer* buf, Im
 
 // TRView extensions
 std::string ItemText(ImGuiTestContext* ctx, ImGuiTestRef ref);
+std::string RenderedText(ImGuiTestContext* ctx, ImGuiTestRef ref);
 
 //-------------------------------------------------------------------------
 

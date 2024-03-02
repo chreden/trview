@@ -355,6 +355,7 @@ namespace trview
                         _scroll_to_room = false;
                     }
 
+                    ImGui::SetNextItemAllowOverlap();
                     if (ImGui::Selectable(std::format("{0}##{0}", room_ptr->number()).c_str(), &selected, ImGuiSelectableFlags_SpanAllColumns | static_cast<int>(ImGuiSelectableFlags_SelectOnNav)))
                     {
                         scroller.fix_scroll();
@@ -366,7 +367,6 @@ namespace trview
                         }
                         _scroll_to_room = false;
                     }
-                    ImGui::SetItemAllowOverlap();
                     ImGui::TableNextColumn();
                     ImGui::Text(std::to_string(item_count(*room_ptr)).c_str());
                     ImGui::TableNextColumn();

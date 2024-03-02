@@ -27,9 +27,6 @@
       <Filter>Menus</Filter>
     </ClCompile>
     <ClCompile Include="stdafx.cpp" />
-    <ClCompile Include="SettingsWindowTests.cpp">
-      <Filter>UI</Filter>
-    </ClCompile>
     <ClCompile Include="ContextMenuTests.cpp">
       <Filter>UI</Filter>
     </ClCompile>
@@ -99,9 +96,6 @@
       <Filter>Settings</Filter>
     </ClCompile>
     <ClCompile Include="UI\GoToTests.cpp">
-      <Filter>UI</Filter>
-    </ClCompile>
-    <ClCompile Include="UI\LevelInfoTests.cpp">
       <Filter>UI</Filter>
     </ClCompile>
     <ClCompile Include="Graphics\TextureStorage.cpp">

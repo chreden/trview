@@ -29,6 +29,19 @@ void ImGuiTrviewTestEngineHook_ItemText(ImGuiContext* ctx, ImGuiID id, const cha
 
 void ImGuiTrviewTestEngineHook_RenderedText(ImGuiContext* ctx, ImGuiID id, const char* buf)
 {
+    ImGuiTestEngine* engine = static_cast<ImGuiTestEngine*>(ctx->TestEngine);
+    if (engine)
+    {
+        for (auto& t : engine->RenderedTexts)
+        {
+            if (t.ID == id)
+            {
+                t.text = buf;
+                return;
+            }
+        }
+        engine->RenderedTexts.push_back({ id, buf });
+    }
 }
 
 int main()

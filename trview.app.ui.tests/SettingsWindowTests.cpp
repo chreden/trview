@@ -41,21 +41,6 @@ namespace
 
         return test_module{};
     }
-
-    template <typename T>
-    struct MockWrapper
-    {
-        std::unique_ptr<T> ptr;
-    };
-
-    template <typename T>
-    void render(const MockWrapper<T>& wrapper)
-    {
-        if (wrapper.ptr)
-        {
-            wrapper.ptr->render();
-        }
-    }
 }
 
 void register_settings_window_tests(ImGuiTestEngine* engine)
@@ -176,22 +161,6 @@ void register_settings_window_tests(ImGuiTestEngine* engine)
             IM_CHECK_EQ(received_value.value(), true);
         });
 
-    test<MockWrapper<SettingsWindow>>(engine, "Settings Window", "Set Camera Degrees Updates Checkbox",
-        [](ImGuiTestContext* ctx) { render(ctx->GetVars<MockWrapper<SettingsWindow>>()); },
-        [](ImGuiTestContext* ctx)
-        {
-            auto& controls = ctx->GetVars<MockWrapper<SettingsWindow>>();
-            controls.ptr = register_test_module().build();;
-            controls.ptr->toggle_visibility();
-
-            ctx->SetRef("Settings");
-            ctx->ItemClick("TabBar/Camera");
-            IM_CHECK_EQ(ctx->ItemIsChecked("TabBar/Camera/Use degrees for camera angle display"), false);
-            controls.ptr->set_camera_display_degrees(true);
-            ctx->Yield();
-            IM_CHECK_EQ(ctx->ItemIsChecked("TabBar/Camera/Use degrees for camera angle display"), true);
-        });
-
     test<MockWrapper<SettingsWindow>>(engine, "Settings Window", "Clicking Open Camera/Sink Window at startup Raises Event",
         [](ImGuiTestContext* ctx) { render(ctx->GetVars<MockWrapper<SettingsWindow>>()); },
         [](ImGuiTestContext* ctx)
@@ -258,5 +227,716 @@ void register_settings_window_tests(ImGuiTestEngine* engine)
             IM_CHECK_EQ(ctx->ItemIsChecked("TabBar/General/Select Lara when level is opened"), true);
             IM_CHECK_EQ(received_value.has_value(), true);
             IM_CHECK_EQ(received_value.value(), true);
+        });
+
+    test<MockWrapper<SettingsWindow>>(engine, "Settings Window", "Clicking Invert Map Controls Raises Event",
+        [](ImGuiTestContext* ctx) { render(ctx->GetVars<MockWrapper<SettingsWindow>>()); },
+        [](ImGuiTestContext* ctx)
+        {
+            auto& controls = ctx->GetVars<MockWrapper<SettingsWindow>>();
+            controls.ptr = register_test_module().build();;
+            controls.ptr->toggle_visibility();
+
+            std::optional<bool> received_value;
+            auto token = controls.ptr->on_invert_map_controls += [&](bool value)
+            {
+                received_value = value;
+            };
+
+            ctx->SetRef("Settings");
+            ctx->ItemClick("TabBar/Minimap");
+            IM_CHECK_EQ(ctx->ItemIsChecked("TabBar/Minimap/Invert map controls"), false);
+            ctx->ItemCheck("TabBar/Minimap/Invert map controls");
+            IM_CHECK_EQ(ctx->ItemIsChecked("TabBar/Minimap/Invert map controls"), true);
+            IM_CHECK_EQ(received_value.has_value(), true);
+            IM_CHECK_EQ(received_value.value(), true);
+        });
+
+    test<MockWrapper<SettingsWindow>>(engine, "Settings Window", "Clicking Invert Vertical Pan Raises Event",
+        [](ImGuiTestContext* ctx) { render(ctx->GetVars<MockWrapper<SettingsWindow>>()); },
+        [](ImGuiTestContext* ctx)
+        {
+            auto& controls = ctx->GetVars<MockWrapper<SettingsWindow>>();
+            controls.ptr = register_test_module().build();;
+            controls.ptr->toggle_visibility();
+
+            std::optional<bool> received_value;
+            auto token = controls.ptr->on_invert_vertical_pan += [&](bool value)
+            {
+                received_value = value;
+            };
+
+            ctx->SetRef("Settings");
+            ctx->ItemClick("TabBar/Camera");
+            IM_CHECK_EQ(ctx->ItemIsChecked("TabBar/Camera/Invert vertical panning"), false);
+            ctx->ItemCheck("TabBar/Camera/Invert vertical panning");
+            IM_CHECK_EQ(ctx->ItemIsChecked("TabBar/Camera/Invert vertical panning"), true);
+            IM_CHECK_EQ(received_value.has_value(), true);
+            IM_CHECK_EQ(received_value.value(), true);
+        });
+
+    test<MockWrapper<SettingsWindow>>(engine, "Settings Window", "Clicking Items Window on Startup Raises Event",
+        [](ImGuiTestContext* ctx) { render(ctx->GetVars<MockWrapper<SettingsWindow>>()); },
+        [](ImGuiTestContext* ctx)
+        {
+            auto& controls = ctx->GetVars<MockWrapper<SettingsWindow>>();
+            controls.ptr = register_test_module().build();;
+            controls.ptr->toggle_visibility();
+
+            std::optional<bool> received_value;
+            auto token = controls.ptr->on_items_startup += [&](bool value)
+            {
+                received_value = value;
+            };
+
+            ctx->SetRef("Settings");
+            ctx->ItemClick("TabBar/General");
+            IM_CHECK_EQ(ctx->ItemIsChecked("TabBar/General/Open Items Window at startup"), false);
+            ctx->ItemCheck("TabBar/General/Open Items Window at startup");
+            IM_CHECK_EQ(ctx->ItemIsChecked("TabBar/General/Open Items Window at startup"), true);
+            IM_CHECK_EQ(received_value.has_value(), true);
+            IM_CHECK_EQ(received_value.value(), true);
+        });
+
+    test<MockWrapper<SettingsWindow>>(engine, "Settings Window", "Clicking Movement Speed Raises Event",
+        [](ImGuiTestContext* ctx) { render(ctx->GetVars<MockWrapper<SettingsWindow>>()); },
+        [](ImGuiTestContext* ctx)
+        {
+            auto& controls = ctx->GetVars<MockWrapper<SettingsWindow>>();
+            controls.ptr = register_test_module().build();;
+            controls.ptr->toggle_visibility();
+
+            std::optional<float> received_value;
+            auto token = controls.ptr->on_movement_speed_changed += [&](float value)
+            {
+                received_value = value;
+            };
+
+            ctx->SetRef("Settings");
+            ctx->ItemClick("TabBar/Camera");
+            ctx->ItemClick("TabBar/Camera/Movement Speed");
+            IM_CHECK_EQ(received_value.has_value(), true);
+            IM_CHECK_EQ(received_value.value(), 0.5f);
+        });
+
+    test<MockWrapper<SettingsWindow>>(engine, "Settings Window", "Clicking Orbit Raises Event",
+        [](ImGuiTestContext* ctx) { render(ctx->GetVars<MockWrapper<SettingsWindow>>()); },
+        [](ImGuiTestContext* ctx)
+        {
+            auto& controls = ctx->GetVars<MockWrapper<SettingsWindow>>();
+            controls.ptr = register_test_module().build();;
+            controls.ptr->toggle_visibility();
+
+            std::optional<bool> received_value;
+            auto token = controls.ptr->on_auto_orbit += [&](bool value)
+            {
+                received_value = value;
+            };
+
+            ctx->SetRef("Settings");
+            ctx->ItemClick("TabBar/Camera");
+            IM_CHECK_EQ(ctx->ItemIsChecked("TabBar/Camera/Switch to orbit on selection"), false);
+            ctx->ItemCheck("TabBar/Camera/Switch to orbit on selection");
+            IM_CHECK_EQ(ctx->ItemIsChecked("TabBar/Camera/Switch to orbit on selection"), true);
+            IM_CHECK_EQ(received_value.has_value(), true);
+            IM_CHECK_EQ(received_value.value(), true);
+        });
+
+    test<MockWrapper<SettingsWindow>>(engine, "Settings Window", "Clicking Randomizer Tools Raises Event",
+        [](ImGuiTestContext* ctx) { render(ctx->GetVars<MockWrapper<SettingsWindow>>()); },
+        [](ImGuiTestContext* ctx)
+        {
+            auto& controls = ctx->GetVars<MockWrapper<SettingsWindow>>();
+            controls.ptr = register_test_module().build();;
+            controls.ptr->toggle_visibility();
+
+            std::optional<bool> received_value;
+            auto token = controls.ptr->on_randomizer_tools += [&](bool value)
+            {
+                received_value = value;
+            };
+
+            ctx->SetRef("Settings");
+            ctx->ItemClick("TabBar/General");
+            IM_CHECK_EQ(ctx->ItemIsChecked("TabBar/General/Enable Randomizer Tools"), false);
+            ctx->ItemCheck("TabBar/General/Enable Randomizer Tools");
+            IM_CHECK_EQ(ctx->ItemIsChecked("TabBar/General/Enable Randomizer Tools"), true);
+            IM_CHECK_EQ(received_value.has_value(), true);
+            IM_CHECK_EQ(received_value.value(), true);
+        });
+
+    test<MockWrapper<SettingsWindow>>(engine, "Settings Window", "Clicking Reset FOV Raises Event",
+        [](ImGuiTestContext* ctx) { render(ctx->GetVars<MockWrapper<SettingsWindow>>()); },
+        [](ImGuiTestContext* ctx)
+        {
+            auto& controls = ctx->GetVars<MockWrapper<SettingsWindow>>();
+            controls.ptr = register_test_module().build();;
+            controls.ptr->toggle_visibility();
+            controls.ptr->set_fov(10.0f);
+
+            std::optional<float> received_value;
+            auto token = controls.ptr->on_camera_fov += [&](float value)
+            {
+                received_value = value;
+            };
+
+            ctx->SetRef("Settings");
+            ctx->ItemClick("TabBar/Camera");
+            ctx->ItemClick("TabBar/Camera/Reset##Fov");
+
+            IM_CHECK_EQ(received_value.has_value(), true);
+            IM_CHECK_EQ(received_value.value(), 45.0f);
+        });
+
+    test<MockWrapper<SettingsWindow>>(engine, "Settings Window", "Clicking Rooms Window on Startup Raises Event",
+        [](ImGuiTestContext* ctx) { render(ctx->GetVars<MockWrapper<SettingsWindow>>()); },
+        [](ImGuiTestContext* ctx)
+        {
+            auto& controls = ctx->GetVars<MockWrapper<SettingsWindow>>();
+            controls.ptr = register_test_module().build();;
+            controls.ptr->toggle_visibility();
+
+            std::optional<bool> received_value;
+            auto token = controls.ptr->on_rooms_startup += [&](bool value)
+            {
+                received_value = value;
+            };
+
+            ctx->SetRef("Settings");
+            ctx->ItemClick("TabBar/General");
+            IM_CHECK_EQ(ctx->ItemIsChecked("TabBar/General/Open Rooms Window at startup"), false);
+            ctx->ItemCheck("TabBar/General/Open Rooms Window at startup");
+            IM_CHECK_EQ(ctx->ItemIsChecked("TabBar/General/Open Rooms Window at startup"), true);
+            IM_CHECK_EQ(received_value.has_value(), true);
+            IM_CHECK_EQ(received_value.value(), true);
+        });
+
+    test<MockWrapper<SettingsWindow>>(engine, "Settings Window", "Clicking Route Window on Startup Raises Event",
+        [](ImGuiTestContext* ctx) { render(ctx->GetVars<MockWrapper<SettingsWindow>>()); },
+        [](ImGuiTestContext* ctx)
+        {
+            auto& controls = ctx->GetVars<MockWrapper<SettingsWindow>>();
+            controls.ptr = register_test_module().build();;
+            controls.ptr->toggle_visibility();
+
+            std::optional<bool> received_value;
+            auto token = controls.ptr->on_route_startup += [&](bool value)
+            {
+                received_value = value;
+            };
+
+            ctx->SetRef("Settings");
+            ctx->ItemClick("TabBar/General");
+            IM_CHECK_EQ(ctx->ItemIsChecked("TabBar/General/Open Route Window at startup"), false);
+            ctx->ItemCheck("TabBar/General/Open Route Window at startup");
+            IM_CHECK_EQ(ctx->ItemIsChecked("TabBar/General/Open Route Window at startup"), true);
+            IM_CHECK_EQ(received_value.has_value(), true);
+            IM_CHECK_EQ(received_value.value(), true);
+        });
+
+    test<MockWrapper<SettingsWindow>>(engine, "Settings Window", "Clicking Sensitivity Raises Event",
+        [](ImGuiTestContext* ctx) { render(ctx->GetVars<MockWrapper<SettingsWindow>>()); },
+        [](ImGuiTestContext* ctx)
+        {
+            auto& controls = ctx->GetVars<MockWrapper<SettingsWindow>>();
+            controls.ptr = register_test_module().build();;
+            controls.ptr->toggle_visibility();
+
+            std::optional<float> received_value;
+            auto token = controls.ptr->on_sensitivity_changed += [&](float value)
+            {
+                received_value = value;
+            };
+
+            ctx->SetRef("Settings");
+            ctx->ItemClick("TabBar/Camera");
+            ctx->ItemClick("TabBar/Camera/Sensitivity");
+            IM_CHECK_EQ(received_value.has_value(), true);
+            IM_CHECK_EQ(received_value.value(), 0.5f);
+        });
+
+    test<MockWrapper<SettingsWindow>>(engine, "Settings Window", "Clicking Triggers Window on Startup Raises Event",
+        [](ImGuiTestContext* ctx) { render(ctx->GetVars<MockWrapper<SettingsWindow>>()); },
+        [](ImGuiTestContext* ctx)
+        {
+            auto& controls = ctx->GetVars<MockWrapper<SettingsWindow>>();
+            controls.ptr = register_test_module().build();;
+            controls.ptr->toggle_visibility();
+
+            std::optional<bool> received_value;
+            auto token = controls.ptr->on_triggers_startup += [&](bool value)
+            {
+                received_value = value;
+            };
+
+            ctx->SetRef("Settings");
+            ctx->ItemClick("TabBar/General");
+            IM_CHECK_EQ(ctx->ItemIsChecked("TabBar/General/Open Triggers Window at startup"), false);
+            ctx->ItemCheck("TabBar/General/Open Triggers Window at startup");
+            IM_CHECK_EQ(ctx->ItemIsChecked("TabBar/General/Open Triggers Window at startup"), true);
+            IM_CHECK_EQ(received_value.has_value(), true);
+            IM_CHECK_EQ(received_value.value(), true);
+        });
+
+    test<MockWrapper<SettingsWindow>>(engine, "Settings Window", "Clicking Vsync Raises Event",
+        [](ImGuiTestContext* ctx) { render(ctx->GetVars<MockWrapper<SettingsWindow>>()); },
+        [](ImGuiTestContext* ctx)
+        {
+            auto& controls = ctx->GetVars<MockWrapper<SettingsWindow>>();
+            controls.ptr = register_test_module().build();;
+            controls.ptr->toggle_visibility();
+
+            std::optional<bool> received_value;
+            auto token = controls.ptr->on_vsync += [&](bool value)
+            {
+                received_value = value;
+            };
+
+            ctx->SetRef("Settings");
+            ctx->ItemClick("TabBar/General");
+            IM_CHECK_EQ(ctx->ItemIsChecked("TabBar/General/Vsync"), false);
+            ctx->ItemCheck("TabBar/General/Vsync");
+            IM_CHECK_EQ(ctx->ItemIsChecked("TabBar/General/Vsync"), true);
+            IM_CHECK_EQ(received_value.has_value(), true);
+            IM_CHECK_EQ(received_value.value(), true);
+        });
+
+    test<MockWrapper<SettingsWindow>>(engine, "Settings Window", "On Minimap Colours Raised On Reset Normal",
+        [](ImGuiTestContext* ctx) { render(ctx->GetVars<MockWrapper<SettingsWindow>>()); },
+        [](ImGuiTestContext* ctx)
+        {
+            auto& controls = ctx->GetVars<MockWrapper<SettingsWindow>>();
+            controls.ptr = register_test_module().build();;
+            controls.ptr->toggle_visibility();
+
+            MapColours colours;
+            colours.set_colour(SectorFlag::Death, Colour::Blue);
+            controls.ptr->set_map_colours(colours);
+
+            std::optional<MapColours> map_colours;
+            auto token = controls.ptr->on_minimap_colours += [&](const auto& colours)
+            {
+                map_colours = colours;
+            };
+
+            ctx->SetRef("Settings");
+            ctx->ItemClick("TabBar/Minimap");
+            ctx->ItemClick("TabBar/Minimap/Reset##Death");
+
+            IM_CHECK_EQ(map_colours.has_value(), true);
+            IM_CHECK_EQ(map_colours.value().override_colours().size(), 0.0f);
+        });
+
+    test<MockWrapper<SettingsWindow>>(engine, "Settings Window", "On Minimap Colours Raised On Reset Special",
+        [](ImGuiTestContext* ctx) { render(ctx->GetVars<MockWrapper<SettingsWindow>>()); },
+        [](ImGuiTestContext* ctx)
+        {
+            auto& controls = ctx->GetVars<MockWrapper<SettingsWindow>>();
+            controls.ptr = register_test_module().build();;
+            controls.ptr->toggle_visibility();
+
+            MapColours colours;
+            colours.set_colour(MapColours::Special::Default, Colour::Red);
+            controls.ptr->set_map_colours(colours);
+
+            std::optional<MapColours> map_colours;
+            auto token = controls.ptr->on_minimap_colours += [&](const auto& colours)
+            {
+                map_colours = colours;
+            };
+
+            ctx->SetRef("Settings");
+            ctx->ItemClick("TabBar/Minimap");
+            ctx->ItemClick("TabBar/Minimap/Reset##Default");
+
+            IM_CHECK_EQ(map_colours.has_value(), true);
+            IM_CHECK_EQ(map_colours.value().special_colours().size(), 0.0f);
+        });
+
+    test<MockWrapper<SettingsWindow>>(engine, "Settings Window", "Open Plugin Directories",
+        [](ImGuiTestContext* ctx) { render(ctx->GetVars<MockWrapper<SettingsWindow>>()); },
+        [](ImGuiTestContext* ctx)
+        {
+            auto shell = mock_shared<MockShell>();
+            EXPECT_CALL(*shell, open(std::wstring(L"path"))).Times(1);
+
+            auto& controls = ctx->GetVars<MockWrapper<SettingsWindow>>();
+            controls.ptr = register_test_module().with_shell(shell).build();;
+            controls.ptr->toggle_visibility();
+            controls.ptr->set_plugin_directories({ "path" });
+
+            ctx->SetRef("Settings");
+            ctx->ItemClick("TabBar/Plugins");
+            ctx->ItemClick("TabBar/Plugins/Directories/Open##0");
+
+            IM_CHECK_EQ(Mock::VerifyAndClear(shell.get()), true);
+        });
+
+    test<MockWrapper<SettingsWindow>>(engine, "Settings Window", "Remove Plugin Directories",
+        [](ImGuiTestContext* ctx) { render(ctx->GetVars<MockWrapper<SettingsWindow>>()); },
+        [](ImGuiTestContext* ctx)
+        {
+            auto& controls = ctx->GetVars<MockWrapper<SettingsWindow>>();
+            controls.ptr = register_test_module().build();
+            controls.ptr->toggle_visibility();
+            controls.ptr->set_plugin_directories({ "path" });
+
+            std::optional<std::vector<std::string>> raised;
+            auto token = controls.ptr->on_plugin_directories += [&](const auto& value)
+            {
+                raised = value;
+            };
+
+            ctx->SetRef("Settings");
+            ctx->ItemClick("TabBar/Plugins");
+            ctx->ItemClick("TabBar/Plugins/Directories/Remove##0");
+
+            const std::vector<std::string> expected;
+            IM_CHECK_EQ(raised.has_value(), true);
+            IM_CHECK_EQ(raised.value(), expected);
+        });
+
+    test<MockWrapper<SettingsWindow>>(engine, "Settings Window", "Set Acceleration Rate Updates Slider",
+        [](ImGuiTestContext* ctx) { render(ctx->GetVars<MockWrapper<SettingsWindow>>()); },
+        [](ImGuiTestContext* ctx)
+        {
+            auto& controls = ctx->GetVars<MockWrapper<SettingsWindow>>();
+            controls.ptr = register_test_module().build();;
+            controls.ptr->toggle_visibility();
+            controls.ptr->set_camera_acceleration_rate(0.5f);
+
+            ctx->SetRef("Settings");
+            ctx->ItemClick("TabBar/Camera");
+
+            IM_CHECK_EQ(ItemText(ctx, ctx->ItemInfo("TabBar/Camera/Acceleration Rate")->ID), "0.500");
+        });
+
+    test<MockWrapper<SettingsWindow>>(engine, "Settings Window", "Set Acceleration Updates Checkbox",
+        [](ImGuiTestContext* ctx) { render(ctx->GetVars<MockWrapper<SettingsWindow>>()); },
+        [](ImGuiTestContext* ctx)
+        {
+            auto& controls = ctx->GetVars<MockWrapper<SettingsWindow>>();
+            controls.ptr = register_test_module().build();;
+            controls.ptr->toggle_visibility();
+
+            ctx->SetRef("Settings");
+            ctx->ItemClick("TabBar/Camera");
+            IM_CHECK_EQ(ctx->ItemIsChecked("TabBar/Camera/Acceleration"), false);
+            controls.ptr->set_camera_acceleration(true);
+            ctx->Yield();
+            IM_CHECK_EQ(ctx->ItemIsChecked("TabBar/Camera/Acceleration"), true);
+        });
+
+    test<MockWrapper<SettingsWindow>>(engine, "Settings Window", "Set Camera Degrees Updates Checkbox",
+        [](ImGuiTestContext* ctx) { render(ctx->GetVars<MockWrapper<SettingsWindow>>()); },
+        [](ImGuiTestContext* ctx)
+        {
+            auto& controls = ctx->GetVars<MockWrapper<SettingsWindow>>();
+            controls.ptr = register_test_module().build();;
+            controls.ptr->toggle_visibility();
+
+            ctx->SetRef("Settings");
+            ctx->ItemClick("TabBar/Camera");
+            IM_CHECK_EQ(ctx->ItemIsChecked("TabBar/Camera/Use degrees for camera angle display"), false);
+            controls.ptr->set_camera_display_degrees(true);
+            ctx->Yield();
+            IM_CHECK_EQ(ctx->ItemIsChecked("TabBar/Camera/Use degrees for camera angle display"), true);
+        });
+
+    test<MockWrapper<SettingsWindow>>(engine, "Settings Window", "Set Camera/Sink Window on Startup Updates Checkbox",
+        [](ImGuiTestContext* ctx) { render(ctx->GetVars<MockWrapper<SettingsWindow>>()); },
+        [](ImGuiTestContext* ctx)
+        {
+            auto& controls = ctx->GetVars<MockWrapper<SettingsWindow>>();
+            controls.ptr = register_test_module().build();;
+            controls.ptr->toggle_visibility();
+
+            ctx->SetRef("Settings");
+            ctx->ItemClick("TabBar/General");
+            IM_CHECK_EQ(ctx->ItemIsChecked("TabBar/General/Open Camera\\/Sink Window at startup"), false);
+            controls.ptr->set_camera_sink_startup(true);
+            ctx->Yield();
+            IM_CHECK_EQ(ctx->ItemIsChecked("TabBar/General/Open Camera\\/Sink Window at startup"), true);
+        });
+
+    test<MockWrapper<SettingsWindow>>(engine, "Settings Window", "Set Default Route Colour Updates Colours",
+        [](ImGuiTestContext* ctx) { render(ctx->GetVars<MockWrapper<SettingsWindow>>()); },
+        [](ImGuiTestContext* ctx)
+        {
+            auto& controls = ctx->GetVars<MockWrapper<SettingsWindow>>();
+            controls.ptr = register_test_module().build();;
+            controls.ptr->toggle_visibility();
+            controls.ptr->set_default_route_colour(Colour(0.5f, 0.75f, 1.0f));
+
+            ctx->SetRef("Settings");
+            ctx->ItemClick("TabBar/Route");
+
+            IM_CHECK_EQ(ItemText(ctx, ctx->ItemInfo("TabBar/Route/Default Route Colour/##X")->ID), "R:128");
+            IM_CHECK_EQ(ItemText(ctx, ctx->ItemInfo("TabBar/Route/Default Route Colour/##Y")->ID), "G:191");
+            IM_CHECK_EQ(ItemText(ctx, ctx->ItemInfo("TabBar/Route/Default Route Colour/##Z")->ID), "B:255");
+        });
+
+    test<MockWrapper<SettingsWindow>>(engine, "Settings Window", "Set Default Waypoint Colour Updates Colours",
+        [](ImGuiTestContext* ctx) { render(ctx->GetVars<MockWrapper<SettingsWindow>>()); },
+        [](ImGuiTestContext* ctx)
+        {
+            auto& controls = ctx->GetVars<MockWrapper<SettingsWindow>>();
+            controls.ptr = register_test_module().build();;
+            controls.ptr->toggle_visibility();
+            controls.ptr->set_default_waypoint_colour(Colour(0.5f, 0.75f, 1.0f));
+
+            ctx->SetRef("Settings");
+            ctx->ItemClick("TabBar/Route");
+
+            IM_CHECK_EQ(ItemText(ctx, ctx->ItemInfo("TabBar/Route/Default Waypoint Colour/##X")->ID), "R:128");
+            IM_CHECK_EQ(ItemText(ctx, ctx->ItemInfo("TabBar/Route/Default Waypoint Colour/##Y")->ID), "G:191");
+            IM_CHECK_EQ(ItemText(ctx, ctx->ItemInfo("TabBar/Route/Default Waypoint Colour/##Z")->ID), "B:255");
+        });
+
+    test<MockWrapper<SettingsWindow>>(engine, "Settings Window", "Set FOV Updates Slider",
+        [](ImGuiTestContext* ctx) { render(ctx->GetVars<MockWrapper<SettingsWindow>>()); },
+        [](ImGuiTestContext* ctx)
+        {
+            auto& controls = ctx->GetVars<MockWrapper<SettingsWindow>>();
+            controls.ptr = register_test_module().build();;
+            controls.ptr->toggle_visibility();
+            controls.ptr->set_fov(0.5f);
+
+            ctx->SetRef("Settings");
+            ctx->ItemClick("TabBar/Camera");
+
+            IM_CHECK_EQ(ItemText(ctx, ctx->ItemInfo("TabBar/Camera/Camera FOV")->ID), "0.500");
+        });
+
+    test<MockWrapper<SettingsWindow>>(engine, "Settings Window", "Set Go To Lara Updates Checkbox",
+        [](ImGuiTestContext* ctx) { render(ctx->GetVars<MockWrapper<SettingsWindow>>()); },
+        [](ImGuiTestContext* ctx)
+        {
+            auto& controls = ctx->GetVars<MockWrapper<SettingsWindow>>();
+            controls.ptr = register_test_module().build();;
+            controls.ptr->toggle_visibility();
+
+            ctx->SetRef("Settings");
+            ctx->ItemClick("TabBar/General");
+            IM_CHECK_EQ(ctx->ItemIsChecked("TabBar/General/Select Lara when level is opened"), false);
+            controls.ptr->set_go_to_lara(true);
+            ctx->Yield();
+            IM_CHECK_EQ(ctx->ItemIsChecked("TabBar/General/Select Lara when level is opened"), true);
+        });
+
+    test<MockWrapper<SettingsWindow>>(engine, "Settings Window", "Set Invert Map Controls Updates Checkbox",
+        [](ImGuiTestContext* ctx) { render(ctx->GetVars<MockWrapper<SettingsWindow>>()); },
+        [](ImGuiTestContext* ctx)
+        {
+            auto& controls = ctx->GetVars<MockWrapper<SettingsWindow>>();
+            controls.ptr = register_test_module().build();;
+            controls.ptr->toggle_visibility();
+
+            ctx->SetRef("Settings");
+            ctx->ItemClick("TabBar/Minimap");
+            IM_CHECK_EQ(ctx->ItemIsChecked("TabBar/Minimap/Invert map controls"), false);
+            controls.ptr->set_invert_map_controls(true);
+            ctx->Yield();
+            IM_CHECK_EQ(ctx->ItemIsChecked("TabBar/Minimap/Invert map controls"), true);
+        });
+
+    test<MockWrapper<SettingsWindow>>(engine, "Settings Window", "Set Invert Vertical Pan Updates Checkbox",
+        [](ImGuiTestContext* ctx) { render(ctx->GetVars<MockWrapper<SettingsWindow>>()); },
+        [](ImGuiTestContext* ctx)
+        {
+            auto& controls = ctx->GetVars<MockWrapper<SettingsWindow>>();
+            controls.ptr = register_test_module().build();;
+            controls.ptr->toggle_visibility();
+
+            ctx->SetRef("Settings");
+            ctx->ItemClick("TabBar/Camera");
+            IM_CHECK_EQ(ctx->ItemIsChecked("TabBar/Camera/Invert vertical panning"), false);
+            controls.ptr->set_invert_vertical_pan(true);
+            ctx->Yield();
+            IM_CHECK_EQ(ctx->ItemIsChecked("TabBar/Camera/Invert vertical panning"), true);
+        });
+
+    test<MockWrapper<SettingsWindow>>(engine, "Settings Window", "Set Items Window on Startup Checkbox",
+        [](ImGuiTestContext* ctx) { render(ctx->GetVars<MockWrapper<SettingsWindow>>()); },
+        [](ImGuiTestContext* ctx)
+        {
+            auto& controls = ctx->GetVars<MockWrapper<SettingsWindow>>();
+            controls.ptr = register_test_module().build();;
+            controls.ptr->toggle_visibility();
+
+            ctx->SetRef("Settings");
+            ctx->ItemClick("TabBar/General");
+            IM_CHECK_EQ(ctx->ItemIsChecked("TabBar/General/Open Items Window at startup"), false);
+            controls.ptr->set_items_startup(true);
+            ctx->Yield();
+            IM_CHECK_EQ(ctx->ItemIsChecked("TabBar/General/Open Items Window at startup"), true);
+        });
+
+    test<MockWrapper<SettingsWindow>>(engine, "Settings Window", "Set Map Colours Updates Colours",
+        [](ImGuiTestContext* ctx) { render(ctx->GetVars<MockWrapper<SettingsWindow>>()); },
+        [](ImGuiTestContext* ctx)
+        {
+            auto& controls = ctx->GetVars<MockWrapper<SettingsWindow>>();
+            controls.ptr = register_test_module().build();;
+            controls.ptr->toggle_visibility();
+
+            ctx->SetRef("Settings");
+            ctx->ItemClick("TabBar/Minimap");
+
+            IM_CHECK_EQ(ItemText(ctx, ctx->ItemInfo("TabBar/Minimap/Default/##X")->ID), "R:  0");
+            IM_CHECK_EQ(ItemText(ctx, ctx->ItemInfo("TabBar/Minimap/Default/##Y")->ID), "G:179");
+            IM_CHECK_EQ(ItemText(ctx, ctx->ItemInfo("TabBar/Minimap/Default/##Z")->ID), "B:179");
+            IM_CHECK_EQ(ItemText(ctx, ctx->ItemInfo("TabBar/Minimap/Default/##W")->ID), "A:255");
+
+            MapColours colours;
+            colours.set_colour(MapColours::Special::Default, Colour(0.25f, 0.5f, 0.75f, 1.0f));
+            controls.ptr->set_map_colours(colours);
+            ctx->Yield();
+
+            IM_CHECK_EQ(ItemText(ctx, ctx->ItemInfo("TabBar/Minimap/Default/##X")->ID), "R:128");
+            IM_CHECK_EQ(ItemText(ctx, ctx->ItemInfo("TabBar/Minimap/Default/##Y")->ID), "G:191");
+            IM_CHECK_EQ(ItemText(ctx, ctx->ItemInfo("TabBar/Minimap/Default/##Z")->ID), "B:255");
+            IM_CHECK_EQ(ItemText(ctx, ctx->ItemInfo("TabBar/Minimap/Default/##W")->ID), "A: 64");
+        });
+
+    test<MockWrapper<SettingsWindow>>(engine, "Settings Window", "Set Max Recent Files Updates Numeric Up Down",
+        [](ImGuiTestContext* ctx) { render(ctx->GetVars<MockWrapper<SettingsWindow>>()); },
+        [](ImGuiTestContext* ctx)
+        {
+            auto& controls = ctx->GetVars<MockWrapper<SettingsWindow>>();
+            controls.ptr = register_test_module().build();;
+            controls.ptr->toggle_visibility();
+            controls.ptr->set_max_recent_files(5);
+
+            ctx->SetRef("Settings");
+            ctx->ItemClick("TabBar/General");
+
+            IM_CHECK_EQ(ItemText(ctx, ctx->ItemInfo("TabBar/General/Recent Files")->ID), "5");
+        });
+
+    test<MockWrapper<SettingsWindow>>(engine, "Settings Window", "Set Movement Speed Updates Slider",
+        [](ImGuiTestContext* ctx) { render(ctx->GetVars<MockWrapper<SettingsWindow>>()); },
+        [](ImGuiTestContext* ctx)
+        {
+            auto& controls = ctx->GetVars<MockWrapper<SettingsWindow>>();
+            controls.ptr = register_test_module().build();;
+            controls.ptr->toggle_visibility();
+            controls.ptr->set_movement_speed(0.5f);
+
+            ctx->SetRef("Settings");
+            ctx->ItemClick("TabBar/Camera");
+
+            IM_CHECK_EQ(ItemText(ctx, ctx->ItemInfo("TabBar/Camera/Movement Speed")->ID), "0.500");
+        });
+
+    test<MockWrapper<SettingsWindow>>(engine, "Settings Window", "Set Orbit Updates Checkbox",
+        [](ImGuiTestContext* ctx) { render(ctx->GetVars<MockWrapper<SettingsWindow>>()); },
+        [](ImGuiTestContext* ctx)
+        {
+            auto& controls = ctx->GetVars<MockWrapper<SettingsWindow>>();
+            controls.ptr = register_test_module().build();;
+            controls.ptr->toggle_visibility();
+
+            ctx->SetRef("Settings");
+            ctx->ItemClick("TabBar/Camera");
+            IM_CHECK_EQ(ctx->ItemIsChecked("TabBar/Camera/Switch to orbit on selection"), false);
+            controls.ptr->set_auto_orbit(true);
+            ctx->Yield();
+            IM_CHECK_EQ(ctx->ItemIsChecked("TabBar/Camera/Switch to orbit on selection"), true);
+        });
+
+    test<MockWrapper<SettingsWindow>>(engine, "Settings Window", "Set Randomizer Tools Updates Checkbox",
+        [](ImGuiTestContext* ctx) { render(ctx->GetVars<MockWrapper<SettingsWindow>>()); },
+        [](ImGuiTestContext* ctx)
+        {
+            auto& controls = ctx->GetVars<MockWrapper<SettingsWindow>>();
+            controls.ptr = register_test_module().build();;
+            controls.ptr->toggle_visibility();
+
+            ctx->SetRef("Settings");
+            ctx->ItemClick("TabBar/General");
+            IM_CHECK_EQ(ctx->ItemIsChecked("TabBar/General/Enable Randomizer Tools"), false);
+            controls.ptr->set_randomizer_tools(true);
+            ctx->Yield();
+            IM_CHECK_EQ(ctx->ItemIsChecked("TabBar/General/Enable Randomizer Tools"), true);
+        });
+
+    test<MockWrapper<SettingsWindow>>(engine, "Settings Window", "Set Rooms Window on Startup Updates Checkbox",
+        [](ImGuiTestContext* ctx) { render(ctx->GetVars<MockWrapper<SettingsWindow>>()); },
+        [](ImGuiTestContext* ctx)
+        {
+            auto& controls = ctx->GetVars<MockWrapper<SettingsWindow>>();
+            controls.ptr = register_test_module().build();;
+            controls.ptr->toggle_visibility();
+
+            ctx->SetRef("Settings");
+            ctx->ItemClick("TabBar/General");
+            IM_CHECK_EQ(ctx->ItemIsChecked("TabBar/General/Open Rooms Window at startup"), false);
+            controls.ptr->set_rooms_startup(true);
+            ctx->Yield();
+            IM_CHECK_EQ(ctx->ItemIsChecked("TabBar/General/Open Rooms Window at startup"), true);
+        });
+
+    test<MockWrapper<SettingsWindow>>(engine, "Settings Window", "Set Route Window on Startup Updates Checkbox",
+        [](ImGuiTestContext* ctx) { render(ctx->GetVars<MockWrapper<SettingsWindow>>()); },
+        [](ImGuiTestContext* ctx)
+        {
+            auto& controls = ctx->GetVars<MockWrapper<SettingsWindow>>();
+            controls.ptr = register_test_module().build();;
+            controls.ptr->toggle_visibility();
+
+            ctx->SetRef("Settings");
+            ctx->ItemClick("TabBar/General");
+            IM_CHECK_EQ(ctx->ItemIsChecked("TabBar/General/Open Route Window at startup"), false);
+            controls.ptr->set_route_startup(true);
+            ctx->Yield();
+            IM_CHECK_EQ(ctx->ItemIsChecked("TabBar/General/Open Route Window at startup"), true);
+        });
+
+    test<MockWrapper<SettingsWindow>>(engine, "Settings Window", "Set Sensitivity Slider",
+        [](ImGuiTestContext* ctx) { render(ctx->GetVars<MockWrapper<SettingsWindow>>()); },
+        [](ImGuiTestContext* ctx)
+        {
+            auto& controls = ctx->GetVars<MockWrapper<SettingsWindow>>();
+            controls.ptr = register_test_module().build();;
+            controls.ptr->toggle_visibility();
+            controls.ptr->set_sensitivity(0.5f);
+
+            ctx->SetRef("Settings");
+            ctx->ItemClick("TabBar/Camera");
+
+            IM_CHECK_EQ(ItemText(ctx, ctx->ItemInfo("TabBar/Camera/Sensitivity")->ID), "0.500");
+        });
+
+    test<MockWrapper<SettingsWindow>>(engine, "Settings Window", "Set Triggers Window on Startup Updates Checkbox",
+        [](ImGuiTestContext* ctx) { render(ctx->GetVars<MockWrapper<SettingsWindow>>()); },
+        [](ImGuiTestContext* ctx)
+        {
+            auto& controls = ctx->GetVars<MockWrapper<SettingsWindow>>();
+            controls.ptr = register_test_module().build();;
+            controls.ptr->toggle_visibility();
+
+            ctx->SetRef("Settings");
+            ctx->ItemClick("TabBar/General");
+            IM_CHECK_EQ(ctx->ItemIsChecked("TabBar/General/Open Triggers Window at startup"), false);
+            controls.ptr->set_triggers_startup(true);
+            ctx->Yield();
+            IM_CHECK_EQ(ctx->ItemIsChecked("TabBar/General/Open Triggers Window at startup"), true);
+        });
+
+    test<MockWrapper<SettingsWindow>>(engine, "Settings Window", "Set VSync Updates Checkbox",
+        [](ImGuiTestContext* ctx) { render(ctx->GetVars<MockWrapper<SettingsWindow>>()); },
+        [](ImGuiTestContext* ctx)
+        {
+            auto& controls = ctx->GetVars<MockWrapper<SettingsWindow>>();
+            controls.ptr = register_test_module().build();;
+            controls.ptr->toggle_visibility();
+
+            ctx->SetRef("Settings");
+            ctx->ItemClick("TabBar/General");
+            IM_CHECK_EQ(ctx->ItemIsChecked("TabBar/General/Vsync"), false);
+            controls.ptr->set_vsync(true);
+            ctx->Yield();
+            IM_CHECK_EQ(ctx->ItemIsChecked("TabBar/General/Vsync"), true);
         });
 }
