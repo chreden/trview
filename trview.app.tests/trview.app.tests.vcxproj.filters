@@ -30,9 +30,6 @@
     <ClCompile Include="ContextMenuTests.cpp">
       <Filter>UI</Filter>
     </ClCompile>
-    <ClCompile Include="ItemsWindowTests.cpp">
-      <Filter>Windows</Filter>
-    </ClCompile>
     <ClCompile Include="TriggersWindowTests.cpp">
       <Filter>Windows</Filter>
     </ClCompile>
