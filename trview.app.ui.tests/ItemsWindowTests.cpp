@@ -221,6 +221,21 @@ void register_items_window_tests(ImGuiTestEngine* engine)
         {
             auto& context = ctx->GetVars<ItemsWindowContext>();
             context.ptr = register_test_module().build();
+            context.items =
+            {
+                mock_shared<MockItem>()->with_number(0)->with_room(mock_shared<MockRoom>()->with_number(55))->with_visible(true),
+                mock_shared<MockItem>()->with_number(1)->with_room(mock_shared<MockRoom>()->with_number(78))->with_visible(true)
+            };
+            context.ptr->set_items({ std::from_range, context.items });
+
+            IM_CHECK_EQ(ctx->ItemExists("Items 0/**/1##1"), true);
+            IM_CHECK_EQ(ctx->ItemExists("Items 0/**/##hide-1"), true);
+            IM_CHECK_EQ(ctx->ItemIsChecked("Items 0/**/##hide-1"), false);
+
+            ON_CALL(*std::static_pointer_cast<MockItem>(context.items[1]), visible).WillByDefault(testing::Return(false));
+
+            ctx->Yield();
+            IM_CHECK_EQ(ctx->ItemIsChecked("Items 0/**/##hide-1"), true);
         });
 
     test<ItemsWindowContext>(engine, "Items Window", "Item Visibility Raised",
