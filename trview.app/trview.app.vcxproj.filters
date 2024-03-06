@@ -320,6 +320,9 @@
     <ClCompile Include="Routing\RandomizerRoute.cpp">
       <Filter>Routing</Filter>
     </ClCompile>
+    <ClCompile Include="Windows\RowCounter.cpp">
+      <Filter>Windows</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera\Camera.h">
@@ -1035,6 +1038,9 @@
     </ClInclude>
     <ClInclude Include="Elements\TypeInfo.h">
       <Filter>Elements</Filter>
+    </ClInclude>
+    <ClInclude Include="Windows\RowCounter.h">
+      <Filter>Windows</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -1,6 +1,7 @@
 #include "LightsWindow.h"
 #include "../trview_imgui.h"
 #include <format>
+#include "RowCounter.h"
 
 namespace trview
 {
@@ -78,7 +79,7 @@ namespace trview
 
     void LightsWindow::render_lights_list() 
     {
-        if (ImGui::BeginChild(Names::light_list_panel.c_str(), ImVec2(230, 0), true))
+        if (ImGui::BeginChild(Names::light_list_panel.c_str(), ImVec2(230, 0), true, ImGuiWindowFlags_NoScrollbar))
         {
             _filters.render();
             ImGui::SameLine();
@@ -91,7 +92,8 @@ namespace trview
                 set_sync_light(sync_light);
             }
 
-            if (ImGui::BeginTable(Names::lights_listbox.c_str(), 4, ImGuiTableFlags_Sortable | ImGuiTableFlags_ScrollY | ImGuiTableFlags_SizingFixedFit, ImVec2(-1, -1)))
+            RowCounter counter{ "lights", _all_lights.size() };
+            if (ImGui::BeginTable(Names::lights_listbox.c_str(), 4, ImGuiTableFlags_Sortable | ImGuiTableFlags_ScrollY | ImGuiTableFlags_SizingFixedFit, ImVec2(-1, -counter.height())))
             {
                 ImGui::TableSetupColumn("#");
                 ImGui::TableSetupColumn("Room");
@@ -116,6 +118,7 @@ namespace trview
                         continue;
                     }
 
+                    counter.count();
                     ImGui::TableNextRow();
                     ImGui::TableNextColumn();
                     bool selected = _selected_light.lock() && _selected_light.lock()->number() == light->number();
@@ -155,6 +158,7 @@ namespace trview
                     ImGui::PopStyleVar();
                 }
                 ImGui::EndTable();
+                counter.render();
             }
         }
         ImGui::EndChild();

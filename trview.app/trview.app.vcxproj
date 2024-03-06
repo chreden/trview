@@ -176,6 +176,7 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClCompile Include="Windows\RoomsWindowManager.cpp" />
     <ClCompile Include="Windows\RouteWindow.cpp" />
     <ClCompile Include="Windows\RouteWindowManager.cpp" />
+    <ClCompile Include="Windows\RowCounter.cpp" />
     <ClCompile Include="Windows\Textures\TexturesWindow.cpp" />
     <ClCompile Include="Windows\Textures\TexturesWindowManager.cpp" />
     <ClCompile Include="Windows\TriggersWindow.cpp" />
@@ -385,6 +386,7 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClInclude Include="Windows\RoomsWindowManager.h" />
     <ClInclude Include="Windows\RouteWindow.h" />
     <ClInclude Include="Windows\RouteWindowManager.h" />
+    <ClInclude Include="Windows\RowCounter.h" />
     <ClInclude Include="Windows\Textures\ITexturesWindow.h" />
     <ClInclude Include="Windows\Textures\ITexturesWindowManager.h" />
     <ClInclude Include="Windows\Textures\TexturesWindow.h" />
