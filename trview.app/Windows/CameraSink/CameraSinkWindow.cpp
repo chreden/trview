@@ -1,6 +1,7 @@
 #include "CameraSinkWindow.h"
 #include "../../trview_imgui.h"
 #include "../../Elements/IRoom.h"
+#include "../RowCounter.h"
 
 namespace trview
 {
@@ -146,7 +147,7 @@ namespace trview
 
     void CameraSinkWindow::render_list()
     {
-        if (ImGui::BeginChild(Names::list_panel.c_str(), ImVec2(230, 0), true))
+        if (ImGui::BeginChild(Names::list_panel.c_str(), ImVec2(230, 0), true, ImGuiWindowFlags_NoScrollbar))
         {
             _filters.render();
             ImGui::SameLine();
@@ -159,7 +160,8 @@ namespace trview
                 set_sync(sync);
             }
 
-            if (ImGui::BeginTable(Names::camera_sink_list.c_str(), 4, ImGuiTableFlags_SizingFixedFit | ImGuiTableFlags_Sortable | ImGuiTableFlags_ScrollY, ImVec2(-1, -1)))
+            RowCounter counter{ "camera/sinks", _all_camera_sinks.size() };
+            if (ImGui::BeginTable(Names::camera_sink_list.c_str(), 4, ImGuiTableFlags_SizingFixedFit | ImGuiTableFlags_Sortable | ImGuiTableFlags_ScrollY, ImVec2(-1, -counter.height())))
             {
                 ImGui::TableSetupColumn("#");
                 ImGui::TableSetupColumn("Room");
@@ -185,6 +187,7 @@ namespace trview
                         continue;
                     }
 
+                    counter.count();
                     ImGui::TableNextRow();
                     ImGui::TableNextColumn();
                     bool selected = _selected_camera_sink.lock() && _selected_camera_sink.lock()->number() == camera_sink->number();
@@ -236,6 +239,7 @@ namespace trview
                 }
 
                 ImGui::EndTable();
+                counter.render();
             }
         }
         ImGui::EndChild();

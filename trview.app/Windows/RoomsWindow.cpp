@@ -4,6 +4,7 @@
 #include <trview.common/Strings.h>
 #include "../trview_imgui.h"
 #include "../Elements/Floordata.h"
+#include "RowCounter.h"
 
 namespace trview
 {
@@ -280,7 +281,7 @@ namespace trview
 
     void RoomsWindow::render_rooms_list()
     {
-        if (ImGui::BeginChild(Names::rooms_panel.c_str(), ImVec2(270, 0), true))
+        if (ImGui::BeginChild(Names::rooms_panel.c_str(), ImVec2(270, 0), true, ImGuiWindowFlags_NoScrollbar))
         {
             _filters.render();
 
@@ -294,7 +295,8 @@ namespace trview
                 set_sync_room(sync_room);
             }
 
-            if (ImGui::BeginTable(Names::rooms_list.c_str(), 5, ImGuiTableFlags_Sortable | ImGuiTableFlags_ScrollY | ImGuiTableFlags_SizingFixedFit, ImVec2(-1, -1)))
+            RowCounter counter{ "rooms", _all_rooms.size() };
+            if (ImGui::BeginTable(Names::rooms_list.c_str(), 5, ImGuiTableFlags_Sortable | ImGuiTableFlags_ScrollY | ImGuiTableFlags_SizingFixedFit, ImVec2(-1, -counter.height())))
             {
                 ImGui::TableSetupColumn("#");
                 ImGui::TableSetupColumn("Items");
@@ -341,6 +343,7 @@ namespace trview
                         continue;
                     }
 
+                    counter.count();
                     ImGui::TableNextRow();
                     ImGui::TableNextColumn();
                     bool selected = room_ptr->number() == _selected_room;
@@ -380,6 +383,7 @@ namespace trview
                     ImGui::PopStyleVar();
                 }
                 ImGui::EndTable();
+                counter.render();
             }
         }
         ImGui::EndChild();

@@ -2,6 +2,7 @@
 #include <trview.common/Strings.h>
 #include "../trview_imgui.h"
 #include <format>
+#include "RowCounter.h"
 
 namespace trview
 {
@@ -132,7 +133,7 @@ namespace trview
 
     void TriggersWindow::render_triggers_list()
     {
-        if (ImGui::BeginChild(Names::trigger_list_panel.c_str(), ImVec2(220, 0), true))
+        if (ImGui::BeginChild(Names::trigger_list_panel.c_str(), ImVec2(220, 0), true, ImGuiWindowFlags_NoScrollbar))
         {
             _filters.render();
             ImGui::SameLine();
@@ -177,7 +178,8 @@ namespace trview
                 ImGui::EndCombo();
             }
 
-            if (ImGui::BeginTable(Names::triggers_list.c_str(), 4, ImGuiTableFlags_Sortable | ImGuiTableFlags_ScrollY | ImGuiTableFlags_SizingFixedFit, ImVec2(-1, -1)))
+            RowCounter counter{ "triggers", _all_triggers.size() };
+            if (ImGui::BeginTable(Names::triggers_list.c_str(), 4, ImGuiTableFlags_Sortable | ImGuiTableFlags_ScrollY | ImGuiTableFlags_SizingFixedFit, ImVec2(-1, -counter.height())))
             {
                 ImGui::TableSetupColumn("#", ImGuiTableColumnFlags_WidthFixed, _required_number_width);
                 ImGui::TableSetupColumn("Room");
@@ -187,6 +189,7 @@ namespace trview
                 ImGui::TableHeadersRow();
 
                 filter_triggers();
+                counter.set_count(_filtered_triggers.size());
 
                 imgui_sort_weak(_filtered_triggers,
                     {
@@ -253,6 +256,7 @@ namespace trview
 
                 clipper.End();
                 ImGui::EndTable();
+                counter.render();
             }
         }
         ImGui::EndChild();
