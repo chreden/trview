@@ -69,6 +69,9 @@
     <ClCompile Include="ItemsWindowTests.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="CameraPositionTests.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\external\shared\imgui_app.h">
@@ -102,6 +105,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ItemsWindowTests.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CameraPositionTests.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

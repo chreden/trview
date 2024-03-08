@@ -14,9 +14,6 @@
     <ClCompile Include="Graphics\LevelTextureStorageTests.cpp">
       <Filter>Graphics</Filter>
     </ClCompile>
-    <ClCompile Include="UI\CameraPositionTests.cpp">
-      <Filter>UI</Filter>
-    </ClCompile>
     <ClCompile Include="Elements\TypeInfoLookupTests.cpp">
       <Filter>Elements</Filter>
     </ClCompile>
