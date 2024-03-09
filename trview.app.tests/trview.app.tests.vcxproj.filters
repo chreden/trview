@@ -155,9 +155,6 @@
     <ClCompile Include="Lua\Elements\Lua_SectorTests.cpp">
       <Filter>Lua\Elements</Filter>
     </ClCompile>
-    <ClCompile Include="Windows\ConsoleTests.cpp">
-      <Filter>Windows</Filter>
-    </ClCompile>
     <ClCompile Include="Windows\ConsoleManagerTests.cpp">
       <Filter>Windows</Filter>
     </ClCompile>

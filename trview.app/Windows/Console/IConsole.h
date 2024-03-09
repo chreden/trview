@@ -1,6 +1,7 @@
 #pragma once
 
 #include <functional>
+#include <trview.common/Event.h>
 
 namespace trview
 {

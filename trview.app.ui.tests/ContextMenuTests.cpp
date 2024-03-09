@@ -19,7 +19,7 @@ void register_context_menu_tests(ImGuiTestEngine* engine)
             menu.set_visible(true);
             menu.set_mid_waypoint_enabled(true);
 
-            ctx->ItemClick("Debug##Default", ImGuiMouseButton_Right);
+            ctx->MouseClickOnVoid(ImGuiMouseButton_Right);
             IM_CHECK_EQ((ctx->ItemInfo("/**/Add Mid Waypoint")->InFlags & ImGuiItemFlags_Disabled) != 0, false);
 
             menu.set_mid_waypoint_enabled(false);
@@ -39,7 +39,7 @@ void register_context_menu_tests(ImGuiTestEngine* engine)
             bool raised = false;
             auto token = menu.on_add_mid_waypoint += [&raised]() { raised = true; };
 
-            ctx->ItemClick("Debug##Default", ImGuiMouseButton_Right);
+            ctx->MouseClickOnVoid(ImGuiMouseButton_Right);
             ctx->ItemClick("/**/Add Mid Waypoint");
 
             ASSERT_FALSE(raised);
@@ -57,7 +57,7 @@ void register_context_menu_tests(ImGuiTestEngine* engine)
             bool raised = false;
             auto token = menu.on_add_mid_waypoint += [&raised]() { raised = true; };
 
-            ctx->ItemClick("Debug##Default", ImGuiMouseButton_Right);
+            ctx->MouseClickOnVoid(ImGuiMouseButton_Right);
             ctx->ItemClick("/**/Add Mid Waypoint");
 
             IM_CHECK_EQ(raised, true);
@@ -74,7 +74,7 @@ void register_context_menu_tests(ImGuiTestEngine* engine)
             bool raised = false;
             auto token = menu.on_add_waypoint += [&raised]() { raised = true; };
 
-            ctx->ItemClick("Debug##Default", ImGuiMouseButton_Right);
+            ctx->MouseClickOnVoid(ImGuiMouseButton_Right);
             ctx->ItemClick("/**/Add Waypoint");
 
             IM_CHECK_EQ(raised, true);
@@ -88,7 +88,7 @@ void register_context_menu_tests(ImGuiTestEngine* engine)
             auto& menu = ctx->GetVars<ContextMenu>();
             menu.set_visible(true);
 
-            ctx->ItemClick("Debug##Default", ImGuiMouseButton_Right);
+            ctx->MouseClickOnVoid(ImGuiMouseButton_Right);
 
             std::optional<trview::IContextMenu::CopyType> raised;
             auto token = menu.on_copy += [&raised](auto type) { raised = type; };
@@ -108,7 +108,7 @@ void register_context_menu_tests(ImGuiTestEngine* engine)
             auto& menu = ctx->GetVars<ContextMenu>();
             menu.set_visible(true);
 
-            ctx->ItemClick("Debug##Default", ImGuiMouseButton_Right);
+            ctx->MouseClickOnVoid(ImGuiMouseButton_Right);
 
             std::optional<trview::IContextMenu::CopyType> raised;
             auto token = menu.on_copy += [&raised](auto type) { raised = type; };
@@ -129,7 +129,7 @@ void register_context_menu_tests(ImGuiTestEngine* engine)
             menu.set_visible(true);
             menu.set_hide_enabled(true);
 
-            ctx->ItemClick("Debug##Default", ImGuiMouseButton_Right);
+            ctx->MouseClickOnVoid(ImGuiMouseButton_Right);
             IM_CHECK_EQ((ctx->ItemInfo("/**/Hide")->InFlags & ImGuiItemFlags_Disabled) != 0, false);
 
             menu.set_hide_enabled(false);
@@ -149,7 +149,7 @@ void register_context_menu_tests(ImGuiTestEngine* engine)
             bool raised = false;
             auto token = menu.on_hide += [&raised]() { raised = true; };
 
-            ctx->ItemClick("Debug##Default", ImGuiMouseButton_Right);
+            ctx->MouseClickOnVoid(ImGuiMouseButton_Right);
             ctx->ItemClick("/**/Hide");
 
             ASSERT_FALSE(raised);
@@ -167,7 +167,7 @@ void register_context_menu_tests(ImGuiTestEngine* engine)
             bool raised = false;
             auto token = menu.on_hide += [&raised]() { raised = true; };
 
-            ctx->ItemClick("Debug##Default", ImGuiMouseButton_Right);
+            ctx->MouseClickOnVoid(ImGuiMouseButton_Right);
             ctx->ItemClick("/**/Hide");
 
             ASSERT_TRUE(raised);
@@ -184,7 +184,7 @@ void register_context_menu_tests(ImGuiTestEngine* engine)
             bool raised = false;
             auto token = menu.on_orbit_here += [&raised]() { raised = true; };
 
-            ctx->ItemClick("Debug##Default", ImGuiMouseButton_Right);
+            ctx->MouseClickOnVoid(ImGuiMouseButton_Right);
             ctx->ItemClick("/**/Orbit Here");
 
             ASSERT_TRUE(raised);
@@ -199,7 +199,7 @@ void register_context_menu_tests(ImGuiTestEngine* engine)
             menu.set_visible(true);
             menu.set_remove_enabled(true);
 
-            ctx->ItemClick("Debug##Default", ImGuiMouseButton_Right);
+            ctx->MouseClickOnVoid(ImGuiMouseButton_Right);
             IM_CHECK_EQ((ctx->ItemInfo("/**/Remove Waypoint")->InFlags& ImGuiItemFlags_Disabled) != 0, false);
 
             menu.set_remove_enabled(false);
@@ -219,7 +219,7 @@ void register_context_menu_tests(ImGuiTestEngine* engine)
             bool raised = false;
             auto token = menu.on_remove_waypoint += [&raised]() { raised = true; };
 
-            ctx->ItemClick("Debug##Default", ImGuiMouseButton_Right);
+            ctx->MouseClickOnVoid(ImGuiMouseButton_Right);
             ctx->ItemClick("/**/Remove Waypoint");
 
             ASSERT_FALSE(raised);
@@ -237,7 +237,7 @@ void register_context_menu_tests(ImGuiTestEngine* engine)
             bool raised = false;
             auto token = menu.on_remove_waypoint += [&raised]() { raised = true; };
 
-            ctx->ItemClick("Debug##Default", ImGuiMouseButton_Right);
+            ctx->MouseClickOnVoid(ImGuiMouseButton_Right);
             ctx->ItemClick("/**/Remove Waypoint");
 
             ASSERT_TRUE(raised);
@@ -260,7 +260,7 @@ void register_context_menu_tests(ImGuiTestEngine* engine)
             std::optional<std::weak_ptr<ITrigger>> raised;
             auto token = menu.on_trigger_selected += [&raised](auto type) { raised = type; };
 
-            ctx->ItemClick("Debug##Default", ImGuiMouseButton_Right);
+            ctx->MouseClickOnVoid(ImGuiMouseButton_Right);
             ctx->ItemOpen("/**/Triggered By");
             ctx->ItemClick("/##Menu_00/Trigger 100");
 
