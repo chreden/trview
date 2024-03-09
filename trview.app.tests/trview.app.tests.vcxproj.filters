@@ -119,9 +119,6 @@
     <ClCompile Include="Windows\LogWindowManagerTests.cpp">
       <Filter>Windows</Filter>
     </ClCompile>
-    <ClCompile Include="Windows\LogWindowTests.cpp">
-      <Filter>Windows</Filter>
-    </ClCompile>
     <ClCompile Include="Elements\ItemTests.cpp">
       <Filter>Elements</Filter>
     </ClCompile>

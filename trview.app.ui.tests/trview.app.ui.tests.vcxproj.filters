@@ -78,6 +78,9 @@
     <ClCompile Include="GoToTests.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="LogWindowTests.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\external\shared\imgui_app.h">
@@ -120,6 +123,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="GoToTests.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="LogWindowTests.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
