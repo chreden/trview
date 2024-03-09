@@ -86,9 +86,6 @@
     <ClCompile Include="Settings\RandomizerSettingsTests.cpp">
       <Filter>Settings</Filter>
     </ClCompile>
-    <ClCompile Include="UI\GoToTests.cpp">
-      <Filter>UI</Filter>
-    </ClCompile>
     <ClCompile Include="Graphics\TextureStorage.cpp">
       <Filter>Graphics</Filter>
     </ClCompile>

@@ -91,7 +91,6 @@
     <ClCompile Include="TexturesWindowTests.cpp" />
     <ClCompile Include="TriggersWindowManagerTests.cpp" />
     <ClCompile Include="TriggersWindowTests.cpp" />
-    <ClCompile Include="UI\GoToTests.cpp" />
     <ClCompile Include="UI\MapColoursTests.cpp" />
     <ClCompile Include="UI\ViewerUITests.cpp" />
     <ClCompile Include="ViewMenuTests.cpp" />
