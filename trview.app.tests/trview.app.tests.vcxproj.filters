@@ -24,9 +24,6 @@
       <Filter>Menus</Filter>
     </ClCompile>
     <ClCompile Include="stdafx.cpp" />
-    <ClCompile Include="ContextMenuTests.cpp">
-      <Filter>UI</Filter>
-    </ClCompile>
     <ClCompile Include="TriggersWindowTests.cpp">
       <Filter>Windows</Filter>
     </ClCompile>

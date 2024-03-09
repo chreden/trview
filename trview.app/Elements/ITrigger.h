@@ -6,6 +6,7 @@
 #include <trview.app/Geometry/TransparentTriangle.h>
 #include <trview.app/Geometry/PickResult.h>
 #include <trview.app/Elements/Types.h>
+#include <trview.common/Event.h>
 
 namespace trview
 {
