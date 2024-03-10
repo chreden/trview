@@ -9,6 +9,7 @@
 #include "LevelInfoTests.h"
 #include "LightsWindowTests.h"
 #include "LogWindowTests.h"
+#include "PluginsWindowTests.h"
 #include "RoomNavigatorTests.h"
 #include "SettingsWindowTests.h"
 #include "ViewOptionsTests.h"
@@ -24,6 +25,7 @@ void register_trview_tests(ImGuiTestEngine* engine)
     register_level_info_tests(engine);
     register_lights_window_tests(engine);
     register_log_window_tests(engine);
+    register_plugins_window_tests(engine);
     register_room_navigator_controls_tests(engine);
     register_settings_window_tests(engine);
     register_view_options_tests(engine);

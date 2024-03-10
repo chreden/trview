@@ -163,6 +163,7 @@
     <ClInclude Include="LightsWindowTests.h" />
     <ClInclude Include="LogWindowTests.h" />
     <ClInclude Include="pch.h" />
+    <ClInclude Include="PluginsWindowTests.h" />
     <ClInclude Include="RoomNavigatorTests.h" />
     <ClInclude Include="SettingsWindowTests.h" />
     <ClInclude Include="TestHelpers.h" />
@@ -228,6 +229,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="PluginsWindowTests.cpp" />
     <ClCompile Include="RoomNavigatorTests.cpp" />
     <ClCompile Include="SettingsWindowTests.cpp" />
     <ClCompile Include="trview.app.ui.tests.cpp" />
