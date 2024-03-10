@@ -1,0 +1,116 @@
+#include "pch.h"
+#include <trview.app/Windows/RoomsWindow.h>
+#include <trview.app/Mocks/UI/IMapRenderer.h>
+#include <trview.app/Mocks/Elements/IRoom.h>
+#include <trview.app/Mocks/Elements/ITrigger.h>
+#include <trview.common/Mocks/Windows/IClipboard.h>
+
+using namespace trview;
+using namespace trview::tests;
+using namespace trview::mocks;
+using namespace testing;
+
+namespace
+{
+    auto register_test_module()
+    {
+        struct test_module
+        {
+            IMapRenderer::Source map_renderer_source{ [](auto&&...) { return mock_unique<MockMapRenderer>(); } };
+            std::shared_ptr<IClipboard> clipboard{ mock_shared<MockClipboard>() };
+
+            std::unique_ptr<RoomsWindow> build()
+            {
+                return std::make_unique<RoomsWindow>(map_renderer_source, clipboard);
+            }
+
+            test_module& with_map_renderer_source(IMapRenderer::Source map_renderer_source)
+            {
+                this->map_renderer_source = map_renderer_source;
+                return *this;
+            }
+
+            test_module& with_clipboard(const std::shared_ptr<IClipboard>& clipboard)
+            {
+                this->clipboard = clipboard;
+                return *this;
+            }
+        };
+        return test_module{};
+    }
+
+    struct RoomsWindowContext final
+    {
+        std::shared_ptr<RoomsWindow> ptr;
+        std::shared_ptr<IRoom> room;
+
+        void render()
+        {
+            if (ptr)
+            {
+                ptr->render();
+            }
+        }
+    };
+}
+
+void register_rooms_window_tests(ImGuiTestEngine* engine)
+{
+    test<RoomsWindowContext>(engine, "Rooms Window", "Level Version Changes Flags",
+        [](ImGuiTestContext* ctx) { ctx->GetVars<RoomsWindowContext>().render(); },
+        [](ImGuiTestContext* ctx)
+        {
+            auto& context = ctx->GetVars<RoomsWindowContext>();
+            context.ptr = register_test_module().build();
+
+            auto room = mock_shared<MockRoom>();
+            EXPECT_CALL(*room, flag).Times(testing::AtLeast(1)).WillRepeatedly(testing::Return(true));
+            context.room = room;
+
+            context.ptr->set_level_version(trlevel::LevelVersion::Tomb1);
+            context.ptr->set_rooms({ room });
+            context.ptr->set_current_room(0);
+
+            ctx->Yield();
+            IM_CHECK_EQ(ctx->ItemExists("/**/Bit 7"), true);
+
+            auto props = ctx->ItemInfo("/**/Bit 7");
+            ctx->SetRef(props->Window);
+
+            IM_CHECK_EQ(ctx->ItemExists("Quicksand \\/ 7"), false);
+
+            context.ptr->set_level_version(trlevel::LevelVersion::Tomb3);
+            context.ptr->set_rooms({ room });
+            context.ptr->set_current_room(0);
+            ctx->Yield();
+
+            IM_CHECK_EQ(ctx->ItemExists("/**/Bit 7"), false);
+            ctx->SetRef(props->Window);
+            IM_CHECK_EQ(ctx->ItemExists("Quicksand \\/ 7"), false);
+        });
+
+    test<RoomsWindowContext>(engine, "Rooms Window", "On Room Visiblity Raised",
+        [](ImGuiTestContext* ctx) { ctx->GetVars<RoomsWindowContext>().render(); },
+        [](ImGuiTestContext* ctx)
+        {
+            auto& context = ctx->GetVars<RoomsWindowContext>();
+            context.ptr = register_test_module().build();
+
+            std::tuple<std::shared_ptr<IRoom>, bool> raised;
+            auto token = context.ptr->on_room_visibility += [&raised](const auto& room, auto&& visible)
+            {
+                auto r = room.lock();
+                ON_CALL(*std::static_pointer_cast<MockRoom>(r), visible).WillByDefault(Return(visible));
+                raised = { r, visible };
+            };
+
+            auto room1 = mock_shared<MockRoom>()->with_number(0);
+            auto room2 = mock_shared<MockRoom>()->with_number(1);
+            context.ptr->set_rooms({ room1, room2 });
+
+            ctx->ItemUncheck("/**/##hide-1");
+
+            IM_CHECK_EQ(std::get<0>(raised), room2);
+            IM_CHECK_EQ(std::get<1>(raised), true);
+        });
+}

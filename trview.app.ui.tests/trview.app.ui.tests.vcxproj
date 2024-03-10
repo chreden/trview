@@ -165,6 +165,7 @@
     <ClInclude Include="pch.h" />
     <ClInclude Include="PluginsWindowTests.h" />
     <ClInclude Include="RoomNavigatorTests.h" />
+    <ClInclude Include="RoomsWindowTests.h" />
     <ClInclude Include="SettingsWindowTests.h" />
     <ClInclude Include="TestHelpers.h" />
     <ClInclude Include="trview_imconfig.h" />
@@ -231,6 +232,7 @@
     </ClCompile>
     <ClCompile Include="PluginsWindowTests.cpp" />
     <ClCompile Include="RoomNavigatorTests.cpp" />
+    <ClCompile Include="RoomsWindowTests.cpp" />
     <ClCompile Include="SettingsWindowTests.cpp" />
     <ClCompile Include="trview.app.ui.tests.cpp" />
     <ClCompile Include="trview_tests.cpp" />
