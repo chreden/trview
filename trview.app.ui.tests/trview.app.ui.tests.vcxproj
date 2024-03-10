@@ -168,6 +168,7 @@
     <ClInclude Include="RoomsWindowTests.h" />
     <ClInclude Include="SettingsWindowTests.h" />
     <ClInclude Include="TestHelpers.h" />
+    <ClInclude Include="TexturesWindowTests.h" />
     <ClInclude Include="trview_imconfig.h" />
     <ClInclude Include="trview_tests.h" />
     <ClInclude Include="ViewOptionsTests.h" />
@@ -234,6 +235,7 @@
     <ClCompile Include="RoomNavigatorTests.cpp" />
     <ClCompile Include="RoomsWindowTests.cpp" />
     <ClCompile Include="SettingsWindowTests.cpp" />
+    <ClCompile Include="TexturesWindowTests.cpp" />
     <ClCompile Include="trview.app.ui.tests.cpp" />
     <ClCompile Include="trview_tests.cpp" />
     <ClCompile Include="ViewOptionsTests.cpp" />

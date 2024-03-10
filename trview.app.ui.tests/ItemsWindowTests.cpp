@@ -60,7 +60,7 @@ void register_items_window_tests(ImGuiTestEngine* engine)
         [](ImGuiTestContext* ctx)
         {
             auto& context = ctx->GetVars<ItemsWindowContext>();
-            context.ptr = register_test_module().build();;
+            context.ptr = register_test_module().build();
 
             std::shared_ptr<IItem> raised_item;
             auto token = context.ptr->on_add_to_route += [&raised_item](const auto& item) { raised_item = item.lock(); };
