@@ -268,3 +268,5 @@ lau/drm
 external/DirectXTK/Src/Shaders/Compiled/*
 
 *.orig
+
+trview.app.ui.tests/imgui.ini
