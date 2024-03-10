@@ -157,6 +157,7 @@
     <ClInclude Include="CameraPositionTests.h" />
     <ClInclude Include="ConsoleTests.h" />
     <ClInclude Include="ContextMenuTests.h" />
+    <ClInclude Include="FiltersTests.h" />
     <ClInclude Include="GoToTests.h" />
     <ClInclude Include="ItemsWindowTests.h" />
     <ClInclude Include="LevelInfoTests.h" />
@@ -220,6 +221,7 @@
     <ClCompile Include="CameraPositionTests.cpp" />
     <ClCompile Include="ConsoleTests.cpp" />
     <ClCompile Include="ContextMenuTests.cpp" />
+    <ClCompile Include="FiltersTests.cpp" />
     <ClCompile Include="GoToTests.cpp" />
     <ClCompile Include="ItemsWindowTests.cpp" />
     <ClCompile Include="LevelInfoTests.cpp" />
