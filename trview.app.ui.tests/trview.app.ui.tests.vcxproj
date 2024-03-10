@@ -155,6 +155,7 @@
     <ClInclude Include="..\external\shared\imgui_app.h" />
     <ClInclude Include="CameraControlsTests.h" />
     <ClInclude Include="CameraPositionTests.h" />
+    <ClInclude Include="CameraSinkWindowTests.h" />
     <ClInclude Include="ConsoleTests.h" />
     <ClInclude Include="ContextMenuTests.h" />
     <ClInclude Include="FiltersTests.h" />
@@ -219,6 +220,7 @@
     </ClCompile>
     <ClCompile Include="CameraControlsTests.cpp" />
     <ClCompile Include="CameraPositionTests.cpp" />
+    <ClCompile Include="CameraSinkWindowTests.cpp" />
     <ClCompile Include="ConsoleTests.cpp" />
     <ClCompile Include="ContextMenuTests.cpp" />
     <ClCompile Include="FiltersTests.cpp" />

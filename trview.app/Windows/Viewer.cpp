@@ -458,8 +458,9 @@ namespace trview
         {
             if (button == IMouse::Button::Left)
             {
-                auto io = ImGui::GetIO();
-                if (!(_ui->is_cursor_over() || io.WantCaptureMouse))
+                const bool want_capture_mouse = ImGui::GetCurrentContext()
+                    ? ImGui::GetIO().WantCaptureMouse : false;
+                if (!(_ui->is_cursor_over() || want_capture_mouse))
                 {
                     if (_ui->show_context_menu())
                     {
@@ -538,7 +539,7 @@ namespace trview
             {
                 _ui->set_show_context_menu(false);
 
-                if (!ImGui::IsWindowHovered(ImGuiHoveredFlags_AnyWindow))
+                if (ImGui::GetCurrentContext() && !ImGui::IsWindowHovered(ImGuiHoveredFlags_AnyWindow))
                 {
                     if (auto sector = _ui->current_minimap_sector())
                     {

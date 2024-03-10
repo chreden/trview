@@ -22,7 +22,6 @@
 #include <trview.app/Mocks/Elements/ILight.h>
 #include <trview.common/Mocks/Windows/IClipboard.h>
 #include <trview.app/Mocks/Elements/ISector.h>
-#include "TestImgui.h"
 
 using testing::A;
 using testing::Return;
@@ -150,7 +149,6 @@ TEST(Viewer, ItemVisibilityRaisedForValidItem)
     auto [picking_ptr, picking] = create_mock<MockPicking>();
     auto [mouse_ptr, mouse] = create_mock<MockMouse>();
     auto viewer = register_test_module().with_ui(std::move(ui_ptr)).with_picking(std::move(picking_ptr)).with_mouse(std::move(mouse_ptr)).build();
-    TestImgui imgui;
 
     viewer->open(level, ILevel::OpenMode::Full);
 
@@ -213,7 +211,6 @@ TEST(Viewer, SelectTriggerRaised)
 
     auto viewer = register_test_module().with_ui(std::move(ui_ptr)).with_picking(std::move(picking_ptr)).with_mouse(std::move(mouse_ptr)).build();
     viewer->open(level, ILevel::OpenMode::Full);
-    TestImgui imgui;
 
     std::optional<std::weak_ptr<ITrigger>> selected_trigger;
     auto token = viewer->on_trigger_selected += [&selected_trigger](const auto& trigger) { selected_trigger = trigger; };
@@ -231,7 +228,6 @@ TEST(Viewer, TriggerVisibilityRaised)
     auto [ui_ptr, ui] = create_mock<MockViewerUI>();
     auto [picking_ptr, picking] = create_mock<MockPicking>();
     auto [mouse_ptr, mouse] = create_mock<MockMouse>();
-    TestImgui imgui;
 
     auto level = mock_shared<MockLevel>();
     auto trigger = mock_shared<MockTrigger>();
@@ -260,7 +256,6 @@ TEST(Viewer, SelectWaypointRaised)
     auto [mouse_ptr, mouse] = create_mock<MockMouse>();
     auto level = mock_shared<MockLevel>();
     auto viewer = register_test_module().with_ui(std::move(ui_ptr)).with_picking(std::move(picking_ptr)).with_mouse(std::move(mouse_ptr)).build();
-    TestImgui imgui;
 
     viewer->open(level, ILevel::OpenMode::Full);
 
@@ -281,7 +276,6 @@ TEST(Viewer, RemoveWaypointRaised)
     auto [picking_ptr, picking] = create_mock<MockPicking>();
     auto [mouse_ptr, mouse] = create_mock<MockMouse>();
     auto viewer = register_test_module().with_ui(std::move(ui_ptr)).with_picking(std::move(picking_ptr)).with_mouse(std::move(mouse_ptr)).build();
-    TestImgui imgui;
 
     std::optional<uint32_t> removed_waypoint;
     auto token = viewer->on_waypoint_removed += [&removed_waypoint](const auto& waypoint) { removed_waypoint = waypoint; };
@@ -300,7 +294,6 @@ TEST(Viewer, AddWaypointRaised)
     auto [ui_ptr, ui] = create_mock<MockViewerUI>();
     auto [picking_ptr, picking] = create_mock<MockPicking>();
     auto [mouse_ptr, mouse] = create_mock<MockMouse>();
-    TestImgui imgui;
 
     auto level = mock_shared<MockLevel>();
     auto viewer = register_test_module().with_ui(std::move(ui_ptr)).with_picking(std::move(picking_ptr)).with_mouse(std::move(mouse_ptr)).build();
@@ -328,7 +321,6 @@ TEST(Viewer, AddWaypointRaisedUsesItemPosition)
     auto [ui_ptr, ui] = create_mock<MockViewerUI>();
     auto [picking_ptr, picking] = create_mock<MockPicking>();
     auto [mouse_ptr, mouse] = create_mock<MockMouse>();
-    TestImgui imgui;
 
     auto level = mock_shared<MockLevel>();
     auto item = mock_shared<MockItem>()->with_room(mock_shared<MockRoom>()->with_number(10))->with_number(50);
@@ -362,7 +354,6 @@ TEST(Viewer, RightClickActivatesContextMenu)
     auto [picking_ptr, picking] = create_mock<MockPicking>();
     auto [mouse_ptr, mouse] = create_mock<MockMouse>();
     auto viewer = register_test_module().with_ui(std::move(ui_ptr)).with_picking(std::move(picking_ptr)).with_mouse(std::move(mouse_ptr)).build();
-    TestImgui imgui;
 
     EXPECT_CALL(ui, set_show_context_menu(false));
     EXPECT_CALL(ui, set_show_context_menu(true)).Times(1);
@@ -619,7 +610,6 @@ TEST(Viewer, WaypointUsesPosition)
     auto [picking_ptr, picking] = create_mock<MockPicking>();
     auto [mouse_ptr, mouse] = create_mock<MockMouse>();
     auto viewer = register_test_module().with_ui(std::move(ui_ptr)).with_picking(std::move(picking_ptr)).with_mouse(std::move(mouse_ptr)).build();
-    TestImgui imgui;
 
     std::optional<Vector3> raised_position;
     auto token = viewer->on_waypoint_added += [&](auto&& position, auto&&...)
@@ -640,7 +630,6 @@ TEST(Viewer, MidWaypointUsesCentroid)
     auto [picking_ptr, picking] = create_mock<MockPicking>();
     auto [mouse_ptr, mouse] = create_mock<MockMouse>();
     auto viewer = register_test_module().with_ui(std::move(ui_ptr)).with_picking(std::move(picking_ptr)).with_mouse(std::move(mouse_ptr)).build();
-    TestImgui imgui;
 
     std::optional<Vector3> raised_position;
     auto token = viewer->on_waypoint_added += [&](auto&& position, auto&&...)
@@ -726,7 +715,6 @@ TEST(Viewer, LightVisibilityRaised)
     auto [ui_ptr, ui] = create_mock<MockViewerUI>();
     auto [picking_ptr, picking] = create_mock<MockPicking>();
     auto [mouse_ptr, mouse] = create_mock<MockMouse>();
-    TestImgui imgui;
 
     auto level = mock_shared<MockLevel>();
     auto light = mock_shared<MockLight>();
@@ -752,7 +740,6 @@ TEST(Viewer, RoomVisibilityRaised)
     auto [ui_ptr, ui] = create_mock<MockViewerUI>();
     auto [picking_ptr, picking] = create_mock<MockPicking>();
     auto [mouse_ptr, mouse] = create_mock<MockMouse>();
-    TestImgui imgui;
 
     auto level = mock_shared<MockLevel>();
     auto room = mock_shared<MockRoom>();
@@ -827,7 +814,6 @@ TEST(Viewer, CopyPosition)
     auto [picking_ptr, picking] = create_mock<MockPicking>();
     auto [mouse_ptr, mouse] = create_mock<MockMouse>();
     auto clipboard = mock_shared<MockClipboard>();
-    TestImgui imgui;
 
     EXPECT_CALL(*clipboard, write(std::wstring(L"1024, 2048, 3072"))).Times(1);
 
@@ -844,7 +830,6 @@ TEST(Viewer, CopyRoom)
     auto [picking_ptr, picking] = create_mock<MockPicking>();
     auto [mouse_ptr, mouse] = create_mock<MockMouse>();
     auto clipboard = mock_shared<MockClipboard>();
-    TestImgui imgui;
 
     EXPECT_CALL(*clipboard, write(std::wstring(L"14"))).Times(1);
 
@@ -861,7 +846,6 @@ TEST(Viewer, SetTriggeredBy)
     auto [picking_ptr, picking] = create_mock<MockPicking>();
     auto [mouse_ptr, mouse] = create_mock<MockMouse>();
     auto clipboard = mock_shared<MockClipboard>();
-    TestImgui imgui;
 
     EXPECT_CALL(ui, set_triggered_by).Times(1);
 
@@ -915,7 +899,6 @@ TEST(Viewer, CameraSinkVisibilityRaisedForValidItem)
     auto cs = mock_shared<MockCameraSink>();
     auto level = mock_shared<MockLevel>();
     EXPECT_CALL(*level, camera_sink(123)).WillRepeatedly(Return(cs));
-    TestImgui imgui;
 
     auto [ui_ptr, ui] = create_mock<MockViewerUI>();
     auto [picking_ptr, picking] = create_mock<MockPicking>();
@@ -960,7 +943,6 @@ TEST(Viewer, SetTriggeredByCameraSink)
     auto [picking_ptr, picking] = create_mock<MockPicking>();
     auto [mouse_ptr, mouse] = create_mock<MockMouse>();
     auto clipboard = mock_shared<MockClipboard>();
-    TestImgui imgui;
 
     EXPECT_CALL(ui, set_triggered_by).Times(1);
 

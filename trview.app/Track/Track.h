@@ -2,6 +2,7 @@
 
 #include "../Type.h"
 #include <array>
+#include <trview.common/Event.h>
 
 namespace trview
 {

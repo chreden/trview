@@ -1,4 +1,5 @@
 #include "pch.h"
+#include "ItemsWindowTests.h"
 #include <trview.app/Windows/ItemsWindow.h>
 #include <trview.app/Elements/Types.h>
 #include <trview.common/Mocks/Windows/IClipboard.h>

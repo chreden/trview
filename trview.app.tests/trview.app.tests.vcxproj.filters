@@ -128,9 +128,6 @@
     <ClCompile Include="CameraSinkWindowManagerTests.cpp">
       <Filter>Windows</Filter>
     </ClCompile>
-    <ClCompile Include="CameraSinkWindowTests.cpp">
-      <Filter>Windows</Filter>
-    </ClCompile>
     <ClCompile Include="Elements\CameraSinkTests.cpp">
       <Filter>Elements</Filter>
     </ClCompile>

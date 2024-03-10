@@ -29,7 +29,6 @@
     <ClCompile Include="AlternateGroupTogglerTests.cpp" />
     <ClCompile Include="ApplicationTests.cpp" />
     <ClCompile Include="CameraSinkWindowManagerTests.cpp" />
-    <ClCompile Include="CameraSinkWindowTests.cpp" />
     <ClCompile Include="Camera\CameraInputTests.cpp" />
     <ClCompile Include="Elements\CameraSinkTests.cpp" />
     <ClCompile Include="Elements\ItemTests.cpp" />
