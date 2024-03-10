@@ -7,6 +7,7 @@
 #include "GoToTests.h"
 #include "ItemsWindowTests.h"
 #include "LevelInfoTests.h"
+#include "LightsWindowTests.h"
 #include "LogWindowTests.h"
 #include "RoomNavigatorTests.h"
 #include "SettingsWindowTests.h"
@@ -21,6 +22,7 @@ void register_trview_tests(ImGuiTestEngine* engine)
     register_go_to_tests(engine);
     register_items_window_tests(engine);
     register_level_info_tests(engine);
+    register_lights_window_tests(engine);
     register_log_window_tests(engine);
     register_room_navigator_controls_tests(engine);
     register_settings_window_tests(engine);

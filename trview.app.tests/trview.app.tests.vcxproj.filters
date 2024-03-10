@@ -104,9 +104,6 @@
     <ClCompile Include="Elements\LightTests.cpp">
       <Filter>Elements</Filter>
     </ClCompile>
-    <ClCompile Include="Windows\LightsWindowTests.cpp">
-      <Filter>Windows</Filter>
-    </ClCompile>
     <ClCompile Include="Windows\LightsWindowManagerTests.cpp">
       <Filter>Windows</Filter>
     </ClCompile>

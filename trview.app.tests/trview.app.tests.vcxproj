@@ -97,7 +97,6 @@
     <ClCompile Include="WindowResizerTests.cpp" />
     <ClCompile Include="Windows\ConsoleManagerTests.cpp" />
     <ClCompile Include="Windows\LightsWindowManagerTests.cpp" />
-    <ClCompile Include="Windows\LightsWindowTests.cpp" />
     <ClCompile Include="Windows\LogWindowManagerTests.cpp" />
     <ClCompile Include="Windows\PluginsWindowTests.cpp" />
     <ClCompile Include="Windows\RouteWindowManagerTests.cpp" />

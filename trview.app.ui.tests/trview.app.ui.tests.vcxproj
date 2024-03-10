@@ -160,6 +160,7 @@
     <ClInclude Include="GoToTests.h" />
     <ClInclude Include="ItemsWindowTests.h" />
     <ClInclude Include="LevelInfoTests.h" />
+    <ClInclude Include="LightsWindowTests.h" />
     <ClInclude Include="LogWindowTests.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="RoomNavigatorTests.h" />
@@ -219,6 +220,7 @@
     <ClCompile Include="GoToTests.cpp" />
     <ClCompile Include="ItemsWindowTests.cpp" />
     <ClCompile Include="LevelInfoTests.cpp" />
+    <ClCompile Include="LightsWindowTests.cpp" />
     <ClCompile Include="LogWindowTests.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
