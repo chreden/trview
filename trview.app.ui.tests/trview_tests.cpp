@@ -14,8 +14,10 @@
 #include "PluginsWindowTests.h"
 #include "RoomNavigatorTests.h"
 #include "RoomsWindowTests.h"
+#include "RouteWindowTests.h"
 #include "SettingsWindowTests.h"
 #include "TexturesWindowTests.h"
+#include "TriggersWindowTests.h"
 #include "ViewOptionsTests.h"
 
 void register_trview_tests(ImGuiTestEngine* engine)
@@ -34,7 +36,9 @@ void register_trview_tests(ImGuiTestEngine* engine)
     register_plugins_window_tests(engine);
     register_room_navigator_controls_tests(engine);
     register_rooms_window_tests(engine);
+    register_route_window_tests(engine);
     register_settings_window_tests(engine);
     register_textures_window_tests(engine);
+    register_triggers_window_tests(engine);
     register_view_options_tests(engine);
 }
