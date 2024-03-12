@@ -13,8 +13,6 @@
 #include <trview.tests.common/Window.h>
 #include <trview.tests.common/Mocks.h>
 
-#define IMGUI_DEFINE_MATH_OPERATORS
-
 #include "gtest/gtest.h"
 #include "gmock/gmock.h"
 
