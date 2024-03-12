@@ -24,7 +24,7 @@ jobs:
     - name: Test Solution (x86)
       run: |
         $any_errors = $false
-        foreach ($file in Get-ChildItem Release\*.tests.exe)
+        foreach ($file in Get-ChildItem Release\*.tests.exe -Exclude trview.app.ui.tests.exe)
         {
           . $file;
           if (!$?)
@@ -57,7 +57,7 @@ jobs:
     - name: Test Solution (x64)
       run: |
         $any_errors = $false
-        foreach ($file in Get-ChildItem x64\Release\*.tests.exe)
+        foreach ($file in Get-ChildItem x64\Release\*.tests.exe -Exclude trview.app.ui.tests.exe)
         {
           . $file;
           if (!$?)
