@@ -95,10 +95,13 @@ namespace trview
     {
         SetWindowLongPtr(window(), GWLP_USERDATA, reinterpret_cast<LONG_PTR>(nullptr));
         _settings_loader->save_user_settings(_settings);
-        if (_imgui_setup)
+        if (_imgui_backend->is_setup())
         {
             _imgui_backend->shutdown();
-            ImGui::DestroyContext();
+            if (ImGui::GetCurrentContext())
+            {
+                ImGui::DestroyContext();
+            }
         }
     }
 
@@ -169,11 +172,7 @@ namespace trview
                     }
                     case ID_WINDOWS_RESET_LAYOUT:
                     {
-                        auto& io = ImGui::GetIO();
-                        _files->delete_file(io.IniFilename);
-                        io.IniFilename = nullptr;
-                        _imgui_setup = false;
-                        _imgui_backend->shutdown();
+                        _imgui_backend->reset_layout();
                         break;
                     }
                 }
@@ -643,7 +642,7 @@ namespace trview
             return;
         }
 
-        if (!_imgui_setup)
+        if (!_imgui_backend->is_setup())
         {
             // Setup Dear ImGui context
             IMGUI_CHECKVERSION();
@@ -670,7 +669,6 @@ namespace trview
 
             // Setup Platform/Renderer backends
             _imgui_backend->initialise();
-            _imgui_setup = true;
         }
 
         _timer.update();

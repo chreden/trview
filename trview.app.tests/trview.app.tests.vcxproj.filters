@@ -83,13 +83,7 @@
     <ClCompile Include="Graphics\TextureStorage.cpp">
       <Filter>Graphics</Filter>
     </ClCompile>
-    <ClCompile Include="TestImgui.cpp">
-      <Filter>ImGui</Filter>
-    </ClCompile>
     <ClCompile Include="NullImGuiBackend.cpp">
-      <Filter>ImGui</Filter>
-    </ClCompile>
-    <ClCompile Include="TestImGuiId.cpp">
       <Filter>ImGui</Filter>
     </ClCompile>
     <ClCompile Include="UI\MapColoursTests.cpp">
@@ -253,13 +247,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
-    <ClInclude Include="TestImgui.h">
-      <Filter>ImGui</Filter>
-    </ClInclude>
     <ClInclude Include="NullImGuiBackend.h">
-      <Filter>ImGui</Filter>
-    </ClInclude>
-    <ClInclude Include="TestImGuiId.h">
       <Filter>ImGui</Filter>
     </ClInclude>
     <ClInclude Include="Lua\Lua.h">

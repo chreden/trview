@@ -338,7 +338,7 @@ namespace trview
             std::make_shared<StartupOptions>(command_line),
             dialogs,
             files,
-            std::make_unique<DX11ImGuiBackend>(window, device),
+            std::make_unique<DX11ImGuiBackend>(window, device, files),
             std::make_unique<LightsWindowManager>(window, shortcuts, lights_window_source),
             std::make_unique<LogWindowManager>(window, log_window_source),
             std::make_unique<TexturesWindowManager>(window, textures_window_source),

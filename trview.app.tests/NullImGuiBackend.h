@@ -10,11 +10,15 @@ namespace trview
         {
         public:
             virtual ~NullImGuiBackend() = default;
-            virtual void initialise() override;
-            virtual void new_frame() override;
-            virtual void render() override;
-            virtual void shutdown() override;
-            virtual bool window_procedure(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam) override;
+            void initialise() override;
+            bool is_setup() const override;
+            void new_frame() override;
+            void render() override;
+            void reset_layout() override;
+            void shutdown() override;
+            bool window_procedure(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam) override;
+        private:
+            bool _active { false };
         };
     }
 }

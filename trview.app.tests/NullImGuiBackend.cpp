@@ -10,6 +10,12 @@ namespace trview
         {
             auto context = ImGui::GetCurrentContext();
             context->IO.DisplaySize = ImVec2(1920, 1080);
+            _active = true;
+        }
+
+        bool NullImGuiBackend::is_setup() const
+        {
+            return _active;
         }
 
         void NullImGuiBackend::new_frame()
@@ -25,8 +31,13 @@ namespace trview
         {
         }
 
+        void NullImGuiBackend::reset_layout()
+        {
+        }
+
         void NullImGuiBackend::shutdown()
         {
+            _active = false;
         }
 
         bool NullImGuiBackend::window_procedure(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)

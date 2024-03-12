@@ -83,8 +83,6 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="TestImgui.cpp" />
-    <ClCompile Include="TestImGuiId.cpp" />
     <ClCompile Include="TexturesWindowManagerTests.cpp" />
     <ClCompile Include="TriggersWindowManagerTests.cpp" />
     <ClCompile Include="UI\MapColoursTests.cpp" />
@@ -130,8 +128,6 @@
     <ClInclude Include="Lua\Lua.h" />
     <ClInclude Include="NullImGuiBackend.h" />
     <ClInclude Include="stdafx.h" />
-    <ClInclude Include="TestImgui.h" />
-    <ClInclude Include="TestImGuiId.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
