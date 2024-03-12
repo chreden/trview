@@ -69,7 +69,6 @@
     <ClCompile Include="Plugins\PluginTests.cpp" />
     <ClCompile Include="RoomsWindowManagerTests.cpp" />
     <ClCompile Include="RoomsWindowTests.cpp" />
-    <ClCompile Include="RouteWindowTests.cpp" />
     <ClCompile Include="Routing\ActionsTests.cpp" />
     <ClCompile Include="Routing\ActionTests.cpp" />
     <ClCompile Include="Routing\RandomizerRouteTests.cpp" />
@@ -88,7 +87,6 @@
     <ClCompile Include="TestImGuiId.cpp" />
     <ClCompile Include="TexturesWindowManagerTests.cpp" />
     <ClCompile Include="TriggersWindowManagerTests.cpp" />
-    <ClCompile Include="TriggersWindowTests.cpp" />
     <ClCompile Include="UI\MapColoursTests.cpp" />
     <ClCompile Include="UI\ViewerUITests.cpp" />
     <ClCompile Include="ViewMenuTests.cpp" />

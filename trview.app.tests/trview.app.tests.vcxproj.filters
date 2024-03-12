@@ -24,9 +24,6 @@
       <Filter>Menus</Filter>
     </ClCompile>
     <ClCompile Include="stdafx.cpp" />
-    <ClCompile Include="TriggersWindowTests.cpp">
-      <Filter>Windows</Filter>
-    </ClCompile>
     <ClCompile Include="ItemsWindowManagerTests.cpp">
       <Filter>Windows</Filter>
     </ClCompile>
@@ -45,9 +42,6 @@
       <Filter>Windows</Filter>
     </ClCompile>
     <ClCompile Include="RoomsWindowTests.cpp">
-      <Filter>Windows</Filter>
-    </ClCompile>
-    <ClCompile Include="RouteWindowTests.cpp">
       <Filter>Windows</Filter>
     </ClCompile>
     <ClCompile Include="Settings\StartupOptionsTests.cpp">

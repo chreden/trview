@@ -168,6 +168,7 @@
     <ClInclude Include="PluginsWindowTests.h" />
     <ClInclude Include="RoomNavigatorTests.h" />
     <ClInclude Include="RoomsWindowTests.h" />
+    <ClInclude Include="RouteWindowTests.h" />
     <ClInclude Include="SettingsWindowTests.h" />
     <ClInclude Include="TestHelpers.h" />
     <ClInclude Include="TexturesWindowTests.h" />
@@ -239,6 +240,7 @@
     <ClCompile Include="PluginsWindowTests.cpp" />
     <ClCompile Include="RoomNavigatorTests.cpp" />
     <ClCompile Include="RoomsWindowTests.cpp" />
+    <ClCompile Include="RouteWindowTests.cpp" />
     <ClCompile Include="SettingsWindowTests.cpp" />
     <ClCompile Include="TexturesWindowTests.cpp" />
     <ClCompile Include="TriggersWindowTests.cpp" />
