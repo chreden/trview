@@ -3879,6 +3879,8 @@ extern const char*  ImGuiTestEngine_FindItemDebugLabel(ImGuiContext* ctx, ImGuiI
 #else
 #define IMGUI_TEST_ENGINE_ITEM_ADD(_BB,_ID)                 ((void)0)
 #define IMGUI_TEST_ENGINE_ITEM_INFO(_ID,_LABEL,_FLAGS)      ((void)g)
+#define IMGUI_TRVIEW_TEST_ENGINE_ITEM_TEXT(_ID,_BUF)        ((void)0)
+#define IMGUI_TRVIEW_TEST_ENGINE_RENDERED_TEXT(_ID,_BUF)    ((void)0)
 #endif
 
 //-----------------------------------------------------------------------------
