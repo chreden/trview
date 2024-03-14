@@ -23,8 +23,6 @@ namespace trview
             static const std::string colour;
             static const inline std::string delete_waypoint = "Delete Waypoint";
             static const inline std::string attach_save = "Attach Save";
-            static const inline std::string export_button = "Export";
-            static const inline std::string import_button = "Import";
             static const inline std::string clear_save = "X";
             static const inline std::string notes = "Notes##notes";
             static const inline std::string waypoint_stats = "##waypointstats";

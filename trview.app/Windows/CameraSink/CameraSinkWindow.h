@@ -15,7 +15,7 @@ namespace trview
             static inline const std::string sync = "Sync";
             static inline const std::string camera_sink_list = "##camerasinklist";
             static inline const std::string list_panel = "Camera/Sink List";
-            static inline const std::string details_panel = "Camera/Sink Details";
+            static inline const std::string details_panel = "Details";
             static inline const std::string stats_listbox = "Stats";
             static inline const std::string triggers_list = "##triggeredby";
             static inline const std::string type = "Type";

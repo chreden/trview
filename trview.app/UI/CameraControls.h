@@ -7,6 +7,7 @@
 #pragma once
 
 #include "ICameraControls.h"
+#include <string>
 
 namespace trview
 {

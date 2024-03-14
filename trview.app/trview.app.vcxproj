@@ -430,9 +430,6 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <None Include="Resources\Generated\ui_vertex_shader.cso" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\external\imgui\imgui.vcxproj">
-      <Project>{6aabd08e-3361-4d84-88f0-851ee588162a}</Project>
-    </ProjectReference>
     <ProjectReference Include="..\external\lua\lua.vcxproj">
       <Project>{2a4f1e89-71ac-46c3-a711-1a4d67accdf5}</Project>
     </ProjectReference>

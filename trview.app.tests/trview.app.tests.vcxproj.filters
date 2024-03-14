@@ -14,9 +14,6 @@
     <ClCompile Include="Graphics\LevelTextureStorageTests.cpp">
       <Filter>Graphics</Filter>
     </ClCompile>
-    <ClCompile Include="UI\CameraPositionTests.cpp">
-      <Filter>UI</Filter>
-    </ClCompile>
     <ClCompile Include="Elements\TypeInfoLookupTests.cpp">
       <Filter>Elements</Filter>
     </ClCompile>
@@ -27,18 +24,6 @@
       <Filter>Menus</Filter>
     </ClCompile>
     <ClCompile Include="stdafx.cpp" />
-    <ClCompile Include="SettingsWindowTests.cpp">
-      <Filter>UI</Filter>
-    </ClCompile>
-    <ClCompile Include="ContextMenuTests.cpp">
-      <Filter>UI</Filter>
-    </ClCompile>
-    <ClCompile Include="ItemsWindowTests.cpp">
-      <Filter>Windows</Filter>
-    </ClCompile>
-    <ClCompile Include="TriggersWindowTests.cpp">
-      <Filter>Windows</Filter>
-    </ClCompile>
     <ClCompile Include="ItemsWindowManagerTests.cpp">
       <Filter>Windows</Filter>
     </ClCompile>
@@ -57,9 +42,6 @@
       <Filter>Windows</Filter>
     </ClCompile>
     <ClCompile Include="RoomsWindowTests.cpp">
-      <Filter>Windows</Filter>
-    </ClCompile>
-    <ClCompile Include="RouteWindowTests.cpp">
       <Filter>Windows</Filter>
     </ClCompile>
     <ClCompile Include="Settings\StartupOptionsTests.cpp">
@@ -92,37 +74,16 @@
     <ClCompile Include="Elements\StaticMeshTests.cpp">
       <Filter>Elements</Filter>
     </ClCompile>
-    <ClCompile Include="UI\ViewOptionsTests.cpp">
-      <Filter>UI</Filter>
-    </ClCompile>
     <ClCompile Include="Settings\SettingsLoaderTests.cpp">
       <Filter>Settings</Filter>
-    </ClCompile>
-    <ClCompile Include="UI\CameraControlsTests.cpp">
-      <Filter>UI</Filter>
     </ClCompile>
     <ClCompile Include="Settings\RandomizerSettingsTests.cpp">
       <Filter>Settings</Filter>
     </ClCompile>
-    <ClCompile Include="UI\GoToTests.cpp">
-      <Filter>UI</Filter>
-    </ClCompile>
-    <ClCompile Include="UI\RoomNavigatorTests.cpp">
-      <Filter>UI</Filter>
-    </ClCompile>
-    <ClCompile Include="UI\LevelInfoTests.cpp">
-      <Filter>UI</Filter>
-    </ClCompile>
     <ClCompile Include="Graphics\TextureStorage.cpp">
       <Filter>Graphics</Filter>
     </ClCompile>
-    <ClCompile Include="TestImgui.cpp">
-      <Filter>ImGui</Filter>
-    </ClCompile>
     <ClCompile Include="NullImGuiBackend.cpp">
-      <Filter>ImGui</Filter>
-    </ClCompile>
-    <ClCompile Include="TestImGuiId.cpp">
       <Filter>ImGui</Filter>
     </ClCompile>
     <ClCompile Include="UI\MapColoursTests.cpp">
@@ -130,9 +91,6 @@
     </ClCompile>
     <ClCompile Include="Elements\LightTests.cpp">
       <Filter>Elements</Filter>
-    </ClCompile>
-    <ClCompile Include="Windows\LightsWindowTests.cpp">
-      <Filter>Windows</Filter>
     </ClCompile>
     <ClCompile Include="Windows\LightsWindowManagerTests.cpp">
       <Filter>Windows</Filter>
@@ -146,25 +104,16 @@
     <ClCompile Include="Windows\LogWindowManagerTests.cpp">
       <Filter>Windows</Filter>
     </ClCompile>
-    <ClCompile Include="Windows\LogWindowTests.cpp">
-      <Filter>Windows</Filter>
-    </ClCompile>
     <ClCompile Include="Elements\ItemTests.cpp">
       <Filter>Elements</Filter>
     </ClCompile>
     <ClCompile Include="Elements\SectorTests.cpp">
       <Filter>Elements</Filter>
     </ClCompile>
-    <ClCompile Include="TexturesWindowTests.cpp">
-      <Filter>Windows</Filter>
-    </ClCompile>
     <ClCompile Include="TexturesWindowManagerTests.cpp">
       <Filter>Windows</Filter>
     </ClCompile>
     <ClCompile Include="CameraSinkWindowManagerTests.cpp">
-      <Filter>Windows</Filter>
-    </ClCompile>
-    <ClCompile Include="CameraSinkWindowTests.cpp">
       <Filter>Windows</Filter>
     </ClCompile>
     <ClCompile Include="Elements\CameraSinkTests.cpp">
@@ -184,9 +133,6 @@
     </ClCompile>
     <ClCompile Include="Lua\Elements\Lua_SectorTests.cpp">
       <Filter>Lua\Elements</Filter>
-    </ClCompile>
-    <ClCompile Include="Windows\ConsoleTests.cpp">
-      <Filter>Windows</Filter>
     </ClCompile>
     <ClCompile Include="Windows\ConsoleManagerTests.cpp">
       <Filter>Windows</Filter>
@@ -209,9 +155,6 @@
     <ClCompile Include="PluginsWindowManagerTests.cpp">
       <Filter>Windows</Filter>
     </ClCompile>
-    <ClCompile Include="Windows\PluginsWindowTests.cpp">
-      <Filter>Windows</Filter>
-    </ClCompile>
     <ClCompile Include="Lua\Elements\Lua_StaticMeshTests.cpp">
       <Filter>Lua\Elements</Filter>
     </ClCompile>
@@ -232,6 +175,27 @@
     </ClCompile>
     <ClCompile Include="Lua\Lua.cpp">
       <Filter>Lua</Filter>
+    </ClCompile>
+    <ClCompile Include="..\external\imgui\imgui.cpp">
+      <Filter>ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\external\imgui\imgui_demo.cpp">
+      <Filter>ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\external\imgui\imgui_draw.cpp">
+      <Filter>ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\external\imgui\imgui_tables.cpp">
+      <Filter>ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\external\imgui\imgui_widgets.cpp">
+      <Filter>ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\external\imgui\misc\cpp\imgui_stdlib.cpp">
+      <Filter>ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\external\shared\imgui_app.cpp">
+      <Filter>ImGui</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -283,13 +247,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
-    <ClInclude Include="TestImgui.h">
-      <Filter>ImGui</Filter>
-    </ClInclude>
     <ClInclude Include="NullImGuiBackend.h">
-      <Filter>ImGui</Filter>
-    </ClInclude>
-    <ClInclude Include="TestImGuiId.h">
       <Filter>ImGui</Filter>
     </ClInclude>
     <ClInclude Include="Lua\Lua.h">

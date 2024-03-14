@@ -19,12 +19,17 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\external\imgui\imgui.cpp" />
+    <ClCompile Include="..\external\imgui\imgui_demo.cpp" />
+    <ClCompile Include="..\external\imgui\imgui_draw.cpp" />
+    <ClCompile Include="..\external\imgui\imgui_tables.cpp" />
+    <ClCompile Include="..\external\imgui\imgui_widgets.cpp" />
+    <ClCompile Include="..\external\imgui\misc\cpp\imgui_stdlib.cpp" />
+    <ClCompile Include="..\external\shared\imgui_app.cpp" />
     <ClCompile Include="AlternateGroupTogglerTests.cpp" />
     <ClCompile Include="ApplicationTests.cpp" />
     <ClCompile Include="CameraSinkWindowManagerTests.cpp" />
-    <ClCompile Include="CameraSinkWindowTests.cpp" />
     <ClCompile Include="Camera\CameraInputTests.cpp" />
-    <ClCompile Include="ContextMenuTests.cpp" />
     <ClCompile Include="Elements\CameraSinkTests.cpp" />
     <ClCompile Include="Elements\ItemTests.cpp" />
     <ClCompile Include="Elements\LevelTests.cpp" />
@@ -40,7 +45,6 @@
     <ClCompile Include="Graphics\MeshStorageTests.cpp" />
     <ClCompile Include="Graphics\TextureStorage.cpp" />
     <ClCompile Include="ItemsWindowManagerTests.cpp" />
-    <ClCompile Include="ItemsWindowTests.cpp" />
     <ClCompile Include="Lua\Elements\Lua_CameraSinkTests.cpp" />
     <ClCompile Include="Lua\Elements\Lua_ItemTests.cpp" />
     <ClCompile Include="Lua\Elements\Lua_LevelTests.cpp" />
@@ -65,13 +69,11 @@
     <ClCompile Include="Plugins\PluginTests.cpp" />
     <ClCompile Include="RoomsWindowManagerTests.cpp" />
     <ClCompile Include="RoomsWindowTests.cpp" />
-    <ClCompile Include="RouteWindowTests.cpp" />
     <ClCompile Include="Routing\ActionsTests.cpp" />
     <ClCompile Include="Routing\ActionTests.cpp" />
     <ClCompile Include="Routing\RandomizerRouteTests.cpp" />
     <ClCompile Include="Routing\RouteTests.cpp" />
     <ClCompile Include="Routing\WaypointTests.cpp" />
-    <ClCompile Include="SettingsWindowTests.cpp" />
     <ClCompile Include="Settings\RandomizerSettingsTests.cpp" />
     <ClCompile Include="Settings\SettingsLoaderTests.cpp" />
     <ClCompile Include="Settings\StartupOptionsTests.cpp" />
@@ -81,29 +83,15 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="TestImgui.cpp" />
-    <ClCompile Include="TestImGuiId.cpp" />
     <ClCompile Include="TexturesWindowManagerTests.cpp" />
-    <ClCompile Include="TexturesWindowTests.cpp" />
     <ClCompile Include="TriggersWindowManagerTests.cpp" />
-    <ClCompile Include="TriggersWindowTests.cpp" />
-    <ClCompile Include="UI\CameraControlsTests.cpp" />
-    <ClCompile Include="UI\CameraPositionTests.cpp" />
-    <ClCompile Include="UI\GoToTests.cpp" />
-    <ClCompile Include="UI\LevelInfoTests.cpp" />
     <ClCompile Include="UI\MapColoursTests.cpp" />
-    <ClCompile Include="UI\RoomNavigatorTests.cpp" />
     <ClCompile Include="UI\ViewerUITests.cpp" />
-    <ClCompile Include="UI\ViewOptionsTests.cpp" />
     <ClCompile Include="ViewMenuTests.cpp" />
     <ClCompile Include="WindowResizerTests.cpp" />
     <ClCompile Include="Windows\ConsoleManagerTests.cpp" />
-    <ClCompile Include="Windows\ConsoleTests.cpp" />
     <ClCompile Include="Windows\LightsWindowManagerTests.cpp" />
-    <ClCompile Include="Windows\LightsWindowTests.cpp" />
     <ClCompile Include="Windows\LogWindowManagerTests.cpp" />
-    <ClCompile Include="Windows\LogWindowTests.cpp" />
-    <ClCompile Include="Windows\PluginsWindowTests.cpp" />
     <ClCompile Include="Windows\RouteWindowManagerTests.cpp" />
     <ClCompile Include="Windows\ViewerTests.cpp" />
   </ItemGroup>
@@ -137,8 +125,6 @@
     <ClInclude Include="Lua\Lua.h" />
     <ClInclude Include="NullImGuiBackend.h" />
     <ClInclude Include="stdafx.h" />
-    <ClInclude Include="TestImgui.h" />
-    <ClInclude Include="TestImGuiId.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
@@ -202,8 +188,8 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <AdditionalIncludeDirectories>$(SolutionDir);$(SolutionDir)external\DirectXTK\Inc;$(ProjectDir);$(SolutionDir)external\googletest\include;$(SolutionDir)external\googlemock\include;$(SolutionDir)external\imgui;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(SolutionDir);$(SolutionDir)external\DirectXTK\Inc;$(ProjectDir);$(SolutionDir)external\googletest\include;$(SolutionDir)external\googlemock\include;$(SolutionDir)external\imgui;$(SolutionDir)external\imgui_test_engine;$(SolutionDir)external\imgui\backends;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions);IMGUI_DEFINE_MATH_OPERATORS;IMGUI_APP_WIN32_DX11;</PreprocessorDefinitions>
       <UseFullPaths>true</UseFullPaths>
       <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpplatest</LanguageStandard>
@@ -226,8 +212,8 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>$(SolutionDir);$(SolutionDir)external\DirectXTK\Inc;$(ProjectDir);$(SolutionDir)external\googletest\include;$(SolutionDir)external\googlemock\include;$(SolutionDir)external\imgui;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(SolutionDir);$(SolutionDir)external\DirectXTK\Inc;$(ProjectDir);$(SolutionDir)external\googletest\include;$(SolutionDir)external\googlemock\include;$(SolutionDir)external\imgui;$(SolutionDir)external\imgui_test_engine;$(SolutionDir)external\imgui\backends;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_DEBUG;%(PreprocessorDefinitions);IMGUI_DEFINE_MATH_OPERATORS;IMGUI_APP_WIN32_DX11;</PreprocessorDefinitions>
       <UseFullPaths>true</UseFullPaths>
       <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpplatest</LanguageStandard>
@@ -248,8 +234,8 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>$(SolutionDir);$(SolutionDir)external\DirectXTK\Inc;$(ProjectDir);$(SolutionDir)external\googletest\include;$(SolutionDir)external\googlemock\include;$(SolutionDir)external\imgui;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(SolutionDir);$(SolutionDir)external\DirectXTK\Inc;$(ProjectDir);$(SolutionDir)external\googletest\include;$(SolutionDir)external\googlemock\include;$(SolutionDir)external\imgui;$(SolutionDir)external\imgui_test_engine;$(SolutionDir)external\imgui\backends;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions);IMGUI_DEFINE_MATH_OPERATORS;IMGUI_APP_WIN32_DX11</PreprocessorDefinitions>
       <UseFullPaths>true</UseFullPaths>
       <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpplatest</LanguageStandard>
@@ -272,8 +258,8 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <AdditionalIncludeDirectories>$(SolutionDir);$(SolutionDir)external\DirectXTK\Inc;$(ProjectDir);$(SolutionDir)external\googletest\include;$(SolutionDir)external\googlemock\include;$(SolutionDir)external\imgui;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(SolutionDir);$(SolutionDir)external\DirectXTK\Inc;$(ProjectDir);$(SolutionDir)external\googletest\include;$(SolutionDir)external\googlemock\include;$(SolutionDir)external\imgui;$(SolutionDir)external\imgui_test_engine;$(SolutionDir)external\imgui\backends;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;NDEBUG;%(PreprocessorDefinitions);IMGUI_DEFINE_MATH_OPERATORS;IMGUI_APP_WIN32_DX11</PreprocessorDefinitions>
       <UseFullPaths>true</UseFullPaths>
       <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpplatest</LanguageStandard>

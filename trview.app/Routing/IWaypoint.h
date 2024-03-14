@@ -5,6 +5,7 @@
 #include <SimpleMath.h>
 #include <trview.common/Colour.h>
 #include <trview.app/Geometry/IRenderable.h>
+#include <trview.common/Event.h>
 
 namespace trview
 {

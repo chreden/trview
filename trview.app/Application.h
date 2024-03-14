@@ -165,7 +165,6 @@ namespace trview
         std::unique_ptr<IRoomsWindowManager> _rooms_windows;
         std::unique_ptr<ILightsWindowManager> _lights_windows;
         Timer _timer;
-        bool _imgui_setup{ false };
         ImFont* _font;
 
         std::unique_ptr<IImGuiBackend> _imgui_backend;

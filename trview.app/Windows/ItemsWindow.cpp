@@ -150,6 +150,7 @@ namespace trview
 
                     const bool item_is_virtual = is_virtual(*item_ptr);
 
+                    ImGui::SetNextItemAllowOverlap();
                     if (ImGui::Selectable(std::format("{0}{1}##{0}", item_ptr->number(), item_is_virtual ? "*" : "").c_str(), &selected, ImGuiSelectableFlags_SpanAllColumns | static_cast<int>(ImGuiSelectableFlags_SelectOnNav)))
                     {
                         scroller.fix_scroll();
@@ -169,7 +170,6 @@ namespace trview
                         ImGui::EndTooltip();
                     }
 
-                    ImGui::SetItemAllowOverlap();
                     ImGui::TableNextColumn();
                     ImGui::Text(std::to_string(item_room(item_ptr)).c_str());
                     ImGui::TableNextColumn();

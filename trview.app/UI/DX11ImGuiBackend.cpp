@@ -11,8 +11,8 @@ namespace trview
     {
     }
 
-    DX11ImGuiBackend::DX11ImGuiBackend(const Window& window, const std::shared_ptr<graphics::IDevice>& device)
-        : _window(window), _device(device)
+    DX11ImGuiBackend::DX11ImGuiBackend(const Window& window, const std::shared_ptr<graphics::IDevice>& device, const std::shared_ptr<IFiles>& files)
+        : _window(window), _device(device), _files(files)
     {
     }
 
@@ -21,6 +21,11 @@ namespace trview
         ImGui_ImplWin32_Init(_window);
         ImGui_ImplDX11_Init(_device->device().Get(), _device->context().Get());
         _active = true;
+    }
+
+    bool DX11ImGuiBackend::is_setup() const
+    {
+        return _active;
     }
 
     void DX11ImGuiBackend::new_frame()
@@ -32,6 +37,14 @@ namespace trview
     void DX11ImGuiBackend::render()
     {
         ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
+    }
+
+    void DX11ImGuiBackend::reset_layout()
+    {
+        auto& io = ImGui::GetIO();
+        _files->delete_file(io.IniFilename);
+        io.IniFilename = nullptr;
+        shutdown();
     }
 
     void DX11ImGuiBackend::shutdown()

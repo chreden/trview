@@ -27,7 +27,6 @@
 #include <trview.app/Resources/resource.h>
 #include "NullImGuiBackend.h"
 #include <trview.common/Strings.h>
-#include "TestImgui.h"
 #include <ranges>
 #include <trview.app/Mocks/Windows/IConsoleManager.h>
 #include <trview.app/Mocks/Lua/ILua.h>
@@ -621,20 +620,14 @@ TEST(Application, MapColoursSetOnSettingsChanged)
 
 TEST(Application, ResetLayout)
 {
-    auto files = mock_shared<MockFiles>();
-    EXPECT_CALL(*files, delete_file).Times(1);
     auto [imgui_backend_ptr, imgui_backend] = create_mock<MockImGuiBackend>();
-    EXPECT_CALL(imgui_backend, shutdown);
+    EXPECT_CALL(imgui_backend, reset_layout);
 
     auto application = register_test_module()
-        .with_files(files)
         .with_imgui_backend(std::move(imgui_backend_ptr))
         .build();
 
-    TestImgui imgui;
     application->process_message(WM_COMMAND, MAKEWPARAM(ID_WINDOWS_RESET_LAYOUT, 0), 0);
-
-    ASSERT_EQ(ImGui::GetIO().IniFilename, nullptr);
 }
 
 TEST(Application, RoomsWindowRoomVisibilityCaptured)

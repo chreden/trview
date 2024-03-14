@@ -199,6 +199,7 @@ namespace trview
                         _scroll_to = false;
                     }
 
+                    ImGui::SetNextItemAllowOverlap();
                     if (ImGui::Selectable(std::format("{0}##{0}", camera_sink->number()).c_str(), &selected, ImGuiSelectableFlags_SpanAllColumns | static_cast<int>(ImGuiSelectableFlags_SelectOnNav) | ImGuiTableFlags_SizingFixedFit))
                     {
                         scroller.fix_scroll();
@@ -211,8 +212,6 @@ namespace trview
 
                         _scroll_to = false;
                     }
-
-                    ImGui::SetItemAllowOverlap();
 
                     ImGui::TableNextColumn();
                     if (camera_sink->type() == ICameraSink::Type::Camera)

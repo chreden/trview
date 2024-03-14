@@ -1,5 +1,4 @@
 #include <trview.app/Filters/Filters.h>
-#include "TestImgui.h"
 
 using namespace trview;
 using namespace trview::tests;
@@ -93,68 +92,6 @@ namespace
 }
 
 using Names = Filters<Object>::Names;
-
-TEST(Filters, ButtonTogglesVisibility)
-{
-    Filters<Object> filters;
-    TestImgui imgui([&]() { filters.render(); });
-    ASSERT_EQ(imgui.find_window(imgui.popup_id(Names::Popup).name()), nullptr);
-    imgui.click_element(imgui.id("Debug##Default").id(Names::FiltersButton));
-    ASSERT_NE(imgui.find_window(imgui.popup_id(Names::Popup).name()), nullptr);
-}
-
-TEST(Filters, CheckboxDisablesFilters)
-{
-    Filters<Object> filters;
-    filters.add_getter<float>("value", [](auto&& o) { return o.number; });
-    Filters<Object>::Filter is_float = make_filter().key("value").compare_op(CompareOp::Equal).value("12");
-    filters.set_filters({ is_float });
-
-    ASSERT_FALSE(filters.match(Object().with_number(13)));
-
-    TestImgui imgui([&]() { filters.render(); });
-    imgui.click_element(imgui.id("Debug##Default").id(Names::Enable));
-
-    ASSERT_TRUE(filters.match(Object().with_number(13)));
-}
-
-TEST(Filters, AddFilterUsingUI)
-{
-    Filters<Object> filters;
-    filters.add_getter<float>("value", [](auto&& o) { return o.number; });
-    
-    TestImgui imgui([&]() { filters.render(); });
-    ASSERT_EQ(imgui.find_window(imgui.popup_id(Names::Popup).name()), nullptr);
-    imgui.click_element(imgui.id("Debug##Default").id(Names::FiltersButton));
-    ASSERT_NE(imgui.find_window(imgui.popup_id(Names::Popup).name()), nullptr);
-
-    imgui.click_element(imgui.popup_id(Names::Popup).id(Names::AddFilter));
-    imgui.click_element(imgui.popup_id(Names::Popup).id(Names::FilterKey + "0"));
-    imgui.click_element(imgui.id("##Combo_01").id("value"));
-
-    imgui.click_element(imgui.popup_id(Names::Popup).id(Names::FilterCompareOp + "0"));
-    imgui.click_element(imgui.id("##Combo_01").id(to_string(CompareOp::LessThan)));
-
-    imgui.click_element(imgui.popup_id(Names::Popup).id(Names::FilterValue + "0"));
-    imgui.enter_text("10");
-
-    imgui.click_element(imgui.popup_id(Names::Popup).id(Names::AddFilter));
-    imgui.click_element(imgui.popup_id(Names::Popup).id(Names::FilterOp + "0"));
-    imgui.click_element(imgui.id("##Combo_01").id(to_string(Op::Or)));
-
-    imgui.click_element(imgui.popup_id(Names::Popup).id(Names::FilterKey + "1"));
-    imgui.click_element(imgui.id("##Combo_01").id("value"));
-
-    imgui.click_element(imgui.popup_id(Names::Popup).id(Names::FilterCompareOp + "1"));
-    imgui.click_element(imgui.id("##Combo_01").id(to_string(CompareOp::GreaterThan)));
-
-    imgui.click_element(imgui.popup_id(Names::Popup).id(Names::FilterValue + "1"));
-    imgui.enter_text("15");
-
-    ASSERT_FALSE(filters.match(Object().with_number(12)));
-    ASSERT_TRUE(filters.match(Object().with_number(9)));
-    ASSERT_TRUE(filters.match(Object().with_number(16)));
-}
 
 TEST(Filters, IsFloat)
 {
@@ -356,15 +293,6 @@ TEST(Filters, And)
     ASSERT_TRUE(filters.match(Object().with_number(7)));
     ASSERT_FALSE(filters.match(Object().with_number(5)));
     ASSERT_FALSE(filters.match(Object().with_number(10)));
-}
-
-TEST(Filters, CheckboxShowsTooltip)
-{
-    Filters<Object> filters;
-    TestImgui imgui([&]() { filters.render(); });
-    ASSERT_EQ(imgui.find_window("##Tooltip_00"), nullptr);
-    imgui.hover_element(imgui.id("Debug##Default").id(Names::Enable));
-    ASSERT_NE(imgui.find_window("##Tooltip_00"), nullptr);
 }
 
 TEST(Filters, NotPresentFloat)

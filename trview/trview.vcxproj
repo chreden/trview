@@ -198,6 +198,9 @@
     <ProjectReference Include="..\external\DirectXTK\DirectXTK_Desktop.vcxproj">
       <Project>{a11566d3-4081-42c9-94c5-f4057edd9d50}</Project>
     </ProjectReference>
+    <ProjectReference Include="..\external\imgui\imgui.vcxproj">
+      <Project>{6aabd08e-3361-4d84-88f0-851ee588162a}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\trlevel\trlevel.vcxproj">
       <Project>{8ffb19fa-1c9d-4d9c-ab96-844bf695e79c}</Project>
     </ProjectReference>

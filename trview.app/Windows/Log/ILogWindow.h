@@ -1,5 +1,7 @@
 #pragma once
 
+#include <trview.common/Event.h>
+
 namespace trview
 {
     struct ILogWindow
