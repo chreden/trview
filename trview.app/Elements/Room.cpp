@@ -610,38 +610,66 @@ namespace trview
                 y_top[i] = y_bottom[i] - height;
             }
 
+            const std::array<Vector3, 4> t
+            {
+                Vector3(x - 0.5f, y_top[0], z - 0.5f),
+                Vector3(x - 0.5f, y_top[1], z + 0.5f),
+                Vector3(x + 0.5f, y_top[2], z - 0.5f),
+                Vector3(x + 0.5f, y_top[3], z + 0.5f)
+            };
+            const std::array<Vector3, 4> b
+            {
+                Vector3(x - 0.5f, y_bottom[0], z - 0.5f),
+                Vector3(x - 0.5f, y_bottom[1], z + 0.5f),
+                Vector3(x + 0.5f, y_bottom[2], z - 0.5f),
+                Vector3(x + 0.5f, y_bottom[3], z + 0.5f)
+            };
+
             std::vector<TransparentTriangle> triangles;
 
+            const auto add_tri = [&triangles](const Vector3& v0, const Vector3& v1, const Vector3& v2)
+            {
+                triangles.push_back(TransparentTriangle(v0, v1, v2, ITrigger::Trigger_Colour));
+            };
+
             // + Y
-            triangles.push_back(TransparentTriangle(Vector3(x + 0.5f, y_top[3], z + 0.5f), Vector3(x + 0.5f, y_top[2], z - 0.5f), Vector3(x - 0.5f, y_top[0], z - 0.5f), ITrigger::Trigger_Colour));
-            triangles.push_back(TransparentTriangle(Vector3(x - 0.5f, y_top[0], z - 0.5f), Vector3(x - 0.5f, y_top[1], z + 0.5f), Vector3(x + 0.5f, y_top[3], z + 0.5f), ITrigger::Trigger_Colour));
+            if (sector->triangulation() == ISector::TriangulationDirection::NwSe)
+            {
+                add_tri(t[3], t[2], t[1]);
+                add_tri(t[0], t[1], t[2]);
+            }
+            else
+            {
+                add_tri(t[3], t[2], t[0]);
+                add_tri(t[0], t[1], t[3]);
+            }
 
             if (pos_x)
             {
                 // + X
-                triangles.push_back(TransparentTriangle(Vector3(x + 0.5f, y_top[2], z - 0.5f), Vector3(x + 0.5f, y_top[3], z + 0.5f), Vector3(x + 0.5f, y_bottom[3], z + 0.5f), ITrigger::Trigger_Colour));
-                triangles.push_back(TransparentTriangle(Vector3(x + 0.5f, y_top[2], z - 0.5f), Vector3(x + 0.5f, y_bottom[3], z + 0.5f), Vector3(x + 0.5f, y_bottom[2], z - 0.5f), ITrigger::Trigger_Colour));
+                add_tri(t[2], t[3], b[3]);
+                add_tri(t[2], b[3], b[2]);
             }
 
             if (neg_x)
             {
                 // - X
-                triangles.push_back(TransparentTriangle(Vector3(x - 0.5f, y_top[1], z + 0.5f), Vector3(x - 0.5f, y_top[0], z - 0.5f), Vector3(x - 0.5f, y_bottom[0], z - 0.5f), ITrigger::Trigger_Colour));
-                triangles.push_back(TransparentTriangle(Vector3(x - 0.5f, y_top[1], z + 0.5f), Vector3(x - 0.5f, y_bottom[0], z - 0.5f), Vector3(x - 0.5f, y_bottom[1], z + 0.5f), ITrigger::Trigger_Colour));
+                add_tri(t[1], t[0], b[0]);
+                add_tri(t[1], b[0], b[1]);
             }
 
             if (pos_z)
             {
                 // + Z
-                triangles.push_back(TransparentTriangle(Vector3(x + 0.5f, y_top[3], z + 0.5f), Vector3(x - 0.5f, y_top[1], z + 0.5f), Vector3(x - 0.5f, y_bottom[1], z + 0.5f), ITrigger::Trigger_Colour));
-                triangles.push_back(TransparentTriangle(Vector3(x + 0.5f, y_top[3], z + 0.5f), Vector3(x - 0.5f, y_bottom[1], z + 0.5f), Vector3(x + 0.5f, y_bottom[3], z + 0.5f), ITrigger::Trigger_Colour));
+                add_tri(t[3], t[1], b[1]);
+                add_tri(t[3], b[1], b[3]);
             }
 
             if (neg_z)
             {
                 // - Z
-                triangles.push_back(TransparentTriangle(Vector3(x - 0.5f, y_top[0], z - 0.5f), Vector3(x + 0.5f, y_top[2], z - 0.5f), Vector3(x + 0.5f, y_bottom[2], z - 0.5f), ITrigger::Trigger_Colour));
-                triangles.push_back(TransparentTriangle(Vector3(x - 0.5f, y_top[0], z - 0.5f), Vector3(x + 0.5f, y_bottom[2], z - 0.5f), Vector3(x - 0.5f, y_bottom[0], z - 0.5f), ITrigger::Trigger_Colour));
+                add_tri(t[0], t[2], b[2]);
+                add_tri(t[0], b[2], b[0]);
             }
 
             trigger->set_triangles(triangles);

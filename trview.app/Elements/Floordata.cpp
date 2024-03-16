@@ -117,13 +117,13 @@ namespace trview
             }
             case Function::Triangulation_Floor_NWSE:
             {
-                meanings.push_back("Floor triangulation");
+                meanings.push_back("Floor triangulation (NWSE)");
                 meanings.push_back("");
                 break;
             }
             case Function::Triangulation_Floor_NESW:
             {
-                meanings.push_back("Floor triangulation");
+                meanings.push_back("Floor triangulation (NESW)");
                 meanings.push_back("");
                 break;
             }
