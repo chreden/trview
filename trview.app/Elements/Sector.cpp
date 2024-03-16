@@ -710,14 +710,24 @@ namespace trview
         ISector::TriangulationDirection direction{ ISector::TriangulationDirection::None };
         switch (function)
         {
+        // Floor
         case 0x07:
         case 0x0B:
         case 0x0C:
+        // Ceiling:
+        case 0x09:
+        case 0x0f:
+        case 0x10:
             direction = ISector::TriangulationDirection::NwSe;
             break;
+        // Floor
         case 0x08:
         case 0x0D:
         case 0x0E:
+        // Ceiling:
+        case 0x0A:
+        case 0x11:
+        case 0x12:
             direction = ISector::TriangulationDirection::NeSw;
             break;
         }
