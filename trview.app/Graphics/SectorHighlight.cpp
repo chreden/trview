@@ -40,23 +40,22 @@ namespace trview
                 return;
             }
 
-            auto c1 = (triangles[0].v1 - triangles[0].v0).Cross(triangles[0].v2 - triangles[0].v0);
-            auto c2 = (triangles[1].v1 - triangles[1].v0).Cross(triangles[1].v2 - triangles[1].v0);
+            std::vector<MeshVertex> vertices;
+            std::vector<uint32_t> indices;
 
-            c1.Normalize();
-            c2.Normalize();
-
-            const std::vector<MeshVertex> vertices
+            for (const auto& t : triangles)
             {
-                { triangles[0].v0 - c1 * 0.05f, Vector3::Down, {0, 0}, Highlight_Colour },
-                { triangles[0].v1 - c1 * 0.05f, Vector3::Down, {0, 0}, Highlight_Colour },
-                { triangles[0].v2 - c1 * 0.05f, Vector3::Down, {0, 0}, Highlight_Colour },
-                { triangles[1].v0 - c2 * 0.05f, Vector3::Down, {0, 0}, Highlight_Colour },
-                { triangles[1].v1 - c2 * 0.05f, Vector3::Down, {0, 0}, Highlight_Colour },
-                { triangles[1].v2 - c2 * 0.05f, Vector3::Down, {0, 0}, Highlight_Colour }
-            };
+                auto c = (t.v1 - t.v0).Cross(t.v2 - t.v0);
+                c.Normalize();
 
-            const std::vector<uint32_t> indices{ 0,  1,  2,  3,  4,  5, };
+                vertices.push_back({ t.v0 - c * 0.05f, Vector3::Down, { 0, 0 }, Highlight_Colour });
+                vertices.push_back({ t.v1 - c * 0.05f, Vector3::Down, { 0, 0 }, Highlight_Colour });
+                vertices.push_back({ t.v2 - c * 0.05f, Vector3::Down, { 0, 0 }, Highlight_Colour });
+                indices.push_back(static_cast<uint32_t>(indices.size()));
+                indices.push_back(static_cast<uint32_t>(indices.size()));
+                indices.push_back(static_cast<uint32_t>(indices.size()));
+            }
+
             _mesh = _mesh_source(vertices, std::vector<std::vector<uint32_t>>(), indices, std::vector<TransparentTriangle>(), std::vector<Triangle>());
         }
 
