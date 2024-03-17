@@ -553,7 +553,8 @@ namespace trview
                     add_quad(self, Quad(north.corner(Corner::SW), corner(Corner::NE), corner(Corner::NW), north.corner(Corner::SE), wall_flags & (~SectorFlag::Climbable | SectorFlag::ClimbableNorth), _room));
                 }
 
-                if (ceiling(Corner::NW) != north.ceiling(Corner::SW) || ceiling(Corner::NE) != north.ceiling(Corner::SE))
+                if (_room_above == 0xff && 
+                    (ceiling(Corner::NW) != north.ceiling(Corner::SW) || ceiling(Corner::NE) != north.ceiling(Corner::SE)))
                 {
                     add_quad(self, Quad(north.ceiling(Corner::SE), ceiling(Corner::NW), ceiling(Corner::NE), north.ceiling(Corner::SW), wall_flags & (~SectorFlag::Climbable | SectorFlag::ClimbableNorth), _room));
                 }
@@ -566,7 +567,8 @@ namespace trview
                     add_quad(self, Quad(corner(Corner::SW), south.corner(Corner::NE), south.corner(Corner::NW), corner(Corner::SE), wall_flags & (~SectorFlag::Climbable | SectorFlag::ClimbableSouth), _room));
                 }
 
-                if (ceiling(Corner::SW) != south.ceiling(Corner::NW) || ceiling(Corner::SE) != south.ceiling(Corner::NE))
+                if (_room_above == 0xff && 
+                    (ceiling(Corner::SW) != south.ceiling(Corner::NW) || ceiling(Corner::SE) != south.ceiling(Corner::NE)))
                 {
                     add_quad(self, Quad(ceiling(Corner::SE), south.ceiling(Corner::NW), south.ceiling(Corner::NE), ceiling(Corner::SW), wall_flags & (~SectorFlag::Climbable | SectorFlag::ClimbableSouth), _room));
                 }
@@ -579,7 +581,8 @@ namespace trview
                     add_quad(self, Quad(corner(Corner::SE), east.corner(Corner::NW), east.corner(Corner::SW), corner(Corner::NE), wall_flags & (~SectorFlag::Climbable | SectorFlag::ClimbableEast), _room));
                 }
 
-                if (ceiling(Corner::NE) != east.ceiling(Corner::NW) || ceiling(Corner::SE) != east.ceiling(Corner::SW))
+                if (_room_above == 0xff &&
+                    (ceiling(Corner::NE) != east.ceiling(Corner::NW) || ceiling(Corner::SE) != east.ceiling(Corner::SW)))
                 {
                     add_quad(self, Quad(ceiling(Corner::NE), east.ceiling(Corner::SW), east.ceiling(Corner::NW), ceiling(Corner::SE), wall_flags & (~SectorFlag::Climbable | SectorFlag::ClimbableEast), _room));
                 }
@@ -592,7 +595,8 @@ namespace trview
                     add_quad(self, Quad(west.corner(Corner::SE), corner(Corner::NW), corner(Corner::SW), west.corner(Corner::NE), wall_flags & (~SectorFlag::Climbable | SectorFlag::ClimbableWest), _room));
                 }
 
-                if (ceiling(Corner::NW) != west.ceiling(Corner::NE) || ceiling(Corner::SW) != west.ceiling(Corner::SE))
+                if (_room_above == 0xff && 
+                    (ceiling(Corner::NW) != west.ceiling(Corner::NE) || ceiling(Corner::SW) != west.ceiling(Corner::SE)))
                 {
                     add_quad(self, Quad(west.ceiling(Corner::NE), ceiling(Corner::SW), ceiling(Corner::NW), west.ceiling(Corner::SE), wall_flags & (~SectorFlag::Climbable | SectorFlag::ClimbableWest), _room));
                 }
