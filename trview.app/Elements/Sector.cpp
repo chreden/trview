@@ -522,7 +522,7 @@ namespace trview
             }
         }
 
-        if (is_wall())
+        if (is_wall() && !is_portal())
         { 
             if (north && !north.is_wall() && !north.is_portal())
             {
