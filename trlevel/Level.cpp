@@ -703,6 +703,8 @@ namespace trlevel
             uint32_t number_of_sectors = read<uint32_t>(trg_file);
             number_of_sectors;
 
+            // int sum = 0;
+
             // Temp fix 
             if (true)
             {
@@ -717,52 +719,49 @@ namespace trlevel
             }
             else
             {
-                auto sum = 0;
+                std::unordered_map<std::string, int> commands;
+
                 for (const auto& room : _rooms)
                 {
                     for (const auto& sector : room.sector_list)
                     {
-                        const auto at = trg_file.tellg();
                         const auto floordata = parse_floordata(_floor_data, sector.floordata_index);
-                        for (const auto& command : floordata.commands)
+                        if (std::ranges::any_of(floordata.commands,
+                            [](auto& x) { return x.type == Floordata::Command::Function::Portal; }))
                         {
-                            switch (command.type)
-                            {
-                            case Floordata::Command::Function::None:
-                            {
-                                skip(trg_file, 4);
-                                break;
-                            }
-                            case Floordata::Command::Function::FloorSlant:
-                            case Floordata::Command::Function::CeilingSlant:
-                            {
-                                skip(trg_file, 12);
-                                break;
-                            }
-                            case Floordata::Command::Function::Portal:
-                            {
-                                skip(trg_file, 128);
-                                break;
-                            }
-                            case Floordata::Command::Function::Trigger:
-                            {
-                                skip(trg_file, 16);
-                                break;
-                            }
-                            default:
-                            {
-                                sum += 1000;
-                                break;
-                            }
-                            }
+                            ++commands["portal"];
+                        }
+
+                        if (std::ranges::any_of(floordata.commands,
+                            [](auto& x) { return x.type == Floordata::Command::Function::None; }))
+                        {
+                            ++commands["none"];
+                        }
+
+                        if (sector.room_above != 255)
+                        {
+                            ++commands["above"];
+                        }
+
+                        if (sector.room_below != 255)
+                        {
+                            ++commands["below"];
+                        }
+
+                        if (std::ranges::any_of(floordata.commands,
+                            [](auto& x) { return x.type == Floordata::Command::Function::Trigger; }))
+                        {
+                            ++commands["trigger"];
                         }
                     }
                 }
+                
+                trg_file.seekg(23744, std::ios::beg);
             }
 
             auto location = trg_file.tellg();
 
-            skip(trg_file, 20);
+            // skip(trg_file, 20);
 
             std::vector<std::tuple<uint32_t, uint32_t>> room_indices;
             for (auto& room : _rooms)
@@ -806,8 +805,8 @@ namespace trlevel
             // trg_file.seekg(103504);
 
             auto current_location = trg_file.tellg();
-            // skip(trg_file, 32);
-            skip(trg_file, 120);
+            skip(trg_file, 32);
+            // skip(trg_file, 120);
 
             uint32_t index_count = read<uint32_t>(trg_file);
             uint32_t vert_count = read<uint32_t>(trg_file);
