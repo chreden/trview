@@ -812,8 +812,11 @@ namespace trlevel
             uint32_t vert_count = read<uint32_t>(trg_file);
             std::vector<uint32_t> indices = read_vector<uint32_t>(trg_file, index_count);
 
+            current_location = trg_file.tellg();
             const auto trg_vertices = read_vector<trlevel::remaster::Vertex>(trg_file, vert_count);
 
+            current_location = trg_file.tellg();
+            /*
             const auto all_textures_0 = trg_vertices
                 | std::views::transform([](const auto& v) -> uint8_t { return v.unknown[0]; })
                 | std::ranges::to<std::set>();
@@ -855,7 +858,7 @@ namespace trlevel
                 | std::ranges::to<std::set>();
             const auto all_textures_13 = trg_vertices
                 | std::views::transform([](const auto& v) -> uint8_t { return v.unknown[13]; })
-                | std::ranges::to<std::set>();
+                | std::ranges::to<std::set>();*/
 
             auto vertices = trg_vertices
                 | std::views::transform([](const auto& v) -> tr_vertex { return { v.position.x, v.position.y, v.position.z }; })
