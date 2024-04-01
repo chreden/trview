@@ -7,6 +7,11 @@
 
 namespace trlevel
 {
+    int remaster::Vertex::offset_u = 0;
+    int remaster::Vertex::size = 1;
+    int remaster::Vertex::offset_v = 0;
+    float remaster::Vertex::divisor = 1.0f;
+
     ILevel::~ILevel()
     {
     }
@@ -767,6 +772,7 @@ namespace trlevel
                 }
                 
                 trg_file.seekg(23744, std::ios::beg);
+                trg_file.seekg(10048, std::ios::beg);
             }
 
             auto location = trg_file.tellg();
@@ -815,7 +821,16 @@ namespace trlevel
             // trg_file.seekg(103504);
 
             auto current_location = trg_file.tellg();
-            skip(trg_file, 32);
+
+            // 10392
+            if (_name == "CUT2.PHD")
+            {
+                trg_file.seekg(10392, std::ios::beg);
+            }
+            else
+            {
+                skip(trg_file, 32);
+            }
             // skip(trg_file, 120);
 
             uint32_t index_count = read<uint32_t>(trg_file);
@@ -828,48 +843,50 @@ namespace trlevel
             current_location = trg_file.tellg();
             /*
             const auto all_textures_0 = trg_vertices
-                | std::views::transform([](const auto& v) -> uint8_t { return v.unknown[0]; })
+                | std::views::transform([](const auto& v) -> uint8_t { return v.unknown_6[0]; })
                 | std::ranges::to<std::set>();
             const auto all_textures_1 = trg_vertices
-                | std::views::transform([](const auto& v) -> uint8_t { return v.unknown[1]; })
+                | std::views::transform([](const auto& v) -> uint8_t { return v.unknown_6[1]; })
                 | std::ranges::to<std::set>();
             const auto all_textures_2 = trg_vertices
-                | std::views::transform([](const auto& v) -> uint8_t { return v.unknown[2]; })
+                | std::views::transform([](const auto& v) -> uint8_t { return v.unknown_6[2]; })
                 | std::ranges::to<std::set>();
             const auto all_textures_3 = trg_vertices
-                | std::views::transform([](const auto& v) -> uint8_t { return v.unknown[3]; })
+                | std::views::transform([](const auto& v) -> uint8_t { return v.unknown_6[3]; })
                 | std::ranges::to<std::set>();
             const auto all_textures_4 = trg_vertices
-                | std::views::transform([](const auto& v) -> uint8_t { return v.unknown[4]; })
+                | std::views::transform([](const auto& v) -> uint8_t { return v.unknown_6[4]; })
                 | std::ranges::to<std::set>();
-            const auto all_textures_5 = trg_vertices
-                | std::views::transform([](const auto& v) -> uint8_t { return v.unknown[5]; })
+            const auto texture_indices = trg_vertices
+                | std::views::transform([](const auto& v) -> uint8_t { return v.texture_index; })
                 | std::ranges::to<std::set>();
             const auto all_textures_6 = trg_vertices
-                | std::views::transform([](const auto& v) -> uint8_t { return v.unknown[6]; })
+                | std::views::transform([](const auto& v) -> uint8_t { return v.unknown_8[0]; })
                 | std::ranges::to<std::set>();
             const auto all_textures_7 = trg_vertices
-                | std::views::transform([](const auto& v) -> uint8_t { return v.unknown[7]; })
+                | std::views::transform([](const auto& v) -> uint8_t { return v.unknown_8[1]; })
                 | std::ranges::to<std::set>();
             const auto all_textures_8 = trg_vertices
-                | std::views::transform([](const auto& v) -> uint8_t { return v.unknown[8]; })
+                | std::views::transform([](const auto& v) -> uint8_t { return v.unknown_8[2]; })
                 | std::ranges::to<std::set>();
             const auto all_textures_9 = trg_vertices
-                | std::views::transform([](const auto& v) -> uint8_t { return v.unknown[9]; })
+                | std::views::transform([](const auto& v) -> uint8_t { return v.unknown_8[3]; })
                 | std::ranges::to<std::set>();
             const auto all_textures_10 = trg_vertices
-                | std::views::transform([](const auto& v) -> uint8_t { return v.unknown[10]; })
+                | std::views::transform([](const auto& v) -> uint8_t { return v.unknown_8[4]; })
                 | std::ranges::to<std::set>();
             const auto all_textures_11 = trg_vertices
-                | std::views::transform([](const auto& v) -> uint8_t { return v.unknown[11]; })
+                | std::views::transform([](const auto& v) -> uint8_t { return v.unknown_8[5]; })
                 | std::ranges::to<std::set>();
             const auto all_textures_12 = trg_vertices
-                | std::views::transform([](const auto& v) -> uint8_t { return v.unknown[12]; })
+                | std::views::transform([](const auto& v) -> uint8_t { return v.unknown_8[6]; })
                 | std::ranges::to<std::set>();
+                
             const auto all_textures_13 = trg_vertices
-                | std::views::transform([](const auto& v) -> uint8_t { return v.unknown[13]; })
-                | std::ranges::to<std::set>();*/
-
+                | std::views::transform([](const auto& v) -> uint8_t { return v.unknown_18[0]; })
+                | std::ranges::to<std::set>();
+                */
+                
             auto vertices = trg_vertices
                 | std::views::transform([](const auto& v) -> tr_vertex { return { v.position.x, v.position.y, v.position.z }; })
                 | std::ranges::to<std::vector>();
@@ -891,7 +908,7 @@ namespace trlevel
                     room.remaster_data.triangles.push_back(
                         remaster::Triangle {
                         .vertices = { rm_v_base, rm_v_base + 1, rm_v_base + 2 },
-                            .texture = 6
+                        .texture = static_cast<uint32_t>(trg_vertices[indices[base]].texture_index) - 1
                     });
                 }
             }
@@ -1921,7 +1938,7 @@ namespace trlevel
             // Texture references - the files that will be used in the tiles.
             const auto texture_references = read_vector<uint16_t, uint16_t>(file);
 
-            std::vector<tr_remastered_textile> tiles;
+            std::vector<remaster::tr_remastered_textile> tiles;
 
             // Tile references - the indices
             // for (uint16_t i = 0; i < _num_textiles; ++i)
@@ -1939,7 +1956,7 @@ namespace trlevel
             // }
             for (uint16_t i = 0; i < _num_textiles; ++i)
             {
-                tr_remastered_textile tile;
+                remaster::tr_remastered_textile tile;
                 int base = i * 16;
                 for (int x = base; x < base + 16 && x < texture_references.size(); ++x)
                 {
@@ -1952,7 +1969,7 @@ namespace trlevel
         }
     }
 
-    tr_remastered_textile Level::get_remastered_textile(uint32_t index) const
+    remaster::tr_remastered_textile Level::get_remastered_textile(uint32_t index) const
     {
         return _remastered_textiles[index];
     }

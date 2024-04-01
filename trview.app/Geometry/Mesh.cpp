@@ -115,7 +115,7 @@ namespace trview
         _bounding_box.Center = minimum + half_size;
     }
 
-    void Mesh::render(const Matrix& world_view_projection, const ILevelTextureStorage& texture_storage, const Color& colour, float light_intensity, Vector3 light_direction, bool geometry_mode, bool use_colour_override)
+    void Mesh::render(const Matrix& world_view_projection, const ILevelTextureStorage& texture_storage, const Color& colour, float light_intensity, Vector3 light_direction, bool geometry_mode, bool use_colour_override, bool use_remaster)
     {
         // There are no vertices.
         if (!_vertex_buffer)
@@ -143,7 +143,7 @@ namespace trview
             auto& index_buffer = _index_buffers[i];
             if (index_buffer)
             {
-                auto texture = geometry_mode ? texture_storage.geometry_texture() : texture_storage.texture(i);
+                auto texture = geometry_mode ? texture_storage.geometry_texture() : use_remaster ? texture_storage.remastered_texture(i) : texture_storage.texture(i);
                 context->PSSetShaderResources(0, 1, texture.view().GetAddressOf());
                 context->IASetIndexBuffer(index_buffer.Get(), DXGI_FORMAT_R32_UINT, 0);
                 context->DrawIndexed(_index_counts[i], 0, 0);

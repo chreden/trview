@@ -7,7 +7,7 @@
 #include "trtypes.h"
 #include "tr_rooms.h"
 #include "LevelVersion.h"
-#include "tr_remastered_types.h"
+#include "tr_remaster.h"
 
 namespace trlevel
 {
@@ -181,6 +181,6 @@ namespace trlevel
 
         virtual Platform platform() const = 0;
 
-        virtual tr_remastered_textile get_remastered_textile(uint32_t index) const = 0;
+        virtual remaster::tr_remastered_textile get_remastered_textile(uint32_t index) const = 0;
     };
 }

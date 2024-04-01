@@ -248,7 +248,7 @@ namespace trview
             else
             {
                 const auto room_mesh = (has_flag(render_filter, RenderFilter::Remaster) && _remaster_mesh) ? _remaster_mesh : _mesh;
-                room_mesh->render(_room_offset * camera.view_projection(), *_texture_storage, colour, 1.0f, Vector3::Zero, false, !has_flag(render_filter, RenderFilter::Lighting));
+                room_mesh->render(_room_offset * camera.view_projection(), *_texture_storage, colour, 1.0f, Vector3::Zero, false, !has_flag(render_filter, RenderFilter::Lighting), has_flag(render_filter, RenderFilter::Remaster));
                 for (const auto& mesh : _static_meshes)
                 {
                     mesh->render(camera, *_texture_storage, colour);
@@ -403,27 +403,67 @@ namespace trview
     void Room::generate_remaster_geometry(const IMesh::Source& mesh_source, const trlevel::tr3_room& room)
     {
         std::vector<MeshVertex> output_vertices;
-        std::vector<std::vector<uint32_t>> output_indices(_texture_storage->num_tiles());
+        std::vector<std::vector<uint32_t>> output_indices(_texture_storage->num_remastered_textures());
 
         uint16_t previous_texture = 0;
         for (const auto& tri : room.remaster_data.triangles)
         {
             std::array<Vector3, 3> verts;
             std::array<Color, 3> colors;
+            std::array<Vector2, 3> uvs;
+
             for (int i = 0; i < 3; ++i)
             {
+                // const auto& uv = room.remaster_data.vertices[tri.vertices[i]].uv;
+                const auto& vert = room.remaster_data.vertices[tri.vertices[i]];
+
+                float u{ 0 }, v{ 0 };
+                switch (trlevel::remaster::Vertex::size)
+                {
+                case 1:
+                    u = static_cast<float>(*reinterpret_cast<const uint8_t*>(&vert.unknown_x[trlevel::remaster::Vertex::offset_u]))
+                        / trlevel::remaster::Vertex::divisor;
+                    v = static_cast<float>(*reinterpret_cast<const uint8_t*>(&vert.unknown_x[trlevel::remaster::Vertex::offset_v]))
+                        / trlevel::remaster::Vertex::divisor;
+                    break;
+                case 2:
+                    u = static_cast<float>(*reinterpret_cast<const uint16_t*>(&vert.unknown_x[trlevel::remaster::Vertex::offset_u]))
+                        / trlevel::remaster::Vertex::divisor;
+                    v = static_cast<float>(*reinterpret_cast<const uint16_t*>(&vert.unknown_x[trlevel::remaster::Vertex::offset_v]))
+                        / trlevel::remaster::Vertex::divisor;
+                    break;
+                case 4:
+                    u = static_cast<float>(*reinterpret_cast<const uint32_t*>(&vert.unknown_x[trlevel::remaster::Vertex::offset_u]))
+                        / trlevel::remaster::Vertex::divisor;
+                    v = static_cast<float>(*reinterpret_cast<const uint32_t*>(&vert.unknown_x[trlevel::remaster::Vertex::offset_v]))
+                        / trlevel::remaster::Vertex::divisor;
+                    break;
+                }
+
+                u = static_cast<float>(vert.u) / 65536.0f;
+                v = static_cast<float>(vert.v) / 65536.0f;
+
                 verts[i] = convert_vertex(room.remaster_data.vertices[tri.vertices[i]]);
+                uvs[i] =
+                {
+                    u, v
+                    // (static_cast<float>(uv.x_whole + static_cast<int8_t>(uv.x_frac))) / 255.0f,
+                    // (static_cast<float>(uv.y_whole + static_cast<int8_t>(uv.y_frac))) / 255.0f
+                };
                 colors[i] = Colour::White; // input_vertices[tri.vertices[i]].colour;
             }
 
             uint16_t texture = static_cast<uint16_t>(tri.texture);// &Texture_Mask;
-            if (texture >= _texture_storage->num_object_textures())
-            {
-                texture = previous_texture;
-            }
+            
+            // auto level = _level.lock();
+            // level->get_remastered_textile
+            // if (texture >= _texture_storage->num_object_textures())
+            // {
+            //     texture = previous_texture;
+            // }
             previous_texture = texture;
             
-            std::array<Vector2, 3> uvs;
+            
             /*
             for (auto i = 0u; i < uvs.size(); ++i)
             {
@@ -460,7 +500,7 @@ namespace trview
                 output_vertices.push_back({ verts[i], normal, uvs[i], colors[i] });
             }
 
-            auto& tex_indices = output_indices[_texture_storage->tile(texture)];
+            auto& tex_indices = output_indices[texture];// _texture_storage->tile(texture)];
             tex_indices.push_back(base);
             tex_indices.push_back(base + 1);
             tex_indices.push_back(base + 2);

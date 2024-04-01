@@ -24,7 +24,8 @@ namespace trview
             float light_intensity = 1.0f,
             DirectX::SimpleMath::Vector3 light_direction = DirectX::SimpleMath::Vector3::Zero,
             bool geometry_mode = false,
-            bool use_colour_override = false) = 0;
+            bool use_colour_override = false,
+            bool use_remaster = false) = 0;
 
         virtual void render(const DirectX::SimpleMath::Matrix& world_view_projection,
             const graphics::Texture& replacement_texture,

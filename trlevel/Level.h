@@ -180,7 +180,7 @@ namespace trlevel
         virtual uint32_t num_cameras() const override;
         virtual tr_camera get_camera(uint32_t index) const override;
         Platform platform() const override;
-        tr_remastered_textile get_remastered_textile(uint32_t index) const override;
+        remaster::tr_remastered_textile get_remastered_textile(uint32_t index) const override;
     private:
         void generate_meshes(const std::vector<uint16_t>& mesh_data);
         void load_tr4(trview::Activity& activity, std::istream& file);
@@ -230,6 +230,6 @@ namespace trlevel
         std::string _name;
 
         std::vector<tr_camera> _cameras;
-        std::vector<tr_remastered_textile> _remastered_textiles;
+        std::vector<remaster::tr_remastered_textile> _remastered_textiles;
     };
 }

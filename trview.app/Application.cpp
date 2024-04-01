@@ -700,6 +700,24 @@ namespace trview
         _plugins_windows->render();
         _plugins->render_ui();
 
+        if (ImGui::Begin("UV Experiment", nullptr, ImGuiWindowFlags_AlwaysAutoResize))
+        {
+            bool any = false;
+            any |= ImGui::InputInt("Offset U", &trlevel::remaster::Vertex::offset_u);
+            trlevel::remaster::Vertex::offset_u = std::max(trlevel::remaster::Vertex::offset_u, 0);
+            any |= ImGui::InputInt("Offset V", &trlevel::remaster::Vertex::offset_v);
+            trlevel::remaster::Vertex::offset_v = std::max(trlevel::remaster::Vertex::offset_v, 0);
+            any |= ImGui::InputInt("Size", &trlevel::remaster::Vertex::size);
+            trlevel::remaster::Vertex::size = std::clamp(trlevel::remaster::Vertex::size, 1, 4);
+            any |= ImGui::InputFloat("Divisor", &trlevel::remaster::Vertex::divisor);
+            trlevel::remaster::Vertex::divisor = std::max(trlevel::remaster::Vertex::divisor, 0.0f);
+            ImGui::End();
+            if (any)
+            {
+                reload();
+            }
+        }
+
         ImGui::PopFont();
         ImGui::Render();
         _imgui_backend->render();
@@ -997,6 +1015,8 @@ namespace trview
             }
 
             select_room(old_level->selected_room());
+
+            _level->set_show_remaster(old_level->show_remaster());
 
             _viewer->set_target(old_target);
             _settings.auto_orbit = old_auto_orbit;
