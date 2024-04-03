@@ -326,4 +326,54 @@ namespace trview
 
         return result;
     }
+
+    std::string to_string(Floordata::Command::Function function)
+    {
+        switch (function)
+        {
+            case Floordata::Command::Function::Portal:
+                return "Portal";
+            case Floordata::Command::Function::FloorSlant:
+                return "Floor Slant";
+            case Floordata::Command::Function::CeilingSlant:
+                return "Ceiling Slant";
+            case Floordata::Command::Function::Trigger:
+                return "Trigger";
+            case Floordata::Command::Function::Death:
+                return "Death";
+            case Floordata::Command::Function::ClimbableWall:
+                return "Climbable Wall";
+            case Floordata::Command::Function::Triangulation_Floor_NWSE:
+                return "Triangulation Floor NWSE";
+            case Floordata::Command::Function::Triangulation_Floor_NESW:
+                return "Triangulation Floor NESW";
+            case Floordata::Command::Function::Triangulation_Ceiling_NW:
+                return "Triangulation Ceiling NW";
+            case Floordata::Command::Function::Triangulation_Ceiling_NE:
+                return "Triangulation_Ceiling_NE";
+            case Floordata::Command::Function::Triangulation_Floor_Collision_SW:
+                return "Triangulation Floor Collision_SW";
+            case Floordata::Command::Function::Triangulation_Floor_Collision_NE:
+                return "Triangulation Floor Collision_NE";
+            case Floordata::Command::Function::Triangulation_Floor_Collision_SE:
+                return "Triangulation Floor Collision_SE";
+            case Floordata::Command::Function::Triangulation_Floor_Collision_NW:
+                return "Triangulation Floor Collision_NW";
+            case Floordata::Command::Function::Triangulation_Ceiling_Collision_SW:
+                return "Triangulation Ceiling Collision_SW";
+            case Floordata::Command::Function::Triangulation_Ceiling_Collision_NE:
+                return "Triangulation Ceiling Collision_NE";
+            case Floordata::Command::Function::Triangulation_Ceiling_Collision_NW:
+                return "Triangulation Ceiling Collision_NW";
+            case Floordata::Command::Function::Triangulation_Ceiling_Collision_SE:
+                return "Triangulation Ceiling Collision_SE";
+            case Floordata::Command::Function::MonkeySwing:
+                return "MonkeySwing";
+            case Floordata::Command::Function::MinecartLeft_DeferredTrigger:
+                return "MinecartLeft DeferredTrigger";
+            case Floordata::Command::Function::MinecartRight_Mapper:
+                return "MinecartRight Mapper";
+        }
+        return "";
+    }
 }
