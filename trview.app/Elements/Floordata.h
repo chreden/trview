@@ -38,7 +38,8 @@ namespace trview
                 Triangulation_Ceiling_Collision_SE,
                 MonkeySwing,
                 MinecartLeft_DeferredTrigger,
-                MinecartRight_Mapper
+                MinecartRight_Mapper,
+                Count
             };
 
             explicit Command(Function type, const std::vector<uint16_t>& data, FloordataMeanings meanings, const std::vector<std::weak_ptr<IItem>>& items);
@@ -63,4 +64,6 @@ namespace trview
     Floordata parse_floordata(const std::vector<uint16_t>& floordata, uint32_t index, FloordataMeanings meanings);
 
     Floordata parse_floordata(const std::vector<uint16_t>& floordata, uint32_t index, FloordataMeanings meanings, const std::vector<std::weak_ptr<IItem>>& items);
+
+    std::string to_string(Floordata::Command::Function function);
 }

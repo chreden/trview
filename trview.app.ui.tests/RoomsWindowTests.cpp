@@ -2,6 +2,7 @@
 #include <trview.app/Windows/RoomsWindow.h>
 #include <trview.app/Mocks/UI/IMapRenderer.h>
 #include <trview.app/Mocks/Elements/IRoom.h>
+#include <trview.app/Mocks/Elements/ISector.h>
 #include <trview.app/Mocks/Elements/ITrigger.h>
 #include <trview.common/Mocks/Windows/IClipboard.h>
 
@@ -42,7 +43,7 @@ namespace
     struct RoomsWindowContext final
     {
         std::shared_ptr<RoomsWindow> ptr;
-        std::shared_ptr<IRoom> room;
+        std::vector<std::shared_ptr<IRoom>> rooms;
 
         void render()
         {
@@ -65,7 +66,7 @@ void register_rooms_window_tests(ImGuiTestEngine* engine)
 
             auto room = mock_shared<MockRoom>();
             EXPECT_CALL(*room, flag).Times(testing::AtLeast(1)).WillRepeatedly(testing::Return(true));
-            context.room = room;
+            context.rooms.push_back(room);
 
             context.ptr->set_level_version(trlevel::LevelVersion::Tomb1);
             context.ptr->set_rooms({ room });
@@ -112,5 +113,47 @@ void register_rooms_window_tests(ImGuiTestEngine* engine)
 
             IM_CHECK_EQ(std::get<0>(raised), room2);
             IM_CHECK_EQ(std::get<1>(raised), true);
+        });
+
+    test<RoomsWindowContext>(engine, "Rooms Window", "Floordata Type Filters List",
+        [](ImGuiTestContext* ctx) { ctx->GetVars<RoomsWindowContext>().render(); },
+        [](ImGuiTestContext* ctx)
+        {
+            auto& context = ctx->GetVars<RoomsWindowContext>();
+            context.ptr = register_test_module().build();
+            context.ptr->set_floordata({ 0x000, 0x8005 });
+
+            auto normal_room = mock_shared<MockRoom>()->with_number(0);
+            auto death_room = mock_shared<MockRoom>()->with_number(1);
+            context.rooms = { normal_room, death_room };
+
+            auto normal_sector = mock_shared<MockSector>();
+            auto death_sector = mock_shared<MockSector>();
+            ON_CALL(*normal_sector, floordata_index).WillByDefault(Return(0));
+            ON_CALL(*death_sector, floordata_index).WillByDefault(Return(1));
+
+            ON_CALL(*normal_room, sectors).WillByDefault(Return(std::vector<std::shared_ptr<ISector>>{ normal_sector }));
+            ON_CALL(*death_room, sectors).WillByDefault(Return(std::vector<std::shared_ptr<ISector>>{ death_sector }));
+
+            context.ptr->set_level_version(trlevel::LevelVersion::Tomb1);
+            context.ptr->set_rooms({ normal_room, death_room });
+            context.ptr->set_current_room(0);
+
+            ctx->Yield();
+            IM_CHECK_EQ(ctx->ItemExists("/**/0##0"), true);
+            IM_CHECK_EQ(ctx->ItemExists("/**/1##1"), true);
+
+            ctx->ItemClick("/**/Filters##FiltersButton");
+            ctx->SetRef(ctx->ItemInfo("/**/+")->Window);
+            ctx->ItemClick("+");
+
+            ctx->ComboClick("##filter-key-0/Floordata Type");
+            ctx->ComboClick("##filter-compare-op-0/is");
+            ctx->ComboClick("##filter-value-0/Death");
+
+            ctx->Yield();
+
+            IM_CHECK_EQ(ctx->ItemExists("/**/0##0"), false);
+            IM_CHECK_EQ(ctx->ItemExists("/**/1##1"), true);
         });
 }

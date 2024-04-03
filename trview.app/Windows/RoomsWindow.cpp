@@ -698,6 +698,23 @@ namespace trview
             _filters.add_getter<float>("Ambient G", [](auto&& room) { return room.ambient().g; });
             _filters.add_getter<float>("Ambient B", [](auto&& room) { return room.ambient().b; });
         }
+
+        const auto available_floordata_types = 
+              std::views::iota(std::to_underlying(Floordata::Command::Function::None) + 1, std::to_underlying(Floordata::Command::Function::Count) + 0)
+            | std::views::transform([](auto c) { return to_string(static_cast<Floordata::Command::Function>(c)); })
+            | std::ranges::to<std::set>();
+
+        _filters.add_multi_getter<std::string>("Floordata Type", { available_floordata_types.begin(), available_floordata_types.end() }, [&](auto&& room)
+            {
+                const auto& sectors = room.sectors();
+                return sectors
+                    | std::views::transform([&](auto&& s) { return parse_floordata(_floordata, s->floordata_index(), FloordataMeanings::None).commands; })
+                    | std::views::join
+                    | std::views::transform([](auto&& c) { return c.type; })
+                    | std::ranges::to<std::unordered_set>()
+                    | std::views::transform([](auto&& s) { return to_string(s); })
+                    | std::ranges::to<std::vector>();
+            });
     }
 
     void RoomsWindow::render_properties_tab(const std::shared_ptr<IRoom>& room)
