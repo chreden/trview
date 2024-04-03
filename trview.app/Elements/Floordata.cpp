@@ -16,23 +16,46 @@ namespace trview
     {
         // Parse the data to create the meanings.
         const uint16_t subfunction = (data[0] & 0x7F00) >> 8;
+        const std::string name = to_string(type);
 
         switch (type)
         {
             case Function::None:
+            case Function::Death:
+            case Function::MonkeySwing:
+            case Function::ClimbableWall:
+            case Function::MinecartLeft_DeferredTrigger:
+            case Function::MinecartRight_Mapper:
             {
-                meanings.push_back("None");
+                meanings.push_back(name);
+                break;
+            }
+            case Function::Triangulation_Floor_NWSE:
+            case Function::Triangulation_Floor_NESW:
+            case Function::Triangulation_Ceiling_NW:
+            case Function::Triangulation_Ceiling_NE:
+            case Function::Triangulation_Floor_Collision_SW:
+            case Function::Triangulation_Floor_Collision_NE:
+            case Function::Triangulation_Floor_Collision_SE:
+            case Function::Triangulation_Floor_Collision_NW:
+            case Function::Triangulation_Ceiling_Collision_SW:
+            case Function::Triangulation_Ceiling_Collision_NE:
+            case Function::Triangulation_Ceiling_Collision_NW:
+            case Function::Triangulation_Ceiling_Collision_SE:
+            {
+                meanings.push_back(name);
+                meanings.push_back("");
                 break;
             }
             case Function::Portal:
             {
-                meanings.push_back("Portal");
+                meanings.push_back(name);
                 meanings.push_back("  Room " + std::to_string(data[1] & 0xff));
                 break;
             }
             case Function::FloorSlant:
             {
-                meanings.push_back("Floor Slant");
+                meanings.push_back(name);
 
                 uint16_t floor_slant = data[1];
                 const int8_t x_slope = floor_slant & 0x00ff;
@@ -42,7 +65,7 @@ namespace trview
             }
             case Function::CeilingSlant:
             {
-                meanings.push_back("Ceiling Slant");
+                meanings.push_back(name);
 
                 uint16_t ceiling_slant = data[1];
                 const int8_t x_slope = ceiling_slant & 0x00ff;
@@ -103,103 +126,6 @@ namespace trview
                     } while (i < data.size() && !(command & 0x8000));
                 }
 
-                break;
-            }
-            case Function::Death:
-            {
-                meanings.push_back("Death");
-                break;
-            }
-            case Function::ClimbableWall:
-            {
-                meanings.push_back("Climbable wall");
-                break;
-            }
-            case Function::Triangulation_Floor_NWSE:
-            {
-                meanings.push_back("Floor triangulation (NWSE)");
-                meanings.push_back("");
-                break;
-            }
-            case Function::Triangulation_Floor_NESW:
-            {
-                meanings.push_back("Floor triangulation (NESW)");
-                meanings.push_back("");
-                break;
-            }
-            case Function::Triangulation_Ceiling_NW:
-            {
-                meanings.push_back("Ceiling triangulation");
-                meanings.push_back("");
-                break;
-            }
-            case Function::Triangulation_Ceiling_NE:
-            {
-                meanings.push_back("Ceiling triangulation");
-                meanings.push_back("");
-                break;
-            }
-            case Function::Triangulation_Floor_Collision_SW:
-            {
-                meanings.push_back("Floor triangulation");
-                meanings.push_back("");
-                break;
-            }
-            case Function::Triangulation_Floor_Collision_NE:
-            {
-                meanings.push_back("Floor triangulation");
-                meanings.push_back("");
-                break;
-            }
-            case Function::Triangulation_Floor_Collision_SE:
-            {
-                meanings.push_back("Floor triangulation");
-                meanings.push_back("");
-                break;
-            }
-            case Function::Triangulation_Floor_Collision_NW:
-            {
-                meanings.push_back("Floor triangulation");
-                meanings.push_back("");
-                break;
-            }
-            case Function::Triangulation_Ceiling_Collision_SW:
-            {
-                meanings.push_back("Ceiling triangulation");
-                meanings.push_back("");
-                break;
-            }
-            case Function::Triangulation_Ceiling_Collision_NE:
-            {
-                meanings.push_back("Ceiling triangulation");
-                meanings.push_back("");
-                break;
-            }
-            case Function::Triangulation_Ceiling_Collision_NW:
-            {
-                meanings.push_back("Ceiling triangulation");
-                meanings.push_back("");
-                break;
-            }
-            case Function::Triangulation_Ceiling_Collision_SE:
-            {
-                meanings.push_back("Ceiling triangulation");
-                meanings.push_back("");
-                break;
-            }
-            case Function::MonkeySwing:
-            {
-                meanings.push_back("Monkey swing");
-                break;
-            }
-            case Function::MinecartLeft_DeferredTrigger:
-            {
-                meanings.push_back("Minecart left");
-                break;
-            }
-            case Function::MinecartRight_Mapper:
-            {
-                meanings.push_back("Minecart right");
                 break;
             }
         }
@@ -331,6 +257,8 @@ namespace trview
     {
         switch (function)
         {
+            case Floordata::Command::Function::None:
+                return "None";
             case Floordata::Command::Function::Portal:
                 return "Portal";
             case Floordata::Command::Function::FloorSlant:
@@ -344,35 +272,35 @@ namespace trview
             case Floordata::Command::Function::ClimbableWall:
                 return "Climbable Wall";
             case Floordata::Command::Function::Triangulation_Floor_NWSE:
-                return "Triangulation Floor NWSE";
+                return "Floor Triangulation (NWSE)";
             case Floordata::Command::Function::Triangulation_Floor_NESW:
-                return "Triangulation Floor NESW";
+                return "Floor Triangulation (NESW)";
             case Floordata::Command::Function::Triangulation_Ceiling_NW:
-                return "Triangulation Ceiling NW";
+                return "Ceiling Triangulation (NW)";
             case Floordata::Command::Function::Triangulation_Ceiling_NE:
-                return "Triangulation_Ceiling_NE";
+                return "Ceiling Triangulation (NE)";
             case Floordata::Command::Function::Triangulation_Floor_Collision_SW:
-                return "Triangulation Floor Collision_SW";
+                return "Floor Triangulation Collision (SW)";
             case Floordata::Command::Function::Triangulation_Floor_Collision_NE:
-                return "Triangulation Floor Collision_NE";
+                return "Floor Triangulation Collision (NE)";
             case Floordata::Command::Function::Triangulation_Floor_Collision_SE:
-                return "Triangulation Floor Collision_SE";
+                return "Floor Triangulation Collision (SE)";
             case Floordata::Command::Function::Triangulation_Floor_Collision_NW:
-                return "Triangulation Floor Collision_NW";
+                return "Floor Triangulation Collision (NW)";
             case Floordata::Command::Function::Triangulation_Ceiling_Collision_SW:
-                return "Triangulation Ceiling Collision_SW";
+                return "Ceiling Triangulation Collision (SW)";
             case Floordata::Command::Function::Triangulation_Ceiling_Collision_NE:
-                return "Triangulation Ceiling Collision_NE";
+                return "Ceiling Triangulation Collision (NE)";
             case Floordata::Command::Function::Triangulation_Ceiling_Collision_NW:
-                return "Triangulation Ceiling Collision_NW";
+                return "Ceiling Triangulation Collision (NW)";
             case Floordata::Command::Function::Triangulation_Ceiling_Collision_SE:
-                return "Triangulation Ceiling Collision_SE";
+                return "Ceiling Triangulation Collision (SE)";
             case Floordata::Command::Function::MonkeySwing:
-                return "MonkeySwing";
+                return "Monkey Swing";
             case Floordata::Command::Function::MinecartLeft_DeferredTrigger:
-                return "MinecartLeft DeferredTrigger";
+                return "Minecart Left/Deferred Trigger";
             case Floordata::Command::Function::MinecartRight_Mapper:
-                return "MinecartRight Mapper";
+                return "Minecart Right/Mapper";
         }
         return "";
     }
