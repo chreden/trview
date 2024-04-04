@@ -228,6 +228,16 @@ namespace trview
     }
 
     template <typename T>
+    bool Filters<T>::group_match(std::ranges::input_range auto&& results, const Filter& filter) const
+    {
+        if (filter.compare == CompareOp::NotEqual)
+        {
+            return std::ranges::all_of(results, [](auto&& v) { return v; });
+        }
+        return std::ranges::any_of(results, [](auto&& v) { return v; });
+    }
+
+    template <typename T>
     bool Filters<T>::match(const T& value) const
     {
         if (!_enabled || empty())
@@ -262,7 +272,7 @@ namespace trview
                         const auto getter_values = multi_getter->second.function(value);
                         if (!getter_values.empty())
                         {
-                            filter_result = std::find_if(getter_values.begin(), getter_values.end(), [&](const auto& value) { return is_match(value, filter); }) != getter_values.end();
+                            filter_result = group_match(getter_values | std::views::transform([&](auto&& value) { return is_match(value, filter); }), filter);
                         }
                     }
                 }
