@@ -342,3 +342,15 @@ TEST(Filters, NotPresentSingleWithPredicate)
     ASSERT_TRUE(filters.match(Object()));
     ASSERT_FALSE(filters.match(Object().with_option(1.0f)));
 }
+
+TEST(Filters, IsNotMultiValue)
+{
+    Filters<Object> filters;
+    filters.add_multi_getter<std::string>("value", [](auto&& o) { return o.texts; });
+
+    Filters<Object>::Filter is_not_string = make_filter().key("value").compare_op(CompareOp::NotEqual).value("first");
+    filters.set_filters({ is_not_string });
+
+    ASSERT_TRUE(filters.match(Object().with_texts({ "second", "third", "fourth" })));
+    ASSERT_FALSE(filters.match(Object().with_texts({ "second", "first", "third" })));
+}

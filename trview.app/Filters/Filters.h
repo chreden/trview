@@ -4,6 +4,7 @@
 #include <string>
 #include <map>
 #include <variant>
+#include <ranges>
 
 namespace trview
 {
@@ -179,6 +180,7 @@ namespace trview
         bool is_match(const std::string& value, const Filter& filter) const;
         bool is_match(float value, const Filter& filter) const;
         bool is_match(bool value, const Filter& filter) const;
+        bool group_match(std::ranges::input_range auto&& results, const Filter& filter) const;
         std::vector<CompareOp> ops_for_key(const std::string& key) const;
         std::vector<std::string> options_for_key(const std::string& key) const;
         bool has_options(const std::string& key) const;
