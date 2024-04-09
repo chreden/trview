@@ -66,8 +66,15 @@ namespace trview
         bool _sync_trigger{ true };
         std::vector<TriggerCommandType> _selected_commands;
         std::shared_ptr<IClipboard> _clipboard;
-        std::vector<std::string> _all_commands;
-        uint32_t _selected_command{ 0u };
+
+        struct VirtualCommand
+        {
+            std::string        name;
+            TriggerCommandType type;
+            bool operator == (const VirtualCommand& other) const noexcept;
+        };
+        std::vector<VirtualCommand> _all_commands;
+        std::optional<VirtualCommand> _selected_command;
         std::weak_ptr<ITrigger> _selected_trigger;
         std::weak_ptr<ITrigger> _global_selected_trigger;
         bool _scroll_to_trigger{ false };

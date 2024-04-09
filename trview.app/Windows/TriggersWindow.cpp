@@ -34,8 +34,6 @@ namespace trview
     {
         _all_triggers = triggers;
 
-        const std::string existing_command = _selected_command < _all_commands.size() ? _all_commands[_selected_command] : "All";
-
         std::set<TriggerCommandType> command_set;
         for (const auto& trigger : triggers)
         {
@@ -45,15 +43,9 @@ namespace trview
                 command_set.insert(command.type());
             }
         }
-        std::vector<std::string> all_commands{ "All", "Flipmaps" };
-        std::transform(command_set.begin(), command_set.end(), std::back_inserter(all_commands), command_type_name);
+        std::vector<VirtualCommand> all_commands{ { .name = "All" }, { .name = "Flipmaps" } };
+        all_commands.append_range(command_set | std::views::transform([](auto&& c) -> VirtualCommand { return { .name = command_type_name(c), .type = c }; }));
         _all_commands = all_commands;
-
-        auto reselected_command = std::find(_all_commands.begin(), _all_commands.end(), existing_command);
-        if (reselected_command != _all_commands.end())
-        {
-            _selected_command = static_cast<uint32_t>(reselected_command - _all_commands.begin());
-        }
 
         setup_filters();
         _need_filtering = true;
@@ -147,26 +139,26 @@ namespace trview
             }
 
             ImGui::PushItemWidth(-1);
-            std::string preview_command = _selected_command < _all_commands.size() ? _all_commands[_selected_command] : "";
-            if (ImGui::BeginCombo(Names::command_filter.c_str(), preview_command.c_str()))
+            const auto current_command = _selected_command.value_or(VirtualCommand{ .name = "All" });
+            if (ImGui::BeginCombo(Names::command_filter.c_str(), current_command.name.c_str()))
             {
-                for (std::size_t n = 0; n < _all_commands.size(); ++n)
+                for (const auto& command : _all_commands)
                 {
-                    bool is_selected = _selected_command == n;
-                    if (ImGui::Selectable(_all_commands[n].c_str(), is_selected))
+                    bool is_selected = current_command == command;
+                    if (ImGui::Selectable(command.name.c_str(), is_selected))
                     {
                         _selected_commands.clear();
-                        if (_all_commands[n] == "Flipmaps")
+                        if (command.name == "Flipmaps")
                         {
                             _selected_commands.push_back(TriggerCommandType::FlipMap);
                             _selected_commands.push_back(TriggerCommandType::FlipOff);
                             _selected_commands.push_back(TriggerCommandType::FlipOn);
                         }
-                        else if (_all_commands[n] != "All")
+                        else if (command.name != "All")
                         {
-                            _selected_commands.push_back(command_from_name(_all_commands[n]));
+                            _selected_commands.push_back(command.type);
                         }
-                        _selected_command = static_cast<uint32_t>(n);
+                        _selected_command = command;
                         _need_filtering = true;
                     }
 
@@ -551,5 +543,10 @@ namespace trview
             }
         }
         return std::nullopt;
+    }
+
+    bool TriggersWindow::VirtualCommand::operator == (const VirtualCommand& other) const noexcept
+    {
+        return name == other.name;
     }
 }
