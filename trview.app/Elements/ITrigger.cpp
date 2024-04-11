@@ -43,24 +43,6 @@ namespace trview
             { TriggerCommandType::Flyby, "Flyby" },
             { TriggerCommandType::Cutscene, "Cutscene" }
         };
-
-        const std::unordered_map<std::string, TriggerCommandType> command_type_lookup
-        {
-            { "Object", TriggerCommandType::Object },
-            { "Camera", TriggerCommandType::Camera },
-            { "Current", TriggerCommandType::UnderwaterCurrent },
-            { "Flip Map", TriggerCommandType::FlipMap },
-            { "Flip On", TriggerCommandType::FlipOn },
-            { "Flip Off", TriggerCommandType::FlipOff },
-            { "Look at Item", TriggerCommandType::LookAtItem },
-            { "End Level", TriggerCommandType::EndLevel },
-            { "Music", TriggerCommandType::PlaySoundtrack },
-            { "Flipeffect", TriggerCommandType::Flipeffect },
-            { "Secret", TriggerCommandType::SecretFound },
-            { "Clear Bodies", TriggerCommandType::ClearBodies },
-            { "Flyby", TriggerCommandType::Flyby },
-            { "Cutscene", TriggerCommandType::Cutscene }
-        };
     }
 
     ITrigger::~ITrigger()
@@ -93,19 +75,9 @@ namespace trview
         auto name = command_type_names.find(type);
         if (name == command_type_names.end())
         {
-            return "Unknown";
+            return std::format("Unknown ({})", static_cast<int>(type));
         }
         return name->second;
-    }
-
-    TriggerCommandType command_from_name(const std::string& name)
-    {
-        auto type = command_type_lookup.find(name);
-        if (type == command_type_lookup.end())
-        {
-            return TriggerCommandType::Object;
-        }
-        return type->second;
     }
 
     bool command_has_index(TriggerCommandType type)
