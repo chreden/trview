@@ -32,12 +32,24 @@ namespace trview
             }
             case Function::Triangulation_Floor_NWSE:
             case Function::Triangulation_Floor_NESW:
-            case Function::Triangulation_Ceiling_NW:
-            case Function::Triangulation_Ceiling_NE:
             case Function::Triangulation_Floor_Collision_SW:
             case Function::Triangulation_Floor_Collision_NE:
             case Function::Triangulation_Floor_Collision_SE:
             case Function::Triangulation_Floor_Collision_NW:
+            {
+                auto tri = parse_triangulation(floor, command.data[1]);
+                _floor_triangulation = tri;
+                _triangulation_function = tri.direction;
+                _corners[0] += tri.c00;
+                _corners[1] += tri.c01;
+                _corners[2] += tri.c10;
+                _corners[3] += tri.c11;
+                meanings.push_back(name);
+                meanings.push_back("");
+                break;
+            }
+            case Function::Triangulation_Ceiling_NW:
+            case Function::Triangulation_Ceiling_NE:
             case Function::Triangulation_Ceiling_Collision_SW:
             case Function::Triangulation_Ceiling_Collision_NE:
             case Function::Triangulation_Ceiling_Collision_NW:
