@@ -8,6 +8,7 @@
 #include "Types.h"
 #include "trlevel/ILevel.h"
 #include "trlevel/trtypes.h"
+#include "Floordata.h"
 
 namespace trview
 {
@@ -18,13 +19,6 @@ namespace trview
     {
         using Source = std::function<std::shared_ptr<ISector>(const trlevel::ILevel&, const trlevel::tr3_room&,
             const trlevel::tr_room_sector&, int, const std::weak_ptr<IRoom>&)>;
-
-        enum class TriangulationDirection
-        {
-            None,
-            NwSe,
-            NeSw
-        };
 
         enum class Corner
         {
@@ -136,7 +130,7 @@ namespace trview
     };
 
     bool is_no_space(SectorFlag flags);
-    constexpr std::string to_string(ISector::TriangulationDirection direction);
+    constexpr std::string to_string(TriangulationDirection direction);
     uint32_t sector_room(const std::shared_ptr<ISector>& sector);
 }
 

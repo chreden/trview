@@ -633,7 +633,7 @@ namespace trview
             };
 
             // + Y
-            if (sector->triangulation() == ISector::TriangulationDirection::NwSe)
+            if (sector->triangulation() == TriangulationDirection::NwSe)
             {
                 add_tri(t[3], t[2], t[1]);
                 add_tri(t[0], t[1], t[2]);

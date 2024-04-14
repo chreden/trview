@@ -341,7 +341,7 @@ namespace trview
         return static_cast<int8_t>(_floor_slant >> 8);
     }
 
-    ISector::TriangulationDirection Sector::triangulation() const
+    TriangulationDirection Sector::triangulation() const
     {
         return _triangulation_function;
     }
@@ -719,49 +719,9 @@ namespace trview
         return _trigger;
     }
 
-    ISector::TriangulationDirection Sector::ceiling_triangulation() const
+    TriangulationDirection Sector::ceiling_triangulation() const
     {
         return _ceiling_triangulation_function;
-    }
-
-    Triangulation parse_triangulation(uint16_t floor, uint16_t data)
-    {
-        // Not sure what to do with h1 and h2 values yet.
-        // const int16_t h2 = (floor & 0x7C00) >> 10;
-        // const int16_t h1 = (floor & 0x03E0) >> 5;
-        const int16_t function = (floor & 0x001F);
-
-        ISector::TriangulationDirection direction{ ISector::TriangulationDirection::None };
-        switch (function)
-        {
-        // Floor
-        case 0x07:
-        case 0x0B:
-        case 0x0C:
-        // Ceiling:
-        case 0x09:
-        case 0x0f:
-        case 0x10:
-            direction = ISector::TriangulationDirection::NwSe;
-            break;
-        // Floor
-        case 0x08:
-        case 0x0D:
-        case 0x0E:
-        // Ceiling:
-        case 0x0A:
-        case 0x11:
-        case 0x12:
-            direction = ISector::TriangulationDirection::NeSw;
-            break;
-        }
-
-        const uint16_t c00 = (data & 0x00F0) >> 4;
-        const uint16_t c01 = (data & 0x0F00) >> 8;
-        const uint16_t c10 = (data & 0x000F);
-        const uint16_t c11 = (data & 0xF000) >> 12;
-        const auto max_corner = std::max({ c00, c01, c10, c11 });
-        return Triangulation{ function, direction, (max_corner - c00) * 0.25f, (max_corner - c01) * 0.25f, (max_corner - c10) * 0.25f, (max_corner - c11) * 0.25f };
     }
 }
 

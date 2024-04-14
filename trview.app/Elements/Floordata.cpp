@@ -37,15 +37,9 @@ namespace trview
             case Function::Triangulation_Floor_Collision_SE:
             case Function::Triangulation_Floor_Collision_NW:
             {
-                auto tri = parse_triangulation(floor, command.data[1]);
-                _floor_triangulation = tri;
-                _triangulation_function = tri.direction;
-                _corners[0] += tri.c00;
-                _corners[1] += tri.c01;
-                _corners[2] += tri.c10;
-                _corners[3] += tri.c11;
+                const auto tri = parse_triangulation(data[0], data[1]);
                 meanings.push_back(name);
-                meanings.push_back("");
+                meanings.push_back(std::format("  NW: {}, NE: {}, SE: {}, SW: {}", tri.c01, tri.c11, tri.c10, tri.c00));
                 break;
             }
             case Function::Triangulation_Ceiling_NW:
@@ -55,8 +49,9 @@ namespace trview
             case Function::Triangulation_Ceiling_Collision_NW:
             case Function::Triangulation_Ceiling_Collision_SE:
             {
+                const auto tri = parse_triangulation(data[0], data[1]);
                 meanings.push_back(name);
-                meanings.push_back("");
+                meanings.push_back(std::format("  NW: {}, NE: {}, SE: {}, SW: {}", tri.c00, tri.c10, tri.c11, tri.c01));
                 break;
             }
             case Function::Portal:
@@ -315,5 +310,45 @@ namespace trview
                 return "Minecart Right/Mapper";
         }
         return "";
+    }
+
+    Triangulation parse_triangulation(uint16_t floor, uint16_t data)
+    {
+        // Not sure what to do with h1 and h2 values yet.
+        // const int16_t h2 = (floor & 0x7C00) >> 10;
+        // const int16_t h1 = (floor & 0x03E0) >> 5;
+        const int16_t function = (floor & 0x001F);
+
+        TriangulationDirection direction{ TriangulationDirection::None };
+        switch (function)
+        {
+            // Floor
+        case 0x07:
+        case 0x0B:
+        case 0x0C:
+            // Ceiling:
+        case 0x09:
+        case 0x0f:
+        case 0x10:
+            direction = TriangulationDirection::NwSe;
+            break;
+            // Floor
+        case 0x08:
+        case 0x0D:
+        case 0x0E:
+            // Ceiling:
+        case 0x0A:
+        case 0x11:
+        case 0x12:
+            direction = TriangulationDirection::NeSw;
+            break;
+        }
+
+        const uint16_t c00 = (data & 0x00F0) >> 4;
+        const uint16_t c01 = (data & 0x0F00) >> 8;
+        const uint16_t c10 = (data & 0x000F);
+        const uint16_t c11 = (data & 0xF000) >> 12;
+        const auto max_corner = std::max({ c00, c01, c10, c11 });
+        return Triangulation{ function, direction, (max_corner - c00) * 0.25f, (max_corner - c01) * 0.25f, (max_corner - c10) * 0.25f, (max_corner - c11) * 0.25f };
     }
 }

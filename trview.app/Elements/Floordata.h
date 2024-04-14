@@ -65,5 +65,24 @@ namespace trview
 
     Floordata parse_floordata(const std::vector<uint16_t>& floordata, uint32_t index, FloordataMeanings meanings, const std::vector<std::weak_ptr<IItem>>& items);
 
+    enum class TriangulationDirection
+    {
+        None,
+        NwSe,
+        NeSw
+    };
+
+    struct Triangulation
+    {
+        int16_t function;
+        TriangulationDirection direction;
+        float c00;
+        float c01;
+        float c10;
+        float c11;
+    };
+
+    Triangulation parse_triangulation(uint16_t floor, uint16_t data);
+
     std::string to_string(Floordata::Command::Function function);
 }
