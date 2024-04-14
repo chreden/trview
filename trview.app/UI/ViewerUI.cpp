@@ -24,6 +24,9 @@ namespace trview
     {
     }
 
+// Disabled as const auto all = { items, triggers, rooms } was being marked as unreachable in debug only.
+#pragma warning(push)
+#pragma warning(disable: 4702)
     ViewerUI::ViewerUI(const Window& window, const std::shared_ptr<ITextureStorage>& texture_storage,
         const std::shared_ptr<IShortcuts>& shortcuts,
         const IMapRenderer::Source& map_renderer_source,
@@ -67,7 +70,7 @@ namespace trview
                         | std::ranges::to<std::vector>();
 
                     const auto all = { items, triggers, rooms };
-                    _go_to->set_items(std::views::join(all) | std::ranges::to<std::vector>());
+                    _go_to->set_items(all | std::views::join | std::ranges::to<std::vector>());
                 }
             }
         };
@@ -184,6 +187,7 @@ namespace trview
             _map_tooltip->set_visible(!text.empty());
         };
     }
+#pragma warning(pop)
 
     void ViewerUI::clear_minimap_highlight()
     {
