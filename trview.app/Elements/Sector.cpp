@@ -522,8 +522,8 @@ namespace trview
             }
         }
 
-        if (is_wall())
-        {
+        if (is_wall() && !is_portal())
+        { 
             if (north && !north.is_wall() && !north.is_portal())
             {
                 add_quad(self, Quad(north.ceiling(Corner::SE), north.corner(Corner::SW), north.corner(Corner::SE), north.ceiling(Corner::SW), (wall_flags & ~SectorFlag::Climbable) | (SectorFlag::ClimbableSouth & north.direct->flags()), _room));
@@ -552,6 +552,12 @@ namespace trview
                 {
                     add_quad(self, Quad(north.corner(Corner::SW), corner(Corner::NE), corner(Corner::NW), north.corner(Corner::SE), wall_flags & (~SectorFlag::Climbable | SectorFlag::ClimbableNorth), _room));
                 }
+
+                if (_room_above == 0xff && 
+                    (ceiling(Corner::NW) != north.ceiling(Corner::SW) || ceiling(Corner::NE) != north.ceiling(Corner::SE)))
+                {
+                    add_quad(self, Quad(north.ceiling(Corner::SE), ceiling(Corner::NW), ceiling(Corner::NE), north.ceiling(Corner::SW), wall_flags & (~SectorFlag::Climbable | SectorFlag::ClimbableNorth), _room));
+                }
             }
 
             if (south && !has_flag(south.flags(), SectorFlag::Wall))
@@ -559,6 +565,12 @@ namespace trview
                 if (corner(Corner::SW) != south.corner(Corner::NW) || corner(Corner::SE) != south.corner(Corner::NE))
                 {
                     add_quad(self, Quad(corner(Corner::SW), south.corner(Corner::NE), south.corner(Corner::NW), corner(Corner::SE), wall_flags & (~SectorFlag::Climbable | SectorFlag::ClimbableSouth), _room));
+                }
+
+                if (_room_above == 0xff && 
+                    (ceiling(Corner::SW) != south.ceiling(Corner::NW) || ceiling(Corner::SE) != south.ceiling(Corner::NE)))
+                {
+                    add_quad(self, Quad(ceiling(Corner::SE), south.ceiling(Corner::NW), south.ceiling(Corner::NE), ceiling(Corner::SW), wall_flags & (~SectorFlag::Climbable | SectorFlag::ClimbableSouth), _room));
                 }
             }
 
@@ -568,6 +580,12 @@ namespace trview
                 {
                     add_quad(self, Quad(corner(Corner::SE), east.corner(Corner::NW), east.corner(Corner::SW), corner(Corner::NE), wall_flags & (~SectorFlag::Climbable | SectorFlag::ClimbableEast), _room));
                 }
+
+                if (_room_above == 0xff &&
+                    (ceiling(Corner::NE) != east.ceiling(Corner::NW) || ceiling(Corner::SE) != east.ceiling(Corner::SW)))
+                {
+                    add_quad(self, Quad(ceiling(Corner::NE), east.ceiling(Corner::SW), east.ceiling(Corner::NW), ceiling(Corner::SE), wall_flags & (~SectorFlag::Climbable | SectorFlag::ClimbableEast), _room));
+                }
             }
 
             if (west && !has_flag(west.flags(), SectorFlag::Wall))
@@ -575,6 +593,12 @@ namespace trview
                 if (corner(Corner::NW) != west.corner(Corner::NE) || corner(Corner::SW) != west.corner(Corner::SE))
                 {
                     add_quad(self, Quad(west.corner(Corner::SE), corner(Corner::NW), corner(Corner::SW), west.corner(Corner::NE), wall_flags & (~SectorFlag::Climbable | SectorFlag::ClimbableWest), _room));
+                }
+
+                if (_room_above == 0xff && 
+                    (ceiling(Corner::NW) != west.ceiling(Corner::NE) || ceiling(Corner::SW) != west.ceiling(Corner::SE)))
+                {
+                    add_quad(self, Quad(west.ceiling(Corner::NE), ceiling(Corner::SW), ceiling(Corner::NW), west.ceiling(Corner::SE), wall_flags & (~SectorFlag::Climbable | SectorFlag::ClimbableWest), _room));
                 }
             }
         }
@@ -710,14 +734,24 @@ namespace trview
         ISector::TriangulationDirection direction{ ISector::TriangulationDirection::None };
         switch (function)
         {
+        // Floor
         case 0x07:
         case 0x0B:
         case 0x0C:
+        // Ceiling:
+        case 0x09:
+        case 0x0f:
+        case 0x10:
             direction = ISector::TriangulationDirection::NwSe;
             break;
+        // Floor
         case 0x08:
         case 0x0D:
         case 0x0E:
+        // Ceiling:
+        case 0x0A:
+        case 0x11:
+        case 0x12:
             direction = ISector::TriangulationDirection::NeSw;
             break;
         }
