@@ -83,7 +83,7 @@ TEST(Lua_Sector, CeilingCorners)
 
 TEST(Lua_Sector, CeilingTriangulation)
 {
-    auto sector = mock_shared<MockSector>()->with_ceiling_triangulation(ISector::TriangulationDirection::NeSw);
+    auto sector = mock_shared<MockSector>()->with_ceiling_triangulation(TriangulationDirection::NeSw);
 
     LuaState L;
     lua::create_sector(L, sector);
@@ -269,7 +269,7 @@ TEST(Lua_Sector, Z)
 
 TEST(Lua_Sector, Triangulation)
 {
-    auto sector = mock_shared<MockSector>()->with_triangulation(ISector::TriangulationDirection::NeSw);
+    auto sector = mock_shared<MockSector>()->with_triangulation(TriangulationDirection::NeSw);
 
     LuaState L;
     lua::create_sector(L, sector);
