@@ -6,16 +6,6 @@
 
 namespace trview
 {
-    struct Triangulation
-    {
-        int16_t function;
-        ISector::TriangulationDirection direction;
-        float c00;
-        float c01;
-        float c10;
-        float c11;
-    };
-
     class Sector final : public ISector
     {
     public:
@@ -112,13 +102,4 @@ namespace trview
         trlevel::tr_room_info _info;
         std::vector<Triangle> _triangles;
     };
-
-    /// <summary>
-    /// Read triangulation data from the level starting at the specified floordata index.
-    /// </summary>
-    /// <param name="level">The level to read from.</param>
-    /// <param name="floor">The current floordata value.</param>
-    /// <param name="cur_index">The current floordata index - this will be updated.</param>
-    /// <returns>Triangulation data.</returns>
-    Triangulation parse_triangulation(uint16_t floor, uint16_t data);
 }

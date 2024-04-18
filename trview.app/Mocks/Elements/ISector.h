@@ -41,7 +41,7 @@ namespace trview
             MOCK_METHOD(std::weak_ptr<ITrigger>, trigger, (), (const, override));
             MOCK_METHOD(TriangulationDirection, ceiling_triangulation, (), (const, override));
 
-            std::shared_ptr<MockSector> with_ceiling_triangulation(ISector::TriangulationDirection triangulation)
+            std::shared_ptr<MockSector> with_ceiling_triangulation(TriangulationDirection triangulation)
             {
                 ON_CALL(*this, ceiling_triangulation).WillByDefault(testing::Return(triangulation));
                 return shared_from_this();
@@ -83,7 +83,7 @@ namespace trview
                 return shared_from_this();
             }
 
-            std::shared_ptr<MockSector> with_triangulation(ISector::TriangulationDirection triangulation)
+            std::shared_ptr<MockSector> with_triangulation(TriangulationDirection triangulation)
             {
                 ON_CALL(*this, triangulation).WillByDefault(testing::Return(triangulation));
                 return shared_from_this();

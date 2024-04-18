@@ -2,13 +2,13 @@
 
 namespace trview
 {
-    constexpr std::string to_string(ISector::TriangulationDirection direction)
+    constexpr std::string to_string(TriangulationDirection direction)
     {
         switch (direction)
         {
-        case ISector::TriangulationDirection::NeSw:
+        case TriangulationDirection::NeSw:
             return "NESW";
-        case ISector::TriangulationDirection::NwSe:
+        case TriangulationDirection::NwSe:
             return "NWSE";
         }
         return "None";
