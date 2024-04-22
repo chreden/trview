@@ -494,14 +494,17 @@ namespace trview
                     const auto level = _level.lock();
                     if (level && !ImGui::IsWindowHovered(ImGuiHoveredFlags_AnyWindow))
                     {
-                        uint32_t room = room_number(sector->room());
-                        // Select the trigger (if it is a trigger).
+                        const auto room = sector->room().lock();
                         const auto triggers = level->triggers();
                         auto trigger = std::find_if(triggers.begin(), triggers.end(),
                             [&](auto t)
                             {
-                                const auto t_ptr = t.lock();
-                                return trigger_room(t_ptr) == room && t_ptr->sector_id() == sector->id();
+                                if (const auto t_ptr = t.lock())
+                                {
+                                    return t_ptr->sector_id() == sector->id() && t_ptr->room().lock() == room;
+                                }
+                                return false;
+                                
                             });
 
                         if (trigger == triggers.end() || (GetAsyncKeyState(VK_CONTROL) & 0x8000))

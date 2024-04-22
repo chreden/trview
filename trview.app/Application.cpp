@@ -473,7 +473,10 @@ namespace trview
 
     void Application::select_room(std::weak_ptr<IRoom> room)
     {
-        _level->set_selected_room(room);
+        if (_level)
+        {
+            _level->set_selected_room(room);
+        }
         _viewer->select_room(room);
         _items_windows->set_room(room);
         _rooms_windows->set_room(room);
