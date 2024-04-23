@@ -38,6 +38,8 @@ namespace trview
     constexpr std::string get_string(T&& value);
 
     std::string join(std::ranges::input_range auto&& range);
+
+    std::string filename_without_path(const std::string& filename);
 }
 
 #include "Strings.inl"

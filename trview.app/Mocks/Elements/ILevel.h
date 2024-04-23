@@ -25,6 +25,7 @@ namespace trview
             MOCK_METHOD(std::vector<graphics::Texture>, level_textures, (), (const, override));
             MOCK_METHOD(std::weak_ptr<ILight>, light, (uint32_t), (const, override));
             MOCK_METHOD(std::vector<std::weak_ptr<ILight>>, lights, (), (const, override));
+            MOCK_METHOD(std::string, name, (), (const, override));
             MOCK_METHOD(uint32_t, neighbour_depth, (), (const, override));
             MOCK_METHOD(uint32_t, number_of_rooms, (), (const, override));
             MOCK_METHOD(void, on_camera_moved, (), (override));

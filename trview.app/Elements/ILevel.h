@@ -57,6 +57,7 @@ namespace trview
         virtual std::weak_ptr<ILight> light(uint32_t index) const = 0;
         virtual std::vector<std::weak_ptr<ILight>> lights() const = 0;
         virtual MapColours map_colours() const = 0;
+        virtual std::string name() const = 0;
         virtual uint32_t neighbour_depth() const = 0;
         /// Get the number of rooms in the level.
         virtual uint32_t number_of_rooms() const = 0;

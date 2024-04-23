@@ -801,6 +801,19 @@ TEST(Viewer, ReloadLevelSyncProperties)
     viewer->open(reloaded, ILevel::OpenMode::Reload);
 }
 
+TEST(Viewer, ReloadSetsLevelOnUi)
+{
+    auto original = mock_shared<MockLevel>();
+    auto reloaded = mock_shared<MockLevel>();
+    auto [ui_ptr, ui] = create_mock<MockViewerUI>();
+    EXPECT_CALL(ui, set_level).Times(2);
+
+    auto viewer = register_test_module().with_ui(std::move(ui_ptr)).build();
+
+    viewer->open(original, ILevel::OpenMode::Full);
+    viewer->open(reloaded, ILevel::OpenMode::Reload);
+}
+
 TEST(Viewer, CopyPosition)
 {
     auto [ui_ptr, ui] = create_mock<MockViewerUI>();

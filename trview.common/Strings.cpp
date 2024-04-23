@@ -42,4 +42,10 @@ namespace trview
             [](unsigned char c) { return static_cast<char>(std::tolower(c)); });
         return result;
     }
+
+    std::string filename_without_path(const std::string& filename)
+    {
+        auto last_index = std::min(filename.find_last_of('\\'), filename.find_last_of('/'));
+        return last_index == filename.npos ? filename : filename.substr(std::min(last_index + 1, filename.size()));
+    }
 }

@@ -42,6 +42,7 @@ namespace trview
         std::weak_ptr<IRoom> selected_room() const override;
         virtual std::weak_ptr<IItem> item(uint32_t index) const override;
         virtual std::vector<std::weak_ptr<IItem>> items() const override;
+        std::string name() const override;
         virtual uint32_t neighbour_depth() const override;
         virtual uint32_t number_of_rooms() const override;
         virtual std::vector<std::weak_ptr<IRoom>> rooms() const override;
@@ -200,6 +201,7 @@ namespace trview
         std::vector<uint16_t> _floor_data;
         std::set<uint32_t> _models;
         TokenStore _token_store;
+        std::string _name;
     };
 
     /// Find the first item with the type id specified.

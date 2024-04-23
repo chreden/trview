@@ -149,9 +149,8 @@ namespace trview
         virtual void set_host_size(const Size& size) = 0;
 
         /// Set the level name and version.
-        /// @param name The file.
         /// @param version The version of the level.
-        virtual void set_level(const std::string& name, const std::weak_ptr<ILevel>& level) = 0;
+        virtual void set_level(const std::weak_ptr<ILevel>& level) = 0;
 
         /// Set the maximum number of rooms in the level.
         /// @param rooms The number of rooms that are in the level.
