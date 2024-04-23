@@ -39,7 +39,7 @@ namespace trview
         virtual ~Level() = default;
         virtual std::vector<graphics::Texture> level_textures() const override;
         virtual std::optional<uint32_t> selected_item() const override;
-        virtual uint16_t selected_room() const override;
+        std::weak_ptr<IRoom> selected_room() const override;
         virtual std::weak_ptr<IItem> item(uint32_t index) const override;
         virtual std::vector<std::weak_ptr<IItem>> items() const override;
         virtual uint32_t neighbour_depth() const override;
@@ -52,7 +52,7 @@ namespace trview
         virtual void render_transparency(const ICamera& camera) override;
         virtual void set_highlight_mode(RoomHighlightMode mode, bool enabled) override;
         virtual bool highlight_mode_enabled(RoomHighlightMode mode) const override;
-        virtual void set_selected_room(uint16_t index) override;
+        void set_selected_room(const std::weak_ptr<IRoom>& room) override;
         virtual void set_selected_item(uint32_t index) override;
         virtual void set_neighbour_depth(uint32_t depth) override;
         virtual void on_camera_moved() override;
@@ -174,7 +174,7 @@ namespace trview
 
         std::set<RoomHighlightMode> _room_highlight_modes;
         
-        uint16_t           _selected_room{ 0u };
+        std::weak_ptr<IRoom> _selected_room;
         std::weak_ptr<IItem> _selected_item;
         std::weak_ptr<ITrigger> _selected_trigger;
         std::weak_ptr<ILight> _selected_light;

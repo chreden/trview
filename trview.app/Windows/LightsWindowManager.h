@@ -20,12 +20,12 @@ namespace trview
         virtual void set_selected_light(const std::weak_ptr<ILight>& light) override;
         virtual std::optional<int> process_message(UINT message, WPARAM wParam, LPARAM lParam) override;
         virtual std::weak_ptr<ILightsWindow> create_window() override;
-        virtual void set_room(uint32_t room) override;
+        void set_room(const std::weak_ptr<IRoom>& room) override;
     private:
         std::vector<std::weak_ptr<ILight>> _lights;
         ILightsWindow::Source _lights_window_source;
         std::weak_ptr<ILight> _selected_light;
         trlevel::LevelVersion _level_version{ trlevel::LevelVersion::Tomb1 };
-        uint32_t _current_room{ 0u };
+        std::weak_ptr<IRoom> _current_room;
     };
 }

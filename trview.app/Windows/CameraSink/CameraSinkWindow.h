@@ -27,7 +27,7 @@ namespace trview
         virtual void set_number(int32_t number) override;
         virtual void set_camera_sinks(const std::vector<std::weak_ptr<ICameraSink>>& camera_sinks) override;
         virtual void set_selected_camera_sink(const std::weak_ptr<ICameraSink>& camera_sink) override;
-        virtual void set_current_room(uint32_t room) override;
+        void set_current_room(const std::weak_ptr<IRoom>& room) override;
     private:
         bool render_camera_sink_window();
         void set_sync(bool value);
@@ -46,7 +46,7 @@ namespace trview
         std::weak_ptr<ITrigger> _selected_trigger;
         bool _sync{ true };
         bool _scroll_to{ false };
-        uint32_t _current_room{ 0u };
+        std::weak_ptr<IRoom> _current_room;
         bool _force_sort{ false };
         std::vector<std::weak_ptr<ITrigger>> _triggered_by;
         Track<Type::Room> _track;

@@ -41,9 +41,11 @@ namespace trview
 
         virtual std::weak_ptr<ITrigger> selected_trigger() const = 0;
 
+        /// <summary>
         /// Set the current room. This will be used when the track room setting is on.
-        /// @param room The current room number.
-        virtual void set_current_room(uint32_t room) = 0;
+        /// </summary>
+        /// <param name="room">The current room number</param>
+        virtual void set_current_room(const std::weak_ptr<IRoom>& room) = 0;
 
         virtual void set_items(const std::vector<std::weak_ptr<IItem>>& items) = 0;
 

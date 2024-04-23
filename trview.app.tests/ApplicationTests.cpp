@@ -734,6 +734,9 @@ TEST(Application, ReloadSyncsProperties)
         lights_weak.push_back(l);
     }
 
+    auto original_room = mock_shared<MockRoom>()->with_number(3);
+    auto room = mock_shared<MockRoom>()->with_number(3);
+
     ON_CALL(original, items).WillByDefault(Return(items_weak));
     ON_CALL(original, selected_item).WillByDefault(Return(3));
     ON_CALL(original, triggers).WillByDefault(Return(triggers_weak));
@@ -741,7 +744,7 @@ TEST(Application, ReloadSyncsProperties)
     ON_CALL(original, lights).WillByDefault(Return(lights_weak));
     ON_CALL(original, selected_light).WillByDefault(Return(3));
     ON_CALL(original, number_of_rooms).WillByDefault(Return(5));
-    ON_CALL(original, selected_room).WillByDefault(Return(3));
+    ON_CALL(original, selected_room).WillByDefault(Return(original_room));
 
     ON_CALL(reloaded, items).WillByDefault(Return(items_weak));
     EXPECT_CALL(reloaded, set_selected_item(3)).Times(1);
@@ -750,11 +753,13 @@ TEST(Application, ReloadSyncsProperties)
     ON_CALL(reloaded, lights).WillByDefault(Return(lights_weak));
     EXPECT_CALL(reloaded, set_selected_light(3)).Times(1);
     ON_CALL(reloaded, number_of_rooms).WillByDefault(Return(5));
-    EXPECT_CALL(reloaded, set_selected_room(0)).Times(AnyNumber());
-    EXPECT_CALL(reloaded, set_selected_room(3)).Times(1);
+    const auto matcher = [](auto r) { return std::get<0>(r).lock(); };
+    EXPECT_CALL(reloaded, set_selected_room).With(ResultOf(matcher, Eq(std::shared_ptr<IRoom>{}))).Times(AnyNumber());
+    EXPECT_CALL(reloaded, set_selected_room).With(ResultOf(matcher, Eq(room))).Times(1);
     EXPECT_CALL(reloaded, trigger).WillRepeatedly(Return(triggers_weak[3]));
     EXPECT_CALL(reloaded, light).WillRepeatedly(Return(lights_weak[3]));
     EXPECT_CALL(reloaded, item).WillRepeatedly(Return(items[3]));
+    EXPECT_CALL(reloaded, room(3)).WillRepeatedly(Return(room));
 
     std::list<std::unique_ptr<ILevel>> levels;
     levels.push_back(std::move(original_ptr));

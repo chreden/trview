@@ -58,7 +58,7 @@ namespace trview
         }
     }
 
-    void CameraSinkWindowManager::set_room(uint32_t room)
+    void CameraSinkWindowManager::set_room(const std::weak_ptr<IRoom>& room)
     {
         _current_room = room;
         for (auto& window : _windows)

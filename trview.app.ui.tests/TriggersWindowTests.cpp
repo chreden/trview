@@ -215,10 +215,11 @@ void register_triggers_window_tests(ImGuiTestEngine* engine)
             auto& context = ctx->GetVars<TriggersWindowContext>();
             context.ptr = register_test_module().build();
 
+            auto room_78 = mock_shared<MockRoom>()->with_number(78);
             auto trigger1 = mock_shared<MockTrigger>()->with_number(0);
             auto trigger2 = mock_shared<MockTrigger>()->with_number(1);
             context.ptr->set_triggers({ trigger1, trigger2 });
-            context.ptr->set_current_room(78);
+            context.ptr->set_current_room(room_78);
 
             ctx->Yield();
             IM_CHECK_EQ(ctx->ItemExists("/**/0##0"), true);
@@ -232,11 +233,12 @@ void register_triggers_window_tests(ImGuiTestEngine* engine)
             auto& context = ctx->GetVars<TriggersWindowContext>();
             context.ptr = register_test_module().build();
 
+            auto room_78 = mock_shared<MockRoom>()->with_number(78);
             auto trigger1 = mock_shared<MockTrigger>()->with_number(0)->with_room(mock_shared<MockRoom>()->with_number(55));
-            auto trigger2 = mock_shared<MockTrigger>()->with_number(1)->with_room(mock_shared<MockRoom>()->with_number(78));
+            auto trigger2 = mock_shared<MockTrigger>()->with_number(1)->with_room(room_78);
             context.triggers = { trigger1, trigger2 };
             context.ptr->set_triggers({ trigger1, trigger2 });
-            context.ptr->set_current_room(78);
+            context.ptr->set_current_room(room_78);
 
             ctx->Yield();
             IM_CHECK_EQ(ctx->ItemExists("/**/0##0"), true);

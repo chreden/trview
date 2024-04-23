@@ -2,6 +2,7 @@
 #include <trview.app/Mocks/Windows/ICameraSinkWindow.h>
 #include <trview.app/Mocks/Elements/ICameraSink.h>
 #include <trview.app/Resources/resource.h>
+#include <trview.app/Mocks/Elements/IRoom.h>
 
 using namespace trview;
 using namespace trview::tests;
@@ -105,7 +106,7 @@ TEST(CameraSinkWindowManager, RoomForwarded)
 
     manager->create_window();
     EXPECT_CALL(*window, set_current_room).Times(1);
-    manager->set_room(0);
+    manager->set_room(mock_shared<MockRoom>());
 }
 
 TEST(CameraSinkWindowManager, SelectedSinkRaised)

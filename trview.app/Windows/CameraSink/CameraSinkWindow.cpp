@@ -7,26 +7,16 @@ namespace trview
 {
     namespace
     {
-        bool matching_room(ICameraSink& camera_sink, uint32_t room)
+        bool matching_room(ICameraSink& camera_sink, const std::weak_ptr<IRoom>& room)
         {
+            const auto room_ptr = room.lock();
             if (camera_sink.type() == ICameraSink::Type::Camera)
             {
-                if (auto camera_room = camera_sink.room().lock())
-                {
-                    return camera_room->number() == room;
-                }
-                return false;
+                return camera_sink.room().lock() == room_ptr;
             }
 
             const auto inferred = camera_sink.inferred_rooms();
-            return std::ranges::find_if(inferred, [=](auto&& r)
-                {
-                    if (auto inferred_room = r.lock())
-                    {
-                        return inferred_room->number() == room;
-                    }
-                    return false;
-                }) != inferred.end();
+            return std::ranges::find_if(inferred, [=](auto&& r) { return r.lock() == room_ptr; }) != inferred.end();
         }
 
         uint32_t primary_room(const ICameraSink& camera_sink)
@@ -372,7 +362,7 @@ namespace trview
         }
     }
 
-    void CameraSinkWindow::set_current_room(uint32_t room)
+    void CameraSinkWindow::set_current_room(const std::weak_ptr<IRoom>& room)
     {
         _current_room = room;
     }

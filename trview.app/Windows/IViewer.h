@@ -47,7 +47,7 @@ namespace trview
         Event<std::weak_ptr<IItem>, bool> on_item_visibility;
 
         /// Event raised when the viewer wants to select a room.
-        Event<uint32_t> on_room_selected;
+        Event<std::weak_ptr<IRoom>> on_room_selected;
 
         /// Event raised when the viewer wants to select a trigger.
         Event<std::weak_ptr<ITrigger>> on_trigger_selected;
@@ -76,7 +76,7 @@ namespace trview
         Event<uint32_t> on_waypoint_removed;
 
         /// Event raised when the viewer wants to add a waypoint.
-        Event<DirectX::SimpleMath::Vector3, DirectX::SimpleMath::Vector3, uint32_t, IWaypoint::Type, uint32_t> on_waypoint_added;
+        Event<DirectX::SimpleMath::Vector3, DirectX::SimpleMath::Vector3, std::weak_ptr<IRoom>, IWaypoint::Type, uint32_t> on_waypoint_added;
 
         Event<std::weak_ptr<ICameraSink>> on_camera_sink_selected;
 
@@ -98,10 +98,12 @@ namespace trview
         /// @remarks This will not raise the on_item_selected event.
         virtual void select_item(const std::weak_ptr<IItem>& item) = 0;
 
+        /// <summary>
         /// Select the specified room.
-        /// @param room The room to select.
-        /// @remarks This will not raise the on_room_selected event.
-        virtual void select_room(uint32_t room) = 0;
+        /// </summary>
+        /// <param name="room">The room to select</param>
+        /// <remarks>This will not raise the on_room_selected event.</remarks>
+        virtual void select_room(const std::weak_ptr<IRoom>& room) = 0;
 
         /// Select the specified trigger.
         /// @param trigger The trigger to select.

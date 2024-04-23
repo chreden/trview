@@ -70,7 +70,7 @@ namespace trview
         void open(const std::weak_ptr<ILevel>& level, ILevel::OpenMode open_mode) override;
         virtual void set_settings(const UserSettings& settings) override;
         virtual void select_item(const std::weak_ptr<IItem>& item) override;
-        virtual void select_room(uint32_t room_number) override;
+        void select_room(const std::weak_ptr<IRoom>& room) override;
         virtual void select_trigger(const std::weak_ptr<ITrigger>& trigger) override;
         virtual void select_waypoint(const std::weak_ptr<IWaypoint>& waypoint) override;
         virtual void set_camera_mode(CameraMode camera_mode) override;
@@ -119,7 +119,7 @@ namespace trview
         void set_show_wireframe(bool show);
         void set_show_bounding_boxes(bool show);
         void set_show_lights(bool show);
-        uint32_t room_from_pick(const PickResult& pick) const;
+        std::weak_ptr<IRoom> room_from_pick(const PickResult& pick) const;
         void add_recent_orbit(const PickResult& pick);
         void select_previous_orbit();
         void select_next_orbit();

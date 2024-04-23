@@ -12,7 +12,7 @@ namespace trview
             virtual ~MockRoomsWindow();
             MOCK_METHOD(void, clear_selected_trigger, (), (override));
             MOCK_METHOD(void, render, (), (override));
-            MOCK_METHOD(void, set_current_room, (uint32_t), (override));
+            MOCK_METHOD(void, set_current_room, (const std::weak_ptr<IRoom>&), (override));
             MOCK_METHOD(void, set_items, (const std::vector<std::weak_ptr<IItem>>&), (override));
             MOCK_METHOD(void, set_level_version, (trlevel::LevelVersion), (override));
             MOCK_METHOD(void, set_map_colours, (const MapColours&), (override));
