@@ -635,15 +635,11 @@ namespace trview
         // Set up the views.
         auto rooms = new_level->rooms();
 
+        _ui->set_level(new_level);
+        window().set_title("trview - " + new_level->name());
+
         if (open_mode == ILevel::OpenMode::Full || !old_level)
         {
-            // Strip the last part of the path away.
-            const auto filename = new_level->filename();
-            auto last_index = std::min(filename.find_last_of('\\'), filename.find_last_of('/'));
-            auto name = last_index == filename.npos ? filename : filename.substr(std::min(last_index + 1, filename.size()));
-            _ui->set_level(name, new_level);
-            window().set_title("trview - " + name);
-
             _camera.reset();
             _ui->set_toggle(Options::highlight, false);
             _ui->set_toggle(Options::flip, false);

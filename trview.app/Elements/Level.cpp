@@ -117,6 +117,11 @@ namespace trview
         return entities;
     }
 
+    std::string Level::name() const
+    {
+        return _name;
+    }
+
     uint32_t Level::neighbour_depth() const
     {
         return _neighbour_depth;
@@ -1279,6 +1284,7 @@ namespace trview
     {
         _version = level->get_version();
         _floor_data = level->get_floor_data_all();
+        _name = level->name();
 
         record_models(*level);
         generate_rooms(*level, room_source, *mesh_storage);

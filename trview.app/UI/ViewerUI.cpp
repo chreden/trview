@@ -311,14 +311,18 @@ namespace trview
         _map_renderer->set_window_size(size);
     }
 
-    void ViewerUI::set_level(const std::string& name, const std::weak_ptr<ILevel>& level)
+    void ViewerUI::set_level(const std::weak_ptr<ILevel>& level)
     {
         _level = level;
-        _level_info->set_level(name);
         _map_renderer->load({});
         if (auto new_level = _level.lock())
         {
+            _level_info->set_level(new_level->name());
             _level_info->set_level_version(new_level->version());
+        }
+        else
+        {
+            _level_info->set_level("");
         }
     }
 
