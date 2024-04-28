@@ -413,4 +413,9 @@ namespace trview
     {
         _plugin_directories = directories;
     }
+
+    void SettingsWindow::set_font(const FontSetting& font)
+    {
+        _selected_font = font;
+    }
 }

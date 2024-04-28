@@ -27,6 +27,13 @@ namespace trview
         json["normal_bottom"] = placement.normal_bottom;
     }
 
+    void to_json(nlohmann::json& json, const FontSetting& setting)
+    {
+        json["name"] = setting.name;
+        json["filename"] = setting.filename;
+        json["size"] = setting.size;
+    }
+
     void from_json(const nlohmann::json& json, UserSettings::RecentRoute& item)
     {
         item.route_path = read_attribute<std::string>(json, "route_path");
@@ -43,6 +50,13 @@ namespace trview
         placement.normal_top = read_attribute<int32_t>(json, "normal_top");
         placement.normal_right = read_attribute<int32_t>(json, "normal_right");
         placement.normal_bottom = read_attribute<int32_t>(json, "normal_bottom");
+    }
+
+    void from_json(const nlohmann::json& json, FontSetting& setting)
+    {
+        setting.name = read_attribute<std::string>(json, "name");
+        setting.filename = read_attribute<std::string>(json, "filename");
+        setting.size = read_attribute<float>(json, "size");
     }
 
     SettingsLoader::SettingsLoader(const std::shared_ptr<IFiles>& files)
@@ -90,6 +104,7 @@ namespace trview
             read_attribute(json, settings.window_placement, "window_placement");
             read_attribute(json, settings.plugin_directories, "plugin_directories");
             read_attribute(json, settings.toggles, "toggles");
+            read_attribute(json, settings.font, "font");
 
             settings.recent_files.resize(std::min<std::size_t>(settings.recent_files.size(), settings.max_recent_files));
         }
@@ -156,6 +171,7 @@ namespace trview
             }
             json["plugin_directories"] = settings.plugin_directories;
             json["toggles"] = settings.toggles;
+            json["font"] = settings.font;
             _files->save_file(file_path, json.dump());
         }
         catch (...)

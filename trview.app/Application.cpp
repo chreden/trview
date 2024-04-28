@@ -674,7 +674,7 @@ namespace trview
             // Setup Dear ImGui style
             ImGui::StyleColorsDark();
 
-            _font = io.Fonts->AddFontFromFileTTF((_files->fonts_directory() + "\\Arial.ttf").c_str(), 12.0f);
+            _font = io.Fonts->AddFontFromFileTTF(std::format("{}\\{}", _files->fonts_directory(), _settings.font.filename).c_str(), _settings.font.size);
 
             _console_manager->initialise_ui();
 

@@ -67,6 +67,7 @@ namespace trview
         virtual void set_fov(float value) override;
         virtual void set_camera_sink_startup(bool value) override;
         void set_plugin_directories(const std::vector<std::string>& directories) override;
+        void set_font(const FontSetting& font) override;
     private:
         std::shared_ptr<IDialogs> _dialogs;
         std::shared_ptr<IShell> _shell;

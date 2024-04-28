@@ -179,6 +179,7 @@ namespace trview
         virtual void set_fov(float value) = 0;
         virtual void set_camera_sink_startup(bool value) = 0;
         virtual void set_plugin_directories(const std::vector<std::string>& directories) = 0;
+        virtual void set_font(const FontSetting& font) = 0;
         /// <summary>
         /// Toggle the visibility of the settings window.
         /// </summary>
