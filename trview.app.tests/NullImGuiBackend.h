@@ -13,6 +13,7 @@ namespace trview
             void initialise() override;
             bool is_setup() const override;
             void new_frame() override;
+            void rebuild_fonts() override;
             void render() override;
             void reset_layout() override;
             void shutdown() override;

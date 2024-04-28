@@ -27,6 +27,10 @@ namespace trview
             context->IO.Fonts->GetTexDataAsRGBA32(&data, &width, &height, &bpp);
         }
 
+        void NullImGuiBackend::rebuild_fonts()
+        {
+        }
+
         void NullImGuiBackend::render()
         {
         }
