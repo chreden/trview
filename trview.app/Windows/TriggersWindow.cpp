@@ -3,6 +3,7 @@
 #include "../trview_imgui.h"
 #include <format>
 #include "RowCounter.h"
+#include "../Elements/IRoom.h"
 
 namespace trview
 {
@@ -125,7 +126,9 @@ namespace trview
 
     void TriggersWindow::render_triggers_list()
     {
-        if (ImGui::BeginChild(Names::trigger_list_panel.c_str(), ImVec2(220, 0), true, ImGuiWindowFlags_NoScrollbar))
+        calculate_column_widths();
+        const float required_width = _required_number_width + _required_type_width + _required_room_width + _required_hide_width;
+        if (ImGui::BeginChild(Names::trigger_list_panel.c_str(), ImVec2(required_width, 0), true, ImGuiWindowFlags_NoScrollbar))
         {
             _filters.render();
             ImGui::SameLine();
@@ -174,9 +177,9 @@ namespace trview
             if (ImGui::BeginTable(Names::triggers_list.c_str(), 4, ImGuiTableFlags_Sortable | ImGuiTableFlags_ScrollY | ImGuiTableFlags_SizingFixedFit, ImVec2(-1, -counter.height())))
             {
                 ImGui::TableSetupColumn("#", ImGuiTableColumnFlags_WidthFixed, _required_number_width);
-                ImGui::TableSetupColumn("Room");
+                ImGui::TableSetupColumn("Room", ImGuiTableColumnFlags_WidthFixed, _required_room_width);
                 ImGui::TableSetupColumn("Type", ImGuiTableColumnFlags_WidthFixed, _required_type_width);
-                ImGui::TableSetupColumn("Hide");
+                ImGui::TableSetupColumn("Hide", ImGuiTableColumnFlags_WidthFixed, _required_hide_width);
                 ImGui::TableSetupScrollFreeze(1, 1);
                 ImGui::TableHeadersRow();
 
@@ -511,8 +514,10 @@ namespace trview
             return;
         }
 
-        _required_type_width = 0.0f;
-        _required_number_width = 0.0f;
+        _required_type_width = ImGui::CalcTextSize("Type").x;
+        _required_number_width = ImGui::CalcTextSize("#").x;
+        _required_room_width = ImGui::CalcTextSize("Room").x;
+        _required_hide_width = ImGui::CalcTextSize("Hide").x;
         for (const auto& trigger : _all_triggers)
         {
             const auto trigger_ptr = trigger.lock();
@@ -520,10 +525,20 @@ namespace trview
             {
                 _required_number_width = std::max(_required_number_width,
                     ImGui::CalcTextSize(std::to_string(trigger_ptr->number()).c_str()).x);
+                if (auto room = trigger_ptr->room().lock())
+                {
+                    _required_room_width = std::max(_required_room_width,
+                        ImGui::CalcTextSize(std::to_string(room->number()).c_str()).x);
+                }
                 _required_type_width = std::max(_required_type_width,
                     ImGui::CalcTextSize(trigger_type_name(trigger_ptr->type()).c_str()).x);
             }
         }
+
+        _required_type_width *= 1.5f;
+        _required_number_width *= 1.5f;
+        _required_room_width *= 1.5f;
+        _required_hide_width *= 4.0f;
     }
 
     std::optional<int> TriggersWindow::index_of_selected() const
