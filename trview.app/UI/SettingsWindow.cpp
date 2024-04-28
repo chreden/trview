@@ -1,7 +1,75 @@
 #include "SettingsWindow.h"
+#include <dwrite.h>
 
 namespace trview
 {
+    namespace
+    {
+        std::vector<FontSetting> get_ye_fonts()
+        {
+            std::vector<FontSetting> available_fonts;
+
+            HKEY key = nullptr;
+            if (ERROR_SUCCESS == RegOpenKeyEx(HKEY_LOCAL_MACHINE, L"Software\\Microsoft\\Windows NT\\CurrentVersion\\Fonts", 0, KEY_READ, &key))
+            {
+                wchar_t class_name[255];
+                DWORD class_name_length = 255;
+                DWORD number_of_subkeys = 0;
+                DWORD max_subkey_length = 0;
+                DWORD max_class_length = 0;
+                DWORD value_count = 0;
+                DWORD max_value_length = 0;
+                DWORD max_data_length = 0;
+                DWORD security_descriptor = 0;
+                FILETIME last_write_time;
+
+                std::vector<wchar_t> value(16383, 0);
+                DWORD value_length = 16383;
+
+                LRESULT result = RegQueryInfoKey(key,
+                    class_name,
+                    &class_name_length,
+                    nullptr,
+                    &number_of_subkeys,
+                    &max_subkey_length,
+                    &max_class_length,
+                    &value_count,
+                    &max_value_length,
+                    &max_data_length,
+                    &security_descriptor,
+                    &last_write_time);
+
+                for (uint32_t i = 0; i < value_count; ++i)
+                {
+                    value_length = 16383;
+                    value[0] = '\0';
+
+                    DWORD data_length = 0;
+                    result = RegEnumValue(key, i, &value[0], &value_length, NULL, NULL, NULL, &data_length);
+
+                    value_length = 16383;
+
+                    std::vector<uint8_t> data_value(data_length, 0);
+                    result = RegEnumValue(key, i, &value[0], &value_length, NULL, NULL, &data_value[0], &data_length);
+
+                    wchar_t* value_string = reinterpret_cast<wchar_t*>(&data_value[0]);
+                    if (value_string && std::wstring(value_string).ends_with(L".ttf"))
+                    {
+                        available_fonts.push_back(
+                            {
+                                .name = to_utf8(&value[0]),
+                                .filename = to_utf8(value_string)
+                            });
+                    }
+                }
+            }
+
+            RegCloseKey(key);
+
+            return available_fonts;
+        }
+    }
+
     ISettingsWindow::~ISettingsWindow()
     {
     }
@@ -51,6 +119,27 @@ namespace trview
                     {
                         on_background_colour(Colour(1.0f, _colour[0], _colour[1], _colour[2]));
                     }
+
+                    if (ImGui::BeginCombo("Font", _selected_font.name.c_str()))
+                    {
+                        for (const auto& f : get_ye_fonts())
+                        {
+                            bool is_selected = _selected_font.name == f.name;
+                            if (ImGui::Selectable(f.name.c_str(), is_selected))
+                            {
+                                _selected_font.name = f.name;
+                                _selected_font.filename = f.filename;
+                                on_font(_selected_font);
+                            }
+                        }
+                        ImGui::EndCombo();
+                    }
+
+                    if (ImGui::InputFloat("Font Size", &_selected_font.size, 1.0f, 0.0f, "%.3f", ImGuiInputTextFlags_EnterReturnsTrue))
+                    {
+                        on_font(_selected_font);
+                    }
+
                     ImGui::EndTabItem();
                 }
 

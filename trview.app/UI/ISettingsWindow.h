@@ -2,6 +2,7 @@
 
 #include <trview.common/Event.h>
 #include "../UI/MapColours.h"
+#include "../Settings/FontSetting.h"
 
 namespace trview
 {
@@ -79,6 +80,7 @@ namespace trview
         Event<float> on_camera_fov;
         Event<bool> on_camera_sink_startup;
         Event<std::vector<std::string>> on_plugin_directories;
+        Event<FontSetting> on_font;
 
         virtual void render() = 0;
         /// <summary>

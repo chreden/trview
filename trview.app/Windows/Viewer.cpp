@@ -253,6 +253,7 @@ namespace trview
             }
         };
         _ui->on_select_trigger += on_trigger_selected;
+        _ui->on_font += on_font;
 
         _ui->set_settings(_settings);
         _ui->set_camera_mode(CameraMode::Orbit);

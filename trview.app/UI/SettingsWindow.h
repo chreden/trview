@@ -94,5 +94,6 @@ namespace trview
         float _fov{ 45 };
         bool _camera_sink_startup{ false };
         std::vector<std::string> _plugin_directories;
+        FontSetting _selected_font{ .name = "Arial", .filename = "arial.ttf", .size = 12.0f };
     };
 }

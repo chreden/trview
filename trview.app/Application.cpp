@@ -278,6 +278,8 @@ namespace trview
                 _level->set_map_colours(settings.map_colours);
             }
         };
+        _token_store += _viewer->on_font += [this](auto&& font) { _new_font = font; };
+
         _viewer->set_settings(_settings);
 
         auto filename = startup_options.filename();
@@ -690,6 +692,14 @@ namespace trview
         _plugins_windows->update(elapsed);
 
         _viewer->render();
+
+        if (_new_font.has_value())
+        {
+            ImGuiIO& io = ImGui::GetIO();
+            _font = io.Fonts->AddFontFromFileTTF((std::format("{}\\{}", _files->fonts_directory(), _new_font.value().filename)).c_str(), _new_font.value().size);
+            _new_font.reset();
+            _imgui_backend->rebuild_fonts();
+        }
 
         _imgui_backend->new_frame();
         ImGui::NewFrame();

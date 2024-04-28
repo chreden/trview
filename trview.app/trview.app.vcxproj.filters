@@ -1042,6 +1042,9 @@
     <ClInclude Include="Windows\RowCounter.h">
       <Filter>Windows</Filter>
     </ClInclude>
+    <ClInclude Include="Settings\FontSetting.h">
+      <Filter>Settings</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Windows">

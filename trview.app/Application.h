@@ -167,6 +167,7 @@ namespace trview
         std::unique_ptr<ILightsWindowManager> _lights_windows;
         Timer _timer;
         ImFont* _font;
+        std::optional<FontSetting> _new_font;
 
         std::unique_ptr<IImGuiBackend> _imgui_backend;
         std::string _imgui_ini_filename;
