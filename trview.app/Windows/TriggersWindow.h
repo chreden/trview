@@ -11,6 +11,7 @@
 #include "ITriggersWindow.h"
 #include "../Elements/IItem.h"
 #include "../Elements/ITrigger.h"
+#include "ColumnSizer.h"
 
 namespace trview
 {
@@ -81,10 +82,7 @@ namespace trview
         std::vector<Command> _local_selected_trigger_commands;
         Filters<ITrigger> _filters;
         bool _need_filtering{ true };
-        float _required_number_width{ 0.0f };
-        float _required_type_width{ 0.0f };
-        float _required_room_width{ 0.0f };
-        float _required_hide_width{ 0.0f };
+        ColumnSizer _column_sizer;
         bool _force_sort{ false };
         Track<Type::Room> _track;
     };

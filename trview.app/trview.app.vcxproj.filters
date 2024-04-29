@@ -323,6 +323,9 @@
     <ClCompile Include="Windows\RowCounter.cpp">
       <Filter>Windows</Filter>
     </ClCompile>
+    <ClCompile Include="Windows\ColumnSizer.cpp">
+      <Filter>Windows</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera\Camera.h">
@@ -1044,6 +1047,9 @@
     </ClInclude>
     <ClInclude Include="Settings\FontSetting.h">
       <Filter>Settings</Filter>
+    </ClInclude>
+    <ClInclude Include="Windows\ColumnSizer.h">
+      <Filter>Windows</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

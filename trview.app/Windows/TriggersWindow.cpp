@@ -127,8 +127,7 @@ namespace trview
     void TriggersWindow::render_triggers_list()
     {
         calculate_column_widths();
-        const float required_width = _required_number_width + _required_type_width + _required_room_width + _required_hide_width;
-        if (ImGui::BeginChild(Names::trigger_list_panel.c_str(), ImVec2(required_width, 0), true, ImGuiWindowFlags_NoScrollbar))
+        if (ImGui::BeginChild(Names::trigger_list_panel.c_str(), ImVec2(_column_sizer.size(), 0), true, ImGuiWindowFlags_NoScrollbar))
         {
             _filters.render();
             ImGui::SameLine();
@@ -176,10 +175,10 @@ namespace trview
             RowCounter counter{ "triggers", _all_triggers.size() };
             if (ImGui::BeginTable(Names::triggers_list.c_str(), 4, ImGuiTableFlags_Sortable | ImGuiTableFlags_ScrollY | ImGuiTableFlags_SizingFixedFit, ImVec2(-1, -counter.height())))
             {
-                ImGui::TableSetupColumn("#", ImGuiTableColumnFlags_WidthFixed, _required_number_width);
-                ImGui::TableSetupColumn("Room", ImGuiTableColumnFlags_WidthFixed, _required_room_width);
-                ImGui::TableSetupColumn("Type", ImGuiTableColumnFlags_WidthFixed, _required_type_width);
-                ImGui::TableSetupColumn("Hide", ImGuiTableColumnFlags_WidthFixed, _required_hide_width);
+                ImGui::TableSetupColumn("#", ImGuiTableColumnFlags_WidthFixed, _column_sizer.size(0));
+                ImGui::TableSetupColumn("Room", ImGuiTableColumnFlags_WidthFixed, _column_sizer.size(1));
+                ImGui::TableSetupColumn("Type", ImGuiTableColumnFlags_WidthFixed, _column_sizer.size(2));
+                ImGui::TableSetupColumn("Hide", ImGuiTableColumnFlags_WidthFixed, _column_sizer.size(3));
                 ImGui::TableSetupScrollFreeze(1, 1);
                 ImGui::TableHeadersRow();
 
@@ -514,31 +513,25 @@ namespace trview
             return;
         }
 
-        _required_type_width = ImGui::CalcTextSize("Type").x;
-        _required_number_width = ImGui::CalcTextSize("#").x;
-        _required_room_width = ImGui::CalcTextSize("Room").x;
-        _required_hide_width = ImGui::CalcTextSize("Hide").x;
+        _column_sizer.reset();
+        _column_sizer.measure("#", 0);
+        _column_sizer.measure("Room", 1);
+        _column_sizer.measure("Type", 2);
+        _column_sizer.measure("Hide", 3);
         for (const auto& trigger : _all_triggers)
         {
             const auto trigger_ptr = trigger.lock();
             if (trigger_ptr)
             {
-                _required_number_width = std::max(_required_number_width,
-                    ImGui::CalcTextSize(std::to_string(trigger_ptr->number()).c_str()).x);
+                _column_sizer.measure(std::to_string(trigger_ptr->number()), 0);
                 if (auto room = trigger_ptr->room().lock())
                 {
-                    _required_room_width = std::max(_required_room_width,
-                        ImGui::CalcTextSize(std::to_string(room->number()).c_str()).x);
+                    _column_sizer.measure(std::to_string(room->number()), 1);
                 }
-                _required_type_width = std::max(_required_type_width,
-                    ImGui::CalcTextSize(trigger_type_name(trigger_ptr->type()).c_str()).x);
+                _column_sizer.measure(trigger_type_name(trigger_ptr->type()), 2);
             }
         }
-
-        _required_type_width *= 1.5f;
-        _required_number_width *= 1.5f;
-        _required_room_width *= 1.5f;
-        _required_hide_width *= 4.0f;
+        _column_sizer.scale({ 1.5f, 1.5f, 1.5f, 4.0f });
     }
 
     std::optional<int> TriggersWindow::index_of_selected() const
