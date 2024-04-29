@@ -45,6 +45,7 @@ namespace trview
         _triggered_by.clear();
         setup_filters();
         _force_sort = true;
+        calculate_column_widths();
     }
 
     void ItemsWindow::set_triggers(const std::vector<std::weak_ptr<ITrigger>>& triggers)
@@ -93,7 +94,7 @@ namespace trview
 
     void ItemsWindow::render_items_list()
     {
-        if (ImGui::BeginChild(Names::item_list_panel.c_str(), ImVec2(290, 0), true, ImGuiWindowFlags_NoScrollbar))
+        if (ImGui::BeginChild(Names::item_list_panel.c_str(), ImVec2(_column_sizer.size(), 0), true, ImGuiWindowFlags_NoScrollbar))
         {
             _filters.render();
 
@@ -110,11 +111,11 @@ namespace trview
             RowCounter counter{ "items", _all_items.size() };
             if (ImGui::BeginTable(Names::items_list.c_str(), 5, ImGuiTableFlags_Sortable | ImGuiTableFlags_ScrollY | ImGuiTableFlags_SizingFixedFit, ImVec2(-1, -counter.height())))
             {
-                ImGui::TableSetupColumn("#");
-                ImGui::TableSetupColumn("Room");
-                ImGui::TableSetupColumn("ID");
-                ImGui::TableSetupColumn("Type");
-                ImGui::TableSetupColumn("Hide");
+                ImGui::TableSetupColumn("#", ImGuiTableColumnFlags_WidthFixed, _column_sizer.size(0));
+                ImGui::TableSetupColumn("Room", ImGuiTableColumnFlags_WidthFixed, _column_sizer.size(1));
+                ImGui::TableSetupColumn("ID", ImGuiTableColumnFlags_WidthFixed, _column_sizer.size(2));
+                ImGui::TableSetupColumn("Type", ImGuiTableColumnFlags_WidthFixed, _column_sizer.size(3));
+                ImGui::TableSetupColumn("Hide", ImGuiTableColumnFlags_WidthFixed, _column_sizer.size(4));
                 ImGui::TableSetupScrollFreeze(1, 1);
                 ImGui::TableHeadersRow();
 
@@ -425,5 +426,28 @@ namespace trview
     void ItemsWindow::set_model_checker(const std::function<bool(uint32_t)>& checker)
     {
         _model_checker = checker;
+    }
+
+    void ItemsWindow::calculate_column_widths()
+    {
+        _column_sizer.reset();
+        _column_sizer.measure("#", 0);
+        _column_sizer.measure("Room", 1);
+        _column_sizer.measure("ID", 2);
+        _column_sizer.measure("Type", 3);
+        _column_sizer.measure("Hide", 4);
+
+        for (const auto& item : _all_items)
+        {
+            if (auto item_ptr = item.lock())
+            {
+                const bool item_is_virtual = is_virtual(*item_ptr);
+                _column_sizer.measure(std::format("{0}{1}##{0}", item_ptr->number(), item_is_virtual ? "*" : ""), 0);
+                _column_sizer.measure(std::to_string(item_room(item_ptr)), 1);
+                _column_sizer.measure(std::to_string(item_ptr->type_id()), 2);
+                _column_sizer.measure(item_ptr->type(), 3);
+            }
+        }
+        _column_sizer.scale({ 1.5f, 1.5f, 1.5f, 1.5f, 5.0f });
     }
 }
