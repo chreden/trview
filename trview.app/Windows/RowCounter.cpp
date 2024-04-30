@@ -10,7 +10,7 @@ namespace trview
 
     float RowCounter::height() const
     {
-        return ImGui::CalcTextSize(_entry_name.c_str()).y;
+        return ImGui::CalcTextSize(_entry_name.c_str()).y * 1.5f;
     }
 
     void RowCounter::count()

@@ -288,7 +288,7 @@ namespace trview
     void RoomsWindow::render_rooms_list()
     {
         calculate_column_widths();
-        if (ImGui::BeginChild(Names::rooms_panel.c_str(), ImVec2(0, 0), ImGuiChildFlags_AlwaysAutoResize | ImGuiChildFlags_AutoResizeX, ImGuiWindowFlags_NoScrollbar))
+        if (ImGui::BeginChild(Names::rooms_panel.c_str(), ImVec2(0, 0), ImGuiChildFlags_AutoResizeX, ImGuiWindowFlags_NoScrollbar))
         {
             _filters.render();
 

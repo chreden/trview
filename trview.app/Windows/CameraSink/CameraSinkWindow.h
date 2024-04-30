@@ -4,6 +4,7 @@
 #include "../../Filters/Filters.h"
 #include "../../Track/Track.h"
 #include "ICameraSinkWindow.h"
+#include "../ColumnSizer.h"
 
 namespace trview
 {
@@ -35,6 +36,7 @@ namespace trview
         void render_list();
         void render_details();
         void setup_filters();
+        void calculate_column_widths();
 
         std::string _id{ "Camera/Sink 0" };
         std::vector<std::weak_ptr<ICameraSink>> _all_camera_sinks;
@@ -50,5 +52,6 @@ namespace trview
         bool _force_sort{ false };
         std::vector<std::weak_ptr<ITrigger>> _triggered_by;
         Track<Type::Room> _track;
+        ColumnSizer _column_sizer;
     };
 }
