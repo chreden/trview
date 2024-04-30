@@ -15,7 +15,6 @@ namespace trview
         /// <param name="column">Column index.</param>
         void measure(const std::string& value, uint32_t column);
         void reset();
-        void scale(std::vector<float> values);
         /// <summary>
         /// Get the calculated size for all column data.
         /// </summary>
@@ -29,7 +28,6 @@ namespace trview
         float size(uint32_t index) const;
     private:
         std::vector<float> _sizes;
-        std::vector<float> _scales;
     };
 }
 

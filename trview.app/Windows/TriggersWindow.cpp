@@ -531,7 +531,6 @@ namespace trview
                 _column_sizer.measure(trigger_type_name(trigger_ptr->type()), 2);
             }
         }
-        _column_sizer.scale({ 1.0f, 1.0f, 1.0f, 1.0f });
     }
 
     std::optional<int> TriggersWindow::index_of_selected() const

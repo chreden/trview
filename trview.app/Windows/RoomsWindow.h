@@ -10,6 +10,7 @@
 #include "../UI/IMapRenderer.h"
 #include "../Filters/Filters.h"
 #include "../Track/Track.h"
+#include "ColumnSizer.h"
 
 namespace trview
 {
@@ -68,6 +69,7 @@ namespace trview
         void select_room(std::weak_ptr<IRoom> room);
         void render_statics_tab();
         void set_static_meshes(const std::vector<std::weak_ptr<IStaticMesh>>& static_meshes);
+        void calculate_column_widths();
 
         std::vector<std::weak_ptr<IRoom>> _all_rooms;
         std::vector<std::weak_ptr<IItem>> _all_items;
@@ -120,5 +122,7 @@ namespace trview
         std::weak_ptr<ISector> _selected_sector;
         uint32_t _selected_floordata{ 0 };
         Track<Type::Item, Type::Trigger, Type::Light, Type::CameraSink> _track;
+
+        ColumnSizer _column_sizer;
     };
 }

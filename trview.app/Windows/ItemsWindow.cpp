@@ -449,6 +449,5 @@ namespace trview
                 _column_sizer.measure(item_ptr->type(), 3);
             }
         }
-        _column_sizer.scale({ 1.0f, 1.0f, 1.0f, 1.0f, 1.0f });
     }
 }
