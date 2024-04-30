@@ -127,7 +127,7 @@ namespace trview
     void TriggersWindow::render_triggers_list()
     {
         calculate_column_widths();
-        if (ImGui::BeginChild(Names::trigger_list_panel.c_str(), ImVec2(_column_sizer.size(), 0), true, ImGuiWindowFlags_NoScrollbar))
+        if (ImGui::BeginChild(Names::trigger_list_panel.c_str(), ImVec2(0, 0), ImGuiChildFlags_AlwaysAutoResize | ImGuiChildFlags_AutoResizeX, ImGuiWindowFlags_NoScrollbar))
         {
             _filters.render();
             ImGui::SameLine();
@@ -173,7 +173,7 @@ namespace trview
             }
 
             RowCounter counter{ "triggers", _all_triggers.size() };
-            if (ImGui::BeginTable(Names::triggers_list.c_str(), 4, ImGuiTableFlags_Sortable | ImGuiTableFlags_ScrollY | ImGuiTableFlags_SizingFixedFit, ImVec2(-1, -counter.height())))
+            if (ImGui::BeginTable(Names::triggers_list.c_str(), 4, ImGuiTableFlags_Sortable | ImGuiTableFlags_ScrollY, ImVec2(0, -counter.height())))
             {
                 ImGui::TableSetupColumn("#", ImGuiTableColumnFlags_WidthFixed, _column_sizer.size(0));
                 ImGui::TableSetupColumn("Room", ImGuiTableColumnFlags_WidthFixed, _column_sizer.size(1));
@@ -514,10 +514,10 @@ namespace trview
         }
 
         _column_sizer.reset();
-        _column_sizer.measure("#", 0);
-        _column_sizer.measure("Room", 1);
-        _column_sizer.measure("Type", 2);
-        _column_sizer.measure("Hide", 3);
+        _column_sizer.measure("#__", 0);
+        _column_sizer.measure("Room__", 1);
+        _column_sizer.measure("Type__", 2);
+        _column_sizer.measure("Hide____", 3);
         for (const auto& trigger : _all_triggers)
         {
             const auto trigger_ptr = trigger.lock();
@@ -531,7 +531,7 @@ namespace trview
                 _column_sizer.measure(trigger_type_name(trigger_ptr->type()), 2);
             }
         }
-        _column_sizer.scale({ 1.5f, 1.5f, 1.5f, 4.0f });
+        _column_sizer.scale({ 1.0f, 1.0f, 1.0f, 1.0f });
     }
 
     std::optional<int> TriggersWindow::index_of_selected() const

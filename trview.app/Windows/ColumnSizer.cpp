@@ -34,6 +34,7 @@ namespace trview
     float ColumnSizer::size(uint32_t index) const
     {
         const float scale = index < _scales.size() ? _scales[index] : 1.0f;
-        return index < _sizes.size() ? (_sizes[index] * scale) : 0.0f;
+        const float base_size = index < _sizes.size() ? _sizes[index] : 0.0f;
+        return base_size * scale;
     }
 }
