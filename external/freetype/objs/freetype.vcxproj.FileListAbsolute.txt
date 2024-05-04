@@ -1,1 +1,0 @@
-C:\Projects\Applications\trview\external\freetype\objs\x64\Debug\freetype.lib
