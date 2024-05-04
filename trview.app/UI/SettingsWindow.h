@@ -7,7 +7,6 @@
 
 #include <trview.common/Windows/IShell.h>
 #include <trview.common/Windows/IDialogs.h>
-#include <trview.common/IFiles.h>
 
 namespace trview
 {
@@ -41,7 +40,7 @@ namespace trview
             static inline const std::string reset_fov = "Reset##Fov";
         };
 
-        explicit SettingsWindow(const std::shared_ptr<IDialogs>& dialogs, const std::shared_ptr<IShell>& shell, const std::shared_ptr<IFiles>& files);
+        explicit SettingsWindow(const std::shared_ptr<IDialogs>& dialogs, const std::shared_ptr<IShell>& shell);
         virtual ~SettingsWindow() = default;
         virtual void render() override;
         virtual void set_vsync(bool value) override;
@@ -98,6 +97,5 @@ namespace trview
         std::vector<std::string> _plugin_directories;
         FontSetting _selected_font{ .name = "Arial", .filename = "arial.ttf", .size = 12.0f };
         std::vector<FontSetting> _fonts;
-        std::shared_ptr<IFiles> _files;
     };
 }

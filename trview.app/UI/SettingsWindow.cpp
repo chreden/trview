@@ -1,24 +1,20 @@
 #include "SettingsWindow.h"
-// #include <external/imgui/imstb_truetype.h>
-#include <trview.common/IFiles.h>
-#include <format>
 
 namespace trview
 {
     namespace
     {
-        std::vector<FontSetting> get_ye_fonts(IFiles&)
+        std::vector<FontSetting> load_for_key(HKEY key_search)
         {
             std::vector<FontSetting> available_fonts;
-
             HKEY key = nullptr;
-            if (ERROR_SUCCESS == RegOpenKeyEx(HKEY_LOCAL_MACHINE, L"Software\\Microsoft\\Windows NT\\CurrentVersion\\Fonts", 0, KEY_READ, &key))
+            if (ERROR_SUCCESS == RegOpenKeyEx(key_search, L"Software\\Microsoft\\Windows NT\\CurrentVersion\\Fonts", 0, KEY_READ, &key))
             {
                 DWORD value_count = 0;
                 DWORD max_value_length = 0;
                 std::vector<wchar_t> value(16383, 0);
 
-                LRESULT result = RegQueryInfoKey(key, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, &value_count, &max_value_length, nullptr,  nullptr, nullptr);
+                LRESULT result = RegQueryInfoKey(key, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, &value_count, &max_value_length, nullptr, nullptr, nullptr);
                 for (uint32_t i = 0; i < value_count; ++i)
                 {
                     DWORD value_length = 16383;
@@ -33,31 +29,28 @@ namespace trview
                     result = RegEnumValue(key, i, &value[0], &value_length, NULL, NULL, &data_value[0], &data_length);
 
                     wchar_t* value_string = reinterpret_cast<wchar_t*>(&data_value[0]);
-                    if (value_string && 
+                    if (value_string &&
                         std::wstring(value_string).ends_with(L".ttf") &&
                         std::wstring(&value[0]).ends_with(L" (TrueType)"))
                     {
-                        //if (auto file = files.load_file(std::format(L"{}\\{}", to_utf16(files.fonts_directory()), value_string)))
-                        //{
-                        //    stbtt_fontinfo info{};
-                        //    if (stbtt_InitFont(&info, &file.value()[0], 0))
-                        //    {
-                        //        if (info.numGlyphs > 0)
-                        //        {
-                                    const auto name = to_utf8(&value[0]);
-                                    available_fonts.push_back(
-                                        {
-                                            .name = name.substr(0, name.length() - 11),
-                                            .filename = to_utf8(value_string)
-                                        });
-                        //         }
-                        //     }
-                        // }
+                        const auto name = to_utf8(&value[0]);
+                        available_fonts.push_back(
+                            {
+                                .name = name.substr(0, name.length() - 11),
+                                .filename = to_utf8(value_string)
+                            });
                     }
                 }
             }
 
             RegCloseKey(key);
+            return available_fonts;
+        }
+
+        std::vector<FontSetting> get_ye_fonts()
+        {
+            std::vector<FontSetting> available_fonts = load_for_key(HKEY_LOCAL_MACHINE);
+            available_fonts.append_range(load_for_key(HKEY_CURRENT_USER));
             std::ranges::sort(available_fonts, [](auto&& l, auto&& r) { return l.name < r.name; });
             return available_fonts;
         }
@@ -67,8 +60,8 @@ namespace trview
     {
     }
 
-    SettingsWindow::SettingsWindow(const std::shared_ptr<IDialogs>& dialogs, const std::shared_ptr<IShell>& shell, const std::shared_ptr<IFiles>& files)
-        : _dialogs(dialogs), _shell(shell), _files(files)
+    SettingsWindow::SettingsWindow(const std::shared_ptr<IDialogs>& dialogs, const std::shared_ptr<IShell>& shell)
+        : _dialogs(dialogs), _shell(shell)
     {
     }
 
@@ -335,7 +328,7 @@ namespace trview
         _visible = !_visible;
         if (_visible)
         {
-            _fonts = get_ye_fonts(*_files);
+            _fonts = get_ye_fonts();
         }
     }
 

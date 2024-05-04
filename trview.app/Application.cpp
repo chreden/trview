@@ -674,7 +674,10 @@ namespace trview
             // Setup Dear ImGui style
             ImGui::StyleColorsDark();
 
-            _font = io.Fonts->AddFontFromFileTTF(std::format("{}\\{}", _files->fonts_directory(), _settings.font.filename).c_str(), _settings.font.size);
+            const std::string font_path = _settings.font.filename.contains('\\') ?
+                    _settings.font.filename :
+                    std::format("{}\\{}", _files->fonts_directory(), _settings.font.filename);
+            _font = io.Fonts->AddFontFromFileTTF(font_path.c_str(), _settings.font.size);
 
             _console_manager->initialise_ui();
 
@@ -696,7 +699,10 @@ namespace trview
         if (_new_font.has_value())
         {
             ImGuiIO& io = ImGui::GetIO();
-            auto new_font = io.Fonts->AddFontFromFileTTF((std::format("{}\\{}", _files->fonts_directory(), _new_font.value().filename)).c_str(), _new_font.value().size);
+            const std::string font_path = _new_font->filename.contains('\\') ?
+                _new_font->filename :
+                std::format("{}\\{}", _files->fonts_directory(), _new_font->filename);
+            auto new_font = io.Fonts->AddFontFromFileTTF(font_path.c_str(), _new_font.value().size);
             _imgui_backend->rebuild_fonts();
 
             bool revert = true;
@@ -715,7 +721,10 @@ namespace trview
             if (revert)
             {
                 io.Fonts->Clear();
-                _font = io.Fonts->AddFontFromFileTTF((std::format("{}\\{}", _files->fonts_directory(), _settings.font.filename)).c_str(), _settings.font.size);
+                const std::string old_font_path = _settings.font.filename.contains('\\') ?
+                    _settings.font.filename :
+                    std::format("{}\\{}", _files->fonts_directory(), _settings.font.filename);
+                _font = io.Fonts->AddFontFromFileTTF(old_font_path.c_str(), _settings.font.size);
             }
             else
             {
