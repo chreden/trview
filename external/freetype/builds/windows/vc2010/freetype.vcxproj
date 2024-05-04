@@ -221,25 +221,4 @@
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
-  <ItemGroup Condition="Exists('..\..\..\subprojects\dlg\.git')">
-    <DlgSrc Include="..\..\..\subprojects\dlg\include\dlg\output.h">
-      <DlgDst>..\..\..\include\dlg\output.h</DlgDst>
-    </DlgSrc>
-    <DlgSrc Include="..\..\..\subprojects\dlg\include\dlg\dlg.h">
-      <DlgDst>..\..\..\include\dlg\dlg.h</DlgDst>
-    </DlgSrc>
-    <DlgSrc Include="..\..\..\subprojects\dlg\src\dlg\dlg.c">
-      <DlgDst>..\..\..\src\dlg\dlg.c</DlgDst>
-    </DlgSrc>
-  </ItemGroup>
-  <Target Name="DlgCopy" Inputs="@(DlgSrc)" Outputs="@(DlgSrc->'%(DlgDst)')" Condition="Exists('..\..\..\subprojects\dlg\.git')">
-    <Copy SourceFiles="@(DlgSrc)" DestinationFiles="@(DlgSrc->'%(DlgDst)')" />
-  </Target>
-  <Target Name="AfterBuild">
-    <ItemGroup>
-      <TargetFiles Include="$(TargetDir)$(TargetName).*" />
-    </ItemGroup>
-    <Copy SourceFiles="@(TargetFiles)" DestinationFolder="..\..\..\objs" />
-    <Copy SourceFiles="$(TargetDir)$(TargetFileName)" DestinationFolder="..\..\..\..\freetype-demos\bin" Condition="'$(TargetExt)'=='.dll'" />
-  </Target>
 </Project>
