@@ -11,7 +11,7 @@
   or with different appropriate switches. It also works with Visual Studio.
   Additional customization can be made in `freetype.user.props`.
 -->
-<Project DefaultTargets="DlgCopy;Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|x86">
       <Configuration>Debug</Configuration>
