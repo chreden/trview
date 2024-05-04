@@ -696,9 +696,33 @@ namespace trview
         if (_new_font.has_value())
         {
             ImGuiIO& io = ImGui::GetIO();
-            _font = io.Fonts->AddFontFromFileTTF((std::format("{}\\{}", _files->fonts_directory(), _new_font.value().filename)).c_str(), _new_font.value().size);
-            _new_font.reset();
+            auto new_font = io.Fonts->AddFontFromFileTTF((std::format("{}\\{}", _files->fonts_directory(), _new_font.value().filename)).c_str(), _new_font.value().size);
             _imgui_backend->rebuild_fonts();
+
+            bool revert = true;
+            if (new_font && new_font->Glyphs.Size > 0)
+            {
+                unsigned char* pixels;
+                int width, height;
+                io.Fonts->GetTexDataAsRGBA32(&pixels, &width, &height);
+                if (width > 0 && height > 0)
+                {
+                    _font = new_font;
+                    revert = false;
+                }
+            }
+
+            if (revert)
+            {
+                io.Fonts->Clear();
+                _font = io.Fonts->AddFontFromFileTTF((std::format("{}\\{}", _files->fonts_directory(), _settings.font.filename)).c_str(), _settings.font.size);
+            }
+            else
+            {
+                _settings.font = _new_font.value();
+                _viewer->set_settings(_settings);
+            }
+            _new_font.reset();
         }
 
         _imgui_backend->new_frame();

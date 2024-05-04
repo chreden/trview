@@ -1,10 +1,13 @@
 #include "SettingsWindow.h"
+// #include <external/imgui/imstb_truetype.h>
+#include <trview.common/IFiles.h>
+#include <format>
 
 namespace trview
 {
     namespace
     {
-        std::vector<FontSetting> get_ye_fonts()
+        std::vector<FontSetting> get_ye_fonts(IFiles&)
         {
             std::vector<FontSetting> available_fonts;
 
@@ -34,12 +37,22 @@ namespace trview
                         std::wstring(value_string).ends_with(L".ttf") &&
                         std::wstring(&value[0]).ends_with(L" (TrueType)"))
                     {
-                        const auto name = to_utf8(&value[0]);
-                        available_fonts.push_back(
-                            {
-                                .name = name.substr(0, name.length() - 11),
-                                .filename = to_utf8(value_string)
-                            });
+                        //if (auto file = files.load_file(std::format(L"{}\\{}", to_utf16(files.fonts_directory()), value_string)))
+                        //{
+                        //    stbtt_fontinfo info{};
+                        //    if (stbtt_InitFont(&info, &file.value()[0], 0))
+                        //    {
+                        //        if (info.numGlyphs > 0)
+                        //        {
+                                    const auto name = to_utf8(&value[0]);
+                                    available_fonts.push_back(
+                                        {
+                                            .name = name.substr(0, name.length() - 11),
+                                            .filename = to_utf8(value_string)
+                                        });
+                        //         }
+                        //     }
+                        // }
                     }
                 }
             }
@@ -54,8 +67,8 @@ namespace trview
     {
     }
 
-    SettingsWindow::SettingsWindow(const std::shared_ptr<IDialogs>& dialogs, const std::shared_ptr<IShell>& shell)
-        : _dialogs(dialogs), _shell(shell)
+    SettingsWindow::SettingsWindow(const std::shared_ptr<IDialogs>& dialogs, const std::shared_ptr<IShell>& shell, const std::shared_ptr<IFiles>& files)
+        : _dialogs(dialogs), _shell(shell), _files(files)
     {
     }
 
@@ -322,7 +335,7 @@ namespace trview
         _visible = !_visible;
         if (_visible)
         {
-            _fonts = get_ye_fonts();
+            _fonts = get_ye_fonts(*_files);
         }
     }
 

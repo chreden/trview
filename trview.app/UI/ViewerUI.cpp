@@ -152,12 +152,7 @@ namespace trview
         forward_setting(_settings_window->on_camera_fov, _settings.fov);
         forward_setting(_settings_window->on_camera_sink_startup, _settings.camera_sink_startup);
         forward_setting(_settings_window->on_plugin_directories, _settings.plugin_directories);
-        _token_store += _settings_window->on_font += [this](auto&& font)
-            {
-                _settings.font = font;
-                on_settings(_settings);
-                on_font(font);
-            };
+        _settings_window->on_font += on_font;
 
         _camera_position = std::make_unique<CameraPosition>();
         _camera_position->on_position_changed += on_camera_position;
