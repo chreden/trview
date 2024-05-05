@@ -1060,6 +1060,9 @@
     <ClInclude Include="UI\Fonts\Fonts.h">
       <Filter>UI\Fonts</Filter>
     </ClInclude>
+    <ClInclude Include="Mocks\UI\IFonts.h">
+      <Filter>Mocks\UI</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Windows">

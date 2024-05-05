@@ -32,6 +32,7 @@
 #include <trview.app/Mocks/Lua/ILua.h>
 #include <trview.app/Mocks/Plugins/IPlugins.h>
 #include <trview.app/Mocks/Windows/IPluginsWindowManager.h>
+#include <trview.app/Mocks/UI/IFonts.h>
 
 using namespace trview;
 using namespace trview::tests;
@@ -85,6 +86,7 @@ namespace
             std::shared_ptr<IPlugins> plugins{ mock_shared<MockPlugins>() };
             std::unique_ptr<IPluginsWindowManager> plugins_window_manager{ mock_unique<MockPluginsWindowManager>() };
             IRandomizerRoute::Source randomizer_route_source { [](auto&&...) { return mock_shared<MockRandomizerRoute>(); } };
+            std::shared_ptr<IFonts> fonts { mock_shared<MockFonts>() };
 
             std::unique_ptr<Application> build()
             {
@@ -94,7 +96,7 @@ namespace
                     std::move(items_window_manager), std::move(triggers_window_manager), std::move(route_window_manager), std::move(rooms_window_manager),
                     level_source, startup_options, dialogs, files, std::move(imgui_backend), std::move(lights_window_manager), std::move(log_window_manager),
                     std::move(textures_window_manager), std::move(camera_sink_window_manager), std::move(console_manager),
-                    plugins, std::move(plugins_window_manager), randomizer_route_source);
+                    plugins, std::move(plugins_window_manager), randomizer_route_source, fonts);
             }
 
             test_module& with_dialogs(std::shared_ptr<IDialogs> dialogs)
@@ -517,8 +519,6 @@ TEST(Application, WindowManagersUpdated)
     EXPECT_CALL(triggers_window_manager, update).Times(1);
     auto [lights_window_manager_ptr, lights_window_manager] = create_mock<MockLightsWindowManager>();
     EXPECT_CALL(lights_window_manager, update).Times(1);
-    auto files = mock_shared<MockFiles>();
-    EXPECT_CALL(*files, fonts_directory()).Times(1).WillRepeatedly(Return(fonts_directory()));
 
     auto application = register_test_module()
         .with_route_window_manager(std::move(route_window_manager_ptr))
@@ -526,7 +526,6 @@ TEST(Application, WindowManagersUpdated)
         .with_rooms_window_manager(std::move(rooms_window_manager_ptr))
         .with_triggers_window_manager(std::move(triggers_window_manager_ptr))
         .with_lights_window_manager(std::move(lights_window_manager_ptr))
-        .with_files(files)
         .build();
     application->render();
 }
@@ -559,8 +558,6 @@ TEST(Application, WindowManagersAndViewerRendered)
 
     auto [viewer_ptr, viewer] = create_mock<MockViewer>();
     EXPECT_CALL(viewer, render).Times(1);
-    auto files = mock_shared<MockFiles>();
-    EXPECT_CALL(*files, fonts_directory()).Times(1).WillRepeatedly(Return(fonts_directory()));
 
     auto application = register_test_module()
         .with_route_window_manager(std::move(route_window_manager_ptr))
@@ -574,7 +571,6 @@ TEST(Application, WindowManagersAndViewerRendered)
         .with_console_manager(std::move(console_manager_ptr))
         .with_plugins_window_manager(std::move(plugins_window_manager_ptr))
         .with_viewer(std::move(viewer_ptr))
-        .with_files(files)
         .with_plugins(plugins)
         .build();
     application->render();
