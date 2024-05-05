@@ -58,14 +58,15 @@ namespace trview
         std::unique_ptr<IConsoleManager> console_manager,
         std::shared_ptr<IPlugins> plugins,
         std::unique_ptr<IPluginsWindowManager> plugins_window_manager,
-        const IRandomizerRoute::Source& randomizer_route_source)
+        const IRandomizerRoute::Source& randomizer_route_source,
+        std::shared_ptr<IFonts> fonts)
         : MessageHandler(application_window), _instance(GetModuleHandle(nullptr)),
         _file_menu(std::move(file_menu)), _update_checker(std::move(update_checker)), _view_menu(window()), _settings_loader(settings_loader), _trlevel_source(trlevel_source),
         _viewer(std::move(viewer)), _route_source(route_source), _shortcuts(shortcuts), _items_windows(std::move(items_window_manager)),
         _triggers_windows(std::move(triggers_window_manager)), _route_window(std::move(route_window_manager)), _rooms_windows(std::move(rooms_window_manager)), _level_source(level_source),
         _dialogs(dialogs), _files(files), _timer(default_time_source()), _imgui_backend(std::move(imgui_backend)), _lights_windows(std::move(lights_window_manager)), _log_windows(std::move(log_window_manager)),
         _textures_windows(std::move(textures_window_manager)), _camera_sink_windows(std::move(camera_sink_window_manager)), _console_manager(std::move(console_manager)),
-        _plugins(plugins), _plugins_windows(std::move(plugins_window_manager)), _randomizer_route_source(randomizer_route_source)
+        _plugins(plugins), _plugins_windows(std::move(plugins_window_manager)), _randomizer_route_source(randomizer_route_source), _fonts(fonts)
     {
         SetWindowLongPtr(window(), GWLP_USERDATA, reinterpret_cast<LONG_PTR>(_imgui_backend.get()));
 
@@ -674,10 +675,7 @@ namespace trview
             // Setup Dear ImGui style
             ImGui::StyleColorsDark();
 
-            const std::string font_path = _settings.font.filename.contains('\\') ?
-                    _settings.font.filename :
-                    std::format("{}\\{}", _files->fonts_directory(), _settings.font.filename);
-            _font = io.Fonts->AddFontFromFileTTF(font_path.c_str(), _settings.font.size);
+            _font = _fonts->add_font("main", _settings.font);
 
             _console_manager->initialise_ui();
 
@@ -698,11 +696,8 @@ namespace trview
 
         if (_new_font.has_value())
         {
+            auto new_font = _fonts->add_font("main", *_new_font);
             ImGuiIO& io = ImGui::GetIO();
-            const std::string font_path = _new_font->filename.contains('\\') ?
-                _new_font->filename :
-                std::format("{}\\{}", _files->fonts_directory(), _new_font->filename);
-            auto new_font = io.Fonts->AddFontFromFileTTF(font_path.c_str(), _new_font.value().size);
             _imgui_backend->rebuild_fonts();
 
             bool revert = true;
@@ -721,10 +716,7 @@ namespace trview
             if (revert)
             {
                 io.Fonts->Clear();
-                const std::string old_font_path = _settings.font.filename.contains('\\') ?
-                    _settings.font.filename :
-                    std::format("{}\\{}", _files->fonts_directory(), _settings.font.filename);
-                _font = io.Fonts->AddFontFromFileTTF(old_font_path.c_str(), _settings.font.size);
+                _font = _fonts->add_font("main", _settings.font);
             }
             else
             {

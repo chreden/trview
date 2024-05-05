@@ -68,6 +68,7 @@
 #include "Windows/Plugins/PluginsWindowManager.h"
 #include "Windows/Plugins/PluginsWindow.h"
 #include "Tools/Toolbar.h"
+#include "UI/Fonts/Fonts.h"
 
 namespace trview
 {
@@ -276,13 +277,14 @@ namespace trview
             plugin_source,
             settings_loader->load_user_settings());
         auto plugins_window_source = [=]() { return std::make_shared<PluginsWindow>(plugins, shell); };
+        auto fonts = std::make_shared<Fonts>(files);
 
         auto viewer_ui = std::make_unique<ViewerUI>(
             window,
             texture_storage,
             shortcuts,
             map_renderer_source,
-            std::make_unique<SettingsWindow>(dialogs, shell),
+            std::make_unique<SettingsWindow>(dialogs, shell, fonts),
             std::make_unique<ViewOptions>(),
             std::make_unique<ContextMenu>(),
             std::make_unique<CameraControls>(),
@@ -346,6 +348,7 @@ namespace trview
             std::make_unique<ConsoleManager>(window, shortcuts, console_source, files),
             plugins,
             std::make_unique<PluginsWindowManager>(window, shortcuts, plugins_window_source),
-            randomizer_route_source);
+            randomizer_route_source,
+            fonts);
     }
 }

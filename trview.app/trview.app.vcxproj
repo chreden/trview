@@ -128,6 +128,7 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClInclude Include="Lua\Route\Lua_Route.h" />
     <ClInclude Include="Lua\Route\Lua_Waypoint.h" />
     <ClInclude Include="Lua\Vector3.h" />
+    <ClCompile Include="UI\Fonts\Fonts.cpp" />
     <ClCompile Include="Windows\ColumnSizer.cpp" />
     <ClCompile Include="Windows\Console\Console.cpp" />
     <ClCompile Include="Windows\Console\ConsoleManager.cpp" />
@@ -185,6 +186,8 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClCompile Include="Windows\TriggersWindowManager.cpp" />
     <ClCompile Include="Windows\Viewer.cpp" />
     <ClCompile Include="Windows\WindowResizer.cpp" />
+    <ClInclude Include="UI\Fonts\Fonts.h" />
+    <ClInclude Include="UI\Fonts\IFonts.h" />
     <ClInclude Include="UserCancelledException.h" />
     <ClInclude Include="Windows\ColumnSizer.h" />
     <ClInclude Include="Windows\Console\Console.h" />
