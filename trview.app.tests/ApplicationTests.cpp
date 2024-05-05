@@ -77,7 +77,7 @@ namespace
             std::shared_ptr<IStartupOptions> startup_options{ mock_shared<MockStartupOptions>() };
             std::shared_ptr<IDialogs> dialogs{ mock_shared<MockDialogs>() };
             std::shared_ptr<IFiles> files{ mock_shared<MockFiles>() };
-            std::unique_ptr<IImGuiBackend> imgui_backend{ std::make_unique<NullImGuiBackend>() };
+            std::shared_ptr<IImGuiBackend> imgui_backend{ std::make_shared<NullImGuiBackend>() };
             std::unique_ptr<ILightsWindowManager> lights_window_manager{ mock_unique<MockLightsWindowManager>() };
             std::unique_ptr<ILogWindowManager> log_window_manager{ mock_unique<MockLogWindowManager>() };
             std::unique_ptr<ITexturesWindowManager> textures_window_manager{ mock_unique<MockTexturesWindowManager>() };
@@ -189,9 +189,9 @@ namespace
                 return *this;
             }
 
-            test_module& with_imgui_backend(std::unique_ptr<IImGuiBackend> backend)
+            test_module& with_imgui_backend(std::shared_ptr<IImGuiBackend> backend)
             {
-                this->imgui_backend = std::move(backend);
+                this->imgui_backend = backend;
                 return *this;
             }
 
@@ -616,11 +616,11 @@ TEST(Application, MapColoursSetOnSettingsChanged)
 
 TEST(Application, ResetLayout)
 {
-    auto [imgui_backend_ptr, imgui_backend] = create_mock<MockImGuiBackend>();
-    EXPECT_CALL(imgui_backend, reset_layout);
+    auto imgui_backend = mock_shared<MockImGuiBackend>();
+    EXPECT_CALL(*imgui_backend, reset_layout);
 
     auto application = register_test_module()
-        .with_imgui_backend(std::move(imgui_backend_ptr))
+        .with_imgui_backend(imgui_backend)
         .build();
 
     application->process_message(WM_COMMAND, MAKEWPARAM(ID_WINDOWS_RESET_LAYOUT, 0), 0);

@@ -277,7 +277,8 @@ namespace trview
             plugin_source,
             settings_loader->load_user_settings());
         auto plugins_window_source = [=]() { return std::make_shared<PluginsWindow>(plugins, shell); };
-        auto fonts = std::make_shared<Fonts>(files);
+        auto imgui_backend = std::make_shared<DX11ImGuiBackend>(window, device, files);
+        auto fonts = std::make_shared<Fonts>(files, imgui_backend);
 
         auto viewer_ui = std::make_unique<ViewerUI>(
             window,
@@ -340,7 +341,7 @@ namespace trview
             std::make_shared<StartupOptions>(command_line),
             dialogs,
             files,
-            std::make_unique<DX11ImGuiBackend>(window, device, files),
+            imgui_backend,
             std::make_unique<LightsWindowManager>(window, shortcuts, lights_window_source),
             std::make_unique<LogWindowManager>(window, log_window_source),
             std::make_unique<TexturesWindowManager>(window, textures_window_source),

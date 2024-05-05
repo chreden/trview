@@ -68,7 +68,7 @@ namespace trview
             std::shared_ptr<IStartupOptions> startup_options,
             std::shared_ptr<IDialogs> dialogs,
             std::shared_ptr<IFiles> files,
-            std::unique_ptr<IImGuiBackend> imgui_backend,
+            std::shared_ptr<IImGuiBackend> imgui_backend,
             std::unique_ptr<ILightsWindowManager> lights_window_manager,
             std::unique_ptr<ILogWindowManager> log_window_manager,
             std::unique_ptr<ITexturesWindowManager> textures_window_manager,
@@ -168,10 +168,9 @@ namespace trview
         std::unique_ptr<IRoomsWindowManager> _rooms_windows;
         std::unique_ptr<ILightsWindowManager> _lights_windows;
         Timer _timer;
-        ImFont* _font;
         std::optional<FontSetting> _new_font;
 
-        std::unique_ptr<IImGuiBackend> _imgui_backend;
+        std::shared_ptr<IImGuiBackend> _imgui_backend;
         std::string _imgui_ini_filename;
         std::unique_ptr<ILogWindowManager> _log_windows;
         bool _recent_route_prompted{ false };

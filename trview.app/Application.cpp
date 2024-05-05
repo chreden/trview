@@ -50,7 +50,7 @@ namespace trview
         std::shared_ptr<IStartupOptions> startup_options,
         std::shared_ptr<IDialogs> dialogs,
         std::shared_ptr<IFiles> files,
-        std::unique_ptr<IImGuiBackend> imgui_backend,
+        std::shared_ptr<IImGuiBackend> imgui_backend,
         std::unique_ptr<ILightsWindowManager> lights_window_manager,
         std::unique_ptr<ILogWindowManager> log_window_manager,
         std::unique_ptr<ITexturesWindowManager> textures_window_manager,
@@ -675,12 +675,12 @@ namespace trview
             // Setup Dear ImGui style
             ImGui::StyleColorsDark();
 
-            _font = _fonts->add_font("main", _settings.font);
-
-            _console_manager->initialise_ui();
-
             // Setup Platform/Renderer backends
             _imgui_backend->initialise();
+
+            _fonts->add_font("main", _settings.font);
+
+            _console_manager->initialise_ui();
         }
 
         _timer.update();
@@ -696,29 +696,7 @@ namespace trview
 
         if (_new_font.has_value())
         {
-            auto new_font = _fonts->add_font("main", *_new_font);
-            ImGuiIO& io = ImGui::GetIO();
-            _imgui_backend->rebuild_fonts();
-
-            bool revert = true;
-            if (new_font && new_font->Glyphs.Size > 0)
-            {
-                unsigned char* pixels;
-                int width, height;
-                io.Fonts->GetTexDataAsRGBA32(&pixels, &width, &height);
-                if (width > 0 && height > 0)
-                {
-                    _font = new_font;
-                    revert = false;
-                }
-            }
-
-            if (revert)
-            {
-                io.Fonts->Clear();
-                _font = _fonts->add_font("main", _settings.font);
-            }
-            else
+            if (_fonts->add_font("main", *_new_font))
             {
                 _settings.font = _new_font.value();
                 _viewer->set_settings(_settings);
@@ -729,7 +707,7 @@ namespace trview
         _imgui_backend->new_frame();
         ImGui::NewFrame();
 
-        ImGui::PushFont(_font);
+        ImGui::PushFont(_fonts->font("main"));
 
         _viewer->render_ui();
         _items_windows->render();

@@ -19,5 +19,6 @@ namespace trview
         /// Attempt to create a font based on the provided setting.
         /// </summary>
         virtual ImFont* add_font(const std::string& name, const FontSetting& setting) = 0;
+        virtual ImFont* font(const std::string& name) const = 0;
     };
 }
