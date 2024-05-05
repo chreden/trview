@@ -679,8 +679,7 @@ namespace trview
             _imgui_backend->initialise();
 
             _fonts->add_font("main", _settings.font);
-
-            _console_manager->initialise_ui();
+            _fonts->add_font("console", { .name = "Consolas", .filename = "consolas.ttf", .size = 12.0f });
         }
 
         _timer.update();

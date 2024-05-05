@@ -17,8 +17,8 @@ namespace trview
     {
     }
 
-    Console::Console(const std::shared_ptr<IDialogs>& dialogs, const std::weak_ptr<IPlugins>& plugins)
-        : _dialogs(dialogs), _plugins(plugins)
+    Console::Console(const std::shared_ptr<IDialogs>& dialogs, const std::weak_ptr<IPlugins>& plugins, const std::shared_ptr<IFonts>& fonts)
+        : _dialogs(dialogs), _plugins(plugins), _fonts(fonts)
     {
         if (auto plugins_ptr = _plugins.lock())
         {
@@ -59,9 +59,10 @@ namespace trview
     bool Console::render_console()
     {
         bool stay_open = true;
-        if (_font)
+        const auto font = _fonts->font("console");
+        if (font)
         {
-            ImGui::PushFont(_font);
+            ImGui::PushFont(font);
         }
         ImGui::PushStyleVar(ImGuiStyleVar_WindowMinSize, ImVec2(520, 400));
         if (ImGui::Begin(_id.c_str(), &stay_open, ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoNavInputs))
@@ -135,16 +136,11 @@ namespace trview
         }
         ImGui::End();
         ImGui::PopStyleVar();
-        if (_font)
+        if (font)
         {
             ImGui::PopFont();
         }
         return stay_open;
-    }
-
-    void Console::set_font(ImFont* font)
-    {
-        _font = font;
     }
 
     void Console::set_number(int32_t number)
