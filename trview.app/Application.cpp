@@ -678,8 +678,8 @@ namespace trview
             // Setup Platform/Renderer backends
             _imgui_backend->initialise();
 
-            _fonts->add_font("main", _settings.font);
-            _fonts->add_font("console", { .name = "Consolas", .filename = "consolas.ttf", .size = 12.0f });
+            _fonts->add_font("Default", _settings.font);
+            _fonts->add_font("Console", { .name = "Consolas", .filename = "consolas.ttf", .size = 12.0f });
         }
 
         _timer.update();
@@ -695,7 +695,7 @@ namespace trview
 
         if (_new_font.has_value())
         {
-            if (_fonts->add_font("main", *_new_font))
+            if (_fonts->add_font("Default", *_new_font))
             {
                 _settings.font = _new_font.value();
                 _viewer->set_settings(_settings);
@@ -706,7 +706,7 @@ namespace trview
         _imgui_backend->new_frame();
         ImGui::NewFrame();
 
-        ImGui::PushFont(_fonts->font("main"));
+        ImGui::PushFont(_fonts->font("Default"));
 
         _viewer->render_ui();
         _items_windows->render();

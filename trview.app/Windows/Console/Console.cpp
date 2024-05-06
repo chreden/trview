@@ -59,7 +59,7 @@ namespace trview
     bool Console::render_console()
     {
         bool stay_open = true;
-        const auto font = _fonts->font("console");
+        const auto font = _fonts->font("Console");
         if (font)
         {
             ImGui::PushFont(font);
