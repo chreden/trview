@@ -236,6 +236,12 @@ namespace
                 this->plugins_window_manager = std::move(plugins_window_manager);
                 return *this;
             }
+
+            test_module& with_fonts(std::shared_ptr<IFonts> fonts)
+            {
+                this->fonts = fonts;
+                return *this;
+            }
         };
         return test_module{};
     }
@@ -611,6 +617,25 @@ TEST(Application, MapColoursSetOnSettingsChanged)
         .build();
 
     viewer.on_settings(UserSettings());
+}
+
+TEST(Application, ResetFonts)
+{
+    auto fonts = mock_shared<MockFonts>();
+    EXPECT_CALL(*fonts, add_font(std::string("Console"), 
+        testing::AllOf(testing::Field(&FontSetting::name, testing::Eq("Consolas")),
+                       testing::Field(&FontSetting::filename, testing::Eq("consola.ttf")),
+                       testing::Field(&FontSetting::size, testing::Eq(12)))));
+    EXPECT_CALL(*fonts, add_font(std::string("Default"),
+        testing::AllOf(testing::Field(&FontSetting::name, testing::Eq("Arial")),
+            testing::Field(&FontSetting::filename, testing::Eq("arial.ttf")),
+            testing::Field(&FontSetting::size, testing::Eq(12)))));
+
+    auto application = register_test_module()
+        .with_fonts(fonts)
+        .build();
+
+    application->process_message(WM_COMMAND, MAKEWPARAM(ID_WINDOWS_RESET_FONTS, 0), 0);
 }
 
 TEST(Application, ResetLayout)
