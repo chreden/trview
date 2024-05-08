@@ -64,6 +64,7 @@ namespace trview
                             ImGui::TableNextRow();
 
                             ImGui::TableNextColumn();
+                            ImGui::AlignTextToFramePadding();
                             ImGui::Text(font.first.c_str());
                             ImGui::TableNextColumn();
                             if (ImGui::BeginCombo(std::format("##{}", font.first).c_str(), font.second.name.c_str(), ImGuiComboFlags_WidthFitPreview))
