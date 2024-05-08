@@ -60,21 +60,12 @@ TEST(ConsoleManager, CreateConsoleKeyboardShortcut)
     auto manager = register_test_module().with_shortcuts(shortcuts).build();
 }
 
-TEST(ConsoleManager, InitialiseUiForwarded)
-{
-    auto window = mock_shared<MockConsole>();
-    EXPECT_CALL(*window, set_font).Times(2);
-    auto manager = register_test_module().with_window_source([&]() { return window; }).build();
-    manager->create_window();
-    manager->initialise_ui();
-}
-
 TEST(ConsoleManager, CreatedWindow)
 {
     auto window = mock_shared<MockConsole>();
-    EXPECT_CALL(*window, set_font).Times(1);
     auto manager = register_test_module().with_window_source([&]() { return window; }).build();
-    manager->create_window();
+    auto result = manager->create_window();
+    ASSERT_EQ(result.lock(), window);
 }
 
 TEST(ConsoleManager, CreateWindowSetsNumber)

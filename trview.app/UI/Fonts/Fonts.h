@@ -17,6 +17,7 @@ namespace trview
         std::vector<FontSetting> list_fonts() const override;
         ImFont* add_font(const std::string& name, const FontSetting& setting) override;
         ImFont* font(const std::string& name) const override;
+        std::unordered_map<std::string, FontSetting> fonts() const override;
     private:
         ImFont* add_font(const FontSetting& setting);
         void rebuild_fonts();

@@ -1,5 +1,6 @@
 #include "Fonts.h"
 #include <format>
+#include <ranges>
 
 namespace trview
 {
@@ -102,13 +103,20 @@ namespace trview
         return found == _fonts.end() ? nullptr : found->second.font;
     }
 
+    std::unordered_map<std::string, FontSetting> Fonts::fonts() const
+    {
+        return _fonts |
+            std::views::transform([](auto&& f) -> std::pair<std::string, FontSetting> { return { f.first, f.second.setting }; }) |
+            std::ranges::to<std::unordered_map>();
+    }
+
     ImFont* Fonts::add_font(const FontSetting& setting)
     {
         const std::string font_path = setting.filename.contains('\\') ?
             setting.filename :
             std::format("{}\\{}", _files->fonts_directory(), setting.filename);
         ImGuiIO& io = ImGui::GetIO();
-        return io.Fonts->AddFontFromFileTTF(font_path.c_str(), setting.size);
+        return io.Fonts->AddFontFromFileTTF(font_path.c_str(), static_cast<float>(setting.size));
     }
 
     void Fonts::rebuild_fonts()

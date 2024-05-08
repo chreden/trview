@@ -80,7 +80,7 @@ namespace trview
 
         Event<std::weak_ptr<ICameraSink>> on_camera_sink_selected;
 
-        Event<FontSetting> on_font;
+        Event<std::string, FontSetting> on_font;
 
         virtual CameraMode camera_mode() const = 0;
 

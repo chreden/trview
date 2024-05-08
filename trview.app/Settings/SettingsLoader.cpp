@@ -56,7 +56,7 @@ namespace trview
     {
         setting.name = read_attribute<std::string>(json, "name");
         setting.filename = read_attribute<std::string>(json, "filename");
-        setting.size = read_attribute<float>(json, "size");
+        setting.size = read_attribute<int>(json, "size");
     }
 
     SettingsLoader::SettingsLoader(const std::shared_ptr<IFiles>& files)
@@ -104,7 +104,7 @@ namespace trview
             read_attribute(json, settings.window_placement, "window_placement");
             read_attribute(json, settings.plugin_directories, "plugin_directories");
             read_attribute(json, settings.toggles, "toggles");
-            read_attribute(json, settings.font, "font");
+            read_attribute(json, settings.fonts, "fonts");
 
             settings.recent_files.resize(std::min<std::size_t>(settings.recent_files.size(), settings.max_recent_files));
         }
@@ -171,7 +171,7 @@ namespace trview
             }
             json["plugin_directories"] = settings.plugin_directories;
             json["toggles"] = settings.toggles;
-            json["font"] = settings.font;
+            json["fonts"] = settings.fonts;
             _files->save_file(file_path, json.dump());
         }
         catch (...)

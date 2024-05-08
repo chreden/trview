@@ -390,7 +390,6 @@ namespace trview
         _settings_window->set_fov(settings.fov);
         _settings_window->set_camera_sink_startup(settings.camera_sink_startup);
         _settings_window->set_plugin_directories(settings.plugin_directories);
-        _settings_window->set_font(settings.font);
         _camera_position->set_display_degrees(settings.camera_display_degrees);
         _map_renderer->set_colours(settings.map_colours);
         for (const auto& toggle : settings.toggles)

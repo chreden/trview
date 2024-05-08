@@ -550,7 +550,6 @@ TEST(Application, WindowManagersAndViewerRendered)
     EXPECT_CALL(camera_sink_window_manager, render).Times(1);
     auto [console_manager_ptr, console_manager] = create_mock<MockConsoleManager>();
     EXPECT_CALL(console_manager, render).Times(1);
-    EXPECT_CALL(console_manager, initialise_ui).Times(1);
     auto [plugins_window_manager_ptr, plugins_window_manager] = create_mock<MockPluginsWindowManager>();
     EXPECT_CALL(plugins_window_manager, render).Times(1);
     auto plugins = mock_shared<MockPlugins>();

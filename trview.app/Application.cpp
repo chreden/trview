@@ -279,7 +279,7 @@ namespace trview
                 _level->set_map_colours(settings.map_colours);
             }
         };
-        _token_store += _viewer->on_font += [this](auto&& font) { _new_font = font; };
+        _token_store += _viewer->on_font += [this](auto&& name, auto&& font) { _new_font = { name, font }; };
 
         _viewer->set_settings(_settings);
 
@@ -678,8 +678,10 @@ namespace trview
             // Setup Platform/Renderer backends
             _imgui_backend->initialise();
 
-            _fonts->add_font("Default", _settings.font);
-            _fonts->add_font("Console", { .name = "Consolas", .filename = "consolas.ttf", .size = 12.0f });
+            for (const auto& font : _settings.fonts)
+            {
+                _fonts->add_font(font.first, font.second);
+            }
         }
 
         _timer.update();
@@ -695,9 +697,9 @@ namespace trview
 
         if (_new_font.has_value())
         {
-            if (_fonts->add_font("Default", *_new_font))
+            if (_fonts->add_font(_new_font->first, _new_font->second))
             {
-                _settings.font = _new_font.value();
+                _settings.fonts[_new_font->first] = _new_font->second;
                 _viewer->set_settings(_settings);
             }
             _new_font.reset();

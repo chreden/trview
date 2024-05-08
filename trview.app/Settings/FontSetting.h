@@ -8,6 +8,6 @@ namespace trview
     {
         std::string name;
         std::string filename;
-        float       size;
+        int         size;
     };
 }

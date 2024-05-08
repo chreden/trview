@@ -20,5 +20,10 @@ namespace trview
         /// </summary>
         virtual ImFont* add_font(const std::string& name, const FontSetting& setting) = 0;
         virtual ImFont* font(const std::string& name) const = 0;
+        /// <summary>
+        /// Get all loaded fonts.
+        /// </summary>
+        /// <returns></returns>
+        virtual std::unordered_map<std::string, FontSetting> fonts() const = 0;
     };
 }
