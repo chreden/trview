@@ -28,6 +28,12 @@ namespace trview
             }
             return (INT_PTR)FALSE;
         }
+
+        void load_default_fonts(IFonts& fonts)
+        {
+            fonts.add_font("Default", { .name = "Arial", .filename = "arial.ttf", .size = 12 });
+            fonts.add_font("Console", { .name = "Consolas", .filename = "consola.ttf", .size = 12 });
+        }
     }
 
     IApplication::~IApplication()
@@ -174,6 +180,12 @@ namespace trview
                     case ID_WINDOWS_RESET_LAYOUT:
                     {
                         _imgui_backend->reset_layout();
+                        break;
+                    }
+                    case ID_WINDOWS_RESET_FONTS:
+                    {
+                        load_default_fonts(*_fonts);
+                        _settings.fonts = _fonts->fonts();
                         break;
                     }
                 }
