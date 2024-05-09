@@ -478,3 +478,22 @@ TEST(ViewerUI, SetPluginDirectoriesUpdatesSettingsWindow)
     ui->set_settings(settings);
 }
 
+
+TEST(ViewerUI, FontForwarded)
+{
+    auto [settings_window_ptr, settings_window] = create_mock<MockSettingsWindow>();
+    auto ui = register_test_module().with_settings_window(std::move(settings_window_ptr)).build();
+
+    std::optional<std::pair<std::string, FontSetting>> raised;
+    auto token = ui->on_font += [&](auto&& key, auto&& value) { raised = { key, value }; };
+
+    settings_window.on_font("test", { .name = "Test", .filename = "test.ttf", .size = 100 });
+
+    ASSERT_EQ(raised.has_value(), true);
+    ASSERT_EQ(raised->first, "test");
+    ASSERT_EQ(raised->second.name, "Test");
+    ASSERT_EQ(raised->second.filename, "test.ttf");
+    ASSERT_EQ(raised->second.size, 100);
+}
+
+

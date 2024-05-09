@@ -1082,3 +1082,20 @@ TEST(Viewer, SectorHighlightForwarded)
     auto sector = mock_shared<MockSector>()->with_room(room);
     ui.on_sector_hover(sector);
 }
+
+TEST(Viewer, FontForwarded)
+{
+    auto [ui_ptr, ui] = create_mock<MockViewerUI>();
+    auto viewer = register_test_module().with_ui(std::move(ui_ptr)).build();
+
+    std::optional<std::pair<std::string, FontSetting>> raised;
+    auto token = viewer->on_font += [&](auto&& key, auto&& value) { raised = { key, value }; };
+
+    ui.on_font("test", { .name = "Test", .filename = "test.ttf", .size = 100 });
+
+    ASSERT_EQ(raised.has_value(), true);
+    ASSERT_EQ(raised->first, "test");
+    ASSERT_EQ(raised->second.name, "Test");
+    ASSERT_EQ(raised->second.filename, "test.ttf");
+    ASSERT_EQ(raised->second.size, 100);
+}
