@@ -1082,3 +1082,32 @@ TEST(Viewer, SectorHighlightForwarded)
     auto sector = mock_shared<MockSector>()->with_room(room);
     ui.on_sector_hover(sector);
 }
+
+TEST(Viewer, AlternateGroupForwarded)
+{
+    auto level = mock_shared<MockLevel>();
+    EXPECT_CALL(*level, set_alternate_group(6, true)).Times(1);
+    ON_CALL(*level, alternate_groups).WillByDefault(Return(std::set<uint32_t>{ 6 }));
+
+    auto [ui_ptr, ui] = create_mock<MockViewerUI>();
+    EXPECT_CALL(ui, set_alternate_group(6, true)).Times(1);
+
+    auto viewer = register_test_module().with_ui(std::move(ui_ptr)).build();
+    viewer->open(level, ILevel::OpenMode::Full);
+
+    ui.on_alternate_group(6, true);
+}
+
+TEST(Viewer, InvalidAlternateGroupNotForwarded)
+{
+    auto level = mock_shared<MockLevel>();
+    EXPECT_CALL(*level, set_alternate_group).Times(0);
+
+    auto [ui_ptr, ui] = create_mock<MockViewerUI>();
+    EXPECT_CALL(ui, set_alternate_group).Times(0);
+
+    auto viewer = register_test_module().with_ui(std::move(ui_ptr)).build();
+    viewer->open(level, ILevel::OpenMode::Full);
+
+    ui.on_alternate_group(6, true);
+}
