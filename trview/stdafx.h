@@ -10,7 +10,3 @@
 #define NOMINMAX
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
-
-#define IMGUI_DEFINE_MATH_OPERATORS
-#include <external/imgui/imgui.h>
-#include <external/imgui/imstb_truetype.h>
