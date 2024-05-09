@@ -187,7 +187,6 @@
     </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="..\external\imgui\imstb_truetype.h" />
     <ClInclude Include="stdafx.h" />
   </ItemGroup>
   <ItemGroup>
