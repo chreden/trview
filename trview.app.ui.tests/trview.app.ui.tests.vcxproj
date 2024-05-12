@@ -76,7 +76,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions);IMGUI_USER_CONFIG="trview_imconfig.h"</PreprocessorDefinitions>
       <ConformanceMode>Default</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)external\shared;$(SolutionDir)external\imgui_test_engine;$(SolutionDir)external\imgui;$(SolutionDir)external\imgui\backends;$(ProjectDir);$(SolutionDir);$(SolutionDir)external\DirectXTK\Inc;$(SolutionDir)external\googletest\include;$(SolutionDir)external\googlemock\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)external\shared;$(SolutionDir)external\imgui_test_engine;$(SolutionDir)external\imgui;$(SolutionDir)external\imgui\backends;$(ProjectDir);$(SolutionDir);$(SolutionDir)external\DirectXTK\Inc;$(SolutionDir)external\googletest\include;$(SolutionDir)external\googlemock\include;$(SolutionDir)external\freetype\include</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <PrecompiledHeader>Use</PrecompiledHeader>
@@ -97,7 +97,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions);IMGUI_USER_CONFIG="trview_imconfig.h"</PreprocessorDefinitions>
       <ConformanceMode>Default</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)external\shared;$(SolutionDir)external\imgui_test_engine;$(SolutionDir)external\imgui;$(SolutionDir)external\imgui\backends;$(ProjectDir);$(SolutionDir);$(SolutionDir)external\DirectXTK\Inc;$(SolutionDir)external\googletest\include;$(SolutionDir)external\googlemock\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)external\shared;$(SolutionDir)external\imgui_test_engine;$(SolutionDir)external\imgui;$(SolutionDir)external\imgui\backends;$(ProjectDir);$(SolutionDir);$(SolutionDir)external\DirectXTK\Inc;$(SolutionDir)external\googletest\include;$(SolutionDir)external\googlemock\include;$(SolutionDir)external\freetype\include</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <PrecompiledHeader>Use</PrecompiledHeader>
@@ -119,7 +119,7 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions);IMGUI_USER_CONFIG="trview_imconfig.h"</PreprocessorDefinitions>
       <ConformanceMode>Default</ConformanceMode>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>$(SolutionDir)external\shared;$(SolutionDir)external\imgui_test_engine;$(SolutionDir)external\imgui;$(SolutionDir)external\imgui\backends;$(ProjectDir);$(SolutionDir);$(SolutionDir)external\DirectXTK\Inc;$(SolutionDir)external\googletest\include;$(SolutionDir)external\googlemock\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)external\shared;$(SolutionDir)external\imgui_test_engine;$(SolutionDir)external\imgui;$(SolutionDir)external\imgui\backends;$(ProjectDir);$(SolutionDir);$(SolutionDir)external\DirectXTK\Inc;$(SolutionDir)external\googletest\include;$(SolutionDir)external\googlemock\include;$(SolutionDir)external\freetype\include</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <PrecompiledHeader>Use</PrecompiledHeader>
@@ -140,7 +140,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions);IMGUI_USER_CONFIG="trview_imconfig.h"</PreprocessorDefinitions>
       <ConformanceMode>Default</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)external\shared;$(SolutionDir)external\imgui_test_engine;$(SolutionDir)external\imgui;$(SolutionDir)external\imgui\backends;$(ProjectDir);$(SolutionDir);$(SolutionDir)external\DirectXTK\Inc;$(SolutionDir)external\googletest\include;$(SolutionDir)external\googlemock\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)external\shared;$(SolutionDir)external\imgui_test_engine;$(SolutionDir)external\imgui;$(SolutionDir)external\imgui\backends;$(ProjectDir);$(SolutionDir);$(SolutionDir)external\DirectXTK\Inc;$(SolutionDir)external\googletest\include;$(SolutionDir)external\googlemock\include;$(SolutionDir)external\freetype\include</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <PrecompiledHeader>Use</PrecompiledHeader>
@@ -218,6 +218,12 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="..\external\imgui\misc\freetype\imgui_freetype.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
     <ClCompile Include="..\external\shared\imgui_app.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
@@ -255,6 +261,9 @@
   <ItemGroup>
     <ProjectReference Include="..\external\DirectXTK\DirectXTK_Desktop.vcxproj">
       <Project>{a11566d3-4081-42c9-94c5-f4057edd9d50}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\external\freetype\builds\windows\vc2010\freetype.vcxproj">
+      <Project>{78b079bd-9fc7-4b9e-b4a6-96da0f00248b}</Project>
     </ProjectReference>
     <ProjectReference Include="..\external\googlemock\googlemock.vcxproj">
       <Project>{6e37091e-954c-4654-9b42-5980410791f4}</Project>

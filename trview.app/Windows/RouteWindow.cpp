@@ -263,7 +263,8 @@ namespace trview
                     if (!is_rando)
                     {
                         const std::string save_text = waypoint->has_save() ? "SAVEGAME.0" : Names::attach_save.c_str();
-                        if (ImGui::Button(save_text.c_str(), ImVec2(-24, 18)))
+
+                        if (ImGui::Button(save_text.c_str(), ImVec2(-1, 0)))
                         {
                             if (!waypoint->has_save())
                             {
@@ -302,14 +303,15 @@ namespace trview
                                 }
                             }
                         }
-                        ImGui::SameLine();
-                        if (ImGui::Button(Names::clear_save.c_str(), ImVec2(-1, 0)))
+
+                        if (ImGui::BeginPopupContextItem())
                         {
-                            if (waypoint->has_save())
+                            if (ImGui::MenuItem("Remove", nullptr, nullptr, waypoint->has_save()))
                             {
                                 waypoint->set_save_file({});
                                 route->set_unsaved(true);
                             }
+                            ImGui::EndPopup();
                         }
                     }
 

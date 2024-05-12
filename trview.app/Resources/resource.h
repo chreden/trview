@@ -47,6 +47,7 @@
 #define ID_WINDOWS_CAMERA_SINK          33023
 #define ID_WINDOWS_CONSOLE              33024
 #define ID_WINDOWS_PLUGINS              33025
+#define ID_WINDOWS_RESET_FONTS          33026
 
 // Next default values for new objects
 // 

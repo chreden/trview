@@ -106,6 +106,8 @@ namespace trview
 
         Event<std::weak_ptr<ITrigger>> on_select_trigger;
 
+        Event<std::string, FontSetting> on_font;
+
         /// Render the UI.
         virtual void render() = 0;
 

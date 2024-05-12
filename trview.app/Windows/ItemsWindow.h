@@ -9,6 +9,7 @@
 #include "IItemsWindow.h"
 #include "../Elements/IItem.h"
 #include "../Track/Track.h"
+#include "ColumnSizer.h"
 
 namespace trview
 {
@@ -47,6 +48,7 @@ namespace trview
         bool render_items_window();
         void set_local_selected_item(std::weak_ptr<IItem> item);
         void setup_filters();
+        void calculate_column_widths();
 
         std::string _id{ "Items 0" };
         std::vector<std::weak_ptr<IItem>> _all_items;
@@ -67,5 +69,7 @@ namespace trview
         std::function<bool(uint32_t)> _model_checker;
         bool _force_sort{ false };
         Track<Type::Room> _track;
+
+        ColumnSizer _column_sizer;
     };
 }

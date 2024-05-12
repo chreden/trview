@@ -29,6 +29,7 @@
 #include "Tools/IMeasure.h"
 #include "UI/ICameraControls.h"
 #include "UI/IContextMenu.h"
+#include "UI/IFonts.h"
 #include "UI/IImGuiBackend.h"
 #include "UI/IMapRenderer.h"
 #include "UI/ISettingsWindow.h"
@@ -148,6 +149,9 @@ namespace trview
 
         MockContextMenu::MockContextMenu() {}
         MockContextMenu::~MockContextMenu() {}
+
+        MockFonts::MockFonts() {}
+        MockFonts::~MockFonts() {}
 
         MockImGuiBackend::MockImGuiBackend() {}
         MockImGuiBackend::~MockImGuiBackend() {}

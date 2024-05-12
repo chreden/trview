@@ -34,6 +34,13 @@ namespace trview
         ImGui_ImplWin32_NewFrame();
     }
 
+    void DX11ImGuiBackend::rebuild_fonts()
+    {
+        auto& io = ImGui::GetIO();
+        io.Fonts->Build();
+        ImGui_ImplDX11_InvalidateDeviceObjects();
+    }
+
     void DX11ImGuiBackend::render()
     {
         ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());

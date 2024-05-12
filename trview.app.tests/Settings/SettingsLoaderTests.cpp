@@ -710,3 +710,25 @@ TEST(SettingsLoader, TogglesLoaded)
     const std::unordered_map<std::string, bool> expected{ { "test1", false }, { "test2", true } };
     ASSERT_EQ(settings.toggles, expected);
 }
+
+TEST(SettingsLoader, FontsLoaded)
+{
+    auto loader = setup_setting("{\"fonts\":{\"Default\":{\"name\":\"Tahoma\",\"filename\":\"tahoma.ttf\",\"size\":10}}}");
+    auto settings = loader->load_user_settings();
+    auto def = settings.fonts.find("Default");
+    ASSERT_TRUE(def != settings.fonts.end());
+    ASSERT_EQ(def->first, "Default");
+    ASSERT_EQ(def->second.name, "Tahoma");
+    ASSERT_EQ(def->second.filename, "tahoma.ttf");
+    ASSERT_EQ(def->second.size, 10);
+}
+
+TEST(SettingsLoader, FontsSaved)
+{
+    std::string output;
+    auto loader = setup_save_setting(output);
+    UserSettings settings;
+    settings.fonts = { { "Default", {.name = "Tahoma", .filename = "tahoma.ttf", .size = 10 } } };
+    loader->save_user_settings(settings);
+    EXPECT_THAT(output, HasSubstr("\"fonts\":{\"Default\":{\"filename\":\"tahoma.ttf\",\"name\":\"Tahoma\",\"size\":10}}"));
+}

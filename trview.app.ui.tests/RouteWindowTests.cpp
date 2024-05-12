@@ -240,7 +240,8 @@ void register_route_window_tests(ImGuiTestEngine* engine)
             context.ptr = register_test_module().build();
             context.ptr->set_route(route);
 
-            ctx->ItemClick("/**/X");
+            ctx->ItemClick("/**/SAVEGAME.0", ImGuiMouseButton_Right);
+            ctx->ItemClick("/**/Remove");
 
             IM_CHECK_EQ(Mock::VerifyAndClearExpectations(route.get()), true);
             IM_CHECK_EQ(Mock::VerifyAndClearExpectations(waypoint.get()), true);

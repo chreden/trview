@@ -95,6 +95,7 @@ namespace trview
     {
         _all_camera_sinks = camera_sinks;
         _force_sort = true;
+        calculate_column_widths();
     }
 
     bool CameraSinkWindow::render_camera_sink_window()
@@ -137,7 +138,8 @@ namespace trview
 
     void CameraSinkWindow::render_list()
     {
-        if (ImGui::BeginChild(Names::list_panel.c_str(), ImVec2(230, 0), true, ImGuiWindowFlags_NoScrollbar))
+        calculate_column_widths();
+        if (ImGui::BeginChild(Names::list_panel.c_str(), ImVec2(0, 0), ImGuiChildFlags_AlwaysAutoResize | ImGuiChildFlags_AutoResizeX, ImGuiWindowFlags_NoScrollbar))
         {
             _filters.render();
             ImGui::SameLine();
@@ -151,12 +153,12 @@ namespace trview
             }
 
             RowCounter counter{ "camera/sinks", _all_camera_sinks.size() };
-            if (ImGui::BeginTable(Names::camera_sink_list.c_str(), 4, ImGuiTableFlags_SizingFixedFit | ImGuiTableFlags_Sortable | ImGuiTableFlags_ScrollY, ImVec2(-1, -counter.height())))
+            if (ImGui::BeginTable(Names::camera_sink_list.c_str(), 4, ImGuiTableFlags_Sortable | ImGuiTableFlags_ScrollY, ImVec2(0, -counter.height())))
             {
-                ImGui::TableSetupColumn("#");
-                ImGui::TableSetupColumn("Room");
-                ImGui::TableSetupColumn("Type");
-                ImGui::TableSetupColumn("Hide");
+                ImGui::TableSetupColumn("#", ImGuiTableColumnFlags_WidthFixed, _column_sizer.size(0));
+                ImGui::TableSetupColumn("Room", ImGuiTableColumnFlags_WidthFixed, _column_sizer.size(1));
+                ImGui::TableSetupColumn("Type", ImGuiTableColumnFlags_WidthFixed, _column_sizer.size(2));
+                ImGui::TableSetupColumn("Hide", ImGuiTableColumnFlags_WidthFixed, _column_sizer.size(3));
                 ImGui::TableSetupScrollFreeze(1, 1);
                 ImGui::TableHeadersRow();
 
@@ -407,5 +409,31 @@ namespace trview
         // Sink:
         _filters.add_getter<float>("Strength", [](auto&& camera_sink) { return static_cast<float>(camera_sink.strength()); }, is_sink);
         _filters.add_getter<float>("Box Index", [](auto&& camera_sink) { return static_cast<float>(camera_sink.flag()); }, is_sink);
+    }
+
+    void CameraSinkWindow::calculate_column_widths()
+    {
+        _column_sizer.reset();
+        _column_sizer.measure("#__", 0);
+        _column_sizer.measure("Room__", 1);
+        _column_sizer.measure("Type__", 2);
+        _column_sizer.measure("Hide____", 3);
+
+        for (const auto& camera_sink : _all_camera_sinks)
+        {
+            if (const auto camera_sink_ptr = camera_sink.lock())
+            {
+                _column_sizer.measure(std::to_string(camera_sink_ptr->number()), 0);
+                if (camera_sink_ptr->type() == ICameraSink::Type::Camera)
+                {
+                    _column_sizer.measure(std::to_string(primary_room(*camera_sink_ptr)), 1);
+                }
+                else
+                {
+                    _column_sizer.measure(inferred_rooms_text(camera_sink_ptr->inferred_rooms()), 1);
+                }
+                _column_sizer.measure(to_string(camera_sink_ptr->type()), 2);
+            }
+        }
     }
 }

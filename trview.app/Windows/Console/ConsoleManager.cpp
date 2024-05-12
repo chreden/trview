@@ -21,7 +21,6 @@ namespace trview
     std::weak_ptr<IConsole> ConsoleManager::create_window()
     {
         auto window = _console_source();
-        window->set_font(_font);
         return add_window(window);
     }
 
@@ -32,19 +31,5 @@ namespace trview
             create_window();
         }
         return {};
-    }
-
-    void ConsoleManager::initialise_ui()
-    {
-        auto context = ImGui::GetCurrentContext();
-        if (context)
-        {
-            _font = context->IO.Fonts->AddFontFromFileTTF((_files->fonts_directory() + "\\Consola.ttf").c_str(), 14.0f);
-        }
-
-        for (auto& window : _windows)
-        {
-            window.second->set_font(_font);
-        }
     }
 }

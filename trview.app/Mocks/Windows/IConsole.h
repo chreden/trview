@@ -12,7 +12,6 @@ namespace trview
             virtual ~MockConsole();
             MOCK_METHOD(void, render, (), (override));
             MOCK_METHOD(void, set_number, (int32_t number), (override));
-            MOCK_METHOD(void, set_font, (ImFont* font), (override));
         };
     }
 }

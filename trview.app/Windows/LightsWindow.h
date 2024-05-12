@@ -5,6 +5,7 @@
 #include "ILightsWindow.h"
 #include "../Filters/Filters.h"
 #include "../Track/Track.h"
+#include "ColumnSizer.h"
 
 namespace trview
 {
@@ -38,6 +39,7 @@ namespace trview
         void render_light_details();
         bool render_lights_window();
         void setup_filters();
+        void calculate_column_widths();
 
         std::vector<std::weak_ptr<ILight>> _all_lights;
         std::shared_ptr<IClipboard> _clipboard;
@@ -53,5 +55,6 @@ namespace trview
         Filters<ILight> _filters;
         bool _force_sort{ false };
         Track<Type::Room> _track;
+        ColumnSizer _column_sizer;
     };
 }

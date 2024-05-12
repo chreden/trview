@@ -28,6 +28,12 @@ namespace trview
             }
             return (INT_PTR)FALSE;
         }
+
+        void load_default_fonts(IFonts& fonts)
+        {
+            fonts.add_font("Default", { .name = "Arial", .filename = "arial.ttf", .size = 12 });
+            fonts.add_font("Console", { .name = "Consolas", .filename = "consola.ttf", .size = 12 });
+        }
     }
 
     IApplication::~IApplication()
@@ -50,7 +56,7 @@ namespace trview
         std::shared_ptr<IStartupOptions> startup_options,
         std::shared_ptr<IDialogs> dialogs,
         std::shared_ptr<IFiles> files,
-        std::unique_ptr<IImGuiBackend> imgui_backend,
+        std::shared_ptr<IImGuiBackend> imgui_backend,
         std::unique_ptr<ILightsWindowManager> lights_window_manager,
         std::unique_ptr<ILogWindowManager> log_window_manager,
         std::unique_ptr<ITexturesWindowManager> textures_window_manager,
@@ -58,14 +64,15 @@ namespace trview
         std::unique_ptr<IConsoleManager> console_manager,
         std::shared_ptr<IPlugins> plugins,
         std::unique_ptr<IPluginsWindowManager> plugins_window_manager,
-        const IRandomizerRoute::Source& randomizer_route_source)
+        const IRandomizerRoute::Source& randomizer_route_source,
+        std::shared_ptr<IFonts> fonts)
         : MessageHandler(application_window), _instance(GetModuleHandle(nullptr)),
         _file_menu(std::move(file_menu)), _update_checker(std::move(update_checker)), _view_menu(window()), _settings_loader(settings_loader), _trlevel_source(trlevel_source),
         _viewer(std::move(viewer)), _route_source(route_source), _shortcuts(shortcuts), _items_windows(std::move(items_window_manager)),
         _triggers_windows(std::move(triggers_window_manager)), _route_window(std::move(route_window_manager)), _rooms_windows(std::move(rooms_window_manager)), _level_source(level_source),
         _dialogs(dialogs), _files(files), _timer(default_time_source()), _imgui_backend(std::move(imgui_backend)), _lights_windows(std::move(lights_window_manager)), _log_windows(std::move(log_window_manager)),
         _textures_windows(std::move(textures_window_manager)), _camera_sink_windows(std::move(camera_sink_window_manager)), _console_manager(std::move(console_manager)),
-        _plugins(plugins), _plugins_windows(std::move(plugins_window_manager)), _randomizer_route_source(randomizer_route_source)
+        _plugins(plugins), _plugins_windows(std::move(plugins_window_manager)), _randomizer_route_source(randomizer_route_source), _fonts(fonts)
     {
         SetWindowLongPtr(window(), GWLP_USERDATA, reinterpret_cast<LONG_PTR>(_imgui_backend.get()));
 
@@ -175,6 +182,12 @@ namespace trview
                         _imgui_backend->reset_layout();
                         break;
                     }
+                    case ID_WINDOWS_RESET_FONTS:
+                    {
+                        load_default_fonts(*_fonts);
+                        _settings.fonts = _fonts->fonts();
+                        break;
+                    }
                 }
                 break;
             }
@@ -278,6 +291,8 @@ namespace trview
                 _level->set_map_colours(settings.map_colours);
             }
         };
+        _token_store += _viewer->on_font += [this](auto&& name, auto&& font) { _new_font = { name, font }; };
+
         _viewer->set_settings(_settings);
 
         auto filename = startup_options.filename();
@@ -672,12 +687,13 @@ namespace trview
             // Setup Dear ImGui style
             ImGui::StyleColorsDark();
 
-            _font = io.Fonts->AddFontFromFileTTF((_files->fonts_directory() + "\\Arial.ttf").c_str(), 12.0f);
-
-            _console_manager->initialise_ui();
-
             // Setup Platform/Renderer backends
             _imgui_backend->initialise();
+
+            for (const auto& font : _settings.fonts)
+            {
+                _fonts->add_font(font.first, font.second);
+            }
         }
 
         _timer.update();
@@ -691,10 +707,20 @@ namespace trview
 
         _viewer->render();
 
+        if (_new_font.has_value())
+        {
+            if (_fonts->add_font(_new_font->first, _new_font->second))
+            {
+                _settings.fonts[_new_font->first] = _new_font->second;
+                _viewer->set_settings(_settings);
+            }
+            _new_font.reset();
+        }
+
         _imgui_backend->new_frame();
         ImGui::NewFrame();
 
-        ImGui::PushFont(_font);
+        ImGui::PushFont(_fonts->font("Default"));
 
         _viewer->render_ui();
         _items_windows->render();

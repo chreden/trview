@@ -10,6 +10,5 @@ namespace trview
         virtual ~IConsoleManager() = 0;
         virtual void render() = 0;
         virtual std::weak_ptr<IConsole> create_window() = 0;
-        virtual void initialise_ui() = 0;
     };
 }

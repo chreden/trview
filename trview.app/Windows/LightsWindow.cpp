@@ -47,6 +47,7 @@ namespace trview
         _all_lights = lights;
         setup_filters();
         _force_sort = true;
+        calculate_column_widths();
     }
 
     void LightsWindow::set_selected_light(const std::weak_ptr<ILight>& light)
@@ -79,7 +80,8 @@ namespace trview
 
     void LightsWindow::render_lights_list() 
     {
-        if (ImGui::BeginChild(Names::light_list_panel.c_str(), ImVec2(230, 0), true, ImGuiWindowFlags_NoScrollbar))
+        calculate_column_widths();
+        if (ImGui::BeginChild(Names::light_list_panel.c_str(), ImVec2(0, 0), ImGuiChildFlags_AutoResizeX, ImGuiWindowFlags_NoScrollbar))
         {
             _filters.render();
             ImGui::SameLine();
@@ -93,12 +95,12 @@ namespace trview
             }
 
             RowCounter counter{ "lights", _all_lights.size() };
-            if (ImGui::BeginTable(Names::lights_listbox.c_str(), 4, ImGuiTableFlags_Sortable | ImGuiTableFlags_ScrollY | ImGuiTableFlags_SizingFixedFit, ImVec2(-1, -counter.height())))
+            if (ImGui::BeginTable(Names::lights_listbox.c_str(), 4, ImGuiTableFlags_Sortable | ImGuiTableFlags_ScrollY, ImVec2(0, -counter.height())))
             {
-                ImGui::TableSetupColumn("#");
-                ImGui::TableSetupColumn("Room");
-                ImGui::TableSetupColumn("Type");
-                ImGui::TableSetupColumn("Hide");
+                ImGui::TableSetupColumn("#", ImGuiTableColumnFlags_WidthFixed, _column_sizer.size(0));
+                ImGui::TableSetupColumn("Room", ImGuiTableColumnFlags_WidthFixed, _column_sizer.size(1));
+                ImGui::TableSetupColumn("Type", ImGuiTableColumnFlags_WidthFixed, _column_sizer.size(2));
+                ImGui::TableSetupColumn("Hide", ImGuiTableColumnFlags_WidthFixed, _column_sizer.size(3));
                 ImGui::TableSetupScrollFreeze(1, 1);
                 ImGui::TableHeadersRow();
 
@@ -340,6 +342,25 @@ namespace trview
             _filters.add_getter<float>("Rad In", [](auto&& light) { return rad_in(light); }, has_rad_in);
             _filters.add_getter<float>("Rad Out", [](auto&& light) { return rad_out(light); }, has_rad_out);
             _filters.add_getter<float>("Range", [](auto&& light) { return range(light); }, has_range);
+        }
+    }
+
+    void LightsWindow::calculate_column_widths()
+    {
+        _column_sizer.reset();
+        _column_sizer.measure("#__", 0);
+        _column_sizer.measure("Room__", 1);
+        _column_sizer.measure("Type__", 2);
+        _column_sizer.measure("Hide____", 3);
+
+        for (const auto& light : _all_lights)
+        {
+            if (auto light_ptr = light.lock())
+            {
+                _column_sizer.measure(std::format("{0}", light_ptr->number()), 0);
+                _column_sizer.measure(std::to_string(light_room(*light_ptr)), 1);
+                _column_sizer.measure(light_type_name(light_ptr->type()), 2);
+            }
         }
     }
 }

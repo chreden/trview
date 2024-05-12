@@ -936,7 +936,7 @@ https://github.com/ocornut/imgui
 
 The MIT License (MIT)
 
-Copyright (c) 2014-2022 Omar Cornut
+Copyright (c) 2014-2024 Omar Cornut
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -955,3 +955,14 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+
+## FreeType
+
+https://github.com/freetype/freetype
+
+[The FreeType Project LICENSE](external/freetype/FTL.txt)
+
+
+
+Portions of this software are copyright © 2023 The FreeType
+Project (www.freetype.org).  All rights reserved.

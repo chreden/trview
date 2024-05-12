@@ -85,6 +85,8 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClCompile Include="Plugins\Plugin.cpp" />
     <ClCompile Include="Plugins\Plugins.cpp" />
     <ClCompile Include="Routing\RandomizerRoute.cpp" />
+    <ClInclude Include="Mocks\UI\IFonts.h" />
+    <ClInclude Include="Settings\FontSetting.h" />
     <ClCompile Include="trview_imgui.cpp" />
     <ClCompile Include="Lua\Lua.cpp" />
     <ClCompile Include="Menus\AlternateGroupToggler.cpp" />
@@ -127,6 +129,8 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClInclude Include="Lua\Route\Lua_Route.h" />
     <ClInclude Include="Lua\Route\Lua_Waypoint.h" />
     <ClInclude Include="Lua\Vector3.h" />
+    <ClCompile Include="UI\Fonts\Fonts.cpp" />
+    <ClCompile Include="Windows\ColumnSizer.cpp" />
     <ClCompile Include="Windows\Console\Console.cpp" />
     <ClCompile Include="Windows\Console\ConsoleManager.cpp" />
     <ClInclude Include="Mocks\IApplication.h" />
@@ -183,7 +187,10 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClCompile Include="Windows\TriggersWindowManager.cpp" />
     <ClCompile Include="Windows\Viewer.cpp" />
     <ClCompile Include="Windows\WindowResizer.cpp" />
+    <ClInclude Include="UI\Fonts\Fonts.h" />
+    <ClInclude Include="UI\Fonts\IFonts.h" />
     <ClInclude Include="UserCancelledException.h" />
+    <ClInclude Include="Windows\ColumnSizer.h" />
     <ClInclude Include="Windows\Console\Console.h" />
     <ClInclude Include="Windows\Console\ConsoleManager.h" />
     <ClInclude Include="Windows\Console\IConsole.h" />

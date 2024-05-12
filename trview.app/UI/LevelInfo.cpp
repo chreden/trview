@@ -31,10 +31,12 @@ namespace trview
 
         if (ImGui::Begin("LevelInfo", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_AlwaysAutoResize))
         {
-            ImGui::Image(get_version_image(_version).view().Get(), ImVec2(16, 16));
-            ImGui::SameLine();
             const float previous = ImGui::GetCursorPosY();
-            ImGui::SetCursorPosY(ImGui::GetWindowHeight() * 0.5f - ImGui::CalcTextSize(_name.c_str()).y * 0.5f);
+            const float text_size = ImGui::CalcTextSize(_name.c_str()).y;
+            ImGui::SetCursorPosY(ImGui::GetWindowHeight() * 0.5f - text_size * 0.5f);
+            ImGui::Image(get_version_image(_version).view().Get(), ImVec2(text_size, text_size));
+            ImGui::SameLine();
+            ImGui::SetCursorPosY(ImGui::GetWindowHeight() * 0.5f - text_size * 0.5f);
             ImGui::Text(_name.c_str());
             ImGui::SameLine();
             ImGui::SetCursorPosY(previous);

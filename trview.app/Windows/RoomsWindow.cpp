@@ -76,6 +76,18 @@ namespace trview
         {
             return 1.0f - static_cast<float>(ambient) / static_cast<float>(0x1fff);
         }
+
+        std::size_t item_count(std::vector<std::weak_ptr<IItem>>& items, const IRoom& room)
+        {
+            return std::ranges::count_if(items, [&room](const auto& item)
+                {
+                    if (auto i = item.lock())
+                    {
+                        return item_room(i) == room.number();
+                    }
+                    return false;
+                });
+        }
     }
 
     IRoomsWindow::~IRoomsWindow()
@@ -173,6 +185,7 @@ namespace trview
         generate_filters();
         _force_sort = true;
         set_selected_sector(nullptr);
+        calculate_column_widths();
     }
 
     void RoomsWindow::set_selected_item(const std::weak_ptr<IItem>& item)
@@ -274,7 +287,8 @@ namespace trview
 
     void RoomsWindow::render_rooms_list()
     {
-        if (ImGui::BeginChild(Names::rooms_panel.c_str(), ImVec2(270, 0), true, ImGuiWindowFlags_NoScrollbar))
+        calculate_column_widths();
+        if (ImGui::BeginChild(Names::rooms_panel.c_str(), ImVec2(0, 0), ImGuiChildFlags_AutoResizeX, ImGuiWindowFlags_NoScrollbar))
         {
             _filters.render();
 
@@ -289,27 +303,15 @@ namespace trview
             }
 
             RowCounter counter{ "rooms", _all_rooms.size() };
-            if (ImGui::BeginTable(Names::rooms_list.c_str(), 5, ImGuiTableFlags_Sortable | ImGuiTableFlags_ScrollY | ImGuiTableFlags_SizingFixedFit, ImVec2(-1, -counter.height())))
+            if (ImGui::BeginTable(Names::rooms_list.c_str(), 5, ImGuiTableFlags_Sortable | ImGuiTableFlags_ScrollY, ImVec2(0, -counter.height())))
             {
-                ImGui::TableSetupColumn("#");
-                ImGui::TableSetupColumn("Items");
-                ImGui::TableSetupColumn("Triggers");
-                ImGui::TableSetupColumn("Statics");
-                ImGui::TableSetupColumn("Hide");
+                ImGui::TableSetupColumn("#", ImGuiTableColumnFlags_WidthFixed, _column_sizer.size(0));
+                ImGui::TableSetupColumn("Items", ImGuiTableColumnFlags_WidthFixed, _column_sizer.size(1));
+                ImGui::TableSetupColumn("Triggers", ImGuiTableColumnFlags_WidthFixed, _column_sizer.size(2));
+                ImGui::TableSetupColumn("Statics", ImGuiTableColumnFlags_WidthFixed, _column_sizer.size(3));
+                ImGui::TableSetupColumn("Hide", ImGuiTableColumnFlags_WidthFixed, _column_sizer.size(4));
                 ImGui::TableSetupScrollFreeze(1, 1);
                 ImGui::TableHeadersRow();
-
-                auto item_count = [&](const IRoom& room)
-                {
-                    return std::count_if(_all_items.begin(), _all_items.end(), [&room](const auto& item)
-                        {
-                            if (auto i = item.lock())
-                            {
-                                return item_room(i) == room.number();
-                            }
-                            return false;
-                        });
-                };
 
                 auto trigger_count = [&](const IRoom& room)
                 {
@@ -321,7 +323,7 @@ namespace trview
                 imgui_sort_weak(_all_rooms,
                     {
                         [](auto&& l, auto&& r) { return l.number() < r.number(); },
-                        [&](auto&& l, auto&& r) { return item_count(l) < item_count(r); },
+                        [&](auto&& l, auto&& r) { return item_count(_all_items, l) < item_count(_all_items, r); },
                         [&](auto&& l, auto&& r) { return trigger_count(l) < trigger_count(r); },
                         [&](auto&& l, auto&& r) { return static_mesh_count(l) < static_mesh_count(r); },
                         [&](auto&& l, auto&& r) { return l.visible() < r.visible(); }
@@ -362,7 +364,7 @@ namespace trview
                         _scroll_to_room = false;
                     }
                     ImGui::TableNextColumn();
-                    ImGui::Text(std::to_string(item_count(*room_ptr)).c_str());
+                    ImGui::Text(std::to_string(item_count(_all_items, *room_ptr)).c_str());
                     ImGui::TableNextColumn();
                     ImGui::Text(std::to_string(trigger_count(*room_ptr)).c_str());
                     ImGui::TableNextColumn();
@@ -1232,5 +1234,26 @@ namespace trview
         _local_selected_static_mesh.reset();
         _static_meshes = static_meshes;
         _force_sort = true;
+    }
+
+    void RoomsWindow::calculate_column_widths()
+    {
+        _column_sizer.reset();
+        _column_sizer.measure("#__", 0);
+        _column_sizer.measure("Items__", 1);
+        _column_sizer.measure("Triggers__", 2);
+        _column_sizer.measure("Statics__", 3);
+        _column_sizer.measure("Hide____", 4);
+
+        for (const auto& room : _all_rooms)
+        {
+            if (auto room_ptr = room.lock())
+            {
+                _column_sizer.measure(std::format("{0}", room_ptr->number()), 0);
+                _column_sizer.measure(std::to_string(item_count(_all_items, *room_ptr)), 1);
+                _column_sizer.measure(std::to_string(room_ptr->triggers().size()), 2);
+                _column_sizer.measure(std::to_string(room_ptr->static_meshes().size()), 3);
+            }
+        }
     }
 }

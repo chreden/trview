@@ -323,6 +323,12 @@
     <ClCompile Include="Windows\RowCounter.cpp">
       <Filter>Windows</Filter>
     </ClCompile>
+    <ClCompile Include="Windows\ColumnSizer.cpp">
+      <Filter>Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\Fonts\Fonts.cpp">
+      <Filter>UI\Fonts</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera\Camera.h">
@@ -1042,6 +1048,21 @@
     <ClInclude Include="Windows\RowCounter.h">
       <Filter>Windows</Filter>
     </ClInclude>
+    <ClInclude Include="Settings\FontSetting.h">
+      <Filter>Settings</Filter>
+    </ClInclude>
+    <ClInclude Include="Windows\ColumnSizer.h">
+      <Filter>Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\Fonts\IFonts.h">
+      <Filter>UI\Fonts</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\Fonts\Fonts.h">
+      <Filter>UI\Fonts</Filter>
+    </ClInclude>
+    <ClInclude Include="Mocks\UI\IFonts.h">
+      <Filter>Mocks\UI</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Windows">
@@ -1229,6 +1250,9 @@
     </Filter>
     <Filter Include="Lua\Route">
       <UniqueIdentifier>{28f7b23c-bc43-40bc-a3a1-f2f742269f65}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="UI\Fonts">
+      <UniqueIdentifier>{68f08988-7dd5-4109-ba3d-337b37fb0567}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

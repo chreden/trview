@@ -25,6 +25,7 @@
     <ClCompile Include="..\external\imgui\imgui_tables.cpp" />
     <ClCompile Include="..\external\imgui\imgui_widgets.cpp" />
     <ClCompile Include="..\external\imgui\misc\cpp\imgui_stdlib.cpp" />
+    <ClCompile Include="..\external\imgui\misc\freetype\imgui_freetype.cpp" />
     <ClCompile Include="..\external\shared\imgui_app.cpp" />
     <ClCompile Include="AlternateGroupTogglerTests.cpp" />
     <ClCompile Include="ApplicationTests.cpp" />
@@ -98,6 +99,9 @@
   <ItemGroup>
     <ProjectReference Include="..\external\DirectXTK\DirectXTK_Desktop.vcxproj">
       <Project>{a11566d3-4081-42c9-94c5-f4057edd9d50}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\external\freetype\builds\windows\vc2010\freetype.vcxproj">
+      <Project>{78b079bd-9fc7-4b9e-b4a6-96da0f00248b}</Project>
     </ProjectReference>
     <ProjectReference Include="..\external\googlemock\googlemock.vcxproj">
       <Project>{6e37091e-954c-4654-9b42-5980410791f4}</Project>
@@ -188,7 +192,7 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <AdditionalIncludeDirectories>$(SolutionDir);$(SolutionDir)external\DirectXTK\Inc;$(ProjectDir);$(SolutionDir)external\googletest\include;$(SolutionDir)external\googlemock\include;$(SolutionDir)external\imgui;$(SolutionDir)external\imgui_test_engine;$(SolutionDir)external\imgui\backends;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir);$(SolutionDir)external\DirectXTK\Inc;$(ProjectDir);$(SolutionDir)external\googletest\include;$(SolutionDir)external\googlemock\include;$(SolutionDir)external\imgui;$(SolutionDir)external\imgui_test_engine;$(SolutionDir)external\imgui\backends;$(SolutionDir)external\freetype\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions);IMGUI_DEFINE_MATH_OPERATORS;IMGUI_APP_WIN32_DX11;</PreprocessorDefinitions>
       <UseFullPaths>true</UseFullPaths>
       <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
@@ -212,7 +216,7 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>$(SolutionDir);$(SolutionDir)external\DirectXTK\Inc;$(ProjectDir);$(SolutionDir)external\googletest\include;$(SolutionDir)external\googlemock\include;$(SolutionDir)external\imgui;$(SolutionDir)external\imgui_test_engine;$(SolutionDir)external\imgui\backends;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir);$(SolutionDir)external\DirectXTK\Inc;$(ProjectDir);$(SolutionDir)external\googletest\include;$(SolutionDir)external\googlemock\include;$(SolutionDir)external\imgui;$(SolutionDir)external\imgui_test_engine;$(SolutionDir)external\imgui\backends;$(SolutionDir)external\freetype\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_DEBUG;%(PreprocessorDefinitions);IMGUI_DEFINE_MATH_OPERATORS;IMGUI_APP_WIN32_DX11;</PreprocessorDefinitions>
       <UseFullPaths>true</UseFullPaths>
       <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
@@ -234,7 +238,7 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>$(SolutionDir);$(SolutionDir)external\DirectXTK\Inc;$(ProjectDir);$(SolutionDir)external\googletest\include;$(SolutionDir)external\googlemock\include;$(SolutionDir)external\imgui;$(SolutionDir)external\imgui_test_engine;$(SolutionDir)external\imgui\backends;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir);$(SolutionDir)external\DirectXTK\Inc;$(ProjectDir);$(SolutionDir)external\googletest\include;$(SolutionDir)external\googlemock\include;$(SolutionDir)external\imgui;$(SolutionDir)external\imgui_test_engine;$(SolutionDir)external\imgui\backends;$(SolutionDir)external\freetype\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions);IMGUI_DEFINE_MATH_OPERATORS;IMGUI_APP_WIN32_DX11</PreprocessorDefinitions>
       <UseFullPaths>true</UseFullPaths>
       <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
@@ -258,7 +262,7 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <AdditionalIncludeDirectories>$(SolutionDir);$(SolutionDir)external\DirectXTK\Inc;$(ProjectDir);$(SolutionDir)external\googletest\include;$(SolutionDir)external\googlemock\include;$(SolutionDir)external\imgui;$(SolutionDir)external\imgui_test_engine;$(SolutionDir)external\imgui\backends;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir);$(SolutionDir)external\DirectXTK\Inc;$(ProjectDir);$(SolutionDir)external\googletest\include;$(SolutionDir)external\googlemock\include;$(SolutionDir)external\imgui;$(SolutionDir)external\imgui_test_engine;$(SolutionDir)external\imgui\backends;$(SolutionDir)external\freetype\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;NDEBUG;%(PreprocessorDefinitions);IMGUI_DEFINE_MATH_OPERATORS;IMGUI_APP_WIN32_DX11</PreprocessorDefinitions>
       <UseFullPaths>true</UseFullPaths>
       <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>

@@ -18,10 +18,8 @@ namespace trview
         void render() override;
         std::weak_ptr<IConsole> create_window() override;
         std::optional<int> process_message(UINT message, WPARAM wParam, LPARAM lParam) override;
-        void initialise_ui() override;
     private:
         IConsole::Source _console_source;
         std::shared_ptr<IFiles> _files;
-        ImFont* _font{ nullptr };
     };
 }

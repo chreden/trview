@@ -197,6 +197,9 @@
     <ClCompile Include="..\external\shared\imgui_app.cpp">
       <Filter>ImGui</Filter>
     </ClCompile>
+    <ClCompile Include="..\external\imgui\misc\freetype\imgui_freetype.cpp">
+      <Filter>ImGui</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Input">

@@ -32,6 +32,7 @@
 #include <trview.app/Mocks/Lua/ILua.h>
 #include <trview.app/Mocks/Plugins/IPlugins.h>
 #include <trview.app/Mocks/Windows/IPluginsWindowManager.h>
+#include <trview.app/Mocks/UI/IFonts.h>
 
 using namespace trview;
 using namespace trview::tests;
@@ -76,7 +77,7 @@ namespace
             std::shared_ptr<IStartupOptions> startup_options{ mock_shared<MockStartupOptions>() };
             std::shared_ptr<IDialogs> dialogs{ mock_shared<MockDialogs>() };
             std::shared_ptr<IFiles> files{ mock_shared<MockFiles>() };
-            std::unique_ptr<IImGuiBackend> imgui_backend{ std::make_unique<NullImGuiBackend>() };
+            std::shared_ptr<IImGuiBackend> imgui_backend{ std::make_shared<NullImGuiBackend>() };
             std::unique_ptr<ILightsWindowManager> lights_window_manager{ mock_unique<MockLightsWindowManager>() };
             std::unique_ptr<ILogWindowManager> log_window_manager{ mock_unique<MockLogWindowManager>() };
             std::unique_ptr<ITexturesWindowManager> textures_window_manager{ mock_unique<MockTexturesWindowManager>() };
@@ -85,6 +86,7 @@ namespace
             std::shared_ptr<IPlugins> plugins{ mock_shared<MockPlugins>() };
             std::unique_ptr<IPluginsWindowManager> plugins_window_manager{ mock_unique<MockPluginsWindowManager>() };
             IRandomizerRoute::Source randomizer_route_source { [](auto&&...) { return mock_shared<MockRandomizerRoute>(); } };
+            std::shared_ptr<IFonts> fonts { mock_shared<MockFonts>() };
 
             std::unique_ptr<Application> build()
             {
@@ -94,7 +96,7 @@ namespace
                     std::move(items_window_manager), std::move(triggers_window_manager), std::move(route_window_manager), std::move(rooms_window_manager),
                     level_source, startup_options, dialogs, files, std::move(imgui_backend), std::move(lights_window_manager), std::move(log_window_manager),
                     std::move(textures_window_manager), std::move(camera_sink_window_manager), std::move(console_manager),
-                    plugins, std::move(plugins_window_manager), randomizer_route_source);
+                    plugins, std::move(plugins_window_manager), randomizer_route_source, fonts);
             }
 
             test_module& with_dialogs(std::shared_ptr<IDialogs> dialogs)
@@ -187,9 +189,9 @@ namespace
                 return *this;
             }
 
-            test_module& with_imgui_backend(std::unique_ptr<IImGuiBackend> backend)
+            test_module& with_imgui_backend(std::shared_ptr<IImGuiBackend> backend)
             {
-                this->imgui_backend = std::move(backend);
+                this->imgui_backend = backend;
                 return *this;
             }
 
@@ -232,6 +234,12 @@ namespace
             test_module& with_plugins_window_manager(std::unique_ptr<IPluginsWindowManager> plugins_window_manager)
             {
                 this->plugins_window_manager = std::move(plugins_window_manager);
+                return *this;
+            }
+
+            test_module& with_fonts(std::shared_ptr<IFonts> fonts)
+            {
+                this->fonts = fonts;
                 return *this;
             }
         };
@@ -517,8 +525,6 @@ TEST(Application, WindowManagersUpdated)
     EXPECT_CALL(triggers_window_manager, update).Times(1);
     auto [lights_window_manager_ptr, lights_window_manager] = create_mock<MockLightsWindowManager>();
     EXPECT_CALL(lights_window_manager, update).Times(1);
-    auto files = mock_shared<MockFiles>();
-    EXPECT_CALL(*files, fonts_directory()).Times(1).WillRepeatedly(Return(fonts_directory()));
 
     auto application = register_test_module()
         .with_route_window_manager(std::move(route_window_manager_ptr))
@@ -526,7 +532,6 @@ TEST(Application, WindowManagersUpdated)
         .with_rooms_window_manager(std::move(rooms_window_manager_ptr))
         .with_triggers_window_manager(std::move(triggers_window_manager_ptr))
         .with_lights_window_manager(std::move(lights_window_manager_ptr))
-        .with_files(files)
         .build();
     application->render();
 }
@@ -551,7 +556,6 @@ TEST(Application, WindowManagersAndViewerRendered)
     EXPECT_CALL(camera_sink_window_manager, render).Times(1);
     auto [console_manager_ptr, console_manager] = create_mock<MockConsoleManager>();
     EXPECT_CALL(console_manager, render).Times(1);
-    EXPECT_CALL(console_manager, initialise_ui).Times(1);
     auto [plugins_window_manager_ptr, plugins_window_manager] = create_mock<MockPluginsWindowManager>();
     EXPECT_CALL(plugins_window_manager, render).Times(1);
     auto plugins = mock_shared<MockPlugins>();
@@ -559,8 +563,6 @@ TEST(Application, WindowManagersAndViewerRendered)
 
     auto [viewer_ptr, viewer] = create_mock<MockViewer>();
     EXPECT_CALL(viewer, render).Times(1);
-    auto files = mock_shared<MockFiles>();
-    EXPECT_CALL(*files, fonts_directory()).Times(1).WillRepeatedly(Return(fonts_directory()));
 
     auto application = register_test_module()
         .with_route_window_manager(std::move(route_window_manager_ptr))
@@ -574,7 +576,6 @@ TEST(Application, WindowManagersAndViewerRendered)
         .with_console_manager(std::move(console_manager_ptr))
         .with_plugins_window_manager(std::move(plugins_window_manager_ptr))
         .with_viewer(std::move(viewer_ptr))
-        .with_files(files)
         .with_plugins(plugins)
         .build();
     application->render();
@@ -618,13 +619,32 @@ TEST(Application, MapColoursSetOnSettingsChanged)
     viewer.on_settings(UserSettings());
 }
 
-TEST(Application, ResetLayout)
+TEST(Application, ResetFonts)
 {
-    auto [imgui_backend_ptr, imgui_backend] = create_mock<MockImGuiBackend>();
-    EXPECT_CALL(imgui_backend, reset_layout);
+    auto fonts = mock_shared<MockFonts>();
+    EXPECT_CALL(*fonts, add_font(std::string("Console"), 
+        testing::AllOf(testing::Field(&FontSetting::name, testing::Eq("Consolas")),
+                       testing::Field(&FontSetting::filename, testing::Eq("consola.ttf")),
+                       testing::Field(&FontSetting::size, testing::Eq(12)))));
+    EXPECT_CALL(*fonts, add_font(std::string("Default"),
+        testing::AllOf(testing::Field(&FontSetting::name, testing::Eq("Arial")),
+            testing::Field(&FontSetting::filename, testing::Eq("arial.ttf")),
+            testing::Field(&FontSetting::size, testing::Eq(12)))));
 
     auto application = register_test_module()
-        .with_imgui_backend(std::move(imgui_backend_ptr))
+        .with_fonts(fonts)
+        .build();
+
+    application->process_message(WM_COMMAND, MAKEWPARAM(ID_WINDOWS_RESET_FONTS, 0), 0);
+}
+
+TEST(Application, ResetLayout)
+{
+    auto imgui_backend = mock_shared<MockImGuiBackend>();
+    EXPECT_CALL(*imgui_backend, reset_layout);
+
+    auto application = register_test_module()
+        .with_imgui_backend(imgui_backend)
         .build();
 
     application->process_message(WM_COMMAND, MAKEWPARAM(ID_WINDOWS_RESET_LAYOUT, 0), 0);

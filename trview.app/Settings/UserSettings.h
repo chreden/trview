@@ -4,6 +4,7 @@
 #include <string>
 #include "RandomizerSettings.h"
 #include "../UI/MapColours.h"
+#include "FontSetting.h"
 
 namespace trview
 {
@@ -57,6 +58,11 @@ namespace trview
         float fov{ 45 };
         std::vector<std::string> plugin_directories;
         std::unordered_map<std::string, bool> toggles;
+        std::unordered_map<std::string, FontSetting> fonts
+        {
+            { "Default", {.name = "Arial", .filename = "arial.ttf", .size = 12 } },
+            { "Console", {.name = "Consolas", .filename = "consola.ttf", .size = 12 } }
+        };
 
         bool operator==(const UserSettings& other) const;
     };

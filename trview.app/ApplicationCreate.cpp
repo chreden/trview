@@ -68,6 +68,7 @@
 #include "Windows/Plugins/PluginsWindowManager.h"
 #include "Windows/Plugins/PluginsWindow.h"
 #include "Tools/Toolbar.h"
+#include "UI/Fonts/Fonts.h"
 
 namespace trview
 {
@@ -276,13 +277,15 @@ namespace trview
             plugin_source,
             settings_loader->load_user_settings());
         auto plugins_window_source = [=]() { return std::make_shared<PluginsWindow>(plugins, shell); };
+        auto imgui_backend = std::make_shared<DX11ImGuiBackend>(window, device, files);
+        auto fonts = std::make_shared<Fonts>(files, imgui_backend);
 
         auto viewer_ui = std::make_unique<ViewerUI>(
             window,
             texture_storage,
             shortcuts,
             map_renderer_source,
-            std::make_unique<SettingsWindow>(dialogs, shell),
+            std::make_unique<SettingsWindow>(dialogs, shell, fonts),
             std::make_unique<ViewOptions>(),
             std::make_unique<ContextMenu>(),
             std::make_unique<CameraControls>(),
@@ -319,7 +322,7 @@ namespace trview
 
         auto trlevel_source = [=](auto&& filename) { return std::make_shared<trlevel::Level>(filename, files, decrypter, log); };
         auto textures_window_source = [=]() { return std::make_shared<TexturesWindow>(); };
-        auto console_source = [=]() { return std::make_shared<Console>(dialogs, plugins); };
+        auto console_source = [=]() { return std::make_shared<Console>(dialogs, plugins, fonts); };
 
         return std::make_unique<Application>(
             window,
@@ -338,7 +341,7 @@ namespace trview
             std::make_shared<StartupOptions>(command_line),
             dialogs,
             files,
-            std::make_unique<DX11ImGuiBackend>(window, device, files),
+            imgui_backend,
             std::make_unique<LightsWindowManager>(window, shortcuts, lights_window_source),
             std::make_unique<LogWindowManager>(window, log_window_source),
             std::make_unique<TexturesWindowManager>(window, textures_window_source),
@@ -346,6 +349,7 @@ namespace trview
             std::make_unique<ConsoleManager>(window, shortcuts, console_source, files),
             plugins,
             std::make_unique<PluginsWindowManager>(window, shortcuts, plugins_window_source),
-            randomizer_route_source);
+            randomizer_route_source,
+            fonts);
     }
 }

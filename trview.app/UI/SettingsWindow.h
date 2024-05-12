@@ -7,6 +7,7 @@
 
 #include <trview.common/Windows/IShell.h>
 #include <trview.common/Windows/IDialogs.h>
+#include "Fonts/IFonts.h"
 
 namespace trview
 {
@@ -40,7 +41,7 @@ namespace trview
             static inline const std::string reset_fov = "Reset##Fov";
         };
 
-        explicit SettingsWindow(const std::shared_ptr<IDialogs>& dialogs, const std::shared_ptr<IShell>& shell);
+        explicit SettingsWindow(const std::shared_ptr<IDialogs>& dialogs, const std::shared_ptr<IShell>& shell, const std::shared_ptr<IFonts>& fonts);
         virtual ~SettingsWindow() = default;
         virtual void render() override;
         virtual void set_vsync(bool value) override;
@@ -94,5 +95,7 @@ namespace trview
         float _fov{ 45 };
         bool _camera_sink_startup{ false };
         std::vector<std::string> _plugin_directories;
+        std::vector<FontSetting> _all_fonts;
+        std::shared_ptr<IFonts> _fonts;
     };
 }

@@ -5,6 +5,7 @@
 #include <trview.app/Windows/Console/Console.h>
 #include <trview.app/Mocks/Plugins/IPlugins.h>
 #include <trview.app/Mocks/Plugins/IPlugin.h>
+#include <trview.app/Mocks/UI/IFonts.h>
 #include <trview.common/Mocks/Windows/IDialogs.h>
 
 using namespace testing;
@@ -42,7 +43,7 @@ void register_console_tests(ImGuiTestEngine* engine)
             EXPECT_CALL(*plugin, clear_messages).Times(1);
 
             ON_CALL(*plugins, plugins).WillByDefault(testing::Return(std::vector<std::weak_ptr<IPlugin>>{ plugin }));
-            context.ptr = std::make_shared<Console>(mock_shared<MockDialogs>(), plugins);
+            context.ptr = std::make_shared<Console>(mock_shared<MockDialogs>(), plugins, mock_shared<MockFonts>());
 
             ctx->Yield();
             IM_CHECK_STR_EQ(ItemText(ctx, ctx->ItemInfo("/Console 0/TabBar/Default/##Log")->ID).c_str(), "Hello");
@@ -63,7 +64,7 @@ void register_console_tests(ImGuiTestEngine* engine)
             ON_CALL(*plugin, name).WillByDefault(testing::Return("Default"));
             EXPECT_CALL(*plugin, execute("Test command")).Times(1);
             ON_CALL(*plugins, plugins).WillByDefault(testing::Return(std::vector<std::weak_ptr<IPlugin>>{ plugin }));
-            context.ptr = std::make_shared<Console>(mock_shared<MockDialogs>(), plugins);
+            context.ptr = std::make_shared<Console>(mock_shared<MockDialogs>(), plugins, mock_shared<MockFonts>());
 
             ctx->ItemInputValue("/Console 0/TabBar/Default/##input", "Test command");
 
@@ -80,7 +81,7 @@ void register_console_tests(ImGuiTestEngine* engine)
             ON_CALL(*plugin, name).WillByDefault(testing::Return("Default"));
             EXPECT_CALL(*plugin, execute("Test command")).Times(2);
             ON_CALL(*plugins, plugins).WillByDefault(testing::Return(std::vector<std::weak_ptr<IPlugin>>{ plugin }));
-            context.ptr = std::make_shared<Console>(mock_shared<MockDialogs>(), plugins);
+            context.ptr = std::make_shared<Console>(mock_shared<MockDialogs>(), plugins, mock_shared<MockFonts>());
 
             ctx->ItemInputValue("/Console 0/TabBar/Default/##input", "Test command");
             ctx->KeyPress(ImGuiKey_UpArrow);
@@ -102,7 +103,7 @@ void register_console_tests(ImGuiTestEngine* engine)
             ON_CALL(*plugins, plugins).WillByDefault(testing::Return(std::vector<std::weak_ptr<IPlugin>>{ plugin }));
             auto dialogs = mock_shared<MockDialogs>();
             ON_CALL(*dialogs, open_file).WillByDefault(testing::Return(IDialogs::FileResult{ "test.lua" }));
-            context.ptr = std::make_shared<Console>(dialogs, plugins);
+            context.ptr = std::make_shared<Console>(dialogs, plugins, mock_shared<MockFonts>());
 
             ctx->ItemClick("/Console 0/##menubar/File");
             ctx->ItemClick("/##Menu_00/Open");
@@ -121,7 +122,7 @@ void register_console_tests(ImGuiTestEngine* engine)
             ON_CALL(*plugins, plugins).WillByDefault(testing::Return(std::vector<std::weak_ptr<IPlugin>>{ plugin }));
             auto dialogs = mock_shared<MockDialogs>();
             ON_CALL(*dialogs, open_file).WillByDefault(testing::Return(IDialogs::FileResult{ "test.lua" }));
-            context.ptr = std::make_shared<Console>(dialogs, plugins);
+            context.ptr = std::make_shared<Console>(dialogs, plugins, mock_shared<MockFonts>());
 
             ctx->ItemClick("/Console 0/##menubar/File");
             ctx->ItemClick("/##Menu_00/Open");

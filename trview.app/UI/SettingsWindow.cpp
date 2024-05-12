@@ -6,8 +6,8 @@ namespace trview
     {
     }
 
-    SettingsWindow::SettingsWindow(const std::shared_ptr<IDialogs>& dialogs, const std::shared_ptr<IShell>& shell)
-        : _dialogs(dialogs), _shell(shell)
+    SettingsWindow::SettingsWindow(const std::shared_ptr<IDialogs>& dialogs, const std::shared_ptr<IShell>& shell, const std::shared_ptr<IFonts>& fonts)
+        : _dialogs(dialogs), _shell(shell), _fonts(fonts)
     {
     }
 
@@ -50,6 +50,48 @@ namespace trview
                     if (ImGui::ColorEdit3(Names::background_colour.c_str(), _colour))
                     {
                         on_background_colour(Colour(1.0f, _colour[0], _colour[1], _colour[2]));
+                    }
+
+                    ImGui::EndTabItem();
+                }
+
+                if (ImGui::BeginTabItem("Fonts"))
+                {
+                    if (ImGui::BeginTable("Fonts List", 3, ImGuiTableFlags_SizingFixedFit))
+                    {
+                        for (const auto font : _fonts->fonts())
+                        {
+                            ImGui::TableNextRow();
+
+                            ImGui::TableNextColumn();
+                            ImGui::AlignTextToFramePadding();
+                            ImGui::Text(font.first.c_str());
+                            ImGui::TableNextColumn();
+                            if (ImGui::BeginCombo(std::format("##{}", font.first).c_str(), font.second.name.c_str(), ImGuiComboFlags_WidthFitPreview))
+                            {
+                                for (const auto& f : _all_fonts)
+                                {
+                                    bool is_selected = font.second.name == f.name;
+                                    if (ImGui::Selectable(f.name.c_str(), is_selected))
+                                    {
+                                        auto selected = font.second;
+                                        selected.name = f.name;
+                                        selected.filename = f.filename;
+                                        on_font(font.first, selected);
+                                    }
+                                }
+                                ImGui::EndCombo();
+                            }
+                            ImGui::TableNextColumn();
+                            int size = font.second.size;
+                            if (ImGui::InputInt(std::format("Font Size##{}", font.first).c_str(), &size, 1, 1, ImGuiInputTextFlags_EnterReturnsTrue))
+                            {
+                                auto selected = font.second;
+                                selected.size = size;
+                                on_font(font.first, selected);
+                            }
+                        }
+                        ImGui::EndTable();
                     }
                     ImGui::EndTabItem();
                 }
@@ -251,6 +293,10 @@ namespace trview
     void SettingsWindow::toggle_visibility()
     {
         _visible = !_visible;
+        if (_visible)
+        {
+            _all_fonts = _fonts->list_fonts();
+        }
     }
 
     void SettingsWindow::set_sensitivity(float value)

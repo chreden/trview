@@ -6,6 +6,7 @@
 #include <trview.app/UI/SettingsWindow.h>
 #include <trview.common/Mocks/Windows/IShell.h>
 #include <trview.common/Mocks/Windows/IDialogs.h>
+#include <trview.app/Mocks/UI/IFonts.h>
 
 using namespace testing;
 using namespace trview;
@@ -20,10 +21,11 @@ namespace
         {
             std::shared_ptr<IDialogs> dialogs{ mock_shared<MockDialogs>() };
             std::shared_ptr<IShell> shell{ mock_shared<MockShell>() };
+            std::shared_ptr<IFonts> fonts{ mock_shared<MockFonts>() };
 
             std::unique_ptr<SettingsWindow> build()
             {
-                return std::make_unique<SettingsWindow>(dialogs, shell);
+                return std::make_unique<SettingsWindow>(dialogs, shell, fonts);
             }
 
             test_module& with_dialogs(const std::shared_ptr<IDialogs>& dialogs)
@@ -35,6 +37,12 @@ namespace
             test_module& with_shell(const std::shared_ptr<IShell>& shell)
             {
                 this->shell = shell;
+                return *this;
+            }
+
+            test_module& with_fonts(const std::shared_ptr<IFonts>& fonts)
+            {
+                this->fonts = fonts;
                 return *this;
             }
         };
@@ -53,7 +61,7 @@ void register_settings_window_tests(ImGuiTestEngine* engine)
 
             auto dialogs = mock_shared<MockDialogs>();
             ON_CALL(*dialogs, open_folder).WillByDefault(Return("test"));
-            controls.ptr = register_test_module().with_dialogs(dialogs).build();;
+            controls.ptr = register_test_module().with_dialogs(dialogs).build();
 
             std::optional<std::vector<std::string>> raised;
             auto token = controls.ptr->on_plugin_directories += [&](const auto& value)
@@ -72,12 +80,53 @@ void register_settings_window_tests(ImGuiTestEngine* engine)
             IM_CHECK_EQ(raised.value(), expected);
         });
 
+    test<MockWrapper<SettingsWindow>>(engine, "Settings Window", "Changing Font Raises Event",
+        [](ImGuiTestContext* ctx) { render(ctx->GetVars<MockWrapper<SettingsWindow>>()); },
+        [](ImGuiTestContext* ctx)
+        {
+            const std::vector<FontSetting> available_fonts
+            {
+                {.name = "name", .filename = "filename", .size = 12 },
+                {.name = "name2", .filename = "filename2", .size = 13 }
+            };
+
+            const std::unordered_map<std::string, FontSetting> registered_fonts
+            {
+                { "Default", { .name = "name", .filename = "filename", .size = 12 } },
+                { "Console", { .name = "name2", .filename = "filename2", .size = 13 } }
+            };
+
+            auto fonts = mock_shared<MockFonts>();
+            ON_CALL(*fonts, list_fonts).WillByDefault(Return(available_fonts));
+            ON_CALL(*fonts, fonts).WillByDefault(Return(registered_fonts));
+
+            auto& controls = ctx->GetVars<MockWrapper<SettingsWindow>>();
+            controls.ptr = register_test_module().with_fonts(fonts).build();
+            controls.ptr->toggle_visibility();
+
+            std::optional<std::pair<std::string, FontSetting>> received_value;
+            auto token = controls.ptr->on_font += [&](auto&& key, auto&& value)
+            {
+                received_value = { key, value };
+            };
+
+            ctx->ItemClick("Settings/TabBar/Fonts");
+            ctx->SetRef("Settings/TabBar/Fonts/Fonts List");
+            ctx->ComboClick("##Default/name2");
+
+            IM_CHECK_EQ(received_value.has_value(), true);
+            IM_CHECK_EQ(received_value->first, "Default");
+            IM_CHECK_EQ(received_value->second.name, "name2");
+            IM_CHECK_EQ(received_value->second.filename, "filename2");
+            IM_CHECK_EQ(received_value->second.size, 12);
+        });
+
     test<MockWrapper<SettingsWindow>>(engine, "Settings Window", "Changing Max Recent Files Raises Event",
         [](ImGuiTestContext* ctx) { render(ctx->GetVars<MockWrapper<SettingsWindow>>()); },
         [](ImGuiTestContext* ctx)
         {
             auto& controls = ctx->GetVars<MockWrapper<SettingsWindow>>();
-            controls.ptr = register_test_module().build();;
+            controls.ptr = register_test_module().build();
             controls.ptr->toggle_visibility();
 
             std::optional<uint32_t> received_value;
@@ -90,8 +139,8 @@ void register_settings_window_tests(ImGuiTestEngine* engine)
             ctx->ItemClick("TabBar/General");
             ctx->ItemClick("TabBar/General/Recent Files/+");
 
-            ASSERT_TRUE(received_value.has_value());
-            ASSERT_EQ(received_value.value(), 11);
+            IM_CHECK_EQ(received_value.has_value(), true);
+            IM_CHECK_EQ(received_value.value(), 11);
         });
 
     test<MockWrapper<SettingsWindow>>(engine, "Settings Window", "Clicking Acceleration Raises Event",
@@ -99,7 +148,7 @@ void register_settings_window_tests(ImGuiTestEngine* engine)
         [](ImGuiTestContext* ctx)
         {
             auto& controls = ctx->GetVars<MockWrapper<SettingsWindow>>();
-            controls.ptr = register_test_module().build();;
+            controls.ptr = register_test_module().build();
             controls.ptr->toggle_visibility();
 
             std::optional<bool> received_value;
@@ -122,7 +171,7 @@ void register_settings_window_tests(ImGuiTestEngine* engine)
         [](ImGuiTestContext* ctx)
         {
             auto& controls = ctx->GetVars<MockWrapper<SettingsWindow>>();
-            controls.ptr = register_test_module().build();;
+            controls.ptr = register_test_module().build();
             controls.ptr->toggle_visibility();
 
             std::optional<float> received_value;
@@ -143,7 +192,7 @@ void register_settings_window_tests(ImGuiTestEngine* engine)
         [](ImGuiTestContext* ctx)
         {
             auto& controls = ctx->GetVars<MockWrapper<SettingsWindow>>();
-            controls.ptr = register_test_module().build();;
+            controls.ptr = register_test_module().build();
             controls.ptr->toggle_visibility();
 
             std::optional<bool> received_value;
@@ -166,7 +215,7 @@ void register_settings_window_tests(ImGuiTestEngine* engine)
         [](ImGuiTestContext* ctx)
         {
             auto& controls = ctx->GetVars<MockWrapper<SettingsWindow>>();
-            controls.ptr = register_test_module().build();;
+            controls.ptr = register_test_module().build();
             controls.ptr->toggle_visibility();
 
             std::optional<bool> received_value;
@@ -189,7 +238,7 @@ void register_settings_window_tests(ImGuiTestEngine* engine)
         [](ImGuiTestContext* ctx)
         {
             auto& controls = ctx->GetVars<MockWrapper<SettingsWindow>>();
-            controls.ptr = register_test_module().build();;
+            controls.ptr = register_test_module().build();
             controls.ptr->toggle_visibility();
             controls.ptr->set_fov(45);
 
@@ -211,7 +260,7 @@ void register_settings_window_tests(ImGuiTestEngine* engine)
         [](ImGuiTestContext* ctx)
         {
             auto& controls = ctx->GetVars<MockWrapper<SettingsWindow>>();
-            controls.ptr = register_test_module().build();;
+            controls.ptr = register_test_module().build();
             controls.ptr->toggle_visibility();
 
             std::optional<bool> received_value;
@@ -234,7 +283,7 @@ void register_settings_window_tests(ImGuiTestEngine* engine)
         [](ImGuiTestContext* ctx)
         {
             auto& controls = ctx->GetVars<MockWrapper<SettingsWindow>>();
-            controls.ptr = register_test_module().build();;
+            controls.ptr = register_test_module().build();
             controls.ptr->toggle_visibility();
 
             std::optional<bool> received_value;
@@ -257,7 +306,7 @@ void register_settings_window_tests(ImGuiTestEngine* engine)
         [](ImGuiTestContext* ctx)
         {
             auto& controls = ctx->GetVars<MockWrapper<SettingsWindow>>();
-            controls.ptr = register_test_module().build();;
+            controls.ptr = register_test_module().build();
             controls.ptr->toggle_visibility();
 
             std::optional<bool> received_value;
@@ -280,7 +329,7 @@ void register_settings_window_tests(ImGuiTestEngine* engine)
         [](ImGuiTestContext* ctx)
         {
             auto& controls = ctx->GetVars<MockWrapper<SettingsWindow>>();
-            controls.ptr = register_test_module().build();;
+            controls.ptr = register_test_module().build();
             controls.ptr->toggle_visibility();
 
             std::optional<bool> received_value;
@@ -303,7 +352,7 @@ void register_settings_window_tests(ImGuiTestEngine* engine)
         [](ImGuiTestContext* ctx)
         {
             auto& controls = ctx->GetVars<MockWrapper<SettingsWindow>>();
-            controls.ptr = register_test_module().build();;
+            controls.ptr = register_test_module().build();
             controls.ptr->toggle_visibility();
 
             std::optional<float> received_value;
@@ -324,7 +373,7 @@ void register_settings_window_tests(ImGuiTestEngine* engine)
         [](ImGuiTestContext* ctx)
         {
             auto& controls = ctx->GetVars<MockWrapper<SettingsWindow>>();
-            controls.ptr = register_test_module().build();;
+            controls.ptr = register_test_module().build();
             controls.ptr->toggle_visibility();
 
             std::optional<bool> received_value;
@@ -347,7 +396,7 @@ void register_settings_window_tests(ImGuiTestEngine* engine)
         [](ImGuiTestContext* ctx)
         {
             auto& controls = ctx->GetVars<MockWrapper<SettingsWindow>>();
-            controls.ptr = register_test_module().build();;
+            controls.ptr = register_test_module().build();
             controls.ptr->toggle_visibility();
 
             std::optional<bool> received_value;
@@ -370,7 +419,7 @@ void register_settings_window_tests(ImGuiTestEngine* engine)
         [](ImGuiTestContext* ctx)
         {
             auto& controls = ctx->GetVars<MockWrapper<SettingsWindow>>();
-            controls.ptr = register_test_module().build();;
+            controls.ptr = register_test_module().build();
             controls.ptr->toggle_visibility();
             controls.ptr->set_fov(10.0f);
 
@@ -393,7 +442,7 @@ void register_settings_window_tests(ImGuiTestEngine* engine)
         [](ImGuiTestContext* ctx)
         {
             auto& controls = ctx->GetVars<MockWrapper<SettingsWindow>>();
-            controls.ptr = register_test_module().build();;
+            controls.ptr = register_test_module().build();
             controls.ptr->toggle_visibility();
 
             std::optional<bool> received_value;
@@ -416,7 +465,7 @@ void register_settings_window_tests(ImGuiTestEngine* engine)
         [](ImGuiTestContext* ctx)
         {
             auto& controls = ctx->GetVars<MockWrapper<SettingsWindow>>();
-            controls.ptr = register_test_module().build();;
+            controls.ptr = register_test_module().build();
             controls.ptr->toggle_visibility();
 
             std::optional<bool> received_value;
@@ -439,7 +488,7 @@ void register_settings_window_tests(ImGuiTestEngine* engine)
         [](ImGuiTestContext* ctx)
         {
             auto& controls = ctx->GetVars<MockWrapper<SettingsWindow>>();
-            controls.ptr = register_test_module().build();;
+            controls.ptr = register_test_module().build();
             controls.ptr->toggle_visibility();
 
             std::optional<float> received_value;
@@ -460,7 +509,7 @@ void register_settings_window_tests(ImGuiTestEngine* engine)
         [](ImGuiTestContext* ctx)
         {
             auto& controls = ctx->GetVars<MockWrapper<SettingsWindow>>();
-            controls.ptr = register_test_module().build();;
+            controls.ptr = register_test_module().build();
             controls.ptr->toggle_visibility();
 
             std::optional<bool> received_value;
@@ -483,7 +532,7 @@ void register_settings_window_tests(ImGuiTestEngine* engine)
         [](ImGuiTestContext* ctx)
         {
             auto& controls = ctx->GetVars<MockWrapper<SettingsWindow>>();
-            controls.ptr = register_test_module().build();;
+            controls.ptr = register_test_module().build();
             controls.ptr->toggle_visibility();
 
             std::optional<bool> received_value;
@@ -506,7 +555,7 @@ void register_settings_window_tests(ImGuiTestEngine* engine)
         [](ImGuiTestContext* ctx)
         {
             auto& controls = ctx->GetVars<MockWrapper<SettingsWindow>>();
-            controls.ptr = register_test_module().build();;
+            controls.ptr = register_test_module().build();
             controls.ptr->toggle_visibility();
 
             MapColours colours;
@@ -532,7 +581,7 @@ void register_settings_window_tests(ImGuiTestEngine* engine)
         [](ImGuiTestContext* ctx)
         {
             auto& controls = ctx->GetVars<MockWrapper<SettingsWindow>>();
-            controls.ptr = register_test_module().build();;
+            controls.ptr = register_test_module().build();
             controls.ptr->toggle_visibility();
 
             MapColours colours;
@@ -561,7 +610,7 @@ void register_settings_window_tests(ImGuiTestEngine* engine)
             EXPECT_CALL(*shell, open(std::wstring(L"path"))).Times(1);
 
             auto& controls = ctx->GetVars<MockWrapper<SettingsWindow>>();
-            controls.ptr = register_test_module().with_shell(shell).build();;
+            controls.ptr = register_test_module().with_shell(shell).build();
             controls.ptr->toggle_visibility();
             controls.ptr->set_plugin_directories({ "path" });
 
@@ -601,7 +650,7 @@ void register_settings_window_tests(ImGuiTestEngine* engine)
         [](ImGuiTestContext* ctx)
         {
             auto& controls = ctx->GetVars<MockWrapper<SettingsWindow>>();
-            controls.ptr = register_test_module().build();;
+            controls.ptr = register_test_module().build();
             controls.ptr->toggle_visibility();
             controls.ptr->set_camera_acceleration_rate(0.5f);
 
@@ -616,7 +665,7 @@ void register_settings_window_tests(ImGuiTestEngine* engine)
         [](ImGuiTestContext* ctx)
         {
             auto& controls = ctx->GetVars<MockWrapper<SettingsWindow>>();
-            controls.ptr = register_test_module().build();;
+            controls.ptr = register_test_module().build();
             controls.ptr->toggle_visibility();
 
             ctx->SetRef("Settings");
@@ -632,7 +681,7 @@ void register_settings_window_tests(ImGuiTestEngine* engine)
         [](ImGuiTestContext* ctx)
         {
             auto& controls = ctx->GetVars<MockWrapper<SettingsWindow>>();
-            controls.ptr = register_test_module().build();;
+            controls.ptr = register_test_module().build();
             controls.ptr->toggle_visibility();
 
             ctx->SetRef("Settings");
@@ -648,7 +697,7 @@ void register_settings_window_tests(ImGuiTestEngine* engine)
         [](ImGuiTestContext* ctx)
         {
             auto& controls = ctx->GetVars<MockWrapper<SettingsWindow>>();
-            controls.ptr = register_test_module().build();;
+            controls.ptr = register_test_module().build();
             controls.ptr->toggle_visibility();
 
             ctx->SetRef("Settings");
@@ -664,7 +713,7 @@ void register_settings_window_tests(ImGuiTestEngine* engine)
         [](ImGuiTestContext* ctx)
         {
             auto& controls = ctx->GetVars<MockWrapper<SettingsWindow>>();
-            controls.ptr = register_test_module().build();;
+            controls.ptr = register_test_module().build();
             controls.ptr->toggle_visibility();
             controls.ptr->set_default_route_colour(Colour(0.5f, 0.75f, 1.0f));
 
@@ -681,7 +730,7 @@ void register_settings_window_tests(ImGuiTestEngine* engine)
         [](ImGuiTestContext* ctx)
         {
             auto& controls = ctx->GetVars<MockWrapper<SettingsWindow>>();
-            controls.ptr = register_test_module().build();;
+            controls.ptr = register_test_module().build();
             controls.ptr->toggle_visibility();
             controls.ptr->set_default_waypoint_colour(Colour(0.5f, 0.75f, 1.0f));
 
@@ -698,7 +747,7 @@ void register_settings_window_tests(ImGuiTestEngine* engine)
         [](ImGuiTestContext* ctx)
         {
             auto& controls = ctx->GetVars<MockWrapper<SettingsWindow>>();
-            controls.ptr = register_test_module().build();;
+            controls.ptr = register_test_module().build();
             controls.ptr->toggle_visibility();
             controls.ptr->set_fov(0.5f);
 
@@ -713,7 +762,7 @@ void register_settings_window_tests(ImGuiTestEngine* engine)
         [](ImGuiTestContext* ctx)
         {
             auto& controls = ctx->GetVars<MockWrapper<SettingsWindow>>();
-            controls.ptr = register_test_module().build();;
+            controls.ptr = register_test_module().build();
             controls.ptr->toggle_visibility();
 
             ctx->SetRef("Settings");
@@ -729,7 +778,7 @@ void register_settings_window_tests(ImGuiTestEngine* engine)
         [](ImGuiTestContext* ctx)
         {
             auto& controls = ctx->GetVars<MockWrapper<SettingsWindow>>();
-            controls.ptr = register_test_module().build();;
+            controls.ptr = register_test_module().build();
             controls.ptr->toggle_visibility();
 
             ctx->SetRef("Settings");
@@ -745,7 +794,7 @@ void register_settings_window_tests(ImGuiTestEngine* engine)
         [](ImGuiTestContext* ctx)
         {
             auto& controls = ctx->GetVars<MockWrapper<SettingsWindow>>();
-            controls.ptr = register_test_module().build();;
+            controls.ptr = register_test_module().build();
             controls.ptr->toggle_visibility();
 
             ctx->SetRef("Settings");
@@ -761,7 +810,7 @@ void register_settings_window_tests(ImGuiTestEngine* engine)
         [](ImGuiTestContext* ctx)
         {
             auto& controls = ctx->GetVars<MockWrapper<SettingsWindow>>();
-            controls.ptr = register_test_module().build();;
+            controls.ptr = register_test_module().build();
             controls.ptr->toggle_visibility();
 
             ctx->SetRef("Settings");
@@ -777,7 +826,7 @@ void register_settings_window_tests(ImGuiTestEngine* engine)
         [](ImGuiTestContext* ctx)
         {
             auto& controls = ctx->GetVars<MockWrapper<SettingsWindow>>();
-            controls.ptr = register_test_module().build();;
+            controls.ptr = register_test_module().build();
             controls.ptr->toggle_visibility();
 
             ctx->SetRef("Settings");
@@ -804,7 +853,7 @@ void register_settings_window_tests(ImGuiTestEngine* engine)
         [](ImGuiTestContext* ctx)
         {
             auto& controls = ctx->GetVars<MockWrapper<SettingsWindow>>();
-            controls.ptr = register_test_module().build();;
+            controls.ptr = register_test_module().build();
             controls.ptr->toggle_visibility();
             controls.ptr->set_max_recent_files(5);
 
@@ -819,7 +868,7 @@ void register_settings_window_tests(ImGuiTestEngine* engine)
         [](ImGuiTestContext* ctx)
         {
             auto& controls = ctx->GetVars<MockWrapper<SettingsWindow>>();
-            controls.ptr = register_test_module().build();;
+            controls.ptr = register_test_module().build();
             controls.ptr->toggle_visibility();
             controls.ptr->set_movement_speed(0.5f);
 
@@ -834,7 +883,7 @@ void register_settings_window_tests(ImGuiTestEngine* engine)
         [](ImGuiTestContext* ctx)
         {
             auto& controls = ctx->GetVars<MockWrapper<SettingsWindow>>();
-            controls.ptr = register_test_module().build();;
+            controls.ptr = register_test_module().build();
             controls.ptr->toggle_visibility();
 
             ctx->SetRef("Settings");
@@ -850,7 +899,7 @@ void register_settings_window_tests(ImGuiTestEngine* engine)
         [](ImGuiTestContext* ctx)
         {
             auto& controls = ctx->GetVars<MockWrapper<SettingsWindow>>();
-            controls.ptr = register_test_module().build();;
+            controls.ptr = register_test_module().build();
             controls.ptr->toggle_visibility();
 
             ctx->SetRef("Settings");
@@ -866,7 +915,7 @@ void register_settings_window_tests(ImGuiTestEngine* engine)
         [](ImGuiTestContext* ctx)
         {
             auto& controls = ctx->GetVars<MockWrapper<SettingsWindow>>();
-            controls.ptr = register_test_module().build();;
+            controls.ptr = register_test_module().build();
             controls.ptr->toggle_visibility();
 
             ctx->SetRef("Settings");
@@ -882,7 +931,7 @@ void register_settings_window_tests(ImGuiTestEngine* engine)
         [](ImGuiTestContext* ctx)
         {
             auto& controls = ctx->GetVars<MockWrapper<SettingsWindow>>();
-            controls.ptr = register_test_module().build();;
+            controls.ptr = register_test_module().build();
             controls.ptr->toggle_visibility();
 
             ctx->SetRef("Settings");
@@ -898,7 +947,7 @@ void register_settings_window_tests(ImGuiTestEngine* engine)
         [](ImGuiTestContext* ctx)
         {
             auto& controls = ctx->GetVars<MockWrapper<SettingsWindow>>();
-            controls.ptr = register_test_module().build();;
+            controls.ptr = register_test_module().build();
             controls.ptr->toggle_visibility();
             controls.ptr->set_sensitivity(0.5f);
 
@@ -913,7 +962,7 @@ void register_settings_window_tests(ImGuiTestEngine* engine)
         [](ImGuiTestContext* ctx)
         {
             auto& controls = ctx->GetVars<MockWrapper<SettingsWindow>>();
-            controls.ptr = register_test_module().build();;
+            controls.ptr = register_test_module().build();
             controls.ptr->toggle_visibility();
 
             ctx->SetRef("Settings");
@@ -929,7 +978,7 @@ void register_settings_window_tests(ImGuiTestEngine* engine)
         [](ImGuiTestContext* ctx)
         {
             auto& controls = ctx->GetVars<MockWrapper<SettingsWindow>>();
-            controls.ptr = register_test_module().build();;
+            controls.ptr = register_test_module().build();
             controls.ptr->toggle_visibility();
 
             ctx->SetRef("Settings");

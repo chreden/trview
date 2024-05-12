@@ -28,6 +28,7 @@
 #include "Windows/Console/IConsoleManager.h"
 #include "Plugins/IPlugins.h"
 #include "Windows/Plugins/IPluginsWindowManager.h"
+#include "UI/Fonts/IFonts.h"
 
 struct ImFont;
 
@@ -67,7 +68,7 @@ namespace trview
             std::shared_ptr<IStartupOptions> startup_options,
             std::shared_ptr<IDialogs> dialogs,
             std::shared_ptr<IFiles> files,
-            std::unique_ptr<IImGuiBackend> imgui_backend,
+            std::shared_ptr<IImGuiBackend> imgui_backend,
             std::unique_ptr<ILightsWindowManager> lights_window_manager,
             std::unique_ptr<ILogWindowManager> log_window_manager,
             std::unique_ptr<ITexturesWindowManager> textures_window_manager,
@@ -75,7 +76,8 @@ namespace trview
             std::unique_ptr<IConsoleManager> console_manager,
             std::shared_ptr<IPlugins> plugins,
             std::unique_ptr<IPluginsWindowManager> plugins_window_manager,
-            const IRandomizerRoute::Source& randomizer_route_source);
+            const IRandomizerRoute::Source& randomizer_route_source,
+            std::shared_ptr<IFonts> fonts);
         virtual ~Application();
         /// Attempt to open the specified level file.
         /// @param filename The level file to open.
@@ -166,9 +168,9 @@ namespace trview
         std::unique_ptr<IRoomsWindowManager> _rooms_windows;
         std::unique_ptr<ILightsWindowManager> _lights_windows;
         Timer _timer;
-        ImFont* _font;
+        std::optional<std::pair<std::string, FontSetting>> _new_font;
 
-        std::unique_ptr<IImGuiBackend> _imgui_backend;
+        std::shared_ptr<IImGuiBackend> _imgui_backend;
         std::string _imgui_ini_filename;
         std::unique_ptr<ILogWindowManager> _log_windows;
         bool _recent_route_prompted{ false };
@@ -180,6 +182,7 @@ namespace trview
         std::unique_ptr<IPluginsWindowManager> _plugins_windows;
 
         IRandomizerRoute::Source _randomizer_route_source;
+        std::shared_ptr<IFonts> _fonts;
     };
 
     std::unique_ptr<IApplication> create_application(HINSTANCE hInstance, int command_show, const std::wstring& command_line);
