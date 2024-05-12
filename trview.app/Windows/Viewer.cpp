@@ -961,9 +961,12 @@ namespace trview
     {
         if (auto level = _level.lock())
         {
-            _was_alternate_select = true;
-            level->set_alternate_group(group, enabled);
-            _ui->set_alternate_group(group, enabled);
+            if (std::ranges::contains(level->alternate_groups(), group))
+            {
+                _was_alternate_select = true;
+                level->set_alternate_group(group, enabled);
+                _ui->set_alternate_group(group, enabled);
+            }
         }
     }
 
