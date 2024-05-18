@@ -1,0 +1,18 @@
+#pragma once
+
+#include "../../Windows/Statics/IStaticsWindow.h"
+
+namespace trview
+{
+    namespace mocks
+    {
+        struct MockStaticsWindow : public IStaticsWindow
+        {
+            MockStaticsWindow();
+            virtual ~MockStaticsWindow();
+            MOCK_METHOD(void, render, (), (override));
+            MOCK_METHOD(void, update, (float), (override));
+            MOCK_METHOD(void, set_number, (int32_t), (override));
+        };
+    }
+}

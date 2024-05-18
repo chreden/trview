@@ -75,6 +75,7 @@ BEGIN
         MENUITEM "Textures"                     ID_WINDOWS_TEXTURES
         MENUITEM "Console\tF11"                 ID_WINDOWS_CONSOLE
         MENUITEM "Plugins\tCtrl+P"              ID_WINDOWS_PLUGINS
+        MENUITEM "Statics\tCtrl+S"              ID_WINDOWS_STATICS
         MENUITEM SEPARATOR
         MENUITEM "Reset Layout"                 ID_WINDOWS_RESET_LAYOUT
         MENUITEM "Reset Fonts"                  ID_WINDOWS_RESET_FONTS

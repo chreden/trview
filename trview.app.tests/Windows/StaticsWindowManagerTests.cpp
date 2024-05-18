@@ -1,5 +1,5 @@
-#include <trview.app/Windows/Plugins/PluginsWindowManager.h>
-#include <trview.app/Mocks/Windows/IPluginsWindow.h>
+#include <trview.app/Windows/Statics/StaticsWindowManager.h>
+#include <trview.app/Mocks/Windows/IStaticsWindow.h>
 #include <trview.app/Resources/resource.h>
 
 using namespace trview;
@@ -14,11 +14,11 @@ namespace
     {
         struct test_module
         {
-            Window window{ create_test_window(L"CameraSinkWindowManagerTests") };
+            Window window{ create_test_window(L"StaticsWindowManagerTests") };
             std::shared_ptr<MockShortcuts> shortcuts{ mock_shared<MockShortcuts>() };
-            IPluginsWindow::Source window_source{ [](auto&&...) { return mock_shared<MockPluginsWindow>(); } };
+            IStaticsWindow::Source window_source{ [](auto&&...) { return mock_shared<MockStaticsWindow>(); } };
 
-            test_module& with_window_source(const IPluginsWindow::Source& source)
+            test_module& with_window_source(const IStaticsWindow::Source& source)
             {
                 this->window_source = source;
                 return *this;
@@ -35,9 +35,9 @@ namespace
                 EXPECT_CALL(*shortcuts, add_shortcut).WillRepeatedly([&](auto, auto) -> Event<>&{ return shortcut_handler; });
             }
 
-            std::unique_ptr<PluginsWindowManager> build()
+            std::unique_ptr<StaticsWindowManager> build()
             {
-                return std::make_unique<PluginsWindowManager>(window, shortcuts, window_source);
+                return std::make_unique<StaticsWindowManager>(window, shortcuts, window_source);
             }
         };
 
@@ -45,22 +45,22 @@ namespace
     }
 }
 
-TEST(PluginsWindowManager, WindowCreatedOnCommand)
+TEST(StaticsWindowManager, WindowCreatedOnCommand)
 {
-    auto window = mock_shared<MockPluginsWindow>();
+    auto window = mock_shared<MockStaticsWindow>();
     bool raised = false;
     auto manager = register_test_module()
         .with_window_source([&]() { raised = true; return window; })
         .build();
 
-    manager->process_message(WM_COMMAND, MAKEWPARAM(ID_WINDOWS_PLUGINS, 0), 0);
+    manager->process_message(WM_COMMAND, MAKEWPARAM(ID_WINDOWS_STATICS, 0), 0);
 
     ASSERT_TRUE(raised);
 }
 
-TEST(PluginsWindowManager, WindowCreated)
+TEST(StaticsWindowManager, WindowCreated)
 {
-    auto window = mock_shared<MockPluginsWindow>();
+    auto window = mock_shared<MockStaticsWindow>();
     EXPECT_CALL(*window, set_number(1)).Times(1);
 
     auto manager = register_test_module()
@@ -71,9 +71,9 @@ TEST(PluginsWindowManager, WindowCreated)
     ASSERT_EQ(created, window);
 }
 
-TEST(PluginsWindowManager, RendersAllWindows)
+TEST(StaticsWindowManager, RendersAllWindows)
 {
-    auto window = mock_shared<MockPluginsWindow>();
+    auto window = mock_shared<MockStaticsWindow>();
     EXPECT_CALL(*window, render).Times(1);
 
     auto manager = register_test_module().with_window_source([&]() { return window; }).build();
@@ -81,9 +81,9 @@ TEST(PluginsWindowManager, RendersAllWindows)
     manager->render();
 }
 
-TEST(PluginsWindowManager, CreatePluginsWindowKeyboardShortcut)
+TEST(StaticsWindowManager, CreateStaticsWindowKeyboardShortcut)
 {
     auto shortcuts = mock_shared<MockShortcuts>();
-    EXPECT_CALL(*shortcuts, add_shortcut(true, 'P')).Times(1).WillOnce([&](auto, auto) -> Event<>&{ return shortcut_handler; });
+    EXPECT_CALL(*shortcuts, add_shortcut(true, 'S')).Times(1).WillOnce([&](auto, auto) -> Event<>&{ return shortcut_handler; });
     auto manager = register_test_module().with_shortcuts(shortcuts).build();
 }

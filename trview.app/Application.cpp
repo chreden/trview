@@ -65,14 +65,15 @@ namespace trview
         std::shared_ptr<IPlugins> plugins,
         std::unique_ptr<IPluginsWindowManager> plugins_window_manager,
         const IRandomizerRoute::Source& randomizer_route_source,
-        std::shared_ptr<IFonts> fonts)
+        std::shared_ptr<IFonts> fonts,
+        std::unique_ptr<IStaticsWindowManager> statics_window_manager)
         : MessageHandler(application_window), _instance(GetModuleHandle(nullptr)),
         _file_menu(std::move(file_menu)), _update_checker(std::move(update_checker)), _view_menu(window()), _settings_loader(settings_loader), _trlevel_source(trlevel_source),
         _viewer(std::move(viewer)), _route_source(route_source), _shortcuts(shortcuts), _items_windows(std::move(items_window_manager)),
         _triggers_windows(std::move(triggers_window_manager)), _route_window(std::move(route_window_manager)), _rooms_windows(std::move(rooms_window_manager)), _level_source(level_source),
         _dialogs(dialogs), _files(files), _timer(default_time_source()), _imgui_backend(std::move(imgui_backend)), _lights_windows(std::move(lights_window_manager)), _log_windows(std::move(log_window_manager)),
         _textures_windows(std::move(textures_window_manager)), _camera_sink_windows(std::move(camera_sink_window_manager)), _console_manager(std::move(console_manager)),
-        _plugins(plugins), _plugins_windows(std::move(plugins_window_manager)), _randomizer_route_source(randomizer_route_source), _fonts(fonts)
+        _plugins(plugins), _plugins_windows(std::move(plugins_window_manager)), _randomizer_route_source(randomizer_route_source), _fonts(fonts), _statics_windows(std::move(statics_window_manager))
     {
         SetWindowLongPtr(window(), GWLP_USERDATA, reinterpret_cast<LONG_PTR>(_imgui_backend.get()));
 
@@ -704,6 +705,7 @@ namespace trview
         _route_window->update(elapsed);
         _lights_windows->update(elapsed);
         _plugins_windows->update(elapsed);
+        _statics_windows->update(elapsed);
 
         _viewer->render();
 
@@ -733,6 +735,7 @@ namespace trview
         _camera_sink_windows->render();
         _console_manager->render();
         _plugins_windows->render();
+        _statics_windows->render();
         _plugins->render_ui();
 
         ImGui::PopFont();

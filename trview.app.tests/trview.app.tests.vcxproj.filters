@@ -200,6 +200,9 @@
     <ClCompile Include="..\external\imgui\misc\freetype\imgui_freetype.cpp">
       <Filter>ImGui</Filter>
     </ClCompile>
+    <ClCompile Include="Windows\StaticsWindowManagerTests.cpp">
+      <Filter>Windows</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Input">

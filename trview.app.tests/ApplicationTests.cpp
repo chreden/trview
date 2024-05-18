@@ -33,6 +33,8 @@
 #include <trview.app/Mocks/Plugins/IPlugins.h>
 #include <trview.app/Mocks/Windows/IPluginsWindowManager.h>
 #include <trview.app/Mocks/UI/IFonts.h>
+#include <trview.app/Mocks/Windows/IStaticsWindow.h>
+#include <trview.app/Mocks/Windows/IStaticsWindowManager.h>
 
 using namespace trview;
 using namespace trview::tests;
@@ -87,6 +89,7 @@ namespace
             std::unique_ptr<IPluginsWindowManager> plugins_window_manager{ mock_unique<MockPluginsWindowManager>() };
             IRandomizerRoute::Source randomizer_route_source { [](auto&&...) { return mock_shared<MockRandomizerRoute>(); } };
             std::shared_ptr<IFonts> fonts { mock_shared<MockFonts>() };
+            std::unique_ptr<IStaticsWindowManager> statics_window_manager{ mock_unique<MockStaticsWindowManager>() };
 
             std::unique_ptr<Application> build()
             {
@@ -96,7 +99,7 @@ namespace
                     std::move(items_window_manager), std::move(triggers_window_manager), std::move(route_window_manager), std::move(rooms_window_manager),
                     level_source, startup_options, dialogs, files, std::move(imgui_backend), std::move(lights_window_manager), std::move(log_window_manager),
                     std::move(textures_window_manager), std::move(camera_sink_window_manager), std::move(console_manager),
-                    plugins, std::move(plugins_window_manager), randomizer_route_source, fonts);
+                    plugins, std::move(plugins_window_manager), randomizer_route_source, fonts, std::move(statics_window_manager));
             }
 
             test_module& with_dialogs(std::shared_ptr<IDialogs> dialogs)
@@ -234,6 +237,12 @@ namespace
             test_module& with_plugins_window_manager(std::unique_ptr<IPluginsWindowManager> plugins_window_manager)
             {
                 this->plugins_window_manager = std::move(plugins_window_manager);
+                return *this;
+            }
+
+            test_module& with_statics_window_manager(std::unique_ptr<IStaticsWindowManager> statics_window_manager)
+            {
+                this->statics_window_manager = std::move(statics_window_manager);
                 return *this;
             }
 
@@ -558,6 +567,8 @@ TEST(Application, WindowManagersAndViewerRendered)
     EXPECT_CALL(console_manager, render).Times(1);
     auto [plugins_window_manager_ptr, plugins_window_manager] = create_mock<MockPluginsWindowManager>();
     EXPECT_CALL(plugins_window_manager, render).Times(1);
+    auto [statics_window_manager_ptr, statics_window_manager] = create_mock<MockStaticsWindowManager>();
+    EXPECT_CALL(statics_window_manager, render).Times(1);
     auto plugins = mock_shared<MockPlugins>();
     EXPECT_CALL(*plugins, render_ui).Times(1);
 
@@ -575,6 +586,7 @@ TEST(Application, WindowManagersAndViewerRendered)
         .with_camera_sink_window_manager(std::move(camera_sink_window_manager_ptr))
         .with_console_manager(std::move(console_manager_ptr))
         .with_plugins_window_manager(std::move(plugins_window_manager_ptr))
+        .with_statics_window_manager(std::move(statics_window_manager_ptr))
         .with_viewer(std::move(viewer_ptr))
         .with_plugins(plugins)
         .build();

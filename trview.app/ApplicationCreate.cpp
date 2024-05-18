@@ -69,6 +69,8 @@
 #include "Windows/Plugins/PluginsWindow.h"
 #include "Tools/Toolbar.h"
 #include "UI/Fonts/Fonts.h"
+#include "Windows/Statics/StaticsWindowManager.h"
+#include "Windows/Statics/StaticsWindow.h"
 
 namespace trview
 {
@@ -323,6 +325,7 @@ namespace trview
         auto trlevel_source = [=](auto&& filename) { return std::make_shared<trlevel::Level>(filename, files, decrypter, log); };
         auto textures_window_source = [=]() { return std::make_shared<TexturesWindow>(); };
         auto console_source = [=]() { return std::make_shared<Console>(dialogs, plugins, fonts); };
+        auto statics_window_source = [=]() { return std::make_shared<StaticsWindow>(); };
 
         return std::make_unique<Application>(
             window,
@@ -350,6 +353,7 @@ namespace trview
             plugins,
             std::make_unique<PluginsWindowManager>(window, shortcuts, plugins_window_source),
             randomizer_route_source,
-            fonts);
+            fonts,
+            std::make_unique<StaticsWindowManager>(window, shortcuts, statics_window_source));
     }
 }

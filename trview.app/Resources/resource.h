@@ -48,6 +48,7 @@
 #define ID_WINDOWS_CONSOLE              33024
 #define ID_WINDOWS_PLUGINS              33025
 #define ID_WINDOWS_RESET_FONTS          33026
+#define ID_WINDOWS_STATICS              33027
 
 // Next default values for new objects
 // 
