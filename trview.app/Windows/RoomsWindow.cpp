@@ -1194,7 +1194,6 @@ namespace trview
             ImGui::TableSetupScrollFreeze(1, 1);
             ImGui::TableHeadersRow();
 
-            uint32_t i = 0;
             for (const auto& static_mesh : _static_meshes)
             {
                 if (auto static_mesh_ptr = static_mesh.lock())
@@ -1212,7 +1211,7 @@ namespace trview
                         _scroll_to_static_mesh = false;
                     }
 
-                    if (ImGui::Selectable(std::format("{0}##{0}", i++).c_str(), &selected, ImGuiSelectableFlags_SpanAllColumns | static_cast<int>(ImGuiSelectableFlags_SelectOnNav)))
+                    if (ImGui::Selectable(std::format("{0}##{0}", static_mesh_ptr->number()).c_str(), &selected, ImGuiSelectableFlags_SpanAllColumns | static_cast<int>(ImGuiSelectableFlags_SelectOnNav)))
                     {
                         scroller.fix_scroll();
                         _local_selected_static_mesh = static_mesh_ptr;
