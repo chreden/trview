@@ -32,7 +32,8 @@ namespace trview
         _rotation(static_mesh.rotation / 16384.0f * DirectX::XM_PIDIV2),
         _bounding_mesh(bounding_mesh),
         _room(room),
-        _mesh_texture_id(static_mesh.mesh_id)
+        _mesh_texture_id(static_mesh.mesh_id),
+        _flags(level_static_mesh.Flags)
     {
         _world = Matrix::CreateRotationY(_rotation) * Matrix::CreateTranslation(_position);
     }
@@ -142,6 +143,11 @@ namespace trview
     uint32_t StaticMesh::number() const
     {
         return _number;
+    }
+
+    uint16_t StaticMesh::flags() const
+    {
+        return _flags;
     }
 
     uint32_t static_mesh_room(const std::shared_ptr<IStaticMesh>& static_mesh)

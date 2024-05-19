@@ -14,6 +14,8 @@ namespace trview
         {
             static inline const std::string statics_list = "##staticslist";
             static inline const std::string statics_list_panel = "Statics List";
+            static inline const std::string details_panel = "Static Details";
+            static inline const std::string static_stats = "##staticstats";
         };
 
         explicit StaticsWindow();
@@ -28,6 +30,7 @@ namespace trview
         void render_static_details();
         void calculate_column_widths();
         void setup_filters();
+        void set_local_selected_static_mesh(std::weak_ptr<IStaticMesh> static_mesh);
 
         std::string _id{ "Statics 0" };
         ColumnSizer _column_sizer;
@@ -35,6 +38,8 @@ namespace trview
         bool _force_sort{ false };
         Filters<IStaticMesh> _filters;
         bool _scroll_to_static{ false };
+        std::weak_ptr<IStaticMesh> _selected_static_mesh;
+        std::unordered_map<std::string, std::string> _tips;
     };
 }
 

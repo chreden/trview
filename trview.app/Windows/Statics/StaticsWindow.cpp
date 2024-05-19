@@ -88,25 +88,22 @@ namespace trview
                     counter.count();
                     ImGui::TableNextRow();
                     ImGui::TableNextColumn();
-                    // auto selected_item = _selected_item.lock();
-                    // bool selected = selected_item && selected_item == item_ptr;
-                    // 
-                    ImGuiScroller scroller;
-                    // if (selected && _scroll_to_item)
-                    // {
-                    //     scroller.scroll_to_item();
-                    //     _scroll_to_item = false;
-                    // }
-                    // 
-                    // const bool item_is_virtual = is_virtual(*item_ptr);
+                    auto selected_static_mesh = _selected_static_mesh.lock();
+                    bool selected = selected_static_mesh && selected_static_mesh == stat_ptr;
 
-                    bool selected = false;
+                    ImGuiScroller scroller;
+                    if (selected && _scroll_to_static)
+                    {
+                        scroller.scroll_to_item();
+                        _scroll_to_static = false;
+                    }
+
                     ImGui::SetNextItemAllowOverlap();
                     if (ImGui::Selectable(std::format("{0}##{0}", stat_ptr->number()).c_str(), &selected, ImGuiSelectableFlags_SpanAllColumns | static_cast<int>(ImGuiSelectableFlags_SelectOnNav)))
                     {
                         scroller.fix_scroll();
 
-                        // set_local_selected_item(item);
+                        set_local_selected_static_mesh(stat);
                         // if (_sync_item)
                         // {
                         //     on_item_selected(item);
@@ -128,10 +125,6 @@ namespace trview
                     ImGui::TableNextColumn();
                     ImGui::Text(to_string(stat_ptr->type()).c_str());
                     //ImGui::TableNextColumn();
-                    //ImGui::Text(std::to_string(item_ptr->type_id()).c_str());
-                    //ImGui::TableNextColumn();
-                    //ImGui::Text(item_ptr->type().c_str());
-                    //ImGui::TableNextColumn();
                     // bool hidden = !item_ptr->visible();
                     // ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0, 0));
                     // if (ImGui::Checkbox(std::format("##hide-{}", item_ptr->number()).c_str(), &hidden))
@@ -149,7 +142,66 @@ namespace trview
 
     void StaticsWindow::render_static_details()
     {
+        if (ImGui::BeginChild(Names::details_panel.c_str(), ImVec2(), true))
+        {
+            ImGui::Text("Static Details");
+            if (ImGui::BeginTable(Names::static_stats.c_str(), 2, 0, ImVec2(-1, 150)))
+            {
+                ImGui::TableSetupColumn("Name");
+                ImGui::TableSetupColumn("Value");
+                ImGui::TableNextRow();
 
+                if (auto stat = _selected_static_mesh.lock())
+                {
+                    auto add_stat = [&]<typename T>(const std::string& name, T&& value)
+                    {
+                        const auto string_value = get_string(value);
+                        ImGui::TableNextColumn();
+                        if (ImGui::Selectable(name.c_str(), false, ImGuiSelectableFlags_SpanAllColumns))
+                        {
+                            // _clipboard->write(to_utf16(string_value));
+                            // _tooltip_timer = 0.0f;
+                        }
+                        if (ImGui::IsItemHovered() && _tips.find(name) != _tips.end())
+                        {
+                            ImGui::BeginTooltip();
+                            ImGui::Text(_tips[name].c_str());
+                            ImGui::EndTooltip();
+                        }
+                        if (ImGui::IsItemHovered() && _tips.find(string_value) != _tips.end())
+                        {
+                            ImGui::BeginTooltip();
+                            ImGui::Text(_tips[string_value].c_str());
+                            ImGui::EndTooltip();
+                        }
+
+                        ImGui::TableNextColumn();
+                        ImGui::Text(string_value.c_str());
+                    };
+
+                    // auto position_text = [&item]()
+                    //     {
+                    //         const auto pos = item->position() * trlevel::Scale;
+                    //         return std::format("{:.0f}, {:.0f}, {:.0f}", pos.x, pos.y, pos.z);
+                    //     };
+
+                    add_stat("#", stat->number());
+                    // add_stat("Position", position_text());
+                    add_stat("ID", stat->id());
+                    add_stat("Room", static_mesh_room(stat));
+                    add_stat("Type", to_string(stat->type()));
+                    add_stat("Rotation", DirectX::XMConvertToDegrees(stat->rotation()));
+                    add_stat("Flags", format_binary(stat->flags()));
+                }
+
+                ImGui::EndTable();
+            }
+            // if (ImGui::Button(Names::add_to_route_button.c_str(), ImVec2(-1, 30)))
+            // {
+            //     on_add_to_route(_selected_item);
+            // }
+        }
+        ImGui::EndChild();
     }
 
     void StaticsWindow::set_number(int32_t number)
@@ -207,27 +259,15 @@ namespace trview
             }
         }
         _filters.add_getter<std::string>("Type", { available_types.begin(), available_types.end() }, [](auto&& stat) { return to_string(stat.type()); });
-        // _filters.add_multi_getter<std::string>("Category", { available_categories.begin(), available_categories.end() }, [](auto&& item)
-        //     {
-        //         std::vector<std::string> results;
-        //         for (const auto& category : item.categories())
-        //         {
-        //             results.push_back(category);
-        //         }
-        //         return results;
-        //     });
         _filters.add_getter<float>("#", [](auto&& stat) { return static_cast<float>(stat.number()); });
         // _filters.add_getter<float>("X", [](auto&& item) { return item.position().x * trlevel::Scale_X; });
         // _filters.add_getter<float>("Y", [](auto&& item) { return item.position().y * trlevel::Scale_Y; });
         // _filters.add_getter<float>("Z", [](auto&& item) { return item.position().z * trlevel::Scale_Z; });
-        // _filters.add_getter<float>("Angle", [](auto&& item) { return static_cast<float>(bound_rotation(item.angle())); });
-        // _filters.add_getter<float>("Angle Degrees", [](auto&& item) { return static_cast<float>(bound_rotation(item.angle()) / 182); });
+        _filters.add_getter<float>("Rotation", [](auto&& stat) { return static_cast<float>(DirectX::XMConvertToDegrees(stat.rotation())); });
         _filters.add_getter<float>("ID", [](auto&& stat) { return static_cast<float>(stat.id()); });
         _filters.add_getter<float>("Room", [](auto&& stat) { return static_cast<float>(static_mesh_room(stat)); });
-        //_filters.add_getter<bool>("Clear Body", [](auto&& item) { return item.clear_body_flag(); });
         //_filters.add_getter<bool>("Invisible", [](auto&& item) { return item.invisible_flag(); });
-        //_filters.add_getter<std::string>("Flags", [](auto&& item) { return format_binary(item.activation_flags()); });
-        //_filters.add_getter<float>("OCB", [](auto&& item) { return static_cast<float>(item.ocb()); });
+        _filters.add_getter<std::string>("Flags", [](auto&& stat) { return format_binary(stat.flags()); });
         // _filters.add_multi_getter<float>("Triggered By", [](auto&& item)
         //     {
         //         std::vector<float> results;
@@ -240,5 +280,11 @@ namespace trview
         //         }
         //         return results;
         //     });
+    }
+
+    void StaticsWindow::set_local_selected_static_mesh(std::weak_ptr<IStaticMesh> static_mesh)
+    {
+        _selected_static_mesh = static_mesh;
+        _force_sort = true;
     }
 }
