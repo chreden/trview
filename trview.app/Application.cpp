@@ -95,6 +95,7 @@ namespace trview
         setup_route_window();
         setup_lights_windows();
         setup_camera_sink_windows();
+        setup_statics_window();
         setup_viewer(*startup_options);
         _plugins->initialise(this);
     }
@@ -499,6 +500,7 @@ namespace trview
         _triggers_windows->set_room(room);
         _lights_windows->set_room(room);
         _camera_sink_windows->set_room(room);
+        _statics_windows->set_room(room);
     }
 
     void Application::select_trigger(const std::weak_ptr<ITrigger>& trigger)
@@ -902,6 +904,11 @@ namespace trview
         _token_store += _camera_sink_windows->on_camera_sink_type_changed += [this]() { _viewer->set_scene_changed(); };
     }
 
+    void Application::setup_statics_window()
+    {
+        _token_store += _statics_windows->on_static_selected += [this](const auto& stat) { select_static_mesh(stat); };
+    }
+
     void Application::save_window_placement()
     {
         WINDOWPLACEMENT placement{};
@@ -1089,5 +1096,6 @@ namespace trview
 
         select_room(static_mesh_ptr->room());
         _viewer->select_static_mesh(static_mesh_ptr);
+        _statics_windows->select_static(static_mesh_ptr);
     }
 }

@@ -4,6 +4,7 @@
 #include "../ColumnSizer.h"
 #include "../../Elements/IStaticMesh.h"
 #include "../../Filters/Filters.h"
+#include "../../Track/Track.h"
 
 namespace trview
 {
@@ -12,6 +13,7 @@ namespace trview
     public:
         struct Names
         {
+            static inline const std::string sync_item = "Sync";
             static inline const std::string statics_list = "##staticslist";
             static inline const std::string statics_list_panel = "Statics List";
             static inline const std::string details_panel = "Static Details";
@@ -24,6 +26,8 @@ namespace trview
         void set_number(int32_t number) override;
         void update(float dt) override;
         void set_statics(const std::vector<std::weak_ptr<IStaticMesh>>& statics) override;
+        void set_current_room(const std::weak_ptr<IRoom>& room) override;
+        void set_selected_static(const std::weak_ptr<IStaticMesh>& static_mesh) override;
     private:
         bool render_statics_window();
         void render_statics_list();
@@ -31,6 +35,7 @@ namespace trview
         void calculate_column_widths();
         void setup_filters();
         void set_local_selected_static_mesh(std::weak_ptr<IStaticMesh> static_mesh);
+        void set_sync_static(bool value);
 
         std::string _id{ "Statics 0" };
         ColumnSizer _column_sizer;
@@ -40,6 +45,10 @@ namespace trview
         bool _scroll_to_static{ false };
         std::weak_ptr<IStaticMesh> _selected_static_mesh;
         std::unordered_map<std::string, std::string> _tips;
+        bool _sync_static{ true };
+        Track<Type::Room> _track;
+        std::weak_ptr<IRoom> _current_room;
+        std::weak_ptr<IStaticMesh> _global_selected_static;
     };
 }
 
