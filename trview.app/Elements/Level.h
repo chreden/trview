@@ -158,6 +158,7 @@ namespace trview
         void apply_ocb_adjustment();
         void deduplicate_triangles();
         void record_models(const trlevel::ILevel& level);
+        void record_static_meshes();
 
         std::shared_ptr<graphics::IDevice> _device;
         std::vector<std::shared_ptr<IRoom>>   _rooms;
@@ -165,6 +166,7 @@ namespace trview
         std::vector<std::shared_ptr<IItem>> _entities;
         std::vector<std::shared_ptr<ILight>> _lights;
         std::vector<std::shared_ptr<ICameraSink>> _camera_sinks;
+        std::vector<std::weak_ptr<IStaticMesh>> _static_meshes;
 
         graphics::IShader*          _vertex_shader;
         graphics::IShader*          _pixel_shader;

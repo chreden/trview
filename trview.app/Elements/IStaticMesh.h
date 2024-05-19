@@ -36,6 +36,8 @@ namespace trview
         virtual DirectX::BoundingBox collision() const = 0;
         virtual Type type() const = 0;
         virtual uint16_t id() const = 0;
+        virtual void set_number(uint32_t number) = 0;
+        virtual uint32_t number() const = 0;
     };
 
     constexpr std::string to_string(IStaticMesh::Type type) noexcept;

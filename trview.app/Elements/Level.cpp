@@ -1299,16 +1299,32 @@ namespace trview
         }
 
         apply_ocb_adjustment();
+        record_static_meshes();
     }
 
-    std::vector<std::weak_ptr<IStaticMesh>> Level::static_meshes() const
+    void Level::record_static_meshes()
     {
         std::vector<std::weak_ptr<IStaticMesh>> results;
         for (const auto& room : _rooms)
         {
             results.append_range(room->static_meshes());
         }
-        return results;
+
+        uint32_t index = 0;
+        for (auto& stat : results)
+        {
+            if (auto stat_ptr = stat.lock())
+            {
+                stat_ptr->set_number(index);
+            }
+            ++index;
+        }
+        _static_meshes = results;
+    }
+
+    std::vector<std::weak_ptr<IStaticMesh>> Level::static_meshes() const
+    {
+        return _static_meshes;
     }
 
     bool find_item_by_type_id(const ILevel& level, uint32_t type_id, std::weak_ptr<IItem>& output_item)

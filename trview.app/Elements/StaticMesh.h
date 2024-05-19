@@ -22,6 +22,8 @@ namespace trview
         float rotation() const override;
         Type type() const override;
         uint16_t id() const override;
+        void set_number(uint32_t number) override;
+        uint32_t number() const override;
     private:
         float _rotation;
         DirectX::SimpleMath::Vector3 _position;
@@ -34,5 +36,6 @@ namespace trview
         DirectX::SimpleMath::Matrix _scale;
         std::weak_ptr<IRoom> _room;
         uint16_t _mesh_texture_id{ 0u };
+        uint32_t _number{ 0u };
     };
 }

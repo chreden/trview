@@ -29,12 +29,22 @@ namespace trview
 
     std::weak_ptr<IStaticsWindow> StaticsWindowManager::create_window()
     {
-        auto plugins_window = _source();
-        return add_window(plugins_window);
+        auto window = _source();
+        window->set_statics(_statics);
+        return add_window(window);
     }
 
     void StaticsWindowManager::update(float delta)
     {
         WindowManager::update(delta);
+    }
+
+    void StaticsWindowManager::set_statics(const std::vector<std::weak_ptr<IStaticMesh>>& statics)
+    {
+        _statics = statics;
+        for (auto& window : _windows)
+        {
+            window.second->set_statics(statics);
+        }
     }
 }

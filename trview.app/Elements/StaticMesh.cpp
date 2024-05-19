@@ -134,6 +134,16 @@ namespace trview
         return _mesh_texture_id;
     }
 
+    void StaticMesh::set_number(uint32_t number)
+    {
+        _number = number;
+    }
+    
+    uint32_t StaticMesh::number() const
+    {
+        return _number;
+    }
+
     uint32_t static_mesh_room(const std::shared_ptr<IStaticMesh>& static_mesh)
     {
         if (!static_mesh)
