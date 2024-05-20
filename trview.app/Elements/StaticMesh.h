@@ -25,6 +25,7 @@ namespace trview
         void set_number(uint32_t number) override;
         uint32_t number() const override;
         uint16_t flags() const override;
+        bool breakable() const override;
     private:
         float _rotation;
         DirectX::SimpleMath::Vector3 _position;

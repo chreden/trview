@@ -185,14 +185,11 @@ namespace trview
                     add_stat("Type", to_string(stat->type()));
                     add_stat("Rotation", DirectX::XMConvertToDegrees(stat->rotation()));
                     add_stat("Flags", format_binary(stat->flags()));
+                    add_stat("Breakable", stat->breakable());
                 }
 
                 ImGui::EndTable();
             }
-            // if (ImGui::Button(Names::add_to_route_button.c_str(), ImVec2(-1, 30)))
-            // {
-            //     on_add_to_route(_selected_item);
-            // }
         }
         ImGui::EndChild();
     }
@@ -220,13 +217,10 @@ namespace trview
         {
             if (auto stat_ptr = stat.lock())
             {
-                // const bool item_is_virtual = is_virtual(*item_ptr);
                 _column_sizer.measure(std::format("{0}##{0}", stat_ptr->number()), 0);
                 _column_sizer.measure(std::to_string(static_mesh_room(*stat_ptr)), 1);
                 _column_sizer.measure(std::to_string(stat_ptr->id()), 2);
                 _column_sizer.measure(to_string(stat_ptr->type()), 3);
-                // _column_sizer.measure(std::to_string(item_ptr->type_id()), 2);
-                // _column_sizer.measure(item_ptr->type(), 3);
             }
         }
     }
@@ -260,6 +254,7 @@ namespace trview
         _filters.add_getter<float>("ID", [](auto&& stat) { return static_cast<float>(stat.id()); });
         _filters.add_getter<float>("Room", [](auto&& stat) { return static_cast<float>(static_mesh_room(stat)); });
         //_filters.add_getter<bool>("Invisible", [](auto&& item) { return item.invisible_flag(); });
+        _filters.add_getter<bool>("Breakable", [](auto&& item) { return item.breakable(); });
         _filters.add_getter<std::string>("Flags", [](auto&& stat) { return format_binary(stat.flags()); });
     }
 

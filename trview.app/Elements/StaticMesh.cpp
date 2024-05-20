@@ -150,6 +150,11 @@ namespace trview
         return _flags;
     }
 
+    bool StaticMesh::breakable() const
+    {
+        return _mesh_texture_id >= 50 && _mesh_texture_id <= 69;
+    }
+
     uint32_t static_mesh_room(const std::shared_ptr<IStaticMesh>& static_mesh)
     {
         if (!static_mesh)

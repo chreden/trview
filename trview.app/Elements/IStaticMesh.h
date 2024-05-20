@@ -39,6 +39,7 @@ namespace trview
         virtual void set_number(uint32_t number) = 0;
         virtual uint32_t number() const = 0;
         virtual uint16_t flags() const = 0;
+        virtual bool breakable() const = 0;
     };
 
     constexpr std::string to_string(IStaticMesh::Type type) noexcept;
