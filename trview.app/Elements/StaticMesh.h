@@ -35,7 +35,6 @@ namespace trview
         DirectX::BoundingBox _collision;
         DirectX::SimpleMath::Matrix  _world;
         std::shared_ptr<IMesh> _mesh;
-        std::shared_ptr<IMesh> _sprite_mesh;
         std::shared_ptr<IMesh> _bounding_mesh;
         DirectX::SimpleMath::Matrix _scale;
         std::weak_ptr<IRoom> _room;
@@ -43,5 +42,6 @@ namespace trview
         uint32_t _number{ 0u };
         uint16_t _flags{ 0u };
         bool _visible{ true };
+        Type _type{ Type::Mesh };
     };
 }

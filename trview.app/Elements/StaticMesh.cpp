@@ -39,7 +39,7 @@ namespace trview
     }
 
     StaticMesh::StaticMesh(const trlevel::tr_room_sprite& room_sprite, const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Matrix& scale, std::shared_ptr<IMesh> mesh, const std::weak_ptr<IRoom>& room)
-        : _position(position), _sprite_mesh(mesh), _rotation(0), _scale(scale), _room(room), _mesh_texture_id(room_sprite.texture)
+        : _position(position), _mesh(mesh), _rotation(0), _scale(scale), _room(room), _mesh_texture_id(room_sprite.texture), _type(Type::Sprite)
     {
         using namespace DirectX::SimpleMath;
         _world = Matrix::CreateRotationY(_rotation) * Matrix::CreateTranslation(_position);
@@ -47,20 +47,16 @@ namespace trview
 
     void StaticMesh::render(const ICamera& camera, const ILevelTextureStorage& texture_storage, const DirectX::SimpleMath::Color& colour)
     {
-        if (_sprite_mesh)
+        if (_type == Type::Sprite)
         {
-            auto wvp = create_billboard(_position, Vector3(0, -0.5f, 0), _scale, camera) * camera.view_projection();
-            _sprite_mesh->render(wvp, texture_storage, colour);
+            _world = create_billboard(_position, Vector3(0, -0.5f, 0), _scale, camera);
         }
-        else
-        {
-            _mesh->render(_world * camera.view_projection(), texture_storage, colour);
-        }
+        _mesh->render(_world * camera.view_projection(), texture_storage, colour);
     }
 
     void StaticMesh::render_bounding_box(const ICamera& camera, const ILevelTextureStorage& texture_storage, const DirectX::SimpleMath::Color& colour)
     {
-        if (!_sprite_mesh)
+        if (_type == Type::Mesh)
         {
             const auto size = (_collision.Extents * 2.0f) / trlevel::Scale;
             const auto adjust = _collision.Center / trlevel::Scale;
@@ -71,32 +67,23 @@ namespace trview
 
     void StaticMesh::get_transparent_triangles(ITransparencyBuffer& transparency, const ICamera& camera, const DirectX::SimpleMath::Color& colour)
     {
-        if (_sprite_mesh)
+        if (_type == Type::Sprite)
         {
-            auto world = create_billboard(_position, Vector3(0, -0.5f, 0), _scale, camera);
-            for (const auto& triangle : _sprite_mesh->transparent_triangles())
-            {
-                transparency.add(triangle.transform(world, colour));
-            }
+            _world = create_billboard(_position, Vector3(0, -0.5f, 0), _scale, camera);
         }
-        else
+
+        for (const auto& triangle : _mesh->transparent_triangles())
         {
-            for (const auto& triangle : _mesh->transparent_triangles())
-            {
-                transparency.add(triangle.transform(_world, colour));
-            }
+            transparency.add(triangle.transform(_world, colour));
         }
     }
 
     PickResult StaticMesh::pick(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& direction) const
     {
-        if (_sprite_mesh)
-        {
-            return {};
-        }
-
         const auto transform = _world.Invert();
-        PickResult result = _mesh->pick(Vector3::Transform(position, transform), Vector3::TransformNormal(direction, transform));
+        auto normal_direction = Vector3::TransformNormal(direction, transform);
+        normal_direction.Normalize();
+        PickResult result = _mesh->pick(Vector3::Transform(position, transform), normal_direction);
         result.position = Vector3::Transform(result.position, _world);
         return result;
     }
@@ -128,7 +115,7 @@ namespace trview
 
     IStaticMesh::Type StaticMesh::type() const
     {
-        return _mesh ? Type::Mesh : Type::Sprite;
+        return _type;
     }
 
     uint16_t StaticMesh::id() const
