@@ -26,6 +26,8 @@ namespace trview
         uint32_t number() const override;
         uint16_t flags() const override;
         bool breakable() const override;
+        bool visible() const override;
+        void set_visible(bool value) override;
     private:
         float _rotation;
         DirectX::SimpleMath::Vector3 _position;
@@ -40,5 +42,6 @@ namespace trview
         uint16_t _mesh_texture_id{ 0u };
         uint32_t _number{ 0u };
         uint16_t _flags{ 0u };
+        bool _visible{ true };
     };
 }

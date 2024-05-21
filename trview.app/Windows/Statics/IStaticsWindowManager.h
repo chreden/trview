@@ -18,5 +18,6 @@ namespace trview
         virtual void select_static(const std::weak_ptr<IStaticMesh>& static_mesh) = 0;
 
         Event<std::weak_ptr<IStaticMesh>> on_static_selected;
+        Event<std::weak_ptr<IStaticMesh>, bool> on_static_visibility;
     };
 }

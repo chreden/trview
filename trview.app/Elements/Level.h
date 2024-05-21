@@ -113,6 +113,8 @@ namespace trview
             const ILight::Source& light_source,
             const ICameraSink::Source& camera_sink_source);
         std::vector<std::weak_ptr<IStaticMesh>> static_meshes() const override;
+        void set_static_mesh_visibility(uint32_t index, bool state) override;
+        std::weak_ptr<IStaticMesh> static_mesh(uint32_t index) const override;
     private:
         void generate_rooms(const trlevel::ILevel& level, const IRoom::Source& room_source, const IMeshStorage& mesh_storage);
         void generate_triggers(const ITrigger::Source& trigger_source);

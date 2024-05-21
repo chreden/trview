@@ -95,7 +95,8 @@ namespace trview
             return {};
         }
 
-        PickResult result = _mesh->pick(Vector3::Transform(position, _world.Invert()), direction);
+        const auto transform = _world.Invert();
+        PickResult result = _mesh->pick(Vector3::Transform(position, transform), Vector3::TransformNormal(direction, transform));
         result.position = Vector3::Transform(result.position, _world);
         return result;
     }
@@ -153,6 +154,16 @@ namespace trview
     bool StaticMesh::breakable() const
     {
         return _mesh_texture_id >= 50 && _mesh_texture_id <= 69;
+    }
+
+    bool StaticMesh::visible() const
+    {
+        return _visible;
+    }
+
+    void StaticMesh::set_visible(bool value)
+    {
+        _visible = value;
     }
 
     uint32_t static_mesh_room(const std::shared_ptr<IStaticMesh>& static_mesh)

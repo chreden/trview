@@ -58,13 +58,13 @@ namespace trview
             }
 
             RowCounter counter{ "statics", _all_statics.size() };
-            if (ImGui::BeginTable(Names::statics_list.c_str(), 4, ImGuiTableFlags_Sortable | ImGuiTableFlags_ScrollY, ImVec2(0, -counter.height())))
+            if (ImGui::BeginTable(Names::statics_list.c_str(), 5, ImGuiTableFlags_Sortable | ImGuiTableFlags_ScrollY, ImVec2(0, -counter.height())))
             {
                 ImGui::TableSetupColumn("#", ImGuiTableColumnFlags_WidthFixed, _column_sizer.size(0));
                 ImGui::TableSetupColumn("Room", ImGuiTableColumnFlags_WidthFixed, _column_sizer.size(1));
                 ImGui::TableSetupColumn("ID", ImGuiTableColumnFlags_WidthFixed, _column_sizer.size(2));
                 ImGui::TableSetupColumn("Type", ImGuiTableColumnFlags_WidthFixed, _column_sizer.size(3));
-                // ImGui::TableSetupColumn("Hide", ImGuiTableColumnFlags_WidthFixed, _column_sizer.size(4));
+                ImGui::TableSetupColumn("Hide", ImGuiTableColumnFlags_WidthFixed, _column_sizer.size(4));
                 ImGui::TableSetupScrollFreeze(1, 1);
                 ImGui::TableHeadersRow();
 
@@ -74,7 +74,7 @@ namespace trview
                         [](auto&& l, auto&& r) { return std::tuple(static_mesh_room(l), l.number()) < std::tuple(static_mesh_room(r), r.number()); },
                         [](auto&& l, auto&& r) { return l.id() < r.id(); },
                         [](auto&& l, auto&& r) { return l.type() < r.type(); },
-                        // [](auto&& l, auto&& r) { return std::tuple(l.visible(), l.number()) < std::tuple(r.visible(), r.number()); }
+                        [](auto&& l, auto&& r) { return std::tuple(l.visible(), l.number()) < std::tuple(r.visible(), r.number()); }
                     }, _force_sort);
 
                 for (const auto& stat : _all_statics)
@@ -117,14 +117,14 @@ namespace trview
                     ImGui::Text(std::to_string(stat_ptr->id()).c_str());
                     ImGui::TableNextColumn();
                     ImGui::Text(to_string(stat_ptr->type()).c_str());
-                    //ImGui::TableNextColumn();
-                    // bool hidden = !item_ptr->visible();
-                    // ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0, 0));
-                    // if (ImGui::Checkbox(std::format("##hide-{}", item_ptr->number()).c_str(), &hidden))
-                    // {
-                    //     on_item_visibility(item, !hidden);
-                    // }
-                    // ImGui::PopStyleVar();
+                    ImGui::TableNextColumn();
+                    bool hidden = !stat_ptr->visible();
+                    ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0, 0));
+                    if (ImGui::Checkbox(std::format("##hide-{}", stat_ptr->number()).c_str(), &hidden))
+                    {
+                        on_static_visibility(stat, !hidden);
+                    }
+                    ImGui::PopStyleVar();
                 }
                 ImGui::EndTable();
                 counter.render();

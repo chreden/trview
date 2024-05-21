@@ -24,6 +24,8 @@ namespace trview
             MOCK_METHOD(void, set_number, (uint32_t), (override));
             MOCK_METHOD(uint32_t, number, (), (const, override));
             MOCK_METHOD(uint16_t, flags, (), (const, override));
+            MOCK_METHOD(bool, visible, (), (const, override));
+            MOCK_METHOD(void, set_visible, (bool), (override));
         };
     }
 }

@@ -1327,6 +1327,25 @@ namespace trview
         return _static_meshes;
     }
 
+    void Level::set_static_mesh_visibility(uint32_t index, bool state)
+    {
+        if (auto mesh = static_mesh(index).lock())
+        {
+            mesh->set_visible(state);
+            _regenerate_transparency = true;
+            on_level_changed();
+        }
+    }
+
+    std::weak_ptr<IStaticMesh> Level::static_mesh(uint32_t index) const
+    {
+        if (index >= _static_meshes.size())
+        {
+            return {};
+        }
+        return _static_meshes[index];
+    }
+
     bool find_item_by_type_id(const ILevel& level, uint32_t type_id, std::weak_ptr<IItem>& output_item)
     {
         const auto& items = level.items();

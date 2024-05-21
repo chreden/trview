@@ -115,6 +115,7 @@ namespace trview
         virtual void set_light_visibility(uint32_t index, bool state) = 0;
         virtual void set_room_visibility(uint32_t index, bool state) = 0;
         virtual void set_camera_sink_visibility(uint32_t index, bool state) = 0;
+        virtual void set_static_mesh_visibility(uint32_t index, bool state) = 0;
         virtual bool show_camera_sinks() const = 0;
         virtual bool show_geometry() const = 0;
         virtual bool show_lighting() const = 0;
@@ -123,6 +124,7 @@ namespace trview
         virtual bool show_items() const = 0;
         virtual std::vector<std::weak_ptr<IStaticMesh>> static_meshes() const = 0;
         virtual std::shared_ptr<ILevelTextureStorage> texture_storage() const = 0;
+        virtual std::weak_ptr<IStaticMesh> static_mesh(uint32_t index) const = 0;
         /// <summary>
         /// Get the trigger at the specific index.
         /// </summary>
