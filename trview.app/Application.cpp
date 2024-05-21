@@ -296,6 +296,7 @@ namespace trview
         };
         _token_store += _viewer->on_font += [this](auto&& name, auto&& font) { _new_font = { name, font }; };
         _token_store += _viewer->on_static_mesh_visibility += [this](const auto& static_mesh, bool value) { set_static_mesh_visibility(static_mesh, value); };
+        _token_store += _viewer->on_static_mesh_selected += [this](const auto& static_mesh) { select_static_mesh(static_mesh); };
 
         _viewer->set_settings(_settings);
 

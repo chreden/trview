@@ -1341,6 +1341,14 @@ namespace trview
             }
             break;
         }
+        case PickResult::Type::StaticMesh:
+        {
+            if (level)
+            {
+                on_static_mesh_selected(level->static_mesh(pick.index));
+            }
+            break;
+        }
         }
     }
 
