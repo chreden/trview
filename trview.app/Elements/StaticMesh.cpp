@@ -150,7 +150,11 @@ namespace trview
 
     void StaticMesh::set_visible(bool value)
     {
-        _visible = value;
+        if (value != _visible)
+        {
+            _visible = value;
+            on_changed();
+        }
     }
 
     uint32_t static_mesh_room(const std::shared_ptr<IStaticMesh>& static_mesh)

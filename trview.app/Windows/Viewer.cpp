@@ -204,7 +204,10 @@ namespace trview
                 }
                 else if (_context_pick.type == PickResult::Type::StaticMesh)
                 {
-                    on_static_mesh_visibility(level->static_mesh(_context_pick.index), false);
+                    if (auto mesh = level->static_mesh(_context_pick.index).lock())
+                    {
+                        mesh->set_visible(false);
+                    }
                 }
             }
         };

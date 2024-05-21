@@ -32,7 +32,6 @@ namespace trview
         auto window = _source();
         window->set_statics(_statics);
         window->on_static_selected += on_static_selected;
-        window->on_static_visibility += on_static_visibility;
         return add_window(window);
     }
 

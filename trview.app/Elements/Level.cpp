@@ -1315,6 +1315,7 @@ namespace trview
         {
             if (auto stat_ptr = stat.lock())
             {
+                _token_store += stat_ptr->on_changed += [this]() { content_changed(); };
                 stat_ptr->set_number(index);
             }
             ++index;
@@ -1327,14 +1328,10 @@ namespace trview
         return _static_meshes;
     }
 
-    void Level::set_static_mesh_visibility(uint32_t index, bool state)
+    void Level::content_changed()
     {
-        if (auto mesh = static_mesh(index).lock())
-        {
-            mesh->set_visible(state);
-            _regenerate_transparency = true;
-            on_level_changed();
-        }
+        _regenerate_transparency = true;
+        on_level_changed();
     }
 
     std::weak_ptr<IStaticMesh> Level::static_mesh(uint32_t index) const

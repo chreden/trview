@@ -263,7 +263,7 @@ namespace trview
             for (const auto& light : _level->lights()) { set_light_visibility(light, true); }
             for (const auto& room : _level->rooms()) { set_room_visibility(room, true); }
             for (const auto& camera_sink : _level->camera_sinks()) { set_camera_sink_visibility(camera_sink, true); }
-            for (const auto& static_mesh : _level->static_meshes()) { set_static_mesh_visibility(static_mesh, true); }
+            for (const auto& static_mesh : _level->static_meshes()) { if (auto stat = static_mesh.lock()) { stat->set_visible(true); } };
         };
     }
 
@@ -295,7 +295,6 @@ namespace trview
             }
         };
         _token_store += _viewer->on_font += [this](auto&& name, auto&& font) { _new_font = { name, font }; };
-        _token_store += _viewer->on_static_mesh_visibility += [this](const auto& static_mesh, bool value) { set_static_mesh_visibility(static_mesh, value); };
         _token_store += _viewer->on_static_mesh_selected += [this](const auto& static_mesh) { select_static_mesh(static_mesh); };
 
         _viewer->set_settings(_settings);
@@ -658,22 +657,6 @@ namespace trview
         }
     }
 
-    void Application::set_static_mesh_visibility(const std::weak_ptr<IStaticMesh>& static_mesh, bool visible)
-    {
-        if (!_level)
-        {
-            return;
-        }
-
-        if (const auto static_mesh_ptr = static_mesh.lock())
-        {
-            if (static_mesh_ptr->visible() != visible)
-            {
-                _level->set_static_mesh_visibility(static_mesh_ptr->number(), visible);
-            }
-        }
-    }
-
     void Application::select_sector(const std::weak_ptr<ISector>& sector)
     {
         _viewer->select_sector(sector);
@@ -926,7 +909,6 @@ namespace trview
     void Application::setup_statics_window()
     {
         _token_store += _statics_windows->on_static_selected += [this](const auto& stat) { select_static_mesh(stat); };
-        _token_store += _statics_windows->on_static_visibility += [this](const auto& stat, bool value) { set_static_mesh_visibility(stat, value); };
     }
 
     void Application::save_window_placement()

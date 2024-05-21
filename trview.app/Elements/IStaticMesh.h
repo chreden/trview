@@ -5,6 +5,7 @@
 #include <trlevel/trtypes.h>
 #include <trview.app/Camera/ICamera.h>
 #include <trview.app/Geometry/IMesh.h>
+#include <trview.common/Event.h>
 
 namespace trview
 {
@@ -42,6 +43,8 @@ namespace trview
         virtual bool breakable() const = 0;
         virtual bool visible() const = 0;
         virtual void set_visible(bool value) = 0;
+
+        Event<> on_changed;
     };
 
     constexpr std::string to_string(IStaticMesh::Type type) noexcept;

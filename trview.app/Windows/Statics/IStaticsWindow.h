@@ -22,6 +22,5 @@ namespace trview
 
         Event<> on_window_closed;
         Event<std::weak_ptr<IStaticMesh>> on_static_selected;
-        Event<std::weak_ptr<IStaticMesh>, bool> on_static_visibility;
     };
 }

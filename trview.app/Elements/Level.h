@@ -113,7 +113,6 @@ namespace trview
             const ILight::Source& light_source,
             const ICameraSink::Source& camera_sink_source);
         std::vector<std::weak_ptr<IStaticMesh>> static_meshes() const override;
-        void set_static_mesh_visibility(uint32_t index, bool state) override;
         std::weak_ptr<IStaticMesh> static_mesh(uint32_t index) const override;
     private:
         void generate_rooms(const trlevel::ILevel& level, const IRoom::Source& room_source, const IMeshStorage& mesh_storage);
@@ -161,6 +160,7 @@ namespace trview
         void deduplicate_triangles();
         void record_models(const trlevel::ILevel& level);
         void record_static_meshes();
+        void content_changed();
 
         std::shared_ptr<graphics::IDevice> _device;
         std::vector<std::shared_ptr<IRoom>>   _rooms;
