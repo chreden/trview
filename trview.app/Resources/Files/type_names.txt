@@ -2991,8 +2991,8 @@
                 "categories": [ "Trap" ]
             }, {
                 "id": 135,
-                "name": "Flame emitter",
-                "categories": [ "Trap" ]
+                "name": "Chain",
+                "categories": [ "Scenery" ]
             }, {
                 "id": 136,
                 "name": "Rotating blade",
