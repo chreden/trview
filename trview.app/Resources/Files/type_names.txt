@@ -2992,7 +2992,7 @@
             }, {
                 "id": 135,
                 "name": "Chain",
-                "categories": [ "Scenery" ]
+                "categories": [ "Trap" ]
             }, {
                 "id": 136,
                 "name": "Rotating blade",
