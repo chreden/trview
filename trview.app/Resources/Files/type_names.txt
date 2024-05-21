@@ -2991,7 +2991,7 @@
                 "categories": [ "Trap" ]
             }, {
                 "id": 135,
-                "name": "Flame emitter",
+                "name": "Chain",
                 "categories": [ "Trap" ]
             }, {
                 "id": 136,
