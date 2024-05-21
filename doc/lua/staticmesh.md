@@ -4,6 +4,7 @@
 
 | Name | Type | Mode | Description |
 | ---- | ---- | ---- | ---- |
+| breakable | boolean | R | Whether this is a breakable static |
 | collision | [BoundingBox](boundingbox.md) | R | Collision bounding box |
 | id | number | R | Mesh ID or sprite texture ID |
 | position | [Vector3](vector3.md) | R | Static mesh position in the world. |

@@ -14,7 +14,12 @@ namespace trview
             {
                 auto static_mesh = lua::get_self<IStaticMesh>(L);
                 const std::string key = lua_tostring(L, 2);
-                if (key == "collision")
+                if (key == "breakable")
+                {
+                    lua_pushboolean(L, static_mesh->breakable());
+                    return 1;
+                }
+                else if (key == "collision")
                 {
                     return create_bounding_box(L, static_mesh->collision());
                 }
