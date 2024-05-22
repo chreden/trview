@@ -8,7 +8,8 @@ namespace trview
     {
     }
 
-    StaticsWindow::StaticsWindow()
+    StaticsWindow::StaticsWindow(const std::shared_ptr<IClipboard>& clipboard)
+        : _clipboard(clipboard)
     {
         setup_filters();
     }
@@ -150,26 +151,17 @@ namespace trview
                     {
                         const auto string_value = get_string(value);
                         ImGui::TableNextColumn();
-                        if (ImGui::Selectable(name.c_str(), false, ImGuiSelectableFlags_SpanAllColumns))
-                        {
-                            // _clipboard->write(to_utf16(string_value));
-                            // _tooltip_timer = 0.0f;
-                        }
-                        if (ImGui::IsItemHovered() && _tips.find(name) != _tips.end())
-                        {
-                            ImGui::BeginTooltip();
-                            ImGui::Text(_tips[name].c_str());
-                            ImGui::EndTooltip();
-                        }
-                        if (ImGui::IsItemHovered() && _tips.find(string_value) != _tips.end())
-                        {
-                            ImGui::BeginTooltip();
-                            ImGui::Text(_tips[string_value].c_str());
-                            ImGui::EndTooltip();
-                        }
-
+                        ImGui::Text(name.c_str());
                         ImGui::TableNextColumn();
                         ImGui::Text(string_value.c_str());
+                        if (ImGui::BeginPopupContextItem(name.c_str()))
+                        {
+                            if (ImGui::MenuItem("Copy"))
+                            {
+                                _clipboard->write(to_utf16(string_value));
+                            }
+                            ImGui::EndPopup();
+                        }
                     };
 
                     auto position_text = [&stat]()
