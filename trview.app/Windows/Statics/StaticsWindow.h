@@ -1,9 +1,12 @@
 #pragma once
 
+#include <vector>
+
 #include <trview.common/Windows/IClipboard.h>
 
 #include "IStaticsWindow.h"
 #include "../ColumnSizer.h"
+#include "../../Elements/IRoom.h"
 #include "../../Elements/IStaticMesh.h"
 #include "../../Filters/Filters.h"
 #include "../../Track/Track.h"

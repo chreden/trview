@@ -46,11 +46,9 @@ namespace trview
         {
             _filters.render();
 
-            // TODO: 
             ImGui::SameLine();
             _track.render();
 
-            // TODO:
             ImGui::SameLine();
             bool sync_static = _sync_static;
             if (ImGui::Checkbox(Names::sync_item.c_str(), &sync_static))
@@ -202,8 +200,8 @@ namespace trview
         _column_sizer.measure("#__", 0);
         _column_sizer.measure("Room__", 1);
         _column_sizer.measure("ID__", 2);
-        _column_sizer.measure("Type______", 3);
-        // _column_sizer.measure("Hide____", 4);
+        _column_sizer.measure("Type__", 3);
+        _column_sizer.measure("Hide______", 4);
 
         for (const auto& stat : _all_statics)
         {
@@ -245,7 +243,6 @@ namespace trview
         _filters.add_getter<float>("Rotation", [](auto&& stat) { return static_cast<float>(DirectX::XMConvertToDegrees(stat.rotation())); });
         _filters.add_getter<float>("ID", [](auto&& stat) { return static_cast<float>(stat.id()); });
         _filters.add_getter<float>("Room", [](auto&& stat) { return static_cast<float>(static_mesh_room(stat)); });
-        //_filters.add_getter<bool>("Invisible", [](auto&& item) { return item.invisible_flag(); });
         _filters.add_getter<bool>("Breakable", [](auto&& item) { return item.breakable(); });
         _filters.add_getter<std::string>("Flags", [](auto&& stat) { return format_binary(stat.flags()); });
     }
