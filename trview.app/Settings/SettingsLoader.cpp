@@ -105,6 +105,7 @@ namespace trview
             read_attribute(json, settings.plugin_directories, "plugin_directories");
             read_attribute(json, settings.toggles, "toggles");
             read_attribute(json, settings.fonts, "fonts");
+            read_attribute(json, settings.statics_startup, "statics_startup");
 
             settings.recent_files.resize(std::min<std::size_t>(settings.recent_files.size(), settings.max_recent_files));
         }
@@ -172,6 +173,7 @@ namespace trview
             json["plugin_directories"] = settings.plugin_directories;
             json["toggles"] = settings.toggles;
             json["fonts"] = settings.fonts;
+            json["statics_startup"] = settings.statics_startup;
             _files->save_file(file_path, json.dump());
         }
         catch (...)

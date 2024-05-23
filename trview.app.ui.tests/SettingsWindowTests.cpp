@@ -504,6 +504,29 @@ void register_settings_window_tests(ImGuiTestEngine* engine)
             IM_CHECK_EQ(received_value.value(), 0.5f);
         });
 
+    test<MockWrapper<SettingsWindow>>(engine, "Settings Window", "Clicking Statics Window on Startup Raises Event",
+        [](ImGuiTestContext* ctx) { render(ctx->GetVars<MockWrapper<SettingsWindow>>()); },
+        [](ImGuiTestContext* ctx)
+        {
+            auto& controls = ctx->GetVars<MockWrapper<SettingsWindow>>();
+            controls.ptr = register_test_module().build();
+            controls.ptr->toggle_visibility();
+
+            std::optional<bool> received_value;
+            auto token = controls.ptr->on_statics_startup += [&](bool value)
+                {
+                    received_value = value;
+                };
+
+            ctx->SetRef("Settings");
+            ctx->ItemClick("TabBar/General");
+            IM_CHECK_EQ(ctx->ItemIsChecked("TabBar/General/Open Statics Window at startup"), false);
+            ctx->ItemCheck("TabBar/General/Open Statics Window at startup");
+            IM_CHECK_EQ(ctx->ItemIsChecked("TabBar/General/Open Statics Window at startup"), true);
+            IM_CHECK_EQ(received_value.has_value(), true);
+            IM_CHECK_EQ(received_value.value(), true);
+        });
+
     test<MockWrapper<SettingsWindow>>(engine, "Settings Window", "Clicking Triggers Window on Startup Raises Event",
         [](ImGuiTestContext* ctx) { render(ctx->GetVars<MockWrapper<SettingsWindow>>()); },
         [](ImGuiTestContext* ctx)
@@ -955,6 +978,22 @@ void register_settings_window_tests(ImGuiTestEngine* engine)
             ctx->ItemClick("TabBar/Camera");
 
             IM_CHECK_EQ(ItemText(ctx, ctx->ItemInfo("TabBar/Camera/Sensitivity")->ID), "0.500");
+        });
+
+    test<MockWrapper<SettingsWindow>>(engine, "Settings Window", "Set Statics Window on Startup Updates Checkbox",
+        [](ImGuiTestContext* ctx) { render(ctx->GetVars<MockWrapper<SettingsWindow>>()); },
+        [](ImGuiTestContext* ctx)
+        {
+            auto& controls = ctx->GetVars<MockWrapper<SettingsWindow>>();
+            controls.ptr = register_test_module().build();
+            controls.ptr->toggle_visibility();
+
+            ctx->SetRef("Settings");
+            ctx->ItemClick("TabBar/General");
+            IM_CHECK_EQ(ctx->ItemIsChecked("TabBar/General/Open Statics Window at startup"), false);
+            controls.ptr->set_statics_startup(true);
+            ctx->Yield();
+            IM_CHECK_EQ(ctx->ItemIsChecked("TabBar/General/Open Statics Window at startup"), true);
         });
 
     test<MockWrapper<SettingsWindow>>(engine, "Settings Window", "Set Triggers Window on Startup Updates Checkbox",

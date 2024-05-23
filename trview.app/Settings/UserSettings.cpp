@@ -42,6 +42,7 @@ namespace trview
             route_startup == other.route_startup &&
             fov == other.fov &&
             camera_sink_startup == other.camera_sink_startup &&
+            statics_startup == other.statics_startup &&
             plugin_directories == other.plugin_directories;
     }
 }

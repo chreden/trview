@@ -908,6 +908,10 @@ namespace trview
 
     void Application::setup_statics_window()
     {
+        if (_settings.statics_startup)
+        {
+            _statics_windows->create_window();
+        }
         _token_store += _statics_windows->on_static_selected += [this](const auto& stat) { select_static_mesh(stat); };
     }
 

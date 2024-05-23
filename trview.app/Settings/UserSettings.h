@@ -63,6 +63,7 @@ namespace trview
             { "Default", {.name = "Arial", .filename = "arial.ttf", .size = 12 } },
             { "Console", {.name = "Consolas", .filename = "consola.ttf", .size = 12 } }
         };
+        bool statics_startup{ false };
 
         bool operator==(const UserSettings& other) const;
     };
