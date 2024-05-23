@@ -679,3 +679,37 @@ TEST(Room, Sector)
     s = sector.lock();
     ASSERT_FALSE(s);
 }
+
+TEST(Room, PickTestsStaticMesh)
+{
+    using namespace DirectX;
+    using namespace DirectX::SimpleMath;
+
+    auto level = mock_shared<trlevel::mocks::MockLevel>();
+    ON_CALL(*level, get_static_mesh).WillByDefault(testing::Return(trlevel::tr_staticmesh{}));
+
+    trlevel::tr3_room level_room{ .static_meshes = { {} } };
+
+    auto static_mesh = mock_shared<MockStaticMesh>();
+    ON_CALL(*static_mesh, number).WillByDefault(Return(10));
+    ON_CALL(*static_mesh, visible).WillByDefault(Return(true));
+    EXPECT_CALL(*static_mesh, pick).Times(1).WillOnce(Return(PickResult{ true, 0, {}, {}, PickResult::Type::StaticMesh, 10 }));
+
+    auto static_mesh_source = [&](auto&&...)
+        {
+            return static_mesh;
+        };
+
+    auto room = register_test_module()
+        .with_room(level_room)
+        .with_static_mesh_source(static_mesh_source)
+        .with_tr_level(level)
+        .build();
+
+    auto results = room->pick(Vector3(0, 0, -2), Vector3(0, 0, 1), PickFilter::StaticMeshes);
+    ASSERT_EQ(results.size(), 1);
+    auto result = results.front();
+    ASSERT_EQ(result.hit, true);
+    ASSERT_EQ(result.type, PickResult::Type::StaticMesh);
+    ASSERT_EQ(result.index, 10);
+}
