@@ -12,6 +12,20 @@ using namespace trview::tests;
 using namespace testing;
 using namespace DirectX::SimpleMath;
 
+TEST(Lua_StaticMesh, Breakable)
+{
+    auto mesh = mock_shared<MockStaticMesh>();
+    EXPECT_CALL(*mesh, breakable).WillOnce(Return(true));
+
+    LuaState L;
+    lua::create_static_mesh(L, mesh);
+    lua_setglobal(L, "s");
+
+    ASSERT_EQ(0, luaL_dostring(L, "return s.breakable"));
+    ASSERT_EQ(LUA_TBOOLEAN, lua_type(L, -1));
+    ASSERT_EQ(true, lua_toboolean(L, -1));
+}
+
 TEST(Lua_StaticMesh, Collision)
 {
     auto static_mesh = mock_shared<MockStaticMesh>();
