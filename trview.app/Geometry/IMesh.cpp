@@ -54,7 +54,11 @@ namespace trview
                 { vertices[2].pos, vertices[1].pos, vertices[3].pos, vertices[2].uv, vertices[1].uv, vertices[3].uv, tile, TransparentTriangle::Mode::Normal },
             };
 
-            std::vector<Triangle> collision_triangles;
+            std::vector<Triangle> collision_triangles
+            {
+                Triangle(vertices[0].pos, vertices[1].pos, vertices[2].pos),
+                Triangle(vertices[2].pos, vertices[1].pos, vertices[3].pos)
+            };
 
             float object_width = static_cast<float>(right - left) / trlevel::Scale_X;
             float object_height = static_cast<float>(bottom - top) / trlevel::Scale_Y;

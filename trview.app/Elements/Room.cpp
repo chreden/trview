@@ -184,11 +184,16 @@ namespace trview
         {
             for (const auto& static_mesh : _static_meshes)
             {
+                if (!static_mesh->visible())
+                {
+                    continue;
+                }
+
                 PickResult static_mesh_result = static_mesh->pick(position, direction);
                 if (static_mesh_result.hit)
                 {
-                    static_mesh_result.type = PickResult::Type::Room;
-                    static_mesh_result.index = _index;
+                    static_mesh_result.type = PickResult::Type::StaticMesh;
+                    static_mesh_result.index = static_mesh->number();
                     pick_results.push_back(static_mesh_result);
                 }
             }
@@ -250,7 +255,10 @@ namespace trview
                 _mesh->render(_room_offset * camera.view_projection(), *_texture_storage, colour, 1.0f, Vector3::Zero, false, !has_flag(render_filter, RenderFilter::Lighting));
                 for (const auto& mesh : _static_meshes)
                 {
-                    mesh->render(camera, *_texture_storage, colour);
+                    if (mesh->visible())
+                    {
+                        mesh->render(camera, *_texture_storage, colour);
+                    }
                 }
             }
         }
@@ -466,7 +474,10 @@ namespace trview
 
                 for (const auto& static_mesh : _static_meshes)
                 {
-                    static_mesh->get_transparent_triangles(transparency, camera, colour);
+                    if (static_mesh->visible())
+                    {
+                        static_mesh->get_transparent_triangles(transparency, camera, colour);
+                    }
                 }
             }
         }

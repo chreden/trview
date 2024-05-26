@@ -202,6 +202,13 @@ namespace trview
                 {
                     on_camera_sink_visibility(level->camera_sink(_context_pick.index), false);
                 }
+                else if (_context_pick.type == PickResult::Type::StaticMesh)
+                {
+                    if (auto mesh = level->static_mesh(_context_pick.index).lock())
+                    {
+                        mesh->set_visible(false);
+                    }
+                }
             }
         };
         _token_store += _ui->on_orbit += [&]()
@@ -563,7 +570,7 @@ namespace trview
                 _ui->set_show_context_menu(true);
                 _camera_input.reset(true);
                 _ui->set_remove_waypoint_enabled(_current_pick.type == PickResult::Type::Waypoint);
-                _ui->set_hide_enabled(equals_any(_current_pick.type, PickResult::Type::Entity, PickResult::Type::Trigger, PickResult::Type::Light, PickResult::Type::Room, PickResult::Type::CameraSink));
+                _ui->set_hide_enabled(equals_any(_current_pick.type, PickResult::Type::Entity, PickResult::Type::Trigger, PickResult::Type::Light, PickResult::Type::Room, PickResult::Type::CameraSink, PickResult::Type::StaticMesh));
                 _ui->set_mid_waypoint_enabled(_current_pick.type == PickResult::Type::Room && _current_pick.triangle.normal.y < 0);
 
                 const auto level = _level.lock();
@@ -1334,6 +1341,14 @@ namespace trview
             if (level)
             {
                 on_camera_sink_selected(level->camera_sink(pick.index));
+            }
+            break;
+        }
+        case PickResult::Type::StaticMesh:
+        {
+            if (level)
+            {
+                on_static_mesh_selected(level->static_mesh(pick.index));
             }
             break;
         }

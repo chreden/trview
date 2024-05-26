@@ -329,6 +329,12 @@
     <ClCompile Include="UI\Fonts\Fonts.cpp">
       <Filter>UI\Fonts</Filter>
     </ClCompile>
+    <ClCompile Include="Windows\Statics\StaticsWindowManager.cpp">
+      <Filter>Windows\Statics</Filter>
+    </ClCompile>
+    <ClCompile Include="Windows\Statics\StaticsWindow.cpp">
+      <Filter>Windows\Statics</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera\Camera.h">
@@ -1063,6 +1069,24 @@
     <ClInclude Include="Mocks\UI\IFonts.h">
       <Filter>Mocks\UI</Filter>
     </ClInclude>
+    <ClInclude Include="Windows\Statics\IStaticsWindowManager.h">
+      <Filter>Windows\Statics</Filter>
+    </ClInclude>
+    <ClInclude Include="Windows\Statics\IStaticsWindow.h">
+      <Filter>Windows\Statics</Filter>
+    </ClInclude>
+    <ClInclude Include="Windows\Statics\StaticsWindowManager.h">
+      <Filter>Windows\Statics</Filter>
+    </ClInclude>
+    <ClInclude Include="Windows\Statics\StaticsWindow.h">
+      <Filter>Windows\Statics</Filter>
+    </ClInclude>
+    <ClInclude Include="Mocks\Windows\IStaticsWindow.h">
+      <Filter>Mocks\Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="Mocks\Windows\IStaticsWindowManager.h">
+      <Filter>Mocks\Windows</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Windows">
@@ -1253,6 +1277,9 @@
     </Filter>
     <Filter Include="UI\Fonts">
       <UniqueIdentifier>{68f08988-7dd5-4109-ba3d-337b37fb0567}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Windows\Statics">
+      <UniqueIdentifier>{56d85abd-e0f6-45f4-9776-b734b80d4b45}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

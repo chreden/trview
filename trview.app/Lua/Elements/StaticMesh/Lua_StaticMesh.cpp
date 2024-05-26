@@ -14,7 +14,12 @@ namespace trview
             {
                 auto static_mesh = lua::get_self<IStaticMesh>(L);
                 const std::string key = lua_tostring(L, 2);
-                if (key == "collision")
+                if (key == "breakable")
+                {
+                    lua_pushboolean(L, static_mesh->breakable());
+                    return 1;
+                }
+                else if (key == "collision")
                 {
                     return create_bounding_box(L, static_mesh->collision());
                 }
@@ -41,6 +46,11 @@ namespace trview
                     lua_pushstring(L, to_string(static_mesh->type()).c_str());
                     return 1;
                 }
+                else if (key == "visible")
+                {
+                    lua_pushboolean(L, static_mesh->visible());
+                    return 1;
+                }
                 else if (key == "visibility")
                 {
                     return create_bounding_box(L, static_mesh->visibility());
@@ -52,8 +62,11 @@ namespace trview
             {
                 auto static_mesh = lua::get_self<IStaticMesh>(L);
                 const std::string key = lua_tostring(L, 2);
-                key;
-                static_mesh;
+
+                if (key == "visible")
+                {
+                    static_mesh->set_visible(lua_toboolean(L, -1));
+                }
                 return 0;
             }
         }

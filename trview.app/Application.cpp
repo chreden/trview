@@ -65,14 +65,15 @@ namespace trview
         std::shared_ptr<IPlugins> plugins,
         std::unique_ptr<IPluginsWindowManager> plugins_window_manager,
         const IRandomizerRoute::Source& randomizer_route_source,
-        std::shared_ptr<IFonts> fonts)
+        std::shared_ptr<IFonts> fonts,
+        std::unique_ptr<IStaticsWindowManager> statics_window_manager)
         : MessageHandler(application_window), _instance(GetModuleHandle(nullptr)),
         _file_menu(std::move(file_menu)), _update_checker(std::move(update_checker)), _view_menu(window()), _settings_loader(settings_loader), _trlevel_source(trlevel_source),
         _viewer(std::move(viewer)), _route_source(route_source), _shortcuts(shortcuts), _items_windows(std::move(items_window_manager)),
         _triggers_windows(std::move(triggers_window_manager)), _route_window(std::move(route_window_manager)), _rooms_windows(std::move(rooms_window_manager)), _level_source(level_source),
         _dialogs(dialogs), _files(files), _timer(default_time_source()), _imgui_backend(std::move(imgui_backend)), _lights_windows(std::move(lights_window_manager)), _log_windows(std::move(log_window_manager)),
         _textures_windows(std::move(textures_window_manager)), _camera_sink_windows(std::move(camera_sink_window_manager)), _console_manager(std::move(console_manager)),
-        _plugins(plugins), _plugins_windows(std::move(plugins_window_manager)), _randomizer_route_source(randomizer_route_source), _fonts(fonts)
+        _plugins(plugins), _plugins_windows(std::move(plugins_window_manager)), _randomizer_route_source(randomizer_route_source), _fonts(fonts), _statics_windows(std::move(statics_window_manager))
     {
         SetWindowLongPtr(window(), GWLP_USERDATA, reinterpret_cast<LONG_PTR>(_imgui_backend.get()));
 
@@ -94,6 +95,7 @@ namespace trview
         setup_route_window();
         setup_lights_windows();
         setup_camera_sink_windows();
+        setup_statics_window();
         setup_viewer(*startup_options);
         _plugins->initialise(this);
     }
@@ -261,6 +263,7 @@ namespace trview
             for (const auto& light : _level->lights()) { set_light_visibility(light, true); }
             for (const auto& room : _level->rooms()) { set_room_visibility(room, true); }
             for (const auto& camera_sink : _level->camera_sinks()) { set_camera_sink_visibility(camera_sink, true); }
+            for (const auto& static_mesh : _level->static_meshes()) { if (auto stat = static_mesh.lock()) { stat->set_visible(true); } };
         };
     }
 
@@ -292,6 +295,7 @@ namespace trview
             }
         };
         _token_store += _viewer->on_font += [this](auto&& name, auto&& font) { _new_font = { name, font }; };
+        _token_store += _viewer->on_static_mesh_selected += [this](const auto& static_mesh) { select_static_mesh(static_mesh); };
 
         _viewer->set_settings(_settings);
 
@@ -498,6 +502,7 @@ namespace trview
         _triggers_windows->set_room(room);
         _lights_windows->set_room(room);
         _camera_sink_windows->set_room(room);
+        _statics_windows->set_room(room);
     }
 
     void Application::select_trigger(const std::weak_ptr<ITrigger>& trigger)
@@ -704,6 +709,7 @@ namespace trview
         _route_window->update(elapsed);
         _lights_windows->update(elapsed);
         _plugins_windows->update(elapsed);
+        _statics_windows->update(elapsed);
 
         _viewer->render();
 
@@ -733,6 +739,7 @@ namespace trview
         _camera_sink_windows->render();
         _console_manager->render();
         _plugins_windows->render();
+        _statics_windows->render();
         _plugins->render_ui();
 
         ImGui::PopFont();
@@ -899,6 +906,15 @@ namespace trview
         _token_store += _camera_sink_windows->on_camera_sink_type_changed += [this]() { _viewer->set_scene_changed(); };
     }
 
+    void Application::setup_statics_window()
+    {
+        if (_settings.statics_startup)
+        {
+            _statics_windows->create_window();
+        }
+        _token_store += _statics_windows->on_static_selected += [this](const auto& stat) { select_static_mesh(stat); };
+    }
+
     void Application::save_window_placement()
     {
         WINDOWPLACEMENT placement{};
@@ -980,6 +996,7 @@ namespace trview
         _lights_windows->set_level_version(_level->version());
         _lights_windows->set_lights(_level->lights());
         _camera_sink_windows->set_camera_sinks(_level->camera_sinks());
+        _statics_windows->set_statics(_level->static_meshes());
         if (open_mode == ILevel::OpenMode::Full)
         {
             _route->clear();
@@ -1085,5 +1102,6 @@ namespace trview
 
         select_room(static_mesh_ptr->room());
         _viewer->select_static_mesh(static_mesh_ptr);
+        _statics_windows->select_static(static_mesh_ptr);
     }
 }

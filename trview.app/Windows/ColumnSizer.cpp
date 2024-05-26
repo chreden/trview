@@ -4,6 +4,11 @@ namespace trview
 {
     void ColumnSizer::measure(const std::string& value, uint32_t index)
     {
+        if (ImGui::GetCurrentContext() == nullptr)
+        {
+            return;
+        }
+
         if (index >= _sizes.size())
         {
             _sizes.resize(index + 1, 0.0f);

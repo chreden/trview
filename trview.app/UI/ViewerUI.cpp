@@ -152,6 +152,7 @@ namespace trview
         forward_setting(_settings_window->on_camera_fov, _settings.fov);
         forward_setting(_settings_window->on_camera_sink_startup, _settings.camera_sink_startup);
         forward_setting(_settings_window->on_plugin_directories, _settings.plugin_directories);
+        forward_setting(_settings_window->on_statics_startup, _settings.statics_startup);
         _settings_window->on_font += on_font;
 
         _camera_position = std::make_unique<CameraPosition>();
@@ -390,6 +391,7 @@ namespace trview
         _settings_window->set_fov(settings.fov);
         _settings_window->set_camera_sink_startup(settings.camera_sink_startup);
         _settings_window->set_plugin_directories(settings.plugin_directories);
+        _settings_window->set_statics_startup(settings.statics_startup);
         _camera_position->set_display_degrees(settings.camera_display_degrees);
         _map_renderer->set_colours(settings.map_colours);
         for (const auto& toggle : settings.toggles)

@@ -82,6 +82,8 @@ namespace trview
 
         Event<std::string, FontSetting> on_font;
 
+        Event<std::weak_ptr<IStaticMesh>> on_static_mesh_selected;
+
         virtual CameraMode camera_mode() const = 0;
 
         /// Render the viewer.

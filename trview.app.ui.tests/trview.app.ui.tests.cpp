@@ -46,6 +46,12 @@ void ImGuiTrviewTestEngineHook_RenderedText(ImGuiContext* ctx, ImGuiID id, const
 
 int main()
 {
+    // Quit if no debugger so it stops running in test discovery.
+    if (!ImOsIsDebuggerPresent())
+    {
+        return 0;
+    }
+
     // Setup application backend
     ImGuiApp* app = ImGuiApp_ImplDefault_Create();
 

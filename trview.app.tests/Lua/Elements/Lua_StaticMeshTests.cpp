@@ -12,6 +12,20 @@ using namespace trview::tests;
 using namespace testing;
 using namespace DirectX::SimpleMath;
 
+TEST(Lua_StaticMesh, Breakable)
+{
+    auto mesh = mock_shared<MockStaticMesh>();
+    EXPECT_CALL(*mesh, breakable).WillOnce(Return(true));
+
+    LuaState L;
+    lua::create_static_mesh(L, mesh);
+    lua_setglobal(L, "s");
+
+    ASSERT_EQ(0, luaL_dostring(L, "return s.breakable"));
+    ASSERT_EQ(LUA_TBOOLEAN, lua_type(L, -1));
+    ASSERT_EQ(true, lua_toboolean(L, -1));
+}
+
 TEST(Lua_StaticMesh, Collision)
 {
     auto static_mesh = mock_shared<MockStaticMesh>();
@@ -115,6 +129,18 @@ TEST(Lua_StaticMesh, Rotation)
     ASSERT_EQ(123.0f, lua_tonumber(L, -1));
 }
 
+TEST(Lua_StaticMesh, SetVisible)
+{
+    auto static_mesh = mock_shared<MockStaticMesh>()->with_number(100);
+    EXPECT_CALL(*static_mesh, set_visible(true)).Times(1);
+
+    LuaState L;
+    lua::create_static_mesh(L, static_mesh);
+    lua_setglobal(L, "s");
+
+    ASSERT_EQ(0, luaL_dostring(L, "s.visible = true"));
+}
+
 TEST(Lua_StaticMesh, Type)
 {
     auto static_mesh = mock_shared<MockStaticMesh>();
@@ -132,6 +158,20 @@ TEST(Lua_StaticMesh, Type)
     ASSERT_EQ(0, luaL_dostring(L, "return s.type"));
     ASSERT_EQ(LUA_TSTRING, lua_type(L, -1));
     ASSERT_STREQ("Sprite", lua_tostring(L, -1));
+}
+
+TEST(Lua_StaticMesh, Visible)
+{
+    auto static_mesh = mock_shared<MockStaticMesh>();
+    EXPECT_CALL(*static_mesh, visible).WillOnce(Return(true));
+
+    LuaState L;
+    lua::create_static_mesh(L, static_mesh);
+    lua_setglobal(L, "s");
+
+    ASSERT_EQ(0, luaL_dostring(L, "return s.visible"));
+    ASSERT_EQ(LUA_TBOOLEAN, lua_type(L, -1));
+    ASSERT_EQ(true, lua_toboolean(L, -1));
 }
 
 TEST(Lua_StaticMesh, Visibility)

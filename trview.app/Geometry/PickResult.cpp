@@ -176,6 +176,14 @@ namespace trview
                 }
                 break;
             }
+            case PickResult::Type::StaticMesh:
+            {
+                if (const auto static_mesh = level.static_mesh(result.index).lock())
+                {
+                    stream << to_string(static_mesh->type()) << " " << result.index;
+                }
+                break;
+            }
         }
 
         return stream.str();

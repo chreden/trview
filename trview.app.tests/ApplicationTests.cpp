@@ -33,6 +33,8 @@
 #include <trview.app/Mocks/Plugins/IPlugins.h>
 #include <trview.app/Mocks/Windows/IPluginsWindowManager.h>
 #include <trview.app/Mocks/UI/IFonts.h>
+#include <trview.app/Mocks/Windows/IStaticsWindow.h>
+#include <trview.app/Mocks/Windows/IStaticsWindowManager.h>
 
 using namespace trview;
 using namespace trview::tests;
@@ -87,6 +89,7 @@ namespace
             std::unique_ptr<IPluginsWindowManager> plugins_window_manager{ mock_unique<MockPluginsWindowManager>() };
             IRandomizerRoute::Source randomizer_route_source { [](auto&&...) { return mock_shared<MockRandomizerRoute>(); } };
             std::shared_ptr<IFonts> fonts { mock_shared<MockFonts>() };
+            std::unique_ptr<IStaticsWindowManager> statics_window_manager{ mock_unique<MockStaticsWindowManager>() };
 
             std::unique_ptr<Application> build()
             {
@@ -96,7 +99,7 @@ namespace
                     std::move(items_window_manager), std::move(triggers_window_manager), std::move(route_window_manager), std::move(rooms_window_manager),
                     level_source, startup_options, dialogs, files, std::move(imgui_backend), std::move(lights_window_manager), std::move(log_window_manager),
                     std::move(textures_window_manager), std::move(camera_sink_window_manager), std::move(console_manager),
-                    plugins, std::move(plugins_window_manager), randomizer_route_source, fonts);
+                    plugins, std::move(plugins_window_manager), randomizer_route_source, fonts, std::move(statics_window_manager));
             }
 
             test_module& with_dialogs(std::shared_ptr<IDialogs> dialogs)
@@ -237,6 +240,12 @@ namespace
                 return *this;
             }
 
+            test_module& with_statics_window_manager(std::unique_ptr<IStaticsWindowManager> statics_window_manager)
+            {
+                this->statics_window_manager = std::move(statics_window_manager);
+                return *this;
+            }
+
             test_module& with_fonts(std::shared_ptr<IFonts> fonts)
             {
                 this->fonts = fonts;
@@ -310,6 +319,7 @@ TEST(Application, WindowContentsResetBeforeViewerLoaded)
     auto [lights_window_manager_ptr, lights_window_manager] = create_mock<MockLightsWindowManager>();
     auto [textures_window_manager_ptr, textures_window_manager] = create_mock<MockTexturesWindowManager>();
     auto [camera_sink_window_manager_ptr, camera_sink_window_manager] = create_mock<MockCameraSinkWindowManager>();
+    auto [statics_window_manager_ptr, statics_window_manager] = create_mock<MockStaticsWindowManager>();
     auto route = mock_shared<MockRoute>();
 
     std::vector<std::string> events;
@@ -330,6 +340,7 @@ TEST(Application, WindowContentsResetBeforeViewerLoaded)
     EXPECT_CALL(route_window_manager, set_route(A<const std::weak_ptr<IRoute>&>())).Times(3).WillRepeatedly([&](auto) { events.push_back("route_route"); });
     EXPECT_CALL(lights_window_manager, set_lights(A<const std::vector<std::weak_ptr<ILight>>&>())).Times(1).WillOnce([&](auto) { events.push_back("lights_lights"); });
     EXPECT_CALL(camera_sink_window_manager, set_camera_sinks).Times(1).WillOnce([&](auto) { events.push_back("camera_sinks_camera_sinks"); });
+    EXPECT_CALL(statics_window_manager, set_statics).Times(1).WillOnce([&](auto) { events.push_back("statics_statics"); });
     EXPECT_CALL(*route, clear()).Times(1).WillOnce([&] { events.push_back("route_clear"); });
     EXPECT_CALL(*route, set_unsaved(false)).Times(1);
     EXPECT_CALL(textures_window_manager, set_texture_storage).Times(1).WillOnce([&](auto) { events.push_back("textures"); });
@@ -346,6 +357,7 @@ TEST(Application, WindowContentsResetBeforeViewerLoaded)
         .with_lights_window_manager(std::move(lights_window_manager_ptr))
         .with_textures_window_manager(std::move(textures_window_manager_ptr))
         .with_camera_sink_window_manager(std::move(camera_sink_window_manager_ptr))
+        .with_statics_window_manager(std::move(statics_window_manager_ptr))
         .build();
     application->open("test_path.tr2", ILevel::OpenMode::Full);
 
@@ -525,6 +537,8 @@ TEST(Application, WindowManagersUpdated)
     EXPECT_CALL(triggers_window_manager, update).Times(1);
     auto [lights_window_manager_ptr, lights_window_manager] = create_mock<MockLightsWindowManager>();
     EXPECT_CALL(lights_window_manager, update).Times(1);
+    auto [statics_window_manager_ptr, statics_window_manager] = create_mock<MockStaticsWindowManager>();
+    EXPECT_CALL(statics_window_manager, update).Times(1);
 
     auto application = register_test_module()
         .with_route_window_manager(std::move(route_window_manager_ptr))
@@ -532,6 +546,7 @@ TEST(Application, WindowManagersUpdated)
         .with_rooms_window_manager(std::move(rooms_window_manager_ptr))
         .with_triggers_window_manager(std::move(triggers_window_manager_ptr))
         .with_lights_window_manager(std::move(lights_window_manager_ptr))
+        .with_statics_window_manager(std::move(statics_window_manager_ptr))
         .build();
     application->render();
 }
@@ -558,6 +573,8 @@ TEST(Application, WindowManagersAndViewerRendered)
     EXPECT_CALL(console_manager, render).Times(1);
     auto [plugins_window_manager_ptr, plugins_window_manager] = create_mock<MockPluginsWindowManager>();
     EXPECT_CALL(plugins_window_manager, render).Times(1);
+    auto [statics_window_manager_ptr, statics_window_manager] = create_mock<MockStaticsWindowManager>();
+    EXPECT_CALL(statics_window_manager, render).Times(1);
     auto plugins = mock_shared<MockPlugins>();
     EXPECT_CALL(*plugins, render_ui).Times(1);
 
@@ -575,6 +592,7 @@ TEST(Application, WindowManagersAndViewerRendered)
         .with_camera_sink_window_manager(std::move(camera_sink_window_manager_ptr))
         .with_console_manager(std::move(console_manager_ptr))
         .with_plugins_window_manager(std::move(plugins_window_manager_ptr))
+        .with_statics_window_manager(std::move(statics_window_manager_ptr))
         .with_viewer(std::move(viewer_ptr))
         .with_plugins(plugins)
         .build();
@@ -1307,14 +1325,17 @@ TEST(Application, OnStaticMeshSelected)
     auto level = mock_shared<trview::mocks::MockLevel>();
     auto static_mesh = mock_shared<MockStaticMesh>();
     auto [rooms_window_manager_ptr, rooms_window_manager] = create_mock<MockRoomsWindowManager>();
+    auto [statics_window_manager_ptr, statics_window_manager] = create_mock<MockStaticsWindowManager>();
     auto [viewer_ptr, viewer] = create_mock<MockViewer>();
     auto application = register_test_module()
         .with_rooms_window_manager(std::move(rooms_window_manager_ptr))
+        .with_statics_window_manager(std::move(statics_window_manager_ptr))
         .with_viewer(std::move(viewer_ptr))
         .build();
 
     application->set_current_level(level, ILevel::OpenMode::Full, false);
 
     EXPECT_CALL(viewer, select_static_mesh).Times(1);
+    EXPECT_CALL(statics_window_manager, select_static).Times(1);
     rooms_window_manager.on_static_mesh_selected(static_mesh);
 }

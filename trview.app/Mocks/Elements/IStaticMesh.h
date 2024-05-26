@@ -6,7 +6,7 @@ namespace trview
 {
     namespace mocks
     {
-        struct MockStaticMesh : public IStaticMesh
+        struct MockStaticMesh : public IStaticMesh, public std::enable_shared_from_this<MockStaticMesh>
         {
             MockStaticMesh();
             virtual ~MockStaticMesh();
@@ -21,6 +21,30 @@ namespace trview
             MOCK_METHOD(DirectX::BoundingBox, visibility, (), (const, override));
             MOCK_METHOD(Type, type, (), (const, override));
             MOCK_METHOD(uint16_t, id, (), (const, override));
+            MOCK_METHOD(void, set_number, (uint32_t), (override));
+            MOCK_METHOD(uint32_t, number, (), (const, override));
+            MOCK_METHOD(uint16_t, flags, (), (const, override));
+            MOCK_METHOD(bool, visible, (), (const, override));
+            MOCK_METHOD(void, set_visible, (bool), (override));
+            MOCK_METHOD(bool, breakable, (), (const, override));
+
+            std::shared_ptr<MockStaticMesh> with_number(uint32_t number)
+            {
+                ON_CALL(*this, number).WillByDefault(testing::Return(number));
+                return shared_from_this();
+            }
+
+            std::shared_ptr<MockStaticMesh> with_visible(bool value)
+            {
+                ON_CALL(*this, visible).WillByDefault(testing::Return(value));
+                return shared_from_this();
+            }
+
+            std::shared_ptr<MockStaticMesh> with_room(std::shared_ptr<IRoom> room)
+            {
+                ON_CALL(*this, room).WillByDefault(testing::Return(room));
+                return shared_from_this();
+            }
         };
     }
 }

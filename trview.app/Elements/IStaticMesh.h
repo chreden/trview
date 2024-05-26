@@ -5,6 +5,7 @@
 #include <trlevel/trtypes.h>
 #include <trview.app/Camera/ICamera.h>
 #include <trview.app/Geometry/IMesh.h>
+#include <trview.common/Event.h>
 
 namespace trview
 {
@@ -36,6 +37,14 @@ namespace trview
         virtual DirectX::BoundingBox collision() const = 0;
         virtual Type type() const = 0;
         virtual uint16_t id() const = 0;
+        virtual void set_number(uint32_t number) = 0;
+        virtual uint32_t number() const = 0;
+        virtual uint16_t flags() const = 0;
+        virtual bool breakable() const = 0;
+        virtual bool visible() const = 0;
+        virtual void set_visible(bool value) = 0;
+
+        Event<> on_changed;
     };
 
     constexpr std::string to_string(IStaticMesh::Type type) noexcept;

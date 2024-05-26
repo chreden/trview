@@ -232,6 +232,31 @@ TEST(SettingsLoader, ItemsStartupSaved)
     EXPECT_THAT(output, HasSubstr("\"itemsstartup\":true"));
 }
 
+TEST(SettingsLoader, StaticsStartupLoaded)
+{
+    auto loader = setup_setting("{\"statics_startup\":false}");
+    auto settings = loader->load_user_settings();
+    ASSERT_EQ(settings.statics_startup, false);
+
+    auto loader_true = setup_setting("{\"statics_startup\":true}");
+    auto settings_true = loader_true->load_user_settings();
+    ASSERT_EQ(settings_true.statics_startup, true);
+}
+
+TEST(SettingsLoader, StaticsStartupSaved)
+{
+    std::string output;
+    auto loader = setup_save_setting(output);
+    UserSettings settings;
+    settings.statics_startup = false;
+    loader->save_user_settings(settings);
+    EXPECT_THAT(output, HasSubstr("\"statics_startup\":false"));
+
+    settings.statics_startup = true;
+    loader->save_user_settings(settings);
+    EXPECT_THAT(output, HasSubstr("\"statics_startup\":true"));
+}
+
 TEST(SettingsLoader, TriggersStartupLoaded)
 {
     auto loader = setup_setting("{\"triggerstartup\":false}");

@@ -16,6 +16,7 @@
 #include "RoomsWindowTests.h"
 #include "RouteWindowTests.h"
 #include "SettingsWindowTests.h"
+#include "StaticsWindowTests.h"
 #include "TexturesWindowTests.h"
 #include "TriggersWindowTests.h"
 #include "ViewOptionsTests.h"
@@ -38,6 +39,7 @@ void register_trview_tests(ImGuiTestEngine* engine)
     register_rooms_window_tests(engine);
     register_route_window_tests(engine);
     register_settings_window_tests(engine);
+    register_statics_window_tests(engine);
     register_textures_window_tests(engine);
     register_triggers_window_tests(engine);
     register_view_options_tests(engine);

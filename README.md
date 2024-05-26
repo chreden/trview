@@ -47,6 +47,7 @@ CTRL + M    | New Rooms window
 CTRL + L    | New Lights window
 CTRL + K    | New Camera/Sink window
 CTRL + P    | New Plugins window
+CTRL + S    | New Statics Window 
 CTRL + H    | Toggle room lighting
 F1          | Toggle settings window
 F5          | Reload current level
