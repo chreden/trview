@@ -163,7 +163,7 @@ void register_statics_window_tests(ImGuiTestEngine* engine)
         {
             auto& context = ctx->GetVars<StaticsWindowContext>();
             context.ptr = register_test_module().build();
-            
+
             bool static1_visible = true;
             auto static1 = mock_shared<MockStaticMesh>()->with_number(1);
             ON_CALL(*static1, visible).WillByDefault([&] { return static1_visible; });
@@ -173,5 +173,6 @@ void register_statics_window_tests(ImGuiTestEngine* engine)
             context.ptr->set_statics({ std::from_range, context.statics });
 
             ctx->ItemCheck("Statics 0/**/##hide-1");
+            IM_CHECK_EQ(static1_visible, false);
         });
 }

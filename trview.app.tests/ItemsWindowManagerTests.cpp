@@ -83,24 +83,6 @@ TEST(ItemsWindowManager, ItemSelectedEventRaised)
     ASSERT_EQ(raised_item, test_item);
 }
 
-TEST(ItemsWindowManager, ItemVisibilityEventRaised)
-{
-    auto manager = register_test_module().build();
-
-    std::optional<std::tuple<std::shared_ptr<IItem>, bool>> raised_item;
-    auto token = manager->on_item_visibility += [&raised_item](const auto& item, bool state) { raised_item = { item.lock(), state }; };
-
-    auto created_window = manager->create_window().lock();
-    ASSERT_NE(created_window, nullptr);
-
-    auto test_item = mock_shared<MockItem>();
-    created_window->on_item_visibility(test_item, true);
-
-    ASSERT_TRUE(raised_item);
-    ASSERT_EQ(std::get<0>(raised_item.value()), test_item);
-    ASSERT_EQ(std::get<1>(raised_item.value()), true);
-}
-
 TEST(ItemsWindowManager, TriggerSelectedEventRaised)
 {
     auto manager = register_test_module().build();

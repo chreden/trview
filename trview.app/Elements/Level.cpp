@@ -566,6 +566,7 @@ namespace trview
             {
                 room->add_entity(entity);
             }
+            _token_store += entity->on_changed += [this]() { content_changed(); };
             _entities.push_back(entity);
 
             if (level.get_version() == trlevel::LevelVersion::Tomb2 && level_entity.TypeID == Entity_Skidoo_Driver)

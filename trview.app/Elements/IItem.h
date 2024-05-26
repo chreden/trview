@@ -6,6 +6,9 @@
 #include <external/DirectXTK/Inc/SimpleMath.h>
 #include <trlevel/ILevel.h>
 #include <trlevel/trtypes.h>
+
+#include <trview.common/Event.h>
+
 #include "../Geometry/IRenderable.h"
 #include "../Geometry/PickResult.h"
 #include "../Graphics/IMeshStorage.h"
@@ -49,6 +52,8 @@ namespace trview
         virtual int32_t angle() const = 0;
         virtual std::unordered_set<std::string> categories() const = 0;
         virtual void set_categories(const std::unordered_set<std::string>& categories) = 0;
+
+        Event<> on_changed;
     };
 
     bool is_mutant_egg(const IItem& item);

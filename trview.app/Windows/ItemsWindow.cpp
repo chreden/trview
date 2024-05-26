@@ -183,7 +183,7 @@ namespace trview
                     ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0, 0));
                     if (ImGui::Checkbox(std::format("##hide-{}", item_ptr->number()).c_str(), &hidden))
                     {
-                        on_item_visibility(item, !hidden);
+                        item_ptr->set_visible(!hidden);
                     }
                     ImGui::PopStyleVar();
                 }

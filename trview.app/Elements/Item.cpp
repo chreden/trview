@@ -381,7 +381,11 @@ namespace trview
 
     void Item::set_visible(bool value)
     {
-        _visible = value;
+        if (_visible != value)
+        {
+            _visible = value;
+            on_changed();
+        }
     }
 
     void Item::adjust_y(float amount)
