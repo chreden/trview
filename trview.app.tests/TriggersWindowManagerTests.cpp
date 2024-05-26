@@ -120,24 +120,6 @@ TEST(TriggersWindowManager, TriggerSelectedEventRaised)
     ASSERT_EQ(raised_trigger.value().lock(), trigger);
 }
 
-TEST(TriggersWindowManager, TriggerVisibilityEventRaised)
-{
-    auto manager = register_test_module().build();
-
-    std::optional<std::tuple<std::weak_ptr<ITrigger>, bool>> raised_trigger;
-    auto token = manager->on_trigger_visibility += [&raised_trigger](const auto& trigger, bool state) { raised_trigger = { trigger, state }; };
-
-    auto created_window = manager->create_window().lock();
-    ASSERT_NE(created_window, nullptr);
-
-    auto trigger = mock_shared<MockTrigger>();
-    created_window->on_trigger_visibility(trigger, true);
-
-    ASSERT_TRUE(raised_trigger.has_value());
-    ASSERT_EQ(std::get<0>(raised_trigger.value()).lock(), trigger);
-    ASSERT_EQ(std::get<1>(raised_trigger.value()), true);
-}
-
 TEST(TriggersWindowManager, AddToRouteEventRaised)
 {
     auto manager = register_test_module().build();

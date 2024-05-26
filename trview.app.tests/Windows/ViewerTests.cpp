@@ -139,7 +139,7 @@ TEST(Viewer, SelectItemRaisedForValidItem)
 }
 
 /// Tests that the on_hide event from the UI is observed and forwarded when the item is valid.
-TEST(Viewer, ItemVisibilityRaisedForValidItem)
+TEST(Viewer, ItemVisibilitySetForValidItem)
 {
     auto item = mock_shared<MockItem>();
     EXPECT_CALL(*item, set_visible(false)).Times(1);
@@ -217,7 +217,7 @@ TEST(Viewer, SelectTriggerRaised)
 }
 
 /// Tests that the on_hide event from the UI is observed and forwarded for triggers.
-TEST(Viewer, TriggerVisibilityRaised)
+TEST(Viewer, TriggerVisibilitySetForValidTrigger)
 {
     auto [ui_ptr, ui] = create_mock<MockViewerUI>();
     auto [picking_ptr, picking] = create_mock<MockPicking>();
@@ -225,21 +225,15 @@ TEST(Viewer, TriggerVisibilityRaised)
 
     auto level = mock_shared<MockLevel>();
     auto trigger = mock_shared<MockTrigger>();
+    EXPECT_CALL(*trigger, set_visible(false)).Times(1);
     EXPECT_CALL(*level, trigger(100)).WillRepeatedly(Return(trigger));
 
     auto viewer = register_test_module().with_ui(std::move(ui_ptr)).with_picking(std::move(picking_ptr)).with_mouse(std::move(mouse_ptr)).build();
     viewer->open(level, ILevel::OpenMode::Full);
 
-    std::optional<std::tuple<std::weak_ptr<ITrigger>, bool>> raised_trigger;
-    auto token = viewer->on_trigger_visibility += [&raised_trigger](const auto& trigger, auto visible) { raised_trigger = { trigger, visible }; };
-
     activate_context_menu(picking, mouse, PickResult::Type::Trigger, 100);
 
     ui.on_hide();
-
-    ASSERT_TRUE(raised_trigger.has_value());
-    ASSERT_EQ(std::get<0>(raised_trigger.value()).lock(), trigger);
-    ASSERT_FALSE(std::get<1>(raised_trigger.value()));
 }
 
 /// Tests that the waypoint selected event is raised when the user clicks on a waypoint.

@@ -191,7 +191,10 @@ namespace trview
                 }
                 else if (_context_pick.type == PickResult::Type::Trigger)
                 {
-                    on_trigger_visibility(level->trigger(_context_pick.index), false);
+                    if (auto trigger = level->trigger(_context_pick.index).lock())
+                    {
+                        trigger->set_visible(false);
+                    }
                 }
                 else if (_context_pick.type == PickResult::Type::Light)
                 {

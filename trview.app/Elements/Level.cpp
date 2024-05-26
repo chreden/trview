@@ -441,11 +441,7 @@ namespace trview
         {
             Activity room_activity(generate_rooms_activity, std::format("Room {}", i));
             auto room = room_source(level, level.get_room(i), _texture_storage, mesh_storage, i, shared_from_this(), room_activity);
-            _token_store += room->on_changed += [&]() 
-            {
-                _regenerate_transparency = true; 
-                on_level_changed();
-            };
+            _token_store += room->on_changed += [this]() { content_changed(); };
             _rooms.push_back(room);
         }
 

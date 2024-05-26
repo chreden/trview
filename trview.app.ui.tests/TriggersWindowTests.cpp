@@ -294,29 +294,22 @@ void register_triggers_window_tests(ImGuiTestEngine* engine)
             IM_CHECK_EQ(raised_trigger, nullptr);
         });
 
-    test<TriggersWindowContext>(engine, "Triggers Window", "Trigger Visibility Raised",
+    test<TriggersWindowContext>(engine, "Triggers Window", "Trigger Visibility Changed",
         [](ImGuiTestContext* ctx) { ctx->GetVars<TriggersWindowContext>().render(); },
         [](ImGuiTestContext* ctx)
         {
             auto& context = ctx->GetVars<TriggersWindowContext>();
             context.ptr = register_test_module().build();
 
-            std::optional<std::tuple<std::shared_ptr<ITrigger>, bool>> raised_trigger;
-            auto token = context.ptr->on_trigger_visibility += [&raised_trigger](const auto& trigger, bool state) 
-            {
-                auto t = trigger.lock();
-                ON_CALL(*std::static_pointer_cast<MockTrigger>(t), visible).WillByDefault(Return(state));
-                raised_trigger = { t, state }; 
-            };
+            bool trigger_visible = true;
+            auto trigger = mock_shared<MockTrigger>()->with_number(1)->with_visible(true);
+            ON_CALL(*trigger, visible).WillByDefault([&] { return trigger_visible; });
+            EXPECT_CALL(*trigger, set_visible(false)).Times(1).WillRepeatedly([&](bool v) { trigger_visible = v; });
 
-            auto trigger = mock_shared<MockTrigger>()->with_visible(true);
             context.triggers = { trigger };
             context.ptr->set_triggers({ trigger });
 
             ctx->ItemCheck("/**/##hide-0");
-
-            IM_CHECK_EQ(raised_trigger.has_value(), true);
-            IM_CHECK_EQ(std::get<0>(raised_trigger.value()), trigger);
-            IM_CHECK_EQ(std::get<1>(raised_trigger.value()), false);
+            IM_CHECK_EQ(trigger_visible, false);
         });
 }
