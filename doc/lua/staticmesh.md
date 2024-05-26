@@ -11,4 +11,5 @@
 | room | [Room](room.md) | R | Room that contains the static mesh |
 | rotation | number | R | Static mesh rotation |
 | type | string | R | Type of static mesh (Mesh/Sprite) |
+| visible| boolean | RW | Whether the item is visible in the viewer |
 | visibility | [BoundingBox](boundingbox.md) | R | Visibility bounding box |

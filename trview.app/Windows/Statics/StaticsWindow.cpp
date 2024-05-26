@@ -184,6 +184,11 @@ namespace trview
         ImGui::EndChild();
     }
 
+    std::weak_ptr<IStaticMesh> StaticsWindow::selected_static() const
+    {
+        return _selected_static_mesh;
+    }
+
     void StaticsWindow::set_number(int32_t number)
     {
         _id = std::format("Statics {}", number);

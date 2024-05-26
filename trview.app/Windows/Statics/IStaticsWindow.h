@@ -14,6 +14,7 @@ namespace trview
         using Source = std::function<std::shared_ptr<IStaticsWindow>()>;
         virtual ~IStaticsWindow() = 0;
         virtual void render() = 0;
+        virtual std::weak_ptr<IStaticMesh> selected_static() const = 0;
         virtual void set_current_room(const std::weak_ptr<IRoom>& room) = 0;
         virtual void set_number(int32_t number) = 0;
         virtual void set_selected_static(const std::weak_ptr<IStaticMesh>& static_mesh) = 0;

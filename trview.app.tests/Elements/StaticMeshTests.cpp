@@ -19,3 +19,12 @@ TEST(StaticMesh, BoundingBoxRendered)
     StaticMesh mesh({}, {}, actual_mesh, {}, bounding_mesh);
     mesh.render_bounding_box(NiceMock<MockCamera>{}, NiceMock<MockLevelTextureStorage>{}, Colour::White);
 }
+
+TEST(StaticMesh, OnChangedRaised)
+{
+    StaticMesh mesh({}, {}, mock_shared<MockMesh>(), {}, mock_shared<MockMesh>());
+    bool raised = false;
+    auto token = mesh.on_changed += [&] (){ raised = true; };
+    mesh.set_visible(false);
+    ASSERT_EQ(raised, true);
+}

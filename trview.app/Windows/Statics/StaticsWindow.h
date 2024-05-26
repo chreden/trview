@@ -28,6 +28,7 @@ namespace trview
         explicit StaticsWindow(const std::shared_ptr<IClipboard>& clipboard);
         virtual ~StaticsWindow() = default;
         void render() override;
+        std::weak_ptr<IStaticMesh> selected_static() const override;
         void set_current_room(const std::weak_ptr<IRoom>& room) override;
         void set_number(int32_t number) override;
         void set_selected_static(const std::weak_ptr<IStaticMesh>& static_mesh) override;

@@ -111,6 +111,9 @@
     <ClCompile Include="..\external\imgui\misc\freetype\imgui_freetype.cpp">
       <Filter>imgui</Filter>
     </ClCompile>
+    <ClCompile Include="StaticsWindowTests.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\external\shared\imgui_app.h">
@@ -183,6 +186,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="RouteWindowTests.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="StaticsWindowTests.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
