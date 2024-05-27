@@ -212,7 +212,10 @@ namespace trview
                 }
                 else if (_context_pick.type == PickResult::Type::CameraSink)
                 {
-                    on_camera_sink_visibility(level->camera_sink(_context_pick.index), false);
+                    if (auto camera_sink = level->camera_sink(_context_pick.index).lock())
+                    {
+                        camera_sink->set_visible(false);
+                    }
                 }
                 else if (_context_pick.type == PickResult::Type::StaticMesh)
                 {

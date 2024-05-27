@@ -33,6 +33,8 @@ namespace trview
         virtual Type type() const = 0;
         virtual void set_type(Type type) = 0;
         virtual std::vector<std::weak_ptr<ITrigger>> triggers() const = 0;
+
+        Event<> on_changed;
     };
 
     std::weak_ptr<IRoom> actual_room(const ICameraSink& camera_sink);

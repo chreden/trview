@@ -998,21 +998,6 @@ TEST(Application, CameraSinkSelectedEventForwarded)
     camera_sink_window_manager.on_camera_sink_selected(mock_shared<MockCameraSink>());
 }
 
-TEST(Application, CameraSinkVisibilityEventForwarded)
-{
-    auto [camera_sink_window_manager_ptr, camera_sink_window_manager] = create_mock<MockCameraSinkWindowManager>();
-    auto [level_ptr, level] = create_mock<trview::mocks::MockLevel>();
-    EXPECT_CALL(level, set_camera_sink_visibility).Times(1);
-
-    auto application = register_test_module()
-        .with_camera_sink_window_manager(std::move(camera_sink_window_manager_ptr))
-        .with_level_source([&](auto&&...) { return std::move(level_ptr); })
-        .build();
-
-    application->open("test_path.tr2", ILevel::OpenMode::Full);
-    camera_sink_window_manager.on_camera_sink_visibility(mock_shared<MockCameraSink>(), true);
-}
-
 TEST(Application, TriggerSelectedFromCameraSinkWindow)
 {
     auto [camera_sink_window_manager_ptr, camera_sink_window_manager] = create_mock<MockCameraSinkWindowManager>();

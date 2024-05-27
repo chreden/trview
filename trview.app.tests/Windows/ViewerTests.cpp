@@ -880,6 +880,7 @@ TEST(Viewer, GoToLaraSelectsLast)
 TEST(Viewer, CameraSinkVisibilityRaisedForValidItem)
 {
     auto cs = mock_shared<MockCameraSink>();
+    EXPECT_CALL(*cs, set_visible(false)).Times(1);
     auto level = mock_shared<MockLevel>();
     EXPECT_CALL(*level, camera_sink(123)).WillRepeatedly(Return(cs));
 
@@ -890,19 +891,9 @@ TEST(Viewer, CameraSinkVisibilityRaisedForValidItem)
 
     viewer->open(level, ILevel::OpenMode::Full);
 
-    std::optional<std::tuple<std::shared_ptr<ICameraSink>, bool>> raised;
-    auto token = viewer->on_camera_sink_visibility += [&raised](const auto& camera_sink, auto visible)
-    { 
-        raised = { camera_sink.lock(), visible };
-    };
-
     activate_context_menu(picking, mouse, PickResult::Type::CameraSink, 123);
 
     ui.on_hide();
-
-    ASSERT_TRUE(raised.has_value());
-    ASSERT_EQ(std::get<0>(raised.value()), cs);
-    ASSERT_FALSE(std::get<1>(raised.value()));
 }
 
 TEST(Viewer, SetShowCameraSinks)

@@ -131,29 +131,6 @@ TEST(CameraSinkWindowManager, SelectedSinkRaised)
     ASSERT_EQ(raised, sink);
 }
 
-TEST(CameraSinkWindowManager, SinkVisibilityRaised)
-{
-    auto window = mock_shared<MockCameraSinkWindow>();
-    auto manager = register_test_module()
-        .with_window_source([&]() { return window; })
-        .build();
-
-    std::optional<std::tuple<std::shared_ptr<ICameraSink>, bool>> raised;
-    auto token = manager->on_camera_sink_visibility += [&](auto sink, auto visibility)
-    {
-        raised = { sink.lock(), visibility };
-    };
-
-    manager->create_window();
-
-    auto sink = mock_shared<MockCameraSink>();
-    manager->on_camera_sink_visibility(sink, true);
-
-    ASSERT_TRUE(raised);
-    ASSERT_EQ(std::get<0>(raised.value()), sink);
-    ASSERT_EQ(std::get<1>(raised.value()), true);
-}
-
 TEST(CameraSinkWindowManager, TriggerSelectedRaised)
 {
     auto window = mock_shared<MockCameraSinkWindow>();
