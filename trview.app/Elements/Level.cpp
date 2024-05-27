@@ -564,6 +564,24 @@ namespace trview
                 room->add_entity(entity);
             }
             _token_store += entity->on_changed += [this]() { content_changed(); };
+            std::weak_ptr<IItem> entity_weak = entity;
+            _token_store += entity->on_selected += [this, entity_weak]() {
+                auto ent = entity_weak.lock();
+                for (auto e : _entities)
+                {
+                    // e->set_selected(e == ent);
+                }
+
+                // Temporary hack here.
+                if (_selected_item.lock() != ent)
+                {
+                    _selected_item = ent;
+                    on_level_changed();
+                    on_item_selected(_selected_item);
+                }
+
+                content_changed();
+            };
             _entities.push_back(entity);
 
             if (level.get_version() == trlevel::LevelVersion::Tomb2 && level_entity.TypeID == Entity_Skidoo_Driver)

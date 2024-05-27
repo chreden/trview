@@ -160,7 +160,7 @@ namespace trview
                         set_local_selected_item(item);
                         if (_sync_item)
                         {
-                            on_item_selected(item);
+                            item_ptr->on_selected();
                         }
                         _scroll_to_item = false;
                     }

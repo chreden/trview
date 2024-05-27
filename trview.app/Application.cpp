@@ -308,7 +308,6 @@ namespace trview
             _items_windows->create_window();
         }
 
-        _token_store += _items_windows->on_item_selected += [this](const auto& item) { select_item(item); };
         _token_store += _items_windows->on_trigger_selected += [this](const auto& trigger) { select_trigger(trigger); };
         _token_store += _items_windows->on_add_to_route += [this](const auto& item)
         {

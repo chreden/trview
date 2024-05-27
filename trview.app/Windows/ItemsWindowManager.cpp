@@ -30,7 +30,6 @@ namespace trview
     std::weak_ptr<IItemsWindow> ItemsWindowManager::create_window()
     {
         auto items_window = _items_window_source();
-        items_window->on_item_selected += on_item_selected;
         items_window->on_trigger_selected += on_trigger_selected;
         items_window->on_add_to_route += on_add_to_route;
         items_window->set_items(_items);

@@ -54,6 +54,7 @@ namespace trview
         virtual void set_categories(const std::unordered_set<std::string>& categories) = 0;
 
         Event<> on_changed;
+        Event<> on_selected;
     };
 
     bool is_mutant_egg(const IItem& item);
