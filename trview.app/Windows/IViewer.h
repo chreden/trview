@@ -59,8 +59,6 @@ namespace trview
         /// </summary>
         Event<std::weak_ptr<ILight>, bool> on_light_visibility;
 
-        Event<std::weak_ptr<IRoom>, bool> on_room_visibility;
-
         Event<std::weak_ptr<ICameraSink>, bool> on_camera_sink_visibility;
 
         /// Event raised when the viewer wants to select a waypoint.

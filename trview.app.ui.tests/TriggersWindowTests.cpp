@@ -302,14 +302,14 @@ void register_triggers_window_tests(ImGuiTestEngine* engine)
             context.ptr = register_test_module().build();
 
             bool trigger_visible = true;
-            auto trigger = mock_shared<MockTrigger>()->with_number(1)->with_visible(true);
+            auto trigger = mock_shared<MockTrigger>()->with_number(1);
             ON_CALL(*trigger, visible).WillByDefault([&] { return trigger_visible; });
             EXPECT_CALL(*trigger, set_visible(false)).Times(1).WillRepeatedly([&](bool v) { trigger_visible = v; });
 
             context.triggers = { trigger };
             context.ptr->set_triggers({ trigger });
 
-            ctx->ItemCheck("/**/##hide-0");
+            ctx->ItemCheck("Triggers 0/**/##hide-1");
             IM_CHECK_EQ(trigger_visible, false);
         });
 }

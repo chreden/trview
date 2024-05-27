@@ -96,26 +96,6 @@ TEST(RoomsWindowManager, MapColoursPassedToNewWindows)
     manager->create_window();
 }
 
-TEST(RoomsWindowManager, OnRoomVisibilityRaised)
-{
-    auto manager = register_test_module().build();
-    auto room = mock_shared<MockRoom>();
-
-    std::optional<std::tuple<std::weak_ptr<IRoom>, bool>> raised;
-    auto token = manager->on_room_visibility += [&](auto&& value, auto&& visible)
-    {
-        raised = { value, visible };
-    };
-
-    auto window = manager->create_window().lock();
-    ASSERT_NE(window, nullptr);
-
-    window->on_room_visibility(room, true);
-    ASSERT_TRUE(raised.has_value());
-    ASSERT_EQ(std::get<0>(raised.value()).lock(), room);
-    ASSERT_TRUE(std::get<1>(raised.value()));
-}
-
 TEST(RoomsWindowManager, SetFloordataPassedToWindows)
 {
     auto mock_window = mock_shared<MockRoomsWindow>();

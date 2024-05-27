@@ -90,29 +90,24 @@ void register_rooms_window_tests(ImGuiTestEngine* engine)
             IM_CHECK_EQ(ctx->ItemExists("Quicksand \\/ 7"), false);
         });
 
-    test<RoomsWindowContext>(engine, "Rooms Window", "On Room Visiblity Raised",
+    test<RoomsWindowContext>(engine, "Rooms Window", "Room Visiblity Changed",
         [](ImGuiTestContext* ctx) { ctx->GetVars<RoomsWindowContext>().render(); },
         [](ImGuiTestContext* ctx)
         {
             auto& context = ctx->GetVars<RoomsWindowContext>();
             context.ptr = register_test_module().build();
 
-            std::tuple<std::shared_ptr<IRoom>, bool> raised;
-            auto token = context.ptr->on_room_visibility += [&raised](const auto& room, auto&& visible)
-            {
-                auto r = room.lock();
-                ON_CALL(*std::static_pointer_cast<MockRoom>(r), visible).WillByDefault(Return(visible));
-                raised = { r, visible };
-            };
+            bool room_visible = true;
+            auto room1 = mock_shared<MockRoom>()->with_number(1);
+            ON_CALL(*room1, visible).WillByDefault([&] { return room_visible; });
+            EXPECT_CALL(*room1, set_visible(false)).Times(1).WillRepeatedly([&](bool v) { room_visible = v; });
 
-            auto room1 = mock_shared<MockRoom>()->with_number(0);
-            auto room2 = mock_shared<MockRoom>()->with_number(1);
-            context.ptr->set_rooms({ room1, room2 });
+            auto room0 = mock_shared<MockRoom>()->with_number(0);
+            context.rooms = { room0, room1 };
+            context.ptr->set_rooms({ std::from_range, context.rooms });
 
-            ctx->ItemUncheck("/**/##hide-1");
-
-            IM_CHECK_EQ(std::get<0>(raised), room2);
-            IM_CHECK_EQ(std::get<1>(raised), true);
+            ctx->ItemCheck("Rooms 0/**/##hide-1");
+            IM_CHECK_EQ(room_visible, false);
         });
 
     test<RoomsWindowContext>(engine, "Rooms Window", "Floordata Type Filters List",

@@ -1082,7 +1082,11 @@ namespace trview
 
     void Room::set_visible(bool visible)
     {
-        _visible = visible;
+        if (_visible != visible)
+        {
+            _visible = visible;
+            on_changed();
+        }
     }
 
     std::vector<std::weak_ptr<ILight>> Room::lights() const

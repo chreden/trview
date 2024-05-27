@@ -202,7 +202,10 @@ namespace trview
                 }
                 else if (_context_pick.type == PickResult::Type::Room)
                 {
-                    on_room_visibility(level->room(_context_pick.index), false);
+                    if (auto room = level->room(_context_pick.index).lock())
+                    {
+                        room->set_visible(false);
+                    }
                 }
                 else if (_context_pick.type == PickResult::Type::CameraSink)
                 {
