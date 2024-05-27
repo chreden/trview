@@ -54,7 +54,6 @@ namespace trview
             MOCK_METHOD(void, set_show_lights, (bool), (override));
             MOCK_METHOD(void, set_show_items, (bool), (override));
             MOCK_METHOD(void, set_show_rooms, (bool), (override));
-            MOCK_METHOD(void, set_trigger_visibility, (uint32_t, bool), (override));
             MOCK_METHOD(void, set_neighbour_depth, (uint32_t), (override));
             MOCK_METHOD(void, set_selected_room, (const std::weak_ptr<IRoom>&), (override));
             MOCK_METHOD(void, set_selected_item, (uint32_t), (override));
@@ -70,6 +69,7 @@ namespace trview
             MOCK_METHOD(trlevel::LevelVersion, version, (), (const, override));
             MOCK_METHOD(MapColours, map_colours, (), (const, override));
             MOCK_METHOD(void, set_map_colours, (const MapColours&), (override));
+            MOCK_METHOD(void, set_show_camera_sinks, (bool), (override));
             MOCK_METHOD(std::optional<uint32_t>, selected_camera_sink, (), (const, override));
             MOCK_METHOD(std::weak_ptr<IStaticMesh>, static_mesh, (uint32_t), (const, override));
             MOCK_METHOD(std::vector<std::weak_ptr<IStaticMesh>>, static_meshes, (), (const));
