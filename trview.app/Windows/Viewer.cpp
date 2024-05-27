@@ -198,7 +198,10 @@ namespace trview
                 }
                 else if (_context_pick.type == PickResult::Type::Light)
                 {
-                    on_light_visibility(level->light(_context_pick.index), false);
+                    if (auto light = level->light(_context_pick.index).lock())
+                    {
+                        light->set_visible(false);
+                    }
                 }
                 else if (_context_pick.type == PickResult::Type::Room)
                 {

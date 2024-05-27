@@ -91,7 +91,11 @@ namespace trview
 
     void Light::set_visible(bool value)
     {
-        _visible = value;
+        if (_visible != value)
+        {
+            _visible = value;
+            on_changed();
+        }
     }
 
     Vector3 Light::position() const

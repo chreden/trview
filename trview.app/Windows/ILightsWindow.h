@@ -26,9 +26,5 @@ namespace trview
         /// Event raised when a light is selected in the list.
         /// </summary>
         Event<std::weak_ptr<ILight>> on_light_selected;
-        /// <summary>
-        /// Event raised when the visibility of a light is changed.
-        /// </summary>
-        Event<std::weak_ptr<ILight>, bool> on_light_visibility;
     };
 }
