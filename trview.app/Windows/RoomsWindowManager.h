@@ -36,7 +36,6 @@ namespace trview
         virtual void set_map_colours(const MapColours& colours) override;
         virtual void set_room(const std::weak_ptr<IRoom>& room) override;
         virtual void set_rooms(const std::vector<std::weak_ptr<IRoom>>& items) override;
-        virtual void set_selected_item(const std::weak_ptr<IItem>& item) override;
         virtual void set_selected_trigger(const std::weak_ptr<ITrigger>& trigger) override;
         virtual std::weak_ptr<IRoomsWindow> create_window() override;
         virtual void update(float delta) override;

@@ -10,13 +10,6 @@ namespace trview
 
         /// Event raised when the user has selected a room in the room window.
         Event<std::weak_ptr<IRoom>> on_room_selected;
-
-        /// Event raised when the user has selected an item in the room window.
-        Event<std::weak_ptr<IItem>> on_item_selected;
-
-        /// Event raised when the user has selected a trigger in the room window.
-        Event<std::weak_ptr<ITrigger>> on_trigger_selected;
-
         Event<std::weak_ptr<ISector>> on_sector_hover;
         Event<std::weak_ptr<ILight>> on_light_selected;
         Event<std::weak_ptr<ICameraSink>> on_camera_sink_selected;
@@ -40,10 +33,6 @@ namespace trview
         /// Set the rooms to display in the window.
         /// @param rooms The rooms to show.
         virtual void set_rooms(const std::vector<std::weak_ptr<IRoom>>& items) = 0;
-
-        /// Set the item currently selected in the viewer.
-        /// @param item The item currently selected.
-        virtual void set_selected_item(const std::weak_ptr<IItem>& item) = 0;
 
         /// Set the trigger currently selected in the viewer.
         /// @param trigger The trigger currently selected.

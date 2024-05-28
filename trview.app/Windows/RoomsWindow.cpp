@@ -159,7 +159,15 @@ namespace trview
 
     void RoomsWindow::set_items(const std::vector<std::weak_ptr<IItem>>& items)
     {
+        _items_token_store.clear();
         _all_items = items;
+        for (auto item : _all_items)
+        {
+            if (auto item_ptr = item.lock())
+            {
+                _items_token_store += item_ptr->on_selected += [this, item]() { set_selected_item(item); };
+            }
+        }
         _global_selected_item.reset();
         _local_selected_item.reset();
         _force_sort = true;
@@ -447,7 +455,7 @@ namespace trview
                                             auto trigger_ptr = trigger.lock();
                                             if (trigger_ptr && trigger_ptr->sector_id() == sector->id())
                                             {
-                                                on_trigger_selected(trigger);
+                                                trigger_ptr->on_selected();
                                                 break;
                                             }
                                         }
@@ -862,7 +870,7 @@ namespace trview
                         {
                             scroller.fix_scroll();
                             _local_selected_item = item;
-                            on_item_selected(item);
+                            item_ptr->on_selected();
                             _scroll_to_item = false;
                         }
 
@@ -911,7 +919,7 @@ namespace trview
                     {
                         scroller.fix_scroll();
                         _local_selected_trigger = trigger_ptr;
-                        on_trigger_selected(trigger);
+                        trigger_ptr->on_selected();
                         _scroll_to_trigger = false;
                     }
 

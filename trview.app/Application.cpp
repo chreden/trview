@@ -357,8 +357,6 @@ namespace trview
         }
 
         _token_store += _rooms_windows->on_room_selected += [this](const auto& room) { select_room(room); };
-        _token_store += _rooms_windows->on_item_selected += [this](const auto& item) { select_item(item); };
-        _token_store += _rooms_windows->on_trigger_selected += [this](const auto& trigger) { select_trigger(trigger); };
         _token_store += _rooms_windows->on_sector_hover += [this](const auto& sector) { select_sector(sector); };
         _token_store += _rooms_windows->on_camera_sink_selected += [this](const auto& camera_sink) { select_camera_sink(camera_sink); };
         _token_store += _rooms_windows->on_light_selected += [this](const auto& light) { select_light(light); };
@@ -475,7 +473,6 @@ namespace trview
         select_room(item_ptr->room());
         _level->set_selected_item(item_ptr->number());
         _viewer->select_item(item);
-        _rooms_windows->set_selected_item(item);
     }
 
     void Application::select_room(std::weak_ptr<IRoom> room)

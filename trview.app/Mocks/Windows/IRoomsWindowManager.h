@@ -17,7 +17,6 @@ namespace trview
             MOCK_METHOD(void, set_map_colours, (const MapColours&), (override));
             MOCK_METHOD(void, set_room, (const std::weak_ptr<IRoom>&), (override));
             MOCK_METHOD(void, set_rooms, (const std::vector<std::weak_ptr<IRoom>>&), (override));
-            MOCK_METHOD(void, set_selected_item, (const std::weak_ptr<IItem>&), (override));
             MOCK_METHOD(void, set_selected_trigger, (const std::weak_ptr<ITrigger>& ), (override));
             MOCK_METHOD(std::weak_ptr<IRoomsWindow>, create_window, (), (override));
             MOCK_METHOD(void, update, (float), (override));

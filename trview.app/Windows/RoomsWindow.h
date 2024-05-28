@@ -39,7 +39,6 @@ namespace trview
         virtual void set_level_version(trlevel::LevelVersion version) override;
         virtual void set_map_colours(const MapColours& colours) override;
         virtual void set_rooms(const std::vector<std::weak_ptr<IRoom>>& rooms) override;
-        virtual void set_selected_item(const std::weak_ptr<IItem>& item) override;
         virtual void set_selected_trigger(const std::weak_ptr<ITrigger>& trigger) override;
         virtual void update(float delta) override;
         virtual void set_number(int32_t number) override;
@@ -70,6 +69,7 @@ namespace trview
         void render_statics_tab();
         void set_static_meshes(const std::vector<std::weak_ptr<IStaticMesh>>& static_meshes);
         void calculate_column_widths();
+        void set_selected_item(const std::weak_ptr<IItem>& item);
 
         std::vector<std::weak_ptr<IRoom>> _all_rooms;
         std::vector<std::weak_ptr<IItem>> _all_items;
@@ -103,6 +103,7 @@ namespace trview
         std::weak_ptr<IRoom> _selected_room;
 
         TokenStore _token_store;
+        TokenStore _items_token_store;
         std::unique_ptr<IMapRenderer> _map_renderer;
         std::shared_ptr<IClipboard> _clipboard;
         trlevel::LevelVersion _level_version{ trlevel::LevelVersion::Tomb1 };
