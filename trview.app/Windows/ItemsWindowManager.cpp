@@ -30,21 +30,18 @@ namespace trview
     std::weak_ptr<IItemsWindow> ItemsWindowManager::create_window()
     {
         auto items_window = _items_window_source();
-        items_window->on_trigger_selected += on_trigger_selected;
         items_window->on_add_to_route += on_add_to_route;
         items_window->set_items(_items);
         items_window->set_triggers(_triggers);
         items_window->set_current_room(_current_room);
         items_window->set_level_version(_level_version);
         items_window->set_model_checker(_model_checker);
-        items_window->set_selected_item(_selected_item);
         return add_window(items_window);
     }
 
     void ItemsWindowManager::set_items(const std::vector<std::weak_ptr<IItem>>& items)
     {
         _items = items;
-        _selected_item.reset();
         for (auto& window : _windows)
         {
             window.second->clear_selected_item();
@@ -85,15 +82,6 @@ namespace trview
         for (auto& window : _windows)
         {
             window.second->set_current_room(room);
-        }
-    }
-
-    void ItemsWindowManager::set_selected_item(const std::weak_ptr<IItem>& item)
-    {
-        _selected_item = item;
-        for (auto& window : _windows)
-        {
-            window.second->set_selected_item(item);
         }
     }
 

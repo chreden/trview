@@ -41,7 +41,15 @@ namespace trview
 
     void ItemsWindow::set_items(const std::vector<std::weak_ptr<IItem>>& items)
     {
+        _token_store.clear();
         _all_items = items;
+        for (auto item : _all_items)
+        {
+            if (auto item_ptr = item.lock())
+            {
+                _token_store += item_ptr->on_selected += [this, item]() { set_selected_item(item); };
+            }
+        }
         _triggered_by.clear();
         setup_filters();
         _force_sort = true;
@@ -297,7 +305,7 @@ namespace trview
                     {
                         _selected_trigger = trigger;
                         _track.set_enabled<Type::Room>(false);
-                        on_trigger_selected(trigger);
+                        trigger_ptr->on_selected();
                     }
                     ImGui::TableNextColumn();
                     ImGui::Text(std::to_string(trigger_room(trigger_ptr)).c_str());

@@ -675,6 +675,10 @@ namespace trview
             std::weak_ptr<IItem> lara;
             if (_settings.go_to_lara && find_last_item_by_type_id(*new_level, 0u, lara))
             {
+                if (auto lara_ptr = lara.lock())
+                {
+                    lara_ptr->on_selected();
+                }
                 on_item_selected(lara);
             }
             else

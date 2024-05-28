@@ -475,6 +475,24 @@ namespace trview
                 {
                     auto trigger = trigger_source(static_cast<uint32_t>(_triggers.size()), room, sector->x(), sector->z(), sector->trigger_info(), _version, shared_from_this());
                     _token_store += trigger->on_changed += [this]() { content_changed(); };
+                    std::weak_ptr<ITrigger> trigger_weak = trigger;
+                    _token_store += trigger->on_selected += [this, trigger_weak]() {
+                        auto trigger = trigger_weak.lock();
+                        for (auto t : _triggers)
+                        {
+                            // e->set_selected(e == ent);
+                        }
+
+                        // Temporary hack here.
+                        if (_selected_trigger.lock() != trigger)
+                        {
+                            _selected_trigger = trigger;
+                            on_level_changed();
+                            on_trigger_selected(_selected_trigger);
+                        }
+
+                        content_changed();
+                    };
                     _triggers.push_back(trigger);
                     sector->set_trigger(trigger);
                     room->add_trigger(trigger);

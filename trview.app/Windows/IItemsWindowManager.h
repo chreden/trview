@@ -9,9 +9,6 @@ namespace trview
     {
         virtual ~IItemsWindowManager() = 0;
 
-        /// Event raised when a trigger is selected in one of the item windows.
-        Event<std::weak_ptr<ITrigger>> on_trigger_selected;
-
         /// Event raised when the 'add to route' button is pressed in one of the item windows.
         Event<std::weak_ptr<IItem>> on_add_to_route;
 
@@ -35,10 +32,6 @@ namespace trview
         /// </summary>
         /// <param name="room">The current room.</param>
         virtual void set_room(const std::weak_ptr<IRoom>& room) = 0;
-
-        /// Set the currently selected item.
-        /// @param item The selected item.
-        virtual void set_selected_item(const std::weak_ptr<IItem>& item) = 0;
 
         /// Create a new items window.
         virtual std::weak_ptr<IItemsWindow> create_window() = 0;

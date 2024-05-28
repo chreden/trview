@@ -3,6 +3,7 @@
 
 #pragma once
 
+#include <trview.common/TokenStore.h>
 #include <trview.common/Windows/IClipboard.h>
 #include "../Filters/Filters.h"
 
@@ -35,7 +36,6 @@ namespace trview
         virtual void set_triggers(const std::vector<std::weak_ptr<ITrigger>>& triggers) override;
         virtual void clear_selected_item() override;
         void set_current_room(const std::weak_ptr<IRoom>& room) override;
-        virtual void set_selected_item(const std::weak_ptr<IItem>& item) override;
         virtual std::weak_ptr<IItem> selected_item() const override;
         virtual void update(float delta) override;
         virtual void set_number(int32_t number) override;
@@ -49,6 +49,7 @@ namespace trview
         void set_local_selected_item(std::weak_ptr<IItem> item);
         void setup_filters();
         void calculate_column_widths();
+        void set_selected_item(const std::weak_ptr<IItem>& item);
 
         std::string _id{ "Items 0" };
         std::vector<std::weak_ptr<IItem>> _all_items;
@@ -71,5 +72,6 @@ namespace trview
         Track<Type::Room> _track;
 
         ColumnSizer _column_sizer;
+        TokenStore _token_store;
     };
 }

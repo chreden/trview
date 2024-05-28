@@ -308,7 +308,6 @@ namespace trview
             _items_windows->create_window();
         }
 
-        _token_store += _items_windows->on_trigger_selected += [this](const auto& trigger) { select_trigger(trigger); };
         _token_store += _items_windows->on_add_to_route += [this](const auto& item)
         {
             if (auto item_ptr = item.lock())
@@ -476,7 +475,6 @@ namespace trview
         select_room(item_ptr->room());
         _level->set_selected_item(item_ptr->number());
         _viewer->select_item(item);
-        _items_windows->set_selected_item(item);
         _rooms_windows->set_selected_item(item);
     }
 

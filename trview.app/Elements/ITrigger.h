@@ -20,6 +20,7 @@ namespace trview
         using Source = std::function<std::shared_ptr<ITrigger>(uint32_t, const std::weak_ptr<IRoom>&, uint16_t, uint16_t, const TriggerInfo&, trlevel::LevelVersion, const std::weak_ptr<ILevel>&)>;
 
         Event<> on_changed;
+        Event<> on_selected;
 
         virtual ~ITrigger() = 0;
         virtual uint32_t number() const = 0;
