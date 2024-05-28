@@ -323,8 +323,6 @@ namespace trview
         {
             _triggers_windows->create_window();
         }
-        _token_store += _triggers_windows->on_item_selected += [this](const auto& item) { select_item(item); };
-        _token_store += _triggers_windows->on_trigger_selected += [this](const auto& trigger) { select_trigger(trigger); };
         _token_store += _triggers_windows->on_add_to_route += [this](const auto& trigger)
         {
             if (auto trigger_ptr = trigger.lock())

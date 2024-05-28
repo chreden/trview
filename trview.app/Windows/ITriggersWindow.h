@@ -13,12 +13,6 @@ namespace trview
 
         virtual ~ITriggersWindow() = 0;
 
-        /// Event raised when a trigger is selected in the list.
-        Event<std::weak_ptr<ITrigger>> on_trigger_selected;
-
-        /// Event raised when an item is selected in the list.
-        Event<std::weak_ptr<IItem>> on_item_selected;
-
         /// Event raised when the 'add to route' button is pressed.
         Event<std::weak_ptr<ITrigger>> on_add_to_route;
 

@@ -220,7 +220,7 @@ namespace trview
                             set_local_selected_trigger(trigger_ptr);
                             if (_sync_trigger)
                             {
-                                on_trigger_selected(trigger_ptr);
+                                trigger_ptr->on_selected();
                             }
                             _scroll_to_trigger = false;
                         }
@@ -360,7 +360,10 @@ namespace trview
                         if (command.type() == TriggerCommandType::LookAtItem || command.type() == TriggerCommandType::Object && command.index() < _all_items.size())
                         {
                             _track.set_enabled<Type::Room>(false);
-                            on_item_selected(_all_items[command.index()]);
+                            if (auto item = _all_items[command.index()].lock())
+                            {
+                                item->on_selected();
+                            }
                         }
                         else if (equals_any(command.type(), TriggerCommandType::UnderwaterCurrent, TriggerCommandType::Camera))
                         {

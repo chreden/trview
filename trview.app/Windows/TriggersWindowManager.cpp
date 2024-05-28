@@ -30,8 +30,6 @@ namespace trview
     std::weak_ptr<ITriggersWindow> TriggersWindowManager::create_window()
     {
         auto triggers_window = _triggers_window_source();
-        triggers_window->on_item_selected += on_item_selected;
-        triggers_window->on_trigger_selected += on_trigger_selected;
         triggers_window->on_add_to_route += on_add_to_route;
         triggers_window->on_camera_sink_selected += on_camera_sink_selected;
         triggers_window->set_items(_items);
