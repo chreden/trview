@@ -35,6 +35,9 @@ namespace trview
         virtual bool visible() const override;
         virtual void set_visible(bool value) override;
         std::weak_ptr<ILevel> level() const override;
+
+        void set_selected(bool value) override;
+        bool selected() const override;
     private:
         std::vector<uint16_t> _objects;
         std::vector<Command> _commands;
@@ -54,5 +57,6 @@ namespace trview
         trlevel::LevelVersion _level_version{ trlevel::LevelVersion::Unknown };
         std::weak_ptr<ILevel> _level;
         std::optional<Colour> _colour;
+        bool _selected;
     };
 }

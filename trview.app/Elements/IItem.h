@@ -55,6 +55,9 @@ namespace trview
 
         Event<> on_changed;
         Event<> on_selected;
+
+        virtual void set_selected(bool value) = 0;
+        virtual bool selected() const = 0;
     };
 
     bool is_mutant_egg(const IItem& item);

@@ -48,6 +48,10 @@ namespace trview
             if (auto item_ptr = item.lock())
             {
                 _token_store += item_ptr->on_selected += [this, item]() { set_selected_item(item); };
+                if (item_ptr->selected())
+                {
+                    set_selected_item(item);
+                }
             }
         }
         _triggered_by.clear();

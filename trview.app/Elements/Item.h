@@ -57,6 +57,9 @@ namespace trview
         int32_t angle() const override;
         std::unordered_set<std::string> categories() const override;
         void set_categories(const std::unordered_set<std::string>& categories) override;
+
+        void set_selected(bool value) override;
+        bool selected() const override;
     private:
         Item(const IMesh::Source& mesh_source, const IMeshStorage& mesh_storage, const trlevel::ILevel& level, const std::weak_ptr<ILevel>& owning_level, const std::weak_ptr<IRoom>& room, uint32_t number, uint16_t type_id, const DirectX::SimpleMath::Vector3& position, int32_t angle, int32_t ocb, const TypeInfo& type, const std::vector<std::weak_ptr<ITrigger>>& triggers, uint16_t flags);
 
@@ -90,5 +93,6 @@ namespace trview
 
         std::weak_ptr<ILevel> _level;
         int32_t _angle;
+        bool _selected{ false };
     };
 }

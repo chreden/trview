@@ -480,7 +480,7 @@ namespace trview
                         auto trigger = trigger_weak.lock();
                         for (auto t : _triggers)
                         {
-                            // e->set_selected(e == ent);
+                            t->set_selected(t == trigger);
                         }
 
                         // Temporary hack here.
@@ -583,11 +583,12 @@ namespace trview
             }
             _token_store += entity->on_changed += [this]() { content_changed(); };
             std::weak_ptr<IItem> entity_weak = entity;
-            _token_store += entity->on_selected += [this, entity_weak]() {
+            _token_store += entity->on_selected += [this, entity_weak]()
+            {
                 auto ent = entity_weak.lock();
-                for (auto e : _entities)
+                for (auto& e : _entities)
                 {
-                    // e->set_selected(e == ent);
+                    e->set_selected(e == ent);
                 }
 
                 // Temporary hack here.

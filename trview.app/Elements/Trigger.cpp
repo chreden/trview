@@ -176,4 +176,14 @@ namespace trview
     {
         return _level;
     }
+
+    void Trigger::set_selected(bool value)
+    {
+        _selected = value;
+    }
+
+    bool Trigger::selected() const
+    {
+        return _selected;
+    }
 }

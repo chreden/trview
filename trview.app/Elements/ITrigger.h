@@ -41,6 +41,9 @@ namespace trview
         virtual void set_position(const DirectX::SimpleMath::Vector3& position) = 0;
         virtual DirectX::SimpleMath::Vector3 position() const = 0;
         virtual std::weak_ptr<ILevel> level() const = 0;
+
+        virtual void set_selected(bool value) = 0;
+        virtual bool selected() const = 0;
     };
 
 

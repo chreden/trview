@@ -470,6 +470,16 @@ namespace trview
         _type.categories = categories;
     }
 
+    void Item::set_selected(bool value)
+    {
+        _selected = value;
+    }
+
+    bool Item::selected() const
+    {
+        return _selected;
+    }
+
     bool is_mutant_egg(const IItem& item)
     {
         return is_mutant_egg(item.type_id());
