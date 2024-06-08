@@ -11,8 +11,7 @@ Input|Action
 ---|------
 Filters | Open the [filters](filters.md) editor. The checkbox toggles whether configured filters are applied.
 Sync | Whether the room selected in the window will be synced with the room selected in the view (bidirectional)
-Track Item | Whether to change selected room when an item is selected
-Track Trigger | Whether to change selected room when a trigger is selected
+Track | Whether to change the selected room when items or triggers are selected. Clicking the button will show the expanded track menu where you can choose what to track.
 
 ## Rooms List
 
@@ -21,6 +20,8 @@ Column | Meaning
 \# | The room number
 Items | The number of the items in the room
 Triggers | The number of triggers in the room
+Statics | The number of static meshes in the room
+Hide | Show/Hide the room in the 3D view
 
 ## Minimap
 
@@ -31,7 +32,10 @@ Key|Action
 Left click          | If a trigger square, will select the trigger. If not a trigger (or `CTRL` is pressed) it will follow a portal, or go to the room below. 
 Right click         | Goes to the room above, if one is present.
 
-## Properties
+## Tabs
+Rooms have a lot of properties and contents so there are tabs for each part. 
+
+### Properties
 
 Lists the various properties of the room.
 
@@ -40,6 +44,7 @@ Property | Meaning | Notes
 X | X position of the room
 Y | Y position of the room
 Z | Z position of the room
+Ambient | Ambient lighting in the room
 Water | Whether the water bit flag is set | Bit 0
 Bit 1 | Whether bit 1 is set
 Bit 2 | Whether bit 2 is set
@@ -56,8 +61,17 @@ Bit 12 | Whether bit 12 is set | Bit 12 (Cold in NGLE, P in TRLE)
 Bit 13 | Whether bit 13 is set
 Bit 14 | Whether bit 14 is set
 Bit 15 | Whether bit 15 is set
+No Space | Whether this room contains no-space entry
 
-## Items
+### Neighbours
+
+Shows the rooms that are immediate neighbours of this room. Clicking one of the rooms will select it.
+
+Column | Meaning
+---|---
+\# | The room number
+
+### Items
 
 Shows the items that are contained in the room. Clicking an item will select it in the viewer.
 
@@ -66,19 +80,50 @@ Column | Meaning
 \# | The item number
 Type | The type of the item triggered
 
-## Neighbours
-
-Shows the rooms that are immediate neighbours of this room. Clicking one of the rooms will select it.
-
-Column | Meaning
----|---
-\# | The room number
-
-## Triggers
+### Triggers
 
 Shows the triggers that are in the room. Clicking one will select it in the viewer.
 
 Column | Meaning
 ---|---
-\# | The room number
+\# | The trigger number
 Type | The type of trigger
+
+### Camera/Sink
+
+Shows the camera/sinks that are in the room. Clicking one will select it in the viewer.
+
+Column | Meaning
+---|---
+\# | The camera/sink number
+Type | The type of camera/sink
+
+### Lights
+
+Shows the lights that are in the room. Clicking one will select it in the viewer.
+
+Column | Meaning
+---|---
+\# | The light number
+Type | The type of light
+
+### Floordata
+
+Shows the floordata for the selected sector. Clicking the minimap when the floordata tab is selected will allow you to select a sector.
+
+If the `Raw` checkbox is checked there will be no meaning attached to any of the floordata values. If unchecked trview will interpret the values.
+
+Column | Meaning
+---|---
+\# | The floordata number
+Value | The value of the floordata
+Meaning | What the value means (only present if `Raw` in unchecked)
+
+### Statics
+
+Shows the statics that are in the room. Clicking one will select it in the viewer.
+
+Column | Meaning
+---|---
+\# | The static number
+ID | The mesh ID of the static

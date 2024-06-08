@@ -10,7 +10,7 @@ Shows the list of items that exist in the current level and allows you to filter
 Input|Action
 ---|------
 Filters | Open the [filters](filters.md) editor. The checkbox toggles whether configured filters are applied.
-Track Room          | Whether to show the items that are in the currently selected room
+Track           | Whether to show the items that are in the currently selected room. Clicking the button will show the expanded track menu where you can choose whether rooms are tracked.
 Sync | Whether the item selected in the window will be synced with the item selected in the view (bidirectional)
 
 ## Items List
@@ -36,7 +36,7 @@ Clear Body | Whether to remove a dead body when a bodybag trigger is triggered
 Invisible | Whether this item is invisible
 Flags | Entity activation flags
 OCB | Used to change entity behaviour
-Categories | Categories to which the item is assigned
+Category | Categories to which the item is assigned
 
 ## Add To Route
 Clicking the `Add to Route` button will insert this item at the current position in the route.

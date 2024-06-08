@@ -8,7 +8,7 @@ _Shortcut: Ctrl + L_
 Input|Action
 ---|------
 Filters | Open the [filters](filters.md) editor. The checkbox toggles whether configured filters are applied.
-Track Room          | Whether to show the items that are in the currently selected room
+Track Room          | Whether to show the lights that are in the currently selected room. Clicking the button will show the expanded track menu where you can choose whether rooms are tracked.
 Sync | Whether the light selected in the window will be synced with the light selected in the view (bidirectional)
 
 ## Lights List
@@ -45,6 +45,8 @@ Density|Fog Bulb|TR4+
 Radius|Fog Bulb|TR4+
 
 ### Light Types
+
+Not all light types are in all games. The table below shows when the different types are introduced.
 
 Type | Games
 ---|---
