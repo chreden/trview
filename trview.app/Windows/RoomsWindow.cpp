@@ -489,24 +489,28 @@ namespace trview
                     {
                         render_items_tab(room);
                         ImGui::EndTabItem();
+                        _scroll_to_item = false;
                     }
 
                     if (ImGui::BeginTabItem("Triggers", 0, _scroll_to_trigger ? ImGuiTabItemFlags_SetSelected : 0))
                     {
                         render_triggers_tab();
                         ImGui::EndTabItem();
+                        _scroll_to_trigger = false;
                     }
 
                     if (ImGui::BeginTabItem("Camera/Sink", 0, _scroll_to_camera_sink ? ImGuiTabItemFlags_SetSelected : 0))
                     {
                         render_camera_sink_tab();
                         ImGui::EndTabItem();
+                        _scroll_to_camera_sink = false;
                     }
 
                     if (ImGui::BeginTabItem("Lights", 0, _scroll_to_light ? ImGuiTabItemFlags_SetSelected : 0))
                     {
                         render_lights_tab();
                         ImGui::EndTabItem();
+                        _scroll_to_light = false;
                     }
 
                     if (ImGui::BeginTabItem("Floordata"))
