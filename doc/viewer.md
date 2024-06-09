@@ -12,17 +12,20 @@ TR1-3 | TR4+
 
 Option|Action
 ---|------
-Highlight           | Highlight the currently selected room
+Items               | Toggle item visibility
 Triggers            | Toggle trigger visibility
-Geometry            | Toggle geometry mode
+Lights              | Toggle lights visibility
 Water               | Toggle water in water rooms
+Bounds              | Show static mesh bounding boxes
+Highlight           | Highlight the currently selected room
 Rooms               | Toggle rendering of room geometry
+Camera/Sink         | Toggle rendering of cameras and sinks
 Depth               | Toggle depth mode. This will show the currently selected depth of neighbours of the current room.
 Depth Selector      | Choose the depth of neighbours to show
 Wireframe           | Enable wireframe rendering mode
-Bounds              | Show static mesh bounding boxes
-Lights              | Toggle lights visibility
+Geometry            | Toggle geometry mode
 Lighting            | Toggle using room lighting
+Notes               | Toggle notes visibility
 Flip                | Toggle the level flipmap (if present in the level). In TR4+ this will be a flipmap group selector.
 
 ## Room Navigator

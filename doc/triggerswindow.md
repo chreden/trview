@@ -10,7 +10,7 @@ Shows the list of triggers that exist in the current level and allows you to fil
 Input|Action
 ---|------
 Filters | Open the [filters](filters.md) editor. The checkbox toggles whether configured filters are applied.
-Track Room          | Whether to show the triggers that are in the currently selected room
+Track Room          | Whether to show the triggers that are in the currently selected room. Clicking the button will show the expanded track menu where you can choose whether rooms are tracked.
 Sync | Whether the trigger selected in the window will be synced with the trigger selected in the view (bidirectional)
 
 ## Triggers List
@@ -33,6 +33,7 @@ Room | The number of the room that the trigger is in
 Flags | Activation mask
 Only Once | Whether this trigger can only be triggered once
 Timer | Used to time trigger activation/deactivation
+Colour | The colour of the trigger in the 3D view. Can be reset with the `Reset` button.
 
 ## Add To Route
 Clicking the `Add to Route` button will insert this trigger at the current position in the route.
