@@ -59,7 +59,7 @@ Controls the way the camera is projected. Perspective is how we see the world wh
 
 Option|Action
 ---|------
-Persepective | Use persepective projection
+Perspective | Use perspective projection
 Orthographic | Use orthographic projection
 
 #### Perspective
@@ -95,7 +95,7 @@ Right click         | Goes to the room above, if one is present.
 
 ## Level Info
 
-The level info display useful informationn about the current level.
+The level info display useful information about the current level.
 
 ![Level Info](level_info.png)
 

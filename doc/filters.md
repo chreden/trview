@@ -1,6 +1,6 @@
 # Filters
 
-Filters can used and combined to build a query to find items based on their properties. The following windows currently support filters:
+Filters can be used and combined to build a query to find items based on their properties. The following windows currently support filters:
 - `Items`
 - `Triggers`
 - `Lights`
@@ -40,4 +40,4 @@ If the value is a multi value property such as `Triggered By` on an `Item` then 
 
 ## Combining Filters
 
-Filters can be comined with either `And` or `Or`. Filters are combined in the order they are defined.
+Filters can be combined with either `And` or `Or`. Filters are combined in the order they are defined.

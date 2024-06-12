@@ -30,6 +30,8 @@ Stat | Meaning
 Type | The type name of the item
 \# | The item number
 Position | The position of the item in world space
+Angle | The raw rotation value
+Angle Degrees | The rotation value converted to degrees
 Type ID | The type ID of the item
 Room | The number of the room that the item is in
 Clear Body | Whether to remove a dead body when a bodybag trigger is triggered

@@ -2,7 +2,7 @@
 
 _Shortcut: Ctrl + R_
 
-Shows the list of waypoints in the current route and allows them to be edited and rearraanged.
+Shows the list of waypoints in the current route and allows them to be edited and rearranged.
 
 ![Route Window](route.png)
 
@@ -35,7 +35,7 @@ Opens a dialog to export a trview route file to file.
 
 ![Route Window Settings](route_settings.png)
 
-Clicking on the settings button will allow you to change route and waypoint colours. Clicking on each coloured square will show a colour picker dialog. The colours you choose will be used in the 3D view. The visiblity of the line between waypoints can also be toggled.
+Clicking on the settings button will allow you to change route and waypoint colours. Clicking on each coloured square will show a colour picker dialog. The colours you choose will be used in the 3D view. The visibility of the line between waypoints can also be toggled.
 
 ## Waypoint List
 
