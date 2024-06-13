@@ -74,11 +74,14 @@ namespace trview
                     if (ImGui::MenuItem("Open"))
                     {
                         const auto filename = _dialogs->open_file(L"Open Lua file", { { L"Lua files", { L"*.lua" } } }, OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST);
-                        if (auto plugin = _selected_plugin.lock())
+                        if (filename.has_value())
                         {
-                            plugin->do_file(escape(filename.value().filename));
-                            std::erase(_recent_files, filename.value().filename);
-                            _recent_files.push_back(filename.value().filename);
+                            if (auto plugin = _selected_plugin.lock())
+                            {
+                                plugin->do_file(escape(filename.value().filename));
+                                std::erase(_recent_files, filename.value().filename);
+                                _recent_files.push_back(filename.value().filename);
+                            }
                         }
                     }
 
