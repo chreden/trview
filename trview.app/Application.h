@@ -1,5 +1,7 @@
 #pragma once
 
+#include <future>
+
 #include <trview.common/Window.h>
 #include <trview.common/Timer.h>
 
@@ -187,6 +189,13 @@ namespace trview
 
         IRandomizerRoute::Source _randomizer_route_source;
         std::shared_ptr<IFonts> _fonts;
+
+        struct LoadingLevel
+        {
+            std::string path;
+            std::future<std::shared_ptr<ILevel>> level;
+        };
+        std::optional<LoadingLevel> _next_level;
     };
 
     std::unique_ptr<IApplication> create_application(HINSTANCE hInstance, int command_show, const std::wstring& command_line);

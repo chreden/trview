@@ -101,13 +101,13 @@ namespace trview
                 int index = wmId - ID_RECENT_FILE_BASE;
                 if (index >= 0 && index < static_cast<int>(_recent_files.size()))
                 {
-                    on_file_open(_recent_files[index]);
+                    on_file_open(_recent_files[index], std::nullopt);
                 }
             }
             else if (wmId >= ID_SWITCHFILE_BASE && wmId <= (ID_SWITCHFILE_BASE + GetMenuItemCount(_directory_listing_menu)))
             {
                 const auto& f = _file_switcher_list.at(wmId - ID_SWITCHFILE_BASE);
-                on_file_open(f.path);
+                on_file_open(f.path, std::nullopt);
             }
             else if (wmId == ID_FILE_RELOAD)
             {
@@ -123,7 +123,7 @@ namespace trview
             wchar_t filename[MAX_PATH];
             memset(&filename, 0, sizeof(filename));
             DragQueryFile((HDROP)wParam, 0, filename, MAX_PATH);
-            on_file_open(to_utf8(filename));
+            on_file_open(to_utf8(filename), std::nullopt);
         }
 
         return std::nullopt;
@@ -163,7 +163,7 @@ namespace trview
         const auto filename = _dialogs->open_file(L"Open level", { { L"All Tomb Raider Files", { L"*.tr2", L"*.tr4", L"*.trc", L"*.phd", L"*.psx" } } }, OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST);
         if (filename.has_value())
         {
-            on_file_open(filename.value().filename);
+            on_file_open(filename.value().filename, std::nullopt);
         }
     }
 
@@ -175,8 +175,9 @@ namespace trview
         {
             return;
         }
-        --iter;
-        on_file_open(iter->path);
+        const auto file = --iter;
+        std::optional<std::string> next = iter != _file_switcher_list.begin() ? std::optional<std::string>(std::prev(iter)->path) : std::nullopt;
+        on_file_open(file->path, next);
     }
 
     void FileMenu::next_directory_file()
@@ -187,9 +188,12 @@ namespace trview
         {
             return;
         }
-        if (++iter != _file_switcher_list.end())
+
+        const auto file = ++iter;
+        const auto next = ++iter;
+        if (file != _file_switcher_list.end())
         {
-            on_file_open(iter->path);
+            on_file_open(file->path, next != _file_switcher_list.end() ? std::optional<std::string>{ next->path } : std::nullopt);
         }
     }
 
@@ -213,7 +217,7 @@ namespace trview
             });
         if (found != _file_switcher_list.end())
         {
-            on_file_open(found->path);
+            on_file_open(found->path, std::nullopt);
         }
     }
 }

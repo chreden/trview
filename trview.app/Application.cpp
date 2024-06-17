@@ -84,7 +84,18 @@ namespace trview
         set_route(_settings.randomizer_tools ? randomizer_route_source(std::nullopt) : route_source(std::nullopt));
 
         _file_menu->set_recent_files(_settings.recent_files);
-        _token_store += _file_menu->on_file_open += [=](const auto& file) { open(file, ILevel::OpenMode::Full); };
+        _token_store += _file_menu->on_file_open += [=](const auto& file, const auto& next)
+            { 
+                open(file, ILevel::OpenMode::Full);
+                if (next.has_value())
+                {
+                    _next_level =
+                    {
+                        .path = next.value(),
+                        .level = std::async(std::launch::async, [=]() { return load(next.value()); })
+                    };
+                }
+            };
         _token_store += _file_menu->on_reload += [=]() { reload(); };
 
         setup_shortcuts();
@@ -123,7 +134,18 @@ namespace trview
 
         try
         {
-            auto level = load(filename);
+            std::shared_ptr<ILevel> level;
+            if (_next_level.has_value() && _next_level->path == filename)
+            {
+                _next_level->level.wait();
+                level = _next_level->level.get();
+                _next_level.reset();
+                OutputDebugString(L"Loaded cache\r\n");
+            }
+            else
+            {
+                level = load(filename);
+            }
             _settings.add_recent_file(filename);
             _file_menu->set_recent_files(_settings.recent_files);
             _settings_loader->save_user_settings(_settings);

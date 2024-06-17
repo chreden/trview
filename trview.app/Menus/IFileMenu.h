@@ -26,7 +26,7 @@ namespace trview
         /// <summary>
         /// Event raised when the user opens a level. The opened level is passed as a parameter.
         /// </summary>
-        Event<std::string> on_file_open;
+        Event<std::string, std::optional<std::string>> on_file_open;
         /// <summary>
         /// Event raised when the user wants to reload the level.
         /// </summary>
