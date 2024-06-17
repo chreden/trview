@@ -140,7 +140,6 @@ namespace trview
                 _next_level->level.wait();
                 level = _next_level->level.get();
                 _next_level.reset();
-                OutputDebugString(L"Loaded cache\r\n");
             }
             else
             {
