@@ -23,6 +23,7 @@ namespace trlevel
         FogBulb = 4
     };
 
+    constexpr float Click{ 256.0f };
     constexpr float Scale { 1024.0f };
     constexpr float Scale_X { 1024.0f };
     constexpr float Scale_Y { 1024.0f };

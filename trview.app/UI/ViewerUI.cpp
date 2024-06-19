@@ -502,7 +502,16 @@ namespace trview
             if (const auto waypoint = route->waypoint(i).lock())
             {
                 const auto notes = waypoint->notes();
-                if (notes.empty())
+                int diff = 0;
+                if (i > 0)
+                {
+                    if (const auto previous = route->waypoint(i - 1).lock())
+                    {
+                        diff = static_cast<int>((waypoint->position().y - previous->position().y) * trlevel::Scale);
+                    }
+                }
+
+                if (notes.empty() && diff == 0)
                 {
                     continue;
                 }
@@ -513,7 +522,16 @@ namespace trview
                     ImGui::SetNextWindowPos(vp->Pos + ImVec2(pos.x, pos.y));
                     if (ImGui::Begin(std::format("##waypoint{}", i).c_str(), nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoInputs | ImGuiWindowFlags_NoFocusOnAppearing))
                     {
-                        ImGui::Text(notes.c_str());
+                        if (diff != 0)
+                        {
+                            const std::string sign = diff <= 0 ? "+" : "-";
+                            const int clicks = static_cast<int>(round(diff / trlevel::Click));
+                            ImGui::Text(std::format("{}{} ({}{} clicks)", sign, abs(diff), sign, abs(clicks)).c_str());
+                        }
+                        if (!notes.empty())
+                        {
+                            ImGui::Text(notes.c_str());
+                        }
                     }
                     ImGui::End();
                 }
