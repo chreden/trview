@@ -1128,8 +1128,8 @@ namespace trview
         if (auto level = _level.lock())
         {
             level->set_show_triggers(show);
-            _ui->set_toggle(Options::triggers, show);
         }
+        set_toggle(Options::triggers, show);
     }
 
     void Viewer::toggle_show_triggers()
@@ -1145,8 +1145,8 @@ namespace trview
         if (auto level = _level.lock())
         {
             level->set_show_items(show);
-            _ui->set_toggle(Options::items, show);
         }
+        set_toggle(Options::items, show);
     }
 
     void Viewer::toggle_show_items()
@@ -1162,8 +1162,8 @@ namespace trview
         if (auto level = _level.lock())
         {
             level->set_show_geometry(show);
-            _ui->set_toggle(Options::geometry, show);
         }
+        set_toggle(Options::geometry, show);
     }
 
     void Viewer::toggle_show_geometry()
@@ -1188,6 +1188,7 @@ namespace trview
         {
             level->set_show_water(show);
         }
+        set_toggle(Options::water, show);
     }
 
     void Viewer::set_show_wireframe(bool show)
@@ -1195,8 +1196,8 @@ namespace trview
         if (auto level = _level.lock())
         {
             level->set_show_wireframe(show);
-            _ui->set_toggle(Options::wireframe, show);
         }
+        set_toggle(Options::wireframe, show);
     }
 
     void Viewer::set_show_bounding_boxes(bool show)
@@ -1204,8 +1205,8 @@ namespace trview
         if (auto level = _level.lock())
         {
             level->set_show_bounding_boxes(show);
-            _ui->set_toggle(Options::show_bounding_boxes, show);
         }
+        set_toggle(Options::show_bounding_boxes, show);
     }
 
     void Viewer::set_show_lights(bool show)
@@ -1213,8 +1214,8 @@ namespace trview
         if (auto level = _level.lock())
         {
             level->set_show_lights(show);
-            _ui->set_toggle(Options::lights, show);
         }
+        set_toggle(Options::lights, show);
     }
 
     std::weak_ptr<IRoom> Viewer::room_from_pick(const PickResult& pick) const
@@ -1410,8 +1411,8 @@ namespace trview
         if (auto level = _level.lock())
         {
             level->set_show_rooms(show);
-            _ui->set_toggle(Options::rooms, show);
         }
+        set_toggle(Options::rooms, show);
     }
 
     void Viewer::select_sector(const std::weak_ptr<ISector>& sector)
@@ -1463,8 +1464,8 @@ namespace trview
         if (auto level = _level.lock())
         {
             level->set_show_camera_sinks(show);
-            _ui->set_toggle(Options::camera_sinks, show);
         }
+        set_toggle(Options::camera_sinks, show);
     }
 
     void Viewer::toggle_show_camera_sinks()
@@ -1480,8 +1481,8 @@ namespace trview
         if (auto level = _level.lock())
         {
             level->set_show_lighting(show);
-            _ui->set_toggle(Options::lighting, show);
         }
+        set_toggle(Options::lighting, show);
     }
 
     void Viewer::toggle_show_lighting()
@@ -1503,5 +1504,12 @@ namespace trview
             }
             _scene_changed = true;
         }
+    }
+
+    void Viewer::set_toggle(const std::string& name, bool value)
+    {
+        _ui->set_toggle(name, value);
+        _settings.toggles[name] = value;
+        on_settings(_settings);
     }
 }
