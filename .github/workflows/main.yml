@@ -9,39 +9,6 @@ on:
     branches: [ master ]
 
 jobs:
-  buildx86:
-    name: Build x86
-    runs-on: windows-latest
-    steps:
-    - uses: actions/checkout@v2
-
-    - name: setup-msbuild
-      uses: microsoft/setup-msbuild@v1
-    
-    - name: Build Solution (x86)
-      run: msbuild trview.sln /property:Configuration=Release /property:Platform=x86 /m
-    
-    - name: Test Solution (x86)
-      run: |
-        $any_errors = $false
-        foreach ($file in Get-ChildItem Release\*.tests.exe -Exclude trview.app.ui.tests.exe)
-        {
-          . $file;
-          if (!$?)
-          {
-            $any_errors = $true;
-          }
-        }
-        if ($any_errors)
-        {
-           throw "One or more tests failed"
-        }
-      
-    - name: Upload Artifact (x86)
-      uses: actions/upload-artifact@v2
-      with:
-        name: trview-x86
-        path: Release\trview.exe
   buildx64:
     name: Build x64
     runs-on: windows-latest
