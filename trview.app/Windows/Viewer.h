@@ -131,6 +131,7 @@ namespace trview
         void toggle_show_camera_sinks();
         void set_show_lighting(bool show);
         void toggle_show_lighting();
+        void set_toggle(const std::string& name, bool value);
 
         const std::shared_ptr<graphics::IDevice> _device;
         const std::shared_ptr<IShortcuts>& _shortcuts;
