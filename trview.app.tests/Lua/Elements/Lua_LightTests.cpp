@@ -344,11 +344,8 @@ TEST(Lua_Light, Visible)
 
 TEST(Lua_Light, SetVisible)
 {
-    auto level = mock_shared<MockLevel>();
-    EXPECT_CALL(*level, set_light_visibility(100, true));
-
     auto light = mock_shared<MockLight>()->with_number(100);
-    EXPECT_CALL(*light, level).WillRepeatedly(Return(level));
+    EXPECT_CALL(*light, set_visible(true)).Times(1);
 
     LuaState L;
     lua::create_light(L, light);

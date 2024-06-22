@@ -17,8 +17,6 @@ namespace trview
         /// Event raised when the user has selected a trigger in the room window.
         Event<std::weak_ptr<ITrigger>> on_trigger_selected;
 
-        Event<std::weak_ptr<IRoom>, bool> on_room_visibility;
-
         Event<std::weak_ptr<ISector>> on_sector_hover;
         Event<std::weak_ptr<ILight>> on_light_selected;
         Event<std::weak_ptr<ICameraSink>> on_camera_sink_selected;

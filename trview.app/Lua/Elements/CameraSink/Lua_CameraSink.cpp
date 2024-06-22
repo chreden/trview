@@ -106,10 +106,8 @@ namespace trview
                 }
                 else if (key == "visible")
                 {
-                    if (auto level = camera_sink->level().lock())
-                    {
-                        level->set_camera_sink_visibility(camera_sink->number(), lua_toboolean(L, -1));
-                    }
+                    camera_sink->set_visible(lua_toboolean(L, -1));
+                    return 0;
                 }
 
                 return 0;

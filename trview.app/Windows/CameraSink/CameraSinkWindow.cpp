@@ -224,7 +224,7 @@ namespace trview
                     ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0, 0));
                     if (ImGui::Checkbox(std::format("##hide-{}", camera_sink->number()).c_str(), &hidden))
                     {
-                        on_camera_sink_visibility(camera_sink, !hidden);
+                        camera_sink->set_visible(!hidden);
                     }
                     ImGui::PopStyleVar();
                 }

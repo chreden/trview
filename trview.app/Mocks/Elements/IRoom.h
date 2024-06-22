@@ -104,6 +104,12 @@ namespace trview
                 ON_CALL(*this, info).WillByDefault(testing::Return(info));
                 return shared_from_this();
             }
+
+            std::shared_ptr<MockRoom> with_visible(bool value)
+            {
+                ON_CALL(*this, visible).WillByDefault(testing::Return(value));
+                return shared_from_this();
+            }
         };
     }
 }
