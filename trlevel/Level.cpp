@@ -3,6 +3,7 @@
 #include "LevelEncryptedException.h"
 #include <format>
 #include <ranges>
+#include <spanstream>
 
 namespace trlevel
 {
@@ -20,14 +21,24 @@ namespace trlevel
 
     namespace
     {
-        template < typename T >
-        void read(std::istream& file, T& value)
+        void skip(std::basic_ispanstream<uint8_t>& file, uint32_t size)
         {
-            file.read(reinterpret_cast<char*>(&value), sizeof(value));
+            file.seekg(size, std::ios::cur);
+        }
+
+        void skip_xela(std::basic_ispanstream<uint8_t>& file)
+        {
+            skip(file, 4);
         }
 
         template <typename T>
-        T read(std::istream& file)
+        void read(std::basic_ispanstream<uint8_t>& file, T& value)
+        {
+            file.read(reinterpret_cast<uint8_t*>(&value), sizeof(value));
+        }
+
+        template <typename T>
+        T read(std::basic_ispanstream<uint8_t>& file)
         {
             T value;
             read<T>(file, value);
@@ -35,7 +46,7 @@ namespace trlevel
         }
 
         template < typename DataType, typename SizeType >
-        std::vector<DataType> read_vector(std::istream& file, SizeType size)
+        std::vector<DataType> read_vector(std::basic_ispanstream<uint8_t>& file, SizeType size)
         {
             std::vector<DataType> data(size);
             for (SizeType i = 0; i < size; ++i)
@@ -46,13 +57,13 @@ namespace trlevel
         }
 
         template < typename SizeType, typename DataType >
-        std::vector<DataType> read_vector(std::istream& file)
+        std::vector<DataType> read_vector(std::basic_ispanstream<uint8_t>& file)
         {
             auto size = read<SizeType>(file);
             return read_vector<DataType, SizeType>(file, size);
         }
 
-        std::vector<uint8_t> read_compressed(std::istream& file)
+        std::vector<uint8_t> read_compressed(std::basic_ispanstream<uint8_t>& file)
         {
             auto uncompressed_size = read<uint32_t>(file);
             auto compressed_size = read<uint32_t>(file);
@@ -74,13 +85,24 @@ namespace trlevel
         }
 
         template < typename DataType >
-        std::vector<DataType> read_vector_compressed(std::istream& file, uint32_t elements)
+        std::vector<DataType> read_vector_compressed(std::basic_ispanstream<uint8_t>& file, uint32_t elements)
         {
             auto uncompressed_data = read_compressed(file);
-            std::string data(reinterpret_cast<char*>(&uncompressed_data[0]), uncompressed_data.size());
-            std::istringstream data_stream(data, std::ios::binary);
-            data_stream.exceptions(std::ifstream::failbit | std::ifstream::badbit | std::ifstream::eofbit);
+            std::basic_ispanstream<uint8_t> data_stream{ { uncompressed_data } };
+            data_stream.exceptions(std::ios::failbit | std::ios::badbit | std::ios::eofbit);
             return read_vector<DataType>(data_stream, elements);
+        }
+
+        void skip_vector_compressed(std::basic_ispanstream<uint8_t>& file)
+        {
+            skip(file, sizeof(uint32_t));
+            auto compressed_size = read<uint32_t>(file);
+            skip(file, compressed_size);
+        }
+
+        void log_file(trview::Activity& activity, std::basic_ispanstream<uint8_t>& stream, const std::string& text)
+        {
+            activity.log(std::format("[{}] {}", static_cast<uint64_t>(stream.tellg()), text));
         }
 
         void log_file(trview::Activity& activity, std::istream& stream, const std::string& text)
@@ -101,17 +123,7 @@ namespace trlevel
             return transformed.find(L".TRC") != filename.npos;
         }
 
-        void skip(std::istream& file, uint32_t size)
-        {
-            file.seekg(size, std::ios::cur);
-        }
-
-        void skip_xela(std::istream& file)
-        {
-            skip(file, 4);
-        }
-
-        void load_tr1_4_room(trview::Activity& activity, std::istream& file, tr3_room& room, PlatformAndVersion platform_and_version)
+        void load_tr1_4_room(trview::Activity& activity, std::basic_ispanstream<uint8_t>& file, tr3_room& room, PlatformAndVersion platform_and_version)
         {
             log_file(activity, file, "Reading room info");
             room.info = convert_room_info(read<tr1_4_room_info>(file));
@@ -278,7 +290,7 @@ namespace trlevel
             }
         }
 
-        void load_tr5_room(trview::Activity& activity, std::istream& file, tr3_room& room)
+        void load_tr5_room(trview::Activity& activity, std::basic_ispanstream<uint8_t>& file, tr3_room& room)
         {
             log_file(activity, file, "Reading room data information");
             skip_xela(file);
@@ -410,8 +422,7 @@ namespace trlevel
                 throw LevelLoadException();
             }
 
-            std::stringstream file(std::string(bytes.value().begin(), bytes.value().end()), std::ios::in | std::ios::binary);
-
+            std::basic_ispanstream<uint8_t> file{ { *bytes } };
             auto file_position = [&]() { return static_cast<uint64_t>(file.tellg()); };
 
             log_file(activity, file, std::format("Opened file \"{}\"", filename));
@@ -430,8 +441,7 @@ namespace trlevel
             {
                 log_file(activity, file, std::format("File is encrypted, decrypting"));
                 decrypter->decrypt(bytes.value());
-
-                file = std::stringstream(std::string(bytes.value().begin(), bytes.value().end()), std::ios::in | std::ios::binary);
+                file.seekg(0, std::ios::beg);
                 raw_version = read<uint32_t>(file);
                 _platform_and_version = convert_level_version(raw_version);
                 log_file(activity, file, std::format("Version number is {:X} ({})", raw_version, to_string(get_version())));
@@ -517,8 +527,8 @@ namespace trlevel
 
         // As well as reading the actual mesh data, generate a map of mesh_pointer to 
         // mesh. It seems that a lot of the pointers point to the same mesh.
-        std::string data(reinterpret_cast<const char*>(&mesh_data[0]), mesh_data.size() * sizeof(uint16_t));
-        std::istringstream stream(data, std::ios::binary);
+        std::span span{ reinterpret_cast<const uint8_t*>(&mesh_data[0]), mesh_data.size() * sizeof(uint16_t) };
+        std::basic_ispanstream<uint8_t> stream{ span };
         stream.exceptions(std::istream::failbit | std::istream::badbit | std::istream::eofbit);
         for (auto pointer : _mesh_pointers)
         {
@@ -949,7 +959,7 @@ namespace trlevel
         return std::nullopt;
     }
 
-    void Level::load_tr4(trview::Activity& activity, std::istream& file)
+    void Level::load_tr4(trview::Activity& activity, std::basic_ispanstream<uint8_t>& file)
     {
         log_file(activity, file, "Reading textile counts");
         uint16_t num_room_textiles = read<uint16_t>(file);
@@ -960,28 +970,34 @@ namespace trlevel
 
         log_file(activity, file, std::format("Reading {} 32-bit textiles", _num_textiles));
         _textile32 = read_vector_compressed<tr_textile32>(file, _num_textiles);
-        log_file(activity, file, std::format("Reading {} 16-bit textiles", _num_textiles));
-        _textile16 = read_vector_compressed<tr_textile16>(file, _num_textiles);
-        log_file(activity, file, "Reading misc textiles");
-        auto textile32_misc = read_vector_compressed<tr_textile32>(file, 2);
 
         constexpr auto is_blank = [](const auto& t)
-        {
-            for (const uint32_t& v : t.Tile)
             {
-                if (v)
+                for (const uint32_t& v : t.Tile)
                 {
-                    return false;
+                    if (v)
+                    {
+                        return false;
+                    }
                 }
-            }
-            return true;
-        };
+                return true;
+            };
 
         if (std::all_of(_textile32.begin(), _textile32.end(), is_blank))
         {
             activity.log(trview::Message::Status::Warning, "32-bit textiles were all blank, discarding");
             _textile32.clear();
+            log_file(activity, file, std::format("Reading {} 16-bit textiles", _num_textiles));
+            _textile16 = read_vector_compressed<tr_textile16>(file, _num_textiles);
         }
+        else
+        {
+            log_file(activity, file, std::format("Skipping {} 16-bit textiles", _num_textiles));
+            skip_vector_compressed(file);
+        }
+        
+        log_file(activity, file, "Reading misc textiles");
+        auto textile32_misc = read_vector_compressed<tr_textile32>(file, 2);
 
         if (get_version() == LevelVersion::Tomb5)
         {
@@ -999,8 +1015,7 @@ namespace trlevel
         {
             log_file(activity, file, "Reading and decompressing level data");
             std::vector<uint8_t> level_data = read_compressed(file);
-            std::string data(reinterpret_cast<char*>(&level_data[0]), level_data.size());
-            std::istringstream data_stream(data, std::ios::binary);
+            std::basic_ispanstream<uint8_t> data_stream{ { level_data } };
             load_level_data(activity, data_stream);
         }
         else
@@ -1016,7 +1031,7 @@ namespace trlevel
         generate_meshes(_mesh_data);
     }
 
-    void Level::load_level_data(trview::Activity& activity, std::istream& file)
+    void Level::load_level_data(trview::Activity& activity, std::basic_ispanstream<uint8_t>& file)
     {
         // Read unused value.
         read<uint32_t>(file);
