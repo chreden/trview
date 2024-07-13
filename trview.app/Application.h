@@ -1,5 +1,7 @@
 #pragma once
 
+#include <future>
+
 #include <trview.common/Window.h>
 #include <trview.common/Timer.h>
 
@@ -52,6 +54,12 @@ namespace trview
     class Application final : public IApplication, public MessageHandler
     {
     public:
+        enum class LoadMode
+        {
+            Async,
+            Sync
+        };
+
         explicit Application(
             const Window& application_window,
             std::unique_ptr<IUpdateChecker> update_checker,
@@ -79,7 +87,8 @@ namespace trview
             std::unique_ptr<IPluginsWindowManager> plugins_window_manager,
             const IRandomizerRoute::Source& randomizer_route_source,
             std::shared_ptr<IFonts> fonts,
-            std::unique_ptr<IStaticsWindowManager> statics_window_manager);
+            std::unique_ptr<IStaticsWindowManager> statics_window_manager,
+            LoadMode load_mode);
         virtual ~Application();
         /// Attempt to open the specified level file.
         /// @param filename The level file to open.
@@ -139,6 +148,7 @@ namespace trview
         void open_recent_route();
         void save_window_placement();
         void select_static_mesh(const std::weak_ptr<IStaticMesh>& static_mesh);
+        void check_load();
 
         TokenStore _token_store;
 
@@ -187,6 +197,17 @@ namespace trview
 
         IRandomizerRoute::Source _randomizer_route_source;
         std::shared_ptr<IFonts> _fonts;
+
+        struct LoadOperation
+        {
+            std::shared_ptr<ILevel>     level;
+            std::string                 filename;
+            ILevel::OpenMode            open_mode;
+            std::optional<std::string>  error;
+        };
+
+        std::future<LoadOperation> _load;
+        LoadMode _load_mode;
     };
 
     std::unique_ptr<IApplication> create_application(HINSTANCE hInstance, int command_show, const std::wstring& command_line);
