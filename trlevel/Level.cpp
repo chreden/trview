@@ -400,118 +400,8 @@ namespace trlevel
     }
 
     Level::Level(const std::string& filename, const std::shared_ptr<trview::IFiles>& files, const std::shared_ptr<IDecrypter>& decrypter, const std::shared_ptr<trview::ILog>& log)
-        : _log(log)
+        : _log(log), _decrypter(decrypter), _filename(filename), _files(files)
     {
-        // Clear the log before loading the level so we don't keep accumulating memory.
-        _log->clear();
-
-        // Load the level from the file.
-        _name = trview::filename_without_path(filename);
-
-        trview::Activity activity(log, "IO", "Load Level " + _name);
-
-        try
-        {
-            // Convert the filename to UTF-16
-            auto converted = trview::to_utf16(filename);
-            activity.log(std::format("Opening file \"{}\"", filename));
-
-            auto bytes = files->load_file(filename);
-            if (!bytes.has_value())
-            {
-                throw LevelLoadException();
-            }
-
-            std::basic_ispanstream<uint8_t> file{ { *bytes } };
-            auto file_position = [&]() { return static_cast<uint64_t>(file.tellg()); };
-
-            log_file(activity, file, std::format("Opened file \"{}\"", filename));
-
-            log_file(activity, file, "Reading version number from file");
-            uint32_t raw_version = read<uint32_t>(file);
-            _platform_and_version = convert_level_version(raw_version);
-
-            log_file(activity, file, std::format("Version number is {:X} ({}), Platform is {}", raw_version, to_string(get_version()), to_string(platform())));
-            if (_platform_and_version.version == LevelVersion::Unknown)
-            {
-                throw LevelLoadException(std::format("Unknown level version ({})", raw_version));
-            }
-
-            if (raw_version == 0x63345254)
-            {
-                log_file(activity, file, std::format("File is encrypted, decrypting"));
-                decrypter->decrypt(bytes.value());
-                file.seekg(0, std::ios::beg);
-                raw_version = read<uint32_t>(file);
-                _platform_and_version = convert_level_version(raw_version);
-                log_file(activity, file, std::format("Version number is {:X} ({})", raw_version, to_string(get_version())));
-            }
-
-            if (is_tr5(activity, get_version(), converted))
-            {
-                _platform_and_version.version = LevelVersion::Tomb5;
-                log_file(activity, file, std::format("Version number is {:X} ({})", raw_version, to_string(get_version())));
-            }
-
-            if (get_version() >= LevelVersion::Tomb4)
-            {
-                load_tr4(activity, file);
-                return;
-            }
-
-            if (get_version() > LevelVersion::Tomb1)
-            {
-                log_file(activity, file, "Reading 8-bit palette");
-                _palette = read_vector<tr_colour>(file, 256);
-                log_file(activity, file, "Reading 16-bit palette");
-                _palette16 = read_vector<tr_colour4>(file, 256);
-            }
-
-            if (_platform_and_version.platform == Platform::PSX)
-            {
-                if (_platform_and_version.version == LevelVersion::Tomb1)
-                {
-                    skip(file, 12);
-                    uint32_t textile_address = read<uint32_t>(file);
-                    file.seekg(textile_address + 8, std::ios::beg);
-                }
-            }
-
-            log_file(activity, file, "Reading textiles");
-            if (_platform_and_version.platform == Platform::PSX)
-            {
-                auto at = file.tellg();
-                _num_textiles = 13;
-                _textile4 = read_vector<tr_textile4>(file, 13);
-                _clut = read_vector<tr_clut>(file, 1024);
-                log_file(activity, file, std::format("Read {} textile4s and {} clut", _textile4.size(), _clut.size()));
-            }
-            else
-            {
-                _num_textiles = read<uint32_t>(file);
-                log_file(activity, file, std::format("Reading {} 8-bit textiles", _num_textiles));
-                _textile8 = read_vector<tr_textile8>(file, _num_textiles);
-            }
-
-            if (get_version() > LevelVersion::Tomb1)
-            {
-                log_file(activity, file, std::format("Reading {} 16-bit textiles", _num_textiles));
-                _textile16 = read_vector<tr_textile16>(file, _num_textiles);
-            }
-
-            load_level_data(activity, file);
-            generate_meshes(_mesh_data);
-        }
-        catch (const LevelEncryptedException&)
-        {
-            activity.log(trview::Message::Status::Error, "Level is encrypted, aborting");
-            throw;
-        }
-        catch (const std::exception& e)
-        {
-            activity.log(trview::Message::Status::Error, std::format("Level failed to load: {}", e.what()));
-            throw LevelLoadException(e.what());
-        }
     }
 
     Level::~Level()
@@ -1515,4 +1405,118 @@ namespace trlevel
         _num_textiles = static_cast<uint32_t>(_textile16.size());
         return static_cast<uint16_t>(_textile16.size() - 1);
     };
+
+    void Level::load()
+    {
+        // Clear the log before loading the level so we don't keep accumulating memory.
+        _log->clear();
+
+        // Load the level from the file.
+        _name = trview::filename_without_path(_filename);
+
+        trview::Activity activity(_log, "IO", "Load Level " + _name);
+
+        try
+        {
+            // Convert the filename to UTF-16
+            auto converted = trview::to_utf16(_filename);
+            activity.log(std::format("Opening file \"{}\"", _filename));
+
+            auto bytes = _files->load_file(_filename);
+            if (!bytes.has_value())
+            {
+                throw LevelLoadException();
+            }
+
+            std::basic_ispanstream<uint8_t> file{ { *bytes } };
+            auto file_position = [&]() { return static_cast<uint64_t>(file.tellg()); };
+
+            log_file(activity, file, std::format("Opened file \"{}\"", _filename));
+
+            log_file(activity, file, "Reading version number from file");
+            uint32_t raw_version = read<uint32_t>(file);
+            _platform_and_version = convert_level_version(raw_version);
+
+            log_file(activity, file, std::format("Version number is {:X} ({}), Platform is {}", raw_version, to_string(get_version()), to_string(platform())));
+            if (_platform_and_version.version == LevelVersion::Unknown)
+            {
+                throw LevelLoadException(std::format("Unknown level version ({})", raw_version));
+            }
+
+            if (raw_version == 0x63345254)
+            {
+                log_file(activity, file, std::format("File is encrypted, decrypting"));
+                _decrypter->decrypt(bytes.value());
+                file.seekg(0, std::ios::beg);
+                raw_version = read<uint32_t>(file);
+                _platform_and_version = convert_level_version(raw_version);
+                log_file(activity, file, std::format("Version number is {:X} ({})", raw_version, to_string(get_version())));
+            }
+
+            if (is_tr5(activity, get_version(), converted))
+            {
+                _platform_and_version.version = LevelVersion::Tomb5;
+                log_file(activity, file, std::format("Version number is {:X} ({})", raw_version, to_string(get_version())));
+            }
+
+            if (get_version() >= LevelVersion::Tomb4)
+            {
+                load_tr4(activity, file);
+                return;
+            }
+
+            if (get_version() > LevelVersion::Tomb1)
+            {
+                log_file(activity, file, "Reading 8-bit palette");
+                _palette = read_vector<tr_colour>(file, 256);
+                log_file(activity, file, "Reading 16-bit palette");
+                _palette16 = read_vector<tr_colour4>(file, 256);
+            }
+
+            if (_platform_and_version.platform == Platform::PSX)
+            {
+                if (_platform_and_version.version == LevelVersion::Tomb1)
+                {
+                    skip(file, 12);
+                    uint32_t textile_address = read<uint32_t>(file);
+                    file.seekg(textile_address + 8, std::ios::beg);
+                }
+            }
+
+            log_file(activity, file, "Reading textiles");
+            if (_platform_and_version.platform == Platform::PSX)
+            {
+                auto at = file.tellg();
+                _num_textiles = 13;
+                _textile4 = read_vector<tr_textile4>(file, 13);
+                _clut = read_vector<tr_clut>(file, 1024);
+                log_file(activity, file, std::format("Read {} textile4s and {} clut", _textile4.size(), _clut.size()));
+            }
+            else
+            {
+                _num_textiles = read<uint32_t>(file);
+                log_file(activity, file, std::format("Reading {} 8-bit textiles", _num_textiles));
+                _textile8 = read_vector<tr_textile8>(file, _num_textiles);
+            }
+
+            if (get_version() > LevelVersion::Tomb1)
+            {
+                log_file(activity, file, std::format("Reading {} 16-bit textiles", _num_textiles));
+                _textile16 = read_vector<tr_textile16>(file, _num_textiles);
+            }
+
+            load_level_data(activity, file);
+            generate_meshes(_mesh_data);
+        }
+        catch (const LevelEncryptedException&)
+        {
+            activity.log(trview::Message::Status::Error, "Level is encrypted, aborting");
+            throw;
+        }
+        catch (const std::exception& e)
+        {
+            activity.log(trview::Message::Status::Error, std::format("Level failed to load: {}", e.what()));
+            throw LevelLoadException(e.what());
+        }
+    }
 }

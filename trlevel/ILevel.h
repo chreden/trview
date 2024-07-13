@@ -179,5 +179,7 @@ namespace trlevel
         virtual tr_camera get_camera(uint32_t index) const = 0;
 
         virtual Platform platform() const = 0;
+
+        virtual void load() = 0;
     };
 }

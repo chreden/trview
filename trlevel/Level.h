@@ -180,6 +180,7 @@ namespace trlevel
         virtual uint32_t num_cameras() const override;
         virtual tr_camera get_camera(uint32_t index) const override;
         Platform platform() const override;
+        void load() override;
     private:
         void generate_meshes(const std::vector<uint16_t>& mesh_data);
 
@@ -191,8 +192,6 @@ namespace trlevel
         tr_colour4 colour_from_object_texture(uint32_t texture) const;
 
         uint16_t convert_textile4(uint16_t tile, uint16_t clut_id);
-
-        std::shared_ptr<trview::ILog> _log;
 
         PlatformAndVersion _platform_and_version;
 
@@ -231,5 +230,10 @@ namespace trlevel
         std::string _name;
 
         std::vector<tr_camera> _cameras;
+
+        std::shared_ptr<trview::ILog>   _log;
+        std::shared_ptr<IDecrypter>     _decrypter;
+        std::string                     _filename;
+        std::shared_ptr<trview::IFiles> _files;
     };
 }

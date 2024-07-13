@@ -246,28 +246,30 @@ namespace trview
         auto camera_sink_source = [=](auto&&... args) { return std::make_shared<CameraSink>(camera_mesh, texture_storage, args...); };
 
         auto level_source = [=](auto&& level)
-        {
-            auto level_texture_storage = std::make_shared<LevelTextureStorage>(device, std::make_unique<TextureStorage>(device), level);
-            auto mesh_storage = std::make_unique<MeshStorage>(mesh_source, *level, *level_texture_storage);
-            auto new_level = std::make_shared<Level>(
-                device, 
-                shader_storage, 
-                level_texture_storage,
-                std::make_unique<TransparencyBuffer>(device),
-                std::make_unique<SelectionRenderer>(device, shader_storage, std::make_unique<TransparencyBuffer>(device), render_target_source),
-                log,
-                buffer_source);
-            new_level->initialise(
-                level,
-                std::move(mesh_storage),
-                entity_source,
-                ai_source,
-                room_source,
-                trigger_source,
-                light_source,
-                camera_sink_source);
-            return new_level;
-        };
+            {
+                // TODO: Hook up callbacks for loading textures, other callbacks.
+                level->load();
+
+                auto level_texture_storage = std::make_shared<LevelTextureStorage>(device, std::make_unique<TextureStorage>(device), level);
+                auto mesh_storage = std::make_unique<MeshStorage>(mesh_source, *level, *level_texture_storage);
+                auto new_level = std::make_shared<Level>(
+                    device, 
+                    shader_storage, 
+                    level_texture_storage,
+                    std::make_unique<TransparencyBuffer>(device),
+                    std::make_unique<SelectionRenderer>(device, shader_storage, std::make_unique<TransparencyBuffer>(device), render_target_source),
+                    log,
+                    buffer_source);
+                new_level->initialise(level,
+                    std::move(mesh_storage),
+                    entity_source,
+                    ai_source,
+                    room_source,
+                    trigger_source,
+                    light_source,
+                    camera_sink_source);
+                return new_level;
+            };
 
         auto dialogs = std::make_shared<Dialogs>(window);
         auto shell = std::make_shared<Shell>();
