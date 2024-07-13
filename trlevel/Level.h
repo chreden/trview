@@ -184,9 +184,9 @@ namespace trlevel
         void generate_meshes(const std::vector<uint16_t>& mesh_data);
 
         // Load a Tomb Raider IV level.
-        void load_tr4(trview::Activity& activity, std::istream& file);
+        void load_tr4(trview::Activity& activity, std::basic_ispanstream<uint8_t>& file);
 
-        void load_level_data(trview::Activity& activity, std::istream& file);
+        void load_level_data(trview::Activity& activity, std::basic_ispanstream<uint8_t>& file);
 
         tr_colour4 colour_from_object_texture(uint32_t texture) const;
 
