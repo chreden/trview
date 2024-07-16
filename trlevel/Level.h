@@ -180,14 +180,14 @@ namespace trlevel
         virtual uint32_t num_cameras() const override;
         virtual tr_camera get_camera(uint32_t index) const override;
         Platform platform() const override;
-        void load() override;
+        void load(const LoadCallbacks& callbacks) override;
     private:
         void generate_meshes(const std::vector<uint16_t>& mesh_data);
 
         // Load a Tomb Raider IV level.
-        void load_tr4(trview::Activity& activity, std::basic_ispanstream<uint8_t>& file);
+        void load_tr4(trview::Activity& activity, std::basic_ispanstream<uint8_t>& file, const LoadCallbacks& callbacks);
 
-        void load_level_data(trview::Activity& activity, std::basic_ispanstream<uint8_t>& file);
+        void load_level_data(trview::Activity& activity, std::basic_ispanstream<uint8_t>& file, const LoadCallbacks& callbacks);
 
         tr_colour4 colour_from_object_texture(uint32_t texture) const;
 

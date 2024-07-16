@@ -111,7 +111,8 @@ namespace trview
             const IRoom::Source& room_source,
             const ITrigger::Source& trigger_source,
             const ILight::Source& light_source,
-            const ICameraSink::Source& camera_sink_source);
+            const ICameraSink::Source& camera_sink_source,
+            const trlevel::ILevel::LoadCallbacks callbacks);
         std::vector<std::weak_ptr<IStaticMesh>> static_meshes() const override;
         std::weak_ptr<IStaticMesh> static_mesh(uint32_t index) const override;
     private:

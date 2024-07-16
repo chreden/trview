@@ -63,6 +63,15 @@ namespace trlevel
             return read_vector<DataType, SizeType>(file, size);
         }
 
+        template < typename DataType, typename SizeType >
+        void stream_vector(std::basic_ispanstream<uint8_t>& file, SizeType size, const std::function<void (const DataType&)>& out)
+        {
+            for (SizeType i = 0; i < size; ++i)
+            {
+                out(read<DataType>(file));
+            }
+        }
+
         std::vector<uint8_t> read_compressed(std::basic_ispanstream<uint8_t>& file)
         {
             auto uncompressed_size = read<uint32_t>(file);
@@ -849,7 +858,7 @@ namespace trlevel
         return std::nullopt;
     }
 
-    void Level::load_tr4(trview::Activity& activity, std::basic_ispanstream<uint8_t>& file)
+    void Level::load_tr4(trview::Activity& activity, std::basic_ispanstream<uint8_t>& file, const LoadCallbacks& callbacks)
     {
         log_file(activity, file, "Reading textile counts");
         uint16_t num_room_textiles = read<uint16_t>(file);
@@ -858,6 +867,7 @@ namespace trlevel
         log_file(activity, file, std::format("Textile counts - Room:{}, Object:{}, Bump:{}", num_room_textiles, num_obj_textiles, num_bump_textiles));
         _num_textiles = num_room_textiles + num_obj_textiles + num_bump_textiles;
 
+        callbacks.on_progress(std::format("Reading {} 32-bit textiles", _num_textiles));
         log_file(activity, file, std::format("Reading {} 32-bit textiles", _num_textiles));
         _textile32 = read_vector_compressed<tr_textile32>(file, _num_textiles);
 
@@ -877,11 +887,37 @@ namespace trlevel
         {
             activity.log(trview::Message::Status::Warning, "32-bit textiles were all blank, discarding");
             _textile32.clear();
+            callbacks.on_progress(std::format("Reading {} 16-bit textiles", _num_textiles));
             log_file(activity, file, std::format("Reading {} 16-bit textiles", _num_textiles));
             _textile16 = read_vector_compressed<tr_textile16>(file, _num_textiles);
+
+            std::vector<uint32_t> converted;
+            converted.reserve(256 * 256);
+            for (const auto& textile : _textile16)
+            {
+                std::transform(textile.Tile,
+                    textile.Tile + sizeof(textile.Tile) / sizeof(uint16_t),
+                    std::back_inserter(converted),
+                    convert_textile16);
+                callbacks.on_textile(converted);
+                converted.clear();
+            }
         }
         else
         {
+            std::vector<uint32_t> converted;
+            converted.reserve(256 * 256);
+            for (const auto& textile : _textile32)
+            {
+                std::transform(textile.Tile,
+                    textile.Tile + sizeof(textile.Tile) / sizeof(uint32_t),
+                    std::back_inserter(converted),
+                    convert_textile32);
+                callbacks.on_textile(converted);
+                converted.clear();
+            }
+
+            callbacks.on_progress(std::format("Skipping {} 16-bit textiles", _num_textiles));
             log_file(activity, file, std::format("Skipping {} 16-bit textiles", _num_textiles));
             skip_vector_compressed(file);
         }
@@ -904,24 +940,29 @@ namespace trlevel
         if (get_version() == LevelVersion::Tomb4)
         {
             log_file(activity, file, "Reading and decompressing level data");
+            callbacks.on_progress("Decompressing level data");
             std::vector<uint8_t> level_data = read_compressed(file);
             std::basic_ispanstream<uint8_t> data_stream{ { level_data } };
-            load_level_data(activity, data_stream);
+            callbacks.on_progress("Processing level data");
+            load_level_data(activity, data_stream, callbacks);
         }
         else
         {
             log_file(activity, file, "Skipping uncompresed and compressed sizes - unused in Tomb5");
             skip(file, 8);
-            load_level_data(activity, file);
+            callbacks.on_progress("Processing level data");
+            load_level_data(activity, file, callbacks);
         }
 
+        callbacks.on_progress("Skipping sound samples");
         log_file(activity, file, "Skipping sound samples");
 
+        callbacks.on_progress("Generating meshes");
         log_file(activity, file, "Generating meshes");
         generate_meshes(_mesh_data);
     }
 
-    void Level::load_level_data(trview::Activity& activity, std::basic_ispanstream<uint8_t>& file)
+    void Level::load_level_data(trview::Activity& activity, std::basic_ispanstream<uint8_t>& file, const LoadCallbacks& callbacks)
     {
         // Read unused value.
         read<uint32_t>(file);
@@ -943,10 +984,12 @@ namespace trlevel
             num_rooms = read<uint16_t>(file);
         }
 
+        callbacks.on_progress(std::format("Reading {} rooms", num_rooms));
         log_file(activity, file, std::format("Reading {} rooms", num_rooms));
         for (auto i = 0u; i < num_rooms; ++i)
         {
             trview::Activity room_activity(activity, std::format("Room {}", i));
+            callbacks.on_progress(std::format("Reading room {}", i));
             log_file(room_activity, file, std::format("Reading room {}", i));
             tr3_room room;
             if (get_version() == LevelVersion::Tomb5)
@@ -961,18 +1004,22 @@ namespace trlevel
             _rooms.push_back(room);
         }
 
+        callbacks.on_progress("Reading floor data");
         log_file(activity, file, "Reading floor data");
         _floor_data = read_vector<uint32_t, uint16_t>(file);
         log_file(activity, file, std::format("Read {} floor data", _floor_data.size()));
 
+        callbacks.on_progress("Reading mesh data");
         log_file(activity, file, "Reading mesh data");
         _mesh_data = read_vector<uint32_t, uint16_t>(file);
         log_file(activity, file, std::format("Read {} mesh data", _mesh_data.size()));
 
+        callbacks.on_progress("Reading mesh pointers");
         log_file(activity, file, "Reading mesh pointers");
         _mesh_pointers = read_vector<uint32_t, uint32_t>(file);
         log_file(activity, file, std::format("Read {} mesh pointers", _mesh_pointers.size()));
 
+        callbacks.on_progress("Reading animations");
         log_file(activity, file, "Reading animations");
         if (get_version() >= LevelVersion::Tomb4)
         {
@@ -983,26 +1030,32 @@ namespace trlevel
             std::vector<tr_animation> animations = read_vector<uint32_t, tr_animation>(file);
         }
 
+        callbacks.on_progress("Reading state changes");
         log_file(activity, file, "Reading state changes");
         std::vector<tr_state_change> state_changes = read_vector<uint32_t, tr_state_change>(file);
         log_file(activity, file, std::format("Read {} state changes", state_changes.size()));
 
+        callbacks.on_progress("Reading anim dispatches");
         log_file(activity, file, "Reading anim dispatches");
         std::vector<tr_anim_dispatch> anim_dispatches = read_vector<uint32_t, tr_anim_dispatch>(file);
         log_file(activity, file, std::format("Read {} anim dispatches", anim_dispatches.size()));
 
+        callbacks.on_progress("Reading anim commands");
         log_file(activity, file, "Reading anim commands");
         std::vector<tr_anim_command> anim_commands = read_vector<uint32_t, tr_anim_command>(file);
         log_file(activity, file, std::format("Read {} anim commands", anim_commands.size()));
 
+        callbacks.on_progress("Reading mesh trees");
         log_file(activity, file, "Reading mesh trees");
         _meshtree = read_vector<uint32_t, uint32_t>(file);
         log_file(activity, file, std::format("Read {} mesh trees", _meshtree.size()));
 
+        callbacks.on_progress("Reading frames");
         log_file(activity, file, "Reading frames");
         _frames = read_vector<uint32_t, uint16_t>(file);
         log_file(activity, file, std::format("Read {} frames", _frames.size()));
 
+        callbacks.on_progress("Reading models");
         log_file(activity, file, "Reading models");
         if (get_version() < LevelVersion::Tomb5)
         {
@@ -1017,6 +1070,7 @@ namespace trlevel
         }
         log_file(activity, file, std::format("Read {} models", _models.size()));
 
+        callbacks.on_progress("Reading static meshes");
         log_file(activity, file, "Reading static meshes");
         auto static_meshes = read_vector<uint32_t, tr_staticmesh>(file);
         log_file(activity, file, std::format("Read {} static meshes", static_meshes.size()));
@@ -1027,6 +1081,7 @@ namespace trlevel
 
         if (get_version() < LevelVersion::Tomb3)
         {
+            callbacks.on_progress("Reading object textures");
             log_file(activity, file, "Reading object textures");
             if (_platform_and_version.platform == Platform::PSX)
             {
@@ -1081,6 +1136,7 @@ namespace trlevel
             }
         }
 
+        callbacks.on_progress("Reading sprite textures");
         log_file(activity, file, "Reading sprite textures");
         if (_platform_and_version.platform == Platform::PSX)
         {
@@ -1100,6 +1156,8 @@ namespace trlevel
             _sprite_textures = read_vector<uint32_t, tr_sprite_texture>(file);
         }
         log_file(activity, file, std::format("Read {} sprite textures", _sprite_textures.size()));
+
+        callbacks.on_progress("Reading sprite sequences");
         log_file(activity, file, "Reading sprite sequences");
         _sprite_sequences = read_vector<uint32_t, tr_sprite_sequence>(file);
         log_file(activity, file, std::format("Read {} sprite sequences", _sprite_sequences.size()));
@@ -1107,22 +1165,26 @@ namespace trlevel
         // If this is Unfinished Business, the palette is here.
         // Need to do something about that, instead of just crashing.
 
+        callbacks.on_progress("Reading cameras");
         log_file(activity, file, "Reading cameras");
         _cameras = read_vector<uint32_t, tr_camera>(file);
         log_file(activity, file, std::format("Read {} cameras", _cameras.size()));
 
         if (get_version() >= LevelVersion::Tomb4)
         {
+            callbacks.on_progress("Reading flyby cameras");
             log_file(activity, file, "Reading flyby cameras");
             std::vector<tr4_flyby_camera> flyby_cameras = read_vector<uint32_t, tr4_flyby_camera>(file);
             log_file(activity, file, std::format("Read {} flyby cameras", flyby_cameras.size()));
         }
 
+        callbacks.on_progress("Reading sound sources");
         log_file(activity, file, "Reading sound sources");
         std::vector<tr_sound_source> sound_sources = read_vector<uint32_t, tr_sound_source>(file);
         log_file(activity, file, std::format("Read {} sound sources", sound_sources.size()));
 
         uint32_t num_boxes = 0;
+        callbacks.on_progress("Reading boxes");
         log_file(activity, file, "Reading boxes");
         if (get_version() == LevelVersion::Tomb1)
         {
@@ -1136,10 +1198,12 @@ namespace trlevel
         }
         log_file(activity, file, std::format("Read {} boxes", num_boxes));
 
+        callbacks.on_progress("Reading overlaps");
         log_file(activity, file, "Reading overlaps");
         std::vector<uint16_t> overlaps = read_vector<uint32_t, uint16_t>(file);
         log_file(activity, file, std::format("Read {} overlaps", overlaps.size()));
 
+        callbacks.on_progress("Reading zones");
         log_file(activity, file, "Reading zones");
         if (get_version() == LevelVersion::Tomb1)
         {
@@ -1152,6 +1216,7 @@ namespace trlevel
             log_file(activity, file, std::format("Read {} zones", zones.size()));
         }
 
+        callbacks.on_progress("Reading animated textures");
         log_file(activity, file, "Reading animated textures");
         std::vector<uint16_t> animated_textures = read_vector<uint32_t, uint16_t>(file);
         log_file(activity, file, std::format("Read {} animated textures", animated_textures.size()));
@@ -1174,23 +1239,27 @@ namespace trlevel
 
         if (get_version() == LevelVersion::Tomb3)
         {
+            callbacks.on_progress("Reading object textures");
             log_file(activity, file, "Reading object textures");
             _object_textures = read_vector<uint32_t, tr_object_texture>(file);
             log_file(activity, file, std::format("Read {} object textures", _object_textures.size()));
         }
         if (get_version() == LevelVersion::Tomb4)
         {
+            callbacks.on_progress("Reading object textures");
             log_file(activity, file, "Reading object textures");
             _object_textures = convert_object_textures(read_vector<uint32_t, tr4_object_texture>(file));
             log_file(activity, file, std::format("Read {} object textures", _object_textures.size()));
         }
         else if (get_version() == LevelVersion::Tomb5)
         {
+            callbacks.on_progress("Reading object textures");
             log_file(activity, file, "Reading object textures");
             _object_textures = convert_object_textures(read_vector<uint32_t, tr5_object_texture>(file));
             log_file(activity, file, std::format("Read {} object textures", _object_textures.size()));
         }
 
+        callbacks.on_progress("Reading entities");
         log_file(activity, file, "Reading entities");
         if (get_version() == LevelVersion::Tomb1)
         {
@@ -1205,6 +1274,7 @@ namespace trlevel
 
         if (get_version() < LevelVersion::Tomb4)
         {
+            callbacks.on_progress("Reading light map");
             log_file(activity, file, "Reading light map");
             std::vector<uint8_t> light_map = read_vector<uint8_t>(file, 32 * 256);
             log_file(activity, file, "Read light map");
@@ -1218,6 +1288,7 @@ namespace trlevel
 
         if (get_version() == LevelVersion::Tomb1)
         {
+            callbacks.on_progress("Reading 8-bit palette");
             log_file(activity, file, "Reading 8-bit palette");
             _palette = read_vector<tr_colour>(file, 256);
             log_file(activity, file, "Read 8-bit palette");
@@ -1225,6 +1296,7 @@ namespace trlevel
 
         if (get_version() >= LevelVersion::Tomb4)
         {
+            callbacks.on_progress("Reading AI objects");
             log_file(activity, file, "Reading AI objects");
             _ai_objects = read_vector<uint32_t, tr4_ai_object>(file);
             log_file(activity, file, std::format("Read {} AI objects", _ai_objects.size()));
@@ -1232,15 +1304,18 @@ namespace trlevel
 
         if (get_version() < LevelVersion::Tomb4)
         {
+            callbacks.on_progress("Reading cinematic frames");
             log_file(activity, file, "Reading cinematic frames");
             std::vector<tr_cinematic_frame> cinematic_frames = read_vector<uint16_t, tr_cinematic_frame>(file);
             log_file(activity, file, std::format("Read {} cinematic frames", cinematic_frames.size()));
         }
 
+        callbacks.on_progress("Reading demo data");
         log_file(activity, file, "Reading demo data");
         std::vector<uint8_t> demo_data = read_vector<uint16_t, uint8_t>(file);
         log_file(activity, file, std::format("Read {} demo data", demo_data.size()));
 
+        callbacks.on_progress("Reading sound map");
         log_file(activity, file, "Reading sound map");
         if (get_version() == LevelVersion::Tomb1)
         {
@@ -1267,12 +1342,14 @@ namespace trlevel
         }
         log_file(activity, file, "Read sound map");
 
+        callbacks.on_progress("Reading sound details");
         log_file(activity, file, "Reading sound details");
         std::vector<tr3_sound_details> sound_details = read_vector<uint32_t, tr3_sound_details>(file);
         log_file(activity, file, std::format("Read {} sound details", sound_details.size()));
 
         if (get_version() == LevelVersion::Tomb1)
         {
+            callbacks.on_progress("Reading sound data");
             log_file(activity, file, "Reading sound data");
             std::vector<uint8_t> sound_data = read_vector<int32_t, uint8_t>(file);
             log_file(activity, file, std::format("Read {} sound data", sound_data.size()));
@@ -1280,6 +1357,7 @@ namespace trlevel
 
         if (get_version() < LevelVersion::Tomb4)
         {
+            callbacks.on_progress("Reading sample indices");
             log_file(activity, file, "Reading sample indices");
             std::vector<uint32_t> sample_indices = read_vector<uint32_t, uint32_t>(file);
             log_file(activity, file, std::format("Read {} sample indices", sample_indices.size()));
@@ -1406,7 +1484,7 @@ namespace trlevel
         return static_cast<uint16_t>(_textile16.size() - 1);
     };
 
-    void Level::load()
+    void Level::load(const LoadCallbacks& callbacks)
     {
         // Clear the log before loading the level so we don't keep accumulating memory.
         _log->clear();
@@ -1418,7 +1496,6 @@ namespace trlevel
 
         try
         {
-            // Convert the filename to UTF-16
             auto converted = trview::to_utf16(_filename);
             activity.log(std::format("Opening file \"{}\"", _filename));
 
@@ -1445,6 +1522,7 @@ namespace trlevel
 
             if (raw_version == 0x63345254)
             {
+                callbacks.on_progress("Decrypting");
                 log_file(activity, file, std::format("File is encrypted, decrypting"));
                 _decrypter->decrypt(bytes.value());
                 file.seekg(0, std::ios::beg);
@@ -1461,14 +1539,17 @@ namespace trlevel
 
             if (get_version() >= LevelVersion::Tomb4)
             {
-                load_tr4(activity, file);
+                load_tr4(activity, file, callbacks);
+                callbacks.on_progress("Loading complete");
                 return;
             }
 
             if (get_version() > LevelVersion::Tomb1)
             {
+                callbacks.on_progress("Reading 8-bit palette");
                 log_file(activity, file, "Reading 8-bit palette");
                 _palette = read_vector<tr_colour>(file, 256);
+                callbacks.on_progress("Reading 16-bit palette");
                 log_file(activity, file, "Reading 16-bit palette");
                 _palette16 = read_vector<tr_colour4>(file, 256);
             }
@@ -1483,6 +1564,7 @@ namespace trlevel
                 }
             }
 
+            callbacks.on_progress("Reading textiles");
             log_file(activity, file, "Reading textiles");
             if (_platform_and_version.platform == Platform::PSX)
             {
@@ -1495,18 +1577,31 @@ namespace trlevel
             else
             {
                 _num_textiles = read<uint32_t>(file);
+                callbacks.on_progress(std::format("Reading {} 8-bit textiles", _num_textiles));
                 log_file(activity, file, std::format("Reading {} 8-bit textiles", _num_textiles));
                 _textile8 = read_vector<tr_textile8>(file, _num_textiles);
             }
 
             if (get_version() > LevelVersion::Tomb1)
             {
+                callbacks.on_progress(std::format("Reading {} 16-bit textiles", _num_textiles));
                 log_file(activity, file, std::format("Reading {} 16-bit textiles", _num_textiles));
-                _textile16 = read_vector<tr_textile16>(file, _num_textiles);
+                std::vector<uint32_t> converted_tile;
+                converted_tile.resize(256 * 256);
+                stream_vector<tr_textile16>(file, _num_textiles, [&](auto&& t)
+                    {
+                        std::transform(t.Tile,
+                            t.Tile + sizeof(t.Tile) / sizeof(uint16_t),
+                            converted_tile.begin(),
+                            convert_textile16);
+                        callbacks.on_textile(converted_tile);
+                    });
             }
 
-            load_level_data(activity, file);
+            load_level_data(activity, file, callbacks);
+            callbacks.on_progress("Generating meshes");
             generate_meshes(_mesh_data);
+            callbacks.on_progress("Loading complete");
         }
         catch (const LevelEncryptedException&)
         {

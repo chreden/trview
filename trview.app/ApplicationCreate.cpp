@@ -245,12 +245,19 @@ namespace trview
         auto camera_mesh = create_cube_mesh(mesh_source);
         auto camera_sink_source = [=](auto&&... args) { return std::make_shared<CameraSink>(camera_mesh, texture_storage, args...); };
 
-        auto level_source = [=](auto&& level)
+        auto level_source = [=](auto&& level, auto&& callbacks)
             {
                 // TODO: Hook up callbacks for loading textures, other callbacks.
-                level->load();
+                auto level_texture_storage = std::make_shared<LevelTextureStorage>(device, std::make_unique<TextureStorage>(device));
+                int count = 0;
+                callbacks.on_textile = [&](auto&& textile)
+                    {
+                        callbacks.on_progress(std::format("Loading texture {}", ++count));
+                        level_texture_storage->add_textile(textile);
+                    };
+                level->load(callbacks);
+                level_texture_storage->load(level);
 
-                auto level_texture_storage = std::make_shared<LevelTextureStorage>(device, std::make_unique<TextureStorage>(device), level);
                 auto mesh_storage = std::make_unique<MeshStorage>(mesh_source, *level, *level_texture_storage);
                 auto new_level = std::make_shared<Level>(
                     device, 
@@ -267,7 +274,8 @@ namespace trview
                     room_source,
                     trigger_source,
                     light_source,
-                    camera_sink_source);
+                    camera_sink_source,
+                    callbacks);
                 return new_level;
             };
 

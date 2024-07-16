@@ -180,6 +180,12 @@ namespace trlevel
 
         virtual Platform platform() const = 0;
 
-        virtual void load() = 0;
+        struct LoadCallbacks
+        {
+            std::function<void(const std::string&)> on_progress;
+            std::function<void(const std::vector<uint32_t>&)> on_textile;
+        };
+
+        virtual void load(const LoadCallbacks& callbacks) = 0;
     };
 }
