@@ -988,6 +988,7 @@ namespace trview
             {
                 .on_progress = [&](auto&& p) { _progress = p; }
             });
+        _progress = std::format("Loading {}", filename);
         level->set_filename(filename);
         return level;
     }
