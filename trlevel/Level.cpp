@@ -1292,6 +1292,29 @@ namespace trlevel
             log_file(activity, file, "Reading 8-bit palette");
             _palette = read_vector<tr_colour>(file, 256);
             log_file(activity, file, "Read 8-bit palette");
+
+            std::vector<uint32_t> converted_tile;
+            converted_tile.resize(256 * 256);
+            for (const auto& t : _textile8)
+            {
+                std::transform(t.Tile,
+                    t.Tile + sizeof(t.Tile) / sizeof(uint8_t),
+                    converted_tile.begin(),
+                    [&](uint8_t entry_index)
+                    {
+                        // The first entry in the 8 bit palette is the transparent colour, so just return 
+                        // fully transparent instead of replacing it later.
+                        if (entry_index == 0)
+                        {
+                            return 0x00000000u;
+                        }
+                        auto entry = get_palette_entry(entry_index);
+                        uint32_t value = 0xff000000 | entry.Blue << 16 | entry.Green << 8 | entry.Red;
+                        return value;
+                    });
+                callbacks.on_textile(converted_tile);
+            }
+            _textile8 = {};
         }
 
         if (get_version() >= LevelVersion::Tomb4)
@@ -1587,27 +1610,7 @@ namespace trlevel
                 {
                     callbacks.on_progress(std::format("Reading {} 8-bit textiles", _num_textiles));
                     log_file(activity, file, std::format("Reading {} 8-bit textiles", _num_textiles));
-                    std::vector<uint32_t> converted_tile;
-                    converted_tile.resize(256 * 256);
-                    stream_vector<tr_textile8>(file, _num_textiles, [&](auto&& t)
-                        {
-                            std::transform(t.Tile,
-                                t.Tile + sizeof(t.Tile) / sizeof(uint8_t),
-                                converted_tile.begin(),
-                                [&](uint8_t entry_index)
-                                {
-                                    // The first entry in the 8 bit palette is the transparent colour, so just return 
-                                    // fully transparent instead of replacing it later.
-                                    if (entry_index == 0)
-                                    {
-                                        return 0x00000000u;
-                                    }
-                                    auto entry = get_palette_entry(entry_index);
-                                    uint32_t value = 0xff000000 | entry.Blue << 16 | entry.Green << 8 | entry.Red;
-                                    return value;
-                                });
-                            callbacks.on_textile(converted_tile);
-                        });
+                    _textile8 = read_vector<tr_textile8>(file, _num_textiles);
                 }
             }
 
