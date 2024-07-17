@@ -15,10 +15,6 @@ namespace trlevel
             MOCK_METHOD(tr_colour4, get_palette_entry_16, (uint32_t), (const, override));
             MOCK_METHOD(tr_colour4, get_palette_entry, (uint32_t), (const, override));
             MOCK_METHOD(tr_colour4, get_palette_entry, (uint32_t, uint32_t), (const, override));
-            MOCK_METHOD(uint32_t, num_textiles, (), (const, override));
-            MOCK_METHOD(tr_textile8, get_textile8, (uint32_t), (const, override));
-            MOCK_METHOD(tr_textile16, get_textile16, (uint32_t), (const, override));
-            MOCK_METHOD(std::vector<uint32_t>, get_textile, (uint32_t), (const, override));
             MOCK_METHOD(uint32_t, num_rooms, (), (const, override));
             MOCK_METHOD(tr3_room, get_room, (uint32_t), (const, override));
             MOCK_METHOD(uint32_t, num_object_textures, (), (const, override));
@@ -48,6 +44,7 @@ namespace trlevel
             MOCK_METHOD(uint32_t, num_cameras, (), (const, override));
             MOCK_METHOD(tr_camera, get_camera, (uint32_t), (const, override));
             MOCK_METHOD(Platform, platform, (), (const, override));
+            MOCK_METHOD(void, load, (const LoadCallbacks&), (override));
         };
     }
 }

@@ -22,7 +22,8 @@ TEST(LevelTextureStorage, PaletteLoadedTomb1)
     auto level = mock_shared<trlevel::mocks::MockLevel>();
     EXPECT_CALL(*level, get_version()).WillRepeatedly(Return(LevelVersion::Tomb1));
     EXPECT_CALL(*level, get_palette_entry(_)).Times(AtLeast(1));
-    LevelTextureStorage subject(mock_shared<MockDevice>(), mock_unique<MockTextureStorage>(), level);
+    LevelTextureStorage subject(mock_shared<MockDevice>(), mock_unique<MockTextureStorage>());
+    subject.load(level);
 }
 
 TEST(LevelTextureStorage, PaletteLoadedTomb2)
@@ -30,7 +31,8 @@ TEST(LevelTextureStorage, PaletteLoadedTomb2)
     auto level = mock_shared<trlevel::mocks::MockLevel>();
     EXPECT_CALL(*level, get_version()).WillRepeatedly(Return(LevelVersion::Tomb2));
     EXPECT_CALL(*level, get_palette_entry(_)).Times(AtLeast(1));
-    LevelTextureStorage subject(mock_shared<MockDevice>(), mock_unique<MockTextureStorage>(), level);
+    LevelTextureStorage subject(mock_shared<MockDevice>(), mock_unique<MockTextureStorage>());
+    subject.load(level);
 }
 
 TEST(LevelTextureStorage, PaletteLoadedTomb3)
@@ -38,7 +40,8 @@ TEST(LevelTextureStorage, PaletteLoadedTomb3)
     auto level = mock_shared<trlevel::mocks::MockLevel>();
     EXPECT_CALL(*level, get_version()).WillRepeatedly(Return(LevelVersion::Tomb3));
     EXPECT_CALL(*level, get_palette_entry(_)).Times(AtLeast(1));
-    LevelTextureStorage subject(mock_shared<MockDevice>(), mock_unique<MockTextureStorage>(), level);
+    LevelTextureStorage subject(mock_shared<MockDevice>(), mock_unique<MockTextureStorage>());
+    subject.load(level);
 }
 
 TEST(LevelTextureStorage, PaletteNotLoadedTomb4)
@@ -46,7 +49,8 @@ TEST(LevelTextureStorage, PaletteNotLoadedTomb4)
     auto level = mock_shared<trlevel::mocks::MockLevel>();
     EXPECT_CALL(*level, get_version()).WillRepeatedly(Return(LevelVersion::Tomb4));
     EXPECT_CALL(*level, get_palette_entry(_)).Times(Exactly(0));
-    LevelTextureStorage subject(mock_shared<MockDevice>(), mock_unique<MockTextureStorage>(), level);
+    LevelTextureStorage subject(mock_shared<MockDevice>(), mock_unique<MockTextureStorage>());
+    subject.load(level);
 }
 
 TEST(LevelTextureStorage, PaletteNotLoadedTomb5)
@@ -54,7 +58,8 @@ TEST(LevelTextureStorage, PaletteNotLoadedTomb5)
     auto level = mock_shared<trlevel::mocks::MockLevel>();
     EXPECT_CALL(*level, get_version()).WillRepeatedly(Return(LevelVersion::Tomb5));
     EXPECT_CALL(*level, get_palette_entry(_)).Times(Exactly(0));
-    LevelTextureStorage subject(mock_shared<MockDevice>(), mock_unique<MockTextureStorage>(), level);
+    LevelTextureStorage subject(mock_shared<MockDevice>(), mock_unique<MockTextureStorage>());
+    subject.load(level);
 }
 
 TEST(LevelTextureStorage, TexturesGenerated)
@@ -62,28 +67,21 @@ TEST(LevelTextureStorage, TexturesGenerated)
     std::vector<uint32_t> data;
     data.resize(256 * 256, 0x000080ff);
 
-    auto level = mock_shared<trlevel::mocks::MockLevel>();
-    ON_CALL(*level, num_textiles).WillByDefault(Return(1));
-    EXPECT_CALL(*level, get_textile(0)).Times(1).WillRepeatedly(Return(data));
     auto device = mock_shared<MockDevice>();
 
     std::vector<std::vector<uint32_t>> saved_data;
-    EXPECT_CALL(*device, create_texture_2D).Times(3).WillRepeatedly(testing::Invoke(
+    EXPECT_CALL(*device, create_texture_2D).Times(1).WillRepeatedly(testing::Invoke(
         [&](auto&& desc, auto&& data)
         {
             const uint32_t* ptr = reinterpret_cast<const uint32_t*>(data.pSysMem);
             saved_data.push_back({ ptr, ptr + 256 * 256 });
             return nullptr;
         }));
-    EXPECT_CALL(*device, create_shader_resource_view).Times(3);
+    EXPECT_CALL(*device, create_shader_resource_view).Times(1);
 
-    LevelTextureStorage subject(device, mock_unique<MockTextureStorage>(), level);
+    LevelTextureStorage subject(device, mock_unique<MockTextureStorage>());
 
-    // 0: Tile, 1: Opaque tile, 2: TRLE
-    ASSERT_EQ(saved_data.size(), 3u);
+    // 0: TRLE
+    ASSERT_EQ(saved_data.size(), 1u);
     ASSERT_EQ(saved_data[0].size(), 65536u);
-    ASSERT_THAT(saved_data[0], testing::Each(testing::Eq(0x000080ff)));
-    ASSERT_EQ(saved_data[1].size(), 65536u);
-    ASSERT_THAT(saved_data[1], testing::Each(testing::Eq(0xff0080ff)));
-    ASSERT_EQ(saved_data[2].size(), 65536u);
 }

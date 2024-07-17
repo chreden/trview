@@ -7,37 +7,6 @@ namespace trview
     {
     }
 
-    LevelTextureStorage::LevelTextureStorage(const std::shared_ptr<graphics::IDevice>& device, std::unique_ptr<ITextureStorage> texture_storage, const std::shared_ptr<trlevel::ILevel>& level)
-        : _texture_storage(std::move(texture_storage)), _version(level->get_version()), _level(level), _platform(level->platform()), _device(device)
-    {
-        for (uint32_t i = 0; i < level->num_textiles(); ++i)
-        {
-            std::vector<uint32_t> data = level->get_textile(i);
-            _tiles.emplace_back(*_device, 256, 256, data);
-            for (auto& d : data)
-            {
-                d |= 0xff000000;
-            }
-            _opaque_tiles.emplace_back(*device, 256, 256, data);
-        }
-
-        // Generate the TRLE texture.
-        std::vector<uint32_t> pixels(256 * 256, 0xffffffff);
-        for (int x = 0; x < 256; ++x)
-        {
-            pixels[x] = 0xff000000;
-            pixels[x + 255 * 256] = 0xff000000;
-        }
-        for (int y = 0; y < 256; ++y)
-        {
-            pixels[y * 256] = 0xff000000;
-            pixels[y * 256 + 255] = 0xff000000;
-        }
-        _geometry_texture = graphics::Texture(*_device, 256, 256, pixels);
-
-        load(level);
-    }
-
     LevelTextureStorage::LevelTextureStorage(const std::shared_ptr<graphics::IDevice>& device, std::unique_ptr<ITextureStorage> texture_storage)
         : _device(device), _texture_storage(std::move(texture_storage))
     {

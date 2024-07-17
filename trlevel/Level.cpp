@@ -11,6 +11,22 @@ namespace trlevel
     {
     }
 
+    void ILevel::LoadCallbacks::on_progress(const std::string& message) const
+    {
+        if (on_progress_callback)
+        {
+            on_progress_callback(message);
+        }
+    }
+
+    void ILevel::LoadCallbacks::on_textile(const std::vector<uint32_t>& data) const
+    {
+        if (on_textile_callback)
+        {
+            on_textile_callback(data);
+        }
+    }
+
     namespace
     {
         const float PiMul2 = 6.283185307179586476925286766559f;
@@ -567,65 +583,6 @@ namespace trlevel
         return convert_to_colour4(get_palette_entry8(index8));
     }
 
-    uint32_t Level::num_textiles() const
-    {
-        return _num_textiles;
-    }
-
-    tr_textile8 Level::get_textile8(uint32_t index) const
-    {
-        return _textile8[index];
-    }
-
-    tr_textile16 Level::get_textile16(uint32_t index) const
-    {
-        return _textile16[index];
-    }
-
-    std::vector<uint32_t> Level::get_textile(uint32_t index) const
-    {
-        std::vector<uint32_t> results;
-        results.reserve(256 * 256);
-
-        if (index < _textile32.size())
-        {
-            const auto& textile = _textile32[index];
-            std::transform(textile.Tile,
-                textile.Tile + sizeof(textile.Tile) / sizeof(uint32_t),
-                std::back_inserter(results),
-                convert_textile32);
-        }
-        else if (index < _textile16.size())
-        {
-            const auto& textile = _textile16[index];
-            std::transform(textile.Tile, 
-                textile.Tile + sizeof(textile.Tile) / sizeof(uint16_t),  
-                std::back_inserter(results),
-                convert_textile16);
-        }
-        else
-        {
-            const auto& textile = _textile8[index];
-            std::transform(textile.Tile,
-                textile.Tile + sizeof(textile.Tile) / sizeof(uint8_t),
-                std::back_inserter(results),
-                [&](uint8_t entry_index)
-            {
-                // The first entry in the 8 bit palette is the transparent colour, so just return 
-                // fully transparent instead of replacing it later.
-                if (entry_index == 0)
-                {
-                    return 0x00000000u;
-                }
-                auto entry = get_palette_entry(entry_index);
-                uint32_t value = 0xff000000 | entry.Blue << 16 | entry.Green << 8 | entry.Red;
-                return value;
-            });
-        }
-
-        return results;
-    }
-
     uint32_t Level::num_rooms() const
     {
         return static_cast<uint32_t>(_rooms.size());
@@ -869,7 +826,7 @@ namespace trlevel
 
         callbacks.on_progress(std::format("Reading {} 32-bit textiles", _num_textiles));
         log_file(activity, file, std::format("Reading {} 32-bit textiles", _num_textiles));
-        _textile32 = read_vector_compressed<tr_textile32>(file, _num_textiles);
+        auto textile32 = read_vector_compressed<tr_textile32>(file, _num_textiles);
 
         constexpr auto is_blank = [](const auto& t)
             {
@@ -883,17 +840,17 @@ namespace trlevel
                 return true;
             };
 
-        if (std::all_of(_textile32.begin(), _textile32.end(), is_blank))
+        if (std::all_of(textile32.begin(), textile32.end(), is_blank))
         {
             activity.log(trview::Message::Status::Warning, "32-bit textiles were all blank, discarding");
-            _textile32.clear();
+            textile32 = {};
             callbacks.on_progress(std::format("Reading {} 16-bit textiles", _num_textiles));
             log_file(activity, file, std::format("Reading {} 16-bit textiles", _num_textiles));
-            _textile16 = read_vector_compressed<tr_textile16>(file, _num_textiles);
+            auto textile16 = read_vector_compressed<tr_textile16>(file, _num_textiles);
 
             std::vector<uint32_t> converted;
             converted.reserve(256 * 256);
-            for (const auto& textile : _textile16)
+            for (const auto& textile : textile16)
             {
                 std::transform(textile.Tile,
                     textile.Tile + sizeof(textile.Tile) / sizeof(uint16_t),
@@ -907,7 +864,7 @@ namespace trlevel
         {
             std::vector<uint32_t> converted;
             converted.reserve(256 * 256);
-            for (const auto& textile : _textile32)
+            for (const auto& textile : textile32)
             {
                 std::transform(textile.Tile,
                     textile.Tile + sizeof(textile.Tile) / sizeof(uint32_t),
@@ -916,6 +873,7 @@ namespace trlevel
                 callbacks.on_textile(converted);
                 converted.clear();
             }
+            textile32 = {};
 
             callbacks.on_progress(std::format("Skipping {} 16-bit textiles", _num_textiles));
             log_file(activity, file, std::format("Skipping {} 16-bit textiles", _num_textiles));
@@ -1156,6 +1114,22 @@ namespace trlevel
             _sprite_textures = read_vector<uint32_t, tr_sprite_texture>(file);
         }
         log_file(activity, file, std::format("Read {} sprite textures", _sprite_textures.size()));
+
+        if (_platform_and_version.platform == Platform::PSX)
+        {
+            std::vector<uint32_t> converted_tile;
+            converted_tile.resize(256 * 256);
+            for (const auto& t : _textile16)
+            {
+                std::transform(t.Tile,
+                    t.Tile + sizeof(t.Tile) / sizeof(uint16_t),
+                    converted_tile.begin(),
+                    convert_textile16);
+                callbacks.on_textile(converted_tile);
+            };
+            _textile16 = {};
+        }
+
 
         callbacks.on_progress("Reading sprite sequences");
         log_file(activity, file, "Reading sprite sequences");

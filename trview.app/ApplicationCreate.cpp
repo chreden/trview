@@ -250,7 +250,7 @@ namespace trview
                 // TODO: Hook up callbacks for loading textures, other callbacks.
                 auto level_texture_storage = std::make_shared<LevelTextureStorage>(device, std::make_unique<TextureStorage>(device));
                 int count = 0;
-                callbacks.on_textile = [&](auto&& textile)
+                callbacks.on_textile_callback = [&](auto&& textile)
                     {
                         callbacks.on_progress(std::format("Loading texture {}", ++count));
                         level_texture_storage->add_textile(textile);

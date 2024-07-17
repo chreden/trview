@@ -986,7 +986,7 @@ namespace trview
     {
         auto level = _level_source(_trlevel_source(filename), 
             {
-                .on_progress = [&](auto&& p) { _progress = p; }
+                .on_progress_callback = [&](auto&& p) { _progress = p; }
             });
         _progress = std::format("Loading {}", filename);
         level->set_filename(filename);
