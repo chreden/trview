@@ -796,6 +796,9 @@ namespace trlevel
     // Convert a 16 bit textile into a 32 bit argb value.
     uint32_t convert_textile16(uint16_t t);
 
+    std::vector<uint32_t> convert_textile(const tr_textile16& tile);
+    std::vector<uint32_t> convert_textile(const tr_textile32& tile);
+
     // Convert a set of Tomb Raider I static meshes into a format compatible
     // with Tomb Raider III (what the viewer is currently using).
     std::vector<tr3_room_staticmesh> convert_room_static_meshes(std::vector<tr_room_staticmesh> meshes);
