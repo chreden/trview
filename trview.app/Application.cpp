@@ -746,9 +746,9 @@ namespace trview
         {
             const auto viewport = ImGui::GetMainViewport();
             const ImVec2 size = ImGui::CalcTextSize(_progress.c_str());
-            ImGui::SetNextWindowPos(ImVec2(viewport->Pos.x + viewport->Size.x * 0.75f, viewport->Pos.y + viewport->Size.y), 0, ImVec2(0.5f, 1.0f));
+            ImGui::SetNextWindowPos(ImVec2(viewport->Pos.x + viewport->Size.x * 0.75f, viewport->Pos.y), 0, ImVec2(0.5f, 0.0f));
             ImGui::SetNextWindowSize(ImVec2(400, size.y));
-            if (ImGui::Begin("Load Progress", nullptr, ImGuiWindowFlags_NoTitleBar))
+            if (ImGui::Begin("Load Progress", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove))
             {
                 ImGui::Text(_progress.c_str());
                 ImGui::End();
@@ -984,11 +984,11 @@ namespace trview
 
     std::shared_ptr<ILevel> Application::load(const std::string& filename)
     {
+        _progress = std::format("Loading {}", filename);
         auto level = _level_source(_trlevel_source(filename), 
             {
                 .on_progress_callback = [&](auto&& p) { _progress = p; }
             });
-        _progress = std::format("Loading {}", filename);
         level->set_filename(filename);
         return level;
     }
