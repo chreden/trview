@@ -27,6 +27,7 @@ namespace trview
         void do_file(const std::string& file) override;
         void execute(const std::string& command) override;
         void initialise(IApplication* application) override;
+        void set_directory(const std::string& directory) override;
     private:
         lua_State* L{ nullptr };
         IRoute::Source _route_source;
@@ -34,6 +35,7 @@ namespace trview
         IWaypoint::Source _waypoint_source;
         std::shared_ptr<IDialogs> _dialogs;
         std::shared_ptr<IFiles> _files;
+        std::string _directory;
     };
 
     namespace lua

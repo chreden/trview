@@ -17,6 +17,7 @@ namespace trview
         const std::string& path)
         : _lua(std::move(lua)), _path(path), _files(files)
     {
+        _lua->set_directory(_path);
         register_print();
         load();
     }
