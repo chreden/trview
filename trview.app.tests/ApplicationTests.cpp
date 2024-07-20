@@ -99,7 +99,8 @@ namespace
                     std::move(items_window_manager), std::move(triggers_window_manager), std::move(route_window_manager), std::move(rooms_window_manager),
                     level_source, startup_options, dialogs, files, std::move(imgui_backend), std::move(lights_window_manager), std::move(log_window_manager),
                     std::move(textures_window_manager), std::move(camera_sink_window_manager), std::move(console_manager),
-                    plugins, std::move(plugins_window_manager), randomizer_route_source, fonts, std::move(statics_window_manager));
+                    plugins, std::move(plugins_window_manager), randomizer_route_source, fonts, std::move(statics_window_manager),
+                    Application::LoadMode::Sync);
             }
 
             test_module& with_dialogs(std::shared_ptr<IDialogs> dialogs)

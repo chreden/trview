@@ -43,6 +43,16 @@ namespace trlevel
         return a << 24 | b << 16 | g << 8 | r;
     }
 
+    std::vector<uint32_t> convert_textile(const tr_textile16& tile)
+    {
+        return tile.Tile | std::views::transform(convert_textile16) | std::ranges::to<std::vector>();
+    }
+
+    std::vector<uint32_t> convert_textile(const tr_textile32& tile)
+    {
+        return tile.Tile | std::views::transform(convert_textile32) | std::ranges::to<std::vector>();
+    }
+
     // Convert a set of Tomb Raider I static meshes into a format compatible
     // with Tomb Raider III (what the viewer is currently using).
     std::vector<tr3_room_staticmesh> convert_room_static_meshes(std::vector<tr_room_staticmesh> meshes)

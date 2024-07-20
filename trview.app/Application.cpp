@@ -66,14 +66,16 @@ namespace trview
         std::unique_ptr<IPluginsWindowManager> plugins_window_manager,
         const IRandomizerRoute::Source& randomizer_route_source,
         std::shared_ptr<IFonts> fonts,
-        std::unique_ptr<IStaticsWindowManager> statics_window_manager)
+        std::unique_ptr<IStaticsWindowManager> statics_window_manager,
+        LoadMode load_mode)
         : MessageHandler(application_window), _instance(GetModuleHandle(nullptr)),
         _file_menu(std::move(file_menu)), _update_checker(std::move(update_checker)), _view_menu(window()), _settings_loader(settings_loader), _trlevel_source(trlevel_source),
         _viewer(std::move(viewer)), _route_source(route_source), _shortcuts(shortcuts), _items_windows(std::move(items_window_manager)),
         _triggers_windows(std::move(triggers_window_manager)), _route_window(std::move(route_window_manager)), _rooms_windows(std::move(rooms_window_manager)), _level_source(level_source),
         _dialogs(dialogs), _files(files), _timer(default_time_source()), _imgui_backend(std::move(imgui_backend)), _lights_windows(std::move(lights_window_manager)), _log_windows(std::move(log_window_manager)),
         _textures_windows(std::move(textures_window_manager)), _camera_sink_windows(std::move(camera_sink_window_manager)), _console_manager(std::move(console_manager)),
-        _plugins(plugins), _plugins_windows(std::move(plugins_window_manager)), _randomizer_route_source(randomizer_route_source), _fonts(fonts), _statics_windows(std::move(statics_window_manager))
+        _plugins(plugins), _plugins_windows(std::move(plugins_window_manager)), _randomizer_route_source(randomizer_route_source), _fonts(fonts), _statics_windows(std::move(statics_window_manager)),
+        _load_mode(load_mode)
     {
         SetWindowLongPtr(window(), GWLP_USERDATA, reinterpret_cast<LONG_PTR>(_imgui_backend.get()));
 
@@ -121,28 +123,37 @@ namespace trview
             return;
         }
 
-        try
+        _load = std::async(std::launch::async, [=]() -> LoadOperation
+            { 
+                LoadOperation operation
+                {
+                    .filename = filename,
+                    .open_mode = open_mode
+                };
+
+                try
+                {
+                    operation.level = load(filename);
+                }
+                catch (trlevel::LevelEncryptedException&)
+                {
+                    operation.error = "Level is encrypted and cannot be loaded";
+                }
+                catch (UserCancelledException&)
+                {
+                }
+                catch (std::exception& e)
+                {
+                    operation.error = std::format("Failed to load level : {}", e.what());
+                }
+
+                return operation;
+            });
+
+        if (_load_mode == LoadMode::Sync)
         {
-            auto level = load(filename);
-            _settings.add_recent_file(filename);
-            _file_menu->set_recent_files(_settings.recent_files);
-            _settings_loader->save_user_settings(_settings);
-            _viewer->set_settings(_settings);
-            set_current_level(level, open_mode, false);
-        }
-        catch (trlevel::LevelEncryptedException&)
-        {
-            _dialogs->message_box(L"Level is encrypted and cannot be loaded", L"Error", IDialogs::Buttons::OK);
-            return;
-        }
-        catch (UserCancelledException&)
-        {
-            return;
-        }
-        catch (std::exception& e)
-        {
-            _dialogs->message_box(to_utf16(std::format("Failed to load level : {}", e.what())), L"Error", IDialogs::Buttons::OK);
-            return;
+            _load.wait();
+            check_load();
         }
     }
 
@@ -701,6 +712,8 @@ namespace trview
             }
         }
 
+        check_load();
+
         _timer.update();
         const auto elapsed = _timer.elapsed();
         _items_windows->update(elapsed);
@@ -727,6 +740,20 @@ namespace trview
         ImGui::NewFrame();
 
         ImGui::PushFont(_fonts->font("Default"));
+
+
+        if (_load.valid())
+        {
+            const auto viewport = ImGui::GetMainViewport();
+            const ImVec2 size = ImGui::CalcTextSize(_progress.c_str());
+            ImGui::SetNextWindowPos(ImVec2(viewport->Pos.x + viewport->Size.x * 0.75f, viewport->Pos.y), 0, ImVec2(0.5f, 0.0f));
+            ImGui::SetNextWindowSize(ImVec2(400, size.y));
+            if (ImGui::Begin("Load Progress", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove))
+            {
+                ImGui::Text(_progress.c_str());
+                ImGui::End();
+            }
+        }
 
         _viewer->render_ui();
         _items_windows->render();
@@ -957,7 +984,11 @@ namespace trview
 
     std::shared_ptr<ILevel> Application::load(const std::string& filename)
     {
-        auto level = _level_source(_trlevel_source(filename));
+        _progress = std::format("Loading {}", filename);
+        auto level = _level_source(_trlevel_source(filename), 
+            {
+                .on_progress_callback = [&](auto&& p) { _progress = p; }
+            });
         level->set_filename(filename);
         return level;
     }
@@ -1103,5 +1134,33 @@ namespace trview
         select_room(static_mesh_ptr->room());
         _viewer->select_static_mesh(static_mesh_ptr);
         _statics_windows->select_static(static_mesh_ptr);
+    }
+
+    void Application::check_load()
+    {
+        if (!_load.valid() || _load.wait_for(std::chrono::milliseconds(0)) != std::future_status::ready)
+        {
+            return;
+        }
+
+        const auto op = _load.get();
+        _load = {};
+
+        if (op.error)
+        {
+            _dialogs->message_box(to_utf16(op.error.value()), L"Error", IDialogs::Buttons::OK);
+            return;
+        }
+
+        if (!op.level)
+        {
+            return;
+        }
+
+        _settings.add_recent_file(op.filename);
+        _file_menu->set_recent_files(_settings.recent_files);
+        _settings_loader->save_user_settings(_settings);
+        _viewer->set_settings(_settings);
+        set_current_level(op.level, op.open_mode, false);
     }
 }

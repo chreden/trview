@@ -52,11 +52,12 @@ namespace
             std::shared_ptr<ILog> log{ mock_shared<MockLog>() };
             graphics::IBuffer::ConstantSource buffer_source{ [](auto&&...) { return mock_unique<MockBuffer>(); } };
             ICameraSink::Source camera_sink_source{ [](auto&&...) { return mock_shared<MockCameraSink>(); } };
+            trlevel::ILevel::LoadCallbacks callbacks;
 
             std::shared_ptr<Level> build()
             {
                 auto new_level = std::make_shared<Level>(device, shader_storage, level_texture_storage, std::move(transparency_buffer), std::move(selection_renderer), log, buffer_source);
-                new_level->initialise(std::move(level), std::move(mesh_storage), entity_source, ai_source, room_source, trigger_source, light_source, camera_sink_source);
+                new_level->initialise(std::move(level), std::move(mesh_storage), entity_source, ai_source, room_source, trigger_source, light_source, camera_sink_source, callbacks);
                 return new_level;
             }
 

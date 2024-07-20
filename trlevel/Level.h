@@ -47,22 +47,6 @@ namespace trlevel
         // Returns: The palette colour.
         virtual tr_colour4 get_palette_entry(uint32_t index8, uint32_t index16) const override;
 
-        // Gets the number of textiles in the level.
-        // Returns: The number of textiles.
-        virtual uint32_t num_textiles() const override;
-
-        // Gets the 8 bit textile with the specified index.
-        // Returns: The textile for this index.
-        virtual tr_textile8 get_textile8(uint32_t index) const override;
-
-        // Gets the 16 bit textile with the specified index.
-        // Returns: The textile for this index.
-        virtual tr_textile16 get_textile16(uint32_t index) const override;
-
-        // Get the 8 or 16 bit textile with the specified index.
-        // Returns: The colours for this index.
-        virtual std::vector<uint32_t> get_textile(uint32_t index) const override;
-
         // Gets the number of rooms in the level.
         // Returns: The number of rooms.
         virtual uint32_t num_rooms() const override;
@@ -180,19 +164,18 @@ namespace trlevel
         virtual uint32_t num_cameras() const override;
         virtual tr_camera get_camera(uint32_t index) const override;
         Platform platform() const override;
+        void load(const LoadCallbacks& callbacks) override;
     private:
         void generate_meshes(const std::vector<uint16_t>& mesh_data);
 
         // Load a Tomb Raider IV level.
-        void load_tr4(trview::Activity& activity, std::basic_ispanstream<uint8_t>& file);
+        void load_tr4(trview::Activity& activity, std::basic_ispanstream<uint8_t>& file, const LoadCallbacks& callbacks);
 
-        void load_level_data(trview::Activity& activity, std::basic_ispanstream<uint8_t>& file);
+        void load_level_data(trview::Activity& activity, std::basic_ispanstream<uint8_t>& file, const LoadCallbacks& callbacks);
 
         tr_colour4 colour_from_object_texture(uint32_t texture) const;
 
         uint16_t convert_textile4(uint16_t tile, uint16_t clut_id);
-
-        std::shared_ptr<trview::ILog> _log;
 
         PlatformAndVersion _platform_and_version;
 
@@ -203,7 +186,6 @@ namespace trlevel
         std::vector<tr_textile4>  _textile4;
         std::vector<tr_textile8>  _textile8;
         std::vector<tr_textile16> _textile16;
-        std::vector<tr_textile32> _textile32;
         std::vector<tr_clut> _clut;
         std::vector<std::pair<uint16_t, uint16_t>> _converted_t16;
 
@@ -231,5 +213,10 @@ namespace trlevel
         std::string _name;
 
         std::vector<tr_camera> _cameras;
+
+        std::shared_ptr<trview::ILog>   _log;
+        std::shared_ptr<IDecrypter>     _decrypter;
+        std::string                     _filename;
+        std::shared_ptr<trview::IFiles> _files;
     };
 }

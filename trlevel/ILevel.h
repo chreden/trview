@@ -39,22 +39,6 @@ namespace trlevel
         // Returns: The palette colour.
         virtual tr_colour4 get_palette_entry(uint32_t index8, uint32_t index16) const = 0;
 
-        // Gets the number of textiles in the level.
-        // Returns: The number of textiles.
-        virtual uint32_t num_textiles() const = 0;
-
-        // Gets the 8 bit textile with the specified index.
-        // Returns: The textile for this index.
-        virtual tr_textile8 get_textile8(uint32_t index) const = 0;
-
-        // Gets the 16 bit textile with the specified index.
-        // Returns: The textile for this index.
-        virtual tr_textile16 get_textile16(uint32_t index) const = 0;
-
-        // Get the 8 or 16 bit textile with the specified index.
-        // Returns: The colours for this index.
-        virtual std::vector<uint32_t> get_textile(uint32_t index) const = 0;
-
         // Gets the number of rooms in the level.
         // Returns: The number of rooms.
         virtual uint32_t num_rooms() const = 0;
@@ -179,5 +163,16 @@ namespace trlevel
         virtual tr_camera get_camera(uint32_t index) const = 0;
 
         virtual Platform platform() const = 0;
+
+        struct LoadCallbacks
+        {
+            std::function<void(const std::string&)> on_progress_callback;
+            std::function<void(const std::vector<uint32_t>&)> on_textile_callback;
+
+            void on_progress(const std::string& message) const;
+            void on_textile(const std::vector<uint32_t>& data) const;
+        };
+
+        virtual void load(const LoadCallbacks& callbacks) = 0;
     };
 }

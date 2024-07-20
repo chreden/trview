@@ -1280,26 +1280,36 @@ namespace trview
         const IRoom::Source& room_source,
         const ITrigger::Source& trigger_source,
         const ILight::Source& light_source,
-        const ICameraSink::Source& camera_sink_source)
+        const ICameraSink::Source& camera_sink_source,
+        const trlevel::ILevel::LoadCallbacks callbacks)
     {
         _version = level->get_version();
         _floor_data = level->get_floor_data_all();
         _name = level->name();
 
         record_models(*level);
+        callbacks.on_progress("Generating rooms");
         generate_rooms(*level, room_source, *mesh_storage);
+        callbacks.on_progress("Generating triggers");
         generate_triggers(trigger_source);
+        callbacks.on_progress("Generating entities");
         generate_entities(*level, entity_source, ai_source, *mesh_storage);
+        callbacks.on_progress("Generating lights");
         generate_lights(*level, light_source);
+        callbacks.on_progress("Generating camera/sinks");
         generate_camera_sinks(*level, camera_sink_source);
 
+        callbacks.on_progress("Generating room bounding boxes");
         for (auto& room : _rooms)
         {
             room->update_bounding_box();
         }
 
         apply_ocb_adjustment();
+
+        callbacks.on_progress("Generating static meshes");
         record_static_meshes();
+        callbacks.on_progress("Done");
     }
 
     void Level::record_static_meshes()

@@ -7,36 +7,9 @@ namespace trview
     {
     }
 
-    LevelTextureStorage::LevelTextureStorage(const std::shared_ptr<graphics::IDevice>& device, std::unique_ptr<ITextureStorage> texture_storage, const std::shared_ptr<trlevel::ILevel>& level)
-        : _texture_storage(std::move(texture_storage)), _version(level->get_version()), _level(level), _platform(level->platform())
+    LevelTextureStorage::LevelTextureStorage(const std::shared_ptr<graphics::IDevice>& device, std::unique_ptr<ITextureStorage> texture_storage)
+        : _device(device), _texture_storage(std::move(texture_storage))
     {
-        for (uint32_t i = 0; i < level->num_textiles(); ++i)
-        {
-            std::vector<uint32_t> data = level->get_textile(i);
-            _tiles.emplace_back(*device, 256, 256, data);
-            for (auto& d : data)
-            {
-                d |= 0xff000000;
-            }
-            _opaque_tiles.emplace_back(*device, 256, 256, data);
-        }
-
-        // Copy object textures locally from the level.
-        for (uint32_t i = 0; i < level->num_object_textures(); ++i)
-        {
-            _object_textures.push_back(level->get_object_texture(i));
-        }
-
-        if (_version < trlevel::LevelVersion::Tomb4)
-        {
-            using namespace DirectX::SimpleMath;
-            for (uint32_t i = 0; i < 256; ++i)
-            {
-                auto entry = level->get_palette_entry(i);
-                _palette[i] = Color(entry.Red / 255.f, entry.Green / 255.f, entry.Blue / 255.f, 1.0f);
-            }
-        }
-
         // Generate the TRLE texture.
         std::vector<uint32_t> pixels(256 * 256, 0xffffffff);
         for (int x = 0; x < 256; ++x)
@@ -49,9 +22,7 @@ namespace trview
             pixels[y * 256] = 0xff000000;
             pixels[y * 256 + 255] = 0xff000000;
         }
-        _geometry_texture = graphics::Texture(*device, 256, 256, pixels);
-
-        determine_texture_mode();
+        _geometry_texture = graphics::Texture(*_device, 256, 256, pixels);
     }
 
     void LevelTextureStorage::determine_texture_mode()
@@ -166,5 +137,41 @@ namespace trview
     uint32_t LevelTextureStorage::num_object_textures() const
     {
         return static_cast<uint32_t>(_object_textures.size());
+    }
+
+    void LevelTextureStorage::load(const std::shared_ptr<trlevel::ILevel>& level)
+    {
+        _version = level->get_version();
+        _level = level;
+        _platform = level->platform();
+
+        // Copy object textures locally from the level.
+        for (uint32_t i = 0; i < level->num_object_textures(); ++i)
+        {
+            _object_textures.push_back(level->get_object_texture(i));
+        }
+
+        if (_version < trlevel::LevelVersion::Tomb4)
+        {
+            using namespace DirectX::SimpleMath;
+            for (uint32_t i = 0; i < 256; ++i)
+            {
+                auto entry = level->get_palette_entry(i);
+                _palette[i] = Color(entry.Red / 255.f, entry.Green / 255.f, entry.Blue / 255.f, 1.0f);
+            }
+        }
+
+        determine_texture_mode();
+    }
+
+    void LevelTextureStorage::add_textile(const std::vector<uint32_t>& textile)
+    {
+        _tiles.emplace_back(*_device, 256, 256, textile);
+        auto opaque = textile;
+        for (auto& d : opaque)
+        {
+            d |= 0xff000000;
+        }
+        _opaque_tiles.emplace_back(*_device, 256, 256, opaque);
     }
 }

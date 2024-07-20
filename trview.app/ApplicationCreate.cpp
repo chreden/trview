@@ -245,29 +245,39 @@ namespace trview
         auto camera_mesh = create_cube_mesh(mesh_source);
         auto camera_sink_source = [=](auto&&... args) { return std::make_shared<CameraSink>(camera_mesh, texture_storage, args...); };
 
-        auto level_source = [=](auto&& level)
-        {
-            auto level_texture_storage = std::make_shared<LevelTextureStorage>(device, std::make_unique<TextureStorage>(device), level);
-            auto mesh_storage = std::make_unique<MeshStorage>(mesh_source, *level, *level_texture_storage);
-            auto new_level = std::make_shared<Level>(
-                device, 
-                shader_storage, 
-                level_texture_storage,
-                std::make_unique<TransparencyBuffer>(device),
-                std::make_unique<SelectionRenderer>(device, shader_storage, std::make_unique<TransparencyBuffer>(device), render_target_source),
-                log,
-                buffer_source);
-            new_level->initialise(
-                level,
-                std::move(mesh_storage),
-                entity_source,
-                ai_source,
-                room_source,
-                trigger_source,
-                light_source,
-                camera_sink_source);
-            return new_level;
-        };
+        auto level_source = [=](auto&& level, auto&& callbacks)
+            {
+                // TODO: Hook up callbacks for loading textures, other callbacks.
+                auto level_texture_storage = std::make_shared<LevelTextureStorage>(device, std::make_unique<TextureStorage>(device));
+                int count = 0;
+                callbacks.on_textile_callback = [&](auto&& textile)
+                    {
+                        callbacks.on_progress(std::format("Loading texture {}", ++count));
+                        level_texture_storage->add_textile(textile);
+                    };
+                level->load(callbacks);
+                level_texture_storage->load(level);
+
+                auto mesh_storage = std::make_unique<MeshStorage>(mesh_source, *level, *level_texture_storage);
+                auto new_level = std::make_shared<Level>(
+                    device, 
+                    shader_storage, 
+                    level_texture_storage,
+                    std::make_unique<TransparencyBuffer>(device),
+                    std::make_unique<SelectionRenderer>(device, shader_storage, std::make_unique<TransparencyBuffer>(device), render_target_source),
+                    log,
+                    buffer_source);
+                new_level->initialise(level,
+                    std::move(mesh_storage),
+                    entity_source,
+                    ai_source,
+                    room_source,
+                    trigger_source,
+                    light_source,
+                    camera_sink_source,
+                    callbacks);
+                return new_level;
+            };
 
         auto dialogs = std::make_shared<Dialogs>(window);
         auto shell = std::make_shared<Shell>();
@@ -354,6 +364,7 @@ namespace trview
             std::make_unique<PluginsWindowManager>(window, shortcuts, plugins_window_source),
             randomizer_route_source,
             fonts,
-            std::make_unique<StaticsWindowManager>(window, shortcuts, statics_window_source));
+            std::make_unique<StaticsWindowManager>(window, shortcuts, statics_window_source),
+            Application::LoadMode::Async);
     }
 }
