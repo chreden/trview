@@ -29,6 +29,8 @@ namespace trview
         void initialise(IApplication* application) override;
         void set_directory(const std::string& directory) override;
     private:
+        void create_state();
+
         lua_State* L{ nullptr };
         IRoute::Source _route_source;
         IRandomizerRoute::Source _randomizer_route_source;

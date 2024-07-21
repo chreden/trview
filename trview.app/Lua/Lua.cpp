@@ -71,12 +71,7 @@ namespace trview
     Lua::Lua(const IRoute::Source& route_source, const IRandomizerRoute::Source& randomizer_route_source, const IWaypoint::Source& waypoint_source, const std::shared_ptr<IDialogs>& dialogs, const std::shared_ptr<IFiles>& files)
         : _route_source(route_source), _randomizer_route_source(randomizer_route_source), _waypoint_source(waypoint_source), _dialogs(dialogs), _files(files)
     {
-        L = luaL_newstate();
-        for (const auto& lib : loadedlibs)
-        {
-            luaL_requiref(L, lib.name, lib.func, 1);
-            lua_pop(L, 1);
-        }
+        create_state();
     }
 
     Lua::~Lua()
@@ -121,6 +116,7 @@ namespace trview
 
     void Lua::initialise(IApplication* application)
     {
+        create_state();
         ILua** userdata = static_cast<ILua**>(lua_newuserdata(L, sizeof(this)));
         *userdata = this;
         lua_pushcclosure(L, print, 1);
@@ -136,6 +132,22 @@ namespace trview
     void Lua::set_directory(const std::string& directory)
     {
         _directory = directory;
+    }
+
+    void Lua::create_state()
+    {
+        if (L)
+        {
+            lua_close(L);
+            L = nullptr;
+        }
+
+        L = luaL_newstate();
+        for (const auto& lib : loadedlibs)
+        {
+            luaL_requiref(L, lib.name, lib.func, 1);
+            lua_pop(L, 1);
+        }
     }
 
     namespace lua

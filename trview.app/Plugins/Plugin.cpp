@@ -1,4 +1,6 @@
 #include "Plugin.h"
+#include <algorithm>
+#include <format>
 
 namespace trview
 {
@@ -50,6 +52,7 @@ namespace trview
     void Plugin::initialise(IApplication* application)
     {
         _lua->initialise(application);
+        set_package_path();
         load_script();
     }
 
@@ -86,7 +89,7 @@ namespace trview
     void Plugin::reload()
     {
         load();
-        load_script();
+        initialise(_application);
     }
 
     void Plugin::load()
@@ -129,5 +132,12 @@ namespace trview
     void Plugin::render_ui()
     {
         _lua->execute("if render_ui ~= nil then render_ui() end");
+    }
+
+    void Plugin::set_package_path()
+    {
+        std::string escaped = _path;
+        std::ranges::replace(escaped, '\\', '/');
+        _lua->execute(std::format("package.path = \"{}/?.lua\"", escaped));
     }
 }
