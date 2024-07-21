@@ -24,6 +24,17 @@ namespace trview
                 return create_sector(L, room->sector(x, z).lock());
             }
 
+            int room_hasflag(lua_State* L)
+            {
+                auto room = lua::get_self<IRoom>(L);
+
+                luaL_checktype(L, -1, LUA_TNUMBER);
+                long long flags = lua_tointeger(L, -1);
+
+                lua_pushboolean(L, static_cast<long long>(room->flags()) & flags);
+                return 1;
+            }
+
             int room_index(lua_State* L)
             {
                 auto room = lua::get_self<IRoom>(L);
@@ -52,14 +63,19 @@ namespace trview
                 {
                     return push_list_p(L, room->camera_sinks(), create_camera_sink);
                 }
-                else if (key == "items")
-                {
-                    return push_list_p(L, room->items(), create_item);
-                }
                 else if (key == "flags")
                 {
                     lua_pushinteger(L, room->flags());
                     return 1;
+                }
+                else if (key == "has_flag")
+                {
+                    lua_pushcfunction(L, room_hasflag);
+                    return 1;
+                }
+                else if (key == "items")
+                {
+                    return push_list_p(L, room->items(), create_item);
                 }
                 else if (key == "level")
                 {

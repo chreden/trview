@@ -27,6 +27,7 @@ The Room library provides information about a room in a [level](level.md).
 | Name | Returns | Parameters | Description |
 | ---- | ------- | ---------- | ----------- |
 | sector | [Sector](sector.md) | number x, number y | Gets the sector at the x and z indices, 1 based |
+| has_flag | boolean | [Flags](#flags) flag | Check whether the flag pattern passed in matches the room flags - uses bitwise and operation |
 
 # Flags
 
