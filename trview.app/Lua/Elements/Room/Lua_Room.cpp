@@ -56,6 +56,11 @@ namespace trview
                 {
                     return push_list_p(L, room->items(), create_item);
                 }
+                else if (key == "flags")
+                {
+                    lua_pushinteger(L, room->flags());
+                    return 1;
+                }
                 else if (key == "level")
                 {
                     return create_level(L, room->level().lock());
@@ -130,6 +135,33 @@ namespace trview
         int create_room(lua_State* L, std::shared_ptr<IRoom> room)
         {
             return create(L, room, room_index, room_newindex);
+        }
+
+        void room_register(lua_State* L)
+        {
+            lua_newtable(L);
+            create_enum<IRoom::Flag>(L, "Flags",
+                {
+                    { "Water", IRoom::Flag::Water },
+                    { "Bit1", IRoom::Flag::Bit1 },
+                    { "Bit2", IRoom::Flag::Bit2 },
+                    { "Outside", IRoom::Flag::Outside },
+                    { "Bit4", IRoom::Flag::Bit4 },
+                    { "Wind", IRoom::Flag::Wind },
+                    { "Bit6", IRoom::Flag::Bit6 },
+                    { "Bit7", IRoom::Flag::Bit7 },
+                    { "Quicksand", IRoom::Flag::Quicksand },
+                    { "NoLensFlare", IRoom::Flag::NoLensFlare },
+                    { "Caustics", IRoom::Flag::Caustics },
+                    { "WaterReflectivity", IRoom::Flag::WaterReflectivity },
+                    { "Bit10", IRoom::Flag::Bit10 },
+                    { "Bit11", IRoom::Flag::Bit11 },
+                    { "Bit12", IRoom::Flag::Bit12 },
+                    { "Bit13", IRoom::Flag::Bit13 },
+                    { "Bit14", IRoom::Flag::Bit14 },
+                    { "Bit15", IRoom::Flag::Bit15 }
+                });
+            lua_setglobal(L, "Room");
         }
 
         std::shared_ptr<IRoom> to_room(lua_State* L, int index)

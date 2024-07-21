@@ -26,6 +26,7 @@ namespace trview
             MOCK_METHOD(void, generate_trigger_geometry, (), (override));
             MOCK_METHOD(void, get_contained_transparent_triangles, (ITransparencyBuffer&, const ICamera&, SelectionMode, RenderFilter), (override));
             MOCK_METHOD(void, get_transparent_triangles, (ITransparencyBuffer&, const ICamera&, SelectionMode, RenderFilter), (override));
+            MOCK_METHOD(uint16_t, flags, (), (const, override));
             MOCK_METHOD(RoomInfo, info, (), (const, override));
             MOCK_METHOD(int16_t, light_mode, (), (const, override));
             MOCK_METHOD(std::set<uint16_t>, neighbours, (), (const, override));
@@ -90,6 +91,12 @@ namespace trview
             std::shared_ptr<MockRoom> with_alternate_room(int16_t alternate)
             {
                 ON_CALL(*this, alternate_room).WillByDefault(testing::Return(alternate));
+                return shared_from_this();
+            }
+
+            std::shared_ptr<MockRoom> with_flags(uint16_t flags)
+            {
+                ON_CALL(*this, flags).WillByDefault(testing::Return(flags));
                 return shared_from_this();
             }
 

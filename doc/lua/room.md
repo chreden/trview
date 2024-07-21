@@ -10,6 +10,7 @@ The Room library provides information about a room in a [level](level.md).
 | alternate_room | [Room](room.md) | R | Alternate room or nil if not present |
 | cameras_and_sinks | [CameraSink](camera_sink.md)[] | R | Camera/Sinks in the room |
 | items | [Item](item.md)[] | R | Items in the room |
+| flags | number | R | Room flags |
 | level | [Level](level.md) | R | The level that the room is in |
 | lights | [Light](light.md)[] | R | Lights in the room |
 | number | number | R | Room number |
@@ -26,3 +27,28 @@ The Room library provides information about a room in a [level](level.md).
 | Name | Returns | Parameters | Description |
 | ---- | ------- | ---------- | ----------- |
 | sector | [Sector](sector.md) | number x, number y | Gets the sector at the x and z indices, 1 based |
+
+# Flags
+
+```Room.Flags```
+
+| Name | Value |
+| ---- | ----- |
+| Water | 0x1 |
+| Bit1 | 0x2 |
+| Bit2 | 0x4 |
+| Outside | 0x8 |
+| Bit4 | 0x10 |
+| Wind | 0x20 |
+| Bit6 | 0x40 |
+| Bit7 | 0x80 |
+| Quicksand | 0x80 |
+| NoLensFlare | 0x80 |
+| Caustics | 0x100 |
+| WaterReflectivity | 0x200 |
+| Bit10 | 0x400 |
+| Bit11 | 0x800 |
+| Bit12 | 0x1000 |
+| Bit13 | 0x2000 |
+| Bit14 | 0x4000 |
+| Bit15 | 0x8000 |

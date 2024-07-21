@@ -182,6 +182,10 @@ namespace trview
         /// <returns>Whether the room has the flag.</returns>
         virtual bool flag(Flag flag) const = 0;
         /// <summary>
+        /// All room flags.
+        /// </summary>
+        virtual uint16_t flags() const = 0;
+        /// <summary>
         /// Get the room info. This contains basic raw positional information about the room.
         /// </summary>
         /// <returns>The room info.</returns>
