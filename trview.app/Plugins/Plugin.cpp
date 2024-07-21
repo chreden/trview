@@ -51,6 +51,7 @@ namespace trview
 
     void Plugin::initialise(IApplication* application)
     {
+        _application = application;
         _lua->initialise(application);
         set_package_path();
         load_script();
