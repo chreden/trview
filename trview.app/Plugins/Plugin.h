@@ -32,6 +32,7 @@ namespace trview
         void load();
         void load_script();
         void register_print();
+        void set_package_path();
 
         std::shared_ptr<IFiles> _files;
         std::unique_ptr<ILua> _lua;
@@ -42,5 +43,6 @@ namespace trview
         std::string _script;
         std::string _messages;
         TokenStore _token_store;
+        IApplication* _application;
     };
 }

@@ -44,6 +44,14 @@ namespace trview
             return 0;
         }
 
+        int dofile(lua_State* L)
+        {
+            luaL_checktype(L, lua_upvalueindex(1), LUA_TUSERDATA);
+            ILua* self = *static_cast<ILua**>(lua_touserdata(L, lua_upvalueindex(1)));
+            self->do_file(lua_tostring(L, 1));
+            return 0;
+        }
+
         constexpr luaL_Reg loadedlibs[] = {
           {LUA_GNAME, luaopen_base},
           {LUA_LOADLIBNAME, luaopen_package},
@@ -63,12 +71,7 @@ namespace trview
     Lua::Lua(const IRoute::Source& route_source, const IRandomizerRoute::Source& randomizer_route_source, const IWaypoint::Source& waypoint_source, const std::shared_ptr<IDialogs>& dialogs, const std::shared_ptr<IFiles>& files)
         : _route_source(route_source), _randomizer_route_source(randomizer_route_source), _waypoint_source(waypoint_source), _dialogs(dialogs), _files(files)
     {
-        L = luaL_newstate();
-        for (const auto& lib : loadedlibs)
-        {
-            luaL_requiref(L, lib.name, lib.func, 1);
-            lua_pop(L, 1);
-        }
+        create_state();
     }
 
     Lua::~Lua()
@@ -78,6 +81,9 @@ namespace trview
 
     void Lua::do_file(const std::string& file)
     {
+        const auto current_working_directory = _files->working_directory();
+        _files->set_working_directory(_directory);
+
         if (luaL_dofile(L, file.c_str()) != LUA_OK)
         {
             if (lua_type(L, -1) == LUA_TSTRING)
@@ -89,6 +95,8 @@ namespace trview
                 on_print("An error occurred");
             }
         }
+
+        _files->set_working_directory(current_working_directory);
     }
 
     void Lua::execute(const std::string& command)
@@ -108,12 +116,38 @@ namespace trview
 
     void Lua::initialise(IApplication* application)
     {
+        create_state();
         ILua** userdata = static_cast<ILua**>(lua_newuserdata(L, sizeof(this)));
         *userdata = this;
         lua_pushcclosure(L, print, 1);
         lua_setglobal(L, "print");
+        userdata = static_cast<ILua**>(lua_newuserdata(L, sizeof(this)));
+        *userdata = this;
+        lua_pushcclosure(L, dofile, 1);
+        lua_setglobal(L, "dofile");
         lua::trview_register(L, application, _route_source, _randomizer_route_source, _waypoint_source, _dialogs, _files);
         lua::imgui_register(L);
+    }
+
+    void Lua::set_directory(const std::string& directory)
+    {
+        _directory = directory;
+    }
+
+    void Lua::create_state()
+    {
+        if (L)
+        {
+            lua_close(L);
+            L = nullptr;
+        }
+
+        L = luaL_newstate();
+        for (const auto& lib : loadedlibs)
+        {
+            luaL_requiref(L, lib.name, lib.func, 1);
+            lua_pop(L, 1);
+        }
     }
 
     namespace lua

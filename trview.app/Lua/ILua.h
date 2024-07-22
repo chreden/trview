@@ -10,6 +10,7 @@ namespace trview
         virtual void do_file(const std::string& file) = 0;
         virtual void execute(const std::string& command) = 0;
         virtual void initialise(IApplication* application) = 0;
+        virtual void set_directory(const std::string& directory) = 0;
 
         Event<std::string> on_print;
     };

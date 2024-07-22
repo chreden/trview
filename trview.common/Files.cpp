@@ -144,6 +144,19 @@ namespace trview
         return data;
     }
 
+    std::string Files::working_directory() const
+    {
+        DWORD length = GetCurrentDirectory(0, nullptr);
+        std::vector<wchar_t> buffer (static_cast<std::size_t>(length) + 1, static_cast<wchar_t>(0));
+        GetCurrentDirectory(static_cast<DWORD>(buffer.size()), &buffer[0]);
+        return to_utf8(&buffer[0]);
+    }
+
+    void Files::set_working_directory(const std::string& directory)
+    {
+        SetCurrentDirectory(to_utf16(directory).c_str());
+    }
+
     std::vector<IFiles::File> Files::get_files(const std::wstring& folder, const std::vector<std::wstring>& patterns) const
     {
         std::vector<File> data;
