@@ -68,6 +68,7 @@ namespace trview
         virtual bool quicksand() const override;
         virtual std::weak_ptr<ITrigger> trigger_at(int32_t x, int32_t z) const override;
         virtual bool flag(Flag flag) const override;
+        uint16_t flags() const override;
         virtual float y_bottom() const override;
         virtual float y_top() const override;
         virtual ISector::Portal sector_portal(int x1, int y1, int x2, int z2) const override;

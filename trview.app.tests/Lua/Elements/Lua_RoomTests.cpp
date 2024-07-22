@@ -97,6 +97,33 @@ TEST(Lua_Room, CamerasAndSinks)
     ASSERT_EQ(2, lua_tointeger(L, -1));
 }
 
+TEST(Lua_Room, Flags)
+{
+    auto room = mock_shared<MockRoom>()->with_flags(static_cast<uint16_t>(IRoom::Flag::Water));
+
+    LuaState L;
+    lua::create_room(L, room);
+    lua_setglobal(L, "r");
+
+    ASSERT_EQ(0, luaL_dostring(L, "return r.flags"));
+    ASSERT_EQ(LUA_TNUMBER, lua_type(L, -1));
+    ASSERT_EQ(1, lua_tointeger(L, -1));
+}
+
+TEST(Lua_Room, HasFlag)
+{
+    auto room = mock_shared<MockRoom>()->with_flags(static_cast<uint16_t>(IRoom::Flag::Water));
+
+    LuaState L;
+    lua::create_room(L, room);
+    lua_setglobal(L, "r");
+    lua::room_register(L);
+
+    ASSERT_EQ(0, luaL_dostring(L, "return r:has_flag(Room.Flags.Water)"));
+    ASSERT_EQ(LUA_TBOOLEAN, lua_type(L, -1));
+    ASSERT_EQ(true, lua_toboolean(L, -1));
+}
+
 TEST(Lua_Room, Items)
 {
     auto item1 = mock_shared<MockItem>()->with_number(100);

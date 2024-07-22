@@ -3,6 +3,7 @@
 #include "../../Application.h"
 #include <trlevel/LevelEncryptedException.h>
 #include "../../UserCancelledException.h"
+#include "../Elements/Room/Lua_Room.h"
 #include "../Elements/Sector/Lua_Sector.h"
 #include "../Route/Lua_Route.h"
 #include "../Route/Lua_Waypoint.h"
@@ -147,6 +148,7 @@ namespace trview
             lua_setmetatable(L, -2);
             lua_setglobal(L, "trview");
 
+            room_register(L);
             sector_register(L);
             route_register(L, route_source, randomizer_route_source, dialogs, files);
             waypoint_register(L, waypoint_source);

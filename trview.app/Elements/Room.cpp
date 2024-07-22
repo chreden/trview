@@ -932,6 +932,11 @@ namespace trview
     {
         return _flags & static_cast<uint16_t>(flag);
     }
+
+    uint16_t Room::flags() const
+    {
+        return _flags;
+    }
     
     float Room::y_bottom() const
     {
