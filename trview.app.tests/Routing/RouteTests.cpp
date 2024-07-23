@@ -120,8 +120,12 @@ TEST(Route, AddBindsWaypoint)
 {
     auto waypoint = mock_shared<MockWaypoint>();
     EXPECT_CALL(*waypoint, set_route).Times(1);
+    EXPECT_CALL(*waypoint, set_route_colour(Colour::Yellow)).Times(1);
+    EXPECT_CALL(*waypoint, set_waypoint_colour(Colour::Green)).Times(1);
 
     auto route = register_test_module().build();
+    route->set_colour(Colour::Yellow);
+    route->set_waypoint_colour(Colour::Green);
 
     int raised_count = 0;
     auto token = route->on_changed += [&]() { ++raised_count; };
@@ -495,8 +499,10 @@ TEST(Route, SetColourUpdatesWaypoints)
         return std::move(waypoint_ptr);
     };
 
+    EXPECT_CALL(waypoint, set_route_colour(Colour::Green)).Times(1);
     EXPECT_CALL(waypoint, set_route_colour(Colour::Yellow)).Times(1);
     auto route = register_test_module().with_waypoint_source(source).build();
+    route->set_colour(Colour::Green);
     route->add(Vector3::Zero, Vector3::Zero, 0);
     route->set_colour(Colour::Yellow);
 }
@@ -509,8 +515,10 @@ TEST(Route, SetWaypointColourUpdatesWaypoints)
         return std::move(waypoint_ptr);
     };
 
+    EXPECT_CALL(waypoint, set_waypoint_colour(Colour::Green)).Times(1);
     EXPECT_CALL(waypoint, set_waypoint_colour(Colour::Cyan)).Times(1);
     auto route = register_test_module().with_waypoint_source(source).build();
+    route->set_waypoint_colour(Colour::Green);
     route->add(Vector3::Zero, Vector3::Zero, 0);
     route->set_waypoint_colour(Colour::Cyan);
 }
