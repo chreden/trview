@@ -10,6 +10,7 @@
 #include "../../Routing/IRoute.h"
 #include "../../Routing/IRandomizerRoute.h"
 #include "../../Settings/UserSettings.h"
+#include "../Scriptable/IScriptable.h"
 
 namespace trview
 {
@@ -22,6 +23,7 @@ namespace trview
             const IRoute::Source& route_source,
             const IRandomizerRoute::Source& randomizer_route_source,
             const IWaypoint::Source& waypoint_source,
+            const IScriptable::Source& scriptable_source,
             const std::shared_ptr<IDialogs>& dialogs,
             const std::shared_ptr<IFiles>& files);
         void set_settings(const UserSettings& settings);

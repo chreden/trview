@@ -338,6 +338,9 @@
     <ClCompile Include="Windows\Windows.cpp">
       <Filter>Windows</Filter>
     </ClCompile>
+    <ClCompile Include="Lua\Scriptable\Scriptable.cpp">
+      <Filter>Lua\Scriptable</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera\Camera.h">
@@ -1099,6 +1102,15 @@
     <ClInclude Include="Mocks\Windows\IWindows.h">
       <Filter>Mocks\Windows</Filter>
     </ClInclude>
+    <ClInclude Include="Lua\Scriptable\Scriptable.h">
+      <Filter>Lua\Scriptable</Filter>
+    </ClInclude>
+    <ClInclude Include="Lua\Scriptable\IScriptable.h">
+      <Filter>Lua\Scriptable</Filter>
+    </ClInclude>
+    <ClInclude Include="Mocks\Lua\IScriptable.h">
+      <Filter>Mocks\Lua</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Windows">
@@ -1292,6 +1304,9 @@
     </Filter>
     <Filter Include="Windows\Statics">
       <UniqueIdentifier>{56d85abd-e0f6-45f4-9776-b734b80d4b45}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Lua\Scriptable">
+      <UniqueIdentifier>{7e2d9e42-f62d-4702-9d5e-7b7b13532b5e}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

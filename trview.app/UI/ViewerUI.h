@@ -73,6 +73,7 @@ namespace trview
     private:
         void generate_tool_window();
         void render_route_notes();
+        void render_scriptable_notes();
 
         TokenStore _token_store;
         input::Mouse _mouse;

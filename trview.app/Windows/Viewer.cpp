@@ -1353,6 +1353,12 @@ namespace trview
             }
             break;
         }
+        case PickResult::Type::Scriptable:
+        {
+            auto scriptable = pick.scriptable.lock();
+            scriptable->click();
+            break;
+        }
         }
     }
 

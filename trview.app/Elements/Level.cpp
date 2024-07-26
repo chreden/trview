@@ -176,6 +176,11 @@ namespace trview
         return _room_highlight_modes.find(mode) != _room_highlight_modes.end();
     }
 
+    std::vector<std::weak_ptr<IScriptable>> Level::scriptables() const
+    {
+        return _scriptables | std::ranges::to<std::vector<std::weak_ptr<IScriptable>>>();
+    }
+
     void Level::set_selected_room(const std::weak_ptr<IRoom>& room)
     { 
         const auto room_ptr = room.lock();
@@ -247,6 +252,11 @@ namespace trview
             _pixel_shader_data->apply(context, graphics::IBuffer::ApplyTo::PS);
 
             render_rooms(camera);
+
+            for (const auto& scriptable : _scriptables)
+            {
+                scriptable->render(camera);
+            }
 
             graphics::set_data(*_pixel_shader_data, context, PixelShaderData{ false });
         }
@@ -684,6 +694,27 @@ namespace trview
                     results.push_back(result);
                 }
             }
+        }
+
+        uint32_t index = 0;
+        for (const auto& scriptable : _scriptables)
+        {
+            PickResult result{};
+            BoundingBox cube(scriptable->position(), Vector3(0.125f, 0.125f, 0.125f));
+
+            float distance = 0;
+            if (cube.Intersects(position, direction, distance))
+            {
+                result.distance = distance;
+                result.hit = true;
+                result.index = index;
+                result.position = position + direction * distance;
+                result.type = PickResult::Type::Scriptable;
+                result.scriptable = scriptable;
+                results.push_back(result);
+            }
+
+            ++index;
         }
 
         std::sort(results.begin(), results.end(), [](const auto& l, const auto& r) { return l.distance < r.distance; });
@@ -1351,6 +1382,12 @@ namespace trview
             return {};
         }
         return _static_meshes[index];
+    }
+
+    void Level::add_scriptable(const std::shared_ptr<IScriptable>& scriptable)
+    {
+        _scriptables.push_back(scriptable);
+        scriptable->on_changed += on_level_changed;
     }
 
     bool find_item_by_type_id(const ILevel& level, uint32_t type_id, std::weak_ptr<IItem>& output_item)

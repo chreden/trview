@@ -8,6 +8,7 @@ namespace trview
     struct Colour;
     struct ILevel;
     struct IRoute;
+    struct IScriptable;
 
     struct PickResult
     {
@@ -21,7 +22,8 @@ namespace trview
             Compass,
             StaticMesh,
             Light,
-            CameraSink
+            CameraSink,
+            Scriptable
         };
 
         bool                         hit{ false };
@@ -34,6 +36,7 @@ namespace trview
         std::string                  text;
         bool                         override_centre{ false };
         Triangle                     triangle;
+        std::weak_ptr<IScriptable>   scriptable;
     };
 
     /// Convert the pick result to a display string.

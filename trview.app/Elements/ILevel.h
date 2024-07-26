@@ -5,6 +5,7 @@
 #include "../Elements/ITrigger.h"
 #include "../Elements/IRoom.h"
 #include "../Elements/IStaticMesh.h"
+#include "../Lua/Scriptable/IScriptable.h"
 #include "IItem.h"
 #include <trview.app/Elements/ILight.h>
 #include "CameraSink/ICameraSink.h"
@@ -31,6 +32,7 @@ namespace trview
         };
 
         virtual ~ILevel() = 0;
+        virtual void add_scriptable(const std::shared_ptr<IScriptable>& scriptable) = 0;
         /// Gets whether the specified alternate group is active.
         /// @param group The group to check.
         /// @returns True if the group is active.
@@ -79,6 +81,7 @@ namespace trview
         // Returns the room with ID provided 
         virtual std::weak_ptr<IRoom> room(uint32_t id) const = 0;
         virtual std::vector<std::weak_ptr<IRoom>> rooms() const = 0;
+        virtual std::vector<std::weak_ptr<IScriptable>> scriptables() const = 0;
         virtual std::optional<uint32_t> selected_item() const = 0;
         virtual std::optional<uint32_t> selected_light() const = 0;
         virtual std::optional<uint32_t> selected_camera_sink() const = 0;

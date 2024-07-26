@@ -18,6 +18,7 @@
 #include "Graphics/ISectorHighlight.h"
 #include "Graphics/ISelectionRenderer.h"
 #include "Graphics/ITextureStorage.h"
+#include "Lua/IScriptable.h"
 #include "Menus/IFileMenu.h"
 #include "Menus/IUpdateChecker.h"
 #include "Routing/IRoute.h"
@@ -257,5 +258,8 @@ namespace trview
 
         MockWindows::MockWindows() {}
         MockWindows::~MockWindows() {}
+
+        MockScriptable::MockScriptable() {}
+        MockScriptable::~MockScriptable() {}
     }
 }

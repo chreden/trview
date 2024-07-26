@@ -266,6 +266,7 @@ namespace trview
         }
 
         render_route_notes();
+        render_scriptable_notes();
     }
 
     void ViewerUI::set_alternate_group(uint32_t value, bool enabled)
@@ -532,6 +533,41 @@ namespace trview
                         {
                             ImGui::Text(notes.c_str());
                         }
+                    }
+                    ImGui::End();
+                }
+            }
+        }
+    }
+
+    void ViewerUI::render_scriptable_notes()
+    {
+        const auto level = _level.lock();
+        if (!level)
+        {
+            return;
+        }
+
+        const auto vp = ImGui::GetMainViewport();
+
+        uint32_t i = 0;
+        for (const auto scriptable : level->scriptables())
+        {
+            if (const auto scriptable_ptr = scriptable.lock())
+            {
+                const auto notes = scriptable_ptr->notes();
+                if (notes.empty())
+                {
+                    continue;
+                }
+
+                const auto pos = scriptable_ptr->screen_position();
+                if (is_on_screen(pos, *vp))
+                {
+                    ImGui::SetNextWindowPos(vp->Pos + ImVec2(pos.x, pos.y));
+                    if (ImGui::Begin(std::format("##scriptable{}", i).c_str(), nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoInputs | ImGuiWindowFlags_NoFocusOnAppearing))
+                    {
+                        ImGui::Text(notes.c_str());
                     }
                     ImGui::End();
                 }

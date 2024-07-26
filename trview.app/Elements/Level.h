@@ -53,6 +53,7 @@ namespace trview
         virtual void render_transparency(const ICamera& camera) override;
         virtual void set_highlight_mode(RoomHighlightMode mode, bool enabled) override;
         virtual bool highlight_mode_enabled(RoomHighlightMode mode) const override;
+        std::vector<std::weak_ptr<IScriptable>> scriptables() const override;
         void set_selected_room(const std::weak_ptr<IRoom>& room) override;
         virtual void set_selected_item(uint32_t index) override;
         virtual void set_neighbour_depth(uint32_t depth) override;
@@ -115,6 +116,7 @@ namespace trview
             const trlevel::ILevel::LoadCallbacks callbacks);
         std::vector<std::weak_ptr<IStaticMesh>> static_meshes() const override;
         std::weak_ptr<IStaticMesh> static_mesh(uint32_t index) const override;
+        void add_scriptable(const std::shared_ptr<IScriptable>& scriptable) override;
     private:
         void generate_rooms(const trlevel::ILevel& level, const IRoom::Source& room_source, const IMeshStorage& mesh_storage);
         void generate_triggers(const ITrigger::Source& trigger_source);
@@ -207,6 +209,8 @@ namespace trview
         std::set<uint32_t> _models;
         TokenStore _token_store;
         std::string _name;
+
+        std::vector<std::shared_ptr<IScriptable>> _scriptables;
     };
 
     /// Find the first item with the type id specified.

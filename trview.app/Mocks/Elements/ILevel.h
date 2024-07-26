@@ -10,6 +10,7 @@ namespace trview
         {
             MockLevel();
             virtual ~MockLevel();
+            MOCK_METHOD(void, add_scriptable, (const std::shared_ptr<IScriptable>&), (override));
             MOCK_METHOD(bool, alternate_group, (uint32_t), (const, override));
             MOCK_METHOD(std::set<uint32_t>, alternate_groups, (), (const, override));
             MOCK_METHOD(bool, alternate_mode, (), (const, override));
@@ -34,6 +35,7 @@ namespace trview
             MOCK_METHOD(void, render_transparency, (const ICamera&), (override));
             MOCK_METHOD(std::weak_ptr<IRoom>, room, (uint32_t), (const, override));
             MOCK_METHOD(std::vector<std::weak_ptr<IRoom>>, rooms, (), (const, override));
+            MOCK_METHOD(std::vector<std::weak_ptr<IScriptable>>, scriptables, (), (const, override));
             MOCK_METHOD(std::optional<uint32_t>, selected_item, (), (const, override));
             MOCK_METHOD(std::optional<uint32_t>, selected_light, (), (const, override));
             MOCK_METHOD(std::weak_ptr<IRoom>, selected_room, (), (const, override));
