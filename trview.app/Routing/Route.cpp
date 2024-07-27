@@ -474,6 +474,8 @@ namespace trview
     void Route::bind_waypoint(IWaypoint& waypoint)
     {
         waypoint.set_route(shared_from_this());
+        waypoint.set_route_colour(_colour);
+        waypoint.set_waypoint_colour(_waypoint_colour);
         waypoint.on_changed += on_changed;
     }
 
