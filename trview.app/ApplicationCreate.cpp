@@ -362,10 +362,11 @@ namespace trview
             std::make_unique<CameraSinkWindowManager>(window, shortcuts, camera_sink_window_source),
             std::make_unique<ConsoleManager>(window, shortcuts, console_source, files),
             plugins,
-            std::make_unique<PluginsWindowManager>(window, shortcuts, plugins_window_source),
             randomizer_route_source,
             fonts,
-            std::make_unique<Windows>(std::make_unique<StaticsWindowManager>(window, shortcuts, statics_window_source)),
+            std::make_unique<Windows>(
+                std::make_unique<PluginsWindowManager>(window, shortcuts, plugins_window_source),
+                std::make_unique<StaticsWindowManager>(window, shortcuts, statics_window_source)),
             Application::LoadMode::Async);
     }
 }

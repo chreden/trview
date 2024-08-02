@@ -64,7 +64,6 @@ namespace trview
         std::unique_ptr<ICameraSinkWindowManager> camera_sink_window_manager,
         std::unique_ptr<IConsoleManager> console_manager,
         std::shared_ptr<IPlugins> plugins,
-        std::unique_ptr<IPluginsWindowManager> plugins_window_manager,
         const IRandomizerRoute::Source& randomizer_route_source,
         std::shared_ptr<IFonts> fonts,
         std::unique_ptr<IWindows> windows,
@@ -75,7 +74,7 @@ namespace trview
         _triggers_windows(std::move(triggers_window_manager)), _route_window(std::move(route_window_manager)), _rooms_windows(std::move(rooms_window_manager)), _level_source(level_source),
         _dialogs(dialogs), _files(files), _timer(default_time_source()), _imgui_backend(std::move(imgui_backend)), _lights_windows(std::move(lights_window_manager)), _log_windows(std::move(log_window_manager)),
         _textures_windows(std::move(textures_window_manager)), _camera_sink_windows(std::move(camera_sink_window_manager)), _console_manager(std::move(console_manager)),
-        _plugins(plugins), _plugins_windows(std::move(plugins_window_manager)), _randomizer_route_source(randomizer_route_source), _fonts(fonts), _load_mode(load_mode), _windows(std::move(windows))
+        _plugins(plugins), _randomizer_route_source(randomizer_route_source), _fonts(fonts), _load_mode(load_mode), _windows(std::move(windows))
     {
         SetWindowLongPtr(window(), GWLP_USERDATA, reinterpret_cast<LONG_PTR>(_imgui_backend.get()));
 
@@ -722,7 +721,6 @@ namespace trview
         _rooms_windows->update(elapsed);
         _route_window->update(elapsed);
         _lights_windows->update(elapsed);
-        _plugins_windows->update(elapsed);
         _windows->update(elapsed);
 
         _viewer->render();
@@ -766,7 +764,6 @@ namespace trview
         _textures_windows->render();
         _camera_sink_windows->render();
         _console_manager->render();
-        _plugins_windows->render();
         _windows->render();
         _plugins->render_ui();
 

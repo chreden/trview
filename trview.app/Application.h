@@ -29,7 +29,6 @@
 #include "Windows/CameraSink/ICameraSinkWindowManager.h"
 #include "Windows/Console/IConsoleManager.h"
 #include "Plugins/IPlugins.h"
-#include "Windows/Plugins/IPluginsWindowManager.h"
 #include "UI/Fonts/IFonts.h"
 
 struct ImFont;
@@ -85,7 +84,6 @@ namespace trview
             std::unique_ptr<ICameraSinkWindowManager> camera_sink_window_manager,
             std::unique_ptr<IConsoleManager> console_manager,
             std::shared_ptr<IPlugins> plugins,
-            std::unique_ptr<IPluginsWindowManager> plugins_window_manager,
             const IRandomizerRoute::Source& randomizer_route_source,
             std::shared_ptr<IFonts> fonts,
             std::unique_ptr<IWindows> windows,
@@ -194,7 +192,6 @@ namespace trview
         std::unique_ptr<ICameraSinkWindowManager> _camera_sink_windows;
         std::unique_ptr<IConsoleManager> _console_manager;
         std::shared_ptr<IPlugins> _plugins;
-        std::unique_ptr<IPluginsWindowManager> _plugins_windows;
 
         IRandomizerRoute::Source _randomizer_route_source;
         std::shared_ptr<IFonts> _fonts;

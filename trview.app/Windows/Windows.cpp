@@ -2,6 +2,8 @@
 #include "Elements/ILevel.h"
 #include "Elements/IRoom.h"
 #include "Settings/UserSettings.h"
+
+#include "Plugins/IPluginsWindowManager.h"
 #include "Statics/IStaticsWindowManager.h"
 
 namespace trview
@@ -10,19 +12,23 @@ namespace trview
     {
     }
 
-    Windows::Windows(std::unique_ptr<IStaticsWindowManager> statics_window_manager)
-        : _statics_windows(std::move(statics_window_manager))
+    Windows::Windows(
+        std::unique_ptr<IPluginsWindowManager> plugins_window_manager,
+        std::unique_ptr<IStaticsWindowManager> statics_window_manager)
+        : _plugins_windows(std::move(plugins_window_manager)), _statics_windows(std::move(statics_window_manager))
     {
         _statics_windows->on_static_selected += on_static_selected;
     }
 
     void Windows::update(float elapsed)
     {
+        _plugins_windows->update(elapsed);
         _statics_windows->update(elapsed);
     }
 
     void Windows::render()
     {
+        _plugins_windows->render();
         _statics_windows->render();
     }
 
