@@ -335,6 +335,9 @@
     <ClCompile Include="Windows\Statics\StaticsWindow.cpp">
       <Filter>Windows\Statics</Filter>
     </ClCompile>
+    <ClCompile Include="Windows\Windows.cpp">
+      <Filter>Windows</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera\Camera.h">
@@ -1085,6 +1088,15 @@
       <Filter>Mocks\Windows</Filter>
     </ClInclude>
     <ClInclude Include="Mocks\Windows\IStaticsWindowManager.h">
+      <Filter>Mocks\Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="Windows\IWindows.h">
+      <Filter>Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="Windows\Windows.h">
+      <Filter>Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="Mocks\Windows\IWindows.h">
       <Filter>Mocks\Windows</Filter>
     </ClInclude>
   </ItemGroup>

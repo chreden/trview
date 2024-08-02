@@ -2,6 +2,7 @@
 #include <trlevel/LevelEncryptedException.h>
 #include "UserCancelledException.h"
 #include "Lua/trview/trview.h"
+#include "Windows/IWindows.h"
 
 #include "Resources/resource.h"
 
@@ -66,7 +67,7 @@ namespace trview
         std::unique_ptr<IPluginsWindowManager> plugins_window_manager,
         const IRandomizerRoute::Source& randomizer_route_source,
         std::shared_ptr<IFonts> fonts,
-        std::unique_ptr<IStaticsWindowManager> statics_window_manager,
+        std::unique_ptr<IWindows> windows,
         LoadMode load_mode)
         : MessageHandler(application_window), _instance(GetModuleHandle(nullptr)),
         _file_menu(std::move(file_menu)), _update_checker(std::move(update_checker)), _view_menu(window()), _settings_loader(settings_loader), _trlevel_source(trlevel_source),
@@ -74,8 +75,7 @@ namespace trview
         _triggers_windows(std::move(triggers_window_manager)), _route_window(std::move(route_window_manager)), _rooms_windows(std::move(rooms_window_manager)), _level_source(level_source),
         _dialogs(dialogs), _files(files), _timer(default_time_source()), _imgui_backend(std::move(imgui_backend)), _lights_windows(std::move(lights_window_manager)), _log_windows(std::move(log_window_manager)),
         _textures_windows(std::move(textures_window_manager)), _camera_sink_windows(std::move(camera_sink_window_manager)), _console_manager(std::move(console_manager)),
-        _plugins(plugins), _plugins_windows(std::move(plugins_window_manager)), _randomizer_route_source(randomizer_route_source), _fonts(fonts), _statics_windows(std::move(statics_window_manager)),
-        _load_mode(load_mode)
+        _plugins(plugins), _plugins_windows(std::move(plugins_window_manager)), _randomizer_route_source(randomizer_route_source), _fonts(fonts), _load_mode(load_mode), _windows(std::move(windows))
     {
         SetWindowLongPtr(window(), GWLP_USERDATA, reinterpret_cast<LONG_PTR>(_imgui_backend.get()));
 
@@ -98,6 +98,7 @@ namespace trview
         setup_lights_windows();
         setup_camera_sink_windows();
         setup_statics_window();
+        _windows->setup(_settings);
         setup_viewer(*startup_options);
         _plugins->initialise(this);
     }
@@ -513,7 +514,7 @@ namespace trview
         _triggers_windows->set_room(room);
         _lights_windows->set_room(room);
         _camera_sink_windows->set_room(room);
-        _statics_windows->set_room(room);
+        _windows->set_room(room);
     }
 
     void Application::select_trigger(const std::weak_ptr<ITrigger>& trigger)
@@ -722,7 +723,7 @@ namespace trview
         _route_window->update(elapsed);
         _lights_windows->update(elapsed);
         _plugins_windows->update(elapsed);
-        _statics_windows->update(elapsed);
+        _windows->update(elapsed);
 
         _viewer->render();
 
@@ -766,7 +767,7 @@ namespace trview
         _camera_sink_windows->render();
         _console_manager->render();
         _plugins_windows->render();
-        _statics_windows->render();
+        _windows->render();
         _plugins->render_ui();
 
         ImGui::PopFont();
@@ -935,11 +936,7 @@ namespace trview
 
     void Application::setup_statics_window()
     {
-        if (_settings.statics_startup)
-        {
-            _statics_windows->create_window();
-        }
-        _token_store += _statics_windows->on_static_selected += [this](const auto& stat) { select_static_mesh(stat); };
+        _token_store += _windows->on_static_selected += [this](const auto& stat) { select_static_mesh(stat); };
     }
 
     void Application::save_window_placement()
@@ -1027,7 +1024,7 @@ namespace trview
         _lights_windows->set_level_version(_level->version());
         _lights_windows->set_lights(_level->lights());
         _camera_sink_windows->set_camera_sinks(_level->camera_sinks());
-        _statics_windows->set_statics(_level->static_meshes());
+        _windows->set_level(_level);
         if (open_mode == ILevel::OpenMode::Full)
         {
             _route->clear();
@@ -1133,7 +1130,7 @@ namespace trview
 
         select_room(static_mesh_ptr->room());
         _viewer->select_static_mesh(static_mesh_ptr);
-        _statics_windows->select_static(static_mesh_ptr);
+        _windows->select(static_mesh_ptr);
     }
 
     void Application::check_load()

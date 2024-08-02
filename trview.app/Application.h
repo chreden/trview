@@ -31,12 +31,13 @@
 #include "Plugins/IPlugins.h"
 #include "Windows/Plugins/IPluginsWindowManager.h"
 #include "UI/Fonts/IFonts.h"
-#include "Windows/Statics/IStaticsWindowManager.h"
 
 struct ImFont;
 
 namespace trview
 {
+    struct IWindows;
+
     struct IApplication
     {
         virtual ~IApplication() = 0;
@@ -87,7 +88,7 @@ namespace trview
             std::unique_ptr<IPluginsWindowManager> plugins_window_manager,
             const IRandomizerRoute::Source& randomizer_route_source,
             std::shared_ptr<IFonts> fonts,
-            std::unique_ptr<IStaticsWindowManager> statics_window_manager,
+            std::unique_ptr<IWindows> windows,
             LoadMode load_mode);
         virtual ~Application();
         /// Attempt to open the specified level file.
@@ -175,6 +176,7 @@ namespace trview
 
         // Windows
         std::unique_ptr<IViewer> _viewer;
+        std::unique_ptr<IWindows> _windows;
         std::unique_ptr<IItemsWindowManager> _items_windows;
         std::unique_ptr<ITriggersWindowManager> _triggers_windows;
         std::unique_ptr<IRouteWindowManager> _route_window;
@@ -193,7 +195,6 @@ namespace trview
         std::unique_ptr<IConsoleManager> _console_manager;
         std::shared_ptr<IPlugins> _plugins;
         std::unique_ptr<IPluginsWindowManager> _plugins_windows;
-        std::unique_ptr<IStaticsWindowManager> _statics_windows;
 
         IRandomizerRoute::Source _randomizer_route_source;
         std::shared_ptr<IFonts> _fonts;

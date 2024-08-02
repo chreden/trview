@@ -71,6 +71,7 @@
 #include "UI/Fonts/Fonts.h"
 #include "Windows/Statics/StaticsWindowManager.h"
 #include "Windows/Statics/StaticsWindow.h"
+#include "Windows/Windows.h"
 
 namespace trview
 {
@@ -364,7 +365,7 @@ namespace trview
             std::make_unique<PluginsWindowManager>(window, shortcuts, plugins_window_source),
             randomizer_route_source,
             fonts,
-            std::make_unique<StaticsWindowManager>(window, shortcuts, statics_window_source),
+            std::make_unique<Windows>(std::make_unique<StaticsWindowManager>(window, shortcuts, statics_window_source)),
             Application::LoadMode::Async);
     }
 }
