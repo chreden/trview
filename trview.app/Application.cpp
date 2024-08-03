@@ -919,7 +919,6 @@ namespace trview
     void Application::setup_camera_sink_windows()
     {
         _token_store += _windows->on_camera_sink_selected += [this](const auto& sink) {  select_camera_sink(sink); };
-        // _token_store += _windows->on_camera_sink_visibility += [this](const auto& cs, bool value) { set_camera_sink_visibility(cs, value); };
         _token_store += _windows->on_trigger_selected += [this](const auto& trigger) { select_trigger(trigger); };
         _token_store += _windows->on_scene_changed += [this]() { _viewer->set_scene_changed(); };
     }

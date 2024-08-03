@@ -224,7 +224,8 @@ namespace trview
                     ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0, 0));
                     if (ImGui::Checkbox(std::format("##hide-{}", camera_sink->number()).c_str(), &hidden))
                     {
-                        on_camera_sink_visibility(camera_sink, !hidden);
+                        camera_sink->set_visible(!hidden);
+                        on_scene_changed();
                     }
                     ImGui::PopStyleVar();
                 }
@@ -270,13 +271,13 @@ namespace trview
                 if (ImGui::Selectable("Camera##type", &camera_selected))
                 {
                     selected->set_type(ICameraSink::Type::Camera);
-                    on_camera_sink_type_changed();
+                    on_scene_changed();
                 }
                 bool sink_selected = selected->type() == ICameraSink::Type::Sink;
                 if (ImGui::Selectable("Sink##type", &sink_selected))
                 {
                     selected->set_type(ICameraSink::Type::Sink);
-                    on_camera_sink_type_changed();
+                    on_scene_changed();
                 }
                 ImGui::EndCombo();
             }

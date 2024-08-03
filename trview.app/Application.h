@@ -26,7 +26,6 @@
 #include "Windows/Log/ILogWindowManager.h"
 #include "Windows/Textures/ITexturesWindowManager.h"
 #include "UI/IImGuiBackend.h"
-#include "Windows/CameraSink/ICameraSinkWindowManager.h"
 #include "Windows/Console/IConsoleManager.h"
 #include "Plugins/IPlugins.h"
 #include "UI/Fonts/IFonts.h"

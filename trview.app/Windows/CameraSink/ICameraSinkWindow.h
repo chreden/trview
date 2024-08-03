@@ -21,8 +21,7 @@ namespace trview
         Event<> on_window_closed;
 
         Event<std::weak_ptr<ICameraSink>> on_camera_sink_selected;
-        Event<std::weak_ptr<ICameraSink>, bool> on_camera_sink_visibility;
         Event<std::weak_ptr<ITrigger>> on_trigger_selected;
-        Event<> on_camera_sink_type_changed;
+        Event<> on_scene_changed;
     };
 }

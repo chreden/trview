@@ -21,7 +21,7 @@ namespace trview
     {
         _camera_sink_windows->on_camera_sink_selected += on_camera_sink_selected;
         _camera_sink_windows->on_trigger_selected += on_trigger_selected;
-        _camera_sink_windows->on_camera_sink_type_changed += on_scene_changed;
+        _camera_sink_windows->on_scene_changed += on_scene_changed;
 
         _statics_windows->on_static_selected += on_static_selected;
     }

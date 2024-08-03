@@ -20,9 +20,9 @@ namespace trview
         window->set_selected_camera_sink(_selected_camera_sink);
         window->set_current_room(_current_room);
         window->on_camera_sink_selected += on_camera_sink_selected;
-        window->on_camera_sink_visibility += on_camera_sink_visibility;
         window->on_trigger_selected += on_trigger_selected;
-        window->on_camera_sink_type_changed += on_camera_sink_type_changed;
+        window->on_scene_changed += on_scene_changed;
+        
         return add_window(window);
     }
 
