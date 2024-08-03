@@ -4,6 +4,7 @@
 #include <format>
 #include "RowCounter.h"
 #include "../Elements/IRoom.h"
+#include "../Elements/ILevel.h"
 
 namespace trview
 {
@@ -234,7 +235,8 @@ namespace trview
                         ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0, 0));
                         if (ImGui::Checkbox(std::format("##hide-{}", trigger_ptr->number()).c_str(), &hidden))
                         {
-                            on_trigger_visibility(trigger_ptr, !hidden);
+                            trigger_ptr->set_visible(!hidden);
+                            on_scene_changed();
                         }
                         ImGui::PopStyleVar();
                     }
@@ -276,13 +278,13 @@ namespace trview
         if (ImGui::BeginChild(Names::details_panel.c_str(), ImVec2(), true))
         {
             ImGui::Text("Trigger Details");
+            auto selected_trigger = _selected_trigger.lock();
             if (ImGui::BeginTable(Names::trigger_stats.c_str(), 2, 0, ImVec2(-1, 150)))
             {
                 ImGui::TableSetupColumn("Name");
                 ImGui::TableSetupColumn("Value");
                 ImGui::TableNextRow();
 
-                auto selected_trigger = _selected_trigger.lock();
                 if (selected_trigger)
                 {
                     auto add_stat = [&]<typename T>(const std::string& name, const T&& value)
@@ -365,7 +367,13 @@ namespace trview
                         else if (equals_any(command.type(), TriggerCommandType::UnderwaterCurrent, TriggerCommandType::Camera))
                         {
                             _track.set_enabled<Type::Room>(false);
-                            on_camera_sink_selected(command.index());
+                            if (selected_trigger)
+                            {
+                                if (auto level = selected_trigger->level().lock())
+                                {
+                                    on_camera_sink_selected(level->camera_sink(command.index()));
+                                }
+                            }
                         }
                     }
                     ImGui::TableNextColumn();

@@ -4,6 +4,7 @@
 #include <trview.common/Event.h>
 #include "../Elements/IItem.h"
 #include "../Elements/ITrigger.h"
+#include "../Elements/CameraSink/ICameraSink.h"
 
 namespace trview
 {
@@ -16,8 +17,7 @@ namespace trview
         /// Event raised when a trigger is selected in the list.
         Event<std::weak_ptr<ITrigger>> on_trigger_selected;
 
-        /// Event raised when the visibility of a trigger is changed.
-        Event<std::weak_ptr<ITrigger>, bool> on_trigger_visibility;
+        Event<> on_scene_changed;
 
         /// Event raised when an item is selected in the list.
         Event<std::weak_ptr<IItem>> on_item_selected;
@@ -31,7 +31,7 @@ namespace trview
         /// <summary>
         /// Event raised when a camera/sinkm is selected in the list.
         /// </summary>
-        Event<uint32_t> on_camera_sink_selected;
+        Event<std::weak_ptr<ICameraSink>> on_camera_sink_selected;
 
         /// Clear the currently selected trigger from the details panel.
         virtual void clear_selected_trigger() = 0;

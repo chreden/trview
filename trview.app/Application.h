@@ -15,7 +15,6 @@
 #include "Routing/IRandomizerRoute.h"
 #include <trview.app/Settings/ISettingsLoader.h>
 #include <trview.app/Settings/IStartupOptions.h>
-#include <trview.app/Windows/IItemsWindowManager.h>
 #include <trview.app/Windows/IRoomsWindowManager.h>
 #include <trview.app/Windows/IRouteWindowManager.h>
 #include <trview.app/Windows/ITriggersWindowManager.h>
@@ -68,8 +67,6 @@ namespace trview
             std::unique_ptr<IViewer> viewer,
             const IRoute::Source& route_source,
             std::shared_ptr<IShortcuts> shortcuts,
-            std::unique_ptr<IItemsWindowManager> items_window_manager,
-            std::unique_ptr<ITriggersWindowManager> triggers_window_manager,
             std::unique_ptr<IRouteWindowManager> route_window_manager,
             std::unique_ptr<IRoomsWindowManager> rooms_window_manager,
             const ILevel::Source& level_source,
@@ -77,7 +74,6 @@ namespace trview
             std::shared_ptr<IDialogs> dialogs,
             std::shared_ptr<IFiles> files,
             std::shared_ptr<IImGuiBackend> imgui_backend,
-            std::unique_ptr<ILightsWindowManager> lights_window_manager,
             std::unique_ptr<ILogWindowManager> log_window_manager,
             std::unique_ptr<ITexturesWindowManager> textures_window_manager,
             std::unique_ptr<IConsoleManager> console_manager,
@@ -104,13 +100,9 @@ namespace trview
         // Window setup functions.
         void setup_view_menu();
         void setup_viewer(const IStartupOptions& startup_options);
-        void setup_items_windows();
-        void setup_triggers_windows();
         void setup_rooms_windows();
         void setup_route_window();
         void setup_lights_windows();
-        void setup_camera_sink_windows();
-        void setup_statics_window();
         void setup_shortcuts();
         // Entity manipulation
         void add_waypoint(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& normal, std::weak_ptr<IRoom> room, IWaypoint::Type type, uint32_t index);
@@ -173,11 +165,8 @@ namespace trview
         // Windows
         std::unique_ptr<IViewer> _viewer;
         std::unique_ptr<IWindows> _windows;
-        std::unique_ptr<IItemsWindowManager> _items_windows;
-        std::unique_ptr<ITriggersWindowManager> _triggers_windows;
         std::unique_ptr<IRouteWindowManager> _route_window;
         std::unique_ptr<IRoomsWindowManager> _rooms_windows;
-        std::unique_ptr<ILightsWindowManager> _lights_windows;
         Timer _timer;
         std::optional<std::pair<std::string, FontSetting>> _new_font;
 

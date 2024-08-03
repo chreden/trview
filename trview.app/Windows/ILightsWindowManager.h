@@ -19,6 +19,6 @@ namespace trview
         virtual void set_room(const std::weak_ptr<IRoom>& room) = 0;
 
         Event<std::weak_ptr<ILight>> on_light_selected;
-        Event<std::weak_ptr<ILight>, bool> on_light_visibility;
+        Event<> on_scene_changed;
     };
 }
