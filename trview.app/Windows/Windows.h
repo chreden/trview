@@ -8,6 +8,7 @@ namespace trview
     struct IItemsWindowManager;
     struct ILightsWindowManager;
     struct IPluginsWindowManager;
+    struct IRoomsWindowManager;
     struct IStaticsWindowManager;
     struct ITriggersWindowManager;
 
@@ -19,6 +20,7 @@ namespace trview
             std::unique_ptr<IItemsWindowManager> items_window_manager,
             std::unique_ptr<ILightsWindowManager> lights_window_manager,
             std::unique_ptr<IPluginsWindowManager> plugins_window_manager,
+            std::unique_ptr<IRoomsWindowManager> rooms_window_manager,
             std::unique_ptr<IStaticsWindowManager> statics_window_manager,
             std::unique_ptr<ITriggersWindowManager> triggers_window_manager);
         virtual ~Windows() = default;
@@ -31,12 +33,14 @@ namespace trview
         void select(const std::weak_ptr<ITrigger>& trigger) override;
         void set_level(const std::weak_ptr<ILevel>& level) override;
         void set_room(const std::weak_ptr<IRoom>& room) override;
+        void set_settings(const UserSettings& settings) override;
         void setup(const UserSettings& settings) override;
     private:
         std::unique_ptr<ICameraSinkWindowManager> _camera_sink_windows;
         std::unique_ptr<IItemsWindowManager> _items_windows;
         std::unique_ptr<ILightsWindowManager> _lights_windows;
         std::unique_ptr<IPluginsWindowManager> _plugins_windows;
+        std::unique_ptr<IRoomsWindowManager> _rooms_windows;
         std::unique_ptr<IStaticsWindowManager> _statics_windows;
         std::unique_ptr<ITriggersWindowManager> _triggers_windows;
     };

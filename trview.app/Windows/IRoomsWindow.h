@@ -29,7 +29,7 @@ namespace trview
         /// Event raised when the window is closed.
         Event<> on_window_closed;
 
-        Event<std::weak_ptr<IRoom>, bool> on_room_visibility;
+        Event<> on_scene_changed;
 
         Event<std::weak_ptr<ISector>> on_sector_hover;
 

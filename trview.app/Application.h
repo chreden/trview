@@ -15,10 +15,7 @@
 #include "Routing/IRandomizerRoute.h"
 #include <trview.app/Settings/ISettingsLoader.h>
 #include <trview.app/Settings/IStartupOptions.h>
-#include <trview.app/Windows/IRoomsWindowManager.h>
 #include <trview.app/Windows/IRouteWindowManager.h>
-#include <trview.app/Windows/ITriggersWindowManager.h>
-#include <trview.app/Windows/ILightsWindowManager.h>
 #include <trview.app/Windows/IViewer.h>
 #include <trview.common/Windows/IDialogs.h>
 #include <trview.common/Windows/IShortcuts.h>
@@ -68,7 +65,6 @@ namespace trview
             const IRoute::Source& route_source,
             std::shared_ptr<IShortcuts> shortcuts,
             std::unique_ptr<IRouteWindowManager> route_window_manager,
-            std::unique_ptr<IRoomsWindowManager> rooms_window_manager,
             const ILevel::Source& level_source,
             std::shared_ptr<IStartupOptions> startup_options,
             std::shared_ptr<IDialogs> dialogs,
@@ -100,9 +96,7 @@ namespace trview
         // Window setup functions.
         void setup_view_menu();
         void setup_viewer(const IStartupOptions& startup_options);
-        void setup_rooms_windows();
         void setup_route_window();
-        void setup_lights_windows();
         void setup_shortcuts();
         // Entity manipulation
         void add_waypoint(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& normal, std::weak_ptr<IRoom> room, IWaypoint::Type type, uint32_t index);
@@ -166,7 +160,6 @@ namespace trview
         std::unique_ptr<IViewer> _viewer;
         std::unique_ptr<IWindows> _windows;
         std::unique_ptr<IRouteWindowManager> _route_window;
-        std::unique_ptr<IRoomsWindowManager> _rooms_windows;
         Timer _timer;
         std::optional<std::pair<std::string, FontSetting>> _new_font;
 
