@@ -81,7 +81,6 @@ namespace trview
             std::unique_ptr<ILightsWindowManager> lights_window_manager,
             std::unique_ptr<ILogWindowManager> log_window_manager,
             std::unique_ptr<ITexturesWindowManager> textures_window_manager,
-            std::unique_ptr<ICameraSinkWindowManager> camera_sink_window_manager,
             std::unique_ptr<IConsoleManager> console_manager,
             std::shared_ptr<IPlugins> plugins,
             const IRandomizerRoute::Source& randomizer_route_source,
@@ -189,7 +188,6 @@ namespace trview
         bool _recent_route_prompted{ false };
 
         std::unique_ptr<ITexturesWindowManager> _textures_windows;
-        std::unique_ptr<ICameraSinkWindowManager> _camera_sink_windows;
         std::unique_ptr<IConsoleManager> _console_manager;
         std::shared_ptr<IPlugins> _plugins;
 

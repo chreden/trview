@@ -61,7 +61,6 @@ namespace trview
         std::unique_ptr<ILightsWindowManager> lights_window_manager,
         std::unique_ptr<ILogWindowManager> log_window_manager,
         std::unique_ptr<ITexturesWindowManager> textures_window_manager,
-        std::unique_ptr<ICameraSinkWindowManager> camera_sink_window_manager,
         std::unique_ptr<IConsoleManager> console_manager,
         std::shared_ptr<IPlugins> plugins,
         const IRandomizerRoute::Source& randomizer_route_source,
@@ -73,8 +72,8 @@ namespace trview
         _viewer(std::move(viewer)), _route_source(route_source), _shortcuts(shortcuts), _items_windows(std::move(items_window_manager)),
         _triggers_windows(std::move(triggers_window_manager)), _route_window(std::move(route_window_manager)), _rooms_windows(std::move(rooms_window_manager)), _level_source(level_source),
         _dialogs(dialogs), _files(files), _timer(default_time_source()), _imgui_backend(std::move(imgui_backend)), _lights_windows(std::move(lights_window_manager)), _log_windows(std::move(log_window_manager)),
-        _textures_windows(std::move(textures_window_manager)), _camera_sink_windows(std::move(camera_sink_window_manager)), _console_manager(std::move(console_manager)),
-        _plugins(plugins), _randomizer_route_source(randomizer_route_source), _fonts(fonts), _load_mode(load_mode), _windows(std::move(windows))
+        _textures_windows(std::move(textures_window_manager)), _console_manager(std::move(console_manager)), _plugins(plugins), _randomizer_route_source(randomizer_route_source), _fonts(fonts), _load_mode(load_mode),
+        _windows(std::move(windows))
     {
         SetWindowLongPtr(window(), GWLP_USERDATA, reinterpret_cast<LONG_PTR>(_imgui_backend.get()));
 
@@ -512,7 +511,6 @@ namespace trview
         _rooms_windows->set_room(room);
         _triggers_windows->set_room(room);
         _lights_windows->set_room(room);
-        _camera_sink_windows->set_room(room);
         _windows->set_room(room);
     }
 
@@ -762,7 +760,6 @@ namespace trview
         _lights_windows->render();
         _log_windows->render();
         _textures_windows->render();
-        _camera_sink_windows->render();
         _console_manager->render();
         _windows->render();
         _plugins->render_ui();
@@ -921,14 +918,10 @@ namespace trview
 
     void Application::setup_camera_sink_windows()
     {
-        if (_settings.camera_sink_startup)
-        {
-            _camera_sink_windows->create_window();
-        }
-        _token_store += _camera_sink_windows->on_camera_sink_selected += [this](const auto& sink) {  select_camera_sink(sink); };
-        _token_store += _camera_sink_windows->on_camera_sink_visibility += [this](const auto& cs, bool value) { set_camera_sink_visibility(cs, value); };
-        _token_store += _camera_sink_windows->on_trigger_selected += [this](const auto& trigger) { select_trigger(trigger); };
-        _token_store += _camera_sink_windows->on_camera_sink_type_changed += [this]() { _viewer->set_scene_changed(); };
+        _token_store += _windows->on_camera_sink_selected += [this](const auto& sink) {  select_camera_sink(sink); };
+        // _token_store += _windows->on_camera_sink_visibility += [this](const auto& cs, bool value) { set_camera_sink_visibility(cs, value); };
+        _token_store += _windows->on_trigger_selected += [this](const auto& trigger) { select_trigger(trigger); };
+        _token_store += _windows->on_scene_changed += [this]() { _viewer->set_scene_changed(); };
     }
 
     void Application::setup_statics_window()
@@ -967,7 +960,7 @@ namespace trview
         select_room(actual_room(*camera_sink_ptr));
         _level->set_selected_camera_sink(camera_sink_ptr->number());
         _viewer->select_camera_sink(camera_sink);
-        _camera_sink_windows->set_selected_camera_sink(camera_sink);
+        _windows->select(camera_sink);
         _rooms_windows->set_selected_camera_sink(camera_sink);
     }
 
@@ -1020,7 +1013,6 @@ namespace trview
         _route_window->set_rooms(_level->rooms());
         _lights_windows->set_level_version(_level->version());
         _lights_windows->set_lights(_level->lights());
-        _camera_sink_windows->set_camera_sinks(_level->camera_sinks());
         _windows->set_level(_level);
         if (open_mode == ILevel::OpenMode::Full)
         {
