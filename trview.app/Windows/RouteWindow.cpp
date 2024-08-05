@@ -101,7 +101,7 @@ namespace trview
 
                     if (level_move_from && level_move_to)
                     {
-                        on_level_reordered(level_move_from.value(), level_move_to.value());
+                        rando_route->move_level(level_move_from.value(), level_move_to.value());
                     }
                 }
                 ImGui::SameLine();
@@ -109,6 +109,7 @@ namespace trview
 
             std::optional<uint32_t> move_from;
             std::optional<uint32_t> move_to;
+            uint32_t selected_index = 0;
 
             if (ImGui::BeginTable("##waypointslist", 2, ImGuiTableFlags_ScrollY | ImGuiTableFlags_SizingFixedFit, ImVec2(-1, -1)))
             {
@@ -121,11 +122,16 @@ namespace trview
                 {
                     for (uint32_t i = 0; i < route->waypoints(); ++i)
                     {
+                        const auto selected_waypoint = _selected_waypoint.lock();
                         if (auto waypoint = route->waypoint(i).lock())
                         {
                             ImGui::TableNextRow();
                             ImGui::TableNextColumn();
-                            bool selected = _selected_index == i;
+                            bool selected = selected_waypoint == waypoint;
+                            if (selected)
+                            {
+                                selected_index = i;
+                            }
 
                             ImGuiScroller scroller;
                             if (selected && _scroll_to_waypoint)
@@ -138,8 +144,8 @@ namespace trview
                             {
                                 scroller.fix_scroll();
 
-                                _selected_index = i;
-                                on_waypoint_selected(i);
+                                _selected_waypoint = waypoint;
+                                on_waypoint_selected(waypoint);
 
                                 _scroll_to_waypoint = false;
                             }
@@ -175,10 +181,11 @@ namespace trview
 
             if (move_from && move_to)
             {
-                on_waypoint_reordered(move_from.value(), move_to.value());
-                if (_selected_index == move_from.value())
+                route->move(move_from.value(), move_to.value());
+                on_scene_changed();
+                if (selected_index == move_from.value())
                 {
-                    on_waypoint_selected(move_to.value());
+                    on_waypoint_selected(_selected_waypoint);
                 }
             }
         }
@@ -189,10 +196,9 @@ namespace trview
     {
         if (ImGui::BeginChild(Names::waypoint_details_panel.c_str(), ImVec2(), true))
         {
-            auto route = _route.lock();
-            if (route && _selected_index < route->waypoints())
+            if (auto route = _route.lock())
             {
-                if (auto waypoint = route->waypoint(_selected_index).lock())
+                if (auto waypoint = _selected_waypoint.lock())
                 {
                     if (ImGui::BeginTable(Names::waypoint_stats.c_str(), 2, 0, ImVec2(-1, 80)))
                     {
@@ -247,7 +253,7 @@ namespace trview
                     if (ImGui::DragScalarN("Position", ImGuiDataType_S32, pos_value, 3))
                     {
                         waypoint->set_position(Vector3(static_cast<float>(pos_value[0]), static_cast<float>(pos_value[1]), static_cast<float>(pos_value[2])) / trlevel::Scale);
-                        on_waypoint_changed();
+                        on_scene_changed();
                     }
 
                     if (ImGui::BeginPopupContextItem("Position"))
@@ -317,7 +323,9 @@ namespace trview
 
                     if (ImGui::Button(Names::delete_waypoint.c_str(), ImVec2(-1, 0)))
                     {
-                        on_waypoint_deleted(_selected_index);
+                        route->remove(waypoint);
+                        on_waypoint_selected(route->waypoint(route->selected_waypoint()));
+                        on_scene_changed();
                     }
                     else
                     {
@@ -392,12 +400,12 @@ namespace trview
     void RouteWindow::set_route(const std::weak_ptr<IRoute>& route) 
     {
         _route = route;
-        _selected_index = 0u;
+        _selected_waypoint.reset();
     }
 
-    void RouteWindow::select_waypoint(uint32_t index)
+    void RouteWindow::select_waypoint(const std::weak_ptr<IWaypoint>& waypoint)
     {
-        _selected_index = index;
+        _selected_waypoint = waypoint;
         _scroll_to_waypoint = true;
     }
 
@@ -625,12 +633,14 @@ namespace trview
                 auto colour = route ? route->colour() : Colour::Green;
                 if (ImGui::ColorEdit3("Route##colour", &colour.r, ImGuiColorEditFlags_NoInputs))
                 {
-                    on_colour_changed(colour);
+                    route->set_colour(colour);
+                    on_scene_changed();
                 }
                 auto waypoint_colour = route ? route->waypoint_colour() : Colour::White;
                 if (ImGui::ColorEdit3("Waypoint##colour", &waypoint_colour.r, ImGuiColorEditFlags_NoInputs))
                 {
-                    on_waypoint_colour_changed(waypoint_colour);
+                    route->set_waypoint_colour(waypoint_colour);
+                    on_scene_changed();
                 }
                 bool route_line = route->show_route_line();;
                 if (ImGui::Checkbox("Route Line", &route_line))

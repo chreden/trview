@@ -4,6 +4,7 @@
 
 #include <trview.common/Window.h>
 #include <trview.common/Timer.h>
+#include <trview.common/TokenStore.h>
 
 #include <trlevel/ILevel.h>
 
@@ -15,7 +16,6 @@
 #include "Routing/IRandomizerRoute.h"
 #include <trview.app/Settings/ISettingsLoader.h>
 #include <trview.app/Settings/IStartupOptions.h>
-#include <trview.app/Windows/IRouteWindowManager.h>
 #include <trview.app/Windows/IViewer.h>
 #include <trview.common/Windows/IDialogs.h>
 #include <trview.common/Windows/IShortcuts.h>
@@ -64,7 +64,6 @@ namespace trview
             std::unique_ptr<IViewer> viewer,
             const IRoute::Source& route_source,
             std::shared_ptr<IShortcuts> shortcuts,
-            std::unique_ptr<IRouteWindowManager> route_window_manager,
             const ILevel::Source& level_source,
             std::shared_ptr<IStartupOptions> startup_options,
             std::shared_ptr<IDialogs> dialogs,
@@ -96,7 +95,6 @@ namespace trview
         // Window setup functions.
         void setup_view_menu();
         void setup_viewer(const IStartupOptions& startup_options);
-        void setup_route_window();
         void setup_shortcuts();
         // Entity manipulation
         void add_waypoint(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& normal, std::weak_ptr<IRoom> room, IWaypoint::Type type, uint32_t index);
@@ -109,7 +107,7 @@ namespace trview
         /// </summary>
         /// <param name="trigger">The trigger.</param>
         void select_trigger(const std::weak_ptr<ITrigger>& trigger);
-        void select_waypoint(uint32_t index);
+        void select_waypoint(const std::weak_ptr<IWaypoint>& waypoint);
         void select_next_waypoint();
         void select_previous_waypoint();
         void select_light(const std::weak_ptr<ILight>& light);
@@ -159,7 +157,6 @@ namespace trview
         // Windows
         std::unique_ptr<IViewer> _viewer;
         std::unique_ptr<IWindows> _windows;
-        std::unique_ptr<IRouteWindowManager> _route_window;
         Timer _timer;
         std::optional<std::pair<std::string, FontSetting>> _new_font;
 

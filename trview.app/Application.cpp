@@ -49,7 +49,6 @@ namespace trview
         std::unique_ptr<IViewer> viewer,
         const IRoute::Source& route_source,
         std::shared_ptr<IShortcuts> shortcuts,
-        std::unique_ptr<IRouteWindowManager> route_window_manager,
         const ILevel::Source& level_source,
         std::shared_ptr<IStartupOptions> startup_options,
         std::shared_ptr<IDialogs> dialogs,
@@ -66,7 +65,7 @@ namespace trview
         : MessageHandler(application_window), _instance(GetModuleHandle(nullptr)),
         _file_menu(std::move(file_menu)), _update_checker(std::move(update_checker)), _view_menu(window()), _settings_loader(settings_loader), _trlevel_source(trlevel_source),
         _viewer(std::move(viewer)), _route_source(route_source), _shortcuts(shortcuts),
-        _route_window(std::move(route_window_manager)), _level_source(level_source),
+        _level_source(level_source),
         _dialogs(dialogs), _files(files), _timer(default_time_source()), _imgui_backend(std::move(imgui_backend)), _log_windows(std::move(log_window_manager)),
         _textures_windows(std::move(textures_window_manager)), _console_manager(std::move(console_manager)), _plugins(plugins), _randomizer_route_source(randomizer_route_source), _fonts(fonts), _load_mode(load_mode),
         _windows(std::move(windows))
@@ -85,7 +84,6 @@ namespace trview
 
         setup_shortcuts();
         setup_view_menu();
-        setup_route_window();
 
         // Camera Sink
         _token_store += _windows->on_camera_sink_selected += [this](const auto& sink) {  select_camera_sink(sink); };
@@ -93,32 +91,23 @@ namespace trview
         _token_store += _windows->on_scene_changed += [this]() { _viewer->set_scene_changed(); };
         // Items
         _token_store += _windows->on_item_selected += [this](const auto& item) { select_item(item); };
-        /*
-        _token_store += _windows->on_add_to_route += [this](const auto& item)
-            {
-                if (auto item_ptr = item.lock())
-                {
-                    add_waypoint(item_ptr->position(), Vector3::Down, item_room(item_ptr), IWaypoint::Type::Entity, item_ptr->number());
-                }
-            };
-        */
         // Lights
         _token_store += _windows->on_light_selected += [this](const auto& light) { select_light(light); };
         // Rooms
         _token_store += _windows->on_room_selected += [this](const auto& room) { select_room(room); };
         _token_store += _windows->on_sector_hover += [this](const auto& sector) { select_sector(sector); };
+        // Route
+        _token_store += _windows->on_waypoint_selected += [&](const auto& waypoint) { select_waypoint(waypoint); };
+        _token_store += _windows->on_route_open += [&]() { this->open_route(); };
+        _token_store += _windows->on_route_reload += [&]() { this->reload_route(); };
+        _token_store += _windows->on_route_save += [&]() { this->save_route(); };
+        _token_store += _windows->on_route_save_as += [&]() { this->save_route_as(); };
+        _token_store += _windows->on_route_window_created += [&]() { open_recent_route(); };
+        _token_store += _windows->on_level_switch += [&](const auto& level) { _file_menu->switch_to(level); };
+        _token_store += _windows->on_new_route += [&]() { if (should_discard_changes()) { set_route(_route_source(std::nullopt)); } };
+        _token_store += _windows->on_new_randomizer_route += [&]() { if (should_discard_changes()) { set_route(_randomizer_route_source(std::nullopt)); } };
         // Statics
         _token_store += _windows->on_static_selected += [this](const auto& stat) { select_static_mesh(stat); };
-        // Triggers
-        /*
-        _token_store += _windows->on_add_to_route += [this](const auto& trigger)
-            {
-                if (auto trigger_ptr = trigger.lock())
-                {
-                    add_waypoint(trigger_ptr->position(), Vector3::Down, trigger_room(trigger_ptr), IWaypoint::Type::Trigger, trigger_ptr->number());
-                }
-            };
-        */
 
         _windows->setup(_settings);
         setup_viewer(*startup_options);
@@ -320,7 +309,6 @@ namespace trview
         {
             _settings = settings;
             _viewer->set_settings(_settings);
-            _route_window->set_randomizer_enabled(settings.randomizer_tools);
             _windows->set_settings(settings);
             lua::set_settings(settings);
             if (_level)
@@ -337,55 +325,6 @@ namespace trview
         if (!filename.empty())
         {
             open(filename, ILevel::OpenMode::Full);
-        }
-    }
-
-    void Application::setup_route_window()
-    {
-        _token_store += _route_window->on_waypoint_selected += [&](auto index) { select_waypoint(index); };
-        _token_store += _route_window->on_item_selected += [&](const auto& item) { select_item(item); };
-        _token_store += _route_window->on_trigger_selected += [&](const auto& trigger) { select_trigger(trigger); };
-        _token_store += _route_window->on_route_open += [&]() { this->open_route(); };
-        _token_store += _route_window->on_route_reload += [&]() { this->reload_route(); };
-        _token_store += _route_window->on_route_save += [&]() { this->save_route(); };
-        _token_store += _route_window->on_route_save_as += [&]() { this->save_route_as(); };
-        _token_store += _route_window->on_waypoint_deleted += [&](auto index) { remove_waypoint(index); };
-        _token_store += _route_window->on_colour_changed += [&](const Colour& colour)
-        {
-            _route->set_colour(colour);
-            _viewer->set_route(_route);
-        };
-        _token_store += _route_window->on_waypoint_colour_changed += [&](const Colour& colour)
-        {
-            _route->set_waypoint_colour(colour);
-            _viewer->set_route(_route);
-        };
-        _token_store += _route_window->on_waypoint_reordered += [&](int32_t from, int32_t to)
-        {
-            _route->move(from, to);
-            _viewer->set_route(_route);
-        };
-        _token_store += _route_window->on_waypoint_changed += [&]()
-        {
-            _viewer->set_scene_changed();
-        };
-        _route_window->set_randomizer_enabled(_settings.randomizer_tools);
-        _route_window->set_randomizer_settings(_settings.randomizer);
-        _token_store += _route_window->on_window_created += [&]() { open_recent_route(); };
-        _token_store += _route_window->on_level_switch += [&](const auto& level) { _file_menu->switch_to(level); };
-        _token_store += _route_window->on_new_route += [&]() { if (should_discard_changes()) { set_route(_route_source(std::nullopt)); } };
-        _token_store += _route_window->on_new_randomizer_route += [&]() { if (should_discard_changes()) { set_route(_randomizer_route_source(std::nullopt)); } };
-        _token_store += _route_window->on_level_reordered += [&](const std::string& from, const std::string& to)
-        {
-            if (auto rando = std::dynamic_pointer_cast<IRandomizerRoute>(_route))
-            {
-                rando->move_level(from, to);
-            }
-        };
-
-        if (_settings.route_startup)
-        {
-            _route_window->create_window();
         }
     }
 
@@ -413,19 +352,17 @@ namespace trview
     void Application::add_waypoint(const Vector3& position, const Vector3& normal, uint32_t room, IWaypoint::Type type, uint32_t index)
     {
         uint32_t new_index = _route->insert(position, normal, room, type, index);
-        _route_window->set_route(_route);
-        select_waypoint(new_index);
+        select_waypoint(_route->waypoint(new_index));
     }
 
     void Application::remove_waypoint(uint32_t index)
     {
         _route->remove(index);
-        _route_window->set_route(_route);
         _viewer->set_route(_route);
 
         if (_route->waypoints() > 0)
         {
-            select_waypoint(_route->selected_waypoint());
+            select_waypoint(_route->waypoint(_route->selected_waypoint()));
         }
     }
 
@@ -477,19 +414,19 @@ namespace trview
         _windows->select(trigger);
     }
 
-    void Application::select_waypoint(uint32_t index)
+    void Application::select_waypoint(const std::weak_ptr<IWaypoint>& waypoint)
     {
         if (!_level)
         {
             return;
         }
 
-        if (auto waypoint = _route->waypoint(index).lock())
+        if (auto waypoint_ptr = waypoint.lock())
         {
-            select_room(_level->room(waypoint->room()));
-            _route->select_waypoint(index);
-            _viewer->select_waypoint(waypoint);
-            _route_window->select_waypoint(index);
+            select_room(_level->room(waypoint_ptr->room()));
+            _route->select_waypoint(waypoint_ptr);
+            _viewer->select_waypoint(waypoint_ptr);
+            _windows->select(waypoint_ptr);
         }
     }
 
@@ -497,7 +434,7 @@ namespace trview
     {
         if (_route->selected_waypoint() + 1 < _route->waypoints())
         {
-            select_waypoint(_route->selected_waypoint() + 1);
+            select_waypoint(_route->waypoint(_route->selected_waypoint() + 1));
         }
     }
 
@@ -505,7 +442,7 @@ namespace trview
     {
         if (_route->selected_waypoint() > 0)
         {
-            select_waypoint(_route->selected_waypoint() - 1);
+            select_waypoint(_route->waypoint(_route->selected_waypoint() - 1));
         }
     }
 
@@ -656,7 +593,6 @@ namespace trview
 
         _timer.update();
         const auto elapsed = _timer.elapsed();
-        _route_window->update(elapsed);
         _windows->update(elapsed);
 
         _viewer->render();
@@ -691,7 +627,6 @@ namespace trview
         }
 
         _viewer->render_ui();
-        _route_window->render();
         _log_windows->render();
         _textures_windows->render();
         _console_manager->render();
@@ -831,7 +766,8 @@ namespace trview
 
     void Application::open_recent_route()
     {
-        if (!_level || _recent_route_prompted || !_route_window->is_window_open() || std::dynamic_pointer_cast<IRandomizerRoute>(_route) != nullptr)
+        // TODO:
+        if (!_level || _recent_route_prompted /* || !_route_window->is_window_open() */ || std::dynamic_pointer_cast<IRandomizerRoute>(_route) != nullptr)
         {
             return;
         }
@@ -917,9 +853,6 @@ namespace trview
 
         _file_menu->open_file(level->filename());
         _level->set_map_colours(_settings.map_colours);
-        _route_window->set_items(_level->items());
-        _route_window->set_triggers(_level->triggers());
-        _route_window->set_rooms(_level->rooms());
         _windows->set_level(_level);
         if (open_mode == ILevel::OpenMode::Full)
         {
@@ -930,7 +863,8 @@ namespace trview
             {
                 _route->set_unsaved(false);
             }
-            _route_window->set_route(_route);
+            // TODO:
+            // _route_window->set_route(_route);
         }
         _textures_windows->set_texture_storage(_level->texture_storage());
 
@@ -1006,9 +940,9 @@ namespace trview
     {
         _route = route;
         _token_store += _route->on_changed += [&]() { if (_viewer) { _viewer->set_scene_changed(); } };
-        _route_window->set_route(_route);
         _route->set_level(_level);
         _viewer->set_route(_route);
+        _windows->set_route(_route);
     }
 
     void Application::select_static_mesh(const std::weak_ptr<IStaticMesh>& static_mesh)

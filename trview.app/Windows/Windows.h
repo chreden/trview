@@ -1,5 +1,8 @@
 #pragma once
 
+#include <trview.common/TokenStore.h>
+#include "../Routing/IWaypoint.h"
+
 #include "IWindows.h"
 
 namespace trview
@@ -9,6 +12,7 @@ namespace trview
     struct ILightsWindowManager;
     struct IPluginsWindowManager;
     struct IRoomsWindowManager;
+    struct IRouteWindowManager;
     struct IStaticsWindowManager;
     struct ITriggersWindowManager;
 
@@ -21,6 +25,7 @@ namespace trview
             std::unique_ptr<ILightsWindowManager> lights_window_manager,
             std::unique_ptr<IPluginsWindowManager> plugins_window_manager,
             std::unique_ptr<IRoomsWindowManager> rooms_window_manager,
+            std::unique_ptr<IRouteWindowManager> _route_window_manager,
             std::unique_ptr<IStaticsWindowManager> statics_window_manager,
             std::unique_ptr<ITriggersWindowManager> triggers_window_manager);
         virtual ~Windows() = default;
@@ -31,16 +36,23 @@ namespace trview
         void select(const std::weak_ptr<ILight>& light) override;
         void select(const std::weak_ptr<IStaticMesh>& static_mesh) override;
         void select(const std::weak_ptr<ITrigger>& trigger) override;
+        void select(const std::weak_ptr<IWaypoint>& waypoint) override;
         void set_level(const std::weak_ptr<ILevel>& level) override;
         void set_room(const std::weak_ptr<IRoom>& room) override;
+        void set_route(const std::weak_ptr<IRoute>& route) override;
         void set_settings(const UserSettings& settings) override;
         void setup(const UserSettings& settings) override;
     private:
+        void add_waypoint(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& normal, uint32_t room, IWaypoint::Type type, uint32_t index);
+
+        TokenStore _token_store;
         std::unique_ptr<ICameraSinkWindowManager> _camera_sink_windows;
         std::unique_ptr<IItemsWindowManager> _items_windows;
         std::unique_ptr<ILightsWindowManager> _lights_windows;
         std::unique_ptr<IPluginsWindowManager> _plugins_windows;
         std::unique_ptr<IRoomsWindowManager> _rooms_windows;
+        std::weak_ptr<IRoute> _route;
+        std::unique_ptr<IRouteWindowManager> _route_window;
         std::unique_ptr<IStaticsWindowManager> _statics_windows;
         std::unique_ptr<ITriggersWindowManager> _triggers_windows;
     };

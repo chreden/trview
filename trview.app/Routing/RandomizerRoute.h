@@ -40,7 +40,7 @@ namespace trview
         void save(const std::shared_ptr<IFiles>& files, const UserSettings& settings) override;
         void save_as(const std::shared_ptr<IFiles>& files, const std::string& filename, const UserSettings& settings) override;
         uint32_t selected_waypoint() const override;
-        void select_waypoint(uint32_t index) override;
+        void select_waypoint(const std::weak_ptr<IWaypoint>& waypoint) override;
         void set_colour(const Colour& colour) override;
         void set_filename(const std::string& filename) override;
         void set_level(const std::weak_ptr<ILevel>& level) override;

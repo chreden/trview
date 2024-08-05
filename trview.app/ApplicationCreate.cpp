@@ -348,7 +348,6 @@ namespace trview
             std::move(viewer),
             route_source,
             shortcuts,
-            std::make_unique<RouteWindowManager>(window, shortcuts, route_window_source),
             level_source,
             std::make_shared<StartupOptions>(command_line),
             dialogs,
@@ -366,6 +365,7 @@ namespace trview
                 std::make_unique<LightsWindowManager>(window, shortcuts, lights_window_source),
                 std::make_unique<PluginsWindowManager>(window, shortcuts, plugins_window_source),
                 std::make_unique<RoomsWindowManager>(window, shortcuts, rooms_window_source),
+                std::make_unique<RouteWindowManager>(window, shortcuts, route_window_source),
                 std::make_unique<StaticsWindowManager>(window, shortcuts, statics_window_source),
                 std::make_unique<TriggersWindowManager>(window, shortcuts, triggers_window_source)),
             Application::LoadMode::Async);

@@ -33,7 +33,7 @@ namespace trview
             MOCK_METHOD(void, save, (const std::shared_ptr<IFiles>&, const UserSettings&), (override));
             MOCK_METHOD(void, save_as, (const std::shared_ptr<IFiles>&, const std::string&, const UserSettings&), (override));
             MOCK_METHOD(uint32_t, selected_waypoint, (), (const, override));
-            MOCK_METHOD(void, select_waypoint, (uint32_t), (override));
+            MOCK_METHOD(void, select_waypoint, (const std::weak_ptr<IWaypoint>&), (override));
             MOCK_METHOD(void, set_colour, (const Colour&), (override));
             MOCK_METHOD(void, set_filename, (const std::string&), (override));
             MOCK_METHOD(void, set_level, (const std::weak_ptr<ILevel>&), (override));

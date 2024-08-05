@@ -1325,7 +1325,7 @@ namespace trview
         {
             if (level)
             {
-                on_waypoint_selected(pick.index);
+                on_waypoint_selected(_route->waypoint(pick.index));
             }
             break;
         }
