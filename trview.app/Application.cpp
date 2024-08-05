@@ -61,10 +61,8 @@ namespace trview
         LoadMode load_mode)
         : MessageHandler(application_window), _instance(GetModuleHandle(nullptr)),
         _file_menu(std::move(file_menu)), _update_checker(std::move(update_checker)), _view_menu(window()), _settings_loader(settings_loader), _trlevel_source(trlevel_source),
-        _viewer(std::move(viewer)), _route_source(route_source), _shortcuts(shortcuts),
-        _level_source(level_source),
-        _dialogs(dialogs), _files(files), _timer(default_time_source()), _imgui_backend(std::move(imgui_backend)),
-        _plugins(plugins), _randomizer_route_source(randomizer_route_source), _fonts(fonts), _load_mode(load_mode),
+        _viewer(std::move(viewer)), _route_source(route_source), _shortcuts(shortcuts), _level_source(level_source), _dialogs(dialogs), _files(files), _timer(default_time_source()),
+        _imgui_backend(std::move(imgui_backend)), _plugins(plugins), _randomizer_route_source(randomizer_route_source), _fonts(fonts), _load_mode(load_mode),
         _windows(std::move(windows))
     {
         SetWindowLongPtr(window(), GWLP_USERDATA, reinterpret_cast<LONG_PTR>(_imgui_backend.get()));
@@ -82,18 +80,13 @@ namespace trview
         setup_shortcuts();
         setup_view_menu();
 
-        // Camera Sink
         _token_store += _windows->on_camera_sink_selected += [this](const auto& sink) {  select_camera_sink(sink); };
         _token_store += _windows->on_trigger_selected += [this](const auto& trigger) { select_trigger(trigger); };
         _token_store += _windows->on_scene_changed += [this]() { _viewer->set_scene_changed(); };
-        // Items
         _token_store += _windows->on_item_selected += [this](const auto& item) { select_item(item); };
-        // Lights
         _token_store += _windows->on_light_selected += [this](const auto& light) { select_light(light); };
-        // Rooms
         _token_store += _windows->on_room_selected += [this](const auto& room) { select_room(room); };
         _token_store += _windows->on_sector_hover += [this](const auto& sector) { select_sector(sector); };
-        // Route
         _token_store += _windows->on_waypoint_selected += [&](const auto& waypoint) { select_waypoint(waypoint); };
         _token_store += _windows->on_route_open += [&]() { this->open_route(); };
         _token_store += _windows->on_route_reload += [&]() { this->reload_route(); };
@@ -103,7 +96,6 @@ namespace trview
         _token_store += _windows->on_level_switch += [&](const auto& level) { _file_menu->switch_to(level); };
         _token_store += _windows->on_new_route += [&]() { if (should_discard_changes()) { set_route(_route_source(std::nullopt)); } };
         _token_store += _windows->on_new_randomizer_route += [&]() { if (should_discard_changes()) { set_route(_randomizer_route_source(std::nullopt)); } };
-        // Statics
         _token_store += _windows->on_static_selected += [this](const auto& stat) { select_static_mesh(stat); };
 
         _windows->setup(_settings);

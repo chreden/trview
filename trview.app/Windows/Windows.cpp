@@ -162,31 +162,30 @@ namespace trview
 
     void Windows::set_level(const std::weak_ptr<ILevel>& level)
     {
-        if (auto new_level = level.lock())
+        const auto new_level = level.lock();
+        if (!new_level)
         {
-            _camera_sink_windows->set_camera_sinks(new_level->camera_sinks());
-            _items_windows->set_items(new_level->items());
-            _items_windows->set_triggers(new_level->triggers());
-            _items_windows->set_level_version(new_level->version());
-            _items_windows->set_model_checker([=](uint32_t id) { return new_level->has_model(id); });
-            _lights_windows->set_level_version(new_level->version());
-            _lights_windows->set_lights(new_level->lights());
-            _rooms_windows->set_level_version(new_level->version());
-            _rooms_windows->set_items(new_level->items());
-            _rooms_windows->set_floordata(new_level->floor_data());
-            _rooms_windows->set_rooms(new_level->rooms());
-            _route_window->set_items(new_level->items());
-            _route_window->set_triggers(new_level->triggers());
-            _route_window->set_rooms(new_level->rooms());
-            _statics_windows->set_statics(new_level->static_meshes());
-            _triggers_windows->set_items(new_level->items());
-            _triggers_windows->set_triggers(new_level->triggers());
-            _textures_windows->set_texture_storage(new_level->texture_storage());
+            return;
         }
-        else
-        {
-            // TODO: Clear data?
-        }
+
+        _camera_sink_windows->set_camera_sinks(new_level->camera_sinks());
+        _items_windows->set_items(new_level->items());
+        _items_windows->set_triggers(new_level->triggers());
+        _items_windows->set_level_version(new_level->version());
+        _items_windows->set_model_checker([=](uint32_t id) { return new_level->has_model(id); });
+        _lights_windows->set_level_version(new_level->version());
+        _lights_windows->set_lights(new_level->lights());
+        _rooms_windows->set_level_version(new_level->version());
+        _rooms_windows->set_items(new_level->items());
+        _rooms_windows->set_floordata(new_level->floor_data());
+        _rooms_windows->set_rooms(new_level->rooms());
+        _route_window->set_items(new_level->items());
+        _route_window->set_triggers(new_level->triggers());
+        _route_window->set_rooms(new_level->rooms());
+        _statics_windows->set_statics(new_level->static_meshes());
+        _triggers_windows->set_items(new_level->items());
+        _triggers_windows->set_triggers(new_level->triggers());
+        _textures_windows->set_texture_storage(new_level->texture_storage());
     }
 
     void Windows::set_room(const std::weak_ptr<IRoom>& room)
