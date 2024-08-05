@@ -209,9 +209,9 @@ TEST(Route, Insert)
     uint32_t test_index = 0;
     auto route = register_test_module().with_waypoint_source(indexed_source(test_index)).build();
     route->add(Vector3::Zero, Vector3::Down, 0);
-    route->add(Vector3::Zero, Vector3::Down, 1);
+    auto wp1 = route->add(Vector3::Zero, Vector3::Down, 1);
     route->set_unsaved(false);
-    route->select_waypoint(1);
+    route->select_waypoint(wp1);
     auto index = route->insert(Vector3(0, 1, 0), Vector3::Down, 2);
     ASSERT_EQ(index, 2);
     ASSERT_TRUE(route->is_unsaved());
@@ -283,9 +283,9 @@ TEST(Route, SelectedWaypoint)
 {
     auto route = register_test_module().build();
     route->add(Vector3::Zero, Vector3::Down, 0);
-    route->add(Vector3::Zero, Vector3::Down, 0);
+    auto wp1 = route->add(Vector3::Zero, Vector3::Down, 0);
     route->set_unsaved(false);
-    route->select_waypoint(1);
+    route->select_waypoint(wp1);
     ASSERT_FALSE(route->is_unsaved());
     ASSERT_EQ(route->selected_waypoint(), 1);
 }
@@ -294,9 +294,9 @@ TEST(Route, SelectedWaypointAdjustedByRemove)
 {
     auto route = register_test_module().build();
     route->add(Vector3::Zero, Vector3::Down, 0);
-    route->add(Vector3::Zero, Vector3::Down, 0);
+    auto wp1 = route->add(Vector3::Zero, Vector3::Down, 0);
     route->set_unsaved(false);
-    route->select_waypoint(1);
+    route->select_waypoint(wp1);
     ASSERT_FALSE(route->is_unsaved());
     ASSERT_EQ(route->selected_waypoint(), 1);
     route->remove(1);

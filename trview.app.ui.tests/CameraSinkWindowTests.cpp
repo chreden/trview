@@ -142,8 +142,10 @@ void register_camera_sink_window_tests(ImGuiTestEngine* engine)
             context.ptr = register_test_module().build();
 
             bool raised = false;
-            auto token = context.ptr->on_camera_sink_type_changed += [&raised]() { raised = true; };
+            auto token = context.ptr->on_scene_changed += [&raised]() { raised = true; };
             auto camera_sink = mock_shared<MockCameraSink>()->with_number(0)->with_type(ICameraSink::Type::Camera);
+            EXPECT_CALL(*camera_sink, set_type(ICameraSink::Type::Sink)).Times(1);
+
             context.camera_sinks = { camera_sink };
             context.ptr->set_camera_sinks({ camera_sink });
             context.ptr->set_selected_camera_sink(camera_sink);
@@ -152,6 +154,7 @@ void register_camera_sink_window_tests(ImGuiTestEngine* engine)
             ctx->ComboClick("Type/Sink##type");
 
             IM_CHECK_EQ(raised, true);
+            IM_CHECK_EQ(Mock::VerifyAndClearExpectations(camera_sink.get()), true);
         });
 
     test<CameraSinkWindowContext>(engine, "Camera/Sink Window", "Visibility Raised",
@@ -161,23 +164,19 @@ void register_camera_sink_window_tests(ImGuiTestEngine* engine)
             auto& context = ctx->GetVars<CameraSinkWindowContext>();
             context.ptr = register_test_module().build();
 
-            std::optional<std::tuple<std::shared_ptr<ICameraSink>, bool>> raised;
-            auto token = context.ptr->on_camera_sink_visibility += [&raised](const auto& camera_sink, bool visible)
-            { 
-                auto cs = camera_sink.lock();
-                ON_CALL(*std::static_pointer_cast<MockCameraSink>(cs), visible).WillByDefault(Return(visible));
-                raised = { cs, visible }; 
-            };
+            bool raised = false;
+            auto token = context.ptr->on_scene_changed += [&raised]() { raised = true; };
 
             auto camera_sink1 = mock_shared<MockCameraSink>()->with_number(0);
             auto camera_sink2 = mock_shared<MockCameraSink>()->with_number(1);
             ON_CALL(*camera_sink2, visible).WillByDefault(testing::Return(true));
+            EXPECT_CALL(*camera_sink2, set_visible(false)).Times(1);
             context.camera_sinks = { camera_sink1, camera_sink2 };
             context.ptr->set_camera_sinks({ camera_sink1, camera_sink2 });
 
             ctx->ItemClick("/**/##hide-1");
 
-            IM_CHECK_EQ(std::get<0>(raised.value()), camera_sink2);
-            IM_CHECK_EQ(std::get<1>(raised.value()), false);
+            IM_CHECK_EQ(raised, true);
+            IM_CHECK_EQ(Mock::VerifyAndClearExpectations(camera_sink2.get()), true);
         });
 }

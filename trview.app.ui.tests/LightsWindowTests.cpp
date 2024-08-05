@@ -157,13 +157,8 @@ void register_lights_window_tests(ImGuiTestEngine* engine)
             auto& context = ctx->GetVars<LightsWindowContext>();
             context.ptr = register_test_module().build();
 
-            std::tuple<std::shared_ptr<ILight>, bool> raised_light;
-            auto token = context.ptr->on_light_visibility += [&raised_light](const auto& light, auto&& visible)
-            {
-                auto l = light.lock();
-                ON_CALL(*std::static_pointer_cast<MockLight>(l), visible).WillByDefault(Return(visible));
-                raised_light = { l, visible };
-            };
+            bool raised = false;
+            auto token = context.ptr->on_scene_changed += [&raised]() { raised = true; };
 
             auto light1 = mock_shared<MockLight>()->with_number(0);
             auto light2 = mock_shared<MockLight>()->with_number(1);
@@ -173,8 +168,8 @@ void register_lights_window_tests(ImGuiTestEngine* engine)
 
             ctx->ItemUncheck("/**/##hide-1");
 
-            IM_CHECK_EQ(std::get<0>(raised_light), light2);
-            IM_CHECK_EQ(std::get<1>(raised_light), true);
+            IM_CHECK_EQ(raised, true);
+            IM_CHECK_EQ(Mock::VerifyAndClearExpectations(light2.get()), true);
         });
 
     test<LightsWindowContext>(engine, "Lights Window", "Point Stats TR1",

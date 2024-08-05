@@ -4,6 +4,8 @@
 #include <trview.app/Mocks/Elements/IItem.h>
 #include <trview.app/Mocks/Elements/ITrigger.h>
 #include <trview.app/Mocks/Elements/IRoom.h>
+#include <trview.app/Mocks/Elements/ILevel.h>
+#include <trview.app/Mocks/Elements/ICameraSink.h>
 #include <trview.common/Mocks/Windows/IClipboard.h>
 #include <trview.tests.common/Mocks.h>
 
@@ -74,8 +76,13 @@ void register_triggers_window_tests(ImGuiTestEngine* engine)
             auto& context = ctx->GetVars<TriggersWindowContext>();
             context.ptr = register_test_module().build();
 
-            std::optional<uint32_t> raised;
-            auto token = context.ptr->on_camera_sink_selected += [&raised](const auto& index) { raised = index; };
+            std::shared_ptr<ICameraSink> raised;
+            auto token = context.ptr->on_camera_sink_selected += [&raised](const auto& cam) { raised = cam.lock(); };
+
+            auto cam = mock_shared<MockCameraSink>();
+
+            auto level = mock_shared<MockLevel>();
+            ON_CALL(*level, camera_sink(100)).WillByDefault(Return(cam));
 
             auto trigger = mock_shared<MockTrigger>()->with_commands({ Command(0, TriggerCommandType::Camera, 100) });
             context.triggers = { trigger };
@@ -84,8 +91,7 @@ void register_triggers_window_tests(ImGuiTestEngine* engine)
 
             ctx->ItemClick("/**/Camera##0");
 
-            IM_CHECK_EQ(raised.has_value(), true);
-            IM_CHECK_EQ(raised.value(), 100u);
+            IM_CHECK_EQ(raised, cam);
         });
 
     test<TriggersWindowContext>(engine, "Triggers Window", "Click Stat Shows Bubble",
@@ -301,22 +307,17 @@ void register_triggers_window_tests(ImGuiTestEngine* engine)
             auto& context = ctx->GetVars<TriggersWindowContext>();
             context.ptr = register_test_module().build();
 
-            std::optional<std::tuple<std::shared_ptr<ITrigger>, bool>> raised_trigger;
-            auto token = context.ptr->on_trigger_visibility += [&raised_trigger](const auto& trigger, bool state) 
-            {
-                auto t = trigger.lock();
-                ON_CALL(*std::static_pointer_cast<MockTrigger>(t), visible).WillByDefault(Return(state));
-                raised_trigger = { t, state }; 
-            };
+            bool raised = false;
+            auto token = context.ptr->on_scene_changed += [&raised]() { raised = true; };
 
             auto trigger = mock_shared<MockTrigger>()->with_visible(true);
             context.triggers = { trigger };
             context.ptr->set_triggers({ trigger });
+            EXPECT_CALL(*trigger, set_visible(false)).Times(1);
 
             ctx->ItemCheck("/**/##hide-0");
 
-            IM_CHECK_EQ(raised_trigger.has_value(), true);
-            IM_CHECK_EQ(std::get<0>(raised_trigger.value()), trigger);
-            IM_CHECK_EQ(std::get<1>(raised_trigger.value()), false);
+            IM_CHECK_EQ(raised, true);
+            IM_CHECK_EQ(Mock::VerifyAndClearExpectations(trigger.get()), true);
         });
 }

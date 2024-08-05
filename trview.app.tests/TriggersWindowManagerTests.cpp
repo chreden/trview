@@ -1,9 +1,11 @@
 #include <trview.app/Windows/TriggersWindowManager.h>
 #include <trview.app/Elements/Types.h>
 #include <trview.app/Mocks/Windows/ITriggersWindow.h>
+#include <trview.app/Windows/TriggersWindow.h>
 #include <trview.common/Mocks/Windows/IShortcuts.h>
 #include <trview.app/Mocks/Elements/ITrigger.h>
 #include <trview.app/Mocks/Elements/IRoom.h>
+#include <trview.app/Mocks/Elements/ICameraSink.h>
 
 using namespace trview;
 using namespace trview::mocks;
@@ -120,22 +122,18 @@ TEST(TriggersWindowManager, TriggerSelectedEventRaised)
     ASSERT_EQ(raised_trigger.value().lock(), trigger);
 }
 
-TEST(TriggersWindowManager, TriggerVisibilityEventRaised)
+TEST(TriggersWindowManager, SceneChangedEventRaised)
 {
     auto manager = register_test_module().build();
 
-    std::optional<std::tuple<std::weak_ptr<ITrigger>, bool>> raised_trigger;
-    auto token = manager->on_trigger_visibility += [&raised_trigger](const auto& trigger, bool state) { raised_trigger = { trigger, state }; };
+    bool raised = false;
+    auto token = manager->on_scene_changed += [&raised]() { raised = true; };
 
     auto created_window = manager->create_window().lock();
     ASSERT_NE(created_window, nullptr);
 
-    auto trigger = mock_shared<MockTrigger>();
-    created_window->on_trigger_visibility(trigger, true);
-
-    ASSERT_TRUE(raised_trigger.has_value());
-    ASSERT_EQ(std::get<0>(raised_trigger.value()).lock(), trigger);
-    ASSERT_EQ(std::get<1>(raised_trigger.value()), true);
+    created_window->on_scene_changed();
+    ASSERT_TRUE(raised);
 }
 
 TEST(TriggersWindowManager, AddToRouteEventRaised)
@@ -246,17 +244,18 @@ TEST(TriggersWindowManager, CameraSinkSelectedRaised)
     auto mock_window = mock_shared<MockTriggersWindow>();
     auto manager = register_test_module().with_window_source([&](auto&&...) { return mock_window; }).build();
 
-    std::optional<uint32_t> raised;
-    auto token = manager->on_camera_sink_selected += [&](auto index)
+    std::optional<std::shared_ptr<ICameraSink>> raised;
+    auto token = manager->on_camera_sink_selected += [&](auto cam)
     {
-        raised = index;
+        raised = cam.lock();
     };
 
     manager->create_window();
 
-    mock_window->on_camera_sink_selected(100);
+    auto camera_sink = mock_shared<MockCameraSink>();
+    mock_window->on_camera_sink_selected(camera_sink);
 
     ASSERT_TRUE(raised);
-    ASSERT_EQ(raised.value(), 100u);
+    ASSERT_EQ(raised.value(), camera_sink);
 }
 

@@ -32,11 +32,6 @@ namespace trview
 
         Event<> on_scene_changed;
 
-        /// <summary>
-        /// Event raised when a waypoint has moved from one index to another.
-        /// </summary>
-        Event<int32_t, int32_t> on_waypoint_reordered;
-
         Event<> on_window_created;
 
         Event<std::string> on_level_switch;

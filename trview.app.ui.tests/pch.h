@@ -31,3 +31,5 @@ void render(const MockWrapper<T>& wrapper)
         wrapper.ptr->render();
     }
 }
+
+#include <external/DirectXTK/Inc/SimpleMath.h>
