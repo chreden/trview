@@ -8,12 +8,15 @@
 namespace trview
 {
     struct ICameraSinkWindowManager;
+    struct IConsoleManager;
     struct IItemsWindowManager;
     struct ILightsWindowManager;
+    struct ILogWindowManager;
     struct IPluginsWindowManager;
     struct IRoomsWindowManager;
     struct IRouteWindowManager;
     struct IStaticsWindowManager;
+    struct ITexturesWindowManager;
     struct ITriggersWindowManager;
 
     class Windows final : public IWindows
@@ -21,14 +24,18 @@ namespace trview
     public:
         explicit Windows(
             std::unique_ptr<ICameraSinkWindowManager> camera_sink_windows,
+            std::unique_ptr<IConsoleManager> console_manager,
             std::unique_ptr<IItemsWindowManager> items_window_manager,
             std::unique_ptr<ILightsWindowManager> lights_window_manager,
+            std::unique_ptr<ILogWindowManager> log_window_manager,
             std::unique_ptr<IPluginsWindowManager> plugins_window_manager,
             std::unique_ptr<IRoomsWindowManager> rooms_window_manager,
             std::unique_ptr<IRouteWindowManager> _route_window_manager,
             std::unique_ptr<IStaticsWindowManager> statics_window_manager,
+            std::unique_ptr<ITexturesWindowManager> textures_window_manager,
             std::unique_ptr<ITriggersWindowManager> triggers_window_manager);
         virtual ~Windows() = default;
+        bool is_route_window_open() const override;
         void update(float elapsed) override;
         void render() override;
         void select(const std::weak_ptr<ICameraSink>& camera_sink) override;
@@ -47,13 +54,16 @@ namespace trview
 
         TokenStore _token_store;
         std::unique_ptr<ICameraSinkWindowManager> _camera_sink_windows;
+        std::unique_ptr<IConsoleManager> _console_manager;
         std::unique_ptr<IItemsWindowManager> _items_windows;
         std::unique_ptr<ILightsWindowManager> _lights_windows;
+        std::unique_ptr<ILogWindowManager> _log_windows;
         std::unique_ptr<IPluginsWindowManager> _plugins_windows;
         std::unique_ptr<IRoomsWindowManager> _rooms_windows;
         std::weak_ptr<IRoute> _route;
         std::unique_ptr<IRouteWindowManager> _route_window;
         std::unique_ptr<IStaticsWindowManager> _statics_windows;
+        std::unique_ptr<ITexturesWindowManager> _textures_windows;
         std::unique_ptr<ITriggersWindowManager> _triggers_windows;
     };
 }

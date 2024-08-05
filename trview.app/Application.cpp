@@ -54,9 +54,6 @@ namespace trview
         std::shared_ptr<IDialogs> dialogs,
         std::shared_ptr<IFiles> files,
         std::shared_ptr<IImGuiBackend> imgui_backend,
-        std::unique_ptr<ILogWindowManager> log_window_manager,
-        std::unique_ptr<ITexturesWindowManager> textures_window_manager,
-        std::unique_ptr<IConsoleManager> console_manager,
         std::shared_ptr<IPlugins> plugins,
         const IRandomizerRoute::Source& randomizer_route_source,
         std::shared_ptr<IFonts> fonts,
@@ -66,8 +63,8 @@ namespace trview
         _file_menu(std::move(file_menu)), _update_checker(std::move(update_checker)), _view_menu(window()), _settings_loader(settings_loader), _trlevel_source(trlevel_source),
         _viewer(std::move(viewer)), _route_source(route_source), _shortcuts(shortcuts),
         _level_source(level_source),
-        _dialogs(dialogs), _files(files), _timer(default_time_source()), _imgui_backend(std::move(imgui_backend)), _log_windows(std::move(log_window_manager)),
-        _textures_windows(std::move(textures_window_manager)), _console_manager(std::move(console_manager)), _plugins(plugins), _randomizer_route_source(randomizer_route_source), _fonts(fonts), _load_mode(load_mode),
+        _dialogs(dialogs), _files(files), _timer(default_time_source()), _imgui_backend(std::move(imgui_backend)),
+        _plugins(plugins), _randomizer_route_source(randomizer_route_source), _fonts(fonts), _load_mode(load_mode),
         _windows(std::move(windows))
     {
         SetWindowLongPtr(window(), GWLP_USERDATA, reinterpret_cast<LONG_PTR>(_imgui_backend.get()));
@@ -627,9 +624,6 @@ namespace trview
         }
 
         _viewer->render_ui();
-        _log_windows->render();
-        _textures_windows->render();
-        _console_manager->render();
         _windows->render();
         _plugins->render_ui();
 
@@ -766,8 +760,7 @@ namespace trview
 
     void Application::open_recent_route()
     {
-        // TODO:
-        if (!_level || _recent_route_prompted /* || !_route_window->is_window_open() */ || std::dynamic_pointer_cast<IRandomizerRoute>(_route) != nullptr)
+        if (!_level || _recent_route_prompted  || !_windows->is_route_window_open() || std::dynamic_pointer_cast<IRandomizerRoute>(_route) != nullptr)
         {
             return;
         }
@@ -863,10 +856,7 @@ namespace trview
             {
                 _route->set_unsaved(false);
             }
-            // TODO:
-            // _route_window->set_route(_route);
         }
-        _textures_windows->set_texture_storage(_level->texture_storage());
 
         set_route(_route);
         _viewer->open(level, open_mode);

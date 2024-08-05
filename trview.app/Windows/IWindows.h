@@ -20,6 +20,7 @@ namespace trview
     struct IWindows
     {
         virtual ~IWindows() = 0;
+        virtual bool is_route_window_open() const = 0;
         virtual void update(float elapsed) = 0;
         virtual void render() = 0;
         virtual void select(const std::weak_ptr<ICameraSink>& camera_sink) = 0;

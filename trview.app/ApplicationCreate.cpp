@@ -353,20 +353,20 @@ namespace trview
             dialogs,
             files,
             imgui_backend,
-            std::make_unique<LogWindowManager>(window, log_window_source),
-            std::make_unique<TexturesWindowManager>(window, textures_window_source),
-            std::make_unique<ConsoleManager>(window, shortcuts, console_source, files),
             plugins,
             randomizer_route_source,
             fonts,
             std::make_unique<Windows>(
                 std::make_unique<CameraSinkWindowManager>(window, shortcuts, camera_sink_window_source),
+                std::make_unique<ConsoleManager>(window, shortcuts, console_source, files),
                 std::make_unique<ItemsWindowManager>(window, shortcuts, items_window_source),
                 std::make_unique<LightsWindowManager>(window, shortcuts, lights_window_source),
+                std::make_unique<LogWindowManager>(window, log_window_source),
                 std::make_unique<PluginsWindowManager>(window, shortcuts, plugins_window_source),
                 std::make_unique<RoomsWindowManager>(window, shortcuts, rooms_window_source),
                 std::make_unique<RouteWindowManager>(window, shortcuts, route_window_source),
                 std::make_unique<StaticsWindowManager>(window, shortcuts, statics_window_source),
+                std::make_unique<TexturesWindowManager>(window, textures_window_source),
                 std::make_unique<TriggersWindowManager>(window, shortcuts, triggers_window_source)),
             Application::LoadMode::Async);
     }

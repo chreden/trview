@@ -20,7 +20,6 @@
 #include <trview.common/Windows/IDialogs.h>
 #include <trview.common/Windows/IShortcuts.h>
 #include "Windows/Log/ILogWindowManager.h"
-#include "Windows/Textures/ITexturesWindowManager.h"
 #include "UI/IImGuiBackend.h"
 #include "Windows/Console/IConsoleManager.h"
 #include "Plugins/IPlugins.h"
@@ -69,9 +68,6 @@ namespace trview
             std::shared_ptr<IDialogs> dialogs,
             std::shared_ptr<IFiles> files,
             std::shared_ptr<IImGuiBackend> imgui_backend,
-            std::unique_ptr<ILogWindowManager> log_window_manager,
-            std::unique_ptr<ITexturesWindowManager> textures_window_manager,
-            std::unique_ptr<IConsoleManager> console_manager,
             std::shared_ptr<IPlugins> plugins,
             const IRandomizerRoute::Source& randomizer_route_source,
             std::shared_ptr<IFonts> fonts,
@@ -162,11 +158,8 @@ namespace trview
 
         std::shared_ptr<IImGuiBackend> _imgui_backend;
         std::string _imgui_ini_filename;
-        std::unique_ptr<ILogWindowManager> _log_windows;
         bool _recent_route_prompted{ false };
 
-        std::unique_ptr<ITexturesWindowManager> _textures_windows;
-        std::unique_ptr<IConsoleManager> _console_manager;
         std::shared_ptr<IPlugins> _plugins;
 
         IRandomizerRoute::Source _randomizer_route_source;
