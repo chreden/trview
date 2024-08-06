@@ -33,3 +33,4 @@ void render(const MockWrapper<T>& wrapper)
 }
 
 #include <external/DirectXTK/Inc/SimpleMath.h>
+#include <trview.app/Routing/Waypoint.h>
