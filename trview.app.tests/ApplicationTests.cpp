@@ -441,7 +441,7 @@ TEST(Application, WindowManagersAndViewerRendered)
 TEST(Application, SettingsSetOnWindow)
 {
     auto [windows_ptr, windows] = create_mock<MockWindows>();
-    EXPECT_CALL(windows, set_settings).Times(1);
+    EXPECT_CALL(windows, setup).Times(1);
 
     auto application = register_test_module()
         .with_windows(std::move(windows_ptr))
@@ -451,7 +451,7 @@ TEST(Application, SettingsSetOnWindow)
 TEST(Application, SettingsSetOnSettingsChanged)
 {
     auto [windows_ptr, windows] = create_mock<MockWindows>();
-    EXPECT_CALL(windows, set_settings).Times(2);
+    EXPECT_CALL(windows, set_settings).Times(1);
     auto [viewer_ptr, viewer] = create_mock<MockViewer>();
 
     auto application = register_test_module()
@@ -1058,7 +1058,6 @@ TEST(Application, OnStaticMeshSelected)
 {
     auto level = mock_shared<trview::mocks::MockLevel>();
     auto static_mesh = mock_shared<MockStaticMesh>();
-    auto [rooms_window_manager_ptr, rooms_window_manager] = create_mock<MockRoomsWindowManager>();
     auto [windows_ptr, windows] = create_mock<MockWindows>();
     auto [viewer_ptr, viewer] = create_mock<MockViewer>();
     auto application = register_test_module()
@@ -1070,5 +1069,5 @@ TEST(Application, OnStaticMeshSelected)
 
     EXPECT_CALL(viewer, select_static_mesh).Times(1);
     EXPECT_CALL(windows, select(A<const std::weak_ptr<IStaticMesh>&>())).Times(1);
-    rooms_window_manager.on_static_mesh_selected(static_mesh);
+    windows.on_static_selected(static_mesh);
 }
