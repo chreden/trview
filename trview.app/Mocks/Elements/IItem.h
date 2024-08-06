@@ -34,6 +34,8 @@ namespace trview
             MOCK_METHOD(std::unordered_set<std::string>, categories, (), (const, override));
             MOCK_METHOD(void, set_categories, (const std::unordered_set<std::string>&), (override));
 
+            bool _visible_state;
+
             std::shared_ptr<MockItem> with_number(uint32_t number)
             {
                 ON_CALL(*this, number).WillByDefault(testing::Return(number));
@@ -67,6 +69,14 @@ namespace trview
             std::shared_ptr<MockItem> with_visible(bool value)
             {
                 ON_CALL(*this, visible).WillByDefault(testing::Return(value));
+                return shared_from_this();
+            }
+
+            std::shared_ptr<MockItem> with_updating_visible(bool value)
+            {
+                _visible_state = value;
+                ON_CALL(*this, visible).WillByDefault([&]() { return _visible_state; });
+                ON_CALL(*this, set_visible).WillByDefault([&](auto v) { _visible_state = v; });
                 return shared_from_this();
             }
         };

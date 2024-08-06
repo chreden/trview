@@ -84,7 +84,7 @@ void register_triggers_window_tests(ImGuiTestEngine* engine)
             auto level = mock_shared<MockLevel>();
             ON_CALL(*level, camera_sink(100)).WillByDefault(Return(cam));
 
-            auto trigger = mock_shared<MockTrigger>()->with_commands({ Command(0, TriggerCommandType::Camera, 100) });
+            auto trigger = mock_shared<MockTrigger>()->with_commands({ Command(0, TriggerCommandType::Camera, 100) })->with_level(level);
             context.triggers = { trigger };
             context.ptr->set_triggers({ trigger });
             context.ptr->set_selected_trigger(trigger);
@@ -310,7 +310,7 @@ void register_triggers_window_tests(ImGuiTestEngine* engine)
             bool raised = false;
             auto token = context.ptr->on_scene_changed += [&raised]() { raised = true; };
 
-            auto trigger = mock_shared<MockTrigger>()->with_visible(true);
+            auto trigger = mock_shared<MockTrigger>()->with_updating_visible(true);
             context.triggers = { trigger };
             context.ptr->set_triggers({ trigger });
             EXPECT_CALL(*trigger, set_visible(false)).Times(1);

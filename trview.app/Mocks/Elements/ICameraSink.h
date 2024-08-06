@@ -30,6 +30,8 @@ namespace trview
             MOCK_METHOD(bool, visible, (), (const, override));
             MOCK_METHOD(std::vector<std::weak_ptr<ITrigger>>, triggers, (), (const, override));
 
+            bool _visible_state{ false };
+
             std::shared_ptr<MockCameraSink> with_number(uint32_t number)
             {
                 ON_CALL(*this, number).WillByDefault(testing::Return(number));
@@ -51,6 +53,14 @@ namespace trview
             std::shared_ptr<MockCameraSink> with_room(std::shared_ptr<IRoom> room)
             {
                 ON_CALL(*this, room).WillByDefault(testing::Return(room));
+                return shared_from_this();
+            }
+
+            std::shared_ptr<MockCameraSink> with_updating_visible(bool value)
+            {
+                _visible_state = value;
+                ON_CALL(*this, visible).WillByDefault([&]() { return _visible_state; });
+                ON_CALL(*this, set_visible).WillByDefault([&](auto v) { _visible_state = v; });
                 return shared_from_this();
             }
         };

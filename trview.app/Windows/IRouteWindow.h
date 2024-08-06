@@ -35,9 +35,6 @@ namespace trview
         /// Event raised when a route is exported.
         Event<> on_route_save_as;
 
-        /// Event raised when a waypoint is deleted.
-        Event<uint32_t> on_waypoint_deleted;
-
         /// Event raised when the window is closed.
         Event<> on_window_closed;
 

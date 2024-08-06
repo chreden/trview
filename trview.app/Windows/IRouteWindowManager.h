@@ -27,9 +27,6 @@ namespace trview
         /// Event raised when a trigger is selected.
         Event<std::weak_ptr<ITrigger>> on_trigger_selected;
 
-        /// Event raised when a waypoint is deleted.
-        Event<uint32_t> on_waypoint_deleted;
-
         Event<> on_scene_changed;
 
         Event<> on_window_created;

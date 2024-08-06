@@ -254,7 +254,7 @@ void register_items_window_tests(ImGuiTestEngine* engine)
             auto token = context.ptr->on_scene_changed += [&raised]() { raised = true; };
 
             auto item1 = mock_shared<MockItem>()->with_number(0)->with_visible(true);
-            auto item2 = mock_shared<MockItem>()->with_number(1)->with_visible(true);
+            auto item2 = mock_shared<MockItem>()->with_number(1)->with_updating_visible(true);
             EXPECT_CALL(*item2, set_visible(false)).Times(1);
 
             context.items = { item1, item2 };

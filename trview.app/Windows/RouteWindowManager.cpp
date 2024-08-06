@@ -40,7 +40,6 @@ namespace trview
         _route_window->on_item_selected += on_item_selected;
         _route_window->on_trigger_selected += on_trigger_selected;
         _route_window->on_waypoint_selected += on_waypoint_selected;
-        _route_window->on_waypoint_deleted += on_waypoint_deleted;
         _route_window->on_scene_changed += on_scene_changed;
         _route_window->on_level_switch += on_level_switch;
         _route_window->on_new_route += on_new_route;

@@ -168,7 +168,7 @@ void register_camera_sink_window_tests(ImGuiTestEngine* engine)
             auto token = context.ptr->on_scene_changed += [&raised]() { raised = true; };
 
             auto camera_sink1 = mock_shared<MockCameraSink>()->with_number(0);
-            auto camera_sink2 = mock_shared<MockCameraSink>()->with_number(1);
+            auto camera_sink2 = mock_shared<MockCameraSink>()->with_number(1)->with_updating_visible(true);
             ON_CALL(*camera_sink2, visible).WillByDefault(testing::Return(true));
             EXPECT_CALL(*camera_sink2, set_visible(false)).Times(1);
             context.camera_sinks = { camera_sink1, camera_sink2 };

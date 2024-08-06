@@ -90,7 +90,7 @@ void register_rooms_window_tests(ImGuiTestEngine* engine)
             IM_CHECK_EQ(ctx->ItemExists("Quicksand \\/ 7"), false);
         });
 
-    test<RoomsWindowContext>(engine, "Rooms Window", "On Room Visiblity Raised",
+    test<RoomsWindowContext>(engine, "Rooms Window", "On Room Visibility Raised",
         [](ImGuiTestContext* ctx) { ctx->GetVars<RoomsWindowContext>().render(); },
         [](ImGuiTestContext* ctx)
         {
@@ -101,8 +101,8 @@ void register_rooms_window_tests(ImGuiTestEngine* engine)
             auto token = context.ptr->on_scene_changed += [&raised]() { raised = true; };
 
             auto room1 = mock_shared<MockRoom>()->with_number(0);
-            auto room2 = mock_shared<MockRoom>()->with_number(1);
-            EXPECT_CALL(*room2, set_visible(false)).Times(1);
+            auto room2 = mock_shared<MockRoom>()->with_number(1)->with_updating_visible(false);
+            EXPECT_CALL(*room2, set_visible(true)).Times(1);
             context.ptr->set_rooms({ room1, room2 });
 
             ctx->ItemUncheck("/**/##hide-1");
