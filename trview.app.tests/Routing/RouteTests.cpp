@@ -288,6 +288,7 @@ TEST(Route, SelectedWaypoint)
     route->select_waypoint(wp1);
     ASSERT_FALSE(route->is_unsaved());
     ASSERT_EQ(route->selected_waypoint(), 1);
+    ASSERT_EQ(route->waypoint(route->selected_waypoint()).lock(), wp1);
 }
 
 TEST(Route, SelectedWaypointAdjustedByRemove)

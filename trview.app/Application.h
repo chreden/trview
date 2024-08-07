@@ -12,16 +12,14 @@
 #include <trview.app/Menus/IFileMenu.h>
 #include <trview.app/Menus/IUpdateChecker.h>
 #include <trview.app/Menus/ViewMenu.h>
-#include <trview.app/Routing/Route.h>
+#include <trview.app/Routing/IRoute.h>
 #include "Routing/IRandomizerRoute.h"
 #include <trview.app/Settings/ISettingsLoader.h>
 #include <trview.app/Settings/IStartupOptions.h>
 #include <trview.app/Windows/IViewer.h>
 #include <trview.common/Windows/IDialogs.h>
 #include <trview.common/Windows/IShortcuts.h>
-#include "Windows/Log/ILogWindowManager.h"
 #include "UI/IImGuiBackend.h"
-#include "Windows/Console/IConsoleManager.h"
 #include "Plugins/IPlugins.h"
 #include "UI/Fonts/IFonts.h"
 

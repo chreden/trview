@@ -1,5 +1,10 @@
 #include <trview.app/Windows/Windows.h>
 
+#include <trview.app/Mocks/Elements/ICameraSink.h>
+#include <trview.app/Mocks/Elements/IItem.h>
+#include <trview.app/Mocks/Elements/ILight.h>
+#include <trview.app/Mocks/Elements/ITrigger.h>
+
 #include <trview.app/Mocks/Windows/ICameraSinkWindowManager.h>
 #include <trview.app/Mocks/Windows/IConsoleManager.h>
 #include <trview.app/Mocks/Windows/IItemsWindowManager.h>
@@ -49,19 +54,208 @@ namespace
                     std::move(textures),
                     std::move(triggers));
             }
+
+            test_module& with_camera_sinks(std::unique_ptr<ICameraSinkWindowManager> manager)
+            {
+                camera_sinks = std::move(manager);
+                return *this;
+            }
+
+            test_module& with_items(std::unique_ptr<IItemsWindowManager> manager)
+            {
+                items = std::move(manager);
+                return *this;
+            }
+
+            test_module& with_lights(std::unique_ptr<ILightsWindowManager> manager)
+            {
+                lights = std::move(manager);
+                return *this;
+            }
+
+            test_module& with_rooms(std::unique_ptr<IRoomsWindowManager> manager)
+            {
+                rooms = std::move(manager);
+                return *this;
+            }
         };
         return test_module{};
     }
 }
 
-/*
-TEST(Windows, Statics)
+TEST(Windows, CameraSinkEventsForwarded)
 {
+    auto [camera_sinks_ptr, camera_sinks] = create_mock<MockCameraSinkWindowManager>();
+    auto windows = register_test_module().with_camera_sinks(std::move(camera_sinks_ptr)).build();
+
+    std::shared_ptr<ICameraSink> raised_camera;
+    auto t1 = windows->on_camera_sink_selected += [&](auto s) { raised_camera = s.lock(); };
+
+    std::shared_ptr<ITrigger> raised_trigger;
+    auto t2 = windows->on_trigger_selected += [&](auto t) { raised_trigger = t.lock(); };
+
+    bool raised = false;
+    auto t3 = windows->on_scene_changed += [&]() { raised = true; };
+
+    auto camera = mock_shared<MockCameraSink>();
+    auto trigger = mock_shared<MockTrigger>();
+
+    camera_sinks.on_camera_sink_selected(camera);
+    camera_sinks.on_trigger_selected(trigger);
+    camera_sinks.on_scene_changed();
+
+    ASSERT_EQ(raised_camera, camera);
+    ASSERT_EQ(raised_trigger, trigger);
+    ASSERT_EQ(raised, true);
 }
 
-TEST(Windows, Plugins)
+TEST(Windows, ItemsEventsForwarded)
 {
+    auto [items_ptr, items] = create_mock<MockItemsWindowManager>();
+    auto windows = register_test_module().with_items(std::move(items_ptr)).build();
+
+    std::shared_ptr<IItem> raised_item;
+    auto t1 = windows->on_item_selected += [&](auto s) { raised_item = s.lock(); };
+
+    std::shared_ptr<ITrigger> raised_trigger;
+    auto t2 = windows->on_trigger_selected += [&](auto t) { raised_trigger = t.lock(); };
+
+    bool raised = false;
+    auto t3 = windows->on_scene_changed += [&]() { raised = true; };
+
+    auto item = mock_shared<MockItem>();
+    auto trigger = mock_shared<MockTrigger>();
+
+    items.on_item_selected(item);
+    items.on_trigger_selected(trigger);
+    items.on_scene_changed();
+
+    ASSERT_EQ(raised_item, item);
+    ASSERT_EQ(raised_trigger, trigger);
+    ASSERT_EQ(raised, true);
 }
+
+TEST(Windows, LightsEventsForwarded)
+{
+    auto [lights_ptr, lights] = create_mock<MockLightsWindowManager>();
+    auto windows = register_test_module().with_lights(std::move(lights_ptr)).build();
+
+    std::shared_ptr<ILight> raised_light;
+    auto t1 = windows->on_light_selected += [&](auto s) { raised_light = s.lock(); };
+
+    bool raised = false;
+    auto t2 = windows->on_scene_changed += [&]() { raised = true; };
+
+    auto light = mock_shared<MockLight>();
+    auto trigger = mock_shared<MockTrigger>();
+
+    lights.on_light_selected(light);
+    lights.on_scene_changed();
+
+    ASSERT_EQ(raised_light, light);
+    ASSERT_EQ(raised, true);
+}
+
+TEST(Windows, RoomsEventsForwarded)
+{
+    FAIL();
+}
+
+TEST(Windows, RouteEventsForwarded)
+{
+    FAIL();
+}
+
+TEST(Windows, SelectCameraSink)
+{
+    auto [camera_sinks_ptr, camera_sinks] = create_mock<MockCameraSinkWindowManager>();
+    auto [rooms_ptr, rooms] = create_mock<MockRoomsWindowManager>();
+
+    const auto camera = mock_shared<MockCameraSink>();
+    std::shared_ptr<ICameraSink> camera_sinks_camera;
+    EXPECT_CALL(camera_sinks, set_selected_camera_sink).Times(1).WillRepeatedly([&](auto c) { camera_sinks_camera = c.lock(); });
+    std::shared_ptr<ICameraSink> rooms_camera;
+    EXPECT_CALL(rooms, set_selected_camera_sink).Times(1).WillRepeatedly([&](auto c) { rooms_camera = c.lock(); });
+
+    auto windows = register_test_module().with_camera_sinks(std::move(camera_sinks_ptr)).with_rooms(std::move(rooms_ptr)).build();
+
+    windows->select(camera);
+
+    ASSERT_EQ(camera_sinks_camera, camera);
+    ASSERT_EQ(rooms_camera, camera);
+}
+
+TEST(Windows, SelectItem)
+{
+    FAIL();
+}
+
+TEST(Windows, SelectLight)
+{
+    FAIL();
+}
+
+TEST(Windows, SelectStaticMesh)
+{
+    FAIL();
+}
+
+TEST(Windows, SelectTrigger)
+{
+    FAIL();
+}
+
+TEST(Windows, SelectWaypoint)
+{
+    FAIL();
+}
+
+TEST(Windows, SetLevel)
+{
+    FAIL();
+}
+
+TEST(Windows, SetRoom)
+{
+    FAIL();
+}
+
+TEST(Windows, SetRoute)
+{
+    FAIL();
+}
+
+TEST(Windows, SetSettings)
+{
+    FAIL();
+}
+
+TEST(Windows, Setup)
+{
+    FAIL();
+}
+
+TEST(Windows, StaticsEventsForwarded)
+{
+    FAIL();
+}
+
+TEST(Windows, TriggersEventsForwarded)
+{
+    FAIL();
+}
+
+TEST(Windows, WindowsRendered)
+{
+    FAIL();
+}
+
+TEST(Windows, WindowsUpdated)
+{
+    FAIL();
+}
+
+/*
 
 TEST(Windows, MapColoursSetOnRoomWindow)
 {
