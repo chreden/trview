@@ -441,11 +441,7 @@ namespace trview
         {
             Activity room_activity(generate_rooms_activity, std::format("Room {}", i));
             auto room = room_source(level, level.get_room(i), _texture_storage, mesh_storage, i, shared_from_this(), room_activity);
-            _token_store += room->on_changed += [&]() 
-            {
-                _regenerate_transparency = true; 
-                on_level_changed();
-            };
+            _token_store += room->on_changed += [this]() { content_changed(); };
             _rooms.push_back(room);
         }
 
@@ -478,6 +474,7 @@ namespace trview
                 if (has_flag(sector->flags(), SectorFlag::Trigger))
                 {
                     auto trigger = trigger_source(static_cast<uint32_t>(_triggers.size()), room, sector->x(), sector->z(), sector->trigger_info(), _version, shared_from_this());
+                    _token_store += trigger->on_changed += [this]() { content_changed(); };
                     _triggers.push_back(trigger);
                     sector->set_trigger(trigger);
                     room->add_trigger(trigger);
@@ -566,6 +563,7 @@ namespace trview
             {
                 room->add_entity(entity);
             }
+            _token_store += entity->on_changed += [this]() { content_changed(); };
             _entities.push_back(entity);
 
             if (level.get_version() == trlevel::LevelVersion::Tomb2 && level_entity.TypeID == Entity_Skidoo_Driver)
@@ -725,20 +723,6 @@ namespace trview
     void Level::on_camera_moved()
     {
         _regenerate_transparency = true;
-    }
-
-    void Level::set_item_visibility(uint32_t index, bool state)
-    {
-        _entities[index]->set_visible(state);
-        _regenerate_transparency = true;
-        on_level_changed();
-    }
-
-    void Level::set_trigger_visibility(uint32_t index, bool state)
-    {
-        _triggers[index]->set_visible(state);
-        _regenerate_transparency = true;
-        on_level_changed();
     }
 
     // Set whether to render the alternate mode (the flipmap) or the regular room.
@@ -1025,8 +1009,10 @@ namespace trview
             auto room = level.get_room(i);
             for (const auto& light : room.lights)
             {
-                _lights.push_back(light_source(static_cast<uint32_t>(_lights.size()), _rooms[i], light, shared_from_this()));
-                _rooms[i]->add_light(_lights.back());
+                auto new_light = light_source(static_cast<uint32_t>(_lights.size()), _rooms[i], light, shared_from_this());
+                _token_store += new_light->on_changed += [this]() { content_changed(); };
+                _lights.push_back(new_light);
+                _rooms[i]->add_light(new_light);
             }
         }
     }
@@ -1045,27 +1031,6 @@ namespace trview
         std::vector<std::weak_ptr<ILight>> lights;
         std::transform(_lights.begin(), _lights.end(), std::back_inserter(lights), [](const auto& light) { return light; });
         return lights;
-    }
-
-    void Level::set_light_visibility(uint32_t index, bool state)
-    {
-        _lights[index]->set_visible(state);
-        _regenerate_transparency = true;
-        on_level_changed();
-    }
-
-    void Level::set_room_visibility(uint32_t index, bool state)
-    {
-        _rooms[index]->set_visible(state);
-        _regenerate_transparency = true;
-        on_level_changed();
-    }
-
-    void Level::set_camera_sink_visibility(uint32_t index, bool state)
-    {
-        _camera_sinks[index]->set_visible(state);
-        _regenerate_transparency = true;
-        on_level_changed();
     }
 
     void Level::deduplicate_triangles()
@@ -1230,6 +1195,7 @@ namespace trview
 
             const ICameraSink::Type type = is_camera ? ICameraSink::Type::Camera : ICameraSink::Type::Sink;
             auto new_camera_sink = camera_sink_source(i, camera_sink, type, inferred_rooms, relevant_triggers, shared_from_this());
+            _token_store += new_camera_sink->on_changed += [this]() { content_changed(); };
             _camera_sinks.push_back(new_camera_sink);
 
             if (is_camera)

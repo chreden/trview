@@ -184,23 +184,38 @@ namespace trview
             {
                 if (_context_pick.type == PickResult::Type::Entity)
                 {
-                    on_item_visibility(level->item(_context_pick.index), false);
+                    if (auto item = level->item(_context_pick.index).lock())
+                    {
+                        item->set_visible(false);
+                    }
                 }
                 else if (_context_pick.type == PickResult::Type::Trigger)
                 {
-                    on_trigger_visibility(level->trigger(_context_pick.index), false);
+                    if (auto trigger = level->trigger(_context_pick.index).lock())
+                    {
+                        trigger->set_visible(false);
+                    }
                 }
                 else if (_context_pick.type == PickResult::Type::Light)
                 {
-                    on_light_visibility(level->light(_context_pick.index), false);
+                    if (auto light = level->light(_context_pick.index).lock())
+                    {
+                        light->set_visible(false);
+                    }
                 }
                 else if (_context_pick.type == PickResult::Type::Room)
                 {
-                    on_room_visibility(level->room(_context_pick.index), false);
+                    if (auto room = level->room(_context_pick.index).lock())
+                    {
+                        room->set_visible(false);
+                    }
                 }
                 else if (_context_pick.type == PickResult::Type::CameraSink)
                 {
-                    on_camera_sink_visibility(level->camera_sink(_context_pick.index), false);
+                    if (auto camera_sink = level->camera_sink(_context_pick.index).lock())
+                    {
+                        camera_sink->set_visible(false);
+                    }
                 }
                 else if (_context_pick.type == PickResult::Type::StaticMesh)
                 {

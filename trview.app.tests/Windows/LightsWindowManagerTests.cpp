@@ -61,26 +61,6 @@ TEST(LightsWindowManager, OnLightSelectedRaised)
     ASSERT_EQ(raised.lock(), light);
 }
 
-TEST(LightsWindowManager, OnLightVisibilityRaised)
-{
-    auto manager = register_test_module().build();
-    auto light = mock_shared<MockLight>();
-
-    std::optional<std::tuple<std::weak_ptr<ILight>, bool>> raised;
-    auto token = manager->on_light_visibility += [&](auto&& value, auto&& visible) 
-    {
-        raised = { value, visible };
-    };
-
-    auto window = manager->create_window().lock();
-    ASSERT_NE(window, nullptr);
-
-    window->on_light_visibility(light, true);
-    ASSERT_TRUE(raised.has_value());
-    ASSERT_EQ(std::get<0>(raised.value()).lock(), light);
-    ASSERT_TRUE(std::get<1>(raised.value()));
-}
-
 TEST(LightsWindowManager, SetLightsUpdatesExistingWindows)
 {
     auto window = mock_shared<MockLightsWindow>();

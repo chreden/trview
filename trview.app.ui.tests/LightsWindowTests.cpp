@@ -150,31 +150,25 @@ void register_lights_window_tests(ImGuiTestEngine* engine)
             ASSERT_EQ(raised_light.lock(), nullptr);
         });
 
-    test<LightsWindowContext>(engine, "Lights Window", "On Light Visibility Raised",
+    test<LightsWindowContext>(engine, "Lights Window", "Light Visibility Changed",
         [](ImGuiTestContext* ctx) { ctx->GetVars<LightsWindowContext>().render(); },
         [](ImGuiTestContext* ctx)
         {
             auto& context = ctx->GetVars<LightsWindowContext>();
             context.ptr = register_test_module().build();
 
-            std::tuple<std::shared_ptr<ILight>, bool> raised_light;
-            auto token = context.ptr->on_light_visibility += [&raised_light](const auto& light, auto&& visible)
-            {
-                auto l = light.lock();
-                ON_CALL(*std::static_pointer_cast<MockLight>(l), visible).WillByDefault(Return(visible));
-                raised_light = { l, visible };
-            };
-
+            bool light1_visible = true;
             auto light1 = mock_shared<MockLight>()->with_number(0);
+            ON_CALL(*light1, visible).WillByDefault([&] { return light1_visible; });
+            EXPECT_CALL(*light1, set_visible(false)).Times(1).WillRepeatedly([&](bool v) { light1_visible = v; });
+
             auto light2 = mock_shared<MockLight>()->with_number(1);
 
             context.lights = { light1, light2 };
             context.ptr->set_lights({ light1, light2 });
 
-            ctx->ItemUncheck("/**/##hide-1");
-
-            IM_CHECK_EQ(std::get<0>(raised_light), light2);
-            IM_CHECK_EQ(std::get<1>(raised_light), true);
+            ctx->ItemCheck("/**/##hide-0");
+            IM_CHECK_EQ(light1_visible, false);
         });
 
     test<LightsWindowContext>(engine, "Lights Window", "Point Stats TR1",

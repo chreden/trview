@@ -669,44 +669,6 @@ TEST(Application, ResetLayout)
     application->process_message(WM_COMMAND, MAKEWPARAM(ID_WINDOWS_RESET_LAYOUT, 0), 0);
 }
 
-TEST(Application, RoomsWindowRoomVisibilityCaptured)
-{
-    auto [rooms_window_manager_ptr, rooms_window_manager] = create_mock<MockRoomsWindowManager>();
-    auto [level_ptr, level] = create_mock<trview::mocks::MockLevel>();
-    EXPECT_CALL(level, set_room_visibility(0, true)).Times(1);
-
-    ILevel::Source level_source = [&](auto&&...) { return std::move(level_ptr); };
-
-    auto application = register_test_module()
-        .with_rooms_window_manager(std::move(rooms_window_manager_ptr))
-        .with_level_source(level_source)
-        .build();
-
-    application->open("", ILevel::OpenMode::Full);
-
-    auto room = mock_shared<MockRoom>();
-    rooms_window_manager.on_room_visibility(room, true);
-}
-
-TEST(Application, ViewerRoomVisibilityCaptured)
-{
-    auto [viewer_ptr, viewer] = create_mock<MockViewer>();
-    auto [level_ptr, level] = create_mock<trview::mocks::MockLevel>();
-    EXPECT_CALL(level, set_room_visibility(0, true)).Times(1);
-
-    ILevel::Source level_source = [&](auto&&...) { return std::move(level_ptr); };
-
-    auto application = register_test_module()
-        .with_viewer(std::move(viewer_ptr))
-        .with_level_source(level_source)
-        .build();
-
-    application->open("", ILevel::OpenMode::Full);
-
-    auto room = mock_shared<MockRoom>();
-    viewer.on_room_visibility(room, true);
-}
-
 TEST(Application, LevelLoadedOnReload)
 {
     auto [file_menu_ptr, file_menu] = create_mock<MockFileMenu>();
@@ -1035,21 +997,6 @@ TEST(Application, CameraSinkSelectedEventForwarded)
 
     application->open("test_path.tr2", ILevel::OpenMode::Full);
     camera_sink_window_manager.on_camera_sink_selected(mock_shared<MockCameraSink>());
-}
-
-TEST(Application, CameraSinkVisibilityEventForwarded)
-{
-    auto [camera_sink_window_manager_ptr, camera_sink_window_manager] = create_mock<MockCameraSinkWindowManager>();
-    auto [level_ptr, level] = create_mock<trview::mocks::MockLevel>();
-    EXPECT_CALL(level, set_camera_sink_visibility).Times(1);
-
-    auto application = register_test_module()
-        .with_camera_sink_window_manager(std::move(camera_sink_window_manager_ptr))
-        .with_level_source([&](auto&&...) { return std::move(level_ptr); })
-        .build();
-
-    application->open("test_path.tr2", ILevel::OpenMode::Full);
-    camera_sink_window_manager.on_camera_sink_visibility(mock_shared<MockCameraSink>(), true);
 }
 
 TEST(Application, TriggerSelectedFromCameraSinkWindow)

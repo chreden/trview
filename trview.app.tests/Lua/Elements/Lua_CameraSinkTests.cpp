@@ -231,11 +231,8 @@ TEST(Lua_CameraSink, SetType)
 
 TEST(Lua_CameraSink, SetVisible)
 {
-    auto level = mock_shared<MockLevel>();
-    EXPECT_CALL(*level, set_camera_sink_visibility(100, true));
-
     auto cs = mock_shared<MockCameraSink>()->with_number(100);
-    EXPECT_CALL(*cs, level).WillRepeatedly(Return(level));
+    EXPECT_CALL(*cs, set_visible(true)).Times(1);
 
     LuaState L;
     lua::create_camera_sink(L, cs);
