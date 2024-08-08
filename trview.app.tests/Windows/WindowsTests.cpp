@@ -21,6 +21,8 @@
 #include <trview.app/Mocks/Windows/ITexturesWindowManager.h>
 #include <trview.app/Mocks/Windows/ITriggersWindowManager.h>
 
+#include <trview.tests.common/Event.h>
+
 using namespace trview;
 using namespace trview::tests;
 using namespace trview::mocks;
@@ -129,23 +131,6 @@ namespace
             }
         };
         return test_module{};
-    }
-
-    template <int index = 0, typename T>
-    auto capture(std::shared_ptr<T>& out)
-    {
-        return [&](auto... in) { out = std::get<index>(std::tie(in...)).lock(); };
-    }
-
-    template <int index = 0, typename T>
-    auto capture(T& out)
-    {
-        return [&](auto... in) { out = std::get<index>(std::tie(in...)); };
-    }
-
-    auto capture_called(bool& out)
-    {
-        return [&](auto&&...) { out = true; };
     }
 }
 
