@@ -178,7 +178,7 @@ namespace trview
 
     std::vector<std::weak_ptr<IScriptable>> Level::scriptables() const
     {
-        return _scriptables | std::ranges::to<std::vector<std::weak_ptr<IScriptable>>>();
+        return _scriptables;
     }
 
     void Level::set_selected_room(const std::weak_ptr<IRoom>& room)
@@ -255,7 +255,10 @@ namespace trview
 
             for (const auto& scriptable : _scriptables)
             {
-                scriptable->render(camera);
+                if (const auto scriptable_ptr = scriptable.lock())
+                {
+                    scriptable_ptr->render(camera);
+                }
             }
 
             graphics::set_data(*_pixel_shader_data, context, PixelShaderData{ false });
@@ -699,19 +702,22 @@ namespace trview
         uint32_t index = 0;
         for (const auto& scriptable : _scriptables)
         {
-            PickResult result{};
-            BoundingBox cube(scriptable->position(), Vector3(0.125f, 0.125f, 0.125f));
-
-            float distance = 0;
-            if (cube.Intersects(position, direction, distance))
+            if (const auto scriptable_ptr = scriptable.lock())
             {
-                result.distance = distance;
-                result.hit = true;
-                result.index = index;
-                result.position = position + direction * distance;
-                result.type = PickResult::Type::Scriptable;
-                result.scriptable = scriptable;
-                results.push_back(result);
+                PickResult result{};
+                BoundingBox cube(scriptable_ptr->position(), Vector3(0.125f, 0.125f, 0.125f));
+
+                float distance = 0;
+                if (cube.Intersects(position, direction, distance))
+                {
+                    result.distance = distance;
+                    result.hit = true;
+                    result.index = index;
+                    result.position = position + direction * distance;
+                    result.type = PickResult::Type::Scriptable;
+                    result.scriptable = scriptable;
+                    results.push_back(result);
+                }
             }
 
             ++index;
@@ -1384,10 +1390,13 @@ namespace trview
         return _static_meshes[index];
     }
 
-    void Level::add_scriptable(const std::shared_ptr<IScriptable>& scriptable)
+    void Level::add_scriptable(const std::weak_ptr<IScriptable>& scriptable)
     {
         _scriptables.push_back(scriptable);
-        scriptable->on_changed += on_level_changed;
+        if (auto scriptable_ptr = scriptable.lock())
+        {
+            scriptable_ptr->on_changed += on_level_changed;
+        }
     }
 
     bool find_item_by_type_id(const ILevel& level, uint32_t type_id, std::weak_ptr<IItem>& output_item)

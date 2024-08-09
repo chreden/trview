@@ -8,7 +8,7 @@ namespace trview
     {
     public:
         explicit Scriptable(lua_State* L, const std::shared_ptr<IMesh>& mesh, const graphics::Texture& texture);
-        virtual ~Scriptable() = default;
+        virtual ~Scriptable();
         void click() override;
         int data() const override;
         std::shared_ptr<IMesh> mesh() const override;

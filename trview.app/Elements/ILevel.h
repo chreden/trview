@@ -32,7 +32,7 @@ namespace trview
         };
 
         virtual ~ILevel() = 0;
-        virtual void add_scriptable(const std::shared_ptr<IScriptable>& scriptable) = 0;
+        virtual void add_scriptable(const std::weak_ptr<IScriptable>& scriptable) = 0;
         /// Gets whether the specified alternate group is active.
         /// @param group The group to check.
         /// @returns True if the group is active.

@@ -116,7 +116,7 @@ namespace trview
             const trlevel::ILevel::LoadCallbacks callbacks);
         std::vector<std::weak_ptr<IStaticMesh>> static_meshes() const override;
         std::weak_ptr<IStaticMesh> static_mesh(uint32_t index) const override;
-        void add_scriptable(const std::shared_ptr<IScriptable>& scriptable) override;
+        void add_scriptable(const std::weak_ptr<IScriptable>& scriptable) override;
     private:
         void generate_rooms(const trlevel::ILevel& level, const IRoom::Source& room_source, const IMeshStorage& mesh_storage);
         void generate_triggers(const ITrigger::Source& trigger_source);
@@ -210,7 +210,7 @@ namespace trview
         TokenStore _token_store;
         std::string _name;
 
-        std::vector<std::shared_ptr<IScriptable>> _scriptables;
+        std::vector<std::weak_ptr<IScriptable>> _scriptables;
     };
 
     /// Find the first item with the type id specified.

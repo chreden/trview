@@ -105,6 +105,13 @@ namespace trview
     {
     }
 
+    Scriptable::~Scriptable()
+    {
+        luaL_unref(_state, LUA_REGISTRYINDEX, _on_click);
+        luaL_unref(_state, LUA_REGISTRYINDEX, _on_tooltip);
+        luaL_unref(_state, LUA_REGISTRYINDEX, _data);
+    }
+
     void Scriptable::click()
     {
         if (_on_click == LUA_NOREF)

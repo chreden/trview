@@ -1355,8 +1355,10 @@ namespace trview
         }
         case PickResult::Type::Scriptable:
         {
-            auto scriptable = pick.scriptable.lock();
-            scriptable->click();
+            if (auto scriptable = pick.scriptable.lock())
+            {
+                scriptable->click();
+            }
             break;
         }
         }
