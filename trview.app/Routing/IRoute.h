@@ -133,11 +133,7 @@ namespace trview
         /// </summary>
         /// <returns>The index of the currently selected waypoint.</returns>
         virtual uint32_t selected_waypoint() const = 0;
-        /// <summary>
-        /// Set the specified waypoint index to be the selected waypoint.
-        /// </summary>
-        /// <param name="index">The index to select.</param>
-        virtual void select_waypoint(uint32_t index) = 0;
+        virtual void select_waypoint(const std::weak_ptr<IWaypoint>& waypoint) = 0;
         /// <summary>
         /// Set the colour for the route.
         /// </summary>

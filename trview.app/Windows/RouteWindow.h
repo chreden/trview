@@ -36,7 +36,7 @@ namespace trview
         virtual ~RouteWindow() = default;
         virtual void render() override;
         virtual void set_route(const std::weak_ptr<IRoute>& route) override;
-        virtual void select_waypoint(uint32_t index) override;
+        void select_waypoint(const std::weak_ptr<IWaypoint>& waypoint) override;
         virtual void set_items(const std::vector<std::weak_ptr<IItem>>& items) override;
         virtual void set_rooms(const std::vector<std::weak_ptr<IRoom>>& rooms) override;
         virtual void set_triggers(const std::vector<std::weak_ptr<ITrigger>>& triggers) override;
@@ -57,7 +57,7 @@ namespace trview
         std::vector<std::weak_ptr<IRoom>> _all_rooms;
         std::vector<std::weak_ptr<ITrigger>> _all_triggers;
         IWaypoint::Type _selected_type{ IWaypoint::Type::Position };
-        uint32_t       _selected_index{ 0u };
+        std::weak_ptr<IWaypoint> _selected_waypoint;
         std::shared_ptr<IClipboard> _clipboard;
         std::shared_ptr<IDialogs> _dialogs;
         std::shared_ptr<IFiles> _files;

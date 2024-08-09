@@ -75,9 +75,11 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClCompile Include="Plugins\Plugin.cpp" />
     <ClCompile Include="Plugins\Plugins.cpp" />
     <ClCompile Include="Routing\RandomizerRoute.cpp" />
+    <ClCompile Include="Windows\Windows.cpp" />
     <ClInclude Include="Mocks\UI\IFonts.h" />
     <ClInclude Include="Mocks\Windows\IStaticsWindow.h" />
     <ClInclude Include="Mocks\Windows\IStaticsWindowManager.h" />
+    <ClInclude Include="Mocks\Windows\IWindows.h" />
     <ClInclude Include="Settings\FontSetting.h" />
     <ClCompile Include="trview_imgui.cpp" />
     <ClCompile Include="Lua\Lua.cpp" />
@@ -187,6 +189,7 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClInclude Include="Windows\Console\ConsoleManager.h" />
     <ClInclude Include="Windows\Console\IConsole.h" />
     <ClInclude Include="Windows\Console\IConsoleManager.h" />
+    <ClInclude Include="Windows\Windows.h" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application.h" />
@@ -371,6 +374,7 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClInclude Include="Windows\ITriggersWindow.h" />
     <ClInclude Include="Windows\ITriggersWindowManager.h" />
     <ClInclude Include="Windows\IViewer.h" />
+    <ClInclude Include="Windows\IWindows.h" />
     <ClInclude Include="Windows\LightsWindow.h" />
     <ClInclude Include="Windows\LightsWindowManager.h" />
     <ClInclude Include="Windows\Log\ILogWindow.h" />

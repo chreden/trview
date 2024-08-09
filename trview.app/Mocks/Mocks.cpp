@@ -63,6 +63,7 @@
 #include "Mocks/Tools/IToolbar.h"
 #include "Mocks/Windows/IStaticsWindow.h"
 #include "Mocks/Windows/IStaticsWindowManager.h"
+#include "Mocks/Windows/IWindows.h"
 
 namespace trview
 {
@@ -253,5 +254,8 @@ namespace trview
 
         MockToolbar::MockToolbar() {}
         MockToolbar::~MockToolbar() {}
+
+        MockWindows::MockWindows() {}
+        MockWindows::~MockWindows() {}
     }
 }

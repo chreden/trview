@@ -33,6 +33,8 @@ namespace trview
             MOCK_METHOD(DirectX::SimpleMath::Vector3, position, (), (const, override));
             MOCK_METHOD(std::weak_ptr<ILevel>, level, (), (const, override));
 
+            bool _visible_state{ false };
+
             std::shared_ptr<MockTrigger> with_number(uint32_t number)
             {
                 ON_CALL(*this, number).WillByDefault(testing::Return(number));
@@ -60,6 +62,20 @@ namespace trview
             std::shared_ptr<MockTrigger> with_visible(const std::function<bool()>& visible)
             {
                 ON_CALL(*this, visible).WillByDefault(visible);
+                return shared_from_this();
+            }
+
+            std::shared_ptr<MockTrigger> with_updating_visible(bool value)
+            {
+                _visible_state = value;
+                ON_CALL(*this, visible).WillByDefault([&]() { return _visible_state; });
+                ON_CALL(*this, set_visible).WillByDefault([&](auto v) { _visible_state = v; });
+                return shared_from_this();
+            }
+
+            std::shared_ptr<MockTrigger> with_level(std::shared_ptr<ILevel> level)
+            {
+                ON_CALL(*this, level).WillByDefault(testing::Return(level));
                 return shared_from_this();
             }
         };

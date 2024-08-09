@@ -91,6 +91,7 @@ void register_route_window_tests(ImGuiTestEngine* engine)
             auto& context = ctx->GetVars<RouteWindowContext>();
             context.ptr = register_test_module().with_dialogs(dialogs).with_files(files).build();
             context.ptr->set_route(route);
+            context.ptr->select_waypoint(waypoint);
             context.route = route;
 
             ctx->ItemClick("/**/Attach Save");
@@ -123,6 +124,7 @@ void register_route_window_tests(ImGuiTestEngine* engine)
             auto& context = ctx->GetVars<RouteWindowContext>();
             context.ptr = register_test_module().with_dialogs(dialogs).with_files(files).build();
             context.ptr->set_route(route);
+            context.ptr->select_waypoint(waypoint);
 
             ctx->ItemClick("/**/Attach Save");
 
@@ -152,6 +154,7 @@ void register_route_window_tests(ImGuiTestEngine* engine)
             auto& context = ctx->GetVars<RouteWindowContext>();
             context.ptr = register_test_module().with_dialogs(dialogs).with_files(files).build();
             context.ptr->set_route(route);
+            context.ptr->select_waypoint(waypoint);
 
             ctx->ItemClick("/**/Attach Save");
 
@@ -180,7 +183,7 @@ void register_route_window_tests(ImGuiTestEngine* engine)
             auto& context = ctx->GetVars<RouteWindowContext>();
             context.ptr = register_test_module().build();
             context.ptr->set_route(route);
-            context.ptr->select_waypoint(0);
+            context.ptr->select_waypoint(waypoint);
             context.route = route;
 
             ctx->ItemInputValue("/**/Notes##notes", "Test");
@@ -209,7 +212,7 @@ void register_route_window_tests(ImGuiTestEngine* engine)
             EXPECT_CALL(*route, waypoint(An<uint32_t>())).WillRepeatedly(Return(waypoint));
             EXPECT_CALL(*waypoint, set_randomizer_settings(An<const IWaypoint::WaypointRandomizerSettings&>())).WillRepeatedly(SaveArg<0>(&new_settings));
             context.ptr->set_route(route);
-            context.ptr->select_waypoint(0);
+            context.ptr->select_waypoint(waypoint);
             context.route = route;
 
             ctx->Yield();
@@ -239,6 +242,7 @@ void register_route_window_tests(ImGuiTestEngine* engine)
             auto& context = ctx->GetVars<RouteWindowContext>();
             context.ptr = register_test_module().build();
             context.ptr->set_route(route);
+            context.ptr->select_waypoint(waypoint);
 
             ctx->ItemClick("/**/SAVEGAME.0", ImGuiMouseButton_Right);
             ctx->ItemClick("/**/Remove");
@@ -259,7 +263,7 @@ void register_route_window_tests(ImGuiTestEngine* engine)
             auto& context = ctx->GetVars<RouteWindowContext>();
             context.ptr = register_test_module().build();
             context.ptr->set_route(route);
-            context.ptr->select_waypoint(0);
+            context.ptr->select_waypoint(waypoint);
 
             ctx->MouseMoveToVoid();
             IM_CHECK_EQ(ctx->ItemExists("/**/##Tooltip_00"), false);
@@ -282,20 +286,21 @@ void register_route_window_tests(ImGuiTestEngine* engine)
             auto route = mock_shared<MockRoute>();
             EXPECT_CALL(*route, waypoints).WillRepeatedly(Return(1));
             EXPECT_CALL(*route, waypoint(An<uint32_t>())).WillRepeatedly(Return(waypoint));
-            context.ptr->set_route(route);
-            context.ptr->select_waypoint(0);
 
-            std::optional<uint32_t> raised;
-            auto token = context.ptr->on_waypoint_deleted += [&](const auto& waypoint)
-            {
-                raised = waypoint;
-            };
+            std::shared_ptr<IWaypoint> removed;
+            EXPECT_CALL(*route, remove(A<const std::shared_ptr<IWaypoint>&>()))
+                .Times(1)
+                .WillRepeatedly([&](auto w) { removed = w; });
+            context.ptr->set_route(route);
+            context.ptr->select_waypoint(waypoint);
+
+            bool raised = false;
+            auto token = context.ptr->on_scene_changed += [&]() { raised = true; };
 
             ctx->ItemClick("/**/Delete Waypoint");
 
-            IM_CHECK_EQ(raised.has_value(), true);
-            IM_CHECK_EQ(raised.value(), 0);
-
+            IM_CHECK_EQ(raised, true);
+            IM_CHECK_EQ(waypoint, removed);
             IM_CHECK_EQ(Mock::VerifyAndClearExpectations(route.get()), true);
             IM_CHECK_EQ(Mock::VerifyAndClearExpectations(waypoint.get()), true);
         });
@@ -321,6 +326,7 @@ void register_route_window_tests(ImGuiTestEngine* engine)
             context.ptr = register_test_module().with_dialogs(dialogs).with_files(files).build();
             context.route = route;
             context.ptr->set_route(route);
+            context.ptr->select_waypoint(waypoint);
 
             ctx->ItemClick("/**/SAVEGAME.0");
 
@@ -352,6 +358,7 @@ void register_route_window_tests(ImGuiTestEngine* engine)
             context.ptr = register_test_module().with_dialogs(dialogs).with_files(files).build();
             context.route = route;
             context.ptr->set_route(route);
+            context.ptr->select_waypoint(waypoint);
 
             ctx->ItemClick("/**/SAVEGAME.0");
 
@@ -383,6 +390,7 @@ void register_route_window_tests(ImGuiTestEngine* engine)
             context.ptr = register_test_module().with_dialogs(dialogs).with_files(files).build();
             context.route = route;
             context.ptr->set_route(route);
+            context.ptr->select_waypoint(waypoint);
 
             ctx->ItemClick("/**/SAVEGAME.0");
 
@@ -495,7 +503,7 @@ void register_route_window_tests(ImGuiTestEngine* engine)
             EXPECT_CALL(*route, waypoint(An<uint32_t>())).WillRepeatedly(Return(waypoint));
             context.route = route;
             context.ptr->set_route(route);
-            context.ptr->select_waypoint(0);
+            context.ptr->select_waypoint(waypoint);
 
             RandomizerSettings settings;
             settings.settings["test1"] = { "Test 1", RandomizerSettings::Setting::Type::Boolean };
@@ -530,7 +538,7 @@ void register_route_window_tests(ImGuiTestEngine* engine)
             EXPECT_CALL(*route, waypoints).WillRepeatedly(Return(1));
             EXPECT_CALL(*route, waypoint(An<uint32_t>())).WillRepeatedly(Return(waypoint));
             context.ptr->set_route(route);
-            context.ptr->select_waypoint(0);
+            context.ptr->select_waypoint(waypoint);
 
             ctx->Yield();
             IM_CHECK_EQ(ctx->ItemExists("/**/Test"), false);
@@ -539,6 +547,7 @@ void register_route_window_tests(ImGuiTestEngine* engine)
             EXPECT_CALL(*rando_route, waypoints).WillRepeatedly(Return(1));
             EXPECT_CALL(*rando_route, waypoint(An<uint32_t>())).WillRepeatedly(Return(waypoint));
             context.ptr->set_route(rando_route);
+            context.ptr->select_waypoint(waypoint);
             context.route = route;
 
             ctx->Yield();
@@ -590,7 +599,7 @@ void register_route_window_tests(ImGuiTestEngine* engine)
             EXPECT_CALL(*route, waypoint(An<uint32_t>())).WillRepeatedly(Return(waypoint));
 
             context.ptr->set_route(route);
-            context.ptr->select_waypoint(0);
+            context.ptr->select_waypoint(waypoint);
 
             ctx->ItemClick("/**/Room Position");
 
@@ -657,7 +666,7 @@ void register_route_window_tests(ImGuiTestEngine* engine)
             EXPECT_CALL(*route, waypoint(An<uint32_t>())).WillRepeatedly(Return(waypoint));
             EXPECT_CALL(*waypoint, set_randomizer_settings(An<const IWaypoint::WaypointRandomizerSettings&>())).WillRepeatedly(SaveArg<0>(&new_settings));
             context.ptr->set_route(route);
-            context.ptr->select_waypoint(0);
+            context.ptr->select_waypoint(waypoint);
 
             ctx->ItemInputValue("/**/Test 1", "2");
 
@@ -688,7 +697,7 @@ void register_route_window_tests(ImGuiTestEngine* engine)
             EXPECT_CALL(*route, waypoint(An<uint32_t>())).WillRepeatedly(Return(waypoint));
             EXPECT_CALL(*waypoint, set_randomizer_settings(An<const IWaypoint::WaypointRandomizerSettings&>())).WillRepeatedly(SaveArg<0>(&new_settings));
             context.ptr->set_route(route);
-            context.ptr->select_waypoint(0);
+            context.ptr->select_waypoint(waypoint);
 
             ctx->ItemInputValue("/**/Test 1", "Two");
 
@@ -718,7 +727,7 @@ void register_route_window_tests(ImGuiTestEngine* engine)
             context.ptr = register_test_module().build();
             context.route = route;
             context.ptr->set_route(route);
-            context.ptr->select_waypoint(0);
+            context.ptr->select_waypoint(waypoint);
             context.ptr->set_randomizer_settings(settings);
             context.ptr->set_randomizer_enabled(true);
 
@@ -756,7 +765,7 @@ void register_route_window_tests(ImGuiTestEngine* engine)
 
             context.ptr->set_rooms({ room });
             context.ptr->set_route(route);
-            context.ptr->select_waypoint(0);
+            context.ptr->select_waypoint(waypoint);
             context.route = route;
             context.room = room;
             ctx->Yield();

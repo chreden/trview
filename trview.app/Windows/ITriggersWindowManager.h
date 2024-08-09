@@ -1,6 +1,6 @@
 #pragma once
 
-#include "TriggersWindow.h"
+#include "ITriggersWindow.h"
 
 namespace trview
 {
@@ -11,7 +11,7 @@ namespace trview
         /// Event raised when an item is selected in one of the trigger windows.
         Event<std::weak_ptr<IItem>> on_item_selected;
 
-        Event<std::weak_ptr<ITrigger>, bool> on_trigger_visibility;
+        Event<> on_scene_changed;
 
         /// Event raised when a trigger is selected in one of the trigger windows.
         Event<std::weak_ptr<ITrigger>> on_trigger_selected;
@@ -19,7 +19,7 @@ namespace trview
         /// Event raised when the 'add to route' button is pressed in one of the trigger windows.
         Event<std::weak_ptr<ITrigger>> on_add_to_route;
 
-        Event<uint32_t> on_camera_sink_selected;
+        Event<std::weak_ptr<ICameraSink>> on_camera_sink_selected;
 
         /// Render all of the triggers windows.
         virtual void render() = 0;

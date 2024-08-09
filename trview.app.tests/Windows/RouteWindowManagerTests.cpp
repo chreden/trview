@@ -94,56 +94,18 @@ TEST(RouteWindowManager, RandomizerSettingsPassedToNewWindow)
     manager->create_window();
 }
 
-TEST(RouteWindowManager, WaypointReorderedEventRaised)
-{
-    auto mock_window = mock_shared<MockRouteWindow>();
-    auto manager = register_test_module().with_window_source([&](auto&&...) { return mock_window; }).build();
-    std::optional<std::tuple<int32_t, int32_t>> raised;
-    auto token = manager->on_waypoint_reordered += [&](int32_t from, int32_t to)
-    {
-        raised = { from, to };
-    };
-    manager->create_window();
-    mock_window->on_waypoint_reordered(1, 2);
-    ASSERT_TRUE(raised.has_value());
-    ASSERT_EQ(std::get<0>(raised.value()), 1);
-    ASSERT_EQ(std::get<1>(raised.value()), 2);
-}
-
-TEST(RouteWindowManager, OnColourChangeEventRaised)
+TEST(RouteWindowManager, OnSceneChangedEventRaised)
 {
     auto mock_window = mock_shared<MockRouteWindow>();
     auto manager = register_test_module().with_window_source([&](auto&&...) { return mock_window; }).build();
 
-    std::optional<Colour> raised;
-    auto token = manager->on_colour_changed += [&](const Colour& colour)
-    {
-        raised = colour;
-    };
+    bool raised = false;
+    auto token = manager->on_scene_changed += [&]() { raised = true; };
 
     manager->create_window();
-    mock_window->on_colour_changed(Colour::Yellow);
+    mock_window->on_scene_changed();
 
-    ASSERT_TRUE(raised.has_value());
-    ASSERT_EQ(raised.value(), Colour::Yellow);
-}
-
-TEST(RouteWindowManager, OnWaypointColourChangedEventRaised)
-{
-    auto mock_window = mock_shared<MockRouteWindow>();
-    auto manager = register_test_module().with_window_source([&](auto&&...) { return mock_window; }).build();
-
-    std::optional<Colour> raised;
-    auto token = manager->on_waypoint_colour_changed += [&](const Colour& colour)
-    {
-        raised = colour;
-    };
-
-    manager->create_window();
-    mock_window->on_waypoint_colour_changed(Colour::Yellow);
-
-    ASSERT_TRUE(raised.has_value());
-    ASSERT_EQ(raised.value(), Colour::Yellow);
+    ASSERT_TRUE(raised);
 }
 
 TEST(RouteWindowManager, OnWindowCreatedEventRaised)
@@ -168,22 +130,6 @@ TEST(RouteWindowManager, IsWindowOpen)
     mock_window->on_window_closed();
     manager->render();
     ASSERT_FALSE(manager->is_window_open());
-}
-
-TEST(RouteWindowManager, WaypointChangedRaised)
-{
-    auto mock_window = mock_shared<MockRouteWindow>();
-    auto manager = register_test_module().with_window_source([&](auto&&...) { return mock_window; }).build();
-
-    bool raised = false;
-    auto token = manager->on_waypoint_changed += [&]()
-    {
-        raised = true;
-    };
-
-    manager->create_window();
-    mock_window->on_waypoint_changed();
-    ASSERT_TRUE(raised);
 }
 
 TEST(RouteWindowManager, OnRouteOpenRaised)

@@ -20,7 +20,7 @@ namespace trview
         virtual void set_items(const std::vector<std::weak_ptr<IItem>>& items) override;
         virtual void set_rooms(const std::vector<std::weak_ptr<IRoom>>& rooms) override;
         virtual void set_triggers(const std::vector<std::weak_ptr<ITrigger>>& triggers) override;
-        virtual void select_waypoint(uint32_t index) override;
+        void select_waypoint(const std::weak_ptr<IWaypoint>& waypoint) override;
         virtual void update(float delta) override;
         virtual void set_randomizer_enabled(bool value) override;
         virtual void set_randomizer_settings(const RandomizerSettings& settings) override;
@@ -33,7 +33,7 @@ namespace trview
         std::vector<std::weak_ptr<IItem>> _all_items;
         std::vector<std::weak_ptr<IRoom>> _all_rooms;
         std::vector<std::weak_ptr<ITrigger>> _all_triggers;
-        uint32_t _selected_waypoint{ 0u };
+        std::weak_ptr<IWaypoint> _selected_waypoint;
         IRouteWindow::Source _route_window_source;
         bool _randomizer_enabled{ false };
         RandomizerSettings _randomizer_settings;

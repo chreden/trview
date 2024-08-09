@@ -1323,9 +1323,9 @@ namespace trview
         }
         case PickResult::Type::Waypoint:
         {
-            if (level)
+            if (_route)
             {
-                on_waypoint_selected(pick.index);
+                on_waypoint_selected(_route->waypoint(pick.index));
             }
             break;
         }

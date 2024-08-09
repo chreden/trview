@@ -31,7 +31,7 @@ namespace trview
     {
         auto items_window = _items_window_source();
         items_window->on_item_selected += on_item_selected;
-        items_window->on_item_visibility += on_item_visibility;
+        items_window->on_scene_changed += on_scene_changed;
         items_window->on_trigger_selected += on_trigger_selected;
         items_window->on_add_to_route += on_add_to_route;
         items_window->set_items(_items);

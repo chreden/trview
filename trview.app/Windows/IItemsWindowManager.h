@@ -12,7 +12,7 @@ namespace trview
         /// Event raised when an item is selected in one of the item windows.
         Event<std::weak_ptr<IItem>> on_item_selected;
 
-        Event<std::weak_ptr<IItem>, bool> on_item_visibility;
+        Event<> on_scene_changed;
 
         /// Event raised when a trigger is selected in one of the item windows.
         Event<std::weak_ptr<ITrigger>> on_trigger_selected;

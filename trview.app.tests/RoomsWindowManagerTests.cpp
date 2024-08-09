@@ -96,24 +96,19 @@ TEST(RoomsWindowManager, MapColoursPassedToNewWindows)
     manager->create_window();
 }
 
-TEST(RoomsWindowManager, OnRoomVisibilityRaised)
+TEST(RoomsWindowManager, SceneChangedRaised)
 {
     auto manager = register_test_module().build();
     auto room = mock_shared<MockRoom>();
 
-    std::optional<std::tuple<std::weak_ptr<IRoom>, bool>> raised;
-    auto token = manager->on_room_visibility += [&](auto&& value, auto&& visible)
-    {
-        raised = { value, visible };
-    };
+    bool raised = false;
+    auto token = manager->on_scene_changed += [&]() { raised = true; };
 
     auto window = manager->create_window().lock();
     ASSERT_NE(window, nullptr);
 
-    window->on_room_visibility(room, true);
-    ASSERT_TRUE(raised.has_value());
-    ASSERT_EQ(std::get<0>(raised.value()).lock(), room);
-    ASSERT_TRUE(std::get<1>(raised.value()));
+    window->on_scene_changed();
+    ASSERT_TRUE(raised);
 }
 
 TEST(RoomsWindowManager, SetFloordataPassedToWindows)

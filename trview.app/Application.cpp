@@ -2,6 +2,7 @@
 #include <trlevel/LevelEncryptedException.h>
 #include "UserCancelledException.h"
 #include "Lua/trview/trview.h"
+#include "Windows/IWindows.h"
 
 #include "Resources/resource.h"
 
@@ -48,34 +49,21 @@ namespace trview
         std::unique_ptr<IViewer> viewer,
         const IRoute::Source& route_source,
         std::shared_ptr<IShortcuts> shortcuts,
-        std::unique_ptr<IItemsWindowManager> items_window_manager,
-        std::unique_ptr<ITriggersWindowManager> triggers_window_manager,
-        std::unique_ptr<IRouteWindowManager> route_window_manager,
-        std::unique_ptr<IRoomsWindowManager> rooms_window_manager,
         const ILevel::Source& level_source,
         std::shared_ptr<IStartupOptions> startup_options,
         std::shared_ptr<IDialogs> dialogs,
         std::shared_ptr<IFiles> files,
         std::shared_ptr<IImGuiBackend> imgui_backend,
-        std::unique_ptr<ILightsWindowManager> lights_window_manager,
-        std::unique_ptr<ILogWindowManager> log_window_manager,
-        std::unique_ptr<ITexturesWindowManager> textures_window_manager,
-        std::unique_ptr<ICameraSinkWindowManager> camera_sink_window_manager,
-        std::unique_ptr<IConsoleManager> console_manager,
         std::shared_ptr<IPlugins> plugins,
-        std::unique_ptr<IPluginsWindowManager> plugins_window_manager,
         const IRandomizerRoute::Source& randomizer_route_source,
         std::shared_ptr<IFonts> fonts,
-        std::unique_ptr<IStaticsWindowManager> statics_window_manager,
+        std::unique_ptr<IWindows> windows,
         LoadMode load_mode)
         : MessageHandler(application_window), _instance(GetModuleHandle(nullptr)),
         _file_menu(std::move(file_menu)), _update_checker(std::move(update_checker)), _view_menu(window()), _settings_loader(settings_loader), _trlevel_source(trlevel_source),
-        _viewer(std::move(viewer)), _route_source(route_source), _shortcuts(shortcuts), _items_windows(std::move(items_window_manager)),
-        _triggers_windows(std::move(triggers_window_manager)), _route_window(std::move(route_window_manager)), _rooms_windows(std::move(rooms_window_manager)), _level_source(level_source),
-        _dialogs(dialogs), _files(files), _timer(default_time_source()), _imgui_backend(std::move(imgui_backend)), _lights_windows(std::move(lights_window_manager)), _log_windows(std::move(log_window_manager)),
-        _textures_windows(std::move(textures_window_manager)), _camera_sink_windows(std::move(camera_sink_window_manager)), _console_manager(std::move(console_manager)),
-        _plugins(plugins), _plugins_windows(std::move(plugins_window_manager)), _randomizer_route_source(randomizer_route_source), _fonts(fonts), _statics_windows(std::move(statics_window_manager)),
-        _load_mode(load_mode)
+        _viewer(std::move(viewer)), _route_source(route_source), _shortcuts(shortcuts), _level_source(level_source), _dialogs(dialogs), _files(files), _timer(default_time_source()),
+        _imgui_backend(std::move(imgui_backend)), _plugins(plugins), _randomizer_route_source(randomizer_route_source), _fonts(fonts), _load_mode(load_mode),
+        _windows(std::move(windows))
     {
         SetWindowLongPtr(window(), GWLP_USERDATA, reinterpret_cast<LONG_PTR>(_imgui_backend.get()));
 
@@ -91,13 +79,26 @@ namespace trview
 
         setup_shortcuts();
         setup_view_menu();
-        setup_items_windows();
-        setup_triggers_windows();
-        setup_rooms_windows();
-        setup_route_window();
-        setup_lights_windows();
-        setup_camera_sink_windows();
-        setup_statics_window();
+
+        _token_store += _windows->on_camera_sink_selected += [this](const auto& sink) {  select_camera_sink(sink); };
+        _token_store += _windows->on_trigger_selected += [this](const auto& trigger) { select_trigger(trigger); };
+        _token_store += _windows->on_scene_changed += [this]() { _viewer->set_scene_changed(); };
+        _token_store += _windows->on_item_selected += [this](const auto& item) { select_item(item); };
+        _token_store += _windows->on_light_selected += [this](const auto& light) { select_light(light); };
+        _token_store += _windows->on_room_selected += [this](const auto& room) { select_room(room); };
+        _token_store += _windows->on_sector_hover += [this](const auto& sector) { select_sector(sector); };
+        _token_store += _windows->on_waypoint_selected += [&](const auto& waypoint) { select_waypoint(waypoint); };
+        _token_store += _windows->on_route_open += [&]() { this->open_route(); };
+        _token_store += _windows->on_route_reload += [&]() { this->reload_route(); };
+        _token_store += _windows->on_route_save += [&]() { this->save_route(); };
+        _token_store += _windows->on_route_save_as += [&]() { this->save_route_as(); };
+        _token_store += _windows->on_route_window_created += [&]() { open_recent_route(); };
+        _token_store += _windows->on_level_switch += [&](const auto& level) { _file_menu->switch_to(level); };
+        _token_store += _windows->on_new_route += [&]() { if (should_discard_changes()) { set_route(_route_source(std::nullopt)); } };
+        _token_store += _windows->on_new_randomizer_route += [&]() { if (should_discard_changes()) { set_route(_randomizer_route_source(std::nullopt)); } };
+        _token_store += _windows->on_static_selected += [this](const auto& stat) { select_static_mesh(stat); };
+
+        _windows->setup(_settings);
         setup_viewer(*startup_options);
         _plugins->initialise(this);
     }
@@ -297,8 +298,7 @@ namespace trview
         {
             _settings = settings;
             _viewer->set_settings(_settings);
-            _route_window->set_randomizer_enabled(settings.randomizer_tools);
-            _rooms_windows->set_map_colours(settings.map_colours);
+            _windows->set_settings(settings);
             lua::set_settings(settings);
             if (_level)
             {
@@ -315,130 +315,6 @@ namespace trview
         {
             open(filename, ILevel::OpenMode::Full);
         }
-    }
-
-    void Application::setup_items_windows()
-    {
-        if (_settings.items_startup)
-        {
-            _items_windows->create_window();
-        }
-
-        _token_store += _items_windows->on_item_selected += [this](const auto& item) { select_item(item); };
-        _token_store += _items_windows->on_item_visibility += [this](const auto& item, bool state) { set_item_visibility(item, state); };
-        _token_store += _items_windows->on_trigger_selected += [this](const auto& trigger) { select_trigger(trigger); };
-        _token_store += _items_windows->on_add_to_route += [this](const auto& item)
-        {
-            if (auto item_ptr = item.lock())
-            {
-                add_waypoint(item_ptr->position(), Vector3::Down, item_room(item_ptr), IWaypoint::Type::Entity, item_ptr->number());
-            }
-        };
-    }
-
-    void Application::setup_triggers_windows()
-    {
-        if (_settings.triggers_startup)
-        {
-            _triggers_windows->create_window();
-        }
-        _token_store += _triggers_windows->on_item_selected += [this](const auto& item) { select_item(item); };
-        _token_store += _triggers_windows->on_trigger_selected += [this](const auto& trigger) { select_trigger(trigger); };
-        _token_store += _triggers_windows->on_trigger_visibility += [this](const auto& trigger, bool state) { set_trigger_visibility(trigger, state); };
-        _token_store += _triggers_windows->on_add_to_route += [this](const auto& trigger)
-        {
-            if (auto trigger_ptr = trigger.lock())
-            {
-                add_waypoint(trigger_ptr->position(), Vector3::Down, trigger_room(trigger_ptr), IWaypoint::Type::Trigger, trigger_ptr->number());
-            }
-        };
-        _token_store += _triggers_windows->on_camera_sink_selected += [this](const auto& camera_sink)
-        {
-            if (!_level)
-            {
-                return;
-            }
-
-            const auto sinks = _level->camera_sinks();
-            if (camera_sink < sinks.size())
-            {
-                select_camera_sink(sinks[camera_sink]);
-            }
-        };
-    }
-
-    void Application::setup_rooms_windows()
-    {
-        _rooms_windows->set_map_colours(_settings.map_colours);
-
-        if (_settings.rooms_startup)
-        {
-            _rooms_windows->create_window();
-        }
-
-        _token_store += _rooms_windows->on_room_selected += [this](const auto& room) { select_room(room); };
-        _token_store += _rooms_windows->on_item_selected += [this](const auto& item) { select_item(item); };
-        _token_store += _rooms_windows->on_trigger_selected += [this](const auto& trigger) { select_trigger(trigger); };
-        _token_store += _rooms_windows->on_room_visibility += [this](const auto& room, bool value) { set_room_visibility(room, value); };
-        _token_store += _rooms_windows->on_sector_hover += [this](const auto& sector) { select_sector(sector); };
-        _token_store += _rooms_windows->on_camera_sink_selected += [this](const auto& camera_sink) { select_camera_sink(camera_sink); };
-        _token_store += _rooms_windows->on_light_selected += [this](const auto& light) { select_light(light); };
-        _token_store += _rooms_windows->on_static_mesh_selected += [this](const auto& static_mesh) { select_static_mesh(static_mesh); };
-    }
-
-    void Application::setup_route_window()
-    {
-        _token_store += _route_window->on_waypoint_selected += [&](auto index) { select_waypoint(index); };
-        _token_store += _route_window->on_item_selected += [&](const auto& item) { select_item(item); };
-        _token_store += _route_window->on_trigger_selected += [&](const auto& trigger) { select_trigger(trigger); };
-        _token_store += _route_window->on_route_open += [&]() { this->open_route(); };
-        _token_store += _route_window->on_route_reload += [&]() { this->reload_route(); };
-        _token_store += _route_window->on_route_save += [&]() { this->save_route(); };
-        _token_store += _route_window->on_route_save_as += [&]() { this->save_route_as(); };
-        _token_store += _route_window->on_waypoint_deleted += [&](auto index) { remove_waypoint(index); };
-        _token_store += _route_window->on_colour_changed += [&](const Colour& colour)
-        {
-            _route->set_colour(colour);
-            _viewer->set_route(_route);
-        };
-        _token_store += _route_window->on_waypoint_colour_changed += [&](const Colour& colour)
-        {
-            _route->set_waypoint_colour(colour);
-            _viewer->set_route(_route);
-        };
-        _token_store += _route_window->on_waypoint_reordered += [&](int32_t from, int32_t to)
-        {
-            _route->move(from, to);
-            _viewer->set_route(_route);
-        };
-        _token_store += _route_window->on_waypoint_changed += [&]()
-        {
-            _viewer->set_scene_changed();
-        };
-        _route_window->set_randomizer_enabled(_settings.randomizer_tools);
-        _route_window->set_randomizer_settings(_settings.randomizer);
-        _token_store += _route_window->on_window_created += [&]() { open_recent_route(); };
-        _token_store += _route_window->on_level_switch += [&](const auto& level) { _file_menu->switch_to(level); };
-        _token_store += _route_window->on_new_route += [&]() { if (should_discard_changes()) { set_route(_route_source(std::nullopt)); } };
-        _token_store += _route_window->on_new_randomizer_route += [&]() { if (should_discard_changes()) { set_route(_randomizer_route_source(std::nullopt)); } };
-        _token_store += _route_window->on_level_reordered += [&](const std::string& from, const std::string& to)
-        {
-            if (auto rando = std::dynamic_pointer_cast<IRandomizerRoute>(_route))
-            {
-                rando->move_level(from, to);
-            }
-        };
-
-        if (_settings.route_startup)
-        {
-            _route_window->create_window();
-        }
-    }
-
-    void Application::setup_lights_windows()
-    {
-        _token_store += _lights_windows->on_light_selected += [this](const auto& light) { select_light(light); };
-        _token_store += _lights_windows->on_light_visibility += [this](const auto& light, bool value) { set_light_visibility(light, value); };
     }
 
     void Application::setup_shortcuts()
@@ -465,19 +341,17 @@ namespace trview
     void Application::add_waypoint(const Vector3& position, const Vector3& normal, uint32_t room, IWaypoint::Type type, uint32_t index)
     {
         uint32_t new_index = _route->insert(position, normal, room, type, index);
-        _route_window->set_route(_route);
-        select_waypoint(new_index);
+        select_waypoint(_route->waypoint(new_index));
     }
 
     void Application::remove_waypoint(uint32_t index)
     {
         _route->remove(index);
-        _route_window->set_route(_route);
         _viewer->set_route(_route);
 
         if (_route->waypoints() > 0)
         {
-            select_waypoint(_route->selected_waypoint());
+            select_waypoint(_route->waypoint(_route->selected_waypoint()));
         }
     }
 
@@ -497,8 +371,7 @@ namespace trview
         select_room(item_ptr->room());
         _level->set_selected_item(item_ptr->number());
         _viewer->select_item(item);
-        _items_windows->set_selected_item(item);
-        _rooms_windows->set_selected_item(item);
+        _windows->select(item);
     }
 
     void Application::select_room(std::weak_ptr<IRoom> room)
@@ -508,12 +381,7 @@ namespace trview
             _level->set_selected_room(room);
         }
         _viewer->select_room(room);
-        _items_windows->set_room(room);
-        _rooms_windows->set_room(room);
-        _triggers_windows->set_room(room);
-        _lights_windows->set_room(room);
-        _camera_sink_windows->set_room(room);
-        _statics_windows->set_room(room);
+        _windows->set_room(room);
     }
 
     void Application::select_trigger(const std::weak_ptr<ITrigger>& trigger)
@@ -532,23 +400,22 @@ namespace trview
         select_room(trigger_ptr->room());
         _level->set_selected_trigger(trigger_ptr->number());
         _viewer->select_trigger(trigger);
-        _triggers_windows->set_selected_trigger(trigger);
-        _rooms_windows->set_selected_trigger(trigger);
+        _windows->select(trigger);
     }
 
-    void Application::select_waypoint(uint32_t index)
+    void Application::select_waypoint(const std::weak_ptr<IWaypoint>& waypoint)
     {
         if (!_level)
         {
             return;
         }
 
-        if (auto waypoint = _route->waypoint(index).lock())
+        if (auto waypoint_ptr = waypoint.lock())
         {
-            select_room(_level->room(waypoint->room()));
-            _route->select_waypoint(index);
-            _viewer->select_waypoint(waypoint);
-            _route_window->select_waypoint(index);
+            select_room(_level->room(waypoint_ptr->room()));
+            _route->select_waypoint(waypoint_ptr);
+            _viewer->select_waypoint(waypoint_ptr);
+            _windows->select(waypoint_ptr);
         }
     }
 
@@ -556,7 +423,7 @@ namespace trview
     {
         if (_route->selected_waypoint() + 1 < _route->waypoints())
         {
-            select_waypoint(_route->selected_waypoint() + 1);
+            select_waypoint(_route->waypoint(_route->selected_waypoint() + 1));
         }
     }
 
@@ -564,7 +431,7 @@ namespace trview
     {
         if (_route->selected_waypoint() > 0)
         {
-            select_waypoint(_route->selected_waypoint() - 1);
+            select_waypoint(_route->waypoint(_route->selected_waypoint() - 1));
         }
     }
 
@@ -584,8 +451,7 @@ namespace trview
         select_room(light_ptr->room());
         _level->set_selected_light(light_ptr->number());
         _viewer->select_light(light);
-        _lights_windows->set_selected_light(light);
-        _rooms_windows->set_selected_light(light);
+        _windows->select(light);
     }
 
     void Application::set_item_visibility(const std::weak_ptr<IItem>& item, bool visible)
@@ -716,13 +582,7 @@ namespace trview
 
         _timer.update();
         const auto elapsed = _timer.elapsed();
-        _items_windows->update(elapsed);
-        _triggers_windows->update(elapsed);
-        _rooms_windows->update(elapsed);
-        _route_window->update(elapsed);
-        _lights_windows->update(elapsed);
-        _plugins_windows->update(elapsed);
-        _statics_windows->update(elapsed);
+        _windows->update(elapsed);
 
         _viewer->render();
 
@@ -756,17 +616,7 @@ namespace trview
         }
 
         _viewer->render_ui();
-        _items_windows->render();
-        _triggers_windows->render();
-        _rooms_windows->render();
-        _route_window->render();
-        _lights_windows->render();
-        _log_windows->render();
-        _textures_windows->render();
-        _camera_sink_windows->render();
-        _console_manager->render();
-        _plugins_windows->render();
-        _statics_windows->render();
+        _windows->render();
         _plugins->render_ui();
 
         ImGui::PopFont();
@@ -902,7 +752,7 @@ namespace trview
 
     void Application::open_recent_route()
     {
-        if (!_level || _recent_route_prompted || !_route_window->is_window_open() || std::dynamic_pointer_cast<IRandomizerRoute>(_route) != nullptr)
+        if (!_level || _recent_route_prompted  || !_windows->is_route_window_open() || std::dynamic_pointer_cast<IRandomizerRoute>(_route) != nullptr)
         {
             return;
         }
@@ -919,27 +769,6 @@ namespace trview
             _viewer->set_settings(_settings);
         }
         _recent_route_prompted = true;
-    }
-
-    void Application::setup_camera_sink_windows()
-    {
-        if (_settings.camera_sink_startup)
-        {
-            _camera_sink_windows->create_window();
-        }
-        _token_store += _camera_sink_windows->on_camera_sink_selected += [this](const auto& sink) {  select_camera_sink(sink); };
-        _token_store += _camera_sink_windows->on_camera_sink_visibility += [this](const auto& cs, bool value) { set_camera_sink_visibility(cs, value); };
-        _token_store += _camera_sink_windows->on_trigger_selected += [this](const auto& trigger) { select_trigger(trigger); };
-        _token_store += _camera_sink_windows->on_camera_sink_type_changed += [this]() { _viewer->set_scene_changed(); };
-    }
-
-    void Application::setup_statics_window()
-    {
-        if (_settings.statics_startup)
-        {
-            _statics_windows->create_window();
-        }
-        _token_store += _statics_windows->on_static_selected += [this](const auto& stat) { select_static_mesh(stat); };
     }
 
     void Application::save_window_placement()
@@ -973,8 +802,7 @@ namespace trview
         select_room(actual_room(*camera_sink_ptr));
         _level->set_selected_camera_sink(camera_sink_ptr->number());
         _viewer->select_camera_sink(camera_sink);
-        _camera_sink_windows->set_selected_camera_sink(camera_sink);
-        _rooms_windows->set_selected_camera_sink(camera_sink);
+        _windows->select(camera_sink);
     }
 
     std::weak_ptr<ILevel> Application::current_level() const
@@ -1010,24 +838,7 @@ namespace trview
 
         _file_menu->open_file(level->filename());
         _level->set_map_colours(_settings.map_colours);
-
-        _items_windows->set_items(_level->items());
-        _items_windows->set_triggers(_level->triggers());
-        _items_windows->set_level_version(_level->version());
-        _items_windows->set_model_checker([&](uint32_t id) { return _level->has_model(id); });
-        _triggers_windows->set_items(_level->items());
-        _triggers_windows->set_triggers(_level->triggers());
-        _rooms_windows->set_level_version(_level->version());
-        _rooms_windows->set_items(_level->items());
-        _rooms_windows->set_floordata(_level->floor_data());
-        _rooms_windows->set_rooms(_level->rooms());
-        _route_window->set_items(_level->items());
-        _route_window->set_triggers(_level->triggers());
-        _route_window->set_rooms(_level->rooms());
-        _lights_windows->set_level_version(_level->version());
-        _lights_windows->set_lights(_level->lights());
-        _camera_sink_windows->set_camera_sinks(_level->camera_sinks());
-        _statics_windows->set_statics(_level->static_meshes());
+        _windows->set_level(_level);
         if (open_mode == ILevel::OpenMode::Full)
         {
             _route->clear();
@@ -1037,9 +848,7 @@ namespace trview
             {
                 _route->set_unsaved(false);
             }
-            _route_window->set_route(_route);
         }
-        _textures_windows->set_texture_storage(_level->texture_storage());
 
         set_route(_route);
         _viewer->open(level, open_mode);
@@ -1113,9 +922,9 @@ namespace trview
     {
         _route = route;
         _token_store += _route->on_changed += [&]() { if (_viewer) { _viewer->set_scene_changed(); } };
-        _route_window->set_route(_route);
         _route->set_level(_level);
         _viewer->set_route(_route);
+        _windows->set_route(_route);
     }
 
     void Application::select_static_mesh(const std::weak_ptr<IStaticMesh>& static_mesh)
@@ -1133,7 +942,7 @@ namespace trview
 
         select_room(static_mesh_ptr->room());
         _viewer->select_static_mesh(static_mesh_ptr);
-        _statics_windows->select_static(static_mesh_ptr);
+        _windows->select(static_mesh_ptr);
     }
 
     void Application::check_load()

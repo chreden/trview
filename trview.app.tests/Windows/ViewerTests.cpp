@@ -258,14 +258,19 @@ TEST(Viewer, SelectWaypointRaised)
 
     viewer->open(level, ILevel::OpenMode::Full);
 
-    std::optional<uint32_t> selected_waypoint;
-    auto token = viewer->on_waypoint_selected += [&selected_waypoint](const auto& waypoint) { selected_waypoint = waypoint; };
+    std::shared_ptr<IWaypoint> selected_waypoint;
+    auto token = viewer->on_waypoint_selected += [&selected_waypoint](const auto& waypoint) { selected_waypoint = waypoint.lock(); };
+
+    auto route = mock_shared<MockRoute>();
+    auto waypoint = mock_shared<MockWaypoint>();
+    EXPECT_CALL(*route, waypoint(100)).WillRepeatedly(Return(waypoint));
+    viewer->set_route(route);
 
     activate_context_menu(picking, mouse, PickResult::Type::Waypoint, 100);
     mouse.mouse_click(IMouse::Button::Left);
 
-    ASSERT_TRUE(selected_waypoint.has_value());
-    ASSERT_EQ(selected_waypoint.value(), 100u);
+    ASSERT_TRUE(selected_waypoint);
+    ASSERT_EQ(selected_waypoint, waypoint);
 }
 
 /// Tests that the on_remove_waypoint event from the UI is observed and forwarded.

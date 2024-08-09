@@ -203,6 +203,9 @@
     <ClCompile Include="Windows\StaticsWindowManagerTests.cpp">
       <Filter>Windows</Filter>
     </ClCompile>
+    <ClCompile Include="Windows\WindowsTests.cpp">
+      <Filter>Windows</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Input">

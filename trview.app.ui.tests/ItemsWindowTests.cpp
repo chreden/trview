@@ -250,25 +250,20 @@ void register_items_window_tests(ImGuiTestEngine* engine)
             auto& context = ctx->GetVars<ItemsWindowContext>();
             context.ptr = register_test_module().build();
 
-            std::optional<std::tuple<std::shared_ptr<IItem>, bool>> raised_item;
-            auto token = context.ptr->on_item_visibility += [&raised_item](const auto& item, bool state) 
-            {
-                auto i = std::static_pointer_cast<MockItem>(item.lock());
-                ON_CALL(*i, visible).WillByDefault(Return(false));
-                raised_item = { item.lock(), state }; 
-            };
+            bool raised = false;
+            auto token = context.ptr->on_scene_changed += [&raised]() { raised = true; };
 
-            context.items =
-            {
-                mock_shared<MockItem>()->with_number(0)->with_visible(true),
-                mock_shared<MockItem>()->with_number(1)->with_visible(true)
-            };
+            auto item1 = mock_shared<MockItem>()->with_number(0)->with_visible(true);
+            auto item2 = mock_shared<MockItem>()->with_number(1)->with_updating_visible(true);
+            EXPECT_CALL(*item2, set_visible(false)).Times(1);
+
+            context.items = { item1, item2 };
             context.ptr->set_items({ std::from_range, context.items });
 
             ctx->ItemCheck("Items 0/**/##hide-1");
-            IM_CHECK_EQ(raised_item.has_value(), true);
-            IM_CHECK_EQ(std::get<1>(raised_item.value()), false);
-            IM_CHECK_EQ(std::get<0>(raised_item.value()), context.items[1]);
+
+            IM_CHECK_EQ(raised, true);
+            IM_CHECK_EQ(Mock::VerifyAndClearExpectations(context.items[1].get()), true);
         });
 
     test<ItemsWindowContext>(engine, "Items Window", "Trigger Selected Event Raised",

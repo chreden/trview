@@ -63,6 +63,7 @@ namespace trview
             MOCK_METHOD(std::weak_ptr<ILevel>, level, (), (const, override));
             MOCK_METHOD(std::vector<std::weak_ptr<IStaticMesh>>, static_meshes, (), (const));
 
+            bool _visible_state{ false };
 
             std::shared_ptr<MockRoom> with_number(uint32_t number)
             {
@@ -109,6 +110,14 @@ namespace trview
             std::shared_ptr<MockRoom> with_room_info(const RoomInfo& info)
             {
                 ON_CALL(*this, info).WillByDefault(testing::Return(info));
+                return shared_from_this();
+            }
+
+            std::shared_ptr<MockRoom> with_updating_visible(bool value)
+            {
+                _visible_state = value;
+                ON_CALL(*this, visible).WillByDefault([&]() { return _visible_state; });
+                ON_CALL(*this, set_visible).WillByDefault([&](auto v) { _visible_state = v; });
                 return shared_from_this();
             }
         };

@@ -37,6 +37,8 @@ namespace trview
             MOCK_METHOD(void, render_direction, (const ICamera&, const ILevelTextureStorage&), (override));
             MOCK_METHOD(trlevel::LevelVersion, level_version, (), (const, override));
 
+            bool _visible_state{ false };
+
             std::shared_ptr<MockLight> with_number(uint32_t number)
             {
                 ON_CALL(*this, number).WillByDefault(testing::Return(number));
@@ -58,6 +60,14 @@ namespace trview
             std::shared_ptr<MockLight> with_level_version(trlevel::LevelVersion version)
             {
                 ON_CALL(*this, level_version).WillByDefault(testing::Return(version));
+                return shared_from_this();
+            }
+
+            std::shared_ptr<MockLight> with_updating_visible(bool value)
+            {
+                _visible_state = value;
+                ON_CALL(*this, visible).WillByDefault([&]() { return _visible_state; });
+                ON_CALL(*this, set_visible).WillByDefault([&](auto v) { _visible_state = v; });
                 return shared_from_this();
             }
         };

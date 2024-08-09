@@ -359,9 +359,16 @@ namespace trview
         return _selected_index;
     }
 
-    void Route::select_waypoint(uint32_t index)
+    void Route::select_waypoint(const std::weak_ptr<IWaypoint>& waypoint)
     {
-        _selected_index = index;
+        if (const auto waypoint_ptr = waypoint.lock())
+        {
+            const auto iter = std::ranges::find(_waypoints, waypoint_ptr);
+            if (iter != _waypoints.end())
+            {
+                _selected_index = static_cast<uint32_t>(std::distance(_waypoints.begin(), iter));
+            }
+        }
     }
 
     void Route::set_colour(const Colour& colour)

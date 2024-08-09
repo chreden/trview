@@ -50,7 +50,7 @@ namespace trview
         lights_window->set_selected_light(_selected_light);
         lights_window->set_current_room(_current_room);
         lights_window->on_light_selected += on_light_selected;
-        lights_window->on_light_visibility += on_light_visibility;
+        lights_window->on_scene_changed += on_scene_changed;
         return add_window(lights_window);
     }
 

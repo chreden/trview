@@ -86,6 +86,7 @@
     <ClCompile Include="Windows\RouteWindowManagerTests.cpp" />
     <ClCompile Include="Windows\StaticsWindowManagerTests.cpp" />
     <ClCompile Include="Windows\ViewerTests.cpp" />
+    <ClCompile Include="Windows\WindowsTests.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\external\DirectXTK\DirectXTK_Desktop.vcxproj">

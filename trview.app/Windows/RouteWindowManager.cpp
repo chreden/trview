@@ -33,22 +33,17 @@ namespace trview
 
         // Otherwise create the window.
         _route_window = _route_window_source();
-        _route_window->on_colour_changed += on_colour_changed;
         _route_window->on_route_open += on_route_open;
         _route_window->on_route_reload += on_route_reload;
         _route_window->on_route_save += on_route_save;
         _route_window->on_route_save_as += on_route_save_as;
         _route_window->on_item_selected += on_item_selected;
-        _route_window->on_waypoint_colour_changed += on_waypoint_colour_changed;
         _route_window->on_trigger_selected += on_trigger_selected;
         _route_window->on_waypoint_selected += on_waypoint_selected;
-        _route_window->on_waypoint_deleted += on_waypoint_deleted;
-        _route_window->on_waypoint_reordered += on_waypoint_reordered;
-        _route_window->on_waypoint_changed += on_waypoint_changed;
+        _route_window->on_scene_changed += on_scene_changed;
         _route_window->on_level_switch += on_level_switch;
         _route_window->on_new_route += on_new_route;
         _route_window->on_new_randomizer_route += on_new_randomizer_route;
-        _route_window->on_level_reordered += on_level_reordered;
         _token_store += _route_window->on_window_closed += [&]() { _closing = true; };
 
         _route_window->set_randomizer_settings(_randomizer_settings);
@@ -112,13 +107,12 @@ namespace trview
         }
     }
 
-    void RouteWindowManager::select_waypoint(uint32_t index)
+    void RouteWindowManager::select_waypoint(const std::weak_ptr<IWaypoint>& waypoint)
     {
-        _selected_waypoint = index;
-
+        _selected_waypoint = waypoint;
         if (_route_window)
         {
-            _route_window->select_waypoint(index);
+            _route_window->select_waypoint(waypoint);
         }
     }
 

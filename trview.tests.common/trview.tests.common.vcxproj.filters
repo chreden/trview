@@ -4,6 +4,7 @@
     <ClInclude Include="Window.h" />
     <ClInclude Include="Mocks.h" />
     <ClInclude Include="Mocks.hpp" />
+    <ClInclude Include="Event.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Window.cpp" />

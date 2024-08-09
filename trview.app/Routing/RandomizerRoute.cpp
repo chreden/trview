@@ -323,9 +323,9 @@ namespace trview
         return _route->selected_waypoint();
     }
 
-    void RandomizerRoute::select_waypoint(uint32_t index)
+    void RandomizerRoute::select_waypoint(const std::weak_ptr<IWaypoint>& waypoint)
     {
-        return _route->select_waypoint(index);
+        return _route->select_waypoint(waypoint);
     }
 
     void RandomizerRoute::set_colour(const Colour& colour)

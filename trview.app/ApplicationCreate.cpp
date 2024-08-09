@@ -53,6 +53,7 @@
 #include "Windows/RouteWindowManager.h"
 #include "Windows/RoomsWindowManager.h"
 #include "Windows/TriggersWindowManager.h"
+#include "Windows/TriggersWindow.h"
 #include "Windows/Viewer.h"
 #include "Windows/Log/LogWindow.h"
 #include "Windows/Log/LogWindowManager.h"
@@ -71,6 +72,7 @@
 #include "UI/Fonts/Fonts.h"
 #include "Windows/Statics/StaticsWindowManager.h"
 #include "Windows/Statics/StaticsWindow.h"
+#include "Windows/Windows.h"
 
 namespace trview
 {
@@ -346,25 +348,26 @@ namespace trview
             std::move(viewer),
             route_source,
             shortcuts,
-            std::make_unique<ItemsWindowManager>(window, shortcuts, items_window_source),
-            std::make_unique<TriggersWindowManager>(window, shortcuts, triggers_window_source),
-            std::make_unique<RouteWindowManager>(window, shortcuts, route_window_source),
-            std::make_unique<RoomsWindowManager>(window, shortcuts, rooms_window_source),
             level_source,
             std::make_shared<StartupOptions>(command_line),
             dialogs,
             files,
             imgui_backend,
-            std::make_unique<LightsWindowManager>(window, shortcuts, lights_window_source),
-            std::make_unique<LogWindowManager>(window, log_window_source),
-            std::make_unique<TexturesWindowManager>(window, textures_window_source),
-            std::make_unique<CameraSinkWindowManager>(window, shortcuts, camera_sink_window_source),
-            std::make_unique<ConsoleManager>(window, shortcuts, console_source, files),
             plugins,
-            std::make_unique<PluginsWindowManager>(window, shortcuts, plugins_window_source),
             randomizer_route_source,
             fonts,
-            std::make_unique<StaticsWindowManager>(window, shortcuts, statics_window_source),
+            std::make_unique<Windows>(
+                std::make_unique<CameraSinkWindowManager>(window, shortcuts, camera_sink_window_source),
+                std::make_unique<ConsoleManager>(window, shortcuts, console_source, files),
+                std::make_unique<ItemsWindowManager>(window, shortcuts, items_window_source),
+                std::make_unique<LightsWindowManager>(window, shortcuts, lights_window_source),
+                std::make_unique<LogWindowManager>(window, log_window_source),
+                std::make_unique<PluginsWindowManager>(window, shortcuts, plugins_window_source),
+                std::make_unique<RoomsWindowManager>(window, shortcuts, rooms_window_source),
+                std::make_unique<RouteWindowManager>(window, shortcuts, route_window_source),
+                std::make_unique<StaticsWindowManager>(window, shortcuts, statics_window_source),
+                std::make_unique<TexturesWindowManager>(window, textures_window_source),
+                std::make_unique<TriggersWindowManager>(window, shortcuts, triggers_window_source)),
             Application::LoadMode::Async);
     }
 }
