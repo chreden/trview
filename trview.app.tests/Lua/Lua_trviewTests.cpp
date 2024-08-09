@@ -6,6 +6,7 @@
 #include <external/lua/src/lauxlib.h>
 #include <trview.app/Mocks/Routing/IRoute.h>
 #include <trview.app/Mocks/Routing/IRandomizerRoute.h>
+#include <trview.app/Mocks/Lua/IScriptable.h>
 #include "Lua.h"
 
 using namespace trview;
@@ -26,6 +27,7 @@ TEST(Lua_trview, Level)
         [](auto&&) { return mock_shared<MockRoute>(); },
         [](auto&&) { return mock_shared<MockRandomizerRoute>(); },
         [](auto&&...) { return mock_shared<MockWaypoint>(); },
+        [](auto&&...) { return mock_shared<MockScriptable>(); },
         mock_shared<MockDialogs>(),
         mock_shared<MockFiles>());
 
@@ -49,6 +51,7 @@ TEST(Lua_trview, RecentFiles)
         [](auto&&) { return mock_shared<MockRoute>(); },
         [](auto&&) { return mock_shared<MockRandomizerRoute>(); },
         [](auto&&...) { return mock_shared<MockWaypoint>(); },
+        [](auto&&...) { return mock_shared<MockScriptable>(); },
         mock_shared<MockDialogs>(),
         mock_shared<MockFiles>());
 
@@ -72,6 +75,7 @@ TEST(Lua_trview, SetLevel)
         [](auto&&) { return mock_shared<MockRoute>(); },
         [](auto&&) { return mock_shared<MockRandomizerRoute>(); },
         [](auto&&...) { return mock_shared<MockWaypoint>(); },
+        [](auto&&...) { return mock_shared<MockScriptable>(); },
         mock_shared<MockDialogs>(),
         mock_shared<MockFiles>());
 
@@ -93,6 +97,7 @@ TEST(Lua_trview, Route)
         [](auto&&) { return mock_shared<MockRoute>(); },
         [](auto&&) { return mock_shared<MockRandomizerRoute>(); },
         [](auto&&...) { return mock_shared<MockWaypoint>(); },
+        [](auto&&...) { return mock_shared<MockScriptable>(); },
         mock_shared<MockDialogs>(),
         mock_shared<MockFiles>());
 
@@ -110,6 +115,7 @@ TEST(Lua_trview, SetRoute)
         [](auto&&) { return mock_shared<MockRoute>(); },
         [](auto&&) { return mock_shared<MockRandomizerRoute>(); },
         [](auto&&...) { return mock_shared<MockWaypoint>(); },
+        [](auto&&...) { return mock_shared<MockScriptable>(); },
         mock_shared<MockDialogs>(),
         mock_shared<MockFiles>());
 

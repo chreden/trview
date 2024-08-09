@@ -7,6 +7,7 @@
 #include "../Trigger/Lua_Trigger.h"
 #include "../Light/Lua_Light.h"
 #include "../StaticMesh/Lua_StaticMesh.h"
+#include "../../Scriptable/IScriptable.h"
 
 namespace trview
 {
@@ -14,19 +15,32 @@ namespace trview
     {
         namespace
         {
+            int level_addscriptable(lua_State* L)
+            {
+                auto level = lua::get_self<ILevel>(L);
+                auto scriptable = lua::get_self<IScriptable>(L, -1);
+                level->add_scriptable(scriptable);
+                return 0;
+            }
+
             int level_index(lua_State* L)
             {
                 auto level = lua::get_self<ILevel>(L);
 
                 const std::string key = lua_tostring(L, 2);
-                if (key == "cameras_and_sinks")
+                if (key == "add_scriptable")
                 {
-                    return push_list_p(L, level->camera_sinks(), create_camera_sink);
+                    lua_pushcfunction(L, level_addscriptable);
+                    return 1;
                 }
                 else if (key == "alternate_mode")
                 {
                     lua_pushboolean(L, level->alternate_mode());
                     return 1;
+                }
+                else if (key == "cameras_and_sinks")
+                {
+                    return push_list_p(L, level->camera_sinks(), create_camera_sink);
                 }
                 else if (key == "filename")
                 {

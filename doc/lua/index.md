@@ -11,6 +11,7 @@
 - [Level](level.md)
 - [Room](room.md)
 - [Route](route.md)
+- [Scriptable](scriptable.md)
 - [Sector](sector.md)
 - [Static_mesh](staticmesh.md)
 - [Trigger](trigger.md)

@@ -65,6 +65,7 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClCompile Include="Lua\Elements\Trigger\Lua_Trigger.cpp" />
     <ClCompile Include="Lua\Route\Lua_Route.cpp" />
     <ClCompile Include="Lua\Route\Lua_Waypoint.cpp" />
+    <ClCompile Include="Lua\Scriptable\Scriptable.cpp" />
     <ClCompile Include="Lua\trview\trview.cpp" />
     <ClCompile Include="Lua\Vector3.cpp" />
     <ClCompile Include="Menus\FileMenu.cpp" />
@@ -76,6 +77,9 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClCompile Include="Plugins\Plugins.cpp" />
     <ClCompile Include="Routing\RandomizerRoute.cpp" />
     <ClCompile Include="Windows\Windows.cpp" />
+    <ClInclude Include="Lua\Scriptable\IScriptable.h" />
+    <ClInclude Include="Lua\Scriptable\Scriptable.h" />
+    <ClInclude Include="Mocks\Lua\IScriptable.h" />
     <ClInclude Include="Mocks\UI\IFonts.h" />
     <ClInclude Include="Mocks\Windows\IStaticsWindow.h" />
     <ClInclude Include="Mocks\Windows\IStaticsWindowManager.h" />

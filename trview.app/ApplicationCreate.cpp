@@ -35,6 +35,7 @@
 #include "Graphics/MeshStorage.h"
 #include "Graphics/SelectionRenderer.h"
 #include "Graphics/SectorHighlight.h"
+#include "Lua/Scriptable/Scriptable.h"
 #include "Menus/FileMenu.h"
 #include "Menus/UpdateChecker.h"
 #include "Routing/Waypoint.h"
@@ -281,13 +282,15 @@ namespace trview
                 return new_level;
             };
 
+        auto scriptable_source = [=](auto state) { return std::make_shared<Scriptable>(state, create_cube_mesh(mesh_source), texture_storage->coloured(Colour::White)); };
+
         auto dialogs = std::make_shared<Dialogs>(window);
         auto shell = std::make_shared<Shell>();
 
-        auto plugin_source = [=](auto&&... args) { return std::make_shared<Plugin>(files, std::make_unique<Lua>(route_source, randomizer_route_source, waypoint_source, dialogs, files), args...); };
+        auto plugin_source = [=](auto&&... args) { return std::make_shared<Plugin>(files, std::make_unique<Lua>(route_source, randomizer_route_source, waypoint_source, scriptable_source, dialogs, files), args...); };
         auto plugins = std::make_shared<Plugins>(
             files,
-            std::make_shared<Plugin>(std::make_unique<Lua>(route_source, randomizer_route_source, waypoint_source, dialogs, files), "Default", "trview", "Default Lua plugin for trview"),
+            std::make_shared<Plugin>(std::make_unique<Lua>(route_source, randomizer_route_source, waypoint_source, scriptable_source, dialogs, files), "Default", "trview", "Default Lua plugin for trview"),
             plugin_source,
             settings_loader->load_user_settings());
         auto plugins_window_source = [=]() { return std::make_shared<PluginsWindow>(plugins, shell); };
