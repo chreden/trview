@@ -18,11 +18,7 @@ namespace trview
                 auto scriptable = get_self<IScriptable>(L);
                 const std::string key = lua_tostring(L, 2);
 
-                if (key == "click")
-                {
-                    scriptable->click();
-                }
-                else if (key == "data")
+                if (key == "data")
                 {
                     int ref = scriptable->data();
                     lua_rawgeti(L, LUA_REGISTRYINDEX, ref);
