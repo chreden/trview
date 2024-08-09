@@ -176,15 +176,15 @@ TEST(Lua_CameraSink, TriggeredBy)
     lua::create_camera_sink(L, cs);
     lua_setglobal(L, "c");
 
-    ASSERT_EQ(0, luaL_dostring(L, "return c.triggered_by"));
+    ASSERT_EQ(0, luaL_dostring(L, "return c.trigger_references"));
     ASSERT_EQ(LUA_TTABLE, lua_type(L, -1));
-    ASSERT_EQ(0, luaL_dostring(L, "return #c.triggered_by"));
+    ASSERT_EQ(0, luaL_dostring(L, "return #c.trigger_references"));
     ASSERT_EQ(LUA_TNUMBER, lua_type(L, -1));
     ASSERT_EQ(2, lua_tointeger(L, -1));
-    ASSERT_EQ(0, luaL_dostring(L, "return c.triggered_by[1].number"));
+    ASSERT_EQ(0, luaL_dostring(L, "return c.trigger_references[1].number"));
     ASSERT_EQ(LUA_TNUMBER, lua_type(L, -1));
     ASSERT_EQ(100, lua_tointeger(L, -1));
-    ASSERT_EQ(0, luaL_dostring(L, "return c.triggered_by[2].number"));
+    ASSERT_EQ(0, luaL_dostring(L, "return c.trigger_references[2].number"));
     ASSERT_EQ(LUA_TNUMBER, lua_type(L, -1));
     ASSERT_EQ(200, lua_tointeger(L, -1));
 }

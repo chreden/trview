@@ -13,7 +13,7 @@ Cameras and Sinks share a data type, so this type provides access to both sets o
 | position | [Vector3](vector3.md) | R | Position of the camera/sink |
 | room | [Room](room.md) | R | Room that contains the Camera |
 | type | string | RW | Type: `Camera` or `Sink` |
-| triggered_by | [Trigger](trigger.md)[] | R | Triggers that reference the camera | 
+| trigger_references | [Trigger](trigger.md)[] | R | Triggers that reference the camera | 
 | visible | boolean | RW | Whether the room is visible in the viewer |
 
 # Sink Properties
@@ -25,5 +25,5 @@ Cameras and Sinks share a data type, so this type provides access to both sets o
 | position | [Vector3](vector3.md) | R | Position of the camera/sink |
 | strength | number | R | How quickly this moves Lara |
 | type | string | RW | Type: `Camera` or `Sink` |
-| triggered_by | [Trigger](trigger.md)[] | R | Triggers that reference the sink | 
+| trigger_references | [Trigger](trigger.md)[] | R | Triggers that reference the sink | 
 | visible | boolean | RW | Whether the room is visible in the viewer |

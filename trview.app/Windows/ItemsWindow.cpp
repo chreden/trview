@@ -267,7 +267,7 @@ namespace trview
             {
                 on_add_to_route(_selected_item);
             }
-            ImGui::Text("Triggered By");
+            ImGui::Text("Trigger References");
             if (ImGui::BeginTable(Names::triggers_list.c_str(), 3, ImGuiTableFlags_ScrollY | ImGuiTableFlags_Sortable | ImGuiTableFlags_SizingFixedFit, ImVec2(-1, -1)))
             {
                 ImGui::TableSetupColumn("#");
@@ -406,7 +406,7 @@ namespace trview
         _filters.add_getter<bool>("Invisible", [](auto&& item) { return item.invisible_flag(); });
         _filters.add_getter<std::string>("Flags", [](auto&& item) { return format_binary(item.activation_flags()); });
         _filters.add_getter<float>("OCB", [](auto&& item) { return static_cast<float>(item.ocb()); });
-        _filters.add_multi_getter<float>("Triggered By", [](auto&& item)
+        _filters.add_multi_getter<float>("Trigger References", [](auto&& item)
             {
                 std::vector<float> results;
                 for (auto trigger : item.triggers())
