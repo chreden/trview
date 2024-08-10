@@ -9,6 +9,7 @@
 #include "../Route/Lua_Waypoint.h"
 #include "../Colour.h"
 #include "../Vector3.h"
+#include "../Scriptable/IScriptable.h"
 #include "Lua/Lua.h"
 
 #include <future>
@@ -134,6 +135,7 @@ namespace trview
             const IRoute::Source& route_source,
             const IRandomizerRoute::Source& randomizer_route_source,
             const IWaypoint::Source& waypoint_source,
+            const IScriptable::Source& scriptable_source,
             const std::shared_ptr<IDialogs>& dialogs,
             const std::shared_ptr<IFiles>& files)
         {
@@ -154,6 +156,7 @@ namespace trview
             waypoint_register(L, waypoint_source);
             colour_register(L);
             vector3_register(L);
+            scriptable_register(L, scriptable_source);
         }
 
         void set_settings(const UserSettings& settings)

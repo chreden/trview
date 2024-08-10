@@ -184,6 +184,14 @@ namespace trview
                 }
                 break;
             }
+            case PickResult::Type::Scriptable:
+            {
+                if (const auto scriptable = result.scriptable.lock())
+                {
+                    stream << scriptable->tooltip();
+                }
+                break;
+            }
         }
 
         return stream.str();

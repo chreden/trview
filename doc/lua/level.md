@@ -18,3 +18,9 @@ The Level library provides information about the currently loaded Level in trvie
 | static_meshes | [StaticMesh](staticmesh.md)[] | R | All static meshes |
 | triggers | [Trigger](trigger.md)[] | R | All triggers |
 | version | number | R | The game number for which this level was made |
+
+# Functions
+
+| Name | Returns | Parameters | Description |
+| ---- | ------- | ---------- | ----------- |
+| add_scriptable | | [Scriptable](scriptable.md) | Add a scriptable to the level. Level does not own the scriptable. |

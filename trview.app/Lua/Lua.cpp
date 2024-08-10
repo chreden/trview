@@ -68,8 +68,8 @@ namespace trview
     {
     }
 
-    Lua::Lua(const IRoute::Source& route_source, const IRandomizerRoute::Source& randomizer_route_source, const IWaypoint::Source& waypoint_source, const std::shared_ptr<IDialogs>& dialogs, const std::shared_ptr<IFiles>& files)
-        : _route_source(route_source), _randomizer_route_source(randomizer_route_source), _waypoint_source(waypoint_source), _dialogs(dialogs), _files(files)
+    Lua::Lua(const IRoute::Source& route_source, const IRandomizerRoute::Source& randomizer_route_source, const IWaypoint::Source& waypoint_source, const IScriptable::Source& scriptable_source, const std::shared_ptr<IDialogs>& dialogs, const std::shared_ptr<IFiles>& files)
+        : _route_source(route_source), _randomizer_route_source(randomizer_route_source), _waypoint_source(waypoint_source), _scriptable_source(scriptable_source), _dialogs(dialogs), _files(files)
     {
         create_state();
     }
@@ -125,7 +125,7 @@ namespace trview
         *userdata = this;
         lua_pushcclosure(L, dofile, 1);
         lua_setglobal(L, "dofile");
-        lua::trview_register(L, application, _route_source, _randomizer_route_source, _waypoint_source, _dialogs, _files);
+        lua::trview_register(L, application, _route_source, _randomizer_route_source, _waypoint_source, _scriptable_source, _dialogs, _files);
         lua::imgui_register(L);
     }
 
