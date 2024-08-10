@@ -1,5 +1,6 @@
 #include "Camera.h"
 #include <trview.common/Maths.h>
+#include "Settings/UserSettings.h"
 
 namespace trview
 {
@@ -9,10 +10,16 @@ namespace trview
     {
         const float max_zoom = 100.0f;
         const float min_zoom = 0.1f;
+        const float movement_speed_multiplier = 23.0f;
 
         float angle_to(float current, float target)
         {
             return atan2(sin(target - current), cos(target - current));
+        }
+
+        Camera::Alignment camera_mode_to_alignment(ICamera::Mode mode)
+        {
+            return mode == ICamera::Mode::Axis ? Camera::Alignment::Axis : Camera::Alignment::Camera;
         }
     }
 
@@ -138,8 +145,11 @@ namespace trview
         return _up;
     }
 
-    void Camera::update(float elapsed)
+    void Camera::update(float elapsed, const DirectX::SimpleMath::Vector3& movement)
     {
+        free_update(elapsed, movement);
+
+
         const float speed = 10.0f;
 
         if (_last_rotation.has_value())
@@ -258,5 +268,125 @@ namespace trview
     {
         _fov = value;
         calculate_projection_matrix();
+    }
+
+    void Camera::set_settings(const UserSettings& settings)
+    {
+        set_fov(settings.fov);
+
+        _acceleration_enabled = settings.camera_acceleration;;
+        _acceleration_rate = settings.camera_acceleration_rate;
+
+        if (!_acceleration_enabled)
+        {
+            _acceleration = 1.0f;
+        }
+    }
+
+    void Camera::move(const Vector3& movement, float elapsed)
+    {
+        update_acceleration(movement, elapsed);
+
+        // Scale the movement by elapsed time to keep it framerate independent - also apply
+        // camera movement acceleration if present.
+        auto scaled_movement = movement * elapsed * _acceleration;
+
+        if (_projection_mode == ProjectionMode::Orthographic)
+        {
+            auto rotate = Matrix::CreateFromYawPitchRoll(_rotation_yaw, _rotation_pitch, 0);
+            _position += Vector3::Transform(Vector3(scaled_movement.x, -scaled_movement.z, 0), rotate);
+        }
+        else
+        {
+            if (_alignment == Alignment::Camera)
+            {
+                auto rotate = Matrix::CreateFromYawPitchRoll(_rotation_yaw, _rotation_pitch, 0);
+                _position += Vector3(0, scaled_movement.y, 0) + Vector3::Transform(Vector3(scaled_movement.x, 0, scaled_movement.z), rotate);
+            }
+            else if (_alignment == Alignment::Axis)
+            {
+                _position += scaled_movement;
+            }
+        }
+
+        if (scaled_movement.LengthSquared() > 0)
+        {
+            calculate_view_matrix();
+        }
+    }
+
+    void Camera::update_acceleration(const Vector3& movement, float elapsed)
+    {
+        if (!_acceleration_enabled)
+        {
+            _acceleration = 1.0f;
+        }
+        else if (movement.LengthSquared() == 0)
+        {
+            _acceleration = 0.0f;
+        }
+        else
+        {
+            _acceleration = std::min(_acceleration + std::max(_acceleration_rate, 0.1f) * elapsed, 1.0f);
+        }
+    }
+
+    void Camera::free_update(float elapsed, const DirectX::SimpleMath::Vector3& movement)
+    {
+        if (_mode == Mode::Free || _mode == Mode::Axis)
+        {
+            const float Speed = std::max(0.01f, _movement_speed) * movement_speed_multiplier;
+            move(movement * Speed, elapsed);
+        }
+    }
+
+    void Camera::update_vectors()
+    {
+        if (_mode == Mode::Orbit)
+        {
+            auto rotate = Matrix::CreateFromYawPitchRoll(_rotation_yaw, _rotation_pitch, 0);
+            _position = Vector3::Transform(Vector3(0, 0, -_zoom), rotate) + _target;
+            _up = Vector3::Transform(Vector3::Down, rotate);
+            (_target - _position).Normalize(_forward);
+            calculate_view_matrix();
+        }
+        else if (_mode == Mode::Free || _mode == Mode::Axis)
+        {
+            const auto rotation = Matrix::CreateFromYawPitchRoll(_rotation_yaw, _rotation_pitch, 0);
+            _forward = Vector3::Transform(Vector3::Backward, rotation);
+            _up = Vector3::Transform(Vector3::Down, rotation);
+            calculate_view_matrix();
+        }
+    }
+
+    void Camera::set_target(const Vector3& target)
+    {
+        _target = target;
+        update_vectors();
+    }
+
+    void Camera::set_position(const DirectX::SimpleMath::Vector3& position)
+    {
+        _position = position;
+        calculate_view_matrix();
+    }
+
+    void Camera::set_mode(Mode mode)
+    {
+        _mode = mode;
+        _alignment = camera_mode_to_alignment(mode);
+    }
+
+    void Camera::reset()
+    {
+        set_rotation_yaw(default_yaw);
+        set_rotation_pitch(default_pitch);
+        set_zoom(default_zoom);
+        _last_rotation.reset();
+    }
+
+    DirectX::SimpleMath::Vector3 Camera::target() const
+    {
+        return _target;
     }
 }

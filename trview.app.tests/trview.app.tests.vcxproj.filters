@@ -3,8 +3,7 @@
   <ItemGroup>
     <ClCompile Include="WindowResizerTests.cpp" />
     <ClCompile Include="FileMenuTests.cpp" />
-    <ClCompile Include="FreeCameraTests.cpp" />
-    <ClCompile Include="OrbitCameraTests.cpp" />
+    <ClCompile Include="CameraTests.cpp" />
     <ClCompile Include="AlternateGroupTogglerTests.cpp">
       <Filter>Input</Filter>
     </ClCompile>

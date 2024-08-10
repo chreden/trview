@@ -21,17 +21,17 @@ namespace trview
         {
             case 'F':
             {
-                on_mode_change(CameraMode::Free);
+                on_mode_change(ICamera::Mode::Free);
                 break;
             }
             case 'O':
             {
-                on_mode_change(CameraMode::Orbit);
+                on_mode_change(ICamera::Mode::Orbit);
                 break;
             }
             case 'X':
             {
-                on_mode_change(CameraMode::Axis);
+                on_mode_change(ICamera::Mode::Axis);
                 break;
             }
             case 'Q':

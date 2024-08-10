@@ -17,10 +17,8 @@
 #include <trview.input/IMouse.h>
 #include <trview.common/TokenStore.h>
 
-#include <trview.app/Camera/FreeCamera.h>
-#include <trview.app/Camera/OrbitCamera.h>
+#include <trview.app/Camera/Camera.h>
 #include <trview.app/Camera/CameraInput.h>
-#include <trview.app/Camera/CameraMode.h>
 #include <trview.app/Elements/Level.h>
 #include <trview.app/Settings/UserSettings.h>
 #include <trview.app/Windows/WindowResizer.h>
@@ -61,9 +59,11 @@ namespace trview
             const graphics::IRenderTarget::SizeSource& render_target_source,
             const graphics::IDeviceWindow::Source& device_window_source,
             std::unique_ptr<ISectorHighlight> sector_highlight,
-            const std::shared_ptr<IClipboard>& clipboard);
+            const std::shared_ptr<IClipboard>& clipboard,
+            const std::shared_ptr<ICamera>& camera);
         virtual ~Viewer() = default;
-        virtual CameraMode camera_mode() const override;
+        std::weak_ptr<ICamera> camera() const override;
+        virtual ICamera::Mode camera_mode() const override;
         virtual void render() override;
         virtual void render_ui() override;
         virtual void present(bool vsync) override;
@@ -73,7 +73,7 @@ namespace trview
         void select_room(const std::weak_ptr<IRoom>& room) override;
         virtual void select_trigger(const std::weak_ptr<ITrigger>& trigger) override;
         virtual void select_waypoint(const std::weak_ptr<IWaypoint>& waypoint) override;
-        virtual void set_camera_mode(CameraMode camera_mode) override;
+        virtual void set_camera_mode(ICamera::Mode camera_mode) override;
         virtual void set_route(const std::shared_ptr<IRoute>& route) override;
         virtual void set_show_compass(bool value) override;
         virtual void set_show_minimap(bool value) override;
@@ -85,8 +85,6 @@ namespace trview
         virtual bool ui_input_active() const override;
         virtual void select_light(const std::weak_ptr<ILight>& light) override;
         virtual std::optional<int> process_message(UINT message, WPARAM wParam, LPARAM lParam) override;
-        const ICamera& current_camera() const;
-        ICamera& current_camera();
         virtual DirectX::SimpleMath::Vector3 target() const override;
         virtual void set_target(const DirectX::SimpleMath::Vector3& target) override;
         virtual void select_sector(const std::weak_ptr<ISector>& sector) override;
@@ -138,12 +136,11 @@ namespace trview
         std::unique_ptr<graphics::IDeviceWindow> _main_window;
         std::weak_ptr<ILevel> _level;
         Timer _timer;
-        OrbitCamera _camera;
-        FreeCamera _free_camera;
+        std::shared_ptr<ICamera> _camera;
         input::Keyboard _keyboard;
         std::unique_ptr<input::IMouse> _mouse;
         std::unique_ptr<IViewerUI> _ui;
-        CameraMode _camera_mode{ CameraMode::Orbit };
+        ICamera::Mode _camera_mode{ ICamera::Mode::Orbit };
         CameraInput _camera_input;
         UserSettings _settings;
         std::unique_ptr<IPicking> _picking;
@@ -152,7 +149,6 @@ namespace trview
         TokenStore _token_store;
         TokenStore _level_token_store;
         AlternateGroupToggler _alternate_group_toggler;
-        DirectX::SimpleMath::Vector3 _target;
         bool _show_selection{ true };
         std::unique_ptr<ISectorHighlight> _sector_highlight;
         MenuDetector _menu_detector;

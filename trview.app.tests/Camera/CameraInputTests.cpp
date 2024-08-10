@@ -8,8 +8,8 @@ TEST(CameraInput, EnterFreeMode)
 {
     CameraInput subject;
 
-    std::optional<CameraMode> mode;
-    auto token = subject.on_mode_change += [&mode](CameraMode new_mode)
+    std::optional<ICamera::Mode> mode;
+    auto token = subject.on_mode_change += [&mode](ICamera::Mode new_mode)
     {
         mode = new_mode;
     };
@@ -17,7 +17,7 @@ TEST(CameraInput, EnterFreeMode)
     subject.key_down(L'F', false);
 
     ASSERT_TRUE(mode.has_value());
-    ASSERT_EQ(CameraMode::Free, mode.value());
+    ASSERT_EQ(ICamera::Mode::Free, mode.value());
 }
 
 /// Tests that when the appropriate shortcut key is pressed the event
@@ -26,8 +26,8 @@ TEST(CameraInput, EnterAxisMode)
 {
     CameraInput subject;
 
-    std::optional<CameraMode> mode;
-    auto token = subject.on_mode_change += [&mode](CameraMode new_mode)
+    std::optional<ICamera::Mode> mode;
+    auto token = subject.on_mode_change += [&mode](ICamera::Mode new_mode)
     {
         mode = new_mode;
     };
@@ -35,7 +35,7 @@ TEST(CameraInput, EnterAxisMode)
     subject.key_down(L'X', false);
 
     ASSERT_TRUE(mode.has_value());
-    ASSERT_EQ(CameraMode::Axis, mode.value());
+    ASSERT_EQ(ICamera::Mode::Axis, mode.value());
 }
 
 /// Tests that when the appropriate shortcut key is pressed the event
@@ -44,8 +44,8 @@ TEST(CameraInput, EnterOrbitMode)
 {
     CameraInput subject;
 
-    std::optional<CameraMode> mode;
-    auto token = subject.on_mode_change += [&mode](CameraMode new_mode)
+    std::optional<ICamera::Mode> mode;
+    auto token = subject.on_mode_change += [&mode](ICamera::Mode new_mode)
     {
         mode = new_mode;
     };
@@ -53,7 +53,7 @@ TEST(CameraInput, EnterOrbitMode)
     subject.key_down(L'O', false);
 
     ASSERT_TRUE(mode.has_value());
-    ASSERT_EQ(CameraMode::Orbit, mode.value());
+    ASSERT_EQ(ICamera::Mode::Orbit, mode.value());
 }
 
 /// Tests that when the mouse is scrolled down the zoom event is raised.
@@ -153,8 +153,8 @@ TEST(CameraInput, ControlBlocks)
 
     CameraInput subject;
 
-    std::set<CameraMode> modes;
-    auto token = subject.on_mode_change += [&modes](CameraMode mode)
+    std::set<ICamera::Mode> modes;
+    auto token = subject.on_mode_change += [&modes](ICamera::Mode mode)
     {
         modes.insert(mode);
     };

@@ -186,15 +186,15 @@ TEST(ViewerUI, CameraControlsModeSelectedEventRaised)
     auto [camera_controls_ptr, camera_controls] = create_mock<MockCameraControls>();
     auto ui = register_test_module().with_camera_controls(std::move(camera_controls_ptr)).build();
 
-    std::optional<CameraMode> raised;
+    std::optional<ICamera::Mode> raised;
     auto token = ui->on_camera_mode += [&](auto mode)
     {
         raised = mode;
     };
 
-    camera_controls.on_mode_selected(CameraMode::Free);
+    camera_controls.on_mode_selected(ICamera::Mode::Free);
     ASSERT_TRUE(raised);
-    ASSERT_EQ(raised.value(), CameraMode::Free);
+    ASSERT_EQ(raised.value(), ICamera::Mode::Free);
 }
 
 TEST(ViewerUI, CameraControlsProjectionModeSelectedEventRaised)
@@ -217,9 +217,9 @@ TEST(ViewerUI, SetCameraModeUpdatesCameraControls)
 {
     auto [camera_controls_ptr, camera_controls] = create_mock<MockCameraControls>();
     auto ui = register_test_module().with_camera_controls(std::move(camera_controls_ptr)).build();
-    EXPECT_CALL(camera_controls, set_mode(CameraMode::Orbit)).Times(1);
+    EXPECT_CALL(camera_controls, set_mode(ICamera::Mode::Orbit)).Times(1);
 
-    ui->set_camera_mode(CameraMode::Orbit);
+    ui->set_camera_mode(ICamera::Mode::Orbit);
 }
 
 TEST(ViewerUI, SetCameraProjectionModeUpdatesCameraControls)

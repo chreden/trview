@@ -26,7 +26,7 @@ namespace trview
 
         virtual ~CameraControls() = default;
         virtual void render() override;
-        virtual void set_mode(CameraMode mode) override;
+        virtual void set_mode(ICamera::Mode mode) override;
         virtual void set_projection_mode(ProjectionMode mode) override;
     private:
         /// <summary>
@@ -34,7 +34,7 @@ namespace trview
         /// </summary>
         /// <param name="mode">The new camera mode.</param>
         /// <remarks>This will raise the on_mode_selected event.</remarks>
-        void change_mode(CameraMode mode);
+        void change_mode(ICamera::Mode mode);
         /// <summary>
         /// Set the current camera projection mode.
         /// </summary>
@@ -42,7 +42,7 @@ namespace trview
         /// <remarks>This will raise the on_projection_mode_selected event</remarks>
         void change_projection(ProjectionMode mode);
 
-        CameraMode _mode{ CameraMode::Orbit };
+        ICamera::Mode _mode{ ICamera::Mode::Orbit };
         ProjectionMode _projection_mode{ ProjectionMode::Perspective };
     };
 }

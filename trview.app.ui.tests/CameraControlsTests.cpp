@@ -12,7 +12,7 @@ void register_camera_controls_tests(ImGuiTestEngine* engine)
         [](ImGuiTestContext* ctx)
         {
             auto& controls = ctx->GetVars<CameraControls>();
-            std::optional<CameraMode> selected_mode;
+            std::optional<ICamera::Mode> selected_mode;
             auto token = controls.on_mode_selected += [&](auto mode)
             {
                 selected_mode = mode;
@@ -22,7 +22,7 @@ void register_camera_controls_tests(ImGuiTestEngine* engine)
             ctx->ComboClick("##Mode/Axis");
 
             IM_CHECK_EQ(selected_mode.has_value(), true);
-            IM_CHECK_EQ(selected_mode.value(), CameraMode::Axis);
+            IM_CHECK_EQ(selected_mode.value(), ICamera::Mode::Axis);
         });
 
     test<CameraControls>(engine, "Camera Controls", "Free Raises Mode Selected",
@@ -30,7 +30,7 @@ void register_camera_controls_tests(ImGuiTestEngine* engine)
         [](ImGuiTestContext* ctx)
         {
             auto& controls = ctx->GetVars<CameraControls>();
-            std::optional<CameraMode> selected_mode;
+            std::optional<ICamera::Mode> selected_mode;
             auto token = controls.on_mode_selected += [&](auto mode)
             {
                 selected_mode = mode;
@@ -40,7 +40,7 @@ void register_camera_controls_tests(ImGuiTestEngine* engine)
             ctx->ComboClick("##Mode/Free");
 
             IM_CHECK_EQ(selected_mode.has_value(), true);
-            IM_CHECK_EQ(selected_mode.value(), CameraMode::Free);
+            IM_CHECK_EQ(selected_mode.value(), ICamera::Mode::Free);
         });
 
     test<CameraControls>(engine, "Camera Controls", "Orbit Raises Mode Selected",
@@ -48,7 +48,7 @@ void register_camera_controls_tests(ImGuiTestEngine* engine)
         [](ImGuiTestContext* ctx)
         {
             auto& controls = ctx->GetVars<CameraControls>();
-            std::optional<CameraMode> selected_mode;
+            std::optional<ICamera::Mode> selected_mode;
             auto token = controls.on_mode_selected += [&](auto mode)
             {
                 selected_mode = mode;
@@ -58,7 +58,7 @@ void register_camera_controls_tests(ImGuiTestEngine* engine)
             ctx->ComboClick("##Mode/Orbit");
 
             IM_CHECK_EQ(selected_mode.has_value(), true);
-            IM_CHECK_EQ(selected_mode.value(), CameraMode::Orbit);
+            IM_CHECK_EQ(selected_mode.value(), ICamera::Mode::Orbit);
         });
 
     test<CameraControls>(engine, "Camera Controls", "Ortho Raises Projection Mode",
@@ -123,7 +123,7 @@ void register_camera_controls_tests(ImGuiTestEngine* engine)
 
             auto id = ctx->ItemInfo("##Mode")->ID;
             IM_CHECK_EQ(ItemText(ctx, id), "Orbit");
-            controls.set_mode(CameraMode::Axis);
+            controls.set_mode(ICamera::Mode::Axis);
             ctx->Yield();
             IM_CHECK_EQ(ItemText(ctx, id), "Axis");
         });

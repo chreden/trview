@@ -8,7 +8,7 @@ namespace trview
 
     // Set the current camera mode and raise the on_mode_selected event.
     // mode: The new camera mode.
-    void CameraControls::change_mode(CameraMode mode)
+    void CameraControls::change_mode(ICamera::Mode mode)
     {
         _mode = mode;
         on_mode_selected(_mode);
@@ -30,10 +30,10 @@ namespace trview
             {
                 for (std::size_t n = 0; n < mode_items.size(); ++n)
                 {
-                    bool is_selected = _mode == static_cast<CameraMode>(n);
+                    bool is_selected = _mode == static_cast<ICamera::Mode>(n);
                     if (ImGui::Selectable(mode_items[n].c_str(), is_selected))
                     {
-                        change_mode(static_cast<CameraMode>(n));
+                        change_mode(static_cast<ICamera::Mode>(n));
                     }
 
                     if (is_selected)
@@ -73,7 +73,7 @@ namespace trview
 
     // Set the current camera mode. This will not raise the on_mode_selected event.
     // mode: The camera mode to change to.
-    void CameraControls::set_mode(CameraMode mode)
+    void CameraControls::set_mode(ICamera::Mode mode)
     {
         _mode = mode;
     }

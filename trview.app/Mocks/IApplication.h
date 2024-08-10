@@ -18,6 +18,7 @@ namespace trview
             MOCK_METHOD(void, set_current_level, (const std::shared_ptr<ILevel>&, ILevel::OpenMode, bool), (override));
             MOCK_METHOD(void, set_route, (const std::shared_ptr<IRoute>&), (override));
             MOCK_METHOD(UserSettings, settings, (), (const, override));
+            MOCK_METHOD(std::weak_ptr<IViewer>, viewer, (), (const, override));
         };
     }
 }

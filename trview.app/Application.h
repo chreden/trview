@@ -40,6 +40,7 @@ namespace trview
         virtual void set_current_level(const std::shared_ptr<ILevel>& level, ILevel::OpenMode open_mode, bool prompt_user) = 0;
         virtual void set_route(const std::shared_ptr<IRoute>& route) = 0;
         virtual UserSettings settings() const = 0;
+        virtual std::weak_ptr<IViewer> viewer() const = 0;
         Event<> on_closing;
     };
 
@@ -58,7 +59,7 @@ namespace trview
             std::shared_ptr<ISettingsLoader> settings_loader,
             const trlevel::ILevel::Source& trlevel_source,
             std::unique_ptr<IFileMenu> file_menu,
-            std::unique_ptr<IViewer> viewer,
+            std::shared_ptr<IViewer> viewer,
             const IRoute::Source& route_source,
             std::shared_ptr<IShortcuts> shortcuts,
             const ILevel::Source& level_source,
@@ -85,6 +86,7 @@ namespace trview
         void set_current_level(const std::shared_ptr<ILevel>& level, ILevel::OpenMode open_mode, bool prompt_user) override;
         void set_route(const std::shared_ptr<IRoute>& route) override;
         UserSettings settings() const override;
+        std::weak_ptr<IViewer> viewer() const override;
     private:
         // Window setup functions.
         void setup_view_menu();
@@ -149,7 +151,7 @@ namespace trview
         std::shared_ptr<IRoute> _route;
 
         // Windows
-        std::unique_ptr<IViewer> _viewer;
+        std::shared_ptr<IViewer> _viewer;
         std::unique_ptr<IWindows> _windows;
         Timer _timer;
         std::optional<std::pair<std::string, FontSetting>> _new_font;

@@ -19,7 +19,7 @@ namespace trview
             MOCK_METHOD(void, set_alternate_groups, (const std::set<uint32_t>&), (override));
             MOCK_METHOD(void, set_camera_position, (const DirectX::SimpleMath::Vector3&), (override));
             MOCK_METHOD(void, set_camera_rotation, (float, float), (override));
-            MOCK_METHOD(void, set_camera_mode, (CameraMode), (override));
+            MOCK_METHOD(void, set_camera_mode, (ICamera::Mode), (override));
             MOCK_METHOD(void, set_camera_projection_mode, (ProjectionMode), (override));
             MOCK_METHOD(void, set_flip_enabled, (bool), (override));
             MOCK_METHOD(void, set_hide_enabled, (bool), (override));

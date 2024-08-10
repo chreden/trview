@@ -9,7 +9,6 @@
 #include "../Elements/ILevel.h"
 #include "../Routing/IRoute.h"
 #include "../Settings/UserSettings.h"
-#include "../Camera/CameraMode.h"
 
 namespace trview
 {
@@ -84,7 +83,9 @@ namespace trview
 
         Event<std::weak_ptr<IStaticMesh>> on_static_mesh_selected;
 
-        virtual CameraMode camera_mode() const = 0;
+        virtual std::weak_ptr<ICamera> camera() const = 0;
+
+        virtual ICamera::Mode camera_mode() const = 0;
 
         /// Render the viewer.
         virtual void render() = 0;
@@ -119,7 +120,7 @@ namespace trview
         /// @remarks This will not raise the on_waypoint_selected event.
         virtual void select_waypoint(const std::weak_ptr<IWaypoint>& waypoint) = 0;
 
-        virtual void set_camera_mode(CameraMode camera_mode) = 0;
+        virtual void set_camera_mode(ICamera::Mode camera_mode) = 0;
 
         /// Set the current route.
         /// @param route The new route.

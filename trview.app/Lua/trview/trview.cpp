@@ -3,6 +3,7 @@
 #include "../../Application.h"
 #include <trlevel/LevelEncryptedException.h>
 #include "../../UserCancelledException.h"
+#include "../Camera/Lua_Camera.h"
 #include "../Elements/Room/Lua_Room.h"
 #include "../Elements/Sector/Lua_Sector.h"
 #include "../Route/Lua_Route.h"
@@ -76,7 +77,14 @@ namespace trview
                 auto application = lua::get_self_raw<IApplication>(L);
 
                 const std::string key = lua_tostring(L, 2);
-                if (key == "level")
+                if (key == "camera")
+                {
+                    if (const auto viewer = application->viewer().lock())
+                    {
+                        return create_camera(L, viewer->camera().lock());
+                    }
+                }
+                else if (key == "level")
                 {
                     return create_level(L, application->current_level().lock());
                 }
@@ -157,6 +165,7 @@ namespace trview
             colour_register(L);
             vector3_register(L);
             scriptable_register(L, scriptable_source);
+            camera_register(L);
         }
 
         void set_settings(const UserSettings& settings)

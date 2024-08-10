@@ -6,7 +6,7 @@
 #include <trview.input/IMouse.h>
 #include <trview.common/Event.h>
 
-#include <trview.app/Camera/CameraMode.h>
+#include "../Camera/ICamera.h"
 
 namespace trview
 {
@@ -59,7 +59,7 @@ namespace trview
         Event<bool, float, float> on_pan;
 
         /// Event raised when the camera mode needs to change.
-        Event<CameraMode> on_mode_change;
+        Event<ICamera::Mode> on_mode_change;
 
         /// <summary>
         /// Relase all pressed keys.

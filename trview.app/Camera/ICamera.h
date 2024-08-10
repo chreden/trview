@@ -4,13 +4,28 @@
 
 #include <SimpleMath.h>
 #include <trview.common/Size.h>
+#include <trview.common/Event.h>
 #include "ProjectionMode.h"
 
 namespace trview
 {
+    struct UserSettings;
+
     /// Interface for a camera.
     struct ICamera
     {
+        /// Defines the behaviour of the camera and the way it reacts to input.
+        enum class Mode
+        {
+            /// The camera is orbiting around the centre of a room.
+            Orbit,
+            /// The camera is free roaming - the user is in control and can freely rotate on the spot
+            /// and can move in any direction.
+            Free,
+            /// The camera is free roaming but movement is constrained to the axes.
+            Axis
+        };
+
         /// Destructor for ICamera.
         virtual ~ICamera() = 0;
 
@@ -80,7 +95,7 @@ namespace trview
 
         /// Update any movement.
         /// @param elapsed The time that has elapsed between updates.
-        virtual void update(float elapsed) = 0;
+        virtual void update(float elapsed, const DirectX::SimpleMath::Vector3& movement) = 0;
 
         /// Gets the current view matrix for the camera.
         /// @returns The view matrix.
@@ -101,5 +116,20 @@ namespace trview
         virtual bool idle_rotation() const = 0;
 
         virtual void set_fov(float value) = 0;
+
+        virtual void set_settings(const UserSettings& setting) = 0;
+
+        virtual void set_target(const DirectX::SimpleMath::Vector3& target) = 0;
+
+        virtual void set_position(const DirectX::SimpleMath::Vector3& position) = 0;
+
+        virtual void set_mode(Mode mode) = 0;
+
+        virtual void reset() = 0;
+
+        virtual DirectX::SimpleMath::Vector3 target() const = 0;
+
+        /// Event raised when the view of the camera has changed.
+        Event<> on_view_changed;
     };
 }

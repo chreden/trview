@@ -2,7 +2,6 @@
 
 #include <memory>
 
-#include <trview.app/Camera/CameraMode.h>
 #include <trview.app/Elements/ISector.h>
 #include <trview.app/Geometry/PickInfo.h>
 #include <trview.app/Settings/UserSettings.h>
@@ -55,7 +54,7 @@ namespace trview
         Event<uint32_t, bool> on_alternate_group;
 
         /// Event raised when the camera mode is set.
-        Event<CameraMode> on_camera_mode;
+        Event<ICamera::Mode> on_camera_mode;
 
         /// Event raised when the camera projection mode is set.
         Event<ProjectionMode> on_camera_projection_mode;
@@ -133,7 +132,7 @@ namespace trview
 
         /// Set the camera mode.
         /// @param mode The current camera mode.
-        virtual void set_camera_mode(CameraMode mode) = 0;
+        virtual void set_camera_mode(ICamera::Mode mode) = 0;
 
         /// Set the camera projection mode.
         /// @param mode The current camera projection mode.
