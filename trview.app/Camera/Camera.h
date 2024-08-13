@@ -55,6 +55,7 @@ namespace trview
         void set_mode(Mode mode) override;
         void reset() override;
         DirectX::SimpleMath::Vector3 target() const override;
+        Mode mode() const override;
     private:
         /// Calculate the bounding frustum based on the view and projection matrices.
         void calculate_bounding_frustum();

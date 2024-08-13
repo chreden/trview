@@ -6,6 +6,7 @@
 # Libraries
 
 - [ImGui](imgui.md)
+- [Camera](camera.md)
 - [Colour](colour.md)
 - [Item](item.md)
 - [Level](level.md)

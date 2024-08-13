@@ -389,4 +389,9 @@ namespace trview
     {
         return _target;
     }
+
+    ICamera::Mode Camera::mode() const
+    {
+        return _mode;
+    }
 }

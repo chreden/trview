@@ -129,6 +129,8 @@ namespace trview
 
         virtual DirectX::SimpleMath::Vector3 target() const = 0;
 
+        virtual Mode mode() const = 0;
+
         /// Event raised when the view of the camera has changed.
         Event<> on_view_changed;
     };
