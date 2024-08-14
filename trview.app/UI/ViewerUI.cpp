@@ -289,7 +289,7 @@ namespace trview
         _camera_position->set_rotation(yaw, pitch);
     }
 
-    void ViewerUI::set_camera_mode(CameraMode mode)
+    void ViewerUI::set_camera_mode(ICamera::Mode mode)
     {
         _camera_controls->set_mode(mode);
     }

@@ -4,15 +4,6 @@
     <ClCompile Include="Camera\Camera.cpp">
       <Filter>Camera</Filter>
     </ClCompile>
-    <ClCompile Include="Camera\CameraMode.cpp">
-      <Filter>Camera</Filter>
-    </ClCompile>
-    <ClCompile Include="Camera\FreeCamera.cpp">
-      <Filter>Camera</Filter>
-    </ClCompile>
-    <ClCompile Include="Camera\OrbitCamera.cpp">
-      <Filter>Camera</Filter>
-    </ClCompile>
     <ClCompile Include="Geometry\IRenderable.cpp">
       <Filter>Geometry</Filter>
     </ClCompile>
@@ -341,21 +332,15 @@
     <ClCompile Include="Lua\Scriptable\Scriptable.cpp">
       <Filter>Lua\Scriptable</Filter>
     </ClCompile>
+    <ClCompile Include="Lua\Camera\Lua_Camera.cpp">
+      <Filter>Lua\Camera</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera\Camera.h">
       <Filter>Camera</Filter>
     </ClInclude>
-    <ClInclude Include="Camera\CameraMode.h">
-      <Filter>Camera</Filter>
-    </ClInclude>
-    <ClInclude Include="Camera\FreeCamera.h">
-      <Filter>Camera</Filter>
-    </ClInclude>
     <ClInclude Include="Camera\ICamera.h">
-      <Filter>Camera</Filter>
-    </ClInclude>
-    <ClInclude Include="Camera\OrbitCamera.h">
       <Filter>Camera</Filter>
     </ClInclude>
     <ClInclude Include="Geometry\IRenderable.h">
@@ -1105,6 +1090,9 @@
     <ClInclude Include="Lua\Scriptable\Scriptable.h">
       <Filter>Lua\Scriptable</Filter>
     </ClInclude>
+    <ClInclude Include="Lua\Camera\Lua_Camera.h">
+      <Filter>Lua\Camera</Filter>
+    </ClInclude>
     <ClInclude Include="Lua\Scriptable\IScriptable.h">
       <Filter>Lua\Scriptable</Filter>
     </ClInclude>
@@ -1307,6 +1295,9 @@
     </Filter>
     <Filter Include="Lua\Scriptable">
       <UniqueIdentifier>{7e2d9e42-f62d-4702-9d5e-7b7b13532b5e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Lua\Camera">
+      <UniqueIdentifier>{4e6be7c4-7790-44bc-8f84-1ad31b71b84d}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

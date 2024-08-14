@@ -26,13 +26,20 @@ namespace trview
             MOCK_METHOD(void, set_view_size, (const Size&), (override));
             MOCK_METHOD(void, set_zoom, (float), (override));
             MOCK_METHOD(DirectX::SimpleMath::Vector3, up, (), (const, override));
-            MOCK_METHOD(void, update, (float), (override));
+            MOCK_METHOD(void, update, (float, const DirectX::SimpleMath::Vector3&), (override));
             MOCK_METHOD(const DirectX::SimpleMath::Matrix, view, (), (const, override));
             MOCK_METHOD(const DirectX::SimpleMath::Matrix, view_projection, (), (const, override));
             MOCK_METHOD(const Size, view_size, (), (const, override));
             MOCK_METHOD(float, zoom, (), (const, override));
             MOCK_METHOD(bool, idle_rotation, (), (const, override));
             MOCK_METHOD(void, set_fov, (float), (override));
+            MOCK_METHOD(void, set_settings, (const UserSettings&), (override));
+            MOCK_METHOD(void, set_target, (const DirectX::SimpleMath::Vector3&), (override));
+            MOCK_METHOD(void, set_position, (const DirectX::SimpleMath::Vector3&), (override));
+            MOCK_METHOD(void, set_mode, (Mode), (override));
+            MOCK_METHOD(void, reset, (), (override));
+            MOCK_METHOD(DirectX::SimpleMath::Vector3, target, (), (const, override));
+            MOCK_METHOD(Mode, mode, (), (const, override));
         };
     }
 }

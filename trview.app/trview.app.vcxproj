@@ -24,9 +24,6 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClCompile Include="ApplicationCreate.cpp" />
     <ClCompile Include="Camera\Camera.cpp" />
     <ClCompile Include="Camera\CameraInput.cpp" />
-    <ClCompile Include="Camera\CameraMode.cpp" />
-    <ClCompile Include="Camera\FreeCamera.cpp" />
-    <ClCompile Include="Camera\OrbitCamera.cpp" />
     <ClCompile Include="Elements\CameraSink\CameraSink.cpp" />
     <ClCompile Include="Elements\Item.cpp" />
     <ClCompile Include="Elements\Floordata.cpp" />
@@ -54,6 +51,7 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClCompile Include="Graphics\SelectionRenderer.cpp" />
     <ClCompile Include="Graphics\TextureStorage.cpp" />
     <ClCompile Include="Lua\BoundingBox.cpp" />
+    <ClCompile Include="Lua\Camera\Lua_Camera.cpp" />
     <ClCompile Include="Lua\Colour.cpp" />
     <ClCompile Include="Lua\Elements\CameraSink\Lua_CameraSink.cpp" />
     <ClCompile Include="Lua\Elements\Item\Lua_Item.cpp" />
@@ -77,6 +75,7 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClCompile Include="Plugins\Plugins.cpp" />
     <ClCompile Include="Routing\RandomizerRoute.cpp" />
     <ClCompile Include="Windows\Windows.cpp" />
+    <ClInclude Include="Lua\Camera\Lua_Camera.h" />
     <ClInclude Include="Lua\Scriptable\IScriptable.h" />
     <ClInclude Include="Lua\Scriptable\Scriptable.h" />
     <ClInclude Include="Mocks\Lua\IScriptable.h" />
@@ -199,10 +198,7 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClInclude Include="Application.h" />
     <ClInclude Include="Camera\Camera.h" />
     <ClInclude Include="Camera\CameraInput.h" />
-    <ClInclude Include="Camera\CameraMode.h" />
-    <ClInclude Include="Camera\FreeCamera.h" />
     <ClInclude Include="Camera\ICamera.h" />
-    <ClInclude Include="Camera\OrbitCamera.h" />
     <ClInclude Include="Camera\ProjectionMode.h" />
     <ClInclude Include="Elements\CameraSink\CameraSink.h" />
     <ClInclude Include="Elements\CameraSink\ICameraSink.h" />

@@ -70,12 +70,20 @@ namespace
             IDeviceWindow::Source device_window_source{ [](auto&&...) { return mock_unique<MockDeviceWindow>(); } };
             std::unique_ptr<ISectorHighlight> sector_highlight{ mock_unique<MockSectorHighlight>() };
             std::shared_ptr<IClipboard> clipboard{ mock_shared<MockClipboard>() };
+            std::shared_ptr<MockCamera> camera{ mock_shared<MockCamera>() };
 
             std::unique_ptr<Viewer> build()
             {
                 EXPECT_CALL(*shortcuts, add_shortcut).WillRepeatedly([&](auto, auto) -> Event<>&{ return shortcut_handler; });
+                ON_CALL(*camera, idle_rotation).WillByDefault(Return(true));
                 return std::make_unique<Viewer>(window, device, std::move(ui), std::move(picking), std::move(mouse), shortcuts, route, sprite_source,
-                    std::move(compass), std::move(measure), render_target_source, device_window_source, std::move(sector_highlight), clipboard);
+                    std::move(compass), std::move(measure), render_target_source, device_window_source, std::move(sector_highlight), clipboard, camera);
+            }
+
+            test_module& with_camera(const std::shared_ptr<MockCamera>& camera)
+            {
+                this->camera = camera;
+                return *this;
             }
 
             test_module& with_device(const std::shared_ptr<IDevice>& device)
@@ -374,118 +382,128 @@ TEST(Viewer, OrbitEnabledWhenItemSelectedAndAutoOrbitEnabled)
 {
     auto [ui_ptr, ui] = create_mock<MockViewerUI>();
     EXPECT_CALL(ui, set_camera_mode);
-    EXPECT_CALL(ui, set_camera_mode(CameraMode::Orbit)).Times(2);
+    EXPECT_CALL(ui, set_camera_mode(ICamera::Mode::Orbit)).Times(2);
 
-    auto viewer = register_test_module().with_ui(std::move(ui_ptr)).build();
+    auto camera = mock_shared<MockCamera>();
+    EXPECT_CALL(*camera, set_mode(ICamera::Mode::Free)).Times(1);
+    EXPECT_CALL(*camera, set_mode(ICamera::Mode::Orbit)).Times(1);
+
+    auto viewer = register_test_module().with_ui(std::move(ui_ptr)).with_camera(camera).build();
 
     UserSettings settings;
     settings.auto_orbit = true;
     viewer->set_settings(settings);
 
-    viewer->set_camera_mode(CameraMode::Free);
-    ASSERT_EQ(viewer->camera_mode(), CameraMode::Free);
-
+    viewer->set_camera_mode(ICamera::Mode::Free);
     viewer->select_item(mock_shared<MockItem>());
-    ASSERT_EQ(viewer->camera_mode(), CameraMode::Orbit);
 }
 
 TEST(Viewer, OrbitNotEnabledWhenItemSelectedAndAutoOrbitDisabled)
 {
     auto [ui_ptr, ui] = create_mock<MockViewerUI>();
     EXPECT_CALL(ui, set_camera_mode);
-    EXPECT_CALL(ui, set_camera_mode(CameraMode::Orbit)).Times(1);
+    EXPECT_CALL(ui, set_camera_mode(ICamera::Mode::Orbit)).Times(1);
 
-    auto viewer = register_test_module().with_ui(std::move(ui_ptr)).build();
+    auto camera = mock_shared<MockCamera>();
+    EXPECT_CALL(*camera, set_mode(ICamera::Mode::Free)).Times(1);
+    EXPECT_CALL(*camera, set_mode(ICamera::Mode::Orbit)).Times(0);
+
+    auto viewer = register_test_module().with_ui(std::move(ui_ptr)).with_camera(camera).build();
 
     UserSettings settings;
     settings.auto_orbit = false;
     viewer->set_settings(settings);
 
-    viewer->set_camera_mode(CameraMode::Free);
-    ASSERT_EQ(viewer->camera_mode(), CameraMode::Free);
-
+    viewer->set_camera_mode(ICamera::Mode::Free);
     viewer->select_item({});
-    ASSERT_EQ(viewer->camera_mode(), CameraMode::Free);
 }
 
 TEST(Viewer, OrbitEnabledWhenTriggerSelectedAndAutoOrbitEnabled)
 {
     auto [ui_ptr, ui] = create_mock<MockViewerUI>();
     EXPECT_CALL(ui, set_camera_mode);
-    EXPECT_CALL(ui, set_camera_mode(CameraMode::Orbit)).Times(2);
+    EXPECT_CALL(ui, set_camera_mode(ICamera::Mode::Orbit)).Times(2);
 
-    auto viewer = register_test_module().with_ui(std::move(ui_ptr)).build();
+    auto camera = mock_shared<MockCamera>();
+    EXPECT_CALL(*camera, set_mode(ICamera::Mode::Free)).Times(1);
+    EXPECT_CALL(*camera, set_mode(ICamera::Mode::Orbit)).Times(1);
+
+    auto viewer = register_test_module().with_ui(std::move(ui_ptr)).with_camera(camera).build();
 
     UserSettings settings;
     settings.auto_orbit = true;
     viewer->set_settings(settings);
 
-    viewer->set_camera_mode(CameraMode::Free);
-    ASSERT_EQ(viewer->camera_mode(), CameraMode::Free);
+    viewer->set_camera_mode(ICamera::Mode::Free);
 
     auto trigger = mock_shared<MockTrigger>();
     viewer->select_trigger(trigger);
-    ASSERT_EQ(viewer->camera_mode(), CameraMode::Orbit);
 }
 
 TEST(Viewer, OrbitNotEnabledWhenTriggerSelectedAndAutoOrbitDisabled)
 {
     auto [ui_ptr, ui] = create_mock<MockViewerUI>();
     EXPECT_CALL(ui, set_camera_mode);
-    EXPECT_CALL(ui, set_camera_mode(CameraMode::Orbit)).Times(1);
+    EXPECT_CALL(ui, set_camera_mode(ICamera::Mode::Orbit)).Times(1);
 
-    auto viewer = register_test_module().with_ui(std::move(ui_ptr)).build();
+    auto camera = mock_shared<MockCamera>();
+    EXPECT_CALL(*camera, set_mode(ICamera::Mode::Free)).Times(1);
+    EXPECT_CALL(*camera, set_mode(ICamera::Mode::Orbit)).Times(0);
+
+    auto viewer = register_test_module().with_ui(std::move(ui_ptr)).with_camera(camera).build();
 
     UserSettings settings;
     settings.auto_orbit = false;
     viewer->set_settings(settings);
 
-    viewer->set_camera_mode(CameraMode::Free);
-    ASSERT_EQ(viewer->camera_mode(), CameraMode::Free);
+    viewer->set_camera_mode(ICamera::Mode::Free);
 
     auto trigger = mock_shared<MockTrigger>();
     viewer->select_trigger(trigger);
-    ASSERT_EQ(viewer->camera_mode(), CameraMode::Free);
 }
 
 TEST(Viewer, OrbitEnabledWhenWaypointSelectedAndAutoOrbitEnabled)
 {
     auto [ui_ptr, ui] = create_mock<MockViewerUI>();
     EXPECT_CALL(ui, set_camera_mode);
-    EXPECT_CALL(ui, set_camera_mode(CameraMode::Orbit)).Times(2);
+    EXPECT_CALL(ui, set_camera_mode(ICamera::Mode::Orbit)).Times(2);
 
-    auto viewer = register_test_module().with_ui(std::move(ui_ptr)).build();
+    auto camera = mock_shared<MockCamera>();
+    EXPECT_CALL(*camera, set_mode(ICamera::Mode::Free)).Times(1);
+    EXPECT_CALL(*camera, set_mode(ICamera::Mode::Orbit)).Times(1);
+
+    auto viewer = register_test_module().with_ui(std::move(ui_ptr)).with_camera(camera).build();
 
     UserSettings settings;
     settings.auto_orbit = true;
     viewer->set_settings(settings);
 
-    viewer->set_camera_mode(CameraMode::Free);
-    ASSERT_EQ(viewer->camera_mode(), CameraMode::Free);
+    viewer->set_camera_mode(ICamera::Mode::Free);
 
     auto mesh = mock_shared<MockMesh>();
     viewer->select_waypoint(mock_shared<MockWaypoint>());
-    ASSERT_EQ(viewer->camera_mode(), CameraMode::Orbit);
 }
 
 TEST(Viewer, OrbitNotEnabledWhenWaypointSelectedAndAutoOrbitDisabled)
 {
     auto [ui_ptr, ui] = create_mock<MockViewerUI>();
     EXPECT_CALL(ui, set_camera_mode);
-    EXPECT_CALL(ui, set_camera_mode(CameraMode::Orbit)).Times(1);
+    EXPECT_CALL(ui, set_camera_mode(ICamera::Mode::Orbit)).Times(1);
 
-    auto viewer = register_test_module().with_ui(std::move(ui_ptr)).build();
+    auto camera = mock_shared<MockCamera>();
+    EXPECT_CALL(*camera, set_mode(ICamera::Mode::Free)).Times(1);
+    EXPECT_CALL(*camera, set_mode(ICamera::Mode::Orbit)).Times(0);
+
+    auto viewer = register_test_module().with_ui(std::move(ui_ptr)).with_camera(camera).build();
 
     UserSettings settings;
     settings.auto_orbit = false;
     viewer->set_settings(settings);
 
-    viewer->set_camera_mode(CameraMode::Free);
-    ASSERT_EQ(viewer->camera_mode(), CameraMode::Free);
+    viewer->set_camera_mode(ICamera::Mode::Free);
 
     auto mesh = mock_shared<MockMesh>();
     viewer->select_waypoint(mock_shared<MockWaypoint>());
-    ASSERT_EQ(viewer->camera_mode(), CameraMode::Free);
 }
 
 
@@ -493,42 +511,42 @@ TEST(Viewer, OrbitEnabledWhenRoomSelectedAndAutoOrbitEnabled)
 {
     auto [ui_ptr, ui] = create_mock<MockViewerUI>();
     EXPECT_CALL(ui, set_camera_mode);
-    EXPECT_CALL(ui, set_camera_mode(CameraMode::Orbit)).Times(2);
+    EXPECT_CALL(ui, set_camera_mode(ICamera::Mode::Orbit)).Times(2);
 
-    auto viewer = register_test_module().with_ui(std::move(ui_ptr)).build();
+    auto camera = mock_shared<MockCamera>();
+    EXPECT_CALL(*camera, set_mode(ICamera::Mode::Free)).Times(1);
+    EXPECT_CALL(*camera, set_mode(ICamera::Mode::Orbit)).Times(1);
+
+    auto viewer = register_test_module().with_ui(std::move(ui_ptr)).with_camera(camera).build();
 
     UserSettings settings;
     settings.auto_orbit = true;
     viewer->set_settings(settings);
 
     auto room = mock_shared<MockRoom>();
-
-    viewer->set_camera_mode(CameraMode::Free);
-    ASSERT_EQ(viewer->camera_mode(), CameraMode::Free);
-
+    viewer->set_camera_mode(ICamera::Mode::Free);
     viewer->select_room(room);
-    ASSERT_EQ(viewer->camera_mode(), CameraMode::Orbit);
 }
 
 TEST(Viewer, OrbitNotEnabledWhenRoomSelectedAndAutoOrbitDisabled)
 {
     auto [ui_ptr, ui] = create_mock<MockViewerUI>();
     EXPECT_CALL(ui, set_camera_mode);
-    EXPECT_CALL(ui, set_camera_mode(CameraMode::Orbit)).Times(1);
+    EXPECT_CALL(ui, set_camera_mode(ICamera::Mode::Orbit)).Times(1);
 
-    auto viewer = register_test_module().with_ui(std::move(ui_ptr)).build();
+    auto camera = mock_shared<MockCamera>();
+    EXPECT_CALL(*camera, set_mode(ICamera::Mode::Free)).Times(1);
+    EXPECT_CALL(*camera, set_mode(ICamera::Mode::Orbit)).Times(0);
+
+    auto viewer = register_test_module().with_ui(std::move(ui_ptr)).with_camera(camera).build();
 
     UserSettings settings;
     settings.auto_orbit = false;
     viewer->set_settings(settings);
 
     auto room = mock_shared<MockRoom>();
-
-    viewer->set_camera_mode(CameraMode::Free);
-    ASSERT_EQ(viewer->camera_mode(), CameraMode::Free);
-
+    viewer->set_camera_mode(ICamera::Mode::Free);
     viewer->select_room(room);
-    ASSERT_EQ(viewer->camera_mode(), CameraMode::Free);
 }
 
 TEST(Viewer, SetSettingsUpdatesUI)
@@ -543,17 +561,15 @@ TEST(Viewer, SetSettingsUpdatesUI)
 TEST(Viewer, CameraRotationUpdated)
 {
     auto [ui_ptr, ui] = create_mock<MockViewerUI>();
-    auto viewer = register_test_module().with_ui(std::move(ui_ptr)).build();
+    auto camera = mock_shared<MockCamera>();
+    auto viewer = register_test_module().with_camera(camera).with_ui(std::move(ui_ptr)).build();
 
-    auto& camera = viewer->current_camera();
-    camera.set_rotation_yaw(0);
-    camera.set_rotation_pitch(0.5f);
-    ASSERT_FLOAT_EQ(0, camera.rotation_yaw());
-    ASSERT_FLOAT_EQ(0.5f, camera.rotation_pitch());
+    ASSERT_EQ(true, testing::Mock::VerifyAndClearExpectations(camera.get()));
+
+    EXPECT_CALL(*camera, set_rotation_yaw(2.0f)).Times(1);
+    EXPECT_CALL(*camera, set_rotation_pitch(1.0f)).Times(1);
 
     ui.on_camera_rotation(2.0f, 1.0f);
-    ASSERT_FLOAT_EQ(2.0f, camera.rotation_yaw());
-    ASSERT_FLOAT_EQ(1.0f, camera.rotation_pitch());
 }
 
 TEST(Viewer, SetShowBoundingBox)
@@ -761,20 +777,21 @@ TEST(Viewer, RoomVisibilityRaised)
 TEST(Viewer, OrbitHereOrbitsWhenSettingDisabled)
 {
     auto [ui_ptr, ui] = create_mock<MockViewerUI>();
-    EXPECT_CALL(ui, set_camera_mode(CameraMode::Free)).Times(1);
-    EXPECT_CALL(ui, set_camera_mode(CameraMode::Orbit)).Times(2);
+    EXPECT_CALL(ui, set_camera_mode(ICamera::Mode::Free)).Times(1);
+    EXPECT_CALL(ui, set_camera_mode(ICamera::Mode::Orbit)).Times(2);
+
+    auto camera = mock_shared<MockCamera>();
+    EXPECT_CALL(*camera, set_mode(ICamera::Mode::Free)).Times(1);
+    EXPECT_CALL(*camera, set_mode(ICamera::Mode::Orbit)).Times(1);
 
     UserSettings settings;
     settings.auto_orbit = false;
 
-    auto viewer = register_test_module().with_ui(std::move(ui_ptr)).build();
-    viewer->set_camera_mode(CameraMode::Free);
+    auto viewer = register_test_module().with_ui(std::move(ui_ptr)).with_camera(camera).build();
+    viewer->set_camera_mode(ICamera::Mode::Free);
     viewer->set_settings(settings);
 
-    ASSERT_EQ(viewer->camera_mode(), CameraMode::Free);
-
     ui.on_orbit();
-    ASSERT_EQ(viewer->camera_mode(), CameraMode::Orbit);
 }
 
 TEST(Viewer, ReloadLevelSyncProperties)
@@ -1132,4 +1149,16 @@ TEST(Viewer, FontForwarded)
     ASSERT_EQ(raised->second.name, "Test");
     ASSERT_EQ(raised->second.filename, "test.ttf");
     ASSERT_EQ(raised->second.size, 100);
+}
+
+TEST(Viewer, CameraModeForwarded)
+{
+    auto [ui_ptr, ui] = create_mock<MockViewerUI>();
+    EXPECT_CALL(ui, set_camera_mode(ICamera::Mode::Orbit)).Times(1);
+    EXPECT_CALL(ui, set_camera_mode(ICamera::Mode::Axis)).Times(1);
+
+    auto camera = mock_shared<MockCamera>();
+    auto viewer = register_test_module().with_ui(std::move(ui_ptr)).with_camera(camera).build();
+
+    camera->on_mode_changed(ICamera::Mode::Axis);
 }

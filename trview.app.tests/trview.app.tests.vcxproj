@@ -33,11 +33,12 @@
     <ClCompile Include="Elements\TriggerTests.cpp" />
     <ClCompile Include="Elements\TypeInfoLookupTests.cpp" />
     <ClCompile Include="Filters\FiltersTests.cpp" />
-    <ClCompile Include="FreeCameraTests.cpp" />
+    <ClCompile Include="CameraTests.cpp" />
     <ClCompile Include="Graphics\LevelTextureStorageTests.cpp" />
     <ClCompile Include="Graphics\MeshStorageTests.cpp" />
     <ClCompile Include="Graphics\TextureStorage.cpp" />
     <ClCompile Include="ItemsWindowManagerTests.cpp" />
+    <ClCompile Include="Lua\Camera\Lua_CameraTests.cpp" />
     <ClCompile Include="Lua\Elements\Lua_CameraSinkTests.cpp" />
     <ClCompile Include="Lua\Elements\Lua_ItemTests.cpp" />
     <ClCompile Include="Lua\Elements\Lua_LevelTests.cpp" />
@@ -55,7 +56,6 @@
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Menus\MenuDetectorTests.cpp" />
     <ClCompile Include="NullImGuiBackend.cpp" />
-    <ClCompile Include="OrbitCameraTests.cpp" />
     <ClCompile Include="FileMenuTests.cpp" />
     <ClCompile Include="PluginsWindowManagerTests.cpp" />
     <ClCompile Include="Plugins\PluginsTests.cpp" />

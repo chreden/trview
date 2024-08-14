@@ -3,8 +3,7 @@
   <ItemGroup>
     <ClCompile Include="WindowResizerTests.cpp" />
     <ClCompile Include="FileMenuTests.cpp" />
-    <ClCompile Include="FreeCameraTests.cpp" />
-    <ClCompile Include="OrbitCameraTests.cpp" />
+    <ClCompile Include="CameraTests.cpp" />
     <ClCompile Include="AlternateGroupTogglerTests.cpp">
       <Filter>Input</Filter>
     </ClCompile>
@@ -206,6 +205,9 @@
     <ClCompile Include="Windows\WindowsTests.cpp">
       <Filter>Windows</Filter>
     </ClCompile>
+    <ClCompile Include="Lua\Camera\Lua_CameraTests.cpp">
+      <Filter>Lua\Camera</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Input">
@@ -252,6 +254,9 @@
     </Filter>
     <Filter Include="Lua\Route">
       <UniqueIdentifier>{4b53f400-34b2-4124-9048-9a1c1fe82960}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Lua\Camera">
+      <UniqueIdentifier>{7c11cc4b-d857-4f38-841b-d03b938913d0}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

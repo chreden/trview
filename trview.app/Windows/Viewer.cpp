@@ -10,11 +10,6 @@ using namespace DirectX::SimpleMath;
 
 namespace trview
 {
-    namespace
-    {
-        const float _CAMERA_MOVEMENT_SPEED_MULTIPLIER = 23.0f;
-    }
-
     IViewer::~IViewer()
     {
     }
@@ -22,18 +17,23 @@ namespace trview
     Viewer::Viewer(const Window& window, const std::shared_ptr<graphics::IDevice>& device, std::unique_ptr<IViewerUI> ui, std::unique_ptr<IPicking> picking,
         std::unique_ptr<input::IMouse> mouse, const std::shared_ptr<IShortcuts>& shortcuts, const std::shared_ptr<IRoute> route, const graphics::ISprite::Source& sprite_source,
         std::unique_ptr<ICompass> compass, std::unique_ptr<IMeasure> measure, const graphics::IRenderTarget::SizeSource& render_target_source, const graphics::IDeviceWindow::Source& device_window_source,
-        std::unique_ptr<ISectorHighlight> sector_highlight, const std::shared_ptr<IClipboard>& clipboard)
-        : MessageHandler(window), _shortcuts(shortcuts), _camera(window.size()), _free_camera(window.size()), _timer(default_time_source()), _keyboard(window),
-        _mouse(std::move(mouse)), _window_resizer(window), _alternate_group_toggler(window),
-        _menu_detector(window), _device(device), _route(route), _ui(std::move(ui)), _picking(std::move(picking)), _compass(std::move(compass)), _measure(std::move(measure)),
-        _render_target_source(render_target_source), _sector_highlight(std::move(sector_highlight)), _clipboard(clipboard)
+        std::unique_ptr<ISectorHighlight> sector_highlight, const std::shared_ptr<IClipboard>& clipboard, const std::shared_ptr<ICamera>& camera)
+        : MessageHandler(window), _shortcuts(shortcuts), _timer(default_time_source()), _keyboard(window), _mouse(std::move(mouse)), _window_resizer(window),
+        _alternate_group_toggler(window), _menu_detector(window), _device(device), _route(route), _ui(std::move(ui)), _picking(std::move(picking)),
+        _compass(std::move(compass)), _measure(std::move(measure)), _render_target_source(render_target_source), _sector_highlight(std::move(sector_highlight)),
+        _clipboard(clipboard), _camera(camera)
     {
         apply_camera_settings();
 
         _scene_target = _render_target_source(static_cast<uint32_t>(window.size().width), static_cast<uint32_t>(window.size().height), graphics::IRenderTarget::DepthStencilMode::Enabled);
         _scene_sprite = sprite_source(window.size());
-        _token_store += _free_camera.on_view_changed += [&]() { _scene_changed = true; };
-        _token_store += _camera.on_view_changed += [&]() { _scene_changed = true; };
+        _token_store += _camera->on_view_changed += [&]() { _scene_changed = true; };
+        _token_store += _camera->on_mode_changed += [&](auto mode)
+            {
+                _ui->set_camera_mode(mode);
+                _camera_moved = true;
+                _scene_changed = true;
+            };
 
         _main_window = device_window_source(window);
 
@@ -105,8 +105,8 @@ namespace trview
             }
             scalar->second(value);
         };
-        _token_store += _ui->on_camera_reset += [&]() { _camera.reset(); };
-        _token_store += _ui->on_camera_mode += [&](CameraMode mode) { set_camera_mode(mode); };
+        _token_store += _ui->on_camera_reset += [&]() { _camera->reset(); };
+        _token_store += _ui->on_camera_mode += [&](auto mode) { set_camera_mode(mode); };
         _token_store += _ui->on_camera_projection_mode += [&](ProjectionMode mode) { set_camera_projection_mode(mode); };
         _token_store += _ui->on_sector_hover += [&](const std::shared_ptr<ISector>& sector) { set_sector_highlight(sector); };
         _token_store += _ui->on_add_waypoint += [&]()
@@ -217,10 +217,10 @@ namespace trview
             on_room_selected(room_from_pick(_context_pick));
             if (!was_alternate_select)
             {
-                set_camera_mode(CameraMode::Orbit);
+                set_camera_mode(ICamera::Mode::Orbit);
             }
 
-            _target = _context_pick.position;
+            set_target(_context_pick.position);
 
             auto stored_pick = _context_pick;
             stored_pick.override_centre = true;
@@ -231,16 +231,16 @@ namespace trview
         _token_store += _ui->on_tool_selected += [&](auto tool) { _active_tool = tool; _measure->reset(); };
         _token_store += _ui->on_camera_position += [&](const auto& position)
         {
-            if (_camera_mode == CameraMode::Orbit)
+            if (camera_mode() == ICamera::Mode::Orbit)
             {
-                set_camera_mode(CameraMode::Free);
+                set_camera_mode(ICamera::Mode::Free);
             }
-            _free_camera.set_position(position);
+            _camera->set_position(position);
         };
         _token_store += _ui->on_camera_rotation += [&](auto yaw, auto pitch)
         {
-            current_camera().set_rotation_yaw(yaw);
-            current_camera().set_rotation_pitch(pitch);
+            _camera->set_rotation_yaw(yaw);
+            _camera->set_rotation_pitch(pitch);
         };
         _token_store += _ui->on_copy += [&](auto type)
         {
@@ -263,7 +263,7 @@ namespace trview
         _ui->on_font += on_font;
 
         _ui->set_settings(_settings);
-        _ui->set_camera_mode(CameraMode::Orbit);
+        _ui->set_camera_mode(ICamera::Mode::Orbit);
 
         _token_store += _measure->on_visible += [&](bool show) { _ui->set_show_measure(show); };
         _token_store += _measure->on_position += [&](auto pos) { _ui->set_measure_position(pos); };
@@ -305,7 +305,7 @@ namespace trview
             {
                 return;
             }
-            result = nearest_result(result, level->pick(current_camera(), info.position, info.direction));
+            result = nearest_result(result, level->pick(*_camera, info.position, info.direction));
         };
         _token_store += _picking->pick_sources += [&](PickInfo info, PickResult& result)
         {
@@ -429,9 +429,9 @@ namespace trview
         add_shortcut(false, VK_INSERT, [&]()
         {
             // Reset the camera to defaults.
-            _camera.set_rotation_yaw(0.f);
-            _camera.set_rotation_pitch(-0.78539f);
-            _camera.set_zoom(8.f);
+            _camera->set_rotation_yaw(0.f);
+            _camera->set_rotation_pitch(-0.78539f);
+            _camera->set_zoom(8.f);
         });
         add_shortcut(false, 'L', [&]() { toggle_show_lights(); });
         add_shortcut(true, 'H', [&]() { toggle_show_lighting(); });
@@ -471,7 +471,7 @@ namespace trview
 
                     if (_compass_axis.has_value())
                     {
-                        align_camera_to_axis(current_camera(), _compass_axis.value());
+                        align_camera_to_axis(*_camera, _compass_axis.value());
                         _compass_axis.reset();
                     }
                     else if (_current_pick.hit)
@@ -489,9 +489,9 @@ namespace trview
                             
                             if (_settings.auto_orbit)
                             {
-                                set_camera_mode(CameraMode::Orbit);
+                                set_camera_mode(ICamera::Mode::Orbit);
                                 auto stored_pick = _current_pick;
-                                stored_pick.position = _target;
+                                stored_pick.position = target();
                                 add_recent_orbit(stored_pick);
                             }
                         }
@@ -564,7 +564,7 @@ namespace trview
 
         _token_store += _mouse->mouse_click += [&](auto button)
         {
-            if (button == input::IMouse::Button::Right && _current_pick.hit && _current_pick.type != PickResult::Type::Compass && current_camera().idle_rotation())
+            if (button == input::IMouse::Button::Right && _current_pick.hit && _current_pick.type != PickResult::Type::Compass && _camera->idle_rotation())
             {
                 _context_pick = _current_pick;
                 _ui->set_show_context_menu(true);
@@ -594,18 +594,13 @@ namespace trview
 
     void Viewer::update_camera()
     {
-        if (_camera_mode == CameraMode::Free || _camera_mode == CameraMode::Axis)
+        _camera->update(_timer.elapsed(), _camera_input.movement());
+
+        // TODO: Replace/Move
+        if (auto level = _level.lock())
         {
-            const float Speed = std::max(0.01f, _settings.camera_movement_speed) * _CAMERA_MOVEMENT_SPEED_MULTIPLIER;
-            _free_camera.move(_camera_input.movement() * Speed, _timer.elapsed());
-
-            if (auto level = _level.lock())
-            {
-                level->on_camera_moved();
-            }
+            level->on_camera_moved();
         }
-
-        current_camera().update(_timer.elapsed());
     }
 
     void Viewer::open(const std::weak_ptr<ILevel>& level, ILevel::OpenMode open_mode)
@@ -648,7 +643,7 @@ namespace trview
 
         if (open_mode == ILevel::OpenMode::Full || !old_level)
         {
-            _camera.reset();
+            _camera->reset();
             _ui->set_toggle(Options::highlight, false);
             _ui->set_toggle(Options::flip, false);
             _ui->set_toggle(Options::depth_enabled, false);
@@ -705,7 +700,7 @@ namespace trview
         const auto mouse_pos = client_cursor_position(window());
         if (mouse_pos != _previous_mouse_pos || (_camera_moved || _camera_input.movement().LengthSquared() > 0))
         {
-            _picking->pick(current_camera());
+            _picking->pick(*_camera);
         }
         _previous_mouse_pos = mouse_pos;
         _camera_moved = false;
@@ -727,8 +722,8 @@ namespace trview
         }
 
         _scene_sprite->render(_scene_target->texture(), 0, 0, window().size().width, window().size().height);
-        _ui->set_camera_position(current_camera().position());
-        _ui->set_camera_rotation(current_camera().rotation_yaw(), current_camera().rotation_pitch());
+        _ui->set_camera_position(_camera->position());
+        _ui->set_camera_rotation(_camera->rotation_yaw(), _camera->rotation_pitch());
     }
 
     void Viewer::render_ui()
@@ -752,76 +747,33 @@ namespace trview
     {
         if (auto level = _level.lock())
         {
-            // Update the view matrix based on the room selected in the room window.
-            if (level->number_of_rooms() > 0)
-            {
-                _camera.set_target(_target);
-            }
-            
-            const auto& camera = current_camera();
-
-            level->render(camera, _show_selection);
+            level->render(*_camera, _show_selection);
             auto texture_storage = level->texture_storage();
 
-            _sector_highlight->render(camera, *texture_storage);
-            _measure->render(camera, *texture_storage);
+            _sector_highlight->render(*_camera, *texture_storage);
+            _measure->render(*_camera, *texture_storage);
 
             if (_show_route)
             {
-                _route->render(camera, *texture_storage, _show_selection);
+                _route->render(*_camera, *texture_storage, _show_selection);
             }
 
-            level->render_transparency(camera);
-            _compass->render(camera, *texture_storage);
+            level->render_transparency(*_camera);
+            _compass->render(*_camera, *texture_storage);
         }
     }
 
-    const ICamera& Viewer::current_camera() const
+    void Viewer::set_camera_mode(ICamera::Mode camera_mode)
     {
-        if (_camera_mode == CameraMode::Orbit)
-        {
-            return _camera;
-        }
-        return _free_camera;
-    }
-
-    ICamera& Viewer::current_camera()
-    {
-        if (_camera_mode == CameraMode::Orbit)
-        {
-            return _camera;
-        }
-        return _free_camera;
-    }
-
-    void Viewer::set_camera_mode(CameraMode camera_mode)
-    {
-        if (_camera_mode == camera_mode) 
-        {
-            return;
-        }
-
         _camera_moved = true;
-        if (camera_mode == CameraMode::Free || camera_mode == CameraMode::Axis)
-        {
-            _free_camera.set_alignment(camera_mode_to_alignment(camera_mode));
-            if (_camera_mode == CameraMode::Orbit)
-            {
-                _free_camera.set_position(_camera.position());
-                _free_camera.set_rotation_yaw(_camera.rotation_yaw());
-                _free_camera.set_rotation_pitch(_camera.rotation_pitch());
-            }
-        }
-
-        _camera_mode = camera_mode;
+        _camera->set_mode(camera_mode);
         _ui->set_camera_mode(camera_mode);
         _scene_changed = true;
     }
 
     void Viewer::set_camera_projection_mode(ProjectionMode projection_mode)
     {
-        _free_camera.set_projection_mode(projection_mode);
-        _camera.set_projection_mode(projection_mode);
+        _camera->set_projection_mode(projection_mode);
         _ui->set_camera_projection_mode(projection_mode);
         _scene_changed = true;
     }
@@ -846,11 +798,11 @@ namespace trview
 
         _was_alternate_select = false;
         _ui->set_selected_room(room_ptr);
-        _target = room_ptr->centre();
+        set_target(room_ptr->centre());
         _scene_changed = true;
         if (_settings.auto_orbit)
         {
-            set_camera_mode(CameraMode::Orbit);
+            set_camera_mode(ICamera::Mode::Orbit);
         }
     }
 
@@ -858,11 +810,11 @@ namespace trview
     {
         if (auto item_ptr = item.lock())
         {
-            _target = item_ptr->position();
+            set_target(item_ptr->position());
             _ui->set_selected_item(item_ptr->number());
             if (_settings.auto_orbit)
             {
-                set_camera_mode(CameraMode::Orbit);
+                set_camera_mode(ICamera::Mode::Orbit);
             }
             _scene_changed = true;
         }
@@ -872,10 +824,10 @@ namespace trview
     {
         if (auto trigger_ptr = trigger.lock())
         {
-            _target = trigger_ptr->position();
+            set_target(trigger_ptr->position());
             if (_settings.auto_orbit)
             {
-                set_camera_mode(CameraMode::Orbit);
+                set_camera_mode(ICamera::Mode::Orbit);
             }
             _scene_changed = true;
         }
@@ -885,10 +837,10 @@ namespace trview
     {
         if (auto waypoint_ptr = waypoint.lock())
         {
-            _target = waypoint_ptr->position();
+            set_target(waypoint_ptr->position());
             if (_settings.auto_orbit)
             {
-                set_camera_mode(CameraMode::Orbit);
+                set_camera_mode(ICamera::Mode::Orbit);
             }
             _scene_changed = true;
         }
@@ -995,8 +947,7 @@ namespace trview
         }
 
         // Inform elements that need to know that the device has been resized.
-        _camera.set_view_size(size);
-        _free_camera.set_view_size(size);
+        _camera->set_view_size(size);
         _ui->set_host_size(size);
         _scene_target = _render_target_source(static_cast<uint32_t>(size.width), static_cast<uint32_t>(size.height), graphics::IRenderTarget::DepthStencilMode::Enabled);
         _scene_sprite->set_host_size(size);
@@ -1037,12 +988,11 @@ namespace trview
             _camera_moved = true;
             _ui->set_show_context_menu(false);
 
-            ICamera& camera = current_camera();
             const float low_sensitivity = 200.0f;
             const float high_sensitivity = 25.0f;
             const float sensitivity = low_sensitivity + (high_sensitivity - low_sensitivity) * _settings.camera_sensitivity;
-            camera.set_rotation_yaw(camera.rotation_yaw() + x / sensitivity);
-            camera.set_rotation_pitch(camera.rotation_pitch() - y / sensitivity);
+            _camera->set_rotation_yaw(_camera->rotation_yaw() + x / sensitivity);
+            _camera->set_rotation_pitch(_camera->rotation_pitch() - y / sensitivity);
             if (auto level = _level.lock())
             {
                 level->on_camera_moved();
@@ -1057,17 +1007,17 @@ namespace trview
             }
             
             _camera_moved = true;
-            if (_camera_mode == CameraMode::Orbit)
+            if (camera_mode() == ICamera::Mode::Orbit)
             {
-                _camera.set_zoom(_camera.zoom() + zoom);
+                _camera->set_zoom(_camera->zoom() + zoom);
                 if (auto level = _level.lock())
                 {
                     level->on_camera_moved();
                 }
             }
-            else if (_free_camera.projection_mode() == ProjectionMode::Orthographic)
+            else if (_camera->projection_mode() == ProjectionMode::Orthographic)
             {
-                _free_camera.set_zoom(_free_camera.zoom() + zoom);
+                _camera->set_zoom(_camera->zoom() + zoom);
                 if (auto level = _level.lock())
                 {
                     level->on_camera_moved();
@@ -1077,7 +1027,7 @@ namespace trview
 
         _token_store += _camera_input.on_pan += [&](bool vertical, float x, float y)
         {
-            if (_ui->is_cursor_over() || _camera_mode != CameraMode::Orbit)
+            if (_ui->is_cursor_over() || camera_mode() != ICamera::Mode::Orbit)
             {
                 return;
             }
@@ -1085,32 +1035,30 @@ namespace trview
             _camera_moved = true;
             _ui->set_show_context_menu(false);
 
-            ICamera& camera = current_camera();
-
             using namespace DirectX::SimpleMath;
 
-            if (camera.projection_mode() == ProjectionMode::Perspective)
+            if (_camera->projection_mode() == ProjectionMode::Perspective)
             {
                 if (vertical)
                 {
-                    _target += 0.05f * Vector3::Up * y * (_settings.invert_vertical_pan ? -1.0f : 1.0f);
+                    set_target(target() + 0.05f * Vector3::Up * y * (_settings.invert_vertical_pan ? -1.0f : 1.0f));
                 }
                 else
                 {
                     // Rotate forward and right by the camera yaw...
-                    const auto rotation = Matrix::CreateRotationY(camera.rotation_yaw());
+                    const auto rotation = Matrix::CreateRotationY(_camera->rotation_yaw());
                     const auto forward = Vector3::Transform(Vector3::Forward, rotation);
                     const auto right = Vector3::Transform(Vector3::Right, rotation);
 
                     // Add them on to the position.
                     const auto movement = 0.05f * (forward * -y + right * -x);
-                    _target += movement;
+                    set_target(target() + movement);
                 }
             }
             else
             {
-                auto rotate = Matrix::CreateFromYawPitchRoll(camera.rotation_yaw(), camera.rotation_pitch(), 0);
-                _target += 0.05f * Vector3::Transform(Vector3(-x, y * (_settings.invert_vertical_pan ? -1.0f : 1.0f), 0), rotate);
+                auto rotate = Matrix::CreateFromYawPitchRoll(_camera->rotation_yaw(), _camera->rotation_pitch(), 0);
+                set_target(target() + 0.05f * Vector3::Transform(Vector3(-x, y * (_settings.invert_vertical_pan ? -1.0f : 1.0f), 0), rotate));
             }
 
             if (auto level = _level.lock())
@@ -1120,7 +1068,7 @@ namespace trview
             _scene_changed = true;
         };
 
-        _token_store += _camera_input.on_mode_change += [&](CameraMode mode) { set_camera_mode(mode); };
+        _token_store += _camera_input.on_mode_change += [&](auto mode) { set_camera_mode(mode); };
     }
 
     void Viewer::set_show_triggers(bool show)
@@ -1302,7 +1250,7 @@ namespace trview
             on_room_selected(level->room(pick.index));
             if (pick.override_centre)
             {
-                _target = pick.position;
+                set_target(pick.position);
             }
             break;
         case PickResult::Type::Entity:
@@ -1366,9 +1314,7 @@ namespace trview
 
     void Viewer::apply_camera_settings()
     {
-        _free_camera.set_acceleration_settings(_settings.camera_acceleration, _settings.camera_acceleration_rate);
-        _free_camera.set_fov(_settings.fov);
-        _camera.set_fov(_settings.fov);
+        _camera->set_settings(_settings);
     }
 
     void Viewer::set_settings(const UserSettings& settings)
@@ -1379,18 +1325,23 @@ namespace trview
         _scene_changed = true;
     }
 
-    CameraMode Viewer::camera_mode() const
+    std::weak_ptr<ICamera> Viewer::camera() const
     {
-        return _camera_mode;
+        return _camera;
+    }
+
+    ICamera::Mode Viewer::camera_mode() const
+    {
+        return _camera->mode();
     }
 
     void Viewer::select_light(const std::weak_ptr<ILight>& light)
     {
         auto light_ptr = light.lock();
-        _target = light_ptr->position();
+        set_target(light_ptr->position());
         if (_settings.auto_orbit)
         {
-            set_camera_mode(CameraMode::Orbit);
+            set_camera_mode(ICamera::Mode::Orbit);
         }
         _scene_changed = true;
     }
@@ -1406,12 +1357,12 @@ namespace trview
 
     DirectX::SimpleMath::Vector3 Viewer::target() const
     {
-        return _target;
+        return _camera->target();
     }
 
     void Viewer::set_target(const DirectX::SimpleMath::Vector3& target)
     {
-        _target = target;
+        _camera->set_target(target);
     }
 
     void Viewer::set_show_rooms(bool show)
@@ -1459,10 +1410,10 @@ namespace trview
     void Viewer::select_camera_sink(const std::weak_ptr<ICameraSink>& camera_sink)
     {
         auto camera_sink_ptr = camera_sink.lock();
-        _target = camera_sink_ptr->position();
+        set_target(camera_sink_ptr->position());
         if (_settings.auto_orbit)
         {
-            set_camera_mode(CameraMode::Orbit);
+            set_camera_mode(ICamera::Mode::Orbit);
         }
         _scene_changed = true;
     }
@@ -1505,10 +1456,10 @@ namespace trview
     {
         if (auto static_mesh_ptr = static_mesh.lock())
         {
-            _target = static_mesh_ptr->position();
+            set_target(static_mesh_ptr->position());
             if (_settings.auto_orbit)
             {
-                set_camera_mode(CameraMode::Orbit);
+                set_camera_mode(ICamera::Mode::Orbit);
             }
             _scene_changed = true;
         }

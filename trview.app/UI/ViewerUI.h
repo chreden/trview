@@ -39,7 +39,7 @@ namespace trview
         virtual void set_alternate_groups(const std::set<uint32_t>& groups) override;
         virtual void set_camera_position(const DirectX::SimpleMath::Vector3& position) override;
         virtual void set_camera_rotation(float yaw, float pitch) override;
-        virtual void set_camera_mode(CameraMode mode) override;
+        virtual void set_camera_mode(ICamera::Mode mode) override;
         virtual void set_camera_projection_mode(ProjectionMode mode) override;
         virtual void set_flip_enabled(bool value) override;
         virtual void set_hide_enabled(bool value) override;

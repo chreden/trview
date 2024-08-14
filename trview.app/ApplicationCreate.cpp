@@ -324,7 +324,8 @@ namespace trview
             render_target_source,
             device_window_source,
             std::make_unique<SectorHighlight>(mesh_source),
-            clipboard);
+            clipboard,
+            std::make_shared<Camera>(window.size()));
 
         auto items_window_source = [=]() { return std::make_shared<ItemsWindow>(clipboard); };
         auto triggers_window_source = [=]() { return std::make_shared<TriggersWindow>(clipboard); };

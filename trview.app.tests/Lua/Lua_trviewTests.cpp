@@ -14,6 +14,29 @@ using namespace trview::mocks;
 using namespace trview::tests;
 using namespace testing;
 
+TEST(Lua_trview, Camera)
+{
+    auto camera = mock_shared<MockCamera>();
+
+    auto viewer = mock_shared<MockViewer>();
+    ON_CALL(*viewer, camera).WillByDefault(Return(camera));
+
+    auto application = mock_shared<MockApplication>();
+    ON_CALL(*application, viewer).WillByDefault(Return(viewer));
+
+    LuaState L;
+    lua::trview_register(L, application.get(),
+        [](auto&&) { return mock_shared<MockRoute>(); },
+        [](auto&&) { return mock_shared<MockRandomizerRoute>(); },
+        [](auto&&...) { return mock_shared<MockWaypoint>(); },
+        [](auto&&...) { return mock_shared<MockScriptable>(); },
+        mock_shared<MockDialogs>(),
+        mock_shared<MockFiles>());
+
+    ASSERT_EQ(0, luaL_dostring(L, "return trview.camera"));
+    ASSERT_EQ(LUA_TUSERDATA, lua_type(L, -1));
+}
+
 TEST(Lua_trview, Level)
 {
     auto level = mock_shared<MockLevel>();

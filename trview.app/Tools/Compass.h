@@ -4,7 +4,6 @@
 #include <trview.graphics/IRenderTarget.h>
 #include <trview.graphics/ISprite.h>
 #include <trview.app/Geometry/IMesh.h>
-#include <trview.app/Camera/OrbitCamera.h>
 #include "ICompass.h"
 
 namespace trview
@@ -39,7 +38,7 @@ namespace trview
         std::unique_ptr<graphics::IRenderTarget> _render_target;
         std::shared_ptr<IMesh> _mesh;
         std::unique_ptr<graphics::ISprite> _sprite;
-        OrbitCamera _mesh_camera;
+        Camera _mesh_camera;
         bool _visible{ true };
     };
 
