@@ -309,7 +309,7 @@ namespace trview
 
                 ImGui::Spacing();
 
-                ImGui::Text("Triggered By");
+                ImGui::Text("Trigger References");
                 if (ImGui::BeginTable(Names::triggers_list.c_str(), 3, ImGuiTableFlags_ScrollY | ImGuiTableFlags_Sortable | ImGuiTableFlags_SizingFixedFit, ImVec2(-1, -1)))
                 {
                     ImGui::TableSetupColumn("#");
@@ -392,7 +392,7 @@ namespace trview
                     [](const auto& r) { if (auto room = r.lock()) { return static_cast<float>(room->number()); } return 0.0f; }) |
                     std::ranges::to<std::vector>();
             });
-        _filters.add_multi_getter<float>("Triggered By", [&](auto&& camera_sink)
+        _filters.add_multi_getter<float>("Trigger References", [&](auto&& camera_sink)
             {
                 std::vector<float> results;
                 for (const auto& trigger : camera_sink.triggers())

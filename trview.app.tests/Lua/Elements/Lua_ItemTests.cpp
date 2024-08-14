@@ -165,15 +165,15 @@ TEST(Lua_Item, TriggeredBy)
     lua::create_item(L, item);
     lua_setglobal(L, "i");
 
-    ASSERT_EQ(0, luaL_dostring(L, "return i.triggered_by"));
+    ASSERT_EQ(0, luaL_dostring(L, "return i.trigger_references"));
     ASSERT_EQ(LUA_TTABLE, lua_type(L, -1));
-    ASSERT_EQ(0, luaL_dostring(L, "return #i.triggered_by"));
+    ASSERT_EQ(0, luaL_dostring(L, "return #i.trigger_references"));
     ASSERT_EQ(LUA_TNUMBER, lua_type(L, -1));
     ASSERT_EQ(2, lua_tointeger(L, -1));
-    ASSERT_EQ(0, luaL_dostring(L, "return i.triggered_by[1].number"));
+    ASSERT_EQ(0, luaL_dostring(L, "return i.trigger_references[1].number"));
     ASSERT_EQ(LUA_TNUMBER, lua_type(L, -1));
     ASSERT_EQ(100, lua_tointeger(L, -1));
-    ASSERT_EQ(0, luaL_dostring(L, "return i.triggered_by[2].number"));
+    ASSERT_EQ(0, luaL_dostring(L, "return i.trigger_references[2].number"));
     ASSERT_EQ(LUA_TNUMBER, lua_type(L, -1));
     ASSERT_EQ(200, lua_tointeger(L, -1));
 }

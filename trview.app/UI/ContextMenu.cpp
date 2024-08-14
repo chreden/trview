@@ -45,7 +45,7 @@ namespace trview
                 ImGui::EndMenu();
             }
 
-            if (ImGui::BeginMenu(Names::triggered_by.c_str(), !_triggered_by.empty()))
+            if (ImGui::BeginMenu(Names::trigger_references.c_str(), !_triggered_by.empty()))
             {
                 for (const auto& trigger : _triggered_by)
                 {

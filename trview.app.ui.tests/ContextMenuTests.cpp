@@ -244,7 +244,7 @@ void register_context_menu_tests(ImGuiTestEngine* engine)
             ASSERT_FALSE(menu.visible());
         });
 
-    test<ContextMenu>(engine, "Context Menu", "Triggered By",
+    test<ContextMenu>(engine, "Context Menu", "Trigger References",
         [](ImGuiTestContext* ctx) { ctx->GetVars<ContextMenu>().render(); },
         [](ImGuiTestContext* ctx)
         {
@@ -261,7 +261,7 @@ void register_context_menu_tests(ImGuiTestEngine* engine)
             auto token = menu.on_trigger_selected += [&raised](auto type) { raised = type; };
 
             ctx->MouseClickOnVoid(ImGuiMouseButton_Right);
-            ctx->ItemOpen("/**/Triggered By");
+            ctx->ItemOpen("/**/Trigger References");
             ctx->ItemClick("/##Menu_00/Trigger 100");
 
             ASSERT_TRUE(raised);

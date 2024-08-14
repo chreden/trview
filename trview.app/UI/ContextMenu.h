@@ -18,7 +18,7 @@ namespace trview
             static inline const std::string copy = "Copy";
             static inline const std::string copy_position = "Position";
             static inline const std::string copy_number = "Room/Object Number";
-            static inline const std::string triggered_by = "Triggered By";
+            static inline const std::string trigger_references = "Trigger References";
         };
 
         virtual ~ContextMenu() = default;

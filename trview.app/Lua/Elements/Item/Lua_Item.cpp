@@ -60,7 +60,7 @@ namespace trview
                 {
                     return create_room(L, item->room().lock());
                 }
-                else if (key == "triggered_by")
+                else if (equals_any(key, "triggered_by", "trigger_references"))
                 {
                     return push_list_p(L, item->triggers(), create_trigger);
                 }

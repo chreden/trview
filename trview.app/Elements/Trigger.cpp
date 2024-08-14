@@ -33,7 +33,7 @@ namespace trview
         {
             _commands.push_back({ command_index++, action.first, action.second });
             // Special case for object still.
-            if (action.first == TriggerCommandType::Object)
+            if (equals_any(action.first, TriggerCommandType::Object, TriggerCommandType::LookAtItem))
             {
                 _objects.push_back(action.second);
             }
