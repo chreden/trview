@@ -140,7 +140,6 @@ namespace trview
         input::Keyboard _keyboard;
         std::unique_ptr<input::IMouse> _mouse;
         std::unique_ptr<IViewerUI> _ui;
-        ICamera::Mode _camera_mode{ ICamera::Mode::Orbit };
         CameraInput _camera_input;
         UserSettings _settings;
         std::unique_ptr<IPicking> _picking;

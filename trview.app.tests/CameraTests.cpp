@@ -1,4 +1,5 @@
 #include <trview.app/Camera/Camera.h>
+#include <trview.tests.common/Event.h>
 
 using namespace trview;
 using namespace DirectX::SimpleMath;
@@ -77,4 +78,17 @@ TEST(Camera, Zoom)
 
     const auto new_position = camera.position();
     ASSERT_EQ(5.0f, -new_position.z);
+}
+
+TEST(Camera, ModeEventRaised)
+{
+    Camera camera(Size(10, 10));
+
+    std::optional<ICamera::Mode> raised;
+    auto token = camera.on_mode_changed += trview::tests::capture(raised);
+
+    camera.set_mode(ICamera::Mode::Axis);
+
+    ASSERT_TRUE(raised);
+    ASSERT_EQ(raised.value(), ICamera::Mode::Axis);
 }

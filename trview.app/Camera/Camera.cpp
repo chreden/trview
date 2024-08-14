@@ -375,6 +375,7 @@ namespace trview
     {
         _mode = mode;
         _alignment = camera_mode_to_alignment(mode);
+        on_mode_changed(mode);
     }
 
     void Camera::reset()

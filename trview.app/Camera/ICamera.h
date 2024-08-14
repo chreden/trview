@@ -133,5 +133,6 @@ namespace trview
 
         /// Event raised when the view of the camera has changed.
         Event<> on_view_changed;
+        Event<Mode> on_mode_changed;
     };
 }

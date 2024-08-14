@@ -28,6 +28,12 @@ namespace trview
         _scene_target = _render_target_source(static_cast<uint32_t>(window.size().width), static_cast<uint32_t>(window.size().height), graphics::IRenderTarget::DepthStencilMode::Enabled);
         _scene_sprite = sprite_source(window.size());
         _token_store += _camera->on_view_changed += [&]() { _scene_changed = true; };
+        _token_store += _camera->on_mode_changed += [&](auto mode)
+            {
+                _ui->set_camera_mode(mode);
+                _camera_moved = true;
+                _scene_changed = true;
+            };
 
         _main_window = device_window_source(window);
 
@@ -225,7 +231,7 @@ namespace trview
         _token_store += _ui->on_tool_selected += [&](auto tool) { _active_tool = tool; _measure->reset(); };
         _token_store += _ui->on_camera_position += [&](const auto& position)
         {
-            if (_camera_mode == ICamera::Mode::Orbit)
+            if (camera_mode() == ICamera::Mode::Orbit)
             {
                 set_camera_mode(ICamera::Mode::Free);
             }
@@ -759,14 +765,8 @@ namespace trview
 
     void Viewer::set_camera_mode(ICamera::Mode camera_mode)
     {
-        if (_camera_mode == camera_mode) 
-        {
-            return;
-        }
-
         _camera_moved = true;
         _camera->set_mode(camera_mode);
-        _camera_mode = camera_mode;
         _ui->set_camera_mode(camera_mode);
         _scene_changed = true;
     }
@@ -1007,7 +1007,7 @@ namespace trview
             }
             
             _camera_moved = true;
-            if (_camera_mode == ICamera::Mode::Orbit)
+            if (camera_mode() == ICamera::Mode::Orbit)
             {
                 _camera->set_zoom(_camera->zoom() + zoom);
                 if (auto level = _level.lock())
@@ -1027,7 +1027,7 @@ namespace trview
 
         _token_store += _camera_input.on_pan += [&](bool vertical, float x, float y)
         {
-            if (_ui->is_cursor_over() || _camera_mode != ICamera::Mode::Orbit)
+            if (_ui->is_cursor_over() || camera_mode() != ICamera::Mode::Orbit)
             {
                 return;
             }
@@ -1332,7 +1332,7 @@ namespace trview
 
     ICamera::Mode Viewer::camera_mode() const
     {
-        return _camera_mode;
+        return _camera->mode();
     }
 
     void Viewer::select_light(const std::weak_ptr<ILight>& light)
