@@ -80,8 +80,6 @@ namespace trview
                 }
                 else if (key == "target")
                 {
-                    camera->set_mode(ICamera::Mode::Orbit);
-
                     const int type = lua_type(L, 3);
                     if (equals_any(type, LUA_TUSERDATA, LUA_TTABLE))
                     {
@@ -95,7 +93,8 @@ namespace trview
                             lua_pop(L, 1);
                         }
                     }
-                    else if (type == LUA_TTABLE)
+
+                    if (type == LUA_TTABLE)
                     {
                         // Assume top is a vector3 if metatable lookups failed.
                         camera->set_target(to_vector3(L, 3) / trlevel::Scale);
