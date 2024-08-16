@@ -26,6 +26,7 @@ namespace trview
         bool render_sounds_window();
         void calculate_column_widths();
         void render_sound_sources_list();
+        void render_sound_board();
 
         std::string _id{ "Sounds 0" };
         bool _force_sort = false;

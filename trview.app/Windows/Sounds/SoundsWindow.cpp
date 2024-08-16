@@ -46,26 +46,7 @@ namespace trview
 
                 if (ImGui::BeginTabItem("Sound Board"))
                 {
-                    if (const auto sound_storage = _sound_storage.lock())
-                    {
-                        ImVec2 size = ImGui::GetWindowSize();
-                        const int slots = static_cast<int>(size.x / 57);
-                        int count = 0;
-                        for (const auto [index, sound] : sound_storage->sounds() | std::ranges::to<std::map<int16_t, std::weak_ptr<ISound>>>())
-                        {
-                            if (const auto sound_ptr = sound.lock())
-                            {
-                                if (ImGui::Button(std::format("{}", index).c_str(), ImVec2(50, 50)))
-                                {
-                                    sound_ptr->play();
-                                }
-                                if (++count % slots != 0)
-                                {
-                                    ImGui::SameLine(0.0f, 5.0f);
-                                }
-                            }
-                        }
-                    }
+                    render_sound_board();
                     ImGui::EndTabItem();
                 }
                 ImGui::EndTabBar();
@@ -178,6 +159,30 @@ namespace trview
             }
         }
         ImGui::EndChild();
+    }
+
+    void SoundsWindow::render_sound_board()
+    {
+        if (const auto sound_storage = _sound_storage.lock())
+        {
+            ImVec2 size = ImGui::GetWindowSize();
+            const int slots = static_cast<int>(size.x / 57);
+            int count = 0;
+            for (const auto [index, sound] : sound_storage->sounds() | std::ranges::to<std::map<int16_t, std::weak_ptr<ISound>>>())
+            {
+                if (const auto sound_ptr = sound.lock())
+                {
+                    if (ImGui::Button(std::format("{}", index).c_str(), ImVec2(50, 50)))
+                    {
+                        sound_ptr->play();
+                    }
+                    if (++count % slots != 0)
+                    {
+                        ImGui::SameLine(0.0f, 5.0f);
+                    }
+                }
+            }
+        }
     }
 
     void SoundsWindow::set_sound_storage(const std::weak_ptr<ISoundStorage>& sound_storage)
