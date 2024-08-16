@@ -26,6 +26,7 @@ namespace trview
 
     struct Sound::Impl
     {
+        bool initialised{ false };
         ma_decoder decoder;
         ma_device_config deviceConfig;
         ma_device device;
@@ -34,17 +35,6 @@ namespace trview
     Sound::Sound(const std::vector<uint8_t>& data)
         : _data(data), _impl(std::make_unique<Impl>())
     {
-        ma_result result = ma_decoder_init_memory(&_data[0], _data.size(), nullptr, &_impl->decoder);
-        result;
-
-        _impl->deviceConfig = ma_device_config_init(ma_device_type_playback);
-        _impl->deviceConfig.playback.format = _impl->decoder.outputFormat;
-        _impl->deviceConfig.playback.channels = _impl->decoder.outputChannels;
-        _impl->deviceConfig.sampleRate = _impl->decoder.outputSampleRate;
-        _impl->deviceConfig.dataCallback = data_callback;
-        _impl->deviceConfig.pUserData = &_impl->decoder;
-
-        ma_device_init(NULL, &_impl->deviceConfig, &_impl->device);
         // if (ma_device_init(NULL, &deviceConfig, &device) != MA_SUCCESS) {
         //     printf("Failed to open playback device.\n");
         //     ma_decoder_uninit(&decoder);
@@ -67,9 +57,27 @@ namespace trview
 
     void Sound::play()
     {
+        initialise();
         ma_decoder_seek_to_pcm_frame(&_impl->decoder, 0);
         ma_device_start(&_impl->device);
     }
+
+    void Sound::initialise()
+    {
+        if (!_impl->initialised)
+        {
+            ma_decoder_init_memory(&_data[0], _data.size(), nullptr, &_impl->decoder);
+            _impl->deviceConfig = ma_device_config_init(ma_device_type_playback);
+            _impl->deviceConfig.playback.format = _impl->decoder.outputFormat;
+            _impl->deviceConfig.playback.channels = _impl->decoder.outputChannels;
+            _impl->deviceConfig.sampleRate = _impl->decoder.outputSampleRate;
+            _impl->deviceConfig.dataCallback = data_callback;
+            _impl->deviceConfig.pUserData = &_impl->decoder;
+            ma_device_init(NULL, &_impl->deviceConfig, &_impl->device);
+            _impl->initialised = true;
+        }
+    }
+
 
     std::shared_ptr<ISound> create_sound(const std::vector<uint8_t>& data)
     {

@@ -12,6 +12,7 @@ namespace trview
         void play() override;
     private:
         std::vector<uint8_t> _data;
+        void initialise();
 
         struct Impl;
         std::unique_ptr<Impl> _impl;
