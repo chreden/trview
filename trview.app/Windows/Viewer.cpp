@@ -6,6 +6,9 @@
 #include <trview.graphics/ViewportStore.h>
 #include <trview.common/Strings.h>
 
+#include "Sound/ISoundStorage.h"
+#include "Sound/ISound.h"
+
 using namespace DirectX::SimpleMath;
 
 namespace trview
@@ -729,6 +732,32 @@ namespace trview
     void Viewer::render_ui()
     {
         _ui->render();
+
+        if (ImGui::Begin("Sound Test", nullptr, ImGuiWindowFlags_AlwaysVerticalScrollbar))
+        {
+            if (const auto level = _level.lock())
+            {
+                if (const auto sounds = level->sound_storage().lock())
+                {
+                    int count = 0;
+                    for (uint16_t i = 0; i < 256; ++i)
+                    {
+                        if (const auto sound = sounds->get(i).lock())
+                        {
+                            if (ImGui::Button(std::format("Sound {}", i).c_str()))
+                            {
+                                sound->play();
+                            }
+                            if (++count % 6 != 0)
+                            {
+                                ImGui::SameLine();
+                            }
+                        }
+                    }
+                }
+            }
+            ImGui::End();
+        }
     }
 
     void Viewer::present(bool vsync)

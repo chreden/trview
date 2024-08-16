@@ -335,6 +335,12 @@
     <ClCompile Include="Lua\Camera\Lua_Camera.cpp">
       <Filter>Lua\Camera</Filter>
     </ClCompile>
+    <ClCompile Include="Sound\SoundStorage.cpp">
+      <Filter>Sound</Filter>
+    </ClCompile>
+    <ClCompile Include="Sound\Sound.cpp">
+      <Filter>Sound</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera\Camera.h">
@@ -1099,6 +1105,18 @@
     <ClInclude Include="Mocks\Lua\IScriptable.h">
       <Filter>Mocks\Lua</Filter>
     </ClInclude>
+    <ClInclude Include="Sound\ISoundStorage.h">
+      <Filter>Sound</Filter>
+    </ClInclude>
+    <ClInclude Include="Sound\SoundStorage.h">
+      <Filter>Sound</Filter>
+    </ClInclude>
+    <ClInclude Include="Sound\ISound.h">
+      <Filter>Sound</Filter>
+    </ClInclude>
+    <ClInclude Include="Sound\Sound.h">
+      <Filter>Sound</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Windows">
@@ -1298,6 +1316,9 @@
     </Filter>
     <Filter Include="Lua\Camera">
       <UniqueIdentifier>{4e6be7c4-7790-44bc-8f84-1ad31b71b84d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Sound">
+      <UniqueIdentifier>{09391af2-c9b4-43aa-9b92-e0b004b67300}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

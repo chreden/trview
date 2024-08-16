@@ -74,6 +74,8 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClCompile Include="Plugins\Plugin.cpp" />
     <ClCompile Include="Plugins\Plugins.cpp" />
     <ClCompile Include="Routing\RandomizerRoute.cpp" />
+    <ClCompile Include="Sound\Sound.cpp" />
+    <ClCompile Include="Sound\SoundStorage.cpp" />
     <ClCompile Include="Windows\Windows.cpp" />
     <ClInclude Include="Lua\Camera\Lua_Camera.h" />
     <ClInclude Include="Lua\Scriptable\IScriptable.h" />
@@ -144,6 +146,10 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClInclude Include="Plugins\Plugins.h" />
     <ClInclude Include="Routing\IRandomizerRoute.h" />
     <ClInclude Include="Routing\RandomizerRoute.h" />
+    <ClInclude Include="Sound\ISound.h" />
+    <ClInclude Include="Sound\ISoundStorage.h" />
+    <ClInclude Include="Sound\Sound.h" />
+    <ClInclude Include="Sound\SoundStorage.h" />
     <ClInclude Include="Tools\IToolbar.h" />
     <ClInclude Include="Type.inl">
       <FileType>Document</FileType>

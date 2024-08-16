@@ -27,6 +27,14 @@ namespace trlevel
         }
     }
 
+    void ILevel::LoadCallbacks::on_sound(uint16_t index, const std::vector<uint8_t>& data) const
+    {
+        if (on_sound_callback)
+        {
+            on_sound_callback(index, data);
+        }
+    }
+
     namespace
     {
         const float PiMul2 = 6.283185307179586476925286766559f;
@@ -1252,7 +1260,7 @@ namespace trlevel
                 callbacks.on_textile(t.Tile |
                     std::views::transform([&](uint8_t entry_index)
                         {
-                            // The first entry in the 8 bit palette is the transparent colour, so just return 
+                            // The first entry in the 8 bit palette is the transparent colour, s just return 
                             // fully transparent instead of replacing it later.
                             if (entry_index == 0)
                             {
@@ -1289,28 +1297,29 @@ namespace trlevel
 
         callbacks.on_progress("Reading sound map");
         log_file(activity, file, "Reading sound map");
+        std::vector<int16_t> sound_map;
         if (get_version() == LevelVersion::Tomb1)
         {
-            std::vector<int16_t> sound_map = read_vector<int16_t>(file, 256);
+            sound_map = read_vector<int16_t>(file, 256);
         }
         else if (get_version() < LevelVersion::Tomb4)
         {
-            std::vector<int16_t> sound_map = read_vector<int16_t>(file, 370);
+            sound_map = read_vector<int16_t>(file, 370);
         }
         else if (get_version() == LevelVersion::Tomb4)
         {
             if (demo_data.size() == 2048)
             {
-                std::vector<int16_t> sound_map = read_vector<int16_t>(file, 1024);
+                sound_map = read_vector<int16_t>(file, 1024);
             }
             else
             {
-                std::vector<int16_t> sound_map = read_vector<int16_t>(file, 370);
+                sound_map = read_vector<int16_t>(file, 370);
             }
         }
         else
         {
-            std::vector<int16_t> sound_map = read_vector<int16_t>(file, 450);
+            sound_map = read_vector<int16_t>(file, 450);
         }
         log_file(activity, file, "Read sound map");
 
@@ -1323,8 +1332,8 @@ namespace trlevel
         {
             callbacks.on_progress("Reading sound data");
             log_file(activity, file, "Reading sound data");
-            std::vector<uint8_t> sound_data = read_vector<int32_t, uint8_t>(file);
-            log_file(activity, file, std::format("Read {} sound data", sound_data.size()));
+            _sound_data = read_vector<int32_t, uint8_t>(file);
+            log_file(activity, file, std::format("Read {} sound data", _sound_data.size()));
         }
 
         if (get_version() < LevelVersion::Tomb4)
@@ -1333,6 +1342,22 @@ namespace trlevel
             log_file(activity, file, "Reading sample indices");
             std::vector<uint32_t> sample_indices = read_vector<uint32_t, uint32_t>(file);
             log_file(activity, file, std::format("Read {} sample indices", sample_indices.size()));
+
+            for (const auto& map_entry : sound_map)
+            {
+                if (map_entry == -1)
+                {
+                    continue;
+                }
+
+                // TODO: Bounds checking.
+                const auto& detail = sound_details[map_entry];
+                const auto start = sample_indices[detail.Sample];
+                const auto end = (detail.Sample + 1) < sample_indices.size() ? sample_indices[detail.Sample + 1] : _sound_data.size();
+
+                std::vector<uint8_t> data{ _sound_data.begin() + start, _sound_data.begin() + end };
+                callbacks.on_sound(detail.Sample, data);
+            }
         }
         else
         {
@@ -1585,5 +1610,10 @@ namespace trlevel
             activity.log(trview::Message::Status::Error, std::format("Level failed to load: {}", e.what()));
             throw LevelLoadException(e.what());
         }
+    }
+
+    std::vector<uint8_t> Level::sound() const
+    {
+        return _sound_data;
     }
 }

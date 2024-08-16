@@ -42,6 +42,7 @@
 #include "Routing/RandomizerRoute.h"
 #include "Settings/SettingsLoader.h"
 #include "Settings/StartupOptions.h"
+#include "Sound/SoundStorage.h"
 #include "UI/CameraControls.h"
 #include "UI/ContextMenu.h"
 #include "UI/SettingsWindow.h"
@@ -248,9 +249,10 @@ namespace trview
         auto camera_mesh = create_cube_mesh(mesh_source);
         auto camera_sink_source = [=](auto&&... args) { return std::make_shared<CameraSink>(camera_mesh, texture_storage, args...); };
 
+        auto sound_source = [=](auto&&... args) { return create_sound(args...); };
+
         auto level_source = [=](auto&& level, auto&& callbacks)
             {
-                // TODO: Hook up callbacks for loading textures, other callbacks.
                 auto level_texture_storage = std::make_shared<LevelTextureStorage>(device, std::make_unique<TextureStorage>(device));
                 int count = 0;
                 callbacks.on_textile_callback = [&](auto&& textile)
@@ -258,6 +260,14 @@ namespace trview
                         callbacks.on_progress(std::format("Loading texture {}", ++count));
                         level_texture_storage->add_textile(textile);
                     };
+
+                auto sound_storage = std::make_shared<SoundStorage>(sound_source);
+                callbacks.on_sound_callback = [&](auto&& index, auto&& data)
+                    {
+                        callbacks.on_progress(std::format("Loading sound {}", index));
+                        sound_storage->add(index, data);
+                    };
+
                 level->load(callbacks);
                 level_texture_storage->load(level);
 
@@ -269,7 +279,8 @@ namespace trview
                     std::make_unique<TransparencyBuffer>(device),
                     std::make_unique<SelectionRenderer>(device, shader_storage, std::make_unique<TransparencyBuffer>(device), render_target_source),
                     log,
-                    buffer_source);
+                    buffer_source,
+                    sound_storage);
                 new_level->initialise(level,
                     std::move(mesh_storage),
                     entity_source,

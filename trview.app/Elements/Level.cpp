@@ -37,9 +37,10 @@ namespace trview
         std::unique_ptr<ITransparencyBuffer> transparency_buffer,
         std::unique_ptr<ISelectionRenderer> selection_renderer,
         const std::shared_ptr<ILog>& log,
-        const graphics::IBuffer::ConstantSource& buffer_source)
+        const graphics::IBuffer::ConstantSource& buffer_source,
+        std::shared_ptr<ISoundStorage> sound_storage)
         : _device(device), _texture_storage(level_texture_storage),
-        _transparency(std::move(transparency_buffer)), _selection_renderer(std::move(selection_renderer)), _log(log)
+        _transparency(std::move(transparency_buffer)), _selection_renderer(std::move(selection_renderer)), _log(log), _sound_storage(sound_storage)
     {
         _vertex_shader = shader_storage->get("level_vertex_shader");
         _pixel_shader = shader_storage->get("level_pixel_shader");
@@ -1323,6 +1324,7 @@ namespace trview
         _version = level->get_version();
         _floor_data = level->get_floor_data_all();
         _name = level->name();
+        _sound = level->sound();
 
         record_models(*level);
         callbacks.on_progress("Generating rooms");
@@ -1397,6 +1399,11 @@ namespace trview
         {
             scriptable_ptr->on_changed += on_level_changed;
         }
+    }
+
+    std::weak_ptr<ISoundStorage> Level::sound_storage() const
+    {
+        return _sound_storage;
     }
 
     bool find_item_by_type_id(const ILevel& level, uint32_t type_id, std::weak_ptr<IItem>& output_item)

@@ -14,6 +14,8 @@
 
 namespace trview
 {
+    struct ISoundStorage;
+
     struct ILevel
     {
         using Source = std::function<std::shared_ptr<ILevel>(std::shared_ptr<trlevel::ILevel>, trlevel::ILevel::LoadCallbacks)>;
@@ -139,6 +141,7 @@ namespace trview
         /// <returns>All triggers in the level.</returns>
         virtual std::vector<std::weak_ptr<ITrigger>> triggers() const = 0;
         virtual trlevel::LevelVersion version() const = 0;
+        virtual std::weak_ptr<ISoundStorage> sound_storage() const = 0;
         Event<std::weak_ptr<IItem>> on_item_selected;
         // Event raised when the level needs to change the selected room.
         Event<std::weak_ptr<IRoom>> on_room_selected;

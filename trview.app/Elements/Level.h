@@ -18,6 +18,7 @@ namespace trview
 {
     struct ILevelTextureStorage;
     struct ICamera;
+    struct ISoundStorage;
 
     namespace graphics
     {
@@ -34,7 +35,8 @@ namespace trview
             std::unique_ptr<ITransparencyBuffer> transparency_buffer,
             std::unique_ptr<ISelectionRenderer> selection_renderer,
             const std::shared_ptr<ILog>& log,
-            const graphics::IBuffer::ConstantSource& buffer_source);
+            const graphics::IBuffer::ConstantSource& buffer_source,
+            std::shared_ptr<ISoundStorage> sound_storage);
         virtual ~Level() = default;
         virtual std::vector<graphics::Texture> level_textures() const override;
         virtual std::optional<uint32_t> selected_item() const override;
@@ -116,6 +118,7 @@ namespace trview
         std::vector<std::weak_ptr<IStaticMesh>> static_meshes() const override;
         std::weak_ptr<IStaticMesh> static_mesh(uint32_t index) const override;
         void add_scriptable(const std::weak_ptr<IScriptable>& scriptable) override;
+        std::weak_ptr<ISoundStorage> sound_storage() const override;
     private:
         void generate_rooms(const trlevel::ILevel& level, const IRoom::Source& room_source, const IMeshStorage& mesh_storage);
         void generate_triggers(const ITrigger::Source& trigger_source);
@@ -210,6 +213,8 @@ namespace trview
         std::string _name;
 
         std::vector<std::weak_ptr<IScriptable>> _scriptables;
+        std::vector<uint8_t> _sound;
+        std::shared_ptr<ISoundStorage> _sound_storage;
     };
 
     /// Find the first item with the type id specified.
