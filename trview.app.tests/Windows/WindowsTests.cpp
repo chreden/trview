@@ -17,6 +17,7 @@
 #include <trview.app/Mocks/Windows/IRoomsWindowManager.h>
 #include <trview.app/Mocks/Windows/IRouteWindowManager.h>
 #include <trview.app/Mocks/Windows/IPluginsWindowManager.h>
+#include <trview.app/Mocks/Windows/ISoundsWindowManager.h>
 #include <trview.app/Mocks/Windows/IStaticsWindowManager.h>
 #include <trview.app/Mocks/Windows/ITexturesWindowManager.h>
 #include <trview.app/Mocks/Windows/ITriggersWindowManager.h>
@@ -44,6 +45,7 @@ namespace
             std::unique_ptr<IPluginsWindowManager> plugins{ mock_unique<MockPluginsWindowManager>() };
             std::unique_ptr<IRoomsWindowManager> rooms{ mock_unique<MockRoomsWindowManager>() };
             std::unique_ptr<IRouteWindowManager> route{ mock_unique<MockRouteWindowManager>() };
+            std::unique_ptr<ISoundsWindowManager> sounds{ mock_unique<MockSoundsWindowManager>() };
             std::unique_ptr<IStaticsWindowManager> statics{ mock_unique<MockStaticsWindowManager>() };
             std::unique_ptr<ITexturesWindowManager> textures{ mock_unique<MockTexturesWindowManager>() };
             std::unique_ptr<ITriggersWindowManager> triggers{ mock_unique<MockTriggersWindowManager>() };
@@ -59,6 +61,7 @@ namespace
                     std::move(plugins),
                     std::move(rooms),
                     std::move(route),
+                    std::move(sounds),
                     std::move(statics),
                     std::move(textures),
                     std::move(triggers));

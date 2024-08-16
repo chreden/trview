@@ -8,6 +8,7 @@
 #include "Elements/IRoom.h"
 #include "Elements/ISector.h"
 #include "Elements/IStaticMesh.h"
+#include "Elements/ISoundSource.h"
 #include "Elements/ITrigger.h"
 #include "Elements/ITypeInfoLookup.h"
 #include "Geometry/IMesh.h"
@@ -26,6 +27,7 @@
 #include "Routing/IRandomizerRoute.h"
 #include "Settings/ISettingsLoader.h"
 #include "Settings/IStartupOptions.h"
+#include "Sound/ISoundStorage.h"
 #include "Tools/ICompass.h"
 #include "Tools/IMeasure.h"
 #include "UI/ICameraControls.h"
@@ -59,12 +61,14 @@
 #include "Lua/ILua.h"
 #include "Plugins/IPlugins.h"
 #include "Plugins/IPlugin.h"
-#include "Mocks/Windows/IPluginsWindow.h"
-#include "Mocks/Windows/IPluginsWindowManager.h"
-#include "Mocks/Tools/IToolbar.h"
-#include "Mocks/Windows/IStaticsWindow.h"
-#include "Mocks/Windows/IStaticsWindowManager.h"
-#include "Mocks/Windows/IWindows.h"
+#include "Windows/IPluginsWindow.h"
+#include "Windows/IPluginsWindowManager.h"
+#include "Tools/IToolbar.h"
+#include "Windows/IStaticsWindow.h"
+#include "Windows/IStaticsWindowManager.h"
+#include "Windows/IWindows.h"
+#include "Windows/ISoundsWindow.h"
+#include "Windows/ISoundsWindowManager.h"
 
 namespace trview
 {
@@ -261,5 +265,17 @@ namespace trview
 
         MockScriptable::MockScriptable() {}
         MockScriptable::~MockScriptable() {}
+
+        MockSoundsWindow::MockSoundsWindow() {}
+        MockSoundsWindow::~MockSoundsWindow() {}
+
+        MockSoundsWindowManager::MockSoundsWindowManager() {}
+        MockSoundsWindowManager::~MockSoundsWindowManager() {}
+
+        MockSoundSource::MockSoundSource() {};
+        MockSoundSource::~MockSoundSource() {};
+
+        MockSoundStorage::MockSoundStorage() {};
+        MockSoundStorage::~MockSoundStorage() {};
     }
 }

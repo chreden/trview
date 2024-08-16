@@ -1319,12 +1319,12 @@ namespace trview
         const ITrigger::Source& trigger_source,
         const ILight::Source& light_source,
         const ICameraSink::Source& camera_sink_source,
+        const ISoundSource::Source& sound_source_source,
         const trlevel::ILevel::LoadCallbacks callbacks)
     {
         _version = level->get_version();
         _floor_data = level->get_floor_data_all();
         _name = level->name();
-        _sound = level->sound();
 
         record_models(*level);
         callbacks.on_progress("Generating rooms");
@@ -1337,6 +1337,8 @@ namespace trview
         generate_lights(*level, light_source);
         callbacks.on_progress("Generating camera/sinks");
         generate_camera_sinks(*level, camera_sink_source);
+        callbacks.on_progress("Generating sound sources");
+        generate_sound_sources(*level, sound_source_source);
 
         callbacks.on_progress("Generating room bounding boxes");
         for (auto& room : _rooms)
@@ -1404,6 +1406,21 @@ namespace trview
     std::weak_ptr<ISoundStorage> Level::sound_storage() const
     {
         return _sound_storage;
+    }
+
+    std::vector<std::weak_ptr<ISoundSource>> Level::sound_sources() const
+    {
+        return _sound_sources | std::ranges::to<std::vector<std::weak_ptr<ISoundSource>>>();
+    }
+
+    void Level::generate_sound_sources(const trlevel::ILevel& level, const ISoundSource::Source& sound_source_source)
+    {
+        uint32_t count = 0;
+        for (const auto& source : level.sound_sources())
+        {
+            _sound_sources.push_back(sound_source_source(count++));
+            source;
+        }
     }
 
     bool find_item_by_type_id(const ILevel& level, uint32_t type_id, std::weak_ptr<IItem>& output_item)

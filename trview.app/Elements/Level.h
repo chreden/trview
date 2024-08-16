@@ -14,6 +14,8 @@
 #include <trview.graphics/IBuffer.h>
 #include <trview.common/TokenStore.h>
 
+#include "SoundSource/ISoundSource.h"
+
 namespace trview
 {
     struct ILevelTextureStorage;
@@ -114,11 +116,13 @@ namespace trview
             const ITrigger::Source& trigger_source,
             const ILight::Source& light_source,
             const ICameraSink::Source& camera_sink_source,
+            const ISoundSource::Source& sound_source_source,
             const trlevel::ILevel::LoadCallbacks callbacks);
         std::vector<std::weak_ptr<IStaticMesh>> static_meshes() const override;
         std::weak_ptr<IStaticMesh> static_mesh(uint32_t index) const override;
         void add_scriptable(const std::weak_ptr<IScriptable>& scriptable) override;
         std::weak_ptr<ISoundStorage> sound_storage() const override;
+        std::vector<std::weak_ptr<ISoundSource>> sound_sources() const override;
     private:
         void generate_rooms(const trlevel::ILevel& level, const IRoom::Source& room_source, const IMeshStorage& mesh_storage);
         void generate_triggers(const ITrigger::Source& trigger_source);
@@ -127,6 +131,7 @@ namespace trview
         void generate_neighbours(std::set<uint16_t>& results, uint16_t selected_room, int32_t max_depth);
         void generate_lights(const trlevel::ILevel& level, const ILight::Source& light_source);
         void generate_camera_sinks(const trlevel::ILevel& level, const ICameraSink::Source& camera_sink_source);
+        void generate_sound_sources(const trlevel::ILevel& level, const ISoundSource::Source& sound_source_source);
 
         // Render the rooms in the level.
         // context: The device context.
@@ -213,8 +218,8 @@ namespace trview
         std::string _name;
 
         std::vector<std::weak_ptr<IScriptable>> _scriptables;
-        std::vector<uint8_t> _sound;
         std::shared_ptr<ISoundStorage> _sound_storage;
+        std::vector<std::shared_ptr<ISoundSource>> _sound_sources;
     };
 
     /// Find the first item with the type id specified.

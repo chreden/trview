@@ -11,6 +11,7 @@
 #include "Plugins/IPluginsWindowManager.h"
 #include "IRoomsWindowManager.h"
 #include "IRouteWindowManager.h"
+#include "Sounds/ISoundsWindowManager.h"
 #include "Statics/IStaticsWindowManager.h"
 #include "Textures/ITexturesWindowManager.h"
 #include "ITriggersWindowManager.h"
@@ -32,13 +33,14 @@ namespace trview
         std::unique_ptr<IPluginsWindowManager> plugins_window_manager,
         std::unique_ptr<IRoomsWindowManager> rooms_window_manager,
         std::unique_ptr<IRouteWindowManager> route_window_manager,
+        std::unique_ptr<ISoundsWindowManager> sounds_window_manager,
         std::unique_ptr<IStaticsWindowManager> statics_window_manager,
         std::unique_ptr<ITexturesWindowManager> textures_window_manager,
         std::unique_ptr<ITriggersWindowManager> triggers_window_manager)
         : _camera_sink_windows(std::move(camera_sink_windows)), _console_manager(std::move(console_manager)), _items_windows(std::move(items_window_manager)),
         _lights_windows(std::move(lights_window_manager)), _log_windows(std::move(log_window_manager)), _plugins_windows(std::move(plugins_window_manager)),
-        _rooms_windows(std::move(rooms_window_manager)), _route_window(std::move(route_window_manager)), _statics_windows(std::move(statics_window_manager)),
-        _textures_windows(std::move(textures_window_manager)), _triggers_windows(std::move(triggers_window_manager))
+        _rooms_windows(std::move(rooms_window_manager)), _route_window(std::move(route_window_manager)), _sounds_windows(std::move(sounds_window_manager)),
+        _statics_windows(std::move(statics_window_manager)), _textures_windows(std::move(textures_window_manager)), _triggers_windows(std::move(triggers_window_manager))
     {
         _camera_sink_windows->on_camera_sink_selected += on_camera_sink_selected;
         _camera_sink_windows->on_trigger_selected += on_trigger_selected;
@@ -121,6 +123,7 @@ namespace trview
         _plugins_windows->render();
         _rooms_windows->render();
         _route_window->render();
+        _sounds_windows->render();
         _statics_windows->render();
         _textures_windows->render();
         _triggers_windows->render();
@@ -182,6 +185,8 @@ namespace trview
         _route_window->set_items(new_level->items());
         _route_window->set_triggers(new_level->triggers());
         _route_window->set_rooms(new_level->rooms());
+        _sounds_windows->set_sound_sources(new_level->sound_sources());
+        _sounds_windows->set_sound_storage(new_level->sound_storage());
         _statics_windows->set_statics(new_level->static_meshes());
         _triggers_windows->set_items(new_level->items());
         _triggers_windows->set_triggers(new_level->triggers());

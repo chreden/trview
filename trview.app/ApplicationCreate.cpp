@@ -27,6 +27,7 @@
 #include "Elements/Trigger.h"
 #include "Elements/StaticMesh.h"
 #include "Elements/Sector.h"
+#include "Elements/SoundSource/SoundSource.h"
 #include "Graphics/TextureStorage.h"
 #include "Geometry/Mesh.h"
 #include "Geometry/Picking.h"
@@ -72,6 +73,8 @@
 #include "Windows/Plugins/PluginsWindow.h"
 #include "Tools/Toolbar.h"
 #include "UI/Fonts/Fonts.h"
+#include "Windows/Sounds/SoundsWindowManager.h"
+#include "Windows/Sounds/SoundsWindow.h"
 #include "Windows/Statics/StaticsWindowManager.h"
 #include "Windows/Statics/StaticsWindow.h"
 #include "Windows/Windows.h"
@@ -249,7 +252,8 @@ namespace trview
         auto camera_mesh = create_cube_mesh(mesh_source);
         auto camera_sink_source = [=](auto&&... args) { return std::make_shared<CameraSink>(camera_mesh, texture_storage, args...); };
 
-        auto sound_source = [=](auto&&... args) { return create_sound(args...); };
+        const auto sound_source = [=](auto&&... args) { return create_sound(args...); };
+        const auto sound_source_source = [=](auto&&... args) { return std::make_shared<SoundSource>(args...); };
 
         auto level_source = [=](auto&& level, auto&& callbacks)
             {
@@ -289,6 +293,7 @@ namespace trview
                     trigger_source,
                     light_source,
                     camera_sink_source,
+                    sound_source_source,
                     callbacks);
                 return new_level;
             };
@@ -353,6 +358,7 @@ namespace trview
         auto textures_window_source = [=]() { return std::make_shared<TexturesWindow>(); };
         auto console_source = [=]() { return std::make_shared<Console>(dialogs, plugins, fonts); };
         auto statics_window_source = [=]() { return std::make_shared<StaticsWindow>(clipboard); };
+        auto sounds_window_source = [=]() { return std::make_shared<SoundsWindow>(); };
 
         return std::make_unique<Application>(
             window,
@@ -380,6 +386,7 @@ namespace trview
                 std::make_unique<PluginsWindowManager>(window, shortcuts, plugins_window_source),
                 std::make_unique<RoomsWindowManager>(window, shortcuts, rooms_window_source),
                 std::make_unique<RouteWindowManager>(window, shortcuts, route_window_source),
+                std::make_unique<SoundsWindowManager>(window, sounds_window_source),
                 std::make_unique<StaticsWindowManager>(window, shortcuts, statics_window_source),
                 std::make_unique<TexturesWindowManager>(window, textures_window_source),
                 std::make_unique<TriggersWindowManager>(window, shortcuts, triggers_window_source)),

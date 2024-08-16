@@ -22,4 +22,9 @@ namespace trview
         const auto found = _sounds.find(index);
         return found == _sounds.end() ? nullptr : found->second;
     }
+
+    std::unordered_map<uint16_t, std::weak_ptr<ISound>> SoundStorage::sounds() const
+    {
+        return _sounds | std::ranges::to<std::unordered_map<uint16_t, std::weak_ptr<ISound>>>();
+    }
 }

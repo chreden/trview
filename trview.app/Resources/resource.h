@@ -49,6 +49,7 @@
 #define ID_WINDOWS_PLUGINS              33025
 #define ID_WINDOWS_RESET_FONTS          33026
 #define ID_WINDOWS_STATICS              33027
+#define ID_WINDOWS_SOUNDS               33028
 
 // Next default values for new objects
 // 

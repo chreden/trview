@@ -1142,8 +1142,8 @@ namespace trlevel
 
         callbacks.on_progress("Reading sound sources");
         log_file(activity, file, "Reading sound sources");
-        std::vector<tr_sound_source> sound_sources = read_vector<uint32_t, tr_sound_source>(file);
-        log_file(activity, file, std::format("Read {} sound sources", sound_sources.size()));
+        _sound_sources = read_vector<uint32_t, tr_sound_source>(file);
+        log_file(activity, file, std::format("Read {} sound sources", _sound_sources.size()));
 
         uint32_t num_boxes = 0;
         callbacks.on_progress("Reading boxes");
@@ -1328,12 +1328,13 @@ namespace trlevel
         std::vector<tr3_sound_details> sound_details = read_vector<uint32_t, tr3_sound_details>(file);
         log_file(activity, file, std::format("Read {} sound details", sound_details.size()));
 
+        std::vector<uint8_t> sound_data;
         if (get_version() == LevelVersion::Tomb1)
         {
             callbacks.on_progress("Reading sound data");
             log_file(activity, file, "Reading sound data");
-            _sound_data = read_vector<int32_t, uint8_t>(file);
-            log_file(activity, file, std::format("Read {} sound data", _sound_data.size()));
+            sound_data = read_vector<int32_t, uint8_t>(file);
+            log_file(activity, file, std::format("Read {} sound data", sound_data.size()));
         }
 
         if (get_version() < LevelVersion::Tomb4)
@@ -1353,9 +1354,9 @@ namespace trlevel
                 // TODO: Bounds checking.
                 const auto& detail = sound_details[map_entry];
                 const auto start = sample_indices[detail.Sample];
-                const auto end = (detail.Sample + 1) < sample_indices.size() ? sample_indices[detail.Sample + 1] : _sound_data.size();
+                const auto end = (detail.Sample + 1) < sample_indices.size() ? sample_indices[detail.Sample + 1] : sound_data.size();
 
-                std::vector<uint8_t> data{ _sound_data.begin() + start, _sound_data.begin() + end };
+                std::vector<uint8_t> data{ sound_data.begin() + start, sound_data.begin() + end };
                 callbacks.on_sound(detail.Sample, data);
             }
         }
@@ -1612,8 +1613,8 @@ namespace trlevel
         }
     }
 
-    std::vector<uint8_t> Level::sound() const
+    std::vector<tr_sound_source> Level::sound_sources() const
     {
-        return _sound_data;
+        return _sound_sources;
     }
 }

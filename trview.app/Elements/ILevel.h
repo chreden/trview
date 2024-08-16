@@ -15,6 +15,7 @@
 namespace trview
 {
     struct ISoundStorage;
+    struct ISoundSource;
 
     struct ILevel
     {
@@ -126,6 +127,7 @@ namespace trview
         virtual bool show_lights() const = 0;
         virtual bool show_triggers() const = 0;
         virtual bool show_items() const = 0;
+        virtual std::vector<std::weak_ptr<ISoundSource>> sound_sources() const = 0;
         virtual std::vector<std::weak_ptr<IStaticMesh>> static_meshes() const = 0;
         virtual std::shared_ptr<ILevelTextureStorage> texture_storage() const = 0;
         virtual std::weak_ptr<IStaticMesh> static_mesh(uint32_t index) const = 0;
