@@ -24,6 +24,7 @@ namespace trview
     std::weak_ptr<ISoundsWindow> SoundsWindowManager::create_window()
     {
         auto sounds_window = _sounds_window_source();
+        sounds_window->set_level_version(_level_version);
         sounds_window->set_sound_sources(_sound_sources);
         sounds_window->set_sound_storage(_sound_storage);
         return add_window(sounds_window);
@@ -32,6 +33,15 @@ namespace trview
     void SoundsWindowManager::render()
     {
         WindowManager::render();
+    }
+
+    void SoundsWindowManager::set_level_version(trlevel::LevelVersion version)
+    {
+        _level_version = version;
+        for (auto& window : _windows)
+        {
+            window.second->set_level_version(version);
+        }
     }
 
     void SoundsWindowManager::set_sound_sources(const std::vector<std::weak_ptr<ISoundSource>>& sound_sources)

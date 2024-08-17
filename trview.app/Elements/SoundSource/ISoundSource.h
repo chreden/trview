@@ -3,6 +3,8 @@
 #include <functional>
 #include <memory>
 
+#include <trlevel/LevelVersion.h>
+
 namespace trlevel
 {
     struct tr_sound_source;
@@ -13,7 +15,7 @@ namespace trview
 {
     struct ISoundSource
     {
-        using Source = std::function<std::shared_ptr<ISoundSource>(uint32_t, const trlevel::tr_sound_source&, const trlevel::tr_x_sound_details&)>;
+        using Source = std::function<std::shared_ptr<ISoundSource>(uint32_t, const trlevel::tr_sound_source&, const trlevel::tr_x_sound_details&, trlevel::LevelVersion)>;
         virtual ~ISoundSource() = 0;
 
         virtual uint16_t chance() const = 0;
@@ -21,7 +23,9 @@ namespace trview
         virtual uint16_t flags() const = 0;
         virtual uint16_t id() const = 0;
         virtual uint32_t number() const = 0;
+        virtual uint8_t pitch() const = 0;
         virtual DirectX::SimpleMath::Vector3 position() const = 0;
+        virtual uint8_t range() const = 0;
         virtual uint16_t sample() const = 0;
         virtual uint16_t volume() const = 0;
     };

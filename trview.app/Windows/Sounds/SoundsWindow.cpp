@@ -5,6 +5,7 @@
 #include "../../Sound/ISoundStorage.h"
 #include "../../Sound/ISound.h"
 #include <trlevel/trtypes.h>
+#include "../../Elements/ILevel.h"
 
 #include <map>
 
@@ -21,6 +22,11 @@ namespace trview
             on_window_closed();
             return;
         }
+    }
+
+    void SoundsWindow::set_level_version(trlevel::LevelVersion version)
+    {
+        _level_version = version;
     }
 
     void SoundsWindow::set_number(int32_t number)
@@ -204,8 +210,11 @@ namespace trview
                     add_stat("Characteristics", selected_sound_source->characteristics());
                     add_stat("Sample", selected_sound_source->sample());
                     add_stat("Volume", selected_sound_source->volume());
-                    // add_stat("Range", selected_sound_source->flags());
-                    // add_stat("Pitch", selected_sound_source->flags());
+                    if (_level_version >= trlevel::LevelVersion::Tomb3)
+                    {
+                        add_stat("Pitch", selected_sound_source->pitch());
+                        add_stat("Range", selected_sound_source->range());
+                    }
                     ImGui::EndTable();
                 }
 

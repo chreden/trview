@@ -5,6 +5,8 @@
 
 namespace trview
 {
+    struct ILevel;
+
     class SoundsWindow final : public ISoundsWindow
     {
     public:
@@ -20,6 +22,7 @@ namespace trview
 
         virtual ~SoundsWindow() = default;
         void render() override;
+        void set_level_version(trlevel::LevelVersion version) override;
         void set_number(int32_t number) override;
         void set_sound_storage(const std::weak_ptr<ISoundStorage>& sound_storage) override;
         void set_sound_sources(const std::vector<std::weak_ptr<ISoundSource>>& sound_sources) override;
@@ -37,5 +40,6 @@ namespace trview
         ColumnSizer _column_sizer;
         std::weak_ptr<ISoundStorage> _sound_storage;
         std::weak_ptr<ISoundSource> _selected_sound_source;
+        trlevel::LevelVersion _level_version{ trlevel::LevelVersion::Unknown };
     };
 }

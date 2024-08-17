@@ -9,10 +9,25 @@ namespace trview
     {
     }
 
-    SoundSource::SoundSource(uint32_t number, const trlevel::tr_sound_source& source, const trlevel::tr_x_sound_details& details)
-        : _flags(source.Flags), _id(source.SoundID), _number(number), _position(source.x / trlevel::Scale, source.y / trlevel::Scale, source.z / trlevel::Scale),
-        _sample(details.tr_sound_details.Sample), _chance(details.tr_sound_details.Chance), _characteristics(details.tr_sound_details.Characteristics), _volume(details.tr_sound_details.Volume)
+    SoundSource::SoundSource(uint32_t number, const trlevel::tr_sound_source& source, const trlevel::tr_x_sound_details& details, trlevel::LevelVersion level_version)
+        : _flags(source.Flags), _id(source.SoundID), _number(number), _position(source.x / trlevel::Scale, source.y / trlevel::Scale, source.z / trlevel::Scale)
     {
+        if (level_version < trlevel::LevelVersion::Tomb3)
+        {
+            _sample = details.tr_sound_details.Sample;
+            _volume = details.tr_sound_details.Volume;
+            _chance = details.tr_sound_details.Chance;
+            _characteristics = details.tr_sound_details.Characteristics;
+        }
+        else
+        {
+            _sample = details.tr3_sound_details.Sample;
+            _volume = details.tr3_sound_details.Volume;
+            _range = details.tr3_sound_details.Range;
+            _chance = details.tr3_sound_details.Chance;
+            _pitch = details.tr3_sound_details.Pitch;
+            _characteristics = details.tr3_sound_details.Characteristics;
+        }
     }
 
     uint16_t SoundSource::chance() const
@@ -40,9 +55,19 @@ namespace trview
         return _number;
     }
 
+    uint8_t SoundSource::pitch() const
+    {
+        return _pitch;
+    }
+
     Vector3 SoundSource::position() const
     {
         return _position;
+    }
+
+    uint8_t SoundSource::range() const
+    {
+        return _range;
     }
 
     uint16_t SoundSource::sample() const
