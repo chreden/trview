@@ -1416,10 +1416,11 @@ namespace trview
     void Level::generate_sound_sources(const trlevel::ILevel& level, const ISoundSource::Source& sound_source_source)
     {
         uint32_t count = 0;
+        const auto sound_map = level.sound_map();
+        const auto details = level.sound_details();
         for (const auto& source : level.sound_sources())
         {
-            _sound_sources.push_back(sound_source_source(count++));
-            source;
+            _sound_sources.push_back(sound_source_source(count++, source, details[sound_map[source.SoundID]]));
         }
     }
 

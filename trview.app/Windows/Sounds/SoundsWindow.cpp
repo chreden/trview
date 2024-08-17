@@ -4,6 +4,7 @@
 #include "../../Elements/SoundSource/ISoundSource.h"
 #include "../../Sound/ISoundStorage.h"
 #include "../../Sound/ISound.h"
+#include <trlevel/trtypes.h>
 
 #include <map>
 
@@ -75,11 +76,11 @@ namespace trview
             // }
 
             RowCounter counter{ "sound sources", _all_sound_sources.size() };
-            if (ImGui::BeginTable(Names::sound_sources_list.c_str(), 1, ImGuiTableFlags_Sortable | ImGuiTableFlags_ScrollY, ImVec2(200, -counter.height())))
+            if (ImGui::BeginTable(Names::sound_sources_list.c_str(), 2, ImGuiTableFlags_Sortable | ImGuiTableFlags_ScrollY, ImVec2(200, -counter.height())))
             {
                 ImGui::TableSetupColumn("#", ImGuiTableColumnFlags_WidthFixed, _column_sizer.size(0));
+                ImGui::TableSetupColumn("ID", ImGuiTableColumnFlags_WidthFixed, _column_sizer.size(1));
                 // ImGui::TableSetupColumn("Room", ImGuiTableColumnFlags_WidthFixed, _column_sizer.size(1));
-                // ImGui::TableSetupColumn("ID", ImGuiTableColumnFlags_WidthFixed, _column_sizer.size(2));
                 // ImGui::TableSetupColumn("Type", ImGuiTableColumnFlags_WidthFixed, _column_sizer.size(3));
                 // ImGui::TableSetupColumn("Hide", ImGuiTableColumnFlags_WidthFixed, _column_sizer.size(4));
                 ImGui::TableSetupScrollFreeze(1, 1);
@@ -88,6 +89,7 @@ namespace trview
                 imgui_sort_weak(_all_sound_sources,
                     {
                         [](auto&& l, auto&& r) { return l.number() < r.number(); },
+                        [](auto&& l, auto&& r) { return l.id() < r.id(); },
                         // [](auto&& l, auto&& r) { return std::tuple(item_room(l), l.number()) < std::tuple(item_room(r), r.number()); },
                         // [](auto&& l, auto&& r) { return std::tuple(l.type_id(), l.number()) < std::tuple(r.type_id(), r.number()); },
                         // [](auto&& l, auto&& r) { return std::tuple(l.type(), l.number()) < std::tuple(r.type(), r.number()); },
@@ -115,14 +117,11 @@ namespace trview
                     //     _scroll_to_item = false;
                     // }
 
-                    // const bool item_is_virtual = is_virtual(*item_ptr);
-                    // ImGui::SetNextItemAllowOverlap();
+                    ImGui::SetNextItemAllowOverlap();
                     if (ImGui::Selectable(std::format("{0}##{0}", sound_source_ptr->number()).c_str(), &selected, ImGuiSelectableFlags_SpanAllColumns | static_cast<int>(ImGuiSelectableFlags_SelectOnNav)))
                     {
                          scroller.fix_scroll();
                          set_local_selected_sound_source(sound_source);
-                    // 
-                    //     set_local_selected_item(item);
                     //     if (_sync_item)
                     //     {
                     //         on_item_selected(item);
@@ -138,8 +137,8 @@ namespace trview
                     //     ImGui::EndTooltip();
                     // }
 
-                    // ImGui::TableNextColumn();
-                    // ImGui::Text(std::to_string(item_room(item_ptr)).c_str());
+                    ImGui::TableNextColumn();
+                    ImGui::Text(std::to_string(sound_source_ptr->id()).c_str());
                     // ImGui::TableNextColumn();
                     // ImGui::Text(std::to_string(item_ptr->type_id()).c_str());
                     // ImGui::TableNextColumn();
@@ -165,87 +164,61 @@ namespace trview
     {
         if (ImGui::BeginChild(Names::details_panel.c_str(), ImVec2(), true))
         {
-            ImGui::Text("Light Details");
-            if (ImGui::BeginTable(Names::stats_listbox.c_str(), 2, 0, ImVec2(-1, 150)))
+            constexpr auto add_stat = [&]<typename T>(const std::string & name, const T && value, Colour colour = Colour::White)
             {
-                ImGui::TableSetupColumn("Name");
-                ImGui::TableSetupColumn("Value");
-                ImGui::TableNextRow();
-
-                auto selected_sound_source = _selected_sound_source.lock();
-                if (selected_sound_source)
+                const auto string_value = get_string(value);
+                ImGui::TableNextColumn();
+                if (ImGui::Selectable(name.c_str(), false, ImGuiSelectableFlags_SpanAllColumns | static_cast<int>(ImGuiSelectableFlags_SelectOnNav)))
                 {
-                    auto add_stat = [&]<typename T>(const std::string & name, const T && value, Colour colour = Colour::White)
-                    {
-                        const auto string_value = get_string(value);
-                        ImGui::TableNextColumn();
-                        if (ImGui::Selectable(name.c_str(), false, ImGuiSelectableFlags_SpanAllColumns | static_cast<int>(ImGuiSelectableFlags_SelectOnNav)))
-                        {
-                            // _clipboard->write(to_utf16(string_value));
-                            // _tooltip_timer = 0.0f;
-                        }
-                        // if (_level_version == trlevel::LevelVersion::Tomb4 && ImGui::IsItemHovered() && _tips.find(name) != _tips.end())
-                        // {
-                        //     ImGui::BeginTooltip();
-                        //     ImGui::Text(_tips[name].c_str());
-                        //     ImGui::EndTooltip();
-                        // }
-                        ImGui::TableNextColumn();
-                        ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(colour.r, colour.g, colour.b, colour.a));
-                        ImGui::Text(string_value.c_str());
-                        ImGui::PopStyleColor();
-                    };
-                    /*
-                    auto add_stat_with_condition = [&](const std::string& name, const auto& stat, const auto& condition)
-                        {
-                            if (condition(*selected_light))
-                            {
-                                add_stat(name, stat(*selected_light));
-                            }
-                        };*/
-                    /*
-                    auto format_colour = [](const Colour& colour)
-                        {
-                            return std::format("R: {}, G: {}, B: {}", static_cast<int>(colour.r * 255), static_cast<int>(colour.g * 255), static_cast<int>(colour.b * 255));
-                        };
-                        */
-                    add_stat("#", selected_sound_source->number());
-
-                    // add_stat("Type", light_type_name(selected_light->type()));
-                    // add_stat("#", selected_light->number());
-                    // add_stat("Room", light_room(selected_light));
-                    /*
-                    if (has_colour(*selected_light))
-                    {
-                        add_stat("Colour", format_colour(selected_light->colour()), selected_light->colour());
-                    }
-
-                    if (has_position(*selected_light))
-                    {
-                        const auto pos = selected_light->position() * trlevel::Scale;
-                        add_stat("Position", std::format("{:.0f}, {:.0f}, {:.0f}", pos.x, pos.y, pos.z));
-                    }
-
-                    if (has_direction(*selected_light))
-                    {
-                        const auto dir = selected_light->direction() * trlevel::Scale;
-                        add_stat("Direction", std::format("{:.3f}, {:.3f}, {:.3f}", dir.x, dir.y, dir.z));
-                    }
-
-                    add_stat_with_condition("Intensity", intensity, has_intensity);
-                    add_stat_with_condition("Fade", fade, has_fade);
-                    add_stat_with_condition("Hotspot", hotspot, has_hotspot);
-                    add_stat_with_condition("Falloff", falloff, has_falloff);
-                    add_stat_with_condition("Falloff Angle", falloff_angle, has_falloff_angle);
-                    add_stat_with_condition("Length", length, has_length);
-                    add_stat_with_condition("Cutoff", cutoff, has_cutoff);
-                    add_stat_with_condition("Rad In", rad_in, has_rad_in);
-                    add_stat_with_condition("Rad Out", rad_out, has_rad_out);
-                    add_stat_with_condition("Range", range, has_range);
-                    add_stat_with_condition("Density", density, has_density);
-                    add_stat_with_condition("Radius", radius, has_radius);*/
+                    // _clipboard->write(to_utf16(string_value));
+                    // _tooltip_timer = 0.0f;
                 }
-                ImGui::EndTable();
+                // if (_level_version == trlevel::LevelVersion::Tomb4 && ImGui::IsItemHovered() && _tips.find(name) != _tips.end())
+                // {
+                //     ImGui::BeginTooltip();
+                //     ImGui::Text(_tips[name].c_str());
+                //     ImGui::EndTooltip();
+                // }
+                ImGui::TableNextColumn();
+                ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(colour.r, colour.g, colour.b, colour.a));
+                ImGui::Text(string_value.c_str());
+                ImGui::PopStyleColor();
+            };
+
+            auto selected_sound_source = _selected_sound_source.lock();
+            if (selected_sound_source)
+            {
+                ImGui::Text("Sound Source");
+                if (ImGui::BeginTable(Names::stats_listbox.c_str(), 2, 0, ImVec2(-1, 0)))
+                {
+                    ImGui::TableSetupColumn("Name");
+                    ImGui::TableSetupColumn("Value");
+                    ImGui::TableNextRow();
+
+                    add_stat("#", selected_sound_source->number());
+                    add_stat("ID", selected_sound_source->id());
+                    add_stat("Flags", selected_sound_source->flags());
+                    const auto pos = selected_sound_source->position() * trlevel::Scale;
+                    add_stat("Position", std::format("{:.0f}, {:.0f}, {:.0f}", pos.x, pos.y, pos.z));
+                    add_stat("Chance", selected_sound_source->chance());
+                    add_stat("Characteristics", selected_sound_source->characteristics());
+                    add_stat("Sample", selected_sound_source->sample());
+                    add_stat("Volume", selected_sound_source->volume());
+                    // add_stat("Range", selected_sound_source->flags());
+                    // add_stat("Pitch", selected_sound_source->flags());
+                    ImGui::EndTable();
+                }
+
+                if (auto storage = _sound_storage.lock())
+                {
+                    if (auto sound = storage->get(selected_sound_source->sample()).lock())
+                    {
+                        if (ImGui::Button("Play", ImVec2(-1, 50)))
+                        {
+                            sound->play();
+                        }
+                    }
+                }
             }
         }
         ImGui::EndChild();
@@ -293,8 +266,7 @@ namespace trview
     {
         _column_sizer.reset();
         _column_sizer.measure("#__", 0);
-        // _column_sizer.measure("Room__", 1);
-        // _column_sizer.measure("ID__", 2);
+        _column_sizer.measure("ID__", 1);
         // _column_sizer.measure("Type__", 3);
         // _column_sizer.measure("Hide____", 4);
 

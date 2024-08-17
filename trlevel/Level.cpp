@@ -1297,36 +1297,35 @@ namespace trlevel
 
         callbacks.on_progress("Reading sound map");
         log_file(activity, file, "Reading sound map");
-        std::vector<int16_t> sound_map;
         if (get_version() == LevelVersion::Tomb1)
         {
-            sound_map = read_vector<int16_t>(file, 256);
+            _sound_map = read_vector<int16_t>(file, 256);
         }
         else if (get_version() < LevelVersion::Tomb4)
         {
-            sound_map = read_vector<int16_t>(file, 370);
+            _sound_map = read_vector<int16_t>(file, 370);
         }
         else if (get_version() == LevelVersion::Tomb4)
         {
             if (demo_data.size() == 2048)
             {
-                sound_map = read_vector<int16_t>(file, 1024);
+                _sound_map = read_vector<int16_t>(file, 1024);
             }
             else
             {
-                sound_map = read_vector<int16_t>(file, 370);
+                _sound_map = read_vector<int16_t>(file, 370);
             }
         }
         else
         {
-            sound_map = read_vector<int16_t>(file, 450);
+            _sound_map = read_vector<int16_t>(file, 450);
         }
         log_file(activity, file, "Read sound map");
 
         callbacks.on_progress("Reading sound details");
         log_file(activity, file, "Reading sound details");
-        std::vector<tr3_sound_details> sound_details = read_vector<uint32_t, tr3_sound_details>(file);
-        log_file(activity, file, std::format("Read {} sound details", sound_details.size()));
+        _sound_details = read_vector<uint32_t, tr_x_sound_details>(file);
+        log_file(activity, file, std::format("Read {} sound details", _sound_details.size()));
 
         std::vector<uint8_t> sound_data;
         if (get_version() == LevelVersion::Tomb1)
@@ -1344,7 +1343,7 @@ namespace trlevel
             std::vector<uint32_t> sample_indices = read_vector<uint32_t, uint32_t>(file);
             log_file(activity, file, std::format("Read {} sample indices", sample_indices.size()));
 
-            for (const auto& map_entry : sound_map)
+            for (const auto& map_entry : _sound_map)
             {
                 if (map_entry == -1)
                 {
@@ -1352,12 +1351,12 @@ namespace trlevel
                 }
 
                 // TODO: Bounds checking.
-                const auto& detail = sound_details[map_entry];
-                const auto start = sample_indices[detail.Sample];
-                const auto end = (detail.Sample + 1) < sample_indices.size() ? sample_indices[detail.Sample + 1] : sound_data.size();
+                const auto& detail = _sound_details[map_entry];
+                const auto start = sample_indices[detail.tr_sound_details.Sample];
+                const auto end = (detail.tr_sound_details.Sample + 1) < sample_indices.size() ? sample_indices[detail.tr_sound_details.Sample + 1] : sound_data.size();
 
                 std::vector<uint8_t> data{ sound_data.begin() + start, sound_data.begin() + end };
-                callbacks.on_sound(detail.Sample, data);
+                callbacks.on_sound(detail.tr_sound_details.Sample, data);
             }
         }
         else
@@ -1616,5 +1615,15 @@ namespace trlevel
     std::vector<tr_sound_source> Level::sound_sources() const
     {
         return _sound_sources;
+    }
+
+    std::vector<tr_x_sound_details> Level::sound_details() const
+    {
+        return _sound_details;
+    }
+
+    std::vector<int16_t> Level::sound_map() const
+    {
+        return _sound_map;
     }
 }

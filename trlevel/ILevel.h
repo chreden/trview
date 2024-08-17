@@ -177,5 +177,7 @@ namespace trlevel
 
         virtual void load(const LoadCallbacks& callbacks) = 0;
         virtual std::vector<tr_sound_source> sound_sources() const = 0;
+        virtual std::vector<tr_x_sound_details> sound_details() const = 0;
+        virtual std::vector<int16_t> sound_map() const = 0;
     };
 }

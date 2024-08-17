@@ -445,6 +445,14 @@ namespace trlevel
         int16_t Characteristics;
     };
 
+    union tr_x_sound_details
+    {
+        tr_sound_details tr_sound_details;
+        tr3_sound_details tr3_sound_details;
+    };
+
+    static_assert(sizeof(tr_x_sound_details) == 8);
+
     struct tr_cinematic_frame // 16 bytes
     {
         int16_t targetX; // Camera look at position about X axis, 
