@@ -15,7 +15,9 @@ namespace trview
             MOCK_METHOD(uint16_t, flags, (), (const, override));
             MOCK_METHOD(uint16_t, id, (), (const, override));
             MOCK_METHOD(uint32_t, number, (), (const, override));
+            MOCK_METHOD(uint8_t, pitch, (), (const, override));
             MOCK_METHOD(DirectX::SimpleMath::Vector3, position, (), (const, override));
+            MOCK_METHOD(uint8_t, range, (), (const, override));
             MOCK_METHOD(uint16_t, sample, (), (const, override));
             MOCK_METHOD(uint16_t, volume, (), (const, override));
         };

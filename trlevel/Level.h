@@ -219,6 +219,7 @@ namespace trlevel
         std::vector<tr_sound_source>    _sound_sources;
         std::vector<tr_x_sound_details> _sound_details;
         std::vector<int16_t> _sound_map;
+        std::vector<uint32_t> _sample_indices;
 
         std::shared_ptr<trview::ILog>   _log;
         std::shared_ptr<IDecrypter>     _decrypter;

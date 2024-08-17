@@ -906,8 +906,38 @@ namespace trlevel
             load_level_data(activity, file, callbacks);
         }
 
-        callbacks.on_progress("Skipping sound samples");
-        log_file(activity, file, "Skipping sound samples");
+        uint32_t num_samples = read<uint32_t>(file);
+        callbacks.on_progress("Reading sound samples");
+        log_file(activity, file, std::format("Reading {} sound samples", num_samples));
+        std::vector<std::vector<uint8_t>> samples;
+        for (uint32_t i = 0; i < num_samples; ++i)
+        {
+            uint32_t uncompressed = read<uint32_t>(file);
+            uncompressed;
+            uint32_t compressed = read<uint32_t>(file);
+            samples.push_back(read_vector<uint8_t>(file, compressed));
+        }
+        log_file(activity, file, std::format("Read {} sound samples", samples.size()));
+
+        for (const auto& map_entry : _sound_map)
+        {
+            if (map_entry == -1)
+            {
+                continue;
+            }
+
+            // TODO: Bounds checking.
+            const auto& detail = _sound_details[map_entry];
+            const auto start = detail.tr3_sound_details.Sample;
+            if (start < samples.size())
+            {
+                callbacks.on_sound(detail.tr_sound_details.Sample, samples[start]);
+            }
+            else
+            {
+                log_file(activity, file, std::format("Invalid sound sample {} (max index: {})", start, samples.size()));
+            }
+        }
 
         callbacks.on_progress("Generating meshes");
         log_file(activity, file, "Generating meshes");
@@ -1336,33 +1366,31 @@ namespace trlevel
             log_file(activity, file, std::format("Read {} sound data", sound_data.size()));
         }
 
-        if (get_version() < LevelVersion::Tomb4)
+        callbacks.on_progress("Reading sample indices");
+        log_file(activity, file, "Reading sample indices");
+        _sample_indices = read_vector<uint32_t, uint32_t>(file);
+        log_file(activity, file, std::format("Read {} sample indices", _sample_indices.size()));
+
+        if (get_version() == LevelVersion::Tomb1)
         {
-            callbacks.on_progress("Reading sample indices");
-            log_file(activity, file, "Reading sample indices");
-            std::vector<uint32_t> sample_indices = read_vector<uint32_t, uint32_t>(file);
-            log_file(activity, file, std::format("Read {} sample indices", sample_indices.size()));
-
-            if (get_version() == LevelVersion::Tomb1)
+            for (const auto& map_entry : _sound_map)
             {
-                for (const auto& map_entry : _sound_map)
+                if (map_entry == -1)
                 {
-                    if (map_entry == -1)
-                    {
-                        continue;
-                    }
-
-                    // TODO: Bounds checking.
-                    const auto& detail = _sound_details[map_entry];
-                    const auto start = sample_indices[detail.tr_sound_details.Sample];
-                    const auto end = (detail.tr_sound_details.Sample + 1) < sample_indices.size() ? sample_indices[detail.tr_sound_details.Sample + 1] : sound_data.size();
-
-                    std::vector<uint8_t> data{ sound_data.begin() + start, sound_data.begin() + end };
-                    callbacks.on_sound(detail.tr_sound_details.Sample, data);
+                    continue;
                 }
+
+                // TODO: Bounds checking.
+                const auto& detail = _sound_details[map_entry];
+                const auto start = _sample_indices[detail.tr_sound_details.Sample];
+                const auto end = (detail.tr_sound_details.Sample + 1) < _sample_indices.size() ? _sample_indices[detail.tr_sound_details.Sample + 1] : sound_data.size();
+
+                std::vector<uint8_t> data{ sound_data.begin() + start, sound_data.begin() + end };
+                callbacks.on_sound(detail.tr_sound_details.Sample, data);
             }
         }
-        else
+
+        if (get_version() >= LevelVersion::Tomb4)
         {
             skip(file, 6);
         }

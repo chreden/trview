@@ -1420,7 +1420,11 @@ namespace trview
         const auto details = level.sound_details();
         for (const auto& source : level.sound_sources())
         {
-            _sound_sources.push_back(sound_source_source(count++, source, details[sound_map[source.SoundID]], _version));
+            auto index = sound_map[source.SoundID];
+            if (index != -1)
+            {
+                _sound_sources.push_back(sound_source_source(count++, source, details[index], _version));
+            }
         }
     }
 
