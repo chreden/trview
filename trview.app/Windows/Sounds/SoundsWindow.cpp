@@ -39,7 +39,7 @@ namespace trview
                 {
                     render_sound_sources_list();
                     ImGui::SameLine();
-                    // render_item_details();
+                    render_sounds_source_details();
                     _force_sort = false;
                     ImGui::EndTabItem();
                 }
@@ -60,7 +60,7 @@ namespace trview
     void SoundsWindow::render_sound_sources_list()
     {
         calculate_column_widths();
-        if (ImGui::BeginChild(Names::item_list_panel.c_str(), ImVec2(200, 0), ImGuiChildFlags_AutoResizeX, ImGuiWindowFlags_NoScrollbar))
+        if (ImGui::BeginChild(Names::sound_source_list_panel.c_str(), ImVec2(200, 0), ImGuiChildFlags_AutoResizeX, ImGuiWindowFlags_NoScrollbar))
         {
             // _filters.render();
 
@@ -105,22 +105,22 @@ namespace trview
                     counter.count();
                     ImGui::TableNextRow();
                     ImGui::TableNextColumn();
-                    // auto selected_item = _selected_item.lock();
-                    // bool selected = selected_item && selected_item == item_ptr;
+                    auto selected_sound_source = _selected_sound_source.lock();
+                    bool selected = selected_sound_source && selected_sound_source == sound_source_ptr;
 
-                    // ImGuiScroller scroller;
-                    // if (selected && _scroll_to_item)
+                    ImGuiScroller scroller;
+                    // if (selected && _scroll_to_sound_source)
                     // {
                     //     scroller.scroll_to_item();
                     //     _scroll_to_item = false;
                     // }
 
                     // const bool item_is_virtual = is_virtual(*item_ptr);
-                    bool selected = false;
                     // ImGui::SetNextItemAllowOverlap();
                     if (ImGui::Selectable(std::format("{0}##{0}", sound_source_ptr->number()).c_str(), &selected, ImGuiSelectableFlags_SpanAllColumns | static_cast<int>(ImGuiSelectableFlags_SelectOnNav)))
                     {
-                    //     scroller.fix_scroll();
+                         scroller.fix_scroll();
+                         set_local_selected_sound_source(sound_source);
                     // 
                     //     set_local_selected_item(item);
                     //     if (_sync_item)
@@ -156,6 +156,96 @@ namespace trview
                 }
                 ImGui::EndTable();
                 counter.render();
+            }
+        }
+        ImGui::EndChild();
+    }
+
+    void SoundsWindow::render_sounds_source_details()
+    {
+        if (ImGui::BeginChild(Names::details_panel.c_str(), ImVec2(), true))
+        {
+            ImGui::Text("Light Details");
+            if (ImGui::BeginTable(Names::stats_listbox.c_str(), 2, 0, ImVec2(-1, 150)))
+            {
+                ImGui::TableSetupColumn("Name");
+                ImGui::TableSetupColumn("Value");
+                ImGui::TableNextRow();
+
+                auto selected_sound_source = _selected_sound_source.lock();
+                if (selected_sound_source)
+                {
+                    auto add_stat = [&]<typename T>(const std::string & name, const T && value, Colour colour = Colour::White)
+                    {
+                        const auto string_value = get_string(value);
+                        ImGui::TableNextColumn();
+                        if (ImGui::Selectable(name.c_str(), false, ImGuiSelectableFlags_SpanAllColumns | static_cast<int>(ImGuiSelectableFlags_SelectOnNav)))
+                        {
+                            // _clipboard->write(to_utf16(string_value));
+                            // _tooltip_timer = 0.0f;
+                        }
+                        // if (_level_version == trlevel::LevelVersion::Tomb4 && ImGui::IsItemHovered() && _tips.find(name) != _tips.end())
+                        // {
+                        //     ImGui::BeginTooltip();
+                        //     ImGui::Text(_tips[name].c_str());
+                        //     ImGui::EndTooltip();
+                        // }
+                        ImGui::TableNextColumn();
+                        ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(colour.r, colour.g, colour.b, colour.a));
+                        ImGui::Text(string_value.c_str());
+                        ImGui::PopStyleColor();
+                    };
+                    /*
+                    auto add_stat_with_condition = [&](const std::string& name, const auto& stat, const auto& condition)
+                        {
+                            if (condition(*selected_light))
+                            {
+                                add_stat(name, stat(*selected_light));
+                            }
+                        };*/
+                    /*
+                    auto format_colour = [](const Colour& colour)
+                        {
+                            return std::format("R: {}, G: {}, B: {}", static_cast<int>(colour.r * 255), static_cast<int>(colour.g * 255), static_cast<int>(colour.b * 255));
+                        };
+                        */
+                    add_stat("#", selected_sound_source->number());
+
+                    // add_stat("Type", light_type_name(selected_light->type()));
+                    // add_stat("#", selected_light->number());
+                    // add_stat("Room", light_room(selected_light));
+                    /*
+                    if (has_colour(*selected_light))
+                    {
+                        add_stat("Colour", format_colour(selected_light->colour()), selected_light->colour());
+                    }
+
+                    if (has_position(*selected_light))
+                    {
+                        const auto pos = selected_light->position() * trlevel::Scale;
+                        add_stat("Position", std::format("{:.0f}, {:.0f}, {:.0f}", pos.x, pos.y, pos.z));
+                    }
+
+                    if (has_direction(*selected_light))
+                    {
+                        const auto dir = selected_light->direction() * trlevel::Scale;
+                        add_stat("Direction", std::format("{:.3f}, {:.3f}, {:.3f}", dir.x, dir.y, dir.z));
+                    }
+
+                    add_stat_with_condition("Intensity", intensity, has_intensity);
+                    add_stat_with_condition("Fade", fade, has_fade);
+                    add_stat_with_condition("Hotspot", hotspot, has_hotspot);
+                    add_stat_with_condition("Falloff", falloff, has_falloff);
+                    add_stat_with_condition("Falloff Angle", falloff_angle, has_falloff_angle);
+                    add_stat_with_condition("Length", length, has_length);
+                    add_stat_with_condition("Cutoff", cutoff, has_cutoff);
+                    add_stat_with_condition("Rad In", rad_in, has_rad_in);
+                    add_stat_with_condition("Rad Out", rad_out, has_rad_out);
+                    add_stat_with_condition("Range", range, has_range);
+                    add_stat_with_condition("Density", density, has_density);
+                    add_stat_with_condition("Radius", radius, has_radius);*/
+                }
+                ImGui::EndTable();
             }
         }
         ImGui::EndChild();
@@ -219,5 +309,10 @@ namespace trview
         //         _column_sizer.measure(item_ptr->type(), 3);
         //     }
         // }
+    }
+
+    void SoundsWindow::set_local_selected_sound_source(const std::weak_ptr<ISoundSource>& sound_source)
+    {
+        _selected_sound_source = sound_source;
     }
 }

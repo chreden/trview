@@ -78,7 +78,6 @@ namespace trview
         }
     }
 
-
     std::shared_ptr<ISound> create_sound(const std::vector<uint8_t>& data)
     {
         return std::make_shared<Sound>(data);
