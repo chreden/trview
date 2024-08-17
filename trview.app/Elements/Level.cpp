@@ -1420,6 +1420,7 @@ namespace trview
         const auto details = level.sound_details();
         for (const auto& source : level.sound_sources())
         {
+            // TODO: Bounds checking.
             auto index = sound_map[source.SoundID];
             if (index != -1)
             {

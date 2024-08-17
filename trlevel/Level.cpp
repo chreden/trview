@@ -915,29 +915,9 @@ namespace trlevel
             uint32_t uncompressed = read<uint32_t>(file);
             uncompressed;
             uint32_t compressed = read<uint32_t>(file);
-            samples.push_back(read_vector<uint8_t>(file, compressed));
+            callbacks.on_sound(static_cast<uint16_t>(i), read_vector<uint8_t>(file, compressed));
         }
-        log_file(activity, file, std::format("Read {} sound samples", samples.size()));
-
-        for (const auto& map_entry : _sound_map)
-        {
-            if (map_entry == -1)
-            {
-                continue;
-            }
-
-            // TODO: Bounds checking.
-            const auto& detail = _sound_details[map_entry];
-            const auto start = detail.tr3_sound_details.Sample;
-            if (start < samples.size())
-            {
-                callbacks.on_sound(detail.tr_sound_details.Sample, samples[start]);
-            }
-            else
-            {
-                log_file(activity, file, std::format("Invalid sound sample {} (max index: {})", start, samples.size()));
-            }
-        }
+        log_file(activity, file, std::format("Read {} sound samples", num_samples));
 
         callbacks.on_progress("Generating meshes");
         log_file(activity, file, "Generating meshes");
@@ -1373,20 +1353,11 @@ namespace trlevel
 
         if (get_version() == LevelVersion::Tomb1)
         {
-            for (const auto& map_entry : _sound_map)
+            for (auto i = 0; i < _sample_indices.size(); ++i)
             {
-                if (map_entry == -1)
-                {
-                    continue;
-                }
-
-                // TODO: Bounds checking.
-                const auto& detail = _sound_details[map_entry];
-                const auto start = _sample_indices[detail.tr_sound_details.Sample];
-                const auto end = (detail.tr_sound_details.Sample + 1) < _sample_indices.size() ? _sample_indices[detail.tr_sound_details.Sample + 1] : sound_data.size();
-
-                std::vector<uint8_t> data{ sound_data.begin() + start, sound_data.begin() + end };
-                callbacks.on_sound(detail.tr_sound_details.Sample, data);
+                const auto start = _sample_indices[i];
+                const auto end = i + 1 < _sample_indices.size() ? _sample_indices[i + 1] : sound_data.size();
+                callbacks.on_sound(static_cast<int16_t>(i), { sound_data.begin() + start, sound_data.begin() + end });
             }
         }
 

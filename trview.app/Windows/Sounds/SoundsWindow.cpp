@@ -220,11 +220,16 @@ namespace trview
 
                 if (auto storage = _sound_storage.lock())
                 {
-                    if (auto sound = storage->get(selected_sound_source->sample()).lock())
+                    const auto sample_index = selected_sound_source->sample();
+                    const auto num_samples = std::min(1, (selected_sound_source->characteristics() & 0x00FC) >> 2);
+                    for (auto i = sample_index; i < sample_index + num_samples; ++i)
                     {
-                        if (ImGui::Button("Play", ImVec2(-1, 50)))
+                        if (auto sound = storage->get(i).lock())
                         {
-                            sound->play();
+                            if (ImGui::Button(std::format("Sample {}", i).c_str(), ImVec2(-1, 40)))
+                            {
+                                sound->play();
+                            }
                         }
                     }
                 }
