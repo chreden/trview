@@ -15,7 +15,7 @@ namespace trview
             static inline const std::string sound_sources_list = "##soundsourceslist";
             static inline const std::string sound_source_list_panel = "Sound Source List";
             static inline const std::string details_panel = "Sound Source Details";
-            static inline const std::string sound_source_stats = "##itemstats";
+            static inline const std::string sound_source_stats = "##soundsourcestats";
             static inline const std::string stats_listbox = "Source Stats";
             static inline const std::string details_listbox = "Details Stats";
         };

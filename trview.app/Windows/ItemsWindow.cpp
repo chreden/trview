@@ -318,7 +318,6 @@ namespace trview
         ImGui::PushStyleVar(ImGuiStyleVar_WindowMinSize, ImVec2(540, 500));
         if (ImGui::Begin(_id.c_str(), &stay_open))
         {
-
             render_items_list();
             ImGui::SameLine();
             render_item_details();

@@ -1260,7 +1260,7 @@ namespace trlevel
                 callbacks.on_textile(t.Tile |
                     std::views::transform([&](uint8_t entry_index)
                         {
-                            // The first entry in the 8 bit palette is the transparent colour, s just return 
+                            // The first entry in the 8 bit palette is the transparent colour, so just return 
                             // fully transparent instead of replacing it later.
                             if (entry_index == 0)
                             {
@@ -1343,20 +1343,23 @@ namespace trlevel
             std::vector<uint32_t> sample_indices = read_vector<uint32_t, uint32_t>(file);
             log_file(activity, file, std::format("Read {} sample indices", sample_indices.size()));
 
-            for (const auto& map_entry : _sound_map)
+            if (get_version() == LevelVersion::Tomb1)
             {
-                if (map_entry == -1)
+                for (const auto& map_entry : _sound_map)
                 {
-                    continue;
+                    if (map_entry == -1)
+                    {
+                        continue;
+                    }
+
+                    // TODO: Bounds checking.
+                    const auto& detail = _sound_details[map_entry];
+                    const auto start = sample_indices[detail.tr_sound_details.Sample];
+                    const auto end = (detail.tr_sound_details.Sample + 1) < sample_indices.size() ? sample_indices[detail.tr_sound_details.Sample + 1] : sound_data.size();
+
+                    std::vector<uint8_t> data{ sound_data.begin() + start, sound_data.begin() + end };
+                    callbacks.on_sound(detail.tr_sound_details.Sample, data);
                 }
-
-                // TODO: Bounds checking.
-                const auto& detail = _sound_details[map_entry];
-                const auto start = sample_indices[detail.tr_sound_details.Sample];
-                const auto end = (detail.tr_sound_details.Sample + 1) < sample_indices.size() ? sample_indices[detail.tr_sound_details.Sample + 1] : sound_data.size();
-
-                std::vector<uint8_t> data{ sound_data.begin() + start, sound_data.begin() + end };
-                callbacks.on_sound(detail.tr_sound_details.Sample, data);
             }
         }
         else
