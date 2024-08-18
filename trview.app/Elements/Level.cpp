@@ -1454,7 +1454,9 @@ namespace trview
                     detail = details[index];
                 }
             }
-            _sound_sources.push_back(sound_source_source(count++, source, detail, _version));
+            auto sound_source = sound_source_source(count++, source, detail, _version);
+            _token_store += sound_source->on_changed += [this]() { content_changed(); };
+            _sound_sources.push_back(sound_source);
         }
     }
 

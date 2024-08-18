@@ -6,6 +6,8 @@
 
 #include <trlevel/LevelVersion.h>
 
+#include <trview.common/Event.h>
+
 #include "../../Geometry/IRenderable.h"
 #include "../../Geometry/PickResult.h"
 
@@ -33,5 +35,7 @@ namespace trview
         virtual uint8_t range() const = 0;
         virtual uint16_t sample() const = 0;
         virtual uint16_t volume() const = 0;
+
+        Event<> on_changed;
     };
 }

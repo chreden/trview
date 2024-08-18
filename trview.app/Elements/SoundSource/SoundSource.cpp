@@ -123,6 +123,7 @@ namespace trview
     void SoundSource::set_visible(bool value)
     {
         _visible = value;
+        on_changed();
     }
 
     bool SoundSource::visible() const

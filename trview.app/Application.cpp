@@ -5,6 +5,7 @@
 #include "Windows/IWindows.h"
 
 #include "Resources/resource.h"
+#include "Elements/SoundSource/ISoundSource.h"
 
 using namespace DirectX::SimpleMath;
 
@@ -277,6 +278,7 @@ namespace trview
             for (const auto& room : _level->rooms()) { set_room_visibility(room, true); }
             for (const auto& camera_sink : _level->camera_sinks()) { set_camera_sink_visibility(camera_sink, true); }
             for (const auto& static_mesh : _level->static_meshes()) { if (auto stat = static_mesh.lock()) { stat->set_visible(true); } };
+            for (const auto& sound_source : _level->sound_sources()) { if (auto sound_source_ptr = sound_source.lock()) { sound_source_ptr->set_visible(true); } };
         };
     }
 
