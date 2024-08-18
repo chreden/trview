@@ -2,6 +2,7 @@
 
 #include "ISoundsWindow.h"
 #include "../ColumnSizer.h"
+#include "../../Filters/Filters.h"
 
 namespace trview
 {
@@ -21,6 +22,7 @@ namespace trview
             static inline const std::string sync_sound_source = "Sync";
         };
 
+        explicit SoundsWindow();
         virtual ~SoundsWindow() = default;
         void render() override;
         void set_level_version(trlevel::LevelVersion version) override;
@@ -36,6 +38,7 @@ namespace trview
         void render_sound_board();
         void set_local_selected_sound_source(const std::weak_ptr<ISoundSource>& sound_source);
         void set_sync_sound_source(bool value);
+        void setup_filters();
 
         std::string _id{ "Sounds 0" };
         bool _force_sort = false;
@@ -47,5 +50,6 @@ namespace trview
         std::weak_ptr<ISoundSource> _selected_sound_source;
         std::weak_ptr<ISoundSource> _global_selected_sound_source;
         trlevel::LevelVersion _level_version{ trlevel::LevelVersion::Unknown };
+        Filters<ISoundSource> _filters;
     };
 }

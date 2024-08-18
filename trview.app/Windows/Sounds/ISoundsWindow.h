@@ -24,6 +24,7 @@ namespace trview
         virtual void set_sound_storage(const std::weak_ptr<ISoundStorage>& sound_storage) = 0;
         virtual void set_sound_sources(const std::vector<std::weak_ptr<ISoundSource>>& sound_sources) = 0;
 
+        Event<> on_scene_changed;
         Event<> on_window_closed;
         Event<std::weak_ptr<ISoundSource>> on_sound_source_selected;
     };

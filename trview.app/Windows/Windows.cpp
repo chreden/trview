@@ -82,6 +82,7 @@ namespace trview
         _route_window->on_new_route += on_new_route;
         _route_window->on_new_randomizer_route += on_new_randomizer_route;
 
+        _sounds_windows->on_scene_changed += on_scene_changed;
         _sounds_windows->on_sound_source_selected += on_sound_source_selected;
 
         _statics_windows->on_static_selected += on_static_selected;

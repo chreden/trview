@@ -28,6 +28,7 @@ namespace trview
         sounds_window->set_selected_sound_source(_selected_sound_source);
         sounds_window->set_sound_sources(_sound_sources);
         sounds_window->set_sound_storage(_sound_storage);
+        sounds_window->on_scene_changed += on_scene_changed;
         sounds_window->on_sound_source_selected += on_sound_source_selected;
         return add_window(sounds_window);
     }
