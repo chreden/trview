@@ -69,6 +69,7 @@ namespace trview
         toggles[Options::camera_sinks] = [this](bool value) { set_show_camera_sinks(value); };
         toggles[Options::lighting] = [this](bool value) { set_show_lighting(value); };
         toggles[Options::notes] = [](bool) {};
+        toggles[Options::sound_sources] = [this](bool value) { set_show_sound_sources(value); };
 
         const auto persist_toggle_value = [&](const std::string& name, bool value)
         {
@@ -634,6 +635,7 @@ namespace trview
         new_level->set_show_rooms(_ui->toggle(Options::rooms));
         new_level->set_show_camera_sinks(_ui->toggle(Options::camera_sinks));
         new_level->set_show_lighting(_ui->toggle(Options::lighting));
+        new_level->set_show_sound_sources(_ui->toggle(Options::sound_sources));
 
         // Set up the views.
         auto rooms = new_level->rooms();
@@ -1470,5 +1472,14 @@ namespace trview
         _ui->set_toggle(name, value);
         _settings.toggles[name] = value;
         on_settings(_settings);
+    }
+
+    void Viewer::set_show_sound_sources(bool show)
+    {
+        if (auto level = _level.lock())
+        {
+            level->set_show_sound_sources(show);
+        }
+        set_toggle(Options::sound_sources, show);
     }
 }

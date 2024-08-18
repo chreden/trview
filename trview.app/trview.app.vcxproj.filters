@@ -1402,6 +1402,9 @@
     <Image Include="Resources\Files\sink.png">
       <Filter>Resources\Files</Filter>
     </Image>
+    <Image Include="Resources\Files\sound.png">
+      <Filter>Resources\Files</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Generated\level_pixel_shader.cso">

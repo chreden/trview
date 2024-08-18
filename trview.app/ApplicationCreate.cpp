@@ -249,11 +249,11 @@ namespace trview
         auto light_source = [=](auto&&... args) { return std::make_shared<Light>(light_mesh, args...); };
         auto buffer_source = [=](auto&&... args) { return std::make_unique<graphics::Buffer>(device, args...); };
 
-        auto camera_mesh = create_cube_mesh(mesh_source);
-        auto camera_sink_source = [=](auto&&... args) { return std::make_shared<CameraSink>(camera_mesh, texture_storage, args...); };
+        auto cube_mesh = create_cube_mesh(mesh_source);
+        auto camera_sink_source = [=](auto&&... args) { return std::make_shared<CameraSink>(cube_mesh, texture_storage, args...); };
 
         const auto sound_source = [=](auto&&... args) { return create_sound(args...); };
-        const auto sound_source_source = [=](auto&&... args) { return std::make_shared<SoundSource>(args...); };
+        const auto sound_source_source = [=](auto&&... args) { return std::make_shared<SoundSource>(cube_mesh, texture_storage, args...); };
 
         auto level_source = [=](auto&& level, auto&& callbacks)
             {

@@ -82,6 +82,8 @@ namespace trview
             MOCK_METHOD(std::vector<std::weak_ptr<IStaticMesh>>, static_meshes, (), (const));
             MOCK_METHOD(std::weak_ptr<ISoundStorage>, sound_storage, (), (const, override));
             MOCK_METHOD(std::vector<std::weak_ptr<ISoundSource>>, sound_sources, (), (const, override));
+            MOCK_METHOD(void, set_show_sound_sources, (bool), (override));
+            MOCK_METHOD(bool, show_sound_sources, (), (const, override));
 
             std::shared_ptr<MockLevel> with_version(trlevel::LevelVersion version)
             {

@@ -130,6 +130,7 @@ namespace trview
         void set_show_lighting(bool show);
         void toggle_show_lighting();
         void set_toggle(const std::string& name, bool value);
+        void set_show_sound_sources(bool show);
 
         const std::shared_ptr<graphics::IDevice> _device;
         const std::shared_ptr<IShortcuts>& _shortcuts;

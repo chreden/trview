@@ -9,9 +9,11 @@ namespace trview
     {
     }
 
-    SoundSource::SoundSource(uint32_t number, const trlevel::tr_sound_source& source, const std::optional<trlevel::tr_x_sound_details>& details, trlevel::LevelVersion level_version)
-        : _flags(source.Flags), _id(source.SoundID), _number(number), _position(source.x / trlevel::Scale, source.y / trlevel::Scale, source.z / trlevel::Scale)
+    SoundSource::SoundSource(const std::shared_ptr<IMesh>& mesh, const std::shared_ptr<ITextureStorage>& texture_storage, uint32_t number, const trlevel::tr_sound_source& source, const std::optional<trlevel::tr_x_sound_details>& details, trlevel::LevelVersion level_version)
+        : _mesh(mesh), _flags(source.Flags), _id(source.SoundID), _number(number), _position(source.x / trlevel::Scale, source.y / trlevel::Scale, source.z / trlevel::Scale)
     {
+        _sound_texture = texture_storage->lookup("sound_texture");
+
         if (!details.has_value())
         {
             return;
@@ -50,6 +52,10 @@ namespace trview
         return _flags;
     }
 
+    void SoundSource::get_transparent_triangles(ITransparencyBuffer&, const ICamera&, const DirectX::SimpleMath::Color&)
+    {
+    }
+
     int16_t SoundSource::id() const
     {
         return _id;
@@ -75,9 +81,33 @@ namespace trview
         return _range;
     }
 
+    void SoundSource::render(const ICamera& camera, const ILevelTextureStorage&, const DirectX::SimpleMath::Color&)
+    {
+        if (!_visible)
+        {
+            return;
+        }
+
+        auto world = Matrix::CreateScale(0.25f) * Matrix::CreateTranslation(_position);
+        auto wvp = world * camera.view_projection();
+        auto light_direction = Vector3::TransformNormal(camera.position() - _position, world.Invert());
+        light_direction.Normalize();
+        _mesh->render(wvp, _sound_texture, Colour::White, 1.0f, light_direction);
+    }
+
     uint16_t SoundSource::sample() const
     {
         return _sample;
+    }
+
+    void SoundSource::set_visible(bool value)
+    {
+        _visible = value;
+    }
+
+    bool SoundSource::visible() const
+    {
+        return _visible;
     }
 
     uint16_t SoundSource::volume() const

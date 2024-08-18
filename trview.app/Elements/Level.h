@@ -123,6 +123,8 @@ namespace trview
         void add_scriptable(const std::weak_ptr<IScriptable>& scriptable) override;
         std::weak_ptr<ISoundStorage> sound_storage() const override;
         std::vector<std::weak_ptr<ISoundSource>> sound_sources() const override;
+        void set_show_sound_sources(bool show) override;
+        bool show_sound_sources() const override;
     private:
         void generate_rooms(const trlevel::ILevel& level, const IRoom::Source& room_source, const IMeshStorage& mesh_storage);
         void generate_triggers(const ITrigger::Source& trigger_source);

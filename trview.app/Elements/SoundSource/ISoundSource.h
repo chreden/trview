@@ -6,6 +6,8 @@
 
 #include <trlevel/LevelVersion.h>
 
+#include "../../Geometry/IRenderable.h"
+
 namespace trlevel
 {
     struct tr_sound_source;
@@ -14,7 +16,7 @@ namespace trlevel
 
 namespace trview
 {
-    struct ISoundSource
+    struct ISoundSource : public IRenderable
     {
         using Source = std::function<std::shared_ptr<ISoundSource>(uint32_t, const trlevel::tr_sound_source&, const std::optional<trlevel::tr_x_sound_details>&, trlevel::LevelVersion)>;
         virtual ~ISoundSource() = 0;

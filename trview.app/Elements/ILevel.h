@@ -114,6 +114,7 @@ namespace trview
         virtual void set_show_items(bool show) = 0;
         virtual void set_show_rooms(bool show) = 0;
         virtual void set_show_camera_sinks(bool show) = 0;
+        virtual void set_show_sound_sources(bool show) = 0;
         virtual void set_trigger_visibility(uint32_t index, bool state) = 0;
         virtual void set_neighbour_depth(uint32_t depth) = 0;
         virtual void set_selected_room(const std::weak_ptr<IRoom>& room) = 0;
@@ -127,6 +128,7 @@ namespace trview
         virtual bool show_lights() const = 0;
         virtual bool show_triggers() const = 0;
         virtual bool show_items() const = 0;
+        virtual bool show_sound_sources() const = 0;
         virtual std::vector<std::weak_ptr<ISoundSource>> sound_sources() const = 0;
         virtual std::vector<std::weak_ptr<IStaticMesh>> static_meshes() const = 0;
         virtual std::shared_ptr<ILevelTextureStorage> texture_storage() const = 0;

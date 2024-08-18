@@ -343,6 +343,14 @@ namespace trview
             }
         }
 
+        if (has_flag(_render_filters, RenderFilter::SoundSources))
+        {
+            for (const auto sound_source : _sound_sources)
+            {
+                sound_source->render(camera, *_texture_storage, Colour::White);
+            }
+        }
+
         if (_regenerate_transparency)
         {
             // Sort the accumulated transparent triangles farthest to nearest.
@@ -1431,6 +1439,18 @@ namespace trview
             }
             _sound_sources.push_back(sound_source_source(count++, source, detail, _version));
         }
+    }
+
+    void Level::set_show_sound_sources(bool show)
+    {
+        _render_filters = set_flag(_render_filters, RenderFilter::SoundSources, show);
+        _regenerate_transparency = true;
+        on_level_changed();
+    }
+
+    bool Level::show_sound_sources() const
+    {
+        return has_flag(_render_filters, RenderFilter::SoundSources);
     }
 
     bool find_item_by_type_id(const ILevel& level, uint32_t type_id, std::weak_ptr<IItem>& output_item)
