@@ -34,6 +34,16 @@ namespace trview
         _id = std::format("Sounds {}", number);
     }
 
+    void SoundsWindow::set_selected_sound_source(const std::weak_ptr<ISoundSource>& sound_source)
+    {
+        _global_selected_sound_source = sound_source;
+        if (_sync_sound_source)
+        {
+            _scroll_to_sound_source = true;
+            set_local_selected_sound_source(sound_source);
+        }
+    }
+
     bool SoundsWindow::render_sounds_window()
     {
         bool stay_open = true;
@@ -74,12 +84,12 @@ namespace trview
             // ImGui::SameLine();
             // _track.render();
 
-            // ImGui::SameLine();
-            // bool sync_item = _sync_item;
-            // if (ImGui::Checkbox(Names::sync_item.c_str(), &sync_item))
-            // {
-            //     set_sync_item(sync_item);
-            // }
+            ImGui::SameLine();
+            bool sync_sound_source = _sync_sound_source;
+            if (ImGui::Checkbox(Names::sync_sound_source.c_str(), &sync_sound_source))
+            {
+                set_sync_sound_source(sync_sound_source);
+            }
 
             RowCounter counter{ "sound sources", _all_sound_sources.size() };
             if (ImGui::BeginTable(Names::sound_sources_list.c_str(), 2, ImGuiTableFlags_Sortable | ImGuiTableFlags_ScrollY, ImVec2(200, -counter.height())))
@@ -117,22 +127,22 @@ namespace trview
                     bool selected = selected_sound_source && selected_sound_source == sound_source_ptr;
 
                     ImGuiScroller scroller;
-                    // if (selected && _scroll_to_sound_source)
-                    // {
-                    //     scroller.scroll_to_item();
-                    //     _scroll_to_item = false;
-                    // }
+                    if (selected && _scroll_to_sound_source)
+                    {
+                        scroller.scroll_to_item();
+                        _scroll_to_sound_source = false;
+                    }
 
                     ImGui::SetNextItemAllowOverlap();
                     if (ImGui::Selectable(std::format("{0}##{0}", sound_source_ptr->number()).c_str(), &selected, ImGuiSelectableFlags_SpanAllColumns | static_cast<int>(ImGuiSelectableFlags_SelectOnNav)))
                     {
                          scroller.fix_scroll();
                          set_local_selected_sound_source(sound_source);
-                    //     if (_sync_item)
-                    //     {
-                    //         on_item_selected(item);
-                    //     }
-                    //     _scroll_to_item = false;
+                         if (_sync_sound_source)
+                         {
+                             on_sound_source_selected(sound_source);
+                         }
+                         _scroll_to_sound_source = false;
                     }
                     // ImGui::Text("Sound!");
 
@@ -300,5 +310,18 @@ namespace trview
     void SoundsWindow::set_local_selected_sound_source(const std::weak_ptr<ISoundSource>& sound_source)
     {
         _selected_sound_source = sound_source;
+    }
+
+    void SoundsWindow::set_sync_sound_source(bool value)
+    {
+        if (_sync_sound_source != value)
+        {
+            _sync_sound_source = value;
+            _scroll_to_sound_source = true;
+            if (_sync_sound_source && _global_selected_sound_source.lock())
+            {
+                set_selected_sound_source(_global_selected_sound_source);
+            }
+        }
     }
 }

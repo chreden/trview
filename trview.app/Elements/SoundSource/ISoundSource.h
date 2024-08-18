@@ -7,6 +7,7 @@
 #include <trlevel/LevelVersion.h>
 
 #include "../../Geometry/IRenderable.h"
+#include "../../Geometry/PickResult.h"
 
 namespace trlevel
 {
@@ -26,6 +27,7 @@ namespace trview
         virtual uint16_t flags() const = 0;
         virtual int16_t id() const = 0;
         virtual uint32_t number() const = 0;
+        virtual PickResult pick(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& direction) const = 0;
         virtual uint8_t pitch() const = 0;
         virtual DirectX::SimpleMath::Vector3 position() const = 0;
         virtual uint8_t range() const = 0;

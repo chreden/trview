@@ -6,7 +6,7 @@
 
 namespace trview
 {
-    class SoundSource final : public ISoundSource
+    class SoundSource final : public ISoundSource, public std::enable_shared_from_this<ISoundSource>
     {
     public:
         explicit SoundSource(
@@ -23,6 +23,7 @@ namespace trview
         void get_transparent_triangles(ITransparencyBuffer& transparency, const ICamera& camera, const DirectX::SimpleMath::Color& colour) override;
         int16_t id() const override;
         uint32_t number() const override;
+        PickResult pick(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& direction) const;
         uint8_t pitch() const override;
         DirectX::SimpleMath::Vector3 position() const override;
         uint8_t range() const override;

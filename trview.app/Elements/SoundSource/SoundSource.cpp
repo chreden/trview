@@ -1,6 +1,7 @@
 #include "SoundSource.h"
 #include <trlevel/trtypes.h>
 
+using namespace DirectX;
 using namespace DirectX::SimpleMath;
 
 namespace trview
@@ -64,6 +65,25 @@ namespace trview
     uint32_t SoundSource::number() const
     {
         return _number;
+    }
+
+    PickResult SoundSource::pick(const Vector3& position, const Vector3& direction) const
+    {
+        PickResult result{};
+        BoundingBox cube(_position, Vector3(0.125f, 0.125f, 0.125f));
+
+        float distance = 0;
+        if (cube.Intersects(position, direction, distance))
+        {
+            result.distance = distance;
+            result.hit = true;
+            result.index = _number;
+            result.position = position + direction * distance;
+            result.type = PickResult::Type::SoundSource;
+            result.sound_source = std::const_pointer_cast<ISoundSource>(shared_from_this());
+        }
+
+        return result;
     }
 
     uint8_t SoundSource::pitch() const

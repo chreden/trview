@@ -97,6 +97,7 @@ namespace trview
         _token_store += _windows->on_new_route += [&]() { if (should_discard_changes()) { set_route(_route_source(std::nullopt)); } };
         _token_store += _windows->on_new_randomizer_route += [&]() { if (should_discard_changes()) { set_route(_randomizer_route_source(std::nullopt)); } };
         _token_store += _windows->on_static_selected += [this](const auto& stat) { select_static_mesh(stat); };
+        _token_store += _windows->on_sound_source_selected += [this](const auto& sound) { select_sound_source(sound); };
 
         _windows->setup(_settings);
         setup_viewer(*startup_options);
@@ -307,6 +308,7 @@ namespace trview
         };
         _token_store += _viewer->on_font += [this](auto&& name, auto&& font) { _new_font = { name, font }; };
         _token_store += _viewer->on_static_mesh_selected += [this](const auto& static_mesh) { select_static_mesh(static_mesh); };
+        _token_store += _viewer->on_sound_source_selected += [this](const auto& sound_source) { select_sound_source(sound_source); };
 
         _viewer->set_settings(_settings);
 
@@ -948,6 +950,12 @@ namespace trview
         select_room(static_mesh_ptr->room());
         _viewer->select_static_mesh(static_mesh_ptr);
         _windows->select(static_mesh_ptr);
+    }
+
+    void Application::select_sound_source(const std::weak_ptr<ISoundSource>& sound_source)
+    {
+        _viewer->select_sound_source(sound_source);
+        _windows->select(sound_source);
     }
 
     void Application::check_load()

@@ -91,6 +91,7 @@ namespace trview
         virtual void set_scene_changed() override;
         virtual void select_camera_sink(const std::weak_ptr<ICameraSink>& camera_sink) override;
         void select_static_mesh(const std::weak_ptr<IStaticMesh>& static_mesh) override;
+        void select_sound_source(const std::weak_ptr<ISoundSource>& sound_source) override;
     private:
         void initialise_input();
         void toggle_highlight();

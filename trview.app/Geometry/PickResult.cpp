@@ -3,6 +3,7 @@
 #include <trview.common/Colour.h>
 #include "../Elements/ILevel.h"
 #include "../Routing/IRoute.h"
+#include "../Elements/SoundSource/ISoundSource.h"
 
 namespace trview
 {
@@ -189,6 +190,14 @@ namespace trview
                 if (const auto scriptable = result.scriptable.lock())
                 {
                     stream << scriptable->tooltip();
+                }
+                break;
+            }
+            case PickResult::Type::SoundSource:
+            {
+                if (const auto sound_source = result.sound_source.lock())
+                {
+                    stream << "Sound Source " << sound_source->number() << " - Sample " << sound_source->sample();
                 }
                 break;
             }

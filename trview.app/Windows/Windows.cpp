@@ -82,6 +82,8 @@ namespace trview
         _route_window->on_new_route += on_new_route;
         _route_window->on_new_randomizer_route += on_new_randomizer_route;
 
+        _sounds_windows->on_sound_source_selected += on_sound_source_selected;
+
         _statics_windows->on_static_selected += on_static_selected;
 
         _triggers_windows->on_item_selected += on_item_selected;
@@ -145,6 +147,11 @@ namespace trview
     {
         _lights_windows->set_selected_light(light);
         _rooms_windows->set_selected_light(light);
+    }
+
+    void Windows::select(const std::weak_ptr<ISoundSource>& sound_source)
+    {
+        _sounds_windows->set_selected_sound_source(sound_source);
     }
 
     void Windows::select(const std::weak_ptr<IStaticMesh>& static_mesh)

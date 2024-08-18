@@ -25,8 +25,10 @@ namespace trview
     {
         auto sounds_window = _sounds_window_source();
         sounds_window->set_level_version(_level_version);
+        sounds_window->set_selected_sound_source(_selected_sound_source);
         sounds_window->set_sound_sources(_sound_sources);
         sounds_window->set_sound_storage(_sound_storage);
+        sounds_window->on_sound_source_selected += on_sound_source_selected;
         return add_window(sounds_window);
     }
 
@@ -41,6 +43,15 @@ namespace trview
         for (auto& window : _windows)
         {
             window.second->set_level_version(version);
+        }
+    }
+
+    void SoundsWindowManager::set_selected_sound_source(const std::weak_ptr<ISoundSource>& sound_source)
+    {
+        _selected_sound_source = sound_source;
+        for (auto& window : _windows)
+        {
+            window.second->set_selected_sound_source(sound_source);
         }
     }
 

@@ -9,6 +9,7 @@ namespace trview
     struct ILevel;
     struct IRoute;
     struct IScriptable;
+    struct ISoundSource;
 
     struct PickResult
     {
@@ -23,7 +24,8 @@ namespace trview
             StaticMesh,
             Light,
             CameraSink,
-            Scriptable
+            Scriptable,
+            SoundSource
         };
 
         bool                         hit{ false };
@@ -37,6 +39,7 @@ namespace trview
         bool                         override_centre{ false };
         Triangle                     triangle;
         std::weak_ptr<IScriptable>   scriptable;
+        std::weak_ptr<ISoundSource>  sound_source;
     };
 
     /// Convert the pick result to a display string.

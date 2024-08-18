@@ -16,6 +16,7 @@ namespace trview
             MOCK_METHOD(void, get_transparent_triangles, (ITransparencyBuffer&, const ICamera&, const DirectX::SimpleMath::Color&), (override));
             MOCK_METHOD(int16_t, id, (), (const, override));
             MOCK_METHOD(uint32_t, number, (), (const, override));
+            MOCK_METHOD(PickResult, pick, (const DirectX::SimpleMath::Vector3&, const DirectX::SimpleMath::Vector3&), (const, override));
             MOCK_METHOD(uint8_t, pitch, (), (const, override));
             MOCK_METHOD(DirectX::SimpleMath::Vector3, position, (), (const, override));
             MOCK_METHOD(uint8_t, range, (), (const, override));

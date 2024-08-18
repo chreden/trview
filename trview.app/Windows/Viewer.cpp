@@ -1311,6 +1311,11 @@ namespace trview
             }
             break;
         }
+        case PickResult::Type::SoundSource:
+        {
+            on_sound_source_selected(pick.sound_source);
+            break;
+        }
         }
     }
 
@@ -1481,5 +1486,18 @@ namespace trview
             level->set_show_sound_sources(show);
         }
         set_toggle(Options::sound_sources, show);
+    }
+
+    void Viewer::select_sound_source(const std::weak_ptr<ISoundSource>& sound_source)
+    {
+        if (auto sound_source_ptr = sound_source.lock())
+        {
+            set_target(sound_source_ptr->position());
+            if (_settings.auto_orbit)
+            {
+                set_camera_mode(ICamera::Mode::Orbit);
+            }
+            _scene_changed = true;
+        }
     }
 }

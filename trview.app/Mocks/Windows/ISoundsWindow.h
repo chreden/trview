@@ -12,6 +12,7 @@ namespace trview
             virtual ~MockSoundsWindow();
             MOCK_METHOD(void, render, (), (override));
             MOCK_METHOD(void, set_level_version, (trlevel::LevelVersion), (override));
+            MOCK_METHOD(void, set_selected_sound_source, (const std::weak_ptr<ISoundSource>&), (override));
             MOCK_METHOD(void, set_number, (int32_t), (override));
         };
     }

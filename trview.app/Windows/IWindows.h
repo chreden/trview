@@ -12,6 +12,7 @@ namespace trview
     struct IRoom;
     struct IRoute;
     struct ISector;
+    struct ISoundSource;
     struct IStaticMesh;
     struct ITrigger;
     struct IWaypoint;
@@ -26,6 +27,7 @@ namespace trview
         virtual void select(const std::weak_ptr<ICameraSink>& camera_sink) = 0;
         virtual void select(const std::weak_ptr<IItem>& item) = 0;
         virtual void select(const std::weak_ptr<ILight>& light) = 0;
+        virtual void select(const std::weak_ptr<ISoundSource>& sound_source) = 0;
         virtual void select(const std::weak_ptr<IStaticMesh>& static_mesh) = 0;
         virtual void select(const std::weak_ptr<ITrigger>& trigger) = 0;
         virtual void select(const std::weak_ptr<IWaypoint>& waypoint) = 0;
@@ -47,6 +49,7 @@ namespace trview
         Event<> on_route_save;
         Event<> on_route_save_as;
         Event<std::weak_ptr<ISector>> on_sector_hover;
+        Event<std::weak_ptr<ISoundSource>> on_sound_source_selected;
         Event<std::weak_ptr<IStaticMesh>> on_static_selected;
         Event<std::weak_ptr<ITrigger>> on_trigger_selected;
         Event<std::weak_ptr<IWaypoint>> on_waypoint_selected;

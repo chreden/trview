@@ -708,6 +708,23 @@ namespace trview
             }
         }
 
+        if (has_flag(_render_filters, RenderFilter::SoundSources))
+        {
+            for (const auto& sound_source : _sound_sources)
+            {
+                if (!sound_source->visible())
+                {
+                    continue;
+                }
+
+                auto sound_source_result = sound_source->pick(position, direction);
+                if (sound_source_result.hit)
+                {
+                    results.push_back(sound_source_result);
+                }
+            }
+        }
+
         uint32_t index = 0;
         for (const auto& scriptable : _scriptables)
         {

@@ -43,6 +43,7 @@ namespace trview
         void select(const std::weak_ptr<ICameraSink>& camera_sink) override;
         void select(const std::weak_ptr<IItem>& item) override;
         void select(const std::weak_ptr<ILight>& light) override;
+        void select(const std::weak_ptr<ISoundSource>& sound_source) override;
         void select(const std::weak_ptr<IStaticMesh>& static_mesh) override;
         void select(const std::weak_ptr<ITrigger>& trigger) override;
         void select(const std::weak_ptr<IWaypoint>& waypoint) override;
