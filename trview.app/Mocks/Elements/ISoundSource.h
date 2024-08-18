@@ -13,7 +13,7 @@ namespace trview
             MOCK_METHOD(uint16_t, chance, (), (const, override));
             MOCK_METHOD(uint16_t, characteristics, (), (const, override));
             MOCK_METHOD(uint16_t, flags, (), (const, override));
-            MOCK_METHOD(uint16_t, id, (), (const, override));
+            MOCK_METHOD(int16_t, id, (), (const, override));
             MOCK_METHOD(uint32_t, number, (), (const, override));
             MOCK_METHOD(uint8_t, pitch, (), (const, override));
             MOCK_METHOD(DirectX::SimpleMath::Vector3, position, (), (const, override));

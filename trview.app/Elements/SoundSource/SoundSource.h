@@ -10,13 +10,13 @@ namespace trview
     public:
         explicit SoundSource(uint32_t number,
             const trlevel::tr_sound_source& source,
-            const trlevel::tr_x_sound_details& details,
+            const std::optional<trlevel::tr_x_sound_details>& details,
             trlevel::LevelVersion level_version);
         virtual ~SoundSource() = default;
         uint16_t chance() const override;
         uint16_t characteristics() const override;
         uint16_t flags() const override;
-        uint16_t id() const override;
+        int16_t id() const override;
         uint32_t number() const override;
         uint8_t pitch() const override;
         DirectX::SimpleMath::Vector3 position() const override;
@@ -27,7 +27,7 @@ namespace trview
         uint16_t _chance{ 0u };
         uint16_t _characteristics{ 0u };
         uint16_t _flags{ 0u };
-        uint16_t _id{ 0u };
+        int16_t _id{ 0 };
         uint32_t _number{ 0u };
         uint8_t _pitch{ 0u };
         DirectX::SimpleMath::Vector3 _position;

@@ -364,7 +364,7 @@ namespace trlevel
         int32_t x;         // absolute X position of sound source (world coordinates)
         int32_t y;         // absolute Y position of sound source (world coordinates)
         int32_t z;         // absolute Z position of sound source (world coordinates)
-        uint16_t SoundID;   // internal sound index
+        int16_t SoundID;   // internal sound index
         uint16_t Flags;     // 0x40, 0x80, or 0xC0
     };
 

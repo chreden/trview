@@ -1420,12 +1420,16 @@ namespace trview
         const auto details = level.sound_details();
         for (const auto& source : level.sound_sources())
         {
-            // TODO: Bounds checking.
-            auto index = sound_map[source.SoundID];
-            if (index != -1)
+            std::optional<trlevel::tr_x_sound_details> detail;
+            if (source.SoundID >= 0 && source.SoundID < sound_map.size())
             {
-                _sound_sources.push_back(sound_source_source(count++, source, details[index], _version));
+                const auto index = sound_map[source.SoundID];
+                if (index >= 0 && index < details.size())
+                {
+                    detail = details[index];
+                }
             }
+            _sound_sources.push_back(sound_source_source(count++, source, detail, _version));
         }
     }
 
