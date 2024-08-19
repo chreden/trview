@@ -1601,7 +1601,7 @@ namespace trlevel
             }
             else if (get_version() < LevelVersion::Tomb4)
             {
-                if (auto main = _files->load_file(std::format("{}MAIN.SFX", trview::path_for_filename(_filename)));)
+                if (auto main = _files->load_file(std::format("{}MAIN.SFX", trview::path_for_filename(_filename))))
                 {
                     std::basic_ispanstream<uint8_t> sfx_file{ { *main } };
                     sfx_file.seekg(_sound_map.size() * 2, std::ios::beg);
