@@ -218,11 +218,26 @@ namespace trview
                     const auto num_samples = std::min(1, (selected_sound_source->characteristics() & 0x00FC) >> 2);
                     for (auto i = sample_index; i < sample_index + num_samples; ++i)
                     {
-                        if (auto sound = storage->get(i).lock())
+                        const auto sound = storage->get(i).lock();
+                        if (!sound)
                         {
-                            if (ImGui::Button(std::format("Sample {}", i).c_str(), ImVec2(-1, 40)))
+                            ImGui::BeginDisabled();
+                        }
+                        
+                        if (ImGui::Button(std::format("Sample {}", i).c_str(), ImVec2(-1, 40)))
+                        {
+                            if (sound)
                             {
                                 sound->play();
+                            }
+                        }
+
+                        if (!sound)
+                        {
+                            ImGui::EndDisabled();
+                            if (ImGui::IsItemHovered(ImGuiHoveredFlags_AllowWhenDisabled))
+                            {
+                                ImGui::SetTooltip("MAIN.SFX not found. Place MAIN.SFX in the same folder as the level.");
                             }
                         }
                     }
@@ -234,25 +249,29 @@ namespace trview
 
     void SoundsWindow::render_sound_board()
     {
-        if (const auto sound_storage = _sound_storage.lock())
+        if (ImGui::BeginChild("##soundboard"))
         {
-            ImVec2 size = ImGui::GetWindowSize();
-            const int slots = static_cast<int>(size.x / 57);
-            int count = 0;
-            for (const auto [index, sound] : sound_storage->sounds() | std::ranges::to<std::map<int16_t, std::weak_ptr<ISound>>>())
+            if (const auto sound_storage = _sound_storage.lock())
             {
-                if (const auto sound_ptr = sound.lock())
+                ImVec2 size = ImGui::GetWindowSize();
+                const int slots = static_cast<int>(size.x / 57);
+                int count = 0;
+                for (const auto [index, sound] : sound_storage->sounds() | std::ranges::to<std::map<int16_t, std::weak_ptr<ISound>>>())
                 {
-                    if (ImGui::Button(std::format("{}", index).c_str(), ImVec2(50, 50)))
+                    if (const auto sound_ptr = sound.lock())
                     {
-                        sound_ptr->play();
-                    }
-                    if (++count % slots != 0)
-                    {
-                        ImGui::SameLine(0.0f, 5.0f);
+                        if (ImGui::Button(std::format("{}", index).c_str(), ImVec2(50, 50)))
+                        {
+                            sound_ptr->play();
+                        }
+                        if (++count % slots != 0)
+                        {
+                            ImGui::SameLine(0.0f, 5.0f);
+                        }
                     }
                 }
             }
+            ImGui::EndChild();
         }
     }
 
