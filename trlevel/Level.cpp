@@ -1342,7 +1342,7 @@ namespace trlevel
         {
             callbacks.on_progress("Reading sound data");
             log_file(activity, file, "Reading sound data");
-            sound_data = read_vector<int32_t, uint8_t>(file);
+            _sound_data = read_vector<int32_t, uint8_t>(file);
             log_file(activity, file, std::format("Read {} sound data", sound_data.size()));
         }
 
@@ -1350,16 +1350,6 @@ namespace trlevel
         log_file(activity, file, "Reading sample indices");
         _sample_indices = read_vector<uint32_t, uint32_t>(file);
         log_file(activity, file, std::format("Read {} sample indices", _sample_indices.size()));
-
-        if (get_version() == LevelVersion::Tomb1)
-        {
-            for (auto i = 0; i < _sample_indices.size(); ++i)
-            {
-                const auto start = _sample_indices[i];
-                const auto end = i + 1 < _sample_indices.size() ? _sample_indices[i + 1] : sound_data.size();
-                callbacks.on_sound(static_cast<int16_t>(i), { sound_data.begin() + start, sound_data.begin() + end });
-            }
-        }
 
         if (get_version() >= LevelVersion::Tomb4)
         {
@@ -1599,6 +1589,43 @@ namespace trlevel
 
             load_level_data(activity, file, callbacks);
             callbacks.on_progress("Generating meshes");
+
+            if (get_version() == LevelVersion::Tomb1)
+            {
+                for (auto i = 0; i < _sample_indices.size(); ++i)
+                {
+                    const auto start = _sample_indices[i];
+                    const auto end = i + 1 < _sample_indices.size() ? _sample_indices[i + 1] : _sound_data.size();
+                    callbacks.on_sound(static_cast<int16_t>(i), { _sound_data.begin() + start, _sound_data.begin() + end });
+                }
+            }
+            else if (get_version() < LevelVersion::Tomb4)
+            {
+                // TODO: Find main.sfx
+                auto main = _files->load_file("C:\\Program Files (x86)\\Steam\\SteamApps\\common\\Tomb Raider I-III Remastered\\2\\DATA\\MAIN.SFX");
+                if (main)
+                {
+                    std::basic_ispanstream<uint8_t> sfx_file{ { *main } };
+                    sfx_file.seekg(_sound_map.size() * 2, std::ios::beg);
+
+                    int16_t overall_index = 0;
+                    int16_t level_index = 0;
+                    while (static_cast<std::size_t>(sfx_file.tellg()) < main->size())
+                    {
+                        auto at = sfx_file.tellg();
+                        skip(sfx_file, 4);
+                        uint32_t size = read<uint32_t>(sfx_file);
+                        sfx_file.seekg(-8, std::ios::cur);
+                        if (std::ranges::find(_sample_indices, static_cast<uint32_t>(overall_index)) != _sample_indices.end())
+                        {
+                            callbacks.on_sound(level_index++, { main->begin() + sfx_file.tellg(), main->begin() + sfx_file.tellg() + size + 8 });
+                        }
+                        overall_index++;
+                        sfx_file.seekg(size + 8, std::ios::cur);
+                    }
+                }
+            }
+
             generate_meshes(_mesh_data);
             callbacks.on_progress("Loading complete");
         }
