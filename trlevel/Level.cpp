@@ -1601,9 +1601,7 @@ namespace trlevel
             }
             else if (get_version() < LevelVersion::Tomb4)
             {
-                // TODO: Find main.sfx
-                auto main = _files->load_file("C:\\Program Files (x86)\\Steam\\SteamApps\\common\\Tomb Raider I-III Remastered\\2\\DATA\\MAIN.SFX");
-                if (main)
+                if (auto main = _files->load_file(std::format("{}MAIN.SFX", trview::path_for_filename(_filename)));)
                 {
                     std::basic_ispanstream<uint8_t> sfx_file{ { *main } };
                     sfx_file.seekg(_sound_map.size() * 2, std::ios::beg);
@@ -1612,7 +1610,6 @@ namespace trlevel
                     int16_t level_index = 0;
                     while (static_cast<std::size_t>(sfx_file.tellg()) < main->size())
                     {
-                        auto at = sfx_file.tellg();
                         skip(sfx_file, 4);
                         uint32_t size = read<uint32_t>(sfx_file);
                         sfx_file.seekg(-8, std::ios::cur);
