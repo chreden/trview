@@ -47,7 +47,7 @@ namespace trview
         }
     }
 
-    void SoundsWindowManager::set_selected_sound_source(const std::weak_ptr<ISoundSource>& sound_source)
+    void SoundsWindowManager::select_sound_source(const std::weak_ptr<ISoundSource>& sound_source)
     {
         _selected_sound_source = sound_source;
         for (auto& window : _windows)

@@ -7,6 +7,7 @@
 #include <trview.app/Mocks/Elements/ILight.h>
 #include <trview.app/Mocks/Elements/IRoom.h>
 #include <trview.app/Mocks/Elements/ISector.h>
+#include <trview.app/Mocks/Elements/ISoundSource.h>
 #include <trview.app/Mocks/Elements/ITrigger.h>
 
 #include <trview.app/Mocks/Windows/ICameraSinkWindowManager.h>
@@ -112,6 +113,12 @@ namespace
             test_module& with_route(std::unique_ptr<IRouteWindowManager> manager)
             {
                 route = std::move(manager);
+                return *this;
+            }
+
+            test_module& with_sounds(std::unique_ptr<ISoundsWindowManager> manager)
+            {
+                sounds = std::move(manager);
                 return *this;
             }
 
@@ -440,6 +447,20 @@ TEST(Windows, SelectLight)
     ASSERT_EQ(rooms_light, light);
 }
 
+TEST(Windows, SelectSoundSource)
+{
+    auto [sounds_ptr, sounds] = create_mock<MockSoundsWindowManager>();
+    auto windows = register_test_module().with_sounds(std::move(sounds_ptr)).build();
+
+    std::shared_ptr<ISoundSource> sounds_sound;
+    EXPECT_CALL(sounds, select_sound_source).Times(1).WillRepeatedly([&](auto s) { sounds_sound = s.lock(); });
+
+    auto sound_source = mock_shared<MockSoundSource>();
+    windows->select(sound_source);
+
+    ASSERT_EQ(sound_source, sounds_sound);
+}
+
 TEST(Windows, SelectStaticMesh)
 {
     auto [statics_ptr, statics] = create_mock<MockStaticsWindowManager>();
@@ -510,6 +531,10 @@ TEST(Windows, SetLevel)
     EXPECT_CALL(route, set_items).Times(1);
     EXPECT_CALL(route, set_triggers).Times(1);
     EXPECT_CALL(route, set_rooms).Times(1);
+    auto [sounds_ptr, sounds] = create_mock<MockSoundsWindowManager>();
+    EXPECT_CALL(sounds, set_level_version).Times(1);
+    EXPECT_CALL(sounds, set_sound_sources).Times(1);
+    EXPECT_CALL(sounds, set_sound_storage).Times(1);
     auto [statics_ptr, statics] = create_mock<MockStaticsWindowManager>();
     EXPECT_CALL(statics, set_statics).Times(1);
     auto [triggers_ptr, triggers] = create_mock<MockTriggersWindowManager>();
@@ -523,6 +548,7 @@ TEST(Windows, SetLevel)
         .with_lights(std::move(lights_ptr))
         .with_rooms(std::move(rooms_ptr))
         .with_route(std::move(route_ptr))
+        .with_sounds(std::move(sounds_ptr))
         .with_statics(std::move(statics_ptr))
         .with_textures(std::move(textures_ptr))
         .with_triggers(std::move(triggers_ptr))
@@ -628,6 +654,26 @@ TEST(Windows, Setup)
     windows->setup({ .randomizer_tools = true });
 }
 
+TEST(Windows, SoundsEventsForwarded)
+{
+    auto [sounds_ptr, sounds] = create_mock<MockSoundsWindowManager>();
+    auto windows = register_test_module().with_sounds(std::move(sounds_ptr)).build();
+
+    std::shared_ptr<ISoundSource> raised_sound_source;
+    auto t1 = windows->on_sound_source_selected += capture(raised_sound_source);
+
+    bool raised = false;
+    auto t2 = windows->on_scene_changed += capture_called(raised);
+
+    auto sound_source = mock_shared<MockSoundSource>();
+    sounds.on_sound_source_selected(sound_source);
+
+    sounds.on_scene_changed();
+
+    ASSERT_EQ(raised_sound_source, sound_source);
+    ASSERT_EQ(raised, true);
+}
+
 TEST(Windows, StaticsEventsForwarded)
 {
     auto [statics_ptr, statics] = create_mock<MockStaticsWindowManager>();
@@ -721,6 +767,8 @@ TEST(Windows, WindowsRendered)
     EXPECT_CALL(rooms, render).Times(1);
     auto [route_ptr, route] = create_mock<MockRouteWindowManager>();
     EXPECT_CALL(route, render).Times(1);
+    auto [sounds_ptr, sounds] = create_mock<MockSoundsWindowManager>();
+    EXPECT_CALL(sounds, render).Times(1);
     auto [statics_ptr, statics] = create_mock<MockStaticsWindowManager>();
     EXPECT_CALL(statics, render).Times(1);
     auto [textures_ptr, textures] = create_mock<MockTexturesWindowManager>();
@@ -736,6 +784,7 @@ TEST(Windows, WindowsRendered)
         .with_plugins(std::move(plugins_ptr))
         .with_rooms(std::move(rooms_ptr))
         .with_route(std::move(route_ptr))
+        .with_sounds(std::move(sounds_ptr))
         .with_statics(std::move(statics_ptr))
         .with_textures(std::move(textures_ptr))
         .with_triggers(std::move(triggers_ptr))

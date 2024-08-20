@@ -152,7 +152,7 @@ namespace trview
 
     void Windows::select(const std::weak_ptr<ISoundSource>& sound_source)
     {
-        _sounds_windows->set_selected_sound_source(sound_source);
+        _sounds_windows->select_sound_source(sound_source);
     }
 
     void Windows::select(const std::weak_ptr<IStaticMesh>& static_mesh)
