@@ -208,6 +208,9 @@
     <ClCompile Include="Lua\Camera\Lua_CameraTests.cpp">
       <Filter>Lua\Camera</Filter>
     </ClCompile>
+    <ClCompile Include="Windows\SoundsWindowManagerTests.cpp">
+      <Filter>Windows</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Input">

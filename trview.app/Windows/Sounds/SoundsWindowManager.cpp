@@ -38,21 +38,21 @@ namespace trview
         WindowManager::render();
     }
 
-    void SoundsWindowManager::set_level_version(trlevel::LevelVersion version)
-    {
-        _level_version = version;
-        for (auto& window : _windows)
-        {
-            window.second->set_level_version(version);
-        }
-    }
-
     void SoundsWindowManager::select_sound_source(const std::weak_ptr<ISoundSource>& sound_source)
     {
         _selected_sound_source = sound_source;
         for (auto& window : _windows)
         {
             window.second->set_selected_sound_source(sound_source);
+        }
+    }
+
+    void SoundsWindowManager::set_level_version(trlevel::LevelVersion version)
+    {
+        _level_version = version;
+        for (auto& window : _windows)
+        {
+            window.second->set_level_version(version);
         }
     }
 

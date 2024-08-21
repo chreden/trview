@@ -84,6 +84,7 @@
     <ClCompile Include="Windows\LightsWindowManagerTests.cpp" />
     <ClCompile Include="Windows\LogWindowManagerTests.cpp" />
     <ClCompile Include="Windows\RouteWindowManagerTests.cpp" />
+    <ClCompile Include="Windows\SoundsWindowManagerTests.cpp" />
     <ClCompile Include="Windows\StaticsWindowManagerTests.cpp" />
     <ClCompile Include="Windows\ViewerTests.cpp" />
     <ClCompile Include="Windows\WindowsTests.cpp" />

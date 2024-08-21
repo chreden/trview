@@ -26,6 +26,6 @@ namespace trview
         std::vector<std::weak_ptr<ISoundSource>> _sound_sources;
         std::weak_ptr<ISoundStorage> _sound_storage;
         std::weak_ptr<ISoundSource> _selected_sound_source;
-        trlevel::LevelVersion _level_version;
+        trlevel::LevelVersion _level_version{ trlevel::LevelVersion::Unknown };
     };
 }
