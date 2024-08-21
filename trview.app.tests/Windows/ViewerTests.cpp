@@ -22,6 +22,9 @@
 #include <trview.app/Mocks/Elements/ILight.h>
 #include <trview.common/Mocks/Windows/IClipboard.h>
 #include <trview.app/Mocks/Elements/ISector.h>
+#include <trview.app/Mocks/Elements/ISoundSource.h>
+
+#include <trview.tests.common/Event.h>
 
 using testing::A;
 using testing::Return;
@@ -46,6 +49,20 @@ namespace
         pick_result.index = index;
         pick_result.position = position;
         pick_result.centroid = centroid;
+        picking.on_pick({}, pick_result);
+        mouse.mouse_click(IMouse::Button::Right);
+    }
+
+    /// Simulates a context menu activation - 
+    void activate_context_menu(MockPicking& picking, MockMouse& mouse, std::weak_ptr<ISoundSource> sound_source)
+    {
+        PickResult pick_result{};
+        pick_result.hit = true;
+        pick_result.type = PickResult::Type::SoundSource;
+        pick_result.index = 0;
+        pick_result.position = Vector3::Zero;
+        pick_result.centroid = Vector3::Zero;
+        pick_result.sound_source = sound_source;
         picking.on_pick({}, pick_result);
         mouse.mouse_click(IMouse::Button::Right);
     }
@@ -1161,4 +1178,57 @@ TEST(Viewer, CameraModeForwarded)
     auto viewer = register_test_module().with_ui(std::move(ui_ptr)).with_camera(camera).build();
 
     camera->on_mode_changed(ICamera::Mode::Axis);
+}
+
+TEST(Viewer, SoundSourceHidden)
+{
+    auto sound_source = mock_shared<MockSoundSource>();
+    EXPECT_CALL(*sound_source, set_visible(false));
+
+    auto level = mock_shared<MockLevel>();
+
+    auto [ui_ptr, ui] = create_mock<MockViewerUI>();
+    auto [picking_ptr, picking] = create_mock<MockPicking>();
+    auto [mouse_ptr, mouse] = create_mock<MockMouse>();
+    auto viewer = register_test_module().with_ui(std::move(ui_ptr)).with_picking(std::move(picking_ptr)).with_mouse(std::move(mouse_ptr)).build();
+
+    viewer->open(level, ILevel::OpenMode::Full);
+
+    activate_context_menu(picking, mouse, sound_source);
+    ui.on_hide();
+}
+
+TEST(Viewer, SelectSoundSourceRaised)
+{
+    auto [ui_ptr, ui] = create_mock<MockViewerUI>();
+    auto [picking_ptr, picking] = create_mock<MockPicking>();
+    auto [mouse_ptr, mouse] = create_mock<MockMouse>();
+    auto level = mock_shared<MockLevel>();
+    auto viewer = register_test_module().with_ui(std::move(ui_ptr)).with_picking(std::move(picking_ptr)).with_mouse(std::move(mouse_ptr)).build();
+
+    viewer->open(level, ILevel::OpenMode::Full);
+
+    std::shared_ptr<ISoundSource> selected_sound_source;
+    auto token = viewer->on_sound_source_selected += capture(selected_sound_source);
+
+    auto sound_source = mock_shared<MockSoundSource>();
+    activate_context_menu(picking, mouse, sound_source);
+    mouse.mouse_click(IMouse::Button::Left);
+
+    ASSERT_EQ(selected_sound_source, sound_source);
+}
+
+TEST(Viewer, SetShowSoundSources)
+{
+    auto [ui_ptr, ui] = create_mock<MockViewerUI>();
+    auto level = mock_shared<MockLevel>();
+    auto viewer = register_test_module().with_ui(std::move(ui_ptr)).build();
+
+    EXPECT_CALL(*level, set_show_sound_sources(false)).Times(1);
+    EXPECT_CALL(ui, set_toggle(testing::A<const std::string&>(), testing::A<bool>())).Times(testing::AtLeast(0));
+    EXPECT_CALL(ui, set_toggle(IViewer::Options::sound_sources, true)).Times(1);
+    EXPECT_CALL(*level, set_show_sound_sources(true)).Times(1);
+
+    viewer->open(level, ILevel::OpenMode::Full);
+    ui.on_toggle_changed(IViewer::Options::sound_sources, true);
 }
