@@ -900,10 +900,14 @@ namespace trlevel
         }
         else
         {
-            log_file(activity, file, "Skipping uncompresed and compressed sizes - unused in Tomb5");
-            skip(file, 8);
+            log_file(activity, file, "Reading uncompresed size and skipping compressed size - unused in Tomb5");
+            const auto uncompressed_size = read<uint32_t>(file);
+            const auto compressed_size = read<uint32_t>(file);
+            compressed_size;
             callbacks.on_progress("Processing level data");
+            const auto at = file.tellg();
             load_level_data(activity, file, callbacks);
+            file.seekg(at + static_cast<std::fpos_t>(uncompressed_size), std::ios::beg);
         }
 
         uint32_t num_samples = read<uint32_t>(file);
@@ -1350,11 +1354,6 @@ namespace trlevel
         log_file(activity, file, "Reading sample indices");
         _sample_indices = read_vector<uint32_t, uint32_t>(file);
         log_file(activity, file, std::format("Read {} sample indices", _sample_indices.size()));
-
-        if (get_version() >= LevelVersion::Tomb4)
-        {
-            skip(file, 6);
-        }
     }
 
     bool Level::find_first_entity_by_type(int16_t type, tr2_entity& entity) const
