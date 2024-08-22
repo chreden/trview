@@ -93,11 +93,12 @@ namespace trview
             }
 
             RowCounter counter{ "sound sources", _all_sound_sources.size() };
-            if (ImGui::BeginTable(Names::sound_sources_list.c_str(), 3, ImGuiTableFlags_Sortable | ImGuiTableFlags_ScrollY, ImVec2(200, -counter.height())))
+            if (ImGui::BeginTable(Names::sound_sources_list.c_str(), 4, ImGuiTableFlags_Sortable | ImGuiTableFlags_ScrollY, ImVec2(200, -counter.height())))
             {
                 ImGui::TableSetupColumn("#", ImGuiTableColumnFlags_WidthFixed, _column_sizer.size(0));
                 ImGui::TableSetupColumn("ID", ImGuiTableColumnFlags_WidthFixed, _column_sizer.size(1));
-                ImGui::TableSetupColumn("Hide", ImGuiTableColumnFlags_WidthFixed, _column_sizer.size(2));
+                ImGui::TableSetupColumn("Sample", ImGuiTableColumnFlags_WidthFixed, _column_sizer.size(2));
+                ImGui::TableSetupColumn("Hide", ImGuiTableColumnFlags_WidthFixed, _column_sizer.size(3));
                 ImGui::TableSetupScrollFreeze(1, 1);
                 ImGui::TableHeadersRow();
 
@@ -105,6 +106,7 @@ namespace trview
                     {
                         [](auto&& l, auto&& r) { return l.number() < r.number(); },
                         [](auto&& l, auto&& r) { return l.id() < r.id(); },
+                        [](auto&& l, auto&& r) { return l.sample() < r.sample(); },
                         [](auto&& l, auto&& r) { return std::tuple(l.visible(), l.number()) < std::tuple(r.visible(), r.number()); }
                     }, _force_sort);
 
@@ -144,6 +146,8 @@ namespace trview
                     ImGui::TableNextColumn();
                     ImGui::Text(std::to_string(sound_source_ptr->id()).c_str());
                     ImGui::TableNextColumn();
+                    ImGui::Text(std::to_string(sound_source_ptr->sample()).c_str());
+                    ImGui::TableNextColumn();
                     bool hidden = !sound_source_ptr->visible();
                     ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0, 0));
                     if (ImGui::Checkbox(std::format("##hide-{}", sound_source_ptr->number()).c_str(), &hidden))
@@ -168,17 +172,7 @@ namespace trview
             {
                 const auto string_value = get_string(value);
                 ImGui::TableNextColumn();
-                if (ImGui::Selectable(name.c_str(), false, ImGuiSelectableFlags_SpanAllColumns | static_cast<int>(ImGuiSelectableFlags_SelectOnNav)))
-                {
-                    // _clipboard->write(to_utf16(string_value));
-                    // _tooltip_timer = 0.0f;
-                }
-                // if (_level_version == trlevel::LevelVersion::Tomb4 && ImGui::IsItemHovered() && _tips.find(name) != _tips.end())
-                // {
-                //     ImGui::BeginTooltip();
-                //     ImGui::Text(_tips[name].c_str());
-                //     ImGui::EndTooltip();
-                // }
+                ImGui::Selectable(name.c_str(), false, ImGuiSelectableFlags_SpanAllColumns | static_cast<int>(ImGuiSelectableFlags_SelectOnNav));
                 ImGui::TableNextColumn();
                 ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(colour.r, colour.g, colour.b, colour.a));
                 ImGui::Text(string_value.c_str());
@@ -293,7 +287,8 @@ namespace trview
         _column_sizer.reset();
         _column_sizer.measure("#__", 0);
         _column_sizer.measure("ID__", 1);
-        _column_sizer.measure("Hide____", 2);
+        _column_sizer.measure("Sample__", 2);
+        _column_sizer.measure("Hide____", 3);
 
         for (const auto& sound_source : _all_sound_sources)
         {
@@ -301,6 +296,7 @@ namespace trview
             {
                 _column_sizer.measure(std::to_string(sound_source_ptr->number()), 0);
                 _column_sizer.measure(std::to_string(sound_source_ptr->id()), 1);
+                _column_sizer.measure(std::to_string(sound_source_ptr->sample()), 2);
             }
         }
     }
