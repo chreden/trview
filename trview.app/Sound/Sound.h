@@ -11,9 +11,7 @@ namespace trview
         virtual ~Sound();
         void play() override;
     private:
-        std::vector<uint8_t> _data;
-        void initialise();
-
+        bool initialise();
         struct Impl;
         std::unique_ptr<Impl> _impl;
     };
