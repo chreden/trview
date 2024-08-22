@@ -87,6 +87,7 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClInclude Include="Lua\Scriptable\Scriptable.h" />
     <ClInclude Include="Mocks\Elements\ISoundSource.h" />
     <ClInclude Include="Mocks\Lua\IScriptable.h" />
+    <ClInclude Include="Mocks\Sound\ISound.h" />
     <ClInclude Include="Mocks\Sound\ISoundStorage.h" />
     <ClInclude Include="Mocks\UI\IFonts.h" />
     <ClInclude Include="Mocks\Windows\ISoundsWindow.h" />

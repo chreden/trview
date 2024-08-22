@@ -211,6 +211,9 @@
     <ClCompile Include="Windows\SoundsWindowManagerTests.cpp">
       <Filter>Windows</Filter>
     </ClCompile>
+    <ClCompile Include="Sound\SoundStorageTests.cpp">
+      <Filter>Sound</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Input">
@@ -260,6 +263,9 @@
     </Filter>
     <Filter Include="Lua\Camera">
       <UniqueIdentifier>{7c11cc4b-d857-4f38-841b-d03b938913d0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Sound">
+      <UniqueIdentifier>{b852428e-6063-4bf2-9be2-dda97c0c3412}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

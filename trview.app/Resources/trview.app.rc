@@ -107,7 +107,7 @@ END
 // Dialog
 //
 
-IDD_ABOUTBOX DIALOGEX 0, 0, 220, 160
+IDD_ABOUTBOX DIALOGEX 0, 0, 220, 170
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "About trview"
 FONT 8, "MS Shell Dlg", 0, 0, 0x1
@@ -120,11 +120,12 @@ Uses DirectXTK (MIT)\r\n\
 Uses zlib (zlib)\r\n\
 Uses nlohmann/json (MIT)\r\n\
 Uses Dear ImGui (MIT)\r\n\
+Uses miniaudio (MIT)\r\n\
 Based on the information in TRosettaStone3 - https://github.com/opentomb/TRosettaStone3\r\n",IDC_STATIC,42,38,200,150
     LTEXT           "Portions of this software are copyright © 2023\r\n\
 The FreeType Project (www.freetype.org). All rights reserved.\
-\r\n\r\n",IDC_STATIC,42,100,200,50
-    DEFPUSHBUTTON   "OK", IDOK, 134, 140, 50, 14, WS_GROUP
+\r\n\r\n",IDC_STATIC,42,110,200,50
+    DEFPUSHBUTTON   "OK", IDOK, 90, 150, 50, 14, WS_GROUP
 END
 
 

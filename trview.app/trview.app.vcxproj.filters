@@ -1156,6 +1156,9 @@
     <ClInclude Include="Mocks\Sound\ISoundStorage.h">
       <Filter>Mocks\Sound</Filter>
     </ClInclude>
+    <ClInclude Include="Mocks\Sound\ISound.h">
+      <Filter>Mocks\Sound</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Windows">

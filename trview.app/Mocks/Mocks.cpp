@@ -27,6 +27,7 @@
 #include "Routing/IRandomizerRoute.h"
 #include "Settings/ISettingsLoader.h"
 #include "Settings/IStartupOptions.h"
+#include "Sound/ISound.h"
 #include "Sound/ISoundStorage.h"
 #include "Tools/ICompass.h"
 #include "Tools/IMeasure.h"
@@ -277,5 +278,8 @@ namespace trview
 
         MockSoundStorage::MockSoundStorage() {};
         MockSoundStorage::~MockSoundStorage() {};
+
+        MockSound::MockSound() {};
+        MockSound::~MockSound() {};
     }
 }

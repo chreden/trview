@@ -20,6 +20,7 @@
 #include <trview.common/Algorithms.h>
 #include <trview.common/Mocks/Logs/ILog.h>
 #include <trview.graphics/mocks/IBuffer.h>
+#include <trview.tests.common/Event.h>
 
 using namespace trview;
 using namespace trview::mocks;
@@ -858,4 +859,15 @@ TEST(Level, StaticMeshChangingRaisesLevelChangedEvent)
 
     static_mesh->on_changed();
     ASSERT_EQ(times_called, 1u);
+}
+
+TEST(Level, SetShowSoundSourcesRaisesLevelChangedEvent)
+{
+    auto level = register_test_module().build();
+
+    bool raised = false;
+    auto token = level->on_level_changed += capture_called(raised);
+
+    level->set_show_sound_sources(true);
+    ASSERT_EQ(raised, true);
 }
