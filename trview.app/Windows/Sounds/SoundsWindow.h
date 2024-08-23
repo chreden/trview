@@ -25,6 +25,7 @@ namespace trview
         explicit SoundsWindow();
         virtual ~SoundsWindow() = default;
         void render() override;
+        void set_level_platform(trlevel::Platform platform) override;
         void set_level_version(trlevel::LevelVersion version) override;
         void set_number(int32_t number) override;
         void set_selected_sound_source(const std::weak_ptr<ISoundSource>& sound_source) override;
@@ -51,5 +52,6 @@ namespace trview
         std::weak_ptr<ISoundSource> _global_selected_sound_source;
         trlevel::LevelVersion _level_version{ trlevel::LevelVersion::Unknown };
         Filters<ISoundSource> _filters;
+        trlevel::Platform _level_platform{ trlevel::Platform::Unknown };
     };
 }

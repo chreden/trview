@@ -115,7 +115,7 @@ namespace trview
         _mesh->render(wvp, _sound_texture, Colour::White, 1.0f, light_direction);
     }
 
-    uint16_t SoundSource::sample() const
+    std::optional<int16_t> SoundSource::sample() const
     {
         return _sample;
     }

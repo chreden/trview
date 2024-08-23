@@ -28,7 +28,7 @@ namespace trview
         DirectX::SimpleMath::Vector3 position() const override;
         uint8_t range() const override;
         void render(const ICamera& camera, const ILevelTextureStorage& texture_storage, const DirectX::SimpleMath::Color& colour) override;
-        uint16_t sample() const override;
+        std::optional<int16_t> sample() const override;
         void set_visible(bool value) override;
         bool visible() const override;
         uint16_t volume() const override;
@@ -42,7 +42,7 @@ namespace trview
         uint8_t _pitch{ 0u };
         DirectX::SimpleMath::Vector3 _position;
         uint8_t _range{ 0u };
-        uint16_t _sample{ 0u };
+        std::optional<int16_t> _sample;
         graphics::Texture _sound_texture;
         bool _visible{ true };
         uint16_t _volume{ 0u };

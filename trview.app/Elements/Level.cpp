@@ -227,6 +227,11 @@ namespace trview
         on_level_changed();
     }
 
+    trlevel::Platform Level::platform() const
+    {
+        return _platform;
+    }
+
     void Level::render(const ICamera& camera, bool render_selection)
     {
         using namespace DirectX;
@@ -1347,6 +1352,7 @@ namespace trview
         const ISoundSource::Source& sound_source_source,
         const trlevel::ILevel::LoadCallbacks callbacks)
     {
+        _platform = level->platform();
         _version = level->get_version();
         _floor_data = level->get_floor_data_all();
         _name = level->name();

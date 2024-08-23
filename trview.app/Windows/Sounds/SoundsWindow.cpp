@@ -29,6 +29,11 @@ namespace trview
         }
     }
 
+    void SoundsWindow::set_level_platform(trlevel::Platform platform)
+    {
+        _level_platform = platform;
+    }
+
     void SoundsWindow::set_level_version(trlevel::LevelVersion version)
     {
         _level_version = version;
@@ -146,7 +151,7 @@ namespace trview
                     ImGui::TableNextColumn();
                     ImGui::Text(std::to_string(sound_source_ptr->id()).c_str());
                     ImGui::TableNextColumn();
-                    ImGui::Text(std::to_string(sound_source_ptr->sample()).c_str());
+                    ImGui::Text(std::to_string(sound_source_ptr->sample().value_or(-1)).c_str());
                     ImGui::TableNextColumn();
                     bool hidden = !sound_source_ptr->visible();
                     ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0, 0));
@@ -191,17 +196,20 @@ namespace trview
 
                     add_stat("#", selected_sound_source->number());
                     add_stat("ID", selected_sound_source->id());
-                    add_stat("Flags", selected_sound_source->flags());
                     const auto pos = selected_sound_source->position() * trlevel::Scale;
                     add_stat("Position", std::format("{:.0f}, {:.0f}, {:.0f}", pos.x, pos.y, pos.z));
-                    add_stat("Chance", selected_sound_source->chance());
-                    add_stat("Characteristics", selected_sound_source->characteristics());
-                    add_stat("Sample", selected_sound_source->sample());
-                    add_stat("Volume", selected_sound_source->volume());
-                    if (_level_version >= trlevel::LevelVersion::Tomb3)
+                    if (selected_sound_source->sample().has_value())
                     {
-                        add_stat("Pitch", selected_sound_source->pitch());
-                        add_stat("Range", selected_sound_source->range());
+                        add_stat("Chance", selected_sound_source->chance());
+                        add_stat("Characteristics", selected_sound_source->characteristics());
+                        add_stat("Flags", selected_sound_source->flags());
+                        add_stat("Sample", selected_sound_source->sample().value());
+                        add_stat("Volume", selected_sound_source->volume());
+                        if (_level_version >= trlevel::LevelVersion::Tomb3)
+                        {
+                            add_stat("Pitch", selected_sound_source->pitch());
+                            add_stat("Range", selected_sound_source->range());
+                        }
                     }
                     ImGui::EndTable();
                 }
@@ -209,30 +217,50 @@ namespace trview
                 if (auto storage = _sound_storage.lock())
                 {
                     const auto sample_index = selected_sound_source->sample();
-                    const auto num_samples = std::min(1, (selected_sound_source->characteristics() & 0x00FC) >> 2);
-                    for (auto i = sample_index; i < sample_index + num_samples; ++i)
+                    if (sample_index.has_value())
                     {
-                        const auto sound = storage->get(i).lock();
-                        if (!sound)
+                        const auto num_samples = std::min(1, (selected_sound_source->characteristics() & 0x00FC) >> 2);
+                        for (auto i = sample_index.value(); i < sample_index.value() + num_samples; ++i)
                         {
-                            ImGui::BeginDisabled();
-                        }
-                        
-                        if (ImGui::Button(std::format("Sample {}", i).c_str(), ImVec2(-1, 40)))
-                        {
-                            if (sound)
+                            const auto sound = storage->get(i).lock();
+                            if (!sound)
                             {
-                                sound->play();
+                                ImGui::BeginDisabled();
                             }
-                        }
 
-                        if (!sound)
-                        {
-                            ImGui::EndDisabled();
-                            if (ImGui::IsItemHovered(ImGuiHoveredFlags_AllowWhenDisabled))
+                            if (ImGui::Button(std::format("Sample {}", i).c_str(), ImVec2(-1, 40)))
                             {
-                                ImGui::SetTooltip("MAIN.SFX not found. Place MAIN.SFX in the same folder as the level.");
+                                if (sound)
+                                {
+                                    sound->play();
+                                }
                             }
+
+                            if (!sound)
+                            {
+                                ImGui::EndDisabled();
+                                if (ImGui::IsItemHovered(ImGuiHoveredFlags_AllowWhenDisabled))
+                                {
+                                    if (_level_platform == trlevel::Platform::PSX)
+                                    {
+                                        ImGui::SetTooltip("Sample playback not yet supported for PSX levels.");
+                                    }
+                                    else
+                                    {
+                                        ImGui::SetTooltip("MAIN.SFX not found. Place MAIN.SFX in the same folder as the level.");
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    else
+                    {
+                        ImGui::BeginDisabled();
+                        ImGui::Button("Missing Sample", ImVec2(-1, 40));
+                        ImGui::EndDisabled();
+                        if (ImGui::IsItemHovered(ImGuiHoveredFlags_AllowWhenDisabled))
+                        {
+                            ImGui::SetTooltip(std::format("Sound Map entry {} does not reference a valid sample.", selected_sound_source->id()).c_str());
                         }
                     }
                 }
@@ -296,7 +324,7 @@ namespace trview
             {
                 _column_sizer.measure(std::to_string(sound_source_ptr->number()), 0);
                 _column_sizer.measure(std::to_string(sound_source_ptr->id()), 1);
-                _column_sizer.measure(std::to_string(sound_source_ptr->sample()), 2);
+                _column_sizer.measure(std::to_string(sound_source_ptr->sample().value_or(-1)), 2);
             }
         }
     }
@@ -330,7 +358,7 @@ namespace trview
         _filters.add_getter<float>("Flags", [](auto&& sound_source) { return static_cast<float>(sound_source.flags()); });
         _filters.add_getter<float>("Chance", [](auto&& sound_source) { return static_cast<float>(sound_source.chance()); });
         _filters.add_getter<float>("Characteristics", [](auto&& sound_source) { return static_cast<float>(sound_source.characteristics()); });
-        _filters.add_getter<float>("Sample", [](auto&& sound_source) { return static_cast<float>(sound_source.sample()); });
+        _filters.add_getter<float>("Sample", [](auto&& sound_source) { return static_cast<float>(sound_source.sample().value_or(-1)); });
         _filters.add_getter<float>("Volume", [](auto&& sound_source) { return static_cast<float>(sound_source.volume()); });
         if (_level_version >= trlevel::LevelVersion::Tomb3)
         {

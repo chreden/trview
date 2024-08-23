@@ -900,7 +900,7 @@ namespace trlevel
         }
         else
         {
-            log_file(activity, file, "Reading uncompresed size and skipping compressed size - unused in Tomb5");
+            log_file(activity, file, "Reading uncompressed size and skipping compressed size - unused in Tomb5");
             const auto uncompressed_size = read<uint32_t>(file);
             const auto compressed_size = read<uint32_t>(file);
             compressed_size;
@@ -1248,18 +1248,27 @@ namespace trlevel
         }
         log_file(activity, file, std::format("Read {} entities", _entities.size()));
 
+        if (_platform_and_version.platform == Platform::PSX &&
+            get_version() == LevelVersion::Tomb1)
+        {
+            callbacks.on_progress("Reading sound map");
+            log_file(activity, file, "Reading sound map");
+            _sound_map = read_vector<int16_t>(file, 256);
+            log_file(activity, file, "Read sound map");
+
+            callbacks.on_progress("Reading sound details");
+            log_file(activity, file, "Reading sound details");
+            _sound_details = read_vector<uint32_t, tr_x_sound_details>(file);
+            log_file(activity, file, std::format("Read {} sound details", _sound_details.size()));
+            return;
+        }
+
         if (get_version() < LevelVersion::Tomb4)
         {
             callbacks.on_progress("Reading light map");
             log_file(activity, file, "Reading light map");
             std::vector<uint8_t> light_map = read_vector<uint8_t>(file, 32 * 256);
             log_file(activity, file, "Read light map");
-        }
-
-        if (_platform_and_version.platform == Platform::PSX &&
-            get_version() == LevelVersion::Tomb1)
-        {
-            return;
         }
 
         if (get_version() == LevelVersion::Tomb1)
@@ -1603,7 +1612,16 @@ namespace trlevel
                 if (auto main = _files->load_file(std::format("{}MAIN.SFX", trview::path_for_filename(_filename))))
                 {
                     std::basic_ispanstream<uint8_t> sfx_file{ { *main } };
-                    sfx_file.seekg(_sound_map.size() * 2, std::ios::beg);
+
+                    // Remastered has a sound map like structure at the start of main.sfx, so skip that if present:
+                    if (read<uint32_t>(sfx_file) != 0x46464952) // RIFF
+                    {
+                        sfx_file.seekg(_sound_map.size() * 2, std::ios::beg);
+                    }
+                    else
+                    {
+                        sfx_file.seekg(0, std::ios::beg);
+                    }
 
                     int16_t overall_index = 0;
                     int16_t level_index = 0;

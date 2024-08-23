@@ -33,7 +33,7 @@ namespace trview
         virtual uint8_t pitch() const = 0;
         virtual DirectX::SimpleMath::Vector3 position() const = 0;
         virtual uint8_t range() const = 0;
-        virtual uint16_t sample() const = 0;
+        virtual std::optional<int16_t> sample() const = 0;
         virtual uint16_t volume() const = 0;
 
         Event<> on_changed;

@@ -18,6 +18,7 @@ namespace trview
 
         virtual ~ISoundsWindow() = 0;
         virtual void render() = 0;
+        virtual void set_level_platform(trlevel::Platform platform) = 0;
         virtual void set_level_version(trlevel::LevelVersion version) = 0;
         virtual void set_number(int32_t number) = 0;
         virtual void set_selected_sound_source(const std::weak_ptr<ISoundSource>& sound_source) = 0;

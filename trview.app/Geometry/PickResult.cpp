@@ -197,7 +197,9 @@ namespace trview
             {
                 if (const auto sound_source = result.sound_source.lock())
                 {
-                    stream << "Sound Source " << sound_source->number() << " - Sample " << sound_source->sample();
+                    stream << "Sound Source " << sound_source->number() << " - ";
+                    const auto sample = sound_source->sample();
+                    stream << (sample ? std::format("Sample {}", sample.value()) : "Missing Sample");
                 }
                 break;
             }
