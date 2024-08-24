@@ -31,6 +31,7 @@ namespace trview
             inline static const std::string camera_sinks = "Camera/Sink";
             inline static const std::string lighting = "Lighting";
             inline static const std::string notes = "Notes";
+            inline static const std::string sound_sources = "Sounds";
         };
 
         virtual ~IViewer() = 0;
@@ -82,6 +83,8 @@ namespace trview
         Event<std::string, FontSetting> on_font;
 
         Event<std::weak_ptr<IStaticMesh>> on_static_mesh_selected;
+
+        Event<std::weak_ptr<ISoundSource>> on_sound_source_selected;
 
         virtual std::weak_ptr<ICamera> camera() const = 0;
 
@@ -160,5 +163,6 @@ namespace trview
 
         virtual void select_camera_sink(const std::weak_ptr<ICameraSink>& camera_sink) = 0;
         virtual void select_static_mesh(const std::weak_ptr<IStaticMesh>& static_mesh) = 0;
+        virtual void select_sound_source(const std::weak_ptr<ISoundSource>& sound_source) = 0;
     };
 }

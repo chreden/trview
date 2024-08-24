@@ -125,6 +125,7 @@ namespace trview
         void open_recent_route();
         void save_window_placement();
         void select_static_mesh(const std::weak_ptr<IStaticMesh>& static_mesh);
+        void select_sound_source(const std::weak_ptr<ISoundSource>& sound_source);
         void check_load();
 
         TokenStore _token_store;

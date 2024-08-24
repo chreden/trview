@@ -69,6 +69,7 @@ namespace trview
         toggles[Options::camera_sinks] = [this](bool value) { set_show_camera_sinks(value); };
         toggles[Options::lighting] = [this](bool value) { set_show_lighting(value); };
         toggles[Options::notes] = [](bool) {};
+        toggles[Options::sound_sources] = [this](bool value) { set_show_sound_sources(value); };
 
         const auto persist_toggle_value = [&](const std::string& name, bool value)
         {
@@ -207,6 +208,13 @@ namespace trview
                     if (auto mesh = level->static_mesh(_context_pick.index).lock())
                     {
                         mesh->set_visible(false);
+                    }
+                }
+                else if (_context_pick.type == PickResult::Type::SoundSource)
+                {
+                    if (auto sound_source = _context_pick.sound_source.lock())
+                    {
+                        sound_source->set_visible(false);
                     }
                 }
             }
@@ -570,7 +578,7 @@ namespace trview
                 _ui->set_show_context_menu(true);
                 _camera_input.reset(true);
                 _ui->set_remove_waypoint_enabled(_current_pick.type == PickResult::Type::Waypoint);
-                _ui->set_hide_enabled(equals_any(_current_pick.type, PickResult::Type::Entity, PickResult::Type::Trigger, PickResult::Type::Light, PickResult::Type::Room, PickResult::Type::CameraSink, PickResult::Type::StaticMesh));
+                _ui->set_hide_enabled(equals_any(_current_pick.type, PickResult::Type::Entity, PickResult::Type::Trigger, PickResult::Type::Light, PickResult::Type::Room, PickResult::Type::CameraSink, PickResult::Type::StaticMesh, PickResult::Type::SoundSource));
                 _ui->set_mid_waypoint_enabled(_current_pick.type == PickResult::Type::Room && _current_pick.triangle.normal.y < 0);
 
                 const auto level = _level.lock();
@@ -634,6 +642,7 @@ namespace trview
         new_level->set_show_rooms(_ui->toggle(Options::rooms));
         new_level->set_show_camera_sinks(_ui->toggle(Options::camera_sinks));
         new_level->set_show_lighting(_ui->toggle(Options::lighting));
+        new_level->set_show_sound_sources(_ui->toggle(Options::sound_sources));
 
         // Set up the views.
         auto rooms = new_level->rooms();
@@ -1309,6 +1318,11 @@ namespace trview
             }
             break;
         }
+        case PickResult::Type::SoundSource:
+        {
+            on_sound_source_selected(pick.sound_source);
+            break;
+        }
         }
     }
 
@@ -1470,5 +1484,27 @@ namespace trview
         _ui->set_toggle(name, value);
         _settings.toggles[name] = value;
         on_settings(_settings);
+    }
+
+    void Viewer::set_show_sound_sources(bool show)
+    {
+        if (auto level = _level.lock())
+        {
+            level->set_show_sound_sources(show);
+        }
+        set_toggle(Options::sound_sources, show);
+    }
+
+    void Viewer::select_sound_source(const std::weak_ptr<ISoundSource>& sound_source)
+    {
+        if (auto sound_source_ptr = sound_source.lock())
+        {
+            set_target(sound_source_ptr->position());
+            if (_settings.auto_orbit)
+            {
+                set_camera_mode(ICamera::Mode::Orbit);
+            }
+            _scene_changed = true;
+        }
     }
 }

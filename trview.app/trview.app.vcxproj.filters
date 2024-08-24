@@ -335,6 +335,21 @@
     <ClCompile Include="Lua\Camera\Lua_Camera.cpp">
       <Filter>Lua\Camera</Filter>
     </ClCompile>
+    <ClCompile Include="Sound\SoundStorage.cpp">
+      <Filter>Sound</Filter>
+    </ClCompile>
+    <ClCompile Include="Sound\Sound.cpp">
+      <Filter>Sound</Filter>
+    </ClCompile>
+    <ClCompile Include="Windows\Sounds\SoundsWindow.cpp">
+      <Filter>Windows\Sounds</Filter>
+    </ClCompile>
+    <ClCompile Include="Windows\Sounds\SoundsWindowManager.cpp">
+      <Filter>Windows\Sounds</Filter>
+    </ClCompile>
+    <ClCompile Include="Elements\SoundSource\SoundSource.cpp">
+      <Filter>Elements\SoundSource</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera\Camera.h">
@@ -1099,6 +1114,51 @@
     <ClInclude Include="Mocks\Lua\IScriptable.h">
       <Filter>Mocks\Lua</Filter>
     </ClInclude>
+    <ClInclude Include="Sound\ISoundStorage.h">
+      <Filter>Sound</Filter>
+    </ClInclude>
+    <ClInclude Include="Sound\SoundStorage.h">
+      <Filter>Sound</Filter>
+    </ClInclude>
+    <ClInclude Include="Sound\ISound.h">
+      <Filter>Sound</Filter>
+    </ClInclude>
+    <ClInclude Include="Sound\Sound.h">
+      <Filter>Sound</Filter>
+    </ClInclude>
+    <ClInclude Include="Windows\Sounds\ISoundsWindow.h">
+      <Filter>Windows\Sounds</Filter>
+    </ClInclude>
+    <ClInclude Include="Windows\Sounds\SoundsWindow.h">
+      <Filter>Windows\Sounds</Filter>
+    </ClInclude>
+    <ClInclude Include="Windows\Sounds\ISoundsWindowManager.h">
+      <Filter>Windows\Sounds</Filter>
+    </ClInclude>
+    <ClInclude Include="Windows\Sounds\SoundsWindowManager.h">
+      <Filter>Windows\Sounds</Filter>
+    </ClInclude>
+    <ClInclude Include="Mocks\Windows\ISoundsWindow.h">
+      <Filter>Mocks\Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="Mocks\Windows\ISoundsWindowManager.h">
+      <Filter>Mocks\Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="Elements\SoundSource\ISoundSource.h">
+      <Filter>Elements\SoundSource</Filter>
+    </ClInclude>
+    <ClInclude Include="Elements\SoundSource\SoundSource.h">
+      <Filter>Elements\SoundSource</Filter>
+    </ClInclude>
+    <ClInclude Include="Mocks\Elements\ISoundSource.h">
+      <Filter>Mocks\Elements</Filter>
+    </ClInclude>
+    <ClInclude Include="Mocks\Sound\ISoundStorage.h">
+      <Filter>Mocks\Sound</Filter>
+    </ClInclude>
+    <ClInclude Include="Mocks\Sound\ISound.h">
+      <Filter>Mocks\Sound</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Windows">
@@ -1299,6 +1359,18 @@
     <Filter Include="Lua\Camera">
       <UniqueIdentifier>{4e6be7c4-7790-44bc-8f84-1ad31b71b84d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Sound">
+      <UniqueIdentifier>{09391af2-c9b4-43aa-9b92-e0b004b67300}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Windows\Sounds">
+      <UniqueIdentifier>{7407f1d7-77cb-432f-81df-b6264d215e13}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Elements\SoundSource">
+      <UniqueIdentifier>{ce32c52f-7f48-4181-9561-4c26af08e500}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Mocks\Sound">
+      <UniqueIdentifier>{b259ddb6-6a38-44a8-bdbc-50c7e1fe00af}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Resources\Files\tomb1.png">
@@ -1331,6 +1403,9 @@
       <Filter>Resources\Files</Filter>
     </Image>
     <Image Include="Resources\Files\sink.png">
+      <Filter>Resources\Files</Filter>
+    </Image>
+    <Image Include="Resources\Files\sound.png">
       <Filter>Resources\Files</Filter>
     </Image>
   </ItemGroup>

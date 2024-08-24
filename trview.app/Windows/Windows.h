@@ -15,6 +15,7 @@ namespace trview
     struct IPluginsWindowManager;
     struct IRoomsWindowManager;
     struct IRouteWindowManager;
+    struct ISoundsWindowManager;
     struct IStaticsWindowManager;
     struct ITexturesWindowManager;
     struct ITriggersWindowManager;
@@ -30,7 +31,8 @@ namespace trview
             std::unique_ptr<ILogWindowManager> log_window_manager,
             std::unique_ptr<IPluginsWindowManager> plugins_window_manager,
             std::unique_ptr<IRoomsWindowManager> rooms_window_manager,
-            std::unique_ptr<IRouteWindowManager> _route_window_manager,
+            std::unique_ptr<IRouteWindowManager> route_window_manager,
+            std::unique_ptr<ISoundsWindowManager> sounds_window_manager,
             std::unique_ptr<IStaticsWindowManager> statics_window_manager,
             std::unique_ptr<ITexturesWindowManager> textures_window_manager,
             std::unique_ptr<ITriggersWindowManager> triggers_window_manager);
@@ -41,6 +43,7 @@ namespace trview
         void select(const std::weak_ptr<ICameraSink>& camera_sink) override;
         void select(const std::weak_ptr<IItem>& item) override;
         void select(const std::weak_ptr<ILight>& light) override;
+        void select(const std::weak_ptr<ISoundSource>& sound_source) override;
         void select(const std::weak_ptr<IStaticMesh>& static_mesh) override;
         void select(const std::weak_ptr<ITrigger>& trigger) override;
         void select(const std::weak_ptr<IWaypoint>& waypoint) override;
@@ -62,6 +65,7 @@ namespace trview
         std::unique_ptr<IRoomsWindowManager> _rooms_windows;
         std::weak_ptr<IRoute> _route;
         std::unique_ptr<IRouteWindowManager> _route_window;
+        std::unique_ptr<ISoundsWindowManager> _sounds_windows;
         std::unique_ptr<IStaticsWindowManager> _statics_windows;
         std::unique_ptr<ITexturesWindowManager> _textures_windows;
         std::unique_ptr<ITriggersWindowManager> _triggers_windows;

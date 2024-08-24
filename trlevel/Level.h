@@ -165,6 +165,9 @@ namespace trlevel
         virtual tr_camera get_camera(uint32_t index) const override;
         Platform platform() const override;
         void load(const LoadCallbacks& callbacks) override;
+        std::vector<tr_sound_source> sound_sources() const override;
+        std::vector<tr_x_sound_details> sound_details() const override;
+        std::vector<int16_t> sound_map() const override;
     private:
         void generate_meshes(const std::vector<uint16_t>& mesh_data);
 
@@ -213,6 +216,11 @@ namespace trlevel
         std::string _name;
 
         std::vector<tr_camera> _cameras;
+        std::vector<tr_sound_source>    _sound_sources;
+        std::vector<tr_x_sound_details> _sound_details;
+        std::vector<int16_t> _sound_map;
+        std::vector<uint32_t> _sample_indices;
+        std::vector<uint8_t> _sound_data;
 
         std::shared_ptr<trview::ILog>   _log;
         std::shared_ptr<IDecrypter>     _decrypter;

@@ -34,6 +34,7 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClCompile Include="Elements\Light.cpp" />
     <ClCompile Include="Elements\Room.cpp" />
     <ClCompile Include="Elements\Sector.cpp" />
+    <ClCompile Include="Elements\SoundSource\SoundSource.cpp" />
     <ClCompile Include="Elements\StaticMesh.cpp" />
     <ClCompile Include="Elements\Trigger.cpp" />
     <ClCompile Include="Elements\TypeInfoLookup.cpp" />
@@ -74,12 +75,23 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClCompile Include="Plugins\Plugin.cpp" />
     <ClCompile Include="Plugins\Plugins.cpp" />
     <ClCompile Include="Routing\RandomizerRoute.cpp" />
+    <ClCompile Include="Sound\Sound.cpp" />
+    <ClCompile Include="Sound\SoundStorage.cpp" />
+    <ClCompile Include="Windows\Sounds\SoundsWindow.cpp" />
+    <ClCompile Include="Windows\Sounds\SoundsWindowManager.cpp" />
     <ClCompile Include="Windows\Windows.cpp" />
+    <ClInclude Include="Elements\SoundSource\ISoundSource.h" />
+    <ClInclude Include="Elements\SoundSource\SoundSource.h" />
     <ClInclude Include="Lua\Camera\Lua_Camera.h" />
     <ClInclude Include="Lua\Scriptable\IScriptable.h" />
     <ClInclude Include="Lua\Scriptable\Scriptable.h" />
+    <ClInclude Include="Mocks\Elements\ISoundSource.h" />
     <ClInclude Include="Mocks\Lua\IScriptable.h" />
+    <ClInclude Include="Mocks\Sound\ISound.h" />
+    <ClInclude Include="Mocks\Sound\ISoundStorage.h" />
     <ClInclude Include="Mocks\UI\IFonts.h" />
+    <ClInclude Include="Mocks\Windows\ISoundsWindow.h" />
+    <ClInclude Include="Mocks\Windows\ISoundsWindowManager.h" />
     <ClInclude Include="Mocks\Windows\IStaticsWindow.h" />
     <ClInclude Include="Mocks\Windows\IStaticsWindowManager.h" />
     <ClInclude Include="Mocks\Windows\IWindows.h" />
@@ -144,6 +156,10 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClInclude Include="Plugins\Plugins.h" />
     <ClInclude Include="Routing\IRandomizerRoute.h" />
     <ClInclude Include="Routing\RandomizerRoute.h" />
+    <ClInclude Include="Sound\ISound.h" />
+    <ClInclude Include="Sound\ISoundStorage.h" />
+    <ClInclude Include="Sound\Sound.h" />
+    <ClInclude Include="Sound\SoundStorage.h" />
     <ClInclude Include="Tools\IToolbar.h" />
     <ClInclude Include="Type.inl">
       <FileType>Document</FileType>
@@ -192,6 +208,10 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClInclude Include="Windows\Console\ConsoleManager.h" />
     <ClInclude Include="Windows\Console\IConsole.h" />
     <ClInclude Include="Windows\Console\IConsoleManager.h" />
+    <ClInclude Include="Windows\Sounds\ISoundsWindow.h" />
+    <ClInclude Include="Windows\Sounds\ISoundsWindowManager.h" />
+    <ClInclude Include="Windows\Sounds\SoundsWindow.h" />
+    <ClInclude Include="Windows\Sounds\SoundsWindowManager.h" />
     <ClInclude Include="Windows\Windows.h" />
   </ItemGroup>
   <ItemGroup>
@@ -412,6 +432,7 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <Image Include="Resources\Files\camera.png" />
     <Image Include="Resources\Files\sink.png" />
     <Image Include="Resources\Files\small.ico" />
+    <Image Include="Resources\Files\sound.png" />
     <Image Include="Resources\Files\tomb1.png" />
     <Image Include="Resources\Files\tomb2.png" />
     <Image Include="Resources\Files\tomb3.png" />

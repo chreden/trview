@@ -27,6 +27,7 @@
 #include "Elements/Trigger.h"
 #include "Elements/StaticMesh.h"
 #include "Elements/Sector.h"
+#include "Elements/SoundSource/SoundSource.h"
 #include "Graphics/TextureStorage.h"
 #include "Geometry/Mesh.h"
 #include "Geometry/Picking.h"
@@ -42,6 +43,7 @@
 #include "Routing/RandomizerRoute.h"
 #include "Settings/SettingsLoader.h"
 #include "Settings/StartupOptions.h"
+#include "Sound/SoundStorage.h"
 #include "UI/CameraControls.h"
 #include "UI/ContextMenu.h"
 #include "UI/SettingsWindow.h"
@@ -71,6 +73,8 @@
 #include "Windows/Plugins/PluginsWindow.h"
 #include "Tools/Toolbar.h"
 #include "UI/Fonts/Fonts.h"
+#include "Windows/Sounds/SoundsWindowManager.h"
+#include "Windows/Sounds/SoundsWindow.h"
 #include "Windows/Statics/StaticsWindowManager.h"
 #include "Windows/Statics/StaticsWindow.h"
 #include "Windows/Windows.h"
@@ -245,12 +249,14 @@ namespace trview
         auto light_source = [=](auto&&... args) { return std::make_shared<Light>(light_mesh, args...); };
         auto buffer_source = [=](auto&&... args) { return std::make_unique<graphics::Buffer>(device, args...); };
 
-        auto camera_mesh = create_cube_mesh(mesh_source);
-        auto camera_sink_source = [=](auto&&... args) { return std::make_shared<CameraSink>(camera_mesh, texture_storage, args...); };
+        auto cube_mesh = create_cube_mesh(mesh_source);
+        auto camera_sink_source = [=](auto&&... args) { return std::make_shared<CameraSink>(cube_mesh, texture_storage, args...); };
+
+        const auto sound_source = [=](auto&&... args) { return create_sound(args...); };
+        const auto sound_source_source = [=](auto&&... args) { return std::make_shared<SoundSource>(cube_mesh, texture_storage, args...); };
 
         auto level_source = [=](auto&& level, auto&& callbacks)
             {
-                // TODO: Hook up callbacks for loading textures, other callbacks.
                 auto level_texture_storage = std::make_shared<LevelTextureStorage>(device, std::make_unique<TextureStorage>(device));
                 int count = 0;
                 callbacks.on_textile_callback = [&](auto&& textile)
@@ -258,6 +264,14 @@ namespace trview
                         callbacks.on_progress(std::format("Loading texture {}", ++count));
                         level_texture_storage->add_textile(textile);
                     };
+
+                auto sound_storage = std::make_shared<SoundStorage>(sound_source);
+                callbacks.on_sound_callback = [&](auto&& index, auto&& data)
+                    {
+                        callbacks.on_progress(std::format("Loading sound {}", index));
+                        sound_storage->add(index, data);
+                    };
+
                 level->load(callbacks);
                 level_texture_storage->load(level);
 
@@ -269,7 +283,8 @@ namespace trview
                     std::make_unique<TransparencyBuffer>(device),
                     std::make_unique<SelectionRenderer>(device, shader_storage, std::make_unique<TransparencyBuffer>(device), render_target_source),
                     log,
-                    buffer_source);
+                    buffer_source,
+                    sound_storage);
                 new_level->initialise(level,
                     std::move(mesh_storage),
                     entity_source,
@@ -278,6 +293,7 @@ namespace trview
                     trigger_source,
                     light_source,
                     camera_sink_source,
+                    sound_source_source,
                     callbacks);
                 return new_level;
             };
@@ -342,6 +358,7 @@ namespace trview
         auto textures_window_source = [=]() { return std::make_shared<TexturesWindow>(); };
         auto console_source = [=]() { return std::make_shared<Console>(dialogs, plugins, fonts); };
         auto statics_window_source = [=]() { return std::make_shared<StaticsWindow>(clipboard); };
+        auto sounds_window_source = [=]() { return std::make_shared<SoundsWindow>(); };
 
         return std::make_unique<Application>(
             window,
@@ -369,6 +386,7 @@ namespace trview
                 std::make_unique<PluginsWindowManager>(window, shortcuts, plugins_window_source),
                 std::make_unique<RoomsWindowManager>(window, shortcuts, rooms_window_source),
                 std::make_unique<RouteWindowManager>(window, shortcuts, route_window_source),
+                std::make_unique<SoundsWindowManager>(window, sounds_window_source),
                 std::make_unique<StaticsWindowManager>(window, shortcuts, statics_window_source),
                 std::make_unique<TexturesWindowManager>(window, textures_window_source),
                 std::make_unique<TriggersWindowManager>(window, shortcuts, triggers_window_source)),

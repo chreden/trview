@@ -27,6 +27,14 @@ namespace trlevel
         }
     }
 
+    void ILevel::LoadCallbacks::on_sound(uint16_t index, const std::vector<uint8_t>& data) const
+    {
+        if (on_sound_callback)
+        {
+            on_sound_callback(index, data);
+        }
+    }
+
     namespace
     {
         const float PiMul2 = 6.283185307179586476925286766559f;
@@ -892,14 +900,28 @@ namespace trlevel
         }
         else
         {
-            log_file(activity, file, "Skipping uncompresed and compressed sizes - unused in Tomb5");
-            skip(file, 8);
+            log_file(activity, file, "Reading uncompressed size and skipping compressed size - unused in Tomb5");
+            const auto uncompressed_size = read<uint32_t>(file);
+            const auto compressed_size = read<uint32_t>(file);
+            compressed_size;
             callbacks.on_progress("Processing level data");
+            const auto at = file.tellg();
             load_level_data(activity, file, callbacks);
+            file.seekg(at + static_cast<std::fpos_t>(uncompressed_size), std::ios::beg);
         }
 
-        callbacks.on_progress("Skipping sound samples");
-        log_file(activity, file, "Skipping sound samples");
+        uint32_t num_samples = read<uint32_t>(file);
+        callbacks.on_progress("Reading sound samples");
+        log_file(activity, file, std::format("Reading {} sound samples", num_samples));
+        std::vector<std::vector<uint8_t>> samples;
+        for (uint32_t i = 0; i < num_samples; ++i)
+        {
+            uint32_t uncompressed = read<uint32_t>(file);
+            uncompressed;
+            uint32_t compressed = read<uint32_t>(file);
+            callbacks.on_sound(static_cast<uint16_t>(i), read_vector<uint8_t>(file, compressed));
+        }
+        log_file(activity, file, std::format("Read {} sound samples", num_samples));
 
         callbacks.on_progress("Generating meshes");
         log_file(activity, file, "Generating meshes");
@@ -1134,8 +1156,8 @@ namespace trlevel
 
         callbacks.on_progress("Reading sound sources");
         log_file(activity, file, "Reading sound sources");
-        std::vector<tr_sound_source> sound_sources = read_vector<uint32_t, tr_sound_source>(file);
-        log_file(activity, file, std::format("Read {} sound sources", sound_sources.size()));
+        _sound_sources = read_vector<uint32_t, tr_sound_source>(file);
+        log_file(activity, file, std::format("Read {} sound sources", _sound_sources.size()));
 
         uint32_t num_boxes = 0;
         callbacks.on_progress("Reading boxes");
@@ -1226,18 +1248,27 @@ namespace trlevel
         }
         log_file(activity, file, std::format("Read {} entities", _entities.size()));
 
+        if (_platform_and_version.platform == Platform::PSX &&
+            get_version() == LevelVersion::Tomb1)
+        {
+            callbacks.on_progress("Reading sound map");
+            log_file(activity, file, "Reading sound map");
+            _sound_map = read_vector<int16_t>(file, 256);
+            log_file(activity, file, "Read sound map");
+
+            callbacks.on_progress("Reading sound details");
+            log_file(activity, file, "Reading sound details");
+            _sound_details = read_vector<uint32_t, tr_x_sound_details>(file);
+            log_file(activity, file, std::format("Read {} sound details", _sound_details.size()));
+            return;
+        }
+
         if (get_version() < LevelVersion::Tomb4)
         {
             callbacks.on_progress("Reading light map");
             log_file(activity, file, "Reading light map");
             std::vector<uint8_t> light_map = read_vector<uint8_t>(file, 32 * 256);
             log_file(activity, file, "Read light map");
-        }
-
-        if (_platform_and_version.platform == Platform::PSX &&
-            get_version() == LevelVersion::Tomb1)
-        {
-            return;
         }
 
         if (get_version() == LevelVersion::Tomb1)
@@ -1291,53 +1322,47 @@ namespace trlevel
         log_file(activity, file, "Reading sound map");
         if (get_version() == LevelVersion::Tomb1)
         {
-            std::vector<int16_t> sound_map = read_vector<int16_t>(file, 256);
+            _sound_map = read_vector<int16_t>(file, 256);
         }
         else if (get_version() < LevelVersion::Tomb4)
         {
-            std::vector<int16_t> sound_map = read_vector<int16_t>(file, 370);
+            _sound_map = read_vector<int16_t>(file, 370);
         }
         else if (get_version() == LevelVersion::Tomb4)
         {
             if (demo_data.size() == 2048)
             {
-                std::vector<int16_t> sound_map = read_vector<int16_t>(file, 1024);
+                _sound_map = read_vector<int16_t>(file, 1024);
             }
             else
             {
-                std::vector<int16_t> sound_map = read_vector<int16_t>(file, 370);
+                _sound_map = read_vector<int16_t>(file, 370);
             }
         }
         else
         {
-            std::vector<int16_t> sound_map = read_vector<int16_t>(file, 450);
+            _sound_map = read_vector<int16_t>(file, 450);
         }
         log_file(activity, file, "Read sound map");
 
         callbacks.on_progress("Reading sound details");
         log_file(activity, file, "Reading sound details");
-        std::vector<tr3_sound_details> sound_details = read_vector<uint32_t, tr3_sound_details>(file);
-        log_file(activity, file, std::format("Read {} sound details", sound_details.size()));
+        _sound_details = read_vector<uint32_t, tr_x_sound_details>(file);
+        log_file(activity, file, std::format("Read {} sound details", _sound_details.size()));
 
+        std::vector<uint8_t> sound_data;
         if (get_version() == LevelVersion::Tomb1)
         {
             callbacks.on_progress("Reading sound data");
             log_file(activity, file, "Reading sound data");
-            std::vector<uint8_t> sound_data = read_vector<int32_t, uint8_t>(file);
+            _sound_data = read_vector<int32_t, uint8_t>(file);
             log_file(activity, file, std::format("Read {} sound data", sound_data.size()));
         }
 
-        if (get_version() < LevelVersion::Tomb4)
-        {
-            callbacks.on_progress("Reading sample indices");
-            log_file(activity, file, "Reading sample indices");
-            std::vector<uint32_t> sample_indices = read_vector<uint32_t, uint32_t>(file);
-            log_file(activity, file, std::format("Read {} sample indices", sample_indices.size()));
-        }
-        else
-        {
-            skip(file, 6);
-        }
+        callbacks.on_progress("Reading sample indices");
+        log_file(activity, file, "Reading sample indices");
+        _sample_indices = read_vector<uint32_t, uint32_t>(file);
+        log_file(activity, file, std::format("Read {} sample indices", _sample_indices.size()));
     }
 
     bool Level::find_first_entity_by_type(int16_t type, tr2_entity& entity) const
@@ -1572,6 +1597,49 @@ namespace trlevel
 
             load_level_data(activity, file, callbacks);
             callbacks.on_progress("Generating meshes");
+
+            if (get_version() == LevelVersion::Tomb1)
+            {
+                for (auto i = 0; i < _sample_indices.size(); ++i)
+                {
+                    const auto start = _sample_indices[i];
+                    const auto end = i + 1 < _sample_indices.size() ? _sample_indices[i + 1] : _sound_data.size();
+                    callbacks.on_sound(static_cast<int16_t>(i), { _sound_data.begin() + start, _sound_data.begin() + end });
+                }
+            }
+            else if (get_version() < LevelVersion::Tomb4)
+            {
+                if (auto main = _files->load_file(std::format("{}MAIN.SFX", trview::path_for_filename(_filename))))
+                {
+                    std::basic_ispanstream<uint8_t> sfx_file{ { *main } };
+
+                    // Remastered has a sound map like structure at the start of main.sfx, so skip that if present:
+                    if (read<uint32_t>(sfx_file) != 0x46464952) // RIFF
+                    {
+                        sfx_file.seekg(_sound_map.size() * 2, std::ios::beg);
+                    }
+                    else
+                    {
+                        sfx_file.seekg(0, std::ios::beg);
+                    }
+
+                    int16_t overall_index = 0;
+                    int16_t level_index = 0;
+                    while (static_cast<std::size_t>(sfx_file.tellg()) < main->size())
+                    {
+                        skip(sfx_file, 4);
+                        uint32_t size = read<uint32_t>(sfx_file);
+                        sfx_file.seekg(-8, std::ios::cur);
+                        if (std::ranges::find(_sample_indices, static_cast<uint32_t>(overall_index)) != _sample_indices.end())
+                        {
+                            callbacks.on_sound(level_index++, { main->begin() + sfx_file.tellg(), main->begin() + sfx_file.tellg() + size + 8 });
+                        }
+                        overall_index++;
+                        sfx_file.seekg(size + 8, std::ios::cur);
+                    }
+                }
+            }
+
             generate_meshes(_mesh_data);
             callbacks.on_progress("Loading complete");
         }
@@ -1585,5 +1653,20 @@ namespace trlevel
             activity.log(trview::Message::Status::Error, std::format("Level failed to load: {}", e.what()));
             throw LevelLoadException(e.what());
         }
+    }
+
+    std::vector<tr_sound_source> Level::sound_sources() const
+    {
+        return _sound_sources;
+    }
+
+    std::vector<tr_x_sound_details> Level::sound_details() const
+    {
+        return _sound_details;
+    }
+
+    std::vector<int16_t> Level::sound_map() const
+    {
+        return _sound_map;
     }
 }

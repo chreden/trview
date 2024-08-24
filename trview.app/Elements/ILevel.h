@@ -14,6 +14,9 @@
 
 namespace trview
 {
+    struct ISoundStorage;
+    struct ISoundSource;
+
     struct ILevel
     {
         using Source = std::function<std::shared_ptr<ILevel>(std::shared_ptr<trlevel::ILevel>, trlevel::ILevel::LoadCallbacks)>;
@@ -71,6 +74,7 @@ namespace trview
         // how far along the ray the hit was and the position in world space. The room that was hit
         // is also specified.
         virtual PickResult pick(const ICamera& camera, const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& direction) const = 0;
+        virtual trlevel::Platform platform() const = 0;
         /// Render the current scene.
         /// @param camera The current camera.
         /// @param render_selection Whether to render selection highlights on selected items.
@@ -111,6 +115,7 @@ namespace trview
         virtual void set_show_items(bool show) = 0;
         virtual void set_show_rooms(bool show) = 0;
         virtual void set_show_camera_sinks(bool show) = 0;
+        virtual void set_show_sound_sources(bool show) = 0;
         virtual void set_trigger_visibility(uint32_t index, bool state) = 0;
         virtual void set_neighbour_depth(uint32_t depth) = 0;
         virtual void set_selected_room(const std::weak_ptr<IRoom>& room) = 0;
@@ -124,6 +129,8 @@ namespace trview
         virtual bool show_lights() const = 0;
         virtual bool show_triggers() const = 0;
         virtual bool show_items() const = 0;
+        virtual bool show_sound_sources() const = 0;
+        virtual std::vector<std::weak_ptr<ISoundSource>> sound_sources() const = 0;
         virtual std::vector<std::weak_ptr<IStaticMesh>> static_meshes() const = 0;
         virtual std::shared_ptr<ILevelTextureStorage> texture_storage() const = 0;
         virtual std::weak_ptr<IStaticMesh> static_mesh(uint32_t index) const = 0;
@@ -139,6 +146,7 @@ namespace trview
         /// <returns>All triggers in the level.</returns>
         virtual std::vector<std::weak_ptr<ITrigger>> triggers() const = 0;
         virtual trlevel::LevelVersion version() const = 0;
+        virtual std::weak_ptr<ISoundStorage> sound_storage() const = 0;
         Event<std::weak_ptr<IItem>> on_item_selected;
         // Event raised when the level needs to change the selected room.
         Event<std::weak_ptr<IRoom>> on_room_selected;

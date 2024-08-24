@@ -45,6 +45,9 @@ namespace trlevel
             MOCK_METHOD(tr_camera, get_camera, (uint32_t), (const, override));
             MOCK_METHOD(Platform, platform, (), (const, override));
             MOCK_METHOD(void, load, (const LoadCallbacks&), (override));
+            MOCK_METHOD(std::vector<tr_sound_source>, sound_sources, (), (const, override));
+            MOCK_METHOD(std::vector<tr_x_sound_details>, sound_details, (), (const, override));
+            MOCK_METHOD(std::vector<int16_t>, sound_map, (), (const, override));
         };
     }
 }

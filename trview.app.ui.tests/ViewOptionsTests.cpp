@@ -449,6 +449,40 @@ void register_view_options_tests(ImGuiTestEngine* engine)
             IM_CHECK_EQ(ctx->ItemIsChecked("flags/Rooms"), false);
         });
 
+    test<ViewOptions>(engine, "View Options", "Sounds Checkbox Toggle",
+        [](ImGuiTestContext* ctx) { ctx->GetVars<ViewOptions>().render(); },
+        [](ImGuiTestContext* ctx)
+        {
+            auto& view_options = ctx->GetVars<ViewOptions>();
+            std::optional<std::tuple<std::string, bool>> clicked;
+            auto token = view_options.on_toggle_changed += [&](const std::string& name, bool value)
+                {
+                    clicked = { name, value };
+                };
+
+            ctx->SetRef("View Options");
+            ctx->ItemCheck("flags/Sounds");
+
+            IM_CHECK_EQ(clicked.has_value(), true);
+            IM_CHECK_EQ(std::get<0>(clicked.value()), IViewer::Options::sound_sources);
+            IM_CHECK_EQ(std::get<1>(clicked.value()), true);
+        });
+
+    test<ViewOptions>(engine, "View Options", "Sounds Checkbox Updated",
+        [](ImGuiTestContext* ctx) { ctx->GetVars<ViewOptions>().render(); },
+        [](ImGuiTestContext* ctx)
+        {
+            auto& view_options = ctx->GetVars<ViewOptions>();
+
+            ctx->SetRef("View Options");
+            IM_CHECK_EQ(ctx->ItemIsChecked("flags/Sounds"), false);
+
+            view_options.set_toggle(IViewer::Options::sound_sources, true);
+            ctx->Yield();
+
+            IM_CHECK_EQ(ctx->ItemIsChecked("flags/Sounds"), true);
+        });
+
     test<ViewOptions>(engine, "View Options", "Triggers Checkbox Toggle",
         [](ImGuiTestContext* ctx) { ctx->GetVars<ViewOptions>().render(); },
         [](ImGuiTestContext* ctx)

@@ -70,6 +70,7 @@
     <ClCompile Include="Settings\RandomizerSettingsTests.cpp" />
     <ClCompile Include="Settings\SettingsLoaderTests.cpp" />
     <ClCompile Include="Settings\StartupOptionsTests.cpp" />
+    <ClCompile Include="Sound\SoundStorageTests.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
@@ -84,6 +85,7 @@
     <ClCompile Include="Windows\LightsWindowManagerTests.cpp" />
     <ClCompile Include="Windows\LogWindowManagerTests.cpp" />
     <ClCompile Include="Windows\RouteWindowManagerTests.cpp" />
+    <ClCompile Include="Windows\SoundsWindowManagerTests.cpp" />
     <ClCompile Include="Windows\StaticsWindowManagerTests.cpp" />
     <ClCompile Include="Windows\ViewerTests.cpp" />
     <ClCompile Include="Windows\WindowsTests.cpp" />

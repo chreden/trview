@@ -12,12 +12,15 @@
 #include <trview.app/Mocks/Elements/ILight.h>
 #include <trview.app/Mocks/Elements/ICameraSink.h>
 #include <trview.app/Mocks/Elements/ISector.h>
+#include <trview.app/Mocks/Elements/ISoundSource.h>
 #include <trview.app/Mocks/Camera/ICamera.h>
+#include <trview.app/Mocks/Sound/ISoundStorage.h>
 #include <trview.graphics/mocks/D3D/ID3D11DeviceContext.h>
 #include <trview.graphics/mocks/IShader.h>
 #include <trview.common/Algorithms.h>
 #include <trview.common/Mocks/Logs/ILog.h>
 #include <trview.graphics/mocks/IBuffer.h>
+#include <trview.tests.common/Event.h>
 
 using namespace trview;
 using namespace trview::mocks;
@@ -53,11 +56,13 @@ namespace
             graphics::IBuffer::ConstantSource buffer_source{ [](auto&&...) { return mock_unique<MockBuffer>(); } };
             ICameraSink::Source camera_sink_source{ [](auto&&...) { return mock_shared<MockCameraSink>(); } };
             trlevel::ILevel::LoadCallbacks callbacks;
+            ISoundSource::Source sound_source_source{ [](auto&&...) { return mock_shared<MockSoundSource>(); } };
+            std::shared_ptr<ISoundStorage> sound_storage{ mock_shared<MockSoundStorage>() };
 
             std::shared_ptr<Level> build()
             {
-                auto new_level = std::make_shared<Level>(device, shader_storage, level_texture_storage, std::move(transparency_buffer), std::move(selection_renderer), log, buffer_source);
-                new_level->initialise(std::move(level), std::move(mesh_storage), entity_source, ai_source, room_source, trigger_source, light_source, camera_sink_source, callbacks);
+                auto new_level = std::make_shared<Level>(device, shader_storage, level_texture_storage, std::move(transparency_buffer), std::move(selection_renderer), log, buffer_source, sound_storage);
+                new_level->initialise(std::move(level), std::move(mesh_storage), entity_source, ai_source, room_source, trigger_source, light_source, camera_sink_source, sound_source_source, callbacks);
                 return new_level;
             }
 
@@ -854,4 +859,15 @@ TEST(Level, StaticMeshChangingRaisesLevelChangedEvent)
 
     static_mesh->on_changed();
     ASSERT_EQ(times_called, 1u);
+}
+
+TEST(Level, SetShowSoundSourcesRaisesLevelChangedEvent)
+{
+    auto level = register_test_module().build();
+
+    bool raised = false;
+    auto token = level->on_level_changed += capture_called(raised);
+
+    level->set_show_sound_sources(true);
+    ASSERT_EQ(raised, true);
 }

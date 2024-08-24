@@ -37,9 +37,10 @@ namespace trview
         std::unique_ptr<ITransparencyBuffer> transparency_buffer,
         std::unique_ptr<ISelectionRenderer> selection_renderer,
         const std::shared_ptr<ILog>& log,
-        const graphics::IBuffer::ConstantSource& buffer_source)
+        const graphics::IBuffer::ConstantSource& buffer_source,
+        std::shared_ptr<ISoundStorage> sound_storage)
         : _device(device), _texture_storage(level_texture_storage),
-        _transparency(std::move(transparency_buffer)), _selection_renderer(std::move(selection_renderer)), _log(log)
+        _transparency(std::move(transparency_buffer)), _selection_renderer(std::move(selection_renderer)), _log(log), _sound_storage(sound_storage)
     {
         _vertex_shader = shader_storage->get("level_vertex_shader");
         _pixel_shader = shader_storage->get("level_pixel_shader");
@@ -226,6 +227,11 @@ namespace trview
         on_level_changed();
     }
 
+    trlevel::Platform Level::platform() const
+    {
+        return _platform;
+    }
+
     void Level::render(const ICamera& camera, bool render_selection)
     {
         using namespace DirectX;
@@ -339,6 +345,14 @@ namespace trview
             for (const auto& room : rooms)
             {
                 room.room.render_camera_sinks(camera);
+            }
+        }
+
+        if (has_flag(_render_filters, RenderFilter::SoundSources))
+        {
+            for (const auto sound_source : _sound_sources)
+            {
+                sound_source->render(camera, *_texture_storage, Colour::White);
             }
         }
 
@@ -695,6 +709,23 @@ namespace trview
                 for (const auto& result : original_room->pick(position, direction, PickFilter::Entities))
                 {
                     results.push_back(result);
+                }
+            }
+        }
+
+        if (has_flag(_render_filters, RenderFilter::SoundSources))
+        {
+            for (const auto& sound_source : _sound_sources)
+            {
+                if (!sound_source->visible())
+                {
+                    continue;
+                }
+
+                auto sound_source_result = sound_source->pick(position, direction);
+                if (sound_source_result.hit)
+                {
+                    results.push_back(sound_source_result);
                 }
             }
         }
@@ -1318,8 +1349,10 @@ namespace trview
         const ITrigger::Source& trigger_source,
         const ILight::Source& light_source,
         const ICameraSink::Source& camera_sink_source,
+        const ISoundSource::Source& sound_source_source,
         const trlevel::ILevel::LoadCallbacks callbacks)
     {
+        _platform = level->platform();
         _version = level->get_version();
         _floor_data = level->get_floor_data_all();
         _name = level->name();
@@ -1335,6 +1368,8 @@ namespace trview
         generate_lights(*level, light_source);
         callbacks.on_progress("Generating camera/sinks");
         generate_camera_sinks(*level, camera_sink_source);
+        callbacks.on_progress("Generating sound sources");
+        generate_sound_sources(*level, sound_source_source);
 
         callbacks.on_progress("Generating room bounding boxes");
         for (auto& room : _rooms)
@@ -1397,6 +1432,50 @@ namespace trview
         {
             scriptable_ptr->on_changed += on_level_changed;
         }
+    }
+
+    std::weak_ptr<ISoundStorage> Level::sound_storage() const
+    {
+        return _sound_storage;
+    }
+
+    std::vector<std::weak_ptr<ISoundSource>> Level::sound_sources() const
+    {
+        return _sound_sources | std::ranges::to<std::vector<std::weak_ptr<ISoundSource>>>();
+    }
+
+    void Level::generate_sound_sources(const trlevel::ILevel& level, const ISoundSource::Source& sound_source_source)
+    {
+        uint32_t count = 0;
+        const auto sound_map = level.sound_map();
+        const auto details = level.sound_details();
+        for (const auto& source : level.sound_sources())
+        {
+            std::optional<trlevel::tr_x_sound_details> detail;
+            if (source.SoundID >= 0 && source.SoundID < sound_map.size())
+            {
+                const auto index = sound_map[source.SoundID];
+                if (index >= 0 && index < details.size())
+                {
+                    detail = details[index];
+                }
+            }
+            auto sound_source = sound_source_source(count++, source, detail, _version);
+            _token_store += sound_source->on_changed += [this]() { content_changed(); };
+            _sound_sources.push_back(sound_source);
+        }
+    }
+
+    void Level::set_show_sound_sources(bool show)
+    {
+        _render_filters = set_flag(_render_filters, RenderFilter::SoundSources, show);
+        _regenerate_transparency = true;
+        on_level_changed();
+    }
+
+    bool Level::show_sound_sources() const
+    {
+        return has_flag(_render_filters, RenderFilter::SoundSources);
     }
 
     bool find_item_by_type_id(const ILevel& level, uint32_t type_id, std::weak_ptr<IItem>& output_item)
