@@ -178,7 +178,11 @@ namespace trlevel
 
         // New level bits:
         void read_header(std::basic_ispanstream<uint8_t>& file, std::vector<uint8_t>& bytes, trview::Activity& activity, const LoadCallbacks& callbacks);
-        void load_psx_tr1(std::basic_ispanstream<uint8_t>& file, trview::Activity& activity, const LoadCallbacks& callbacks);
+        void read_textiles_tr1_psx(std::basic_ispanstream<uint8_t>& file, trview::Activity& activity, const LoadCallbacks& callbacks);
+        void load_tr1_psx(std::basic_ispanstream<uint8_t>& file, trview::Activity& activity, const LoadCallbacks& callbacks);
+        
+        
+        void generate_sounds_tr1(const LoadCallbacks& callbacks);
 
         PlatformAndVersion _platform_and_version;
 

@@ -1508,7 +1508,7 @@ namespace trlevel
 
             const std::unordered_map<PlatformAndVersion, std::function<void ()>> loaders
             {
-                {{.platform = Platform::PSX, .version = LevelVersion::Tomb1 }, [&]() { load_psx_tr1(file, activity, callbacks); }}
+                {{.platform = Platform::PSX, .version = LevelVersion::Tomb1 }, [&]() { load_tr1_psx(file, activity, callbacks); }}
             };
 
             const auto loader = loaders.find(_platform_and_version);
@@ -1564,12 +1564,7 @@ namespace trlevel
 
             if (get_version() == LevelVersion::Tomb1)
             {
-                for (auto i = 0; i < _sample_indices.size(); ++i)
-                {
-                    const auto start = _sample_indices[i];
-                    const auto end = i + 1 < _sample_indices.size() ? _sample_indices[i + 1] : _sound_data.size();
-                    callbacks.on_sound(static_cast<int16_t>(i), { _sound_data.begin() + start, _sound_data.begin() + end });
-                }
+                generate_sounds_tr1(callbacks);
             }
             else if (get_version() < LevelVersion::Tomb4)
             {
@@ -1664,23 +1659,34 @@ namespace trlevel
         }
     }
 
-    void Level::load_psx_tr1(std::basic_ispanstream<uint8_t>& file, trview::Activity& activity, const LoadCallbacks& callbacks)
+    void Level::load_tr1_psx(std::basic_ispanstream<uint8_t>& file, trview::Activity& activity, const LoadCallbacks& callbacks)
     {
         skip(file, 12);
         uint32_t textile_address = read<uint32_t>(file);
         file.seekg(textile_address + 8, std::ios::beg);
 
+        read_textiles_tr1_psx(file, activity, callbacks);
+        load_level_data(activity, file, callbacks);
+        generate_sounds_tr1(callbacks);
+
+        callbacks.on_progress("Generating meshes");
+        generate_meshes(_mesh_data);
+        callbacks.on_progress("Loading complete");
+    }
+
+    void Level::read_textiles_tr1_psx(std::basic_ispanstream<uint8_t>& file, trview::Activity& activity, const LoadCallbacks& callbacks)
+    {
         callbacks.on_progress("Reading textiles");
         log_file(activity, file, "Reading textiles");
 
-        auto at = file.tellg();
         _num_textiles = 13;
         _textile4 = read_vector<tr_textile4>(file, 13);
         _clut = read_vector<tr_clut>(file, 1024);
         log_file(activity, file, std::format("Read {} textile4s and {} clut", _textile4.size(), _clut.size()));
+    }
 
-        load_level_data(activity, file, callbacks);
-
+    void Level::generate_sounds_tr1(const LoadCallbacks& callbacks)
+    {
         callbacks.on_progress("Generating sounds");
         for (auto i = 0; i < _sample_indices.size(); ++i)
         {
@@ -1688,9 +1694,5 @@ namespace trlevel
             const auto end = i + 1 < _sample_indices.size() ? _sample_indices[i + 1] : _sound_data.size();
             callbacks.on_sound(static_cast<int16_t>(i), { _sound_data.begin() + start, _sound_data.begin() + end });
         }
-
-        callbacks.on_progress("Generating meshes");
-        generate_meshes(_mesh_data);
-        callbacks.on_progress("Loading complete");
     }
 }
