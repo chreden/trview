@@ -1493,7 +1493,6 @@ namespace trlevel
 
         try
         {
-            auto converted = trview::to_utf16(_filename);
             activity.log(std::format("Opening file \"{}\"", _filename));
 
             auto bytes = _files->load_file(_filename);
@@ -1503,36 +1502,9 @@ namespace trlevel
             }
 
             std::basic_ispanstream<uint8_t> file{ { *bytes } };
-            auto file_position = [&]() { return static_cast<uint64_t>(file.tellg()); };
-
             log_file(activity, file, std::format("Opened file \"{}\"", _filename));
 
-            log_file(activity, file, "Reading version number from file");
-            uint32_t raw_version = read<uint32_t>(file);
-            _platform_and_version = convert_level_version(raw_version);
-
-            log_file(activity, file, std::format("Version number is {:X} ({}), Platform is {}", raw_version, to_string(get_version()), to_string(platform())));
-            if (_platform_and_version.version == LevelVersion::Unknown)
-            {
-                throw LevelLoadException(std::format("Unknown level version ({})", raw_version));
-            }
-
-            if (raw_version == 0x63345254)
-            {
-                callbacks.on_progress("Decrypting");
-                log_file(activity, file, std::format("File is encrypted, decrypting"));
-                _decrypter->decrypt(bytes.value());
-                file.seekg(0, std::ios::beg);
-                raw_version = read<uint32_t>(file);
-                _platform_and_version = convert_level_version(raw_version);
-                log_file(activity, file, std::format("Version number is {:X} ({})", raw_version, to_string(get_version())));
-            }
-
-            if (is_tr5(activity, get_version(), converted))
-            {
-                _platform_and_version.version = LevelVersion::Tomb5;
-                log_file(activity, file, std::format("Version number is {:X} ({})", raw_version, to_string(get_version())));
-            }
+            read_header(file, *bytes, activity);
 
             if (get_version() >= LevelVersion::Tomb4)
             {
@@ -1668,5 +1640,35 @@ namespace trlevel
     std::vector<int16_t> Level::sound_map() const
     {
         return _sound_map;
+    }
+
+    void Level::read_header(std::basic_ispanstream<uint8_t>& file, std::vector<uint8_t>& bytes, trview::Activity& activity)
+    {
+        log_file(activity, file, "Reading version number from file");
+        uint32_t raw_version = read<uint32_t>(file);
+        _platform_and_version = convert_level_version(raw_version);
+
+        log_file(activity, file, std::format("Version number is {:X} ({}), Platform is {}", raw_version, to_string(get_version()), to_string(platform())));
+        if (_platform_and_version.version == LevelVersion::Unknown)
+        {
+            throw LevelLoadException(std::format("Unknown level version ({})", raw_version));
+        }
+
+        if (raw_version == 0x63345254)
+        {
+            callbacks.on_progress("Decrypting");
+            log_file(activity, file, std::format("File is encrypted, decrypting"));
+            _decrypter->decrypt(bytes);
+            file.seekg(0, std::ios::beg);
+            raw_version = read<uint32_t>(file);
+            _platform_and_version = convert_level_version(raw_version);
+            log_file(activity, file, std::format("Version number is {:X} ({})", raw_version, to_string(get_version())));
+        }
+
+        if (is_tr5(activity, get_version(), trview::to_utf16(_filename)))
+        {
+            _platform_and_version.version = LevelVersion::Tomb5;
+            log_file(activity, file, std::format("Version number is {:X} ({})", raw_version, to_string(get_version())));
+        }
     }
 }

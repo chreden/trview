@@ -170,15 +170,15 @@ namespace trlevel
         std::vector<int16_t> sound_map() const override;
     private:
         void generate_meshes(const std::vector<uint16_t>& mesh_data);
-
         // Load a Tomb Raider IV level.
         void load_tr4(trview::Activity& activity, std::basic_ispanstream<uint8_t>& file, const LoadCallbacks& callbacks);
-
         void load_level_data(trview::Activity& activity, std::basic_ispanstream<uint8_t>& file, const LoadCallbacks& callbacks);
-
         tr_colour4 colour_from_object_texture(uint32_t texture) const;
-
         uint16_t convert_textile4(uint16_t tile, uint16_t clut_id);
+
+        // New level bits:
+        void read_header(std::basic_ispanstream<uint8_t>& file, std::vector<uint8_t>& bytes, trview::Activity& activity);
+
 
         PlatformAndVersion _platform_and_version;
 
