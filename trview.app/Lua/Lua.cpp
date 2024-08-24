@@ -51,20 +51,6 @@ namespace trview
             self->do_file(lua_tostring(L, 1));
             return 0;
         }
-
-        constexpr luaL_Reg loadedlibs[] = {
-          {LUA_GNAME, luaopen_base},
-          {LUA_LOADLIBNAME, luaopen_package},
-          {LUA_COLIBNAME, luaopen_coroutine},
-          {LUA_TABLIBNAME, luaopen_table},
-          {LUA_IOLIBNAME, luaopen_io},
-          {LUA_OSLIBNAME, luaopen_os},
-          {LUA_STRLIBNAME, luaopen_string},
-          {LUA_MATHLIBNAME, luaopen_math},
-          {LUA_UTF8LIBNAME, luaopen_utf8},
-          {LUA_DBLIBNAME, luaopen_debug},
-          {NULL, NULL}
-        };
     }
 
     ILua::~ILua()
@@ -146,11 +132,7 @@ namespace trview
         }
 
         L = luaL_newstate();
-        for (const auto& lib : loadedlibs)
-        {
-            luaL_requiref(L, lib.name, lib.func, 1);
-            lua_pop(L, 1);
-        }
+        luaL_openlibs(L);
     }
 
     namespace lua
