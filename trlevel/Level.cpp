@@ -1504,7 +1504,19 @@ namespace trlevel
             std::basic_ispanstream<uint8_t> file{ { *bytes } };
             log_file(activity, file, std::format("Opened file \"{}\"", _filename));
 
-            read_header(file, *bytes, activity);
+            read_header(file, *bytes, activity, callbacks);
+
+            const std::unordered_map<PlatformAndVersion, std::function<void ()>> loaders
+            {
+                {{.platform = Platform::PSX, .version = LevelVersion::Tomb1 }, [&]() { load_psx_tr1(file, activity, callbacks); }}
+            };
+
+            const auto loader = loaders.find(_platform_and_version);
+            if (loader != loaders.end())
+            {
+                loader->second();
+                return;
+            }
 
             if (get_version() >= LevelVersion::Tomb4)
             {
@@ -1523,41 +1535,21 @@ namespace trlevel
                 _palette16 = read_vector<tr_colour4>(file, 256);
             }
 
-            if (_platform_and_version.platform == Platform::PSX)
-            {
-                if (_platform_and_version.version == LevelVersion::Tomb1)
-                {
-                    skip(file, 12);
-                    uint32_t textile_address = read<uint32_t>(file);
-                    file.seekg(textile_address + 8, std::ios::beg);
-                }
-            }
-
             callbacks.on_progress("Reading textiles");
             log_file(activity, file, "Reading textiles");
-            if (_platform_and_version.platform == Platform::PSX)
+
+            _num_textiles = read<uint32_t>(file);
+            if (get_version() > LevelVersion::Tomb1)
             {
-                auto at = file.tellg();
-                _num_textiles = 13;
-                _textile4 = read_vector<tr_textile4>(file, 13);
-                _clut = read_vector<tr_clut>(file, 1024);
-                log_file(activity, file, std::format("Read {} textile4s and {} clut", _textile4.size(), _clut.size()));
+                callbacks.on_progress(std::format("Skipping {} 8-bit textiles", _num_textiles));
+                log_file(activity, file, std::format("Skipping {} 8-bit textiles", _num_textiles));
+                skip(file, sizeof(tr_textile8) * _num_textiles);
             }
             else
             {
-                _num_textiles = read<uint32_t>(file);
-                if (get_version() > LevelVersion::Tomb1)
-                {
-                    callbacks.on_progress(std::format("Skipping {} 8-bit textiles", _num_textiles));
-                    log_file(activity, file, std::format("Skipping {} 8-bit textiles", _num_textiles));
-                    skip(file, sizeof(tr_textile8) * _num_textiles);
-                }
-                else
-                {
-                    callbacks.on_progress(std::format("Reading {} 8-bit textiles", _num_textiles));
-                    log_file(activity, file, std::format("Reading {} 8-bit textiles", _num_textiles));
-                    _textile8 = read_vector<tr_textile8>(file, _num_textiles);
-                }
+                callbacks.on_progress(std::format("Reading {} 8-bit textiles", _num_textiles));
+                log_file(activity, file, std::format("Reading {} 8-bit textiles", _num_textiles));
+                _textile8 = read_vector<tr_textile8>(file, _num_textiles);
             }
 
             if (get_version() > LevelVersion::Tomb1)
@@ -1642,7 +1634,7 @@ namespace trlevel
         return _sound_map;
     }
 
-    void Level::read_header(std::basic_ispanstream<uint8_t>& file, std::vector<uint8_t>& bytes, trview::Activity& activity)
+    void Level::read_header(std::basic_ispanstream<uint8_t>& file, std::vector<uint8_t>& bytes, trview::Activity& activity, const LoadCallbacks& callbacks)
     {
         log_file(activity, file, "Reading version number from file");
         uint32_t raw_version = read<uint32_t>(file);
@@ -1670,5 +1662,35 @@ namespace trlevel
             _platform_and_version.version = LevelVersion::Tomb5;
             log_file(activity, file, std::format("Version number is {:X} ({})", raw_version, to_string(get_version())));
         }
+    }
+
+    void Level::load_psx_tr1(std::basic_ispanstream<uint8_t>& file, trview::Activity& activity, const LoadCallbacks& callbacks)
+    {
+        skip(file, 12);
+        uint32_t textile_address = read<uint32_t>(file);
+        file.seekg(textile_address + 8, std::ios::beg);
+
+        callbacks.on_progress("Reading textiles");
+        log_file(activity, file, "Reading textiles");
+
+        auto at = file.tellg();
+        _num_textiles = 13;
+        _textile4 = read_vector<tr_textile4>(file, 13);
+        _clut = read_vector<tr_clut>(file, 1024);
+        log_file(activity, file, std::format("Read {} textile4s and {} clut", _textile4.size(), _clut.size()));
+
+        load_level_data(activity, file, callbacks);
+
+        callbacks.on_progress("Generating sounds");
+        for (auto i = 0; i < _sample_indices.size(); ++i)
+        {
+            const auto start = _sample_indices[i];
+            const auto end = i + 1 < _sample_indices.size() ? _sample_indices[i + 1] : _sound_data.size();
+            callbacks.on_sound(static_cast<int16_t>(i), { _sound_data.begin() + start, _sound_data.begin() + end });
+        }
+
+        callbacks.on_progress("Generating meshes");
+        generate_meshes(_mesh_data);
+        callbacks.on_progress("Loading complete");
     }
 }

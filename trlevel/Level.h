@@ -177,8 +177,8 @@ namespace trlevel
         uint16_t convert_textile4(uint16_t tile, uint16_t clut_id);
 
         // New level bits:
-        void read_header(std::basic_ispanstream<uint8_t>& file, std::vector<uint8_t>& bytes, trview::Activity& activity);
-
+        void read_header(std::basic_ispanstream<uint8_t>& file, std::vector<uint8_t>& bytes, trview::Activity& activity, const LoadCallbacks& callbacks);
+        void load_psx_tr1(std::basic_ispanstream<uint8_t>& file, trview::Activity& activity, const LoadCallbacks& callbacks);
 
         PlatformAndVersion _platform_and_version;
 
