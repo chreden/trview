@@ -156,15 +156,328 @@ namespace trlevel
             return transformed.find(L".TRC") != filename.npos;
         }
 
-        void load_tr1_4_room(trview::Activity& activity, std::basic_ispanstream<uint8_t>& file, tr3_room& room, PlatformAndVersion platform_and_version)
+        std::vector<uint16_t> read_animated_textures(trview::Activity& activity, std::basic_ispanstream<uint8_t>& file, const ILevel::LoadCallbacks& callbacks)
         {
-            log_file(activity, file, "Reading room info");
-            room.info = convert_room_info(read<tr1_4_room_info>(file));
-            log_file(activity, file, "Read room info");
+            callbacks.on_progress("Reading animated textures");
+            log_file(activity, file, "Reading animated textures");
+            std::vector<uint16_t> animated_textures = read_vector<uint32_t, uint16_t>(file);
+            log_file(activity, file, std::format("Read {} animated textures", animated_textures.size()));
+            return animated_textures;
+        }
 
+        std::vector<tr_animation> read_animations_tr1_3(trview::Activity& activity, std::basic_ispanstream<uint8_t>& file, const ILevel::LoadCallbacks& callbacks)
+        {
+            callbacks.on_progress("Reading animations");
+            log_file(activity, file, "Reading animations");
+            return read_vector<uint32_t, tr_animation>(file);
+        }
+
+        std::vector<tr_anim_command> read_anim_commands(trview::Activity& activity, std::basic_ispanstream<uint8_t>& file, const ILevel::LoadCallbacks& callbacks)
+        {
+            callbacks.on_progress("Reading anim commands");
+            log_file(activity, file, "Reading anim commands");
+            const auto anim_commands = read_vector<uint32_t, tr_anim_command>(file);
+            log_file(activity, file, std::format("Read {} anim commands", anim_commands.size()));
+            return anim_commands;
+        }
+
+        std::vector<tr_anim_dispatch> read_anim_dispatches(trview::Activity& activity, std::basic_ispanstream<uint8_t>& file, const ILevel::LoadCallbacks& callbacks)
+        {
+            callbacks.on_progress("Reading anim dispatches");
+            log_file(activity, file, "Reading anim dispatches");
+            const auto anim_dispatches = read_vector<uint32_t, tr_anim_dispatch>(file);
+            log_file(activity, file, std::format("Read {} anim dispatches", anim_dispatches.size()));
+            return anim_dispatches;
+        }
+
+        std::vector<tr_box> read_boxes_tr1(trview::Activity& activity, std::basic_ispanstream<uint8_t>& file, const ILevel::LoadCallbacks& callbacks)
+        {
+            callbacks.on_progress("Reading boxes");
+            log_file(activity, file, "Reading boxes");
+            const auto boxes = read_vector<uint32_t, tr_box>(file);
+            log_file(activity, file, std::format("Read {} boxes", static_cast<uint32_t>(boxes.size())));
+            return boxes;
+        }
+
+        std::vector<tr_camera> read_cameras(trview::Activity& activity, std::basic_ispanstream<uint8_t>& file, const ILevel::LoadCallbacks& callbacks)
+        {
+            callbacks.on_progress("Reading cameras");
+            log_file(activity, file, "Reading cameras");
+            const auto cameras = read_vector<uint32_t, tr_camera>(file);
+            log_file(activity, file, std::format("Read {} cameras", cameras.size()));
+            return cameras;
+        }
+
+        std::vector<tr2_entity> read_entities_tr1(trview::Activity& activity, std::basic_ispanstream<uint8_t>& file, const ILevel::LoadCallbacks& callbacks)
+        {
+            callbacks.on_progress("Reading entities");
+            log_file(activity, file, "Reading entities");
+            auto entities = convert_entities(read_vector<uint32_t, tr_entity>(file));
+            log_file(activity, file, std::format("Read {} entities", entities.size()));
+            return entities;
+        }
+
+        std::vector<uint16_t> read_floor_data(trview::Activity& activity, std::basic_ispanstream<uint8_t>& file, const ILevel::LoadCallbacks& callbacks)
+        {
+            callbacks.on_progress("Reading floor data");
+            log_file(activity, file, "Reading floor data");
+            const auto floor_data = read_vector<uint32_t, uint16_t>(file);
+            log_file(activity, file, std::format("Read {} floor data", floor_data.size()));
+            return floor_data;
+        }
+
+        std::vector<uint16_t> read_frames(trview::Activity& activity, std::basic_ispanstream<uint8_t>& file, const ILevel::LoadCallbacks& callbacks)
+        {
+            callbacks.on_progress("Reading frames");
+            log_file(activity, file, "Reading frames");
+            const auto frames = read_vector<uint32_t, uint16_t>(file);
+            log_file(activity, file, std::format("Read {} frames", frames.size()));
+            return frames;
+        }
+
+        std::vector<uint16_t> read_mesh_data(trview::Activity& activity, std::basic_ispanstream<uint8_t>& file, const ILevel::LoadCallbacks& callbacks)
+        {
+            callbacks.on_progress("Reading mesh data");
+            log_file(activity, file, "Reading mesh data");
+            const auto mesh_data = read_vector<uint32_t, uint16_t>(file);
+            log_file(activity, file, std::format("Read {} mesh data", mesh_data.size()));
+            return mesh_data;
+        }
+
+        std::vector<uint32_t> read_mesh_pointers(trview::Activity& activity, std::basic_ispanstream<uint8_t>& file, const ILevel::LoadCallbacks& callbacks)
+        {
+            callbacks.on_progress("Reading mesh pointers");
+            log_file(activity, file, "Reading mesh pointers");
+            const auto mesh_pointers = read_vector<uint32_t, uint32_t>(file);
+            log_file(activity, file, std::format("Read {} mesh pointers", mesh_pointers.size()));
+            return mesh_pointers;
+        }
+
+        std::vector<uint32_t> read_meshtree(trview::Activity& activity, std::basic_ispanstream<uint8_t>& file, const ILevel::LoadCallbacks& callbacks)
+        {
+            callbacks.on_progress("Reading mesh trees");
+            log_file(activity, file, "Reading mesh trees");
+            const auto meshtree = read_vector<uint32_t, uint32_t>(file);
+            log_file(activity, file, std::format("Read {} mesh trees", meshtree.size()));
+            return meshtree;
+        }
+
+        std::vector<tr_model> read_models_tr1_psx(trview::Activity& activity, std::basic_ispanstream<uint8_t>& file, const ILevel::LoadCallbacks& callbacks)
+        {
+            callbacks.on_progress("Reading models");
+            log_file(activity, file, "Reading models");
+            auto models = convert_models(read_vector<uint32_t, tr_model_psx>(file));
+            log_file(activity, file, std::format("Read {} models", models.size()));
+            return models;
+        }
+
+        uint32_t read_num_data_words(trview::Activity& activity, std::basic_ispanstream<uint8_t>& file)
+        {
             log_file(activity, file, "Reading number of data words");
             uint32_t NumDataWords = read<uint32_t>(file);
             log_file(activity, file, std::format("{} data words to process", NumDataWords));
+            return NumDataWords;
+        }
+
+        std::vector<uint16_t> read_overlaps(trview::Activity& activity, std::basic_ispanstream<uint8_t>& file, const ILevel::LoadCallbacks& callbacks)
+        {
+            callbacks.on_progress("Reading overlaps");
+            log_file(activity, file, "Reading overlaps");
+            std::vector<uint16_t> overlaps = read_vector<uint32_t, uint16_t>(file);
+            log_file(activity, file, std::format("Read {} overlaps", overlaps.size()));
+            return overlaps;
+        }
+
+        tr_room_info read_room_info(trview::Activity& activity, std::basic_ispanstream<uint8_t>& file)
+        {
+            log_file(activity, file, "Reading room info");
+            auto info = convert_room_info(read<tr1_4_room_info>(file));
+            log_file(activity, file, "Read room info");
+            return info;
+        }
+
+        void read_room_alternate_room(trview::Activity& activity, std::basic_ispanstream<uint8_t>& file, tr3_room& room)
+        {
+            log_file(activity, file, "Reading alternate room");
+            room.alternate_room = read<int16_t>(file);
+            log_file(activity, file, std::format("Read alternate room: {}", room.alternate_room));
+        }
+
+        void read_room_ambient_intensity_1(trview::Activity& activity, std::basic_ispanstream<uint8_t>& file, tr3_room& room)
+        {
+            log_file(activity, file, "Reading ambient intensity 1");
+            room.ambient_intensity_1 = read<int16_t>(file);
+            log_file(activity, file, std::format("Read ambient intensity 1: {}", room.ambient_intensity_1));
+        }
+
+        void read_room_flags(trview::Activity& activity, std::basic_ispanstream<uint8_t>& file, tr3_room& room)
+        {
+            log_file(activity, file, "Reading flags");
+            room.flags = read<int16_t>(file);
+            log_file(activity, file, std::format("Read flags: {:X}", room.flags));
+        }
+
+        void read_room_lights_tr1_psx(trview::Activity& activity, std::basic_ispanstream<uint8_t>& file, tr3_room& room)
+        {
+            log_file(activity, file, "Reading lights");
+            room.lights = convert_lights(read_vector<uint16_t, tr_room_light_psx>(file));
+            log_file(activity, file, std::format("Read {} lights", room.lights.size()));
+        }
+
+        void read_room_portals(trview::Activity& activity, std::basic_ispanstream<uint8_t>& file, tr3_room& room)
+        {
+            log_file(activity, file, "Reading portals");
+            room.portals = read_vector<uint16_t, tr_room_portal>(file);
+            log_file(activity, file, std::format("Read {} portals", room.portals.size()));
+        }
+
+        void read_room_rectangles(trview::Activity& activity, std::basic_ispanstream<uint8_t>& file, tr3_room& room)
+        {
+            log_file(activity, file, "Reading rectangles");
+            room.data.rectangles = convert_rectangles(read_vector<int16_t, tr_face4>(file));
+            log_file(activity, file, std::format("Read {} rectangles", room.data.rectangles.size()));
+        }
+
+        void read_room_sectors(trview::Activity& activity, std::basic_ispanstream<uint8_t>& file, tr3_room& room)
+        {
+            log_file(activity, file, "Reading number of z sectors");
+            room.num_z_sectors = read<uint16_t>(file);
+            log_file(activity, file, std::format("There are {} z sectors", room.num_z_sectors));
+            log_file(activity, file, "Reading number of x sectors");
+            room.num_x_sectors = read<uint16_t>(file);
+            log_file(activity, file, std::format("There are {} x sectors", room.num_x_sectors));
+            log_file(activity, file, std::format("Reading {} sectors", room.num_z_sectors * room.num_x_sectors));
+            room.sector_list = read_vector<tr_room_sector>(file, room.num_z_sectors * room.num_x_sectors);
+            log_file(activity, file, std::format("Read {} sectors", room.sector_list.size()));
+        }
+
+        void read_room_sprites(trview::Activity& activity, std::basic_ispanstream<uint8_t>& file, tr3_room& room)
+        {
+            log_file(activity, file, "Reading sprites");
+            room.data.sprites = read_vector<int16_t, tr_room_sprite>(file);
+            log_file(activity, file, std::format("Read {} sprites", room.data.sprites.size()));
+        }
+
+        void read_room_static_meshes_tr1_psx(trview::Activity& activity, std::basic_ispanstream<uint8_t>& file, tr3_room& room)
+        {
+            log_file(activity, file, "Reading static meshes");
+            room.static_meshes = convert_room_static_meshes(read_vector<uint16_t, tr_room_staticmesh_psx>(file));
+            log_file(activity, file, std::format("Read {} static meshes", room.static_meshes.size()));
+        }
+
+        void read_room_triangles(trview::Activity& activity, std::basic_ispanstream<uint8_t>& file, tr3_room& room)
+        {
+            log_file(activity, file, "Reading triangles");
+            room.data.triangles = convert_triangles(read_vector<int16_t, tr_face3>(file));
+            log_file(activity, file, std::format("Read {} triangles", room.data.triangles.size()));
+        }
+
+        void read_room_vertices_tr1(trview::Activity& activity, std::basic_ispanstream<uint8_t>& file, tr3_room& room)
+        {
+            log_file(activity, file, "Reading vertices");
+            room.data.vertices = convert_vertices(read_vector<int16_t, tr_room_vertex>(file));
+            log_file(activity, file, std::format("Read {} vertices", room.data.vertices.size()));
+        }
+
+        std::vector<tr_x_sound_details> read_sound_details(trview::Activity& activity, std::basic_ispanstream<uint8_t>& file, const ILevel::LoadCallbacks& callbacks)
+        {
+            callbacks.on_progress("Reading sound details");
+            log_file(activity, file, "Reading sound details");
+            auto sound_details = read_vector<uint32_t, tr_x_sound_details>(file);
+            log_file(activity, file, std::format("Read {} sound details", sound_details.size()));
+            return sound_details;
+        }
+
+        std::vector<int16_t> read_sound_map_tr1(trview::Activity& activity, std::basic_ispanstream<uint8_t>& file, const ILevel::LoadCallbacks& callbacks)
+        {
+            callbacks.on_progress("Reading sound map");
+            log_file(activity, file, "Reading sound map");
+            auto sound_map = read_vector<int16_t>(file, 256);
+            log_file(activity, file, "Read sound map");
+            return sound_map;
+        }
+
+        std::vector<tr_sound_source> read_sound_sources(trview::Activity& activity, std::basic_ispanstream<uint8_t>& file, const ILevel::LoadCallbacks& callbacks)
+        {
+            callbacks.on_progress("Reading sound sources");
+            log_file(activity, file, "Reading sound sources");
+            const auto sound_sources = read_vector<uint32_t, tr_sound_source>(file);
+            log_file(activity, file, std::format("Read {} sound sources", sound_sources.size()));
+            return sound_sources;
+        }
+
+        std::vector<tr_sprite_sequence> read_sprite_sequences(trview::Activity& activity, std::basic_ispanstream<uint8_t>& file, const ILevel::LoadCallbacks& callbacks)
+        {
+            callbacks.on_progress("Reading sprite sequences");
+            log_file(activity, file, "Reading sprite sequences");
+            const auto sprite_sequences = read_vector<uint32_t, tr_sprite_sequence>(file);
+            log_file(activity, file, std::format("Read {} sprite sequences", sprite_sequences.size()));
+            return sprite_sequences;
+        }
+
+        std::vector<tr_state_change> read_state_changes(trview::Activity& activity, std::basic_ispanstream<uint8_t>& file, const ILevel::LoadCallbacks& callbacks)
+        {
+            callbacks.on_progress("Reading state changes");
+            log_file(activity, file, "Reading state changes");
+            const auto state_changes = read_vector<uint32_t, tr_state_change>(file);
+            log_file(activity, file, std::format("Read {} state changes", state_changes.size()));
+            return state_changes;
+        }
+
+        std::unordered_map<uint32_t, tr_staticmesh> read_static_meshes(trview::Activity& activity, std::basic_ispanstream<uint8_t>& file, const ILevel::LoadCallbacks& callbacks)
+        {
+            callbacks.on_progress("Reading static meshes");
+            log_file(activity, file, "Reading static meshes");
+            auto static_meshes = read_vector<uint32_t, tr_staticmesh>(file);
+            log_file(activity, file, std::format("Read {} static meshes", static_meshes.size()));
+            std::unordered_map<uint32_t, tr_staticmesh> mesh_map;
+            for (const auto& mesh : static_meshes)
+            {
+                mesh_map.insert({ mesh.ID, mesh });
+            }
+            return mesh_map;
+        }
+
+        void read_zones_tr1(trview::Activity& activity, std::basic_ispanstream<uint8_t>& file, const ILevel::LoadCallbacks& callbacks, uint32_t num_boxes)
+        {
+            callbacks.on_progress("Reading zones");
+            log_file(activity, file, "Reading zones");
+            std::vector<int16_t> zones = read_vector<int16_t>(file, num_boxes * 6);
+            log_file(activity, file, std::format("Read {} zones", zones.size()));
+        }
+
+        void load_tr1_psx_room(trview::Activity& activity, std::basic_ispanstream<uint8_t>& file, tr3_room& room)
+        {
+            room.info = read_room_info(activity, file);
+            uint32_t NumDataWords = read_num_data_words(activity, file);
+            skip(file, 2);
+
+            if (NumDataWords > 0)
+            {
+                read_room_vertices_tr1(activity, file, room);
+                read_room_rectangles(activity, file, room);
+                read_room_triangles(activity, file, room);
+                read_room_sprites(activity, file, room);
+
+                for (auto& rectangle : room.data.rectangles)
+                {
+                    std::swap(rectangle.vertices[2], rectangle.vertices[3]);
+                }
+            }
+
+            read_room_portals(activity, file, room);
+            read_room_sectors(activity, file, room);
+            read_room_ambient_intensity_1(activity, file, room);
+            read_room_lights_tr1_psx(activity, file, room);
+            read_room_static_meshes_tr1_psx(activity, file, room);
+            read_room_alternate_room(activity, file, room);
+            read_room_flags(activity, file, room);
+        }
+
+        void load_tr1_4_room(trview::Activity& activity, std::basic_ispanstream<uint8_t>& file, tr3_room& room, PlatformAndVersion platform_and_version)
+        {
+            room.info = read_room_info(activity, file);
+            uint32_t NumDataWords = read_num_data_words(activity, file);
 
             if (platform_and_version.platform == Platform::PSX &&
                 platform_and_version.version == LevelVersion::Tomb1)
@@ -970,20 +1283,9 @@ namespace trlevel
             _rooms.push_back(room);
         }
 
-        callbacks.on_progress("Reading floor data");
-        log_file(activity, file, "Reading floor data");
-        _floor_data = read_vector<uint32_t, uint16_t>(file);
-        log_file(activity, file, std::format("Read {} floor data", _floor_data.size()));
-
-        callbacks.on_progress("Reading mesh data");
-        log_file(activity, file, "Reading mesh data");
-        _mesh_data = read_vector<uint32_t, uint16_t>(file);
-        log_file(activity, file, std::format("Read {} mesh data", _mesh_data.size()));
-
-        callbacks.on_progress("Reading mesh pointers");
-        log_file(activity, file, "Reading mesh pointers");
-        _mesh_pointers = read_vector<uint32_t, uint32_t>(file);
-        log_file(activity, file, std::format("Read {} mesh pointers", _mesh_pointers.size()));
+        _floor_data = read_floor_data(activity, file, callbacks);
+        _mesh_data = read_mesh_data(activity, file, callbacks);
+        _mesh_pointers = read_mesh_pointers(activity, file, callbacks);
 
         callbacks.on_progress("Reading animations");
         log_file(activity, file, "Reading animations");
@@ -996,30 +1298,11 @@ namespace trlevel
             std::vector<tr_animation> animations = read_vector<uint32_t, tr_animation>(file);
         }
 
-        callbacks.on_progress("Reading state changes");
-        log_file(activity, file, "Reading state changes");
-        std::vector<tr_state_change> state_changes = read_vector<uint32_t, tr_state_change>(file);
-        log_file(activity, file, std::format("Read {} state changes", state_changes.size()));
-
-        callbacks.on_progress("Reading anim dispatches");
-        log_file(activity, file, "Reading anim dispatches");
-        std::vector<tr_anim_dispatch> anim_dispatches = read_vector<uint32_t, tr_anim_dispatch>(file);
-        log_file(activity, file, std::format("Read {} anim dispatches", anim_dispatches.size()));
-
-        callbacks.on_progress("Reading anim commands");
-        log_file(activity, file, "Reading anim commands");
-        std::vector<tr_anim_command> anim_commands = read_vector<uint32_t, tr_anim_command>(file);
-        log_file(activity, file, std::format("Read {} anim commands", anim_commands.size()));
-
-        callbacks.on_progress("Reading mesh trees");
-        log_file(activity, file, "Reading mesh trees");
-        _meshtree = read_vector<uint32_t, uint32_t>(file);
-        log_file(activity, file, std::format("Read {} mesh trees", _meshtree.size()));
-
-        callbacks.on_progress("Reading frames");
-        log_file(activity, file, "Reading frames");
-        _frames = read_vector<uint32_t, uint16_t>(file);
-        log_file(activity, file, std::format("Read {} frames", _frames.size()));
+        read_state_changes(activity, file, callbacks);
+        read_anim_dispatches(activity, file, callbacks);
+        read_anim_commands(activity, file, callbacks);
+        _meshtree = read_meshtree(activity, file, callbacks);
+        _frames = read_frames(activity, file, callbacks);
 
         callbacks.on_progress("Reading models");
         log_file(activity, file, "Reading models");
@@ -1035,15 +1318,7 @@ namespace trlevel
             _models = convert_models(read_vector<uint32_t, tr5_model>(file));
         }
         log_file(activity, file, std::format("Read {} models", _models.size()));
-
-        callbacks.on_progress("Reading static meshes");
-        log_file(activity, file, "Reading static meshes");
-        auto static_meshes = read_vector<uint32_t, tr_staticmesh>(file);
-        log_file(activity, file, std::format("Read {} static meshes", static_meshes.size()));
-        for (const auto& mesh : static_meshes)
-        {
-            _static_meshes.insert({ mesh.ID, mesh });
-        }
+        _static_meshes = read_static_meshes(activity, file, callbacks);
 
         if (get_version() < LevelVersion::Tomb3)
         {
@@ -1141,10 +1416,7 @@ namespace trlevel
         // If this is Unfinished Business, the palette is here.
         // Need to do something about that, instead of just crashing.
 
-        callbacks.on_progress("Reading cameras");
-        log_file(activity, file, "Reading cameras");
-        _cameras = read_vector<uint32_t, tr_camera>(file);
-        log_file(activity, file, std::format("Read {} cameras", _cameras.size()));
+        _cameras = read_cameras(activity, file, callbacks);
 
         if (get_version() >= LevelVersion::Tomb4)
         {
@@ -1154,10 +1426,7 @@ namespace trlevel
             log_file(activity, file, std::format("Read {} flyby cameras", flyby_cameras.size()));
         }
 
-        callbacks.on_progress("Reading sound sources");
-        log_file(activity, file, "Reading sound sources");
-        _sound_sources = read_vector<uint32_t, tr_sound_source>(file);
-        log_file(activity, file, std::format("Read {} sound sources", _sound_sources.size()));
+        _sound_sources = read_sound_sources(activity, file, callbacks);
 
         uint32_t num_boxes = 0;
         callbacks.on_progress("Reading boxes");
@@ -1174,10 +1443,7 @@ namespace trlevel
         }
         log_file(activity, file, std::format("Read {} boxes", num_boxes));
 
-        callbacks.on_progress("Reading overlaps");
-        log_file(activity, file, "Reading overlaps");
-        std::vector<uint16_t> overlaps = read_vector<uint32_t, uint16_t>(file);
-        log_file(activity, file, std::format("Read {} overlaps", overlaps.size()));
+        read_overlaps(activity, file, callbacks);
 
         callbacks.on_progress("Reading zones");
         log_file(activity, file, "Reading zones");
@@ -1192,10 +1458,7 @@ namespace trlevel
             log_file(activity, file, std::format("Read {} zones", zones.size()));
         }
 
-        callbacks.on_progress("Reading animated textures");
-        log_file(activity, file, "Reading animated textures");
-        std::vector<uint16_t> animated_textures = read_vector<uint32_t, uint16_t>(file);
-        log_file(activity, file, std::format("Read {} animated textures", animated_textures.size()));
+        read_animated_textures(activity, file, callbacks);
 
         if (get_version() >= LevelVersion::Tomb4)
         {
@@ -1251,15 +1514,8 @@ namespace trlevel
         if (_platform_and_version.platform == Platform::PSX &&
             get_version() == LevelVersion::Tomb1)
         {
-            callbacks.on_progress("Reading sound map");
-            log_file(activity, file, "Reading sound map");
-            _sound_map = read_vector<int16_t>(file, 256);
-            log_file(activity, file, "Read sound map");
-
-            callbacks.on_progress("Reading sound details");
-            log_file(activity, file, "Reading sound details");
-            _sound_details = read_vector<uint32_t, tr_x_sound_details>(file);
-            log_file(activity, file, std::format("Read {} sound details", _sound_details.size()));
+            _sound_map = read_sound_map_tr1(activity, file, callbacks);
+            _sound_details = read_sound_details(activity, file, callbacks);
             return;
         }
 
@@ -1273,10 +1529,7 @@ namespace trlevel
 
         if (get_version() == LevelVersion::Tomb1)
         {
-            callbacks.on_progress("Reading 8-bit palette");
-            log_file(activity, file, "Reading 8-bit palette");
-            _palette = read_vector<tr_colour>(file, 256);
-            log_file(activity, file, "Read 8-bit palette");
+            read_palette_tr1(file, activity, callbacks);
 
             for (const auto& t : _textile8)
             {
@@ -1527,12 +1780,7 @@ namespace trlevel
 
             if (get_version() > LevelVersion::Tomb1)
             {
-                callbacks.on_progress("Reading 8-bit palette");
-                log_file(activity, file, "Reading 8-bit palette");
-                _palette = read_vector<tr_colour>(file, 256);
-                callbacks.on_progress("Reading 16-bit palette");
-                log_file(activity, file, "Reading 16-bit palette");
-                _palette16 = read_vector<tr_colour4>(file, 256);
+                read_palette_tr2_3(file, activity, callbacks);
             }
 
             callbacks.on_progress("Reading textiles");
@@ -1659,6 +1907,23 @@ namespace trlevel
         }
     }
 
+    void Level::read_palette_tr1(std::basic_ispanstream<uint8_t>& file, trview::Activity& activity, const LoadCallbacks& callbacks)
+    {
+        callbacks.on_progress("Reading 8-bit palette");
+        log_file(activity, file, "Reading 8-bit palette");
+        _palette = read_vector<tr_colour>(file, 256);
+        log_file(activity, file, "Read 8-bit palette");
+    }
+
+    void Level::read_palette_tr2_3(std::basic_ispanstream<uint8_t>& file, trview::Activity& activity, const LoadCallbacks& callbacks)
+    {
+        read_palette_tr1(file, activity, callbacks);
+        callbacks.on_progress("Reading 16-bit palette");
+        log_file(activity, file, "Reading 16-bit palette");
+        _palette16 = read_vector<tr_colour4>(file, 256);
+        log_file(activity, file, "Read 16-bit palette");
+    }
+
     void Level::load_tr1_psx(std::basic_ispanstream<uint8_t>& file, trview::Activity& activity, const LoadCallbacks& callbacks)
     {
         skip(file, 12);
@@ -1666,9 +1931,112 @@ namespace trlevel
         file.seekg(textile_address + 8, std::ios::beg);
 
         read_textiles_tr1_psx(file, activity, callbacks);
-        load_level_data(activity, file, callbacks);
-        generate_sounds_tr1(callbacks);
 
+        read<uint32_t>(file);
+
+        if (file.eof())
+        {
+            // VICT.TR2 ends here.
+            return;
+        }
+
+        log_file(activity, file, "Reading number of rooms");
+        const uint16_t num_rooms = read<uint16_t>(file);
+
+        callbacks.on_progress(std::format("Reading {} rooms", num_rooms));
+        for (auto i = 0u; i < num_rooms; ++i)
+        {
+            trview::Activity room_activity(activity, std::format("Room {}", i));
+            callbacks.on_progress(std::format("Reading room {}", i));
+            log_file(room_activity, file, std::format("Reading room {}", i));
+            tr3_room room;
+            load_tr1_psx_room(room_activity, file, room);
+
+            log_file(room_activity, file, std::format("Read room {}", i));
+            _rooms.push_back(room);
+        }
+
+        _floor_data = read_floor_data(activity, file, callbacks);
+        _mesh_data = read_mesh_data(activity, file, callbacks);
+        _mesh_pointers = read_mesh_pointers(activity, file, callbacks);        
+        read_animations_tr1_3(activity, file, callbacks);
+        read_state_changes(activity, file, callbacks);
+        read_anim_dispatches(activity, file, callbacks);
+        read_anim_commands(activity, file, callbacks);
+        _meshtree = read_meshtree(activity, file, callbacks);
+        _frames = read_frames(activity, file, callbacks);
+        _models = read_models_tr1_psx(activity, file, callbacks);
+        _static_meshes = read_static_meshes(activity, file, callbacks);
+
+        callbacks.on_progress("Reading object textures");
+        log_file(activity, file, "Reading object textures");
+        _object_textures_psx = read_vector<uint32_t, tr_object_texture_psx>(file);
+        _object_textures = _object_textures_psx
+            | std::views::transform([&](const auto texture)
+                {
+                    tr_object_texture_psx new_texture = texture;
+                    new_texture.Tile = convert_textile4(texture.Tile, texture.Clut);
+                    new_texture.Clut = 0U; // Unneeded after conversion
+                    if (new_texture.x3 || new_texture.y3)
+                    {
+                        std::swap(new_texture.x2, new_texture.x3);
+                        std::swap(new_texture.y2, new_texture.y3);
+                    }
+                    return new_texture;
+                })
+            | std::views::transform([&](const auto texture) -> tr_object_texture
+                {
+                    return
+                    {
+                        .Attribute = texture.Attribute,
+                        .TileAndFlag = texture.Tile,
+                        .Vertices =
+                        {
+                            { 0, texture.x0, 0, texture.y0 },
+                            { 0, texture.x1, 0, texture.y1 },
+                            { 0, texture.x2, 0, texture.y2 },
+                            { 0, texture.x3, 0, texture.y3 }
+                        }
+                    };
+                })
+            | std::ranges::to<std::vector>();
+        log_file(activity, file, std::format("Read {} object textures", _object_textures.size()));
+
+        callbacks.on_progress("Reading sprite textures");
+        log_file(activity, file, "Reading sprite textures");
+        auto textures = read_vector<uint32_t, tr_sprite_texture_psx>(file);
+        _sprite_textures = textures
+            | std::views::transform([&](const auto texture) -> tr_sprite_texture
+                {
+                    const uint16_t tile = convert_textile4(texture.Tile, texture.Clut);
+                    const uint16_t width = (texture.u1 - texture.u0) * 256 + 255;
+                    const uint16_t height = (texture.v1 - texture.v0) * 256 + 255;
+                    return { tile, texture.u0, texture.v0, width, height, texture.LeftSide, texture.TopSide, texture.RightSide, texture.BottomSide };
+                })
+            | std::ranges::to<std::vector>();
+        log_file(activity, file, std::format("Read {} sprite textures", _sprite_textures.size()));
+
+        for (const auto& t : _textile16)
+        {
+            callbacks.on_textile(convert_textile(t));
+        };
+
+        read_sprite_sequences(activity, file, callbacks);
+
+        // If this is Unfinished Business, the palette is here.
+        // Need to do something about that, instead of just crashing.
+
+        _cameras = read_cameras(activity, file, callbacks);
+        _sound_sources = read_sound_sources(activity, file, callbacks);
+        const auto boxes = read_boxes_tr1(activity, file, callbacks);
+        read_overlaps(activity, file, callbacks);
+        read_zones_tr1(activity, file, callbacks, static_cast<uint32_t>(boxes.size()));
+        read_animated_textures(activity, file, callbacks);
+        _entities = read_entities_tr1(activity, file, callbacks);
+        _sound_map = read_sound_map_tr1(activity, file, callbacks);
+        _sound_details = read_sound_details(activity, file, callbacks);
+
+        generate_sounds_tr1(callbacks);
         callbacks.on_progress("Generating meshes");
         generate_meshes(_mesh_data);
         callbacks.on_progress("Loading complete");
