@@ -1424,44 +1424,7 @@ namespace trlevel
         {
             callbacks.on_progress("Reading object textures");
             log_file(activity, file, "Reading object textures");
-            if (_platform_and_version.platform == Platform::PSX)
-            {
-                _object_textures_psx = read_vector<uint32_t, tr_object_texture_psx>(file);
-                _object_textures = _object_textures_psx
-                    | std::views::transform([&](const auto texture)
-                        {
-                            tr_object_texture_psx new_texture = texture;
-                            new_texture.Tile = convert_textile4(texture.Tile, texture.Clut);
-                            new_texture.Clut = 0U; // Unneeded after conversion
-                            if (new_texture.x3 || new_texture.y3)
-                            {
-                                std::swap(new_texture.x2, new_texture.x3);
-                                std::swap(new_texture.y2, new_texture.y3);
-                            }
-                            return new_texture;
-                        })
-                    | std::views::transform([&](const auto texture) -> tr_object_texture
-                        {
-                            return
-                            {
-                                .Attribute = texture.Attribute,
-                                .TileAndFlag = texture.Tile,
-                                .Vertices = 
-                                {
-                                    { 0, texture.x0, 0, texture.y0 },
-                                    { 0, texture.x1, 0, texture.y1 },
-                                    { 0, texture.x2, 0, texture.y2 },
-                                    { 0, texture.x3, 0, texture.y3 }
-                                }
-                            };
-                        })
-                    | std::ranges::to<std::vector>();
-            }
-            else
-            {
-                _object_textures = read_vector<uint32_t, tr_object_texture>(file);
-            }
-
+            _object_textures = read_vector<uint32_t, tr_object_texture>(file);
             log_file(activity, file, std::format("Read {} object textures", _object_textures.size()));
         }
 
@@ -1479,34 +1442,8 @@ namespace trlevel
 
         callbacks.on_progress("Reading sprite textures");
         log_file(activity, file, "Reading sprite textures");
-        if (_platform_and_version.platform == Platform::PSX)
-        {
-            auto textures = read_vector<uint32_t, tr_sprite_texture_psx>(file);
-            _sprite_textures = textures
-                | std::views::transform([&](const auto texture) -> tr_sprite_texture
-                    {
-                        const uint16_t tile = convert_textile4(texture.Tile, texture.Clut);
-                        const uint16_t width = (texture.u1 - texture.u0) * 256 + 255;
-                        const uint16_t height = (texture.v1 - texture.v0) * 256 + 255;
-                        return { tile, texture.u0, texture.v0, width, height, texture.LeftSide, texture.TopSide, texture.RightSide, texture.BottomSide };
-                    })
-                | std::ranges::to<std::vector>();
-        }
-        else
-        {
-            _sprite_textures = read_vector<uint32_t, tr_sprite_texture>(file);
-        }
+        _sprite_textures = read_vector<uint32_t, tr_sprite_texture>(file);
         log_file(activity, file, std::format("Read {} sprite textures", _sprite_textures.size()));
-
-        if (_platform_and_version.platform == Platform::PSX)
-        {
-            for (const auto& t : _textile16)
-            {
-                callbacks.on_textile(convert_textile(t));
-            };
-            _textile16 = {};
-        }
-
 
         callbacks.on_progress("Reading sprite sequences");
         log_file(activity, file, "Reading sprite sequences");
@@ -1515,7 +1452,6 @@ namespace trlevel
 
         // If this is Unfinished Business, the palette is here.
         // Need to do something about that, instead of just crashing.
-
         _cameras = read_cameras(activity, file, callbacks);
 
         if (get_version() >= LevelVersion::Tomb4)
@@ -1528,35 +1464,18 @@ namespace trlevel
 
         _sound_sources = read_sound_sources(activity, file, callbacks);
 
-        uint32_t num_boxes = 0;
         callbacks.on_progress("Reading boxes");
         log_file(activity, file, "Reading boxes");
-        if (get_version() == LevelVersion::Tomb1)
-        {
-            std::vector<tr_box> boxes = read_vector<uint32_t, tr_box>(file);
-            num_boxes = static_cast<uint32_t>(boxes.size());
-        }
-        else
-        {
-            std::vector<tr2_box> boxes = read_vector<uint32_t, tr2_box>(file);
-            num_boxes = static_cast<uint32_t>(boxes.size());
-        }
+        std::vector<tr2_box> boxes = read_vector<uint32_t, tr2_box>(file);
+        uint32_t num_boxes = static_cast<uint32_t>(boxes.size());
         log_file(activity, file, std::format("Read {} boxes", num_boxes));
 
         read_overlaps(activity, file, callbacks);
 
         callbacks.on_progress("Reading zones");
         log_file(activity, file, "Reading zones");
-        if (get_version() == LevelVersion::Tomb1)
-        {
-            std::vector<int16_t> zones = read_vector<int16_t>(file, num_boxes * 6);
-            log_file(activity, file, std::format("Read {} zones", zones.size()));
-        }
-        else
-        {
-            std::vector<int16_t> zones = read_vector<int16_t>(file, num_boxes * 10);
-            log_file(activity, file, std::format("Read {} zones", zones.size()));
-        }
+        std::vector<int16_t> zones = read_vector<int16_t>(file, num_boxes * 10);
+        log_file(activity, file, std::format("Read {} zones", zones.size()));
 
         read_animated_textures(activity, file, callbacks);
 
@@ -1600,51 +1519,13 @@ namespace trlevel
 
         callbacks.on_progress("Reading entities");
         log_file(activity, file, "Reading entities");
-        if (get_version() == LevelVersion::Tomb1)
-        {
-            _entities = convert_entities(read_vector<uint32_t, tr_entity>(file));
-        }
-        else
-        {
-            // TR4 entity is in here, OCB is not set but goes into intensity2 (convert later).
-            _entities = read_vector<uint32_t, tr2_entity>(file);
-        }
+        // TR4 entity is in here, OCB is not set but goes into intensity2 (convert later).
+        _entities = read_vector<uint32_t, tr2_entity>(file);
         log_file(activity, file, std::format("Read {} entities", _entities.size()));
-
-        if (_platform_and_version.platform == Platform::PSX &&
-            get_version() == LevelVersion::Tomb1)
-        {
-            _sound_map = read_sound_map_tr1(activity, file, callbacks);
-            _sound_details = read_sound_details(activity, file, callbacks);
-            return;
-        }
 
         if (get_version() < LevelVersion::Tomb4)
         {
             read_light_map(activity, file, callbacks);
-        }
-
-        if (get_version() == LevelVersion::Tomb1)
-        {
-            read_palette_tr1(file, activity, callbacks);
-
-            for (const auto& t : _textile8)
-            {
-                callbacks.on_textile(t.Tile |
-                    std::views::transform([&](uint8_t entry_index)
-                        {
-                            // The first entry in the 8 bit palette is the transparent colour, so just return 
-                            // fully transparent instead of replacing it later.
-                            if (entry_index == 0)
-                            {
-                                return 0x00000000u;
-                            }
-                            auto entry = get_palette_entry(entry_index);
-                            uint32_t value = 0xff000000 | entry.Blue << 16 | entry.Green << 8 | entry.Red;
-                            return value;
-                        }) | std::ranges::to<std::vector>());
-            }
-            _textile8 = {};
         }
 
         if (get_version() >= LevelVersion::Tomb4)
@@ -1667,11 +1548,7 @@ namespace trlevel
 
         callbacks.on_progress("Reading sound map");
         log_file(activity, file, "Reading sound map");
-        if (get_version() == LevelVersion::Tomb1)
-        {
-            _sound_map = read_vector<int16_t>(file, 256);
-        }
-        else if (get_version() < LevelVersion::Tomb4)
+        if (get_version() < LevelVersion::Tomb4)
         {
             _sound_map = read_vector<int16_t>(file, 370);
         }
@@ -1693,16 +1570,6 @@ namespace trlevel
         log_file(activity, file, "Read sound map");
 
         _sound_details = read_sound_details(activity, file, callbacks);
-
-        std::vector<uint8_t> sound_data;
-        if (get_version() == LevelVersion::Tomb1)
-        {
-            callbacks.on_progress("Reading sound data");
-            log_file(activity, file, "Reading sound data");
-            _sound_data = read_vector<int32_t, uint8_t>(file);
-            log_file(activity, file, std::format("Read {} sound data", sound_data.size()));
-        }
-
         _sample_indices = read_sample_indices(activity, file, callbacks);
     }
 
