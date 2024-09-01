@@ -1761,7 +1761,7 @@ namespace trlevel
 
             const std::unordered_map<PlatformAndVersion, std::function<void ()>> loaders
             {
-                {{.platform = Platform::PSX, .version = LevelVersion::Tomb1 }, [&]() { load_tr1_psx(file, activity, callbacks); }}
+                {{.platform = Platform::PSX, .version = LevelVersion::Tomb1 }, [&]() { load_tr1_psx(file, activity, callbacks); }},
             };
 
             const auto loader = loaders.find(_platform_and_version);
@@ -1958,7 +1958,7 @@ namespace trlevel
 
         _floor_data = read_floor_data(activity, file, callbacks);
         _mesh_data = read_mesh_data(activity, file, callbacks);
-        _mesh_pointers = read_mesh_pointers(activity, file, callbacks);        
+        _mesh_pointers = read_mesh_pointers(activity, file, callbacks);
         read_animations_tr1_3(activity, file, callbacks);
         read_state_changes(activity, file, callbacks);
         read_anim_dispatches(activity, file, callbacks);
