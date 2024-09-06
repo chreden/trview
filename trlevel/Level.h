@@ -170,9 +170,6 @@ namespace trlevel
         std::vector<int16_t> sound_map() const override;
     private:
         void generate_meshes(const std::vector<uint16_t>& mesh_data);
-        // Load a Tomb Raider IV level.
-        void load_tr4(trview::Activity& activity, std::basic_ispanstream<uint8_t>& file, const LoadCallbacks& callbacks);
-        void load_level_data(trview::Activity& activity, std::basic_ispanstream<uint8_t>& file, const LoadCallbacks& callbacks);
         tr_colour4 colour_from_object_texture(uint32_t texture) const;
         uint16_t convert_textile4(uint16_t tile, uint16_t clut_id);
 
@@ -185,8 +182,13 @@ namespace trlevel
 
         void load_tr1_pc(std::basic_ispanstream<uint8_t>& file, trview::Activity& activity, const LoadCallbacks& callbacks);
         void load_tr1_psx(std::basic_ispanstream<uint8_t>& file, trview::Activity& activity, const LoadCallbacks& callbacks);
+        void load_tr2_pc(std::basic_ispanstream<uint8_t>& file, trview::Activity& activity, const LoadCallbacks& callbacks);
+        void load_tr3_pc(std::basic_ispanstream<uint8_t>& file, trview::Activity& activity, const LoadCallbacks& callbacks);
+        void load_tr4_pc(std::basic_ispanstream<uint8_t>& file, trview::Activity& activity, const LoadCallbacks& callbacks);
+        void load_tr5_pc(std::basic_ispanstream<uint8_t>& file, trview::Activity& activity, const LoadCallbacks& callbacks);
 
         void generate_sounds_tr1(const LoadCallbacks& callbacks);
+        void load_sound_fx(const LoadCallbacks& callbacks);
 
         PlatformAndVersion _platform_and_version;
 
