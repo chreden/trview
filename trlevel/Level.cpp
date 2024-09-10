@@ -594,6 +594,34 @@ namespace trlevel
             log_file(activity, file, std::format("Read water scheme: {}", room.water_scheme));
         }
 
+        template <typename size_type>
+        std::vector<tr3_room> read_rooms(
+            trview::Activity& activity,
+            std::basic_ispanstream<uint8_t>& file,
+            const ILevel::LoadCallbacks& callbacks,
+            std::function<void (trview::Activity& activity, std::basic_ispanstream<uint8_t>&, tr3_room&)> load_function)
+        {
+            std::vector<tr3_room> rooms;
+
+            log_file(activity, file, "Reading number of rooms");
+            const size_type num_rooms = read<size_type>(file);
+
+            callbacks.on_progress(std::format("Reading {} rooms", num_rooms));
+            for (auto i = 0u; i < num_rooms; ++i)
+            {
+                trview::Activity room_activity(activity, std::format("Room {}", i));
+                callbacks.on_progress(std::format("Reading room {}", i));
+                log_file(room_activity, file, std::format("Reading room {}", i));
+                tr3_room room;
+                load_function(room_activity, file, room);
+
+                log_file(room_activity, file, std::format("Read room {}", i));
+                rooms.push_back(room);
+            }
+
+            return rooms;
+        }
+
         std::vector<uint32_t> read_sample_indices(trview::Activity& activity, std::basic_ispanstream<uint8_t>& file, const ILevel::LoadCallbacks& callbacks)
         {
             callbacks.on_progress("Reading sample indices");
@@ -1670,22 +1698,7 @@ namespace trlevel
         read_textiles_tr1_pc(file, activity, callbacks);
         read<uint32_t>(file);
 
-        log_file(activity, file, "Reading number of rooms");
-        const uint16_t num_rooms = read<uint16_t>(file);
-
-        callbacks.on_progress(std::format("Reading {} rooms", num_rooms));
-        for (auto i = 0u; i < num_rooms; ++i)
-        {
-            trview::Activity room_activity(activity, std::format("Room {}", i));
-            callbacks.on_progress(std::format("Reading room {}", i));
-            log_file(room_activity, file, std::format("Reading room {}", i));
-            tr3_room room;
-            load_tr1_pc_room(room_activity, file, room);
-
-            log_file(room_activity, file, std::format("Read room {}", i));
-            _rooms.push_back(room);
-        }
-
+        _rooms = read_rooms<uint16_t>(activity, file, callbacks, load_tr1_pc_room);
         _floor_data = read_floor_data(activity, file, callbacks);
         _mesh_data = read_mesh_data(activity, file, callbacks);
         _mesh_pointers = read_mesh_pointers(activity, file, callbacks);
@@ -1755,22 +1768,7 @@ namespace trlevel
             return;
         }
 
-        log_file(activity, file, "Reading number of rooms");
-        const uint16_t num_rooms = read<uint16_t>(file);
-
-        callbacks.on_progress(std::format("Reading {} rooms", num_rooms));
-        for (auto i = 0u; i < num_rooms; ++i)
-        {
-            trview::Activity room_activity(activity, std::format("Room {}", i));
-            callbacks.on_progress(std::format("Reading room {}", i));
-            log_file(room_activity, file, std::format("Reading room {}", i));
-            tr3_room room;
-            load_tr1_psx_room(room_activity, file, room);
-
-            log_file(room_activity, file, std::format("Read room {}", i));
-            _rooms.push_back(room);
-        }
-
+        _rooms = read_rooms<uint16_t>(activity, file, callbacks, load_tr1_psx_room);
         _floor_data = read_floor_data(activity, file, callbacks);
         _mesh_data = read_mesh_data(activity, file, callbacks);
         _mesh_pointers = read_mesh_pointers(activity, file, callbacks);
@@ -1859,22 +1857,7 @@ namespace trlevel
 
         read<uint32_t>(file);
 
-        log_file(activity, file, "Reading number of rooms");
-        const uint16_t num_rooms = read<uint16_t>(file);
-
-        callbacks.on_progress(std::format("Reading {} rooms", num_rooms));
-        for (auto i = 0u; i < num_rooms; ++i)
-        {
-            trview::Activity room_activity(activity, std::format("Room {}", i));
-            callbacks.on_progress(std::format("Reading room {}", i));
-            log_file(room_activity, file, std::format("Reading room {}", i));
-            tr3_room room;
-            load_tr2_pc_room(room_activity, file, room);
-
-            log_file(room_activity, file, std::format("Read room {}", i));
-            _rooms.push_back(room);
-        }
-
+        _rooms = read_rooms<uint16_t>(activity, file, callbacks, load_tr2_pc_room);
         _floor_data = read_floor_data(activity, file, callbacks);
         _mesh_data = read_mesh_data(activity, file, callbacks);
         _mesh_pointers = read_mesh_pointers(activity, file, callbacks);
@@ -1922,22 +1905,7 @@ namespace trlevel
             return;
         }
 
-        log_file(activity, file, "Reading number of rooms");
-        const uint16_t num_rooms = read<uint16_t>(file);
-
-        callbacks.on_progress(std::format("Reading {} rooms", num_rooms));
-        for (auto i = 0u; i < num_rooms; ++i)
-        {
-            trview::Activity room_activity(activity, std::format("Room {}", i));
-            callbacks.on_progress(std::format("Reading room {}", i));
-            log_file(room_activity, file, std::format("Reading room {}", i));
-            tr3_room room;
-            load_tr3_pc_room(room_activity, file, room);
-
-            log_file(room_activity, file, std::format("Read room {}", i));
-            _rooms.push_back(room);
-        }
-
+        _rooms = read_rooms<uint16_t>(activity, file, callbacks, load_tr3_pc_room);
         _floor_data = read_floor_data(activity, file, callbacks);
         _mesh_data = read_mesh_data(activity, file, callbacks);
         _mesh_pointers = read_mesh_pointers(activity, file, callbacks);
@@ -1990,22 +1958,7 @@ namespace trlevel
                 return;
             }
 
-            log_file(activity, data_stream, "Reading number of rooms");
-            uint16_t num_rooms = read<uint16_t>(data_stream);
-
-            callbacks.on_progress(std::format("Reading {} rooms", num_rooms));
-            log_file(activity, data_stream, std::format("Reading {} rooms", num_rooms));
-            for (auto i = 0u; i < num_rooms; ++i)
-            {
-                trview::Activity room_activity(activity, std::format("Room {}", i));
-                callbacks.on_progress(std::format("Reading room {}", i));
-                log_file(room_activity, data_stream, std::format("Reading room {}", i));
-                tr3_room room;
-                load_tr4_pc_room(room_activity, data_stream, room);
-                log_file(room_activity, data_stream, std::format("Read room {}", i));
-                _rooms.push_back(room);
-            }
-
+            _rooms = read_rooms<uint16_t>(activity, data_stream, callbacks, load_tr4_pc_room);
             _floor_data = read_floor_data(activity, data_stream, callbacks);
             _mesh_data = read_mesh_data(activity, data_stream, callbacks);
             _mesh_pointers = read_mesh_pointers(activity, data_stream, callbacks);
@@ -2094,22 +2047,7 @@ namespace trlevel
             return;
         }
 
-        log_file(activity, file, "Reading number of rooms");
-        uint32_t num_rooms = read<uint32_t>(file);;
-
-        callbacks.on_progress(std::format("Reading {} rooms", num_rooms));
-        log_file(activity, file, std::format("Reading {} rooms", num_rooms));
-        for (auto i = 0u; i < num_rooms; ++i)
-        {
-            trview::Activity room_activity(activity, std::format("Room {}", i));
-            callbacks.on_progress(std::format("Reading room {}", i));
-            log_file(room_activity, file, std::format("Reading room {}", i));
-            tr3_room room;
-            load_tr5_pc_room(room_activity, file, room);
-            log_file(room_activity, file, std::format("Read room {}", i));
-            _rooms.push_back(room);
-        }
-
+        _rooms = read_rooms<uint32_t>(activity, file, callbacks, load_tr5_pc_room);
         _floor_data = read_floor_data(activity, file, callbacks);
         _mesh_data = read_mesh_data(activity, file, callbacks);
         _mesh_pointers = read_mesh_pointers(activity, file, callbacks);
