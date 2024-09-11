@@ -124,7 +124,6 @@ namespace trview
                             meanings.push_back(meaning);
                             if (action == TriggerCommandType::Camera || action == TriggerCommandType::Flyby)
                             {
-                                // Camera has another uint16_t - skip for now.
                                 command = data[++i];
                                 meanings.push_back(std::format("    Once: {}, Timer: {}, MoveTimer: {}, ContBit: {}", 
                                     (command & 0x100) != 0,
