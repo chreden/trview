@@ -126,7 +126,11 @@ namespace trview
                             {
                                 // Camera has another uint16_t - skip for now.
                                 command = data[++i];
-                                meanings.push_back("    " + std::to_string(command));
+                                meanings.push_back(std::format("    Once: {}, Timer: {}, MoveTimer: {}, ContBit: {}", 
+                                    (command & 0x100) != 0,
+                                    command & 0xff,
+                                    (command & 0x3e00) >> 9,
+                                    (command & 0x8000) >> 15));
                             }
                         }
 
