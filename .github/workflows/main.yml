@@ -38,7 +38,7 @@ jobs:
         }
         
     - name: Upload Artifact (x64)
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v4
       with:
         name: trview-x64
         path: x64\Release\trview.exe
