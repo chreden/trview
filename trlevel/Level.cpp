@@ -174,6 +174,15 @@ namespace trlevel
             return animated_textures;
         }
 
+        uint8_t read_animated_textures_uv_count(trview::Activity& activity, std::basic_ispanstream<uint8_t>& file, const ILevel::LoadCallbacks& callbacks)
+        {
+            callbacks.on_progress("Reading animated textures UV count");
+            log_file(activity, file, "Reading animated textures UV count");
+            uint8_t animated_textures_uv_count = read<uint8_t>(file);
+            log_file(activity, file, std::format("Animated texture UV count: {}", animated_textures_uv_count));
+            return animated_textures_uv_count;
+        }
+
         std::vector<tr_animation> read_animations_tr1_3(trview::Activity& activity, std::basic_ispanstream<uint8_t>& file, const ILevel::LoadCallbacks& callbacks)
         {
             callbacks.on_progress("Reading animations");
@@ -287,6 +296,25 @@ namespace trlevel
             std::vector<tr4_flyby_camera> flyby_cameras = read_vector<uint32_t, tr4_flyby_camera>(file);
             log_file(activity, file, std::format("Read {} flyby cameras", flyby_cameras.size()));
             return flyby_cameras;
+        }
+
+        void read_fog_bulbs_tr5_pc(trview::Activity& activity, std::basic_ispanstream<uint8_t>& file, tr3_room& room, const tr5_room_header& header)
+        {
+            log_file(activity, file, std::format("Reading {} fog bulbs", header.num_fog_bulbs));
+            auto fog_bulbs = read_vector<tr5_fog_bulb>(file, header.num_fog_bulbs);
+            log_file(activity, file, std::format("Read {} fog bulbs", fog_bulbs.size()));
+
+            log_file(activity, file, "Converting lights to fog bulbs");
+            uint32_t fog_bulb = 0;
+            for (auto& light : room.lights)
+            {
+                if (*reinterpret_cast<uint32_t*>(&light.tr5.position.x) == 0xCDCDCDCD)
+                {
+                    const auto fog = fog_bulbs[fog_bulb++];
+                    light.tr5.light_type = LightType::FogBulb;
+                    light.tr5_fog = fog;
+                }
+            }
         }
 
         std::vector<uint16_t> read_frames(trview::Activity& activity, std::basic_ispanstream<uint8_t>& file, const ILevel::LoadCallbacks& callbacks)
@@ -455,6 +483,12 @@ namespace trlevel
             log_file(activity, file, std::format("Read flags: {:X}", room.flags));
         }
 
+        std::vector<tr5_room_layer> read_room_layers(trview::Activity& activity, std::basic_ispanstream<uint8_t>& file, const tr5_room_header& header)
+        {
+            log_file(activity, file, std::format("Reading {} layers", header.num_layers));
+            return read_vector<tr5_room_layer>(file, header.num_layers);
+        }
+
         void read_room_light_mode(trview::Activity& activity, std::basic_ispanstream<uint8_t>& file, tr3_room& room)
         {
             log_file(activity, file, "Reading light mode");
@@ -497,6 +531,13 @@ namespace trlevel
             log_file(activity, file, std::format("Read {} lights", room.lights.size()));
         }
 
+        void read_room_lights_tr5_pc(trview::Activity& activity, std::basic_ispanstream<uint8_t>& file, tr3_room& room, const tr5_room_header& header)
+        {
+            log_file(activity, file, std::format("Reading {} lights", header.num_lights));
+            room.lights = convert_lights(read_vector<tr5_room_light>(file, header.num_lights));
+            log_file(activity, file, std::format("Read {} lights", room.lights.size()));
+        }
+
         void read_room_portals(trview::Activity& activity, std::basic_ispanstream<uint8_t>& file, tr3_room& room)
         {
             log_file(activity, file, "Reading portals");
@@ -531,6 +572,13 @@ namespace trlevel
             log_file(activity, file, std::format("Read {} sectors", room.sector_list.size()));
         }
 
+        void read_room_sectors_tr5(trview::Activity& activity, std::basic_ispanstream<uint8_t>& file, tr3_room& room)
+        {
+            log_file(activity, file, std::format("Reading {} sectors ({} x {})", room.num_x_sectors * room.num_z_sectors, room.num_x_sectors, room.num_z_sectors));
+            room.sector_list = read_vector<tr_room_sector>(file, room.num_z_sectors * room.num_x_sectors);
+            log_file(activity, file, std::format("Read {} sectors", room.sector_list.size()));
+        }
+
         void read_room_sprites(trview::Activity& activity, std::basic_ispanstream<uint8_t>& file, tr3_room& room)
         {
             log_file(activity, file, "Reading sprites");
@@ -556,6 +604,13 @@ namespace trlevel
         {
             log_file(activity, file, "Reading static meshes");
             room.static_meshes = convert_room_static_meshes(read_vector<uint16_t, tr_room_staticmesh_psx>(file));
+            log_file(activity, file, std::format("Read {} static meshes", room.static_meshes.size()));
+        }
+
+        void read_room_static_meshes_tr5(trview::Activity& activity, std::basic_ispanstream<uint8_t>& file, tr3_room& room, const tr5_room_header& header)
+        {
+            log_file(activity, file, std::format("Reading {} static meshes", header.num_static_meshes));
+            room.static_meshes = read_vector<tr3_room_staticmesh>(file, header.num_static_meshes);
             log_file(activity, file, std::format("Read {} static meshes", room.static_meshes.size()));
         }
 
@@ -663,6 +718,15 @@ namespace trlevel
             callbacks.on_progress("Reading sound map");
             log_file(activity, file, "Reading sound map");
             const auto sound_map = read_vector<int16_t>(file, 370);
+            log_file(activity, file, "Read sound map");
+            return sound_map;
+        }
+
+        std::vector<int16_t> read_sound_map_tr4(trview::Activity& activity, std::basic_ispanstream<uint8_t>& file, const ILevel::LoadCallbacks& callbacks, std::size_t demo_length)
+        {
+            callbacks.on_progress("Reading sound map");
+            log_file(activity, file, "Reading sound map");
+            const auto sound_map = read_vector<int16_t>(file, demo_length == 2048 ? 1024 : 370);
             log_file(activity, file, "Read sound map");
             return sound_map;
         }
@@ -985,42 +1049,19 @@ namespace trlevel
             // The offsets start measuring from this position, after all the header information.
             const uint32_t data_start = static_cast<uint32_t>(file.tellg());
 
-            log_file(activity, file, std::format("Reading {} lights", header.num_lights));
-            room.lights = convert_lights(read_vector<tr5_room_light>(file, header.num_lights));
-
-            log_file(activity, file, std::format("Reading {} fog bulbs", header.num_fog_bulbs));
-            auto fog_bulbs = read_vector<tr5_fog_bulb>(file, header.num_fog_bulbs);
-
-            log_file(activity, file, "Converting lights to fog buibs");
-            uint32_t fog_bulb = 0;
-            for (auto& light : room.lights)
-            {
-                if (*reinterpret_cast<uint32_t*>(&light.tr5.position.x) == 0xCDCDCDCD)
-                {
-                    const auto fog = fog_bulbs[fog_bulb++];
-                    light.tr5.light_type = LightType::FogBulb;
-                    light.tr5_fog = fog;
-                }
-            }
-
+            read_room_lights_tr5_pc(activity, file, room, header);
+            read_fog_bulbs_tr5_pc(activity, file, room, header);
+            
             file.seekg(data_start + header.start_sd_offset, std::ios::beg);
-
-            log_file(activity, file, std::format("Reading {} sectors ({} x {})", room.num_x_sectors * room.num_z_sectors, room.num_x_sectors, room.num_z_sectors));
-            room.sector_list = read_vector<tr_room_sector>(file, room.num_z_sectors * room.num_x_sectors);
-            log_file(activity, file, "Reading room portals");
-            room.portals = read_vector<uint16_t, tr_room_portal>(file);
-            log_file(activity, file, std::format("Read {} room portals", room.portals.size()));
+            read_room_sectors_tr5(activity, file, room);
+            read_room_portals(activity, file, room);
 
             // Separator
             skip(file, 2);
-
             file.seekg(data_start + header.end_portal_offset, std::ios::beg);
-            log_file(activity, file, std::format("Reading {} static meshes", header.num_static_meshes));
-            room.static_meshes = read_vector<tr3_room_staticmesh>(file, header.num_static_meshes);
-
+            read_room_static_meshes_tr5(activity, file, room, header);
             file.seekg(data_start + header.layer_offset, std::ios::beg);
-            log_file(activity, file, std::format("Reading {} layers", header.num_layers));
-            auto layers = read_vector<tr5_room_layer>(file, header.num_layers);
+            const auto layers = read_room_layers(activity, file, header);
 
             file.seekg(data_start + header.poly_offset, std::ios::beg);
             uint16_t vertex_offset = 0;
@@ -1985,9 +2026,7 @@ namespace trlevel
             read_animated_textures(activity, data_stream, callbacks);
 
             // Animated textures uv count - not yet used:
-            log_file(activity, data_stream, "Reading animated textures UV count");
-            uint8_t animated_textures_uv_count = read<uint8_t>(data_stream);
-            log_file(activity, data_stream, std::format("Animated texture UV count: {}", animated_textures_uv_count));
+            read_animated_textures_uv_count(activity, data_stream, callbacks);
 
             log_file(activity, data_stream, "Skipping TEX marker");
             data_stream.seekg(3, std::ios::cur);
@@ -1995,20 +2034,8 @@ namespace trlevel
             _object_textures = read_object_textures_tr4(activity, data_stream, callbacks);
             _entities = read_entities(activity, data_stream, callbacks);
             _ai_objects = read_ai_objects(activity, data_stream, callbacks);
-
             const auto demo_data = read_demo_data(activity, data_stream, callbacks);
-            callbacks.on_progress("Reading sound map");
-            log_file(activity, data_stream, "Reading sound map");
-            if (demo_data.size() == 2048)
-            {
-                _sound_map = read_vector<int16_t>(data_stream, 1024);
-            }
-            else
-            {
-                _sound_map = read_vector<int16_t>(data_stream, 370);
-            }
-            log_file(activity, data_stream, "Read sound map");
-
+            _sound_map = read_sound_map_tr4(activity, data_stream, callbacks, demo_data.size());
             _sound_details = read_sound_details(activity, data_stream, callbacks);
             _sample_indices = read_sample_indices(activity, data_stream, callbacks);
         }
@@ -2074,11 +2101,7 @@ namespace trlevel
         read_overlaps(activity, file, callbacks);
         read_zones(activity, file, callbacks, static_cast<uint32_t>(boxes.size()));
         read_animated_textures(activity, file, callbacks);
-
-        // Animated textures uv count - not yet used:
-        log_file(activity, file, "Reading animated textures UV count");
-        uint8_t animated_textures_uv_count = read<uint8_t>(file);
-        log_file(activity, file, std::format("Animated texture UV count: {}", animated_textures_uv_count));
+        read_animated_textures_uv_count(activity, file, callbacks);
 
         log_file(activity, file, "Skipping TEX marker");
         file.seekg(4, std::ios::cur);
