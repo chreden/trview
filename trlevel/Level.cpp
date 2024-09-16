@@ -1658,7 +1658,7 @@ namespace trlevel
                 return;
             }
 
-            // TODO: Now what - tell the user.
+            throw std::exception(std::format("Unsupported level platform and version ({}:{})", to_string(_platform_and_version.platform), to_string(_platform_and_version.version)).c_str());
         }
         catch (const LevelEncryptedException&)
         {
