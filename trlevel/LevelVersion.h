@@ -2,6 +2,7 @@
 
 #include <cstdint>
 #include <string>
+#include <unordered_map>
 
 namespace trlevel
 {
@@ -28,6 +29,11 @@ namespace trlevel
         LevelVersion version{ LevelVersion::Unknown };
     };
 
+    inline bool operator==(const PlatformAndVersion & l, const PlatformAndVersion & r)
+    {
+        return l.platform == r.platform && l.version == r.version;
+    }
+
     // Converts the level version number into a level version enumeration.
     // This will never return tomb5 as more information is required in order to 
     // make that determination.
@@ -38,5 +44,17 @@ namespace trlevel
     constexpr std::string to_string(LevelVersion version) noexcept;
     constexpr std::string to_string(Platform platform) noexcept;
 }
+
+template <>
+struct std::hash<trlevel::PlatformAndVersion>
+{
+    std::size_t operator()(const trlevel::PlatformAndVersion& p) const
+    {
+        std::size_t result = 17;
+        result = result * 31 + std::hash<trlevel::Platform>()(p.platform);
+        result = result * 31 + std::hash<trlevel::LevelVersion>()(p.version);
+        return result;
+    }
+};
 
 #include "LevelVersion.hpp"
