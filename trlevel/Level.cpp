@@ -1996,7 +1996,20 @@ namespace trlevel
                     room.info.z = read_be<int32_t>(file);
                     room.info.yBottom = read_be<int32_t>(file);
                     room.info.yTop = read_be<int32_t>(file);
-                    _rooms.push_back(room);
+
+                    // Room vertices
+                    auto meshsize_tag = read_tag(file);
+                    int32_t meshsize_element_size = read_be<int32_t>(file);
+                    int32_t num_vertices = read_be<int32_t>(file);
+                    for (int32_t v = 0; v < num_vertices; ++v)
+                    {
+                        tr_room_vertex vertex;
+                        vertex.vertex.x = read_be<int16_t>(file);
+                        vertex.vertex.y = read_be<int16_t>(file);
+                        vertex.vertex.z = read_be<int16_t>(file);
+                        vertex.lighting = read_be<int16_t>(file);
+                        room.data.vertices.push_back(vertex);
+                    }
 
                     // Just search for next roomnumb
                     if (i < num_rooms - 1)
@@ -2015,6 +2028,8 @@ namespace trlevel
                             }
                         }
                     }
+
+                    _rooms.push_back(room);
                 }
                 break;
             }
