@@ -831,7 +831,10 @@ namespace trlevel
             log_file(activity, file, std::format("Read {} static meshes", static_meshes.size()));
             std::unordered_map<uint32_t, tr_staticmesh> mesh_map;
             for (const auto& mesh : static_meshes)
-            return std::string(reinterpret_cast<char*>(&tag), reinterpret_cast<char*>(&tag) + 8);
+            {
+                mesh_map.insert({ mesh.ID, mesh });
+            }
+            return mesh_map;
         }
 
         std::string read_tag(std::basic_ispanstream<uint8_t>& file)
@@ -1678,6 +1681,7 @@ namespace trlevel
             {
                 {{.platform = Platform::PSX, .version = LevelVersion::Tomb1 }, [&]() { load_tr1_psx(file, activity, callbacks); }},
                 {{.platform = Platform::PC, .version = LevelVersion::Tomb1 }, [&]() { load_tr1_pc(file, activity, callbacks); }},
+                {{.platform = Platform::Saturn, .version = LevelVersion::Tomb1 }, [&]() { load_tr1_saturn(file, activity, callbacks); }},
                 {{.platform = Platform::PC, .version = LevelVersion::Tomb2 }, [&]() { load_tr2_pc(file, activity, callbacks); }},
                 {{.platform = Platform::PC, .version = LevelVersion::Tomb3 }, [&]() { load_tr3_pc(file, activity, callbacks); }},
                 {{.platform = Platform::PC, .version = LevelVersion::Tomb4 }, [&]() { load_tr4_pc(file, activity, callbacks); }},
@@ -1933,6 +1937,22 @@ namespace trlevel
         };
 
         static_assert(sizeof(SaturnTinf) == 16);
+
+        void seek_tag(std::basic_ispanstream<uint8_t>& file, const std::string& name)
+        {
+            while (true)
+            {
+                auto next_tag = read_tag(file);
+                if (next_tag == name)
+                {
+                    break;
+                }
+                else
+                {
+                    file.seekg(-7, std::ios::cur);
+                }
+            }
+        }
     }
 
     void Level::load_tr1_saturn(std::basic_ispanstream<uint8_t>& file, trview::Activity& activity, const LoadCallbacks& callbacks)
@@ -1945,6 +1965,13 @@ namespace trlevel
 
         // TEMPORARY: Palette hack
         _palette16.resize(256);
+        // TEMPORARY: object texture hack
+        _object_textures.push_back(tr_object_texture{ });
+        _textile16.push_back({});
+        _num_textiles = 1;
+        std::vector<uint32_t> textile;
+        textile.resize(256 * 256);
+        callbacks.on_textile(textile);
 
         auto x = file.tellg();
         skip(file, 4); // FILE
@@ -1989,7 +2016,6 @@ namespace trlevel
                     skip(file, 8); // ROOMNUMB
                     skip(file, 8); // 4 + number
 
-                    // TODO: Room info
                     auto meshpos_tag = read_tag(file);
                     tr3_room room{ };
                     room.info.x = read_be<int32_t>(file);
@@ -2000,36 +2026,81 @@ namespace trlevel
                     // Room vertices
                     auto meshsize_tag = read_tag(file);
                     int32_t meshsize_element_size = read_be<int32_t>(file);
-                    int32_t num_vertices = read_be<int32_t>(file);
-                    for (int32_t v = 0; v < num_vertices; ++v)
+                    meshsize_element_size;
+                    int32_t other_value = read_be<int32_t>(file);
+                    other_value;
+                    int16_t num_vertices = read_be<int16_t>(file);
+                    std::vector<tr_room_vertex> vertices;
+                    for (int16_t v = 0; v < num_vertices; ++v)
                     {
-                        tr_room_vertex vertex;
+                        tr_room_vertex vertex {};
                         vertex.vertex.x = read_be<int16_t>(file);
                         vertex.vertex.y = read_be<int16_t>(file);
                         vertex.vertex.z = read_be<int16_t>(file);
-                        vertex.lighting = read_be<int16_t>(file);
-                        room.data.vertices.push_back(vertex);
+                        // TODO: Make this make sense
+                        vertex.lighting = read_be<int16_t>(file); 
+                        vertices.push_back(vertex);
                     }
+                    room.data.vertices = convert_vertices(vertices);
+                    auto at = file.tellg();
+
+                    skip(file, 6);
+
+                    // TODO: Why the >> 4?
+                    int16_t num_rectangles = read_be<int16_t>(file);
+                    std::vector<tr_face4> rectangles;
+                    for (int16_t r = 0; r < num_rectangles; ++r)
+                    {
+                        tr_face4 face{};
+                        face.vertices[0] = read_be<int16_t>(file) >> 4;
+                        face.vertices[1] = read_be<int16_t>(file) >> 4;
+                        face.vertices[2] = read_be<int16_t>(file) >> 4;
+                        face.vertices[3] = read_be<int16_t>(file) >> 4;
+                        face.texture = read_be<int16_t>(file) >> 4;
+                        face.texture = 0;
+                        rectangles.push_back(face);
+                    }
+                    room.data.rectangles = convert_rectangles(rectangles);
+
+                    at = file.tellg();
+                    /*
+                    int16_t num_triangles = read_be<int16_t>(file);
+                    std::vector<tr_face3> triangles;
+                    for (int16_t t = 0; t < num_triangles; ++t)
+                    {
+                        tr_face3 face{};
+                        face.vertices[0] = read_be<int16_t>(file);
+                        face.vertices[1] = read_be<int16_t>(file);
+                        face.vertices[2] = read_be<int16_t>(file);
+                        face.texture = read_be<int16_t>(file);
+                        triangles.push_back(face);
+                    }
+                    room.data.triangles = convert_triangles(triangles);
+
+                    at = file.tellg();
+                    */
+
+                    seek_tag(file, "LIGHTAMB");
+                    skip(file, 2);
+                    room.ambient_intensity_1 = read_be<int16_t>(file);
+
+                    seek_tag(file, "RM_FLAGS");
+                    skip(file, 6);
+                    room.flags = read_be<int16_t>(file);
 
                     // Just search for next roomnumb
                     if (i < num_rooms - 1)
                     {
-                        while (true)
-                        {
-                            auto next_tag = read_tag(file);
-                            if (next_tag == "ROOMNUMB")
-                            {
-                                file.seekg(-8, std::ios::cur);
-                                break;
-                            }
-                            else
-                            {
-                                file.seekg(-7, std::ios::cur);
-                            }
-                        }
+                        seek_tag(file, "ROOMNUMB");
+                        file.seekg(-8, std::ios::cur);
                     }
 
                     _rooms.push_back(room);
+
+                    // if (i == 0)
+                    // {
+                    //     break;
+                    // }
                 }
                 break;
             }
