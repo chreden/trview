@@ -2064,21 +2064,24 @@ namespace trlevel
 
                     at = file.tellg();
                     /*
+                    * TODO: Triangles???
+                    * 
+                    skip(file, 2);
                     int16_t num_triangles = read_be<int16_t>(file);
                     std::vector<tr_face3> triangles;
                     for (int16_t t = 0; t < num_triangles; ++t)
                     {
                         tr_face3 face{};
-                        face.vertices[0] = read_be<int16_t>(file);
-                        face.vertices[1] = read_be<int16_t>(file);
-                        face.vertices[2] = read_be<int16_t>(file);
-                        face.texture = read_be<int16_t>(file);
+                        face.vertices[0] = read_be<int16_t>(file) >> 4;
+                        face.vertices[1] = read_be<int16_t>(file) >> 4;
+                        face.vertices[2] = read_be<int16_t>(file) >> 4;
+                        face.texture = read_be<int16_t>(file) >> 4;
+                        // face.texture = 0;
                         triangles.push_back(face);
                     }
                     room.data.triangles = convert_triangles(triangles);
-
-                    at = file.tellg();
                     */
+                    at = file.tellg();
 
                     seek_tag(file, "FLOORDAT");
                     at = file.tellg();
@@ -2101,18 +2104,54 @@ namespace trlevel
                     }
 
                     seek_tag(file, "LIGHTAMB");
-                    skip(file, 2);
-                    room.ambient_intensity_1 = read_be<int16_t>(file);
+                    room.ambient_intensity_1 = static_cast<uint16_t>(read_be<uint32_t>(file));
+                    uint32_t num_lights_1 = read_be<uint32_t>(file);
+
+                    if (num_lights_1)
+                    {
+                        seek_tag(file, "LIGHTSIZ");
+                        skip(file, 4);
+                        uint32_t num_lights = read_be<uint32_t>(file);
+                        for (auto l = 0u; l < num_lights; ++l)
+                        {
+                            tr_x_room_light light{};
+                            light.level_version = trlevel::LevelVersion::Tomb1;
+                            light.tr1.x = read_be<int32_t>(file);
+                            light.tr1.y = read_be<int32_t>(file);
+                            light.tr1.z = read_be<int32_t>(file);
+                            light.tr1.intensity = read_be<uint16_t>(file);
+                            skip(file, 2);
+                            light.tr1.fade = read_be<uint32_t>(file);
+                            room.lights.push_back(light);
+                        }
+                    }
+
+                    seek_tag(file, "MESHSIZE");
+                    skip(file, 4);
+                    uint32_t num_statics = read_be<uint32_t>(file);
+                    std::vector<tr_room_staticmesh> static_meshes;
+                    for (auto s = 0u; s < num_statics; ++s)
+                    {
+                        tr_room_staticmesh static_mesh{};
+                        static_mesh.x = read_be<int32_t>(file);
+                        static_mesh.y = read_be<int32_t>(file);
+                        static_mesh.z = read_be<int32_t>(file);
+                        static_mesh.rotation = read_be<uint16_t>(file);
+                        static_mesh.intensity = read_be<uint16_t>(file);
+                        static_mesh.mesh_id = read_be<uint16_t>(file);
+                        skip(file, 2);
+                        static_meshes.push_back(static_mesh);
+                    }
+                    room.static_meshes = convert_room_static_meshes(static_meshes);
 
                     seek_tag(file, "RM_FLIP ");
-                    skip(file, 6);
-                    room.alternate_room = read_be<int16_t>(file);
+                    skip(file, 4);
+                    room.alternate_room = static_cast<int16_t>(read_be<int32_t>(file));
 
                     seek_tag(file, "RM_FLAGS");
                     skip(file, 6);
                     room.flags = read_be<int16_t>(file);
 
-                    // Just search for next roomnumb
                     if (i < num_rooms - 1)
                     {
                         seek_tag(file, "ROOMNUMB");
@@ -2130,9 +2169,38 @@ namespace trlevel
                 {
                     _floor_data.push_back(read_be<uint16_t>(file));
                 }
+
+                seek_tag(file, "ITEMDATA");
+                file.seekg(-8, std::ios::cur);
+            }
+            else if (tag == "ITEMDATA")
+            {
+                skip(file, 4);
+                auto at = file.tellg();
+                uint32_t num_entities = read_be<uint32_t>(file);
+                std::vector<tr_entity> entities;
+                for (auto e = 0u; e < num_entities; ++e)
+                {
+                    tr_entity entity{};
+                    entity.TypeID = read_be<int16_t>(file);
+                    entity.Room = read_be<int16_t>(file);
+                    entity.x = read_be<int32_t>(file);
+                    entity.y = read_be<int32_t>(file);
+                    entity.z = read_be<int32_t>(file);
+                    entity.Angle = read_be<int16_t>(file);
+                    entity.Intensity1 = read_be<int16_t>(file);
+                    entity.Flags = read_be<uint16_t>(file);
+                    skip(file, 2);
+                    entities.push_back(entity);
+                }
+                _entities = convert_entities(entities);
                 break;
             }
         }
+
+        callbacks.on_progress("Generating meshes");
+        generate_meshes(_mesh_data);
+        callbacks.on_progress("Loading complete");
     }
 
     void Level::load_tr2_pc(std::basic_ispanstream<uint8_t>& file, trview::Activity& activity, const LoadCallbacks& callbacks)
