@@ -2080,9 +2080,33 @@ namespace trlevel
                     at = file.tellg();
                     */
 
+                    seek_tag(file, "FLOORDAT");
+                    at = file.tellg();
+                    room.num_z_sectors = static_cast<int16_t>(read_be<int32_t>(file));
+                    room.num_x_sectors = static_cast<int16_t>(read_be<int32_t>(file));
+
+                    seek_tag(file, "FLOORSIZ");
+                    skip(file, 4);
+                    uint32_t num_sectors = read_be<uint32_t>(file);
+                    for (auto s = 0u; s < num_sectors; ++s)
+                    {
+                        tr_room_sector sector{};
+                        sector.floordata_index = read_be<uint16_t>(file);
+                        sector.box_index = read_be<uint16_t>(file);
+                        sector.room_below = read_be<uint8_t>(file);
+                        sector.floor = read_be<int8_t>(file);
+                        sector.room_above = read_be<uint8_t>(file);
+                        sector.ceiling = read_be<int8_t>(file);
+                        room.sector_list.push_back(sector);
+                    }
+
                     seek_tag(file, "LIGHTAMB");
                     skip(file, 2);
                     room.ambient_intensity_1 = read_be<int16_t>(file);
+
+                    seek_tag(file, "RM_FLIP ");
+                    skip(file, 6);
+                    room.alternate_room = read_be<int16_t>(file);
 
                     seek_tag(file, "RM_FLAGS");
                     skip(file, 6);
@@ -2096,11 +2120,15 @@ namespace trlevel
                     }
 
                     _rooms.push_back(room);
-
-                    // if (i == 0)
-                    // {
-                    //     break;
-                    // }
+                }
+            }
+            else if (tag == "FLORDATA")
+            {
+                skip(file, 4);
+                uint32_t floordata_size = read_be<uint32_t>(file);
+                for (auto i = 0u; i < floordata_size; ++i)
+                {
+                    _floor_data.push_back(read_be<uint16_t>(file));
                 }
                 break;
             }
