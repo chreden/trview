@@ -9,6 +9,12 @@ namespace trlevel
     // Returns: The level version.
     PlatformAndVersion convert_level_version(uint32_t version)
     {
+        if (version == 0x4D4F4F52)
+        {
+            // Note - this is not a version number, it's just ROOM
+            return { .platform = Platform::Saturn, .version = LevelVersion::Tomb1 };
+        }
+
         switch (version & 0xff)
         {
         case 0x20:

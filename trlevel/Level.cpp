@@ -69,6 +69,19 @@ namespace trlevel
             return value;
         }
 
+        template <typename T>
+        T read_be(std::basic_ispanstream<uint8_t>& file)
+        {
+            T value;
+            read<T>(file, value);
+            // if constexpr (std::is_integral<T>::value)
+            // {
+            //     return std::byteswap(value);
+            // }
+            // return value;
+            return std::byteswap(value);
+        }
+
         template < typename DataType, typename SizeType >
         std::vector<DataType> read_vector(std::basic_ispanstream<uint8_t>& file, SizeType size)
         {
@@ -84,6 +97,24 @@ namespace trlevel
         std::vector<DataType> read_vector(std::basic_ispanstream<uint8_t>& file)
         {
             auto size = read<SizeType>(file);
+            return read_vector<DataType, SizeType>(file, size);
+        }
+
+        template < typename DataType, typename SizeType >
+        std::vector<DataType> read_vector_be(std::basic_ispanstream<uint8_t>& file, SizeType size)
+        {
+            std::vector<DataType> data(size);
+            for (SizeType i = 0; i < size; ++i)
+            {
+                read_be<DataType>(file, data[i]);
+            }
+            return data;
+        }
+
+        template < typename SizeType, typename DataType >
+        std::vector<DataType> read_vector_be(std::basic_ispanstream<uint8_t>& file)
+        {
+            auto size = read_be<SizeType>(file);
             return read_vector<DataType, SizeType>(file, size);
         }
 
@@ -800,10 +831,13 @@ namespace trlevel
             log_file(activity, file, std::format("Read {} static meshes", static_meshes.size()));
             std::unordered_map<uint32_t, tr_staticmesh> mesh_map;
             for (const auto& mesh : static_meshes)
-            {
-                mesh_map.insert({ mesh.ID, mesh });
-            }
-            return mesh_map;
+            return std::string(reinterpret_cast<char*>(&tag), reinterpret_cast<char*>(&tag) + 8);
+        }
+
+        std::string read_tag(std::basic_ispanstream<uint8_t>& file)
+        {
+            uint64_t tag = read<uint64_t>(file);
+            return std::string(reinterpret_cast<char*>(&tag), reinterpret_cast<char*>(&tag) + 8);
         }
 
         uint32_t read_textiles(trview::Activity& activity, std::basic_ispanstream<uint8_t>& file, const ILevel::LoadCallbacks& callbacks)
@@ -1889,6 +1923,102 @@ namespace trlevel
         callbacks.on_progress("Generating meshes");
         generate_meshes(_mesh_data);
         callbacks.on_progress("Loading complete");
+    }
+
+    namespace
+    {
+        struct SaturnTinf
+        {
+            short unknown[8];
+        };
+
+        static_assert(sizeof(SaturnTinf) == 16);
+    }
+
+    void Level::load_tr1_saturn(std::basic_ispanstream<uint8_t>& file, trview::Activity& activity, const LoadCallbacks& callbacks)
+    {
+        activity;
+        callbacks;
+
+        // TODO: Read the other saturn files, at some point: .SAD, .SND, .SPR
+        // _files->load_file(std::format("{}MAIN.SFX", trview::path_for_filename(_filename))))
+
+        // TEMPORARY: Palette hack
+        _palette16.resize(256);
+
+        auto x = file.tellg();
+        skip(file, 4); // FILE
+        skip(file, 8);
+
+        while (true)
+        {
+            std::string tag = read_tag(file);
+            if (tag == "ROOMTINF") // Texture info
+            {
+                skip(file, 4); // Numbers
+                auto tinfs = read_vector_be<uint32_t, SaturnTinf>(file);
+            }
+            else if (tag == "ROOMTQTR") // Textures?
+            {
+                skip(file, 4);
+                auto texture_data = read_vector_be<uint32_t, uint8_t>(file);
+            }
+            else if (tag == "ROOMTSUB") // Texture subdivisions?
+            {
+                skip(file, 4);
+                auto texture_data = read_vector_be<uint32_t, uint8_t>(file);
+            }
+            else if (tag == "ROOMTPAL") // Texture palette
+            {
+                skip(file, 4);
+                uint32_t size = read_be<uint32_t>(file);
+                auto texture_data = read_vector<uint8_t>(file, size * 3);
+            }
+            else if (tag == "ROOMSPAL")
+            {
+                skip(file, 4);
+                uint32_t size = read_be<uint32_t>(file);
+                auto texture_data = read_vector<uint8_t>(file, size * 2);
+            }
+            else if (tag == "ROOMDATA")
+            {
+                skip(file, 4);
+                uint32_t num_rooms = read_be<uint32_t>(file);
+                for (uint32_t i = 0; i < num_rooms; ++i)
+                {
+                    skip(file, 8); // ROOMNUMB
+                    skip(file, 8); // 4 + number
+
+                    // TODO: Room info
+                    auto meshpos_tag = read_tag(file);
+                    tr3_room room{ };
+                    room.info.x = read_be<int32_t>(file);
+                    room.info.z = read_be<int32_t>(file);
+                    room.info.yBottom = read_be<int32_t>(file);
+                    room.info.yTop = read_be<int32_t>(file);
+                    _rooms.push_back(room);
+
+                    // Just search for next roomnumb
+                    if (i < num_rooms - 1)
+                    {
+                        while (true)
+                        {
+                            auto next_tag = read_tag(file);
+                            if (next_tag == "ROOMNUMB")
+                            {
+                                file.seekg(-8, std::ios::cur);
+                                break;
+                            }
+                            else
+                            {
+                                file.seekg(-7, std::ios::cur);
+                            }
+                        }
+                    }
+                }
+                break;
+            }
+        }
     }
 
     void Level::load_tr2_pc(std::basic_ispanstream<uint8_t>& file, trview::Activity& activity, const LoadCallbacks& callbacks)
