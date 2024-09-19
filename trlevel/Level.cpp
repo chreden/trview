@@ -472,6 +472,18 @@ namespace trlevel
             return info;
         }
 
+        tr_room_info read_room_info_saturn(trview::Activity& activity, std::basic_ispanstream<uint8_t>& file)
+        {
+            log_file(activity, file, "Reading room info");
+            tr1_4_room_info info;
+            info.x = read_be<int32_t>(file);
+            info.z = read_be<int32_t>(file);
+            info.yBottom = read_be<int32_t>(file);
+            info.yTop = read_be<int32_t>(file);
+            log_file(activity, file, "Read room info");
+            return convert_room_info(info);
+        }
+
         void read_room_alternate_group(trview::Activity& activity, std::basic_ispanstream<uint8_t>& file, tr3_room& room)
         {
             log_file(activity, file, "Reading alternate group");
@@ -486,10 +498,25 @@ namespace trlevel
             log_file(activity, file, std::format("Read alternate room: {}", room.alternate_room));
         }
 
+        void read_room_alternate_room_saturn(trview::Activity& activity, std::basic_ispanstream<uint8_t>& file, tr3_room& room)
+        {
+            log_file(activity, file, "Reading alternate room");
+            skip(file, 4);
+            room.alternate_room = static_cast<int16_t>(read_be<int32_t>(file));
+            log_file(activity, file, std::format("Read alternate room: {}", room.alternate_room));
+        }
+
         void read_room_ambient_intensity_1(trview::Activity& activity, std::basic_ispanstream<uint8_t>& file, tr3_room& room)
         {
             log_file(activity, file, "Reading ambient intensity 1");
             room.ambient_intensity_1 = read<int16_t>(file);
+            log_file(activity, file, std::format("Read ambient intensity 1: {}", room.ambient_intensity_1));
+        }
+
+        void read_room_ambient_intensity_1_saturn(trview::Activity& activity, std::basic_ispanstream<uint8_t>& file, tr3_room& room)
+        {
+            log_file(activity, file, "Reading ambient intensity 1");
+            room.ambient_intensity_1 = static_cast<uint16_t>(read_be<uint32_t>(file));
             log_file(activity, file, std::format("Read ambient intensity 1: {}", room.ambient_intensity_1));
         }
 
@@ -511,6 +538,14 @@ namespace trlevel
         {
             log_file(activity, file, "Reading flags");
             room.flags = read<int16_t>(file);
+            log_file(activity, file, std::format("Read flags: {:X}", room.flags));
+        }
+
+        void read_room_flags_saturn(trview::Activity& activity, std::basic_ispanstream<uint8_t>& file, tr3_room& room)
+        {
+            log_file(activity, file, "Reading flags");
+            skip(file, 6);
+            room.flags = read_be<int16_t>(file);
             log_file(activity, file, std::format("Read flags: {:X}", room.flags));
         }
 
@@ -2018,10 +2053,7 @@ namespace trlevel
 
                     auto meshpos_tag = read_tag(file);
                     tr3_room room{ };
-                    room.info.x = read_be<int32_t>(file);
-                    room.info.z = read_be<int32_t>(file);
-                    room.info.yBottom = read_be<int32_t>(file);
-                    room.info.yTop = read_be<int32_t>(file);
+                    room.info = read_room_info_saturn(activity, file);
 
                     // Room vertices
                     auto meshsize_tag = read_tag(file);
@@ -2104,7 +2136,7 @@ namespace trlevel
                     }
 
                     seek_tag(file, "LIGHTAMB");
-                    room.ambient_intensity_1 = static_cast<uint16_t>(read_be<uint32_t>(file));
+                    read_room_ambient_intensity_1_saturn(activity, file, room);
                     uint32_t num_lights_1 = read_be<uint32_t>(file);
 
                     if (num_lights_1)
@@ -2145,12 +2177,10 @@ namespace trlevel
                     room.static_meshes = convert_room_static_meshes(static_meshes);
 
                     seek_tag(file, "RM_FLIP ");
-                    skip(file, 4);
-                    room.alternate_room = static_cast<int16_t>(read_be<int32_t>(file));
+                    read_room_alternate_room_saturn(activity, file, room);
 
                     seek_tag(file, "RM_FLAGS");
-                    skip(file, 6);
-                    room.flags = read_be<int16_t>(file);
+                    read_room_flags_saturn(activity, file, room);
 
                     if (i < num_rooms - 1)
                     {
@@ -2168,6 +2198,25 @@ namespace trlevel
                 for (auto i = 0u; i < floordata_size; ++i)
                 {
                     _floor_data.push_back(read_be<uint16_t>(file));
+                }
+
+                seek_tag(file, "CAMERAS ");
+                file.seekg(-8, std::ios::cur);
+            }
+            else if (tag == "CAMERAS ")
+            {
+                skip(file, 4);
+
+                uint32_t num_cameras = read_be<uint32_t>(file);
+                for (auto c = 0u; c < num_cameras; ++c)
+                {
+                    tr_camera camera{};
+                    camera.x = read_be<int32_t>(file);
+                    camera.y = read_be<int32_t>(file);
+                    camera.z = read_be<int32_t>(file);
+                    camera.Room = read_be<int16_t>(file);
+                    camera.Flag = read_be<uint16_t>(file);
+                    _cameras.push_back(camera);
                 }
 
                 seek_tag(file, "ITEMDATA");
