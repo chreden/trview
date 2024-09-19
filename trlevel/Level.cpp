@@ -2005,7 +2005,7 @@ namespace trlevel
         _textile16.push_back({});
         _num_textiles = 1;
         std::vector<uint32_t> textile;
-        textile.resize(256 * 256);
+        textile.resize(256 * 256, 0xffffffff);
         callbacks.on_textile(textile);
 
         auto x = file.tellg();
