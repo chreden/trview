@@ -2006,6 +2006,15 @@ namespace trlevel
         _num_textiles = 1;
         std::vector<uint32_t> textile;
         textile.resize(256 * 256, 0xffffffff);
+
+        for (int x = 0; x < 256; ++x)
+        {
+            for (int y = 0; y < 256; ++y)
+            {
+                textile[y * 256 + x] = 0xff000000 | (x << 16) | (y << 8);
+            }
+        }
+
         callbacks.on_textile(textile);
 
         auto x = file.tellg();
@@ -2076,7 +2085,8 @@ namespace trlevel
                     room.data.vertices = convert_vertices(vertices);
                     auto at = file.tellg();
 
-                    skip(file, 6);
+                    uint16_t num_polys = read_be<uint16_t>(file);
+                    skip(file, 4);
 
                     // TODO: Why the >> 4?
                     int16_t num_rectangles = read_be<int16_t>(file);
@@ -2084,35 +2094,51 @@ namespace trlevel
                     for (int16_t r = 0; r < num_rectangles; ++r)
                     {
                         tr_face4 face{};
-                        face.vertices[0] = read_be<int16_t>(file) >> 4;
-                        face.vertices[1] = read_be<int16_t>(file) >> 4;
-                        face.vertices[2] = read_be<int16_t>(file) >> 4;
-                        face.vertices[3] = read_be<int16_t>(file) >> 4;
-                        face.texture = read_be<int16_t>(file) >> 4;
+                        face.vertices[0] = read_be<uint16_t>(file) >> 4;
+                        face.vertices[1] = read_be<uint16_t>(file) >> 4;
+                        face.vertices[2] = read_be<uint16_t>(file) >> 4;
+                        face.vertices[3] = read_be<uint16_t>(file) >> 4;
+                        face.texture = read_be<uint16_t>(file) >> 4;
                         face.texture = 0;
+
+                        if (face.vertices[0] > room.data.vertices.size() ||
+                            face.vertices[1] > room.data.vertices.size() ||
+                            face.vertices[2] > room.data.vertices.size() ||
+                            face.vertices[3] > room.data.vertices.size())
+                        {
+                            continue;
+                        }
                         rectangles.push_back(face);
                     }
                     room.data.rectangles = convert_rectangles(rectangles);
 
                     at = file.tellg();
-                    /*
-                    * TODO: Triangles???
-                    * 
-                    skip(file, 2);
-                    int16_t num_triangles = read_be<int16_t>(file);
-                    std::vector<tr_face3> triangles;
-                    for (int16_t t = 0; t < num_triangles; ++t)
+
+                    if (num_rectangles < num_polys)
                     {
-                        tr_face3 face{};
-                        face.vertices[0] = read_be<int16_t>(file) >> 4;
-                        face.vertices[1] = read_be<int16_t>(file) >> 4;
-                        face.vertices[2] = read_be<int16_t>(file) >> 4;
-                        face.texture = read_be<int16_t>(file) >> 4;
-                        // face.texture = 0;
-                        triangles.push_back(face);
+                        skip(file, 2);
+                        int16_t num_triangles = read_be<int16_t>(file);
+                        std::vector<tr_face3> triangles;
+                        for (int16_t t = 0; t < num_triangles; ++t)
+                        {
+                            tr_face3 face{};
+                            face.vertices[0] = read_be<uint16_t>(file) >> 4;
+                            face.vertices[1] = read_be<uint16_t>(file) >> 4;
+                            face.vertices[2] = read_be<uint16_t>(file) >> 4;
+                            face.texture = read_be<uint16_t>(file) >> 4;
+                            face.texture = 0;
+
+                            if (face.vertices[0] > room.data.vertices.size() ||
+                                face.vertices[1] > room.data.vertices.size() ||
+                                face.vertices[2] > room.data.vertices.size())
+                            {
+                                continue;
+                            }
+                            triangles.push_back(face);
+                        }
+                        room.data.triangles = convert_triangles(triangles);
                     }
-                    room.data.triangles = convert_triangles(triangles);
-                    */
+                    
                     at = file.tellg();
 
                     seek_tag(file, "FLOORDAT");
