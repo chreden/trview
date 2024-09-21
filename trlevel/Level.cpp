@@ -1971,6 +1971,18 @@ namespace trlevel
             short unknown[8];
         };
 
+        struct SpritInf
+        {
+            int16_t a;
+            int16_t b;
+            int16_t c;
+            int16_t d;
+            int16_t e;
+            int16_t f;
+            int16_t g;
+            int16_t h;
+        };
+
         static_assert(sizeof(SaturnTinf) == 16);
 
         void seek_tag(std::basic_ispanstream<uint8_t>& file, const std::string& name)
@@ -2271,6 +2283,43 @@ namespace trlevel
                 _entities = convert_entities(entities);
                 break;
             }
+        }
+
+        if (auto sprite_file_bytes = _files->load_file(std::format("{}{}.SPR",
+            trview::path_for_filename(_filename),
+            trview::filename_without_extension(_filename))))
+        {
+            std::basic_ispanstream<uint8_t> sprite_file{ { *sprite_file_bytes } };
+            // seek_tag(sprite_file, "SPRFILE ");
+            // skip(sprite_file, 4);
+            // uint32_t something = read_be<uint32_t>(sprite_file);
+            // something;
+            seek_tag(sprite_file, "SPRITINF");
+            skip(sprite_file, 4);
+            uint32_t num_sprite_infos = read_be<uint32_t>(sprite_file);
+            std::vector<SpritInf> sprite_infos;
+            for (auto s = 0u; s < num_sprite_infos; ++s)
+            {
+                SpritInf info;
+                info.a = read_be<int16_t>(sprite_file);
+                info.b = read_be<int16_t>(sprite_file);
+                info.c = read_be<int16_t>(sprite_file);
+                info.d = read_be<int16_t>(sprite_file);
+                info.e = read_be<int16_t>(sprite_file);
+                info.f = read_be<int16_t>(sprite_file);
+                info.g = read_be<int16_t>(sprite_file);
+                info.h = read_be<int16_t>(sprite_file);
+                sprite_infos.push_back(info);
+            }
+
+            seek_tag(sprite_file, "SPRITDAT");
+            skip(sprite_file, 4);
+            uint32_t num_bytes = read_be<uint32_t>(sprite_file);
+            std::vector<uint8_t> data = read_vector<uint8_t>(sprite_file, num_bytes);
+
+            seek_tag(sprite_file, "OBJECTS ");
+
+            seek_tag(sprite_file, "SPRITEND");
         }
 
         callbacks.on_progress("Generating meshes");

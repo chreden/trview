@@ -54,4 +54,11 @@ namespace trview
         auto last_index = std::min(filename.find_last_of('\\'), filename.find_last_of('/'));
         return last_index == filename.npos ? std::string() : filename.substr(0, std::min(last_index + 1, filename.size()));
     }
+
+    std::string filename_without_extension(const std::string& filename)
+    {
+        const auto pathless = filename_without_path(filename);
+        const auto last_index = pathless.find_last_of('.');
+        return last_index == pathless.npos ? pathless : pathless.substr(0, last_index);
+    }
 }
