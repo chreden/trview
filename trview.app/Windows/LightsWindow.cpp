@@ -94,15 +94,31 @@ namespace trview
                 set_sync_light(sync_light);
             }
 
+            auto filtered_lights =
+                _all_lights |
+                std::views::filter([&](auto&& light)
+                    {
+                        const auto light_ptr = light .lock();
+                        return !(!light_ptr || (_track.enabled<Type::Room>() && light_ptr->room().lock() != _current_room.lock() || !_filters.match(*light_ptr)));
+                    }) |
+                std::views::transform([](auto&& light) { return light.lock(); }) |
+                std::ranges::to<std::vector>();
+
             RowCounter counter{ "lights", _all_lights.size() };
             if (ImGui::BeginTable(Names::lights_listbox.c_str(), 4, ImGuiTableFlags_Sortable | ImGuiTableFlags_ScrollY, ImVec2(0, -counter.height())))
             {
-                ImGui::TableSetupColumn("#", ImGuiTableColumnFlags_WidthFixed, _column_sizer.size(0));
-                ImGui::TableSetupColumn("Room", ImGuiTableColumnFlags_WidthFixed, _column_sizer.size(1));
-                ImGui::TableSetupColumn("Type", ImGuiTableColumnFlags_WidthFixed, _column_sizer.size(2));
-                ImGui::TableSetupColumn("Hide", ImGuiTableColumnFlags_WidthFixed, _column_sizer.size(3));
-                ImGui::TableSetupScrollFreeze(1, 1);
-                ImGui::TableHeadersRow();
+                imgui_header_row(
+                    {
+                        { "#", _column_sizer.size(0) },
+                        { "Room", _column_sizer.size(1) },
+                        { "Type", _column_sizer.size(2) },
+                        {.name = "Hide", .width = _column_sizer.size(3), .set_checked = [&](bool v)
+                            {
+                                std::ranges::for_each(filtered_lights, [=](auto&& light) { light->set_visible(!v); });
+                                on_scene_changed();
+                            }, .checked = std::ranges::all_of(filtered_lights, [](auto&& light) { return !light->visible(); })
+                        }
+                    });
 
                 imgui_sort_weak(_all_lights,
                     {
@@ -112,14 +128,8 @@ namespace trview
                         [](auto&& l, auto&& r) { return std::tuple(l.visible(), l.number()) < std::tuple(r.visible(), r.number()); }
                     }, _force_sort);
 
-                for (const auto& light_ptr : _all_lights)
+                for (const auto& light : filtered_lights)
                 {
-                    const auto& light = light_ptr.lock();
-                    if (_track.enabled<Type::Room>() && light->room().lock() != _current_room.lock() || !_filters.match(*light))
-                    {
-                        continue;
-                    }
-
                     counter.count();
                     ImGui::TableNextRow();
                     ImGui::TableNextColumn();

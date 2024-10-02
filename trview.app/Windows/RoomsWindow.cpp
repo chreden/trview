@@ -302,16 +302,32 @@ namespace trview
                 set_sync_room(sync_room);
             }
 
+            auto filtered_rooms =
+                _all_rooms |
+                std::views::filter([&](auto&& room)
+                    {
+                        const auto room_ptr = room.lock();
+                        return !(!room_ptr || !_filters.match(*room_ptr));
+                    }) |
+                std::views::transform([](auto&& room) { return room.lock(); }) |
+                std::ranges::to<std::vector>();
+
             RowCounter counter{ "rooms", _all_rooms.size() };
             if (ImGui::BeginTable(Names::rooms_list.c_str(), 5, ImGuiTableFlags_Sortable | ImGuiTableFlags_ScrollY, ImVec2(0, -counter.height())))
             {
-                ImGui::TableSetupColumn("#", ImGuiTableColumnFlags_WidthFixed, _column_sizer.size(0));
-                ImGui::TableSetupColumn("Items", ImGuiTableColumnFlags_WidthFixed, _column_sizer.size(1));
-                ImGui::TableSetupColumn("Triggers", ImGuiTableColumnFlags_WidthFixed, _column_sizer.size(2));
-                ImGui::TableSetupColumn("Statics", ImGuiTableColumnFlags_WidthFixed, _column_sizer.size(3));
-                ImGui::TableSetupColumn("Hide", ImGuiTableColumnFlags_WidthFixed, _column_sizer.size(4));
-                ImGui::TableSetupScrollFreeze(1, 1);
-                ImGui::TableHeadersRow();
+                imgui_header_row(
+                    {
+                        { "#", _column_sizer.size(0) },
+                        { "Room", _column_sizer.size(1) },
+                        { "Triggers", _column_sizer.size(2) },
+                        { "Statics", _column_sizer.size(3) },
+                        { .name = "Hide", .width = _column_sizer.size(4), .set_checked = [&](bool v)
+                            {
+                                std::ranges::for_each(filtered_rooms, [=](auto&& room) { room->set_visible(!v); });
+                                on_scene_changed();
+                            }, .checked = std::ranges::all_of(filtered_rooms, [](auto&& room) { return !room->visible(); })
+                        }
+                    });
 
                 auto trigger_count = [&](const IRoom& room)
                 {
@@ -323,26 +339,19 @@ namespace trview
                 imgui_sort_weak(_all_rooms,
                     {
                         [](auto&& l, auto&& r) { return l.number() < r.number(); },
-                        [&](auto&& l, auto&& r) { return item_count(_all_items, l) < item_count(_all_items, r); },
-                        [&](auto&& l, auto&& r) { return trigger_count(l) < trigger_count(r); },
-                        [&](auto&& l, auto&& r) { return static_mesh_count(l) < static_mesh_count(r); },
-                        [&](auto&& l, auto&& r) { return l.visible() < r.visible(); }
+                        [&](auto&& l, auto&& r) { return std::tuple(item_count(_all_items, l), l.number()) < std::tuple(item_count(_all_items, r), r.number()); },
+                        [&](auto&& l, auto&& r) { return std::tuple(trigger_count(l), l.number()) < std::tuple(trigger_count(r), r.number()); },
+                        [&](auto&& l, auto&& r) { return std::tuple(static_mesh_count(l), l.number()) < std::tuple(static_mesh_count(r), r.number()); },
+                        [&](auto&& l, auto&& r) { return std::tuple(l.visible(), l.number()) < std::tuple(r.visible(), r.number()); }
                     }, _force_sort);
 
                 const auto selected_room = _selected_room.lock();
-                for (const auto& room : _all_rooms)
+                for (const auto& room : filtered_rooms)
                 {
-                    auto room_ptr = room.lock();
-
-                    if (!_filters.match(*room_ptr))
-                    {
-                        continue;
-                    }
-
                     counter.count();
                     ImGui::TableNextRow();
                     ImGui::TableNextColumn();
-                    bool selected = room_ptr == selected_room;
+                    bool selected = room == selected_room;
 
                     ImGuiScroller scroller;
                     if (selected && _scroll_to_room)
@@ -352,11 +361,11 @@ namespace trview
                     }
 
                     ImGui::SetNextItemAllowOverlap();
-                    if (ImGui::Selectable(std::format("{0}##{0}", room_ptr->number()).c_str(), &selected, ImGuiSelectableFlags_SpanAllColumns | static_cast<int>(ImGuiSelectableFlags_SelectOnNav)))
+                    if (ImGui::Selectable(std::format("{0}##{0}", room->number()).c_str(), &selected, ImGuiSelectableFlags_SpanAllColumns | static_cast<int>(ImGuiSelectableFlags_SelectOnNav)))
                     {
                         scroller.fix_scroll();
-                        select_room(room_ptr);
-                        _map_renderer->load(room_ptr);
+                        select_room(room);
+                        _map_renderer->load(room);
                         if (_sync_room)
                         {
                             on_room_selected(_selected_room);
@@ -364,17 +373,17 @@ namespace trview
                         _scroll_to_room = false;
                     }
                     ImGui::TableNextColumn();
-                    ImGui::Text(std::to_string(item_count(_all_items, *room_ptr)).c_str());
+                    ImGui::Text(std::to_string(item_count(_all_items, *room)).c_str());
                     ImGui::TableNextColumn();
-                    ImGui::Text(std::to_string(trigger_count(*room_ptr)).c_str());
+                    ImGui::Text(std::to_string(trigger_count(*room)).c_str());
                     ImGui::TableNextColumn();
-                    ImGui::Text(std::to_string(static_mesh_count(*room_ptr)).c_str());
+                    ImGui::Text(std::to_string(static_mesh_count(*room)).c_str());
                     ImGui::TableNextColumn();
-                    bool hidden = !room_ptr->visible();
+                    bool hidden = !room->visible();
                     ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0, 0));
-                    if (ImGui::Checkbox(std::format("##hide-{}", room_ptr->number()).c_str(), &hidden))
+                    if (ImGui::Checkbox(std::format("##hide-{}", room->number()).c_str(), &hidden))
                     {
-                        room_ptr->set_visible(!hidden);
+                        room->set_visible(!hidden);
                         on_scene_changed();
                     }
                     ImGui::PopStyleVar();
@@ -1247,7 +1256,7 @@ namespace trview
         _column_sizer.measure("Items__", 1);
         _column_sizer.measure("Triggers__", 2);
         _column_sizer.measure("Statics__", 3);
-        _column_sizer.measure("Hide____", 4);
+        _column_sizer.measure("Hide______", 4);
 
         for (const auto& room : _all_rooms)
         {

@@ -109,16 +109,32 @@ namespace trview
                 set_sync_item(sync_item);
             }
 
+            auto filtered_items = 
+                _all_items | 
+                std::views::filter([&](auto&& item) 
+                    {
+                        const auto item_ptr = item.lock();
+                        return !(!item_ptr || (_track.enabled<Type::Room>() && item_ptr->room().lock() != _current_room.lock() || !_filters.match(*item_ptr)));
+                    }) |
+                std::views::transform([](auto&& item) { return item.lock(); }) |
+                std::ranges::to<std::vector>();
+
             RowCounter counter{ "items", _all_items.size() };
             if (ImGui::BeginTable(Names::items_list.c_str(), 5, ImGuiTableFlags_Sortable | ImGuiTableFlags_ScrollY, ImVec2(0, -counter.height())))
             {
-                ImGui::TableSetupColumn("#", ImGuiTableColumnFlags_WidthFixed, _column_sizer.size(0));
-                ImGui::TableSetupColumn("Room", ImGuiTableColumnFlags_WidthFixed, _column_sizer.size(1));
-                ImGui::TableSetupColumn("ID", ImGuiTableColumnFlags_WidthFixed, _column_sizer.size(2));
-                ImGui::TableSetupColumn("Type", ImGuiTableColumnFlags_WidthFixed, _column_sizer.size(3));
-                ImGui::TableSetupColumn("Hide", ImGuiTableColumnFlags_WidthFixed, _column_sizer.size(4));
-                ImGui::TableSetupScrollFreeze(1, 1);
-                ImGui::TableHeadersRow();
+                imgui_header_row(
+                    {
+                        { "#", _column_sizer.size(0) },
+                        { "Room", _column_sizer.size(1) },
+                        { "ID", _column_sizer.size(2) },
+                        { "Type", _column_sizer.size(3) },
+                        { .name = "Hide", .width = _column_sizer.size(4), .set_checked = [&](bool v)
+                            { 
+                                std::ranges::for_each(filtered_items, [=](auto&& item) { item->set_visible(!v); });
+                                on_scene_changed();
+                            }, .checked = std::ranges::all_of(filtered_items, [](auto&& item) { return !item->visible(); })
+                        }
+                    });
 
                 imgui_sort_weak(_all_items,
                     {
@@ -129,19 +145,13 @@ namespace trview
                         [](auto&& l, auto&& r) { return std::tuple(l.visible(), l.number()) < std::tuple(r.visible(), r.number()); }
                     }, _force_sort);
 
-                for (const auto& item : _all_items)
+                for (const auto& item : filtered_items)
                 {
-                    auto item_ptr = item.lock();
-                    if (!item_ptr || (_track.enabled<Type::Room>() && item_ptr->room().lock() != _current_room.lock() || !_filters.match(*item_ptr)))
-                    {
-                        continue;
-                    }
-
                     counter.count();
                     ImGui::TableNextRow();
                     ImGui::TableNextColumn();
                     auto selected_item = _selected_item.lock();
-                    bool selected = selected_item && selected_item == item_ptr;
+                    bool selected = selected_item && selected_item == item;
 
                     ImGuiScroller scroller;
                     if (selected && _scroll_to_item)
@@ -150,10 +160,10 @@ namespace trview
                         _scroll_to_item = false;
                     }
 
-                    const bool item_is_virtual = is_virtual(*item_ptr);
+                    const bool item_is_virtual = is_virtual(*item);
 
                     ImGui::SetNextItemAllowOverlap();
-                    if (ImGui::Selectable(std::format("{0}{1}##{0}", item_ptr->number(), item_is_virtual ? "*" : "").c_str(), &selected, ImGuiSelectableFlags_SpanAllColumns | static_cast<int>(ImGuiSelectableFlags_SelectOnNav)))
+                    if (ImGui::Selectable(std::format("{0}{1}##{0}", item->number(), item_is_virtual ? "*" : "").c_str(), &selected, ImGuiSelectableFlags_SpanAllColumns | static_cast<int>(ImGuiSelectableFlags_SelectOnNav)))
                     {
                         scroller.fix_scroll();
 
@@ -173,17 +183,17 @@ namespace trview
                     }
 
                     ImGui::TableNextColumn();
-                    ImGui::Text(std::to_string(item_room(item_ptr)).c_str());
+                    ImGui::Text(std::to_string(item_room(item)).c_str());
                     ImGui::TableNextColumn();
-                    ImGui::Text(std::to_string(item_ptr->type_id()).c_str());
+                    ImGui::Text(std::to_string(item->type_id()).c_str());
                     ImGui::TableNextColumn();
-                    ImGui::Text(item_ptr->type().c_str());
+                    ImGui::Text(item->type().c_str());
                     ImGui::TableNextColumn();
-                    bool hidden = !item_ptr->visible();
+                    bool hidden = !item->visible();
                     ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0, 0));
-                    if (ImGui::Checkbox(std::format("##hide-{}", item_ptr->number()).c_str(), &hidden))
+                    if (ImGui::Checkbox(std::format("##hide-{}", item->number()).c_str(), &hidden))
                     {
-                        item_ptr->set_visible(!hidden);
+                        item->set_visible(!hidden);
                         on_scene_changed();
                     }
                     ImGui::PopStyleVar();
@@ -437,7 +447,7 @@ namespace trview
         _column_sizer.measure("Room__", 1);
         _column_sizer.measure("ID__", 2);
         _column_sizer.measure("Type__", 3);
-        _column_sizer.measure("Hide____", 4);
+        _column_sizer.measure("Hide________", 4);
 
         for (const auto& item : _all_items)
         {
