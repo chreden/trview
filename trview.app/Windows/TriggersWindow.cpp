@@ -176,12 +176,21 @@ namespace trview
             RowCounter counter{ "triggers", _all_triggers.size() };
             if (ImGui::BeginTable(Names::triggers_list.c_str(), 4, ImGuiTableFlags_Sortable | ImGuiTableFlags_ScrollY, ImVec2(0, -counter.height())))
             {
-                ImGui::TableSetupColumn("#", ImGuiTableColumnFlags_WidthFixed, _column_sizer.size(0));
-                ImGui::TableSetupColumn("Room", ImGuiTableColumnFlags_WidthFixed, _column_sizer.size(1));
-                ImGui::TableSetupColumn("Type", ImGuiTableColumnFlags_WidthFixed, _column_sizer.size(2));
-                ImGui::TableSetupColumn("Hide", ImGuiTableColumnFlags_WidthFixed, _column_sizer.size(3));
-                ImGui::TableSetupScrollFreeze(1, 1);
-                ImGui::TableHeadersRow();
+                imgui_header_row(
+                    {
+                        { "#", _column_sizer.size(0) },
+                        { "Room", _column_sizer.size(1) },
+                        { "Type", _column_sizer.size(2) },
+                        { .name = "Hide", .width = _column_sizer.size(3), .set_checked = [&](bool v)
+                            {
+                                std::ranges::for_each(_filtered_triggers, [=](auto&& trigger) 
+                                    {
+                                        auto trigger_ptr = trigger.lock(); trigger_ptr->set_visible(!v); 
+                                    });
+                                on_scene_changed();
+                            }, .checked = std::ranges::all_of(_filtered_triggers, [](auto&& trigger) { auto trigger_ptr = trigger.lock(); return trigger_ptr ? !trigger_ptr->visible() : false; })
+                        }
+                    });
 
                 filter_triggers();
                 counter.set_count(_filtered_triggers.size());

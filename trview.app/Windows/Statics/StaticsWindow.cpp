@@ -56,39 +56,48 @@ namespace trview
                 set_sync_static(sync_static);
             }
 
+            auto filtered_statics =
+                _all_statics |
+                std::views::filter([&](auto&& stat)
+                    {
+                        const auto stat_ptr = stat.lock();
+                        return !(!stat_ptr || (_track.enabled<Type::Room>() && stat_ptr->room().lock() != _current_room.lock() || !_filters.match(*stat_ptr)));
+                    }) |
+                std::views::transform([](auto&& stat) { return stat.lock(); }) |
+                std::ranges::to<std::vector>();
+
             RowCounter counter{ "statics", _all_statics.size() };
             if (ImGui::BeginTable(Names::statics_list.c_str(), 5, ImGuiTableFlags_Sortable | ImGuiTableFlags_ScrollY, ImVec2(0, -counter.height())))
             {
-                ImGui::TableSetupColumn("#", ImGuiTableColumnFlags_WidthFixed, _column_sizer.size(0));
-                ImGui::TableSetupColumn("Room", ImGuiTableColumnFlags_WidthFixed, _column_sizer.size(1));
-                ImGui::TableSetupColumn("ID", ImGuiTableColumnFlags_WidthFixed, _column_sizer.size(2));
-                ImGui::TableSetupColumn("Type", ImGuiTableColumnFlags_WidthFixed, _column_sizer.size(3));
-                ImGui::TableSetupColumn("Hide", ImGuiTableColumnFlags_WidthFixed, _column_sizer.size(4));
-                ImGui::TableSetupScrollFreeze(1, 1);
-                ImGui::TableHeadersRow();
+                imgui_header_row(
+                    {
+                        { "#", _column_sizer.size(0) },
+                        { "Room", _column_sizer.size(1) },
+                        { "ID", _column_sizer.size(2) },
+                        { "Type", _column_sizer.size(3) },
+                        {.name = "Hide", .width = _column_sizer.size(4), .set_checked = [&](bool v)
+                            {
+                                std::ranges::for_each(filtered_statics, [=](auto&& stat) { stat->set_visible(!v); });
+                            }, .checked = std::ranges::all_of(filtered_statics, [](auto&& stat) { return !stat->visible(); })
+                        }
+                    });
 
                 imgui_sort_weak(_all_statics,
                     {
                         [](auto&& l, auto&& r) { return l.number() < r.number(); },
                         [](auto&& l, auto&& r) { return std::tuple(static_mesh_room(l), l.number()) < std::tuple(static_mesh_room(r), r.number()); },
-                        [](auto&& l, auto&& r) { return l.id() < r.id(); },
-                        [](auto&& l, auto&& r) { return l.type() < r.type(); },
+                        [](auto&& l, auto&& r) { return std::tuple(l.id(), l.number()) < std::tuple(r.id(), r.number()); },
+                        [](auto&& l, auto&& r) { return std::tuple(l.type(), l.number()) < std::tuple(r.type(), r.number()); },
                         [](auto&& l, auto&& r) { return std::tuple(l.visible(), l.number()) < std::tuple(r.visible(), r.number()); }
                     }, _force_sort);
 
-                for (const auto& stat : _all_statics)
+                for (const auto& stat : filtered_statics)
                 {
-                    auto stat_ptr = stat.lock();
-                    if (!stat_ptr || ( _track.enabled<Type::Room>() && stat_ptr->room().lock() != _current_room.lock() || !_filters.match(*stat_ptr)))
-                    {
-                        continue;
-                    }
-
                     counter.count();
                     ImGui::TableNextRow();
                     ImGui::TableNextColumn();
                     auto selected_static_mesh = _selected_static_mesh.lock();
-                    bool selected = selected_static_mesh && selected_static_mesh == stat_ptr;
+                    bool selected = selected_static_mesh && selected_static_mesh == stat;
 
                     ImGuiScroller scroller;
                     if (selected && _scroll_to_static)
@@ -98,7 +107,7 @@ namespace trview
                     }
 
                     ImGui::SetNextItemAllowOverlap();
-                    if (ImGui::Selectable(std::format("{0}##{0}", stat_ptr->number()).c_str(), &selected, ImGuiSelectableFlags_SpanAllColumns | static_cast<int>(ImGuiSelectableFlags_SelectOnNav)))
+                    if (ImGui::Selectable(std::format("{0}##{0}", stat->number()).c_str(), &selected, ImGuiSelectableFlags_SpanAllColumns | static_cast<int>(ImGuiSelectableFlags_SelectOnNav)))
                     {
                         scroller.fix_scroll();
 
@@ -111,17 +120,17 @@ namespace trview
                     }
 
                     ImGui::TableNextColumn();
-                    ImGui::Text(std::to_string(static_mesh_room(*stat_ptr)).c_str());
+                    ImGui::Text(std::to_string(static_mesh_room(*stat)).c_str());
                     ImGui::TableNextColumn();
-                    ImGui::Text(std::to_string(stat_ptr->id()).c_str());
+                    ImGui::Text(std::to_string(stat->id()).c_str());
                     ImGui::TableNextColumn();
-                    ImGui::Text(to_string(stat_ptr->type()).c_str());
+                    ImGui::Text(to_string(stat->type()).c_str());
                     ImGui::TableNextColumn();
-                    bool hidden = !stat_ptr->visible();
+                    bool hidden = !stat->visible();
                     ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0, 0));
-                    if (ImGui::Checkbox(std::format("##hide-{}", stat_ptr->number()).c_str(), &hidden))
+                    if (ImGui::Checkbox(std::format("##hide-{}", stat->number()).c_str(), &hidden))
                     {
-                        stat_ptr->set_visible(!hidden);
+                        stat->set_visible(!hidden);
                     }
                     ImGui::PopStyleVar();
                 }
@@ -206,7 +215,7 @@ namespace trview
         _column_sizer.measure("Room__", 1);
         _column_sizer.measure("ID__", 2);
         _column_sizer.measure("Type__", 3);
-        _column_sizer.measure("Hide______", 4);
+        _column_sizer.measure("Hide________", 4);
 
         for (const auto& stat : _all_statics)
         {

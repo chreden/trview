@@ -152,15 +152,31 @@ namespace trview
                 set_sync(sync);
             }
 
+            auto filtered_camera_sinks =
+                _all_camera_sinks |
+                std::views::filter([&](auto&& cs)
+                    {
+                        const auto cs_ptr = cs.lock();
+                        return !(!cs_ptr || (_track.enabled<Type::Room>() && !matching_room(*cs_ptr, _current_room) || !_filters.match(*cs_ptr)));
+                    }) |
+                std::views::transform([](auto&& cs) { return cs.lock(); }) |
+                std::ranges::to<std::vector>();
+
             RowCounter counter{ "camera/sinks", _all_camera_sinks.size() };
             if (ImGui::BeginTable(Names::camera_sink_list.c_str(), 4, ImGuiTableFlags_Sortable | ImGuiTableFlags_ScrollY, ImVec2(0, -counter.height())))
             {
-                ImGui::TableSetupColumn("#", ImGuiTableColumnFlags_WidthFixed, _column_sizer.size(0));
-                ImGui::TableSetupColumn("Room", ImGuiTableColumnFlags_WidthFixed, _column_sizer.size(1));
-                ImGui::TableSetupColumn("Type", ImGuiTableColumnFlags_WidthFixed, _column_sizer.size(2));
-                ImGui::TableSetupColumn("Hide", ImGuiTableColumnFlags_WidthFixed, _column_sizer.size(3));
-                ImGui::TableSetupScrollFreeze(1, 1);
-                ImGui::TableHeadersRow();
+                imgui_header_row(
+                    {
+                        { "#", _column_sizer.size(0) },
+                        { "Room", _column_sizer.size(1) },
+                        { "Type", _column_sizer.size(2) },
+                        {.name = "Hide", .width = _column_sizer.size(3), .set_checked = [&](bool v)
+                            {
+                                std::ranges::for_each(filtered_camera_sinks, [=](auto&& cs) { cs->set_visible(!v); });
+                                on_scene_changed();
+                            }, .checked = std::ranges::all_of(filtered_camera_sinks, [](auto&& cs) { return !cs->visible(); })
+                        }
+                    });
 
                 imgui_sort_weak(_all_camera_sinks,
                     {
@@ -170,15 +186,8 @@ namespace trview
                         [](auto&& l, auto&& r) { return std::tuple(l.visible(), l.number()) < std::tuple(r.visible(), r.number()); }
                     }, _force_sort);
 
-                for (const auto& camera_sink_ptr : _all_camera_sinks)
+                for (const auto& camera_sink : filtered_camera_sinks)
                 {
-                    const auto camera_sink = camera_sink_ptr.lock();
-
-                    if (_track.enabled<Type::Room>() && !matching_room(*camera_sink, _current_room) || !_filters.match(*camera_sink))
-                    {
-                        continue;
-                    }
-
                     counter.count();
                     ImGui::TableNextRow();
                     ImGui::TableNextColumn();
@@ -240,7 +249,7 @@ namespace trview
     void CameraSinkWindow::render_details()
     {
         auto selected = _selected_camera_sink.lock();
-        if (ImGui::BeginChild(Names::details_panel.c_str(), ImVec2(230, 0), true) && selected)
+        if (ImGui::BeginChild(Names::details_panel.c_str(), ImVec2(), true) && selected)
         {
             const auto add_stat = [&]<typename T>(const std::string & name, const T && value)
             {

@@ -560,12 +560,14 @@ TEST(Windows, SetLevel)
 TEST(Windows, SetRoom)
 {
     auto [cameras_ptr, cameras] = create_mock<MockCameraSinkWindowManager>();
+    auto [items_ptr, items] = create_mock<MockItemsWindowManager>();
     auto [lights_ptr, lights] = create_mock<MockLightsWindowManager>();
     auto [rooms_ptr, rooms] = create_mock<MockRoomsWindowManager>();
     auto [statics_ptr, statics] = create_mock<MockStaticsWindowManager>();
     auto [triggers_ptr, triggers] = create_mock<MockTriggersWindowManager>();
     auto windows = register_test_module()
         .with_camera_sinks(std::move(cameras_ptr))
+        .with_items(std::move(items_ptr))
         .with_lights(std::move(lights_ptr))
         .with_rooms(std::move(rooms_ptr))
         .with_statics(std::move(statics_ptr))
@@ -574,6 +576,8 @@ TEST(Windows, SetRoom)
 
     std::shared_ptr<IRoom> cameras_room;
     EXPECT_CALL(cameras, set_room).Times(1).WillRepeatedly([&](auto r) { cameras_room = r.lock(); });
+    std::shared_ptr<IRoom> items_room;
+    EXPECT_CALL(items, set_room).Times(1).WillRepeatedly([&](auto r) { items_room = r.lock(); });
     std::shared_ptr<IRoom> lights_room;
     EXPECT_CALL(lights, set_room).Times(1).WillRepeatedly([&](auto r) { lights_room = r.lock(); });
     std::shared_ptr<IRoom> rooms_room;
@@ -587,6 +591,7 @@ TEST(Windows, SetRoom)
     windows->set_room(room);
 
     ASSERT_EQ(cameras_room, room);
+    ASSERT_EQ(items_room, room);
     ASSERT_EQ(lights_room, room);
     ASSERT_EQ(rooms_room, room);
     ASSERT_EQ(statics_room, room);

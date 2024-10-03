@@ -97,37 +97,47 @@ namespace trview
                 set_sync_sound_source(sync_sound_source);
             }
 
+            auto filtered_sound_sources =
+                _all_sound_sources |
+                std::views::filter([&](auto&& sound)
+                    {
+                        const auto sound_ptr = sound.lock();
+                        return !(!sound_ptr || !_filters.match(*sound_ptr));
+                    }) |
+                std::views::transform([](auto&& sound) { return sound.lock(); }) |
+                std::ranges::to<std::vector>();
+
             RowCounter counter{ "sound sources", _all_sound_sources.size() };
             if (ImGui::BeginTable(Names::sound_sources_list.c_str(), 4, ImGuiTableFlags_Sortable | ImGuiTableFlags_ScrollY, ImVec2(200, -counter.height())))
             {
-                ImGui::TableSetupColumn("#", ImGuiTableColumnFlags_WidthFixed, _column_sizer.size(0));
-                ImGui::TableSetupColumn("ID", ImGuiTableColumnFlags_WidthFixed, _column_sizer.size(1));
-                ImGui::TableSetupColumn("Sample", ImGuiTableColumnFlags_WidthFixed, _column_sizer.size(2));
-                ImGui::TableSetupColumn("Hide", ImGuiTableColumnFlags_WidthFixed, _column_sizer.size(3));
-                ImGui::TableSetupScrollFreeze(1, 1);
-                ImGui::TableHeadersRow();
+                imgui_header_row(
+                    {
+                        { "#", _column_sizer.size(0) },
+                        { "ID", _column_sizer.size(1) },
+                        { "Sample", _column_sizer.size(2) },
+                        { .name = "Hide", .width = _column_sizer.size(3), .set_checked = [&](bool v)
+                            {
+                                std::ranges::for_each(filtered_sound_sources, [=](auto&& sound) { sound->set_visible(!v); });
+                                on_scene_changed();
+                            }, .checked = std::ranges::all_of(filtered_sound_sources, [](auto&& sound) { return !sound->visible(); })
+                        }
+                    });
 
                 imgui_sort_weak(_all_sound_sources,
                     {
                         [](auto&& l, auto&& r) { return l.number() < r.number(); },
-                        [](auto&& l, auto&& r) { return l.id() < r.id(); },
-                        [](auto&& l, auto&& r) { return l.sample() < r.sample(); },
+                        [](auto&& l, auto&& r) { return std::tuple(l.id(), l.number()) < std::tuple(r.id(), r.number()); },
+                        [](auto&& l, auto&& r) { return std::tuple(l.sample(), l.number()) < std::tuple(r.sample(), r.number()); },
                         [](auto&& l, auto&& r) { return std::tuple(l.visible(), l.number()) < std::tuple(r.visible(), r.number()); }
                     }, _force_sort);
 
-                for (const auto& sound_source : _all_sound_sources)
+                for (const auto& sound_source : filtered_sound_sources)
                 {
-                    auto sound_source_ptr = sound_source.lock();
-                    if (!sound_source_ptr || !_filters.match(*sound_source_ptr))
-                    {
-                        continue;
-                    }
-
                     counter.count();
                     ImGui::TableNextRow();
                     ImGui::TableNextColumn();
                     auto selected_sound_source = _selected_sound_source.lock();
-                    bool selected = selected_sound_source && selected_sound_source == sound_source_ptr;
+                    bool selected = selected_sound_source && selected_sound_source == sound_source;
 
                     ImGuiScroller scroller;
                     if (selected && _scroll_to_sound_source)
@@ -137,7 +147,7 @@ namespace trview
                     }
 
                     ImGui::SetNextItemAllowOverlap();
-                    if (ImGui::Selectable(std::format("{0}##{0}", sound_source_ptr->number()).c_str(), &selected, ImGuiSelectableFlags_SpanAllColumns | static_cast<int>(ImGuiSelectableFlags_SelectOnNav)))
+                    if (ImGui::Selectable(std::format("{0}##{0}", sound_source->number()).c_str(), &selected, ImGuiSelectableFlags_SpanAllColumns | static_cast<int>(ImGuiSelectableFlags_SelectOnNav)))
                     {
                          scroller.fix_scroll();
                          set_local_selected_sound_source(sound_source);
@@ -149,15 +159,15 @@ namespace trview
                     }
 
                     ImGui::TableNextColumn();
-                    ImGui::Text(std::to_string(sound_source_ptr->id()).c_str());
+                    ImGui::Text(std::to_string(sound_source->id()).c_str());
                     ImGui::TableNextColumn();
-                    ImGui::Text(std::to_string(sound_source_ptr->sample().value_or(-1)).c_str());
+                    ImGui::Text(std::to_string(sound_source->sample().value_or(-1)).c_str());
                     ImGui::TableNextColumn();
-                    bool hidden = !sound_source_ptr->visible();
+                    bool hidden = !sound_source->visible();
                     ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0, 0));
-                    if (ImGui::Checkbox(std::format("##hide-{}", sound_source_ptr->number()).c_str(), &hidden))
+                    if (ImGui::Checkbox(std::format("##hide-{}", sound_source->number()).c_str(), &hidden))
                     {
-                        sound_source_ptr->set_visible(!hidden);
+                        sound_source->set_visible(!hidden);
                         on_scene_changed();
                     }
                     ImGui::PopStyleVar();
