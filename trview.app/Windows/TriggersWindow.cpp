@@ -449,6 +449,13 @@ namespace trview
         _filters.add_getter<bool>("Only once", [](auto&& trigger) { return trigger.only_once(); });
         _filters.add_getter<float>("Timer", [](auto&& trigger) { return static_cast<float>(trigger.timer()); });
 
+        _filters.add_multi_getter<std::string>("Command", [=](auto&& trigger)
+            {
+                return trigger.commands()
+                    | std::views::transform([](auto&& t) { return command_type_name(t.type()); })
+                    | std::ranges::to<std::vector>();
+            });
+
         auto all_trigger_indices = [](TriggerCommandType type, const auto& trigger)
         {
             std::vector<float> indices;
