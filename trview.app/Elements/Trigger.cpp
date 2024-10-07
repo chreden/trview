@@ -85,7 +85,7 @@ namespace trview
         return _timer;
     }
 
-    const std::vector<Command> Trigger::commands() const
+    std::vector<Command> Trigger::commands() const
     {
         return _commands;
     }
