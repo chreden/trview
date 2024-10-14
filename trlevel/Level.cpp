@@ -4,6 +4,7 @@
 #include <format>
 #include <ranges>
 #include <spanstream>
+#include "aod.h"
 
 namespace trlevel
 {
@@ -1638,7 +1639,14 @@ namespace trlevel
             std::basic_ispanstream<uint8_t> file{ { *bytes } };
             log_file(activity, file, std::format("Opened file \"{}\"", _filename));
 
-            read_header(file, *bytes, activity, callbacks);
+            if (trview::to_lowercase(_filename).ends_with(".gmx.clz"))
+            {
+                _platform_and_version = { .platform = Platform::PC, .version = LevelVersion::AoD };
+            }
+            else
+            {
+                read_header(file, *bytes, activity, callbacks);
+            }
 
             const std::unordered_map<PlatformAndVersion, std::function<void ()>> loaders
             {
@@ -1647,7 +1655,8 @@ namespace trlevel
                 {{.platform = Platform::PC, .version = LevelVersion::Tomb2 }, [&]() { load_tr2_pc(file, activity, callbacks); }},
                 {{.platform = Platform::PC, .version = LevelVersion::Tomb3 }, [&]() { load_tr3_pc(file, activity, callbacks); }},
                 {{.platform = Platform::PC, .version = LevelVersion::Tomb4 }, [&]() { load_tr4_pc(file, activity, callbacks); }},
-                {{.platform = Platform::PC, .version = LevelVersion::Tomb5 }, [&]() { load_tr5_pc(file, activity, callbacks); }}
+                {{.platform = Platform::PC, .version = LevelVersion::Tomb5 }, [&]() { load_tr5_pc(file, activity, callbacks); }},
+                {{.platform = Platform::PC, .version = LevelVersion::AoD }, [&]() { load_aod_pc(file, *bytes, activity, callbacks); }}
             };
 
             const auto loader = loaders.find(_platform_and_version);
@@ -2120,6 +2129,56 @@ namespace trlevel
         callbacks.on_progress("Generating meshes");
         log_file(activity, file, "Generating meshes");
         generate_meshes(_mesh_data);
+    }
+
+    void Level::load_aod_pc(std::basic_ispanstream<uint8_t>& zipped_file, std::vector<uint8_t>& bytes, trview::Activity& activity, const LoadCallbacks& callbacks)
+    {
+        activity;
+        callbacks;
+
+        // Read compressed AOD data as a test:
+        auto uncompressed_size = read<uint32_t>(zipped_file);
+        zipped_file.seekg(0, std::ios::end);
+        std::size_t compressed_size = static_cast<std::size_t>(zipped_file.tellg()) - 4;
+        zipped_file.seekg(4, std::ios::beg);
+        std::vector<uint8_t> uncompressed_data(uncompressed_size);
+
+        z_stream stream;
+        memset(&stream, 0, sizeof(stream));
+        int result = inflateInit(&stream);
+        // Exception...
+        stream.avail_in = static_cast<uint32_t>(compressed_size);
+        stream.next_in = &bytes[4];
+        stream.avail_out = uncompressed_size;
+        stream.next_out = &uncompressed_data[0];
+        result = inflate(&stream, Z_NO_FLUSH);
+        inflateEnd(&stream);
+
+        // TODO: Remove temporary file output.
+        _files->save_file(
+            std::format("C:\\Users\\Chris\\AppData\\Local\\Temp\\Temper\\aexamoso\\{}", trview::filename_without_path(_filename)),
+            uncompressed_data);
+
+        std::basic_ispanstream<uint8_t> file{ { uncompressed_data } };
+        log_file(activity, file, std::format("Decompressed AoD file \"{}\"", _filename));
+
+        const aod::Header header = read<aod::Header>(file);
+        const aod::Section1_Header section1_header = read<aod::Section1_Header>(file);
+        const auto unknowns = read_vector<aod::Section1_Unknown>(file, section1_header.count_4);
+
+        // Cheeky skip.
+        file.seekg(2048 + unknowns.back().unknown_4 + 8, std::ios::beg);
+
+        const auto unknowns_2 = read_vector<aod::Section1_Unknown2>(file, section1_header.num_animations);
+
+        // for (const auto& section : header.sections)
+        // {
+        //     // Seek to start of header.
+        //     file.seekg(sizeof(header) + section.start, std::ios::beg);
+        // 
+        //     // Read data - how do you know what it is?
+        // 
+        // }
     }
 
     void Level::read_textiles_tr1_pc(std::basic_ispanstream<uint8_t>& file, trview::Activity& activity, const LoadCallbacks& callbacks)

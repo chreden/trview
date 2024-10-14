@@ -13,7 +13,8 @@ namespace trlevel
         Tomb2,
         Tomb3,
         Tomb4,
-        Tomb5
+        Tomb5,
+        AoD
     };
 
     enum class Platform

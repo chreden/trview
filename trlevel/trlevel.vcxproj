@@ -94,6 +94,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="aod.h" />
     <ClInclude Include="Decrypter.h" />
     <ClInclude Include="IDecrypter.h" />
     <ClInclude Include="ILevel.h" />

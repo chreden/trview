@@ -16,6 +16,7 @@
     <ClInclude Include="LevelVersion.hpp" />
     <ClInclude Include="IDecrypter.h" />
     <ClInclude Include="Decrypter.h" />
+    <ClInclude Include="aod.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Level.cpp" />
