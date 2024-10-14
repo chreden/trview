@@ -6,16 +6,23 @@ namespace trlevel
 {
     namespace aod
     {
+        enum class SectionType : uint32_t
+        {
+            Animation  = 1127259533,
+            Animation2 = 3444339134,
+            Unknown2   = 3045493218
+        };
+
         struct Header
         {
             struct Section
             {
-                uint32_t unknown;
-                uint32_t start;
-                uint32_t size;
+                SectionType type;
+                uint32_t    start;
+                uint32_t    size;
             };
 
-            uint32_t version;
+            float    version;
             uint32_t unknown_1;
             Section  sections[170];
         };
@@ -26,17 +33,18 @@ namespace trlevel
             uint32_t num_animations;
             uint32_t count_2;
             uint32_t count_3;
-            uint32_t count_4;
-            uint32_t unknowns[44];
+            uint32_t num_something;
+            uint32_t count_5;
+            uint32_t count_6;
         };
-        static_assert(sizeof(Section1_Header) == 192);
+        static_assert(sizeof(Section1_Header) == 24);
 
         struct Section1_Unknown
         {
             uint32_t unknown_1;
             uint32_t unknown_2;
-            uint32_t unknown_3;
-            uint32_t unknown_4;
+            uint32_t num_entries;
+            uint32_t start;
         };
 
         struct Section1_Unknown2
@@ -46,6 +54,5 @@ namespace trlevel
         };
         static_assert(sizeof(Section1_Unknown2) == 132);
 
-        
     }
 }

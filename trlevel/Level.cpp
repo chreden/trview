@@ -5,6 +5,7 @@
 #include <ranges>
 #include <spanstream>
 #include "aod.h"
+#include <unordered_set>
 
 namespace trlevel
 {
@@ -42,10 +43,7 @@ namespace trlevel
         const int16_t Lara = 0;
         const int16_t LaraSkinTR3 = 315;
         const int16_t LaraSkinPostTR3 = 8;
-    }
 
-    namespace
-    {
         void skip(std::basic_ispanstream<uint8_t>& file, uint32_t size)
         {
             file.seekg(size, std::ios::cur);
@@ -2163,22 +2161,55 @@ namespace trlevel
         log_file(activity, file, std::format("Decompressed AoD file \"{}\"", _filename));
 
         const aod::Header header = read<aod::Header>(file);
-        const aod::Section1_Header section1_header = read<aod::Section1_Header>(file);
-        const auto unknowns = read_vector<aod::Section1_Unknown>(file, section1_header.count_4);
 
-        // Cheeky skip.
-        file.seekg(2048 + unknowns.back().unknown_4 + 8, std::ios::beg);
+        for (const auto& section : header.sections)
+        {
+            file.seekg(2048 + section.start, std::ios::beg);
 
-        const auto unknowns_2 = read_vector<aod::Section1_Unknown2>(file, section1_header.num_animations);
+            switch (section.type)
+            {
+                case aod::SectionType::Animation:
+                case aod::SectionType::Animation2:
+                {
+                    const aod::Section1_Header section1_header = read<aod::Section1_Header>(file);
+                    const auto unknowns_1 = read_vector<uint32_t>(file, section1_header.num_animations);
+                    const auto unknowns = read_vector<aod::Section1_Unknown>(file, section1_header.num_something);
 
-        // for (const auto& section : header.sections)
-        // {
-        //     // Seek to start of header.
-        //     file.seekg(sizeof(header) + section.start, std::ios::beg);
-        // 
-        //     // Read data - how do you know what it is?
-        // 
-        // }
+                    // Not sure what this data is yet. Sometimes one of the elements is a float, usually 2 of 3.
+                    std::vector<std::vector<float>> somethings;
+                    for (const auto& unknown : unknowns)
+                    {
+                        file.seekg(2048 + section.start + unknown.start, std::ios::beg);
+                        somethings.push_back(read_vector<float>(file, unknown.num_entries));
+                    }
+
+                    const auto animations = read_vector<aod::Section1_Unknown2>(file, section1_header.num_animations);
+                    break;
+                }
+            }
+        }
+
+        /*
+        // Temporary output of sections
+
+        const auto name = trview::filename_without_path(_filename);
+        const auto folder = std::format("C:\\Users\\Chris\\AppData\\Local\\Temp\\Temper\\aexamoso\\{}", name.substr(0, name.size() - 8));
+        CreateDirectory(trview::to_utf16(folder).c_str(), nullptr);
+
+        uint32_t i = 0;
+        for (const auto& section : header.sections)
+        {
+            if (section.size == 0)
+            {
+                break;
+            }
+
+            const auto start = section.start + 2048;
+            const auto end = std::min<std::size_t>(uncompressed_data.size() - 1, section.start + section.size + 2048);
+
+            _files->save_file(std::format("{}\\{}.bin", folder, i++), std::vector<uint8_t>{ &uncompressed_data[start], &uncompressed_data[end] });
+        }
+        */
     }
 
     void Level::read_textiles_tr1_pc(std::basic_ispanstream<uint8_t>& file, trview::Activity& activity, const LoadCallbacks& callbacks)
