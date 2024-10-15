@@ -159,5 +159,7 @@ namespace trview
         Event<> on_level_changed;
         mutable Event<> on_geometry_colours_changed;
         Event<std::weak_ptr<ITrigger>> on_trigger_selected;
+
+        virtual std::vector<DirectX::SimpleMath::Vector3> temp() const = 0;
     };
 }

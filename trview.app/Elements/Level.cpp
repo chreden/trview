@@ -1356,6 +1356,7 @@ namespace trview
         _version = level->get_version();
         _floor_data = level->get_floor_data_all();
         _name = level->name();
+        _temp = level->temp();
 
         record_models(*level);
         callbacks.on_progress("Generating rooms");
@@ -1476,6 +1477,11 @@ namespace trview
     bool Level::show_sound_sources() const
     {
         return has_flag(_render_filters, RenderFilter::SoundSources);
+    }
+
+    std::vector<DirectX::SimpleMath::Vector3> Level::temp() const
+    {
+        return _temp;
     }
 
     bool find_item_by_type_id(const ILevel& level, uint32_t type_id, std::weak_ptr<IItem>& output_item)

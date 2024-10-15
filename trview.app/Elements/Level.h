@@ -126,6 +126,7 @@ namespace trview
         std::vector<std::weak_ptr<ISoundSource>> sound_sources() const override;
         void set_show_sound_sources(bool show) override;
         bool show_sound_sources() const override;
+        std::vector<DirectX::SimpleMath::Vector3> temp() const override;
     private:
         void generate_rooms(const trlevel::ILevel& level, const IRoom::Source& room_source, const IMeshStorage& mesh_storage);
         void generate_triggers(const ITrigger::Source& trigger_source);
@@ -224,6 +225,8 @@ namespace trview
         std::vector<std::weak_ptr<IScriptable>> _scriptables;
         std::shared_ptr<ISoundStorage> _sound_storage;
         std::vector<std::shared_ptr<ISoundSource>> _sound_sources;
+
+        std::vector<DirectX::SimpleMath::Vector3> _temp;
     };
 
     /// Find the first item with the type id specified.

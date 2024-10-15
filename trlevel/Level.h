@@ -168,6 +168,7 @@ namespace trlevel
         std::vector<tr_sound_source> sound_sources() const override;
         std::vector<tr_x_sound_details> sound_details() const override;
         std::vector<int16_t> sound_map() const override;
+        std::vector<DirectX::SimpleMath::Vector3> temp() const override;
     private:
         void generate_meshes(const std::vector<uint16_t>& mesh_data);
         tr_colour4 colour_from_object_texture(uint32_t texture) const;
@@ -237,5 +238,7 @@ namespace trlevel
         std::shared_ptr<IDecrypter>     _decrypter;
         std::string                     _filename;
         std::shared_ptr<trview::IFiles> _files;
+
+        std::vector<DirectX::SimpleMath::Vector3> _temp;
     };
 }

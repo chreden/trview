@@ -10,7 +10,9 @@ namespace trlevel
         {
             Animation  = 1127259533,
             Animation2 = 3444339134,
-            Unknown2   = 3045493218
+            Animation3 = 3045493218,
+            Unknown    = 3045516138,
+            Unknown2   = 2883510172
         };
 
         struct Header

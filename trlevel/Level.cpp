@@ -2170,6 +2170,7 @@ namespace trlevel
             {
                 case aod::SectionType::Animation:
                 case aod::SectionType::Animation2:
+                case aod::SectionType::Animation3:
                 {
                     const aod::Section1_Header section1_header = read<aod::Section1_Header>(file);
                     const auto unknowns_1 = read_vector<uint32_t>(file, section1_header.num_animations);
@@ -2184,6 +2185,24 @@ namespace trlevel
                     }
 
                     const auto animations = read_vector<aod::Section1_Unknown2>(file, section1_header.num_animations);
+                    break;
+                }
+                case aod::SectionType::Unknown:
+                {
+                    file.seekg(5, std::ios::cur);
+                    uint16_t num_entries = read<uint16_t>(file);
+                    file.seekg(4, std::ios::cur);
+                    float unknown_1 = read<float>(file);
+                    unknown_1;
+                    file.seekg(17, std::ios::cur);
+
+                    for (int i = 0; i < num_entries; ++i)
+                    {
+                        float values[64];
+                        file.read(reinterpret_cast<uint8_t*>(values), sizeof(values));
+                        _temp.push_back({ values[0], values[1], values[2] });
+                    }
+
                     break;
                 }
             }
@@ -2275,5 +2294,10 @@ namespace trlevel
                 sfx_file.seekg(size + 8, std::ios::cur);
             }
         }
+    }
+
+    std::vector<DirectX::SimpleMath::Vector3> Level::temp() const
+    {
+        return _temp;
     }
 }

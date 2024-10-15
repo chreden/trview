@@ -857,6 +857,11 @@ namespace trview
         set_route(_route);
         _viewer->open(level, open_mode);
 
+        for (const auto v : _level->temp())
+        {
+            _route->add(v, Vector3::Up, 0);
+        }
+
         if (old_level && open_mode == ILevel::OpenMode::Reload)
         {
             const Vector3 old_target = _viewer->target();

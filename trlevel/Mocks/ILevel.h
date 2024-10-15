@@ -48,6 +48,7 @@ namespace trlevel
             MOCK_METHOD(std::vector<tr_sound_source>, sound_sources, (), (const, override));
             MOCK_METHOD(std::vector<tr_x_sound_details>, sound_details, (), (const, override));
             MOCK_METHOD(std::vector<int16_t>, sound_map, (), (const, override));
+            MOCK_METHOD(std::vector<DirectX::SimpleMath::Vector3>, temp, (), (const, override));
         };
     }
 }
