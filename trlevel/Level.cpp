@@ -41,10 +41,8 @@ namespace trlevel
         const int16_t Lara = 0;
         const int16_t LaraSkinTR3 = 315;
         const int16_t LaraSkinPostTR3 = 8;
-    }
-
-    namespace
-    {
+        constexpr std::array expected_del{ 126, 237, 0, 126, 126, 126, 126, 121, 122, 123 };
+    
         void skip(std::basic_ispanstream<uint8_t>& file, uint32_t size)
         {
             file.seekg(size, std::ios::cur);
@@ -731,11 +729,11 @@ namespace trlevel
             return sound_map;
         }
 
-        std::vector<int16_t> read_sound_map_tr5(trview::Activity& activity, std::basic_ispanstream<uint8_t>& file, const ILevel::LoadCallbacks& callbacks)
+        std::vector<int16_t> read_sound_map_tr5(trview::Activity& activity, std::basic_ispanstream<uint8_t>& file, const ILevel::LoadCallbacks& callbacks, bool is_del)
         {
             callbacks.on_progress("Reading sound map");
             log_file(activity, file, "Reading sound map");
-            const auto sound_map = read_vector<int16_t>(file, 450);
+            const auto sound_map = read_vector<int16_t>(file, is_del ? 370 : 450);
             log_file(activity, file, "Read sound map");
             return sound_map;
         }
@@ -2110,7 +2108,12 @@ namespace trlevel
         _entities = read_entities(activity, file, callbacks);
         _ai_objects = read_ai_objects(activity, file, callbacks);
         read_demo_data(activity, file, callbacks);
-        _sound_map = read_sound_map_tr5(activity, file, callbacks);
+
+        // Check state here to determine if this is del.trc. del.trc is a TRC level that has
+        // 370 length sound map instead of 450 sound map like every other TRC level.
+        const bool is_del = std::ranges::equal(_entities | std::views::transform([](auto&& e) { return e.TypeID; }), expected_del);
+
+        _sound_map = read_sound_map_tr5(activity, file, callbacks, is_del);
         _sound_details = read_sound_details(activity, file, callbacks);
         _sample_indices = read_sample_indices(activity, file, callbacks);
 
