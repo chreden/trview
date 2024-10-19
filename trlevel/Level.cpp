@@ -2196,13 +2196,10 @@ namespace trlevel
                     unknown_1;
                     file.seekg(17, std::ios::cur);
 
-                    for (int i = 0; i < num_entries; ++i)
-                    {
-                        float values[64];
-                        file.read(reinterpret_cast<uint8_t*>(values), sizeof(values));
-                        _temp.push_back({ values[0], values[1], values[2] });
-                    }
-
+                    const auto vertices = read_vector<aod::UnknownVertex>(file, num_entries);
+                    _temp = vertices | 
+                        std::views::transform([](auto&& v) { return v.position; }) |
+                        std::ranges::to<std::vector>();
                     break;
                 }
             }

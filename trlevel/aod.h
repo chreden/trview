@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cstdint>
+#include <SimpleMath.h>
 
 namespace trlevel
 {
@@ -56,5 +57,11 @@ namespace trlevel
         };
         static_assert(sizeof(Section1_Unknown2) == 132);
 
+        struct UnknownVertex
+        {
+            DirectX::SimpleMath::Vector3 position;
+            DirectX::SimpleMath::Vector3 normal;
+            float unknown[58]; // Probably transforms, scaling.
+        };
     }
 }
