@@ -62,6 +62,20 @@ TEST(Lua_StaticMesh, Collision)
     ASSERT_DOUBLE_EQ(3072.0, lua_tonumber(L, -1));
 }
 
+TEST(Lua_StaticMesh, HasCollision)
+{
+    auto static_mesh = mock_shared<MockStaticMesh>();
+    EXPECT_CALL(*static_mesh, has_collision).WillRepeatedly(Return(true));
+
+    LuaState L;
+    lua::create_static_mesh(L, static_mesh);
+    lua_setglobal(L, "s");
+
+    ASSERT_EQ(0, luaL_dostring(L, "return s.has_collision"));
+    ASSERT_EQ(LUA_TBOOLEAN, lua_type(L, -1));
+    ASSERT_EQ(true, lua_toboolean(L, -1));
+}
+
 TEST(Lua_StaticMesh, Id)
 {
     auto static_mesh = mock_shared<MockStaticMesh>();

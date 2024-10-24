@@ -28,3 +28,17 @@ TEST(StaticMesh, OnChangedRaised)
     mesh.set_visible(false);
     ASSERT_EQ(raised, true);
 }
+
+TEST(StaticMesh, HasCollision)
+{
+    StaticMesh collision_mesh({}, { .Flags = 0 }, mock_shared<MockMesh>(), {}, mock_shared<MockMesh>());
+    ASSERT_EQ(collision_mesh.has_collision(), true);
+    StaticMesh no_collision_mesh({}, { .Flags = 1 }, mock_shared<MockMesh>(), {}, mock_shared<MockMesh>());
+    ASSERT_EQ(no_collision_mesh.has_collision(), false);
+}
+
+TEST(StaticMesh, SpriteNoCollision)
+{
+    StaticMesh collision_mesh({}, {}, {}, mock_shared<MockMesh>(), {});
+    ASSERT_EQ(collision_mesh.has_collision(), false);
+}

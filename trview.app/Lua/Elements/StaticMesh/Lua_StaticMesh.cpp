@@ -23,6 +23,11 @@ namespace trview
                 {
                     return create_bounding_box(L, static_mesh->collision());
                 }
+                else if (key == "has_collision")
+                {
+                    lua_pushboolean(L, static_mesh->has_collision());
+                    return 1;
+                }
                 else if (key == "id")
                 {
                     lua_pushinteger(L, static_mesh->id());
