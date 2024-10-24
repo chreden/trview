@@ -185,6 +185,7 @@ namespace trview
                     add_stat("Rotation", DirectX::XMConvertToDegrees(stat->rotation()));
                     add_stat("Flags", format_binary(stat->flags()));
                     add_stat("Breakable", stat->breakable());
+                    add_stat("Has Collision", stat->has_collision());
                 }
 
                 ImGui::EndTable();
@@ -259,6 +260,7 @@ namespace trview
         _filters.add_getter<float>("Room", [](auto&& stat) { return static_cast<float>(static_mesh_room(stat)); });
         _filters.add_getter<bool>("Breakable", [](auto&& item) { return item.breakable(); });
         _filters.add_getter<std::string>("Flags", [](auto&& stat) { return format_binary(stat.flags()); });
+        _filters.add_getter<bool>("Has Collision", [](auto&& stat) { return stat.has_collision(); });
     }
 
     void StaticsWindow::set_local_selected_static_mesh(std::weak_ptr<IStaticMesh> static_mesh)

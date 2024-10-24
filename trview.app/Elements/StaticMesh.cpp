@@ -157,6 +157,11 @@ namespace trview
         }
     }
 
+    bool StaticMesh::has_collision() const
+    {
+        return _type == Type::Mesh && (_flags & 0x1) == 0;
+    }
+
     uint32_t static_mesh_room(const std::shared_ptr<IStaticMesh>& static_mesh)
     {
         if (!static_mesh)

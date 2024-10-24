@@ -43,6 +43,7 @@ namespace trview
         virtual bool breakable() const = 0;
         virtual bool visible() const = 0;
         virtual void set_visible(bool value) = 0;
+        virtual bool has_collision() const = 0;
 
         Event<> on_changed;
     };

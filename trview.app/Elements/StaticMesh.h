@@ -28,6 +28,7 @@ namespace trview
         bool breakable() const override;
         bool visible() const override;
         void set_visible(bool value) override;
+        bool has_collision() const override;
     private:
         float _rotation;
         DirectX::SimpleMath::Vector3 _position;

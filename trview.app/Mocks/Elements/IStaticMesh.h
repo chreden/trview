@@ -27,6 +27,7 @@ namespace trview
             MOCK_METHOD(bool, visible, (), (const, override));
             MOCK_METHOD(void, set_visible, (bool), (override));
             MOCK_METHOD(bool, breakable, (), (const, override));
+            MOCK_METHOD(bool, has_collision, (), (const, override));
 
             std::shared_ptr<MockStaticMesh> with_number(uint32_t number)
             {
