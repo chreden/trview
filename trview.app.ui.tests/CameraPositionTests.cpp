@@ -8,6 +8,24 @@ using namespace DirectX::SimpleMath;
 
 void register_camera_position_tests(ImGuiTestEngine* engine)
 {
+    test<CameraPosition>(engine, "Camera Position", "Close Raises Event",
+        [](ImGuiTestContext* ctx) { ctx->GetVars<CameraPosition>().render(); },
+        [](ImGuiTestContext* ctx)
+        {
+            auto& camera_position = ctx->GetVars<CameraPosition>();
+            camera_position.set_rotation(-1.5707963267f, 1);
+
+            bool raised = false;
+            auto token = camera_position.on_hidden += [&]()
+                {
+                    raised = true;
+                };
+
+            ctx->ItemClick("Camera Position/#CLOSE");
+
+            IM_CHECK_EQ(raised, true);
+        });
+
     test<CameraPosition>(engine, "Camera Position", "Coordinates Updated",
         [](ImGuiTestContext* ctx) { ctx->GetVars<CameraPosition>().render(); },
         [](ImGuiTestContext* ctx)
