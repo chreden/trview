@@ -757,3 +757,28 @@ TEST(SettingsLoader, FontsSaved)
     loader->save_user_settings(settings);
     EXPECT_THAT(output, HasSubstr("\"fonts\":{\"Default\":{\"filename\":\"tahoma.ttf\",\"name\":\"Tahoma\",\"size\":10}}"));
 }
+
+TEST(SettingsLoader, CameraPositionWindowLoaded)
+{
+    auto loader = setup_setting("{\"camera_position_window\":false}");
+    auto settings = loader->load_user_settings();
+    ASSERT_EQ(settings.camera_position_window, false);
+
+    auto loader_true = setup_setting("{\"camera_position_window\":true}");
+    auto settings_true = loader_true->load_user_settings();
+    ASSERT_EQ(settings_true.camera_position_window, true);
+}
+
+TEST(SettingsLoader, CameraPositionWindowSaved)
+{
+    std::string output;
+    auto loader = setup_save_setting(output);
+    UserSettings settings;
+    settings.camera_position_window = false;
+    loader->save_user_settings(settings);
+    EXPECT_THAT(output, HasSubstr("\"camera_position_window\":false"));
+
+    settings.camera_position_window = true;
+    loader->save_user_settings(settings);
+    EXPECT_THAT(output, HasSubstr("\"camera_position_window\":true"));
+}

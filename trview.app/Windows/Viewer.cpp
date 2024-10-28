@@ -1376,14 +1376,14 @@ namespace trview
                 {
                     case ID_WINDOWS_CAMERA_POSITION:
                     {
-                        _settings.camera_position = true;
+                        _settings.camera_position_window = true;
                         on_settings(_settings);
                         _ui->set_show_camera_position(true);
                         break;
                     }
                     case ID_WINDOWS_RESET_LAYOUT:
                     {
-                        _settings.camera_position = true;
+                        _settings.camera_position_window = true;
                         on_settings(_settings);
                         _ui->reset_layout();
                         _ui->set_show_camera_position(true);

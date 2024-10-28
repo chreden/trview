@@ -64,7 +64,7 @@ namespace trview
             { "Console", {.name = "Consolas", .filename = "consola.ttf", .size = 12 } }
         };
         bool statics_startup{ false };
-        bool camera_position{ true };
+        bool camera_position_window{ true };
 
         bool operator==(const UserSettings& other) const;
     };

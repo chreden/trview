@@ -160,7 +160,7 @@ namespace trview
         _camera_position->on_rotation_changed += on_camera_rotation;
         _token_store += _camera_position->on_hidden += [this]()
             {
-                _settings.camera_position = false;
+                _settings.camera_position_window = false;
                 on_settings(_settings);
             };
 
@@ -400,7 +400,7 @@ namespace trview
         _settings_window->set_plugin_directories(settings.plugin_directories);
         _settings_window->set_statics_startup(settings.statics_startup);
         _camera_position->set_display_degrees(settings.camera_display_degrees);
-        _camera_position->set_visible(settings.camera_position);
+        _camera_position->set_visible(settings.camera_position_window);
         _map_renderer->set_colours(settings.map_colours);
         for (const auto& toggle : settings.toggles)
         {

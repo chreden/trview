@@ -44,6 +44,6 @@ namespace trview
             camera_sink_startup == other.camera_sink_startup &&
             statics_startup == other.statics_startup &&
             plugin_directories == other.plugin_directories &&
-            camera_position == other.camera_position;
+            camera_position_window == other.camera_position_window;
     }
 }
