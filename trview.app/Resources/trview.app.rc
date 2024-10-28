@@ -78,6 +78,8 @@ BEGIN
         MENUITEM "Statics\tCtrl+S"              ID_WINDOWS_STATICS
         MENUITEM "Sounds"                       ID_WINDOWS_SOUNDS
         MENUITEM SEPARATOR
+        MENUITEM "Camera Position"              ID_WINDOWS_CAMERA_POSITION
+        MENUITEM SEPARATOR
         MENUITEM "Reset Layout"                 ID_WINDOWS_RESET_LAYOUT
         MENUITEM "Reset Fonts"                  ID_WINDOWS_RESET_FONTS
     END

@@ -1,4 +1,5 @@
 #include "Viewer.h"
+#include "Resources/resource.h"
 
 #include <trlevel/ILevel.h>
 #include <trview.graphics/RenderTargetStore.h>
@@ -1360,11 +1361,37 @@ namespace trview
         _scene_changed = true;
     }
 
-    std::optional<int> Viewer::process_message(UINT message, WPARAM, LPARAM)
+    std::optional<int> Viewer::process_message(UINT message, WPARAM wParam, LPARAM)
     {
-        if (message == WM_ACTIVATE)
+        switch (message)
         {
-            _camera_input.reset_input();
+            case WM_ACTIVATE:
+            {
+                _camera_input.reset_input();
+                break;
+            }
+            case WM_COMMAND:
+            {
+                switch (LOWORD(wParam))
+                {
+                    case ID_WINDOWS_CAMERA_POSITION:
+                    {
+                        _settings.camera_position = true;
+                        on_settings(_settings);
+                        _ui->set_show_camera_position(true);
+                        break;
+                    }
+                    case ID_WINDOWS_RESET_LAYOUT:
+                    {
+                        _settings.camera_position = true;
+                        on_settings(_settings);
+                        _ui->reset_layout();
+                        _ui->set_show_camera_position(true);
+                        break;
+                    }
+                }
+            }
+            
         }
         return {};
     }

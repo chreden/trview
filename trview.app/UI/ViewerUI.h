@@ -70,6 +70,8 @@ namespace trview
         virtual bool toggle(const std::string& name) const override;
         virtual void set_triggered_by(const std::vector<std::weak_ptr<ITrigger>>& triggers) override;
         void set_route(const std::weak_ptr<IRoute>& route) override;
+        void set_show_camera_position(bool value) override;
+        void reset_layout() override;
     private:
         void generate_tool_window();
         void render_route_notes();

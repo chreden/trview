@@ -252,5 +252,9 @@ namespace trview
         virtual void set_triggered_by(const std::vector<std::weak_ptr<ITrigger>>& triggers) = 0;
 
         virtual void set_route(const std::weak_ptr<IRoute>& route) = 0;
+
+        virtual void set_show_camera_position(bool value) = 0;
+
+        virtual void reset_layout() = 0;
     };
 }
