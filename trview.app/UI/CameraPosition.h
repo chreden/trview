@@ -3,6 +3,7 @@
 
 #pragma once
 
+#include <optional>
 #include <SimpleMath.h>
 #include <trview.common/Event.h>
 
@@ -43,11 +44,23 @@ namespace trview
         /// <param name="value">True to use degrees - radians if false.</param>
         void set_display_degrees(bool value);
 
+        void set_visible(bool value);
+
         Event<float, float> on_rotation_changed;
+
+        Event<> on_hidden;
+
+        void reposition();
+        void reset();
     private:
+        void check_reposition();
+        void capture_position();
         DirectX::SimpleMath::Vector3 _position;
         float _rotation_yaw{ 0 };
         float _rotation_pitch{ 0 };
         bool _display_degrees{ true };
+        bool _visible{ true };
+        bool _reposition{ true };
+        std::optional<ImVec2> _in_window_offset{ {  4, -148 } };
     };
 }

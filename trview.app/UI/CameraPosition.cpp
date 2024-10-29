@@ -7,9 +7,17 @@ namespace trview
 {
     void CameraPosition::render()
     {
-        ImGui::SetNextWindowPos(ImGui::GetMainViewport()->Pos + ImVec2(4, ImGui::GetMainViewport()->Size.y - 148), ImGuiCond_FirstUseEver);
-        if (ImGui::Begin("Camera Position", nullptr, ImGuiWindowFlags_AlwaysAutoResize))
+        if (!_visible)
         {
+            return;
+        }
+
+        check_reposition();
+        const bool was_visible = _visible;
+        if (ImGui::Begin("Camera Position", &_visible, ImGuiWindowFlags_AlwaysAutoResize))
+        {
+            capture_position();
+
             bool rotation_changed = false;
             if (ImGui::InputFloat("Yaw", &_rotation_yaw, 0.0f, 0.0f, "%.4f", ImGuiInputTextFlags_EnterReturnsTrue))
             {
@@ -46,6 +54,11 @@ namespace trview
             }
         }
         ImGui::End();
+
+        if (!_visible && was_visible)
+        {
+            on_hidden();
+        }
     }
 
     void CameraPosition::set_position(const DirectX::SimpleMath::Vector3& position)
@@ -66,5 +79,50 @@ namespace trview
     void CameraPosition::set_display_degrees(bool value)
     {
         _display_degrees = value;
+    }
+
+    void CameraPosition::set_visible(bool value)
+    {
+        _visible = value;
+    }
+
+    void CameraPosition::reposition()
+    {
+        _reposition = true;
+    }
+
+    void CameraPosition::check_reposition()
+    {
+        if (!_reposition || !_in_window_offset.has_value())
+        {
+            return;
+        }
+
+        ImGui::SetNextWindowPos(ImGui::GetMainViewport()->Pos +
+            ImVec2{ 0, ImGui::GetMainViewport()->Size.y } +
+            _in_window_offset.value());
+        _reposition = false;
+        _in_window_offset.reset();
+    }
+
+    void CameraPosition::capture_position()
+    {
+        const auto window = ImGui::GetCurrentWindow();
+        const auto viewport = ImGui::GetMainViewport();
+        if (window->Viewport != viewport)
+        {
+            _in_window_offset.reset();
+        }
+        else
+        {
+            const auto pos = window->Pos - viewport->Pos;
+            _in_window_offset = ImVec2{ pos.x, pos.y - viewport->Size.y };
+        }
+    }
+
+    void CameraPosition::reset()
+    {
+        _in_window_offset = { {  4, -148 } };
+        _reposition = true;
     }
 }

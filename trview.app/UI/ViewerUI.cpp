@@ -158,6 +158,11 @@ namespace trview
         _camera_position = std::make_unique<CameraPosition>();
         _camera_position->on_position_changed += on_camera_position;
         _camera_position->on_rotation_changed += on_camera_rotation;
+        _token_store += _camera_position->on_hidden += [this]()
+            {
+                _settings.camera_position_window = false;
+                on_settings(_settings);
+            };
 
         _map_renderer = map_renderer_source(window.size());
         _token_store += _map_renderer->on_sector_hover += [this](const std::shared_ptr<ISector>& sector)
@@ -312,6 +317,7 @@ namespace trview
     void ViewerUI::set_host_size(const Size& size)
     {
         _map_renderer->set_window_size(size);
+        _camera_position->reposition();
     }
 
     void ViewerUI::set_level(const std::weak_ptr<ILevel>& level)
@@ -394,6 +400,7 @@ namespace trview
         _settings_window->set_plugin_directories(settings.plugin_directories);
         _settings_window->set_statics_startup(settings.statics_startup);
         _camera_position->set_display_degrees(settings.camera_display_degrees);
+        _camera_position->set_visible(settings.camera_position_window);
         _map_renderer->set_colours(settings.map_colours);
         for (const auto& toggle : settings.toggles)
         {
@@ -573,5 +580,15 @@ namespace trview
                 }
             }
         }
+    }
+
+    void ViewerUI::set_show_camera_position(bool value)
+    {
+        _camera_position->set_visible(value);
+    }
+
+    void ViewerUI::reset_layout()
+    {
+        _camera_position->reset();
     }
 }

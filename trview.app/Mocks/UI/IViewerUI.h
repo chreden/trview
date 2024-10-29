@@ -48,6 +48,8 @@ namespace trview
             MOCK_METHOD(void, set_scalar, (const std::string&, int32_t), (override));
             MOCK_METHOD(void, set_triggered_by, (const std::vector<std::weak_ptr<ITrigger>>&), (override));
             MOCK_METHOD(void, set_route, (const std::weak_ptr<IRoute>&), (override));
+            MOCK_METHOD(void, set_show_camera_position, (bool), (override));
+            MOCK_METHOD(void, reset_layout, (), (override));
         };
     }
 }
