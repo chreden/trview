@@ -285,7 +285,7 @@ namespace trview
     void Application::setup_viewer(const IStartupOptions& startup_options)
     {
         _token_store += _viewer->on_item_visibility += [this](const auto& item, bool value) { set_item_visibility(item, value); };
-        _token_store += _viewer->on_item_selected += [this](const auto& item) { select_item(item); };
+        // TODO: _token_store += _viewer->on_item_selected += [this](const auto& item) { select_item(item); };
         _token_store += _viewer->on_room_selected += [this](const auto& room) { select_room(room); };
         _token_store += _viewer->on_trigger_selected += [this](const auto& trigger) { select_trigger(trigger); };
         _token_store += _viewer->on_trigger_visibility += [this](const auto& trigger, bool value) { set_trigger_visibility(trigger, value); };
@@ -373,7 +373,7 @@ namespace trview
         }
 
         select_room(item_ptr->room());
-        _level->set_selected_item(item_ptr->number());
+        _level->set_selected_item(item_ptr);
         _viewer->select_item(item);
         _windows->select(item);
     }
@@ -864,10 +864,9 @@ namespace trview
             _settings.auto_orbit = false;
             _viewer->set_settings(_settings);
 
-            auto selected_item = old_level->selected_item();
-            if (selected_item.has_value())
+            if (auto selected_item = old_level->selected_item().lock())
             {
-                if (const auto new_selected_item = _level->item(selected_item.value()).lock())
+                if (const auto new_selected_item = _level->item(selected_item->number()).lock())
                 {
                     select_item(new_selected_item);
                 }

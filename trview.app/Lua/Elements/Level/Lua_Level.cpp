@@ -72,13 +72,7 @@ namespace trview
                 }
                 else if (key == "selected_item")
                 {
-                    auto item = level->selected_item();
-                    if (item)
-                    {
-                        return create_item(L, level->item(item.value()).lock());
-                    }
-                    lua_pushnil(L);
-                    return 1;
+                    return create_item(L, level->selected_item().lock());
                 }
                 else if (key == "selected_room")
                 {
@@ -125,7 +119,7 @@ namespace trview
                 {
                     if (auto item = to_item(L, -1))
                     {
-                        level->set_selected_item(item->number());
+                        level->set_selected_item(item);
                     }
                 }
                 else if (key == "selected_room")

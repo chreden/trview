@@ -408,11 +408,6 @@ namespace trview
         }
     }
 
-    void ViewerUI::set_selected_item(uint32_t index)
-    {
-        _selected_item = index;
-    }
-
     void ViewerUI::set_selected_room(const std::shared_ptr<IRoom>& room)
     {
         _room_navigator->set_selected_room(room->number());

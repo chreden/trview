@@ -510,10 +510,9 @@ TEST(Level, SelectedItem)
     std::shared_ptr<IItem> raised;
     auto token = level->on_item_selected += [&](auto t) { raised = t.lock(); };
 
-    ASSERT_EQ(level->selected_item(), std::nullopt);
-    level->set_selected_item(4);
-    ASSERT_TRUE(level->selected_item().has_value());
-    ASSERT_EQ(level->selected_item().value(), 4);
+    ASSERT_EQ(level->selected_item().lock(), nullptr);
+    level->set_selected_item(items[4]);
+    ASSERT_EQ(level->selected_item().lock(), items[4]);
     ASSERT_EQ(raised, items[4]);
 }
 

@@ -36,7 +36,7 @@ namespace trview
             MOCK_METHOD(std::weak_ptr<IRoom>, room, (uint32_t), (const, override));
             MOCK_METHOD(std::vector<std::weak_ptr<IRoom>>, rooms, (), (const, override));
             MOCK_METHOD(std::vector<std::weak_ptr<IScriptable>>, scriptables, (), (const, override));
-            MOCK_METHOD(std::optional<uint32_t>, selected_item, (), (const, override));
+            MOCK_METHOD(std::weak_ptr<IItem>, selected_item, (), (const, override));
             MOCK_METHOD(std::optional<uint32_t>, selected_light, (), (const, override));
             MOCK_METHOD(std::weak_ptr<IRoom>, selected_room, (), (const, override));
             MOCK_METHOD(std::optional<uint32_t>, selected_trigger, (), (const, override));
@@ -60,7 +60,7 @@ namespace trview
             MOCK_METHOD(void, set_trigger_visibility, (uint32_t, bool), (override));
             MOCK_METHOD(void, set_neighbour_depth, (uint32_t), (override));
             MOCK_METHOD(void, set_selected_room, (const std::weak_ptr<IRoom>&), (override));
-            MOCK_METHOD(void, set_selected_item, (uint32_t), (override));
+            MOCK_METHOD(void, set_selected_item, (const std::weak_ptr<IItem>&), (override));
             MOCK_METHOD(void, set_light_visibility, (uint32_t, bool), (override));
             MOCK_METHOD(void, set_room_visibility, (uint32_t, bool), (override));
             MOCK_METHOD(bool, show_camera_sinks, (), (const, override));

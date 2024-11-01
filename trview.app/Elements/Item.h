@@ -26,7 +26,7 @@ namespace trview
     struct ILevelTextureStorage;
     struct ICamera;
 
-    class Item final : public IItem
+    class Item final : public IItem, public std::enable_shared_from_this<IItem>
     {
     public:
         explicit Item(const IMesh::Source& mesh_source, const trlevel::ILevel& level, const trlevel::tr2_entity& entity, const IMeshStorage& mesh_storage, const std::weak_ptr<ILevel>& owning_level, uint32_t number, const TypeInfo& type, const std::vector<std::weak_ptr<ITrigger>>& triggers, const std::weak_ptr<IRoom>& room);

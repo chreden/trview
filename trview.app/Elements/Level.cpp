@@ -88,13 +88,9 @@ namespace trview
         return textures;
     }
 
-    std::optional<uint32_t> Level::selected_item() const
+    std::weak_ptr<IItem> Level::selected_item() const
     {
-        if (auto item = _selected_item.lock())
-        {
-            return item->number();
-        }
-        return std::nullopt;
+        return _selected_item;
     }
 
     std::weak_ptr<IRoom> Level::selected_room() const
@@ -209,9 +205,9 @@ namespace trview
         on_room_selected(room);
     }
 
-    void Level::set_selected_item(uint32_t index)
+    void Level::set_selected_item(const std::weak_ptr<IItem>& item)
     {
-        const auto selected_item = _entities[index];
+        const auto selected_item = item.lock();
         if (_selected_item.lock() != selected_item)
         {
             _selected_item = selected_item;

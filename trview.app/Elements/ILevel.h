@@ -86,7 +86,7 @@ namespace trview
         virtual std::weak_ptr<IRoom> room(uint32_t id) const = 0;
         virtual std::vector<std::weak_ptr<IRoom>> rooms() const = 0;
         virtual std::vector<std::weak_ptr<IScriptable>> scriptables() const = 0;
-        virtual std::optional<uint32_t> selected_item() const = 0;
+        virtual std::weak_ptr<IItem> selected_item() const = 0;
         virtual std::optional<uint32_t> selected_light() const = 0;
         virtual std::optional<uint32_t> selected_camera_sink() const = 0;
         virtual std::weak_ptr<IRoom> selected_room() const = 0;
@@ -119,7 +119,7 @@ namespace trview
         virtual void set_trigger_visibility(uint32_t index, bool state) = 0;
         virtual void set_neighbour_depth(uint32_t depth) = 0;
         virtual void set_selected_room(const std::weak_ptr<IRoom>& room) = 0;
-        virtual void set_selected_item(uint32_t index) = 0;
+        virtual void set_selected_item(const std::weak_ptr<IItem>& item) = 0;
         virtual void set_light_visibility(uint32_t index, bool state) = 0;
         virtual void set_room_visibility(uint32_t index, bool state) = 0;
         virtual void set_camera_sink_visibility(uint32_t index, bool state) = 0;

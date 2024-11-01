@@ -41,7 +41,7 @@ namespace trview
             std::shared_ptr<ISoundStorage> sound_storage);
         virtual ~Level() = default;
         virtual std::vector<graphics::Texture> level_textures() const override;
-        virtual std::optional<uint32_t> selected_item() const override;
+        std::weak_ptr<IItem> selected_item() const override;
         std::weak_ptr<IRoom> selected_room() const override;
         virtual std::weak_ptr<IItem> item(uint32_t index) const override;
         virtual std::vector<std::weak_ptr<IItem>> items() const override;
@@ -59,7 +59,7 @@ namespace trview
         virtual bool highlight_mode_enabled(RoomHighlightMode mode) const override;
         std::vector<std::weak_ptr<IScriptable>> scriptables() const override;
         void set_selected_room(const std::weak_ptr<IRoom>& room) override;
-        virtual void set_selected_item(uint32_t index) override;
+        void set_selected_item(const std::weak_ptr<IItem>& item) override;
         virtual void set_neighbour_depth(uint32_t depth) override;
         virtual void on_camera_moved() override;
         virtual void set_item_visibility(uint32_t index, bool state) override;

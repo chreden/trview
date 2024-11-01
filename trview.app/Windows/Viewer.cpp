@@ -676,9 +676,6 @@ namespace trview
             {
                 _ui->set_selected_room(selected_room);
             }
-
-            auto selected_item = new_level->selected_item();
-            _ui->set_selected_item(selected_item.value_or(0));
         }
         else if (open_mode == ILevel::OpenMode::Reload && old_level)
         {
@@ -821,7 +818,6 @@ namespace trview
         if (auto item_ptr = item.lock())
         {
             set_target(item_ptr->position());
-            _ui->set_selected_item(item_ptr->number());
             if (_settings.auto_orbit)
             {
                 set_camera_mode(ICamera::Mode::Orbit);

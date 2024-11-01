@@ -582,7 +582,7 @@ TEST(Application, ReloadSyncsProperties)
     auto room = mock_shared<MockRoom>()->with_number(3);
 
     ON_CALL(original, items).WillByDefault(Return(items_weak));
-    ON_CALL(original, selected_item).WillByDefault(Return(3));
+    ON_CALL(original, selected_item).WillByDefault(Return(items[3]));
     ON_CALL(original, triggers).WillByDefault(Return(triggers_weak));
     ON_CALL(original, selected_trigger).WillByDefault(Return(3));
     ON_CALL(original, lights).WillByDefault(Return(lights_weak));
@@ -591,7 +591,8 @@ TEST(Application, ReloadSyncsProperties)
     ON_CALL(original, selected_room).WillByDefault(Return(original_room));
 
     ON_CALL(reloaded, items).WillByDefault(Return(items_weak));
-    EXPECT_CALL(reloaded, set_selected_item(3)).Times(1);
+    const auto item_matcher = [](auto r) { return std::get<0>(r).lock(); };
+    EXPECT_CALL(reloaded, set_selected_item).With(ResultOf(item_matcher, Eq((items[3])))).Times(1);
     ON_CALL(reloaded, triggers).WillByDefault(Return(triggers_weak));
     EXPECT_CALL(reloaded, set_selected_trigger(3)).Times(1);
     ON_CALL(reloaded, lights).WillByDefault(Return(lights_weak));
