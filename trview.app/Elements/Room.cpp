@@ -72,6 +72,8 @@ namespace trview
         {
             _token_store += parent->on_geometry_colours_changed += [&]() { _all_geometry_meshes.clear(); };
         }
+
+        _line_mesh = create_cube_mesh(mesh_source);
     }
 
     void Room::initialise(const trlevel::ILevel& level, const trlevel::tr3_room& room, const IMeshStorage& mesh_storage,
@@ -309,16 +311,66 @@ namespace trview
 
     void Room::render_contained(const ICamera& camera, const Color& colour, RenderFilter render_filter)
     {
-        if (!has_flag(render_filter, RenderFilter::Entities))
+        if (has_flag(render_filter, RenderFilter::Entities))
         {
-            return;
+            for (const auto& entity : _entities)
+            {
+                if (auto entity_ptr = entity.lock())
+                {
+                    entity_ptr->render(camera, *_texture_storage, colour);
+                }
+            }
         }
 
-        for (const auto& entity : _entities)
+        if (has_flag(render_filter, RenderFilter::Triggers))
         {
-            if (auto entity_ptr = entity.lock())
+            const float gap = 0.1f;
+            static float hack = 0.0f;
+            hack += 0.01f;
+            if (hack > 1.0f)
             {
-                entity_ptr->render(camera, *_texture_storage, colour);
+                hack = 0.0f;
+            }
+
+            for (const auto& trigger : _triggers)
+            {
+                if (auto trigger_ptr = trigger.second.lock())
+                {
+                    const auto level = _level.lock();
+                    for (const auto& command : trigger_ptr->commands())
+                    {
+                        if (command_is_item(command.type()))
+                        {
+                            if (const auto item = level->item(command.index()).lock())
+                            {
+                                const auto end = item->position();
+                                const auto start = trigger_ptr->position();
+
+                                auto to = end - start;
+                                auto halfway = Vector3::Lerp(start, end, 0.5f);
+
+                                const auto scale = Matrix::CreateScale(0.02f);
+                                const auto view_projection = camera.view_projection();
+
+                                int blobs = static_cast<int>(to.Length() / gap);
+
+                                to.Normalize();
+                                for (int i = 0; i <= blobs; ++i)
+                                {
+                                    // Adjust for 'movement' along the line
+                                    float i2 = static_cast<float>(i) + hack;
+                                    // Placement along route
+                                    auto pos = start + to * gap * i2;
+                                    // Height arc
+                                    const float x = 2 * (i2 / blobs) - 1;
+                                    pos.y -= (1 - x * x);
+                                    auto wvp = scale * Matrix::CreateTranslation(pos) * view_projection;
+                                    _line_mesh->render(wvp, *_texture_storage, Color(1.0f, 0.0f, 1.0f));
+                                }
+                            }
+                        }
+                    }
+                }
             }
         }
     }

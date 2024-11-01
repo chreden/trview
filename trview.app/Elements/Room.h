@@ -123,6 +123,7 @@ namespace trview
         std::unordered_map<uint32_t, std::shared_ptr<IMesh>> _all_geometry_meshes;
         DirectX::SimpleMath::Matrix _room_offset;
         DirectX::SimpleMath::Matrix _inverted_room_offset;
+        std::shared_ptr<IMesh> _line_mesh;
 
         DirectX::BoundingBox  _bounding_box;
 

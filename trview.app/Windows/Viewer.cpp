@@ -719,7 +719,7 @@ namespace trview
         _main_window->begin();
         _main_window->clear(Colour(_settings.background_colour));
 
-        if (_scene_changed)
+        // if (_scene_changed)
         {
             _scene_target->clear(Colour::Transparent);
 
