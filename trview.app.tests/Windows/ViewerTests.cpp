@@ -54,6 +54,20 @@ namespace
     }
 
     /// Simulates a context menu activation - 
+    void activate_context_menu(MockPicking& picking, MockMouse& mouse, std::weak_ptr<IItem> item)
+    {
+        PickResult pick_result{};
+        pick_result.hit = true;
+        pick_result.type = PickResult::Type::Entity;
+        pick_result.index = 0;
+        pick_result.position = Vector3::Zero;
+        pick_result.centroid = Vector3::Zero;
+        pick_result.item = item;
+        picking.on_pick({}, pick_result);
+        mouse.mouse_click(IMouse::Button::Right);
+    }
+
+    /// Simulates a context menu activation - 
     void activate_context_menu(MockPicking& picking, MockMouse& mouse, std::weak_ptr<ISoundSource> sound_source)
     {
         PickResult pick_result{};
@@ -167,26 +181,18 @@ TEST(Viewer, SelectItemRaisedForValidItem)
 TEST(Viewer, ItemVisibilityRaisedForValidItem)
 {
     auto item = mock_shared<MockItem>();
-    auto level = mock_shared<MockLevel>();
-    EXPECT_CALL(*level, item(123)).WillRepeatedly(Return(item));
+    EXPECT_CALL(*item, set_visible(false)).Times(1);
 
     auto [ui_ptr, ui] = create_mock<MockViewerUI>();
     auto [picking_ptr, picking] = create_mock<MockPicking>();
     auto [mouse_ptr, mouse] = create_mock<MockMouse>();
     auto viewer = register_test_module().with_ui(std::move(ui_ptr)).with_picking(std::move(picking_ptr)).with_mouse(std::move(mouse_ptr)).build();
 
-    viewer->open(level, ILevel::OpenMode::Full);
+    viewer->open(mock_shared<MockLevel>(), ILevel::OpenMode::Full);
 
-    std::optional<std::tuple<std::shared_ptr<IItem>, bool>> raised_item;
-    auto token = viewer->on_item_visibility += [&raised_item](const auto& item, auto visible) { raised_item = { item.lock(), visible }; };
-
-    activate_context_menu(picking, mouse, PickResult::Type::Entity, 123);
+    activate_context_menu(picking, mouse, item);
 
     ui.on_hide();
-
-    ASSERT_TRUE(raised_item.has_value());
-    ASSERT_EQ(std::get<0>(raised_item.value()), item);
-    ASSERT_FALSE(std::get<1>(raised_item.value()));
 }
 
 /// Tests that the on_settings event from the UI is observed and forwarded.

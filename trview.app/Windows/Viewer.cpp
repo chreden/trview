@@ -182,13 +182,23 @@ namespace trview
         _token_store += _ui->on_remove_waypoint += [&]() { on_waypoint_removed(_context_pick.index); };
         _token_store += _ui->on_hide += [&]()
         {
-            if (auto level = _level.lock())
+            if (_context_pick.type == PickResult::Type::Entity)
             {
-                if (_context_pick.type == PickResult::Type::Entity)
+                if (auto item = _context_pick.item.lock())
                 {
-                    on_item_visibility(level->item(_context_pick.index), false);
+                    item->set_visible(false);
                 }
-                else if (_context_pick.type == PickResult::Type::Trigger)
+            }
+            else if (_context_pick.type == PickResult::Type::SoundSource)
+            {
+                if (auto sound_source = _context_pick.sound_source.lock())
+                {
+                    sound_source->set_visible(false);
+                }
+            }
+            else if (auto level = _level.lock())
+            {
+                if (_context_pick.type == PickResult::Type::Trigger)
                 {
                     on_trigger_visibility(level->trigger(_context_pick.index), false);
                 }
@@ -209,13 +219,6 @@ namespace trview
                     if (auto mesh = level->static_mesh(_context_pick.index).lock())
                     {
                         mesh->set_visible(false);
-                    }
-                }
-                else if (_context_pick.type == PickResult::Type::SoundSource)
-                {
-                    if (auto sound_source = _context_pick.sound_source.lock())
-                    {
-                        sound_source->set_visible(false);
                     }
                 }
             }

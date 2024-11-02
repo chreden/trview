@@ -1,5 +1,8 @@
 #pragma once
 
+#include <cstdint>
+#include <memory>
+#include <string>
 #include <SimpleMath.h>
 #include <trview.app/Geometry/Triangle.h>
 

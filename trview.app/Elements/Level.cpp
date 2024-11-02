@@ -628,6 +628,11 @@ namespace trview
                 _entities.push_back(entity);
             }
         }
+
+        for (auto& item : _entities)
+        {
+            _token_store += item->on_changed += [this]() { content_changed(); };
+        }
     }
 
     void Level::regenerate_neighbours()

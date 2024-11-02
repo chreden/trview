@@ -272,7 +272,7 @@ namespace trview
                 return;
             }
 
-            for (const auto& item : _level->items()) { set_item_visibility(item, true); }
+            for (const auto& item : _level->items()) { if (auto item_ptr = item.lock()) { item_ptr->set_visible(true); } };
             for (const auto& trigger : _level->triggers()) { set_trigger_visibility(trigger, true); }
             for (const auto& light : _level->lights()) { set_light_visibility(light, true); }
             for (const auto& room : _level->rooms()) { set_room_visibility(room, true); }
@@ -284,8 +284,7 @@ namespace trview
 
     void Application::setup_viewer(const IStartupOptions& startup_options)
     {
-        _token_store += _viewer->on_item_visibility += [this](const auto& item, bool value) { set_item_visibility(item, value); };
-        // TODO: _token_store += _viewer->on_item_selected += [this](const auto& item) { select_item(item); };
+        _token_store += _viewer->on_item_selected += [this](const auto& item) { select_item(item); };
         _token_store += _viewer->on_room_selected += [this](const auto& room) { select_room(room); };
         _token_store += _viewer->on_trigger_selected += [this](const auto& trigger) { select_trigger(trigger); };
         _token_store += _viewer->on_trigger_visibility += [this](const auto& trigger, bool value) { set_trigger_visibility(trigger, value); };
@@ -456,22 +455,6 @@ namespace trview
         _level->set_selected_light(light_ptr->number());
         _viewer->select_light(light);
         _windows->select(light);
-    }
-
-    void Application::set_item_visibility(const std::weak_ptr<IItem>& item, bool visible)
-    {
-        if (!_level)
-        {
-            return;
-        }
-
-        if (const auto item_ptr = item.lock())
-        {
-            if (item_ptr->visible() != visible)
-            {
-                _level->set_item_visibility(item_ptr->number(), visible);
-            }
-        }
     }
 
     void Application::set_trigger_visibility(const std::weak_ptr<ITrigger>& trigger, bool visible)
