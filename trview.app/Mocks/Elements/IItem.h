@@ -79,6 +79,12 @@ namespace trview
                 ON_CALL(*this, set_visible).WillByDefault([&](auto v) { _visible_state = v; });
                 return shared_from_this();
             }
+
+            std::shared_ptr<MockItem> with_position(const DirectX::SimpleMath::Vector3& position)
+            {
+                ON_CALL(*this, position).WillByDefault(testing::Return(position));
+                return shared_from_this();
+            }
         };
     }
 }

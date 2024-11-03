@@ -108,7 +108,6 @@ namespace trview
         void select_previous_waypoint();
         void select_light(const std::weak_ptr<ILight>& light);
         void select_camera_sink(const std::weak_ptr<ICameraSink>& camera_sink);
-        void set_trigger_visibility(const std::weak_ptr<ITrigger>& trigger, bool visible);
         void set_light_visibility(const std::weak_ptr<ILight>& light, bool visible);
         void set_room_visibility(const std::weak_ptr<IRoom>& room, bool visible);
         void set_camera_sink_visibility(const std::weak_ptr<ICameraSink>& camera_sink, bool visible);

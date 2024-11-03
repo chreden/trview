@@ -123,6 +123,7 @@ namespace trview
             {
                 result.type = PickResult::Type::Trigger;
                 result.index = _number;
+                result.trigger = std::const_pointer_cast<ITrigger>(shared_from_this());
                 return result;
             }
         }

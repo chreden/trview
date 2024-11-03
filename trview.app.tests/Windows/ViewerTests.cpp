@@ -54,12 +54,12 @@ namespace
     }
 
     /// Simulates a context menu activation - 
-    void activate_context_menu(MockPicking& picking, MockMouse& mouse, std::weak_ptr<IItem> item)
+    void activate_context_menu(MockPicking& picking, MockMouse& mouse, std::weak_ptr<IItem> item, int index = 0)
     {
         PickResult pick_result{};
         pick_result.hit = true;
         pick_result.type = PickResult::Type::Entity;
-        pick_result.index = 0;
+        pick_result.index = index;
         pick_result.position = Vector3::Zero;
         pick_result.centroid = Vector3::Zero;
         pick_result.item = item;
@@ -77,6 +77,20 @@ namespace
         pick_result.position = Vector3::Zero;
         pick_result.centroid = Vector3::Zero;
         pick_result.sound_source = sound_source;
+        picking.on_pick({}, pick_result);
+        mouse.mouse_click(IMouse::Button::Right);
+    }
+
+    /// Simulates a context menu activation - 
+    void activate_context_menu(MockPicking& picking, MockMouse& mouse, std::weak_ptr<ITrigger> trigger)
+    {
+        PickResult pick_result{};
+        pick_result.hit = true;
+        pick_result.type = PickResult::Type::Trigger;
+        pick_result.index = 0;
+        pick_result.position = Vector3::Zero;
+        pick_result.centroid = Vector3::Zero;
+        pick_result.trigger = trigger;
         picking.on_pick({}, pick_result);
         mouse.mouse_click(IMouse::Button::Right);
     }
@@ -235,17 +249,15 @@ TEST(Viewer, SelectTriggerRaised)
     auto [picking_ptr, picking] = create_mock<MockPicking>();
     auto [mouse_ptr, mouse] = create_mock<MockMouse>();
 
-    auto level = mock_shared<MockLevel>();
     auto trigger = mock_shared<MockTrigger>();
-    EXPECT_CALL(*level, trigger(100)).WillRepeatedly(Return(trigger));
 
     auto viewer = register_test_module().with_ui(std::move(ui_ptr)).with_picking(std::move(picking_ptr)).with_mouse(std::move(mouse_ptr)).build();
-    viewer->open(level, ILevel::OpenMode::Full);
+    viewer->open(mock_shared<MockLevel>(), ILevel::OpenMode::Full);
 
     std::optional<std::weak_ptr<ITrigger>> selected_trigger;
     auto token = viewer->on_trigger_selected += [&selected_trigger](const auto& trigger) { selected_trigger = trigger; };
 
-    activate_context_menu(picking, mouse, PickResult::Type::Trigger, 100);
+    activate_context_menu(picking, mouse, trigger);
     mouse.mouse_click(IMouse::Button::Left);
 
     ASSERT_TRUE(selected_trigger.has_value());
@@ -259,23 +271,15 @@ TEST(Viewer, TriggerVisibilityRaised)
     auto [picking_ptr, picking] = create_mock<MockPicking>();
     auto [mouse_ptr, mouse] = create_mock<MockMouse>();
 
-    auto level = mock_shared<MockLevel>();
     auto trigger = mock_shared<MockTrigger>();
-    EXPECT_CALL(*level, trigger(100)).WillRepeatedly(Return(trigger));
+    EXPECT_CALL(*trigger, set_visible(false)).Times(1);
 
     auto viewer = register_test_module().with_ui(std::move(ui_ptr)).with_picking(std::move(picking_ptr)).with_mouse(std::move(mouse_ptr)).build();
-    viewer->open(level, ILevel::OpenMode::Full);
+    viewer->open(mock_shared<MockLevel>(), ILevel::OpenMode::Full);
 
-    std::optional<std::tuple<std::weak_ptr<ITrigger>, bool>> raised_trigger;
-    auto token = viewer->on_trigger_visibility += [&raised_trigger](const auto& trigger, auto visible) { raised_trigger = { trigger, visible }; };
-
-    activate_context_menu(picking, mouse, PickResult::Type::Trigger, 100);
+    activate_context_menu(picking, mouse, trigger);
 
     ui.on_hide();
-
-    ASSERT_TRUE(raised_trigger.has_value());
-    ASSERT_EQ(std::get<0>(raised_trigger.value()).lock(), trigger);
-    ASSERT_FALSE(std::get<1>(raised_trigger.value()));
 }
 
 /// Tests that the waypoint selected event is raised when the user clicks on a waypoint.
@@ -361,14 +365,10 @@ TEST(Viewer, AddWaypointRaisedUsesItemPosition)
     auto [mouse_ptr, mouse] = create_mock<MockMouse>();
 
     auto room = mock_shared<MockRoom>()->with_number(10);
-    auto level = mock_shared<MockLevel>();
-    ON_CALL(*level, room(10)).WillByDefault(Return(room));
     auto item = mock_shared<MockItem>()->with_room(room)->with_number(50);
 
-    EXPECT_CALL(*level, item(50)).WillRepeatedly(Return(item));
-
     auto viewer = register_test_module().with_ui(std::move(ui_ptr)).with_picking(std::move(picking_ptr)).with_mouse(std::move(mouse_ptr)).build();
-    viewer->open(level, ILevel::OpenMode::Full);
+    viewer->open(mock_shared<MockLevel>(), ILevel::OpenMode::Full);
 
     std::optional<std::tuple<Vector3, Vector3, std::shared_ptr<IRoom>, IWaypoint::Type, uint32_t>> added_waypoint;
     auto token = viewer->on_waypoint_added += [&added_waypoint](const auto& position, const auto& normal, auto room, IWaypoint::Type type, uint32_t index)
@@ -376,7 +376,7 @@ TEST(Viewer, AddWaypointRaisedUsesItemPosition)
         added_waypoint = { position, normal, room.lock(), type, index };
     };
 
-    activate_context_menu(picking, mouse, PickResult::Type::Entity, 50, Vector3(100, 200, 300));
+    activate_context_menu(picking, mouse, item, 50);
 
     ui.on_add_waypoint();
 

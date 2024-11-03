@@ -121,21 +121,18 @@ namespace trview
                 _context_pick.triangle.normal.Normalize();
             }
 
-            if (auto level = _level.lock())
+            if (_context_pick.type == PickResult::Type::Entity)
             {
-                if (_context_pick.type == PickResult::Type::Entity)
+                if (const auto item = _context_pick.item.lock())
                 {
-                    if (const auto item = level->item(_context_pick.index).lock())
-                    {
-                        _context_pick.position = item->position();
-                    }
+                    _context_pick.position = item->position();
                 }
-                else if (_context_pick.type == PickResult::Type::Trigger)
+            }
+            else if (_context_pick.type == PickResult::Type::Trigger)
+            {
+                if (const auto trigger = _context_pick.trigger.lock())
                 {
-                    if (const auto trigger = level->trigger(_context_pick.index).lock())
-                    {
-                        _context_pick.position = trigger->position();
-                    }
+                    _context_pick.position = trigger->position();
                 }
             }
             on_waypoint_added(_context_pick.position, _context_pick.triangle.normal, room_from_pick(_context_pick), type, _context_pick.index);
@@ -189,6 +186,13 @@ namespace trview
                     item->set_visible(false);
                 }
             }
+            else if (_context_pick.type == PickResult::Type::Trigger)
+            {
+                if (auto trigger = _context_pick.trigger.lock())
+                {
+                    trigger->set_visible(false);
+                }
+            }
             else if (_context_pick.type == PickResult::Type::SoundSource)
             {
                 if (auto sound_source = _context_pick.sound_source.lock())
@@ -198,11 +202,7 @@ namespace trview
             }
             else if (auto level = _level.lock())
             {
-                if (_context_pick.type == PickResult::Type::Trigger)
-                {
-                    on_trigger_visibility(level->trigger(_context_pick.index), false);
-                }
-                else if (_context_pick.type == PickResult::Type::Light)
+                if (_context_pick.type == PickResult::Type::Light)
                 {
                     on_light_visibility(level->light(_context_pick.index), false);
                 }
@@ -375,7 +375,7 @@ namespace trview
                     }
                     else if (_current_pick.type == PickResult::Type::Trigger)
                     {
-                        const auto trigger = level->trigger(_current_pick.index).lock();
+                        const auto trigger = _current_pick.trigger.lock();
                         if (trigger && 
                             selected_room &&
                             trigger->room().lock() == selected_room)
@@ -1178,18 +1178,20 @@ namespace trview
     std::weak_ptr<IRoom> Viewer::room_from_pick(const PickResult& pick) const
     {
         const auto level = _level.lock();
-        if (!level)
-        {
-            return {};
-        }
 
         switch (pick.type)
         {
             case PickResult::Type::Room:
+            {
+                if (!level)
+                {
+                    return {};
+                }
                 return level->room(pick.index);
+            }
             case PickResult::Type::Entity:
             {
-                if (auto item = level->item(pick.index).lock())
+                if (const auto item = pick.item.lock())
                 {
                     return item->room();
                 }
@@ -1197,7 +1199,7 @@ namespace trview
             }
             case PickResult::Type::Trigger:
             {
-                if (const auto trigger = level->trigger(pick.index).lock())
+                if (const auto trigger = pick.trigger.lock())
                 {
                     return trigger->room();
                 }
@@ -1213,6 +1215,10 @@ namespace trview
             }
         }
 
+        if (!level)
+        {
+            return {};
+        }
         return level->selected_room();
     }
 
@@ -1264,18 +1270,12 @@ namespace trview
             break;
         case PickResult::Type::Entity:
         {
-            if (level)
-            {
-                on_item_selected(level->item(pick.index));
-            }
+            on_item_selected(pick.item);
             break;
         }
         case PickResult::Type::Trigger:
         {
-            if (level)
-            {
-                on_trigger_selected(level->trigger(pick.index));
-            }
+            on_trigger_selected(pick.trigger);
             break;
         }
         case PickResult::Type::Waypoint:

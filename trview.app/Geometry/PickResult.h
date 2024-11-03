@@ -14,6 +14,7 @@ namespace trview
     struct IRoute;
     struct IScriptable;
     struct ISoundSource;
+    struct ITrigger;
 
     struct PickResult
     {
@@ -45,6 +46,7 @@ namespace trview
         std::weak_ptr<IItem>         item;
         std::weak_ptr<IScriptable>   scriptable;
         std::weak_ptr<ISoundSource>  sound_source;
+        std::weak_ptr<ITrigger>      trigger;
     };
 
     /// Convert the pick result to a display string.

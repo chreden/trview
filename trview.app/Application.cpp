@@ -255,7 +255,7 @@ namespace trview
 
         return (int)msg.wParam;
     }
-        
+
     void Application::setup_view_menu()
     {
         _token_store += _view_menu.on_show_minimap += [&](bool show) { _viewer->set_show_minimap(show); };
@@ -273,7 +273,7 @@ namespace trview
             }
 
             for (const auto& item : _level->items()) { if (auto item_ptr = item.lock()) { item_ptr->set_visible(true); } };
-            for (const auto& trigger : _level->triggers()) { set_trigger_visibility(trigger, true); }
+            for (const auto& trigger : _level->triggers()) { if (auto trigger_ptr = trigger.lock()) { trigger_ptr->set_visible(true); } };
             for (const auto& light : _level->lights()) { set_light_visibility(light, true); }
             for (const auto& room : _level->rooms()) { set_room_visibility(room, true); }
             for (const auto& camera_sink : _level->camera_sinks()) { set_camera_sink_visibility(camera_sink, true); }
@@ -287,7 +287,6 @@ namespace trview
         _token_store += _viewer->on_item_selected += [this](const auto& item) { select_item(item); };
         _token_store += _viewer->on_room_selected += [this](const auto& room) { select_room(room); };
         _token_store += _viewer->on_trigger_selected += [this](const auto& trigger) { select_trigger(trigger); };
-        _token_store += _viewer->on_trigger_visibility += [this](const auto& trigger, bool value) { set_trigger_visibility(trigger, value); };
         _token_store += _viewer->on_light_selected += [this](const auto& light) { select_light(light); };
         _token_store += _viewer->on_light_visibility += [this](const auto& light, bool value) { set_light_visibility(light, value); };
         _token_store += _viewer->on_room_visibility += [this](const auto& room, bool value) { set_room_visibility(room, value); };
@@ -455,22 +454,6 @@ namespace trview
         _level->set_selected_light(light_ptr->number());
         _viewer->select_light(light);
         _windows->select(light);
-    }
-
-    void Application::set_trigger_visibility(const std::weak_ptr<ITrigger>& trigger, bool visible)
-    {
-        if (!_level)
-        {
-            return;
-        }
-
-        if (const auto trigger_ptr = trigger.lock())
-        {
-            if (trigger_ptr->visible() != visible)
-            {
-                _level->set_trigger_visibility(trigger_ptr->number(), visible);
-            }
-        }
     }
 
     void Application::set_light_visibility(const std::weak_ptr<ILight>& light, bool visible)
