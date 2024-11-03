@@ -6,6 +6,7 @@
 
 #include "Resources/resource.h"
 #include "Elements/SoundSource/ISoundSource.h"
+#include <algorithm>
 
 using namespace DirectX::SimpleMath;
 
@@ -35,6 +36,15 @@ namespace trview
         {
             fonts.add_font("Default", { .name = "Arial", .filename = "arial.ttf", .size = 12 });
             fonts.add_font("Console", { .name = "Consolas", .filename = "consola.ttf", .size = 12 });
+        }
+
+        template <typename T>
+        void show(const std::weak_ptr<T>& target)
+        {
+            if (const auto t = target.lock())
+            {
+                t->set_visible(true);
+            }
         }
     }
 
@@ -272,13 +282,13 @@ namespace trview
                 return;
             }
 
-            for (const auto& item : _level->items()) { if (auto item_ptr = item.lock()) { item_ptr->set_visible(true); } };
-            for (const auto& trigger : _level->triggers()) { if (auto trigger_ptr = trigger.lock()) { trigger_ptr->set_visible(true); } };
+            std::ranges::for_each(_level->items(), show<IItem>);
+            std::ranges::for_each(_level->triggers(), show<ITrigger>);
             for (const auto& light : _level->lights()) { set_light_visibility(light, true); }
             for (const auto& room : _level->rooms()) { set_room_visibility(room, true); }
             for (const auto& camera_sink : _level->camera_sinks()) { set_camera_sink_visibility(camera_sink, true); }
-            for (const auto& static_mesh : _level->static_meshes()) { if (auto stat = static_mesh.lock()) { stat->set_visible(true); } };
-            for (const auto& sound_source : _level->sound_sources()) { if (auto sound_source_ptr = sound_source.lock()) { sound_source_ptr->set_visible(true); } };
+            std::ranges::for_each(_level->static_meshes(), show<IStaticMesh>);
+            std::ranges::for_each(_level->sound_sources(), show<ISoundSource>);
         };
     }
 

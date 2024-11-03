@@ -167,6 +167,7 @@ namespace trview
     void Trigger::set_visible(bool value)
     {
         _visible = value;
+        on_changed();
     }
 
     std::weak_ptr<ILevel> Trigger::level() const
