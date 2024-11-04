@@ -5,7 +5,7 @@
 
 namespace trview
 {
-    class CameraSink final : public ICameraSink
+    class CameraSink final : public ICameraSink, public std::enable_shared_from_this<ICameraSink>
     {
     public:
         explicit CameraSink(const std::shared_ptr<IMesh>& mesh, const std::shared_ptr<ITextureStorage>& texture_storage,

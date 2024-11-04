@@ -464,11 +464,7 @@ namespace trview
         {
             Activity room_activity(generate_rooms_activity, std::format("Room {}", i));
             auto room = room_source(level, level.get_room(i), _texture_storage, mesh_storage, i, shared_from_this(), room_activity);
-            _token_store += room->on_changed += [&]() 
-            {
-                _regenerate_transparency = true; 
-                on_level_changed();
-            };
+            _token_store += room->on_changed += [this]() { content_changed(); };
             _rooms.push_back(room);
         }
 
@@ -796,20 +792,6 @@ namespace trview
         _regenerate_transparency = true;
     }
 
-    void Level::set_item_visibility(uint32_t index, bool state)
-    {
-        _entities[index]->set_visible(state);
-        _regenerate_transparency = true;
-        on_level_changed();
-    }
-
-    void Level::set_trigger_visibility(uint32_t index, bool state)
-    {
-        _triggers[index]->set_visible(state);
-        _regenerate_transparency = true;
-        on_level_changed();
-    }
-
     // Set whether to render the alternate mode (the flipmap) or the regular room.
     // enabled: Whether to render the flipmap.
     void Level::set_alternate_mode(bool enabled)
@@ -1116,27 +1098,6 @@ namespace trview
         std::vector<std::weak_ptr<ILight>> lights;
         std::transform(_lights.begin(), _lights.end(), std::back_inserter(lights), [](const auto& light) { return light; });
         return lights;
-    }
-
-    void Level::set_light_visibility(uint32_t index, bool state)
-    {
-        _lights[index]->set_visible(state);
-        _regenerate_transparency = true;
-        on_level_changed();
-    }
-
-    void Level::set_room_visibility(uint32_t index, bool state)
-    {
-        _rooms[index]->set_visible(state);
-        _regenerate_transparency = true;
-        on_level_changed();
-    }
-
-    void Level::set_camera_sink_visibility(uint32_t index, bool state)
-    {
-        _camera_sinks[index]->set_visible(state);
-        _regenerate_transparency = true;
-        on_level_changed();
     }
 
     void Level::deduplicate_triangles()

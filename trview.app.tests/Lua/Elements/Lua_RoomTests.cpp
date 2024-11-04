@@ -331,11 +331,8 @@ TEST(Lua_Room, Visible)
 
 TEST(Lua_Room, SetVisible)
 {
-    auto level = mock_shared<MockLevel>();
-    EXPECT_CALL(*level, set_room_visibility(100, true));
-
     auto room = mock_shared<MockRoom>()->with_number(100);
-    EXPECT_CALL(*room, level).WillRepeatedly(Return(level));
+    EXPECT_CALL(*room, set_visible(true)).Times(1);
 
     LuaState L;
     lua::create_room(L, room);

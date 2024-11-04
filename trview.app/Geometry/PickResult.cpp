@@ -171,7 +171,7 @@ namespace trview
             }
             case PickResult::Type::CameraSink:
             {
-                if (const auto camera_sink = level.camera_sink(result.index).lock())
+                if (const auto camera_sink = result.camera_sink.lock())
                 {
                     stream << to_string(camera_sink->type()) << " " << result.index;
                 }

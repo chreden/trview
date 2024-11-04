@@ -109,6 +109,34 @@ namespace
         mouse.mouse_click(IMouse::Button::Right);
     }
 
+    /// Simulates a context menu activation - 
+    void activate_context_menu(MockPicking& picking, MockMouse& mouse, std::weak_ptr<IRoom> room, int index = 0, Vector3 pos = Vector3::Zero)
+    {
+        PickResult pick_result{};
+        pick_result.hit = true;
+        pick_result.type = PickResult::Type::Room;
+        pick_result.index = index;
+        pick_result.position = pos;
+        pick_result.centroid = Vector3::Zero;
+        pick_result.room = room;
+        picking.on_pick({}, pick_result);
+        mouse.mouse_click(IMouse::Button::Right);
+    }
+
+    /// Simulates a context menu activation - 
+    void activate_context_menu(MockPicking& picking, MockMouse& mouse, std::weak_ptr<ICameraSink> cs)
+    {
+        PickResult pick_result{};
+        pick_result.hit = true;
+        pick_result.type = PickResult::Type::Room;
+        pick_result.index = 0;
+        pick_result.position = Vector3::Zero;
+        pick_result.centroid = Vector3::Zero;
+        pick_result.camera_sink = cs;
+        picking.on_pick({}, pick_result);
+        mouse.mouse_click(IMouse::Button::Right);
+    }
+
     Event<> shortcut_handler;
 
     auto register_test_module()
@@ -361,7 +389,7 @@ TEST(Viewer, AddWaypointRaised)
         added_waypoint = { position, normal, room.lock(), type, index };
     };
 
-    activate_context_menu(picking, mouse, PickResult::Type::Room, 50, Vector3(100, 200, 300));
+    activate_context_menu(picking, mouse, room, 50, Vector3(100, 200, 300));
 
     ui.on_add_waypoint();
 
@@ -783,24 +811,15 @@ TEST(Viewer, RoomVisibilityRaised)
     auto [picking_ptr, picking] = create_mock<MockPicking>();
     auto [mouse_ptr, mouse] = create_mock<MockMouse>();
 
-    auto level = mock_shared<MockLevel>();
     auto room = mock_shared<MockRoom>()->with_number(100);
-    EXPECT_CALL(*level, room(0)).WillRepeatedly(Return(std::weak_ptr<IRoom>{}));
-    EXPECT_CALL(*level, room(100)).WillRepeatedly(Return(room));
+    EXPECT_CALL(*room, set_visible(false));
 
     auto viewer = register_test_module().with_ui(std::move(ui_ptr)).with_picking(std::move(picking_ptr)).with_mouse(std::move(mouse_ptr)).build();
-    viewer->open(level, ILevel::OpenMode::Full);
+    viewer->open(mock_shared<MockLevel>(), ILevel::OpenMode::Full);
 
-    std::optional<std::tuple<std::weak_ptr<IRoom>, bool>> raised_room;
-    auto token = viewer->on_room_visibility += [&raised_room](const auto& room, auto visible) { raised_room = { room, visible }; };
-
-    activate_context_menu(picking, mouse, PickResult::Type::Room, 100);
+    activate_context_menu(picking, mouse, room);
 
     ui.on_hide();
-
-    ASSERT_TRUE(raised_room.has_value());
-    ASSERT_EQ(std::get<0>(raised_room.value()).lock(), room);
-    ASSERT_FALSE(std::get<1>(raised_room.value()));
 }
 
 TEST(Viewer, OrbitHereOrbitsWhenSettingDisabled)
@@ -954,29 +973,18 @@ TEST(Viewer, GoToLaraSelectsLast)
 TEST(Viewer, CameraSinkVisibilityRaisedForValidItem)
 {
     auto cs = mock_shared<MockCameraSink>();
-    auto level = mock_shared<MockLevel>();
-    EXPECT_CALL(*level, camera_sink(123)).WillRepeatedly(Return(cs));
+    EXPECT_CALL(*cs, set_visible(false)).Times(1);
 
     auto [ui_ptr, ui] = create_mock<MockViewerUI>();
     auto [picking_ptr, picking] = create_mock<MockPicking>();
     auto [mouse_ptr, mouse] = create_mock<MockMouse>();
     auto viewer = register_test_module().with_ui(std::move(ui_ptr)).with_picking(std::move(picking_ptr)).with_mouse(std::move(mouse_ptr)).build();
 
-    viewer->open(level, ILevel::OpenMode::Full);
+    viewer->open(mock_shared<MockLevel>(), ILevel::OpenMode::Full);
 
-    std::optional<std::tuple<std::shared_ptr<ICameraSink>, bool>> raised;
-    auto token = viewer->on_camera_sink_visibility += [&raised](const auto& camera_sink, auto visible)
-    { 
-        raised = { camera_sink.lock(), visible };
-    };
-
-    activate_context_menu(picking, mouse, PickResult::Type::CameraSink, 123);
+    activate_context_menu(picking, mouse, cs);
 
     ui.on_hide();
-
-    ASSERT_TRUE(raised.has_value());
-    ASSERT_EQ(std::get<0>(raised.value()), cs);
-    ASSERT_FALSE(std::get<1>(raised.value()));
 }
 
 TEST(Viewer, SetShowCameraSinks)

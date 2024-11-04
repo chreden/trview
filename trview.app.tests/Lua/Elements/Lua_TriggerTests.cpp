@@ -185,11 +185,8 @@ TEST(Lua_Trigger, Visible)
 
 TEST(Lua_Trigger, SetVisible)
 {
-    auto level = mock_shared<MockLevel>();
-    EXPECT_CALL(*level, set_trigger_visibility(100, true));
-
     auto trigger = mock_shared<MockTrigger>()->with_number(100);
-    EXPECT_CALL(*trigger, level).WillRepeatedly(Return(level));
+    EXPECT_CALL(*trigger, set_visible(true)).Times(1);
 
     LuaState L;
     lua::create_trigger(L, trigger);

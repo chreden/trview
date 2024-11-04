@@ -100,7 +100,6 @@ namespace trview
         virtual void set_alternate_group(uint32_t group, bool enabled) = 0;
         virtual void set_filename(const std::string& filename) = 0;
         virtual void set_highlight_mode(RoomHighlightMode mode, bool enabled) = 0;
-        virtual void set_item_visibility(uint32_t index, bool state) = 0;
         virtual void set_map_colours(const MapColours& map_colours) = 0;
         virtual void set_selected_trigger(uint32_t number) = 0;
         virtual void set_selected_light(uint32_t number) = 0;
@@ -116,13 +115,9 @@ namespace trview
         virtual void set_show_rooms(bool show) = 0;
         virtual void set_show_camera_sinks(bool show) = 0;
         virtual void set_show_sound_sources(bool show) = 0;
-        virtual void set_trigger_visibility(uint32_t index, bool state) = 0;
         virtual void set_neighbour_depth(uint32_t depth) = 0;
         virtual void set_selected_room(const std::weak_ptr<IRoom>& room) = 0;
         virtual void set_selected_item(const std::weak_ptr<IItem>& item) = 0;
-        virtual void set_light_visibility(uint32_t index, bool state) = 0;
-        virtual void set_room_visibility(uint32_t index, bool state) = 0;
-        virtual void set_camera_sink_visibility(uint32_t index, bool state) = 0;
         virtual bool show_camera_sinks() const = 0;
         virtual bool show_geometry() const = 0;
         virtual bool show_lighting() const = 0;

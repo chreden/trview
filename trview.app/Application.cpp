@@ -285,8 +285,8 @@ namespace trview
             std::ranges::for_each(_level->items(), show<IItem>);
             std::ranges::for_each(_level->triggers(), show<ITrigger>);
             std::ranges::for_each(_level->lights(), show<ILight>);
-            for (const auto& room : _level->rooms()) { set_room_visibility(room, true); }
-            for (const auto& camera_sink : _level->camera_sinks()) { set_camera_sink_visibility(camera_sink, true); }
+            std::ranges::for_each(_level->rooms(), show<IRoom>);
+            std::ranges::for_each(_level->camera_sinks(), show<ICameraSink>);
             std::ranges::for_each(_level->static_meshes(), show<IStaticMesh>);
             std::ranges::for_each(_level->sound_sources(), show<ISoundSource>);
         };
@@ -298,8 +298,6 @@ namespace trview
         _token_store += _viewer->on_room_selected += [this](const auto& room) { select_room(room); };
         _token_store += _viewer->on_trigger_selected += [this](const auto& trigger) { select_trigger(trigger); };
         _token_store += _viewer->on_light_selected += [this](const auto& light) { select_light(light); };
-        _token_store += _viewer->on_room_visibility += [this](const auto& room, bool value) { set_room_visibility(room, value); };
-        _token_store += _viewer->on_camera_sink_visibility += [this](const auto& camera_sink, bool value) { set_camera_sink_visibility(camera_sink, value); };
         _token_store += _viewer->on_waypoint_added += [this](const auto& position, const auto& normal, auto room, auto type, auto index) { add_waypoint(position, normal, room, type, index); };
         _token_store += _viewer->on_waypoint_selected += [this](auto index) { select_waypoint(index); };
         _token_store += _viewer->on_waypoint_removed += [this](auto index) { remove_waypoint(index); };
@@ -463,38 +461,6 @@ namespace trview
         _level->set_selected_light(light_ptr->number());
         _viewer->select_light(light);
         _windows->select(light);
-    }
-
-    void Application::set_room_visibility(const std::weak_ptr<IRoom>& room, bool visible)
-    {
-        if (!_level)
-        {
-            return;
-        }
-
-        if (const auto room_ptr = room.lock())
-        {
-            if (room_ptr->visible() != visible)
-            {
-                _level->set_room_visibility(room_ptr->number(), visible);
-            }
-        }
-    }
-
-    void Application::set_camera_sink_visibility(const std::weak_ptr<ICameraSink>& camera_sink, bool visible)
-    {
-        if (!_level)
-        {
-            return;
-        }
-
-        if (const auto camera_sink_ptr = camera_sink.lock())
-        {
-            if (camera_sink_ptr->visible() != visible)
-            {
-                _level->set_camera_sink_visibility(camera_sink_ptr->number(), visible);
-            }
-        }
     }
 
     void Application::select_sector(const std::weak_ptr<ISector>& sector)

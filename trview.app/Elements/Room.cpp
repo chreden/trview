@@ -909,6 +909,7 @@ namespace trview
         geometry_result.type = PickResult::Type::Room;
         geometry_result.index = _index;
         geometry_result.position = Vector3::Transform(geometry_result.position, _room_offset);
+        geometry_result.room = std::const_pointer_cast<IRoom>(shared_from_this());
 
         const auto& tri = geometry_result.triangle;
         if (tri.normal.y < 0)
@@ -1088,6 +1089,7 @@ namespace trview
     void Room::set_visible(bool visible)
     {
         _visible = visible;
+        on_changed();
     }
 
     std::vector<std::weak_ptr<ILight>> Room::lights() const

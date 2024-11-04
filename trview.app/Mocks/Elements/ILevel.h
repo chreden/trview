@@ -44,7 +44,6 @@ namespace trview
             MOCK_METHOD(void, set_alternate_group, (uint32_t, bool), (override));
             MOCK_METHOD(void, set_filename, (const std::string&), (override));
             MOCK_METHOD(void, set_highlight_mode, (RoomHighlightMode, bool), (override));
-            MOCK_METHOD(void, set_item_visibility, (uint32_t, bool), (override));
             MOCK_METHOD(void, set_selected_trigger, (uint32_t), (override));
             MOCK_METHOD(void, set_selected_light, (uint32_t), (override));
             MOCK_METHOD(void, set_selected_camera_sink, (uint32_t), (override));
@@ -57,12 +56,9 @@ namespace trview
             MOCK_METHOD(void, set_show_lights, (bool), (override));
             MOCK_METHOD(void, set_show_items, (bool), (override));
             MOCK_METHOD(void, set_show_rooms, (bool), (override));
-            MOCK_METHOD(void, set_trigger_visibility, (uint32_t, bool), (override));
             MOCK_METHOD(void, set_neighbour_depth, (uint32_t), (override));
             MOCK_METHOD(void, set_selected_room, (const std::weak_ptr<IRoom>&), (override));
             MOCK_METHOD(void, set_selected_item, (const std::weak_ptr<IItem>&), (override));
-            MOCK_METHOD(void, set_light_visibility, (uint32_t, bool), (override));
-            MOCK_METHOD(void, set_room_visibility, (uint32_t, bool), (override));
             MOCK_METHOD(bool, show_camera_sinks, (), (const, override));
             MOCK_METHOD(bool, show_lighting, (), (const, override));
             MOCK_METHOD(bool, show_geometry, (), (const, override));
@@ -75,7 +71,6 @@ namespace trview
             MOCK_METHOD(trlevel::LevelVersion, version, (), (const, override));
             MOCK_METHOD(MapColours, map_colours, (), (const, override));
             MOCK_METHOD(void, set_map_colours, (const MapColours&), (override));
-            MOCK_METHOD(void, set_camera_sink_visibility, (uint32_t, bool), (override));
             MOCK_METHOD(void, set_show_camera_sinks, (bool), (override));
             MOCK_METHOD(std::optional<uint32_t>, selected_camera_sink, (), (const, override));
             MOCK_METHOD(std::weak_ptr<IStaticMesh>, static_mesh, (uint32_t), (const, override));

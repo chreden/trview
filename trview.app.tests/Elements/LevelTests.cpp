@@ -432,13 +432,12 @@ TEST(Level, ItemsRenderedWhenEnabled)
     level->render(camera, false);
 }
 
-TEST(Level, SetRoomVisibilty)
+TEST(Level, RoomChangedRaisesLevelChanged)
 {
     auto [mock_level_ptr, mock_level] = create_mock<trlevel::mocks::MockLevel>();
     EXPECT_CALL(mock_level, num_rooms()).WillRepeatedly(Return(1));
 
     auto room = mock_shared<MockRoom>();
-    EXPECT_CALL(*room, set_visible(false)).Times(1);
 
     auto level = register_test_module()
         .with_level(std::move(mock_level_ptr))
@@ -448,7 +447,7 @@ TEST(Level, SetRoomVisibilty)
     bool level_changed_raised = false;
     auto token = level->on_level_changed += [&]() { level_changed_raised = true; };
 
-    level->set_room_visibility(0, false);
+    room->on_changed();
 
     ASSERT_TRUE(level_changed_raised);
 }

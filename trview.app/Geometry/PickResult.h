@@ -9,9 +9,11 @@
 namespace trview
 {
     struct Colour;
+    struct ICameraSink;
     struct IItem;
     struct ILevel;
     struct ILight;
+    struct IRoom;
     struct IRoute;
     struct IScriptable;
     struct ISoundSource;
@@ -44,8 +46,10 @@ namespace trview
         std::string                  text;
         bool                         override_centre{ false };
         Triangle                     triangle;
+        std::weak_ptr<ICameraSink>   camera_sink;
         std::weak_ptr<IItem>         item;
         std::weak_ptr<ILight>        light;
+        std::weak_ptr<IRoom>         room;
         std::weak_ptr<IScriptable>   scriptable;
         std::weak_ptr<ISoundSource>  sound_source;
         std::weak_ptr<ITrigger>      trigger;

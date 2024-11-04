@@ -147,22 +147,16 @@ namespace trview
             }
             else if (_context_pick.type == PickResult::Type::Entity)
             {
-                if (const auto level = _level.lock())
+                if (const auto item = _context_pick.item.lock())
                 {
-                    if (const auto item = level->item(_context_pick.index).lock())
-                    {
-                        _context_pick.position = item->position();
-                    }
+                    _context_pick.position = item->position();
                 }
             }
             else if (_context_pick.type == PickResult::Type::Trigger)
             {
-                if (const auto level = _level.lock())
+                if (const auto trigger = _context_pick.trigger.lock())
                 {
-                    if (const auto trigger = level->trigger(_context_pick.index).lock())
-                    {
-                        _context_pick.position = trigger->position();
-                    }
+                    _context_pick.position = trigger->position();
                 }
             }
 
@@ -207,17 +201,23 @@ namespace trview
                     sound_source->set_visible(false);
                 }
             }
+            else if (_context_pick.type == PickResult::Type::Room)
+            {
+                if (auto room = _context_pick.room.lock())
+                {
+                    room->set_visible(false);
+                }
+            }
+            else if(_context_pick.type == PickResult::Type::CameraSink)
+            {
+                if (auto camera_sink = _context_pick.camera_sink.lock())
+                {
+                    camera_sink->set_visible(false);
+                }
+            }
             else if (auto level = _level.lock())
             {
-                if (_context_pick.type == PickResult::Type::Room)
-                {
-                    on_room_visibility(level->room(_context_pick.index), false);
-                }
-                else if (_context_pick.type == PickResult::Type::CameraSink)
-                {
-                    on_camera_sink_visibility(level->camera_sink(_context_pick.index), false);
-                }
-                else if (_context_pick.type == PickResult::Type::StaticMesh)
+                if (_context_pick.type == PickResult::Type::StaticMesh)
                 {
                     if (auto mesh = level->static_mesh(_context_pick.index).lock())
                     {
@@ -372,7 +372,7 @@ namespace trview
                     const auto selected_room = level->selected_room().lock();
                     if (_current_pick.type == PickResult::Type::Room &&
                         selected_room &&
-                        _current_pick.index == selected_room->number())
+                        _current_pick.room.lock() == selected_room)
                     {
                         info = selected_room->info();
                     }
@@ -591,12 +591,12 @@ namespace trview
                 const auto level = _level.lock();
                 if (_current_pick.type == PickResult::Type::Entity && level)
                 {
-                    const auto item = level->item(_current_pick.index).lock();
+                    const auto item = _current_pick.item.lock();
                     _ui->set_triggered_by(item ? item->triggers() : std::vector<std::weak_ptr<ITrigger>>{});
                 }
                 else if (_current_pick.type == PickResult::Type::CameraSink && level)
                 {
-                    const auto camera_sink = level->camera_sink(_current_pick.index).lock();
+                    const auto camera_sink = _current_pick.camera_sink.lock();
                     _ui->set_triggered_by(camera_sink ? camera_sink->triggers() : std::vector<std::weak_ptr<ITrigger>>{});
                 }
                 else 
@@ -1181,16 +1181,11 @@ namespace trview
     std::weak_ptr<IRoom> Viewer::room_from_pick(const PickResult& pick) const
     {
         const auto level = _level.lock();
-
         switch (pick.type)
         {
             case PickResult::Type::Room:
             {
-                if (!level)
-                {
-                    return {};
-                }
-                return level->room(pick.index);
+                return pick.room;
             }
             case PickResult::Type::Entity:
             {
@@ -1265,7 +1260,7 @@ namespace trview
         switch (pick.type)
         {
         case PickResult::Type::Room:
-            on_room_selected(level->room(pick.index));
+            on_room_selected(pick.room);
             if (pick.override_centre)
             {
                 set_target(pick.position);
@@ -1296,10 +1291,7 @@ namespace trview
         }
         case PickResult::Type::CameraSink:
         {
-            if (level)
-            {
-                on_camera_sink_selected(level->camera_sink(pick.index));
-            }
+            on_camera_sink_selected(pick.camera_sink);
             break;
         }
         case PickResult::Type::StaticMesh:

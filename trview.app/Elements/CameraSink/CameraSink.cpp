@@ -76,6 +76,7 @@ namespace trview
             result.index = _number;
             result.position = position + direction * distance;
             result.type = PickResult::Type::CameraSink;
+            result.camera_sink = std::const_pointer_cast<ICameraSink>(shared_from_this());
         }
 
         return result;
