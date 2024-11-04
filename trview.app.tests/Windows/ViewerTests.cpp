@@ -128,7 +128,7 @@ namespace
     {
         PickResult pick_result{};
         pick_result.hit = true;
-        pick_result.type = PickResult::Type::Room;
+        pick_result.type = PickResult::Type::CameraSink;
         pick_result.index = 0;
         pick_result.position = Vector3::Zero;
         pick_result.centroid = Vector3::Zero;
