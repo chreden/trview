@@ -92,6 +92,7 @@ namespace trview
     void Light::set_visible(bool value)
     {
         _visible = value;
+        on_changed();
     }
 
     Vector3 Light::position() const
@@ -132,6 +133,7 @@ namespace trview
             result.index = _number;
             result.position = position + direction * distance;
             result.type = PickResult::Type::Light;
+            result.light = std::const_pointer_cast<ILight>(shared_from_this());
         }
 
         return result;

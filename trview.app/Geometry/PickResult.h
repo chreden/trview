@@ -11,6 +11,7 @@ namespace trview
     struct Colour;
     struct IItem;
     struct ILevel;
+    struct ILight;
     struct IRoute;
     struct IScriptable;
     struct ISoundSource;
@@ -44,6 +45,7 @@ namespace trview
         bool                         override_centre{ false };
         Triangle                     triangle;
         std::weak_ptr<IItem>         item;
+        std::weak_ptr<ILight>        light;
         std::weak_ptr<IScriptable>   scriptable;
         std::weak_ptr<ISoundSource>  sound_source;
         std::weak_ptr<ITrigger>      trigger;

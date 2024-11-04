@@ -186,6 +186,13 @@ namespace trview
                     item->set_visible(false);
                 }
             }
+            else if (_context_pick.type == PickResult::Type::Light)
+            {
+                if (auto light = _context_pick.light.lock())
+                {
+                    light->set_visible(false);
+                }
+            }
             else if (_context_pick.type == PickResult::Type::Trigger)
             {
                 if (auto trigger = _context_pick.trigger.lock())
@@ -202,11 +209,7 @@ namespace trview
             }
             else if (auto level = _level.lock())
             {
-                if (_context_pick.type == PickResult::Type::Light)
-                {
-                    on_light_visibility(level->light(_context_pick.index), false);
-                }
-                else if (_context_pick.type == PickResult::Type::Room)
+                if (_context_pick.type == PickResult::Type::Room)
                 {
                     on_room_visibility(level->room(_context_pick.index), false);
                 }
@@ -1288,10 +1291,7 @@ namespace trview
         }
         case PickResult::Type::Light:
         {
-            if (level)
-            {
-                on_light_selected(level->light(pick.index));
-            }
+            on_light_selected(pick.light);
             break;
         }
         case PickResult::Type::CameraSink:

@@ -124,7 +124,7 @@ namespace trview
             }
             case PickResult::Type::Light:
             {
-                if (const auto light = level.light(result.index).lock())
+                if (const auto light = result.light.lock())
                 {
                     stream << "Light " << result.index << " - " << light_type_name(light->type());
                 }

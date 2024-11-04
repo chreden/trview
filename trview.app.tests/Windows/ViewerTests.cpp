@@ -68,6 +68,20 @@ namespace
     }
 
     /// Simulates a context menu activation - 
+    void activate_context_menu(MockPicking& picking, MockMouse& mouse, std::weak_ptr<ILight> light)
+    {
+        PickResult pick_result{};
+        pick_result.hit = true;
+        pick_result.type = PickResult::Type::Light;
+        pick_result.index = 0;
+        pick_result.position = Vector3::Zero;
+        pick_result.centroid = Vector3::Zero;
+        pick_result.light = light;
+        picking.on_pick({}, pick_result);
+        mouse.mouse_click(IMouse::Button::Right);
+    }
+
+    /// Simulates a context menu activation - 
     void activate_context_menu(MockPicking& picking, MockMouse& mouse, std::weak_ptr<ISoundSource> sound_source)
     {
         PickResult pick_result{};
@@ -752,23 +766,15 @@ TEST(Viewer, LightVisibilityRaised)
     auto [picking_ptr, picking] = create_mock<MockPicking>();
     auto [mouse_ptr, mouse] = create_mock<MockMouse>();
 
-    auto level = mock_shared<MockLevel>();
     auto light = mock_shared<MockLight>();
-    EXPECT_CALL(*level, light(100)).WillRepeatedly(Return(light));
+    EXPECT_CALL(*light, set_visible(false)).Times(1);
 
     auto viewer = register_test_module().with_ui(std::move(ui_ptr)).with_picking(std::move(picking_ptr)).with_mouse(std::move(mouse_ptr)).build();
-    viewer->open(level, ILevel::OpenMode::Full);
+    viewer->open(mock_shared<MockLevel>(), ILevel::OpenMode::Full);
 
-    std::optional<std::tuple<std::weak_ptr<ILight>, bool>> raised_light;
-    auto token = viewer->on_light_visibility += [&raised_light](const auto& light, auto visible) { raised_light = { light, visible }; };
-
-    activate_context_menu(picking, mouse, PickResult::Type::Light, 100);
+    activate_context_menu(picking, mouse, light);
 
     ui.on_hide();
-
-    ASSERT_TRUE(raised_light.has_value());
-    ASSERT_EQ(std::get<0>(raised_light.value()).lock(), light);
-    ASSERT_FALSE(std::get<1>(raised_light.value()));
 }
 
 TEST(Viewer, RoomVisibilityRaised)

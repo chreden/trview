@@ -36,6 +36,8 @@ namespace trview
         virtual void set_position(const DirectX::SimpleMath::Vector3& position) = 0;
         virtual void render_direction(const ICamera& camera, const ILevelTextureStorage& texture_storage) = 0;
         virtual trlevel::LevelVersion level_version() const = 0;
+
+        Event<> on_changed;
     };
 
     bool has_colour(const ILight& light);
