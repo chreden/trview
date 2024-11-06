@@ -56,6 +56,7 @@ namespace trview
         void add_waypoint(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& normal, uint32_t room, IWaypoint::Type type, uint32_t index);
 
         TokenStore _token_store;
+        TokenStore _level_token_store;
         std::unique_ptr<ICameraSinkWindowManager> _camera_sink_windows;
         std::unique_ptr<IConsoleManager> _console_manager;
         std::unique_ptr<IItemsWindowManager> _items_windows;

@@ -118,10 +118,14 @@ namespace trview
                     continue;
                 }
 
-                auto entity_result = entity_ptr->pick(position, direction);
-                if (entity_result.hit)
+                const auto ng = entity_ptr->ng_plus();
+                if (!ng.has_value() || ng.value() == has_flag(filters, PickFilter::NgPlus))
                 {
-                    pick_results.push_back(entity_result);
+                    auto entity_result = entity_ptr->pick(position, direction);
+                    if (entity_result.hit)
+                    {
+                        pick_results.push_back(entity_result);
+                    }
                 }
             }
         }
@@ -318,7 +322,11 @@ namespace trview
         {
             if (auto entity_ptr = entity.lock())
             {
-                entity_ptr->render(camera, *_texture_storage, colour);
+                const auto ng = entity_ptr->ng_plus();
+                if (!ng.has_value() || ng.value() == has_flag(render_filter, RenderFilter::NgPlus))
+                {
+                    entity_ptr->render(camera, *_texture_storage, colour);
+                }
             }
         }
     }
@@ -513,7 +521,11 @@ namespace trview
         {
             if (auto entity_ptr = entity.lock())
             {
-                entity_ptr->get_transparent_triangles(transparency, camera, colour);
+                const auto ng = entity_ptr->ng_plus();
+                if (!ng.has_value() || ng.value() == has_flag(render_filter, RenderFilter::NgPlus))
+                {
+                    entity_ptr->get_transparent_triangles(transparency, camera, colour);
+                }
             }
         }
     }
@@ -1143,6 +1155,15 @@ namespace trview
     std::vector<std::weak_ptr<IStaticMesh>> Room::static_meshes() const
     {
         return { std::from_range, _static_meshes };
+    }
+
+    void Room::remove_item(const std::weak_ptr<IItem>& item)
+    {
+        if (const auto item_ptr = item.lock())
+        {
+            std::erase_if(_entities,
+                [&](auto&& i) { return i.lock() == item_ptr; });
+        }
     }
 
     std::shared_ptr<ISector> sector_from_point(const IRoom& room, const Vector3& point)

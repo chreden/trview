@@ -117,6 +117,7 @@ namespace trview
         rooms_window->set_selected_trigger(_selected_trigger);
         rooms_window->set_selected_camera_sink(_selected_camera_sink);
         rooms_window->set_selected_light(_selected_light);
+        rooms_window->set_ng_plus(_ng_plus);
         return add_window(rooms_window);
     }
 
@@ -149,6 +150,15 @@ namespace trview
         for (auto& window : _windows)
         {
             window.second->set_selected_camera_sink(camera_sink);
+        }
+    }
+
+    void RoomsWindowManager::set_ng_plus(bool value)
+    {
+        _ng_plus = value;
+        for (auto& [_, window] : _windows)
+        {
+            window->set_ng_plus(value);
         }
     }
 }

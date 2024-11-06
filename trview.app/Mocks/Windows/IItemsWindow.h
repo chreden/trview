@@ -21,6 +21,7 @@ namespace trview
             MOCK_METHOD(void, set_number, (int32_t), (override));
             MOCK_METHOD(void, set_level_version, (trlevel::LevelVersion), (override));
             MOCK_METHOD(void, set_model_checker, (const std::function<bool(uint32_t)>&), (override));
+            MOCK_METHOD(void, set_ng_plus, (bool), (override));
         };
     }
 }

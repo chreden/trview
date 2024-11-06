@@ -125,7 +125,7 @@ namespace trview
                 {
                     if (auto item = to_item(L, -1))
                     {
-                        level->set_selected_item(item->number());
+                        level->set_selected_item(item);
                     }
                 }
                 else if (key == "selected_room")

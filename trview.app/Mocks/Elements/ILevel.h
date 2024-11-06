@@ -60,7 +60,7 @@ namespace trview
             MOCK_METHOD(void, set_trigger_visibility, (uint32_t, bool), (override));
             MOCK_METHOD(void, set_neighbour_depth, (uint32_t), (override));
             MOCK_METHOD(void, set_selected_room, (const std::weak_ptr<IRoom>&), (override));
-            MOCK_METHOD(void, set_selected_item, (uint32_t), (override));
+            MOCK_METHOD(void, set_selected_item, (const std::weak_ptr<IItem>&), (override));
             MOCK_METHOD(void, set_light_visibility, (uint32_t, bool), (override));
             MOCK_METHOD(void, set_room_visibility, (uint32_t, bool), (override));
             MOCK_METHOD(bool, show_camera_sinks, (), (const, override));
@@ -85,6 +85,8 @@ namespace trview
             MOCK_METHOD(void, set_show_sound_sources, (bool), (override));
             MOCK_METHOD(bool, show_sound_sources, (), (const, override));
             MOCK_METHOD(trlevel::Platform, platform, (), (const, override));
+            MOCK_METHOD(void, set_ng_plus, (bool), (override));
+            MOCK_METHOD(bool, ng_plus, (), (const, override));
 
             std::shared_ptr<MockLevel> with_version(trlevel::LevelVersion version)
             {

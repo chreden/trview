@@ -67,6 +67,20 @@ namespace
         mouse.mouse_click(IMouse::Button::Right);
     }
 
+    /// Simulates a context menu activation - 
+    void activate_context_menu(MockPicking& picking, MockMouse& mouse, std::weak_ptr<IItem> item, int index = 0)
+    {
+        PickResult pick_result{};
+        pick_result.hit = true;
+        pick_result.type = PickResult::Type::Entity;
+        pick_result.index = index;
+        pick_result.position = Vector3::Zero;
+        pick_result.centroid = Vector3::Zero;
+        pick_result.item = item;
+        picking.on_pick({}, pick_result);
+        mouse.mouse_click(IMouse::Button::Right);
+    }
+
     Event<> shortcut_handler;
 
     auto register_test_module()
@@ -180,7 +194,7 @@ TEST(Viewer, ItemVisibilityRaisedForValidItem)
     std::optional<std::tuple<std::shared_ptr<IItem>, bool>> raised_item;
     auto token = viewer->on_item_visibility += [&raised_item](const auto& item, auto visible) { raised_item = { item.lock(), visible }; };
 
-    activate_context_menu(picking, mouse, PickResult::Type::Entity, 123);
+    activate_context_menu(picking, mouse, item);
 
     ui.on_hide();
 
@@ -370,7 +384,7 @@ TEST(Viewer, AddWaypointRaisedUsesItemPosition)
         added_waypoint = { position, normal, room.lock(), type, index };
     };
 
-    activate_context_menu(picking, mouse, PickResult::Type::Entity, 50, Vector3(100, 200, 300));
+    activate_context_menu(picking, mouse, item, 50);
 
     ui.on_add_waypoint();
 

@@ -48,6 +48,7 @@ namespace trview
         virtual void set_selected_camera_sink(const std::weak_ptr<ICameraSink>& camera_sink) override;
         virtual void clear_selected_light() override;
         virtual void clear_selected_camera_sink() override;
+        void set_ng_plus(bool value) override;
     private:
         void set_sync_room(bool value);
         void render_rooms_list();
@@ -124,5 +125,6 @@ namespace trview
         Track<Type::Item, Type::Trigger, Type::Light, Type::CameraSink> _track;
 
         ColumnSizer _column_sizer;
+        bool _ng_plus{ false };
     };
 }

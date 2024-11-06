@@ -21,6 +21,7 @@
 #include <trview.common/Mocks/Logs/ILog.h>
 #include <trview.graphics/mocks/IBuffer.h>
 #include <trview.tests.common/Event.h>
+#include <trview.app/Mocks/Elements/INgPlusSwitcher.h>
 
 using namespace trview;
 using namespace trview::mocks;
@@ -58,10 +59,11 @@ namespace
             trlevel::ILevel::LoadCallbacks callbacks;
             ISoundSource::Source sound_source_source{ [](auto&&...) { return mock_shared<MockSoundSource>(); } };
             std::shared_ptr<ISoundStorage> sound_storage{ mock_shared<MockSoundStorage>() };
+            std::shared_ptr<INgPlusSwitcher> ngplus_switcher{ mock_shared<MockNgPlusSwitcher>() };
 
             std::shared_ptr<Level> build()
             {
-                auto new_level = std::make_shared<Level>(device, shader_storage, level_texture_storage, std::move(transparency_buffer), std::move(selection_renderer), log, buffer_source, sound_storage);
+                auto new_level = std::make_shared<Level>(device, shader_storage, level_texture_storage, std::move(transparency_buffer), std::move(selection_renderer), log, buffer_source, sound_storage, ngplus_switcher);
                 new_level->initialise(std::move(level), std::move(mesh_storage), entity_source, ai_source, room_source, trigger_source, light_source, camera_sink_source, sound_source_source, callbacks);
                 return new_level;
             }
@@ -511,7 +513,7 @@ TEST(Level, SelectedItem)
     auto token = level->on_item_selected += [&](auto t) { raised = t.lock(); };
 
     ASSERT_EQ(level->selected_item(), std::nullopt);
-    level->set_selected_item(4);
+    level->set_selected_item(items[4]);
     ASSERT_TRUE(level->selected_item().has_value());
     ASSERT_EQ(level->selected_item().value(), 4);
     ASSERT_EQ(raised, items[4]);

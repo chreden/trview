@@ -24,6 +24,7 @@ namespace trview
         _toggles[IViewer::Options::lighting] = true;
         _toggles[IViewer::Options::notes] = true;
         _toggles[IViewer::Options::sound_sources] = false;
+        _toggles[IViewer::Options::ng_plus] = false;
     }
 
     void ViewOptions::render()
@@ -72,6 +73,7 @@ namespace trview
                 add_toggle(IViewer::Options::notes);
                 ImGui::TableNextRow();
                 add_toggle(IViewer::Options::sound_sources);
+                add_toggle(IViewer::Options::ng_plus);
                 ImGui::TableNextRow();
                 if (!_use_alternate_groups)
                 {

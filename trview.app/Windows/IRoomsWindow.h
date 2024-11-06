@@ -85,5 +85,6 @@ namespace trview
 
         virtual void clear_selected_light() = 0;
         virtual void clear_selected_camera_sink() = 0;
+        virtual void set_ng_plus(bool value) = 0;
     };
 }

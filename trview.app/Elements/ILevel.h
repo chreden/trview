@@ -64,6 +64,7 @@ namespace trview
         virtual MapColours map_colours() const = 0;
         virtual std::string name() const = 0;
         virtual uint32_t neighbour_depth() const = 0;
+        virtual bool ng_plus() const = 0;
         /// Get the number of rooms in the level.
         virtual uint32_t number_of_rooms() const = 0;
         virtual void on_camera_moved() = 0;
@@ -119,10 +120,11 @@ namespace trview
         virtual void set_trigger_visibility(uint32_t index, bool state) = 0;
         virtual void set_neighbour_depth(uint32_t depth) = 0;
         virtual void set_selected_room(const std::weak_ptr<IRoom>& room) = 0;
-        virtual void set_selected_item(uint32_t index) = 0;
+        virtual void set_selected_item(const std::weak_ptr<IItem>& item) = 0;
         virtual void set_light_visibility(uint32_t index, bool state) = 0;
         virtual void set_room_visibility(uint32_t index, bool state) = 0;
         virtual void set_camera_sink_visibility(uint32_t index, bool state) = 0;
+        virtual void set_ng_plus(bool show) = 0;
         virtual bool show_camera_sinks() const = 0;
         virtual bool show_geometry() const = 0;
         virtual bool show_lighting() const = 0;
@@ -147,6 +149,7 @@ namespace trview
         virtual std::vector<std::weak_ptr<ITrigger>> triggers() const = 0;
         virtual trlevel::LevelVersion version() const = 0;
         virtual std::weak_ptr<ISoundStorage> sound_storage() const = 0;
+
         Event<std::weak_ptr<IItem>> on_item_selected;
         // Event raised when the level needs to change the selected room.
         Event<std::weak_ptr<IRoom>> on_room_selected;
@@ -159,5 +162,7 @@ namespace trview
         Event<> on_level_changed;
         mutable Event<> on_geometry_colours_changed;
         Event<std::weak_ptr<ITrigger>> on_trigger_selected;
+        Event<> on_items_changed;
+        Event<bool> on_ng_plus;
     };
 }
