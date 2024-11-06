@@ -1751,7 +1751,7 @@ namespace trlevel
         _static_meshes = read_static_meshes(activity, file, callbacks);
         _object_textures = read_object_textures_tr1_3(activity, file, callbacks);
         _sprite_textures = read_sprite_textures(activity, file, callbacks);
-        read_sprite_sequences(activity, file, callbacks);
+        _sprite_sequences = read_sprite_sequences(activity, file, callbacks);
         _cameras = read_cameras(activity, file, callbacks);
         _sound_sources = read_sound_sources(activity, file, callbacks);
         const auto boxes = read_boxes_tr1(activity, file, callbacks);
@@ -1873,7 +1873,7 @@ namespace trlevel
             callbacks.on_textile(convert_textile(t));
         };
 
-        read_sprite_sequences(activity, file, callbacks);
+        _sprite_sequences = read_sprite_sequences(activity, file, callbacks);
         _cameras = read_cameras(activity, file, callbacks);
         _sound_sources = read_sound_sources(activity, file, callbacks);
         const auto boxes = read_boxes_tr1(activity, file, callbacks);
