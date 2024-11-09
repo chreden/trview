@@ -122,7 +122,12 @@ namespace trview
                     }) |
                 std::ranges::to<std::vector>();
 
-            RowCounter counter{ "items", _all_items.size() };
+            RowCounter counter{ "items",
+                static_cast<std::size_t>(std::ranges::count_if(_all_items, [](auto&& item)
+                    {
+                        const auto item_ptr = item.lock();
+                        return item_ptr && item_ptr->ng_plus().value_or(true);
+                    }))};
             if (ImGui::BeginTable(Names::items_list.c_str(), 5, ImGuiTableFlags_Sortable | ImGuiTableFlags_ScrollY, ImVec2(0, -counter.height())))
             {
                 imgui_header_row(
