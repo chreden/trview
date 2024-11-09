@@ -42,6 +42,17 @@ namespace trview
                     lua_pushboolean(L, item->invisible_flag());
                     return 1;
                 }
+                else if (key == "ng")
+                {
+                    const auto ng = item->ng_plus();
+                    if (ng.has_value())
+                    {
+                        lua_pushboolean(L, ng.value());
+                        return 1;
+                    }
+                    lua_pushnil(L);
+                    return 1;
+                }
                 else if (key == "number")
                 {
                     lua_pushinteger(L, item->number());

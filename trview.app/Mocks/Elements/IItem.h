@@ -38,6 +38,12 @@ namespace trview
 
             bool _visible_state;
 
+            std::shared_ptr<MockItem> with_ng_plus(std::optional<bool> value)
+            {
+                ON_CALL(*this, ng_plus).WillByDefault(testing::Return(value));
+                return shared_from_this();
+            }
+
             std::shared_ptr<MockItem> with_number(uint32_t number)
             {
                 ON_CALL(*this, number).WillByDefault(testing::Return(number));
