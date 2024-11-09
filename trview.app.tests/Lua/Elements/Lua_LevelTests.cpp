@@ -125,6 +125,31 @@ TEST(Lua_Level, Items)
     ASSERT_EQ(200, lua_tonumber(L, -1));
 }
 
+TEST(Lua_Level, ItemsNg)
+{
+    auto item1 = mock_shared<MockItem>()->with_number(100);
+    auto item2 = mock_shared<MockItem>()->with_number(200)->with_ng_plus(false);
+    auto item3 = mock_shared<MockItem>()->with_number(201)->with_ng_plus(true);
+    auto level = mock_shared<MockLevel>();
+    EXPECT_CALL(*level, items).WillRepeatedly(Return(std::vector<std::weak_ptr<IItem>>{ item1, item2, item3 }));
+
+    LuaState L;
+    lua::create_level(L, level);
+    lua_setglobal(L, "l");
+
+    ASSERT_EQ(0, luaL_dostring(L, "return l.items_ng"));
+    ASSERT_EQ(LUA_TTABLE, lua_type(L, -1));
+    ASSERT_EQ(0, luaL_dostring(L, "return #l.items_ng"));
+    ASSERT_EQ(LUA_TNUMBER, lua_type(L, -1));
+    ASSERT_EQ(2, lua_tonumber(L, -1));
+    ASSERT_EQ(0, luaL_dostring(L, "return l.items_ng[1].number"));
+    ASSERT_EQ(LUA_TNUMBER, lua_type(L, -1));
+    ASSERT_EQ(100, lua_tonumber(L, -1));
+    ASSERT_EQ(0, luaL_dostring(L, "return l.items_ng[2].number"));
+    ASSERT_EQ(LUA_TNUMBER, lua_type(L, -1));
+    ASSERT_EQ(201, lua_tonumber(L, -1));
+}
+
 TEST(Lua_Level, Lights)
 {
     auto light1 = mock_shared<MockLight>()->with_number(100);

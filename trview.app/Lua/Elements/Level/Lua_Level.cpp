@@ -60,7 +60,25 @@ namespace trview
                 }
                 else if (key == "items")
                 {
-                    return push_list_p(L, level->items(), create_item);
+                    return push_list_p(L, 
+                        level->items() |
+                        std::views::filter([](auto&& i)
+                            {
+                                const auto item = i.lock();
+                                return item && item->ng_plus().value_or(false) == false;
+                            }) |
+                        std::ranges::to<std::vector>(), create_item);
+                }
+                else if (key == "items_ng")
+                {
+                    return push_list_p(L,
+                        level->items() |
+                        std::views::filter([](auto&& i)
+                            {
+                                const auto item = i.lock();
+                                return item && item->ng_plus().value_or(true) == true;
+                            }) |
+                        std::ranges::to<std::vector>(), create_item);
                 }
                 else if (key == "lights")
                 {
