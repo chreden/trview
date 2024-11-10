@@ -206,17 +206,299 @@
                 { "item":63, "type":147 }
             ],
             "KEEL.TR2": [
-                { "item":24, "type":0 },
-                { "item":47, "type":0 },
-                { "item":64, "type":0 },
-                { "item":73, "type":0 },
-                { "item":74, "type":0 },
-                { "item":95, "type":0 },
-                { "item":151, "type":0 },
-                { "item":154, "type":0 },
-                { "item":170, "type":0 }
+                { "item":24, "type":148 },
+                { "item":47, "type":143 },
+                { "item":64, "type":148 },
+                { "item":73, "type":148 },
+                { "item":74, "type":147 },
+                { "item":95, "type":147 },
+                { "item":151, "type":147 },
+                { "item":154, "type":146 },
+                { "item":170, "type":144 }
+            ],
+            "LIVING.TR2": [
+                { "item":4, "type":144 }
+            ],
+            "DECK.TR2": [
+                { "item":16, "type":145 },
+                { "item":38, "type":145 },
+                { "item":93, "type":145 }
+            ],
+            "SKIDOO.TR2": [
+                { "item":0, "type":145 },
+                { "item":9, "type":147 },
+                { "item":22, "type":144 },
+                { "item":80, "type":145 },
+                { "item":93, "type":148 },
+                { "item":94, "type":148 }
+            ],
+            "MONASTRY.TR2": [
+                { "item":27, "type":147 },
+                { "item":48, "type":145 },
+                { "item":77, "type":145 },
+                { "item":92, "type":147 },
+                { "item":93, "type":148 },
+                { "item":119, "type":147 },
+                { "item":121, "type":145 },
+                { "item":157, "type":147 },
+                { "item":158, "type":148 }
+            ],
+            "CATACOMB.TR2": [
+                { "item":17, "type":147 },
+                { "item":28, "type":145 },
+                { "item":46, "type":148 },
+                { "item":47, "type":148 },
+                { "item":55, "type":145 },
+                { "item":114, "type":147 },
+                { "item":152, "type":144 }
+            ],
+            "PALACE.TR2": [
+                { "item":71, "type":148 },
+                { "item":90, "type":145 },
+                { "item":93, "type":143 },
+                { "item":127, "type":145 },
+                { "item":130, "type":144 },
+                { "item":133, "type":148 },
+                { "item":151, "type":148 }
+            ],
+            "EMPRTOMB.TR2": [
+                { "item":0, "type":143 },
+                { "item":39, "type":145 },
+                { "item":103, "type":145 },
+                { "item":133, "type":145 },
+                { "item":137, "type":143 },
+                { "item":160, "type":145 },
+                { "item":181, "type":145 },
+                { "item":202, "type":148 }
+            ],
+            "FLOATING.TR2": [
+                { "item":4, "type":145 },
+                { "item":26, "type":148 },
+                { "item":45, "type":147 },
+                { "item":84, "type":147 },
+                { "item":112, "type":148 },
+                { "item":117, "type":148 }
+            ],
+            "XIAN.TR2": [
+                { "item":0, "type":145 },
+                { "item":13, "type":145 },
+                { "item":14, "type":148 },
+                { "item":34, "type":145 },
+                { "item":37, "type":145 }
+            ],
+            "HOUSE.TR2": [
+                { "item":3, "type":143 },
+                { "item":63, "type":143 },
+                { "item":64, "type":143 },
+                { "item":66, "type":143 }
             ]
         },
-        "tr3": []
+        "tr3": {
+            "JUNGLE.TR2": [
+                { "item":9, "type":174 },
+                { "item":15, "type":173 },
+                { "item":33, "type":169 },
+                { "item":72, "type":169 },
+                { "item":125, "type":170 },
+                { "item":132, "type":172 }
+            ],
+            "TEMPLE.TR2": [
+                { "item":3, "type":169 },
+                { "item":13, "type":171 },
+                { "item":22, "type":169 },
+                { "item":35, "type":171 },
+                { "item":62, "type":174 },
+                { "item":65, "type":173 },
+                { "item":68, "type":169 },
+                { "item":103, "type":169 },
+                { "item":111, "type":170 },
+                { "item":130, "type":172 },
+                { "item":136, "type":171 },
+                { "item":183, "type":171 },
+                { "item":221, "type":172 }
+            ],
+            "QUADCHAS.TR2": [
+                { "item":8, "type":173 },
+                { "item":16, "type":175 },
+                { "item":21, "type":175 },
+                { "item":31, "type":170 },
+                { "item":105, "type":169 },
+                { "item":107, "type":170 },
+                { "item":115, "type":169 }
+            ],
+            "TONYBOSS.TR2": [
+                { "item":20, "type":171 },
+                { "item":26, "type":175 },
+                { "item":31, "type":171 }
+            ],
+            "NEVADA.TR2": [
+                { "item":17, "type":169 },
+                { "item":22, "type":169 },
+                { "item":29, "type":173 },
+                { "item":38, "type":171 },
+                { "item":48, "type":174 },
+                { "item":49, "type":169 },
+                { "item":72, "type":169 }
+            ],
+            "COMPOUND.TR2": [
+                { "item":20, "type":171 },
+                { "item":44, "type":172 },
+                { "item":58, "type":165 },
+                { "item":76, "type":174 },
+                { "item":129, "type":169 },
+                { "item":139, "type":174 },
+                { "item":184, "type":169 },
+                { "item":202, "type":169 },
+                { "item":204, "type":164 },
+                { "item":222, "type":163 },
+                { "item":229, "type":161 },
+                { "item":230, "type":170 },
+                { "item":244, "type":-1 }
+            ],
+            "AREA51.TR2": [
+                { "item":30, "type":170 },
+                { "item":61, "type":173 },
+                { "item":83, "type":171 },
+                { "item":84, "type":173 },
+                { "item":100, "type":170 },
+                { "item":107, "type":171 },
+                { "item":132, "type":171 },
+                { "item":197, "type":169 },
+                { "item":221, "type":173 },
+                { "item":223, "type":169 },
+                { "item":234, "type":170 }
+            ],
+            "SHORE.TR2": [
+                { "item":2, "type":169 },
+                { "item":4, "type":169 },
+                { "item":31, "type":170 },
+                { "item":53, "type":171 },
+                { "item":55, "type":173 },
+                { "item":56, "type":166 },
+                { "item":67, "type":170 },
+                { "item":68, "type":171 },
+                { "item":96, "type":173 },
+                { "item":121, "type":171 }
+            ],
+            "CRASH.TR2": [
+                { "item":52, "type":173 },
+                { "item":69, "type":170 },
+                { "item":82, "type":174 },
+                { "item":86, "type":174 },
+                { "item":96, "type":175 },
+                { "item":112, "type":171 },
+                { "item":137, "type":175 }
+            ],
+            "RAPIDS.TR2": [
+                { "item":28, "type":170 },
+                { "item":62, "type":169 },
+                { "item":73, "type":170 },
+                { "item":98, "type":169 }
+            ],
+            "TRIBOSS.TR2": [
+                { "item":7, "type":171 },
+                { "item":14, "type":170 },
+                { "item":31, "type":171 },
+                { "item":39, "type":174 },
+                { "item":63, "type":171 },
+                { "item":64, "type":171 }
+            ],
+            "ROOFS.TR2": [
+                { "item":0, "type":173 },
+                { "item":9, "type":171 },
+                { "item":32, "type":174 },
+                { "item":48, "type":173 },
+                { "item":97, "type":173 },
+                { "item":102, "type":170 },
+                { "item":104, "type":169 },
+                { "item":108, "type":173 },
+                { "item":118, "type":173 },
+                { "item":146, "type":170 },
+                { "item":149, "type":170 },
+                { "item":155, "type":174 },
+                { "item":199, "type":175 },
+                { "item":209, "type":173 }
+            ],
+            "SEWER.TR2": [
+                { "item":45, "type":173 },
+                { "item":48, "type":172 },
+                { "item":57, "type":171 },
+                { "item":64, "type":169 },
+                { "item":80, "type":169 },
+                { "item":84, "type":170 },
+                { "item":100, "type":169 },
+                { "item":103, "type":171 },
+                { "item":127, "type":174 },
+                { "item":146, "type":173 },
+                { "item":153, "type":170 },
+                { "item":161, "type":171 },
+                { "item":189, "type":171 },
+                { "item":201, "type":172 },
+                { "item":207, "type":169 },
+                { "item":228, "type":170 },
+                { "item":245, "type":175 }
+            ],
+            "TOWER.TR2": [
+                { "item":8, "type":172 },
+                { "item":13, "type":173 },
+                { "item":21, "type":169 },
+                { "item":37, "type":169 },
+                { "item":40, "type":172 },
+                { "item":43, "type":170 },
+                { "item":52, "type":171 },
+                { "item":68, "type":172 },
+                { "item":71, "type":172 },
+                { "item":89, "type":169 },
+                { "item":112, "type":172 },
+                { "item":123, "type":173 },
+                { "item":129, "type":169 },
+                { "item":150, "type":172 },
+                { "item":167, "type":171 },
+                { "item":172, "type":169 },
+                { "item":192, "type":172 }
+            ],
+            "OFFICE.TR2": [
+                { "item":13, "type":174 },
+                { "item":18, "type":169 },
+                { "item":22, "type":173 },
+                { "item":24, "type":171 },
+                { "item":27, "type":174 }
+            ],
+            "ANTARC.TR2": [
+                { "item":33, "type":171 },
+                { "item":68, "type":169 },
+                { "item":84, "type":171 },
+                { "item":97, "type":171 },
+                { "item":108, "type":171 },
+                { "item":111, "type":175 },
+                { "item":112, "type":175 },
+                { "item":125, "type":173 }
+            ],
+            "MINES.TR2": [
+                { "item":19, "type":173 },
+                { "item":27, "type":174 },
+                { "item":33, "type":170 },
+                { "item":43, "type":174 },
+                { "item":126, "type":170 },
+                { "item":174, "type":173 },
+                { "item":179, "type":171 }
+            ],
+            "CITY.TR2": [
+                { "item":34, "type":175 },
+                { "item":35, "type":175 },
+                { "item":39, "type":171 },
+                { "item":65, "type":173 },
+                { "item":92, "type":170 },
+                { "item":96, "type":170 },
+                { "item":116, "type":169 },
+                { "item":141, "type":170 },
+                { "item":182, "type":171 },
+                { "item":192, "type":174 },
+                { "item":196, "type":173 }
+            ],
+            "CHAMBER.TR2": [
+                { "item":29, "type":170 }
+            ]
         }
+    }
 }

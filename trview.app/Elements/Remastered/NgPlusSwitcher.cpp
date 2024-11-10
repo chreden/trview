@@ -27,7 +27,6 @@ namespace trview
         Resource type_list = get_resource_memory(IDR_NGPLUS, L"TEXT");
         std::string ngplus_json = { type_list.data, type_list.data + type_list.size };
         auto json = nlohmann::json::parse(ngplus_json.begin(), ngplus_json.end());
-
         for (auto& [key, value] : json["games"].items())
         {
             const auto version = version_mapping.find(key);
@@ -73,13 +72,20 @@ namespace trview
                 continue;
             }
 
-            auto entity = tr_level.get_entity(entry.first);
-            entity.TypeID = entry.second;
-            auto item = _item_source(tr_level, entity, entry.first, existing_item->triggers(), mesh_storage, level, existing_item->room());
-
             existing_item->set_ng_plus(false);
-            item->set_ng_plus(true);
-            swapset.items[entry.first] = item;
+
+            if (entry.second != -1)
+            {
+                auto entity = tr_level.get_entity(entry.first);
+                entity.TypeID = entry.second;
+                auto item = _item_source(tr_level, entity, entry.first, existing_item->triggers(), mesh_storage, level, existing_item->room());
+                item->set_ng_plus(true);
+                swapset.items[entry.first] = item;
+            }
+            else
+            {
+                swapset.items[entry.first] = nullptr;
+            }
         }
 
         return swapset;

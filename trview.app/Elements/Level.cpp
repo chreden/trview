@@ -1395,13 +1395,15 @@ namespace trview
                 continue;
             }
 
-            const auto existing_item = _entities[key];
-            if (auto room = existing_item->room().lock())
+            if (value)
             {
-                room->add_entity(value);
+                const auto existing_item = _entities[key];
+                if (auto room = existing_item->room().lock())
+                {
+                    room->add_entity(value);
+                }
+                _entities.push_back(value);
             }
-
-            _entities.push_back(value);
         }
 
         callbacks.on_progress("Done");
