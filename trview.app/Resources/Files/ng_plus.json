@@ -3,7 +3,6 @@
         "tr1": {
             "LEVEL1.PHD": [
                 { "item":29, "type":89 },
-                { "item":29, "type":89 },
                 { "item":34, "type":89 },
                 { "item":47, "type":90 },
                 { "item":48, "type":89 },
@@ -154,7 +153,70 @@
                 { "item":128, "type":91 }
             ]
         },
-        "tr2": [],
+        "tr2": {
+            "WALL.TR2": [
+                { "item":28, "type":148 },
+                { "item":92, "type":148 }
+            ],
+            "BOAT.TR2": [
+                { "item":12, "type":144 },
+                { "item":60, "type":144 },
+                { "item":105, "type":147 },
+                { "item":122, "type":143 },
+                { "item":129, "type":147 },
+                { "item":132, "type":144 }
+            ],
+            "VENICE.TR2": [
+                { "item":33, "type":144 },
+                { "item":47, "type":145 },
+                { "item":57, "type":143 },
+                { "item":65, "type":143 },
+                { "item":79, "type":144 },
+                { "item":115, "type":143 }
+            ],
+            "OPERA.TR2": [
+                { "item":27, "type":145 },
+                { "item":35, "type":145 },
+                { "item":59, "type":143 },
+                { "item":86, "type":145 },
+                { "item":130, "type":145 },
+                { "item":141, "type":143 },
+                { "item":169, "type":147 },
+                { "item":186, "type":148 }
+            ],
+            "RIG.TR2": [
+                { "item":15, "type":145 },
+                { "item":29, "type":145 },
+                { "item":37, "type":144 },
+                { "item":64, "type":141 },
+                { "item":72, "type":145 },
+                { "item":81, "type":138 },
+                { "item":111, "type":140 }
+            ],
+            "PLATFORM.TR2": [
+                { "item":30, "type":147 },
+                { "item":33, "type":145 },
+                { "item":44, "type":146 },
+                { "item":76, "type":147 },
+                { "item":64, "type":146 },
+                { "item":104, "type":147 }
+            ],
+            "UNWATER.TR2": [
+                { "item":58, "type":147 },
+                { "item":63, "type":147 }
+            ],
+            "KEEL.TR2": [
+                { "item":24, "type":0 },
+                { "item":47, "type":0 },
+                { "item":64, "type":0 },
+                { "item":73, "type":0 },
+                { "item":74, "type":0 },
+                { "item":95, "type":0 },
+                { "item":151, "type":0 },
+                { "item":154, "type":0 },
+                { "item":170, "type":0 }
+            ]
+        },
         "tr3": []
-    }
+        }
 }
