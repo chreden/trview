@@ -73,7 +73,9 @@ namespace trview
                 add_toggle(IViewer::Options::notes);
                 ImGui::TableNextRow();
                 add_toggle(IViewer::Options::sound_sources);
+                ImGui::BeginDisabled(!_ng_plus_enabled); 
                 add_toggle(IViewer::Options::ng_plus);
+                ImGui::EndDisabled();
                 ImGui::TableNextRow();
                 if (!_use_alternate_groups)
                 {
@@ -154,5 +156,10 @@ namespace trview
     void ViewOptions::set_flip_enabled(bool enabled)
     {
         _flip_enabled = enabled;
+    }
+
+    void ViewOptions::set_ng_plus_enabled(bool enabled)
+    {
+        _ng_plus_enabled = enabled;
     }
 }
