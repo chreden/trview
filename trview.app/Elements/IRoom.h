@@ -229,7 +229,6 @@ namespace trview
         /// </summary>
         /// <returns>Whether the room is a quicksand room.</returns>
         virtual bool quicksand() const = 0;
-        virtual void remove_item(const std::weak_ptr<IItem>& item) = 0;
         /// <summary>
         /// Render the room.
         /// </summary>

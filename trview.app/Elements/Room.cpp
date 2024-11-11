@@ -1157,15 +1157,6 @@ namespace trview
         return { std::from_range, _static_meshes };
     }
 
-    void Room::remove_item(const std::weak_ptr<IItem>& item)
-    {
-        if (const auto item_ptr = item.lock())
-        {
-            std::erase_if(_entities,
-                [&](auto&& i) { return i.lock() == item_ptr; });
-        }
-    }
-
     std::shared_ptr<ISector> sector_from_point(const IRoom& room, const Vector3& point)
     {
         const auto info = room.info();
