@@ -184,12 +184,14 @@ namespace trview
         _items_windows->set_triggers(new_level->triggers());
         _items_windows->set_level_version(new_level->version());
         _items_windows->set_model_checker([=](uint32_t id) { return new_level->has_model(id); });
+        _items_windows->set_ng_plus(new_level->ng_plus());
         _lights_windows->set_level_version(new_level->version());
         _lights_windows->set_lights(new_level->lights());
         _rooms_windows->set_level_version(new_level->version());
         _rooms_windows->set_items(new_level->items());
         _rooms_windows->set_floordata(new_level->floor_data());
         _rooms_windows->set_rooms(new_level->rooms());
+        _rooms_windows->set_ng_plus(new_level->ng_plus());
         _route_window->set_items(new_level->items());
         _route_window->set_triggers(new_level->triggers());
         _route_window->set_rooms(new_level->rooms());
@@ -201,6 +203,7 @@ namespace trview
         _triggers_windows->set_items(new_level->items());
         _triggers_windows->set_triggers(new_level->triggers());
         _textures_windows->set_texture_storage(new_level->texture_storage());
+        
 
         _level_token_store.clear();
         _level_token_store += new_level->on_ng_plus += [this, level](bool value)
