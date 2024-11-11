@@ -162,7 +162,6 @@ namespace trview
         Event<> on_level_changed;
         mutable Event<> on_geometry_colours_changed;
         Event<std::weak_ptr<ITrigger>> on_trigger_selected;
-        Event<> on_items_changed;
         Event<bool> on_ng_plus;
     };
 }

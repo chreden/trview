@@ -211,16 +211,6 @@ namespace trview
                 _items_windows->set_ng_plus(value);
                 _rooms_windows->set_ng_plus(value);
             };
-        _level_token_store += new_level->on_items_changed += [this, level]()
-            {
-                if (auto level_ptr = level.lock())
-                {
-                    _items_windows->set_items(level_ptr->items());
-                    _route_window->set_items(level_ptr->items());
-                    _items_windows->set_items(level_ptr->items());
-                    _triggers_windows->set_items(level_ptr->items());
-                }
-            };
     }
 
     void Windows::set_room(const std::weak_ptr<IRoom>& room)
