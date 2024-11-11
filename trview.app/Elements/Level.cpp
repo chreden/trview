@@ -1388,7 +1388,7 @@ namespace trview
 
         callbacks.on_progress("Generating NG+ items");
         const auto swapset = _ngplus_switcher->create_for_level(shared_from_this(), *level, *mesh_storage);
-        for (const auto& [key, value] : swapset.items)
+        for (const auto& [key, value] : swapset)
         {
             if (key > _entities.size())
             {

@@ -49,7 +49,7 @@ namespace trview
         }
     }
 
-    INgPlusSwitcher::SwapSet NgPlusSwitcher::create_for_level(const std::shared_ptr<ILevel>& level, const trlevel::ILevel& tr_level, const IMeshStorage& mesh_storage) const
+    std::unordered_map<uint16_t, std::shared_ptr<IItem>> NgPlusSwitcher::create_for_level(const std::shared_ptr<ILevel>& level, const trlevel::ILevel& tr_level, const IMeshStorage& mesh_storage) const
     {
         const auto game_mapping = _item_mapping.find(level->version());
         if (game_mapping == _item_mapping.end())
@@ -63,7 +63,7 @@ namespace trview
             return {};
         }
 
-        SwapSet swapset;
+        std::unordered_map<uint16_t, std::shared_ptr<IItem>> results;
         for (const auto& entry : level_mapping->second)
         {
             const auto existing_item = level->item(entry.first).lock();
@@ -80,14 +80,14 @@ namespace trview
                 entity.TypeID = entry.second;
                 auto item = _item_source(tr_level, entity, entry.first, existing_item->triggers(), mesh_storage, level, existing_item->room());
                 item->set_ng_plus(true);
-                swapset.items[entry.first] = item;
+                results[entry.first] = item;
             }
             else
             {
-                swapset.items[entry.first] = nullptr;
+                results[entry.first] = nullptr;
             }
         }
 
-        return swapset;
+        return results;
     }
 }
