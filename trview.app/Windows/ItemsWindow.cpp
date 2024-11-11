@@ -436,6 +436,10 @@ namespace trview
                 }
                 return results;
             });
+        _filters.add_multi_getter<bool>("NG+", [](auto&& item)
+            {
+                return item.ng_plus() == std::nullopt ? std::vector<bool>{} : std::vector<bool>{false,true};
+            });
     }
 
     void ItemsWindow::set_level_version(trlevel::LevelVersion version)
