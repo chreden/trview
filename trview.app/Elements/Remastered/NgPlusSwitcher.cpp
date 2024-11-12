@@ -35,10 +35,10 @@ namespace trview
                 continue;
             }
 
-            std::unordered_map<std::string, std::unordered_map<uint16_t, uint16_t>> level_maps;
+            std::unordered_map<std::string, std::unordered_map<uint16_t, int16_t>> level_maps;
             for (auto& [level_key, level_value] : value.items())
             {
-                std::unordered_map<uint16_t, uint16_t> entries;
+                std::unordered_map<uint16_t, int16_t> entries;
                 for (auto& [_, item_value] : level_value.items())
                 {
                     entries[item_value["item"].get<uint16_t>()] = item_value["type"].get<uint16_t>();

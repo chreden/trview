@@ -21,7 +21,7 @@ namespace trview
     private:
         std::unordered_map<trlevel::LevelVersion,
             std::unordered_map<std::string,
-            std::unordered_map<uint16_t, uint16_t>>> _item_mapping;
+            std::unordered_map<uint16_t, int16_t>>> _item_mapping;
         IItem::EntitySource _item_source;
     };
 }
