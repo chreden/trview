@@ -858,7 +858,7 @@ namespace trview
                 std::views::transform([](auto&& i) { return i.lock(); }) |
                 std::views::filter([this, room](auto&& i)
                     {
-                        return i && i->room().lock() == room && (!i->ng_plus().has_value() || i->ng_plus() == _ng_plus);
+                        return i && i->room().lock() == room && (i->ng_plus().value_or(_ng_plus) == _ng_plus);
                     }) |
                 std::ranges::to<std::vector>();
 

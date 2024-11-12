@@ -123,10 +123,10 @@ namespace trview
                 std::ranges::to<std::vector>();
 
             RowCounter counter{ "items",
-                static_cast<std::size_t>(std::ranges::count_if(_all_items, [](auto&& item)
+                static_cast<std::size_t>(std::ranges::count_if(_all_items, [this](auto&& item)
                     {
                         const auto item_ptr = item.lock();
-                        return item_ptr && item_ptr->ng_plus().value_or(true);
+                        return item_ptr && item_ptr->ng_plus().value_or(_ng_plus) == _ng_plus;
                     }))};
             if (ImGui::BeginTable(Names::items_list.c_str(), 5, ImGuiTableFlags_Sortable | ImGuiTableFlags_ScrollY, ImVec2(0, -counter.height())))
             {
