@@ -49,6 +49,8 @@ namespace trview
         virtual int32_t angle() const = 0;
         virtual std::unordered_set<std::string> categories() const = 0;
         virtual void set_categories(const std::unordered_set<std::string>& categories) = 0;
+        virtual void set_ng_plus(bool value) = 0;
+        virtual std::optional<bool> ng_plus() const = 0;
     };
 
     bool is_mutant_egg(const IItem& item);

@@ -32,6 +32,7 @@ namespace trview
             inline static const std::string lighting = "Lighting";
             inline static const std::string notes = "Notes";
             inline static const std::string sound_sources = "Sounds";
+            inline static const std::string ng_plus = "NG+";
         };
 
         virtual ~IViewer() = 0;

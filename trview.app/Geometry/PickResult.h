@@ -6,6 +6,7 @@
 namespace trview
 {
     struct Colour;
+    struct IItem;
     struct ILevel;
     struct IRoute;
     struct IScriptable;
@@ -40,6 +41,7 @@ namespace trview
         Triangle                     triangle;
         std::weak_ptr<IScriptable>   scriptable;
         std::weak_ptr<ISoundSource>  sound_source;
+        std::weak_ptr<IItem>         item;
     };
 
     /// Convert the pick result to a display string.

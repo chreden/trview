@@ -26,7 +26,7 @@ namespace trview
     struct ILevelTextureStorage;
     struct ICamera;
 
-    class Item final : public IItem
+    class Item final : public IItem, public std::enable_shared_from_this<IItem>
     {
     public:
         explicit Item(const IMesh::Source& mesh_source, const trlevel::ILevel& level, const trlevel::tr2_entity& entity, const IMeshStorage& mesh_storage, const std::weak_ptr<ILevel>& owning_level, uint32_t number, const TypeInfo& type, const std::vector<std::weak_ptr<ITrigger>>& triggers, const std::weak_ptr<IRoom>& room);
@@ -57,6 +57,8 @@ namespace trview
         int32_t angle() const override;
         std::unordered_set<std::string> categories() const override;
         void set_categories(const std::unordered_set<std::string>& categories) override;
+        void set_ng_plus(bool value) override;
+        std::optional<bool> ng_plus() const override;
     private:
         Item(const IMesh::Source& mesh_source, const IMeshStorage& mesh_storage, const trlevel::ILevel& level, const std::weak_ptr<ILevel>& owning_level, const std::weak_ptr<IRoom>& room, uint32_t number, uint16_t type_id, const DirectX::SimpleMath::Vector3& position, int32_t angle, int32_t ocb, const TypeInfo& type, const std::vector<std::weak_ptr<ITrigger>>& triggers, uint16_t flags);
 
@@ -90,5 +92,6 @@ namespace trview
 
         std::weak_ptr<ILevel> _level;
         int32_t _angle;
+        std::optional<bool> _ng_plus;
     };
 }

@@ -61,5 +61,6 @@ namespace trview
         /// </summary>
         /// <param name="enabled">Whether the control is enabled.</param>
         virtual void set_flip_enabled(bool enabled) = 0;
+        virtual void set_ng_plus_enabled(bool enabled) = 0;
     };
 }

@@ -373,7 +373,7 @@ namespace trview
         }
 
         select_room(item_ptr->room());
-        _level->set_selected_item(item_ptr->number());
+        _level->set_selected_item(item);
         _viewer->select_item(item);
         _windows->select(item);
     }

@@ -257,6 +257,7 @@ namespace trview
             result.index = _number;
             result.distance = box_distance;
             result.position = position + direction * box_distance;
+            result.item = std::const_pointer_cast<IItem>(shared_from_this());
             return result;
         }
 
@@ -285,6 +286,7 @@ namespace trview
         PickResult result;
         result.type = PickResult::Type::Entity;
         result.index = _number;
+        result.item = std::const_pointer_cast<IItem>(shared_from_this());
 
         for (auto i : pick_meshes)
         {
@@ -464,6 +466,16 @@ namespace trview
     void Item::set_categories(const std::unordered_set<std::string>& categories)
     {
         _type.categories = categories;
+    }
+
+    void Item::set_ng_plus(bool value)
+    {
+        _ng_plus = value;
+    }
+
+    std::optional<bool> Item::ng_plus() const
+    {
+        return _ng_plus;
     }
 
     bool is_mutant_egg(const IItem& item)

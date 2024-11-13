@@ -350,6 +350,9 @@
     <ClCompile Include="Elements\SoundSource\SoundSource.cpp">
       <Filter>Elements\SoundSource</Filter>
     </ClCompile>
+    <ClCompile Include="Elements\Remastered\NgPlusSwitcher.cpp">
+      <Filter>Elements\Remastered</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera\Camera.h">
@@ -1159,6 +1162,15 @@
     <ClInclude Include="Mocks\Sound\ISound.h">
       <Filter>Mocks\Sound</Filter>
     </ClInclude>
+    <ClInclude Include="Elements\Remastered\INgPlusSwitcher.h">
+      <Filter>Elements\Remastered</Filter>
+    </ClInclude>
+    <ClInclude Include="Elements\Remastered\NgPlusSwitcher.h">
+      <Filter>Elements\Remastered</Filter>
+    </ClInclude>
+    <ClInclude Include="Mocks\Elements\INgPlusSwitcher.h">
+      <Filter>Mocks\Elements</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Windows">
@@ -1371,6 +1383,9 @@
     <Filter Include="Mocks\Sound">
       <UniqueIdentifier>{b259ddb6-6a38-44a8-bdbc-50c7e1fe00af}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Elements\Remastered">
+      <UniqueIdentifier>{dcbb80b1-085c-425d-8598-8c63d7b6bcd4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Resources\Files\tomb1.png">
@@ -1445,6 +1460,9 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="Resources\Files\type_names.txt">
+      <Filter>Resources\Files</Filter>
+    </Text>
+    <Text Include="Resources\Files\ng_plus.json">
       <Filter>Resources\Files</Filter>
     </Text>
     <Text Include="Resources\Files\actions.json">

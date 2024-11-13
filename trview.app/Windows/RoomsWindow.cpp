@@ -854,36 +854,38 @@ namespace trview
                     [](auto&& l, auto&& r) { return std::tuple(l.type(), l.number()) < std::tuple(r.type(), r.number()); },
                 }, _force_sort);
 
-            for (const auto& item : _all_items)
-            {
-                if (auto item_ptr = item.lock())
-                {
-                    if (item_room(item_ptr) == room->number())
+            const auto filtered = _all_items |
+                std::views::transform([](auto&& i) { return i.lock(); }) |
+                std::views::filter([this, room](auto&& i)
                     {
-                        ImGui::TableNextRow();
-                        ImGui::TableNextColumn();
-                        auto selected_item = _local_selected_item.lock();
-                        bool selected = selected_item && selected_item == item_ptr;
+                        return i && i->room().lock() == room && (i->ng_plus().value_or(_ng_plus) == _ng_plus);
+                    }) |
+                std::ranges::to<std::vector>();
 
-                        ImGuiScroller scroller;
-                        if (selected && _scroll_to_item)
-                        {
-                            scroller.scroll_to_item();
-                            _scroll_to_item = false;
-                        }
+            for (const auto& item : filtered)
+            {
+                ImGui::TableNextRow();
+                ImGui::TableNextColumn();
+                auto selected_item = _local_selected_item.lock();
+                bool selected = selected_item && selected_item == item;
 
-                        if (ImGui::Selectable(std::to_string(item_ptr->number()).c_str(), &selected, ImGuiSelectableFlags_SpanAllColumns | static_cast<int>(ImGuiSelectableFlags_SelectOnNav)))
-                        {
-                            scroller.fix_scroll();
-                            _local_selected_item = item;
-                            on_item_selected(item);
-                            _scroll_to_item = false;
-                        }
-
-                        ImGui::TableNextColumn();
-                        ImGui::Text(item_ptr->type().c_str());
-                    }
+                ImGuiScroller scroller;
+                if (selected && _scroll_to_item)
+                {
+                    scroller.scroll_to_item();
+                    _scroll_to_item = false;
                 }
+
+                if (ImGui::Selectable(std::to_string(item->number()).c_str(), &selected, ImGuiSelectableFlags_SpanAllColumns | static_cast<int>(ImGuiSelectableFlags_SelectOnNav)))
+                {
+                    scroller.fix_scroll();
+                    _local_selected_item = item;
+                    on_item_selected(item);
+                    _scroll_to_item = false;
+                }
+
+                ImGui::TableNextColumn();
+                ImGui::Text(item->type().c_str());
             }
 
             ImGui::EndTable();
@@ -1268,5 +1270,10 @@ namespace trview
                 _column_sizer.measure(std::to_string(room_ptr->static_meshes().size()), 3);
             }
         }
+    }
+
+    void RoomsWindow::set_ng_plus(bool value)
+    {
+        _ng_plus = value;
     }
 }

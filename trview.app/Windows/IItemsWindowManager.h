@@ -31,6 +31,8 @@ namespace trview
 
         virtual void set_model_checker(const std::function<bool (uint32_t)>& checker) = 0;
 
+        virtual void set_ng_plus(bool value) = 0;
+
         /// Set the triggers to use in the windows.
         /// @param triggers The triggers in the level.
         virtual void set_triggers(const std::vector<std::weak_ptr<ITrigger>>& triggers) = 0;

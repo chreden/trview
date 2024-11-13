@@ -33,8 +33,16 @@ namespace trview
             MOCK_METHOD(int32_t, angle, (), (const, override));
             MOCK_METHOD(std::unordered_set<std::string>, categories, (), (const, override));
             MOCK_METHOD(void, set_categories, (const std::unordered_set<std::string>&), (override));
+            MOCK_METHOD(std::optional<bool>, ng_plus, (), (const, override));
+            MOCK_METHOD(void, set_ng_plus, (bool), (override));
 
             bool _visible_state;
+
+            std::shared_ptr<MockItem> with_ng_plus(std::optional<bool> value)
+            {
+                ON_CALL(*this, ng_plus).WillByDefault(testing::Return(value));
+                return shared_from_this();
+            }
 
             std::shared_ptr<MockItem> with_number(uint32_t number)
             {

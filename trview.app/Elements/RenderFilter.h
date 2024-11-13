@@ -15,6 +15,7 @@ namespace trview
         CameraSinks = 0x80,
         Lighting = 0x100,
         SoundSources = 0x200,
+        NgPlus = 0x400,
         All = 0xffffffff,
         Default = Rooms | Entities | Triggers | Water
     };

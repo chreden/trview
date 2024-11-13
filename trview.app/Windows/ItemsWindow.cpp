@@ -111,15 +111,23 @@ namespace trview
 
             auto filtered_items = 
                 _all_items | 
+                std::views::transform([](auto&& item) { return item.lock(); }) |
+                std::views::filter([&](auto&& item)
+                    { 
+                        return item && (!item->ng_plus().has_value() || item->ng_plus() == _ng_plus); 
+                    }) |
                 std::views::filter([&](auto&& item) 
                     {
-                        const auto item_ptr = item.lock();
-                        return !(!item_ptr || (_track.enabled<Type::Room>() && item_ptr->room().lock() != _current_room.lock() || !_filters.match(*item_ptr)));
+                        return !(!item || (_track.enabled<Type::Room>() && item->room().lock() != _current_room.lock() || !_filters.match(*item)));
                     }) |
-                std::views::transform([](auto&& item) { return item.lock(); }) |
                 std::ranges::to<std::vector>();
 
-            RowCounter counter{ "items", _all_items.size() };
+            RowCounter counter{ "items",
+                static_cast<std::size_t>(std::ranges::count_if(_all_items, [this](auto&& item)
+                    {
+                        const auto item_ptr = item.lock();
+                        return item_ptr && item_ptr->ng_plus().value_or(_ng_plus) == _ng_plus;
+                    }))};
             if (ImGui::BeginTable(Names::items_list.c_str(), 5, ImGuiTableFlags_Sortable | ImGuiTableFlags_ScrollY, ImVec2(0, -counter.height())))
             {
                 imgui_header_row(
@@ -428,6 +436,10 @@ namespace trview
                 }
                 return results;
             });
+        _filters.add_multi_getter<bool>("NG+", [](auto&& item)
+            {
+                return item.ng_plus() == std::nullopt ? std::vector<bool>{} : std::vector<bool>{false,true};
+            });
     }
 
     void ItemsWindow::set_level_version(trlevel::LevelVersion version)
@@ -460,5 +472,10 @@ namespace trview
                 _column_sizer.measure(item_ptr->type(), 3);
             }
         }
+    }
+
+    void ItemsWindow::set_ng_plus(bool value)
+    {
+        _ng_plus = value;
     }
 }

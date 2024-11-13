@@ -5,6 +5,7 @@
 #include "Elements/IItem.h"
 #include "Elements/ILevel.h"
 #include "Elements/ILight.h"
+#include "Elements/INgPlusSwitcher.h"
 #include "Elements/IRoom.h"
 #include "Elements/ISector.h"
 #include "Elements/IStaticMesh.h"
@@ -281,5 +282,8 @@ namespace trview
 
         MockSound::MockSound() {};
         MockSound::~MockSound() {};
+
+        MockNgPlusSwitcher::MockNgPlusSwitcher() {};
+        MockNgPlusSwitcher::~MockNgPlusSwitcher() {};
     }
 }

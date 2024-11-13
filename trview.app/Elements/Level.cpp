@@ -3,8 +3,9 @@
 #include <trview.graphics/IShaderStorage.h>
 #include <trview.graphics/IShader.h>
 
-#include <trview.app/Graphics/LevelTextureStorage.h>
-#include <trview.app/Camera/ICamera.h>
+#include "../Graphics/LevelTextureStorage.h"
+#include "../Camera/ICamera.h"
+#include "Remastered/INgPlusSwitcher.h"
 #include <trview.graphics/RasterizerStateStore.h>
 #include <format>
 #include <ranges>
@@ -38,9 +39,11 @@ namespace trview
         std::unique_ptr<ISelectionRenderer> selection_renderer,
         const std::shared_ptr<ILog>& log,
         const graphics::IBuffer::ConstantSource& buffer_source,
-        std::shared_ptr<ISoundStorage> sound_storage)
+        std::shared_ptr<ISoundStorage> sound_storage,
+        std::shared_ptr<INgPlusSwitcher> ngplus_switcher)
         : _device(device), _texture_storage(level_texture_storage),
-        _transparency(std::move(transparency_buffer)), _selection_renderer(std::move(selection_renderer)), _log(log), _sound_storage(sound_storage)
+        _transparency(std::move(transparency_buffer)), _selection_renderer(std::move(selection_renderer)), _log(log), _sound_storage(sound_storage),
+        _ngplus_switcher(ngplus_switcher)
     {
         _vertex_shader = shader_storage->get("level_vertex_shader");
         _pixel_shader = shader_storage->get("level_pixel_shader");
@@ -209,9 +212,9 @@ namespace trview
         on_room_selected(room);
     }
 
-    void Level::set_selected_item(uint32_t index)
+    void Level::set_selected_item(const std::weak_ptr<IItem>& item)
     {
-        const auto selected_item = _entities[index];
+        const auto selected_item = item.lock();
         if (_selected_item.lock() != selected_item)
         {
             _selected_item = selected_item;
@@ -698,7 +701,8 @@ namespace trview
                 filter_flag(PickFilter::AllGeometry, has_flag(_render_filters, RenderFilter::AllGeometry)) |
                 filter_flag(PickFilter::Triggers, has_flag(_render_filters, RenderFilter::Triggers)) |
                 filter_flag(PickFilter::Lights, has_flag(_render_filters, RenderFilter::Lights)) |
-                filter_flag(PickFilter::CameraSinks, has_flag(_render_filters, RenderFilter::CameraSinks))))
+                filter_flag(PickFilter::CameraSinks, has_flag(_render_filters, RenderFilter::CameraSinks)) |
+                filter_flag(PickFilter::NgPlus, has_flag(_render_filters, RenderFilter::NgPlus))))
             {
                 results.push_back(result);
             }
@@ -1342,7 +1346,7 @@ namespace trview
     }
 
     void Level::initialise(std::shared_ptr<trlevel::ILevel> level,
-        std::unique_ptr<IMeshStorage> mesh_storage,
+        std::shared_ptr<IMeshStorage> mesh_storage,
         const IItem::EntitySource& entity_source,
         const IItem::AiSource& ai_source,
         const IRoom::Source& room_source,
@@ -1381,6 +1385,27 @@ namespace trview
 
         callbacks.on_progress("Generating static meshes");
         record_static_meshes();
+
+        callbacks.on_progress("Generating NG+ items");
+        const auto swapset = _ngplus_switcher->create_for_level(shared_from_this(), *level, *mesh_storage);
+        for (const auto& [key, value] : swapset)
+        {
+            if (key > _entities.size())
+            {
+                continue;
+            }
+
+            if (value)
+            {
+                const auto existing_item = _entities[key];
+                if (auto room = existing_item->room().lock())
+                {
+                    room->add_entity(value);
+                }
+                _entities.push_back(value);
+            }
+        }
+
         callbacks.on_progress("Done");
     }
 
@@ -1476,6 +1501,43 @@ namespace trview
     bool Level::show_sound_sources() const
     {
         return has_flag(_render_filters, RenderFilter::SoundSources);
+    }
+
+    bool Level::ng_plus() const
+    {
+        return has_flag(_render_filters, RenderFilter::NgPlus);
+    }
+
+    void Level::set_ng_plus(bool show)
+    {
+        bool currently_active = has_flag(_render_filters, RenderFilter::NgPlus);
+        if (currently_active != show)
+        {
+            _render_filters = set_flag(_render_filters, RenderFilter::NgPlus, show);
+            on_ng_plus(show);
+
+            if (const auto selected = _selected_item.lock())
+            {
+                const auto ng = selected->ng_plus();
+                if (ng.has_value() && ng != show)
+                {
+                    const auto alternate = std::ranges::find_if(
+                        _entities, [selected](auto&& i)
+                        {
+                            return i != selected &&
+                                i->number() == selected->number() &&
+                                i->ng_plus() != selected->ng_plus();
+                        });
+                    if (alternate != _entities.end())
+                    {
+                        _selected_item = *alternate;
+                        on_item_selected(_selected_item);
+                        on_level_changed();
+                    }
+                }
+            }
+        }
+        
     }
 
     bool find_item_by_type_id(const ILevel& level, uint32_t type_id, std::weak_ptr<IItem>& output_item)

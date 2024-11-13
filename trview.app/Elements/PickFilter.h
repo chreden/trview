@@ -15,6 +15,7 @@ namespace trview
         StaticMeshes = 0x10,
         Lights = 0x20,
         CameraSinks = 0x40,
+        NgPlus = 0x80,
         All = 0xffffffff,
         Default = All & ~(AllGeometry)
     };

@@ -41,6 +41,7 @@ namespace trview
         virtual void set_number(int32_t number) override;
         virtual void set_level_version(trlevel::LevelVersion version) override;
         virtual void set_model_checker(const std::function<bool(uint32_t)>& checker) override;
+        void set_ng_plus(bool value) override;
     private:
         void set_sync_item(bool value);
         void render_items_list();
@@ -71,5 +72,6 @@ namespace trview
         Track<Type::Room> _track;
 
         ColumnSizer _column_sizer;
+        bool _ng_plus{ false };
     };
 }

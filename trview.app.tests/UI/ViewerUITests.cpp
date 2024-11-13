@@ -525,3 +525,33 @@ TEST(ViewerUI, SetStaticsStartupUpdatesSettingsWindow)
     ui->set_settings(settings);
 }
 
+TEST(ViewerUI, NgPlusEnabled)
+{
+    auto [view_options_ptr, view_options] = create_mock<MockViewOptions>();
+    EXPECT_CALL(view_options, set_ng_plus_enabled(true)).Times(1);
+
+    auto ui = register_test_module().with_view_options(std::move(view_options_ptr)).build();
+
+    auto item = mock_shared<MockItem>()->with_ng_plus(false);
+    std::vector<std::weak_ptr<IItem>> items{ item };
+    auto level = mock_shared<MockLevel>();
+    ON_CALL(*level, items).WillByDefault(testing::Return(items));
+
+    ui->set_level(level);
+}
+
+TEST(ViewerUI, NgPlusDisabled)
+{
+    auto [view_options_ptr, view_options] = create_mock<MockViewOptions>();
+    EXPECT_CALL(view_options, set_ng_plus_enabled(false)).Times(1);
+
+    auto ui = register_test_module().with_view_options(std::move(view_options_ptr)).build();
+
+    auto item = mock_shared<MockItem>()->with_ng_plus(std::nullopt);
+    std::vector<std::weak_ptr<IItem>> items{ item };
+    auto level = mock_shared<MockLevel>();
+    ON_CALL(*level, items).WillByDefault(testing::Return(items));
+
+    ui->set_level(level);
+}
+

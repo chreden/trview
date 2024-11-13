@@ -7,10 +7,12 @@
 #include <set>
 
 #include <trlevel/ILevel.h>
-#include <trview.app/Elements/ILevel.h>
-#include <trview.app/Geometry/ITransparencyBuffer.h>
-#include <trview.app/Graphics/ISelectionRenderer.h>
-#include <trview.app/Graphics/IMeshStorage.h>
+#include "ILevel.h"
+#include "../Geometry/ITransparencyBuffer.h"
+#include "../Graphics/ISelectionRenderer.h"
+#include "../Graphics/IMeshStorage.h"
+#include "Remastered/INgPlusSwitcher.h"
+
 #include <trview.graphics/IBuffer.h>
 #include <trview.common/TokenStore.h>
 
@@ -38,7 +40,8 @@ namespace trview
             std::unique_ptr<ISelectionRenderer> selection_renderer,
             const std::shared_ptr<ILog>& log,
             const graphics::IBuffer::ConstantSource& buffer_source,
-            std::shared_ptr<ISoundStorage> sound_storage);
+            std::shared_ptr<ISoundStorage> sound_storage,
+            std::shared_ptr<INgPlusSwitcher> ngplus_switcher);
         virtual ~Level() = default;
         virtual std::vector<graphics::Texture> level_textures() const override;
         virtual std::optional<uint32_t> selected_item() const override;
@@ -59,7 +62,7 @@ namespace trview
         virtual bool highlight_mode_enabled(RoomHighlightMode mode) const override;
         std::vector<std::weak_ptr<IScriptable>> scriptables() const override;
         void set_selected_room(const std::weak_ptr<IRoom>& room) override;
-        virtual void set_selected_item(uint32_t index) override;
+        void set_selected_item(const std::weak_ptr<IItem>& item) override;
         virtual void set_neighbour_depth(uint32_t depth) override;
         virtual void on_camera_moved() override;
         virtual void set_item_visibility(uint32_t index, bool state) override;
@@ -110,7 +113,7 @@ namespace trview
         virtual bool show_camera_sinks() const override;
         void initialise(
             std::shared_ptr<trlevel::ILevel> level,
-            std::unique_ptr<IMeshStorage> mesh_storage,
+            std::shared_ptr<IMeshStorage> mesh_storage,
             const IItem::EntitySource& entity_source,
             const IItem::AiSource& ai_source,
             const IRoom::Source& room_source,
@@ -126,6 +129,8 @@ namespace trview
         std::vector<std::weak_ptr<ISoundSource>> sound_sources() const override;
         void set_show_sound_sources(bool show) override;
         bool show_sound_sources() const override;
+        void set_ng_plus(bool show) override;
+        bool ng_plus() const override;
     private:
         void generate_rooms(const trlevel::ILevel& level, const IRoom::Source& room_source, const IMeshStorage& mesh_storage);
         void generate_triggers(const ITrigger::Source& trigger_source);
@@ -224,6 +229,8 @@ namespace trview
         std::vector<std::weak_ptr<IScriptable>> _scriptables;
         std::shared_ptr<ISoundStorage> _sound_storage;
         std::vector<std::shared_ptr<ISoundSource>> _sound_sources;
+
+        std::shared_ptr<INgPlusSwitcher> _ngplus_switcher;
     };
 
     /// Find the first item with the type id specified.

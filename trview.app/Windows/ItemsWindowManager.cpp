@@ -39,6 +39,7 @@ namespace trview
         items_window->set_current_room(_current_room);
         items_window->set_level_version(_level_version);
         items_window->set_model_checker(_model_checker);
+        items_window->set_ng_plus(_ng_plus);
         items_window->set_selected_item(_selected_item);
         return add_window(items_window);
     }
@@ -69,6 +70,15 @@ namespace trview
         for (auto& window : _windows)
         {
             window.second->set_model_checker(checker);
+        }
+    }
+
+    void ItemsWindowManager::set_ng_plus(bool value)
+    {
+        _ng_plus = value;
+        for (auto& [_, window] : _windows)
+        {
+            window->set_ng_plus(value);
         }
     }
 

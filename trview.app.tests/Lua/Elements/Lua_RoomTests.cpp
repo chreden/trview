@@ -149,6 +149,32 @@ TEST(Lua_Room, Items)
     ASSERT_EQ(200, lua_tointeger(L, -1));
 }
 
+TEST(Lua_Room, ItemsNg)
+{
+    auto item1 = mock_shared<MockItem>()->with_number(100);
+    auto item2 = mock_shared<MockItem>()->with_number(200)->with_ng_plus(false);
+    auto item3 = mock_shared<MockItem>()->with_number(201)->with_ng_plus(true);
+
+    auto room = mock_shared<MockRoom>();
+    EXPECT_CALL(*room, items).WillRepeatedly(Return(std::vector<std::weak_ptr<IItem>>{ item1, item2, item3 }));
+
+    LuaState L;
+    lua::create_room(L, room);
+    lua_setglobal(L, "r");
+
+    ASSERT_EQ(0, luaL_dostring(L, "return r.items_ng"));
+    ASSERT_EQ(LUA_TTABLE, lua_type(L, -1));
+    ASSERT_EQ(0, luaL_dostring(L, "return #r.items_ng"));
+    ASSERT_EQ(LUA_TNUMBER, lua_type(L, -1));
+    ASSERT_EQ(2, lua_tointeger(L, -1));
+    ASSERT_EQ(0, luaL_dostring(L, "return r.items_ng[1].number"));
+    ASSERT_EQ(LUA_TNUMBER, lua_type(L, -1));
+    ASSERT_EQ(100, lua_tointeger(L, -1));
+    ASSERT_EQ(0, luaL_dostring(L, "return r.items_ng[2].number"));
+    ASSERT_EQ(LUA_TNUMBER, lua_type(L, -1));
+    ASSERT_EQ(201, lua_tointeger(L, -1));
+}
+
 TEST(Lua_Room, Level)
 {
     auto level = mock_shared<MockLevel>()->with_version(trlevel::LevelVersion::Tomb4);

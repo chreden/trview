@@ -71,6 +71,7 @@ namespace trview
         toggles[Options::lighting] = [this](bool value) { set_show_lighting(value); };
         toggles[Options::notes] = [](bool) {};
         toggles[Options::sound_sources] = [this](bool value) { set_show_sound_sources(value); };
+        toggles[Options::ng_plus] = [this](bool value) { set_ng_plus(value); };
 
         const auto persist_toggle_value = [&](const std::string& name, bool value)
         {
@@ -125,7 +126,7 @@ namespace trview
             {
                 if (_context_pick.type == PickResult::Type::Entity)
                 {
-                    if (const auto item = level->item(_context_pick.index).lock())
+                    if (const auto item = _context_pick.item.lock())
                     {
                         _context_pick.position = item->position();
                     }
@@ -150,12 +151,9 @@ namespace trview
             }
             else if (_context_pick.type == PickResult::Type::Entity)
             {
-                if (const auto level = _level.lock())
+                if (const auto item = _context_pick.item.lock())
                 {
-                    if (const auto item = level->item(_context_pick.index).lock())
-                    {
-                        _context_pick.position = item->position();
-                    }
+                    _context_pick.position = item->position();
                 }
             }
             else if (_context_pick.type == PickResult::Type::Trigger)
@@ -186,7 +184,7 @@ namespace trview
             {
                 if (_context_pick.type == PickResult::Type::Entity)
                 {
-                    on_item_visibility(level->item(_context_pick.index), false);
+                    on_item_visibility(_context_pick.item, false);
                 }
                 else if (_context_pick.type == PickResult::Type::Trigger)
                 {
@@ -585,7 +583,7 @@ namespace trview
                 const auto level = _level.lock();
                 if (_current_pick.type == PickResult::Type::Entity && level)
                 {
-                    const auto item = level->item(_current_pick.index).lock();
+                    const auto item = _current_pick.item.lock();
                     _ui->set_triggered_by(item ? item->triggers() : std::vector<std::weak_ptr<ITrigger>>{});
                 }
                 else if (_current_pick.type == PickResult::Type::CameraSink && level)
@@ -644,6 +642,7 @@ namespace trview
         new_level->set_show_camera_sinks(_ui->toggle(Options::camera_sinks));
         new_level->set_show_lighting(_ui->toggle(Options::lighting));
         new_level->set_show_sound_sources(_ui->toggle(Options::sound_sources));
+        new_level->set_ng_plus(_ui->toggle(Options::ng_plus));
 
         // Set up the views.
         auto rooms = new_level->rooms();
@@ -1190,7 +1189,7 @@ namespace trview
                 return level->room(pick.index);
             case PickResult::Type::Entity:
             {
-                if (auto item = level->item(pick.index).lock())
+                if (auto item = pick.item.lock())
                 {
                     return item->room();
                 }
@@ -1265,10 +1264,7 @@ namespace trview
             break;
         case PickResult::Type::Entity:
         {
-            if (level)
-            {
-                on_item_selected(level->item(pick.index));
-            }
+            on_item_selected(pick.item);
             break;
         }
         case PickResult::Type::Trigger:
@@ -1533,5 +1529,14 @@ namespace trview
             }
             _scene_changed = true;
         }
+    }
+
+    void Viewer::set_ng_plus(bool show)
+    {
+        if (auto level = _level.lock())
+        {
+            level->set_ng_plus(show);
+        }
+        set_toggle(Options::ng_plus, show);
     }
 }

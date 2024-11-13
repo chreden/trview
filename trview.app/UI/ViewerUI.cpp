@@ -328,6 +328,12 @@ namespace trview
         {
             _level_info->set_level(new_level->name());
             _level_info->set_level_version(new_level->version());
+            _view_options->set_ng_plus_enabled(
+                std::ranges::any_of(new_level->items(), [](auto&& i)
+                    {
+                        const auto item = i.lock();
+                        return item && item->ng_plus() != std::nullopt;
+                    }));
         }
         else
         {

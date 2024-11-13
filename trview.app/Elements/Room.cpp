@@ -118,10 +118,14 @@ namespace trview
                     continue;
                 }
 
-                auto entity_result = entity_ptr->pick(position, direction);
-                if (entity_result.hit)
+                const auto ng = entity_ptr->ng_plus();
+                if (!ng.has_value() || ng.value() == has_flag(filters, PickFilter::NgPlus))
                 {
-                    pick_results.push_back(entity_result);
+                    auto entity_result = entity_ptr->pick(position, direction);
+                    if (entity_result.hit)
+                    {
+                        pick_results.push_back(entity_result);
+                    }
                 }
             }
         }
@@ -318,7 +322,11 @@ namespace trview
         {
             if (auto entity_ptr = entity.lock())
             {
-                entity_ptr->render(camera, *_texture_storage, colour);
+                const auto ng = entity_ptr->ng_plus();
+                if (!ng.has_value() || ng.value() == has_flag(render_filter, RenderFilter::NgPlus))
+                {
+                    entity_ptr->render(camera, *_texture_storage, colour);
+                }
             }
         }
     }
@@ -513,7 +521,11 @@ namespace trview
         {
             if (auto entity_ptr = entity.lock())
             {
-                entity_ptr->get_transparent_triangles(transparency, camera, colour);
+                const auto ng = entity_ptr->ng_plus();
+                if (!ng.has_value() || ng.value() == has_flag(render_filter, RenderFilter::NgPlus))
+                {
+                    entity_ptr->get_transparent_triangles(transparency, camera, colour);
+                }
             }
         }
     }

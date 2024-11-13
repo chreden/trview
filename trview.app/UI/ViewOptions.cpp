@@ -24,6 +24,7 @@ namespace trview
         _toggles[IViewer::Options::lighting] = true;
         _toggles[IViewer::Options::notes] = true;
         _toggles[IViewer::Options::sound_sources] = false;
+        _toggles[IViewer::Options::ng_plus] = false;
     }
 
     void ViewOptions::render()
@@ -72,6 +73,9 @@ namespace trview
                 add_toggle(IViewer::Options::notes);
                 ImGui::TableNextRow();
                 add_toggle(IViewer::Options::sound_sources);
+                ImGui::BeginDisabled(!_ng_plus_enabled); 
+                add_toggle(IViewer::Options::ng_plus);
+                ImGui::EndDisabled();
                 ImGui::TableNextRow();
                 if (!_use_alternate_groups)
                 {
@@ -152,5 +156,10 @@ namespace trview
     void ViewOptions::set_flip_enabled(bool enabled)
     {
         _flip_enabled = enabled;
+    }
+
+    void ViewOptions::set_ng_plus_enabled(bool enabled)
+    {
+        _ng_plus_enabled = enabled;
     }
 }

@@ -18,6 +18,7 @@ namespace trview
             MOCK_METHOD(void, set_toggle, (const std::string&, bool), (override));
             MOCK_METHOD(bool, toggle, (const std::string&), (const, override));
             MOCK_METHOD(void, render, (), (override));
+            MOCK_METHOD(void, set_ng_plus_enabled, (bool), (override));
         };
     }
 }

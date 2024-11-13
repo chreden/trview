@@ -251,6 +251,24 @@ TEST(Windows, LightsEventsForwarded)
     ASSERT_EQ(raised, true);
 }
 
+TEST(Windows, OnNgPlusForwarded)
+{
+    auto [items_ptr, items] = create_mock<MockItemsWindowManager>();
+    EXPECT_CALL(items, set_ng_plus(true)).Times(1);
+    EXPECT_CALL(items, set_ng_plus(false)).Times(1);
+    auto [rooms_ptr, rooms] = create_mock<MockRoomsWindowManager>();
+    EXPECT_CALL(rooms, set_ng_plus(true)).Times(1);
+    EXPECT_CALL(rooms, set_ng_plus(false)).Times(1);
+    auto windows = register_test_module().with_rooms(std::move(rooms_ptr)).with_items(std::move(items_ptr)).build();
+
+    auto level = mock_shared<MockLevel>();
+    ON_CALL(*level, ng_plus).WillByDefault(Return(true));
+
+    windows->set_level(level);
+
+    level->on_ng_plus(false);
+}
+
 TEST(Windows, RoomsEventsForwarded)
 {
     auto [rooms_ptr, rooms] = create_mock<MockRoomsWindowManager>();

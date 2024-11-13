@@ -24,6 +24,7 @@ namespace trview
             MOCK_METHOD(void, set_floordata, (const std::vector<uint16_t>&), (override));
             MOCK_METHOD(void, set_selected_camera_sink, (const std::weak_ptr<ICameraSink>&), (override));
             MOCK_METHOD(void, set_selected_light, (const std::weak_ptr<ILight>&), (override));
+            MOCK_METHOD(void, set_ng_plus, (bool), (override));
         };
     }
 }

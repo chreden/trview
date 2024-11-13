@@ -591,7 +591,8 @@ TEST(Application, ReloadSyncsProperties)
     ON_CALL(original, selected_room).WillByDefault(Return(original_room));
 
     ON_CALL(reloaded, items).WillByDefault(Return(items_weak));
-    EXPECT_CALL(reloaded, set_selected_item(3)).Times(1);
+    const auto item_matcher = [](auto r) { return std::get<0>(r).lock(); };
+    EXPECT_CALL(reloaded, set_selected_item).With(ResultOf(item_matcher, Eq(items[3]))).Times(1);
     ON_CALL(reloaded, triggers).WillByDefault(Return(triggers_weak));
     EXPECT_CALL(reloaded, set_selected_trigger(3)).Times(1);
     ON_CALL(reloaded, lights).WillByDefault(Return(lights_weak));

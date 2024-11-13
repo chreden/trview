@@ -66,6 +66,8 @@ namespace trview
         virtual void set_level_version(trlevel::LevelVersion version) = 0;
 
         virtual void set_model_checker(const std::function<bool(uint32_t)>& checker) = 0;
+
+        virtual void set_ng_plus(bool value) = 0;
     };
 }
 

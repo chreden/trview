@@ -25,6 +25,7 @@
 #include "Elements/Item.h"
 #include "Elements/Light.h"
 #include "Elements/Trigger.h"
+#include "Elements/Remastered/NgPlusSwitcher.h"
 #include "Elements/StaticMesh.h"
 #include "Elements/Sector.h"
 #include "Elements/SoundSource/SoundSource.h"
@@ -230,6 +231,7 @@ namespace trview
             return std::make_shared<Item>(mesh_source, level, entity, mesh_storage, owning_level, index, type_info_lookup->lookup(level.get_version(), entity.type_id, entity.flags), std::vector<std::weak_ptr<ITrigger>>{}, room);
         };
 
+        auto ngplus = std::make_shared<NgPlusSwitcher>(entity_source);
         auto log = std::make_shared<Log>();
 
         auto bounding_mesh = create_cube_mesh(mesh_source);
@@ -275,7 +277,7 @@ namespace trview
                 level->load(callbacks);
                 level_texture_storage->load(level);
 
-                auto mesh_storage = std::make_unique<MeshStorage>(mesh_source, *level, *level_texture_storage);
+                auto mesh_storage = std::make_shared<MeshStorage>(mesh_source, *level, *level_texture_storage);
                 auto new_level = std::make_shared<Level>(
                     device, 
                     shader_storage, 
@@ -284,9 +286,10 @@ namespace trview
                     std::make_unique<SelectionRenderer>(device, shader_storage, std::make_unique<TransparencyBuffer>(device), render_target_source),
                     log,
                     buffer_source,
-                    sound_storage);
+                    sound_storage,
+                    ngplus);
                 new_level->initialise(level,
-                    std::move(mesh_storage),
+                    mesh_storage,
                     entity_source,
                     ai_source,
                     room_source,
@@ -295,6 +298,7 @@ namespace trview
                     camera_sink_source,
                     sound_source_source,
                     callbacks);
+
                 return new_level;
             };
 

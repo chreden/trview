@@ -231,3 +231,12 @@ TEST(ItemsWindowManager, SetModelCheckerUpdatesWindows)
     manager->create_window();
     manager->set_model_checker([](auto) {return true; });
 }
+
+TEST(ItemsWindowManager, SetNgPlusPassedToWindows)
+{
+    auto mock_window = mock_shared<MockItemsWindow>();
+    EXPECT_CALL(*mock_window, set_ng_plus).Times(2);
+    auto manager = register_test_module().with_window_source([&](auto&&...) { return mock_window; }).build();
+    manager->create_window();
+    manager->set_ng_plus(false);
+}

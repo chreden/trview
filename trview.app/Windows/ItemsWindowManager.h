@@ -29,6 +29,7 @@ namespace trview
         virtual void set_items(const std::vector<std::weak_ptr<IItem>>& items) override;
         virtual void set_level_version(trlevel::LevelVersion version) override;
         virtual void set_model_checker(const std::function<bool(uint32_t)>& checker) override;
+        void set_ng_plus(bool value) override;
         virtual void set_triggers(const std::vector<std::weak_ptr<ITrigger>>& triggers) override;
         void set_room(const std::weak_ptr<IRoom>& room) override;
         virtual void set_selected_item(const std::weak_ptr<IItem>& item) override;
@@ -42,5 +43,6 @@ namespace trview
         IItemsWindow::Source _items_window_source;
         trlevel::LevelVersion _level_version{ trlevel::LevelVersion::Unknown };
         std::function<bool(uint32_t)> _model_checker;
+        bool _ng_plus{ false };
     };
 }

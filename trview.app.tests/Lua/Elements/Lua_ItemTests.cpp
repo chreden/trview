@@ -87,6 +87,28 @@ TEST(Lua_Item, Invisible)
     ASSERT_EQ(true, lua_toboolean(L, -1));
 }
 
+TEST(Lua_Item, Ng)
+{
+    auto item = mock_shared<MockItem>()->with_ng_plus(true);
+
+    LuaState L;
+    lua::create_item(L, item);
+    lua_setglobal(L, "i");
+
+    ASSERT_EQ(0, luaL_dostring(L, "return i.ng"));
+    ASSERT_EQ(LUA_TBOOLEAN, lua_type(L, -1));
+    ASSERT_EQ(true, lua_toboolean(L, -1));
+
+    item->with_ng_plus(false);
+    ASSERT_EQ(0, luaL_dostring(L, "return i.ng"));
+    ASSERT_EQ(LUA_TBOOLEAN, lua_type(L, -1));
+    ASSERT_EQ(false, lua_toboolean(L, -1));
+
+    item->with_ng_plus(std::nullopt);
+    ASSERT_EQ(0, luaL_dostring(L, "return i.ng"));
+    ASSERT_EQ(LUA_TNIL, lua_type(L, -1));
+}
+
 TEST(Lua_Item, Number)
 {
     auto item = mock_shared<MockItem>()->with_number(123);

@@ -9,7 +9,8 @@ The Room library provides information about a room in a [level](level.md).
 | alternate_group | number | R | Flipmap number (TR4+) |
 | alternate_room | [Room](room.md) | R | Alternate room or nil if not present |
 | cameras_and_sinks | [CameraSink](camera_sink.md)[] | R | Camera/Sinks in the room |
-| items | [Item](item.md)[] | R | Items in the room |
+| items | [Item](item.md)[] | R | Items in the room, no NG+ swap |
+| items_ng | [Item](item.md)[] | R | Items in the room, NG+ swap |
 | flags | number | R | Room flags |
 | level | [Level](level.md) | R | The level that the room is in |
 | lights | [Light](light.md)[] | R | Lights in the room |
