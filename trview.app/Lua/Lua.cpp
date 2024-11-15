@@ -51,6 +51,38 @@ namespace trview
             self->do_file(lua_tostring(L, 1));
             return 0;
         }
+
+        void nil_functions(lua_State* L, const std::string& lib, const std::vector<std::string>& names)
+        {
+            for (const auto& name : names)
+            {
+                lua_getglobal(L, lib.c_str());
+                lua_pushnil(L);
+                lua_setfield(L, -2, name.c_str());
+            }
+        }
+
+        static const luaL_Reg loadedlibs[] = {
+          {LUA_GNAME, luaopen_base},
+          {LUA_COLIBNAME, luaopen_coroutine},
+          {LUA_TABLIBNAME, luaopen_table},
+          {LUA_IOLIBNAME, luaopen_io},
+          {LUA_OSLIBNAME, luaopen_os},
+          {LUA_STRLIBNAME, luaopen_string},
+          {LUA_MATHLIBNAME, luaopen_math},
+          {LUA_UTF8LIBNAME, luaopen_utf8},
+          {NULL, NULL}
+        };
+
+        LUALIB_API void trview_luaL_openlibs(lua_State* L) {
+            const luaL_Reg* lib;
+            /* "require" functions from 'loadedlibs' and set results to global table */
+            for (lib = loadedlibs; lib->func; lib++) {
+                luaL_requiref(L, lib->name, lib->func, 1);
+                lua_pop(L, 1);  /* remove lib */
+            }
+        }
+
     }
 
     ILua::~ILua()
@@ -132,7 +164,8 @@ namespace trview
         }
 
         L = luaL_newstate();
-        luaL_openlibs(L);
+        trview_luaL_openlibs(L);
+        nil_functions(L, LUA_OSLIBNAME, { "execute", "exit", "remove", "rename", "setlocale" });
     }
 
     namespace lua
