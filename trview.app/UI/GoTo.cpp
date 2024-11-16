@@ -1,5 +1,6 @@
 #include "GoTo.h"
 #include <charconv>
+#include <ranges>
 
 namespace trview
 {

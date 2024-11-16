@@ -3,6 +3,7 @@
 #include "../Settings/UserSettings.h"
 
 #include <algorithm>
+#include <ranges>
 
 using namespace DirectX;
 using namespace DirectX::SimpleMath;
