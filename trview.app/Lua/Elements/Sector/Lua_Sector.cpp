@@ -7,6 +7,8 @@
 #include <trview.common/Algorithms.h>
 #include "../../../Elements/Floordata.h"
 
+#include <ranges>
+
 namespace trview
 {
     namespace lua

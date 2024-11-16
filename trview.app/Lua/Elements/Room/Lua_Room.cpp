@@ -10,6 +10,8 @@
 #include "../StaticMesh/Lua_StaticMesh.h"
 #include "../../Vector3.h"
 
+#include <ranges>
+
 namespace trview
 {
     namespace lua

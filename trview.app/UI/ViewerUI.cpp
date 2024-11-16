@@ -7,6 +7,8 @@
 #include "../Routing/IRoute.h"
 #include "../Windows/IViewer.h"
 
+#include <ranges>
+
 using namespace DirectX::SimpleMath;
 
 namespace trview

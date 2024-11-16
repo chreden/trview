@@ -9,6 +9,8 @@
 #include "../StaticMesh/Lua_StaticMesh.h"
 #include "../../Scriptable/IScriptable.h"
 
+#include <ranges>
+
 namespace trview
 {
     namespace lua
