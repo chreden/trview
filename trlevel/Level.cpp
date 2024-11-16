@@ -1786,6 +1786,7 @@ namespace trlevel
         _sound_details = read_sound_details(activity, file, callbacks);
         _sound_data = read_sound_data(activity, file, callbacks);
         _sample_indices = read_sample_indices(activity, file, callbacks);
+        generate_sounds_tr1(callbacks);
         callbacks.on_progress("Generating meshes");
         generate_meshes(_mesh_data);
         callbacks.on_progress("Loading complete");
