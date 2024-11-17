@@ -758,8 +758,6 @@ namespace trlevel
         {
             callbacks.on_progress("Reading sound sources");
             log_file(activity, file, "Reading sound sources");
-            const auto x = file.tellg();
-            x;
             const auto sound_sources = read_vector<uint32_t, tr_sound_source>(file);
             log_file(activity, file, std::format("Read {} sound sources", sound_sources.size()));
             return sound_sources;
