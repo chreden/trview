@@ -1634,6 +1634,7 @@ namespace trlevel
             }
 
             std::basic_ispanstream<uint8_t> file{ { *bytes } };
+            file.exceptions(std::ios::failbit);
             log_file(activity, file, std::format("Opened file \"{}\"", _filename));
 
             read_header(file, *bytes, activity, callbacks);
@@ -1752,40 +1753,79 @@ namespace trlevel
         _object_textures = read_object_textures_tr1_3(activity, file, callbacks);
         _sprite_textures = read_sprite_textures(activity, file, callbacks);
         _sprite_sequences = read_sprite_sequences(activity, file, callbacks);
-        _cameras = read_cameras(activity, file, callbacks);
-        _sound_sources = read_sound_sources(activity, file, callbacks);
-        const auto boxes = read_boxes_tr1(activity, file, callbacks);
-        read_overlaps(activity, file, callbacks);
-        read_zones_tr1(activity, file, callbacks, static_cast<uint32_t>(boxes.size()));
-        read_animated_textures(activity, file, callbacks);
-        _entities = read_entities_tr1(activity, file, callbacks);
-        read_light_map(activity, file, callbacks);
 
-        read_palette_tr1(file, activity, callbacks);
-        for (const auto& t : _textile8)
+        // Special handling for demo levels or levels where the palette is here:
+        bool on_demo_attempt = false;
+        const auto branch_start = file.tellg();
+        std::optional<std::exception> original_exception;
+
+        do
         {
-            callbacks.on_textile(t.Tile |
-                std::views::transform([&](uint8_t entry_index)
-                    {
-                        // The first entry in the 8 bit palette is the transparent colour, so just return 
-                        // fully transparent instead of replacing it later.
-                        if (entry_index == 0)
-                        {
-                            return 0x00000000u;
-                        }
-                        auto entry = get_palette_entry(entry_index);
-                        uint32_t value = 0xff000000 | entry.Blue << 16 | entry.Green << 8 | entry.Red;
-                        return value;
-                    }) | std::ranges::to<std::vector>());
-        }
-        _textile8 = {};
+            try
+            {
+                if (on_demo_attempt)
+                {
+                    read_palette_tr1(file, activity, callbacks);
+                }
 
-        read_cinematic_frames(activity, file, callbacks);
-        read_demo_data(activity, file, callbacks);
-        _sound_map = read_sound_map_tr1(activity, file, callbacks);
-        _sound_details = read_sound_details(activity, file, callbacks);
-        _sound_data = read_sound_data(activity, file, callbacks);
-        _sample_indices = read_sample_indices(activity, file, callbacks);
+                _cameras = read_cameras(activity, file, callbacks);
+                _sound_sources = read_sound_sources(activity, file, callbacks);
+                const auto boxes = read_boxes_tr1(activity, file, callbacks);
+                read_overlaps(activity, file, callbacks);
+                read_zones_tr1(activity, file, callbacks, static_cast<uint32_t>(boxes.size()));
+                read_animated_textures(activity, file, callbacks);
+                _entities = read_entities_tr1(activity, file, callbacks);
+                read_light_map(activity, file, callbacks);
+                
+                if (!on_demo_attempt)
+                {
+                    read_palette_tr1(file, activity, callbacks);
+                }
+
+                for (const auto& t : _textile8)
+                {
+                    callbacks.on_textile(t.Tile |
+                        std::views::transform([&](uint8_t entry_index)
+                            {
+                                // The first entry in the 8 bit palette is the transparent colour, so just return 
+                                // fully transparent instead of replacing it later.
+                                if (entry_index == 0)
+                                {
+                                    return 0x00000000u;
+                                }
+                                auto entry = get_palette_entry(entry_index);
+                                uint32_t value = 0xff000000 | entry.Blue << 16 | entry.Green << 8 | entry.Red;
+                                return value;
+                            }) | std::ranges::to<std::vector>());
+                }
+                _textile8 = {};
+
+                read_cinematic_frames(activity, file, callbacks);
+                read_demo_data(activity, file, callbacks);
+                _sound_map = read_sound_map_tr1(activity, file, callbacks);
+                _sound_details = read_sound_details(activity, file, callbacks);
+                _sound_data = read_sound_data(activity, file, callbacks);
+                _sample_indices = read_sample_indices(activity, file, callbacks);
+                break;
+            }
+            catch (const std::exception& e)
+            {
+                if (!on_demo_attempt)
+                {
+                    original_exception = e;
+                    callbacks.on_progress("Attempting to load as TR1 demo");
+                    file.clear();
+                    file.seekg(branch_start, std::ios::beg);
+                    on_demo_attempt = true;
+                }
+                else
+                {
+                    throw original_exception.value_or(e);
+                }
+            }
+
+        } while (on_demo_attempt);
+
         generate_sounds_tr1(callbacks);
         callbacks.on_progress("Generating meshes");
         generate_meshes(_mesh_data);
