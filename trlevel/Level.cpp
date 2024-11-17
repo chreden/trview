@@ -2200,7 +2200,7 @@ namespace trlevel
 
     void Level::load_sound_fx(const LoadCallbacks& callbacks)
     {
-        if (auto main = _files->load_file(std::format("{}MAIN.SFX", trview::path_for_filename(_filename))))
+        if (auto main = load_main_sfx())
         {
             std::basic_ispanstream<uint8_t> sfx_file{ { *main } };
 
@@ -2229,5 +2229,16 @@ namespace trlevel
                 sfx_file.seekg(size + 8, std::ios::cur);
             }
         }
+    }
+
+    std::optional<std::vector<uint8_t>> Level::load_main_sfx() const
+    {
+        const auto path = trview::path_for_filename(_filename);
+        const auto og_main = _files->load_file(std::format("{}MAIN.SFX", path));
+        if (og_main.has_value())
+        {
+            return og_main;
+        }
+        return _files->load_file(std::format("{}../SFX/MAIN.SFX", path));
     }
 }
