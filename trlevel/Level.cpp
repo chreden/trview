@@ -41,7 +41,6 @@ namespace trlevel
         const int16_t Lara = 0;
         const int16_t LaraSkinTR3 = 315;
         const int16_t LaraSkinPostTR3 = 8;
-        constexpr std::array expected_del{ 126, 237, 0, 126, 126, 126, 126, 121, 122, 123 };
     
         void skip(std::basic_ispanstream<uint8_t>& file, uint32_t size)
         {
@@ -51,6 +50,16 @@ namespace trlevel
         void skip_xela(std::basic_ispanstream<uint8_t>& file)
         {
             skip(file, 4);
+        }
+
+        template <typename T>
+        T peek(std::basic_ispanstream<uint8_t>& file)
+        {
+            T value;
+            const auto at = file.tellg();
+            read<T>(file, value);
+            file.seekg(at);
+            return value;
         }
 
         template <typename T>
@@ -702,38 +711,17 @@ namespace trlevel
             return sound_details;
         }
 
-        std::vector<int16_t> read_sound_map_tr1(trview::Activity& activity, std::basic_ispanstream<uint8_t>& file, const ILevel::LoadCallbacks& callbacks)
+        std::vector<int16_t> read_sound_map(trview::Activity& activity, std::basic_ispanstream<uint8_t>& file, const ILevel::LoadCallbacks& callbacks)
         {
             callbacks.on_progress("Reading sound map");
             log_file(activity, file, "Reading sound map");
-            auto sound_map = read_vector<int16_t>(file, 256);
-            log_file(activity, file, "Read sound map");
-            return sound_map;
-        }
-
-        std::vector<int16_t> read_sound_map_tr2_3(trview::Activity& activity, std::basic_ispanstream<uint8_t>& file, const ILevel::LoadCallbacks& callbacks)
-        {
-            callbacks.on_progress("Reading sound map");
-            log_file(activity, file, "Reading sound map");
-            const auto sound_map = read_vector<int16_t>(file, 370);
-            log_file(activity, file, "Read sound map");
-            return sound_map;
-        }
-
-        std::vector<int16_t> read_sound_map_tr4(trview::Activity& activity, std::basic_ispanstream<uint8_t>& file, const ILevel::LoadCallbacks& callbacks, std::size_t demo_length)
-        {
-            callbacks.on_progress("Reading sound map");
-            log_file(activity, file, "Reading sound map");
-            const auto sound_map = read_vector<int16_t>(file, demo_length == 2048 ? 1024 : 370);
-            log_file(activity, file, "Read sound map");
-            return sound_map;
-        }
-
-        std::vector<int16_t> read_sound_map_tr5(trview::Activity& activity, std::basic_ispanstream<uint8_t>& file, const ILevel::LoadCallbacks& callbacks, bool is_del)
-        {
-            callbacks.on_progress("Reading sound map");
-            log_file(activity, file, "Reading sound map");
-            const auto sound_map = read_vector<int16_t>(file, is_del ? 370 : 450);
+            std::vector<int16_t> sound_map;
+            uint32_t next = peek<uint32_t>(file);
+            while (next >= 65535)
+            {
+                sound_map.push_back(read<int16_t>(file));
+                next = peek<uint32_t>(file);
+            }
             log_file(activity, file, "Read sound map");
             return sound_map;
         }
@@ -1802,7 +1790,7 @@ namespace trlevel
 
                 read_cinematic_frames(activity, file, callbacks);
                 read_demo_data(activity, file, callbacks);
-                _sound_map = read_sound_map_tr1(activity, file, callbacks);
+                _sound_map = read_sound_map(activity, file, callbacks);
                 _sound_details = read_sound_details(activity, file, callbacks);
                 _sound_data = read_sound_data(activity, file, callbacks);
                 _sample_indices = read_sample_indices(activity, file, callbacks);
@@ -1922,7 +1910,7 @@ namespace trlevel
         read_zones_tr1(activity, file, callbacks, static_cast<uint32_t>(boxes.size()));
         read_animated_textures(activity, file, callbacks);
         _entities = read_entities_tr1(activity, file, callbacks);
-        _sound_map = read_sound_map_tr1(activity, file, callbacks);
+        _sound_map = read_sound_map(activity, file, callbacks);
         _sound_details = read_sound_details(activity, file, callbacks);
         generate_sounds_tr1(callbacks);
         callbacks.on_progress("Generating meshes");
@@ -1962,7 +1950,7 @@ namespace trlevel
         read_light_map(activity, file, callbacks);
         read_cinematic_frames(activity, file, callbacks);
         read_demo_data(activity, file, callbacks);
-        _sound_map = read_sound_map_tr2_3(activity, file, callbacks);
+        _sound_map = read_sound_map(activity, file, callbacks);
         _sound_details = read_sound_details(activity, file, callbacks);
         _sample_indices = read_sample_indices(activity, file, callbacks);
         load_sound_fx(callbacks);
@@ -2010,7 +1998,7 @@ namespace trlevel
         read_light_map(activity, file, callbacks);
         read_cinematic_frames(activity, file, callbacks);
         read_demo_data(activity, file, callbacks);
-        _sound_map = read_sound_map_tr2_3(activity, file, callbacks);
+        _sound_map = read_sound_map(activity, file, callbacks);
         _sound_details = read_sound_details(activity, file, callbacks);
         _sample_indices = read_sample_indices(activity, file, callbacks);
         load_sound_fx(callbacks);
@@ -2073,8 +2061,8 @@ namespace trlevel
             _object_textures = read_object_textures_tr4(activity, data_stream, callbacks);
             _entities = read_entities(activity, data_stream, callbacks);
             _ai_objects = read_ai_objects(activity, data_stream, callbacks);
-            const auto demo_data = read_demo_data(activity, data_stream, callbacks);
-            _sound_map = read_sound_map_tr4(activity, data_stream, callbacks, demo_data.size());
+            read_demo_data(activity, data_stream, callbacks);
+            _sound_map = read_sound_map(activity, data_stream, callbacks);
             _sound_details = read_sound_details(activity, data_stream, callbacks);
             _sample_indices = read_sample_indices(activity, data_stream, callbacks);
         }
@@ -2150,11 +2138,7 @@ namespace trlevel
         _ai_objects = read_ai_objects(activity, file, callbacks);
         read_demo_data(activity, file, callbacks);
 
-        // Check state here to determine if this is del.trc. del.trc is a TRC level that has
-        // 370 length sound map instead of 450 sound map like every other TRC level.
-        const bool is_del = std::ranges::equal(_entities | std::views::transform([](auto&& e) { return e.TypeID; }), expected_del);
-
-        _sound_map = read_sound_map_tr5(activity, file, callbacks, is_del);
+        _sound_map = read_sound_map(activity, file, callbacks);
         _sound_details = read_sound_details(activity, file, callbacks);
         _sample_indices = read_sample_indices(activity, file, callbacks);
 
