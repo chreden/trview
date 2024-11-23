@@ -353,6 +353,12 @@
     <ClCompile Include="Elements\Remastered\NgPlusSwitcher.cpp">
       <Filter>Elements\Remastered</Filter>
     </ClCompile>
+    <ClCompile Include="Windows\About\AboutWindow.cpp">
+      <Filter>Windows\About</Filter>
+    </ClCompile>
+    <ClCompile Include="Windows\About\AboutWindowManager.cpp">
+      <Filter>Windows\About</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera\Camera.h">
@@ -1171,6 +1177,18 @@
     <ClInclude Include="Mocks\Elements\INgPlusSwitcher.h">
       <Filter>Mocks\Elements</Filter>
     </ClInclude>
+    <ClInclude Include="Windows\About\IAboutWindow.h">
+      <Filter>Windows\About</Filter>
+    </ClInclude>
+    <ClInclude Include="Windows\About\IAboutWindowManager.h">
+      <Filter>Windows\About</Filter>
+    </ClInclude>
+    <ClInclude Include="Windows\About\AboutWindow.h">
+      <Filter>Windows\About</Filter>
+    </ClInclude>
+    <ClInclude Include="Windows\About\AboutWindowManager.h">
+      <Filter>Windows\About</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Windows">
@@ -1385,6 +1403,9 @@
     </Filter>
     <Filter Include="Elements\Remastered">
       <UniqueIdentifier>{dcbb80b1-085c-425d-8598-8c63d7b6bcd4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Windows\About">
+      <UniqueIdentifier>{9a5c8748-0920-46fd-a893-d0e0f1d748d8}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

@@ -78,6 +78,8 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClCompile Include="Routing\RandomizerRoute.cpp" />
     <ClCompile Include="Sound\Sound.cpp" />
     <ClCompile Include="Sound\SoundStorage.cpp" />
+    <ClCompile Include="Windows\About\AboutWindow.cpp" />
+    <ClCompile Include="Windows\About\AboutWindowManager.cpp" />
     <ClCompile Include="Windows\Sounds\SoundsWindow.cpp" />
     <ClCompile Include="Windows\Sounds\SoundsWindowManager.cpp" />
     <ClCompile Include="Windows\Windows.cpp" />
@@ -207,6 +209,10 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClInclude Include="UI\Fonts\Fonts.h" />
     <ClInclude Include="UI\Fonts\IFonts.h" />
     <ClInclude Include="UserCancelledException.h" />
+    <ClInclude Include="Windows\About\AboutWindow.h" />
+    <ClInclude Include="Windows\About\AboutWindowManager.h" />
+    <ClInclude Include="Windows\About\IAboutWindow.h" />
+    <ClInclude Include="Windows\About\IAboutWindowManager.h" />
     <ClInclude Include="Windows\ColumnSizer.h" />
     <ClInclude Include="Windows\Console\Console.h" />
     <ClInclude Include="Windows\Console\ConsoleManager.h" />

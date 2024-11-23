@@ -7,6 +7,7 @@
 
 namespace trview
 {
+    struct IAboutWindowManager;
     struct ICameraSinkWindowManager;
     struct IConsoleManager;
     struct IItemsWindowManager;
@@ -24,6 +25,7 @@ namespace trview
     {
     public:
         explicit Windows(
+            std::unique_ptr<IAboutWindowManager> about_window_manager,
             std::unique_ptr<ICameraSinkWindowManager> camera_sink_windows,
             std::unique_ptr<IConsoleManager> console_manager,
             std::unique_ptr<IItemsWindowManager> items_window_manager,
@@ -57,6 +59,7 @@ namespace trview
 
         TokenStore _token_store;
         TokenStore _level_token_store;
+        std::unique_ptr<IAboutWindowManager> _about_windows;
         std::unique_ptr<ICameraSinkWindowManager> _camera_sink_windows;
         std::unique_ptr<IConsoleManager> _console_manager;
         std::unique_ptr<IItemsWindowManager> _items_windows;
