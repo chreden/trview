@@ -71,6 +71,8 @@
 #include "Windows/IWindows.h"
 #include "Windows/ISoundsWindow.h"
 #include "Windows/ISoundsWindowManager.h"
+#include "Windows/IAboutWindow.h"
+#include "Windows/IAboutWindowManager.h"
 
 namespace trview
 {
@@ -285,5 +287,11 @@ namespace trview
 
         MockNgPlusSwitcher::MockNgPlusSwitcher() {};
         MockNgPlusSwitcher::~MockNgPlusSwitcher() {};
+
+        MockAboutWindowManager::MockAboutWindowManager() {};
+        MockAboutWindowManager::~MockAboutWindowManager() {};
+
+        MockAboutWindow::MockAboutWindow() {};
+        MockAboutWindow::~MockAboutWindow() {};
     }
 }

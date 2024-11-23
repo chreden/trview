@@ -96,11 +96,13 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClInclude Include="Mocks\Sound\ISound.h" />
     <ClInclude Include="Mocks\Sound\ISoundStorage.h" />
     <ClInclude Include="Mocks\UI\IFonts.h" />
+    <ClInclude Include="Mocks\Windows\IAboutWindow.h" />
     <ClInclude Include="Mocks\Windows\ISoundsWindow.h" />
     <ClInclude Include="Mocks\Windows\ISoundsWindowManager.h" />
     <ClInclude Include="Mocks\Windows\IStaticsWindow.h" />
     <ClInclude Include="Mocks\Windows\IStaticsWindowManager.h" />
     <ClInclude Include="Mocks\Windows\IWindows.h" />
+    <ClInclude Include="Mocks\Windows\IAboutWindowManager.h" />
     <ClInclude Include="Settings\FontSetting.h" />
     <ClCompile Include="trview_imgui.cpp" />
     <ClCompile Include="Lua\Lua.cpp" />

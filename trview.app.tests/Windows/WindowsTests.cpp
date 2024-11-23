@@ -10,6 +10,7 @@
 #include <trview.app/Mocks/Elements/ISoundSource.h>
 #include <trview.app/Mocks/Elements/ITrigger.h>
 
+#include <trview.app/Mocks/Windows/IAboutWindowManager.h>
 #include <trview.app/Mocks/Windows/ICameraSinkWindowManager.h>
 #include <trview.app/Mocks/Windows/IConsoleManager.h>
 #include <trview.app/Mocks/Windows/IItemsWindowManager.h>
@@ -38,6 +39,7 @@ namespace
     {
         struct test_module
         {
+            std::unique_ptr<IAboutWindowManager> about_window{ mock_unique<MockAboutWindowManager>() };
             std::unique_ptr<ICameraSinkWindowManager> camera_sinks{ mock_unique<MockCameraSinkWindowManager>() };
             std::unique_ptr<IConsoleManager> console_manager{ mock_unique<MockConsoleManager>() };
             std::unique_ptr<IItemsWindowManager> items{ mock_unique<MockItemsWindowManager>() };
@@ -54,6 +56,7 @@ namespace
             std::unique_ptr<trview::Windows> build()
             {
                 return std::make_unique<trview::Windows>(
+                    std::move(about_window),
                     std::move(camera_sinks),
                     std::move(console_manager),
                     std::move(items),

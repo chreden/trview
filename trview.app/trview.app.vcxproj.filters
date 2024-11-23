@@ -1189,6 +1189,12 @@
     <ClInclude Include="Windows\About\AboutWindowManager.h">
       <Filter>Windows\About</Filter>
     </ClInclude>
+    <ClInclude Include="Mocks\Windows\IAboutWindow.h">
+      <Filter>Mocks\Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="Mocks\Windows\IAboutWindowManager.h">
+      <Filter>Mocks\Windows</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Windows">
