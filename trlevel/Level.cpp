@@ -2067,7 +2067,18 @@ namespace trlevel
             _sample_indices = read_sample_indices(activity, data_stream, callbacks);
         }
 
-        read_sound_samples_tr4_5(activity, file, callbacks);
+        const auto sound_start = file.tellg();
+        try
+        {
+            read_sound_samples_tr4_5(activity, file, callbacks);
+        }
+        catch (const std::exception& e)
+        {
+            callbacks.on_progress("Failed to load sound samples");
+            file.clear();
+            file.seekg(sound_start, std::ios::beg);
+            log_file(activity, file, std::format("Failed to load sound samples {}", e.what()));
+        }
         callbacks.on_progress("Generating meshes");
         log_file(activity, file, "Generating meshes");
         generate_meshes(_mesh_data);
@@ -2144,7 +2155,19 @@ namespace trlevel
 
         file.seekg(at + static_cast<std::fpos_t>(uncompressed_size), std::ios::beg);
 
-        read_sound_samples_tr4_5(activity, file, callbacks);
+        const auto sound_start = file.tellg();
+        try
+        {
+            read_sound_samples_tr4_5(activity, file, callbacks);
+        }
+        catch (const std::exception& e)
+        {
+            callbacks.on_progress("Failed to load sound samples");
+            file.clear();
+            file.seekg(sound_start, std::ios::beg);
+            log_file(activity, file, std::format("Failed to load sound samples {}", e.what()));
+        }
+
         callbacks.on_progress("Generating meshes");
         log_file(activity, file, "Generating meshes");
         generate_meshes(_mesh_data);
