@@ -190,6 +190,7 @@ namespace trlevel
         void generate_sounds_tr1(const LoadCallbacks& callbacks);
         void load_sound_fx(const LoadCallbacks& callbacks);
         std::optional<std::vector<uint8_t>> load_main_sfx() const;
+        void load_ngle_sound_fx(trview::Activity& activity, std::basic_ispanstream<uint8_t>& file, const LoadCallbacks& callbacks);
 
         PlatformAndVersion _platform_and_version;
 

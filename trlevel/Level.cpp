@@ -726,6 +726,30 @@ namespace trlevel
             return sound_map;
         }
 
+        bool is_ngle_sound_samples(trview::Activity&, std::basic_ispanstream<uint8_t>& file)
+        {
+            const auto position = file.tellg();
+            uint32_t num_samples = read<uint32_t>(file);
+            file.seekg(8 * num_samples, std::ios::cur);
+            const auto ng = read<uint16_t>(file);
+            file.seekg(position, std::ios::beg);
+            return ng == 18254; // NG
+        }
+
+        struct NgleSoundSample
+        {
+            uint32_t start;
+            uint32_t size;
+        };
+
+        std::vector<NgleSoundSample> read_sound_samples_ngle(trview::Activity& activity, std::basic_ispanstream<uint8_t>& file, const ILevel::LoadCallbacks& callbacks)
+        {
+            uint32_t num_samples = read<uint32_t>(file);
+            callbacks.on_progress("Reading NGLE sound samples");
+            log_file(activity, file, std::format("Reading {} sound samples", num_samples));
+            return read_vector<NgleSoundSample>(file, num_samples);
+        }
+
         void read_sound_samples_tr4_5(trview::Activity& activity, std::basic_ispanstream<uint8_t>& file, const ILevel::LoadCallbacks& callbacks)
         {
             uint32_t num_samples = read<uint32_t>(file);
@@ -2070,7 +2094,14 @@ namespace trlevel
         const auto sound_start = file.tellg();
         try
         {
-            read_sound_samples_tr4_5(activity, file, callbacks);
+            if (is_ngle_sound_samples(activity, file))
+            {
+                load_ngle_sound_fx(activity, file, callbacks);
+            }
+            else
+            {
+                read_sound_samples_tr4_5(activity, file, callbacks);
+            }
         }
         catch (const std::exception& e)
         {
@@ -2158,7 +2189,14 @@ namespace trlevel
         const auto sound_start = file.tellg();
         try
         {
-            read_sound_samples_tr4_5(activity, file, callbacks);
+            if (is_ngle_sound_samples(activity, file))
+            {
+                load_ngle_sound_fx(activity, file, callbacks);
+            }
+            else
+            {
+                read_sound_samples_tr4_5(activity, file, callbacks);
+            }
         }
         catch (const std::exception& e)
         {
@@ -2247,5 +2285,22 @@ namespace trlevel
             return og_main;
         }
         return _files->load_file(std::format("{}../SFX/MAIN.SFX", path));
+    }
+
+    void Level::load_ngle_sound_fx(trview::Activity& activity, std::basic_ispanstream<uint8_t>& file, const LoadCallbacks& callbacks)
+    {
+        const auto ngle_samples = read_sound_samples_ngle(activity, file, callbacks);
+        if (auto main = load_main_sfx())
+        {
+            std::basic_ispanstream<uint8_t> sfx_file{ { *main } };
+            sfx_file.exceptions(std::ios::failbit | std::ios::badbit | std::ios::eofbit);
+
+            for (uint32_t i = 0; i < ngle_samples.size(); ++i)
+            {
+                const auto sample = ngle_samples[i];
+                sfx_file.seekg(sample.start);
+                callbacks.on_sound(static_cast<uint16_t>(i), read_vector<uint8_t>(sfx_file, sample.size));
+            }
+        }
     }
 }
