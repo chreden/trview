@@ -97,6 +97,8 @@ namespace trview
         calculate_column_widths();
         if (ImGui::BeginChild(Names::item_list_panel.c_str(), ImVec2(0, 0), ImGuiChildFlags_AutoResizeX, ImGuiWindowFlags_NoScrollbar))
         {
+            _auto_hider.check_focus();
+
             _filters.render();
 
             ImGui::SameLine();
@@ -108,6 +110,8 @@ namespace trview
             {
                 set_sync_item(sync_item);
             }
+
+            _auto_hider.render();
 
             auto filtered_items = 
                 _all_items | 
@@ -121,6 +125,11 @@ namespace trview
                         return !(!item || (_track.enabled<Type::Room>() && item->room().lock() != _current_room.lock() || !_filters.match(*item)));
                     }) |
                 std::ranges::to<std::vector>();
+
+            if (_auto_hider.apply(_all_items, filtered_items, _filters))
+            {
+                on_scene_changed();
+            }
 
             RowCounter counter{ "items",
                 static_cast<std::size_t>(std::ranges::count_if(_all_items, [this](auto&& item)
