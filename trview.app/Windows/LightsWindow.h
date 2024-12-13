@@ -6,6 +6,7 @@
 #include "../Filters/Filters.h"
 #include "../Track/Track.h"
 #include "ColumnSizer.h"
+#include "AutoHider.h"
 
 namespace trview
 {
@@ -56,5 +57,6 @@ namespace trview
         bool _force_sort{ false };
         Track<Type::Room> _track;
         ColumnSizer _column_sizer;
+        AutoHider _auto_hider;
     };
 }

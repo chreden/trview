@@ -83,6 +83,8 @@ namespace trview
         calculate_column_widths();
         if (ImGui::BeginChild(Names::light_list_panel.c_str(), ImVec2(0, 0), ImGuiChildFlags_AutoResizeX, ImGuiWindowFlags_NoScrollbar))
         {
+            _auto_hider.check_focus();
+
             _filters.render();
             ImGui::SameLine();
 
@@ -94,6 +96,8 @@ namespace trview
                 set_sync_light(sync_light);
             }
 
+            _auto_hider.render();
+
             auto filtered_lights =
                 _all_lights |
                 std::views::filter([&](auto&& light)
@@ -103,6 +107,11 @@ namespace trview
                     }) |
                 std::views::transform([](auto&& light) { return light.lock(); }) |
                 std::ranges::to<std::vector>();
+
+            if (_auto_hider.apply(_all_lights, filtered_lights, _filters))
+            {
+                on_scene_changed();
+            }
 
             RowCounter counter{ "lights", _all_lights.size() };
             if (ImGui::BeginTable(Names::lights_listbox.c_str(), 4, ImGuiTableFlags_Sortable | ImGuiTableFlags_ScrollY, ImVec2(0, -counter.height())))
