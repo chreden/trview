@@ -5,6 +5,7 @@
 #include "../../Track/Track.h"
 #include "ICameraSinkWindow.h"
 #include "../ColumnSizer.h"
+#include "../AutoHider.h"
 
 namespace trview
 {
@@ -53,5 +54,6 @@ namespace trview
         std::vector<std::weak_ptr<ITrigger>> _triggered_by;
         Track<Type::Room> _track;
         ColumnSizer _column_sizer;
+        AutoHider _auto_hider;
     };
 }
