@@ -10,6 +10,7 @@
 #include "../../Elements/IStaticMesh.h"
 #include "../../Filters/Filters.h"
 #include "../../Track/Track.h"
+#include "../AutoHider.h"
 
 namespace trview
 {
@@ -55,6 +56,7 @@ namespace trview
         std::weak_ptr<IRoom> _current_room;
         std::weak_ptr<IStaticMesh> _global_selected_static;
         std::shared_ptr<IClipboard> _clipboard;
+        AutoHider _auto_hider;
     };
 }
 

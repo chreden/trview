@@ -89,6 +89,8 @@ namespace trview
         calculate_column_widths();
         if (ImGui::BeginChild(Names::sound_source_list_panel.c_str(), ImVec2(200, 0), ImGuiChildFlags_AutoResizeX, ImGuiWindowFlags_NoScrollbar))
         {
+            _auto_hider.check_focus();
+
             _filters.render();
             ImGui::SameLine();
             bool sync_sound_source = _sync_sound_source;
@@ -96,6 +98,8 @@ namespace trview
             {
                 set_sync_sound_source(sync_sound_source);
             }
+
+            _auto_hider.render();
 
             auto filtered_sound_sources =
                 _all_sound_sources |
@@ -106,6 +110,11 @@ namespace trview
                     }) |
                 std::views::transform([](auto&& sound) { return sound.lock(); }) |
                 std::ranges::to<std::vector>();
+
+            if (_auto_hider.apply(_all_sound_sources, filtered_sound_sources, _filters))
+            {
+                on_scene_changed();
+            }
 
             RowCounter counter{ "sound sources", _all_sound_sources.size() };
             if (ImGui::BeginTable(Names::sound_sources_list.c_str(), 4, ImGuiTableFlags_Sortable | ImGuiTableFlags_ScrollY, ImVec2(200, -counter.height())))
