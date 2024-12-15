@@ -130,6 +130,8 @@ namespace trview
         calculate_column_widths();
         if (ImGui::BeginChild(Names::trigger_list_panel.c_str(), ImVec2(0, 0), ImGuiChildFlags_AutoResizeX, ImGuiWindowFlags_NoScrollbar))
         {
+            _auto_hider.check_focus();
+
             _filters.render();
             ImGui::SameLine();
 
@@ -140,6 +142,8 @@ namespace trview
             {
                 set_sync_trigger(sync_trigger);
             }
+
+            _auto_hider.render();
 
             ImGui::PushItemWidth(-1);
             const auto current_command = _selected_command.value_or(VirtualCommand{ .name = "All" });
@@ -513,7 +517,7 @@ namespace trview
 
     void TriggersWindow::filter_triggers()
     {
-        if (!_need_filtering && !_filters.test_and_reset_changed())
+        if (!_need_filtering && !_filters.test_and_reset_changed() && !_auto_hider.changed())
         {
             return;
         }
@@ -528,6 +532,11 @@ namespace trview
             });
         _need_filtering = false;
         _force_sort = true;
+
+        if (_auto_hider.apply(_all_triggers, _filtered_triggers | std::views::transform([](auto&& t) { return t.lock(); })))
+        {
+            on_scene_changed();
+        }
     }
 
     void TriggersWindow::calculate_column_widths()

@@ -290,6 +290,8 @@ namespace trview
         calculate_column_widths();
         if (ImGui::BeginChild(Names::rooms_panel.c_str(), ImVec2(0, 0), ImGuiChildFlags_AutoResizeX, ImGuiWindowFlags_NoScrollbar))
         {
+            _auto_hider.check_focus();
+
             _filters.render();
 
             ImGui::SameLine();
@@ -302,6 +304,8 @@ namespace trview
                 set_sync_room(sync_room);
             }
 
+            _auto_hider.render();
+
             auto filtered_rooms =
                 _all_rooms |
                 std::views::filter([&](auto&& room)
@@ -311,6 +315,11 @@ namespace trview
                     }) |
                 std::views::transform([](auto&& room) { return room.lock(); }) |
                 std::ranges::to<std::vector>();
+
+            if (_auto_hider.apply(_all_rooms, filtered_rooms, _filters))
+            {
+                on_scene_changed();
+            }
 
             RowCounter counter{ "rooms", _all_rooms.size() };
             if (ImGui::BeginTable(Names::rooms_list.c_str(), 5, ImGuiTableFlags_Sortable | ImGuiTableFlags_ScrollY, ImVec2(0, -counter.height())))

@@ -12,6 +12,7 @@
 #include "../Elements/IItem.h"
 #include "../Elements/ITrigger.h"
 #include "ColumnSizer.h"
+#include "AutoHider.h"
 
 namespace trview
 {
@@ -85,5 +86,6 @@ namespace trview
         ColumnSizer _column_sizer;
         bool _force_sort{ false };
         Track<Type::Room> _track;
+        AutoHider _auto_hider;
     };
 }

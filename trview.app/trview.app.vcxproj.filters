@@ -353,6 +353,9 @@
     <ClCompile Include="Elements\Remastered\NgPlusSwitcher.cpp">
       <Filter>Elements\Remastered</Filter>
     </ClCompile>
+    <ClCompile Include="Windows\AutoHider.cpp">
+      <Filter>Windows</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera\Camera.h">
@@ -1171,6 +1174,9 @@
     <ClInclude Include="Mocks\Elements\INgPlusSwitcher.h">
       <Filter>Mocks\Elements</Filter>
     </ClInclude>
+    <ClInclude Include="Windows\AutoHider.h">
+      <Filter>Windows</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Windows">
@@ -1451,6 +1457,9 @@
     </None>
     <None Include="Elements\IStaticMesh.inl">
       <Filter>Elements\StaticMesh</Filter>
+    </None>
+    <None Include="Windows\AutoHider.inl">
+      <Filter>Windows</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>

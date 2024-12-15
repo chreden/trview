@@ -10,6 +10,7 @@
 #include "../Elements/IItem.h"
 #include "../Track/Track.h"
 #include "ColumnSizer.h"
+#include "AutoHider.h"
 
 namespace trview
 {
@@ -26,6 +27,7 @@ namespace trview
             static inline const std::string details_panel = "Item Details";
             static inline const std::string triggers_list = "##triggeredby";
             static inline const std::string item_stats = "##itemstats";
+            static inline const std::string auto_hide = "Auto-Hide";
         };
 
         explicit ItemsWindow(const std::shared_ptr<IClipboard>& clipboard);
@@ -73,5 +75,6 @@ namespace trview
 
         ColumnSizer _column_sizer;
         bool _ng_plus{ false };
+        AutoHider _auto_hider;
     };
 }

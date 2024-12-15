@@ -44,6 +44,7 @@ namespace trview
         calculate_column_widths();
         if (ImGui::BeginChild(Names::statics_list_panel.c_str(), ImVec2(0, 0), ImGuiChildFlags_AutoResizeX, ImGuiWindowFlags_NoScrollbar))
         {
+            _auto_hider.check_focus();
             _filters.render();
 
             ImGui::SameLine();
@@ -56,6 +57,8 @@ namespace trview
                 set_sync_static(sync_static);
             }
 
+            _auto_hider.render();
+
             auto filtered_statics =
                 _all_statics |
                 std::views::filter([&](auto&& stat)
@@ -65,6 +68,8 @@ namespace trview
                     }) |
                 std::views::transform([](auto&& stat) { return stat.lock(); }) |
                 std::ranges::to<std::vector>();
+
+            _auto_hider.apply(_all_statics, filtered_statics, _filters);
 
             RowCounter counter{ "statics", _all_statics.size() };
             if (ImGui::BeginTable(Names::statics_list.c_str(), 5, ImGuiTableFlags_Sortable | ImGuiTableFlags_ScrollY, ImVec2(0, -counter.height())))

@@ -78,6 +78,7 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClCompile Include="Routing\RandomizerRoute.cpp" />
     <ClCompile Include="Sound\Sound.cpp" />
     <ClCompile Include="Sound\SoundStorage.cpp" />
+    <ClCompile Include="Windows\AutoHider.cpp" />
     <ClCompile Include="Windows\Sounds\SoundsWindow.cpp" />
     <ClCompile Include="Windows\Sounds\SoundsWindowManager.cpp" />
     <ClCompile Include="Windows\Windows.cpp" />
@@ -207,6 +208,7 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClInclude Include="UI\Fonts\Fonts.h" />
     <ClInclude Include="UI\Fonts\IFonts.h" />
     <ClInclude Include="UserCancelledException.h" />
+    <ClInclude Include="Windows\AutoHider.h" />
     <ClInclude Include="Windows\ColumnSizer.h" />
     <ClInclude Include="Windows\Console\Console.h" />
     <ClInclude Include="Windows\Console\ConsoleManager.h" />
@@ -451,6 +453,7 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <None Include="Elements\IStaticMesh.inl" />
     <None Include="Lua\Lua.inl" />
     <None Include="Track\Track.inl" />
+    <None Include="Windows\AutoHider.inl" />
     <Text Include="Resources\Files\actions.json">
       <FileType>Document</FileType>
     </Text>

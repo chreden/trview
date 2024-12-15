@@ -3,6 +3,7 @@
 #include "ISoundsWindow.h"
 #include "../ColumnSizer.h"
 #include "../../Filters/Filters.h"
+#include "../AutoHider.h"
 
 namespace trview
 {
@@ -53,5 +54,6 @@ namespace trview
         trlevel::LevelVersion _level_version{ trlevel::LevelVersion::Unknown };
         Filters<ISoundSource> _filters;
         trlevel::Platform _level_platform{ trlevel::Platform::Unknown };
+        AutoHider _auto_hider;
     };
 }

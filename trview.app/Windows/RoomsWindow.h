@@ -11,6 +11,7 @@
 #include "../Filters/Filters.h"
 #include "../Track/Track.h"
 #include "ColumnSizer.h"
+#include "AutoHider.h"
 
 namespace trview
 {
@@ -126,5 +127,6 @@ namespace trview
 
         ColumnSizer _column_sizer;
         bool _ng_plus{ false };
+        AutoHider _auto_hider;
     };
 }

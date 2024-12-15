@@ -141,6 +141,7 @@ namespace trview
         calculate_column_widths();
         if (ImGui::BeginChild(Names::list_panel.c_str(), ImVec2(0, 0), ImGuiChildFlags_AlwaysAutoResize | ImGuiChildFlags_AutoResizeX, ImGuiWindowFlags_NoScrollbar))
         {
+            _auto_hider.check_focus();
             _filters.render();
             ImGui::SameLine();
 
@@ -152,6 +153,8 @@ namespace trview
                 set_sync(sync);
             }
 
+            _auto_hider.render();
+
             auto filtered_camera_sinks =
                 _all_camera_sinks |
                 std::views::filter([&](auto&& cs)
@@ -161,6 +164,11 @@ namespace trview
                     }) |
                 std::views::transform([](auto&& cs) { return cs.lock(); }) |
                 std::ranges::to<std::vector>();
+
+            if (_auto_hider.apply(_all_camera_sinks, filtered_camera_sinks, _filters))
+            {
+                on_scene_changed();
+            }
 
             RowCounter counter{ "camera/sinks", _all_camera_sinks.size() };
             if (ImGui::BeginTable(Names::camera_sink_list.c_str(), 4, ImGuiTableFlags_Sortable | ImGuiTableFlags_ScrollY, ImVec2(0, -counter.height())))
