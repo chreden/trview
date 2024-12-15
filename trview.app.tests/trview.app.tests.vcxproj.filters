@@ -214,6 +214,9 @@
     <ClCompile Include="Sound\SoundStorageTests.cpp">
       <Filter>Sound</Filter>
     </ClCompile>
+    <ClCompile Include="Windows\AboutWindowManagerTests.cpp">
+      <Filter>Windows</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Input">

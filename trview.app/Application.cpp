@@ -13,24 +13,6 @@ namespace trview
 {
     namespace
     {
-        INT_PTR CALLBACK About(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
-        {
-            UNREFERENCED_PARAMETER(lParam);
-            switch (message)
-            {
-                case WM_INITDIALOG:
-                    return (INT_PTR)TRUE;
-                case WM_COMMAND:
-                    if (LOWORD(wParam) == IDOK || LOWORD(wParam) == IDCANCEL)
-                    {
-                        EndDialog(hDlg, LOWORD(wParam));
-                        return (INT_PTR)TRUE;
-                    }
-                    break;
-            }
-            return (INT_PTR)FALSE;
-        }
-
         void load_default_fonts(IFonts& fonts)
         {
             fonts.add_font("Default", { .name = "Arial", .filename = "arial.ttf", .size = 12 });
@@ -171,9 +153,6 @@ namespace trview
                 // Parse the menu selections:
                 switch (wmId)
                 {
-                    case IDM_ABOUT:
-                        DialogBox(GetModuleHandle(nullptr), MAKEINTRESOURCE(IDD_ABOUTBOX), window(), About);
-                        break;
                     case ID_HELP_GITHUB:
                     {
                         ShellExecute(0, 0, L"https://github.com/chreden/trview", 0, 0, SW_SHOW);

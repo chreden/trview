@@ -79,6 +79,8 @@
 #include "Windows/Statics/StaticsWindowManager.h"
 #include "Windows/Statics/StaticsWindow.h"
 #include "Windows/Windows.h"
+#include "Windows/About/AboutWindowManager.h"
+#include "Windows/About/AboutWindow.h"
 
 namespace trview
 {
@@ -363,6 +365,7 @@ namespace trview
         auto console_source = [=]() { return std::make_shared<Console>(dialogs, plugins, fonts); };
         auto statics_window_source = [=]() { return std::make_shared<StaticsWindow>(clipboard); };
         auto sounds_window_source = [=]() { return std::make_shared<SoundsWindow>(); };
+        auto about_window_source = [=]() { return std::make_shared<AboutWindow>(); };
 
         return std::make_unique<Application>(
             window,
@@ -382,6 +385,7 @@ namespace trview
             randomizer_route_source,
             fonts,
             std::make_unique<Windows>(
+                std::make_unique<AboutWindowManager>(window, about_window_source),
                 std::make_unique<CameraSinkWindowManager>(window, shortcuts, camera_sink_window_source),
                 std::make_unique<ConsoleManager>(window, shortcuts, console_source, files),
                 std::make_unique<ItemsWindowManager>(window, shortcuts, items_window_source),
