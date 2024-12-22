@@ -50,6 +50,7 @@ namespace trview
         virtual void clear_selected_light() override;
         virtual void clear_selected_camera_sink() override;
         void set_ng_plus(bool value) override;
+        void set_trng(bool value) override;
     private:
         void set_sync_room(bool value);
         void render_rooms_list();
@@ -128,5 +129,6 @@ namespace trview
         ColumnSizer _column_sizer;
         bool _ng_plus{ false };
         AutoHider _auto_hider;
+        bool _trng{ false };
     };
 }

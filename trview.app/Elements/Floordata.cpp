@@ -3,16 +3,16 @@
 
 namespace trview
 {
-    Floordata::Command::Command(Function type, const std::vector<uint16_t>& data, FloordataMeanings meanings, const std::vector<std::weak_ptr<IItem>>& items)
+    Floordata::Command::Command(Function type, const std::vector<uint16_t>& data, FloordataMeanings meanings, const std::vector<std::weak_ptr<IItem>>& items, bool trng)
         : type(type), data(data)
     {
         if (meanings == FloordataMeanings::Generate)
         {
-            create_meanings(items);
+            create_meanings(items, trng);
         }
     }
 
-    void Floordata::Command::create_meanings(const std::vector<std::weak_ptr<IItem>>& items)
+    void Floordata::Command::create_meanings(const std::vector<std::weak_ptr<IItem>>& items, bool trng)
     {
         // Parse the data to create the meanings.
         const uint16_t subfunction = (data[0] & 0x7F00) >> 8;
@@ -131,6 +131,11 @@ namespace trview
                                     (command & 0x3e00) >> 9,
                                     (command & 0x8000) >> 15));
                             }
+                            else if (trng && action == TriggerCommandType::Flipeffect)
+                            {
+                                command = data[++i];
+                                meanings.push_back(std::format("    Extra TRNG value: {}", command & 0x7fff));
+                            }
                         }
 
                     } while (i < data.size() && !(command & 0x8000));
@@ -151,19 +156,19 @@ namespace trview
         return sum;
     }
 
-    Floordata parse_floordata(const std::vector<uint16_t>& floordata, uint32_t index, FloordataMeanings meanings)
+    Floordata parse_floordata(const std::vector<uint16_t>& floordata, uint32_t index, FloordataMeanings meanings, bool trng)
     {
-        return parse_floordata(floordata, index, meanings, {});
+        return parse_floordata(floordata, index, meanings, {}, trng);
     }
 
 
-    Floordata parse_floordata(const std::vector<uint16_t>& floordata, uint32_t index, FloordataMeanings meanings, const std::vector<std::weak_ptr<IItem>>& items)
+    Floordata parse_floordata(const std::vector<uint16_t>& floordata, uint32_t index, FloordataMeanings meanings, const std::vector<std::weak_ptr<IItem>>& items, bool trng)
     {
         Floordata result;
 
         if (index == 0)
         {
-            result.commands.push_back(Floordata::Command(Floordata::Command::Function::None, { floordata[index] }, meanings, items));
+            result.commands.push_back(Floordata::Command(Floordata::Command::Function::None, { floordata[index] }, meanings, items, trng));
             return result;
         }
         
@@ -206,7 +211,9 @@ namespace trview
                                 trigger_command = floordata[index];
                                 data.push_back(trigger_command);
                                 auto action = static_cast<TriggerCommandType>((trigger_command & 0x7C00) >> 10);
-                                if (action == TriggerCommandType::Camera || action == TriggerCommandType::Flyby)
+                                if (action == TriggerCommandType::Camera ||
+                                    action == TriggerCommandType::Flyby ||
+                                    (trng && action == TriggerCommandType::Flipeffect))
                                 {
                                     // Camera has another uint16_t - skip for now.
                                     trigger_command = floordata[++index];
@@ -248,7 +255,7 @@ namespace trview
                 }
             }
 
-            result.commands.push_back(Floordata::Command(function, data, meanings, items));
+            result.commands.push_back(Floordata::Command(function, data, meanings, items, trng));
 
             if ((floor >> 15) || index == 0)
             {

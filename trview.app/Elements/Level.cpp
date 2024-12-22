@@ -1360,6 +1360,7 @@ namespace trview
         _version = level->get_version();
         _floor_data = level->get_floor_data_all();
         _name = level->name();
+        _ng = level->trng();
 
         record_models(*level);
         callbacks.on_progress("Generating rooms");
@@ -1537,7 +1538,11 @@ namespace trview
                 }
             }
         }
-        
+    }
+
+    bool Level::trng() const
+    {
+        return _ng;
     }
 
     bool find_item_by_type_id(const ILevel& level, uint32_t type_id, std::weak_ptr<IItem>& output_item)

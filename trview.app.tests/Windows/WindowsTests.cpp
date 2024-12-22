@@ -548,6 +548,8 @@ TEST(Windows, SetLevel)
     EXPECT_CALL(rooms, set_items).Times(1);
     EXPECT_CALL(rooms, set_floordata).Times(1);
     EXPECT_CALL(rooms, set_rooms).Times(1);
+    EXPECT_CALL(rooms, set_ng_plus).Times(1);
+    EXPECT_CALL(rooms, set_trng).Times(1);
     auto [route_ptr, route] = create_mock<MockRouteWindowManager>();
     EXPECT_CALL(route, set_items).Times(1);
     EXPECT_CALL(route, set_triggers).Times(1);

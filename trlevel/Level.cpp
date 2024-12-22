@@ -2094,7 +2094,8 @@ namespace trlevel
         const auto sound_start = file.tellg();
         try
         {
-            if (is_ngle_sound_samples(activity, file))
+            _trng = is_ngle_sound_samples(activity, file);
+            if (_trng)
             {
                 load_ngle_sound_fx(activity, file, callbacks);
             }
@@ -2110,6 +2111,26 @@ namespace trlevel
             file.seekg(sound_start, std::ios::beg);
             log_file(activity, file, std::format("Failed to load sound samples {}", e.what()));
         }
+
+        // Final check for NG-ness
+        const auto ng_start = file.tellg();
+        try
+        {
+            const auto ng = read<uint16_t>(file);
+            file.seekg(ng_start, std::ios::beg);
+            _trng |= ng == 18254;
+        }
+        catch (const std::exception&)
+        {
+            file.clear();
+            file.seekg(sound_start, std::ios::beg);
+        }
+
+        if (_trng)
+        {
+            log_file(activity, file, "TRNG level detected");
+        }
+
         callbacks.on_progress("Generating meshes");
         log_file(activity, file, "Generating meshes");
         generate_meshes(_mesh_data);
@@ -2302,5 +2323,10 @@ namespace trlevel
                 callbacks.on_sound(static_cast<uint16_t>(i), read_vector<uint8_t>(sfx_file, sample.size));
             }
         }
+    }
+
+    bool Level::trng() const
+    {
+        return _trng;
     }
 }

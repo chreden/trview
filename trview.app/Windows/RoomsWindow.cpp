@@ -719,7 +719,7 @@ namespace trview
             {
                 const auto& sectors = room.sectors();
                 return sectors
-                    | std::views::transform([&](auto&& s) { return parse_floordata(_floordata, s->floordata_index(), FloordataMeanings::None).commands; })
+                    | std::views::transform([&](auto&& s) { return parse_floordata(_floordata, s->floordata_index(), FloordataMeanings::None, _trng).commands; })
                     | std::views::join
                     | std::views::transform([](auto&& c) { return c.type; })
                     | std::ranges::to<std::unordered_set>()
@@ -971,7 +971,7 @@ namespace trview
 
             if (selected_sector)
             {
-                const Floordata floordata = parse_floordata(_floordata, selected_sector->floordata_index(), FloordataMeanings::Generate, _all_items);
+                const Floordata floordata = parse_floordata(_floordata, selected_sector->floordata_index(), FloordataMeanings::Generate, _all_items, _trng);
 
                 uint32_t index = selected_sector->floordata_index();
                 for (const auto& command : floordata.commands)
@@ -1284,5 +1284,10 @@ namespace trview
     void RoomsWindow::set_ng_plus(bool value)
     {
         _ng_plus = value;
+    }
+
+    void RoomsWindow::set_trng(bool value)
+    {
+        _trng = value;
     }
 }

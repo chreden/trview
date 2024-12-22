@@ -196,6 +196,7 @@ namespace trview
         _rooms_windows->set_floordata(new_level->floor_data());
         _rooms_windows->set_rooms(new_level->rooms());
         _rooms_windows->set_ng_plus(new_level->ng_plus());
+        _rooms_windows->set_trng(new_level->trng());
         _route_window->set_items(new_level->items());
         _route_window->set_triggers(new_level->triggers());
         _route_window->set_rooms(new_level->rooms());
