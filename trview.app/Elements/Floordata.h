@@ -42,13 +42,13 @@ namespace trview
                 Count
             };
 
-            explicit Command(Function type, const std::vector<uint16_t>& data, FloordataMeanings meanings, const std::vector<std::weak_ptr<IItem>>& items);
+            explicit Command(Function type, const std::vector<uint16_t>& data, FloordataMeanings meanings, const std::vector<std::weak_ptr<IItem>>& items, bool trng);
 
             Function type;
             std::vector<uint16_t> data;
             std::vector<std::string> meanings;
         private:
-            void create_meanings(const std::vector<std::weak_ptr<IItem>>& items);
+            void create_meanings(const std::vector<std::weak_ptr<IItem>>& items, bool trng);
         };
 
         std::vector<Command> commands;
@@ -61,9 +61,9 @@ namespace trview
     /// <param name="floordata">The raw floor data.</param>
     /// <param name="index">The index to start at.</param>
     /// <returns>The parsed floor data.</returns>
-    Floordata parse_floordata(const std::vector<uint16_t>& floordata, uint32_t index, FloordataMeanings meanings);
+    Floordata parse_floordata(const std::vector<uint16_t>& floordata, uint32_t index, FloordataMeanings meanings, bool trng);
 
-    Floordata parse_floordata(const std::vector<uint16_t>& floordata, uint32_t index, FloordataMeanings meanings, const std::vector<std::weak_ptr<IItem>>& items);
+    Floordata parse_floordata(const std::vector<uint16_t>& floordata, uint32_t index, FloordataMeanings meanings, const std::vector<std::weak_ptr<IItem>>& items, bool trng);
 
     enum class TriangulationDirection
     {

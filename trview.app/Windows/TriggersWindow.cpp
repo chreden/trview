@@ -300,7 +300,7 @@ namespace trview
 
                 if (selected_trigger)
                 {
-                    auto add_stat = [&]<typename T>(const std::string& name, const T&& value)
+                    auto add_stat = [&]<typename T>(const std::string & name, const T && value)
                     {
                         const auto string_value = get_string(value);
                         ImGui::TableNextColumn();
@@ -314,10 +314,10 @@ namespace trview
                     };
 
                     auto position_text = [=]()
-                    {
-                        const auto p = selected_trigger->position() * trlevel::Scale;
-                        return std::format("{:.0f}, {:.0f}, {:.0f}", p.x, p.y, p.z);
-                    };
+                        {
+                            const auto p = selected_trigger->position() * trlevel::Scale;
+                            return std::format("{:.0f}, {:.0f}, {:.0f}", p.x, p.y, p.z);
+                        };
 
                     add_stat("Type", trigger_type_name(selected_trigger->type()));
                     add_stat("#", selected_trigger->number());
@@ -349,12 +349,19 @@ namespace trview
             {
                 on_add_to_route(_selected_trigger);
             }
+
+            const bool any_extra = std::ranges::any_of(_local_selected_trigger_commands, [](auto&& c) { return c.data().size() > 1; });
+
             ImGui::Text("Commands");
-            if (ImGui::BeginTable(Names::commands_list.c_str(), 3, ImGuiTableFlags_ScrollY | ImGuiTableFlags_Sortable | ImGuiTableFlags_SizingFixedFit, ImVec2(-1, -1)))
+            if (ImGui::BeginTable(Names::commands_list.c_str(), any_extra ? 4 : 3, ImGuiTableFlags_ScrollY | ImGuiTableFlags_Sortable | ImGuiTableFlags_SizingFixedFit, ImVec2(-1, -1)))
             {
                 ImGui::TableSetupColumn("Type");
                 ImGui::TableSetupColumn("Index");
                 ImGui::TableSetupColumn("Entity");
+                if (any_extra)
+                {
+                    ImGui::TableSetupColumn("Extra");
+                }
                 ImGui::TableSetupScrollFreeze(1, 1);
                 ImGui::TableHeadersRow();
 
@@ -393,6 +400,14 @@ namespace trview
                     ImGui::Text(std::to_string(command.index()).c_str());
                     ImGui::TableNextColumn();
                     ImGui::Text(get_command_display(command).c_str());;
+                    if (any_extra)
+                    {
+                        ImGui::TableNextColumn();
+                        const auto data = command.data();
+                        ImGui::Text(join(
+                            std::ranges::subrange(data.begin() + 1, data.end()) |
+                            std::views::transform([](auto&& d) { return std::to_string(d); })).c_str());
+                    }
                 }
 
                 ImGui::EndTable();

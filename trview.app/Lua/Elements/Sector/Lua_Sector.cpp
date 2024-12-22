@@ -142,7 +142,7 @@ namespace trview
                             {
                                 lua_newtable(L);
                                 push_list(L, 
-                                    parse_floordata(level->floor_data(), sector->floordata_index(), FloordataMeanings::None).commands
+                                    parse_floordata(level->floor_data(), sector->floordata_index(), FloordataMeanings::None, level->trng()).commands
                                     | std::views::transform([](auto& f) { return f.data; })
                                     | std::views::join,
                                     [](auto L, auto f) { lua_pushinteger(L, f); });

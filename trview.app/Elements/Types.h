@@ -49,23 +49,30 @@ namespace trview
 
     struct TriggerInfo
     {
+        struct Command
+        {
+            TriggerCommandType      type;
+            std::vector<uint16_t>   data;
+        };
+
         std::uint8_t timer, oneshot, mask;
         TriggerType type; 
         uint16_t sector_id;
-        std::vector<std::pair<TriggerCommandType, std::uint16_t>> commands;
+        std::vector<Command> commands;
     };
 
     class Command final
     {
     public:
-        Command(uint32_t number, TriggerCommandType type, uint16_t index);
+        Command(uint32_t number, TriggerCommandType type, const std::vector<uint16_t>& data);
         uint32_t number() const;
         TriggerCommandType type() const;
         uint16_t index() const;
+        std::vector<uint16_t> data() const;
     private:
         uint32_t _number;
         TriggerCommandType _type;
-        uint16_t _index;
+        std::vector<uint16_t> _data;
     };
     
 }

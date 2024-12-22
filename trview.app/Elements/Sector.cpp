@@ -62,7 +62,7 @@ namespace trview
 
         if (_sector.floordata_index != 0)
         {
-            auto floordata = parse_floordata(level.get_floor_data_all(), _sector.floordata_index, FloordataMeanings::None);
+            auto floordata = parse_floordata(level.get_floor_data_all(), _sector.floordata_index, FloordataMeanings::None, level.trng());
 
             for (const auto& command : floordata.commands)
             {
@@ -127,11 +127,21 @@ namespace trview
                             {
                                 trigger_command = command.data[index];
                                 auto action = static_cast<TriggerCommandType>((trigger_command & 0x7C00) >> 10);
-                                _trigger_info.commands.emplace_back(action, static_cast<uint16_t>(trigger_command & 0x3FF));
-                                if (action == TriggerCommandType::Camera || action == TriggerCommandType::Flyby)
+                                if (action == TriggerCommandType::Camera || 
+                                    action == TriggerCommandType::Flyby || 
+                                    (level.trng() && action == TriggerCommandType::Flipeffect))
                                 {
-                                    // Camera has another uint16_t - skip for now.
-                                    trigger_command = command.data[++index];
+                                    uint16_t next_trigger_command = command.data[++index];
+                                    _trigger_info.commands.push_back({ .type = action, .data = 
+                                        {
+                                            static_cast<uint16_t>(trigger_command & 0x3ff),
+                                            static_cast<uint16_t>(next_trigger_command & 0x7ff)
+                                        }});
+                                    trigger_command = next_trigger_command;
+                                }
+                                else
+                                {
+                                    _trigger_info.commands.push_back({ .type = action, .data = { static_cast<uint16_t>(trigger_command & 0x3ff) }});
                                 }
                             }
 

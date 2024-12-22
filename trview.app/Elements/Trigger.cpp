@@ -3,8 +3,8 @@
 
 namespace trview
 {
-    Command::Command(uint32_t number, TriggerCommandType type, uint16_t index)
-        : _number(number), _type(type), _index(index)
+    Command::Command(uint32_t number, TriggerCommandType type, const std::vector<uint16_t>& data)
+        : _number(number), _type(type), _data(data)
     {
     }
 
@@ -20,7 +20,12 @@ namespace trview
 
     uint16_t Command::index() const
     {
-        return _index;
+        return _data.empty() ? 0 : _data[0];
+    }
+
+    std::vector<uint16_t> Command::data() const
+    {
+        return _data;
     }
 
     Trigger::Trigger(uint32_t number, const std::weak_ptr<IRoom>& room, uint16_t x, uint16_t z, const TriggerInfo& trigger_info, trlevel::LevelVersion level_version, const std::weak_ptr<ILevel>& level, const IMesh::TransparentSource& mesh_source)
@@ -29,14 +34,14 @@ namespace trview
         _level_version(level_version), _mesh_source(mesh_source), _level(level)
     {
         uint32_t command_index = 0;
-        for (auto action : trigger_info.commands)
+        for (const auto& action : trigger_info.commands)
         {
-            _commands.push_back({ command_index++, action.first, action.second });
-            // Special case for object still.
-            if (equals_any(action.first, TriggerCommandType::Object, TriggerCommandType::LookAtItem))
+            const Command command{ command_index++, action.type, action.data };
+            if (equals_any(action.type, TriggerCommandType::Object, TriggerCommandType::LookAtItem))
             {
-                _objects.push_back(action.second);
+                _objects.push_back(command.index());
             }
+            _commands.push_back(command);
         }
     }
 

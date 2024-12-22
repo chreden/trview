@@ -16,7 +16,7 @@ using namespace DirectX::SimpleMath;
 
 TEST(Lua_Trigger, Commands)
 {
-    Command command{ 123, TriggerCommandType::Camera, 6 };
+    Command command{ 123, TriggerCommandType::Camera, { 6 } };
     auto trigger = mock_shared<MockTrigger>();
     EXPECT_CALL(*trigger, commands).WillRepeatedly(Return(std::vector<Command>{ command }));
 

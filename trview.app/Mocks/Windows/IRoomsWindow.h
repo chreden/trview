@@ -27,6 +27,7 @@ namespace trview
             MOCK_METHOD(void, clear_selected_light, (), (override));
             MOCK_METHOD(void, clear_selected_camera_sink, (), (override));
             MOCK_METHOD(void, set_ng_plus, (bool), (override));
+            MOCK_METHOD(void, set_trng, (bool), (override));
         };
     }
 }
