@@ -84,7 +84,7 @@ void register_triggers_window_tests(ImGuiTestEngine* engine)
             auto level = mock_shared<MockLevel>();
             ON_CALL(*level, camera_sink(100)).WillByDefault(Return(cam));
 
-            auto trigger = mock_shared<MockTrigger>()->with_commands({ Command(0, TriggerCommandType::Camera, 100) })->with_level(level);
+            auto trigger = mock_shared<MockTrigger>()->with_commands({ Command(0, TriggerCommandType::Camera, { 100 }) })->with_level(level);
             context.triggers = { trigger };
             context.ptr->set_triggers({ trigger });
             context.ptr->set_selected_trigger(trigger);
@@ -101,7 +101,7 @@ void register_triggers_window_tests(ImGuiTestEngine* engine)
             auto& context = ctx->GetVars<TriggersWindowContext>();
             context.ptr = register_test_module().build();
 
-            auto trigger1 = mock_shared<MockTrigger>()->with_number(0)->with_commands({ Command(0, TriggerCommandType::FlipOff, 0) });
+            auto trigger1 = mock_shared<MockTrigger>()->with_number(0)->with_commands({ Command(0, TriggerCommandType::FlipOff, { 0 }) });
             context.triggers = { trigger1 };
             context.ptr->set_triggers({ trigger1 });
             context.ptr->set_selected_trigger(trigger1);
@@ -118,9 +118,9 @@ void register_triggers_window_tests(ImGuiTestEngine* engine)
         {
             auto& context = ctx->GetVars<TriggersWindowContext>();
             context.ptr = register_test_module().build();
-            auto trigger1 = mock_shared<MockTrigger>()->with_number(0)->with_commands({ Command(0, TriggerCommandType::FlipOff, 0) });
-            auto trigger2 = mock_shared<MockTrigger>()->with_number(1)->with_commands({ Command(0, TriggerCommandType::FlipOn, 0) });
-            auto trigger3 = mock_shared<MockTrigger>()->with_number(2)->with_commands({ Command(0, TriggerCommandType::FlipMap, 0) });
+            auto trigger1 = mock_shared<MockTrigger>()->with_number(0)->with_commands({ Command(0, TriggerCommandType::FlipOff, { 0 }) });
+            auto trigger2 = mock_shared<MockTrigger>()->with_number(1)->with_commands({ Command(0, TriggerCommandType::FlipOn, { 0 }) });
+            auto trigger3 = mock_shared<MockTrigger>()->with_number(2)->with_commands({ Command(0, TriggerCommandType::FlipMap, { 0 }) });
             auto trigger4 = mock_shared<MockTrigger>()->with_number(3);
             context.triggers = { trigger1, trigger2, trigger3, trigger4 };
             context.ptr->set_triggers({ trigger1, trigger2, trigger3, trigger4 });
@@ -157,7 +157,7 @@ void register_triggers_window_tests(ImGuiTestEngine* engine)
                 mock_shared<MockItem>()->with_number(1)
             };
 
-            auto trigger = mock_shared<MockTrigger>()->with_commands({ Command(0, TriggerCommandType::Object, 1) });
+            auto trigger = mock_shared<MockTrigger>()->with_commands({ Command(0, TriggerCommandType::Object, { 1 }) });
             context.ptr->set_items({ std::from_range, context.items });
             context.ptr->set_triggers({ trigger });
             context.triggers = { trigger };
@@ -196,8 +196,8 @@ void register_triggers_window_tests(ImGuiTestEngine* engine)
             auto& context = ctx->GetVars<TriggersWindowContext>();
             context.ptr = register_test_module().build();
 
-            auto trigger1 = mock_shared<MockTrigger>()->with_commands({ Command(0, TriggerCommandType::Object, 1) });
-            auto trigger2 = mock_shared<MockTrigger>()->with_number(1)->with_commands({ Command(0, TriggerCommandType::Camera, 1) });
+            auto trigger1 = mock_shared<MockTrigger>()->with_commands({ Command(0, TriggerCommandType::Object, { 1 }) });
+            auto trigger2 = mock_shared<MockTrigger>()->with_number(1)->with_commands({ Command(0, TriggerCommandType::Camera, { 1 }) });
             std::vector<std::weak_ptr<ITrigger>> triggers{ trigger1, trigger2 };
             context.triggers = { trigger1, trigger2 };
             context.ptr->set_triggers(triggers);

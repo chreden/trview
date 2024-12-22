@@ -176,8 +176,8 @@ TEST(RoomsWindowManager, SetNgPlusPassedToWindows)
 TEST(RoomsWindowManager, SetTrngPassedToWindows)
 {
     auto mock_window = mock_shared<MockRoomsWindow>();
-    EXPECT_CALL(*mock_window, set_ng_plus(false)).Times(1);
-    EXPECT_CALL(*mock_window, set_ng_plus(true)).Times(1);
+    EXPECT_CALL(*mock_window, set_trng(false)).Times(1);
+    EXPECT_CALL(*mock_window, set_trng(true)).Times(1);
     auto manager = register_test_module().with_window_source([&](auto&&...) { return mock_window; }).build();
     manager->create_window();
     manager->set_trng(true);
