@@ -22,6 +22,16 @@ namespace trview
                 lua_setfield(L, -2, "index");
                 lua_pushstring(L, command_type_name(command.type()).c_str());
                 lua_setfield(L, -2, "type");
+                lua_newtable(L);
+                int index = 1;
+                for (const auto& data : command.data())
+                {
+                    lua_pushnumber(L, index);
+                    lua_pushnumber(L, data);
+                    lua_settable(L, -3);
+                    ++index;
+                }
+                lua_setfield(L, -2, "data");
             }
 
             int trigger_index(lua_State* L)
