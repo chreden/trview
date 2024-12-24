@@ -38,6 +38,11 @@ TEST(Lua_Trigger, Commands)
     ASSERT_EQ(0, luaL_dostring(L, "return t.commands[1].index"));
     ASSERT_EQ(LUA_TNUMBER, lua_type(L, -1));
     ASSERT_EQ(6, lua_tointeger(L, -1));
+    ASSERT_EQ(0, luaL_dostring(L, "return t.commands[1].data"));
+    ASSERT_EQ(LUA_TTABLE, lua_type(L, -1));
+    ASSERT_EQ(0, luaL_dostring(L, "return t.commands[1].data[1]"));
+    ASSERT_EQ(LUA_TNUMBER, lua_type(L, -1));
+    ASSERT_EQ(6, lua_tointeger(L, -1));
 }
 
 TEST(Lua_Trigger, Flags)

@@ -89,7 +89,7 @@ void register_triggers_window_tests(ImGuiTestEngine* engine)
             context.ptr->set_triggers({ trigger });
             context.ptr->set_selected_trigger(trigger);
 
-            ctx->ItemClick("/**/Camera##0");
+            ctx->ItemClick("/**/0##command-0");
 
             IM_CHECK_EQ(raised, cam);
         });
@@ -163,7 +163,7 @@ void register_triggers_window_tests(ImGuiTestEngine* engine)
             context.triggers = { trigger };
             context.ptr->set_selected_trigger(trigger);
 
-            ctx->ItemClick("/**/Item##0");
+            ctx->ItemClick("/**/0##command-0");
 
             auto selected = context.ptr->selected_trigger().lock();
             IM_CHECK_EQ(selected, trigger);
