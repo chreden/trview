@@ -113,4 +113,11 @@ namespace trview
     {
         WindowManager::update(delta);
     }
+
+    std::vector<std::weak_ptr<IItemsWindow>> ItemsWindowManager::windows() const
+    {
+        return _windows |
+            std::views::transform([](auto&& w) -> std::weak_ptr<IItemsWindow> { return w.second; }) |
+            std::ranges::to<std::vector>();
+    }
 }

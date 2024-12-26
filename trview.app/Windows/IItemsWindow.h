@@ -5,6 +5,7 @@
 #include <trview.common/Event.h>
 #include "../Elements/IItem.h"
 #include "../Elements/ITrigger.h"
+#include "../Filters/Filters.h"
 
 namespace trview
 {
@@ -27,6 +28,8 @@ namespace trview
 
         /// Event raised when the window is closed.
         Event<> on_window_closed;
+
+        virtual void add_filters(std::vector<Filters<IItem>::Filter> filters) = 0;
 
         /// Set the items to display in the window.
         /// @param items The items to show.
@@ -68,6 +71,8 @@ namespace trview
         virtual void set_model_checker(const std::function<bool(uint32_t)>& checker) = 0;
 
         virtual void set_ng_plus(bool value) = 0;
+
+        virtual std::string name() const = 0;
     };
 }
 

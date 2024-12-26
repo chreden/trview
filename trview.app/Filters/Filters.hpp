@@ -33,6 +33,13 @@ namespace trview
     }
 
     template <typename T>
+    void Filters<T>::add_filter(const Filter& filter)
+    {
+        _filters.push_back(filter);
+        _changed = true;
+    }
+
+    template <typename T>
     template <typename value_type>
     void Filters<T>::add_getter(const std::string& key, const std::function<value_type(const T&)>& getter)
     {

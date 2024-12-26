@@ -4,6 +4,8 @@
 
 namespace trview
 {
+    struct IItemsWindowManager;
+
     class ContextMenu final : public IContextMenu
     {
     public:
@@ -19,8 +21,10 @@ namespace trview
             static inline const std::string copy_position = "Position";
             static inline const std::string copy_number = "Room/Object Number";
             static inline const std::string trigger_references = "Trigger References";
+            static inline const std::string filter = "Filter";
         };
 
+        explicit ContextMenu(const std::weak_ptr<IItemsWindowManager>& items_window_manager);
         virtual ~ContextMenu() = default;
         virtual void render() override;
         virtual void set_visible(bool value) override;
@@ -36,5 +40,6 @@ namespace trview
         bool _can_show{ false };
         bool _visible{ false };
         std::vector<std::weak_ptr<ITrigger>> _triggered_by;
+        std::weak_ptr<IItemsWindowManager> _items_window_manager;
     };
 }

@@ -29,7 +29,7 @@ namespace trview
         std::unique_ptr<IAboutWindowManager> about_window_manager,
         std::unique_ptr<ICameraSinkWindowManager> camera_sink_windows,
         std::unique_ptr<IConsoleManager> console_manager,
-        std::unique_ptr<IItemsWindowManager> items_window_manager,
+        std::shared_ptr<IItemsWindowManager> items_window_manager,
         std::unique_ptr<ILightsWindowManager> lights_window_manager,
         std::unique_ptr<ILogWindowManager> log_window_manager,
         std::unique_ptr<IPluginsWindowManager> plugins_window_manager,
@@ -40,7 +40,7 @@ namespace trview
         std::unique_ptr<ITexturesWindowManager> textures_window_manager,
         std::unique_ptr<ITriggersWindowManager> triggers_window_manager)
         : _about_windows(std::move(about_window_manager)), _camera_sink_windows(std::move(camera_sink_windows)), _console_manager(std::move(console_manager)),
-        _items_windows(std::move(items_window_manager)), _lights_windows(std::move(lights_window_manager)), _log_windows(std::move(log_window_manager)),
+        _items_windows(items_window_manager), _lights_windows(std::move(lights_window_manager)), _log_windows(std::move(log_window_manager)),
         _plugins_windows(std::move(plugins_window_manager)), _rooms_windows(std::move(rooms_window_manager)), _route_window(std::move(route_window_manager)),
         _sounds_windows(std::move(sounds_window_manager)), _statics_windows(std::move(statics_window_manager)), _textures_windows(std::move(textures_window_manager)),
         _triggers_windows(std::move(triggers_window_manager))

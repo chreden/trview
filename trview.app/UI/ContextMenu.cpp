@@ -1,8 +1,14 @@
 #include "ContextMenu.h"
+#include "../Windows/IItemsWindowManager.h"
 
 namespace trview
 {
     IContextMenu::~IContextMenu()
+    {
+    }
+
+    ContextMenu::ContextMenu(const std::weak_ptr<IItemsWindowManager>& items_window_manager)
+        : _items_window_manager(items_window_manager)
     {
     }
 
@@ -56,6 +62,37 @@ namespace trview
                             on_trigger_selected(trigger);
                         }
                     }
+                }
+                ImGui::EndMenu();
+            }
+
+            if (ImGui::BeginMenu(Names::filter.c_str()))
+            {
+                if (ImGui::BeginMenu("By Tile in..."))
+                {
+                    if (ImGui::BeginMenu("Items..."))
+                    {
+                        if (auto items_windows = _items_window_manager.lock())
+                        {
+                            if (ImGui::MenuItem("New Window"))
+                            {
+                                on_filter_items_to_tile(items_windows->create_window());
+                            }
+
+                            for (const auto& window : items_windows->windows())
+                            {
+                                if (auto actual_window = window.lock())
+                                {
+                                    if (ImGui::MenuItem(actual_window->name().c_str()))
+                                    {
+                                        on_filter_items_to_tile(window);
+                                    }
+                                }
+                            }
+                        }
+                        ImGui::EndMenu();
+                    }
+                    ImGui::EndMenu();
                 }
                 ImGui::EndMenu();
             }

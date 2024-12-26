@@ -14,6 +14,7 @@ namespace trview
 {
     struct IRoom;
     struct IItem;
+    struct IItemsWindow;
 
     enum class Tool
     {
@@ -106,6 +107,8 @@ namespace trview
         Event<std::weak_ptr<ITrigger>> on_select_trigger;
 
         Event<std::string, FontSetting> on_font;
+
+        Event<std::weak_ptr<IItemsWindow>> on_filter_items_to_tile;
 
         /// Render the UI.
         virtual void render() = 0;

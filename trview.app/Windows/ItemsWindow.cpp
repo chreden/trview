@@ -362,6 +362,14 @@ namespace trview
         return stay_open;
     }
 
+    void ItemsWindow::add_filters(std::vector<Filters<IItem>::Filter> filters)
+    {
+        for (auto filter : filters)
+        {
+            _filters.add_filter(filter);
+        }
+    }
+
     void ItemsWindow::render()
     {
         if (!render_items_window())
@@ -486,5 +494,10 @@ namespace trview
     void ItemsWindow::set_ng_plus(bool value)
     {
         _ng_plus = value;
+    }
+
+    std::string ItemsWindow::name() const
+    {
+        return _id;
     }
 }

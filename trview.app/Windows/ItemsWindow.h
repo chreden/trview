@@ -32,6 +32,7 @@ namespace trview
 
         explicit ItemsWindow(const std::shared_ptr<IClipboard>& clipboard);
         virtual ~ItemsWindow() = default;
+        virtual void add_filters(std::vector<Filters<IItem>::Filter> filters) override;
         virtual void render() override;
         virtual void set_items(const std::vector<std::weak_ptr<IItem>>& items) override;
         virtual void set_triggers(const std::vector<std::weak_ptr<ITrigger>>& triggers) override;
@@ -44,6 +45,7 @@ namespace trview
         virtual void set_level_version(trlevel::LevelVersion version) override;
         virtual void set_model_checker(const std::function<bool(uint32_t)>& checker) override;
         void set_ng_plus(bool value) override;
+        std::string name() const override;
     private:
         void set_sync_item(bool value);
         void render_items_list();
