@@ -353,8 +353,9 @@ namespace trview
             const bool any_extra = std::ranges::any_of(_local_selected_trigger_commands, [](auto&& c) { return c.data().size() > 1; });
 
             ImGui::Text("Commands");
-            if (ImGui::BeginTable(Names::commands_list.c_str(), any_extra ? 4 : 3, ImGuiTableFlags_ScrollY | ImGuiTableFlags_Sortable | ImGuiTableFlags_SizingFixedFit, ImVec2(-1, -1)))
+            if (ImGui::BeginTable(Names::commands_list.c_str(), any_extra ? 5 : 4, ImGuiTableFlags_ScrollY | ImGuiTableFlags_Sortable | ImGuiTableFlags_SizingFixedFit, ImVec2(-1, -1)))
             {
+                ImGui::TableSetupColumn("#");
                 ImGui::TableSetupColumn("Type");
                 ImGui::TableSetupColumn("Index");
                 ImGui::TableSetupColumn("Entity");
@@ -367,6 +368,7 @@ namespace trview
 
                 imgui_sort(_local_selected_trigger_commands,
                     {
+                        [](auto&& l, auto&& r) { return l.number() < r.number(); },
                         [](auto&& l, auto&& r) { return std::tuple(command_type_name(l.type()), l.index()) < std::tuple(command_type_name(r.type()), r.index()); },
                         [](auto&& l, auto&& r) { return l.index() < r.index(); },
                         [&](auto&& l, auto&& r) { return std::tuple(get_command_display(l), l.index()) < std::tuple(get_command_display(r), r.index()); },
@@ -377,7 +379,7 @@ namespace trview
                     ImGui::TableNextRow();
                     ImGui::TableNextColumn();
                     bool selected = false;
-                    if (ImGui::Selectable(std::format("{}##{}", command_type_name(command.type()), command.number()).c_str(), &selected, ImGuiSelectableFlags_SpanAllColumns | static_cast<int>(ImGuiSelectableFlags_SelectOnNav)))
+                    if (ImGui::Selectable(std::format("{}##command-{}", command.number(), command.number()).c_str(), &selected, ImGuiSelectableFlags_SpanAllColumns | static_cast<int>(ImGuiSelectableFlags_SelectOnNav)))
                     {
                         if (command.type() == TriggerCommandType::LookAtItem || command.type() == TriggerCommandType::Object && command.index() < _all_items.size())
                         {
@@ -396,6 +398,8 @@ namespace trview
                             }
                         }
                     }
+                    ImGui::TableNextColumn();
+                    ImGui::Text(command_type_name(command.type()).c_str());
                     ImGui::TableNextColumn();
                     ImGui::Text(std::to_string(command.index()).c_str());
                     ImGui::TableNextColumn();
