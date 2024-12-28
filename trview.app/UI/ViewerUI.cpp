@@ -600,4 +600,9 @@ namespace trview
     {
         _camera_position->reset();
     }
+
+    void ViewerUI::set_tile_filter_enabled(bool value)
+    {
+        _context_menu->set_tile_filter_enabled(value);
+    }
 }

@@ -259,5 +259,7 @@ namespace trview
         virtual void set_show_camera_position(bool value) = 0;
 
         virtual void reset_layout() = 0;
+
+        virtual void set_tile_filter_enabled(bool value) = 0;
     };
 }

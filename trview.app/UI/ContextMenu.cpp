@@ -66,7 +66,7 @@ namespace trview
                 ImGui::EndMenu();
             }
 
-            if (ImGui::BeginMenu(Names::filter.c_str()))
+            if (ImGui::BeginMenu(Names::filter.c_str(), _tile_filter_enabled))
             {
                 if (ImGui::BeginMenu("By Tile in..."))
                 {
@@ -133,5 +133,10 @@ namespace trview
     void ContextMenu::set_triggered_by(const std::vector<std::weak_ptr<ITrigger>>& triggers)
     {
         _triggered_by = triggers;
+    }
+
+    void ContextMenu::set_tile_filter_enabled(bool value)
+    {
+        _tile_filter_enabled = value;
     }
 }

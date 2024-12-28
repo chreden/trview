@@ -605,6 +605,7 @@ namespace trview
                 _ui->set_remove_waypoint_enabled(_current_pick.type == PickResult::Type::Waypoint);
                 _ui->set_hide_enabled(equals_any(_current_pick.type, PickResult::Type::Entity, PickResult::Type::Trigger, PickResult::Type::Light, PickResult::Type::Room, PickResult::Type::CameraSink, PickResult::Type::StaticMesh, PickResult::Type::SoundSource));
                 _ui->set_mid_waypoint_enabled(_current_pick.type == PickResult::Type::Room && _current_pick.triangle.normal.y < 0);
+                _ui->set_tile_filter_enabled(_current_pick.type == PickResult::Type::Room);
 
                 const auto level = _level.lock();
                 if (_current_pick.type == PickResult::Type::Entity && level)

@@ -33,12 +33,14 @@ namespace trview
         virtual void set_mid_waypoint_enabled(bool value) override;
         virtual bool visible() const override;
         virtual void set_triggered_by(const std::vector<std::weak_ptr<ITrigger>>& triggers) override;
+        void set_tile_filter_enabled(bool value) override;
     private:
         bool _remove_enabled{ false };
         bool _hide_enabled{ false };
         bool _mid_enabled{ false };
         bool _can_show{ false };
         bool _visible{ false };
+        bool _tile_filter_enabled{ false };
         std::vector<std::weak_ptr<ITrigger>> _triggered_by;
         std::weak_ptr<IItemsWindowManager> _items_window_manager;
     };
