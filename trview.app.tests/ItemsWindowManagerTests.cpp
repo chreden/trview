@@ -240,3 +240,15 @@ TEST(ItemsWindowManager, SetNgPlusPassedToWindows)
     manager->create_window();
     manager->set_ng_plus(false);
 }
+
+TEST(ItemsWindowManager, Windows)
+{
+    auto mock_window = mock_shared<MockItemsWindow>();
+    auto manager = register_test_module().with_window_source([&](auto&&...) { return mock_window; }).build();
+    manager->create_window();
+    manager->create_window();
+    const auto windows = manager->windows();
+    ASSERT_EQ(windows.size(), 2);
+    ASSERT_EQ(windows[0].lock(), mock_window);
+    ASSERT_EQ(windows[1].lock(), mock_window);
+}

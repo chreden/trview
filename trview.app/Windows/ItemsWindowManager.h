@@ -35,6 +35,7 @@ namespace trview
         virtual void set_selected_item(const std::weak_ptr<IItem>& item) override;
         virtual std::weak_ptr<IItemsWindow> create_window() override;
         virtual void update(float delta) override;
+        std::vector<std::weak_ptr<IItemsWindow>> windows() const override;
     private:
         std::vector<std::weak_ptr<IItem>> _items;
         std::vector<std::weak_ptr<ITrigger>> _triggers;

@@ -54,5 +54,7 @@ namespace trview
         /// </summary>
         /// <param name="delta">Elapsed time since previous update.</param>
         virtual void update(float delta) = 0;
+
+        virtual std::vector<std::weak_ptr<IItemsWindow>> windows() const = 0;
     };
 }

@@ -5,6 +5,8 @@
 
 namespace trview
 {
+    struct IItemsWindow;
+
     struct IContextMenu
     {
         enum class CopyType
@@ -42,6 +44,7 @@ namespace trview
         /// Event raised when a trigger has been selected.
         /// </summary>
         Event<std::weak_ptr<ITrigger>> on_trigger_selected;
+        Event<std::weak_ptr<IItemsWindow>> on_filter_items_to_tile;
         virtual void render() = 0;
         /// <summary>
         /// Set the context menu to visible.
@@ -73,5 +76,6 @@ namespace trview
         /// </summary>
         /// <param name="triggers"></param>
         virtual void set_triggered_by(const std::vector<std::weak_ptr<ITrigger>>& triggers) = 0;
+        virtual void set_tile_filter_enabled(bool value) = 0;
     };
 }

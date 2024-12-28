@@ -59,6 +59,8 @@ namespace trview
             bool initial_state() const noexcept;
         };
 
+        void add_filter(const Filter& filter);
+
         /// <summary>
         /// Add a getter definition to extract a value from an object.
         /// </summary>

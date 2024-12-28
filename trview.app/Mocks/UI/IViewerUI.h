@@ -50,6 +50,7 @@ namespace trview
             MOCK_METHOD(void, set_route, (const std::weak_ptr<IRoute>&), (override));
             MOCK_METHOD(void, set_show_camera_position, (bool), (override));
             MOCK_METHOD(void, reset_layout, (), (override));
+            MOCK_METHOD(void, set_tile_filter_enabled, (bool), (override));
         };
     }
 }

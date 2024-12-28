@@ -319,6 +319,10 @@ namespace trview
         auto imgui_backend = std::make_shared<DX11ImGuiBackend>(window, device, files);
         auto fonts = std::make_shared<Fonts>(files, imgui_backend);
 
+        auto clipboard = std::make_shared<Clipboard>(window);
+        auto items_window_source = [=]() { return std::make_shared<ItemsWindow>(clipboard); };
+        auto items_window_manager = std::make_shared<ItemsWindowManager>(window, shortcuts, items_window_source);
+
         auto viewer_ui = std::make_unique<ViewerUI>(
             window,
             texture_storage,
@@ -326,11 +330,9 @@ namespace trview
             map_renderer_source,
             std::make_unique<SettingsWindow>(dialogs, shell, fonts),
             std::make_unique<ViewOptions>(),
-            std::make_unique<ContextMenu>(),
+            std::make_unique<ContextMenu>(items_window_manager),
             std::make_unique<CameraControls>(),
             std::make_unique<Toolbar>(plugins));
-
-        auto clipboard = std::make_shared<Clipboard>(window);
 
         auto viewer = std::make_unique<Viewer>(
             window,
@@ -349,7 +351,7 @@ namespace trview
             clipboard,
             std::make_shared<Camera>(window.size()));
 
-        auto items_window_source = [=]() { return std::make_shared<ItemsWindow>(clipboard); };
+        
         auto triggers_window_source = [=]() { return std::make_shared<TriggersWindow>(clipboard); };
         auto route_window_source = [=]() { return std::make_shared<RouteWindow>(clipboard, dialogs, files); };
         auto rooms_window_source = [=]() { return std::make_shared<RoomsWindow>(map_renderer_source, clipboard); };
@@ -388,7 +390,7 @@ namespace trview
                 std::make_unique<AboutWindowManager>(window, about_window_source),
                 std::make_unique<CameraSinkWindowManager>(window, shortcuts, camera_sink_window_source),
                 std::make_unique<ConsoleManager>(window, shortcuts, console_source, files),
-                std::make_unique<ItemsWindowManager>(window, shortcuts, items_window_source),
+                items_window_manager,
                 std::make_unique<LightsWindowManager>(window, shortcuts, lights_window_source),
                 std::make_unique<LogWindowManager>(window, log_window_source),
                 std::make_unique<PluginsWindowManager>(window, shortcuts, plugins_window_source),

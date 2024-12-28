@@ -555,3 +555,11 @@ TEST(ViewerUI, NgPlusDisabled)
     ui->set_level(level);
 }
 
+TEST(ViewerUI, SetTileFilterEnabled)
+{
+    auto [context_menu_ptr, context_menu] = create_mock<MockContextMenu>();
+    EXPECT_CALL(context_menu, set_tile_filter_enabled).Times(1);
+    auto ui = register_test_module().with_context_menu(std::move(context_menu_ptr)).build();
+
+    ui->set_tile_filter_enabled(true);
+}
