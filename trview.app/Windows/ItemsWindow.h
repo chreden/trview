@@ -32,7 +32,7 @@ namespace trview
 
         explicit ItemsWindow(const std::shared_ptr<IClipboard>& clipboard);
         virtual ~ItemsWindow() = default;
-        virtual void add_filters(std::vector<Filters<IItem>::Filter> filters) override;
+        void set_filters(std::vector<Filters<IItem>::Filter> filters) override;
         virtual void render() override;
         virtual void set_items(const std::vector<std::weak_ptr<IItem>>& items) override;
         virtual void set_triggers(const std::vector<std::weak_ptr<ITrigger>>& triggers) override;

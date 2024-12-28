@@ -29,7 +29,7 @@ namespace trview
         /// Event raised when the window is closed.
         Event<> on_window_closed;
 
-        virtual void add_filters(std::vector<Filters<IItem>::Filter> filters) = 0;
+        virtual void set_filters(std::vector<Filters<IItem>::Filter> filters) = 0;
 
         /// Set the items to display in the window.
         /// @param items The items to show.

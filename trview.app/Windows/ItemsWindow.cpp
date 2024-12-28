@@ -362,9 +362,9 @@ namespace trview
         return stay_open;
     }
 
-    void ItemsWindow::add_filters(std::vector<Filters<IItem>::Filter> filters)
+    void ItemsWindow::set_filters(std::vector<Filters<IItem>::Filter> filters)
     {
-        std::ranges::for_each(filters, [&](auto&& f) { _filters.add_filter(f); });
+        _filters.set_filters(filters);
     }
 
     void ItemsWindow::render()
