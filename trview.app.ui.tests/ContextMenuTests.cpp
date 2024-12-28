@@ -319,4 +319,22 @@ void register_context_menu_tests(ImGuiTestEngine* engine)
             ASSERT_FALSE(context.menu->visible());
             ASSERT_EQ(raised.value().lock(), trigger);
         });
+
+    test<ContextMenuContext>(engine, "Context Menu", "Filters Disabled",
+        [](ImGuiTestContext* ctx) { render(ctx->GetVars<ContextMenuContext>()); },
+        [](ImGuiTestContext* ctx)
+        {
+            auto& context = ctx->GetVars<ContextMenuContext>();
+            context.menu = register_test_module().build();
+            context.menu->set_visible(true);
+            context.menu->set_tile_filter_enabled(true);
+
+            ctx->MouseClickOnVoid(ImGuiMouseButton_Right);
+            IM_CHECK_EQ((ctx->ItemInfo("/**/Filter")->InFlags & ImGuiItemFlags_Disabled) != 0, false);
+
+            context.menu->set_tile_filter_enabled(false);
+            ctx->Yield();
+
+            IM_CHECK_EQ((ctx->ItemInfo("/**/Filter")->InFlags & ImGuiItemFlags_Disabled) != 0, true);
+        });
 }
