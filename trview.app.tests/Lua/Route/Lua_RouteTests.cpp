@@ -254,6 +254,22 @@ TEST(Lua_Route, SaveAsChoosesFile)
     ASSERT_EQ(0, luaL_dostring(L, "r:save_as()"));
 }
 
+TEST(Lua_Route, SelectedWaypoint)
+{
+    auto route = mock_shared<MockRoute>();
+    auto waypoint = mock_shared<MockWaypoint>();
+    ON_CALL(*route, selected_waypoint).WillByDefault(Return(2));
+    ON_CALL(*route, waypoint(2)).WillByDefault(Return(waypoint));
+
+    LuaState L;
+    lua::create_route(L, route);
+    lua_setglobal(L, "r");
+
+    ASSERT_EQ(0, luaL_dostring(L, "return r.selected_waypoint"));
+    ASSERT_EQ(LUA_TUSERDATA, lua_type(L, -1));
+    ASSERT_EQ(waypoint.get(), *reinterpret_cast<IWaypoint**>(lua_touserdata(L, -1)));
+}
+
 TEST(Lua_Route, SetColour)
 {
     Colour called_colour;
@@ -289,6 +305,28 @@ TEST(Lua_Route, SetLevel)
 
     ASSERT_EQ(0, luaL_dostring(L, "r.level = l"));
     ASSERT_EQ(value.lock(), level);
+}
+
+TEST(Lua_Route, SetSelectedWaypoint)
+{
+    auto route = mock_shared<MockRoute>();
+    auto waypoint = mock_shared<MockWaypoint>();
+
+    std::shared_ptr<IWaypoint> raised;
+    auto token = route->on_waypoint_selected += [&](auto&& w)
+    {
+        raised = w.lock();
+    };
+    EXPECT_CALL(*route, select_waypoint).Times(1);
+
+    LuaState L;
+    lua::create_route(L, route);
+    lua_setglobal(L, "r");
+    lua::create_waypoint(L, waypoint);
+    lua_setglobal(L, "w");
+
+    ASSERT_EQ(0, luaL_dostring(L, "r.selected_waypoint = w"));
+    ASSERT_EQ(raised, waypoint);
 }
 
 TEST(Lua_Route, SetWaypointColour)

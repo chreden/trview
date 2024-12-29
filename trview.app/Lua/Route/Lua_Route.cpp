@@ -222,6 +222,10 @@ namespace trview
                     lua_pushcfunction(L, route_save_as);
                     return 1;
                 }
+                else if (key == "selected_waypoint")
+                {
+                    return create_waypoint(L, route->waypoint(route->selected_waypoint()).lock());
+                }
                 else if (key == "show_route_line")
                 {
                     lua_pushboolean(L, route->show_route_line());
@@ -256,6 +260,14 @@ namespace trview
                 else if (key == "level")
                 {
                     route->set_level(to_level(L, 3));
+                }
+                else if (key == "selected_waypoint")
+                {
+                    if (auto waypoint = to_waypoint(L, 3))
+                    {
+                        route->select_waypoint(waypoint);
+                        route->on_waypoint_selected(waypoint);
+                    }
                 }
                 else if (key == "show_route_line")
                 {

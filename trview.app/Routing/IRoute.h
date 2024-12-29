@@ -27,6 +27,7 @@ namespace trview
         using Source = std::function<std::shared_ptr<IRoute>(std::optional<FileData>)>;
 
         Event<> on_changed;
+        Event<std::weak_ptr<IWaypoint>> on_waypoint_selected;
 
         virtual ~IRoute() = 0;
         /// <summary>
