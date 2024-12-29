@@ -8,6 +8,7 @@ The Route library lets you create and edit routes. Routes need to be bound to a 
 | colour | [Colour](colour.md) | RW | The route line colour |
 | filename | string | R | The file to read and write from/to |
 | level | [Level](level.md) | RW | The level all targets will reference |
+| selected_waypoint | [Waypoint](waypoint.md) | RW | The currently selected waypoint in the route |
 | show_route_line | boolean | RW | Whether to show the route line in the viewer |
 | waypoints | [Waypoint](waypoint.md)[] | RW | The route waypoints |
 | waypoint_colour | [Colour](colour.md) | RW | The default waypoint colour |

@@ -910,6 +910,7 @@ namespace trview
     {
         _route = route;
         _token_store += _route->on_changed += [&]() { if (_viewer) { _viewer->set_scene_changed(); } };
+        _token_store += _route->on_waypoint_selected += [&](auto&& r) { select_waypoint(r); };
         _route->set_level(_level);
         _viewer->set_route(_route);
         _windows->set_route(_route);
