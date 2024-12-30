@@ -18,7 +18,7 @@ namespace trview
     struct ISector
     {
         using Source = std::function<std::shared_ptr<ISector>(const trlevel::ILevel&, const trlevel::tr3_room&,
-            const trlevel::tr_room_sector&, int, const std::weak_ptr<IRoom>&)>;
+            const trlevel::tr_room_sector&, int, const std::weak_ptr<IRoom>&, uint32_t)>;
 
         enum class Corner
         {
@@ -127,6 +127,7 @@ namespace trview
         virtual std::weak_ptr<ITrigger> trigger() const = 0;
 
         virtual TriangulationDirection ceiling_triangulation() const = 0;
+        virtual uint32_t number() const = 0;
     };
 
     bool is_no_space(SectorFlag flags);

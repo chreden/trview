@@ -62,7 +62,7 @@ namespace trview
                     const auto triggers = level->triggers()
                         | std::views::transform([](auto&& t) { return t.lock(); })
                         | std::views::filter([](auto&& t) { return t != nullptr; })
-                        | std::views::transform([](auto&& t) -> GoTo::GoToItem { return { .number = t->number(), .name = trigger_type_name(t->type()), .item = t }; })
+                        | std::views::transform([](auto&& t) -> GoTo::GoToItem { return { .number = t->number(), .name = to_string(t->type()), .item = t }; })
                         | std::ranges::to<std::vector>();
 
                     const auto rooms = level->rooms()

@@ -557,7 +557,7 @@ namespace trview
             {
                 if (auto trigger = _all_triggers[waypoint.index()].lock())
                 {
-                    return trigger_type_name(trigger->type());
+                    return to_string(trigger->type());
                 }
             }
             else

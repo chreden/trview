@@ -87,7 +87,7 @@ namespace trview
                 std::uint16_t setup = data[++i];
 
                 auto trigger_type = (TriggerType)subfunction;
-                meanings.push_back(trigger_type_name(trigger_type));
+                meanings.push_back(to_string(trigger_type));
                 meanings.push_back("  Timer:" + std::to_string(setup & 0xff) + ", Only Once:" + std::to_string((setup & 0x100) >> 8) + ", Mask:" + format_binary((setup & 0x3e00) >> 9));
 
                 bool continue_processing = true;

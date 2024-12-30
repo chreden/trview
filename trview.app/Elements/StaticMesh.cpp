@@ -24,7 +24,7 @@ namespace trview
     {
     }
 
-    StaticMesh::StaticMesh(const trlevel::tr3_room_staticmesh& static_mesh, const trlevel::tr_staticmesh& level_static_mesh, const std::shared_ptr<IMesh>& mesh, const std::weak_ptr<IRoom>& room, const std::shared_ptr<IMesh>& bounding_mesh)
+    StaticMesh::StaticMesh(const trlevel::tr3_room_staticmesh& static_mesh, const trlevel::tr_staticmesh& level_static_mesh, const std::shared_ptr<IMesh>& mesh, const std::weak_ptr<IRoom>& room, const std::weak_ptr<ILevel>& level, const std::shared_ptr<IMesh>& bounding_mesh)
         : _mesh(mesh),
         _visibility(from_box(level_static_mesh.VisibilityBox)),
         _collision(from_box(level_static_mesh.CollisionBox)),
@@ -33,13 +33,14 @@ namespace trview
         _bounding_mesh(bounding_mesh),
         _room(room),
         _mesh_texture_id(static_mesh.mesh_id),
-        _flags(level_static_mesh.Flags)
+        _flags(level_static_mesh.Flags),
+        _level(level)
     {
         _world = Matrix::CreateRotationY(_rotation) * Matrix::CreateTranslation(_position);
     }
 
-    StaticMesh::StaticMesh(const trlevel::tr_room_sprite& room_sprite, const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Matrix& scale, std::shared_ptr<IMesh> mesh, const std::weak_ptr<IRoom>& room)
-        : _position(position), _mesh(mesh), _rotation(0), _scale(scale), _room(room), _mesh_texture_id(room_sprite.texture), _type(Type::Sprite)
+    StaticMesh::StaticMesh(const trlevel::tr_room_sprite& room_sprite, const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Matrix& scale, std::shared_ptr<IMesh> mesh, const std::weak_ptr<IRoom>& room, const std::weak_ptr<ILevel>& level)
+        : _position(position), _mesh(mesh), _rotation(0), _scale(scale), _room(room), _mesh_texture_id(room_sprite.texture), _type(Type::Sprite), _level(level)
     {
         using namespace DirectX::SimpleMath;
         _world = Matrix::CreateRotationY(_rotation) * Matrix::CreateTranslation(_position);
@@ -160,6 +161,11 @@ namespace trview
     bool StaticMesh::has_collision() const
     {
         return _type == Type::Mesh && (_flags & 0x1) == 0;
+    }
+
+    std::weak_ptr<ILevel> StaticMesh::level() const
+    {
+        return _level;
     }
 
     uint32_t static_mesh_room(const std::shared_ptr<IStaticMesh>& static_mesh)

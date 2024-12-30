@@ -467,16 +467,18 @@ namespace trview
     {
         Activity generate_rooms_activity(_log, "Level", level.name());
         const auto num_rooms = level.num_rooms();
+        uint32_t sector_base_index = 0;
         for (uint32_t i = 0u; i < num_rooms; ++i)
         {
             Activity room_activity(generate_rooms_activity, std::format("Room {}", i));
-            auto room = room_source(level, level.get_room(i), _texture_storage, mesh_storage, i, shared_from_this(), room_activity);
+            auto room = room_source(level, level.get_room(i), _texture_storage, mesh_storage, i, shared_from_this(), sector_base_index, room_activity);
             _token_store += room->on_changed += [&]() 
             {
                 _regenerate_transparency = true; 
                 on_level_changed();
             };
             _rooms.push_back(room);
+            sector_base_index += static_cast<uint32_t>(room->sectors().size());
         }
 
         std::set<uint32_t> alternate_groups;
@@ -1486,7 +1488,7 @@ namespace trview
                     detail = details[index];
                 }
             }
-            auto sound_source = sound_source_source(count++, source, detail, _version);
+            auto sound_source = sound_source_source(count++, source, detail, _version, shared_from_this());
             _token_store += sound_source->on_changed += [this]() { content_changed(); };
             _sound_sources.push_back(sound_source);
         }

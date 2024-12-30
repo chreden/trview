@@ -77,6 +77,7 @@ BEGIN
         MENUITEM "Plugins\tCtrl+P"              ID_WINDOWS_PLUGINS
         MENUITEM "Statics\tCtrl+S"              ID_WINDOWS_STATICS
         MENUITEM "Sounds"                       ID_WINDOWS_SOUNDS
+        MENUITEM "Diff\tCtrl+D"                 ID_WINDOWS_DIFF
         MENUITEM SEPARATOR
         MENUITEM "Camera Position"              ID_WINDOWS_CAMERA_POSITION
         MENUITEM SEPARATOR

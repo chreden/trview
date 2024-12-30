@@ -93,7 +93,7 @@ namespace trview
         /// Create a new implementation of <see cref="IRoom"/>.
         /// </summary>
         using Source = std::function<std::shared_ptr<IRoom>(const trlevel::ILevel&, const trlevel::tr3_room&,
-            const std::shared_ptr<ILevelTextureStorage>&, const IMeshStorage&, uint32_t, const std::weak_ptr<ILevel>&, const Activity& activity)>;
+            const std::shared_ptr<ILevelTextureStorage>&, const IMeshStorage&, uint32_t, const std::weak_ptr<ILevel>&, uint32_t, const Activity& activity)>;
         /// <summary>
         /// Destructor for <see cref="IRoom"/>.
         /// </summary>

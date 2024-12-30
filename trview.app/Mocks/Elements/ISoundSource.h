@@ -25,6 +25,7 @@ namespace trview
             MOCK_METHOD(void, set_visible, (bool), (override));
             MOCK_METHOD(bool, visible, (), (const, override));
             MOCK_METHOD(uint16_t, volume, (), (const, override));
+            MOCK_METHOD(std::weak_ptr<ILevel>, level, (), (const, override));
         };
     }
 }

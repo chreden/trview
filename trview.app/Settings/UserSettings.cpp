@@ -2,21 +2,34 @@
 
 namespace trview
 {
+    namespace
+    {
+        void add_to_files_list(std::list<std::string>& files, const std::string& file, uint32_t max)
+        {
+            // If the file already exists in the recent files list, remove it from where it is
+            // and move it to the to avoid duplicates and to make it ordered by most recent.
+            auto existing = std::find(files.begin(), files.end(), file);
+            if (existing != files.end())
+            {
+                files.erase(existing);
+            }
+
+            files.push_front(file);
+            if (files.size() > max)
+            {
+                files.pop_back();
+            }
+        }
+    }
+
     void UserSettings::add_recent_file(const std::string& file)
     {
-        // If the file already exists in the recent files list, remove it from where it is
-        // and move it to the to avoid duplicates and to make it ordered by most recent.
-        auto existing = std::find(recent_files.begin(), recent_files.end(), file);
-        if (existing != recent_files.end())
-        {
-            recent_files.erase(existing);
-        }
+        add_to_files_list(recent_files, file, max_recent_files);
+    }
 
-        recent_files.push_front(file);
-        if (recent_files.size() > max_recent_files)
-        {
-            recent_files.pop_back();
-        }
+    void UserSettings::add_recent_diff_file(const std::string& file)
+    {
+        add_to_files_list(recent_diff_files, file, max_recent_files);
     }
 
     bool UserSettings::operator==(const UserSettings& other) const
@@ -44,6 +57,7 @@ namespace trview
             camera_sink_startup == other.camera_sink_startup &&
             statics_startup == other.statics_startup &&
             plugin_directories == other.plugin_directories &&
-            camera_position_window == other.camera_position_window;
+            camera_position_window == other.camera_position_window &&
+            recent_diff_files == other.recent_diff_files;
     }
 }

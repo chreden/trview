@@ -11,6 +11,7 @@ namespace trview
     struct UserSettings
     {
         void add_recent_file(const std::string& file);
+        void add_recent_diff_file(const std::string& file);
 
         struct RecentRoute
         {
@@ -65,6 +66,7 @@ namespace trview
         };
         bool statics_startup{ false };
         bool camera_position_window{ true };
+        std::list<std::string> recent_diff_files;
 
         bool operator==(const UserSettings& other) const;
     };

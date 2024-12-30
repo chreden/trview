@@ -216,4 +216,8 @@ namespace trview
             on_file_open(found->path);
         }
     }
+
+    void FileMenu::render()
+    {
+    }
 }

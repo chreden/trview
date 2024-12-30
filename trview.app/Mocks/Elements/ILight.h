@@ -70,6 +70,12 @@ namespace trview
                 ON_CALL(*this, set_visible).WillByDefault([&](auto v) { _visible_state = v; });
                 return shared_from_this();
             }
+
+            std::shared_ptr<MockLight> with_level(std::weak_ptr<ILevel> level)
+            {
+                ON_CALL(*this, level).WillByDefault(testing::Return(level));
+                return shared_from_this();
+            }
         };
     }
 }

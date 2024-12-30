@@ -10,8 +10,8 @@ namespace trview
     {
     }
 
-    SoundSource::SoundSource(const std::shared_ptr<IMesh>& mesh, const std::shared_ptr<ITextureStorage>& texture_storage, uint32_t number, const trlevel::tr_sound_source& source, const std::optional<trlevel::tr_x_sound_details>& details, trlevel::LevelVersion level_version)
-        : _mesh(mesh), _flags(source.Flags), _id(source.SoundID), _number(number), _position(source.x / trlevel::Scale, source.y / trlevel::Scale, source.z / trlevel::Scale)
+    SoundSource::SoundSource(const std::shared_ptr<IMesh>& mesh, const std::shared_ptr<ITextureStorage>& texture_storage, uint32_t number, const trlevel::tr_sound_source& source, const std::optional<trlevel::tr_x_sound_details>& details, trlevel::LevelVersion level_version, const std::weak_ptr<ILevel>& level)
+        : _mesh(mesh), _flags(source.Flags), _id(source.SoundID), _number(number), _position(source.x / trlevel::Scale, source.y / trlevel::Scale, source.z / trlevel::Scale), _level(level)
     {
         _sound_texture = texture_storage->lookup("sound_texture");
 
@@ -134,5 +134,10 @@ namespace trview
     uint16_t SoundSource::volume() const
     {
         return _volume;
+    }
+
+    std::weak_ptr<ILevel> SoundSource::level() const
+    {
+        return _level;
     }
 }

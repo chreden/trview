@@ -641,6 +641,12 @@ namespace trview
     {
         auto old_level = _level.lock();
         auto new_level = level.lock();
+
+        if (old_level == new_level)
+        {
+            return;
+        }
+
         _level = level;
 
         _level_token_store.clear();

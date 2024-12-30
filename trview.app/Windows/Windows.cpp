@@ -6,6 +6,7 @@
 #include "About/AboutWindowManager.h"
 #include "CameraSink/ICameraSinkWindowManager.h"
 #include "Console/IConsoleManager.h"
+#include "Diff/IDiffWindowManager.h"
 #include "IItemsWindowManager.h"
 #include "ILightsWindowManager.h"
 #include "Log/ILogWindowManager.h"
@@ -29,6 +30,7 @@ namespace trview
         std::unique_ptr<IAboutWindowManager> about_window_manager,
         std::unique_ptr<ICameraSinkWindowManager> camera_sink_windows,
         std::unique_ptr<IConsoleManager> console_manager,
+        std::unique_ptr<IDiffWindowManager> diff_window_manager,
         std::shared_ptr<IItemsWindowManager> items_window_manager,
         std::unique_ptr<ILightsWindowManager> lights_window_manager,
         std::unique_ptr<ILogWindowManager> log_window_manager,
@@ -40,14 +42,25 @@ namespace trview
         std::unique_ptr<ITexturesWindowManager> textures_window_manager,
         std::unique_ptr<ITriggersWindowManager> triggers_window_manager)
         : _about_windows(std::move(about_window_manager)), _camera_sink_windows(std::move(camera_sink_windows)), _console_manager(std::move(console_manager)),
-        _items_windows(items_window_manager), _lights_windows(std::move(lights_window_manager)), _log_windows(std::move(log_window_manager)),
-        _plugins_windows(std::move(plugins_window_manager)), _rooms_windows(std::move(rooms_window_manager)), _route_window(std::move(route_window_manager)),
-        _sounds_windows(std::move(sounds_window_manager)), _statics_windows(std::move(statics_window_manager)), _textures_windows(std::move(textures_window_manager)),
-        _triggers_windows(std::move(triggers_window_manager))
+        _diff_windows(std::move(diff_window_manager)), _items_windows(items_window_manager), _lights_windows(std::move(lights_window_manager)),
+        _log_windows(std::move(log_window_manager)), _plugins_windows(std::move(plugins_window_manager)), _rooms_windows(std::move(rooms_window_manager)),
+        _route_window(std::move(route_window_manager)), _sounds_windows(std::move(sounds_window_manager)), _statics_windows(std::move(statics_window_manager)),
+        _textures_windows(std::move(textures_window_manager)), _triggers_windows(std::move(triggers_window_manager))
     {
         _camera_sink_windows->on_camera_sink_selected += on_camera_sink_selected;
         _camera_sink_windows->on_trigger_selected += on_trigger_selected;
         _camera_sink_windows->on_scene_changed += on_scene_changed;
+
+        _diff_windows->on_item_selected += on_item_selected;
+        _diff_windows->on_light_selected += on_light_selected;
+        _diff_windows->on_trigger_selected += on_trigger_selected;
+        _diff_windows->on_level_selected += on_diff_level_selected;
+        _diff_windows->on_camera_sink_selected += on_camera_sink_selected;
+        _diff_windows->on_static_mesh_selected += on_static_selected;
+        _diff_windows->on_sound_source_selected += on_sound_source_selected;
+        _diff_windows->on_room_selected += on_room_selected;
+        _diff_windows->on_sector_selected += on_sector_selected;
+        _diff_windows->on_settings += on_settings;
 
         _token_store += _items_windows->on_add_to_route += [this](auto item)
             {
@@ -124,6 +137,7 @@ namespace trview
         _about_windows->render();
         _camera_sink_windows->render();
         _console_manager->render();
+        _diff_windows->render();
         _items_windows->render();
         _lights_windows->render();
         _log_windows->render();
@@ -184,6 +198,7 @@ namespace trview
         }
 
         _camera_sink_windows->set_camera_sinks(new_level->camera_sinks());
+        _diff_windows->set_level(new_level);
         _items_windows->set_items(new_level->items());
         _items_windows->set_triggers(new_level->triggers());
         _items_windows->set_level_version(new_level->version());
@@ -236,6 +251,7 @@ namespace trview
 
     void Windows::set_settings(const UserSettings& settings)
     {
+        _diff_windows->set_settings(settings);
         _rooms_windows->set_map_colours(settings.map_colours);
         _route_window->set_randomizer_enabled(settings.randomizer_tools);
         _route_window->set_randomizer_settings(settings.randomizer);

@@ -51,6 +51,7 @@
 #define ID_WINDOWS_SOUNDS               33028
 #define ID_WINDOWS_CAMERA_POSITION      33029
 #define IDR_NGPLUS                      33030
+#define ID_WINDOWS_DIFF                 33031
 
 // Next default values for new objects
 // 

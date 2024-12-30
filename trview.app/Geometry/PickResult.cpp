@@ -105,7 +105,7 @@ namespace trview
             {
                 if (auto trigger = level.trigger(result.index).lock())
                 {
-                    stream << trigger_type_name(trigger->type()) << " " << result.index;
+                    stream << to_string(trigger->type()) << " " << result.index;
                     for (const auto command : trigger->commands())
                     {
                         stream << "\n  " << command_type_name(command.type());
@@ -126,7 +126,7 @@ namespace trview
             {
                 if (const auto light = level.light(result.index).lock())
                 {
-                    stream << "Light " << result.index << " - " << light_type_name(light->type());
+                    stream << "Light " << result.index << " - " << to_string(light->type());
                 }
                 break;
             }
@@ -152,7 +152,7 @@ namespace trview
                     {
                         if (const auto trigger = level.trigger(waypoint->index()).lock())
                         {
-                            stream << " - " << trigger_type_name(trigger->type()) << " " << waypoint->index();
+                            stream << " - " << to_string(trigger->type()) << " " << waypoint->index();
                         }
                     }
 

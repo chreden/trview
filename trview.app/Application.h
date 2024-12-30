@@ -6,8 +6,6 @@
 #include <trview.common/Timer.h>
 #include <trview.common/TokenStore.h>
 
-#include <trlevel/ILevel.h>
-
 #include "Elements/ITypeInfoLookup.h"
 #include <trview.app/Menus/IFileMenu.h>
 #include <trview.app/Menus/IUpdateChecker.h>
@@ -57,7 +55,6 @@ namespace trview
             const Window& application_window,
             std::unique_ptr<IUpdateChecker> update_checker,
             std::shared_ptr<ISettingsLoader> settings_loader,
-            const trlevel::ILevel::Source& trlevel_source,
             std::unique_ptr<IFileMenu> file_menu,
             std::shared_ptr<IViewer> viewer,
             const IRoute::Source& route_source,
@@ -127,13 +124,14 @@ namespace trview
         void select_static_mesh(const std::weak_ptr<IStaticMesh>& static_mesh);
         void select_sound_source(const std::weak_ptr<ISoundSource>& sound_source);
         void check_load();
+        void open_diff_level(const std::weak_ptr<ILevel>& level);
+        
 
         TokenStore _token_store;
 
         // Window message related components.
         std::shared_ptr<ISettingsLoader> _settings_loader;
         UserSettings _settings;
-        trlevel::ILevel::Source _trlevel_source;
         std::unique_ptr<IFileMenu> _file_menu;
         std::unique_ptr<IUpdateChecker> _update_checker;
         ViewMenu _view_menu;
@@ -177,6 +175,7 @@ namespace trview
         std::future<LoadOperation> _load;
         LoadMode _load_mode;
         std::string _progress;
+        std::weak_ptr<ILevel> _diff_level;
     };
 
     std::unique_ptr<IApplication> create_application(HINSTANCE hInstance, int command_show, const std::wstring& command_line);

@@ -39,6 +39,7 @@
 #include "Graphics/SectorHighlight.h"
 #include "Lua/Scriptable/Scriptable.h"
 #include "Menus/FileMenu.h"
+#include "Menus/ImGuiFileMenu.h"
 #include "Menus/UpdateChecker.h"
 #include "Routing/Waypoint.h"
 #include "Routing/RandomizerRoute.h"
@@ -81,6 +82,8 @@
 #include "Windows/Windows.h"
 #include "Windows/About/AboutWindowManager.h"
 #include "Windows/About/AboutWindow.h"
+#include "Windows/Diff/DiffWindowManager.h"
+#include "Windows/Diff/DiffWindow.h"
 
 namespace trview
 {
@@ -241,10 +244,10 @@ namespace trview
         auto static_mesh_position_source = [=](auto&&... args) { return std::make_shared<StaticMesh>(args...); };
         auto sector_source = [=](auto&&... args) { return std::make_shared<Sector>(std::forward<decltype(args)>(args)...); };
         auto room_source = [=](const trlevel::ILevel& level, const trlevel::tr3_room& room,
-            const std::shared_ptr<ILevelTextureStorage>& texture_storage, const IMeshStorage& mesh_storage, uint32_t index, const std::weak_ptr<ILevel>& parent_level, const Activity& activity)
+            const std::shared_ptr<ILevelTextureStorage>& texture_storage, const IMeshStorage& mesh_storage, uint32_t index, const std::weak_ptr<ILevel>& parent_level, uint32_t sector_base_index, const Activity& activity)
         {
             auto new_room = std::make_shared<Room>(room, mesh_source, texture_storage, index, parent_level);
-            new_room->initialise(level, room, mesh_storage, static_mesh_source, static_mesh_position_source, sector_source, activity);
+            new_room->initialise(level, room, mesh_storage, static_mesh_source, static_mesh_position_source, sector_source, sector_base_index, activity);
             return new_room;
         };
         auto trigger_source = [=](auto&&... args) { return std::make_shared<Trigger>(args..., mesh_transparent_source); };
@@ -259,8 +262,13 @@ namespace trview
         const auto sound_source = [=](auto&&... args) { return create_sound(args...); };
         const auto sound_source_source = [=](auto&&... args) { return std::make_shared<SoundSource>(cube_mesh, texture_storage, args...); };
 
-        auto level_source = [=](auto&& level, auto&& callbacks)
+        auto decrypter = std::make_shared<trlevel::Decrypter>();
+        auto trlevel_source = [=](auto&& filename) { return std::make_shared<trlevel::Level>(filename, files, decrypter, log); };
+
+        auto level_source = [=](auto&& filename, auto&& callbacks)
             {
+                auto level = trlevel_source(filename);
+
                 auto level_texture_storage = std::make_shared<LevelTextureStorage>(device, std::make_unique<TextureStorage>(device));
                 int count = 0;
                 callbacks.on_textile_callback = [&](auto&& textile)
@@ -351,7 +359,6 @@ namespace trview
             clipboard,
             std::make_shared<Camera>(window.size()));
 
-        
         auto triggers_window_source = [=]() { return std::make_shared<TriggersWindow>(clipboard); };
         auto route_window_source = [=]() { return std::make_shared<RouteWindow>(clipboard, dialogs, files); };
         auto rooms_window_source = [=]() { return std::make_shared<RoomsWindow>(map_renderer_source, clipboard); };
@@ -360,20 +367,17 @@ namespace trview
         auto log_window_source = [=]() { return std::make_shared<LogWindow>(log, dialogs, files); };
         auto camera_sink_window_source = [=]() { return std::make_shared<CameraSinkWindow>(clipboard); };
 
-        auto decrypter = std::make_shared<trlevel::Decrypter>();
-
-        auto trlevel_source = [=](auto&& filename) { return std::make_shared<trlevel::Level>(filename, files, decrypter, log); };
         auto textures_window_source = [=]() { return std::make_shared<TexturesWindow>(); };
         auto console_source = [=]() { return std::make_shared<Console>(dialogs, plugins, fonts); };
         auto statics_window_source = [=]() { return std::make_shared<StaticsWindow>(clipboard); };
         auto sounds_window_source = [=]() { return std::make_shared<SoundsWindow>(); };
         auto about_window_source = [=]() { return std::make_shared<AboutWindow>(); };
+        auto diff_window_source = [=]() { return std::make_shared<DiffWindow>(dialogs, level_source, std::make_unique<ImGuiFileMenu>(dialogs, files)); };
 
         return std::make_unique<Application>(
             window,
             std::make_unique<UpdateChecker>(window),
             settings_loader,
-            trlevel_source,
             std::make_unique<FileMenu>(window, shortcuts, dialogs, files),
             std::move(viewer),
             route_source,
@@ -390,6 +394,7 @@ namespace trview
                 std::make_unique<AboutWindowManager>(window, about_window_source),
                 std::make_unique<CameraSinkWindowManager>(window, shortcuts, camera_sink_window_source),
                 std::make_unique<ConsoleManager>(window, shortcuts, console_source, files),
+                std::make_unique<DiffWindowManager>(window, shortcuts, diff_window_source),
                 items_window_manager,
                 std::make_unique<LightsWindowManager>(window, shortcuts, lights_window_source),
                 std::make_unique<LogWindowManager>(window, log_window_source),

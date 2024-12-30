@@ -18,6 +18,10 @@ namespace trview
         /// <param name="filename">The file that was opened.</param>
         virtual void open_file(const std::string& filename) = 0;
         /// <summary>
+        /// Render in ImGui mode.
+        /// </summary>
+        virtual void render() = 0;
+        /// <summary>
         /// Set the list of recent files to display in the menu.
         /// </summary>
         /// <param name="files">The files to show.</param>

@@ -5,7 +5,7 @@ namespace trview
 {
     namespace
     {
-        const std::unordered_map<TriggerType, std::string> trigger_type_names
+        const std::unordered_map<TriggerType, std::string> to_strings
         {
             { TriggerType::Trigger, "Trigger" },
             { TriggerType::Pad, "Pad" },
@@ -60,10 +60,10 @@ namespace trview
         return std::any_of(types.begin(), types.end(), [&](const auto& type) { return has_command(trigger, type); });
     }
 
-    std::string trigger_type_name(TriggerType type)
+    std::string to_string(TriggerType type)
     {
-        auto name = trigger_type_names.find(type);
-        if (name == trigger_type_names.end())
+        auto name = to_strings.find(type);
+        if (name == to_strings.end())
         {
             return "Unknown";
         }

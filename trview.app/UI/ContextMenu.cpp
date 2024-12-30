@@ -57,7 +57,7 @@ namespace trview
                 {
                     if (const auto trigger_ptr = trigger.lock())
                     {
-                        if (ImGui::MenuItem(std::format("{} {}", trigger_type_name(trigger_ptr->type()), trigger_ptr->number()).c_str()))
+                        if (ImGui::MenuItem(std::format("{} {}", to_string(trigger_ptr->type()), trigger_ptr->number()).c_str()))
                         {
                             on_trigger_selected(trigger);
                         }

@@ -91,6 +91,7 @@ namespace trview
             const IStaticMesh::MeshSource& static_mesh_mesh_source,
             const IStaticMesh::PositionSource& static_mesh_position_source,
             const ISector::Source& sector_source,
+            uint32_t sector_base_index,
             const Activity& activity);
         std::vector<std::weak_ptr<IStaticMesh>> static_meshes() const override;
     private:
@@ -100,7 +101,7 @@ namespace trview
             const IStaticMesh::MeshSource& static_mesh_mesh_source, const IStaticMesh::PositionSource& static_mesh_position_source, const Activity& activity);
         void render_contained(const ICamera& camera, const DirectX::SimpleMath::Color& colour, RenderFilter render_filter);
         void get_contained_transparent_triangles(ITransparencyBuffer& transparency, const ICamera& camera, const DirectX::SimpleMath::Color& colour, RenderFilter render_filter);
-        void generate_sectors(const trlevel::ILevel& level, const trlevel::tr3_room& room, const ISector::Source& sector_source);
+        void generate_sectors(const trlevel::ILevel& level, const trlevel::tr3_room& room, const ISector::Source& sector_source, uint32_t sector_base_index);
         ISector* get_trigger_sector(int32_t x, int32_t z);
         uint32_t get_sector_id(int32_t x, int32_t z) const;
 

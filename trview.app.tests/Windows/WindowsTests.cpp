@@ -13,6 +13,7 @@
 #include <trview.app/Mocks/Windows/IAboutWindowManager.h>
 #include <trview.app/Mocks/Windows/ICameraSinkWindowManager.h>
 #include <trview.app/Mocks/Windows/IConsoleManager.h>
+#include <trview.app/Mocks/Windows/IDiffWindowManager.h>
 #include <trview.app/Mocks/Windows/IItemsWindowManager.h>
 #include <trview.app/Mocks/Windows/ILightsWindowManager.h>
 #include <trview.app/Mocks/Windows/ILogWindowManager.h>
@@ -42,7 +43,8 @@ namespace
             std::unique_ptr<IAboutWindowManager> about_window{ mock_unique<MockAboutWindowManager>() };
             std::unique_ptr<ICameraSinkWindowManager> camera_sinks{ mock_unique<MockCameraSinkWindowManager>() };
             std::unique_ptr<IConsoleManager> console_manager{ mock_unique<MockConsoleManager>() };
-            std::unique_ptr<IItemsWindowManager> items{ mock_unique<MockItemsWindowManager>() };
+            std::unique_ptr<IDiffWindowManager> diffs{ mock_unique<MockDiffWindowManager>() };
+            std::shared_ptr<IItemsWindowManager> items{ mock_shared<MockItemsWindowManager>() };
             std::unique_ptr<ILogWindowManager> log{ mock_unique<MockLogWindowManager>() };
             std::unique_ptr<ILightsWindowManager> lights{ mock_unique<MockLightsWindowManager>() };
             std::unique_ptr<IPluginsWindowManager> plugins{ mock_unique<MockPluginsWindowManager>() };
@@ -59,7 +61,8 @@ namespace
                     std::move(about_window),
                     std::move(camera_sinks),
                     std::move(console_manager),
-                    std::move(items),
+                    std::move(diffs),
+                    items,
                     std::move(lights),
                     std::move(log),
                     std::move(plugins),
@@ -80,6 +83,12 @@ namespace
             test_module& with_console(std::unique_ptr<IConsoleManager> manager)
             {
                 console_manager = std::move(manager);
+                return *this;
+            }
+
+            test_module& with_diffs(std::unique_ptr<IDiffWindowManager> manager)
+            {
+                diffs = std::move(manager);
                 return *this;
             }
 

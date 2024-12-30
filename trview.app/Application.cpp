@@ -18,6 +18,17 @@ namespace trview
             fonts.add_font("Default", { .name = "Arial", .filename = "arial.ttf", .size = 12 });
             fonts.add_font("Console", { .name = "Consolas", .filename = "consola.ttf", .size = 12 });
         }
+
+        template <typename T>
+        std::tuple<std::shared_ptr<T>, std::shared_ptr<ILevel>> get_entity_and_level(const std::weak_ptr<T>& entity)
+        {
+            if (const auto entity_ptr = entity.lock())
+            {
+                const auto level_ptr = entity_ptr->level().lock();
+                return { entity_ptr, level_ptr };
+            }
+            return { nullptr, nullptr };
+        }
     }
 
     IApplication::~IApplication()
@@ -27,7 +38,6 @@ namespace trview
     Application::Application(const Window& application_window,
         std::unique_ptr<IUpdateChecker> update_checker,
         std::shared_ptr<ISettingsLoader> settings_loader,
-        const trlevel::ILevel::Source& trlevel_source,
         std::unique_ptr<IFileMenu> file_menu,
         std::shared_ptr<IViewer> viewer,
         const IRoute::Source& route_source,
@@ -43,8 +53,8 @@ namespace trview
         std::unique_ptr<IWindows> windows,
         LoadMode load_mode)
         : MessageHandler(application_window), _instance(GetModuleHandle(nullptr)),
-        _file_menu(std::move(file_menu)), _update_checker(std::move(update_checker)), _view_menu(window()), _settings_loader(settings_loader), _trlevel_source(trlevel_source),
-        _viewer(viewer), _route_source(route_source), _shortcuts(shortcuts), _level_source(level_source), _dialogs(dialogs), _files(files), _timer(default_time_source()),
+        _file_menu(std::move(file_menu)), _update_checker(std::move(update_checker)), _view_menu(window()), _settings_loader(settings_loader), _viewer(viewer),
+        _route_source(route_source), _shortcuts(shortcuts), _level_source(level_source), _dialogs(dialogs), _files(files), _timer(default_time_source()),
         _imgui_backend(std::move(imgui_backend)), _plugins(plugins), _randomizer_route_source(randomizer_route_source), _fonts(fonts), _load_mode(load_mode),
         _windows(std::move(windows))
     {
@@ -81,6 +91,29 @@ namespace trview
         _token_store += _windows->on_new_randomizer_route += [&]() { if (should_discard_changes()) { set_route(_randomizer_route_source(std::nullopt)); } };
         _token_store += _windows->on_static_selected += [this](const auto& stat) { select_static_mesh(stat); };
         _token_store += _windows->on_sound_source_selected += [this](const auto& sound) { select_sound_source(sound); };
+        _token_store += _windows->on_diff_level_selected += [this](auto&& level) { open_diff_level(level); };
+        _token_store += _windows->on_sector_selected += [this](auto&& sector)
+            {
+                if (const auto s = sector.lock())
+                {
+                    if (const auto r = s->room().lock())
+                    {
+                        select_room(r);
+                        _viewer->set_target(r->sector_centroid(s));
+                    }
+                }
+            };
+        _token_store += _windows->on_settings += [this](auto&& settings)
+            {
+                _settings = settings;
+                _viewer->set_settings(_settings);
+                _windows->set_settings(settings);
+                lua::set_settings(settings);
+                if (_level)
+                {
+                    _level->set_map_colours(settings.map_colours);
+                }
+            };
 
         _windows->setup(_settings);
         setup_viewer(*startup_options);
@@ -340,48 +373,44 @@ namespace trview
 
     void Application::select_item(std::weak_ptr<IItem> item)
     {
-        if (!_level)
+        const auto [item_ptr, level] = get_entity_and_level(item);
+        if (!item_ptr || !level)
         {
             return;
         }
 
-        auto item_ptr = item.lock();
-        if (!item_ptr)
-        {
-            return;
-        }
-
+        _viewer->open(level, ILevel::OpenMode::Reload);
         select_room(item_ptr->room());
-        _level->set_selected_item(item);
+        level->set_selected_item(item);
         _viewer->select_item(item);
         _windows->select(item);
     }
 
     void Application::select_room(std::weak_ptr<IRoom> room)
     {
-        if (_level)
+        const auto [room_ptr, level] = get_entity_and_level(room);
+        if (!room_ptr || !level)
         {
-            _level->set_selected_room(room);
+            return;
         }
+
+        level->set_selected_room(room);
+        _viewer->open(level, ILevel::OpenMode::Reload);
         _viewer->select_room(room);
         _windows->set_room(room);
     }
 
     void Application::select_trigger(const std::weak_ptr<ITrigger>& trigger)
     {
-        if (!_level)
+        const auto [trigger_ptr, level] = get_entity_and_level(trigger);
+        if (!trigger_ptr || !level)
         {
             return;
         }
 
-        auto trigger_ptr = trigger.lock();
-        if (!trigger_ptr)
-        {
-            return;
-        }
-
+        _viewer->open(level, ILevel::OpenMode::Reload);
         select_room(trigger_ptr->room());
-        _level->set_selected_trigger(trigger_ptr->number());
+        level->set_selected_trigger(trigger_ptr->number());
         _viewer->select_trigger(trigger);
         _windows->select(trigger);
     }
@@ -420,19 +449,15 @@ namespace trview
 
     void Application::select_light(const std::weak_ptr<ILight>& light)
     {
-        if (!_level)
+        const auto [light_ptr, level] = get_entity_and_level(light);
+        if (!light_ptr || !level)
         {
             return;
         }
 
-        auto light_ptr = light.lock();
-        if (!light_ptr)
-        {
-            return;
-        }
-
+        _viewer->open(level, ILevel::OpenMode::Reload);
         select_room(light_ptr->room());
-        _level->set_selected_light(light_ptr->number());
+        level->set_selected_light(light_ptr->number());
         _viewer->select_light(light);
         _windows->select(light);
     }
@@ -771,19 +796,15 @@ namespace trview
 
     void Application::select_camera_sink(const std::weak_ptr<ICameraSink>& camera_sink)
     {
-        if (!_level)
+        const auto [camera_sink_ptr, level] = get_entity_and_level(camera_sink);
+        if (!camera_sink_ptr || !level)
         {
             return;
         }
 
-        auto camera_sink_ptr = camera_sink.lock();
-        if (!camera_sink_ptr)
-        {
-            return;
-        }
-
+        _viewer->open(level, ILevel::OpenMode::Reload);
         select_room(actual_room(*camera_sink_ptr));
-        _level->set_selected_camera_sink(camera_sink_ptr->number());
+        level->set_selected_camera_sink(camera_sink_ptr->number());
         _viewer->select_camera_sink(camera_sink);
         _windows->select(camera_sink);
     }
@@ -796,7 +817,7 @@ namespace trview
     std::shared_ptr<ILevel> Application::load(const std::string& filename)
     {
         _progress = std::format("Loading {}", filename);
-        auto level = _level_source(_trlevel_source(filename), 
+        auto level = _level_source(filename, 
             {
                 .on_progress_callback = [&](auto&& p) { _progress = p; }
             });
@@ -918,17 +939,13 @@ namespace trview
 
     void Application::select_static_mesh(const std::weak_ptr<IStaticMesh>& static_mesh)
     {
-        if (!_level)
+        const auto [static_mesh_ptr, level] = get_entity_and_level(static_mesh);
+        if (!static_mesh_ptr || !level)
         {
             return;
         }
 
-        auto static_mesh_ptr = static_mesh.lock();
-        if (!static_mesh_ptr)
-        {
-            return;
-        }
-
+        _viewer->open(level, ILevel::OpenMode::Reload);
         select_room(static_mesh_ptr->room());
         _viewer->select_static_mesh(static_mesh_ptr);
         _windows->select(static_mesh_ptr);
@@ -936,6 +953,13 @@ namespace trview
 
     void Application::select_sound_source(const std::weak_ptr<ISoundSource>& sound_source)
     {
+        const auto [sound_source_ptr, level] = get_entity_and_level(sound_source);
+        if (!sound_source_ptr || !level)
+        {
+            return;
+        }
+
+        _viewer->open(level, ILevel::OpenMode::Reload);
         _viewer->select_sound_source(sound_source);
         _windows->select(sound_source);
     }
@@ -966,5 +990,10 @@ namespace trview
         _settings_loader->save_user_settings(_settings);
         _viewer->set_settings(_settings);
         set_current_level(op.level, op.open_mode, false);
+    }
+
+    void Application::open_diff_level(const std::weak_ptr<ILevel>& level)
+    {
+        _diff_level = level;
     }
 }
