@@ -100,6 +100,8 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClInclude Include="Mocks\Sound\ISoundStorage.h" />
     <ClInclude Include="Mocks\UI\IFonts.h" />
     <ClInclude Include="Mocks\Windows\IAboutWindow.h" />
+    <ClInclude Include="Mocks\Windows\IDiffWindow.h" />
+    <ClInclude Include="Mocks\Windows\IDiffWindowManager.h" />
     <ClInclude Include="Mocks\Windows\ISoundsWindow.h" />
     <ClInclude Include="Mocks\Windows\ISoundsWindowManager.h" />
     <ClInclude Include="Mocks\Windows\IStaticsWindow.h" />

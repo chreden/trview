@@ -19,7 +19,7 @@ namespace trview
 
     struct ILevel
     {
-        using Source = std::function<std::shared_ptr<ILevel>(std::shared_ptr<trlevel::ILevel>, trlevel::ILevel::LoadCallbacks)>;
+        using Source = std::function<std::shared_ptr<ILevel>(const std::string&, trlevel::ILevel::LoadCallbacks)>;
 
         enum class OpenMode
         {

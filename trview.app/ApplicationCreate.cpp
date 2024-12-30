@@ -261,8 +261,13 @@ namespace trview
         const auto sound_source = [=](auto&&... args) { return create_sound(args...); };
         const auto sound_source_source = [=](auto&&... args) { return std::make_shared<SoundSource>(cube_mesh, texture_storage, args...); };
 
-        auto level_source = [=](auto&& level, auto&& callbacks)
+        auto decrypter = std::make_shared<trlevel::Decrypter>();
+        auto trlevel_source = [=](auto&& filename) { return std::make_shared<trlevel::Level>(filename, files, decrypter, log); };
+
+        auto level_source = [=](auto&& filename, auto&& callbacks)
             {
+                auto level = trlevel_source(filename);
+
                 auto level_texture_storage = std::make_shared<LevelTextureStorage>(device, std::make_unique<TextureStorage>(device));
                 int count = 0;
                 callbacks.on_textile_callback = [&](auto&& textile)
@@ -353,7 +358,6 @@ namespace trview
             clipboard,
             std::make_shared<Camera>(window.size()));
 
-        
         auto triggers_window_source = [=]() { return std::make_shared<TriggersWindow>(clipboard); };
         auto route_window_source = [=]() { return std::make_shared<RouteWindow>(clipboard, dialogs, files); };
         auto rooms_window_source = [=]() { return std::make_shared<RoomsWindow>(map_renderer_source, clipboard); };
@@ -362,9 +366,6 @@ namespace trview
         auto log_window_source = [=]() { return std::make_shared<LogWindow>(log, dialogs, files); };
         auto camera_sink_window_source = [=]() { return std::make_shared<CameraSinkWindow>(clipboard); };
 
-        auto decrypter = std::make_shared<trlevel::Decrypter>();
-
-        auto trlevel_source = [=](auto&& filename) { return std::make_shared<trlevel::Level>(filename, files, decrypter, log); };
         auto textures_window_source = [=]() { return std::make_shared<TexturesWindow>(); };
         auto console_source = [=]() { return std::make_shared<Console>(dialogs, plugins, fonts); };
         auto statics_window_source = [=]() { return std::make_shared<StaticsWindow>(clipboard); };
@@ -376,7 +377,6 @@ namespace trview
             window,
             std::make_unique<UpdateChecker>(window),
             settings_loader,
-            trlevel_source,
             std::make_unique<FileMenu>(window, shortcuts, dialogs, files),
             std::move(viewer),
             route_source,

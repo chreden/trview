@@ -1219,6 +1219,12 @@
     <ClInclude Include="Windows\Diff\DiffWindow.h">
       <Filter>Windows\Diff</Filter>
     </ClInclude>
+    <ClInclude Include="Mocks\Windows\IDiffWindowManager.h">
+      <Filter>Mocks\Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="Mocks\Windows\IDiffWindow.h">
+      <Filter>Mocks\Windows</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Windows">

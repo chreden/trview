@@ -27,7 +27,6 @@ namespace trview
     Application::Application(const Window& application_window,
         std::unique_ptr<IUpdateChecker> update_checker,
         std::shared_ptr<ISettingsLoader> settings_loader,
-        const trlevel::ILevel::Source& trlevel_source,
         std::unique_ptr<IFileMenu> file_menu,
         std::shared_ptr<IViewer> viewer,
         const IRoute::Source& route_source,
@@ -43,8 +42,8 @@ namespace trview
         std::unique_ptr<IWindows> windows,
         LoadMode load_mode)
         : MessageHandler(application_window), _instance(GetModuleHandle(nullptr)),
-        _file_menu(std::move(file_menu)), _update_checker(std::move(update_checker)), _view_menu(window()), _settings_loader(settings_loader), _trlevel_source(trlevel_source),
-        _viewer(viewer), _route_source(route_source), _shortcuts(shortcuts), _level_source(level_source), _dialogs(dialogs), _files(files), _timer(default_time_source()),
+        _file_menu(std::move(file_menu)), _update_checker(std::move(update_checker)), _view_menu(window()), _settings_loader(settings_loader), _viewer(viewer),
+        _route_source(route_source), _shortcuts(shortcuts), _level_source(level_source), _dialogs(dialogs), _files(files), _timer(default_time_source()),
         _imgui_backend(std::move(imgui_backend)), _plugins(plugins), _randomizer_route_source(randomizer_route_source), _fonts(fonts), _load_mode(load_mode),
         _windows(std::move(windows))
     {
@@ -796,7 +795,7 @@ namespace trview
     std::shared_ptr<ILevel> Application::load(const std::string& filename)
     {
         _progress = std::format("Loading {}", filename);
-        auto level = _level_source(_trlevel_source(filename), 
+        auto level = _level_source(filename, 
             {
                 .on_progress_callback = [&](auto&& p) { _progress = p; }
             });
