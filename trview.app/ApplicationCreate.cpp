@@ -81,6 +81,8 @@
 #include "Windows/Windows.h"
 #include "Windows/About/AboutWindowManager.h"
 #include "Windows/About/AboutWindow.h"
+#include "Windows/Diff/DiffWindowManager.h"
+#include "Windows/Diff/DiffWindow.h"
 
 namespace trview
 {
@@ -368,6 +370,7 @@ namespace trview
         auto statics_window_source = [=]() { return std::make_shared<StaticsWindow>(clipboard); };
         auto sounds_window_source = [=]() { return std::make_shared<SoundsWindow>(); };
         auto about_window_source = [=]() { return std::make_shared<AboutWindow>(); };
+        auto diff_window_source = [=]() { return std::make_shared<DiffWindow>(); };
 
         return std::make_unique<Application>(
             window,
@@ -390,6 +393,7 @@ namespace trview
                 std::make_unique<AboutWindowManager>(window, about_window_source),
                 std::make_unique<CameraSinkWindowManager>(window, shortcuts, camera_sink_window_source),
                 std::make_unique<ConsoleManager>(window, shortcuts, console_source, files),
+                std::make_unique<DiffWindowManager>(window, shortcuts, diff_window_source),
                 items_window_manager,
                 std::make_unique<LightsWindowManager>(window, shortcuts, lights_window_source),
                 std::make_unique<LogWindowManager>(window, log_window_source),

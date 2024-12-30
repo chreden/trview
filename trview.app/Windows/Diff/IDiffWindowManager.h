@@ -1,0 +1,13 @@
+#pragma once
+
+namespace trview
+{
+    struct IDiffWindow;
+
+    struct IDiffWindowManager
+    {
+        virtual ~IDiffWindowManager() = 0;
+        virtual std::weak_ptr<IDiffWindow> create_window() = 0;
+        virtual void render() = 0;
+    };
+}
