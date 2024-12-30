@@ -371,7 +371,7 @@ namespace trview
         auto statics_window_source = [=]() { return std::make_shared<StaticsWindow>(clipboard); };
         auto sounds_window_source = [=]() { return std::make_shared<SoundsWindow>(); };
         auto about_window_source = [=]() { return std::make_shared<AboutWindow>(); };
-        auto diff_window_source = [=]() { return std::make_shared<DiffWindow>(); };
+        auto diff_window_source = [=]() { return std::make_shared<DiffWindow>(dialogs, level_source); };
 
         return std::make_unique<Application>(
             window,
