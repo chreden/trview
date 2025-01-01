@@ -35,7 +35,7 @@ namespace trview
                 None,
                 Add,
                 Update,
-                Move,
+                Reindex,
                 Delete
             };
 

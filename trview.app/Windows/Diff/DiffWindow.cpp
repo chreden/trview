@@ -17,7 +17,7 @@ namespace trview
                 return ImVec4(0, 1, 0, 1);
             case DiffWindow::Diff::Type::Update:
                 return ImVec4(1, 1, 0, 1);
-            case DiffWindow::Diff::Type::Move:
+            case DiffWindow::Diff::Type::Reindex:
                 return ImVec4(1, 0, 1, 1);
             case DiffWindow::Diff::Type::Delete:
                 return ImVec4(1, 0, 0, 1);
@@ -33,8 +33,8 @@ namespace trview
                 return "None";
             case DiffWindow::Diff::Type::Add:
                 return "Add";
-            case DiffWindow::Diff::Type::Move:
-                return "Move";
+            case DiffWindow::Diff::Type::Reindex:
+                return "Reindex";
             case DiffWindow::Diff::Type::Update:
                 return "Update";
             case DiffWindow::Diff::Type::Delete:
@@ -112,7 +112,7 @@ namespace trview
 
                     if (found != right_items.end())
                     {
-                        result.type = Diff::Type::Move;
+                        result.type = Diff::Type::Reindex;
                         result.state = Diff::State::Resolved;
                         result.right = *found;
                         left_resolved[i] = Diff::State::Resolved;
@@ -289,6 +289,19 @@ namespace trview
                 find_direct_matches(results, left_items, right_items, left_resolved, right_resolved);
                 find_moves(results, left_items, right_items, left_resolved, right_resolved);
                 mark_updated(results, left_items, right_items, left_resolved, right_resolved);
+
+                std::ranges::sort(
+                    results, [](const auto& l, const auto& r)
+                    {
+                        const auto left_left = l.left.lock();
+                        const auto left_right = l.right.lock();
+                        const auto right_left = r.left.lock();
+                        const auto right_right = r.right.lock();
+                        const auto left_index = (left_right ? left_right->number() : left_left ? left_left->number() : 0);
+                        const auto right_index = (right_right ? right_right->number() : right_left ? right_left->number() : 0);
+                        return left_index < right_index;
+                    }
+                );
 
                 operation.diff.items = results;
                 return operation;
