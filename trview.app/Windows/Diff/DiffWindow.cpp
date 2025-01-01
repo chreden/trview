@@ -17,6 +17,8 @@ namespace trview
                 return ImVec4(0, 1, 0, 1);
             case DiffWindow::Diff::Type::Update:
                 return ImVec4(1, 1, 0, 1);
+            case DiffWindow::Diff::Type::Move:
+                return ImVec4(1, 0, 1, 1);
             case DiffWindow::Diff::Type::Delete:
                 return ImVec4(1, 0, 0, 1);
             }
@@ -31,6 +33,8 @@ namespace trview
                 return "None";
             case DiffWindow::Diff::Type::Add:
                 return "Add";
+            case DiffWindow::Diff::Type::Move:
+                return "Move";
             case DiffWindow::Diff::Type::Update:
                 return "Update";
             case DiffWindow::Diff::Type::Delete:
@@ -60,7 +64,10 @@ namespace trview
                     {
                         const auto right = right_items[i];
                         if (left->type_id() == right->type_id() &&
-                            left->position() == right->position())
+                            left->position() == right->position() &&
+                            left->angle() == right->angle() &&
+                            left->ocb() == right->ocb() &&
+                            left->activation_flags() == right->activation_flags())
                         {
                             result.type = Diff::Type::None;
                             result.state = Diff::State::Resolved;
@@ -97,7 +104,10 @@ namespace trview
                                 return
                                     right_resolved[std::distance(right_items.begin(), std::ranges::find(right_items, right))] == Diff::State::Unresolved &&
                                     left->type_id() == right->type_id() &&
-                                    left->position() == right->position();
+                                    left->position() == right->position() &&
+                                    left->angle() == right->angle() &&
+                                    left->ocb() == right->ocb() &&
+                                    left->activation_flags() == right->activation_flags();
                             });
 
                     if (found != right_items.end())
