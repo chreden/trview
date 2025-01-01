@@ -317,13 +317,15 @@ namespace trview
         {
             if (ImGui::BeginTabItem("Items"))
             {
-                if (ImGui::BeginTable("Items List", 3, ImGuiTableFlags_Sortable | ImGuiTableFlags_ScrollY))// , ImVec2(0, -counter.height())))
+                if (ImGui::BeginTable("Items List", 5, ImGuiTableFlags_Sortable | ImGuiTableFlags_ScrollY))// , ImVec2(0, -counter.height())))
                 {
                     imgui_header_row(
                         {
-                            { "Type", _column_sizer.size(0) },
-                            { "Change", _column_sizer.size(1) },
-                            { "Type", _column_sizer.size(2) },
+                            { "#", _column_sizer.size(0) },
+                            { "Type", _column_sizer.size(1) },
+                            { "Change", _column_sizer.size(2) },
+                            { "#", _column_sizer.size(3) },
+                            { "Type", _column_sizer.size(4) },
                         });
 
                     for (const auto item_diff : _diff->diff.items)
@@ -336,6 +338,12 @@ namespace trview
                         ImGui::TableNextColumn();
                         if (left_item)
                         {
+                            ImGui::Text(std::to_string(left_item->number()).c_str());
+                        }
+
+                        ImGui::TableNextColumn();
+                        if (left_item)
+                        {
                             ImGui::Text(left_item->type().c_str());
                         }
                         
@@ -344,6 +352,12 @@ namespace trview
                             to_colour(item_diff.type),
                             to_string(item_diff.type).c_str());
                         
+                        ImGui::TableNextColumn();
+                        if (right_item)
+                        {
+                            ImGui::Text(std::to_string(right_item->number()).c_str());
+                        }
+
                         ImGui::TableNextColumn();
                         if (right_item)
                         {
@@ -368,17 +382,26 @@ namespace trview
         }
 
         _column_sizer.reset();
-        _column_sizer.measure("Type__", 0);
-        _column_sizer.measure("Change__", 1);
-        _column_sizer.measure("Type__", 2);
+        _column_sizer.measure("#__", 0);
+        _column_sizer.measure("Type__", 1);
+        _column_sizer.measure("Change__", 2);
+        _column_sizer.measure("#__", 3);
+        _column_sizer.measure("Type__", 4);
 
         for (const auto& item : _diff->diff.items)
         {
             if (auto item_ptr = item.left.lock())
             {
-                _column_sizer.measure(std::to_string(item_room(item_ptr)), 0);
-                _column_sizer.measure(std::to_string(item_ptr->type_id()), 1);
-                _column_sizer.measure(item_ptr->type(), 2);
+                _column_sizer.measure(std::to_string(item_ptr->number()), 0);
+                _column_sizer.measure(item_ptr->type(), 1);
+            }
+
+            _column_sizer.measure(to_string(item.type), 2);
+
+            if (auto item_ptr = item.right.lock())
+            {
+                _column_sizer.measure(std::to_string(item_ptr->number()), 3);
+                _column_sizer.measure(item_ptr->type(), 4);
             }
         }
     }
