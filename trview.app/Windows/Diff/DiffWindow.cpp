@@ -1,10 +1,129 @@
 #include "DiffWindow.h"
 #include <format>
+#include <ranges>
 #include <trlevel/LevelEncryptedException.h>
 #include "../../UserCancelledException.h"
+#include "../../trview_imgui.h"
 
 namespace trview
 {
+    namespace
+    {
+        constexpr ImVec4 to_colour(DiffWindow::Diff::Type type) noexcept
+        {
+            switch (type)
+            {
+            case DiffWindow::Diff::Type::Add:
+                return ImVec4(0, 1, 0, 1);
+            case DiffWindow::Diff::Type::Update:
+                return ImVec4(1, 1, 0, 1);
+            case DiffWindow::Diff::Type::Delete:
+                return ImVec4(1, 0, 0, 1);
+            }
+            return ImVec4(1, 1, 1, 1);
+        }
+
+        constexpr std::string to_string(DiffWindow::Diff::Type type) noexcept
+        {
+            switch (type)
+            {
+            case DiffWindow::Diff::Type::None:
+                return "None";
+            case DiffWindow::Diff::Type::Add:
+                return "Add";
+            case DiffWindow::Diff::Type::Update:
+                return "Update";
+            case DiffWindow::Diff::Type::Delete:
+                return "Delete";
+            }
+            return "Unknown";
+        }
+
+        void find_direct_matches(
+            std::vector<DiffWindow::Diff::Item>& results,
+            const std::vector<std::shared_ptr<IItem>>& left_items,
+            const std::vector<std::shared_ptr<IItem>>& right_items,
+            std::vector<DiffWindow::Diff::State>& left_resolved,
+            std::vector<DiffWindow::Diff::State>& right_resolved)
+        {
+            using Diff = DiffWindow::Diff;
+
+            for (auto i = 0; i < results.size(); ++i)
+            {
+                auto& result = results[i];
+                if (result.state == Diff::State::Unresolved && i < left_items.size())
+                {
+                    const auto left = left_items[i];
+                    result.left = left;
+
+                    if (i < right_items.size())
+                    {
+                        const auto right = right_items[i];
+                        if (left->type_id() == right->type_id() &&
+                            left->position() == right->position())
+                        {
+                            result.type = Diff::Type::None;
+                            result.state = Diff::State::Resolved;
+                            result.right = right;
+                            left_resolved[i] = Diff::State::Resolved;
+                            right_resolved[i] = Diff::State::Resolved;
+                        }
+                    }
+                }
+            }
+        }
+
+        void find_moves(
+            std::vector<DiffWindow::Diff::Item>& results,
+            const std::vector<std::shared_ptr<IItem>>& left_items,
+            const std::vector<std::shared_ptr<IItem>>& right_items,
+            std::vector<DiffWindow::Diff::State>& left_resolved,
+            std::vector<DiffWindow::Diff::State>& right_resolved)
+        {
+            using Diff = DiffWindow::Diff;
+
+            for (auto i = 0; i < results.size(); ++i)
+            {
+                auto& result = results[i];
+                if (result.state == Diff::State::Unresolved && i < left_items.size())
+                {
+                    const auto left = left_items[i];
+                    result.left = left;
+
+                    // TODO: Multiple items on the same spot, deal with that.
+                    const auto found =
+                        std::ranges::find_if(right_items, [left, right_items, right_resolved](auto&& right)
+                            {
+                                return
+                                    right_resolved[std::distance(right_items.begin(), std::ranges::find(right_items, right))] == Diff::State::Unresolved &&
+                                    left->type_id() == right->type_id() &&
+                                    left->position() == right->position();
+                            });
+
+                    if (found != right_items.end())
+                    {
+                        result.type = Diff::Type::Move;
+                        result.state = Diff::State::Resolved;
+                        result.right = *found;
+                        left_resolved[i] = Diff::State::Resolved;
+                        right_resolved[std::distance(right_items.begin(), found)] = Diff::State::Resolved;
+                    }
+                }
+            }
+        }
+
+        void mark_updated(std::vector<DiffWindow::Diff::Item>& results)
+        {
+            for (auto& r : results)
+            {
+                if (r.state == DiffWindow::Diff::State::Unresolved)
+                {
+                    r.type = DiffWindow::Diff::Type::Update;
+                }
+            }
+        }
+    }
+
     IDiffWindow::~IDiffWindow()
     {
     }
@@ -46,11 +165,26 @@ namespace trview
                 ImGui::EndMenuBar();
             }
 
-            ImGui::Text(std::format("Load Progress: {}", _progress).c_str());
+            if (loading())
+            {
+                if (!_progress.empty())
+                {
+                    ImGui::Text(std::format("Loading: {}", _progress).c_str());
+                }
+            }
+            else if (_diff)
+            {
+                render_diff_details();
+            }
         }
         ImGui::End();
         ImGui::PopStyleVar();
         return stay_open;
+    }
+
+    void DiffWindow::set_level(const std::weak_ptr<ILevel>& level)
+    {
+        _level = level;
     }
 
     void DiffWindow::set_number(int32_t number)
@@ -60,6 +194,12 @@ namespace trview
 
     void DiffWindow::start_load(const std::string& filename)
     {
+        const auto level = _level.lock();
+        if (!level)
+        {
+            return;
+        }
+
         _load = std::async(std::launch::async, [=]() -> LoadOperation
             {
                 LoadOperation operation
@@ -83,6 +223,25 @@ namespace trview
                     operation.error = std::format("Failed to load level : {}", e.what());
                 }
 
+                const auto left_items = level->items() 
+                    | std::views::transform([](auto&& i) { return i.lock(); })
+                    | std::views::filter([](auto&& i) { return i && i->ng_plus() != true; })
+                    | std::ranges::to<std::vector>();
+                const auto right_items = operation.level->items()
+                    | std::views::transform([](auto&& i) { return i.lock(); })
+                    | std::views::filter([](auto&& i) { return i && i->ng_plus() != true; })
+                    | std::ranges::to<std::vector>();
+
+                const auto max_index = std::max(left_items.size(), right_items.size());
+                std::vector<Diff::Item> results{ max_index };
+                std::vector<Diff::State> left_resolved{ left_items.size() };
+                std::vector<Diff::State> right_resolved{ right_items.size() };
+
+                find_direct_matches(results, left_items, right_items, left_resolved, right_resolved);
+                find_moves(results, left_items, right_items, left_resolved, right_resolved);
+                mark_updated(results);
+
+                operation.diff.items = results;
                 return operation;
             });
     }
@@ -94,7 +253,94 @@ namespace trview
             {
                 .on_progress_callback = [&](auto&& p) { _progress = p; }
             });
+
         level->set_filename(filename);
         return level;
+    }
+
+
+    bool DiffWindow::loading()
+    {
+        if (_load.valid())
+        {
+            if (_load.wait_for(std::chrono::milliseconds(0)) != std::future_status::ready)
+            {
+                return true;
+            }
+            _diff = _load.get();
+        }
+        return false;
+    }
+
+    void DiffWindow::render_diff_details()
+    {
+        if (ImGui::BeginTabBar("TabBar"))
+        {
+            if (ImGui::BeginTabItem("Items"))
+            {
+                if (ImGui::BeginTable("Items List", 3, ImGuiTableFlags_Sortable | ImGuiTableFlags_ScrollY))// , ImVec2(0, -counter.height())))
+                {
+                    imgui_header_row(
+                        {
+                            { "Type", _column_sizer.size(0) },
+                            { "Change", _column_sizer.size(1) },
+                            { "Type", _column_sizer.size(2) },
+                        });
+
+                    for (const auto item_diff : _diff->diff.items)
+                    {
+                        ImGui::TableNextRow();
+
+                        const auto left_item = item_diff.left.lock();
+                        const auto right_item = item_diff.right.lock();
+
+                        ImGui::TableNextColumn();
+                        if (left_item)
+                        {
+                            ImGui::Text(left_item->type().c_str());
+                        }
+                        
+                        ImGui::TableNextColumn();
+                        ImGui::TextColored(
+                            to_colour(item_diff.type),
+                            to_string(item_diff.type).c_str());
+                        
+                        ImGui::TableNextColumn();
+                        if (right_item)
+                        {
+                            ImGui::Text(right_item->type().c_str());
+                        }
+                    }
+
+                    ImGui::EndTable();
+                }
+                ImGui::EndTabItem();
+            }
+
+            ImGui::EndTabBar();
+        }
+    }
+
+    void DiffWindow::calculate_column_widths()
+    {
+        if (!_diff)
+        {
+            return;
+        }
+
+        _column_sizer.reset();
+        _column_sizer.measure("Type__", 0);
+        _column_sizer.measure("Change__", 1);
+        _column_sizer.measure("Type__", 2);
+
+        for (const auto& item : _diff->diff.items)
+        {
+            if (auto item_ptr = item.left.lock())
+            {
+                _column_sizer.measure(std::to_string(item_room(item_ptr)), 0);
+                _column_sizer.measure(std::to_string(item_ptr->type_id()), 1);
+                _column_sizer.measure(item_ptr->type(), 2);
+            }
+        }
     }
 }

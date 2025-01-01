@@ -64,7 +64,7 @@ namespace trview
         std::unique_ptr<IAboutWindowManager> _about_windows;
         std::unique_ptr<ICameraSinkWindowManager> _camera_sink_windows;
         std::unique_ptr<IConsoleManager> _console_manager;
-        std::unique_ptr<IDiffWindowManager> _diff_window_manager;
+        std::unique_ptr<IDiffWindowManager> _diff_windows;
         std::shared_ptr<IItemsWindowManager> _items_windows;
         std::unique_ptr<ILightsWindowManager> _lights_windows;
         std::unique_ptr<ILogWindowManager> _log_windows;

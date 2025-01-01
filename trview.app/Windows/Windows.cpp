@@ -42,7 +42,7 @@ namespace trview
         std::unique_ptr<ITexturesWindowManager> textures_window_manager,
         std::unique_ptr<ITriggersWindowManager> triggers_window_manager)
         : _about_windows(std::move(about_window_manager)), _camera_sink_windows(std::move(camera_sink_windows)), _console_manager(std::move(console_manager)),
-        _diff_window_manager(std::move(diff_window_manager)), _items_windows(items_window_manager), _lights_windows(std::move(lights_window_manager)),
+        _diff_windows(std::move(diff_window_manager)), _items_windows(items_window_manager), _lights_windows(std::move(lights_window_manager)),
         _log_windows(std::move(log_window_manager)), _plugins_windows(std::move(plugins_window_manager)), _rooms_windows(std::move(rooms_window_manager)),
         _route_window(std::move(route_window_manager)), _sounds_windows(std::move(sounds_window_manager)), _statics_windows(std::move(statics_window_manager)),
         _textures_windows(std::move(textures_window_manager)), _triggers_windows(std::move(triggers_window_manager))
@@ -126,7 +126,7 @@ namespace trview
         _about_windows->render();
         _camera_sink_windows->render();
         _console_manager->render();
-        _diff_window_manager->render();
+        _diff_windows->render();
         _items_windows->render();
         _lights_windows->render();
         _log_windows->render();
@@ -187,6 +187,7 @@ namespace trview
         }
 
         _camera_sink_windows->set_camera_sinks(new_level->camera_sinks());
+        _diff_windows->set_level(new_level);
         _items_windows->set_items(new_level->items());
         _items_windows->set_triggers(new_level->triggers());
         _items_windows->set_level_version(new_level->version());

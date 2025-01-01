@@ -15,12 +15,9 @@ namespace trview
 
     std::weak_ptr<IDiffWindow> DiffWindowManager::create_window()
     {
-        return add_window(_diff_window_source());
-    }
-
-    void DiffWindowManager::render()
-    {
-        WindowManager::render();
+        const auto window = _diff_window_source();
+        window->set_level(_level);
+        return add_window(window);
     }
 
     std::optional<int> DiffWindowManager::process_message(UINT message, WPARAM wParam, LPARAM)
@@ -30,6 +27,20 @@ namespace trview
             create_window();
         }
         return {};
+    }
+
+    void DiffWindowManager::render()
+    {
+        WindowManager::render();
+    }
+
+    void DiffWindowManager::set_level(const std::weak_ptr<ILevel>& level)
+    {
+        _level = level;
+        for (auto& window : _windows)
+        {
+            window.second->set_level(level);
+        }
     }
 }
 
