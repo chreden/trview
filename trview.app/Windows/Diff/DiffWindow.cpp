@@ -112,13 +112,53 @@ namespace trview
             }
         }
 
-        void mark_updated(std::vector<DiffWindow::Diff::Item>& results)
+        void mark_updated(
+            std::vector<DiffWindow::Diff::Item>& results,
+            const std::vector<std::shared_ptr<IItem>>& left_items,
+            const std::vector<std::shared_ptr<IItem>>& right_items,
+            std::vector<DiffWindow::Diff::State>& left_resolved,
+            std::vector<DiffWindow::Diff::State>& right_resolved)
         {
-            for (auto& r : results)
+            using Diff = DiffWindow::Diff;
+
+            std::vector<Diff::Item> new_results;
+            for (auto i = 0; i < results.size(); ++i)
             {
-                if (r.state == DiffWindow::Diff::State::Unresolved)
+                auto& result = results[i];
+                if (result.state == Diff::State::Unresolved)
                 {
-                    r.type = DiffWindow::Diff::Type::Update;
+                    if (result.left.lock())
+                    {
+                        result.type = Diff::Type::Delete;
+                        result.state = Diff::State::Resolved;
+                        result.left = left_items[i];
+                        left_resolved[i] = Diff::State::Resolved;
+                    }
+                }
+            }
+
+            for (auto i = 0; i < right_items.size(); ++i)
+            {
+                if (right_resolved[i] == Diff::State::Unresolved)
+                {
+                    // Is the left side also unresolved? Could be an update in this case.
+                    if (left_resolved[i] == Diff::State::Resolved && results[i].type == Diff::Type::Delete)
+                    {
+                        results[i].left = left_items[i];
+                        results[i].right = right_items[i];
+                        results[i].type = Diff::Type::Update;
+                        results[i].state = Diff::State::Resolved;
+                    }
+                    else
+                    {
+                        results.push_back(
+                            {
+                                .state = Diff::State::Resolved,
+                                .type = Diff::Type::Add,
+                                .right = right_items[i]
+                            });
+                    }
+                    right_resolved[i] = Diff::State::Resolved;
                 }
             }
         }
@@ -232,14 +272,13 @@ namespace trview
                     | std::views::filter([](auto&& i) { return i && i->ng_plus() != true; })
                     | std::ranges::to<std::vector>();
 
-                const auto max_index = std::max(left_items.size(), right_items.size());
-                std::vector<Diff::Item> results{ max_index };
+                std::vector<Diff::Item> results{ left_items.size() };
                 std::vector<Diff::State> left_resolved{ left_items.size() };
                 std::vector<Diff::State> right_resolved{ right_items.size() };
 
                 find_direct_matches(results, left_items, right_items, left_resolved, right_resolved);
                 find_moves(results, left_items, right_items, left_resolved, right_resolved);
-                mark_updated(results);
+                mark_updated(results, left_items, right_items, left_resolved, right_resolved);
 
                 operation.diff.items = results;
                 return operation;
