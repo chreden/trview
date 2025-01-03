@@ -51,6 +51,8 @@ namespace trview
         _camera_sink_windows->on_trigger_selected += on_trigger_selected;
         _camera_sink_windows->on_scene_changed += on_scene_changed;
 
+        _diff_windows->on_item_selected += on_item_selected;
+
         _token_store += _items_windows->on_add_to_route += [this](auto item)
             {
                 if (auto item_ptr = item.lock())

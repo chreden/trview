@@ -353,27 +353,26 @@ namespace trview
 
                     for (const auto item_diff : _diff->diff.items)
                     {
-                        ImGui::TableNextRow();
-
                         const auto left_item = item_diff.left.lock();
                         const auto right_item = item_diff.right.lock();
 
+                        ImGui::TableNextRow();
                         ImGui::TableNextColumn();
-                        if (left_item)
-                        {
-                            ImGui::Text(std::to_string(left_item->number()).c_str());
-                        }
+
+                        const std::string row_text = left_item ? std::to_string(left_item->number()) : "";
+                        bool open = ImGui::TreeNodeEx(row_text.c_str(), ImGuiTreeNodeFlags_OpenOnArrow);
 
                         ImGui::TableNextColumn();
                         if (left_item)
                         {
-                            ImGui::Text(left_item->type().c_str());
+                            if (ImGui::Selectable(std::format("{}##left-{}", left_item->type(), left_item->number()).c_str()))
+                            {
+                                on_item_selected(left_item);
+                            }
                         }
                         
                         ImGui::TableNextColumn();
-                        ImGui::TextColored(
-                            to_colour(item_diff.type),
-                            to_string(item_diff.type).c_str());
+                        ImGui::TextColored(to_colour(item_diff.type), to_string(item_diff.type).c_str());
                         
                         ImGui::TableNextColumn();
                         if (right_item)
@@ -384,7 +383,86 @@ namespace trview
                         ImGui::TableNextColumn();
                         if (right_item)
                         {
-                            ImGui::Text(right_item->type().c_str());
+                            if (ImGui::Selectable(std::format("{}##right-{}", right_item->type(), right_item->number()).c_str()))
+                            {
+                                on_item_selected(right_item);
+                            }
+                        }
+
+                        if (open && left_item && right_item)
+                        {
+                            if (left_item->type_id() != right_item->type_id())
+                            {
+                                ImGui::TableNextRow();
+                                ImGui::TableNextColumn();
+                                ImGui::TableNextColumn();
+                                ImGui::Text("Type");
+                                ImGui::TableNextColumn();
+                                ImGui::Text(left_item->type().c_str());
+                                ImGui::TableNextColumn();
+                                ImGui::TableNextColumn();
+                                ImGui::Text(right_item->type().c_str());
+                            }
+
+                            if (left_item->position() != right_item->position())
+                            {
+                                ImGui::TableNextRow();
+                                ImGui::TableNextColumn();
+                                ImGui::TableNextColumn();
+                                ImGui::Text("Position");
+                                ImGui::TableNextColumn();
+                                ImGui::Text(std::format("{},{},{}",
+                                    left_item->position().x * 1024,
+                                    left_item->position().y * 1024,
+                                    left_item->position().z * 1024).c_str());
+                                ImGui::TableNextColumn();
+                                ImGui::TableNextColumn();
+                                ImGui::Text(std::format("{},{},{}",
+                                    right_item->position().x * 1024,
+                                    right_item->position().y * 1024,
+                                    right_item->position().z * 1024).c_str());
+                            }
+
+                            if (left_item->angle() != right_item->angle())
+                            {
+                                ImGui::TableNextRow();
+                                ImGui::TableNextColumn();
+                                ImGui::TableNextColumn();
+                                ImGui::Text("Angle");
+                                ImGui::TableNextColumn();
+                                ImGui::Text(std::to_string(left_item->angle()).c_str());
+                                ImGui::TableNextColumn();
+                                ImGui::TableNextColumn();
+                                ImGui::Text(std::to_string(right_item->angle()).c_str());
+                            }
+
+                            if (left_item->ocb() != right_item->ocb())
+                            {
+                                ImGui::TableNextRow();
+                                ImGui::TableNextColumn();
+                                ImGui::TableNextColumn();
+                                ImGui::Text("OCB");
+                                ImGui::TableNextColumn();
+                                ImGui::Text(std::to_string(left_item->ocb()).c_str());
+                                ImGui::TableNextColumn();
+                                ImGui::TableNextColumn();
+                                ImGui::Text(std::to_string(right_item->ocb()).c_str());
+                            }
+
+                            if (left_item->activation_flags() != right_item->activation_flags())
+                            {
+                                ImGui::TableNextRow();
+                                ImGui::TableNextColumn();
+                                ImGui::TableNextColumn();
+                                ImGui::Text("Flags");
+                                ImGui::TableNextColumn();
+                                ImGui::Text(format_binary(left_item->activation_flags()).c_str());
+                                ImGui::TableNextColumn();
+                                ImGui::TableNextColumn();
+                                ImGui::Text(format_binary(right_item->activation_flags()).c_str());
+                            }
+
+                            ImGui::TreePop();
                         }
                     }
 

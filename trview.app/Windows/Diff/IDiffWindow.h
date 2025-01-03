@@ -4,6 +4,8 @@
 
 namespace trview
 {
+    struct IItem;
+
     struct IDiffWindow
     {
         using Source = std::function<std::shared_ptr<IDiffWindow>()>;
@@ -16,5 +18,6 @@ namespace trview
         /// Event raised when the window is closed.
         /// </summary>
         Event<> on_window_closed;
+        Event<std::weak_ptr<IItem>> on_item_selected;
     };
 }

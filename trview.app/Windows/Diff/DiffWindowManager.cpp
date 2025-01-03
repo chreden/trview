@@ -17,6 +17,7 @@ namespace trview
     {
         const auto window = _diff_window_source();
         window->set_level(_level);
+        window->on_item_selected += on_item_selected;
         return add_window(window);
     }
 
