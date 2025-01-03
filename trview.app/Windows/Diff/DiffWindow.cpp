@@ -359,6 +359,8 @@ namespace trview
 
     void DiffWindow::render_diff_details()
     {
+        ImGui::Text(std::format("Comparing with {}", _diff->filename).c_str());
+
         if (ImGui::BeginTabBar("TabBar"))
         {
             if (ImGui::BeginTabItem("Items"))
