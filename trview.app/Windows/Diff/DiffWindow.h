@@ -62,6 +62,7 @@ namespace trview
         bool render_diff_window();
         void start_load(const std::string& filename);
         std::shared_ptr<ILevel> load_level(const std::string& filename);
+        Diff do_diff(const std::shared_ptr<ILevel>& left, const std::shared_ptr<ILevel>& right);
         bool loading();
         void calculate_column_widths();
 

@@ -235,6 +235,25 @@ namespace trview
     void DiffWindow::set_level(const std::weak_ptr<ILevel>& level)
     {
         _level = level;
+        if (_diff)
+        {
+            const auto left = _level.lock();
+            if (left)
+            {
+                const auto filename = _diff->filename;
+                const auto right = _diff->level;
+                _load = std::async(std::launch::async, [=]() -> LoadOperation
+                    {
+                        LoadOperation operation
+                        {
+                            .level = right,
+                            .filename = filename
+                        };
+                        operation.diff = do_diff(left, operation.level);
+                        return operation;
+                    });
+            }
+        }
     }
 
     void DiffWindow::set_number(int32_t number)
@@ -273,37 +292,7 @@ namespace trview
                     operation.error = std::format("Failed to load level : {}", e.what());
                 }
 
-                const auto left_items = level->items() 
-                    | std::views::transform([](auto&& i) { return i.lock(); })
-                    | std::views::filter([](auto&& i) { return i && i->ng_plus() != true; })
-                    | std::ranges::to<std::vector>();
-                const auto right_items = operation.level->items()
-                    | std::views::transform([](auto&& i) { return i.lock(); })
-                    | std::views::filter([](auto&& i) { return i && i->ng_plus() != true; })
-                    | std::ranges::to<std::vector>();
-
-                std::vector<Diff::Item> results{ left_items.size() };
-                std::vector<Diff::State> left_resolved{ left_items.size() };
-                std::vector<Diff::State> right_resolved{ right_items.size() };
-
-                find_direct_matches(results, left_items, right_items, left_resolved, right_resolved);
-                find_moves(results, left_items, right_items, left_resolved, right_resolved);
-                mark_updated(results, left_items, right_items, left_resolved, right_resolved);
-
-                std::ranges::sort(
-                    results, [](const auto& l, const auto& r)
-                    {
-                        const auto left_left = l.left.lock();
-                        const auto left_right = l.right.lock();
-                        const auto right_left = r.left.lock();
-                        const auto right_right = r.right.lock();
-                        const auto left_index = (left_right ? left_right->number() : left_left ? left_left->number() : 0);
-                        const auto right_index = (right_right ? right_right->number() : right_left ? right_left->number() : 0);
-                        return left_index < right_index;
-                    }
-                );
-
-                operation.diff.items = results;
+                operation.diff = do_diff(level, operation.level);
                 return operation;
             });
     }
@@ -320,6 +309,40 @@ namespace trview
         return level;
     }
 
+    DiffWindow::Diff DiffWindow::do_diff(const std::shared_ptr<ILevel>& left, const std::shared_ptr<ILevel>& right)
+    {
+        const auto left_items = left ->items()
+            | std::views::transform([](auto&& i) { return i.lock(); })
+            | std::views::filter([](auto&& i) { return i && i->ng_plus() != true; })
+            | std::ranges::to<std::vector>();
+        const auto right_items = right->items()
+            | std::views::transform([](auto&& i) { return i.lock(); })
+            | std::views::filter([](auto&& i) { return i && i->ng_plus() != true; })
+            | std::ranges::to<std::vector>();
+
+        std::vector<Diff::Item> results{ left_items.size() };
+        std::vector<Diff::State> left_resolved{ left_items.size() };
+        std::vector<Diff::State> right_resolved{ right_items.size() };
+
+        find_direct_matches(results, left_items, right_items, left_resolved, right_resolved);
+        find_moves(results, left_items, right_items, left_resolved, right_resolved);
+        mark_updated(results, left_items, right_items, left_resolved, right_resolved);
+
+        std::ranges::sort(
+            results, [](const auto& l, const auto& r)
+            {
+                const auto left_left = l.left.lock();
+                const auto left_right = l.right.lock();
+                const auto right_left = r.left.lock();
+                const auto right_right = r.right.lock();
+                const auto left_index = (left_right ? left_right->number() : left_left ? left_left->number() : 0);
+                const auto right_index = (right_right ? right_right->number() : right_left ? right_left->number() : 0);
+                return left_index < right_index;
+            }
+        );
+
+        return Diff{ .items = results };
+    }
 
     bool DiffWindow::loading()
     {
