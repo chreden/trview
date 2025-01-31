@@ -30,7 +30,7 @@ namespace
             std::shared_ptr<IMeshStorage> mesh_storage{ mock_shared<MockMeshStorage>() };
             IMesh::Source mesh_source{ [](auto&&...) { return mock_shared<MockMesh>(); } };
             std::shared_ptr<trlevel::ILevel> tr_level{ mock_shared<trlevel::mocks::MockLevel>() };
-            trlevel::tr3_room room;
+            trlevel::tr3_room room{ .alternate_group = 0 };
             uint32_t index{ 0u };
             std::shared_ptr<ILevel> level{ mock_shared<MockLevel>() };
             IStaticMesh::MeshSource static_mesh_source{ [](auto&&...) { return mock_shared<MockStaticMesh>(); } };
@@ -118,6 +118,20 @@ TEST(Room, AlternateModeDetected)
     auto room = register_test_module().with_room(level_room).build();
     ASSERT_EQ(room->alternate_mode(), IRoom::AlternateMode::HasAlternate);
     ASSERT_EQ(room->alternate_room(), 100);
+}
+
+/// <summary>
+/// Tests that the logic embedded in TR5 alternate group numbers isn't hidden.
+/// </summary>
+TEST(Room, AlternateModeDetectedInvalidAlternate)
+{
+    trlevel::tr3_room level_room;
+    level_room.alternate_group = 15;
+    level_room.alternate_room = -1;
+    auto room = register_test_module().with_room(level_room).build();
+    ASSERT_EQ(room->alternate_mode(), IRoom::AlternateMode::HasAlternate);
+    ASSERT_EQ(room->alternate_room(), -1);
+    ASSERT_EQ(room->alternate_group(), 15);
 }
 
 /// <summary>
