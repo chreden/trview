@@ -63,7 +63,7 @@ namespace trview
         // Can only determine HasAlternate or normal at this point. After all rooms have been loaded,
         // the level can fix up the rooms so that they know if they are alternates of another room
         // (IsAlternate).
-        _alternate_mode = room.alternate_room != -1 ? AlternateMode::HasAlternate : AlternateMode::None;
+        _alternate_mode = (room.alternate_room != -1 || room.alternate_group != 0) ? AlternateMode::HasAlternate : AlternateMode::None;
 
         _room_offset = Matrix::CreateTranslation(room.info.x / trlevel::Scale_X, 0, room.info.z / trlevel::Scale_Z);
         _inverted_room_offset = _room_offset.Invert();
