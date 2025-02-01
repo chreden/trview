@@ -113,6 +113,17 @@ namespace trview
                 return 0;
             }
 
+            int text_colored(lua_State* L)
+            {
+                auto text = get_string(L, 1, "text");
+                auto r = get_optional_float(L, 1, "r");
+                auto g = get_optional_float(L, 1, "g");
+                auto b = get_optional_float(L, 1, "b");
+                auto a = get_optional_float(L, 1, "a");
+                ImGui::TextColored(ImVec4(r.value_or(0), g.value_or(0), b.value_or(0), a.value_or(1)), text.c_str());
+                return 0;
+            }
+
             int begin_table(lua_State* L)
             {
                 const auto id = get_string(L, 1, "id");
@@ -287,6 +298,8 @@ namespace trview
             // Text
             lua_pushcfunction(L, text);
             lua_setfield(L, -2, "Text");
+            lua_pushcfunction(L, text_colored);
+            lua_setfield(L, -2, "TextColored");
             // Table
             lua_pushcfunction(L, begin_table);
             lua_setfield(L, -2, "BeginTable");
