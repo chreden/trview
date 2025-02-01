@@ -877,7 +877,7 @@ namespace trview
     {
         if (version() >= trlevel::LevelVersion::Tomb4)
         {
-            return room.alternate_mode() == IRoom::AlternateMode::HasAlternate && is_alternate_group_set(room.alternate_group()) ||
+            return (room.alternate_mode() == IRoom::AlternateMode::HasAlternate && is_alternate_group_set(room.alternate_group()) && room.alternate_room() != -1) ||
                    room.alternate_mode() == IRoom::AlternateMode::IsAlternate && !is_alternate_group_set(room.alternate_group());
         }
 
