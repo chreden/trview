@@ -34,6 +34,7 @@ The ImGui library allows plugins to render UI elements.
 | TableSetupColumn ||`{ string label, ImGuiTableColumnFlags flags }`||
 | TableSetupScrollFreeze ||`{ number cols, number rows }`||
 | Text || `{ string text } `| Draw some text. |
+| TextColored || `{ string text, [optional] float r, [optional] float g, [optional] float b, [optional] float a }`| Draw colored text. RGB default to 0, A defaults to 1. |
 
 # Enumerations
 
