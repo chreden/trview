@@ -2305,7 +2305,7 @@ namespace trlevel
         {
             return og_main;
         }
-        return _files->load_file(std::format("{}../SFX/MAIN.SFX", path));
+        return _files->load_file(std::format("{}/../SFX/MAIN.SFX", path));
     }
 
     void Level::load_ngle_sound_fx(trview::Activity& activity, std::basic_ispanstream<uint8_t>& file, const LoadCallbacks& callbacks)
