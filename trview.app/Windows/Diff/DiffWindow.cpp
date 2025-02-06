@@ -428,7 +428,7 @@ namespace trview
         ImGui::PushStyleVar(ImGuiStyleVar_WindowMinSize, ImVec2(520, 400));
         if (ImGui::Begin(_id.c_str(), &stay_open, ImGuiWindowFlags_MenuBar))
         {
-            if (ImGui::BeginMenuBar())
+            if (!_load.valid() && ImGui::BeginMenuBar())
             {
                 _file_menu->render();
                 ImGui::MenuItem("Only Show Changes", nullptr, &_only_show_changes);
@@ -520,6 +520,7 @@ namespace trview
     DiffWindow::Diff DiffWindow::do_diff(const std::shared_ptr<ILevel>& left, const std::shared_ptr<ILevel>& right)
     {
         // Items:
+        _progress = "Comparing items...";
         const auto item_results = get_results<IItem>(left->items(), right->items(),
             [](auto&& left, auto&& right)
             {
@@ -532,6 +533,7 @@ namespace trview
             [](auto&& i) { return i && i->ng_plus() != true; });
 
         // Triggers:
+        _progress = "Comparing triggers...";
         const auto trigger_results = get_results<ITrigger>(left->triggers(), right->triggers(), 
             [](auto&& left, auto&& right)
             {
@@ -546,6 +548,7 @@ namespace trview
             });;
 
         // Lights:
+        _progress = "Comparing lights...";
         const auto light_results = get_results<ILight>(left->lights(), right->lights(),
             [](auto&& left, auto&& right)
             {
@@ -568,6 +571,7 @@ namespace trview
             });
 
         // Camera/Sinks:
+        _progress = "Comparing camera/sinks...";
         const auto camera_sink_results = get_results<ICameraSink>(left->camera_sinks(), right->camera_sinks(),
             [](auto&& left, auto&& right)
             {
@@ -582,6 +586,7 @@ namespace trview
             });
 
         // Statics:
+        _progress = "Comparing statics...";
         const auto static_results = get_results<IStaticMesh>(left->static_meshes(), right->static_meshes(),
             [](auto&& left, auto&& right)
             {
@@ -599,6 +604,7 @@ namespace trview
             });
 
         // Sounds:
+        _progress = "Comparing sounds...";
         const auto sound_source_results = get_results<ISoundSource>(left->sound_sources(), right->sound_sources(),
             [](auto&& left, auto&& right)
             {
@@ -615,6 +621,7 @@ namespace trview
             });
 
         // Rooms:
+        _progress = "Comparing rooms...";
         const auto rooms_results = get_results<IRoom>(left->rooms(), right->rooms(),
             [](auto&& left, auto&& right)
             {
@@ -634,6 +641,7 @@ namespace trview
             });
 
         // Sectors:
+        _progress = "Comparing sectors...";
         const auto left_sectors = std::ranges::join_view(
                 left->rooms() |
                 std::views::transform([](auto&& r) { return r.lock(); }) |
