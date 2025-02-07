@@ -68,12 +68,17 @@ namespace trview
         }
 
         template <typename T>
+        struct Entry
+        {
+            DiffWindow::Diff::State state;
+            std::shared_ptr<T>      entry;
+        };
+
+        template <typename T>
         void find_direct_matches(
             std::vector<DiffWindow::Diff::Item<T>>& results,
-            const std::vector<std::shared_ptr<T>>& left_entries,
-            const std::vector<std::shared_ptr<T>>& right_entries,
-            std::vector<DiffWindow::Diff::State>& left_resolved,
-            std::vector<DiffWindow::Diff::State>& right_resolved,
+            std::vector<Entry<T>>& left_entries,
+            std::vector<Entry<T>>& right_entries,
             std::function<bool (const std::shared_ptr<T>&, const std::shared_ptr<T>&)> comparer)
         {
             using Diff = DiffWindow::Diff;
@@ -83,19 +88,19 @@ namespace trview
                 auto& result = results[i];
                 if (result.state == Diff::State::Unresolved && i < left_entries.size())
                 {
-                    const auto left = left_entries[i];
-                    result.left = left;
+                    auto& left = left_entries[i];
+                    result.left = left.entry;
 
                     if (i < right_entries.size())
                     {
-                        const auto right = right_entries[i];
-                        if (comparer(left, right))
+                        auto& right = right_entries[i];
+                        if (comparer(left.entry, right.entry))
                         {
                             result.type = Diff::Type::None;
                             result.state = Diff::State::Resolved;
-                            result.right = right;
-                            left_resolved[i] = Diff::State::Resolved;
-                            right_resolved[i] = Diff::State::Resolved;
+                            result.right = right.entry;
+                            left.state = Diff::State::Resolved;
+                            right.state = Diff::State::Resolved;
                         }
                     }
                 }
@@ -105,10 +110,8 @@ namespace trview
         template <typename T>
         void find_moves(
             std::vector<DiffWindow::Diff::Item<T>>& results,
-            const std::vector<std::shared_ptr<T>>& left_entries,
-            const std::vector<std::shared_ptr<T>>& right_entries,
-            std::vector<DiffWindow::Diff::State>& left_resolved,
-            std::vector<DiffWindow::Diff::State>& right_resolved,
+            std::vector<Entry<T>>& left_entries,
+            std::vector<Entry<T>>& right_entries,
             std::function<bool (const std::shared_ptr<T>&, const std::shared_ptr<T>&)> comparer)
         {
             using Diff = DiffWindow::Diff;
@@ -118,25 +121,23 @@ namespace trview
                 auto& result = results[i];
                 if (result.state == Diff::State::Unresolved && i < left_entries.size())
                 {
-                    const auto left = left_entries[i];
-                    result.left = left;
+                    auto& left = left_entries[i];
+                    result.left = left.entry;
 
                     // TODO: Multiple items on the same spot, deal with that.
-                    const auto found =
-                        std::ranges::find_if(right_entries, [left, right_entries, right_resolved, comparer](auto&& right)
+                    auto found =
+                        std::ranges::find_if(right_entries, [left, right_entries, comparer](auto&& right)
                             {
-                                return
-                                    right_resolved[std::distance(right_entries.begin(), std::ranges::find(right_entries, right))] == Diff::State::Unresolved &&
-                                    comparer(left, right);
+                                return right.state == Diff::State::Unresolved && comparer(left.entry, right.entry);
                             });
 
                     if (found != right_entries.end())
                     {
                         result.type = Diff::Type::Reindex;
                         result.state = Diff::State::Resolved;
-                        result.right = *found;
-                        left_resolved[i] = Diff::State::Resolved;
-                        right_resolved[std::distance(right_entries.begin(), found)] = Diff::State::Resolved;
+                        result.right = found->entry;
+                        left.state = Diff::State::Resolved;
+                        found->state = Diff::State::Resolved;
                     }
                 }
             }
@@ -145,10 +146,8 @@ namespace trview
         template <typename T>
         void mark_updated(
             std::vector<DiffWindow::Diff::Item<T>>& results,
-            const std::vector<std::shared_ptr<T>>& left_entries,
-            const std::vector<std::shared_ptr<T>>& right_entries,
-            std::vector<DiffWindow::Diff::State>& left_resolved,
-            std::vector<DiffWindow::Diff::State>& right_resolved)
+            std::vector<Entry<T>>& left_entries,
+            std::vector<Entry<T>>& right_entries)
         {
             using Diff = DiffWindow::Diff;
 
@@ -162,21 +161,21 @@ namespace trview
                     {
                         result.type = Diff::Type::Delete;
                         result.state = Diff::State::Resolved;
-                        result.left = left_entries[i];
-                        left_resolved[i] = Diff::State::Resolved;
+                        result.left = left_entries[i].entry;
+                        left_entries[i].state = Diff::State::Resolved;
                     }
                 }
             }
 
             for (auto i = 0; i < right_entries.size(); ++i)
             {
-                if (right_resolved[i] == Diff::State::Unresolved)
+                if (right_entries[i].state == Diff::State::Unresolved)
                 {
                     // Is the left side also unresolved? Could be an update in this case.
-                    if (i < left_resolved.size() && left_resolved[i] == Diff::State::Resolved && results[i].type == Diff::Type::Delete)
+                    if (i < left_entries.size() && left_entries[i].state == Diff::State::Resolved && results[i].type == Diff::Type::Delete)
                     {
-                        results[i].left = left_entries[i];
-                        results[i].right = right_entries[i];
+                        results[i].left = left_entries[i].entry;
+                        results[i].right = right_entries[i].entry;
                         results[i].type = Diff::Type::Update;
                         results[i].state = Diff::State::Resolved;
                     }
@@ -186,10 +185,10 @@ namespace trview
                             {
                                 .state = Diff::State::Resolved,
                                 .type = Diff::Type::Add,
-                                .right = right_entries[i]
+                                .right = right_entries[i].entry
                             });
                     }
-                    right_resolved[i] = Diff::State::Resolved;
+                    right_entries[i].state = Diff::State::Resolved;
                 }
             }
         }
@@ -361,24 +360,24 @@ namespace trview
         template <typename T>
         auto get_results(auto&& left_entries, auto&& right_entries, auto&& comparer, auto&& extra_check)
         {
-            const auto left_filtered = left_entries
+            auto left_filtered = left_entries
                 | std::views::transform([](auto&& t) { return t.lock(); })
                 | std::views::filter([](auto&& t) { return t != nullptr; })
                 | std::views::filter(extra_check)
+                | std::views::transform([](auto&& t) -> Entry<T> { return { .state = DiffWindow::Diff::State::Unresolved, .entry = t }; })
                 | std::ranges::to<std::vector>();
-            const auto right_filtered = right_entries
+            auto right_filtered = right_entries
                 | std::views::transform([](auto&& t) { return t.lock(); })
                 | std::views::filter([](auto&& t) { return t != nullptr; })
                 | std::views::filter(extra_check)
+                | std::views::transform([](auto&& t) -> Entry<T> { return { .state = DiffWindow::Diff::State::Unresolved, .entry = t }; })
                 | std::ranges::to<std::vector>();
 
             std::vector<DiffWindow::Diff::Item<T>> results{ left_filtered.size() };
-            std::vector<DiffWindow::Diff::State> left_resolved{ left_filtered.size() };
-            std::vector<DiffWindow::Diff::State> right_resolved{ right_filtered.size() };
 
-            find_direct_matches<T>(results, left_filtered, right_filtered, left_resolved, right_resolved, comparer);
-            find_moves<T>(results, left_filtered, right_filtered, left_resolved, right_resolved, comparer);
-            mark_updated<T>(results, left_filtered, right_filtered, left_resolved, right_resolved);
+            find_direct_matches<T>(results, left_filtered, right_filtered, comparer);
+            find_moves<T>(results, left_filtered, right_filtered, comparer);
+            mark_updated<T>(results, left_filtered, right_filtered);
 
             std::ranges::sort(
                 results, [](const auto& l, const auto& r)
