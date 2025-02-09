@@ -46,5 +46,6 @@ namespace trview
         std::weak_ptr<IPlugins> _plugins;
         std::weak_ptr<IPlugin> _selected_plugin;
         std::unordered_set<IPlugin*> _need_scroll;
+        std::optional<std::string> _initial_directory;
     };
 }

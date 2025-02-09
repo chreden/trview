@@ -36,5 +36,6 @@ namespace trview
         std::vector<IFiles::File> _file_switcher_list;
         std::string _opened_file;
         std::shared_ptr<IFiles> _files;
+        std::optional<std::string> _initial_directory;
     };
 }

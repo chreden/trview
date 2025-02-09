@@ -341,7 +341,7 @@ void register_route_window_tests(ImGuiTestEngine* engine)
         [](ImGuiTestContext* ctx)
         {
             auto dialogs = mock_shared<MockDialogs>();
-            EXPECT_CALL(*dialogs, save_file).Times(1).WillRepeatedly(Return(IDialogs::FileResult{ "filename", 0 }));
+            EXPECT_CALL(*dialogs, save_file).Times(1).WillRepeatedly(Return(IDialogs::FileResult{ "directory", "filename", 0 }));
 
             auto files = mock_shared<MockFiles>();
             EXPECT_CALL(*files, save_file(An<const std::string&>(), An<const std::vector<uint8_t>&>())).Times(1);
@@ -373,7 +373,7 @@ void register_route_window_tests(ImGuiTestEngine* engine)
         [](ImGuiTestContext* ctx)
         {
             auto dialogs = mock_shared<MockDialogs>();
-            EXPECT_CALL(*dialogs, save_file).Times(1).WillRepeatedly(Return(IDialogs::FileResult{ "filename", 0 }));
+            EXPECT_CALL(*dialogs, save_file).Times(1).WillRepeatedly(Return(IDialogs::FileResult{ "directory", "filename", 0 }));
             EXPECT_CALL(*dialogs, message_box).Times(1);
 
             auto files = mock_shared<MockFiles>();

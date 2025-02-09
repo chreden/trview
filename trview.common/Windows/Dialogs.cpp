@@ -79,7 +79,7 @@ namespace trview
         return convert_response(MessageBox(_window, message.c_str(), title.c_str(), convert_button(buttons)));
     }
 
-    std::optional<IDialogs::FileResult> Dialogs::open_file(const std::wstring& title, const std::vector<FileFilter>& filters, uint32_t flags) const
+    std::optional<IDialogs::FileResult> Dialogs::open_file(const std::wstring& title, const std::vector<FileFilter>& filters, uint32_t flags, std::optional<std::string> initial_directory) const
     {
         OPENFILENAME ofn;
         memset(&ofn, 0, sizeof(ofn));
@@ -89,6 +89,12 @@ namespace trview
 
         const auto final_filters = combine_filters(filters);
 
+        std::wstring directory;
+        if (initial_directory)
+        {
+            directory = to_utf16(initial_directory.value());
+            ofn.lpstrInitialDir = directory.c_str();
+        }
         ofn.lStructSize = sizeof(ofn);
         ofn.lpstrFile = path;
         ofn.nMaxFile = MAX_PATH;
@@ -98,7 +104,12 @@ namespace trview
 
         if (GetOpenFileName(&ofn))
         {
-            return IDialogs::FileResult{ trview::to_utf8(ofn.lpstrFile), static_cast<int>(ofn.nFilterIndex) };
+            return IDialogs::FileResult
+            {
+                .directory = trview::path_for_filename(trview::to_utf8(ofn.lpstrFile)),
+                .filename = trview::to_utf8(ofn.lpstrFile),
+                .filter_index = static_cast<int>(ofn.nFilterIndex)
+            };
         }
         return {};
     }
@@ -149,7 +160,12 @@ namespace trview
 
         if (GetSaveFileName(&ofn))
         {
-            return IDialogs::FileResult{ trview::to_utf8(ofn.lpstrFile), static_cast<int>(ofn.nFilterIndex) };
+            return IDialogs::FileResult
+            {
+                .directory = trview::path_for_filename(trview::to_utf8(ofn.lpstrFile)),
+                .filename = trview::to_utf8(ofn.lpstrFile),
+                .filter_index = static_cast<int>(ofn.nFilterIndex)
+            };
         }
         return {};
     }

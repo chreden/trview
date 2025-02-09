@@ -363,7 +363,7 @@ TEST(Application, ClosingEventCalled)
 TEST(Application, ExportRouteSavesFile)
 {
     auto dialogs = mock_shared<MockDialogs>();
-    EXPECT_CALL(*dialogs, save_file).Times(1).WillRepeatedly(Return(IDialogs::FileResult{ "filename", 0 }));
+    EXPECT_CALL(*dialogs, save_file).Times(1).WillRepeatedly(Return(IDialogs::FileResult{ "directory", "filename", 0 }));
 
     auto [windows_ptr, windows] = create_mock<MockWindows>();
     auto route = mock_shared<MockRoute>();
@@ -382,7 +382,7 @@ TEST(Application, ExportRouteSavesFile)
 TEST(Application, OpenRouteLoadsFile)
 {
     auto dialogs = mock_shared<MockDialogs>();
-    EXPECT_CALL(*dialogs, open_file).Times(1).WillRepeatedly(Return(IDialogs::FileResult{ "filename", 0 }));
+    EXPECT_CALL(*dialogs, open_file).Times(1).WillRepeatedly(Return(IDialogs::FileResult{ "directory", "filename", 0 }));
 
     auto [viewer_ptr, viewer] = create_mock <MockViewer>();
     EXPECT_CALL(viewer, set_route).Times(2);

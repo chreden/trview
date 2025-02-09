@@ -5,6 +5,8 @@
 #include <trview.common/Windows/IDialogs.h>
 #include <trview.common/IFiles.h>
 
+#include <optional>
+
 namespace trview
 {
     class ImGuiFileMenu final : public IFileMenu
@@ -24,5 +26,6 @@ namespace trview
         std::shared_ptr<IFiles> _files;
         std::vector<IFiles::File> _file_switcher;
         std::vector<std::string> _recent_files;
+        std::optional<std::string> _initial_directory;
     };
 }

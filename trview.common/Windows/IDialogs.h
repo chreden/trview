@@ -18,6 +18,7 @@ namespace trview
 
         struct FileResult
         {
+            std::string directory;
             std::string filename;
             int filter_index;
         };
@@ -43,8 +44,9 @@ namespace trview
         /// <param name="title">The title of the dialog box.</param>
         /// <param name="filters">The filters to use.</param>
         /// <param name="flags">The flags for the dialog.</param>
+        /// <param name="initial_directory">Directory in which to open dialog. Optional.</param>
         /// <returns>The open file result if one was selected or an empty optional.</returns>
-        virtual std::optional<FileResult> open_file(const std::wstring& title, const std::vector<FileFilter>& filters, uint32_t flags) const = 0;
+        virtual std::optional<FileResult> open_file(const std::wstring& title, const std::vector<FileFilter>& filters, uint32_t flags, std::optional<std::string> initial_directory) const = 0;
 
         virtual std::optional<std::string> open_folder() const = 0;
         /// <summary>

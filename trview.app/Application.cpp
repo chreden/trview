@@ -673,9 +673,10 @@ namespace trview
             filters.push_back({ L"Randomizer Locations", { L"*.json" } });
         }
 
-        const auto filename = _dialogs->open_file(L"Import route", filters, OFN_FILEMUSTEXIST);
+        const auto filename = _dialogs->open_file(L"Import route", filters, OFN_FILEMUSTEXIST, _route_directory);
         if (filename)
         {
+            _route_directory = filename->directory;
             import_route(filename->filename,
                 filename->filter_index == 2 ||
                 filename->filename.ends_with(".json"));

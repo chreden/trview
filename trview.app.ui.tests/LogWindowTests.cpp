@@ -74,7 +74,7 @@ void register_log_window_tests(ImGuiTestEngine* engine)
             auto files = mock_shared<MockFiles>();
             context.ptr = register_test_module().with_dialogs(dialogs).with_files(files).build();
 
-            EXPECT_CALL(*dialogs, save_file).Times(1).WillRepeatedly(testing::Return<IDialogs::FileResult>({ "fn", 0 }));
+            EXPECT_CALL(*dialogs, save_file).Times(1).WillRepeatedly(testing::Return<IDialogs::FileResult>({ "directory", "fn", 0 }));
             EXPECT_CALL(*files, save_file(An<const std::string&>(), An<const std::string&>())).Times(1);
 
             ctx->ItemClick("/Log 0/topics/All/Save");

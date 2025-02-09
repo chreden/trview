@@ -73,11 +73,12 @@ namespace trview
                 {
                     if (ImGui::MenuItem("Open"))
                     {
-                        const auto filename = _dialogs->open_file(L"Open Lua file", { { L"Lua files", { L"*.lua" } } }, OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST);
+                        const auto filename = _dialogs->open_file(L"Open Lua file", { { L"Lua files", { L"*.lua" } } }, OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST, _initial_directory);
                         if (filename.has_value())
                         {
                             if (auto plugin = _selected_plugin.lock())
                             {
+                                _initial_directory = filename->directory;
                                 plugin->do_file(escape(filename.value().filename));
                                 std::erase(_recent_files, filename.value().filename);
                                 _recent_files.push_back(filename.value().filename);
