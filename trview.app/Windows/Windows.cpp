@@ -54,7 +54,7 @@ namespace trview
         _diff_windows->on_item_selected += on_item_selected;
         _diff_windows->on_light_selected += on_light_selected;
         _diff_windows->on_trigger_selected += on_trigger_selected;
-        _diff_windows->on_level_selected += on_diff_level_selected;
+        _diff_windows->on_diff_ended += on_diff_ended;
         _diff_windows->on_camera_sink_selected += on_camera_sink_selected;
         _diff_windows->on_static_mesh_selected += on_static_selected;
         _diff_windows->on_sound_source_selected += on_sound_source_selected;

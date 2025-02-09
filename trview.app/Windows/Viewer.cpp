@@ -1572,4 +1572,9 @@ namespace trview
         }
         set_toggle(Options::ng_plus, show);
     }
+
+    std::weak_ptr<ILevel> Viewer::level() const
+    {
+        return _level;
+    }
 }

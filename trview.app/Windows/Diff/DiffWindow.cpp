@@ -416,6 +416,10 @@ namespace trview
     {
         if (!render_diff_window())
         {
+            if (_diff.has_value())
+            {
+                on_diff_ended(_diff->level);
+            }
             on_window_closed();
             return;
         }
@@ -692,7 +696,6 @@ namespace trview
                 return true;
             }
             _diff = _load.get();
-            on_level_selected(_diff->level);
             if (_diff->level)
             {
                 _file_menu->open_file(_diff->level->filename());
@@ -790,7 +793,6 @@ namespace trview
                             {
                                 if (ImGui::Selectable(std::format("{}##right-{}", key_get(right_item), right_item->number()).c_str()))
                                 {
-                                    on_level_selected(_diff->level);
                                     on_selected(right_item);
                                 }
                             }

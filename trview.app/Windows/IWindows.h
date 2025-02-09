@@ -38,7 +38,7 @@ namespace trview
         virtual void setup(const UserSettings& settings) = 0;
 
         Event<std::weak_ptr<ICameraSink>> on_camera_sink_selected;
-        Event<std::weak_ptr<ILevel>> on_diff_level_selected;
+        Event<std::weak_ptr<ILevel>> on_diff_ended;
         Event<std::weak_ptr<IItem>> on_item_selected;
         Event<std::string> on_level_switch;
         Event<std::weak_ptr<ILight>> on_light_selected;

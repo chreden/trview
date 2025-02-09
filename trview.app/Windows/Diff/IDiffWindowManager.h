@@ -28,7 +28,7 @@ namespace trview
         Event<std::weak_ptr<IItem>> on_item_selected;
         Event<std::weak_ptr<ILight>> on_light_selected;
         Event<std::weak_ptr<ITrigger>> on_trigger_selected;
-        Event<std::weak_ptr<ILevel>> on_level_selected;
+        Event<std::weak_ptr<ILevel>> on_diff_ended;
         Event<std::weak_ptr<ICameraSink>> on_camera_sink_selected;
         Event<std::weak_ptr<IStaticMesh>> on_static_mesh_selected;
         Event<std::weak_ptr<ISoundSource>> on_sound_source_selected;

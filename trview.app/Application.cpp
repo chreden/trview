@@ -91,7 +91,7 @@ namespace trview
         _token_store += _windows->on_new_randomizer_route += [&]() { if (should_discard_changes()) { set_route(_randomizer_route_source(std::nullopt)); } };
         _token_store += _windows->on_static_selected += [this](const auto& stat) { select_static_mesh(stat); };
         _token_store += _windows->on_sound_source_selected += [this](const auto& sound) { select_sound_source(sound); };
-        _token_store += _windows->on_diff_level_selected += [this](auto&& level) { open_diff_level(level); };
+        _token_store += _windows->on_diff_ended += [this](auto&& level) { end_diff(level); };
         _token_store += _windows->on_sector_selected += [this](auto&& sector)
             {
                 if (const auto s = sector.lock())
@@ -992,8 +992,13 @@ namespace trview
         set_current_level(op.level, op.open_mode, false);
     }
 
-    void Application::open_diff_level(const std::weak_ptr<ILevel>& level)
+    void Application::end_diff(const std::weak_ptr<ILevel>& level)
     {
-        _diff_level = level;
+        const auto closed_level = level.lock();
+        const auto open_level = _viewer->level().lock();
+        if (closed_level == open_level)
+        {
+            _viewer->open(_level, ILevel::OpenMode::Reload);
+        }
     }
 }
