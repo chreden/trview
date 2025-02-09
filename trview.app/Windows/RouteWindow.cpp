@@ -274,7 +274,7 @@ namespace trview
                         {
                             if (!waypoint->has_save())
                             {
-                                const auto filename = _dialogs->open_file(L"Select Save", { { L"Savegame File", { L"*.*" } } }, OFN_FILEMUSTEXIST);
+                                const auto filename = _dialogs->open_file(L"Select Save", { { L"Savegame File", { L"*.*" } } }, OFN_FILEMUSTEXIST, std::nullopt);
                                 if (filename.has_value())
                                 {
                                     // Load bytes from file.

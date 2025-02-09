@@ -24,9 +24,10 @@ namespace trview
         {
             if (ImGui::MenuItem("Open"))
             {
-                const auto filename = _dialogs->open_file(L"Open level", { { L"All Tomb Raider Files", { L"*.tr2", L"*.tr4", L"*.trc", L"*.phd", L"*.psx" } } }, OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST);
+                const auto filename = _dialogs->open_file(L"Open level", { { L"All Tomb Raider Files", { L"*.tr2", L"*.tr4", L"*.trc", L"*.phd", L"*.psx" } } }, OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST, _initial_directory);
                 if (filename.has_value())
                 {
+                    _initial_directory = filename->directory;
                     on_file_open(filename->filename);
                 }
             }

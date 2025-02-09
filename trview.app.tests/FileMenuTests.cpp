@@ -88,7 +88,7 @@ TEST(FileMenu, OpenFileRaisedOnRecentFile)
 TEST(FileMenu, FileOpenUsingShortcut)
 {
     auto dialogs = mock_shared<MockDialogs>();
-    EXPECT_CALL(*dialogs, open_file).Times(1).WillRepeatedly(Return(IDialogs::FileResult{ "filename" }));
+    EXPECT_CALL(*dialogs, open_file).Times(1).WillRepeatedly(Return(IDialogs::FileResult{ .filename = "filename" }));
     auto menu = register_test_module().with_dialogs(dialogs).build();
     std::optional<std::string> raised;
     auto token = menu->on_file_open += [&](auto&& filename) { raised = filename; };
@@ -100,7 +100,7 @@ TEST(FileMenu, FileOpenUsingShortcut)
 TEST(FileMenu, FileOpenOpensFile)
 {
     auto dialogs = mock_shared<MockDialogs>();
-    EXPECT_CALL(*dialogs, open_file).Times(1).WillRepeatedly(Return(IDialogs::FileResult{ "filename" }));
+    EXPECT_CALL(*dialogs, open_file).Times(1).WillRepeatedly(Return(IDialogs::FileResult{ .filename = "filename" }));
     auto menu = register_test_module().with_dialogs(dialogs).build();
     std::optional<std::string> raised;
     auto token = menu->on_file_open += [&](auto&& filename) { raised = filename; };

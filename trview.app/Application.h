@@ -174,6 +174,7 @@ namespace trview
         std::future<LoadOperation> _load;
         LoadMode _load_mode;
         std::string _progress;
+        std::optional<std::string> _route_directory;
     };
 
     std::unique_ptr<IApplication> create_application(HINSTANCE hInstance, int command_show, const std::wstring& command_line);

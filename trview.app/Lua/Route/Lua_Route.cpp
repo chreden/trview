@@ -152,7 +152,7 @@ namespace trview
                     {
                         filters.push_back({ L"Randomizer Locations", { L"*.json" } });
                     }
-                    if (auto result = dialogs->open_file(L"Select route to import", filters, OFN_FILEMUSTEXIST))
+                    if (auto result = dialogs->open_file(L"Select route to import", filters, OFN_FILEMUSTEXIST, std::nullopt))
                     {
                         is_rando = result->filter_index == 2 || result->filename.ends_with(".json");
                         filename = result->filename;
