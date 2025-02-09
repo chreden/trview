@@ -732,15 +732,15 @@ namespace trview
                 auto& on_selected,
                 const auto& key_get)
                 {
-                    if (ImGui::BeginTable(table_name.c_str(), 5, ImGuiTableFlags_Sortable | ImGuiTableFlags_ScrollY))
+                    if (ImGui::BeginTable(table_name.c_str(), 5, ImGuiTableFlags_ScrollY))
                     {
                         imgui_header_row(
                             {
-                                { "#", _column_sizer.size(0) },
-                                { "Type", _column_sizer.size(1) },
+                                { "# ##L", _column_sizer.size(0) },
+                                { "Type##L", _column_sizer.size(1) },
                                 { "Change", _column_sizer.size(2) },
-                                { "#", _column_sizer.size(3) },
-                                { "Type", _column_sizer.size(4) },
+                                { "# ##R", _column_sizer.size(3) },
+                                { "Type##R", _column_sizer.size(4) },
                             });
 
                         for (const auto item_diff : diff_entries)
