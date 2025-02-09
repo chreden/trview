@@ -7,8 +7,8 @@ namespace trview
     class StaticMesh final : public IStaticMesh
     {
     public:
-        StaticMesh(const trlevel::tr3_room_staticmesh& static_mesh, const trlevel::tr_staticmesh& level_static_mesh, const std::shared_ptr<IMesh>& mesh, const std::weak_ptr<IRoom>& room, const std::shared_ptr<IMesh>& bounding_mesh);
-        StaticMesh(const trlevel::tr_room_sprite& room_sprite, const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Matrix& scale, std::shared_ptr<IMesh> mesh, const std::weak_ptr<IRoom>& room);
+        StaticMesh(const trlevel::tr3_room_staticmesh& static_mesh, const trlevel::tr_staticmesh& level_static_mesh, const std::shared_ptr<IMesh>& mesh, const std::weak_ptr<IRoom>& room, const std::weak_ptr<ILevel>& level, const std::shared_ptr<IMesh>& bounding_mesh);
+        StaticMesh(const trlevel::tr_room_sprite& room_sprite, const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Matrix& scale, std::shared_ptr<IMesh> mesh, const std::weak_ptr<IRoom>& room, const std::weak_ptr<ILevel>& level);
         virtual ~StaticMesh() = default;
         virtual void render(const ICamera& camera, const ILevelTextureStorage& texture_storage, const DirectX::SimpleMath::Color& colour) override;
         virtual void render_bounding_box(const ICamera& camera, const ILevelTextureStorage& texture_storage, const DirectX::SimpleMath::Color& colour) override;
@@ -29,6 +29,7 @@ namespace trview
         bool visible() const override;
         void set_visible(bool value) override;
         bool has_collision() const override;
+        std::weak_ptr<ILevel> level() const override;
     private:
         float _rotation;
         DirectX::SimpleMath::Vector3 _position;
@@ -44,5 +45,6 @@ namespace trview
         uint16_t _flags{ 0u };
         bool _visible{ true };
         Type _type{ Type::Mesh };
+        std::weak_ptr<ILevel> _level;
     };
 }

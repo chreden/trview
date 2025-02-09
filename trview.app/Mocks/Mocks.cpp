@@ -73,6 +73,8 @@
 #include "Windows/ISoundsWindowManager.h"
 #include "Windows/IAboutWindow.h"
 #include "Windows/IAboutWindowManager.h"
+#include "Windows/IDiffWindowManager.h"
+#include "Windows/IDiffWindow.h"
 
 namespace trview
 {
@@ -293,5 +295,11 @@ namespace trview
 
         MockAboutWindow::MockAboutWindow() {};
         MockAboutWindow::~MockAboutWindow() {};
+
+        MockDiffWindow::MockDiffWindow() {};
+        MockDiffWindow::~MockDiffWindow() {};
+
+        MockDiffWindowManager::MockDiffWindowManager() {};
+        MockDiffWindowManager::~MockDiffWindowManager() {};
     }
 }

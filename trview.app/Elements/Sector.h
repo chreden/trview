@@ -10,7 +10,7 @@ namespace trview
     {
     public:
         // Constructs sector object and parses floor data automatically 
-        Sector(const trlevel::ILevel& level, const trlevel::tr3_room& room, const trlevel::tr_room_sector& sector, int sector_id, const std::weak_ptr<IRoom>& room_ptr);
+        Sector(const trlevel::ILevel& level, const trlevel::tr3_room& room, const trlevel::tr_room_sector& sector, int sector_id, const std::weak_ptr<IRoom>& room_ptr, uint32_t sector_number);
         virtual ~Sector() = default;
         // Returns the id of the room that this floor data points to 
         virtual std::uint16_t portal() const override;
@@ -49,6 +49,7 @@ namespace trview
         void set_trigger(const std::weak_ptr<ITrigger>& trigger) override;
         std::weak_ptr<ITrigger> trigger() const override;
         TriangulationDirection ceiling_triangulation() const override;
+        uint32_t number() const override;
     private:
         bool parse(const trlevel::ILevel& level);
         void parse_slope();
@@ -101,5 +102,6 @@ namespace trview
         uint32_t _floordata_index;
         trlevel::tr_room_info _info;
         std::vector<Triangle> _triangles;
+        uint32_t _number;
     };
 }

@@ -203,7 +203,7 @@ namespace trview
                     {
                         [](auto&& l, auto&& r) { return l.number() < r.number(); },
                         [](auto&& l, auto&& r) { return std::tuple(trigger_room(l), l.number()) < std::tuple(trigger_room(r), r.number()); },
-                        [](auto&& l, auto&& r) { return std::tuple(trigger_type_name(l.type()), l.number()) < std::tuple(trigger_type_name(r.type()), r.number()); },
+                        [](auto&& l, auto&& r) { return std::tuple(to_string(l.type()), l.number()) < std::tuple(to_string(r.type()), r.number()); },
                         [](auto&& l, auto&& r) { return std::tuple(l.visible(), l.number()) < std::tuple(r.visible(), r.number()); }
                     }, _force_sort);
 
@@ -242,7 +242,7 @@ namespace trview
                         ImGui::TableNextColumn();
                         ImGui::Text(std::to_string(trigger_room(trigger_ptr)).c_str());
                         ImGui::TableNextColumn();
-                        ImGui::Text(trigger_type_name(trigger_ptr->type()).c_str());
+                        ImGui::Text(to_string(trigger_ptr->type()).c_str());
                         ImGui::TableNextColumn();
                         bool hidden = !trigger_ptr->visible();
                         ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0, 0));
@@ -319,7 +319,7 @@ namespace trview
                             return std::format("{:.0f}, {:.0f}, {:.0f}", p.x, p.y, p.z);
                         };
 
-                    add_stat("Type", trigger_type_name(selected_trigger->type()));
+                    add_stat("Type", to_string(selected_trigger->type()));
                     add_stat("#", selected_trigger->number());
                     add_stat("Position", position_text());
                     add_stat("Room", trigger_room(selected_trigger));
@@ -462,10 +462,10 @@ namespace trview
         {
             if (auto trigger_ptr = trigger.lock())
             {
-                available_types.insert(trigger_type_name(trigger_ptr->type()));
+                available_types.insert(to_string(trigger_ptr->type()));
             }
         }
-        _filters.add_getter<std::string>("Type", { available_types.begin(), available_types.end() }, [](auto&& trigger) { return trigger_type_name(trigger.type()); });
+        _filters.add_getter<std::string>("Type", { available_types.begin(), available_types.end() }, [](auto&& trigger) { return to_string(trigger.type()); });
         _filters.add_getter<float>("#", [](auto&& trigger) { return static_cast<float>(trigger.number()); });
         _filters.add_getter<float>("Room", [](auto&& trigger) { return static_cast<float>(trigger_room(trigger)); });
         _filters.add_getter<std::string>("Flags", [](auto&& trigger) { return format_binary(trigger.flags()); });
@@ -580,7 +580,7 @@ namespace trview
                 {
                     _column_sizer.measure(std::to_string(room->number()), 1);
                 }
-                _column_sizer.measure(trigger_type_name(trigger_ptr->type()), 2);
+                _column_sizer.measure(to_string(trigger_ptr->type()), 2);
             }
         }
     }

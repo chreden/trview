@@ -100,7 +100,7 @@ namespace trview
                 }
                 else if (key == "type")
                 {
-                    lua_pushstring(L, trlevel::light_type_name(light->type()).c_str());
+                    lua_pushstring(L, trlevel::to_string(light->type()).c_str());
                     return 1;
                 }
                 else if (key == "visible")

@@ -21,7 +21,7 @@ namespace trview
 {
     struct ISoundSource : public IRenderable
     {
-        using Source = std::function<std::shared_ptr<ISoundSource>(uint32_t, const trlevel::tr_sound_source&, const std::optional<trlevel::tr_x_sound_details>&, trlevel::LevelVersion)>;
+        using Source = std::function<std::shared_ptr<ISoundSource>(uint32_t, const trlevel::tr_sound_source&, const std::optional<trlevel::tr_x_sound_details>&, trlevel::LevelVersion, const std::weak_ptr<ILevel>&)>;
         virtual ~ISoundSource() = 0;
 
         virtual uint16_t chance() const = 0;
@@ -35,6 +35,7 @@ namespace trview
         virtual uint8_t range() const = 0;
         virtual std::optional<int16_t> sample() const = 0;
         virtual uint16_t volume() const = 0;
+        virtual std::weak_ptr<ILevel> level() const = 0;
 
         Event<> on_changed;
     };

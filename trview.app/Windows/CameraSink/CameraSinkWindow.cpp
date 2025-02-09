@@ -339,7 +339,7 @@ namespace trview
                         {
                             [](auto&& l, auto&& r) { return l.number() < r.number(); },
                             [](auto&& l, auto&& r) { return std::tuple(trigger_room(l), l.number()) < std::tuple(trigger_room(r), r.number()); },
-                            [](auto&& l, auto&& r) { return std::tuple(trigger_type_name(l.type()), l.number()) < std::tuple(trigger_type_name(r.type()), r.number()); },
+                            [](auto&& l, auto&& r) { return std::tuple(to_string(l.type()), l.number()) < std::tuple(to_string(r.type()), r.number()); },
                         }, _force_sort);
 
                     for (auto& trigger : _triggered_by)
@@ -362,7 +362,7 @@ namespace trview
                         ImGui::TableNextColumn();
                         ImGui::Text(std::to_string(trigger_room(trigger_ptr)).c_str());
                         ImGui::TableNextColumn();
-                        ImGui::Text(trigger_type_name(trigger_ptr->type()).c_str());
+                        ImGui::Text(to_string(trigger_ptr->type()).c_str());
                     }
 
                     ImGui::EndTable();

@@ -614,7 +614,7 @@ namespace trview
                 {
                     if (auto trigger_ptr = trigger.lock())
                     {
-                        available_trigger_types.insert(trigger_type_name(trigger_ptr->type()));
+                        available_trigger_types.insert(to_string(trigger_ptr->type()));
                     }
                 }
             }
@@ -626,7 +626,7 @@ namespace trview
                 {
                     if (const auto trigger_ptr = trigger.lock())
                     {
-                        results.push_back(trigger_type_name(trigger_ptr->type()));
+                        results.push_back(to_string(trigger_ptr->type()));
                     }
                 }
                 return results;
@@ -913,7 +913,7 @@ namespace trview
             imgui_sort_weak(_triggers,
                 {
                     [](auto&& l, auto&& r) { return l.number() < r.number(); },
-                    [&](auto&& l, auto&& r) { return std::tuple(trigger_type_name(l.type()), l.number()) < std::tuple(trigger_type_name(r.type()), r.number()); }
+                    [&](auto&& l, auto&& r) { return std::tuple(to_string(l.type()), l.number()) < std::tuple(to_string(r.type()), r.number()); }
                 }, _force_sort);
 
             for (const auto& trigger : _triggers)
@@ -941,7 +941,7 @@ namespace trview
                     }
 
                     ImGui::TableNextColumn();
-                    ImGui::Text(trigger_type_name(trigger_ptr->type()).c_str());
+                    ImGui::Text(to_string(trigger_ptr->type()).c_str());
                 }
             }
 
@@ -1130,7 +1130,7 @@ namespace trview
             imgui_sort_weak(_lights,
                 {
                     [](auto&& l, auto&& r) { return l.number() < r.number(); },
-                    [&](auto&& l, auto&& r) { return std::tuple(light_type_name(l.type()), l.number()) < std::tuple(light_type_name(r.type()), r.number()); }
+                    [&](auto&& l, auto&& r) { return std::tuple(to_string(l.type()), l.number()) < std::tuple(to_string(r.type()), r.number()); }
                 }, _force_sort);
 
             for (const auto& light : _lights)
@@ -1158,7 +1158,7 @@ namespace trview
                     }
 
                     ImGui::TableNextColumn();
-                    ImGui::Text(light_type_name(light_ptr->type()).c_str());
+                    ImGui::Text(to_string(light_ptr->type()).c_str());
                 }
             }
 

@@ -7,9 +7,9 @@ using namespace DirectX::SimpleMath;
 
 namespace trview
 {
-    Sector::Sector(const trlevel::ILevel& level, const trlevel::tr3_room& room, const trlevel::tr_room_sector& sector, int sector_id, const std::weak_ptr<IRoom>& room_ptr)
+    Sector::Sector(const trlevel::ILevel& level, const trlevel::tr3_room& room, const trlevel::tr_room_sector& sector, int sector_id, const std::weak_ptr<IRoom>& room_ptr, uint32_t sector_number)
         : _sector(sector), _sector_id(static_cast<uint16_t>(sector_id)), _room_above(sector.room_above), _room_below(sector.room_below), _room(room_number(room_ptr)), _info(room.info), _room_ptr(room_ptr),
-        _floordata_index(sector.floordata_index)
+        _floordata_index(sector.floordata_index), _number(sector_number)
     {
         _x = static_cast<int16_t>(sector_id / room.num_z_sectors);
         _z = static_cast<int16_t>(sector_id % room.num_z_sectors);
@@ -732,6 +732,11 @@ namespace trview
     TriangulationDirection Sector::ceiling_triangulation() const
     {
         return _ceiling_triangulation_function;
+    }
+
+    uint32_t Sector::number() const
+    {
+        return _number;
     }
 }
 

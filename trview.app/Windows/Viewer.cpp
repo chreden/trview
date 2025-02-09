@@ -641,6 +641,12 @@ namespace trview
     {
         auto old_level = _level.lock();
         auto new_level = level.lock();
+
+        if (old_level == new_level)
+        {
+            return;
+        }
+
         _level = level;
 
         _level_token_store.clear();
@@ -1565,5 +1571,10 @@ namespace trview
             level->set_ng_plus(show);
         }
         set_toggle(Options::ng_plus, show);
+    }
+
+    std::weak_ptr<ILevel> Viewer::level() const
+    {
+        return _level;
     }
 }

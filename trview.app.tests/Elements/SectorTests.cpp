@@ -23,7 +23,7 @@ TEST(Sector, HighNumberedPortal)
     tr_room_sector sector { 1, 0xffff, 255, 0, 255, 0 };
     auto room = trview::tests::mock_shared<MockRoom>();
 
-    Sector s(level, tr_room, sector, 0, room);
+    Sector s(level, tr_room, sector, 0, room, 0);
 
     ASSERT_EQ(s.portal(), 378);
 }

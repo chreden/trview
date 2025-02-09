@@ -76,9 +76,9 @@ namespace trview
 
     void Room::initialise(const trlevel::ILevel& level, const trlevel::tr3_room& room, const IMeshStorage& mesh_storage,
         const IStaticMesh::MeshSource& static_mesh_mesh_source, const IStaticMesh::PositionSource& static_mesh_position_source,
-        const ISector::Source& sector_source, const Activity& activity)
+        const ISector::Source& sector_source, uint32_t sector_base_index, const Activity& activity)
     {
-        generate_sectors(level, room, sector_source);
+        generate_sectors(level, room, sector_source, sector_base_index);
         generate_geometry(_mesh_source, room);
         generate_adjacency();
         generate_static_meshes(_mesh_source, level, room, mesh_storage, static_mesh_mesh_source, static_mesh_position_source, activity);
@@ -343,7 +343,7 @@ namespace trview
                 activity.log(trview::Message::Status::Error, std::format("Static Mesh {} was requested but not found", room_mesh.mesh_id));
                 continue;
             }
-            _static_meshes.push_back(static_mesh_mesh_source(room_mesh, level_static_mesh.value(), mesh_storage.mesh(level_static_mesh.value().Mesh), shared_from_this()));
+            _static_meshes.push_back(static_mesh_mesh_source(room_mesh, level_static_mesh.value(), mesh_storage.mesh(level_static_mesh.value().Mesh), shared_from_this(), _level));
         }
 
         // Also read the room sprites - they're similar enough for now.
@@ -356,7 +356,7 @@ namespace trview
             auto vertex = room.data.vertices[room_sprite.vertex].vertex;
             auto pos = Vector3(vertex.x / trlevel::Scale_X, vertex.y / trlevel::Scale_Y, vertex.z / trlevel::Scale_Z);
             pos = Vector3::Transform(pos, _room_offset) + offset;
-            _static_meshes.push_back(static_mesh_position_source(room_sprite, pos, scale, sprite_mesh, shared_from_this()));
+            _static_meshes.push_back(static_mesh_position_source(room_sprite, pos, scale, sprite_mesh, shared_from_this(), _level));
         }
     }
 
@@ -458,12 +458,12 @@ namespace trview
         _camera_sinks.push_back(camera_sink);
     }
 
-    void Room::generate_sectors(const trlevel::ILevel& level, const trlevel::tr3_room& room, const ISector::Source& sector_source)
+    void Room::generate_sectors(const trlevel::ILevel& level, const trlevel::tr3_room& room, const ISector::Source& sector_source, uint32_t sector_base_index)
     {
         for (auto i = 0u; i < room.sector_list.size(); ++i)
         {
             const trlevel::tr_room_sector &sector = room.sector_list[i];
-            _sectors.push_back(sector_source(level, room, sector, i, shared_from_this()));
+            _sectors.push_back(sector_source(level, room, sector, i, shared_from_this(), sector_base_index + i));
         }
     }
 

@@ -36,7 +36,7 @@ namespace trlevel
         float density() const;
     };
 
-    std::string light_type_name(LightType type);
+    std::string to_string(LightType type);
 
     std::vector<tr_x_room_light> convert_lights(std::vector<tr_room_light> lights);
     std::vector<tr_x_room_light> convert_lights(std::vector<tr_room_light_psx> lights);

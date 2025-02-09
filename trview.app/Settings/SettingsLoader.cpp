@@ -107,6 +107,7 @@ namespace trview
             read_attribute(json, settings.fonts, "fonts");
             read_attribute(json, settings.statics_startup, "statics_startup");
             read_attribute(json, settings.camera_position_window, "camera_position_window");
+            read_attribute(json, settings.recent_diff_files, "recent_diff");
 
             settings.recent_files.resize(std::min<std::size_t>(settings.recent_files.size(), settings.max_recent_files));
         }
@@ -176,6 +177,7 @@ namespace trview
             json["fonts"] = settings.fonts;
             json["statics_startup"] = settings.statics_startup;
             json["camera_position_window"] = settings.camera_position_window;
+            json["recent_diff"] = std::list<std::string>(settings.recent_diff_files.begin(), std::next(settings.recent_diff_files.begin(), std::min<std::size_t>(settings.recent_diff_files.size(), settings.max_recent_files)));
             _files->save_file(file_path, json.dump());
         }
         catch (...)

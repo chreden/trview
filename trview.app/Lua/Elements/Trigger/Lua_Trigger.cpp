@@ -90,7 +90,7 @@ namespace trview
                 }
                 else if (key == "type")
                 {
-                    lua_pushstring(L, trigger_type_name(trigger->type()).c_str());
+                    lua_pushstring(L, to_string(trigger->type()).c_str());
                     return 1;
                 }
                 else if (key == "visible")

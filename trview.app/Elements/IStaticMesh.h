@@ -12,6 +12,7 @@ namespace trview
     struct ILevelTextureStorage;
     struct ITransparencyBuffer;
     struct IRoom;
+    struct ILevel;
 
     struct IStaticMesh
     {
@@ -21,8 +22,8 @@ namespace trview
             Sprite
         };
 
-        using PositionSource = std::function<std::shared_ptr<IStaticMesh>(const trlevel::tr_room_sprite&, const DirectX::SimpleMath::Vector3&, const DirectX::SimpleMath::Matrix&, std::shared_ptr<IMesh>, const std::shared_ptr<IRoom>&)>;
-        using MeshSource = std::function<std::shared_ptr<IStaticMesh>(const trlevel::tr3_room_staticmesh&, const trlevel::tr_staticmesh&, const std::shared_ptr<IMesh>&, const std::shared_ptr<IRoom>&)>;
+        using PositionSource = std::function<std::shared_ptr<IStaticMesh>(const trlevel::tr_room_sprite&, const DirectX::SimpleMath::Vector3&, const DirectX::SimpleMath::Matrix&, std::shared_ptr<IMesh>, const std::shared_ptr<IRoom>&, const std::weak_ptr<ILevel>&)>;
+        using MeshSource = std::function<std::shared_ptr<IStaticMesh>(const trlevel::tr3_room_staticmesh&, const trlevel::tr_staticmesh&, const std::shared_ptr<IMesh>&, const std::shared_ptr<IRoom>&, const std::weak_ptr<ILevel>&)>;
 
         virtual ~IStaticMesh() = 0;
         virtual void render(const ICamera& camera, const ILevelTextureStorage& texture_storage, const DirectX::SimpleMath::Color& colour) = 0;
@@ -44,6 +45,7 @@ namespace trview
         virtual bool visible() const = 0;
         virtual void set_visible(bool value) = 0;
         virtual bool has_collision() const = 0;
+        virtual std::weak_ptr<ILevel> level() const = 0;
 
         Event<> on_changed;
     };

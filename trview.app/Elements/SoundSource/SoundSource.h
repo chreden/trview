@@ -15,7 +15,8 @@ namespace trview
             uint32_t number,
             const trlevel::tr_sound_source& source,
             const std::optional<trlevel::tr_x_sound_details>& details,
-            trlevel::LevelVersion level_version);
+            trlevel::LevelVersion level_version,
+            const std::weak_ptr<ILevel>& level);
         virtual ~SoundSource() = default;
         uint16_t chance() const override;
         uint16_t characteristics() const override;
@@ -32,6 +33,7 @@ namespace trview
         void set_visible(bool value) override;
         bool visible() const override;
         uint16_t volume() const override;
+        std::weak_ptr<ILevel> level() const override;
     private:
         uint16_t _chance{ 0u };
         uint16_t _characteristics{ 0u };
@@ -46,6 +48,7 @@ namespace trview
         graphics::Texture _sound_texture;
         bool _visible{ true };
         uint16_t _volume{ 0u };
+        std::weak_ptr<ILevel> _level;
     };
 }
 

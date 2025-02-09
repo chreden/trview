@@ -260,7 +260,7 @@ namespace trlevel
         return 0;
     }
 
-    std::string light_type_name(LightType type)
+    std::string to_string(LightType type)
     {
         switch (type)
         {
