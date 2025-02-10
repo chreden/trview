@@ -199,8 +199,9 @@ namespace trview
 
         _camera_sink_windows->set_camera_sinks(new_level->camera_sinks());
         _diff_windows->set_level(new_level);
-        _items_windows->set_items(new_level->items());
-        _items_windows->set_triggers(new_level->triggers());
+        _items_windows->add_level(new_level);
+        // _items_windows->set_items(new_level->items());
+        // _items_windows->set_triggers(new_level->triggers());
         _items_windows->set_level_version(new_level->version());
         _items_windows->set_model_checker([=](uint32_t id) { return new_level->has_model(id); });
         _items_windows->set_ng_plus(new_level->ng_plus());

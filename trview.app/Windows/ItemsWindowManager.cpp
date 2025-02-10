@@ -13,6 +13,15 @@ namespace trview
         _token_store += shortcuts->add_shortcut(true, 'I') += [&]() { create_window(); };
     }
 
+    void ItemsWindowManager::add_level(const std::weak_ptr<ILevel>& level)
+    {
+        _levels.push_back(level);
+        for (auto& window : _windows)
+        {
+            window.second->add_level(level);
+        }
+    }
+
     std::optional<int> ItemsWindowManager::process_message(UINT message, WPARAM wParam, LPARAM)
     {
         if (message == WM_COMMAND && LOWORD(wParam) == ID_WINDOWS_ITEMS)
@@ -30,29 +39,20 @@ namespace trview
     std::weak_ptr<IItemsWindow> ItemsWindowManager::create_window()
     {
         auto items_window = _items_window_source();
+        for (auto& level : _levels)
+        {
+            items_window->add_level(level);
+        }
         items_window->on_item_selected += on_item_selected;
         items_window->on_scene_changed += on_scene_changed;
         items_window->on_trigger_selected += on_trigger_selected;
         items_window->on_add_to_route += on_add_to_route;
-        items_window->set_items(_items);
-        items_window->set_triggers(_triggers);
         items_window->set_current_room(_current_room);
         items_window->set_level_version(_level_version);
         items_window->set_model_checker(_model_checker);
         items_window->set_ng_plus(_ng_plus);
         items_window->set_selected_item(_selected_item);
         return add_window(items_window);
-    }
-
-    void ItemsWindowManager::set_items(const std::vector<std::weak_ptr<IItem>>& items)
-    {
-        _items = items;
-        _selected_item.reset();
-        for (auto& window : _windows)
-        {
-            window.second->clear_selected_item();
-            window.second->set_items(items);
-        }
     }
 
     void ItemsWindowManager::set_level_version(trlevel::LevelVersion version)
@@ -79,15 +79,6 @@ namespace trview
         for (auto& [_, window] : _windows)
         {
             window->set_ng_plus(value);
-        }
-    }
-
-    void ItemsWindowManager::set_triggers(const std::vector<std::weak_ptr<ITrigger>>& triggers)
-    {
-        _triggers = triggers;
-        for (auto& window : _windows)
-        {
-            window.second->set_triggers(triggers);
         }
     }
 

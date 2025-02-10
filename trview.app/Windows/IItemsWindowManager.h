@@ -20,22 +20,15 @@ namespace trview
         /// Event raised when the 'add to route' button is pressed in one of the item windows.
         Event<std::weak_ptr<IItem>> on_add_to_route;
 
+        virtual void add_level(const std::weak_ptr<ILevel>& level) = 0;
         /// Render all of the item windows.
         virtual void render() = 0;
-
-        /// Set the items to use in the windows.
-        /// @param items The items in the level.
-        virtual void set_items(const std::vector<std::weak_ptr<IItem>>& items) = 0;
 
         virtual void set_level_version(trlevel::LevelVersion version) = 0;
 
         virtual void set_model_checker(const std::function<bool (uint32_t)>& checker) = 0;
 
         virtual void set_ng_plus(bool value) = 0;
-
-        /// Set the triggers to use in the windows.
-        /// @param triggers The triggers in the level.
-        virtual void set_triggers(const std::vector<std::weak_ptr<ITrigger>>& triggers) = 0;
 
         /// <summary>
         /// Set the current room to filter item windows.

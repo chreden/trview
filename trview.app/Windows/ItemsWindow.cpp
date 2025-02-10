@@ -3,9 +3,22 @@
 #include <trview.common/Windows/Clipboard.h>
 #include "../trview_imgui.h"
 #include "RowCounter.h"
+#include "../Elements/ILevel.h"
 
 namespace trview
 {
+    namespace
+    {
+        std::unordered_map<std::string, std::string> tips
+        {
+            { "OCB", "Changes entity behaviour" },
+            { "Clear Body", "If true, removed when Bodybag is triggered" },
+            { "Trigger triggerer", "Disables the trigger on the same sector until this item is triggered" },
+            { "Type*", "Mutant Egg spawn target is missing; egg will be empty" }
+        };
+    }
+
+
     int32_t bound_rotation(int32_t v)
     {
         constexpr int32_t low = 0;
@@ -31,15 +44,10 @@ namespace trview
     ItemsWindow::ItemsWindow(const std::shared_ptr<IClipboard>& clipboard)
         : _clipboard(clipboard)
     {
-        _tips["OCB"] = "Changes entity behaviour";
-        _tips["Clear Body"] = "If true, removed when Bodybag is triggered";
-        _tips["Trigger triggerer"] = "Disables the trigger on the same sector until this item is triggered";
-        _tips["Type*"] = "Mutant Egg spawn target is missing; egg will be empty";
-
-        setup_filters();
+        
     }
 
-    void ItemsWindow::set_items(const std::vector<std::weak_ptr<IItem>>& items)
+    void ItemsWindow::SubWindow::set_items(const std::vector<std::weak_ptr<IItem>>& items)
     {
         _all_items = items;
         _triggered_by.clear();
@@ -48,12 +56,21 @@ namespace trview
         calculate_column_widths();
     }
 
-    void ItemsWindow::set_triggers(const std::vector<std::weak_ptr<ITrigger>>& triggers)
+    void ItemsWindow::SubWindow::set_triggers(const std::vector<std::weak_ptr<ITrigger>>& triggers)
     {
         _all_triggers = triggers;
     }
 
     void ItemsWindow::clear_selected_item()
+    {
+        // TODO: Fix
+        for (auto& sub_window : _sub_windows)
+        {
+            sub_window.clear_selected_item();
+        }
+    }
+
+    void ItemsWindow::SubWindow::clear_selected_item()
     {
         _selected_item.reset();
         _triggered_by.clear();
@@ -61,10 +78,18 @@ namespace trview
 
     void ItemsWindow::set_current_room(const std::weak_ptr<IRoom>& room)
     {
+        for (auto& sub_window : _sub_windows)
+        {
+            sub_window.set_current_room(room);
+        }
+    }
+
+    void ItemsWindow::SubWindow::set_current_room(const std::weak_ptr<IRoom>& room)
+    {
         _current_room = room;
     }
 
-    void ItemsWindow::set_sync_item(bool value)
+    void ItemsWindow::SubWindow::set_sync_item(bool value)
     {
         if (_sync_item != value)
         {
@@ -79,6 +104,25 @@ namespace trview
 
     void ItemsWindow::set_selected_item(const std::weak_ptr<IItem>& item)
     {
+        for (auto& window : _sub_windows)
+        {
+            window.set_selected_item(item);
+        }
+    }
+
+    void ItemsWindow::SubWindow::set_selected_item(const std::weak_ptr<IItem>& item)
+    {
+        // Exclude items for other levels.
+        const auto item_ptr = item.lock();
+        if (item_ptr)
+        {
+            const auto level = item_ptr->level().lock();
+            if (level != _level.lock())
+            {
+                return;
+            }
+        }
+
         _global_selected_item = item;
         if (_sync_item)
         {
@@ -89,10 +133,11 @@ namespace trview
 
     std::weak_ptr<IItem> ItemsWindow::selected_item() const
     {
-        return _selected_item;
+        // TODO: Fix??
+        return {};
     }
 
-    void ItemsWindow::render_items_list()
+    void ItemsWindow::SubWindow::render_items_list()
     {
         calculate_column_widths();
         if (ImGui::BeginChild(Names::item_list_panel.c_str(), ImVec2(0, 0), ImGuiChildFlags_AutoResizeX, ImGuiWindowFlags_NoScrollbar))
@@ -222,7 +267,7 @@ namespace trview
         ImGui::EndChild();
     }
 
-    void ItemsWindow::render_item_details()
+    void ItemsWindow::SubWindow::render_item_details()
     {
         if (ImGui::BeginChild(Names::details_panel.c_str(), ImVec2(), true))
         {
@@ -244,16 +289,16 @@ namespace trview
                             _clipboard->write(to_utf16(string_value));
                             _tooltip_timer = 0.0f;
                         }
-                        if (ImGui::IsItemHovered() && _tips.find(name) != _tips.end())
+                        if (ImGui::IsItemHovered() && tips.find(name) != tips.end())
                         {
                             ImGui::BeginTooltip();
-                            ImGui::Text(_tips[name].c_str());
+                            ImGui::Text(tips[name].c_str());
                             ImGui::EndTooltip();
                         }
-                        if (ImGui::IsItemHovered() && _tips.find(string_value) != _tips.end())
+                        if (ImGui::IsItemHovered() && tips.find(string_value) != tips.end())
                         {
                             ImGui::BeginTooltip();
-                            ImGui::Text(_tips[string_value].c_str());
+                            ImGui::Text(tips[string_value].c_str());
                             ImGui::EndTooltip();
                         }
 
@@ -345,16 +390,13 @@ namespace trview
         ImGui::PushStyleVar(ImGuiStyleVar_WindowMinSize, ImVec2(540, 500));
         if (ImGui::Begin(_id.c_str(), &stay_open))
         {
-            render_items_list();
-            ImGui::SameLine();
-            render_item_details();
-            _force_sort = false;
-
-            if (_tooltip_timer.has_value())
+            if (ImGui::BeginTabBar("TabBar"))
             {
-                ImGui::BeginTooltip();
-                ImGui::Text("Copied");
-                ImGui::EndTooltip();
+                for (auto& sub_window : _sub_windows)
+                {
+                    sub_window.render();
+                }
+                ImGui::EndTabBar();
             }
         }
         ImGui::End();
@@ -362,8 +404,42 @@ namespace trview
         return stay_open;
     }
 
+    void ItemsWindow::add_level(const std::weak_ptr<ILevel>& level)
+    {
+        if (const auto new_level = level.lock())
+        {
+            _sub_windows.push_back(
+                {
+                    ._clipboard = _clipboard,
+                    ._level = level,
+                    ._level_version = new_level->version(),
+                    ._model_checker = _model_checker
+                });
+
+            auto& new_window = _sub_windows.back();
+            new_window.setup_filters();
+            new_window.set_items(new_level->items());
+            new_window.set_triggers(new_level->triggers());
+
+            new_window.on_item_selected += on_item_selected;
+            new_window.on_add_to_route += on_add_to_route;
+            new_window.on_scene_changed += on_scene_changed;
+            new_window.on_trigger_selected += on_trigger_selected;
+        }
+    }
+
     void ItemsWindow::set_filters(std::vector<Filters<IItem>::Filter> filters)
     {
+        // TODO: Which level is this for?
+        for (auto& sub_window : _sub_windows)
+        {
+            sub_window.set_filters(filters);
+        }
+    }
+
+    void ItemsWindow::SubWindow::set_filters(std::vector<Filters<IItem>::Filter> filters)
+    {
+        // TODO: Which level is this for?
         _filters.set_filters(filters);
     }
 
@@ -377,6 +453,14 @@ namespace trview
     }
 
     void ItemsWindow::update(float delta)
+    {
+        for (auto& sub_window : _sub_windows)
+        {
+            sub_window.update(delta);
+        }
+    }
+
+    void ItemsWindow::SubWindow::update(float delta)
     {
         if (_tooltip_timer.has_value())
         {
@@ -393,7 +477,7 @@ namespace trview
         _id = "Items " + std::to_string(number);
     }
 
-    void ItemsWindow::set_local_selected_item(std::weak_ptr<IItem> item)
+    void ItemsWindow::SubWindow::set_local_selected_item(std::weak_ptr<IItem> item)
     {
         _selected_item = item;
         if (auto selected = _selected_item.lock())
@@ -403,7 +487,7 @@ namespace trview
         _force_sort = true;
     }
 
-    void ItemsWindow::setup_filters()
+    void ItemsWindow::SubWindow::setup_filters()
     {
         _filters.clear_all_getters();
         std::set<std::string> available_types;
@@ -456,9 +540,9 @@ namespace trview
             });
     }
 
-    void ItemsWindow::set_level_version(trlevel::LevelVersion version)
+    void ItemsWindow::set_level_version(trlevel::LevelVersion)
     {
-        _level_version = version;
+        // _level_version = version;
     }
 
     void ItemsWindow::set_model_checker(const std::function<bool(uint32_t)>& checker)
@@ -466,7 +550,7 @@ namespace trview
         _model_checker = checker;
     }
 
-    void ItemsWindow::calculate_column_widths()
+    void ItemsWindow::SubWindow::calculate_column_widths()
     {
         _column_sizer.reset();
         _column_sizer.measure("#__", 0);
@@ -490,11 +574,43 @@ namespace trview
 
     void ItemsWindow::set_ng_plus(bool value)
     {
+        for (auto& window : _sub_windows)
+        {
+            window.set_ng_plus(value);
+        }
+        // _ng_plus = value;
+    }
+
+    void ItemsWindow::SubWindow::set_ng_plus(bool value)
+    {
         _ng_plus = value;
     }
 
     std::string ItemsWindow::name() const
     {
         return _id;
+    }
+
+    void ItemsWindow::SubWindow::render()
+    {
+        if (const auto& level = _level.lock())
+        {
+            if (ImGui::BeginTabItem(level->name().c_str()))
+            {
+                render_items_list();
+                ImGui::SameLine();
+                render_item_details();
+                _force_sort = false;
+
+                if (_tooltip_timer.has_value())
+                {
+                    ImGui::BeginTooltip();
+                    ImGui::Text("Copied");
+                    ImGui::EndTooltip();
+                }
+
+                ImGui::EndTabItem();
+            }
+        }
     }
 }

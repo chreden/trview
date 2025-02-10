@@ -29,18 +29,12 @@ namespace trview
         /// Event raised when the window is closed.
         Event<> on_window_closed;
 
-        virtual void set_filters(std::vector<Filters<IItem>::Filter> filters) = 0;
+        virtual void add_level(const std::weak_ptr<ILevel>& level) = 0;
 
-        /// Set the items to display in the window.
-        /// @param items The items to show.
-        virtual void set_items(const std::vector<std::weak_ptr<IItem>>& items) = 0;
+        virtual void set_filters(std::vector<Filters<IItem>::Filter> filters) = 0;
 
         /// Render the window.
         virtual void render() = 0;
-
-        /// Set the triggers to display in the window.
-        /// @param triggers The triggers.
-        virtual void set_triggers(const std::vector<std::weak_ptr<ITrigger>>& triggers) = 0;
 
         /// Clear the currently selected item from the details panel.
         virtual void clear_selected_item() = 0;

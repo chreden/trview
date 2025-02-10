@@ -24,13 +24,12 @@ namespace trview
         /// @param items_window_source Function to call to create a triggers window.
         explicit ItemsWindowManager(const Window& window, const std::shared_ptr<IShortcuts>& shortcuts, const IItemsWindow::Source& items_window_source);
         virtual ~ItemsWindowManager() = default;
+        void add_level(const std::weak_ptr<ILevel>& level) override;
         virtual std::optional<int> process_message(UINT message, WPARAM wParam, LPARAM lParam) override;
         virtual void render() override;
-        virtual void set_items(const std::vector<std::weak_ptr<IItem>>& items) override;
         virtual void set_level_version(trlevel::LevelVersion version) override;
         virtual void set_model_checker(const std::function<bool(uint32_t)>& checker) override;
         void set_ng_plus(bool value) override;
-        virtual void set_triggers(const std::vector<std::weak_ptr<ITrigger>>& triggers) override;
         void set_room(const std::weak_ptr<IRoom>& room) override;
         virtual void set_selected_item(const std::weak_ptr<IItem>& item) override;
         virtual std::weak_ptr<IItemsWindow> create_window() override;
@@ -45,5 +44,6 @@ namespace trview
         trlevel::LevelVersion _level_version{ trlevel::LevelVersion::Unknown };
         std::function<bool(uint32_t)> _model_checker;
         bool _ng_plus{ false };
+        std::vector<std::weak_ptr<ILevel>> _levels;
     };
 }
