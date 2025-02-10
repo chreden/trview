@@ -35,15 +35,10 @@ namespace trview
         void add_level(const std::weak_ptr<ILevel>& level) override;
         void set_filters(std::vector<Filters<IItem>::Filter> filters) override;
         virtual void render() override;
-        virtual void clear_selected_item() override;
         void set_current_room(const std::weak_ptr<IRoom>& room) override;
         virtual void set_selected_item(const std::weak_ptr<IItem>& item) override;
-        virtual std::weak_ptr<IItem> selected_item() const override;
         virtual void update(float delta) override;
         virtual void set_number(int32_t number) override;
-        virtual void set_level_version(trlevel::LevelVersion version) override;
-        virtual void set_model_checker(const std::function<bool(uint32_t)>& checker) override;
-        void set_ng_plus(bool value) override;
         std::string name() const override;
     private:
         bool render_items_window();
@@ -79,15 +74,13 @@ namespace trview
             std::vector<std::weak_ptr<ITrigger>> _triggered_by;
 
             void calculate_column_widths();
-            void clear_selected_item();
-            void render();
+            void render(int index);
             void render_items_list();
             void render_item_details();
             void set_current_room(const std::weak_ptr<IRoom>& room);
             void set_filters(std::vector<Filters<IItem>::Filter> filters);
             void set_items(const std::vector<std::weak_ptr<IItem>>& items);
             void set_local_selected_item(std::weak_ptr<IItem> item);
-            void set_ng_plus(bool value);
             void set_selected_item(const std::weak_ptr<IItem>& item);
             void set_sync_item(bool value);
             void set_triggers(const std::vector<std::weak_ptr<ITrigger>>& triggers);
@@ -98,6 +91,5 @@ namespace trview
         std::string _id{ "Items 0" };
         std::vector<SubWindow> _sub_windows;
         std::shared_ptr<IClipboard> _clipboard;
-        std::function<bool(uint32_t)> _model_checker;
     };
 }

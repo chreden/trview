@@ -18,7 +18,6 @@ namespace trview
         };
     }
 
-
     int32_t bound_rotation(int32_t v)
     {
         constexpr int32_t low = 0;
@@ -59,21 +58,6 @@ namespace trview
     void ItemsWindow::SubWindow::set_triggers(const std::vector<std::weak_ptr<ITrigger>>& triggers)
     {
         _all_triggers = triggers;
-    }
-
-    void ItemsWindow::clear_selected_item()
-    {
-        // TODO: Fix
-        for (auto& sub_window : _sub_windows)
-        {
-            sub_window.clear_selected_item();
-        }
-    }
-
-    void ItemsWindow::SubWindow::clear_selected_item()
-    {
-        _selected_item.reset();
-        _triggered_by.clear();
     }
 
     void ItemsWindow::set_current_room(const std::weak_ptr<IRoom>& room)
@@ -129,12 +113,6 @@ namespace trview
             _scroll_to_item = true;
             set_local_selected_item(item);
         }
-    }
-
-    std::weak_ptr<IItem> ItemsWindow::selected_item() const
-    {
-        // TODO: Fix??
-        return {};
     }
 
     void ItemsWindow::SubWindow::render_items_list()
@@ -392,9 +370,10 @@ namespace trview
         {
             if (ImGui::BeginTabBar("TabBar"))
             {
+                int window_index = 0;
                 for (auto& sub_window : _sub_windows)
                 {
-                    sub_window.render();
+                    sub_window.render(window_index++);
                 }
                 ImGui::EndTabBar();
             }
@@ -413,7 +392,11 @@ namespace trview
                     ._clipboard = _clipboard,
                     ._level = level,
                     ._level_version = new_level->version(),
-                    ._model_checker = _model_checker
+                    ._model_checker = [=](uint32_t id)
+                        { 
+                            auto new_level = level.lock();
+                            return new_level ? new_level->has_model(id) : false;
+                        }
                 });
 
             auto& new_window = _sub_windows.back();
@@ -540,16 +523,6 @@ namespace trview
             });
     }
 
-    void ItemsWindow::set_level_version(trlevel::LevelVersion)
-    {
-        // _level_version = version;
-    }
-
-    void ItemsWindow::set_model_checker(const std::function<bool(uint32_t)>& checker)
-    {
-        _model_checker = checker;
-    }
-
     void ItemsWindow::SubWindow::calculate_column_widths()
     {
         _column_sizer.reset();
@@ -572,31 +545,19 @@ namespace trview
         }
     }
 
-    void ItemsWindow::set_ng_plus(bool value)
-    {
-        for (auto& window : _sub_windows)
-        {
-            window.set_ng_plus(value);
-        }
-        // _ng_plus = value;
-    }
-
-    void ItemsWindow::SubWindow::set_ng_plus(bool value)
-    {
-        _ng_plus = value;
-    }
-
     std::string ItemsWindow::name() const
     {
         return _id;
     }
 
-    void ItemsWindow::SubWindow::render()
+    void ItemsWindow::SubWindow::render(int index)
     {
         if (const auto& level = _level.lock())
         {
-            if (ImGui::BeginTabItem(level->name().c_str()))
+            if (ImGui::BeginTabItem(std::format("{}##{}", level->name(), index).c_str()))
             {
+                _ng_plus = level->ng_plus();
+
                 render_items_list();
                 ImGui::SameLine();
                 render_item_details();

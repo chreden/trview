@@ -200,11 +200,6 @@ namespace trview
         _camera_sink_windows->set_camera_sinks(new_level->camera_sinks());
         _diff_windows->set_level(new_level);
         _items_windows->add_level(new_level);
-        // _items_windows->set_items(new_level->items());
-        // _items_windows->set_triggers(new_level->triggers());
-        _items_windows->set_level_version(new_level->version());
-        _items_windows->set_model_checker([=](uint32_t id) { return new_level->has_model(id); });
-        _items_windows->set_ng_plus(new_level->ng_plus());
         _lights_windows->set_level_version(new_level->version());
         _lights_windows->set_lights(new_level->lights());
         _rooms_windows->set_level_version(new_level->version());
@@ -224,12 +219,10 @@ namespace trview
         _triggers_windows->set_items(new_level->items());
         _triggers_windows->set_triggers(new_level->triggers());
         _textures_windows->set_texture_storage(new_level->texture_storage());
-        
 
         _level_token_store.clear();
         _level_token_store += new_level->on_ng_plus += [this, level](bool value)
             {
-                _items_windows->set_ng_plus(value);
                 _rooms_windows->set_ng_plus(value);
             };
     }

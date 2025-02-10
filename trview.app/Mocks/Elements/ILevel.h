@@ -94,6 +94,18 @@ namespace trview
                 ON_CALL(*this, version).WillByDefault(testing::Return(version));
                 return shared_from_this();
             }
+
+            std::shared_ptr<MockLevel> with_items(const std::vector<std::weak_ptr<IItem>>& items)
+            {
+                ON_CALL(*this, items).WillByDefault(testing::Return(items));
+                return shared_from_this();
+            }
+
+            std::shared_ptr<MockLevel> with_triggers(const std::vector<std::weak_ptr<ITrigger>>& triggers)
+            {
+                ON_CALL(*this, triggers).WillByDefault(testing::Return(triggers));
+                return shared_from_this();
+            }
         };
     }
 }

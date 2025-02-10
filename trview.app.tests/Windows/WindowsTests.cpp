@@ -265,13 +265,10 @@ TEST(Windows, LightsEventsForwarded)
 
 TEST(Windows, OnNgPlusForwarded)
 {
-    auto [items_ptr, items] = create_mock<MockItemsWindowManager>();
-    EXPECT_CALL(items, set_ng_plus(true)).Times(1);
-    EXPECT_CALL(items, set_ng_plus(false)).Times(1);
     auto [rooms_ptr, rooms] = create_mock<MockRoomsWindowManager>();
     EXPECT_CALL(rooms, set_ng_plus(true)).Times(1);
     EXPECT_CALL(rooms, set_ng_plus(false)).Times(1);
-    auto windows = register_test_module().with_rooms(std::move(rooms_ptr)).with_items(std::move(items_ptr)).build();
+    auto windows = register_test_module().with_rooms(std::move(rooms_ptr)).build();
 
     auto level = mock_shared<MockLevel>();
     ON_CALL(*level, ng_plus).WillByDefault(Return(true));
@@ -545,10 +542,7 @@ TEST(Windows, SetLevel)
     auto [cameras_ptr, cameras] = create_mock<MockCameraSinkWindowManager>();
     EXPECT_CALL(cameras, set_camera_sinks).Times(1);
     auto [items_ptr, items] = create_mock<MockItemsWindowManager>();
-    EXPECT_CALL(items, set_items).Times(1);
-    EXPECT_CALL(items, set_triggers).Times(1);
-    EXPECT_CALL(items, set_level_version).Times(1);
-    EXPECT_CALL(items, set_model_checker).Times(1);
+    EXPECT_CALL(items, add_level).Times(1);
     auto [lights_ptr, lights] = create_mock<MockLightsWindowManager>();
     EXPECT_CALL(lights, set_level_version).Times(1);
     EXPECT_CALL(lights, set_lights).Times(1);

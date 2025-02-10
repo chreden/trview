@@ -48,38 +48,8 @@ namespace trview
         items_window->on_trigger_selected += on_trigger_selected;
         items_window->on_add_to_route += on_add_to_route;
         items_window->set_current_room(_current_room);
-        items_window->set_level_version(_level_version);
-        items_window->set_model_checker(_model_checker);
-        items_window->set_ng_plus(_ng_plus);
         items_window->set_selected_item(_selected_item);
         return add_window(items_window);
-    }
-
-    void ItemsWindowManager::set_level_version(trlevel::LevelVersion version)
-    {
-        _level_version = version;
-        for (auto& window : _windows)
-        {
-            window.second->set_level_version(version);
-        }
-    }
-
-    void ItemsWindowManager::set_model_checker(const std::function<bool(uint32_t)>& checker)
-    {
-        _model_checker = checker;
-        for (auto& window : _windows)
-        {
-            window.second->set_model_checker(checker);
-        }
-    }
-
-    void ItemsWindowManager::set_ng_plus(bool value)
-    {
-        _ng_plus = value;
-        for (auto& [_, window] : _windows)
-        {
-            window->set_ng_plus(value);
-        }
     }
 
     void ItemsWindowManager::set_room(const std::weak_ptr<IRoom>& room)

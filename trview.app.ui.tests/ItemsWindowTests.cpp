@@ -6,6 +6,7 @@
 #include <trview.app/Mocks/Elements/ITrigger.h>
 #include <trview.app/Mocks/Elements/IRoom.h>
 #include <trview.app/Mocks/Elements/IItem.h>
+#include <trview.app/Mocks/Elements/ILevel.h>
 
 #include <ranges>
 #include <format>
@@ -43,6 +44,7 @@ namespace
         std::unique_ptr<ItemsWindow> ptr;
         std::vector<std::shared_ptr<IItem>> items;
         std::vector<std::shared_ptr<ITrigger>> triggers;
+        std::shared_ptr<ILevel> level;
     };
 
     void render(ItemsWindowContext& context)
@@ -71,7 +73,8 @@ void register_items_window_tests(ImGuiTestEngine* engine)
                 mock_shared<MockItem>()->with_number(0),
                 mock_shared<MockItem>()->with_number(1)
             };
-            context.ptr->set_items({ std::from_range, context.items });
+            context.level = mock_shared<MockLevel>()->with_items({ std::from_range, context.items });
+            context.ptr->add_level(context.level);
             context.ptr->set_selected_item(context.items[1]);
 
             ctx->ItemClick("Items 0/**/Add to Route");
@@ -91,7 +94,8 @@ void register_items_window_tests(ImGuiTestEngine* engine)
             context.ptr = register_test_module().with_clipboard(clipboard).build();
 
             context.items =  { mock_shared<MockItem>() };
-            context.ptr->set_items({ std::from_range, context.items });
+            context.level = mock_shared<MockLevel>()->with_items({ std::from_range, context.items });
+            context.ptr->add_level(context.level);
             context.ptr->set_selected_item(context.items[0]);
 
             ctx->ItemClick("Items 0/**/##itemstats/Position");
@@ -113,7 +117,8 @@ void register_items_window_tests(ImGuiTestEngine* engine)
                 mock_shared<MockItem>()->with_number(0),
                 mock_shared<MockItem>()->with_number(1)
             };
-            context.ptr->set_items({ std::from_range, context.items });
+            context.level = mock_shared<MockLevel>()->with_items({ std::from_range, context.items });
+            context.ptr->add_level(context.level);
 
             ctx->ItemUncheck("Items 0/**/Sync");
             ctx->ItemClick("Items 0/**/1##1");
@@ -136,14 +141,12 @@ void register_items_window_tests(ImGuiTestEngine* engine)
                 mock_shared<MockItem>()->with_number(0),
                 mock_shared<MockItem>()->with_number(1)
             };
-            context.ptr->set_items({ std::from_range, context.items });
+            context.level = mock_shared<MockLevel>()->with_items({ std::from_range, context.items });
+            context.ptr->add_level(context.level);
 
             ctx->ItemClick("Items 0/**/1##1");
 
             IM_CHECK_EQ(raised_item, context.items[1]);
-
-            const auto from_window = context.ptr->selected_item().lock();
-            IM_CHECK_EQ(from_window, context.items[1]);
         });
 
     test<ItemsWindowContext>(engine, "Items Window", "Items List Filtered When Room Set and Track Room Enabled",
@@ -163,7 +166,8 @@ void register_items_window_tests(ImGuiTestEngine* engine)
                 mock_shared<MockItem>()->with_number(0)->with_room(mock_shared<MockRoom>()->with_number(55)),
                 mock_shared<MockItem>()->with_number(1)->with_room(room_78)
             };
-            context.ptr->set_items({ std::from_range, context.items });
+            context.level = mock_shared<MockLevel>()->with_items({ std::from_range, context.items });
+            context.ptr->add_level(context.level);
             context.ptr->set_current_room(room_78);
 
             ctx->ItemClick("Items 0/**/Track##track");
@@ -193,7 +197,8 @@ void register_items_window_tests(ImGuiTestEngine* engine)
                 mock_shared<MockItem>()->with_number(0)->with_room(mock_shared<MockRoom>()->with_number(55)),
                 mock_shared<MockItem>()->with_number(1)->with_room(room_78)
             };
-            context.ptr->set_items({ std::from_range, context.items });
+            context.level = mock_shared<MockLevel>()->with_items({ std::from_range, context.items });
+            context.ptr->add_level(context.level);
             context.ptr->set_current_room(room_78);
 
             ctx->ItemClick("Items 0/**/0##0");
@@ -212,7 +217,8 @@ void register_items_window_tests(ImGuiTestEngine* engine)
                 mock_shared<MockItem>()->with_number(0),
                 mock_shared<MockItem>()->with_number(1)
             };
-            context.ptr->set_items({ std::from_range, context.items });
+            context.level = mock_shared<MockLevel>()->with_items({ std::from_range, context.items });
+            context.ptr->add_level(context.level);
 
             for (std::size_t i = 0; i < context.items.size(); ++i)
             {
@@ -231,7 +237,8 @@ void register_items_window_tests(ImGuiTestEngine* engine)
                 mock_shared<MockItem>()->with_number(0)->with_room(mock_shared<MockRoom>()->with_number(55))->with_visible(true),
                 mock_shared<MockItem>()->with_number(1)->with_room(mock_shared<MockRoom>()->with_number(78))->with_visible(true)
             };
-            context.ptr->set_items({ std::from_range, context.items });
+            context.level = mock_shared<MockLevel>()->with_items({ std::from_range, context.items });
+            context.ptr->add_level(context.level);
 
             IM_CHECK_EQ(ctx->ItemExists("Items 0/**/1##1"), true);
             IM_CHECK_EQ(ctx->ItemExists("Items 0/**/##hide-1"), true);
@@ -258,7 +265,8 @@ void register_items_window_tests(ImGuiTestEngine* engine)
             EXPECT_CALL(*item2, set_visible(false)).Times(1);
 
             context.items = { item1, item2 };
-            context.ptr->set_items({ std::from_range, context.items });
+            context.level = mock_shared<MockLevel>()->with_items({ std::from_range, context.items });
+            context.ptr->add_level(context.level);
 
             ctx->ItemCheck("Items 0/**/##hide-1");
 
@@ -276,19 +284,22 @@ void register_items_window_tests(ImGuiTestEngine* engine)
             std::shared_ptr<ITrigger> raised_trigger;
             auto token = context.ptr->on_trigger_selected += [&raised_trigger](const auto& trigger) { raised_trigger = trigger.lock(); };
 
-            auto trigger = mock_shared<MockTrigger>();
-            std::vector<std::shared_ptr<MockItem>> items
+            context.triggers =
+            {
+                mock_shared<MockTrigger>()
+            };
+            context.items =
             {
                 mock_shared<MockItem>()->with_number(0),
-                    mock_shared<MockItem>()->with_number(1)->with_triggers({ trigger })
+                mock_shared<MockItem>()->with_number(1)->with_triggers({ std::from_range, context.triggers })
             };
-            context.ptr->set_items({ std::from_range, items });
-            context.ptr->set_triggers({ trigger });
+            context.level = mock_shared<MockLevel>()->with_items({ std::from_range, context.items })->with_triggers({ std::from_range, context.triggers });
+            context.ptr->add_level(context.level);
 
             ctx->ItemClick("Items 0/**/1##1");
             ctx->ItemClick("Items 0/**/0");
 
-            IM_CHECK_EQ(raised_trigger, trigger);
+            IM_CHECK_EQ(raised_trigger, context.triggers[0]);
         });
 
     test<ItemsWindowContext>(engine, "Items Window", "Triggers Loaded For Item",
@@ -308,8 +319,8 @@ void register_items_window_tests(ImGuiTestEngine* engine)
                 mock_shared<MockItem>()->with_number(0),
                 mock_shared<MockItem>()->with_number(1)->with_triggers({ std::from_range, context.triggers })
             };
-            context.ptr->set_items({ std::from_range, context.items });
-            context.ptr->set_triggers({ std::from_range, context.triggers });
+            context.level = mock_shared<MockLevel>()->with_items({ std::from_range, context.items })->with_triggers({ std::from_range, context.triggers });
+            context.ptr->add_level(context.level);
 
             ctx->ItemClick("Items 0/**/1##1");
 

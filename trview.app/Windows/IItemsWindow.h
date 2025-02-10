@@ -36,9 +36,6 @@ namespace trview
         /// Render the window.
         virtual void render() = 0;
 
-        /// Clear the currently selected item from the details panel.
-        virtual void clear_selected_item() = 0;
-
         /// <summary>
         /// Set the current room. This will be used when the track room setting is on.
         /// </summary>
@@ -49,23 +46,12 @@ namespace trview
         /// @param item The selected item.
         virtual void set_selected_item(const std::weak_ptr<IItem>& item) = 0;
 
-        /// Get the selected item.
-        /// @returns The selected item, if present.
-        virtual std::weak_ptr<IItem> selected_item() const = 0;
         /// <summary>
         /// Update the window.
         /// </summary>
         /// <param name="delta">Elapsed time since previous update.</param>
         virtual void update(float delta) = 0;
-
         virtual void set_number(int32_t number) = 0;
-
-        virtual void set_level_version(trlevel::LevelVersion version) = 0;
-
-        virtual void set_model_checker(const std::function<bool(uint32_t)>& checker) = 0;
-
-        virtual void set_ng_plus(bool value) = 0;
-
         virtual std::string name() const = 0;
     };
 }
