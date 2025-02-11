@@ -8,6 +8,18 @@
 
 namespace trview
 {
+    namespace
+    {
+        bool is_level_mismatch(auto&& e, auto&& level)
+        {
+            if (auto e_ptr = e.lock())
+            {
+                return e_ptr->level().lock() != level.lock();
+            }
+            return false;
+        }
+    }
+
     ITriggersWindow::~ITriggersWindow()
     {
     }
@@ -15,24 +27,120 @@ namespace trview
     TriggersWindow::TriggersWindow(const std::shared_ptr<IClipboard>& clipboard)
         : _clipboard(clipboard)
     {
-        setup_filters();
-
-        _token_store += _track.on_toggle<Type::Room>() += [&](bool value)
-        {
-            _need_filtering = true;
-            if (value)
-            {
-                set_current_room(_current_room);
-            }
-            else
-            {
-                _filter_applied = false;
-                set_triggers(_all_triggers);
-            }
-        };
     }
 
-    void TriggersWindow::set_triggers(const std::vector<std::weak_ptr<ITrigger>>& triggers)
+    void TriggersWindow::add_level(const std::weak_ptr<ILevel>& level)
+    {
+        if (const auto new_level = level.lock())
+        {
+            _sub_windows.push_back(
+                {
+                    ._clipboard = _clipboard,
+                    ._level = level
+                });
+
+            auto& new_window = _sub_windows.back();
+            new_window.setup_filters();
+            new_window.set_items(new_level->items());
+            new_window.set_triggers(new_level->triggers());
+            new_window.setup_track();
+
+            new_window.on_add_to_route += on_add_to_route;
+            new_window.on_camera_sink_selected += on_camera_sink_selected;
+            new_window.on_item_selected += on_item_selected;
+            new_window.on_scene_changed += on_scene_changed;
+            new_window.on_trigger_selected += on_trigger_selected;
+        }
+    }
+
+    void TriggersWindow::render()
+    {
+        if (!render_triggers_window())
+        {
+            on_window_closed();
+            return;
+        }
+    }
+
+    void TriggersWindow::set_current_room(const std::weak_ptr<IRoom>& room)
+    {
+        for (auto& sub_window : _sub_windows)
+        {
+            sub_window.set_current_room(room);
+        }
+    }
+
+    void TriggersWindow::set_number(int32_t number)
+    {
+        _id = "Triggers " + std::to_string(number);
+    }
+
+    void TriggersWindow::set_selected_trigger(const std::weak_ptr<ITrigger>& trigger)
+    {
+        for (auto& window : _sub_windows)
+        {
+            window.set_selected_trigger(trigger);
+        }
+    }
+
+    void TriggersWindow::update(float delta)
+    {
+        for (auto& sub_window : _sub_windows)
+        {
+            sub_window.update(delta);
+        }
+    }
+
+    bool TriggersWindow::render_triggers_window()
+    {
+        bool stay_open = true;
+        ImGui::PushStyleVar(ImGuiStyleVar_WindowMinSize, ImVec2(520, 500));
+        if (ImGui::Begin(_id.c_str(), &stay_open))
+        {
+            if (ImGui::BeginTabBar("TabBar"))
+            {
+                int window_index = 0;
+                for (auto& sub_window : _sub_windows)
+                {
+                    sub_window.render(window_index++);
+                }
+                ImGui::EndTabBar();
+            }
+        }
+        ImGui::End();
+        ImGui::PopStyleVar();
+        return stay_open;
+    }
+
+    bool TriggersWindow::SubWindow::VirtualCommand::operator == (const VirtualCommand& other) const noexcept
+    {
+        return name == other.name;
+    }
+
+    void TriggersWindow::SubWindow::render(int index)
+    {
+        if (const auto& level = _level.lock())
+        {
+            if (ImGui::BeginTabItem(std::format("{}##{}", level->name(), index).c_str()))
+            {
+                render_triggers_list();
+                ImGui::SameLine();
+                render_trigger_details();
+                _force_sort = false;
+
+                if (_tooltip_timer.has_value())
+                {
+                    ImGui::BeginTooltip();
+                    ImGui::Text("Copied");
+                    ImGui::EndTooltip();
+                }
+
+                ImGui::EndTabItem();
+            }
+        }
+    }
+
+    void TriggersWindow::SubWindow::set_triggers(const std::vector<std::weak_ptr<ITrigger>>& triggers)
     {
         _all_triggers = triggers;
 
@@ -45,7 +153,7 @@ namespace trview
                 command_set.insert(command.type());
             }
         }
-        std::vector<VirtualCommand> all_commands{ { .name = "All" }, { .name = "Flipmaps" } };
+        std::vector<VirtualCommand> all_commands{ {.name = "All" }, {.name = "Flipmaps" } };
         all_commands.append_range(command_set | std::views::transform([](auto&& c) -> VirtualCommand { return { .name = command_type_name(c), .type = c }; }));
         _all_commands = all_commands;
 
@@ -54,239 +162,173 @@ namespace trview
         calculate_column_widths();
     }
 
-    void TriggersWindow::clear_selected_trigger()
+    void TriggersWindow::SubWindow::setup_filters()
     {
-        _selected_trigger.reset();
-        _local_selected_trigger_commands.clear();
-    }
-
-    void TriggersWindow::set_current_room(const std::weak_ptr<IRoom>& room)
-    {
-        _current_room = room;
-        _need_filtering = true;
-    }
-
-    void TriggersWindow::set_number(int32_t number)
-    {
-        _id = "Triggers " + std::to_string(number);
-    }
-
-    void TriggersWindow::set_selected_trigger(const std::weak_ptr<ITrigger>& trigger)
-    {
-        _global_selected_trigger = trigger;
-        if (_sync_trigger)
+        _filters.clear_all_getters();
+        std::set<std::string> available_types;
+        for (const auto& trigger : _all_triggers)
         {
-            _scroll_to_trigger = true;
-            set_local_selected_trigger(trigger);
-        }
-    }
-
-    void TriggersWindow::set_sync_trigger(bool value)
-    {
-        if (_sync_trigger != value)
-        {
-            _sync_trigger = value;
-            _scroll_to_trigger = true;
-            if (_sync_trigger && _global_selected_trigger.lock())
+            if (auto trigger_ptr = trigger.lock())
             {
-                set_selected_trigger(_global_selected_trigger);
+                available_types.insert(to_string(trigger_ptr->type()));
             }
         }
-    }
+        _filters.add_getter<std::string>("Type", { available_types.begin(), available_types.end() }, [](auto&& trigger) { return to_string(trigger.type()); });
+        _filters.add_getter<float>("#", [](auto&& trigger) { return static_cast<float>(trigger.number()); });
+        _filters.add_getter<float>("Room", [](auto&& trigger) { return static_cast<float>(trigger_room(trigger)); });
+        _filters.add_getter<std::string>("Flags", [](auto&& trigger) { return format_binary(trigger.flags()); });
+        _filters.add_getter<bool>("Only once", [](auto&& trigger) { return trigger.only_once(); });
+        _filters.add_getter<float>("Timer", [](auto&& trigger) { return static_cast<float>(trigger.timer()); });
 
-    void TriggersWindow::set_items(const std::vector<std::weak_ptr<IItem>>& items)
-    {
-        _all_items = items;
-    }
+        _filters.add_multi_getter<std::string>("Command", [=](auto&& trigger)
+            {
+                return trigger.commands()
+                    | std::views::transform([](auto&& t) { return command_type_name(t.type()); })
+                    | std::ranges::to<std::vector>();
+            });
 
-    std::weak_ptr<ITrigger> TriggersWindow::selected_trigger() const
-    {
-        return _selected_trigger;
-    }
-
-    void TriggersWindow::render()
-    {
-        if (!render_triggers_window())
+        auto all_trigger_indices = [](TriggerCommandType type, const auto& trigger)
         {
-            on_window_closed();
+            std::vector<float> indices;
+            for (const auto& command : trigger.commands())
+            {
+                if (command.type() == type)
+                {
+                    indices.push_back(static_cast<float>(command.index()));
+                }
+            }
+            return indices;
+        };
+
+        auto any_of_command = [&](TriggerCommandType type)
+        {
+            for (auto& trigger : _all_triggers)
+            {
+                if (auto trigger_ptr = trigger.lock())
+                {
+                    for (auto command : trigger_ptr->commands())
+                    {
+                        if (command.type() == type)
+                        {
+                            return true;
+                        }
+                    }
+                }
+            }
+            return false;
+        };
+
+        auto add_multi_getter = [&](TriggerCommandType type)
+        {
+            if (any_of_command(type))
+            {
+                _filters.add_multi_getter<float>(command_type_name(type), [=](auto&& trigger) { return all_trigger_indices(type, trigger); });
+            }
+        };
+
+        add_multi_getter(TriggerCommandType::Object);
+        add_multi_getter(TriggerCommandType::Camera);
+        add_multi_getter(TriggerCommandType::UnderwaterCurrent);
+        add_multi_getter(TriggerCommandType::FlipMap);
+        add_multi_getter(TriggerCommandType::FlipOn);
+        add_multi_getter(TriggerCommandType::FlipOff);
+        add_multi_getter(TriggerCommandType::LookAtItem);
+        add_multi_getter(TriggerCommandType::EndLevel);
+        add_multi_getter(TriggerCommandType::PlaySoundtrack);
+        add_multi_getter(TriggerCommandType::Flipeffect);
+        add_multi_getter(TriggerCommandType::SecretFound);
+        add_multi_getter(TriggerCommandType::ClearBodies);
+        add_multi_getter(TriggerCommandType::Flyby);
+        add_multi_getter(TriggerCommandType::Cutscene);
+    }
+
+    void TriggersWindow::SubWindow::calculate_column_widths()
+    {
+        if (ImGui::GetCurrentContext() == nullptr)
+        {
             return;
         }
-    }
 
-    void TriggersWindow::update(float delta)
-    {
-        if (_tooltip_timer.has_value())
+        _column_sizer.reset();
+        _column_sizer.measure("#__", 0);
+        _column_sizer.measure("Room__", 1);
+        _column_sizer.measure("Type__", 2);
+        _column_sizer.measure("Hide____", 3);
+        for (const auto& trigger : _all_triggers)
         {
-            _tooltip_timer = _tooltip_timer.value() + delta;
-            if (_tooltip_timer.value() > 0.6f)
+            const auto trigger_ptr = trigger.lock();
+            if (trigger_ptr)
             {
-                _tooltip_timer.reset();
+                _column_sizer.measure(std::to_string(trigger_ptr->number()), 0);
+                if (auto room = trigger_ptr->room().lock())
+                {
+                    _column_sizer.measure(std::to_string(room->number()), 1);
+                }
+                _column_sizer.measure(to_string(trigger_ptr->type()), 2);
             }
         }
     }
 
-    void TriggersWindow::render_triggers_list()
+    void TriggersWindow::SubWindow::filter_triggers()
     {
-        calculate_column_widths();
-        if (ImGui::BeginChild(Names::trigger_list_panel.c_str(), ImVec2(0, 0), ImGuiChildFlags_AutoResizeX, ImGuiWindowFlags_NoScrollbar))
+        if (!_need_filtering && !_filters.test_and_reset_changed() && !_auto_hider.changed())
         {
-            _auto_hider.check_focus();
-
-            _filters.render();
-            ImGui::SameLine();
-
-            _track.render();
-            ImGui::SameLine();
-            bool sync_trigger = _sync_trigger;
-            if (ImGui::Checkbox(Names::sync_trigger.c_str(), &sync_trigger))
-            {
-                set_sync_trigger(sync_trigger);
-            }
-
-            _auto_hider.render();
-
-            ImGui::PushItemWidth(-1);
-            const auto current_command = _selected_command.value_or(VirtualCommand{ .name = "All" });
-            if (ImGui::BeginCombo(Names::command_filter.c_str(), current_command.name.c_str()))
-            {
-                for (const auto& command : _all_commands)
-                {
-                    bool is_selected = current_command == command;
-                    if (ImGui::Selectable(command.name.c_str(), is_selected))
-                    {
-                        _selected_commands.clear();
-                        if (command.name == "Flipmaps")
-                        {
-                            _selected_commands.push_back(TriggerCommandType::FlipMap);
-                            _selected_commands.push_back(TriggerCommandType::FlipOff);
-                            _selected_commands.push_back(TriggerCommandType::FlipOn);
-                        }
-                        else if (command.name != "All")
-                        {
-                            _selected_commands.push_back(command.type);
-                        }
-                        _selected_command = command;
-                        _need_filtering = true;
-                    }
-
-                    if (is_selected)
-                    {
-                        ImGui::SetItemDefaultFocus();
-                    }
-                }
-                ImGui::EndCombo();
-            }
-
-            RowCounter counter{ "triggers", _all_triggers.size() };
-            if (ImGui::BeginTable(Names::triggers_list.c_str(), 4, ImGuiTableFlags_Sortable | ImGuiTableFlags_ScrollY, ImVec2(0, -counter.height())))
-            {
-                imgui_header_row(
-                    {
-                        { "#", _column_sizer.size(0) },
-                        { "Room", _column_sizer.size(1) },
-                        { "Type", _column_sizer.size(2) },
-                        { .name = "Hide", .width = _column_sizer.size(3), .set_checked = [&](bool v)
-                            {
-                                std::ranges::for_each(_filtered_triggers, [=](auto&& trigger) 
-                                    {
-                                        auto trigger_ptr = trigger.lock(); trigger_ptr->set_visible(!v); 
-                                    });
-                                on_scene_changed();
-                            }, .checked = std::ranges::all_of(_filtered_triggers, [](auto&& trigger) { auto trigger_ptr = trigger.lock(); return trigger_ptr ? !trigger_ptr->visible() : false; })
-                        }
-                    });
-
-                filter_triggers();
-                counter.set_count(_filtered_triggers.size());
-
-                imgui_sort_weak(_filtered_triggers,
-                    {
-                        [](auto&& l, auto&& r) { return l.number() < r.number(); },
-                        [](auto&& l, auto&& r) { return std::tuple(trigger_room(l), l.number()) < std::tuple(trigger_room(r), r.number()); },
-                        [](auto&& l, auto&& r) { return std::tuple(to_string(l.type()), l.number()) < std::tuple(to_string(r.type()), r.number()); },
-                        [](auto&& l, auto&& r) { return std::tuple(l.visible(), l.number()) < std::tuple(r.visible(), r.number()); }
-                    }, _force_sort);
-
-                ImGuiListClipper clipper;
-                clipper.Begin(static_cast<int>(std::ssize(_filtered_triggers)));
-
-                while (clipper.Step())
-                {
-                    for (int i = clipper.DisplayStart; i < clipper.DisplayEnd; i++)
-                    {
-                        const auto trigger_ptr = _filtered_triggers[i].lock();
-
-                        ImGui::TableNextRow();
-                        ImGui::TableNextColumn();
-                        bool selected = _selected_trigger.lock() && _selected_trigger.lock()->number() == trigger_ptr->number();
-
-                        ImGuiScroller scroller;
-                        if (selected && _scroll_to_trigger)
-                        {
-                            scroller.scroll_to_item();
-                            _scroll_to_trigger = false;
-                        }
-
-                        ImGui::SetNextItemAllowOverlap();
-                        if (ImGui::Selectable(std::format("{0}##{0}", trigger_ptr->number()).c_str(), &selected, ImGuiSelectableFlags_SpanAllColumns | static_cast<int>(ImGuiSelectableFlags_SelectOnNav)))
-                        {
-                            scroller.fix_scroll();
-                            set_local_selected_trigger(trigger_ptr);
-                            if (_sync_trigger)
-                            {
-                                on_trigger_selected(trigger_ptr);
-                            }
-                            _scroll_to_trigger = false;
-                        }
-
-                        ImGui::TableNextColumn();
-                        ImGui::Text(std::to_string(trigger_room(trigger_ptr)).c_str());
-                        ImGui::TableNextColumn();
-                        ImGui::Text(to_string(trigger_ptr->type()).c_str());
-                        ImGui::TableNextColumn();
-                        bool hidden = !trigger_ptr->visible();
-                        ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0, 0));
-                        if (ImGui::Checkbox(std::format("##hide-{}", trigger_ptr->number()).c_str(), &hidden))
-                        {
-                            trigger_ptr->set_visible(!hidden);
-                            on_scene_changed();
-                        }
-                        ImGui::PopStyleVar();
-                    }
-                }
-
-                const auto index = index_of_selected();
-                if (index.has_value())
-                {
-                    const float item_pos_y = clipper.StartPosY + clipper.ItemsHeight * index.value();
-                    ImGui::SetScrollFromPosY(item_pos_y - ImGui::GetWindowPos().y);
-                }
-
-                clipper.End();
-                ImGui::EndTable();
-                counter.render();
-            }
+            return;
         }
-        ImGui::EndChild();
+
+        _filtered_triggers.clear();
+        std::copy_if(_all_triggers.begin(), _all_triggers.end(), std::back_inserter(_filtered_triggers),
+            [&](const auto& trigger)
+            {
+                const auto trigger_ptr = trigger.lock();
+                return !((_track.enabled<Type::Room>() && trigger_ptr->room().lock() != _current_room.lock() || !_filters.match(*trigger_ptr)) ||
+                    (!_selected_commands.empty() && !has_any_command(*trigger_ptr, _selected_commands)));
+            });
+        _need_filtering = false;
+        _force_sort = true;
+
+        if (_auto_hider.apply(_all_triggers, _filtered_triggers | std::views::transform([](auto&& t) { return t.lock(); })))
+        {
+            on_scene_changed();
+        }
     }
 
-    void TriggersWindow::render_trigger_details()
+    std::optional<int> TriggersWindow::SubWindow::index_of_selected() const
+    {
+        const auto selected = _selected_trigger.lock();
+        if (selected && _scroll_to_trigger)
+        {
+            const auto found = std::find_if(_filtered_triggers.begin(), _filtered_triggers.end(),
+                [&](auto&& t)
+                {
+                    auto t_l = t.lock();
+                    return t_l && t_l->number() == selected->number();
+                });
+            if (found != _filtered_triggers.end())
+            {
+                return static_cast<int>(found - _filtered_triggers.begin());
+            }
+        }
+        return std::nullopt;
+    }
+
+    void TriggersWindow::SubWindow::render_trigger_details()
     {
         auto get_command_display = [this](const Command& command)
-        {
-            if (command.type() == TriggerCommandType::LookAtItem || command.type() == TriggerCommandType::Object)
             {
-                if (command.index() < _all_items.size())
+                if (command.type() == TriggerCommandType::LookAtItem || command.type() == TriggerCommandType::Object)
                 {
-                    if (auto item = _all_items[command.index()].lock())
+                    if (command.index() < _all_items.size())
                     {
-                        return item->type();
+                        if (auto item = _all_items[command.index()].lock())
+                        {
+                            return item->type();
+                        }
                     }
+                    return std::string("No Item");
                 }
-                return std::string("No Item");
-            }
-            return std::string();
-        };
+                return std::string();
+            };
 
         if (ImGui::BeginChild(Names::details_panel.c_str(), ImVec2(), true))
         {
@@ -420,30 +462,168 @@ namespace trview
         ImGui::EndChild();
     }
 
-    bool TriggersWindow::render_triggers_window()
+    void TriggersWindow::SubWindow::render_triggers_list()
     {
-        bool stay_open = true;
-        ImGui::PushStyleVar(ImGuiStyleVar_WindowMinSize, ImVec2(520, 500));
-        if (ImGui::Begin(_id.c_str(), &stay_open))
+        calculate_column_widths();
+        if (ImGui::BeginChild(Names::trigger_list_panel.c_str(), ImVec2(0, 0), ImGuiChildFlags_AutoResizeX, ImGuiWindowFlags_NoScrollbar))
         {
-            render_triggers_list();
-            ImGui::SameLine();
-            render_trigger_details();
-            _force_sort = false;
+            _auto_hider.check_focus();
 
-            if (_tooltip_timer.has_value())
+            _filters.render();
+            ImGui::SameLine();
+
+            _track.render();
+            ImGui::SameLine();
+            bool sync_trigger = _sync_trigger;
+            if (ImGui::Checkbox(Names::sync_trigger.c_str(), &sync_trigger))
             {
-                ImGui::BeginTooltip();
-                ImGui::Text("Copied");
-                ImGui::EndTooltip();
+                set_sync_trigger(sync_trigger);
+            }
+
+            _auto_hider.render();
+
+            ImGui::PushItemWidth(-1);
+            const auto current_command = _selected_command.value_or(VirtualCommand{ .name = "All" });
+            if (ImGui::BeginCombo(Names::command_filter.c_str(), current_command.name.c_str()))
+            {
+                for (const auto& command : _all_commands)
+                {
+                    bool is_selected = current_command == command;
+                    if (ImGui::Selectable(command.name.c_str(), is_selected))
+                    {
+                        _selected_commands.clear();
+                        if (command.name == "Flipmaps")
+                        {
+                            _selected_commands.push_back(TriggerCommandType::FlipMap);
+                            _selected_commands.push_back(TriggerCommandType::FlipOff);
+                            _selected_commands.push_back(TriggerCommandType::FlipOn);
+                        }
+                        else if (command.name != "All")
+                        {
+                            _selected_commands.push_back(command.type);
+                        }
+                        _selected_command = command;
+                        _need_filtering = true;
+                    }
+
+                    if (is_selected)
+                    {
+                        ImGui::SetItemDefaultFocus();
+                    }
+                }
+                ImGui::EndCombo();
+            }
+
+            RowCounter counter{ "triggers", _all_triggers.size() };
+            if (ImGui::BeginTable(Names::triggers_list.c_str(), 4, ImGuiTableFlags_Sortable | ImGuiTableFlags_ScrollY, ImVec2(0, -counter.height())))
+            {
+                imgui_header_row(
+                    {
+                        { "#", _column_sizer.size(0) },
+                        { "Room", _column_sizer.size(1) },
+                        { "Type", _column_sizer.size(2) },
+                        {.name = "Hide", .width = _column_sizer.size(3), .set_checked = [&](bool v)
+                            {
+                                std::ranges::for_each(_filtered_triggers, [=](auto&& trigger)
+                                    {
+                                        auto trigger_ptr = trigger.lock(); trigger_ptr->set_visible(!v);
+                                    });
+                                on_scene_changed();
+                            }, .checked = std::ranges::all_of(_filtered_triggers, [](auto&& trigger) { auto trigger_ptr = trigger.lock(); return trigger_ptr ? !trigger_ptr->visible() : false; })
+                        }
+                    });
+
+                filter_triggers();
+                counter.set_count(_filtered_triggers.size());
+
+                imgui_sort_weak(_filtered_triggers,
+                    {
+                        [](auto&& l, auto&& r) { return l.number() < r.number(); },
+                        [](auto&& l, auto&& r) { return std::tuple(trigger_room(l), l.number()) < std::tuple(trigger_room(r), r.number()); },
+                        [](auto&& l, auto&& r) { return std::tuple(to_string(l.type()), l.number()) < std::tuple(to_string(r.type()), r.number()); },
+                        [](auto&& l, auto&& r) { return std::tuple(l.visible(), l.number()) < std::tuple(r.visible(), r.number()); }
+                    }, _force_sort);
+
+                ImGuiListClipper clipper;
+                clipper.Begin(static_cast<int>(std::ssize(_filtered_triggers)));
+
+                while (clipper.Step())
+                {
+                    for (int i = clipper.DisplayStart; i < clipper.DisplayEnd; i++)
+                    {
+                        const auto trigger_ptr = _filtered_triggers[i].lock();
+
+                        ImGui::TableNextRow();
+                        ImGui::TableNextColumn();
+                        bool selected = _selected_trigger.lock() && _selected_trigger.lock()->number() == trigger_ptr->number();
+
+                        ImGuiScroller scroller;
+                        if (selected && _scroll_to_trigger)
+                        {
+                            scroller.scroll_to_item();
+                            _scroll_to_trigger = false;
+                        }
+
+                        ImGui::SetNextItemAllowOverlap();
+                        if (ImGui::Selectable(std::format("{0}##{0}", trigger_ptr->number()).c_str(), &selected, ImGuiSelectableFlags_SpanAllColumns | static_cast<int>(ImGuiSelectableFlags_SelectOnNav)))
+                        {
+                            scroller.fix_scroll();
+                            set_local_selected_trigger(trigger_ptr);
+                            if (_sync_trigger)
+                            {
+                                on_trigger_selected(trigger_ptr);
+                            }
+                            _scroll_to_trigger = false;
+                        }
+
+                        ImGui::TableNextColumn();
+                        ImGui::Text(std::to_string(trigger_room(trigger_ptr)).c_str());
+                        ImGui::TableNextColumn();
+                        ImGui::Text(to_string(trigger_ptr->type()).c_str());
+                        ImGui::TableNextColumn();
+                        bool hidden = !trigger_ptr->visible();
+                        ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0, 0));
+                        if (ImGui::Checkbox(std::format("##hide-{}", trigger_ptr->number()).c_str(), &hidden))
+                        {
+                            trigger_ptr->set_visible(!hidden);
+                            on_scene_changed();
+                        }
+                        ImGui::PopStyleVar();
+                    }
+                }
+
+                const auto index = index_of_selected();
+                if (index.has_value())
+                {
+                    const float item_pos_y = clipper.StartPosY + clipper.ItemsHeight * index.value();
+                    ImGui::SetScrollFromPosY(item_pos_y - ImGui::GetWindowPos().y);
+                }
+
+                clipper.End();
+                ImGui::EndTable();
+                counter.render();
             }
         }
-        ImGui::End();
-        ImGui::PopStyleVar();
-        return stay_open;
+        ImGui::EndChild();
     }
 
-    void TriggersWindow::set_local_selected_trigger(const std::weak_ptr<ITrigger>& trigger)
+    void TriggersWindow::SubWindow::set_current_room(const std::weak_ptr<IRoom>& room)
+    {
+        if (is_level_mismatch(room, _level))
+        {
+            return;
+        }
+
+        _current_room = room;
+        _need_filtering = true;
+    }
+
+    void TriggersWindow::SubWindow::set_items(const std::vector<std::weak_ptr<IItem>>& items)
+    {
+        _all_items = items;
+    }
+
+    void TriggersWindow::SubWindow::set_local_selected_trigger(const std::weak_ptr<ITrigger>& trigger)
     {
         _selected_trigger = trigger;
         _local_selected_trigger_commands.clear();
@@ -454,158 +634,61 @@ namespace trview
         }
     }
 
-    void TriggersWindow::setup_filters()
+    void TriggersWindow::SubWindow::set_selected_trigger(const std::weak_ptr<ITrigger>& trigger)
     {
-        _filters.clear_all_getters();
-        std::set<std::string> available_types;
-        for (const auto& trigger : _all_triggers)
-        {
-            if (auto trigger_ptr = trigger.lock())
-            {
-                available_types.insert(to_string(trigger_ptr->type()));
-            }
-        }
-        _filters.add_getter<std::string>("Type", { available_types.begin(), available_types.end() }, [](auto&& trigger) { return to_string(trigger.type()); });
-        _filters.add_getter<float>("#", [](auto&& trigger) { return static_cast<float>(trigger.number()); });
-        _filters.add_getter<float>("Room", [](auto&& trigger) { return static_cast<float>(trigger_room(trigger)); });
-        _filters.add_getter<std::string>("Flags", [](auto&& trigger) { return format_binary(trigger.flags()); });
-        _filters.add_getter<bool>("Only once", [](auto&& trigger) { return trigger.only_once(); });
-        _filters.add_getter<float>("Timer", [](auto&& trigger) { return static_cast<float>(trigger.timer()); });
-
-        _filters.add_multi_getter<std::string>("Command", [=](auto&& trigger)
-            {
-                return trigger.commands()
-                    | std::views::transform([](auto&& t) { return command_type_name(t.type()); })
-                    | std::ranges::to<std::vector>();
-            });
-
-        auto all_trigger_indices = [](TriggerCommandType type, const auto& trigger)
-        {
-            std::vector<float> indices;
-            for (const auto& command : trigger.commands())
-            {
-                if (command.type() == type)
-                {
-                    indices.push_back(static_cast<float>(command.index()));
-                }
-            }
-            return indices;
-        };
-
-        auto any_of_command = [&](TriggerCommandType type)
-        {
-            for (auto& trigger : _all_triggers)
-            {
-                if (auto trigger_ptr = trigger.lock())
-                {
-                    for (auto command : trigger_ptr->commands())
-                    {
-                        if (command.type() == type)
-                        {
-                            return true;
-                        }
-                    }
-                }
-            }
-            return false;
-        };
-
-        auto add_multi_getter = [&](TriggerCommandType type)
-        {
-            if (any_of_command(type))
-            {
-                _filters.add_multi_getter<float>(command_type_name(type), [=](auto&& trigger) { return all_trigger_indices(type, trigger); });
-            }
-        };
-
-        add_multi_getter(TriggerCommandType::Object);
-        add_multi_getter(TriggerCommandType::Camera);
-        add_multi_getter(TriggerCommandType::UnderwaterCurrent);
-        add_multi_getter(TriggerCommandType::FlipMap);
-        add_multi_getter(TriggerCommandType::FlipOn);
-        add_multi_getter(TriggerCommandType::FlipOff);
-        add_multi_getter(TriggerCommandType::LookAtItem);
-        add_multi_getter(TriggerCommandType::EndLevel);
-        add_multi_getter(TriggerCommandType::PlaySoundtrack);
-        add_multi_getter(TriggerCommandType::Flipeffect);
-        add_multi_getter(TriggerCommandType::SecretFound);
-        add_multi_getter(TriggerCommandType::ClearBodies);
-        add_multi_getter(TriggerCommandType::Flyby);
-        add_multi_getter(TriggerCommandType::Cutscene);
-    }
-
-    void TriggersWindow::filter_triggers()
-    {
-        if (!_need_filtering && !_filters.test_and_reset_changed() && !_auto_hider.changed())
+        if (is_level_mismatch(trigger, _level))
         {
             return;
         }
 
-        _filtered_triggers.clear();
-        std::copy_if(_all_triggers.begin(), _all_triggers.end(), std::back_inserter(_filtered_triggers),
-            [&](const auto& trigger)
-            {
-                const auto trigger_ptr = trigger.lock();
-                return !((_track.enabled<Type::Room>() && trigger_ptr->room().lock() != _current_room.lock() || !_filters.match(*trigger_ptr)) ||
-                         (!_selected_commands.empty() && !has_any_command(*trigger_ptr, _selected_commands)));
-            });
-        _need_filtering = false;
-        _force_sort = true;
-
-        if (_auto_hider.apply(_all_triggers, _filtered_triggers | std::views::transform([](auto&& t) { return t.lock(); })))
+        _global_selected_trigger = trigger;
+        if (_sync_trigger)
         {
-            on_scene_changed();
+            _scroll_to_trigger = true;
+            set_local_selected_trigger(trigger);
         }
     }
 
-    void TriggersWindow::calculate_column_widths()
+    void TriggersWindow::SubWindow::set_sync_trigger(bool value)
     {
-        if (ImGui::GetCurrentContext() == nullptr)
+        if (_sync_trigger != value)
         {
-            return;
-        }
-
-        _column_sizer.reset();
-        _column_sizer.measure("#__", 0);
-        _column_sizer.measure("Room__", 1);
-        _column_sizer.measure("Type__", 2);
-        _column_sizer.measure("Hide____", 3);
-        for (const auto& trigger : _all_triggers)
-        {
-            const auto trigger_ptr = trigger.lock();
-            if (trigger_ptr)
+            _sync_trigger = value;
+            _scroll_to_trigger = true;
+            if (_sync_trigger && _global_selected_trigger.lock())
             {
-                _column_sizer.measure(std::to_string(trigger_ptr->number()), 0);
-                if (auto room = trigger_ptr->room().lock())
-                {
-                    _column_sizer.measure(std::to_string(room->number()), 1);
-                }
-                _column_sizer.measure(to_string(trigger_ptr->type()), 2);
+                set_selected_trigger(_global_selected_trigger);
             }
         }
     }
 
-    std::optional<int> TriggersWindow::index_of_selected() const
+    void TriggersWindow::SubWindow::setup_track()
     {
-        const auto selected = _selected_trigger.lock();
-        if (selected && _scroll_to_trigger)
+        // TODO: Fix capture of object - ptr?
+        _token_store += _track.on_toggle<Type::Room>() += [&](bool value)
         {
-            const auto found = std::find_if(_filtered_triggers.begin(), _filtered_triggers.end(),
-                [&](auto&& t)
-                {
-                    auto t_l = t.lock();
-                    return t_l && t_l->number() == selected->number();
-                });
-            if (found != _filtered_triggers.end())
+            _need_filtering = true;
+            if (value)
             {
-                return static_cast<int>(found - _filtered_triggers.begin());
+                set_current_room(_current_room);
             }
-        }
-        return std::nullopt;
+            else
+            {
+                _filter_applied = false;
+                set_triggers(_all_triggers);
+            }
+        };
     }
 
-    bool TriggersWindow::VirtualCommand::operator == (const VirtualCommand& other) const noexcept
+    void TriggersWindow::SubWindow::update(float delta)
     {
-        return name == other.name;
+        if (_tooltip_timer.has_value())
+        {
+            _tooltip_timer = _tooltip_timer.value() + delta;
+            if (_tooltip_timer.value() > 0.6f)
+            {
+                _tooltip_timer.reset();
+            }
+        }
     }
 }

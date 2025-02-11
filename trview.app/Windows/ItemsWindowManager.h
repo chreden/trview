@@ -33,12 +33,10 @@ namespace trview
         virtual void update(float delta) override;
         std::vector<std::weak_ptr<IItemsWindow>> windows() const override;
     private:
-        std::vector<std::weak_ptr<IItem>> _items;
-        std::vector<std::weak_ptr<ITrigger>> _triggers;
+        // TODO: Make these two per level
         std::weak_ptr<IRoom> _current_room;
         std::weak_ptr<IItem> _selected_item;
         IItemsWindow::Source _items_window_source;
-        std::function<bool(uint32_t)> _model_checker;
         std::vector<std::weak_ptr<ILevel>> _levels;
     };
 }

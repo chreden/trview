@@ -520,18 +520,6 @@ namespace trview
         _all_triggers = triggers;
     }
 
-    void ItemsWindow::SubWindow::update(float delta)
-    {
-        if (_tooltip_timer.has_value())
-        {
-            _tooltip_timer = _tooltip_timer.value() + delta;
-            if (_tooltip_timer.value() > 0.6f)
-            {
-                _tooltip_timer.reset();
-            }
-        }
-    }
-
     void ItemsWindow::SubWindow::setup_filters()
     {
         _filters.clear_all_getters();
@@ -583,5 +571,17 @@ namespace trview
             {
                 return item.ng_plus() == std::nullopt ? std::vector<bool>{} : std::vector<bool>{false,true};
             });
+    }
+
+    void ItemsWindow::SubWindow::update(float delta)
+    {
+        if (_tooltip_timer.has_value())
+        {
+            _tooltip_timer = _tooltip_timer.value() + delta;
+            if (_tooltip_timer.value() > 0.6f)
+            {
+                _tooltip_timer.reset();
+            }
+        }
     }
 }

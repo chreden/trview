@@ -165,8 +165,6 @@ void register_triggers_window_tests(ImGuiTestEngine* engine)
 
             ctx->ItemClick("/**/0##command-0");
 
-            auto selected = context.ptr->selected_trigger().lock();
-            IM_CHECK_EQ(selected, trigger);
             IM_CHECK_EQ(raised_item, context.items[1]);
         });
 
@@ -275,9 +273,6 @@ void register_triggers_window_tests(ImGuiTestEngine* engine)
             ctx->ItemClick("/**/1##1");
 
             IM_CHECK_EQ(raised_trigger, trigger2);
-
-            const auto from_window = context.ptr->selected_trigger().lock();
-            IM_CHECK_EQ(from_window, trigger2);
         });
 
     test<TriggersWindowContext>(engine, "Triggers Window", "Trigger Selected Not Raised When Sync Trigger Disabled",

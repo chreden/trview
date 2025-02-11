@@ -21,20 +21,19 @@ namespace trview
         /// @param triggers_window_source Function to call to create a triggers window.
         explicit TriggersWindowManager(const Window& window, const std::shared_ptr<IShortcuts>& shortcuts, const ITriggersWindow::Source& triggers_window_source);
         virtual ~TriggersWindowManager() = default;
-        virtual std::optional<int> process_message(UINT message, WPARAM wParam, LPARAM lParam) override;
-        virtual void render() override;
+        void add_level(const std::weak_ptr<ILevel>& level) override;
+        std::weak_ptr<ITriggersWindow> create_window() override;
+        std::optional<int> process_message(UINT message, WPARAM wParam, LPARAM lParam) override;
+        void render() override;
         const std::weak_ptr<ITrigger> selected_trigger() const;
-        virtual void set_items(const std::vector<std::weak_ptr<IItem>>& items) override;
-        virtual void set_triggers(const std::vector<std::weak_ptr<ITrigger>>& triggers) override;
         void set_room(const std::weak_ptr<IRoom>& room) override;
-        virtual void set_selected_trigger(const std::weak_ptr<ITrigger>& trigger) override;
-        virtual std::weak_ptr<ITriggersWindow> create_window() override;
-        virtual void update(float delta) override;
+        void set_selected_trigger(const std::weak_ptr<ITrigger>& trigger) override;
+        void update(float delta) override;
     private:
-        std::vector<std::weak_ptr<IItem>> _items;
-        std::vector<std::weak_ptr<ITrigger>> _triggers;
+        // TODO: Make these per level
         std::weak_ptr<IRoom> _current_room;
         std::weak_ptr<ITrigger> _selected_trigger;
         ITriggersWindow::Source _triggers_window_source;
+        std::vector<std::weak_ptr<ILevel>> _levels;
     };
 }

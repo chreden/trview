@@ -13,10 +13,10 @@ namespace trview
     {
         using Source = std::function<std::shared_ptr<IItemsWindow>()>;
 
+        Event<std::weak_ptr<IItem>> on_add_to_route;
         Event<std::weak_ptr<IItem>> on_item_selected;
         Event<> on_scene_changed;
         Event<std::weak_ptr<ITrigger>> on_trigger_selected;
-        Event<std::weak_ptr<IItem>> on_add_to_route;
         Event<> on_window_closed;
 
         virtual ~IItemsWindow() = 0;
