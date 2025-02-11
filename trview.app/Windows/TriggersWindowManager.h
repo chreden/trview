@@ -25,15 +25,17 @@ namespace trview
         std::weak_ptr<ITriggersWindow> create_window() override;
         std::optional<int> process_message(UINT message, WPARAM wParam, LPARAM lParam) override;
         void render() override;
-        const std::weak_ptr<ITrigger> selected_trigger() const;
         void set_room(const std::weak_ptr<IRoom>& room) override;
         void set_selected_trigger(const std::weak_ptr<ITrigger>& trigger) override;
         void update(float delta) override;
     private:
-        // TODO: Make these per level
-        std::weak_ptr<IRoom> _current_room;
-        std::weak_ptr<ITrigger> _selected_trigger;
+        struct Selection
+        {
+            std::weak_ptr<ILevel> level;
+            std::weak_ptr<IRoom> room;
+            std::weak_ptr<ITrigger> trigger;
+        };
+        std::vector<Selection> _levels;
         ITriggersWindow::Source _triggers_window_source;
-        std::vector<std::weak_ptr<ILevel>> _levels;
     };
 }

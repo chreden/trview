@@ -60,12 +60,10 @@ TEST(TriggersWindowManager, CreateTriggersWindowKeyboardShortcut)
 TEST(TriggersWindowManager, CreateTriggersWindowCreatesNewWindowWithSavedValues)
 {
     auto mock_window = mock_shared<MockTriggersWindow>();
-    EXPECT_CALL(*mock_window, set_triggers).Times(1);
+    EXPECT_CALL(*mock_window, add_level).Times(1);
     auto manager = register_test_module().with_window_source([&](auto&&...) { return mock_window; }).build();
 
-    auto trigger1 = mock_shared<MockTrigger>();
-    auto trigger2 = mock_shared<MockTrigger>();
-    manager->set_triggers({ trigger1, trigger2 });
+    manager->add_level(mock_shared<MockLevel>());
 
     auto created_window = manager->create_window().lock();
     ASSERT_NE(created_window, nullptr);
@@ -78,9 +76,10 @@ TEST(TriggersWindowManager, CreateTriggersWindowSetsSelectedTriggerOnWindows)
     EXPECT_CALL(*mock_window, set_selected_trigger).Times(1);
     auto manager = register_test_module().with_window_source([&](auto&&...) { return mock_window; }).build();
 
-    auto trigger1 = mock_shared<MockTrigger>();
-    auto trigger2 = mock_shared<MockTrigger>();
-    manager->set_triggers({ trigger1, trigger2 });
+    auto level = mock_shared<MockLevel>();
+    manager->add_level(level);
+
+    auto trigger2 = mock_shared<MockTrigger>()->with_level(level);
     manager->set_selected_trigger(trigger2);
 
     auto created_window = manager->create_window().lock();
@@ -153,53 +152,22 @@ TEST(TriggersWindowManager, AddToRouteEventRaised)
     ASSERT_EQ(raised_trigger.value().lock(), trigger);
 }
 
-TEST(TriggersWindowManager, SetItemsSetsItemsOnWindows)
+TEST(TriggersWindowManager, AddLevelAddsToWindows)
 {
     auto mock_window = mock_shared<MockTriggersWindow>();
-    EXPECT_CALL(*mock_window, set_items).Times(2);
+    EXPECT_CALL(*mock_window, add_level).Times(2);
     auto manager = register_test_module().with_window_source([&](auto&&...) { return mock_window; }).build();
+
+    auto level1 = mock_shared<MockLevel>();
+    auto level2 = mock_shared<MockLevel>();
+
+    manager->add_level(level1);
 
     auto created_window = manager->create_window().lock();
     ASSERT_NE(created_window, nullptr);
     ASSERT_EQ(created_window, mock_window);
 
-    manager->set_items({});
-}
-
-TEST(TriggersWindowManager, SetTriggersSetsTriggersOnWindows)
-{
-    auto mock_window = mock_shared<MockTriggersWindow>();
-    EXPECT_CALL(*mock_window, set_triggers).Times(2);
-    auto manager = register_test_module().with_window_source([&](auto&&...) { return mock_window; }).build();
-
-    auto created_window = manager->create_window().lock();
-    ASSERT_NE(created_window, nullptr);
-    ASSERT_EQ(created_window, mock_window);
-
-    auto trigger1 = mock_shared<MockTrigger>();
-    auto trigger2 = mock_shared<MockTrigger>();
-    manager->set_triggers({ trigger1, trigger2 });
-}
-
-TEST(TriggersWindowManager, SetTriggersClearsSelectedTrigger)
-{
-    auto mock_window = mock_shared<MockTriggersWindow>();
-    EXPECT_CALL(*mock_window, set_triggers).Times(3);
-    EXPECT_CALL(*mock_window, clear_selected_trigger).Times(2);
-    auto manager = register_test_module().with_window_source([&](auto&&...) { return mock_window; }).build();
-
-    auto created_window = manager->create_window().lock();
-    ASSERT_NE(created_window, nullptr);
-    ASSERT_EQ(created_window, mock_window);
-
-    auto trigger = mock_shared<MockTrigger>();
-    manager->set_triggers({ trigger });
-
-    ASSERT_EQ(manager->selected_trigger().lock(), nullptr);
-    manager->set_selected_trigger(trigger);
-    ASSERT_EQ(manager->selected_trigger().lock(), trigger);
-    manager->set_triggers({});
-    ASSERT_EQ(manager->selected_trigger().lock(), nullptr);
+    manager->add_level(level2);
 }
 
 TEST(TriggersWindowManager, SetRoomSetsRoomOnWindows)
@@ -208,10 +176,13 @@ TEST(TriggersWindowManager, SetRoomSetsRoomOnWindows)
     EXPECT_CALL(*mock_window, set_current_room).Times(2);
     auto manager = register_test_module().with_window_source([&](auto&&...) { return mock_window; }).build();
 
+    auto level = mock_shared<MockLevel>();
+    manager->add_level(level);
+
     auto created_window = manager->create_window().lock();
     ASSERT_NE(created_window, nullptr);
     ASSERT_EQ(created_window, mock_window);
-    manager->set_room(mock_shared<MockRoom>());
+    manager->set_room(mock_shared<MockRoom>()->with_level(level));
 }
 
 TEST(TriggersWindowManager, SetSelectedTriggerSetsSelectedTriggerOnWindows)
@@ -220,14 +191,15 @@ TEST(TriggersWindowManager, SetSelectedTriggerSetsSelectedTriggerOnWindows)
     EXPECT_CALL(*mock_window, set_selected_trigger).Times(2);
     auto manager = register_test_module().with_window_source([&](auto&&...) { return mock_window; }).build();
 
+    auto level = mock_shared<MockLevel>();
+    manager->add_level(level);
+
     auto created_window = manager->create_window().lock();
     ASSERT_NE(created_window, nullptr);
     ASSERT_EQ(created_window, mock_window);
 
-    auto trigger1 = mock_shared<MockTrigger>();
     auto trigger2 = mock_shared<MockTrigger>();
-    manager->set_triggers({ trigger1, trigger2 });
-    manager->set_selected_trigger(trigger2);
+    manager->set_selected_trigger(trigger2->with_level(level));
 }
 
 TEST(TriggersWindowManager, WindowsUpdated)

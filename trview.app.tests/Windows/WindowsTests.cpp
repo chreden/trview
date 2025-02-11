@@ -562,10 +562,9 @@ TEST(Windows, SetLevel)
     EXPECT_CALL(sounds, set_sound_sources).Times(1);
     EXPECT_CALL(sounds, set_sound_storage).Times(1);
     auto [statics_ptr, statics] = create_mock<MockStaticsWindowManager>();
-    EXPECT_CALL(statics, set_statics).Times(1);
+    EXPECT_CALL(statics, add_level).Times(1);
     auto [triggers_ptr, triggers] = create_mock<MockTriggersWindowManager>();
-    EXPECT_CALL(triggers, set_items).Times(1);
-    EXPECT_CALL(triggers, set_triggers).Times(1);
+    EXPECT_CALL(triggers, add_level).Times(1);
     auto [textures_ptr, textures] = create_mock<MockTexturesWindowManager>();
     EXPECT_CALL(textures, set_texture_storage).Times(1);
     auto windows = register_test_module()

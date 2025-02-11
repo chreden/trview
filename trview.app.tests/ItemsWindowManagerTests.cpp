@@ -122,10 +122,13 @@ TEST(ItemsWindowManager, SetRoomSetsRoomOnWindows)
     EXPECT_CALL(*mock_window, set_current_room).Times(2);
     auto manager = register_test_module().with_window_source([&](auto&&...) { return mock_window; }).build();
 
+    auto level = mock_shared<MockLevel>();
+    manager->add_level(level);
+
     auto created_window = manager->create_window().lock();
     ASSERT_NE(created_window, nullptr);
     ASSERT_EQ(created_window, mock_window);
-    manager->set_room(mock_shared<MockRoom>());
+    manager->set_room(mock_shared<MockRoom>()->with_level(level));
 }
 
 TEST(ItemsWindowManager, SetSelectedItemSetsSelectedItemOnWindows)
@@ -134,10 +137,13 @@ TEST(ItemsWindowManager, SetSelectedItemSetsSelectedItemOnWindows)
     EXPECT_CALL(*mock_window, set_selected_item).Times(2);
     auto manager = register_test_module().with_window_source([&](auto&&...) { return mock_window; }).build();
 
+    auto level = mock_shared<MockLevel>();
+    manager->add_level(level);
+
     auto created_window = manager->create_window().lock();
     ASSERT_NE(created_window, nullptr);
     ASSERT_EQ(created_window, mock_window);
-    manager->set_selected_item(mock_shared<MockItem>());
+    manager->set_selected_item(mock_shared<MockItem>()->with_level(level));
 }
 
 TEST(ItemsWindowManager, CreateWindowCreatesNewWindowWithSavedValues)

@@ -1,8 +1,17 @@
 #include "ItemsWindowManager.h"
 #include "../Resources/resource.h"
+#include "../Elements/IRoom.h"
 
 namespace trview
 {
+    namespace
+    {
+        auto find_level(auto&& levels, auto&& level)
+        {
+            return std::ranges::find_if(levels, [=](auto&& l) { return l.level.lock() == level.lock(); });
+        }
+    }
+
     IItemsWindowManager::~IItemsWindowManager()
     {
     }
@@ -15,7 +24,7 @@ namespace trview
 
     void ItemsWindowManager::add_level(const std::weak_ptr<ILevel>& level)
     {
-        _levels.push_back(level);
+        _levels.push_back({ .level = level });
         for (auto& window : _windows)
         {
             window.second->add_level(level);
@@ -39,34 +48,48 @@ namespace trview
     std::weak_ptr<IItemsWindow> ItemsWindowManager::create_window()
     {
         auto items_window = _items_window_source();
-        for (auto& level : _levels)
-        {
-            items_window->add_level(level);
-        }
         items_window->on_item_selected += on_item_selected;
         items_window->on_scene_changed += on_scene_changed;
         items_window->on_trigger_selected += on_trigger_selected;
         items_window->on_add_to_route += on_add_to_route;
-        items_window->set_current_room(_current_room);
-        items_window->set_selected_item(_selected_item);
+        for (auto& level : _levels)
+        {
+            items_window->add_level(level.level);
+            items_window->set_current_room(level.room);
+            items_window->set_selected_item(level.item);
+        }
         return add_window(items_window);
     }
 
     void ItemsWindowManager::set_room(const std::weak_ptr<IRoom>& room)
     {
-        _current_room = room;
-        for (auto& window : _windows)
+        if (const auto room_ptr = room.lock())
         {
-            window.second->set_current_room(room);
+            const auto found = find_level(_levels, room_ptr->level());
+            if (found != _levels.end())
+            {
+                found->room = room;
+                for (auto& window : _windows)
+                {
+                    window.second->set_current_room(room);
+                }
+            }
         }
     }
 
     void ItemsWindowManager::set_selected_item(const std::weak_ptr<IItem>& item)
     {
-        _selected_item = item;
-        for (auto& window : _windows)
+        if (const auto item_ptr = item.lock())
         {
-            window.second->set_selected_item(item);
+            const auto found = find_level(_levels, item_ptr->level());
+            if (found != _levels.end())
+            {
+                found->item = item;
+                for (auto& window : _windows)
+                {
+                    window.second->set_selected_item(item);
+                }
+            }
         }
     }
 

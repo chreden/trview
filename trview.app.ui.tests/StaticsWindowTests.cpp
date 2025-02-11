@@ -4,6 +4,7 @@
 #include <trview.app/Mocks/Elements/IRoom.h>
 #include <trview.app/Windows/Statics/StaticsWindow.h>
 #include <trview.common/Mocks/Windows/IClipboard.h>
+#include <trview.app/Mocks/Elements/ILevel.h>
 
 #include <format>
 #include <ranges>
@@ -40,6 +41,7 @@ namespace
     {
         std::unique_ptr<StaticsWindow> ptr;
         std::vector<std::shared_ptr<MockStaticMesh>> statics;
+        std::shared_ptr<ILevel> level;
     };
 
     void render(StaticsWindowContext& context)
@@ -70,7 +72,8 @@ void register_statics_window_tests(ImGuiTestEngine* engine)
                 mock_shared<MockStaticMesh>()->with_number(0)->with_room(mock_shared<MockRoom>()->with_number(55)),
                 mock_shared<MockStaticMesh>()->with_number(1)->with_room(room_78)
             };
-            context.ptr->set_statics({ std::from_range, context.statics });
+            context.level = mock_shared<MockLevel>()->with_statics({ std::from_range, context.statics });
+            context.ptr->add_level(context.level);
             context.ptr->set_current_room(room_78);
 
             ctx->ItemClick("Statics 0/**/Track##track");
@@ -100,7 +103,8 @@ void register_statics_window_tests(ImGuiTestEngine* engine)
                 mock_shared<MockStaticMesh>()->with_number(0)->with_room(mock_shared<MockRoom>()->with_number(55)),
                 mock_shared<MockStaticMesh>()->with_number(1)->with_room(room_78)
             };
-            context.ptr->set_statics({ std::from_range, context.statics });
+            context.level = mock_shared<MockLevel>()->with_statics({ std::from_range, context.statics });
+            context.ptr->add_level(context.level);
             context.ptr->set_current_room(room_78);
 
             ctx->ItemClick("Statics 0/**/0##0");
@@ -123,7 +127,8 @@ void register_statics_window_tests(ImGuiTestEngine* engine)
                 mock_shared<MockStaticMesh>()->with_number(0),
                 mock_shared<MockStaticMesh>()->with_number(1)
             };
-            context.ptr->set_statics({ std::from_range, context.statics });
+            context.level = mock_shared<MockLevel>()->with_statics({ std::from_range, context.statics });
+            context.ptr->add_level(context.level);
 
             ctx->ItemUncheck("Statics 0/**/Sync");
             ctx->ItemClick("Statics 0/**/1##1");
@@ -146,15 +151,13 @@ void register_statics_window_tests(ImGuiTestEngine* engine)
                 mock_shared<MockStaticMesh>()->with_number(0),
                 mock_shared<MockStaticMesh>()->with_number(1)
             };
-            context.ptr->set_statics({ std::from_range, context.statics });
+            context.level = mock_shared<MockLevel>()->with_statics({ std::from_range, context.statics });
+            context.ptr->add_level(context.level);
 
             ctx->ItemUncheck("Statics 0/**/Sync");
             ctx->ItemClick("Statics 0/**/1##1");
 
             IM_CHECK_EQ(raised_static, nullptr);
-
-            const auto from_window = context.ptr->selected_static().lock();
-            IM_CHECK_EQ(from_window, context.statics[1]);
         });
 
     test<StaticsWindowContext>(engine, "Statics Window", "Static Visibility Changed",
@@ -170,7 +173,8 @@ void register_statics_window_tests(ImGuiTestEngine* engine)
             EXPECT_CALL(*static1, set_visible(false)).Times(1).WillRepeatedly([&](bool v) { static1_visible = v; });
 
             context.statics = { mock_shared<MockStaticMesh>()->with_number(0)->with_visible(true), static1 };
-            context.ptr->set_statics({ std::from_range, context.statics });
+            context.level = mock_shared<MockLevel>()->with_statics({ std::from_range, context.statics });
+            context.ptr->add_level(context.level);
 
             ctx->ItemCheck("Statics 0/**/##hide-1");
         });

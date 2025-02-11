@@ -106,6 +106,12 @@ namespace trview
                 ON_CALL(*this, triggers).WillByDefault(testing::Return(triggers));
                 return shared_from_this();
             }
+
+            std::shared_ptr<MockLevel> with_statics(const std::vector<std::weak_ptr<IStaticMesh>>& statics)
+            {
+                ON_CALL(*this, static_meshes).WillByDefault(testing::Return(statics));
+                return shared_from_this();
+            }
         };
     }
 }

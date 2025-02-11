@@ -1,8 +1,17 @@
 #include "TriggersWindowManager.h"
 #include "../Resources/resource.h"
+#include "../Elements/IRoom.h"
 
 namespace trview
 {
+    namespace
+    {
+        auto find_level(auto&& levels, auto&& level)
+        {
+            return std::ranges::find_if(levels, [=](auto&& l) { return l.level.lock() == level.lock(); });
+        }
+    }
+
     ITriggersWindowManager::~ITriggersWindowManager()
     {
     }
@@ -15,7 +24,7 @@ namespace trview
 
     void TriggersWindowManager::add_level(const std::weak_ptr<ILevel>& level)
     {
-        _levels.push_back(level);
+        _levels.push_back({ .level = level });
         for (auto& window : _windows)
         {
             window.second->add_level(level);
@@ -25,17 +34,17 @@ namespace trview
     std::weak_ptr<ITriggersWindow> TriggersWindowManager::create_window()
     {
         auto triggers_window = _triggers_window_source();
-        for (auto& level : _levels)
-        {
-            triggers_window->add_level(level);
-        }
         triggers_window->on_item_selected += on_item_selected;
         triggers_window->on_trigger_selected += on_trigger_selected;
         triggers_window->on_scene_changed += on_scene_changed;
         triggers_window->on_add_to_route += on_add_to_route;
         triggers_window->on_camera_sink_selected += on_camera_sink_selected;
-        triggers_window->set_current_room(_current_room);
-        triggers_window->set_selected_trigger(_selected_trigger);
+        for (auto& level : _levels)
+        {
+            triggers_window->add_level(level.level);
+            triggers_window->set_current_room(level.room);
+            triggers_window->set_selected_trigger(level.trigger);
+        }
         return add_window(triggers_window);
     }
 
@@ -53,26 +62,35 @@ namespace trview
         WindowManager::render();
     }
 
-    const std::weak_ptr<ITrigger> TriggersWindowManager::selected_trigger() const
-    {
-        return _selected_trigger;
-    }
-
     void TriggersWindowManager::set_room(const std::weak_ptr<IRoom>& room)
     {
-        _current_room = room;
-        for (auto& window : _windows)
+        if (const auto room_ptr = room.lock())
         {
-            window.second->set_current_room(room);
+            const auto found = find_level(_levels, room_ptr->level());
+            if (found != _levels.end())
+            {
+                found->room = room;
+                for (auto& window : _windows)
+                {
+                    window.second->set_current_room(room);
+                }
+            }
         }
     }
 
     void TriggersWindowManager::set_selected_trigger(const std::weak_ptr<ITrigger>& trigger)
     {
-        _selected_trigger = trigger;
-        for (auto& window : _windows)
+        if (const auto trigger_ptr = trigger.lock())
         {
-            window.second->set_selected_trigger(trigger);
+            const auto found = find_level(_levels, trigger_ptr->level());
+            if (found != _levels.end())
+            {
+                found->trigger = trigger;
+                for (auto& window : _windows)
+                {
+                    window.second->set_selected_trigger(trigger);
+                }
+            }
         }
     }
 

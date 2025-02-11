@@ -1,9 +1,22 @@
 #include "StaticsWindow.h"
 #include "../RowCounter.h"
 #include "../../trview_imgui.h"
+#include "../../Elements/ILevel.h"
 
 namespace trview
 {
+    namespace
+    {
+        bool is_level_mismatch(auto&& e, auto&& level)
+        {
+            if (auto e_ptr = e.lock())
+            {
+                return e_ptr->level().lock() != level.lock();
+            }
+            return false;
+        }
+    }
+
     IStaticsWindow::~IStaticsWindow()
     {
     }
@@ -11,7 +24,23 @@ namespace trview
     StaticsWindow::StaticsWindow(const std::shared_ptr<IClipboard>& clipboard)
         : _clipboard(clipboard)
     {
-        setup_filters();
+    }
+
+    void StaticsWindow::add_level(const std::weak_ptr<ILevel>& level)
+    {
+        if (const auto new_level = level.lock())
+        {
+            _sub_windows.push_back(
+                {
+                    ._clipboard = _clipboard,
+                    ._level = level
+                });
+
+            auto& new_window = _sub_windows.back();
+            new_window.setup_filters();
+            new_window.set_statics(new_level->static_meshes());
+            new_window.on_static_selected += on_static_selected;
+        }
     }
 
     void StaticsWindow::render()
@@ -29,17 +58,22 @@ namespace trview
         ImGui::PushStyleVar(ImGuiStyleVar_WindowMinSize, ImVec2(540, 500));
         if (ImGui::Begin(_id.c_str(), &stay_open))
         {
-            render_statics_list();
-            ImGui::SameLine();
-            render_static_details();
-            _force_sort = false;
+            if (ImGui::BeginTabBar("TabBar"))
+            {
+                int window_index = 0;
+                for (auto& sub_window : _sub_windows)
+                {
+                    sub_window.render(window_index++);
+                }
+                ImGui::EndTabBar();
+            }
         }
         ImGui::End();
         ImGui::PopStyleVar();
         return stay_open;
     }
 
-    void StaticsWindow::render_statics_list()
+    void StaticsWindow::SubWindow::render_statics_list()
     {
         calculate_column_widths();
         if (ImGui::BeginChild(Names::statics_list_panel.c_str(), ImVec2(0, 0), ImGuiChildFlags_AutoResizeX, ImGuiWindowFlags_NoScrollbar))
@@ -146,7 +180,7 @@ namespace trview
         ImGui::EndChild();
     }
 
-    void StaticsWindow::render_static_details()
+    void StaticsWindow::SubWindow::render_static_details()
     {
         if (ImGui::BeginChild(Names::details_panel.c_str(), ImVec2(), true))
         {
@@ -199,11 +233,6 @@ namespace trview
         ImGui::EndChild();
     }
 
-    std::weak_ptr<IStaticMesh> StaticsWindow::selected_static() const
-    {
-        return _selected_static_mesh;
-    }
-
     void StaticsWindow::set_number(int32_t number)
     {
         _id = std::format("Statics {}", number);
@@ -213,7 +242,7 @@ namespace trview
     {
     }
 
-    void StaticsWindow::calculate_column_widths()
+    void StaticsWindow::SubWindow::calculate_column_widths()
     {
         _column_sizer.reset();
         
@@ -235,7 +264,22 @@ namespace trview
         }
     }
 
-    void StaticsWindow::set_statics(const std::vector<std::weak_ptr<IStaticMesh>>& statics)
+    void StaticsWindow::SubWindow::render(int index)
+    {
+        if (const auto& level = _level.lock())
+        {
+            if (ImGui::BeginTabItem(std::format("{}##{}", level->name(), index).c_str()))
+            {
+                render_statics_list();
+                ImGui::SameLine();
+                render_static_details();
+                _force_sort = false;
+                ImGui::EndTabItem();
+            }
+        }
+    }
+
+    void StaticsWindow::SubWindow::set_statics(const std::vector<std::weak_ptr<IStaticMesh>>& statics)
     {
         _all_statics = statics;
         setup_filters();
@@ -243,7 +287,7 @@ namespace trview
         calculate_column_widths();
     }
 
-    void StaticsWindow::setup_filters()
+    void StaticsWindow::SubWindow::setup_filters()
     {
         _filters.clear_all_getters();
 
@@ -268,13 +312,13 @@ namespace trview
         _filters.add_getter<bool>("Has Collision", [](auto&& stat) { return stat.has_collision(); });
     }
 
-    void StaticsWindow::set_local_selected_static_mesh(std::weak_ptr<IStaticMesh> static_mesh)
+    void StaticsWindow::SubWindow::set_local_selected_static_mesh(std::weak_ptr<IStaticMesh> static_mesh)
     {
         _selected_static_mesh = static_mesh;
         _force_sort = true;
     }
 
-    void StaticsWindow::set_sync_static(bool value)
+    void StaticsWindow::SubWindow::set_sync_static(bool value)
     {
         if (_sync_static != value)
         {
@@ -289,11 +333,37 @@ namespace trview
 
     void StaticsWindow::set_current_room(const std::weak_ptr<IRoom>& room)
     {
-        _current_room = room;
+        for (auto& sub_window : _sub_windows)
+        {
+            sub_window.set_current_room(room);
+        }
     }
 
     void StaticsWindow::set_selected_static(const std::weak_ptr<IStaticMesh>& static_mesh)
     {
+        for (auto& window : _sub_windows)
+        {
+            window.set_selected_static(static_mesh);
+        }
+    }
+
+    void StaticsWindow::SubWindow::set_current_room(const std::weak_ptr<IRoom>& room)
+    {
+        if (is_level_mismatch(room, _level))
+        {
+            return;
+        }
+
+        _current_room = room;
+    }
+
+    void StaticsWindow::SubWindow::set_selected_static(const std::weak_ptr<IStaticMesh>& static_mesh)
+    {
+        if (is_level_mismatch(static_mesh, _level))
+        {
+            return;
+        }
+
         _global_selected_static = static_mesh;
         if (_sync_static)
         {

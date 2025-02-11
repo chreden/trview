@@ -215,7 +215,7 @@ namespace trview
         _sounds_windows->set_level_version(new_level->version());
         _sounds_windows->set_sound_sources(new_level->sound_sources());
         _sounds_windows->set_sound_storage(new_level->sound_storage());
-        _statics_windows->set_statics(new_level->static_meshes());
+        _statics_windows->add_level(new_level);
         _triggers_windows->add_level(new_level);
         _textures_windows->set_texture_storage(new_level->texture_storage());
 
