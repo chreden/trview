@@ -55,18 +55,46 @@ namespace trview
         
     }
 
-    void ItemsWindow::SubWindow::set_items(const std::vector<std::weak_ptr<IItem>>& items)
+    void ItemsWindow::add_level(const std::weak_ptr<ILevel>& level)
     {
-        _all_items = items;
-        _triggered_by.clear();
-        setup_filters();
-        _force_sort = true;
-        calculate_column_widths();
+        if (const auto new_level = level.lock())
+        {
+            _sub_windows.push_back(
+                {
+                    ._clipboard = _clipboard,
+                    ._level = level,
+                    ._level_version = new_level->version(),
+                    ._model_checker = [=](uint32_t id)
+                        {
+                            auto new_level = level.lock();
+                            return new_level ? new_level->has_model(id) : false;
+                        }
+                });
+
+            auto& new_window = _sub_windows.back();
+            new_window.setup_filters();
+            new_window.set_items(new_level->items());
+            new_window.set_triggers(new_level->triggers());
+
+            new_window.on_item_selected += on_item_selected;
+            new_window.on_add_to_route += on_add_to_route;
+            new_window.on_scene_changed += on_scene_changed;
+            new_window.on_trigger_selected += on_trigger_selected;
+        }
     }
 
-    void ItemsWindow::SubWindow::set_triggers(const std::vector<std::weak_ptr<ITrigger>>& triggers)
+    std::string ItemsWindow::name() const
     {
-        _all_triggers = triggers;
+        return _id;
+    }
+
+    void ItemsWindow::render()
+    {
+        if (!render_items_window())
+        {
+            on_window_closed();
+            return;
+        }
     }
 
     void ItemsWindow::set_current_room(const std::weak_ptr<IRoom>& room)
@@ -77,27 +105,17 @@ namespace trview
         }
     }
 
-    void ItemsWindow::SubWindow::set_current_room(const std::weak_ptr<IRoom>& room)
+    void ItemsWindow::set_filters(const std::weak_ptr<ILevel>& level, std::vector<Filters<IItem>::Filter> filters)
     {
-        if (is_level_mismatch(room, _level))
+        for (auto& sub_window : _sub_windows)
         {
-            return;
+            sub_window.set_filters(level, filters);
         }
-
-        _current_room = room;
     }
 
-    void ItemsWindow::SubWindow::set_sync_item(bool value)
+    void ItemsWindow::set_number(int32_t number)
     {
-        if (_sync_item != value)
-        {
-            _sync_item = value;
-            _scroll_to_item = true;
-            if (_sync_item && _global_selected_item.lock())
-            {
-                set_selected_item(_global_selected_item);
-            }
-        }
+        _id = "Items " + std::to_string(number);
     }
 
     void ItemsWindow::set_selected_item(const std::weak_ptr<IItem>& item)
@@ -108,18 +126,79 @@ namespace trview
         }
     }
 
-    void ItemsWindow::SubWindow::set_selected_item(const std::weak_ptr<IItem>& item)
+    void ItemsWindow::update(float delta)
     {
-        if (is_level_mismatch(item, _level))
+        for (auto& sub_window : _sub_windows)
         {
-            return;
+            sub_window.update(delta);
         }
+    }
 
-        _global_selected_item = item;
-        if (_sync_item)
+    bool ItemsWindow::render_items_window()
+    {
+        bool stay_open = true;
+        ImGui::PushStyleVar(ImGuiStyleVar_WindowMinSize, ImVec2(540, 500));
+        if (ImGui::Begin(_id.c_str(), &stay_open))
         {
-            _scroll_to_item = true;
-            set_local_selected_item(item);
+            if (ImGui::BeginTabBar("TabBar"))
+            {
+                int window_index = 0;
+                for (auto& sub_window : _sub_windows)
+                {
+                    sub_window.render(window_index++);
+                }
+                ImGui::EndTabBar();
+            }
+        }
+        ImGui::End();
+        ImGui::PopStyleVar();
+        return stay_open;
+    }
+
+    void ItemsWindow::SubWindow::calculate_column_widths()
+    {
+        _column_sizer.reset();
+        _column_sizer.measure("#__", 0);
+        _column_sizer.measure("Room__", 1);
+        _column_sizer.measure("ID__", 2);
+        _column_sizer.measure("Type__", 3);
+        _column_sizer.measure("Hide________", 4);
+
+        for (const auto& item : _all_items)
+        {
+            if (auto item_ptr = item.lock())
+            {
+                const bool item_is_virtual = is_virtual(*item_ptr);
+                _column_sizer.measure(std::format("{0}{1}##{0}", item_ptr->number(), item_is_virtual ? "*" : ""), 0);
+                _column_sizer.measure(std::to_string(item_room(item_ptr)), 1);
+                _column_sizer.measure(std::to_string(item_ptr->type_id()), 2);
+                _column_sizer.measure(item_ptr->type(), 3);
+            }
+        }
+    }
+
+    void ItemsWindow::SubWindow::render(int index)
+    {
+        if (const auto& level = _level.lock())
+        {
+            if (ImGui::BeginTabItem(std::format("{}##{}", level->name(), index).c_str()))
+            {
+                _ng_plus = level->ng_plus();
+
+                render_items_list();
+                ImGui::SameLine();
+                render_item_details();
+                _force_sort = false;
+
+                if (_tooltip_timer.has_value())
+                {
+                    ImGui::BeginTooltip();
+                    ImGui::Text("Copied");
+                    ImGui::EndTooltip();
+                }
+
+                ImGui::EndTabItem();
+            }
         }
     }
 
@@ -144,111 +223,111 @@ namespace trview
 
             _auto_hider.render();
 
-            auto filtered_items = 
-                _all_items | 
+            auto filtered_items =
+                _all_items |
                 std::views::transform([](auto&& item) { return item.lock(); }) |
                 std::views::filter([&](auto&& item)
-                    { 
-                        return item && (!item->ng_plus().has_value() || item->ng_plus() == _ng_plus); 
+                    {
+                        return item && (!item->ng_plus().has_value() || item->ng_plus() == _ng_plus);
                     }) |
-                std::views::filter([&](auto&& item) 
+                std::views::filter([&](auto&& item)
                     {
                         return !(!item || (_track.enabled<Type::Room>() && item->room().lock() != _current_room.lock() || !_filters.match(*item)));
                     }) |
-                std::ranges::to<std::vector>();
+                        std::ranges::to<std::vector>();
 
-            if (_auto_hider.apply(_all_items, filtered_items, _filters))
-            {
-                on_scene_changed();
-            }
-
-            RowCounter counter{ "items",
-                static_cast<std::size_t>(std::ranges::count_if(_all_items, [this](auto&& item)
+                    if (_auto_hider.apply(_all_items, filtered_items, _filters))
                     {
-                        const auto item_ptr = item.lock();
-                        return item_ptr && item_ptr->ng_plus().value_or(_ng_plus) == _ng_plus;
-                    }))};
-            if (ImGui::BeginTable(Names::items_list.c_str(), 5, ImGuiTableFlags_Sortable | ImGuiTableFlags_ScrollY, ImVec2(0, -counter.height())))
-            {
-                imgui_header_row(
-                    {
-                        { "#", _column_sizer.size(0) },
-                        { "Room", _column_sizer.size(1) },
-                        { "ID", _column_sizer.size(2) },
-                        { "Type", _column_sizer.size(3) },
-                        { .name = "Hide", .width = _column_sizer.size(4), .set_checked = [&](bool v)
-                            { 
-                                std::ranges::for_each(filtered_items, [=](auto&& item) { item->set_visible(!v); });
-                                on_scene_changed();
-                            }, .checked = std::ranges::all_of(filtered_items, [](auto&& item) { return !item->visible(); })
-                        }
-                    });
-
-                imgui_sort_weak(_all_items,
-                    {
-                        [](auto&& l, auto&& r) { return l.number() < r.number(); },
-                        [](auto&& l, auto&& r) { return std::tuple(item_room(l), l.number()) < std::tuple(item_room(r), r.number()); },
-                        [](auto&& l, auto&& r) { return std::tuple(l.type_id(), l.number()) < std::tuple(r.type_id(), r.number()); },
-                        [](auto&& l, auto&& r) { return std::tuple(l.type(), l.number()) < std::tuple(r.type(), r.number()); },
-                        [](auto&& l, auto&& r) { return std::tuple(l.visible(), l.number()) < std::tuple(r.visible(), r.number()); }
-                    }, _force_sort);
-
-                for (const auto& item : filtered_items)
-                {
-                    counter.count();
-                    ImGui::TableNextRow();
-                    ImGui::TableNextColumn();
-                    auto selected_item = _selected_item.lock();
-                    bool selected = selected_item && selected_item == item;
-
-                    ImGuiScroller scroller;
-                    if (selected && _scroll_to_item)
-                    {
-                        scroller.scroll_to_item();
-                        _scroll_to_item = false;
-                    }
-
-                    const bool item_is_virtual = is_virtual(*item);
-
-                    ImGui::SetNextItemAllowOverlap();
-                    if (ImGui::Selectable(std::format("{0}{1}##{0}", item->number(), item_is_virtual ? "*" : "").c_str(), &selected, ImGuiSelectableFlags_SpanAllColumns | static_cast<int>(ImGuiSelectableFlags_SelectOnNav)))
-                    {
-                        scroller.fix_scroll();
-
-                        set_local_selected_item(item);
-                        if (_sync_item)
-                        {
-                            on_item_selected(item);
-                        }
-                        _scroll_to_item = false;
-                    }
-
-                    if (item_is_virtual && ImGui::IsItemHovered())
-                    {
-                        ImGui::BeginTooltip();
-                        ImGui::Text("Virtual item generated by trview");
-                        ImGui::EndTooltip();
-                    }
-
-                    ImGui::TableNextColumn();
-                    ImGui::Text(std::to_string(item_room(item)).c_str());
-                    ImGui::TableNextColumn();
-                    ImGui::Text(std::to_string(item->type_id()).c_str());
-                    ImGui::TableNextColumn();
-                    ImGui::Text(item->type().c_str());
-                    ImGui::TableNextColumn();
-                    bool hidden = !item->visible();
-                    ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0, 0));
-                    if (ImGui::Checkbox(std::format("##hide-{}", item->number()).c_str(), &hidden))
-                    {
-                        item->set_visible(!hidden);
                         on_scene_changed();
                     }
-                    ImGui::PopStyleVar();
-                }
-                ImGui::EndTable();
-                counter.render();
-            }
+
+                    RowCounter counter{ "items",
+                        static_cast<std::size_t>(std::ranges::count_if(_all_items, [this](auto&& item)
+                            {
+                                const auto item_ptr = item.lock();
+                                return item_ptr && item_ptr->ng_plus().value_or(_ng_plus) == _ng_plus;
+                            })) };
+                    if (ImGui::BeginTable(Names::items_list.c_str(), 5, ImGuiTableFlags_Sortable | ImGuiTableFlags_ScrollY, ImVec2(0, -counter.height())))
+                    {
+                        imgui_header_row(
+                            {
+                                { "#", _column_sizer.size(0) },
+                                { "Room", _column_sizer.size(1) },
+                                { "ID", _column_sizer.size(2) },
+                                { "Type", _column_sizer.size(3) },
+                                {.name = "Hide", .width = _column_sizer.size(4), .set_checked = [&](bool v)
+                                    {
+                                        std::ranges::for_each(filtered_items, [=](auto&& item) { item->set_visible(!v); });
+                                        on_scene_changed();
+                                    }, .checked = std::ranges::all_of(filtered_items, [](auto&& item) { return !item->visible(); })
+                                }
+                            });
+
+                        imgui_sort_weak(_all_items,
+                            {
+                                [](auto&& l, auto&& r) { return l.number() < r.number(); },
+                                [](auto&& l, auto&& r) { return std::tuple(item_room(l), l.number()) < std::tuple(item_room(r), r.number()); },
+                                [](auto&& l, auto&& r) { return std::tuple(l.type_id(), l.number()) < std::tuple(r.type_id(), r.number()); },
+                                [](auto&& l, auto&& r) { return std::tuple(l.type(), l.number()) < std::tuple(r.type(), r.number()); },
+                                [](auto&& l, auto&& r) { return std::tuple(l.visible(), l.number()) < std::tuple(r.visible(), r.number()); }
+                            }, _force_sort);
+
+                        for (const auto& item : filtered_items)
+                        {
+                            counter.count();
+                            ImGui::TableNextRow();
+                            ImGui::TableNextColumn();
+                            auto selected_item = _selected_item.lock();
+                            bool selected = selected_item && selected_item == item;
+
+                            ImGuiScroller scroller;
+                            if (selected && _scroll_to_item)
+                            {
+                                scroller.scroll_to_item();
+                                _scroll_to_item = false;
+                            }
+
+                            const bool item_is_virtual = is_virtual(*item);
+
+                            ImGui::SetNextItemAllowOverlap();
+                            if (ImGui::Selectable(std::format("{0}{1}##{0}", item->number(), item_is_virtual ? "*" : "").c_str(), &selected, ImGuiSelectableFlags_SpanAllColumns | static_cast<int>(ImGuiSelectableFlags_SelectOnNav)))
+                            {
+                                scroller.fix_scroll();
+
+                                set_local_selected_item(item);
+                                if (_sync_item)
+                                {
+                                    on_item_selected(item);
+                                }
+                                _scroll_to_item = false;
+                            }
+
+                            if (item_is_virtual && ImGui::IsItemHovered())
+                            {
+                                ImGui::BeginTooltip();
+                                ImGui::Text("Virtual item generated by trview");
+                                ImGui::EndTooltip();
+                            }
+
+                            ImGui::TableNextColumn();
+                            ImGui::Text(std::to_string(item_room(item)).c_str());
+                            ImGui::TableNextColumn();
+                            ImGui::Text(std::to_string(item->type_id()).c_str());
+                            ImGui::TableNextColumn();
+                            ImGui::Text(item->type().c_str());
+                            ImGui::TableNextColumn();
+                            bool hidden = !item->visible();
+                            ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0, 0));
+                            if (ImGui::Checkbox(std::format("##hide-{}", item->number()).c_str(), &hidden))
+                            {
+                                item->set_visible(!hidden);
+                                on_scene_changed();
+                            }
+                            ImGui::PopStyleVar();
+                        }
+                        ImGui::EndTable();
+                        counter.render();
+                    }
         }
         ImGui::EndChild();
     }
@@ -266,7 +345,7 @@ namespace trview
 
                 if (auto item = _selected_item.lock())
                 {
-                    auto add_stat = [&]<typename T>(const std::string& name, T&& value)
+                    auto add_stat = [&]<typename T>(const std::string & name, T && value)
                     {
                         const auto string_value = get_string(value);
                         ImGui::TableNextColumn();
@@ -293,17 +372,17 @@ namespace trview
                     };
 
                     auto position_text = [&item]()
-                    {
-                        const auto pos = item->position() * trlevel::Scale;
-                        return std::format("{:.0f}, {:.0f}, {:.0f}", pos.x, pos.y, pos.z);
-                    };
+                        {
+                            const auto pos = item->position() * trlevel::Scale;
+                            return std::format("{:.0f}, {:.0f}, {:.0f}", pos.x, pos.y, pos.z);
+                        };
 
-                    auto is_bad_mutant_egg = [&]() 
-                    { 
-                        return _level_version == trlevel::LevelVersion::Tomb1 &&
-                            is_mutant_egg(*item) &&
-                            !_model_checker(mutant_egg_contents(*item));
-                    };
+                    auto is_bad_mutant_egg = [&]()
+                        {
+                            return _level_version == trlevel::LevelVersion::Tomb1 &&
+                                is_mutant_egg(*item) &&
+                                !_model_checker(mutant_egg_contents(*item));
+                        };
 
                     add_stat(std::format("Type{}", is_bad_mutant_egg() ? "*" : ""), item->type());
                     add_stat("#", item->number());
@@ -370,61 +449,14 @@ namespace trview
         ImGui::EndChild();
     }
 
-    bool ItemsWindow::render_items_window()
+    void ItemsWindow::SubWindow::set_current_room(const std::weak_ptr<IRoom>& room)
     {
-        bool stay_open = true;
-        ImGui::PushStyleVar(ImGuiStyleVar_WindowMinSize, ImVec2(540, 500));
-        if (ImGui::Begin(_id.c_str(), &stay_open))
+        if (is_level_mismatch(room, _level))
         {
-            if (ImGui::BeginTabBar("TabBar"))
-            {
-                int window_index = 0;
-                for (auto& sub_window : _sub_windows)
-                {
-                    sub_window.render(window_index++);
-                }
-                ImGui::EndTabBar();
-            }
+            return;
         }
-        ImGui::End();
-        ImGui::PopStyleVar();
-        return stay_open;
-    }
 
-    void ItemsWindow::add_level(const std::weak_ptr<ILevel>& level)
-    {
-        if (const auto new_level = level.lock())
-        {
-            _sub_windows.push_back(
-                {
-                    ._clipboard = _clipboard,
-                    ._level = level,
-                    ._level_version = new_level->version(),
-                    ._model_checker = [=](uint32_t id)
-                        { 
-                            auto new_level = level.lock();
-                            return new_level ? new_level->has_model(id) : false;
-                        }
-                });
-
-            auto& new_window = _sub_windows.back();
-            new_window.setup_filters();
-            new_window.set_items(new_level->items());
-            new_window.set_triggers(new_level->triggers());
-
-            new_window.on_item_selected += on_item_selected;
-            new_window.on_add_to_route += on_add_to_route;
-            new_window.on_scene_changed += on_scene_changed;
-            new_window.on_trigger_selected += on_trigger_selected;
-        }
-    }
-
-    void ItemsWindow::set_filters(const std::weak_ptr<ILevel>& level, std::vector<Filters<IItem>::Filter> filters)
-    {
-        for (auto& sub_window : _sub_windows)
-        {
-            sub_window.set_filters(level, filters);
-        }
+        _current_room = room;
     }
 
     void ItemsWindow::SubWindow::set_filters(const std::weak_ptr<ILevel>& level, std::vector<Filters<IItem>::Filter> filters)
@@ -436,21 +468,56 @@ namespace trview
         _filters.set_filters(filters);
     }
 
-    void ItemsWindow::render()
+    void ItemsWindow::SubWindow::set_items(const std::vector<std::weak_ptr<IItem>>& items)
     {
-        if (!render_items_window())
+        _all_items = items;
+        _triggered_by.clear();
+        setup_filters();
+        _force_sort = true;
+        calculate_column_widths();
+    }
+
+    void ItemsWindow::SubWindow::set_local_selected_item(std::weak_ptr<IItem> item)
+    {
+        _selected_item = item;
+        if (auto selected = _selected_item.lock())
         {
-            on_window_closed();
+            _triggered_by = selected->triggers();
+        }
+        _force_sort = true;
+    }
+
+    void ItemsWindow::SubWindow::set_selected_item(const std::weak_ptr<IItem>& item)
+    {
+        if (is_level_mismatch(item, _level))
+        {
             return;
+        }
+
+        _global_selected_item = item;
+        if (_sync_item)
+        {
+            _scroll_to_item = true;
+            set_local_selected_item(item);
         }
     }
 
-    void ItemsWindow::update(float delta)
+    void ItemsWindow::SubWindow::set_sync_item(bool value)
     {
-        for (auto& sub_window : _sub_windows)
+        if (_sync_item != value)
         {
-            sub_window.update(delta);
+            _sync_item = value;
+            _scroll_to_item = true;
+            if (_sync_item && _global_selected_item.lock())
+            {
+                set_selected_item(_global_selected_item);
+            }
         }
+    }
+
+    void ItemsWindow::SubWindow::set_triggers(const std::vector<std::weak_ptr<ITrigger>>& triggers)
+    {
+        _all_triggers = triggers;
     }
 
     void ItemsWindow::SubWindow::update(float delta)
@@ -463,21 +530,6 @@ namespace trview
                 _tooltip_timer.reset();
             }
         }
-    }
-
-    void ItemsWindow::set_number(int32_t number)
-    {
-        _id = "Items " + std::to_string(number);
-    }
-
-    void ItemsWindow::SubWindow::set_local_selected_item(std::weak_ptr<IItem> item)
-    {
-        _selected_item = item;
-        if (auto selected = _selected_item.lock())
-        {
-            _triggered_by = selected->triggers();
-        }
-        _force_sort = true;
     }
 
     void ItemsWindow::SubWindow::setup_filters()
@@ -531,57 +583,5 @@ namespace trview
             {
                 return item.ng_plus() == std::nullopt ? std::vector<bool>{} : std::vector<bool>{false,true};
             });
-    }
-
-    void ItemsWindow::SubWindow::calculate_column_widths()
-    {
-        _column_sizer.reset();
-        _column_sizer.measure("#__", 0);
-        _column_sizer.measure("Room__", 1);
-        _column_sizer.measure("ID__", 2);
-        _column_sizer.measure("Type__", 3);
-        _column_sizer.measure("Hide________", 4);
-
-        for (const auto& item : _all_items)
-        {
-            if (auto item_ptr = item.lock())
-            {
-                const bool item_is_virtual = is_virtual(*item_ptr);
-                _column_sizer.measure(std::format("{0}{1}##{0}", item_ptr->number(), item_is_virtual ? "*" : ""), 0);
-                _column_sizer.measure(std::to_string(item_room(item_ptr)), 1);
-                _column_sizer.measure(std::to_string(item_ptr->type_id()), 2);
-                _column_sizer.measure(item_ptr->type(), 3);
-            }
-        }
-    }
-
-    std::string ItemsWindow::name() const
-    {
-        return _id;
-    }
-
-    void ItemsWindow::SubWindow::render(int index)
-    {
-        if (const auto& level = _level.lock())
-        {
-            if (ImGui::BeginTabItem(std::format("{}##{}", level->name(), index).c_str()))
-            {
-                _ng_plus = level->ng_plus();
-
-                render_items_list();
-                ImGui::SameLine();
-                render_item_details();
-                _force_sort = false;
-
-                if (_tooltip_timer.has_value())
-                {
-                    ImGui::BeginTooltip();
-                    ImGui::Text("Copied");
-                    ImGui::EndTooltip();
-                }
-
-                ImGui::EndTabItem();
-            }
-        }
     }
 }

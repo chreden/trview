@@ -13,46 +13,21 @@ namespace trview
     {
         using Source = std::function<std::shared_ptr<IItemsWindow>()>;
 
-        virtual ~IItemsWindow() = 0;
-
-        /// Event raised when an item is selected in the list.
         Event<std::weak_ptr<IItem>> on_item_selected;
-
         Event<> on_scene_changed;
-
-        /// Event raised when a trigger is selected in the list.
         Event<std::weak_ptr<ITrigger>> on_trigger_selected;
-
-        /// Event raised when the 'add to route' button is pressed.
         Event<std::weak_ptr<IItem>> on_add_to_route;
-
-        /// Event raised when the window is closed.
         Event<> on_window_closed;
 
+        virtual ~IItemsWindow() = 0;
         virtual void add_level(const std::weak_ptr<ILevel>& level) = 0;
-
-        virtual void set_filters(const std::weak_ptr<ILevel>& level, std::vector<Filters<IItem>::Filter> filters) = 0;
-
-        /// Render the window.
-        virtual void render() = 0;
-
-        /// <summary>
-        /// Set the current room. This will be used when the track room setting is on.
-        /// </summary>
-        /// <param name="room">The current room.</param>
-        virtual void set_current_room(const std::weak_ptr<IRoom>& room) = 0;
-
-        /// Set the selected item.
-        /// @param item The selected item.
-        virtual void set_selected_item(const std::weak_ptr<IItem>& item) = 0;
-
-        /// <summary>
-        /// Update the window.
-        /// </summary>
-        /// <param name="delta">Elapsed time since previous update.</param>
-        virtual void update(float delta) = 0;
-        virtual void set_number(int32_t number) = 0;
         virtual std::string name() const = 0;
+        virtual void render() = 0;
+        virtual void set_current_room(const std::weak_ptr<IRoom>& room) = 0;
+        virtual void set_filters(const std::weak_ptr<ILevel>& level, std::vector<Filters<IItem>::Filter> filters) = 0;
+        virtual void set_number(int32_t number) = 0;
+        virtual void set_selected_item(const std::weak_ptr<IItem>& item) = 0;
+        virtual void update(float delta) = 0;
     };
 }
 

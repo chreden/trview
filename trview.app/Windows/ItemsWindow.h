@@ -33,17 +33,16 @@ namespace trview
         explicit ItemsWindow(const std::shared_ptr<IClipboard>& clipboard);
         virtual ~ItemsWindow() = default;
         void add_level(const std::weak_ptr<ILevel>& level) override;
-        void set_filters(const std::weak_ptr<ILevel>& level, std::vector<Filters<IItem>::Filter> filters) override;
-        virtual void render() override;
-        void set_current_room(const std::weak_ptr<IRoom>& room) override;
-        virtual void set_selected_item(const std::weak_ptr<IItem>& item) override;
-        virtual void update(float delta) override;
-        virtual void set_number(int32_t number) override;
         std::string name() const override;
+        void render() override;
+        void set_current_room(const std::weak_ptr<IRoom>& room) override;
+        void set_filters(const std::weak_ptr<ILevel>& level, std::vector<Filters<IItem>::Filter> filters) override;
+        void set_number(int32_t number) override;
+        void set_selected_item(const std::weak_ptr<IItem>& item) override;
+        void update(float delta) override;
     private:
         bool render_items_window();
 
-        // Experimenting with multiple levels.
         struct SubWindow
         {
             Event<std::weak_ptr<IItem>> on_item_selected;
@@ -51,7 +50,6 @@ namespace trview
             Event<std::weak_ptr<ITrigger>> on_trigger_selected;
             Event<std::weak_ptr<IItem>> on_add_to_route;
 
-            // To contain essentially the current contents of the items window, but nested.
             std::vector<std::weak_ptr<IItem>> _all_items;
             std::vector<std::weak_ptr<ITrigger>> _all_triggers;
             AutoHider _auto_hider;
