@@ -98,7 +98,6 @@ namespace trview
             void set_sync_trigger(bool value);
             void set_triggers(const std::vector<std::weak_ptr<ITrigger>>& triggers);
             void setup_filters();
-            void setup_track();
             void update(float delta);
         };
 

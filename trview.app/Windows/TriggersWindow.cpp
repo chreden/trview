@@ -472,7 +472,23 @@ namespace trview
             _filters.render();
             ImGui::SameLine();
 
-            _track.render();
+            {
+                auto token = _track.on_toggle<Type::Room>() += [&](bool value)
+                    {
+                        _need_filtering = true;
+                        if (value)
+                        {
+                            set_current_room(_current_room);
+                        }
+                        else
+                        {
+                            _filter_applied = false;
+                            set_triggers(_all_triggers);
+                        }
+                    };
+                _track.render();
+            }
+
             ImGui::SameLine();
             bool sync_trigger = _sync_trigger;
             if (ImGui::Checkbox(Names::sync_trigger.c_str(), &sync_trigger))
@@ -660,24 +676,6 @@ namespace trview
                 set_selected_trigger(_global_selected_trigger);
             }
         }
-    }
-
-    void TriggersWindow::SubWindow::setup_track()
-    {
-        // TODO: Fix capture of object - ptr?
-        _token_store += _track.on_toggle<Type::Room>() += [&](bool value)
-        {
-            _need_filtering = true;
-            if (value)
-            {
-                set_current_room(_current_room);
-            }
-            else
-            {
-                _filter_applied = false;
-                set_triggers(_all_triggers);
-            }
-        };
     }
 
     void TriggersWindow::SubWindow::update(float delta)
