@@ -840,6 +840,8 @@ namespace trview
 
         auto old_level = _level;
         _level = level;
+        // TODO: Do this properly.
+        _levels.push_back(_level);
 
         _file_menu->open_file(level->filename());
         _level->set_map_colours(_settings.map_colours);

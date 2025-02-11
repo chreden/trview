@@ -142,6 +142,7 @@ namespace trview
         // Level data components
         std::unique_ptr<ITypeInfoLookup> _type_info_lookup;
         std::shared_ptr<ILevel> _level;
+        std::vector<std::shared_ptr<ILevel>> _levels;
         ILevel::Source _level_source;
 
         // Routing and tools.
