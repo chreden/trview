@@ -31,7 +31,7 @@ namespace trview
 
         virtual void add_level(const std::weak_ptr<ILevel>& level) = 0;
 
-        virtual void set_filters(std::vector<Filters<IItem>::Filter> filters) = 0;
+        virtual void set_filters(const std::weak_ptr<ILevel>& level, std::vector<Filters<IItem>::Filter> filters) = 0;
 
         /// Render the window.
         virtual void render() = 0;

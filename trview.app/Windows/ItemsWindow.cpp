@@ -16,6 +16,15 @@ namespace trview
             { "Trigger triggerer", "Disables the trigger on the same sector until this item is triggered" },
             { "Type*", "Mutant Egg spawn target is missing; egg will be empty" }
         };
+
+        bool is_level_mismatch(auto&& e, auto&& level)
+        {
+            if (auto e_ptr = e.lock())
+            {
+                return e_ptr->level().lock() != level.lock();
+            }
+            return false;
+        }
     }
 
     int32_t bound_rotation(int32_t v)
@@ -70,6 +79,11 @@ namespace trview
 
     void ItemsWindow::SubWindow::set_current_room(const std::weak_ptr<IRoom>& room)
     {
+        if (is_level_mismatch(room, _level))
+        {
+            return;
+        }
+
         _current_room = room;
     }
 
@@ -96,15 +110,9 @@ namespace trview
 
     void ItemsWindow::SubWindow::set_selected_item(const std::weak_ptr<IItem>& item)
     {
-        // Exclude items for other levels.
-        const auto item_ptr = item.lock();
-        if (item_ptr)
+        if (is_level_mismatch(item, _level))
         {
-            const auto level = item_ptr->level().lock();
-            if (level != _level.lock())
-            {
-                return;
-            }
+            return;
         }
 
         _global_selected_item = item;
@@ -411,18 +419,20 @@ namespace trview
         }
     }
 
-    void ItemsWindow::set_filters(std::vector<Filters<IItem>::Filter> filters)
+    void ItemsWindow::set_filters(const std::weak_ptr<ILevel>& level, std::vector<Filters<IItem>::Filter> filters)
     {
-        // TODO: Which level is this for?
         for (auto& sub_window : _sub_windows)
         {
-            sub_window.set_filters(filters);
+            sub_window.set_filters(level, filters);
         }
     }
 
-    void ItemsWindow::SubWindow::set_filters(std::vector<Filters<IItem>::Filter> filters)
+    void ItemsWindow::SubWindow::set_filters(const std::weak_ptr<ILevel>& level, std::vector<Filters<IItem>::Filter> filters)
     {
-        // TODO: Which level is this for?
+        if (level.lock() != _level.lock())
+        {
+            return;
+        }
         _filters.set_filters(filters);
     }
 

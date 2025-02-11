@@ -284,6 +284,7 @@ namespace trview
                             const auto sector_x = static_cast<int>(_context_pick.position.x - (info.x / trlevel::Scale_X));
                             const auto sector_z = static_cast<int>(_context_pick.position.z - (info.z / trlevel::Scale_Z));
                             window->set_filters(
+                                level,
                                 {
                                     {.key = "Room", .compare = CompareOp::Equal, .value = std::to_string(room->number()), .op = Op::And },
                                     {.key = "X", .compare = CompareOp::Between, .value = std::to_string(info.x + sector_x * 1024), .value2 = std::to_string(info.x + (sector_x + 1) * 1024), .op = Op::And },

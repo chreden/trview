@@ -33,7 +33,7 @@ namespace trview
         explicit ItemsWindow(const std::shared_ptr<IClipboard>& clipboard);
         virtual ~ItemsWindow() = default;
         void add_level(const std::weak_ptr<ILevel>& level) override;
-        void set_filters(std::vector<Filters<IItem>::Filter> filters) override;
+        void set_filters(const std::weak_ptr<ILevel>& level, std::vector<Filters<IItem>::Filter> filters) override;
         virtual void render() override;
         void set_current_room(const std::weak_ptr<IRoom>& room) override;
         virtual void set_selected_item(const std::weak_ptr<IItem>& item) override;
@@ -78,7 +78,7 @@ namespace trview
             void render_items_list();
             void render_item_details();
             void set_current_room(const std::weak_ptr<IRoom>& room);
-            void set_filters(std::vector<Filters<IItem>::Filter> filters);
+            void set_filters(const std::weak_ptr<ILevel>& level, std::vector<Filters<IItem>::Filter> filters);
             void set_items(const std::vector<std::weak_ptr<IItem>>& items);
             void set_local_selected_item(std::weak_ptr<IItem> item);
             void set_selected_item(const std::weak_ptr<IItem>& item);
