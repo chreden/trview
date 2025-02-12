@@ -217,7 +217,7 @@ namespace trview
         _sounds_windows->set_sound_storage(new_level->sound_storage());
         _statics_windows->add_level(new_level);
         _triggers_windows->add_level(new_level);
-        _textures_windows->set_texture_storage(new_level->texture_storage());
+        _textures_windows->add_level(new_level);
 
         _level_token_store.clear();
         _level_token_store += new_level->on_ng_plus += [this, level](bool value)

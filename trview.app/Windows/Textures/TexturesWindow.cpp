@@ -1,11 +1,17 @@
 #include "TexturesWindow.h"
 #include "../../Graphics/ILevelTextureStorage.h"
 #include <format>
+#include "../../Elements/ILevel.h"
 
 namespace trview
 {
     ITexturesWindow::~ITexturesWindow()
     {
+    }
+
+    void TexturesWindow::add_level(const std::weak_ptr<ILevel>& level)
+    {
+        _sub_windows.push_back({ ._level = level });
     }
 
     void TexturesWindow::render()
@@ -23,17 +29,14 @@ namespace trview
         ImGui::PushStyleVar(ImGuiStyleVar_WindowMinSize, ImVec2(270, 335));
         if (ImGui::Begin(_id.c_str(), &stay_open, ImGuiWindowFlags_NoResize))
         {
-            ImGui::Checkbox(Names::transparency_checkbox.c_str(), &_transparency);
-
-            if (ImGui::InputInt(Names::tile.c_str(), &_index))
+            if (ImGui::BeginTabBar("TabBar"))
             {
-                clamp_index();
-            }
-
-            if (_texture_storage && _index < static_cast<int32_t>(_texture_storage->num_tiles()))
-            {
-                auto texture = _transparency ? _texture_storage->texture(_index) : _texture_storage->opaque_texture(_index);
-                ImGui::Image(texture.view().Get(), ImVec2(256, 256));
+                int window_index = 0;
+                for (auto& sub_window : _sub_windows)
+                {
+                    sub_window.render(window_index++);
+                }
+                ImGui::EndTabBar();
             }
         }
         ImGui::End();
@@ -46,15 +49,31 @@ namespace trview
         _id = std::format("Textures {}", number);
     }
 
-    void TexturesWindow::set_texture_storage(const std::shared_ptr<ILevelTextureStorage>& texture_storage)
+    void TexturesWindow::SubWindow::render(int index)
     {
-        _texture_storage = texture_storage;
-        clamp_index();
-    }
+        if (auto level = _level.lock())
+        {
+            if (const auto texture_storage = level->texture_storage())
+            {
+                if (ImGui::BeginTabItem(std::format("{}##{}", level->name(), index).c_str()))
+                {
+                    ImGui::Checkbox(Names::transparency_checkbox.c_str(), &_transparency);
 
-    void TexturesWindow::clamp_index()
-    {
-        const int32_t max_textures = std::max(0, (_texture_storage ? static_cast<int32_t>(_texture_storage->num_tiles()) : 0) - 1);
-        _index = std::clamp(_index, 0, max_textures);
+                    if (ImGui::InputInt(Names::tile.c_str(), &_index))
+                    {
+                        const int32_t max_textures = std::max(0, (texture_storage ? static_cast<int32_t>(texture_storage->num_tiles()) : 0) - 1);
+                        _index = std::clamp(_index, 0, max_textures);
+                    }
+
+                    if (texture_storage && _index < static_cast<int32_t>(texture_storage->num_tiles()))
+                    {
+                        auto texture = _transparency ? texture_storage->texture(_index) : texture_storage->opaque_texture(_index);
+                        ImGui::Image(texture.view().Get(), ImVec2(256, 256));
+                    }
+
+                    ImGui::EndTabItem();
+                }
+            }
+        }
     }
 }

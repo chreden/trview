@@ -43,7 +43,6 @@ namespace trview
             new_window.setup_filters();
             new_window.set_items(new_level->items());
             new_window.set_triggers(new_level->triggers());
-            new_window.setup_track();
 
             new_window.on_add_to_route += on_add_to_route;
             new_window.on_camera_sink_selected += on_camera_sink_selected;

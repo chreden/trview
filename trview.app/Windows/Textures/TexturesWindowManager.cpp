@@ -12,10 +12,22 @@ namespace trview
     {
     }
 
+    void TexturesWindowManager::add_level(const std::weak_ptr<ILevel>& level)
+    {
+        _levels.push_back(level);
+        for (auto& window : _windows)
+        {
+            window.second->add_level(level);
+        }
+    }
+
     std::weak_ptr<ITexturesWindow> TexturesWindowManager::create_window()
     {
         auto window = _textures_window_source();
-        window->set_texture_storage(_texture_storage);
+        for (auto& level : _levels)
+        {
+            window->add_level(level);
+        }
         return add_window(window);
     }
 
@@ -31,14 +43,5 @@ namespace trview
     void TexturesWindowManager::render()
     {
         WindowManager::render();
-    }
-
-    void TexturesWindowManager::set_texture_storage(const std::shared_ptr<ILevelTextureStorage>& texture_storage)
-    {
-        _texture_storage = texture_storage;
-        for (auto& window : _windows)
-        {
-            window.second->set_texture_storage(_texture_storage);
-        }
     }
 }

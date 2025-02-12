@@ -4,7 +4,6 @@
 #pragma once
 
 #include <trview.common/Windows/IClipboard.h>
-#include <trview.common/TokenStore.h>
 #include "../Filters/Filters.h"
 #include "../Track/Track.h"
 
@@ -58,7 +57,6 @@ namespace trview
 
             std::shared_ptr<IClipboard> _clipboard;
             std::weak_ptr<ILevel> _level;
-            TokenStore _token_store;
             std::weak_ptr<IRoom> _current_room;
             /// Whether the room tracking filter has been applied.
             bool _filter_applied{ false };
