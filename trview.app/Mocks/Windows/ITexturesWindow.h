@@ -10,6 +10,7 @@ namespace trview
         {
             MockTexturesWindow();
             virtual ~MockTexturesWindow();
+            MOCK_METHOD(void, add_level, (const std::weak_ptr<ILevel>&), (override));
             MOCK_METHOD(void, render, (), (override));
             MOCK_METHOD(void, set_number, (int32_t), (override));
         };

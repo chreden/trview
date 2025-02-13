@@ -33,21 +33,23 @@ namespace
 
 TEST(TexturesWindowManager, CreateWindowPassesLevelTextureStorage)
 {
+    auto level = mock_shared<MockLevel>();
     auto mock_window = mock_shared<MockTexturesWindow>();
-    EXPECT_CALL(*mock_window, set_texture_storage).Times(1);
+    EXPECT_CALL(*mock_window, add_level).Times(1);
     auto manager = register_test_module().with_window_source([&](auto&&...) { return mock_window; }).build();
-    manager->set_texture_storage(mock_shared<MockLevelTextureStorage>());
+    manager->add_level(level);
     manager->create_window();
 }
 
 TEST(TexturesWindowManager, SetTextureStoragePassesToWindows)
 {
+    auto level = mock_shared<MockLevel>();
     auto mock_window = mock_shared<MockTexturesWindow>();
     auto manager = register_test_module().with_window_source([&](auto&&...) { return mock_window; }).build();
     manager->create_window();
 
-    EXPECT_CALL(*mock_window, set_texture_storage).Times(1);
-    manager->set_texture_storage(mock_shared<MockLevelTextureStorage>());
+    EXPECT_CALL(*mock_window, add_level).Times(1);
+    manager->add_level(level);
 }
 
 TEST(TexturesWindowManager, WindowsRendered)

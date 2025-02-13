@@ -2,6 +2,7 @@
 #include "TexturesWindowTests.h"
 #include <trview.app/Mocks/Graphics/ILevelTextureStorage.h>
 #include <trview.app/Windows/Textures/TexturesWindow.h>
+#include <trview.app/Mocks/Elements/ILevel.h>
 
 using namespace trview;
 using namespace trview::tests;
@@ -22,7 +23,11 @@ void register_textures_window_tests(ImGuiTestEngine* engine)
             EXPECT_CALL(*storage, texture(0)).Times(AtLeast(1));
             EXPECT_CALL(*storage, texture(1)).Times(0);
             EXPECT_CALL(*storage, opaque_texture).Times(0);
-            window.set_texture_storage(storage);
+
+            auto level = mock_shared<MockLevel>();
+            ON_CALL(*level, texture_storage).WillByDefault(Return(storage));
+
+            window.add_level(level);
 
             ctx->Yield();
             IM_CHECK_EQ(Mock::VerifyAndClearExpectations(storage.get()), true);
@@ -46,12 +51,14 @@ void register_textures_window_tests(ImGuiTestEngine* engine)
 
             auto storage = mock_shared<MockLevelTextureStorage>();
             ON_CALL(*storage, num_tiles).WillByDefault(Return(2));
-            window.set_texture_storage(storage);
+
+            auto level = mock_shared<MockLevel>();
+            ON_CALL(*level, texture_storage).WillByDefault(Return(storage));
+            window.add_level(level);
 
             ctx->ItemInputValue("/**/Tile", "1");
 
             ON_CALL(*storage, num_tiles).WillByDefault(Return(1));
-            window.set_texture_storage(storage);
 
             ctx->Yield();
 
@@ -71,7 +78,9 @@ void register_textures_window_tests(ImGuiTestEngine* engine)
             EXPECT_CALL(*storage, texture).Times(0);
             EXPECT_CALL(*storage, opaque_texture).Times(0);
             EXPECT_CALL(*storage, opaque_texture(0)).Times(1);
-            window.set_texture_storage(storage);
+            auto level = mock_shared<MockLevel>();
+            ON_CALL(*level, texture_storage).WillByDefault(Return(storage));
+            window.add_level(level);
 
             ctx->Yield();
 
@@ -88,7 +97,9 @@ void register_textures_window_tests(ImGuiTestEngine* engine)
             EXPECT_CALL(*storage, texture).Times(0);
             EXPECT_CALL(*storage, opaque_texture).Times(0);
             EXPECT_CALL(*storage, texture(0)).Times(1);
-            window.set_texture_storage(storage);
+            auto level = mock_shared<MockLevel>();
+            ON_CALL(*level, texture_storage).WillByDefault(Return(storage));
+            window.add_level(level);
 
             ctx->Yield();
 

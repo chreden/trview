@@ -566,7 +566,7 @@ TEST(Windows, SetLevel)
     auto [triggers_ptr, triggers] = create_mock<MockTriggersWindowManager>();
     EXPECT_CALL(triggers, add_level).Times(1);
     auto [textures_ptr, textures] = create_mock<MockTexturesWindowManager>();
-    EXPECT_CALL(textures, set_texture_storage).Times(1);
+    EXPECT_CALL(textures, add_level).Times(1);
     auto windows = register_test_module()
         .with_camera_sinks(std::move(cameras_ptr))
         .with_items(std::move(items_ptr))
