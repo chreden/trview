@@ -76,25 +76,6 @@ TEST(LightsWindowManager, SceneChangedRaised)
     ASSERT_TRUE(raised);
 }
 
-TEST(LightsWindowManager, SetLightsUpdatesExistingWindows)
-{
-    auto window = mock_shared<MockLightsWindow>();
-    EXPECT_CALL(*window, set_lights).Times(2);
-
-    auto manager = register_test_module().with_window_source([&]() { return window; }).build();
-    manager->create_window();
-    manager->set_lights({ mock_shared<MockLight>() });
-}
-
-TEST(LightsWindowManager, SetLightsUpdatesNewWindows)
-{
-    auto window = mock_shared<MockLightsWindow>();
-    EXPECT_CALL(*window, set_lights).Times(1);
-
-    auto manager = register_test_module().with_window_source([&]() { return window; }).build();
-    manager->create_window();
-}
-
 TEST(LightsWindowManager, RendersAllWindows)
 {
     auto window = mock_shared<MockLightsWindow>();
@@ -121,6 +102,7 @@ TEST(LightsWindowManager, SetSelectedLightUpdatesExistingWindows)
     EXPECT_CALL(*window, set_selected_light).Times(2);
 
     auto manager = register_test_module().with_window_source([&]() { return window; }).build();
+    manager->add_level(mock_shared<MockLevel>());
     manager->create_window();
     manager->set_selected_light(mock_shared<MockLight>());
 }
@@ -131,28 +113,7 @@ TEST(LightsWindowManager, SetSelectedLightUpdatesNewWindows)
     EXPECT_CALL(*window, set_selected_light).Times(1);
 
     auto manager = register_test_module().with_window_source([&]() { return window; }).build();
-    manager->create_window();
-}
-
-TEST(LightsWindowManager, SetLevelVersionUpdatesExistingWindows)
-{
-    auto window = mock_shared<MockLightsWindow>();
-    EXPECT_CALL(*window, set_level_version(trlevel::LevelVersion::Tomb1)).Times(1);
-    EXPECT_CALL(*window, set_level_version(trlevel::LevelVersion::Tomb4)).Times(1);
-
-    auto manager = register_test_module().with_window_source([&]() { return window; }).build();
-    manager->set_level_version(trlevel::LevelVersion::Tomb1);
-    manager->create_window();
-    manager->set_level_version(trlevel::LevelVersion::Tomb4);
-}
-
-TEST(LightsWindowManager, SetLevelVersionUpdatesNewWindows)
-{
-    auto window = mock_shared<MockLightsWindow>();
-    EXPECT_CALL(*window, set_level_version(trlevel::LevelVersion::Tomb4)).Times(1);
-
-    auto manager = register_test_module().with_window_source([&]() { return window; }).build();
-    manager->set_level_version(trlevel::LevelVersion::Tomb4);
+    manager->add_level(mock_shared<MockLevel>());
     manager->create_window();
 }
 
@@ -163,6 +124,7 @@ TEST(LightsWindowManager, SetRoomUpdatesExistingWindows)
     EXPECT_CALL(*window, set_current_room).Times(2);
 
     auto manager = register_test_module().with_window_source([&]() { return window; }).build();
+    manager->add_level(mock_shared<MockLevel>());
     manager->create_window();
     manager->set_room(room);
 }
@@ -174,6 +136,7 @@ TEST(LightsWindowManager, SetRoomUpdatesNewWindows)
     EXPECT_CALL(*window, set_current_room).Times(1);
 
     auto manager = register_test_module().with_window_source([&]() { return window; }).build();
+    manager->add_level(mock_shared<MockLevel>());
     manager->set_room(room);
     manager->create_window();
 }

@@ -2,9 +2,27 @@
 #include "../trview_imgui.h"
 #include <format>
 #include "RowCounter.h"
+#include "../Elements/ILevel.h"
 
 namespace trview
 {
+    namespace
+    {
+        std::unordered_map<std::string, std::string> tips
+        {
+            { "Direction", "Direction is inverted in-game. 3D view shows correct direction." }
+        };
+
+        bool is_level_mismatch(auto&& e, auto&& level)
+        {
+            if (auto e_ptr = e.lock())
+            {
+                return e_ptr->level().lock() != level.lock();
+            }
+            return false;
+        }
+    }
+
     ILightsWindow::~ILightsWindow()
     {
     }
@@ -12,13 +30,26 @@ namespace trview
     LightsWindow::LightsWindow(const std::shared_ptr<IClipboard>& clipboard)
         : _clipboard(clipboard)
     {
-        _tips["Direction"] = "Direction is inverted in-game. 3D view shows correct direction.";
-        setup_filters();
     }
 
-    void LightsWindow::clear_selected_light()
+    void LightsWindow::add_level(const std::weak_ptr<ILevel>& level)
     {
-        _selected_light.reset();
+        if (const auto new_level = level.lock())
+        {
+            _sub_windows.push_back(
+                {
+                    ._clipboard = _clipboard,
+                    ._level = level,
+                    ._level_version = new_level->version()
+                });
+
+            auto& new_window = _sub_windows.back();
+            new_window.setup_filters();
+            new_window.set_lights(new_level->lights());
+
+            new_window.on_light_selected += on_light_selected;
+            new_window.on_scene_changed += on_scene_changed;
+        }
     }
 
     void LightsWindow::render()
@@ -32,40 +63,21 @@ namespace trview
     
     void LightsWindow::update(float delta)
     {
-        if (_tooltip_timer.has_value())
+        for (auto& sub_window : _sub_windows)
         {
-            _tooltip_timer = _tooltip_timer.value() + delta;
-            if (_tooltip_timer.value() > 0.6f)
-            {
-                _tooltip_timer.reset();
-            }
+            sub_window.update(delta);
         }
-    }
-
-    void LightsWindow::set_lights(const std::vector<std::weak_ptr<ILight>>& lights)
-    {
-        _all_lights = lights;
-        setup_filters();
-        _force_sort = true;
-        calculate_column_widths();
     }
 
     void LightsWindow::set_selected_light(const std::weak_ptr<ILight>& light)
     {
-        _global_selected_light = light;
-        if (_sync_light)
+        for (auto& sub_window : _sub_windows)
         {
-            _scroll_to_light = true;
-            set_local_selected_light(light);
+            sub_window.set_selected_light(light);
         }
     }
 
-    void LightsWindow::set_level_version(trlevel::LevelVersion version)
-    {
-        _level_version = version;
-    }
-
-    void LightsWindow::set_sync_light(bool value)
+    void LightsWindow::SubWindow::set_sync_light(bool value)
     {
         if (_sync_light != value)
         {
@@ -78,7 +90,7 @@ namespace trview
         }
     }
 
-    void LightsWindow::render_lights_list() 
+    void LightsWindow::SubWindow::render_lights_list() 
     {
         calculate_column_widths();
         if (ImGui::BeginChild(Names::light_list_panel.c_str(), ImVec2(0, 0), ImGuiChildFlags_AutoResizeX, ImGuiWindowFlags_NoScrollbar))
@@ -186,7 +198,7 @@ namespace trview
         ImGui::EndChild();
     }
 
-    void LightsWindow::render_light_details()
+    void LightsWindow::SubWindow::render_light_details()
     {
         if (ImGui::BeginChild(Names::details_panel.c_str(), ImVec2(), true))
         {
@@ -280,16 +292,14 @@ namespace trview
         ImGui::PushStyleVar(ImGuiStyleVar_WindowMinSize, ImVec2(530, 500));
         if (ImGui::Begin(_id.c_str(), &stay_open))
         {
-            render_lights_list();
-            ImGui::SameLine();
-            render_light_details();
-            _force_sort = false;
-
-            if (_tooltip_timer.has_value())
+            if (ImGui::BeginTabBar("TabBar"))
             {
-                ImGui::BeginTooltip();
-                ImGui::Text("Copied");
-                ImGui::EndTooltip();
+                int window_index = 0;
+                for (auto& sub_window : _sub_windows)
+                {
+                    sub_window.render(window_index++);
+                }
+                ImGui::EndTabBar();
             }
         }
         ImGui::End();
@@ -302,17 +312,30 @@ namespace trview
         _id = "Lights " + std::to_string(number);
     }
 
-    void LightsWindow::set_local_selected_light(const std::weak_ptr<ILight>& light)
+    void LightsWindow::SubWindow::set_local_selected_light(const std::weak_ptr<ILight>& light)
     {
         _selected_light = light;
     }
 
     void LightsWindow::set_current_room(const std::weak_ptr<IRoom>& room)
     {
+        for (auto& sub_window : _sub_windows)
+        {
+            sub_window.set_current_room(room);
+        }
+    }
+
+    void LightsWindow::SubWindow::set_current_room(const std::weak_ptr<IRoom>& room)
+    {
+        if (is_level_mismatch(room, _level))
+        {
+            return;
+        }
+
         _current_room = room;
     }
 
-    void LightsWindow::setup_filters()
+    void LightsWindow::SubWindow::setup_filters()
     {
         _filters.clear_all_getters();
         std::set<std::string> available_types;
@@ -365,7 +388,7 @@ namespace trview
         }
     }
 
-    void LightsWindow::calculate_column_widths()
+    void LightsWindow::SubWindow::calculate_column_widths()
     {
         _column_sizer.reset();
         _column_sizer.measure("#__", 0);
@@ -381,6 +404,63 @@ namespace trview
                 _column_sizer.measure(std::to_string(light_room(*light_ptr)), 1);
                 _column_sizer.measure(to_string(light_ptr->type()), 2);
             }
+        }
+    }
+
+    void LightsWindow::SubWindow::set_lights(const std::vector<std::weak_ptr<ILight>>& lights)
+    {
+        _all_lights = lights;
+        setup_filters();
+        _force_sort = true;
+        calculate_column_widths();
+    }
+
+    void LightsWindow::SubWindow::update(float delta)
+    {
+        if (_tooltip_timer.has_value())
+        {
+            _tooltip_timer = _tooltip_timer.value() + delta;
+            if (_tooltip_timer.value() > 0.6f)
+            {
+                _tooltip_timer.reset();
+            }
+        }
+    }
+
+    void LightsWindow::SubWindow::render(int index)
+    {
+        if (const auto& level = _level.lock())
+        {
+            if (ImGui::BeginTabItem(std::format("{}##{}", level->name(), index).c_str()))
+            {
+                render_lights_list();
+                ImGui::SameLine();
+                render_light_details();
+                _force_sort = false;
+
+                if (_tooltip_timer.has_value())
+                {
+                    ImGui::BeginTooltip();
+                    ImGui::Text("Copied");
+                    ImGui::EndTooltip();
+                }
+                ImGui::EndTabItem();
+            }
+        }
+    }
+
+    void LightsWindow::SubWindow::set_selected_light(const std::weak_ptr<ILight>& light)
+    {
+        if (is_level_mismatch(light, _level))
+        {
+            return;
+        }
+
+        _global_selected_light = light;
+        if (_sync_light)
+        {
+            _scroll_to_light = true;
+            set_local_selected_light(light);
         }
     }
 }

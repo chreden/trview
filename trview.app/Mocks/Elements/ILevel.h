@@ -101,15 +101,21 @@ namespace trview
                 return shared_from_this();
             }
 
-            std::shared_ptr<MockLevel> with_triggers(const std::vector<std::weak_ptr<ITrigger>>& triggers)
+            std::shared_ptr<MockLevel> with_lights(const std::vector<std::weak_ptr<ILight>>& lights)
             {
-                ON_CALL(*this, triggers).WillByDefault(testing::Return(triggers));
+                ON_CALL(*this, lights).WillByDefault(testing::Return(lights));
                 return shared_from_this();
             }
 
             std::shared_ptr<MockLevel> with_statics(const std::vector<std::weak_ptr<IStaticMesh>>& statics)
             {
                 ON_CALL(*this, static_meshes).WillByDefault(testing::Return(statics));
+                return shared_from_this();
+            }
+
+            std::shared_ptr<MockLevel> with_triggers(const std::vector<std::weak_ptr<ITrigger>>& triggers)
+            {
+                ON_CALL(*this, triggers).WillByDefault(testing::Return(triggers));
                 return shared_from_this();
             }
         };

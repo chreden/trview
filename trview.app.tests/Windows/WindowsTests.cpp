@@ -544,8 +544,7 @@ TEST(Windows, SetLevel)
     auto [items_ptr, items] = create_mock<MockItemsWindowManager>();
     EXPECT_CALL(items, add_level).Times(1);
     auto [lights_ptr, lights] = create_mock<MockLightsWindowManager>();
-    EXPECT_CALL(lights, set_level_version).Times(1);
-    EXPECT_CALL(lights, set_lights).Times(1);
+    EXPECT_CALL(lights, add_level).Times(1);
     auto [rooms_ptr, rooms] = create_mock<MockRoomsWindowManager>();
     EXPECT_CALL(rooms, set_level_version).Times(1);
     EXPECT_CALL(rooms, set_items).Times(1);

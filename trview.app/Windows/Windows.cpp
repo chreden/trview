@@ -200,8 +200,7 @@ namespace trview
         _camera_sink_windows->set_camera_sinks(new_level->camera_sinks());
         _diff_windows->set_level(new_level);
         _items_windows->add_level(new_level);
-        _lights_windows->set_level_version(new_level->version());
-        _lights_windows->set_lights(new_level->lights());
+        _lights_windows->add_level(new_level);
         _rooms_windows->set_level_version(new_level->version());
         _rooms_windows->set_items(new_level->items());
         _rooms_windows->set_floordata(new_level->floor_data());

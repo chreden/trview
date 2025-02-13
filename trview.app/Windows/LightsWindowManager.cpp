@@ -1,8 +1,18 @@
 #include "LightsWindowManager.h"
 #include "../Resources/resource.h"
+#include "../Elements/ILight.h"
+#include "../Elements/IRoom.h"
 
 namespace trview
 {
+    namespace
+    {
+        auto find_level(auto&& levels, auto&& level)
+        {
+            return std::ranges::find_if(levels, [=](auto&& l) { return l.level.lock() == level.lock(); });
+        }
+    }
+
     ILightsWindowManager::~ILightsWindowManager()
     {
     }
@@ -11,6 +21,15 @@ namespace trview
         : _lights_window_source(lights_window_source), MessageHandler(window)
     {
         _token_store += shortcuts->add_shortcut(true, 'L') += [&]() { create_window(); };
+    }
+
+    void LightsWindowManager::add_level(const std::weak_ptr<ILevel>& level)
+    {
+        _levels.push_back({ .level = level });
+        for (auto& window : _windows)
+        {
+            window.second->add_level(level);
+        }
     }
 
     std::optional<int> LightsWindowManager::process_message(UINT message, WPARAM wParam, LPARAM)
@@ -22,35 +41,17 @@ namespace trview
         return {};
     }
 
-    void LightsWindowManager::set_lights(const std::vector<std::weak_ptr<ILight>>& lights)
-    {
-        _lights = lights;
-        _selected_light.reset();
-        for (auto& window : _windows)
-        {
-            window.second->clear_selected_light();
-            window.second->set_lights(lights);
-        }
-    }
-
-    void LightsWindowManager::set_level_version(trlevel::LevelVersion version)
-    {
-        _level_version = version;
-        for (auto& window : _windows)
-        {
-            window.second->set_level_version(_level_version);
-        }
-    }
-
     std::weak_ptr<ILightsWindow> LightsWindowManager::create_window()
     {
         auto lights_window = _lights_window_source();
-        lights_window->set_level_version(_level_version);
-        lights_window->set_lights(_lights);
-        lights_window->set_selected_light(_selected_light);
-        lights_window->set_current_room(_current_room);
         lights_window->on_light_selected += on_light_selected;
         lights_window->on_scene_changed += on_scene_changed;
+        for (auto& level : _levels)
+        {
+            lights_window->add_level(level.level);
+            lights_window->set_current_room(level.room);
+            lights_window->set_selected_light(level.light);
+        }
         return add_window(lights_window);
     }
 
@@ -66,19 +67,33 @@ namespace trview
 
     void LightsWindowManager::set_selected_light(const std::weak_ptr<ILight>& light)
     {
-        _selected_light = light;
-        for (auto& window : _windows)
+        if (const auto light_ptr = light.lock())
         {
-            window.second->set_selected_light(light);
+            const auto found = find_level(_levels, light_ptr->level());
+            if (found != _levels.end())
+            {
+                found->light = light;
+                for (auto& window : _windows)
+                {
+                    window.second->set_selected_light(light);
+                }
+            }
         }
     }
 
     void LightsWindowManager::set_room(const std::weak_ptr<IRoom>& room)
     {
-        _current_room = room;
-        for (auto& window : _windows)
+        if (const auto room_ptr = room.lock())
         {
-            window.second->set_current_room(room);
+            const auto found = find_level(_levels, room_ptr->level());
+            if (found != _levels.end())
+            {
+                found->room = room;
+                for (auto& window : _windows)
+                {
+                    window.second->set_current_room(room);
+                }
+            }
         }
     }
 }

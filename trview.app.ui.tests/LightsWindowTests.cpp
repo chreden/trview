@@ -4,6 +4,7 @@
 #include <trview.app/Mocks/Elements/IRoom.h>
 #include <trview.app/Windows/LightsWindow.h>
 #include <trview.common/Mocks/Windows/IClipboard.h>
+#include <trview.app/Mocks/Elements/ILevel.h>
 
 using namespace testing;
 using namespace trview;
@@ -31,6 +32,7 @@ namespace
     {
         std::shared_ptr<LightsWindow> ptr;
         std::vector<std::shared_ptr<ILight>> lights;
+        std::shared_ptr<ILevel> level;
 
         void render()
         {
@@ -53,9 +55,9 @@ void register_lights_window_tests(ImGuiTestEngine* engine)
 
             auto light1 = mock_shared<MockLight>()->with_number(0)->with_type(trlevel::LightType::FogBulb);
             context.lights = { light1 };
-            context.ptr->set_lights({ light1 });
+            context.level = mock_shared<MockLevel>()->with_lights({ std::from_range, context.lights });
+            context.ptr->add_level(context.level);
             context.ptr->set_selected_light(light1);
-            context.ptr->set_level_version(trlevel::LevelVersion::Tomb4);
 
             ctx->Yield();
             IM_CHECK_EQ(ctx->ItemExists("/**/Stats/Type"), true);
@@ -78,7 +80,8 @@ void register_lights_window_tests(ImGuiTestEngine* engine)
             auto light1 = mock_shared<MockLight>()->with_number(0)->with_room(mock_shared<MockRoom>()->with_number(56));
             auto light2 = mock_shared<MockLight>()->with_number(1)->with_room(room_78);
             context.lights = { light1, light2 };
-            context.ptr->set_lights({ light1, light2 });
+            context.level = mock_shared<MockLevel>()->with_lights({ std::from_range, context.lights });
+            context.ptr->add_level(context.level);
             context.ptr->set_current_room(room_78);
 
             ctx->ItemClick("/**/Track##track");
@@ -100,7 +103,8 @@ void register_lights_window_tests(ImGuiTestEngine* engine)
             auto light1 = mock_shared<MockLight>()->with_number(0)->with_room(mock_shared<MockRoom>()->with_number(56));
             auto light2 = mock_shared<MockLight>()->with_number(1)->with_room(room_78);
             context.lights = { light1, light2 };
-            context.ptr->set_lights({ light1, light2 });
+            context.level = mock_shared<MockLevel>()->with_lights({ std::from_range, context.lights });
+            context.ptr->add_level(context.level);
             context.ptr->set_current_room(room_78);
 
             ctx->Yield();
@@ -122,7 +126,8 @@ void register_lights_window_tests(ImGuiTestEngine* engine)
             auto light1 = mock_shared<MockLight>()->with_number(0);
             auto light2 = mock_shared<MockLight>()->with_number(1);
             context.lights = { light1, light2 };
-            context.ptr->set_lights({ light1, light2 });
+            context.level = mock_shared<MockLevel>()->with_lights({ std::from_range, context.lights });
+            context.ptr->add_level(context.level);
 
             ctx->ItemClick("/**/1##1");
 
@@ -142,7 +147,8 @@ void register_lights_window_tests(ImGuiTestEngine* engine)
             auto light1 = mock_shared<MockLight>()->with_number(0);
             auto light2 = mock_shared<MockLight>()->with_number(1);
             context.lights = { light1, light2 };
-            context.ptr->set_lights({ light1, light2 });
+            context.level = mock_shared<MockLevel>()->with_lights({ std::from_range, context.lights });
+            context.ptr->add_level(context.level);
 
             ctx->ItemUncheck("/**/Sync");
             ctx->ItemClick("/**/1##1");
@@ -165,7 +171,8 @@ void register_lights_window_tests(ImGuiTestEngine* engine)
             EXPECT_CALL(*light2, set_visible(true)).Times(1);
 
             context.lights = { light1, light2 };
-            context.ptr->set_lights({ light1, light2 });
+            context.level = mock_shared<MockLevel>()->with_lights({ std::from_range, context.lights });
+            context.ptr->add_level(context.level);
 
             ctx->ItemUncheck("/**/##hide-1");
 
@@ -182,9 +189,9 @@ void register_lights_window_tests(ImGuiTestEngine* engine)
 
             auto light1 = mock_shared<MockLight>()->with_number(0)->with_type(trlevel::LightType::Point)->with_level_version(trlevel::LevelVersion::Tomb1);
             context.lights = { light1 };
-            context.ptr->set_lights({ light1 });
+            context.level = mock_shared<MockLevel>()->with_lights({ std::from_range, context.lights });
+            context.ptr->add_level(context.level);
             context.ptr->set_selected_light(light1);
-            context.ptr->set_level_version(trlevel::LevelVersion::Tomb1);
 
             ctx->Yield();
             IM_CHECK_EQ(ctx->ItemExists("/**/Stats/Type"), true);
@@ -207,9 +214,9 @@ void register_lights_window_tests(ImGuiTestEngine* engine)
 
             auto light1 = mock_shared<MockLight>()->with_number(0)->with_type(trlevel::LightType::Point)->with_level_version(trlevel::LevelVersion::Tomb2);
             context.lights = { light1 };
-            context.ptr->set_lights({ light1 });
+            context.level = mock_shared<MockLevel>()->with_lights({ std::from_range, context.lights });
+            context.ptr->add_level(context.level);
             context.ptr->set_selected_light(light1);
-            context.ptr->set_level_version(trlevel::LevelVersion::Tomb2);
 
             ctx->Yield();
             IM_CHECK_EQ(ctx->ItemExists("/**/Stats/Type"), true);
@@ -232,9 +239,9 @@ void register_lights_window_tests(ImGuiTestEngine* engine)
 
             auto light1 = mock_shared<MockLight>()->with_number(0)->with_type(trlevel::LightType::Point)->with_level_version(trlevel::LevelVersion::Tomb3);
             context.lights = { light1 };
-            context.ptr->set_lights({ light1 });
+            context.level = mock_shared<MockLevel>()->with_lights({ std::from_range, context.lights });
+            context.ptr->add_level(context.level);
             context.ptr->set_selected_light(light1);
-            context.ptr->set_level_version(trlevel::LevelVersion::Tomb3);
 
             ctx->Yield();
             IM_CHECK_EQ(ctx->ItemExists("/**/Stats/Type"), true);
@@ -257,9 +264,9 @@ void register_lights_window_tests(ImGuiTestEngine* engine)
 
             auto light1 = mock_shared<MockLight>()->with_number(0)->with_type(trlevel::LightType::Point)->with_level_version(trlevel::LevelVersion::Tomb4);
             context.lights = { light1 };
-            context.ptr->set_lights({ light1 });
+            context.level = mock_shared<MockLevel>()->with_lights({ std::from_range, context.lights });
+            context.ptr->add_level(context.level);
             context.ptr->set_selected_light(light1);
-            context.ptr->set_level_version(trlevel::LevelVersion::Tomb4);
 
             ctx->Yield();
             IM_CHECK_EQ(ctx->ItemExists("/**/Stats/Type"), true);
@@ -282,9 +289,9 @@ void register_lights_window_tests(ImGuiTestEngine* engine)
 
             auto light1 = mock_shared<MockLight>()->with_number(0)->with_type(trlevel::LightType::Shadow)->with_level_version(trlevel::LevelVersion::Tomb4);
             context.lights = { light1 };
-            context.ptr->set_lights({ light1 });
+            context.level = mock_shared<MockLevel>()->with_lights({ std::from_range, context.lights });
+            context.ptr->add_level(context.level);
             context.ptr->set_selected_light(light1);
-            context.ptr->set_level_version(trlevel::LevelVersion::Tomb4);
 
             ctx->Yield();
             IM_CHECK_EQ(ctx->ItemExists("/**/Stats/Type"), true);
@@ -306,9 +313,9 @@ void register_lights_window_tests(ImGuiTestEngine* engine)
 
             auto light1 = mock_shared<MockLight>()->with_number(0)->with_type(trlevel::LightType::Spot)->with_level_version(trlevel::LevelVersion::Tomb4);
             context.lights = { light1 };
-            context.ptr->set_lights({ light1 });
+            context.level = mock_shared<MockLevel>()->with_lights({ std::from_range, context.lights });
+            context.ptr->add_level(context.level);
             context.ptr->set_selected_light(light1);
-            context.ptr->set_level_version(trlevel::LevelVersion::Tomb4);
 
             ctx->Yield();
             IM_CHECK_EQ(ctx->ItemExists("/**/Stats/Type"), true);
@@ -333,9 +340,9 @@ void register_lights_window_tests(ImGuiTestEngine* engine)
 
             auto light1 = mock_shared<MockLight>()->with_number(0)->with_type(trlevel::LightType::Sun);
             context.lights = { light1 };
-            context.ptr->set_lights({ light1 });
+            context.level = mock_shared<MockLevel>()->with_lights({ std::from_range, context.lights });
+            context.ptr->add_level(context.level);
             context.ptr->set_selected_light(light1);
-            context.ptr->set_level_version(trlevel::LevelVersion::Tomb4);
 
             ctx->Yield();
             IM_CHECK_EQ(ctx->ItemExists("/**/Stats/Type"), true);
