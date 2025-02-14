@@ -1685,7 +1685,8 @@ namespace trlevel
                 {{.platform = Platform::PC, .version = LevelVersion::Tomb3 }, [&]() { load_tr3_pc(file, activity, callbacks); }},
                 {{.platform = Platform::PC, .version = LevelVersion::Tomb4 }, [&]() { load_tr4_pc(file, activity, callbacks); }},
                 {{.platform = Platform::PC, .version = LevelVersion::Tomb4, .remastered = true }, [&]() { load_tr4_pc_remastered(file, activity, callbacks); }},
-                {{.platform = Platform::PC, .version = LevelVersion::Tomb5 }, [&]() { load_tr5_pc(file, activity, callbacks); }}
+                {{.platform = Platform::PC, .version = LevelVersion::Tomb5 }, [&]() { load_tr5_pc(file, activity, callbacks); }},
+                {{.platform = Platform::PC, .version = LevelVersion::Tomb5, .remastered = true }, [&]() { load_tr5_pc_remastered(file, activity, callbacks); }}
             };
 
             const auto loader = loaders.find(_platform_and_version);
@@ -2304,6 +2305,107 @@ namespace trlevel
             file.seekg(sound_start, std::ios::beg);
             log_file(activity, file, std::format("Failed to load sound samples {}", e.what()));
         }
+
+        callbacks.on_progress("Generating meshes");
+        log_file(activity, file, "Generating meshes");
+        generate_meshes(_mesh_data);
+    }
+
+    void Level::load_tr5_pc_remastered(std::basic_ispanstream<uint8_t>& file, trview::Activity& activity, const LoadCallbacks& callbacks)
+    {
+        _num_textiles = read_textiles_tr4_5_remastered(activity, file, callbacks);
+
+        log_file(activity, file, "Reading Lara type");
+        _lara_type = read<uint16_t>(file);
+        log_file(activity, file, std::format("Lara type: {}", _lara_type));
+        log_file(activity, file, "Reading weather type");
+        _weather_type = read<uint16_t>(file);
+        log_file(activity, file, std::format("Weather type: {}", _weather_type));
+        log_file(activity, file, "Skipping 28 unknown/padding bytes");
+        file.seekg(28, std::ios::cur);
+
+        log_file(activity, file, "Reading uncompressed size and skipping compressed size - unused in Tomb5");
+        const auto uncompressed_size = read<uint32_t>(file);
+        uncompressed_size;
+        const auto compressed_size = read<uint32_t>(file);
+        compressed_size;
+        callbacks.on_progress("Processing level data");
+        const auto at = file.tellg();
+
+        // Read unused value.
+        // read<uint32_t>(file);
+
+        if (file.eof())
+        {
+            // VICT.TR2 ends here.
+            return;
+        }
+
+        _rooms = read_rooms<uint32_t>(activity, file, callbacks, load_tr5_pc_room);
+        _floor_data = read_floor_data(activity, file, callbacks);
+        _mesh_data = read_mesh_data(activity, file, callbacks);
+        _mesh_pointers = read_mesh_pointers(activity, file, callbacks);
+        read_animations_tr4_5(activity, file, callbacks);
+        read_state_changes(activity, file, callbacks);
+        read_anim_dispatches(activity, file, callbacks);
+        read_anim_commands(activity, file, callbacks);
+        _meshtree = read_meshtree(activity, file, callbacks);
+        _frames = read_frames(activity, file, callbacks);
+        _models = read_models_tr5(activity, file, callbacks);
+        _static_meshes = read_static_meshes(activity, file, callbacks);
+
+        log_file(activity, file, "Skipping SPR marker");
+        // Skip past the 'SPR' marker.
+        file.seekg(4, std::ios::cur);
+
+        _sprite_textures = read_sprite_textures(activity, file, callbacks);
+        _sprite_sequences = read_sprite_sequences(activity, file, callbacks);
+        _cameras = read_cameras(activity, file, callbacks);
+        read_flyby_cameras(activity, file, callbacks);
+        _sound_sources = read_sound_sources(activity, file, callbacks);
+
+        const auto boxes = read_boxes(activity, file, callbacks);
+        read_overlaps(activity, file, callbacks);
+        read_zones(activity, file, callbacks, static_cast<uint32_t>(boxes.size()));
+        read_animated_textures(activity, file, callbacks);
+        read_animated_textures_uv_count(activity, file, callbacks);
+
+        log_file(activity, file, "Skipping TEX marker");
+        file.seekg(4, std::ios::cur);
+
+        _object_textures = read_object_textures_tr5(activity, file, callbacks);
+        _entities = read_entities(activity, file, callbacks);
+        _ai_objects = read_ai_objects(activity, file, callbacks);
+
+        load_sound_fx(activity, callbacks);
+
+        // read_demo_data(activity, file, callbacks);
+        // _sound_map = read_sound_map(activity, file, callbacks);
+        // _sound_details = read_sound_details(activity, file, callbacks);
+        // _sample_indices = read_sample_indices(activity, file, callbacks);
+        /*9
+        file.seekg(at + static_cast<std::fpos_t>(uncompressed_size), std::ios::beg);
+
+        const auto sound_start = file.tellg();
+        try
+        {
+            if (is_ngle_sound_samples(activity, file))
+            {
+                load_ngle_sound_fx(activity, file, callbacks);
+            }
+            else
+            {
+                read_sound_samples_tr4_5(activity, file, callbacks);
+            }
+        }
+        catch (const std::exception& e)
+        {
+            callbacks.on_progress("Failed to load sound samples");
+            file.clear();
+            file.seekg(sound_start, std::ios::beg);
+            log_file(activity, file, std::format("Failed to load sound samples {}", e.what()));
+        }
+        */
 
         callbacks.on_progress("Generating meshes");
         log_file(activity, file, "Generating meshes");
