@@ -4,6 +4,7 @@
 #include <format>
 #include <ranges>
 #include <spanstream>
+#include <numeric>
 
 namespace trlevel
 {
@@ -888,6 +889,31 @@ namespace trlevel
             return num_textiles;
         }
 
+        uint32_t read_textiles_tr4_5_remastered(trview::Activity& activity, std::basic_ispanstream<uint8_t>& file, const ILevel::LoadCallbacks& callbacks)
+        {
+            log_file(activity, file, "Reading textile counts");
+            uint16_t num_room_textiles = read<uint16_t>(file);
+            uint16_t num_obj_textiles = read<uint16_t>(file);
+            uint16_t num_bump_textiles = read<uint16_t>(file);
+            log_file(activity, file, std::format("Textile counts - Room:{}, Object:{}, Bump:{}", num_room_textiles, num_obj_textiles, num_bump_textiles));
+            const auto num_textiles = num_room_textiles + num_obj_textiles + num_bump_textiles;
+
+            callbacks.on_progress(std::format("Reading {} 32-bit textiles", num_textiles));
+            log_file(activity, file, std::format("Reading {} 32-bit textiles", num_textiles));
+            skip(file, 4); // skip sizes
+            auto textile32 = read_vector<tr_textile32>(file, num_textiles);
+
+            for (const auto& textile : textile32)
+            {
+                callbacks.on_textile(convert_textile(textile));
+            }
+            textile32 = {};
+
+            log_file(activity, file, "Skipping misc textiles");
+            skip(file, sizeof(tr_textile32) * 2);
+            return num_textiles;
+        }
+
         void read_zones(trview::Activity& activity, std::basic_ispanstream<uint8_t>& file, const ILevel::LoadCallbacks& callbacks, uint32_t num_boxes)
         {
             callbacks.on_progress("Reading zones");
@@ -1658,6 +1684,7 @@ namespace trlevel
                 {{.platform = Platform::PC, .version = LevelVersion::Tomb2 }, [&]() { load_tr2_pc(file, activity, callbacks); }},
                 {{.platform = Platform::PC, .version = LevelVersion::Tomb3 }, [&]() { load_tr3_pc(file, activity, callbacks); }},
                 {{.platform = Platform::PC, .version = LevelVersion::Tomb4 }, [&]() { load_tr4_pc(file, activity, callbacks); }},
+                {{.platform = Platform::PC, .version = LevelVersion::Tomb4, .remastered = true }, [&]() { load_tr4_pc_remastered(file, activity, callbacks); }},
                 {{.platform = Platform::PC, .version = LevelVersion::Tomb5 }, [&]() { load_tr5_pc(file, activity, callbacks); }}
             };
 
@@ -1669,7 +1696,10 @@ namespace trlevel
                 return;
             }
 
-            throw std::exception(std::format("Unsupported level platform and version ({}:{})", to_string(_platform_and_version.platform), to_string(_platform_and_version.version)).c_str());
+            throw std::exception(std::format("Unsupported level platform and version ({}:{}{})",
+                to_string(_platform_and_version.platform),
+                to_string(_platform_and_version.version),
+                _platform_and_version.remastered ? " (Remastered)" : "").c_str());
         }
         catch (const LevelEncryptedException&)
         {
@@ -1977,7 +2007,7 @@ namespace trlevel
         _sound_map = read_sound_map(activity, file, callbacks);
         _sound_details = read_sound_details(activity, file, callbacks);
         _sample_indices = read_sample_indices(activity, file, callbacks);
-        load_sound_fx(callbacks);
+        load_sound_fx(activity, callbacks);
         callbacks.on_progress("Generating meshes");
         generate_meshes(_mesh_data);
         callbacks.on_progress("Loading complete");
@@ -2025,7 +2055,7 @@ namespace trlevel
         _sound_map = read_sound_map(activity, file, callbacks);
         _sound_details = read_sound_details(activity, file, callbacks);
         _sample_indices = read_sample_indices(activity, file, callbacks);
-        load_sound_fx(callbacks);
+        load_sound_fx(activity, callbacks);
         callbacks.on_progress("Generating meshes");
         generate_meshes(_mesh_data);
         callbacks.on_progress("Loading complete");
@@ -2130,6 +2160,54 @@ namespace trlevel
         {
             log_file(activity, file, "TRNG level detected");
         }
+
+        callbacks.on_progress("Generating meshes");
+        log_file(activity, file, "Generating meshes");
+        generate_meshes(_mesh_data);
+    }
+
+    void Level::load_tr4_pc_remastered(std::basic_ispanstream<uint8_t>& file, trview::Activity& activity, const LoadCallbacks& callbacks)
+    {
+        _num_textiles = read_textiles_tr4_5_remastered(activity, file, callbacks);
+        log_file(activity, file, "Reading level data");
+        callbacks.on_progress("Processing level data");
+
+        _rooms = read_rooms<uint16_t>(activity, file, callbacks, load_tr4_pc_room);
+        _floor_data = read_floor_data(activity, file, callbacks);
+        _mesh_data = read_mesh_data(activity, file, callbacks);
+        _mesh_pointers = read_mesh_pointers(activity, file, callbacks);
+        read_animations_tr4_5(activity, file, callbacks);
+        read_state_changes(activity, file, callbacks);
+        read_anim_dispatches(activity, file, callbacks);
+        read_anim_commands(activity, file, callbacks);
+        _meshtree = read_meshtree(activity, file, callbacks);
+        _frames = read_frames(activity, file, callbacks);
+        _models = read_models_tr1_4(activity, file, callbacks);
+        _static_meshes = read_static_meshes(activity, file, callbacks);
+        log_file(activity, file, "Skipping SPR marker");
+        // Skip past the 'SPR' marker.
+        file.seekg(3, std::ios::cur);
+        _sprite_textures = read_sprite_textures(activity, file, callbacks);
+        _sprite_sequences = read_sprite_sequences(activity, file, callbacks);
+        _cameras = read_cameras(activity, file, callbacks);
+        read_flyby_cameras(activity, file, callbacks);
+
+        _sound_sources = read_sound_sources(activity, file, callbacks);
+        const auto boxes = read_boxes(activity, file, callbacks);
+        read_overlaps(activity, file, callbacks);
+        read_zones(activity, file, callbacks, static_cast<uint32_t>(boxes.size()));
+        read_animated_textures(activity, file, callbacks);
+
+        // Animated textures uv count - not yet used:
+        read_animated_textures_uv_count(activity, file, callbacks);
+
+        log_file(activity, file, "Skipping TEX marker");
+        file.seekg(3, std::ios::cur);
+
+        _object_textures = read_object_textures_tr4(activity, file, callbacks);
+        _entities = read_entities(activity, file, callbacks);
+        _ai_objects = read_ai_objects(activity, file, callbacks);
+        load_sound_fx(activity, callbacks);
 
         callbacks.on_progress("Generating meshes");
         log_file(activity, file, "Generating meshes");
@@ -2264,20 +2342,31 @@ namespace trlevel
         }
     }
 
-    void Level::load_sound_fx(const LoadCallbacks& callbacks)
+    void Level::load_sound_fx(trview::Activity& activity, const LoadCallbacks& callbacks)
     {
         if (auto main = load_main_sfx())
         {
             std::basic_ispanstream<uint8_t> sfx_file{ { *main } };
+            sfx_file.exceptions(std::ios::failbit | std::ios::badbit | std::ios::eofbit);
 
             // Remastered has a sound map like structure at the start of main.sfx, so skip that if present:
-            if (read<uint32_t>(sfx_file) != 0x46464952) // RIFF
+            if (_platform_and_version.remastered)
             {
-                sfx_file.seekg(_sound_map.size() * 2, std::ios::beg);
+                _sound_map = read_sound_map(activity, sfx_file, callbacks);
+                _sound_details = read_sound_details(activity, sfx_file, callbacks);
+                _sample_indices = std::ranges::iota_view{ 0u, _sound_map.size() } | std::ranges::to<std::vector>();
+                skip(sfx_file, 4000);
             }
             else
             {
-                sfx_file.seekg(0, std::ios::beg);
+                if (read<uint32_t>(sfx_file) != 0x46464952) // RIFF
+                {
+                    sfx_file.seekg(_sound_map.size() * 2, std::ios::beg);
+                }
+                else
+                {
+                    sfx_file.seekg(0, std::ios::beg);
+                }
             }
 
             int16_t overall_index = 0;
@@ -2300,7 +2389,7 @@ namespace trlevel
     std::optional<std::vector<uint8_t>> Level::load_main_sfx() const
     {
         const auto path = trview::path_for_filename(_filename);
-        const auto og_main = _files->load_file(std::format("{}MAIN.SFX", path));
+        const auto og_main = _files->load_file(std::format("{}/MAIN.SFX", path));
         if (og_main.has_value())
         {
             return og_main;

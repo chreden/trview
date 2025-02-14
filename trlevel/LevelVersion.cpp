@@ -9,6 +9,15 @@ namespace trlevel
     // Returns: The level version.
     PlatformAndVersion convert_level_version(uint32_t version)
     {
+        if (version == 0x34585254)
+        {
+            return { .platform = Platform::PC, .version = LevelVersion::Tomb4, .remastered = true };
+        }
+        else if (version == 0x35585254)
+        {
+            return { .platform = Platform::PC, .version = LevelVersion::Tomb5, .remastered = true };
+        }
+
         switch (version & 0xff)
         {
         case 0x20:

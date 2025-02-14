@@ -27,11 +27,12 @@ namespace trlevel
     {
         Platform platform{ Platform::Unknown };
         LevelVersion version{ LevelVersion::Unknown };
+        bool remastered{ false };
     };
 
     inline bool operator==(const PlatformAndVersion & l, const PlatformAndVersion & r)
     {
-        return l.platform == r.platform && l.version == r.version;
+        return l.platform == r.platform && l.version == r.version && l.remastered == r.remastered;
     }
 
     // Converts the level version number into a level version enumeration.
