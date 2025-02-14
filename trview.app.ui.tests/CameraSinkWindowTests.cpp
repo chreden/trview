@@ -6,6 +6,7 @@
 #include <trview.app/Windows/CameraSink/CameraSinkWindow.h>
 #include <trview.common/Mocks/Windows/IClipboard.h>
 #include <trview.tests.common/Mocks.h>
+#include <trview.app/Mocks/Elements/ILevel.h>
 
 using namespace testing;
 using namespace trview;
@@ -37,6 +38,7 @@ namespace
         std::unique_ptr<CameraSinkWindow> ptr;
         std::vector<std::shared_ptr<MockCameraSink>> camera_sinks;
         std::vector<std::shared_ptr<MockTrigger>> triggers;
+        std::shared_ptr<ILevel> level;
 
         void render()
         {
@@ -60,9 +62,10 @@ void register_camera_sink_window_tests(ImGuiTestEngine* engine)
             auto room_78 = mock_shared<MockRoom>()->with_number(78);
             auto camera_sink1 = mock_shared<MockCameraSink>()->with_number(0)->with_room(mock_shared<MockRoom>()->with_number(56));
             auto camera_sink2 = mock_shared<MockCameraSink>()->with_number(1)->with_room(room_78);
-            context.ptr->set_camera_sinks({ camera_sink1, camera_sink2 });
-            context.ptr->set_current_room(room_78);
             context.camera_sinks = { camera_sink1, camera_sink2 };
+            context.level = mock_shared<MockLevel>()->with_camera_sinks({ std::from_range, context.camera_sinks });
+            context.ptr->add_level(context.level);
+            context.ptr->set_current_room(room_78);
 
             ctx->ItemClick("/**/Track##track");
             ctx->ItemCheck("/**/Room");
@@ -84,7 +87,8 @@ void register_camera_sink_window_tests(ImGuiTestEngine* engine)
             auto camera_sink1 = mock_shared<MockCameraSink>()->with_number(0);
             auto camera_sink2 = mock_shared<MockCameraSink>()->with_number(1);
             context.camera_sinks = { camera_sink1, camera_sink2 };
-            context.ptr->set_camera_sinks({ camera_sink1, camera_sink2 });
+            context.level = mock_shared<MockLevel>()->with_camera_sinks({ std::from_range, context.camera_sinks });
+            context.ptr->add_level(context.level);
 
             ctx->ItemUncheck("/**/Sync");
             ctx->ItemClick("/**/1##1");
@@ -105,7 +109,8 @@ void register_camera_sink_window_tests(ImGuiTestEngine* engine)
             auto camera_sink1 = mock_shared<MockCameraSink>()->with_number(0);
             auto camera_sink2 = mock_shared<MockCameraSink>()->with_number(1);
             context.camera_sinks = { camera_sink1, camera_sink2 };
-            context.ptr->set_camera_sinks({ camera_sink1, camera_sink2 });
+            context.level = mock_shared<MockLevel>()->with_camera_sinks({ std::from_range, context.camera_sinks });
+            context.ptr->add_level(context.level);
 
             ctx->ItemClick("/**/1##1");
 
@@ -127,7 +132,8 @@ void register_camera_sink_window_tests(ImGuiTestEngine* engine)
             context.triggers = { trigger1, trigger2 };
             auto camera_sink = mock_shared<MockCameraSink>() ->with_number(0)->with_triggers({ trigger1, trigger2 });
             context.camera_sinks = { camera_sink };
-            context.ptr->set_camera_sinks({ camera_sink });
+            context.level = mock_shared<MockLevel>()->with_camera_sinks({ std::from_range, context.camera_sinks });
+            context.ptr->add_level(context.level);
             context.ptr->set_selected_camera_sink(camera_sink);
 
             ctx->ItemClick("/**/1");
@@ -147,7 +153,8 @@ void register_camera_sink_window_tests(ImGuiTestEngine* engine)
             EXPECT_CALL(*camera_sink, set_type(ICameraSink::Type::Sink)).Times(1);
 
             context.camera_sinks = { camera_sink };
-            context.ptr->set_camera_sinks({ camera_sink });
+            context.level = mock_shared<MockLevel>()->with_camera_sinks({ std::from_range, context.camera_sinks });
+            context.ptr->add_level(context.level);
             context.ptr->set_selected_camera_sink(camera_sink);
 
             ctx->SetRef("/Camera\\/Sink 0\\/Details_8FE7677A");
@@ -172,7 +179,8 @@ void register_camera_sink_window_tests(ImGuiTestEngine* engine)
             ON_CALL(*camera_sink2, visible).WillByDefault(testing::Return(true));
             EXPECT_CALL(*camera_sink2, set_visible(false)).Times(1);
             context.camera_sinks = { camera_sink1, camera_sink2 };
-            context.ptr->set_camera_sinks({ camera_sink1, camera_sink2 });
+            context.level = mock_shared<MockLevel>()->with_camera_sinks({ std::from_range, context.camera_sinks });
+            context.ptr->add_level(context.level);
 
             ctx->ItemClick("/**/##hide-1");
 

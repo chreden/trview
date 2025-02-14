@@ -67,22 +67,13 @@ TEST(CameraSinkWindowManager, WindowCreated)
         .with_window_source([&]() { return window; })
         .build();
 
+    auto level = mock_shared<MockLevel>();
+    manager->add_level(level);
+
     EXPECT_CALL(*window, set_current_room).Times(1);
     EXPECT_CALL(*window, set_selected_camera_sink).Times(1);
-    EXPECT_CALL(*window, set_camera_sinks).Times(1);
+    EXPECT_CALL(*window, add_level).Times(1);
     manager->create_window();
-}
-
-TEST(CameraSinkWindowManager, CameraSinksForwarded)
-{
-    auto window = mock_shared<MockCameraSinkWindow>();
-    auto manager = register_test_module()
-        .with_window_source([&]() { return window; })
-        .build();
-
-    manager->create_window();
-    EXPECT_CALL(*window, set_camera_sinks).Times(1);
-    manager->set_camera_sinks({});
 }
 
 TEST(CameraSinkWindowManager, SelectedCameraSinkForwarded)
@@ -92,9 +83,12 @@ TEST(CameraSinkWindowManager, SelectedCameraSinkForwarded)
         .with_window_source([&]() { return window; })
         .build();
 
+    auto level = mock_shared<MockLevel>();
+    manager->add_level(level);
+
     manager->create_window();
     EXPECT_CALL(*window, set_selected_camera_sink).Times(1);
-    manager->set_selected_camera_sink({});
+    manager->set_selected_camera_sink(mock_shared<MockCameraSink>()->with_level(level));
 }
 
 TEST(CameraSinkWindowManager, RoomForwarded)
@@ -104,9 +98,12 @@ TEST(CameraSinkWindowManager, RoomForwarded)
         .with_window_source([&]() { return window; })
         .build();
 
+    auto level = mock_shared<MockLevel>();
+    manager->add_level(level);
+
     manager->create_window();
     EXPECT_CALL(*window, set_current_room).Times(1);
-    manager->set_room(mock_shared<MockRoom>());
+    manager->set_room(mock_shared<MockRoom>()->with_level(level));
 }
 
 TEST(CameraSinkWindowManager, SelectedSinkRaised)

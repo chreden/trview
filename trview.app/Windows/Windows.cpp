@@ -197,7 +197,7 @@ namespace trview
             return;
         }
 
-        _camera_sink_windows->set_camera_sinks(new_level->camera_sinks());
+        _camera_sink_windows->add_level(new_level);
         _diff_windows->set_level(new_level);
         _items_windows->add_level(new_level);
         _lights_windows->add_level(new_level);

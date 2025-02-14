@@ -38,6 +38,12 @@ namespace trview
                 return shared_from_this();
             }
 
+            std::shared_ptr<MockCameraSink> with_level(std::shared_ptr<ILevel> level)
+            {
+                ON_CALL(*this, level).WillByDefault(testing::Return(level));
+                return shared_from_this();
+            }
+
             std::shared_ptr<MockCameraSink> with_triggers(const std::vector<std::weak_ptr<ITrigger>>& triggers)
             {
                 ON_CALL(*this, triggers).WillByDefault(testing::Return(triggers));

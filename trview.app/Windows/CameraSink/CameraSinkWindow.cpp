@@ -2,11 +2,21 @@
 #include "../../trview_imgui.h"
 #include "../../Elements/IRoom.h"
 #include "../RowCounter.h"
+#include "../../Elements/ILevel.h"
 
 namespace trview
 {
     namespace
     {
+        bool is_level_mismatch(auto&& e, auto&& level)
+        {
+            if (auto e_ptr = e.lock())
+            {
+                return e_ptr->level().lock() != level.lock();
+            }
+            return false;
+        }
+
         bool matching_room(ICameraSink& camera_sink, const std::weak_ptr<IRoom>& room)
         {
             const auto room_ptr = room.lock();
@@ -74,7 +84,26 @@ namespace trview
     CameraSinkWindow::CameraSinkWindow(const std::shared_ptr<IClipboard>& clipboard)
         : _clipboard(clipboard)
     {
-        setup_filters();
+    }
+
+    void CameraSinkWindow::add_level(const std::weak_ptr<ILevel>& level)
+    {
+        if (const auto new_level = level.lock())
+        {
+            _sub_windows.push_back(
+                {
+                    ._clipboard = _clipboard,
+                    ._level = level
+                });
+
+            auto& new_window = _sub_windows.back();
+            new_window.setup_filters();
+            new_window.set_camera_sinks(new_level->camera_sinks());
+
+            new_window.on_camera_sink_selected += on_camera_sink_selected;
+            new_window.on_scene_changed += on_scene_changed;
+            new_window.on_trigger_selected += on_trigger_selected;
+        }
     }
 
     void CameraSinkWindow::render()
@@ -91,7 +120,7 @@ namespace trview
         _id = std::format("Camera/Sink {}", number);
     }
 
-    void CameraSinkWindow::set_camera_sinks(const std::vector<std::weak_ptr<ICameraSink>>& camera_sinks)
+    void CameraSinkWindow::SubWindow::set_camera_sinks(const std::vector<std::weak_ptr<ICameraSink>>& camera_sinks)
     {
         _all_camera_sinks = camera_sinks;
         _force_sort = true;
@@ -104,16 +133,37 @@ namespace trview
         ImGui::PushStyleVar(ImGuiStyleVar_WindowMinSize, ImVec2(485, 500));
         if (ImGui::Begin(_id.c_str(), &stay_open))
         {
-            render_list();
-            ImGui::SameLine();
-            render_details();
+            if (ImGui::BeginTabBar("TabBar"))
+            {
+                int window_index = 0;
+                for (auto& sub_window : _sub_windows)
+                {
+                    sub_window.render(window_index++);
+                }
+                ImGui::EndTabBar();
+            }
         }
         ImGui::End();
         ImGui::PopStyleVar();
         return stay_open;
     }
 
-    void CameraSinkWindow::set_sync(bool value)
+    void CameraSinkWindow::SubWindow::render(int index)
+    {
+        if (const auto& level = _level.lock())
+        {
+            if (ImGui::BeginTabItem(std::format("{}##{}", level->name(), index).c_str()))
+            {
+                render_list();
+                ImGui::SameLine();
+                render_details();
+                ImGui::EndTabItem();
+            }
+        }
+
+    }
+
+    void CameraSinkWindow::SubWindow::set_sync(bool value)
     {
         if (_sync != value)
         {
@@ -126,7 +176,7 @@ namespace trview
         }
     }
     
-    void CameraSinkWindow::set_local_selected_camera_sink(const std::weak_ptr<ICameraSink>& camera_sink)
+    void CameraSinkWindow::SubWindow::set_local_selected_camera_sink(const std::weak_ptr<ICameraSink>& camera_sink)
     {
         _selected_camera_sink = camera_sink;
         _triggered_by.clear();
@@ -136,7 +186,7 @@ namespace trview
         }
     }
 
-    void CameraSinkWindow::render_list()
+    void CameraSinkWindow::SubWindow::render_list()
     {
         calculate_column_widths();
         if (ImGui::BeginChild(Names::list_panel.c_str(), ImVec2(0, 0), ImGuiChildFlags_AlwaysAutoResize | ImGuiChildFlags_AutoResizeX, ImGuiWindowFlags_NoScrollbar))
@@ -254,7 +304,7 @@ namespace trview
         ImGui::EndChild();
     }
 
-    void CameraSinkWindow::render_details()
+    void CameraSinkWindow::SubWindow::render_details()
     {
         auto selected = _selected_camera_sink.lock();
         if (ImGui::BeginChild(Names::details_panel.c_str(), ImVec2(), true) && selected)
@@ -374,6 +424,27 @@ namespace trview
 
     void CameraSinkWindow::set_selected_camera_sink(const std::weak_ptr<ICameraSink>& camera_sink)
     {
+        for (auto& window : _sub_windows)
+        {
+            window.set_selected_camera_sink(camera_sink);
+        }
+    }
+
+    void CameraSinkWindow::set_current_room(const std::weak_ptr<IRoom>& room)
+    {
+        for (auto& window : _sub_windows)
+        {
+            window.set_current_room(room);
+        }
+    }
+
+    void CameraSinkWindow::SubWindow::set_selected_camera_sink(const std::weak_ptr<ICameraSink>& camera_sink)
+    {
+        if (is_level_mismatch(camera_sink, _level))
+        {
+            return;
+        }
+
         _global_selected_camera_sink = camera_sink;
         if (_sync)
         {
@@ -382,12 +453,17 @@ namespace trview
         }
     }
 
-    void CameraSinkWindow::set_current_room(const std::weak_ptr<IRoom>& room)
+    void CameraSinkWindow::SubWindow::set_current_room(const std::weak_ptr<IRoom>& room)
     {
+        if (is_level_mismatch(room, _level))
+        {
+            return;
+        }
+
         _current_room = room;
     }
 
-    void CameraSinkWindow::setup_filters()
+    void CameraSinkWindow::SubWindow::setup_filters()
     {
         _filters.clear_all_getters();
 
@@ -429,7 +505,7 @@ namespace trview
         _filters.add_getter<float>("Box Index", [](auto&& camera_sink) { return static_cast<float>(camera_sink.flag()); }, is_sink);
     }
 
-    void CameraSinkWindow::calculate_column_widths()
+    void CameraSinkWindow::SubWindow::calculate_column_widths()
     {
         _column_sizer.reset();
         _column_sizer.measure("#__", 0);

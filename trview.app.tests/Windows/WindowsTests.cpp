@@ -540,7 +540,7 @@ TEST(Windows, SelectWaypoint)
 TEST(Windows, SetLevel)
 {
     auto [cameras_ptr, cameras] = create_mock<MockCameraSinkWindowManager>();
-    EXPECT_CALL(cameras, set_camera_sinks).Times(1);
+    EXPECT_CALL(cameras, add_level).Times(1);
     auto [items_ptr, items] = create_mock<MockItemsWindowManager>();
     EXPECT_CALL(items, add_level).Times(1);
     auto [lights_ptr, lights] = create_mock<MockLightsWindowManager>();

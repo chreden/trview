@@ -25,35 +25,51 @@ namespace trview
 
         explicit CameraSinkWindow(const std::shared_ptr<IClipboard>& clipboard);
         virtual ~CameraSinkWindow() = default;
-        virtual void render() override;
-        virtual void set_number(int32_t number) override;
-        virtual void set_camera_sinks(const std::vector<std::weak_ptr<ICameraSink>>& camera_sinks) override;
-        virtual void set_selected_camera_sink(const std::weak_ptr<ICameraSink>& camera_sink) override;
+        void add_level(const std::weak_ptr<ILevel>& level) override;
+        void render() override;
+        void set_number(int32_t number) override;
+        void set_selected_camera_sink(const std::weak_ptr<ICameraSink>& camera_sink) override;
         void set_current_room(const std::weak_ptr<IRoom>& room) override;
     private:
         bool render_camera_sink_window();
-        void set_sync(bool value);
-        void set_local_selected_camera_sink(const std::weak_ptr<ICameraSink>& camera_sink);
-        void render_list();
-        void render_details();
-        void setup_filters();
-        void calculate_column_widths();
+
+        struct SubWindow
+        {
+            Event<std::weak_ptr<ICameraSink>> on_camera_sink_selected;
+            Event<std::weak_ptr<ITrigger>> on_trigger_selected;
+            Event<> on_scene_changed;
+
+            std::vector<std::weak_ptr<ICameraSink>> _all_camera_sinks;
+            AutoHider _auto_hider;
+            std::shared_ptr<IClipboard> _clipboard;
+            ColumnSizer _column_sizer;
+            std::weak_ptr<IRoom> _current_room;
+            Filters<ICameraSink> _filters;
+            bool _force_sort{ false };
+            std::weak_ptr<ICameraSink> _global_selected_camera_sink;
+            std::weak_ptr<ILevel> _level;
+            std::weak_ptr<ICameraSink> _selected_camera_sink;
+            std::weak_ptr<ITrigger> _selected_trigger;
+            bool _scroll_to{ false };
+            bool _sync{ true };
+            std::unordered_map<std::string, std::string> _tips;
+            Track<Type::Room> _track;
+            std::vector<std::weak_ptr<ITrigger>> _triggered_by;
+
+            void calculate_column_widths();
+            void render(int index);
+            void render_details();
+            void render_list();
+            void set_camera_sinks(const std::vector<std::weak_ptr<ICameraSink>>& camera_sinks);
+            void set_current_room(const std::weak_ptr<IRoom>& room);
+            void set_local_selected_camera_sink(const std::weak_ptr<ICameraSink>& camera_sink);
+            void set_selected_camera_sink(const std::weak_ptr<ICameraSink>& camera_sink);
+            void set_sync(bool value);
+            void setup_filters();
+        };
 
         std::string _id{ "Camera/Sink 0" };
-        std::vector<std::weak_ptr<ICameraSink>> _all_camera_sinks;
-        std::weak_ptr<ICameraSink> _selected_camera_sink;
-        std::weak_ptr<ICameraSink> _global_selected_camera_sink;
-        std::unordered_map<std::string, std::string> _tips;
+        std::vector<SubWindow> _sub_windows;
         std::shared_ptr<IClipboard> _clipboard;
-        Filters<ICameraSink> _filters;
-        std::weak_ptr<ITrigger> _selected_trigger;
-        bool _sync{ true };
-        bool _scroll_to{ false };
-        std::weak_ptr<IRoom> _current_room;
-        bool _force_sort{ false };
-        std::vector<std::weak_ptr<ITrigger>> _triggered_by;
-        Track<Type::Room> _track;
-        ColumnSizer _column_sizer;
-        AutoHider _auto_hider;
     };
 }
