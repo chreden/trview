@@ -557,9 +557,7 @@ TEST(Windows, SetLevel)
     EXPECT_CALL(route, set_triggers).Times(1);
     EXPECT_CALL(route, set_rooms).Times(1);
     auto [sounds_ptr, sounds] = create_mock<MockSoundsWindowManager>();
-    EXPECT_CALL(sounds, set_level_version).Times(1);
-    EXPECT_CALL(sounds, set_sound_sources).Times(1);
-    EXPECT_CALL(sounds, set_sound_storage).Times(1);
+    EXPECT_CALL(sounds, add_level).Times(1);
     auto [statics_ptr, statics] = create_mock<MockStaticsWindowManager>();
     EXPECT_CALL(statics, add_level).Times(1);
     auto [triggers_ptr, triggers] = create_mock<MockTriggersWindowManager>();

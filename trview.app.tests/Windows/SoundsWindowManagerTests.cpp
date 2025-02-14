@@ -68,49 +68,20 @@ TEST(SoundsWindowManager, RendersAllWindows)
     manager->render();
 }
 
-TEST(SoundsWindowManager, SetLevelVersion)
-{
-    auto window = mock_shared<MockSoundsWindow>();
-    EXPECT_CALL(*window, set_level_version(trlevel::LevelVersion::Unknown)).Times(1);
-    EXPECT_CALL(*window, set_level_version(trlevel::LevelVersion::Tomb3)).Times(1);
-
-    auto manager = register_test_module().with_window_source([&]() { return window; }).build();
-    manager->create_window();
-    manager->set_level_version(trlevel::LevelVersion::Tomb3);
-}
-
-TEST(SoundsWindowManager, SetSoundSources)
-{
-    auto window = mock_shared<MockSoundsWindow>();
-    EXPECT_CALL(*window, set_sound_sources).Times(2);
-
-    auto manager = register_test_module().with_window_source([&]() { return window; }).build();
-    manager->create_window();
-    manager->set_sound_sources({});
-}
-
-TEST(SoundsWindowManager, SetSoundStorage)
-{
-    auto window = mock_shared<MockSoundsWindow>();
-    EXPECT_CALL(*window, set_sound_storage).Times(2);
-
-    auto manager = register_test_module().with_window_source([&]() { return window; }).build();
-    manager->create_window();
-    manager->set_sound_storage({});
-}
-
 TEST(SoundsWindowManager, WindowCreated)
 {
     auto window = mock_shared<MockSoundsWindow>();
     EXPECT_CALL(*window, set_number(1)).Times(1);
-    EXPECT_CALL(*window, set_level_version).Times(1);
+    EXPECT_CALL(*window, add_level).Times(1);
     EXPECT_CALL(*window, set_selected_sound_source).Times(1);
-    EXPECT_CALL(*window, set_sound_sources).Times(1);
-    EXPECT_CALL(*window, set_sound_storage).Times(1);
+
+    auto level = mock_shared<MockLevel>();
 
     auto manager = register_test_module()
         .with_window_source([&]() { return window; })
         .build();
+
+    manager->add_level(level);
 
     auto created = manager->create_window().lock();
     ASSERT_EQ(created, window);

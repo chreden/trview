@@ -11,13 +11,45 @@
 
 namespace trview
 {
+    namespace
+    {
+        bool is_level_mismatch(auto&& e, auto&& level)
+        {
+            if (auto e_ptr = e.lock())
+            {
+                return e_ptr->level().lock() != level.lock();
+            }
+            return false;
+        }
+    }
+
     ISoundsWindow::~ISoundsWindow()
     {
     }
 
     SoundsWindow::SoundsWindow()
     {
-        setup_filters();
+    }
+
+    void SoundsWindow::add_level(const std::weak_ptr<ILevel>& level)
+    {
+        if (const auto new_level = level.lock())
+        {
+            _sub_windows.push_back(
+                {
+                    ._level = level,
+                    ._level_platform = new_level->platform(),
+                    ._level_version = new_level->version()
+                });
+
+            auto& new_window = _sub_windows.back();
+            new_window.setup_filters();
+            new_window.set_sound_sources(new_level->sound_sources());
+            new_window.set_sound_storage(new_level->sound_storage());
+
+            new_window.on_scene_changed += on_scene_changed;
+            new_window.on_sound_source_selected += on_sound_source_selected;
+        }
     }
 
     void SoundsWindow::render()
@@ -29,16 +61,6 @@ namespace trview
         }
     }
 
-    void SoundsWindow::set_level_platform(trlevel::Platform platform)
-    {
-        _level_platform = platform;
-    }
-
-    void SoundsWindow::set_level_version(trlevel::LevelVersion version)
-    {
-        _level_version = version;
-    }
-
     void SoundsWindow::set_number(int32_t number)
     {
         _id = std::format("Sounds {}", number);
@@ -46,6 +68,19 @@ namespace trview
 
     void SoundsWindow::set_selected_sound_source(const std::weak_ptr<ISoundSource>& sound_source)
     {
+        for (auto& window : _sub_windows)
+        {
+            window.set_selected_sound_source(sound_source);
+        }
+    }
+
+    void SoundsWindow::SubWindow::set_selected_sound_source(const std::weak_ptr<ISoundSource>& sound_source)
+    {
+        if (is_level_mismatch(sound_source, _level))
+        {
+            return;
+        }
+
         _global_selected_sound_source = sound_source;
         if (_sync_sound_source)
         {
@@ -62,19 +97,10 @@ namespace trview
         {
             if (ImGui::BeginTabBar("TabBar"))
             {
-                if (ImGui::BeginTabItem("Sound Sources"))
+                int window_index = 0;
+                for (auto& sub_window : _sub_windows)
                 {
-                    render_sound_sources_list();
-                    ImGui::SameLine();
-                    render_sounds_source_details();
-                    _force_sort = false;
-                    ImGui::EndTabItem();
-                }
-
-                if (ImGui::BeginTabItem("Sound Board"))
-                {
-                    render_sound_board();
-                    ImGui::EndTabItem();
+                    sub_window.render(window_index++);
                 }
                 ImGui::EndTabBar();
             }
@@ -84,7 +110,7 @@ namespace trview
         return stay_open;
     }
 
-    void SoundsWindow::render_sound_sources_list()
+    void SoundsWindow::SubWindow::render_sound_sources_list()
     {
         calculate_column_widths();
         if (ImGui::BeginChild(Names::sound_source_list_panel.c_str(), ImVec2(200, 0), ImGuiChildFlags_AutoResizeX, ImGuiWindowFlags_NoScrollbar))
@@ -188,7 +214,7 @@ namespace trview
         ImGui::EndChild();
     }
 
-    void SoundsWindow::render_sounds_source_details()
+    void SoundsWindow::SubWindow::render_sounds_source_details()
     {
         if (ImGui::BeginChild(Names::details_panel.c_str(), ImVec2(), true))
         {
@@ -288,7 +314,7 @@ namespace trview
         ImGui::EndChild();
     }
 
-    void SoundsWindow::render_sound_board()
+    void SoundsWindow::SubWindow::render_sound_board()
     {
         if (ImGui::BeginChild("##soundboard"))
         {
@@ -316,12 +342,12 @@ namespace trview
         }
     }
 
-    void SoundsWindow::set_sound_storage(const std::weak_ptr<ISoundStorage>& sound_storage)
+    void SoundsWindow::SubWindow::set_sound_storage(const std::weak_ptr<ISoundStorage>& sound_storage)
     {
         _sound_storage = sound_storage;
     }
 
-    void SoundsWindow::set_sound_sources(const std::vector<std::weak_ptr<ISoundSource>>& sound_sources)
+    void SoundsWindow::SubWindow::set_sound_sources(const std::vector<std::weak_ptr<ISoundSource>>& sound_sources)
     {
         _all_sound_sources = sound_sources;
         setup_filters();
@@ -329,7 +355,7 @@ namespace trview
         calculate_column_widths();
     }
 
-    void SoundsWindow::calculate_column_widths()
+    void SoundsWindow::SubWindow::calculate_column_widths()
     {
         _column_sizer.reset();
         _column_sizer.measure("#__", 0);
@@ -348,12 +374,12 @@ namespace trview
         }
     }
 
-    void SoundsWindow::set_local_selected_sound_source(const std::weak_ptr<ISoundSource>& sound_source)
+    void SoundsWindow::SubWindow::set_local_selected_sound_source(const std::weak_ptr<ISoundSource>& sound_source)
     {
         _selected_sound_source = sound_source;
     }
 
-    void SoundsWindow::set_sync_sound_source(bool value)
+    void SoundsWindow::SubWindow::set_sync_sound_source(bool value)
     {
         if (_sync_sound_source != value)
         {
@@ -366,7 +392,7 @@ namespace trview
         }
     }
 
-    void SoundsWindow::setup_filters()
+    void SoundsWindow::SubWindow::setup_filters()
     {
         _filters.clear_all_getters();
         _filters.add_getter<float>("#", [](auto&& sound_source) { return static_cast<float>(sound_source.number()); });
@@ -383,6 +409,35 @@ namespace trview
         {
             _filters.add_getter<float>("Pitch", [](auto&& sound_source) { return static_cast<float>(sound_source.pitch()); });
             _filters.add_getter<float>("Range", [](auto&& sound_source) { return static_cast<float>(sound_source.range()); });
+        }
+    }
+
+    void SoundsWindow::SubWindow::render(int index)
+    {
+        if (const auto& level = _level.lock())
+        {
+            if (ImGui::BeginTabItem(std::format("{}##{}", level->name(), index).c_str()))
+            {
+                if (ImGui::BeginTabBar("LevelTabBar"))
+                {
+                    if (ImGui::BeginTabItem("Sound Sources"))
+                    {
+                        render_sound_sources_list();
+                        ImGui::SameLine();
+                        render_sounds_source_details();
+                        _force_sort = false;
+                        ImGui::EndTabItem();
+                    }
+
+                    if (ImGui::BeginTabItem("Sound Board"))
+                    {
+                        render_sound_board();
+                        ImGui::EndTabItem();
+                    }
+                    ImGui::EndTabBar();
+                }
+                ImGui::EndTabItem();
+            }
         }
     }
 }

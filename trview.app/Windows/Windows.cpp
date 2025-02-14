@@ -210,10 +210,7 @@ namespace trview
         _route_window->set_items(new_level->items());
         _route_window->set_triggers(new_level->triggers());
         _route_window->set_rooms(new_level->rooms());
-        _sounds_windows->set_level_platform(new_level->platform());
-        _sounds_windows->set_level_version(new_level->version());
-        _sounds_windows->set_sound_sources(new_level->sound_sources());
-        _sounds_windows->set_sound_storage(new_level->sound_storage());
+        _sounds_windows->add_level(new_level);
         _statics_windows->add_level(new_level);
         _triggers_windows->add_level(new_level);
         _textures_windows->add_level(new_level);

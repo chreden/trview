@@ -1,8 +1,17 @@
 #include "SoundsWindowManager.h"
 #include "../../Resources/resource.h"
+#include "../../Elements/SoundSource/ISoundSource.h"
 
 namespace trview
 {
+    namespace
+    {
+        auto find_level(auto&& levels, auto&& level)
+        {
+            return std::ranges::find_if(levels, [=](auto&& l) { return l.level.lock() == level.lock(); });
+        }
+    }
+
     ISoundsWindowManager::~ISoundsWindowManager()
     {
     }
@@ -10,6 +19,15 @@ namespace trview
     SoundsWindowManager::SoundsWindowManager(const Window& window, const ISoundsWindow::Source& sounds_window_source)
         : MessageHandler(window), _sounds_window_source(sounds_window_source)
     {
+    }
+
+    void SoundsWindowManager::add_level(const std::weak_ptr<ILevel>& level)
+    {
+        _levels.push_back({ .level = level });
+        for (auto& window : _windows)
+        {
+            window.second->add_level(level);
+        }
     }
 
     std::optional<int> SoundsWindowManager::process_message(UINT message, WPARAM wParam, LPARAM)
@@ -24,13 +42,13 @@ namespace trview
     std::weak_ptr<ISoundsWindow> SoundsWindowManager::create_window()
     {
         auto sounds_window = _sounds_window_source();
-        sounds_window->set_level_platform(_level_platform);
-        sounds_window->set_level_version(_level_version);
-        sounds_window->set_selected_sound_source(_selected_sound_source);
-        sounds_window->set_sound_sources(_sound_sources);
-        sounds_window->set_sound_storage(_sound_storage);
         sounds_window->on_scene_changed += on_scene_changed;
         sounds_window->on_sound_source_selected += on_sound_source_selected;
+        for (auto& level : _levels)
+        {
+            sounds_window->add_level(level.level);
+            sounds_window->set_selected_sound_source(level.sound_source);
+        }
         return add_window(sounds_window);
     }
 
@@ -41,46 +59,17 @@ namespace trview
 
     void SoundsWindowManager::select_sound_source(const std::weak_ptr<ISoundSource>& sound_source)
     {
-        _selected_sound_source = sound_source;
-        for (auto& window : _windows)
+        if (const auto sound_source_ptr = sound_source.lock())
         {
-            window.second->set_selected_sound_source(sound_source);
-        }
-    }
-
-    void SoundsWindowManager::set_level_platform(trlevel::Platform platform)
-    {
-        _level_platform = platform;
-        for (auto& window : _windows)
-        {
-            window.second->set_level_platform(platform);
-        }
-    }
-
-    void SoundsWindowManager::set_level_version(trlevel::LevelVersion version)
-    {
-        _level_version = version;
-        for (auto& window : _windows)
-        {
-            window.second->set_level_version(version);
-        }
-    }
-
-    void SoundsWindowManager::set_sound_sources(const std::vector<std::weak_ptr<ISoundSource>>& sound_sources)
-    {
-        _sound_sources = sound_sources;
-        for (auto& window : _windows)
-        {
-            window.second->set_sound_sources(_sound_sources);
-        }
-    }
-
-    void SoundsWindowManager::set_sound_storage(const std::weak_ptr<ISoundStorage>& sound_storage)
-    {
-        _sound_storage = sound_storage;
-        for (auto& window : _windows)
-        {
-            window.second->set_sound_storage(_sound_storage);
+            const auto found = find_level(_levels, sound_source_ptr->level());
+            if (found != _levels.end())
+            {
+                found->sound_source = sound_source;
+                for (auto& window : _windows)
+                {
+                    window.second->set_selected_sound_source(sound_source);
+                }
+            }
         }
     }
 }

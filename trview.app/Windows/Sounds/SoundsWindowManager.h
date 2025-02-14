@@ -16,18 +16,16 @@ namespace trview
         virtual ~SoundsWindowManager() = default;
         std::optional<int> process_message(UINT message, WPARAM wParam, LPARAM lParam) override;
         std::weak_ptr<ISoundsWindow> create_window() override;
+        void add_level(const std::weak_ptr<ILevel>& level) override;
         void render() override;
         void select_sound_source(const std::weak_ptr<ISoundSource>& sound_source) override;
-        void set_level_platform(trlevel::Platform platform) override;
-        void set_level_version(trlevel::LevelVersion version) override;
-        void set_sound_sources(const std::vector<std::weak_ptr<ISoundSource>>& sound_sources) override;
-        void set_sound_storage(const std::weak_ptr<ISoundStorage>& sound_storage) override;
     private:
+        struct Selection
+        {
+            std::weak_ptr<ILevel> level;
+            std::weak_ptr<ISoundSource> sound_source;
+        };
+        std::vector<Selection> _levels;
         ISoundsWindow::Source _sounds_window_source;
-        std::vector<std::weak_ptr<ISoundSource>> _sound_sources;
-        std::weak_ptr<ISoundStorage> _sound_storage;
-        std::weak_ptr<ISoundSource> _selected_sound_source;
-        trlevel::Platform _level_platform{ trlevel::Platform::Unknown };
-        trlevel::LevelVersion _level_version{ trlevel::LevelVersion::Unknown };
     };
 }
