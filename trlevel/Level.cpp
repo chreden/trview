@@ -1195,10 +1195,9 @@ namespace trlevel
 
             room.alternate_room = read<uint16_t>(file);
             room.flags = read<uint16_t>(file);
-            uint8_t unknown = read<uint8_t>(file);
+            room.water_scheme = read<uint8_t>(file);
             room.reverb_info = read<uint8_t>(file);
             room.alternate_group = read<uint8_t>(file);
-            unknown;
 
             uint16_t vertex_offset = 0;
             uint32_t num_layers = read<uint32_t>(file);
@@ -1236,92 +1235,6 @@ namespace trlevel
 
             int unknown3 = read<int>(file);
             unknown3;
-
-            // ???uint8  unknown_2;
-
-            // uint16_t num_unknowns = read<uint16_t>(file);
-            // skip(file, num_unknowns * 20);
-
-                        /*skip_xela(file);
-            uint32_t room_data_size = read<uint32_t>(file);
-            const uint32_t room_start = static_cast<uint32_t>(file.tellg());
-            const uint32_t room_end = room_start + room_data_size;
-            log_file(activity, file, std::format("Reading room data information. Data Size: {}", room_data_size));
-
-            log_file(activity, file, "Reading room header");
-            const auto header = read<tr5_room_header>(file);
-
-            // Copy useful data from the header to the room.
-            room.info = header.info;
-            room.num_x_sectors = header.num_x_sectors;
-            room.num_z_sectors = header.num_z_sectors;
-            room.colour = header.colour;    
-            room.reverb_info = header.reverb_info;
-            room.alternate_group = header.alternate_group;
-            room.water_scheme = header.water_scheme;
-            room.alternate_room = header.alternate_room;
-            room.flags = header.flags;
-            log_file(activity, file, "Read room header");
-
-            // The offsets start measuring from this position, after all the header information.
-            const uint32_t data_start = static_cast<uint32_t>(file.tellg());
-
-            read_room_lights_tr5_pc(activity, file, room, header);
-            read_fog_bulbs_tr5_pc(activity, file, room, header);
-
-            file.seekg(data_start + header.start_sd_offset, std::ios::beg);
-            read_room_sectors_tr5(activity, file, room);
-            read_room_portals(activity, file, room);
-
-            // Separator
-            skip(file, 2);
-            file.seekg(data_start + header.end_portal_offset, std::ios::beg);
-            read_room_static_meshes_tr5(activity, file, room, header);
-            file.seekg(data_start + header.layer_offset, std::ios::beg);
-            const auto layers = read_room_layers(activity, file, header);
-
-            file.seekg(data_start + header.poly_offset, std::ios::beg);
-            uint16_t vertex_offset = 0;
-            int32_t layer_number = 0;
-            for (const auto& layer : layers)
-            {
-                log_file(activity, file, std::format("Reading {} rectangles for layer {}", layer.num_rectangles, layer_number));
-                auto rects = read_vector<tr4_mesh_face4>(file, layer.num_rectangles);
-                for (auto& rect : rects)
-                {
-                    for (auto& v : rect.vertices)
-                    {
-                        v += vertex_offset;
-                    }
-                }
-                std::copy(rects.begin(), rects.end(), std::back_inserter(room.data.rectangles));
-
-                log_file(activity, file, std::format("Reading {} triangles for layer {}", layer.num_triangles, layer_number));
-                auto tris = read_vector<tr4_mesh_face3>(file, layer.num_triangles);
-                for (auto& tri : tris)
-                {
-                    for (auto& v : tri.vertices)
-                    {
-                        v += vertex_offset;
-                    }
-                }
-                std::copy(tris.begin(), tris.end(), std::back_inserter(room.data.triangles));
-
-                vertex_offset += layer.num_vertices;
-                ++layer_number;
-            }
-
-            file.seekg(data_start + header.vertices_offset, std::ios::beg);
-            layer_number = 0;
-            for (const auto& layer : layers)
-            {
-                log_file(activity, file, std::format("Reading {} vertices for layer {}", layer.num_vertices, layer_number));
-                auto verts = convert_vertices(read_vector<tr5_room_vertex>(file, layer.num_vertices));
-                std::copy(verts.begin(), verts.end(), std::back_inserter(room.data.vertices));
-                ++layer_number;
-            }
-
-            file.seekg(room_end, std::ios::beg);*/
         }
     }
 
