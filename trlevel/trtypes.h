@@ -278,7 +278,6 @@ namespace trlevel
         uint16_t filler;
     };
 
-
     struct tr_bounding_box // 12 bytes
     {
         int16_t MinX, MaxX, MinY, MaxY, MinZ, MaxZ;
@@ -546,6 +545,17 @@ namespace trlevel
         tr5_vertex bounding_box_min;
         tr5_vertex bounding_box_max;
         uint32_t _3[4];
+    };
+
+    struct tr5_room_layer_remastered
+    {
+        uint16_t num_vertices;
+        uint16_t _1[2];
+        uint16_t num_rectangles;
+        uint16_t num_triangles;
+        uint16_t _2[2];
+        tr5_vertex bounding_box_min;
+        tr5_vertex bounding_box_max;
     };
 
     struct tr_room_portal

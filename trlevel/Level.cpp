@@ -306,10 +306,10 @@ namespace trlevel
             return flyby_cameras;
         }
 
-        void read_fog_bulbs_tr5_pc(trview::Activity& activity, std::basic_ispanstream<uint8_t>& file, tr3_room& room, const tr5_room_header& header)
+        void read_fog_bulbs_tr5_pc(trview::Activity& activity, std::basic_ispanstream<uint8_t>& file, tr3_room& room, uint32_t num_fog_bulbs)
         {
-            log_file(activity, file, std::format("Reading {} fog bulbs", header.num_fog_bulbs));
-            auto fog_bulbs = read_vector<tr5_fog_bulb>(file, header.num_fog_bulbs);
+            log_file(activity, file, std::format("Reading {} fog bulbs", num_fog_bulbs));
+            auto fog_bulbs = read_vector<tr5_fog_bulb>(file, num_fog_bulbs);
             log_file(activity, file, std::format("Read {} fog bulbs", fog_bulbs.size()));
 
             log_file(activity, file, "Converting lights to fog bulbs");
@@ -615,10 +615,10 @@ namespace trlevel
             log_file(activity, file, std::format("Read {} static meshes", room.static_meshes.size()));
         }
 
-        void read_room_static_meshes_tr5(trview::Activity& activity, std::basic_ispanstream<uint8_t>& file, tr3_room& room, const tr5_room_header& header)
+        void read_room_static_meshes_tr5(trview::Activity& activity, std::basic_ispanstream<uint8_t>& file, tr3_room& room, uint16_t num_static_meshes)
         {
-            log_file(activity, file, std::format("Reading {} static meshes", header.num_static_meshes));
-            room.static_meshes = read_vector<tr3_room_staticmesh>(file, header.num_static_meshes);
+            log_file(activity, file, std::format("Reading {} static meshes", num_static_meshes));
+            room.static_meshes = read_vector<tr3_room_staticmesh>(file, num_static_meshes);
             log_file(activity, file, std::format("Read {} static meshes", room.static_meshes.size()));
         }
 
@@ -1111,7 +1111,7 @@ namespace trlevel
             const uint32_t data_start = static_cast<uint32_t>(file.tellg());
 
             read_room_lights_tr5_pc(activity, file, room, header.num_lights);
-            read_fog_bulbs_tr5_pc(activity, file, room, header);
+            read_fog_bulbs_tr5_pc(activity, file, room, header.num_fog_bulbs);
             
             file.seekg(data_start + header.start_sd_offset, std::ios::beg);
             read_room_sectors_tr5(activity, file, room);
@@ -1120,7 +1120,7 @@ namespace trlevel
             // Separator
             skip(file, 2);
             file.seekg(data_start + header.end_portal_offset, std::ios::beg);
-            read_room_static_meshes_tr5(activity, file, room, header);
+            read_room_static_meshes_tr5(activity, file, room, header.num_static_meshes);
             file.seekg(data_start + header.layer_offset, std::ios::beg);
             const auto layers = read_room_layers(activity, file, header);
 
@@ -1188,8 +1188,61 @@ namespace trlevel
 
             uint16_t num_lights = read<uint16_t>(file);
             read_room_lights_tr5_pc(activity, file, room, num_lights);
+            uint32_t num_fog_bulbs = read<uint32_t>(file);
+            read_fog_bulbs_tr5_pc(activity, file, room, num_fog_bulbs);
+            uint16_t num_static_meshes = read<uint16_t>(file);
+            read_room_static_meshes_tr5(activity, file, room, num_static_meshes);
 
-            /*skip_xela(file);
+            room.alternate_room = read<uint16_t>(file);
+            room.flags = read<uint16_t>(file);
+            room.alternate_group = read<uint8_t>(file);
+            room.reverb_info = read<uint8_t>(file);
+            uint8_t unknown = read<uint8_t>(file);
+            unknown;
+
+            uint16_t vertex_offset = 0;
+            uint32_t num_layers = read<uint32_t>(file);
+            for (uint32_t i = 0; i < num_layers; ++i)
+            {
+                auto layer = read<tr5_room_layer_remastered>(file);
+
+                log_file(activity, file, std::format("Reading {} vertices for layer {}", layer.num_vertices, i));
+                auto verts = convert_vertices(read_vector<tr5_room_vertex>(file, layer.num_vertices));
+                std::copy(verts.begin(), verts.end(), std::back_inserter(room.data.vertices));
+
+                log_file(activity, file, std::format("Reading {} rectangles for layer {}", layer.num_rectangles, i));
+                auto rects = read_vector<tr4_mesh_face4>(file, layer.num_rectangles);
+                for (auto& rect : rects)
+                {
+                    for (auto& v : rect.vertices)
+                    {
+                        v += vertex_offset;
+                    }
+                }
+                std::copy(rects.begin(), rects.end(), std::back_inserter(room.data.rectangles));
+
+                log_file(activity, file, std::format("Reading {} triangles for layer {}", layer.num_triangles, i));
+                auto tris = read_vector<tr4_mesh_face3>(file, layer.num_triangles);
+                for (auto& tri : tris)
+                {
+                    for (auto& v : tri.vertices)
+                    {
+                        v += vertex_offset;
+                    }
+                }
+                std::copy(tris.begin(), tris.end(), std::back_inserter(room.data.triangles));
+                vertex_offset += layer.num_vertices;
+            }
+
+            int unknown3 = read<int>(file);
+            unknown3;
+
+            // ???uint8  unknown_2;
+
+            // uint16_t num_unknowns = read<uint16_t>(file);
+            // skip(file, num_unknowns * 20);
+
+                        /*skip_xela(file);
             uint32_t room_data_size = read<uint32_t>(file);
             const uint32_t room_start = static_cast<uint32_t>(file.tellg());
             const uint32_t room_end = room_start + room_data_size;
@@ -2447,37 +2500,6 @@ namespace trlevel
         _lara_type = read<uint16_t>(file);
 
         _rooms = read_rooms<uint16_t>(activity, file, callbacks, load_tr5_pc_remastered_room);
-
-        /*
-
-        
-        log_file(activity, file, std::format("Lara type: {}", _lara_type));
-        log_file(activity, file, "Reading weather type");
-        _weather_type = read<uint16_t>(file);
-        log_file(activity, file, std::format("Weather type: {}", _weather_type));
-        log_file(activity, file, "Skipping 28 unknown/padding bytes");
-        file.seekg(28, std::ios::cur);
-
-        log_file(activity, file, "Reading uncompressed size and skipping compressed size - unused in Tomb5");
-        const auto uncompressed_size = read<uint32_t>(file);
-        uncompressed_size;
-        const auto compressed_size = read<uint32_t>(file);
-        compressed_size;
-        callbacks.on_progress("Processing level data");
-        const auto at = file.tellg();
-
-        // Read unused value.
-        // read<uint32_t>(file);
-
-        if (file.eof())
-        {
-            // VICT.TR2 ends here.
-            return;
-        }
-
-        // file.seekg(5535500, std::ios::beg);
-
-        _rooms = read_rooms<uint32_t>(activity, file, callbacks, load_tr5_pc_room);
         _floor_data = read_floor_data(activity, file, callbacks);
         _mesh_data = read_mesh_data(activity, file, callbacks);
         _mesh_pointers = read_mesh_pointers(activity, file, callbacks);
@@ -2487,12 +2509,12 @@ namespace trlevel
         read_anim_commands(activity, file, callbacks);
         _meshtree = read_meshtree(activity, file, callbacks);
         _frames = read_frames(activity, file, callbacks);
-        _models = read_models_tr5(activity, file, callbacks);
+        _models = read_models_tr1_4(activity, file, callbacks);
         _static_meshes = read_static_meshes(activity, file, callbacks);
 
         log_file(activity, file, "Skipping SPR marker");
         // Skip past the 'SPR' marker.
-        file.seekg(4, std::ios::cur);
+        file.seekg(3, std::ios::cur);
 
         _sprite_textures = read_sprite_textures(activity, file, callbacks);
         _sprite_sequences = read_sprite_sequences(activity, file, callbacks);
@@ -2507,9 +2529,9 @@ namespace trlevel
         read_animated_textures_uv_count(activity, file, callbacks);
 
         log_file(activity, file, "Skipping TEX marker");
-        file.seekg(4, std::ios::cur);
+        file.seekg(3, std::ios::cur);
 
-        _object_textures = read_object_textures_tr5(activity, file, callbacks);
+        _object_textures = read_object_textures_tr4(activity, file, callbacks);
         _entities = read_entities(activity, file, callbacks);
         _ai_objects = read_ai_objects(activity, file, callbacks);
 
@@ -2517,7 +2539,7 @@ namespace trlevel
 
         callbacks.on_progress("Generating meshes");
         log_file(activity, file, "Generating meshes");
-        generate_meshes(_mesh_data);*/
+        generate_meshes(_mesh_data);
     }
 
     void Level::read_textiles_tr1_pc(std::basic_ispanstream<uint8_t>& file, trview::Activity& activity, const LoadCallbacks& callbacks)
