@@ -186,10 +186,11 @@ namespace trlevel
         void load_tr2_pc(std::basic_ispanstream<uint8_t>& file, trview::Activity& activity, const LoadCallbacks& callbacks);
         void load_tr3_pc(std::basic_ispanstream<uint8_t>& file, trview::Activity& activity, const LoadCallbacks& callbacks);
         void load_tr4_pc(std::basic_ispanstream<uint8_t>& file, trview::Activity& activity, const LoadCallbacks& callbacks);
+        void load_tr4_pc_remastered(std::basic_ispanstream<uint8_t>& file, trview::Activity& activity, const LoadCallbacks& callbacks);
         void load_tr5_pc(std::basic_ispanstream<uint8_t>& file, trview::Activity& activity, const LoadCallbacks& callbacks);
 
         void generate_sounds_tr1(const LoadCallbacks& callbacks);
-        void load_sound_fx(const LoadCallbacks& callbacks);
+        void load_sound_fx(trview::Activity& activity, const LoadCallbacks& callbacks);
         std::optional<std::vector<uint8_t>> load_main_sfx() const;
         void load_ngle_sound_fx(trview::Activity& activity, std::basic_ispanstream<uint8_t>& file, const LoadCallbacks& callbacks);
 
