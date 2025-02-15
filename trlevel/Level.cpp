@@ -2532,8 +2532,8 @@ namespace trlevel
         file.seekg(3, std::ios::cur);
 
         _object_textures = read_object_textures_tr4(activity, file, callbacks);
-        _entities = read_entities(activity, file, callbacks);
         _ai_objects = read_ai_objects(activity, file, callbacks);
+        _entities = read_entities(activity, file, callbacks);
 
         load_sound_fx(activity, callbacks);
 
