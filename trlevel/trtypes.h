@@ -798,6 +798,14 @@ namespace trlevel
         uint32_t _8[4];
     };
 
+    struct tr5_room_header_remastered
+    {
+        uint32_t x;
+        uint32_t z;
+        uint32_t yBottom;
+        uint32_t yTop;
+    };
+
     // Convert a 32 bit textile into a 32 bit argb value.
     uint32_t convert_textile32(uint32_t t);
 
