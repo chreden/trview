@@ -550,10 +550,12 @@ namespace trlevel
     struct tr5_room_layer_remastered
     {
         uint16_t num_vertices;
-        uint16_t _1[2];
+        uint16_t num_water;
+        uint16_t num_shore;
         uint16_t num_rectangles;
         uint16_t num_triangles;
-        uint16_t _2[2];
+        uint16_t num_water_rects;
+        uint16_t num_water_tris;
         tr5_vertex bounding_box_min;
         tr5_vertex bounding_box_max;
     };

@@ -1230,8 +1230,8 @@ namespace trlevel
                 vertex_offset += layer.num_vertices;
             }
 
-            int unknown3 = read<int>(file);
-            unknown3;
+            // Mystery number - seems to be tied to vertices in some way.
+            read<int>(file);
         }
     }
 
