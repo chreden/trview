@@ -564,8 +564,8 @@ namespace trview
                     left->direction() == right->direction() &&
                     left->in() == right->in() &&
                     left->out() == right->out() &&
-                    left->rad_in() == right->rad_in() &&
-                    left->rad_out() == right->rad_out() &&
+                    ((std::isnan(left->rad_in()) == std::isnan(right->rad_in())) || left->rad_in() == right->rad_in()) &&
+                    ((std::isnan(left->rad_out()) == std::isnan(right->rad_out())) || left->rad_out() == right->rad_out()) &&
                     left->range() == right->range() &&
                     left->length() == right->length() &&
                     left->cutoff() == right->cutoff() &&
