@@ -1181,17 +1181,14 @@ namespace trlevel
             room.info.yTop = header.yTop;
 
             read_room_portals(activity, file, room);
-            room.num_z_sectors = read<uint16_t>(file);
-            room.num_x_sectors = read<uint16_t>(file);
-            read_room_sectors_tr5(activity, file, room);
+            read_room_sectors(activity, file, room);
             room.colour = read<uint32_t>(file);
 
             uint16_t num_lights = read<uint16_t>(file);
             read_room_lights_tr5_pc(activity, file, room, num_lights);
             uint32_t num_fog_bulbs = read<uint32_t>(file);
             read_fog_bulbs_tr5_pc(activity, file, room, num_fog_bulbs);
-            uint16_t num_static_meshes = read<uint16_t>(file);
-            read_room_static_meshes_tr5(activity, file, room, num_static_meshes);
+            read_room_static_meshes(activity, file, room);
 
             room.alternate_room = read<uint16_t>(file);
             room.flags = read<uint16_t>(file);
@@ -1203,7 +1200,7 @@ namespace trlevel
             uint32_t num_layers = read<uint32_t>(file);
             for (uint32_t i = 0; i < num_layers; ++i)
             {
-                auto layer = read<tr5_room_layer_remastered>(file);
+                const auto layer = read<tr5_room_layer_remastered>(file);
 
                 log_file(activity, file, std::format("Reading {} vertices for layer {}", layer.num_vertices, i));
                 auto verts = convert_vertices(read_vector<tr5_room_vertex>(file, layer.num_vertices));
