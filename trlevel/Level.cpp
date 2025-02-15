@@ -615,10 +615,10 @@ namespace trlevel
             log_file(activity, file, std::format("Read {} static meshes", room.static_meshes.size()));
         }
 
-        void read_room_static_meshes_tr5(trview::Activity& activity, std::basic_ispanstream<uint8_t>& file, tr3_room& room, uint16_t num_static_meshes)
+        void read_room_static_meshes_tr5(trview::Activity& activity, std::basic_ispanstream<uint8_t>& file, tr3_room& room, const tr5_room_header& header)
         {
-            log_file(activity, file, std::format("Reading {} static meshes", num_static_meshes));
-            room.static_meshes = read_vector<tr3_room_staticmesh>(file, num_static_meshes);
+            log_file(activity, file, std::format("Reading {} static meshes", header.num_static_meshes));
+            room.static_meshes = read_vector<tr3_room_staticmesh>(file, header.num_static_meshes);
             log_file(activity, file, std::format("Read {} static meshes", room.static_meshes.size()));
         }
 
@@ -885,7 +885,11 @@ namespace trlevel
             }
 
             log_file(activity, file, "Reading misc textiles");
-            auto textile32_misc = read_vector_compressed<tr_textile32>(file, 2);
+            const auto textile32_misc = read_vector_compressed<tr_textile32>(file, 2);
+            for (const auto& textile : textile32_misc)
+            {
+                callbacks.on_textile(convert_textile(textile));
+            }
             return num_textiles;
         }
 
@@ -910,7 +914,11 @@ namespace trlevel
             textile32 = {};
 
             log_file(activity, file, "Skipping misc textiles");
-            skip(file, sizeof(tr_textile32) * 2);
+            const auto textile32_misc = read_vector<tr_textile32>(file, 2);
+            for (const auto& textile : textile32_misc)
+            {
+                callbacks.on_textile(convert_textile(textile));
+            }
             return num_textiles;
         }
 
@@ -935,7 +943,11 @@ namespace trlevel
             textile32 = {};
 
             log_file(activity, file, "Skipping misc textiles");
-            skip(file, sizeof(tr_textile32) * 3);
+            const auto textile32_misc = read_vector<tr_textile32>(file, 3);
+            for (const auto& textile : textile32_misc)
+            {
+                callbacks.on_textile(convert_textile(textile));
+            }
             return num_textiles;
         }
 
@@ -1120,7 +1132,7 @@ namespace trlevel
             // Separator
             skip(file, 2);
             file.seekg(data_start + header.end_portal_offset, std::ios::beg);
-            read_room_static_meshes_tr5(activity, file, room, header.num_static_meshes);
+            read_room_static_meshes_tr5(activity, file, room, header);
             file.seekg(data_start + header.layer_offset, std::ios::beg);
             const auto layers = read_room_layers(activity, file, header);
 
