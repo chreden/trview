@@ -1195,9 +1195,9 @@ namespace trlevel
 
             room.alternate_room = read<uint16_t>(file);
             room.flags = read<uint16_t>(file);
-            room.alternate_group = read<uint8_t>(file);
-            room.reverb_info = read<uint8_t>(file);
             uint8_t unknown = read<uint8_t>(file);
+            room.reverb_info = read<uint8_t>(file);
+            room.alternate_group = read<uint8_t>(file);
             unknown;
 
             uint16_t vertex_offset = 0;
