@@ -33,19 +33,19 @@ namespace trlevel
         std::vector<tr_room_sector> sector_list;
 
         uint32_t colour{ 0xffffffff };
-        int16_t ambient_intensity_1;
-        int16_t ambient_intensity_2;
-        int16_t light_mode;
+        int16_t ambient_intensity_1{ 0 };
+        int16_t ambient_intensity_2{ 0 };
+        int16_t light_mode{ 0 };
 
         std::vector<tr_x_room_light> lights;
 
         std::vector<tr3_room_staticmesh> static_meshes;
 
         int16_t alternate_room{ -1 };
-        int16_t flags;
+        int16_t flags{ 0 };
 
-        uint16_t water_scheme;
-        uint8_t reverb_info;
+        uint16_t water_scheme{ 0 };
+        uint8_t reverb_info{ 0 };
         uint8_t alternate_group{ 0xff };
     };
 

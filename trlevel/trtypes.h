@@ -278,7 +278,6 @@ namespace trlevel
         uint16_t filler;
     };
 
-
     struct tr_bounding_box // 12 bytes
     {
         int16_t MinX, MaxX, MinY, MaxY, MinZ, MaxZ;
@@ -548,6 +547,19 @@ namespace trlevel
         uint32_t _3[4];
     };
 
+    struct tr5_room_layer_remastered
+    {
+        uint16_t num_vertices;
+        uint16_t num_water;
+        uint16_t num_shore;
+        uint16_t num_rectangles;
+        uint16_t num_triangles;
+        uint16_t num_water_rects;
+        uint16_t num_water_tris;
+        tr5_vertex bounding_box_min;
+        tr5_vertex bounding_box_max;
+    };
+
     struct tr_room_portal
     {
         uint16_t  adjoining_room;
@@ -796,6 +808,14 @@ namespace trlevel
         uint32_t poly_offset2;
         uint32_t vertices_size;
         uint32_t _8[4];
+    };
+
+    struct tr5_room_header_remastered
+    {
+        uint32_t x;
+        uint32_t z;
+        uint32_t yBottom;
+        uint32_t yTop;
     };
 
     // Convert a 32 bit textile into a 32 bit argb value.
