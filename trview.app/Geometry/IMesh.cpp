@@ -7,7 +7,7 @@ namespace trview
 {
     namespace
     {
-        const uint16_t Texture_Mask = 0x7fff;
+        const uint16_t Texture_Mask = 0x3fff;
 
         Vector3 calculate_normal(const Vector3* const vertices)
         {
