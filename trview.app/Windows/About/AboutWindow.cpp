@@ -22,8 +22,8 @@ namespace trview
         bool stay_open = true;
         if (ImGui::Begin("About", &stay_open, ImGuiWindowFlags_AlwaysAutoResize))
         {
-            ImGui::Text("trview, Version 2.7.1");
-            ImGui::Text("Copyright (c) 2024 trview team");
+            ImGui::Text("trview, Version 2.7.3");
+            ImGui::Text("Copyright (c) 2025 trview team");
             ImGui::Text("Licensed under the MIT license");
             ImGui::Text("\tUses DirectXTK (MIT)");
             ImGui::Text("\tUses zlib (zlib)");
