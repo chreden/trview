@@ -67,6 +67,15 @@ namespace trview
             return value.has_value() ? to_string(*value) : "";
         }
 
+        bool equal_float(float l, float r)
+        {
+            if (std::isnan(l) && std::isnan(r))
+            {
+                return true;
+            }
+            return l == r;
+        }
+
         template <typename T>
         struct Entry
         {
@@ -562,15 +571,15 @@ namespace trview
                     left->intensity() == right->intensity() &&
                     left->fade() == right->fade() &&
                     left->direction() == right->direction() &&
-                    left->in() == right->in() &&
-                    left->out() == right->out() &&
-                    ((std::isnan(left->rad_in()) == std::isnan(right->rad_in())) || left->rad_in() == right->rad_in()) &&
-                    ((std::isnan(left->rad_out()) == std::isnan(right->rad_out())) || left->rad_out() == right->rad_out()) &&
-                    left->range() == right->range() &&
-                    left->length() == right->length() &&
-                    left->cutoff() == right->cutoff() &&
-                    left->radius() == right->radius() &&
-                    left->density() == right->density();
+                    equal_float(left->in(), right->in()) &&
+                    equal_float(left->out(), right->out()) &&
+                    equal_float(left->rad_in(), right->rad_in()) &&
+                    equal_float(left->rad_out(), right->rad_out()) &&
+                    equal_float(left->range(), right->range()) &&
+                    equal_float(left->length(), right->length()) &&
+                    equal_float(left->cutoff(), right->cutoff()) &&
+                    equal_float(left->radius(), right->radius()) &&
+                    equal_float(left->density(), right->density());
             });
 
         // Camera/Sinks:
