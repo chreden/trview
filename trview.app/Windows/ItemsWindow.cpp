@@ -3,6 +3,8 @@
 #include <trview.common/Windows/Clipboard.h>
 #include "../trview_imgui.h"
 #include "RowCounter.h"
+#include "../Elements/IRoom.h"
+#include "../Elements/ISector.h"
 
 namespace trview
 {
@@ -294,46 +296,97 @@ namespace trview
             {
                 on_add_to_route(_selected_item);
             }
-            ImGui::Text("Trigger References");
-            if (ImGui::BeginTable(Names::triggers_list.c_str(), 3, ImGuiTableFlags_ScrollY | ImGuiTableFlags_Sortable | ImGuiTableFlags_SizingFixedFit, ImVec2(-1, -1)))
+
+            if (ImGui::BeginTabBar("TabBar"))
             {
-                ImGui::TableSetupColumn("#");
-                ImGui::TableSetupColumn("Room");
-                ImGui::TableSetupColumn("Type");
-                ImGui::TableSetupScrollFreeze(1, 1);
-                ImGui::TableHeadersRow();
-
-                imgui_sort_weak(_triggered_by,
-                    {
-                        [](auto&& l, auto&& r) { return l.number() < r.number(); },
-                        [](auto&& l, auto&& r) { return std::tuple(trigger_room(l), l.number()) < std::tuple(trigger_room(r), r.number()); },
-                        [](auto&& l, auto&& r) { return std::tuple(to_string(l.type()), l.number()) < std::tuple(to_string(r.type()), r.number()); },
-                    }, _force_sort);
-
-                for (auto& trigger : _triggered_by)
+                if (ImGui::BeginTabItem("Trigger References"))
                 {
-                    auto trigger_ptr = trigger.lock();
-                    if (!trigger_ptr)
+                    if (ImGui::BeginTable(Names::triggers_list.c_str(), 3, ImGuiTableFlags_ScrollY | ImGuiTableFlags_Sortable | ImGuiTableFlags_SizingFixedFit, ImVec2(-1, -1)))
                     {
-                        continue;
-                    }
+                        ImGui::TableSetupColumn("#");
+                        ImGui::TableSetupColumn("Room");
+                        ImGui::TableSetupColumn("Type");
+                        ImGui::TableSetupScrollFreeze(1, 1);
+                        ImGui::TableHeadersRow();
 
-                    ImGui::TableNextRow();
-                    ImGui::TableNextColumn();
-                    bool selected = _selected_trigger.lock() == trigger_ptr;
-                    if (ImGui::Selectable(std::to_string(trigger_ptr->number()).c_str(), &selected, ImGuiSelectableFlags_SpanAllColumns | static_cast<int>(ImGuiSelectableFlags_SelectOnNav)))
-                    {
-                        _selected_trigger = trigger;
-                        _track.set_enabled<Type::Room>(false);
-                        on_trigger_selected(trigger);
+                        imgui_sort_weak(_triggered_by,
+                            {
+                                [](auto&& l, auto&& r) { return l.number() < r.number(); },
+                                [](auto&& l, auto&& r) { return std::tuple(trigger_room(l), l.number()) < std::tuple(trigger_room(r), r.number()); },
+                                [](auto&& l, auto&& r) { return std::tuple(to_string(l.type()), l.number()) < std::tuple(to_string(r.type()), r.number()); },
+                            }, _force_sort);
+
+                        for (auto& trigger : _triggered_by)
+                        {
+                            auto trigger_ptr = trigger.lock();
+                            if (!trigger_ptr)
+                            {
+                                continue;
+                            }
+
+                            ImGui::TableNextRow();
+                            ImGui::TableNextColumn();
+                            bool selected = _selected_trigger.lock() == trigger_ptr;
+                            if (ImGui::Selectable(std::to_string(trigger_ptr->number()).c_str(), &selected, ImGuiSelectableFlags_SpanAllColumns | static_cast<int>(ImGuiSelectableFlags_SelectOnNav)))
+                            {
+                                _selected_trigger = trigger;
+                                _track.set_enabled<Type::Room>(false);
+                                on_trigger_selected(trigger);
+                            }
+                            ImGui::TableNextColumn();
+                            ImGui::Text(std::to_string(trigger_room(trigger_ptr)).c_str());
+                            ImGui::TableNextColumn();
+                            ImGui::Text(to_string(trigger_ptr->type()).c_str());
+                        }
+                        ImGui::EndTable();
                     }
-                    ImGui::TableNextColumn();
-                    ImGui::Text(std::to_string(trigger_room(trigger_ptr)).c_str());
-                    ImGui::TableNextColumn();
-                    ImGui::Text(to_string(trigger_ptr->type()).c_str());
+                    ImGui::EndTabItem();
                 }
 
-                ImGui::EndTable();
+                // Temporary workaround for item->sector()
+                if (const auto item = _selected_item.lock())
+                {
+                    if (const auto room = item->room().lock())
+                    {
+                        const auto pos = item->position() - room->position();
+                        if (const auto sector = room->sector(static_cast<int32_t>(pos.x), static_cast<int32_t>(pos.z)).lock())
+                        {
+                            if (const auto trigger = sector->trigger().lock())
+                            {
+                                if (ImGui::BeginTabItem("Other Triggers"))
+                                {
+                                    ImGui::Text("Item is a trigger triggerer for these triggers");
+                                    if (ImGui::BeginTable(Names::triggers_list.c_str(), 3, ImGuiTableFlags_ScrollY | ImGuiTableFlags_Sortable | ImGuiTableFlags_SizingFixedFit, ImVec2(-1, -1)))
+                                    {
+                                        ImGui::TableSetupColumn("#");
+                                        ImGui::TableSetupColumn("Room");
+                                        ImGui::TableSetupColumn("Type");
+                                        ImGui::TableSetupScrollFreeze(1, 1);
+                                        ImGui::TableHeadersRow();
+
+                                        ImGui::TableNextRow();
+                                        ImGui::TableNextColumn();
+                                        bool selected = _selected_trigger.lock() == trigger;
+                                        if (ImGui::Selectable(std::to_string(trigger->number()).c_str(), &selected, ImGuiSelectableFlags_SpanAllColumns | static_cast<int>(ImGuiSelectableFlags_SelectOnNav)))
+                                        {
+                                            _selected_trigger = trigger;
+                                            _track.set_enabled<Type::Room>(false);
+                                            on_trigger_selected(trigger);
+                                        }
+                                        ImGui::TableNextColumn();
+                                        ImGui::Text(std::to_string(trigger_room(trigger)).c_str());
+                                        ImGui::TableNextColumn();
+                                        ImGui::Text(to_string(trigger->type()).c_str());
+                                        ImGui::EndTable();
+                                    }
+                                    ImGui::EndTabItem();
+                                }
+                            }
+                        }
+                    }
+                }
+
+                ImGui::EndTabBar();
             }
         }
         ImGui::EndChild();
