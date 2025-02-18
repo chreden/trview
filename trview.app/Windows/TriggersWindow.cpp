@@ -8,6 +8,19 @@
 
 namespace trview
 {
+    namespace
+    {
+        std::shared_ptr<ISector> sector_for_item(auto&& item)
+        {
+            if (const auto room = item->room().lock())
+            {
+                const auto pos = item->position() - room->position();
+                return room->sector(static_cast<int32_t>(pos.x), static_cast<int32_t>(pos.z)).lock();
+            }
+            return {};
+        };
+    }
+
     ITriggersWindow::~ITriggersWindow()
     {
     }
@@ -345,6 +358,37 @@ namespace trview
 
                 ImGui::EndTable();
             }
+
+            if (const auto trigger = _selected_trigger.lock())
+            {
+                if (const auto sector = trigger->sector().lock())
+                {
+                    const auto trigger_triggerers = _all_items |
+                        std::views::filter([&](auto&& i)
+                            {
+                                auto item = i.lock();
+                                return item && item->type() == "Trigger triggerer" && sector_for_item(item) == sector;
+                            }) |
+                        std::ranges::to<std::vector>();
+
+                    if (ImGui::BeginChild("Trigger triggerer", ImVec2(), ImGuiChildFlags_Border | ImGuiChildFlags_AutoResizeY))
+                    {
+                        for (const auto& item : trigger_triggerers)
+                        {
+                            if (auto item_ptr = item.lock())
+                            {
+                                ImGui::TextWrapped("This trigger is affected by a trigger triggerer. This trigger will be disabled until the item is activated.");
+                                if (ImGui::Button(std::format("Item {} - {}", item_ptr->number(), item_ptr->type()).c_str(), ImVec2(-1, 0)))
+                                {
+                                    on_item_selected(item);
+                                }
+                            }
+                        }
+                        ImGui::EndChild();
+                    }
+                }
+            }
+
             if (ImGui::Button(Names::add_to_route.c_str(), ImVec2(-1, 30)))
             {
                 on_add_to_route(_selected_trigger);
@@ -476,6 +520,21 @@ namespace trview
             {
                 return trigger.commands()
                     | std::views::transform([](auto&& t) { return command_type_name(t.type()); })
+                    | std::ranges::to<std::vector>();
+            });
+
+        _filters.add_multi_getter<float>("Trigger triggerer", [&](auto&& trigger)
+            {
+                const auto sector = trigger.sector().lock();
+                return _all_items
+                    | std::views::filter([&](const auto& i)
+                      {
+                          auto item = i.lock();
+                          return item && item->type() == "Trigger triggerer" && sector_for_item(item) == sector;
+                      })
+                    | std::views::transform([](const auto& i) -> std::shared_ptr<IItem> { return i.lock(); })
+                    | std::views::filter([](const auto& i) { return i != nullptr; })
+                    | std::views::transform([](const auto& i) { return static_cast<float>(i->number()); })
                     | std::ranges::to<std::vector>();
             });
 

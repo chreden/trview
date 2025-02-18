@@ -28,10 +28,10 @@ namespace trview
         return _data;
     }
 
-    Trigger::Trigger(uint32_t number, const std::weak_ptr<IRoom>& room, uint16_t x, uint16_t z, const TriggerInfo& trigger_info, trlevel::LevelVersion level_version, const std::weak_ptr<ILevel>& level, const IMesh::TransparentSource& mesh_source)
+    Trigger::Trigger(uint32_t number, const std::weak_ptr<IRoom>& room, uint16_t x, uint16_t z, const TriggerInfo& trigger_info, trlevel::LevelVersion level_version, const std::weak_ptr<ILevel>& level, const std::weak_ptr<ISector>& sector, const IMesh::TransparentSource& mesh_source)
         : _number(number), _room(room), _x(x), _z(z), _type(trigger_info.type), _only_once(trigger_info.oneshot), _flags(trigger_info.mask),
         _timer(level_version >= trlevel::LevelVersion::Tomb4 ? static_cast<int8_t>(trigger_info.timer) : trigger_info.timer), _sector_id(trigger_info.sector_id),
-        _level_version(level_version), _mesh_source(mesh_source), _level(level)
+        _level_version(level_version), _mesh_source(mesh_source), _level(level), _sector(sector)
     {
         uint32_t command_index = 0;
         for (const auto& action : trigger_info.commands)
@@ -176,5 +176,10 @@ namespace trview
     std::weak_ptr<ILevel> Trigger::level() const
     {
         return _level;
+    }
+
+    std::weak_ptr<ISector> Trigger::sector() const
+    {
+        return _sector;
     }
 }

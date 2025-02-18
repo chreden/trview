@@ -3,6 +3,7 @@
 #include <trview.app/Geometry/IMesh.h>
 #include <trview.app/Elements/ITrigger.h>
 #include <trview.app/Camera/ICamera.h>
+#include "../Elements/ISector.h"
 
 namespace trview
 {
@@ -11,7 +12,7 @@ namespace trview
     class Trigger final : public ITrigger
     {
     public:
-        explicit Trigger(uint32_t number, const std::weak_ptr<IRoom>& room, uint16_t x, uint16_t z, const TriggerInfo& trigger_info, trlevel::LevelVersion level_version, const std::weak_ptr<ILevel>& level, const IMesh::TransparentSource& mesh_source);
+        explicit Trigger(uint32_t number, const std::weak_ptr<IRoom>& room, uint16_t x, uint16_t z, const TriggerInfo& trigger_info, trlevel::LevelVersion level_version, const std::weak_ptr<ILevel>& level, const std::weak_ptr<ISector>& sector, const IMesh::TransparentSource& mesh_source);
         virtual ~Trigger() = default;
         virtual uint32_t number() const override;
         std::weak_ptr<IRoom> room() const override;
@@ -35,6 +36,7 @@ namespace trview
         virtual bool visible() const override;
         virtual void set_visible(bool value) override;
         std::weak_ptr<ILevel> level() const override;
+        std::weak_ptr<ISector> sector() const override;
     private:
         std::vector<uint16_t> _objects;
         std::vector<Command> _commands;
@@ -54,5 +56,6 @@ namespace trview
         trlevel::LevelVersion _level_version{ trlevel::LevelVersion::Unknown };
         std::weak_ptr<ILevel> _level;
         std::optional<Colour> _colour;
+        std::weak_ptr<ISector> _sector;
     };
 }
