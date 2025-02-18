@@ -59,6 +59,7 @@ namespace trview
         Microsoft::WRL::ComPtr<ID3D11Buffer> _index_buffer;
         Microsoft::WRL::ComPtr<ID3D11Buffer> _matrix_buffer;
         Microsoft::WRL::ComPtr<ID3D11Buffer> _scale_buffer;
+        Microsoft::WRL::ComPtr<ID3D11SamplerState> _sampler_state;
         graphics::IShader* _pixel_shader;
         graphics::IShader* _vertex_shader;
     };
