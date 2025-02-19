@@ -26,57 +26,59 @@ namespace trview
         ImGui::PushStyleVar(ImGuiStyleVar_WindowMinSize, ImVec2(540, 500));
         if (ImGui::Begin(_id.c_str(), &stay_open))
         {
-            ImGui::Text("Plugin Directories");
-            if (ImGui::BeginTable("Directories", 3, ImGuiTableFlags_SizingFixedFit, ImVec2(0, 0)))
+            if (auto plugins = _plugins.lock())
             {
-                const auto directories = _settings.plugin_directories;
-                for (std::size_t i = 0; i < directories.size(); ++i)
+                ImGui::Text("Plugin Directories");
+                if (ImGui::BeginTable("Directories", 3, ImGuiTableFlags_SizingFixedFit, ImVec2(0, 0)))
                 {
+                    const auto directories = _settings.plugin_directories;
+                    for (std::size_t i = 0; i < directories.size(); ++i)
+                    {
+                        ImGui::TableNextRow();
+                        ImGui::TableNextColumn();
+
+                        if (ImGui::Button(std::format("Remove##{}", i).c_str()))
+                        {
+                            _settings.plugin_directories.erase(_settings.plugin_directories.begin() + i);
+                            on_settings(_settings);
+                            plugins->reload();
+                        }
+                        ImGui::TableNextColumn();
+                        if (ImGui::Button(std::format("Open##{}", i).c_str()))
+                        {
+                            _shell->open(to_utf16(directories[i]));
+                        }
+                        ImGui::TableNextColumn();
+                        ImGui::Text(directories[i].c_str());
+                    }
+
                     ImGui::TableNextRow();
                     ImGui::TableNextColumn();
+                    if (ImGui::Button("+"))
+                    {
+                        if (auto path = _dialogs->open_folder())
+                        {
+                            _settings.plugin_directories.push_back(path.value());
+                            on_settings(_settings);
+                            plugins->reload();
+                        }
+                    }
 
-                    if (ImGui::Button(std::format("Remove##{}", i).c_str()))
-                    {
-                        _settings.plugin_directories.erase(_settings.plugin_directories.begin() + i);
-                        on_settings(_settings);
-                    }
-                    ImGui::TableNextColumn();
-                    if (ImGui::Button(std::format("Open##{}", i).c_str()))
-                    {
-                        _shell->open(to_utf16(directories[i]));
-                    }
-                    ImGui::TableNextColumn();
-                    ImGui::Text(directories[i].c_str());
+                    ImGui::EndTable();
                 }
 
-                ImGui::TableNextRow();
-                ImGui::TableNextColumn();
-                if (ImGui::Button("+"))
+                ImGui::Text("Plugins");
+                if (ImGui::BeginTable(Names::plugins_list.c_str(), 6, ImGuiTableFlags_SizingStretchProp))
                 {
-                    if (auto path = _dialogs->open_folder())
-                    {
-                        _settings.plugin_directories.push_back(path.value());
-                        on_settings(_settings);
-                    }
-                }
+                    ImGui::TableSetupColumn("Enabled");
+                    ImGui::TableSetupColumn("Location");
+                    ImGui::TableSetupColumn("Action");
+                    ImGui::TableSetupColumn("Name");
+                    ImGui::TableSetupColumn("Author");
+                    ImGui::TableSetupColumn("Description");
+                    ImGui::TableSetupScrollFreeze(1, 1);
+                    ImGui::TableHeadersRow();
 
-                ImGui::EndTable();
-            }
-
-            ImGui::Text("Plugins");
-            if (ImGui::BeginTable(Names::plugins_list.c_str(), 6, ImGuiTableFlags_SizingStretchProp))
-            {
-                ImGui::TableSetupColumn("Enabled");
-                ImGui::TableSetupColumn("Location");
-                ImGui::TableSetupColumn("Action");
-                ImGui::TableSetupColumn("Name");
-                ImGui::TableSetupColumn("Author");
-                ImGui::TableSetupColumn("Description");
-                ImGui::TableSetupScrollFreeze(1, 1);
-                ImGui::TableHeadersRow();
-
-                if (auto plugins = _plugins.lock())
-                {
                     for (const auto& p : plugins->plugins())
                     {
                         if (auto plugin = p.lock())
@@ -108,9 +110,9 @@ namespace trview
                             ImGui::Text(plugin->description().c_str());
                         }
                     }
-                }
 
-                ImGui::EndTable();
+                    ImGui::EndTable();
+                }
             }
         }
         ImGui::End();

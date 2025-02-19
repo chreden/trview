@@ -10,17 +10,10 @@ namespace trview
         const std::shared_ptr<IPlugin>& default_plugin,
         const IPlugin::Source& plugin_source,
         const UserSettings& settings)
+        : _files(files), _settings(settings), _plugin_source(plugin_source)
     {
         _plugins.push_back(default_plugin);
-
-        for (const auto& directory : settings.plugin_directories)
-        {
-            const auto plugins = files->get_directories(directory);
-            for (const auto& plugin : plugins)
-            {
-                _plugins.push_back(plugin_source(plugin.path));
-            }
-        }
+        reload();
     }
 
     std::vector<std::weak_ptr<IPlugin>> Plugins::plugins() const
@@ -32,14 +25,37 @@ namespace trview
 
     void Plugins::initialise(IApplication* application)
     {
+        _application = application;
         for (auto& plugin : _plugins)
         {
-            plugin->initialise(application);
+            plugin->initialise(_application);
         }
     }
 
     void Plugins::render_ui()
     {
         std::ranges::for_each(_plugins, [](auto&& p) { p->render_ui(); });
+    }
+
+    void Plugins::reload()
+    {
+        // Remove all but the default plugin
+        _plugins.resize(1);
+
+        for (const auto& directory : _settings.plugin_directories)
+        {
+            const auto plugins = _files->get_directories(directory);
+            for (const auto& plugin : plugins)
+            {
+                _plugins.push_back(_plugin_source(plugin.path));
+            }
+        }
+
+        initialise(_application);
+    }
+
+    void Plugins::set_settings(const UserSettings& settings)
+    {
+        _settings = settings;
     }
 }

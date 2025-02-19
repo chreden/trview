@@ -106,6 +106,7 @@ namespace trview
         _token_store += _windows->on_settings += [this](auto&& settings)
             {
                 _settings = settings;
+                _plugins->set_settings(_settings);
                 _viewer->set_settings(_settings);
                 _windows->set_settings(settings);
                 lua::set_settings(settings);
@@ -312,6 +313,7 @@ namespace trview
         _token_store += _viewer->on_settings += [this](auto&& settings)
         {
             _settings = settings;
+            _plugins->set_settings(_settings);
             _viewer->set_settings(_settings);
             _windows->set_settings(settings);
             lua::set_settings(settings);
