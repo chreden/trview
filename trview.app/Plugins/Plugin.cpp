@@ -9,7 +9,7 @@ namespace trview
     }
 
     Plugin::Plugin(std::unique_ptr<ILua> lua, const std::string& name, const std::string& author, const std::string& description)
-        : _lua(std::move(lua)), _name(name), _author(author), _description(description)
+        : _lua(std::move(lua)), _name(name), _author(author), _description(description), _built_in(true)
     {
         register_print();
     }
@@ -27,6 +27,11 @@ namespace trview
     void Plugin::register_print()
     {
         _token_store += _lua->on_print += [&](const std::string& message) { add_message(message); };
+    }
+
+    bool Plugin::built_in() const
+    {
+        return _built_in;
     }
 
     std::string Plugin::name() const
@@ -47,6 +52,11 @@ namespace trview
     std::string Plugin::path() const
     {
         return _path;
+    }
+
+    bool Plugin::enabled() const
+    {
+        return _enabled;
     }
 
     void Plugin::initialise(IApplication* application)
@@ -119,6 +129,11 @@ namespace trview
 
     void Plugin::load_script()
     {
+        if (!_enabled)
+        {
+            return;
+        }
+
         if (!_script.empty())
         {
             _lua->do_file(_script);
@@ -127,11 +142,21 @@ namespace trview
 
     void Plugin::render_toolbar()
     {
+        if (!_enabled)
+        {
+            return;
+        }
+
         _lua->execute("if render_toolbar ~= nil then render_toolbar() end");
     }
 
     void Plugin::render_ui()
     {
+        if (!_enabled)
+        {
+            return;
+        }
+
         _lua->execute("if render_ui ~= nil then render_ui() end");
     }
 
@@ -140,5 +165,15 @@ namespace trview
         std::string escaped = _path;
         std::ranges::replace(escaped, '\\', '/');
         _lua->execute(std::format("package.path = \"{}/?.lua\"", escaped));
+    }
+
+    void Plugin::set_enabled(bool value)
+    {
+        if (_built_in)
+        {
+            return;
+        }
+
+        _enabled = value;
     }
 }

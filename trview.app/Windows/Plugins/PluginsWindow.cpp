@@ -6,8 +6,8 @@ namespace trview
     {
     }
 
-    PluginsWindow::PluginsWindow(const std::weak_ptr<IPlugins>& plugins, const std::shared_ptr<IShell>& shell)
-        : _plugins(plugins), _shell(shell)
+    PluginsWindow::PluginsWindow(const std::weak_ptr<IPlugins>& plugins, const std::shared_ptr<IShell>& shell, const std::shared_ptr<IDialogs>& dialogs)
+        : _plugins(plugins), _shell(shell), _dialogs(dialogs)
     {
     }
 
@@ -25,8 +25,47 @@ namespace trview
         bool stay_open = true;
         if (ImGui::Begin(_id.c_str(), &stay_open))
         {
-            if (ImGui::BeginTable(Names::plugins_list.c_str(), 5, ImGuiTableFlags_SizingStretchProp))
+            ImGui::Text("Plugin Directories");
+            if (ImGui::BeginTable("Directories", 3, ImGuiTableFlags_SizingFixedFit, ImVec2(0, 0)))
             {
+                const auto directories = _settings.plugin_directories;
+                for (std::size_t i = 0; i < directories.size(); ++i)
+                {
+                    ImGui::TableNextRow();
+                    ImGui::TableNextColumn();
+
+                    if (ImGui::Button(std::format("Remove##{}", i).c_str()))
+                    {
+                        _settings.plugin_directories.erase(_settings.plugin_directories.begin() + i);
+                        on_settings(_settings);
+                    }
+                    ImGui::TableNextColumn();
+                    if (ImGui::Button(std::format("Open##{}", i).c_str()))
+                    {
+                        _shell->open(to_utf16(directories[i]));
+                    }
+                    ImGui::TableNextColumn();
+                    ImGui::Text(directories[i].c_str());
+                }
+
+                ImGui::TableNextRow();
+                ImGui::TableNextColumn();
+                if (ImGui::Button("+"))
+                {
+                    if (auto path = _dialogs->open_folder())
+                    {
+                        _settings.plugin_directories.push_back(path.value());
+                        on_settings(_settings);
+                    }
+                }
+
+                ImGui::EndTable();
+            }
+
+            ImGui::Text("Plugins");
+            if (ImGui::BeginTable(Names::plugins_list.c_str(), 6, ImGuiTableFlags_SizingStretchProp))
+            {
+                ImGui::TableSetupColumn("Enabled");
                 ImGui::TableSetupColumn("Location");
                 ImGui::TableSetupColumn("Action");
                 ImGui::TableSetupColumn("Name");
@@ -42,6 +81,14 @@ namespace trview
                         if (auto plugin = p.lock())
                         {
                             ImGui::TableNextRow();
+                            ImGui::TableNextColumn();
+                            bool enabled = plugin->enabled();
+                            ImGui::BeginDisabled(plugin->built_in());
+                            if (ImGui::Checkbox(std::format("##enabled-{}", reinterpret_cast<std::size_t>(plugin.get())).c_str(), &enabled))
+                            {
+                                plugin->set_enabled(enabled);
+                            }
+                            ImGui::EndDisabled();
                             ImGui::TableNextColumn();
                             if (!plugin->path().empty() && ImGui::Button(std::format("Open##{}", plugin->name()).c_str()))
                             {
@@ -72,6 +119,11 @@ namespace trview
     void PluginsWindow::set_number(int32_t number)
     {
         _id = std::format("Plugins {}", number);
+    }
+
+    void PluginsWindow::set_settings(const UserSettings& settings)
+    {
+        _settings = settings;
     }
 
     void PluginsWindow::update(float)

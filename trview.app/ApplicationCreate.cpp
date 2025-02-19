@@ -323,7 +323,7 @@ namespace trview
             std::make_shared<Plugin>(std::make_unique<Lua>(route_source, randomizer_route_source, waypoint_source, scriptable_source, dialogs, files), "Default", "trview", "Default Lua plugin for trview"),
             plugin_source,
             settings_loader->load_user_settings());
-        auto plugins_window_source = [=]() { return std::make_shared<PluginsWindow>(plugins, shell); };
+        auto plugins_window_source = [=]() { return std::make_shared<PluginsWindow>(plugins, shell, dialogs); };
         auto imgui_backend = std::make_shared<DX11ImGuiBackend>(window, device, files);
         auto fonts = std::make_shared<Fonts>(files, imgui_backend);
 

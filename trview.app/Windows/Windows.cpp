@@ -76,6 +76,8 @@ namespace trview
         _lights_windows->on_light_selected += on_light_selected;
         _lights_windows->on_scene_changed += on_scene_changed;
 
+        _plugins_windows->on_settings += on_settings;
+
         _rooms_windows->on_camera_sink_selected += on_camera_sink_selected;
         _rooms_windows->on_item_selected += on_item_selected;
         _rooms_windows->on_light_selected += on_light_selected;
@@ -252,6 +254,7 @@ namespace trview
     void Windows::set_settings(const UserSettings& settings)
     {
         _diff_windows->set_settings(settings);
+        _plugins_windows->set_settings(settings);
         _rooms_windows->set_map_colours(settings.map_colours);
         _route_window->set_randomizer_enabled(settings.randomizer_tools);
         _route_window->set_randomizer_settings(settings.randomizer);

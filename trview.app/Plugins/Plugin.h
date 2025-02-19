@@ -15,9 +15,11 @@ namespace trview
             std::unique_ptr<ILua> lua,
             const std::string& path);
         virtual ~Plugin() = default;
+        bool built_in() const override;
         std::string name() const override;
         std::string author() const override;
         std::string description() const override;
+        bool enabled() const override;
         void initialise(IApplication* application) override;
         std::string path() const override;
         std::string messages() const override;
@@ -28,6 +30,7 @@ namespace trview
         void reload() override;
         void render_toolbar() override;
         void render_ui() override;
+        void set_enabled(bool value) override;
     private:
         void load();
         void load_script();
@@ -44,5 +47,7 @@ namespace trview
         std::string _messages;
         TokenStore _token_store;
         IApplication* _application;
+        bool _enabled{ true };
+        bool _built_in{ false };
     };
 }

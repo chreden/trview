@@ -68,7 +68,6 @@ namespace trview
         virtual void set_route_startup(bool value) override;
         virtual void set_fov(float value) override;
         virtual void set_camera_sink_startup(bool value) override;
-        void set_plugin_directories(const std::vector<std::string>& directories) override;
         void set_statics_startup(bool value) override;
     private:
         std::shared_ptr<IDialogs> _dialogs;
@@ -96,7 +95,6 @@ namespace trview
         bool _route_startup{ false };
         float _fov{ 45 };
         bool _camera_sink_startup{ false };
-        std::vector<std::string> _plugin_directories;
         std::vector<FontSetting> _all_fonts;
         std::shared_ptr<IFonts> _fonts;
         bool _statics_startup{ false };
