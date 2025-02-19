@@ -23,6 +23,7 @@ namespace trview
     bool PluginsWindow::render_plugins_window()
     {
         bool stay_open = true;
+        ImGui::PushStyleVar(ImGuiStyleVar_WindowMinSize, ImVec2(540, 500));
         if (ImGui::Begin(_id.c_str(), &stay_open))
         {
             ImGui::Text("Plugin Directories");
@@ -113,6 +114,7 @@ namespace trview
             }
         }
         ImGui::End();
+        ImGui::PopStyleVar();
         return stay_open;
     }
 

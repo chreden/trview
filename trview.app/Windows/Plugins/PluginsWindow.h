@@ -3,6 +3,7 @@
 #include "../../Plugins/IPlugins.h"
 #include "IPluginsWindow.h"
 #include <trview.common/Windows/IShell.h>
+#include <trview.common/Windows/IDialogs.h>
 
 namespace trview
 {

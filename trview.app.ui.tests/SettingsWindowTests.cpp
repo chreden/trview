@@ -53,33 +53,6 @@ namespace
 
 void register_settings_window_tests(ImGuiTestEngine* engine)
 {
-    test<MockWrapper<SettingsWindow>>(engine, "Settings Window", "Add Plugin Directories",
-        [](ImGuiTestContext* ctx) { render(ctx->GetVars<MockWrapper<SettingsWindow>>()); },
-        [](ImGuiTestContext* ctx)
-        {
-            auto& controls = ctx->GetVars<MockWrapper<SettingsWindow>>();
-
-            auto dialogs = mock_shared<MockDialogs>();
-            ON_CALL(*dialogs, open_folder).WillByDefault(Return("test"));
-            controls.ptr = register_test_module().with_dialogs(dialogs).build();
-
-            std::optional<std::vector<std::string>> raised;
-            auto token = controls.ptr->on_plugin_directories += [&](const auto& value)
-            {
-                raised = value;
-            };
-
-            controls.ptr->toggle_visibility();
-
-            ctx->SetRef("Settings");
-            ctx->ItemClick("TabBar/Plugins");
-            ctx->ItemClick("TabBar/Plugins/Directories/Add");
-
-            const std::vector<std::string> expected{ "test" };
-            IM_CHECK_EQ(raised.has_value(), true);
-            IM_CHECK_EQ(raised.value(), expected);
-        });
-
     test<MockWrapper<SettingsWindow>>(engine, "Settings Window", "Changing Font Raises Event",
         [](ImGuiTestContext* ctx) { render(ctx->GetVars<MockWrapper<SettingsWindow>>()); },
         [](ImGuiTestContext* ctx)
@@ -623,49 +596,6 @@ void register_settings_window_tests(ImGuiTestEngine* engine)
 
             IM_CHECK_EQ(map_colours.has_value(), true);
             IM_CHECK_EQ(map_colours.value().special_colours().size(), 0.0f);
-        });
-
-    test<MockWrapper<SettingsWindow>>(engine, "Settings Window", "Open Plugin Directories",
-        [](ImGuiTestContext* ctx) { render(ctx->GetVars<MockWrapper<SettingsWindow>>()); },
-        [](ImGuiTestContext* ctx)
-        {
-            auto shell = mock_shared<MockShell>();
-            EXPECT_CALL(*shell, open(std::wstring(L"path"))).Times(1);
-
-            auto& controls = ctx->GetVars<MockWrapper<SettingsWindow>>();
-            controls.ptr = register_test_module().with_shell(shell).build();
-            controls.ptr->toggle_visibility();
-            controls.ptr->set_plugin_directories({ "path" });
-
-            ctx->SetRef("Settings");
-            ctx->ItemClick("TabBar/Plugins");
-            ctx->ItemClick("TabBar/Plugins/Directories/Open##0");
-
-            IM_CHECK_EQ(Mock::VerifyAndClear(shell.get()), true);
-        });
-
-    test<MockWrapper<SettingsWindow>>(engine, "Settings Window", "Remove Plugin Directories",
-        [](ImGuiTestContext* ctx) { render(ctx->GetVars<MockWrapper<SettingsWindow>>()); },
-        [](ImGuiTestContext* ctx)
-        {
-            auto& controls = ctx->GetVars<MockWrapper<SettingsWindow>>();
-            controls.ptr = register_test_module().build();
-            controls.ptr->toggle_visibility();
-            controls.ptr->set_plugin_directories({ "path" });
-
-            std::optional<std::vector<std::string>> raised;
-            auto token = controls.ptr->on_plugin_directories += [&](const auto& value)
-            {
-                raised = value;
-            };
-
-            ctx->SetRef("Settings");
-            ctx->ItemClick("TabBar/Plugins");
-            ctx->ItemClick("TabBar/Plugins/Directories/Remove##0");
-
-            const std::vector<std::string> expected;
-            IM_CHECK_EQ(raised.has_value(), true);
-            IM_CHECK_EQ(raised.value(), expected);
         });
 
     test<MockWrapper<SettingsWindow>>(engine, "Settings Window", "Set Acceleration Rate Updates Slider",
