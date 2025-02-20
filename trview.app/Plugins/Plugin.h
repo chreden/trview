@@ -49,5 +49,6 @@ namespace trview
         IApplication* _application;
         bool _enabled{ true };
         bool _built_in{ false };
+        bool _script_loaded{ false };
     };
 }

@@ -34,6 +34,11 @@ namespace trview
         json["size"] = setting.size;
     }
 
+    void to_json(nlohmann::json& json, const PluginSetting& setting)
+    {
+        json["enabled"] = setting.enabled;
+    }
+
     void from_json(const nlohmann::json& json, UserSettings::RecentRoute& item)
     {
         item.route_path = read_attribute<std::string>(json, "route_path");
@@ -57,6 +62,11 @@ namespace trview
         setting.name = read_attribute<std::string>(json, "name");
         setting.filename = read_attribute<std::string>(json, "filename");
         setting.size = read_attribute<int>(json, "size");
+    }
+
+    void from_json(const nlohmann::json& json, PluginSetting& setting)
+    {
+        setting.enabled = read_attribute<bool>(json, "enabled");
     }
 
     SettingsLoader::SettingsLoader(const std::shared_ptr<IFiles>& files)
@@ -108,6 +118,7 @@ namespace trview
             read_attribute(json, settings.statics_startup, "statics_startup");
             read_attribute(json, settings.camera_position_window, "camera_position_window");
             read_attribute(json, settings.recent_diff_files, "recent_diff");
+            read_attribute(json, settings.plugins, "plugins");
 
             settings.recent_files.resize(std::min<std::size_t>(settings.recent_files.size(), settings.max_recent_files));
         }
@@ -178,7 +189,8 @@ namespace trview
             json["statics_startup"] = settings.statics_startup;
             json["camera_position_window"] = settings.camera_position_window;
             json["recent_diff"] = std::list<std::string>(settings.recent_diff_files.begin(), std::next(settings.recent_diff_files.begin(), std::min<std::size_t>(settings.recent_diff_files.size(), settings.max_recent_files)));
-            _files->save_file(file_path, json.dump());
+            json["plugins"] = settings.plugins;
+            _files->save_file(file_path, json.dump(4));
         }
         catch (...)
         {

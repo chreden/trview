@@ -137,6 +137,7 @@ namespace trview
         if (!_script.empty())
         {
             _lua->do_file(_script);
+            _script_loaded = true;
         }
     }
 
@@ -175,5 +176,10 @@ namespace trview
         }
 
         _enabled = value;
+
+        if (!_script_loaded)
+        {
+            load_script();
+        }
     }
 }

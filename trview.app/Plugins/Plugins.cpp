@@ -47,7 +47,14 @@ namespace trview
             const auto plugins = _files->get_directories(directory);
             for (const auto& plugin : plugins)
             {
-                _plugins.push_back(_plugin_source(plugin.path));
+                auto new_plugin = _plugin_source(plugin.path);
+                _plugins.push_back(new_plugin);
+
+                const auto plugin_setting = _settings.plugins.find(plugin.path);
+                if (plugin_setting != _settings.plugins.end())
+                {
+                    new_plugin->set_enabled(plugin_setting->second.enabled);
+                }
             }
         }
 

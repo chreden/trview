@@ -90,6 +90,8 @@ namespace trview
                             if (ImGui::Checkbox(std::format("##enabled-{}", reinterpret_cast<std::size_t>(plugin.get())).c_str(), &enabled))
                             {
                                 plugin->set_enabled(enabled);
+                                _settings.plugins[plugin->path()].enabled = enabled;
+                                on_settings(_settings);
                             }
                             ImGui::EndDisabled();
                             ImGui::TableNextColumn();
