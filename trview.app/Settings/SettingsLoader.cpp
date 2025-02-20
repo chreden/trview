@@ -190,7 +190,7 @@ namespace trview
             json["camera_position_window"] = settings.camera_position_window;
             json["recent_diff"] = std::list<std::string>(settings.recent_diff_files.begin(), std::next(settings.recent_diff_files.begin(), std::min<std::size_t>(settings.recent_diff_files.size(), settings.max_recent_files)));
             json["plugins"] = settings.plugins;
-            _files->save_file(file_path, json.dump(4));
+            _files->save_file(file_path, json.dump());
         }
         catch (...)
         {
