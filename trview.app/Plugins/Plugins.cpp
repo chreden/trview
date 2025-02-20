@@ -51,10 +51,7 @@ namespace trview
                 _plugins.push_back(new_plugin);
 
                 const auto plugin_setting = _settings.plugins.find(plugin.path);
-                if (plugin_setting != _settings.plugins.end())
-                {
-                    new_plugin->set_enabled(plugin_setting->second.enabled);
-                }
+                new_plugin->set_enabled(plugin_setting != _settings.plugins.end() ? plugin_setting->second.enabled : true);
             }
         }
 

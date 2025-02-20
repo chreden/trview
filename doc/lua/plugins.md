@@ -34,3 +34,4 @@ trview will attempt to call the following functions if they are defined in the p
 |--------|----------|------------|-------|
 |render_ui|None|During trview UI rendering|Used for drawing any plugin windows required|
 |render_toolbar|None|When trview is rendering the toolbar at the bottom of the screen|Used to add a button or other control to the tool`bar - for example if you want a way to open the main plugin window|
+|set_enabled|boolean enabled|At plugin load and when user toggles whether plugin is enabled|Allows plugin to set up when enabled or to clean up when disabled|

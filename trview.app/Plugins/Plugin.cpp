@@ -176,10 +176,11 @@ namespace trview
         }
 
         _enabled = value;
-
         if (!_script_loaded)
         {
             load_script();
         }
+
+        _lua->execute(std::format("if set_enabled ~= nil then set_enabled({}) end", value));
     }
 }
