@@ -51,6 +51,7 @@ namespace
     struct PluginsWindowContext final
     {
         std::shared_ptr<PluginsWindow> ptr;
+        std::shared_ptr<MockPlugins> plugins;
 
         void render()
         {
@@ -74,13 +75,13 @@ void register_plugins_window_tests(ImGuiTestEngine* engine)
             ON_CALL(*plugin, name).WillByDefault(Return("Plugin Name"));
             ON_CALL(*plugin, path).WillByDefault(Return("test_path"));
 
-            auto plugins = mock_shared<MockPlugins>();
-            ON_CALL(*plugins, plugins).WillByDefault(Return(std::vector<std::weak_ptr<IPlugin>> { plugin }));
+            context.plugins = mock_shared<MockPlugins>();
+            ON_CALL(*context.plugins, plugins).WillByDefault(Return(std::vector<std::weak_ptr<IPlugin>> { plugin }));
 
             auto shell = mock_shared<MockShell>();
             EXPECT_CALL(*shell, open(std::wstring(L"test_path"))).Times(1);
 
-            context.ptr = register_test_module().with_plugins(plugins).with_shell(shell).build();;
+            context.ptr = register_test_module().with_plugins(context.plugins).with_shell(shell).build();;
 
             ctx->ItemClick("/**/Open##Plugin Name");
 
@@ -97,11 +98,11 @@ void register_plugins_window_tests(ImGuiTestEngine* engine)
             ON_CALL(*plugin, path).WillByDefault(Return("test_path"));
             EXPECT_CALL(*plugin, reload).Times(1);
 
-            auto plugins = mock_shared<MockPlugins>();
-            ON_CALL(*plugins, plugins).WillByDefault(Return(std::vector<std::weak_ptr<IPlugin>> { plugin }));
+            context.plugins = mock_shared<MockPlugins>();
+            ON_CALL(*context.plugins, plugins).WillByDefault(Return(std::vector<std::weak_ptr<IPlugin>> { plugin }));
 
             context.ptr = register_test_module()
-                .with_plugins(plugins)
+                .with_plugins(context.plugins)
                 .build();
 
             ctx->ItemClick("/**/Reload##Plugin Name");
@@ -116,7 +117,8 @@ void register_plugins_window_tests(ImGuiTestEngine* engine)
             auto& context = ctx->GetVars<PluginsWindowContext>();
             auto dialogs = mock_shared<MockDialogs>();
             ON_CALL(*dialogs, open_folder).WillByDefault(Return("test"));
-            context.ptr = register_test_module().with_dialogs(dialogs).build();
+            context.plugins = mock_shared<MockPlugins>();
+            context.ptr = register_test_module().with_dialogs(dialogs).with_plugins(context.plugins).build();
 
             std::optional<UserSettings> raised;
             auto token = context.ptr->on_settings += [&](const auto& value)
@@ -141,7 +143,8 @@ void register_plugins_window_tests(ImGuiTestEngine* engine)
             UserSettings settings{ .plugin_directories = { "path" } };
 
             auto& context = ctx->GetVars<PluginsWindowContext>();
-            context.ptr = register_test_module().with_shell(shell).build();
+            context.plugins = mock_shared<MockPlugins>();
+            context.ptr = register_test_module().with_shell(shell).with_plugins(context.plugins).build();
             context.ptr->set_settings(settings);
 
             ctx->ItemClick("/**/Open##0");
@@ -154,7 +157,8 @@ void register_plugins_window_tests(ImGuiTestEngine* engine)
         [](ImGuiTestContext* ctx)
         {
             auto& context = ctx->GetVars<PluginsWindowContext>();
-            context.ptr = register_test_module().build();
+            context.plugins = mock_shared<MockPlugins>();
+            context.ptr = register_test_module().with_plugins(context.plugins).build();
 
             UserSettings settings{ .plugin_directories = { "path" } };
             context.ptr->set_settings(settings);
