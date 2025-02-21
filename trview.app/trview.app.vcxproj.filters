@@ -1231,6 +1231,9 @@
     <ClInclude Include="Menus\ImGuiFileMenu.h">
       <Filter>Menus</Filter>
     </ClInclude>
+    <ClInclude Include="Settings\PluginSetting.h">
+      <Filter>Settings</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Windows">

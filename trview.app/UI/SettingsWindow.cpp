@@ -200,46 +200,6 @@ namespace trview
                     ImGui::EndTabItem();
                 }
 
-                if (ImGui::BeginTabItem("Plugins"))
-                {
-                    if (ImGui::BeginTable("Directories", 3, 0, ImVec2(-1, -1)))
-                    {
-                        auto directories = _plugin_directories;
-                        for (std::size_t i = 0; i < directories.size(); ++i)
-                        {
-                            ImGui::TableNextRow();
-                            ImGui::TableNextColumn();
-                            if (ImGui::Button(std::format("Remove##{}", i).c_str()))
-                            {
-                                _plugin_directories.erase(_plugin_directories.begin() + i);
-                                on_plugin_directories(_plugin_directories);
-                            }
-                            ImGui::TableNextColumn();
-                            if (ImGui::Button(std::format("Open##{}", i).c_str()))
-                            {
-                                _shell->open(to_utf16(directories[i]));
-                            }
-                            ImGui::TableNextColumn();
-                            ImGui::Text(directories[i].c_str());
-                        }
-
-                        ImGui::TableNextRow();
-                        ImGui::TableNextColumn();
-                        if (ImGui::Button("Add"))
-                        {
-                            if (auto path = _dialogs->open_folder())
-                            {
-                                _plugin_directories.push_back(path.value());
-                                on_plugin_directories(_plugin_directories);
-                            }
-                        }
-
-                        ImGui::EndTable();
-                    }
-
-                    ImGui::EndTabItem();
-                }
-
                 ImGui::EndTabBar();
             }
         }
@@ -365,11 +325,6 @@ namespace trview
     void SettingsWindow::set_camera_sink_startup(bool value)
     {
         _camera_sink_startup = value;
-    }
-
-    void SettingsWindow::set_plugin_directories(const std::vector<std::string>& directories)
-    {
-        _plugin_directories = directories;
     }
 
     void SettingsWindow::set_statics_startup(bool value)

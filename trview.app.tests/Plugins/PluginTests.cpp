@@ -88,3 +88,12 @@ TEST(Plugin, Reload)
     Plugin plugin(mock_shared<MockFiles>(), std::move(lua_ptr), "test");
     plugin.reload();
 }
+
+TEST(Plugin, SetEnabled)
+{
+    auto [lua_ptr, lua] = create_mock<MockLua>();
+    EXPECT_CALL(lua, execute("if set_enabled ~= nil then set_enabled(true) end")).Times(1);
+
+    Plugin plugin(mock_shared<MockFiles>(), std::move(lua_ptr), "test");
+    plugin.set_enabled(true);
+}

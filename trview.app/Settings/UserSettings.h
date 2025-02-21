@@ -5,6 +5,7 @@
 #include "RandomizerSettings.h"
 #include "../UI/MapColours.h"
 #include "FontSetting.h"
+#include "PluginSetting.h"
 
 namespace trview
 {
@@ -67,6 +68,7 @@ namespace trview
         bool statics_startup{ false };
         bool camera_position_window{ true };
         std::list<std::string> recent_diff_files;
+        std::unordered_map<std::string, PluginSetting> plugins;
 
         bool operator==(const UserSettings& other) const;
     };

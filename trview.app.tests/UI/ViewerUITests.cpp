@@ -447,38 +447,6 @@ TEST(ViewerUI, SetCameraSinkStartupUpdatesSettingsWindow)
     ui->set_settings(settings);
 }
 
-TEST(ViewerUI, OnPluginDirectoriesEventRaised)
-{
-    const std::vector<std::string> expected{ "test " };
-    auto [settings_window_ptr, settings_window] = create_mock<MockSettingsWindow>();
-    auto ui = register_test_module().with_settings_window(std::move(settings_window_ptr)).build();
-
-    std::optional<UserSettings> settings;
-    auto token = ui->on_settings += [&](auto raised)
-    {
-        settings = raised;
-    };
-
-    settings_window.on_plugin_directories(expected);
-
-    ASSERT_TRUE(settings);
-    ASSERT_EQ(settings.value().plugin_directories, expected);
-}
-
-TEST(ViewerUI, SetPluginDirectoriesUpdatesSettingsWindow)
-{
-    const std::vector<std::string> expected{ "test " };
-    auto [settings_window_ptr, settings_window] = create_mock<MockSettingsWindow>();
-    EXPECT_CALL(settings_window, set_plugin_directories(expected)).Times(1);
-
-    auto ui = register_test_module().with_settings_window(std::move(settings_window_ptr)).build();
-
-    UserSettings settings{};
-    settings.plugin_directories = expected;
-    ui->set_settings(settings);
-}
-
-
 TEST(ViewerUI, FontForwarded)
 {
     auto [settings_window_ptr, settings_window] = create_mock<MockSettingsWindow>();

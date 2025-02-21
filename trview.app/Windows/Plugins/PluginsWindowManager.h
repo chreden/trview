@@ -11,11 +11,13 @@ namespace trview
     public:
         explicit PluginsWindowManager(const Window& window, const std::shared_ptr<IShortcuts>& shortcuts, const IPluginsWindow::Source& plugins_window_source);
         virtual ~PluginsWindowManager() = default;
-        virtual std::optional<int> process_message(UINT message, WPARAM wParam, LPARAM lParam) override;
-        virtual void render() override;
-        virtual std::weak_ptr<IPluginsWindow> create_window() override;
-        virtual void update(float delta) override;
+        std::optional<int> process_message(UINT message, WPARAM wParam, LPARAM lParam) override;
+        void render() override;
+        std::weak_ptr<IPluginsWindow> create_window() override;
+        void update(float delta) override;
+        void set_settings(const UserSettings& settings) override;
     private:
         IPluginsWindow::Source _source;
+        UserSettings _settings;
     };
 }

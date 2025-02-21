@@ -782,3 +782,23 @@ TEST(SettingsLoader, CameraPositionWindowSaved)
     loader->save_user_settings(settings);
     EXPECT_THAT(output, HasSubstr("\"camera_position_window\":true"));
 }
+
+TEST(SettingsLoader, PluginsLoaded)
+{
+    auto loader = setup_setting("{\"plugins\":{\"Default\":{\"enabled\":true}}}");
+    auto settings = loader->load_user_settings();
+    auto def = settings.plugins.find("Default");
+    ASSERT_TRUE(def != settings.plugins.end());
+    ASSERT_EQ(def->first, "Default");
+    ASSERT_EQ(def->second.enabled, true);
+}
+
+TEST(SettingsLoader, PluginsSaved)
+{
+    std::string output;
+    auto loader = setup_save_setting(output);
+    UserSettings settings;
+    settings.plugins = { { "Default", {.enabled = true } } };
+    loader->save_user_settings(settings);
+    EXPECT_THAT(output, HasSubstr("\"plugins\":{\"Default\":{\"enabled\":true}}"));
+}

@@ -171,6 +171,7 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClInclude Include="Plugins\Plugins.h" />
     <ClInclude Include="Routing\IRandomizerRoute.h" />
     <ClInclude Include="Routing\RandomizerRoute.h" />
+    <ClInclude Include="Settings\PluginSetting.h" />
     <ClInclude Include="Sound\ISound.h" />
     <ClInclude Include="Sound\ISoundStorage.h" />
     <ClInclude Include="Sound\Sound.h" />

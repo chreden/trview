@@ -12,9 +12,11 @@ namespace trview
         using Source = std::function<std::shared_ptr<IPlugin>(const std::string& directory)>;
 
         virtual ~IPlugin() = 0;
+        virtual bool built_in() const = 0;
         virtual std::string name() const = 0;
         virtual std::string author() const = 0;
         virtual std::string description() const = 0;
+        virtual bool enabled() const = 0;
         virtual void initialise(IApplication* application) = 0;
         virtual std::string path() const = 0;
         virtual std::string messages() const = 0;
@@ -25,6 +27,7 @@ namespace trview
         virtual void reload() = 0;
         virtual void render_toolbar() = 0;
         virtual void render_ui() = 0;
+        virtual void set_enabled(bool value) = 0;
 
         Event<std::string> on_message;
     };
