@@ -272,13 +272,14 @@ namespace trview
         _ui->on_font += on_font;
         _token_store += _ui->on_filter_items_to_tile += [&](auto&& window_ptr)
         {
-            if (_context_pick.hit && _context_pick.type == PickResult::Type::Room)
-            {
+                if (!_context_pick.hit)
+                {
+                    return;
+                }
+
                 if (auto window = window_ptr.lock())
                 {
-                    if (const auto level = _level.lock())
-                    {
-                        if (const auto room = level->room(_context_pick.index).lock())
+                    const auto filter_to_sector = [&](auto&& room)
                         {
                             const auto info = room->info();
                             const auto sector_x = static_cast<int>(_context_pick.position.x - (info.x / trlevel::Scale_X));
@@ -289,10 +290,45 @@ namespace trview
                                     {.key = "X", .compare = CompareOp::Between, .value = std::to_string(info.x + sector_x * 1024), .value2 = std::to_string(info.x + (sector_x + 1) * 1024), .op = Op::And },
                                     {.key = "Z", .compare = CompareOp::Between, .value = std::to_string(info.z + sector_z * 1024), .value2 = std::to_string(info.z + (sector_z + 1) * 1024) }
                                 });
+                        };
+
+                    if (const auto level = _level.lock())
+                    {
+                        switch (_context_pick.type)
+                        {
+                            case PickResult::Type::Room:
+                            {
+                                if (const auto room = level->room(_context_pick.index).lock())
+                                {
+                                    filter_to_sector(room);
+                                }
+                                break;
+                            }
+                            case PickResult::Type::Entity:
+                            {
+                                if (const auto item = _context_pick.item.lock())
+                                {
+                                    if (const auto room = item->room().lock())
+                                    {
+                                        filter_to_sector(room);
+                                    }
+                                }
+                                break;
+                            }
+                            case PickResult::Type::Trigger:
+                            {
+                                if (const auto trigger = level->trigger(_context_pick.index).lock())
+                                {
+                                    if (const auto room = trigger->room().lock())
+                                    {
+                                        filter_to_sector(room);
+                                    }
+                                }
+                                break;
+                            }
                         }
                     }
                 }
-            }
         };
 
         _ui->set_settings(_settings);
@@ -605,7 +641,7 @@ namespace trview
                 _ui->set_remove_waypoint_enabled(_current_pick.type == PickResult::Type::Waypoint);
                 _ui->set_hide_enabled(equals_any(_current_pick.type, PickResult::Type::Entity, PickResult::Type::Trigger, PickResult::Type::Light, PickResult::Type::Room, PickResult::Type::CameraSink, PickResult::Type::StaticMesh, PickResult::Type::SoundSource));
                 _ui->set_mid_waypoint_enabled(_current_pick.type == PickResult::Type::Room && _current_pick.triangle.normal.y < 0);
-                _ui->set_tile_filter_enabled(_current_pick.type == PickResult::Type::Room);
+                _ui->set_tile_filter_enabled(equals_any(_current_pick.type, PickResult::Type::Room, PickResult::Type::Entity, PickResult::Type::Trigger));
 
                 const auto level = _level.lock();
                 if (_current_pick.type == PickResult::Type::Entity && level)
