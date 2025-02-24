@@ -131,7 +131,7 @@ namespace trview
                 on_scene_changed();
             }
 
-            RowCounter counter{ "items",
+            RowCounter counter{ "item",
                 static_cast<std::size_t>(std::ranges::count_if(_all_items, [this](auto&& item)
                     {
                         const auto item_ptr = item.lock();

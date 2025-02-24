@@ -71,7 +71,7 @@ namespace trview
 
             _auto_hider.apply(_all_statics, filtered_statics, _filters);
 
-            RowCounter counter{ "statics", _all_statics.size() };
+            RowCounter counter{ "static", _all_statics.size() };
             if (ImGui::BeginTable(Names::statics_list.c_str(), 5, ImGuiTableFlags_Sortable | ImGuiTableFlags_ScrollY, ImVec2(0, -counter.height())))
             {
                 imgui_header_row(

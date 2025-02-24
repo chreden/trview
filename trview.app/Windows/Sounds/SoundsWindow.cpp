@@ -116,7 +116,7 @@ namespace trview
                 on_scene_changed();
             }
 
-            RowCounter counter{ "sound sources", _all_sound_sources.size() };
+            RowCounter counter{ "sound source", _all_sound_sources.size() };
             if (ImGui::BeginTable(Names::sound_sources_list.c_str(), 4, ImGuiTableFlags_Sortable | ImGuiTableFlags_ScrollY, ImVec2(200, -counter.height())))
             {
                 imgui_header_row(

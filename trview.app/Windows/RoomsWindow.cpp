@@ -321,7 +321,7 @@ namespace trview
                 on_scene_changed();
             }
 
-            RowCounter counter{ "rooms", _all_rooms.size() };
+            RowCounter counter{ "room", _all_rooms.size() };
             if (ImGui::BeginTable(Names::rooms_list.c_str(), 5, ImGuiTableFlags_Sortable | ImGuiTableFlags_ScrollY, ImVec2(0, -counter.height())))
             {
                 imgui_header_row(

@@ -113,7 +113,7 @@ namespace trview
                 on_scene_changed();
             }
 
-            RowCounter counter{ "lights", _all_lights.size() };
+            RowCounter counter{ "light", _all_lights.size() };
             if (ImGui::BeginTable(Names::lights_listbox.c_str(), 4, ImGuiTableFlags_Sortable | ImGuiTableFlags_ScrollY, ImVec2(0, -counter.height())))
             {
                 imgui_header_row(

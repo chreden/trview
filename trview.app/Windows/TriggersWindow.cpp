@@ -177,7 +177,7 @@ namespace trview
                 ImGui::EndCombo();
             }
 
-            RowCounter counter{ "triggers", _all_triggers.size() };
+            RowCounter counter{ "trigger", _all_triggers.size() };
             if (ImGui::BeginTable(Names::triggers_list.c_str(), 4, ImGuiTableFlags_Sortable | ImGuiTableFlags_ScrollY, ImVec2(0, -counter.height())))
             {
                 imgui_header_row(
