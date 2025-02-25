@@ -170,7 +170,7 @@ namespace trview
                 on_scene_changed();
             }
 
-            RowCounter counter{ "camera/sinks", _all_camera_sinks.size() };
+            RowCounter counter{ "camera/sink", _all_camera_sinks.size() };
             if (ImGui::BeginTable(Names::camera_sink_list.c_str(), 4, ImGuiTableFlags_Sortable | ImGuiTableFlags_ScrollY, ImVec2(0, -counter.height())))
             {
                 imgui_header_row(
