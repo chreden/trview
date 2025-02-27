@@ -371,7 +371,7 @@ namespace trview
                             }) |
                         std::ranges::to<std::vector>();
 
-                    if (ImGui::BeginChild("Trigger triggerer", ImVec2(), ImGuiChildFlags_Border | ImGuiChildFlags_AutoResizeY))
+                    if (!trigger_triggerers.empty() && ImGui::BeginChild("Trigger triggerer", ImVec2(), ImGuiChildFlags_Border | ImGuiChildFlags_AutoResizeY))
                     {
                         for (const auto& item : trigger_triggerers)
                         {
