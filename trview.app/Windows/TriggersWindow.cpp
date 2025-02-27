@@ -359,34 +359,20 @@ namespace trview
                 ImGui::EndTable();
             }
 
-            if (const auto trigger = _selected_trigger.lock())
+            if (!_local_selected_trigger_trigger_triggerers.empty() && ImGui::BeginChild("Trigger triggerer", ImVec2(), ImGuiChildFlags_Border | ImGuiChildFlags_AutoResizeY))
             {
-                if (const auto sector = trigger->sector().lock())
+                for (const auto& item : _local_selected_trigger_trigger_triggerers)
                 {
-                    const auto trigger_triggerers = _all_items |
-                        std::views::filter([&](auto&& i)
-                            {
-                                auto item = i.lock();
-                                return item && item->type() == "Trigger triggerer" && sector_for_item(item) == sector;
-                            }) |
-                        std::ranges::to<std::vector>();
-
-                    if (!trigger_triggerers.empty() && ImGui::BeginChild("Trigger triggerer", ImVec2(), ImGuiChildFlags_Border | ImGuiChildFlags_AutoResizeY))
+                    if (auto item_ptr = item.lock())
                     {
-                        for (const auto& item : trigger_triggerers)
+                        ImGui::TextWrapped("This trigger is affected by a trigger triggerer. This trigger will be disabled until the item is activated.");
+                        if (ImGui::Button(std::format("Item {} - {}", item_ptr->number(), item_ptr->type()).c_str(), ImVec2(-1, 0)))
                         {
-                            if (auto item_ptr = item.lock())
-                            {
-                                ImGui::TextWrapped("This trigger is affected by a trigger triggerer. This trigger will be disabled until the item is activated.");
-                                if (ImGui::Button(std::format("Item {} - {}", item_ptr->number(), item_ptr->type()).c_str(), ImVec2(-1, 0)))
-                                {
-                                    on_item_selected(item);
-                                }
-                            }
+                            on_item_selected(item);
                         }
-                        ImGui::EndChild();
                     }
                 }
+                ImGui::EndChild();
             }
 
             if (ImGui::Button(Names::add_to_route.c_str(), ImVec2(-1, 30)))
@@ -491,9 +477,11 @@ namespace trview
     {
         _selected_trigger = trigger;
         _local_selected_trigger_commands.clear();
+        _local_selected_trigger_trigger_triggerers.clear();
         if (auto selected_trigger = _selected_trigger.lock())
         {
             _local_selected_trigger_commands = selected_trigger->commands();
+            find_trigger_triggerers();
             _need_filtering = true;
         }
     }
@@ -666,5 +654,22 @@ namespace trview
     bool TriggersWindow::VirtualCommand::operator == (const VirtualCommand& other) const noexcept
     {
         return name == other.name;
+    }
+
+    void TriggersWindow::find_trigger_triggerers()
+    {
+        if (const auto trigger = _selected_trigger.lock())
+        {
+            if (const auto sector = trigger->sector().lock())
+            {
+                _local_selected_trigger_trigger_triggerers = _all_items |
+                    std::views::filter([&](auto&& i)
+                        {
+                            auto item = i.lock();
+                            return item && item->type() == "Trigger triggerer" && sector_for_item(item) == sector;
+                        }) |
+                    std::ranges::to<std::vector>();
+            }
+        }
     }
 }

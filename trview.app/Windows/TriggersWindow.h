@@ -54,6 +54,7 @@ namespace trview
         void filter_triggers();
         void calculate_column_widths();
         std::optional<int> index_of_selected() const;
+        void find_trigger_triggerers();
 
         std::string _id{ "Triggers 0" };
         std::vector<std::weak_ptr<IItem>> _all_items;
@@ -81,6 +82,7 @@ namespace trview
         bool _scroll_to_trigger{ false };
         std::optional<float> _tooltip_timer;
         std::vector<Command> _local_selected_trigger_commands;
+        std::vector<std::weak_ptr<IItem>> _local_selected_trigger_trigger_triggerers;
         Filters<ITrigger> _filters;
         bool _need_filtering{ true };
         ColumnSizer _column_sizer;
