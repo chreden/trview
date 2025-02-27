@@ -12,12 +12,13 @@ namespace trview
 {
     struct ILevel;
     struct IRoom;
+    struct ISector;
 
     struct ITrigger : public IRenderable
     {
         const static inline Colour Trigger_Colour{ 0.5f, 1, 0, 1 };
 
-        using Source = std::function<std::shared_ptr<ITrigger>(uint32_t, const std::weak_ptr<IRoom>&, uint16_t, uint16_t, const TriggerInfo&, trlevel::LevelVersion, const std::weak_ptr<ILevel>&)>;
+        using Source = std::function<std::shared_ptr<ITrigger>(uint32_t, const std::weak_ptr<IRoom>&, uint16_t, uint16_t, const TriggerInfo&, trlevel::LevelVersion, const std::weak_ptr<ILevel>&, const std::weak_ptr<ISector>&)>;
 
         Event<> on_changed;
 
@@ -40,6 +41,7 @@ namespace trview
         virtual void set_position(const DirectX::SimpleMath::Vector3& position) = 0;
         virtual DirectX::SimpleMath::Vector3 position() const = 0;
         virtual std::weak_ptr<ILevel> level() const = 0;
+        virtual std::weak_ptr<ISector> sector() const = 0;
     };
 
 

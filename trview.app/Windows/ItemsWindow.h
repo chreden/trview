@@ -54,6 +54,7 @@ namespace trview
         void set_local_selected_item(std::weak_ptr<IItem> item);
         void setup_filters();
         void calculate_column_widths();
+        void render_trigger_references();
 
         std::string _id{ "Items 0" };
         std::vector<std::weak_ptr<IItem>> _all_items;

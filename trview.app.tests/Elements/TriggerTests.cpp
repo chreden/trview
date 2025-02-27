@@ -1,6 +1,7 @@
 #include <trview.app/Elements/Trigger.h>
 #include <trview.tests.common/Mocks.h>
 #include <trview.app/Mocks/Elements/IRoom.h>
+#include <trview.app/Mocks/Elements/ISector.h>
 
 using namespace trlevel;
 using namespace trview;
@@ -21,10 +22,11 @@ namespace
             trlevel::LevelVersion level_version{ trlevel::LevelVersion::Tomb3 };
             IMesh::TransparentSource mesh_source{ [](auto&&...) { return mock_shared<MockMesh>(); } };
             std::shared_ptr<trview::ILevel> level{ mock_shared<MockLevel>() };
+            std::shared_ptr<ISector> sector{ mock_shared<MockSector>() };
 
             std::unique_ptr<Trigger> build()
             {
-                return std::make_unique<Trigger>(number, room, x, z, trigger_info, level_version, level, mesh_source);
+                return std::make_unique<Trigger>(number, room, x, z, trigger_info, level_version, level, sector, mesh_source);
             }
 
             test_module& with_info(const TriggerInfo& info)

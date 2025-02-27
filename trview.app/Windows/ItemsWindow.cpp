@@ -3,6 +3,8 @@
 #include <trview.common/Windows/Clipboard.h>
 #include "../trview_imgui.h"
 #include "RowCounter.h"
+#include "../Elements/IRoom.h"
+#include "../Elements/ISector.h"
 
 namespace trview
 {
@@ -290,51 +292,40 @@ namespace trview
 
                 ImGui::EndTable();
             }
+
+            if (const auto item = _selected_item.lock())
+            {
+                const bool is_trigger_triggerer = item->type() == "Trigger triggerer";
+                if (is_trigger_triggerer)
+                {
+                    if (ImGui::BeginChild("Trigger triggerer", ImVec2(), ImGuiChildFlags_Border | ImGuiChildFlags_AutoResizeY))
+                    {
+                        ImGui::TextWrapped("This item is a trigger triggerer for a trigger. The trigger will be disabled until this item is activated.");
+                        if (const auto room = item->room().lock())
+                        {
+                            const auto pos = item->position() - room->position();
+                            if (const auto sector = room->sector(static_cast<int32_t>(pos.x), static_cast<int32_t>(pos.z)).lock())
+                            {
+                                if (const auto trigger = sector->trigger().lock())
+                                {
+                                    if (ImGui::Button(std::format("{} {}", to_string(trigger->type()), trigger->number()).c_str(), ImVec2(-1,0)))
+                                    {
+                                        on_trigger_selected(trigger);
+                                    }
+                                }
+                            }
+                        }
+                        ImGui::EndChild();
+                    }
+                }
+            }
+
             if (ImGui::Button(Names::add_to_route_button.c_str(), ImVec2(-1, 30)))
             {
                 on_add_to_route(_selected_item);
             }
-            ImGui::Text("Trigger References");
-            if (ImGui::BeginTable(Names::triggers_list.c_str(), 3, ImGuiTableFlags_ScrollY | ImGuiTableFlags_Sortable | ImGuiTableFlags_SizingFixedFit, ImVec2(-1, -1)))
-            {
-                ImGui::TableSetupColumn("#");
-                ImGui::TableSetupColumn("Room");
-                ImGui::TableSetupColumn("Type");
-                ImGui::TableSetupScrollFreeze(1, 1);
-                ImGui::TableHeadersRow();
 
-                imgui_sort_weak(_triggered_by,
-                    {
-                        [](auto&& l, auto&& r) { return l.number() < r.number(); },
-                        [](auto&& l, auto&& r) { return std::tuple(trigger_room(l), l.number()) < std::tuple(trigger_room(r), r.number()); },
-                        [](auto&& l, auto&& r) { return std::tuple(to_string(l.type()), l.number()) < std::tuple(to_string(r.type()), r.number()); },
-                    }, _force_sort);
-
-                for (auto& trigger : _triggered_by)
-                {
-                    auto trigger_ptr = trigger.lock();
-                    if (!trigger_ptr)
-                    {
-                        continue;
-                    }
-
-                    ImGui::TableNextRow();
-                    ImGui::TableNextColumn();
-                    bool selected = _selected_trigger.lock() == trigger_ptr;
-                    if (ImGui::Selectable(std::to_string(trigger_ptr->number()).c_str(), &selected, ImGuiSelectableFlags_SpanAllColumns | static_cast<int>(ImGuiSelectableFlags_SelectOnNav)))
-                    {
-                        _selected_trigger = trigger;
-                        _track.set_enabled<Type::Room>(false);
-                        on_trigger_selected(trigger);
-                    }
-                    ImGui::TableNextColumn();
-                    ImGui::Text(std::to_string(trigger_room(trigger_ptr)).c_str());
-                    ImGui::TableNextColumn();
-                    ImGui::Text(to_string(trigger_ptr->type()).c_str());
-                }
-
-                ImGui::EndTable();
-            }
+            render_trigger_references();
         }
         ImGui::EndChild();
     }
@@ -496,5 +487,48 @@ namespace trview
     std::string ItemsWindow::name() const
     {
         return _id;
+    }
+
+    void ItemsWindow::render_trigger_references()
+    {
+        if (ImGui::BeginTable(Names::triggers_list.c_str(), 3, ImGuiTableFlags_ScrollY | ImGuiTableFlags_Sortable | ImGuiTableFlags_SizingFixedFit, ImVec2(-1, -1)))
+        {
+            ImGui::TableSetupColumn("#");
+            ImGui::TableSetupColumn("Room");
+            ImGui::TableSetupColumn("Type");
+            ImGui::TableSetupScrollFreeze(1, 1);
+            ImGui::TableHeadersRow();
+
+            imgui_sort_weak(_triggered_by,
+                {
+                    [](auto&& l, auto&& r) { return l.number() < r.number(); },
+                    [](auto&& l, auto&& r) { return std::tuple(trigger_room(l), l.number()) < std::tuple(trigger_room(r), r.number()); },
+                    [](auto&& l, auto&& r) { return std::tuple(to_string(l.type()), l.number()) < std::tuple(to_string(r.type()), r.number()); },
+                }, _force_sort);
+
+            for (auto& trigger : _triggered_by)
+            {
+                auto trigger_ptr = trigger.lock();
+                if (!trigger_ptr)
+                {
+                    continue;
+                }
+
+                ImGui::TableNextRow();
+                ImGui::TableNextColumn();
+                bool selected = _selected_trigger.lock() == trigger_ptr;
+                if (ImGui::Selectable(std::to_string(trigger_ptr->number()).c_str(), &selected, ImGuiSelectableFlags_SpanAllColumns | static_cast<int>(ImGuiSelectableFlags_SelectOnNav)))
+                {
+                    _selected_trigger = trigger;
+                    _track.set_enabled<Type::Room>(false);
+                    on_trigger_selected(trigger);
+                }
+                ImGui::TableNextColumn();
+                ImGui::Text(std::to_string(trigger_room(trigger_ptr)).c_str());
+                ImGui::TableNextColumn();
+                ImGui::Text(to_string(trigger_ptr->type()).c_str());
+            }
+            ImGui::EndTable();
+        }
     }
 }
