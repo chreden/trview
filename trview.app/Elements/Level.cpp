@@ -472,11 +472,7 @@ namespace trview
         {
             Activity room_activity(generate_rooms_activity, std::format("Room {}", i));
             auto room = room_source(level, level.get_room(i), _texture_storage, mesh_storage, i, shared_from_this(), sector_base_index, room_activity);
-            _token_store += room->on_changed += [&]() 
-            {
-                _regenerate_transparency = true; 
-                on_level_changed();
-            };
+            _token_store += room->on_changed += [this]() { content_changed(); };
             _rooms.push_back(room);
             sector_base_index += static_cast<uint32_t>(room->sectors().size());
         }
@@ -1120,13 +1116,6 @@ namespace trview
         on_level_changed();
     }
 
-    void Level::set_camera_sink_visibility(uint32_t index, bool state)
-    {
-        _camera_sinks[index]->set_visible(state);
-        _regenerate_transparency = true;
-        on_level_changed();
-    }
-
     void Level::deduplicate_triangles()
     {
         struct TriangleData
@@ -1289,6 +1278,7 @@ namespace trview
 
             const ICameraSink::Type type = is_camera ? ICameraSink::Type::Camera : ICameraSink::Type::Sink;
             auto new_camera_sink = camera_sink_source(i, camera_sink, type, inferred_rooms, relevant_triggers, shared_from_this());
+            _token_store += new_camera_sink->on_changed += [this]() { content_changed(); };
             _camera_sinks.push_back(new_camera_sink);
 
             if (is_camera)
@@ -1443,7 +1433,7 @@ namespace trview
         _scriptables.push_back(scriptable);
         if (auto scriptable_ptr = scriptable.lock())
         {
-            scriptable_ptr->on_changed += on_level_changed;
+            _token_store += scriptable_ptr->on_changed += [this]() { content_changed(); };
         }
     }
 

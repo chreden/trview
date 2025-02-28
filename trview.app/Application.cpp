@@ -289,7 +289,7 @@ namespace trview
             for (const auto& trigger : _level->triggers()) { if (auto trigger_ptr = trigger.lock()) { trigger_ptr->set_visible(true); } }
             for (const auto& light : _level->lights()) { if (auto light_ptr = light.lock()) { light_ptr->set_visible(true); } }
             for (const auto& room : _level->rooms()) { set_room_visibility(room, true); }
-            for (const auto& camera_sink : _level->camera_sinks()) { set_camera_sink_visibility(camera_sink, true); }
+            for (const auto& camera_sink : _level->camera_sinks()) { if (auto cs = camera_sink.lock()) { cs->set_visible(true); } }
             for (const auto& static_mesh : _level->static_meshes()) { if (auto stat = static_mesh.lock()) { stat->set_visible(true); } };
             for (const auto& sound_source : _level->sound_sources()) { if (auto sound_source_ptr = sound_source.lock()) { sound_source_ptr->set_visible(true); } };
         };
@@ -303,7 +303,6 @@ namespace trview
         _token_store += _viewer->on_trigger_selected += [this](const auto& trigger) { select_trigger(trigger); };
         _token_store += _viewer->on_light_selected += [this](const auto& light) { select_light(light); };
         _token_store += _viewer->on_room_visibility += [this](const auto& room, bool value) { set_room_visibility(room, value); };
-        _token_store += _viewer->on_camera_sink_visibility += [this](const auto& camera_sink, bool value) { set_camera_sink_visibility(camera_sink, value); };
         _token_store += _viewer->on_waypoint_added += [this](const auto& position, const auto& normal, auto room, auto type, auto index) { add_waypoint(position, normal, room, type, index); };
         _token_store += _viewer->on_waypoint_selected += [this](auto index) { select_waypoint(index); };
         _token_store += _viewer->on_waypoint_removed += [this](auto index) { remove_waypoint(index); };
@@ -490,22 +489,6 @@ namespace trview
             if (room_ptr->visible() != visible)
             {
                 _level->set_room_visibility(room_ptr->number(), visible);
-            }
-        }
-    }
-
-    void Application::set_camera_sink_visibility(const std::weak_ptr<ICameraSink>& camera_sink, bool visible)
-    {
-        if (!_level)
-        {
-            return;
-        }
-
-        if (const auto camera_sink_ptr = camera_sink.lock())
-        {
-            if (camera_sink_ptr->visible() != visible)
-            {
-                _level->set_camera_sink_visibility(camera_sink_ptr->number(), visible);
             }
         }
     }

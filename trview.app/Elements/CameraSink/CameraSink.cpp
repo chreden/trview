@@ -113,6 +113,7 @@ namespace trview
     void CameraSink::set_visible(bool value)
     {
         _visible = value;
+        on_changed();
     }
 
     uint16_t CameraSink::strength() const
