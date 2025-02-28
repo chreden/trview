@@ -10,7 +10,8 @@ namespace trview
     void AutoHider::check_focus()
     {
         const bool focused = ImGui::IsWindowFocused(ImGuiFocusedFlags_RootAndChildWindows);
-        _enabled_changed = !_was_focused && focused;
+        _enabled_changed = _enabled && (!_was_focused && focused);
+        OutputDebugStringA(std::format("Enabled changed: {}\n", _enabled_changed).c_str());
         _was_focused = focused;
     }
 
