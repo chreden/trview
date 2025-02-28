@@ -815,20 +815,14 @@ TEST(Viewer, RoomVisibilityRaised)
 
     auto level = mock_shared<MockLevel>();
     auto room = mock_shared<MockRoom>()->with_number(100);
+    EXPECT_CALL(*room, set_visible(false)).Times(1);
 
     auto viewer = register_test_module().with_ui(std::move(ui_ptr)).with_picking(std::move(picking_ptr)).with_mouse(std::move(mouse_ptr)).build();
     viewer->open(level, ILevel::OpenMode::Full);
 
-    std::optional<std::tuple<std::weak_ptr<IRoom>, bool>> raised_room;
-    auto token = viewer->on_room_visibility += [&raised_room](const auto& room, auto visible) { raised_room = { room, visible }; };
-
     activate_context_menu(picking, mouse, room);
 
     ui.on_hide();
-
-    ASSERT_TRUE(raised_room.has_value());
-    ASSERT_EQ(std::get<0>(raised_room.value()).lock(), room);
-    ASSERT_FALSE(std::get<1>(raised_room.value()));
 }
 
 TEST(Viewer, OrbitHereOrbitsWhenSettingDisabled)

@@ -727,3 +727,16 @@ TEST(Room, PickTestsStaticMesh)
     ASSERT_EQ(result.type, PickResult::Type::StaticMesh);
     ASSERT_EQ(result.static_mesh.lock(), static_mesh);
 }
+
+
+TEST(Room, VisibilityRaisesOnChanged)
+{
+    auto room = register_test_module().build();
+
+    bool raised = false;
+    auto token = room->on_changed += [&]() { raised = true; };
+    room->set_visible(false);
+
+    ASSERT_EQ(raised, true);
+}
+

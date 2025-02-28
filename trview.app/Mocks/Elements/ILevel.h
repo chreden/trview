@@ -59,7 +59,6 @@ namespace trview
             MOCK_METHOD(void, set_neighbour_depth, (uint32_t), (override));
             MOCK_METHOD(void, set_selected_room, (const std::weak_ptr<IRoom>&), (override));
             MOCK_METHOD(void, set_selected_item, (const std::weak_ptr<IItem>&), (override));
-            MOCK_METHOD(void, set_room_visibility, (uint32_t, bool), (override));
             MOCK_METHOD(bool, show_camera_sinks, (), (const, override));
             MOCK_METHOD(bool, show_lighting, (), (const, override));
             MOCK_METHOD(bool, show_geometry, (), (const, override));

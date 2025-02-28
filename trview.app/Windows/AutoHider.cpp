@@ -11,7 +11,6 @@ namespace trview
     {
         const bool focused = ImGui::IsWindowFocused(ImGuiFocusedFlags_RootAndChildWindows);
         _enabled_changed = _enabled && (!_was_focused && focused);
-        OutputDebugStringA(std::format("Enabled changed: {}\n", _enabled_changed).c_str());
         _was_focused = focused;
     }
 

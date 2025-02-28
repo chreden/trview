@@ -1105,13 +1105,6 @@ namespace trview
         return lights;
     }
 
-    void Level::set_room_visibility(uint32_t index, bool state)
-    {
-        _rooms[index]->set_visible(state);
-        _regenerate_transparency = true;
-        on_level_changed();
-    }
-
     void Level::deduplicate_triangles()
     {
         struct TriangleData
