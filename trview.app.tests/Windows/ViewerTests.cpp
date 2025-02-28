@@ -226,9 +226,9 @@ TEST(Viewer, SelectItemRaisedForValidItem)
 TEST(Viewer, ItemVisibilityRaisedForValidItem)
 {
     auto item = mock_shared<MockItem>();
-    auto level = mock_shared<MockLevel>();
-    EXPECT_CALL(*level, item(123)).WillRepeatedly(Return(item));
+    EXPECT_CALL(*item, set_visible(false)).Times(1);
 
+    auto level = mock_shared<MockLevel>();
     auto [ui_ptr, ui] = create_mock<MockViewerUI>();
     auto [picking_ptr, picking] = create_mock<MockPicking>();
     auto [mouse_ptr, mouse] = create_mock<MockMouse>();
@@ -236,16 +236,9 @@ TEST(Viewer, ItemVisibilityRaisedForValidItem)
 
     viewer->open(level, ILevel::OpenMode::Full);
 
-    std::optional<std::tuple<std::shared_ptr<IItem>, bool>> raised_item;
-    auto token = viewer->on_item_visibility += [&raised_item](const auto& item, auto visible) { raised_item = { item.lock(), visible }; };
-
     activate_context_menu(picking, mouse, item);
 
     ui.on_hide();
-
-    ASSERT_TRUE(raised_item.has_value());
-    ASSERT_EQ(std::get<0>(raised_item.value()), item);
-    ASSERT_FALSE(std::get<1>(raised_item.value()));
 }
 
 /// Tests that the on_settings event from the UI is observed and forwarded.

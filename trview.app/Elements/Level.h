@@ -65,7 +65,6 @@ namespace trview
         void set_selected_item(const std::weak_ptr<IItem>& item) override;
         virtual void set_neighbour_depth(uint32_t depth) override;
         virtual void on_camera_moved() override;
-        virtual void set_item_visibility(uint32_t index, bool state) override;
         virtual void set_alternate_mode(bool enabled) override;
         virtual void set_alternate_group(uint32_t group, bool enabled) override;
         virtual bool alternate_group(uint32_t group) const override;

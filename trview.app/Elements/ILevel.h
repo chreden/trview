@@ -101,7 +101,6 @@ namespace trview
         virtual void set_alternate_group(uint32_t group, bool enabled) = 0;
         virtual void set_filename(const std::string& filename) = 0;
         virtual void set_highlight_mode(RoomHighlightMode mode, bool enabled) = 0;
-        virtual void set_item_visibility(uint32_t index, bool state) = 0;
         virtual void set_map_colours(const MapColours& map_colours) = 0;
         virtual void set_selected_trigger(uint32_t number) = 0;
         virtual void set_selected_light(uint32_t number) = 0;

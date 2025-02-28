@@ -44,7 +44,6 @@ namespace trview
             MOCK_METHOD(void, set_alternate_group, (uint32_t, bool), (override));
             MOCK_METHOD(void, set_filename, (const std::string&), (override));
             MOCK_METHOD(void, set_highlight_mode, (RoomHighlightMode, bool), (override));
-            MOCK_METHOD(void, set_item_visibility, (uint32_t, bool), (override));
             MOCK_METHOD(void, set_selected_trigger, (uint32_t), (override));
             MOCK_METHOD(void, set_selected_light, (uint32_t), (override));
             MOCK_METHOD(void, set_selected_camera_sink, (uint32_t), (override));

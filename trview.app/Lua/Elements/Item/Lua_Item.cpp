@@ -114,10 +114,7 @@ namespace trview
                 }
                 else if (key == "visible")
                 {
-                    if (auto level = item->level().lock())
-                    {
-                        level->set_item_visibility(item->number(), lua_toboolean(L, -1));
-                    }
+                    item->set_visible(lua_toboolean(L, -1));
                     return 0;
                 }
 

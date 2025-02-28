@@ -259,11 +259,8 @@ TEST(Lua_Item, SetCategories)
 }
 TEST(Lua_Item, SetVisible)
 {
-    auto level = mock_shared<MockLevel>();
-    EXPECT_CALL(*level, set_item_visibility(100, true));
-
     auto item = mock_shared<MockItem>()->with_number(100);
-    EXPECT_CALL(*item, level).WillRepeatedly(Return(level));
+    EXPECT_CALL(*item, set_visible(true)).Times(1);
 
     LuaState L;
     lua::create_item(L, item);

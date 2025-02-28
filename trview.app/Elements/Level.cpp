@@ -594,6 +594,7 @@ namespace trview
             {
                 room->add_entity(entity);
             }
+            _token_store += entity->on_changed += [this]() { content_changed(); };
             _entities.push_back(entity);
 
             if (level.get_version() == trlevel::LevelVersion::Tomb2 && level_entity.TypeID == Entity_Skidoo_Driver)
@@ -612,6 +613,7 @@ namespace trview
             {
                 room->add_entity(entity);
             }
+            _token_store += entity->on_changed += [this]() { content_changed(); };
             _entities.push_back(entity);
         }
 
@@ -630,6 +632,7 @@ namespace trview
                 auto categories = entity->categories();
                 categories.insert("Virtual");
                 entity->set_categories(categories);
+                _token_store += entity->on_changed += [this]() { content_changed(); };
                 _entities.push_back(entity);
             }
         }
@@ -794,13 +797,6 @@ namespace trview
     void Level::on_camera_moved()
     {
         _regenerate_transparency = true;
-    }
-
-    void Level::set_item_visibility(uint32_t index, bool state)
-    {
-        _entities[index]->set_visible(state);
-        _regenerate_transparency = true;
-        on_level_changed();
     }
 
     // Set whether to render the alternate mode (the flipmap) or the regular room.
@@ -1380,6 +1376,7 @@ namespace trview
                 {
                     room->add_entity(value);
                 }
+                _token_store += value->on_changed += [this]() { content_changed(); };
                 _entities.push_back(value);
             }
         }

@@ -204,7 +204,10 @@ namespace trview
             {
                 if (_context_pick.type == PickResult::Type::Entity)
                 {
-                    on_item_visibility(_context_pick.item, false);
+                    if (auto item = _context_pick.item.lock())
+                    {
+                        item->set_visible(false);
+                    }
                 }
                 else if (_context_pick.type == PickResult::Type::Trigger)
                 {

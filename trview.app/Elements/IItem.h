@@ -22,6 +22,8 @@ namespace trview
         using AiSource =
             std::function<std::shared_ptr<IItem>(const trlevel::ILevel&, const trlevel::tr4_ai_object&, uint32_t, const IMeshStorage&, const std::weak_ptr<ILevel>&, const std::weak_ptr<IRoom>&)>;
 
+        Event<> on_changed;
+
         virtual ~IItem() = 0;
         virtual uint32_t number() const = 0;
         virtual std::weak_ptr<IRoom> room() const = 0;

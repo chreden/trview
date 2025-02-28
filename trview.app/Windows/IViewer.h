@@ -44,9 +44,6 @@ namespace trview
         /// Event raised when the viwer wants to select an item.
         Event<std::weak_ptr<IItem>> on_item_selected;
 
-        /// Event raised when the viewer wants to change the visibility of an item.
-        Event<std::weak_ptr<IItem>, bool> on_item_visibility;
-
         /// Event raised when the viewer wants to select a room.
         Event<std::weak_ptr<IRoom>> on_room_selected;
 
