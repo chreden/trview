@@ -53,18 +53,10 @@ namespace trview
         /// Event raised when the viewer wants to select a trigger.
         Event<std::weak_ptr<ITrigger>> on_trigger_selected;
 
-        /// Event raised when the viewer wants to change the visibility of a trigger.
-        Event<std::weak_ptr<ITrigger>, bool> on_trigger_visibility;
-
         /// <summary>
         /// Event raised when the viewer wants to select a light.
         /// </summary>
         Event<std::weak_ptr<ILight>> on_light_selected;
-
-        /// <summary>
-        /// Event raised when the viewer wants to change the visibility of a light.
-        /// </summary>
-        Event<std::weak_ptr<ILight>, bool> on_light_visibility;
 
         Event<std::weak_ptr<IRoom>, bool> on_room_visibility;
 

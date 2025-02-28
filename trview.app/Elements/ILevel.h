@@ -117,11 +117,9 @@ namespace trview
         virtual void set_show_rooms(bool show) = 0;
         virtual void set_show_camera_sinks(bool show) = 0;
         virtual void set_show_sound_sources(bool show) = 0;
-        virtual void set_trigger_visibility(uint32_t index, bool state) = 0;
         virtual void set_neighbour_depth(uint32_t depth) = 0;
         virtual void set_selected_room(const std::weak_ptr<IRoom>& room) = 0;
         virtual void set_selected_item(const std::weak_ptr<IItem>& item) = 0;
-        virtual void set_light_visibility(uint32_t index, bool state) = 0;
         virtual void set_room_visibility(uint32_t index, bool state) = 0;
         virtual void set_camera_sink_visibility(uint32_t index, bool state) = 0;
         virtual void set_ng_plus(bool show) = 0;

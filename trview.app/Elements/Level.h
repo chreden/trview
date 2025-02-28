@@ -66,7 +66,6 @@ namespace trview
         virtual void set_neighbour_depth(uint32_t depth) override;
         virtual void on_camera_moved() override;
         virtual void set_item_visibility(uint32_t index, bool state) override;
-        virtual void set_trigger_visibility(uint32_t index, bool state) override;
         virtual void set_alternate_mode(bool enabled) override;
         virtual void set_alternate_group(uint32_t group, bool enabled) override;
         virtual bool alternate_group(uint32_t group) const override;
@@ -98,7 +97,6 @@ namespace trview
         virtual std::vector<uint16_t> floor_data() const override;
         virtual std::weak_ptr<ILight> light(uint32_t index) const override;
         virtual std::vector<std::weak_ptr<ILight>> lights() const override;
-        virtual void set_light_visibility(uint32_t index, bool state) override;
         virtual void set_room_visibility(uint32_t index, bool state) override;
         virtual void set_camera_sink_visibility(uint32_t index, bool state) override;
         virtual MapColours map_colours() const override;

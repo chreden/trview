@@ -118,10 +118,7 @@ namespace trview
                 }
                 else if (key == "visible")
                 {
-                    if (auto level = trigger->level().lock())
-                    {
-                        level->set_trigger_visibility(trigger->number(), lua_toboolean(L, -1));
-                    }
+                    trigger->set_visible(lua_toboolean(L, -1));
                 }
 
                 return 0;

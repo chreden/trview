@@ -749,7 +749,6 @@ namespace trview
                 {
                     result.distance = distance;
                     result.hit = true;
-                    result.index = index;
                     result.position = position + direction * distance;
                     result.type = PickResult::Type::Scriptable;
                     result.scriptable = scriptable;
@@ -804,13 +803,6 @@ namespace trview
     void Level::set_item_visibility(uint32_t index, bool state)
     {
         _entities[index]->set_visible(state);
-        _regenerate_transparency = true;
-        on_level_changed();
-    }
-
-    void Level::set_trigger_visibility(uint32_t index, bool state)
-    {
-        _triggers[index]->set_visible(state);
         _regenerate_transparency = true;
         on_level_changed();
     }
@@ -1119,13 +1111,6 @@ namespace trview
         std::vector<std::weak_ptr<ILight>> lights;
         std::transform(_lights.begin(), _lights.end(), std::back_inserter(lights), [](const auto& light) { return light; });
         return lights;
-    }
-
-    void Level::set_light_visibility(uint32_t index, bool state)
-    {
-        _lights[index]->set_visible(state);
-        _regenerate_transparency = true;
-        on_level_changed();
     }
 
     void Level::set_room_visibility(uint32_t index, bool state)
