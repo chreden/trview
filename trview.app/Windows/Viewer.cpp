@@ -356,6 +356,17 @@ namespace trview
                                 });
                         };
 
+                    const auto get_room = [&](auto&& ent)
+                        {
+                            if (const auto ent_ptr = ent.lock())
+                            {
+                                if (const auto room = ent_ptr->room().lock())
+                                {
+                                    filter_to_sector(room);
+                                }
+                            }
+                        };
+
                     if (const auto level = _level.lock())
                     {
                         switch (_context_pick.type)
@@ -369,27 +380,17 @@ namespace trview
                                 break;
                             }
                             case PickResult::Type::Entity:
-                            {
-                                if (const auto item = _context_pick.item.lock())
-                                {
-                                    if (const auto room = item->room().lock())
-                                    {
-                                        filter_to_sector(room);
-                                    }
-                                }
+                                get_room(_context_pick.item);
                                 break;
-                            }
                             case PickResult::Type::Trigger:
-                            {
-                                if (const auto trigger = _context_pick.trigger.lock())
-                                {
-                                    if (const auto room = trigger->room().lock())
-                                    {
-                                        filter_to_sector(room);
-                                    }
-                                }
+                                get_room(_context_pick.trigger);
                                 break;
-                            }
+                            case PickResult::Type::Light:
+                                get_room(_context_pick.light);
+                                break;
+                            case PickResult::Type::CameraSink:
+                                get_room(_context_pick.camera_sink);
+                                break;
                         }
                     }
                 }
@@ -704,7 +705,7 @@ namespace trview
                 _ui->set_remove_waypoint_enabled(_current_pick.type == PickResult::Type::Waypoint);
                 _ui->set_hide_enabled(equals_any(_current_pick.type, PickResult::Type::Entity, PickResult::Type::Trigger, PickResult::Type::Light, PickResult::Type::Room, PickResult::Type::CameraSink, PickResult::Type::StaticMesh, PickResult::Type::SoundSource));
                 _ui->set_mid_waypoint_enabled(_current_pick.type == PickResult::Type::Room && _current_pick.triangle.normal.y < 0);
-                _ui->set_tile_filter_enabled(equals_any(_current_pick.type, PickResult::Type::Room, PickResult::Type::Entity, PickResult::Type::Trigger));
+                _ui->set_tile_filter_enabled(equals_any(_current_pick.type, PickResult::Type::Room, PickResult::Type::Entity, PickResult::Type::Trigger, PickResult::Type::Light, PickResult::Type::CameraSink));
 
                 const auto level = _level.lock();
                 if (_current_pick.type == PickResult::Type::Entity && level)
