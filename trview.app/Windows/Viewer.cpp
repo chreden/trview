@@ -367,31 +367,28 @@ namespace trview
                             }
                         };
 
-                    if (const auto level = _level.lock())
+                    switch (_context_pick.type)
                     {
-                        switch (_context_pick.type)
+                        case PickResult::Type::Room:
                         {
-                            case PickResult::Type::Room:
+                            if (const auto room = _context_pick.room.lock())
                             {
-                                if (const auto room = _context_pick.room.lock())
-                                {
-                                    filter_to_sector(room);
-                                }
-                                break;
+                                filter_to_sector(room);
                             }
-                            case PickResult::Type::Entity:
-                                get_room(_context_pick.item);
-                                break;
-                            case PickResult::Type::Trigger:
-                                get_room(_context_pick.trigger);
-                                break;
-                            case PickResult::Type::Light:
-                                get_room(_context_pick.light);
-                                break;
-                            case PickResult::Type::CameraSink:
-                                get_room(_context_pick.camera_sink);
-                                break;
+                            break;
                         }
+                        case PickResult::Type::Entity:
+                            get_room(_context_pick.item);
+                            break;
+                        case PickResult::Type::Trigger:
+                            get_room(_context_pick.trigger);
+                            break;
+                        case PickResult::Type::Light:
+                            get_room(_context_pick.light);
+                            break;
+                        case PickResult::Type::CameraSink:
+                            get_room(_context_pick.camera_sink);
+                            break;
                     }
                 }
             };
