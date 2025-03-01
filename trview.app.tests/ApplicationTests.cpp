@@ -484,25 +484,6 @@ TEST(Application, ResetLayout)
     application->process_message(WM_COMMAND, MAKEWPARAM(ID_WINDOWS_RESET_LAYOUT, 0), 0);
 }
 
-TEST(Application, ViewerRoomVisibilityCaptured)
-{
-    auto [viewer_ptr, viewer] = create_mock<MockViewer>();
-    auto [level_ptr, level] = create_mock<trview::mocks::MockLevel>();
-    EXPECT_CALL(level, set_room_visibility(0, true)).Times(1);
-
-    ILevel::Source level_source = [&](auto&&...) { return std::move(level_ptr); };
-
-    auto application = register_test_module()
-        .with_viewer(std::move(viewer_ptr))
-        .with_level_source(level_source)
-        .build();
-
-    application->open("", ILevel::OpenMode::Full);
-
-    auto room = mock_shared<MockRoom>();
-    viewer.on_room_visibility(room, true);
-}
-
 TEST(Application, LevelLoadedOnReload)
 {
     auto [file_menu_ptr, file_menu] = create_mock<MockFileMenu>();

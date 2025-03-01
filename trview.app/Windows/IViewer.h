@@ -44,31 +44,16 @@ namespace trview
         /// Event raised when the viwer wants to select an item.
         Event<std::weak_ptr<IItem>> on_item_selected;
 
-        /// Event raised when the viewer wants to change the visibility of an item.
-        Event<std::weak_ptr<IItem>, bool> on_item_visibility;
-
         /// Event raised when the viewer wants to select a room.
         Event<std::weak_ptr<IRoom>> on_room_selected;
 
         /// Event raised when the viewer wants to select a trigger.
         Event<std::weak_ptr<ITrigger>> on_trigger_selected;
 
-        /// Event raised when the viewer wants to change the visibility of a trigger.
-        Event<std::weak_ptr<ITrigger>, bool> on_trigger_visibility;
-
         /// <summary>
         /// Event raised when the viewer wants to select a light.
         /// </summary>
         Event<std::weak_ptr<ILight>> on_light_selected;
-
-        /// <summary>
-        /// Event raised when the viewer wants to change the visibility of a light.
-        /// </summary>
-        Event<std::weak_ptr<ILight>, bool> on_light_visibility;
-
-        Event<std::weak_ptr<IRoom>, bool> on_room_visibility;
-
-        Event<std::weak_ptr<ICameraSink>, bool> on_camera_sink_visibility;
 
         /// Event raised when the viewer wants to select a waypoint.
         Event<std::weak_ptr<IWaypoint>> on_waypoint_selected;

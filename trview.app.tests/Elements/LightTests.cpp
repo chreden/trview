@@ -299,3 +299,14 @@ TEST(Light, FogBulbTR5)
     ASSERT_EQ(light.radius(), 2.0f);
     ASSERT_EQ(light.type(), LightType::FogBulb);
 }
+
+TEST(Light, VisibilityRaisesOnChanged)
+{
+    auto light = register_test_module().build();
+
+    bool raised = false;
+    auto token = light.on_changed += [&]() { raised = true; };
+    light.set_visible(false);
+
+    ASSERT_EQ(raised, true);
+}

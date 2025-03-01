@@ -1,11 +1,13 @@
 #pragma once
 
+#include <memory>
+
 #include "ILight.h"
 #include <trview.app/Geometry/IMesh.h>
 
 namespace trview
 {
-    class Light final : public ILight
+    class Light final : public ILight, public std::enable_shared_from_this<ILight>
     {
     public:
         explicit Light(const std::shared_ptr<IMesh>& mesh, uint32_t number, const std::weak_ptr<IRoom>& room, const trlevel::tr_x_room_light& light, const std::weak_ptr<ILevel>& level);

@@ -158,10 +158,7 @@ namespace trview
                 const std::string key = lua_tostring(L, 2);
                 if (key == "visible")
                 {
-                    if (auto level = room->level().lock())
-                    {
-                        level->set_room_visibility(room->number(), lua_toboolean(L, -1));
-                    }
+                    room->set_visible(lua_toboolean(L, -1));
                 }
 
                 return 0;

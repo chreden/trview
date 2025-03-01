@@ -135,3 +135,14 @@ TEST(Item, MutantEggContentsFlags)
     ASSERT_EQ(22, mutant_egg_contents(8));
     ASSERT_EQ(20, mutant_egg_contents(1851));
 }
+
+TEST(Item, VisibilityRaisesOnChanged)
+{
+    auto item = register_test_module().build();
+
+    bool raised = false;
+    auto token = item->on_changed += [&]() { raised = true; };
+    item->set_visible(false);
+
+    ASSERT_EQ(raised, true);
+}

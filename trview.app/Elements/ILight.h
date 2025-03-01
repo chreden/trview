@@ -12,6 +12,8 @@ namespace trview
 
     struct ILight : public IRenderable
     {
+        Event<> on_changed;
+
         using Source = std::function<std::shared_ptr<ILight>(uint32_t, const std::weak_ptr<IRoom>&, const trlevel::tr_x_room_light&, const std::weak_ptr<ILevel>&)>;
         virtual ~ILight() = 0;
         virtual uint32_t number() const = 0;

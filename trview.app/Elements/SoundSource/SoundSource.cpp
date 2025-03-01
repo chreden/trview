@@ -77,7 +77,6 @@ namespace trview
         {
             result.distance = distance;
             result.hit = true;
-            result.index = _number;
             result.position = position + direction * distance;
             result.type = PickResult::Type::SoundSource;
             result.sound_source = std::const_pointer_cast<ISoundSource>(shared_from_this());

@@ -197,7 +197,7 @@ namespace trview
                 if (static_mesh_result.hit)
                 {
                     static_mesh_result.type = PickResult::Type::StaticMesh;
-                    static_mesh_result.index = static_mesh->number();
+                    static_mesh_result.static_mesh = static_mesh;
                     pick_results.push_back(static_mesh_result);
                 }
             }
@@ -434,22 +434,26 @@ namespace trview
     {
         _lights.push_back(light);
 
-        // Place suns in the middle of the room instead of 9 million units away.
-        // Only do this if the light position is massive - don't change Tomb Editor placed suns.
-        // Stack them in a line so they don't overlap each other.
-        auto light_ptr = light.lock();
-        if (light_ptr && light_ptr->type() == trlevel::LightType::Sun && light_ptr->position().x > 9000)
+        if (auto light_ptr = light.lock())
         {
-            uint32_t suns = 0;
-            for (const auto& other_light : _lights)
+            light_ptr->on_changed += on_changed;
+
+            // Place suns in the middle of the room instead of 9 million units away.
+            // Only do this if the light position is massive - don't change Tomb Editor placed suns.
+            // Stack them in a line so they don't overlap each other.
+            if (light_ptr->type() == trlevel::LightType::Sun && light_ptr->position().x > 9000)
             {
-                auto other_light_ptr = other_light.lock();
-                if (other_light_ptr->type() == trlevel::LightType::Sun && other_light_ptr != light_ptr)
+                uint32_t suns = 0;
+                for (const auto& other_light : _lights)
                 {
-                    ++suns;
+                    auto other_light_ptr = other_light.lock();
+                    if (other_light_ptr->type() == trlevel::LightType::Sun && other_light_ptr != light_ptr)
+                    {
+                        ++suns;
+                    }
                 }
+                light_ptr->set_position(centre() + Vector3(0, 0, 0.25f * suns));
             }
-            light_ptr->set_position(centre() + Vector3(0, 0, 0.25f * suns));
         }
     }
 
@@ -919,7 +923,7 @@ namespace trview
     {
         // Transform the position back in to world space. Also mark it as a room pick result.
         geometry_result.type = PickResult::Type::Room;
-        geometry_result.index = _index;
+        geometry_result.room = std::const_pointer_cast<IRoom>(shared_from_this());
         geometry_result.position = Vector3::Transform(geometry_result.position, _room_offset);
 
         const auto& tri = geometry_result.triangle;
@@ -1100,6 +1104,7 @@ namespace trview
     void Room::set_visible(bool visible)
     {
         _visible = visible;
+        on_changed();
     }
 
     std::vector<std::weak_ptr<ILight>> Room::lights() const

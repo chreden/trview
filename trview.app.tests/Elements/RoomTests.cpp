@@ -356,7 +356,7 @@ TEST(Room, PickTestsEntities)
     auto room = register_test_module().build();
     auto entity = mock_shared<MockItem>();
     ON_CALL(*entity, visible).WillByDefault(Return(true));
-    EXPECT_CALL(*entity, pick).Times(1).WillOnce(Return(PickResult{ true, 0, {}, {}, PickResult::Type::Entity, 10 }));
+    EXPECT_CALL(*entity, pick).Times(1).WillOnce(Return(PickResult{ .hit = true, .distance = 0, .position = {}, .centroid = {}, .type = PickResult::Type::Entity, .item = entity }));
     room->add_entity(entity);
 
     auto results = room->pick(Vector3(0, 0, -2), Vector3(0, 0, 1), PickFilter::Entities);
@@ -364,7 +364,7 @@ TEST(Room, PickTestsEntities)
     auto result = results.front();
     ASSERT_EQ(result.hit, true);
     ASSERT_EQ(result.type, PickResult::Type::Entity);
-    ASSERT_EQ(result.index, 10);
+    ASSERT_EQ(result.item.lock(), entity);
 }
 
 /// <summary>
@@ -378,7 +378,7 @@ TEST(Room, PickTestsTriggers)
     auto room = register_test_module().build();
     auto trigger = mock_shared<MockTrigger>();
     ON_CALL(*trigger, visible).WillByDefault(Return(true));
-    EXPECT_CALL(*trigger, pick).Times(1).WillOnce(Return(PickResult{ true, 0, {}, {}, PickResult::Type::Trigger, 10 }));
+    EXPECT_CALL(*trigger, pick).Times(1).WillOnce(Return(PickResult{ .hit = true, .distance = 0, .position = {}, .centroid = {}, .type = PickResult::Type::Trigger, .trigger = trigger }));
     room->add_trigger(trigger);
 
     auto results = room->pick(Vector3(0, 0, -2), Vector3(0, 0, 1), PickFilter::Triggers);
@@ -386,7 +386,7 @@ TEST(Room, PickTestsTriggers)
     auto result = results.front();
     ASSERT_EQ(result.hit, true);
     ASSERT_EQ(result.type, PickResult::Type::Trigger);
-    ASSERT_EQ(result.index, 10);
+    ASSERT_EQ(result.trigger.lock(), trigger);
 }
 
 /// <summary>
@@ -400,12 +400,12 @@ TEST(Room, PickChoosesClosest)
     auto room = register_test_module().build();
     auto entity = mock_shared<MockItem>();
     ON_CALL(*entity, visible).WillByDefault(Return(true));
-    EXPECT_CALL(*entity, pick).Times(1).WillOnce(Return(PickResult{ true, 0.5f, {}, {}, PickResult::Type::Entity, 5 }));
+    EXPECT_CALL(*entity, pick).Times(1).WillOnce(Return(PickResult{ .hit = true, .distance = 0.5f, .position = {}, .centroid = {}, .type = PickResult::Type::Entity, .item = entity }));
     room->add_entity(entity);
 
     auto entity2 = mock_shared<MockItem>();
     ON_CALL(*entity2, visible).WillByDefault(Return(true));
-    EXPECT_CALL(*entity2, pick).Times(1).WillOnce(Return(PickResult{ true, 1.0f, {}, {}, PickResult::Type::Entity, 10 }));
+    EXPECT_CALL(*entity2, pick).Times(1).WillOnce(Return(PickResult{ .hit = true, .distance = 1.0f, .position = {}, .centroid = {}, .type = PickResult::Type::Entity, .item = entity2 }));
     room->add_entity(entity2);
 
     auto results = room->pick(Vector3(0, 0, -2), Vector3(0, 0, 1), PickFilter::Entities | PickFilter::Triggers);
@@ -413,7 +413,7 @@ TEST(Room, PickChoosesClosest)
     auto result = results.front();
     ASSERT_EQ(result.hit, true);
     ASSERT_EQ(result.type, PickResult::Type::Entity);
-    ASSERT_EQ(result.index, 5);
+    ASSERT_EQ(result.item.lock(), entity);
     ASSERT_EQ(result.distance, 0.5f);
 }
 
@@ -428,7 +428,7 @@ TEST(Room, PickChoosesEntityOverTrigger)
     auto room = register_test_module().build();
     auto entity = mock_shared<MockItem>();
     ON_CALL(*entity, visible).WillByDefault(Return(true));
-    EXPECT_CALL(*entity, pick).Times(1).WillOnce(Return(PickResult{ true, 1.0f, {}, {}, PickResult::Type::Entity, 5 }));
+    EXPECT_CALL(*entity, pick).Times(1).WillOnce(Return(PickResult{ .hit = true, .distance = 1.0f, .position = {}, .centroid = {}, .type = PickResult::Type::Entity, .item = entity }));
     room->add_entity(entity);
 
     auto trigger = mock_shared<MockTrigger>();
@@ -440,7 +440,7 @@ TEST(Room, PickChoosesEntityOverTrigger)
     auto result = results.front();
     ASSERT_EQ(result.hit, true);
     ASSERT_EQ(result.type, PickResult::Type::Entity);
-    ASSERT_EQ(result.index, 5);
+    ASSERT_EQ(result.item.lock(), entity);
     ASSERT_EQ(result.distance, 1.0f);
 }
 
@@ -707,7 +707,7 @@ TEST(Room, PickTestsStaticMesh)
     auto static_mesh = mock_shared<MockStaticMesh>();
     ON_CALL(*static_mesh, number).WillByDefault(Return(10));
     ON_CALL(*static_mesh, visible).WillByDefault(Return(true));
-    EXPECT_CALL(*static_mesh, pick).Times(1).WillOnce(Return(PickResult{ true, 0, {}, {}, PickResult::Type::StaticMesh, 10 }));
+    EXPECT_CALL(*static_mesh, pick).Times(1).WillOnce(Return(PickResult{ .hit = true, .distance = 0, .position = {}, .centroid = {}, .type = PickResult::Type::StaticMesh, .static_mesh = static_mesh }));
 
     auto static_mesh_source = [&](auto&&...)
         {
@@ -725,5 +725,18 @@ TEST(Room, PickTestsStaticMesh)
     auto result = results.front();
     ASSERT_EQ(result.hit, true);
     ASSERT_EQ(result.type, PickResult::Type::StaticMesh);
-    ASSERT_EQ(result.index, 10);
+    ASSERT_EQ(result.static_mesh.lock(), static_mesh);
 }
+
+
+TEST(Room, VisibilityRaisesOnChanged)
+{
+    auto room = register_test_module().build();
+
+    bool raised = false;
+    auto token = room->on_changed += [&]() { raised = true; };
+    room->set_visible(false);
+
+    ASSERT_EQ(raised, true);
+}
+

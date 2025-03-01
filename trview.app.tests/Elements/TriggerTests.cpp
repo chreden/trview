@@ -71,3 +71,14 @@ TEST(Trigger, Colour)
     trigger->set_colour(std::nullopt);
     ASSERT_EQ(trigger->colour(), ITrigger::Trigger_Colour);
 }
+
+TEST(Trigger, VisibilityRaisesOnChanged)
+{
+    auto trigger = register_test_module().build();
+
+    bool raised = false;
+    auto token = trigger->on_changed += [&]() { raised = true; };
+    trigger->set_visible(false);
+
+    ASSERT_EQ(raised, true);
+}

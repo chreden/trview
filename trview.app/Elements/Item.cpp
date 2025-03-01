@@ -254,7 +254,7 @@ namespace trview
             PickResult result;
             result.hit = true;
             result.type = PickResult::Type::Entity;
-            result.index = _number;
+            result.item = std::const_pointer_cast<IItem>(shared_from_this());
             result.distance = box_distance;
             result.position = position + direction * box_distance;
             result.item = std::const_pointer_cast<IItem>(shared_from_this());
@@ -285,7 +285,6 @@ namespace trview
 
         PickResult result;
         result.type = PickResult::Type::Entity;
-        result.index = _number;
         result.item = std::const_pointer_cast<IItem>(shared_from_this());
 
         for (auto i : pick_meshes)
@@ -384,6 +383,7 @@ namespace trview
     void Item::set_visible(bool value)
     {
         _visible = value;
+        on_changed();
     }
 
     void Item::adjust_y(float amount)

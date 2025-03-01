@@ -124,48 +124,66 @@ namespace trview
                 _context_pick.triangle.normal.Normalize();
             }
 
-            if (auto level = _level.lock())
+            uint32_t index = 0;
+            switch (_context_pick.type)
             {
-                if (_context_pick.type == PickResult::Type::Entity)
+                case PickResult::Type::Room:
+                {
+                    if (const auto room = _context_pick.room.lock())
+                    {
+                        index = room->number();
+                    }
+                    break;
+                }
+                case PickResult::Type::Entity:
                 {
                     if (const auto item = _context_pick.item.lock())
                     {
                         _context_pick.position = item->position();
+                        index = item->number();
                     }
+                    break;
                 }
-                else if (_context_pick.type == PickResult::Type::Trigger)
+                case PickResult::Type::Trigger:
                 {
-                    if (const auto trigger = level->trigger(_context_pick.index).lock())
+                    if (const auto trigger = _context_pick.trigger.lock())
                     {
                         _context_pick.position = trigger->position();
+                        index = trigger->number();
                     }
+                    break;
                 }
             }
-            on_waypoint_added(_context_pick.position, _context_pick.triangle.normal, room_from_pick(_context_pick), type, _context_pick.index);
+
+            on_waypoint_added(_context_pick.position, _context_pick.triangle.normal, room_from_pick(_context_pick), type, index);
         };
         _token_store += _ui->on_add_mid_waypoint += [&]()
         {
             auto type = _context_pick.type == PickResult::Type::Entity ? IWaypoint::Type::Entity : _context_pick.type == PickResult::Type::Trigger ? IWaypoint::Type::Trigger : IWaypoint::Type::Position;
 
+            uint32_t index = 0;
             if (_context_pick.type == PickResult::Type::Room)
             {
-                _context_pick.position = _context_pick.centroid;
+                if (const auto room = _context_pick.room.lock())
+                {
+                    _context_pick.position = _context_pick.centroid;
+                    index = room->number();
+                }
             }
             else if (_context_pick.type == PickResult::Type::Entity)
             {
                 if (const auto item = _context_pick.item.lock())
                 {
                     _context_pick.position = item->position();
+                    index = item->number();
                 }
             }
             else if (_context_pick.type == PickResult::Type::Trigger)
             {
-                if (const auto level = _level.lock())
+                if (const auto trigger = _context_pick.trigger.lock())
                 {
-                    if (const auto trigger = level->trigger(_context_pick.index).lock())
-                    {
-                        _context_pick.position = trigger->position();
-                    }
+                    _context_pick.position = trigger->position();
+                    index = trigger->number();
                 }
             }
 
@@ -177,36 +195,51 @@ namespace trview
                 _context_pick.triangle.normal.Normalize();
             }
 
-            on_waypoint_added(_context_pick.position, _context_pick.triangle.normal, room_from_pick(_context_pick), type, _context_pick.index);
+            on_waypoint_added(_context_pick.position, _context_pick.triangle.normal, room_from_pick(_context_pick), type, index);
         };
-        _token_store += _ui->on_remove_waypoint += [&]() { on_waypoint_removed(_context_pick.index); };
+        _token_store += _ui->on_remove_waypoint += [&]() { on_waypoint_removed(_context_pick.waypoint_index); };
         _token_store += _ui->on_hide += [&]()
         {
             if (auto level = _level.lock())
             {
                 if (_context_pick.type == PickResult::Type::Entity)
                 {
-                    on_item_visibility(_context_pick.item, false);
+                    if (auto item = _context_pick.item.lock())
+                    {
+                        item->set_visible(false);
+                    }
                 }
                 else if (_context_pick.type == PickResult::Type::Trigger)
                 {
-                    on_trigger_visibility(level->trigger(_context_pick.index), false);
+                    if (auto trigger = _context_pick.trigger.lock())
+                    {
+                        trigger->set_visible(false);
+                    }
                 }
                 else if (_context_pick.type == PickResult::Type::Light)
                 {
-                    on_light_visibility(level->light(_context_pick.index), false);
+                    if (auto light = _context_pick.light.lock())
+                    {
+                        light->set_visible(false);
+                    }
                 }
                 else if (_context_pick.type == PickResult::Type::Room)
                 {
-                    on_room_visibility(level->room(_context_pick.index), false);
+                    if (auto room = _context_pick.room.lock())
+                    {
+                        room->set_visible(false);
+                    }
                 }
                 else if (_context_pick.type == PickResult::Type::CameraSink)
                 {
-                    on_camera_sink_visibility(level->camera_sink(_context_pick.index), false);
+                    if (auto camera_sink = _context_pick.camera_sink.lock())
+                    {
+                        camera_sink->set_visible(false);
+                    }
                 }
                 else if (_context_pick.type == PickResult::Type::StaticMesh)
                 {
-                    if (auto mesh = level->static_mesh(_context_pick.index).lock())
+                    if (auto mesh = _context_pick.static_mesh.lock())
                     {
                         mesh->set_visible(false);
                     }
@@ -263,7 +296,38 @@ namespace trview
                 }
                 case IContextMenu::CopyType::Number:
                 {
-                    _clipboard->write(std::to_wstring(_context_pick.index));
+                    auto get_number = [](auto&& e)
+                        {
+                            const auto e_ptr = e.lock();
+                            return e_ptr ? e_ptr->number() : 0;
+                        };
+
+                    auto get_number_for_pick = [&](auto&& pick) -> uint32_t
+                        {
+                            switch (_context_pick.type)
+                            {
+                            case PickResult::Type::Waypoint:
+                                return pick.waypoint_index;
+                            case PickResult::Type::Room:
+                                return get_number(pick.room);
+                            case PickResult::Type::Entity:
+                                return get_number(pick.item);
+                            case PickResult::Type::Trigger:
+                                return get_number(pick.trigger);
+                            case PickResult::Type::StaticMesh:
+                                return get_number(pick.static_mesh);
+                            case PickResult::Type::Light:
+                                return get_number(pick.light);
+                            case PickResult::Type::CameraSink:
+                                return get_number(pick.camera_sink);
+                            case PickResult::Type::SoundSource:
+                                return get_number(pick.sound_source);
+                            default: // mesh, compass, TODO: scriptable 
+                                return 0;
+                            }
+                        };
+
+                    _clipboard->write(std::to_wstring(get_number_for_pick(_context_pick)));
                     break;
                 }
             }
@@ -276,20 +340,17 @@ namespace trview
             {
                 if (auto window = window_ptr.lock())
                 {
-                    if (const auto level = _level.lock())
+                    if (const auto room = _context_pick.room.lock())
                     {
-                        if (const auto room = level->room(_context_pick.index).lock())
-                        {
-                            const auto info = room->info();
-                            const auto sector_x = static_cast<int>(_context_pick.position.x - (info.x / trlevel::Scale_X));
-                            const auto sector_z = static_cast<int>(_context_pick.position.z - (info.z / trlevel::Scale_Z));
-                            window->set_filters(
-                                {
-                                    {.key = "Room", .compare = CompareOp::Equal, .value = std::to_string(room->number()), .op = Op::And },
-                                    {.key = "X", .compare = CompareOp::Between, .value = std::to_string(info.x + sector_x * 1024), .value2 = std::to_string(info.x + (sector_x + 1) * 1024), .op = Op::And },
-                                    {.key = "Z", .compare = CompareOp::Between, .value = std::to_string(info.z + sector_z * 1024), .value2 = std::to_string(info.z + (sector_z + 1) * 1024) }
-                                });
-                        }
+                        const auto info = room->info();
+                        const auto sector_x = static_cast<int>(_context_pick.position.x - (info.x / trlevel::Scale_X));
+                        const auto sector_z = static_cast<int>(_context_pick.position.z - (info.z / trlevel::Scale_Z));
+                        window->set_filters(
+                            {
+                                {.key = "Room", .compare = CompareOp::Equal, .value = std::to_string(room->number()), .op = Op::And },
+                                {.key = "X", .compare = CompareOp::Between, .value = std::to_string(info.x + sector_x * 1024), .value2 = std::to_string(info.x + (sector_x + 1) * 1024), .op = Op::And },
+                                {.key = "Z", .compare = CompareOp::Between, .value = std::to_string(info.z + sector_z * 1024), .value2 = std::to_string(info.z + (sector_z + 1) * 1024) }
+                            });
                     }
                 }
             }
@@ -321,7 +382,6 @@ namespace trview
                 result.stop = true;
                 result.position = info.position + info.direction;
                 result.type = PickResult::Type::Compass;
-                result.index = static_cast<uint32_t>(axis);
                 result.distance = 1.0f;
                 result.text = axis_name(axis);
                 _compass_axis = axis;
@@ -370,9 +430,9 @@ namespace trview
             _current_pick = result;
 
             const auto level = _level.lock();
-            if (level && _route)
+            if (level)
             {
-                result.text = generate_pick_message(result, *level, *_route);
+                result.text = generate_pick_message(result, *level);
             }
             _ui->set_pick(result);
 
@@ -388,18 +448,18 @@ namespace trview
                 if (result.hit)
                 {
                     const auto selected_room = level->selected_room().lock();
-                    if (_current_pick.type == PickResult::Type::Room &&
-                        selected_room &&
-                        _current_pick.index == selected_room->number())
+                    if (_current_pick.type == PickResult::Type::Room)
                     {
-                        info = selected_room->info();
+                        const auto room = _current_pick.room.lock();
+                        if (room && selected_room && room == selected_room)
+                        {
+                            info = selected_room->info();
+                        }
                     }
                     else if (_current_pick.type == PickResult::Type::Trigger)
                     {
-                        const auto trigger = level->trigger(_current_pick.index).lock();
-                        if (trigger && 
-                            selected_room &&
-                            trigger->room().lock() == selected_room)
+                        const auto trigger = _current_pick.trigger.lock();
+                        if (trigger && selected_room && trigger->room().lock() == selected_room)
                         {
                             info = selected_room->info();
                         }
@@ -615,7 +675,7 @@ namespace trview
                 }
                 else if (_current_pick.type == PickResult::Type::CameraSink && level)
                 {
-                    const auto camera_sink = level->camera_sink(_current_pick.index).lock();
+                    const auto camera_sink = _current_pick.camera_sink.lock();
                     _ui->set_triggered_by(camera_sink ? camera_sink->triggers() : std::vector<std::weak_ptr<ITrigger>>{});
                 }
                 else 
@@ -1219,7 +1279,9 @@ namespace trview
         switch (pick.type)
         {
             case PickResult::Type::Room:
-                return level->room(pick.index);
+            {
+                return pick.room;
+            }
             case PickResult::Type::Entity:
             {
                 if (auto item = pick.item.lock())
@@ -1230,7 +1292,7 @@ namespace trview
             }
             case PickResult::Type::Trigger:
             {
-                if (const auto trigger = level->trigger(pick.index).lock())
+                if (const auto trigger = pick.trigger.lock())
                 {
                     return trigger->room();
                 }
@@ -1238,7 +1300,7 @@ namespace trview
             }
             case PickResult::Type::Waypoint:
             {
-                if (const auto waypoint = _route->waypoint(pick.index).lock())
+                if (const auto waypoint = pick.waypoint.lock())
                 {
                     return level->room(waypoint->room());
                 }
@@ -1289,7 +1351,7 @@ namespace trview
         switch (pick.type)
         {
         case PickResult::Type::Room:
-            on_room_selected(level->room(pick.index));
+            on_room_selected(pick.room);
             if (pick.override_centre)
             {
                 set_target(pick.position);
@@ -1302,42 +1364,27 @@ namespace trview
         }
         case PickResult::Type::Trigger:
         {
-            if (level)
-            {
-                on_trigger_selected(level->trigger(pick.index));
-            }
+            on_trigger_selected(pick.trigger);
             break;
         }
         case PickResult::Type::Waypoint:
         {
-            if (_route)
-            {
-                on_waypoint_selected(_route->waypoint(pick.index));
-            }
+            on_waypoint_selected(pick.waypoint);
             break;
         }
         case PickResult::Type::Light:
         {
-            if (level)
-            {
-                on_light_selected(level->light(pick.index));
-            }
+            on_light_selected(pick.light);
             break;
         }
         case PickResult::Type::CameraSink:
         {
-            if (level)
-            {
-                on_camera_sink_selected(level->camera_sink(pick.index));
-            }
+            on_camera_sink_selected(pick.camera_sink);
             break;
         }
         case PickResult::Type::StaticMesh:
         {
-            if (level)
-            {
-                on_static_mesh_selected(level->static_mesh(pick.index));
-            }
+            on_static_mesh_selected(pick.static_mesh);
             break;
         }
         case PickResult::Type::Scriptable:

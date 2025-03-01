@@ -18,6 +18,8 @@ namespace trview
 
         using Source = std::function<std::shared_ptr<ICameraSink>(uint32_t, const trlevel::tr_camera&, Type, const std::vector<std::weak_ptr<IRoom>>& inferred_rooms, const std::vector<std::weak_ptr<ITrigger>>& triggers, const std::weak_ptr<ILevel>&)>;
 
+        Event<> on_changed;
+
         virtual ~ICameraSink() = 0;
         virtual DirectX::BoundingBox bounding_box() const = 0;
         virtual uint16_t box_index() const = 0;
