@@ -17,18 +17,18 @@ namespace trview
 
         TransparentTriangle(const DirectX::SimpleMath::Vector3& v0, const DirectX::SimpleMath::Vector3& v1, const DirectX::SimpleMath::Vector3& v2,
             const DirectX::SimpleMath::Vector2& uv0, const DirectX::SimpleMath::Vector2& uv1, const DirectX::SimpleMath::Vector2& uv2,
-            uint32_t texture, Mode mode, DirectX::SimpleMath::Color = { 1,1,1,1 });
+            uint32_t texture, Mode mode, const DirectX::SimpleMath::Color& c0, const DirectX::SimpleMath::Color& c1, const DirectX::SimpleMath::Color& c2);
 
         /// Create an untextured transparent triangle with the specified colour.
         /// @param v0 The first vertex.
         /// @param v1 The second vertex.
         /// @param v2 The third vertex.
         /// @param colour The colour for the triangle.
-        TransparentTriangle(const DirectX::SimpleMath::Vector3& v0, const DirectX::SimpleMath::Vector3& v1, const DirectX::SimpleMath::Vector3& v2, const DirectX::SimpleMath::Color& colour);
+        TransparentTriangle(const DirectX::SimpleMath::Vector3& v0, const DirectX::SimpleMath::Vector3& v1, const DirectX::SimpleMath::Vector3& v2, const DirectX::SimpleMath::Color& c0, const DirectX::SimpleMath::Color& c1, const DirectX::SimpleMath::Color& c2);
 
         DirectX::SimpleMath::Vector3 normal() const;
 
-        TransparentTriangle transform(const DirectX::SimpleMath::Matrix& matrix, const DirectX::SimpleMath::Color& colour_override) const;
+        TransparentTriangle transform(const DirectX::SimpleMath::Matrix& matrix, const DirectX::SimpleMath::Color& colour_override, bool use_colour_override) const;
 
         // The world space positions that make up the triangle.
         DirectX::SimpleMath::Vector3 vertices[3];
@@ -41,7 +41,7 @@ namespace trview
         
         Mode                         mode;
 
-        DirectX::SimpleMath::Color   colour{ 1, 1, 1, 1 };
+        DirectX::SimpleMath::Color   colours[3];
     };
 
     // Determine whether the face should be transparent give the attribute and effects values. The 

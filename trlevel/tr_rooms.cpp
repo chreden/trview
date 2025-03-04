@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "tr_rooms.h"
+#include <ranges>
 
 using namespace DirectX::SimpleMath;
 
@@ -89,5 +90,28 @@ namespace trlevel
                 return trview_room_vertex{ vertex, 0, 0, to_colour(vert.colour) };
             });
         return new_vertices;
+    }
+
+    std::vector<trview_room_vertex> convert_vertices_tr3_psx(std::vector<uint32_t> vertices, int32_t y_top)
+    {
+        return vertices |
+            std::views::transform([=](auto&& v)
+                {
+                    const uint16_t colour = (v >> 15) & 0x7fff;
+                    return trview_room_vertex
+                    {
+                        .vertex =
+                        {
+                            .x = static_cast<int16_t>(((v >> 10) & 0x1f) << 10),
+                            .y = static_cast<int16_t>((((v >> 5) & 0x1f) << 8) + y_top),
+                            .z = static_cast<int16_t>((v & 0x1f) << 10)
+                         },
+                        .attributes = 0,
+                        .colour = trview::Colour(
+                            static_cast<float>((colour & 0x1F)) / 0x1F,
+                            static_cast<float>(((colour >> 5) & 0x1F)) / 0x1F,
+                            static_cast<float>(((colour >> 10) & 0x1F)) / 0x1F)
+                    };
+                }) | std::ranges::to<std::vector>();
     }
 }

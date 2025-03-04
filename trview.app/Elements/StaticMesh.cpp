@@ -48,6 +48,11 @@ namespace trview
 
     void StaticMesh::render(const ICamera& camera, const ILevelTextureStorage& texture_storage, const DirectX::SimpleMath::Color& colour)
     {
+        if (!_mesh)
+        {
+            return;
+        }
+
         if (_type == Type::Sprite)
         {
             _world = create_billboard(_position, Vector3(0, -0.5f, 0), _scale, camera);
@@ -68,6 +73,11 @@ namespace trview
 
     void StaticMesh::get_transparent_triangles(ITransparencyBuffer& transparency, const ICamera& camera, const DirectX::SimpleMath::Color& colour)
     {
+        if (!_mesh)
+        {
+            return;
+        }
+
         if (_type == Type::Sprite)
         {
             _world = create_billboard(_position, Vector3(0, -0.5f, 0), _scale, camera);
@@ -75,12 +85,17 @@ namespace trview
 
         for (const auto& triangle : _mesh->transparent_triangles())
         {
-            transparency.add(triangle.transform(_world, colour));
+            transparency.add(triangle.transform(_world, colour, true));
         }
     }
 
     PickResult StaticMesh::pick(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& direction) const
     {
+        if (!_mesh)
+        {
+            return {};
+        }
+
         const auto transform = _world.Invert();
         auto normal_direction = Vector3::TransformNormal(direction, transform);
         normal_direction.Normalize();

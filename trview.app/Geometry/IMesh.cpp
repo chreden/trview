@@ -50,8 +50,8 @@ namespace trview
 
             std::vector<TransparentTriangle> transparent_triangles
             {
-                { vertices[0].pos, vertices[1].pos, vertices[2].pos, vertices[0].uv, vertices[1].uv, vertices[2].uv, tile, TransparentTriangle::Mode::Normal },
-                { vertices[2].pos, vertices[1].pos, vertices[3].pos, vertices[2].uv, vertices[1].uv, vertices[3].uv, tile, TransparentTriangle::Mode::Normal },
+                { vertices[0].pos, vertices[1].pos, vertices[2].pos, vertices[0].uv, vertices[1].uv, vertices[2].uv, tile, TransparentTriangle::Mode::Normal, Colour::White, Colour::White, Colour::White },
+                { vertices[2].pos, vertices[1].pos, vertices[3].pos, vertices[2].uv, vertices[1].uv, vertices[3].uv, tile, TransparentTriangle::Mode::Normal, Colour::White, Colour::White, Colour::White },
             };
 
             std::vector<Triangle> collision_triangles
@@ -264,13 +264,18 @@ namespace trview
                 uvs[i] = texture_storage.uv(texture, i);
             }
 
+            if (texture_storage.platform_and_version().platform == Platform::PSX)
+            {
+                std::swap(uvs[2], uvs[3]);
+            }
+
             const bool double_sided = rect.texture & 0x8000;
 
             TransparentTriangle::Mode transparency_mode;
             if (determine_transparency(texture_storage.attribute(texture), rect.effects, transparency_mode))
             {
-                transparent_triangles.emplace_back(verts[0], verts[1], verts[2], uvs[0], uvs[1], uvs[2], texture_storage.tile(texture), transparency_mode);
-                transparent_triangles.emplace_back(verts[2], verts[3], verts[0], uvs[2], uvs[3], uvs[0], texture_storage.tile(texture), transparency_mode);
+                transparent_triangles.emplace_back(verts[0], verts[1], verts[2], uvs[0], uvs[1], uvs[2], texture_storage.tile(texture), transparency_mode, colors[0], colors[1], colors[2]);
+                transparent_triangles.emplace_back(verts[2], verts[3], verts[0], uvs[2], uvs[3], uvs[0], texture_storage.tile(texture), transparency_mode, colors[2], colors[3], colors[0]);
                 if (transparent_collision)
                 {
                     collision_triangles.emplace_back(verts[0], verts[1], verts[2]);
@@ -280,8 +285,8 @@ namespace trview
                 if (double_sided)
                 {
 
-                    transparent_triangles.emplace_back(verts[2], verts[1], verts[0], uvs[2], uvs[1], uvs[0], texture_storage.tile(texture), transparency_mode);
-                    transparent_triangles.emplace_back(verts[0], verts[3], verts[2], uvs[0], uvs[3], uvs[2], texture_storage.tile(texture), transparency_mode);
+                    transparent_triangles.emplace_back(verts[2], verts[1], verts[0], uvs[2], uvs[1], uvs[0], texture_storage.tile(texture), transparency_mode, colors[2], colors[1], colors[0]);
+                    transparent_triangles.emplace_back(verts[0], verts[3], verts[2], uvs[0], uvs[3], uvs[2], texture_storage.tile(texture), transparency_mode, colors[0], colors[3], colors[2]);
                     if (transparent_collision)
                     {
                         collision_triangles.emplace_back(verts[2], verts[1], verts[0]);
@@ -365,14 +370,14 @@ namespace trview
             TransparentTriangle::Mode transparency_mode;
             if (determine_transparency(texture_storage.attribute(texture), tri.effects, transparency_mode))
             {
-                transparent_triangles.emplace_back(verts[0], verts[1], verts[2], uvs[0], uvs[1], uvs[2], texture_storage.tile(texture), transparency_mode);
+                transparent_triangles.emplace_back(verts[0], verts[1], verts[2], uvs[0], uvs[1], uvs[2], texture_storage.tile(texture), transparency_mode, colors[0], colors[1], colors[2]);
                 if (transparent_collision)
                 {
                     collision_triangles.emplace_back(verts[0], verts[1], verts[2]);
                 }
                 if (double_sided)
                 {
-                    transparent_triangles.emplace_back(verts[2], verts[1], verts[0], uvs[2], uvs[1], uvs[0], texture_storage.tile(texture), transparency_mode);
+                    transparent_triangles.emplace_back(verts[2], verts[1], verts[0], uvs[2], uvs[1], uvs[0], texture_storage.tile(texture), transparency_mode, colors[2], colors[1], colors[0]);
                     if (transparent_collision)
                     {
                         collision_triangles.emplace_back(verts[2], verts[1], verts[0]);

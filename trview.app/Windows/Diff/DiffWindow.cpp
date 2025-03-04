@@ -772,7 +772,7 @@ namespace trview
                             bool open = false;
                             if (item_diff.type == Diff::Type::Update)
                             {
-                                open = ImGui::TreeNodeEx(row_text.c_str(), ImGuiTreeNodeFlags_OpenOnArrow);
+                                open = ImGui::TreeNodeEx(row_text.c_str(), ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_DefaultOpen);
                             }
                             else
                             {

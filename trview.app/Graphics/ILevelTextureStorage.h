@@ -33,6 +33,8 @@ namespace trview
         virtual graphics::Texture geometry_texture() const = 0;
 
         virtual uint32_t num_object_textures() const = 0;
+
+        virtual trlevel::PlatformAndVersion platform_and_version() const = 0;
     };
 }
 
