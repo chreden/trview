@@ -139,6 +139,11 @@ namespace trview
         return static_cast<uint32_t>(_object_textures.size());
     }
 
+    trlevel::PlatformAndVersion LevelTextureStorage::platform_and_version() const
+    {
+        return { .platform = _platform, .version = _version };
+    }
+
     void LevelTextureStorage::load(const std::shared_ptr<trlevel::ILevel>& level)
     {
         _version = level->get_version();

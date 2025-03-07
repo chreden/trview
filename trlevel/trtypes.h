@@ -478,10 +478,11 @@ namespace trlevel
         uint16_t Clut;
         uint8_t x1;
         uint8_t y1;
-        uint16_t Tile : 14, : 2;
+        uint16_t Tile;
         uint8_t x2;
         uint8_t y2;
-        uint16_t Unknown;
+        uint8_t tri_draw;
+        uint8_t quad_draw;
         uint8_t x3;
         uint8_t y3;
         uint16_t Attribute;
@@ -864,6 +865,8 @@ namespace trlevel
     std::vector<tr_model> convert_models(std::vector<tr5_model> models);
 
     std::vector<tr_vertex> convert_vertices(std::vector<tr_vertex_psx> vertices);
+
+    std::vector<tr4_mesh_face3> convert_tr3_psx_room_triangles(std::vector<uint32_t> triangles, uint16_t total_vertices);
 
     constexpr LightType convert(LightTypeTR3 type);
 }

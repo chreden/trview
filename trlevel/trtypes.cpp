@@ -186,4 +186,23 @@ namespace trlevel
             | std::views::transform([](const auto& vert) { return tr_vertex{ vert.x, vert.y, vert.z }; })
             | std::ranges::to<std::vector>();
     }
+
+    std::vector<tr4_mesh_face3> convert_tr3_psx_room_triangles(std::vector<uint32_t> triangles, uint16_t total_vertices)
+    {
+        return triangles |
+            std::views::transform([=](const auto& t)
+                {
+                    return tr4_mesh_face3
+                    {
+                        .vertices =
+                        {
+                            static_cast<uint16_t>(total_vertices + (t & 0x7f)),
+                            static_cast<uint16_t>(total_vertices + ((t >> 7) & 0x7f)),
+                            static_cast<uint16_t>(total_vertices + ((t >> 14) & 0x7f))
+                        },
+                        .texture = static_cast<uint16_t>(t >> 21),
+                        .effects = 0
+                    };
+                }) | std::ranges::to<std::vector>();
+    }
 }

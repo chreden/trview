@@ -481,7 +481,7 @@ namespace trview
             {
                 for (const auto& triangle : _mesh->transparent_triangles())
                 {
-                    transparency.add(triangle.transform(_room_offset, colour));
+                    transparency.add(triangle.transform(_room_offset, colour, !has_flag(render_filter, RenderFilter::Lighting)));
                 }
 
                 for (const auto& static_mesh : _static_meshes)
@@ -656,7 +656,7 @@ namespace trview
 
             const auto add_tri = [&triangles](const Vector3& v0, const Vector3& v1, const Vector3& v2)
             {
-                triangles.push_back(TransparentTriangle(v0, v1, v2, ITrigger::Trigger_Colour));
+                triangles.push_back(TransparentTriangle(v0, v1, v2, ITrigger::Trigger_Colour, ITrigger::Trigger_Colour, ITrigger::Trigger_Colour));
             };
 
             // + Y

@@ -29,6 +29,7 @@ namespace trview
         virtual DirectX::SimpleMath::Color palette_from_texture(uint32_t texture) const override;
         virtual graphics::Texture geometry_texture() const override;
         virtual uint32_t num_object_textures() const override;
+        trlevel::PlatformAndVersion platform_and_version() const override;
         void load(const std::shared_ptr<trlevel::ILevel>& level);
         void add_textile(const std::vector<uint32_t>& textile);
     private:

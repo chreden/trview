@@ -112,7 +112,11 @@ namespace trview
             const uint32_t end_pointer = static_cast<uint32_t>(model.StartingMesh + model.NumMeshes);
             for (uint32_t mesh_pointer = model.StartingMesh; mesh_pointer < end_pointer; ++mesh_pointer)
             {
-                _meshes.push_back(mesh_storage.mesh(mesh_pointer));
+                auto mesh = mesh_storage.mesh(mesh_pointer);
+                if (mesh)
+                {
+                    _meshes.push_back(mesh);
+                }
             }
         }
     }
@@ -225,7 +229,7 @@ namespace trview
         {
             for (const auto& triangle : _meshes[i]->transparent_triangles())
             {
-                transparency.add(triangle.transform(_world_transforms[i] * _world, colour));
+                transparency.add(triangle.transform(_world_transforms[i] * _world, colour, true));
             }
         }
 
@@ -234,7 +238,7 @@ namespace trview
             auto world = create_billboard(_position, _offset, _scale, camera);
             for (const auto& triangle : _sprite_mesh->transparent_triangles())
             {
-                transparency.add(triangle.transform(world, colour));
+                transparency.add(triangle.transform(world, colour, true));
             }
         }
     }
