@@ -53,5 +53,6 @@ namespace trlevel
     std::vector<trview_room_vertex> convert_vertices(std::vector<tr2_room_vertex> vertices);
     std::vector<trview_room_vertex> convert_vertices(std::vector<tr3_room_vertex> vertices);
     std::vector<trview_room_vertex> convert_vertices(std::vector<tr5_room_vertex> vertices);
+    std::vector<trview_room_vertex> convert_vertices_tr2_psx(std::vector<uint32_t> vertices, int32_t y_top);
     std::vector<trview_room_vertex> convert_vertices_tr3_psx(std::vector<uint32_t> vertices, int32_t y_top);
 }
