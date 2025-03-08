@@ -62,18 +62,27 @@ namespace trlevel
 
         bool check_for_tr2_psx(std::basic_ispanstream<uint8_t>& file)
         {
-            // TR2 PSX has sound data before the version number - attempt to read
-            // sound data and see if we end up at a TR2 version number.
-            file.seekg(0);
+            try
+            {
+                // TR2 PSX has sound data before the version number - attempt to read
+                // sound data and see if we end up at a TR2 version number.
+                file.seekg(0);
 
-            read_vector<uint32_t, uint32_t>(file);
-            read_vector<uint32_t, byte>(file);
-            const uint32_t potential_version = read<uint32_t>(file);
+                read_vector<uint32_t, uint32_t>(file);
+                read_vector<uint32_t, byte>(file);
+                const uint32_t potential_version = read<uint32_t>(file);
 
-            const bool is_tr2_psx = convert_level_version(potential_version).version == LevelVersion::Tomb2;
-            file.seekg(0);
+                const bool is_tr2_psx = convert_level_version(potential_version).version == LevelVersion::Tomb2;
+                file.seekg(0);
 
-            return is_tr2_psx;
+                return is_tr2_psx;
+            }
+            catch (const std::exception&)
+            {
+                file.clear();
+                file.seekg(0, std::ios::beg);
+                return false;
+            }
         }
     }
 
