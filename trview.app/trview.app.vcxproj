@@ -84,6 +84,8 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClCompile Include="Windows\About\AboutWindowManager.cpp" />
     <ClCompile Include="Windows\Diff\DiffWindow.cpp" />
     <ClCompile Include="Windows\Diff\DiffWindowManager.cpp" />
+    <ClCompile Include="Windows\Pack\PackWindow.cpp" />
+    <ClCompile Include="Windows\Pack\PackWindowManager.cpp" />
     <ClCompile Include="Windows\Sounds\SoundsWindow.cpp" />
     <ClCompile Include="Windows\Sounds\SoundsWindowManager.cpp" />
     <ClCompile Include="Windows\Windows.cpp" />
@@ -233,6 +235,10 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClInclude Include="Windows\Diff\DiffWindowManager.h" />
     <ClInclude Include="Windows\Diff\IDiffWindow.h" />
     <ClInclude Include="Windows\Diff\IDiffWindowManager.h" />
+    <ClInclude Include="Windows\Pack\IPackWindow.h" />
+    <ClInclude Include="Windows\Pack\IPackWindowManager.h" />
+    <ClInclude Include="Windows\Pack\PackWindow.h" />
+    <ClInclude Include="Windows\Pack\PackWindowManager.h" />
     <ClInclude Include="Windows\Sounds\ISoundsWindow.h" />
     <ClInclude Include="Windows\Sounds\ISoundsWindowManager.h" />
     <ClInclude Include="Windows\Sounds\SoundsWindow.h" />

@@ -154,8 +154,13 @@ namespace trlevel
         }
     }
 
-    Level::Level(const std::string& filename, const std::shared_ptr<trview::IFiles>& files, const std::shared_ptr<IDecrypter>& decrypter, const std::shared_ptr<trview::ILog>& log)
-        : _log(log), _decrypter(decrypter), _filename(filename), _files(files)
+    Level::Level(const std::string& filename, const std::shared_ptr<IPack>& pack, const std::shared_ptr<trview::IFiles>& files, const std::shared_ptr<IDecrypter>& decrypter, const std::shared_ptr<trview::ILog>& log, const IPack::Source& pack_source)
+        : _log(log), _decrypter(decrypter), _filename(filename), _files(files), _pack_source(pack_source), _pack(pack)
+    {
+    }
+
+    Level::Level(const std::string& filename, const std::shared_ptr<IPack>& pack, const std::shared_ptr<trview::IFiles>& files, const std::shared_ptr<IDecrypter>& decrypter, const std::shared_ptr<trview::ILog>& log)
+        : _log(log), _decrypter(decrypter), _filename(filename), _files(files), _pack(pack)
     {
     }
 
@@ -215,6 +220,10 @@ namespace trlevel
                 else if (_platform_and_version.version == LevelVersion::Tomb3)
                 {
                     generate_mesh_tr3_psx(mesh, stream);
+                }
+                else if (_platform_and_version.version == LevelVersion::Tomb4)
+                {
+                    generate_mesh_tr4_psx(mesh, stream);
                 }
             }
             else
@@ -551,7 +560,22 @@ namespace trlevel
         {
             activity.log(std::format("Opening file \"{}\"", _filename));
 
-            auto bytes = _files->load_file(_filename);
+            auto get_pack_entry = [this]() -> std::optional<std::vector<uint8_t>>
+                {
+                    uint32_t target = std::stoi(_name);
+                    for (const auto& p : _pack->parts())
+                    {
+                        if (p.start == target)
+                        {
+                            return p.data;
+                        }
+                    }
+                    return std::nullopt;
+                };
+
+            const bool is_packed = _filename.starts_with("pack") && _pack;
+            const bool is_pack_preview = _filename.starts_with("pack-preview") && _pack;
+            auto bytes = is_packed ? get_pack_entry() : _files->load_file(_filename);
             if (!bytes.has_value())
             {
                 throw LevelLoadException();
@@ -564,11 +588,18 @@ namespace trlevel
 
             read_header(file, *bytes, activity, callbacks);
 
-            const std::unordered_map<PlatformAndVersion, std::function<void ()>> loaders
+            if (is_pack_preview)
+            {
+                return;
+            }
+
+            const std::unordered_map<PlatformAndVersion, std::function<void()>> loaders
             {
                 {{.platform = Platform::PSX, .version = LevelVersion::Tomb1 }, [&]() { load_tr1_psx(file, activity, callbacks); }},
                 {{.platform = Platform::PSX, .version = LevelVersion::Tomb2 }, [&]() { load_tr2_psx(file, activity, callbacks); }},
                 {{.platform = Platform::PSX, .version = LevelVersion::Tomb3 }, [&]() { load_tr3_psx(file, activity, callbacks); }},
+                {{.platform = Platform::PSX, .version = LevelVersion::Tomb4 }, [&]() { load_tr4_psx(file, activity, callbacks); }},
+                {{.platform = Platform::PSX, .version = LevelVersion::Unknown, .is_pack = true }, [&]() { load_psx_pack(file, activity, callbacks); }},
                 {{.platform = Platform::PC, .version = LevelVersion::Tomb1 }, [&]() { load_tr1_pc(file, activity, callbacks); }},
                 {{.platform = Platform::PC, .version = LevelVersion::Tomb2 }, [&]() { load_tr2_pc(file, activity, callbacks); }},
                 {{.platform = Platform::PC, .version = LevelVersion::Tomb3 }, [&]() { load_tr3_pc(file, activity, callbacks); }},
@@ -625,7 +656,7 @@ namespace trlevel
         _platform_and_version = convert_level_version(raw_version);
 
         log_file(activity, file, std::format("Version number is {:X} ({}), Platform is {}", raw_version, to_string(get_version()), to_string(platform())));
-        if (_platform_and_version.version == LevelVersion::Unknown)
+        if (_platform_and_version.version == LevelVersion::Unknown && !_platform_and_version.is_pack)
         {
             // Test for TR2 PSX
             if (check_for_tr1_psx_without_sound(file))
@@ -813,5 +844,10 @@ namespace trlevel
             return 0;
         }
         return std::ranges::any_of(_clut[clut_id].Colour, [](auto&& c) { return c.Red == 0 && c.Green == 0 && c.Blue == 0; }) ? 1 : 0;
+    }
+
+    std::weak_ptr<IPack> Level::pack() const
+    {
+        return _pack;
     }
 }

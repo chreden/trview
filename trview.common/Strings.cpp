@@ -45,7 +45,13 @@ namespace trview
 
     std::string filename_without_path(const std::string& filename)
     {
-        auto last_index = std::min(filename.find_last_of('\\'), filename.find_last_of('/'));
+        const auto last_fs = filename.find_last_of('/');
+        const auto last_bs = filename.find_last_of('\\');
+        const auto last_index = 
+            last_fs == filename.npos ?
+            last_bs : 
+            last_bs == filename.npos ?
+            last_fs : std::max(last_fs, last_bs);
         return last_index == filename.npos ? filename : filename.substr(std::min(last_index + 1, filename.size()));
     }
 

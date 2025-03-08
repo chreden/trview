@@ -25,10 +25,11 @@ namespace trlevel
 
     struct PlatformAndVersion final
     {
-        Platform platform{ Platform::Unknown };
+        Platform     platform{ Platform::Unknown };
         LevelVersion version{ LevelVersion::Unknown };
-        bool remastered{ false };
-        uint32_t raw_version{ 0 };
+        bool         remastered{ false };
+        bool         is_pack{ false };
+        uint32_t     raw_version{ 0 };
     };
 
     inline bool operator==(const PlatformAndVersion & l, const PlatformAndVersion & r)

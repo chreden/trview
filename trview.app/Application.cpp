@@ -86,6 +86,7 @@ namespace trview
         _token_store += _windows->on_route_save += [&]() { this->save_route(); };
         _token_store += _windows->on_route_save_as += [&]() { this->save_route_as(); };
         _token_store += _windows->on_route_window_created += [&]() { open_recent_route(); };
+        _token_store += _windows->on_level_open += [&](const auto& filename) { open(filename, ILevel::OpenMode::Full); };
         _token_store += _windows->on_level_switch += [&](const auto& level) { _file_menu->switch_to(level); };
         _token_store += _windows->on_new_route += [&]() { if (should_discard_changes()) { set_route(_route_source(std::nullopt)); } };
         _token_store += _windows->on_new_randomizer_route += [&]() { if (should_discard_changes()) { set_route(_randomizer_route_source(std::nullopt)); } };
@@ -735,7 +736,10 @@ namespace trview
     std::shared_ptr<ILevel> Application::load(const std::string& filename)
     {
         _progress = std::format("Loading {}", filename);
-        auto level = _level_source(filename, 
+
+        auto pack = _level ? _level->pack().lock() : nullptr;
+        auto level = _level_source(filename,
+            pack,
             {
                 .on_progress_callback = [&](auto&& p) { _progress = p; }
             });
