@@ -1,8 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClInclude Include="ILevel.h" />
-    <ClInclude Include="Level.h" />
     <ClInclude Include="trtypes.h" />
     <ClInclude Include="LevelVersion.h" />
     <ClInclude Include="LevelLoadException.h" />
@@ -16,9 +14,29 @@
     <ClInclude Include="LevelVersion.hpp" />
     <ClInclude Include="IDecrypter.h" />
     <ClInclude Include="Decrypter.h" />
+    <ClInclude Include="ILevel.h">
+      <Filter>Level</Filter>
+    </ClInclude>
+    <ClInclude Include="Level.h">
+      <Filter>Level</Filter>
+    </ClInclude>
+    <ClInclude Include="Level_tr1.h">
+      <Filter>Level</Filter>
+    </ClInclude>
+    <ClInclude Include="Level_tr2.h">
+      <Filter>Level</Filter>
+    </ClInclude>
+    <ClInclude Include="Level_tr3.h">
+      <Filter>Level</Filter>
+    </ClInclude>
+    <ClInclude Include="Level_common.h">
+      <Filter>Level\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="Level_psx.h">
+      <Filter>Level\PSX</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Level.cpp" />
     <ClCompile Include="trtypes.cpp" />
     <ClCompile Include="LevelVersion.cpp" />
     <ClCompile Include="stdafx.cpp" />
@@ -28,13 +46,61 @@
       <Filter>Mocks</Filter>
     </ClCompile>
     <ClCompile Include="tr_rooms.cpp" />
+    <ClCompile Include="Level.cpp">
+      <Filter>Level</Filter>
+    </ClCompile>
+    <ClCompile Include="Level_common.cpp">
+      <Filter>Level\Common</Filter>
+    </ClCompile>
+    <ClCompile Include="Level_tr1_pc.cpp">
+      <Filter>Level\PC</Filter>
+    </ClCompile>
+    <ClCompile Include="Level_tr2_pc.cpp">
+      <Filter>Level\PC</Filter>
+    </ClCompile>
+    <ClCompile Include="Level_tr3_pc.cpp">
+      <Filter>Level\PC</Filter>
+    </ClCompile>
+    <ClCompile Include="Level_tr1_psx.cpp">
+      <Filter>Level\PSX</Filter>
+    </ClCompile>
+    <ClCompile Include="Level_tr2_psx.cpp">
+      <Filter>Level\PSX</Filter>
+    </ClCompile>
+    <ClCompile Include="Level_tr3_psx.cpp">
+      <Filter>Level\PSX</Filter>
+    </ClCompile>
+    <ClCompile Include="Level_psx.cpp">
+      <Filter>Level\PSX</Filter>
+    </ClCompile>
+    <ClCompile Include="Level_tr4_pc.cpp">
+      <Filter>Level\PC</Filter>
+    </ClCompile>
+    <ClCompile Include="Level_tr5_pc.cpp">
+      <Filter>Level\PC</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Mocks">
       <UniqueIdentifier>{761f107e-00af-4697-ba3e-3653c2e29391}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Level">
+      <UniqueIdentifier>{5ba6b4bb-ca8e-4bac-baf1-f4c53f93d46c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Level\Common">
+      <UniqueIdentifier>{0ba5d9fd-5aed-441b-b6ea-1b88fc4ba73d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Level\PC">
+      <UniqueIdentifier>{ee6bacc7-d2bf-422a-a107-e36a1e5f363f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Level\PSX">
+      <UniqueIdentifier>{f6d40800-10c2-4705-bf39-6f8199b80136}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="trtypes.inl" />
+    <None Include="Level_common.inl">
+      <Filter>Level\Common</Filter>
+    </None>
   </ItemGroup>
 </Project>

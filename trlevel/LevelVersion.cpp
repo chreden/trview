@@ -1,4 +1,5 @@
 #include "LevelVersion.h"
+#include <trview.common/Algorithms.h>
 
 namespace trlevel
 {
@@ -21,6 +22,10 @@ namespace trlevel
         switch (version & 0xff)
         {
         case 0x20:
+            if (is_tr2_beta(version))
+            {
+                return { .platform = Platform::PSX, .version = LevelVersion::Tomb2 };
+            }
             return { .platform = (version & 0xff00) ? Platform::PSX : Platform::PC, .version = LevelVersion::Tomb1 };
         case 0x2D:
             return { .platform = Platform::PC, .version = LevelVersion::Tomb2 };
@@ -33,5 +38,10 @@ namespace trlevel
             return { .platform = Platform::PC, .version = LevelVersion::Tomb4 };
         }
         return { .platform = Platform::Unknown, .version = LevelVersion::Unknown };
+    }
+
+    constexpr bool is_tr2_beta(uint32_t version)
+    {
+        return ((version & 0xff) == 0x20) && (version & 0xff0000 || trview::equals_any(version, 0xf820u, 0xd620u, 0x1220u, 0x1a20u));
     }
 }

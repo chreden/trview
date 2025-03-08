@@ -102,6 +102,11 @@
     <ClInclude Include="LevelLoadException.h" />
     <ClInclude Include="LevelVersion.h" />
     <ClInclude Include="LevelVersion.hpp" />
+    <ClInclude Include="Level_common.h" />
+    <ClInclude Include="Level_psx.h" />
+    <ClInclude Include="Level_tr1.h" />
+    <ClInclude Include="Level_tr2.h" />
+    <ClInclude Include="Level_tr3.h" />
     <ClInclude Include="Mocks\ILevel.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="trtypes.h" />
@@ -115,6 +120,16 @@
     </ClCompile>
     <ClCompile Include="Level.cpp" />
     <ClCompile Include="LevelVersion.cpp" />
+    <ClCompile Include="Level_common.cpp" />
+    <ClCompile Include="Level_psx.cpp" />
+    <ClCompile Include="Level_tr1_pc.cpp" />
+    <ClCompile Include="Level_tr1_psx.cpp" />
+    <ClCompile Include="Level_tr2_pc.cpp" />
+    <ClCompile Include="Level_tr2_psx.cpp" />
+    <ClCompile Include="Level_tr3_pc.cpp" />
+    <ClCompile Include="Level_tr3_psx.cpp" />
+    <ClCompile Include="Level_tr4_pc.cpp" />
+    <ClCompile Include="Level_tr5_pc.cpp" />
     <ClCompile Include="Mocks\MockLevel.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
@@ -130,6 +145,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <None Include="Level_common.inl" />
     <None Include="trtypes.inl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
