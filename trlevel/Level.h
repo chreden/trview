@@ -213,7 +213,7 @@ namespace trlevel
         void generate_mesh_tr3_psx(tr_mesh& mesh, std::basic_ispanstream<uint8_t>& stream);
 
         PlatformAndVersion _platform_and_version;
-        uint32_t _raw_version;
+        uint32_t _raw_version{ 0u };
 
         std::vector<tr_colour>  _palette;
         std::vector<tr_colour4> _palette16;

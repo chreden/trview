@@ -33,6 +33,7 @@ namespace trlevel
         case 0x38:
             return { .platform = Platform::PC, .version = LevelVersion::Tomb3 }; 
         case 0xc8:
+        case 0xcb:  //TR3 PSX ECTS Demos
             return { .platform = Platform::PSX, .version = LevelVersion::Tomb3 };
         case 0x54:
             return { .platform = Platform::PC, .version = LevelVersion::Tomb4 };
