@@ -491,6 +491,7 @@ namespace trview
 
     void ItemsWindow::render_trigger_references()
     {
+        ImGui::Text("Trigger References");
         if (ImGui::BeginTable(Names::triggers_list.c_str(), 3, ImGuiTableFlags_ScrollY | ImGuiTableFlags_Sortable | ImGuiTableFlags_SizingFixedFit, ImVec2(-1, -1)))
         {
             ImGui::TableSetupColumn("#");
