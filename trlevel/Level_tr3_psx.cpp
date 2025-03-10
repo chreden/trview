@@ -221,8 +221,9 @@ namespace trlevel
     {
         auto sound_offsets = read_vector<uint32_t, uint32_t>(file);
         auto sound_data = read_vector<uint32_t, byte>(file);
+        const bool ects = _raw_version == -53;
 
-        for (int i = 0; i < 13; ++i)
+        for (int i = 0; i < (ects ? 10 : 13); ++i)
         {
             int size = read<int>(file);
             if (size != 0)
@@ -230,6 +231,10 @@ namespace trlevel
                 skip(file, size);
                 int size2 = read<int>(file);
                 skip(file, size2);
+            }
+            else if (ects)
+            {
+                skip(file, 4);
             }
         }
 
