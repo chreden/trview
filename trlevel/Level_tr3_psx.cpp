@@ -9,6 +9,11 @@ namespace trlevel
 {
     namespace
     {
+        constexpr bool is_ects(uint32_t raw_version)
+        {
+            return raw_version == -53;
+        }
+
         std::vector<trview_room_vertex> convert_vertices_tr3_psx(std::vector<uint32_t> vertices, int32_t y_top)
         {
             return vertices |
@@ -117,7 +122,8 @@ namespace trlevel
     void Level::generate_mesh_tr3_psx(tr_mesh& mesh, std::basic_ispanstream<uint8_t>& stream)
     {
         // Avoid skybox mesh for now.
-        const auto skybox_model = std::ranges::find_if(_models, [](auto&& m) { return m.ID == 355; });
+        const uint32_t skybox_id = is_ects(_raw_version) ? 312 : 355;
+        const auto skybox_model = std::ranges::find_if(_models, [skybox_id](auto&& m) { return m.ID == skybox_id; });
         if (skybox_model != _models.end())
         {
             if (stream.tellg() == _mesh_pointers[skybox_model->StartingMesh])
@@ -221,7 +227,7 @@ namespace trlevel
     {
         auto sound_offsets = read_vector<uint32_t, uint32_t>(file);
         auto sound_data = read_vector<uint32_t, byte>(file);
-        const bool ects = _raw_version == -53;
+        const bool ects = is_ects(_raw_version);
 
         for (int i = 0; i < (ects ? 10 : 13); ++i)
         {
