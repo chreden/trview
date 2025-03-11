@@ -163,6 +163,7 @@ namespace trlevel
         virtual tr_camera get_camera(uint32_t index) const = 0;
 
         virtual Platform platform() const = 0;
+        virtual PlatformAndVersion platform_and_version() const = 0;
 
         struct LoadCallbacks
         {

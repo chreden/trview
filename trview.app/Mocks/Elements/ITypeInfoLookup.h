@@ -10,7 +10,7 @@ namespace trview
         {
             MockTypeInfoLookup();
             virtual ~MockTypeInfoLookup();
-            MOCK_METHOD(TypeInfo, lookup, (trlevel::LevelVersion, uint32_t, int16_t), (const, override));
+            MOCK_METHOD(TypeInfo, lookup, (trlevel::PlatformAndVersion, uint32_t, int16_t), (const, override));
         };
     }
 }

@@ -22,6 +22,30 @@ namespace trview
             auto mutant_name = mutant_names.find(mutant_egg_contents((flags & 0x3E00) >> 9));
             return std::format("Mutant Egg ({})", mutant_name == mutant_names.end() ? "Winged" : mutant_name->second);
         }
+
+        constexpr std::string game_name(trlevel::PlatformAndVersion version)
+        {
+            switch (version.version)
+            {
+            case trlevel::LevelVersion::Tomb1:
+                return "tr1";
+                break;
+            case trlevel::LevelVersion::Tomb2:
+                return "tr2";
+                break;
+            case trlevel::LevelVersion::Tomb3:
+                return version.raw_version == -53 ? "tr3_ects" : "tr3";
+                break;
+            case trlevel::LevelVersion::Tomb4:
+                return "tr4";
+                break;
+            case trlevel::LevelVersion::Tomb5:
+                return "tr5";
+                break;
+            default:
+                return {};
+            }
+        }
     }
 
     ITypeInfoLookup::~ITypeInfoLookup()
@@ -31,32 +55,11 @@ namespace trview
     TypeInfoLookup::TypeInfoLookup(const std::string& type_name_json)
     {
         auto json = nlohmann::json::parse(type_name_json.begin(), type_name_json.end());
-        auto load_game_types = [&](LevelVersion version)
+        auto load_game_types = [&](PlatformAndVersion version)
         {
-            std::string game_name;
-            switch (version)
-            {
-            case trlevel::LevelVersion::Tomb1:
-                game_name = "tr1";
-                break;
-            case trlevel::LevelVersion::Tomb2:
-                game_name = "tr2";
-                break;
-            case trlevel::LevelVersion::Tomb3:
-                game_name = "tr3";
-                break;
-            case trlevel::LevelVersion::Tomb4:
-                game_name = "tr4";
-                break;
-            case trlevel::LevelVersion::Tomb5:
-                game_name = "tr5";
-                break;
-            default:
-                return;
-            }
-
+            const std::string game = game_name(version);
             std::unordered_map<uint32_t, TypeInfo> type_names;
-            for (const auto& element : json["games"][game_name])
+            for (const auto& element : json["games"][game])
             {
                 auto name = element.at("name").get<std::string>();
                 type_names.insert({ element.at("id").get<uint32_t>(), 
@@ -65,19 +68,20 @@ namespace trview
                         read_attribute<std::unordered_set<std::string>>(element, "categories")
                     } });
             }
-            _type_names.insert({ version, type_names });
+            _type_names.insert({ game, type_names });
         };
 
-        load_game_types(LevelVersion::Tomb1);
-        load_game_types(LevelVersion::Tomb2);
-        load_game_types(LevelVersion::Tomb3);
-        load_game_types(LevelVersion::Tomb4);
-        load_game_types(LevelVersion::Tomb5);
+        load_game_types({ .version = LevelVersion::Tomb1 });
+        load_game_types({ .version = LevelVersion::Tomb2 });
+        load_game_types({ .version = LevelVersion::Tomb3 });
+        load_game_types({ .version = LevelVersion::Tomb3, .raw_version = 0xffffffcb });
+        load_game_types({ .version = LevelVersion::Tomb4 });
+        load_game_types({ .version = LevelVersion::Tomb5 });
     }
 
-    TypeInfo TypeInfoLookup::lookup(trlevel::LevelVersion level_version, uint32_t type_id, int16_t flags) const
+    TypeInfo TypeInfoLookup::lookup(trlevel::PlatformAndVersion level_version, uint32_t type_id, int16_t flags) const
     {
-        const auto& game_types = _type_names.find(level_version);
+        const auto& game_types = _type_names.find(game_name(level_version));
         if (game_types == _type_names.end())
         {
             return { .name = std::to_string(type_id) };
@@ -90,7 +94,7 @@ namespace trview
         }
 
         TypeInfo result = found_type->second;
-        if (level_version == LevelVersion::Tomb1 && is_mutant_egg(type_id))
+        if (level_version.version == LevelVersion::Tomb1 && is_mutant_egg(type_id))
         {
             result.name = mutant_name(flags);
         }

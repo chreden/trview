@@ -359,7 +359,7 @@ namespace trlevel
 
     void Level::load_tr2_psx(std::basic_ispanstream<uint8_t>& file, trview::Activity& activity, const LoadCallbacks& callbacks)
     {
-        if (is_tr2_beta(_raw_version))
+        if (is_tr2_beta(_platform_and_version.raw_version))
         {
             return load_tr2_psx_beta(file, activity, callbacks);
         }

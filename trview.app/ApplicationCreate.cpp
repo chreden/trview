@@ -226,14 +226,14 @@ namespace trview
         auto entity_source = [=](auto&& level, auto&& entity, auto&& index, auto&& triggers, auto&& mesh_storage, auto&& owning_level, auto&& room)
         {
             return std::make_shared<Item>(mesh_source, level, entity, mesh_storage, owning_level, index,
-                type_info_lookup->lookup(level.get_version(), entity.TypeID, entity.Flags),
+                type_info_lookup->lookup(level.platform_and_version(), entity.TypeID, entity.Flags),
                 triggers,
                 room);
         };
 
         auto ai_source = [=](auto&& level, auto&& entity, auto&& index, auto&& mesh_storage, auto&& owning_level, auto&& room)
         {
-            return std::make_shared<Item>(mesh_source, level, entity, mesh_storage, owning_level, index, type_info_lookup->lookup(level.get_version(), entity.type_id, entity.flags), std::vector<std::weak_ptr<ITrigger>>{}, room);
+            return std::make_shared<Item>(mesh_source, level, entity, mesh_storage, owning_level, index, type_info_lookup->lookup(level.platform_and_version(), entity.type_id, entity.flags), std::vector<std::weak_ptr<ITrigger>>{}, room);
         };
 
         auto ngplus = std::make_shared<NgPlusSwitcher>(entity_source);

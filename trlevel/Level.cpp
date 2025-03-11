@@ -128,7 +128,7 @@ namespace trlevel
                 }
                 else if (_platform_and_version.version == LevelVersion::Tomb2)
                 {
-                    if (is_tr2_beta(_raw_version))
+                    if (is_tr2_beta(_platform_and_version.raw_version))
                     {
                         generate_mesh_tr2_psx_beta(mesh, stream);
                     }
@@ -546,40 +546,38 @@ namespace trlevel
     void Level::read_header(std::basic_ispanstream<uint8_t>& file, std::vector<uint8_t>& bytes, trview::Activity& activity, const LoadCallbacks& callbacks)
     {
         log_file(activity, file, "Reading version number from file");
-        _raw_version = read<uint32_t>(file);
-        _platform_and_version = convert_level_version(_raw_version);
+        uint32_t raw_version = read<uint32_t>(file);
+        _platform_and_version = convert_level_version(raw_version);
 
-        log_file(activity, file, std::format("Version number is {:X} ({}), Platform is {}", _raw_version, to_string(get_version()), to_string(platform())));
+        log_file(activity, file, std::format("Version number is {:X} ({}), Platform is {}", raw_version, to_string(get_version()), to_string(platform())));
         if (_platform_and_version.version == LevelVersion::Unknown)
         {
             // Test for TR2 PSX
             if (check_for_tr2_psx(file))
             {
-                _raw_version = read<uint32_t>(file);
-                _platform_and_version = { .platform = Platform::PSX, .version = LevelVersion::Tomb2 };
-                log_file(activity, file, std::format("Version number is {:X} ({}), Platform is {}", _raw_version, to_string(get_version()), to_string(platform())));
+                _platform_and_version = { .platform = Platform::PSX, .version = LevelVersion::Tomb2, .raw_version = read<uint32_t>(file) };
+                log_file(activity, file, std::format("Version number is {:X} ({}), Platform is {}", _platform_and_version.raw_version, to_string(get_version()), to_string(platform())));
             }
             else
             {
-                throw LevelLoadException(std::format("Unknown level version ({})", _raw_version));
+                throw LevelLoadException(std::format("Unknown level version ({})", _platform_and_version.raw_version));
             }
         }
 
-        if (_raw_version == 0x63345254)
+        if (_platform_and_version.raw_version == 0x63345254)
         {
             callbacks.on_progress("Decrypting");
             log_file(activity, file, std::format("File is encrypted, decrypting"));
             _decrypter->decrypt(bytes);
             file.seekg(0, std::ios::beg);
-            _raw_version = read<uint32_t>(file);
-            _platform_and_version = convert_level_version(_raw_version);
-            log_file(activity, file, std::format("Version number is {:X} ({})", _raw_version, to_string(get_version())));
+            _platform_and_version = convert_level_version(read<uint32_t>(file));
+            log_file(activity, file, std::format("Version number is {:X} ({})", _platform_and_version.raw_version, to_string(get_version())));
         }
 
         if (is_tr5(activity, get_version(), trview::to_utf16(_filename)))
         {
             _platform_and_version.version = LevelVersion::Tomb5;
-            log_file(activity, file, std::format("Version number is {:X} ({})", _raw_version, to_string(get_version())));
+            log_file(activity, file, std::format("Version number is {:X} ({})", _platform_and_version.raw_version, to_string(get_version())));
         }
     }
 
@@ -713,5 +711,10 @@ namespace trlevel
                 face.texture += static_cast<uint16_t>(_object_textures_psx.size());
             }
         }
+    }
+
+    PlatformAndVersion Level::platform_and_version() const
+    {
+        return _platform_and_version;
     }
 }

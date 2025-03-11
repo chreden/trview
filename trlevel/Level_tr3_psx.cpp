@@ -14,6 +14,55 @@ namespace trlevel
             return raw_version == -53;
         }
 
+        constexpr int16_t convert_ects_type_id(uint16_t id)
+        {
+            if (id >= 46 && id <= 61)
+            {
+                return id + 4;
+            }
+            if ((id >= 63 && id <= 67) || (id >= 71 && id <= 79))
+            {
+                return id + 3;
+            }
+            if (id >= 180 && id <= 202)
+            {
+                return id + 1;
+            }
+            if (id >= 203 && id <= 237)
+            {
+                return id + 2;
+            }
+
+            if (id >= 261)
+            {
+                return id + 43;
+            }
+
+            if (id >= 257)
+            {
+                return id + 42;
+            }
+
+            if (id >= 233)
+            {
+                return id + 44;
+            }
+
+            switch (id)
+            {
+            case 15:
+                return 13;
+            case 93:
+                return 96;
+            case 243:
+                return 287;
+            case 244:
+                return 288;
+            }
+
+            return id;
+        }
+
         std::vector<trview_room_vertex> convert_vertices_tr3_psx(std::vector<uint32_t> vertices, int32_t y_top)
         {
             return vertices |
@@ -122,7 +171,7 @@ namespace trlevel
     void Level::generate_mesh_tr3_psx(tr_mesh& mesh, std::basic_ispanstream<uint8_t>& stream)
     {
         // Avoid skybox mesh for now.
-        const uint32_t skybox_id = is_ects(_raw_version) ? 312 : 355;
+        const uint32_t skybox_id = is_ects(_platform_and_version.raw_version) ? 312 : 355;
         const auto skybox_model = std::ranges::find_if(_models, [skybox_id](auto&& m) { return m.ID == skybox_id; });
         if (skybox_model != _models.end())
         {
@@ -227,7 +276,7 @@ namespace trlevel
     {
         auto sound_offsets = read_vector<uint32_t, uint32_t>(file);
         auto sound_data = read_vector<uint32_t, byte>(file);
-        const bool ects = is_ects(_raw_version);
+        const bool ects = is_ects(_platform_and_version.raw_version);
 
         for (int i = 0; i < (ects ? 10 : 13); ++i)
         {

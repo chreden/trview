@@ -169,6 +169,7 @@ namespace trlevel
         std::vector<tr_x_sound_details> sound_details() const override;
         std::vector<int16_t> sound_map() const override;
         bool trng() const override;
+        PlatformAndVersion platform_and_version() const override;
     private:
         void generate_meshes(const std::vector<uint16_t>& mesh_data);
         tr_colour4 colour_from_object_texture(uint32_t texture) const;
@@ -213,7 +214,6 @@ namespace trlevel
         void generate_mesh_tr3_psx(tr_mesh& mesh, std::basic_ispanstream<uint8_t>& stream);
 
         PlatformAndVersion _platform_and_version;
-        uint32_t _raw_version{ 0u };
 
         std::vector<tr_colour>  _palette;
         std::vector<tr_colour4> _palette16;
