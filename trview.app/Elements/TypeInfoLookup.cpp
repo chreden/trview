@@ -31,10 +31,11 @@ namespace trview
                 return "tr1";
                 break;
             case trlevel::LevelVersion::Tomb2:
-                return "tr2";
+                return is_tr2_beta(version) ? "tr2_beta" : "tr2";
                 break;
             case trlevel::LevelVersion::Tomb3:
-                return version.raw_version == -53 ? "tr3_ects" : "tr3";
+                return is_tr3_ects(version) ? "tr3_ects" :
+                    is_tr3_demo_55(version) ? "tr3_demo_55" : "tr3";
                 break;
             case trlevel::LevelVersion::Tomb4:
                 return "tr4";
@@ -55,28 +56,20 @@ namespace trview
     TypeInfoLookup::TypeInfoLookup(const std::string& type_name_json)
     {
         auto json = nlohmann::json::parse(type_name_json.begin(), type_name_json.end());
-        auto load_game_types = [&](PlatformAndVersion version)
+        for (const auto& [key, value] : json["games"].items())
         {
-            const std::string game = game_name(version);
             std::unordered_map<uint32_t, TypeInfo> type_names;
-            for (const auto& element : json["games"][game])
+            for (const auto& element : value)
             {
                 auto name = element.at("name").get<std::string>();
-                type_names.insert({ element.at("id").get<uint32_t>(), 
+                type_names.insert({ element.at("id").get<uint32_t>(),
                     {
                         name,
                         read_attribute<std::unordered_set<std::string>>(element, "categories")
                     } });
             }
-            _type_names.insert({ game, type_names });
-        };
-
-        load_game_types({ .version = LevelVersion::Tomb1 });
-        load_game_types({ .version = LevelVersion::Tomb2 });
-        load_game_types({ .version = LevelVersion::Tomb3 });
-        load_game_types({ .version = LevelVersion::Tomb3, .raw_version = 0xffffffcb });
-        load_game_types({ .version = LevelVersion::Tomb4 });
-        load_game_types({ .version = LevelVersion::Tomb5 });
+            _type_names.insert({ key, type_names });
+        }
     }
 
     TypeInfo TypeInfoLookup::lookup(trlevel::PlatformAndVersion level_version, uint32_t type_id, int16_t flags) const

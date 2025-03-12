@@ -52,13 +52,28 @@ namespace trlevel
         return result;
     }
 
-    constexpr bool is_tr2_beta(uint32_t version)
+    bool is_tr2_beta(uint32_t version)
     {
         return ((version & 0xff) == 0x20) && (version & 0xff0000 || trview::equals_any(version, 0xf820u, 0xd620u, 0x1220u, 0x1a20u));
     }
 
-    bool is_tr2_demo_70688(uint32_t version)
+    bool is_tr2_beta(PlatformAndVersion version)
     {
-        return version == 70688;
+        return is_tr2_beta(version.raw_version);
+    }
+
+    bool is_tr2_demo_70688(PlatformAndVersion version)
+    {
+        return version.raw_version == 70688;
+    }
+
+    bool is_tr3_ects(PlatformAndVersion version)
+    {
+        return version.raw_version == -53;
+    }
+
+    bool is_tr3_demo_55(PlatformAndVersion version)
+    {
+        return version.raw_version == -55;
     }
 }

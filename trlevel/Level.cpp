@@ -87,7 +87,7 @@ namespace trlevel
 
         bool is_tr1_frame_format(PlatformAndVersion version)
         {
-            return version.version == LevelVersion::Tomb1 || is_tr2_demo_70688(version.raw_version);
+            return version.version == LevelVersion::Tomb1 || is_tr2_demo_70688(version);
         }
     }
 
@@ -133,7 +133,7 @@ namespace trlevel
                 }
                 else if (_platform_and_version.version == LevelVersion::Tomb2)
                 {
-                    if (is_tr2_beta(_platform_and_version.raw_version))
+                    if (is_tr2_beta(_platform_and_version))
                     {
                         generate_mesh_tr2_psx_beta(mesh, stream);
                     }

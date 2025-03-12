@@ -9,9 +9,17 @@ namespace trlevel
 {
     namespace
     {
-        constexpr bool is_ects(uint32_t raw_version)
+        uint32_t get_skybox_id(PlatformAndVersion version)
         {
-            return raw_version == -53;
+            if (is_tr3_ects(version))
+            {
+                return 312;
+            }
+            if (version.raw_version == -55)
+            {
+                return 315;
+            }
+            return 355;
         }
 
         constexpr int16_t convert_ects_type_id(uint16_t id)
@@ -170,11 +178,7 @@ namespace trlevel
 
     void Level::generate_mesh_tr3_psx(tr_mesh& mesh, std::basic_ispanstream<uint8_t>& stream)
     {
-        // Avoid skybox mesh for now.
-        const uint32_t skybox_id = 
-            is_ects(_platform_and_version.raw_version) ? 312 : 
-            _platform_and_version.raw_version == -55 ? 315 :
-            355;
+        const uint32_t skybox_id = get_skybox_id(_platform_and_version);
         const auto skybox_model = std::ranges::find_if(_models, [skybox_id](auto&& m) { return m.ID == skybox_id; });
         if (skybox_model != _models.end())
         {
@@ -279,7 +283,7 @@ namespace trlevel
     {
         auto sound_offsets = read_vector<uint32_t, uint32_t>(file);
         auto sound_data = read_vector<uint32_t, byte>(file);
-        const bool ects = is_ects(_platform_and_version.raw_version);
+        const bool ects = is_tr3_ects(_platform_and_version);
 
         for (int i = 0; i < (ects ? 10 : 13); ++i)
         {
