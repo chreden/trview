@@ -2724,6 +2724,276 @@
                 "categories": [ "Effect", "Scenery" ]
             }
         ],
+        "tr3_ects": [{
+                "id": 0,
+                "name": "Lara",
+                "categories": [ "Entity" ]
+            }, {
+                "id": 16,
+                "name": "Kayak",
+                "categories": [ "Vehicle" ]
+            }, {
+                "id": 22,
+                "name": "Dog",
+                "categories": [ "Entity" ]
+            }, {
+                "id": 23,
+                "name": "Rat",
+                "categories": [ "Entity" ]
+            }, {
+                "id": 33,
+                "name": "Lizard",
+                "categories": [ "Entity" ]
+            }, {
+                "id": 34,
+                "name": "Puna",
+                "categories": [ "Entity" ]
+            }, {
+                "id": 49,
+                "name": "Punk",
+                "categories": [ "Entity" ]
+            }, {
+                "id": 56,
+                "name": "MP (Baton)",
+                "categories": [ "Entity" ]
+            }, {
+                "id": 58,
+                "name": "Prisoner",
+                "categories": [ "Entity" ]
+            }, {
+                "id": 59,
+                "name": "MP (MP5)",
+                "categories": [ "Entity" ]
+            }, {
+                "id": 60,
+                "name": "Gun Turret",
+                "categories": [ "Entity" ]
+            }, {
+                "id": 63,
+                "name": "Tripwire",
+                "categories": [ "Trap" ]
+            }, {
+                "id": 64,
+                "name": "Electrified Wire",
+                "categories": [ "Trap" ]
+            }, {
+                "id": 71,
+                "name": "AI Guard",
+                "categories": [ "AI" ]
+            }, {
+                "id": 73,
+                "name": "AI Patrol 1",
+                "categories": [ "AI" ]
+            }, {
+                "id": 76,
+                "name": "AI Patrol 2",
+                "categories": [ "AI" ]
+            }, {
+                "id": 80,
+                "name": "Breakable tile",
+                "categories": [ "Trap" ]
+            }, {
+                "id": 83,
+                "name": "Propeller/Diver/Meteor",
+                "categories": [ "Trap" ]
+            }, {
+                "id": 85,
+                "name": "Boulder",
+                "categories": [ "Trap" ]
+            }, {
+                "id": 91,
+                "name": "Skeleton Trap",
+                "categories": [ "Trap" ]
+            }, {
+                "id": 94,
+                "name": "Pushable Block 1",
+                "categories": [ "Movable" ]
+            }, {
+                "id": 98,
+                "name": "Breakable Window",
+                "categories": [ "Scenery" ]
+            }, {
+                "id": 103,
+                "name": "Hook",
+                "categories": [ "Trap" ]
+            }, {
+                "id": 113,
+                "name": "Spike Wall (Vertical)",
+                "categories": [ "Trap" ]
+            }, {
+                "id": 117,
+                "name": "Wheel Door",
+                "categories": [ "Door" ]
+            }, {
+                "id": 118,
+                "name": "Small Switch",
+                "categories": [ "Switch" ]
+            }, {
+                "id": 107,
+                "name": "Falling Ceiling",
+                "categories": [ "Trap" ]
+            }, {
+                "id" : 127,
+                "name": "Zipline",
+                "categories": [ "Vehicle" ]
+            }, {
+                "id" : 128,
+                "name": "Button",
+                "categories": [ "Switch" ]
+            }, {
+                "id": 129,
+                "name": "Wall Switch",
+                "categories": [ "Switch" ]
+            }, {
+                "id": 131,
+                "name": "Door 1",
+                "categories": [ "Door" ]
+            }, {
+                "id": 132,
+                "name": "Door 2",
+                "categories": [ "Door" ]
+            }, {
+                "id": 133,
+                "name": "Door 3",
+                "categories": [ "Door" ]
+            }, {
+                "id": 134,
+                "name": "Door 4",
+                "categories": [ "Door" ]
+            }, {
+                "id": 135,
+                "name": "Door 5",
+                "categories": [ "Door" ]
+            }, {
+                "id": 136,
+                "name": "Door 6",
+                "categories": [ "Door" ]
+            }, {
+                "id" : 137,
+                "name": "Door 7",
+                "categories": [ "Door" ]
+            }, {
+                "id" : 138,
+                "name": "Door 8",
+                "categories": [ "Door" ]
+            }, {
+                "id": 139,
+                "name": "Trapdoor 1",
+                "categories": [ "Door", "Trapdoor" ]
+            }, {
+                "id": 140,
+                "name": "Trapdoor 2",
+                "categories": [ "Door", "Trapdoor" ]
+            }, {
+                "id": 142,
+                "name": "Bridge (Flat)",
+                "categories": [ "Scenery" ]
+            }, {
+                "id": 143,
+                "name": "Bridge (Tilt 1)",
+                "categories": [ "Scenery" ]
+            }, {
+                "id": 161,
+                "name": "Shotgun",
+                "categories": [ "Pickup" ]
+            }, {
+                "id": 165,
+                "name": "M16",
+                "categories": [ "Pickup" ]
+            }, {
+                "id": 166,
+                "name": "Rocket Launcher",
+                "categories": [ "Pickup" ]
+            }, {
+                "id": 167,
+                "name": "Grenade Launcher",
+                "categories": [ "Pickup" ]
+            }, {
+                "id": 169,
+                "name": "Shotgun shells",
+                "categories": [ "Pickup" ]
+            }, {
+                "id": 171,
+                "name": "Uzi ammo",
+                "categories": [ "Pickup" ]
+            }, {
+                "id": 174,
+                "name": "Rocket",
+                "categories": [ "Pickup" ]
+            }, {
+                "id": 175,
+                "name": "Grenades",
+                "categories": [ "Pickup" ]
+            }, {
+                "id": 176,
+                "name": "Small Medipack",
+                "categories": [ "Pickup" ]
+            }, {
+                "id": 177,
+                "name": "Large Medipack",
+                "categories": [ "Pickup" ]
+            }, {
+                "id": 178,
+                "name": "Flares",
+                "categories": [ "Pickup" ]
+            }, {
+                "id": 201,
+                "name": "Large Medipack",
+                "categories": [ "Pickup" ]
+            }, {
+                "id": 203,
+                "name": "Puzzle 1",
+                "categories": [ "Puzzle", "Pickup" ]
+            }, {
+                "id": 204,
+                "name": "Puzzle 2",
+                "categories": [ "Puzzle", "Pickup" ]
+            }, {
+                "id": 211,
+                "name": "Slot 1",
+                "categories": [ "Slot" ]
+            }, {
+                "id": 212,
+                "name": "Slot 2",
+                "categories": [ "Slot" ]
+            }, {
+                "id": 222,
+                "name": "Key 1",
+                "categories": [ "Key" ]
+            }, {
+                "id": 230,
+                "name": "Keyhole 1",
+                "categories": [ "Keyhole" ]
+            }, {
+                "id": 247,
+                "name": "Moving Lasers",
+                "categories": [ "Trap" ]
+            }, {
+                "id": 271,
+                "name": "Movable Boom",
+                "categories": [ "Trap" ]
+            }, {
+                "id": 275,
+                "name": "Alarm Light",
+                "categories": [ "Effect" ]
+            }, {
+                "id": 306,
+                "name": "Animating 1",
+                "categories": [ "Scenery" ]
+            }, {
+                "id": 307,
+                "name": "Animating 2",
+                "categories": [ "Scenery" ]
+            }, {
+                "id": 308,
+                "name": "Monster",
+                "categories": [ "Entity" ]
+            }, {
+                "id": 309,
+                "name": "Wasp",
+                "categories": [ "Entity" ]
+            }
+        ],
         "tr4": [{
                 "id": 0,
                 "name": "Lara",

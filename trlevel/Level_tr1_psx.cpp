@@ -185,7 +185,7 @@ namespace trlevel
         for (const auto& t : _textile16)
         {
             callbacks.on_textile(convert_textile(t));
-        };
+        }
 
         _sprite_sequences = read_sprite_sequences(activity, file, callbacks);
         _cameras = read_cameras(activity, file, callbacks);

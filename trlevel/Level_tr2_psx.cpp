@@ -2,6 +2,7 @@
 #include "Level_common.h"
 #include "Level_tr2.h"
 #include "Level_psx.h"
+#include "Level_tr1.h"
 
 #include <ranges>
 
@@ -316,8 +317,7 @@ namespace trlevel
         skip(file, 12);
         uint32_t textile_address = read<uint32_t>(file);
         file.seekg(textile_address + 8, std::ios::beg);
-        uint32_t unknown = read<uint32_t>(file);
-        unknown;
+        skip(file, 4);
 
         _rooms = read_rooms<uint16_t>(activity, file, callbacks, load_tr2_psx_beta_room);
         _floor_data = read_floor_data(activity, file, callbacks);
@@ -341,6 +341,52 @@ namespace trlevel
         read_overlaps(activity, file, callbacks);
         read_zones(activity, file, callbacks, static_cast<uint32_t>(boxes.size()));
         read_animated_textures(activity, file, callbacks);
+
+        _entities = read_entities(activity, file, callbacks);
+        read<int32_t>(file); // Unknown
+
+        for (const auto& t : _textile16)
+        {
+            callbacks.on_textile(convert_textile(t));
+        };
+
+        _sound_map = read_sound_map(activity, file, callbacks);
+        _sound_details = read_sound_details(activity, file, callbacks);
+
+        callbacks.on_progress("Generating meshes");
+        generate_meshes(_mesh_data);
+        callbacks.on_progress("Loading complete");
+    }
+
+    void Level::load_tr2_psx_demo_70688(std::basic_ispanstream<uint8_t>& file, trview::Activity& activity, const LoadCallbacks& callbacks)
+    {
+        skip(file, 12);
+        uint32_t textile_address = read<uint32_t>(file);
+        file.seekg(textile_address + 8, std::ios::beg);
+
+        read_textiles_tr2_psx_demo_70688(file, activity, callbacks);
+        _rooms = read_rooms<uint16_t>(activity, file, callbacks, load_tr2_psx_beta_room);
+        _floor_data = read_floor_data(activity, file, callbacks);
+        _mesh_data = read_mesh_data(activity, file, callbacks);
+        _mesh_pointers = read_mesh_pointers(activity, file, callbacks);
+        read_animations_tr1_3(activity, file, callbacks);
+        read_state_changes(activity, file, callbacks);
+        read_anim_dispatches(activity, file, callbacks);
+        read_anim_commands(activity, file, callbacks);
+        _meshtree = read_meshtree(activity, file, callbacks);
+        _frames = read_frames(activity, file, callbacks);
+        _models = read_models_psx(activity, file, callbacks);
+        _static_meshes = read_static_meshes(activity, file, callbacks);
+        read_object_textures_tr2_psx(file, activity, callbacks);
+        read_sprite_textures_psx(file, activity, callbacks);
+        _sprite_sequences = read_sprite_sequences(activity, file, callbacks);
+        _cameras = read_cameras(activity, file, callbacks);
+        _sound_sources = read_sound_sources(activity, file, callbacks);
+        const auto boxes = read_boxes_tr1(activity, file, callbacks);
+        read_overlaps(activity, file, callbacks);
+        read_zones(activity, file, callbacks, static_cast<uint32_t>(boxes.size()));
+        read_animated_textures(activity, file, callbacks);
+
         _entities = read_entities(activity, file, callbacks);
         read<int32_t>(file); // Unknown
 
@@ -359,8 +405,12 @@ namespace trlevel
 
     void Level::load_tr2_psx(std::basic_ispanstream<uint8_t>& file, trview::Activity& activity, const LoadCallbacks& callbacks)
     {
-        if (is_tr2_beta(_raw_version))
+        if (is_tr2_beta(_platform_and_version.raw_version))
         {
+            if (is_tr2_demo_70688(_platform_and_version.raw_version))
+            {
+                return load_tr2_psx_demo_70688(file, activity, callbacks);
+            }
             return load_tr2_psx_beta(file, activity, callbacks);
         }
 
@@ -399,7 +449,7 @@ namespace trlevel
         for (const auto& t : _textile16)
         {
             callbacks.on_textile(convert_textile(t));
-        };
+        }
 
         _sound_map = read_sound_map(activity, file, callbacks);
         _sound_details = read_sound_details(activity, file, callbacks);
@@ -466,6 +516,17 @@ namespace trlevel
         _num_textiles = read<uint32_t>(file);
         _textile4 = read_vector<tr_textile4>(file, _num_textiles);
         _clut = read_vector<tr_clut>(file, 2048);
+        log_file(activity, file, std::format("Read {} textile4s and {} clut", _textile4.size(), _clut.size()));
+    }
+
+    void Level::read_textiles_tr2_psx_demo_70688(std::basic_ispanstream<uint8_t>& file, trview::Activity& activity, const LoadCallbacks& callbacks)
+    {
+        callbacks.on_progress("Reading textiles");
+        log_file(activity, file, "Reading textiles");
+        _num_textiles = 18;
+        _textile4 = read_vector<tr_textile4>(file, _num_textiles);
+        _clut = read_vector<tr_clut>(file, 2048);
+        skip(file, 4);
         log_file(activity, file, std::format("Read {} textile4s and {} clut", _textile4.size(), _clut.size()));
     }
 }

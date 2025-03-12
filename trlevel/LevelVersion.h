@@ -28,6 +28,7 @@ namespace trlevel
         Platform platform{ Platform::Unknown };
         LevelVersion version{ LevelVersion::Unknown };
         bool remastered{ false };
+        uint32_t raw_version{ 0 };
     };
 
     inline bool operator==(const PlatformAndVersion & l, const PlatformAndVersion & r)
@@ -43,6 +44,7 @@ namespace trlevel
     PlatformAndVersion convert_level_version(uint32_t version);
 
     constexpr bool is_tr2_beta(uint32_t version);
+    bool is_tr2_demo_70688(uint32_t version);
 
     constexpr std::string to_string(LevelVersion version) noexcept;
     constexpr std::string to_string(Platform platform) noexcept;
@@ -56,6 +58,7 @@ struct std::hash<trlevel::PlatformAndVersion>
         std::size_t result = 17;
         result = result * 31 + std::hash<trlevel::Platform>()(p.platform);
         result = result * 31 + std::hash<trlevel::LevelVersion>()(p.version);
+        result = result * 31 + std::hash<bool>()(p.remastered);
         return result;
     }
 };
