@@ -521,9 +521,12 @@ namespace trlevel
 
     void Level::read_textiles_tr2_psx_demo_70688(std::basic_ispanstream<uint8_t>& file, trview::Activity& activity, const LoadCallbacks& callbacks)
     {
+        callbacks.on_progress("Reading textiles");
+        log_file(activity, file, "Reading textiles");
         _num_textiles = 18;
         _textile4 = read_vector<tr_textile4>(file, _num_textiles);
         _clut = read_vector<tr_clut>(file, 2048);
         skip(file, 4);
+        log_file(activity, file, std::format("Read {} textile4s and {} clut", _textile4.size(), _clut.size()));
     }
 }
