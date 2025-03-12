@@ -1132,6 +1132,7 @@
             { "id": 270, "name": "Smoke", "categories": [ "Effect" ]},
             { "id": 271, "name": "Movable Boom", "categories": [ "Trap" ]},
             { "id": 275, "name": "Alarm Light", "categories": [ "Effect" ]},
+            { "id": 278, "name": "Light", "categories": [ "Effect" ]},
             { "id": 287, "name": "Fire", "categories": [ "Effect" ]},
             { "id": 288, "name": "Alternate Fire", "categories": [ "Scenery", "Trap" ]},
             { "id": 289, "name": "Alternate Fire 2", "categories": [ "Scenery", "Trap" ]},
