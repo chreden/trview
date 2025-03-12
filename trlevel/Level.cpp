@@ -84,6 +84,11 @@ namespace trlevel
                 return false;
             }
         }
+
+        bool is_tr1_frame_format(PlatformAndVersion version)
+        {
+            return version.version == LevelVersion::Tomb1 || is_tr2_demo_70688(version.raw_version);
+        }
     }
 
     Level::Level(const std::string& filename, const std::shared_ptr<trview::IFiles>& files, const std::shared_ptr<IDecrypter>& decrypter, const std::shared_ptr<trview::ILog>& log)
@@ -322,7 +327,7 @@ namespace trlevel
 
         // Tomb Raider I has the mesh count in the frame structure - all other tombs
         // already know based on the number of meshes.
-        if (get_version() == LevelVersion::Tomb1)
+        if (is_tr1_frame_format(_platform_and_version))
         {
             mesh_count = _frames[offset++];
         }
@@ -336,7 +341,7 @@ namespace trlevel
             uint16_t mode = 0;
 
             // Tomb Raider I has reversed words and always uses the two word format.
-            if (get_version() == LevelVersion::Tomb1)
+            if (is_tr1_frame_format(_platform_and_version))
             {
                 next = _frames[offset++];
                 data = _frames[offset++];

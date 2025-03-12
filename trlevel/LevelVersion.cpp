@@ -56,4 +56,9 @@ namespace trlevel
     {
         return ((version & 0xff) == 0x20) && (version & 0xff0000 || trview::equals_any(version, 0xf820u, 0xd620u, 0x1220u, 0x1a20u));
     }
+
+    bool is_tr2_demo_70688(uint32_t version)
+    {
+        return version == 70688;
+    }
 }
