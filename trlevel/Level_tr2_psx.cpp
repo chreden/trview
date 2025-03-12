@@ -364,11 +364,7 @@ namespace trlevel
         uint32_t textile_address = read<uint32_t>(file);
         file.seekg(textile_address + 8, std::ios::beg);
 
-        _num_textiles = 18;
-        _textile4 = read_vector<tr_textile4>(file, _num_textiles);
-        _clut = read_vector<tr_clut>(file, 2048);
-        skip(file, 4);
-
+        read_textiles_tr2_psx_demo_70688(file, activity, callbacks);
         _rooms = read_rooms<uint16_t>(activity, file, callbacks, load_tr2_psx_beta_room);
         _floor_data = read_floor_data(activity, file, callbacks);
         _mesh_data = read_mesh_data(activity, file, callbacks);
@@ -521,5 +517,13 @@ namespace trlevel
         _textile4 = read_vector<tr_textile4>(file, _num_textiles);
         _clut = read_vector<tr_clut>(file, 2048);
         log_file(activity, file, std::format("Read {} textile4s and {} clut", _textile4.size(), _clut.size()));
+    }
+
+    void Level::read_textiles_tr2_psx_demo_70688(std::basic_ispanstream<uint8_t>& file, trview::Activity& activity, const LoadCallbacks& callbacks)
+    {
+        _num_textiles = 18;
+        _textile4 = read_vector<tr_textile4>(file, _num_textiles);
+        _clut = read_vector<tr_clut>(file, 2048);
+        skip(file, 4);
     }
 }
