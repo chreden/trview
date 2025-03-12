@@ -171,7 +171,10 @@ namespace trlevel
     void Level::generate_mesh_tr3_psx(tr_mesh& mesh, std::basic_ispanstream<uint8_t>& stream)
     {
         // Avoid skybox mesh for now.
-        const uint32_t skybox_id = is_ects(_platform_and_version.raw_version) ? 312 : 355;
+        const uint32_t skybox_id = 
+            is_ects(_platform_and_version.raw_version) ? 312 : 
+            _platform_and_version.raw_version == -55 ? 315 :
+            355;
         const auto skybox_model = std::ranges::find_if(_models, [skybox_id](auto&& m) { return m.ID == skybox_id; });
         if (skybox_model != _models.end())
         {
