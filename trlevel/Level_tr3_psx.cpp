@@ -15,7 +15,7 @@ namespace trlevel
             {
                 return 312;
             }
-            if (version.raw_version == -55)
+            if (is_tr3_demo_55(version))
             {
                 return 315;
             }
