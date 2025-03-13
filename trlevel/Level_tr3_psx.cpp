@@ -9,58 +9,17 @@ namespace trlevel
 {
     namespace
     {
-        constexpr bool is_ects(uint32_t raw_version)
+        uint32_t get_skybox_id(PlatformAndVersion version)
         {
-            return raw_version == -53;
-        }
-
-        constexpr int16_t convert_ects_type_id(uint16_t id)
-        {
-            if (id >= 46 && id <= 61)
+            if (is_tr3_ects(version))
             {
-                return id + 4;
+                return 312;
             }
-            if ((id >= 63 && id <= 67) || (id >= 71 && id <= 79))
+            if (is_tr3_demo_55(version))
             {
-                return id + 3;
+                return 315;
             }
-            if (id >= 180 && id <= 202)
-            {
-                return id + 1;
-            }
-            if (id >= 203 && id <= 237)
-            {
-                return id + 2;
-            }
-
-            if (id >= 261)
-            {
-                return id + 43;
-            }
-
-            if (id >= 257)
-            {
-                return id + 42;
-            }
-
-            if (id >= 233)
-            {
-                return id + 44;
-            }
-
-            switch (id)
-            {
-            case 15:
-                return 13;
-            case 93:
-                return 96;
-            case 243:
-                return 287;
-            case 244:
-                return 288;
-            }
-
-            return id;
+            return 355;
         }
 
         std::vector<trview_room_vertex> convert_vertices_tr3_psx(std::vector<uint32_t> vertices, int32_t y_top)
@@ -170,11 +129,7 @@ namespace trlevel
 
     void Level::generate_mesh_tr3_psx(tr_mesh& mesh, std::basic_ispanstream<uint8_t>& stream)
     {
-        // Avoid skybox mesh for now.
-        const uint32_t skybox_id = 
-            is_ects(_platform_and_version.raw_version) ? 312 : 
-            _platform_and_version.raw_version == -55 ? 315 :
-            355;
+        const uint32_t skybox_id = get_skybox_id(_platform_and_version);
         const auto skybox_model = std::ranges::find_if(_models, [skybox_id](auto&& m) { return m.ID == skybox_id; });
         if (skybox_model != _models.end())
         {
@@ -279,7 +234,7 @@ namespace trlevel
     {
         auto sound_offsets = read_vector<uint32_t, uint32_t>(file);
         auto sound_data = read_vector<uint32_t, byte>(file);
-        const bool ects = is_ects(_platform_and_version.raw_version);
+        const bool ects = is_tr3_ects(_platform_and_version);
 
         for (int i = 0; i < (ects ? 10 : 13); ++i)
         {
