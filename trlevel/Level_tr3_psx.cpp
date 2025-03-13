@@ -139,7 +139,7 @@ namespace trlevel
             in_stream.exceptions(std::istream::failbit | std::istream::badbit | std::istream::eofbit);
 
             // Skip past the name
-            in_stream.seekg(18, std::ios::beg);
+            in_stream.seekg(16, std::ios::beg);
 
             double s_1 = 0.0;
             double s_2 = 0.0;
