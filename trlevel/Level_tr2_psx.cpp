@@ -316,6 +316,8 @@ namespace trlevel
     {
         skip(file, 12);
         uint32_t textile_address = read<uint32_t>(file);
+        skip(file, 2);
+        read_sounds_tr1_psx(activity, file, callbacks, 8000);
         file.seekg(textile_address + 8, std::ios::beg);
         skip(file, 4);
 
@@ -362,6 +364,8 @@ namespace trlevel
     {
         skip(file, 12);
         uint32_t textile_address = read<uint32_t>(file);
+        skip(file, 2);
+        read_sounds_tr1_psx(activity, file, callbacks, 8000);
         file.seekg(textile_address + 8, std::ios::beg);
 
         read_textiles_tr2_psx_demo_70688(file, activity, callbacks);
@@ -417,8 +421,7 @@ namespace trlevel
         // TR2 has sound data at the start of the file so must seek back to the start.
         file.seekg(0, std::ios::beg);
 
-        auto sound_offsets = read_vector<uint32_t, uint32_t>(file);
-        auto sound_data = read_vector<uint32_t, byte>(file);
+        read_sounds_psx(activity, file, callbacks, 8000);
         read<uint32_t>(file); // version - already read.
         _rooms = read_rooms<uint16_t>(activity, file, callbacks, load_tr2_psx_room);
         _floor_data = read_floor_data(activity, file, callbacks);
