@@ -24,6 +24,9 @@ namespace trlevel
             return static_cast<double>(value >> shift_factor);
         }
 
+        /// <summary>
+        /// Based on vag2wav from http://unhaut.epizy.com/psxsdk/
+        /// </summary>
         std::vector<uint8_t> convert_vag_to_wav(const std::vector<uint8_t>& bytes, uint32_t sample_frequency)
         {
             std::span span{ &bytes[0], bytes.size() };

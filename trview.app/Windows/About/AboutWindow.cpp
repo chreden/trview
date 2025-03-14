@@ -20,20 +20,23 @@ namespace trview
         }
 
         bool stay_open = true;
-        if (ImGui::Begin("About", &stay_open, ImGuiWindowFlags_AlwaysAutoResize))
+        ImGui::PushStyleVar(ImGuiStyleVar_WindowMinSize, ImVec2(400, 0));
+        if (ImGui::Begin("About", &stay_open, ImGuiWindowFlags_None))
         {
-            ImGui::Text("trview, Version 2.7.3");
-            ImGui::Text("Copyright (c) 2025 trview team");
-            ImGui::Text("Licensed under the MIT license");
-            ImGui::Text("\tUses DirectXTK (MIT)");
-            ImGui::Text("\tUses zlib (zlib)");
-            ImGui::Text("\tUses nlohmann/json (MIT)");
-            ImGui::Text("\tUses Dear ImGui (MIT)");
-            ImGui::Text("\tUses miniaudio (MIT)");
-            ImGui::Text("Based on the information in TRosettaStone3 - https://github.com/opentomb/TRosettaStone3");
-            ImGui::Text("Portions of this software are copyright (c) 2023 The FreeType Project (www.freetype.org). All rights reserved.");
+            ImGui::TextWrapped("trview, Version 2.7.3");
+            ImGui::TextWrapped("Copyright (c) 2025 trview team");
+            ImGui::TextWrapped("Licensed under the MIT license");
+            ImGui::TextWrapped("Uses DirectXTK (MIT)");
+            ImGui::TextWrapped("Uses zlib (zlib)");
+            ImGui::TextWrapped("Uses nlohmann/json (MIT)");
+            ImGui::TextWrapped("Uses Dear ImGui (MIT)");
+            ImGui::TextWrapped("Uses miniaudio (MIT)");
+            ImGui::TextWrapped("PSX audio code based on vag2wav from vag2wav from http://unhaut.epizy.com/psxsdk/");
+            ImGui::TextWrapped("Based on the information in TRosettaStone3 - https://github.com/opentomb/TRosettaStone3");
+            ImGui::TextWrapped("Portions of this software are copyright (c) 2023 The FreeType Project (www.freetype.org). All rights reserved.");
         }
         ImGui::End();
+        ImGui::PopStyleVar();
 
         if (!stay_open)
         {
