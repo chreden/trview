@@ -126,8 +126,9 @@ namespace trlevel
     {
         skip(file, 12);
         uint32_t textile_address = read<uint32_t>(file);
+        skip(file, 2);
+        read_sounds_tr1_psx(activity, file, callbacks, 11025);
         file.seekg(textile_address + 8, std::ios::beg);
-
         read_textiles_tr1_psx(file, activity, callbacks);
 
         read<uint32_t>(file);

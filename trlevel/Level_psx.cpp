@@ -3,9 +3,99 @@
 #include "Level.h"
 
 #include <format>
+#include <ranges>
 
 namespace trlevel
 {
+    namespace
+    {
+        template <typename T>
+        void write(std::basic_ospanstream<uint8_t>& file, const T& value)
+        {
+            file.write(reinterpret_cast<const uint8_t*>(&value), sizeof(value));
+        }
+
+        constexpr double load_sample(int value, int shift_factor)
+        {
+            if (value & 0x8000)
+            {
+                value |= 0xffff0000;
+            }
+            return static_cast<double>(value >> shift_factor);
+        }
+
+        /// <summary>
+        /// Based on vag2wav from http://unhaut.epizy.com/psxsdk/
+        /// </summary>
+        std::vector<uint8_t> convert_vag_to_wav(const std::vector<uint8_t>& bytes, uint32_t sample_frequency)
+        {
+            std::span span{ &bytes[0], bytes.size() };
+            std::basic_ispanstream<uint8_t> in_stream{ span };
+            in_stream.exceptions(std::istream::failbit | std::istream::badbit | std::istream::eofbit);
+            in_stream.seekg(16, std::ios::beg);
+
+            double s_1 = 0.0;
+            double s_2 = 0.0;
+            double samples[28];
+            constexpr double f[5][2] = { { 0.0, 0.0 },{ 60.0 / 64.0,  0.0 }, {  115.0 / 64.0, -52.0 / 64.0 }, {   98.0 / 64.0, -55.0 / 64.0 }, {  122.0 / 64.0, -60.0 / 64.0 } };
+
+            // Uncompressed is usually about 3.33 times larger
+            std::vector<uint8_t> results;
+            results.resize(static_cast<uint32_t>(3.5 * bytes.size()));
+
+            std::span out_span{ &results[0], results.size() };
+            std::basic_ospanstream<uint8_t> out_stream{ out_span };
+            out_stream.exceptions(std::istream::failbit | std::istream::badbit | std::istream::eofbit);
+
+            out_stream << "RIFF";
+            out_stream.seekp(4, std::ios::cur);
+            out_stream << "WAVEfmt ";
+            write(out_stream, 16);
+            write<uint16_t>(out_stream, 1);
+            write<uint16_t>(out_stream, 1);
+            write<uint32_t>(out_stream, sample_frequency);
+            write<uint32_t>(out_stream, sample_frequency * 2);
+            write<uint16_t>(out_stream, 2);
+            write<uint16_t>(out_stream, 16);
+            out_stream << "data";
+            out_stream.seekp(4, std::ios::cur);
+
+            while (static_cast<uint32_t>(in_stream.tellg()) + 48 < static_cast<uint32_t>(bytes.size()))
+            {
+                int predict_nr = read<char>(in_stream);
+                int shift_factor = predict_nr & 0xf;
+                predict_nr >>= 4;
+                if (read<uint8_t>(in_stream) == 7)
+                {
+                    break;
+                }
+
+                for (int i = 0; i < 28; i += 2)
+                {
+                    const int d = read<uint8_t>(in_stream);
+                    samples[i] = load_sample((d & 0xf) << 12, shift_factor);
+                    samples[i + 1] = load_sample((d & 0xf0) << 8, shift_factor);
+                }
+
+                for (int i = 0; i < 28; i++)
+                {
+                    samples[i] = samples[i] + s_1 * f[predict_nr][0] + s_2 * f[predict_nr][1];
+                    s_2 = s_1;
+                    s_1 = samples[i];
+                    write<int16_t>(out_stream, static_cast<int16_t>(samples[i] + 0.5));
+                }
+            }
+
+            const uint32_t file_size = static_cast<uint32_t>(out_stream.tellp());
+            out_stream.seekp(4, std::ios::beg);
+            write<uint32_t>(out_stream, file_size - 8);
+            out_stream.seekp(40, std::ios::beg);
+            write<uint32_t>(out_stream, file_size - 44);
+            results.resize(file_size);
+            return results;
+        }
+    }
+
     std::vector<tr_model> read_models_psx(trview::Activity& activity, std::basic_ispanstream<uint8_t>& file, const ILevel::LoadCallbacks& callbacks)
     {
         callbacks.on_progress("Reading models");
@@ -13,6 +103,52 @@ namespace trlevel
         auto models = convert_models(read_vector<uint32_t, tr_model_psx>(file));
         log_file(activity, file, std::format("Read {} models", models.size()));
         return models;
+    }
+
+    void read_sounds_tr1_psx(trview::Activity& activity, std::basic_ispanstream<uint8_t>& file, const ILevel::LoadCallbacks& callbacks, uint32_t sample_frequency)
+    {
+        callbacks.on_progress("Reading sounds");
+        log_file(activity, file, "Reading sounds");
+        const uint16_t num_samples = read<uint16_t>(file);
+        file.seekg(2086 + num_samples * 512, std::ios::beg);
+
+        const auto sample_sizes = read_vector<uint16_t>(file, num_samples)
+            | std::views::transform([](uint16_t v) -> uint32_t { return static_cast<uint32_t>(v) * 8; })
+            | std::ranges::to<std::vector>();
+
+        file.seekg(2086 + num_samples * 512 + 510, std::ios::beg);
+        skip(file, 4);
+
+        for (uint32_t s = 0; s < sample_sizes.size(); ++s)
+        {
+            callbacks.on_progress(std::format("Loading sound {} of {}", s, sample_sizes.size()));
+            log_file(activity, file, std::format("Loading sound {} of {}", s, sample_sizes.size()));
+            callbacks.on_sound(static_cast<uint16_t>(s), convert_vag_to_wav(read_vector<uint8_t>(file, sample_sizes[s]), sample_frequency));
+        }
+
+        log_file(activity, file, std::format("Read {} sounds", sample_sizes.size()));
+    }
+
+    void read_sounds_psx(trview::Activity& activity, std::basic_ispanstream<uint8_t>& file, const ILevel::LoadCallbacks& callbacks, uint32_t sample_frequency)
+    {
+        callbacks.on_progress("Reading sounds");
+        log_file(activity, file, "Reading sounds");
+
+        const auto sound_offsets = read_vector<uint32_t, uint32_t>(file);
+        const auto sound_data = read_vector<uint32_t, byte>(file);
+
+        for (uint32_t s = 0; s < sound_offsets.size(); ++s)
+        {
+            callbacks.on_progress(std::format("Loading sound {} of {}", s, sound_offsets.size()));
+            log_file(activity, file, std::format("Loading sound {} of {}", s, sound_offsets.size()));
+            const std::size_t offset = sound_offsets[s];
+            const std::size_t size = s == sound_offsets.size() - 1 ?
+                sound_data.size() - offset - 1 :
+                sound_offsets[s + 1] - offset;
+            callbacks.on_sound(static_cast<uint16_t>(s), convert_vag_to_wav({ &sound_data[offset], &sound_data[offset + size] }, sample_frequency));
+        }
+
+        log_file(activity, file, std::format("Read {} sounds", sound_offsets.size()));
     }
 
     tr_colour4 Level::colour_from_object_texture(uint32_t texture) const

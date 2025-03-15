@@ -1,5 +1,7 @@
 #pragma once
 
+#include <bit>
+
 namespace trlevel
 {
     template <typename T>
@@ -24,6 +26,12 @@ namespace trlevel
         T value;
         read<T>(file, value);
         return value;
+    }
+
+    template <typename T>
+    T read_be(std::basic_ispanstream<uint8_t>& file)
+    {
+        return std::byteswap(read<T>(file));
     }
 
     template < typename DataType, typename SizeType >

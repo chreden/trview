@@ -232,8 +232,7 @@ namespace trlevel
 
     void Level::load_tr3_psx(std::basic_ispanstream<uint8_t>& file, trview::Activity& activity, const LoadCallbacks& callbacks)
     {
-        auto sound_offsets = read_vector<uint32_t, uint32_t>(file);
-        auto sound_data = read_vector<uint32_t, byte>(file);
+        read_sounds_psx(activity, file, callbacks, 11025);
         const bool ects = is_tr3_ects(_platform_and_version);
 
         for (int i = 0; i < (ects ? 10 : 13); ++i)
