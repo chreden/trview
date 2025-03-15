@@ -52,6 +52,11 @@ namespace trlevel
         return result;
     }
 
+    bool is_tr1_aug_1996(PlatformAndVersion version)
+    {
+        return version.raw_version == 27;
+    }
+
     bool is_tr2_beta(uint32_t version)
     {
         return ((version & 0xff) == 0x20) && (version & 0xff0000 || trview::equals_any(version, 0xf820u, 0xd620u, 0x1220u, 0x1a20u));
