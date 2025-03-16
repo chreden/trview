@@ -147,11 +147,6 @@ namespace trlevel
             return;
         }
 
-        // std::ofstream out_file;
-        // out_file.open("c:/dev/trview-temp/aug/meshes.bin", std::ios::out | std::ios::binary);
-        // out_file.write(reinterpret_cast<const char*>(&mesh_data[0]), sizeof(uint16_t) * mesh_data.size());
-        // out_file.close();
-
         // As well as reading the actual mesh data, generate a map of mesh_pointer to 
         // mesh. It seems that a lot of the pointers point to the same mesh.
         std::span span{ reinterpret_cast<const uint8_t*>(&mesh_data[0]), mesh_data.size() * sizeof(uint16_t) };
