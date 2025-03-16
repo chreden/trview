@@ -172,7 +172,7 @@ namespace trview
             return result;
         }
         
-        while (true)
+        while (index < floordata.size())
         {
             // Parse the floordata here.
             const uint16_t floor = floordata[index];

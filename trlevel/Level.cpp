@@ -106,6 +106,25 @@ namespace trlevel
             }
         }
 
+        bool check_for_tr1_may_1996(std::basic_ispanstream<uint8_t>& file)
+        {
+            try
+            {
+                // TR1 PSX May 1996 has textiles first.
+                file.seekg(sizeof(tr_textile4) * 21 + sizeof(tr_clut) * 1024);
+                const uint32_t potential_version = read<uint32_t>(file);
+                const bool is_tr1_may_1996 = potential_version == 11;
+                file.seekg(0);
+                return is_tr1_may_1996;
+            }
+            catch (const std::exception&)
+            {
+                file.clear();
+                file.seekg(0, std::ios::beg);
+                return false;
+            }
+        }
+
         bool is_tr1_frame_format(PlatformAndVersion version)
         {
             return version.version == LevelVersion::Tomb1 || is_tr2_demo_70688(version);
@@ -127,6 +146,11 @@ namespace trlevel
         {
             return;
         }
+
+        // std::ofstream out_file;
+        // out_file.open("c:/dev/trview-temp/aug/meshes.bin", std::ios::out | std::ios::binary);
+        // out_file.write(reinterpret_cast<const char*>(&mesh_data[0]), sizeof(uint16_t) * mesh_data.size());
+        // out_file.close();
 
         // As well as reading the actual mesh data, generate a map of mesh_pointer to 
         // mesh. It seems that a lot of the pointers point to the same mesh.
@@ -150,7 +174,14 @@ namespace trlevel
             {
                 if (_platform_and_version.version == LevelVersion::Tomb1)
                 {
-                    generate_mesh_tr1_psx(mesh, stream);
+                    if (is_tr1_may_1996(_platform_and_version))
+                    {
+                        generate_mesh_tr1_psx_may_1996(mesh, stream);
+                    }
+                    else
+                    {
+                        generate_mesh_tr1_psx(mesh, stream);
+                    }
                 }
                 else if (_platform_and_version.version == LevelVersion::Tomb2)
                 {
@@ -587,6 +618,11 @@ namespace trlevel
             else if (check_for_tr1_aug_1996(file))
             {
                 _platform_and_version = { .platform = Platform::PSX, .version = LevelVersion::Tomb1, .raw_version = 27 };
+                log_file(activity, file, std::format("Version number is {:X} ({}), Platform is {}", _platform_and_version.raw_version, to_string(get_version()), to_string(platform())));
+            }
+            else if (check_for_tr1_may_1996(file))
+            {
+                _platform_and_version = { .platform = Platform::PSX, .version = LevelVersion::Tomb1, .raw_version = 11 };
                 log_file(activity, file, std::format("Version number is {:X} ({}), Platform is {}", _platform_and_version.raw_version, to_string(get_version()), to_string(platform())));
             }
             else

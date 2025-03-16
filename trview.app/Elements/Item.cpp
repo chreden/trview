@@ -137,6 +137,11 @@ namespace trview
             auto frame = level.get_frame(model.FrameOffset / 2, model.NumMeshes);
 
             uint32_t frame_offset = 0;
+            if (frame.values.empty())
+            {
+                _world_transforms.push_back(Matrix::Identity);
+                return;
+            }
 
             auto initial_frame = frame.values[frame_offset++];
 
@@ -175,8 +180,12 @@ namespace trview
 
                 // Get the rotation from the frames.
                 // Rotations are performed in Y, X, Z order.
-                auto rotation = frame.values[frame_offset++];
-                Matrix rotation_matrix = get_rotate(rotation);
+                Matrix rotation_matrix = Matrix::Identity;
+                if (frame_offset < frame.values.size())
+                {
+                    auto rotation = frame.values[frame_offset++];
+                    rotation_matrix = get_rotate(rotation);
+                }
                 Matrix translation_matrix = Matrix::CreateTranslation(node.position());
                 Matrix node_transform = rotation_matrix * translation_matrix * parent_world;
 

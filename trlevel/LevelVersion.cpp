@@ -52,6 +52,11 @@ namespace trlevel
         return result;
     }
 
+    bool is_tr1_may_1996(PlatformAndVersion version)
+    {
+        return version.raw_version == 11;
+    }
+
     bool is_tr1_aug_1996(PlatformAndVersion version)
     {
         return version.raw_version == 27;

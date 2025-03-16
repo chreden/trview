@@ -196,6 +196,7 @@ namespace trlevel
         void load_tr1_pc(std::basic_ispanstream<uint8_t>& file, trview::Activity& activity, const LoadCallbacks& callbacks);
         void load_tr1_psx(std::basic_ispanstream<uint8_t>& file, trview::Activity& activity, const LoadCallbacks& callbacks);
         void load_tr1_psx_aug_1996(std::basic_ispanstream<uint8_t>& file, trview::Activity& activity, const LoadCallbacks& callbacks);
+        void load_tr1_psx_may_1996(std::basic_ispanstream<uint8_t>& file, trview::Activity& activity, const LoadCallbacks& callbacks);
         void load_tr2_pc(std::basic_ispanstream<uint8_t>& file, trview::Activity& activity, const LoadCallbacks& callbacks);
         void load_tr2_psx(std::basic_ispanstream<uint8_t>& file, trview::Activity& activity, const LoadCallbacks& callbacks);
         void load_tr2_psx_beta(std::basic_ispanstream<uint8_t>& file, trview::Activity& activity, const LoadCallbacks& callbacks);
@@ -214,6 +215,7 @@ namespace trlevel
 
         void generate_mesh(tr_mesh& mesh, std::basic_ispanstream<uint8_t>& stream);
         void generate_mesh_tr1_psx(tr_mesh& mesh, std::basic_ispanstream<uint8_t>& stream);
+        void generate_mesh_tr1_psx_may_1996(tr_mesh& mesh, std::basic_ispanstream<uint8_t>& stream);
         void generate_mesh_tr2_psx(tr_mesh& mesh, std::basic_ispanstream<uint8_t>& stream);
         void generate_mesh_tr2_psx_beta(tr_mesh& mesh, std::basic_ispanstream<uint8_t>& stream);
         void generate_mesh_tr3_psx(tr_mesh& mesh, std::basic_ispanstream<uint8_t>& stream);
