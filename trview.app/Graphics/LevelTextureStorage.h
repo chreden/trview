@@ -44,8 +44,7 @@ namespace trview
         std::unique_ptr<ITextureStorage> _texture_storage;
         mutable graphics::Texture _untextured_texture;
         std::array<DirectX::SimpleMath::Color, 256> _palette;
-        trlevel::LevelVersion _version{ trlevel::LevelVersion::Unknown };
-        trlevel::Platform _platform{ trlevel::Platform::Unknown };
+        trlevel::PlatformAndVersion _platform_and_version;
 
         enum class TextureMode
         {

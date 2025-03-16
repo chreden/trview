@@ -210,6 +210,9 @@ namespace trlevel
         void adjust_room_textures_psx();
 
         void load_tr1_pc(std::basic_ispanstream<uint8_t>& file, trview::Activity& activity, const LoadCallbacks& callbacks);
+        void load_tr1_pc_may_1996(std::basic_ispanstream<uint8_t>& file, trview::Activity& activity, const LoadCallbacks& callbacks);
+        void load_tr1_pc_may_1996_wad(std::vector<uint8_t>& textile_buffer, trview::Activity& activity, const LoadCallbacks& callbacks);
+        void load_tr1_pc_may_1996_swd(std::vector<uint8_t>& textile_buffer, trview::Activity& activity, const LoadCallbacks& callbacks);
         void load_tr1_psx(std::basic_ispanstream<uint8_t>& file, trview::Activity& activity, const LoadCallbacks& callbacks);
         void load_tr1_psx_aug_1996(std::basic_ispanstream<uint8_t>& file, trview::Activity& activity, const LoadCallbacks& callbacks);
         void load_tr1_psx_may_1996(std::basic_ispanstream<uint8_t>& file, trview::Activity& activity, const LoadCallbacks& callbacks);
@@ -235,6 +238,7 @@ namespace trlevel
         void load_ngle_sound_fx(trview::Activity& activity, std::basic_ispanstream<uint8_t>& file, const LoadCallbacks& callbacks);
 
         void generate_mesh(tr_mesh& mesh, std::basic_ispanstream<uint8_t>& stream);
+        void generate_mesh_tr1_pc_may_1996(tr_mesh& mesh, std::basic_ispanstream<uint8_t>& stream);
         void generate_mesh_tr1_psx(tr_mesh& mesh, std::basic_ispanstream<uint8_t>& stream);
         void generate_mesh_tr1_psx_may_1996(tr_mesh& mesh, std::basic_ispanstream<uint8_t>& stream);
         void generate_mesh_tr2_psx(tr_mesh& mesh, std::basic_ispanstream<uint8_t>& stream);
@@ -250,7 +254,7 @@ namespace trlevel
         std::vector<tr_colour>  _palette;
         std::vector<tr_colour4> _palette16;
 
-        uint32_t                  _num_textiles;
+        uint32_t                  _num_textiles{ 0u };
         std::vector<tr_textile4>  _textile4;
         std::vector<tr_textile8>  _textile8;
         std::vector<tr_textile16> _textile16;

@@ -263,6 +263,7 @@
             { "id": 0, "name": "Lara", "categories": [ "Entity" ]},
             { "id": 2, "name": "Wolf", "categories": [ "Entity" ]},
             { "id": 3, "name": "Bear", "categories": [ "Entity" ]},
+            { "id": 4, "name": "Bat", "categories": [ "Entity" ]},
             { "id": 9, "name": "Breakable Tile", "categories": [ "Trap" ]},
             { "id": 10, "name": "Swinging Blade", "categories": [ "Trap" ]},
             { "id": 14, "name": "Wall Switch", "categories": [ "Switch" ]},
