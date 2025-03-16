@@ -3,6 +3,37 @@
 
 namespace trview
 {
+    namespace
+    {
+        Floordata::Command::Function extract_function(uint16_t floor, std::optional<trlevel::PlatformAndVersion> version)
+        {
+            Floordata::Command::Function function = static_cast<Floordata::Command::Function>(floor & 0x1f);
+            if (!version.has_value() || !is_tr1_may_1996(version.value()))
+            {
+                return function;
+            }
+
+            using namespace trlevel;
+            using Function = Floordata::Command::Function;
+            switch (function)
+            {
+            case Function::Death:
+                return Function::CeilingSlant;
+                break;
+            case Function::Trigger:
+                return Function::FloorSlant;
+                break;
+            case Function::CeilingSlant:
+                return Function::Trigger;
+                break;
+            case Function::FloorSlant:
+                return Function::Portal;
+                break;
+            }
+            return function;
+        }
+    }
+
     Floordata::Command::Command(Function type, const std::vector<uint16_t>& data, FloordataMeanings meanings, const std::vector<std::weak_ptr<IItem>>& items, bool trng)
         : type(type), data(data)
     {
@@ -156,13 +187,13 @@ namespace trview
         return sum;
     }
 
-    Floordata parse_floordata(const std::vector<uint16_t>& floordata, uint32_t index, FloordataMeanings meanings, bool trng)
+    Floordata parse_floordata(const std::vector<uint16_t>& floordata, uint32_t index, FloordataMeanings meanings, bool trng, std::optional<trlevel::PlatformAndVersion> version)
     {
-        return parse_floordata(floordata, index, meanings, {}, trng);
+        return parse_floordata(floordata, index, meanings, {}, trng, version);
     }
 
 
-    Floordata parse_floordata(const std::vector<uint16_t>& floordata, uint32_t index, FloordataMeanings meanings, const std::vector<std::weak_ptr<IItem>>& items, bool trng)
+    Floordata parse_floordata(const std::vector<uint16_t>& floordata, uint32_t index, FloordataMeanings meanings, const std::vector<std::weak_ptr<IItem>>& items, bool trng, std::optional<trlevel::PlatformAndVersion> version)
     {
         Floordata result;
 
@@ -172,11 +203,11 @@ namespace trview
             return result;
         }
         
-        while (index < floordata.size())
+        while (true)
         {
             // Parse the floordata here.
             const uint16_t floor = floordata[index];
-            Floordata::Command::Function function = static_cast<Floordata::Command::Function>(floor & 0x1f);
+            Floordata::Command::Function function = extract_function(floor, version);
             uint16_t subfunction = (floor & 0x7F00) >> 8;
 
             using Function = Floordata::Command::Function;

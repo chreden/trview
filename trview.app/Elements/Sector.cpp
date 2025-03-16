@@ -62,7 +62,7 @@ namespace trview
 
         if (_sector.floordata_index != 0)
         {
-            auto floordata = parse_floordata(level.get_floor_data_all(), _sector.floordata_index, FloordataMeanings::None, level.trng());
+            auto floordata = parse_floordata(level.get_floor_data_all(), _sector.floordata_index, FloordataMeanings::None, level.trng(), level.platform_and_version());
 
             for (const auto& command : floordata.commands)
             {

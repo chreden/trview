@@ -101,6 +101,10 @@ namespace trlevel
                 }
             }
 
+            auto [min, max] = std::ranges::minmax(room.data.vertices | std::views::transform([](auto&& v) { return v.vertex.y; }));
+            room.info.yTop = min;
+            room.info.yBottom = max;
+
             read_room_portals(activity, file, room);
             read_room_sectors(activity, file, room);
             read_room_ambient_intensity_1(activity, file, room);
@@ -399,7 +403,6 @@ namespace trlevel
         _num_textiles = 20;
         _textile4 = read_vector<tr_textile4>(file, _num_textiles);
         _clut = read_vector<tr_clut>(file, 1024);
-        // skip(file, 772);
 
         file.seekg(721668, std::ios::beg);
 
