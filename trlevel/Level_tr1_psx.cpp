@@ -60,6 +60,14 @@ namespace trlevel
             read_room_alternate_room(activity, file, room);
             read_room_flags(activity, file, room);
         }
+
+        void read_zones_tr1_aug_1996(trview::Activity& activity, std::basic_ispanstream<uint8_t>& file, const ILevel::LoadCallbacks& callbacks, uint32_t num_boxes)
+        {
+            callbacks.on_progress("Reading zones");
+            log_file(activity, file, "Reading zones");
+            std::vector<int16_t> zones = read_vector<int16_t>(file, num_boxes * 4);
+            log_file(activity, file, std::format("Read {} zones", zones.size()));
+        }
     }
 
     void Level::generate_mesh_tr1_psx(tr_mesh& mesh, std::basic_ispanstream<uint8_t>& stream)
@@ -124,6 +132,11 @@ namespace trlevel
 
     void Level::load_tr1_psx(std::basic_ispanstream<uint8_t>& file, trview::Activity& activity, const LoadCallbacks& callbacks)
     {
+        if (_platform_and_version.raw_version == 27)
+        {
+            return load_tr1_psx_aug_1996(file, activity, callbacks);
+        }
+
         skip(file, 12);
         uint32_t textile_address = read<uint32_t>(file);
         skip(file, 2);
@@ -151,36 +164,7 @@ namespace trlevel
         _frames = read_frames(activity, file, callbacks);
         _models = read_models_psx(activity, file, callbacks);
         _static_meshes = read_static_meshes(activity, file, callbacks);
-
-        callbacks.on_progress("Reading object textures");
-        log_file(activity, file, "Reading object textures");
-        _object_textures_psx = read_vector<uint32_t, tr_object_texture_psx>(file);
-        _object_textures = _object_textures_psx
-            | std::views::transform([&](const auto texture)
-                {
-                    tr_object_texture_psx new_texture = texture;
-                    new_texture.Tile = convert_textile4(texture.Tile, texture.Clut);
-                    new_texture.Clut = 0U; // Unneeded after conversion
-                    return new_texture;
-                })
-            | std::views::transform([&](const auto texture) -> tr_object_texture
-                {
-                    return
-                    {
-                        .Attribute = texture.Attribute,
-                        .TileAndFlag = texture.Tile,
-                        .Vertices =
-                        {
-                            { 0, texture.x0, 0, texture.y0 },
-                            { 0, texture.x1, 0, texture.y1 },
-                            { 0, texture.x2, 0, texture.y2 },
-                            { 0, texture.x3, 0, texture.y3 }
-                        }
-                    };
-                })
-            | std::ranges::to<std::vector>();
-        log_file(activity, file, std::format("Read {} object textures", _object_textures.size()));
-
+        read_object_textures_tr1_psx(file, activity, callbacks);
         read_sprite_textures_psx(file, activity, callbacks);
 
         for (const auto& t : _textile16)
@@ -213,5 +197,88 @@ namespace trlevel
         _textile4 = read_vector<tr_textile4>(file, 13);
         _clut = read_vector<tr_clut>(file, 1024);
         log_file(activity, file, std::format("Read {} textile4s and {} clut", _textile4.size(), _clut.size()));
+    }
+
+    void Level::read_textiles_tr1_psx_aug_1996(std::basic_ispanstream<uint8_t>& file, trview::Activity& activity, const LoadCallbacks& callbacks)
+    {
+        callbacks.on_progress("Reading textiles");
+        log_file(activity, file, "Reading textiles");
+
+        _num_textiles = 15;
+        _textile4 = read_vector<tr_textile4>(file, _num_textiles);
+        _clut = read_vector<tr_clut>(file, 1024);
+        log_file(activity, file, std::format("Read {} textile4s and {} clut", _textile4.size(), _clut.size()));
+    }
+
+    void Level::read_object_textures_tr1_psx(std::basic_ispanstream<uint8_t>& file, trview::Activity& activity, const LoadCallbacks& callbacks)
+    {
+        callbacks.on_progress("Reading object textures");
+        log_file(activity, file, "Reading object textures");
+        _object_textures_psx = read_vector<uint32_t, tr_object_texture_psx>(file);
+        _object_textures = _object_textures_psx
+            | std::views::transform([&](const auto texture)
+                {
+                    tr_object_texture_psx new_texture = texture;
+                    new_texture.Tile = convert_textile4(texture.Tile, texture.Clut);
+                    new_texture.Clut = 0U; // Unneeded after conversion
+                    return new_texture;
+                })
+            | std::views::transform([&](const auto texture) -> tr_object_texture
+                {
+                    return
+                    {
+                        .Attribute = texture.Attribute,
+                        .TileAndFlag = texture.Tile,
+                        .Vertices =
+                        {
+                            { 0, texture.x0, 0, texture.y0 },
+                            { 0, texture.x1, 0, texture.y1 },
+                            { 0, texture.x2, 0, texture.y2 },
+                            { 0, texture.x3, 0, texture.y3 }
+                        }
+                    };
+                })
+            | std::ranges::to<std::vector>();
+        log_file(activity, file, std::format("Read {} object textures", _object_textures.size()));
+    }
+
+    void Level::load_tr1_psx_aug_1996(std::basic_ispanstream<uint8_t>& file, trview::Activity& activity, const LoadCallbacks& callbacks)
+    {
+        read_textiles_tr1_psx_aug_1996(file, activity, callbacks);
+        skip(file, 4);
+        _rooms = read_rooms<uint16_t>(activity, file, callbacks, load_tr1_psx_room);
+        _floor_data = read_floor_data(activity, file, callbacks);
+        _mesh_data = read_mesh_data(activity, file, callbacks);
+        _mesh_pointers = read_mesh_pointers(activity, file, callbacks);
+        read_animations_tr1_3(activity, file, callbacks);
+        read_state_changes(activity, file, callbacks);
+        read_anim_dispatches(activity, file, callbacks);
+        read_anim_commands(activity, file, callbacks);
+        _meshtree = read_meshtree(activity, file, callbacks);
+        _frames = read_frames(activity, file, callbacks);
+        _models = read_models_psx(activity, file, callbacks);
+        _static_meshes = read_static_meshes(activity, file, callbacks);
+        read_object_textures_tr1_psx(file, activity, callbacks);
+        read_sprite_textures_psx(file, activity, callbacks);
+
+        for (const auto& t : _textile16)
+        {
+            callbacks.on_textile(convert_textile(t));
+        }
+
+        _sprite_sequences = read_sprite_sequences(activity, file, callbacks);
+        _cameras = read_cameras(activity, file, callbacks);
+        _sound_sources = read_sound_sources(activity, file, callbacks);
+        const auto boxes = read_boxes_tr1(activity, file, callbacks);
+        read_overlaps(activity, file, callbacks);
+        read_zones_tr1_aug_1996(activity, file, callbacks, static_cast<uint32_t>(boxes.size()));
+        read_animated_textures(activity, file, callbacks);
+        _entities = read_entities_tr1(activity, file, callbacks);
+        _sound_map = read_sound_map(activity, file, callbacks);
+        _sound_details = read_sound_details(activity, file, callbacks);
+        generate_sounds_tr1(callbacks);
+        callbacks.on_progress("Generating meshes");
+        generate_meshes(_mesh_data);
+        callbacks.on_progress("Loading complete");
     }
 }
