@@ -1073,16 +1073,13 @@ namespace trview
         if (has_flag(portal.direct->flags(), SectorFlag::Portal) && portal.direct->portal() != 0xff)
         {
             const auto other_room = level->room(portal.direct->portal()).lock();
-            if (other_room)
+            const auto diff = (position() - other_room->position()) + Vector3(static_cast<float>(x2), 0, static_cast<float>(z2));
+            const int other_id = static_cast<int>(diff.x * other_room->num_z_sectors() + diff.z);
+            const auto sectors = other_room->sectors();
+            if (other_id >= 0 && other_id < std::ssize(sectors))
             {
-                const auto diff = (position() - other_room->position()) + Vector3(static_cast<float>(x2), 0, static_cast<float>(z2));
-                const int other_id = static_cast<int>(diff.x * other_room->num_z_sectors() + diff.z);
-                const auto sectors = other_room->sectors();
-                if (other_id >= 0 && other_id < std::ssize(sectors))
-                {
-                    portal.target = sectors[other_id];
-                    portal.offset = Vector3(static_cast<float>(x2), 0, static_cast<float>(z2)) - diff;
-                }
+                portal.target = sectors[other_id];
+                portal.offset = Vector3(static_cast<float>(x2), 0, static_cast<float>(z2)) - diff;
             }
         }
 
