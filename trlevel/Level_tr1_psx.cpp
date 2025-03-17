@@ -423,7 +423,6 @@ namespace trlevel
 
         auto static_meshes = read_vector<uint32_t, tr_staticmesh_may_1996>(file);
         log_file(activity, file, std::format("Read {} static meshes", static_meshes.size()));
-        std::unordered_map<uint32_t, tr_staticmesh> mesh_map;
         for (const auto& mesh : static_meshes)
         {
             const tr_staticmesh new_mesh
@@ -434,7 +433,7 @@ namespace trlevel
                 .CollisionBox = mesh.VisibilityBox,
                 .Flags = 0,
             };
-            mesh_map.insert({ mesh.ID, new_mesh });
+            _static_meshes.insert({ mesh.ID, new_mesh });
         }
 
         read_object_textures_tr1_psx(file, activity, callbacks);
