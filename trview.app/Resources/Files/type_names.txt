@@ -270,7 +270,7 @@
             { "id": 17, "name": "Door 2", "categories": [ "Door" ]},
             { "id": 18, "name": "Door 3", "categories": [ "Door" ]},
             { "id": 19, "name": "Trapdoor 1", "categories": [ "Door", "Trapdoor" ]},
-            { "id": 26, "name": "Grenade", "categories": [ "Pickup" ] },
+            { "id": 26, "name": "Dynamite", "categories": [ "Pickup" ] },
             { "id": 27, "name": "Small medipack", "categories": [ "Pickup" ]},
             { "id": 28, "name": "Large medipack", "categories": [ "Pickup" ]}
             ],
