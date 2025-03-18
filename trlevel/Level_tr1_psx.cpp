@@ -437,6 +437,7 @@ namespace trlevel
         }
 
         read_object_textures_tr1_psx(file, activity, callbacks);
+        std::ranges::for_each(_object_textures, [](auto& t) { t.Attribute = 1; });
         read_sprite_textures_psx(file, activity, callbacks);
 
         for (const auto& t : _textile16)
