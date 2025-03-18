@@ -248,7 +248,7 @@ namespace trlevel
             return load_tr1_psx_aug_1996(file, activity, callbacks);
         }
 
-        if (_platform_and_version.raw_version == 11)
+        if (is_tr1_may_1996(_platform_and_version))
         {
             return load_tr1_psx_may_1996(file, activity, callbacks);
         }
