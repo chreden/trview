@@ -779,4 +779,13 @@ namespace trlevel
     {
         return _platform_and_version;
     }
+
+    uint16_t Level::attribute_for_clut(uint16_t clut_id) const
+    {
+        if (clut_id >= _clut.size())
+        {
+            return 0;
+        }
+        return std::ranges::any_of(_clut[clut_id].Colour, [](auto&& c) { return c.Red == 0 && c.Green == 0 && c.Blue == 0; }) ? 1 : 0;
+    }
 }

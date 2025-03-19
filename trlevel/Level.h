@@ -174,6 +174,7 @@ namespace trlevel
         void generate_meshes(const std::vector<uint16_t>& mesh_data);
         tr_colour4 colour_from_object_texture(uint32_t texture) const;
         uint16_t convert_textile4(uint16_t tile, uint16_t clut_id);
+        uint16_t attribute_for_clut(uint16_t clut_id) const;
 
         // New level bits:
         void read_header(std::basic_ispanstream<uint8_t>& file, std::vector<uint8_t>& bytes, trview::Activity& activity, const LoadCallbacks& callbacks);
