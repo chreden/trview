@@ -174,6 +174,7 @@ namespace trlevel
         void generate_meshes(const std::vector<uint16_t>& mesh_data);
         tr_colour4 colour_from_object_texture(uint32_t texture) const;
         uint16_t convert_textile4(uint16_t tile, uint16_t clut_id);
+        uint16_t attribute_for_clut(uint16_t clut_id) const;
 
         // New level bits:
         void read_header(std::basic_ispanstream<uint8_t>& file, std::vector<uint8_t>& bytes, trview::Activity& activity, const LoadCallbacks& callbacks);
@@ -196,6 +197,7 @@ namespace trlevel
         void load_tr1_pc(std::basic_ispanstream<uint8_t>& file, trview::Activity& activity, const LoadCallbacks& callbacks);
         void load_tr1_psx(std::basic_ispanstream<uint8_t>& file, trview::Activity& activity, const LoadCallbacks& callbacks);
         void load_tr1_psx_aug_1996(std::basic_ispanstream<uint8_t>& file, trview::Activity& activity, const LoadCallbacks& callbacks);
+        void load_tr1_psx_may_1996(std::basic_ispanstream<uint8_t>& file, trview::Activity& activity, const LoadCallbacks& callbacks);
         void load_tr2_pc(std::basic_ispanstream<uint8_t>& file, trview::Activity& activity, const LoadCallbacks& callbacks);
         void load_tr2_psx(std::basic_ispanstream<uint8_t>& file, trview::Activity& activity, const LoadCallbacks& callbacks);
         void load_tr2_psx_beta(std::basic_ispanstream<uint8_t>& file, trview::Activity& activity, const LoadCallbacks& callbacks);
@@ -214,6 +216,7 @@ namespace trlevel
 
         void generate_mesh(tr_mesh& mesh, std::basic_ispanstream<uint8_t>& stream);
         void generate_mesh_tr1_psx(tr_mesh& mesh, std::basic_ispanstream<uint8_t>& stream);
+        void generate_mesh_tr1_psx_may_1996(tr_mesh& mesh, std::basic_ispanstream<uint8_t>& stream);
         void generate_mesh_tr2_psx(tr_mesh& mesh, std::basic_ispanstream<uint8_t>& stream);
         void generate_mesh_tr2_psx_beta(tr_mesh& mesh, std::basic_ispanstream<uint8_t>& stream);
         void generate_mesh_tr3_psx(tr_mesh& mesh, std::basic_ispanstream<uint8_t>& stream);

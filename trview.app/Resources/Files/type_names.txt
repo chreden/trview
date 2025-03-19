@@ -259,6 +259,21 @@
             { "id": 135, "name": "Scion Piece", "categories": [ "Pickup" ]},
             { "id": 154, "name": "Camera Target", "categories": [ "Effect" ]}
             ],
+        "tr1_may_1996": [
+            { "id": 0, "name": "Lara", "categories": [ "Entity" ]},
+            { "id": 2, "name": "Wolf", "categories": [ "Entity" ]},
+            { "id": 3, "name": "Bear", "categories": [ "Entity" ]},
+            { "id": 9, "name": "Breakable Tile", "categories": [ "Trap" ]},
+            { "id": 10, "name": "Swinging Blade", "categories": [ "Trap" ]},
+            { "id": 14, "name": "Wall Switch", "categories": [ "Switch" ]},
+            { "id": 16, "name": "Door 1", "categories": [ "Door" ]},
+            { "id": 17, "name": "Door 2", "categories": [ "Door" ]},
+            { "id": 18, "name": "Door 3", "categories": [ "Door" ]},
+            { "id": 19, "name": "Trapdoor 1", "categories": [ "Door", "Trapdoor" ]},
+            { "id": 26, "name": "Dynamite", "categories": [ "Pickup" ] },
+            { "id": 27, "name": "Small medipack", "categories": [ "Pickup" ]},
+            { "id": 28, "name": "Large medipack", "categories": [ "Pickup" ]}
+            ],
         "tr2": [
             { "id": 0, "name": "Lara", "categories": [ "Entity" ]},
             { "id": 1, "name": "LaraPistolsAnim" },

@@ -10,6 +10,26 @@ namespace trlevel
 {
     namespace
     {
+#pragma pack(push, 1)
+        struct tr_staticmesh_may_1996   // 18 bytes
+        {
+            uint32_t ID;   // Static Mesh Identifier
+            uint16_t Mesh; // Mesh (offset into MeshPointers[])
+            tr_bounding_box VisibilityBox;
+        };
+
+        struct tr_entity_may_1996
+        {
+            int16_t TypeID;
+            int16_t Room;
+            int32_t x;
+            int32_t y;
+            int32_t z;
+            int16_t Angle;
+            uint16_t Flags;
+        };
+#pragma pack(pop)
+
         std::vector<tr_model> read_models_tr1_psx(trview::Activity& activity, std::basic_ispanstream<uint8_t>& file, const ILevel::LoadCallbacks& callbacks)
         {
             callbacks.on_progress("Reading models");
@@ -61,6 +81,38 @@ namespace trlevel
             read_room_flags(activity, file, room);
         }
 
+        void load_tr1_psx_may_1996_room(trview::Activity& activity, std::basic_ispanstream<uint8_t>& file, tr3_room& room)
+        {
+            room.info.x = read<int32_t>(file);
+            room.info.z = read<int32_t>(file);
+
+            uint32_t NumDataWords = read_num_data_words(activity, file);
+            skip(file, 2);
+            if (NumDataWords > 0)
+            {
+                read_room_vertices_tr1(activity, file, room);
+                read_room_rectangles(activity, file, room);
+                read_room_triangles(activity, file, room);
+                read_room_sprites(activity, file, room);
+
+                for (auto& rectangle : room.data.rectangles)
+                {
+                    std::swap(rectangle.vertices[2], rectangle.vertices[3]);
+                }
+            }
+
+            auto [min, max] = std::ranges::minmax(room.data.vertices | std::views::transform([](auto&& v) { return v.vertex.y; }));
+            room.info.yTop = min;
+            room.info.yBottom = max;
+
+            read_room_portals(activity, file, room);
+            read_room_sectors(activity, file, room);
+            read_room_ambient_intensity_1(activity, file, room);
+            read_room_lights_tr1_psx(activity, file, room);
+            read_room_static_meshes_tr1_psx(activity, file, room);
+            read_room_flags(activity, file, room);
+        }
+
         void read_zones_tr1_aug_1996(trview::Activity& activity, std::basic_ispanstream<uint8_t>& file, const ILevel::LoadCallbacks& callbacks, uint32_t num_boxes)
         {
             callbacks.on_progress("Reading zones");
@@ -68,6 +120,65 @@ namespace trlevel
             std::vector<int16_t> zones = read_vector<int16_t>(file, num_boxes * 4);
             log_file(activity, file, std::format("Read {} zones", zones.size()));
         }
+    }
+
+    void Level::generate_mesh_tr1_psx_may_1996(tr_mesh& mesh, std::basic_ispanstream<uint8_t>& stream)
+    {
+        mesh.centre = { .x = 0, .y = 0, .z = 0 };
+        mesh.coll_radius = read<uint16_t>(stream);
+        int16_t vertices_count = read<int16_t>(stream);
+        int16_t normals_count = vertices_count;
+        vertices_count = static_cast<int16_t>(std::abs(vertices_count));
+        
+        mesh.vertices = convert_vertices(read_vector<tr_vertex_psx>(stream, vertices_count));
+        
+        for (int i = 0; i < vertices_count; ++i)
+        {
+            if (normals_count > 0)
+            {
+                tr_vertex_psx norm = read<tr_vertex_psx>(stream);
+                norm.w = 1;
+                mesh.normals.push_back({ norm.x, norm.y, norm.z });
+            }
+            else
+            {
+                mesh.lights.push_back(read<int16_t>(stream)); // intensity
+                mesh.normals.push_back({ 0, 0, 0 });
+            }
+        }
+        const auto rectangles = read_vector<int16_t, tr_face4>(stream);
+        const auto triangles = read_vector<int16_t, tr_face3>(stream);
+
+        mesh.textured_rectangles = rectangles
+            | std::views::filter([](const auto& rect) { return rect.texture > 255; })
+            | std::views::transform([](const auto& rect)
+                {
+                    tr4_mesh_face4 new_face4;
+                    memcpy(new_face4.vertices, rect.vertices, sizeof(rect.vertices));
+                    new_face4.texture = rect.texture;
+                    new_face4.effects = 0;
+                    return new_face4;
+                })
+            | std::ranges::to<std::vector>();
+        mesh.textured_triangles = triangles
+            | std::views::filter([](const auto& tri) { return tri.texture > 255; })
+            | std::views::transform([](const auto& tri)
+                {
+                    tr4_mesh_face3 new_face3;
+                    memcpy(new_face3.vertices, tri.vertices, sizeof(tri.vertices));
+                    new_face3.texture = tri.texture;
+                    new_face3.effects = 0;
+                    return new_face3;
+                })
+            | std::ranges::to<std::vector>();
+
+        mesh.coloured_rectangles = rectangles
+            | std::views::filter([](const auto& rect) { return rect.texture < 256; })
+            | std::ranges::to<std::vector>();
+
+        mesh.coloured_triangles = triangles
+            | std::views::filter([](const auto& tri) { return tri.texture < 256; })
+            | std::ranges::to<std::vector>();
     }
 
     void Level::generate_mesh_tr1_psx(tr_mesh& mesh, std::basic_ispanstream<uint8_t>& stream)
@@ -132,9 +243,14 @@ namespace trlevel
 
     void Level::load_tr1_psx(std::basic_ispanstream<uint8_t>& file, trview::Activity& activity, const LoadCallbacks& callbacks)
     {
-        if (_platform_and_version.raw_version == 27)
+        if (is_tr1_aug_1996(_platform_and_version))
         {
             return load_tr1_psx_aug_1996(file, activity, callbacks);
+        }
+
+        if (is_tr1_may_1996(_platform_and_version))
+        {
+            return load_tr1_psx_may_1996(file, activity, callbacks);
         }
 
         skip(file, 12);
@@ -220,6 +336,7 @@ namespace trlevel
                 {
                     tr_object_texture_psx new_texture = texture;
                     new_texture.Tile = convert_textile4(texture.Tile, texture.Clut);
+                    new_texture.Attribute = attribute_for_clut(texture.Clut);
                     new_texture.Clut = 0U; // Unneeded after conversion
                     return new_texture;
                 })
@@ -277,6 +394,79 @@ namespace trlevel
         _sound_map = read_sound_map(activity, file, callbacks);
         _sound_details = read_sound_details(activity, file, callbacks);
         generate_sounds_tr1(callbacks);
+        callbacks.on_progress("Generating meshes");
+        generate_meshes(_mesh_data);
+        callbacks.on_progress("Loading complete");
+    }
+
+    void Level::load_tr1_psx_may_1996(std::basic_ispanstream<uint8_t>& file, trview::Activity& activity, const LoadCallbacks& callbacks)
+    {
+        _num_textiles = 20;
+        _textile4 = read_vector<tr_textile4>(file, _num_textiles);
+        _clut = read_vector<tr_clut>(file, 1024);
+
+        file.seekg(721668, std::ios::beg);
+
+        _rooms = read_rooms<uint16_t>(activity, file, callbacks, load_tr1_psx_may_1996_room);
+        _floor_data = read_floor_data(activity, file, callbacks);
+        _mesh_data = read_mesh_data(activity, file, callbacks);
+        _mesh_pointers = read_mesh_pointers(activity, file, callbacks);
+
+        uint32_t num_animations = read<uint32_t>(file);
+        skip(file, num_animations * 28);
+
+        read_state_changes(activity, file, callbacks);
+        read_anim_dispatches(activity, file, callbacks);
+        read_anim_commands(activity, file, callbacks);
+        _meshtree = read_meshtree(activity, file, callbacks);
+        _frames = read_frames(activity, file, callbacks);
+        _models = read_models_psx(activity, file, callbacks);
+
+        auto static_meshes = read_vector<uint32_t, tr_staticmesh_may_1996>(file);
+        log_file(activity, file, std::format("Read {} static meshes", static_meshes.size()));
+        for (const auto& mesh : static_meshes)
+        {
+            const tr_staticmesh new_mesh
+            {
+                .ID = mesh.ID,
+                .Mesh = mesh.Mesh,
+                .VisibilityBox = mesh.VisibilityBox,
+                .CollisionBox = mesh.VisibilityBox,
+                .Flags = 0,
+            };
+            _static_meshes.insert({ mesh.ID, new_mesh });
+        }
+
+        read_object_textures_tr1_psx(file, activity, callbacks);
+        read_sprite_textures_psx(file, activity, callbacks);
+
+        for (const auto& t : _textile16)
+        {
+            callbacks.on_textile(convert_textile(t));
+        }
+
+        _sprite_sequences = read_sprite_sequences(activity, file, callbacks);
+        _cameras = read_cameras(activity, file, callbacks);
+        read_boxes_tr1(activity, file, callbacks);
+        read_overlaps(activity, file, callbacks);
+        read_animated_textures(activity, file, callbacks);
+
+        _entities = read_vector<uint32_t, tr_entity_may_1996>(file) |
+            std::views::transform([](auto&& e) -> tr2_entity {
+                return
+                {
+                    .TypeID = e.TypeID,
+                    .Room = e.Room,
+                    .x = e.x,
+                    .y = e.y,
+                    .z = e.z,
+                    .Angle = e.Angle,
+                    .Intensity1 = 0,
+                    .Intensity2 = 0,
+                    .Flags = e.Flags
+                };
+            }) | std::ranges::to<std::vector>();;
+
         callbacks.on_progress("Generating meshes");
         generate_meshes(_mesh_data);
         callbacks.on_progress("Loading complete");
