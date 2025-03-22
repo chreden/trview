@@ -398,6 +398,7 @@ namespace trlevel
         }
         catch(std::exception&)
         {
+            activity.log("Failed to read external sound data");
         }
     }
 
