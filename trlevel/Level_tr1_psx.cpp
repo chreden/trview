@@ -243,6 +243,22 @@ namespace trlevel
 
     void Level::load_tr1_psx(std::basic_ispanstream<uint8_t>& file, trview::Activity& activity, const LoadCallbacks& callbacks)
     {
+        file.seekg(4, std::ios::beg);
+        const bool has_sound = peek<uint32_t>(file) == 0x56414270; //pBAV
+        if (has_sound)
+        {
+            skip(file, 12);
+            uint32_t textile_address = read<uint32_t>(file);
+            skip(file, 2);
+            read_sounds_tr1_psx(activity, file, callbacks, 11025);
+            file.seekg(textile_address + 8, std::ios::beg);
+        }
+        else
+        {
+            read_sounds_external_tr1_psx(activity, callbacks);
+            file.seekg(0, std::ios::beg);
+        }
+
         if (is_tr1_aug_1996(_platform_and_version))
         {
             return load_tr1_psx_aug_1996(file, activity, callbacks);
@@ -253,13 +269,7 @@ namespace trlevel
             return load_tr1_psx_may_1996(file, activity, callbacks);
         }
 
-        skip(file, 12);
-        uint32_t textile_address = read<uint32_t>(file);
-        skip(file, 2);
-        read_sounds_tr1_psx(activity, file, callbacks, 11025);
-        file.seekg(textile_address + 8, std::ios::beg);
         read_textiles_tr1_psx(file, activity, callbacks);
-
         read<uint32_t>(file);
 
         if (file.eof())
@@ -357,6 +367,39 @@ namespace trlevel
                 })
             | std::ranges::to<std::vector>();
         log_file(activity, file, std::format("Read {} object textures", _object_textures.size()));
+    }
+
+    void Level::read_sounds_external_tr1_psx(trview::Activity& activity, const LoadCallbacks& callbacks)
+    {
+        try
+        {
+            const std::string folder = trview::path_for_filename(_filename);
+            const std::string level_filename = trview::filename_without_path(_filename);
+            auto dot_pos = level_filename.find_last_of('.');
+            const std::string level_name = dot_pos == level_filename.npos ? level_filename : level_filename.substr(0, dot_pos);
+
+            auto sound_header = _files->load_file(std::format("{}\\..\\PSXSOUND\\{}.VBH", folder, level_name));
+            auto sound_data = _files->load_file(std::format("{}\\..\\PSXSOUND\\{}.VBB", folder, level_name));
+
+            if (sound_header && sound_data)
+            {
+                const uint32_t data_size = static_cast<uint32_t>(sound_data->size());
+                sound_header->resize(sound_header->size() + 4);
+                memcpy(&sound_header.value()[sound_header->size() - 4], &data_size, 4);
+                sound_header->append_range(sound_data.value());
+
+                const auto& bytes_value = *sound_header;
+                std::basic_ispanstream<uint8_t> sound_file{ { bytes_value } };
+                sound_file.exceptions(std::ios::failbit);
+
+                skip(sound_file, 18);
+                read_sounds_tr1_psx(activity, sound_file, callbacks, 11025);
+            }
+        }
+        catch(std::exception&)
+        {
+            activity.log("Failed to read external sound data");
+        }
     }
 
     void Level::load_tr1_psx_aug_1996(std::basic_ispanstream<uint8_t>& file, trview::Activity& activity, const LoadCallbacks& callbacks)
