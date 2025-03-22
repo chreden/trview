@@ -110,20 +110,24 @@ namespace trlevel
         callbacks.on_progress("Reading sounds");
         log_file(activity, file, "Reading sounds");
         const uint16_t num_samples = read<uint16_t>(file);
-        file.seekg(2086 + num_samples * 512, std::ios::beg);
+        skip(file, 2062 + num_samples * 512);
 
+        const uint32_t sample_start = static_cast<uint32_t>(file.tellg());
         const auto sample_sizes = read_vector<uint16_t>(file, num_samples)
             | std::views::transform([](uint16_t v) -> uint32_t { return static_cast<uint32_t>(v) * 8; })
             | std::ranges::to<std::vector>();
 
-        file.seekg(2086 + num_samples * 512 + 510, std::ios::beg);
+        file.seekg(sample_start + 510, std::ios::beg);
         skip(file, 4);
 
         for (uint32_t s = 0; s < sample_sizes.size(); ++s)
         {
             callbacks.on_progress(std::format("Loading sound {} of {}", s, sample_sizes.size()));
             log_file(activity, file, std::format("Loading sound {} of {}", s, sample_sizes.size()));
-            callbacks.on_sound(static_cast<uint16_t>(s), convert_vag_to_wav(read_vector<uint8_t>(file, sample_sizes[s]), sample_frequency));
+            if (sample_sizes[s] > 0)
+            {
+                callbacks.on_sound(static_cast<uint16_t>(s), convert_vag_to_wav(read_vector<uint8_t>(file, sample_sizes[s]), sample_frequency));
+            }
         }
 
         log_file(activity, file, std::format("Read {} sounds", sample_sizes.size()));
