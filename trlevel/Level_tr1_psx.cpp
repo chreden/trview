@@ -245,7 +245,6 @@ namespace trlevel
     {
         file.seekg(4, std::ios::beg);
         const bool has_sound = peek<uint32_t>(file) == 0x56414270; //pBAV
-        file.seekg(0);
         if (has_sound)
         {
             skip(file, 12);
@@ -257,6 +256,7 @@ namespace trlevel
         else
         {
             read_sounds_external_tr1_psx(activity, callbacks);
+            file.seekg(0, std::ios::beg);
         }
 
         if (is_tr1_aug_1996(_platform_and_version))
