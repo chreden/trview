@@ -244,7 +244,7 @@ namespace trlevel
     void Level::load_tr1_psx(std::basic_ispanstream<uint8_t>& file, trview::Activity& activity, const LoadCallbacks& callbacks)
     {
         file.seekg(4, std::ios::beg);
-        bool has_sound = peek<uint32_t>(file) == 1447117424;
+        const bool has_sound = peek<uint32_t>(file) == 0x56414270; //pBAV
         file.seekg(0);
         if (has_sound)
         {
