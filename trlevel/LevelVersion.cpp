@@ -59,12 +59,7 @@ namespace trlevel
 
     bool is_tr1_aug_1996(PlatformAndVersion version)
     {
-        return version.raw_version == 27 || version.raw_version == 32;
-    }
-
-    bool is_tr1_aug_1996_french(PlatformAndVersion version)
-    {
-        return version.raw_version == 32;
+        return version.raw_version == 27;
     }
 
     bool is_tr2_beta(uint32_t version)

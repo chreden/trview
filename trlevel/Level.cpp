@@ -60,6 +60,29 @@ namespace trlevel
             return transformed.find(L".TRC") != filename.npos;
         }
 
+        bool check_for_tr1_psx_without_sound(std::basic_ispanstream<uint8_t>& file)
+        {
+            try
+            {
+                // TR1 PSX sometimes has sound separated
+                file.seekg(0);
+
+                file.seekg(sizeof(tr_textile4) * 13 + sizeof(tr_clut) * 1024);
+                const uint32_t potential_version = read<uint32_t>(file);
+
+                const bool is_tr1_psx = convert_level_version(potential_version).version == LevelVersion::Tomb1;
+                file.seekg(0);
+
+                return is_tr1_psx;
+            }
+            catch (const std::exception&)
+            {
+                file.clear();
+                file.seekg(0, std::ios::beg);
+                return false;
+            }
+        }
+
         bool check_for_tr2_psx(std::basic_ispanstream<uint8_t>& file)
         {
             try
@@ -97,27 +120,6 @@ namespace trlevel
                 file.seekg(0);
 
                 return is_tr1_psx_aug_1996;
-            }
-            catch (const std::exception&)
-            {
-                file.clear();
-                file.seekg(0, std::ios::beg);
-                return false;
-            }
-        }
-
-        bool check_for_tr1_aug_1996_french(std::basic_ispanstream<uint8_t>& file)
-        {
-            try
-            {
-                // French TR1 PSX August 1996 has textiles first.
-                file.seekg(sizeof(tr_textile4) * 13 + sizeof(tr_clut) * 1024);
-                const uint32_t potential_version = read<uint32_t>(file);
-
-                const bool is_tr1_psx_aug_french_1996 = potential_version == 32;
-                file.seekg(0);
-
-                return is_tr1_psx_aug_french_1996;
             }
             catch (const std::exception&)
             {
@@ -626,30 +628,28 @@ namespace trlevel
         if (_platform_and_version.version == LevelVersion::Unknown)
         {
             // Test for TR2 PSX
-            if (check_for_tr2_psx(file))
+            if (check_for_tr1_psx_without_sound(file))
+            {
+                _platform_and_version = { .platform = Platform::PSX, .version = LevelVersion::Tomb1, .raw_version = read<uint32_t>(file) };
+            }
+            else if (check_for_tr2_psx(file))
             {
                 _platform_and_version = { .platform = Platform::PSX, .version = LevelVersion::Tomb2, .raw_version = read<uint32_t>(file) };
-                log_file(activity, file, std::format("Version number is {:X} ({}), Platform is {}", _platform_and_version.raw_version, to_string(get_version()), to_string(platform())));
             }
             else if (check_for_tr1_aug_1996(file))
             {
                 _platform_and_version = { .platform = Platform::PSX, .version = LevelVersion::Tomb1, .raw_version = 27 };
-                log_file(activity, file, std::format("Version number is {:X} ({}), Platform is {}", _platform_and_version.raw_version, to_string(get_version()), to_string(platform())));
-            }
-            else if (check_for_tr1_aug_1996_french(file))
-            {
-                _platform_and_version = { .platform = Platform::PSX, .version = LevelVersion::Tomb1, .raw_version = 32 };
-                log_file(activity, file, std::format("Version number is {:X} ({}), Platform is {}", _platform_and_version.raw_version, to_string(get_version()), to_string(platform())));
             }
             else if (check_for_tr1_may_1996(file))
             {
                 _platform_and_version = { .platform = Platform::PSX, .version = LevelVersion::Tomb1, .raw_version = 11 };
-                log_file(activity, file, std::format("Version number is {:X} ({}), Platform is {}", _platform_and_version.raw_version, to_string(get_version()), to_string(platform())));
             }
             else
             {
                 throw LevelLoadException(std::format("Unknown level version ({})", _platform_and_version.raw_version));
             }
+
+            log_file(activity, file, std::format("Version number is {:X} ({}), Platform is {}", _platform_and_version.raw_version, to_string(get_version()), to_string(platform())));
         }
 
         if (_platform_and_version.raw_version == 0x63345254)
