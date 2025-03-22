@@ -28,7 +28,8 @@ namespace trview
             switch (version.version)
             {
             case trlevel::LevelVersion::Tomb1:
-                return is_tr1_aug_1996(version) ? "tr1_aug_1996" :
+                return is_tr1_aug_1996_french(version) ? "tr1" :
+                       is_tr1_aug_1996(version) ? "tr1_aug_1996" :
                        is_tr1_may_1996(version) ? "tr1_may_1996" : "tr1";
                 break;
             case trlevel::LevelVersion::Tomb2:

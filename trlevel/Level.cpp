@@ -106,6 +106,27 @@ namespace trlevel
             }
         }
 
+        bool check_for_tr1_aug_1996_french(std::basic_ispanstream<uint8_t>& file)
+        {
+            try
+            {
+                // French TR1 PSX August 1996 has textiles first.
+                file.seekg(sizeof(tr_textile4) * 13 + sizeof(tr_clut) * 1024);
+                const uint32_t potential_version = read<uint32_t>(file);
+
+                const bool is_tr1_psx_aug_french_1996 = potential_version == 32;
+                file.seekg(0);
+
+                return is_tr1_psx_aug_french_1996;
+            }
+            catch (const std::exception&)
+            {
+                file.clear();
+                file.seekg(0, std::ios::beg);
+                return false;
+            }
+        }
+
         bool check_for_tr1_may_1996(std::basic_ispanstream<uint8_t>& file)
         {
             try
@@ -613,6 +634,11 @@ namespace trlevel
             else if (check_for_tr1_aug_1996(file))
             {
                 _platform_and_version = { .platform = Platform::PSX, .version = LevelVersion::Tomb1, .raw_version = 27 };
+                log_file(activity, file, std::format("Version number is {:X} ({}), Platform is {}", _platform_and_version.raw_version, to_string(get_version()), to_string(platform())));
+            }
+            else if (check_for_tr1_aug_1996_french(file))
+            {
+                _platform_and_version = { .platform = Platform::PSX, .version = LevelVersion::Tomb1, .raw_version = 32 };
                 log_file(activity, file, std::format("Version number is {:X} ({}), Platform is {}", _platform_and_version.raw_version, to_string(get_version()), to_string(platform())));
             }
             else if (check_for_tr1_may_1996(file))

@@ -113,8 +113,13 @@ namespace trlevel
             read_room_flags(activity, file, room);
         }
 
-        void read_zones_tr1_aug_1996(trview::Activity& activity, std::basic_ispanstream<uint8_t>& file, const ILevel::LoadCallbacks& callbacks, uint32_t num_boxes)
+        void read_zones_tr1_aug_1996(trview::Activity& activity, std::basic_ispanstream<uint8_t>& file, const ILevel::LoadCallbacks& callbacks, uint32_t num_boxes, PlatformAndVersion version)
         {
+            if (is_tr1_aug_1996_french(version))
+            {
+                return read_zones_tr1(activity, file, callbacks, num_boxes);
+            }
+
             callbacks.on_progress("Reading zones");
             log_file(activity, file, "Reading zones");
             std::vector<int16_t> zones = read_vector<int16_t>(file, num_boxes * 4);
@@ -320,7 +325,7 @@ namespace trlevel
         callbacks.on_progress("Reading textiles");
         log_file(activity, file, "Reading textiles");
 
-        _num_textiles = 15;
+        _num_textiles = is_tr1_aug_1996_french(_platform_and_version) ? 13 : 15;
         _textile4 = read_vector<tr_textile4>(file, _num_textiles);
         _clut = read_vector<tr_clut>(file, 1024);
         log_file(activity, file, std::format("Read {} textile4s and {} clut", _textile4.size(), _clut.size()));
@@ -388,7 +393,7 @@ namespace trlevel
         _sound_sources = read_sound_sources(activity, file, callbacks);
         const auto boxes = read_boxes_tr1(activity, file, callbacks);
         read_overlaps(activity, file, callbacks);
-        read_zones_tr1_aug_1996(activity, file, callbacks, static_cast<uint32_t>(boxes.size()));
+        read_zones_tr1_aug_1996(activity, file, callbacks, static_cast<uint32_t>(boxes.size()), _platform_and_version);
         read_animated_textures(activity, file, callbacks);
         _entities = read_entities_tr1(activity, file, callbacks);
         _sound_map = read_sound_map(activity, file, callbacks);
