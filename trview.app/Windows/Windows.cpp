@@ -35,14 +35,14 @@ namespace trview
         std::shared_ptr<IItemsWindowManager> items_window_manager,
         std::unique_ptr<ILightsWindowManager> lights_window_manager,
         std::unique_ptr<ILogWindowManager> log_window_manager,
+        std::unique_ptr<IPackWindowManager> pack_window_manager,
         std::unique_ptr<IPluginsWindowManager> plugins_window_manager,
         std::unique_ptr<IRoomsWindowManager> rooms_window_manager,
         std::unique_ptr<IRouteWindowManager> route_window_manager,
         std::unique_ptr<ISoundsWindowManager> sounds_window_manager,
         std::unique_ptr<IStaticsWindowManager> statics_window_manager,
         std::unique_ptr<ITexturesWindowManager> textures_window_manager,
-        std::unique_ptr<ITriggersWindowManager> triggers_window_manager,
-        std::unique_ptr<IPackWindowManager> pack_window_manager)
+        std::unique_ptr<ITriggersWindowManager> triggers_window_manager)
         : _about_windows(std::move(about_window_manager)), _camera_sink_windows(std::move(camera_sink_windows)), _console_manager(std::move(console_manager)),
         _diff_windows(std::move(diff_window_manager)), _items_windows(items_window_manager), _lights_windows(std::move(lights_window_manager)),
         _log_windows(std::move(log_window_manager)), _plugins_windows(std::move(plugins_window_manager)), _rooms_windows(std::move(rooms_window_manager)),
@@ -213,6 +213,7 @@ namespace trview
         _items_windows->set_ng_plus(new_level->ng_plus());
         _lights_windows->set_level_version(new_level->version());
         _lights_windows->set_lights(new_level->lights());
+        _pack_windows->set_level(new_level);
         _pack_windows->set_pack(new_level->pack());
         _rooms_windows->set_level_version(new_level->version());
         _rooms_windows->set_items(new_level->items());
@@ -231,7 +232,6 @@ namespace trview
         _triggers_windows->set_items(new_level->items());
         _triggers_windows->set_triggers(new_level->triggers());
         _textures_windows->set_texture_storage(new_level->texture_storage());
-        
 
         _level_token_store.clear();
         _level_token_store += new_level->on_ng_plus += [this, level](bool value)

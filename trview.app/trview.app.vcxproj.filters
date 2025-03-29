@@ -1252,6 +1252,12 @@
     <ClInclude Include="Windows\Pack\PackWindowManager.h">
       <Filter>Windows\Pack</Filter>
     </ClInclude>
+    <ClInclude Include="Mocks\Windows\IPackWindowManager.h">
+      <Filter>Mocks\Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="Mocks\Windows\IPackWindow.h">
+      <Filter>Mocks\Windows</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Windows">

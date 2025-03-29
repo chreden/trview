@@ -51,7 +51,7 @@ namespace trview
                         bool selected = false;
                         if (ImGui::Selectable(std::format("{}##{}", part.start, index++).c_str(), &selected, ImGuiSelectableFlags_SpanAllColumns | static_cast<int>(ImGuiSelectableFlags_SelectOnNav)))
                         {
-                            on_level_open(std::format("pack://{}\\{}", pack->filename(), part.start));
+                            on_level_open(std::format("pack:{}\\{}", pack->filename(), part.start));
                         }
                         ImGui::TableNextColumn();
                         ImGui::Text(std::to_string(part.size).c_str());

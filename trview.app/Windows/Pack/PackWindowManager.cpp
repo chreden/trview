@@ -1,5 +1,6 @@
 #include "PackWindowManager.h"
 #include "../../Resources/resource.h"
+#include "../../Elements/ILevel.h"
 
 namespace trview
 {
@@ -32,6 +33,19 @@ namespace trview
     void PackWindowManager::render()
     {
         WindowManager::render();
+    }
+
+    void PackWindowManager::set_level(const std::weak_ptr<ILevel>& level)
+    {
+        if (auto level_ptr = level.lock())
+        {
+            if (level_ptr->version() == trlevel::LevelVersion::Unknown &&
+                level_ptr->pack().lock() &&
+                _windows.empty())
+            {
+                create_window();
+            }
+        }
     }
 
     void PackWindowManager::set_pack(const std::weak_ptr<trlevel::IPack>& pack)

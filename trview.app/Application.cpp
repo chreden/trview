@@ -737,12 +737,24 @@ namespace trview
     {
         _progress = std::format("Loading {}", filename);
 
-        auto pack = _level ? _level->pack().lock() : nullptr;
-        auto level = _level_source(filename,
-            pack,
+        std::shared_ptr<trlevel::IPack> current_pack;
+        if (filename.starts_with("pack:"))
+        {
+            const auto pack_filename = trlevel::pack_filename(filename);
+
+            // Attempt to reuse the current level pack.
+            current_pack = _level ? _level->pack().lock() : nullptr;
+            if (!current_pack || current_pack->filename() != pack_filename)
             {
-                .on_progress_callback = [&](auto&& p) { _progress = p; }
-            });
+                auto pack_level = _level_source(pack_filename, {}, { .on_progress_callback = [&](auto&& p) { _progress = p; } });
+                if (auto pack = pack_level->pack().lock())
+                {
+                    current_pack = pack;
+                }
+            }
+        }
+
+        auto level = _level_source(filename, current_pack, { .on_progress_callback = [&](auto&& p) { _progress = p; } });
         level->set_filename(filename);
         return level;
     }

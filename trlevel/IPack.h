@@ -24,5 +24,7 @@ namespace trlevel
         virtual std::string filename() const = 0;
         virtual void set_filename(const std::string& filename) = 0;
     };
+
+    std::string pack_filename(const std::string& filename);
 }
 

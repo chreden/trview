@@ -34,14 +34,14 @@ namespace trview
             std::shared_ptr<IItemsWindowManager> items_window_manager,
             std::unique_ptr<ILightsWindowManager> lights_window_manager,
             std::unique_ptr<ILogWindowManager> log_window_manager,
+            std::unique_ptr<IPackWindowManager> pack_window_manager,
             std::unique_ptr<IPluginsWindowManager> plugins_window_manager,
             std::unique_ptr<IRoomsWindowManager> rooms_window_manager,
             std::unique_ptr<IRouteWindowManager> route_window_manager,
             std::unique_ptr<ISoundsWindowManager> sounds_window_manager,
             std::unique_ptr<IStaticsWindowManager> statics_window_manager,
             std::unique_ptr<ITexturesWindowManager> textures_window_manager,
-            std::unique_ptr<ITriggersWindowManager> triggers_window_manager,
-            std::unique_ptr<IPackWindowManager> pack_window_manager);
+            std::unique_ptr<ITriggersWindowManager> triggers_window_manager);
         virtual ~Windows() = default;
         bool is_route_window_open() const override;
         void update(float elapsed) override;

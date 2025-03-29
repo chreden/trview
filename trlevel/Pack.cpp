@@ -1,7 +1,9 @@
 #include "Pack.h"
 #include "Level_common.h"
 
+#include <trview.common/Strings.h>
 #include <ranges>
+#include <utility>
 
 namespace trlevel
 {
@@ -67,5 +69,28 @@ namespace trlevel
     void Pack::set_filename(const std::string& filename)
     {
         _filename = filename;
+    }
+
+    std::string pack_filename(const std::string& filename)
+    {
+        if (filename.starts_with("pack:"))
+        {
+            const std::string without_pack = filename.substr(5);
+            const auto last_fs = without_pack.find_last_of('\\');
+            if (last_fs != without_pack.npos)
+            {
+                const auto maybe_entry = without_pack.substr(last_fs + 1);
+                try
+                {
+                    std::ignore = std::stoi(maybe_entry);
+                    return filename.substr(5, last_fs);
+                }
+                catch (const std::invalid_argument&)
+                {
+                }
+            }
+            return filename.substr(5);
+        }
+        return filename;
     }
 }
