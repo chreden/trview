@@ -127,6 +127,7 @@ namespace trview
         void set_ng_plus(bool show) override;
         bool ng_plus() const override;
         bool trng() const override;
+        std::weak_ptr<trlevel::IPack> pack() const override;
     private:
         void generate_rooms(const trlevel::ILevel& level, const IRoom::Source& room_source, const IMeshStorage& mesh_storage);
         void generate_triggers(const ITrigger::Source& trigger_source);
@@ -228,6 +229,7 @@ namespace trview
 
         std::shared_ptr<INgPlusSwitcher> _ngplus_switcher;
         bool _ng{ false };
+        std::shared_ptr<trlevel::IPack> _pack;
     };
 
     /// Find the first item with the type id specified.

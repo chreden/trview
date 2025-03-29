@@ -35,6 +35,8 @@
     <ClInclude Include="Level_psx.h">
       <Filter>Level\PSX</Filter>
     </ClInclude>
+    <ClInclude Include="IPack.h" />
+    <ClInclude Include="Pack.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="trtypes.cpp" />
@@ -79,6 +81,10 @@
     <ClCompile Include="Level_tr5_pc.cpp">
       <Filter>Level\PC</Filter>
     </ClCompile>
+    <ClCompile Include="Level_tr4_psx.cpp">
+      <Filter>Level\PSX</Filter>
+    </ClCompile>
+    <ClCompile Include="Pack.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Mocks">

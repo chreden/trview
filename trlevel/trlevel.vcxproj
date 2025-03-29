@@ -97,6 +97,7 @@
     <ClInclude Include="Decrypter.h" />
     <ClInclude Include="IDecrypter.h" />
     <ClInclude Include="ILevel.h" />
+    <ClInclude Include="IPack.h" />
     <ClInclude Include="Level.h" />
     <ClInclude Include="LevelEncryptedException.h" />
     <ClInclude Include="LevelLoadException.h" />
@@ -108,6 +109,7 @@
     <ClInclude Include="Level_tr2.h" />
     <ClInclude Include="Level_tr3.h" />
     <ClInclude Include="Mocks\ILevel.h" />
+    <ClInclude Include="Pack.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="trtypes.h" />
     <ClInclude Include="tr_lights.h" />
@@ -129,8 +131,10 @@
     <ClCompile Include="Level_tr3_pc.cpp" />
     <ClCompile Include="Level_tr3_psx.cpp" />
     <ClCompile Include="Level_tr4_pc.cpp" />
+    <ClCompile Include="Level_tr4_psx.cpp" />
     <ClCompile Include="Level_tr5_pc.cpp" />
     <ClCompile Include="Mocks\MockLevel.cpp" />
+    <ClCompile Include="Pack.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>

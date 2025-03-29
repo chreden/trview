@@ -75,6 +75,8 @@
 #include "Windows/IAboutWindowManager.h"
 #include "Windows/IDiffWindowManager.h"
 #include "Windows/IDiffWindow.h"
+#include "Windows/IPackWindowManager.h"
+#include "Windows/IPackWindow.h"
 
 namespace trview
 {
@@ -199,6 +201,12 @@ namespace trview
 
         MockLogWindowManager::MockLogWindowManager() {}
         MockLogWindowManager::~MockLogWindowManager() {}
+
+        MockPackWindow::MockPackWindow() {}
+        MockPackWindow::~MockPackWindow() {}
+
+        MockPackWindowManager::MockPackWindowManager() {}
+        MockPackWindowManager::~MockPackWindowManager() {}
 
         MockRoomsWindow::MockRoomsWindow() {}
         MockRoomsWindow::~MockRoomsWindow() {}

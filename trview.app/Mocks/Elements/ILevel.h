@@ -83,6 +83,7 @@ namespace trview
             MOCK_METHOD(void, set_ng_plus, (bool), (override));
             MOCK_METHOD(bool, ng_plus, (), (const, override));
             MOCK_METHOD(bool, trng, (), (const, override));
+            MOCK_METHOD(std::weak_ptr<trlevel::IPack>, pack, (), (const, override));
 
             std::shared_ptr<MockLevel> with_version(trlevel::LevelVersion version)
             {

@@ -24,6 +24,7 @@
 #include <trview.app/Mocks/Windows/IStaticsWindowManager.h>
 #include <trview.app/Mocks/Windows/ITexturesWindowManager.h>
 #include <trview.app/Mocks/Windows/ITriggersWindowManager.h>
+#include <trview.app/Mocks/Windows/IPackWindowManager.h>
 
 #include <trview.tests.common/Event.h>
 
@@ -47,6 +48,7 @@ namespace
             std::shared_ptr<IItemsWindowManager> items{ mock_shared<MockItemsWindowManager>() };
             std::unique_ptr<ILogWindowManager> log{ mock_unique<MockLogWindowManager>() };
             std::unique_ptr<ILightsWindowManager> lights{ mock_unique<MockLightsWindowManager>() };
+            std::unique_ptr<IPackWindowManager> pack{ mock_unique<MockPackWindowManager>() };
             std::unique_ptr<IPluginsWindowManager> plugins{ mock_unique<MockPluginsWindowManager>() };
             std::unique_ptr<IRoomsWindowManager> rooms{ mock_unique<MockRoomsWindowManager>() };
             std::unique_ptr<IRouteWindowManager> route{ mock_unique<MockRouteWindowManager>() };
@@ -65,6 +67,7 @@ namespace
                     items,
                     std::move(lights),
                     std::move(log),
+                    std::move(pack),
                     std::move(plugins),
                     std::move(rooms),
                     std::move(route),

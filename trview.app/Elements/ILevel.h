@@ -11,6 +11,7 @@
 #include "CameraSink/ICameraSink.h"
 #include <trview.common/Event.h>
 #include "../UI/MapColours.h"
+#include <trlevel/IPack.h>
 
 namespace trview
 {
@@ -19,7 +20,7 @@ namespace trview
 
     struct ILevel
     {
-        using Source = std::function<std::shared_ptr<ILevel>(const std::string&, trlevel::ILevel::LoadCallbacks)>;
+        using Source = std::function<std::shared_ptr<ILevel>(const std::string&, const std::shared_ptr<trlevel::IPack>&, trlevel::ILevel::LoadCallbacks)>;
 
         enum class OpenMode
         {
@@ -145,6 +146,7 @@ namespace trview
         virtual trlevel::LevelVersion version() const = 0;
         virtual std::weak_ptr<ISoundStorage> sound_storage() const = 0;
         virtual bool trng() const = 0;
+        virtual std::weak_ptr<trlevel::IPack> pack() const = 0;
 
         Event<std::weak_ptr<IItem>> on_item_selected;
         // Event raised when the level needs to change the selected room.

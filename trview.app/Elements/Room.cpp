@@ -441,7 +441,7 @@ namespace trview
             // Place suns in the middle of the room instead of 9 million units away.
             // Only do this if the light position is massive - don't change Tomb Editor placed suns.
             // Stack them in a line so they don't overlap each other.
-            if (light_ptr->type() == trlevel::LightType::Sun && light_ptr->position().x > 9000)
+            if (light_ptr->type() == trlevel::LightType::Sun && std::abs(light_ptr->position().x) > 9000)
             {
                 uint32_t suns = 0;
                 for (const auto& other_light : _lights)

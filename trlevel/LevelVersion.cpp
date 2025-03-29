@@ -15,6 +15,10 @@ namespace trlevel
             {
                 return { .platform = Platform::PC, .version = LevelVersion::Tomb5, .remastered = true };
             }
+            else if (version == 0x00000000)
+            {
+                return { .platform = Platform::PSX, .is_pack = true };
+            }
 
             switch (version & 0xff)
             {
@@ -35,6 +39,8 @@ namespace trlevel
                 return { .platform = Platform::PSX, .version = LevelVersion::Tomb3 };
             case 0x54:
                 return { .platform = Platform::PC, .version = LevelVersion::Tomb4 };
+            case 0xfc:
+                return { .platform = Platform::PSX, .version = LevelVersion::Tomb4 };
             }
             return { .platform = Platform::Unknown, .version = LevelVersion::Unknown };
         }

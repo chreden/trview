@@ -109,13 +109,29 @@ namespace trview
         trlevel::tr_model model;
         if (level.get_model_by_id(level.get_mesh_from_type_id(type_id), model))
         {
-            const uint32_t end_pointer = static_cast<uint32_t>(model.StartingMesh + model.NumMeshes);
-            for (uint32_t mesh_pointer = model.StartingMesh; mesh_pointer < end_pointer; ++mesh_pointer)
+            if (level.platform_and_version().platform == trlevel::Platform::PSX && 
+                level.platform_and_version().version == trlevel::LevelVersion::Tomb4)
             {
-                auto mesh = mesh_storage.mesh(mesh_pointer);
-                if (mesh)
+                const uint32_t end_pointer = static_cast<uint32_t>(model.StartingMesh + model.NumMeshes * 2);
+                for (uint32_t mesh_pointer = model.StartingMesh; mesh_pointer < end_pointer; mesh_pointer += 2)
                 {
-                    _meshes.push_back(mesh);
+                    auto mesh = mesh_storage.mesh(mesh_pointer);
+                    if (mesh)
+                    {
+                        _meshes.push_back(mesh);
+                    }
+                }
+            }
+            else
+            {
+                const uint32_t end_pointer = static_cast<uint32_t>(model.StartingMesh + model.NumMeshes);
+                for (uint32_t mesh_pointer = model.StartingMesh; mesh_pointer < end_pointer; ++mesh_pointer)
+                {
+                    auto mesh = mesh_storage.mesh(mesh_pointer);
+                    if (mesh)
+                    {
+                        _meshes.push_back(mesh);
+                    }
                 }
             }
         }

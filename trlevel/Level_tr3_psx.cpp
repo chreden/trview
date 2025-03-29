@@ -309,7 +309,7 @@ namespace trlevel
                     tr_object_texture_psx new_texture = texture;
                     new_texture.Tile = convert_textile4(texture.Tile, texture.Clut);
                     new_texture.Clut = 0U; // Unneeded after conversion
-                    new_texture.Attribute = texture.tri_draw & 0x2 ? 2 : texture.tri_draw & 0x4 ? 1 : 0;
+                    new_texture.Attribute = attribute_for_object_texture(texture, _clut[texture.Clut]);
                     return new_texture;
                 })
             | std::views::transform([&](const auto texture) -> tr_object_texture
@@ -350,7 +350,7 @@ namespace trlevel
                     tr_object_texture_psx new_texture = texture;
                     new_texture.Tile = convert_textile4(texture.Tile, texture.Clut);
                     new_texture.Clut = 0U; // Unneeded after conversion
-                    new_texture.Attribute = texture.tri_draw & 0x2 ? 2 : texture.tri_draw & 0x4 ? 1 : 0;
+                    new_texture.Attribute = attribute_for_object_texture(texture, _clut[texture.Clut]);
                     return new_texture;
                 })
             | std::ranges::to<std::vector>();
