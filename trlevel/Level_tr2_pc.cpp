@@ -55,8 +55,63 @@ namespace trlevel
         log_file(activity, file, std::format("Read {} lights", room.lights.size()));
     }
 
+    void Level::load_tr2_pc_e3(std::basic_ispanstream<uint8_t>& file, trview::Activity& activity, const LoadCallbacks& callbacks)
+    {
+        read_palette_tr1(file, activity, callbacks);
+        read_textiles(activity, file, callbacks);
+
+        read<uint32_t>(file);
+
+        _rooms = read_rooms<uint16_t>(activity, file, callbacks, load_tr2_pc_room);
+        _floor_data = read_floor_data(activity, file, callbacks);
+        _mesh_data = read_mesh_data(activity, file, callbacks);
+        _mesh_pointers = read_mesh_pointers(activity, file, callbacks);
+        read_animations_tr1_3(activity, file, callbacks);
+        read_state_changes(activity, file, callbacks);
+        read_anim_dispatches(activity, file, callbacks);
+        read_anim_commands(activity, file, callbacks);
+        _meshtree = read_meshtree(activity, file, callbacks);
+        _frames = read_frames(activity, file, callbacks);
+        _models = read_models_tr1_4(activity, file, callbacks);
+        _static_meshes = read_static_meshes(activity, file, callbacks);
+        _object_textures = read_object_textures_tr1_3(activity, file, callbacks);
+        _sprite_textures = read_sprite_textures(activity, file, callbacks);
+        _sprite_sequences = read_sprite_sequences(activity, file, callbacks);
+        _cameras = read_cameras(activity, file, callbacks);
+        _sound_sources = read_sound_sources(activity, file, callbacks);
+        uint32_t box_count = read<uint32_t>(file);
+        skip(file, box_count * 20);
+        uint32_t overlap_count = read<uint32_t>(file);
+        skip(file, overlap_count * 2);
+        skip(file, box_count * 20);
+        read_animated_textures(activity, file, callbacks);
+        _entities = read_entities(activity, file, callbacks);
+        read_light_map(activity, file, callbacks);
+        read_cinematic_frames(activity, file, callbacks);
+        read_demo_data(activity, file, callbacks);
+        _sound_map = read_sound_map(activity, file, callbacks);
+        _sound_details = read_sound_details(activity, file, callbacks);
+        uint32_t num_sounds = peek<uint32_t>(file);
+        for (uint32_t s = 0; s < num_sounds; ++s)
+        {
+            skip(file, 4); // count/number
+            skip(file, 4); // RIFF
+            uint32_t size = peek<uint32_t>(file);
+            file.seekg(-4, std::ios::cur);
+            callbacks.on_sound(static_cast<uint16_t>(s), read_vector<uint8_t>(file, size + 4));
+        }
+        callbacks.on_progress("Generating meshes");
+        generate_meshes(_mesh_data);
+        callbacks.on_progress("Loading complete");
+    }
+
     void Level::load_tr2_pc(std::basic_ispanstream<uint8_t>& file, trview::Activity& activity, const LoadCallbacks& callbacks)
     {
+        if (is_tr2_e3(_platform_and_version))
+        {
+            return load_tr2_pc_e3(file, activity, callbacks);
+        }
+
         read_palette_tr2_3(file, activity, callbacks);
         read_textiles(activity, file, callbacks);
 
