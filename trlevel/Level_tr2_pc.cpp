@@ -39,6 +39,29 @@ namespace trlevel
             read_room_alternate_room(activity, file, room);
             read_room_flags(activity, file, room);
         }
+
+        uint32_t convert_textile16_pc_e3(uint16_t t)
+        {
+            uint16_t r = (t & 0x7c00) >> 10;
+            uint16_t g = (t & 0x03e0) >> 5;
+            uint16_t b = t & 0x001f;
+
+            r = static_cast<uint16_t>((r / 31.0f) * 255.0f);
+            g = static_cast<uint16_t>((g / 31.0f) * 255.0f);
+            b = static_cast<uint16_t>((b / 31.0f) * 255.0f);
+
+            if ((r == 255 && b == 255 && g == 0) ||
+                (r == 0 && b == 0 && g == 0))
+            {
+                return 0x00000000;
+            }
+            return 0xff000000 | b << 16 | g << 8 | r;
+        }
+
+        std::vector<uint32_t> convert_textile_pc_e3(const tr_textile16& tile)
+        {
+            return tile.Tile | std::views::transform(convert_textile16_pc_e3) | std::ranges::to<std::vector>();
+        }
     }
 
     void read_room_ambient_intensity_2(trview::Activity& activity, std::basic_ispanstream<uint8_t>& file, tr3_room& room)
@@ -55,10 +78,25 @@ namespace trlevel
         log_file(activity, file, std::format("Read {} lights", room.lights.size()));
     }
 
+    void Level::read_textiles_tr2_pc_e3(std::basic_ispanstream<uint8_t>& file, trview::Activity& activity, const LoadCallbacks& callbacks)
+    {
+        callbacks.on_progress("Reading textiles");
+        log_file(activity, file, "Reading textiles");
+
+        uint32_t num_textiles = read<uint32_t>(file);
+        callbacks.on_progress(std::format("Skipping {} 8-bit textiles", num_textiles));
+        log_file(activity, file, std::format("Skipping {} 8-bit textiles", num_textiles));
+        skip(file, sizeof(tr_textile8) * num_textiles);
+
+        callbacks.on_progress(std::format("Reading {} 16-bit textiles", num_textiles));
+        log_file(activity, file, std::format("Reading {} 16-bit textiles", num_textiles));
+        stream_vector<tr_textile16>(file, num_textiles, [&](auto&& t) { callbacks.on_textile(convert_textile_pc_e3(t)); });
+    }
+
     void Level::load_tr2_pc_e3(std::basic_ispanstream<uint8_t>& file, trview::Activity& activity, const LoadCallbacks& callbacks)
     {
         read_palette_tr1(file, activity, callbacks);
-        read_textiles(activity, file, callbacks);
+        read_textiles_tr2_pc_e3(file, activity, callbacks);
 
         read<uint32_t>(file);
 

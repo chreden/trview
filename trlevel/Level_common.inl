@@ -89,4 +89,13 @@ namespace trlevel
 
         return rooms;
     }
+
+    template < typename DataType, typename SizeType >
+    void stream_vector(std::basic_ispanstream<uint8_t>& file, SizeType size, const std::function<void(const DataType&)>& out)
+    {
+        for (SizeType i = 0; i < size; ++i)
+        {
+            out(read<DataType>(file));
+        }
+    }
 }

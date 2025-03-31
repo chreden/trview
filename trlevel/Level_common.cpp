@@ -48,15 +48,6 @@ namespace trlevel
         return uncompressed_data;
     }
 
-    template < typename DataType, typename SizeType >
-    void stream_vector(std::basic_ispanstream<uint8_t>& file, SizeType size, const std::function<void(const DataType&)>& out)
-    {
-        for (SizeType i = 0; i < size; ++i)
-        {
-            out(read<DataType>(file));
-        }
-    }
-
     std::vector<tr4_ai_object> read_ai_objects(trview::Activity& activity, std::basic_ispanstream<uint8_t>& file, const ILevel::LoadCallbacks& callbacks)
     {
         callbacks.on_progress("Reading AI objects");
