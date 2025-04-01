@@ -31,13 +31,9 @@ namespace trlevel
         uint16_t g = (t & 0x03e0) >> 5;
         uint16_t b = t & 0x001f;
 
-        r <<= 3;
-        g <<= 3;
-        b <<= 3;
-
-        r += 3;
-        g += 3;
-        b += 3;
+        r = static_cast<uint16_t>((r / 31.0f) * 255.0f);
+        g = static_cast<uint16_t>((g / 31.0f) * 255.0f);
+        b = static_cast<uint16_t>((b / 31.0f) * 255.0f);
 
         uint16_t a = t & 0x8000 ? 0xff : 0x00;
         return a << 24 | b << 16 | g << 8 | r;

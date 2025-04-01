@@ -150,7 +150,7 @@ namespace trlevel
 
         bool is_tr1_frame_format(PlatformAndVersion version)
         {
-            return version.version == LevelVersion::Tomb1 || is_tr2_demo_70688(version);
+            return version.version == LevelVersion::Tomb1 || is_tr2_demo_70688(version) || is_tr2_e3(version);
         }
     }
 

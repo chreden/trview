@@ -799,7 +799,7 @@ TEST(Level, SkidooGenerated)
     auto [mock_level_ptr, mock_level] = create_mock<trlevel::mocks::MockLevel>();
     ON_CALL(mock_level, num_entities).WillByDefault(Return(1));
     EXPECT_CALL(mock_level, get_entity(0)).WillRepeatedly(Return(driver));
-    ON_CALL(mock_level, get_version).WillByDefault(Return(trlevel::LevelVersion::Tomb2));
+    ON_CALL(mock_level, platform_and_version).WillByDefault(Return(PlatformAndVersion { .version = trlevel::LevelVersion::Tomb2 }));
 
     std::vector<tr2_entity> entities;
 

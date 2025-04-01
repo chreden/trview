@@ -26,6 +26,36 @@ namespace trview
         };
 #pragma pack(pop)
 #pragma warning(pop)
+
+        constexpr uint16_t get_skidoo(trlevel::PlatformAndVersion version)
+        {
+            if (version.version != trlevel::LevelVersion::Tomb2)
+            {
+                return 0;
+            }
+
+            if (trlevel::is_tr2_e3(version))
+            {
+                return 48;
+            }
+
+            return 51;
+        }
+
+        constexpr bool is_skidoo_driver(trlevel::PlatformAndVersion version, uint16_t id)
+        {
+            if (version.version != trlevel::LevelVersion::Tomb2)
+            {
+                return false;
+            }
+
+            if (trlevel::is_tr2_e3(version))
+            {
+                return id == 49;
+            }
+
+            return id == 52;
+        }
     }
 
     ILevel::~ILevel()
@@ -571,8 +601,6 @@ namespace trview
 
     void Level::generate_entities(const trlevel::ILevel& level, const IItem::EntitySource& entity_source, const IItem::AiSource& ai_source, const IMeshStorage& mesh_storage)
     {
-        const int Entity_Black_Skidoo = 51;
-        const int Entity_Skidoo_Driver = 52;
         std::vector<std::weak_ptr<IItem>> skidoo_drivers;
 
         const uint32_t num_entities = level.num_entities();
@@ -597,7 +625,7 @@ namespace trview
             _token_store += entity->on_changed += [this]() { content_changed(); };
             _entities.push_back(entity);
 
-            if (level.get_version() == trlevel::LevelVersion::Tomb2 && level_entity.TypeID == Entity_Skidoo_Driver)
+            if (is_skidoo_driver(level.platform_and_version(), level_entity.TypeID))
             {
                 skidoo_drivers.push_back(entity);
             }
@@ -622,7 +650,7 @@ namespace trview
             if (auto man = driver.lock())
             {
                 auto level_entity = level.get_entity(man->number());
-                level_entity.TypeID = Entity_Black_Skidoo;
+                level_entity.TypeID = get_skidoo(level.platform_and_version());
                 auto containing_room = man->room();
                 auto entity = entity_source(level, level_entity, static_cast<uint32_t>(_entities.size()), {}, mesh_storage, shared_from_this(), containing_room);
                 if (auto room = containing_room.lock())

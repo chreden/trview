@@ -37,6 +37,9 @@ namespace trlevel
 
     void skip(std::basic_ispanstream<uint8_t>& file, uint32_t size);
 
+    template < typename DataType, typename SizeType >
+    void stream_vector(std::basic_ispanstream<uint8_t>& file, SizeType size, const std::function<void(const DataType&)>& out);
+
     /* Logging */
 
     void log_file(trview::Activity& activity, std::basic_ispanstream<uint8_t>& stream, const std::string& text);

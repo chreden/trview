@@ -24,6 +24,7 @@ namespace trlevel
                     return { .platform = Platform::PSX, .version = LevelVersion::Tomb2 };
                 }
                 return { .platform = (version & 0xff00) ? Platform::PSX : Platform::PC, .version = LevelVersion::Tomb1 };
+            case 0x26:
             case 0x2D:
                 return { .platform = Platform::PC, .version = LevelVersion::Tomb2 };
             case 0x34:
@@ -75,6 +76,11 @@ namespace trlevel
     bool is_tr2_demo_70688(PlatformAndVersion version)
     {
         return version.raw_version == 70688;
+    }
+
+    bool is_tr2_e3(PlatformAndVersion version)
+    {
+        return version.raw_version == 0x26;
     }
 
     bool is_tr3_ects(PlatformAndVersion version)
