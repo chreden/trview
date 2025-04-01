@@ -31,15 +31,15 @@ namespace trview
         {
             if (version.version != trlevel::LevelVersion::Tomb2)
             {
-                return false;
+                return 0;
             }
 
             if (trlevel::is_tr2_e3(version))
             {
-                return 49;
+                return 48;
             }
 
-            return 52;
+            return 51;
         }
 
         constexpr bool is_skidoo_driver(trlevel::PlatformAndVersion version, uint16_t id)
@@ -51,10 +51,10 @@ namespace trview
 
             if (trlevel::is_tr2_e3(version))
             {
-                return id == 48;
+                return id == 49;
             }
 
-            return id == 51;
+            return id == 52;
         }
     }
 
