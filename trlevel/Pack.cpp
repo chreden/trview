@@ -45,7 +45,7 @@ namespace trlevel
         {
             try
             {
-                auto level = _level_source(std::format("pack-preview://{}", part.start), shared_from_this());
+                auto level = _level_source(std::format("pack-preview:{}", part.start), shared_from_this());
                 level->load({});
                 part.level = level;
             }

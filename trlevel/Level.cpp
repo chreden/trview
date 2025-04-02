@@ -593,6 +593,12 @@ namespace trlevel
                 return;
             }
 
+            // Don't attempt to load nested packs if a packed file is detected as a pack.
+            if (is_packed)
+            {
+                _platform_and_version.is_pack = false;
+            }
+
             const std::unordered_map<PlatformAndVersion, std::function<void()>> loaders
             {
                 {{.platform = Platform::PSX, .version = LevelVersion::Tomb1 }, [&]() { load_tr1_psx(file, activity, callbacks); }},

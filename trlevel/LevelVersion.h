@@ -34,7 +34,7 @@ namespace trlevel
 
     inline bool operator==(const PlatformAndVersion & l, const PlatformAndVersion & r)
     {
-        return l.platform == r.platform && l.version == r.version && l.remastered == r.remastered;
+        return l.platform == r.platform && l.version == r.version && l.remastered == r.remastered && l.is_pack == r.is_pack;
     }
 
     // Converts the level version number into a level version enumeration.
