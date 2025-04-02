@@ -28,5 +28,6 @@ namespace trlevel
     };
 
     std::string pack_filename(const std::string& filename);
+    std::optional<std::vector<uint8_t>> pack_entry(const IPack& pack, uint32_t offset);
 }
 

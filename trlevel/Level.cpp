@@ -560,22 +560,9 @@ namespace trlevel
         {
             activity.log(std::format("Opening file \"{}\"", _filename));
 
-            auto get_pack_entry = [this]() -> std::optional<std::vector<uint8_t>>
-                {
-                    uint32_t target = std::stoi(_name);
-                    for (const auto& p : _pack->parts())
-                    {
-                        if (p.start == target)
-                        {
-                            return p.data;
-                        }
-                    }
-                    return std::nullopt;
-                };
-
             const bool is_packed = _filename.starts_with("pack") && _pack;
             const bool is_pack_preview = _filename.starts_with("pack-preview") && _pack;
-            auto bytes = is_packed ? get_pack_entry() : _files->load_file(_filename);
+            auto bytes = is_packed ? pack_entry(*_pack, std::stoi(_name)) : _files->load_file(_filename);
             if (!bytes.has_value())
             {
                 throw LevelLoadException();

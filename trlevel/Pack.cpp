@@ -90,4 +90,16 @@ namespace trlevel
         }
         return filename;
     }
+
+    std::optional<std::vector<uint8_t>> pack_entry(const IPack& pack, uint32_t offset)
+    {
+        for (const auto& p : pack.parts())
+        {
+            if (p.start == offset)
+            {
+                return p.data;
+            }
+        }
+        return std::nullopt;
+    }
 }
