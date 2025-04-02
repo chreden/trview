@@ -1,12 +1,14 @@
 #pragma once
 
-#include <vector>
+#include "LevelVersion.h"
+
+#include <cstdint>
 #include <functional>
+#include <optional>
+#include <vector>
 
 namespace trlevel
 {
-    struct ILevel;
-
     struct IPack
     {
         struct Part
@@ -14,7 +16,7 @@ namespace trlevel
             uint32_t start;
             uint32_t size;
             std::vector<uint8_t> data;
-            std::shared_ptr<ILevel> level;
+            std::optional<trlevel::PlatformAndVersion> version;
         };
 
         using Source = std::function<std::shared_ptr<IPack>(std::basic_ispanstream<uint8_t>&)>;

@@ -51,14 +51,14 @@ namespace trview
                         bool selected = false;
                         if (ImGui::Selectable(std::format("{}##{}", part.start, index++).c_str(), &selected, ImGuiSelectableFlags_SpanAllColumns | static_cast<int>(ImGuiSelectableFlags_SelectOnNav)))
                         {
-                            on_level_open(std::format("pack:{}\\{}", pack->filename(), part.start));
+                            on_level_open(std::format("pack://{}\\{}", pack->filename(), part.start));
                         }
                         ImGui::TableNextColumn();
                         ImGui::Text(std::to_string(part.size).c_str());
                         ImGui::TableNextColumn();
-                        if (part.level)
+                        if (part.version)
                         {
-                            ImGui::Text(trlevel::to_string(part.level->platform_and_version().version).c_str());
+                            ImGui::Text(trlevel::to_string(part.version->version).c_str());
                         }
                     }
 

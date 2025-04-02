@@ -738,7 +738,7 @@ namespace trview
         _progress = std::format("Loading {}", filename);
 
         std::shared_ptr<trlevel::IPack> current_pack;
-        if (filename.starts_with("pack:"))
+        if (filename.starts_with("pack://"))
         {
             const auto pack_filename = trlevel::pack_filename(filename);
 

@@ -4,6 +4,7 @@
 #include <trview.common/Strings.h>
 #include <ranges>
 #include <utility>
+#include <filesystem>
 
 namespace trlevel
 {
@@ -45,9 +46,9 @@ namespace trlevel
         {
             try
             {
-                auto level = _level_source(std::format("pack-preview:{}", part.start), shared_from_this());
+                auto level = _level_source(std::format("pack-preview://{}", part.start), shared_from_this());
                 level->load({});
-                part.level = level;
+                part.version = level->platform_and_version();
             }
             catch(...)
             {
@@ -73,23 +74,19 @@ namespace trlevel
 
     std::string pack_filename(const std::string& filename)
     {
-        if (filename.starts_with("pack:"))
+        if (filename.starts_with("pack://"))
         {
-            const std::string without_pack = filename.substr(5);
-            const auto last_fs = without_pack.find_last_of('\\');
-            if (last_fs != without_pack.npos)
+            const std::filesystem::path without_pack = filename.substr(7);
+            const auto maybe_entry = without_pack.filename();
+            try
             {
-                const auto maybe_entry = without_pack.substr(last_fs + 1);
-                try
-                {
-                    std::ignore = std::stoi(maybe_entry);
-                    return filename.substr(5, last_fs);
-                }
-                catch (const std::invalid_argument&)
-                {
-                }
+                std::ignore = std::stoi(maybe_entry);
+                return filename.substr(7, without_pack.parent_path().string().length());
             }
-            return filename.substr(5);
+            catch (const std::invalid_argument&)
+            {
+            }
+            return filename.substr(7);
         }
         return filename;
     }
