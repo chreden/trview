@@ -113,6 +113,12 @@ namespace
                 return *this;
             }
 
+            test_module& with_packs(std::unique_ptr<IPackWindowManager> manager)
+            {
+                pack = std::move(manager);
+                return *this;
+            }
+
             test_module& with_plugins(std::unique_ptr<IPluginsWindowManager> manager)
             {
                 plugins = std::move(manager);
@@ -282,6 +288,20 @@ TEST(Windows, OnNgPlusForwarded)
     windows->set_level(level);
 
     level->on_ng_plus(false);
+}
+
+TEST(Windows, PackEventsForwarded)
+{
+    auto [packs_ptr, packs] = create_mock<MockPackWindowManager>();
+    auto windows = register_test_module().with_packs(std::move(packs_ptr)).build();
+
+    TokenStore store;
+    std::string raised_level;
+    store += windows->on_level_open += capture(raised_level);
+
+    packs.on_level_open("test");
+
+    ASSERT_EQ(raised_level, "test");
 }
 
 TEST(Windows, RoomsEventsForwarded)
@@ -555,6 +575,9 @@ TEST(Windows, SetLevel)
     auto [lights_ptr, lights] = create_mock<MockLightsWindowManager>();
     EXPECT_CALL(lights, set_level_version).Times(1);
     EXPECT_CALL(lights, set_lights).Times(1);
+    auto [pack_ptr, pack] = create_mock<MockPackWindowManager>();
+    EXPECT_CALL(pack, set_level).Times(1);
+    EXPECT_CALL(pack, set_pack).Times(1);
     auto [rooms_ptr, rooms] = create_mock<MockRoomsWindowManager>();
     EXPECT_CALL(rooms, set_level_version).Times(1);
     EXPECT_CALL(rooms, set_items).Times(1);
@@ -581,6 +604,7 @@ TEST(Windows, SetLevel)
         .with_camera_sinks(std::move(cameras_ptr))
         .with_items(std::move(items_ptr))
         .with_lights(std::move(lights_ptr))
+        .with_packs(std::move(pack_ptr))
         .with_rooms(std::move(rooms_ptr))
         .with_route(std::move(route_ptr))
         .with_sounds(std::move(sounds_ptr))
