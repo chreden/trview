@@ -19,6 +19,14 @@ namespace trlevel
     {
     public:
         explicit Level(const std::string& filename,
+            const std::shared_ptr<IPack>& pack,
+            const std::shared_ptr<trview::IFiles>& files,
+            const std::shared_ptr<IDecrypter>& decrypter,
+            const std::shared_ptr<trview::ILog>& log,
+            const IPack::Source& pack_source);
+
+        explicit Level(const std::string& filename,
+            const std::shared_ptr<IPack>& pack,
             const std::shared_ptr<trview::IFiles>& files,
             const std::shared_ptr<IDecrypter>& decrypter,
             const std::shared_ptr<trview::ILog>& log);
@@ -170,6 +178,7 @@ namespace trlevel
         std::vector<int16_t> sound_map() const override;
         bool trng() const override;
         PlatformAndVersion platform_and_version() const override;
+        std::weak_ptr<IPack> pack() const override;
     private:
         void generate_meshes(const std::vector<uint16_t>& mesh_data);
         tr_colour4 colour_from_object_texture(uint32_t texture) const;
@@ -209,8 +218,10 @@ namespace trlevel
         void load_tr3_psx(std::basic_ispanstream<uint8_t>& file, trview::Activity& activity, const LoadCallbacks& callbacks);
         void load_tr4_pc(std::basic_ispanstream<uint8_t>& file, trview::Activity& activity, const LoadCallbacks& callbacks);
         void load_tr4_pc_remastered(std::basic_ispanstream<uint8_t>& file, trview::Activity& activity, const LoadCallbacks& callbacks);
+        void load_tr4_psx(std::basic_ispanstream<uint8_t>& file, trview::Activity& activity, const LoadCallbacks& callbacks);
         void load_tr5_pc(std::basic_ispanstream<uint8_t>& file, trview::Activity& activity, const LoadCallbacks& callbacks);
         void load_tr5_pc_remastered(std::basic_ispanstream<uint8_t>& file, trview::Activity& activity, const LoadCallbacks& callbacks);
+        void load_psx_pack(std::basic_ispanstream<uint8_t>& file, trview::Activity& activity, const LoadCallbacks& callbacks);
 
         void generate_sounds_tr1(const LoadCallbacks& callbacks);
         void load_sound_fx(trview::Activity& activity, const LoadCallbacks& callbacks);
@@ -223,6 +234,7 @@ namespace trlevel
         void generate_mesh_tr2_psx(tr_mesh& mesh, std::basic_ispanstream<uint8_t>& stream);
         void generate_mesh_tr2_psx_beta(tr_mesh& mesh, std::basic_ispanstream<uint8_t>& stream);
         void generate_mesh_tr3_psx(tr_mesh& mesh, std::basic_ispanstream<uint8_t>& stream);
+        void generate_mesh_tr4_psx(tr_mesh& mesh, std::basic_ispanstream<uint8_t>& stream);
 
         PlatformAndVersion _platform_and_version;
 
@@ -271,5 +283,8 @@ namespace trlevel
         std::string                     _filename;
         std::shared_ptr<trview::IFiles> _files;
         bool                            _trng{ false };
+
+        IPack::Source _pack_source;
+        std::shared_ptr<IPack> _pack;
     };
 }

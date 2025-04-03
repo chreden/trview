@@ -86,6 +86,7 @@ namespace trview
         _token_store += _windows->on_route_save += [&]() { this->save_route(); };
         _token_store += _windows->on_route_save_as += [&]() { this->save_route_as(); };
         _token_store += _windows->on_route_window_created += [&]() { open_recent_route(); };
+        _token_store += _windows->on_level_open += [&](const auto& filename) { open(filename, ILevel::OpenMode::Full); };
         _token_store += _windows->on_level_switch += [&](const auto& level) { _file_menu->switch_to(level); };
         _token_store += _windows->on_new_route += [&]() { if (should_discard_changes()) { set_route(_route_source(std::nullopt)); } };
         _token_store += _windows->on_new_randomizer_route += [&]() { if (should_discard_changes()) { set_route(_randomizer_route_source(std::nullopt)); } };
@@ -735,10 +736,25 @@ namespace trview
     std::shared_ptr<ILevel> Application::load(const std::string& filename)
     {
         _progress = std::format("Loading {}", filename);
-        auto level = _level_source(filename, 
+
+        std::shared_ptr<trlevel::IPack> current_pack;
+        if (filename.starts_with("pack://"))
+        {
+            const auto pack_filename = trlevel::pack_filename(filename);
+
+            // Attempt to reuse the current level pack.
+            current_pack = _level ? _level->pack().lock() : nullptr;
+            if (!current_pack || current_pack->filename() != pack_filename)
             {
-                .on_progress_callback = [&](auto&& p) { _progress = p; }
-            });
+                auto pack_level = _level_source(pack_filename, {}, { .on_progress_callback = [&](auto&& p) { _progress = p; } });
+                if (auto pack = pack_level->pack().lock())
+                {
+                    current_pack = pack;
+                }
+            }
+        }
+
+        auto level = _level_source(filename, current_pack, { .on_progress_callback = [&](auto&& p) { _progress = p; } });
         level->set_filename(filename);
         return level;
     }

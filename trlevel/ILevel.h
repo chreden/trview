@@ -7,13 +7,15 @@
 #include "trtypes.h"
 #include "tr_rooms.h"
 #include "LevelVersion.h"
+#include "IPack.h"
 
 namespace trlevel
 {
     // Interface that defines a level.
     struct ILevel
     {
-        using Source = std::function<std::shared_ptr<ILevel>(const std::string&)>;
+        using Source = std::function<std::shared_ptr<ILevel>(const std::string&, const std::shared_ptr<IPack>&)>;
+        using PackSource = std::function<std::shared_ptr<ILevel>(const std::string&, const std::shared_ptr<IPack>&)>;
 
         virtual ~ILevel() = 0;
 
@@ -181,5 +183,6 @@ namespace trlevel
         virtual std::vector<tr_x_sound_details> sound_details() const = 0;
         virtual std::vector<int16_t> sound_map() const = 0;
         virtual bool trng() const = 0;
+        virtual std::weak_ptr<IPack> pack() const = 0;
     };
 }

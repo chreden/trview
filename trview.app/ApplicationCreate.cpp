@@ -2,6 +2,7 @@
 
 #include <trlevel/Level.h>
 #include <trlevel/Decrypter.h>
+#include <trlevel/Pack.h>
 #include <trview.common/Files.h>
 #include <trview.common/Logs/Log.h>
 #include <trview.common/windows/Clipboard.h>
@@ -84,6 +85,8 @@
 #include "Windows/About/AboutWindow.h"
 #include "Windows/Diff/DiffWindowManager.h"
 #include "Windows/Diff/DiffWindow.h"
+#include "Windows/Pack/PackWindowManager.h"
+#include "Windows/Pack/PackWindow.h"
 
 namespace trview
 {
@@ -263,11 +266,18 @@ namespace trview
         const auto sound_source_source = [=](auto&&... args) { return std::make_shared<SoundSource>(cube_mesh, texture_storage, args...); };
 
         auto decrypter = std::make_shared<trlevel::Decrypter>();
-        auto trlevel_source = [=](auto&& filename) { return std::make_shared<trlevel::Level>(filename, files, decrypter, log); };
+        auto trlevel_pack_source = [=](auto&&... args) { return std::make_shared<trlevel::Level>(args..., files, decrypter, log); };
+        const auto pack_source = [=](auto&&... args)
+            { 
+                auto pack = std::make_shared<trlevel::Pack>(args..., trlevel_pack_source);
+                pack->load();
+                return pack;
+            };
+        auto trlevel_source = [=](auto&&... args) { return std::make_shared<trlevel::Level>(args..., files, decrypter, log, pack_source); };
 
-        auto level_source = [=](auto&& filename, auto&& callbacks)
+        auto level_source = [=](auto&& filename, auto&& pack, auto&& callbacks)
             {
-                auto level = trlevel_source(filename);
+                auto level = trlevel_source(filename, pack);
 
                 auto level_texture_storage = std::make_shared<LevelTextureStorage>(device, std::make_unique<TextureStorage>(device));
                 int count = 0;
@@ -373,6 +383,7 @@ namespace trview
         auto sounds_window_source = [=]() { return std::make_shared<SoundsWindow>(); };
         auto about_window_source = [=]() { return std::make_shared<AboutWindow>(); };
         auto diff_window_source = [=]() { return std::make_shared<DiffWindow>(dialogs, level_source, std::make_unique<ImGuiFileMenu>(dialogs, files)); };
+        auto pack_window_source = [=]() { return std::make_shared<PackWindow>(); };
 
         return std::make_unique<Application>(
             window,
@@ -398,6 +409,7 @@ namespace trview
                 items_window_manager,
                 std::make_unique<LightsWindowManager>(window, shortcuts, lights_window_source),
                 std::make_unique<LogWindowManager>(window, log_window_source),
+                std::make_unique<PackWindowManager>(window, pack_window_source),
                 std::make_unique<PluginsWindowManager>(window, shortcuts, plugins_window_source),
                 std::make_unique<RoomsWindowManager>(window, shortcuts, rooms_window_source),
                 std::make_unique<RouteWindowManager>(window, shortcuts, route_window_source),

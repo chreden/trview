@@ -371,6 +371,12 @@
     <ClCompile Include="Menus\ImGuiFileMenu.cpp">
       <Filter>Menus</Filter>
     </ClCompile>
+    <ClCompile Include="Windows\Pack\PackWindow.cpp">
+      <Filter>Windows\Pack</Filter>
+    </ClCompile>
+    <ClCompile Include="Windows\Pack\PackWindowManager.cpp">
+      <Filter>Windows\Pack</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera\Camera.h">
@@ -1234,6 +1240,24 @@
     <ClInclude Include="Settings\PluginSetting.h">
       <Filter>Settings</Filter>
     </ClInclude>
+    <ClInclude Include="Windows\Pack\IPackWindow.h">
+      <Filter>Windows\Pack</Filter>
+    </ClInclude>
+    <ClInclude Include="Windows\Pack\PackWindow.h">
+      <Filter>Windows\Pack</Filter>
+    </ClInclude>
+    <ClInclude Include="Windows\Pack\IPackWindowManager.h">
+      <Filter>Windows\Pack</Filter>
+    </ClInclude>
+    <ClInclude Include="Windows\Pack\PackWindowManager.h">
+      <Filter>Windows\Pack</Filter>
+    </ClInclude>
+    <ClInclude Include="Mocks\Windows\IPackWindowManager.h">
+      <Filter>Mocks\Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="Mocks\Windows\IPackWindow.h">
+      <Filter>Mocks\Windows</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Windows">
@@ -1454,6 +1478,9 @@
     </Filter>
     <Filter Include="Windows\Diff">
       <UniqueIdentifier>{9903f794-d62d-4218-bd6a-23463418328c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Windows\Pack">
+      <UniqueIdentifier>{2309c42b-f2ee-4516-88c1-62a8182b467f}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

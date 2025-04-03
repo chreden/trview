@@ -21,6 +21,7 @@ namespace trview
     struct IStaticsWindowManager;
     struct ITexturesWindowManager;
     struct ITriggersWindowManager;
+    struct IPackWindowManager;
 
     class Windows final : public IWindows
     {
@@ -33,6 +34,7 @@ namespace trview
             std::shared_ptr<IItemsWindowManager> items_window_manager,
             std::unique_ptr<ILightsWindowManager> lights_window_manager,
             std::unique_ptr<ILogWindowManager> log_window_manager,
+            std::unique_ptr<IPackWindowManager> pack_window_manager,
             std::unique_ptr<IPluginsWindowManager> plugins_window_manager,
             std::unique_ptr<IRoomsWindowManager> rooms_window_manager,
             std::unique_ptr<IRouteWindowManager> route_window_manager,
@@ -68,6 +70,7 @@ namespace trview
         std::shared_ptr<IItemsWindowManager> _items_windows;
         std::unique_ptr<ILightsWindowManager> _lights_windows;
         std::unique_ptr<ILogWindowManager> _log_windows;
+        std::unique_ptr<IPackWindowManager> _pack_windows;
         std::unique_ptr<IPluginsWindowManager> _plugins_windows;
         std::unique_ptr<IRoomsWindowManager> _rooms_windows;
         std::weak_ptr<IRoute> _route;

@@ -182,7 +182,7 @@ TEST(Application, LevelLoadedOnFileOpen)
 {
     auto [file_menu_ptr, file_menu] = create_mock<MockFileMenu>();
     std::optional<std::string> called;
-    auto level_source = [&](auto&& filename, auto&&)-> std::unique_ptr<ILevel> { called = filename; throw std::exception(); };
+    auto level_source = [&](auto&& filename, auto&&...)-> std::unique_ptr<ILevel> { called = filename; throw std::exception(); };
     auto application = register_test_module().with_level_source(level_source).with_file_menu(std::move(file_menu_ptr)).build();
     file_menu.on_file_open("test_path.tr2");
     ASSERT_TRUE(called.has_value());
@@ -195,7 +195,7 @@ TEST(Application, RecentFilesUpdatedOnFileOpen)
     EXPECT_CALL(file_menu, set_recent_files(std::list<std::string>{})).Times(1);
     EXPECT_CALL(file_menu, set_recent_files(std::list<std::string>{"test_path.tr2"})).Times(1);
     std::optional<std::string> called;
-    auto level_source = [&](auto&& filename, auto&&) { called = filename; return mock_unique<mocks::MockLevel>(); };
+    auto level_source = [&](auto&& filename, auto&&...) { called = filename; return mock_unique<mocks::MockLevel>(); };
     auto application = register_test_module().with_level_source(level_source).with_file_menu(std::move(file_menu_ptr)).build();
     application->open("test_path.tr2", ILevel::OpenMode::Full);
     ASSERT_TRUE(called.has_value());
@@ -206,7 +206,7 @@ TEST(Application, FileOpenedInViewer)
 {
     auto [viewer_ptr, viewer] = create_mock<MockViewer>();
     std::optional<std::string> called;
-    auto level_source = [&](auto&& filename, auto&&) { called = filename; return mock_unique<mocks::MockLevel>(); };
+    auto level_source = [&](auto&& filename, auto&&...) { called = filename; return mock_unique<mocks::MockLevel>(); };
     EXPECT_CALL(viewer, open(A<const std::weak_ptr<ILevel>&>(), ILevel::OpenMode::Full)).Times(1);
     auto application = register_test_module().with_level_source(level_source).with_viewer(std::move(viewer_ptr)).build();
     application->open("test_path.tr2", ILevel::OpenMode::Full);
@@ -217,7 +217,7 @@ TEST(Application, FileOpenedInViewer)
 TEST(Application, WindowContentsResetBeforeViewerLoaded)
 {
     std::optional<std::string> called;
-    auto level_source = [&](auto&& filename, auto&&) { called = filename; return mock_unique<mocks::MockLevel>(); };
+    auto level_source = [&](auto&& filename, auto&&...) { called = filename; return mock_unique<mocks::MockLevel>(); };
     auto [viewer_ptr, viewer] = create_mock<MockViewer>();
     auto [windows_ptr, windows] = create_mock<MockWindows>();
     auto route = mock_shared<MockRoute>();
@@ -264,7 +264,7 @@ TEST(Application, FileOpenedFromCommandLine)
     auto startup_options = mock_shared<MockStartupOptions>();
     ON_CALL(*startup_options, filename).WillByDefault(testing::Return("test.tr2"));
     std::optional<std::string> called;
-    auto level_source = [&](auto&& filename, auto&&) { called = filename; return mock_unique<mocks::MockLevel>(); };
+    auto level_source = [&](auto&& filename, auto&&...) { called = filename; return mock_unique<mocks::MockLevel>(); };
     auto [viewer_ptr, viewer] = create_mock<MockViewer>();
     EXPECT_CALL(viewer, open).Times(1);
     auto application = register_test_module().with_level_source(level_source).with_viewer(std::move(viewer_ptr)).with_startup_options(startup_options).build();

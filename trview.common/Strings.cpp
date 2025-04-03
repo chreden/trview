@@ -1,6 +1,7 @@
 #include "Strings.h"
 #include <algorithm>
 #include <format>
+#include <filesystem>
 
 namespace trview
 {
@@ -45,13 +46,11 @@ namespace trview
 
     std::string filename_without_path(const std::string& filename)
     {
-        auto last_index = std::min(filename.find_last_of('\\'), filename.find_last_of('/'));
-        return last_index == filename.npos ? filename : filename.substr(std::min(last_index + 1, filename.size()));
+        return std::filesystem::path(filename).filename().string();
     }
 
     std::string path_for_filename(const std::string& filename)
     {
-        auto last_index = std::min(filename.find_last_of('\\'), filename.find_last_of('/'));
-        return last_index == filename.npos ? std::string() : filename.substr(0, std::min(last_index, filename.size()));
+        return std::filesystem::path(filename).parent_path().string();
     }
 }
