@@ -30,53 +30,6 @@ namespace trlevel
         };
         static_assert(sizeof(tr4_psx_room_info) == 80);
 
-        struct tr4_psx_level_info
-        {
-            int32_t  version;
-            uint32_t sound_offsets;
-            uint32_t sound_data_offset;
-            uint32_t textiles_offset;
-            uint32_t frames_offset;
-            uint32_t room_data_offset;
-            uint32_t models_offset;
-            uint32_t unknown[2];
-            uint32_t num_sounds;
-            uint32_t sound_data_length;
-            uint16_t clut_start;
-            uint16_t num_rooms;
-            char     unknown_2[2];
-            uint16_t num_items;
-            char     unknown_3[4];
-            uint32_t room_data_size;
-            uint32_t floor_data_size;
-            uint32_t outside_room_size;
-            uint32_t bounding_boxes_size;
-            char     unknown_4[0x4];
-            uint32_t mesh_data_size;
-            uint32_t mesh_pointer_size;
-            uint32_t animations_size;
-            uint32_t state_changes_size;
-            uint32_t dispatches_size;
-            uint32_t commands_size;
-            uint32_t meshtree_size;
-            uint32_t frames_size;
-            uint32_t texture_info_length;
-            uint32_t sprite_info_length;
-            uint32_t texture_info_length2;
-            uint32_t animated_texture_length;
-            uint32_t sfx_info_length;
-            uint32_t sample_info_length;
-            char     unknown_5[12];
-            uint32_t unknown_offsets[7];
-            uint32_t num_cameras;
-            char     unknown_5a[4];
-            int      camera_length;
-            char     unknown_6[4];
-            uint16_t num_ai_objects;
-            char     unknown_7[38];
-        };
-        static_assert(sizeof(tr4_psx_level_info) == 228);
-
         struct tr4_psx_room_light
         {
             int32_t x;
@@ -214,182 +167,182 @@ namespace trlevel
                         };
                     }) | std::ranges::to<std::vector>();
         }
+    }
 
-        std::vector<tr3_room> read_rooms_tr4_psx(uint16_t num_rooms, std::basic_ispanstream<uint8_t>& file, trview::Activity& activity, const ILevel::LoadCallbacks& callbacks)
-        {
-            activity;
-            callbacks;
+    std::vector<tr3_room> read_rooms_tr4_psx(uint16_t num_rooms, std::basic_ispanstream<uint8_t>& file, trview::Activity& activity, const ILevel::LoadCallbacks& callbacks)
+    {
+        activity;
+        callbacks;
 
-            return read_vector<tr4_psx_room_info>(file, num_rooms)
-                | std::views::transform([&](auto&& room_info)
+        return read_vector<tr4_psx_room_info>(file, num_rooms)
+            | std::views::transform([&](auto&& room_info)
+                {
+                    tr3_room room
                     {
-                        tr3_room room
+                        .info = room_info.info,
+                        .num_z_sectors = room_info.num_z_sectors,
+                        .num_x_sectors = room_info.num_x_sectors,
+                        .alternate_room = room_info.alternate_room,
+                        .flags = room_info.flags,
+                        .alternate_group = room_info.alternate_group,
+                    };
+
+                    const uint32_t data_start = static_cast<uint32_t>(file.tellg());
+
+                    const uint32_t number_of_roomlets = read<uint32_t>(file);
+                    const std::vector<uint32_t> roomlet_offsets = read_vector<uint32_t>(file, 16);
+
+                    uint16_t total_vertices = 0;
+                    uint32_t previous_offset = 0;
+                    for (std::size_t i = 0; i < number_of_roomlets; ++i)
+                    {
+                        previous_offset = roomlet_offsets[i];
+
+                        file.seekg(static_cast<std::size_t>(data_start) + roomlet_offsets[i]);
+
+                        const auto bounding_box = read_vector<uint8_t>(file, 6);
+                        bounding_box;
+
+                        uint8_t num_vertices = read<uint8_t>(file);
+                        uint8_t num_triangles = read<uint8_t>(file);
+
+                        room.data.vertices.append_range(convert_vertices_tr4_psx(read_vector<uint32_t>(file, num_vertices), room.info.yTop));
+                        room.data.triangles.append_range(convert_tr3_psx_room_triangles(read_vector<uint32_t>(file, num_triangles), total_vertices));
+
+                        bool more_quads = true;
+                        while (more_quads)
                         {
-                            .info = room_info.info,
-                            .num_z_sectors = room_info.num_z_sectors,
-                            .num_x_sectors = room_info.num_x_sectors,
-                            .alternate_room = room_info.alternate_room,
-                            .flags = room_info.flags,
-                            .alternate_group = room_info.alternate_group,
-                        };
+                            const uint32_t tex_info = read<uint32_t>(file);
 
-                        const uint32_t data_start = static_cast<uint32_t>(file.tellg());
-
-                        const uint32_t number_of_roomlets = read<uint32_t>(file);
-                        const std::vector<uint32_t> roomlet_offsets = read_vector<uint32_t>(file, 16);
-
-                        uint16_t total_vertices = 0;
-                        uint32_t previous_offset = 0;
-                        for (std::size_t i = 0; i < number_of_roomlets; ++i)
-                        {
-                            previous_offset = roomlet_offsets[i];
-
-                            file.seekg(static_cast<std::size_t>(data_start) + roomlet_offsets[i]);
-
-                            const auto bounding_box = read_vector<uint8_t>(file, 6);
-                            bounding_box;
-
-                            uint8_t num_vertices = read<uint8_t>(file);
-                            uint8_t num_triangles = read<uint8_t>(file);
-
-                            room.data.vertices.append_range(convert_vertices_tr4_psx(read_vector<uint32_t>(file, num_vertices), room.info.yTop));
-                            room.data.triangles.append_range(convert_tr3_psx_room_triangles(read_vector<uint32_t>(file, num_triangles), total_vertices));
-
-                            bool more_quads = true;
-                            while (more_quads)
+                            uint32_t face_index = 0;
+                            for (uint32_t face : read_vector<uint32_t>(file, 3))
                             {
-                                const uint32_t tex_info = read<uint32_t>(file);
-
-                                uint32_t face_index = 0;
-                                for (uint32_t face : read_vector<uint32_t>(file, 3))
+                                if (((tex_info >> (10 * face_index)) & 0x3ff) == 0x3ff)
                                 {
-                                    if (((tex_info >> (10 * face_index)) & 0x3ff) == 0x3ff)
-                                    {
-                                        more_quads = false;
-                                        break;
-                                    }
-
-                                    room.data.rectangles.push_back
-                                    (
-                                        tr4_mesh_face4
-                                        {
-                                            .vertices =
-                                            {
-                                                static_cast<uint16_t>(total_vertices + (face & 0x7f)),
-                                                static_cast<uint16_t>(total_vertices + ((face >> 7) & 0x7f)),
-                                                static_cast<uint16_t>(total_vertices + ((face >> 21) & 0x7f)),    // swapped with last
-                                                static_cast<uint16_t>(total_vertices + ((face >> 14) & 0x7f))
-                                            },
-                                            .texture = static_cast<uint16_t>((tex_info >> (face_index * 10)) & 0x3ff),
-                                            .effects = 0
-                                        }
-                                    );
-                                    face_index++;
+                                    more_quads = false;
+                                    break;
                                 }
-                            }
 
-                            total_vertices += num_vertices;
+                                room.data.rectangles.push_back
+                                (
+                                    tr4_mesh_face4
+                                    {
+                                        .vertices =
+                                        {
+                                            static_cast<uint16_t>(total_vertices + (face & 0x7f)),
+                                            static_cast<uint16_t>(total_vertices + ((face >> 7) & 0x7f)),
+                                            static_cast<uint16_t>(total_vertices + ((face >> 21) & 0x7f)),    // swapped with last
+                                            static_cast<uint16_t>(total_vertices + ((face >> 14) & 0x7f))
+                                        },
+                                        .texture = static_cast<uint16_t>((tex_info >> (face_index * 10)) & 0x3ff),
+                                        .effects = 0
+                                    }
+                                );
+                                face_index++;
+                            }
                         }
 
-                        file.seekg(data_start + room_info.data_size, std::ios::beg);
+                        total_vertices += num_vertices;
+                    }
 
-                        const uint32_t portals_start = static_cast<uint32_t>(file.tellg());
-                        room.portals = read_vector<tr_room_portal>(file, room_info.portal_size / sizeof(tr_room_portal));
-                        file.seekg(portals_start + room_info.portal_size, std::ios::beg);
+                    file.seekg(data_start + room_info.data_size, std::ios::beg);
 
-                        const uint32_t sectors_start = static_cast<uint32_t>(file.tellg());
-                        room.sector_list = read_vector<tr_room_sector>(file, room.num_z_sectors * room.num_x_sectors);
-                        file.seekg(sectors_start + room_info.sectors_size, std::ios::beg);
+                    const uint32_t portals_start = static_cast<uint32_t>(file.tellg());
+                    room.portals = read_vector<tr_room_portal>(file, room_info.portal_size / sizeof(tr_room_portal));
+                    file.seekg(portals_start + room_info.portal_size, std::ios::beg);
 
-                        const uint32_t lights_start = static_cast<uint32_t>(file.tellg());
-                        room.lights = read_vector<tr4_psx_room_light>(file, room_info.num_lights)
-                            | std::views::transform([](auto&& l)
+                    const uint32_t sectors_start = static_cast<uint32_t>(file.tellg());
+                    room.sector_list = read_vector<tr_room_sector>(file, room.num_z_sectors * room.num_x_sectors);
+                    file.seekg(sectors_start + room_info.sectors_size, std::ios::beg);
+
+                    const uint32_t lights_start = static_cast<uint32_t>(file.tellg());
+                    room.lights = read_vector<tr4_psx_room_light>(file, room_info.num_lights)
+                        | std::views::transform([](auto&& l)
+                            {
+                                tr_x_room_light new_light
                                 {
-                                    tr_x_room_light new_light
+                                    .level_version = LevelVersion::Tomb4,
+                                    .tr4 =
                                     {
-                                        .level_version = LevelVersion::Tomb4,
-                                        .tr4 =
-                                        {
-                                            .x = l.x,
-                                            .y = l.y,
-                                            .z = l.z,
-                                            .colour = {.Red = l.r, .Green = l.g, .Blue = l.b },
-                                            .light_type = l.type,
-                                            .intensity = l.intensity,
-                                            .dx = static_cast<float>(l.dx) / 4096.0f,
-                                            .dy = static_cast<float>(l.dy) / 4096.0f,
-                                            .dz = static_cast<float>(l.dz) / 4096.0f
-                                        }
-                                    };
-
-                                    switch (l.type)
-                                    {
-                                        case LightType::Spot:
-                                        {
-                                            new_light.tr4.in = static_cast<float>(l.spot.in << 2) / 16384.0f;
-                                            new_light.tr4.out = static_cast<float>(l.spot.out << 2) / 16384.0f;
-                                            new_light.tr4.length = static_cast<float>(l.spot.length << 7);
-                                            new_light.tr4.cutoff = static_cast<float>(l.spot.cutoff << 7);
-                                            break;
-                                        }
-                                        case LightType::Shadow:
-                                        {
-                                            new_light.tr4.in = static_cast<float>(l.shadow.hotspot << 7);
-                                            new_light.tr4.out = static_cast<float>(l.shadow.falloff << 7);
-                                            break;
-                                        }
-                                        case LightType::Point:
-                                        {
-                                            new_light.tr4.in = static_cast<float>(l.point.hotspot << 7);
-                                            new_light.tr4.out = static_cast<float>(l.point.falloff << 7);
-                                            break;
-                                        }
+                                        .x = l.x,
+                                        .y = l.y,
+                                        .z = l.z,
+                                        .colour = {.Red = l.r, .Green = l.g, .Blue = l.b },
+                                        .light_type = l.type,
+                                        .intensity = l.intensity,
+                                        .dx = static_cast<float>(l.dx) / 4096.0f,
+                                        .dy = static_cast<float>(l.dy) / 4096.0f,
+                                        .dz = static_cast<float>(l.dz) / 4096.0f
                                     }
+                                };
 
-                                    return new_light;
+                                switch (l.type)
+                                {
+                                case LightType::Spot:
+                                {
+                                    new_light.tr4.in = static_cast<float>(l.spot.in << 2) / 16384.0f;
+                                    new_light.tr4.out = static_cast<float>(l.spot.out << 2) / 16384.0f;
+                                    new_light.tr4.length = static_cast<float>(l.spot.length << 7);
+                                    new_light.tr4.cutoff = static_cast<float>(l.spot.cutoff << 7);
+                                    break;
+                                }
+                                case LightType::Shadow:
+                                {
+                                    new_light.tr4.in = static_cast<float>(l.shadow.hotspot << 7);
+                                    new_light.tr4.out = static_cast<float>(l.shadow.falloff << 7);
+                                    break;
+                                }
+                                case LightType::Point:
+                                {
+                                    new_light.tr4.in = static_cast<float>(l.point.hotspot << 7);
+                                    new_light.tr4.out = static_cast<float>(l.point.falloff << 7);
+                                    break;
+                                }
+                                }
 
-                                }) | std::ranges::to<std::vector>();
-                        file.seekg(lights_start + room_info.light_size, std::ios::beg);
+                                return new_light;
 
-                        const uint32_t statics_start = static_cast<uint32_t>(file.tellg());
-                        room.static_meshes = read_vector<tr3_room_staticmesh>(file, room_info.num_meshes);
-                        file.seekg(statics_start + room_info.static_mesh_size, std::ios::beg);
+                            }) | std::ranges::to<std::vector>();
+                    file.seekg(lights_start + room_info.light_size, std::ios::beg);
 
-                        return room;
-                    }) | std::ranges::to<std::vector>();
-        }
+                    const uint32_t statics_start = static_cast<uint32_t>(file.tellg());
+                    room.static_meshes = read_vector<tr3_room_staticmesh>(file, room_info.num_meshes);
+                    file.seekg(statics_start + room_info.static_mesh_size, std::ios::beg);
 
-        void read_sounds_tr4_psx(trview::Activity& activity, 
-            std::basic_ispanstream<uint8_t>& file,
-            const ILevel::LoadCallbacks& callbacks,
-            uint32_t sounds_offset,
-            uint32_t data_offset,
-            uint32_t num_sounds,
-            uint32_t data_length,
-            uint32_t sample_frequency)
+                    return room;
+                }) | std::ranges::to<std::vector>();
+    }
+
+    void read_sounds_tr4_psx(trview::Activity& activity,
+        std::basic_ispanstream<uint8_t>& file,
+        const ILevel::LoadCallbacks& callbacks,
+        uint32_t sounds_offset,
+        uint32_t data_offset,
+        uint32_t num_sounds,
+        uint32_t data_length,
+        uint32_t sample_frequency)
+    {
+        callbacks.on_progress("Reading sounds");
+        log_file(activity, file, "Reading sounds");
+
+        file.seekg(sounds_offset, std::ios::beg);
+        const auto sound_offsets = read_vector<uint32_t>(file, num_sounds);
+
+        file.seekg(data_offset, std::ios::beg);
+        const auto sound_data = read_vector<byte>(file, data_length);
+
+        for (uint32_t s = 0; s < sound_offsets.size(); ++s)
         {
-            callbacks.on_progress("Reading sounds");
-            log_file(activity, file, "Reading sounds");
-
-            file.seekg(sounds_offset, std::ios::beg);
-            const auto sound_offsets = read_vector<uint32_t>(file, num_sounds);
-
-            file.seekg(data_offset, std::ios::beg);
-            const auto sound_data = read_vector<byte>(file, data_length);
-
-            for (uint32_t s = 0; s < sound_offsets.size(); ++s)
-            {
-                callbacks.on_progress(std::format("Loading sound {} of {}", s, sound_offsets.size()));
-                log_file(activity, file, std::format("Loading sound {} of {}", s, sound_offsets.size()));
-                const std::size_t offset = sound_offsets[s];
-                const std::size_t size = s == sound_offsets.size() - 1 ?
-                    sound_data.size() - offset - 1 :
-                    sound_offsets[s + 1] - offset;
-                callbacks.on_sound(static_cast<uint16_t>(s), convert_vag_to_wav({ &sound_data[offset], &sound_data[offset + size] }, sample_frequency));
-            }
-
-            log_file(activity, file, std::format("Read {} sounds", sound_offsets.size()));
+            callbacks.on_progress(std::format("Loading sound {} of {}", s, sound_offsets.size()));
+            log_file(activity, file, std::format("Loading sound {} of {}", s, sound_offsets.size()));
+            const std::size_t offset = sound_offsets[s];
+            const std::size_t size = s == sound_offsets.size() - 1 ?
+                sound_data.size() - offset - 1 :
+                sound_offsets[s + 1] - offset;
+            callbacks.on_sound(static_cast<uint16_t>(s), convert_vag_to_wav({ &sound_data[offset], &sound_data[offset + size] }, sample_frequency));
         }
+
+        log_file(activity, file, std::format("Read {} sounds", sound_offsets.size()));
     }
 
     void Level::generate_mesh_tr4_psx(tr_mesh& mesh, std::basic_ispanstream<uint8_t>& stream)
@@ -517,10 +470,13 @@ namespace trlevel
         activity;
 
         file.seekg(0x7800, std::ios::beg);
-
         const uint32_t start = static_cast<uint32_t>(file.tellg());
         auto info = read<tr4_psx_level_info>(file);
+        load_tr4_5_psx(file, start, info, activity, callbacks);
+    }
 
+    void Level::load_tr4_5_psx(std::basic_ispanstream<uint8_t>& file, uint32_t start, const tr4_psx_level_info& info, trview::Activity& activity, const LoadCallbacks& callbacks)
+    {
         file.seekg(start + info.room_data_offset, std::ios::beg);
         _rooms = read_rooms_tr4_psx(info.num_rooms, file, activity, callbacks);
 
@@ -658,43 +614,43 @@ namespace trlevel
         file.seekg(start + info.textiles_offset);
 
         auto convert_textile4_tr4_psx = [&](tr_object_texture_psx& t)
-        {
-            const auto [tx, ty] = tile_to_x_y(t.Tile);
-            const auto [cx, cy] = clut_to_clut(t.Clut);
-            tr_clut clut = *reinterpret_cast<const tr_clut*>(&textile_bytes[cy * 1024 + cx]);
-
-            // Check if we've already converted this tile + clut
-            for (auto i = _converted_t16.begin(); i < _converted_t16.end(); ++i)
             {
-                if (i->first == t.Tile && i->second == t.Clut)
-                {
-                    t.Attribute = attribute_for_object_texture(t, clut),
-                    t.Tile = static_cast<uint16_t>(std::distance(_converted_t16.begin(), i));
-                    t.Clut = 0;
-                    return;
-                }
-            }
-            // If not, create new conversion
-            _converted_t16.push_back(std::make_pair(t.Tile, t.Clut));
+                const auto [tx, ty] = tile_to_x_y(t.Tile);
+                const auto [cx, cy] = clut_to_clut(t.Clut);
+                tr_clut clut = *reinterpret_cast<const tr_clut*>(&textile_bytes[cy * 1024 + cx]);
 
-            tr_textile16& tile16 = _textile16.emplace_back();
-            for (int y = 0; y < 256; ++y)
-            {
-                for (int x = 0; x < 256; ++x)
+                // Check if we've already converted this tile + clut
+                for (auto i = _converted_t16.begin(); i < _converted_t16.end(); ++i)
                 {
-                    const std::size_t src_pixel = ((ty + y) * 1024) + (tx + (x / 2));
-                    const std::size_t dest_pixel = y * 256 + x;
-                    const tr_colorindex4 index = *reinterpret_cast<const tr_colorindex4*>(&textile_bytes[src_pixel]);
-                    const tr_rgba5551& colour = clut.Colour[(x % 2) ? index.b : index.a];
-                    tile16.Tile[dest_pixel] = (colour.Alpha << 15) | (colour.Red << 10) | (colour.Green << 5) | colour.Blue;
+                    if (i->first == t.Tile && i->second == t.Clut)
+                    {
+                        t.Attribute = attribute_for_object_texture(t, clut),
+                            t.Tile = static_cast<uint16_t>(std::distance(_converted_t16.begin(), i));
+                        t.Clut = 0;
+                        return;
+                    }
                 }
-            }
+                // If not, create new conversion
+                _converted_t16.push_back(std::make_pair(t.Tile, t.Clut));
 
-            _num_textiles = static_cast<uint32_t>(_textile16.size());
-            t.Attribute = attribute_for_object_texture(t, clut);
-            t.Tile = static_cast<uint16_t>(_textile16.size() - 1);
-            t.Clut = 0;
-        };
+                tr_textile16& tile16 = _textile16.emplace_back();
+                for (int y = 0; y < 256; ++y)
+                {
+                    for (int x = 0; x < 256; ++x)
+                    {
+                        const std::size_t src_pixel = ((ty + y) * 1024) + (tx + (x / 2));
+                        const std::size_t dest_pixel = y * 256 + x;
+                        const tr_colorindex4 index = *reinterpret_cast<const tr_colorindex4*>(&textile_bytes[src_pixel]);
+                        const tr_rgba5551& colour = clut.Colour[(x % 2) ? index.b : index.a];
+                        tile16.Tile[dest_pixel] = (colour.Alpha << 15) | (colour.Red << 10) | (colour.Green << 5) | colour.Blue;
+                    }
+                }
+
+                _num_textiles = static_cast<uint32_t>(_textile16.size());
+                t.Attribute = attribute_for_object_texture(t, clut);
+                t.Tile = static_cast<uint16_t>(_textile16.size() - 1);
+                t.Clut = 0;
+            };
 
         _object_textures = _object_textures_psx
             | std::views::transform([&](auto texture)

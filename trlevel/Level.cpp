@@ -239,7 +239,8 @@ namespace trlevel
                 {
                     generate_mesh_tr3_psx(mesh, stream);
                 }
-                else if (_platform_and_version.version == LevelVersion::Tomb4)
+                else if (_platform_and_version.version == LevelVersion::Tomb4 ||
+                         _platform_and_version.version == LevelVersion::Tomb5)
                 {
                     generate_mesh_tr4_psx(mesh, stream);
                 }
