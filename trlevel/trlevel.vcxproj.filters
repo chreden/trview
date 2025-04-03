@@ -85,6 +85,9 @@
       <Filter>Level\PSX</Filter>
     </ClCompile>
     <ClCompile Include="Pack.cpp" />
+    <ClCompile Include="Level_tr5_psx.cpp">
+      <Filter>Level\PSX</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Mocks">
