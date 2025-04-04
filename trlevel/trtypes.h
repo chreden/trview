@@ -784,6 +784,71 @@ namespace trlevel
     };
     static_assert(sizeof(tr4_psx_level_info) == 228);
 
+    struct tr4_psx_room_info
+    {
+        uint32_t        data_size;
+        uint32_t        portal_size;
+        uint32_t        sectors_size;
+        uint32_t        light_size;
+        uint32_t        static_mesh_size;
+        tr_room_info    info;
+        uint16_t        num_z_sectors;
+        uint16_t        num_x_sectors;
+        char            unknown_1[4];
+        uint16_t        num_lights;
+        uint16_t        num_meshes;
+        char            unknown_2[1];
+        uint8_t         alternate_group;
+        char            unknown_3[22];
+        int16_t         alternate_room;
+        int16_t         flags;
+    };
+    static_assert(sizeof(tr4_psx_room_info) == 80);
+
+    struct tr4_psx_room_light
+    {
+        int32_t x;
+        int32_t y;
+        int32_t z;
+        LightType type;
+        uint8_t r;
+        uint8_t g;
+        uint8_t b;
+        int16_t dx;
+        int16_t dy;
+        int16_t dz;
+        uint16_t intensity;
+
+        struct spot_light
+        {
+            uint8_t length;
+            uint8_t cutoff;
+            int16_t unused;
+            int16_t in;
+            int16_t out;
+        };
+
+        struct shadow_light
+        {
+            uint8_t hotspot;
+            uint8_t falloff;
+        };
+
+        struct point_light
+        {
+            uint8_t hotspot;
+            uint8_t falloff;
+        };
+
+        union
+        {
+            spot_light spot;
+            shadow_light shadow;
+            point_light point;
+        };
+    };
+    static_assert(sizeof(tr4_psx_room_light) == 32);
+
 #pragma pack(pop)
 
     struct tr2_frame
