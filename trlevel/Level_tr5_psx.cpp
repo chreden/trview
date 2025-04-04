@@ -19,7 +19,6 @@ namespace trlevel
                     .colour = {.r = static_cast<float>(l.r) / 255.0f, .g = static_cast<float>(l.g) / 255.0f, .b = static_cast<float>(l.b) / 255.0f },
                     .direction = {.x = static_cast<float>(l.dx) / 4096.0f, .y = static_cast<float>(l.dy) / 4096.0f, .z = static_cast<float>(l.dz) / 4096.0f },
                     .light_type = l.type
-                    // .intensity = l.intensity,
                 }
             };
 
@@ -29,8 +28,8 @@ namespace trlevel
             {
                 new_light.tr5.in = static_cast<float>(l.spot.in << 2) / 16384.0f;
                 new_light.tr5.out = static_cast<float>(l.spot.out << 2) / 16384.0f;
-                new_light.tr5.rad_in = static_cast<float>(l.spot.length << 7);
-                new_light.tr5.rad_out = static_cast<float>(l.spot.length << 7);
+                new_light.tr5.rad_in = std::acosf(new_light.tr5.in) * 2.0f;
+                new_light.tr5.rad_out = std::acosf(new_light.tr5.out) * 2.0f;
                 new_light.tr5.range = static_cast<float>(l.spot.cutoff << 7);
                 break;
             }
@@ -51,7 +50,7 @@ namespace trlevel
             return new_light;
         }
 
-        std::vector<tr3_room> read_rooms_tr5_psx(uint16_t num_rooms, std::basic_ispanstream<uint8_t>& file, LevelVersion version)
+        std::vector<tr3_room> read_rooms_tr5_psx(uint16_t num_rooms, std::basic_ispanstream<uint8_t>& file)
         {
             return read_vector<tr4_psx_room_info>(file, num_rooms)
                 | std::views::transform([&](auto&& room_info)
@@ -97,7 +96,7 @@ namespace trlevel
         const uint32_t start = static_cast<uint32_t>(file.tellg());
         auto info = read<tr4_psx_level_info>(file);
         file.seekg(start + info.room_data_offset, std::ios::beg);
-        _rooms = read_rooms_tr5_psx(info.num_rooms, file, _platform_and_version.version);
+        _rooms = read_rooms_tr5_psx(info.num_rooms, file);
         _floor_data = read_vector<uint16_t>(file, info.floor_data_size / 2);
 
         // 'Room outside map':

@@ -385,11 +385,8 @@ namespace trlevel
         return frames;
     }
 
-    std::vector<tr3_room> read_rooms_tr4_psx(uint16_t num_rooms, std::basic_ispanstream<uint8_t>& file, LevelVersion version, trview::Activity& activity, const ILevel::LoadCallbacks& callbacks)
+    std::vector<tr3_room> read_rooms_tr4_psx(uint16_t num_rooms, std::basic_ispanstream<uint8_t>& file)
     {
-        activity;
-        callbacks;
-
         return read_vector<tr4_psx_room_info>(file, num_rooms)
             | std::views::transform([&](auto&& room_info)
                 {
@@ -644,7 +641,7 @@ namespace trlevel
         const uint32_t start = static_cast<uint32_t>(file.tellg());
         auto info = read<tr4_psx_level_info>(file);
         file.seekg(start + info.room_data_offset, std::ios::beg);
-        _rooms = read_rooms_tr4_psx(info.num_rooms, file, _platform_and_version.version);
+        _rooms = read_rooms_tr4_psx(info.num_rooms, file);
         _floor_data = read_vector<uint16_t>(file, info.floor_data_size / 2);
 
         // 'Room outside map':
