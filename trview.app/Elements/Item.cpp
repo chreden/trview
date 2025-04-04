@@ -110,7 +110,7 @@ namespace trview
         if (level.get_model_by_id(level.get_mesh_from_type_id(type_id), model))
         {
             if (level.platform_and_version().platform == trlevel::Platform::PSX && 
-                level.platform_and_version().version == trlevel::LevelVersion::Tomb4)
+                equals_any(level.platform_and_version().version, trlevel::LevelVersion::Tomb4, trlevel::LevelVersion::Tomb5))
             {
                 const uint32_t end_pointer = static_cast<uint32_t>(model.StartingMesh + model.NumMeshes * 2);
                 for (uint32_t mesh_pointer = model.StartingMesh; mesh_pointer < end_pointer; mesh_pointer += 2)

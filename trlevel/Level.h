@@ -221,6 +221,7 @@ namespace trlevel
         void load_tr4_psx(std::basic_ispanstream<uint8_t>& file, trview::Activity& activity, const LoadCallbacks& callbacks);
         void load_tr5_pc(std::basic_ispanstream<uint8_t>& file, trview::Activity& activity, const LoadCallbacks& callbacks);
         void load_tr5_pc_remastered(std::basic_ispanstream<uint8_t>& file, trview::Activity& activity, const LoadCallbacks& callbacks);
+        void load_tr5_psx(std::basic_ispanstream<uint8_t>& file, trview::Activity& activity, const LoadCallbacks& callbacks);
         void load_psx_pack(std::basic_ispanstream<uint8_t>& file, trview::Activity& activity, const LoadCallbacks& callbacks);
 
         void generate_sounds_tr1(const LoadCallbacks& callbacks);
@@ -235,6 +236,7 @@ namespace trlevel
         void generate_mesh_tr2_psx_beta(tr_mesh& mesh, std::basic_ispanstream<uint8_t>& stream);
         void generate_mesh_tr3_psx(tr_mesh& mesh, std::basic_ispanstream<uint8_t>& stream);
         void generate_mesh_tr4_psx(tr_mesh& mesh, std::basic_ispanstream<uint8_t>& stream);
+        void generate_object_textures_tr4_psx(std::basic_ispanstream<uint8_t>& file, uint32_t start, const tr4_psx_level_info& info);
 
         PlatformAndVersion _platform_and_version;
 
