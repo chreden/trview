@@ -171,4 +171,11 @@ namespace trview
             window->set_trng(value);
         }
     }
+
+    std::vector<std::weak_ptr<IRoomsWindow>> RoomsWindowManager::windows() const
+    {
+        return _windows |
+            std::views::transform([](auto&& w) -> std::weak_ptr<IRoomsWindow> { return w.second; }) |
+            std::ranges::to<std::vector>();
+    }
 }

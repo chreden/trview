@@ -51,6 +51,8 @@ namespace trview
         virtual void clear_selected_camera_sink() override;
         void set_ng_plus(bool value) override;
         void set_trng(bool value) override;
+        std::string name() const override;
+        void set_filters(std::vector<Filters<IRoom>::Filter> filters) override;
     private:
         void set_sync_room(bool value);
         void render_rooms_list();

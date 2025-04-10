@@ -8,6 +8,7 @@
 #include "../Elements/ILight.h"
 #include <trview.app/Elements/IRoom.h>
 #include "../UI/MapColours.h"
+#include "../Filters/Filters.h"
 
 namespace trview
 {
@@ -87,5 +88,7 @@ namespace trview
         virtual void clear_selected_camera_sink() = 0;
         virtual void set_ng_plus(bool value) = 0;
         virtual void set_trng(bool value) = 0;
+        virtual std::string name() const = 0;
+        virtual void set_filters(std::vector<Filters<IRoom>::Filter> filters) = 0;
     };
 }

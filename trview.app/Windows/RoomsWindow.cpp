@@ -1290,4 +1290,14 @@ namespace trview
     {
         _trng = value;
     }
+
+    std::string RoomsWindow::name() const
+    {
+        return _id;
+    }
+
+    void RoomsWindow::set_filters(std::vector<Filters<IRoom>::Filter> filters)
+    {
+        _filters.set_filters(filters);
+    }
 }

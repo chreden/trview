@@ -36,7 +36,7 @@ namespace trview
             std::unique_ptr<ILogWindowManager> log_window_manager,
             std::unique_ptr<IPackWindowManager> pack_window_manager,
             std::unique_ptr<IPluginsWindowManager> plugins_window_manager,
-            std::unique_ptr<IRoomsWindowManager> rooms_window_manager,
+            std::shared_ptr<IRoomsWindowManager> rooms_window_manager,
             std::unique_ptr<IRouteWindowManager> route_window_manager,
             std::unique_ptr<ISoundsWindowManager> sounds_window_manager,
             std::unique_ptr<IStaticsWindowManager> statics_window_manager,
@@ -72,7 +72,7 @@ namespace trview
         std::unique_ptr<ILogWindowManager> _log_windows;
         std::unique_ptr<IPackWindowManager> _pack_windows;
         std::unique_ptr<IPluginsWindowManager> _plugins_windows;
-        std::unique_ptr<IRoomsWindowManager> _rooms_windows;
+        std::shared_ptr<IRoomsWindowManager> _rooms_windows;
         std::weak_ptr<IRoute> _route;
         std::unique_ptr<IRouteWindowManager> _route_window;
         std::unique_ptr<ISoundsWindowManager> _sounds_windows;
