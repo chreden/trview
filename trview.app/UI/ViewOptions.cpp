@@ -125,6 +125,12 @@ namespace trview
 
                     if (_flip_enabled)
                     {
+                        if (ImGui::IsItemHovered())
+                        {
+                            ImGui::BeginTooltip();
+                            ImGui::Text("Click to toggle flip map, right click for filter options.");
+                            ImGui::EndTooltip();
+                        }
                         show_room_filter(_rooms_window_manager, {{.key = "Alternate", .compare = CompareOp::Exists, .op = Op::And }});
                     }
                 }
@@ -134,6 +140,13 @@ namespace trview
             if (_use_alternate_groups)
             {
                 ImGui::Text("Flip Groups");
+                if (ImGui::IsItemHovered())
+                {
+                    ImGui::BeginTooltip();
+                    ImGui::Text("Alternate groups in the level. Click to toggle, right click for filter options.");
+                    ImGui::EndTooltip();
+                }
+
                 for (auto& group : _alternate_group_values)
                 {
                     std::string id = std::to_string(group.first) + "##" + std::to_string(group.first) + "_flip";
