@@ -139,7 +139,7 @@ namespace trview
 
             if (_use_alternate_groups)
             {
-                ImGui::Text("Flip Groups");
+                ImGui::Text(std::format("{}Alternate Groups", _alternate_group_values.empty() ? "No " : "").c_str());
                 if (ImGui::IsItemHovered())
                 {
                     ImGui::BeginTooltip();
