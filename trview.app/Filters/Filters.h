@@ -55,6 +55,8 @@ namespace trview
             std::string value2;
             Op op{ Op::And };
 
+            auto operator <=> (const Filter&) const = default;
+
             int value_count() const noexcept;
             bool initial_state() const noexcept;
         };

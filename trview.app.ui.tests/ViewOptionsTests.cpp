@@ -4,8 +4,14 @@
 
 #include <trview.app/UI/ViewOptions.h>
 #include <trview.app/Windows/IViewer.h>
+#include <trview.tests.common/Mocks.h>
+
+#include <trview.app/Mocks/Windows/IRoomsWindowManager.h>
+#include <trview.app/Mocks/Windows/IRoomsWindow.h>
 
 using namespace trview;
+using namespace trview::tests;
+using namespace trview::mocks;
 
 namespace
 {
@@ -243,6 +249,32 @@ void register_view_options_tests(ImGuiTestEngine* engine)
             IM_CHECK_EQ(ctx->ItemIsChecked("flags/Flip"), true);
         });
 
+    test<ViewOptionsContext>(engine, "View Options", "Flip Checkbox Filter",
+        [](ImGuiTestContext* ctx) { render(ctx->GetVars<ViewOptionsContext>()); },
+        [](ImGuiTestContext* ctx)
+        {
+            std::vector<Filters<IRoom>::Filter> filters;
+            auto room = mock_shared<MockRoomsWindow>();
+            EXPECT_CALL(*room, set_filters).WillOnce(testing::SaveArg<0>(&filters)).Times(1);
+            auto rooms_window_manager = mock_shared<MockRoomsWindowManager>();
+            EXPECT_CALL(*rooms_window_manager, create_window).WillOnce(testing::Return(room));
+
+            auto& context = ctx->GetVars<ViewOptionsContext>();
+            context.ptr = register_test_module().with_rooms_window_manager(rooms_window_manager).build();
+            context.ptr->set_flip_enabled(true);
+
+            ctx->SetRef("View Options");
+            ctx->ItemClick("flags/Flip", ImGuiMouseButton_Right);
+            ctx->ItemOpen("/**/Filter");
+            ctx->ItemClick("/**/##Menu_00/New Window");
+
+            IM_CHECK_EQ(true, testing::Mock::VerifyAndClearExpectations(rooms_window_manager.get()));
+            IM_CHECK_EQ(true, testing::Mock::VerifyAndClearExpectations(room.get()));
+
+            const std::vector<Filters<IRoom>::Filter> expected{ {.key = "Alternate", .compare = CompareOp::Exists, .op = Op::And } };
+            IM_CHECK_EQ(expected, filters);
+        });
+
     test<ViewOptionsContext>(engine, "View Options", "Flip Flags Toggle",
         [](ImGuiTestContext* ctx) { render(ctx->GetVars<ViewOptionsContext>()); },
         [](ImGuiTestContext* ctx)
@@ -294,6 +326,33 @@ void register_view_options_tests(ImGuiTestEngine* engine)
             ctx->ItemClick("3##3_flip");
             IM_CHECK_EQ(raised.size(), 1);
             IM_CHECK_EQ(raised[3], false);
+        });
+
+    test<ViewOptionsContext>(engine, "View Options", "Flip Flags Filter",
+        [](ImGuiTestContext* ctx) { render(ctx->GetVars<ViewOptionsContext>()); },
+        [](ImGuiTestContext* ctx)
+        {
+            std::vector<Filters<IRoom>::Filter> filters;
+            auto room = mock_shared<MockRoomsWindow>();
+            EXPECT_CALL(*room, set_filters).WillOnce(testing::SaveArg<0>(&filters)).Times(1);
+            auto rooms_window_manager = mock_shared<MockRoomsWindowManager>();
+            EXPECT_CALL(*rooms_window_manager, create_window).WillOnce(testing::Return(room));
+
+            auto& context = ctx->GetVars<ViewOptionsContext>();
+            context.ptr = register_test_module().with_rooms_window_manager(rooms_window_manager).build();
+            context.ptr->set_use_alternate_groups(true);
+            context.ptr->set_alternate_groups({ 1, 3, 5 });
+
+            ctx->SetRef("View Options");
+            ctx->ItemClick("3##3_flip", ImGuiMouseButton_Right);
+            ctx->ItemOpen("/**/Filter");
+            ctx->ItemClick("/**/##Menu_00/New Window");
+
+            IM_CHECK_EQ(true, testing::Mock::VerifyAndClearExpectations(rooms_window_manager.get()));
+            IM_CHECK_EQ(true, testing::Mock::VerifyAndClearExpectations(room.get()));
+
+            const std::vector<Filters<IRoom>::Filter> expected{ {.key = "Alternate Group", .compare = CompareOp::Equal, .value = "3", .op = Op::And } };
+            IM_CHECK_EQ(expected, filters);
         });
 
     test<ViewOptionsContext>(engine, "View Options", "Hidden Geometry Checkbox Toggle",
