@@ -39,6 +39,8 @@
     <ClInclude Include="Strings.h" />
     <ClInclude Include="Timer.h" />
     <ClInclude Include="TokenStore.h" />
+    <ClInclude Include="Version.h" />
+    <ClInclude Include="Version.hpp" />
     <ClInclude Include="Window.h" />
     <ClInclude Include="Windows\Clipboard.h" />
     <ClInclude Include="Windows\Dialogs.h" />
