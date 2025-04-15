@@ -1,4 +1,5 @@
 #include "AboutWindow.h"
+#include <trview.common/Version.h>
 
 namespace trview
 {
@@ -23,7 +24,7 @@ namespace trview
         ImGui::PushStyleVar(ImGuiStyleVar_WindowMinSize, ImVec2(400, 0));
         if (ImGui::Begin("About", &stay_open, ImGuiWindowFlags_None))
         {
-            ImGui::TextWrapped("trview, Version 2.7.4");
+            ImGui::TextWrapped(std::format("trview, Version {}", trview::version()).c_str());
             ImGui::TextWrapped("Copyright (c) 2025 trview team");
             ImGui::TextWrapped("Licensed under the MIT license");
             ImGui::TextWrapped("Uses DirectXTK (MIT)");

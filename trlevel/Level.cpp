@@ -9,6 +9,7 @@
 #include "Level_common.h"
 #include "Level_psx.h"
 #include "Level_tr3.h"
+#include <trview.common/Version.h>
 
 namespace trlevel
 {
@@ -577,6 +578,7 @@ namespace trlevel
 
         try
         {
+            activity.log(std::format("trview version {}", trview::version()));
             activity.log(std::format("Opening file \"{}\"", _filename));
 
             const bool is_packed = _filename.starts_with("pack") && _pack;

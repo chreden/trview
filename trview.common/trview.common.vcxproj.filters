@@ -80,6 +80,8 @@
     <ClInclude Include="Logs\Message.h">
       <Filter>Logs</Filter>
     </ClInclude>
+    <ClInclude Include="Version.h" />
+    <ClInclude Include="Version.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Size.cpp" />
