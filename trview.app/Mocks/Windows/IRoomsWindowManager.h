@@ -26,6 +26,7 @@ namespace trview
             MOCK_METHOD(void, set_selected_light, (const std::weak_ptr<ILight>&), (override));
             MOCK_METHOD(void, set_ng_plus, (bool), (override));
             MOCK_METHOD(void, set_trng, (bool), (override));
+            MOCK_METHOD(std::vector<std::weak_ptr<IRoomsWindow>>, windows, (), (const, override));
         };
     }
 }

@@ -26,7 +26,13 @@ Wireframe           | Enable wireframe rendering mode
 Geometry            | Toggle geometry mode
 Lighting            | Toggle using room lighting
 Notes               | Toggle notes visibility
-Flip                | Toggle the level flipmap (if present in the level). In TR4+ this will be a flipmap group selector.
+Flip                | Toggle the level flipmap (if present in the level). In TR4+ this will be the alternate group selector.
+
+Right clicking the `Flip` checkbox or one of the alternate group numbers will allow you to filter a Rooms window to show affected rooms.
+
+TR1-3 | TR4+
+---|---
+![TR1-3](view_options/tr1-3_filter.png) | ![TR4](view_options/tr4_filter.png)
 
 ## Room Navigator
 

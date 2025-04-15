@@ -4,18 +4,63 @@
 
 #include <trview.app/UI/ViewOptions.h>
 #include <trview.app/Windows/IViewer.h>
+#include <trview.tests.common/Mocks.h>
+
+#include <trview.app/Mocks/Windows/IRoomsWindowManager.h>
+#include <trview.app/Mocks/Windows/IRoomsWindow.h>
 
 using namespace trview;
+using namespace trview::tests;
+using namespace trview::mocks;
+
+namespace
+{
+    auto register_test_module()
+    {
+        struct test_module
+        {
+            std::shared_ptr<IRoomsWindowManager> rooms_window_manager;
+
+            std::unique_ptr<ViewOptions> build()
+            {
+                return std::make_unique<ViewOptions>(rooms_window_manager);
+            }
+
+            test_module& with_rooms_window_manager(const std::shared_ptr<IRoomsWindowManager>& rooms_window_manager)
+            {
+                this->rooms_window_manager = rooms_window_manager;
+                return *this;
+            }
+        };
+
+        return test_module{};
+    }
+
+    struct ViewOptionsContext
+    {
+        std::unique_ptr<ViewOptions> ptr;
+    };
+
+    void render(ViewOptionsContext& context)
+    {
+        if (context.ptr)
+        {
+            context.ptr->render();
+        }
+    }
+}
 
 void register_view_options_tests(ImGuiTestEngine* engine)
 {
-    test<ViewOptions>(engine, "View Options", "Bounds Checkbox Toggle",
-        [](ImGuiTestContext* ctx) { ctx->GetVars<ViewOptions>().render(); },
+    test<ViewOptionsContext>(engine, "View Options", "Bounds Checkbox Toggle",
+        [](ImGuiTestContext* ctx) { render(ctx->GetVars<ViewOptionsContext>()); },
         [](ImGuiTestContext* ctx)
         {
-            auto& view_options = ctx->GetVars<ViewOptions>();
+            auto& context = ctx->GetVars<ViewOptionsContext>();
+            context.ptr = register_test_module().build();
+
             std::optional<std::tuple<std::string, bool>> clicked;
-            auto token = view_options.on_toggle_changed += [&](const std::string& name, bool value)
+            auto token = context.ptr->on_toggle_changed += [&](const std::string& name, bool value)
             {
                 clicked = { name, value };
             };
@@ -28,28 +73,30 @@ void register_view_options_tests(ImGuiTestEngine* engine)
             IM_CHECK_EQ(std::get<1>(clicked.value()), true);
         });
 
-    test<ViewOptions>(engine, "View Options", "Bounds Checkbox Updated",
-        [](ImGuiTestContext* ctx) { ctx->GetVars<ViewOptions>().render(); },
+    test<ViewOptionsContext>(engine, "View Options", "Bounds Checkbox Updated",
+        [](ImGuiTestContext* ctx) { render(ctx->GetVars<ViewOptionsContext>()); },
         [](ImGuiTestContext* ctx)
         {
-            auto& view_options = ctx->GetVars<ViewOptions>();
+            auto& context = ctx->GetVars<ViewOptionsContext>();
+            context.ptr = register_test_module().build();
 
             ctx->SetRef("View Options");
             IM_CHECK_EQ(ctx->ItemIsChecked("flags/Bounds"), false);
 
-            view_options.set_toggle(IViewer::Options::show_bounding_boxes, true);
+            context.ptr->set_toggle(IViewer::Options::show_bounding_boxes, true);
             ctx->Yield();
 
             IM_CHECK_EQ(ctx->ItemIsChecked("flags/Bounds"), true);
         });
 
-    test<ViewOptions>(engine, "View Options", "Camera/Sink Checkbox Toggle",
-        [](ImGuiTestContext* ctx) { ctx->GetVars<ViewOptions>().render(); },
+    test<ViewOptionsContext>(engine, "View Options", "Camera/Sink Checkbox Toggle",
+        [](ImGuiTestContext* ctx) { render(ctx->GetVars<ViewOptionsContext>()); },
         [](ImGuiTestContext* ctx)
         {
-            auto& view_options = ctx->GetVars<ViewOptions>();
+            auto& context = ctx->GetVars<ViewOptionsContext>();
+            context.ptr = register_test_module().build();
             std::optional<std::tuple<std::string, bool>> clicked;
-            auto token = view_options.on_toggle_changed += [&](const std::string& name, bool value)
+            auto token = context.ptr->on_toggle_changed += [&](const std::string& name, bool value)
             {
                 clicked = { name, value };
             };
@@ -62,28 +109,30 @@ void register_view_options_tests(ImGuiTestEngine* engine)
             IM_CHECK_EQ(std::get<1>(clicked.value()), true);
         });
 
-    test<ViewOptions>(engine, "View Options", "Camera/Sink Checkbox Updated",
-        [](ImGuiTestContext* ctx) { ctx->GetVars<ViewOptions>().render(); },
+    test<ViewOptionsContext>(engine, "View Options", "Camera/Sink Checkbox Updated",
+        [](ImGuiTestContext* ctx) { render(ctx->GetVars<ViewOptionsContext>()); },
         [](ImGuiTestContext* ctx)
         {
-            auto& view_options = ctx->GetVars<ViewOptions>();
+            auto& context = ctx->GetVars<ViewOptionsContext>();
+            context.ptr = register_test_module().build();
 
             ctx->SetRef("View Options");
             IM_CHECK_EQ(ctx->ItemIsChecked("flags/Camera\\/Sink"), false);
 
-            view_options.set_toggle(IViewer::Options::camera_sinks, true);
+            context.ptr->set_toggle(IViewer::Options::camera_sinks, true);
             ctx->Yield();
 
             IM_CHECK_EQ(ctx->ItemIsChecked("flags/Camera\\/Sink"), true);
         });
 
-    test<ViewOptions>(engine, "View Options", "Depth Checkbox Toggle",
-        [](ImGuiTestContext* ctx) { ctx->GetVars<ViewOptions>().render(); },
+    test<ViewOptionsContext>(engine, "View Options", "Depth Checkbox Toggle",
+        [](ImGuiTestContext* ctx) { render(ctx->GetVars<ViewOptionsContext>()); },
         [](ImGuiTestContext* ctx)
         {
-            auto& view_options = ctx->GetVars<ViewOptions>();
+            auto& context = ctx->GetVars<ViewOptionsContext>();
+            context.ptr = register_test_module().build();
             std::optional<std::tuple<std::string, bool>> clicked;
-            auto token = view_options.on_toggle_changed += [&](const std::string& name, bool value)
+            auto token = context.ptr->on_toggle_changed += [&](const std::string& name, bool value)
             {
                 clicked = { name, value };
             };
@@ -96,28 +145,30 @@ void register_view_options_tests(ImGuiTestEngine* engine)
             IM_CHECK_EQ(std::get<1>(clicked.value()), true);
         });
 
-    test<ViewOptions>(engine, "View Options", "Depth Checkbox Updated",
-        [](ImGuiTestContext* ctx) { ctx->GetVars<ViewOptions>().render(); },
+    test<ViewOptionsContext>(engine, "View Options", "Depth Checkbox Updated",
+        [](ImGuiTestContext* ctx) { render(ctx->GetVars<ViewOptionsContext>()); },
         [](ImGuiTestContext* ctx)
         {
-            auto& view_options = ctx->GetVars<ViewOptions>();
+            auto& context = ctx->GetVars<ViewOptionsContext>();
+            context.ptr = register_test_module().build();
 
             ctx->SetRef("View Options");
             IM_CHECK_EQ(ctx->ItemIsChecked("flags/Depth"), false);
 
-            view_options.set_toggle(IViewer::Options::depth_enabled, true);
+            context.ptr->set_toggle(IViewer::Options::depth_enabled, true);
             ctx->Yield();
 
             IM_CHECK_EQ(ctx->ItemIsChecked("flags/Depth"), true);
         });
 
-    test<ViewOptions>(engine, "View Options", "Depth Value Updated",
-        [](ImGuiTestContext* ctx) { ctx->GetVars<ViewOptions>().render(); },
+    test<ViewOptionsContext>(engine, "View Options", "Depth Value Updated",
+        [](ImGuiTestContext* ctx) { render(ctx->GetVars<ViewOptionsContext>()); },
         [](ImGuiTestContext* ctx)
         {
-            auto& view_options = ctx->GetVars<ViewOptions>();
+            auto& context = ctx->GetVars<ViewOptionsContext>();
+            context.ptr = register_test_module().build();
             std::optional<std::tuple<std::string, int32_t>> clicked;
-            auto token = view_options.on_scalar_changed += [&](const std::string& name, int32_t value)
+            auto token = context.ptr->on_scalar_changed += [&](const std::string& name, int32_t value)
             {
                 clicked = { name, value };
             };
@@ -130,42 +181,45 @@ void register_view_options_tests(ImGuiTestEngine* engine)
             IM_CHECK_EQ(std::get<1>(clicked.value()), 1);
         });
 
-    test<ViewOptions>(engine, "View Options", "Flip Checkbox Enabled",
-        [](ImGuiTestContext* ctx) { ctx->GetVars<ViewOptions>().render(); },
+    test<ViewOptionsContext>(engine, "View Options", "Flip Checkbox Enabled",
+        [](ImGuiTestContext* ctx) { render(ctx->GetVars<ViewOptionsContext>()); },
         [](ImGuiTestContext* ctx)
         {
-            auto& view_options = ctx->GetVars<ViewOptions>();
+            auto& context = ctx->GetVars<ViewOptionsContext>();
+            context.ptr = register_test_module().build();
             ctx->SetRef("View Options");
             IM_CHECK_EQ((ctx->ItemInfo("flags/Flip")->InFlags & ImGuiItemFlags_Disabled) != 0, true);
-            view_options.set_flip_enabled(true);
+            context.ptr->set_flip_enabled(true);
             ctx->Yield();
             IM_CHECK_EQ((ctx->ItemInfo("flags/Flip")->InFlags & ImGuiItemFlags_Disabled) != 0, false);
         });
 
-    test<ViewOptions>(engine, "View Options", "Flip Checkbox Hidden with Alternate Groups",
-        [](ImGuiTestContext* ctx) { ctx->GetVars<ViewOptions>().render(); },
+    test<ViewOptionsContext>(engine, "View Options", "Flip Checkbox Hidden with Alternate Groups",
+        [](ImGuiTestContext* ctx) { render(ctx->GetVars<ViewOptionsContext>()); },
         [](ImGuiTestContext* ctx)
         {
-            auto& view_options = ctx->GetVars<ViewOptions>();
-            view_options.set_use_alternate_groups(false);
+            auto& context = ctx->GetVars<ViewOptionsContext>();
+            context.ptr = register_test_module().build();
+            context.ptr->set_use_alternate_groups(false);
 
             ctx->SetRef("View Options");
             IM_CHECK_EQ(ctx->ItemExists("flags/Flip"), true);
-            view_options.set_use_alternate_groups(true);
+            context.ptr->set_use_alternate_groups(true);
             ctx->Engine->InfoTasks.clear_delete();
             ctx->Yield();
             IM_CHECK_EQ(ctx->ItemExists("flags/Flip"), false);
         });
 
-    test<ViewOptions>(engine, "View Options", "Flip Checkbox Toggle",
-        [](ImGuiTestContext* ctx) { ctx->GetVars<ViewOptions>().render(); },
+    test<ViewOptionsContext>(engine, "View Options", "Flip Checkbox Toggle",
+        [](ImGuiTestContext* ctx) { render(ctx->GetVars<ViewOptionsContext>()); },
         [](ImGuiTestContext* ctx)
         {
-            auto& view_options = ctx->GetVars<ViewOptions>();
-            view_options.set_flip_enabled(true);
+            auto& context = ctx->GetVars<ViewOptionsContext>();
+            context.ptr = register_test_module().build();
+            context.ptr->set_flip_enabled(true);
 
             std::optional<std::tuple<std::string, bool>> clicked;
-            auto token = view_options.on_toggle_changed += [&](const std::string& name, bool value)
+            auto token = context.ptr->on_toggle_changed += [&](const std::string& name, bool value)
             {
                 clicked = { name, value };
             };
@@ -178,32 +232,60 @@ void register_view_options_tests(ImGuiTestEngine* engine)
             IM_CHECK_EQ(std::get<1>(clicked.value()), true);
         });
 
-    test<ViewOptions>(engine, "View Options", "Flip Checkbox Updated",
-        [](ImGuiTestContext* ctx) { ctx->GetVars<ViewOptions>().render(); },
+    test<ViewOptionsContext>(engine, "View Options", "Flip Checkbox Updated",
+        [](ImGuiTestContext* ctx) { render(ctx->GetVars<ViewOptionsContext>()); },
         [](ImGuiTestContext* ctx)
         {
-            auto& view_options = ctx->GetVars<ViewOptions>();
-            view_options.set_flip_enabled(true);
+            auto& context = ctx->GetVars<ViewOptionsContext>();
+            context.ptr = register_test_module().build();
+            context.ptr->set_flip_enabled(true);
 
             ctx->SetRef("View Options");
             IM_CHECK_EQ(ctx->ItemIsChecked("flags/Flip"), false);
 
-            view_options.set_toggle(IViewer::Options::flip, true);
+            context.ptr->set_toggle(IViewer::Options::flip, true);
             ctx->Yield();
 
             IM_CHECK_EQ(ctx->ItemIsChecked("flags/Flip"), true);
         });
 
-    test<ViewOptions>(engine, "View Options", "Flip Flags Toggle",
-        [](ImGuiTestContext* ctx) { ctx->GetVars<ViewOptions>().render(); },
+    test<ViewOptionsContext>(engine, "View Options", "Flip Checkbox Filter",
+        [](ImGuiTestContext* ctx) { render(ctx->GetVars<ViewOptionsContext>()); },
         [](ImGuiTestContext* ctx)
         {
-            auto& view_options = ctx->GetVars<ViewOptions>();
-            view_options.set_use_alternate_groups(true);
-            view_options.set_alternate_groups({ 1, 3, 5 });
+            std::vector<Filters<IRoom>::Filter> filters;
+            auto room = mock_shared<MockRoomsWindow>();
+            EXPECT_CALL(*room, set_filters).WillOnce(testing::SaveArg<0>(&filters)).Times(1);
+            auto rooms_window_manager = mock_shared<MockRoomsWindowManager>();
+            EXPECT_CALL(*rooms_window_manager, create_window).WillOnce(testing::Return(room));
+
+            auto& context = ctx->GetVars<ViewOptionsContext>();
+            context.ptr = register_test_module().with_rooms_window_manager(rooms_window_manager).build();
+            context.ptr->set_flip_enabled(true);
+
+            ctx->SetRef("View Options");
+            ctx->ItemClick("flags/Flip", ImGuiMouseButton_Right);
+            ctx->ItemOpen("/**/Filter");
+            ctx->ItemClick("/**/##Menu_00/New Window");
+
+            IM_CHECK_EQ(true, testing::Mock::VerifyAndClearExpectations(rooms_window_manager.get()));
+            IM_CHECK_EQ(true, testing::Mock::VerifyAndClearExpectations(room.get()));
+
+            const std::vector<Filters<IRoom>::Filter> expected{ {.key = "Alternate", .compare = CompareOp::Exists, .op = Op::And } };
+            IM_CHECK_EQ(expected, filters);
+        });
+
+    test<ViewOptionsContext>(engine, "View Options", "Flip Flags Toggle",
+        [](ImGuiTestContext* ctx) { render(ctx->GetVars<ViewOptionsContext>()); },
+        [](ImGuiTestContext* ctx)
+        {
+            auto& context = ctx->GetVars<ViewOptionsContext>();
+            context.ptr = register_test_module().build();
+            context.ptr->set_use_alternate_groups(true);
+            context.ptr->set_alternate_groups({ 1, 3, 5 });
 
             std::unordered_map<uint32_t, bool> raised;
-            auto token = view_options.on_alternate_group += [&](uint32_t group, bool state)
+            auto token = context.ptr->on_alternate_group += [&](uint32_t group, bool state)
             {
                 raised[group] = state;
             };
@@ -215,17 +297,18 @@ void register_view_options_tests(ImGuiTestEngine* engine)
             IM_CHECK_EQ(raised[3], true);
         });
 
-    test<ViewOptions>(engine, "View Options", "Flip Flags Updated",
-        [](ImGuiTestContext* ctx) { ctx->GetVars<ViewOptions>().render(); },
+    test<ViewOptionsContext>(engine, "View Options", "Flip Flags Updated",
+        [](ImGuiTestContext* ctx) { render(ctx->GetVars<ViewOptionsContext>()); },
         [](ImGuiTestContext* ctx)
         {
-            auto& view_options = ctx->GetVars<ViewOptions>();
-            view_options.set_use_alternate_groups(true);
-            view_options.set_alternate_groups({ 1, 3, 5 });
-            view_options.set_alternate_group(3, true);
+            auto& context = ctx->GetVars<ViewOptionsContext>();
+            context.ptr = register_test_module().build();
+            context.ptr->set_use_alternate_groups(true);
+            context.ptr->set_alternate_groups({ 1, 3, 5 });
+            context.ptr->set_alternate_group(3, true);
 
             std::unordered_map<uint32_t, bool> raised;
-            auto token = view_options.on_alternate_group += [&](uint32_t group, bool state)
+            auto token = context.ptr->on_alternate_group += [&](uint32_t group, bool state)
             {
                 raised[group] = state;
             };
@@ -236,7 +319,7 @@ void register_view_options_tests(ImGuiTestEngine* engine)
             IM_CHECK_EQ(raised[3], false);
 
             ctx->Yield();
-            view_options.set_alternate_group(3, true);
+            context.ptr->set_alternate_group(3, true);
             raised.clear();
 
             ctx->SetRef("View Options");
@@ -245,13 +328,41 @@ void register_view_options_tests(ImGuiTestEngine* engine)
             IM_CHECK_EQ(raised[3], false);
         });
 
-    test<ViewOptions>(engine, "View Options", "Hidden Geometry Checkbox Toggle",
-        [](ImGuiTestContext* ctx) { ctx->GetVars<ViewOptions>().render(); },
+    test<ViewOptionsContext>(engine, "View Options", "Flip Flags Filter",
+        [](ImGuiTestContext* ctx) { render(ctx->GetVars<ViewOptionsContext>()); },
         [](ImGuiTestContext* ctx)
         {
-            auto& view_options = ctx->GetVars<ViewOptions>();
+            std::vector<Filters<IRoom>::Filter> filters;
+            auto room = mock_shared<MockRoomsWindow>();
+            EXPECT_CALL(*room, set_filters).WillOnce(testing::SaveArg<0>(&filters)).Times(1);
+            auto rooms_window_manager = mock_shared<MockRoomsWindowManager>();
+            EXPECT_CALL(*rooms_window_manager, create_window).WillOnce(testing::Return(room));
+
+            auto& context = ctx->GetVars<ViewOptionsContext>();
+            context.ptr = register_test_module().with_rooms_window_manager(rooms_window_manager).build();
+            context.ptr->set_use_alternate_groups(true);
+            context.ptr->set_alternate_groups({ 1, 3, 5 });
+
+            ctx->SetRef("View Options");
+            ctx->ItemClick("3##3_flip", ImGuiMouseButton_Right);
+            ctx->ItemOpen("/**/Filter");
+            ctx->ItemClick("/**/##Menu_00/New Window");
+
+            IM_CHECK_EQ(true, testing::Mock::VerifyAndClearExpectations(rooms_window_manager.get()));
+            IM_CHECK_EQ(true, testing::Mock::VerifyAndClearExpectations(room.get()));
+
+            const std::vector<Filters<IRoom>::Filter> expected{ {.key = "Alternate Group", .compare = CompareOp::Equal, .value = "3", .op = Op::And } };
+            IM_CHECK_EQ(expected, filters);
+        });
+
+    test<ViewOptionsContext>(engine, "View Options", "Hidden Geometry Checkbox Toggle",
+        [](ImGuiTestContext* ctx) { render(ctx->GetVars<ViewOptionsContext>()); },
+        [](ImGuiTestContext* ctx)
+        {
+            auto& context = ctx->GetVars<ViewOptionsContext>();
+            context.ptr = register_test_module().build();
             std::optional<std::tuple<std::string, bool>> clicked;
-            auto token = view_options.on_toggle_changed += [&](const std::string& name, bool value)
+            auto token = context.ptr->on_toggle_changed += [&](const std::string& name, bool value)
             {
                 clicked = { name, value };
             };
@@ -264,28 +375,30 @@ void register_view_options_tests(ImGuiTestEngine* engine)
             IM_CHECK_EQ(std::get<1>(clicked.value()), true);
         });
 
-    test<ViewOptions>(engine, "View Options", "Hidden Geometry Checkbox Updated",
-        [](ImGuiTestContext* ctx) { ctx->GetVars<ViewOptions>().render(); },
+    test<ViewOptionsContext>(engine, "View Options", "Hidden Geometry Checkbox Updated",
+        [](ImGuiTestContext* ctx) { render(ctx->GetVars<ViewOptionsContext>()); },
         [](ImGuiTestContext* ctx)
         {
-            auto& view_options = ctx->GetVars<ViewOptions>();
+            auto& context = ctx->GetVars<ViewOptionsContext>();
+            context.ptr = register_test_module().build();
 
             ctx->SetRef("View Options");
             IM_CHECK_EQ(ctx->ItemIsChecked("flags/Geometry"), false);
 
-            view_options.set_toggle(IViewer::Options::geometry, true);
+            context.ptr->set_toggle(IViewer::Options::geometry, true);
             ctx->Yield();
 
             IM_CHECK_EQ(ctx->ItemIsChecked("flags/Geometry"), true);
         });
 
-    test<ViewOptions>(engine, "View Options", "Highlight Checkbox Toggle",
-        [](ImGuiTestContext* ctx) { ctx->GetVars<ViewOptions>().render(); },
+    test<ViewOptionsContext>(engine, "View Options", "Highlight Checkbox Toggle",
+        [](ImGuiTestContext* ctx) { render(ctx->GetVars<ViewOptionsContext>()); },
         [](ImGuiTestContext* ctx)
         {
-            auto& view_options = ctx->GetVars<ViewOptions>();
+            auto& context = ctx->GetVars<ViewOptionsContext>();
+            context.ptr = register_test_module().build();
             std::optional<std::tuple<std::string, bool>> clicked;
-            auto token = view_options.on_toggle_changed += [&](const std::string& name, bool value)
+            auto token = context.ptr->on_toggle_changed += [&](const std::string& name, bool value)
             {
                 clicked = { name, value };
             };
@@ -298,28 +411,30 @@ void register_view_options_tests(ImGuiTestEngine* engine)
             IM_CHECK_EQ(std::get<1>(clicked.value()), true);
         });
 
-    test<ViewOptions>(engine, "View Options", "Highlight Checkbox Updated",
-        [](ImGuiTestContext* ctx) { ctx->GetVars<ViewOptions>().render(); },
+    test<ViewOptionsContext>(engine, "View Options", "Highlight Checkbox Updated",
+        [](ImGuiTestContext* ctx) { render(ctx->GetVars<ViewOptionsContext>()); },
         [](ImGuiTestContext* ctx)
         {
-            auto& view_options = ctx->GetVars<ViewOptions>();
+            auto& context = ctx->GetVars<ViewOptionsContext>();
+            context.ptr = register_test_module().build();
 
             ctx->SetRef("View Options");
             IM_CHECK_EQ(ctx->ItemIsChecked("flags/Highlight"), false);
 
-            view_options.set_toggle(IViewer::Options::highlight, true);
+            context.ptr->set_toggle(IViewer::Options::highlight, true);
             ctx->Yield();
 
             IM_CHECK_EQ(ctx->ItemIsChecked("flags/Highlight"), true);
         });
 
-    test<ViewOptions>(engine, "View Options", "Items Checkbox Toggle",
-        [](ImGuiTestContext* ctx) { ctx->GetVars<ViewOptions>().render(); },
+    test<ViewOptionsContext>(engine, "View Options", "Items Checkbox Toggle",
+        [](ImGuiTestContext* ctx) { render(ctx->GetVars<ViewOptionsContext>()); },
         [](ImGuiTestContext* ctx)
         {
-            auto& view_options = ctx->GetVars<ViewOptions>();
+            auto& context = ctx->GetVars<ViewOptionsContext>();
+            context.ptr = register_test_module().build();
             std::optional<std::tuple<std::string, bool>> clicked;
-            auto token = view_options.on_toggle_changed += [&](const std::string& name, bool value)
+            auto token = context.ptr->on_toggle_changed += [&](const std::string& name, bool value)
             {
                 clicked = { name, value };
             };
@@ -332,28 +447,30 @@ void register_view_options_tests(ImGuiTestEngine* engine)
             IM_CHECK_EQ(std::get<1>(clicked.value()), false);
         });
 
-    test<ViewOptions>(engine, "View Options", "Items Checkbox Updated",
-        [](ImGuiTestContext* ctx) { ctx->GetVars<ViewOptions>().render(); },
+    test<ViewOptionsContext>(engine, "View Options", "Items Checkbox Updated",
+        [](ImGuiTestContext* ctx) { render(ctx->GetVars<ViewOptionsContext>()); },
         [](ImGuiTestContext* ctx)
         {
-            auto& view_options = ctx->GetVars<ViewOptions>();
+            auto& context = ctx->GetVars<ViewOptionsContext>();
+            context.ptr = register_test_module().build();
 
             ctx->SetRef("View Options");
             IM_CHECK_EQ(ctx->ItemIsChecked("flags/Items"), true);
 
-            view_options.set_toggle(IViewer::Options::items, false);
+            context.ptr->set_toggle(IViewer::Options::items, false);
             ctx->Yield();
 
             IM_CHECK_EQ(ctx->ItemIsChecked("flags/Items"), false);
         });
 
-    test<ViewOptions>(engine, "View Options", "Lighting Checkbox Toggle",
-        [](ImGuiTestContext* ctx) { ctx->GetVars<ViewOptions>().render(); },
+    test<ViewOptionsContext>(engine, "View Options", "Lighting Checkbox Toggle",
+        [](ImGuiTestContext* ctx) { render(ctx->GetVars<ViewOptionsContext>()); },
         [](ImGuiTestContext* ctx)
         {
-            auto& view_options = ctx->GetVars<ViewOptions>();
+            auto& context = ctx->GetVars<ViewOptionsContext>();
+            context.ptr = register_test_module().build();
             std::optional<std::tuple<std::string, bool>> clicked;
-            auto token = view_options.on_toggle_changed += [&](const std::string& name, bool value)
+            auto token = context.ptr->on_toggle_changed += [&](const std::string& name, bool value)
             {
                 clicked = { name, value };
             };
@@ -366,28 +483,30 @@ void register_view_options_tests(ImGuiTestEngine* engine)
             IM_CHECK_EQ(std::get<1>(clicked.value()), false);
         });
 
-    test<ViewOptions>(engine, "View Options", "Lighting Checkbox Updated",
-        [](ImGuiTestContext* ctx) { ctx->GetVars<ViewOptions>().render(); },
+    test<ViewOptionsContext>(engine, "View Options", "Lighting Checkbox Updated",
+        [](ImGuiTestContext* ctx) { render(ctx->GetVars<ViewOptionsContext>()); },
         [](ImGuiTestContext* ctx)
         {
-            auto& view_options = ctx->GetVars<ViewOptions>();
+            auto& context = ctx->GetVars<ViewOptionsContext>();
+            context.ptr = register_test_module().build();
 
             ctx->SetRef("View Options");
             IM_CHECK_EQ(ctx->ItemIsChecked("flags/Lighting"), true);
 
-            view_options.set_toggle(IViewer::Options::lighting, false);
+            context.ptr->set_toggle(IViewer::Options::lighting, false);
             ctx->Yield();
 
             IM_CHECK_EQ(ctx->ItemIsChecked("flags/Lighting"), false);
         });
 
-    test<ViewOptions>(engine, "View Options", "Notes Checkbox Toggle",
-        [](ImGuiTestContext* ctx) { ctx->GetVars<ViewOptions>().render(); },
+    test<ViewOptionsContext>(engine, "View Options", "Notes Checkbox Toggle",
+        [](ImGuiTestContext* ctx) { render(ctx->GetVars<ViewOptionsContext>()); },
         [](ImGuiTestContext* ctx)
         {
-            auto& view_options = ctx->GetVars<ViewOptions>();
+            auto& context = ctx->GetVars<ViewOptionsContext>();
+            context.ptr = register_test_module().build();
             std::optional<std::tuple<std::string, bool>> clicked;
-            auto token = view_options.on_toggle_changed += [&](const std::string& name, bool value)
+            auto token = context.ptr->on_toggle_changed += [&](const std::string& name, bool value)
             {
                 clicked = { name, value };
             };
@@ -400,28 +519,30 @@ void register_view_options_tests(ImGuiTestEngine* engine)
             IM_CHECK_EQ(std::get<1>(clicked.value()), false);
         });
 
-    test<ViewOptions>(engine, "View Options", "Notes Checkbox Updated",
-        [](ImGuiTestContext* ctx) { ctx->GetVars<ViewOptions>().render(); },
+    test<ViewOptionsContext>(engine, "View Options", "Notes Checkbox Updated",
+        [](ImGuiTestContext* ctx) { render(ctx->GetVars<ViewOptionsContext>()); },
         [](ImGuiTestContext* ctx)
         {
-            auto& view_options = ctx->GetVars<ViewOptions>();
+            auto& context = ctx->GetVars<ViewOptionsContext>();
+            context.ptr = register_test_module().build();
 
             ctx->SetRef("View Options");
             IM_CHECK_EQ(ctx->ItemIsChecked("flags/Notes"), true);
 
-            view_options.set_toggle(IViewer::Options::notes, false);
+            context.ptr->set_toggle(IViewer::Options::notes, false);
             ctx->Yield();
 
             IM_CHECK_EQ(ctx->ItemIsChecked("flags/Notes"), false);
         });
 
-    test<ViewOptions>(engine, "View Options", "Rooms Checkbox Toggle",
-        [](ImGuiTestContext* ctx) { ctx->GetVars<ViewOptions>().render(); },
+    test<ViewOptionsContext>(engine, "View Options", "Rooms Checkbox Toggle",
+        [](ImGuiTestContext* ctx) { render(ctx->GetVars<ViewOptionsContext>()); },
         [](ImGuiTestContext* ctx)
         {
-            auto& view_options = ctx->GetVars<ViewOptions>();
+            auto& context = ctx->GetVars<ViewOptionsContext>();
+            context.ptr = register_test_module().build();
             std::optional<std::tuple<std::string, bool>> clicked;
-            auto token = view_options.on_toggle_changed += [&](const std::string& name, bool value)
+            auto token = context.ptr->on_toggle_changed += [&](const std::string& name, bool value)
             {
                 clicked = { name, value };
             };
@@ -434,28 +555,30 @@ void register_view_options_tests(ImGuiTestEngine* engine)
             IM_CHECK_EQ(std::get<1>(clicked.value()), false);
         });
 
-    test<ViewOptions>(engine, "View Options", "Rooms Checkbox Updated",
-        [](ImGuiTestContext* ctx) { ctx->GetVars<ViewOptions>().render(); },
+    test<ViewOptionsContext>(engine, "View Options", "Rooms Checkbox Updated",
+        [](ImGuiTestContext* ctx) { render(ctx->GetVars<ViewOptionsContext>()); },
         [](ImGuiTestContext* ctx)
         {
-            auto& view_options = ctx->GetVars<ViewOptions>();
+            auto& context = ctx->GetVars<ViewOptionsContext>();
+            context.ptr = register_test_module().build();
 
             ctx->SetRef("View Options");
             IM_CHECK_EQ(ctx->ItemIsChecked("flags/Rooms"), true);
 
-            view_options.set_toggle(IViewer::Options::rooms, false);
+            context.ptr->set_toggle(IViewer::Options::rooms, false);
             ctx->Yield();
 
             IM_CHECK_EQ(ctx->ItemIsChecked("flags/Rooms"), false);
         });
 
-    test<ViewOptions>(engine, "View Options", "Sounds Checkbox Toggle",
-        [](ImGuiTestContext* ctx) { ctx->GetVars<ViewOptions>().render(); },
+    test<ViewOptionsContext>(engine, "View Options", "Sounds Checkbox Toggle",
+        [](ImGuiTestContext* ctx) { render(ctx->GetVars<ViewOptionsContext>()); },
         [](ImGuiTestContext* ctx)
         {
-            auto& view_options = ctx->GetVars<ViewOptions>();
+            auto& context = ctx->GetVars<ViewOptionsContext>();
+            context.ptr = register_test_module().build();
             std::optional<std::tuple<std::string, bool>> clicked;
-            auto token = view_options.on_toggle_changed += [&](const std::string& name, bool value)
+            auto token = context.ptr->on_toggle_changed += [&](const std::string& name, bool value)
                 {
                     clicked = { name, value };
                 };
@@ -468,28 +591,30 @@ void register_view_options_tests(ImGuiTestEngine* engine)
             IM_CHECK_EQ(std::get<1>(clicked.value()), true);
         });
 
-    test<ViewOptions>(engine, "View Options", "Sounds Checkbox Updated",
-        [](ImGuiTestContext* ctx) { ctx->GetVars<ViewOptions>().render(); },
+    test<ViewOptionsContext>(engine, "View Options", "Sounds Checkbox Updated",
+        [](ImGuiTestContext* ctx) { render(ctx->GetVars<ViewOptionsContext>()); },
         [](ImGuiTestContext* ctx)
         {
-            auto& view_options = ctx->GetVars<ViewOptions>();
+            auto& context = ctx->GetVars<ViewOptionsContext>();
+            context.ptr = register_test_module().build();
 
             ctx->SetRef("View Options");
             IM_CHECK_EQ(ctx->ItemIsChecked("flags/Sounds"), false);
 
-            view_options.set_toggle(IViewer::Options::sound_sources, true);
+            context.ptr->set_toggle(IViewer::Options::sound_sources, true);
             ctx->Yield();
 
             IM_CHECK_EQ(ctx->ItemIsChecked("flags/Sounds"), true);
         });
 
-    test<ViewOptions>(engine, "View Options", "Triggers Checkbox Toggle",
-        [](ImGuiTestContext* ctx) { ctx->GetVars<ViewOptions>().render(); },
+    test<ViewOptionsContext>(engine, "View Options", "Triggers Checkbox Toggle",
+        [](ImGuiTestContext* ctx) { render(ctx->GetVars<ViewOptionsContext>()); },
         [](ImGuiTestContext* ctx)
         {
-            auto& view_options = ctx->GetVars<ViewOptions>();
+            auto& context = ctx->GetVars<ViewOptionsContext>();
+            context.ptr = register_test_module().build();
             std::optional<std::tuple<std::string, bool>> clicked;
-            auto token = view_options.on_toggle_changed += [&](const std::string& name, bool value)
+            auto token = context.ptr->on_toggle_changed += [&](const std::string& name, bool value)
             {
                 clicked = { name, value };
             };
@@ -502,28 +627,30 @@ void register_view_options_tests(ImGuiTestEngine* engine)
             IM_CHECK_EQ(std::get<1>(clicked.value()), false);
         });
 
-    test<ViewOptions>(engine, "View Options", "Triggers Checkbox Updated",
-        [](ImGuiTestContext* ctx) { ctx->GetVars<ViewOptions>().render(); },
+    test<ViewOptionsContext>(engine, "View Options", "Triggers Checkbox Updated",
+        [](ImGuiTestContext* ctx) { render(ctx->GetVars<ViewOptionsContext>()); },
         [](ImGuiTestContext* ctx)
         {
-            auto& view_options = ctx->GetVars<ViewOptions>();
+            auto& context = ctx->GetVars<ViewOptionsContext>();
+            context.ptr = register_test_module().build();
 
             ctx->SetRef("View Options");
             IM_CHECK_EQ(ctx->ItemIsChecked("flags/Triggers"), true);
 
-            view_options.set_toggle(IViewer::Options::triggers, false);
+            context.ptr->set_toggle(IViewer::Options::triggers, false);
             ctx->Yield();
 
             IM_CHECK_EQ(ctx->ItemIsChecked("flags/Triggers"), false);
         });
 
-    test<ViewOptions>(engine, "View Options", "Water Checkbox Toggle",
-        [](ImGuiTestContext* ctx) { ctx->GetVars<ViewOptions>().render(); },
+    test<ViewOptionsContext>(engine, "View Options", "Water Checkbox Toggle",
+        [](ImGuiTestContext* ctx) { render(ctx->GetVars<ViewOptionsContext>()); },
         [](ImGuiTestContext* ctx)
         {
-            auto& view_options = ctx->GetVars<ViewOptions>();
+            auto& context = ctx->GetVars<ViewOptionsContext>();
+            context.ptr = register_test_module().build();
             std::optional<std::tuple<std::string, bool>> clicked;
-            auto token = view_options.on_toggle_changed += [&](const std::string& name, bool value)
+            auto token = context.ptr->on_toggle_changed += [&](const std::string& name, bool value)
             {
                 clicked = { name, value };
             };
@@ -536,28 +663,30 @@ void register_view_options_tests(ImGuiTestEngine* engine)
             IM_CHECK_EQ(std::get<1>(clicked.value()), false);
         });
 
-    test<ViewOptions>(engine, "View Options", "Water Checkbox Updated",
-        [](ImGuiTestContext* ctx) { ctx->GetVars<ViewOptions>().render(); },
+    test<ViewOptionsContext>(engine, "View Options", "Water Checkbox Updated",
+        [](ImGuiTestContext* ctx) { render(ctx->GetVars<ViewOptionsContext>()); },
         [](ImGuiTestContext* ctx)
         {
-            auto& view_options = ctx->GetVars<ViewOptions>();
+            auto& context = ctx->GetVars<ViewOptionsContext>();
+            context.ptr = register_test_module().build();
 
             ctx->SetRef("View Options");
             IM_CHECK_EQ(ctx->ItemIsChecked("flags/Water"), true);
 
-            view_options.set_toggle(IViewer::Options::water, false);
+            context.ptr->set_toggle(IViewer::Options::water, false);
             ctx->Yield();
 
             IM_CHECK_EQ(ctx->ItemIsChecked("flags/Water"), false);
         });
 
-    test<ViewOptions>(engine, "View Options", "Wireframe Checkbox Toggle",
-        [](ImGuiTestContext* ctx) { ctx->GetVars<ViewOptions>().render(); },
+    test<ViewOptionsContext>(engine, "View Options", "Wireframe Checkbox Toggle",
+        [](ImGuiTestContext* ctx) { render(ctx->GetVars<ViewOptionsContext>()); },
         [](ImGuiTestContext* ctx)
         {
-            auto& view_options = ctx->GetVars<ViewOptions>();
+            auto& context = ctx->GetVars<ViewOptionsContext>();
+            context.ptr = register_test_module().build();
             std::optional<std::tuple<std::string, bool>> clicked;
-            auto token = view_options.on_toggle_changed += [&](const std::string& name, bool value)
+            auto token = context.ptr->on_toggle_changed += [&](const std::string& name, bool value)
             {
                 clicked = { name, value };
             };
@@ -570,16 +699,17 @@ void register_view_options_tests(ImGuiTestEngine* engine)
             IM_CHECK_EQ(std::get<1>(clicked.value()), true);
         });
 
-    test<ViewOptions>(engine, "View Options", "Wireframe Checkbox Updated",
-        [](ImGuiTestContext* ctx) { ctx->GetVars<ViewOptions>().render(); },
+    test<ViewOptionsContext>(engine, "View Options", "Wireframe Checkbox Updated",
+        [](ImGuiTestContext* ctx) { render(ctx->GetVars<ViewOptionsContext>()); },
         [](ImGuiTestContext* ctx)
         {
-            auto& view_options = ctx->GetVars<ViewOptions>();
+            auto& context = ctx->GetVars<ViewOptionsContext>();
+            context.ptr = register_test_module().build();
 
             ctx->SetRef("View Options");
             IM_CHECK_EQ(ctx->ItemIsChecked("flags/Wireframe"), false);
 
-            view_options.set_toggle(IViewer::Options::wireframe, true);
+            context.ptr->set_toggle(IViewer::Options::wireframe, true);
             ctx->Yield();
 
             IM_CHECK_EQ(ctx->ItemIsChecked("flags/Wireframe"), true);

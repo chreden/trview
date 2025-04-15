@@ -45,6 +45,7 @@ namespace trview
         virtual void set_selected_camera_sink(const std::weak_ptr<ICameraSink>& camera_sink) override;
         void set_ng_plus(bool value) override;
         void set_trng(bool value) override;
+        std::vector<std::weak_ptr<IRoomsWindow>> windows() const override;
     private:
         std::vector<std::weak_ptr<IItem>> _all_items;
         std::vector<std::weak_ptr<IRoom>> _all_rooms;

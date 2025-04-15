@@ -1,13 +1,53 @@
 #include "ViewOptions.h"
 #include "../Windows/IViewer.h"
+#include "../Windows/IRoomsWindowManager.h"
 
 namespace trview
 {
+    namespace
+    {
+        void show_room_filter(
+            std::weak_ptr<IRoomsWindowManager> rooms_window_manager,
+            const std::vector<Filters<IRoom>::Filter>& filters)
+        {
+            if (ImGui::BeginPopupContextItem())
+            {
+                if (ImGui::BeginMenu("Filter"))
+                {
+                    if (auto rooms_windows = rooms_window_manager.lock())
+                    {
+                        if (ImGui::MenuItem("New Window"))
+                        {
+                            if (const auto new_window = rooms_windows->create_window().lock())
+                            {
+                                new_window->set_filters(filters);
+                            }
+                        }
+
+                        for (const auto& window : rooms_windows->windows())
+                        {
+                            if (auto actual_window = window.lock())
+                            {
+                                if (ImGui::MenuItem(actual_window->name().c_str()))
+                                {
+                                    actual_window->set_filters(filters);
+                                }
+                            }
+                        }
+                    }
+                    ImGui::EndMenu();
+                }
+                ImGui::EndPopup();
+            }
+        }
+    }
+
     IViewOptions::~IViewOptions()
     {
     }
 
-    ViewOptions::ViewOptions()
+    ViewOptions::ViewOptions(const std::weak_ptr<IRoomsWindowManager>& rooms_window_manager)
+        : _rooms_window_manager(rooms_window_manager)
     {
         _toggles[IViewer::Options::highlight] = false;
         _toggles[IViewer::Options::triggers] = true;
@@ -82,12 +122,31 @@ namespace trview
                     ImGui::BeginDisabled(!_flip_enabled);
                     add_toggle(IViewer::Options::flip);
                     ImGui::EndDisabled();
+
+                    if (_flip_enabled)
+                    {
+                        if (ImGui::IsItemHovered())
+                        {
+                            ImGui::BeginTooltip();
+                            ImGui::Text("Click to toggle flip map, right click for filter options.");
+                            ImGui::EndTooltip();
+                        }
+                        show_room_filter(_rooms_window_manager, {{.key = "Alternate", .compare = CompareOp::Exists, .op = Op::And }});
+                    }
                 }
                 ImGui::EndTable();
             }
 
             if (_use_alternate_groups)
             {
+                ImGui::Text(std::format("{}Alternate Groups", _alternate_group_values.empty() ? "No " : "").c_str());
+                if (ImGui::IsItemHovered())
+                {
+                    ImGui::BeginTooltip();
+                    ImGui::Text("Alternate groups in the level. Click to toggle, right click for filter options.");
+                    ImGui::EndTooltip();
+                }
+
                 for (auto& group : _alternate_group_values)
                 {
                     std::string id = std::to_string(group.first) + "##" + std::to_string(group.first) + "_flip";
@@ -107,6 +166,7 @@ namespace trview
                     {
                         ImGui::PopStyleColor();
                     }
+                    show_room_filter(_rooms_window_manager, { {.key = "Alternate Group", .compare = CompareOp::Equal, .value = std::to_string(group.first), .op = Op::And } });
                     ImGui::SameLine();
                 }
             }
