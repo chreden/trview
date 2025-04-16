@@ -15,7 +15,7 @@ namespace trview
         explicit ImGuiFileMenu(const std::shared_ptr<IDialogs>& dialogs, const std::shared_ptr<IFiles>& files);
         virtual ~ImGuiFileMenu() = default;
         std::vector<std::string> local_levels() const override;
-        void open_file(const std::string& filename) override;
+        void open_file(const std::string& filename, const std::weak_ptr<trlevel::IPack>& pack) override;
         void render() override;
         void set_recent_files(const std::list<std::string>& files) override;
         void switch_to(const std::string& filename) override;

@@ -13,9 +13,16 @@ namespace trview
         return {};
     }
 
-    void ImGuiFileMenu::open_file(const std::string& filename)
+    void ImGuiFileMenu::open_file(const std::string& filename, const std::weak_ptr<trlevel::IPack>& pack)
     {
-        _file_switcher = _files->get_files(path_for_filename(filename), default_file_pattern);
+        if (const auto pack_ptr = pack.lock())
+        {
+            _file_switcher = valid_pack_levels(*pack_ptr);
+        }
+        else
+        {
+            _file_switcher = _files->get_files(path_for_filename(filename), default_file_pattern);
+        }
     }
 
     void ImGuiFileMenu::render()

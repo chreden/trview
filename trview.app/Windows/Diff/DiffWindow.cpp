@@ -708,7 +708,7 @@ namespace trview
             _diff = _load.get();
             if (_diff->level)
             {
-                _file_menu->open_file(_diff->level->filename());
+                _file_menu->open_file(_diff->level->filename(), _diff->level->pack());
                 _settings.add_recent_diff_file(_diff->level->filename());
                 _file_menu->set_recent_files(_settings.recent_diff_files);
                 on_settings(_settings);

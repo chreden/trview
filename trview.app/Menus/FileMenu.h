@@ -20,7 +20,7 @@ namespace trview
         virtual ~FileMenu() = default;
         std::vector<std::string> local_levels() const override;
         std::optional<int> process_message(UINT message, WPARAM wParam, LPARAM lParam) override;
-        void open_file(const std::string& filename) override;
+        void open_file(const std::string& filename, const std::weak_ptr<trlevel::IPack>& pack) override;
         void render() override;
         void set_recent_files(const std::list<std::string>& files) override;
         void switch_to(const std::string& filename) override;

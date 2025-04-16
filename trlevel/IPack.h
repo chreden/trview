@@ -7,6 +7,8 @@
 #include <optional>
 #include <vector>
 
+#include <trview.common/IFiles.h>
+
 namespace trlevel
 {
     struct IPack
@@ -29,5 +31,6 @@ namespace trlevel
 
     std::string pack_filename(const std::string& filename);
     std::optional<std::vector<uint8_t>> pack_entry(const IPack& pack, uint32_t offset);
+    std::vector<trview::IFiles::File> valid_pack_levels(const IPack& pack);
 }
 

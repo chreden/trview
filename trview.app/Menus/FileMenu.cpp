@@ -129,14 +129,18 @@ namespace trview
         return std::nullopt;
     }
 
-    void FileMenu::open_file(const std::string& filename)
+    void FileMenu::open_file(const std::string& filename, const std::weak_ptr<trlevel::IPack>& pack)
     {
         _opened_file = filename;
 
-        const std::size_t pos = filename.find_last_of("\\/");
-        const std::string folder = filename.substr(0, pos);
-
-        _file_switcher_list = _files->get_files(folder, default_file_pattern);
+        if (const auto pack_ptr = pack.lock())
+        {
+            _file_switcher_list = valid_pack_levels(*pack_ptr);
+        }
+        else
+        {
+            _file_switcher_list = _files->get_files(path_for_filename(filename), default_file_pattern);
+        }
 
         // Enable menu when populating in case it's not enabled
         EnableMenuItem(GetMenu(window()), ID_FILE_SWITCHLEVEL, MF_ENABLED);
