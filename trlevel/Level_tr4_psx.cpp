@@ -641,6 +641,10 @@ namespace trlevel
         {
             file.seekg(0x7000, std::ios::beg);
         }
+        else if (_platform_and_version.raw_version == 0xffffff88)
+        {
+            return load_tr4_psx_opsm_90(file, activity, callbacks);
+        }
         else
         {
             file.seekg(0x7800, std::ios::beg);
@@ -693,6 +697,146 @@ namespace trlevel
 
         read_sounds_tr4_psx(file, activity, callbacks, start, info, 11025);
         generate_sounds(callbacks);
+
+        callbacks.on_progress("Generating meshes");
+        generate_meshes(_mesh_data);
+        callbacks.on_progress("Loading complete");
+    }
+
+    namespace
+    {
+        struct tr4_psx_level_info_opsm_90
+        {
+            uint32_t version;
+            uint8_t  unknown_0[2];
+            uint16_t num_rooms;
+            uint8_t  unknown_1[2];
+            uint16_t num_items;
+            uint8_t  unknown_2[8];
+            uint32_t floor_data_size;
+            uint32_t outside_room_size;
+            uint32_t bounding_boxes_size;
+            uint8_t  unknown_4[0x4];
+            uint32_t mesh_data_size;
+            uint32_t mesh_pointer_size;
+            uint32_t animations_size;
+            uint32_t state_changes_size;
+            uint32_t dispatches_size;
+            uint32_t commands_size;
+            uint32_t meshtree_size;
+            uint32_t frames_size;
+            uint32_t texture_info_length;
+            uint32_t sprite_info_length;
+            uint32_t texture_info_length2;
+            uint32_t animated_texture_length;
+            uint32_t sfx_info_length;
+            uint32_t sample_info_length;
+            char     unknown_5[12];
+            uint32_t unknown_offsets[7];
+            uint32_t num_cameras;
+            char     unknown_5a[4];
+            int      camera_length;
+            char     unknown_6[4];
+            uint16_t num_ai_objects;
+            char     unknown_7[38];
+        };
+    }
+
+    void Level::load_tr4_psx_opsm_90(std::basic_ispanstream<uint8_t>& file, trview::Activity& activity, const LoadCallbacks& callbacks)
+    {
+        file.seekg(0);
+
+        const uint32_t start = static_cast<uint32_t>(file.tellg());
+        const auto opsm_info = read<tr4_psx_level_info_opsm_90>(file);
+        tr4_psx_level_info info
+        {
+            .num_rooms = opsm_info.num_rooms,
+            .num_items = opsm_info.num_items,
+            .floor_data_size = opsm_info.floor_data_size,
+            .outside_room_size = opsm_info.outside_room_size,
+            .bounding_boxes_size = opsm_info.bounding_boxes_size,
+            .mesh_data_size = opsm_info.mesh_data_size,
+            .mesh_pointer_size = opsm_info.mesh_pointer_size,
+            .animations_size = opsm_info.animations_size,
+            .state_changes_size = opsm_info.state_changes_size,
+            .dispatches_size = opsm_info.dispatches_size,
+            .commands_size = opsm_info.commands_size,
+            .meshtree_size = opsm_info.meshtree_size,
+            .frames_size = opsm_info.frames_size,
+            .texture_info_length = opsm_info.texture_info_length,
+            .sprite_info_length = opsm_info.sprite_info_length,
+            .texture_info_length2 = opsm_info.texture_info_length2,
+            .animated_texture_length = opsm_info.animated_texture_length,
+            .sfx_info_length = opsm_info.sfx_info_length,
+            .sample_info_length = opsm_info.sample_info_length,
+        };
+
+        // Sounds without offsets
+        info.num_sounds = read<uint32_t>(file);
+        info.sound_offsets = static_cast<uint32_t>(file.tellg());
+        info.sound_data_offset = static_cast<uint32_t>(file.tellg()) + info.num_sounds * sizeof(uint32_t) + 4;
+        uint32_t sound_start = static_cast<uint32_t>(file.tellg());
+        file.seekg(sound_start + info.num_sounds * sizeof(uint32_t));
+        info.sound_data_length = read<uint32_t>(file);
+        file.seekg(sound_start); 
+        read_sounds_tr4_psx(activity, file, callbacks, start, info, 11025);
+
+        info.textiles_offset = static_cast<uint32_t>(file.tellg());
+        skip(file, 0x80000);
+
+        _rooms = read_rooms_tr4_psx(info.num_rooms, file);
+        _floor_data = read_vector<uint16_t>(file, info.floor_data_size / 2);
+
+        // 'Room outside map':
+        read_vector<uint16_t>(file, 729);
+        skip(file, 2);
+        // Outside room table:
+        read_vector<uint8_t>(file, info.outside_room_size);
+        // Bounding boxes
+        skip(file, info.bounding_boxes_size);
+
+        _mesh_data = read_mesh_data(activity, file, info, callbacks);
+        _mesh_pointers = read_mesh_pointers(activity, file, info, callbacks);
+
+        skip(file, info.animations_size);
+        skip(file, info.state_changes_size);
+        skip(file, info.dispatches_size);
+        skip(file, info.commands_size);
+        _meshtree = read_meshtree(activity, file, info, callbacks);
+
+        info.frames_offset = static_cast<uint32_t>(file.tellg());
+        skip(file, info.frames_size);
+
+        skip(file, info.animated_texture_length);
+
+        _object_textures_psx = read_object_textures(activity, file, info, callbacks);
+        skip(file, info.sprite_info_length);
+        adjust_room_textures_psx();
+        _object_textures_psx.append_range(read_room_textures(activity, file, info, callbacks));
+        _sound_sources = read_sound_sources(activity, file, info, callbacks);
+
+        _sound_map = read_vector<int16_t>(file, 370);
+        _sound_details = read_vector<tr_x_sound_details>(file, info.sample_info_length / sizeof(tr_x_sound_details));
+        _entities = read_entities(activity, file, info, callbacks);
+        _ai_objects = read_ai_objects(activity, file, info, callbacks);
+        skip(file, info.unknown_offsets[0] + info.unknown_offsets[1]);
+        skip(file, 2 * (info.unknown_offsets[2] + info.unknown_offsets[3] + info.unknown_offsets[4] + info.unknown_offsets[5] + info.unknown_offsets[6]));
+        _cameras = read_vector<tr_camera>(file, info.num_cameras);
+        _frames = read_frames(activity, file, start, info, callbacks);
+
+        // TODO: Fix this
+        info.models_offset = 1953944;
+        // info.models_offset = 1820288;
+        _models = read_models(activity, file, start, info, callbacks);
+
+        // skip(file, 320);
+        // _static_meshes = read_static_meshes_tr4_psx(activity, file, callbacks);
+        generate_object_textures_tr4_psx(file, start, info);
+
+        for (const auto& t : _textile16)
+        {
+            callbacks.on_textile(convert_textile(t));
+        }
 
         callbacks.on_progress("Generating meshes");
         generate_meshes(_mesh_data);

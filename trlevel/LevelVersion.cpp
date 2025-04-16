@@ -44,6 +44,7 @@ namespace trlevel
                 return { .platform = Platform::PSX, .version = LevelVersion::Tomb3 };
             case 0x54:
                 return { .platform = Platform::PC, .version = LevelVersion::Tomb4 };
+            case 0x88:
             case 0xfc:
                 return { .platform = Platform::PSX, .version = LevelVersion::Tomb4 };
             case 0x3c:
