@@ -526,18 +526,14 @@ namespace trview
         {
             const auto pack_filename = trlevel::pack_filename(filename);
 
-            if (_diff.has_value())
+            std::shared_ptr<ILevel> level = _diff.has_value() ? _diff->level : nullptr;
+            current_pack = level ? level->pack().lock() : nullptr;
+            if (!current_pack || current_pack->filename() != pack_filename)
             {
-                // Attempt to reuse the current level pack.
-                auto level = _diff->level;
-                current_pack = level ? level->pack().lock() : nullptr;
-                if (!current_pack || current_pack->filename() != pack_filename)
+                auto pack_level = _level_source(pack_filename, {}, { .on_progress_callback = [&](auto&& p) { _progress = p; } });
+                if (auto pack = pack_level->pack().lock())
                 {
-                    auto pack_level = _level_source(pack_filename, {}, { .on_progress_callback = [&](auto&& p) { _progress = p; } });
-                    if (auto pack = pack_level->pack().lock())
-                    {
-                        current_pack = pack;
-                    }
+                    current_pack = pack;
                 }
             }
         }
