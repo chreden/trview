@@ -3,6 +3,7 @@
 #include <external/imgui/imgui.h>
 #include <external/imgui/misc/cpp/imgui_stdlib.h>
 #include <charconv>
+#include <ranges>
 
 namespace trview
 {
@@ -155,6 +156,10 @@ namespace trview
         else if (const bool* value_bool = std::get_if<bool>(&value))
         {
             return is_match(*value_bool, filter);
+        }
+        else if (const int* value_int = std::get_if<int>(&value))
+        {
+            return is_match(static_cast<float>(*value_int), filter);
         }
         return false;
     }
@@ -478,6 +483,47 @@ namespace trview
     }
 
     template <typename T>
+    void Filters<T>::render_settings()
+    {
+        if (ImGui::Button("+"))
+        {
+            ImGui::OpenPopup("Columns");
+        }
+
+        if (ImGui::BeginPopupContextItem("Columns"))
+        {
+            if (ImGui::BeginTable("Columns List", 2, ImGuiTableFlags_Sortable | ImGuiTableFlags_ScrollY))
+            {
+                ImGui::TableSetupColumn("Name");
+                ImGui::TableSetupColumn("Visible");
+                ImGui::TableSetupScrollFreeze(1, 1);
+                for (auto& getter : _getters)
+                {
+                    ImGui::TableNextRow();
+                    ImGui::TableNextColumn();
+                    ImGui::Text(getter.first.c_str());
+                    ImGui::TableNextColumn();
+                    ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0, 0));
+                    ImGui::Checkbox(std::format("##{}-visible", getter.first).c_str(), &getter.second.visible);
+                    ImGui::PopStyleVar();
+                }
+                for (auto& getter : _multi_getters)
+                {
+                    ImGui::TableNextRow();
+                    ImGui::TableNextColumn();
+                    ImGui::Text(getter.first.c_str());
+                    ImGui::TableNextColumn();
+                    ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0, 0));
+                    ImGui::Checkbox(std::format("##{}-visible", getter.first).c_str(), &getter.second.visible);
+                    ImGui::PopStyleVar();
+                }
+                ImGui::EndTable();
+            }
+            ImGui::EndPopup();
+        }
+    }
+
+    template <typename T>
     std::vector<CompareOp> Filters<T>::ops_for_key(const std::string& key) const
     {
         const auto& getter = _getters.find(key);
@@ -568,6 +614,99 @@ namespace trview
         return current_value;
     }
 
+    template <typename T>
+    int Filters<T>::column_count() const
+    {
+        return static_cast<int>(std::ranges::count_if(_getters, [](auto&& c) { return c.second.visible; }) + 
+                                std::ranges::count_if(_multi_getters, [](auto&& c) { return c.second.visible; }));
+    }
+
+    template <typename T>
+    void Filters<T>::render_table(const std::ranges::forward_range auto& items) const
+    {
+        auto columns = column_count();
+        if (columns == 0)
+        {
+            return;
+        }
+
+        if (ImGui::BeginTable("filter-list", columns, ImGuiTableFlags_Sortable | ImGuiTableFlags_ScrollY | ImGuiTableFlags_Reorderable))
+        {
+            // TODO: Header row
+            for (const auto& getter : _getters)
+            {
+                if (getter.second.visible)
+                {
+                    ImGui::TableSetupColumn(getter.first.c_str(), ImGuiTableColumnFlags_WidthStretch);
+                }
+            }
+            ImGui::TableSetupScrollFreeze(1, 1);
+            ImGui::TableNextRow(ImGuiTableRowFlags_Headers, ImGui::TableGetHeaderRowHeight());
+
+            int column_n = 0;
+            for (const auto& getter : _getters)
+            {
+                if (getter.second.visible)
+                {
+                    if (!ImGui::TableSetColumnIndex(column_n++))
+                    {
+                        continue;
+                    }
+
+                    /*
+                    if (header.set_checked)
+                    {
+                        ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0, 0));
+
+                        bool value = header.checked;
+                        if (ImGui::Checkbox("##checkall", &value))
+                        {
+                            header.set_checked(value);
+                        }
+
+                        ImGui::PopStyleVar();
+                        ImGui::SameLine(0.0f, ImGui::GetStyle().ItemInnerSpacing.x);
+                    }*/
+                    ImGui::TableHeader(getter.first.c_str());
+                }
+            }
+
+            // TODO: Sorting
+            // TODO: Items
+            // TODO: Iterate props
+            // TODO: Selection
+
+            for (const auto& item : items)
+            {
+                ImGui::TableNextRow();
+
+                for (const auto getter : _getters)
+                {
+                    if (getter.second.visible)
+                    {
+                        ImGui::TableNextColumn();
+
+                        const auto value = std::visit([](auto&& arg) -> std::string
+                        {
+                            using R = std::decay_t<decltype(arg)>;
+                            if constexpr (std::is_same_v<R, std::string>)
+                            {
+                                return arg;
+                            }
+                            else
+                            {
+                                return std::to_string(arg);
+                            }
+                        }, getter.second.function(*item));
+                        ImGui::Text(value.c_str());
+                    }
+                }
+            }
+
+            ImGui::EndTable();
+        }
+    }
+
     constexpr std::string to_string(CompareOp op) noexcept
     {
         switch (op)
@@ -647,6 +786,22 @@ namespace trview
         {
             CompareOp::Equal,
             CompareOp::NotEqual,
+        };
+    }
+
+    template <>
+    constexpr std::vector<CompareOp> compare_ops<int>() noexcept
+    {
+        return
+        {
+            CompareOp::Equal,
+            CompareOp::NotEqual,
+            CompareOp::GreaterThan,
+            CompareOp::GreaterThanOrEqual,
+            CompareOp::LessThan,
+            CompareOp::LessThanOrEqual,
+            CompareOp::Between,
+            CompareOp::BetweenInclusive
         };
     }
 

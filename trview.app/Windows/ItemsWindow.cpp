@@ -133,13 +133,20 @@ namespace trview
                 on_scene_changed();
             }
 
+            _filters.render_settings();
+
             RowCounter counter{ "item",
                 static_cast<std::size_t>(std::ranges::count_if(_all_items, [this](auto&& item)
                     {
                         const auto item_ptr = item.lock();
                         return item_ptr && item_ptr->ng_plus().value_or(_ng_plus) == _ng_plus;
                     }))};
-            if (ImGui::BeginTable(Names::items_list.c_str(), 5, ImGuiTableFlags_Sortable | ImGuiTableFlags_ScrollY, ImVec2(0, -counter.height())))
+
+            _filters.render_table(filtered_items);
+
+            /*
+            int extra_columns = _filters.column_count();
+            if (ImGui::BeginTable(Names::items_list.c_str(), 5 + extra_columns, ImGuiTableFlags_Sortable | ImGuiTableFlags_ScrollY, ImVec2(0, -counter.height())))
             {
                 imgui_header_row(
                     {
@@ -178,6 +185,9 @@ namespace trview
                         scroller.scroll_to_item();
                         _scroll_to_item = false;
                     }
+
+                    // Da getters
+                    // _filters.render_columns(*item);
 
                     const bool item_is_virtual = is_virtual(*item);
 
@@ -220,6 +230,7 @@ namespace trview
                 ImGui::EndTable();
                 counter.render();
             }
+            */
         }
         ImGui::EndChild();
     }
@@ -417,18 +428,18 @@ namespace trview
                 }
                 return results;
             });
-        _filters.add_getter<float>("#", [](auto&& item) { return static_cast<float>(item.number()); });
+        _filters.add_getter<int>("#", [](auto&& item) { return static_cast<int>(item.number()); });
         _filters.add_getter<float>("X", [](auto&& item) { return item.position().x * trlevel::Scale_X; });
         _filters.add_getter<float>("Y", [](auto&& item) { return item.position().y * trlevel::Scale_Y; });
         _filters.add_getter<float>("Z", [](auto&& item) { return item.position().z * trlevel::Scale_Z; });
         _filters.add_getter<float>("Angle", [](auto&& item) { return static_cast<float>(bound_rotation(item.angle())); });
         _filters.add_getter<float>("Angle Degrees", [](auto&& item) { return static_cast<float>(bound_rotation(item.angle()) / 182); });
-        _filters.add_getter<float>("Type ID", [](auto&& item) { return static_cast<float>(item.type_id()); });
-        _filters.add_getter<float>("Room", [](auto&& item) { return static_cast<float>(item_room(item)); });
+        _filters.add_getter<int>("Type ID", [](auto&& item) { return static_cast<int>(item.type_id()); });
+        _filters.add_getter<int>("Room", [](auto&& item) { return static_cast<int>(item_room(item)); });
         _filters.add_getter<bool>("Clear Body", [](auto&& item) { return item.clear_body_flag(); });
         _filters.add_getter<bool>("Invisible", [](auto&& item) { return item.invisible_flag(); });
         _filters.add_getter<std::string>("Flags", [](auto&& item) { return format_binary(item.activation_flags()); });
-        _filters.add_getter<float>("OCB", [](auto&& item) { return static_cast<float>(item.ocb()); });
+        _filters.add_getter<int>("OCB", [](auto&& item) { return static_cast<int>(item.ocb()); });
         _filters.add_multi_getter<float>("Trigger References", [](auto&& item)
             {
                 std::vector<float> results;
