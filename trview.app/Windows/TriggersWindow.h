@@ -11,8 +11,8 @@
 #include "ITriggersWindow.h"
 #include "../Elements/IItem.h"
 #include "../Elements/ITrigger.h"
-#include "ColumnSizer.h"
 #include "AutoHider.h"
+#include "../Settings/UserSettings.h"
 
 namespace trview
 {
@@ -45,6 +45,7 @@ namespace trview
         void set_platform_and_version(const trlevel::PlatformAndVersion& platform_and_version) override;
         virtual std::weak_ptr<ITrigger> selected_trigger() const override;
         virtual void update(float delta) override;
+        void set_settings(const UserSettings& settings) override;
     private:
         void set_sync_trigger(bool value);
         void render_triggers_list();
@@ -53,7 +54,6 @@ namespace trview
         void set_local_selected_trigger(const std::weak_ptr<ITrigger>& trigger);
         void setup_filters();
         void filter_triggers();
-        void calculate_column_widths();
         std::optional<int> index_of_selected() const;
         void find_trigger_triggerers();
 
@@ -86,10 +86,11 @@ namespace trview
         std::vector<std::weak_ptr<IItem>> _local_selected_trigger_trigger_triggerers;
         Filters<ITrigger> _filters;
         bool _need_filtering{ true };
-        ColumnSizer _column_sizer;
         bool _force_sort{ false };
         Track<Type::Room> _track;
         AutoHider _auto_hider;
         trlevel::PlatformAndVersion _platform_and_version;
+        UserSettings _settings;
+        bool _columns_set{ false };
     };
 }

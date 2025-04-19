@@ -52,6 +52,7 @@ namespace trview
         _camera_sink_windows->on_camera_sink_selected += on_camera_sink_selected;
         _camera_sink_windows->on_trigger_selected += on_trigger_selected;
         _camera_sink_windows->on_scene_changed += on_scene_changed;
+        _camera_sink_windows->on_settings += on_settings;
 
         _diff_windows->on_item_selected += on_item_selected;
         _diff_windows->on_light_selected += on_light_selected;
@@ -73,11 +74,13 @@ namespace trview
             };
         _items_windows->on_item_selected += on_item_selected;
         _items_windows->on_scene_changed += on_scene_changed;
+        _items_windows->on_settings += on_settings;
         _items_windows->on_trigger_selected += on_trigger_selected;
 
         _lights_windows->on_light_selected += on_light_selected;
         _lights_windows->on_scene_changed += on_scene_changed;
-
+        _lights_windows->on_settings += on_settings;
+            
         _pack_windows->on_level_open += on_level_open;
 
         _plugins_windows->on_settings += on_settings;
@@ -88,6 +91,7 @@ namespace trview
         _rooms_windows->on_room_selected += on_room_selected;
         _rooms_windows->on_scene_changed += on_scene_changed;
         _rooms_windows->on_sector_hover += on_sector_hover;
+        _rooms_windows->on_settings += on_settings;
         _rooms_windows->on_static_mesh_selected += on_static_selected;
         _rooms_windows->on_trigger_selected += on_trigger_selected;
 
@@ -105,9 +109,11 @@ namespace trview
         _route_window->on_new_randomizer_route += on_new_randomizer_route;
 
         _sounds_windows->on_scene_changed += on_scene_changed;
+        _sounds_windows->on_settings += on_settings;
         _sounds_windows->on_sound_source_selected += on_sound_source_selected;
 
         _statics_windows->on_static_selected += on_static_selected;
+        _statics_windows->on_settings += on_settings;
 
         _triggers_windows->on_item_selected += on_item_selected;
         _triggers_windows->on_trigger_selected += on_trigger_selected;
@@ -260,11 +266,16 @@ namespace trview
 
     void Windows::set_settings(const UserSettings& settings)
     {
+        _camera_sink_windows->set_settings(settings);
         _diff_windows->set_settings(settings);
         _plugins_windows->set_settings(settings);
-        _rooms_windows->set_map_colours(settings.map_colours);
+        _items_windows->set_settings(settings);
+        _lights_windows->set_settings(settings);
+        _rooms_windows->set_settings(settings);
         _route_window->set_randomizer_enabled(settings.randomizer_tools);
         _route_window->set_randomizer_settings(settings.randomizer);
+        _sounds_windows->set_settings(settings);
+        _statics_windows->set_settings(settings);
     }
 
     void Windows::setup(const UserSettings& settings)

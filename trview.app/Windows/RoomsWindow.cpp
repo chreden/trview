@@ -121,6 +121,17 @@ namespace trview
 
         generate_filters();
 
+        _filters.set_columns(std::vector<std::string>{ "#", "Items", "Triggers", "Statics", "Hide" });
+        _token_store += _filters.on_columns_reset += [this]()
+            {
+                _filters.set_columns(std::vector<std::string>{ "#", "Items", "Triggers", "Statics", "Hide" });
+            };
+        _token_store += _filters.on_columns_saved += [this]()
+            {
+                _settings.rooms_window_columns = _filters.columns();
+                on_settings(_settings);
+            };
+
         _token_store += _track.on_toggle<Type::Item>() += [&](bool value)
         {
             if (value && _global_selected_item.lock())
@@ -163,6 +174,7 @@ namespace trview
         _global_selected_item.reset();
         _local_selected_item.reset();
         _force_sort = true;
+        _filters.force_sort();
     }
 
     void RoomsWindow::set_level_version(trlevel::LevelVersion version)
@@ -170,9 +182,15 @@ namespace trview
         _level_version = version;
     }
 
-    void RoomsWindow::set_map_colours(const MapColours& colours)
+    void RoomsWindow::set_settings(const UserSettings& settings)
     {
-        _map_renderer->set_colours(colours);
+        _settings = settings;
+        _map_renderer->set_colours(settings.map_colours);
+        if (!_columns_set)
+        {
+            _filters.set_columns(_settings.rooms_window_columns);
+            _columns_set = true;
+        }
     }
 
     void RoomsWindow::set_rooms(const std::vector<std::weak_ptr<IRoom>>& rooms)
@@ -184,8 +202,8 @@ namespace trview
         _camera_sinks.clear();
         generate_filters();
         _force_sort = true;
+        _filters.force_sort();
         set_selected_sector(nullptr);
-        calculate_column_widths();
     }
 
     void RoomsWindow::set_selected_item(const std::weak_ptr<IItem>& item)
@@ -233,6 +251,7 @@ namespace trview
         _local_selected_trigger.reset();
         _triggers = triggers;
         _force_sort = true;
+        _filters.force_sort();
     }
 
     void RoomsWindow::set_sync_room(bool value)
@@ -287,7 +306,6 @@ namespace trview
 
     void RoomsWindow::render_rooms_list()
     {
-        calculate_column_widths();
         if (ImGui::BeginChild(Names::rooms_panel.c_str(), ImVec2(0, 0), ImGuiChildFlags_AutoResizeX, ImGuiWindowFlags_NoScrollbar))
         {
             _auto_hider.check_focus();
@@ -321,85 +339,42 @@ namespace trview
                 on_scene_changed();
             }
 
+            ImGui::SameLine();
+            _filters.render_settings();
+
             RowCounter counter{ "room", _all_rooms.size() };
-            if (ImGui::BeginTable(Names::rooms_list.c_str(), 5, ImGuiTableFlags_Sortable | ImGuiTableFlags_ScrollY, ImVec2(0, -counter.height())))
-            {
-                imgui_header_row(
-                    {
-                        { "#", _column_sizer.size(0) },
-                        { "Room", _column_sizer.size(1) },
-                        { "Triggers", _column_sizer.size(2) },
-                        { "Statics", _column_sizer.size(3) },
-                        { .name = "Hide", .width = _column_sizer.size(4), .set_checked = [&](bool v)
-                            {
-                                std::ranges::for_each(filtered_rooms, [=](auto&& room) { room->set_visible(!v); });
-                                on_scene_changed();
-                            }, .checked = std::ranges::all_of(filtered_rooms, [](auto&& room) { return !room->visible(); })
-                        }
-                    });
 
-                auto trigger_count = [&](const IRoom& room)
+            _filters.render_table(filtered_rooms, _all_rooms, _selected_room, counter,
+                [&](auto&& room)
                 {
-                    return room.triggers().size();
-                };
-
-                auto static_mesh_count = [](const IRoom& room) { return room.static_meshes().size(); };
-
-                imgui_sort_weak(_all_rooms,
+                    select_room(room);
+                    _map_renderer->load(room.lock());
+                    if (_sync_room)
                     {
-                        [](auto&& l, auto&& r) { return l.number() < r.number(); },
-                        [&](auto&& l, auto&& r) { return std::tuple(item_count(_all_items, l), l.number()) < std::tuple(item_count(_all_items, r), r.number()); },
-                        [&](auto&& l, auto&& r) { return std::tuple(trigger_count(l), l.number()) < std::tuple(trigger_count(r), r.number()); },
-                        [&](auto&& l, auto&& r) { return std::tuple(static_mesh_count(l), l.number()) < std::tuple(static_mesh_count(r), r.number()); },
-                        [&](auto&& l, auto&& r) { return std::tuple(l.visible(), l.number()) < std::tuple(r.visible(), r.number()); }
-                    }, _force_sort);
-
-                const auto selected_room = _selected_room.lock();
-                for (const auto& room : filtered_rooms)
-                {
-                    counter.count();
-                    ImGui::TableNextRow();
-                    ImGui::TableNextColumn();
-                    bool selected = room == selected_room;
-
-                    ImGuiScroller scroller;
-                    if (selected && _scroll_to_room)
-                    {
-                        scroller.scroll_to_item();
-                        _scroll_to_room = false;
+                        on_room_selected(_selected_room);
                     }
-
-                    ImGui::SetNextItemAllowOverlap();
-                    if (ImGui::Selectable(std::format("{0}##{0}", room->number()).c_str(), &selected, ImGuiSelectableFlags_SpanAllColumns | static_cast<int>(ImGuiSelectableFlags_SelectOnNav)))
+                },
+                {
                     {
-                        scroller.fix_scroll();
-                        select_room(room);
-                        _map_renderer->load(room);
-                        if (_sync_room)
+                        "Hide",
                         {
-                            on_room_selected(_selected_room);
+                            .on_toggle = [&](auto&& room, auto&& value)
+                                {
+                                    if (auto room_ptr = room.lock())
+                                    {
+                                        room_ptr->set_visible(!value);
+                                        on_scene_changed();
+                                    }
+                                },
+                            .on_toggle_all = [&](bool value)
+                                {
+                                    std::ranges::for_each(filtered_rooms, [=](auto&& room) { room->set_visible(!value); });
+                                    on_scene_changed();
+                                },
+                            .all_toggled = [&]() { return std::ranges::all_of(filtered_rooms, [](auto&& room) { return !room->visible(); }); }
                         }
-                        _scroll_to_room = false;
                     }
-                    ImGui::TableNextColumn();
-                    ImGui::Text(std::to_string(item_count(_all_items, *room)).c_str());
-                    ImGui::TableNextColumn();
-                    ImGui::Text(std::to_string(trigger_count(*room)).c_str());
-                    ImGui::TableNextColumn();
-                    ImGui::Text(std::to_string(static_mesh_count(*room)).c_str());
-                    ImGui::TableNextColumn();
-                    bool hidden = !room->visible();
-                    ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0, 0));
-                    if (ImGui::Checkbox(std::format("##hide-{}", room->number()).c_str(), &hidden))
-                    {
-                        room->set_visible(!hidden);
-                        on_scene_changed();
-                    }
-                    ImGui::PopStyleVar();
-                }
-                ImGui::EndTable();
-                counter.render();
-            }
+                });
         }
         ImGui::EndChild();
     }
@@ -582,9 +557,15 @@ namespace trview
     void RoomsWindow::generate_filters()
     {
         _filters.clear_all_getters();
-        _filters.add_getter<float>("X", [](auto&& room) { return static_cast<float>(room.info().x); });
-        _filters.add_getter<float>("Y", [](auto&& room) { return static_cast<float>(room.info().yBottom); });
-        _filters.add_getter<float>("Z", [](auto&& room) { return static_cast<float>(room.info().z); });
+        _filters.add_getter<int>("#", [](auto&& room) { return static_cast<int>(room.number()); });
+        _filters.add_getter<int>("X size", [](auto&& room) { return static_cast<int>(room.num_x_sectors()); });
+        _filters.add_getter<int>("Z size", [](auto&& room) { return static_cast<int>(room.num_z_sectors()); });
+        _filters.add_getter<int>("X", [](auto&& room) { return static_cast<int>(room.info().x); });
+        _filters.add_getter<int>("Y", [](auto&& room) { return static_cast<int>(room.info().yBottom); });
+        _filters.add_getter<int>("Z", [](auto&& room) { return static_cast<int>(room.info().z); });
+        _filters.add_getter<int>("Triggers", [](auto&& room) { return static_cast<int>(room.triggers().size()); });
+        _filters.add_getter<int>("Statics", [](auto&& room) { return static_cast<int>(room.static_meshes().size()); });
+        _filters.add_getter<int>("Items", [&](auto&& room) { return static_cast<int>(item_count(_all_items, room)); });
         _filters.add_multi_getter<float>("Neighbours", [](auto&& room)
             {
                 std::vector<float> results;
@@ -670,6 +651,7 @@ namespace trview
                 }
                 return results;
             });
+        _filters.add_getter<bool>("Hide", [](auto&& room) { return !room.visible(); }, EditMode::ReadWrite);
         _filters.add_getter<bool>("Water", [](auto&& room) { return room.water(); });
         _filters.add_getter<bool>("Bit 1", [](auto&& room) { return room.flag(IRoom::Flag::Bit1); });
         _filters.add_getter<bool>("Bit 2", [](auto&& room) { return room.flag(IRoom::Flag::Bit2); });
@@ -687,7 +669,7 @@ namespace trview
         _filters.add_getter<bool>("Bit 14", [](auto&& room) { return room.flag(IRoom::Flag::Bit14); });
         _filters.add_getter<bool>("Bit 15", [](auto&& room) { return room.flag(IRoom::Flag::Bit15); });
         _filters.add_getter<float>("Alternate", [](auto&& room) { return room.alternate_room(); }, [](auto&& room) { return room.alternate_mode() != IRoom::AlternateMode::None; });
-        _filters.add_getter<float>("Alternate Group", [](auto&& room) { return room.alternate_group(); }, [](auto&& room) { return room.alternate_mode() != IRoom::AlternateMode::None; });
+        _filters.add_getter<int>("Alternate Group", [](auto&& room) { return room.alternate_group(); }, [](auto&& room) { return room.alternate_mode() != IRoom::AlternateMode::None; });
         _filters.add_getter<bool>("No Space", room_is_no_space);
         if (_level_version < trlevel::LevelVersion::Tomb4)
         {
@@ -1258,27 +1240,6 @@ namespace trview
         _local_selected_static_mesh.reset();
         _static_meshes = static_meshes;
         _force_sort = true;
-    }
-
-    void RoomsWindow::calculate_column_widths()
-    {
-        _column_sizer.reset();
-        _column_sizer.measure("#__", 0);
-        _column_sizer.measure("Items__", 1);
-        _column_sizer.measure("Triggers__", 2);
-        _column_sizer.measure("Statics__", 3);
-        _column_sizer.measure("Hide______", 4);
-
-        for (const auto& room : _all_rooms)
-        {
-            if (auto room_ptr = room.lock())
-            {
-                _column_sizer.measure(std::format("{0}", room_ptr->number()), 0);
-                _column_sizer.measure(std::to_string(item_count(_all_items, *room_ptr)), 1);
-                _column_sizer.measure(std::to_string(room_ptr->triggers().size()), 2);
-                _column_sizer.measure(std::to_string(room_ptr->static_meshes().size()), 3);
-            }
-        }
     }
 
     void RoomsWindow::set_ng_plus(bool value)

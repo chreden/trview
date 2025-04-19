@@ -75,6 +75,17 @@ namespace trview
         : _clipboard(clipboard)
     {
         setup_filters();
+
+        _filters.set_columns(std::vector<std::string>{ "#", "Room", "Type", "Hide" });
+        _token_store += _filters.on_columns_reset += [this]()
+            {
+                _filters.set_columns(std::vector<std::string>{ "#", "Room", "Type", "Hide" });
+            };
+        _token_store += _filters.on_columns_saved += [this]()
+            {
+                _settings.camera_sink_window_columns = _filters.columns();
+                on_settings(_settings);
+            };
     }
 
     void CameraSinkWindow::render()
@@ -95,7 +106,7 @@ namespace trview
     {
         _all_camera_sinks = camera_sinks;
         _force_sort = true;
-        calculate_column_widths();
+        _filters.force_sort();
     }
 
     bool CameraSinkWindow::render_camera_sink_window()
@@ -138,7 +149,6 @@ namespace trview
 
     void CameraSinkWindow::render_list()
     {
-        calculate_column_widths();
         if (ImGui::BeginChild(Names::list_panel.c_str(), ImVec2(0, 0), ImGuiChildFlags_AlwaysAutoResize | ImGuiChildFlags_AutoResizeX, ImGuiWindowFlags_NoScrollbar))
         {
             _auto_hider.check_focus();
@@ -154,6 +164,8 @@ namespace trview
             }
 
             _auto_hider.render();
+            ImGui::SameLine();
+            _filters.render_settings();
 
             auto filtered_camera_sinks =
                 _all_camera_sinks |
@@ -171,85 +183,36 @@ namespace trview
             }
 
             RowCounter counter{ "camera/sink", _all_camera_sinks.size() };
-            if (ImGui::BeginTable(Names::camera_sink_list.c_str(), 4, ImGuiTableFlags_Sortable | ImGuiTableFlags_ScrollY, ImVec2(0, -counter.height())))
-            {
-                imgui_header_row(
-                    {
-                        { "#", _column_sizer.size(0) },
-                        { "Room", _column_sizer.size(1) },
-                        { "Type", _column_sizer.size(2) },
-                        {.name = "Hide", .width = _column_sizer.size(3), .set_checked = [&](bool v)
-                            {
-                                std::ranges::for_each(filtered_camera_sinks, [=](auto&& cs) { cs->set_visible(!v); });
-                                on_scene_changed();
-                            }, .checked = std::ranges::all_of(filtered_camera_sinks, [](auto&& cs) { return !cs->visible(); })
-                        }
-                    });
-
-                imgui_sort_weak(_all_camera_sinks,
-                    {
-                        [](auto&& l, auto&& r) { return l.number() < r.number(); },
-                        [](auto&& l, auto&& r) { return std::tuple(primary_room(l), l.number()) < std::tuple(primary_room(r), r.number()); },
-                        [](auto&& l, auto&& r) { return std::tuple(to_string(l.type()), l.number()) < std::tuple(to_string(r.type()), r.number()); },
-                        [](auto&& l, auto&& r) { return std::tuple(l.visible(), l.number()) < std::tuple(r.visible(), r.number()); }
-                    }, _force_sort);
-
-                for (const auto& camera_sink : filtered_camera_sinks)
+            _filters.render_table(filtered_camera_sinks, _all_camera_sinks, _selected_camera_sink, counter,
+                [&](auto&& camera)
                 {
-                    counter.count();
-                    ImGui::TableNextRow();
-                    ImGui::TableNextColumn();
-                    bool selected = _selected_camera_sink.lock() && _selected_camera_sink.lock()->number() == camera_sink->number();
-
-                    ImGuiScroller scroller;
-                    if (selected && _scroll_to)
+                    set_local_selected_camera_sink(camera);
+                    if (_sync)
                     {
-                        scroller.scroll_to_item();
-                        _scroll_to = false;
+                        on_camera_sink_selected(camera);
                     }
-
-                    ImGui::SetNextItemAllowOverlap();
-                    if (ImGui::Selectable(std::format("{0}##{0}", camera_sink->number()).c_str(), &selected, ImGuiSelectableFlags_SpanAllColumns | static_cast<int>(ImGuiSelectableFlags_SelectOnNav) | ImGuiTableFlags_SizingFixedFit))
+                },
+                {
                     {
-                        scroller.fix_scroll();
-
-                        set_local_selected_camera_sink(camera_sink);
-                        if (_sync)
+                        "Hide",
                         {
-                            on_camera_sink_selected(camera_sink);
+                            .on_toggle = [&](auto&& camera, auto&& value)
+                                {
+                                    if (auto camera_ptr = camera.lock())
+                                    {
+                                        camera_ptr->set_visible(!value);
+                                        on_scene_changed();
+                                    }
+                                },
+                            .on_toggle_all = [&](bool value)
+                                {
+                                    std::ranges::for_each(filtered_camera_sinks, [=](auto&& camera) { camera->set_visible(!value); });
+                                    on_scene_changed();
+                                },
+                            .all_toggled = [&]() { return std::ranges::all_of(filtered_camera_sinks, [](auto&& camera) { return !camera->visible(); }); }
                         }
-
-                        _scroll_to = false;
                     }
-
-                    ImGui::TableNextColumn();
-                    if (camera_sink->type() == ICameraSink::Type::Camera)
-                    {
-                        ImGui::Text(std::format("{}", primary_room(*camera_sink)).c_str());
-                    }
-                    else
-                    {
-                        ImGui::Text(inferred_rooms_text(camera_sink->inferred_rooms()).c_str());
-                    }
-
-                    ImGui::TableNextColumn();
-                    ImGui::Text(to_string(camera_sink->type()).c_str());
-
-                    ImGui::TableNextColumn();
-
-                    bool hidden = !camera_sink->visible();
-                    ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0, 0));
-                    if (ImGui::Checkbox(std::format("##hide-{}", camera_sink->number()).c_str(), &hidden))
-                    {
-                        camera_sink->set_visible(!hidden);
-                        on_scene_changed();
-                    }
-                    ImGui::PopStyleVar();
-                }
-
-                ImGui::EndTable();
-                counter.render();
-            }
+                });
         }
         ImGui::EndChild();
     }
@@ -394,64 +357,60 @@ namespace trview
         // All:
         std::set<std::string> available_types{ "Camera", "Sink" };
         _filters.add_getter<std::string>("Type", { available_types.begin(), available_types.end() }, [](auto&& camera_sink) { return to_string(camera_sink.type()); });
-        _filters.add_getter<float>("#", [](auto&& camera_sink) { return static_cast<float>(camera_sink.number()); });
-        _filters.add_getter<float>("X", [](auto&& camera_sink) { return camera_sink.position().x * trlevel::Scale_X; });
-        _filters.add_getter<float>("Y", [](auto&& camera_sink) { return camera_sink.position().y * trlevel::Scale_Y; });
-        _filters.add_getter<float>("Z", [](auto&& camera_sink) { return camera_sink.position().z * trlevel::Scale_Z; });
-        _filters.add_multi_getter<float>("Room", [](auto&& camera_sink) -> std::vector<float>
+        _filters.add_getter<int>("#", [](auto&& camera_sink) { return static_cast<int>(camera_sink.number()); });
+        _filters.add_getter<int>("X", [](auto&& camera_sink) { return static_cast<int>(camera_sink.position().x * trlevel::Scale_X); });
+        _filters.add_getter<int>("Y", [](auto&& camera_sink) { return static_cast<int>(camera_sink.position().y * trlevel::Scale_Y); });
+        _filters.add_getter<int>("Z", [](auto&& camera_sink) { return static_cast<int>(camera_sink.position().z * trlevel::Scale_Z); });
+        _filters.add_getter<int>("Room", [](auto&& camera_sink)
             {
                 if (camera_sink.type() == ICameraSink::Type::Camera)
                 {
-                    return { static_cast<float>(primary_room(camera_sink)) };
+                    return static_cast<int>(primary_room(camera_sink));
+                }
+                const auto rooms = std::views::transform(camera_sink.inferred_rooms(),
+                    [](const auto& r) { if (auto room = r.lock()) { return static_cast<int>(room->number()); } return 0; }) |
+                    std::ranges::to<std::vector>();
+                return rooms.empty() ? 0 : rooms[0];
+            });
+        _filters.add_multi_getter<int>("Rooms", [](auto&& camera_sink) -> std::vector<int>
+            {
+                if (camera_sink.type() == ICameraSink::Type::Camera)
+                {
+                    return { static_cast<int>(primary_room(camera_sink)) };
                 }
                 return std::views::transform(
                     camera_sink.inferred_rooms(),
-                    [](const auto& r) { if (auto room = r.lock()) { return static_cast<float>(room->number()); } return 0.0f; }) |
+                    [](const auto& r) { if (auto room = r.lock()) { return static_cast<int>(room->number()); } return 0; }) |
                     std::ranges::to<std::vector>();
             });
-        _filters.add_multi_getter<float>("Trigger References", [&](auto&& camera_sink)
+        _filters.add_multi_getter<int>("Trigger References", [&](auto&& camera_sink)
             {
-                std::vector<float> results;
+                std::vector<int> results;
                 for (const auto& trigger : camera_sink.triggers())
                 {
                     const auto trigger_ptr = trigger.lock();
-                    results.push_back(static_cast<float>(trigger_ptr->number()));
+                    results.push_back(static_cast<int>(trigger_ptr->number()));
                 }
                 return results;
             });
-        
+        _filters.add_getter<bool>("Hide", [](auto&& camera_sink) { return !camera_sink.visible(); }, EditMode::ReadWrite);
+
         // Camera:
-        _filters.add_getter<float>("Flag", [](auto&& camera_sink) { return static_cast<float>(camera_sink.flag()); }, is_camera);
+        _filters.add_getter<int>("Flag", [](auto&& camera_sink) { return static_cast<int>(camera_sink.flag()); }, is_camera);
         _filters.add_getter<bool>("Persistent", [](auto&& camera_sink) { return (camera_sink.flag() & 0x1) == 1; }, is_camera);
         
         // Sink:
-        _filters.add_getter<float>("Strength", [](auto&& camera_sink) { return static_cast<float>(camera_sink.strength()); }, is_sink);
-        _filters.add_getter<float>("Box Index", [](auto&& camera_sink) { return static_cast<float>(camera_sink.flag()); }, is_sink);
+        _filters.add_getter<int>("Strength", [](auto&& camera_sink) { return static_cast<int>(camera_sink.strength()); }, is_sink);
+        _filters.add_getter<int>("Box Index", [](auto&& camera_sink) { return static_cast<int>(camera_sink.flag()); }, is_sink);
     }
 
-    void CameraSinkWindow::calculate_column_widths()
+    void CameraSinkWindow::set_settings(const UserSettings& settings)
     {
-        _column_sizer.reset();
-        _column_sizer.measure("#__", 0);
-        _column_sizer.measure("Room__", 1);
-        _column_sizer.measure("Type__", 2);
-        _column_sizer.measure("Hide____", 3);
-
-        for (const auto& camera_sink : _all_camera_sinks)
+        _settings = settings;
+        if (!_columns_set)
         {
-            if (const auto camera_sink_ptr = camera_sink.lock())
-            {
-                _column_sizer.measure(std::to_string(camera_sink_ptr->number()), 0);
-                if (camera_sink_ptr->type() == ICameraSink::Type::Camera)
-                {
-                    _column_sizer.measure(std::to_string(primary_room(*camera_sink_ptr)), 1);
-                }
-                else
-                {
-                    _column_sizer.measure(inferred_rooms_text(camera_sink_ptr->inferred_rooms()), 1);
-                }
-                _column_sizer.measure(to_string(camera_sink_ptr->type()), 2);
-            }
+            _filters.set_columns(settings.camera_sink_window_columns);
+            _columns_set = true;
         }
     }
 }

@@ -4,6 +4,7 @@
 #include "ISoundsWindowManager.h"
 #include "../WindowManager.h"
 #include "ISoundsWindow.h"
+#include "../../Settings/UserSettings.h"
 
 namespace trview
 {
@@ -20,6 +21,7 @@ namespace trview
         void select_sound_source(const std::weak_ptr<ISoundSource>& sound_source) override;
         void set_level_platform(trlevel::Platform platform) override;
         void set_level_version(trlevel::LevelVersion version) override;
+        void set_settings(const UserSettings& settings) override;
         void set_sound_sources(const std::vector<std::weak_ptr<ISoundSource>>& sound_sources) override;
         void set_sound_storage(const std::weak_ptr<ISoundStorage>& sound_storage) override;
     private:
@@ -29,5 +31,6 @@ namespace trview
         std::weak_ptr<ISoundSource> _selected_sound_source;
         trlevel::Platform _level_platform{ trlevel::Platform::Unknown };
         trlevel::LevelVersion _level_version{ trlevel::LevelVersion::Unknown };
+        UserSettings _settings;
     };
 }

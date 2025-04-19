@@ -6,6 +6,8 @@
 #include "ILightsWindowManager.h"
 #include "WindowManager.h"
 
+#include "../Settings/UserSettings.h"
+
 namespace trview
 {
     class LightsWindowManager final : public ILightsWindowManager, WindowManager<ILightsWindow>, public MessageHandler
@@ -21,11 +23,13 @@ namespace trview
         virtual std::optional<int> process_message(UINT message, WPARAM wParam, LPARAM lParam) override;
         virtual std::weak_ptr<ILightsWindow> create_window() override;
         void set_room(const std::weak_ptr<IRoom>& room) override;
+        void set_settings(const UserSettings& settings) override;
     private:
         std::vector<std::weak_ptr<ILight>> _lights;
         ILightsWindow::Source _lights_window_source;
         std::weak_ptr<ILight> _selected_light;
         trlevel::LevelVersion _level_version{ trlevel::LevelVersion::Tomb1 };
         std::weak_ptr<IRoom> _current_room;
+        UserSettings _settings;
     };
 }

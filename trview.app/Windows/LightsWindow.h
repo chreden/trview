@@ -1,12 +1,14 @@
 #pragma once
 
+#include <trview.common/TokenStore.h>
 #include <trview.common/Windows/IClipboard.h>
 #include "../Elements/ILight.h"
 #include "ILightsWindow.h"
 #include "../Filters/Filters.h"
 #include "../Track/Track.h"
-#include "ColumnSizer.h"
 #include "AutoHider.h"
+
+#include "../Settings/UserSettings.h"
 
 namespace trview
 {
@@ -33,6 +35,7 @@ namespace trview
         virtual void set_level_version(trlevel::LevelVersion version) override;
         virtual void set_number(int32_t number) override;
         void set_current_room(const std::weak_ptr<IRoom>& room) override;
+        void set_settings(const UserSettings& settings) override;
     private:
         void set_sync_light(bool value);
         void set_local_selected_light(const std::weak_ptr<ILight>& light);
@@ -40,7 +43,6 @@ namespace trview
         void render_light_details();
         bool render_lights_window();
         void setup_filters();
-        void calculate_column_widths();
 
         std::vector<std::weak_ptr<ILight>> _all_lights;
         std::shared_ptr<IClipboard> _clipboard;
@@ -48,15 +50,15 @@ namespace trview
         trlevel::LevelVersion _level_version{ trlevel::LevelVersion::Tomb5 };
         std::optional<float> _tooltip_timer;
         std::string _id{ "Lights 0" };
-        bool _scroll_to_light{ false };
         std::weak_ptr<ILight> _selected_light;
         std::weak_ptr<ILight> _global_selected_light;
         std::weak_ptr<IRoom> _current_room;
         std::unordered_map<std::string, std::string> _tips;
         Filters<ILight> _filters;
-        bool _force_sort{ false };
         Track<Type::Room> _track;
-        ColumnSizer _column_sizer;
         AutoHider _auto_hider;
+        UserSettings _settings;
+        TokenStore _token_store;
+        bool _columns_set{ false };
     };
 }

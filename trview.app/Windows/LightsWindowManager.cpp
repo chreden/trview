@@ -49,8 +49,10 @@ namespace trview
         lights_window->set_lights(_lights);
         lights_window->set_selected_light(_selected_light);
         lights_window->set_current_room(_current_room);
+        lights_window->set_settings(_settings);
         lights_window->on_light_selected += on_light_selected;
         lights_window->on_scene_changed += on_scene_changed;
+        lights_window->on_settings += on_settings;
         return add_window(lights_window);
     }
 
@@ -79,6 +81,15 @@ namespace trview
         for (auto& window : _windows)
         {
             window.second->set_current_room(room);
+        }
+    }
+
+    void LightsWindowManager::set_settings(const UserSettings& settings)
+    {
+        _settings = settings;
+        for (auto& window : _windows)
+        {
+            window.second->set_settings(settings);
         }
     }
 }

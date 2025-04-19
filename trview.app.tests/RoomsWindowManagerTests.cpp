@@ -79,19 +79,19 @@ TEST(RoomsWindowManager, LevelVersionPassedToWindows)
     manager->set_level_version(trlevel::LevelVersion::Tomb3);
 }
 
-TEST(RoomsWindowManager, SetMapColoursPassedToWindows)
+TEST(RoomsWindowManager, SetSettingsPassedToWindows)
 {
     auto mock_window = mock_shared<MockRoomsWindow>();
-    EXPECT_CALL(*mock_window, set_map_colours).Times(2);
+    EXPECT_CALL(*mock_window, set_settings).Times(2);
     auto manager = register_test_module().with_window_source([&](auto&&...) { return mock_window; }).build();
     manager->create_window();
-    manager->set_map_colours({});
+    manager->set_settings({});
 }
 
-TEST(RoomsWindowManager, MapColoursPassedToNewWindows)
+TEST(RoomsWindowManager, SettingsPassedToNewWindows)
 {
     auto mock_window = mock_shared<MockRoomsWindow>();
-    EXPECT_CALL(*mock_window, set_map_colours).Times(1);
+    EXPECT_CALL(*mock_window, set_settings).Times(1);
     auto manager = register_test_module().with_window_source([&](auto&&...) { return mock_window; }).build();
     manager->create_window();
 }

@@ -58,6 +58,11 @@ namespace trview
             statics_startup == other.statics_startup &&
             plugin_directories == other.plugin_directories &&
             camera_position_window == other.camera_position_window &&
-            recent_diff_files == other.recent_diff_files;
+            recent_diff_files == other.recent_diff_files &&
+            items_window_columns == other.items_window_columns &&
+            rooms_window_columns == other.rooms_window_columns &&
+            statics_window_columns == other.statics_window_columns &&
+            sounds_window_columns == other.sounds_window_columns &&
+            lights_window_columns == other.lights_window_columns;
     }
 }

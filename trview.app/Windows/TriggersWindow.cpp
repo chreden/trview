@@ -44,6 +44,17 @@ namespace trview
     {
         setup_filters();
 
+        _filters.set_columns(std::vector<std::string>{ "#", "Room", "Type", "Hide" });
+        _token_store += _filters.on_columns_reset += [this]()
+            {
+                _filters.set_columns(std::vector<std::string>{ "#", "Room", "Type", "Hide" });
+            };
+        _token_store += _filters.on_columns_saved += [this]()
+            {
+                _settings.triggers_window_columns = _filters.columns();
+                on_settings(_settings);
+            };
+
         _token_store += _track.on_toggle<Type::Room>() += [&](bool value)
         {
             _need_filtering = true;
@@ -78,7 +89,6 @@ namespace trview
 
         setup_filters();
         _need_filtering = true;
-        calculate_column_widths();
     }
 
     void TriggersWindow::clear_selected_trigger()
@@ -159,7 +169,6 @@ namespace trview
 
     void TriggersWindow::render_triggers_list()
     {
-        calculate_column_widths();
         if (ImGui::BeginChild(Names::trigger_list_panel.c_str(), ImVec2(0, 0), ImGuiChildFlags_AutoResizeX, ImGuiWindowFlags_NoScrollbar))
         {
             _auto_hider.check_focus();
@@ -176,6 +185,8 @@ namespace trview
             }
 
             _auto_hider.render();
+            ImGui::SameLine();
+            _filters.render_settings();
 
             ImGui::PushItemWidth(-1);
             const auto current_command = _selected_command.value_or(VirtualCommand{ .name = "All" });
@@ -209,95 +220,39 @@ namespace trview
                 ImGui::EndCombo();
             }
 
+            filter_triggers();
+            auto filtered_triggers = _filtered_triggers | std::views::transform([](auto&& t) { return t.lock(); }) | std::ranges::to<std::vector>();
             RowCounter counter{ "trigger", _all_triggers.size() };
-            if (ImGui::BeginTable(Names::triggers_list.c_str(), 4, ImGuiTableFlags_Sortable | ImGuiTableFlags_ScrollY, ImVec2(0, -counter.height())))
-            {
-                imgui_header_row(
-                    {
-                        { "#", _column_sizer.size(0) },
-                        { "Room", _column_sizer.size(1) },
-                        { "Type", _column_sizer.size(2) },
-                        { .name = "Hide", .width = _column_sizer.size(3), .set_checked = [&](bool v)
-                            {
-                                std::ranges::for_each(_filtered_triggers, [=](auto&& trigger) 
-                                    {
-                                        auto trigger_ptr = trigger.lock(); trigger_ptr->set_visible(!v); 
-                                    });
-                                on_scene_changed();
-                            }, .checked = std::ranges::all_of(_filtered_triggers, [](auto&& trigger) { auto trigger_ptr = trigger.lock(); return trigger_ptr ? !trigger_ptr->visible() : false; })
-                        }
-                    });
-
-                filter_triggers();
-                counter.set_count(_filtered_triggers.size());
-
-                imgui_sort_weak(_filtered_triggers,
-                    {
-                        [](auto&& l, auto&& r) { return l.number() < r.number(); },
-                        [](auto&& l, auto&& r) { return std::tuple(trigger_room(l), l.number()) < std::tuple(trigger_room(r), r.number()); },
-                        [](auto&& l, auto&& r) { return std::tuple(to_string(l.type()), l.number()) < std::tuple(to_string(r.type()), r.number()); },
-                        [](auto&& l, auto&& r) { return std::tuple(l.visible(), l.number()) < std::tuple(r.visible(), r.number()); }
-                    }, _force_sort);
-
-                ImGuiListClipper clipper;
-                clipper.Begin(static_cast<int>(std::ssize(_filtered_triggers)));
-
-                while (clipper.Step())
+            _filters.render_table(filtered_triggers, _all_triggers, _selected_trigger, counter,
+                [&](auto&& trigger)
                 {
-                    for (int i = clipper.DisplayStart; i < clipper.DisplayEnd; i++)
+                    set_local_selected_trigger(trigger);
+                    if (_sync_trigger)
                     {
-                        const auto trigger_ptr = _filtered_triggers[i].lock();
-
-                        ImGui::TableNextRow();
-                        ImGui::TableNextColumn();
-                        bool selected = _selected_trigger.lock() && _selected_trigger.lock()->number() == trigger_ptr->number();
-
-                        ImGuiScroller scroller;
-                        if (selected && _scroll_to_trigger)
-                        {
-                            scroller.scroll_to_item();
-                            _scroll_to_trigger = false;
-                        }
-
-                        ImGui::SetNextItemAllowOverlap();
-                        if (ImGui::Selectable(std::format("{0}##{0}", trigger_ptr->number()).c_str(), &selected, ImGuiSelectableFlags_SpanAllColumns | static_cast<int>(ImGuiSelectableFlags_SelectOnNav)))
-                        {
-                            scroller.fix_scroll();
-                            set_local_selected_trigger(trigger_ptr);
-                            if (_sync_trigger)
-                            {
-                                on_trigger_selected(trigger_ptr);
-                            }
-                            _scroll_to_trigger = false;
-                        }
-
-                        ImGui::TableNextColumn();
-                        ImGui::Text(std::to_string(trigger_room(trigger_ptr)).c_str());
-                        ImGui::TableNextColumn();
-                        ImGui::Text(to_string(trigger_ptr->type()).c_str());
-                        ImGui::TableNextColumn();
-                        bool hidden = !trigger_ptr->visible();
-                        ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0, 0));
-                        if (ImGui::Checkbox(std::format("##hide-{}", trigger_ptr->number()).c_str(), &hidden))
-                        {
-                            trigger_ptr->set_visible(!hidden);
-                            on_scene_changed();
-                        }
-                        ImGui::PopStyleVar();
+                        on_trigger_selected(trigger);
                     }
-                }
-
-                const auto index = index_of_selected();
-                if (index.has_value())
+                },
                 {
-                    const float item_pos_y = clipper.StartPosY + clipper.ItemsHeight * index.value();
-                    ImGui::SetScrollFromPosY(item_pos_y - ImGui::GetWindowPos().y);
-                }
-
-                clipper.End();
-                ImGui::EndTable();
-                counter.render();
-            }
+                    {
+                        "Hide",
+                        {
+                            .on_toggle = [&](auto&& trigger, auto&& value)
+                                {
+                                    if (auto trigger_ptr = trigger.lock())
+                                    {
+                                        trigger_ptr->set_visible(!value);
+                                        on_scene_changed();
+                                    }
+                                },
+                            .on_toggle_all = [&](bool value)
+                                {
+                                    std::ranges::for_each(filtered_triggers, [=](auto&& trigger) { trigger->set_visible(!value); });
+                                    on_scene_changed();
+                                },
+                            .all_toggled = [&]() { return std::ranges::all_of(filtered_triggers, [](auto&& trigger) { return !trigger->visible(); }); }
+                        }
+                    }
+                });
         }
         ImGui::EndChild();
     }
@@ -531,11 +486,12 @@ namespace trview
             }
         }
         _filters.add_getter<std::string>("Type", { available_types.begin(), available_types.end() }, [](auto&& trigger) { return to_string(trigger.type()); });
-        _filters.add_getter<float>("#", [](auto&& trigger) { return static_cast<float>(trigger.number()); });
-        _filters.add_getter<float>("Room", [](auto&& trigger) { return static_cast<float>(trigger_room(trigger)); });
+        _filters.add_getter<int>("#", [](auto&& trigger) { return static_cast<int>(trigger.number()); });
+        _filters.add_getter<int>("Room", [](auto&& trigger) { return static_cast<int>(trigger_room(trigger)); });
         _filters.add_getter<std::string>("Flags", [](auto&& trigger) { return format_binary(trigger.flags()); });
         _filters.add_getter<bool>("Only once", [](auto&& trigger) { return trigger.only_once(); });
-        _filters.add_getter<float>("Timer", [](auto&& trigger) { return static_cast<float>(trigger.timer()); });
+        _filters.add_getter<int>("Timer", [](auto&& trigger) { return static_cast<int>(trigger.timer()); });
+        _filters.add_getter<bool>("Hide", [](auto&& trigger) { return !trigger.visible(); }, EditMode::ReadWrite);
 
         _filters.add_multi_getter<std::string>("Command", [=](auto&& trigger)
             {
@@ -653,33 +609,6 @@ namespace trview
         }
     }
 
-    void TriggersWindow::calculate_column_widths()
-    {
-        if (ImGui::GetCurrentContext() == nullptr)
-        {
-            return;
-        }
-
-        _column_sizer.reset();
-        _column_sizer.measure("#__", 0);
-        _column_sizer.measure("Room__", 1);
-        _column_sizer.measure("Type__", 2);
-        _column_sizer.measure("Hide____", 3);
-        for (const auto& trigger : _all_triggers)
-        {
-            const auto trigger_ptr = trigger.lock();
-            if (trigger_ptr)
-            {
-                _column_sizer.measure(std::to_string(trigger_ptr->number()), 0);
-                if (auto room = trigger_ptr->room().lock())
-                {
-                    _column_sizer.measure(std::to_string(room->number()), 1);
-                }
-                _column_sizer.measure(to_string(trigger_ptr->type()), 2);
-            }
-        }
-    }
-
     std::optional<int> TriggersWindow::index_of_selected() const
     {
         const auto selected = _selected_trigger.lock();
@@ -718,6 +647,16 @@ namespace trview
                         }) |
                     std::ranges::to<std::vector>();
             }
+        }
+    }
+
+    void TriggersWindow::set_settings(const UserSettings& settings)
+    {
+        _settings = settings;
+        if (!_columns_set)
+        {
+            _filters.set_columns(settings.triggers_window_columns);
+            _columns_set = true;
         }
     }
 }
