@@ -774,7 +774,7 @@ namespace trview
         auto old_level = _level;
         _level = level;
 
-        _file_menu->open_file(level->filename());
+        _file_menu->open_file(level->filename(), level->pack());
         _level->set_map_colours(_settings.map_colours);
         _windows->set_level(_level);
         if (open_mode == ILevel::OpenMode::Full)

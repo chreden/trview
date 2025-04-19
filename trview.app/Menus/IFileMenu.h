@@ -3,6 +3,7 @@
 #include <list>
 #include <string>
 #include <trview.common/Event.h>
+#include <trlevel/IPack.h>
 
 namespace trview
 {
@@ -16,7 +17,7 @@ namespace trview
         /// Open the specified file. This will populate the switcher menu.
         /// </summary>
         /// <param name="filename">The file that was opened.</param>
-        virtual void open_file(const std::string& filename) = 0;
+        virtual void open_file(const std::string& filename, const std::weak_ptr<trlevel::IPack>& pack) = 0;
         /// <summary>
         /// Render in ImGui mode.
         /// </summary>

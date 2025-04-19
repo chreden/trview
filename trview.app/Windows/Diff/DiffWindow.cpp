@@ -520,8 +520,26 @@ namespace trview
     std::shared_ptr<ILevel> DiffWindow::load_level(const std::string& filename)
     {
         _progress = std::format("Loading {}", filename);
+
+        std::shared_ptr<trlevel::IPack> current_pack;
+        if (filename.starts_with("pack://"))
+        {
+            const auto pack_filename = trlevel::pack_filename(filename);
+
+            std::shared_ptr<ILevel> level = _diff.has_value() ? _diff->level : nullptr;
+            current_pack = level ? level->pack().lock() : nullptr;
+            if (!current_pack || current_pack->filename() != pack_filename)
+            {
+                auto pack_level = _level_source(pack_filename, {}, { .on_progress_callback = [&](auto&& p) { _progress = p; } });
+                if (auto pack = pack_level->pack().lock())
+                {
+                    current_pack = pack;
+                }
+            }
+        }
+
         auto level = _level_source(filename,
-            {},
+            current_pack,
             {
                 .on_progress_callback = [&](auto&& p) { _progress = p; }
             });
@@ -708,7 +726,7 @@ namespace trview
             _diff = _load.get();
             if (_diff->level)
             {
-                _file_menu->open_file(_diff->level->filename());
+                _file_menu->open_file(_diff->level->filename(), _diff->level->pack());
                 _settings.add_recent_diff_file(_diff->level->filename());
                 _file_menu->set_recent_files(_settings.recent_diff_files);
                 on_settings(_settings);

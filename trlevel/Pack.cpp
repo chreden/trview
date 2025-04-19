@@ -102,4 +102,19 @@ namespace trlevel
         }
         return std::nullopt;
     }
+
+    std::vector<trview::IFiles::File> valid_pack_levels(const IPack& pack)
+    {
+        return pack.parts() |
+            std::views::filter([](auto&& p) { return p.version.has_value() && p.version->version != trlevel::LevelVersion::Unknown; }) |
+            std::views::transform([&](auto&& p) -> trview::IFiles::File
+                {
+                    return
+                    {
+                        .path = std::format("pack://{}\\{}", pack.filename(), p.start),
+                        .friendly_name = std::to_string(p.start)
+                    };
+                }) |
+            std::ranges::to<std::vector>();
+    }
 }

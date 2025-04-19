@@ -189,7 +189,7 @@ TEST(FileMenu, PreviousFile)
         raised = f;
     };
 
-    menu->open_file("file2");
+    menu->open_file("file2", {});
 
     f6_shortcut();
     ASSERT_TRUE(raised);
@@ -210,7 +210,7 @@ TEST(FileMenu, NextFile)
         raised = f;
     };
 
-    menu->open_file("file1");
+    menu->open_file("file1", {});
 
     f7_shortcut();
     ASSERT_TRUE(raised);
@@ -231,7 +231,7 @@ TEST(FileMenu, SwitchTo)
         raised = f;
     };
 
-    menu->open_file("file1");
+    menu->open_file("file1", {});
     menu->switch_to("c:\\dir\\file2");
     ASSERT_TRUE(raised);
     ASSERT_EQ(raised.value(), "file2");
