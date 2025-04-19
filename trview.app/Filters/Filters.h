@@ -141,6 +141,7 @@ namespace trview
         /// Render the filters button and popup.
         /// </summary>
         void render();
+        void render_settings();
         /// <summary>
         /// Set the filters to a specific value.
         /// </summary>
@@ -151,8 +152,11 @@ namespace trview
         /// </summary>
         /// <returns>Whether filters were changed.</returns>
         bool test_and_reset_changed();
+        void render_table(const std::ranges::forward_range auto& items) const;
     private:
-        using Value = std::variant<std::string, float, bool>;
+        int column_count() const;
+
+        using Value = std::variant<std::string, float, bool, int>;
 
         template <typename return_type>
         struct Getter
@@ -161,6 +165,7 @@ namespace trview
             std::vector<std::string> options;
             std::function<return_type (const T&)> function;
             std::function<bool(const T&)> predicate;
+            bool visible{ false };
         };
 
         /// <summary>
