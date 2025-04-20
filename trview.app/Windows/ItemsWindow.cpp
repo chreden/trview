@@ -47,6 +47,7 @@ namespace trview
         _triggered_by.clear();
         setup_filters();
         _force_sort = true;
+        _filters.force_sort();
         calculate_column_widths();
     }
 
@@ -71,7 +72,7 @@ namespace trview
         if (_sync_item != value)
         {
             _sync_item = value;
-            _scroll_to_item = true;
+            _filters.scroll_to_item();
             if (_sync_item && _global_selected_item.lock())
             {
                 set_selected_item(_global_selected_item);
@@ -84,7 +85,7 @@ namespace trview
         _global_selected_item = item;
         if (_sync_item)
         {
-            _scroll_to_item = true;
+            _filters.scroll_to_item();
             set_local_selected_item(item);
         }
     }
@@ -100,9 +101,7 @@ namespace trview
         if (ImGui::BeginChild(Names::item_list_panel.c_str(), ImVec2(0, 0), ImGuiChildFlags_AutoResizeX, ImGuiWindowFlags_NoScrollbar))
         {
             _auto_hider.check_focus();
-
             _filters.render();
-
             ImGui::SameLine();
             _track.render();
 
@@ -142,7 +141,27 @@ namespace trview
                         return item_ptr && item_ptr->ng_plus().value_or(_ng_plus) == _ng_plus;
                     }))};
 
-            _filters.render_table(filtered_items);
+            _filters.render_table(filtered_items, _all_items, _selected_item, counter,
+                [&](auto&& item)
+                {
+                    set_local_selected_item(item);
+                    if (_sync_item)
+                    {
+                        on_item_selected(item);
+                    }
+                },
+                {
+                    { 
+                        "Hide", [&](auto&& item, auto&& value)
+                                {
+                                    if (auto item_ptr = item.lock())
+                                    {
+                                        item_ptr->set_visible(!value);
+                                        on_scene_changed();
+                                    }
+                                }
+                    }
+                });
 
             /*
             int extra_columns = _filters.column_count();
@@ -403,6 +422,7 @@ namespace trview
             _triggered_by = selected->triggers();
         }
         _force_sort = true;
+        _filters.force_sort();
     }
 
     void ItemsWindow::setup_filters()
@@ -440,6 +460,7 @@ namespace trview
         _filters.add_getter<bool>("Invisible", [](auto&& item) { return item.invisible_flag(); });
         _filters.add_getter<std::string>("Flags", [](auto&& item) { return format_binary(item.activation_flags()); });
         _filters.add_getter<int>("OCB", [](auto&& item) { return static_cast<int>(item.ocb()); });
+        _filters.add_getter<bool>("Hide", [](auto&& item) { return !item.visible(); }, EditMode::ReadWrite);
         _filters.add_multi_getter<float>("Trigger References", [](auto&& item)
             {
                 std::vector<float> results;
