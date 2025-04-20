@@ -132,6 +132,7 @@ namespace trview
                 on_scene_changed();
             }
 
+            ImGui::SameLine();
             _filters.render_settings();
 
             RowCounter counter{ "item",

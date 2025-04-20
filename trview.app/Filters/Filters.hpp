@@ -494,7 +494,7 @@ namespace trview
     template <typename T>
     void Filters<T>::render_settings()
     {
-        if (ImGui::Button("+"))
+        if (ImGui::Button("Columns"))
         {
             ImGui::OpenPopup("Columns");
         }
@@ -717,6 +717,7 @@ namespace trview
                 }
                 ImGui::SameLine();
 
+                int remaining = columns;
                 for (const auto getter : _getters)
                 {
                     if (getter.second.visible)
@@ -732,10 +733,10 @@ namespace trview
                                 }
                                 else if constexpr (std::is_same_v<R, bool>)
                                 {
-                                    ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0, 0));
                                     bool toggle_value = arg;
 
                                     ImGui::BeginDisabled(getter.second.can_change == EditMode::Read);
+                                    ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0, 0));
                                     if (ImGui::Checkbox(std::format("##{}-{}", getter.first, item->number()).c_str(), &toggle_value))
                                     {
                                         auto found_toggle = on_toggle.find(getter.first);
@@ -753,7 +754,10 @@ namespace trview
                                 }
                             }, result);
 
-                        ImGui::TableNextColumn();
+                        if (--remaining > 0)
+                        {
+                            ImGui::TableNextColumn();
+                        }
                     }
                 }
             }
