@@ -85,7 +85,7 @@ namespace trview
         /// <param name="key">The key used in filters</param>
         /// <param name="getter">The getter function.</param>
         template <typename value_type>
-        void add_getter(const std::string& key, const std::function<value_type (const T&)>& getter, EditMode can_change = EditMode::Read);
+        void add_getter(const std::string& key, const std::function<value_type (const T&)>& getter, EditMode can_change = EditMode::Read, bool visible = false);
         /// <summary>
         /// Add a getter definition to extract a value from an object with specific options.
         /// </summary>
@@ -93,7 +93,7 @@ namespace trview
         /// <param name="options">List of possible options.</param>
         /// <param name="getter">The getter function.</param>
         template <typename value_type>
-        void add_getter(const std::string& key, const std::vector<std::string>& options, const std::function<value_type(const T&)>& getter, EditMode can_change = EditMode::Read);
+        void add_getter(const std::string& key, const std::vector<std::string>& options, const std::function<value_type(const T&)>& getter, EditMode can_change = EditMode::Read, bool visible = false);
         /// <summary>
         /// Add a getter definition to extract a value from an object with a predicate.
         /// </summary>
@@ -101,7 +101,7 @@ namespace trview
         /// <param name="getter">The getter function.</param>
         /// <param name="predicate">Predicate function to determine whether a specific object supports this getter.</param>
         template <typename value_type>
-        void add_getter(const std::string& key, const std::function<value_type(const T&)>& getter, const std::function<bool(const T&)>& predicate, EditMode can_change = EditMode::Read);
+        void add_getter(const std::string& key, const std::function<value_type(const T&)>& getter, const std::function<bool(const T&)>& predicate, EditMode can_change = EditMode::Read, bool visible = false);
         /// <summary>
         /// Add a getter definition to extract a value from an object with specific options and a predicate.
         /// </summary>
@@ -110,7 +110,7 @@ namespace trview
         /// <param name="getter">The getter function.</param>
         /// <param name="predicate">Predicate function to determine whether a specific object supports this getter.</param>
         template <typename value_type>
-        void add_getter(const std::string& key, const std::vector<std::string>& options, const std::function<value_type(const T&)>& getter, const std::function<bool(const T&)>& predicate, EditMode can_change = EditMode::Read);
+        void add_getter(const std::string& key, const std::vector<std::string>& options, const std::function<value_type(const T&)>& getter, const std::function<bool(const T&)>& predicate, EditMode can_change = EditMode::Read, bool visible = false);
         /// <summary>
         /// Add a getter definition to extract multiple values from an object.
         /// </summary>
