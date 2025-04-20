@@ -5,6 +5,8 @@
 #include <charconv>
 #include <ranges>
 
+#include "trview_imgui.h"
+
 namespace trview
 {
     template <typename T>
@@ -42,35 +44,36 @@ namespace trview
 
     template <typename T>
     template <typename value_type>
-    void Filters<T>::add_getter(const std::string& key, const std::function<value_type(const T&)>& getter)
+    void Filters<T>::add_getter(const std::string& key, const std::function<value_type(const T&)>& getter, EditMode can_change)
     {
-        add_getter(key, getter, {});
+        add_getter(key, getter, {}, can_change);
     }
 
     template <typename T>
     template <typename value_type>
-    void Filters<T>::add_getter(const std::string& key, const std::vector<std::string>& options, const std::function<value_type(const T&)>& getter)
+    void Filters<T>::add_getter(const std::string& key, const std::vector<std::string>& options, const std::function<value_type(const T&)>& getter, EditMode can_change)
     {
-        add_getter(key, options, getter, {});
+        add_getter(key, options, getter, {}, can_change);
     }
 
     template <typename T>
     template <typename value_type>
-    void Filters<T>::add_getter(const std::string& key, const std::function<value_type(const T&)>& getter, const std::function<bool(const T&)>& predicate)
+    void Filters<T>::add_getter(const std::string& key, const std::function<value_type(const T&)>& getter, const std::function<bool(const T&)>& predicate, EditMode can_change)
     {
-        add_getter(key, available_options<value_type>(), getter, predicate);
+        add_getter(key, available_options<value_type>(), getter, predicate, can_change);
     }
 
     template <typename T>
     template <typename value_type>
-    void Filters<T>::add_getter(const std::string& key, const std::vector<std::string>& options, const std::function<value_type(const T&)>& getter, const std::function<bool(const T&)>& predicate)
+    void Filters<T>::add_getter(const std::string& key, const std::vector<std::string>& options, const std::function<value_type(const T&)>& getter, const std::function<bool(const T&)>& predicate, EditMode can_change)
     {
         _getters[key] =
         {
-            compare_ops<value_type>(),
-            options,
-            [=](const auto& value) { return getter(value); },
-            predicate
+            .ops = compare_ops<value_type>(),
+            .options = options,
+            .function = [=](const auto& value) { return getter(value); },
+            .predicate = predicate,
+            .can_change = can_change
         };
     }
 
@@ -119,6 +122,12 @@ namespace trview
     {
         _getters.clear();
         _multi_getters.clear();
+    }
+
+    template <typename T>
+    void Filters<T>::force_sort()
+    {
+        _force_sort = true;
     }
 
     template <typename T>
@@ -507,16 +516,6 @@ namespace trview
                     ImGui::Checkbox(std::format("##{}-visible", getter.first).c_str(), &getter.second.visible);
                     ImGui::PopStyleVar();
                 }
-                for (auto& getter : _multi_getters)
-                {
-                    ImGui::TableNextRow();
-                    ImGui::TableNextColumn();
-                    ImGui::Text(getter.first.c_str());
-                    ImGui::TableNextColumn();
-                    ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0, 0));
-                    ImGui::Checkbox(std::format("##{}-visible", getter.first).c_str(), &getter.second.visible);
-                    ImGui::PopStyleVar();
-                }
                 ImGui::EndTable();
             }
             ImGui::EndPopup();
@@ -601,6 +600,12 @@ namespace trview
     }
 
     template <typename T>
+    void Filters<T>::scroll_to_item()
+    {
+        _scroll_to_item = true;
+    }
+
+    template <typename T>
     void Filters<T>::set_filters(const std::vector<Filter> filters)
     {
         _filters = filters;
@@ -622,7 +627,12 @@ namespace trview
     }
 
     template <typename T>
-    void Filters<T>::render_table(const std::ranges::forward_range auto& items) const
+    void Filters<T>::render_table(const std::ranges::forward_range auto& items,
+        std::ranges::forward_range auto& all_items,
+        const std::weak_ptr<T>& selected_item,
+        RowCounter counter,
+        const std::function<void(std::weak_ptr<T>)>& on_item_selected,
+        const std::unordered_map<std::string, std::function<void(std::weak_ptr<T>, bool)>>& on_toggle) const
     {
         auto columns = column_count();
         if (columns == 0)
@@ -630,7 +640,7 @@ namespace trview
             return;
         }
 
-        if (ImGui::BeginTable("filter-list", columns, ImGuiTableFlags_Sortable | ImGuiTableFlags_ScrollY | ImGuiTableFlags_Reorderable))
+        if (ImGui::BeginTable("filter-list", columns, ImGuiTableFlags_Sortable | ImGuiTableFlags_ScrollY | ImGuiTableFlags_Reorderable | ImGuiTableFlags_SizingStretchProp, ImVec2(0, -counter.height())))
         {
             // TODO: Header row
             for (const auto& getter : _getters)
@@ -671,21 +681,39 @@ namespace trview
                 }
             }
 
-            // TODO: Sorting
-            // TODO: Items
-            // TODO: Iterate props
-            // TODO: Selection
+            imgui_sort_weak(all_items, _getters
+                | std::views::filter([](auto&& g) { return g.second.visible; })
+                | std::views::transform([](auto&& g) -> std::function<bool(const T&, const T&)>
+                    {
+                        return [&](const T& l, const T& r) -> bool
+                            {
+                                return std::tuple(g.second.function(l), l.number()) < std::tuple(g.second.function(r), r.number());
+                            };
+                    })
+                | std::ranges::to<std::vector>(), _force_sort);
+            _force_sort = false;
 
             for (const auto& item : items)
             {
+                counter.count();
                 ImGui::TableNextRow();
+                ImGui::TableNextColumn();
+                bool first_column = true;
+                auto selected_item_ptr = selected_item.lock();
+                bool selected = selected_item_ptr && selected_item_ptr == item;
+
+                ImGuiScroller scroller;
+                if (selected && _scroll_to_item)
+                {
+                    scroller.scroll_to_item();
+                    _scroll_to_item = false;
+                }
 
                 for (const auto getter : _getters)
                 {
                     if (getter.second.visible)
                     {
-                        ImGui::TableNextColumn();
-
+                        const auto result = getter.second.function(*item);
                         const auto value = std::visit([](auto&& arg) -> std::string
                         {
                             using R = std::decay_t<decltype(arg)>;
@@ -697,13 +725,47 @@ namespace trview
                             {
                                 return std::to_string(arg);
                             }
-                        }, getter.second.function(*item));
-                        ImGui::Text(value.c_str());
+                        }, result);
+
+                        if (first_column)
+                        {
+                            ImGui::SetNextItemAllowOverlap();
+                            if (ImGui::Selectable(std::format("{0}##{0}", value).c_str(), &selected, ImGuiSelectableFlags_SpanAllColumns | static_cast<int>(ImGuiSelectableFlags_SelectOnNav)))
+                            {
+                                scroller.fix_scroll();
+                                on_item_selected(item);
+                                _scroll_to_item = false;
+                            }
+                            first_column = false;
+                        }
+                        else
+                        {
+                            if (getter.second.can_change == EditMode::ReadWrite)
+                            {
+                                bool toggle_value = std::get<bool>(result);
+                                ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0, 0));
+                                if (ImGui::Checkbox(std::format("##{}-{}", getter.first, item->number()).c_str(), &toggle_value))
+                                {
+                                    auto found_event = on_toggle.find(getter.first);
+                                    if (found_event != on_toggle.end())
+                                    {
+                                        found_event->second(item, toggle_value);
+                                    }
+                                }
+                                ImGui::PopStyleVar();
+                            }
+                            else
+                            {
+                                ImGui::Text(value.c_str());
+                            }
+                        }
+                        ImGui::TableNextColumn();
                     }
                 }
             }
 
             ImGui::EndTable();
+            counter.render();
         }
     }
 
