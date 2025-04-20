@@ -44,28 +44,28 @@ namespace trview
 
     template <typename T>
     template <typename value_type>
-    void Filters<T>::add_getter(const std::string& key, const std::function<value_type(const T&)>& getter, EditMode can_change)
+    void Filters<T>::add_getter(const std::string& key, const std::function<value_type(const T&)>& getter, EditMode can_change, bool visible)
     {
-        add_getter(key, getter, {}, can_change);
+        add_getter(key, getter, {}, can_change, visible);
     }
 
     template <typename T>
     template <typename value_type>
-    void Filters<T>::add_getter(const std::string& key, const std::vector<std::string>& options, const std::function<value_type(const T&)>& getter, EditMode can_change)
+    void Filters<T>::add_getter(const std::string& key, const std::vector<std::string>& options, const std::function<value_type(const T&)>& getter, EditMode can_change, bool visible)
     {
-        add_getter(key, options, getter, {}, can_change);
+        add_getter(key, options, getter, {}, can_change, visible);
     }
 
     template <typename T>
     template <typename value_type>
-    void Filters<T>::add_getter(const std::string& key, const std::function<value_type(const T&)>& getter, const std::function<bool(const T&)>& predicate, EditMode can_change)
+    void Filters<T>::add_getter(const std::string& key, const std::function<value_type(const T&)>& getter, const std::function<bool(const T&)>& predicate, EditMode can_change, bool visible)
     {
-        add_getter(key, available_options<value_type>(), getter, predicate, can_change);
+        add_getter(key, available_options<value_type>(), getter, predicate, can_change, visible);
     }
 
     template <typename T>
     template <typename value_type>
-    void Filters<T>::add_getter(const std::string& key, const std::vector<std::string>& options, const std::function<value_type(const T&)>& getter, const std::function<bool(const T&)>& predicate, EditMode can_change)
+    void Filters<T>::add_getter(const std::string& key, const std::vector<std::string>& options, const std::function<value_type(const T&)>& getter, const std::function<bool(const T&)>& predicate, EditMode can_change, bool visible)
     {
         _getters[key] =
         {
@@ -73,6 +73,7 @@ namespace trview
             .options = options,
             .function = [=](const auto& value) { return getter(value); },
             .predicate = predicate,
+            .visible = visible,
             .can_change = can_change
         };
     }
