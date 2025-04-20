@@ -70,6 +70,13 @@ namespace trview
             bool initial_state() const noexcept;
         };
 
+        struct Toggle
+        {
+            std::function<void(std::weak_ptr<T>, bool)> on_toggle;
+            std::function<void(bool)> on_toggle_all;
+            std::function<bool()> all_toggled;
+        };
+
         void add_filter(const Filter& filter);
 
         /// <summary>
@@ -164,7 +171,7 @@ namespace trview
             const std::weak_ptr<T>& selected_item,
             RowCounter counter,
             const std::function<void(std::weak_ptr<T>)>& on_item_selected,
-            const std::unordered_map<std::string, std::function<void(std::weak_ptr<T>, bool)>>& on_toggle) const;
+            const std::unordered_map<std::string, Toggle>& on_toggle) const;
         void scroll_to_item();
         /// <summary>
         /// Set the filters to a specific value.

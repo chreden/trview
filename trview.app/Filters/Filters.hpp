@@ -632,7 +632,7 @@ namespace trview
         const std::weak_ptr<T>& selected_item,
         RowCounter counter,
         const std::function<void(std::weak_ptr<T>)>& on_item_selected,
-        const std::unordered_map<std::string, std::function<void(std::weak_ptr<T>, bool)>>& on_toggle) const
+        const std::unordered_map<std::string, Toggle>& on_toggle) const
     {
         auto columns = column_count();
         if (columns == 0)
@@ -642,7 +642,6 @@ namespace trview
 
         if (ImGui::BeginTable("filter-list", columns, ImGuiTableFlags_Sortable | ImGuiTableFlags_ScrollY | ImGuiTableFlags_Reorderable | ImGuiTableFlags_SizingStretchProp, ImVec2(0, -counter.height())))
         {
-            // TODO: Header row
             for (const auto& getter : _getters)
             {
                 if (getter.second.visible)
@@ -663,20 +662,21 @@ namespace trview
                         continue;
                     }
 
-                    /*
-                    if (header.set_checked)
+                    if (getter.second.can_change == EditMode::ReadWrite)
                     {
-                        ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0, 0));
-
-                        bool value = header.checked;
-                        if (ImGui::Checkbox("##checkall", &value))
+                        auto found_toggle = on_toggle.find(getter.first);
+                        if (found_toggle != on_toggle.end())
                         {
-                            header.set_checked(value);
+                            ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0, 0));
+                            bool value = found_toggle->second.all_toggled();
+                            if (ImGui::Checkbox("##checkall", &value))
+                            {
+                                found_toggle->second.on_toggle_all(value);
+                            }
+                            ImGui::PopStyleVar();
+                            ImGui::SameLine(0.0f, ImGui::GetStyle().ItemInnerSpacing.x);
                         }
-
-                        ImGui::PopStyleVar();
-                        ImGui::SameLine(0.0f, ImGui::GetStyle().ItemInnerSpacing.x);
-                    }*/
+                    }
                     ImGui::TableHeader(getter.first.c_str());
                 }
             }
@@ -698,7 +698,6 @@ namespace trview
                 counter.count();
                 ImGui::TableNextRow();
                 ImGui::TableNextColumn();
-                bool first_column = true;
                 auto selected_item_ptr = selected_item.lock();
                 bool selected = selected_item_ptr && selected_item_ptr == item;
 
@@ -709,56 +708,51 @@ namespace trview
                     _scroll_to_item = false;
                 }
 
+                ImGui::SetNextItemAllowOverlap();
+                if (ImGui::Selectable(std::format("##{0}", item->number()).c_str(), &selected, ImGuiSelectableFlags_SpanAllColumns | static_cast<int>(ImGuiSelectableFlags_SelectOnNav)))
+                {
+                    scroller.fix_scroll();
+                    on_item_selected(item);
+                    _scroll_to_item = false;
+                }
+                ImGui::SameLine();
+
                 for (const auto getter : _getters)
                 {
                     if (getter.second.visible)
                     {
                         const auto result = getter.second.function(*item);
-                        const auto value = std::visit([](auto&& arg) -> std::string
-                        {
-                            using R = std::decay_t<decltype(arg)>;
-                            if constexpr (std::is_same_v<R, std::string>)
-                            {
-                                return arg;
-                            }
-                            else
-                            {
-                                return std::to_string(arg);
-                            }
-                        }, result);
 
-                        if (first_column)
-                        {
-                            ImGui::SetNextItemAllowOverlap();
-                            if (ImGui::Selectable(std::format("{0}##{0}", value).c_str(), &selected, ImGuiSelectableFlags_SpanAllColumns | static_cast<int>(ImGuiSelectableFlags_SelectOnNav)))
+                        std::visit([&](auto&& arg)
                             {
-                                scroller.fix_scroll();
-                                on_item_selected(item);
-                                _scroll_to_item = false;
-                            }
-                            first_column = false;
-                        }
-                        else
-                        {
-                            if (getter.second.can_change == EditMode::ReadWrite)
-                            {
-                                bool toggle_value = std::get<bool>(result);
-                                ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0, 0));
-                                if (ImGui::Checkbox(std::format("##{}-{}", getter.first, item->number()).c_str(), &toggle_value))
+                                using R = std::decay_t<decltype(arg)>;
+                                if constexpr (std::is_same_v<R, std::string>)
                                 {
-                                    auto found_event = on_toggle.find(getter.first);
-                                    if (found_event != on_toggle.end())
-                                    {
-                                        found_event->second(item, toggle_value);
-                                    }
+                                    ImGui::Text(arg.c_str());
                                 }
-                                ImGui::PopStyleVar();
-                            }
-                            else
-                            {
-                                ImGui::Text(value.c_str());
-                            }
-                        }
+                                else if constexpr (std::is_same_v<R, bool>)
+                                {
+                                    ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0, 0));
+                                    bool toggle_value = arg;
+
+                                    ImGui::BeginDisabled(getter.second.can_change == EditMode::Read);
+                                    if (ImGui::Checkbox(std::format("##{}-{}", getter.first, item->number()).c_str(), &toggle_value))
+                                    {
+                                        auto found_toggle = on_toggle.find(getter.first);
+                                        if (found_toggle != on_toggle.end())
+                                        {
+                                            found_toggle->second.on_toggle(item, toggle_value);
+                                        }
+                                    }
+                                    ImGui::PopStyleVar();
+                                    ImGui::EndDisabled();
+                                }
+                                else
+                                {
+                                    ImGui::Text(std::to_string(arg).c_str());
+                                }
+                            }, result);
+
                         ImGui::TableNextColumn();
                     }
                 }
