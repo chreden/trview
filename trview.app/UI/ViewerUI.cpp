@@ -29,16 +29,18 @@ namespace trview
 // Disabled as const auto all = { items, triggers, rooms } was being marked as unreachable in debug only.
 #pragma warning(push)
 #pragma warning(disable: 4702)
-    ViewerUI::ViewerUI(const Window& window, const std::shared_ptr<ITextureStorage>& texture_storage,
+    ViewerUI::ViewerUI(const Window& window,
         const std::shared_ptr<IShortcuts>& shortcuts,
         const IMapRenderer::Source& map_renderer_source,
         std::unique_ptr<ISettingsWindow> settings_window,
         std::unique_ptr<IViewOptions> view_options,
         std::unique_ptr<IContextMenu> context_menu,
         std::unique_ptr<ICameraControls> camera_controls,
-        std::unique_ptr<IToolbar> toolbar)
+        std::unique_ptr<IToolbar> toolbar,
+        std::unique_ptr<ILevelInfo> level_info)
         : _mouse(window, std::make_unique<input::WindowTester>(window)), _window(window), _camera_controls(std::move(camera_controls)),
-        _view_options(std::move(view_options)), _settings_window(std::move(settings_window)), _context_menu(std::move(context_menu)), _toolbar(std::move(toolbar))
+        _view_options(std::move(view_options)), _settings_window(std::move(settings_window)), _context_menu(std::move(context_menu)), _toolbar(std::move(toolbar)),
+        _level_info(std::move(level_info))
     {
         _token_store += _mouse.mouse_move += [&](long, long)
         {
@@ -120,7 +122,6 @@ namespace trview
         _context_menu->set_remove_enabled(false);
         _context_menu->set_hide_enabled(false);
 
-        _level_info = std::make_unique<LevelInfo>(*texture_storage);
         _token_store += _level_info->on_toggle_settings += [&]() { _settings_window->toggle_visibility(); };
 
         const auto forward_setting = [&]<typename T>(auto& event, T& target)
@@ -155,6 +156,7 @@ namespace trview
         forward_setting(_settings_window->on_camera_fov, _settings.fov);
         forward_setting(_settings_window->on_camera_sink_startup, _settings.camera_sink_startup);
         forward_setting(_settings_window->on_statics_startup, _settings.statics_startup);
+        forward_setting(_settings_window->on_level_sorting_mode, _settings.level_sorting_mode);
         _settings_window->on_font += on_font;
 
         _camera_position = std::make_unique<CameraPosition>();
@@ -328,8 +330,7 @@ namespace trview
         _map_renderer->load({});
         if (auto new_level = _level.lock())
         {
-            _level_info->set_level(new_level->name());
-            _level_info->set_level_version(new_level->version());
+            _level_info->set_level(new_level);
             _view_options->set_ng_plus_enabled(
                 std::ranges::any_of(new_level->items(), [](auto&& i)
                     {
@@ -339,7 +340,7 @@ namespace trview
         }
         else
         {
-            _level_info->set_level("");
+            _level_info->set_level({});
         }
     }
 
@@ -406,6 +407,7 @@ namespace trview
         _settings_window->set_fov(settings.fov);
         _settings_window->set_camera_sink_startup(settings.camera_sink_startup);
         _settings_window->set_statics_startup(settings.statics_startup);
+        _settings_window->set_level_sorting_mode(settings.level_sorting_mode);
         _camera_position->set_display_degrees(settings.camera_display_degrees);
         _camera_position->set_visible(settings.camera_position_window);
         _map_renderer->set_colours(settings.map_colours);

@@ -3,6 +3,7 @@
 #include <trview.common/Event.h>
 #include "../UI/MapColours.h"
 #include "../Settings/FontSetting.h"
+#include "../Menus/LevelSortingMode.h"
 
 namespace trview
 {
@@ -81,6 +82,7 @@ namespace trview
         Event<bool> on_camera_sink_startup;
         Event<std::string, FontSetting> on_font;
         Event<bool> on_statics_startup;
+        Event<LevelSortingMode> on_level_sorting_mode;
 
         virtual void render() = 0;
         /// <summary>
@@ -183,5 +185,6 @@ namespace trview
         /// </summary>
         virtual void toggle_visibility() = 0;
         virtual void set_statics_startup(bool value) = 0;
+        virtual void set_level_sorting_mode(LevelSortingMode mode) = 0;
     };
 }

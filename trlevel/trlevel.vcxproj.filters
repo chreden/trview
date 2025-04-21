@@ -37,6 +37,8 @@
     </ClInclude>
     <ClInclude Include="IPack.h" />
     <ClInclude Include="Pack.h" />
+    <ClInclude Include="IHasher.h" />
+    <ClInclude Include="Hasher.h" />
     <ClInclude Include="TileMapper.h">
       <Filter>Level\Saturn</Filter>
     </ClInclude>
@@ -91,6 +93,7 @@
     <ClCompile Include="Level_tr5_psx.cpp">
       <Filter>Level\PSX</Filter>
     </ClCompile>
+    <ClCompile Include="Hasher.cpp" />
     <ClCompile Include="Level_tr5_dc.cpp">
       <Filter>Level\DC</Filter>
     </ClCompile>

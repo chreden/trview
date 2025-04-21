@@ -59,6 +59,7 @@ namespace trview
             plugin_directories == other.plugin_directories &&
             camera_position_window == other.camera_position_window &&
             recent_diff_files == other.recent_diff_files &&
+            level_sorting_mode == other.level_sorting_mode &&
             items_window_columns == other.items_window_columns &&
             rooms_window_columns == other.rooms_window_columns &&
             statics_window_columns == other.statics_window_columns &&

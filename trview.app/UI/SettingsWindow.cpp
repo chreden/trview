@@ -48,6 +48,25 @@ namespace trview
                         _max_recent_files = std::max(0, _max_recent_files);
                         on_max_recent_files(_max_recent_files);
                     }
+
+                    ImGui::AlignTextToFramePadding();
+                    ImGui::Text("Switch Level sorting mode");
+                    ImGui::SameLine();
+                    if (ImGui::BeginCombo(std::format("##sortingmode").c_str(), to_string(_level_sorting_mode).c_str(), ImGuiComboFlags_None))
+                    {
+                        for (int i = 0; i < 2; ++i)
+                        {
+                            LevelSortingMode current_mode = static_cast<LevelSortingMode>(i);
+                            bool is_selected = _level_sorting_mode == current_mode;
+                            if (ImGui::Selectable(to_string(current_mode).c_str(), is_selected))
+                            {
+                                _level_sorting_mode = current_mode;
+                                on_level_sorting_mode(_level_sorting_mode);
+                            }
+                        }
+                        ImGui::EndCombo();
+                    }
+
                     if (ImGui::ColorEdit3(Names::background_colour.c_str(), _colour))
                     {
                         on_background_colour(Colour(1.0f, _colour[0], _colour[1], _colour[2]));
@@ -330,5 +349,10 @@ namespace trview
     void SettingsWindow::set_statics_startup(bool value)
     {
         _statics_startup = value;
+    }
+
+    void SettingsWindow::set_level_sorting_mode(LevelSortingMode mode)
+    {
+        _level_sorting_mode = mode;
     }
 }

@@ -53,6 +53,8 @@ namespace trlevel
             MOCK_METHOD(PlatformAndVersion, platform_and_version, (), (const, override));
             MOCK_METHOD(std::weak_ptr<IPack>, pack, (), (const, override));
             MOCK_METHOD(std::vector<tr4_flyby_camera>, flyby_cameras, (), (const, override));
+            MOCK_METHOD(std::string, hash, (), (const, override));
+            MOCK_METHOD(std::string, filename, (), (const, override));
         };
     }
 }
