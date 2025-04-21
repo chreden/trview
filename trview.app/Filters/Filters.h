@@ -7,7 +7,7 @@
 #include <variant>
 #include <ranges>
 
-#include "Windows/RowCounter.h"
+#include "../Windows/RowCounter.h"
 
 namespace trview
 {
