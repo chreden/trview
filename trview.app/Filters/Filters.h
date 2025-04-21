@@ -85,7 +85,7 @@ namespace trview
         /// <param name="key">The key used in filters</param>
         /// <param name="getter">The getter function.</param>
         template <typename value_type>
-        void add_getter(const std::string& key, const std::function<value_type (const T&)>& getter, EditMode can_change = EditMode::Read, bool visible = false);
+        void add_getter(const std::string& key, const std::function<value_type (const T&)>& getter, EditMode can_change = EditMode::Read);
         /// <summary>
         /// Add a getter definition to extract a value from an object with specific options.
         /// </summary>
@@ -93,7 +93,7 @@ namespace trview
         /// <param name="options">List of possible options.</param>
         /// <param name="getter">The getter function.</param>
         template <typename value_type>
-        void add_getter(const std::string& key, const std::vector<std::string>& options, const std::function<value_type(const T&)>& getter, EditMode can_change = EditMode::Read, bool visible = false);
+        void add_getter(const std::string& key, const std::vector<std::string>& options, const std::function<value_type(const T&)>& getter, EditMode can_change = EditMode::Read);
         /// <summary>
         /// Add a getter definition to extract a value from an object with a predicate.
         /// </summary>
@@ -101,7 +101,7 @@ namespace trview
         /// <param name="getter">The getter function.</param>
         /// <param name="predicate">Predicate function to determine whether a specific object supports this getter.</param>
         template <typename value_type>
-        void add_getter(const std::string& key, const std::function<value_type(const T&)>& getter, const std::function<bool(const T&)>& predicate, EditMode can_change = EditMode::Read, bool visible = false);
+        void add_getter(const std::string& key, const std::function<value_type(const T&)>& getter, const std::function<bool(const T&)>& predicate, EditMode can_change = EditMode::Read);
         /// <summary>
         /// Add a getter definition to extract a value from an object with specific options and a predicate.
         /// </summary>
@@ -110,7 +110,7 @@ namespace trview
         /// <param name="getter">The getter function.</param>
         /// <param name="predicate">Predicate function to determine whether a specific object supports this getter.</param>
         template <typename value_type>
-        void add_getter(const std::string& key, const std::vector<std::string>& options, const std::function<value_type(const T&)>& getter, const std::function<bool(const T&)>& predicate, EditMode can_change = EditMode::Read, bool visible = false);
+        void add_getter(const std::string& key, const std::vector<std::string>& options, const std::function<value_type(const T&)>& getter, const std::function<bool(const T&)>& predicate, EditMode can_change = EditMode::Read);
         /// <summary>
         /// Add a getter definition to extract multiple values from an object.
         /// </summary>
@@ -171,8 +171,9 @@ namespace trview
             const std::weak_ptr<T>& selected_item,
             RowCounter counter,
             const std::function<void(std::weak_ptr<T>)>& on_item_selected,
-            const std::unordered_map<std::string, Toggle>& on_toggle) const;
+            const std::unordered_map<std::string, Toggle>& on_toggle);
         void scroll_to_item();
+        void set_columns(const std::vector<std::string>& columns);
         /// <summary>
         /// Set the filters to a specific value.
         /// </summary>
@@ -195,7 +196,6 @@ namespace trview
             std::vector<std::string> options;
             std::function<return_type (const T&)> function;
             std::function<bool(const T&)> predicate;
-            bool visible{ false };
             EditMode can_change{ EditMode::Read };
         };
 
@@ -231,6 +231,7 @@ namespace trview
         bool _changed{ true };
         mutable bool _scroll_to_item{ false };
         mutable bool _force_sort{ false };
+        std::vector<std::string> _columns;
     };
 
     constexpr std::string to_string(CompareOp op) noexcept;

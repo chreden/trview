@@ -45,28 +45,28 @@ namespace trview
 
     template <typename T>
     template <typename value_type>
-    void Filters<T>::add_getter(const std::string& key, const std::function<value_type(const T&)>& getter, EditMode can_change, bool visible)
+    void Filters<T>::add_getter(const std::string& key, const std::function<value_type(const T&)>& getter, EditMode can_change)
     {
-        add_getter(key, getter, {}, can_change, visible);
+        add_getter(key, getter, {}, can_change);
     }
 
     template <typename T>
     template <typename value_type>
-    void Filters<T>::add_getter(const std::string& key, const std::vector<std::string>& options, const std::function<value_type(const T&)>& getter, EditMode can_change, bool visible)
+    void Filters<T>::add_getter(const std::string& key, const std::vector<std::string>& options, const std::function<value_type(const T&)>& getter, EditMode can_change)
     {
-        add_getter(key, options, getter, {}, can_change, visible);
+        add_getter(key, options, getter, {}, can_change);
     }
 
     template <typename T>
     template <typename value_type>
-    void Filters<T>::add_getter(const std::string& key, const std::function<value_type(const T&)>& getter, const std::function<bool(const T&)>& predicate, EditMode can_change, bool visible)
+    void Filters<T>::add_getter(const std::string& key, const std::function<value_type(const T&)>& getter, const std::function<bool(const T&)>& predicate, EditMode can_change)
     {
-        add_getter(key, available_options<value_type>(), getter, predicate, can_change, visible);
+        add_getter(key, available_options<value_type>(), getter, predicate, can_change);
     }
 
     template <typename T>
     template <typename value_type>
-    void Filters<T>::add_getter(const std::string& key, const std::vector<std::string>& options, const std::function<value_type(const T&)>& getter, const std::function<bool(const T&)>& predicate, EditMode can_change, bool visible)
+    void Filters<T>::add_getter(const std::string& key, const std::vector<std::string>& options, const std::function<value_type(const T&)>& getter, const std::function<bool(const T&)>& predicate, EditMode can_change)
     {
         _getters[key] =
         {
@@ -74,7 +74,6 @@ namespace trview
             .options = options,
             .function = [=](const auto& value) { return getter(value); },
             .predicate = predicate,
-            .visible = visible,
             .can_change = can_change
         };
     }
@@ -514,8 +513,19 @@ namespace trview
                     ImGui::TableNextColumn();
                     ImGui::Text(getter.first.c_str());
                     ImGui::TableNextColumn();
+                    bool visible = std::ranges::find(_columns, getter.first) != _columns.end();
                     ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0, 0));
-                    ImGui::Checkbox(std::format("##{}-visible", getter.first).c_str(), &getter.second.visible);
+                    if (ImGui::Checkbox(std::format("##{}-visible", getter.first).c_str(), &visible))
+                    {
+                        if (visible)
+                        {
+                            _columns.push_back(getter.first);
+                        }
+                        else
+                        {
+                            std::erase(_columns, getter.first);
+                        }
+                    }
                     ImGui::PopStyleVar();
                 }
                 ImGui::EndTable();
@@ -608,6 +618,12 @@ namespace trview
     }
 
     template <typename T>
+    void Filters<T>::set_columns(const std::vector<std::string>& columns)
+    {
+        _columns = columns;
+    }
+
+    template <typename T>
     void Filters<T>::set_filters(const std::vector<Filter> filters)
     {
         _filters = filters;
@@ -624,8 +640,7 @@ namespace trview
     template <typename T>
     int Filters<T>::column_count() const
     {
-        return static_cast<int>(std::ranges::count_if(_getters, [](auto&& c) { return c.second.visible; }) + 
-                                std::ranges::count_if(_multi_getters, [](auto&& c) { return c.second.visible; }));
+        return static_cast<int>(_columns.size());
     }
 
     template <typename T>
@@ -634,7 +649,7 @@ namespace trview
         const std::weak_ptr<T>& selected_item,
         RowCounter counter,
         const std::function<void(std::weak_ptr<T>)>& on_item_selected,
-        const std::unordered_map<std::string, Toggle>& on_toggle) const
+        const std::unordered_map<std::string, Toggle>& on_toggle)
     {
         auto columns = column_count();
         if (columns == 0)
@@ -644,55 +659,60 @@ namespace trview
 
         if (ImGui::BeginTable("filter-list", columns, ImGuiTableFlags_Sortable | ImGuiTableFlags_ScrollY | ImGuiTableFlags_Reorderable, ImVec2(0, -counter.height())))
         {
-            for (const auto& getter : _getters)
+            for (const auto& column_name : _columns)
             {
-                if (getter.second.visible)
-                {
-                    ImGui::TableSetupColumn(getter.first.c_str(), ImGuiTableColumnFlags_None);
-                }
+                ImGui::TableSetupColumn(column_name.c_str(), ImGuiTableColumnFlags_None);
             }
             ImGui::TableSetupScrollFreeze(1, 1);
             ImGui::TableNextRow(ImGuiTableRowFlags_Headers, ImGui::TableGetHeaderRowHeight());
 
             int column_n = 0;
-            for (const auto& getter : _getters)
+            for (const auto& column_name : _columns)
             {
-                if (getter.second.visible)
+                if (!ImGui::TableSetColumnIndex(column_n++))
                 {
-                    if (!ImGui::TableSetColumnIndex(column_n++))
-                    {
-                        continue;
-                    }
+                    continue;
+                }
 
-                    if (getter.second.can_change == EditMode::ReadWrite)
+                const auto found_getter = _getters.find(column_name);
+                if (found_getter == _getters.end())
+                {
+                    continue;
+                }
+                const auto& getter = found_getter->second;
+                if (getter.can_change == EditMode::ReadWrite)
+                {
+                    auto found_toggle = on_toggle.find(column_name);
+                    if (found_toggle != on_toggle.end())
                     {
-                        auto found_toggle = on_toggle.find(getter.first);
-                        if (found_toggle != on_toggle.end())
+                        ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0, 0));
+                        bool value = found_toggle->second.all_toggled();
+                        if (ImGui::Checkbox("##checkall", &value))
                         {
-                            ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0, 0));
-                            bool value = found_toggle->second.all_toggled();
-                            if (ImGui::Checkbox("##checkall", &value))
-                            {
-                                found_toggle->second.on_toggle_all(value);
-                            }
-                            ImGui::PopStyleVar();
-                            ImGui::SameLine(0.0f, ImGui::GetStyle().ItemInnerSpacing.x);
+                            found_toggle->second.on_toggle_all(value);
                         }
+                        ImGui::PopStyleVar();
+                        ImGui::SameLine(0.0f, ImGui::GetStyle().ItemInnerSpacing.x);
                     }
-                    ImGui::TableHeader(getter.first.c_str());
+                }
+                ImGui::TableHeader(column_name.c_str());
+            }
+
+            std::vector<std::function<bool(const T&, const T&)>> sorting_functions;
+            for (const auto& column : _columns)
+            {
+                const auto found_getter = _getters.find(column);
+                if (found_getter != _getters.end())
+                {
+                    const auto getter = found_getter->second;
+                    sorting_functions.push_back([=](const T& l, const T& r) -> bool
+                    {
+                        return std::tuple(getter.function(l), l.number()) < std::tuple(getter.function(r), r.number());
+                    });
                 }
             }
 
-            imgui_sort_weak(all_items, _getters
-                | std::views::filter([](auto&& g) { return g.second.visible; })
-                | std::views::transform([](auto&& g) -> std::function<bool(const T&, const T&)>
-                    {
-                        return [&](const T& l, const T& r) -> bool
-                            {
-                                return std::tuple(g.second.function(l), l.number()) < std::tuple(g.second.function(r), r.number());
-                            };
-                    })
-                | std::ranges::to<std::vector>(), _force_sort);
+            imgui_sort_weak(all_items, sorting_functions, _force_sort);
             _force_sort = false;
 
             for (const auto& item : items)
@@ -720,46 +740,49 @@ namespace trview
                 ImGui::SameLine();
 
                 int remaining = columns;
-                for (const auto getter : _getters)
+                for (const auto& column_name : _columns)
                 {
-                    if (getter.second.visible)
+                    const auto found_getter = _getters.find(column_name);
+                    if (found_getter == _getters.end())
                     {
-                        const auto result = getter.second.function(*item);
+                        continue;
+                    }
+                    const auto& getter = found_getter->second;
+                    const auto result = getter.function(*item);
 
-                        std::visit([&](auto&& arg)
-                            {
-                                using R = std::decay_t<decltype(arg)>;
-                                if constexpr (std::is_same_v<R, std::string>)
-                                {
-                                    ImGui::Text(arg.c_str());
-                                }
-                                else if constexpr (std::is_same_v<R, bool>)
-                                {
-                                    bool toggle_value = arg;
-
-                                    ImGui::BeginDisabled(getter.second.can_change == EditMode::Read);
-                                    ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0, 0));
-                                    if (ImGui::Checkbox(std::format("##{}-{}", getter.first, item->number()).c_str(), &toggle_value))
-                                    {
-                                        auto found_toggle = on_toggle.find(getter.first);
-                                        if (found_toggle != on_toggle.end())
-                                        {
-                                            found_toggle->second.on_toggle(item, toggle_value);
-                                        }
-                                    }
-                                    ImGui::PopStyleVar();
-                                    ImGui::EndDisabled();
-                                }
-                                else
-                                {
-                                    ImGui::Text(std::to_string(arg).c_str());
-                                }
-                            }, result);
-
-                        if (--remaining > 0)
+                    std::visit([&](auto&& arg)
                         {
-                            ImGui::TableNextColumn();
-                        }
+                            using R = std::decay_t<decltype(arg)>;
+                            if constexpr (std::is_same_v<R, std::string>)
+                            {
+                                ImGui::Text(arg.c_str());
+                            }
+                            else if constexpr (std::is_same_v<R, bool>)
+                            {
+                                bool toggle_value = arg;
+
+                                ImGui::BeginDisabled(getter.can_change == EditMode::Read);
+                                ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0, 0));
+                                if (ImGui::Checkbox(std::format("##{}-{}", column_name, item->number()).c_str(), &toggle_value))
+                                {
+                                    auto found_toggle = on_toggle.find(column_name);
+                                    if (found_toggle != on_toggle.end())
+                                    {
+                                        found_toggle->second.on_toggle(item, toggle_value);
+                                    }
+                                }
+                                ImGui::PopStyleVar();
+                                ImGui::EndDisabled();
+                            }
+                            else
+                            {
+                                ImGui::Text(std::to_string(arg).c_str());
+                            }
+                        }, result);
+
+                    if (--remaining > 0)
+                    {
+                        ImGui::TableNextColumn();
                     }
                 }
             }
