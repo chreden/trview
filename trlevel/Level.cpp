@@ -784,9 +784,19 @@ namespace trlevel
             return og_main;
         }
 
-        auto remastered_main = _files->load_file(std::format("{}/../SFX/MAIN.SFX", path));
-        _platform_and_version.remastered |= remastered_main.has_value();
-        return remastered_main;
+        if (auto remastered_main = _files->load_file(std::format("{}/../SFX/MAIN.SFX", path)))
+        {
+            _platform_and_version.remastered = true;
+            return remastered_main;
+        }
+
+        if (auto remastered_main_expansion = _files->load_file(std::format("{}/../../SFX/MAIN.SFX", path)))
+        {
+            _platform_and_version.remastered = true;
+            return remastered_main_expansion;
+        }
+
+        return std::nullopt;
     }
 
     bool Level::trng() const
