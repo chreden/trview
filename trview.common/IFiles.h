@@ -33,6 +33,7 @@ namespace trview
         virtual void save_file(const std::string& filename, const std::string& text) const = 0;
         virtual std::vector<File> get_files(const std::string& folder, const std::string& pattern) const = 0;
         virtual std::vector<Directory> get_directories(const std::string& folder) const = 0;
+        virtual std::vector<Directory> get_directories(const std::string& folder, const std::string& pattern) const = 0;
         virtual std::string working_directory() const = 0;
         virtual void set_working_directory(const std::string& directory) = 0;
     };

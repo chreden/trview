@@ -14,6 +14,7 @@
 #include "Elements/ISoundSource.h"
 #include "Elements/ITrigger.h"
 #include "Elements/ITypeInfoLookup.h"
+#include "Elements/ILevelNameLookup.h"
 #include "Geometry/IMesh.h"
 #include "Geometry/IPicking.h"
 #include "Geometry/ITransparencyBuffer.h"
@@ -38,6 +39,7 @@
 #include "UI/ICameraControls.h"
 #include "UI/IContextMenu.h"
 #include "UI/IFonts.h"
+#include "UI/ILevelInfo.h"
 #include "UI/IImGuiBackend.h"
 #include "UI/IMapRenderer.h"
 #include "UI/ISettingsWindow.h"
@@ -313,11 +315,17 @@ namespace trview
         MockDiffWindowManager::MockDiffWindowManager() {};
         MockDiffWindowManager::~MockDiffWindowManager() {};
 
+        MockLevelInfo::MockLevelInfo() {}
+        MockLevelInfo::~MockLevelInfo() {}
+
         MockModelStorage::MockModelStorage() {};
         MockModelStorage::~MockModelStorage() {};
 
         MockFlyby::MockFlyby() {};
         MockFlyby::~MockFlyby() {};
+
+        MockLevelNameLookup::MockLevelNameLookup() {}
+        MockLevelNameLookup::~MockLevelNameLookup() {}
 
         MockFlybyNode::MockFlybyNode() {};
         MockFlybyNode::~MockFlybyNode() {};

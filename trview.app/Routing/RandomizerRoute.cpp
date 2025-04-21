@@ -415,7 +415,7 @@ namespace trview
     void RandomizerRoute::import(const std::vector<uint8_t>& data, const RandomizerSettings& randomizer_settings)
     {
         std::vector<Waypoints> new_waypoints;
-        auto json = nlohmann::ordered_json::parse(data.begin(), data.end());
+        auto json = nlohmann::ordered_json::parse(data.begin(), data.end(), nullptr, true, true, true);
         for (const auto& level : json.items())
         {
             Waypoints level_waypoints{ .level_name = level.key() };

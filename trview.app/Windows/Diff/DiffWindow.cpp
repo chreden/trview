@@ -900,6 +900,7 @@ namespace trview
         {
             _settings = settings.value();
             _file_menu->set_recent_files(_settings->recent_diff_files);
+            _file_menu->set_sorting_mode(_settings->level_sorting_mode);
         }
     }
 }

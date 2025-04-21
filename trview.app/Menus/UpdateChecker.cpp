@@ -94,7 +94,7 @@ namespace trview
 
             try
             {
-                auto json = nlohmann::json::parse(text);
+                auto json = nlohmann::json::parse(text, nullptr, true, true, true);
                 auto tag = json["tag_name"].get<std::string>();
 
                 if (tag != version)

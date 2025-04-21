@@ -77,8 +77,8 @@ namespace trview
     {
     }
 
-    FileMenu::FileMenu(const Window& window, const std::shared_ptr<IShortcuts>& shortcuts, const std::shared_ptr<IDialogs>& dialogs, const std::shared_ptr<IFiles>& files)
-        : MessageHandler(window), _dialogs(dialogs), _directory_listing_menu(create_directory_listing_menu(window)), _files(files)
+    FileMenu::FileMenu(const Window& window, const std::shared_ptr<IShortcuts>& shortcuts, const std::shared_ptr<IDialogs>& dialogs, const std::shared_ptr<IFiles>& files, const LevelNameSource& level_name_source)
+        : MessageHandler(window), _dialogs(dialogs), _directory_listing_menu(create_directory_listing_menu(window)), _files(files), _level_name_source(level_name_source)
     {
         DragAcceptFiles(window, TRUE);
 
@@ -135,22 +135,23 @@ namespace trview
 
         if (const auto pack_ptr = pack.lock())
         {
-            _file_switcher_list = valid_pack_levels(*pack_ptr);
+            _file_switcher_list = valid_pack_levels(*pack_ptr)
+                | std::views::transform([&](auto&& f) -> File { return { .path = f.path, .friendly_name = f.friendly_name, .level_name = _level_name_source(f.path, pack_ptr) };})
+                | std::ranges::to<std::vector>();
         }
         else
         {
-            _file_switcher_list = _files->get_files(path_for_filename(filename), default_file_pattern);
+            _file_switcher_list = _files->get_files(path_for_filename(filename), default_file_pattern)
+                | std::views::transform([&](auto&& f) -> File { return { .path = f.path, .friendly_name = f.friendly_name, .level_name = _level_name_source(f.path, {}) }; })
+                | std::ranges::to<std::vector>();
         }
 
         // Enable menu when populating in case it's not enabled
         EnableMenuItem(GetMenu(window()), ID_FILE_SWITCHLEVEL, MF_ENABLED);
 
         // Clear all items from menu and repopulate
-        reset_menu(window(), _directory_listing_menu);
-        for (auto i = 0u; i < _file_switcher_list.size(); ++i)
-        {
-            AppendMenu(_directory_listing_menu, MF_STRING, ID_SWITCHFILE_BASE + static_cast<int>(i), to_utf16(_file_switcher_list[i].friendly_name).c_str());
-        }
+        sort_level_switcher();
+        update_level_switcher();
 
         EnableMenuItem(GetMenu(window()), ID_FILE_RELOAD, MF_ENABLED);
         DrawMenuBar(window());
@@ -160,6 +161,13 @@ namespace trview
     {
         _recent_files.assign(files.begin(), files.end());
         update_menu(window(), _recent_files);
+    }
+
+    void FileMenu::set_sorting_mode(LevelSortingMode mode)
+    {
+        _sorting_mode = mode;
+        sort_level_switcher();
+        update_level_switcher();
     }
 
     void FileMenu::choose_file()
@@ -224,5 +232,34 @@ namespace trview
 
     void FileMenu::render()
     {
+    }
+
+    void FileMenu::sort_level_switcher()
+    {
+        switch (_sorting_mode)
+        {
+            case LevelSortingMode::FilenameOnly:
+            {
+                std::ranges::sort(_file_switcher_list, [](auto&& l, auto&& r) { return l.friendly_name < r.friendly_name; });
+                break;
+            }
+            case LevelSortingMode::NameThenFilename:
+            {
+                std::ranges::sort(_file_switcher_list, [](auto&& l, auto&& r) { return l.level_name < r.level_name; });
+                break;
+            }
+        }
+    }
+
+    void FileMenu::update_level_switcher()
+    {
+        reset_menu(window(), _directory_listing_menu);
+        for (auto i = 0u; i < _file_switcher_list.size(); ++i)
+        {
+            const auto name = _file_switcher_list[i].level_name.has_value() ?
+                std::format("{} ({})", _file_switcher_list[i].level_name.value(), _file_switcher_list[i].friendly_name) :
+                _file_switcher_list[i].friendly_name;
+            AppendMenu(_directory_listing_menu, MF_STRING, ID_SWITCHFILE_BASE + static_cast<int>(i), to_utf16(name).c_str());
+        }
     }
 }

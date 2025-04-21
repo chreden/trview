@@ -112,7 +112,7 @@ namespace trview
             {
                 try
                 {
-                    auto manifest_json = nlohmann::json::parse(manifest.value().begin(), manifest.value().end());
+                    auto manifest_json = nlohmann::json::parse(manifest.value().begin(), manifest.value().end(), nullptr, true, true, true);
 
                     read_attribute(manifest_json, _name, "name");
                     read_attribute(manifest_json, _author, "author");

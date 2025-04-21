@@ -73,7 +73,7 @@ namespace trview
     {
         auto parse_json = [&](const auto& data)
             {
-                auto json = nlohmann::json::parse(data.begin(), data.end());
+                auto json = nlohmann::json::parse(data.begin(), data.end(), nullptr, true, true, true);
                 for (const auto& [key, value] : json["games"].items())
                 {
                     auto& type_names = _type_names[key];

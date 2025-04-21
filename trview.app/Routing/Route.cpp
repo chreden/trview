@@ -80,7 +80,7 @@ namespace trview
                 }
 
                 const auto data_bytes = data.value();
-                return nlohmann::ordered_json::parse(data_bytes.begin(), data_bytes.end());
+                return nlohmann::ordered_json::parse(data_bytes.begin(), data_bytes.end(), nullptr, true, true, true);
             }
             catch (...)
             {
@@ -498,7 +498,7 @@ namespace trview
         Colour new_route_colour = colour();
         Colour new_waypoint_colour = waypoint_colour();
 
-        auto json = nlohmann::json::parse(data.begin(), data.end());
+        auto json = nlohmann::json::parse(data.begin(), data.end(), nullptr, true, true, true);
         if (json["colour"].is_string())
         {
             new_route_colour = from_colour_code(json["colour"].get<std::string>());

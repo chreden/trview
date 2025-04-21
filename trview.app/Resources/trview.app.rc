@@ -222,6 +222,7 @@ TEXTURE_FILTERING_POINT  TEXTURE                     "Files\\texture_filtering_p
 IDR_TYPE_NAMES                      TEXT         "Files\\type_names.txt"
 IDR_ACTIONS                         TEXT         "Files\\actions.json"
 IDR_NGPLUS                          TEXT         "Files\\ng_plus.json"
+IDR_LEVEL_HASHES                    TEXT         "Files\\level_hashes.json"
 
 /////////////////////////////////////////////////////////////////////////////
 //

@@ -25,6 +25,7 @@ namespace
             std::shared_ptr<MockShortcuts> shortcuts{ mock_shared<MockShortcuts>() };
             std::shared_ptr<MockDialogs> dialogs{ mock_shared<MockDialogs>() };
             std::shared_ptr<IFiles> files{ mock_shared<MockFiles>() };
+            FileMenu::LevelNameSource level_name_source{ [](auto&&...) { return std::nullopt; } };
 
             std::unique_ptr<FileMenu> build()
             {
@@ -32,7 +33,7 @@ namespace
                 ON_CALL(*shortcuts, add_shortcut(true, 'O')).WillByDefault([&](auto, auto) -> Event<>&{ return ctrl_o_shortcut; });
                 ON_CALL(*shortcuts, add_shortcut(false, VK_F6)).WillByDefault([&](auto, auto) -> Event<>&{ return f6_shortcut; });
                 ON_CALL(*shortcuts, add_shortcut(false, VK_F7)).WillByDefault([&](auto, auto) -> Event<>&{ return f7_shortcut; });
-                return std::make_unique<FileMenu>(window, shortcuts, dialogs, files);
+                return std::make_unique<FileMenu>(window, shortcuts, dialogs, files, level_name_source);
             }
 
             test_module& with_window(const trview::Window& window)

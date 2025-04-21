@@ -1,5 +1,6 @@
 #include "LevelInfo.h"
 #include <trview.app/Graphics/ITextureStorage.h>
+#include "../Elements/ILevel.h"
 
 namespace trview
 {
@@ -16,7 +17,12 @@ namespace trview
         };
     }
 
-    LevelInfo::LevelInfo(const ITextureStorage& texture_storage)
+    ILevelInfo::~ILevelInfo()
+    {
+    }
+
+    LevelInfo::LevelInfo(const ITextureStorage& texture_storage, const std::shared_ptr<ILevelNameLookup>& level_name_lookup)
+        : _level_name_lookup(level_name_lookup)
     {
         for (const auto& tex : texture_names)
         {
@@ -48,14 +54,25 @@ namespace trview
         ImGui::End();
     }
 
-    void LevelInfo::set_level(const std::string& name)
+    void LevelInfo::set_level(const std::weak_ptr<ILevel>& level)
     {
-        _name = name;
-    }
-
-    void LevelInfo::set_level_version(trlevel::LevelVersion version)
-    {
-        _version = version;
+        if (const auto level_ptr = level.lock())
+        {
+            if (auto name = _level_name_lookup->lookup(level))
+            {
+                _name = std::format("{} ({})", name.value(), level_ptr->name());
+            }
+            else
+            {
+                _name = level_ptr->name();
+            }
+            _version = level_ptr->version();
+        }
+        else
+        {
+            _name.clear();
+            _version = trlevel::LevelVersion::Unknown;
+        }
     }
 
     graphics::Texture LevelInfo::get_version_image(trlevel::LevelVersion version) const

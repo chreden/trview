@@ -33,6 +33,7 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClCompile Include="Elements\ISector.cpp" />
     <ClCompile Include="Elements\ITrigger.cpp" />
     <ClCompile Include="Elements\Level.cpp" />
+    <ClCompile Include="Elements\Level\LevelNameLookup.cpp" />
     <ClCompile Include="Elements\Light.cpp" />
     <ClCompile Include="Elements\Remastered\NgPlusSwitcher.cpp" />
     <ClCompile Include="Elements\Room.cpp" />
@@ -94,6 +95,8 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClCompile Include="Windows\Sounds\SoundsWindow.cpp" />
     <ClCompile Include="Windows\Sounds\SoundsWindowManager.cpp" />
     <ClCompile Include="Windows\Windows.cpp" />
+    <ClInclude Include="Elements\Level\ILevelNameLookup.h" />
+    <ClInclude Include="Elements\Level\LevelNameLookup.h" />
     <ClInclude Include="Elements\Flyby\Flyby.h" />
     <ClInclude Include="Elements\Flyby\FlybyNode.h" />
     <ClInclude Include="Elements\Flyby\IFlyby.h" />
@@ -111,8 +114,11 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClInclude Include="Lua\Scriptable\Scriptable.h" />
     <ClInclude Include="Menus\ImGuiFileMenu.h" />
     <ClInclude Include="Messages\Messages.h" />
+    <ClInclude Include="Menus\LevelSortingMode.h" />
+    <ClInclude Include="Menus\LevelSortingMode.hpp" />
     <ClInclude Include="Mocks\Elements\IFlyby.h" />
     <ClInclude Include="Mocks\Elements\IFlybyNode.h" />
+    <ClInclude Include="Mocks\Elements\ILevelNameLookup.h" />
     <ClInclude Include="Mocks\Elements\INgPlusSwitcher.h" />
     <ClInclude Include="Mocks\Elements\ISoundSource.h" />
     <ClInclude Include="Mocks\Geometry\IModelStorage.h" />
@@ -120,6 +126,7 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClInclude Include="Mocks\Sound\ISound.h" />
     <ClInclude Include="Mocks\Sound\ISoundStorage.h" />
     <ClInclude Include="Mocks\UI\IFonts.h" />
+    <ClInclude Include="Mocks\UI\ILevelInfo.h" />
     <ClInclude Include="Mocks\Windows\IAboutWindow.h" />
     <ClInclude Include="Mocks\Windows\IDiffWindow.h" />
     <ClInclude Include="Mocks\Windows\IDiffWindowManager.h" />
@@ -237,6 +244,7 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClCompile Include="Windows\WindowResizer.cpp" />
     <ClInclude Include="UI\Fonts\Fonts.h" />
     <ClInclude Include="UI\Fonts\IFonts.h" />
+    <ClInclude Include="UI\ILevelInfo.h" />
     <ClInclude Include="UserCancelledException.h" />
     <ClInclude Include="Windows\AutoHider.h" />
     <ClInclude Include="Windows\About\AboutWindow.h" />
@@ -521,6 +529,7 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
   </ItemGroup>
   <ItemGroup>
     <Text Include="Resources\Files\type_names.txt" />
+    <Text Include="Resources\Files\level_hashes.json" />
     <Text Include="Resources\Files\ng_plus.json" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
