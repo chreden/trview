@@ -54,6 +54,8 @@ namespace trlevel
             MOCK_METHOD(std::vector<tr4_flyby_camera>, flyby_cameras, (), (const, override));
             MOCK_METHOD(std::vector<std::vector<int16_t>>, animated_textures, (), (const, override));
             MOCK_METHOD(uint32_t, animated_texture_uv_count, (), (const, override));
+            MOCK_METHOD(std::string, hash, (), (const, override));
+            MOCK_METHOD(std::string, filename, (), (const, override));
         };
     }
 }
