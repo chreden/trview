@@ -56,6 +56,7 @@ namespace trview
         virtual std::vector<std::weak_ptr<ITrigger>> triggers() const override;
         virtual PickResult pick(const ICamera& camera, const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& direction) const override;
         virtual trlevel::Platform platform() const override;
+        trlevel::PlatformAndVersion platform_and_version() const override;
         virtual void render(const ICamera& camera, bool render_selection) override;
         virtual void render_transparency(const ICamera& camera) override;
         virtual void set_highlight_mode(RoomHighlightMode mode, bool enabled) override;
@@ -214,8 +215,7 @@ namespace trview
 
         std::unique_ptr<ISelectionRenderer> _selection_renderer;
         std::set<uint32_t> _alternate_groups;
-        trlevel::LevelVersion _version;
-        trlevel::Platform _platform;
+        trlevel::PlatformAndVersion _platform_and_version;
         std::string _filename;
         std::shared_ptr<ILog> _log;
         std::vector<uint16_t> _floor_data;

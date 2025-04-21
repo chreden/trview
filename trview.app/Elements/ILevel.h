@@ -77,6 +77,7 @@ namespace trview
         // is also specified.
         virtual PickResult pick(const ICamera& camera, const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& direction) const = 0;
         virtual trlevel::Platform platform() const = 0;
+        virtual trlevel::PlatformAndVersion platform_and_version() const = 0;
         /// Render the current scene.
         /// @param camera The current camera.
         /// @param render_selection Whether to render selection highlights on selected items.

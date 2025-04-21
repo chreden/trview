@@ -739,7 +739,7 @@ namespace trlevel
             sfx_file.exceptions(std::ios::failbit | std::ios::badbit | std::ios::eofbit);
 
             // Remastered has a sound map like structure at the start of main.sfx, so skip that if present:
-            if (_platform_and_version.remastered)
+            if (_platform_and_version.remastered && _platform_and_version.version >= LevelVersion::Tomb4)
             {
                 _sound_map = read_sound_map(activity, sfx_file, callbacks);
                 _sound_details = read_sound_details(activity, sfx_file, callbacks);
@@ -775,7 +775,7 @@ namespace trlevel
         }
     }
 
-    std::optional<std::vector<uint8_t>> Level::load_main_sfx() const
+    std::optional<std::vector<uint8_t>> Level::load_main_sfx()
     {
         const auto path = trview::path_for_filename(_filename);
         const auto og_main = _files->load_file(std::format("{}/MAIN.SFX", path));
@@ -783,7 +783,10 @@ namespace trlevel
         {
             return og_main;
         }
-        return _files->load_file(std::format("{}/../SFX/MAIN.SFX", path));
+
+        auto remastered_main = _files->load_file(std::format("{}/../SFX/MAIN.SFX", path));
+        _platform_and_version.remastered |= remastered_main.has_value();
+        return remastered_main;
     }
 
     bool Level::trng() const

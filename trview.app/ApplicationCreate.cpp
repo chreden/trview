@@ -87,6 +87,8 @@
 #include "Windows/Diff/DiffWindow.h"
 #include "Windows/Pack/PackWindowManager.h"
 #include "Windows/Pack/PackWindow.h"
+#include "UI/LevelInfo.h"
+#include "Elements/Level/LevelNameLookup.h"
 
 namespace trview
 {
@@ -342,17 +344,18 @@ namespace trview
         auto items_window_manager = std::make_shared<ItemsWindowManager>(window, shortcuts, items_window_source);
         auto rooms_window_source = [=]() { return std::make_shared<RoomsWindow>(map_renderer_source, clipboard); };
         auto rooms_window_manager = std::make_shared<RoomsWindowManager>(window, shortcuts, rooms_window_source);
+        auto level_name_lookup = std::make_shared<LevelNameLookup>(files);
 
         auto viewer_ui = std::make_unique<ViewerUI>(
             window,
-            texture_storage,
             shortcuts,
             map_renderer_source,
             std::make_unique<SettingsWindow>(dialogs, shell, fonts),
             std::make_unique<ViewOptions>(rooms_window_manager),
             std::make_unique<ContextMenu>(items_window_manager),
             std::make_unique<CameraControls>(),
-            std::make_unique<Toolbar>(plugins));
+            std::make_unique<Toolbar>(plugins),
+            std::make_unique<LevelInfo>(*texture_storage, level_name_lookup));
 
         auto viewer = std::make_unique<Viewer>(
             window,

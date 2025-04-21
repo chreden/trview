@@ -80,6 +80,7 @@ namespace trview
             MOCK_METHOD(void, set_show_sound_sources, (bool), (override));
             MOCK_METHOD(bool, show_sound_sources, (), (const, override));
             MOCK_METHOD(trlevel::Platform, platform, (), (const, override));
+            MOCK_METHOD(trlevel::PlatformAndVersion, platform_and_version, (), (const, override));
             MOCK_METHOD(void, set_ng_plus, (bool), (override));
             MOCK_METHOD(bool, ng_plus, (), (const, override));
             MOCK_METHOD(bool, trng, (), (const, override));
