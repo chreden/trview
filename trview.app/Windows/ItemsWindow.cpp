@@ -39,6 +39,8 @@ namespace trview
         _tips["Type*"] = "Mutant Egg spawn target is missing; egg will be empty";
 
         setup_filters();
+
+        _filters.set_columns(std::vector<std::string>{ "#", "Room", "Type ID", "Type", "Hide" });
     }
 
     void ItemsWindow::set_items(const std::vector<std::weak_ptr<IItem>>& items)
@@ -360,8 +362,8 @@ namespace trview
                 available_categories.insert_range(item_ptr->categories());
             }
         }
-        _filters.add_getter<int>("#", [](auto&& item) { return static_cast<int>(item.number()); }, EditMode::Read, true);
-        _filters.add_getter<std::string>("Type", { available_types.begin(), available_types.end() }, [](auto&& item) { return item.type(); }, EditMode::Read, true);
+        _filters.add_getter<int>("#", [](auto&& item) { return static_cast<int>(item.number()); });
+        _filters.add_getter<std::string>("Type", { available_types.begin(), available_types.end() }, [](auto&& item) { return item.type(); });
         _filters.add_multi_getter<std::string>("Category", { available_categories.begin(), available_categories.end() }, [](auto&& item)
             {
                 std::vector<std::string> results;
@@ -376,13 +378,13 @@ namespace trview
         _filters.add_getter<float>("Z", [](auto&& item) { return item.position().z * trlevel::Scale_Z; });
         _filters.add_getter<float>("Angle", [](auto&& item) { return static_cast<float>(bound_rotation(item.angle())); });
         _filters.add_getter<float>("Angle Degrees", [](auto&& item) { return static_cast<float>(bound_rotation(item.angle()) / 182); });
-        _filters.add_getter<int>("Type ID", [](auto&& item) { return static_cast<int>(item.type_id()); }, EditMode::Read, true);
-        _filters.add_getter<int>("Room", [](auto&& item) { return static_cast<int>(item_room(item)); }, EditMode::Read, true);
+        _filters.add_getter<int>("Type ID", [](auto&& item) { return static_cast<int>(item.type_id()); }, EditMode::Read);
+        _filters.add_getter<int>("Room", [](auto&& item) { return static_cast<int>(item_room(item)); }, EditMode::Read);
         _filters.add_getter<bool>("Clear Body", [](auto&& item) { return item.clear_body_flag(); });
         _filters.add_getter<bool>("Invisible", [](auto&& item) { return item.invisible_flag(); });
         _filters.add_getter<std::string>("Flags", [](auto&& item) { return format_binary(item.activation_flags()); });
         _filters.add_getter<int>("OCB", [](auto&& item) { return static_cast<int>(item.ocb()); });
-        _filters.add_getter<bool>("Hide", [](auto&& item) { return !item.visible(); }, EditMode::ReadWrite, true);
+        _filters.add_getter<bool>("Hide", [](auto&& item) { return !item.visible(); }, EditMode::ReadWrite);
         _filters.add_multi_getter<float>("Trigger References", [](auto&& item)
             {
                 std::vector<float> results;
