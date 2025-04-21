@@ -642,13 +642,13 @@ namespace trview
             return;
         }
 
-        if (ImGui::BeginTable("filter-list", columns, ImGuiTableFlags_Sortable | ImGuiTableFlags_ScrollY | ImGuiTableFlags_Reorderable | ImGuiTableFlags_SizingStretchProp, ImVec2(0, -counter.height())))
+        if (ImGui::BeginTable("filter-list", columns, ImGuiTableFlags_Sortable | ImGuiTableFlags_ScrollY | ImGuiTableFlags_Reorderable, ImVec2(0, -counter.height())))
         {
             for (const auto& getter : _getters)
             {
                 if (getter.second.visible)
                 {
-                    ImGui::TableSetupColumn(getter.first.c_str(), ImGuiTableColumnFlags_WidthStretch);
+                    ImGui::TableSetupColumn(getter.first.c_str(), ImGuiTableColumnFlags_None);
                 }
             }
             ImGui::TableSetupScrollFreeze(1, 1);
