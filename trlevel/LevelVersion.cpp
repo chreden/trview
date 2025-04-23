@@ -19,6 +19,10 @@ namespace trlevel
             {
                 return { .platform = Platform::PSX, .is_pack = true };
             }
+            else if (version == 0x6a20)
+            {
+                return { .platform = Platform::PSX, .version = LevelVersion::Tomb4 };
+            }
 
             switch (version & 0xff)
             {
@@ -97,5 +101,10 @@ namespace trlevel
     bool is_tr3_demo_55(PlatformAndVersion version)
     {
         return version.raw_version == -55;
+    }
+
+    bool is_tr4_oct_1999(PlatformAndVersion version)
+    {
+        return version.raw_version == 0x6a20;
     }
 }
