@@ -1360,6 +1360,7 @@ namespace trview
         _name = level->name();
         _ng = level->trng();
         _pack = level->pack().lock();
+        _hash = level->hash();
 
         record_models(*level);
         callbacks.on_progress("Generating rooms");
@@ -1548,6 +1549,11 @@ namespace trview
     std::weak_ptr<trlevel::IPack> Level::pack() const
     {
         return _pack;
+    }
+
+    std::string Level::hash() const
+    {
+        return _hash;
     }
 
     bool find_item_by_type_id(const ILevel& level, uint32_t type_id, std::weak_ptr<IItem>& output_item)

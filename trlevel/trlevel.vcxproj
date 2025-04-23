@@ -95,7 +95,9 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Decrypter.h" />
+    <ClInclude Include="Hasher.h" />
     <ClInclude Include="IDecrypter.h" />
+    <ClInclude Include="IHasher.h" />
     <ClInclude Include="ILevel.h" />
     <ClInclude Include="IPack.h" />
     <ClInclude Include="Level.h" />
@@ -120,6 +122,7 @@
       <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">4302</DisableSpecificWarnings>
       <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Release|x64'">4302</DisableSpecificWarnings>
     </ClCompile>
+    <ClCompile Include="Hasher.cpp" />
     <ClCompile Include="Level.cpp" />
     <ClCompile Include="LevelVersion.cpp" />
     <ClCompile Include="Level_common.cpp" />

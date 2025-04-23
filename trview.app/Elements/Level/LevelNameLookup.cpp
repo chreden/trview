@@ -5,6 +5,8 @@
 #include <spanstream>
 #include <ranges>
 
+#include <bcrypt.h>
+
 #include <trlevel/Level_common.h>
 
 namespace trview
@@ -278,9 +280,14 @@ namespace trview
     {
     }
 
-    LevelNameLookup::LevelNameLookup(const std::shared_ptr<IFiles>& files)
+    LevelNameLookup::LevelNameLookup(const std::shared_ptr<IFiles>& files, const std::string& level_hashes_json)
         : _files(files)
     {
+        const auto json = nlohmann::json::parse(level_hashes_json.begin(), level_hashes_json.end());
+        for (const auto& [key, value] : json.items())
+        {
+            _hashes.insert({ key, value.get<std::string>() });
+        }
     }
 
     std::string LevelNameLookup::lookup(const std::weak_ptr<ILevel>& level) const
@@ -322,9 +329,6 @@ namespace trview
             {
                 switch (platform_and_version.version)
                 {
-                case LevelVersion::Tomb1:
-                    // TODO: What?
-                    break;
                 case LevelVersion::Tomb2:
                 case LevelVersion::Tomb3:
                     if (auto name = read_tombpc_1_3(_files, level_ptr->filename()))
@@ -344,7 +348,11 @@ namespace trview
         }
 
         // Mode 2: Hash lookup - can hash be calculated on load and stored?
-
+        const auto found = _hashes.find(level_ptr->hash());
+        if (found != _hashes.end())
+        {
+            return found->second;
+        }
 
         // Mode 3: give up
         const std::filesystem::path filename_path{ level_ptr->filename() };

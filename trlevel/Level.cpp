@@ -173,13 +173,13 @@ namespace trlevel
         }
     }
 
-    Level::Level(const std::string& filename, const std::shared_ptr<IPack>& pack, const std::shared_ptr<trview::IFiles>& files, const std::shared_ptr<IDecrypter>& decrypter, const std::shared_ptr<trview::ILog>& log, const IPack::Source& pack_source)
-        : _log(log), _decrypter(decrypter), _filename(filename), _files(files), _pack_source(pack_source), _pack(pack)
+    Level::Level(const std::string& filename, const std::shared_ptr<IPack>& pack, const std::shared_ptr<trview::IFiles>& files, const std::shared_ptr<IDecrypter>& decrypter, const std::shared_ptr<trview::ILog>& log, const std::shared_ptr<IHasher>& hasher, const IPack::Source& pack_source)
+        : _log(log), _decrypter(decrypter), _filename(filename), _files(files), _pack_source(pack_source), _pack(pack), _hasher(hasher)
     {
     }
 
-    Level::Level(const std::string& filename, const std::shared_ptr<IPack>& pack, const std::shared_ptr<trview::IFiles>& files, const std::shared_ptr<IDecrypter>& decrypter, const std::shared_ptr<trview::ILog>& log)
-        : _log(log), _decrypter(decrypter), _filename(filename), _files(files), _pack(pack)
+    Level::Level(const std::string& filename, const std::shared_ptr<IPack>& pack, const std::shared_ptr<trview::IFiles>& files, const std::shared_ptr<IDecrypter>& decrypter, const std::shared_ptr<trview::ILog>& log, const std::shared_ptr<IHasher>& hasher)
+        : _log(log), _decrypter(decrypter), _filename(filename), _files(files), _pack(pack), _hasher(hasher)
     {
     }
 
@@ -589,6 +589,8 @@ namespace trlevel
                 throw LevelLoadException();
             }
 
+            _hash = _hasher->hash(*bytes);
+
             const auto& bytes_value = *bytes;
             std::basic_ispanstream<uint8_t> file{ { bytes_value } };
             file.exceptions(std::ios::failbit);
@@ -884,5 +886,10 @@ namespace trlevel
     std::weak_ptr<IPack> Level::pack() const
     {
         return _pack;
+    }
+
+    std::string Level::hash() const
+    {
+        return _hash;
     }
 }

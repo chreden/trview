@@ -3,6 +3,7 @@
 #include <trlevel/Level.h>
 #include <trlevel/Decrypter.h>
 #include <trlevel/Pack.h>
+#include <trlevel/Hasher.h>
 #include <trview.common/Files.h>
 #include <trview.common/Logs/Log.h>
 #include <trview.common/windows/Clipboard.h>
@@ -268,14 +269,16 @@ namespace trview
         const auto sound_source_source = [=](auto&&... args) { return std::make_shared<SoundSource>(cube_mesh, texture_storage, args...); };
 
         auto decrypter = std::make_shared<trlevel::Decrypter>();
-        auto trlevel_pack_source = [=](auto&&... args) { return std::make_shared<trlevel::Level>(args..., files, decrypter, log); };
+        auto hasher = std::make_shared<trlevel::Hasher>();
+
+        auto trlevel_pack_source = [=](auto&&... args) { return std::make_shared<trlevel::Level>(args..., files, decrypter, log, hasher); };
         const auto pack_source = [=](auto&&... args)
             { 
                 auto pack = std::make_shared<trlevel::Pack>(args..., trlevel_pack_source);
                 pack->load();
                 return pack;
             };
-        auto trlevel_source = [=](auto&&... args) { return std::make_shared<trlevel::Level>(args..., files, decrypter, log, pack_source); };
+        auto trlevel_source = [=](auto&&... args) { return std::make_shared<trlevel::Level>(args..., files, decrypter, log, hasher, pack_source); };
 
         auto level_source = [=](auto&& filename, auto&& pack, auto&& callbacks)
             {
@@ -344,7 +347,9 @@ namespace trview
         auto items_window_manager = std::make_shared<ItemsWindowManager>(window, shortcuts, items_window_source);
         auto rooms_window_source = [=]() { return std::make_shared<RoomsWindow>(map_renderer_source, clipboard); };
         auto rooms_window_manager = std::make_shared<RoomsWindowManager>(window, shortcuts, rooms_window_source);
-        auto level_name_lookup = std::make_shared<LevelNameLookup>(files);
+
+        Resource level_hashes = get_resource_memory(IDR_LEVEL_HASHES, L"TEXT");
+        auto level_name_lookup = std::make_shared<LevelNameLookup>(files, std::string(level_hashes.data, level_hashes.data + level_hashes.size));
 
         auto viewer_ui = std::make_unique<ViewerUI>(
             window,

@@ -513,6 +513,7 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
   </ItemGroup>
   <ItemGroup>
     <Text Include="Resources\Files\type_names.txt" />
+    <Text Include="Resources\Files\level_hashes.json" />
     <Text Include="Resources\Files\ng_plus.json" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

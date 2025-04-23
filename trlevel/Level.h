@@ -8,6 +8,7 @@
 #include "ILevel.h"
 #include "trtypes.h"
 #include "IDecrypter.h"
+#include "IHasher.h"
 
 #include <trview.common/Logs/ILog.h>
 #include <trview.common/Logs/Activity.h>
@@ -23,13 +24,15 @@ namespace trlevel
             const std::shared_ptr<trview::IFiles>& files,
             const std::shared_ptr<IDecrypter>& decrypter,
             const std::shared_ptr<trview::ILog>& log,
+            const std::shared_ptr<IHasher>& hasher,
             const IPack::Source& pack_source);
 
         explicit Level(const std::string& filename,
             const std::shared_ptr<IPack>& pack,
             const std::shared_ptr<trview::IFiles>& files,
             const std::shared_ptr<IDecrypter>& decrypter,
-            const std::shared_ptr<trview::ILog>& log);
+            const std::shared_ptr<trview::ILog>& log,
+            const std::shared_ptr<IHasher>& hasher);
 
         virtual ~Level();
 
@@ -179,6 +182,7 @@ namespace trlevel
         bool trng() const override;
         PlatformAndVersion platform_and_version() const override;
         std::weak_ptr<IPack> pack() const override;
+        std::string hash() const override;
     private:
         void generate_meshes(const std::vector<uint16_t>& mesh_data);
         tr_colour4 colour_from_object_texture(uint32_t texture) const;
@@ -288,5 +292,7 @@ namespace trlevel
 
         IPack::Source _pack_source;
         std::shared_ptr<IPack> _pack;
+        std::shared_ptr<IHasher> _hasher;
+        std::string _hash;
     };
 }
