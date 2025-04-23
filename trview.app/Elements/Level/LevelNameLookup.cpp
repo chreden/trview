@@ -286,7 +286,7 @@ namespace trview
         const auto json = nlohmann::json::parse(level_hashes_json.begin(), level_hashes_json.end());
         for (const auto& [key, value] : json.items())
         {
-            _hashes.insert({ key, value.get<std::string>() });
+            _hashes.insert({ key, value.at("name").get<std::string>() });
         }
     }
 
