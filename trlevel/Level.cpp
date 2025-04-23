@@ -594,7 +594,9 @@ namespace trlevel
             const auto& bytes_value = *bytes;
             std::basic_ispanstream<uint8_t> file{ { bytes_value } };
             file.exceptions(std::ios::failbit);
+
             log_file(activity, file, std::format("Opened file \"{}\"", _filename));
+            log_file(activity, file, std::format("File hash: {}", _hash));
 
             read_header(file, *bytes, activity, callbacks);
 
