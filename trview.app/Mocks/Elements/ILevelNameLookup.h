@@ -11,6 +11,7 @@ namespace trview
             MockLevelNameLookup();
             virtual ~MockLevelNameLookup();
             MOCK_METHOD(std::optional<std::string>, lookup, (const std::weak_ptr<ILevel>&), (const, override));
+            MOCK_METHOD(std::optional<std::string>, lookup, (const std::weak_ptr<trlevel::ILevel>&), (const, override));
         };
     }
 }
