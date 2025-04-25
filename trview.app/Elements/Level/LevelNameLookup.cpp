@@ -290,14 +290,14 @@ namespace trview
         }
     }
 
-    std::string LevelNameLookup::lookup(const std::weak_ptr<ILevel>& level) const
+    std::optional<std::string> LevelNameLookup::lookup(const std::weak_ptr<ILevel>& level) const
     {
         using namespace trlevel;
 
         const auto level_ptr = level.lock();
         if (!level_ptr)
         {
-            return "";
+            return std::nullopt;
         }
 
         const auto platform_and_version = level_ptr->platform_and_version();
@@ -354,8 +354,6 @@ namespace trview
             return found->second;
         }
 
-        // Mode 3: give up
-        const std::filesystem::path filename_path{ level_ptr->filename() };
-        return filename_path.filename().string();
+        return std::nullopt;
     }
 }

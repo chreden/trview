@@ -58,7 +58,14 @@ namespace trview
     {
         if (const auto level_ptr = level.lock())
         {
-            _name = _level_name_lookup->lookup(level);
+            if (auto name = _level_name_lookup->lookup(level))
+            {
+                _name = std::format("{} ({})", name.value(), level_ptr->name());
+            }
+            else
+            {
+                _name = level_ptr->name();
+            }
             _version = level_ptr->version();
         }
         else
