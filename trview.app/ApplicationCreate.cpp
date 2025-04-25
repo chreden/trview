@@ -393,12 +393,25 @@ namespace trview
         auto about_window_source = [=]() { return std::make_shared<AboutWindow>(); };
         auto diff_window_source = [=]() { return std::make_shared<DiffWindow>(dialogs, level_source, std::make_unique<ImGuiFileMenu>(dialogs, files)); };
         auto pack_window_source = [=]() { return std::make_shared<PackWindow>(); };
+        auto level_name_source = [=](auto&& filename, auto&& pack) -> std::optional<std::string>
+            {
+                try
+                {
+                    auto level = trlevel_source(filename, pack);
+                    level->load(trlevel::ILevel::LoadCallbacks{ .open_mode = trlevel::ILevel::LoadCallbacks::OpenMode::Preview });
+                    return level_name_lookup->lookup(level);
+                }
+                catch(...)
+                {
+                }
+                return std::nullopt;
+            };
 
         return std::make_unique<Application>(
             window,
             std::make_unique<UpdateChecker>(window),
             settings_loader,
-            std::make_unique<FileMenu>(window, shortcuts, dialogs, files),
+            std::make_unique<FileMenu>(window, shortcuts, dialogs, files, level_name_source),
             std::move(viewer),
             route_source,
             shortcuts,

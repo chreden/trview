@@ -183,6 +183,7 @@ namespace trlevel
         PlatformAndVersion platform_and_version() const override;
         std::weak_ptr<IPack> pack() const override;
         std::string hash() const override;
+        std::string filename() const override;
     private:
         void generate_meshes(const std::vector<uint16_t>& mesh_data);
         tr_colour4 colour_from_object_texture(uint32_t texture) const;

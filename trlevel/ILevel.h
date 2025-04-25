@@ -169,9 +169,16 @@ namespace trlevel
 
         struct LoadCallbacks
         {
+            enum class OpenMode
+            {
+                Full = 0,
+                Preview
+            };
+
             std::function<void(const std::string&)> on_progress_callback;
             std::function<void(const std::vector<uint32_t>&)> on_textile_callback;
             std::function<void(uint16_t, const std::vector<uint8_t>&)> on_sound_callback;
+            OpenMode open_mode{ OpenMode::Full };
 
             void on_progress(const std::string& message) const;
             void on_textile(const std::vector<uint32_t>& data) const;
@@ -185,5 +192,6 @@ namespace trlevel
         virtual bool trng() const = 0;
         virtual std::weak_ptr<IPack> pack() const = 0;
         virtual std::string hash() const = 0;
+        virtual std::string filename() const = 0;
     };
 }

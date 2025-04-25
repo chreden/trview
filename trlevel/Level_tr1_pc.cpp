@@ -3,7 +3,6 @@
 #include "Level_tr1.h"
 
 #include <ranges>
-#include <filesystem>
 
 namespace trlevel
 {
@@ -183,10 +182,6 @@ namespace trlevel
             }
 
         } while (on_demo_attempt);
-
-        std::filesystem::path level_path{ _filename };
-        level_path.replace_extension(".TEX");
-        _platform_and_version.remastered = _files->load_file(level_path.string()).has_value();
 
         generate_sounds_tr1(callbacks);
         callbacks.on_progress("Generating meshes");

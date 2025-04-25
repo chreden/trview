@@ -5,6 +5,7 @@
 #include <ranges>
 #include <spanstream>
 #include <numeric>
+#include <filesystem>
 
 #include "Level_common.h"
 #include "Level_psx.h"
@@ -600,7 +601,14 @@ namespace trlevel
 
             read_header(file, *bytes, activity, callbacks);
 
-            if (is_pack_preview)
+            // Determine if this is remastered.
+            {
+                std::filesystem::path level_path{ _filename };
+                level_path.replace_extension(".TEX");
+                _platform_and_version.remastered = _files->load_file(level_path.string()).has_value();
+            }
+
+            if (is_pack_preview || callbacks.open_mode == LoadCallbacks::OpenMode::Preview)
             {
                 return;
             }
@@ -620,8 +628,11 @@ namespace trlevel
                 {{.platform = Platform::PSX, .version = LevelVersion::Tomb5 }, [&]() { load_tr5_psx(file, activity, callbacks); }},
                 {{.platform = Platform::PSX, .version = LevelVersion::Unknown, .is_pack = true }, [&]() { load_psx_pack(file, activity, callbacks); }},
                 {{.platform = Platform::PC, .version = LevelVersion::Tomb1 }, [&]() { load_tr1_pc(file, activity, callbacks); }},
+                {{.platform = Platform::PC, .version = LevelVersion::Tomb1, .remastered = true }, [&]() { load_tr1_pc(file, activity, callbacks); }},
                 {{.platform = Platform::PC, .version = LevelVersion::Tomb2 }, [&]() { load_tr2_pc(file, activity, callbacks); }},
+                {{.platform = Platform::PC, .version = LevelVersion::Tomb2, .remastered = true }, [&]() { load_tr2_pc(file, activity, callbacks); }},
                 {{.platform = Platform::PC, .version = LevelVersion::Tomb3 }, [&]() { load_tr3_pc(file, activity, callbacks); }},
+                {{.platform = Platform::PC, .version = LevelVersion::Tomb3, .remastered = true }, [&]() { load_tr3_pc(file, activity, callbacks); }},
                 {{.platform = Platform::PC, .version = LevelVersion::Tomb4 }, [&]() { load_tr4_pc(file, activity, callbacks); }},
                 {{.platform = Platform::PC, .version = LevelVersion::Tomb4, .remastered = true }, [&]() { load_tr4_pc_remastered(file, activity, callbacks); }},
                 {{.platform = Platform::PC, .version = LevelVersion::Tomb5 }, [&]() { load_tr5_pc(file, activity, callbacks); }},
@@ -893,5 +904,10 @@ namespace trlevel
     std::string Level::hash() const
     {
         return _hash;
+    }
+
+    std::string Level::filename() const
+    {
+        return _filename;
     }
 }

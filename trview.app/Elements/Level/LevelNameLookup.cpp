@@ -1,5 +1,6 @@
 #include "LevelNameLookup.h"
 #include "../ILevel.h"
+#include <trlevel/ILevel.h>
 
 #include <filesystem>
 #include <spanstream>
@@ -292,22 +293,34 @@ namespace trview
 
     std::optional<std::string> LevelNameLookup::lookup(const std::weak_ptr<ILevel>& level) const
     {
-        using namespace trlevel;
-
         const auto level_ptr = level.lock();
         if (!level_ptr)
         {
             return std::nullopt;
         }
+        return get_name(level_ptr->filename(), level_ptr->platform_and_version(), level_ptr->hash());
+    }
 
-        const auto platform_and_version = level_ptr->platform_and_version();
+    std::optional<std::string> LevelNameLookup::lookup(const std::weak_ptr<trlevel::ILevel>& level) const
+    {
+        const auto level_ptr = level.lock();
+        if (!level_ptr)
+        {
+            return std::nullopt;
+        }
+        return get_name(level_ptr->filename(), level_ptr->platform_and_version(), level_ptr->hash());
+    }
+
+    std::optional<std::string> LevelNameLookup::get_name(const std::string& filename, trlevel::PlatformAndVersion platform_and_version, const std::string& hash) const
+    {
+        using namespace trlevel;
 
         // Mode 1: Check in the files (TOMBPC, English.DAT, etc)
         if (platform_and_version.platform == Platform::PC)
         {
             if (platform_and_version.remastered)
             {
-                const std::filesystem::path level_path{ level_ptr->filename() };
+                const std::filesystem::path level_path{ filename };
                 if (const auto strings_data = load_strings_data(_files, level_path))
                 {
                     std::string level_stem = level_path.stem().string();
@@ -331,14 +344,14 @@ namespace trview
                 {
                 case LevelVersion::Tomb2:
                 case LevelVersion::Tomb3:
-                    if (auto name = read_tombpc_1_3(_files, level_ptr->filename()))
+                    if (auto name = read_tombpc_1_3(_files, filename))
                     {
                         return name.value();
                     }
                     break;
                 case LevelVersion::Tomb4:
                 case LevelVersion::Tomb5:
-                    if (auto name = read_english_4_5(_files, level_ptr->filename(), platform_and_version.version))
+                    if (auto name = read_english_4_5(_files, filename, platform_and_version.version))
                     {
                         return name.value();
                     }
@@ -348,7 +361,7 @@ namespace trview
         }
 
         // Mode 2: Hash lookup - can hash be calculated on load and stored?
-        const auto found = _hashes.find(level_ptr->hash());
+        const auto found = _hashes.find(hash);
         if (found != _hashes.end())
         {
             return found->second;
