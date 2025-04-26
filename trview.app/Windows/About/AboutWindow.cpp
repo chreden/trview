@@ -35,6 +35,7 @@ namespace trview
             ImGui::TextWrapped("PSX audio code based on vag2wav from vag2wav from http://unhaut.epizy.com/psxsdk/");
             ImGui::TextWrapped("Based on the information in TRosettaStone3 - https://github.com/opentomb/TRosettaStone3");
             ImGui::TextWrapped("Portions of this software are copyright (c) 2023 The FreeType Project (www.freetype.org). All rights reserved.");
+            ImGui::TextWrapped("TR4/5 PSX loading based on TOMB5 - https://github.com/TOMB5/TOMB5");
         }
         ImGui::End();
         ImGui::PopStyleVar();
