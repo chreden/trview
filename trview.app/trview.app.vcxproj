@@ -100,6 +100,8 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClInclude Include="Lua\Scriptable\IScriptable.h" />
     <ClInclude Include="Lua\Scriptable\Scriptable.h" />
     <ClInclude Include="Menus\ImGuiFileMenu.h" />
+    <ClInclude Include="Menus\LevelSortingMode.h" />
+    <ClInclude Include="Menus\LevelSortingMode.hpp" />
     <ClInclude Include="Mocks\Elements\ILevelNameLookup.h" />
     <ClInclude Include="Mocks\Elements\INgPlusSwitcher.h" />
     <ClInclude Include="Mocks\Elements\ISoundSource.h" />

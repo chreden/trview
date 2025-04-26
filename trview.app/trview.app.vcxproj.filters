@@ -1276,6 +1276,12 @@
     <ClInclude Include="Mocks\Elements\ILevelNameLookup.h">
       <Filter>Mocks\Elements</Filter>
     </ClInclude>
+    <ClInclude Include="Menus\LevelSortingMode.h">
+      <Filter>Menus</Filter>
+    </ClInclude>
+    <ClInclude Include="Menus\LevelSortingMode.hpp">
+      <Filter>Menus</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Windows">
@@ -1585,5 +1591,6 @@
     <Text Include="Resources\Files\actions.json">
       <Filter>Resources\Files</Filter>
     </Text>
+    <Text Include="Resources\Files\level_hashes.json" />
   </ItemGroup>
 </Project>

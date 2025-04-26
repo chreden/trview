@@ -6,6 +6,7 @@
 #include "../UI/MapColours.h"
 #include "FontSetting.h"
 #include "PluginSetting.h"
+#include "../Menus/LevelSortingMode.h"
 
 namespace trview
 {
@@ -69,6 +70,7 @@ namespace trview
         bool camera_position_window{ true };
         std::list<std::string> recent_diff_files;
         std::unordered_map<std::string, PluginSetting> plugins;
+        LevelSortingMode level_sorting_mode{ LevelSortingMode::NameThenFilename };
 
         bool operator==(const UserSettings& other) const;
     };

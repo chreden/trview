@@ -156,6 +156,7 @@ namespace trview
         forward_setting(_settings_window->on_camera_fov, _settings.fov);
         forward_setting(_settings_window->on_camera_sink_startup, _settings.camera_sink_startup);
         forward_setting(_settings_window->on_statics_startup, _settings.statics_startup);
+        forward_setting(_settings_window->on_level_sorting_mode, _settings.level_sorting_mode);
         _settings_window->on_font += on_font;
 
         _camera_position = std::make_unique<CameraPosition>();
@@ -406,6 +407,7 @@ namespace trview
         _settings_window->set_fov(settings.fov);
         _settings_window->set_camera_sink_startup(settings.camera_sink_startup);
         _settings_window->set_statics_startup(settings.statics_startup);
+        _settings_window->set_level_sorting_mode(settings.level_sorting_mode);
         _camera_position->set_display_degrees(settings.camera_display_degrees);
         _camera_position->set_visible(settings.camera_position_window);
         _map_renderer->set_colours(settings.map_colours);
