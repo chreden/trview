@@ -220,6 +220,7 @@ SOUND_TEXTURE       TEXTURE                     "Files\\sound.png"
 IDR_TYPE_NAMES                      TEXT         "Files\\type_names.txt"
 IDR_ACTIONS                         TEXT         "Files\\actions.json"
 IDR_NGPLUS                          TEXT         "Files\\ng_plus.json"
+IDR_LEVEL_HASHES                    TEXT         "Files\\level_hashes.json"
 
 /////////////////////////////////////////////////////////////////////////////
 //

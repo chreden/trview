@@ -69,6 +69,7 @@ namespace trview
         virtual void set_fov(float value) override;
         virtual void set_camera_sink_startup(bool value) override;
         void set_statics_startup(bool value) override;
+        void set_level_sorting_mode(LevelSortingMode mode) override;
     private:
         std::shared_ptr<IDialogs> _dialogs;
         std::shared_ptr<IShell> _shell;
@@ -98,5 +99,6 @@ namespace trview
         std::vector<FontSetting> _all_fonts;
         std::shared_ptr<IFonts> _fonts;
         bool _statics_startup{ false };
+        LevelSortingMode _level_sorting_mode;
     };
 }

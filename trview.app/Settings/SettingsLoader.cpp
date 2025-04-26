@@ -119,6 +119,7 @@ namespace trview
             read_attribute(json, settings.camera_position_window, "camera_position_window");
             read_attribute(json, settings.recent_diff_files, "recent_diff");
             read_attribute(json, settings.plugins, "plugins");
+            read_attribute(json, settings.level_sorting_mode, "level_sorting_mode");
 
             settings.recent_files.resize(std::min<std::size_t>(settings.recent_files.size(), settings.max_recent_files));
         }
@@ -190,6 +191,7 @@ namespace trview
             json["camera_position_window"] = settings.camera_position_window;
             json["recent_diff"] = std::list<std::string>(settings.recent_diff_files.begin(), std::next(settings.recent_diff_files.begin(), std::min<std::size_t>(settings.recent_diff_files.size(), settings.max_recent_files)));
             json["plugins"] = settings.plugins;
+            json["level_sorting_mode"] = settings.level_sorting_mode;
             _files->save_file(file_path, json.dump());
         }
         catch (...)

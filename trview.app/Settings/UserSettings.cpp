@@ -58,6 +58,7 @@ namespace trview
             statics_startup == other.statics_startup &&
             plugin_directories == other.plugin_directories &&
             camera_position_window == other.camera_position_window &&
-            recent_diff_files == other.recent_diff_files;
+            recent_diff_files == other.recent_diff_files &&
+            level_sorting_mode == other.level_sorting_mode;
     }
 }

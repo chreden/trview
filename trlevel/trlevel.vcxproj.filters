@@ -37,6 +37,8 @@
     </ClInclude>
     <ClInclude Include="IPack.h" />
     <ClInclude Include="Pack.h" />
+    <ClInclude Include="IHasher.h" />
+    <ClInclude Include="Hasher.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="trtypes.cpp" />
@@ -88,6 +90,7 @@
     <ClCompile Include="Level_tr5_psx.cpp">
       <Filter>Level\PSX</Filter>
     </ClCompile>
+    <ClCompile Include="Hasher.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Mocks">

@@ -377,6 +377,9 @@
     <ClCompile Include="Windows\Pack\PackWindowManager.cpp">
       <Filter>Windows\Pack</Filter>
     </ClCompile>
+    <ClCompile Include="Elements\Level\LevelNameLookup.cpp">
+      <Filter>Elements\Level</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera\Camera.h">
@@ -1258,6 +1261,27 @@
     <ClInclude Include="Mocks\Windows\IPackWindow.h">
       <Filter>Mocks\Windows</Filter>
     </ClInclude>
+    <ClInclude Include="Elements\Level\ILevelNameLookup.h">
+      <Filter>Elements\Level</Filter>
+    </ClInclude>
+    <ClInclude Include="Elements\Level\LevelNameLookup.h">
+      <Filter>Elements\Level</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\ILevelInfo.h">
+      <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="Mocks\UI\ILevelInfo.h">
+      <Filter>Mocks\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="Mocks\Elements\ILevelNameLookup.h">
+      <Filter>Mocks\Elements</Filter>
+    </ClInclude>
+    <ClInclude Include="Menus\LevelSortingMode.h">
+      <Filter>Menus</Filter>
+    </ClInclude>
+    <ClInclude Include="Menus\LevelSortingMode.hpp">
+      <Filter>Menus</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Windows">
@@ -1567,5 +1591,6 @@
     <Text Include="Resources\Files\actions.json">
       <Filter>Resources\Files</Filter>
     </Text>
+    <Text Include="Resources\Files\level_hashes.json" />
   </ItemGroup>
 </Project>
