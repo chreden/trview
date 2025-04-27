@@ -132,6 +132,7 @@
     <ClCompile Include="Level_tr3_psx.cpp" />
     <ClCompile Include="Level_tr4_pc.cpp" />
     <ClCompile Include="Level_tr4_psx.cpp" />
+    <ClCompile Include="Level_tr5_dc.cpp" />
     <ClCompile Include="Level_tr5_pc.cpp" />
     <ClCompile Include="Level_tr5_psx.cpp" />
     <ClCompile Include="Mocks\MockLevel.cpp" />

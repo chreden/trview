@@ -621,7 +621,8 @@ namespace trlevel
                 {{.platform = Platform::PC, .version = LevelVersion::Tomb4 }, [&]() { load_tr4_pc(file, activity, callbacks); }},
                 {{.platform = Platform::PC, .version = LevelVersion::Tomb4, .remastered = true }, [&]() { load_tr4_pc_remastered(file, activity, callbacks); }},
                 {{.platform = Platform::PC, .version = LevelVersion::Tomb5 }, [&]() { load_tr5_pc(file, activity, callbacks); }},
-                {{.platform = Platform::PC, .version = LevelVersion::Tomb5, .remastered = true }, [&]() { load_tr5_pc_remastered(file, activity, callbacks); }}
+                {{.platform = Platform::PC, .version = LevelVersion::Tomb5, .remastered = true }, [&]() { load_tr5_pc_remastered(file, activity, callbacks); }},
+                {{.platform = Platform::Dreamcast, .version = LevelVersion::Tomb5 }, [&]() { load_tr5_dc(file, activity, callbacks); } },
             };
 
             const auto loader = loaders.find(_platform_and_version);

@@ -172,6 +172,25 @@ namespace trlevel
         return flyby_cameras;
     }
 
+    void read_fog_bulbs_tr5_pc(trview::Activity& activity, std::basic_ispanstream<uint8_t>& file, tr3_room& room, uint32_t num_fog_bulbs)
+    {
+        log_file(activity, file, std::format("Reading {} fog bulbs", num_fog_bulbs));
+        auto fog_bulbs = read_vector<tr5_fog_bulb>(file, num_fog_bulbs);
+        log_file(activity, file, std::format("Read {} fog bulbs", fog_bulbs.size()));
+
+        log_file(activity, file, "Converting lights to fog bulbs");
+        uint32_t fog_bulb = 0;
+        for (auto& light : room.lights)
+        {
+            if (*reinterpret_cast<uint32_t*>(&light.tr5.position.x) == 0xCDCDCDCD)
+            {
+                const auto fog = fog_bulbs[fog_bulb++];
+                light.tr5.light_type = LightType::FogBulb;
+                light.tr5_fog = fog;
+            }
+        }
+    }
+
     std::vector<uint16_t> read_frames(trview::Activity& activity, std::basic_ispanstream<uint8_t>& file, const ILevel::LoadCallbacks& callbacks)
     {
         callbacks.on_progress("Reading frames");
@@ -226,6 +245,15 @@ namespace trlevel
         return models;
     }
 
+    std::vector<tr_model> read_models_tr5(trview::Activity& activity, std::basic_ispanstream<uint8_t>& file, const ILevel::LoadCallbacks& callbacks)
+    {
+        callbacks.on_progress("Reading models");
+        log_file(activity, file, "Reading models");
+        const auto models = convert_models(read_vector<uint32_t, tr5_model>(file));
+        log_file(activity, file, std::format("Read {} models", models.size()));
+        return models;
+    }
+
     uint32_t read_num_data_words(trview::Activity& activity, std::basic_ispanstream<uint8_t>& file)
     {
         log_file(activity, file, "Reading number of data words");
@@ -248,6 +276,15 @@ namespace trlevel
         callbacks.on_progress("Reading object textures");
         log_file(activity, file, "Reading object textures");
         const auto object_textures = convert_object_textures(read_vector<uint32_t, tr4_object_texture>(file));
+        log_file(activity, file, std::format("Read {} object textures", object_textures.size()));
+        return object_textures;
+    }
+
+    std::vector<tr_object_texture> read_object_textures_tr5(trview::Activity& activity, std::basic_ispanstream<uint8_t>& file, const ILevel::LoadCallbacks& callbacks)
+    {
+        callbacks.on_progress("Reading object textures");
+        log_file(activity, file, "Reading object textures");
+        const auto object_textures = convert_object_textures(read_vector<uint32_t, tr5_object_texture>(file));
         log_file(activity, file, std::format("Read {} object textures", object_textures.size()));
         return object_textures;
     }
@@ -304,11 +341,24 @@ namespace trlevel
         return info;
     }
 
+    std::vector<tr5_room_layer> read_room_layers(trview::Activity& activity, std::basic_ispanstream<uint8_t>& file, const tr5_room_header& header)
+    {
+        log_file(activity, file, std::format("Reading {} layers", header.num_layers));
+        return read_vector<tr5_room_layer>(file, header.num_layers);
+    }
+
     void read_room_light_mode(trview::Activity& activity, std::basic_ispanstream<uint8_t>& file, tr3_room& room)
     {
         log_file(activity, file, "Reading light mode");
         room.light_mode = read<int16_t>(file);
         log_file(activity, file, std::format("Read light mode: {}", room.light_mode));
+    }
+
+    void read_room_lights_tr5_pc(trview::Activity& activity, std::basic_ispanstream<uint8_t>& file, tr3_room& room, uint16_t num_lights)
+    {
+        log_file(activity, file, std::format("Reading {} lights", num_lights));
+        room.lights = convert_lights(read_vector<tr5_room_light>(file, num_lights));
+        log_file(activity, file, std::format("Read {} lights", room.lights.size()));
     }
 
     void read_room_portals(trview::Activity& activity, std::basic_ispanstream<uint8_t>& file, tr3_room& room)
@@ -345,6 +395,13 @@ namespace trlevel
         log_file(activity, file, std::format("Read {} sectors", room.sector_list.size()));
     }
 
+    void read_room_sectors_tr5(trview::Activity& activity, std::basic_ispanstream<uint8_t>& file, tr3_room& room)
+    {
+        log_file(activity, file, std::format("Reading {} sectors ({} x {})", room.num_x_sectors * room.num_z_sectors, room.num_x_sectors, room.num_z_sectors));
+        room.sector_list = read_vector<tr_room_sector>(file, room.num_z_sectors * room.num_x_sectors);
+        log_file(activity, file, std::format("Read {} sectors", room.sector_list.size()));
+    }
+
     void read_room_sprites(trview::Activity& activity, std::basic_ispanstream<uint8_t>& file, tr3_room& room)
     {
         log_file(activity, file, "Reading sprites");
@@ -356,6 +413,13 @@ namespace trlevel
     {
         log_file(activity, file, "Reading static meshes");
         room.static_meshes = read_vector<uint16_t, tr3_room_staticmesh>(file);
+        log_file(activity, file, std::format("Read {} static meshes", room.static_meshes.size()));
+    }
+
+    void read_room_static_meshes_tr5(trview::Activity& activity, std::basic_ispanstream<uint8_t>& file, tr3_room& room, const tr5_room_header& header)
+    {
+        log_file(activity, file, std::format("Reading {} static meshes", header.num_static_meshes));
+        room.static_meshes = read_vector<tr3_room_staticmesh>(file, header.num_static_meshes);
         log_file(activity, file, std::format("Read {} static meshes", room.static_meshes.size()));
     }
 
@@ -570,5 +634,10 @@ namespace trlevel
         log_file(activity, file, "Reading zones");
         std::vector<int16_t> zones = read_vector<int16_t>(file, num_boxes * 10);
         log_file(activity, file, std::format("Read {} zones", zones.size()));
+    }
+
+    void skip_xela(std::basic_ispanstream<uint8_t>& file)
+    {
+        skip(file, 4);
     }
 }

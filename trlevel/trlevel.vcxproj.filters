@@ -88,6 +88,9 @@
     <ClCompile Include="Level_tr5_psx.cpp">
       <Filter>Level\PSX</Filter>
     </ClCompile>
+    <ClCompile Include="Level_tr5_dc.cpp">
+      <Filter>Level\DC</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Mocks">
@@ -104,6 +107,9 @@
     </Filter>
     <Filter Include="Level\PSX">
       <UniqueIdentifier>{f6d40800-10c2-4705-bf39-6f8199b80136}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Level\DC">
+      <UniqueIdentifier>{a4536cf3-974f-4808-b64e-0c71cf1525c6}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
