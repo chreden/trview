@@ -1,5 +1,6 @@
 #include "IMesh.h"
 #include <random>
+#include <trlevel/trtypes.h>
 
 using namespace DirectX::SimpleMath;
 
@@ -115,7 +116,7 @@ namespace trview
     {
     }
 
-    std::shared_ptr<IMesh> create_mesh(const trlevel::tr_mesh& mesh, const IMesh::Source& source, const ILevelTextureStorage& texture_storage, bool transparent_collision)
+    std::shared_ptr<IMesh> create_mesh(const trlevel::tr_mesh& mesh, const IMesh::Source& source, const ILevelTextureStorage& texture_storage, const trlevel::PlatformAndVersion& platform_and_version, bool transparent_collision)
     {
         std::vector<std::vector<uint32_t>> indices(texture_storage.num_tiles());
         std::vector<MeshVertex> vertices;
@@ -129,8 +130,8 @@ namespace trview
 
         process_textured_rectangles(mesh.textured_rectangles, in_vertices, texture_storage, vertices, indices, transparent_triangles, collision_triangles, transparent_collision);
         process_textured_triangles(mesh.textured_triangles, in_vertices, texture_storage, vertices, indices, transparent_triangles, collision_triangles, transparent_collision);
-        process_coloured_rectangles(mesh.coloured_rectangles, in_vertices, texture_storage, vertices, untextured_indices, collision_triangles);
-        process_coloured_triangles(mesh.coloured_triangles, in_vertices, texture_storage, vertices, untextured_indices, collision_triangles);
+        process_coloured_rectangles(mesh.coloured_rectangles, in_vertices, texture_storage, vertices, untextured_indices, collision_triangles, platform_and_version);
+        process_coloured_triangles(mesh.coloured_triangles, in_vertices, texture_storage, vertices, untextured_indices, collision_triangles, platform_and_version);
 
         return source(vertices, indices, untextured_indices, transparent_triangles, collision_triangles);
     }
@@ -467,32 +468,42 @@ namespace trview
         }
     }
 
+    namespace
+    {
+        DirectX::SimpleMath::Color colour_from_texture(uint16_t t)
+        {
+            uint16_t b = (t & 0x7c00) >> 10;
+            uint16_t g = (t & 0x03e0) >> 5;
+            uint16_t r = t & 0x001f;
+            return Color(r / 31.0f, g / 31.0f, b / 31.0f);
+        }
+    }
+
     void process_coloured_rectangles(
         const std::vector<trlevel::tr_face4>& rectangles,
         const std::vector<trlevel::trview_room_vertex>& input_vertices,
         const ILevelTextureStorage& texture_storage,
         std::vector<MeshVertex>& output_vertices,
         std::vector<uint32_t>& output_indices,
-        std::vector<Triangle>& collision_triangles)
+        std::vector<Triangle>& collision_triangles,
+        const trlevel::PlatformAndVersion& platform_and_version)
     {
         for (const auto& rect : rectangles)
         {
             const uint16_t texture = rect.texture & 0x7fff;
-            const bool double_sided = rect.texture & 0x8000;
+            const bool double_sided = platform_and_version.platform == trlevel::Platform::Saturn ? false : rect.texture & 0x8000;
 
             std::array<Vector3, 4> verts;
-            std::array<Color, 4> colors;
             for (int i = 0; i < 4; ++i)
             {
                 verts[i] = convert_vertex(input_vertices[rect.vertices[i]].vertex);
-                colors[i] = input_vertices[rect.vertices[i]].colour;
             }
 
             const uint32_t base = static_cast<uint32_t>(output_vertices.size());
             const auto normal = calculate_normal(&verts[0]);
             for (int i = 0; i < 4; ++i)
             {
-                output_vertices.push_back({ verts[i], normal, Vector2::Zero, texture_storage.palette_from_texture(texture) });
+                output_vertices.push_back({ verts[i], normal, Vector2::Zero, platform_and_version.platform == trlevel::Platform::Saturn ? colour_from_texture(rect.texture) : texture_storage.palette_from_texture(texture) });
             }
 
             output_indices.push_back(base);
@@ -527,26 +538,25 @@ namespace trview
         const ILevelTextureStorage& texture_storage,
         std::vector<MeshVertex>& output_vertices,
         std::vector<uint32_t>& output_indices,
-        std::vector<Triangle>& collision_triangles)
+        std::vector<Triangle>& collision_triangles,
+        const trlevel::PlatformAndVersion& platform_and_version)
     {
         for (const auto& tri : triangles)
         {
             const uint16_t texture = tri.texture & 0x7fff;
-            const bool double_sided = tri.texture & 0x8000;
+            const bool double_sided = platform_and_version.platform == trlevel::Platform::Saturn ? false : tri.texture & 0x8000;
 
             std::array<Vector3, 3> verts;
-            std::array<Color, 3> colors;
             for (int i = 0; i < 3; ++i)
             {
                 verts[i] = convert_vertex(input_vertices[tri.vertices[i]].vertex);
-                colors[i] = input_vertices[tri.vertices[i]].colour;
             }
 
             const uint32_t base = static_cast<uint32_t>(output_vertices.size());
             const auto normal = calculate_normal(&verts[0]);
             for (int i = 0; i < 3; ++i)
             {
-                output_vertices.push_back({ verts[i], normal, Vector2::Zero, texture_storage.palette_from_texture(texture) });
+                output_vertices.push_back({ verts[i], normal, Vector2::Zero, platform_and_version.platform == trlevel::Platform::Saturn ? colour_from_texture(tri.texture) : texture_storage.palette_from_texture(texture) });
             }
 
             output_indices.push_back(base);
