@@ -21,7 +21,8 @@ namespace trlevel
         Unknown,
         PC,
         PSX,
-        Dreamcast
+        Dreamcast,
+        Saturn
     };
 
     struct PlatformAndVersion final

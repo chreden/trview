@@ -91,6 +91,9 @@
     <ClCompile Include="Level_tr5_dc.cpp">
       <Filter>Level\DC</Filter>
     </ClCompile>
+    <ClCompile Include="Level_tr1_saturn.cpp">
+      <Filter>Level\Saturn</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Mocks">
@@ -110,6 +113,9 @@
     </Filter>
     <Filter Include="Level\DC">
       <UniqueIdentifier>{a4536cf3-974f-4808-b64e-0c71cf1525c6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Level\Saturn">
+      <UniqueIdentifier>{f3bd2226-96df-41e2-9106-bbe39842fc76}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

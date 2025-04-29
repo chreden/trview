@@ -126,6 +126,7 @@
     <ClCompile Include="Level_psx.cpp" />
     <ClCompile Include="Level_tr1_pc.cpp" />
     <ClCompile Include="Level_tr1_psx.cpp" />
+    <ClCompile Include="Level_tr1_saturn.cpp" />
     <ClCompile Include="Level_tr2_pc.cpp" />
     <ClCompile Include="Level_tr2_psx.cpp" />
     <ClCompile Include="Level_tr3_pc.cpp" />
