@@ -20,7 +20,8 @@ namespace trlevel
     {
         Unknown,
         PC,
-        PSX
+        PSX,
+        Dreamcast
     };
 
     struct PlatformAndVersion final

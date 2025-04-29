@@ -62,15 +62,18 @@ namespace trlevel
     std::vector<tr2_entity> read_entities(trview::Activity& activity, std::basic_ispanstream<uint8_t>& file, const ILevel::LoadCallbacks& callbacks);
     std::vector<uint16_t> read_floor_data(trview::Activity& activity, std::basic_ispanstream<uint8_t>& file, const ILevel::LoadCallbacks& callbacks);
     std::vector<tr4_flyby_camera> read_flyby_cameras(trview::Activity& activity, std::basic_ispanstream<uint8_t>& file, const ILevel::LoadCallbacks& callbacks);
+    void read_fog_bulbs_tr5_pc(trview::Activity& activity, std::basic_ispanstream<uint8_t>& file, tr3_room& room, uint32_t num_fog_bulbs);
     std::vector<uint16_t> read_frames(trview::Activity& activity, std::basic_ispanstream<uint8_t>& file, const ILevel::LoadCallbacks& callbacks);
     std::vector<uint8_t> read_light_map(trview::Activity& activity, std::basic_ispanstream<uint8_t>& file, const ILevel::LoadCallbacks& callbacks);
     std::vector<uint16_t> read_mesh_data(trview::Activity& activity, std::basic_ispanstream<uint8_t>& file, const ILevel::LoadCallbacks& callbacks);
     std::vector<uint32_t> read_mesh_pointers(trview::Activity& activity, std::basic_ispanstream<uint8_t>& file, const ILevel::LoadCallbacks& callbacks);
     std::vector<tr_model> read_models_tr1_4(trview::Activity& activity, std::basic_ispanstream<uint8_t>& file, const ILevel::LoadCallbacks& callbacks);
+    std::vector<tr_model> read_models_tr5(trview::Activity& activity, std::basic_ispanstream<uint8_t>& file, const ILevel::LoadCallbacks& callbacks);
     std::vector<uint32_t> read_meshtree(trview::Activity& activity, std::basic_ispanstream<uint8_t>& file, const ILevel::LoadCallbacks& callbacks);
     uint32_t read_num_data_words(trview::Activity& activity, std::basic_ispanstream<uint8_t>& file);
     std::vector<tr_object_texture> read_object_textures_tr1_3(trview::Activity& activity, std::basic_ispanstream<uint8_t>& file, const ILevel::LoadCallbacks& callbacks);
     std::vector<tr_object_texture> read_object_textures_tr4_5(trview::Activity& activity, std::basic_ispanstream<uint8_t>& file, const ILevel::LoadCallbacks& callbacks);
+    std::vector<tr_object_texture> read_object_textures_tr5(trview::Activity& activity, std::basic_ispanstream<uint8_t>& file, const ILevel::LoadCallbacks& callbacks);
     std::vector<uint16_t> read_overlaps(trview::Activity& activity, std::basic_ispanstream<uint8_t>& file, const ILevel::LoadCallbacks& callbacks);
     void read_room_alternate_group(trview::Activity& activity, std::basic_ispanstream<uint8_t>& file, tr3_room& room);
     void read_room_alternate_room(trview::Activity& activity, std::basic_ispanstream<uint8_t>& file, tr3_room& room);
@@ -78,13 +81,17 @@ namespace trlevel
     void read_room_colour(trview::Activity& activity, std::basic_ispanstream<uint8_t>& file, tr3_room& room);
     void read_room_flags(trview::Activity& activity, std::basic_ispanstream<uint8_t>& file, tr3_room& room);
     tr_room_info read_room_info(trview::Activity& activity, std::basic_ispanstream<uint8_t>& file);
+    std::vector<tr5_room_layer> read_room_layers(trview::Activity& activity, std::basic_ispanstream<uint8_t>& file, const tr5_room_header& header);
     void read_room_light_mode(trview::Activity& activity, std::basic_ispanstream<uint8_t>& file, tr3_room& room);
+    void read_room_lights_tr5_pc(trview::Activity& activity, std::basic_ispanstream<uint8_t>& file, tr3_room& room, uint16_t num_lights);
     void read_room_portals(trview::Activity& activity, std::basic_ispanstream<uint8_t>& file, tr3_room& room);
     void read_room_rectangles(trview::Activity& activity, std::basic_ispanstream<uint8_t>& file, tr3_room& room);
     void read_room_reverb_info(trview::Activity& activity, std::basic_ispanstream<uint8_t>& file, tr3_room& room);
     void read_room_sectors(trview::Activity& activity, std::basic_ispanstream<uint8_t>& file, tr3_room& room);
+    void read_room_sectors_tr5(trview::Activity& activity, std::basic_ispanstream<uint8_t>& file, tr3_room& room);
     void read_room_sprites(trview::Activity& activity, std::basic_ispanstream<uint8_t>& file, tr3_room& room);
     void read_room_static_meshes(trview::Activity& activity, std::basic_ispanstream<uint8_t>& file, tr3_room& room);
+    void read_room_static_meshes_tr5(trview::Activity& activity, std::basic_ispanstream<uint8_t>& file, tr3_room& room, const tr5_room_header& header);
     void read_room_triangles(trview::Activity& activity, std::basic_ispanstream<uint8_t>& file, tr3_room& room);
     void read_room_vertices_tr3_4(trview::Activity& activity, std::basic_ispanstream<uint8_t>& file, tr3_room& room);
     void read_room_water_scheme(trview::Activity& activity, std::basic_ispanstream<uint8_t>& file, tr3_room& room);
@@ -103,6 +110,7 @@ namespace trlevel
     uint32_t read_textiles(trview::Activity& activity, std::basic_ispanstream<uint8_t>& file, const ILevel::LoadCallbacks& callbacks);
     uint32_t read_textiles_tr4_5(trview::Activity& activity, std::basic_ispanstream<uint8_t>& file, const ILevel::LoadCallbacks& callbacks);
     void read_zones(trview::Activity& activity, std::basic_ispanstream<uint8_t>& file, const ILevel::LoadCallbacks& callbacks, uint32_t num_boxes);
+    void skip_xela(std::basic_ispanstream<uint8_t>& file);
 }
 
 #include "Level_common.inl"
