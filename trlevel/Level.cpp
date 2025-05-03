@@ -760,7 +760,6 @@ namespace trlevel
             }
 
             int16_t overall_index = 0;
-            int16_t level_index = 0;
             while (static_cast<std::size_t>(sfx_file.tellg()) < main->size())
             {
                 skip(sfx_file, 4);
@@ -768,7 +767,7 @@ namespace trlevel
                 sfx_file.seekg(-8, std::ios::cur);
                 if (std::ranges::find(_sample_indices, static_cast<uint32_t>(overall_index)) != _sample_indices.end())
                 {
-                    callbacks.on_sound(0, 0, level_index++, { main->begin() + sfx_file.tellg(), main->begin() + sfx_file.tellg() + size + 8 });
+                    _sound_samples.push_back({ main->begin() + sfx_file.tellg(), main->begin() + sfx_file.tellg() + size + 8 });
                 }
                 overall_index++;
                 sfx_file.seekg(size + 8, std::ios::cur);
@@ -872,5 +871,32 @@ namespace trlevel
     std::weak_ptr<IPack> Level::pack() const
     {
         return _pack;
+    }
+
+    void Level::generate_sounds(const LoadCallbacks& callbacks)
+    {
+        callbacks.on_progress("Generating sounds");
+        for (auto sound_map_index = 0; sound_map_index < _sound_map.size(); ++sound_map_index)
+        {
+            const int16_t sound_details_index = _sound_map[sound_map_index];
+            if (sound_details_index == -1)
+            {
+                continue;
+            }
+
+            const auto sound_detail = _sound_details[sound_details_index];
+            const auto sample_count = ((_platform_and_version.version > LevelVersion::Tomb1 ? sound_detail.tr3_sound_details.Characteristics : sound_detail.tr_sound_details.Characteristics) >> 2) & 0xf;
+            for (int s = 0; s < sample_count; ++s)
+            {
+                const uint16_t sample_index = static_cast<uint16_t>(sound_detail.tr_sound_details.Sample + s);
+                if (sample_index < _sound_samples.size())
+                {
+                    callbacks.on_sound(static_cast<uint16_t>(sound_map_index), sound_details_index, sample_index, { _sound_samples[sample_index] });
+                }
+            }
+        }
+
+        _sound_data = {};
+        _sound_samples = {};
     }
 }

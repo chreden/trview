@@ -202,6 +202,9 @@ namespace trlevel
         void read_textiles_tr2_psx_demo_70688(std::basic_ispanstream<uint8_t>& file, trview::Activity& activity, const LoadCallbacks& callbacks);
         void read_textiles_tr3_psx(std::basic_ispanstream<uint8_t>& file, trview::Activity& activity, const LoadCallbacks& callbacks);
         void read_sprite_textures_psx(std::basic_ispanstream<uint8_t>& file, trview::Activity& activity, const LoadCallbacks& callbacks);
+        void read_sounds_psx(std::basic_ispanstream<uint8_t>& file, trview::Activity& activity, const LoadCallbacks& callbacks, uint32_t sample_frequency);
+        void read_sounds_tr1_psx(std::basic_ispanstream<uint8_t>& file, trview::Activity& activity, const LoadCallbacks& callbacks, uint32_t sample_frequency);
+        void read_sounds_tr4_psx(std::basic_ispanstream<uint8_t>& file, trview::Activity& activity, const ILevel::LoadCallbacks& callbacks, uint32_t start, const tr4_psx_level_info& info, uint32_t sample_frequency);
         void read_sounds_external_tr1_psx(trview::Activity& activity, const LoadCallbacks& callbacks);
         void read_sound_samples_tr4_5(std::basic_ispanstream<uint8_t>& file, trview::Activity& activity, const LoadCallbacks& callbacks);
         void adjust_room_textures_psx();
@@ -226,7 +229,6 @@ namespace trlevel
         void load_tr5_psx(std::basic_ispanstream<uint8_t>& file, trview::Activity& activity, const LoadCallbacks& callbacks);
         void load_psx_pack(std::basic_ispanstream<uint8_t>& file, trview::Activity& activity, const LoadCallbacks& callbacks);
 
-        void generate_sounds_tr1(const LoadCallbacks& callbacks);
         void load_sound_fx(trview::Activity& activity, const LoadCallbacks& callbacks);
         std::optional<std::vector<uint8_t>> load_main_sfx() const;
         void load_ngle_sound_fx(trview::Activity& activity, std::basic_ispanstream<uint8_t>& file, const LoadCallbacks& callbacks);
@@ -239,6 +241,8 @@ namespace trlevel
         void generate_mesh_tr3_psx(tr_mesh& mesh, std::basic_ispanstream<uint8_t>& stream);
         void generate_mesh_tr4_psx(tr_mesh& mesh, std::basic_ispanstream<uint8_t>& stream);
         void generate_object_textures_tr4_psx(std::basic_ispanstream<uint8_t>& file, uint32_t start, const tr4_psx_level_info& info);
+        void generate_sound_samples(const LoadCallbacks& callbacks);
+        void generate_sounds(const LoadCallbacks& callbacks);
 
         PlatformAndVersion _platform_and_version;
 
@@ -281,6 +285,7 @@ namespace trlevel
         std::vector<int16_t> _sound_map;
         std::vector<uint32_t> _sample_indices;
         std::vector<uint8_t> _sound_data;
+        std::vector<std::vector<uint8_t>> _sound_samples;
 
         std::shared_ptr<trview::ILog>   _log;
         std::shared_ptr<IDecrypter>     _decrypter;

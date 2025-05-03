@@ -194,6 +194,7 @@ namespace trlevel
             log_file(activity, file, "TRNG level detected");
         }
 
+        generate_sounds(callbacks);
         callbacks.on_progress("Generating meshes");
         log_file(activity, file, "Generating meshes");
         generate_meshes(_mesh_data);
@@ -241,6 +242,7 @@ namespace trlevel
         _entities = read_entities(activity, file, callbacks);
         _ai_objects = read_ai_objects(activity, file, callbacks);
         load_sound_fx(activity, callbacks);
+        generate_sounds(callbacks);
 
         callbacks.on_progress("Generating meshes");
         log_file(activity, file, "Generating meshes");
@@ -252,33 +254,14 @@ namespace trlevel
         uint32_t num_samples = read<uint32_t>(file);
         callbacks.on_progress("Reading sound samples");
         log_file(activity, file, std::format("Reading {} sound samples", num_samples));
-        std::vector<std::vector<uint8_t>> samples;
         for (uint32_t i = 0; i < num_samples; ++i)
         {
             uint32_t uncompressed = read<uint32_t>(file);
             uncompressed;
             uint32_t compressed = read<uint32_t>(file);
-            samples.push_back(read_vector<uint8_t>(file, compressed));
+            _sound_samples.push_back(read_vector<uint8_t>(file, compressed));
         }
         log_file(activity, file, std::format("Read {} sound samples", num_samples));
-
-        callbacks.on_progress("Generating sounds");
-        for (auto sound_map_index = 0; sound_map_index < _sound_map.size(); ++sound_map_index)
-        {
-            const int16_t sound_details_index = _sound_map[sound_map_index];
-            if (sound_details_index == -1)
-            {
-                continue;
-            }
-
-            const auto sound_detail = _sound_details[sound_details_index];
-            const auto sample_count = (sound_detail.tr3_sound_details.Characteristics >> 2) & 0xF;
-            for (int s = 0; s < sample_count; ++s)
-            {
-                const uint16_t sample_index = static_cast<uint16_t>(sound_detail.tr_sound_details.Sample + s);
-                callbacks.on_sound(static_cast<uint16_t>(sound_map_index), sound_details_index, sample_index, samples[sample_index]);
-            }
-        }
     }
 
     void Level::load_ngle_sound_fx(trview::Activity& activity, std::basic_ispanstream<uint8_t>& file, const LoadCallbacks& callbacks)
@@ -293,7 +276,7 @@ namespace trlevel
             {
                 const auto sample = ngle_samples[i];
                 sfx_file.seekg(sample.start);
-                callbacks.on_sound(0, 0, static_cast<uint16_t>(i), read_vector<uint8_t>(sfx_file, sample.size));
+                _sound_samples.push_back(read_vector<uint8_t>(sfx_file, sample.size));
             }
         }
     }

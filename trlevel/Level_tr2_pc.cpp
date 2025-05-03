@@ -136,8 +136,9 @@ namespace trlevel
             skip(file, 4); // RIFF
             uint32_t size = peek<uint32_t>(file);
             file.seekg(-4, std::ios::cur);
-            callbacks.on_sound(0, 0, static_cast<uint16_t>(s), read_vector<uint8_t>(file, size + 4));
+            _sound_samples.push_back(read_vector<uint8_t>(file, size + 4));
         }
+        generate_sounds(callbacks);
         callbacks.on_progress("Generating meshes");
         generate_meshes(_mesh_data);
         callbacks.on_progress("Loading complete");
@@ -184,6 +185,7 @@ namespace trlevel
         _sound_details = read_sound_details(activity, file, callbacks);
         _sample_indices = read_sample_indices(activity, file, callbacks);
         load_sound_fx(activity, callbacks);
+        generate_sounds(callbacks);
         callbacks.on_progress("Generating meshes");
         generate_meshes(_mesh_data);
         callbacks.on_progress("Loading complete");

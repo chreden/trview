@@ -250,7 +250,7 @@ namespace trlevel
             skip(file, 12);
             uint32_t textile_address = read<uint32_t>(file);
             skip(file, 2);
-            read_sounds_tr1_psx(activity, file, callbacks, 11025);
+            read_sounds_tr1_psx(file, activity, callbacks, 11025);
             file.seekg(textile_address + 8, std::ios::beg);
         }
         else
@@ -308,7 +308,8 @@ namespace trlevel
         _entities = read_entities_tr1(activity, file, callbacks);
         _sound_map = read_sound_map(activity, file, callbacks);
         _sound_details = read_sound_details(activity, file, callbacks);
-        generate_sounds_tr1(callbacks);
+
+        generate_sounds(callbacks);
         callbacks.on_progress("Generating meshes");
         generate_meshes(_mesh_data);
         callbacks.on_progress("Loading complete");
@@ -393,7 +394,7 @@ namespace trlevel
                 sound_file.exceptions(std::ios::failbit);
 
                 skip(sound_file, 18);
-                read_sounds_tr1_psx(activity, sound_file, callbacks, 11025);
+                read_sounds_tr1_psx(sound_file, activity, callbacks, 11025);
             }
         }
         catch(std::exception&)
@@ -436,7 +437,7 @@ namespace trlevel
         _entities = read_entities_tr1(activity, file, callbacks);
         _sound_map = read_sound_map(activity, file, callbacks);
         _sound_details = read_sound_details(activity, file, callbacks);
-        generate_sounds_tr1(callbacks);
+        generate_sounds(callbacks);
         callbacks.on_progress("Generating meshes");
         generate_meshes(_mesh_data);
         callbacks.on_progress("Loading complete");

@@ -137,7 +137,8 @@ namespace trlevel
             callbacks.on_textile(convert_textile(t));
         }
 
-        read_sounds_tr4_psx(activity, file, callbacks, start, info, 11025);
+        read_sounds_tr4_psx(file, activity, callbacks, start, info, 11025);
+        generate_sounds(callbacks);
 
         callbacks.on_progress("Generating meshes");
         generate_meshes(_mesh_data);
