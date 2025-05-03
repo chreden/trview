@@ -269,7 +269,7 @@ namespace trlevel
             }
             else
             {
-                read_sound_samples_tr4_5(activity, file, callbacks);
+                read_sound_samples_tr4_5(file, activity, callbacks);
             }
         }
         catch (const std::exception& e)

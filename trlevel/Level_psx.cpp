@@ -127,7 +127,7 @@ namespace trlevel
             log_file(activity, file, std::format("Loading sound {} of {}", s, sample_sizes.size()));
             if (sample_sizes[s] > 0)
             {
-                callbacks.on_sound(static_cast<uint16_t>(s), convert_vag_to_wav(read_vector<uint8_t>(file, sample_sizes[s]), sample_frequency));
+                callbacks.on_sound(0, 0, static_cast<uint16_t>(s), convert_vag_to_wav(read_vector<uint8_t>(file, sample_sizes[s]), sample_frequency));
             }
         }
 
@@ -150,7 +150,7 @@ namespace trlevel
             const std::size_t size = s == sound_offsets.size() - 1 ?
                 sound_data.size() - offset - 1 :
                 sound_offsets[s + 1] - offset;
-            callbacks.on_sound(static_cast<uint16_t>(s), convert_vag_to_wav({ &sound_data[offset], &sound_data[offset + size] }, sample_frequency));
+            callbacks.on_sound(0, 0, static_cast<uint16_t>(s), convert_vag_to_wav({ &sound_data[offset], &sound_data[offset + size] }, sample_frequency));
         }
 
         log_file(activity, file, std::format("Read {} sounds", sound_offsets.size()));

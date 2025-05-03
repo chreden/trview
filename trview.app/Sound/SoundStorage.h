@@ -14,11 +14,17 @@ namespace trview
     public:
         explicit SoundStorage(const ISound::Source& sound_source);
         virtual ~SoundStorage() = default;
-        void add(uint16_t index, const std::vector<uint8_t>& data) override;
+        void add(Index index, const std::vector<uint8_t>& data) override;
         std::weak_ptr<ISound> get(uint16_t index) const override;
-        std::unordered_map<uint16_t, std::weak_ptr<ISound>> sounds() const override;
+        std::vector<Entry> sounds() const override;
     private:
+        struct OwningEntry
+        {
+            Index index;
+            std::shared_ptr<ISound> sound;
+        };
+
         ISound::Source _sound_source;
-        std::unordered_map<uint16_t, std::shared_ptr<ISound>> _sounds;
+        std::vector<OwningEntry> _sounds;
     };
 }

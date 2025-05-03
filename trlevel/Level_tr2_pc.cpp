@@ -136,7 +136,7 @@ namespace trlevel
             skip(file, 4); // RIFF
             uint32_t size = peek<uint32_t>(file);
             file.seekg(-4, std::ios::cur);
-            callbacks.on_sound(static_cast<uint16_t>(s), read_vector<uint8_t>(file, size + 4));
+            callbacks.on_sound(0, 0, static_cast<uint16_t>(s), read_vector<uint8_t>(file, size + 4));
         }
         callbacks.on_progress("Generating meshes");
         generate_meshes(_mesh_data);

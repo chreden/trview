@@ -298,7 +298,7 @@ namespace trlevel
         try
         {
             skip(file, 4); // TOSS
-            read_sound_samples_tr4_5(activity, file, callbacks);
+            read_sound_samples_tr4_5(file, activity, callbacks);
         }
         catch (const std::exception& e)
         {

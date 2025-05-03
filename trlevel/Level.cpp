@@ -33,11 +33,11 @@ namespace trlevel
         }
     }
 
-    void ILevel::LoadCallbacks::on_sound(uint16_t index, const std::vector<uint8_t>& data) const
+    void ILevel::LoadCallbacks::on_sound(uint16_t sound_map, uint16_t sound_details, uint16_t sample_index, const std::vector<uint8_t>& data) const
     {
         if (on_sound_callback)
         {
-            on_sound_callback(index, data);
+            on_sound_callback(sound_map, sound_details, sample_index, data);
         }
     }
 
@@ -768,7 +768,7 @@ namespace trlevel
                 sfx_file.seekg(-8, std::ios::cur);
                 if (std::ranges::find(_sample_indices, static_cast<uint32_t>(overall_index)) != _sample_indices.end())
                 {
-                    callbacks.on_sound(level_index++, { main->begin() + sfx_file.tellg(), main->begin() + sfx_file.tellg() + size + 8 });
+                    callbacks.on_sound(0, 0, level_index++, { main->begin() + sfx_file.tellg(), main->begin() + sfx_file.tellg() + size + 8 });
                 }
                 overall_index++;
                 sfx_file.seekg(size + 8, std::ios::cur);

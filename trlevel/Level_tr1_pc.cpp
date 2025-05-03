@@ -82,11 +82,23 @@ namespace trlevel
     void Level::generate_sounds_tr1(const LoadCallbacks& callbacks)
     {
         callbacks.on_progress("Generating sounds");
-        for (auto i = 0; i < _sample_indices.size(); ++i)
+        for (auto sound_map_index = 0; sound_map_index < _sound_map.size(); ++sound_map_index)
         {
-            const auto start = _sample_indices[i];
-            const auto end = i + 1 < _sample_indices.size() ? _sample_indices[i + 1] : _sound_data.size();
-            callbacks.on_sound(static_cast<int16_t>(i), { _sound_data.begin() + start, _sound_data.begin() + end });
+            const int16_t sound_details_index = _sound_map[sound_map_index];
+            if (sound_details_index == -1)
+            {
+                continue;
+            }
+
+            const auto sound_detail = _sound_details[sound_details_index];
+            const auto sample_count = (sound_detail.tr_sound_details.Characteristics >> 2) & 0xF;
+            for (int s = 0; s < sample_count; ++s)
+            {
+                const uint16_t sample_index = static_cast<uint16_t>(sound_detail.tr_sound_details.Sample + s);
+                const auto start = _sample_indices[sample_index];
+                const auto end = sample_index + 1 < _sample_indices.size() ? _sample_indices[sample_index + 1] : _sound_data.size();
+                callbacks.on_sound(static_cast<uint16_t>(sound_map_index), sound_details_index, sample_index, { _sound_data.begin() + start, _sound_data.begin() + end });
+            }
         }
     }
 
