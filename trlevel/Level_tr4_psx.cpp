@@ -641,7 +641,7 @@ namespace trlevel
         {
             file.seekg(0x7000, std::ios::beg);
         }
-        else if (_platform_and_version.raw_version == 0xffffff88)
+        else if (is_tr4_opsm_90(_platform_and_version))
         {
             return load_tr4_psx_opsm_90(file, activity, callbacks);
         }
