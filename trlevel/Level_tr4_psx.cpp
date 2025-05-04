@@ -330,12 +330,12 @@ namespace trlevel
         return ai_objects;
     }
 
-    std::vector<tr_model> read_models(trview::Activity& activity, std::basic_ispanstream<uint8_t>& file, uint32_t start, const tr4_psx_level_info& info, const ILevel::LoadCallbacks& callbacks)
+    std::vector<tr_model> read_models(trview::Activity& activity, std::basic_ispanstream<uint8_t>& file, uint32_t start, const tr4_psx_level_info& info, const ILevel::LoadCallbacks& callbacks, uint32_t num_meshes)
     {
         file.seekg(start + info.models_offset);
         callbacks.on_progress("Reading models");
         log_file(activity, file, "Reading models");
-        auto models = read_vector<tr4_psx_model>(file, 460);
+        auto models = read_vector<tr4_psx_model>(file, num_meshes);
         std::vector<tr_model> converted_models;
         for (uint32_t m = 0; m < models.size(); ++m)
         {
@@ -353,11 +353,11 @@ namespace trlevel
         return converted_models;
     }
 
-    std::unordered_map<uint32_t, tr_staticmesh> read_static_meshes_tr4_psx(trview::Activity& activity, std::basic_ispanstream<uint8_t>& file, const ILevel::LoadCallbacks& callbacks)
+    std::unordered_map<uint32_t, tr_staticmesh> read_static_meshes_tr4_psx(trview::Activity& activity, std::basic_ispanstream<uint8_t>& file, const ILevel::LoadCallbacks& callbacks, uint32_t num_statics)
     {
         callbacks.on_progress("Reading static meshes");
         log_file(activity, file, "Reading static meshes");
-        auto static_meshes = read_vector<tr4_psx_staticmesh>(file, 70);
+        auto static_meshes = read_vector<tr4_psx_staticmesh>(file, num_statics);
         std::unordered_map<uint32_t, tr_staticmesh> converted_static_meshes;
         for (uint32_t s = 0; s < static_meshes.size(); ++s)
         {
@@ -681,8 +681,8 @@ namespace trlevel
         _sound_details = read_vector<tr_x_sound_details>(file, info.sample_info_length / sizeof(tr_x_sound_details));
         _entities = read_entities(activity, file, info, callbacks);
         _ai_objects = read_ai_objects(activity, file, info, callbacks);
-        skip(file, info.unknown_offsets[0] + info.unknown_offsets[1]);
-        skip(file, 2 * (info.unknown_offsets[2] + info.unknown_offsets[3] + info.unknown_offsets[4] + info.unknown_offsets[5] + info.unknown_offsets[6]));
+        skip(file, info.boxes_length + info.overlaps_length);
+        skip(file, 2 * (info.ground_zone_length + info.ground_zone_length2 + info.ground_zone_length3 + info.ground_zone_length4 + info.ground_zone_length5));
         _cameras = read_vector<tr_camera>(file, info.num_cameras);
         _frames = read_frames(activity, file, start, info, callbacks);
         _models = read_models(activity, file, start, info, callbacks);
@@ -732,11 +732,17 @@ namespace trlevel
             uint32_t sfx_info_length;
             uint32_t sample_info_length;
             char     unknown_5[12];
-            uint32_t unknown_offsets[7];
+            uint32_t boxes_length;
+            uint32_t overlaps_length;
+            uint32_t ground_zone_length;
+            uint32_t ground_zone_length2;
+            uint32_t ground_zone_length3;
+            uint32_t ground_zone_length4;
+            uint32_t ground_zone_length5;
             uint32_t num_cameras;
             char     unknown_5a[4];
             int      camera_length;
-            char     unknown_6[4];
+            uint32_t unknown_6;
             uint16_t num_ai_objects;
             char     unknown_7[38];
         };
@@ -769,6 +775,16 @@ namespace trlevel
             .animated_texture_length = opsm_info.animated_texture_length,
             .sfx_info_length = opsm_info.sfx_info_length,
             .sample_info_length = opsm_info.sample_info_length,
+            .boxes_length = opsm_info.boxes_length,
+            .overlaps_length = opsm_info.overlaps_length,
+            .ground_zone_length = opsm_info.ground_zone_length,
+            .ground_zone_length2 = opsm_info.ground_zone_length2,
+            .ground_zone_length3 = opsm_info.ground_zone_length3,
+            .ground_zone_length4 = opsm_info.ground_zone_length4,
+            .ground_zone_length5 = opsm_info.ground_zone_length5,
+            .num_cameras = opsm_info.num_cameras,
+            .unknown_6 = opsm_info.unknown_6,
+            .num_ai_objects = opsm_info.num_ai_objects
         };
 
         // Sounds without offsets
@@ -779,7 +795,7 @@ namespace trlevel
         file.seekg(sound_start + info.num_sounds * sizeof(uint32_t));
         info.sound_data_length = read<uint32_t>(file);
         file.seekg(sound_start); 
-        read_sounds_tr4_psx(activity, file, callbacks, start, info, 11025);
+        read_sounds_tr4_psx(file, activity, callbacks, start, info, 11025);
 
         info.textiles_offset = static_cast<uint32_t>(file.tellg());
         skip(file, 0x80000);
@@ -805,7 +821,7 @@ namespace trlevel
         _meshtree = read_meshtree(activity, file, info, callbacks);
 
         info.frames_offset = static_cast<uint32_t>(file.tellg());
-        skip(file, info.frames_size);
+        _frames = read_frames(activity, file, start, info, callbacks);
 
         skip(file, info.animated_texture_length);
 
@@ -819,18 +835,14 @@ namespace trlevel
         _sound_details = read_vector<tr_x_sound_details>(file, info.sample_info_length / sizeof(tr_x_sound_details));
         _entities = read_entities(activity, file, info, callbacks);
         _ai_objects = read_ai_objects(activity, file, info, callbacks);
-        skip(file, info.unknown_offsets[0] + info.unknown_offsets[1]);
-        skip(file, 2 * (info.unknown_offsets[2] + info.unknown_offsets[3] + info.unknown_offsets[4] + info.unknown_offsets[5] + info.unknown_offsets[6]));
+        skip(file, info.boxes_length + info.overlaps_length);
+        skip(file, 2 * (info.ground_zone_length + info.ground_zone_length2 + info.ground_zone_length3 + info.ground_zone_length4 + info.ground_zone_length5));
         _cameras = read_vector<tr_camera>(file, info.num_cameras);
-        _frames = read_frames(activity, file, start, info, callbacks);
-
-        // TODO: Fix this
-        info.models_offset = 1953944;
-        // info.models_offset = 1820288;
-        _models = read_models(activity, file, start, info, callbacks);
-
-        // skip(file, 320);
-        // _static_meshes = read_static_meshes_tr4_psx(activity, file, callbacks);
+        skip(file, info.unknown_6);
+        info.models_offset = static_cast<uint32_t>(file.tellg());
+        _models = read_models(activity, file, start, info, callbacks, 436);
+        _static_meshes = read_static_meshes_tr4_psx(activity, file, callbacks, 60);
+        
         generate_object_textures_tr4_psx(file, start, info);
 
         for (const auto& t : _textile16)
@@ -838,6 +850,7 @@ namespace trlevel
             callbacks.on_textile(convert_textile(t));
         }
 
+        generate_sounds(callbacks);
         callbacks.on_progress("Generating meshes");
         generate_meshes(_mesh_data);
         callbacks.on_progress("Loading complete");

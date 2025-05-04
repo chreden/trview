@@ -19,7 +19,7 @@ namespace trlevel
     std::vector<uint16_t> read_mesh_data(trview::Activity& activity, std::basic_ispanstream<uint8_t>& file, const tr4_psx_level_info& info, const ILevel::LoadCallbacks& callbacks);
     std::vector<uint32_t> read_mesh_pointers(trview::Activity& activity, std::basic_ispanstream<uint8_t>& file, const tr4_psx_level_info& info, const ILevel::LoadCallbacks& callbacks);
     std::vector<uint32_t> read_meshtree(trview::Activity& activity, std::basic_ispanstream<uint8_t>& file, const tr4_psx_level_info& info, const ILevel::LoadCallbacks& callbacks);
-    std::vector<tr_model> read_models(trview::Activity& activity, std::basic_ispanstream<uint8_t>& file, uint32_t start, const tr4_psx_level_info& info, const ILevel::LoadCallbacks& callbacks);
+    std::vector<tr_model> read_models(trview::Activity& activity, std::basic_ispanstream<uint8_t>& file, uint32_t start, const tr4_psx_level_info& info, const ILevel::LoadCallbacks& callbacks, uint32_t num_meshes = 460);
     std::vector<tr_model> read_models_psx(trview::Activity& activity, std::basic_ispanstream<uint8_t>& file, const ILevel::LoadCallbacks& callbacks);
     std::vector<tr_object_texture_psx> read_object_textures(trview::Activity& activity, std::basic_ispanstream<uint8_t>& file, const tr4_psx_level_info& info, const ILevel::LoadCallbacks& callbacks);
     void read_room_geometry_tr4_psx(std::basic_ispanstream<uint8_t>& file, tr3_room& room, const tr4_psx_room_info& info);
@@ -29,5 +29,5 @@ namespace trlevel
     void read_sounds_tr1_psx(trview::Activity& activity, std::basic_ispanstream<uint8_t>& file, const ILevel::LoadCallbacks& callbacks, uint32_t sample_frequency);
     void read_sounds_psx(trview::Activity& activity, std::basic_ispanstream<uint8_t>& file, const ILevel::LoadCallbacks& callbacks, uint32_t sample_frequency);
     void read_sounds_tr4_psx(trview::Activity& activity, std::basic_ispanstream<uint8_t>& file, const ILevel::LoadCallbacks& callbacks, uint32_t start, const tr4_psx_level_info& info, uint32_t sample_frequency);
-    std::unordered_map<uint32_t, tr_staticmesh> read_static_meshes_tr4_psx(trview::Activity& activity, std::basic_ispanstream<uint8_t>& file, const ILevel::LoadCallbacks& callbacks);
+    std::unordered_map<uint32_t, tr_staticmesh> read_static_meshes_tr4_psx(trview::Activity& activity, std::basic_ispanstream<uint8_t>& file, const ILevel::LoadCallbacks& callbacks, uint32_t num_statics = 70);
 }
