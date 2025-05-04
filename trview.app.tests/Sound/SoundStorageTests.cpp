@@ -15,7 +15,7 @@ TEST(SoundStorage, AddAndGetSound)
     auto found = storage.get(100).lock();
     ASSERT_EQ(found, nullptr);
 
-    storage.add(100, {});
+    storage.add({ .sound_map = 0, .sound_details = 0, .sample_index = 100 }, {});
 
     found = storage.get(100).lock();
     ASSERT_EQ(found, sound);
@@ -30,10 +30,10 @@ TEST(SoundStorage, AddAndGetSounds)
     auto sounds = storage.sounds();
     ASSERT_EQ(sounds.empty(), true);
 
-    storage.add(100, {});
+    storage.add({ .sound_map = 0, .sound_details = 0, .sample_index = 100 }, {});
 
     sounds = storage.sounds();
     ASSERT_EQ(sounds.size(), 1);
-    ASSERT_NE(sounds.find(100), sounds.end());
-    ASSERT_EQ(sounds[100].lock(), sound);
+    ASSERT_EQ(sounds[0].index.sample_index, 100);
+    ASSERT_EQ(sounds[0].sound.lock(), sound);
 }

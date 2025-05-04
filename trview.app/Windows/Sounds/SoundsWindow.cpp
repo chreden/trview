@@ -295,13 +295,13 @@ namespace trview
             if (const auto sound_storage = _sound_storage.lock())
             {
                 ImVec2 size = ImGui::GetWindowSize();
-                const int slots = static_cast<int>(size.x / 57);
+                const int slots = static_cast<int>(size.x / 72);
                 int count = 0;
-                for (const auto [index, sound] : sound_storage->sounds() | std::ranges::to<std::map<int16_t, std::weak_ptr<ISound>>>())
+                for (const auto [index, sound] : sound_storage->sounds())
                 {
                     if (const auto sound_ptr = sound.lock())
                     {
-                        if (ImGui::Button(std::format("{}", index).c_str(), ImVec2(50, 50)))
+                        if (ImGui::Button(std::format("Map:{}\nDetails:{}\nSample:{}", index.sound_map, index.sound_details, index.sample_index).c_str(), ImVec2(65, 65)))
                         {
                             sound_ptr->play();
                         }

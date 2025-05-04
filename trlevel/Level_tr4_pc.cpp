@@ -164,7 +164,7 @@ namespace trlevel
             }
             else
             {
-                read_sound_samples_tr4_5(activity, file, callbacks);
+                read_sound_samples_tr4_5(file, activity, callbacks);
             }
         }
         catch (const std::exception& e)
@@ -194,6 +194,7 @@ namespace trlevel
             log_file(activity, file, "TRNG level detected");
         }
 
+        generate_sounds(callbacks);
         callbacks.on_progress("Generating meshes");
         log_file(activity, file, "Generating meshes");
         generate_meshes(_mesh_data);
@@ -241,10 +242,26 @@ namespace trlevel
         _entities = read_entities(activity, file, callbacks);
         _ai_objects = read_ai_objects(activity, file, callbacks);
         load_sound_fx(activity, callbacks);
+        generate_sounds(callbacks);
 
         callbacks.on_progress("Generating meshes");
         log_file(activity, file, "Generating meshes");
         generate_meshes(_mesh_data);
+    }
+
+    void Level::read_sound_samples_tr4_5(std::basic_ispanstream<uint8_t>& file, trview::Activity& activity, const ILevel::LoadCallbacks& callbacks)
+    {
+        uint32_t num_samples = read<uint32_t>(file);
+        callbacks.on_progress("Reading sound samples");
+        log_file(activity, file, std::format("Reading {} sound samples", num_samples));
+        for (uint32_t i = 0; i < num_samples; ++i)
+        {
+            uint32_t uncompressed = read<uint32_t>(file);
+            uncompressed;
+            uint32_t compressed = read<uint32_t>(file);
+            _sound_samples.push_back(read_vector<uint8_t>(file, compressed));
+        }
+        log_file(activity, file, std::format("Read {} sound samples", num_samples));
     }
 
     void Level::load_ngle_sound_fx(trview::Activity& activity, std::basic_ispanstream<uint8_t>& file, const LoadCallbacks& callbacks)
@@ -259,7 +276,7 @@ namespace trlevel
             {
                 const auto sample = ngle_samples[i];
                 sfx_file.seekg(sample.start);
-                callbacks.on_sound(static_cast<uint16_t>(i), read_vector<uint8_t>(sfx_file, sample.size));
+                _sound_samples.push_back(read_vector<uint8_t>(sfx_file, sample.size));
             }
         }
     }

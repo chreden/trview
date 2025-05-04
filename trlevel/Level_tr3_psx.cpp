@@ -232,7 +232,7 @@ namespace trlevel
 
     void Level::load_tr3_psx(std::basic_ispanstream<uint8_t>& file, trview::Activity& activity, const LoadCallbacks& callbacks)
     {
-        read_sounds_psx(activity, file, callbacks, 11025);
+        read_sounds_psx(file, activity, callbacks, 11025);
         const bool ects = is_tr3_ects(_platform_and_version);
 
         for (int i = 0; i < (ects ? 10 : 13); ++i)
@@ -292,6 +292,7 @@ namespace trlevel
 
         _sound_map = read_sound_map(activity, file, callbacks);
         _sound_details = read_sound_details(activity, file, callbacks);
+        generate_sounds(callbacks);
 
         callbacks.on_progress("Generating meshes");
         generate_meshes(_mesh_data);

@@ -288,10 +288,10 @@ namespace trview
                     };
 
                 auto sound_storage = std::make_shared<SoundStorage>(sound_source);
-                callbacks.on_sound_callback = [&](auto&& index, auto&& data)
+                callbacks.on_sound_callback = [&](auto&& sound_map, auto&& sound_details, auto&& sample_index, auto&& data)
                     {
-                        callbacks.on_progress(std::format("Loading sound {}", index));
-                        sound_storage->add(index, data);
+                        callbacks.on_progress(std::format("Loading sound {}:{}:{}", sound_map, sound_details, sample_index));
+                        sound_storage->add({ .sound_map = sound_map, .sound_details = sound_details, .sample_index = sample_index }, data);
                     };
 
                 level->load(callbacks);

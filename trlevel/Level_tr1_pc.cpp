@@ -79,14 +79,14 @@ namespace trlevel
         log_file(activity, file, std::format("Read {} zones", zones.size()));
     }
 
-    void Level::generate_sounds_tr1(const LoadCallbacks& callbacks)
+    void Level::generate_sound_samples(const LoadCallbacks& callbacks)
     {
-        callbacks.on_progress("Generating sounds");
-        for (auto i = 0; i < _sample_indices.size(); ++i)
+        callbacks.on_progress("Generating sound samples");
+        for (int s = 0; s < _sample_indices.size(); ++s)
         {
-            const auto start = _sample_indices[i];
-            const auto end = i + 1 < _sample_indices.size() ? _sample_indices[i + 1] : _sound_data.size();
-            callbacks.on_sound(static_cast<int16_t>(i), { _sound_data.begin() + start, _sound_data.begin() + end });
+            const auto start = _sample_indices[s];
+            const auto end = s + 1 < _sample_indices.size() ? _sample_indices[s + 1] : _sound_data.size();
+            _sound_samples.push_back({ _sound_data.begin() + start, _sound_data.begin() + end });
         }
     }
 
@@ -183,7 +183,8 @@ namespace trlevel
 
         } while (on_demo_attempt);
 
-        generate_sounds_tr1(callbacks);
+        generate_sound_samples(callbacks);
+        generate_sounds(callbacks);
         callbacks.on_progress("Generating meshes");
         generate_meshes(_mesh_data);
         callbacks.on_progress("Loading complete");

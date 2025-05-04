@@ -1,4 +1,5 @@
 #include "SoundStorage.h"
+#include <ranges>
 
 namespace trview
 {
@@ -11,20 +12,20 @@ namespace trview
     {
     }
 
-    void SoundStorage::add(uint16_t index, const std::vector<uint8_t>& data)
+    void SoundStorage::add(Index index, const std::vector<uint8_t>& data)
     {
         const auto sound = _sound_source(data);
-        _sounds[index] = sound;
+        _sounds.push_back({ .index = index, .sound = sound });
     }
 
     std::weak_ptr<ISound> SoundStorage::get(uint16_t index) const
     {
-        const auto found = _sounds.find(index);
-        return found == _sounds.end() ? nullptr : found->second;
+        const auto found = std::ranges::find_if(_sounds, [=](auto& s) { return s.index.sample_index == index; });
+        return found == _sounds.end() ? nullptr : found->sound;
     }
 
-    std::unordered_map<uint16_t, std::weak_ptr<ISound>> SoundStorage::sounds() const
+    std::vector<ISoundStorage::Entry> SoundStorage::sounds() const
     {
-        return _sounds | std::ranges::to<std::unordered_map<uint16_t, std::weak_ptr<ISound>>>();
+        return _sounds | std::views::transform([](auto&& e) -> Entry { return { .index = e.index, .sound = e.sound }; }) | std::ranges::to<std::vector>();
     }
 }

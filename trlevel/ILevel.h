@@ -171,11 +171,11 @@ namespace trlevel
         {
             std::function<void(const std::string&)> on_progress_callback;
             std::function<void(const std::vector<uint32_t>&)> on_textile_callback;
-            std::function<void(uint16_t, const std::vector<uint8_t>&)> on_sound_callback;
+            std::function<void(uint16_t, uint16_t, uint16_t, const std::vector<uint8_t>&)> on_sound_callback;
 
             void on_progress(const std::string& message) const;
             void on_textile(const std::vector<uint32_t>& data) const;
-            void on_sound(uint16_t id, const std::vector<uint8_t>&) const;
+            void on_sound(uint16_t sound_map, uint16_t sound_details, uint16_t sample_index, const std::vector<uint8_t>&) const;
         };
 
         virtual void load(const LoadCallbacks& callbacks) = 0;

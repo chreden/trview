@@ -78,6 +78,7 @@ namespace trlevel
         _sound_details = read_sound_details(activity, file, callbacks);
         _sample_indices = read_sample_indices(activity, file, callbacks);
         load_sound_fx(activity, callbacks);
+        generate_sounds(callbacks);
         callbacks.on_progress("Generating meshes");
         generate_meshes(_mesh_data);
         callbacks.on_progress("Loading complete");

@@ -298,7 +298,7 @@ namespace trlevel
         try
         {
             skip(file, 4); // TOSS
-            read_sound_samples_tr4_5(activity, file, callbacks);
+            read_sound_samples_tr4_5(file, activity, callbacks);
         }
         catch (const std::exception& e)
         {
@@ -308,6 +308,7 @@ namespace trlevel
             log_file(activity, file, std::format("Failed to load sound samples {}", e.what()));
         }
 
+        generate_sounds(callbacks);
         callbacks.on_progress("Generating meshes");
         log_file(activity, file, "Generating meshes");
         generate_meshes(_mesh_data);

@@ -486,22 +486,6 @@ namespace trlevel
         return sound_map;
     }
 
-    void read_sound_samples_tr4_5(trview::Activity& activity, std::basic_ispanstream<uint8_t>& file, const ILevel::LoadCallbacks& callbacks)
-    {
-        uint32_t num_samples = read<uint32_t>(file);
-        callbacks.on_progress("Reading sound samples");
-        log_file(activity, file, std::format("Reading {} sound samples", num_samples));
-        std::vector<std::vector<uint8_t>> samples;
-        for (uint32_t i = 0; i < num_samples; ++i)
-        {
-            uint32_t uncompressed = read<uint32_t>(file);
-            uncompressed;
-            uint32_t compressed = read<uint32_t>(file);
-            callbacks.on_sound(static_cast<uint16_t>(i), read_vector<uint8_t>(file, compressed));
-        }
-        log_file(activity, file, std::format("Read {} sound samples", num_samples));
-    }
-
     std::vector<tr_sound_source> read_sound_sources(trview::Activity& activity, std::basic_ispanstream<uint8_t>& file, const ILevel::LoadCallbacks& callbacks)
     {
         callbacks.on_progress("Reading sound sources");
