@@ -731,7 +731,9 @@ namespace trlevel
             uint32_t animated_texture_length;
             uint32_t sfx_info_length;
             uint32_t sample_info_length;
-            char     unknown_5[12];
+            uint32_t unknown_4a;
+            uint32_t demo_data_length; // in title.psx
+            uint32_t num_boxes;
             uint32_t boxes_length;
             uint32_t overlaps_length;
             uint32_t ground_zone_length;
@@ -775,6 +777,9 @@ namespace trlevel
             .animated_texture_length = opsm_info.animated_texture_length,
             .sfx_info_length = opsm_info.sfx_info_length,
             .sample_info_length = opsm_info.sample_info_length,
+            .unknown_4a = opsm_info.unknown_4a,
+            .demo_data_length = opsm_info.demo_data_length,
+            .num_boxes = opsm_info.num_boxes,
             .boxes_length = opsm_info.boxes_length,
             .overlaps_length = opsm_info.overlaps_length,
             .ground_zone_length = opsm_info.ground_zone_length,
@@ -833,6 +838,15 @@ namespace trlevel
 
         _sound_map = read_vector<int16_t>(file, 370);
         _sound_details = read_vector<tr_x_sound_details>(file, info.sample_info_length / sizeof(tr_x_sound_details));
+
+        // Unsure about this hardcoded seek or if it even is related to demo data being present.
+        // In the title level there is TR3 demo data after some unknown data.
+        if (info.demo_data_length)
+        {
+            skip(file, 12680);
+            skip(file, info.demo_data_length);
+        }
+
         _entities = read_entities(activity, file, info, callbacks);
         _ai_objects = read_ai_objects(activity, file, info, callbacks);
         skip(file, info.boxes_length + info.overlaps_length);

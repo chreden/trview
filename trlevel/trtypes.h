@@ -773,7 +773,9 @@ namespace trlevel
         uint32_t animated_texture_length;
         uint32_t sfx_info_length;
         uint32_t sample_info_length;
-        char     unknown_5[12];
+        uint32_t unknown_4a;
+        uint32_t demo_data_length;
+        uint32_t num_boxes;
         uint32_t boxes_length;
         uint32_t overlaps_length;
         uint32_t ground_zone_length;
