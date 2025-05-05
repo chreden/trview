@@ -124,8 +124,8 @@ namespace trlevel
         _sound_details = read_vector<tr_x_sound_details>(file, info.sample_info_length / sizeof(tr_x_sound_details));
         _entities = read_entities(activity, file, info, callbacks);
         _ai_objects = read_ai_objects(activity, file, info, callbacks);
-        skip(file, info.unknown_offsets[0] + info.unknown_offsets[1]);
-        skip(file, 2 * (info.unknown_offsets[2] + info.unknown_offsets[3] + info.unknown_offsets[4] + info.unknown_offsets[5] + info.unknown_offsets[6]));
+        skip(file, info.boxes_length + info.overlaps_length);
+        skip(file, 2 * (info.ground_zone_length + info.ground_zone_length2 + info.ground_zone_length3 + info.ground_zone_length4 + info.ground_zone_length5));
         _cameras = read_vector<tr_camera>(file, info.num_cameras);
         _frames = read_frames(activity, file, start, info, callbacks);
         _models = read_models(activity, file, start, info, callbacks);

@@ -40,7 +40,7 @@ namespace trview
                     is_tr3_demo_55(version) ? "tr3_demo_55" : "tr3";
                 break;
             case trlevel::LevelVersion::Tomb4:
-                return "tr4";
+                return is_tr4_opsm_90(version) ? "tr4_opsm90" : "tr4";
                 break;
             case trlevel::LevelVersion::Tomb5:
                 return "tr5";

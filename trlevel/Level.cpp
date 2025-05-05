@@ -46,7 +46,9 @@ namespace trlevel
         const float PiMul2 = 6.283185307179586476925286766559f;
         const int16_t Lara = 0;
         const int16_t LaraSkinTR3 = 315;
+        const int16_t LaraSkinTR3Demo55 = 275;
         const int16_t LaraSkinPostTR3 = 8;
+        const int16_t LaraSkinTR4OPSM90 = 10;
     
         bool is_tr5(trview::Activity& activity, LevelVersion version, const std::wstring& filename)
         {
@@ -538,10 +540,17 @@ namespace trlevel
         {
             return type;
         }
-
-        if (get_version() > trlevel::LevelVersion::Tomb3)
+        else if (get_version() > trlevel::LevelVersion::Tomb3)
         {
+            if (is_tr4_opsm_90(_platform_and_version))
+            {
+                return LaraSkinTR4OPSM90;
+            }
             return LaraSkinPostTR3;
+        }
+        else if (is_tr3_demo_55(_platform_and_version))
+        {
+            return LaraSkinTR3Demo55;
         }
         return LaraSkinTR3;
     }

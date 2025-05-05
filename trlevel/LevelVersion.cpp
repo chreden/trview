@@ -44,6 +44,7 @@ namespace trlevel
                 return { .platform = Platform::PSX, .version = LevelVersion::Tomb3 };
             case 0x54:
                 return { .platform = Platform::PC, .version = LevelVersion::Tomb4 };
+            case 0x88:
             case 0xfc:
                 return { .platform = Platform::PSX, .version = LevelVersion::Tomb4 };
             case 0x3c:
@@ -109,5 +110,10 @@ namespace trlevel
     bool is_tr4_oct_1999(PlatformAndVersion version)
     {
         return version.raw_version == 0x6a20;
+    }
+
+    bool is_tr4_opsm_90(PlatformAndVersion version)
+    {
+        return version.raw_version == 0xffffff88;
     }
 }
