@@ -68,7 +68,6 @@ namespace trview
         std::weak_ptr<IItem> _selected_item;
         std::weak_ptr<IItem> _global_selected_item;
         std::vector<std::weak_ptr<ITrigger>> _triggered_by;
-        bool _scroll_to_item{ false };
 
         Filters<IItem> _filters;
         trlevel::LevelVersion _level_version{ trlevel::LevelVersion::Unknown };
