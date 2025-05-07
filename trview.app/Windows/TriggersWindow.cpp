@@ -526,6 +526,19 @@ namespace trview
                     | std::ranges::to<std::vector>();
             });
 
+        _filters.add_multi_getter<float>("Extra", [&](auto&& trigger)
+            {
+                return trigger.commands()
+                    | std::views::transform([](auto&& t)
+                        {
+                            const auto data = t.data();
+                            return std::ranges::subrange(data.begin() + 1, data.end())
+                                 | std::views::transform([](auto&& d) { return static_cast<float>(d); });
+                        })
+                    | std::views::join
+                    | std::ranges::to<std::vector>();
+            });
+
         auto all_trigger_indices = [](TriggerCommandType type, const auto& trigger)
         {
             std::vector<float> indices;
