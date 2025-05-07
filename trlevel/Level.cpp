@@ -248,6 +248,10 @@ namespace trlevel
                     generate_mesh_tr4_psx(mesh, stream);
                 }
             }
+            else if (is_tr1_may_1996(_platform_and_version))
+            {
+                generate_mesh_tr1_pc_may_1996(mesh, stream);
+            }
             else
             {
                 generate_mesh(mesh, stream);

@@ -90,6 +90,27 @@ namespace trlevel
         }
     }
 
+    void Level::read_sound_map_tr5_psx(std::basic_ispanstream<uint8_t>& file, const tr4_psx_level_info& info, trview::Activity& activity, const LoadCallbacks& callbacks)
+    {
+        // October version has a smaller sound map. Attempt to load with retail sound map and revert to
+        // smaller sound map if the entities don't look good (too many Laras).
+        const auto before_sound_map = file.tellg();
+        for (const auto sound_map_size : { 450, 370 })
+        {
+            file.seekg(before_sound_map);
+            _sound_map = read_vector<int16_t>(file, sound_map_size);
+            _sound_details = read_vector<tr_x_sound_details>(file, info.sample_info_length / sizeof(tr_x_sound_details));
+            const auto before_entities = file.tellg();
+            const auto entities = read_entities(activity, file, info, callbacks);
+            const auto lara_count = std::ranges::count_if(entities, [](auto&& e) { return e.TypeID == 0; });
+            if (lara_count < 2)
+            {
+                file.seekg(before_entities);
+                return;
+            }
+        }
+    }
+
     void Level::load_tr5_psx(std::basic_ispanstream<uint8_t>& file, trview::Activity& activity, const LoadCallbacks& callbacks)
     {
         file.seekg(313344);
@@ -120,8 +141,7 @@ namespace trlevel
         adjust_room_textures_psx();
         _object_textures_psx.append_range(read_room_textures(activity, file, info, callbacks));
         _sound_sources = read_sound_sources(activity, file, info, callbacks);
-        _sound_map = read_vector<int16_t>(file, 450);
-        _sound_details = read_vector<tr_x_sound_details>(file, info.sample_info_length / sizeof(tr_x_sound_details));
+        read_sound_map_tr5_psx(file, info, activity, callbacks);
         _entities = read_entities(activity, file, info, callbacks);
         _ai_objects = read_ai_objects(activity, file, info, callbacks);
         skip(file, info.boxes_length + info.overlaps_length);

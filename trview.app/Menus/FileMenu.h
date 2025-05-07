@@ -10,7 +10,7 @@ namespace trview
     class FileMenu final : public IFileMenu, public MessageHandler
     {
     public:
-        static const inline std::string default_file_pattern{ "\\*.TR2*,\\*.TR4*,\\*.TRC*,\\*.PHD,\\*.PSX,\\*.OBJ" };
+        static const inline std::string default_file_pattern{ "\\*.TR2*,\\*.TR4*,\\*.TRC*,\\*.PHD,\\*.PSX,\\*.OBJ,\\*.TOM" };
 
         explicit FileMenu(
             const Window& window,

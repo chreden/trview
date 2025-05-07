@@ -46,6 +46,7 @@ namespace trlevel
     PlatformAndVersion convert_level_version(uint32_t version);
 
     bool is_tr1_may_1996(PlatformAndVersion version);
+    bool is_tr1_pc_may_1996(PlatformAndVersion version);
     bool is_tr1_aug_1996(PlatformAndVersion version);
     bool is_tr2_beta(uint32_t version);
     bool is_tr2_beta(PlatformAndVersion version);

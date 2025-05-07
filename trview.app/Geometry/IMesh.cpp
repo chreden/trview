@@ -75,6 +75,40 @@ namespace trview
 
             return source(std::vector<MeshVertex>(), std::vector<std::vector<uint32_t>>(), std::vector<uint32_t>(), transparent_triangles, collision_triangles);
         }
+
+        void adjust_rect_uvs_tr1_1996_pc(std::array<Vector2, 4>& uvs, uint16_t texture)
+        {
+            int16_t signed_texture = static_cast<int16_t>(texture);
+            if (signed_texture < 0)
+            {
+                std::swap(uvs[0], uvs[1]);
+                std::swap(uvs[2], uvs[3]);
+            }
+        }
+
+        void adjust_tri_uvs_tr1_1996_pc(std::array<Vector2, 4>& uvs, uint16_t texture)
+        {
+            const uint16_t texture_operation = (texture & 0x6000) >> 13;
+            switch (texture_operation)
+            {
+                case 1:
+                {
+                    std::swap(uvs[1], uvs[2]);
+                    break;
+                }
+                case 2:
+                {
+                    std::swap(uvs[0], uvs[3]);
+                    std::swap(uvs[1], uvs[2]);
+                    break;
+                }
+                case 3:
+                {
+                    std::swap(uvs[0], uvs[3]);
+                    break;
+                }
+            }
+        }
     }
 
     IMesh::~IMesh()
@@ -252,6 +286,11 @@ namespace trview
             }
 
             uint16_t texture = rect.texture & Texture_Mask;
+            if (is_tr1_pc_may_1996(texture_storage.platform_and_version()))
+            {
+                texture = static_cast<uint16_t>(std::abs(static_cast<int16_t>(rect.texture)));
+            }
+
             if (texture >= texture_storage.num_object_textures())
             {
                 texture = previous_texture;
@@ -264,7 +303,12 @@ namespace trview
                 uvs[i] = texture_storage.uv(texture, i);
             }
 
-            if (texture_storage.platform_and_version().platform == Platform::PSX)
+            if (is_tr1_pc_may_1996(texture_storage.platform_and_version()) && static_cast<int16_t>(rect.texture) < 0)
+            {
+                adjust_rect_uvs_tr1_1996_pc(uvs, rect.texture);
+            }
+
+            if (texture_storage.platform_and_version().platform == Platform::PSX || is_tr1_pc_may_1996(texture_storage.platform_and_version()))
             {
                 std::swap(uvs[2], uvs[3]);
             }
@@ -353,16 +397,27 @@ namespace trview
             }
 
             uint16_t texture = tri.texture & Texture_Mask;
+
+            if (is_tr1_pc_may_1996(texture_storage.platform_and_version()))
+            {
+                texture = tri.texture & 0x1FFF;
+            }
+
             if (texture >= texture_storage.num_object_textures())
             {
                 texture = previous_texture;
             }
             previous_texture = texture;
 
-            std::array<Vector2, 3> uvs;
+            std::array<Vector2, 4> uvs;
             for (auto i = 0u; i < uvs.size(); ++i)
             {
                 uvs[i] = texture_storage.uv(texture, i);
+            }
+
+            if (is_tr1_pc_may_1996(texture_storage.platform_and_version()))
+            {
+                adjust_tri_uvs_tr1_1996_pc(uvs, tri.texture);
             }
 
             const bool double_sided = tri.texture & 0x8000;

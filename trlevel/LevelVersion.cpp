@@ -26,6 +26,8 @@ namespace trlevel
 
             switch (version & 0xff)
             {
+            case 0x09:
+            case 0x0B:
             case 0x20:
                 if (is_tr2_beta(version))
                 {
@@ -69,7 +71,12 @@ namespace trlevel
 
     bool is_tr1_may_1996(PlatformAndVersion version)
     {
-        return version.raw_version == 11;
+        return version.raw_version == 11 || version.raw_version == 9;
+    }
+
+    bool is_tr1_pc_may_1996(PlatformAndVersion version)
+    {
+        return is_tr1_may_1996(version) && version.platform == Platform::PC;
     }
 
     bool is_tr1_aug_1996(PlatformAndVersion version)

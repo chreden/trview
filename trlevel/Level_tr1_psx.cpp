@@ -509,7 +509,7 @@ namespace trlevel
                     .Intensity2 = 0,
                     .Flags = e.Flags
                 };
-            }) | std::ranges::to<std::vector>();;
+            }) | std::ranges::to<std::vector>();
 
         callbacks.on_progress("Generating meshes");
         generate_meshes(_mesh_data);

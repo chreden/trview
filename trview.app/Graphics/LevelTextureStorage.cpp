@@ -87,7 +87,11 @@ namespace trview
 
     uint32_t LevelTextureStorage::tile(uint32_t texture_index) const
     {
-        return _object_textures[texture_index].TileAndFlag & 0x7FFF;
+        if (texture_index < _object_textures.size())
+        {
+            return _object_textures[texture_index].TileAndFlag & 0x7FFF;
+        }
+        return 0;
     }
 
     uint32_t LevelTextureStorage::num_tiles() const
@@ -97,17 +101,21 @@ namespace trview
 
     uint16_t LevelTextureStorage::attribute(uint32_t texture_index) const
     {
-        return _object_textures[texture_index].Attribute;
+        if (texture_index < _object_textures.size())
+        {
+            return _object_textures[texture_index].Attribute;
+        }
+        return 0;
     }
 
     DirectX::SimpleMath::Color LevelTextureStorage::palette_from_texture(uint32_t texture) const
     {
-        if (_version > trlevel::LevelVersion::Tomb1)
+        if (_platform_and_version.version > trlevel::LevelVersion::Tomb1)
         {
             return _palette[texture >> 8];
         }
 
-        if (_platform == trlevel::Platform::PSX)
+        if (_platform_and_version.platform == trlevel::Platform::PSX)
         {
             if (auto level = _level.lock())
             {
@@ -141,14 +149,13 @@ namespace trview
 
     trlevel::PlatformAndVersion LevelTextureStorage::platform_and_version() const
     {
-        return { .platform = _platform, .version = _version };
+        return _platform_and_version;
     }
 
     void LevelTextureStorage::load(const std::shared_ptr<trlevel::ILevel>& level)
     {
-        _version = level->get_version();
+        _platform_and_version = level->platform_and_version();
         _level = level;
-        _platform = level->platform();
 
         // Copy object textures locally from the level.
         for (uint32_t i = 0; i < level->num_object_textures(); ++i)
@@ -156,7 +163,7 @@ namespace trview
             _object_textures.push_back(level->get_object_texture(i));
         }
 
-        if (_version < trlevel::LevelVersion::Tomb4)
+        if (_platform_and_version.version < trlevel::LevelVersion::Tomb4)
         {
             using namespace DirectX::SimpleMath;
             for (uint32_t i = 0; i < 256; ++i)
