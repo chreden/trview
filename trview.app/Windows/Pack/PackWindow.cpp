@@ -7,6 +7,11 @@ namespace trview
     {
     }
 
+    PackWindow::PackWindow(const std::shared_ptr<IFiles>& files, const std::shared_ptr<IDialogs>& dialogs)
+        : _files(files), _dialogs(dialogs)
+    {
+    }
+
     void PackWindow::render()
     {
         if (!render_pack_window())
@@ -52,6 +57,19 @@ namespace trview
                         if (ImGui::Selectable(std::format("{}##{}", part.start, index++).c_str(), &selected, ImGuiSelectableFlags_SpanAllColumns | static_cast<int>(ImGuiSelectableFlags_SelectOnNav)))
                         {
                             on_level_open(std::format("pack://{}\\{}", pack->filename(), part.start));
+                        }
+                        if (ImGui::BeginPopupContextItem())
+                        {
+                            if (ImGui::MenuItem("Save"))
+                            {
+                                if (const auto file = _dialogs->save_file(std::format(L"Saving {}", part.start),
+                                    { { L"TR4 levels", { L"*.tr4" } }, { L"TR5 levels", { L"*.trc" }}, { L"All files", { L"*.*" }} },
+                                    part.version.has_value() ? (part.version.value().version == trlevel::LevelVersion::Tomb4 ? 1 : 2) : 3))
+                                {
+                                    _files->save_file(file->filename, part.data);
+                                }
+                            }
+                            ImGui::EndPopup();
                         }
                         ImGui::TableNextColumn();
                         ImGui::Text(std::to_string(part.size).c_str());
