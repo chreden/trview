@@ -52,6 +52,31 @@ namespace trlevel
 
 #pragma pack(pop)
 
+        enum class PrimitiveType : uint16_t
+        {
+            Triangle2 = 2,
+            Rectangle3 = 3,
+            ColouredTriangle = 4,
+            ColouredRectangle = 5,
+            TexturedTriangle = 8,
+            TexturedRectangle = 9,
+            Triangle10 = 10,
+            Rectangle11 = 11,
+            TransparentTexturedTriangle = 16,
+            TransparentTexturedRectangle = 17
+        };
+
+        enum class RoomPrimitive : uint16_t
+        {
+            TransparentTriangle = 32,
+            TransparentRectangle,
+            InvisibleTriangle,
+            InvisibleRectangle,
+            TexturedTriangle,
+            TexturedRectangle,
+            Sprite = 39
+        };
+
         void read_room_lights_tr1_pc(trview::Activity& activity, std::basic_ispanstream<uint8_t>& file, tr3_room& room)
         {
             log_file(activity, file, "Reading lights");
@@ -83,20 +108,6 @@ namespace trlevel
             return 0;
         }
 
-        namespace
-        {
-            enum class Primitive : uint16_t
-            {
-                TransparentTriangle = 32,
-                TransparentRectangle,
-                InvisibleTriangle,
-                InvisibleRectangle,
-                TexturedTriangle,
-                TexturedRectangle,
-                Sprite = 39
-            };
-        }
-
         void load_tr1_pc_room_may_1996(trview::Activity& activity, std::basic_ispanstream<uint8_t>& file, tr3_room& room)
         {
             room.info.x = read<int32_t>(file);
@@ -113,20 +124,20 @@ namespace trlevel
                 uint16_t num_primitives = read<uint16_t>(file);
                 for (uint16_t i = 0; i < num_primitives; ++i)
                 {
-                    Primitive value = read<Primitive>(file);
+                    RoomPrimitive value = read<RoomPrimitive>(file);
                     switch (value)
                     {
-                        case Primitive::InvisibleTriangle:
+                        case RoomPrimitive::InvisibleTriangle:
                         {
                             skip(file, sizeof(tr_face3));
                             break;
                         }
-                        case Primitive::InvisibleRectangle:
+                        case RoomPrimitive::InvisibleRectangle:
                         {
                             skip(file, sizeof(tr_face4));
                             break;
                         }
-                        case Primitive::TexturedTriangle:
+                        case RoomPrimitive::TexturedTriangle:
                         {
                             tr_face3 tri = read<tr_face3>(file);
                             tr4_mesh_face3 new_face3;
@@ -136,8 +147,8 @@ namespace trlevel
                             room.data.triangles.push_back(new_face3);
                             break;
                         }
-                        case Primitive::TransparentRectangle:
-                        case Primitive::TexturedRectangle:
+                        case RoomPrimitive::TransparentRectangle:
+                        case RoomPrimitive::TexturedRectangle:
                         {
                             tr_face4 rect = read<tr_face4>(file);
                             tr4_mesh_face4 new_face4;
@@ -147,7 +158,7 @@ namespace trlevel
                             room.data.rectangles.push_back(new_face4);
                             break;
                         }
-                        case Primitive::Sprite:
+                        case RoomPrimitive::Sprite:
                         {
                             room.data.sprites.push_back(read<tr_room_sprite>(file));
                             break;
@@ -286,31 +297,31 @@ namespace trlevel
         const uint16_t num_primitives = read<uint16_t>(stream);
         for (uint16_t i = 0; i < num_primitives; ++i)
         {
-            uint16_t value = read<uint16_t>(stream);
-            switch (value)
+            PrimitiveType primitive_type = read<PrimitiveType>(stream);
+            switch (primitive_type)
             {
-                case 4: // Coloured tris
+                case PrimitiveType::ColouredTriangle:
                 {
                     coloured_triangles.push_back(read<tr_face3>(stream));
                     break;
                 }
-                case 5: // Coloured rects
+                case PrimitiveType::ColouredRectangle:
                 {
                     coloured_rectangles.push_back(read<tr_face4>(stream));
                     break;
                 }
-                case 2:
-                case 8: // not sure - bad
-                case 10:
-                case 16:
+                case PrimitiveType::Triangle2:
+                case PrimitiveType::TexturedTriangle:
+                case PrimitiveType::Triangle10:
+                case PrimitiveType::TransparentTexturedTriangle:
                 {
                     textured_triangles.push_back(read<tr_face3>(stream));
                     break;
                 }
-                case 3:
-                case 9: // textured rect
-                case 11: 
-                case 17: // transparent rect
+                case PrimitiveType::Rectangle3:
+                case PrimitiveType::TexturedRectangle:
+                case PrimitiveType::Rectangle11: 
+                case PrimitiveType::TransparentTexturedRectangle:
                 {
                     textured_rectangles.push_back(read<tr_face4>(stream));
                     break;
