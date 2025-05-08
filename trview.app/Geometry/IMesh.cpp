@@ -399,7 +399,8 @@ namespace trview
 
             uint16_t texture = tri.texture & Texture_Mask;
 
-            if (is_tr1_pc_may_1996(texture_storage.platform_and_version()))
+            if (is_tr1_pc_may_1996(texture_storage.platform_and_version()) ||
+                texture_storage.platform_and_version().platform == trlevel::Platform::Saturn)
             {
                 texture = tri.texture & 0x1FFF;
             }
@@ -416,7 +417,8 @@ namespace trview
                 uvs[i] = texture_storage.uv(texture, i);
             }
 
-            if (is_tr1_pc_may_1996(texture_storage.platform_and_version()))
+            if (is_tr1_pc_may_1996(texture_storage.platform_and_version()) ||
+                texture_storage.platform_and_version().platform == trlevel::Platform::Saturn)
             {
                 adjust_tri_uvs_tr1_1996_pc(uvs, tri.texture);
             }
