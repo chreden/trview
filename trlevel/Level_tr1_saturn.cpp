@@ -907,7 +907,24 @@ namespace trlevel
         {
             skip(file, 4);
             uint32_t count = to_le(read<uint32_t>(file));
-            _sprite_sequences = to_le(read_vector<tr_sprite_sequence>(file, count));
+            std::vector<tr_sprite_sequence> sprite_sequences;
+            for (uint32_t i = 0; i < count; ++i)
+            {
+                tr_sprite_sequence new_sequence{};
+                new_sequence.SpriteID = to_le(read<uint32_t>(file));
+                new_sequence.NegativeLength = to_le(read<int16_t>(file));
+                if (new_sequence.NegativeLength > 0)
+                {
+                    file.seekg(-1, std::ios::cur);
+                    new_sequence.NegativeLength = read<int8_t>(file);
+                }
+                else
+                {
+                    new_sequence.Offset = to_le(read<int16_t>(file));
+                }
+                sprite_sequences.push_back(new_sequence);
+            }
+            _sprite_sequences = sprite_sequences;
         };
 
         const std::unordered_map<std::string, std::function<void(std::basic_ispanstream<uint8_t>&)>> loader_functions
