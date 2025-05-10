@@ -5,6 +5,7 @@
 #include <ranges>
 #include <spanstream>
 #include <filesystem>
+#include <set>
 
 namespace trlevel
 {
@@ -24,6 +25,20 @@ namespace trlevel
             result.erase(result.find_last_not_of('\0') + 1);
             result.erase(result.find_last_not_of(' ') + 1);
             return result;
+        }
+
+        uint32_t convert_saturn_palette(uint16_t t)
+        {
+            uint16_t b = (t & 0x7c00) >> 10;
+            uint16_t g = (t & 0x03e0) >> 5;
+            uint16_t r = t & 0x001f;
+
+            r = static_cast<uint16_t>((r / 31.0f) * 255.0f);
+            g = static_cast<uint16_t>((g / 31.0f) * 255.0f);
+            b = static_cast<uint16_t>((b / 31.0f) * 255.0f);
+
+            uint16_t a = t & 0x8000 ? 0xff : 0x00;
+            return a << 24 | b << 16 | g << 8 | r;
         }
 
         struct Tag
@@ -56,20 +71,32 @@ namespace trlevel
 
         struct tr_object_texture_saturn
         {
-            uint8_t x0;
-            uint8_t y0;
-            uint16_t Clut;
-            uint8_t x1;
-            uint8_t y1;
-            uint16_t Tile;
-            uint8_t x2;
-            uint8_t y2;
-            uint8_t tri_draw;
-            uint8_t quad_draw;
-            uint8_t x3;
-            uint8_t y3;
-            uint16_t Attribute;
+            uint16_t a1;
+            uint16_t a2;
+            uint16_t a3;
+            uint16_t a4;
+            uint16_t a5;
+            uint16_t size;
+            uint16_t a7;
+            uint16_t a8;
         };
+
+        static_assert(sizeof(tr_object_texture_saturn) == 16);
+
+        struct tr_sprite_texture_saturn   // 16 bytes
+        {
+            uint16_t start;
+            uint16_t end;
+            uint8_t a2_1;
+            uint8_t height;
+            int16_t LeftSide;
+            int16_t TopSide;
+            int16_t RightSide;
+            int16_t BottomSide;
+            int16_t a7;
+        };
+
+        static_assert(sizeof(tr_sprite_texture_saturn) == 16);
 
         enum class Primitive : uint16_t
         {
@@ -191,7 +218,16 @@ namespace trlevel
         template <>
         tr_object_texture_saturn to_le(const tr_object_texture_saturn& value)
         {
-            return { .x0 = value.x0, .y0 = value.y0, .Clut = to_le(value.Clut), .x1 = value.x1, .y1 = value.y1, .Tile = to_le(value.Tile), .x2 = value.x2, .y2 = value.y2, .tri_draw = value.tri_draw, .quad_draw = value.quad_draw, .x3 = value.x3, .y3 = value.y3, .Attribute = to_le(value.Attribute) };
+            return {
+                .a1 = to_le(value.a1),
+                .a2 = to_le(value.a2),
+                .a3 = to_le(value.a3),
+                .a4 = to_le(value.a4),
+                .a5 = to_le(value.a5),
+                .size = to_le(value.size),
+                .a7 = to_le(value.a7),
+                .a8 = to_le(value.a8)
+            };
         }
 
         template <>
@@ -290,6 +326,23 @@ namespace trlevel
                 .TopSide = to_le(value.TopSide),
                 .RightSide = to_le(value.RightSide),
                 .BottomSide = to_le(value.BottomSide)
+            };
+        }
+
+        template<>
+        tr_sprite_texture_saturn to_le(const tr_sprite_texture_saturn& value)
+        {
+            return
+            {
+                .start = to_le(value.start),
+                .end = to_le(value.end),
+                .a2_1 = to_le(value.a2_1),
+                .height = to_le(value.height),
+                .LeftSide = to_le(value.LeftSide),
+                .TopSide = to_le(value.TopSide),
+                .RightSide = to_le(value.RightSide),
+                .BottomSide = to_le(value.BottomSide),
+                .a7 = to_le(value.a7),
             };
         }
 
@@ -566,7 +619,17 @@ namespace trlevel
             roomtinf_size;
             uint32_t roomtinf_count = to_le(read<uint32_t>(file));
             auto object_textures = to_le(read_vector<tr_object_texture_saturn>(file, roomtinf_count));
-            object_textures;
+            _object_textures = object_textures 
+            |
+                std::views::transform([](auto&& t) -> tr_object_texture
+                    {
+                        t;
+                        return
+                        {
+                            .Attribute = 0,
+                            .TileAndFlag = 0
+                        };
+                    }) | std::ranges::to<std::vector>();
         };
 
         const auto read_roomtqtr = [&](auto& file)
@@ -578,9 +641,12 @@ namespace trlevel
 
         const auto read_roomtsub = [&](auto& file)
         {
-            uint32_t roomtsub_size = to_le(read<uint32_t>(file));
+            // uint32_t roomtsub_size = to_le(read<uint32_t>(file));
+            skip(file, 4);
             uint32_t roomtsub_count = to_le(read<uint32_t>(file));
-            skip(file, roomtsub_size * roomtsub_count);
+            auto tsubs = to_le(read_vector<uint8_t>(file, roomtsub_count));
+            tsubs.clear();
+            tsubs;
         };
 
         const auto read_roomdata_forward = [&](auto& file)
@@ -615,20 +681,6 @@ namespace trlevel
             skip(file, soundfx_size * soundfx_count);
         };
 
-        const auto read_boxes = [&](auto& file)
-        {
-            uint32_t boxes_size = to_le(read<uint32_t>(file));
-            uint32_t boxes_count = to_le(read<uint32_t>(file));
-            skip(file, boxes_size * boxes_count);
-        };
-
-        const auto read_overlaps = [&](auto& file)
-        {
-            uint32_t overlaps_size = to_le(read<uint32_t>(file));
-            uint32_t overlaps_count = to_le(read<uint32_t>(file));
-            skip(file, overlaps_size * overlaps_count);
-        };
-
         const auto read_generic = [&](auto& file)
         {
             uint32_t generic_size = to_le(read<uint32_t>(file));
@@ -656,14 +708,14 @@ namespace trlevel
             { "ROOMSPAL", read_generic },
             { "ROOMDATA", read_roomdata_forward },
             { "FLORDATA", read_flordata },
-            { "CAMERAS", read_cameras },
-            { "SOUNDFX", read_soundfx },
-            { "BOXES", read_boxes },
-            { "OVERLAPS", read_overlaps },
+            { "CAMERAS",  read_cameras },
+            { "SOUNDFX",  read_soundfx },
+            { "BOXES",    read_generic },
+            { "OVERLAPS", read_generic },
             { "GND_ZONE", read_generic },
             { "GND_ZON2", read_generic },
             { "FLY_ZONE", read_generic },
-            { "ARANGES", read_generic },
+            { "ARANGES",  read_generic },
             { "ITEMDATA", read_itemdata }
         };
 
@@ -683,6 +735,7 @@ namespace trlevel
                 (rand() % 64);
         }
         callbacks.on_textile(temp_texture);
+        _num_textiles++;
         _object_textures.push_back(tr_object_texture{});
 
         callbacks.on_progress("Generating meshes");
@@ -693,12 +746,12 @@ namespace trlevel
     void Level::load_tr1_saturn_sad(trview::Activity& activity, const LoadCallbacks& callbacks)
     {
         const auto read_anibones = [&](auto& file)
-            {
-                uint32_t bones_size = to_le(read<uint32_t>(file));
-                bones_size;
-                uint32_t bones_count = to_le(read<uint32_t>(file));
-                _meshtree = to_le(read_vector<uint32_t>(file, bones_count));
-            };
+        {
+            uint32_t bones_size = to_le(read<uint32_t>(file));
+            bones_size;
+            uint32_t bones_count = to_le(read<uint32_t>(file));
+            _meshtree = to_le(read_vector<uint32_t>(file, bones_count));
+        };
 
         const auto read_anims = [&](auto& file)
         {
@@ -762,6 +815,26 @@ namespace trlevel
             }
         };
 
+        const auto read_otextinf = [&](auto& file)
+        {
+            skip(file, 4);
+            uint32_t count = to_le(read<uint32_t>(file));
+            auto object_textures = to_le(read_vector<tr_object_texture_saturn>(file, count));
+            object_textures;
+            object_textures.clear();
+            // skip(file, count * 16);
+        };
+
+        const auto read_otextdat = [&](auto& file)
+        {
+            skip(file, 4);
+            uint32_t count = to_le(read<uint32_t>(file));
+            auto data = read_vector<uint8_t>(file, count);
+            data;
+            data.clear();
+            // skip(file, count * 16);
+        };
+
         const std::unordered_map<std::string, std::function<void(std::basic_ispanstream<uint8_t>&)>> loader_functions
         {
             { "ANIMS", read_anims },
@@ -774,8 +847,8 @@ namespace trlevel
             { "FRAMES", read_frames },
             { "MESHPTRS", read_meshptrs },
             { "MESHDATA", read_meshdata },
-            { "OTEXTINF", read_generic },
-            { "OTEXTDAT", read_generic },
+            { "OTEXTINF", read_otextinf },
+            { "OTEXTDAT", read_otextdat },
             { "ITEXTINF", read_generic },
             { "ITEXTDAT", read_generic },
         };
@@ -813,18 +886,21 @@ namespace trlevel
         activity;
         callbacks;
 
-        const auto read_generic = [&](auto& file)
+        std::vector<uint8_t> spritdat;
+        std::vector<tr_sprite_texture_saturn> sprite_textures;
+
+        const auto read_spritdat = [&](auto& file)
         {
-            uint32_t size = to_le(read<uint32_t>(file));
+            skip(file, 4);
             uint32_t count = to_le(read<uint32_t>(file));
-            skip(file, size * count);
+            spritdat = read_vector<uint8_t>(file, count);
         };
 
         const auto read_spritinf = [&](auto& file)
         {
             skip(file, 4);
             uint32_t count = to_le(read<uint32_t>(file));
-            _sprite_textures = to_le(read_vector<tr_sprite_texture>(file, count));
+            sprite_textures = to_le(read_vector<tr_sprite_texture_saturn>(file, count));
         };
 
         const auto read_objects = [&](auto& file)
@@ -836,7 +912,7 @@ namespace trlevel
 
         const std::unordered_map<std::string, std::function<void(std::basic_ispanstream<uint8_t>&)>> loader_functions
         {
-            { "SPRITDAT", read_generic },
+            { "SPRITDAT", read_spritdat },
             { "SPRITINF", read_spritinf },
             { "OBJECTS", read_objects },
         };
@@ -844,6 +920,60 @@ namespace trlevel
         std::filesystem::path path{ _filename };
         path.replace_extension("SPR");
         load_saturn_tagfile(*_files, path, loader_functions, "SPRITEND");
+
+        for (const auto sprite_texture : sprite_textures)
+        {
+            const auto data = 
+                std::ranges::subrange(spritdat.begin() + (sprite_texture.start << 3), spritdat.begin() + (sprite_texture.end << 3))
+              | std::ranges::to<std::vector>();
+            std::vector<uint32_t> sprite_texture_data;
+            sprite_texture_data.resize(256 * 256);
+
+            auto interesting = std::ranges::count_if(data, [](auto&& x) { return x != 0; });
+            interesting;
+
+            const auto palette_bytes = 
+                std::ranges::subrange(spritdat.begin() + (sprite_texture.end << 3), spritdat.begin() + (sprite_texture.end << 3) + 32)
+              | std::ranges::to<std::vector>();
+
+            std::array<uint16_t, 16> palette;
+            memcpy(&palette[0], &palette_bytes[0], sizeof(uint16_t) * 16);
+
+            uint32_t height = sprite_texture.height;
+            uint32_t width = static_cast<uint32_t>(data.size() / height);
+
+            for (uint32_t y = 0; y < height; ++y)
+            {
+                for (uint32_t x = 0; x < width; ++x)
+                {
+                    uint8_t value1 = ((data[y * width + x] & 0xF0) >> 4);
+                    uint8_t value2 = (data[y * width + x] & 0xF);
+
+                    uint16_t pe1 = value1 ? to_le(palette[value1]) : 0x00000000;
+                    uint16_t pe2 = value1 ? to_le(palette[value2]) : 0x00000000;
+
+                    sprite_texture_data[y * 256 + x * 2 + 0] = convert_saturn_palette(pe1);
+                    sprite_texture_data[y * 256 + x * 2 + 1] = convert_saturn_palette(pe2);
+                }
+            }
+
+            tr_sprite_texture new_sprite_texture
+            {
+                .Tile = static_cast<uint16_t>(_num_textiles),
+                .x = 0,
+                .y = 0,
+                .Width = static_cast<uint16_t>((width * 2 * 256) + 255),
+                .Height = static_cast<uint16_t>((height * 256) + 255),
+                .LeftSide = sprite_texture.LeftSide,
+                .TopSide = sprite_texture.TopSide,
+                .RightSide = sprite_texture.RightSide,
+                .BottomSide = sprite_texture.BottomSide
+            };
+            _sprite_textures.push_back(new_sprite_texture);
+
+            _num_textiles++;
+            callbacks.on_textile(sprite_texture_data);
+        }
     }
 
     void Level::generate_mesh_tr1_saturn(tr_mesh& mesh, std::basic_ispanstream<uint8_t>& stream)
