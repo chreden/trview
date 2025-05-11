@@ -718,8 +718,6 @@ namespace trlevel
 
         load_saturn_tagfile(level_file, loader_functions, "ROOMEND");
 
-        // TODO: Generate room textures
-        uint32_t ot_index = 0;
         for (const auto object_texture : object_textures)
         {
             const auto start = object_texture.a2 << 3;
@@ -791,7 +789,6 @@ namespace trlevel
 
             _num_textiles++;
             callbacks.on_textile(object_texture_data);
-            ++ot_index;
         }
 
         load_tr1_saturn_sad(activity, callbacks);
