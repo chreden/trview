@@ -6,6 +6,7 @@
 #include <spanstream>
 #include <filesystem>
 #include <set>
+#include <map>
 
 namespace trlevel
 {
@@ -74,7 +75,7 @@ namespace trlevel
             uint16_t  padding;
         };
 
-        struct tr_object_texture_saturn
+        struct tr_room_texture_saturn
         {
             uint16_t start;
             uint16_t a2;
@@ -84,6 +85,21 @@ namespace trlevel
             uint16_t size;
             uint8_t a7_1;
             uint8_t subdiv_height;
+            uint16_t a8;
+        };
+
+        static_assert(sizeof(tr_room_texture_saturn) == 16);
+
+        struct tr_object_texture_saturn
+        {
+            uint16_t start;
+            uint16_t cut0;
+            uint16_t cut1;
+            uint16_t cut2;
+            uint16_t cut3;
+            uint16_t size;
+            uint8_t  width;
+            uint8_t  height;
             uint16_t a8;
         };
 
@@ -222,7 +238,7 @@ namespace trlevel
         }
 
         template <>
-        tr_object_texture_saturn to_le(const tr_object_texture_saturn& value)
+        tr_room_texture_saturn to_le(const tr_room_texture_saturn& value)
         {
             return {
                 .start = to_le(value.start),
@@ -233,6 +249,22 @@ namespace trlevel
                 .size = to_le(value.size),
                 .a7_1 = to_le(value.a7_1),
                 .subdiv_height = to_le(value.subdiv_height),
+                .a8 = to_le(value.a8),
+            };
+        }
+
+        template <>
+        tr_object_texture_saturn to_le(const tr_object_texture_saturn& value)
+        {
+            return {
+                .start = to_le(value.start),
+                .cut0 = to_le(value.cut0),
+                .cut1 = to_le(value.cut1),
+                .cut2 = to_le(value.cut2),
+                .cut3 = to_le(value.cut3),
+                .size = to_le(value.size),
+                .width = to_le(value.width),
+                .height = to_le(value.height),
                 .a8 = to_le(value.a8),
             };
         }
@@ -620,7 +652,7 @@ namespace trlevel
 
     void Level::load_tr1_saturn(std::basic_ispanstream<uint8_t>& level_file, trview::Activity& activity, const LoadCallbacks& callbacks)
     {
-        std::vector<tr_object_texture_saturn> object_textures;
+        std::vector<tr_room_texture_saturn> object_textures;
         std::vector<uint8_t> all_object_texture_data;
         std::vector<uint8_t> tqtr_data;
 
@@ -629,7 +661,7 @@ namespace trlevel
             uint32_t roomtinf_size = to_le(read<uint32_t>(file));
             roomtinf_size;
             uint32_t roomtinf_count = to_le(read<uint32_t>(file));
-            object_textures = to_le(read_vector<tr_object_texture_saturn>(file, roomtinf_count));
+            object_textures = to_le(read_vector<tr_room_texture_saturn>(file, roomtinf_count));
         };
 
         const auto read_roomtqtr = [&](auto& file)
@@ -717,6 +749,20 @@ namespace trlevel
         };
 
         load_saturn_tagfile(level_file, loader_functions, "ROOMEND");
+        load_tr1_saturn_sad(activity, callbacks);
+
+        for (auto& room : _rooms)
+        {
+            for (auto& face : room.data.rectangles)
+            {
+                face.texture += static_cast<uint16_t>(_object_textures.size());
+            }
+
+            for (auto& face : room.data.triangles)
+            {
+                face.texture += static_cast<uint16_t>(_object_textures.size());
+            }
+        }
 
         for (const auto object_texture : object_textures)
         {
@@ -791,13 +837,27 @@ namespace trlevel
             callbacks.on_textile(object_texture_data);
         }
 
-        load_tr1_saturn_sad(activity, callbacks);
         load_tr1_saturn_spr(activity, callbacks);
         load_tr1_saturn_snd(activity, callbacks);
 
         callbacks.on_progress("Generating meshes");
         generate_meshes(_mesh_data);
         callbacks.on_progress("Loading complete");
+
+        std::map<int32_t, uint32_t> ot_refs;
+        for (const auto& [_, mesh] : _meshes)
+        {
+            for (const auto& t : mesh.textured_triangles)
+            {
+                ++ot_refs[t.texture];
+            }
+
+            for (const auto& r : mesh.textured_rectangles)
+            {
+                ++ot_refs[r.texture];
+            }
+        }
+
     }
 
     void Level::load_tr1_saturn_sad(trview::Activity& activity, const LoadCallbacks& callbacks)
@@ -872,24 +932,21 @@ namespace trlevel
             }
         };
 
+        std::vector<tr_object_texture_saturn> object_textures;
+        std::vector<uint8_t> all_object_texture_data;
+
         const auto read_otextinf = [&](auto& file)
         {
             skip(file, 4);
             uint32_t count = to_le(read<uint32_t>(file));
-            auto object_textures = to_le(read_vector<tr_object_texture_saturn>(file, count));
-            object_textures;
-            object_textures.clear();
-            // skip(file, count * 16);
+            object_textures = to_le(read_vector<tr_object_texture_saturn>(file, count));
         };
 
         const auto read_otextdat = [&](auto& file)
         {
             skip(file, 4);
             uint32_t count = to_le(read<uint32_t>(file));
-            auto data = read_vector<uint8_t>(file, count);
-            data;
-            data.clear();
-            // skip(file, count * 16);
+            all_object_texture_data = read_vector<uint8_t>(file, count);
         };
 
         const std::unordered_map<std::string, std::function<void(std::basic_ispanstream<uint8_t>&)>> loader_functions
@@ -913,6 +970,107 @@ namespace trlevel
         std::filesystem::path path{ _filename };
         path.replace_extension("SAD");
         load_saturn_tagfile(*_files, path, loader_functions, "OBJEND");
+#if 0
+        // Generate object textures:
+        for (const auto& object_texture : object_textures)
+        {
+            uint32_t start = (object_texture.start) << 3;
+            uint32_t end = start + (object_texture.size << 3);
+
+            const auto data =
+                std::ranges::subrange(all_object_texture_data.begin() + start, all_object_texture_data.begin() + end)
+                | std::ranges::to<std::vector>();
+            
+            const auto palette_bytes =
+                std::ranges::subrange(all_object_texture_data.begin() + start, all_object_texture_data.begin() + end + 32)
+                | std::ranges::to<std::vector>();
+
+            std::array<uint16_t, 16> palette;
+            memcpy(&palette[0], &palette_bytes[0], sizeof(uint16_t) * 16);
+
+            if (!data.empty())
+            {
+                std::ofstream outfile;
+                outfile.open("c:\\dev\\trview-temp\\ot.bin", std::ios::binary | std::ios::out);
+                outfile.write(reinterpret_cast<const char*>(&data[0]), data.size());
+            }
+
+            if (object_texture.size)
+            {
+                std::vector<uint32_t> object_texture_data;
+                object_texture_data.resize(256 * 256);
+
+                uint32_t width = object_texture.width << 2;
+                uint32_t height = object_texture.height;
+
+                for (uint32_t y = 0; y < height; ++y)
+                {
+                    for (uint32_t x = 0; x < width; ++x)
+                    {
+                        uint8_t value1 = ((data[y * width + x] & 0xF0) >> 4);
+                        uint8_t value2 = (data[y * width + x] & 0xF);
+
+                        // uint16_t pe1 = value1 ? to_le(palette[value1]) : 0x00000000;
+                        // uint16_t pe2 = value2 ? to_le(palette[value2]) : 0x00000000;
+
+                        uint16_t pe1 = to_le(palette[value1]);
+                        uint16_t pe2 = to_le(palette[value2]);
+
+                        object_texture_data[y * 256 + x * 2 + 0] = convert_saturn_palette(pe1);
+                        object_texture_data[y * 256 + x * 2 + 1] = convert_saturn_palette(pe2);
+                    }
+                }
+
+                tr_object_texture new_object_texture
+                {
+                    .Attribute = 0,// static_cast<uint16_t>(std::ranges::any_of(object_texture_data, [](auto&& p) { return p == 0; }) ? 1 : 0),
+                    .TileAndFlag = static_cast<uint16_t>(_num_textiles),
+                    .Vertices =
+                    {
+                        { 0, 0, 0, 0 },
+                        { 0, static_cast<uint8_t>(object_texture.width << 3), 0, 0 },
+                        { 0, 0, 0, static_cast<uint8_t>(object_texture.height) },
+                        { 0, static_cast<uint8_t>(object_texture.width << 3), 0, static_cast<uint8_t>(object_texture.height) }
+                    }
+                };
+                _object_textures.push_back(new_object_texture);
+
+                _num_textiles++;
+                callbacks.on_textile(object_texture_data);
+            }
+            else
+            {
+                tr_object_texture new_object_texture
+                {
+                    .Attribute = 0,
+                    .TileAndFlag = static_cast<uint16_t>(_num_textiles),
+                    .Vertices =
+                    {
+                        { 0, 0, 0, 0 },
+                        { 0, static_cast<uint8_t>(object_texture.width << 3), 0, 0 },
+                        { 0, 0, 0, static_cast<uint8_t>(object_texture.height) },
+                        { 0, static_cast<uint8_t>(object_texture.width << 3), 0, static_cast<uint8_t>(object_texture.height) }
+                    }
+                };
+                _object_textures.push_back(new_object_texture);
+            }
+        }
+#else
+        std::map<uint32_t, std::string> cuts;
+        uint32_t index = 0;
+        for (const auto& object_texture : object_textures)
+        {
+            cuts[index] = 
+                std::format("{},{},{},{},{}",
+                    object_texture.start << 3,
+                    object_texture.cut0 << 3,
+                    object_texture.cut1 << 3,
+                    object_texture.cut2 << 3,
+                    object_texture.cut3 << 3);
+            ++index;
+        }
+        
+#endif
     }
 
     void Level::load_tr1_saturn_snd(trview::Activity& activity, const LoadCallbacks& callbacks)
