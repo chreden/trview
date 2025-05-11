@@ -1012,7 +1012,7 @@ namespace trlevel
                     uint8_t value2 = (data[y * width + x] & 0xF);
 
                     uint16_t pe1 = value1 ? to_le(palette[value1]) : 0x00000000;
-                    uint16_t pe2 = value1 ? to_le(palette[value2]) : 0x00000000;
+                    uint16_t pe2 = value2 ? to_le(palette[value2]) : 0x00000000;
 
                     sprite_texture_data[y * 256 + x * 2 + 0] = convert_saturn_palette(pe1);
                     sprite_texture_data[y * 256 + x * 2 + 1] = convert_saturn_palette(pe2);
