@@ -988,35 +988,60 @@ namespace trlevel
         // Generate object textures:
         for (const auto& object_texture : object_textures)
         {
-            uint32_t start = (object_texture.start) << 3;
-            uint32_t end = start + (object_texture.size << 3);
-
-            const auto data =
-                std::ranges::subrange(all_object_texture_data.begin() + start, all_object_texture_data.begin() + end)
-                | std::ranges::to<std::vector>();
-            
-            const auto palette_bytes =
-                std::ranges::subrange(all_object_texture_data.begin() + end, all_object_texture_data.begin() + end + 32)
-                | std::ranges::to<std::vector>();
-
-            std::array<uint16_t, 16> palette;
-            memcpy(&palette[0], &palette_bytes[0], sizeof(uint16_t) * 16);
-
-            if (!data.empty())
-            {
-                std::ofstream outfile;
-                outfile.open("c:\\dev\\trview-temp\\ot.bin", std::ios::binary | std::ios::out);
-                outfile.write(reinterpret_cast<const char*>(&data[0]), data.size());
-            }
-
             std::vector<uint32_t> object_texture_data;
             object_texture_data.resize(256 * 256);
 
-            if (object_texture.size)
+            std::vector<uint8_t> data;
+            std::array<uint16_t, 16> palette;
+            std::optional<int> cut;
+
+            const auto read_cut_data = [&](auto&& offset)
             {
+                const uint32_t start = offset << 3;
+                const uint32_t end = start + (object_texture.size << 3);
+                data = std::ranges::subrange(all_object_texture_data.begin() + start, all_object_texture_data.begin() + end)
+                    | std::ranges::to<std::vector>();
+                const auto palette_bytes =
+                    std::ranges::subrange(all_object_texture_data.begin() + end, all_object_texture_data.begin() + end + 32)
+                    | std::ranges::to<std::vector>();
+                memcpy(&palette[0], &palette_bytes[0], sizeof(uint16_t) * 16);
+            };
+
+            if (object_texture.start != 1)
+            {
+                read_cut_data(object_texture.start);
+            }
+            else if (object_texture.cut0 != 1)
+            {
+                read_cut_data(object_texture.cut0);
+                cut = 0;
+            }
+            else if (object_texture.cut1 != 1)
+            {
+                read_cut_data(object_texture.cut1);
+                cut = 1;
+            }
+            else if (object_texture.cut2 != 1)
+            {
+                read_cut_data(object_texture.cut2);
+                cut = 2;
+            }
+            else if (object_texture.cut3 != 1)
+            {
+                read_cut_data(object_texture.cut3);
+                cut = 3;
+            }
+
+            if (!data.empty())
+            {
+                {
+                    std::ofstream outfile;
+                    outfile.open("c:\\dev\\trview-temp\\ot.bin", std::ios::binary | std::ios::out);
+                    outfile.write(reinterpret_cast<const char*>(&data[0]), data.size());
+                }
+
                 uint32_t width = object_texture.width << 2;
                 uint32_t height = object_texture.height;
-
                 bool any_transparent = false;
 
                 for (uint32_t y = 0; y < height; ++y)
@@ -1024,16 +1049,16 @@ namespace trlevel
                     for (uint32_t x = 0; x < width; ++x)
                     {
                         uint8_t value1 = ((data[y * width + x] & 0xF0) >> 4);
-                        uint8_t value2 = (data[y * width + x] & 0xF);
-
-                        // uint16_t pe1 = value1 ? to_le(palette[value1]) : 0x00000000;
-                        // uint16_t pe2 = value2 ? to_le(palette[value2]) : 0x00000000;
+                        uint8_t value2 = (data[y * width + x] & 0x0F);
 
                         uint16_t pe1 = to_le(palette[value1]);
                         uint16_t pe2 = to_le(palette[value2]);
 
-                        object_texture_data[y * 256 + x * 2 + 0] = convert_saturn_palette(pe1);
-                        object_texture_data[y * 256 + x * 2 + 1] = convert_saturn_palette(pe2);
+                        uint32_t c1 = convert_saturn_palette(pe1);
+                        uint32_t c2 = convert_saturn_palette(pe2);
+
+                        object_texture_data[y * 256 + x * 2 + 0] = cut.has_value() ? ((value1 == 0xF) ? 0x00000000 : c1) : c1;
+                        object_texture_data[y * 256 + x * 2 + 1] = cut.has_value() ? ((value2 == 0xF) ? 0x00000000 : c2) : c2;
                         any_transparent |=
                             ((object_texture_data[y * 256 + x * 2 + 0] & 0xff000000) == 0) |
                             ((object_texture_data[y * 256 + x * 2 + 1] & 0xff000000) == 0);
@@ -1052,6 +1077,37 @@ namespace trlevel
                         { 0, static_cast<uint8_t>(object_texture.width << 3), 0, static_cast<uint8_t>(object_texture.height) }
                     }
                 };
+
+                if (cut.has_value())
+                {
+                    switch (cut.value())
+                    {
+                        case 0:
+                        {
+                            // std::swap(new_object_texture.Vertices[0], new_object_texture.Vertices[3]);
+                            break;
+                        }
+                        case 1:
+                        {
+                            // Eyebrows
+                            std::swap(new_object_texture.Vertices[0], new_object_texture.Vertices[2]);
+                            std::swap(new_object_texture.Vertices[1], new_object_texture.Vertices[3]);
+                            break;
+                        }
+                        case 2:
+                        {
+                            // std::swap(new_object_texture.Vertices[0], new_object_texture.Vertices[3]);
+                            // std::swap(new_object_texture.Vertices[1], new_object_texture.Vertices[2]);
+                            break;
+                        }
+                        case 3:
+                        {
+                            // std::swap(new_object_texture.Vertices[0], new_object_texture.Vertices[3]);
+                            break;
+                        }
+                    }
+                }
+
                 _object_textures.push_back(new_object_texture);
 
                 _num_textiles++;
