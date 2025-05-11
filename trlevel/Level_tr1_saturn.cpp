@@ -38,7 +38,8 @@ namespace trlevel
             g = static_cast<uint16_t>((g / 31.0f) * 255.0f);
             b = static_cast<uint16_t>((b / 31.0f) * 255.0f);
 
-            if (r == 222 && b == 238 && g == 0)
+            if ((r == 222 && b == 238 && g == 0) ||
+                (r == 0 && b == 0 && g == 0))
             {
                 return 0x00000000;
             }
