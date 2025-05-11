@@ -37,6 +37,11 @@ namespace trlevel
             g = static_cast<uint16_t>((g / 31.0f) * 255.0f);
             b = static_cast<uint16_t>((b / 31.0f) * 255.0f);
 
+            if (r == 222 && b == 238 && g == 0)
+            {
+                return 0x00000000;
+            }
+
             uint16_t a = t & 0x8000 ? 0xff : 0x00;
             return a << 24 | b << 16 | g << 8 | r;
         }
@@ -77,7 +82,8 @@ namespace trlevel
             uint16_t a4;
             uint16_t a5;
             uint16_t size;
-            uint16_t a7;
+            uint8_t a7_1;
+            uint8_t subdiv_height;
             uint16_t a8;
         };
 
@@ -225,7 +231,8 @@ namespace trlevel
                 .a4 = to_le(value.a4),
                 .a5 = to_le(value.a5),
                 .size = to_le(value.size),
-                .a7 = to_le(value.a7),
+                .a7_1 = to_le(value.a7_1),
+                .subdiv_height = to_le(value.subdiv_height),
                 .a8 = to_le(value.a8),
             };
         }
@@ -712,6 +719,7 @@ namespace trlevel
         load_saturn_tagfile(level_file, loader_functions, "ROOMEND");
 
         // TODO: Generate room textures
+        uint32_t ot_index = 0;
         for (const auto object_texture : object_textures)
         {
             const auto start = object_texture.a2 << 3;
@@ -732,18 +740,21 @@ namespace trlevel
             std::vector<uint8_t> object_texture_8;
             object_texture_8.resize(256 * 256);
 
-            const uint32_t height = object_texture.size / 2;
-            const uint32_t width = height / 2;
-            for (uint32_t y = 0; y < height; ++y)
+            const uint32_t subdiv_height = object_texture.subdiv_height;
+            const uint32_t width_pixels = static_cast<uint32_t>(data.size()) / subdiv_height;
+            const uint32_t subdiv_width_bytes = width_pixels / 4;
+            const uint32_t height_pixels = subdiv_height * 2;
+
+            for (uint32_t y = 0; y < subdiv_height; ++y)
             {
-                // Top left
-                memcpy(&object_texture_8[y * 256], &data[y * width], width);
+                // Top left.
+                memcpy(&object_texture_8[y * 256], &data[y * subdiv_width_bytes], subdiv_width_bytes);
                 // Top right
-                memcpy(&object_texture_8[y * 256 + width], &data[(y + height) * width], width);
+                memcpy(&object_texture_8[y * 256 + subdiv_width_bytes], &data[(y + subdiv_height) * subdiv_width_bytes], subdiv_width_bytes);
                 // Bottom left
-                memcpy(&object_texture_8[(y + height) * 256], &data[(y + height * 3) * width], width);
+                memcpy(&object_texture_8[(y + subdiv_height) * 256], &data[(y + subdiv_height * 3) * subdiv_width_bytes], subdiv_width_bytes);
                 // Bottom right
-                memcpy(&object_texture_8[(y + height) * 256 + width], &data[(y + height * 2) * width], width);
+                memcpy(&object_texture_8[(y + subdiv_height) * 256 + subdiv_width_bytes], &data[(y + subdiv_height * 2) * subdiv_width_bytes], subdiv_width_bytes);
             }
 
             std::vector<uint32_t> object_texture_data;
@@ -771,15 +782,16 @@ namespace trlevel
                 .Vertices =
                 {
                     { 0, 0, 0, 0 },
-                    { 0, static_cast<uint8_t>(width * 4), 0, 0 },
-                    { 0, 0, 0, static_cast<uint8_t>(height * 2) },
-                    { 0, static_cast<uint8_t>(width * 4), 0, static_cast<uint8_t>(height * 2) }
+                    { 0, static_cast<uint8_t>(width_pixels), 0, 0 },
+                    { 0, 0, 0, static_cast<uint8_t>(height_pixels) },
+                    { 0, static_cast<uint8_t>(width_pixels), 0, static_cast<uint8_t>(height_pixels) }
                 }
             };
             _object_textures.push_back(new_object_texture);
 
             _num_textiles++;
             callbacks.on_textile(object_texture_data);
+            ++ot_index;
         }
 
         load_tr1_saturn_sad(activity, callbacks);
