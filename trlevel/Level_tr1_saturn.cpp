@@ -47,6 +47,24 @@ namespace trlevel
             return a << 24 | b << 16 | g << 8 | r;
         }
 
+        uint32_t convert_object_saturn_palette(uint16_t t)
+        {
+            uint16_t r = (t & 0x7c00) >> 10;
+            uint16_t g = (t & 0x03e0) >> 5;
+            uint16_t b = t & 0x001f;
+
+            r = static_cast<uint16_t>((r / 31.0f) * 255.0f);
+            g = static_cast<uint16_t>((g / 31.0f) * 255.0f);
+            b = static_cast<uint16_t>((b / 31.0f) * 255.0f);
+
+            if (r == 222 && b == 238 && g == 0)
+            {
+                return 0x00000000;
+            }
+
+            return 0xff000000 | b << 16 | g << 8 | r;
+        }
+
         struct Tag
         {
             char     name[8];
@@ -844,20 +862,15 @@ namespace trlevel
         generate_meshes(_mesh_data);
         callbacks.on_progress("Loading complete");
 
-        std::map<int32_t, uint32_t> ot_refs;
-        for (const auto& [_, mesh] : _meshes)
+        std::map<int16_t, uint32_t> ot_refs;
+        for (auto& [_, mesh] : _meshes)
         {
-            for (const auto& t : mesh.textured_triangles)
+            for (auto& r : mesh.textured_rectangles)
             {
-                ++ot_refs[t.texture];
-            }
-
-            for (const auto& r : mesh.textured_rectangles)
-            {
-                ++ot_refs[r.texture];
+                int16_t tex = static_cast<int16_t>(r.texture);
+                r.texture = tex >> 4;
             }
         }
-
     }
 
     void Level::load_tr1_saturn_sad(trview::Activity& activity, const LoadCallbacks& callbacks)
@@ -889,7 +902,7 @@ namespace trlevel
         {
             skip(file, 4);
             uint32_t count = to_le(read<uint32_t>(file));
-            _mesh_data = to_le(read_vector<uint16_t>(file, count));
+            _mesh_data = read_vector<uint16_t>(file, count);
         };
 
         const auto read_meshptrs = [&](auto& file)
@@ -970,7 +983,7 @@ namespace trlevel
         std::filesystem::path path{ _filename };
         path.replace_extension("SAD");
         load_saturn_tagfile(*_files, path, loader_functions, "OBJEND");
-#if 0
+
         // Generate object textures:
         for (const auto& object_texture : object_textures)
         {
@@ -982,7 +995,7 @@ namespace trlevel
                 | std::ranges::to<std::vector>();
             
             const auto palette_bytes =
-                std::ranges::subrange(all_object_texture_data.begin() + start, all_object_texture_data.begin() + end + 32)
+                std::ranges::subrange(all_object_texture_data.begin() + end, all_object_texture_data.begin() + end + 32)
                 | std::ranges::to<std::vector>();
 
             std::array<uint16_t, 16> palette;
@@ -995,13 +1008,15 @@ namespace trlevel
                 outfile.write(reinterpret_cast<const char*>(&data[0]), data.size());
             }
 
+            std::vector<uint32_t> object_texture_data;
+            object_texture_data.resize(256 * 256);
+
             if (object_texture.size)
             {
-                std::vector<uint32_t> object_texture_data;
-                object_texture_data.resize(256 * 256);
-
                 uint32_t width = object_texture.width << 2;
                 uint32_t height = object_texture.height;
+
+                bool any_transparent = false;
 
                 for (uint32_t y = 0; y < height; ++y)
                 {
@@ -1018,12 +1033,15 @@ namespace trlevel
 
                         object_texture_data[y * 256 + x * 2 + 0] = convert_saturn_palette(pe1);
                         object_texture_data[y * 256 + x * 2 + 1] = convert_saturn_palette(pe2);
+                        any_transparent |=
+                            ((object_texture_data[y * 256 + x * 2 + 0] & 0xff000000) == 0) |
+                            ((object_texture_data[y * 256 + x * 2 + 1] & 0xff000000) == 0);
                     }
                 }
 
                 tr_object_texture new_object_texture
                 {
-                    .Attribute = 0,// static_cast<uint16_t>(std::ranges::any_of(object_texture_data, [](auto&& p) { return p == 0; }) ? 1 : 0),
+                    .Attribute = any_transparent ? static_cast<uint16_t>(1) : static_cast<uint16_t>(0),
                     .TileAndFlag = static_cast<uint16_t>(_num_textiles),
                     .Vertices =
                     {
@@ -1052,10 +1070,11 @@ namespace trlevel
                         { 0, static_cast<uint8_t>(object_texture.width << 3), 0, static_cast<uint8_t>(object_texture.height) }
                     }
                 };
+                _num_textiles++;
                 _object_textures.push_back(new_object_texture);
+                callbacks.on_textile(object_texture_data);
             }
         }
-#else
         std::map<uint32_t, std::string> cuts;
         uint32_t index = 0;
         for (const auto& object_texture : object_textures)
@@ -1069,8 +1088,6 @@ namespace trlevel
                     object_texture.cut3 << 3);
             ++index;
         }
-        
-#endif
     }
 
     void Level::load_tr1_saturn_snd(trview::Activity& activity, const LoadCallbacks& callbacks)
@@ -1207,41 +1224,41 @@ namespace trlevel
 
     void Level::generate_mesh_tr1_saturn(tr_mesh& mesh, std::basic_ispanstream<uint8_t>& stream)
     {
-        mesh.centre = read<tr_vertex>(stream);
-        mesh.coll_radius = read<uint16_t>(stream);
+        mesh.centre = to_le(read<tr_vertex>(stream));
+        mesh.coll_radius = to_le(read<uint16_t>(stream));
 
-        uint16_t unknown = read<uint16_t>(stream);
+        uint16_t unknown = to_le(read<uint16_t>(stream));
         unknown;
 
-        int16_t vertices_count = read<int16_t>(stream);
+        int16_t vertices_count = to_le(read<int16_t>(stream));
         int16_t normals_count = vertices_count;
         normals_count;
         vertices_count = static_cast<int16_t>(std::abs(vertices_count));
-        mesh.vertices = read_vector<tr_vertex>(stream, vertices_count);
+        mesh.vertices = to_le(read_vector<tr_vertex>(stream, vertices_count));
 
-        int16_t normals = read<int16_t>(stream);
+        int16_t normals = to_le(read<int16_t>(stream));
         if (normals > 0)
         {
-            mesh.normals = read_vector<tr_vertex>(stream, normals);
+            mesh.normals = to_le(read_vector<tr_vertex>(stream, normals));
         }
         else
         {
-            mesh.lights = read_vector<int16_t>(stream, abs(normals));
+            mesh.lights = to_le(read_vector<int16_t>(stream, abs(normals)));
         }
 
         std::vector<tr_face3> triangles;
         std::vector<tr_face4> rectangles;
 
-        const uint16_t num_primitives = read<uint16_t>(stream);
+        const uint16_t num_primitives = to_le(read<uint16_t>(stream));
         uint16_t total_primitives = 0;
 
         auto read_rects = [&]() -> std::vector<tr_face4>
         {
             if (total_primitives < num_primitives)
             {
-                uint16_t trects_count = read<uint16_t>(stream);
+                uint16_t trects_count = to_le(read<uint16_t>(stream));
                 total_primitives += trects_count;
-                auto trects = read_vector<tr_face4>(stream, trects_count);
+                auto trects = to_le(read_vector<tr_face4>(stream, trects_count));
                 for (auto& r : trects)
                 {
                     r.vertices[0] >>= 5;
@@ -1258,9 +1275,9 @@ namespace trlevel
             {
                 if (total_primitives < num_primitives)
                 {
-                    uint16_t ttris_count = read<uint16_t>(stream);
+                    uint16_t ttris_count = to_le(read<uint16_t>(stream));
                     total_primitives += ttris_count;
-                    auto ttris = read_vector<tr_face3>(stream, ttris_count);
+                    auto ttris = to_le(read_vector<tr_face3>(stream, ttris_count));
                     for (auto& r : ttris)
                     {
                         r.vertices[0] >>= 5;
@@ -1272,10 +1289,10 @@ namespace trlevel
                 return {};
             };
 
-        const uint16_t num_primitive_types = read<uint16_t>(stream);
+        const uint16_t num_primitive_types = to_le(read<uint16_t>(stream));
         for (uint16_t p = 0; p < num_primitive_types; ++p)
         {
-            const uint16_t prim_type = read<uint16_t>(stream);
+            const uint16_t prim_type = to_le(read<uint16_t>(stream));
             switch (prim_type)
             {
                 case 4: // Coloured Tris
