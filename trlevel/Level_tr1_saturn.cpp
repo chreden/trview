@@ -777,7 +777,7 @@ namespace trlevel
 
             tr_object_texture new_object_texture
             {
-                .Attribute = 0,
+                .Attribute = static_cast<uint16_t>(std::ranges::any_of(object_texture_data, [](auto&& p) { return p == 0; }) ? 1 : 0),
                 .TileAndFlag = static_cast<uint16_t>(_num_textiles),
                 .Vertices =
                 {
