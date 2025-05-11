@@ -304,12 +304,15 @@ namespace trview
                 uvs[i] = texture_storage.uv(texture, i);
             }
 
-            if (is_tr1_pc_may_1996(texture_storage.platform_and_version()) && static_cast<int16_t>(rect.texture) < 0)
+            if ((is_tr1_pc_may_1996(texture_storage.platform_and_version()) ||
+                texture_storage.platform_and_version().platform == Platform::Saturn) && static_cast<int16_t>(rect.texture) < 0)
             {
                 adjust_rect_uvs_tr1_1996_pc(uvs, rect.texture);
             }
 
-            if (texture_storage.platform_and_version().platform == Platform::PSX || is_tr1_pc_may_1996(texture_storage.platform_and_version()))
+            if (texture_storage.platform_and_version().platform == Platform::PSX || 
+                is_tr1_pc_may_1996(texture_storage.platform_and_version()) ||
+                texture_storage.platform_and_version().platform == Platform::Saturn)
             {
                 std::swap(uvs[2], uvs[3]);
             }

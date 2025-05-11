@@ -71,7 +71,7 @@ namespace trlevel
 
         struct tr_object_texture_saturn
         {
-            uint16_t a1;
+            uint16_t start;
             uint16_t a2;
             uint16_t a3;
             uint16_t a4;
@@ -219,14 +219,14 @@ namespace trlevel
         tr_object_texture_saturn to_le(const tr_object_texture_saturn& value)
         {
             return {
-                .a1 = to_le(value.a1),
+                .start = to_le(value.start),
                 .a2 = to_le(value.a2),
                 .a3 = to_le(value.a3),
                 .a4 = to_le(value.a4),
                 .a5 = to_le(value.a5),
                 .size = to_le(value.size),
                 .a7 = to_le(value.a7),
-                .a8 = to_le(value.a8)
+                .a8 = to_le(value.a8),
             };
         }
 
@@ -458,7 +458,7 @@ namespace trlevel
                                 t.vertices[0] >>= 4;
                                 t.vertices[1] >>= 4;
                                 t.vertices[2] >>= 4;
-                                t.texture = 0;
+                                t.texture >>= 4;
                             }
                             room.data.triangles.append_range(new_triangles);
                             log_file(activity, file, std::format("Read {} triangles", triangle_count));
@@ -476,7 +476,7 @@ namespace trlevel
                                 r.vertices[1] >>= 4;
                                 r.vertices[2] >>= 4;
                                 r.vertices[3] >>= 4;
-                                r.texture = 0;
+                                r.texture >>= 4;
                             }
                             room.data.rectangles.append_range(new_rectangles);
                             log_file(activity, file, std::format("Read {} textured rectangles", rectangle_count));
@@ -613,40 +613,30 @@ namespace trlevel
 
     void Level::load_tr1_saturn(std::basic_ispanstream<uint8_t>& level_file, trview::Activity& activity, const LoadCallbacks& callbacks)
     {
+        std::vector<tr_object_texture_saturn> object_textures;
+        std::vector<uint8_t> all_object_texture_data;
+        std::vector<uint8_t> tqtr_data;
+
         const auto read_roomtinf = [&](auto& file)
         {
             uint32_t roomtinf_size = to_le(read<uint32_t>(file));
             roomtinf_size;
             uint32_t roomtinf_count = to_le(read<uint32_t>(file));
-            auto object_textures = to_le(read_vector<tr_object_texture_saturn>(file, roomtinf_count));
-            _object_textures = object_textures 
-            |
-                std::views::transform([](auto&& t) -> tr_object_texture
-                    {
-                        t;
-                        return
-                        {
-                            .Attribute = 0,
-                            .TileAndFlag = 0
-                        };
-                    }) | std::ranges::to<std::vector>();
+            object_textures = to_le(read_vector<tr_object_texture_saturn>(file, roomtinf_count));
         };
 
         const auto read_roomtqtr = [&](auto& file)
         {
-            uint32_t roomtqtr_size = to_le(read<uint32_t>(file));
-            uint32_t roomtqtr_count = to_le(read<uint32_t>(file));
-            skip(file, roomtqtr_size * roomtqtr_count);
+            skip(file, 4);
+            uint32_t count = to_le(read<uint32_t>(file));
+            tqtr_data = read_vector<uint8_t>(file, count);
         };
 
         const auto read_roomtsub = [&](auto& file)
         {
-            // uint32_t roomtsub_size = to_le(read<uint32_t>(file));
             skip(file, 4);
             uint32_t roomtsub_count = to_le(read<uint32_t>(file));
-            auto tsubs = to_le(read_vector<uint8_t>(file, roomtsub_count));
-            tsubs.clear();
-            tsubs;
+            all_object_texture_data = read_vector<uint8_t>(file, roomtsub_count);
         };
 
         const auto read_roomdata_forward = [&](auto& file)
@@ -720,23 +710,81 @@ namespace trlevel
         };
 
         load_saturn_tagfile(level_file, loader_functions, "ROOMEND");
+
+        // TODO: Generate room textures
+        for (const auto object_texture : object_textures)
+        {
+            const auto start = object_texture.a2 << 3;
+            const auto size = ((object_texture.a5 + object_texture.size) << 3) - start;
+            const auto end = start + size;
+
+            const auto data =
+                std::ranges::subrange(all_object_texture_data.begin() + start, all_object_texture_data.begin() + end)
+                | std::ranges::to<std::vector>();
+
+            const auto palette_bytes =
+                std::ranges::subrange(tqtr_data.begin() + (object_texture.start * 8 + object_texture.size * 8), tqtr_data.begin() + (object_texture.start * 8 + object_texture.size * 8) + 32)
+                | std::ranges::to<std::vector>();
+
+            std::array<uint16_t, 16> palette;
+            memcpy(&palette[0], &palette_bytes[0], sizeof(uint16_t) * 16);
+
+            std::vector<uint8_t> object_texture_8;
+            object_texture_8.resize(256 * 256);
+
+            const uint32_t height = object_texture.size / 2;
+            const uint32_t width = height / 2;
+            for (uint32_t y = 0; y < height; ++y)
+            {
+                // Top left
+                memcpy(&object_texture_8[y * 256], &data[y * width], width);
+                // Top right
+                memcpy(&object_texture_8[y * 256 + width], &data[(y + height) * width], width);
+                // Bottom left
+                memcpy(&object_texture_8[(y + height) * 256], &data[(y + height * 3) * width], width);
+                // Bottom right
+                memcpy(&object_texture_8[(y + height) * 256 + width], &data[(y + height * 2) * width], width);
+            }
+
+            std::vector<uint32_t> object_texture_data;
+            object_texture_data.resize(256 * 256);
+
+            for (uint32_t y = 0; y < 256; ++y)
+            {
+                for (uint32_t x = 0; x < 128; ++x)
+                {
+                    uint8_t value1 = ((object_texture_8[y * 256 + x] & 0xF0) >> 4);
+                    uint8_t value2 = (object_texture_8[y * 256 + x] & 0xF);
+
+                    uint16_t pe1 = to_le(palette[value1]);
+                    uint16_t pe2 = to_le(palette[value2]);
+
+                    object_texture_data[y * 256 + x * 2]     = convert_saturn_palette(pe1);
+                    object_texture_data[y * 256 + x * 2 + 1] = convert_saturn_palette(pe2);
+                }
+            }
+
+            tr_object_texture new_object_texture
+            {
+                .Attribute = 0,
+                .TileAndFlag = static_cast<uint16_t>(_num_textiles),
+                .Vertices =
+                {
+                    { 0, 0, 0, 0 },
+                    { 0, static_cast<uint8_t>(width * 4), 0, 0 },
+                    { 0, 0, 0, static_cast<uint8_t>(height * 2) },
+                    { 0, static_cast<uint8_t>(width * 4), 0, static_cast<uint8_t>(height * 2) }
+                }
+            };
+            _object_textures.push_back(new_object_texture);
+
+            _num_textiles++;
+            callbacks.on_textile(object_texture_data);
+        }
+
         load_tr1_saturn_sad(activity, callbacks);
         load_tr1_saturn_spr(activity, callbacks);
         load_tr1_saturn_snd(activity, callbacks);
-
-        std::vector<uint32_t> temp_texture;
-        temp_texture.resize(256 * 256);
-        for (int i = 0; i < 65536; ++i)
-        {
-            temp_texture[i] =
-                (rand() % 64) << 24 |
-                (rand() % 64) << 16 |
-                (rand() % 64) << 8 |
-                (rand() % 64);
-        }
-        callbacks.on_textile(temp_texture);
-        _num_textiles++;
-        _object_textures.push_back(tr_object_texture{});
 
         callbacks.on_progress("Generating meshes");
         generate_meshes(_mesh_data);
@@ -945,9 +993,6 @@ namespace trlevel
               | std::ranges::to<std::vector>();
             std::vector<uint32_t> sprite_texture_data;
             sprite_texture_data.resize(256 * 256);
-
-            auto interesting = std::ranges::count_if(data, [](auto&& x) { return x != 0; });
-            interesting;
 
             const auto palette_bytes = 
                 std::ranges::subrange(spritdat.begin() + (sprite_texture.end << 3), spritdat.begin() + (sprite_texture.end << 3) + 32)
