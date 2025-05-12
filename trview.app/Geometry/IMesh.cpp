@@ -125,6 +125,15 @@ namespace trview
             {
             case 0:
             case 1:
+            {
+                const Vector2 v0 = uvs[2];
+                const Vector2 v1 = uvs[0];
+                const Vector2 v2 = uvs[3];
+                uvs[0] = v0;
+                uvs[1] = v1;
+                uvs[2] = v2;
+                break;
+            }
             case 2:
                 break;
             case 3:
@@ -138,6 +147,15 @@ namespace trview
                 break;
             }
             case 4:
+            {
+                const Vector2 v0 = uvs[2];
+                const Vector2 v1 = uvs[3];
+                const Vector2 v2 = uvs[0];
+                uvs[0] = v0;
+                uvs[1] = v1;
+                uvs[2] = v2;
+                break;
+            }
             case 5:
             case 6:
             {
