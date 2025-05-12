@@ -892,11 +892,12 @@ namespace trlevel
         {
             for (auto& r : mesh.textured_rectangles)
             {
-                const int16_t tex = static_cast<int16_t>(r.texture) >> 4;
+                const int16_t signed_tex = static_cast<int16_t>(r.texture);
+                const int16_t tex = (signed_tex & 0x7fff) >> 4;
                 const auto& mapping = object_texture_mapping.find(tex);
                 if (mapping != object_texture_mapping.end())
                 {
-                    r.texture = mapping->second[0].value();
+                    r.texture = (r.texture & 0x8000) | mapping->second[0].value();
                 }
             }
 
@@ -910,7 +911,6 @@ namespace trlevel
                 {
                     int16_t new_tex = mapping->second[texture_operation + 1].value_or(mapping->second[0].value());
                     t.texture = (t.texture & 0xE000) | new_tex;
-                    // t.texture = new_tex;
                 }
             }
         }
@@ -1403,11 +1403,18 @@ namespace trlevel
                     break;
                 }
                 case 9:
-                case 49:
                 case 17:
+                case 49:
                 case 57:
                 {
                     auto rects = read_rects();
+                    if (prim_type == 49 || prim_type == 57)
+                    {
+                        for (auto& rect : rects)
+                        {
+                            rect.texture |= 0x8000;
+                        }
+                    }
                     mesh.textured_rectangles.append_range(convert_rectangles(rects));
                     break;
                 }

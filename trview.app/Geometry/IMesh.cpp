@@ -121,64 +121,39 @@ namespace trview
             const uint16_t texture_operation = get_raw_texture_operation(texture);
             switch (texture_operation)
             {
-            case 0:
-            {
-                break;
-            }
-            case 1:
-            {
-                const Vector2 v0 = uvs[2];
-                const Vector2 v1 = uvs[0];
-                const Vector2 v2 = uvs[3];
-                uvs[0] = v0;
-                uvs[1] = v1;
-                uvs[2] = v2;
-                break;
-            }
-            case 2:
-            {
-                break;
-            }
-            case 3:
-            {
-                const Vector2 v0 = uvs[2];
-                const Vector2 v1 = uvs[0];
-                const Vector2 v2 = uvs[3];
-                uvs[0] = v0;
-                uvs[1] = v1;
-                uvs[2] = v2;
-                break;
-            }
-            case 4:
-            {
-                const Vector2 v0 = uvs[2];
-                const Vector2 v1 = uvs[3];
-                const Vector2 v2 = uvs[0];
-                uvs[0] = v0;
-                uvs[1] = v1;
-                uvs[2] = v2;
-                break;
-            }
-            case 5:
-            {
-                std::swap(uvs[1], uvs[2]);
-                break;
-            }
-            case 6:
-            {
-                const Vector2 v0 = uvs[2];
-                const Vector2 v1 = uvs[3];
-                const Vector2 v2 = uvs[0];
-                uvs[0] = v0;
-                uvs[1] = v1;
-                uvs[2] = v2;
-                break;
-            }
-            case 7:
-            {
-                std::swap(uvs[1], uvs[2]);
-                break;
-            }
+                case 0:
+                case 2:
+                {
+                    break;
+                }
+                case 1:
+                case 3:
+                {
+                    const Vector2 v0 = uvs[2];
+                    const Vector2 v1 = uvs[0];
+                    const Vector2 v2 = uvs[3];
+                    uvs[0] = v0;
+                    uvs[1] = v1;
+                    uvs[2] = v2;
+                    break;
+                }
+                case 4:
+                case 6:
+                {
+                    const Vector2 v0 = uvs[2];
+                    const Vector2 v1 = uvs[3];
+                    const Vector2 v2 = uvs[0];
+                    uvs[0] = v0;
+                    uvs[1] = v1;
+                    uvs[2] = v2;
+                    break;
+                }
+                case 5:
+                case 7:
+                {
+                    std::swap(uvs[1], uvs[2]);
+                    break;
+                }
             }
         }
     }
