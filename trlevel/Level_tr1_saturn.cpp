@@ -38,12 +38,6 @@ namespace trlevel
             g = static_cast<uint16_t>((g / 31.0f) * 255.0f);
             b = static_cast<uint16_t>((b / 31.0f) * 255.0f);
 
-            if ((r == 222 && b == 238 && g == 0) ||
-                (r == 0 && b == 0 && g == 0))
-            {
-                return 0x00000000;
-            }
-
             uint16_t a = t & 0x8000 ? 0xff : 0x00;
             return a << 24 | b << 16 | g << 8 | r;
         }
@@ -1324,9 +1318,6 @@ namespace trlevel
         {
             mesh.lights = to_le(read_vector<int16_t>(stream, abs(normals)));
         }
-
-        std::vector<tr_face3> triangles;
-        std::vector<tr_face4> rectangles;
 
         const uint16_t num_primitives = to_le(read<uint16_t>(stream));
         uint16_t total_primitives = 0;
