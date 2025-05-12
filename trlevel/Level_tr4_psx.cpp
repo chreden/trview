@@ -637,7 +637,7 @@ namespace trlevel
 
     void Level::load_tr4_psx(std::basic_ispanstream<uint8_t>& file, trview::Activity& activity, const LoadCallbacks& callbacks)
     {
-        if (is_tr4_oct_1999(_platform_and_version))
+        if (is_tr4_oct_1999(_platform_and_version) || is_tr4_psx_v1(_platform_and_version))
         {
             file.seekg(0x7000, std::ios::beg);
         }
