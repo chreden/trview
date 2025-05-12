@@ -4,6 +4,9 @@
 #include <array>
 #include <vector>
 #include <unordered_map>
+#include <map>
+#include <array>
+#include <optional>
 
 #include "ILevel.h"
 #include "trtypes.h"
@@ -218,7 +221,7 @@ namespace trlevel
         void load_tr1_psx_aug_1996(std::basic_ispanstream<uint8_t>& file, trview::Activity& activity, const LoadCallbacks& callbacks);
         void load_tr1_psx_may_1996(std::basic_ispanstream<uint8_t>& file, trview::Activity& activity, const LoadCallbacks& callbacks);
         void load_tr1_saturn(std::basic_ispanstream<uint8_t>& file, trview::Activity& activity, const LoadCallbacks& callbacks);
-        void load_tr1_saturn_sad(trview::Activity& activity, const LoadCallbacks& callbacks);
+        std::map<uint16_t, std::array<std::optional<uint16_t>, 5>> load_tr1_saturn_sad(trview::Activity& activity, const LoadCallbacks& callbacks);
         void load_tr1_saturn_snd(trview::Activity& activity, const LoadCallbacks& callbacks);
         void load_tr1_saturn_spr(trview::Activity& activity, const LoadCallbacks& callbacks);
         void load_tr2_pc(std::basic_ispanstream<uint8_t>& file, trview::Activity& activity, const LoadCallbacks& callbacks);

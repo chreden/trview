@@ -150,6 +150,13 @@ namespace trlevel
             Sprite = 39
         };
 
+        struct ObjectTextureData
+        {
+            std::vector<uint32_t> pixels;
+            uint32_t              width;
+            uint32_t              height;
+        };
+
         std::vector<tr_x_room_light> convert_lights(std::vector<tr_room_light_saturn> lights)
         {
             return lights 
@@ -768,7 +775,7 @@ namespace trlevel
         };
 
         load_saturn_tagfile(level_file, loader_functions, "ROOMEND");
-        load_tr1_saturn_sad(activity, callbacks);
+        auto object_texture_mapping = load_tr1_saturn_sad(activity, callbacks);
 
         for (auto& room : _rooms)
         {
@@ -870,11 +877,28 @@ namespace trlevel
             {
                 int16_t tex = static_cast<int16_t>(r.texture);
                 r.texture = tex >> 4;
+                tex;
+            }
+            
+            for (auto& t : mesh.textured_triangles)
+            {
+                // const uint16_t texture_operation = (t.texture & 0x6000) >> 13;
+                // bool           has_operation = ((t.texture & 0x8000) >> 15) != 0;
+                const uint16_t texture_operation = (t.texture & 0x6000) >> 13;
+                int16_t        tex = (static_cast<int16_t>(t.texture) & 0x1fff) >> 4;
+
+                tex;
+                texture_operation;
+
+                // if (texture_operation != 0)
+                {
+                    OutputDebugStringA(std::format("Tex {} - op {}\n", tex, texture_operation).c_str());
+                }
             }
         }
     }
 
-    void Level::load_tr1_saturn_sad(trview::Activity& activity, const LoadCallbacks& callbacks)
+    std::map<uint16_t, std::array<std::optional<uint16_t>, 5>> Level::load_tr1_saturn_sad(trview::Activity& activity, const LoadCallbacks& callbacks)
     {
         const auto read_anibones = [&](auto& file)
         {
@@ -985,6 +1009,236 @@ namespace trlevel
         path.replace_extension("SAD");
         load_saturn_tagfile(*_files, path, loader_functions, "OBJEND");
 
+        auto get_texture_for_cut = [&](auto&& offset, auto&& object_texture, bool is_cut) -> ObjectTextureData
+            {
+                std::vector<uint8_t> data;
+                std::array<uint16_t, 16> palette;
+
+                const uint32_t start = offset << 3;
+                const uint32_t end = start + (object_texture.size << 3);
+                data = std::ranges::subrange(all_object_texture_data.begin() + start, all_object_texture_data.begin() + end)
+                    | std::ranges::to<std::vector>();
+                const auto palette_bytes =
+                    std::ranges::subrange(all_object_texture_data.begin() + end, all_object_texture_data.begin() + end + 32)
+                    | std::ranges::to<std::vector>();
+                memcpy(&palette[0], &palette_bytes[0], sizeof(uint16_t) * 16);
+
+                uint32_t source_width = object_texture.width << 2;
+                uint32_t width = object_texture.width << 3;
+                uint32_t height = object_texture.height;
+                bool any_transparent = false;
+
+                std::vector<uint32_t> object_texture_data;
+                object_texture_data.resize(width * height);
+
+                for (uint32_t y = 0; y < height; ++y)
+                {
+                    for (uint32_t x = 0; x < source_width; ++x)
+                    {
+                        uint8_t value1 = ((data[y * source_width + x] & 0xF0) >> 4);
+                        uint8_t value2 = (data[y * source_width + x] & 0x0F);
+
+                        uint16_t pe1 = to_le(palette[value1]);
+                        uint16_t pe2 = to_le(palette[value2]);
+
+                        uint32_t c1 = convert_saturn_palette(pe1);
+                        uint32_t c2 = convert_saturn_palette(pe2);
+
+                        object_texture_data[y * width + x * 2 + 0] = is_cut ? ((value1 == 0x10) ? 0x00000000 : c1) : c1;
+                        object_texture_data[y * width + x * 2 + 1] = is_cut ? ((value2 == 0x10) ? 0x00000000 : c2) : c2;
+                        any_transparent |=
+                            ((object_texture_data[y * width + x * 2 + 0] & 0xff000000) == 0) |
+                            ((object_texture_data[y * width + x * 2 + 1] & 0xff000000) == 0);
+                    }
+                }
+
+                return { .pixels = object_texture_data, .width = width, .height = height };
+            };
+
+        /*
+        auto create_object_texture_for_cut = [&](auto&& offset, auto&& object_texture, const std::optional<int>& cut)
+            {
+                std::vector<uint32_t> object_texture_data;
+                object_texture_data.resize(256 * 256);
+
+                std::vector<uint8_t> data;
+                std::array<uint16_t, 16> palette;
+
+                const uint32_t start = offset << 3;
+                const uint32_t end = start + (object_texture.size << 3);
+                data = std::ranges::subrange(all_object_texture_data.begin() + start, all_object_texture_data.begin() + end)
+                    | std::ranges::to<std::vector>();
+                const auto palette_bytes =
+                    std::ranges::subrange(all_object_texture_data.begin() + end, all_object_texture_data.begin() + end + 32)
+                    | std::ranges::to<std::vector>();
+                memcpy(&palette[0], &palette_bytes[0], sizeof(uint16_t) * 16);
+
+                uint32_t width = object_texture.width << 2;
+                uint32_t height = object_texture.height;
+                bool any_transparent = false;
+
+                for (uint32_t y = 0; y < height; ++y)
+                {
+                    for (uint32_t x = 0; x < width; ++x)
+                    {
+                        uint8_t value1 = ((data[y * width + x] & 0xF0) >> 4);
+                        uint8_t value2 = (data[y * width + x] & 0x0F);
+
+                        uint16_t pe1 = to_le(palette[value1]);
+                        uint16_t pe2 = to_le(palette[value2]);
+
+                        uint32_t c1 = convert_saturn_palette(pe1);
+                        uint32_t c2 = convert_saturn_palette(pe2);
+
+                        object_texture_data[y * 256 + x * 2 + 0] = cut.has_value() ? ((value1 == 0x10) ? 0x00000000 : c1) : c1;
+                        object_texture_data[y * 256 + x * 2 + 1] = cut.has_value() ? ((value2 == 0x10) ? 0x00000000 : c2) : c2;
+                        any_transparent |=
+                            ((object_texture_data[y * 256 + x * 2 + 0] & 0xff000000) == 0) |
+                            ((object_texture_data[y * 256 + x * 2 + 1] & 0xff000000) == 0);
+                    }
+                }
+
+                tr_object_texture new_object_texture
+                {
+                    .Attribute = any_transparent ? static_cast<uint16_t>(1) : static_cast<uint16_t>(0),
+                    .TileAndFlag = static_cast<uint16_t>(_num_textiles),
+                    .Vertices =
+                    {
+                        { 0, 0, 0, 0 },
+                        { 0, static_cast<uint8_t>(object_texture.width << 3), 0, 0 },
+                        { 0, 0, 0, static_cast<uint8_t>(object_texture.height) },
+                        { 0, static_cast<uint8_t>(object_texture.width << 3), 0, static_cast<uint8_t>(object_texture.height) }
+                    }
+                };
+
+                if (cut.has_value())
+                {
+                    switch (cut.value())
+                    {
+                    case 0:
+                    {
+                        // std::swap(new_object_texture.Vertices[0], new_object_texture.Vertices[3]);
+                        break;
+                    }
+                    case 1:
+                    {
+                        // Eyebrows
+                        std::swap(new_object_texture.Vertices[0], new_object_texture.Vertices[2]);
+                        std::swap(new_object_texture.Vertices[1], new_object_texture.Vertices[3]);
+                        break;
+                    }
+                    case 2:
+                    {
+                        // std::swap(new_object_texture.Vertices[0], new_object_texture.Vertices[3]);
+                        // std::swap(new_object_texture.Vertices[1], new_object_texture.Vertices[2]);
+                        break;
+                    }
+                    case 3:
+                    {
+                        // std::swap(new_object_texture.Vertices[0], new_object_texture.Vertices[3]);
+                        break;
+                    }
+                    }
+                }
+
+                _object_textures.push_back(new_object_texture);
+
+                _num_textiles++;
+                callbacks.on_textile(object_texture_data);
+            };
+        */
+
+        // Original object texture map to generated object textures
+        std::map<uint16_t, std::array<std::optional<uint16_t>, 5>> object_texture_mapping;
+        object_texture_mapping;
+
+        uint16_t object_texture_index = 0;
+        uint16_t output_texture_index = 0;
+        for (const auto& object_texture : object_textures)
+        {
+            // Whatever the cut commands we are going to write to the single texture.
+            std::vector<uint32_t> object_texture_data;
+            object_texture_data.resize(256 * 256);
+
+
+            auto write_to = [&](const ObjectTextureData& source, uint32_t dest_x, uint32_t dest_y)
+            {
+                for (uint32_t y = 0; y < source.height; ++y)
+                {
+                    for (uint32_t x = 0; x < source.width; ++x)
+                    {
+                        if (source.pixels[y * source.width + x] != 0x00000000)
+                        {
+                            object_texture_data[(y + dest_y) * 256 + (dest_x + x)] = source.pixels[y * source.width + x];
+                        }
+                    }
+                }
+            };
+
+            if (object_texture.start != 1 && object_texture.cut0 != 1 && object_texture.cut1 != 1 && object_texture.cut2 != 1 && object_texture.cut3 != 1)
+            {
+                OutputDebugStringA(std::format("All cuts at {}\n", _object_textures.size()).c_str());
+            }
+
+            if (object_texture.start != 1)
+            {
+                auto texture = get_texture_for_cut(object_texture.start, object_texture, false);
+                write_to(texture, 0, 0);
+            }
+            // else
+            {
+                if (object_texture.cut0 != 1)
+                {
+                    auto texture = get_texture_for_cut(object_texture.cut0, object_texture, true);
+                    write_to(texture, texture.width, 0);
+                }
+
+                if (object_texture.cut1 != 1)
+                {
+                    auto texture = get_texture_for_cut(object_texture.cut1, object_texture, true);
+                    write_to(texture, texture.width, texture.height);
+                }
+
+                if (object_texture.cut2 != 1)
+                {
+                    auto texture = get_texture_for_cut(object_texture.cut2, object_texture, true);
+                    write_to(texture, texture.width, texture.height * 2);
+                }
+
+                if (object_texture.cut3 != 1)
+                {
+                    auto texture = get_texture_for_cut(object_texture.cut3, object_texture, true);
+                    write_to(texture, texture.width, texture.height * 3);
+                }
+            }
+
+            // if (object_texture.start == 1 && object_texture.cut0 == 1 && object_texture.cut1 == 1 && object_texture.cut2 == 1 && object_texture.cut3 == 1)
+            {
+                tr_object_texture new_object_texture
+                {
+                    .Attribute = 0,
+                    .TileAndFlag = static_cast<uint16_t>(_num_textiles),
+                    .Vertices =
+                    {
+                        { 0, 0, 0, 0 },
+                        { 0, static_cast<uint8_t>(object_texture.width << 3), 0, 0 },
+                        { 0, 0, 0, static_cast<uint8_t>(object_texture.height) },
+                        { 0, static_cast<uint8_t>(object_texture.width << 3), 0, static_cast<uint8_t>(object_texture.height) }
+                    }
+                };
+                _num_textiles++;
+                _object_textures.push_back(new_object_texture);
+
+                callbacks.on_textile(object_texture_data);
+                object_texture_mapping[object_texture_index][0] = output_texture_index++;
+            }
+
+            ++object_texture_index;
+        }
+
+        return object_texture_mapping;
+
+        /*
         // Generate object textures:
         for (const auto& object_texture : object_textures)
         {
@@ -1131,7 +1385,8 @@ namespace trlevel
                 _object_textures.push_back(new_object_texture);
                 callbacks.on_textile(object_texture_data);
             }
-        }
+        }*/
+/*
         std::map<uint32_t, std::string> cuts;
         uint32_t index = 0;
         for (const auto& object_texture : object_textures)
@@ -1145,6 +1400,7 @@ namespace trlevel
                     object_texture.cut3 << 3);
             ++index;
         }
+        */
     }
 
     void Level::load_tr1_saturn_snd(trview::Activity& activity, const LoadCallbacks& callbacks)
