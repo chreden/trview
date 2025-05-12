@@ -1347,7 +1347,7 @@ namespace trlevel
         const uint16_t num_primitives = to_le(read<uint16_t>(stream));
         uint16_t total_primitives = 0;
 
-        auto read_rects = [&]() -> std::vector<tr_face4>
+        auto read_rects = [&](bool negate_texture = false) -> std::vector<tr_face4>
         {
             if (total_primitives < num_primitives)
             {
@@ -1360,6 +1360,10 @@ namespace trlevel
                     r.vertices[1] >>= 5;
                     r.vertices[2] >>= 5;
                     r.vertices[3] >>= 5;
+                    if (negate_texture)
+                    {
+                        r.texture |= 0x8000;
+                    }
                 }
                 return trects;
             }
@@ -1407,14 +1411,7 @@ namespace trlevel
                 case 49:
                 case 57:
                 {
-                    auto rects = read_rects();
-                    if (prim_type == 49 || prim_type == 57)
-                    {
-                        for (auto& rect : rects)
-                        {
-                            rect.texture |= 0x8000;
-                        }
-                    }
+                    auto rects = read_rects(prim_type == 49 || prim_type == 57);
                     mesh.textured_rectangles.append_range(convert_rectangles(rects));
                     break;
                 }
