@@ -1134,23 +1134,7 @@ namespace trlevel
                         { 0, static_cast<uint8_t>(x + w), 0, static_cast<uint8_t>(y + h) }
                     }
                 };
-
-                switch (texture_operation - 1)
-                {
-                case 0:
-                    memset(new_object_texture.Vertices, 0, sizeof(new_object_texture.Vertices));
-                    break;
-                case 1: // Done
-                    // memset(new_object_texture.Vertices, 0, sizeof(new_object_texture.Vertices));
-                    break;
-                case 2:
-                    memset(new_object_texture.Vertices, 0, sizeof(new_object_texture.Vertices));
-                    break;
-                case 3: // Done
-                    // memset(new_object_texture.Vertices, 0, sizeof(new_object_texture.Vertices));
-                    break;
-                }
-
+                
                 _object_textures.push_back(new_object_texture);
                 object_texture_mapping[object_texture_index][texture_operation] = output_texture_index++;
             };

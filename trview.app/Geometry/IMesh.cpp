@@ -118,12 +118,13 @@ namespace trview
 
         void adjust_tri_uvs_tr1_saturn(std::array<Vector2, 4>& uvs, uint16_t texture)
         {
-            uvs;
-
             const uint16_t texture_operation = get_raw_texture_operation(texture);
             switch (texture_operation)
             {
             case 0:
+            {
+                break;
+            }
             case 1:
             {
                 const Vector2 v0 = uvs[2];
@@ -135,7 +136,9 @@ namespace trview
                 break;
             }
             case 2:
+            {
                 break;
+            }
             case 3:
             {
                 const Vector2 v0 = uvs[2];
@@ -157,6 +160,10 @@ namespace trview
                 break;
             }
             case 5:
+            {
+                std::swap(uvs[1], uvs[2]);
+                break;
+            }
             case 6:
             {
                 const Vector2 v0 = uvs[2];
@@ -166,10 +173,12 @@ namespace trview
                 uvs[1] = v1;
                 uvs[2] = v2;
                 break;
-                break;
             }
             case 7:
+            {
+                std::swap(uvs[1], uvs[2]);
                 break;
+            }
             }
         }
     }
