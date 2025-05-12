@@ -110,6 +110,50 @@ namespace trview
                 }
             }
         }
+
+        constexpr uint16_t get_raw_texture_operation(uint16_t texture)
+        {
+            return (texture & 0xE000) >> 13;
+        }
+
+        void adjust_tri_uvs_tr1_saturn(std::array<Vector2, 4>& uvs, uint16_t texture)
+        {
+            uvs;
+
+            const uint16_t texture_operation = get_raw_texture_operation(texture);
+            switch (texture_operation)
+            {
+            case 0:
+            case 1:
+            case 2:
+                break;
+            case 3:
+            {
+                const Vector2 v0 = uvs[2];
+                const Vector2 v1 = uvs[0];
+                const Vector2 v2 = uvs[3];
+                uvs[0] = v0;
+                uvs[1] = v1;
+                uvs[2] = v2;
+                break;
+            }
+            case 4:
+            case 5:
+            case 6:
+            {
+                const Vector2 v0 = uvs[2];
+                const Vector2 v1 = uvs[3];
+                const Vector2 v2 = uvs[0];
+                uvs[0] = v0;
+                uvs[1] = v1;
+                uvs[2] = v2;
+                break;
+                break;
+            }
+            case 7:
+                break;
+            }
+        }
     }
 
     IMesh::~IMesh()
@@ -420,10 +464,14 @@ namespace trview
                 uvs[i] = texture_storage.uv(texture, i);
             }
 
-            if (is_tr1_pc_may_1996(texture_storage.platform_and_version()) ||
-                texture_storage.platform_and_version().platform == trlevel::Platform::Saturn)
+            if (is_tr1_pc_may_1996(texture_storage.platform_and_version()))
             {
                 adjust_tri_uvs_tr1_1996_pc(uvs, tri.texture);
+            }
+
+            if (texture_storage.platform_and_version().platform == trlevel::Platform::Saturn)
+            {
+                adjust_tri_uvs_tr1_saturn(uvs, tri.texture);
             }
 
             const bool double_sided = tri.texture & 0x8000;
