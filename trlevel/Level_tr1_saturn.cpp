@@ -1091,23 +1091,7 @@ namespace trlevel
                 {
                     for (uint32_t x = 0; x < source.width; ++x)
                     {
-                        if (y == 0 && x == 0) // red = tl, green = tr, blue = bl, yellow = br
-                        {
-                            object_texture_data[(y + dest_y) * 256 + (dest_x + x)] = 0xff0000ff;
-                        }
-                        else if (x == source.width - 1 && y == 0)
-                        {
-                            object_texture_data[(y + dest_y) * 256 + (dest_x + x)] = 0xff00ff00;
-                        }
-                        else if (x == 0 && y == source.height - 1)
-                        {
-                            object_texture_data[(y + dest_y) * 256 + (dest_x + x)] = 0xffff0000;
-                        }
-                        else if (x == source.width - 1 && y == source.height - 1)
-                        {
-                            object_texture_data[(y + dest_y) * 256 + (dest_x + x)] = 0xff00ffff;
-                        }
-                        else if (source.pixels[y * source.width + x] != 0x00000000)
+                        if (source.pixels[y * source.width + x] != 0x00000000)
                         {
                             object_texture_data[(y + dest_y) * 256 + (dest_x + x)] = source.pixels[y * source.width + x];
                         }
