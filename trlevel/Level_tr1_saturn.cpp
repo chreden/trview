@@ -12,6 +12,12 @@ namespace trlevel
 {
     namespace
     {
+        template <typename T>
+        void write(std::basic_ospanstream<uint8_t>& file, const T& value)
+        {
+            file.write(reinterpret_cast<const uint8_t*>(&value), sizeof(value));
+        }
+
         template <uint32_t size>
         std::string read_string(std::basic_ispanstream<uint8_t>& file)
         {
@@ -528,6 +534,12 @@ namespace trlevel
         tr_sprite_sequence to_le(const tr_sprite_sequence& value)
         {
             return { .SpriteID = to_le(value.SpriteID), .NegativeLength = to_le(value.NegativeLength), .Offset = to_le(value.Offset) };
+        }
+
+        template <>
+        tr_sound_details to_le(const tr_sound_details& value)
+        {
+            return { .Sample = to_le(value.Sample), .Volume = to_le(value.Volume), .Chance = to_le(value.Chance), .Characteristics = to_le(value.Characteristics) };
         }
 
         constexpr uint16_t get_texture_operation(uint16_t texture)
@@ -1085,7 +1097,16 @@ namespace trlevel
         mapper.finish();
 
         load_tr1_saturn_spr(activity, callbacks);
-        load_tr1_saturn_snd(activity, callbacks);
+
+        // Some saturn levels have broken SND files.
+        try
+        {
+            load_tr1_saturn_snd(activity, callbacks);
+            generate_sounds(callbacks);
+        }
+        catch (...)
+        {
+        }
     }
 
     Level::SaturnTextureInfo Level::load_tr1_saturn_sad(trview::Activity& activity, const LoadCallbacks& callbacks)
@@ -1271,7 +1292,7 @@ namespace trlevel
             {
                 const auto add_mapping = [&](const ObjectTextureData& texture, uint16_t operation)
                 {
-                        texture_info.object_texture_mapping[object_texture_index][operation] = { .index = static_cast<uint16_t>(_object_textures.size()), .transparent_colour = texture.transparent_colour };
+                    texture_info.object_texture_mapping[object_texture_index][operation] = { .index = static_cast<uint16_t>(_object_textures.size()), .transparent_colour = texture.transparent_colour };
                     _object_textures.push_back(mapper.map(texture.pixels, texture.width, texture.height));
                 };
 
@@ -1317,17 +1338,76 @@ namespace trlevel
         activity;
         callbacks;
 
-        const auto read_generic = [&](auto& file)
+        const auto read_samplut = [&](auto& file)
         {
-            uint32_t size = to_le(read<uint32_t>(file));
+            skip(file, 4);
             uint32_t count = to_le(read<uint32_t>(file));
-            skip(file, size * count);
+            _sound_map = to_le(read_vector<int16_t>(file, count));
+        };
+
+        const auto read_sampinfs = [&](auto& file)
+        {
+            skip(file, 4);
+            uint32_t count = to_le(read<uint32_t>(file));
+            _sound_details = 
+                to_le(read_vector<tr_sound_details>(file, count)) | 
+                std::views::transform([](auto&& s) -> tr_x_sound_details { return { .tr_sound_details = s }; }) |
+                std::ranges::to<std::vector>();
+        };
+
+        const auto read_sample = [&](auto& file)
+        {
+            uint32_t index = to_le(read<uint32_t>(file));
+            index;
+            uint32_t count = to_le(read<uint32_t>(file));
+            if (count != 16)
+            {
+                auto data = read_vector<uint8_t>(file, count);
+
+                std::vector<uint8_t> results;
+                results.resize(static_cast<uint32_t>(data.size() * 2));
+
+                std::span out_span{ &results[0], results.size() };
+                std::basic_ospanstream<uint8_t> out_stream{ out_span };
+                out_stream.exceptions(std::istream::failbit | std::istream::badbit | std::istream::eofbit);
+
+                out_stream << "RIFF";
+                out_stream.seekp(4, std::ios::cur);
+                out_stream << "WAVEfmt ";
+                write(out_stream, 8);
+                write<uint16_t>(out_stream, 1);
+                write<uint16_t>(out_stream, 1);
+                write<uint32_t>(out_stream, 11025);
+                write<uint32_t>(out_stream, 11025);
+                write<uint16_t>(out_stream, 1);
+                write<uint16_t>(out_stream, 8);
+                out_stream << "data";
+                out_stream.seekp(4, std::ios::cur);
+
+                for (auto b : data)
+                {
+                    write<uint8_t>(out_stream, b + 127);
+                }
+
+                const uint32_t file_size = static_cast<uint32_t>(out_stream.tellp());
+                out_stream.seekp(4, std::ios::beg);
+                write<uint32_t>(out_stream, file_size - 8);
+                out_stream.seekp(40, std::ios::beg);
+                write<uint32_t>(out_stream, file_size - 44);
+                results.resize(file_size);
+                _sound_samples.push_back(results);
+            }
+            else
+            {
+                _sound_samples.push_back({});
+            }
         };
 
         const std::unordered_map<std::string, std::function<void(std::basic_ispanstream<uint8_t>&)>> loader_functions
         {
-            { "SAMPLUT", read_generic },
-            { "SAMPLE", read_generic },
+            { "SAMPLUT", read_samplut },
+            { "SAMPINFS", read_sampinfs },
+            { "SAMPLE", read_sample },
         };
 
         std::filesystem::path path{ _filename };
