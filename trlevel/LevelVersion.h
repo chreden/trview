@@ -56,6 +56,7 @@ namespace trlevel
     bool is_tr3_demo_55(PlatformAndVersion version);
     bool is_tr4_oct_1999(PlatformAndVersion version);
     bool is_tr4_opsm_90(PlatformAndVersion version);
+    bool is_tr4_psx_v1(PlatformAndVersion version);
 
     constexpr std::string to_string(LevelVersion version) noexcept;
     constexpr std::string to_string(Platform platform) noexcept;
