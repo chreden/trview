@@ -5,7 +5,6 @@
 #include <ranges>
 #include <spanstream>
 #include <filesystem>
-#include <set>
 #include <map>
 
 namespace trlevel
@@ -841,9 +840,9 @@ namespace trlevel
             std::vector<uint32_t> object_texture_data;
             object_texture_data.resize(256 * 256);
 
-            for (uint32_t y = 0; y < 256; ++y)
+            for (uint32_t y = 0; y < height_pixels; ++y)
             {
-                for (uint32_t x = 0; x < 128; ++x)
+                for (uint32_t x = 0; x < width_pixels / 2; ++x)
                 {
                     uint8_t value1 = ((object_texture_8[y * 256 + x] & 0xF0) >> 4);
                     uint8_t value2 = (object_texture_8[y * 256 + x] & 0xF);
@@ -862,10 +861,10 @@ namespace trlevel
                 .TileAndFlag = static_cast<uint16_t>(_num_textiles),
                 .Vertices =
                 {
-                    { 0, 0, 0, 0 },
-                    { 0, static_cast<uint8_t>(width_pixels), 0, 0 },
-                    { 0, 0, 0, static_cast<uint8_t>(height_pixels) },
-                    { 0, static_cast<uint8_t>(width_pixels), 0, static_cast<uint8_t>(height_pixels) }
+                    { 0, 1, 0, 0 },
+                    { 0, static_cast<uint8_t>(width_pixels - 2), 0, 0 },
+                    { 0, 1, 0, static_cast<uint8_t>(height_pixels - 2) },
+                    { 0, static_cast<uint8_t>(width_pixels - 2), 0, static_cast<uint8_t>(height_pixels - 2) }
                 }
             };
             _object_textures.push_back(new_object_texture);
@@ -881,7 +880,6 @@ namespace trlevel
         generate_meshes(_mesh_data);
         callbacks.on_progress("Loading complete");
 
-        std::map<int16_t, uint32_t> ot_refs;
         for (auto& [_, mesh] : _meshes)
         {
             for (auto& r : mesh.textured_rectangles)
@@ -1095,10 +1093,10 @@ namespace trlevel
 
             auto add_mapping = [&](int texture_operation, uint32_t in_x, uint32_t in_y)
             {
-                const uint8_t x = static_cast<uint8_t>(in_x);
-                const uint8_t y = static_cast<uint8_t>(in_y);
-                const uint8_t w = static_cast<uint8_t>(object_texture.width << 3);
-                const uint8_t h = static_cast<uint8_t>(object_texture.height);
+                const uint8_t x = static_cast<uint8_t>(in_x) + 1;
+                const uint8_t y = static_cast<uint8_t>(in_y) + 1;
+                const uint8_t w = static_cast<uint8_t>(object_texture.width << 3) - 2;
+                const uint8_t h = static_cast<uint8_t>(object_texture.height) - 2;
 
                 tr_object_texture new_object_texture
                 {
