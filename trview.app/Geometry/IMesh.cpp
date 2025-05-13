@@ -363,10 +363,12 @@ namespace trview
                 std::swap(uvs[2], uvs[3]);
             }
 
-            const bool double_sided = rect.texture & 0x8000;
+            const bool double_sided = texture_storage.platform_and_version().platform != Platform::Saturn && (rect.texture & 0x8000);
 
             TransparentTriangle::Mode transparency_mode;
-            if (determine_transparency(texture_storage.attribute(texture), rect.effects, transparency_mode))
+            if (determine_transparency(
+                texture_storage.platform_and_version().platform == Platform::Saturn ? rect.effects : texture_storage.attribute(texture),
+                texture_storage.platform_and_version().platform == Platform::Saturn ? 0 : rect.effects, transparency_mode))
             {
                 transparent_triangles.emplace_back(verts[0], verts[1], verts[2], uvs[0], uvs[1], uvs[2], texture_storage.tile(texture), transparency_mode, colors[0], colors[1], colors[2]);
                 transparent_triangles.emplace_back(verts[2], verts[3], verts[0], uvs[2], uvs[3], uvs[0], texture_storage.tile(texture), transparency_mode, colors[2], colors[3], colors[0]);
@@ -435,6 +437,8 @@ namespace trview
         std::vector<Triangle>& collision_triangles,
         bool transparent_collision)
     {
+        using namespace trlevel;
+
         uint16_t previous_texture = 0;
         for (const auto& tri : triangles)
         {
@@ -476,10 +480,12 @@ namespace trview
                 adjust_tri_uvs_tr1_saturn(uvs, tri.texture);
             }
 
-            const bool double_sided = tri.texture & 0x8000;
+            const bool double_sided = texture_storage.platform_and_version().platform != Platform::Saturn && (tri.texture & 0x8000);
 
             TransparentTriangle::Mode transparency_mode;
-            if (determine_transparency(texture_storage.attribute(texture), tri.effects, transparency_mode))
+            if (determine_transparency(
+                texture_storage.platform_and_version().platform == Platform::Saturn ? tri.effects : texture_storage.attribute(texture),
+                texture_storage.platform_and_version().platform == Platform::Saturn ? 0 : tri.effects, transparency_mode))
             {
                 transparent_triangles.emplace_back(verts[0], verts[1], verts[2], uvs[0], uvs[1], uvs[2], texture_storage.tile(texture), transparency_mode, colors[0], colors[1], colors[2]);
                 if (transparent_collision)

@@ -37,25 +37,6 @@ namespace trlevel
             g = static_cast<uint16_t>((g / 31.0f) * 255.0f);
             b = static_cast<uint16_t>((b / 31.0f) * 255.0f);
 
-            uint16_t a = t & 0x8000 ? 0xff : 0x00;
-            return a << 24 | b << 16 | g << 8 | r;
-        }
-
-        uint32_t convert_object_saturn_palette(uint16_t t)
-        {
-            uint16_t r = (t & 0x7c00) >> 10;
-            uint16_t g = (t & 0x03e0) >> 5;
-            uint16_t b = t & 0x001f;
-
-            r = static_cast<uint16_t>((r / 31.0f) * 255.0f);
-            g = static_cast<uint16_t>((g / 31.0f) * 255.0f);
-            b = static_cast<uint16_t>((b / 31.0f) * 255.0f);
-
-            if (r == 222 && b == 238 && g == 0)
-            {
-                return 0x00000000;
-            }
-
             return 0xff000000 | b << 16 | g << 8 | r;
         }
 
@@ -143,11 +124,142 @@ namespace trlevel
             Sprite = 39
         };
 
+        enum class MeshPrimitive : uint16_t
+        {
+            UnknownTriangle = 2,
+            ColouredTriangle = 4,
+            ColouredRectangle = 5,
+            TexturedTriangle = 8,
+            TexturedRectangle = 9,
+            TransparentTriangle = 16,
+            TransparentRectangle = 17,
+            TexturedMirroredRectangle = 49,
+            TexturedMirroredTransparentRectangle = 57
+        };
+
         struct ObjectTextureData
         {
             std::vector<uint32_t> pixels;
             uint32_t              width;
             uint32_t              height;
+        };
+
+        class Mapper
+        {
+        public:
+            Mapper(
+                uint32_t initial_textile_count,
+                const std::function<void(const std::vector<uint32_t>&)>& publish_callback)
+                : current_textile(256 * 256, 0), textile_number(initial_textile_count), on_publish(publish_callback)
+            {
+            }
+
+            tr_object_texture map(const std::vector<uint32_t>& data, uint32_t width, uint32_t height)
+            {
+                find_space(width, height);
+                copy_data(data, width, height);
+
+                tr_object_texture new_object_texture
+                {
+                    .Attribute = static_cast<uint16_t>(std::ranges::any_of(data, [](auto&& p) { return (p & 0xff000000) == 0; }) ? 1 : 0),
+                    .TileAndFlag = static_cast<uint16_t>(textile_number),
+                    .Vertices =
+                    {
+                        { 0, static_cast<uint8_t>(x_current + 1), 0, static_cast<uint8_t>(y_current + 1) },
+                        { 0, static_cast<uint8_t>(x_current + width - 2), 0, static_cast<uint8_t>(y_current + 1) },
+                        { 0, static_cast<uint8_t>(x_current + 1), 0, static_cast<uint8_t>(y_current + height - 2) },
+                        { 0, static_cast<uint8_t>(x_current + width - 2), 0, static_cast<uint8_t>(y_current + height - 2) }
+                    }
+                };
+
+                adjust_cursor(width, height);
+                return new_object_texture;
+            }
+
+            tr_sprite_texture map_sprite(const std::vector<uint32_t>& data,
+                uint32_t width,
+                uint32_t height,
+                const tr_sprite_texture_saturn& sprite_texture)
+            {
+                find_space(width, height);
+                copy_data(data, width, height);
+
+                tr_sprite_texture new_sprite_texture
+                {
+                    .Tile = static_cast<uint16_t>(textile_number),
+                    .x = static_cast<uint8_t>(x_current + 1),
+                    .y = static_cast<uint8_t>(y_current + 1),
+                    .Width = static_cast<uint16_t>(((width - 2) * 256) + 255),
+                    .Height = static_cast<uint16_t>(((height - 2) * 256) + 255),
+                    .LeftSide = sprite_texture.LeftSide,
+                    .TopSide = sprite_texture.TopSide,
+                    .RightSide = sprite_texture.RightSide,
+                    .BottomSide = sprite_texture.BottomSide
+                };
+
+                adjust_cursor(width, height);
+                return new_sprite_texture;
+            }
+
+            void finish()
+            {
+                publish();
+            }
+        private:
+            void find_space(uint32_t width, uint32_t height)
+            {
+                // Try to tile horizontally first and then move on to the next row when full.
+                if (x_current + width > max_x)
+                {
+                    y_current = y_extent;
+                    x_current = 0;
+                }
+
+                if (y_current + height > max_y)
+                {
+                    publish();
+                }
+            }
+
+            void copy_data(const std::vector<uint32_t>& data, uint32_t width, uint32_t height)
+            {
+                for (uint32_t y = 0; y < height; ++y)
+                {
+                    memcpy(&current_textile[(y_current + y) * 256 + x_current],
+                        &data[y * width],
+                        sizeof(uint32_t) * width);
+                }
+            }
+
+            void adjust_cursor(uint32_t width, uint32_t height)
+            {
+                x_current += width;
+                y_extent = std::max(y_extent, y_current + height);
+            }
+
+            void reset()
+            {
+                memset(&current_textile[0], 0, sizeof(uint32_t) * current_textile.size());
+                x_current = 0u;
+                y_current = 0u;
+                y_extent = 0u;
+            }
+
+            void publish()
+            {
+                on_publish(current_textile);
+                textile_number++;
+                reset();
+            }
+
+            std::vector<uint32_t> current_textile;
+            uint32_t              x_current{ 0u };
+            uint32_t              y_current{ 0u };
+            uint32_t              y_extent{ 0u };
+            const uint32_t        max_x{ 256u };
+            const uint32_t        max_y{ 256u };
+            uint32_t              textile_number{ 0u };
+            std::function<void(const std::vector<uint32_t>&)> on_publish;
         };
 
         std::vector<tr_x_room_light> convert_lights(std::vector<tr_room_light_saturn> lights)
@@ -327,6 +439,12 @@ namespace trlevel
         Primitive to_le(const Primitive& value)
         {
             return static_cast<Primitive>(std::byteswap(static_cast<uint16_t>(value)));
+        }
+
+        template <>
+        MeshPrimitive to_le(const MeshPrimitive& value)
+        {
+            return static_cast<MeshPrimitive>(std::byteswap(static_cast<uint16_t>(value)));
         }
 
         template <>
@@ -552,6 +670,7 @@ namespace trlevel
                                 r.vertices[2] >>= 4;
                                 r.vertices[3] >>= 4;
                                 r.texture >>= 4;
+                                r.effects = primitive_type == Primitive::TransparentRectangle ? 1 : 0;
                             }
                             room.data.rectangles.append_range(new_rectangles);
                             log_file(activity, file, std::format("Read {} textured rectangles", rectangle_count));
@@ -800,6 +919,12 @@ namespace trlevel
             }
         }
 
+        Mapper mapper(_num_textiles, [&](const std::vector<uint32_t>& data) 
+            {
+                callbacks.on_textile(data);
+                ++_num_textiles;
+            });
+
         for (const auto object_texture : object_textures)
         {
             const auto start = object_texture.a2 << 3;
@@ -817,61 +942,52 @@ namespace trlevel
             std::array<uint16_t, 16> palette;
             memcpy(&palette[0], &palette_bytes[0], sizeof(uint16_t) * 16);
 
-            std::vector<uint8_t> object_texture_8;
-            object_texture_8.resize(256 * 256);
-
             const uint32_t subdiv_height = object_texture.subdiv_height;
             const uint32_t width_pixels = static_cast<uint32_t>(data.size()) / subdiv_height;
             const uint32_t subdiv_width_bytes = width_pixels / 4;
             const uint32_t height_pixels = subdiv_height * 2;
+            const uint32_t source_width = width_pixels / 2;
+
+            std::vector<uint8_t> object_texture_8;
+            object_texture_8.resize(source_width * height_pixels);
 
             for (uint32_t y = 0; y < subdiv_height; ++y)
             {
                 // Top left.
-                memcpy(&object_texture_8[y * 256], &data[y * subdiv_width_bytes], subdiv_width_bytes);
+                memcpy(&object_texture_8[y * source_width], &data[y * subdiv_width_bytes], subdiv_width_bytes);
                 // Top right
-                memcpy(&object_texture_8[y * 256 + subdiv_width_bytes], &data[(y + subdiv_height) * subdiv_width_bytes], subdiv_width_bytes);
+                memcpy(&object_texture_8[y * source_width + subdiv_width_bytes], &data[(y + subdiv_height) * subdiv_width_bytes], subdiv_width_bytes);
                 // Bottom left
-                memcpy(&object_texture_8[(y + subdiv_height) * 256], &data[(y + subdiv_height * 3) * subdiv_width_bytes], subdiv_width_bytes);
+                memcpy(&object_texture_8[(y + subdiv_height) * source_width], &data[(y + subdiv_height * 3) * subdiv_width_bytes], subdiv_width_bytes);
                 // Bottom right
-                memcpy(&object_texture_8[(y + subdiv_height) * 256 + subdiv_width_bytes], &data[(y + subdiv_height * 2) * subdiv_width_bytes], subdiv_width_bytes);
+                memcpy(&object_texture_8[(y + subdiv_height) * source_width + subdiv_width_bytes], &data[(y + subdiv_height * 2) * subdiv_width_bytes], subdiv_width_bytes);
             }
 
             std::vector<uint32_t> object_texture_data;
-            object_texture_data.resize(256 * 256);
+            object_texture_data.resize(width_pixels * height_pixels);
 
             for (uint32_t y = 0; y < height_pixels; ++y)
             {
-                for (uint32_t x = 0; x < width_pixels / 2; ++x)
+                for (uint32_t x = 0; x < source_width; ++x)
                 {
-                    uint8_t value1 = ((object_texture_8[y * 256 + x] & 0xF0) >> 4);
-                    uint8_t value2 = (object_texture_8[y * 256 + x] & 0xF);
+                    uint8_t value1 = ((object_texture_8[y * source_width + x] & 0xF0) >> 4);
+                    uint8_t value2 = (object_texture_8[y * source_width + x] & 0xF);
 
-                    uint16_t pe1 = to_le(palette[value1]);
-                    uint16_t pe2 = to_le(palette[value2]);
+                    uint32_t pe1 = convert_saturn_palette(to_le(palette[value1]));
+                    uint32_t pe2 = convert_saturn_palette(to_le(palette[value2]));
 
-                    object_texture_data[y * 256 + x * 2]     = convert_saturn_palette(pe1);
-                    object_texture_data[y * 256 + x * 2 + 1] = convert_saturn_palette(pe2);
+                    if (value1 == 0x0) { pe1 &= 0x00FFFFFF; }
+                    if (value2 == 0x0) { pe2 &= 0x00FFFFFF; }
+
+                    object_texture_data[y * width_pixels + x * 2]     = pe1;
+                    object_texture_data[y * width_pixels + x * 2 + 1] = pe2;
                 }
             }
 
-            tr_object_texture new_object_texture
-            {
-                .Attribute = static_cast<uint16_t>(std::ranges::any_of(object_texture_data, [](auto&& p) { return p == 0; }) ? 1 : 0),
-                .TileAndFlag = static_cast<uint16_t>(_num_textiles),
-                .Vertices =
-                {
-                    { 0, 1, 0, 0 },
-                    { 0, static_cast<uint8_t>(width_pixels - 2), 0, 0 },
-                    { 0, 1, 0, static_cast<uint8_t>(height_pixels - 2) },
-                    { 0, static_cast<uint8_t>(width_pixels - 2), 0, static_cast<uint8_t>(height_pixels - 2) }
-                }
-            };
-            _object_textures.push_back(new_object_texture);
-
-            _num_textiles++;
-            callbacks.on_textile(object_texture_data);
+            _object_textures.push_back(mapper.map(object_texture_data, width_pixels, height_pixels));
         }
+
+        mapper.finish();
 
         load_tr1_saturn_spr(activity, callbacks);
         load_tr1_saturn_snd(activity, callbacks);
@@ -1019,7 +1135,7 @@ namespace trlevel
         path.replace_extension("SAD");
         load_saturn_tagfile(*_files, path, loader_functions, "OBJEND");
 
-        auto get_texture_for_cut = [&](auto&& offset, auto&& object_texture, bool is_cut) -> ObjectTextureData
+        auto get_texture_for_cut = [&](auto&& offset, auto&& object_texture, bool) -> ObjectTextureData
             {
                 std::vector<uint8_t> data;
                 std::array<uint16_t, 16> palette;
@@ -1036,7 +1152,6 @@ namespace trlevel
                 uint32_t source_width = object_texture.width << 2;
                 uint32_t width = object_texture.width << 3;
                 uint32_t height = object_texture.height;
-                bool any_transparent = false;
 
                 std::vector<uint32_t> object_texture_data;
                 object_texture_data.resize(width * height);
@@ -1048,17 +1163,18 @@ namespace trlevel
                         uint8_t value1 = ((data[y * source_width + x] & 0xF0) >> 4);
                         uint8_t value2 = (data[y * source_width + x] & 0x0F);
 
-                        uint16_t pe1 = to_le(palette[value1]);
-                        uint16_t pe2 = to_le(palette[value2]);
+                        uint32_t pe1 = convert_saturn_palette(to_le(palette[value1]));
+                        uint32_t pe2 = convert_saturn_palette(to_le(palette[value2]));
 
-                        uint32_t c1 = convert_saturn_palette(pe1);
-                        uint32_t c2 = convert_saturn_palette(pe2);
+                        if (value1 == 0x0) {
+                            pe1 &= 0x00ffffff;
+                        }
+                        if (value2 == 0x0) {
+                            pe2 &= 0x00ffffff;
+                        }
 
-                        object_texture_data[y * width + x * 2 + 0] = is_cut ? ((value1 == 0xF) ? 0x00000000 : c1) : c1;
-                        object_texture_data[y * width + x * 2 + 1] = is_cut ? ((value2 == 0xF) ? 0x00000000 : c2) : c2;
-                        any_transparent |=
-                            ((object_texture_data[y * width + x * 2 + 0] & 0xff000000) == 0) |
-                            ((object_texture_data[y * width + x * 2 + 1] & 0xff000000) == 0);
+                        object_texture_data[y * width + x * 2 + 0] = pe1;
+                        object_texture_data[y * width + x * 2 + 1] = pe2;
                     }
                 }
 
@@ -1067,96 +1183,80 @@ namespace trlevel
 
         // Original object texture map to generated object textures
         std::map<uint16_t, std::array<std::optional<uint16_t>, 5>> object_texture_mapping;
-        object_texture_mapping;
 
+        Mapper mapper(_num_textiles, [&](const std::vector<uint32_t>& data)
+            {
+                callbacks.on_textile(data);
+                ++_num_textiles;
+            });
+
+        // There are a lot of object textures that don't have any data - instead of creating a textile for each one of these
+        // create a default blank texture and then redirect all entries to this.
+        auto add_default_texture = [&]()
+        {
+            const uint16_t default_output_texture = static_cast<uint16_t>(_object_textures.size());
+            _object_textures.push_back(mapper.map(std::vector<uint32_t>(256 * 256, 0), 256, 256));
+            return default_output_texture;
+        };
+
+        const uint16_t default_output_texture = add_default_texture();
         uint16_t object_texture_index = 0;
-        uint16_t output_texture_index = 0;
         for (const auto& object_texture : object_textures)
         {
-            // Whatever the cut commands we are going to write to the single texture.
-            std::vector<uint32_t> object_texture_data;
-            object_texture_data.resize(256 * 256);
-
-            auto write_to = [&](const ObjectTextureData& source, uint32_t dest_x, uint32_t dest_y)
+            if (object_texture.start == 1 &&
+                object_texture.cut0 == 1 &&
+                object_texture.cut1 == 1 &&
+                object_texture.cut2 == 1 &&
+                object_texture.cut3 == 1)
             {
-                for (uint32_t y = 0; y < source.height; ++y)
-                {
-                    for (uint32_t x = 0; x < source.width; ++x)
-                    {
-                        if (source.pixels[y * source.width + x] != 0x00000000)
-                        {
-                            object_texture_data[(y + dest_y) * 256 + (dest_x + x)] = source.pixels[y * source.width + x];
-                        }
-                    }
-                }
-            };
-
-            auto add_mapping = [&](int texture_operation, uint32_t in_x, uint32_t in_y)
+                object_texture_mapping[object_texture_index][0] = default_output_texture;
+                object_texture_mapping[object_texture_index][1] = default_output_texture;
+                object_texture_mapping[object_texture_index][2] = default_output_texture;
+                object_texture_mapping[object_texture_index][3] = default_output_texture;
+                object_texture_mapping[object_texture_index][4] = default_output_texture;
+            }
+            else
             {
-                const uint8_t x = static_cast<uint8_t>(in_x) + 1;
-                const uint8_t y = static_cast<uint8_t>(in_y) + 1;
-                const uint8_t w = static_cast<uint8_t>(object_texture.width << 3) - 2;
-                const uint8_t h = static_cast<uint8_t>(object_texture.height) - 2;
-
-                tr_object_texture new_object_texture
+                const auto add_mapping = [&](const ObjectTextureData& texture, uint16_t operation)
                 {
-                    .Attribute = 0,
-                    .TileAndFlag = static_cast<uint16_t>(_num_textiles),
-                    .Vertices =
-                    {
-                        { 0, x, 0, y },
-                        { 0, static_cast<uint8_t>(x + w), 0, y },
-                        { 0, x, 0, static_cast<uint8_t>(y + h) },
-                        { 0, static_cast<uint8_t>(x + w), 0, static_cast<uint8_t>(y + h) }
-                    }
+                    object_texture_mapping[object_texture_index][operation] = static_cast<uint16_t>(_object_textures.size());
+                    _object_textures.push_back(mapper.map(texture.pixels, texture.width, texture.height));
                 };
-                
-                _object_textures.push_back(new_object_texture);
-                object_texture_mapping[object_texture_index][texture_operation] = output_texture_index++;
-            };
 
-            if (object_texture.start != 1)
-            {
-                auto texture = get_texture_for_cut(object_texture.start, object_texture, false);
-                write_to(texture, 0, 0);
+                if (object_texture.start != 1)
+                {
+                    add_mapping(get_texture_for_cut(object_texture.start, object_texture, false), 0);
+                }
+                else
+                {
+                    object_texture_mapping[object_texture_index][0] = default_output_texture;
+                }
+
+                if (object_texture.cut0 != 1)
+                {
+                    add_mapping(get_texture_for_cut(object_texture.cut0, object_texture, true), 1);
+                }
+
+                if (object_texture.cut1 != 1)
+                {
+                    add_mapping(get_texture_for_cut(object_texture.cut1, object_texture, true), 2);
+                }
+
+                if (object_texture.cut2 != 1)
+                {
+                    add_mapping(get_texture_for_cut(object_texture.cut2, object_texture, true), 3);
+                }
+
+                if (object_texture.cut3 != 1)
+                {
+                    add_mapping(get_texture_for_cut(object_texture.cut3, object_texture, true), 4);
+                }
             }
-
-            // Always add 0th mapping as a fallback
-            add_mapping(0, 0, 0);
-            
-            if (object_texture.cut0 != 1)
-            {
-                auto texture = get_texture_for_cut(object_texture.cut0, object_texture, true);
-                write_to(texture, texture.width, 0);
-                add_mapping(1, texture.width, 0);
-            }
-
-            if (object_texture.cut1 != 1)
-            {
-                auto texture = get_texture_for_cut(object_texture.cut1, object_texture, true);
-                write_to(texture, texture.width, texture.height);
-                add_mapping(2, texture.width, texture.height);
-            }
-
-            if (object_texture.cut2 != 1)
-            {
-                auto texture = get_texture_for_cut(object_texture.cut2, object_texture, true);
-                write_to(texture, texture.width, texture.height * 2);
-                add_mapping(3, texture.width, texture.height * 2);
-            }
-
-            if (object_texture.cut3 != 1)
-            {
-                auto texture = get_texture_for_cut(object_texture.cut3, object_texture, true);
-                write_to(texture, texture.width, texture.height * 3);
-                add_mapping(4, texture.width, texture.height * 3);
-            }
-
-            _num_textiles++;
-            callbacks.on_textile(object_texture_data);
 
             ++object_texture_index;
         }
+
+        mapper.finish();
 
         return object_texture_mapping;
     }
@@ -1241,13 +1341,17 @@ namespace trlevel
         path.replace_extension("SPR");
         load_saturn_tagfile(*_files, path, loader_functions, "SPRITEND");
 
+        Mapper mapper(_num_textiles, [&](const std::vector<uint32_t>& data)
+            {
+                callbacks.on_textile(data);
+                ++_num_textiles;
+            });
+
         for (const auto sprite_texture : sprite_textures)
         {
             const auto data = 
                 std::ranges::subrange(spritdat.begin() + (sprite_texture.start << 3), spritdat.begin() + (sprite_texture.end << 3))
               | std::ranges::to<std::vector>();
-            std::vector<uint32_t> sprite_texture_data;
-            sprite_texture_data.resize(256 * 256);
 
             const auto palette_bytes = 
                 std::ranges::subrange(spritdat.begin() + (sprite_texture.end << 3), spritdat.begin() + (sprite_texture.end << 3) + 32)
@@ -1259,6 +1363,9 @@ namespace trlevel
             uint32_t height = sprite_texture.height;
             uint32_t width = static_cast<uint32_t>(data.size() / height);
 
+            std::vector<uint32_t> sprite_texture_data;
+            sprite_texture_data.resize(height * width * 2);
+
             for (uint32_t y = 0; y < height; ++y)
             {
                 for (uint32_t x = 0; x < width; ++x)
@@ -1266,31 +1373,25 @@ namespace trlevel
                     uint8_t value1 = ((data[y * width + x] & 0xF0) >> 4);
                     uint8_t value2 = (data[y * width + x] & 0xF);
 
-                    uint16_t pe1 = value1 ? to_le(palette[value1]) : 0x00000000;
-                    uint16_t pe2 = value2 ? to_le(palette[value2]) : 0x00000000;
+                    uint32_t pe1 = convert_saturn_palette(to_le(palette[value1]));
+                    uint32_t pe2 = convert_saturn_palette(to_le(palette[value2]));
 
-                    sprite_texture_data[y * 256 + x * 2 + 0] = convert_saturn_palette(pe1);
-                    sprite_texture_data[y * 256 + x * 2 + 1] = convert_saturn_palette(pe2);
+                    if (value1 == 0x0) {
+                        pe1 &= 0x00ffffff;
+                    }
+                    if (value2 == 0x0) {
+                        pe2 &= 0x00ffffff;
+                    }
+
+                    sprite_texture_data[y * (width * 2) + x * 2 + 0] = pe1;
+                    sprite_texture_data[y * (width * 2) + x * 2 + 1] = pe2;
                 }
             }
 
-            tr_sprite_texture new_sprite_texture
-            {
-                .Tile = static_cast<uint16_t>(_num_textiles),
-                .x = 0,
-                .y = 0,
-                .Width = static_cast<uint16_t>((width * 2 * 256) + 255),
-                .Height = static_cast<uint16_t>((height * 256) + 255),
-                .LeftSide = sprite_texture.LeftSide,
-                .TopSide = sprite_texture.TopSide,
-                .RightSide = sprite_texture.RightSide,
-                .BottomSide = sprite_texture.BottomSide
-            };
-            _sprite_textures.push_back(new_sprite_texture);
-
-            _num_textiles++;
-            callbacks.on_textile(sprite_texture_data);
+            _sprite_textures.push_back(mapper.map_sprite(sprite_texture_data, width * 2, height, sprite_texture));
         }
+
+        mapper.finish();
     }
 
     void Level::generate_mesh_tr1_saturn(tr_mesh& mesh, std::basic_ispanstream<uint8_t>& stream)
@@ -1364,36 +1465,50 @@ namespace trlevel
         const uint16_t num_primitive_types = to_le(read<uint16_t>(stream));
         for (uint16_t p = 0; p < num_primitive_types; ++p)
         {
-            const uint16_t prim_type = to_le(read<uint16_t>(stream));
+            const MeshPrimitive prim_type = to_le(read<MeshPrimitive>(stream));
             switch (prim_type)
             {
-                case 4: // Coloured Tris
+                case MeshPrimitive::ColouredTriangle:
                 {
                     auto tris = read_tris();
                     mesh.coloured_triangles.append_range(tris);
                     break;
                 }
-                case 5: // coloured rects
+                case MeshPrimitive::ColouredRectangle:
                 {
                     auto rects = read_rects();
                     mesh.coloured_rectangles.append_range(rects);
                     break;
                 }
-                case 9:
-                case 17:
-                case 49:
-                case 57:
+                case MeshPrimitive::TexturedRectangle:
+                case MeshPrimitive::TransparentRectangle:
+                case MeshPrimitive::TexturedMirroredRectangle:
+                case MeshPrimitive::TexturedMirroredTransparentRectangle:
                 {
-                    auto rects = read_rects(prim_type == 49 || prim_type == 57);
-                    mesh.textured_rectangles.append_range(convert_rectangles(rects));
+                    auto rects = convert_rectangles(read_rects(prim_type == MeshPrimitive::TexturedMirroredRectangle || prim_type == MeshPrimitive::TexturedMirroredTransparentRectangle));
+                    if (prim_type == MeshPrimitive::TransparentRectangle || prim_type == MeshPrimitive::TexturedMirroredTransparentRectangle)
+                    {
+                        for (auto& rect : rects)
+                        {
+                            rect.effects = 1;
+                        }
+                    }
+                    mesh.textured_rectangles.append_range(rects);
                     break;
                 }
-                case 2:
-                case 16:
-                case 8:
+                case MeshPrimitive::UnknownTriangle:
+                case MeshPrimitive::TransparentTriangle:
+                case MeshPrimitive::TexturedTriangle:
                 {
-                    auto tris = read_tris();
-                    mesh.textured_triangles.append_range(convert_triangles(tris));
+                    auto tris = convert_triangles(read_tris());
+                    if (prim_type == MeshPrimitive::TransparentTriangle)
+                    {
+                        for (auto& tri : tris)
+                        {
+                            tri.effects = 1;
+                        }
+                    }
+                    mesh.textured_triangles.append_range(tris);
                     break;
                 }
             }
