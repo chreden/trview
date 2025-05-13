@@ -6,6 +6,7 @@
 #include <spanstream>
 #include <filesystem>
 #include <map>
+#include <unordered_set>
 
 namespace trlevel
 {
@@ -142,6 +143,7 @@ namespace trlevel
             std::vector<uint32_t> pixels;
             uint32_t              width;
             uint32_t              height;
+            uint32_t              transparent_colour;
         };
 
         class Mapper
@@ -904,18 +906,104 @@ namespace trlevel
         };
 
         load_saturn_tagfile(level_file, loader_functions, "ROOMEND");
-        auto object_texture_mapping = load_tr1_saturn_sad(activity, callbacks);
+        auto object_texture_info = load_tr1_saturn_sad(activity, callbacks);
 
+        callbacks.on_progress("Generating meshes");
+        generate_meshes(_mesh_data);
+        callbacks.on_progress("Loading complete");
+
+        std::unordered_set<uint16_t> transparent_object_textures;
+        for (auto& [_, mesh] : _meshes)
+        {
+            for (auto& r : mesh.textured_rectangles)
+            {
+                const int16_t signed_tex = static_cast<int16_t>(r.texture);
+                const int16_t tex = (signed_tex & 0x7fff) >> 4;
+                const auto& mapping = object_texture_info.object_texture_mapping.find(tex);
+                if (mapping != object_texture_info.object_texture_mapping.end())
+                {
+                    r.texture = (r.texture & 0x8000) | mapping->second[0].value().index;
+                }
+                if (r.effects != 0)
+                {
+                    transparent_object_textures.insert(r.texture & 0xFFF);
+                }
+            }
+
+            for (auto& t : mesh.textured_triangles)
+            {
+                const uint16_t texture_operation = get_texture_operation(t.texture);
+                const int16_t  tex = (static_cast<int16_t>(t.texture) & 0x1fff);
+
+                const auto& mapping = object_texture_info.object_texture_mapping.find(tex);
+                if (mapping != object_texture_info.object_texture_mapping.end())
+                {
+                    int16_t new_tex = mapping->second[texture_operation + 1].value_or(mapping->second[0].value()).index;
+                    t.texture = (t.texture & 0xE000) | new_tex;
+                }
+                if (t.effects != 0)
+                {
+                    transparent_object_textures.insert(t.texture & 0xFFF);
+                }
+            }
+        }
+
+        // Extract the mapped texture transparency values
+        const auto texture_transparent_colours =
+            object_texture_info.object_texture_mapping |
+            std::views::values |
+            std::views::join |
+            std::views::filter([](auto&& map) { return map != std::nullopt && map.value().index != 0; }) |
+            std::views::transform([](auto&& map) { return std::make_pair(map.value().index, map.value().transparent_colour); }) |
+            std::ranges::to<std::unordered_map>();
+
+        // Apply transparency.
+        for (const auto& transparent_texture : transparent_object_textures)
+        {
+            const auto& found = texture_transparent_colours.find(transparent_texture);
+            if (found != texture_transparent_colours.end())
+            {
+                const auto& object_texture = _object_textures[transparent_texture];
+                const auto transparent_colour = found->second;
+                auto& textile = object_texture_info.textiles[object_texture.TileAndFlag];
+                for (uint32_t y = object_texture.Vertices[0].y_whole - 1; y < static_cast<uint32_t>(object_texture.Vertices[3].y_whole + 1); ++y)
+                {
+                    for (uint32_t x = object_texture.Vertices[0].x_whole - 1; x < static_cast<uint32_t>(object_texture.Vertices[3].x_whole + 1); ++x)
+                    {
+                        if (textile[y * 256 + x] == transparent_colour)
+                        {
+                            textile[y * 256 + x] = 0x00000000;
+                        }
+                    }
+                }
+            }
+        }
+
+        // Publish textures.
+        for (const auto& info : object_texture_info.textiles)
+        {
+            callbacks.on_textile(info);
+        }
+
+        std::unordered_set<uint16_t> transparent_room_object_textures;
         for (auto& room : _rooms)
         {
             for (auto& face : room.data.rectangles)
             {
                 face.texture += static_cast<uint16_t>(_object_textures.size());
+                if (face.effects)
+                {
+                    transparent_room_object_textures.insert(face.texture & 0xFFF);
+                }
             }
 
             for (auto& face : room.data.triangles)
             {
                 face.texture += static_cast<uint16_t>(_object_textures.size());
+                if (face.effects)
+                {
+                    transparent_room_object_textures.insert(face.texture & 0xFFF);
+                }
             }
         }
 
@@ -966,6 +1054,10 @@ namespace trlevel
             std::vector<uint32_t> object_texture_data;
             object_texture_data.resize(width_pixels * height_pixels);
 
+            const bool is_transparent = 
+                transparent_room_object_textures.find(static_cast<uint16_t>(_object_textures.size())) !=
+                transparent_room_object_textures.end();
+
             for (uint32_t y = 0; y < height_pixels; ++y)
             {
                 for (uint32_t x = 0; x < source_width; ++x)
@@ -976,8 +1068,11 @@ namespace trlevel
                     uint32_t pe1 = convert_saturn_palette(to_le(palette[value1]));
                     uint32_t pe2 = convert_saturn_palette(to_le(palette[value2]));
 
-                    if (value1 == 0x0) { pe1 &= 0x00FFFFFF; }
-                    if (value2 == 0x0) { pe2 &= 0x00FFFFFF; }
+                    if (is_transparent)
+                    {
+                        if (value1 == 0x0) { pe1 = 0x00000000; }
+                        if (value2 == 0x0) { pe2 = 0x00000000; }
+                    }
 
                     object_texture_data[y * width_pixels + x * 2]     = pe1;
                     object_texture_data[y * width_pixels + x * 2 + 1] = pe2;
@@ -991,40 +1086,9 @@ namespace trlevel
 
         load_tr1_saturn_spr(activity, callbacks);
         load_tr1_saturn_snd(activity, callbacks);
-
-        callbacks.on_progress("Generating meshes");
-        generate_meshes(_mesh_data);
-        callbacks.on_progress("Loading complete");
-
-        for (auto& [_, mesh] : _meshes)
-        {
-            for (auto& r : mesh.textured_rectangles)
-            {
-                const int16_t signed_tex = static_cast<int16_t>(r.texture);
-                const int16_t tex = (signed_tex & 0x7fff) >> 4;
-                const auto& mapping = object_texture_mapping.find(tex);
-                if (mapping != object_texture_mapping.end())
-                {
-                    r.texture = (r.texture & 0x8000) | mapping->second[0].value();
-                }
-            }
-
-            for (auto& t : mesh.textured_triangles)
-            {
-                const uint16_t texture_operation = get_texture_operation(t.texture);
-                const int16_t  tex = (static_cast<int16_t>(t.texture) & 0x1fff);
-
-                const auto& mapping = object_texture_mapping.find(tex);
-                if (mapping != object_texture_mapping.end())
-                {
-                    int16_t new_tex = mapping->second[texture_operation + 1].value_or(mapping->second[0].value());
-                    t.texture = (t.texture & 0xE000) | new_tex;
-                }
-            }
-        }
     }
 
-    std::map<uint16_t, std::array<std::optional<uint16_t>, 5>> Level::load_tr1_saturn_sad(trview::Activity& activity, const LoadCallbacks& callbacks)
+    Level::SaturnTextureInfo Level::load_tr1_saturn_sad(trview::Activity& activity, const LoadCallbacks& callbacks)
     {
         const auto read_anibones = [&](auto& file)
         {
@@ -1160,33 +1224,21 @@ namespace trlevel
                 {
                     for (uint32_t x = 0; x < source_width; ++x)
                     {
-                        uint8_t value1 = ((data[y * source_width + x] & 0xF0) >> 4);
-                        uint8_t value2 = (data[y * source_width + x] & 0x0F);
-
-                        uint32_t pe1 = convert_saturn_palette(to_le(palette[value1]));
-                        uint32_t pe2 = convert_saturn_palette(to_le(palette[value2]));
-
-                        if (value1 == 0x0) {
-                            pe1 &= 0x00ffffff;
-                        }
-                        if (value2 == 0x0) {
-                            pe2 &= 0x00ffffff;
-                        }
-
-                        object_texture_data[y * width + x * 2 + 0] = pe1;
-                        object_texture_data[y * width + x * 2 + 1] = pe2;
+                        const uint8_t value1 = ((data[y * source_width + x] & 0xF0) >> 4);
+                        const uint8_t value2 = (data[y * source_width + x] & 0x0F);
+                        object_texture_data[y * width + x * 2 + 0] = convert_saturn_palette(to_le(palette[value1]));
+                        object_texture_data[y * width + x * 2 + 1] = convert_saturn_palette(to_le(palette[value2]));
                     }
                 }
 
-                return { .pixels = object_texture_data, .width = width, .height = height };
+                return { .pixels = object_texture_data, .width = width, .height = height, .transparent_colour = convert_saturn_palette(to_le(palette[0])) };
             };
 
-        // Original object texture map to generated object textures
-        std::map<uint16_t, std::array<std::optional<uint16_t>, 5>> object_texture_mapping;
 
+        SaturnTextureInfo texture_info;
         Mapper mapper(_num_textiles, [&](const std::vector<uint32_t>& data)
             {
-                callbacks.on_textile(data);
+                texture_info.textiles.push_back(data);
                 ++_num_textiles;
             });
 
@@ -1209,17 +1261,17 @@ namespace trlevel
                 object_texture.cut2 == 1 &&
                 object_texture.cut3 == 1)
             {
-                object_texture_mapping[object_texture_index][0] = default_output_texture;
-                object_texture_mapping[object_texture_index][1] = default_output_texture;
-                object_texture_mapping[object_texture_index][2] = default_output_texture;
-                object_texture_mapping[object_texture_index][3] = default_output_texture;
-                object_texture_mapping[object_texture_index][4] = default_output_texture;
+                texture_info.object_texture_mapping[object_texture_index][0] = { .index = default_output_texture };
+                texture_info.object_texture_mapping[object_texture_index][1] = { .index = default_output_texture };
+                texture_info.object_texture_mapping[object_texture_index][2] = { .index = default_output_texture };
+                texture_info.object_texture_mapping[object_texture_index][3] = { .index = default_output_texture };
+                texture_info.object_texture_mapping[object_texture_index][4] = { .index = default_output_texture };
             }
             else
             {
                 const auto add_mapping = [&](const ObjectTextureData& texture, uint16_t operation)
                 {
-                    object_texture_mapping[object_texture_index][operation] = static_cast<uint16_t>(_object_textures.size());
+                        texture_info.object_texture_mapping[object_texture_index][operation] = { .index = static_cast<uint16_t>(_object_textures.size()), .transparent_colour = texture.transparent_colour };
                     _object_textures.push_back(mapper.map(texture.pixels, texture.width, texture.height));
                 };
 
@@ -1229,7 +1281,7 @@ namespace trlevel
                 }
                 else
                 {
-                    object_texture_mapping[object_texture_index][0] = default_output_texture;
+                    texture_info.object_texture_mapping[object_texture_index][0] = { .index = default_output_texture };
                 }
 
                 if (object_texture.cut0 != 1)
@@ -1257,8 +1309,7 @@ namespace trlevel
         }
 
         mapper.finish();
-
-        return object_texture_mapping;
+        return texture_info;
     }
 
     void Level::load_tr1_saturn_snd(trview::Activity& activity, const LoadCallbacks& callbacks)
@@ -1376,12 +1427,8 @@ namespace trlevel
                     uint32_t pe1 = convert_saturn_palette(to_le(palette[value1]));
                     uint32_t pe2 = convert_saturn_palette(to_le(palette[value2]));
 
-                    if (value1 == 0x0) {
-                        pe1 &= 0x00ffffff;
-                    }
-                    if (value2 == 0x0) {
-                        pe2 &= 0x00ffffff;
-                    }
+                    if (value1 == 0x0) { pe1 &= 0x00ffffff; }
+                    if (value2 == 0x0) { pe2 &= 0x00ffffff; }
 
                     sprite_texture_data[y * (width * 2) + x * 2 + 0] = pe1;
                     sprite_texture_data[y * (width * 2) + x * 2 + 1] = pe2;
