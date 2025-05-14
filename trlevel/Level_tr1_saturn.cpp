@@ -174,9 +174,9 @@ namespace trlevel
                     .Vertices =
                     {
                         { 0, static_cast<uint8_t>(x_current + 1), 0, static_cast<uint8_t>(y_current + 1) },
-                        { 0, static_cast<uint8_t>(x_current + width - 2), 0, static_cast<uint8_t>(y_current + 1) },
-                        { 0, static_cast<uint8_t>(x_current + 1), 0, static_cast<uint8_t>(y_current + height - 2) },
-                        { 0, static_cast<uint8_t>(x_current + width - 2), 0, static_cast<uint8_t>(y_current + height - 2) }
+                        { 0, static_cast<uint8_t>(x_current + width - 1), 0, static_cast<uint8_t>(y_current + 1) },
+                        { 0, static_cast<uint8_t>(x_current + 1), 0, static_cast<uint8_t>(y_current + height - 1) },
+                        { 0, static_cast<uint8_t>(x_current + width - 1), 0, static_cast<uint8_t>(y_current + height - 1) }
                     }
                 };
 
@@ -928,7 +928,7 @@ namespace trlevel
                     int16_t new_tex = mapping->second[texture_operation + 1].value_or(mapping->second[0].value()).index;
                     t.texture = (t.texture & 0xE000) | new_tex;
                 }
-                if (t.effects != 0)
+                if (t.effects != 0 || texture_operation != 0)
                 {
                     transparent_object_textures.insert(t.texture & 0xFFF);
                 }
@@ -1153,7 +1153,7 @@ namespace trlevel
         path.replace_extension("SAD");
         load_saturn_tagfile(*_files, path, loader_functions, "OBJEND");
 
-        auto get_texture_for_cut = [&](auto&& offset, auto&& object_texture, bool) -> ObjectTextureData
+        auto get_texture_for_cut = [&](auto&& offset, auto&& object_texture, bool is_cut) -> ObjectTextureData
             {
                 std::vector<uint8_t> data;
                 std::array<uint16_t, 16> palette;
@@ -1185,7 +1185,7 @@ namespace trlevel
                     }
                 }
 
-                return { .pixels = object_texture_data, .width = width, .height = height, .transparent_colour = convert_saturn_palette(to_le(palette[0])) };
+                return { .pixels = object_texture_data, .width = width, .height = height, .transparent_colour = convert_saturn_palette(to_le(palette[is_cut ? 15 : 0])) };
             };
 
 
