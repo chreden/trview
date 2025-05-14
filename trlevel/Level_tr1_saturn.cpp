@@ -1326,6 +1326,7 @@ namespace trlevel
             }
             else
             {
+                skip(file, 16);
                 _sound_samples.push_back({});
             }
         };
