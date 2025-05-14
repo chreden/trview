@@ -367,7 +367,7 @@ namespace trlevel
         template <>
         tr_camera to_le(const tr_camera& value)
         {
-            return { .x = std::byteswap(value.x), .y = std::byteswap(value.y), .z = std::byteswap(value.z), .Room = value.Room, .Flag = value.Flag };
+            return { .x = std::byteswap(value.x), .y = std::byteswap(value.y), .z = std::byteswap(value.z), .Room = to_le(value.Room), .Flag = to_le(value.Flag) };
         }
 
         template <>
@@ -542,6 +542,12 @@ namespace trlevel
             return { .Sample = to_le(value.Sample), .Volume = to_le(value.Volume), .Chance = to_le(value.Chance), .Characteristics = to_le(value.Characteristics) };
         }
 
+        template <>
+        tr_sound_source to_le(const tr_sound_source& value)
+        {
+            return { .x = to_le(value.x), .y = to_le(value.y), .z = to_le(value.z), .SoundID = to_le(value.SoundID), .Flags = to_le(value.Flags) };
+        }
+
         constexpr uint16_t get_texture_operation(uint16_t texture)
         {
             const uint16_t raw_op = (texture & 0xE000) >> 13;
@@ -557,6 +563,26 @@ namespace trlevel
                 return 2;
             }
             return raw_op;
+        }
+
+        // Reads and discards a Saturn tag. Only works when the size is accurate.
+        void read_generic(std::basic_ispanstream<uint8_t>& file)
+        {
+            uint32_t size = to_le(read<uint32_t>(file));
+            uint32_t count = to_le(read<uint32_t>(file));
+            skip(file, size * count);
+        };
+
+        // Reads a list of entries from a Saturn tag and stores it in an output location.
+        template <typename T>
+        std::function<void(std::basic_ispanstream<uint8_t>&)> read_list(std::vector<T>& out)
+        {
+            return [&](auto& file)
+                {
+                    skip(file, 4); // Discard size - not always accurate anyway.
+                    uint32_t count = to_le(read<uint32_t>(file));
+                    out = to_le(read_vector<T>(file, count));
+                };
         }
 
         void load_saturn_tagfile(
@@ -626,7 +652,12 @@ namespace trlevel
 
                 log_file(activity, file, "Reading vertices");
                 uint16_t vertex_count = to_le(read<uint16_t>(file));
-                room.data.vertices = convert_vertices(to_le(read_vector<tr_room_vertex>(file, vertex_count)));
+                auto vertices = to_le(read_vector<tr_room_vertex>(file, vertex_count));
+                for (auto& v : vertices)
+                {
+                    v.lighting = (-v.lighting) / 4;
+                }
+                room.data.vertices = convert_vertices(vertices);
                 log_file(activity, file, std::format("Read {} vertices", room.data.vertices.size()));
 
                 uint16_t num_primitives = to_le(read<uint16_t>(file));
@@ -825,65 +856,9 @@ namespace trlevel
         std::vector<uint8_t> all_object_texture_data;
         std::vector<uint8_t> tqtr_data;
 
-        const auto read_roomtinf = [&](auto& file)
-        {
-            uint32_t roomtinf_size = to_le(read<uint32_t>(file));
-            roomtinf_size;
-            uint32_t roomtinf_count = to_le(read<uint32_t>(file));
-            object_textures = to_le(read_vector<tr_room_texture_saturn>(file, roomtinf_count));
-        };
-
-        const auto read_roomtqtr = [&](auto& file)
-        {
-            skip(file, 4);
-            uint32_t count = to_le(read<uint32_t>(file));
-            tqtr_data = read_vector<uint8_t>(file, count);
-        };
-
-        const auto read_roomtsub = [&](auto& file)
-        {
-            skip(file, 4);
-            uint32_t roomtsub_count = to_le(read<uint32_t>(file));
-            all_object_texture_data = read_vector<uint8_t>(file, roomtsub_count);
-        };
-
         const auto read_roomdata_forward = [&](auto& file)
         {
             _rooms = read_roomdata(file, activity);
-        };
-
-        const auto read_flordata = [&](auto& file)
-        {
-            skip(file, 4);
-            uint32_t num_floor_data = to_le(read<uint32_t>(file));
-            callbacks.on_progress("Reading floor data");
-            log_file(activity, file, "Reading floor data");
-            _floor_data = to_le(read_vector<uint16_t>(file, num_floor_data));
-            log_file(activity, file, std::format("Read {} floor data", _floor_data.size()));
-        };
-
-        const auto read_cameras = [&](auto& file)
-        {
-            skip(file, 4);
-            uint32_t num_cameras = to_le(read<uint32_t>(file));
-            callbacks.on_progress("Reading cameras");
-            log_file(activity, file, "Reading cameras");
-            _cameras = to_le(read_vector<tr_camera>(file, num_cameras));
-            log_file(activity, file, std::format("Read {} cameras", _cameras.size()));
-        };
-
-        const auto read_soundfx = [&](auto& file)
-        {
-            uint32_t soundfx_size = to_le(read<uint32_t>(file));
-            uint32_t soundfx_count = to_le(read<uint32_t>(file));
-            skip(file, soundfx_size * soundfx_count);
-        };
-
-        const auto read_generic = [&](auto& file)
-        {
-            uint32_t generic_size = to_le(read<uint32_t>(file));
-            uint32_t generic_count = to_le(read<uint32_t>(file));
-            skip(file, generic_size * generic_count);
         };
 
         const auto read_itemdata = [&](auto& file)
@@ -899,15 +874,15 @@ namespace trlevel
 
         const std::unordered_map<std::string, std::function<void(std::basic_ispanstream<uint8_t>&)>> loader_functions
         {
-            { "ROOMTINF", read_roomtinf },
-            { "ROOMTQTR", read_roomtqtr },
-            { "ROOMTSUB", read_roomtsub },
+            { "ROOMTINF", read_list(object_textures) },
+            { "ROOMTQTR", read_list(tqtr_data) },
+            { "ROOMTSUB", read_list(all_object_texture_data) },
             { "ROOMTPAL", read_generic },
             { "ROOMSPAL", read_generic },
             { "ROOMDATA", read_roomdata_forward },
-            { "FLORDATA", read_flordata },
-            { "CAMERAS",  read_cameras },
-            { "SOUNDFX",  read_soundfx },
+            { "FLORDATA", read_list(_floor_data) },
+            { "CAMERAS",  read_list(_cameras) },
+            { "SOUNDFX",  read_list(_sound_sources) },
             { "BOXES",    read_generic },
             { "OVERLAPS", read_generic },
             { "GND_ZONE", read_generic },
@@ -1111,14 +1086,6 @@ namespace trlevel
 
     Level::SaturnTextureInfo Level::load_tr1_saturn_sad(trview::Activity& activity, const LoadCallbacks& callbacks)
     {
-        const auto read_anibones = [&](auto& file)
-        {
-            uint32_t bones_size = to_le(read<uint32_t>(file));
-            bones_size;
-            uint32_t bones_count = to_le(read<uint32_t>(file));
-            _meshtree = to_le(read_vector<uint32_t>(file, bones_count));
-        };
-
         const auto read_anims = [&](auto& file)
         {
             uint32_t anims_size = to_le(read<uint32_t>(file));
@@ -1127,32 +1094,12 @@ namespace trlevel
             skip(file, anims_count * sizeof(tr_animation));
         };
 
-        const auto read_generic = [&](auto& file)
-        {
-            uint32_t size = to_le(read<uint32_t>(file));
-            uint32_t count = to_le(read<uint32_t>(file));
-            skip(file, size * count);
-        };
-
+        // Endian flip is done during mesh generation.
         const auto read_meshdata = [&](auto& file)
         {
             skip(file, 4);
             uint32_t count = to_le(read<uint32_t>(file));
             _mesh_data = read_vector<uint16_t>(file, count);
-        };
-
-        const auto read_meshptrs = [&](auto& file)
-        {
-            skip(file, 4);
-            uint32_t count = to_le(read<uint32_t>(file));
-            _mesh_pointers = to_le(read_vector<uint32_t>(file, count));
-        };
-
-        const auto read_frames = [&](auto& file)
-        {
-            skip(file, 4);
-            uint32_t count = to_le(read<uint32_t>(file));
-            _frames = to_le(read_vector<uint16_t>(file, count));
         };
 
         const auto read_animobj = [&](auto& file)
@@ -1184,34 +1131,20 @@ namespace trlevel
         std::vector<tr_object_texture_saturn> object_textures;
         std::vector<uint8_t> all_object_texture_data;
 
-        const auto read_otextinf = [&](auto& file)
-        {
-            skip(file, 4);
-            uint32_t count = to_le(read<uint32_t>(file));
-            object_textures = to_le(read_vector<tr_object_texture_saturn>(file, count));
-        };
-
-        const auto read_otextdat = [&](auto& file)
-        {
-            skip(file, 4);
-            uint32_t count = to_le(read<uint32_t>(file));
-            all_object_texture_data = read_vector<uint8_t>(file, count);
-        };
-
         const std::unordered_map<std::string, std::function<void(std::basic_ispanstream<uint8_t>&)>> loader_functions
         {
             { "ANIMS", read_anims },
             { "CHANGES", read_generic },
             { "RANGES", read_generic },
             { "COMMANDS", read_generic },
-            { "ANIBONES", read_anibones },
+            { "ANIBONES", read_list(_meshtree) },
             { "ANIMOBJ", read_animobj },
             { "STATOBJ", read_statobj },
-            { "FRAMES", read_frames },
-            { "MESHPTRS", read_meshptrs },
+            { "FRAMES", read_list(_frames) },
+            { "MESHPTRS", read_list(_mesh_pointers) },
             { "MESHDATA", read_meshdata },
-            { "OTEXTINF", read_otextinf },
-            { "OTEXTDAT", read_otextdat },
+            { "OTEXTINF", read_list(object_textures) },
+            { "OTEXTDAT", read_list(all_object_texture_data) },
             { "ITEXTINF", read_generic },
             { "ITEXTDAT", read_generic },
         };
@@ -1338,13 +1271,6 @@ namespace trlevel
         activity;
         callbacks;
 
-        const auto read_samplut = [&](auto& file)
-        {
-            skip(file, 4);
-            uint32_t count = to_le(read<uint32_t>(file));
-            _sound_map = to_le(read_vector<int16_t>(file, count));
-        };
-
         const auto read_sampinfs = [&](auto& file)
         {
             skip(file, 4);
@@ -1384,6 +1310,7 @@ namespace trlevel
                 out_stream << "data";
                 out_stream.seekp(4, std::ios::cur);
 
+                // Convert signed PCM to unsigned.
                 for (auto b : data)
                 {
                     write<uint8_t>(out_stream, b + 127);
@@ -1405,7 +1332,7 @@ namespace trlevel
 
         const std::unordered_map<std::string, std::function<void(std::basic_ispanstream<uint8_t>&)>> loader_functions
         {
-            { "SAMPLUT", read_samplut },
+            { "SAMPLUT", read_list(_sound_map) },
             { "SAMPINFS", read_sampinfs },
             { "SAMPLE", read_sample },
         };
@@ -1422,20 +1349,6 @@ namespace trlevel
 
         std::vector<uint8_t> spritdat;
         std::vector<tr_sprite_texture_saturn> sprite_textures;
-
-        const auto read_spritdat = [&](auto& file)
-        {
-            skip(file, 4);
-            uint32_t count = to_le(read<uint32_t>(file));
-            spritdat = read_vector<uint8_t>(file, count);
-        };
-
-        const auto read_spritinf = [&](auto& file)
-        {
-            skip(file, 4);
-            uint32_t count = to_le(read<uint32_t>(file));
-            sprite_textures = to_le(read_vector<tr_sprite_texture_saturn>(file, count));
-        };
 
         const auto read_objects = [&](auto& file)
         {
@@ -1463,8 +1376,8 @@ namespace trlevel
 
         const std::unordered_map<std::string, std::function<void(std::basic_ispanstream<uint8_t>&)>> loader_functions
         {
-            { "SPRITDAT", read_spritdat },
-            { "SPRITINF", read_spritinf },
+            { "SPRITDAT", read_list(spritdat) },
+            { "SPRITINF", read_list(sprite_textures) },
             { "OBJECTS", read_objects },
         };
 
