@@ -131,6 +131,7 @@ namespace trlevel
             TexturedMirroredTransparentRectangle = 57
         };
 
+        // Temporary storage for generated textures so transparency can be correctly mapped.
         struct ObjectTextureData
         {
             std::vector<uint32_t> pixels;
@@ -721,8 +722,8 @@ namespace trlevel
 
     void Level::load_tr1_saturn(std::basic_ispanstream<uint8_t>& level_file, trview::Activity& activity, const LoadCallbacks& callbacks)
     {
-        std::vector<tr_room_texture_saturn> object_textures;
-        std::vector<uint8_t> all_object_texture_data;
+        std::vector<tr_room_texture_saturn> room_textures;
+        std::vector<uint8_t> all_room_texture_data;
         std::vector<uint8_t> tqtr_data;
 
         const auto read_roomdata_forward = [&](auto& file)
@@ -743,9 +744,9 @@ namespace trlevel
 
         const std::unordered_map<std::string, std::function<void(std::basic_ispanstream<uint8_t>&)>> loader_functions
         {
-            { "ROOMTINF", read_list(object_textures) },
+            { "ROOMTINF", read_list(room_textures) },
             { "ROOMTQTR", read_list(tqtr_data) },
-            { "ROOMTSUB", read_list(all_object_texture_data) },
+            { "ROOMTSUB", read_list(all_room_texture_data) },
             { "ROOMTPAL", read_generic },
             { "ROOMSPAL", read_generic },
             { "ROOMDATA", read_roomdata_forward },
@@ -822,9 +823,9 @@ namespace trlevel
                 const auto& object_texture = _object_textures[transparent_texture];
                 const auto transparent_colour = found->second;
                 auto& textile = object_texture_info.textiles[object_texture.TileAndFlag];
-                for (uint32_t y = object_texture.Vertices[0].y_whole - 1; y < static_cast<uint32_t>(object_texture.Vertices[3].y_whole + 1); ++y)
+                for (uint32_t y = object_texture.Vertices[0].y_whole - 1; y < static_cast<uint32_t>(object_texture.Vertices[3].y_whole + 2); ++y)
                 {
-                    for (uint32_t x = object_texture.Vertices[0].x_whole - 1; x < static_cast<uint32_t>(object_texture.Vertices[3].x_whole + 1); ++x)
+                    for (uint32_t x = object_texture.Vertices[0].x_whole - 1; x < static_cast<uint32_t>(object_texture.Vertices[3].x_whole + 2); ++x)
                     {
                         if (textile[y * 256 + x] == transparent_colour)
                         {
@@ -869,24 +870,24 @@ namespace trlevel
                 ++_num_textiles;
             });
 
-        for (const auto object_texture : object_textures)
+        for (const auto room_texture : room_textures)
         {
-            const auto start = object_texture.a2 << 3;
-            const auto size = ((object_texture.a5 + object_texture.size) << 3) - start;
+            const auto start = room_texture.a2 << 3;
+            const auto size = ((room_texture.a5 + room_texture.size) << 3) - start;
             const auto end = start + size;
 
             const auto data =
-                std::ranges::subrange(all_object_texture_data.begin() + start, all_object_texture_data.begin() + end)
+                std::ranges::subrange(all_room_texture_data.begin() + start, all_room_texture_data.begin() + end)
                 | std::ranges::to<std::vector>();
 
             const auto palette_bytes =
-                std::ranges::subrange(tqtr_data.begin() + (object_texture.start * 8 + object_texture.size * 8), tqtr_data.begin() + (object_texture.start * 8 + object_texture.size * 8) + 32)
+                std::ranges::subrange(tqtr_data.begin() + (room_texture.start * 8 + room_texture.size * 8), tqtr_data.begin() + (room_texture.start * 8 + room_texture.size * 8) + 32)
                 | std::ranges::to<std::vector>();
 
             std::array<uint16_t, 16> palette;
             memcpy(&palette[0], &palette_bytes[0], sizeof(uint16_t) * 16);
 
-            const uint32_t subdiv_height = object_texture.subdiv_height;
+            const uint32_t subdiv_height = room_texture.subdiv_height;
             const uint32_t width_pixels = static_cast<uint32_t>(data.size()) / subdiv_height;
             const uint32_t subdiv_width_bytes = width_pixels / 4;
             const uint32_t height_pixels = subdiv_height * 2;

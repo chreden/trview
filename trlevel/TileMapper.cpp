@@ -19,9 +19,9 @@ namespace trlevel
             .Vertices =
             {
                 { 0, static_cast<uint8_t>(x_current + 1), 0, static_cast<uint8_t>(y_current + 1) },
-                { 0, static_cast<uint8_t>(x_current + width - 1), 0, static_cast<uint8_t>(y_current + 1) },
-                { 0, static_cast<uint8_t>(x_current + 1), 0, static_cast<uint8_t>(y_current + height - 1) },
-                { 0, static_cast<uint8_t>(x_current + width - 1), 0, static_cast<uint8_t>(y_current + height - 1) }
+                { 0, static_cast<uint8_t>(x_current + width - 2), 0, static_cast<uint8_t>(y_current + 1) },
+                { 0, static_cast<uint8_t>(x_current + 1), 0, static_cast<uint8_t>(y_current + height - 2) },
+                { 0, static_cast<uint8_t>(x_current + width - 2), 0, static_cast<uint8_t>(y_current + height - 2) }
             }
         };
 
