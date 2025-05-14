@@ -37,6 +37,9 @@
     </ClInclude>
     <ClInclude Include="IPack.h" />
     <ClInclude Include="Pack.h" />
+    <ClInclude Include="TileMapper.h">
+      <Filter>Level\Saturn</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="trtypes.cpp" />
@@ -92,6 +95,9 @@
       <Filter>Level\DC</Filter>
     </ClCompile>
     <ClCompile Include="Level_tr1_saturn.cpp">
+      <Filter>Level\Saturn</Filter>
+    </ClCompile>
+    <ClCompile Include="TileMapper.cpp">
       <Filter>Level\Saturn</Filter>
     </ClCompile>
   </ItemGroup>

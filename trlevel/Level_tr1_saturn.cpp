@@ -8,6 +8,8 @@
 #include <map>
 #include <unordered_set>
 
+#include "TileMapper.h"
+
 namespace trlevel
 {
     namespace
@@ -105,21 +107,6 @@ namespace trlevel
 
         static_assert(sizeof(tr_object_texture_saturn) == 16);
 
-        struct tr_sprite_texture_saturn   // 16 bytes
-        {
-            uint16_t start;
-            uint16_t end;
-            uint8_t a2_1;
-            uint8_t height;
-            int16_t LeftSide;
-            int16_t TopSide;
-            int16_t RightSide;
-            int16_t BottomSide;
-            int16_t a7;
-        };
-
-        static_assert(sizeof(tr_sprite_texture_saturn) == 16);
-
         enum class Primitive : uint16_t
         {
             TransparentTriangle = 32,
@@ -150,124 +137,6 @@ namespace trlevel
             uint32_t              width;
             uint32_t              height;
             uint32_t              transparent_colour;
-        };
-
-        class Mapper
-        {
-        public:
-            Mapper(
-                uint32_t initial_textile_count,
-                const std::function<void(const std::vector<uint32_t>&)>& publish_callback)
-                : current_textile(256 * 256, 0), textile_number(initial_textile_count), on_publish(publish_callback)
-            {
-            }
-
-            tr_object_texture map(const std::vector<uint32_t>& data, uint32_t width, uint32_t height)
-            {
-                find_space(width, height);
-                copy_data(data, width, height);
-
-                tr_object_texture new_object_texture
-                {
-                    .Attribute = static_cast<uint16_t>(std::ranges::any_of(data, [](auto&& p) { return (p & 0xff000000) == 0; }) ? 1 : 0),
-                    .TileAndFlag = static_cast<uint16_t>(textile_number),
-                    .Vertices =
-                    {
-                        { 0, static_cast<uint8_t>(x_current + 1), 0, static_cast<uint8_t>(y_current + 1) },
-                        { 0, static_cast<uint8_t>(x_current + width - 1), 0, static_cast<uint8_t>(y_current + 1) },
-                        { 0, static_cast<uint8_t>(x_current + 1), 0, static_cast<uint8_t>(y_current + height - 1) },
-                        { 0, static_cast<uint8_t>(x_current + width - 1), 0, static_cast<uint8_t>(y_current + height - 1) }
-                    }
-                };
-
-                adjust_cursor(width, height);
-                return new_object_texture;
-            }
-
-            tr_sprite_texture map_sprite(const std::vector<uint32_t>& data,
-                uint32_t width,
-                uint32_t height,
-                const tr_sprite_texture_saturn& sprite_texture)
-            {
-                find_space(width, height);
-                copy_data(data, width, height);
-
-                tr_sprite_texture new_sprite_texture
-                {
-                    .Tile = static_cast<uint16_t>(textile_number),
-                    .x = static_cast<uint8_t>(x_current + 1),
-                    .y = static_cast<uint8_t>(y_current + 1),
-                    .Width = static_cast<uint16_t>(((width - 2) * 256) + 255),
-                    .Height = static_cast<uint16_t>(((height - 2) * 256) + 255),
-                    .LeftSide = sprite_texture.LeftSide,
-                    .TopSide = sprite_texture.TopSide,
-                    .RightSide = sprite_texture.RightSide,
-                    .BottomSide = sprite_texture.BottomSide
-                };
-
-                adjust_cursor(width, height);
-                return new_sprite_texture;
-            }
-
-            void finish()
-            {
-                publish();
-            }
-        private:
-            void find_space(uint32_t width, uint32_t height)
-            {
-                // Try to tile horizontally first and then move on to the next row when full.
-                if (x_current + width > max_x)
-                {
-                    y_current = y_extent;
-                    x_current = 0;
-                }
-
-                if (y_current + height > max_y)
-                {
-                    publish();
-                }
-            }
-
-            void copy_data(const std::vector<uint32_t>& data, uint32_t width, uint32_t height)
-            {
-                for (uint32_t y = 0; y < height; ++y)
-                {
-                    memcpy(&current_textile[(y_current + y) * 256 + x_current],
-                        &data[y * width],
-                        sizeof(uint32_t) * width);
-                }
-            }
-
-            void adjust_cursor(uint32_t width, uint32_t height)
-            {
-                x_current += width;
-                y_extent = std::max(y_extent, y_current + height);
-            }
-
-            void reset()
-            {
-                memset(&current_textile[0], 0, sizeof(uint32_t) * current_textile.size());
-                x_current = 0u;
-                y_current = 0u;
-                y_extent = 0u;
-            }
-
-            void publish()
-            {
-                on_publish(current_textile);
-                textile_number++;
-                reset();
-            }
-
-            std::vector<uint32_t> current_textile;
-            uint32_t              x_current{ 0u };
-            uint32_t              y_current{ 0u };
-            uint32_t              y_extent{ 0u };
-            const uint32_t        max_x{ 256u };
-            const uint32_t        max_y{ 256u };
-            uint32_t              textile_number{ 0u };
-            std::function<void(const std::vector<uint32_t>&)> on_publish;
         };
 
         std::vector<tr_x_room_light> convert_lights(std::vector<tr_room_light_saturn> lights)
@@ -994,7 +863,7 @@ namespace trlevel
             }
         }
 
-        Mapper mapper(_num_textiles, [&](const std::vector<uint32_t>& data) 
+        TileMapper mapper(_num_textiles, [&](const std::vector<uint32_t>& data) 
             {
                 callbacks.on_textile(data);
                 ++_num_textiles;
@@ -1190,7 +1059,7 @@ namespace trlevel
 
 
         SaturnTextureInfo texture_info;
-        Mapper mapper(_num_textiles, [&](const std::vector<uint32_t>& data)
+        TileMapper mapper(_num_textiles, [&](const std::vector<uint32_t>& data)
             {
                 texture_info.textiles.push_back(data);
                 ++_num_textiles;
@@ -1386,7 +1255,7 @@ namespace trlevel
         path.replace_extension("SPR");
         load_saturn_tagfile(*_files, path, loader_functions, "SPRITEND");
 
-        Mapper mapper(_num_textiles, [&](const std::vector<uint32_t>& data)
+        TileMapper mapper(_num_textiles, [&](const std::vector<uint32_t>& data)
             {
                 callbacks.on_textile(data);
                 ++_num_textiles;
