@@ -156,6 +156,17 @@ namespace trview
                 }
             }
         }
+
+        /// <summary>
+        /// Convert Saturn texture into a colour value.
+        /// </summary>
+        DirectX::SimpleMath::Color colour_from_texture(uint16_t t)
+        {
+            const uint16_t b = (t & 0x7c00) >> 10;
+            const uint16_t g = (t & 0x03e0) >> 5;
+            const uint16_t r = t & 0x001f;
+            return Color(r / 31.0f, g / 31.0f, b / 31.0f);
+        }
     }
 
     IMesh::~IMesh()
@@ -526,17 +537,6 @@ namespace trview
             {
                 collision_triangles.emplace_back(verts[2], verts[1], verts[0]);
             }
-        }
-    }
-
-    namespace
-    {
-        DirectX::SimpleMath::Color colour_from_texture(uint16_t t)
-        {
-            uint16_t b = (t & 0x7c00) >> 10;
-            uint16_t g = (t & 0x03e0) >> 5;
-            uint16_t r = t & 0x001f;
-            return Color(r / 31.0f, g / 31.0f, b / 31.0f);
         }
     }
 
