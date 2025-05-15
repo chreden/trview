@@ -2,6 +2,8 @@
 #include "Level_common.h"
 #include "LevelLoadException.h"
 
+#include <trview.common/Algorithms.h>
+
 #include <ranges>
 #include <spanstream>
 #include <filesystem>
@@ -14,6 +16,17 @@ namespace trlevel
 {
     namespace
     {
+        struct SaturnTextureInfo
+        {
+            struct Mapping
+            {
+                uint16_t index{ 0u };
+                uint32_t transparent_colour{ 0u };
+            };
+            std::map<uint16_t, std::array<std::optional<Mapping>, 5>> object_texture_mapping;
+            std::vector<std::vector<uint32_t>> textiles;
+        };
+
         template <typename T>
         void write(std::basic_ospanstream<uint8_t>& file, const T& value)
         {
@@ -455,14 +468,15 @@ namespace trlevel
                 };
         }
 
-        void load_saturn_tagfile(
+        uint32_t load_saturn_tagfile(
             std::basic_ispanstream<uint8_t>& file,
             const std::unordered_map<std::string, std::function<void(std::basic_ispanstream<uint8_t>&)>>& loader_functions,
             const std::string& end_tag)
         {
             file.seekg(0);
             read_tag_name(file);
-            skip(file, 8);
+            skip(file, 4);
+            const uint32_t version = to_le(read<uint32_t>(file));
 
             auto tag = read_tag_name(file);
             auto reader = loader_functions.find(tag);
@@ -476,10 +490,12 @@ namespace trlevel
                 }
                 reader = loader_functions.find(tag);
             }
+
+            return version;
         }
 
 
-        void load_saturn_tagfile(
+        uint32_t load_saturn_tagfile(
             trview::IFiles& files,
             const std::filesystem::path& path,
             const std::unordered_map<std::string, std::function<void(std::basic_ispanstream<uint8_t>&)>>& loader_functions,
@@ -495,10 +511,9 @@ namespace trlevel
             std::basic_ispanstream<uint8_t> file{ { bytes_value } };
             file.exceptions(std::ios::failbit);
 
-            load_saturn_tagfile(file, loader_functions, end_tag);
+            return load_saturn_tagfile(file, loader_functions, end_tag);
         }
 
-        // Room functions
         void read_roomnumb(std::basic_ispanstream<uint8_t>& file, trview::Activity&, tr3_room&)
         {
             skip(file, 8); // size, number - not needed
@@ -722,25 +737,42 @@ namespace trlevel
 
     void Level::load_tr1_saturn(std::basic_ispanstream<uint8_t>& level_file, trview::Activity& activity, const LoadCallbacks& callbacks)
     {
+        load_tr1_saturn_sad(activity, callbacks);
+        load_tr1_saturn_sat(level_file, activity, callbacks);
+        load_tr1_saturn_spr(activity, callbacks);
+
+        // Some saturn levels have broken SND files.
+        try
+        {
+            load_tr1_saturn_snd(activity, callbacks);
+            generate_sounds(callbacks);
+        }
+        catch (...)
+        {
+        }
+    }
+
+    void Level::load_tr1_saturn_sat(std::basic_ispanstream<uint8_t>& level_file, trview::Activity& activity, const LoadCallbacks& callbacks)
+    {
         std::vector<tr_room_texture_saturn> room_textures;
         std::vector<uint8_t> all_room_texture_data;
         std::vector<uint8_t> tqtr_data;
 
         const auto read_roomdata_forward = [&](auto& file)
-        {
-            _rooms = read_roomdata(file, activity);
-        };
+            {
+                _rooms = read_roomdata(file, activity);
+            };
 
         const auto read_itemdata = [&](auto& file)
-        {
-            callbacks.on_progress("Reading entities");
-            log_file(activity, file, "Reading entities");
-            uint32_t itemdata_size = to_le(read<uint32_t>(file));
-            itemdata_size;
-            uint32_t itemdata_count = to_le(read<uint32_t>(file));
-            _entities = convert_entities(to_le(read_vector<tr_entity_saturn>(file, itemdata_count)));
-            log_file(activity, file, std::format("Read {} entities", _entities.size()));
-        };
+            {
+                callbacks.on_progress("Reading entities");
+                log_file(activity, file, "Reading entities");
+                uint32_t itemdata_size = to_le(read<uint32_t>(file));
+                itemdata_size;
+                uint32_t itemdata_count = to_le(read<uint32_t>(file));
+                _entities = convert_entities(to_le(read_vector<tr_entity_saturn>(file, itemdata_count)));
+                log_file(activity, file, std::format("Read {} entities", _entities.size()));
+            };
 
         const std::unordered_map<std::string, std::function<void(std::basic_ispanstream<uint8_t>&)>> loader_functions
         {
@@ -763,84 +795,6 @@ namespace trlevel
         };
 
         load_saturn_tagfile(level_file, loader_functions, "ROOMEND");
-        auto object_texture_info = load_tr1_saturn_sad(activity, callbacks);
-
-        callbacks.on_progress("Generating meshes");
-        generate_meshes(_mesh_data);
-        callbacks.on_progress("Loading complete");
-
-        std::unordered_set<uint16_t> transparent_object_textures;
-        for (auto& [_, mesh] : _meshes)
-        {
-            for (auto& r : mesh.textured_rectangles)
-            {
-                const int16_t signed_tex = static_cast<int16_t>(r.texture);
-                const int16_t tex = (signed_tex & 0x7fff) >> 4;
-                const auto& mapping = object_texture_info.object_texture_mapping.find(tex);
-                if (mapping != object_texture_info.object_texture_mapping.end())
-                {
-                    r.texture = (r.texture & 0x8000) | mapping->second[0].value().index;
-                }
-                if (r.effects != 0)
-                {
-                    transparent_object_textures.insert(r.texture & 0xFFF);
-                }
-            }
-
-            for (auto& t : mesh.textured_triangles)
-            {
-                const uint16_t texture_operation = get_texture_operation(t.texture);
-                const int16_t  tex = (static_cast<int16_t>(t.texture) & 0x1fff);
-
-                const auto& mapping = object_texture_info.object_texture_mapping.find(tex);
-                if (mapping != object_texture_info.object_texture_mapping.end())
-                {
-                    int16_t new_tex = mapping->second[texture_operation + 1].value_or(mapping->second[0].value()).index;
-                    t.texture = (t.texture & 0xE000) | new_tex;
-                }
-                if (t.effects != 0 || texture_operation != 0)
-                {
-                    transparent_object_textures.insert(t.texture & 0xFFF);
-                }
-            }
-        }
-
-        // Extract the mapped texture transparency values
-        const auto texture_transparent_colours =
-            object_texture_info.object_texture_mapping |
-            std::views::values |
-            std::views::join |
-            std::views::filter([](auto&& map) { return map != std::nullopt && map.value().index != 0; }) |
-            std::views::transform([](auto&& map) { return std::make_pair(map.value().index, map.value().transparent_colour); }) |
-            std::ranges::to<std::unordered_map>();
-
-        // Apply transparency.
-        for (const auto& transparent_texture : transparent_object_textures)
-        {
-            const auto& found = texture_transparent_colours.find(transparent_texture);
-            if (found != texture_transparent_colours.end())
-            {
-                const auto& object_texture = _object_textures[transparent_texture];
-                const auto transparent_colour = found->second;
-                auto& textile = object_texture_info.textiles[object_texture.TileAndFlag];
-                for (uint32_t y = object_texture.Vertices[0].y_whole - 1; y < static_cast<uint32_t>(object_texture.Vertices[3].y_whole + 2); ++y)
-                {
-                    for (uint32_t x = object_texture.Vertices[0].x_whole - 1; x < static_cast<uint32_t>(object_texture.Vertices[3].x_whole + 2); ++x)
-                    {
-                        if (textile[y * 256 + x] == transparent_colour)
-                        {
-                            textile[y * 256 + x] = 0x00000000;
-                        }
-                    }
-                }
-            }
-        }
-
-        // Publish textures.
-        for (const auto& info : object_texture_info.textiles)
-        {
-            callbacks.on_textile(info);
-        }
 
         std::unordered_set<uint16_t> transparent_room_object_textures;
         for (auto& room : _rooms)
@@ -864,7 +818,7 @@ namespace trlevel
             }
         }
 
-        TileMapper mapper(_num_textiles, [&](const std::vector<uint32_t>& data) 
+        TileMapper mapper(_num_textiles, [&](const std::vector<uint32_t>& data)
             {
                 callbacks.on_textile(data);
                 ++_num_textiles;
@@ -911,7 +865,7 @@ namespace trlevel
             std::vector<uint32_t> object_texture_data;
             object_texture_data.resize(width_pixels * height_pixels);
 
-            const bool is_transparent = 
+            const bool is_transparent =
                 transparent_room_object_textures.find(static_cast<uint16_t>(_object_textures.size())) !=
                 transparent_room_object_textures.end();
 
@@ -931,7 +885,7 @@ namespace trlevel
                         if (value2 == 0x0) { pe2 = 0x00000000; }
                     }
 
-                    object_texture_data[y * width_pixels + x * 2]     = pe1;
+                    object_texture_data[y * width_pixels + x * 2] = pe1;
                     object_texture_data[y * width_pixels + x * 2 + 1] = pe2;
                 }
             }
@@ -940,21 +894,9 @@ namespace trlevel
         }
 
         mapper.finish();
-
-        load_tr1_saturn_spr(activity, callbacks);
-
-        // Some saturn levels have broken SND files.
-        try
-        {
-            load_tr1_saturn_snd(activity, callbacks);
-            generate_sounds(callbacks);
-        }
-        catch (...)
-        {
-        }
     }
 
-    Level::SaturnTextureInfo Level::load_tr1_saturn_sad(trview::Activity& activity, const LoadCallbacks& callbacks)
+    void Level::load_tr1_saturn_sad(trview::Activity& activity, const LoadCallbacks& callbacks)
     {
         const auto read_anims = [&](auto& file)
         {
@@ -1021,29 +963,23 @@ namespace trlevel
 
         std::filesystem::path path{ _filename };
         path.replace_extension("SAD");
-        load_saturn_tagfile(*_files, path, loader_functions, "OBJEND");
+        const uint32_t sad_version = load_saturn_tagfile(*_files, path, loader_functions, "OBJEND");
+        _platform_and_version.is_tr2_saturn = sad_version == 45;
 
         auto get_texture_for_cut = [&](auto&& offset, auto&& object_texture, bool is_cut) -> ObjectTextureData
             {
-                std::vector<uint8_t> data;
-                std::array<uint16_t, 16> palette;
-
                 const uint32_t start = offset << 3;
                 const uint32_t end = start + (object_texture.size << 3);
-                data = std::ranges::subrange(all_object_texture_data.begin() + start, all_object_texture_data.begin() + end)
+                const std::vector<uint8_t> data = std::ranges::subrange(all_object_texture_data.begin() + start, all_object_texture_data.begin() + end)
                     | std::ranges::to<std::vector>();
-                const auto palette_bytes =
-                    std::ranges::subrange(all_object_texture_data.begin() + end, all_object_texture_data.begin() + end + 32)
-                    | std::ranges::to<std::vector>();
-                memcpy(&palette[0], &palette_bytes[0], sizeof(uint16_t) * 16);
+                std::array<uint16_t, 16> palette;
+                memcpy(&palette[0], &all_object_texture_data[end], sizeof(uint16_t) * 16);
 
-                uint32_t source_width = object_texture.width << 2;
-                uint32_t width = object_texture.width << 3;
-                uint32_t height = object_texture.height;
+                const uint32_t source_width = object_texture.width << 2;
+                const uint32_t width = object_texture.width << 3;
+                const uint32_t height = object_texture.height;
 
-                std::vector<uint32_t> object_texture_data;
-                object_texture_data.resize(width * height);
-
+                std::vector<uint32_t> object_texture_data(width * height, 0);
                 for (uint32_t y = 0; y < height; ++y)
                 {
                     for (uint32_t x = 0; x < source_width; ++x)
@@ -1057,7 +993,6 @@ namespace trlevel
 
                 return { .pixels = object_texture_data, .width = width, .height = height, .transparent_colour = convert_saturn_palette(to_le(palette[is_cut ? 15 : 0])) };
             };
-
 
         SaturnTextureInfo texture_info;
         TileMapper mapper(_num_textiles, [&](const std::vector<uint32_t>& data)
@@ -1079,11 +1014,7 @@ namespace trlevel
         uint16_t object_texture_index = 0;
         for (const auto& object_texture : object_textures)
         {
-            if (object_texture.start == 1 &&
-                object_texture.cut0 == 1 &&
-                object_texture.cut1 == 1 &&
-                object_texture.cut2 == 1 &&
-                object_texture.cut3 == 1)
+            if (trview::all_equal_to(1, object_texture.start, object_texture.cut0, object_texture.cut1, object_texture.cut2, object_texture.cut3))
             {
                 texture_info.object_texture_mapping[object_texture_index][0] = { .index = default_output_texture };
                 texture_info.object_texture_mapping[object_texture_index][1] = { .index = default_output_texture };
@@ -1133,7 +1064,83 @@ namespace trlevel
         }
 
         mapper.finish();
-        return texture_info;
+
+        callbacks.on_progress("Generating meshes");
+        generate_meshes(_mesh_data);
+        callbacks.on_progress("Loading complete");
+
+        std::unordered_set<uint16_t> transparent_object_textures;
+        for (auto& [_, mesh] : _meshes)
+        {
+            for (auto& r : mesh.textured_rectangles)
+            {
+                const int16_t signed_tex = static_cast<int16_t>(r.texture);
+                const int16_t tex = (signed_tex & 0x7fff) >> 4;
+                const auto& mapping = texture_info.object_texture_mapping.find(tex);
+                if (mapping != texture_info.object_texture_mapping.end())
+                {
+                    r.texture = (r.texture & 0x8000) | mapping->second[0].value().index;
+                }
+                if (r.effects != 0)
+                {
+                    transparent_object_textures.insert(r.texture & 0xFFF);
+                }
+            }
+
+            for (auto& t : mesh.textured_triangles)
+            {
+                const uint16_t texture_operation = get_texture_operation(t.texture);
+                const int16_t  tex = (static_cast<int16_t>(t.texture) & 0x1fff);
+
+                const auto& mapping = texture_info.object_texture_mapping.find(tex);
+                if (mapping != texture_info.object_texture_mapping.end())
+                {
+                    int16_t new_tex = mapping->second[texture_operation + 1].value_or(mapping->second[0].value()).index;
+                    t.texture = (t.texture & 0xE000) | new_tex;
+                }
+                if (t.effects != 0 || texture_operation != 0)
+                {
+                    transparent_object_textures.insert(t.texture & 0xFFF);
+                }
+            }
+        }
+
+        // Extract the mapped texture transparency values
+        const auto texture_transparent_colours =
+            texture_info.object_texture_mapping |
+            std::views::values |
+            std::views::join |
+            std::views::filter([](auto&& map) { return map != std::nullopt && map.value().index != 0; }) |
+            std::views::transform([](auto&& map) { return std::make_pair(map.value().index, map.value().transparent_colour); }) |
+            std::ranges::to<std::unordered_map>();
+
+        // Apply transparency.
+        for (const auto& transparent_texture : transparent_object_textures)
+        {
+            const auto& found = texture_transparent_colours.find(transparent_texture);
+            if (found != texture_transparent_colours.end())
+            {
+                const auto& object_texture = _object_textures[transparent_texture];
+                const auto transparent_colour = found->second;
+                auto& textile = texture_info.textiles[object_texture.TileAndFlag];
+                for (uint32_t y = object_texture.Vertices[0].y_whole - 1; y < static_cast<uint32_t>(object_texture.Vertices[3].y_whole + 2); ++y)
+                {
+                    for (uint32_t x = object_texture.Vertices[0].x_whole - 1; x < static_cast<uint32_t>(object_texture.Vertices[3].x_whole + 2); ++x)
+                    {
+                        if (textile[y * 256 + x] == transparent_colour)
+                        {
+                            textile[y * 256 + x] = 0x00000000;
+                        }
+                    }
+                }
+            }
+        }
+
+        // Publish textures.
+        for (const auto& info : texture_info.textiles)
+        {
+            callbacks.on_textile(info);
+        }
     }
 
     void Level::load_tr1_saturn_snd(trview::Activity& activity, const LoadCallbacks& callbacks)

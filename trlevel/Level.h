@@ -183,17 +183,6 @@ namespace trlevel
         PlatformAndVersion platform_and_version() const override;
         std::weak_ptr<IPack> pack() const override;
     private:
-        struct SaturnTextureInfo
-        {
-            struct Mapping
-            {
-                uint16_t index{ 0u };
-                uint32_t transparent_colour{ 0u };
-            };
-            std::map<uint16_t, std::array<std::optional<Mapping>, 5>> object_texture_mapping;
-            std::vector<std::vector<uint32_t>> textiles;
-        };
-
         void generate_meshes(const std::vector<uint16_t>& mesh_data);
         tr_colour4 colour_from_object_texture(uint32_t texture) const;
         uint16_t convert_textile4(uint16_t tile, uint16_t clut_id);
@@ -232,7 +221,8 @@ namespace trlevel
         void load_tr1_psx_aug_1996(std::basic_ispanstream<uint8_t>& file, trview::Activity& activity, const LoadCallbacks& callbacks);
         void load_tr1_psx_may_1996(std::basic_ispanstream<uint8_t>& file, trview::Activity& activity, const LoadCallbacks& callbacks);
         void load_tr1_saturn(std::basic_ispanstream<uint8_t>& file, trview::Activity& activity, const LoadCallbacks& callbacks);
-        SaturnTextureInfo load_tr1_saturn_sad(trview::Activity& activity, const LoadCallbacks& callbacks);
+        void load_tr1_saturn_sat(std::basic_ispanstream<uint8_t>& level_file, trview::Activity& activity, const LoadCallbacks& callbacks);
+        void load_tr1_saturn_sad(trview::Activity& activity, const LoadCallbacks& callbacks);
         void load_tr1_saturn_snd(trview::Activity& activity, const LoadCallbacks& callbacks);
         void load_tr1_saturn_spr(trview::Activity& activity, const LoadCallbacks& callbacks);
         void load_tr2_pc(std::basic_ispanstream<uint8_t>& file, trview::Activity& activity, const LoadCallbacks& callbacks);

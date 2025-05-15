@@ -27,8 +27,6 @@ namespace trlevel
         uint32_t              x_current{ 0u };
         uint32_t              y_current{ 0u };
         uint32_t              y_extent{ 0u };
-        const uint32_t        max_x{ 256u };
-        const uint32_t        max_y{ 256u };
         uint32_t              textile_number{ 0u };
         std::function<void(const std::vector<uint32_t>&)> on_publish;
     };

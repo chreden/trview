@@ -2,6 +2,12 @@
 
 namespace trlevel
 {
+    namespace
+    {
+        constexpr uint32_t Max_X { 256u };
+        constexpr uint32_t Max_Y { 256u };
+    }
+
     TileMapper::TileMapper(uint32_t initial_textile_count, const std::function<void(const std::vector<uint32_t>&)>& publish_callback)
         : current_textile(256 * 256, 0), textile_number(initial_textile_count), on_publish(publish_callback)
     {
@@ -59,13 +65,13 @@ namespace trlevel
     void TileMapper::find_space(uint32_t width, uint32_t height)
     {
         // Try to tile horizontally first and then move on to the next row when full.
-        if (x_current + width > max_x)
+        if (x_current + width > Max_X)
         {
             y_current = y_extent;
             x_current = 0;
         }
 
-        if (y_current + height > max_y)
+        if (y_current + height > Max_Y)
         {
             publish();
         }

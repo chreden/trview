@@ -171,7 +171,7 @@ namespace trlevel
 
         bool has_frame_count(PlatformAndVersion version)
         {
-            return version.version == LevelVersion::Tomb1 || is_tr2_demo_70688(version) || is_tr2_e3(version);
+            return (version.version == LevelVersion::Tomb1 && !version.is_tr2_saturn) || is_tr2_demo_70688(version) || is_tr2_e3(version);
         }
 
         bool is_tr1_frame_format(PlatformAndVersion version)

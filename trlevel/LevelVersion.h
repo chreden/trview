@@ -31,6 +31,7 @@ namespace trlevel
         LevelVersion version{ LevelVersion::Unknown };
         bool         remastered{ false };
         bool         is_pack{ false };
+        bool         is_tr2_saturn{ false };
         uint32_t     raw_version{ 0 };
     };
 
