@@ -111,6 +111,7 @@
     <ClInclude Include="Mocks\ILevel.h" />
     <ClInclude Include="Pack.h" />
     <ClInclude Include="stdafx.h" />
+    <ClInclude Include="TileMapper.h" />
     <ClInclude Include="trtypes.h" />
     <ClInclude Include="tr_lights.h" />
     <ClInclude Include="tr_rooms.h" />
@@ -126,6 +127,7 @@
     <ClCompile Include="Level_psx.cpp" />
     <ClCompile Include="Level_tr1_pc.cpp" />
     <ClCompile Include="Level_tr1_psx.cpp" />
+    <ClCompile Include="Level_tr1_saturn.cpp" />
     <ClCompile Include="Level_tr2_pc.cpp" />
     <ClCompile Include="Level_tr2_psx.cpp" />
     <ClCompile Include="Level_tr3_pc.cpp" />
@@ -141,6 +143,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="TileMapper.cpp" />
     <ClCompile Include="trtypes.cpp" />
     <ClCompile Include="tr_lights.cpp" />
     <ClCompile Include="tr_rooms.cpp" />

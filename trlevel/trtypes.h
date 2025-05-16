@@ -319,6 +319,20 @@ namespace trlevel
         uint8_t v1;
     };
 
+    struct tr_sprite_texture_saturn
+    {
+        uint16_t start;
+        uint16_t end;
+        uint8_t a2_1;
+        uint8_t height;
+        int16_t LeftSide;
+        int16_t TopSide;
+        int16_t RightSide;
+        int16_t BottomSide;
+        int16_t a7;
+    };
+    static_assert(sizeof(tr_sprite_texture_saturn) == 16);
+
     struct tr_sprite_sequence  // 8 bytes
     {
         int32_t SpriteID;       // Sprite identifier

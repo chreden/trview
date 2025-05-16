@@ -1,5 +1,6 @@
 #include "IMesh.h"
 #include <random>
+#include <trlevel/trtypes.h>
 
 using namespace DirectX::SimpleMath;
 
@@ -109,13 +110,70 @@ namespace trview
                 }
             }
         }
+
+        constexpr uint16_t get_raw_texture_operation(uint16_t texture)
+        {
+            return (texture & 0xE000) >> 13;
+        }
+
+        void adjust_tri_uvs_tr1_saturn(std::array<Vector2, 4>& uvs, uint16_t texture)
+        {
+            const uint16_t texture_operation = get_raw_texture_operation(texture);
+            switch (texture_operation)
+            {
+                case 0:
+                case 2:
+                {
+                    break;
+                }
+                case 1:
+                case 3:
+                {
+                    const Vector2 v0 = uvs[2];
+                    const Vector2 v1 = uvs[0];
+                    const Vector2 v2 = uvs[3];
+                    uvs[0] = v0;
+                    uvs[1] = v1;
+                    uvs[2] = v2;
+                    break;
+                }
+                case 4:
+                case 6:
+                {
+                    const Vector2 v0 = uvs[2];
+                    const Vector2 v1 = uvs[3];
+                    const Vector2 v2 = uvs[0];
+                    uvs[0] = v0;
+                    uvs[1] = v1;
+                    uvs[2] = v2;
+                    break;
+                }
+                case 5:
+                case 7:
+                {
+                    std::swap(uvs[1], uvs[2]);
+                    break;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Convert Saturn texture into a colour value.
+        /// </summary>
+        DirectX::SimpleMath::Color colour_from_texture(uint16_t t)
+        {
+            const uint16_t b = (t & 0x7c00) >> 10;
+            const uint16_t g = (t & 0x03e0) >> 5;
+            const uint16_t r = t & 0x001f;
+            return Color(r / 31.0f, g / 31.0f, b / 31.0f);
+        }
     }
 
     IMesh::~IMesh()
     {
     }
 
-    std::shared_ptr<IMesh> create_mesh(const trlevel::tr_mesh& mesh, const IMesh::Source& source, const ILevelTextureStorage& texture_storage, bool transparent_collision)
+    std::shared_ptr<IMesh> create_mesh(const trlevel::tr_mesh& mesh, const IMesh::Source& source, const ILevelTextureStorage& texture_storage, const trlevel::PlatformAndVersion& platform_and_version, bool transparent_collision)
     {
         std::vector<std::vector<uint32_t>> indices(texture_storage.num_tiles());
         std::vector<MeshVertex> vertices;
@@ -129,8 +187,8 @@ namespace trview
 
         process_textured_rectangles(mesh.textured_rectangles, in_vertices, texture_storage, vertices, indices, transparent_triangles, collision_triangles, transparent_collision);
         process_textured_triangles(mesh.textured_triangles, in_vertices, texture_storage, vertices, indices, transparent_triangles, collision_triangles, transparent_collision);
-        process_coloured_rectangles(mesh.coloured_rectangles, in_vertices, texture_storage, vertices, untextured_indices, collision_triangles);
-        process_coloured_triangles(mesh.coloured_triangles, in_vertices, texture_storage, vertices, untextured_indices, collision_triangles);
+        process_coloured_rectangles(mesh.coloured_rectangles, in_vertices, texture_storage, vertices, untextured_indices, collision_triangles, platform_and_version);
+        process_coloured_triangles(mesh.coloured_triangles, in_vertices, texture_storage, vertices, untextured_indices, collision_triangles, platform_and_version);
 
         return source(vertices, indices, untextured_indices, transparent_triangles, collision_triangles);
     }
@@ -303,20 +361,25 @@ namespace trview
                 uvs[i] = texture_storage.uv(texture, i);
             }
 
-            if (is_tr1_pc_may_1996(texture_storage.platform_and_version()) && static_cast<int16_t>(rect.texture) < 0)
+            if ((is_tr1_pc_may_1996(texture_storage.platform_and_version()) ||
+                texture_storage.platform_and_version().platform == Platform::Saturn) && static_cast<int16_t>(rect.texture) < 0)
             {
                 adjust_rect_uvs_tr1_1996_pc(uvs, rect.texture);
             }
 
-            if (texture_storage.platform_and_version().platform == Platform::PSX || is_tr1_pc_may_1996(texture_storage.platform_and_version()))
+            if (texture_storage.platform_and_version().platform == Platform::PSX || 
+                is_tr1_pc_may_1996(texture_storage.platform_and_version()) ||
+                texture_storage.platform_and_version().platform == Platform::Saturn)
             {
                 std::swap(uvs[2], uvs[3]);
             }
 
-            const bool double_sided = rect.texture & 0x8000;
+            const bool double_sided = texture_storage.platform_and_version().platform != Platform::Saturn && (rect.texture & 0x8000);
 
             TransparentTriangle::Mode transparency_mode;
-            if (determine_transparency(texture_storage.attribute(texture), rect.effects, transparency_mode))
+            if (determine_transparency(
+                texture_storage.platform_and_version().platform == Platform::Saturn ? rect.effects : texture_storage.attribute(texture),
+                texture_storage.platform_and_version().platform == Platform::Saturn ? 0 : rect.effects, transparency_mode))
             {
                 transparent_triangles.emplace_back(verts[0], verts[1], verts[2], uvs[0], uvs[1], uvs[2], texture_storage.tile(texture), transparency_mode, colors[0], colors[1], colors[2]);
                 transparent_triangles.emplace_back(verts[2], verts[3], verts[0], uvs[2], uvs[3], uvs[0], texture_storage.tile(texture), transparency_mode, colors[2], colors[3], colors[0]);
@@ -385,6 +448,8 @@ namespace trview
         std::vector<Triangle>& collision_triangles,
         bool transparent_collision)
     {
+        using namespace trlevel;
+
         uint16_t previous_texture = 0;
         for (const auto& tri : triangles)
         {
@@ -398,7 +463,8 @@ namespace trview
 
             uint16_t texture = tri.texture & Texture_Mask;
 
-            if (is_tr1_pc_may_1996(texture_storage.platform_and_version()))
+            if (is_tr1_pc_may_1996(texture_storage.platform_and_version()) ||
+                texture_storage.platform_and_version().platform == trlevel::Platform::Saturn)
             {
                 texture = tri.texture & 0x1FFF;
             }
@@ -420,10 +486,17 @@ namespace trview
                 adjust_tri_uvs_tr1_1996_pc(uvs, tri.texture);
             }
 
-            const bool double_sided = tri.texture & 0x8000;
+            if (texture_storage.platform_and_version().platform == trlevel::Platform::Saturn)
+            {
+                adjust_tri_uvs_tr1_saturn(uvs, tri.texture);
+            }
+
+            const bool double_sided = texture_storage.platform_and_version().platform != Platform::Saturn && (tri.texture & 0x8000);
 
             TransparentTriangle::Mode transparency_mode;
-            if (determine_transparency(texture_storage.attribute(texture), tri.effects, transparency_mode))
+            if (determine_transparency(
+                texture_storage.platform_and_version().platform == Platform::Saturn ? tri.effects : texture_storage.attribute(texture),
+                texture_storage.platform_and_version().platform == Platform::Saturn ? 0 : tri.effects, transparency_mode))
             {
                 transparent_triangles.emplace_back(verts[0], verts[1], verts[2], uvs[0], uvs[1], uvs[2], texture_storage.tile(texture), transparency_mode, colors[0], colors[1], colors[2]);
                 if (transparent_collision)
@@ -473,26 +546,25 @@ namespace trview
         const ILevelTextureStorage& texture_storage,
         std::vector<MeshVertex>& output_vertices,
         std::vector<uint32_t>& output_indices,
-        std::vector<Triangle>& collision_triangles)
+        std::vector<Triangle>& collision_triangles,
+        const trlevel::PlatformAndVersion& platform_and_version)
     {
         for (const auto& rect : rectangles)
         {
             const uint16_t texture = rect.texture & 0x7fff;
-            const bool double_sided = rect.texture & 0x8000;
+            const bool double_sided = platform_and_version.platform == trlevel::Platform::Saturn ? false : rect.texture & 0x8000;
 
             std::array<Vector3, 4> verts;
-            std::array<Color, 4> colors;
             for (int i = 0; i < 4; ++i)
             {
                 verts[i] = convert_vertex(input_vertices[rect.vertices[i]].vertex);
-                colors[i] = input_vertices[rect.vertices[i]].colour;
             }
 
             const uint32_t base = static_cast<uint32_t>(output_vertices.size());
             const auto normal = calculate_normal(&verts[0]);
             for (int i = 0; i < 4; ++i)
             {
-                output_vertices.push_back({ verts[i], normal, Vector2::Zero, texture_storage.palette_from_texture(texture) });
+                output_vertices.push_back({ verts[i], normal, Vector2::Zero, platform_and_version.platform == trlevel::Platform::Saturn ? colour_from_texture(rect.texture) : texture_storage.palette_from_texture(texture) });
             }
 
             output_indices.push_back(base);
@@ -527,26 +599,25 @@ namespace trview
         const ILevelTextureStorage& texture_storage,
         std::vector<MeshVertex>& output_vertices,
         std::vector<uint32_t>& output_indices,
-        std::vector<Triangle>& collision_triangles)
+        std::vector<Triangle>& collision_triangles,
+        const trlevel::PlatformAndVersion& platform_and_version)
     {
         for (const auto& tri : triangles)
         {
             const uint16_t texture = tri.texture & 0x7fff;
-            const bool double_sided = tri.texture & 0x8000;
+            const bool double_sided = platform_and_version.platform == trlevel::Platform::Saturn ? false : tri.texture & 0x8000;
 
             std::array<Vector3, 3> verts;
-            std::array<Color, 3> colors;
             for (int i = 0; i < 3; ++i)
             {
                 verts[i] = convert_vertex(input_vertices[tri.vertices[i]].vertex);
-                colors[i] = input_vertices[tri.vertices[i]].colour;
             }
 
             const uint32_t base = static_cast<uint32_t>(output_vertices.size());
             const auto normal = calculate_normal(&verts[0]);
             for (int i = 0; i < 3; ++i)
             {
-                output_vertices.push_back({ verts[i], normal, Vector2::Zero, texture_storage.palette_from_texture(texture) });
+                output_vertices.push_back({ verts[i], normal, Vector2::Zero, platform_and_version.platform == trlevel::Platform::Saturn ? colour_from_texture(tri.texture) : texture_storage.palette_from_texture(texture) });
             }
 
             output_indices.push_back(base);

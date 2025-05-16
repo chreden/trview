@@ -45,7 +45,7 @@ namespace trview
     /// @param texture_storage The textures for the level.
     /// @param transparent_collision Whether to include transparent triangles in collision triangles.
     /// @returns The new mesh.
-    std::shared_ptr<IMesh> create_mesh(const trlevel::tr_mesh& mesh, const IMesh::Source& source, const ILevelTextureStorage& texture_storage, bool transparent_collision = true);
+    std::shared_ptr<IMesh> create_mesh(const trlevel::tr_mesh& mesh, const IMesh::Source& source, const ILevelTextureStorage& texture_storage, const trlevel::PlatformAndVersion& platform_and_version, bool transparent_collision = true);
 
     /// Create a new cube mesh.
     std::shared_ptr<IMesh> create_cube_mesh(const IMesh::Source& source);
@@ -132,7 +132,8 @@ namespace trview
         const ILevelTextureStorage& texture_storage,
         std::vector<MeshVertex>& output_vertices,
         std::vector<uint32_t>& output_indices,
-        std::vector<Triangle>& collision_triangles);
+        std::vector<Triangle>& collision_triangles,
+        const trlevel::PlatformAndVersion& platform_and_version);
 
     // Convert the coloured triangles into collections required to create a mesh.
     // triangles: The triangles from the mesh or room geometry.
@@ -147,7 +148,8 @@ namespace trview
         const ILevelTextureStorage& texture_storage,
         std::vector<MeshVertex>& output_vertices,
         std::vector<uint32_t>& output_indices,
-        std::vector<Triangle>& collision_triangles);
+        std::vector<Triangle>& collision_triangles,
+        const trlevel::PlatformAndVersion& platform_and_version);
 
     /// Convert the vertex to the scale used by the viewer.
     /// @param vertex The vertex to convert.

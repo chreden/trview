@@ -11,7 +11,7 @@ namespace trview
         const uint32_t pointers = level.num_mesh_pointers();
         for (uint32_t i = 0; i < pointers; ++i)
         {
-            _meshes.insert({ i, create_mesh(level.get_mesh_by_pointer(i), mesh_source, texture_storage) });
+            _meshes.insert({ i, create_mesh(level.get_mesh_by_pointer(i), mesh_source, texture_storage, level.platform_and_version()) });
         }
     }
 

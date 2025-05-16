@@ -67,7 +67,8 @@ namespace trview
             return false;
         }
 
-        if (MA_SUCCESS != ma_decoder_init_memory(&_impl->data[0], _impl->data.size(), nullptr, &_impl->decoder))
+        if (_impl->data.empty() ||
+            MA_SUCCESS != ma_decoder_init_memory(&_impl->data[0], _impl->data.size(), nullptr, &_impl->decoder))
         {
             _impl->failed = true;
             return false;

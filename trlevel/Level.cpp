@@ -169,9 +169,16 @@ namespace trlevel
             }
         }
 
+        bool has_frame_count(PlatformAndVersion version)
+        {
+            return (version.version == LevelVersion::Tomb1 && !version.is_tr2_saturn) || is_tr2_demo_70688(version) || is_tr2_e3(version);
+        }
+
         bool is_tr1_frame_format(PlatformAndVersion version)
         {
-            return version.version == LevelVersion::Tomb1 || is_tr2_demo_70688(version) || is_tr2_e3(version);
+            return
+                (version.version == LevelVersion::Tomb1 && version.platform != Platform::Saturn)
+                || is_tr2_demo_70688(version) || is_tr2_e3(version);
         }
     }
 
@@ -247,6 +254,10 @@ namespace trlevel
                 {
                     generate_mesh_tr4_psx(mesh, stream);
                 }
+            }
+            else if (_platform_and_version.platform == Platform::Saturn)
+            {
+                generate_mesh_tr1_saturn(mesh, stream);
             }
             else if (is_tr1_may_1996(_platform_and_version))
             {
@@ -432,7 +443,7 @@ namespace trlevel
 
         // Tomb Raider I has the mesh count in the frame structure - all other tombs
         // already know based on the number of meshes.
-        if (is_tr1_frame_format(_platform_and_version))
+        if (has_frame_count(_platform_and_version))
         {
             mesh_count = _frames[offset++];
         }
@@ -635,7 +646,8 @@ namespace trlevel
                 {{.platform = Platform::PC, .version = LevelVersion::Tomb4, .remastered = true }, [&]() { load_tr4_pc_remastered(file, activity, callbacks); }},
                 {{.platform = Platform::PC, .version = LevelVersion::Tomb5 }, [&]() { load_tr5_pc(file, activity, callbacks); }},
                 {{.platform = Platform::PC, .version = LevelVersion::Tomb5, .remastered = true }, [&]() { load_tr5_pc_remastered(file, activity, callbacks); }},
-                {{.platform = Platform::Dreamcast, .version = LevelVersion::Tomb5 }, [&]() { load_tr5_dc(file, activity, callbacks); } },
+                {{.platform = Platform::Dreamcast, .version = LevelVersion::Tomb5 }, [&]() { load_tr5_dc(file, activity, callbacks); }},
+                {{.platform = Platform::Saturn, .version = LevelVersion::Tomb1 }, [&]() { load_tr1_saturn(file, activity, callbacks); }},
             };
 
             const auto loader = loaders.find(_platform_and_version);

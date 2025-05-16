@@ -14,6 +14,18 @@ namespace trview
         return equals_any(value, other) || equals_any(value, set...);
     }
 
+    template <typename T1, typename T2>
+    constexpr bool all_equal_to(T1&& value, T2&& other)
+    {
+        return value == other;
+    }
+
+    template <typename T1, typename T2, typename... Args>
+    constexpr bool all_equal_to(T1&& value, T2&& other, Args&&... set)
+    {
+        return all_equal_to(value, other) && all_equal_to(value, set...);
+    }
+
     template <Enum T>
     constexpr bool has_flag(T field, T flag) noexcept
     {

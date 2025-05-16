@@ -20,7 +20,7 @@ namespace trview
         void set_recent_files(const std::list<std::string>& files) override;
         void switch_to(const std::string& filename) override;
     private:
-        static const inline std::string default_file_pattern{ "\\*.TR2*,\\*.TR4*,\\*.TRC*,\\*.PHD,\\*.PSX,\\*.OBJ,\\*.TOM" };
+        static const inline std::string default_file_pattern{ "\\*.TR2*,\\*.TR4*,\\*.TRC*,\\*.PHD,\\*.PSX,\\*.OBJ,\\*.TOM,\\*.SAT" };
 
         std::shared_ptr<IDialogs> _dialogs;
         std::shared_ptr<IFiles> _files;
