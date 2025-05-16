@@ -67,7 +67,11 @@ namespace trview
 
             if (offset_mode == SpriteOffsetMode::RoomSprite)
             {
-                offset = Vector3(0, (1 - object_height) * 0.5f, 0);
+                if (bottom != top)
+                {
+                    const float y_factor = (-0.5f + ((fabs(static_cast<float>(top)) / (bottom - top))));
+                    offset = Vector3(0, -object_height * y_factor, 0);
+                }
             }
             else
             {

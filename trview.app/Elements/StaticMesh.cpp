@@ -55,7 +55,7 @@ namespace trview
 
         if (_type == Type::Sprite)
         {
-            _world = create_billboard(_position, Vector3(0, -0.5f, 0), _scale, camera);
+            _world = create_billboard(_position, Vector3(), _scale, camera);
         }
         _mesh->render(_world * camera.view_projection(), texture_storage, colour);
     }
@@ -80,7 +80,7 @@ namespace trview
 
         if (_type == Type::Sprite)
         {
-            _world = create_billboard(_position, Vector3(0, -0.5f, 0), _scale, camera);
+            _world = create_billboard(_position, Vector3(), _scale, camera);
         }
 
         for (const auto& triangle : _mesh->transparent_triangles())
