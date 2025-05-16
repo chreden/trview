@@ -1098,10 +1098,7 @@ namespace trlevel
                     int16_t new_tex = mapping->second[texture_operation + 1].value_or(mapping->second[0].value()).index;
                     t.texture = (t.texture & 0xE000) | new_tex;
                 }
-                if (t.effects != 0 || texture_operation != 0)
-                {
-                    transparent_object_textures.insert(t.texture & 0xFFF);
-                }
+                transparent_object_textures.insert(t.texture & 0xFFF);
             }
         }
 
