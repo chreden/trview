@@ -14,6 +14,7 @@
 #include "Lua/Lua.h"
 
 #include <future>
+#include <tlhelp32.h>
 
 namespace trview
 {
@@ -72,6 +73,32 @@ namespace trview
                 }
             }
 
+            int find_process(lua_State* L)
+            {
+                std::wstring name = to_utf16(lua_tostring(L, -1));
+
+                PROCESSENTRY32 entry;
+                entry.dwSize = sizeof(PROCESSENTRY32);
+
+                HANDLE snapshot = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
+                if (Process32First(snapshot, &entry))
+                {
+                    while (Process32Next(snapshot, &entry))
+                    {
+                        if (entry.szExeFile == name)
+                        {
+                            CloseHandle(snapshot);
+                            lua_pushnumber(L, entry.th32ProcessID);
+                            return 1;
+                        }
+                    }
+                }
+
+                CloseHandle(snapshot);
+                lua_pushnil(L);
+                return 1;
+            }
+
             int read_int(lua_State* L)
             {
                 uint32_t pid = static_cast<uint32_t>(lua_tointeger(L, 1));
@@ -113,6 +140,11 @@ namespace trview
                     {
                         return create_camera(L, viewer->camera().lock());
                     }
+                }
+                else if (key == "find_process")
+                {
+                    lua_pushcfunction(L, find_process);
+                    return 1;
                 }
                 else if (key == "level")
                 {
