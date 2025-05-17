@@ -377,6 +377,9 @@
     <ClCompile Include="Windows\Pack\PackWindowManager.cpp">
       <Filter>Windows\Pack</Filter>
     </ClCompile>
+    <ClCompile Include="Lua\Process\Lua_Process.cpp">
+      <Filter>Lua\Process</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera\Camera.h">
@@ -1258,6 +1261,9 @@
     <ClInclude Include="Mocks\Windows\IPackWindow.h">
       <Filter>Mocks\Windows</Filter>
     </ClInclude>
+    <ClInclude Include="Lua\Process\Lua_Process.h">
+      <Filter>Lua\Process</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Windows">
@@ -1481,6 +1487,9 @@
     </Filter>
     <Filter Include="Windows\Pack">
       <UniqueIdentifier>{2309c42b-f2ee-4516-88c1-62a8182b467f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Lua\Process">
+      <UniqueIdentifier>{74521c40-946a-4453-a1c5-25a3466a060d}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

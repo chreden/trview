@@ -8,8 +8,11 @@ local selected_game = "Tomb Raider 1"
 local games = 
 {
     ["Tomb Raider 1"] = { lara = 0, exe = "Tomb1.exe" }, 
+    ["Tomb Raider 1 Remastered"] = { lara = 140717555900000, room = 12, position = 20, exe = "tomb123.exe" }, 
     ["Tomb Raider 2"] = { lara = 5375932, room = 24, position = 52, exe = "Tomb2.exe" },
+    ["Tomb Raider 2 Remastered"] = { lara = 0, exe = "tomb123.exe" }, 
     ["Tomb Raider 3"] = { lara = 4300048, room = 24, position = 48, exe = "tomb3.exe" },
+    ["Tomb Raider 3 Remastered"] = { lara = 0, exe = "tomb123.exe" }, 
     ["Tomb Raider 4"] = { lara = 8446268, room = 24, position = 64, exe = "Tomb4.exe" },
     ["Tomb Raider 5"] = { lara = 0, exe = "Tomb5.exe" }
 }
@@ -19,7 +22,7 @@ function select_game(game)
 
     local actual_game = games[game]
     if actual_game ~= nil then
-        pid = trview:find_process(actual_game.exe) or 0
+        pid = Process.find(actual_game.exe) or 0
         lara_pointer = actual_game.lara
         room_offset = actual_game.room
         pos_offset = actual_game.position
@@ -27,9 +30,8 @@ function select_game(game)
 end
 
 function render_ui()
-    
     if (ImGui.Begin( { name = "Lara Tracker" })) then
-        if (ImGui.BeginCombo({ label = "", preview_value = selected_game })) then
+        if (ImGui.BeginCombo({ label = "A", preview_value = selected_game })) then
             for g, _ in pairs(games) do
                 if (ImGui.Selectable({ label = g, selected = g == selected_game })) then
                     select_game(g)
@@ -47,16 +49,16 @@ function render_ui()
         _, room_offset = ImGui.InputInt( { label = "Room Offset", value = room_offset })
         _, pos_offset = ImGui.InputInt( { label = "Pos Offset", value = pos_offset })
         _, enabled = ImGui.Checkbox({ label = "Enabled", checked = enabled })
-        
-        if (enabled and trview.level ~= nil) then
-            local lara_ptr = trview.read_int(pid, lara_pointer)
 
-            local room = trview.read_int16(pid, lara_ptr + room_offset)
+        if (enabled and trview.level ~= nil) then
+            local lara_ptr = Process.read_int32(pid, lara_pointer)
+
+            local room = Process.read_int16(pid, lara_ptr + room_offset)
             ImGui.Text( { text = "Room : " .. tostring(room) })
         
-            local x = trview.read_int(pid, lara_ptr + pos_offset)
-            local y = trview.read_int(pid, lara_ptr + pos_offset + 4)
-            local z = trview.read_int(pid, lara_ptr + pos_offset + 8)
+            local x = Process.read_int32(pid, lara_ptr + pos_offset)
+            local y = Process.read_int32(pid, lara_ptr + pos_offset + 4)
+            local z = Process.read_int32(pid, lara_ptr + pos_offset + 8)
             ImGui.Text( { text = "Pos : " .. tostring(x) .. "," .. tostring(y) .. "," .. tostring(z) })
             
             local wp = trview.route.waypoints[1]

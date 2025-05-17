@@ -14,7 +14,6 @@
 #include "Lua/Lua.h"
 
 #include <future>
-#include <tlhelp32.h>
 
 namespace trview
 {
@@ -73,62 +72,6 @@ namespace trview
                 }
             }
 
-            int find_process(lua_State* L)
-            {
-                std::wstring name = to_utf16(lua_tostring(L, -1));
-
-                PROCESSENTRY32 entry;
-                entry.dwSize = sizeof(PROCESSENTRY32);
-
-                HANDLE snapshot = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
-                if (Process32First(snapshot, &entry))
-                {
-                    while (Process32Next(snapshot, &entry))
-                    {
-                        if (entry.szExeFile == name)
-                        {
-                            CloseHandle(snapshot);
-                            lua_pushnumber(L, entry.th32ProcessID);
-                            return 1;
-                        }
-                    }
-                }
-
-                CloseHandle(snapshot);
-                lua_pushnil(L);
-                return 1;
-            }
-
-            int read_int(lua_State* L)
-            {
-                uint32_t pid = static_cast<uint32_t>(lua_tointeger(L, 1));
-                uint64_t offset = lua_tointeger(L, 2);
-
-                HANDLE process = OpenProcess(PROCESS_VM_READ, FALSE, pid);
-                int output = 0;
-                ReadProcessMemory(process, (void*)offset, &output, sizeof(int), nullptr);
-
-                CloseHandle(process);
-
-                lua_pushnumber(L, output);
-                return 1;
-            }
-
-            int read_int16(lua_State* L)
-            {
-                uint32_t pid = static_cast<uint32_t>(lua_tointeger(L, 1));
-                uint64_t offset = lua_tointeger(L, 2);
-
-                HANDLE process = OpenProcess(PROCESS_VM_READ, FALSE, pid);
-                int16_t output = 0;
-                ReadProcessMemory(process, (void*)offset, &output, sizeof(int16_t), nullptr);
-
-                CloseHandle(process);
-
-                lua_pushnumber(L, output);
-                return 1;
-            }
-
             int trview_index(lua_State* L)
             {
                 auto application = lua::get_self_raw<IApplication>(L);
@@ -140,11 +83,6 @@ namespace trview
                     {
                         return create_camera(L, viewer->camera().lock());
                     }
-                }
-                else if (key == "find_process")
-                {
-                    lua_pushcfunction(L, find_process);
-                    return 1;
                 }
                 else if (key == "level")
                 {
@@ -166,16 +104,6 @@ namespace trview
                 else if (key == "route")
                 {
                     return create_route(L, application->route());
-                }
-                else if (key == "read_int")
-                {
-                    lua_pushcfunction(L, read_int);
-                    return 1;
-                }
-                else if (key == "read_int16")
-                {
-                    lua_pushcfunction(L, read_int16);
-                    return 1;
                 }
                 return 0;
             }

@@ -4,6 +4,7 @@
 #include <external/lua/src/lualib.h>
 #include <trview.lua.imgui/inc/trview.lua.imgui.h>
 #include "Route/Lua_Waypoint.h"
+#include "Process/Lua_Process.h"
 
 namespace trview
 {
@@ -149,6 +150,7 @@ namespace trview
         lua_setglobal(L, "dofile");
         lua::trview_register(L, application, _route_source, _randomizer_route_source, _waypoint_source, _scriptable_source, _dialogs, _files);
         lua::imgui_register(L);
+        lua::process_register(L);
     }
 
     void Lua::set_directory(const std::string& directory)
