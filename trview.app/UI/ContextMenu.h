@@ -5,6 +5,7 @@
 namespace trview
 {
     struct IItemsWindowManager;
+    struct IPlugins;
 
     class ContextMenu final : public IContextMenu
     {
@@ -24,9 +25,9 @@ namespace trview
             static inline const std::string filter = "Filter";
         };
 
-        explicit ContextMenu(const std::weak_ptr<IItemsWindowManager>& items_window_manager);
+        explicit ContextMenu(const std::weak_ptr<IItemsWindowManager>& items_window_manager, const std::weak_ptr<IPlugins>& plugins);
         virtual ~ContextMenu() = default;
-        virtual void render() override;
+        void render(const PickResult& pick_result) override;
         virtual void set_visible(bool value) override;
         virtual void set_remove_enabled(bool value) override;
         virtual void set_hide_enabled(bool value) override;
@@ -43,5 +44,6 @@ namespace trview
         bool _tile_filter_enabled{ false };
         std::vector<std::weak_ptr<ITrigger>> _triggered_by;
         std::weak_ptr<IItemsWindowManager> _items_window_manager;
+        std::weak_ptr<IPlugins> _plugins;
     };
 }

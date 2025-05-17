@@ -6,6 +6,7 @@
 namespace trview
 {
     struct IApplication;
+    struct PickResult;
 
     struct IPlugin
     {
@@ -25,6 +26,7 @@ namespace trview
         virtual void do_file(const std::string& path) = 0;
         virtual void clear_messages() = 0;
         virtual void reload() = 0;
+        virtual void render_context_menu(const PickResult& pick_result) = 0;
         virtual void render_toolbar() = 0;
         virtual void render_ui() = 0;
         virtual void set_enabled(bool value) = 0;

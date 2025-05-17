@@ -1,5 +1,7 @@
 #include "ContextMenu.h"
 #include "../Windows/IItemsWindowManager.h"
+#include "../Plugins/IPlugins.h"
+#include "../Geometry/PickResult.h"
 
 namespace trview
 {
@@ -7,12 +9,12 @@ namespace trview
     {
     }
 
-    ContextMenu::ContextMenu(const std::weak_ptr<IItemsWindowManager>& items_window_manager)
-        : _items_window_manager(items_window_manager)
+    ContextMenu::ContextMenu(const std::weak_ptr<IItemsWindowManager>& items_window_manager, const std::weak_ptr<IPlugins>& plugins)
+        : _items_window_manager(items_window_manager), _plugins(plugins)
     {
     }
 
-    void ContextMenu::render()
+    void ContextMenu::render(const PickResult& pick_result)
     {
         if (_can_show && ImGui::BeginPopupContextVoid())
         {
@@ -95,6 +97,11 @@ namespace trview
                     ImGui::EndMenu();
                 }
                 ImGui::EndMenu();
+            }
+
+            if (auto plugins = _plugins.lock())
+            {
+                plugins->render_context_menu(pick_result);
             }
 
             ImGui::EndPopup();

@@ -7,6 +7,7 @@
 #include <trview.app/Settings/UserSettings.h>
 #include "IContextMenu.h"
 
+
 #include <trview.common/Event.h>
 
 
@@ -140,6 +141,8 @@ namespace trview
         /// Set the camera projection mode.
         /// @param mode The current camera projection mode.
         virtual void set_camera_projection_mode(ProjectionMode mode) = 0;
+
+        virtual void set_context_pick(const PickResult& pick_result) = 0;
 
         /// Set whether there are any flipmaps in the level.
         /// @param value Whether there are any flipmaps.

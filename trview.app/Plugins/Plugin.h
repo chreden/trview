@@ -28,6 +28,7 @@ namespace trview
         void do_file(const std::string& path) override;
         void clear_messages() override;
         void reload() override;
+        void render_context_menu(const PickResult& pick_result) override;
         void render_toolbar() override;
         void render_ui() override;
         void set_enabled(bool value) override;

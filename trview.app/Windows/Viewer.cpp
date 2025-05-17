@@ -697,6 +697,7 @@ namespace trview
             if (button == input::IMouse::Button::Right && _current_pick.hit && _current_pick.type != PickResult::Type::Compass && _camera->idle_rotation())
             {
                 _context_pick = _current_pick;
+                _ui->set_context_pick(_context_pick);
                 _ui->set_show_context_menu(true);
                 _camera_input.reset(true);
                 _ui->set_remove_waypoint_enabled(_current_pick.type == PickResult::Type::Waypoint);

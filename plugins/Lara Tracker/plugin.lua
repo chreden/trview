@@ -80,4 +80,21 @@ end
 function render_toolbar()
 end
 
+local warp_selected = false
+function render_context_menu(pick)
+    warp_selected = ImGui.Selectable({ label = "Warp Here", selected = warp_selected })
+    if warp_selected then
+        print(tostring(pick.x) .. "," .. pick.y .. "," .. pick.z)
+        local lara_ptr = Process.read_int32(pid, lara_pointer)
+        Process.write_int16(pid, lara_ptr + room_offset, pick.room)
+        Process.write_int32(pid, lara_ptr + pos_offset, pick.x)
+        Process.write_int32(pid, lara_ptr + pos_offset + 4, pick.y)
+        Process.write_int32(pid, lara_ptr + pos_offset + 8, pick.z)
+        -- Process.write_int32(pid, 246462372, pick.x)
+        -- Process.write_int32(pid, 246462372 + 4, pick.y)
+        -- Process.write_int32(pid, 246462372 + 8, pick.z)
+        
+    end
+end
+
 print("Lara Tracker loaded")

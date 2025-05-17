@@ -6,6 +6,7 @@
 namespace trview
 {
     struct IItemsWindow;
+    struct PickResult;
 
     struct IContextMenu
     {
@@ -45,7 +46,7 @@ namespace trview
         /// </summary>
         Event<std::weak_ptr<ITrigger>> on_trigger_selected;
         Event<std::weak_ptr<IItemsWindow>> on_filter_items_to_tile;
-        virtual void render() = 0;
+        virtual void render(const PickResult& pick_result) = 0;
         /// <summary>
         /// Set the context menu to visible.
         /// </summary>

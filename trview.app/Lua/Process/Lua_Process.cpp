@@ -33,6 +33,21 @@ namespace trview
             return 1;
         }
 
+        int read_int16(lua_State* L)
+        {
+            uint32_t pid = static_cast<uint32_t>(lua_tointeger(L, 1));
+            uint64_t offset = lua_tointeger(L, 2);
+
+            HANDLE process = OpenProcess(PROCESS_VM_READ, FALSE, pid);
+            int16_t output = 0;
+            ReadProcessMemory(process, (void*)offset, &output, sizeof(int16_t), nullptr);
+
+            CloseHandle(process);
+
+            lua_pushnumber(L, output);
+            return 1;
+        }
+
         int read_int32(lua_State* L)
         {
             uint32_t pid = static_cast<uint32_t>(lua_tointeger(L, 1));
@@ -63,19 +78,30 @@ namespace trview
             return 1;
         }
 
-        int read_int16(lua_State* L)
+        int write_int16(lua_State* L)
         {
             uint32_t pid = static_cast<uint32_t>(lua_tointeger(L, 1));
             uint64_t offset = lua_tointeger(L, 2);
+            int16_t value = static_cast<int16_t>(lua_tonumber(L, 3));
 
-            HANDLE process = OpenProcess(PROCESS_VM_READ, FALSE, pid);
-            int16_t output = 0;
-            ReadProcessMemory(process, (void*)offset, &output, sizeof(int16_t), nullptr);
-
+            HANDLE process = OpenProcess(PROCESS_ALL_ACCESS, FALSE, pid);
+            WriteProcessMemory(process, (void*)offset, &value, sizeof(int16_t), nullptr);
             CloseHandle(process);
 
-            lua_pushnumber(L, output);
-            return 1;
+            return 0;
+        }
+
+        int write_int32(lua_State* L)
+        {
+            uint32_t pid = static_cast<uint32_t>(lua_tointeger(L, 1));
+            uint64_t offset = lua_tointeger(L, 2);
+            int32_t value = static_cast<int32_t>(lua_tonumber(L, 3));
+
+            HANDLE process = OpenProcess(PROCESS_ALL_ACCESS, FALSE, pid);
+            WriteProcessMemory(process, (void*)offset, &value, sizeof(int32_t), nullptr);
+            CloseHandle(process);
+
+            return 0;
         }
 
         void process_register(lua_State* L)
@@ -89,6 +115,10 @@ namespace trview
             lua_setfield(L, -2, "read_int32");
             lua_pushcfunction(L, read_int64);
             lua_setfield(L, -2, "read_int64");
+            lua_pushcfunction(L, write_int16);
+            lua_setfield(L, -2, "write_int16");
+            lua_pushcfunction(L, write_int32);
+            lua_setfield(L, -2, "write_int32");
             lua_setglobal(L, "Process");
         }
     }

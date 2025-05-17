@@ -41,6 +41,7 @@ namespace trview
         virtual void set_camera_rotation(float yaw, float pitch) override;
         virtual void set_camera_mode(ICamera::Mode mode) override;
         virtual void set_camera_projection_mode(ProjectionMode mode) override;
+        void set_context_pick(const PickResult& pick_result) override;
         virtual void set_flip_enabled(bool value) override;
         virtual void set_hide_enabled(bool value) override;
 
@@ -103,5 +104,6 @@ namespace trview
         uint32_t _selected_item{ 0u };
         std::weak_ptr<IRoute> _route;
         std::weak_ptr<ILevel> _level;
+        PickResult _pick_result;
     };
 }

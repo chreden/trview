@@ -1,6 +1,8 @@
 #include "Plugin.h"
 #include <algorithm>
 #include <format>
+#include "../Geometry/PickResult.h"
+#include "../Elements/IRoom.h"
 
 namespace trview
 {
@@ -138,6 +140,54 @@ namespace trview
         {
             _lua->do_file(_script);
             _script_loaded = true;
+        }
+    }
+
+    namespace
+    {
+        std::weak_ptr<IRoom> room_from_pick(const PickResult& pick)
+        {
+            switch (pick.type)
+            {
+            case PickResult::Type::Room:
+            {
+                return pick.room;
+            }
+            case PickResult::Type::Entity:
+            {
+                if (auto item = pick.item.lock())
+                {
+                    return item->room();
+                }
+                break;
+            }
+            case PickResult::Type::Trigger:
+            {
+                if (const auto trigger = pick.trigger.lock())
+                {
+                    return trigger->room();
+                }
+                break;
+            }
+            }
+            return {};
+        }
+    }
+
+
+    void Plugin::render_context_menu(const PickResult& pick_result)
+    {
+        if (!_enabled)
+        {
+            return;
+        }
+
+        if (auto room = room_from_pick(pick_result).lock())
+        {
+            const float x = pick_result.position.x * trlevel::Scale;
+            const float y = pick_result.position.y * trlevel::Scale;
+            const float z = pick_result.position.z * trlevel::Scale;
+            _lua->execute(std::format("if render_context_menu ~= nil then local pick = {{ room = {}, x = {}, y = {}, z = {} }} render_context_menu(pick) end", room->number(), x, y, z));
         }
     }
 

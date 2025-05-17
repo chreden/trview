@@ -17,6 +17,7 @@ namespace trview
         virtual ~Plugins() = default;
         std::vector<std::weak_ptr<IPlugin>> plugins() const override;
         void initialise(IApplication* application) override;
+        void render_context_menu(const PickResult& pick_result) override;
         void render_ui() override;
         void reload() override;
         void set_settings(const UserSettings& settings) override;

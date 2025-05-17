@@ -1,4 +1,5 @@
 #include "Plugins.h"
+#include "../Geometry/PickResult.h"
 
 namespace trview
 {
@@ -30,6 +31,11 @@ namespace trview
         {
             plugin->initialise(_application);
         }
+    }
+
+    void Plugins::render_context_menu(const PickResult& pick_result)
+    {
+        std::ranges::for_each(_plugins, [=](auto&& p) { p->render_context_menu(pick_result); });
     }
 
     void Plugins::render_ui()

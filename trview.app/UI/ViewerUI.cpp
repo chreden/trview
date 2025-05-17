@@ -252,7 +252,7 @@ namespace trview
         _camera_controls->render();
         _camera_position->render();
         _settings_window->render();
-        _context_menu->render();
+        _context_menu->render(_pick_result);
         _go_to->render();
         _level_info->render();
         _toolbar->render();
@@ -304,6 +304,11 @@ namespace trview
     void ViewerUI::set_camera_projection_mode(ProjectionMode mode)
     {
         _camera_controls->set_projection_mode(mode);
+    }
+
+    void ViewerUI::set_context_pick(const PickResult& pick_result)
+    {
+        _pick_result = pick_result;
     }
 
     void ViewerUI::set_flip_enabled(bool value)
