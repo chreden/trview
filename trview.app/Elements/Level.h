@@ -128,6 +128,7 @@ namespace trview
         bool ng_plus() const override;
         bool trng() const override;
         std::weak_ptr<trlevel::IPack> pack() const override;
+        trlevel::PlatformAndVersion platform_and_version() const override;
     private:
         void generate_rooms(const trlevel::ILevel& level, const IRoom::Source& room_source, const IMeshStorage& mesh_storage);
         void generate_triggers(const ITrigger::Source& trigger_source);
@@ -214,8 +215,6 @@ namespace trview
 
         std::unique_ptr<ISelectionRenderer> _selection_renderer;
         std::set<uint32_t> _alternate_groups;
-        trlevel::LevelVersion _version;
-        trlevel::Platform _platform;
         std::string _filename;
         std::shared_ptr<ILog> _log;
         std::vector<uint16_t> _floor_data;
@@ -230,6 +229,7 @@ namespace trview
         std::shared_ptr<INgPlusSwitcher> _ngplus_switcher;
         bool _ng{ false };
         std::shared_ptr<trlevel::IPack> _pack;
+        trlevel::PlatformAndVersion _platform_and_version;
     };
 
     /// Find the first item with the type id specified.

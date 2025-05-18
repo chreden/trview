@@ -42,6 +42,7 @@ namespace trview
         virtual void set_number(int32_t number) override;
         virtual void set_selected_trigger(const std::weak_ptr<ITrigger>& trigger) override;
         virtual void set_items(const std::vector<std::weak_ptr<IItem>>& items) override;
+        void set_platform_and_version(const trlevel::PlatformAndVersion& platform_and_version) override;
         virtual std::weak_ptr<ITrigger> selected_trigger() const override;
         virtual void update(float delta) override;
     private:
@@ -89,5 +90,6 @@ namespace trview
         bool _force_sort{ false };
         Track<Type::Room> _track;
         AutoHider _auto_hider;
+        trlevel::PlatformAndVersion _platform_and_version;
     };
 }

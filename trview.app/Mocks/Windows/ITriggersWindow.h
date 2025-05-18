@@ -17,6 +17,7 @@ namespace trview
             MOCK_METHOD(void, set_items, (const std::vector<std::weak_ptr<IItem>>&), (override));
             MOCK_METHOD(void, set_selected_trigger, (const std::weak_ptr<ITrigger>&), (override));
             MOCK_METHOD(void, set_number, (int32_t), (override));
+            MOCK_METHOD(void, set_platform_and_version, (const trlevel::PlatformAndVersion&), (override));
             MOCK_METHOD(void, set_triggers, (const std::vector<std::weak_ptr<ITrigger>>&), (override));
             MOCK_METHOD(void, update, (float), (override));
         };

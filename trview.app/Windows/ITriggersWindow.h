@@ -51,6 +51,8 @@ namespace trview
 
         virtual void set_number(int32_t number) = 0;
 
+        virtual void set_platform_and_version(const trlevel::PlatformAndVersion& platform_and_version) = 0;
+
         /// Set the selected trigger.
         /// @param item The selected trigger.
         virtual void set_selected_trigger(const std::weak_ptr<ITrigger>& trigger) = 0;

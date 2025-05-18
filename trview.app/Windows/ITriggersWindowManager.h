@@ -28,6 +28,8 @@ namespace trview
         /// @param items The items in the level.
         virtual void set_items(const std::vector<std::weak_ptr<IItem>>& items) = 0;
 
+        virtual void set_platform_and_version(const trlevel::PlatformAndVersion& platform_and_version) = 0;
+
         /// Set the triggers to use in the windows.
         /// @param triggers The triggers in the level.
         virtual void set_triggers(const std::vector<std::weak_ptr<ITrigger>>& triggers) = 0;
