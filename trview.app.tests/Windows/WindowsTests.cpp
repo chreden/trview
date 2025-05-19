@@ -598,6 +598,7 @@ TEST(Windows, SetLevel)
     auto [triggers_ptr, triggers] = create_mock<MockTriggersWindowManager>();
     EXPECT_CALL(triggers, set_items).Times(1);
     EXPECT_CALL(triggers, set_triggers).Times(1);
+    EXPECT_CALL(triggers, set_platform_and_version).Times(1);
     auto [textures_ptr, textures] = create_mock<MockTexturesWindowManager>();
     EXPECT_CALL(textures, set_texture_storage).Times(1);
     auto windows = register_test_module()

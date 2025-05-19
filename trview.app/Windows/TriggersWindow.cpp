@@ -18,7 +18,21 @@ namespace trview
                 return room->sector(static_cast<int32_t>(pos.x), static_cast<int32_t>(pos.z)).lock();
             }
             return {};
-        };
+        }
+
+        std::string soundtrack_id_to_file(uint16_t index)
+        {
+            std::optional<uint16_t> new_index;
+            if (index >= 3 && index <= 23)
+            {
+                new_index = static_cast<uint16_t>(index - 1);
+            }
+            else if (index >= 27)
+            {
+                new_index = static_cast<uint16_t>(index - 4);
+            }
+            return new_index.has_value() ? std::to_string(new_index.value()) : "?";
+        }
     }
 
     ITriggersWindow::~ITriggersWindow()
@@ -110,6 +124,11 @@ namespace trview
     void TriggersWindow::set_items(const std::vector<std::weak_ptr<IItem>>& items)
     {
         _all_items = items;
+    }
+
+    void TriggersWindow::set_platform_and_version(const trlevel::PlatformAndVersion& platform_and_version)
+    {
+        _platform_and_version = platform_and_version;
     }
 
     std::weak_ptr<ITrigger> TriggersWindow::selected_trigger() const
@@ -431,7 +450,21 @@ namespace trview
                     ImGui::TableNextColumn();
                     ImGui::Text(command_type_name(command.type()).c_str());
                     ImGui::TableNextColumn();
-                    ImGui::Text(std::to_string(command.index()).c_str());
+                    if (command.type() == TriggerCommandType::PlaySoundtrack &&
+                        _platform_and_version.version == trlevel::LevelVersion::Tomb2)
+                    {
+                        ImGui::Text(std::format("{} ({})", command.index(), soundtrack_id_to_file(command.index())).c_str());
+                        if (ImGui::IsItemHovered())
+                        {
+                            ImGui::BeginTooltip();
+                            ImGui::Text("Actual track file number is in parenthesis");
+                            ImGui::EndTooltip();
+                        }
+                    }
+                    else
+                    {
+                        ImGui::Text(std::to_string(command.index()).c_str());
+                    }
                     ImGui::TableNextColumn();
                     ImGui::Text(get_command_display(command).c_str());;
                     if (any_extra)

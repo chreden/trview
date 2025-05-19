@@ -147,6 +147,7 @@ namespace trview
         virtual std::weak_ptr<ISoundStorage> sound_storage() const = 0;
         virtual bool trng() const = 0;
         virtual std::weak_ptr<trlevel::IPack> pack() const = 0;
+        virtual trlevel::PlatformAndVersion platform_and_version() const = 0;
 
         Event<std::weak_ptr<IItem>> on_item_selected;
         // Event raised when the level needs to change the selected room.

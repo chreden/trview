@@ -166,6 +166,19 @@ TEST(TriggersWindowManager, SetItemsSetsItemsOnWindows)
     manager->set_items({});
 }
 
+TEST(TriggersWindowManager, SetPlatformAndVersionSetsPlatformAndVersionOnWindows)
+{
+    auto mock_window = mock_shared<MockTriggersWindow>();
+    EXPECT_CALL(*mock_window, set_platform_and_version).Times(2);
+    auto manager = register_test_module().with_window_source([&](auto&&...) { return mock_window; }).build();
+
+    auto created_window = manager->create_window().lock();
+    ASSERT_NE(created_window, nullptr);
+    ASSERT_EQ(created_window, mock_window);
+
+    manager->set_platform_and_version({});
+}
+
 TEST(TriggersWindowManager, SetTriggersSetsTriggersOnWindows)
 {
     auto mock_window = mock_shared<MockTriggersWindow>();

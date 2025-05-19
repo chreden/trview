@@ -262,7 +262,7 @@ namespace trview
 
     trlevel::Platform Level::platform() const
     {
-        return _platform;
+        return _platform_and_version.platform;
     }
 
     void Level::render(const ICamera& camera, bool render_selection)
@@ -535,7 +535,7 @@ namespace trview
             {
                 if (has_flag(sector->flags(), SectorFlag::Trigger))
                 {
-                    auto trigger = trigger_source(static_cast<uint32_t>(_triggers.size()), room, sector->x(), sector->z(), sector->trigger_info(), _version, shared_from_this(), sector);
+                    auto trigger = trigger_source(static_cast<uint32_t>(_triggers.size()), room, sector->x(), sector->z(), sector->trigger_info(), _platform_and_version.version, shared_from_this(), sector);
                     _triggers.push_back(trigger);
                     sector->set_trigger(trigger);
                     room->add_trigger(trigger);
@@ -1050,7 +1050,7 @@ namespace trview
 
     trlevel::LevelVersion Level::version() const
     {
-        return _version;
+        return _platform_and_version.version;
     }
 
     std::string Level::filename() const
@@ -1350,8 +1350,7 @@ namespace trview
         const ISoundSource::Source& sound_source_source,
         const trlevel::ILevel::LoadCallbacks callbacks)
     {
-        _platform = level->platform();
-        _version = level->get_version();
+        _platform_and_version = level->platform_and_version();
         _floor_data = level->get_floor_data_all();
         _name = level->name();
         _ng = level->trng();
@@ -1482,7 +1481,7 @@ namespace trview
                     detail = details[index];
                 }
             }
-            auto sound_source = sound_source_source(count++, source, detail, _version, shared_from_this());
+            auto sound_source = sound_source_source(count++, source, detail, _platform_and_version.version, shared_from_this());
             _token_store += sound_source->on_changed += [this]() { content_changed(); };
             _sound_sources.push_back(sound_source);
         }
@@ -1544,6 +1543,11 @@ namespace trview
     std::weak_ptr<trlevel::IPack> Level::pack() const
     {
         return _pack;
+    }
+
+    trlevel::PlatformAndVersion Level::platform_and_version() const
+    {
+        return _platform_and_version;
     }
 
     bool find_item_by_type_id(const ILevel& level, uint32_t type_id, std::weak_ptr<IItem>& output_item)

@@ -36,6 +36,7 @@ namespace trview
         triggers_window->on_add_to_route += on_add_to_route;
         triggers_window->on_camera_sink_selected += on_camera_sink_selected;
         triggers_window->set_items(_items);
+        triggers_window->set_platform_and_version(_platform_and_version);
         triggers_window->set_triggers(_triggers);
         triggers_window->set_current_room(_current_room);
         triggers_window->set_selected_trigger(_selected_trigger);
@@ -53,6 +54,15 @@ namespace trview
         for (auto& window : _windows)
         {
             window.second->set_items(items);
+        }
+    }
+
+    void TriggersWindowManager::set_platform_and_version(const trlevel::PlatformAndVersion& platform_and_version)
+    {
+        _platform_and_version = platform_and_version;
+        for (auto& window : _windows)
+        {
+            window.second->set_platform_and_version(platform_and_version);
         }
     }
 
