@@ -174,7 +174,10 @@ namespace trview
         auto font_factory = std::make_shared<graphics::FontFactory>();
 
         Resource type_list = get_resource_memory(IDR_TYPE_NAMES, L"TEXT");
-        auto type_info_lookup = std::make_shared<TypeInfoLookup>(std::string(type_list.data, type_list.data + type_list.size));
+        auto extra_type_info = files->load_file(files->appdata_directory() + "\\trview\\types.json");
+        auto type_info_lookup = std::make_shared<TypeInfoLookup>(
+            std::string(type_list.data, type_list.data + type_list.size),
+            extra_type_info.has_value() ? std::optional<std::string>(extra_type_info.value() | std::ranges::to<std::string>()) : std::nullopt);
 
         load_default_shaders(device, shader_storage);
         load_default_fonts(device, font_factory);

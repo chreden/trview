@@ -8,7 +8,7 @@ TEST(TypeInfoLookup, LookupTR1)
 {
     std::string json = "{\"games\":{\"tr1\":[{\"id\":123,\"name\":\"Test Name\"}]}}";
 
-    TypeInfoLookup lookup(json);
+    TypeInfoLookup lookup(json, std::nullopt);
 
     ASSERT_EQ("Test Name", lookup.lookup({ .version = LevelVersion::Tomb1 }, 123, 0).name);
 }
@@ -18,7 +18,7 @@ TEST(TypeInfoLookup, LookupMultipleGames)
 {
     std::string json = "{\"games\":{\"tr1\":[{\"id\":123,\"name\":\"Test Name TR1\"}],\"tr2\":[{\"id\":123,\"name\":\"Test Name TR2\"}]}}";
 
-    TypeInfoLookup lookup(json);
+    TypeInfoLookup lookup(json, std::nullopt);
 
     ASSERT_EQ("Test Name TR1", lookup.lookup({ .version = LevelVersion::Tomb1 }, 123, 0).name);
     ASSERT_EQ("Test Name TR2", lookup.lookup({ .version = LevelVersion::Tomb2 }, 123, 0).name);
@@ -29,7 +29,7 @@ TEST(TypeInfoLookup, LookupMissingItem)
 {
     std::string json = "{}";
 
-    TypeInfoLookup lookup(json);
+    TypeInfoLookup lookup(json, std::nullopt);
 
     ASSERT_EQ("123", lookup.lookup({ .version = LevelVersion::Tomb3 }, 123, 0).name);
 }
@@ -37,7 +37,7 @@ TEST(TypeInfoLookup, LookupMissingItem)
 TEST(TypeInfoLookup, LookupNormalMutantEggs)
 {
     std::string json = "{\"games\":{\"tr1\":[{\"id\":163,\"name\":\"Test Name 1\"}]}}";
-    TypeInfoLookup lookup(json);
+    TypeInfoLookup lookup(json, std::nullopt);
 
     auto winged = lookup.lookup({ .version = LevelVersion::Tomb1 }, 163, 0).name;
     auto shooter = lookup.lookup({ .version = LevelVersion::Tomb1 }, 163, 1 << 9).name;
@@ -57,7 +57,7 @@ TEST(TypeInfoLookup, LookupNormalMutantEggs)
 TEST(TypeInfoLookup, LookupBigMutantEggs)
 {
     std::string json = "{\"games\":{\"tr1\":[{\"id\":181,\"name\":\"Test Name 2\"}]}}";
-    TypeInfoLookup lookup(json);
+    TypeInfoLookup lookup(json, std::nullopt);
 
     auto winged = lookup.lookup({ .version = LevelVersion::Tomb1 }, 181, 0).name;
     auto shooter = lookup.lookup({ .version = LevelVersion::Tomb1 }, 181, 1 << 9).name;
@@ -77,9 +77,29 @@ TEST(TypeInfoLookup, LookupBigMutantEggs)
 TEST(TypeInfoLookup, LookupNormalMutantEggsTR2)
 {
     std::string json = "{\"games\":{\"tr1\":[{\"id\":163,\"name\":\"Test Name 1\"}],\"tr2\":[{\"id\":163,\"name\":\"Test Name 2\"}]}}";
-    TypeInfoLookup lookup(json);
+    TypeInfoLookup lookup(json, std::nullopt);
 
     auto winged = lookup.lookup({ .version = LevelVersion::Tomb2 }, 163, 0).name;
 
     ASSERT_EQ(winged, "Test Name 2");
+}
+
+TEST(TypeInfoLookup, ExtraTypesUsed)
+{
+    std::string json = "{}";
+
+    TypeInfoLookup lookup(json, "{\"games\":{\"tr3\":[{\"id\":123,\"name\":\"Test\"}]}}");
+
+    ASSERT_EQ("Test", lookup.lookup({ .version = LevelVersion::Tomb3 }, 123, 0).name);
+}
+
+TEST(TypeInfoLookup, ExtraTypesOverride)
+{
+    std::string json = "{\"games\":{\"tr1\":[{\"id\":123,\"name\":\"Test Name 1\"},{\"id\":124,\"name\":\"Test Name 2\"}]}}";
+    std::string extra = "{\"games\":{\"tr1\":[{\"id\":123,\"name\":\"New Name\"}]}}";
+
+    TypeInfoLookup lookup(json, extra);
+
+    ASSERT_EQ("New Name", lookup.lookup({ .version = LevelVersion::Tomb1 }, 123, 0).name);
+    ASSERT_EQ("Test Name 2", lookup.lookup({ .version = LevelVersion::Tomb1 }, 124, 0).name);
 }

@@ -29,7 +29,8 @@ namespace trview
             {
             case trlevel::LevelVersion::Tomb1:
                 return is_tr1_aug_1996(version) ? "tr1_aug_1996" :
-                       is_tr1_may_1996(version) ? "tr1_may_1996" : "tr1";
+                       is_tr1_may_1996(version) ? "tr1_may_1996" :
+                       version.is_tr2_saturn ? "tr2_saturn" : "tr1";
                 break;
             case trlevel::LevelVersion::Tomb2:
                 return is_tr2_beta(version) ? "tr2_beta" : 
@@ -55,23 +56,28 @@ namespace trview
     {
     }
 
-    TypeInfoLookup::TypeInfoLookup(const std::string& type_name_json)
+    TypeInfoLookup::TypeInfoLookup(const std::string& type_name_json, const std::optional<std::string>& extra_type_name_json)
     {
-        auto json = nlohmann::json::parse(type_name_json.begin(), type_name_json.end());
-        for (const auto& [key, value] : json["games"].items())
-        {
-            std::unordered_map<uint32_t, TypeInfo> type_names;
-            for (const auto& element : value)
+        auto parse_json = [&](const auto& data)
             {
-                auto name = element.at("name").get<std::string>();
-                type_names.insert({ element.at("id").get<uint32_t>(),
+                auto json = nlohmann::json::parse(data.begin(), data.end());
+                for (const auto& [key, value] : json["games"].items())
+                {
+                    auto& type_names = _type_names[key];
+                    for (const auto& element : value)
                     {
-                        name,
-                        read_attribute<std::unordered_set<std::string>>(element, "categories")
-                    } });
-            }
-            _type_names.insert({ key, type_names });
-        }
+                        auto name = element.at("name").get<std::string>();
+                        type_names[element.at("id").get<uint32_t>()] = 
+                            {
+                                name,
+                                read_attribute<std::unordered_set<std::string>>(element, "categories")
+                            };
+                    }
+                }
+            };
+
+        parse_json(type_name_json);
+        parse_json(extra_type_name_json.value_or("{}"));
     }
 
     TypeInfo TypeInfoLookup::lookup(trlevel::PlatformAndVersion level_version, uint32_t type_id, int16_t flags) const

@@ -9,7 +9,7 @@ namespace trview
     class TypeInfoLookup : public ITypeInfoLookup
     {
     public:
-        explicit TypeInfoLookup(const std::string& type_name_json);
+        explicit TypeInfoLookup(const std::string& type_name_json, const std::optional<std::string>& extra_type_name_json);
         virtual ~TypeInfoLookup() = default;
         TypeInfo lookup(trlevel::PlatformAndVersion level_version, uint32_t type_id, int16_t flags) const override;
     private:
