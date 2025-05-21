@@ -311,7 +311,7 @@ namespace trview
         if (sprite)
         {
             const auto& s = sprite.value();
-            return create_sprite_mesh(source, s.x, s.y, s.Width, s.Height, s.Tile, s.LeftSide, s.RightSide, s.TopSide, s.BottomSide, scale, offset, offset_mode);
+            return create_sprite_mesh(source, s.x + 1, s.y + 1, s.Width - 1, s.Height - 1, s.Tile, s.LeftSide, s.RightSide, s.TopSide, s.BottomSide, scale, offset, offset_mode);
         }
         return create_sprite_mesh(source, 0, 0, 0, 0, TransparentTriangle::Untextured, -256, 256, -256, 256, scale, offset, offset_mode);
     }
