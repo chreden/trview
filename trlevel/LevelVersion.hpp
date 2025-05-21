@@ -30,6 +30,8 @@ namespace trlevel
             return "PSX";
         case Platform::Dreamcast:
             return "Dreamcast";
+        case Platform::Saturn:
+            return "Saturn";
         }
         return "Unknown";
     }
