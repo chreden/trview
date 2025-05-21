@@ -1,5 +1,6 @@
 #include <trview.app/Windows/Statics/StaticsWindowManager.h>
 #include <trview.app/Mocks/Windows/IStaticsWindow.h>
+#include <trview.app/Mocks/Elements/IRoom.h>
 #include <trview.app/Resources/resource.h>
 
 using namespace trview;
@@ -86,4 +87,28 @@ TEST(StaticsWindowManager, CreateStaticsWindowKeyboardShortcut)
     auto shortcuts = mock_shared<MockShortcuts>();
     EXPECT_CALL(*shortcuts, add_shortcut(true, 'S')).Times(1).WillOnce([&](auto, auto) -> Event<>&{ return shortcut_handler; });
     auto manager = register_test_module().with_shortcuts(shortcuts).build();
+}
+
+TEST(StaticsWindowManager, SelectStaticSetsSelectedStaticOnWindows)
+{
+    auto mock_window = mock_shared<MockStaticsWindow>();
+    EXPECT_CALL(*mock_window, set_selected_static).Times(2);
+    auto manager = register_test_module().with_window_source([&](auto&&...) { return mock_window; }).build();
+
+    auto created_window = manager->create_window().lock();
+    ASSERT_NE(created_window, nullptr);
+    ASSERT_EQ(created_window, mock_window);
+    manager->select_static(mock_shared<MockStaticMesh>());
+}
+
+TEST(StaticsWindowManager, SetRoomSetsCurrentRoomOnWindows)
+{
+    auto mock_window = mock_shared<MockStaticsWindow>();
+    EXPECT_CALL(*mock_window, set_current_room).Times(2);
+    auto manager = register_test_module().with_window_source([&](auto&&...) { return mock_window; }).build();
+
+    auto created_window = manager->create_window().lock();
+    ASSERT_NE(created_window, nullptr);
+    ASSERT_EQ(created_window, mock_window);
+    manager->set_room(mock_shared<MockRoom>());
 }

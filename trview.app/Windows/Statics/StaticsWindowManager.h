@@ -30,5 +30,6 @@ namespace trview
         IStaticsWindow::Source _source;
         std::vector<std::weak_ptr<IStaticMesh>> _statics;
         std::weak_ptr<IRoom> _current_room;
+        std::weak_ptr<IStaticMesh> _selected_static;
     };
 }
