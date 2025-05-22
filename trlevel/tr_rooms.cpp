@@ -91,4 +91,52 @@ namespace trlevel
             });
         return new_vertices;
     }
+
+    std::vector<trview_mesh_face4> convert_rectangles_2(std::vector<tr_face4> rectangles)
+    {
+        return rectangles | 
+            std::views::transform([](auto&& r) -> trview_mesh_face4 {
+            return
+            {
+                .vertices = { static_cast<uint32_t>(r.vertices[0]), static_cast<uint32_t>(r.vertices[1]), static_cast<uint32_t>(r.vertices[2]), static_cast<uint32_t>(r.vertices[3]) },
+                .texture = static_cast<uint32_t>(r.texture)
+            };
+        }) | std::ranges::to<std::vector>();
+    }
+
+    std::vector<trview_mesh_face4> convert_rectangles_2(std::vector<tr4_mesh_face4> rectangles)
+    {
+        return rectangles |
+            std::views::transform([](auto&& r) -> trview_mesh_face4 {
+            return
+            {
+                .vertices = { static_cast<uint32_t>(r.vertices[0]), static_cast<uint32_t>(r.vertices[1]), static_cast<uint32_t>(r.vertices[2]), static_cast<uint32_t>(r.vertices[3]) },
+                .texture = static_cast<uint32_t>(r.texture),
+                .effects = static_cast<uint32_t>(r.effects)
+            }; }) | std::ranges::to<std::vector>();
+    }
+
+    std::vector<trview_mesh_face3> convert_triangles_2(std::vector<tr_face3> triangles)
+    {
+        return triangles |
+            std::views::transform([](auto&& r) -> trview_mesh_face3 {
+            return
+            {
+                .vertices = { static_cast<uint32_t>(r.vertices[0]), static_cast<uint32_t>(r.vertices[1]), static_cast<uint32_t>(r.vertices[2]) },
+                .texture = static_cast<uint32_t>(r.texture)
+            };
+        }) | std::ranges::to<std::vector>();
+    }
+
+    std::vector<trview_mesh_face3> convert_triangles_2(std::vector<tr4_mesh_face3> triangles)
+    {
+        return triangles |
+            std::views::transform([](auto&& r) -> trview_mesh_face3 {
+            return
+            {
+                .vertices = { static_cast<uint32_t>(r.vertices[0]), static_cast<uint32_t>(r.vertices[1]), static_cast<uint32_t>(r.vertices[2]) },
+                .texture = static_cast<uint32_t>(r.texture),
+                .effects = static_cast<uint32_t>(r.effects)
+            }; }) | std::ranges::to<std::vector>();
+    }
 }

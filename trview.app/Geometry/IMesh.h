@@ -91,7 +91,7 @@ namespace trview
     /// @param collision_triangles The collection to add collision triangles to.
     /// @param transparent_collision Whether to add transparent rectangles as collision triangles.
     void process_textured_rectangles(
-        const std::vector<trlevel::tr4_mesh_face4>& rectangles,
+        const std::vector<trlevel::trview_mesh_face4>& rectangles,
         const std::vector<trlevel::trview_room_vertex>& input_vertices,
         const ILevelTextureStorage& texture_storage,
         std::vector<MeshVertex>& output_vertices,
@@ -110,7 +110,7 @@ namespace trview
     /// @param collision_triangles The collection to add collision triangles to.
     /// @param transparent_collision Whether to add transparent rectangles as collision triangles.
     void process_textured_triangles(
-        const std::vector<trlevel::tr4_mesh_face3>& triangles,
+        const std::vector<trlevel::trview_mesh_face3>& triangles,
         const std::vector<trlevel::trview_room_vertex>& input_vertices,
         const ILevelTextureStorage& texture_storage,
         std::vector<MeshVertex>& output_vertices,

@@ -189,8 +189,8 @@ namespace trview
         std::ranges::transform(mesh.vertices, std::back_inserter(in_vertices),
             [](const auto& v) { return trlevel::trview_room_vertex { v, 0, 0, Color(1, 1, 1, 1) }; });
 
-        process_textured_rectangles(mesh.textured_rectangles, in_vertices, texture_storage, vertices, indices, transparent_triangles, collision_triangles, transparent_collision);
-        process_textured_triangles(mesh.textured_triangles, in_vertices, texture_storage, vertices, indices, transparent_triangles, collision_triangles, transparent_collision);
+        process_textured_rectangles(convert_rectangles_2(mesh.textured_rectangles), in_vertices, texture_storage, vertices, indices, transparent_triangles, collision_triangles, transparent_collision);
+        process_textured_triangles(convert_triangles_2(mesh.textured_triangles), in_vertices, texture_storage, vertices, indices, transparent_triangles, collision_triangles, transparent_collision);
         process_coloured_rectangles(mesh.coloured_rectangles, in_vertices, texture_storage, vertices, untextured_indices, collision_triangles, platform_and_version);
         process_coloured_triangles(mesh.coloured_triangles, in_vertices, texture_storage, vertices, untextured_indices, collision_triangles, platform_and_version);
 
@@ -325,7 +325,7 @@ namespace trview
     }
 
     void process_textured_rectangles(
-        const std::vector<trlevel::tr4_mesh_face4>& rectangles,
+        const std::vector<trlevel::trview_mesh_face4>& rectangles,
         const std::vector<trlevel::trview_room_vertex>& input_vertices,
         const ILevelTextureStorage& texture_storage,
         std::vector<MeshVertex>& output_vertices,
@@ -353,22 +353,30 @@ namespace trview
                 texture = static_cast<uint16_t>(std::abs(static_cast<int16_t>(rect.texture)));
             }
 
-            if (texture >= texture_storage.num_object_textures())
+            if (texture_storage.platform_and_version().version != LevelVersion::TombEngine &&
+                texture >= texture_storage.num_object_textures())
             {
                 texture = previous_texture;
             }
             previous_texture = texture;
 
             std::array<Vector2, 4> uvs;
-            for (auto i = 0u; i < uvs.size(); ++i)
+            if (texture_storage.platform_and_version().version == LevelVersion::TombEngine)
             {
-                uvs[i] = texture_storage.uv(texture, i);
+                memcpy(&uvs[0], &rect.uvs[0], sizeof(Vector2) * 4);
+            }
+            else
+            {
+                for (auto i = 0u; i < uvs.size(); ++i)
+                {
+                    uvs[i] = texture_storage.uv(texture, i);
+                }
             }
 
             if ((is_tr1_pc_may_1996(texture_storage.platform_and_version()) ||
                 texture_storage.platform_and_version().platform == Platform::Saturn) && static_cast<int16_t>(rect.texture) < 0)
             {
-                adjust_rect_uvs_tr1_1996_pc(uvs, rect.texture);
+                adjust_rect_uvs_tr1_1996_pc(uvs, static_cast<uint16_t>(rect.texture));
             }
 
             if (texture_storage.platform_and_version().platform == Platform::PSX || 
@@ -378,15 +386,17 @@ namespace trview
                 std::swap(uvs[2], uvs[3]);
             }
 
-            const bool double_sided = texture_storage.platform_and_version().platform != Platform::Saturn && (rect.texture & 0x8000);
+            const auto textile_index = texture_storage.platform_and_version().version == LevelVersion::TombEngine ?
+                texture : texture_storage.tile(texture);
 
+            const bool double_sided = texture_storage.platform_and_version().platform != Platform::Saturn && (rect.texture & 0x8000);
             TransparentTriangle::Mode transparency_mode;
             if (determine_transparency(
-                texture_storage.platform_and_version().platform == Platform::Saturn ? rect.effects : texture_storage.attribute(texture),
-                texture_storage.platform_and_version().platform == Platform::Saturn ? 0 : rect.effects, transparency_mode))
+                (texture_storage.platform_and_version().platform == Platform::Saturn || texture_storage.platform_and_version().version == LevelVersion::TombEngine) ? static_cast<uint16_t>(rect.effects) : texture_storage.attribute(texture),
+                (texture_storage.platform_and_version().platform == Platform::Saturn || texture_storage.platform_and_version().version == LevelVersion::TombEngine) ? 0 : static_cast<uint16_t>(rect.effects), transparency_mode))
             {
-                transparent_triangles.emplace_back(verts[0], verts[1], verts[2], uvs[0], uvs[1], uvs[2], texture_storage.tile(texture), transparency_mode, colors[0], colors[1], colors[2]);
-                transparent_triangles.emplace_back(verts[2], verts[3], verts[0], uvs[2], uvs[3], uvs[0], texture_storage.tile(texture), transparency_mode, colors[2], colors[3], colors[0]);
+                transparent_triangles.emplace_back(verts[0], verts[1], verts[2], uvs[0], uvs[1], uvs[2], textile_index, transparency_mode, colors[0], colors[1], colors[2]);
+                transparent_triangles.emplace_back(verts[2], verts[3], verts[0], uvs[2], uvs[3], uvs[0], textile_index, transparency_mode, colors[2], colors[3], colors[0]);
                 if (transparent_collision)
                 {
                     collision_triangles.emplace_back(verts[0], verts[1], verts[2]);
@@ -396,8 +406,8 @@ namespace trview
                 if (double_sided)
                 {
 
-                    transparent_triangles.emplace_back(verts[2], verts[1], verts[0], uvs[2], uvs[1], uvs[0], texture_storage.tile(texture), transparency_mode, colors[2], colors[1], colors[0]);
-                    transparent_triangles.emplace_back(verts[0], verts[3], verts[2], uvs[0], uvs[3], uvs[2], texture_storage.tile(texture), transparency_mode, colors[0], colors[3], colors[2]);
+                    transparent_triangles.emplace_back(verts[2], verts[1], verts[0], uvs[2], uvs[1], uvs[0], textile_index, transparency_mode, colors[2], colors[1], colors[0]);
+                    transparent_triangles.emplace_back(verts[0], verts[3], verts[2], uvs[0], uvs[3], uvs[2], textile_index, transparency_mode, colors[0], colors[3], colors[2]);
                     if (transparent_collision)
                     {
                         collision_triangles.emplace_back(verts[2], verts[1], verts[0]);
@@ -414,7 +424,7 @@ namespace trview
                 output_vertices.push_back({ verts[i], normal, uvs[i], colors[i] });
             }
 
-            auto& tex_indices = output_indices[texture_storage.tile(texture)];
+            auto& tex_indices = output_indices[textile_index];
             tex_indices.push_back(base);
             tex_indices.push_back(base + 1);
             tex_indices.push_back(base + 2);
@@ -443,7 +453,7 @@ namespace trview
     }
 
     void process_textured_triangles(
-        const std::vector<trlevel::tr4_mesh_face3>& triangles,
+        const std::vector<trlevel::trview_mesh_face3>& triangles,
         const std::vector<trlevel::trview_room_vertex>& input_vertices,
         const ILevelTextureStorage& texture_storage,
         std::vector<MeshVertex>& output_vertices,
@@ -473,43 +483,53 @@ namespace trview
                 texture = tri.texture & 0x1FFF;
             }
 
-            if (texture >= texture_storage.num_object_textures())
+            if (texture_storage.platform_and_version().version != LevelVersion::TombEngine &&
+                texture >= texture_storage.num_object_textures())
             {
                 texture = previous_texture;
             }
             previous_texture = texture;
 
             std::array<Vector2, 4> uvs;
-            for (auto i = 0u; i < uvs.size(); ++i)
+            if (texture_storage.platform_and_version().version == LevelVersion::TombEngine)
             {
-                uvs[i] = texture_storage.uv(texture, i);
+                memcpy(&uvs[0], &tri.uvs[0], sizeof(Vector2) * 3);
+            }
+            else
+            {
+                for (auto i = 0u; i < uvs.size(); ++i)
+                {
+                    uvs[i] = texture_storage.uv(texture, i);
+                }
             }
 
             if (is_tr1_pc_may_1996(texture_storage.platform_and_version()))
             {
-                adjust_tri_uvs_tr1_1996_pc(uvs, tri.texture);
+                adjust_tri_uvs_tr1_1996_pc(uvs, static_cast<uint16_t>(tri.texture));
             }
 
             if (texture_storage.platform_and_version().platform == trlevel::Platform::Saturn)
             {
-                adjust_tri_uvs_tr1_saturn(uvs, tri.texture);
+                adjust_tri_uvs_tr1_saturn(uvs, static_cast<uint16_t>(tri.texture));
             }
 
             const bool double_sided = texture_storage.platform_and_version().platform != Platform::Saturn && (tri.texture & 0x8000);
 
+            const auto textile_index = texture_storage.platform_and_version().version == LevelVersion::TombEngine ?
+                texture : texture_storage.tile(texture);
             TransparentTriangle::Mode transparency_mode;
             if (determine_transparency(
-                texture_storage.platform_and_version().platform == Platform::Saturn ? tri.effects : texture_storage.attribute(texture),
-                texture_storage.platform_and_version().platform == Platform::Saturn ? 0 : tri.effects, transparency_mode))
+                (texture_storage.platform_and_version().platform == Platform::Saturn || texture_storage.platform_and_version().version == LevelVersion::TombEngine) ? static_cast<uint16_t>(tri.effects) : texture_storage.attribute(texture),
+                (texture_storage.platform_and_version().platform == Platform::Saturn || texture_storage.platform_and_version().version == LevelVersion::TombEngine) ? 0 : static_cast<uint16_t>(tri.effects), transparency_mode))
             {
-                transparent_triangles.emplace_back(verts[0], verts[1], verts[2], uvs[0], uvs[1], uvs[2], texture_storage.tile(texture), transparency_mode, colors[0], colors[1], colors[2]);
+                transparent_triangles.emplace_back(verts[0], verts[1], verts[2], uvs[0], uvs[1], uvs[2], textile_index, transparency_mode, colors[0], colors[1], colors[2]);
                 if (transparent_collision)
                 {
                     collision_triangles.emplace_back(verts[0], verts[1], verts[2]);
                 }
                 if (double_sided)
                 {
-                    transparent_triangles.emplace_back(verts[2], verts[1], verts[0], uvs[2], uvs[1], uvs[0], texture_storage.tile(texture), transparency_mode, colors[2], colors[1], colors[0]);
+                    transparent_triangles.emplace_back(verts[2], verts[1], verts[0], uvs[2], uvs[1], uvs[0], textile_index, transparency_mode, colors[2], colors[1], colors[0]);
                     if (transparent_collision)
                     {
                         collision_triangles.emplace_back(verts[2], verts[1], verts[0]);
@@ -525,7 +545,7 @@ namespace trview
                 output_vertices.push_back({ verts[i], normal, uvs[i], colors[i] });
             }
 
-            auto& tex_indices = output_indices[texture_storage.tile(texture)];
+            auto& tex_indices = output_indices[textile_index];
             tex_indices.push_back(base);
             tex_indices.push_back(base + 1);
             tex_indices.push_back(base + 2);
