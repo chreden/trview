@@ -137,23 +137,23 @@ namespace trlevel
                     }
                     case RoomPrimitive::TexturedTriangle:
                     {
-                        tr_face3 tri = read<tr_face3>(file);
-                        tr4_mesh_face3 new_face3;
-                        memcpy(new_face3.vertices, tri.vertices, sizeof(tri.vertices));
-                        new_face3.texture = tri.texture;
-                        new_face3.effects = 0;
-                        room.data.triangles.push_back(new_face3);
+                        const tr_face3 tri = read<tr_face3>(file);
+                        room.data.triangles.push_back(
+                            {
+                                .vertices = { static_cast<uint32_t>(tri.vertices[0]), static_cast<uint32_t>(tri.vertices[1]), static_cast<uint32_t>(tri.vertices[2]) },
+                                .texture = static_cast<uint32_t>(tri.texture)
+                            });
                         break;
                     }
                     case RoomPrimitive::TransparentRectangle:
                     case RoomPrimitive::TexturedRectangle:
                     {
-                        tr_face4 rect = read<tr_face4>(file);
-                        tr4_mesh_face4 new_face4;
-                        memcpy(new_face4.vertices, rect.vertices, sizeof(rect.vertices));
-                        new_face4.texture = rect.texture;
-                        new_face4.effects = 0;
-                        room.data.rectangles.push_back(new_face4);
+                        const tr_face4 rect = read<tr_face4>(file);
+                        room.data.rectangles.push_back(
+                            {
+                                .vertices = { static_cast<uint32_t>(rect.vertices[0]), static_cast<uint32_t>(rect.vertices[1]), static_cast<uint32_t>(rect.vertices[2]), static_cast<uint32_t>(rect.vertices[3]) },
+                                .texture = static_cast<uint32_t>(rect.texture)
+                            });
                         break;
                     }
                     case RoomPrimitive::Sprite:
@@ -169,8 +169,8 @@ namespace trlevel
             skip(file, NumDataWords * 2);
 
             auto [min, max] = std::ranges::minmax(room.data.vertices | std::views::transform([](auto&& v) { return v.vertex.y; }));
-            room.info.yTop = min;
-            room.info.yBottom = max;
+            room.info.yTop = static_cast<int32_t>(min);
+            room.info.yBottom = static_cast<int32_t>(max);
         }
 
         void load_tr1_pc_room_version_21(trview::Activity& activity, std::basic_ispanstream<uint8_t>& file, tr3_room& room)

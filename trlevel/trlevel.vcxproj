@@ -114,6 +114,7 @@
     <ClInclude Include="TileMapper.h" />
     <ClInclude Include="trtypes.h" />
     <ClInclude Include="tr_lights.h" />
+    <ClInclude Include="tr_mesh.h" />
     <ClInclude Include="tr_rooms.h" />
   </ItemGroup>
   <ItemGroup>
@@ -146,7 +147,7 @@
     <ClCompile Include="TileMapper.cpp" />
     <ClCompile Include="trtypes.cpp" />
     <ClCompile Include="tr_lights.cpp" />
-    <ClCompile Include="tr_rooms.cpp" />
+    <ClCompile Include="tr_mesh.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\external\zlib\contrib\vstudio\vc14\zlibstat.vcxproj">

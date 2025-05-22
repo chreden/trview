@@ -598,7 +598,7 @@ namespace trlevel
                         {
                             log_file(activity, file, "Reading triangles");
                             uint16_t triangle_count = to_le(read<uint16_t>(file));
-                            auto new_triangles = convert_triangles(to_le(read_vector<tr_face3>(file, triangle_count)));
+                            auto new_triangles = convert_triangles_2(to_le(read_vector<tr_face3>(file, triangle_count)));
                             for (auto& t : new_triangles)
                             {
                                 t.vertices[0] >>= 4;
@@ -615,7 +615,7 @@ namespace trlevel
                         {
                             log_file(activity, file, "Reading textured rectangles");
                             uint16_t rectangle_count = to_le(read<uint16_t>(file));
-                            auto new_rectangles = convert_rectangles(to_le(read_vector<tr_face4>(file, rectangle_count)));
+                            auto new_rectangles = convert_rectangles_2(to_le(read_vector<tr_face4>(file, rectangle_count)));
                             for (auto& r : new_rectangles)
                             {
                                 r.vertices[0] >>= 4;

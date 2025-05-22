@@ -74,7 +74,7 @@ namespace trlevel
                         v += vertex_offset;
                     }
                 }
-                std::copy(rects.begin(), rects.end(), std::back_inserter(room.data.rectangles));
+                room.data.rectangles.append_range(convert_rectangles_2(rects));
 
                 log_file(activity, file, std::format("Reading {} triangles for layer {}", layer.num_triangles, layer_number));
                 auto tris = read_vector<tr4_mesh_face3>(file, layer.num_triangles);
@@ -85,7 +85,7 @@ namespace trlevel
                         v += vertex_offset;
                     }
                 }
-                std::copy(tris.begin(), tris.end(), std::back_inserter(room.data.triangles));
+                room.data.triangles.append_range(convert_triangles_2(tris));
 
                 vertex_offset += layer.num_vertices;
                 ++layer_number;

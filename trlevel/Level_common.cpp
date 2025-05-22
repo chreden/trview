@@ -1,4 +1,5 @@
 #include "Level_common.h"
+#include "tr_rooms.h"
 
 namespace trlevel
 {
@@ -371,7 +372,7 @@ namespace trlevel
     void read_room_rectangles(trview::Activity& activity, std::basic_ispanstream<uint8_t>& file, tr3_room& room)
     {
         log_file(activity, file, "Reading rectangles");
-        room.data.rectangles = convert_rectangles(read_vector<int16_t, tr_face4>(file));
+        room.data.rectangles = convert_rectangles_2(read_vector<int16_t, tr_face4>(file));
         log_file(activity, file, std::format("Read {} rectangles", room.data.rectangles.size()));
     }
 
@@ -426,7 +427,7 @@ namespace trlevel
     void read_room_triangles(trview::Activity& activity, std::basic_ispanstream<uint8_t>& file, tr3_room& room)
     {
         log_file(activity, file, "Reading triangles");
-        room.data.triangles = convert_triangles(read_vector<int16_t, tr_face3>(file));
+        room.data.triangles = convert_triangles_2(read_vector<int16_t, tr_face3>(file));
         log_file(activity, file, std::format("Read {} triangles", room.data.triangles.size()));
     }
 

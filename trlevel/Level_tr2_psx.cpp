@@ -35,19 +35,19 @@ namespace trlevel
         };
 #pragma pack(pop)
 
-        std::vector<trview_room_vertex> convert_vertices_tr2_psx(std::vector<uint32_t> vertices, int32_t y_top)
+        std::vector<trview_vertex> convert_vertices_tr2_psx(std::vector<uint32_t> vertices, int32_t y_top)
         {
             return vertices |
                 std::views::transform([=](auto&& v)
                     {
                         const float colour = static_cast<float>(((v >> 15) & 0x7fff)) / 0x7fff;
-                        return trview_room_vertex
+                        return trview_vertex
                         {
                             .vertex =
                             {
-                                .x = static_cast<int16_t>(((v >> 10) & 0x1f) << 10),
-                                .y = static_cast<int16_t>((((v >> 5) & 0x1f) << 8) + y_top),
-                                .z = static_cast<int16_t>((v & 0x1f) << 10)
+                                static_cast<float>(((v >> 10) & 0x1f) << 10),
+                                static_cast<float>((((v >> 5) & 0x1f) << 8) + y_top),
+                                static_cast<float>((v & 0x1f) << 10)
                              },
                             .attributes = 0,
                             .colour = trview::Colour(1 - colour, 1 - colour, 1 - colour)
@@ -79,14 +79,14 @@ namespace trlevel
                 for (auto i = 0u; i < num_rectangles; ++i)
                 {
                     room.data.rectangles.push_back(
-                        tr4_mesh_face4
+                        trview_mesh_face4
                         {
                             .vertices =
                             {
-                                static_cast<uint16_t>(rectangle_vertices[i].vertices[0] >> 2),
-                                static_cast<uint16_t>(rectangle_vertices[i].vertices[1] >> 2),
-                                static_cast<uint16_t>(rectangle_vertices[i].vertices[3] >> 2),
-                                static_cast<uint16_t>(rectangle_vertices[i].vertices[2] >> 2)
+                                static_cast<uint32_t>(rectangle_vertices[i].vertices[0] >> 2),
+                                static_cast<uint32_t>(rectangle_vertices[i].vertices[1] >> 2),
+                                static_cast<uint32_t>(rectangle_vertices[i].vertices[3] >> 2),
+                                static_cast<uint32_t>(rectangle_vertices[i].vertices[2] >> 2)
                             },
                             .texture = rectangle_textures[i]
                         });
@@ -98,21 +98,21 @@ namespace trlevel
                     skip(file, 2);
                 }
                 const auto tris = read_vector<tr2_face3_psx>(file, count);
-                room.data.triangles = tris |
+                room.data.triangles.append_range(tris |
                     std::views::transform([](auto&& t)
                         {
-                            return tr4_mesh_face3
+                            return trview_mesh_face3
                             {
                                 .vertices =
                                 {
-                                    static_cast<uint16_t>(t.vertices[0] >> 2),
-                                    static_cast<uint16_t>(t.vertices[1] >> 2),
-                                    static_cast<uint16_t>(t.vertices[2] >> 2)
+                                    static_cast<uint32_t>(t.vertices[0] >> 2),
+                                    static_cast<uint32_t>(t.vertices[1] >> 2),
+                                    static_cast<uint32_t>(t.vertices[2] >> 2)
                                 },
                                 .texture = t.texture,
                                 .effects = 0
                             };
-                        }) | std::ranges::to<std::vector>();
+                        }));
             }
             file.seekg(at, std::ios::beg);
             file.seekg(NumDataWords * 2, std::ios::cur);
@@ -143,14 +143,14 @@ namespace trlevel
                 room.data.rectangles = rectangles |
                     std::views::transform([](auto&& r)
                         {
-                            return tr4_mesh_face4
+                            return trview_mesh_face4
                             {
                                 .vertices =
                                 {
-                                    static_cast<uint16_t>(r.vertices[0] >> 2),
-                                    static_cast<uint16_t>(r.vertices[1] >> 2),
-                                    static_cast<uint16_t>(r.vertices[3] >> 2),
-                                    static_cast<uint16_t>(r.vertices[2] >> 2)
+                                    static_cast<uint32_t>(r.vertices[0] >> 2),
+                                    static_cast<uint32_t>(r.vertices[1] >> 2),
+                                    static_cast<uint32_t>(r.vertices[3] >> 2),
+                                    static_cast<uint32_t>(r.vertices[2] >> 2)
                                 },
                                 .texture = r.texture,
                                 .effects = 0
@@ -161,13 +161,13 @@ namespace trlevel
                 room.data.triangles = tris |
                     std::views::transform([](auto&& t)
                         {
-                            return tr4_mesh_face3
+                            return trview_mesh_face3
                             {
                                 .vertices =
                                 {
-                                    static_cast<uint16_t>(t.vertices[0] >> 2),
-                                    static_cast<uint16_t>(t.vertices[1] >> 2),
-                                    static_cast<uint16_t>(t.vertices[2] >> 2)
+                                    static_cast<uint32_t>(t.vertices[0] >> 2),
+                                    static_cast<uint32_t>(t.vertices[1] >> 2),
+                                    static_cast<uint32_t>(t.vertices[2] >> 2)
                                 },
                                 .texture = t.texture,
                                 .effects = 0
