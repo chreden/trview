@@ -81,6 +81,10 @@ namespace trview
         DirectX::SimpleMath::Matrix& offset,
         SpriteOffsetMode offset_mode);
 
+    void preprocess_textured_rectangles(
+        std::vector<trlevel::trview_mesh_face4>& rectangles,
+        const ILevelTextureStorage& texture_storage);
+
     /// Convert the textured rectangles into collections required to create a mesh.
     /// @param rectangles The rectangles from the mesh or room geometry.
     /// @param input_vertices The vertices that the rectangle indices refer to.
@@ -93,7 +97,6 @@ namespace trview
     void process_textured_rectangles(
         const std::vector<trlevel::trview_mesh_face4>& rectangles,
         const std::vector<trlevel::trview_vertex>& input_vertices,
-        const ILevelTextureStorage& texture_storage,
         std::vector<MeshVertex>& output_vertices,
         std::vector<std::vector<uint32_t>>& output_indices,
         std::vector<TransparentTriangle>& transparent_triangles,

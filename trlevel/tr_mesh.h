@@ -2,11 +2,19 @@
 
 #include "trtypes.h"
 
+#include <array>
 #include <cstdint>
 #include <SimpleMath.h>
 
 namespace trlevel
 {
+    enum class BlendMode
+    {
+        None,
+        Normal,
+        Additive
+    };
+
     struct trview_vertex
     {
         DirectX::SimpleMath::Vector3 vertex;
@@ -18,10 +26,12 @@ namespace trlevel
     struct trview_mesh_face4
     {
         uint32_t                     vertices[4];
-        DirectX::SimpleMath::Vector2 uvs[4];
+        std::array<DirectX::SimpleMath::Vector2, 4> uvs;
         DirectX::SimpleMath::Vector3 normals[4];
         uint32_t                     texture{ 0u };
         uint32_t                     effects{ 0u };
+        BlendMode                    blend_mode{ BlendMode::None };
+        bool                         double_sided{ false };
     };
 
     struct trview_mesh_face3
