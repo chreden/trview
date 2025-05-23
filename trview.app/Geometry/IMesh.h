@@ -103,6 +103,10 @@ namespace trview
         std::vector<Triangle>& collision_triangles,
         bool transparent_collision = true);
 
+    void preprocess_textured_triangles(
+        std::vector<trlevel::trview_mesh_face3>& triangles,
+        const ILevelTextureStorage& texture_storage);
+
     /// Convert the textured triangles into collections required to create a mesh.
     /// @param triangles The triangles from the mesh or room geometry.
     /// @param input_vertices The vertices that the triangle indices refer to.
@@ -115,7 +119,6 @@ namespace trview
     void process_textured_triangles(
         const std::vector<trlevel::trview_mesh_face3>& triangles,
         const std::vector<trlevel::trview_vertex>& input_vertices,
-        const ILevelTextureStorage& texture_storage,
         std::vector<MeshVertex>& output_vertices,
         std::vector<std::vector<uint32_t>>& output_indices,
         std::vector<TransparentTriangle>& transparent_triangles,

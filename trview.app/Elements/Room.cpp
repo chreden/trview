@@ -395,7 +395,9 @@ namespace trview
         auto rectangles = room.data.rectangles;
         preprocess_textured_rectangles(rectangles, *_texture_storage);
         process_textured_rectangles(rectangles, room.data.vertices, vertices, indices, transparent_triangles, collision_triangles, false);
-        process_textured_triangles(room.data.triangles, room.data.vertices, *_texture_storage, vertices, indices, transparent_triangles, collision_triangles, false);
+        auto triangles = room.data.triangles;
+        preprocess_textured_triangles(triangles, *_texture_storage);
+        process_textured_triangles(triangles, room.data.vertices, vertices, indices, transparent_triangles, collision_triangles, false);
         process_collision_transparency(transparent_triangles, collision_triangles);
 
         _mesh = mesh_source(vertices, indices, std::vector<uint32_t>{}, transparent_triangles, collision_triangles);

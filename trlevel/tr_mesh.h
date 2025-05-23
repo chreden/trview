@@ -41,6 +41,8 @@ namespace trlevel
         DirectX::SimpleMath::Vector3 normals[3];
         uint32_t                     texture{ 0u };
         uint32_t                     effects{ 0u };
+        BlendMode                    blend_mode{ BlendMode::None };
+        bool                         double_sided{ false };
     };
 
     std::vector<trview_mesh_face4> convert_rectangles_2(std::vector<tr_face4> rectangles);
