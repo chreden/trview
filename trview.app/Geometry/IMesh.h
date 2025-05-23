@@ -92,7 +92,7 @@ namespace trview
     /// @param transparent_collision Whether to add transparent rectangles as collision triangles.
     void process_textured_rectangles(
         const std::vector<trlevel::trview_mesh_face4>& rectangles,
-        const std::vector<trlevel::trview_room_vertex>& input_vertices,
+        const std::vector<trlevel::trview_vertex>& input_vertices,
         const ILevelTextureStorage& texture_storage,
         std::vector<MeshVertex>& output_vertices,
         std::vector<std::vector<uint32_t>>& output_indices,
@@ -111,7 +111,7 @@ namespace trview
     /// @param transparent_collision Whether to add transparent rectangles as collision triangles.
     void process_textured_triangles(
         const std::vector<trlevel::trview_mesh_face3>& triangles,
-        const std::vector<trlevel::trview_room_vertex>& input_vertices,
+        const std::vector<trlevel::trview_vertex>& input_vertices,
         const ILevelTextureStorage& texture_storage,
         std::vector<MeshVertex>& output_vertices,
         std::vector<std::vector<uint32_t>>& output_indices,
@@ -128,7 +128,7 @@ namespace trview
     // collision_triangles: The collection to add collision triangles to.
     void process_coloured_rectangles(
         const std::vector<trlevel::tr_face4>& rectangles,
-        const std::vector<trlevel::trview_room_vertex>& input_vertices,
+        const std::vector<trlevel::trview_vertex>& input_vertices,
         const ILevelTextureStorage& texture_storage,
         std::vector<MeshVertex>& output_vertices,
         std::vector<uint32_t>& output_indices,
@@ -144,17 +144,12 @@ namespace trview
     // collision_triangles: The collection to add collision triangles to.
     void process_coloured_triangles(
         const std::vector<trlevel::tr_face3>& triangles,
-        const std::vector<trlevel::trview_room_vertex>& input_vertices,
+        const std::vector<trlevel::trview_vertex>& input_vertices,
         const ILevelTextureStorage& texture_storage,
         std::vector<MeshVertex>& output_vertices,
         std::vector<uint32_t>& output_indices,
         std::vector<Triangle>& collision_triangles,
         const trlevel::PlatformAndVersion& platform_and_version);
-
-    /// Convert the vertex to the scale used by the viewer.
-    /// @param vertex The vertex to convert.
-    /// @retrurns The scaled vector.
-    DirectX::SimpleMath::Vector3 convert_vertex(const trlevel::tr_vertex& vertex);
 
 #pragma warning(push)
 #pragma warning(disable : 4324)

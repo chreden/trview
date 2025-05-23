@@ -80,19 +80,19 @@ namespace trlevel
             return { x, y };
         }
 
-        std::vector<trview_room_vertex> convert_vertices_tr4_psx(std::vector<uint32_t> vertices, int32_t y_top)
+        std::vector<trview_vertex> convert_vertices_tr4_psx(std::vector<uint32_t> vertices, int32_t y_top)
         {
             return vertices |
                 std::views::transform([=](auto&& v)
                     {
                         const uint16_t colour = (v >> 15) & 0x7fff;
-                        return trview_room_vertex
+                        return trview_vertex
                         {
                             .vertex =
                             {
-                                .x = static_cast<int16_t>(((v >> 10) & 0x1f) << 10),
-                                .y = static_cast<int16_t>((((v >> 5) & 0x1f) << 8) + y_top),
-                                .z = static_cast<int16_t>((v & 0x1f) << 10)
+                                static_cast<float>(((v >> 10) & 0x1f) << 10),
+                                static_cast<float>((((v >> 5) & 0x1f) << 8) + y_top),
+                                static_cast<float>((v & 0x1f) << 10)
                              },
                             .attributes = 0,
                             .colour = trview::Colour(

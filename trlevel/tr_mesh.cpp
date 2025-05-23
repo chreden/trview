@@ -1,11 +1,10 @@
-#include "stdafx.h"
-#include "tr_rooms.h"
+#include "tr_mesh.h"
 #include <ranges>
-
-using namespace DirectX::SimpleMath;
 
 namespace trlevel
 {
+    using namespace DirectX::SimpleMath;
+
     namespace
     {
         /// <summary>
@@ -40,68 +39,16 @@ namespace trlevel
         }
     }
 
-    std::vector<trview_room_vertex> convert_vertices(std::vector<tr_room_vertex> vertices)
-    {
-        std::vector<trview_room_vertex> new_vertices;
-        new_vertices.reserve(vertices.size());
-        std::transform(vertices.begin(), vertices.end(),
-            std::back_inserter(new_vertices), [](const auto& vert)
-            {
-                trview_room_vertex new_vertex{ vert.vertex, vert.lighting, 0, lighting_to_colour(vert.lighting) };
-                return new_vertex;
-            });
-        return new_vertices;
-    }
-
-    std::vector<trview_room_vertex> convert_vertices(std::vector<tr2_room_vertex> vertices)
-    {
-        std::vector<trview_room_vertex> new_vertices;
-        new_vertices.reserve(vertices.size());
-        std::transform(vertices.begin(), vertices.end(),
-            std::back_inserter(new_vertices), [](const auto& vert)
-            {
-                trview_room_vertex new_vertex{ vert.vertex, vert.lighting2, 0, lighting_to_colour(vert.lighting2) };
-                return new_vertex;
-            });
-        return new_vertices;
-    }
-
-    std::vector<trview_room_vertex> convert_vertices(std::vector<tr3_room_vertex> vertices)
-    {
-        std::vector<trview_room_vertex> new_vertices;
-        new_vertices.reserve(vertices.size());
-        std::transform(vertices.begin(), vertices.end(),
-            std::back_inserter(new_vertices), [](const auto& vert)
-            {
-                trview_room_vertex new_vertex{ vert.vertex, vert.lighting, vert.attributes, to_colour(vert.colour) };
-                return new_vertex;
-            });
-        return new_vertices;
-    }
-
-    std::vector<trview_room_vertex> convert_vertices(std::vector<tr5_room_vertex> vertices)
-    {
-        std::vector<trview_room_vertex> new_vertices;
-        new_vertices.reserve(vertices.size());
-        std::transform(vertices.begin(), vertices.end(),
-            std::back_inserter(new_vertices), [](const auto& vert)
-            {
-                tr_vertex vertex{ static_cast<int16_t>(vert.vertex.x), static_cast<int16_t>(vert.vertex.y), static_cast<int16_t>(vert.vertex.z) };
-                return trview_room_vertex{ vertex, 0, 0, to_colour(vert.colour) };
-            });
-        return new_vertices;
-    }
-
     std::vector<trview_mesh_face4> convert_rectangles_2(std::vector<tr_face4> rectangles)
     {
-        return rectangles | 
+        return rectangles |
             std::views::transform([](auto&& r) -> trview_mesh_face4 {
             return
             {
                 .vertices = { static_cast<uint32_t>(r.vertices[0]), static_cast<uint32_t>(r.vertices[1]), static_cast<uint32_t>(r.vertices[2]), static_cast<uint32_t>(r.vertices[3]) },
                 .texture = static_cast<uint32_t>(r.texture)
             };
-        }) | std::ranges::to<std::vector>();
+                }) | std::ranges::to<std::vector>();
     }
 
     std::vector<trview_mesh_face4> convert_rectangles_2(std::vector<tr4_mesh_face4> rectangles)
@@ -125,7 +72,7 @@ namespace trlevel
                 .vertices = { static_cast<uint32_t>(r.vertices[0]), static_cast<uint32_t>(r.vertices[1]), static_cast<uint32_t>(r.vertices[2]) },
                 .texture = static_cast<uint32_t>(r.texture)
             };
-        }) | std::ranges::to<std::vector>();
+                }) | std::ranges::to<std::vector>();
     }
 
     std::vector<trview_mesh_face3> convert_triangles_2(std::vector<tr4_mesh_face3> triangles)
@@ -138,5 +85,34 @@ namespace trlevel
                 .texture = static_cast<uint32_t>(r.texture),
                 .effects = static_cast<uint32_t>(r.effects)
             }; }) | std::ranges::to<std::vector>();
+    }
+
+
+    std::vector<trview_vertex> convert_vertices(std::vector<tr_room_vertex> vertices)
+    {
+        return vertices | std::views::transform([](auto&& v) -> trview_vertex {
+            return { .vertex = { static_cast<float>(v.vertex.x), static_cast<float>(v.vertex.y), static_cast<float>(v.vertex.z) }, .lighting = v.lighting, .colour = lighting_to_colour(v.lighting) };
+            }) | std::ranges::to<std::vector>();
+    }
+
+    std::vector<trview_vertex> convert_vertices(std::vector<tr2_room_vertex> vertices)
+    {
+        return vertices | std::views::transform([](auto&& v) -> trview_vertex {
+            return { .vertex = { static_cast<float>(v.vertex.x), static_cast<float>(v.vertex.y), static_cast<float>(v.vertex.z) }, .lighting = v.lighting2, .colour = lighting_to_colour(v.lighting2) };
+            }) | std::ranges::to<std::vector>();
+    }
+
+    std::vector<trview_vertex> convert_vertices(std::vector<tr3_room_vertex> vertices)
+    {
+        return vertices | std::views::transform([](auto&& v) -> trview_vertex {
+            return { .vertex = { static_cast<float>(v.vertex.x), static_cast<float>(v.vertex.y), static_cast<float>(v.vertex.z) }, .lighting = v.lighting, .colour = to_colour(v.colour) };
+            }) | std::ranges::to<std::vector>();
+    }
+
+    std::vector<trview_vertex> convert_vertices(std::vector<tr5_room_vertex> vertices)
+    {
+        return vertices | std::views::transform([](auto&& v) -> trview_vertex {
+            return { .vertex = { static_cast<float>(v.vertex.x), static_cast<float>(v.vertex.y), static_cast<float>(v.vertex.z) }, .colour = to_colour(v.colour) };
+            }) | std::ranges::to<std::vector>();
     }
 }
