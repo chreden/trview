@@ -171,14 +171,14 @@ namespace trlevel
 
         bool has_frame_count(PlatformAndVersion version)
         {
-            return (version.version == LevelVersion::Tomb1 && !version.is_tr2_saturn) || is_tr2_demo_70688(version) || is_tr2_e3(version);
+            return (version.version == LevelVersion::Tomb1 && !version.is_tr2_saturn) || is_tr2_demo_70688(version) || is_tr2_e3(version) || is_tr2_demo_opsm1(version);
         }
 
         bool is_tr1_frame_format(PlatformAndVersion version)
         {
             return
                 (version.version == LevelVersion::Tomb1 && version.platform != Platform::Saturn)
-                || is_tr2_demo_70688(version) || is_tr2_e3(version);
+                || is_tr2_demo_70688(version) || is_tr2_e3(version) || is_tr2_demo_opsm1(version);
         }
     }
 
@@ -239,6 +239,10 @@ namespace trlevel
                     if (is_tr2_beta(_platform_and_version))
                     {
                         generate_mesh_tr2_psx_beta(mesh, stream);
+                    }
+                    else if (is_tr2_demo_opsm1(_platform_and_version))
+                    {
+                        generate_mesh_tr2_psx_opsm1(mesh, stream);
                     }
                     else
                     {

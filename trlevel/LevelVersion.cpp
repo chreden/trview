@@ -103,6 +103,11 @@ namespace trlevel
         return version.raw_version == 70688;
     }
 
+    bool is_tr2_demo_opsm1(PlatformAndVersion version)
+    {
+        return version.raw_version == 38;
+    }
+
     bool is_tr2_e3(PlatformAndVersion version)
     {
         return version.raw_version == 0x26;
