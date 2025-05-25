@@ -61,7 +61,7 @@ namespace trlevel
 
             if (NumDataWords > 0)
             {
-                read_room_vertices_tr1(activity, file, room);
+                read_room_vertices_tr1_psx(activity, file, room);
                 read_room_rectangles(activity, file, room);
                 read_room_triangles(activity, file, room);
                 read_room_sprites(activity, file, room);
@@ -120,6 +120,13 @@ namespace trlevel
             std::vector<int16_t> zones = read_vector<int16_t>(file, num_boxes * 4);
             log_file(activity, file, std::format("Read {} zones", zones.size()));
         }
+    }
+
+    void read_room_vertices_tr1_psx(trview::Activity& activity, std::basic_ispanstream<uint8_t>& file, tr3_room& room)
+    {
+        log_file(activity, file, "Reading vertices");
+        room.data.vertices = convert_vertices(convert_psx_vertex_lighting(read_vector<int16_t, tr_room_vertex>(file)));
+        log_file(activity, file, std::format("Read {} vertices", room.data.vertices.size()));
     }
 
     void Level::generate_mesh_tr1_psx_may_1996(tr_mesh& mesh, std::basic_ispanstream<uint8_t>& stream)

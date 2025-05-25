@@ -708,13 +708,13 @@ namespace trlevel
             {
                 _platform_and_version = { .platform = Platform::PSX, .version = LevelVersion::Tomb5, .raw_version = 0xFFFFFF1F };
             }
-            else if (check_for_tr1_psx_without_sound(file))
-            {
-                _platform_and_version = { .platform = Platform::PSX, .version = LevelVersion::Tomb1, .raw_version = read<uint32_t>(file) };
-            }
             else if (check_for_tr2_psx(file))
             {
                 _platform_and_version = { .platform = Platform::PSX, .version = LevelVersion::Tomb2, .raw_version = read<uint32_t>(file) };
+            }
+            else if (check_for_tr1_psx_without_sound(file))
+            {
+                _platform_and_version = { .platform = Platform::PSX, .version = LevelVersion::Tomb1, .raw_version = read<uint32_t>(file) };
             }
             else if (check_for_tr1_aug_1996(file))
             {

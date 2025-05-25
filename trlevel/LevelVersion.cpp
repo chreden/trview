@@ -90,7 +90,7 @@ namespace trlevel
 
     bool is_tr2_beta(uint32_t version)
     {
-        return ((version & 0xff) == 0x20) && (version & 0xff0000 || trview::equals_any(version, 0xf820u, 0xd620u, 0x1220u, 0x1a20u));
+        return ((version & 0xff) == 0x20) && (version & 0xff0000 || trview::equals_any(version, 0xf820u, 0xd620u, 0x1220u, 0x1a20u, 0xe220u));
     }
 
     bool is_tr2_beta(PlatformAndVersion version)

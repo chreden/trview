@@ -33,12 +33,6 @@ namespace trlevel
         {
             uint16_t vertices[4];
         };
-
-        struct tr2_psx_opsm1_vert
-        {
-            tr_vertex position;
-            int16_t   lighting;
-        };
 #pragma pack(pop)
 
         std::vector<trview_room_vertex> convert_vertices_tr2_psx(std::vector<uint32_t> vertices, int32_t y_top)
@@ -204,24 +198,15 @@ namespace trlevel
             if (NumDataWords > 0)
             {
                 uint16_t num_vertices = read<uint16_t>(file);
-                read<uint16_t>(file);
-                auto vertices = read_vector<tr2_psx_opsm1_vert>(file, num_vertices);
-                room.data.vertices = vertices |
-                    std::views::transform([](auto&& v) -> trview_room_vertex
-                        {
-                            return trview_room_vertex
-                            {
-                                .vertex = v.position,
-                            };
-                        }) | std::ranges::to<std::vector>();
+                num_vertices;
+                read_room_vertices_tr1_psx(activity, file, room);
+                read_room_rectangles(activity, file, room);
+                read_room_triangles(activity, file, room);
 
-                room.data.rectangles = convert_rectangles(read_vector<uint16_t, tr_face4>(file));
                 for (auto& rectangle : room.data.rectangles)
                 {
                     std::swap(rectangle.vertices[2], rectangle.vertices[3]);
                 }
-
-                room.data.triangles = convert_triangles(read_vector<uint16_t, tr_face3>(file));
             }
             file.seekg(at, std::ios::beg);
             file.seekg(NumDataWords * 2, std::ios::cur);
@@ -556,8 +541,12 @@ namespace trlevel
         _entities = read_entities(activity, file, callbacks);
         read<int32_t>(file); // Unknown
 
-        for (const auto& t : _textile16)
+        for (auto& t : _textile16)
         {
+            for (uint16_t& pixel : t.Tile)
+            {
+                pixel |= ((pixel & 0x00ffffff) != 0) ? 0x8000 : 0x0000;
+            }
             callbacks.on_textile(convert_textile(t));
         };
 
