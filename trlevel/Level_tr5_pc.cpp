@@ -191,6 +191,7 @@ namespace trlevel
 
     void Level::load_tr5_pc(std::basic_ispanstream<uint8_t>& file, trview::Activity& activity, const LoadCallbacks& callbacks)
     {
+        skip(file, 4); // version number
         _num_textiles = read_textiles_tr4_5(activity, file, callbacks);
         log_file(activity, file, "Reading Lara type");
         _lara_type = read<uint16_t>(file);
@@ -288,6 +289,7 @@ namespace trlevel
 
     void Level::load_tr5_pc_remastered(std::basic_ispanstream<uint8_t>& file, trview::Activity& activity, const LoadCallbacks& callbacks)
     {
+        skip(file, 4); // version number
         _num_textiles = read_textiles_tr5_remastered(activity, file, callbacks);
 
         log_file(activity, file, "Reading Lara type");

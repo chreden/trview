@@ -33,7 +33,7 @@ namespace trview
                        version.is_tr2_saturn ? "tr2_saturn" : "tr1";
                 break;
             case trlevel::LevelVersion::Tomb2:
-                return is_tr2_beta(version) ? "tr2_beta" : 
+                return is_tr2_version_44(version) ? "tr2_beta" :
                        is_tr2_e3(version) ? "tr2_e3" : "tr2";
                 break;
             case trlevel::LevelVersion::Tomb3:

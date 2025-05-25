@@ -95,6 +95,7 @@ namespace trlevel
 
     void Level::load_tr2_pc_e3(std::basic_ispanstream<uint8_t>& file, trview::Activity& activity, const LoadCallbacks& callbacks)
     {
+        skip(file, 4); // version number
         read_palette_tr1(file, activity, callbacks);
         read_textiles_tr2_pc_e3(file, activity, callbacks);
 
@@ -151,6 +152,7 @@ namespace trlevel
             return load_tr2_pc_e3(file, activity, callbacks);
         }
 
+        skip(file, 4); // version number
         read_palette_tr2_3(file, activity, callbacks);
         read_textiles(activity, file, callbacks);
 

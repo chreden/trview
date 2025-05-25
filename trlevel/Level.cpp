@@ -94,14 +94,79 @@ namespace trlevel
                 // sound data and see if we end up at a TR2 version number.
                 file.seekg(0);
 
-                read_vector<uint32_t, uint32_t>(file);
-                read_vector<uint32_t, byte>(file);
+                skip(file, read<uint32_t>(file) * sizeof(uint32_t));
+                skip(file, read<uint32_t>(file));
                 const uint32_t potential_version = read<uint32_t>(file);
-
                 const bool is_tr2_psx = convert_level_version(potential_version).version == LevelVersion::Tomb2;
                 file.seekg(0);
-
                 return is_tr2_psx;
+            }
+            catch (const std::exception&)
+            {
+                file.clear();
+                file.seekg(0, std::ios::beg);
+                return false;
+            }
+        }
+
+        bool check_for_tr2_psx_version_44(std::basic_ispanstream<uint8_t>& file)
+        {
+            try
+            {
+                // TR2 beta has TR1 style sounds first.
+                file.seekg(0);
+                skip(file, read<uint32_t>(file));
+                skip(file, read<uint32_t>(file));
+                const uint32_t potential_version = read<uint32_t>(file);
+                const bool is_tr2_psx_version_44 = potential_version == 44;
+                file.seekg(0);
+                return is_tr2_psx_version_44;
+            }
+            catch (const std::exception&)
+            {
+                file.clear();
+                file.seekg(0, std::ios::beg);
+                return false;
+            }
+        }
+
+        bool check_for_tr2_version_42(std::basic_ispanstream<uint8_t>& file)
+        {
+            try
+            {
+                // TR2 42 has sounds, style sounds then 18 textiles + cluts;
+                file.seekg(0);
+                skip(file, read<uint32_t>(file));
+                skip(file, read<uint32_t>(file));
+                skip(file, sizeof(tr_textile4) * 18);
+                skip(file, sizeof(tr_clut) * 2048);
+                const uint32_t potential_version = read<uint32_t>(file);
+                const bool is_tr2_psx_42 = potential_version == 42;
+                file.seekg(0);
+                return is_tr2_psx_42;
+            }
+            catch (const std::exception&)
+            {
+                file.clear();
+                file.seekg(0, std::ios::beg);
+                return false;
+            }
+        }
+
+        bool check_for_tr2_psx_version_38(std::basic_ispanstream<uint8_t>& file)
+        {
+            try
+            {
+                // TR2 38 has TR1 style sounds then 14 textiles + cluts.
+                file.seekg(0);
+                skip(file, read<uint32_t>(file));
+                skip(file, read<uint32_t>(file));
+                skip(file, sizeof(tr_textile4) * 14);
+                skip(file, sizeof(tr_clut) * 1024);
+                const uint32_t potential_version = read<uint32_t>(file);
+                const bool is_tr2_psx_version_38 = potential_version == 38;
+                file.seekg(0);
+                return is_tr2_psx_version_38;
             }
             catch (const std::exception&)
             {
@@ -169,16 +234,50 @@ namespace trlevel
             }
         }
 
+        PlatformAndVersion detect_level_version(std::basic_ispanstream<uint8_t>& file)
+        {
+            if (check_for_tr2_psx(file))
+            {
+                return { .platform = Platform::PSX, .version = LevelVersion::Tomb2, .raw_version = 45 };
+            }
+            else if (check_for_tr2_psx_version_44(file))
+            {
+                return { .platform = Platform::PSX, .version = LevelVersion::Tomb2, .raw_version = 44 };
+            }
+            else if (check_for_tr2_version_42(file))
+            {
+                return { .platform = Platform::PSX, .version = LevelVersion::Tomb2, .raw_version = 42 };
+            }
+            else if (check_for_tr2_psx_version_38(file))
+            {
+                return { .platform = Platform::PSX, .version = LevelVersion::Tomb2, .raw_version = 38 };
+            }
+            else if (check_for_tr1_aug_1996(file))
+            {
+                return { .platform = Platform::PSX, .version = LevelVersion::Tomb1, .raw_version = 27 };
+            }
+            else if (check_for_tr1_may_1996(file))
+            {
+                return { .platform = Platform::PSX, .version = LevelVersion::Tomb1, .raw_version = 11 };
+            }
+            else if (check_for_tr5_psx(file))
+            {
+                return { .platform = Platform::PSX, .version = LevelVersion::Tomb5, .raw_version = static_cast<uint32_t>(-225) };
+            }
+
+            return {};
+        }
+
         bool has_frame_count(PlatformAndVersion version)
         {
-            return (version.version == LevelVersion::Tomb1 && !version.is_tr2_saturn) || is_tr2_demo_70688(version) || is_tr2_e3(version) || is_tr2_demo_opsm1(version);
+            return (version.version == LevelVersion::Tomb1 && !version.is_tr2_saturn) || is_tr2_version_42(version) || is_tr2_e3(version) || is_tr2_version_38(version);
         }
 
         bool is_tr1_frame_format(PlatformAndVersion version)
         {
             return
                 (version.version == LevelVersion::Tomb1 && version.platform != Platform::Saturn)
-                || is_tr2_demo_70688(version) || is_tr2_e3(version) || is_tr2_demo_opsm1(version);
+                || is_tr2_version_42(version) || is_tr2_e3(version) || is_tr2_version_38(version);
         }
     }
 
@@ -236,13 +335,14 @@ namespace trlevel
                 }
                 else if (_platform_and_version.version == LevelVersion::Tomb2)
                 {
-                    if (is_tr2_beta(_platform_and_version))
+                    if (is_tr2_version_44(_platform_and_version) || 
+                        is_tr2_version_42(_platform_and_version))
                     {
-                        generate_mesh_tr2_psx_beta(mesh, stream);
+                        generate_mesh_tr2_psx_version_44(mesh, stream);
                     }
-                    else if (is_tr2_demo_opsm1(_platform_and_version))
+                    else if (is_tr2_version_38(_platform_and_version))
                     {
-                        generate_mesh_tr2_psx_opsm1(mesh, stream);
+                        generate_mesh_tr2_psx_version_38(mesh, stream);
                     }
                     else
                     {
@@ -673,7 +773,7 @@ namespace trlevel
             throw;
         }
         catch (const std::exception& e)
-        {
+        {   
             activity.log(trview::Message::Status::Error, std::format("Level failed to load: {}", e.what()));
             throw LevelLoadException(e.what());
         }
@@ -698,40 +798,24 @@ namespace trlevel
     {
         log_file(activity, file, "Reading version number from file");
         uint32_t raw_version = read<uint32_t>(file);
-        _platform_and_version = convert_level_version(raw_version);
+
+        // For levels where the version number is not the first bytes check the
+        // appropriate location in the file.
+        _platform_and_version = detect_level_version(file);
+
+        // If specific version checks failed we can check the first bytes.
+        if (_platform_and_version.version == LevelVersion::Unknown)
+        {
+            _platform_and_version = convert_level_version(raw_version);
+        }
 
         log_file(activity, file, std::format("Version number is {:X} ({}), Platform is {}", raw_version, to_string(get_version()), to_string(platform())));
         if (_platform_and_version.version == LevelVersion::Unknown)
         {
-            // Test for TR2 PSX
-            if (check_for_tr5_psx(file))
+            if (!_platform_and_version.is_pack)
             {
-                _platform_and_version = { .platform = Platform::PSX, .version = LevelVersion::Tomb5, .raw_version = 0xFFFFFF1F };
+                throw LevelLoadException(std::format("Unknown level version ({})", _platform_and_version.raw_version));
             }
-            else if (check_for_tr2_psx(file))
-            {
-                _platform_and_version = { .platform = Platform::PSX, .version = LevelVersion::Tomb2, .raw_version = read<uint32_t>(file) };
-            }
-            else if (check_for_tr1_psx_without_sound(file))
-            {
-                _platform_and_version = { .platform = Platform::PSX, .version = LevelVersion::Tomb1, .raw_version = read<uint32_t>(file) };
-            }
-            else if (check_for_tr1_aug_1996(file))
-            {
-                _platform_and_version = { .platform = Platform::PSX, .version = LevelVersion::Tomb1, .raw_version = 27 };
-            }
-            else if (check_for_tr1_may_1996(file))
-            {
-                _platform_and_version = { .platform = Platform::PSX, .version = LevelVersion::Tomb1, .raw_version = 11 };
-            }
-            else
-            {
-                if (!_platform_and_version.is_pack)
-                {
-                    throw LevelLoadException(std::format("Unknown level version ({})", _platform_and_version.raw_version));
-                }
-            }
-
             log_file(activity, file, std::format("Version number is {:X} ({}), Platform is {}", _platform_and_version.raw_version, to_string(get_version()), to_string(platform())));
         }
 
