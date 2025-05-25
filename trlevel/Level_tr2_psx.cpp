@@ -211,13 +211,7 @@ namespace trlevel
                         {
                             return trview_room_vertex
                             {
-                                .vertex =
-                                {
-                                    .x = v.position.x,
-                                    .y = v.position.y,
-                                    .z = v.position.z
-                                 },
-                                .attributes = 0
+                                .vertex = v.position,
                             };
                         }) | std::ranges::to<std::vector>();
 
