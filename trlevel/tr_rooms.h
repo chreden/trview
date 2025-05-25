@@ -8,8 +8,8 @@ namespace trlevel
     struct trview_room_vertex
     {
         tr_vertex vertex;
-        int16_t lighting;
-        uint16_t attributes;
+        int16_t lighting{ 0 };
+        uint16_t attributes{ 0 };
         DirectX::SimpleMath::Color colour;
     };
 
