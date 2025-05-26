@@ -101,7 +101,7 @@ namespace trlevel
 
     bool is_tr2_e3(PlatformAndVersion version)
     {
-        return version.raw_version == 0x26;
+        return version.raw_version == 38;
     }
 
     bool is_tr3_ects(PlatformAndVersion version)

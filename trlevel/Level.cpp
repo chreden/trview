@@ -72,8 +72,7 @@ namespace trlevel
 
                 file.seekg(sizeof(tr_textile4) * 13 + sizeof(tr_clut) * 1024);
                 const uint32_t potential_version = read<uint32_t>(file);
-
-                const bool is_tr1_psx = convert_level_version(potential_version).version == LevelVersion::Tomb1;
+                const bool is_tr1_psx = potential_version == 32;
                 file.seekg(0);
 
                 return is_tr1_psx;
@@ -97,7 +96,7 @@ namespace trlevel
                 skip(file, sizeof(tr_textile4) * 13 + sizeof(tr_clut) * 1024);
                 const uint32_t potential_version = read<uint32_t>(file);
 
-                const bool is_tr1_psx = convert_level_version(potential_version).version == LevelVersion::Tomb1;
+                const bool is_tr1_psx = potential_version == 32;
                 file.seekg(0);
                 return is_tr1_psx;
             }
@@ -120,7 +119,7 @@ namespace trlevel
                 skip(file, read<uint32_t>(file) * sizeof(uint32_t));
                 skip(file, read<uint32_t>(file));
                 const uint32_t potential_version = read<uint32_t>(file);
-                const bool is_tr2_psx = convert_level_version(potential_version).version == LevelVersion::Tomb2;
+                const bool is_tr2_psx = potential_version == 45;
                 file.seekg(0);
                 return is_tr2_psx;
             }
