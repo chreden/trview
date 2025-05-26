@@ -90,7 +90,7 @@ namespace trlevel
             skip(file, 2);
             if (NumDataWords > 0)
             {
-                read_room_vertices_tr1(activity, file, room);
+                read_room_vertices_tr1_psx(activity, file, room);
                 read_room_rectangles(activity, file, room);
                 read_room_triangles(activity, file, room);
                 read_room_sprites(activity, file, room);
@@ -413,7 +413,7 @@ namespace trlevel
     void Level::load_tr1_psx_aug_1996(std::basic_ispanstream<uint8_t>& file, trview::Activity& activity, const LoadCallbacks& callbacks)
     {
         read_textiles_tr1_psx_aug_1996(file, activity, callbacks);
-        skip(file, 4);
+        skip(file, 4); // version 27
         _rooms = read_rooms<uint16_t>(activity, file, callbacks, load_tr1_psx_room);
         _floor_data = read_floor_data(activity, file, callbacks);
         _mesh_data = read_mesh_data(activity, file, callbacks);
@@ -454,9 +454,13 @@ namespace trlevel
     {
         _num_textiles = 20;
         _textile4 = read_vector<tr_textile4>(file, _num_textiles);
-        _clut = read_vector<tr_clut>(file, 1024);
+        _clut = read_vector<tr_clut>(file, 2048);
 
-        file.seekg(721668, std::ios::beg);
+        // version (11)
+        skip(file, 4);
+
+        // Palette?
+        skip(file, 768);
 
         _rooms = read_rooms<uint16_t>(activity, file, callbacks, load_tr1_psx_may_1996_room);
         _floor_data = read_floor_data(activity, file, callbacks);

@@ -260,6 +260,10 @@ namespace trlevel
             {
                 return { .platform = Platform::PSX, .version = LevelVersion::Tomb1, .raw_version = 11 };
             }
+            else if (check_for_tr1_psx_without_sound(file))
+            {
+                return { .platform = Platform::PSX, .version = LevelVersion::Tomb1, .raw_version = 32 };
+            }
             else if (check_for_tr5_psx(file))
             {
                 return { .platform = Platform::PSX, .version = LevelVersion::Tomb5, .raw_version = static_cast<uint32_t>(-225) };
