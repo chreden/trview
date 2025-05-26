@@ -49,7 +49,7 @@ namespace trlevel
 
     bool is_tr1_may_1996(PlatformAndVersion version);
     bool is_tr1_pc_may_1996(PlatformAndVersion version);
-    bool is_tr1_aug_1996(PlatformAndVersion version);
+    bool is_tr1_version_27(PlatformAndVersion version);
     bool is_tr2_version_38(PlatformAndVersion version);
     bool is_tr2_version_42(PlatformAndVersion version);
     bool is_tr2_version_44(PlatformAndVersion version);

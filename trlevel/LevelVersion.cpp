@@ -79,7 +79,7 @@ namespace trlevel
         return is_tr1_may_1996(version) && version.platform == Platform::PC;
     }
 
-    bool is_tr1_aug_1996(PlatformAndVersion version)
+    bool is_tr1_version_27(PlatformAndVersion version)
     {
         return version.raw_version == 27;
     }

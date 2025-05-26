@@ -113,7 +113,7 @@ namespace trlevel
             read_room_flags(activity, file, room);
         }
 
-        void read_zones_tr1_aug_1996(trview::Activity& activity, std::basic_ispanstream<uint8_t>& file, const ILevel::LoadCallbacks& callbacks, uint32_t num_boxes)
+        void read_zones_tr1_version_27(trview::Activity& activity, std::basic_ispanstream<uint8_t>& file, const ILevel::LoadCallbacks& callbacks, uint32_t num_boxes)
         {
             callbacks.on_progress("Reading zones");
             log_file(activity, file, "Reading zones");
@@ -250,9 +250,9 @@ namespace trlevel
 
     void Level::load_tr1_psx(std::basic_ispanstream<uint8_t>& file, trview::Activity& activity, const LoadCallbacks& callbacks)
     {
-        file.seekg(4, std::ios::beg);
-        const bool has_sound = peek<uint32_t>(file) == 0x56414270; //pBAV
-        if (has_sound)
+        file.seekg(0, std::ios::beg);
+        uint32_t sound_header_size = read<uint32_t>(file);
+        if (sound_header_size && peek<uint32_t>(file) == 0x56414270) // pBAV
         {
             skip(file, 12);
             uint32_t textile_address = read<uint32_t>(file);
@@ -260,15 +260,20 @@ namespace trlevel
             read_sounds_tr1_psx(file, activity, callbacks, 11025);
             file.seekg(textile_address + 8, std::ios::beg);
         }
+        else if (!sound_header_size)
+        {
+            const uint32_t sound_data_size = read<uint32_t>(file);
+            skip(file, sound_data_size);
+        }
         else
         {
             read_sounds_external_tr1_psx(activity, callbacks);
             file.seekg(0, std::ios::beg);
         }
 
-        if (is_tr1_aug_1996(_platform_and_version))
+        if (is_tr1_version_27(_platform_and_version))
         {
-            return load_tr1_psx_aug_1996(file, activity, callbacks);
+            return load_tr1_psx_version_27(file, activity, callbacks);
         }
 
         if (is_tr1_may_1996(_platform_and_version))
@@ -276,8 +281,18 @@ namespace trlevel
             return load_tr1_psx_may_1996(file, activity, callbacks);
         }
 
+        const uint32_t before_textiles = static_cast<uint32_t>(file.tellg());
         read_textiles_tr1_psx(file, activity, callbacks);
-        read<uint32_t>(file);
+
+        // The 'without sound' variant loading also gets triggered with some of the cutscenes so
+        // if we aren't at the version number, try offsetting back and reading textiles again.
+        uint32_t version = read<uint32_t>(file);
+        if (version != 32)
+        {
+            file.seekg(before_textiles - 8);
+            read_textiles_tr1_psx(file, activity, callbacks);
+            version = read<uint32_t>(file);;
+        }
 
         if (file.eof())
         {
@@ -333,7 +348,7 @@ namespace trlevel
         log_file(activity, file, std::format("Read {} textile4s and {} clut", _textile4.size(), _clut.size()));
     }
 
-    void Level::read_textiles_tr1_psx_aug_1996(std::basic_ispanstream<uint8_t>& file, trview::Activity& activity, const LoadCallbacks& callbacks)
+    void Level::read_textiles_tr1_psx_version_27(std::basic_ispanstream<uint8_t>& file, trview::Activity& activity, const LoadCallbacks& callbacks)
     {
         callbacks.on_progress("Reading textiles");
         log_file(activity, file, "Reading textiles");
@@ -410,9 +425,10 @@ namespace trlevel
         }
     }
 
-    void Level::load_tr1_psx_aug_1996(std::basic_ispanstream<uint8_t>& file, trview::Activity& activity, const LoadCallbacks& callbacks)
+    void Level::load_tr1_psx_version_27(std::basic_ispanstream<uint8_t>& file, trview::Activity& activity, const LoadCallbacks& callbacks)
     {
-        read_textiles_tr1_psx_aug_1996(file, activity, callbacks);
+        file.seekg(0, std::ios::beg);
+        read_textiles_tr1_psx_version_27(file, activity, callbacks);
         skip(file, 4); // version 27
         _rooms = read_rooms<uint16_t>(activity, file, callbacks, load_tr1_psx_room);
         _floor_data = read_floor_data(activity, file, callbacks);
@@ -439,7 +455,7 @@ namespace trlevel
         _sound_sources = read_sound_sources(activity, file, callbacks);
         const auto boxes = read_boxes_tr1(activity, file, callbacks);
         read_overlaps(activity, file, callbacks);
-        read_zones_tr1_aug_1996(activity, file, callbacks, static_cast<uint32_t>(boxes.size()));
+        read_zones_tr1_version_27(activity, file, callbacks, static_cast<uint32_t>(boxes.size()));
         read_animated_textures(activity, file, callbacks);
         _entities = read_entities_tr1(activity, file, callbacks);
         _sound_map = read_sound_map(activity, file, callbacks);
@@ -452,6 +468,7 @@ namespace trlevel
 
     void Level::load_tr1_psx_may_1996(std::basic_ispanstream<uint8_t>& file, trview::Activity& activity, const LoadCallbacks& callbacks)
     {
+        file.seekg(0, std::ios::beg);
         _num_textiles = 20;
         _textile4 = read_vector<tr_textile4>(file, _num_textiles);
         _clut = read_vector<tr_clut>(file, 2048);

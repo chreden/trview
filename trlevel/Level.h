@@ -197,7 +197,7 @@ namespace trlevel
         void read_textiles_tr1_pc(std::basic_ispanstream<uint8_t>& file, trview::Activity& activity, const LoadCallbacks& callbacks);
         void read_textiles_tr2_pc_e3(std::basic_ispanstream<uint8_t>& file, trview::Activity& activity, const LoadCallbacks& callbacks);
         void read_textiles_tr1_psx(std::basic_ispanstream<uint8_t>& file, trview::Activity& activity, const LoadCallbacks& callbacks);
-        void read_textiles_tr1_psx_aug_1996(std::basic_ispanstream<uint8_t>& file, trview::Activity& activity, const LoadCallbacks& callbacks);
+        void read_textiles_tr1_psx_version_27(std::basic_ispanstream<uint8_t>& file, trview::Activity& activity, const LoadCallbacks& callbacks);
         void read_textiles_tr2_psx(std::basic_ispanstream<uint8_t>& file, trview::Activity& activity, const LoadCallbacks& callbacks);
         void read_textiles_tr2_psx_version_44(std::basic_ispanstream<uint8_t>& file, trview::Activity& activity, const LoadCallbacks& callbacks);
         void read_textiles_tr2_psx_version_42(std::basic_ispanstream<uint8_t>& file, trview::Activity& activity, const LoadCallbacks& callbacks);
@@ -216,7 +216,7 @@ namespace trlevel
         void load_tr1_pc_may_1996_wad(std::vector<uint8_t>& textile_buffer, trview::Activity& activity, const LoadCallbacks& callbacks);
         void load_tr1_pc_may_1996_swd(std::vector<uint8_t>& textile_buffer, trview::Activity& activity, const LoadCallbacks& callbacks);
         void load_tr1_psx(std::basic_ispanstream<uint8_t>& file, trview::Activity& activity, const LoadCallbacks& callbacks);
-        void load_tr1_psx_aug_1996(std::basic_ispanstream<uint8_t>& file, trview::Activity& activity, const LoadCallbacks& callbacks);
+        void load_tr1_psx_version_27(std::basic_ispanstream<uint8_t>& file, trview::Activity& activity, const LoadCallbacks& callbacks);
         void load_tr1_psx_may_1996(std::basic_ispanstream<uint8_t>& file, trview::Activity& activity, const LoadCallbacks& callbacks);
         void load_tr1_saturn(std::basic_ispanstream<uint8_t>& file, trview::Activity& activity, const LoadCallbacks& callbacks);
         void load_tr1_saturn_sat(std::basic_ispanstream<uint8_t>& level_file, trview::Activity& activity, const LoadCallbacks& callbacks);
