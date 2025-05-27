@@ -232,6 +232,7 @@ namespace trlevel
 
     void Level::load_tr3_psx(std::basic_ispanstream<uint8_t>& file, trview::Activity& activity, const LoadCallbacks& callbacks)
     {
+        skip(file, 4); // version number
         read_sounds_psx(file, activity, callbacks, 11025);
         const bool ects = is_tr3_ects(_platform_and_version);
 

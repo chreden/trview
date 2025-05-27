@@ -26,6 +26,14 @@ namespace trlevel
         }
     }
 
+    std::vector<tr_room_vertex> convert_psx_vertex_lighting(std::vector<tr_room_vertex> vertices)
+    {
+        return vertices | std::views::transform([](auto&& v) -> tr_room_vertex
+            {
+                return  { .vertex = v.vertex, .lighting = static_cast<int16_t>(8192 - (v.lighting << 5)) };
+            }) | std::ranges::to<std::vector>();
+    }
+
     /// <summary>
     /// Based on vag2wav from http://unhaut.epizy.com/psxsdk/
     /// </summary>

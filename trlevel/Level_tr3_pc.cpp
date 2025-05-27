@@ -37,6 +37,7 @@ namespace trlevel
 
     void Level::load_tr3_pc(std::basic_ispanstream<uint8_t>& file, trview::Activity& activity, const LoadCallbacks& callbacks)
     {
+        skip(file, 4); // version number
         read_palette_tr2_3(file, activity, callbacks);
         _num_textiles = read_textiles(activity, file, callbacks);
 

@@ -33,10 +33,6 @@ namespace trlevel
             case 0x09:
             case 0x0B:
             case 0x20:
-                if (is_tr2_beta(version))
-                {
-                    return { .platform = Platform::PSX, .version = LevelVersion::Tomb2 };
-                }
                 return { .platform = (version & 0xff00) ? Platform::PSX : Platform::PC, .version = LevelVersion::Tomb1 };
             case 0x26:
             case 0x2D:
@@ -83,34 +79,29 @@ namespace trlevel
         return is_tr1_may_1996(version) && version.platform == Platform::PC;
     }
 
-    bool is_tr1_aug_1996(PlatformAndVersion version)
+    bool is_tr1_version_27(PlatformAndVersion version)
     {
         return version.raw_version == 27;
     }
 
-    bool is_tr2_beta(uint32_t version)
-    {
-        return ((version & 0xff) == 0x20) && (version & 0xff0000 || trview::equals_any(version, 0xf820u, 0xd620u, 0x1220u, 0x1a20u));
-    }
-
-    bool is_tr2_beta(PlatformAndVersion version)
-    {
-        return is_tr2_beta(version.raw_version);
-    }
-
-    bool is_tr2_demo_70688(PlatformAndVersion version)
-    {
-        return version.raw_version == 70688;
-    }
-
-    bool is_tr2_demo_opsm1(PlatformAndVersion version)
+    bool is_tr2_version_38(PlatformAndVersion version)
     {
         return version.raw_version == 38;
     }
 
+    bool is_tr2_version_42(PlatformAndVersion version)
+    {
+        return version.raw_version == 42;
+    }
+
+    bool is_tr2_version_44(PlatformAndVersion version)
+    {
+        return version.raw_version == 44;
+    }
+
     bool is_tr2_e3(PlatformAndVersion version)
     {
-        return version.raw_version == 0x26;
+        return version.raw_version == 38;
     }
 
     bool is_tr3_ects(PlatformAndVersion version)

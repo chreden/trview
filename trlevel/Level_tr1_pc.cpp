@@ -438,6 +438,7 @@ namespace trlevel
 
     void Level::load_tr1_pc_may_1996(std::basic_ispanstream<uint8_t>& file, trview::Activity& activity, const LoadCallbacks& callbacks)
     {
+        skip(file, 4); // version number
         auto room_object_textures = read_vector<uint16_t, tr_object_texture_may_1996>(file);
 
         std::vector<uint8_t> textile_buffer;
@@ -559,6 +560,7 @@ namespace trlevel
             return load_tr1_pc_may_1996(file, activity, callbacks);
         }
 
+        skip(file, 4); // version number
         read_textiles_tr1_pc(file, activity, callbacks);
         read<uint32_t>(file);
 
