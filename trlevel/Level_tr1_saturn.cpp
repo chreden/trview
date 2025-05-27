@@ -448,6 +448,29 @@ namespace trlevel
             return raw_op;
         }
 
+        void apply_pre_retail_indices_shift(tr3_room_data& data)
+        {
+            for (auto& rect : data.rectangles)
+            {
+                rect.vertices[0] >>= 1;
+                rect.vertices[1] >>= 1;
+                rect.vertices[2] >>= 1;
+                rect.vertices[3] >>= 1;
+            }
+
+            for (auto& tri : data.triangles)
+            {
+                tri.vertices[0] >>= 1;
+                tri.vertices[1] >>= 1;
+                tri.vertices[2] >>= 1;
+            }
+
+            for (auto& spr : data.sprites)
+            {
+                spr.vertex >>= 1;
+            }
+        }
+
         // Reads and discards a Saturn tag. Only works when the size is accurate.
         void read_generic(std::basic_ispanstream<uint8_t>& file)
         {
@@ -694,7 +717,7 @@ namespace trlevel
             log_file(activity, file, std::format("Read flags: {:X}", room.flags));
         }
 
-        std::vector<tr3_room> read_roomdata(std::basic_ispanstream<uint8_t>& file, trview::Activity& activity)
+        std::vector<tr3_room> read_roomdata(std::basic_ispanstream<uint8_t>& file, trview::Activity& activity, const PlatformAndVersion& platform_and_version)
         {
             skip(file, 4);
             uint32_t num_rooms = to_le(read<uint32_t>(file));
@@ -729,6 +752,12 @@ namespace trlevel
                     tag = read_tag_name(file);
                     reader = room_functions.find(tag);
                 }
+
+                if (platform_and_version.raw_version < 32)
+                {
+                    apply_pre_retail_indices_shift(room.data);
+                }
+
                 rooms.push_back(room);
             }
             return rooms;
@@ -757,10 +786,11 @@ namespace trlevel
         std::vector<tr_room_texture_saturn> room_textures;
         std::vector<uint8_t> all_room_texture_data;
         std::vector<uint8_t> tqtr_data;
+        std::vector<uint8_t> room_texture_data;
 
         const auto read_roomdata_forward = [&](auto& file)
             {
-                _rooms = read_roomdata(file, activity);
+                _rooms = read_roomdata(file, activity, _platform_and_version);
             };
 
         const auto read_itemdata = [&](auto& file)
@@ -779,6 +809,7 @@ namespace trlevel
             { "ROOMTINF", read_list(room_textures) },
             { "ROOMTQTR", read_list(tqtr_data) },
             { "ROOMTSUB", read_list(all_room_texture_data) },
+            { "ROOMTDAT", read_list(room_texture_data) },
             { "ROOMTPAL", read_generic },
             { "ROOMSPAL", read_generic },
             { "ROOMDATA", read_roomdata_forward },
@@ -824,73 +855,105 @@ namespace trlevel
                 ++_num_textiles;
             });
 
-        for (const auto room_texture : room_textures)
-        {
-            const auto start = room_texture.a2 << 3;
-            const auto size = ((room_texture.a5 + room_texture.size) << 3) - start;
-            const auto end = start + size;
-
-            const auto data =
-                std::ranges::subrange(all_room_texture_data.begin() + start, all_room_texture_data.begin() + end)
-                | std::ranges::to<std::vector>();
-
-            const auto palette_bytes =
-                std::ranges::subrange(tqtr_data.begin() + (room_texture.start * 8 + room_texture.size * 8), tqtr_data.begin() + (room_texture.start * 8 + room_texture.size * 8) + 32)
-                | std::ranges::to<std::vector>();
-
-            std::array<uint16_t, 16> palette;
-            memcpy(&palette[0], &palette_bytes[0], sizeof(uint16_t) * 16);
-
-            const uint32_t subdiv_height = room_texture.subdiv_height;
-            const uint32_t width_pixels = static_cast<uint32_t>(data.size()) / subdiv_height;
-            const uint32_t subdiv_width_bytes = width_pixels / 4;
-            const uint32_t height_pixels = subdiv_height * 2;
-            const uint32_t source_width = width_pixels / 2;
-
-            std::vector<uint8_t> object_texture_8;
-            object_texture_8.resize(source_width * height_pixels);
-
-            for (uint32_t y = 0; y < subdiv_height; ++y)
+        const auto convert_object_texture_data = [&](const auto& texture_data, const auto& palette, uint32_t height_pixels, uint32_t width_pixels)
             {
-                // Top left.
-                memcpy(&object_texture_8[y * source_width], &data[y * subdiv_width_bytes], subdiv_width_bytes);
-                // Top right
-                memcpy(&object_texture_8[y * source_width + subdiv_width_bytes], &data[(y + subdiv_height) * subdiv_width_bytes], subdiv_width_bytes);
-                // Bottom left
-                memcpy(&object_texture_8[(y + subdiv_height) * source_width], &data[(y + subdiv_height * 3) * subdiv_width_bytes], subdiv_width_bytes);
-                // Bottom right
-                memcpy(&object_texture_8[(y + subdiv_height) * source_width + subdiv_width_bytes], &data[(y + subdiv_height * 2) * subdiv_width_bytes], subdiv_width_bytes);
-            }
+                const auto width_bytes = width_pixels / 2;
+                std::vector<uint32_t> object_texture_data;
+                object_texture_data.resize(width_pixels * height_pixels);
 
-            std::vector<uint32_t> object_texture_data;
-            object_texture_data.resize(width_pixels * height_pixels);
+                const bool is_transparent =
+                    transparent_room_object_textures.find(static_cast<uint16_t>(_object_textures.size())) !=
+                    transparent_room_object_textures.end();
 
-            const bool is_transparent =
-                transparent_room_object_textures.find(static_cast<uint16_t>(_object_textures.size())) !=
-                transparent_room_object_textures.end();
-
-            for (uint32_t y = 0; y < height_pixels; ++y)
-            {
-                for (uint32_t x = 0; x < source_width; ++x)
+                for (uint32_t y = 0; y < height_pixels; ++y)
                 {
-                    uint8_t value1 = ((object_texture_8[y * source_width + x] & 0xF0) >> 4);
-                    uint8_t value2 = (object_texture_8[y * source_width + x] & 0xF);
-
-                    uint32_t pe1 = convert_saturn_palette(to_le(palette[value1]));
-                    uint32_t pe2 = convert_saturn_palette(to_le(palette[value2]));
-
-                    if (is_transparent)
+                    for (uint32_t x = 0; x < width_bytes; ++x)
                     {
-                        if (value1 == 0x0) { pe1 = 0x00000000; }
-                        if (value2 == 0x0) { pe2 = 0x00000000; }
+                        uint8_t value1 = ((texture_data[y * width_bytes + x] & 0xF0) >> 4);
+                        uint8_t value2 = (texture_data[y * width_bytes + x] & 0xF);
+
+                        uint32_t pe1 = convert_saturn_palette(to_le(palette[value1]));
+                        uint32_t pe2 = convert_saturn_palette(to_le(palette[value2]));
+
+                        if (is_transparent)
+                        {
+                            if (value1 == 0x0) { pe1 = 0x00000000; }
+                            if (value2 == 0x0) { pe2 = 0x00000000; }
+                        }
+
+                        object_texture_data[y * width_pixels + x * 2] = pe1;
+                        object_texture_data[y * width_pixels + x * 2 + 1] = pe2;
                     }
-
-                    object_texture_data[y * width_pixels + x * 2] = pe1;
-                    object_texture_data[y * width_pixels + x * 2 + 1] = pe2;
                 }
-            }
+                return object_texture_data;
+            };
 
-            _object_textures.push_back(mapper.map(object_texture_data, width_pixels, height_pixels));
+        if (_platform_and_version.raw_version < 32)
+        {
+            for (const auto room_texture : room_textures)
+            {
+                const auto start = room_texture.start << 3;
+                const auto size = room_texture.size << 3;
+                const auto end = start + size;
+
+                const auto data =
+                    std::ranges::subrange(room_texture_data.begin() + start, room_texture_data.begin() + end)
+                    | std::ranges::to<std::vector>();
+
+                const auto palette_bytes =
+                    std::ranges::subrange(room_texture_data.begin() + (room_texture.start * 8 + room_texture.size * 8), room_texture_data.begin() + (room_texture.start * 8 + room_texture.size * 8) + 32)
+                    | std::ranges::to<std::vector>();
+
+                std::array<uint16_t, 16> palette;
+                memcpy(&palette[0], &palette_bytes[0], sizeof(uint16_t) * 16);
+
+                const uint32_t height_pixels = room_texture.subdiv_height;
+                const uint32_t width_pixels = (static_cast<uint32_t>(data.size()) / height_pixels) * 2;
+                _object_textures.push_back(mapper.map(convert_object_texture_data(data, palette, height_pixels, width_pixels), width_pixels, height_pixels));
+            }
+        }
+        else
+        {
+            for (const auto room_texture : room_textures)
+            {
+                const auto start = room_texture.a2 << 3;
+                const auto size = ((room_texture.a5 + room_texture.size) << 3) - start;
+                const auto end = start + size;
+
+                const auto data =
+                    std::ranges::subrange(all_room_texture_data.begin() + start, all_room_texture_data.begin() + end)
+                    | std::ranges::to<std::vector>();
+
+                const auto palette_bytes =
+                    std::ranges::subrange(tqtr_data.begin() + (room_texture.start * 8 + room_texture.size * 8), tqtr_data.begin() + (room_texture.start * 8 + room_texture.size * 8) + 32)
+                    | std::ranges::to<std::vector>();
+
+                std::array<uint16_t, 16> palette;
+                memcpy(&palette[0], &palette_bytes[0], sizeof(uint16_t) * 16);
+
+                const uint32_t subdiv_height = room_texture.subdiv_height;
+                const uint32_t width_pixels = static_cast<uint32_t>(data.size()) / subdiv_height;
+                const uint32_t subdiv_width_bytes = width_pixels / 4;
+                const uint32_t height_pixels = subdiv_height * 2;
+                const uint32_t source_width = width_pixels / 2;
+
+                std::vector<uint8_t> object_texture_8;
+                object_texture_8.resize(source_width * height_pixels);
+
+                for (uint32_t y = 0; y < subdiv_height; ++y)
+                {
+                    // Top left.
+                    memcpy(&object_texture_8[y * source_width], &data[y * subdiv_width_bytes], subdiv_width_bytes);
+                    // Top right
+                    memcpy(&object_texture_8[y * source_width + subdiv_width_bytes], &data[(y + subdiv_height) * subdiv_width_bytes], subdiv_width_bytes);
+                    // Bottom left
+                    memcpy(&object_texture_8[(y + subdiv_height) * source_width], &data[(y + subdiv_height * 3) * subdiv_width_bytes], subdiv_width_bytes);
+                    // Bottom right
+                    memcpy(&object_texture_8[(y + subdiv_height) * source_width + subdiv_width_bytes], &data[(y + subdiv_height * 2) * subdiv_width_bytes], subdiv_width_bytes);
+                }
+
+                _object_textures.push_back(mapper.map(convert_object_texture_data(object_texture_8, palette, height_pixels, width_pixels), width_pixels, height_pixels));
+            }
         }
 
         mapper.finish();

@@ -23,10 +23,6 @@ namespace trlevel
             {
                 return { .platform = Platform::PSX, .version = LevelVersion::Tomb4 };
             }
-            else if (version == 0x4D4F4F52)
-            {
-                return { .platform = Platform::Saturn, .version = LevelVersion::Tomb1 };
-            }
 
             switch (version & 0xff)
             {

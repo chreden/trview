@@ -238,6 +238,31 @@ namespace trlevel
             }
         }
 
+        std::optional<PlatformAndVersion> check_for_tr1_saturn(std::basic_ispanstream<uint8_t>& file)
+        {
+            try
+            {
+                file.seekg(0);
+                std::array<uint8_t, 8> data;
+                file.read(&data[0], 8);
+                if ((data | std::ranges::to<std::string>()) == "ROOMFILE")
+                {
+                    skip(file, 4);
+                    const uint32_t version = std::byteswap(read<uint32_t>(file));
+                    file.seekg(0);
+                    return PlatformAndVersion{ .platform = Platform::Saturn, .version = LevelVersion::Tomb1, .raw_version = version };
+                }
+                file.seekg(0);
+            }
+            catch (const std::exception&)
+            {
+                file.clear();
+                file.seekg(0, std::ios::beg);
+            }
+
+            return std::nullopt;
+        }
+
         bool check_for_tr5_psx(std::basic_ispanstream<uint8_t>& file)
         {
             try
@@ -293,6 +318,10 @@ namespace trlevel
             else if (check_for_tr5_psx(file))
             {
                 return { .platform = Platform::PSX, .version = LevelVersion::Tomb5, .raw_version = static_cast<uint32_t>(-225) };
+            }
+            else if (auto version = check_for_tr1_saturn(file))
+            {
+                return version.value();
             }
 
             return {};
