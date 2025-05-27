@@ -63,267 +63,184 @@ namespace trlevel
             return transformed.find(L".TRC") != filename.npos;
         }
 
-        bool check_for_tr1_psx_without_sound(std::basic_ispanstream<uint8_t>& file)
+        std::optional<PlatformAndVersion>  check_for_tr1_psx_without_sound(std::basic_ispanstream<uint8_t>& file)
         {
-            try
+            // TR1 PSX sometimes has sound separated
+            file.seekg(sizeof(tr_textile4) * 13 + sizeof(tr_clut) * 1024);
+            const uint32_t potential_version = read<uint32_t>(file);
+            if (potential_version == 32)
             {
-                // TR1 PSX sometimes has sound separated
-                file.seekg(0);
-
-                file.seekg(sizeof(tr_textile4) * 13 + sizeof(tr_clut) * 1024);
-                const uint32_t potential_version = read<uint32_t>(file);
-                const bool is_tr1_psx = potential_version == 32;
-                file.seekg(0);
-
-                return is_tr1_psx;
+                return PlatformAndVersion{ .platform = Platform::PSX, .version = LevelVersion::Tomb1, .raw_version = 32 };
             }
-            catch (const std::exception&)
-            {
-                file.clear();
-                file.seekg(0, std::ios::beg);
-                return false;
-            }
+            return std::nullopt;
         }
 
-        bool check_for_tr1_psx(std::basic_ispanstream<uint8_t>& file)
+        std::optional<PlatformAndVersion> check_for_tr1_psx(std::basic_ispanstream<uint8_t>& file)
         {
-            try
+            skip(file, read<uint32_t>(file));
+            skip(file, read<uint32_t>(file));
+            skip(file, sizeof(tr_textile4) * 13 + sizeof(tr_clut) * 1024);
+            const uint32_t potential_version = read<uint32_t>(file);
+            if (potential_version == 32)
             {
-                file.seekg(0);
-
-                skip(file, read<uint32_t>(file));
-                skip(file, read<uint32_t>(file));
-                skip(file, sizeof(tr_textile4) * 13 + sizeof(tr_clut) * 1024);
-                const uint32_t potential_version = read<uint32_t>(file);
-
-                const bool is_tr1_psx = potential_version == 32;
-                file.seekg(0);
-                return is_tr1_psx;
+                return PlatformAndVersion{ .platform = Platform::PSX, .version = LevelVersion::Tomb1, .raw_version = 32 };
             }
-            catch (const std::exception&)
-            {
-                file.clear();
-                file.seekg(0, std::ios::beg);
-                return false;
-            }
+            return std::nullopt;
         }
 
-        bool check_for_tr2_psx(std::basic_ispanstream<uint8_t>& file)
+        std::optional<PlatformAndVersion> check_for_tr2_psx(std::basic_ispanstream<uint8_t>& file)
         {
-            try
+            // TR2 PSX has sound data before the version number - attempt to read
+            // sound data and see if we end up at a TR2 version number.
+            skip(file, read<uint32_t>(file) * sizeof(uint32_t));
+            skip(file, read<uint32_t>(file));
+            const uint32_t potential_version = read<uint32_t>(file);
+            if (potential_version == 45)
             {
-                // TR2 PSX has sound data before the version number - attempt to read
-                // sound data and see if we end up at a TR2 version number.
-                file.seekg(0);
-
-                skip(file, read<uint32_t>(file) * sizeof(uint32_t));
-                skip(file, read<uint32_t>(file));
-                const uint32_t potential_version = read<uint32_t>(file);
-                const bool is_tr2_psx = potential_version == 45;
-                file.seekg(0);
-                return is_tr2_psx;
+                return PlatformAndVersion { .platform = Platform::PSX, .version = LevelVersion::Tomb2, .raw_version = 45 };
             }
-            catch (const std::exception&)
-            {
-                file.clear();
-                file.seekg(0, std::ios::beg);
-                return false;
-            }
+            return std::nullopt;
         }
 
-        bool check_for_tr2_psx_version_44(std::basic_ispanstream<uint8_t>& file)
+        std::optional<PlatformAndVersion> check_for_tr2_psx_version_44(std::basic_ispanstream<uint8_t>& file)
         {
-            try
+            // TR2 beta has TR1 style sounds first.
+            skip(file, read<uint32_t>(file));
+            skip(file, read<uint32_t>(file));
+            const uint32_t potential_version = read<uint32_t>(file);
+            if (potential_version == 44)
             {
-                // TR2 beta has TR1 style sounds first.
-                file.seekg(0);
-                skip(file, read<uint32_t>(file));
-                skip(file, read<uint32_t>(file));
-                const uint32_t potential_version = read<uint32_t>(file);
-                const bool is_tr2_psx_version_44 = potential_version == 44;
-                file.seekg(0);
-                return is_tr2_psx_version_44;
+                return PlatformAndVersion{ .platform = Platform::PSX, .version = LevelVersion::Tomb2, .raw_version = 44 };
             }
-            catch (const std::exception&)
-            {
-                file.clear();
-                file.seekg(0, std::ios::beg);
-                return false;
-            }
+            return std::nullopt;
         }
 
-        bool check_for_tr2_version_42(std::basic_ispanstream<uint8_t>& file)
+        std::optional<PlatformAndVersion> check_for_tr2_version_42(std::basic_ispanstream<uint8_t>& file)
         {
-            try
+            // TR2 42 has sounds, style sounds then 18 textiles + cluts;
+            skip(file, read<uint32_t>(file));
+            skip(file, read<uint32_t>(file));
+            skip(file, sizeof(tr_textile4) * 18);
+            skip(file, sizeof(tr_clut) * 2048);
+            const uint32_t potential_version = read<uint32_t>(file);
+            if (potential_version == 42)
             {
-                // TR2 42 has sounds, style sounds then 18 textiles + cluts;
-                file.seekg(0);
-                skip(file, read<uint32_t>(file));
-                skip(file, read<uint32_t>(file));
-                skip(file, sizeof(tr_textile4) * 18);
-                skip(file, sizeof(tr_clut) * 2048);
-                const uint32_t potential_version = read<uint32_t>(file);
-                const bool is_tr2_psx_42 = potential_version == 42;
-                file.seekg(0);
-                return is_tr2_psx_42;
+                return PlatformAndVersion{ .platform = Platform::PSX, .version = LevelVersion::Tomb2, .raw_version = 42 };
             }
-            catch (const std::exception&)
-            {
-                file.clear();
-                file.seekg(0, std::ios::beg);
-                return false;
-            }
+            return std::nullopt;
         }
 
-        bool check_for_tr2_psx_version_38(std::basic_ispanstream<uint8_t>& file)
+        std::optional<PlatformAndVersion> check_for_tr2_psx_version_38(std::basic_ispanstream<uint8_t>& file)
         {
-            try
+            // TR2 38 has TR1 style sounds then 14 textiles + cluts.
+            skip(file, read<uint32_t>(file));
+            skip(file, read<uint32_t>(file));
+            skip(file, sizeof(tr_textile4) * 14);
+            skip(file, sizeof(tr_clut) * 1024);
+            const uint32_t potential_version = read<uint32_t>(file);
+            if (potential_version == 38)
             {
-                // TR2 38 has TR1 style sounds then 14 textiles + cluts.
-                file.seekg(0);
-                skip(file, read<uint32_t>(file));
-                skip(file, read<uint32_t>(file));
-                skip(file, sizeof(tr_textile4) * 14);
-                skip(file, sizeof(tr_clut) * 1024);
-                const uint32_t potential_version = read<uint32_t>(file);
-                const bool is_tr2_psx_version_38 = potential_version == 38;
-                file.seekg(0);
-                return is_tr2_psx_version_38;
+                return PlatformAndVersion{ .platform = Platform::PSX, .version = LevelVersion::Tomb2, .raw_version = 38 };
             }
-            catch (const std::exception&)
-            {
-                file.clear();
-                file.seekg(0, std::ios::beg);
-                return false;
-            }
+            return std::nullopt;
         }
 
-        bool check_for_tr1_psx_version_27(std::basic_ispanstream<uint8_t>& file)
+        std::optional<PlatformAndVersion> check_for_tr1_psx_version_27(std::basic_ispanstream<uint8_t>& file)
         {
-            try
+            // TR1 PSX August 1996 has textiles first.
+            file.seekg(sizeof(tr_textile4) * 15 + sizeof(tr_clut) * 1024);
+            const uint32_t potential_version = read<uint32_t>(file);
+            if (potential_version == 27)
             {
-                // TR1 PSX August 1996 has textiles first.
-                file.seekg(sizeof(tr_textile4) * 15 + sizeof(tr_clut) * 1024);
-                const uint32_t potential_version = read<uint32_t>(file);
-
-                const bool is_tr1_psx_version_27 = potential_version == 27;
-                file.seekg(0);
-
-                return is_tr1_psx_version_27;
+                return PlatformAndVersion{ .platform = Platform::PSX, .version = LevelVersion::Tomb1, .raw_version = 27 };
             }
-            catch (const std::exception&)
-            {
-                file.clear();
-                file.seekg(0, std::ios::beg);
-                return false;
-            }
+            return std::nullopt;
         }
 
-        bool check_for_tr1_may_1996(std::basic_ispanstream<uint8_t>& file)
+        std::optional<PlatformAndVersion> check_for_tr1_may_1996(std::basic_ispanstream<uint8_t>& file)
         {
-            try
+            // TR1 PSX May 1996 has textiles first.
+            file.seekg(sizeof(tr_textile4) * 21 + sizeof(tr_clut) * 1024);
+            const uint32_t potential_version = read<uint32_t>(file);
+            if (potential_version == 11)
             {
-                // TR1 PSX May 1996 has textiles first.
-                file.seekg(sizeof(tr_textile4) * 21 + sizeof(tr_clut) * 1024);
-                const uint32_t potential_version = read<uint32_t>(file);
-                const bool is_tr1_may_1996 = potential_version == 11;
-                file.seekg(0);
-                return is_tr1_may_1996;
+                return PlatformAndVersion{ .platform = Platform::PSX, .version = LevelVersion::Tomb1, .raw_version = 11 };
             }
-            catch (const std::exception&)
-            {
-                file.clear();
-                file.seekg(0, std::ios::beg);
-                return false;
-            }
+            return std::nullopt;
         }
 
         std::optional<PlatformAndVersion> check_for_tr1_saturn(std::basic_ispanstream<uint8_t>& file)
         {
-            try
+            std::array<uint8_t, 8> data;
+            file.read(&data[0], 8);
+            if ((data | std::ranges::to<std::string>()) == "ROOMFILE")
             {
-                file.seekg(0);
-                std::array<uint8_t, 8> data;
-                file.read(&data[0], 8);
-                if ((data | std::ranges::to<std::string>()) == "ROOMFILE")
-                {
-                    skip(file, 4);
-                    const uint32_t version = std::byteswap(read<uint32_t>(file));
-                    file.seekg(0);
-                    return PlatformAndVersion{ .platform = Platform::Saturn, .version = LevelVersion::Tomb1, .raw_version = version };
-                }
-                file.seekg(0);
+                skip(file, 4);
+                const int32_t version = std::byteswap(read<int32_t>(file));
+                return PlatformAndVersion{ .platform = Platform::Saturn, .version = LevelVersion::Tomb1, .raw_version = version };
             }
-            catch (const std::exception&)
-            {
-                file.clear();
-                file.seekg(0, std::ios::beg);
-            }
-
             return std::nullopt;
         }
 
-        bool check_for_tr5_psx(std::basic_ispanstream<uint8_t>& file)
+        std::optional<PlatformAndVersion> check_for_tr5_psx(std::basic_ispanstream<uint8_t>& file)
         {
-            try
+            file.seekg(313344);
+            const int32_t potential_version = read<int32_t>(file);
+            if (potential_version == -225)
             {
-                file.seekg(313344);
-                const int32_t potential_version = read<int32_t>(file);
-                const bool is_tr5_psx = potential_version == -225;
-                file.seekg(0);
-                return is_tr5_psx;
+                return PlatformAndVersion{ .platform = Platform::PSX, .version = LevelVersion::Tomb5, .raw_version = -225 };
             }
-            catch (const std::exception&)
-            {
-                file.clear();
-                file.seekg(0, std::ios::beg);
-                return false;
-            }
+            return std::nullopt;
         }
+
+        class FileResetter final
+        {
+        public:
+            FileResetter(std::basic_ispanstream<uint8_t>& file)
+                : _file(file)
+            {
+                _file.seekg(0, std::ios::beg);
+            }
+
+            ~FileResetter()
+            {
+                _file.clear();
+                _file.seekg(0, std::ios::beg);
+            }
+        private:
+            std::basic_ispanstream<uint8_t>& _file;
+        };
 
         PlatformAndVersion detect_level_version(std::basic_ispanstream<uint8_t>& file)
         {
-            if (check_for_tr2_psx(file))
+            const std::vector<std::function<std::optional<PlatformAndVersion>(std::basic_ispanstream<uint8_t>&)>> checks
             {
-                return { .platform = Platform::PSX, .version = LevelVersion::Tomb2, .raw_version = 45 };
-            }
-            else if (check_for_tr2_psx_version_44(file))
-            {
-                return { .platform = Platform::PSX, .version = LevelVersion::Tomb2, .raw_version = 44 };
-            }
-            else if (check_for_tr2_version_42(file))
-            {
-                return { .platform = Platform::PSX, .version = LevelVersion::Tomb2, .raw_version = 42 };
-            }
-            else if (check_for_tr2_psx_version_38(file))
-            {
-                return { .platform = Platform::PSX, .version = LevelVersion::Tomb2, .raw_version = 38 };
-            }
-            else if (check_for_tr1_psx_version_27(file))
-            {
-                return { .platform = Platform::PSX, .version = LevelVersion::Tomb1, .raw_version = 27 };
-            }
-            else if (check_for_tr1_may_1996(file))
-            {
-                return { .platform = Platform::PSX, .version = LevelVersion::Tomb1, .raw_version = 11 };
-            }
-            else if (check_for_tr1_psx_without_sound(file))
-            {
-                return { .platform = Platform::PSX, .version = LevelVersion::Tomb1, .raw_version = 32 };
-            }
-            else if (check_for_tr1_psx(file))
-            {
-                return { .platform = Platform::PSX, .version = LevelVersion::Tomb1, .raw_version = 32 };
-            }
-            else if (check_for_tr5_psx(file))
-            {
-                return { .platform = Platform::PSX, .version = LevelVersion::Tomb5, .raw_version = static_cast<uint32_t>(-225) };
-            }
-            else if (auto version = check_for_tr1_saturn(file))
-            {
-                return version.value();
-            }
+                check_for_tr2_psx,
+                check_for_tr2_psx_version_44,
+                check_for_tr2_version_42,
+                check_for_tr2_psx_version_38,
+                check_for_tr1_psx_version_27,
+                check_for_tr1_may_1996,
+                check_for_tr1_psx_without_sound,
+                check_for_tr1_psx,
+                check_for_tr5_psx,
+                check_for_tr1_saturn
+            };
 
+            for (const auto& check : checks)
+            {
+                const FileResetter resetter(file);
+                try
+                {
+                    if (const auto version = check(file))
+                    {
+                        return version.value();
+                    }
+                }
+                catch(...)
+                {
+                }
+            }
             return {};
         }
 

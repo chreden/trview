@@ -5,7 +5,7 @@ namespace trlevel
 {
     namespace
     {
-        PlatformAndVersion platform_and_version(uint32_t version)
+        PlatformAndVersion platform_and_version(int32_t version)
         {
             if (version == 0x34585254)
             {
@@ -58,7 +58,7 @@ namespace trlevel
     // make that determination.
     // version: The version to convert.
     // Returns: The level version.
-    PlatformAndVersion convert_level_version(uint32_t version)
+    PlatformAndVersion convert_level_version(int32_t version)
     {
         auto result = platform_and_version(version);
         result.raw_version = version;

@@ -32,7 +32,7 @@ namespace trlevel
         bool         remastered{ false };
         bool         is_pack{ false };
         bool         is_tr2_saturn{ false };
-        uint32_t     raw_version{ 0 };
+        int32_t      raw_version{ 0 };
     };
 
     inline bool operator==(const PlatformAndVersion & l, const PlatformAndVersion & r)
@@ -45,7 +45,7 @@ namespace trlevel
     // make that determination.
     // version: The version to convert.
     // Returns: The level version.
-    PlatformAndVersion convert_level_version(uint32_t version);
+    PlatformAndVersion convert_level_version(int32_t version);
 
     bool is_tr1_may_1996(PlatformAndVersion version);
     bool is_tr1_pc_may_1996(PlatformAndVersion version);
