@@ -5,7 +5,7 @@ namespace trlevel
 {
     namespace
     {
-        PlatformAndVersion platform_and_version(uint32_t version)
+        PlatformAndVersion platform_and_version(int32_t version)
         {
             if (version == 0x34585254)
             {
@@ -22,10 +22,6 @@ namespace trlevel
             else if (version == 0x6a20 || version == 0x6ba8)
             {
                 return { .platform = Platform::PSX, .version = LevelVersion::Tomb4 };
-            }
-            else if (version == 0x4D4F4F52)
-            {
-                return { .platform = Platform::Saturn, .version = LevelVersion::Tomb1 };
             }
 
             switch (version & 0xff)
@@ -62,7 +58,7 @@ namespace trlevel
     // make that determination.
     // version: The version to convert.
     // Returns: The level version.
-    PlatformAndVersion convert_level_version(uint32_t version)
+    PlatformAndVersion convert_level_version(int32_t version)
     {
         auto result = platform_and_version(version);
         result.raw_version = version;
@@ -77,6 +73,11 @@ namespace trlevel
     bool is_tr1_pc_may_1996(PlatformAndVersion version)
     {
         return is_tr1_may_1996(version) && version.platform == Platform::PC;
+    }
+
+    bool is_tr1_version_26(PlatformAndVersion version)
+    {
+        return version.raw_version == 26;
     }
 
     bool is_tr1_version_27(PlatformAndVersion version)

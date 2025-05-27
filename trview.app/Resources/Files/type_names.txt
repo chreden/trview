@@ -196,7 +196,7 @@
             { "id": 238, "name": "Pottery5", "categories": [ "Scenery" ]},
             { "id": 239, "name": "Pottery6", "categories": [ "Scenery" ]}
             ],
-        "tr1_aug_1996": [
+        "tr1_version_26": [
             { "id": 0, "name": "Lara", "categories": [ "Entity" ]},
             { "id": 7, "name": "Wolf", "categories": [ "Entity" ]},
             { "id": 8, "name": "Bear", "categories": [ "Entity" ]},
