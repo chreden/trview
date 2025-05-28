@@ -108,10 +108,8 @@ namespace trlevel
             return 0;
         }
 
-        void load_tr1_pc_room_version_21(trview::Activity& activity, std::basic_ispanstream<uint8_t>& file, tr3_room& room)
+        void read_room_mesh_pre_21(trview::Activity& activity, std::basic_ispanstream<uint8_t>& file, tr3_room& room)
         {
-            room.info = read_room_info(activity, file);
-
             uint32_t NumDataWords = read_num_data_words(activity, file);
             auto at = file.tellg();
 
@@ -172,7 +170,12 @@ namespace trlevel
             auto [min, max] = std::ranges::minmax(room.data.vertices | std::views::transform([](auto&& v) { return v.vertex.y; }));
             room.info.yTop = min;
             room.info.yBottom = max;
+        }
 
+        void load_tr1_pc_room_version_21(trview::Activity& activity, std::basic_ispanstream<uint8_t>& file, tr3_room& room)
+        {
+            room.info = read_room_info(activity, file);
+            read_room_mesh_pre_21(activity, file, room);
             read_room_portals(activity, file, room);
             read_room_sectors(activity, file, room);
             read_room_ambient_intensity_1(activity, file, room);
@@ -186,68 +189,7 @@ namespace trlevel
         {
             room.info.x = read<int32_t>(file);
             room.info.z = read<int32_t>(file);
-
-            uint32_t NumDataWords = read_num_data_words(activity, file);
-            auto at = file.tellg();
-
-            // Read actual room data.
-            if (NumDataWords > 0)
-            {
-                read_room_vertices_tr1(activity, file, room);
-
-                uint16_t num_primitives = read<uint16_t>(file);
-                for (uint16_t i = 0; i < num_primitives; ++i)
-                {
-                    RoomPrimitive value = read<RoomPrimitive>(file);
-                    switch (value)
-                    {
-                        case RoomPrimitive::InvisibleTriangle:
-                        {
-                            skip(file, sizeof(tr_face3));
-                            break;
-                        }
-                        case RoomPrimitive::InvisibleRectangle:
-                        {
-                            skip(file, sizeof(tr_face4));
-                            break;
-                        }
-                        case RoomPrimitive::TexturedTriangle:
-                        {
-                            tr_face3 tri = read<tr_face3>(file);
-                            tr4_mesh_face3 new_face3;
-                            memcpy(new_face3.vertices, tri.vertices, sizeof(tri.vertices));
-                            new_face3.texture = tri.texture;
-                            new_face3.effects = 0;
-                            room.data.triangles.push_back(new_face3);
-                            break;
-                        }
-                        case RoomPrimitive::TransparentRectangle:
-                        case RoomPrimitive::TexturedRectangle:
-                        {
-                            tr_face4 rect = read<tr_face4>(file);
-                            tr4_mesh_face4 new_face4;
-                            memcpy(new_face4.vertices, rect.vertices, sizeof(rect.vertices));
-                            new_face4.texture = rect.texture;
-                            new_face4.effects = 0;
-                            room.data.rectangles.push_back(new_face4);
-                            break;
-                        }
-                        case RoomPrimitive::Sprite:
-                        {
-                            room.data.sprites.push_back(read<tr_room_sprite>(file));
-                            break;
-                        }
-                    }
-                }
-            }
-
-            file.seekg(at, std::ios::beg);
-            skip(file, NumDataWords * 2);
-
-            auto [min, max] = std::ranges::minmax(room.data.vertices | std::views::transform([](auto&& v) { return v.vertex.y; }));
-            room.info.yTop = min;
-            room.info.yBottom = max;
-
+            read_room_mesh_pre_21(activity, file, room);
             read_room_portals(activity, file, room);
             read_room_sectors(activity, file, room);
             read_room_ambient_intensity_1(activity, file, room);
