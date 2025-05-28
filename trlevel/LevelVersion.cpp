@@ -23,6 +23,22 @@ namespace trlevel
             {
                 return { .platform = Platform::PSX, .version = LevelVersion::Tomb4 };
             }
+            else if (version == -111)
+            {
+                return { .platform = Platform::PSX, .version = LevelVersion::Tomb4, .raw_version = -111 };
+            }
+            else if (version == -121)
+            {
+                return { .platform = Platform::PSX, .version = LevelVersion::Tomb4, .raw_version = -121 };
+            }
+            else if (version == -126)
+            {
+                return { .platform = Platform::PSX, .version = LevelVersion::Tomb4, .raw_version = -126 };
+            }
+            else if (version == -129)
+            {
+                return { .platform = Platform::PSX, .version = LevelVersion::Tomb4, .raw_version = -129 };
+            }
 
             switch (version & 0xff)
             {
@@ -128,7 +144,7 @@ namespace trlevel
 
     bool is_tr4_opsm_90(PlatformAndVersion version)
     {
-        return version.raw_version == 0xffffff88;
+        return version.raw_version == -120;
     }
 
     bool is_tr4_psx_v1(PlatformAndVersion version)

@@ -1585,6 +1585,14 @@
             { "id": 455, "name": "Animating 15" },
             { "id": 457, "name" : "Animating 16" }
             ],
+        "tr4_version_111": [
+            { "id": 0, "name": "Lara", "categories": [ "Entity" ]},
+            { "id": 19, "name": "Skeleton", "categories": [ "Entity" ]},
+            { "id": 23, "name": "Mummy", "categories": [ "Entity" ]},
+            { "id": 41, "name": "Knight Templar", "categories": [ "Entity" ]},
+            { "id": 91, "name": "Boulder", "categories": [ "Trap" ]},
+            { "id": 304, "name": "Camera Target" }
+            ],
         "tr4_opsm90": [
             { "id": 0, "name": "Lara", "categories": [ "Entity" ]},
             { "id": 22, "name": "Skeleton", "categories": [ "Entity" ]},

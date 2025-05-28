@@ -639,7 +639,8 @@ namespace trlevel
         {
             return type;
         }
-        else if (get_version() > trlevel::LevelVersion::Tomb3)
+        else if (get_version() > trlevel::LevelVersion::Tomb3 ||
+                 _platform_and_version.raw_version == -111)
         {
             if (is_tr4_opsm_90(_platform_and_version))
             {
@@ -651,6 +652,7 @@ namespace trlevel
         {
             return LaraSkinTR3Demo55;
         }
+
         return LaraSkinTR3;
     }
 
