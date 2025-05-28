@@ -12,9 +12,13 @@ Earliest version that TRView supports. The only example of this is the early ver
 
 The 'May 1996' version of TR1.
 
+## Version 21
+
+'July 1996' PC version of TR1.
+
 ## Version 26
 
-July Saturn demo of TR1.
+'July 1996' Saturn demo of TR1.
 
 ## Version 27
 

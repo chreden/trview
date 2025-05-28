@@ -150,7 +150,7 @@ namespace trview
         if (model.NumMeshes > 0)
         {
             // Load the frames.
-            auto frame = level.get_frame(trlevel::is_tr1_may_1996(level.platform_and_version()) ? model.FrameOffset : model.FrameOffset / 2, model.NumMeshes);
+            auto frame = level.get_frame(trlevel::has_double_frames(level.platform_and_version()) ? model.FrameOffset : model.FrameOffset / 2, model.NumMeshes);
 
             uint32_t frame_offset = 0;
 

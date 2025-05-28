@@ -210,8 +210,10 @@ namespace trlevel
         void read_sound_samples_tr4_5(std::basic_ispanstream<uint8_t>& file, trview::Activity& activity, const LoadCallbacks& callbacks);
         void read_sound_map_tr5_psx(std::basic_ispanstream<uint8_t>& file, const tr4_psx_level_info& info, trview::Activity& activity, const LoadCallbacks& callbacks);
         void adjust_room_textures_psx();
+        void adjust_room_textures();
 
         void load_tr1_pc(std::basic_ispanstream<uint8_t>& file, trview::Activity& activity, const LoadCallbacks& callbacks);
+        void load_tr1_pc_version_21(std::basic_ispanstream<uint8_t>& file, trview::Activity& activity, const LoadCallbacks& callbacks);
         void load_tr1_pc_may_1996(std::basic_ispanstream<uint8_t>& file, trview::Activity& activity, const LoadCallbacks& callbacks);
         void load_tr1_pc_may_1996_wad(std::vector<uint8_t>& textile_buffer, trview::Activity& activity, const LoadCallbacks& callbacks);
         void load_tr1_pc_may_1996_swd(std::vector<uint8_t>& textile_buffer, trview::Activity& activity, const LoadCallbacks& callbacks);
@@ -246,6 +248,7 @@ namespace trlevel
         void load_ngle_sound_fx(trview::Activity& activity, std::basic_ispanstream<uint8_t>& file, const LoadCallbacks& callbacks);
 
         void generate_mesh(tr_mesh& mesh, std::basic_ispanstream<uint8_t>& stream);
+        void generate_mesh_tr1_pc_version_21(tr_mesh& mesh, std::basic_ispanstream<uint8_t>& stream);
         void generate_mesh_tr1_pc_may_1996(tr_mesh& mesh, std::basic_ispanstream<uint8_t>& stream);
         void generate_mesh_tr1_psx(tr_mesh& mesh, std::basic_ispanstream<uint8_t>& stream);
         void generate_mesh_tr1_psx_may_1996(tr_mesh& mesh, std::basic_ispanstream<uint8_t>& stream);
@@ -258,6 +261,7 @@ namespace trlevel
         void generate_object_textures_tr4_psx(std::basic_ispanstream<uint8_t>& file, uint32_t start, const tr4_psx_level_info& info);
         void generate_sound_samples(const LoadCallbacks& callbacks);
         void generate_sounds(const LoadCallbacks& callbacks);
+        void generate_textiles_from_textile8(const LoadCallbacks& callbacks);
 
         PlatformAndVersion _platform_and_version;
 

@@ -28,6 +28,7 @@ namespace trlevel
             {
             case 0x09:
             case 0x0B:
+            case 0x15:
             case 0x20:
                 return { .platform = (version & 0xff00) ? Platform::PSX : Platform::PC, .version = LevelVersion::Tomb1 };
             case 0x26:
@@ -63,6 +64,11 @@ namespace trlevel
         auto result = platform_and_version(version);
         result.raw_version = version;
         return result;
+    }
+
+    bool is_tr1_version_21(PlatformAndVersion version)
+    {
+        return version.raw_version == 21;
     }
 
     bool is_tr1_may_1996(PlatformAndVersion version)
@@ -128,5 +134,10 @@ namespace trlevel
     bool is_tr4_psx_v1(PlatformAndVersion version)
     {
         return version.raw_version == 0x6ba8;
+    }
+
+    bool has_double_frames(PlatformAndVersion version)
+    {
+        return is_tr1_may_1996(version) || is_tr1_version_21(version);
     }
 }

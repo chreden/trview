@@ -171,6 +171,34 @@ namespace trview
             const uint16_t r = t & 0x001f;
             return Color(r / 31.0f, g / 31.0f, b / 31.0f);
         }
+
+        bool needs_rect_texture_abs(trlevel::PlatformAndVersion version)
+        {
+            return is_tr1_pc_may_1996(version) || is_tr1_version_21(version);
+        }
+
+        bool needs_tri_texture_mask(trlevel::PlatformAndVersion version)
+        {
+            return is_tr1_pc_may_1996(version) || is_tr1_version_21(version) || version.platform == trlevel::Platform::Saturn;
+        }
+
+        bool needs_rect_uv_adjustment(trlevel::PlatformAndVersion version)
+        {
+            return is_tr1_pc_may_1996(version) || is_tr1_version_21(version) || version.platform == trlevel::Platform::Saturn;
+        }
+
+        bool needs_tri_uv_adjustment(trlevel::PlatformAndVersion version)
+        {
+            return is_tr1_pc_may_1996(version) || is_tr1_version_21(version);
+        }
+
+        bool needs_rect_uv_swap(trlevel::PlatformAndVersion version)
+        {
+            return version.platform == trlevel::Platform::PSX ||
+                is_tr1_pc_may_1996(version) ||
+                is_tr1_version_21(version) ||
+                version.platform == trlevel::Platform::Saturn;
+        }
     }
 
     IMesh::~IMesh()
@@ -335,6 +363,7 @@ namespace trview
         bool transparent_collision)
     {
         using namespace trlevel;
+        const auto version = texture_storage.platform_and_version();
 
         uint16_t previous_texture = 0;
         for (const auto& rect : rectangles)
@@ -348,7 +377,7 @@ namespace trview
             }
 
             uint16_t texture = rect.texture & Texture_Mask;
-            if (is_tr1_pc_may_1996(texture_storage.platform_and_version()))
+            if (needs_rect_texture_abs(version))
             {
                 texture = static_cast<uint16_t>(std::abs(static_cast<int16_t>(rect.texture)));
             }
@@ -365,15 +394,12 @@ namespace trview
                 uvs[i] = texture_storage.uv(texture, i);
             }
 
-            if ((is_tr1_pc_may_1996(texture_storage.platform_and_version()) ||
-                texture_storage.platform_and_version().platform == Platform::Saturn) && static_cast<int16_t>(rect.texture) < 0)
+            if (needs_rect_uv_adjustment(version) && static_cast<int16_t>(rect.texture) < 0)
             {
                 adjust_rect_uvs_tr1_1996_pc(uvs, rect.texture);
             }
 
-            if (texture_storage.platform_and_version().platform == Platform::PSX || 
-                is_tr1_pc_may_1996(texture_storage.platform_and_version()) ||
-                texture_storage.platform_and_version().platform == Platform::Saturn)
+            if (needs_rect_uv_swap(version))
             {
                 std::swap(uvs[2], uvs[3]);
             }
@@ -382,8 +408,8 @@ namespace trview
 
             TransparentTriangle::Mode transparency_mode;
             if (determine_transparency(
-                texture_storage.platform_and_version().platform == Platform::Saturn ? rect.effects : texture_storage.attribute(texture),
-                texture_storage.platform_and_version().platform == Platform::Saturn ? 0 : rect.effects, transparency_mode))
+                version.platform == Platform::Saturn ? rect.effects : texture_storage.attribute(texture),
+                version.platform == Platform::Saturn ? 0 : rect.effects, transparency_mode))
             {
                 transparent_triangles.emplace_back(verts[0], verts[1], verts[2], uvs[0], uvs[1], uvs[2], texture_storage.tile(texture), transparency_mode, colors[0], colors[1], colors[2]);
                 transparent_triangles.emplace_back(verts[2], verts[3], verts[0], uvs[2], uvs[3], uvs[0], texture_storage.tile(texture), transparency_mode, colors[2], colors[3], colors[0]);
@@ -453,6 +479,7 @@ namespace trview
         bool transparent_collision)
     {
         using namespace trlevel;
+        const auto version = texture_storage.platform_and_version();
 
         uint16_t previous_texture = 0;
         for (const auto& tri : triangles)
@@ -467,8 +494,7 @@ namespace trview
 
             uint16_t texture = tri.texture & Texture_Mask;
 
-            if (is_tr1_pc_may_1996(texture_storage.platform_and_version()) ||
-                texture_storage.platform_and_version().platform == trlevel::Platform::Saturn)
+            if (needs_tri_texture_mask(version))
             {
                 texture = tri.texture & 0x1FFF;
             }
@@ -485,22 +511,22 @@ namespace trview
                 uvs[i] = texture_storage.uv(texture, i);
             }
 
-            if (is_tr1_pc_may_1996(texture_storage.platform_and_version()))
+            if (needs_tri_uv_adjustment(version))
             {
                 adjust_tri_uvs_tr1_1996_pc(uvs, tri.texture);
             }
 
-            if (texture_storage.platform_and_version().platform == trlevel::Platform::Saturn)
+            if (version.platform == trlevel::Platform::Saturn)
             {
                 adjust_tri_uvs_tr1_saturn(uvs, tri.texture);
             }
 
-            const bool double_sided = texture_storage.platform_and_version().platform != Platform::Saturn && (tri.texture & 0x8000);
+            const bool double_sided = version.platform != Platform::Saturn && (tri.texture & 0x8000);
 
             TransparentTriangle::Mode transparency_mode;
             if (determine_transparency(
-                texture_storage.platform_and_version().platform == Platform::Saturn ? tri.effects : texture_storage.attribute(texture),
-                texture_storage.platform_and_version().platform == Platform::Saturn ? 0 : tri.effects, transparency_mode))
+                version.platform == Platform::Saturn ? tri.effects : texture_storage.attribute(texture),
+                version.platform == Platform::Saturn ? 0 : tri.effects, transparency_mode))
             {
                 transparent_triangles.emplace_back(verts[0], verts[1], verts[2], uvs[0], uvs[1], uvs[2], texture_storage.tile(texture), transparency_mode, colors[0], colors[1], colors[2]);
                 if (transparent_collision)

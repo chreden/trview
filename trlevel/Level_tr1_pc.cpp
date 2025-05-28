@@ -108,6 +108,80 @@ namespace trlevel
             return 0;
         }
 
+        void load_tr1_pc_room_version_21(trview::Activity& activity, std::basic_ispanstream<uint8_t>& file, tr3_room& room)
+        {
+            room.info = read_room_info(activity, file);
+
+            uint32_t NumDataWords = read_num_data_words(activity, file);
+            auto at = file.tellg();
+
+            // Read actual room data.
+            if (NumDataWords > 0)
+            {
+                read_room_vertices_tr1(activity, file, room);
+
+                uint16_t num_primitives = read<uint16_t>(file);
+                for (uint16_t i = 0; i < num_primitives; ++i)
+                {
+                    RoomPrimitive value = read<RoomPrimitive>(file);
+                    switch (value)
+                    {
+                    case RoomPrimitive::InvisibleTriangle:
+                    {
+                        skip(file, sizeof(tr_face3));
+                        break;
+                    }
+                    case RoomPrimitive::InvisibleRectangle:
+                    {
+                        skip(file, sizeof(tr_face4));
+                        break;
+                    }
+                    case RoomPrimitive::TexturedTriangle:
+                    {
+                        tr_face3 tri = read<tr_face3>(file);
+                        tr4_mesh_face3 new_face3;
+                        memcpy(new_face3.vertices, tri.vertices, sizeof(tri.vertices));
+                        new_face3.texture = tri.texture;
+                        new_face3.effects = 0;
+                        room.data.triangles.push_back(new_face3);
+                        break;
+                    }
+                    case RoomPrimitive::TransparentRectangle:
+                    case RoomPrimitive::TexturedRectangle:
+                    {
+                        tr_face4 rect = read<tr_face4>(file);
+                        tr4_mesh_face4 new_face4;
+                        memcpy(new_face4.vertices, rect.vertices, sizeof(rect.vertices));
+                        new_face4.texture = rect.texture;
+                        new_face4.effects = 0;
+                        room.data.rectangles.push_back(new_face4);
+                        break;
+                    }
+                    case RoomPrimitive::Sprite:
+                    {
+                        room.data.sprites.push_back(read<tr_room_sprite>(file));
+                        break;
+                    }
+                    }
+                }
+            }
+
+            file.seekg(at, std::ios::beg);
+            skip(file, NumDataWords * 2);
+
+            auto [min, max] = std::ranges::minmax(room.data.vertices | std::views::transform([](auto&& v) { return v.vertex.y; }));
+            room.info.yTop = min;
+            room.info.yBottom = max;
+
+            read_room_portals(activity, file, room);
+            read_room_sectors(activity, file, room);
+            read_room_ambient_intensity_1(activity, file, room);
+            read_room_lights_tr1_pc(activity, file, room);
+            read_room_static_meshes_tr1_pc(activity, file, room);
+            read_room_alternate_room(activity, file, room);
+            read_room_flags(activity, file, room);
+        }
+
         void load_tr1_pc_room_may_1996(trview::Activity& activity, std::basic_ispanstream<uint8_t>& file, tr3_room& room)
         {
             room.info.x = read<int32_t>(file);
@@ -266,6 +340,75 @@ namespace trlevel
         }
     }
 
+    void Level::generate_mesh_tr1_pc_version_21(tr_mesh& mesh, std::basic_ispanstream<uint8_t>& stream)
+    {
+        mesh.centre = read<tr_vertex>(stream);
+        mesh.coll_radius = read<int32_t>(stream);
+        int16_t vertices_count = read<int16_t>(stream);
+        vertices_count = static_cast<int16_t>(std::abs(vertices_count));
+
+        mesh.vertices = read_vector<tr_vertex>(stream, vertices_count);
+        int16_t normals_count = read<int16_t>(stream);
+
+        for (int i = 0; i < vertices_count; ++i)
+        {
+            if (normals_count > 0)
+            {
+                mesh.normals.push_back(read<tr_vertex>(stream));
+            }
+            else
+            {
+                mesh.lights.push_back(read<int16_t>(stream)); // intensity
+                mesh.normals.push_back({ 0, 0, 0 });
+            }
+        }
+
+        std::vector<tr_face3> coloured_triangles;
+        std::vector<tr_face4> coloured_rectangles;
+        std::vector<tr_face3> textured_triangles;
+        std::vector<tr_face4> textured_rectangles;
+
+        const uint16_t num_primitives = read<uint16_t>(stream);
+        for (uint16_t i = 0; i < num_primitives; ++i)
+        {
+            PrimitiveType primitive_type = read<PrimitiveType>(stream);
+            switch (primitive_type)
+            {
+            case PrimitiveType::ColouredTriangle:
+            {
+                coloured_triangles.push_back(read<tr_face3>(stream));
+                break;
+            }
+            case PrimitiveType::ColouredRectangle:
+            {
+                coloured_rectangles.push_back(read<tr_face4>(stream));
+                break;
+            }
+            case PrimitiveType::Triangle2:
+            case PrimitiveType::TexturedTriangle:
+            case PrimitiveType::Triangle10:
+            case PrimitiveType::TransparentTexturedTriangle:
+            {
+                textured_triangles.push_back(read<tr_face3>(stream));
+                break;
+            }
+            case PrimitiveType::Rectangle3:
+            case PrimitiveType::TexturedRectangle:
+            case PrimitiveType::Rectangle11:
+            case PrimitiveType::TransparentTexturedRectangle:
+            {
+                textured_rectangles.push_back(read<tr_face4>(stream));
+                break;
+            }
+            }
+        }
+
+        mesh.textured_rectangles = convert_rectangles(textured_rectangles);
+        mesh.textured_triangles = convert_triangles(textured_triangles);
+        mesh.coloured_rectangles = coloured_rectangles;
+        mesh.coloured_triangles = coloured_triangles;
+    }
+
     void Level::generate_mesh_tr1_pc_may_1996(tr_mesh& mesh, std::basic_ispanstream<uint8_t>& stream)
     {
         mesh.centre = { .x = 0, .y = 0, .z = 0 };
@@ -329,27 +472,8 @@ namespace trlevel
             }
         }
 
-        mesh.textured_rectangles = textured_rectangles
-            | std::views::transform([](const auto& rect)
-                {
-                    tr4_mesh_face4 new_face4;
-                    memcpy(new_face4.vertices, rect.vertices, sizeof(rect.vertices));
-                    new_face4.texture = rect.texture;
-                    new_face4.effects = 0;
-                    return new_face4;
-                })
-            | std::ranges::to<std::vector>();
-        mesh.textured_triangles = textured_triangles
-            | std::views::transform([](const auto& tri)
-                {
-                    tr4_mesh_face3 new_face3;
-                    memcpy(new_face3.vertices, tri.vertices, sizeof(tri.vertices));
-                    new_face3.texture = tri.texture;
-                    new_face3.effects = 0;
-                    return new_face3;
-                })
-            | std::ranges::to<std::vector>();
-
+        mesh.textured_rectangles = convert_rectangles(textured_rectangles);
+        mesh.textured_triangles = convert_triangles(textured_triangles);
         mesh.coloured_rectangles = coloured_rectangles;
         mesh.coloured_triangles = coloured_triangles;
     }
@@ -436,6 +560,62 @@ namespace trlevel
         _sprite_sequences = read_sprite_sequences(activity, wad_file, callbacks);
     }
 
+    void Level::load_tr1_pc_version_21(std::basic_ispanstream<uint8_t>& file, trview::Activity& activity, const LoadCallbacks& callbacks)
+    {
+        skip(file, 4); // version number
+        auto room_object_textures = read_vector<uint16_t, tr_object_texture_may_1996>(file);
+
+        std::vector<uint8_t> textile_buffer;
+        auto room_textiles = read_vector<uint32_t, uint8_t>(file);
+
+        read_palette_tr1(file, activity, callbacks);
+
+        _rooms = read_rooms<uint16_t>(activity, file, callbacks, load_tr1_pc_room_version_21);
+        _floor_data = read_floor_data(activity, file, callbacks);
+
+        load_tr1_pc_may_1996_wad(textile_buffer, activity, callbacks);
+        load_tr1_pc_may_1996_swd(textile_buffer, activity, callbacks);
+
+        adjust_room_textures();
+
+        auto new_room_textures = room_object_textures | std::views::transform(convert_object_texture) | std::ranges::to<std::vector>();
+        for (auto& texture : new_room_textures)
+        {
+            texture.TileAndFlag += static_cast<uint16_t>(textile_buffer.size() / sizeof(tr_textile8));
+        }
+        _object_textures.append_range(new_room_textures);
+        new_room_textures = {};
+
+        textile_buffer.append_range(room_textiles);
+
+        _cameras = read_cameras(activity, file, callbacks);
+        const auto boxes = read_boxes_tr1(activity, file, callbacks);
+        read_overlaps(activity, file, callbacks);
+        skip(file, static_cast<uint32_t>(boxes.size()) * 4);
+        const uint32_t num_animated_textures = read<uint32_t>(file);
+        skip(file, num_animated_textures * 8);
+        _entities = read_entities_tr1(activity, file, callbacks);
+        read_light_map(activity, file, callbacks);
+
+        // Assemble textiles:
+        const uint32_t full_textile_size = static_cast<uint32_t>(textile_buffer.size());
+        _textile8.resize(full_textile_size / sizeof(tr_textile8) + ((full_textile_size % sizeof(tr_textile8) > 0) ? 1 : 0));
+        memcpy(&_textile8[0], &textile_buffer[0], textile_buffer.size());
+        _num_textiles = static_cast<uint32_t>(_textile8.size());
+
+        // Object textures don't have attributes for transparency so must be calculated.
+        for (auto& ot : _object_textures)
+        {
+            ot.Attribute = attribute_for_object_texture(ot, _textile8);
+        }
+
+        generate_textiles_from_textile8(callbacks);
+
+        callbacks.on_progress("Generating meshes");
+        generate_meshes(_mesh_data);
+        callbacks.on_progress("Loading complete");
+    }
+
     void Level::load_tr1_pc_may_1996(std::basic_ispanstream<uint8_t>& file, trview::Activity& activity, const LoadCallbacks& callbacks)
     {
         skip(file, 4); // version number
@@ -452,19 +632,7 @@ namespace trlevel
         load_tr1_pc_may_1996_wad(textile_buffer, activity, callbacks);
         load_tr1_pc_may_1996_swd(textile_buffer, activity, callbacks);
 
-        // Adjust room textures.
-        for (auto& room : _rooms)
-        {
-            for (auto& face : room.data.rectangles)
-            {
-                face.texture += static_cast<uint16_t>(_object_textures.size());
-            }
-
-            for (auto& face : room.data.triangles)
-            {
-                face.texture += static_cast<uint16_t>(_object_textures.size());
-            }
-        }
+        adjust_room_textures();
 
         auto new_room_textures = room_object_textures | std::views::transform(convert_object_texture) | std::ranges::to<std::vector>();
         for (auto& texture : new_room_textures)
@@ -530,23 +698,7 @@ namespace trlevel
             ot.Attribute = attribute_for_object_texture(ot, _textile8);
         }
 
-        for (const auto& t : _textile8)
-        {
-            callbacks.on_textile(t.Tile |
-                std::views::transform([&](uint8_t entry_index)
-                    {
-                        // The first entry in the 8 bit palette is the transparent colour, so just return 
-                        // fully transparent instead of replacing it later.
-                        if (entry_index == 0)
-                        {
-                            return 0x00000000u;
-                        }
-
-                        auto entry = get_palette_entry(entry_index);
-                        return 0xff000000 | entry.Blue << 16 | entry.Green << 8 | entry.Red;
-                    }) | std::ranges::to<std::vector>());
-        }
-        _textile8 = {};
+        generate_textiles_from_textile8(callbacks);
 
         callbacks.on_progress("Generating meshes");
         generate_meshes(_mesh_data);
@@ -555,6 +707,11 @@ namespace trlevel
 
     void Level::load_tr1_pc(std::basic_ispanstream<uint8_t>& file, trview::Activity& activity, const LoadCallbacks& callbacks)
     {
+        if (is_tr1_version_21(_platform_and_version))
+        {
+            return load_tr1_pc_version_21(file, activity, callbacks);
+        }
+
         if (is_tr1_may_1996(_platform_and_version))
         {
             return load_tr1_pc_may_1996(file, activity, callbacks);
@@ -608,23 +765,7 @@ namespace trlevel
                     read_palette_tr1(file, activity, callbacks);
                 }
 
-                for (const auto& t : _textile8)
-                {
-                    callbacks.on_textile(t.Tile |
-                        std::views::transform([&](uint8_t entry_index)
-                            {
-                                // The first entry in the 8 bit palette is the transparent colour, so just return 
-                                // fully transparent instead of replacing it later.
-                                if (entry_index == 0)
-                                {
-                                    return 0x00000000u;
-                                }
-                                auto entry = get_palette_entry(entry_index);
-                                uint32_t value = 0xff000000 | entry.Blue << 16 | entry.Green << 8 | entry.Red;
-                                return value;
-                            }) | std::ranges::to<std::vector>());
-                }
-                _textile8 = {};
+                generate_textiles_from_textile8(callbacks);
 
                 read_cinematic_frames(activity, file, callbacks);
                 read_demo_data(activity, file, callbacks);
@@ -675,5 +816,26 @@ namespace trlevel
         callbacks.on_progress(std::format("Reading {} 8-bit textiles", _num_textiles));
         log_file(activity, file, std::format("Reading {} 8-bit textiles", _num_textiles));
         _textile8 = read_vector<tr_textile8>(file, _num_textiles);
+    }
+
+    void Level::generate_textiles_from_textile8(const LoadCallbacks& callbacks)
+    {
+        for (const auto& t : _textile8)
+        {
+            callbacks.on_textile(t.Tile |
+                std::views::transform([&](uint8_t entry_index)
+                    {
+                        // The first entry in the 8 bit palette is the transparent colour, so just return 
+                        // fully transparent instead of replacing it later.
+                        if (entry_index == 0)
+                        {
+                            return 0x00000000u;
+                        }
+                        auto entry = get_palette_entry(entry_index);
+                        uint32_t value = 0xff000000 | entry.Blue << 16 | entry.Green << 8 | entry.Red;
+                        return value;
+                    }) | std::ranges::to<std::vector>());
+        }
+        _textile8 = {};
     }
 }

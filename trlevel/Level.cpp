@@ -343,6 +343,10 @@ namespace trlevel
             {
                 generate_mesh_tr1_pc_may_1996(mesh, stream);
             }
+            else if (is_tr1_version_21(_platform_and_version))
+            {
+                generate_mesh_tr1_pc_version_21(mesh, stream);
+            }
             else
             {
                 generate_mesh(mesh, stream);
@@ -939,6 +943,22 @@ namespace trlevel
             for (auto& face : room.data.triangles)
             {
                 face.texture += static_cast<uint16_t>(_object_textures_psx.size());
+            }
+        }
+    }
+
+    void Level::adjust_room_textures()
+    {
+        for (auto& room : _rooms)
+        {
+            for (auto& face : room.data.rectangles)
+            {
+                face.texture += static_cast<uint16_t>(_object_textures.size());
+            }
+
+            for (auto& face : room.data.triangles)
+            {
+                face.texture += static_cast<uint16_t>(_object_textures.size());
             }
         }
     }
