@@ -1,5 +1,6 @@
 #include "LevelVersion.h"
 #include <trview.common/Algorithms.h>
+#include "Level_psx.h"
 
 namespace trlevel
 {
@@ -22,6 +23,14 @@ namespace trlevel
             else if (version == 0x6a20 || version == 0x6ba8)
             {
                 return { .platform = Platform::PSX, .version = LevelVersion::Tomb4 };
+            }
+            else if (is_supported_tr4_psx_version(version))
+            {
+                return { .platform = Platform::PSX, .version = LevelVersion::Tomb4 };
+            }
+            else if (is_supported_tr5_psx_version(version))
+            {
+                return { .platform = Platform::PSX, .version = LevelVersion::Tomb5 };
             }
 
             switch (version & 0xff)
@@ -121,6 +130,11 @@ namespace trlevel
         return version.raw_version == -55;
     }
 
+    bool is_tr4_version_111(PlatformAndVersion version)
+    {
+        return version.raw_version == -111;
+    }
+
     bool is_tr4_oct_1999(PlatformAndVersion version)
     {
         return version.raw_version == 0x6a20;
@@ -128,7 +142,7 @@ namespace trlevel
 
     bool is_tr4_opsm_90(PlatformAndVersion version)
     {
-        return version.raw_version == 0xffffff88;
+        return version.raw_version == -120;
     }
 
     bool is_tr4_psx_v1(PlatformAndVersion version)

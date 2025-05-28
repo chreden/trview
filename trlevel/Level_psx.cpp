@@ -3,6 +3,8 @@
 #include "Level.h"
 #include "IPack.h"
 
+#include <trview.common/Algorithms.h>
+
 #include <format>
 #include <ranges>
 
@@ -103,6 +105,16 @@ namespace trlevel
         write<uint32_t>(out_stream, file_size - 44);
         results.resize(file_size);
         return results;
+    }
+
+    bool is_supported_tr4_psx_version(int32_t version)
+    {
+        return trview::equals_any(version, -111, -120, -126, -129);
+    }
+
+    bool is_supported_tr5_psx_version(int32_t version)
+    {
+        return trview::equals_any(version, -206, -224, -225);
     }
 
     std::vector<tr_model> read_models_psx(trview::Activity& activity, std::basic_ispanstream<uint8_t>& file, const ILevel::LoadCallbacks& callbacks)

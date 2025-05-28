@@ -17,7 +17,7 @@ namespace trview
             {
                 return type;
             }
-            else if (version.version > trlevel::LevelVersion::Tomb3)
+            else if (version.version > trlevel::LevelVersion::Tomb3 || is_tr4_version_111(version))
             {
                 if (is_tr4_opsm_90(version))
                 {
@@ -39,7 +39,7 @@ namespace trview
             {
                 return false;
             }
-            else if (version.version > trlevel::LevelVersion::Tomb3)
+            else if (version.version > trlevel::LevelVersion::Tomb3 || is_tr4_version_111(version))
             {
                 if (is_tr4_opsm_90(version))
                 {

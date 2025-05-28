@@ -1,6 +1,7 @@
 #include "Level.h"
 #include "Level_common.h"
 #include "Level_psx.h"
+#include <trview.common/Algorithms.h>
 
 #include <ranges>
 
@@ -65,7 +66,7 @@ namespace trlevel
                             .alternate_group = room_info.alternate_group,
                         };
 
-                        read_room_geometry_tr4_psx(file, room, room_info);
+                        read_room_geometry_tr4_psx(file, room, room_info.data_size);
 
                         const uint32_t portals_start = static_cast<uint32_t>(file.tellg());
                         room.portals = read_vector<tr_room_portal>(file, room_info.portal_size / sizeof(tr_room_portal));
@@ -87,6 +88,18 @@ namespace trlevel
 
                         return room;
                     }) | std::ranges::to<std::vector>();
+        }
+
+        constexpr uint32_t model_count(PlatformAndVersion version)
+        {
+            switch (version.raw_version)
+            {
+            case -206:
+                return 393;
+            case -224:
+                return 452;
+            }
+            return 460;
         }
     }
 
@@ -113,7 +126,10 @@ namespace trlevel
 
     void Level::load_tr5_psx(std::basic_ispanstream<uint8_t>& file, trview::Activity& activity, const LoadCallbacks& callbacks)
     {
-        file.seekg(313344);
+        if (!is_supported_tr5_psx_version(peek<int32_t>(file)))
+        {
+            file.seekg(313344);
+        }
         const uint32_t start = static_cast<uint32_t>(file.tellg());
         auto info = read<tr4_psx_level_info>(file);
         file.seekg(start + info.room_data_offset, std::ios::beg);
@@ -148,9 +164,7 @@ namespace trlevel
         skip(file, 2 * (info.ground_zone_length + info.ground_zone_length2 + info.ground_zone_length3 + info.ground_zone_length4 + info.ground_zone_length5));
         _cameras = read_vector<tr_camera>(file, info.num_cameras);
         _frames = read_frames(activity, file, start, info, callbacks);
-
-        const uint32_t num_meshes = _platform_and_version.raw_version == -224 ? 452 : 460;
-        _models = read_models(activity, file, start, info, callbacks, num_meshes);
+        _models = read_models(activity, file, start, info, callbacks, model_count(_platform_and_version));
         _static_meshes = read_static_meshes_tr4_psx(activity, file, callbacks);
         generate_object_textures_tr4_psx(file, start, info);
 

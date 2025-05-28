@@ -53,9 +53,7 @@ namespace trlevel
             const auto data_start = file.tellg();
 
             const uint32_t number_of_roomlets = read<uint32_t>(file);
-            number_of_roomlets;
-
-            const std::vector<uint32_t> roomlet_offsets = read_vector<uint32_t>(file, 16);
+            const std::vector<uint32_t> roomlet_offsets = read_vector<uint32_t>(file, number_of_roomlets);
 
             uint16_t total_vertices = 0;
             uint32_t previous_offset = 0;

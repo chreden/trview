@@ -56,7 +56,31 @@ TR3 OPSM 15 demo on PlayStation.
 
 TR3 retail version.
 
-## Some time passes - TR4 is in here somewhere
+## Version 111
+
+Structure is mostly the same as TR3 except it has (not exhaustive list yet) TR4 style room lights and animations.
+
+## Version 120
+
+TR4 OPSM 90 demo.
+
+## Version 121
+
+Level1
+
+## Version 126
+
+TOM
+
+## Version 129
+
+TR4 retail
+
+## Version 206
+
+## Version 214
+
+## Version 223
 
 ## Version 224
 
