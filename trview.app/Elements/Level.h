@@ -109,6 +109,7 @@ namespace trview
         void initialise(
             std::shared_ptr<trlevel::ILevel> level,
             std::shared_ptr<IMeshStorage> mesh_storage,
+            std::shared_ptr<IModelStorage> model_storage,
             const IItem::EntitySource& entity_source,
             const IItem::AiSource& ai_source,
             const IRoom::Source& room_source,
@@ -132,7 +133,7 @@ namespace trview
     private:
         void generate_rooms(const trlevel::ILevel& level, const IRoom::Source& room_source, const IMeshStorage& mesh_storage);
         void generate_triggers(const ITrigger::Source& trigger_source);
-        void generate_entities(const trlevel::ILevel& level, const IItem::EntitySource& entity_source, const IItem::AiSource& ai_source, const IMeshStorage& mesh_storage);
+        void generate_entities(const trlevel::ILevel& level, const IItem::EntitySource& entity_source, const IItem::AiSource& ai_source, const IModelStorage& model_storage);
         void regenerate_neighbours();
         void generate_neighbours(std::set<uint16_t>& results, uint16_t selected_room, int32_t max_depth);
         void generate_lights(const trlevel::ILevel& level, const ILight::Source& light_source);
@@ -230,6 +231,7 @@ namespace trview
         bool _ng{ false };
         std::shared_ptr<trlevel::IPack> _pack;
         trlevel::PlatformAndVersion _platform_and_version;
+        std::shared_ptr<IModelStorage> _model_storage;
     };
 
     /// Find the first item with the type id specified.

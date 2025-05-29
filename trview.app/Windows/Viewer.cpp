@@ -889,16 +889,16 @@ namespace trview
             level->render(*_camera, _show_selection);
             auto texture_storage = level->texture_storage();
 
-            _sector_highlight->render(*_camera, *texture_storage);
-            _measure->render(*_camera, *texture_storage);
+            _sector_highlight->render(*_camera);
+            _measure->render(*_camera);
 
             if (_show_route)
             {
-                _route->render(*_camera, *texture_storage, _show_selection);
+                _route->render(*_camera, _show_selection);
             }
 
             level->render_transparency(*_camera);
-            _compass->render(*_camera, *texture_storage);
+            _compass->render(*_camera);
         }
     }
 

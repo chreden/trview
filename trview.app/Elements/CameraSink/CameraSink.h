@@ -24,7 +24,7 @@ namespace trview
         virtual bool persistent() const override;
         virtual PickResult pick(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& direction) const override;
         virtual DirectX::SimpleMath::Vector3 position() const override;
-        virtual void render(const ICamera& camera, const ILevelTextureStorage& texture_storage, const DirectX::SimpleMath::Color& colour) override;
+        void render(const ICamera& camera, const DirectX::SimpleMath::Color& colour) override;
         virtual std::weak_ptr<IRoom> room() const override;
         virtual void set_type(Type type) override;
         virtual void set_visible(bool value) override;

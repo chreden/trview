@@ -515,6 +515,13 @@ namespace trlevel
     {
         uint32_t offset = frame_offset;
         tr2_frame frame;
+
+        // TODO: Catch all...
+        if (offset >= _frames.size())
+        {
+            return frame;
+        }
+
         frame.bb1x = _frames[offset++];
         frame.bb1y = _frames[offset++];
         frame.bb1z = _frames[offset++];
@@ -631,27 +638,6 @@ namespace trlevel
         }
         entity = *found;
         return true;
-    }
-
-    int16_t Level::get_mesh_from_type_id(int16_t type) const
-    {
-        if (type != 0 || get_version() < LevelVersion::Tomb3)
-        {
-            return type;
-        }
-        else if (get_version() > trlevel::LevelVersion::Tomb3)
-        {
-            if (is_tr4_opsm_90(_platform_and_version))
-            {
-                return LaraSkinTR4OPSM90;
-            }
-            return LaraSkinPostTR3;
-        }
-        else if (is_tr3_demo_55(_platform_and_version))
-        {
-            return LaraSkinTR3Demo55;
-        }
-        return LaraSkinTR3;
     }
 
     std::string Level::name() const

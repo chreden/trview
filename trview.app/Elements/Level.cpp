@@ -385,7 +385,7 @@ namespace trview
         {
             for (const auto sound_source : _sound_sources)
             {
-                sound_source->render(camera, *_texture_storage, Colour::White);
+                sound_source->render(camera, Colour::White);
             }
         }
 
@@ -411,7 +411,7 @@ namespace trview
         _pixel_shader_data->apply(context, graphics::IBuffer::ApplyTo::PS);
 
         // Render the triangles that the transparency buffer has produced.
-        _transparency->render(camera, *_texture_storage.get());
+        _transparency->render(camera);
     }
 
     void Level::render_selected_item(const ICamera& camera)
@@ -422,7 +422,7 @@ namespace trview
         auto selected_item = _selected_item.lock();
         if (selected_item)
         {
-            _selection_renderer->render(camera, *_texture_storage, *selected_item, Item_Outline);
+            _selection_renderer->render(camera, *selected_item, Item_Outline);
         }
 
         if (has_flag(_render_filters, RenderFilter::Triggers))
@@ -430,7 +430,7 @@ namespace trview
             auto selected_trigger = _selected_trigger.lock();
             if (selected_trigger)
             {
-                _selection_renderer->render(camera, *_texture_storage, *selected_trigger, Trigger_Outline);
+                _selection_renderer->render(camera, *selected_trigger, Trigger_Outline);
             }
         }
     }
@@ -599,7 +599,7 @@ namespace trview
         deduplicate_triangles();
     }
 
-    void Level::generate_entities(const trlevel::ILevel& level, const IItem::EntitySource& entity_source, const IItem::AiSource& ai_source, const IMeshStorage& mesh_storage)
+    void Level::generate_entities(const trlevel::ILevel& level, const IItem::EntitySource& entity_source, const IItem::AiSource& ai_source, const IModelStorage& model_storage)
     {
         std::vector<std::weak_ptr<IItem>> skidoo_drivers;
 
@@ -617,7 +617,7 @@ namespace trview
 
             auto level_entity = level.get_entity(i);
             auto containing_room = room(level_entity.Room);
-            auto entity = entity_source(level, level_entity, i, relevant_triggers, mesh_storage, shared_from_this(), containing_room);
+            auto entity = entity_source(level, level_entity, i, relevant_triggers, model_storage, shared_from_this(), containing_room);
             if (auto room = containing_room.lock())
             {
                 room->add_entity(entity);
@@ -636,7 +636,7 @@ namespace trview
         {
             auto ai_object = level.get_ai_object(i);
             auto containing_room = room(ai_object.room);
-            auto entity = ai_source(level, ai_object, num_entities + i, mesh_storage, shared_from_this(), containing_room);
+            auto entity = ai_source(level, ai_object, num_entities + i, model_storage, shared_from_this(), containing_room);
             if (auto room = containing_room.lock())
             {
                 room->add_entity(entity);
@@ -652,7 +652,7 @@ namespace trview
                 auto level_entity = level.get_entity(man->number());
                 level_entity.TypeID = get_skidoo(level.platform_and_version());
                 auto containing_room = man->room();
-                auto entity = entity_source(level, level_entity, static_cast<uint32_t>(_entities.size()), {}, mesh_storage, shared_from_this(), containing_room);
+                auto entity = entity_source(level, level_entity, static_cast<uint32_t>(_entities.size()), {}, model_storage, shared_from_this(), containing_room);
                 if (auto room = containing_room.lock())
                 {
                     room->add_entity(entity);
@@ -1341,6 +1341,7 @@ namespace trview
 
     void Level::initialise(std::shared_ptr<trlevel::ILevel> level,
         std::shared_ptr<IMeshStorage> mesh_storage,
+        std::shared_ptr<IModelStorage> model_storage,
         const IItem::EntitySource& entity_source,
         const IItem::AiSource& ai_source,
         const IRoom::Source& room_source,
@@ -1355,6 +1356,7 @@ namespace trview
         _name = level->name();
         _ng = level->trng();
         _pack = level->pack().lock();
+        _model_storage = model_storage;
 
         record_models(*level);
         callbacks.on_progress("Generating rooms");
@@ -1362,7 +1364,7 @@ namespace trview
         callbacks.on_progress("Generating triggers");
         generate_triggers(trigger_source);
         callbacks.on_progress("Generating entities");
-        generate_entities(*level, entity_source, ai_source, *mesh_storage);
+        generate_entities(*level, entity_source, ai_source, *model_storage);
         callbacks.on_progress("Generating lights");
         generate_lights(*level, light_source);
         callbacks.on_progress("Generating camera/sinks");
@@ -1382,7 +1384,7 @@ namespace trview
         record_static_meshes();
 
         callbacks.on_progress("Generating NG+ items");
-        const auto swapset = _ngplus_switcher->create_for_level(shared_from_this(), *level, *mesh_storage);
+        const auto swapset = _ngplus_switcher->create_for_level(shared_from_this(), *level, *model_storage);
         for (const auto& [key, value] : swapset)
         {
             if (key > _entities.size())

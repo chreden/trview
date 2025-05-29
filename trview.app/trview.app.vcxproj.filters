@@ -377,6 +377,12 @@
     <ClCompile Include="Windows\Pack\PackWindowManager.cpp">
       <Filter>Windows\Pack</Filter>
     </ClCompile>
+    <ClCompile Include="Geometry\Model\Model.cpp">
+      <Filter>Geometry\Model</Filter>
+    </ClCompile>
+    <ClCompile Include="Geometry\Model\ModelStorage.cpp">
+      <Filter>Geometry\Model</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera\Camera.h">
@@ -1258,6 +1264,21 @@
     <ClInclude Include="Mocks\Windows\IPackWindow.h">
       <Filter>Mocks\Windows</Filter>
     </ClInclude>
+    <ClInclude Include="Geometry\Model\IModel.h">
+      <Filter>Geometry\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="Geometry\Model\Model.h">
+      <Filter>Geometry\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="Geometry\Model\IModelStorage.h">
+      <Filter>Geometry\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="Geometry\Model\ModelStorage.h">
+      <Filter>Geometry\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="Mocks\Geometry\IModelStorage.h">
+      <Filter>Mocks\Geometry</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Windows">
@@ -1481,6 +1502,9 @@
     </Filter>
     <Filter Include="Windows\Pack">
       <UniqueIdentifier>{2309c42b-f2ee-4516-88c1-62a8182b467f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Geometry\Model">
+      <UniqueIdentifier>{03a8e721-8c98-438d-a8eb-c67a9e88e956}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

@@ -1,7 +1,6 @@
 #pragma once
 
 #include <trview.app/Geometry/TransparentTriangle.h>
-#include <trview.app/Graphics/ILevelTextureStorage.h>
 #include <trview.app/Camera/ICamera.h>
 
 namespace trview
@@ -23,7 +22,7 @@ namespace trview
         /// @param camera The current camera.
         /// @param texture_storage Texture storage for the level.
         /// @param ignore_blend Optional. Set to true to render this without transparency.
-        virtual void render(const ICamera& camera, const ILevelTextureStorage& texture_storage, bool ignore_blend = false) = 0;
+        virtual void render(const ICamera& camera, bool ignore_blend = false) = 0;
 
         // Reset the triangles buffer.
         virtual void reset() = 0;

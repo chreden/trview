@@ -250,18 +250,18 @@ namespace trview
                 {
                     if (mesh.first == _index || (visible_rooms.find(mesh.first) == visible_rooms.end() || _index < mesh.first))
                     {
-                        mesh.second->render(_room_offset * camera.view_projection(), *_texture_storage, colour, 1.0f, Vector3::Zero, has_flag(render_filter, RenderFilter::AllGeometry));
+                        mesh.second->render(_room_offset * camera.view_projection(), colour, 1.0f, Vector3::Zero, has_flag(render_filter, RenderFilter::AllGeometry));
                     }
                 }
             }
             else
             {
-                _mesh->render(_room_offset * camera.view_projection(), *_texture_storage, colour, 1.0f, Vector3::Zero, false, !has_flag(render_filter, RenderFilter::Lighting));
+                _mesh->render(_room_offset * camera.view_projection(), colour, 1.0f, Vector3::Zero, false, !has_flag(render_filter, RenderFilter::Lighting));
                 for (const auto& mesh : _static_meshes)
                 {
                     if (mesh->visible())
                     {
-                        mesh->render(camera, *_texture_storage, colour);
+                        mesh->render(camera, colour);
                     }
                 }
             }
@@ -274,7 +274,7 @@ namespace trview
     {
         for (const auto& mesh : _static_meshes)
         {
-            mesh->render_bounding_box(camera, *_texture_storage, Colour::White);
+            mesh->render_bounding_box(camera, Colour::White);
         }
     }
 
@@ -285,10 +285,10 @@ namespace trview
         {
             if (auto light_ptr = light.lock())
             {
-                light_ptr->render(camera, *_texture_storage, Colour::White);
+                light_ptr->render(camera, Colour::White);
                 if (light_ptr == selected)
                 {
-                    light_ptr->render_direction(camera, *_texture_storage);
+                    light_ptr->render_direction(camera);
                 }
             }
         }
@@ -300,7 +300,7 @@ namespace trview
         {
             if (auto camera_sink_ptr = camera_sink.lock())
             {
-                camera_sink_ptr->render(camera, *_texture_storage, Colour::White);
+                camera_sink_ptr->render(camera, Colour::White);
             }
         }
     }
@@ -325,7 +325,7 @@ namespace trview
                 const auto ng = entity_ptr->ng_plus();
                 if (!ng.has_value() || ng.value() == has_flag(render_filter, RenderFilter::NgPlus))
                 {
-                    entity_ptr->render(camera, *_texture_storage, colour);
+                    entity_ptr->render(camera, colour);
                 }
             }
         }

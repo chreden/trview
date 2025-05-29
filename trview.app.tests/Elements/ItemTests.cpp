@@ -2,7 +2,7 @@
 #include <trview.app/Mocks/Elements/IItem.h>
 #include <trview.app/Mocks/Elements/IRoom.h>
 #include <trview.app/Mocks/Geometry/IMesh.h>
-#include <trview.app/Mocks/Graphics/IMeshStorage.h>
+#include <trview.app/Mocks/Geometry/IModelStorage.h>
 #include <trlevel/Mocks/ILevel.h>
 #include <trview.tests.common/Mocks.h>
 
@@ -19,7 +19,7 @@ namespace
         {
             std::shared_ptr<trlevel::ILevel> level{ mock_shared<trlevel::mocks::MockLevel>() };
             IMesh::Source mesh_source = [](auto&&...) { return mock_shared<MockMesh>(); };
-            std::shared_ptr<IMeshStorage> mesh_storage = mock_shared<MockMeshStorage>();
+            std::shared_ptr<IModelStorage> model_storage = mock_shared<MockModelStorage>();
             trlevel::tr2_entity entity{};
             uint32_t index{ 0u };
             TypeInfo type{ .name = "Lara" };
@@ -29,7 +29,7 @@ namespace
 
             std::unique_ptr<Item> build()
             {
-                return std::make_unique<Item>(mesh_source, *level, entity, *mesh_storage, owning_level, index, type, triggers, room);
+                return std::make_unique<Item>(mesh_source, *level, entity, *model_storage, owning_level, index, type, triggers, room);
             }
 
             test_module& with_level(const std::shared_ptr<trlevel::ILevel>& level)

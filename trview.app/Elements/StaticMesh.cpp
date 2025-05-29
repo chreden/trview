@@ -46,7 +46,7 @@ namespace trview
         _world = Matrix::CreateRotationY(_rotation) * Matrix::CreateTranslation(_position);
     }
 
-    void StaticMesh::render(const ICamera& camera, const ILevelTextureStorage& texture_storage, const DirectX::SimpleMath::Color& colour)
+    void StaticMesh::render(const ICamera& camera, const DirectX::SimpleMath::Color& colour)
     {
         if (!_mesh)
         {
@@ -57,17 +57,17 @@ namespace trview
         {
             _world = create_billboard(_position, Vector3(), _scale, camera);
         }
-        _mesh->render(_world * camera.view_projection(), texture_storage, colour);
+        _mesh->render(_world * camera.view_projection(), colour);
     }
 
-    void StaticMesh::render_bounding_box(const ICamera& camera, const ILevelTextureStorage& texture_storage, const DirectX::SimpleMath::Color& colour)
+    void StaticMesh::render_bounding_box(const ICamera& camera, const DirectX::SimpleMath::Color& colour)
     {
         if (_type == Type::Mesh)
         {
             const auto size = (_collision.Extents * 2.0f) / trlevel::Scale;
             const auto adjust = _collision.Center / trlevel::Scale;
             const auto wvp = Matrix::CreateScale(size) * Matrix::CreateTranslation(adjust) * _world * camera.view_projection();
-            _bounding_mesh->render(wvp, texture_storage, colour);
+            _bounding_mesh->render(wvp, colour);
         }
     }
 

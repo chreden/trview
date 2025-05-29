@@ -875,9 +875,9 @@ namespace trlevel
 
     struct tr2_frame
     {
-        int16_t bb1x, bb1y, bb1z;
-        int16_t bb2x, bb2y, bb2z;
-        int16_t offsetx, offsety, offsetz;
+        int16_t bb1x{ 0 }, bb1y{ 0 }, bb1z{ 0 };
+        int16_t bb2x{ 0 }, bb2y{ 0 }, bb2z{ 0 };
+        int16_t offsetx{ 0 }, offsety{ 0 }, offsetz{ 0 };
         std::vector<tr2_frame_rotation> values;
 
         DirectX::SimpleMath::Vector3 position() const

@@ -1,5 +1,4 @@
 #include "Mesh.h"
-#include <trview.app/Graphics/ILevelTextureStorage.h>
 
 using namespace Microsoft::WRL;
 using namespace DirectX::SimpleMath;
@@ -11,8 +10,9 @@ namespace trview
         const std::vector<std::vector<uint32_t>>& indices, 
         const std::vector<uint32_t>& untextured_indices, 
         const std::vector<TransparentTriangle>& transparent_triangles,
-        const std::vector<Triangle>& collision_triangles)
-        : _device(device), _transparent_triangles(transparent_triangles), _collision_triangles(collision_triangles)
+        const std::vector<Triangle>& collision_triangles,
+        const std::shared_ptr<ITextureStorage>& texture_storage)
+        : _device(device), _transparent_triangles(transparent_triangles), _collision_triangles(collision_triangles), _texture_storage(texture_storage)
     {
         if (!vertices.empty())
         {
@@ -115,13 +115,20 @@ namespace trview
         _bounding_box.Center = minimum + half_size;
     }
 
-    void Mesh::render(const Matrix& world_view_projection, const ILevelTextureStorage& texture_storage, const Color& colour, float light_intensity, Vector3 light_direction, bool geometry_mode, bool use_colour_override)
+    void Mesh::render(const Matrix& world_view_projection, const Color& colour, float light_intensity, Vector3 light_direction, bool geometry_mode, bool use_colour_override)
     {
         // There are no vertices.
         if (!_vertex_buffer)
         {
             return;
         }
+
+        const auto texture_storage = _texture_storage.lock();
+        if (!texture_storage)
+        {
+            return;
+        }
+
 
         auto context = _device->context();
 
@@ -143,7 +150,7 @@ namespace trview
             auto& index_buffer = _index_buffers[i];
             if (index_buffer)
             {
-                auto texture = geometry_mode ? texture_storage.geometry_texture() : texture_storage.texture(i);
+                auto texture = geometry_mode ? texture_storage->geometry_texture() : texture_storage->texture(i);
                 context->PSSetShaderResources(0, 1, texture.view().GetAddressOf());
                 context->IASetIndexBuffer(index_buffer.Get(), DXGI_FORMAT_R32_UINT, 0);
                 context->DrawIndexed(_index_counts[i], 0, 0);
@@ -152,7 +159,7 @@ namespace trview
 
         if (_untextured_index_count)
         {
-            auto texture = texture_storage.untextured();
+            auto texture = texture_storage->untextured();
             context->PSSetShaderResources(0, 1, texture.view().GetAddressOf());
             context->IASetIndexBuffer(_untextured_index_buffer.Get(), DXGI_FORMAT_R32_UINT, 0);
             context->DrawIndexed(_untextured_index_count, 0, 0);

@@ -100,7 +100,7 @@ namespace trview
         return _range;
     }
 
-    void SoundSource::render(const ICamera& camera, const ILevelTextureStorage&, const DirectX::SimpleMath::Color&)
+    void SoundSource::render(const ICamera& camera, const DirectX::SimpleMath::Color&)
     {
         if (!_visible)
         {

@@ -87,7 +87,7 @@ namespace trview
         /// <param name="camera">The camera to use to render.</param>
         /// <param name="texture_storage">The texture storage to use to render.</param>
         /// <param name="colour">The colour for the join.</param>
-        virtual void render_join(const IWaypoint& next_waypoint, const ICamera& camera, const ILevelTextureStorage& texture_storage, const DirectX::SimpleMath::Color& colour) = 0;
+        virtual void render_join(const IWaypoint& next_waypoint, const ICamera& camera, const DirectX::SimpleMath::Color& colour) = 0;
         /// <summary>
         /// Get the contents of the attached save file.
         /// </summary>

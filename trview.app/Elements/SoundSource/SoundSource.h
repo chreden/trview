@@ -28,7 +28,7 @@ namespace trview
         uint8_t pitch() const override;
         DirectX::SimpleMath::Vector3 position() const override;
         uint8_t range() const override;
-        void render(const ICamera& camera, const ILevelTextureStorage& texture_storage, const DirectX::SimpleMath::Color& colour) override;
+        void render(const ICamera& camera, const DirectX::SimpleMath::Color& colour) override;
         std::optional<int16_t> sample() const override;
         void set_visible(bool value) override;
         bool visible() const override;

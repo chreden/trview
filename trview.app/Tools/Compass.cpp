@@ -48,7 +48,7 @@ namespace trview
     {
     }
 
-    void Compass::render(const ICamera& camera, const ILevelTextureStorage& texture_storage)
+    void Compass::render(const ICamera& camera)
     {
         if (!_visible)
         {
@@ -73,21 +73,21 @@ namespace trview
             const float thickness = 0.015f;
             const auto scale = Matrix::CreateScale(thickness, 1.0f, thickness);
 
-            _mesh->render(scale * view_projection, texture_storage, Color(1.0f, 0.0f, 0.0f));
-            _mesh->render(scale * Matrix::CreateRotationZ(maths::HalfPi) * view_projection, texture_storage, Color(0.0f, 1.0f, 0.0f));
-            _mesh->render(scale * Matrix::CreateRotationX(maths::HalfPi) * view_projection, texture_storage, Color(0.0f, 0.0f, 1.0f));
+            _mesh->render(scale * view_projection, Color(1.0f, 0.0f, 0.0f));
+            _mesh->render(scale * Matrix::CreateRotationZ(maths::HalfPi) * view_projection, Color(0.0f, 1.0f, 0.0f));
+            _mesh->render(scale * Matrix::CreateRotationX(maths::HalfPi) * view_projection, Color(0.0f, 0.0f, 1.0f));
 
             // Nodules for each direction - they can be clicked.
             const auto nodule_scale = Matrix::CreateScale(0.05f);
             // Y
-            _mesh->render(nodule_scale * Matrix::CreateTranslation(0, 0.5f, 0) * view_projection, texture_storage, Color(1.0f, 0.0f, 0.0f));
-            _mesh->render(nodule_scale * Matrix::CreateTranslation(0, -0.5f, 0) * view_projection, texture_storage, Color(1.0f, 0.0f, 0.0f));
+            _mesh->render(nodule_scale * Matrix::CreateTranslation(0, 0.5f, 0) * view_projection, Color(1.0f, 0.0f, 0.0f));
+            _mesh->render(nodule_scale * Matrix::CreateTranslation(0, -0.5f, 0) * view_projection, Color(1.0f, 0.0f, 0.0f));
             // X
-            _mesh->render(nodule_scale * Matrix::CreateTranslation(0.5f, 0, 0) * view_projection, texture_storage, Color(0.0f, 1.0f, 0.0f));
-            _mesh->render(nodule_scale * Matrix::CreateTranslation(-0.5f, 0, 0) * view_projection, texture_storage, Color(0.0f, 1.0f, 0.0f));
+            _mesh->render(nodule_scale * Matrix::CreateTranslation(0.5f, 0, 0) * view_projection, Color(0.0f, 1.0f, 0.0f));
+            _mesh->render(nodule_scale * Matrix::CreateTranslation(-0.5f, 0, 0) * view_projection, Color(0.0f, 1.0f, 0.0f));
             // Z
-            _mesh->render(nodule_scale * Matrix::CreateTranslation(0, 0, 0.5f) * view_projection, texture_storage, Color(0.0f, 0.0f, 1.0f));
-            _mesh->render(nodule_scale * Matrix::CreateTranslation(0, 0, -0.5f) * view_projection, texture_storage, Color(0.0f, 0.0f, 1.0f));
+            _mesh->render(nodule_scale * Matrix::CreateTranslation(0, 0, 0.5f) * view_projection, Color(0.0f, 0.0f, 1.0f));
+            _mesh->render(nodule_scale * Matrix::CreateTranslation(0, 0, -0.5f) * view_projection, Color(0.0f, 0.0f, 1.0f));
         }
 
         auto screen_size = camera.view_size();

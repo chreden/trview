@@ -6,7 +6,6 @@
 namespace trview
 {
     struct ICamera;
-    struct ILevelTextureStorage;
 
     /// Interface for something that can be rendered by the viewer.
     struct IRenderable
@@ -16,9 +15,8 @@ namespace trview
 
         /// Render non-transparent faces of the object.
         /// @param camera The current camera to render with.
-        /// @param texture_storage The current texture storage instance.
         /// @param colour The colour tint to use to render the object.
-        virtual void render(const ICamera& camera, const ILevelTextureStorage& texture_storage, const DirectX::SimpleMath::Color& colour) = 0;
+        virtual void render(const ICamera& camera, const DirectX::SimpleMath::Color& colour) = 0;
 
         /// Populate the transparency buffer with the transparent faces for the object.
         /// @param transparency The transparency buffer to populate.

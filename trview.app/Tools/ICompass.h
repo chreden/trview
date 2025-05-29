@@ -1,6 +1,5 @@
 #pragma once
 
-#include <trview.app/Graphics/ILevelTextureStorage.h>
 #include <trview.app/Camera/Camera.h>
 
 #include <trview.common/Point.h>
@@ -25,8 +24,7 @@ namespace trview
 
         /// Render the compass.
         /// @param camera The current camera being used to view the level.
-        /// @param texture_storage The texture storage instance to use.
-        virtual void render(const ICamera& camera, const ILevelTextureStorage& texture_storage) = 0;
+        virtual void render(const ICamera& camera) = 0;
 
         /// Pick against the compass points.
         /// @param mouse_position The mouse position in screen space.

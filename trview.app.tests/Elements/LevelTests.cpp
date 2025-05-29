@@ -3,6 +3,7 @@
 #include <trview.graphics/mocks/IDevice.h>
 #include <trview.graphics/mocks/IShaderStorage.h>
 #include <trview.app/Mocks/Geometry/ITransparencyBuffer.h>
+#include <trview.app/Mocks/Geometry/IModelStorage.h>
 #include <trview.app/Mocks/Graphics/ILevelTextureStorage.h>
 #include <trview.app/Mocks/Graphics/IMeshStorage.h>
 #include <trview.app/Mocks/Graphics/ISelectionRenderer.h>
@@ -45,7 +46,8 @@ namespace
             std::shared_ptr<graphics::IShaderStorage> shader_storage{ mock_shared<MockShaderStorage>() };
             std::unique_ptr<trlevel::ILevel> level{ mock_unique<trlevel::mocks::MockLevel>() };
             std::shared_ptr<ILevelTextureStorage> level_texture_storage{ mock_shared<MockLevelTextureStorage>() };
-            std::unique_ptr<IMeshStorage> mesh_storage{ mock_unique<MockMeshStorage>() };
+            std::shared_ptr<IMeshStorage> mesh_storage{ mock_shared<MockMeshStorage>() };
+            std::shared_ptr<IModelStorage> model_storage{ mock_shared<MockModelStorage>() };
             std::unique_ptr<ITransparencyBuffer> transparency_buffer{ mock_unique<MockTransparencyBuffer>() };
             std::unique_ptr<ISelectionRenderer> selection_renderer{ mock_unique<MockSelectionRenderer>() };
             IItem::EntitySource entity_source{ [](auto&&...) { return mock_shared<MockItem>(); } };
@@ -64,7 +66,7 @@ namespace
             std::shared_ptr<Level> build()
             {
                 auto new_level = std::make_shared<Level>(device, shader_storage, level_texture_storage, std::move(transparency_buffer), std::move(selection_renderer), log, buffer_source, sound_storage, ngplus_switcher);
-                new_level->initialise(std::move(level), std::move(mesh_storage), entity_source, ai_source, room_source, trigger_source, light_source, camera_sink_source, sound_source_source, callbacks);
+                new_level->initialise(std::move(level), mesh_storage, model_storage, entity_source, ai_source, room_source, trigger_source, light_source, camera_sink_source, sound_source_source, callbacks);
                 return new_level;
             }
 

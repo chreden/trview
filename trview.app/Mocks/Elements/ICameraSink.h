@@ -21,7 +21,7 @@ namespace trview
             MOCK_METHOD(bool, persistent, (), (const, override));
             MOCK_METHOD(PickResult, pick, (const DirectX::SimpleMath::Vector3&, const DirectX::SimpleMath::Vector3&), (const, override));
             MOCK_METHOD(DirectX::SimpleMath::Vector3, position, (), (const, override));
-            MOCK_METHOD(void, render, (const ICamera&, const ILevelTextureStorage&, const DirectX::SimpleMath::Color&), (override));
+            MOCK_METHOD(void, render, (const ICamera&, const DirectX::SimpleMath::Color&), (override));
             MOCK_METHOD(std::weak_ptr<IRoom>, room, (), (const, override));
             MOCK_METHOD(void, set_visible, (bool), (override));
             MOCK_METHOD(void, set_type, (Type), (override));

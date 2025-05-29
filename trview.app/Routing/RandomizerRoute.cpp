@@ -270,9 +270,9 @@ namespace trview
         update_waypoints();
     }
 
-    void RandomizerRoute::render(const ICamera& camera, const ILevelTextureStorage& texture_storage, bool show_selection)
+    void RandomizerRoute::render(const ICamera& camera, bool show_selection)
     {
-        return _route->render(camera, texture_storage, show_selection);
+        return _route->render(camera, show_selection);
     }
 
     void RandomizerRoute::save(const std::shared_ptr<IFiles>& files, const UserSettings& settings)
