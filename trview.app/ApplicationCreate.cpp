@@ -61,6 +61,7 @@
 #include "UI/ViewerUI.h"
 #include "UI/ViewOptions.h"
 #include "UI/MapRenderer.h"
+#include "Windows/ItemsWindow.h"
 #include "Windows/ItemsWindowManager.h"
 #include "Windows/LightsWindow.h"
 #include "Windows/LightsWindowManager.h"
@@ -71,6 +72,8 @@
 #include "Windows/Viewer.h"
 #include "Windows/Log/LogWindow.h"
 #include "Windows/Log/LogWindowManager.h"
+#include "Windows/Models/ModelsWindow.h"
+#include "Windows/Models/ModelsWindowManager.h"
 #include "UI/DX11ImGuiBackend.h"
 #include "Windows/Textures/TexturesWindowManager.h"
 #include "Windows/Textures/TexturesWindow.h"
@@ -485,6 +488,9 @@ namespace trview
         auto file_menu = std::make_shared<FileMenu>(window, shortcuts, dialogs, files, level_name_source, messaging);
         messaging->add_recipient(file_menu);
 
+        auto transparency_buffer_source = [=](auto&& lts) { return std::make_unique<TransparencyBuffer>(device, lts); };
+        auto meshes_window_source = [=]() { return std::make_shared<ModelsWindow>(device, render_target_source, shader_storage, buffer_source, transparency_buffer_source, sampler_source); };
+
         auto application = std::make_shared<Application>(
             window,
             std::make_unique<UpdateChecker>(window),
@@ -509,6 +515,7 @@ namespace trview
                 items_window_manager,
                 std::make_unique<LightsWindowManager>(window, shortcuts, lights_window_source),
                 std::make_unique<LogWindowManager>(window, log_window_source),
+                std::make_unique<ModelsWindowManager>(window, meshes_window_source),
                 std::make_unique<PackWindowManager>(window, pack_window_source),
                 std::make_unique<PluginsWindowManager>(window, shortcuts, plugins_window_source),
                 rooms_window_manager,
