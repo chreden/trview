@@ -88,6 +88,8 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClCompile Include="Windows\About\AboutWindowManager.cpp" />
     <ClCompile Include="Windows\Diff\DiffWindow.cpp" />
     <ClCompile Include="Windows\Diff\DiffWindowManager.cpp" />
+    <ClCompile Include="Windows\Models\ModelsWindow.cpp" />
+    <ClCompile Include="Windows\Models\ModelsWindowManager.cpp" />
     <ClCompile Include="Windows\Pack\PackWindow.cpp" />
     <ClCompile Include="Windows\Pack\PackWindowManager.cpp" />
     <ClCompile Include="Windows\Sounds\SoundsWindow.cpp" />
@@ -121,6 +123,8 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClInclude Include="Mocks\Windows\IAboutWindow.h" />
     <ClInclude Include="Mocks\Windows\IDiffWindow.h" />
     <ClInclude Include="Mocks\Windows\IDiffWindowManager.h" />
+    <ClInclude Include="Mocks\Windows\IModelsWindow.h" />
+    <ClInclude Include="Mocks\Windows\IModelsWindowManager.h" />
     <ClInclude Include="Mocks\Windows\IPackWindow.h" />
     <ClInclude Include="Mocks\Windows\IPackWindowManager.h" />
     <ClInclude Include="Mocks\Windows\ISoundsWindow.h" />
@@ -250,6 +254,10 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClInclude Include="Windows\Diff\DiffWindowManager.h" />
     <ClInclude Include="Windows\Diff\IDiffWindow.h" />
     <ClInclude Include="Windows\Diff\IDiffWindowManager.h" />
+    <ClInclude Include="Windows\Models\IModelsWindow.h" />
+    <ClInclude Include="Windows\Models\IModelsWindowManager.h" />
+    <ClInclude Include="Windows\Models\ModelsWindow.h" />
+    <ClInclude Include="Windows\Models\ModelsWindowManager.h" />
     <ClInclude Include="Windows\Pack\IPackWindow.h" />
     <ClInclude Include="Windows\Pack\IPackWindowManager.h" />
     <ClInclude Include="Windows\Pack\PackWindow.h" />

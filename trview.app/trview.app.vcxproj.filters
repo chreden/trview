@@ -382,9 +382,15 @@
     </ClCompile>
     <ClCompile Include="Elements\Flyby\Flyby.cpp">
       <Filter>Elements\Flyby</Filter>
+    </ClComplile>
+    <ClCompile Include="Windows\Models\ModelsWindow.cpp">
+      <Filter>Windows\Models</Filter>
     </ClCompile>
     <ClCompile Include="Elements\Flyby\FlybyNode.cpp">
       <Filter>Elements\Flyby</Filter>
+    </ClCompile>
+    <ClCompile Include="Windows\Models\ModelsWindowManager.cpp">
+      <Filter>Windows\Models</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1279,20 +1285,38 @@
     <ClInclude Include="Elements\Flyby\IFlyby.h">
       <Filter>Elements\Flyby</Filter>
     </ClInclude>
+    <ClInclude Include="Mocks\Windows\IModelsWindow.h">
+      <Filter>Mocks\Windows</Filter>
+    </ClInclude>
     <ClInclude Include="Elements\Flyby\Flyby.h">
       <Filter>Elements\Flyby</Filter>
+    </ClInclude>
+    <ClInclude Include="Mocks\Windows\IModelsWindowManager.h">
+      <Filter>Mocks\Windows</Filter>
     </ClInclude>
     <ClInclude Include="Mocks\Elements\IFlyby.h">
       <Filter>Mocks\Elements</Filter>
     </ClInclude>
+    <ClInclude Include="Windows\Models\IModelsWindow.h">
+      <Filter>Windows\Models</Filter>
+    </ClInclude>
     <ClInclude Include="Elements\Flyby\IFlybyNode.h">
       <Filter>Elements\Flyby</Filter>
+    </ClInclude>
+    <ClInclude Include="Windows\Models\IModelsWindowManager.h">
+      <Filter>Windows\Models</Filter>
     </ClInclude>
     <ClInclude Include="Elements\Flyby\FlybyNode.h">
       <Filter>Elements\Flyby</Filter>
     </ClInclude>
+    <ClInclude Include="Windows\Models\ModelsWindow.h">
+      <Filter>Windows\Models</Filter>
+    </ClInclude>
     <ClInclude Include="Mocks\Elements\IFlybyNode.h">
       <Filter>Mocks\Elements</Filter>
+    </ClInclude>
+    <ClInclude Include="Windows\Models\ModelsWindowManager.h">
+      <Filter>Windows\Models</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1520,6 +1544,9 @@
     </Filter>
     <Filter Include="Geometry\Model">
       <UniqueIdentifier>{03a8e721-8c98-438d-a8eb-c67a9e88e956}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Windows\Models">
+      <UniqueIdentifier>{bb2435da-29e4-489f-a207-f9e9f86ef14b}</UniqueIdentifier>
     </Filter>
     <Filter Include="Elements\Flyby">
       <UniqueIdentifier>{52dec27a-a711-4587-9a97-4ae9bdb7a050}</UniqueIdentifier>

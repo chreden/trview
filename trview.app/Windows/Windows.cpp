@@ -10,6 +10,7 @@
 #include "IItemsWindowManager.h"
 #include "ILightsWindowManager.h"
 #include "Log/ILogWindowManager.h"
+#include "Models/IModelsWindowManager.h"
 #include "Plugins/IPluginsWindowManager.h"
 #include "IRoomsWindowManager.h"
 #include "IRouteWindowManager.h"
@@ -35,6 +36,7 @@ namespace trview
         std::shared_ptr<IItemsWindowManager> items_window_manager,
         std::unique_ptr<ILightsWindowManager> lights_window_manager,
         std::unique_ptr<ILogWindowManager> log_window_manager,
+        std::unique_ptr<IModelsWindowManager> models_window_manager,
         std::unique_ptr<IPackWindowManager> pack_window_manager,
         std::unique_ptr<IPluginsWindowManager> plugins_window_manager,
         std::shared_ptr<IRoomsWindowManager> rooms_window_manager,
@@ -45,9 +47,10 @@ namespace trview
         std::unique_ptr<ITriggersWindowManager> triggers_window_manager)
         : _about_windows(std::move(about_window_manager)), _camera_sink_windows(std::move(camera_sink_windows)), _console_manager(std::move(console_manager)),
         _diff_windows(std::move(diff_window_manager)), _items_windows(items_window_manager), _lights_windows(std::move(lights_window_manager)),
-        _log_windows(std::move(log_window_manager)), _plugins_windows(std::move(plugins_window_manager)), _rooms_windows(rooms_window_manager),
-        _route_window(std::move(route_window_manager)), _sounds_windows(std::move(sounds_window_manager)), _statics_windows(std::move(statics_window_manager)),
-        _textures_windows(std::move(textures_window_manager)), _triggers_windows(std::move(triggers_window_manager)), _pack_windows(std::move(pack_window_manager))
+        _log_windows(std::move(log_window_manager)), _models_windows(std::move(models_window_manager)), _plugins_windows(std::move(plugins_window_manager)),
+        _rooms_windows(rooms_window_manager), _route_window(std::move(route_window_manager)), _sounds_windows(std::move(sounds_window_manager)),
+        _statics_windows(std::move(statics_window_manager)), _textures_windows(std::move(textures_window_manager)), _triggers_windows(std::move(triggers_window_manager)),
+        _pack_windows(std::move(pack_window_manager))
     {
         _camera_sink_windows->on_camera_sink_selected += on_camera_sink_selected;
         _camera_sink_windows->on_flyby_node_selected += on_flyby_node_selected;
@@ -133,6 +136,7 @@ namespace trview
         _camera_sink_windows->update(elapsed);
         _items_windows->update(elapsed);
         _lights_windows->update(elapsed);
+        _models_windows->update(elapsed);
         _plugins_windows->update(elapsed);
         _rooms_windows->update(elapsed);
         _route_window->update(elapsed);
@@ -149,6 +153,7 @@ namespace trview
         _items_windows->render();
         _lights_windows->render();
         _log_windows->render();
+        _models_windows->render();
         _pack_windows->render();
         _plugins_windows->render();
         _rooms_windows->render();
@@ -222,6 +227,8 @@ namespace trview
         _items_windows->set_ng_plus(new_level->ng_plus());
         _lights_windows->set_level_version(new_level->version());
         _lights_windows->set_lights(new_level->lights());
+        _models_windows->set_level_texture_storage(new_level->level_texture_storage());
+        _models_windows->set_model_storage(new_level->model_storage());
         _pack_windows->set_level(new_level);
         _pack_windows->set_pack(new_level->pack());
         _rooms_windows->set_level_version(new_level->version());

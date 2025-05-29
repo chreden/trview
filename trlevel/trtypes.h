@@ -1003,6 +1003,8 @@ namespace trlevel
 
     std::vector<tr4_mesh_face3> convert_tr3_psx_room_triangles(std::vector<uint32_t> triangles, uint16_t total_vertices);
 
+    std::vector<tr4_animation> convert_animations(std::vector<tr_animation> animations);
+
     constexpr LightType convert(LightTypeTR3 type);
 }
 
