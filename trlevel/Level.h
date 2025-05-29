@@ -282,6 +282,9 @@ namespace trlevel
         std::vector<tr2_entity>        _entities;
         std::unordered_map<uint32_t, tr_staticmesh> _static_meshes;
         std::vector<tr4_ai_object>     _ai_objects;
+        std::vector<tr4_animation>     _animations;
+        std::vector<tr_state_change>   _state_changes;
+        std::vector<tr_anim_dispatch>  _anim_dispatches;
 
         uint16_t _lara_type{ 0u };
         uint16_t _weather_type{ 0u };

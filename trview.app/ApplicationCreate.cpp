@@ -68,6 +68,7 @@
 #include "Windows/TriggersWindow.h"
 #include "Windows/Viewer.h"
 #include "Windows/Log/LogWindow.h"
+#include "Windows/Models/ModelsWindow.h"
 #include "UI/DX11ImGuiBackend.h"
 #include "Windows/Textures/TexturesWindow.h"
 #include "Windows/CameraSink/CameraSinkWindow.h"
@@ -497,6 +498,12 @@ namespace trview
                 pack_window->initialise();
                 return pack_window;
             };
+        auto models_window_source = [=]()
+            {
+                auto models_window = std::make_shared<ModelsWindow>(files, dialogs, messaging);
+                models_window->initialise();
+                return models_window;
+            };
 
         auto windows = std::make_shared<Windows>(window, shortcuts);
         windows->register_window("About", about_window_source);
@@ -514,6 +521,7 @@ namespace trview
         windows->register_window("Statics", statics_window_source);
         windows->register_window("Textures", textures_window_source);
         windows->register_window("Triggers", triggers_window_source);
+        windows->register_window("Models", models_window_source);
 
         auto viewer_ui = std::make_shared<ViewerUI>(
             window,
@@ -549,6 +557,9 @@ namespace trview
 
         auto file_menu = std::make_shared<FileMenu>(window, shortcuts, dialogs, files, level_name_source, messaging);
         messaging->add_recipient(file_menu);
+
+        auto transparency_buffer_source = [=](auto&& lts) { return std::make_unique<TransparencyBuffer>(device, lts); };
+        auto meshes_window_source = [=]() { return std::make_shared<ModelsWindow>(device, render_target_source, shader_storage, buffer_source, transparency_buffer_source, sampler_source, std::make_unique<input::Mouse>(window, std::make_unique<input::WindowTester>(window))); };
 
         auto application = std::make_shared<Application>(
             window,
