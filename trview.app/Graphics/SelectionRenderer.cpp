@@ -150,7 +150,7 @@ namespace trview
             _transparency->reset();
             selected_item.get_transparent_triangles(*_transparency, camera, IRenderable::SelectionFill);
             _transparency->sort(camera.rendering_position());
-            _transparency->render(camera, true);
+            _transparency->render(camera.view_projection(), true);
             selected_item.set_visible(was_visible);
         }
 

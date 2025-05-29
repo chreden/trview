@@ -411,7 +411,7 @@ namespace trview
         _pixel_shader_data->apply(context, graphics::IBuffer::ApplyTo::PS);
 
         // Render the triangles that the transparency buffer has produced.
-        _transparency->render(camera);
+        _transparency->render(camera.view_projection());
     }
 
     void Level::render_selected_item(const ICamera& camera)
@@ -1550,6 +1550,16 @@ namespace trview
     trlevel::PlatformAndVersion Level::platform_and_version() const
     {
         return _platform_and_version;
+    }
+
+    std::weak_ptr<IModelStorage> Level::model_storage() const
+    {
+        return _model_storage;
+    }
+
+    std::weak_ptr<ILevelTextureStorage> Level::level_texture_storage() const
+    {
+        return _texture_storage;
     }
 
     bool find_item_by_type_id(const ILevel& level, uint32_t type_id, std::weak_ptr<IItem>& output_item)

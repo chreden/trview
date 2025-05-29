@@ -721,7 +721,7 @@ namespace trlevel
 
         _mesh_data = read_mesh_data(activity, file, info, callbacks);
         _mesh_pointers = read_mesh_pointers(activity, file, info, callbacks);
-        skip(file, info.animations_size);
+        skip(file, info.animations_size); // TODO: Load animations
         skip(file, info.state_changes_size);
         skip(file, info.dispatches_size);
         skip(file, info.commands_size);
@@ -882,7 +882,7 @@ namespace trlevel
         _mesh_data = read_mesh_data(activity, file, info, callbacks);
         _mesh_pointers = read_mesh_pointers(activity, file, info, callbacks);
 
-        skip(file, info.animations_size);
+        skip(file, info.animations_size); // TODO: Read and store these
         skip(file, info.state_changes_size);
         skip(file, info.dispatches_size);
         skip(file, info.commands_size);
