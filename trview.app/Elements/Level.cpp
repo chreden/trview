@@ -1552,6 +1552,11 @@ namespace trview
         return _platform_and_version;
     }
 
+    std::weak_ptr<IModelStorage> Level::model_storage() const
+    {
+        return _model_storage;
+    }
+
     bool find_item_by_type_id(const ILevel& level, uint32_t type_id, std::weak_ptr<IItem>& output_item)
     {
         const auto& items = level.items();
