@@ -80,6 +80,8 @@
 #include "Windows/IDiffWindow.h"
 #include "Windows/IPackWindowManager.h"
 #include "Windows/IPackWindow.h"
+#include "Windows/IModelsWindow.h"
+#include "Windows/IModelsWindowManager.h"
 
 namespace trview
 {
@@ -321,5 +323,11 @@ namespace trview
 
         MockFlybyNode::MockFlybyNode() {};
         MockFlybyNode::~MockFlybyNode() {};
+
+        MockModelsWindow::MockModelsWindow() {};
+        MockModelsWindow::~MockModelsWindow() {};
+
+        MockModelsWindowManager::MockModelsWindowManager() {};
+        MockModelsWindowManager::~MockModelsWindowManager() {};
     }
 }

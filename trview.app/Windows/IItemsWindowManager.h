@@ -1,7 +1,7 @@
 #pragma once
 
 #include <trview.common/Event.h>
-#include "ItemsWindow.h"
+#include "IItemsWindow.h"
 
 namespace trview
 {

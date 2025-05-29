@@ -1,4 +1,5 @@
 #include "MeshStorage.h"
+#include <ranges>
 
 namespace trview
 {
@@ -23,5 +24,15 @@ namespace trview
             return found->second;
         }
         return nullptr;
+    }
+
+    std::map<uint32_t, std::weak_ptr<IMesh>> MeshStorage::meshes() const
+    {
+        std::map<uint32_t, std::weak_ptr<IMesh>> meshes;
+        for (const auto& m : _meshes)
+        {
+            meshes[m.first] = m.second;
+        }
+        return meshes;
     }
 }
