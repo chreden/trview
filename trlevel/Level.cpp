@@ -516,7 +516,8 @@ namespace trlevel
         uint32_t offset = frame_offset;
         tr2_frame frame;
 
-        // TODO: Catch all...
+        // Some models have a frames reference equal to the frames length. Presumably this
+        // means they don't have any frames, so just return default.
         if (offset >= _frames.size())
         {
             return frame;
