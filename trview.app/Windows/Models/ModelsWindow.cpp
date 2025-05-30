@@ -1,25 +1,58 @@
 #include "ModelsWindow.h"
-#include "../../Graphics/IMeshStorage.h"
-#include "../../Geometry/IMesh.h"
+#include "../../Geometry/Model/IModelStorage.h"
+#include "../../Geometry/Model/IModel.h"
 
 #include <trview.graphics/RenderTargetStore.h>
 #include <trview.graphics/ViewportStore.h>
 
 namespace trview
 {
+    namespace
+    {
+#pragma warning(push)
+#pragma warning(disable : 4324)
+#pragma pack(push, 16)
+        __declspec(align(16)) struct PixelShaderData
+        {
+            bool disable_transparency;
+        };
+#pragma pack(pop)
+#pragma warning(pop)
+    }
+
     IModelsWindow::~IModelsWindow()
     {
     }
 
-    ModelsWindow::ModelsWindow(const std::shared_ptr<graphics::IDevice>& device, const graphics::IRenderTarget::SizeSource& render_target_source, const std::shared_ptr<graphics::IShaderStorage>& shader_storage)
-        : _device(device), _render_target(render_target_source(512, 512, graphics::IRenderTarget::DepthStencilMode::Enabled))
+    ModelsWindow::ModelsWindow(const std::shared_ptr<graphics::IDevice>& device,
+        const graphics::IRenderTarget::SizeSource& render_target_source,
+        const std::shared_ptr<graphics::IShaderStorage>& shader_storage,
+        const graphics::IBuffer::ConstantSource& buffer_source,
+        ITransparencyBuffer::Source transparency_buffer_source)
+        : _device(device), _render_target(render_target_source(512, 512, graphics::IRenderTarget::DepthStencilMode::Enabled)), _transparency_buffer_source(transparency_buffer_source)
     {
         _vertex_shader = shader_storage->get("level_vertex_shader");
         _pixel_shader = shader_storage->get("level_pixel_shader");
 
-        D3D11_DEPTH_STENCIL_DESC ui_depth_stencil_desc;
-        memset(&ui_depth_stencil_desc, 0, sizeof(ui_depth_stencil_desc));
-        _depth_stencil_state = device->create_depth_stencil_state(ui_depth_stencil_desc);
+        D3D11_DEPTH_STENCIL_DESC stencil_desc;
+        memset(&stencil_desc, 0, sizeof(stencil_desc));
+        stencil_desc.DepthEnable = true;
+        stencil_desc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
+        stencil_desc.DepthFunc = D3D11_COMPARISON_LESS;
+        stencil_desc.StencilEnable = true;
+        stencil_desc.StencilReadMask = 0xFF;
+        stencil_desc.StencilWriteMask = 0xFF;
+        stencil_desc.FrontFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
+        stencil_desc.FrontFace.StencilDepthFailOp = D3D11_STENCIL_OP_INCR;
+        stencil_desc.FrontFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
+        stencil_desc.FrontFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
+        stencil_desc.BackFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
+        stencil_desc.BackFace.StencilDepthFailOp = D3D11_STENCIL_OP_DECR;
+        stencil_desc.BackFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
+        stencil_desc.BackFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
+        _depth_stencil_state = device->create_depth_stencil_state(stencil_desc);
+
+        _pixel_shader_data = buffer_source(sizeof(PixelShaderData));
     }
 
     void ModelsWindow::render()
@@ -29,6 +62,11 @@ namespace trview
             on_window_closed();
             return;
         }
+    }
+
+    void ModelsWindow::set_level_texture_storage(const std::weak_ptr<ILevelTextureStorage>& level_texture_storage)
+    {
+        _transparency_buffer = _transparency_buffer_source(level_texture_storage);
     }
 
     void ModelsWindow::set_model_storage(const std::weak_ptr<IModelStorage>& model_storage)
@@ -43,7 +81,7 @@ namespace trview
 
     void ModelsWindow::update(float delta)
     {
-        delta;
+        _rotation += delta;
     }
 
     bool ModelsWindow::render_meshes_window()
@@ -51,7 +89,7 @@ namespace trview
         using namespace DirectX::SimpleMath;
         // lemoa
 
-        auto selected_mesh = _selected_mesh.lock();
+        auto selected_model = _selected_model.lock();
 
         auto context = _device->context();
         context->OMSetDepthStencilState(_depth_stencil_state.Get(), 1);
@@ -65,17 +103,31 @@ namespace trview
             graphics::ViewportStore vp_store(context);
             _render_target->apply();
 
-            if (selected_mesh)
+            if (selected_model)
             {
-                Matrix world = Matrix::Identity;
-                Matrix view = Matrix::CreateLookAt(Vector3(0, 0, -3), Vector3(), Vector3(0, 1, 0));
+                const auto box = selected_model->bounding_box();
+                const float ex = Vector3(box.Extents).Length();
+                const auto camera_pos = Vector3(0, box.Center.y - 0.25f, ex * 3.5f);
+
+                Matrix world = Matrix::CreateRotationY(_rotation);
+                Matrix view = Matrix::CreateLookAt(camera_pos, box.Center, Vector3(0, -1, 0));
                 Matrix projection = Matrix::CreatePerspectiveFieldOfView(DirectX::XM_PIDIV4, 1.0f, 0.1f, 1000.0f);
-                Matrix transform = world * view * projection;
-                selected_mesh->render(transform, Colour::White);
+                Matrix view_projection = view * projection;
+
+                graphics::set_data(*_pixel_shader_data, context, PixelShaderData{ false });
+                _pixel_shader_data->apply(context, graphics::IBuffer::ApplyTo::PS);
+                
+                selected_model->render(world, view_projection, Colour::White);
+
+                _transparency_buffer->reset();
+                selected_model->render_transparency(world, *_transparency_buffer, Colour::White);
+                _transparency_buffer->sort(camera_pos);
+                
+                graphics::set_data(*_pixel_shader_data, context, PixelShaderData{ false });
+                _pixel_shader_data->apply(context, graphics::IBuffer::ApplyTo::PS);
+                _transparency_buffer->render(view_projection);
             }
         }
-        // render_internal(context);
-        // _force_redraw = false;
 
         bool stay_open = true;
         ImGui::PushStyleVar(ImGuiStyleVar_WindowMinSize, ImVec2(540, 500));
@@ -87,22 +139,20 @@ namespace trview
                 ImGui::TableSetupScrollFreeze(1, 1);
                 ImGui::TableHeadersRow();
 
-                if (auto model_Storage = _model_storage.lock())
+                if (auto model_storage = _model_storage.lock())
                 {
-                    /*
-                    for (const auto model : _model_storage->models())
+                    for (const auto model : model_storage->models())
                     {
                         ImGui::TableNextRow();
                         ImGui::TableNextColumn();
 
-                        auto mesh_ptr = mesh.second.lock();
-                        bool selected = mesh_ptr == selected_mesh;
-                        if (ImGui::Selectable(std::format("{}", mesh.first).c_str(), &selected, ImGuiSelectableFlags_SelectOnNav))
+                        auto model_ptr = model.lock();
+                        bool selected = model_ptr == selected_model;
+                        if (ImGui::Selectable(std::format("{}", model_ptr->type_id()).c_str(), &selected, ImGuiSelectableFlags_SelectOnNav))
                         {
-                            _selected_mesh = mesh.second;
+                            _selected_model = model;
                         }
                     }
-                    */
                 }
                 ImGui::EndTable();
             }

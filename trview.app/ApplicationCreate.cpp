@@ -401,7 +401,9 @@ namespace trview
         auto about_window_source = [=]() { return std::make_shared<AboutWindow>(); };
         auto diff_window_source = [=]() { return std::make_shared<DiffWindow>(dialogs, level_source, std::make_unique<ImGuiFileMenu>(dialogs, files)); };
         auto pack_window_source = [=]() { return std::make_shared<PackWindow>(files, dialogs); };
-        auto meshes_window_source = [=]() { return std::make_shared<ModelsWindow>(device, render_target_source, shader_storage); };
+
+        auto transparency_buffer_source = [=](auto&& lts) { return std::make_unique<TransparencyBuffer>(device, lts); };
+        auto meshes_window_source = [=]() { return std::make_shared<ModelsWindow>(device, render_target_source, shader_storage, buffer_source, transparency_buffer_source); };
 
         return std::make_unique<Application>(
             window,

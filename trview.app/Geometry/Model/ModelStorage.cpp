@@ -1,5 +1,6 @@
 #include "ModelStorage.h"
 #include "../../Graphics/IMeshStorage.h"
+#include <ranges>
 
 namespace trview
 {
@@ -224,5 +225,10 @@ namespace trview
             }
         }
         return {};
+    }
+
+    std::vector<std::weak_ptr<IModel>> ModelStorage::models() const
+    {
+        return _models | std::ranges::to<std::vector<std::weak_ptr<IModel>>>();
     }
 }

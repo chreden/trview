@@ -50,7 +50,7 @@ namespace
             std::shared_ptr<IItemsWindowManager> items{ mock_shared<MockItemsWindowManager>() };
             std::unique_ptr<ILogWindowManager> log{ mock_unique<MockLogWindowManager>() };
             std::unique_ptr<ILightsWindowManager> lights{ mock_unique<MockLightsWindowManager>() };
-            std::unique_ptr<IModelsWindowManager> meshes{ mock_unique<MockMeshesWindowManager>() };
+            std::unique_ptr<IModelsWindowManager> meshes{ mock_unique<MockModelsWindowManager>() };
             std::unique_ptr<IPackWindowManager> pack{ mock_unique<MockPackWindowManager>() };
             std::unique_ptr<IPluginsWindowManager> plugins{ mock_unique<MockPluginsWindowManager>() };
             std::unique_ptr<IRoomsWindowManager> rooms{ mock_unique<MockRoomsWindowManager>() };
