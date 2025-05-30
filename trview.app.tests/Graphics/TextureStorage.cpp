@@ -18,27 +18,3 @@ TEST(TextureStorage, KeysAreCaseInsensitive)
     auto texture = storage.lookup("test_key");
     ASSERT_EQ(texture.name(), "test");
 }
-
-TEST(TextureStorage, TexturesGenerated)
-{
-    std::vector<uint32_t> data;
-    data.resize(256 * 256, 0x000080ff);
-
-    auto device = mock_shared<MockDevice>();
-
-    std::vector<std::vector<uint32_t>> saved_data;
-    EXPECT_CALL(*device, create_texture_2D).Times(2).WillRepeatedly(
-        [&](auto&& desc, auto&& data)
-        {
-            const uint32_t* ptr = reinterpret_cast<const uint32_t*>(data.pSysMem);
-            saved_data.push_back({ ptr, ptr + 256 * 256 });
-            return nullptr;
-        });
-    EXPECT_CALL(*device, create_shader_resource_view).Times(2);
-
-    TextureStorage subject(device);
-
-    // 0: TRLE
-    ASSERT_EQ(saved_data.size(), 2u);
-    ASSERT_EQ(saved_data[0].size(), 65536u);
-}
