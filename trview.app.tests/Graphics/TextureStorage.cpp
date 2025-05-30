@@ -27,13 +27,13 @@ TEST(TextureStorage, TexturesGenerated)
     auto device = mock_shared<MockDevice>();
 
     std::vector<std::vector<uint32_t>> saved_data;
-    EXPECT_CALL(*device, create_texture_2D).Times(2).WillRepeatedly(testing::Invoke(
+    EXPECT_CALL(*device, create_texture_2D).Times(2).WillRepeatedly(
         [&](auto&& desc, auto&& data)
         {
             const uint32_t* ptr = reinterpret_cast<const uint32_t*>(data.pSysMem);
             saved_data.push_back({ ptr, ptr + 256 * 256 });
             return nullptr;
-        }));
+        });
     EXPECT_CALL(*device, create_shader_resource_view).Times(2);
 
     TextureStorage subject(device);
