@@ -176,6 +176,10 @@ namespace trview
         for (uint32_t i = 0; i < level.num_models(); ++i)
         {
             const auto model = level.get_model(i);
+            if (model.NumMeshes > 0xff00)
+            {
+                continue;
+            }
 
             std::vector<std::shared_ptr<IMesh>> meshes;
 

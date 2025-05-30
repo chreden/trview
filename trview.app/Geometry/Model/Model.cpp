@@ -120,8 +120,11 @@ namespace trview
             _oriented_boxes.push_back(oriented_box);
         }
 
-        // Create an axis-aligned BB from the points of the oriented ones.
-        BoundingBox::CreateFromPoints(_bounding_box, corners.size(), &corners[0], sizeof(Vector3));
+        if (!corners.empty())
+        {
+            // Create an axis-aligned BB from the points of the oriented ones.
+            BoundingBox::CreateFromPoints(_bounding_box, corners.size(), &corners[0], sizeof(Vector3));
+        }
     }
 }
 
