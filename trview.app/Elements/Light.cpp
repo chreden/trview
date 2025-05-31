@@ -33,7 +33,7 @@ namespace trview
         return _type;
     }
 
-    void Light::render(const ICamera& camera, const ILevelTextureStorage& texture_storage, const Color&)
+    void Light::render(const ICamera& camera, const Color&)
     {
         if (!_visible)
         {
@@ -44,10 +44,10 @@ namespace trview
         auto wvp = world * camera.view_projection();
         auto light_direction = Vector3::TransformNormal(camera.position() - _position, world.Invert());
         light_direction.Normalize();
-        _mesh->render(wvp, texture_storage, _colour, 1.0f, light_direction);
+        _mesh->render(wvp, _colour, 1.0f, light_direction);
     }
 
-    void Light::render_direction(const ICamera& camera, const ILevelTextureStorage& texture_storage)
+    void Light::render_direction(const ICamera& camera)
     {
         if (!_visible)
         {
@@ -75,7 +75,7 @@ namespace trview
                 _mesh->render(
                     Matrix::CreateScale(0.05f) * 
                     Matrix::CreateTranslation(_position + step * static_cast<float>(i)) *
-                    camera.view_projection(), texture_storage, _colour, 1.0f, light_direction);
+                    camera.view_projection(), _colour, 1.0f, light_direction);
             }
         }
     }

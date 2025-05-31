@@ -3,7 +3,6 @@
 #include <SimpleMath.h>
 #include <trview.common/Event.h>
 #include <trview.app/Camera/ICamera.h>
-#include <trview.app/Graphics/ILevelTextureStorage.h>
 
 namespace trview
 {
@@ -34,8 +33,7 @@ namespace trview
 
         /// Render the measurement.
         /// @param camera The camera being used to render the scene.
-        /// @param texture_storage Texture storage for the level.
-        virtual void render(const ICamera& camera, const ILevelTextureStorage& texture_storage) = 0;
+        virtual void render(const ICamera& camera) = 0;
 
         /// Get the current text version of the distance measured.
         /// @returns The text version of the distance.

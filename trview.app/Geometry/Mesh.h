@@ -25,7 +25,8 @@ namespace trview
              const std::vector<std::vector<uint32_t>>& indices, 
              const std::vector<uint32_t>& untextured_indices,
              const std::vector<TransparentTriangle>& transparent_triangles,
-             const std::vector<Triangle>& collision_triangles);
+             const std::vector<Triangle>& collision_triangles,
+             const std::shared_ptr<ITextureStorage>& texture_storage);
 
         /// Create a mesh using the specified vertices and indices.
         /// @param transparent_triangles The triangles to use to create the mesh.
@@ -35,7 +36,6 @@ namespace trview
         virtual ~Mesh() = default;
 
         virtual void render(const DirectX::SimpleMath::Matrix& world_view_projection,
-            const ILevelTextureStorage& texture_storage,
             const DirectX::SimpleMath::Color& colour,
             float light_intensity = 1.0f,
             DirectX::SimpleMath::Vector3 light_direction = DirectX::SimpleMath::Vector3::Zero,
@@ -66,5 +66,6 @@ namespace trview
         std::vector<TransparentTriangle>                  _transparent_triangles;
         std::vector<Triangle>                             _collision_triangles;
         DirectX::BoundingBox                              _bounding_box;
+        std::weak_ptr<ITextureStorage>                    _texture_storage;
     };
 }

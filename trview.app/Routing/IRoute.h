@@ -126,7 +126,7 @@ namespace trview
         /// <param name="camera">The camera to use to render.</param>
         /// <param name="texture_storage">Texture storage for the mesh.</param>
         /// <param name="show_selection">Whether to show the selection outline.</param>
-        virtual void render(const ICamera& camera, const ILevelTextureStorage& texture_storage, bool show_selection) = 0;
+        virtual void render(const ICamera& camera, bool show_selection) = 0;
         virtual void save(const std::shared_ptr<IFiles>& files, const UserSettings& settings) = 0;
         virtual void save_as(const std::shared_ptr<IFiles>& files, const std::string& filename, const UserSettings& settings) = 0;
         /// <summary>

@@ -135,7 +135,7 @@ namespace trview
         return PickResult();
     }
 
-    void Trigger::render(const ICamera&, const ILevelTextureStorage&, const DirectX::SimpleMath::Color&)
+    void Trigger::render(const ICamera&, const DirectX::SimpleMath::Color&)
     {
     }
 

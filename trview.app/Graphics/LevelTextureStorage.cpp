@@ -10,19 +10,6 @@ namespace trview
     LevelTextureStorage::LevelTextureStorage(const std::shared_ptr<graphics::IDevice>& device, std::unique_ptr<ITextureStorage> texture_storage)
         : _device(device), _texture_storage(std::move(texture_storage))
     {
-        // Generate the TRLE texture.
-        std::vector<uint32_t> pixels(256 * 256, 0xffffffff);
-        for (int x = 0; x < 256; ++x)
-        {
-            pixels[x] = 0xff000000;
-            pixels[x + 255 * 256] = 0xff000000;
-        }
-        for (int y = 0; y < 256; ++y)
-        {
-            pixels[y * 256] = 0xff000000;
-            pixels[y * 256 + 255] = 0xff000000;
-        }
-        _geometry_texture = graphics::Texture(*_device, 256, 256, pixels);
     }
 
     void LevelTextureStorage::determine_texture_mode()
@@ -41,9 +28,14 @@ namespace trview
         }
     }
 
+    void LevelTextureStorage::add_texture(const std::vector<uint32_t>& pixels, uint32_t width, uint32_t height)
+    {
+        _texture_storage->add_texture(pixels, width, height);
+    }
+
     graphics::Texture LevelTextureStorage::texture(uint32_t tile_index) const
     {
-        return _tiles[tile_index];
+        return _texture_storage->texture(tile_index);
     }
 
     graphics::Texture LevelTextureStorage::opaque_texture(uint32_t tile_index) const
@@ -58,11 +50,7 @@ namespace trview
 
     graphics::Texture LevelTextureStorage::untextured() const
     {
-        if (!_untextured_texture.has_content())
-        {
-            _untextured_texture = coloured(0xffffffff);
-        }
-        return _untextured_texture;
+        return _texture_storage->untextured();
     }
 
     DirectX::SimpleMath::Vector2 LevelTextureStorage::uv(uint32_t texture_index, uint32_t uv_index) const
@@ -94,9 +82,14 @@ namespace trview
         return 0;
     }
 
+    uint32_t LevelTextureStorage::num_textures() const
+    {
+        return _texture_storage->num_textures();
+    }
+
     uint32_t LevelTextureStorage::num_tiles() const
     {
-        return static_cast<uint32_t>(_tiles.size());
+        return _texture_storage->num_textures();
     }
 
     uint16_t LevelTextureStorage::attribute(uint32_t texture_index) const
@@ -139,7 +132,7 @@ namespace trview
 
     graphics::Texture LevelTextureStorage::geometry_texture() const
     {
-        return _geometry_texture;
+        return _texture_storage->geometry_texture();
     }
 
     uint32_t LevelTextureStorage::num_object_textures() const
@@ -178,7 +171,7 @@ namespace trview
 
     void LevelTextureStorage::add_textile(const std::vector<uint32_t>& textile)
     {
-        _tiles.emplace_back(*_device, 256, 256, textile);
+        _texture_storage->add_texture(textile, 256, 256);
         auto opaque = textile;
         for (auto& d : opaque)
         {

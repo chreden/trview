@@ -50,7 +50,7 @@ namespace trview
         on_distance((_end.value() - _start.value()).Length());
     }
 
-    void Measure::render(const ICamera& camera, const ILevelTextureStorage& texture_storage)
+    void Measure::render(const ICamera& camera)
     {
         if (!_start.has_value() || !_end.has_value() || !_visible)
         {
@@ -83,11 +83,11 @@ namespace trview
         {
             auto pos = _start.value() + to * 0.25f * static_cast<float>(i);
             auto wvp = scale * Matrix::CreateTranslation(pos) * view_projection;
-            _mesh->render(wvp, texture_storage, Color(1.0f, 1.0f, 1.0f));
+            _mesh->render(wvp, Color(1.0f, 1.0f, 1.0f));
         }
 
         auto wvp = scale * Matrix::CreateTranslation(_end.value()) * view_projection;
-        _mesh->render(wvp, texture_storage, Color(1.0f, 1.0f, 1.0f));
+        _mesh->render(wvp, Color(1.0f, 1.0f, 1.0f));
 
         const auto window_size = camera.view_size();
 

@@ -8,8 +8,6 @@
 
 namespace trview
 {
-    struct ILevelTextureStorage;
-
     /// The compass shows the X, Y and Z axes.
     class Compass final : public ICompass
     {
@@ -22,17 +20,17 @@ namespace trview
         /// Render the compass.
         /// @param camera The current camera being used to view the level.
         /// @param texture_storage The texture storage instance to use.
-        void render(const ICamera& camera, const ILevelTextureStorage& texture_storage);
+        void render(const ICamera& camera) override;
 
         /// Pick against the compass points.
         /// @param mouse_position The mouse position in screen space.
         /// @param screen_size The screen size.
         /// @param axis The axis that was hovered over.
-        bool pick(const Point& mouse_position, const Size& screen_size, Axis& axis);
+        bool pick(const Point& mouse_position, const Size& screen_size, Axis& axis) override;
 
         /// Set whether the compass is visible.
         /// @param value Whether to render the compass.
-        void set_visible(bool value);
+        void set_visible(bool value) override;
     private:
         std::shared_ptr<graphics::IDevice> _device;
         std::unique_ptr<graphics::IRenderTarget> _render_target;

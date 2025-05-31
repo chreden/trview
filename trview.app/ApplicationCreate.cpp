@@ -34,6 +34,8 @@
 #include "Geometry/Mesh.h"
 #include "Geometry/Picking.h"
 #include "Geometry/TransparencyBuffer.h"
+#include "Geometry/Model/Model.h"
+#include "Geometry/Model/ModelStorage.h"
 #include "Graphics/LevelTextureStorage.h"
 #include "Graphics/MeshStorage.h"
 #include "Graphics/SelectionRenderer.h"
@@ -199,16 +201,15 @@ namespace trview
             return std::make_unique<MapRenderer>(device, font_factory, size, sprite_source, render_target_source);
         };
 
-        auto mesh_source = [=](auto&&... args) { return std::make_shared<Mesh>(device, args...); };
-        auto mesh_transparent_source = [=](auto&&... args) { return std::make_shared<Mesh>(args...); };
-
-        const auto waypoint_mesh = create_cube_mesh(mesh_source);
+        auto default_mesh_source = [=](auto&&... args) { return std::make_shared<Mesh>(device, args..., texture_storage); };
+        
+        const auto waypoint_mesh = create_cube_mesh(default_mesh_source);
         auto waypoint_source = [=](auto&&... args) { return std::make_shared<Waypoint>(waypoint_mesh, args...); };
 
         auto route_source = [=](std::optional<IRoute::FileData> data)
         {
             auto new_route = std::make_shared<Route>(
-                std::make_unique<SelectionRenderer>(device, shader_storage, std::make_unique<TransparencyBuffer>(device), render_target_source),
+                std::make_unique<SelectionRenderer>(device, shader_storage, std::make_unique<TransparencyBuffer>(device, texture_storage), render_target_source),
                 waypoint_source, settings_loader->load_user_settings());
             if (data)
             {
@@ -229,40 +230,18 @@ namespace trview
             return new_route;
         };
 
-        auto entity_source = [=](auto&& level, auto&& entity, auto&& index, auto&& triggers, auto&& mesh_storage, auto&& owning_level, auto&& room)
-        {
-            return std::make_shared<Item>(mesh_source, level, entity, mesh_storage, owning_level, index,
-                type_info_lookup->lookup(level.platform_and_version(), entity.TypeID, entity.Flags),
-                triggers,
-                room);
-        };
-
-        auto ai_source = [=](auto&& level, auto&& entity, auto&& index, auto&& mesh_storage, auto&& owning_level, auto&& room)
-        {
-            return std::make_shared<Item>(mesh_source, level, entity, mesh_storage, owning_level, index, type_info_lookup->lookup(level.platform_and_version(), entity.type_id, entity.flags), std::vector<std::weak_ptr<ITrigger>>{}, room);
-        };
-
-        auto ngplus = std::make_shared<NgPlusSwitcher>(entity_source);
         auto log = std::make_shared<Log>();
 
-        auto bounding_mesh = create_cube_mesh(mesh_source);
+        auto bounding_mesh = create_cube_mesh(default_mesh_source);
         auto static_mesh_source = [=](auto&&... args) { return std::make_shared<StaticMesh>(args..., bounding_mesh); };
         auto static_mesh_position_source = [=](auto&&... args) { return std::make_shared<StaticMesh>(args...); };
         auto sector_source = [=](auto&&... args) { return std::make_shared<Sector>(std::forward<decltype(args)>(args)...); };
-        auto room_source = [=](const trlevel::ILevel& level, const trlevel::tr3_room& room,
-            const std::shared_ptr<ILevelTextureStorage>& texture_storage, const IMeshStorage& mesh_storage, uint32_t index, const std::weak_ptr<ILevel>& parent_level, uint32_t sector_base_index, const Activity& activity)
-        {
-            auto new_room = std::make_shared<Room>(room, mesh_source, texture_storage, index, parent_level);
-            new_room->initialise(level, room, mesh_storage, static_mesh_source, static_mesh_position_source, sector_source, sector_base_index, activity);
-            return new_room;
-        };
-        auto trigger_source = [=](auto&&... args) { return std::make_shared<Trigger>(args..., mesh_transparent_source); };
 
-        const auto light_mesh = create_sphere_mesh(mesh_source, 24, 24);
+        const auto light_mesh = create_sphere_mesh(default_mesh_source, 24, 24);
         auto light_source = [=](auto&&... args) { return std::make_shared<Light>(light_mesh, args...); };
         auto buffer_source = [=](auto&&... args) { return std::make_unique<graphics::Buffer>(device, args...); };
 
-        auto cube_mesh = create_cube_mesh(mesh_source);
+        auto cube_mesh = create_cube_mesh(default_mesh_source);
         auto camera_sink_source = [=](auto&&... args) { return std::make_shared<CameraSink>(cube_mesh, texture_storage, args...); };
 
         const auto sound_source = [=](auto&&... args) { return create_sound(args...); };
@@ -300,19 +279,50 @@ namespace trview
                 level->load(callbacks);
                 level_texture_storage->load(level);
 
+                auto mesh_source = [=](auto&&... args) { return std::make_shared<Mesh>(device, args..., level_texture_storage); };
+                auto mesh_transparent_source = [=](auto&&... args) { return std::make_shared<Mesh>(args...); };
+
+                auto entity_source = [=](auto&& level, auto&& entity, auto&& index, auto&& triggers, auto&& model_storage, auto&& owning_level, auto&& room)
+                    {
+                        return std::make_shared<Item>(mesh_source, level, entity, model_storage, owning_level, index,
+                            type_info_lookup->lookup(level.platform_and_version(), entity.TypeID, entity.Flags),
+                            triggers,
+                            room);
+                    };
+
+                auto ai_source = [=](auto&& level, auto&& entity, auto&& index, auto&& model_storage, auto&& owning_level, auto&& room)
+                    {
+                        return std::make_shared<Item>(mesh_source, level, entity, model_storage, owning_level, index, type_info_lookup->lookup(level.platform_and_version(), entity.type_id, entity.flags), std::vector<std::weak_ptr<ITrigger>>{}, room);
+                    };
+
+                auto ngplus = std::make_shared<NgPlusSwitcher>(entity_source);
+
+                auto room_source = [=](const trlevel::ILevel& level, const trlevel::tr3_room& room,
+                    const std::shared_ptr<ILevelTextureStorage>& texture_storage, const IMeshStorage& mesh_storage, uint32_t index, const std::weak_ptr<ILevel>& parent_level, uint32_t sector_base_index, const Activity& activity)
+                    {
+                        auto new_room = std::make_shared<Room>(room, mesh_source, texture_storage, index, parent_level);
+                        new_room->initialise(level, room, mesh_storage, static_mesh_source, static_mesh_position_source, sector_source, sector_base_index, activity);
+                        return new_room;
+                    };
+                auto trigger_source = [=](auto&&... args) { return std::make_shared<Trigger>(args..., mesh_transparent_source); };
+
                 auto mesh_storage = std::make_shared<MeshStorage>(mesh_source, *level, *level_texture_storage);
+
+                auto model_source = [=](auto&&... args) { return std::make_shared<Model>(args...); };
+                auto model_storage = std::make_shared<ModelStorage>(mesh_storage, model_source, *level);
                 auto new_level = std::make_shared<Level>(
                     device, 
                     shader_storage, 
                     level_texture_storage,
-                    std::make_unique<TransparencyBuffer>(device),
-                    std::make_unique<SelectionRenderer>(device, shader_storage, std::make_unique<TransparencyBuffer>(device), render_target_source),
+                    std::make_unique<TransparencyBuffer>(device, level_texture_storage),
+                    std::make_unique<SelectionRenderer>(device, shader_storage, std::make_unique<TransparencyBuffer>(device, level_texture_storage), render_target_source),
                     log,
                     buffer_source,
                     sound_storage,
                     ngplus);
                 new_level->initialise(level,
                     mesh_storage,
+                    model_storage,
                     entity_source,
                     ai_source,
                     room_source,
@@ -325,7 +335,7 @@ namespace trview
                 return new_level;
             };
 
-        auto scriptable_source = [=](auto state) { return std::make_shared<Scriptable>(state, create_cube_mesh(mesh_source), texture_storage->coloured(Colour::White)); };
+        auto scriptable_source = [=](auto state) { return std::make_shared<Scriptable>(state, create_cube_mesh(default_mesh_source), texture_storage->coloured(Colour::White)); };
 
         auto dialogs = std::make_shared<Dialogs>(window);
         auto shell = std::make_shared<Shell>();
@@ -366,11 +376,11 @@ namespace trview
             shortcuts,
             route_source(std::nullopt),
             sprite_source,
-            std::make_unique<Compass>(device, sprite_source, render_target_source, mesh_source),
-            std::make_unique<Measure>(device, mesh_source),
+            std::make_unique<Compass>(device, sprite_source, render_target_source, default_mesh_source),
+            std::make_unique<Measure>(device, default_mesh_source),
             render_target_source,
             device_window_source,
-            std::make_unique<SectorHighlight>(mesh_source),
+            std::make_unique<SectorHighlight>(default_mesh_source),
             clipboard,
             std::make_shared<Camera>(window.size()));
 

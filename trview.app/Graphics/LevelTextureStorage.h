@@ -16,6 +16,7 @@ namespace trview
     public:
         explicit LevelTextureStorage(const std::shared_ptr<graphics::IDevice>& device, std::unique_ptr<ITextureStorage> texture_storage);
         virtual ~LevelTextureStorage() = default;
+        void add_texture(const std::vector<uint32_t>& pixels, uint32_t width, uint32_t height) override;
         virtual graphics::Texture texture(uint32_t tile_index) const override;
         virtual graphics::Texture opaque_texture(uint32_t texture_index) const override;
         virtual graphics::Texture coloured(uint32_t colour) const override;
@@ -24,6 +25,7 @@ namespace trview
         virtual graphics::Texture untextured() const override;
         virtual DirectX::SimpleMath::Vector2 uv(uint32_t texture_index, uint32_t uv_index) const override;
         virtual uint32_t          tile(uint32_t texture_index) const override;
+        uint32_t num_textures() const override; 
         virtual uint32_t          num_tiles() const override;
         virtual uint16_t attribute(uint32_t texture_index) const override;
         virtual DirectX::SimpleMath::Color palette_from_texture(uint32_t texture) const override;
@@ -36,13 +38,10 @@ namespace trview
         void determine_texture_mode();
 
         std::weak_ptr<trlevel::ILevel> _level;
-
         std::shared_ptr<graphics::IDevice> _device;
-        std::vector<graphics::Texture> _tiles;
         std::vector<graphics::Texture> _opaque_tiles;
         std::vector<trlevel::tr_object_texture> _object_textures;
         std::unique_ptr<ITextureStorage> _texture_storage;
-        mutable graphics::Texture _untextured_texture;
         std::array<DirectX::SimpleMath::Color, 256> _palette;
         trlevel::PlatformAndVersion _platform_and_version;
 
@@ -52,6 +51,5 @@ namespace trview
             Custom
         };
         TextureMode _texture_mode{ TextureMode::Official };
-        graphics::Texture _geometry_texture;
     };
 }

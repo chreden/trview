@@ -36,7 +36,7 @@ namespace trview
         virtual float radius() const = 0;
         virtual float density() const = 0;
         virtual void set_position(const DirectX::SimpleMath::Vector3& position) = 0;
-        virtual void render_direction(const ICamera& camera, const ILevelTextureStorage& texture_storage) = 0;
+        virtual void render_direction(const ICamera& camera) = 0;
         virtual trlevel::LevelVersion level_version() const = 0;
     };
 

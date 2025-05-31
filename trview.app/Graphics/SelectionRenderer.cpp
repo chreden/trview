@@ -9,7 +9,6 @@
 
 #include <trview.app/Geometry/IRenderable.h>
 #include <trview.app/Camera/ICamera.h>
-#include "ILevelTextureStorage.h"
 
 using namespace Microsoft::WRL;
 using namespace DirectX::SimpleMath;
@@ -119,7 +118,7 @@ namespace trview
         _scale_buffer = device.create_buffer(scale_desc, std::optional<D3D11_SUBRESOURCE_DATA>());
     }
 
-    void SelectionRenderer::render(const ICamera& camera, const ILevelTextureStorage& texture_storage, IRenderable& selected_item, const DirectX::SimpleMath::Color& outline_colour)
+    void SelectionRenderer::render(const ICamera& camera, IRenderable& selected_item, const DirectX::SimpleMath::Color& outline_colour)
     {
         auto context = _device->context();
 
@@ -145,13 +144,13 @@ namespace trview
             // Draw the regular faces of the item with a black colouring.
             const bool was_visible = selected_item.visible();
             selected_item.set_visible(true);
-            selected_item.render(camera, texture_storage, IRenderable::SelectionFill);
+            selected_item.render(camera, IRenderable::SelectionFill);
 
             // Also render the transparent parts of the meshes, again with black.
             _transparency->reset();
             selected_item.get_transparent_triangles(*_transparency, camera, IRenderable::SelectionFill);
             _transparency->sort(camera.rendering_position());
-            _transparency->render(camera, texture_storage, true);
+            _transparency->render(camera, true);
             selected_item.set_visible(was_visible);
         }
 

@@ -265,22 +265,22 @@ namespace trview
         remove(static_cast<uint32_t>(found - _waypoints.begin()));
     }
 
-    void Route::render(const ICamera& camera, const ILevelTextureStorage& texture_storage, bool show_selection)
+    void Route::render(const ICamera& camera, bool show_selection)
     {
         for (std::size_t i = 0; i < _waypoints.size(); ++i)
         {
             auto& waypoint = _waypoints[i];
-            waypoint->render(camera, texture_storage, _waypoint_colour);
+            waypoint->render(camera, _waypoint_colour);
             if (_show_route_line && i < _waypoints.size() - 1)
             {
-                waypoint->render_join(*_waypoints[i + 1], camera, texture_storage, _colour);
+                waypoint->render_join(*_waypoints[i + 1], camera, _colour);
             }
         }
 
         // Render selected waypoint...
         if (show_selection && _selected_index < _waypoints.size())
         {
-            _selection_renderer->render(camera, texture_storage, *_waypoints[_selected_index], Colour::White);
+            _selection_renderer->render(camera, *_waypoints[_selected_index], Colour::White);
         }
     }
 

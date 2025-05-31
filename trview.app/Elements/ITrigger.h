@@ -2,6 +2,9 @@
 
 #include <cstdint>
 #include <vector>
+
+#include <trlevel/LevelVersion.h>
+
 #include <trview.app/Geometry/IRenderable.h>
 #include <trview.app/Geometry/TransparentTriangle.h>
 #include <trview.app/Geometry/PickResult.h>

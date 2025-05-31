@@ -13,6 +13,6 @@ namespace trview
         /// @param camera The current camera.
         /// @param selected_item The entity to outline.
         /// @param outline_colour The outline colour
-        virtual void render(const ICamera& camera, const ILevelTextureStorage& texture_storage, IRenderable& selected_item, const DirectX::SimpleMath::Color& outline_colour) = 0;
+        virtual void render(const ICamera& camera, IRenderable& selected_item, const DirectX::SimpleMath::Color& outline_colour) = 0;
     };
 }

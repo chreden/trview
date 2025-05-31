@@ -61,27 +61,3 @@ TEST(LevelTextureStorage, PaletteNotLoadedTomb5)
     LevelTextureStorage subject(mock_shared<MockDevice>(), mock_unique<MockTextureStorage>());
     subject.load(level);
 }
-
-TEST(LevelTextureStorage, TexturesGenerated)
-{
-    std::vector<uint32_t> data;
-    data.resize(256 * 256, 0x000080ff);
-
-    auto device = mock_shared<MockDevice>();
-
-    std::vector<std::vector<uint32_t>> saved_data;
-    EXPECT_CALL(*device, create_texture_2D).Times(1).WillRepeatedly(testing::Invoke(
-        [&](auto&& desc, auto&& data)
-        {
-            const uint32_t* ptr = reinterpret_cast<const uint32_t*>(data.pSysMem);
-            saved_data.push_back({ ptr, ptr + 256 * 256 });
-            return nullptr;
-        }));
-    EXPECT_CALL(*device, create_shader_resource_view).Times(1);
-
-    LevelTextureStorage subject(device, mock_unique<MockTextureStorage>());
-
-    // 0: TRLE
-    ASSERT_EQ(saved_data.size(), 1u);
-    ASSERT_EQ(saved_data[0].size(), 65536u);
-}

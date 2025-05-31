@@ -43,6 +43,8 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClCompile Include="Geometry\IRenderable.cpp" />
     <ClCompile Include="Geometry\Matrix.cpp" />
     <ClCompile Include="Geometry\Mesh.cpp" />
+    <ClCompile Include="Geometry\Model\Model.cpp" />
+    <ClCompile Include="Geometry\Model\ModelStorage.cpp" />
     <ClCompile Include="Geometry\Picking.cpp" />
     <ClCompile Include="Geometry\PickResult.cpp" />
     <ClCompile Include="Geometry\TransparencyBuffer.cpp" />
@@ -93,12 +95,17 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClInclude Include="Elements\Remastered\NgPlusSwitcher.h" />
     <ClInclude Include="Elements\SoundSource\ISoundSource.h" />
     <ClInclude Include="Elements\SoundSource\SoundSource.h" />
+    <ClInclude Include="Geometry\Model\IModel.h" />
+    <ClInclude Include="Geometry\Model\IModelStorage.h" />
+    <ClInclude Include="Geometry\Model\Model.h" />
+    <ClInclude Include="Geometry\Model\ModelStorage.h" />
     <ClInclude Include="Lua\Camera\Lua_Camera.h" />
     <ClInclude Include="Lua\Scriptable\IScriptable.h" />
     <ClInclude Include="Lua\Scriptable\Scriptable.h" />
     <ClInclude Include="Menus\ImGuiFileMenu.h" />
     <ClInclude Include="Mocks\Elements\INgPlusSwitcher.h" />
     <ClInclude Include="Mocks\Elements\ISoundSource.h" />
+    <ClInclude Include="Mocks\Geometry\IModelStorage.h" />
     <ClInclude Include="Mocks\Lua\IScriptable.h" />
     <ClInclude Include="Mocks\Sound\ISound.h" />
     <ClInclude Include="Mocks\Sound\ISoundStorage.h" />

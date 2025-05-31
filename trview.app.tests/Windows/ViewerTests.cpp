@@ -760,7 +760,7 @@ TEST(Viewer, SelectionRendered)
     ON_CALL(*level, texture_storage).WillByDefault(testing::Return(texture_storage));
     EXPECT_CALL(*level, render(A<const ICamera&>(), true)).Times(1);
     auto route = mock_shared<MockRoute>();
-    EXPECT_CALL(*route, render(A<const ICamera&>(), A<const ILevelTextureStorage&>(), true)).Times(1);
+    EXPECT_CALL(*route, render(A<const ICamera&>(), true)).Times(1);
 
     viewer->open(level, ILevel::OpenMode::Full);
     viewer->set_route(route);
@@ -780,7 +780,7 @@ TEST(Viewer, SelectionNotRendered)
     ON_CALL(*level, texture_storage).WillByDefault(testing::Return(texture_storage));
     EXPECT_CALL(*level, render(A<const ICamera&>(), false)).Times(1);
     auto route = mock_shared<MockRoute>();
-    EXPECT_CALL(*route, render(A<const ICamera&>(), A<const ILevelTextureStorage&>(), false)).Times(1);
+    EXPECT_CALL(*route, render(A<const ICamera&>(), false)).Times(1);
 
     viewer->set_show_selection(false);
     viewer->open(level, ILevel::OpenMode::Full);

@@ -23,7 +23,7 @@ namespace trview
     {
     }
 
-    void Waypoint::render(const ICamera& camera, const ILevelTextureStorage& texture_storage, const Color& colour)
+    void Waypoint::render(const ICamera& camera, const Color& colour)
     {
         Matrix rotation = calculate_waypoint_rotation();
 
@@ -33,17 +33,17 @@ namespace trview
         light_direction.Normalize();
 
         auto pole_wvp = pole_world * camera.view_projection();
-        _mesh->render(pole_wvp, texture_storage, colour, 0.75f, light_direction);
+        _mesh->render(pole_wvp, colour, 0.75f, light_direction);
 
         // The light blob.
         auto blob_wvp = Matrix::CreateScale(PoleThickness, PoleThickness, PoleThickness) * Matrix::CreateTranslation(-Vector3(0, PoleLength + PoleThickness * 0.5f, 0)) * rotation * Matrix::CreateTranslation(_position) * camera.view_projection();
-        _mesh->render(blob_wvp, texture_storage, colour == IRenderable::SelectionFill ? colour : static_cast<Color>(_route_colour));
+        _mesh->render(blob_wvp, colour == IRenderable::SelectionFill ? colour : static_cast<Color>(_route_colour));
 
         const auto window_size = camera.view_size();
         _screen_position = XMVector3Project(blob_position(), 0, 0, window_size.width, window_size.height, 0, 1.0f, camera.projection(), camera.view(), Matrix::Identity);
     }
 
-    void Waypoint::render_join(const IWaypoint& next_waypoint, const ICamera& camera, const ILevelTextureStorage& texture_storage, const Color& colour)
+    void Waypoint::render_join(const IWaypoint& next_waypoint, const ICamera& camera, const Color& colour)
     {
         const auto current = blob_position();
         const auto next_waypoint_pos = next_waypoint.blob_position();
@@ -55,7 +55,7 @@ namespace trview
             : Matrix(XMMatrixLookAtRH(mid, next_waypoint_pos, Vector3::Up)).Invert();
         const auto length = to.Length();
         const auto to_wvp = Matrix::CreateScale(RopeThickness, RopeThickness, length) * matrix * camera.view_projection();
-        _mesh->render(to_wvp, texture_storage, colour);
+        _mesh->render(to_wvp, colour);
     }
 
     void Waypoint::get_transparent_triangles(ITransparencyBuffer&, const ICamera&, const Color&)

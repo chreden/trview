@@ -36,7 +36,7 @@ namespace trview
         void reload(const std::shared_ptr<IFiles>& files, const UserSettings& settings) override;
         void remove(uint32_t index) override;
         void remove(const std::shared_ptr<IWaypoint>& waypoint) override;
-        void render(const ICamera& camera, const ILevelTextureStorage& texture_storage, bool show_selection) override;
+        void render(const ICamera& camera, bool show_selection) override;
         void save(const std::shared_ptr<IFiles>& files, const UserSettings& settings) override;
         void save_as(const std::shared_ptr<IFiles>& files, const std::string& filename, const UserSettings& settings) override;
         uint32_t selected_waypoint() const override;

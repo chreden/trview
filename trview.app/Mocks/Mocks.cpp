@@ -15,6 +15,7 @@
 #include "Geometry/IMesh.h"
 #include "Geometry/IPicking.h"
 #include "Geometry/ITransparencyBuffer.h"
+#include "Geometry/IModelStorage.h"
 #include "Graphics/ILevelTextureStorage.h"
 #include "Graphics/IMeshStorage.h"
 #include "Graphics/ISectorHighlight.h"
@@ -309,5 +310,8 @@ namespace trview
 
         MockDiffWindowManager::MockDiffWindowManager() {};
         MockDiffWindowManager::~MockDiffWindowManager() {};
+
+        MockModelStorage::MockModelStorage() {};
+        MockModelStorage::~MockModelStorage() {};
     }
 }

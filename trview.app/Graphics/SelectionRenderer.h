@@ -27,7 +27,6 @@ namespace trview
 
     struct IRenderable;
     struct ICamera;
-    struct ILevelTextureStorage;
 
     /// Draws an outline around an object.
     class SelectionRenderer final : public ISelectionRenderer
@@ -45,7 +44,7 @@ namespace trview
         /// Render the outline around the specified object.
         /// @param camera The current camera.
         /// @param selected_item The entity to outline.
-        void render(const ICamera& camera, const ILevelTextureStorage& texture_storage, IRenderable& selected_item, const DirectX::SimpleMath::Color& outline_colour);
+        void render(const ICamera& camera, IRenderable& selected_item, const DirectX::SimpleMath::Color& outline_colour);
     private:
         /// Create vertex, index and parameter buffers.
         /// @param device The device to use to create the buffers.

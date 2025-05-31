@@ -1,6 +1,6 @@
 #include "TransparencyBuffer.h"
 #include <trview.app/Camera/ICamera.h>
-#include <trview.app/Graphics/ILevelTextureStorage.h>
+#include <trview.app/Graphics/ITextureStorage.h>
 #include <trview.app/Geometry/MeshVertex.h>
 #include <trview.app/Geometry/IMesh.h>
 
@@ -13,8 +13,8 @@ namespace trview
     {
     }
 
-    TransparencyBuffer::TransparencyBuffer(const std::shared_ptr<graphics::IDevice>& device)
-        : _device(device), _untextured(create_texture(*device, Colour::White))
+    TransparencyBuffer::TransparencyBuffer(const std::shared_ptr<graphics::IDevice>& device, const std::weak_ptr<ITextureStorage>& texture_storage)
+        : _device(device), _texture_storage(texture_storage)
     {
         create_matrix_buffer();
 
@@ -77,9 +77,15 @@ namespace trview
         complete();
     }
 
-    void TransparencyBuffer::render(const ICamera& camera, const ILevelTextureStorage& texture_storage, bool ignore_blend)
+    void TransparencyBuffer::render(const ICamera& camera, bool ignore_blend)
     {
         if (!_vertices.size())
+        {
+            return;
+        }
+
+        const auto texture_storage = _texture_storage.lock();
+        if (!texture_storage)
         {
             return;
         }
@@ -119,7 +125,7 @@ namespace trview
             }
             previous_mode = run.mode;
 
-            auto texture = run.texture == TransparentTriangle::Untextured ? _untextured : texture_storage.texture(run.texture);
+            auto texture = run.texture == TransparentTriangle::Untextured ? texture_storage->untextured() : texture_storage->texture(run.texture);
             context->PSSetShaderResources(0, 1, texture.view().GetAddressOf());
             context->Draw(run.count * 3, sum);
             sum += run.count * 3;

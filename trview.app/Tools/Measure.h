@@ -30,8 +30,7 @@ namespace trview
 
         /// Render the measurement.
         /// @param camera The camera being used to render the scene.
-        /// @param texture_storage Texture storage for the level.
-        virtual void render(const ICamera& camera, const ILevelTextureStorage& texture_storage) override;
+        void render(const ICamera& camera) override;
 
         /// Get the current text version of the distance measured.
         /// @returns The text version of the distance.

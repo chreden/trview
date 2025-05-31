@@ -3,7 +3,6 @@
 #include <trview.graphics/IDevice.h>
 #include <trview.app/Elements/ISector.h>
 #include <trview.app/Camera/ICamera.h>
-#include "ILevelTextureStorage.h"
 
 namespace trview
 {
@@ -11,6 +10,6 @@ namespace trview
     {
         virtual ~ISectorHighlight() = 0;
         virtual void set_sector(const std::shared_ptr<ISector>& sector, const DirectX::SimpleMath::Matrix& room_offset) = 0;
-        virtual void render(const ICamera& camera, const ILevelTextureStorage& texture_storage) = 0;
+        virtual void render(const ICamera& camera) = 0;
     };
 }

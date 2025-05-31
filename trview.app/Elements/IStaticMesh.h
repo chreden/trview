@@ -9,7 +9,6 @@
 
 namespace trview
 {
-    struct ILevelTextureStorage;
     struct ITransparencyBuffer;
     struct IRoom;
     struct ILevel;
@@ -26,8 +25,8 @@ namespace trview
         using MeshSource = std::function<std::shared_ptr<IStaticMesh>(const trlevel::tr3_room_staticmesh&, const trlevel::tr_staticmesh&, const std::shared_ptr<IMesh>&, const std::shared_ptr<IRoom>&, const std::weak_ptr<ILevel>&)>;
 
         virtual ~IStaticMesh() = 0;
-        virtual void render(const ICamera& camera, const ILevelTextureStorage& texture_storage, const DirectX::SimpleMath::Color& colour) = 0;
-        virtual void render_bounding_box(const ICamera& camera, const ILevelTextureStorage& texture_storage, const DirectX::SimpleMath::Color& colour) = 0;
+        virtual void render(const ICamera& camera, const DirectX::SimpleMath::Color& colour) = 0;
+        virtual void render_bounding_box(const ICamera& camera, const DirectX::SimpleMath::Color& colour) = 0;
         virtual void get_transparent_triangles(ITransparencyBuffer& transparency, const ICamera& camera, const DirectX::SimpleMath::Color& colour) = 0;
         virtual PickResult pick(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& direction) const = 0;
 

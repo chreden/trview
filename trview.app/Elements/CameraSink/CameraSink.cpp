@@ -86,7 +86,7 @@ namespace trview
         return _position;
     }
 
-    void CameraSink::render(const ICamera& camera, const ILevelTextureStorage&, const Color&)
+    void CameraSink::render(const ICamera& camera, const Color&)
     {
         if (!_visible)
         {

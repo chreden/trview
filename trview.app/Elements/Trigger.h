@@ -33,7 +33,7 @@ namespace trview
         virtual PickResult pick(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& direction) const override;
         virtual void set_position(const DirectX::SimpleMath::Vector3& position) override;
         virtual DirectX::SimpleMath::Vector3 position() const override;
-        virtual void render(const ICamera& camera, const ILevelTextureStorage& texture_storage, const DirectX::SimpleMath::Color& colour) override;
+        void render(const ICamera& camera, const DirectX::SimpleMath::Color& colour) override;
         virtual void get_transparent_triangles(ITransparencyBuffer& transparency, const ICamera& camera, const DirectX::SimpleMath::Color& colour) override;
         virtual bool visible() const override;
         virtual void set_visible(bool value) override;

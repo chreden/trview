@@ -49,7 +49,7 @@ namespace trview
         }
     }
 
-    std::unordered_map<uint16_t, std::shared_ptr<IItem>> NgPlusSwitcher::create_for_level(const std::shared_ptr<ILevel>& level, const trlevel::ILevel& tr_level, const IMeshStorage& mesh_storage) const
+    std::unordered_map<uint16_t, std::shared_ptr<IItem>> NgPlusSwitcher::create_for_level(const std::shared_ptr<ILevel>& level, const trlevel::ILevel& tr_level, const IModelStorage& model_storage) const
     {
         const auto game_mapping = _item_mapping.find(level->version());
         if (game_mapping == _item_mapping.end())
@@ -78,7 +78,7 @@ namespace trview
             {
                 auto entity = tr_level.get_entity(entry.first);
                 entity.TypeID = entry.second;
-                auto item = _item_source(tr_level, entity, entry.first, existing_item->triggers(), mesh_storage, level, existing_item->room());
+                auto item = _item_source(tr_level, entity, entry.first, existing_item->triggers(), model_storage, level, existing_item->room());
                 item->set_ng_plus(true);
                 results[entry.first] = item;
             }

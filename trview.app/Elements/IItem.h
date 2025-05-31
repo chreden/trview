@@ -8,19 +8,19 @@
 #include <trlevel/trtypes.h>
 #include "../Geometry/IRenderable.h"
 #include "../Geometry/PickResult.h"
-#include "../Graphics/IMeshStorage.h"
 
 namespace trview
 {
     struct ITrigger;
     struct IRoom;
+    struct IModelStorage;
 
     struct IItem : public IRenderable
     {
         using EntitySource =
-            std::function<std::shared_ptr<IItem> (const trlevel::ILevel&, const trlevel::tr2_entity&, uint32_t, const std::vector<std::weak_ptr<ITrigger>>&, const IMeshStorage&, const std::weak_ptr<ILevel>&, const std::weak_ptr<IRoom>&)>;
+            std::function<std::shared_ptr<IItem> (const trlevel::ILevel&, const trlevel::tr2_entity&, uint32_t, const std::vector<std::weak_ptr<ITrigger>>&, const IModelStorage&, const std::weak_ptr<ILevel>&, const std::weak_ptr<IRoom>&)>;
         using AiSource =
-            std::function<std::shared_ptr<IItem>(const trlevel::ILevel&, const trlevel::tr4_ai_object&, uint32_t, const IMeshStorage&, const std::weak_ptr<ILevel>&, const std::weak_ptr<IRoom>&)>;
+            std::function<std::shared_ptr<IItem>(const trlevel::ILevel&, const trlevel::tr4_ai_object&, uint32_t, const IModelStorage&, const std::weak_ptr<ILevel>&, const std::weak_ptr<IRoom>&)>;
 
         Event<> on_changed;
 

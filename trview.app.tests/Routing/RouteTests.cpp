@@ -2,7 +2,6 @@
 #include <trview.app/Mocks/Graphics/ISelectionRenderer.h>
 #include <trview.app/Mocks/Routing/IWaypoint.h>
 #include <trview.app/Mocks/Camera/ICamera.h>
-#include <trview.app/Mocks/Graphics/ILevelTextureStorage.h>
 #include <trview.tests.common/Mocks.h>
 
 using namespace trview;
@@ -328,8 +327,7 @@ TEST(Route, Render)
     route->add(Vector3::Zero, Vector3::Down, 0);
  
     NiceMock<MockCamera> camera;
-    NiceMock<MockLevelTextureStorage> texture_storage;
-    route->render(camera, texture_storage, true);
+    route->render(camera, true);
 }
 
 TEST(Route, RenderDoesNotJoinWhenRouteLineDisabled)
@@ -365,8 +363,7 @@ TEST(Route, RenderDoesNotJoinWhenRouteLineDisabled)
     route->add(Vector3::Zero, Vector3::Down, 0);
 
     NiceMock<MockCamera> camera;
-    NiceMock<MockLevelTextureStorage> texture_storage;
-    route->render(camera, texture_storage, true);
+    route->render(camera, true);
 }
 
 TEST(Route, RenderShowsSelection)
@@ -375,11 +372,10 @@ TEST(Route, RenderShowsSelection)
     EXPECT_CALL(selection_renderer, render).Times(1);
 
     NiceMock<MockCamera> camera;
-    NiceMock<MockLevelTextureStorage> texture_storage;
 
     auto route = register_test_module().with_selection_renderer(std::move(selection_renderer_ptr)).build();
     route->add(Vector3::Zero, Vector3::Down, 0);
-    route->render(camera, texture_storage, true);
+    route->render(camera, true);
 }
 
 TEST(Route, RenderDoesNotShowSelection)
@@ -388,11 +384,10 @@ TEST(Route, RenderDoesNotShowSelection)
     EXPECT_CALL(selection_renderer, render).Times(0);
 
     NiceMock<MockCamera> camera;
-    NiceMock<MockLevelTextureStorage> texture_storage;
 
     auto route = register_test_module().with_selection_renderer(std::move(selection_renderer_ptr)).build();
     route->add(Vector3::Zero, Vector3::Down, 0);
-    route->render(camera, texture_storage, false);
+    route->render(camera, false);
 }
 
 TEST(Route, AddWaypointUsesColours)

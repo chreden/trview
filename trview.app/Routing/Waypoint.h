@@ -24,8 +24,8 @@ namespace trview
         /// <param name="route_colour">The colour of the route.</param>
         explicit Waypoint(std::shared_ptr<IMesh> mesh, const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& normal, uint32_t room, Type type, uint32_t index, const Colour& route_colour, const Colour& stick_colour);
         virtual ~Waypoint() = default;
-        virtual void render(const ICamera& camera, const ILevelTextureStorage& texture_storage, const DirectX::SimpleMath::Color& colour) override;
-        virtual void render_join(const IWaypoint& next_waypoint, const ICamera& camera, const ILevelTextureStorage& texture_storage, const DirectX::SimpleMath::Color& colour) override;
+        void render(const ICamera& camera, const DirectX::SimpleMath::Color& colour) override;
+        void render_join(const IWaypoint& next_waypoint, const ICamera& camera, const DirectX::SimpleMath::Color& colour) override;
         virtual void get_transparent_triangles(ITransparencyBuffer& transparency, const ICamera& camera, const DirectX::SimpleMath::Color& colour) override;
         virtual DirectX::BoundingBox bounding_box() const override;
         virtual DirectX::SimpleMath::Vector3 position() const override;

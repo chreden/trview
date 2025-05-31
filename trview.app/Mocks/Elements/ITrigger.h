@@ -10,7 +10,7 @@ namespace trview
         {
             MockTrigger();
             virtual ~MockTrigger();
-            MOCK_METHOD(void, render, (const ICamera&, const ILevelTextureStorage&, const DirectX::SimpleMath::Color&), (override));
+            MOCK_METHOD(void, render, (const ICamera&, const DirectX::SimpleMath::Color&), (override));
             MOCK_METHOD(void, get_transparent_triangles, (ITransparencyBuffer&, const ICamera&, const DirectX::SimpleMath::Color&), (override));
             MOCK_METHOD(bool, visible, (), (const, override));
             MOCK_METHOD(void, set_visible, (bool), (override));
