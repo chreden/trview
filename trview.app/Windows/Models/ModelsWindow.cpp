@@ -109,8 +109,10 @@ namespace trview
                 const float ex = Vector3(box.Extents).Length();
                 const auto camera_pos = Vector3(0, box.Center.y - 0.25f, ex * 3.5f);
 
-                Matrix world = Matrix::CreateRotationY(_rotation);
-                Matrix view = Matrix::CreateLookAt(camera_pos, box.Center, Vector3(0, -1, 0));
+                Matrix world = Matrix::Identity;
+                Matrix camera_rotation = Matrix::CreateRotationY(_rotation);
+
+                Matrix view = Matrix::CreateLookAt(box.Center + Vector3::Transform(camera_pos, camera_rotation), box.Center, Vector3(0, -1, 0));
                 Matrix projection = Matrix::CreatePerspectiveFieldOfView(DirectX::XM_PIDIV4, 1.0f, 0.1f, 1000.0f);
                 Matrix view_projection = view * projection;
 
