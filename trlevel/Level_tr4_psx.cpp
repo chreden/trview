@@ -171,6 +171,16 @@ namespace trlevel
             read_room_reverb_info(activity, file, room);
             skip(file, 1); // filler in TR3
         }
+
+        constexpr uint32_t model_count(PlatformAndVersion version)
+        {
+            switch (version.raw_version)
+            {
+            case -126:
+                return 444;
+            }
+            return 460;
+        }
     }
 
     std::vector<uint16_t> read_mesh_data(trview::Activity& activity, std::basic_ispanstream<uint8_t>& file, const tr4_psx_level_info& info, const ILevel::LoadCallbacks& callbacks)
@@ -675,13 +685,17 @@ namespace trlevel
             }
         }
 
-        if (is_tr4_opsm_90(_platform_and_version))
-        {
-            return load_tr4_psx_opsm_90(file, activity, callbacks);
-        }
-        else if (is_tr4_version_111(_platform_and_version))
+        if (is_tr4_version_111(_platform_and_version))
         {
             return load_tr4_psx_version_111(file, activity, callbacks);
+        }
+        else if (is_tr4_version_121(_platform_and_version))
+        {
+            return load_tr4_psx_version_121(file, activity, callbacks);
+        }
+        else if (is_tr4_opsm_90(_platform_and_version))
+        {
+            return load_tr4_psx_opsm_90(file, activity, callbacks);
         }
 
         const uint32_t start = static_cast<uint32_t>(file.tellg());
@@ -719,7 +733,7 @@ namespace trlevel
         skip(file, 2 * (info.ground_zone_length + info.ground_zone_length2 + info.ground_zone_length3 + info.ground_zone_length4 + info.ground_zone_length5));
         _cameras = read_vector<tr_camera>(file, info.num_cameras);
         _frames = read_frames(activity, file, start, info, callbacks);
-        _models = read_models(activity, file, start, info, callbacks);
+        _models = read_models(activity, file, start, info, callbacks, model_count(_platform_and_version));
         skip(file, 320);
         _static_meshes = read_static_meshes_tr4_psx(activity, file, callbacks);
         generate_object_textures_tr4_psx(file, start, info);
@@ -1024,5 +1038,12 @@ namespace trlevel
         callbacks.on_progress("Generating meshes");
         generate_meshes(_mesh_data);
         callbacks.on_progress("Loading complete");
+    }
+
+    void Level::load_tr4_psx_version_121(std::basic_ispanstream<uint8_t>& file, trview::Activity& activity, const LoadCallbacks& callbacks)
+    {
+        file;
+        activity;
+        callbacks;
     }
 }

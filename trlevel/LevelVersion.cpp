@@ -135,6 +135,16 @@ namespace trlevel
         return version.raw_version == -111;
     }
 
+    bool is_tr4_version_121(PlatformAndVersion version)
+    {
+        return version.raw_version == -121;
+    }
+
+    bool is_tr4_version_126(PlatformAndVersion version)
+    {
+        return version.raw_version == -126;
+    }
+
     bool is_tr4_oct_1999(PlatformAndVersion version)
     {
         return version.raw_version == 0x6a20;
