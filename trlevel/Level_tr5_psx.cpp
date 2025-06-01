@@ -148,7 +148,9 @@ namespace trlevel
         skip(file, 2 * (info.ground_zone_length + info.ground_zone_length2 + info.ground_zone_length3 + info.ground_zone_length4 + info.ground_zone_length5));
         _cameras = read_vector<tr_camera>(file, info.num_cameras);
         _frames = read_frames(activity, file, start, info, callbacks);
-        _models = read_models(activity, file, start, info, callbacks);
+
+        const uint32_t num_meshes = _platform_and_version.raw_version == -224 ? 452 : 460;
+        _models = read_models(activity, file, start, info, callbacks, num_meshes);
         _static_meshes = read_static_meshes_tr4_psx(activity, file, callbacks);
         generate_object_textures_tr4_psx(file, start, info);
 
