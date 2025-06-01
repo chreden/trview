@@ -58,6 +58,10 @@ TR3 retail version.
 
 ## Some time passes - TR4 is in here somewhere
 
+## Version 224
+
+Pre-release TR5. Model count is 452 instead of 460.
+
 ## Version 225
 
 TR5 retail version.

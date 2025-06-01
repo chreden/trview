@@ -186,9 +186,9 @@ namespace trlevel
         {
             file.seekg(313344);
             const int32_t potential_version = read<int32_t>(file);
-            if (potential_version == -225)
+            if (potential_version == -225 || potential_version == -224)
             {
-                return PlatformAndVersion{ .platform = Platform::PSX, .version = LevelVersion::Tomb5, .raw_version = -225 };
+                return PlatformAndVersion{ .platform = Platform::PSX, .version = LevelVersion::Tomb5, .raw_version = potential_version };
             }
             return std::nullopt;
         }
