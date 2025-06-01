@@ -114,7 +114,7 @@ namespace trlevel
 
     bool is_supported_tr5_psx_version(int32_t version)
     {
-        return trview::equals_any(version, -206, -214, -224, -225);
+        return trview::equals_any(version, -206, -214, -223, -224, -225);
     }
 
     std::vector<tr_model> read_models_psx(trview::Activity& activity, std::basic_ispanstream<uint8_t>& file, const ILevel::LoadCallbacks& callbacks)
