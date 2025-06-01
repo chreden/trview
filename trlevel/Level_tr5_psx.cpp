@@ -95,7 +95,9 @@ namespace trlevel
             switch (version.raw_version)
             {
             case -206:
-                return 393;
+                return 378;
+            case -214:
+                return 427;
             case -224:
                 return 452;
             }
