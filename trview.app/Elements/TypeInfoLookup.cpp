@@ -45,7 +45,7 @@ namespace trview
                 return is_tr4_opsm_90(version) ? "tr4_opsm90" : "tr4";
                 break;
             case trlevel::LevelVersion::Tomb5:
-                return "tr5";
+                return version.raw_version == -224 ? "tr5_version_224" : "tr5";
                 break;
             default:
                 return {};
