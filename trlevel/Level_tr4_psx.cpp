@@ -735,7 +735,7 @@ namespace trlevel
         _frames = read_frames(activity, file, start, info, callbacks);
         _models = read_models(activity, file, start, info, callbacks, model_count(_platform_and_version));
         skip(file, 320);
-        _static_meshes = read_static_meshes_tr4_psx(activity, file, callbacks);
+        _static_meshes = read_static_meshes_tr4_psx(activity, file, callbacks, 60);
         generate_object_textures_tr4_psx(file, start, info);
 
         for (const auto& t : _textile16)

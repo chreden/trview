@@ -62,34 +62,57 @@ Structure is mostly the same as TR3 except it has (not exhaustive list yet) TR4 
 
 ## Version 120
 
-TR4 OPSM 90 demo.
+TR4 OPSM 90 demo. 436 models
 
 ## Version 121
 
-Level1
+426 models
 
 ## Version 126
 
-TOM
+TOM. 444 models.
 
 ## Version 129
 
 TR4 retail
 
+## Version 201
+
+305 models, 60 statics.
+
+## Version 202
+
+312 models, 60 statics.
+
 ## Version 206
 
-378 models.
+378 models. 70 statics.
+
+## Version 209
+
+393 models.
 
 ## Version 214
 
 427 models.
 
+## Version 215
+
+431 models.
+
+## Version 219
+
+441 models.
+
 ## Version 223
+
+452 models
 
 ## Version 224
 
-Pre-release TR5. Model count is 452 instead of 460.
+452 models
 
 ## Version 225
 
 TR5 retail version.
+460 models.

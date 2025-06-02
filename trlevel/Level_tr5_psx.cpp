@@ -94,15 +94,36 @@ namespace trlevel
         {
             switch (version.raw_version)
             {
+            case -201:
+                return 305;
+            case -202:
+                return 312;
             case -206:
                 return 378;
+            case -209:
+                return 393;
             case -214:
                 return 427;
+            case -215:
+                return 431;
+            case -219:
+                return 441;
             case -223:
             case -224:
-                return 452;
+                return 454;
             }
             return 460;
+        }
+
+        constexpr uint32_t static_count(PlatformAndVersion version)
+        {
+            switch (version.raw_version)
+            {
+            case -201:
+            case -202:
+                return 60;
+            }
+            return 70;
         }
     }
 
@@ -168,7 +189,7 @@ namespace trlevel
         _cameras = read_vector<tr_camera>(file, info.num_cameras);
         _frames = read_frames(activity, file, start, info, callbacks);
         _models = read_models(activity, file, start, info, callbacks, model_count(_platform_and_version));
-        _static_meshes = read_static_meshes_tr4_psx(activity, file, callbacks);
+        _static_meshes = read_static_meshes_tr4_psx(activity, file, callbacks, static_count(_platform_and_version));
         generate_object_textures_tr4_psx(file, start, info);
 
         for (const auto& t : _textile16)
