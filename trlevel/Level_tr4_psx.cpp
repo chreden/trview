@@ -181,11 +181,11 @@ namespace trlevel
             case -121:
                 return 426;
             case -124:
-                return 428;
+                return 427;
             case -126:
                 return 444;
             }
-            return 460;
+            return 465;
         }
     }
 
@@ -734,6 +734,15 @@ namespace trlevel
         _sound_sources = read_sound_sources(activity, file, info, callbacks);
         _sound_map = read_vector<int16_t>(file, 370);
         _sound_details = read_vector<tr_x_sound_details>(file, info.sample_info_length / sizeof(tr_x_sound_details));
+
+        // Unsure about this hardcoded seek or if it even is related to demo data being present.
+        // In the title level there is TR3 demo data after some unknown data.
+        if (info.demo_data_length)
+        {
+            skip(file, 15872);
+            skip(file, info.demo_data_length);
+        }
+
         _entities = read_entities(activity, file, info, callbacks);
         _ai_objects = read_ai_objects(activity, file, info, callbacks);
         skip(file, info.boxes_length + info.overlaps_length);
@@ -741,7 +750,6 @@ namespace trlevel
         _cameras = read_vector<tr_camera>(file, info.num_cameras);
         _frames = read_frames(activity, file, start, info, callbacks);
         _models = read_models(activity, file, start, info, callbacks, model_count(_platform_and_version));
-        skip(file, 320);
         _static_meshes = read_static_meshes_tr4_psx(activity, file, callbacks, 60);
         generate_object_textures_tr4_psx(file, start, info);
 
