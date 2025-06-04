@@ -109,7 +109,7 @@ namespace trlevel
 
     bool is_supported_tr4_psx_version(int32_t version)
     {
-        return trview::equals_any(version, -111, -120, -121, -126, -129);
+        return trview::equals_any(version, -111, -120, -121, -124, -126, -129);
     }
 
     bool is_supported_tr5_psx_version(int32_t version)

@@ -195,6 +195,13 @@ namespace trlevel
                 return PlatformAndVersion{ .platform = Platform::PSX, .version = LevelVersion::Tomb4, .raw_version = potential_version_2 };
             }
 
+            file.seekg(0x6000);
+            const int32_t potential_version_3 = peek<int32_t>(file);
+            if (is_supported_tr4_psx_version(potential_version_3))
+            {
+                return PlatformAndVersion{ .platform = Platform::PSX, .version = LevelVersion::Tomb4, .raw_version = potential_version_3 };
+            }
+
             return std::nullopt;
         }
 

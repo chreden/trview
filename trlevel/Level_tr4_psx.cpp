@@ -180,6 +180,8 @@ namespace trlevel
                 return 436;
             case -121:
                 return 426;
+            case -124:
+
             case -126:
                 return 444;
             }
@@ -684,7 +686,12 @@ namespace trlevel
                 const int32_t peeked_version_2 = peek<int32_t>(file);
                 if (!is_supported_tr4_psx_version(peeked_version_2))
                 {
-                    return;
+                    file.seekg(0x6000);
+                    const int32_t peeked_version_3 = peek<int32_t>(file);
+                    if (!is_supported_tr4_psx_version(peeked_version_3))
+                    {
+                        return;
+                    }
                 }
             }
         }
