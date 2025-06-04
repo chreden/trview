@@ -60,6 +60,7 @@ namespace trlevel
     bool is_tr3_demo_55(PlatformAndVersion version);
     bool is_tr4_version_111(PlatformAndVersion version);
     bool is_tr4_version_121(PlatformAndVersion version);
+    bool is_tr4_version_124(PlatformAndVersion version);
     bool is_tr4_version_126(PlatformAndVersion version);
     bool is_tr4_oct_1999(PlatformAndVersion version);
     bool is_tr4_opsm_90(PlatformAndVersion version);
