@@ -1,6 +1,7 @@
 #pragma once
 
 #include <bit>
+#include <span>
 
 namespace trlevel
 {
@@ -50,7 +51,7 @@ namespace trlevel
     std::vector<DataType> read_vector_compressed(std::basic_ispanstream<uint8_t>& file, uint32_t elements)
     {
         auto uncompressed_data = read_compressed(file);
-        std::basic_ispanstream<uint8_t> data_stream(uncompressed_data);
+        std::basic_ispanstream<uint8_t> data_stream{ std::span(uncompressed_data) };
         data_stream.exceptions(std::ios::failbit | std::ios::badbit | std::ios::eofbit);
         return read_vector<DataType>(data_stream, elements);
     }
