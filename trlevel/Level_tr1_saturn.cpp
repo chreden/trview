@@ -530,8 +530,7 @@ namespace trlevel
                 throw LevelLoadException();
             }
 
-            const auto& bytes_value = *bytes;
-            std::basic_ispanstream<uint8_t> file{ { bytes_value } };
+            std::basic_ispanstream<uint8_t> file{ { *bytes } };
             file.exceptions(std::ios::failbit);
 
             return load_saturn_tagfile(file, loader_functions, end_tag);

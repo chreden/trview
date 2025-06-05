@@ -684,8 +684,7 @@ namespace trlevel
                 throw LevelLoadException();
             }
 
-            const auto& bytes_value = *bytes;
-            std::basic_ispanstream<uint8_t> file{ { bytes_value } };
+            std::basic_ispanstream<uint8_t> file{ { *bytes } };
             file.exceptions(std::ios::failbit);
             log_file(activity, file, std::format("Opened file \"{}\"", _filename));
 
@@ -814,7 +813,7 @@ namespace trlevel
 
     void Level::load_sound_fx(trview::Activity& activity, const LoadCallbacks& callbacks)
     {
-        if (const auto main = load_main_sfx())
+        if (auto main = load_main_sfx())
         {
             std::basic_ispanstream<uint8_t> sfx_file{ { *main } };
             sfx_file.exceptions(std::ios::failbit | std::ios::badbit | std::ios::eofbit);

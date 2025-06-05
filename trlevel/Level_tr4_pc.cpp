@@ -100,7 +100,7 @@ namespace trlevel
         _num_textiles = read_textiles_tr4_5(activity, file, callbacks);
         log_file(activity, file, "Reading and decompressing level data");
         callbacks.on_progress("Decompressing level data");
-        const std::vector<uint8_t> level_data = read_compressed(file);
+        std::vector<uint8_t> level_data = read_compressed(file);
         std::basic_ispanstream<uint8_t> data_stream{ { level_data } };
         callbacks.on_progress("Processing level data");
 
@@ -269,7 +269,7 @@ namespace trlevel
     void Level::load_ngle_sound_fx(trview::Activity& activity, std::basic_ispanstream<uint8_t>& file, const LoadCallbacks& callbacks)
     {
         const auto ngle_samples = read_sound_samples_ngle(activity, file, callbacks);
-        if (const auto main = load_main_sfx())
+        if (auto main = load_main_sfx())
         {
             std::basic_ispanstream<uint8_t> sfx_file{ { *main } };
             sfx_file.exceptions(std::ios::failbit | std::ios::badbit | std::ios::eofbit);

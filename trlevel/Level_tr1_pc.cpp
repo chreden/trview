@@ -430,8 +430,7 @@ namespace trlevel
             return;
         }
 
-        const auto& bytes_value = *wad_bytes;
-        std::basic_ispanstream<uint8_t> wad_file{ { bytes_value } };
+        std::basic_ispanstream<uint8_t> wad_file{ { *wad_bytes } };
         wad_file.exceptions(std::ios::failbit);
         log_file(activity, wad_file, std::format("Opened file \"{}\"", wad_filename.string()));
 
@@ -482,8 +481,7 @@ namespace trlevel
             return;
         }
 
-        const auto& bytes_value = *wad_bytes;
-        std::basic_ispanstream<uint8_t> wad_file{ { bytes_value } };
+        std::basic_ispanstream<uint8_t> wad_file{ { *wad_bytes } };
         wad_file.exceptions(std::ios::failbit);
         log_file(activity, wad_file, std::format("Opened file \"{}\"", swd_filename.string()));
 
