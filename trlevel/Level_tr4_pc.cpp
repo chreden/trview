@@ -2,6 +2,7 @@
 #include "Level_common.h"
 
 #include <ranges>
+#include <span>
 
 namespace trlevel
 {
@@ -101,7 +102,7 @@ namespace trlevel
         log_file(activity, file, "Reading and decompressing level data");
         callbacks.on_progress("Decompressing level data");
         const std::vector<uint8_t> level_data = read_compressed(file);
-        std::basic_ispanstream<uint8_t> data_stream{ { level_data } };
+        std::basic_ispanstream<uint8_t> data_stream{ std::span(level_data) };
         callbacks.on_progress("Processing level data");
 
         {
@@ -271,7 +272,7 @@ namespace trlevel
         const auto ngle_samples = read_sound_samples_ngle(activity, file, callbacks);
         if (const auto main = load_main_sfx())
         {
-            std::basic_ispanstream<uint8_t> sfx_file{ { *main } };
+            std::basic_ispanstream<uint8_t> sfx_file{ std::span(*main) };
             sfx_file.exceptions(std::ios::failbit | std::ios::badbit | std::ios::eofbit);
 
             for (uint32_t i = 0; i < ngle_samples.size(); ++i)

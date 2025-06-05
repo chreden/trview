@@ -5,6 +5,7 @@
 #include <ranges>
 #include <spanstream>
 #include <numeric>
+#include <span>
 
 #include "Level_common.h"
 #include "Level_psx.h"
@@ -684,8 +685,7 @@ namespace trlevel
                 throw LevelLoadException();
             }
 
-            const auto& bytes_value = *bytes;
-            std::basic_ispanstream<uint8_t> file{ { bytes_value } };
+            std::basic_ispanstream<uint8_t> file{ std::span(*bytes) };
             file.exceptions(std::ios::failbit);
             log_file(activity, file, std::format("Opened file \"{}\"", _filename));
 
@@ -816,7 +816,7 @@ namespace trlevel
     {
         if (const auto main = load_main_sfx())
         {
-            std::basic_ispanstream<uint8_t> sfx_file{ { *main } };
+            std::basic_ispanstream<uint8_t> sfx_file{ std::span(*main) };
             sfx_file.exceptions(std::ios::failbit | std::ios::badbit | std::ios::eofbit);
 
             // Remastered has a sound map like structure at the start of main.sfx, so skip that if present:

@@ -5,6 +5,7 @@
 
 #include <filesystem>
 #include <ranges>
+#include <span>
 
 namespace trlevel
 {
@@ -424,14 +425,13 @@ namespace trlevel
     {
         std::filesystem::path wad_filename{ _filename };
         wad_filename.replace_extension("WAD");
-        auto wad_bytes = _files->load_file(wad_filename.string());
+        const auto wad_bytes = _files->load_file(wad_filename.string());
         if (!wad_bytes.has_value())
         {
             return;
         }
 
-        const auto& bytes_value = *wad_bytes;
-        std::basic_ispanstream<uint8_t> wad_file{ { bytes_value } };
+        std::basic_ispanstream<uint8_t> wad_file{ std::span(*wad_bytes) };
         wad_file.exceptions(std::ios::failbit);
         log_file(activity, wad_file, std::format("Opened file \"{}\"", wad_filename.string()));
 
@@ -476,14 +476,13 @@ namespace trlevel
     {
         std::filesystem::path swd_filename{ _filename };
         swd_filename.replace_extension("SWD");
-        auto wad_bytes = _files->load_file(swd_filename);
+        const auto wad_bytes = _files->load_file(swd_filename);
         if (!wad_bytes.has_value())
         {
             return;
         }
 
-        const auto& bytes_value = *wad_bytes;
-        std::basic_ispanstream<uint8_t> wad_file{ { bytes_value } };
+        std::basic_ispanstream<uint8_t> wad_file{ std::span(*wad_bytes) };
         wad_file.exceptions(std::ios::failbit);
         log_file(activity, wad_file, std::format("Opened file \"{}\"", swd_filename.string()));
 

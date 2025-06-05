@@ -9,6 +9,7 @@
 #include <filesystem>
 #include <map>
 #include <unordered_set>
+#include <span>
 
 #include "TileMapper.h"
 
@@ -524,14 +525,13 @@ namespace trlevel
             const std::unordered_map<std::string, std::function<void(std::basic_ispanstream<uint8_t>&)>>& loader_functions,
             const std::string& end_tag)
         {
-            auto bytes = files.load_file(path);
+            const auto bytes = files.load_file(path);
             if (!bytes.has_value())
             {
                 throw LevelLoadException();
             }
 
-            const auto& bytes_value = *bytes;
-            std::basic_ispanstream<uint8_t> file{ { bytes_value } };
+            std::basic_ispanstream<uint8_t> file{ std::span(*bytes) };
             file.exceptions(std::ios::failbit);
 
             return load_saturn_tagfile(file, loader_functions, end_tag);
