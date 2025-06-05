@@ -5,6 +5,7 @@
 
 #include <ranges>
 #include <format>
+#include <span>
 
 namespace trlevel
 {
@@ -411,8 +412,7 @@ namespace trlevel
                 memcpy(&sound_header.value()[sound_header->size() - 4], &data_size, 4);
                 sound_header->append_range(sound_data.value());
 
-                auto& bytes_value = *sound_header;
-                std::basic_ispanstream<uint8_t> sound_file{ bytes_value };
+                std::basic_ispanstream<uint8_t> sound_file{ std::span(*sound_header) };
                 sound_file.exceptions(std::ios::failbit);
 
                 skip(sound_file, 18);
