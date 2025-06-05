@@ -271,7 +271,8 @@ namespace trlevel
         const auto ngle_samples = read_sound_samples_ngle(activity, file, callbacks);
         if (auto main = load_main_sfx())
         {
-            std::basic_ispanstream<uint8_t> sfx_file{ { *main } };
+            auto& bytes_value = *main;
+            std::basic_ispanstream<uint8_t> sfx_file{ bytes_value };
             sfx_file.exceptions(std::ios::failbit | std::ios::badbit | std::ios::eofbit);
 
             for (uint32_t i = 0; i < ngle_samples.size(); ++i)
