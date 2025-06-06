@@ -46,7 +46,7 @@ namespace trview
                 return is_tr4_version_120(version) ? "tr4_version_120" : 
                        is_tr4_version_121(version) ? "tr4_version_121" : 
                        is_tr4_version_124(version) ? "tr4_version_124" :
-                    "tr4";
+                       is_tr4_version_126(version) ? "tr4_version_126" : "tr4";
                 break;
             case trlevel::LevelVersion::Tomb5:
                 return version.raw_version == -224 ? "tr5_version_224" : "tr5";
