@@ -700,7 +700,7 @@ namespace trlevel
         {
             return load_tr4_psx_version_111(file, activity, callbacks);
         }
-        else if (is_tr4_opsm_90(_platform_and_version) || is_tr4_version_121(_platform_and_version))
+        else if (is_tr4_version_120(_platform_and_version) || is_tr4_version_121(_platform_and_version))
         {
             return load_tr4_psx_opsm_90(file, activity, callbacks);
         }

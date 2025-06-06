@@ -135,6 +135,11 @@ namespace trlevel
         return version.raw_version == -111;
     }
 
+    bool is_tr4_version_120(PlatformAndVersion version)
+    {
+        return version.raw_version == -120;
+    }
+
     bool is_tr4_version_121(PlatformAndVersion version)
     {
         return version.raw_version == -121;
@@ -155,10 +160,7 @@ namespace trlevel
         return version.raw_version == 0x6a20;
     }
 
-    bool is_tr4_opsm_90(PlatformAndVersion version)
-    {
-        return version.raw_version == -120;
-    }
+
 
     bool is_tr4_psx_v1(PlatformAndVersion version)
     {

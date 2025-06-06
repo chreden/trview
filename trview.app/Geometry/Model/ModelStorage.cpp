@@ -19,7 +19,7 @@ namespace trview
             }
             else if (version.version > trlevel::LevelVersion::Tomb3 || is_tr4_version_111(version))
             {
-                if (is_tr4_opsm_90(version) || is_tr4_version_121(version) || is_tr4_version_124(version) || is_tr4_version_126(version))
+                if (is_tr4_version_120(version) || is_tr4_version_121(version) || is_tr4_version_124(version) || is_tr4_version_126(version))
                 {
                     return LaraSkinTR4OPSM90;
                 }
@@ -41,7 +41,7 @@ namespace trview
             }
             else if (version.version > trlevel::LevelVersion::Tomb3 || is_tr4_version_111(version))
             {
-                if (is_tr4_opsm_90(version) || is_tr4_version_121(version) || is_tr4_version_124(version) || is_tr4_version_126(version))
+                if (is_tr4_version_120(version) || is_tr4_version_121(version) || is_tr4_version_124(version) || is_tr4_version_126(version))
                 {
                     if (type == LaraSkinTR4OPSM90)
                     {
