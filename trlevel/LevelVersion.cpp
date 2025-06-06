@@ -160,11 +160,49 @@ namespace trlevel
         return version.raw_version == 0x6a20;
     }
 
-
-
     bool is_tr4_psx_v1(PlatformAndVersion version)
     {
         return version.raw_version == 0x6ba8;
+    }
+
+    bool is_tr5_version_201(PlatformAndVersion version)
+    {
+        return version.raw_version == -201;
+    }
+
+    bool is_tr5_version_202(PlatformAndVersion version)
+    {
+        return version.raw_version == -202;
+    }
+
+    bool is_tr5_version_206(PlatformAndVersion version)
+    {
+        return version.raw_version == -206;
+    }
+
+    bool is_tr5_version_209(PlatformAndVersion version)
+    {
+        return version.raw_version == -209;
+    }
+
+    bool is_tr5_version_214(PlatformAndVersion version)
+    {
+        return version.raw_version == -214;
+    }
+
+    bool is_tr5_version_215(PlatformAndVersion version)
+    {
+        return version.raw_version == -215;
+    }
+
+    bool is_tr5_version_219(PlatformAndVersion version)
+    {
+        return version.raw_version == -219;
+    }
+
+    bool is_tr5_version_224(PlatformAndVersion version)
+    {
+        return version.raw_version == -224;
     }
 
     bool has_double_frames(PlatformAndVersion version)

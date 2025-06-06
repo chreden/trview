@@ -49,7 +49,14 @@ namespace trview
                        is_tr4_version_126(version) ? "tr4_version_126" : "tr4";
                 break;
             case trlevel::LevelVersion::Tomb5:
-                return version.raw_version == -224 ? "tr5_version_224" : "tr5";
+                return is_tr5_version_201(version) ? "tr5_version_201" :
+                       is_tr5_version_202(version) ? "tr5_version_202" :
+                       is_tr5_version_206(version) ? "tr5_version_206" :
+                       is_tr5_version_209(version) ? "tr5_version_209" :
+                       is_tr5_version_214(version) ? "tr5_version_214" :
+                       is_tr5_version_215(version) ? "tr5_version_215" :
+                       is_tr5_version_219(version) ? "tr5_version_219" :
+                       is_tr5_version_224(version) ? "tr5_version_224" : "tr5";
                 break;
             default:
                 return {};
