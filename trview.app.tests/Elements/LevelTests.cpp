@@ -7,6 +7,7 @@
 #include <trview.app/Mocks/Graphics/ILevelTextureStorage.h>
 #include <trview.app/Mocks/Graphics/IMeshStorage.h>
 #include <trview.app/Mocks/Graphics/ISelectionRenderer.h>
+#include <trview.app/Mocks/Elements/IFlyby.h>
 #include <trview.app/Mocks/Elements/IItem.h>
 #include <trview.app/Mocks/Elements/IRoom.h>
 #include <trview.app/Mocks/Elements/ITrigger.h>
@@ -62,11 +63,12 @@ namespace
             ISoundSource::Source sound_source_source{ [](auto&&...) { return mock_shared<MockSoundSource>(); } };
             std::shared_ptr<ISoundStorage> sound_storage{ mock_shared<MockSoundStorage>() };
             std::shared_ptr<INgPlusSwitcher> ngplus_switcher{ mock_shared<MockNgPlusSwitcher>() };
+            IFlyby::Source flyby_source{ [](auto&&...) { return mock_shared<MockFlyby>(); } };
 
             std::shared_ptr<Level> build()
             {
                 auto new_level = std::make_shared<Level>(device, shader_storage, level_texture_storage, std::move(transparency_buffer), std::move(selection_renderer), log, buffer_source, sound_storage, ngplus_switcher);
-                new_level->initialise(std::move(level), mesh_storage, model_storage, entity_source, ai_source, room_source, trigger_source, light_source, camera_sink_source, sound_source_source, callbacks);
+                new_level->initialise(std::move(level), mesh_storage, model_storage, entity_source, ai_source, room_source, trigger_source, light_source, camera_sink_source, sound_source_source, flyby_source, callbacks);
                 return new_level;
             }
 

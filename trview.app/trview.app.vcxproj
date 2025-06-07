@@ -25,6 +25,7 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClCompile Include="Camera\Camera.cpp" />
     <ClCompile Include="Camera\CameraInput.cpp" />
     <ClCompile Include="Elements\CameraSink\CameraSink.cpp" />
+    <ClCompile Include="Elements\Flyby\Flyby.cpp" />
     <ClCompile Include="Elements\Item.cpp" />
     <ClCompile Include="Elements\Floordata.cpp" />
     <ClCompile Include="Elements\ILight.cpp" />
@@ -91,6 +92,8 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClCompile Include="Windows\Sounds\SoundsWindow.cpp" />
     <ClCompile Include="Windows\Sounds\SoundsWindowManager.cpp" />
     <ClCompile Include="Windows\Windows.cpp" />
+    <ClInclude Include="Elements\Flyby\Flyby.h" />
+    <ClInclude Include="Elements\Flyby\IFlyby.h" />
     <ClInclude Include="Elements\Remastered\INgPlusSwitcher.h" />
     <ClInclude Include="Elements\Remastered\NgPlusSwitcher.h" />
     <ClInclude Include="Elements\SoundSource\ISoundSource.h" />
@@ -103,6 +106,7 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClInclude Include="Lua\Scriptable\IScriptable.h" />
     <ClInclude Include="Lua\Scriptable\Scriptable.h" />
     <ClInclude Include="Menus\ImGuiFileMenu.h" />
+    <ClInclude Include="Mocks\Elements\IFlyby.h" />
     <ClInclude Include="Mocks\Elements\INgPlusSwitcher.h" />
     <ClInclude Include="Mocks\Elements\ISoundSource.h" />
     <ClInclude Include="Mocks\Geometry\IModelStorage.h" />

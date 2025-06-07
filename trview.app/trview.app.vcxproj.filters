@@ -380,6 +380,9 @@
     <ClCompile Include="Geometry\Model\ModelStorage.cpp">
       <Filter>Geometry\Model</Filter>
     </ClCompile>
+    <ClCompile Include="Elements\Flyby\Flyby.cpp">
+      <Filter>Elements\Flyby</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera\Camera.h">
@@ -1273,6 +1276,15 @@
     <ClInclude Include="Mocks\Geometry\IModelStorage.h">
       <Filter>Mocks\Geometry</Filter>
     </ClInclude>
+    <ClInclude Include="Elements\Flyby\IFlyby.h">
+      <Filter>Elements\Flyby</Filter>
+    </ClInclude>
+    <ClInclude Include="Elements\Flyby\Flyby.h">
+      <Filter>Elements\Flyby</Filter>
+    </ClInclude>
+    <ClInclude Include="Mocks\Elements\IFlyby.h">
+      <Filter>Mocks\Elements</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Windows">
@@ -1499,6 +1511,9 @@
     </Filter>
     <Filter Include="Geometry\Model">
       <UniqueIdentifier>{03a8e721-8c98-438d-a8eb-c67a9e88e956}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Elements\Flyby">
+      <UniqueIdentifier>{52dec27a-a711-4587-9a97-4ae9bdb7a050}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

@@ -300,6 +300,11 @@ namespace trview
                 }
             }
 
+            for (const auto& flyby : _flybys)
+            {
+                flyby->render(camera, Colour::White);
+            }
+
             graphics::set_data(*_pixel_shader_data, context, PixelShaderData{ false });
         }
 
@@ -1318,6 +1323,19 @@ namespace trview
         }
     }
 
+    void Level::generate_flybys(const trlevel::ILevel& level, const IFlyby::Source& flyby_source)
+    {
+        const auto grouped = level.flyby_cameras() |
+            std::views::chunk_by([](auto&& l, auto&& r) { return l.sequence == r.sequence; }) |
+            std::ranges::to<std::vector<std::vector<trlevel::tr4_flyby_camera>>>();
+        uint32_t index = 0;
+        for (const auto& flyby : grouped)
+        {
+            auto new_flyby = flyby_source(flyby, index++);
+            _flybys.push_back(new_flyby);
+        }
+    }
+
     void Level::set_show_camera_sinks(bool show)
     {
         _render_filters = set_flag(_render_filters, RenderFilter::CameraSinks, show);
@@ -1349,6 +1367,7 @@ namespace trview
         const ILight::Source& light_source,
         const ICameraSink::Source& camera_sink_source,
         const ISoundSource::Source& sound_source_source,
+        const IFlyby::Source& flyby_source,
         const trlevel::ILevel::LoadCallbacks callbacks)
     {
         _platform_and_version = level->platform_and_version();
@@ -1369,6 +1388,8 @@ namespace trview
         generate_lights(*level, light_source);
         callbacks.on_progress("Generating camera/sinks");
         generate_camera_sinks(*level, camera_sink_source);
+        callbacks.on_progress("Generating flyby cameras");
+        generate_flybys(*level, flyby_source);
         callbacks.on_progress("Generating sound sources");
         generate_sound_sources(*level, sound_source_source);
 
@@ -1550,6 +1571,11 @@ namespace trview
     trlevel::PlatformAndVersion Level::platform_and_version() const
     {
         return _platform_and_version;
+    }
+
+    std::vector<std::weak_ptr<IFlyby>> Level::flybys() const
+    {
+        return _flybys | std::ranges::to<std::vector<std::weak_ptr<IFlyby>>>();
     }
 
     bool find_item_by_type_id(const ILevel& level, uint32_t type_id, std::weak_ptr<IItem>& output_item)

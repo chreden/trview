@@ -17,14 +17,15 @@ namespace trview
     {
         auto window = _camera_sink_window_source();
         window->set_camera_sinks(_camera_sinks);
+        window->set_flybys(_flybys);
         window->set_selected_camera_sink(_selected_camera_sink);
         window->set_current_room(_current_room);
+        window->set_platform_and_version(_platform_and_version);
         window->set_settings(_settings);
         window->on_camera_sink_selected += on_camera_sink_selected;
         window->on_trigger_selected += on_trigger_selected;
         window->on_scene_changed += on_scene_changed;
         window->on_settings += on_settings;
-        
         return add_window(window);
     }
 
@@ -51,12 +52,30 @@ namespace trview
         }
     }
 
+    void CameraSinkWindowManager::set_flybys(const std::vector<std::weak_ptr<IFlyby>>& flybys)
+    {
+        _flybys = flybys;
+        for (auto& window : _windows)
+        {
+            window.second->set_flybys(_flybys);
+        }
+    }
+
     void CameraSinkWindowManager::set_selected_camera_sink(const std::weak_ptr<ICameraSink>& camera_sink)
     {
         _selected_camera_sink = camera_sink;
         for (auto& window : _windows)
         {
             window.second->set_selected_camera_sink(_selected_camera_sink);
+        }
+    }
+
+    void CameraSinkWindowManager::set_platform_and_version(const trlevel::PlatformAndVersion& platform_and_version)
+    {
+        _platform_and_version = platform_and_version;
+        for (auto& window : _windows)
+        {
+            window.second->set_platform_and_version(_platform_and_version);
         }
     }
 
@@ -76,5 +95,10 @@ namespace trview
         {
             window.second->set_settings(_settings);
         }
+    }
+
+    void CameraSinkWindowManager::update(float delta)
+    {
+        WindowManager::update(delta);
     }
 }

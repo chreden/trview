@@ -23,6 +23,7 @@
 
 #include "Elements/TypeInfoLookup.h"
 #include "Elements/CameraSink/CameraSink.h"
+#include "Elements/Flyby/Flyby.h"
 #include "Elements/Item.h"
 #include "Elements/Light.h"
 #include "Elements/Trigger.h"
@@ -247,6 +248,9 @@ namespace trview
         const auto sound_source = [=](auto&&... args) { return create_sound(args...); };
         const auto sound_source_source = [=](auto&&... args) { return std::make_shared<SoundSource>(cube_mesh, texture_storage, args...); };
 
+        const auto flyby_mesh = create_frustum_mesh(default_mesh_source);
+        const auto flyby_source = [=](auto&&... args) { return std::make_shared<Flyby>(flyby_mesh, args...); };
+
         auto decrypter = std::make_shared<trlevel::Decrypter>();
         auto trlevel_pack_source = [=](auto&&... args) { return std::make_shared<trlevel::Level>(args..., files, decrypter, log); };
         const auto pack_source = [=](auto&&... args)
@@ -330,6 +334,7 @@ namespace trview
                     light_source,
                     camera_sink_source,
                     sound_source_source,
+                    flyby_source,
                     callbacks);
 
                 return new_level;
@@ -367,6 +372,7 @@ namespace trview
             std::make_unique<CameraControls>(),
             std::make_unique<Toolbar>(plugins));
 
+        const auto camera = std::make_shared<Camera>(window.size());
         auto viewer = std::make_unique<Viewer>(
             window,
             device,
@@ -382,14 +388,14 @@ namespace trview
             device_window_source,
             std::make_unique<SectorHighlight>(default_mesh_source),
             clipboard,
-            std::make_shared<Camera>(window.size()));
+            camera);
 
         auto triggers_window_source = [=]() { return std::make_shared<TriggersWindow>(clipboard); };
         auto route_window_source = [=]() { return std::make_shared<RouteWindow>(clipboard, dialogs, files); };
         auto lights_window_source = [=]() { return std::make_shared<LightsWindow>(clipboard); };
 
         auto log_window_source = [=]() { return std::make_shared<LogWindow>(log, dialogs, files); };
-        auto camera_sink_window_source = [=]() { return std::make_shared<CameraSinkWindow>(clipboard); };
+        auto camera_sink_window_source = [=]() { return std::make_shared<CameraSinkWindow>(clipboard, camera); };
 
         auto textures_window_source = [=]() { return std::make_shared<TexturesWindow>(); };
         auto console_source = [=]() { return std::make_shared<Console>(dialogs, plugins, fonts); };

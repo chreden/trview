@@ -12,18 +12,23 @@ namespace trview
     public:
         CameraSinkWindowManager(const Window& window, const std::shared_ptr<IShortcuts>& shortcuts, const ICameraSinkWindow::Source& camera_sink_window_source);
         virtual ~CameraSinkWindowManager() = default;
-        virtual std::optional<int> process_message(UINT message, WPARAM wParam, LPARAM lParam) override;
-        virtual std::weak_ptr<ICameraSinkWindow> create_window() override;
-        virtual void render() override;
-        virtual void set_camera_sinks(const std::vector<std::weak_ptr<ICameraSink>>& camera_sinks) override;
-        virtual void set_selected_camera_sink(const std::weak_ptr<ICameraSink>& camera_sink) override;
+        std::optional<int> process_message(UINT message, WPARAM wParam, LPARAM lParam) override;
+        std::weak_ptr<ICameraSinkWindow> create_window() override;
+        void render() override;
+        void set_camera_sinks(const std::vector<std::weak_ptr<ICameraSink>>& camera_sinks) override;
+        void set_flybys(const std::vector<std::weak_ptr<IFlyby>>& flybys) override;
+        void set_platform_and_version(const trlevel::PlatformAndVersion& platform_and_version) override;
+        void set_selected_camera_sink(const std::weak_ptr<ICameraSink>& camera_sink) override;
         void set_room(const std::weak_ptr<IRoom>& room) override;
         void set_settings(const UserSettings& settings) override;
+        void update(float delta) override;
     private:
         ICameraSinkWindow::Source _camera_sink_window_source;
         std::vector<std::weak_ptr<ICameraSink>> _camera_sinks;
         std::weak_ptr<ICameraSink> _selected_camera_sink;
         std::weak_ptr<IRoom> _current_room;
         UserSettings _settings;
+        std::vector<std::weak_ptr<IFlyby>> _flybys;
+        trlevel::PlatformAndVersion _platform_and_version;
     };
 }

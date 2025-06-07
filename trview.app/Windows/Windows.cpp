@@ -135,6 +135,7 @@ namespace trview
 
     void Windows::update(float elapsed)
     {
+        _camera_sink_windows->update(elapsed);
         _items_windows->update(elapsed);
         _lights_windows->update(elapsed);
         _plugins_windows->update(elapsed);
@@ -211,6 +212,8 @@ namespace trview
         }
 
         _camera_sink_windows->set_camera_sinks(new_level->camera_sinks());
+        _camera_sink_windows->set_flybys(new_level->flybys());
+        _camera_sink_windows->set_platform_and_version(new_level->platform_and_version());
         _diff_windows->set_level(new_level);
         _items_windows->set_items(new_level->items());
         _items_windows->set_triggers(new_level->triggers());

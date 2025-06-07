@@ -179,5 +179,6 @@ namespace trlevel
         virtual std::vector<int16_t> sound_map() const = 0;
         virtual bool trng() const = 0;
         virtual std::weak_ptr<IPack> pack() const = 0;
+        virtual std::vector<tr4_flyby_camera> flyby_cameras() const = 0;
     };
 }
