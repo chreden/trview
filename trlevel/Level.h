@@ -175,6 +175,7 @@ namespace trlevel
         bool trng() const override;
         PlatformAndVersion platform_and_version() const override;
         std::weak_ptr<IPack> pack() const override;
+        std::vector<tr4_flyby_camera> flyby_cameras() const override;
     private:
         void generate_meshes(const std::vector<uint16_t>& mesh_data);
         tr_colour4 colour_from_object_texture(uint32_t texture) const;
@@ -295,6 +296,7 @@ namespace trlevel
         std::string _name;
 
         std::vector<tr_camera> _cameras;
+        std::vector<tr4_flyby_camera> _flyby_cameras;
         std::vector<tr_sound_source>    _sound_sources;
         std::vector<tr_x_sound_details> _sound_details;
         std::vector<int16_t> _sound_map;

@@ -992,6 +992,11 @@ namespace trlevel
         return _pack;
     }
 
+    std::vector<tr4_flyby_camera> Level::flyby_cameras() const
+    {
+        return _flyby_cameras;
+    }
+
     void Level::generate_sounds(const LoadCallbacks& callbacks)
     {
         callbacks.on_progress("Generating sounds");

@@ -17,6 +17,7 @@
 #include <trview.common/TokenStore.h>
 
 #include "SoundSource/ISoundSource.h"
+#include "Flyby/IFlyby.h"
 
 namespace trview
 {
@@ -117,6 +118,7 @@ namespace trview
             const ILight::Source& light_source,
             const ICameraSink::Source& camera_sink_source,
             const ISoundSource::Source& sound_source_source,
+            const IFlyby::Source& flyby_source,
             const trlevel::ILevel::LoadCallbacks callbacks);
         std::vector<std::weak_ptr<IStaticMesh>> static_meshes() const override;
         std::weak_ptr<IStaticMesh> static_mesh(uint32_t index) const override;
@@ -139,6 +141,7 @@ namespace trview
         void generate_lights(const trlevel::ILevel& level, const ILight::Source& light_source);
         void generate_camera_sinks(const trlevel::ILevel& level, const ICameraSink::Source& camera_sink_source);
         void generate_sound_sources(const trlevel::ILevel& level, const ISoundSource::Source& sound_source_source);
+        void generate_flybys(const trlevel::ILevel& level, const IFlyby::Source& flyby_source);
 
         // Render the rooms in the level.
         // context: The device context.
