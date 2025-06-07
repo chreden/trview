@@ -811,50 +811,6 @@ namespace trlevel
             uint16_t num_ai_objects;
             char     unknown_7[38];
         };
-
-        struct tr4_psx_level_info_version_111
-        {
-            int32_t version;
-            uint8_t  unknown_0[2];
-            uint16_t num_rooms;
-            uint8_t  unknown_1[2];
-            uint16_t num_items;
-            uint8_t  unknown_2[8];
-            uint32_t floor_data_size;
-            uint32_t outside_room_size;
-            uint32_t bounding_boxes_size;
-            uint8_t  unknown_4[0x4];
-            uint32_t mesh_data_size;
-            uint32_t mesh_pointer_size;
-            uint32_t animations_size;
-            uint32_t state_changes_size;
-            uint32_t dispatches_size;
-            uint32_t commands_size;
-            uint32_t meshtree_size;
-            uint32_t frames_size;
-            uint32_t texture_info_length;
-            uint32_t sprite_info_length;
-            uint32_t texture_info_length2;
-            uint32_t animated_texture_length;
-            uint32_t sfx_info_length;
-            uint32_t sample_info_length;
-            uint32_t unknown_4a;
-            uint32_t demo_data_length; // in title.psx
-            uint32_t num_boxes;
-            uint32_t boxes_length;
-            uint32_t overlaps_length;
-            uint32_t ground_zone_length;
-            uint32_t ground_zone_length2;
-            uint32_t ground_zone_length3;
-            uint32_t ground_zone_length4;
-            uint32_t ground_zone_length5;
-            uint32_t num_cameras;
-            char     unknown_5a[4];
-            int      camera_length;
-            uint32_t unknown_6;
-            uint16_t num_ai_objects;
-            char     unknown_7[38];
-        };
     }
 
     void Level::load_tr4_psx_opsm_90(std::basic_ispanstream<uint8_t>& file, trview::Activity& activity, const LoadCallbacks& callbacks)
