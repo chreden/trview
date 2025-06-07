@@ -56,6 +56,7 @@ namespace trview
                        is_tr5_version_214(version) ? "tr5_version_214" :
                        is_tr5_version_215(version) ? "tr5_version_215" :
                        is_tr5_version_219(version) ? "tr5_version_219" :
+                       is_tr5_version_223(version) ? "tr5_version_223" :
                        is_tr5_version_224(version) ? "tr5_version_224" : "tr5";
                 break;
             default:

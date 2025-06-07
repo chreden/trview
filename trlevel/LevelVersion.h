@@ -72,6 +72,7 @@ namespace trlevel
     bool is_tr5_version_214(PlatformAndVersion version);
     bool is_tr5_version_215(PlatformAndVersion version);
     bool is_tr5_version_219(PlatformAndVersion version);
+    bool is_tr5_version_223(PlatformAndVersion version);
     bool is_tr5_version_224(PlatformAndVersion version);
     bool has_double_frames(PlatformAndVersion version);
 

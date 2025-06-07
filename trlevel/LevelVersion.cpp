@@ -200,6 +200,11 @@ namespace trlevel
         return version.raw_version == -219;
     }
 
+    bool is_tr5_version_223(PlatformAndVersion version)
+    {
+        return version.raw_version == -223;
+    }
+
     bool is_tr5_version_224(PlatformAndVersion version)
     {
         return version.raw_version == -224;
