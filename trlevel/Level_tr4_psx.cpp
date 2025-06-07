@@ -1,6 +1,8 @@
 #include "Level.h"
 #include "Level_common.h"
 #include "Level_psx.h"
+#include "Level_tr3.h"
+#include <trview.common/Algorithms.h>
 
 #include <ranges>
 
@@ -148,6 +150,43 @@ namespace trlevel
 
             return new_light;
         }
+
+        void load_tr4_psx_version_111_room(trview::Activity& activity, std::basic_ispanstream<uint8_t>& file, tr3_room& room)
+        {
+            room.info = read_room_info(activity, file);
+            uint32_t NumDataWords = read_num_data_words(activity, file);
+            read_room_geometry_tr4_psx(file, room, NumDataWords * 2);
+
+            read_room_portals(activity, file, room);
+            read_room_sectors(activity, file, room);
+            read_room_ambient_intensity_1(activity, file, room);
+            read_room_light_mode(activity, file, room);
+            room.lights = read_vector<uint16_t, tr4_psx_room_light>(file)
+                | std::views::transform(to_tr4_light)
+                | std::ranges::to<std::vector>();
+            read_room_static_meshes(activity, file, room);
+            read_room_alternate_room(activity, file, room);
+            read_room_flags(activity, file, room);
+            read_room_water_scheme(activity, file, room);
+            read_room_reverb_info(activity, file, room);
+            skip(file, 1); // filler in TR3
+        }
+
+        constexpr uint32_t model_count(PlatformAndVersion version)
+        {
+            switch (version.raw_version)
+            {
+            case -120:
+                return 436;
+            case -121:
+                return 426;
+            case -124:
+                return 427;
+            case -126:
+                return 444;
+            }
+            return 465;
+        }
     }
 
     std::vector<uint16_t> read_mesh_data(trview::Activity& activity, std::basic_ispanstream<uint8_t>& file, const tr4_psx_level_info& info, const ILevel::LoadCallbacks& callbacks)
@@ -194,11 +233,11 @@ namespace trlevel
         return object_textures;
     }
 
-    void read_room_geometry_tr4_psx(std::basic_ispanstream<uint8_t>& file, tr3_room& room, const tr4_psx_room_info& room_info)
+    void read_room_geometry_tr4_psx(std::basic_ispanstream<uint8_t>& file, tr3_room& room, uint32_t data_size)
     {
         const uint32_t data_start = static_cast<uint32_t>(file.tellg());
         const uint32_t number_of_roomlets = read<uint32_t>(file);
-        const std::vector<uint32_t> roomlet_offsets = read_vector<uint32_t>(file, 16);
+        const std::vector<uint32_t> roomlet_offsets = read_vector<uint32_t>(file, number_of_roomlets);
 
         uint16_t total_vertices = 0;
         uint32_t previous_offset = 0;
@@ -252,7 +291,7 @@ namespace trlevel
 
             total_vertices += num_vertices;
         }
-        file.seekg(data_start + room_info.data_size, std::ios::beg);
+        file.seekg(data_start + data_size, std::ios::beg);
     }
 
     std::vector<tr_object_texture_psx> read_room_textures(trview::Activity& activity, std::basic_ispanstream<uint8_t>& file, const tr4_psx_level_info& info, const ILevel::LoadCallbacks& callbacks)
@@ -400,7 +439,7 @@ namespace trlevel
                         .alternate_group = room_info.alternate_group,
                     };
 
-                    read_room_geometry_tr4_psx(file, room, room_info);
+                    read_room_geometry_tr4_psx(file, room, room_info.data_size);
 
                     const uint32_t portals_start = static_cast<uint32_t>(file.tellg());
                     room.portals = read_vector<tr_room_portal>(file, room_info.portal_size / sizeof(tr_room_portal));
@@ -637,17 +676,33 @@ namespace trlevel
 
     void Level::load_tr4_psx(std::basic_ispanstream<uint8_t>& file, trview::Activity& activity, const LoadCallbacks& callbacks)
     {
-        if (is_tr4_oct_1999(_platform_and_version) || is_tr4_psx_v1(_platform_and_version))
+        if (!is_supported_tr4_psx_version(peek<int32_t>(file)))
         {
-            file.seekg(0x7000, std::ios::beg);
+            file.seekg(0x7000);
+            const int32_t peeked_version_1 = peek<int32_t>(file);
+            if (!is_supported_tr4_psx_version(peeked_version_1))
+            {
+                file.seekg(0x7800);
+                const int32_t peeked_version_2 = peek<int32_t>(file);
+                if (!is_supported_tr4_psx_version(peeked_version_2))
+                {
+                    file.seekg(0x6000);
+                    const int32_t peeked_version_3 = peek<int32_t>(file);
+                    if (!is_supported_tr4_psx_version(peeked_version_3))
+                    {
+                        return;
+                    }
+                }
+            }
         }
-        else if (is_tr4_opsm_90(_platform_and_version))
+
+        if (is_tr4_version_111(_platform_and_version))
+        {
+            return load_tr4_psx_version_111(file, activity, callbacks);
+        }
+        else if (is_tr4_version_120(_platform_and_version) || is_tr4_version_121(_platform_and_version))
         {
             return load_tr4_psx_opsm_90(file, activity, callbacks);
-        }
-        else
-        {
-            file.seekg(0x7800, std::ios::beg);
         }
 
         const uint32_t start = static_cast<uint32_t>(file.tellg());
@@ -679,15 +734,23 @@ namespace trlevel
         _sound_sources = read_sound_sources(activity, file, info, callbacks);
         _sound_map = read_vector<int16_t>(file, 370);
         _sound_details = read_vector<tr_x_sound_details>(file, info.sample_info_length / sizeof(tr_x_sound_details));
+
+        // Unsure about this hardcoded seek or if it even is related to demo data being present.
+        // In the title level there is TR3 demo data after some unknown data.
+        if (info.demo_data_length)
+        {
+            skip(file, 15872);
+            skip(file, info.demo_data_length);
+        }
+
         _entities = read_entities(activity, file, info, callbacks);
         _ai_objects = read_ai_objects(activity, file, info, callbacks);
         skip(file, info.boxes_length + info.overlaps_length);
         skip(file, 2 * (info.ground_zone_length + info.ground_zone_length2 + info.ground_zone_length3 + info.ground_zone_length4 + info.ground_zone_length5));
         _cameras = read_vector<tr_camera>(file, info.num_cameras);
         _frames = read_frames(activity, file, start, info, callbacks);
-        _models = read_models(activity, file, start, info, callbacks);
-        skip(file, 320);
-        _static_meshes = read_static_meshes_tr4_psx(activity, file, callbacks);
+        _models = read_models(activity, file, start, info, callbacks, model_count(_platform_and_version));
+        _static_meshes = read_static_meshes_tr4_psx(activity, file, callbacks, 60);
         generate_object_textures_tr4_psx(file, start, info);
 
         for (const auto& t : _textile16)
@@ -707,7 +770,7 @@ namespace trlevel
     {
         struct tr4_psx_level_info_opsm_90
         {
-            uint32_t version;
+            int32_t version;
             uint8_t  unknown_0[2];
             uint16_t num_rooms;
             uint8_t  unknown_1[2];
@@ -854,7 +917,7 @@ namespace trlevel
         _cameras = read_vector<tr_camera>(file, info.num_cameras);
         skip(file, info.unknown_6);
         info.models_offset = static_cast<uint32_t>(file.tellg());
-        _models = read_models(activity, file, start, info, callbacks, 436);
+        _models = read_models(activity, file, start, info, callbacks, model_count(_platform_and_version));
         _static_meshes = read_static_meshes_tr4_psx(activity, file, callbacks, 60);
         
         generate_object_textures_tr4_psx(file, start, info);
@@ -865,6 +928,84 @@ namespace trlevel
         }
 
         generate_sounds(callbacks);
+        callbacks.on_progress("Generating meshes");
+        generate_meshes(_mesh_data);
+        callbacks.on_progress("Loading complete");
+    }
+
+    void Level::load_tr4_psx_version_111(std::basic_ispanstream<uint8_t>& file, trview::Activity& activity, const LoadCallbacks& callbacks)
+    {
+        // For most of the checks and special handling in trview this
+        // level may as well just be Tomb3.
+        _platform_and_version.version = LevelVersion::Tomb3;
+
+        int32_t version = read<int32_t>(file);
+        version;
+        read_sounds_psx(file, activity, callbacks, 11025);
+
+        for (int i = 0; i < 13; ++i)
+        {
+            int size = read<int>(file);
+            if (size != 0)
+            {
+                skip(file, size);
+                int size2 = read<int>(file);
+                skip(file, size2);
+            }
+        }
+
+        _rooms = read_rooms<uint16_t>(activity, file, callbacks, load_tr4_psx_version_111_room);
+        _floor_data = read_floor_data(activity, file, callbacks);
+
+        // 'Room outside map':
+        read_vector<uint16_t>(file, 729);
+        // Outside room table:
+        read_vector<uint32_t, uint8_t>(file);
+        // Bounding boxes
+        int bb_count = read<int>(file);
+        skip(file, bb_count * 8);
+
+        _mesh_data = read_mesh_data(activity, file, callbacks);
+        _mesh_pointers = read_mesh_pointers(activity, file, callbacks);
+        read_animations_tr4_5(activity, file, callbacks);
+        read_state_changes(activity, file, callbacks);
+        read_anim_dispatches(activity, file, callbacks);
+        read_anim_commands(activity, file, callbacks);
+        _meshtree = read_meshtree(activity, file, callbacks);
+        _frames = read_frames(activity, file, callbacks);
+        _models = read_models_psx(activity, file, callbacks);
+        _static_meshes = read_static_meshes(activity, file, callbacks);
+        read_textiles_tr3_psx(file, activity, callbacks);
+        read_object_textures_tr3_psx(file, activity, callbacks);
+        read_sprite_textures_psx(file, activity, callbacks);
+        _sprite_sequences = read_sprite_sequences(activity, file, callbacks);
+        _cameras = read_cameras(activity, file, callbacks);
+        _sound_sources = read_sound_sources(activity, file, callbacks);
+
+        // TODO: What this?
+        skip(file, 4);
+
+        const auto boxes = read_boxes(activity, file, callbacks);
+        read_overlaps(activity, file, callbacks);
+
+        // Zones
+        skip(file, static_cast<uint32_t>(boxes.size() * 20));
+
+        skip(file, 2); // TODO: Figure out
+
+        read_animated_textures(activity, file, callbacks);
+        _entities = read_entities(activity, file, callbacks);
+        read<int32_t>(file); // horizon colour
+        read_room_textures_tr3_psx(file, activity, callbacks);
+        _sound_map = read_sound_map(activity, file, callbacks);
+        _sound_details = read_sound_details(activity, file, callbacks);
+        generate_sounds(callbacks);
+
+        for (const auto& t : _textile16)
+        {
+            callbacks.on_textile(convert_textile(t));
+        }
+
         callbacks.on_progress("Generating meshes");
         generate_meshes(_mesh_data);
         callbacks.on_progress("Loading complete");

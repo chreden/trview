@@ -58,9 +58,22 @@ namespace trlevel
     bool is_tr2_e3(PlatformAndVersion version);
     bool is_tr3_ects(PlatformAndVersion version);
     bool is_tr3_demo_55(PlatformAndVersion version);
+    bool is_tr4_version_111(PlatformAndVersion version);
+    bool is_tr4_version_120(PlatformAndVersion version);
+    bool is_tr4_version_121(PlatformAndVersion version);
+    bool is_tr4_version_124(PlatformAndVersion version);
+    bool is_tr4_version_126(PlatformAndVersion version);
     bool is_tr4_oct_1999(PlatformAndVersion version);
-    bool is_tr4_opsm_90(PlatformAndVersion version);
     bool is_tr4_psx_v1(PlatformAndVersion version);
+    bool is_tr5_version_201(PlatformAndVersion version);
+    bool is_tr5_version_202(PlatformAndVersion version);
+    bool is_tr5_version_206(PlatformAndVersion version);
+    bool is_tr5_version_209(PlatformAndVersion version);
+    bool is_tr5_version_214(PlatformAndVersion version);
+    bool is_tr5_version_215(PlatformAndVersion version);
+    bool is_tr5_version_219(PlatformAndVersion version);
+    bool is_tr5_version_223(PlatformAndVersion version);
+    bool is_tr5_version_224(PlatformAndVersion version);
     bool has_double_frames(PlatformAndVersion version);
 
     constexpr std::string to_string(LevelVersion version) noexcept;

@@ -1,5 +1,6 @@
 #include "LevelVersion.h"
 #include <trview.common/Algorithms.h>
+#include "Level_psx.h"
 
 namespace trlevel
 {
@@ -22,6 +23,14 @@ namespace trlevel
             else if (version == 0x6a20 || version == 0x6ba8)
             {
                 return { .platform = Platform::PSX, .version = LevelVersion::Tomb4 };
+            }
+            else if (is_supported_tr4_psx_version(version))
+            {
+                return { .platform = Platform::PSX, .version = LevelVersion::Tomb4 };
+            }
+            else if (is_supported_tr5_psx_version(version))
+            {
+                return { .platform = Platform::PSX, .version = LevelVersion::Tomb5 };
             }
 
             switch (version & 0xff)
@@ -121,19 +130,84 @@ namespace trlevel
         return version.raw_version == -55;
     }
 
+    bool is_tr4_version_111(PlatformAndVersion version)
+    {
+        return version.raw_version == -111;
+    }
+
+    bool is_tr4_version_120(PlatformAndVersion version)
+    {
+        return version.raw_version == -120;
+    }
+
+    bool is_tr4_version_121(PlatformAndVersion version)
+    {
+        return version.raw_version == -121;
+    }
+
+    bool is_tr4_version_124(PlatformAndVersion version)
+    {
+        return version.raw_version == -124;
+    }
+
+    bool is_tr4_version_126(PlatformAndVersion version)
+    {
+        return version.raw_version == -126;
+    }
+
     bool is_tr4_oct_1999(PlatformAndVersion version)
     {
         return version.raw_version == 0x6a20;
     }
 
-    bool is_tr4_opsm_90(PlatformAndVersion version)
-    {
-        return version.raw_version == 0xffffff88;
-    }
-
     bool is_tr4_psx_v1(PlatformAndVersion version)
     {
         return version.raw_version == 0x6ba8;
+    }
+
+    bool is_tr5_version_201(PlatformAndVersion version)
+    {
+        return version.raw_version == -201;
+    }
+
+    bool is_tr5_version_202(PlatformAndVersion version)
+    {
+        return version.raw_version == -202;
+    }
+
+    bool is_tr5_version_206(PlatformAndVersion version)
+    {
+        return version.raw_version == -206;
+    }
+
+    bool is_tr5_version_209(PlatformAndVersion version)
+    {
+        return version.raw_version == -209;
+    }
+
+    bool is_tr5_version_214(PlatformAndVersion version)
+    {
+        return version.raw_version == -214;
+    }
+
+    bool is_tr5_version_215(PlatformAndVersion version)
+    {
+        return version.raw_version == -215;
+    }
+
+    bool is_tr5_version_219(PlatformAndVersion version)
+    {
+        return version.raw_version == -219;
+    }
+
+    bool is_tr5_version_223(PlatformAndVersion version)
+    {
+        return version.raw_version == -223;
+    }
+
+    bool is_tr5_version_224(PlatformAndVersion version)
+    {
+        return version.raw_version == -224;
     }
 
     bool has_double_frames(PlatformAndVersion version)

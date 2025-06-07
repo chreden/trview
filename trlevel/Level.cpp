@@ -46,10 +46,6 @@ namespace trlevel
     {
         const float PiMul2 = 6.283185307179586476925286766559f;
         const int16_t Lara = 0;
-        const int16_t LaraSkinTR3 = 315;
-        const int16_t LaraSkinTR3Demo55 = 275;
-        const int16_t LaraSkinPostTR3 = 8;
-        const int16_t LaraSkinTR4OPSM90 = 10;
     
         bool is_tr5(trview::Activity& activity, LevelVersion version, const std::wstring& filename)
         {
@@ -183,11 +179,37 @@ namespace trlevel
             return std::nullopt;
         }
 
+        std::optional<PlatformAndVersion> check_for_tr4_psx(std::basic_ispanstream<uint8_t>& file)
+        {
+            file.seekg(0x7000);
+            const int32_t potential_version = peek<int32_t>(file);
+            if (is_supported_tr4_psx_version(potential_version))
+            {
+                return PlatformAndVersion{ .platform = Platform::PSX, .version = LevelVersion::Tomb4, .raw_version = potential_version };
+            }
+
+            file.seekg(0x7800);
+            const int32_t potential_version_2 = peek<int32_t>(file);
+            if (is_supported_tr4_psx_version(potential_version_2))
+            {
+                return PlatformAndVersion{ .platform = Platform::PSX, .version = LevelVersion::Tomb4, .raw_version = potential_version_2 };
+            }
+
+            file.seekg(0x6000);
+            const int32_t potential_version_3 = peek<int32_t>(file);
+            if (is_supported_tr4_psx_version(potential_version_3))
+            {
+                return PlatformAndVersion{ .platform = Platform::PSX, .version = LevelVersion::Tomb4, .raw_version = potential_version_3 };
+            }
+
+            return std::nullopt;
+        }
+
         std::optional<PlatformAndVersion> check_for_tr5_psx(std::basic_ispanstream<uint8_t>& file)
         {
             file.seekg(313344);
             const int32_t potential_version = read<int32_t>(file);
-            if (potential_version == -225 || potential_version == -224)
+            if (is_supported_tr5_psx_version(potential_version))
             {
                 return PlatformAndVersion{ .platform = Platform::PSX, .version = LevelVersion::Tomb5, .raw_version = potential_version };
             }
@@ -224,6 +246,7 @@ namespace trlevel
                 check_for_tr1_may_1996,
                 check_for_tr1_psx_without_sound,
                 check_for_tr1_psx,
+                check_for_tr4_psx,
                 check_for_tr5_psx,
                 check_for_tr1_saturn
             };
