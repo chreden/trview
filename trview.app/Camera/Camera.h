@@ -83,7 +83,7 @@ namespace trview
         static constexpr float default_fov = 45;
 
         DirectX::SimpleMath::Vector3 _position;
-        DirectX::SimpleMath::Vector3 _forward;
+        DirectX::SimpleMath::Vector3 _forward{ DirectX::SimpleMath::Vector3::Backward };
         DirectX::SimpleMath::Vector3 _up;
         float _rotation_yaw{ default_yaw };
         float _rotation_pitch{ default_pitch };

@@ -6,9 +6,9 @@
 #include "../Elements/IRoom.h"
 #include "../Elements/IStaticMesh.h"
 #include "../Lua/Scriptable/IScriptable.h"
-#include "IItem.h"
 #include <trview.app/Elements/ILight.h>
 #include "CameraSink/ICameraSink.h"
+#include "Flyby/IFlyby.h"
 #include <trview.common/Event.h>
 #include "../UI/MapColours.h"
 #include <trlevel/IPack.h>
@@ -148,6 +148,7 @@ namespace trview
         virtual bool trng() const = 0;
         virtual std::weak_ptr<trlevel::IPack> pack() const = 0;
         virtual trlevel::PlatformAndVersion platform_and_version() const = 0;
+        virtual std::vector<std::weak_ptr<IFlyby>> flybys() const = 0;
 
         Event<std::weak_ptr<IItem>> on_item_selected;
         // Event raised when the level needs to change the selected room.

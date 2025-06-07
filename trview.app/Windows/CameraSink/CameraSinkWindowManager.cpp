@@ -17,12 +17,13 @@ namespace trview
     {
         auto window = _camera_sink_window_source();
         window->set_camera_sinks(_camera_sinks);
+        window->set_flybys(_flybys);
         window->set_selected_camera_sink(_selected_camera_sink);
         window->set_current_room(_current_room);
         window->on_camera_sink_selected += on_camera_sink_selected;
         window->on_trigger_selected += on_trigger_selected;
         window->on_scene_changed += on_scene_changed;
-        
+        window->on_camera_position += on_camera_position;
         return add_window(window);
     }
 
@@ -46,6 +47,15 @@ namespace trview
         for (auto& window : _windows)
         {
             window.second->set_camera_sinks(_camera_sinks);
+        }
+    }
+
+    void CameraSinkWindowManager::set_flybys(const std::vector<std::weak_ptr<IFlyby>>& flybys)
+    {
+        _flybys = flybys;
+        for (auto& window : _windows)
+        {
+            window.second->set_flybys(_flybys);
         }
     }
 

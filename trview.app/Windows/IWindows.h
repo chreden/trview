@@ -37,6 +37,7 @@ namespace trview
         virtual void set_settings(const UserSettings& settings) = 0;
         virtual void setup(const UserSettings& settings) = 0;
 
+        Event<DirectX::SimpleMath::Vector3> on_camera_position;
         Event<std::weak_ptr<ICameraSink>> on_camera_sink_selected;
         Event<std::weak_ptr<ILevel>> on_diff_ended;
         Event<std::weak_ptr<IItem>> on_item_selected;

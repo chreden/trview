@@ -104,9 +104,24 @@ namespace trview
         ImGui::PushStyleVar(ImGuiStyleVar_WindowMinSize, ImVec2(485, 500));
         if (ImGui::Begin(_id.c_str(), &stay_open))
         {
-            render_list();
-            ImGui::SameLine();
-            render_details();
+            if (ImGui::BeginTabBar("TabBar"))
+            {
+                if (ImGui::BeginTabItem("Camera/Sink"))
+                {
+                    render_list();
+                    ImGui::SameLine();
+                    render_details();
+                    ImGui::EndTabItem();
+                }
+
+                if (ImGui::BeginTabItem("Flyby"))
+                {
+                    render_flybys();
+                    ImGui::EndTabItem();
+                }
+
+                ImGui::EndTabBar();
+            }
         }
         ImGui::End();
         ImGui::PopStyleVar();
@@ -372,6 +387,11 @@ namespace trview
         ImGui::EndChild();
     }
 
+    void CameraSinkWindow::set_flybys(const std::vector<std::weak_ptr<IFlyby>>& flybys)
+    {
+        _all_flybys = flybys;
+    }
+
     void CameraSinkWindow::set_selected_camera_sink(const std::weak_ptr<ICameraSink>& camera_sink)
     {
         _global_selected_camera_sink = camera_sink;
@@ -451,6 +471,36 @@ namespace trview
                     _column_sizer.measure(inferred_rooms_text(camera_sink_ptr->inferred_rooms()), 1);
                 }
                 _column_sizer.measure(to_string(camera_sink_ptr->type()), 2);
+            }
+        }
+    }
+
+    void CameraSinkWindow::render_flybys()
+    {
+        if (ImGui::BeginCombo("Flyby", "Flyby"))
+        {
+            const auto selected_flyby = _selected_flyby.lock();
+            int index = 0;
+            for (const auto& flyby : _all_flybys)
+            {
+                if (const auto flyby_ptr = flyby.lock())
+                {
+                    bool is_selected = flyby_ptr == selected_flyby;
+                    if (ImGui::Selectable(std::format("Flyby {}", index++).c_str(), is_selected))
+                    {
+                        _selected_flyby = flyby_ptr;
+                    }
+                }
+            }
+            ImGui::EndCombo();
+        }
+
+        if (const auto selected_flyby = _selected_flyby.lock())
+        {
+            static float percentage;
+            if (ImGui::SliderFloat("Position", &percentage, 0.0f, 1.0f, "%.3f", ImGuiSliderFlags_AlwaysClamp))
+            {
+                on_camera_position(selected_flyby->position_at(percentage));
             }
         }
     }

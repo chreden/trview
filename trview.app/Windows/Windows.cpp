@@ -49,6 +49,7 @@ namespace trview
         _route_window(std::move(route_window_manager)), _sounds_windows(std::move(sounds_window_manager)), _statics_windows(std::move(statics_window_manager)),
         _textures_windows(std::move(textures_window_manager)), _triggers_windows(std::move(triggers_window_manager)), _pack_windows(std::move(pack_window_manager))
     {
+        _camera_sink_windows->on_camera_position += on_camera_position;
         _camera_sink_windows->on_camera_sink_selected += on_camera_sink_selected;
         _camera_sink_windows->on_trigger_selected += on_trigger_selected;
         _camera_sink_windows->on_scene_changed += on_scene_changed;
@@ -205,6 +206,7 @@ namespace trview
         }
 
         _camera_sink_windows->set_camera_sinks(new_level->camera_sinks());
+        _camera_sink_windows->set_flybys(new_level->flybys());
         _diff_windows->set_level(new_level);
         _items_windows->set_items(new_level->items());
         _items_windows->set_triggers(new_level->triggers());

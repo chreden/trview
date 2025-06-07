@@ -25,10 +25,11 @@ namespace trview
 
         explicit CameraSinkWindow(const std::shared_ptr<IClipboard>& clipboard);
         virtual ~CameraSinkWindow() = default;
-        virtual void render() override;
-        virtual void set_number(int32_t number) override;
-        virtual void set_camera_sinks(const std::vector<std::weak_ptr<ICameraSink>>& camera_sinks) override;
-        virtual void set_selected_camera_sink(const std::weak_ptr<ICameraSink>& camera_sink) override;
+        void render() override;
+        void set_number(int32_t number) override;
+        void set_camera_sinks(const std::vector<std::weak_ptr<ICameraSink>>& camera_sinks) override;
+        void set_flybys(const std::vector<std::weak_ptr<IFlyby>>& flybys) override;
+        void set_selected_camera_sink(const std::weak_ptr<ICameraSink>& camera_sink) override;
         void set_current_room(const std::weak_ptr<IRoom>& room) override;
     private:
         bool render_camera_sink_window();
@@ -38,11 +39,14 @@ namespace trview
         void render_details();
         void setup_filters();
         void calculate_column_widths();
+        void render_flybys();
 
         std::string _id{ "Camera/Sink 0" };
         std::vector<std::weak_ptr<ICameraSink>> _all_camera_sinks;
         std::weak_ptr<ICameraSink> _selected_camera_sink;
         std::weak_ptr<ICameraSink> _global_selected_camera_sink;
+        std::vector<std::weak_ptr<IFlyby>> _all_flybys;
+        std::weak_ptr<IFlyby> _selected_flyby;
         std::unordered_map<std::string, std::string> _tips;
         std::shared_ptr<IClipboard> _clipboard;
         Filters<ICameraSink> _filters;

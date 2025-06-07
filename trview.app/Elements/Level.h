@@ -132,6 +132,7 @@ namespace trview
         bool trng() const override;
         std::weak_ptr<trlevel::IPack> pack() const override;
         trlevel::PlatformAndVersion platform_and_version() const override;
+        std::vector<std::weak_ptr<IFlyby>> flybys() const override;
     private:
         void generate_rooms(const trlevel::ILevel& level, const IRoom::Source& room_source, const IMeshStorage& mesh_storage);
         void generate_triggers(const ITrigger::Source& trigger_source);

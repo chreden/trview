@@ -10,6 +10,7 @@ namespace trview
     public:
         explicit Flyby(const std::shared_ptr<IMesh>& mesh, const std::vector<trlevel::tr4_flyby_camera>& camera_nodes);
         virtual ~Flyby() = default;
+        DirectX::SimpleMath::Vector3 position_at(float value) const override;
         void render(const ICamera& camera, const DirectX::SimpleMath::Color& colour) override;
         void get_transparent_triangles(ITransparencyBuffer& transparency, const ICamera& camera, const DirectX::SimpleMath::Color& colour) override;
         bool visible() const override;

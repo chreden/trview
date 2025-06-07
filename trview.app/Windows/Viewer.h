@@ -93,6 +93,7 @@ namespace trview
         void select_static_mesh(const std::weak_ptr<IStaticMesh>& static_mesh) override;
         void select_sound_source(const std::weak_ptr<ISoundSource>& sound_source) override;
         std::weak_ptr<ILevel> level() const override;
+        void set_position(const DirectX::SimpleMath::Vector3& position) override;
     private:
         void initialise_input();
         void toggle_highlight();

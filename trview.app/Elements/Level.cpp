@@ -1573,6 +1573,11 @@ namespace trview
         return _platform_and_version;
     }
 
+    std::vector<std::weak_ptr<IFlyby>> Level::flybys() const
+    {
+        return _flybys | std::ranges::to<std::vector<std::weak_ptr<IFlyby>>>();
+    }
+
     bool find_item_by_type_id(const ILevel& level, uint32_t type_id, std::weak_ptr<IItem>& output_item)
     {
         const auto& items = level.items();

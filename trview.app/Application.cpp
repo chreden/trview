@@ -73,6 +73,12 @@ namespace trview
         setup_shortcuts();
         setup_view_menu();
 
+        _token_store += _windows->on_camera_position += [this](const auto& pos)
+        {
+            // _viewer->set_camera_mode(ICamera::Mode::Orbit);
+            _viewer->set_position(pos);
+            // _viewer->set_target(Vector3(88319, -779, 19993) / trlevel::Scale);
+        };
         _token_store += _windows->on_camera_sink_selected += [this](const auto& sink) {  select_camera_sink(sink); };
         _token_store += _windows->on_trigger_selected += [this](const auto& trigger) { select_trigger(trigger); };
         _token_store += _windows->on_scene_changed += [this]() { _viewer->set_scene_changed(); };
