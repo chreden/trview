@@ -300,6 +300,11 @@ namespace trview
                 }
             }
 
+            for (const auto& flyby : _flybys)
+            {
+                flyby->render(camera, Colour::White);
+            }
+
             graphics::set_data(*_pixel_shader_data, context, PixelShaderData{ false });
         }
 
@@ -1323,7 +1328,12 @@ namespace trview
         const auto grouped = level.flyby_cameras() |
             std::views::chunk_by([](auto&& l, auto&& r) { return l.sequence == r.sequence; }) |
             std::ranges::to<std::vector<std::vector<trlevel::tr4_flyby_camera>>>();
-        flyby_source;
+        for (const auto& flyby : grouped)
+        {
+            auto new_flyby = flyby_source(flyby);
+            // TODO: Any events
+            _flybys.push_back(new_flyby);
+        }
     }
 
     void Level::set_show_camera_sinks(bool show)

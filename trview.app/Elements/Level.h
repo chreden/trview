@@ -229,6 +229,7 @@ namespace trview
         std::vector<std::weak_ptr<IScriptable>> _scriptables;
         std::shared_ptr<ISoundStorage> _sound_storage;
         std::vector<std::shared_ptr<ISoundSource>> _sound_sources;
+        std::vector<std::shared_ptr<IFlyby>> _flybys;
 
         std::shared_ptr<INgPlusSwitcher> _ngplus_switcher;
         bool _ng{ false };
