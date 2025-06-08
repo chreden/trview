@@ -71,8 +71,8 @@ namespace trview
     {
     }
 
-    CameraSinkWindow::CameraSinkWindow(const std::shared_ptr<IClipboard>& clipboard)
-        : _clipboard(clipboard)
+    CameraSinkWindow::CameraSinkWindow(const std::shared_ptr<IClipboard>& clipboard, const std::weak_ptr<ICamera>& camera)
+        : _clipboard(clipboard), _camera(camera)
     {
         setup_filters();
     }
@@ -500,7 +500,11 @@ namespace trview
             static float percentage;
             if (ImGui::SliderFloat("Position", &percentage, 0.0f, 1.0f, "%.3f", ImGuiSliderFlags_AlwaysClamp))
             {
-                on_camera_position(selected_flyby->position_at(percentage));
+                if (auto camera = _camera.lock())
+                {
+                    const auto state = selected_flyby->state_at(percentage);
+                    camera->set_position(state.position);
+                }
             }
         }
     }

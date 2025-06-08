@@ -49,18 +49,21 @@ namespace trview
         _visible = value;
     }
 
-    Vector3 Flyby::position_at(float value) const
+    IFlyby::CameraState Flyby::state_at(float value) const
     {
+        CameraState state;
+
         if (_camera_nodes.empty())
         {
-            return Vector3::Zero;
+            return state;
         }
 
         if (_camera_nodes.size() == 1)
         {
-            return Vector3(static_cast<float>(_camera_nodes[0].x),
-                static_cast<float>(_camera_nodes[0].y),
-                static_cast<float>(_camera_nodes[0].z)) / trlevel::Scale;
+            state.position = Vector3(static_cast<float>(_camera_nodes[0].x),
+                                     static_cast<float>(_camera_nodes[0].y),
+                                     static_cast<float>(_camera_nodes[0].z)) / trlevel::Scale;
+            return state;
         }
 
         // With: 
@@ -82,10 +85,11 @@ namespace trview
         if (next_step >= _camera_nodes.size())
         {
             const auto node = _camera_nodes.back();
-            return Vector3(
+            state.position = Vector3(
                 static_cast<float>(node.x),
                 static_cast<float>(node.y),
                 static_cast<float>(node.z)) / trlevel::Scale;
+            return state;
         }
 
         const auto node = _camera_nodes[at_step];
@@ -94,6 +98,7 @@ namespace trview
             Vector3(static_cast<float>(node.x), static_cast<float>(node.y), static_cast<float>(node.z)),
             Vector3(static_cast<float>(next_node.x), static_cast<float>(next_node.y), static_cast<float>(next_node.z)),
             t);
-        return position / trlevel::Scale;
+        state.position = position / trlevel::Scale;
+        return state;
     }
 }

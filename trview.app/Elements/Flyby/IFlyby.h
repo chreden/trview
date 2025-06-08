@@ -14,7 +14,15 @@ namespace trview
     {
         using Source = std::function<std::shared_ptr<IFlyby>(const std::vector<trlevel::tr4_flyby_camera>&)>;
 
+        struct CameraState
+        {
+            DirectX::SimpleMath::Vector3 position;
+            DirectX::SimpleMath::Vector3 direction{ DirectX::SimpleMath::Vector3::Backward };
+            float fov{ 0.0f };
+            float roll{ 0.0f };
+        };
+
         virtual ~IFlyby() = 0;
-        virtual DirectX::SimpleMath::Vector3 position_at(float value) const = 0;
+        virtual CameraState state_at(float value) const = 0;
     };
 }

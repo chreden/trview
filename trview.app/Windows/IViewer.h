@@ -151,6 +151,5 @@ namespace trview
         virtual void select_static_mesh(const std::weak_ptr<IStaticMesh>& static_mesh) = 0;
         virtual void select_sound_source(const std::weak_ptr<ISoundSource>& sound_source) = 0;
         virtual std::weak_ptr<ILevel> level() const = 0;
-        virtual void set_position(const DirectX::SimpleMath::Vector3& position) = 0;
     };
 }

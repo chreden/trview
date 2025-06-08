@@ -23,7 +23,7 @@ namespace trview
             static inline const std::string type = "Type";
         };
 
-        explicit CameraSinkWindow(const std::shared_ptr<IClipboard>& clipboard);
+        explicit CameraSinkWindow(const std::shared_ptr<IClipboard>& clipboard, const std::weak_ptr<ICamera>& camera);
         virtual ~CameraSinkWindow() = default;
         void render() override;
         void set_number(int32_t number) override;
@@ -59,5 +59,6 @@ namespace trview
         Track<Type::Room> _track;
         ColumnSizer _column_sizer;
         AutoHider _auto_hider;
+        std::weak_ptr<ICamera> _camera;
     };
 }

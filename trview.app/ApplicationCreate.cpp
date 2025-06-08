@@ -372,6 +372,7 @@ namespace trview
             std::make_unique<CameraControls>(),
             std::make_unique<Toolbar>(plugins));
 
+        const auto camera = std::make_shared<Camera>(window.size());
         auto viewer = std::make_unique<Viewer>(
             window,
             device,
@@ -387,14 +388,14 @@ namespace trview
             device_window_source,
             std::make_unique<SectorHighlight>(default_mesh_source),
             clipboard,
-            std::make_shared<Camera>(window.size()));
+            camera);
 
         auto triggers_window_source = [=]() { return std::make_shared<TriggersWindow>(clipboard); };
         auto route_window_source = [=]() { return std::make_shared<RouteWindow>(clipboard, dialogs, files); };
         auto lights_window_source = [=]() { return std::make_shared<LightsWindow>(clipboard); };
 
         auto log_window_source = [=]() { return std::make_shared<LogWindow>(log, dialogs, files); };
-        auto camera_sink_window_source = [=]() { return std::make_shared<CameraSinkWindow>(clipboard); };
+        auto camera_sink_window_source = [=]() { return std::make_shared<CameraSinkWindow>(clipboard, camera); };
 
         auto textures_window_source = [=]() { return std::make_shared<TexturesWindow>(); };
         auto console_source = [=]() { return std::make_shared<Console>(dialogs, plugins, fonts); };

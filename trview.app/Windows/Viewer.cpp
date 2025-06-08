@@ -1661,9 +1661,4 @@ namespace trview
     {
         return _level;
     }
-
-    void Viewer::set_position(const DirectX::SimpleMath::Vector3& position)
-    {
-        _camera->set_position(position);
-    }
 }
