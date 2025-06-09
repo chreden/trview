@@ -6,6 +6,7 @@
 #include <trview.app/Windows/CameraSink/CameraSinkWindow.h>
 #include <trview.common/Mocks/Windows/IClipboard.h>
 #include <trview.tests.common/Mocks.h>
+#include <trview.app/Mocks/Camera/ICamera.h>
 
 using namespace testing;
 using namespace trview;
@@ -21,10 +22,11 @@ namespace
             struct test_module
             {
                 std::shared_ptr<IClipboard> clipboard{ mock_shared<MockClipboard>() };
+                std::shared_ptr<ICamera> camera{ mock_shared<MockCamera>() };
 
                 std::unique_ptr<CameraSinkWindow> build()
                 {
-                    return std::make_unique<CameraSinkWindow>(clipboard);
+                    return std::make_unique<CameraSinkWindow>(clipboard, camera);
                 }
             };
 

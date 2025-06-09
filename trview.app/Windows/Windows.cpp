@@ -129,6 +129,7 @@ namespace trview
 
     void Windows::update(float elapsed)
     {
+        _camera_sink_windows->update(elapsed);
         _items_windows->update(elapsed);
         _lights_windows->update(elapsed);
         _plugins_windows->update(elapsed);

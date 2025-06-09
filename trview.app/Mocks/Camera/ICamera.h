@@ -40,6 +40,8 @@ namespace trview
             MOCK_METHOD(void, reset, (), (override));
             MOCK_METHOD(DirectX::SimpleMath::Vector3, target, (), (const, override));
             MOCK_METHOD(Mode, mode, (), (const, override));
+            MOCK_METHOD(void, set_forward, (const DirectX::SimpleMath::Vector3&), (override));
+            MOCK_METHOD(void, set_rotation_roll, (float), (override));
         };
     }
 }

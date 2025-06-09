@@ -75,4 +75,9 @@ namespace trview
             window.second->set_current_room(_current_room);
         }
     }
+
+    void CameraSinkWindowManager::update(float delta)
+    {
+        WindowManager::update(delta);
+    }
 }

@@ -85,6 +85,7 @@ namespace trview
             MOCK_METHOD(bool, trng, (), (const, override));
             MOCK_METHOD(std::weak_ptr<trlevel::IPack>, pack, (), (const, override));
             MOCK_METHOD(trlevel::PlatformAndVersion, platform_and_version, (), (const, override));
+            MOCK_METHOD(std::vector<std::weak_ptr<IFlyby>>, flybys, (), (const, override));
 
             std::shared_ptr<MockLevel> with_version(trlevel::LevelVersion version)
             {

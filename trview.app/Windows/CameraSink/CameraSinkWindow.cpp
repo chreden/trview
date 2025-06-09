@@ -497,14 +497,65 @@ namespace trview
 
         if (const auto selected_flyby = _selected_flyby.lock())
         {
-            static float percentage;
-            if (ImGui::SliderFloat("Position", &percentage, 0.0f, 1.0f, "%.3f", ImGuiSliderFlags_AlwaysClamp))
+            if (ImGui::Button(_playing_flyby ? "X" : ">"))
             {
-                if (auto camera = _camera.lock())
+                if (!_playing_flyby && _flyby_percentage >= 1.0f)
                 {
-                    const auto state = selected_flyby->state_at(percentage);
-                    camera->set_position(state.position);
+                    _flyby_percentage = 0.0f;
                 }
+                _playing_flyby = !_playing_flyby;
+            }
+            ImGui::SameLine();
+            if (ImGui::SliderFloat("Position", &_flyby_percentage, 0.0f, 1.0f, "%.3f", ImGuiSliderFlags_AlwaysClamp))
+            {
+                sync_flyby();
+            }
+
+            if (_playing_flyby)
+            {
+                const auto state = selected_flyby->state_at(_flyby_percentage);
+                // camera->set_position(state.position);
+                // camera->set_forward(state.direction);
+                ImGui::Text(std::format("Roll: {}", state.roll).c_str());
+            }
+        }
+    }
+
+    void CameraSinkWindow::sync_flyby()
+    {
+        auto flyby = _selected_flyby.lock();
+        if (!flyby)
+        {
+            return;
+        }
+
+        if (auto camera = _camera.lock())
+        {
+            using namespace DirectX::SimpleMath;
+            const auto state = flyby->state_at(_flyby_percentage);
+            camera->set_mode(ICamera::Mode::Free);
+            camera->set_position(state.position);
+            camera->set_forward(state.direction);
+            camera->set_rotation_roll(state.roll);
+        }
+    }
+
+    void CameraSinkWindow::update(float delta)
+    {
+        auto flyby = _selected_flyby.lock();
+        if (!flyby)
+        {
+            return;
+        }
+
+        if (_playing_flyby)
+        {
+            const float speed = 0.05f;
+            _flyby_percentage += speed * delta;
+            sync_flyby();
+            if (_flyby_percentage >= 1.0f)
+            {
+                _playing_flyby = false;
             }
         }
     }

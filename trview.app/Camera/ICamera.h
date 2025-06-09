@@ -131,6 +131,10 @@ namespace trview
 
         virtual Mode mode() const = 0;
 
+        virtual void set_forward(const DirectX::SimpleMath::Vector3& forward) = 0;
+
+        virtual void set_rotation_roll(float roll) = 0;
+
         /// Event raised when the view of the camera has changed.
         Event<> on_view_changed;
         Event<Mode> on_mode_changed;

@@ -1288,6 +1288,9 @@
     <ClInclude Include="Elements\Flyby\Flyby.h">
       <Filter>Elements\Flyby</Filter>
     </ClInclude>
+    <ClInclude Include="Mocks\Elements\IFlyby.h">
+      <Filter>Mocks\Elements</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Windows">

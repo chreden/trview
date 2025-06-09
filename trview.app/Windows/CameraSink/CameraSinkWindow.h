@@ -31,6 +31,7 @@ namespace trview
         void set_flybys(const std::vector<std::weak_ptr<IFlyby>>& flybys) override;
         void set_selected_camera_sink(const std::weak_ptr<ICameraSink>& camera_sink) override;
         void set_current_room(const std::weak_ptr<IRoom>& room) override;
+        void update(float delta) override;
     private:
         bool render_camera_sink_window();
         void set_sync(bool value);
@@ -40,6 +41,7 @@ namespace trview
         void setup_filters();
         void calculate_column_widths();
         void render_flybys();
+        void sync_flyby();
 
         std::string _id{ "Camera/Sink 0" };
         std::vector<std::weak_ptr<ICameraSink>> _all_camera_sinks;
@@ -60,5 +62,8 @@ namespace trview
         ColumnSizer _column_sizer;
         AutoHider _auto_hider;
         std::weak_ptr<ICamera> _camera;
+
+        bool _playing_flyby{ false };
+        float _flyby_percentage{ 0.0f };
     };
 }

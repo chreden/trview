@@ -99,6 +99,14 @@ namespace trview
             Vector3(static_cast<float>(next_node.x), static_cast<float>(next_node.y), static_cast<float>(next_node.z)),
             t);
         state.position = position / trlevel::Scale;
+
+        const Vector3 direction = DirectX::XMVectorLerp(
+            Vector3(static_cast<float>(node.dx), static_cast<float>(node.dy), static_cast<float>(node.dz)),
+            Vector3(static_cast<float>(next_node.dx), static_cast<float>(next_node.dy), static_cast<float>(next_node.dz)),
+            t);
+        ((direction / trlevel::Scale) - state.position).Normalize(state.direction);
+
+        state.roll = (node.roll + (next_node.roll - node.roll) * t) / -182.0f;
         return state;
     }
 }
