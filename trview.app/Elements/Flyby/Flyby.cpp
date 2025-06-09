@@ -2,7 +2,16 @@
 
 namespace trview
 {
+    using namespace DirectX;
     using namespace DirectX::SimpleMath;
+
+    namespace
+    {
+        Vector3 to_vector(int32_t x, int32_t y, int32_t z)
+        {
+            return Vector3(static_cast<float>(x), static_cast<float>(y), static_cast<float>(z)) / trlevel::Scale;
+        }
+    }
 
     IFlyby::~IFlyby()
     {
@@ -60,9 +69,7 @@ namespace trview
 
         if (_camera_nodes.size() == 1)
         {
-            state.position = Vector3(static_cast<float>(_camera_nodes[0].x),
-                                     static_cast<float>(_camera_nodes[0].y),
-                                     static_cast<float>(_camera_nodes[0].z)) / trlevel::Scale;
+            state.position = to_vector(_camera_nodes[0].x, _camera_nodes[0].y, _camera_nodes[0].z);
             return state;
         }
 
@@ -85,26 +92,15 @@ namespace trview
         if (next_step >= _camera_nodes.size())
         {
             const auto node = _camera_nodes.back();
-            state.position = Vector3(
-                static_cast<float>(node.x),
-                static_cast<float>(node.y),
-                static_cast<float>(node.z)) / trlevel::Scale;
+            state.position = to_vector(node.x, node.y, node.z);
             return state;
         }
 
         const auto node = _camera_nodes[at_step];
         const auto next_node = _camera_nodes[next_step];
-        const Vector3 position = DirectX::XMVectorLerp(
-            Vector3(static_cast<float>(node.x), static_cast<float>(node.y), static_cast<float>(node.z)),
-            Vector3(static_cast<float>(next_node.x), static_cast<float>(next_node.y), static_cast<float>(next_node.z)),
-            t);
-        state.position = position / trlevel::Scale;
-
-        const Vector3 direction = DirectX::XMVectorLerp(
-            Vector3(static_cast<float>(node.dx), static_cast<float>(node.dy), static_cast<float>(node.dz)),
-            Vector3(static_cast<float>(next_node.dx), static_cast<float>(next_node.dy), static_cast<float>(next_node.dz)),
-            t);
-        ((direction / trlevel::Scale) - state.position).Normalize(state.direction);
+        state.position = DirectX::XMVectorLerp(to_vector(node.x, node.y, node.z), to_vector(next_node.x, next_node.y, next_node.z), t);
+        const Vector3 target = DirectX::XMVectorLerp(to_vector(node.dx, node.dy, node.dz), to_vector(next_node.dx, next_node.dy, next_node.dz), t);
+        (target - state.position).Normalize(state.direction);
 
         state.roll = (node.roll + (next_node.roll - node.roll) * t) / -182.0f;
         return state;
