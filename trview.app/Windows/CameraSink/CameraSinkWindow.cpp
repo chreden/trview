@@ -514,9 +514,11 @@ namespace trview
             if (_playing_flyby)
             {
                 const auto state = selected_flyby->state_at(_flyby_percentage);
-                // camera->set_position(state.position);
-                // camera->set_forward(state.direction);
+                ImGui::Text(std::format("Node: {}", state.index).c_str());
+                ImGui::Text(std::format("T: {}", state.t).c_str());
+                ImGui::Text(std::format("Cat-T: {}", state.cat_t).c_str());
                 ImGui::Text(std::format("Roll: {}", state.roll).c_str());
+                ImGui::Text(std::format("Fov: {}", state.fov.value_or(0.0f)).c_str());
             }
         }
     }
@@ -537,6 +539,10 @@ namespace trview
             camera->set_position(state.position);
             camera->set_forward(state.direction);
             camera->set_rotation_roll(state.roll);
+            if (state.fov.has_value())
+            {
+                camera->set_fov(state.fov.value());
+            }
         }
     }
 

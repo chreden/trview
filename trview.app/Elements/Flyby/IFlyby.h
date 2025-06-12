@@ -1,7 +1,9 @@
 #pragma once
 
+#include <cstdint>
 #include <functional>
 #include <memory>
+#include <optional>
 #include <vector>
 
 #include <trlevel/trtypes.h>
@@ -16,10 +18,13 @@ namespace trview
 
         struct CameraState
         {
+            uint32_t index{ 0u };
             DirectX::SimpleMath::Vector3 position;
             DirectX::SimpleMath::Vector3 direction{ DirectX::SimpleMath::Vector3::Backward };
-            float fov{ 0.0f };
+            std::optional<float> fov;
             float roll{ 0.0f };
+            float t{ 0.0f };
+            float cat_t{ 0.0f };
         };
 
         virtual ~IFlyby() = 0;
