@@ -79,7 +79,11 @@ namespace trview
 
         if (_camera_nodes.size() == 1)
         {
-            state.position = to_vector(_camera_nodes[0].x, _camera_nodes[0].y, _camera_nodes[0].z);
+            state.position = to_position(_camera_nodes[0]);
+            state.direction = to_direction(_camera_nodes[0]);
+            state.fov = _camera_nodes[0].fov;
+            state.roll = _camera_nodes[0].roll;
+            state.index = 0;
             return state;
         }
 
@@ -112,14 +116,8 @@ namespace trview
         const auto n1 = _camera_nodes[at_step];
         const auto n2 = _camera_nodes[next_step];
         const auto n3 = (next_step == _camera_nodes.size() - 1) ? _camera_nodes[next_step] : _camera_nodes[next_step + 1];
-
         state.position = XMVectorCatmullRom(to_position(n0), to_position(n1), to_position(n2), to_position(n3), t);
-
-        const auto d0 = at_step == 0 ? _camera_nodes[at_step] : _camera_nodes[at_step - 1];
-        const auto d1 = _camera_nodes[at_step];
-        const auto d2 = _camera_nodes[next_step];
-        const auto d3 = (next_step == _camera_nodes.size() - 1) ? _camera_nodes[next_step] : _camera_nodes[next_step + 1];
-        Vector3 target = XMVectorCatmullRom(to_direction(d0), to_direction(d1), to_direction(d2), to_direction(d3), t);
+        Vector3 target = XMVectorCatmullRom(to_direction(n0), to_direction(n1), to_direction(n2), to_direction(n3), t);
         (target - state.position).Normalize(state.direction);
 
         state.roll = (n1.roll + (n2.roll - n1.roll) * t) / -182.0f;
