@@ -15,6 +15,7 @@ namespace trview
         void get_transparent_triangles(ITransparencyBuffer& transparency, const ICamera& camera, const DirectX::SimpleMath::Color& colour) override;
         bool visible() const override;
         void set_visible(bool value) override;
+        [[nodiscard]] CameraState update_state(const CameraState& state, float delta) const override;
     private:
         std::vector<trlevel::tr4_flyby_camera> _camera_nodes;
         std::shared_ptr<IMesh> _mesh;

@@ -66,5 +66,6 @@ namespace trview
         bool _playing_flyby{ false };
         float _flyby_percentage{ 0.0f };
         float _original_fov;
+        IFlyby::CameraState _state;
     };
 }

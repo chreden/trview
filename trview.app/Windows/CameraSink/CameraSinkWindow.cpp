@@ -508,17 +508,16 @@ namespace trview
             ImGui::SameLine();
             if (ImGui::SliderFloat("Position", &_flyby_percentage, 0.0f, 1.0f, "%.3f", ImGuiSliderFlags_AlwaysClamp))
             {
+                _state = selected_flyby->state_at(_flyby_percentage);
                 sync_flyby();
             }
 
             if (_playing_flyby)
             {
-                const auto state = selected_flyby->state_at(_flyby_percentage);
-                ImGui::Text(std::format("Node: {}", state.index).c_str());
-                ImGui::Text(std::format("T: {}", state.t).c_str());
-                ImGui::Text(std::format("Cat-T: {}", state.cat_t).c_str());
-                ImGui::Text(std::format("Roll: {}", state.roll).c_str());
-                ImGui::Text(std::format("Fov: {}", state.fov.value_or(0.0f)).c_str());
+                ImGui::Text(std::format("Node: {}", _state.index).c_str());
+                ImGui::Text(std::format("T: {}", _state.t).c_str());
+                ImGui::Text(std::format("Roll: {}", _state.roll).c_str());
+                ImGui::Text(std::format("Fov: {}", _state.fov.value_or(0.0f)).c_str());
             }
         }
     }
@@ -534,14 +533,15 @@ namespace trview
         if (auto camera = _camera.lock())
         {
             using namespace DirectX::SimpleMath;
-            const auto state = flyby->state_at(_flyby_percentage);
+            // const auto state = flyby->state_at(_flyby_percentage);
+            // _state = flyby->update_state(_state, 
             camera->set_mode(ICamera::Mode::Free);
-            camera->set_position(state.position);
-            camera->set_forward(state.direction);
-            camera->set_rotation_roll(state.roll);
-            if (state.fov.has_value())
+            camera->set_position(_state.position);
+            camera->set_forward(_state.direction);
+            camera->set_rotation_roll(_state.roll);
+            if (_state.fov.has_value())
             {
-                camera->set_fov(state.fov.value());
+                camera->set_fov(_state.fov.value());
             }
         }
     }
@@ -556,6 +556,16 @@ namespace trview
 
         if (_playing_flyby)
         {
+            _state = flyby->update_state(_state, delta);
+            if (_state.value >= 1.0f)
+            {
+                _playing_flyby = false;
+            }
+            else
+            {
+                sync_flyby();
+            }
+            /*
             const float speed = 0.05f;
             _flyby_percentage += speed * delta;
             sync_flyby();
@@ -563,6 +573,7 @@ namespace trview
             {
                 _playing_flyby = false;
             }
+            */
         }
     }
 }
