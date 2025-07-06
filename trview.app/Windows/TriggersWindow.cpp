@@ -231,28 +231,7 @@ namespace trview
                     {
                         on_trigger_selected(trigger);
                     }
-                },
-                {
-                    {
-                        "Hide",
-                        {
-                            .on_toggle = [&](auto&& trigger, auto&& value)
-                                {
-                                    if (auto trigger_ptr = trigger.lock())
-                                    {
-                                        trigger_ptr->set_visible(!value);
-                                        on_scene_changed();
-                                    }
-                                },
-                            .on_toggle_all = [&](bool value)
-                                {
-                                    std::ranges::for_each(filtered_triggers, [=](auto&& trigger) { trigger->set_visible(!value); });
-                                    on_scene_changed();
-                                },
-                            .all_toggled = [&]() { return std::ranges::all_of(filtered_triggers, [](auto&& trigger) { return !trigger->visible(); }); }
-                        }
-                    }
-                });
+                }, default_hide(filtered_triggers));
         }
         ImGui::EndChild();
     }

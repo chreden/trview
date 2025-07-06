@@ -256,6 +256,9 @@ namespace trview
     /// <returns>The acceptable options. Emtpy means that there are no restrictions.</returns>
     template <typename T>
     constexpr std::vector<std::string> available_options() noexcept;
+
+    template <typename T>
+    std::unordered_map<std::string, typename Filters<T>::Toggle> default_hide(const std::vector<std::shared_ptr<T>>& filtered_entries);
 }
 
 #include "Filters.hpp"

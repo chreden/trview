@@ -93,26 +93,7 @@ namespace trview
                     {
                         on_static_selected(stat);
                     }
-                },
-                {
-                    {
-                        "Hide",
-                        {
-                            .on_toggle = [&](auto&& static_mesh, auto&& value)
-                                {
-                                    if (auto static_mesh_ptr = static_mesh.lock())
-                                    {
-                                        static_mesh_ptr->set_visible(!value);
-                                    }
-                                },
-                            .on_toggle_all = [&](bool value)
-                                {
-                                    std::ranges::for_each(filtered_statics, [=](auto&& static_mesh) { static_mesh->set_visible(!value); });
-                                },
-                            .all_toggled = [&]() { return std::ranges::all_of(filtered_statics, [](auto&& static_mesh) { return !static_mesh->visible(); }); }
-                        }
-                    }
-                });
+                }, default_hide(filtered_statics));
         }
         ImGui::EndChild();
     }

@@ -133,28 +133,7 @@ namespace trview
                     {
                         on_light_selected(light);
                     }
-                },
-                {
-                    {
-                        "Hide",
-                        {
-                            .on_toggle = [&](auto&& sound, auto&& value)
-                                {
-                                    if (auto sound_ptr = sound.lock())
-                                    {
-                                        sound_ptr->set_visible(!value);
-                                        on_scene_changed();
-                                    }
-                                },
-                            .on_toggle_all = [&](bool value)
-                                {
-                                    std::ranges::for_each(filtered_lights, [=](auto&& light) { light->set_visible(!value); });
-                                    on_scene_changed();
-                                },
-                            .all_toggled = [&]() { return std::ranges::all_of(filtered_lights, [](auto&& light) { return !light->visible(); }); }
-                        }
-                    }
-                });
+                }, default_hide(filtered_lights));
         }
         ImGui::EndChild();
     }

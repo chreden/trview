@@ -63,6 +63,7 @@ namespace trview
             rooms_window_columns == other.rooms_window_columns &&
             statics_window_columns == other.statics_window_columns &&
             sounds_window_columns == other.sounds_window_columns &&
-            lights_window_columns == other.lights_window_columns;
+            lights_window_columns == other.lights_window_columns &&
+            triggers_window_columns == other.triggers_window_columns;
     }
 }

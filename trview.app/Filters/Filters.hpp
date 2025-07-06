@@ -925,4 +925,29 @@ namespace trview
     {
         return { "false", "true" };
     }
+
+    template <typename T>
+    std::unordered_map<std::string, typename Filters<T>::Toggle> default_hide(const std::vector<std::shared_ptr<T>>& filtered_entries)
+    {
+        return
+        {
+            {
+                "Hide",
+                {
+                    .on_toggle = [&](auto&& entry, auto&& value)
+                    {
+                        if (auto entry_ptr = entry.lock())
+                        {
+                            entry_ptr->set_visible(!value);
+                        }
+                    },
+                    .on_toggle_all = [&](bool value)
+                    {
+                        std::ranges::for_each(filtered_entries, [=](auto&& entry) { entry->set_visible(!value); });
+                    },
+                    .all_toggled = [&]() { return std::ranges::all_of(filtered_entries, [](auto&& entry) { return !entry->visible(); }); }
+                }
+            }
+        };
+    }
 }

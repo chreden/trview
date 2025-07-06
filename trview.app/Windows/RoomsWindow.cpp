@@ -353,28 +353,7 @@ namespace trview
                     {
                         on_room_selected(_selected_room);
                     }
-                },
-                {
-                    {
-                        "Hide",
-                        {
-                            .on_toggle = [&](auto&& room, auto&& value)
-                                {
-                                    if (auto room_ptr = room.lock())
-                                    {
-                                        room_ptr->set_visible(!value);
-                                        on_scene_changed();
-                                    }
-                                },
-                            .on_toggle_all = [&](bool value)
-                                {
-                                    std::ranges::for_each(filtered_rooms, [=](auto&& room) { room->set_visible(!value); });
-                                    on_scene_changed();
-                                },
-                            .all_toggled = [&]() { return std::ranges::all_of(filtered_rooms, [](auto&& room) { return !room->visible(); }); }
-                        }
-                    }
-                });
+                }, default_hide(filtered_rooms));
         }
         ImGui::EndChild();
     }
