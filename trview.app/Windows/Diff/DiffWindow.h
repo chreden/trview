@@ -8,7 +8,6 @@
 #include "../../Menus/IFileMenu.h"
 #include "../../Elements/ILevel.h"
 #include "IDiffWindow.h"
-#include "../ColumnSizer.h"
 #include "../../Settings/UserSettings.h"
 
 namespace trview
@@ -77,7 +76,6 @@ namespace trview
         std::shared_ptr<ILevel> load_level(const std::string& filename);
         Diff do_diff(const std::shared_ptr<ILevel>& left, const std::shared_ptr<ILevel>& right);
         bool loading();
-        void calculate_column_widths();
 
         std::string _id{ "Diff 0" };
         std::string _progress;
@@ -86,7 +84,6 @@ namespace trview
         std::optional<LoadOperation> _diff;
         std::shared_ptr<IDialogs> _dialogs;
         std::weak_ptr<ILevel> _level;
-        ColumnSizer _column_sizer;
         std::unique_ptr<IFileMenu> _file_menu;
         TokenStore _token_store;
         UserSettings _settings;
