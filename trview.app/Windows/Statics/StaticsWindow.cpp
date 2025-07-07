@@ -12,6 +12,17 @@ namespace trview
         : _clipboard(clipboard)
     {
         setup_filters();
+
+        _filters.set_columns(std::vector<std::string>{ "#", "Room", "ID", "Type", "Hide" });
+        _token_store += _filters.on_columns_reset += [this]()
+            {
+                _filters.set_columns(std::vector<std::string>{ "#", "Room", "ID", "Type", "Hide" });
+            };
+        _token_store += _filters.on_columns_saved += [this]()
+            {
+                _settings.statics_window_columns = _filters.columns();
+                on_settings(_settings);
+            };
     }
 
     void StaticsWindow::render()
@@ -32,7 +43,6 @@ namespace trview
             render_statics_list();
             ImGui::SameLine();
             render_static_details();
-            _force_sort = false;
         }
         ImGui::End();
         ImGui::PopStyleVar();
@@ -41,7 +51,6 @@ namespace trview
 
     void StaticsWindow::render_statics_list()
     {
-        calculate_column_widths();
         if (ImGui::BeginChild(Names::statics_list_panel.c_str(), ImVec2(0, 0), ImGuiChildFlags_AutoResizeX, ImGuiWindowFlags_NoScrollbar))
         {
             _auto_hider.check_focus();
@@ -59,6 +68,9 @@ namespace trview
 
             _auto_hider.render();
 
+            ImGui::SameLine();
+            _filters.render_settings();
+
             auto filtered_statics =
                 _all_statics |
                 std::views::filter([&](auto&& stat)
@@ -72,76 +84,16 @@ namespace trview
             _auto_hider.apply(_all_statics, filtered_statics, _filters);
 
             RowCounter counter{ "static", _all_statics.size() };
-            if (ImGui::BeginTable(Names::statics_list.c_str(), 5, ImGuiTableFlags_Sortable | ImGuiTableFlags_ScrollY, ImVec2(0, -counter.height())))
-            {
-                imgui_header_row(
-                    {
-                        { "#", _column_sizer.size(0) },
-                        { "Room", _column_sizer.size(1) },
-                        { "ID", _column_sizer.size(2) },
-                        { "Type", _column_sizer.size(3) },
-                        {.name = "Hide", .width = _column_sizer.size(4), .set_checked = [&](bool v)
-                            {
-                                std::ranges::for_each(filtered_statics, [=](auto&& stat) { stat->set_visible(!v); });
-                            }, .checked = std::ranges::all_of(filtered_statics, [](auto&& stat) { return !stat->visible(); })
-                        }
-                    });
 
-                imgui_sort_weak(_all_statics,
-                    {
-                        [](auto&& l, auto&& r) { return l.number() < r.number(); },
-                        [](auto&& l, auto&& r) { return std::tuple(static_mesh_room(l), l.number()) < std::tuple(static_mesh_room(r), r.number()); },
-                        [](auto&& l, auto&& r) { return std::tuple(l.id(), l.number()) < std::tuple(r.id(), r.number()); },
-                        [](auto&& l, auto&& r) { return std::tuple(l.type(), l.number()) < std::tuple(r.type(), r.number()); },
-                        [](auto&& l, auto&& r) { return std::tuple(l.visible(), l.number()) < std::tuple(r.visible(), r.number()); }
-                    }, _force_sort);
-
-                for (const auto& stat : filtered_statics)
+            _filters.render_table(filtered_statics, _all_statics, _selected_static_mesh, counter,
+                [&](auto&& stat)
                 {
-                    counter.count();
-                    ImGui::TableNextRow();
-                    ImGui::TableNextColumn();
-                    auto selected_static_mesh = _selected_static_mesh.lock();
-                    bool selected = selected_static_mesh && selected_static_mesh == stat;
-
-                    ImGuiScroller scroller;
-                    if (selected && _scroll_to_static)
+                    set_local_selected_static_mesh(stat);
+                    if (_sync_static)
                     {
-                        scroller.scroll_to_item();
-                        _scroll_to_static = false;
+                        on_static_selected(stat);
                     }
-
-                    ImGui::SetNextItemAllowOverlap();
-                    if (ImGui::Selectable(std::format("{0}##{0}", stat->number()).c_str(), &selected, ImGuiSelectableFlags_SpanAllColumns | static_cast<int>(ImGuiSelectableFlags_SelectOnNav)))
-                    {
-                        scroller.fix_scroll();
-
-                        set_local_selected_static_mesh(stat);
-                        if (_sync_static)
-                        {
-                            on_static_selected(stat);
-                        }
-                        _scroll_to_static = false;
-                    }
-
-                    ImGui::TableNextColumn();
-                    ImGui::Text(std::to_string(static_mesh_room(*stat)).c_str());
-                    ImGui::TableNextColumn();
-                    ImGui::Text(std::to_string(stat->id()).c_str());
-                    ImGui::TableNextColumn();
-                    ImGui::Text(to_string(stat->type()).c_str());
-                    ImGui::TableNextColumn();
-                    bool hidden = !stat->visible();
-                    ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0, 0));
-                    if (ImGui::Checkbox(std::format("##hide-{}", stat->number()).c_str(), &hidden))
-                    {
-                        stat->set_visible(!hidden);
-                    }
-                    ImGui::PopStyleVar();
-                }
-                ImGui::EndTable();
-                counter.render();
-            }
+                }, default_hide(filtered_statics));
         }
         ImGui::EndChild();
     }
@@ -213,34 +165,11 @@ namespace trview
     {
     }
 
-    void StaticsWindow::calculate_column_widths()
-    {
-        _column_sizer.reset();
-        
-        _column_sizer.measure("#__", 0);
-        _column_sizer.measure("Room__", 1);
-        _column_sizer.measure("ID__", 2);
-        _column_sizer.measure("Type__", 3);
-        _column_sizer.measure("Hide________", 4);
-
-        for (const auto& stat : _all_statics)
-        {
-            if (auto stat_ptr = stat.lock())
-            {
-                _column_sizer.measure(std::format("{0}##{0}", stat_ptr->number()), 0);
-                _column_sizer.measure(std::to_string(static_mesh_room(*stat_ptr)), 1);
-                _column_sizer.measure(std::to_string(stat_ptr->id()), 2);
-                _column_sizer.measure(to_string(stat_ptr->type()), 3);
-            }
-        }
-    }
-
     void StaticsWindow::set_statics(const std::vector<std::weak_ptr<IStaticMesh>>& statics)
     {
         _all_statics = statics;
         setup_filters();
-        _force_sort = true;
-        calculate_column_widths();
+        _filters.force_sort();
     }
 
     void StaticsWindow::setup_filters()
@@ -255,23 +184,25 @@ namespace trview
                 available_types.insert(to_string(stat_ptr->type()));
             }
         }
+
+        _filters.add_getter<int>("#", [](auto&& stat) { return static_cast<int>(stat.number()); });
         _filters.add_getter<std::string>("Type", { available_types.begin(), available_types.end() }, [](auto&& stat) { return to_string(stat.type()); });
-        _filters.add_getter<float>("#", [](auto&& stat) { return static_cast<float>(stat.number()); });
-        _filters.add_getter<float>("X", [](auto&& stat) { return stat.position().x * trlevel::Scale_X; });
-        _filters.add_getter<float>("Y", [](auto&& stat) { return stat.position().y * trlevel::Scale_Y; });
-        _filters.add_getter<float>("Z", [](auto&& stat) { return stat.position().z * trlevel::Scale_Z; });
-        _filters.add_getter<float>("Rotation", [](auto&& stat) { return static_cast<float>(DirectX::XMConvertToDegrees(stat.rotation())); });
-        _filters.add_getter<float>("ID", [](auto&& stat) { return static_cast<float>(stat.id()); });
-        _filters.add_getter<float>("Room", [](auto&& stat) { return static_cast<float>(static_mesh_room(stat)); });
+        _filters.add_getter<int>("X", [](auto&& stat) { return static_cast<int>(stat.position().x * trlevel::Scale_X); });
+        _filters.add_getter<int>("Y", [](auto&& stat) { return static_cast<int>(stat.position().y * trlevel::Scale_Y); });
+        _filters.add_getter<int>("Z", [](auto&& stat) { return static_cast<int>(stat.position().z * trlevel::Scale_Z); });
+        _filters.add_getter<int>("Rotation", [](auto&& stat) { return static_cast<int>(DirectX::XMConvertToDegrees(stat.rotation())); });
+        _filters.add_getter<int>("ID", [](auto&& stat) { return static_cast<int>(stat.id()); });
+        _filters.add_getter<int>("Room", [](auto&& stat) { return static_cast<int>(static_mesh_room(stat)); });
         _filters.add_getter<bool>("Breakable", [](auto&& item) { return item.breakable(); });
         _filters.add_getter<std::string>("Flags", [](auto&& stat) { return format_binary(stat.flags()); });
         _filters.add_getter<bool>("Has Collision", [](auto&& stat) { return stat.has_collision(); });
+        _filters.add_getter<bool>("Hide", [](auto&& stat) { return !stat.visible(); }, EditMode::ReadWrite);
     }
 
     void StaticsWindow::set_local_selected_static_mesh(std::weak_ptr<IStaticMesh> static_mesh)
     {
         _selected_static_mesh = static_mesh;
-        _force_sort = true;
+        _filters.force_sort();
     }
 
     void StaticsWindow::set_sync_static(bool value)
@@ -279,7 +210,7 @@ namespace trview
         if (_sync_static != value)
         {
             _sync_static = value;
-            _scroll_to_static = true;
+            _filters.scroll_to_item();
             if (_sync_static && _global_selected_static.lock())
             {
                 set_selected_static(_global_selected_static);
@@ -297,8 +228,18 @@ namespace trview
         _global_selected_static = static_mesh;
         if (_sync_static)
         {
-            _scroll_to_static = true;
+            _filters.scroll_to_item();
             set_local_selected_static_mesh(static_mesh);
+        }
+    }
+
+    void StaticsWindow::set_settings(const UserSettings& settings)
+    {
+        _settings = settings;
+        if (!_columns_set)
+        {
+            _filters.set_columns(settings.statics_window_columns);
+            _columns_set = true;
         }
     }
 }

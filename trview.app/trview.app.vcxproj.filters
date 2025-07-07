@@ -314,9 +314,6 @@
     <ClCompile Include="Windows\RowCounter.cpp">
       <Filter>Windows</Filter>
     </ClCompile>
-    <ClCompile Include="Windows\ColumnSizer.cpp">
-      <Filter>Windows</Filter>
-    </ClCompile>
     <ClCompile Include="UI\Fonts\Fonts.cpp">
       <Filter>UI\Fonts</Filter>
     </ClCompile>
@@ -1095,9 +1092,6 @@
     </ClInclude>
     <ClInclude Include="Settings\FontSetting.h">
       <Filter>Settings</Filter>
-    </ClInclude>
-    <ClInclude Include="Windows\ColumnSizer.h">
-      <Filter>Windows</Filter>
     </ClInclude>
     <ClInclude Include="UI\Fonts\IFonts.h">
       <Filter>UI\Fonts</Filter>

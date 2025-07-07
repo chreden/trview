@@ -45,5 +45,5 @@ TEST(RoomsWindow, SetMapColoursUpdatesMapRenderer)
     EXPECT_CALL(map_renderer, set_colours).Times(1);
 
     auto window = register_test_module().with_map_renderer_source([&](auto&&) { return std::move(map_renderer_ptr); }).build();
-    window->set_map_colours({});
+    window->set_settings({});
 }

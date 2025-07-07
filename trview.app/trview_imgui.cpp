@@ -6,9 +6,9 @@ namespace trview
     {
         for (const auto& header : headers)
         {
-            ImGui::TableSetupColumn(header.name.c_str(), ImGuiTableColumnFlags_WidthFixed, header.width);
+            ImGui::TableSetupColumn(header.name.c_str(), ImGuiTableColumnFlags_WidthStretch, header.width);
         }
-        ImGui::TableSetupScrollFreeze(1, 1);
+        ImGui::TableSetupScrollFreeze(0, 1);
         ImGui::TableNextRow(ImGuiTableRowFlags_Headers, ImGui::TableGetHeaderRowHeight());
 
         int column_n = 0;

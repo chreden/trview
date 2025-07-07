@@ -20,6 +20,8 @@ namespace trview
         /// Event raised when the 'add to route' button is pressed in one of the item windows.
         Event<std::weak_ptr<IItem>> on_add_to_route;
 
+        Event<UserSettings> on_settings;
+
         /// Render all of the item windows.
         virtual void render() = 0;
 
@@ -56,5 +58,6 @@ namespace trview
         virtual void update(float delta) = 0;
 
         virtual std::vector<std::weak_ptr<IItemsWindow>> windows() const = 0;
+        virtual void set_settings(const UserSettings& settings) = 0;
     };
 }

@@ -1,8 +1,12 @@
 #pragma once
 
 #include <external/imgui/imgui.h>
+#include <external/imgui/imgui_internal.h>
 #include <external/imgui/misc/cpp/imgui_stdlib.h>
 #include <charconv>
+#include <ranges>
+
+#include "../trview_imgui.h"
 
 namespace trview
 {
@@ -41,35 +45,36 @@ namespace trview
 
     template <typename T>
     template <typename value_type>
-    void Filters<T>::add_getter(const std::string& key, const std::function<value_type(const T&)>& getter)
+    void Filters<T>::add_getter(const std::string& key, const std::function<value_type(const T&)>& getter, EditMode can_change)
     {
-        add_getter(key, getter, {});
+        add_getter(key, getter, {}, can_change);
     }
 
     template <typename T>
     template <typename value_type>
-    void Filters<T>::add_getter(const std::string& key, const std::vector<std::string>& options, const std::function<value_type(const T&)>& getter)
+    void Filters<T>::add_getter(const std::string& key, const std::vector<std::string>& options, const std::function<value_type(const T&)>& getter, EditMode can_change)
     {
-        add_getter(key, options, getter, {});
+        add_getter(key, options, getter, {}, can_change);
     }
 
     template <typename T>
     template <typename value_type>
-    void Filters<T>::add_getter(const std::string& key, const std::function<value_type(const T&)>& getter, const std::function<bool(const T&)>& predicate)
+    void Filters<T>::add_getter(const std::string& key, const std::function<value_type(const T&)>& getter, const std::function<bool(const T&)>& predicate, EditMode can_change)
     {
-        add_getter(key, available_options<value_type>(), getter, predicate);
+        add_getter(key, available_options<value_type>(), getter, predicate, can_change);
     }
 
     template <typename T>
     template <typename value_type>
-    void Filters<T>::add_getter(const std::string& key, const std::vector<std::string>& options, const std::function<value_type(const T&)>& getter, const std::function<bool(const T&)>& predicate)
+    void Filters<T>::add_getter(const std::string& key, const std::vector<std::string>& options, const std::function<value_type(const T&)>& getter, const std::function<bool(const T&)>& predicate, EditMode can_change)
     {
         _getters[key] =
         {
-            compare_ops<value_type>(),
-            options,
-            [=](const auto& value) { return getter(value); },
-            predicate
+            .ops = compare_ops<value_type>(),
+            .options = options,
+            .function = [=](const auto& value) { return getter(value); },
+            .predicate = predicate,
+            .can_change = can_change
         };
     }
 
@@ -121,6 +126,12 @@ namespace trview
     }
 
     template <typename T>
+    void Filters<T>::force_sort()
+    {
+        _force_sort = true;
+    }
+
+    template <typename T>
     std::vector<std::string> Filters<T>::keys() const
     {
         std::vector<std::string> result;
@@ -155,6 +166,10 @@ namespace trview
         else if (const bool* value_bool = std::get_if<bool>(&value))
         {
             return is_match(*value_bool, filter);
+        }
+        else if (const int* value_int = std::get_if<int>(&value))
+        {
+            return is_match(static_cast<float>(*value_int), filter);
         }
         return false;
     }
@@ -478,6 +493,77 @@ namespace trview
     }
 
     template <typename T>
+    void Filters<T>::render_settings()
+    {
+        if (ImGui::Button("Columns"))
+        {
+            ImGui::OpenPopup("Columns");
+        }
+
+        if (ImGui::BeginPopupContextItem("Columns"))
+        {
+            if (ImGui::Button("Save"))
+            {
+                on_columns_saved();
+            }
+            if (ImGui::IsItemHovered())
+            {
+                ImGui::SetTooltip("Save these columns as the default for this list");
+            }
+            ImGui::SameLine();
+            if (ImGui::Button("Reset"))
+            {
+                on_columns_reset();
+            }
+            if (ImGui::IsItemHovered())
+            {
+                ImGui::SetTooltip("Reset columns for this list to default");
+            }
+
+            if (ImGui::BeginTable("Columns List", 2, ImGuiTableFlags_Sortable | ImGuiTableFlags_ScrollY))
+            {
+                ImGui::TableSetupColumn("Name");
+                ImGui::TableSetupColumn("Visible");
+                ImGui::TableSetupScrollFreeze(0, 1);
+                for (auto& getter : _getters)
+                {
+                    ImGui::TableNextRow();
+                    ImGui::TableNextColumn();
+                    ImGui::Text(getter.first.c_str());
+                    ImGui::TableNextColumn();
+                    bool visible = std::ranges::find(_columns, getter.first) != _columns.end();
+                    ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0, 0));
+                    if (ImGui::Checkbox(std::format("##{}-visible", getter.first).c_str(), &visible))
+                    {
+                        if (visible)
+                        {
+                            _columns.push_back(getter.first);
+                        }
+                        else
+                        {
+                            // Remove the column but also order the columns to be how they are in the
+                            // current display order.
+                            std::vector<std::string> new_columns;
+                            for (std::size_t col = 0; col < _columns.size() && col < _column_order.size(); ++col)
+                            {
+                                if (_columns[_column_order[col]] != getter.first)
+                                {
+                                    new_columns.push_back(_columns[_column_order[col]]);
+                                }
+                            }
+                            _columns = new_columns;
+                            _column_order = std::views::iota(static_cast<std::size_t>(0u), _columns.size()) | std::ranges::to<std::vector>();
+                        }
+                    }
+                    ImGui::PopStyleVar();
+                }
+                ImGui::EndTable();
+            }
+            ImGui::EndPopup();
+        }
+    }
+
+    template <typename T>
     std::vector<CompareOp> Filters<T>::ops_for_key(const std::string& key) const
     {
         const auto& getter = _getters.find(key);
@@ -555,6 +641,18 @@ namespace trview
     }
 
     template <typename T>
+    void Filters<T>::scroll_to_item()
+    {
+        _scroll_to_item = true;
+    }
+
+    template <typename T>
+    void Filters<T>::set_columns(const std::vector<std::string>& columns)
+    {
+        _columns = columns;
+    }
+
+    template <typename T>
     void Filters<T>::set_filters(const std::vector<Filter> filters)
     {
         _filters = filters;
@@ -566,6 +664,171 @@ namespace trview
         bool current_value = _changed;
         _changed = false;
         return current_value;
+    }
+
+    template <typename T>
+    int Filters<T>::column_count() const
+    {
+        return static_cast<int>(_columns.size());
+    }
+
+    template <typename T>
+    std::vector<std::string> Filters<T>::columns() const
+    {
+        return _columns;
+    }
+
+    template <typename T>
+    void Filters<T>::render_table(const std::ranges::forward_range auto& items,
+        std::ranges::forward_range auto& all_items,
+        const std::weak_ptr<T>& selected_item,
+        RowCounter counter,
+        const std::function<void(std::weak_ptr<T>)>& on_item_selected,
+        const std::unordered_map<std::string, Toggle>& on_toggle)
+    {
+        auto columns = column_count();
+        if (columns == 0)
+        {
+            return;
+        }
+
+        if (ImGui::BeginTable("filter-list", columns, ImGuiTableFlags_Sortable | ImGuiTableFlags_ScrollX | ImGuiTableFlags_ScrollY | ImGuiTableFlags_Reorderable, ImVec2(0, -counter.height())))
+        {
+            for (const auto& column_name : _columns)
+            {
+                ImGui::TableSetupColumn(column_name.c_str(), ImGuiTableColumnFlags_WidthFixed);
+            }
+            ImGui::TableSetupScrollFreeze(0, 1);
+            ImGui::TableNextRow(ImGuiTableRowFlags_Headers, ImGui::TableGetHeaderRowHeight());
+
+            int column_n = 0;
+            for (const auto& column_name : _columns)
+            {
+                if (!ImGui::TableSetColumnIndex(column_n++))
+                {
+                    continue;
+                }
+
+                const auto found_getter = _getters.find(column_name);
+                if (found_getter == _getters.end())
+                {
+                    continue;
+                }
+                const auto& getter = found_getter->second;
+                if (getter.can_change == EditMode::ReadWrite)
+                {
+                    auto found_toggle = on_toggle.find(column_name);
+                    if (found_toggle != on_toggle.end())
+                    {
+                        ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0, 0));
+                        bool value = found_toggle->second.all_toggled();
+                        if (ImGui::Checkbox("##checkall", &value))
+                        {
+                            found_toggle->second.on_toggle_all(value);
+                        }
+                        ImGui::PopStyleVar();
+                        ImGui::SameLine(0.0f, ImGui::GetStyle().ItemInnerSpacing.x);
+                    }
+                }
+                ImGui::TableHeader(column_name.c_str());
+            }
+
+            std::vector<std::function<bool(const T&, const T&)>> sorting_functions;
+            for (const auto& column : _columns)
+            {
+                const auto found_getter = _getters.find(column);
+                if (found_getter != _getters.end())
+                {
+                    const auto getter = found_getter->second;
+                    sorting_functions.push_back([=](const T& l, const T& r) -> bool
+                    {
+                        return std::tuple(getter.function(l), l.number()) < std::tuple(getter.function(r), r.number());
+                    });
+                }
+            }
+
+            imgui_sort_weak(all_items, sorting_functions, _force_sort);
+            _force_sort = false;
+
+            for (const auto& item : items)
+            {
+                counter.count();
+                ImGui::TableNextRow();
+                ImGui::TableNextColumn();
+                auto selected_item_ptr = selected_item.lock();
+                bool selected = selected_item_ptr && selected_item_ptr == item;
+
+                ImGuiScroller scroller;
+                if (selected && _scroll_to_item)
+                {
+                    scroller.scroll_to_item();
+                    _scroll_to_item = false;
+                }
+
+                ImGui::SetNextItemAllowOverlap();
+                if (ImGui::Selectable(std::format("##{0}", item->number()).c_str(), &selected, ImGuiSelectableFlags_SpanAllColumns | static_cast<int>(ImGuiSelectableFlags_SelectOnNav)))
+                {
+                    scroller.fix_scroll();
+                    on_item_selected(item);
+                    _scroll_to_item = false;
+                }
+                ImGui::SameLine();
+
+                int remaining = columns;
+                for (const auto& column_name : _columns)
+                {
+                    const auto found_getter = _getters.find(column_name);
+                    if (found_getter == _getters.end())
+                    {
+                        continue;
+                    }
+                    const auto& getter = found_getter->second;
+                    const auto result = getter.function(*item);
+
+                    std::visit([&](auto&& arg)
+                        {
+                            using R = std::decay_t<decltype(arg)>;
+                            if constexpr (std::is_same_v<R, std::string>)
+                            {
+                                ImGui::Text(arg.c_str());
+                            }
+                            else if constexpr (std::is_same_v<R, bool>)
+                            {
+                                bool toggle_value = arg;
+
+                                ImGui::BeginDisabled(getter.can_change == EditMode::Read);
+                                ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0, 0));
+                                if (ImGui::Checkbox(std::format("##{}-{}", column_name, item->number()).c_str(), &toggle_value))
+                                {
+                                    auto found_toggle = on_toggle.find(column_name);
+                                    if (found_toggle != on_toggle.end())
+                                    {
+                                        found_toggle->second.on_toggle(item, toggle_value);
+                                    }
+                                }
+                                ImGui::PopStyleVar();
+                                ImGui::EndDisabled();
+                            }
+                            else
+                            {
+                                ImGui::Text(std::to_string(arg).c_str());
+                            }
+                        }, result);
+
+                    if (--remaining > 0)
+                    {
+                        ImGui::TableNextColumn();
+                    }
+                }
+            }
+
+            // Track current order in case a column is removed - have to restore the order
+            // manually otherwise it resets.
+            _column_order = { std::from_range, ImGui::GetCurrentTable()->DisplayOrderToIndex };
+
+            ImGui::EndTable();
+            counter.render();
+        }
     }
 
     constexpr std::string to_string(CompareOp op) noexcept
@@ -650,6 +913,22 @@ namespace trview
         };
     }
 
+    template <>
+    constexpr std::vector<CompareOp> compare_ops<int>() noexcept
+    {
+        return
+        {
+            CompareOp::Equal,
+            CompareOp::NotEqual,
+            CompareOp::GreaterThan,
+            CompareOp::GreaterThanOrEqual,
+            CompareOp::LessThan,
+            CompareOp::LessThanOrEqual,
+            CompareOp::Between,
+            CompareOp::BetweenInclusive
+        };
+    }
+
     template <typename T>
     constexpr std::vector<std::string> available_options() noexcept
     {
@@ -660,5 +939,30 @@ namespace trview
     constexpr std::vector<std::string> available_options<bool>() noexcept
     {
         return { "false", "true" };
+    }
+
+    template <typename T>
+    std::unordered_map<std::string, typename Filters<T>::Toggle> default_hide(const std::vector<std::shared_ptr<T>>& filtered_entries)
+    {
+        return
+        {
+            {
+                "Hide",
+                {
+                    .on_toggle = [&](auto&& entry, auto&& value)
+                    {
+                        if (auto entry_ptr = entry.lock())
+                        {
+                            entry_ptr->set_visible(!value);
+                        }
+                    },
+                    .on_toggle_all = [&](bool value)
+                    {
+                        std::ranges::for_each(filtered_entries, [=](auto&& entry) { entry->set_visible(!value); });
+                    },
+                    .all_toggled = [&]() { return std::ranges::all_of(filtered_entries, [](auto&& entry) { return !entry->visible(); }); }
+                }
+            }
+        };
     }
 }

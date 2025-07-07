@@ -9,6 +9,8 @@
 
 #include <trview.common/MessageHandler.h>
 #include <trview.common/Windows/IShortcuts.h>
+
+#include "../Settings/UserSettings.h"
 #include "../Elements/IItem.h"
 #include "IRoomsWindowManager.h"
 #include "WindowManager.h"
@@ -28,21 +30,21 @@ namespace trview
         /// @param rooms_window_source The function to call to get a rooms window.
         explicit RoomsWindowManager(const Window& window, const std::shared_ptr<IShortcuts>& shortcuts, const IRoomsWindow::Source& rooms_window_source);
         virtual ~RoomsWindowManager() = default;
-        virtual std::optional<int> process_message(UINT message, WPARAM wParam, LPARAM lParam) override;
-        virtual void render() override;
+        std::optional<int> process_message(UINT message, WPARAM wParam, LPARAM lParam) override;
+        void render() override;
         std::weak_ptr<ITrigger> selected_trigger() const;
-        virtual void set_items(const std::vector<std::weak_ptr<IItem>>& items) override;
-        virtual void set_level_version(trlevel::LevelVersion version) override;
-        virtual void set_map_colours(const MapColours& colours) override;
-        virtual void set_room(const std::weak_ptr<IRoom>& room) override;
-        virtual void set_rooms(const std::vector<std::weak_ptr<IRoom>>& items) override;
-        virtual void set_selected_item(const std::weak_ptr<IItem>& item) override;
-        virtual void set_selected_trigger(const std::weak_ptr<ITrigger>& trigger) override;
-        virtual std::weak_ptr<IRoomsWindow> create_window() override;
-        virtual void update(float delta) override;
-        virtual void set_floordata(const std::vector<uint16_t>& data) override;
-        virtual void set_selected_light(const std::weak_ptr<ILight>& light) override;
-        virtual void set_selected_camera_sink(const std::weak_ptr<ICameraSink>& camera_sink) override;
+        void set_items(const std::vector<std::weak_ptr<IItem>>& items) override;
+        void set_level_version(trlevel::LevelVersion version) override;
+        void set_settings(const UserSettings& settings) override;
+        void set_room(const std::weak_ptr<IRoom>& room) override;
+        void set_rooms(const std::vector<std::weak_ptr<IRoom>>& items) override;
+        void set_selected_item(const std::weak_ptr<IItem>& item) override;
+        void set_selected_trigger(const std::weak_ptr<ITrigger>& trigger) override;
+        std::weak_ptr<IRoomsWindow> create_window() override;
+        void update(float delta) override;
+        void set_floordata(const std::vector<uint16_t>& data) override;
+        void set_selected_light(const std::weak_ptr<ILight>& light) override;
+        void set_selected_camera_sink(const std::weak_ptr<ICameraSink>& camera_sink) override;
         void set_ng_plus(bool value) override;
         void set_trng(bool value) override;
         std::vector<std::weak_ptr<IRoomsWindow>> windows() const override;
@@ -54,7 +56,7 @@ namespace trview
         std::weak_ptr<IItem> _selected_item;
         IRoomsWindow::Source _rooms_window_source;
         trlevel::LevelVersion _level_version{ trlevel::LevelVersion::Unknown };
-        MapColours _map_colours;
+        UserSettings _settings;
         std::vector<uint16_t> _floordata;
         std::vector<std::weak_ptr<ICameraSink>> _all_camera_sinks;
         std::weak_ptr<ICameraSink> _selected_camera_sink;

@@ -3,14 +3,15 @@
 
 #pragma once
 
+#include <trview.common/TokenStore.h>
 #include <trview.common/Windows/IClipboard.h>
 #include "../Filters/Filters.h"
 
 #include "IItemsWindow.h"
 #include "../Elements/IItem.h"
 #include "../Track/Track.h"
-#include "ColumnSizer.h"
 #include "AutoHider.h"
+#include "../Settings/UserSettings.h"
 
 namespace trview
 {
@@ -46,6 +47,7 @@ namespace trview
         virtual void set_model_checker(const std::function<bool(uint32_t)>& checker) override;
         void set_ng_plus(bool value) override;
         std::string name() const override;
+        void set_settings(const UserSettings& settings) override;
     private:
         void set_sync_item(bool value);
         void render_items_list();
@@ -53,7 +55,6 @@ namespace trview
         bool render_items_window();
         void set_local_selected_item(std::weak_ptr<IItem> item);
         void setup_filters();
-        void calculate_column_widths();
         void render_trigger_references();
 
         std::string _id{ "Items 0" };
@@ -68,7 +69,6 @@ namespace trview
         std::weak_ptr<IItem> _selected_item;
         std::weak_ptr<IItem> _global_selected_item;
         std::vector<std::weak_ptr<ITrigger>> _triggered_by;
-        bool _scroll_to_item{ false };
 
         Filters<IItem> _filters;
         trlevel::LevelVersion _level_version{ trlevel::LevelVersion::Unknown };
@@ -76,8 +76,10 @@ namespace trview
         bool _force_sort{ false };
         Track<Type::Room> _track;
 
-        ColumnSizer _column_sizer;
         bool _ng_plus{ false };
         AutoHider _auto_hider;
+        UserSettings _settings;
+        TokenStore _token_store;
+        bool _columns_set{ false };
     };
 }

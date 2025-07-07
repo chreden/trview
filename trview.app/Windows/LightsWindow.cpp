@@ -14,6 +14,17 @@ namespace trview
     {
         _tips["Direction"] = "Direction is inverted in-game. 3D view shows correct direction.";
         setup_filters();
+
+        _filters.set_columns(std::vector<std::string>{ "#", "Room", "Type", "Hide" });
+        _token_store += _filters.on_columns_reset += [this]()
+            {
+                _filters.set_columns(std::vector<std::string>{ "#", "Room", "Type", "Hide" });
+            };
+        _token_store += _filters.on_columns_saved += [this]()
+            {
+                _settings.lights_window_columns = _filters.columns();
+                on_settings(_settings);
+            };
     }
 
     void LightsWindow::clear_selected_light()
@@ -46,8 +57,7 @@ namespace trview
     {
         _all_lights = lights;
         setup_filters();
-        _force_sort = true;
-        calculate_column_widths();
+        _filters.force_sort();
     }
 
     void LightsWindow::set_selected_light(const std::weak_ptr<ILight>& light)
@@ -55,7 +65,7 @@ namespace trview
         _global_selected_light = light;
         if (_sync_light)
         {
-            _scroll_to_light = true;
+            _filters.scroll_to_item();
             set_local_selected_light(light);
         }
     }
@@ -70,7 +80,7 @@ namespace trview
         if (_sync_light != value)
         {
             _sync_light = value;
-            _scroll_to_light = true;
+            _filters.scroll_to_item();
             if (_sync_light && _global_selected_light.lock())
             {
                 set_selected_light(_global_selected_light);
@@ -80,7 +90,6 @@ namespace trview
 
     void LightsWindow::render_lights_list() 
     {
-        calculate_column_widths();
         if (ImGui::BeginChild(Names::light_list_panel.c_str(), ImVec2(0, 0), ImGuiChildFlags_AutoResizeX, ImGuiWindowFlags_NoScrollbar))
         {
             _auto_hider.check_focus();
@@ -97,6 +106,8 @@ namespace trview
             }
 
             _auto_hider.render();
+            ImGui::SameLine();
+            _filters.render_settings();
 
             auto filtered_lights =
                 _all_lights |
@@ -114,74 +125,15 @@ namespace trview
             }
 
             RowCounter counter{ "light", _all_lights.size() };
-            if (ImGui::BeginTable(Names::lights_listbox.c_str(), 4, ImGuiTableFlags_Sortable | ImGuiTableFlags_ScrollY, ImVec2(0, -counter.height())))
-            {
-                imgui_header_row(
-                    {
-                        { "#", _column_sizer.size(0) },
-                        { "Room", _column_sizer.size(1) },
-                        { "Type", _column_sizer.size(2) },
-                        {.name = "Hide", .width = _column_sizer.size(3), .set_checked = [&](bool v)
-                            {
-                                std::ranges::for_each(filtered_lights, [=](auto&& light) { light->set_visible(!v); });
-                                on_scene_changed();
-                            }, .checked = std::ranges::all_of(filtered_lights, [](auto&& light) { return !light->visible(); })
-                        }
-                    });
-
-                imgui_sort_weak(_all_lights,
-                    {
-                        [](auto&& l, auto&& r) { return l.number() < r.number(); },
-                        [](auto&& l, auto&& r) { return std::tuple(light_room(l), l.number()) < std::tuple(light_room(r), r.number()); },
-                        [](auto&& l, auto&& r) { return std::tuple(to_string(l.type()), l.number()) < std::tuple(to_string(r.type()), r.number()); },
-                        [](auto&& l, auto&& r) { return std::tuple(l.visible(), l.number()) < std::tuple(r.visible(), r.number()); }
-                    }, _force_sort);
-
-                for (const auto& light : filtered_lights)
+            _filters.render_table(filtered_lights, _all_lights, _selected_light, counter,
+                [&](auto&& light)
                 {
-                    counter.count();
-                    ImGui::TableNextRow();
-                    ImGui::TableNextColumn();
-                    bool selected = _selected_light.lock() && _selected_light.lock()->number() == light->number();
-
-                    ImGuiScroller scroller;
-                    if (selected && _scroll_to_light)
+                    set_local_selected_light(light);
+                    if (_sync_light)
                     {
-                        scroller.scroll_to_item();
-                        _scroll_to_light = false;
+                        on_light_selected(light);
                     }
-
-                    ImGui::SetNextItemAllowOverlap();
-                    if (ImGui::Selectable(std::format("{0}##{0}", light->number()).c_str(), &selected, ImGuiSelectableFlags_SpanAllColumns | static_cast<int>(ImGuiSelectableFlags_SelectOnNav)))
-                    {
-                        scroller.fix_scroll();
-
-                        set_local_selected_light(light);
-                        if (_sync_light)
-                        {
-                            on_light_selected(light);
-                        }
-
-                        _scroll_to_light = false;
-                    }
-
-                    ImGui::TableNextColumn();
-                    ImGui::Text(std::to_string(light_room(light)).c_str());
-                    ImGui::TableNextColumn();
-                    ImGui::Text(to_string(light->type()).c_str());
-                    ImGui::TableNextColumn();
-                    bool hidden = !light->visible();
-                    ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0, 0));
-                    if (ImGui::Checkbox(std::format("##hide-{}", light->number()).c_str(), &hidden))
-                    {
-                        light->set_visible(!hidden);
-                        on_scene_changed();
-                    }
-                    ImGui::PopStyleVar();
-                }
-                ImGui::EndTable();
-                counter.render();
-            }
+                }, default_hide(filtered_lights));
         }
         ImGui::EndChild();
     }
@@ -283,7 +235,6 @@ namespace trview
             render_lights_list();
             ImGui::SameLine();
             render_light_details();
-            _force_sort = false;
 
             if (_tooltip_timer.has_value())
             {
@@ -324,19 +275,20 @@ namespace trview
             }
         }
         _filters.add_getter<std::string>("Type", { available_types.begin(), available_types.end() }, [](auto&& light) { return to_string(light.type()); });
-        _filters.add_getter<float>("#", [](auto&& light) { return static_cast<float>(light.number()); });
-        _filters.add_getter<float>("Room", [](auto&& light) { return static_cast<float>(light_room(light)); });
-        _filters.add_getter<float>("X", [](auto&& light) { return light.position().x * trlevel::Scale_X; }, has_position);
-        _filters.add_getter<float>("Y", [](auto&& light) { return light.position().y * trlevel::Scale_Y; }, has_position);
-        _filters.add_getter<float>("Z", [](auto&& light) { return light.position().z * trlevel::Scale_Z; }, has_position);
-        _filters.add_getter<float>("Intensity", [](auto&& light) { return static_cast<float>(light.intensity()); }, has_intensity);
-        _filters.add_getter<float>("Fade", [](auto&& light) { return static_cast<float>(light.fade()); }, has_fade);
+        _filters.add_getter<int>("#", [](auto&& light) { return static_cast<int>(light.number()); });
+        _filters.add_getter<int>("Room", [](auto&& light) { return static_cast<int>(light_room(light)); });
+        _filters.add_getter<int>("X", [](auto&& light) { return static_cast<int>(light.position().x * trlevel::Scale_X); }, has_position);
+        _filters.add_getter<int>("Y", [](auto&& light) { return static_cast<int>(light.position().y * trlevel::Scale_Y); }, has_position);
+        _filters.add_getter<int>("Z", [](auto&& light) { return static_cast<int>(light.position().z * trlevel::Scale_Z); }, has_position);
+        _filters.add_getter<int>("Intensity", [](auto&& light) { return static_cast<int>(light.intensity()); }, has_intensity);
+        _filters.add_getter<int>("Fade", [](auto&& light) { return static_cast<int>(light.fade()); }, has_fade);
+        _filters.add_getter<bool>("Hide", [](auto&& light) { return !light.visible(); }, EditMode::ReadWrite);
 
         if (_level_version >= trlevel::LevelVersion::Tomb3)
         {
-            _filters.add_getter<float>("R", [](auto&& light) { return std::floor(light.colour().r * 255.0f); }, has_colour);
-            _filters.add_getter<float>("G", [](auto&& light) { return std::floor(light.colour().g * 255.0f); }, has_colour);
-            _filters.add_getter<float>("B", [](auto&& light) { return std::floor(light.colour().b * 255.0f); }, has_colour);
+            _filters.add_getter<int>("R", [](auto&& light) { return static_cast<int>(std::floor(light.colour().r * 255.0f)); }, has_colour);
+            _filters.add_getter<int>("G", [](auto&& light) { return static_cast<int>(std::floor(light.colour().g * 255.0f)); }, has_colour);
+            _filters.add_getter<int>("B", [](auto&& light) { return static_cast<int>(std::floor(light.colour().b * 255.0f)); }, has_colour);
             _filters.add_getter<float>("DX", [](auto&& light) { return light.direction().x * trlevel::Scale_X; }, has_direction);
             _filters.add_getter<float>("DY", [](auto&& light) { return light.direction().y * trlevel::Scale_Y; }, has_direction);
             _filters.add_getter<float>("DZ", [](auto&& light) { return light.direction().z * trlevel::Scale_Z; }, has_direction);
@@ -365,22 +317,13 @@ namespace trview
         }
     }
 
-    void LightsWindow::calculate_column_widths()
+    void LightsWindow::set_settings(const UserSettings& settings)
     {
-        _column_sizer.reset();
-        _column_sizer.measure("#__", 0);
-        _column_sizer.measure("Room__", 1);
-        _column_sizer.measure("Type__", 2);
-        _column_sizer.measure("Hide____", 3);
-
-        for (const auto& light : _all_lights)
+        _settings = settings;
+        if (!_columns_set)
         {
-            if (auto light_ptr = light.lock())
-            {
-                _column_sizer.measure(std::format("{0}", light_ptr->number()), 0);
-                _column_sizer.measure(std::to_string(light_room(*light_ptr)), 1);
-                _column_sizer.measure(to_string(light_ptr->type()), 2);
-            }
+            _filters.set_columns(settings.lights_window_columns);
+            _columns_set = true;
         }
     }
 }

@@ -3,6 +3,7 @@
 #include <trview.common/MessageHandler.h>
 #include "ICameraSinkWindowManager.h"
 #include "../WindowManager.h"
+#include "../../Settings/UserSettings.h"
 
 namespace trview
 {
@@ -17,10 +18,12 @@ namespace trview
         virtual void set_camera_sinks(const std::vector<std::weak_ptr<ICameraSink>>& camera_sinks) override;
         virtual void set_selected_camera_sink(const std::weak_ptr<ICameraSink>& camera_sink) override;
         void set_room(const std::weak_ptr<IRoom>& room) override;
+        void set_settings(const UserSettings& settings) override;
     private:
         ICameraSinkWindow::Source _camera_sink_window_source;
         std::vector<std::weak_ptr<ICameraSink>> _camera_sinks;
         std::weak_ptr<ICameraSink> _selected_camera_sink;
         std::weak_ptr<IRoom> _current_room;
+        UserSettings _settings;
     };
 }

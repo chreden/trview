@@ -3,8 +3,11 @@
 #include <vector>
 #include <string>
 #include <map>
+#include <unordered_map>
 #include <variant>
 #include <ranges>
+
+#include "../Windows/RowCounter.h"
 
 namespace trview
 {
@@ -28,6 +31,12 @@ namespace trview
     {
         And,
         Or
+    };
+
+    enum class EditMode
+    {
+        Read,
+        ReadWrite
     };
 
     template <typename T>
@@ -61,6 +70,16 @@ namespace trview
             bool initial_state() const noexcept;
         };
 
+        struct Toggle
+        {
+            std::function<void(std::weak_ptr<T>, bool)> on_toggle;
+            std::function<void(bool)> on_toggle_all;
+            std::function<bool()> all_toggled;
+        };
+
+        Event<> on_columns_reset;
+        Event<> on_columns_saved;
+
         void add_filter(const Filter& filter);
 
         /// <summary>
@@ -69,7 +88,7 @@ namespace trview
         /// <param name="key">The key used in filters</param>
         /// <param name="getter">The getter function.</param>
         template <typename value_type>
-        void add_getter(const std::string& key, const std::function<value_type (const T&)>& getter);
+        void add_getter(const std::string& key, const std::function<value_type (const T&)>& getter, EditMode can_change = EditMode::Read);
         /// <summary>
         /// Add a getter definition to extract a value from an object with specific options.
         /// </summary>
@@ -77,7 +96,7 @@ namespace trview
         /// <param name="options">List of possible options.</param>
         /// <param name="getter">The getter function.</param>
         template <typename value_type>
-        void add_getter(const std::string& key, const std::vector<std::string>& options, const std::function<value_type(const T&)>& getter);
+        void add_getter(const std::string& key, const std::vector<std::string>& options, const std::function<value_type(const T&)>& getter, EditMode can_change = EditMode::Read);
         /// <summary>
         /// Add a getter definition to extract a value from an object with a predicate.
         /// </summary>
@@ -85,7 +104,7 @@ namespace trview
         /// <param name="getter">The getter function.</param>
         /// <param name="predicate">Predicate function to determine whether a specific object supports this getter.</param>
         template <typename value_type>
-        void add_getter(const std::string& key, const std::function<value_type(const T&)>& getter, const std::function<bool(const T&)>& predicate);
+        void add_getter(const std::string& key, const std::function<value_type(const T&)>& getter, const std::function<bool(const T&)>& predicate, EditMode can_change = EditMode::Read);
         /// <summary>
         /// Add a getter definition to extract a value from an object with specific options and a predicate.
         /// </summary>
@@ -94,7 +113,7 @@ namespace trview
         /// <param name="getter">The getter function.</param>
         /// <param name="predicate">Predicate function to determine whether a specific object supports this getter.</param>
         template <typename value_type>
-        void add_getter(const std::string& key, const std::vector<std::string>& options, const std::function<value_type(const T&)>& getter, const std::function<bool(const T&)>& predicate);
+        void add_getter(const std::string& key, const std::vector<std::string>& options, const std::function<value_type(const T&)>& getter, const std::function<bool(const T&)>& predicate, EditMode can_change = EditMode::Read);
         /// <summary>
         /// Add a getter definition to extract multiple values from an object.
         /// </summary>
@@ -131,6 +150,7 @@ namespace trview
         /// Remove all getters and multi getters
         /// </summary>
         void clear_all_getters();
+        void force_sort();
         /// <summary>
         /// Check whether the object matches the configured filters.
         /// </summary>
@@ -141,6 +161,22 @@ namespace trview
         /// Render the filters button and popup.
         /// </summary>
         void render();
+        void render_settings();
+        /// <summary>
+        /// Render the entity list.
+        /// </summary>
+        /// <param name="items">Filtered items.</param>
+        /// <param name="all_items">All items.</param>
+        /// <param name="selected_item">The currently selected item.</param>
+        void render_table(
+            const std::ranges::forward_range auto& items,
+            std::ranges::forward_range auto& all_items,
+            const std::weak_ptr<T>& selected_item,
+            RowCounter counter,
+            const std::function<void(std::weak_ptr<T>)>& on_item_selected,
+            const std::unordered_map<std::string, Toggle>& on_toggle);
+        void scroll_to_item();
+        void set_columns(const std::vector<std::string>& columns);
         /// <summary>
         /// Set the filters to a specific value.
         /// </summary>
@@ -151,8 +187,11 @@ namespace trview
         /// </summary>
         /// <returns>Whether filters were changed.</returns>
         bool test_and_reset_changed();
+        std::vector<std::string> columns() const;
     private:
-        using Value = std::variant<std::string, float, bool>;
+        int column_count() const;
+
+        using Value = std::variant<std::string, float, bool, int>;
 
         template <typename return_type>
         struct Getter
@@ -161,6 +200,7 @@ namespace trview
             std::vector<std::string> options;
             std::function<return_type (const T&)> function;
             std::function<bool(const T&)> predicate;
+            EditMode can_change{ EditMode::Read };
         };
 
         /// <summary>
@@ -193,6 +233,10 @@ namespace trview
         bool _show_filters{ false };
         bool _enabled{ true };
         bool _changed{ true };
+        mutable bool _scroll_to_item{ false };
+        mutable bool _force_sort{ false };
+        std::vector<std::string> _columns;
+        std::vector<std::size_t> _column_order;
     };
 
     constexpr std::string to_string(CompareOp op) noexcept;
@@ -213,6 +257,9 @@ namespace trview
     /// <returns>The acceptable options. Emtpy means that there are no restrictions.</returns>
     template <typename T>
     constexpr std::vector<std::string> available_options() noexcept;
+
+    template <typename T>
+    std::unordered_map<std::string, typename Filters<T>::Toggle> default_hide(const std::vector<std::shared_ptr<T>>& filtered_entries);
 }
 
 #include "Filters.hpp"

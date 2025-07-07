@@ -34,6 +34,7 @@ namespace trview
         items_window->on_scene_changed += on_scene_changed;
         items_window->on_trigger_selected += on_trigger_selected;
         items_window->on_add_to_route += on_add_to_route;
+        items_window->on_settings += on_settings;
         items_window->set_items(_items);
         items_window->set_triggers(_triggers);
         items_window->set_current_room(_current_room);
@@ -41,6 +42,7 @@ namespace trview
         items_window->set_model_checker(_model_checker);
         items_window->set_ng_plus(_ng_plus);
         items_window->set_selected_item(_selected_item);
+        items_window->set_settings(_settings);
         return add_window(items_window);
     }
 
@@ -119,5 +121,14 @@ namespace trview
         return _windows |
             std::views::transform([](auto&& w) -> std::weak_ptr<IItemsWindow> { return w.second; }) |
             std::ranges::to<std::vector>();
+    }
+
+    void ItemsWindowManager::set_settings(const UserSettings& settings)
+    {
+        _settings = settings;
+        for (auto& window : _windows)
+        {
+            window.second->set_settings(settings);
+        }
     }
 }

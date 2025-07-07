@@ -5,12 +5,13 @@
 #include <trview.common/Windows/IClipboard.h>
 #include <trview.common/TokenStore.h>
 
+#include "../Settings/UserSettings.h"
+
 #include "../UI/Tooltip.h"
 #include "../Elements/IItem.h"
 #include "../UI/IMapRenderer.h"
 #include "../Filters/Filters.h"
 #include "../Track/Track.h"
-#include "ColumnSizer.h"
 #include "AutoHider.h"
 
 namespace trview
@@ -33,22 +34,22 @@ namespace trview
         /// @param renderer_source The function to call to get a renderer.
         explicit RoomsWindow(const IMapRenderer::Source& map_renderer_source, const std::shared_ptr<IClipboard>& clipboard);
         virtual ~RoomsWindow() = default;
-        virtual void clear_selected_trigger() override;
-        virtual void render() override;
-        virtual void set_current_room(const std::weak_ptr<IRoom>& room) override;
-        virtual void set_items(const std::vector<std::weak_ptr<IItem>>& items) override;
-        virtual void set_level_version(trlevel::LevelVersion version) override;
-        virtual void set_map_colours(const MapColours& colours) override;
-        virtual void set_rooms(const std::vector<std::weak_ptr<IRoom>>& rooms) override;
-        virtual void set_selected_item(const std::weak_ptr<IItem>& item) override;
-        virtual void set_selected_trigger(const std::weak_ptr<ITrigger>& trigger) override;
-        virtual void update(float delta) override;
-        virtual void set_number(int32_t number) override;
-        virtual void set_floordata(const std::vector<uint16_t>& data) override;
-        virtual void set_selected_light(const std::weak_ptr<ILight>& light) override;
-        virtual void set_selected_camera_sink(const std::weak_ptr<ICameraSink>& camera_sink) override;
-        virtual void clear_selected_light() override;
-        virtual void clear_selected_camera_sink() override;
+        void clear_selected_trigger() override;
+        void render() override;
+        void set_current_room(const std::weak_ptr<IRoom>& room) override;
+        void set_items(const std::vector<std::weak_ptr<IItem>>& items) override;
+        void set_level_version(trlevel::LevelVersion version) override;
+        void set_settings(const UserSettings& settings) override;
+        void set_rooms(const std::vector<std::weak_ptr<IRoom>>& rooms) override;
+        void set_selected_item(const std::weak_ptr<IItem>& item) override;
+        void set_selected_trigger(const std::weak_ptr<ITrigger>& trigger) override;
+        void update(float delta) override;
+        void set_number(int32_t number) override;
+        void set_floordata(const std::vector<uint16_t>& data) override;
+        void set_selected_light(const std::weak_ptr<ILight>& light) override;
+        void set_selected_camera_sink(const std::weak_ptr<ICameraSink>& camera_sink) override;
+        void clear_selected_light() override;
+        void clear_selected_camera_sink() override;
         void set_ng_plus(bool value) override;
         void set_trng(bool value) override;
         std::string name() const override;
@@ -74,7 +75,6 @@ namespace trview
         void select_room(std::weak_ptr<IRoom> room);
         void render_statics_tab();
         void set_static_meshes(const std::vector<std::weak_ptr<IStaticMesh>>& static_meshes);
-        void calculate_column_widths();
 
         std::vector<std::weak_ptr<IRoom>> _all_rooms;
         std::vector<std::weak_ptr<IItem>> _all_items;
@@ -128,9 +128,11 @@ namespace trview
         uint32_t _selected_floordata{ 0 };
         Track<Type::Item, Type::Trigger, Type::Light, Type::CameraSink> _track;
 
-        ColumnSizer _column_sizer;
         bool _ng_plus{ false };
         AutoHider _auto_hider;
         bool _trng{ false };
+
+        UserSettings _settings;
+        bool _columns_set{ false };
     };
 }

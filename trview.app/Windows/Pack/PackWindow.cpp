@@ -45,7 +45,7 @@ namespace trview
                     ImGui::TableSetupColumn("Offset");
                     ImGui::TableSetupColumn("Size");
                     ImGui::TableSetupColumn("Type");
-                    ImGui::TableSetupScrollFreeze(1, 1);
+                    ImGui::TableSetupScrollFreeze(0, 1);
                     ImGui::TableHeadersRow();
 
                     uint32_t index = 0;

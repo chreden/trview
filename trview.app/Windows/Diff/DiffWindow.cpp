@@ -767,11 +767,11 @@ namespace trview
                     {
                         imgui_header_row(
                             {
-                                { "# ##L", _column_sizer.size(0) },
-                                { "Type##L", _column_sizer.size(1) },
-                                { "Change", _column_sizer.size(2) },
-                                { "# ##R", _column_sizer.size(3) },
-                                { "Type##R", _column_sizer.size(4) },
+                                { "# ##L" },
+                                { "Type##L" },
+                                { "Change" },
+                                { "# ##R" },
+                                { "Type##R" },
                             });
 
                         for (const auto item_diff : diff_entries)
@@ -885,38 +885,6 @@ namespace trview
             }
 
             ImGui::EndTabBar();
-        }
-    }
-
-    void DiffWindow::calculate_column_widths()
-    {
-        if (!_diff)
-        {
-            return;
-        }
-
-        _column_sizer.reset();
-        _column_sizer.measure("#__", 0);
-        _column_sizer.measure("Type__", 1);
-        _column_sizer.measure("Change__", 2);
-        _column_sizer.measure("#__", 3);
-        _column_sizer.measure("Type__", 4);
-
-        for (const auto& item : _diff->diff.items)
-        {
-            if (auto item_ptr = item.left.lock())
-            {
-                _column_sizer.measure(std::to_string(item_ptr->number()), 0);
-                _column_sizer.measure(item_ptr->type(), 1);
-            }
-
-            _column_sizer.measure(to_string(item.type), 2);
-
-            if (auto item_ptr = item.right.lock())
-            {
-                _column_sizer.measure(std::to_string(item_ptr->number()), 3);
-                _column_sizer.measure(item_ptr->type(), 4);
-            }
         }
     }
 }

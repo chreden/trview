@@ -21,6 +21,8 @@ namespace trview
 
         Event<std::weak_ptr<ICameraSink>> on_camera_sink_selected;
 
+        Event<UserSettings> on_settings;
+
         /// Render all of the triggers windows.
         virtual void render() = 0;
 
@@ -43,6 +45,8 @@ namespace trview
         /// Set the currently selected trigger.
         /// @param item The selected trigger.
         virtual void set_selected_trigger(const std::weak_ptr<ITrigger>& trigger) = 0;
+
+        virtual void set_settings(const UserSettings& settings) = 0;
 
         /// Create a new triggers window.
         virtual std::weak_ptr<ITriggersWindow> create_window() = 0;

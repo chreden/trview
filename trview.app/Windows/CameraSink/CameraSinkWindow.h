@@ -1,11 +1,12 @@
 #pragma once
 
+#include <trview.common/TokenStore.h>
 #include <trview.common/Windows/IClipboard.h>
 #include "../../Filters/Filters.h"
 #include "../../Track/Track.h"
 #include "ICameraSinkWindow.h"
-#include "../ColumnSizer.h"
 #include "../AutoHider.h"
+#include "../../Settings/UserSettings.h"
 
 namespace trview
 {
@@ -30,6 +31,7 @@ namespace trview
         virtual void set_camera_sinks(const std::vector<std::weak_ptr<ICameraSink>>& camera_sinks) override;
         virtual void set_selected_camera_sink(const std::weak_ptr<ICameraSink>& camera_sink) override;
         void set_current_room(const std::weak_ptr<IRoom>& room) override;
+        void set_settings(const UserSettings& settings) override;
     private:
         bool render_camera_sink_window();
         void set_sync(bool value);
@@ -37,7 +39,6 @@ namespace trview
         void render_list();
         void render_details();
         void setup_filters();
-        void calculate_column_widths();
 
         std::string _id{ "Camera/Sink 0" };
         std::vector<std::weak_ptr<ICameraSink>> _all_camera_sinks;
@@ -50,10 +51,12 @@ namespace trview
         bool _sync{ true };
         bool _scroll_to{ false };
         std::weak_ptr<IRoom> _current_room;
-        bool _force_sort{ false };
         std::vector<std::weak_ptr<ITrigger>> _triggered_by;
         Track<Type::Room> _track;
-        ColumnSizer _column_sizer;
         AutoHider _auto_hider;
+        UserSettings _settings;
+        bool _columns_set{ false };
+        bool _force_sort{ false };
+        TokenStore _token_store;
     };
 }

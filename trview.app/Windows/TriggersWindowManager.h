@@ -8,6 +8,7 @@
 #include <trview.common/Windows/IShortcuts.h>
 #include "ITriggersWindowManager.h"
 #include "WindowManager.h"
+#include "../Settings/UserSettings.h"
 
 namespace trview
 {
@@ -31,6 +32,7 @@ namespace trview
         virtual void set_selected_trigger(const std::weak_ptr<ITrigger>& trigger) override;
         virtual std::weak_ptr<ITriggersWindow> create_window() override;
         virtual void update(float delta) override;
+        void set_settings(const UserSettings& settings) override;
     private:
         std::vector<std::weak_ptr<IItem>> _items;
         std::vector<std::weak_ptr<ITrigger>> _triggers;
@@ -38,5 +40,6 @@ namespace trview
         std::weak_ptr<ITrigger> _selected_trigger;
         ITriggersWindow::Source _triggers_window_source;
         trlevel::PlatformAndVersion _platform_and_version;
+        UserSettings _settings;
     };
 }

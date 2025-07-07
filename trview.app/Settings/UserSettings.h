@@ -69,6 +69,13 @@ namespace trview
         bool camera_position_window{ true };
         std::list<std::string> recent_diff_files;
         std::unordered_map<std::string, PluginSetting> plugins;
+        std::vector<std::string> items_window_columns{ "#", "Room", "Type ID", "Type", "Hide" };
+        std::vector<std::string> rooms_window_columns{ "#", "Items", "Triggers", "Statics", "Hide" };
+        std::vector<std::string> statics_window_columns{ "#", "Room", "ID", "Type", "Hide" };
+        std::vector<std::string> sounds_window_columns{ "#", "ID", "Sample", "Hide" };
+        std::vector<std::string> lights_window_columns{ "#", "Type", "Room", "Hide" };
+        std::vector<std::string> camera_sink_window_columns{ "#", "Type", "Room", "Hide" };
+        std::vector<std::string> triggers_window_columns{ "#", "Type", "Room", "Hide" };
 
         bool operator==(const UserSettings& other) const;
     };

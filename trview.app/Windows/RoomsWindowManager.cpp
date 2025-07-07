@@ -51,12 +51,12 @@ namespace trview
         }
     }
 
-    void RoomsWindowManager::set_map_colours(const MapColours& colours)
+    void RoomsWindowManager::set_settings(const UserSettings& settings)
     {
-        _map_colours = colours;
+        _settings = settings;
         for (auto& window : _windows)
         {
-            window.second->set_map_colours(colours);
+            window.second->set_settings(settings);
         }
     }
 
@@ -107,11 +107,12 @@ namespace trview
         rooms_window->on_light_selected += on_light_selected;
         rooms_window->on_camera_sink_selected += on_camera_sink_selected;
         rooms_window->on_static_mesh_selected += on_static_mesh_selected;
+        rooms_window->on_settings += on_settings;
         rooms_window->set_level_version(_level_version);
         rooms_window->set_items(_all_items);
         rooms_window->set_rooms(_all_rooms);
         rooms_window->set_current_room(_current_room);
-        rooms_window->set_map_colours(_map_colours);
+        rooms_window->set_settings(_settings);
         rooms_window->set_floordata(_floordata);
         rooms_window->set_selected_item(_selected_item);
         rooms_window->set_selected_trigger(_selected_trigger);
