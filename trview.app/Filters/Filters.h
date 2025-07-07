@@ -236,6 +236,7 @@ namespace trview
         mutable bool _scroll_to_item{ false };
         mutable bool _force_sort{ false };
         std::vector<std::string> _columns;
+        std::vector<std::size_t> _column_order;
     };
 
     constexpr std::string to_string(CompareOp op) noexcept;

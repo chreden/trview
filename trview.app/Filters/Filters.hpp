@@ -541,7 +541,18 @@ namespace trview
                         }
                         else
                         {
-                            std::erase(_columns, getter.first);
+                            // Remove the column but also order the columns to be how they are in the
+                            // current display order.
+                            std::vector<std::string> new_columns;
+                            for (std::size_t col = 0; col < _columns.size() && col < _column_order.size(); ++col)
+                            {
+                                if (_columns[_column_order[col]] != getter.first)
+                                {
+                                    new_columns.push_back(_columns[_column_order[col]]);
+                                }
+                            }
+                            _columns = new_columns;
+                            _column_order = std::views::iota(static_cast<std::size_t>(0u), _columns.size()) | std::ranges::to<std::vector>();
                         }
                     }
                     ImGui::PopStyleVar();
@@ -810,6 +821,10 @@ namespace trview
                     }
                 }
             }
+
+            // Track current order in case a column is removed - have to restore the order
+            // manually otherwise it resets.
+            _column_order = { std::from_range, ImGui::GetCurrentTable()->DisplayOrderToIndex };
 
             ImGui::EndTable();
             counter.render();
