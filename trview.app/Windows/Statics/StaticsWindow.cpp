@@ -190,7 +190,7 @@ namespace trview
         _filters.add_getter<int>("X", [](auto&& stat) { return static_cast<int>(stat.position().x * trlevel::Scale_X); });
         _filters.add_getter<int>("Y", [](auto&& stat) { return static_cast<int>(stat.position().y * trlevel::Scale_Y); });
         _filters.add_getter<int>("Z", [](auto&& stat) { return static_cast<int>(stat.position().z * trlevel::Scale_Z); });
-        _filters.add_getter<float>("Rotation", [](auto&& stat) { return static_cast<float>(DirectX::XMConvertToDegrees(stat.rotation())); });
+        _filters.add_getter<int>("Rotation", [](auto&& stat) { return static_cast<int>(DirectX::XMConvertToDegrees(stat.rotation())); });
         _filters.add_getter<int>("ID", [](auto&& stat) { return static_cast<int>(stat.id()); });
         _filters.add_getter<int>("Room", [](auto&& stat) { return static_cast<int>(static_mesh_room(stat)); });
         _filters.add_getter<bool>("Breakable", [](auto&& item) { return item.breakable(); });

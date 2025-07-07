@@ -358,8 +358,8 @@ namespace trview
         _filters.add_getter<int>("X", [](auto&& item) { return static_cast<int>(item.position().x * trlevel::Scale_X); });
         _filters.add_getter<int>("Y", [](auto&& item) { return static_cast<int>(item.position().y * trlevel::Scale_Y); });
         _filters.add_getter<int>("Z", [](auto&& item) { return static_cast<int>(item.position().z * trlevel::Scale_Z); });
-        _filters.add_getter<float>("Angle", [](auto&& item) { return static_cast<float>(bound_rotation(item.angle())); });
-        _filters.add_getter<float>("Angle Degrees", [](auto&& item) { return static_cast<float>(bound_rotation(item.angle()) / 182); });
+        _filters.add_getter<int>("Angle", [](auto&& item) { return static_cast<int>(bound_rotation(item.angle())); });
+        _filters.add_getter<int>("Angle Degrees", [](auto&& item) { return static_cast<int>(bound_rotation(item.angle()) / 182); });
         _filters.add_getter<int>("Type ID", [](auto&& item) { return static_cast<int>(item.type_id()); }, EditMode::Read);
         _filters.add_getter<int>("Room", [](auto&& item) { return static_cast<int>(item_room(item)); }, EditMode::Read);
         _filters.add_getter<bool>("Clear Body", [](auto&& item) { return item.clear_body_flag(); });
@@ -413,7 +413,7 @@ namespace trview
             ImGui::TableSetupColumn("#");
             ImGui::TableSetupColumn("Room");
             ImGui::TableSetupColumn("Type");
-            ImGui::TableSetupScrollFreeze(1, 1);
+            ImGui::TableSetupScrollFreeze(0, 1);
             ImGui::TableHeadersRow();
 
             imgui_sort_weak(_triggered_by,

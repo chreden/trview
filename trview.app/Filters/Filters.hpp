@@ -524,7 +524,7 @@ namespace trview
             {
                 ImGui::TableSetupColumn("Name");
                 ImGui::TableSetupColumn("Visible");
-                ImGui::TableSetupScrollFreeze(1, 1);
+                ImGui::TableSetupScrollFreeze(0, 1);
                 for (auto& getter : _getters)
                 {
                     ImGui::TableNextRow();
@@ -687,7 +687,7 @@ namespace trview
             {
                 ImGui::TableSetupColumn(column_name.c_str(), ImGuiTableColumnFlags_WidthFixed);
             }
-            ImGui::TableSetupScrollFreeze(1, 1);
+            ImGui::TableSetupScrollFreeze(0, 1);
             ImGui::TableNextRow(ImGuiTableRowFlags_Headers, ImGui::TableGetHeaderRowHeight());
 
             int column_n = 0;

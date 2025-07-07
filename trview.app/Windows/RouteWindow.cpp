@@ -54,7 +54,7 @@ namespace trview
                 if (ImGui::BeginTable("##levellist", 1, ImGuiTableFlags_ScrollY, ImVec2(100, -1)))
                 {
                     ImGui::TableSetupColumn("Name");
-                    ImGui::TableSetupScrollFreeze(1, 1);
+                    ImGui::TableSetupScrollFreeze(0, 1);
                     ImGui::TableHeadersRow();
 
                     std::string selected_level;
@@ -115,7 +115,7 @@ namespace trview
             {
                 ImGui::TableSetupColumn("#");
                 ImGui::TableSetupColumn("Type");
-                ImGui::TableSetupScrollFreeze(1, 1);
+                ImGui::TableSetupScrollFreeze(0, 1);
                 ImGui::TableHeadersRow();
 
                 if (route) 

@@ -76,7 +76,7 @@ namespace trview
                     ImGui::TableSetupColumn("Name");
                     ImGui::TableSetupColumn("Author");
                     ImGui::TableSetupColumn("Description");
-                    ImGui::TableSetupScrollFreeze(1, 1);
+                    ImGui::TableSetupScrollFreeze(0, 1);
                     ImGui::TableHeadersRow();
 
                     for (const auto& p : plugins->plugins())

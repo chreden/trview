@@ -295,7 +295,7 @@ namespace trview
                     ImGui::TableSetupColumn("#");
                     ImGui::TableSetupColumn("Room");
                     ImGui::TableSetupColumn("Type");
-                    ImGui::TableSetupScrollFreeze(1, 1);
+                    ImGui::TableSetupScrollFreeze(0, 1);
                     ImGui::TableHeadersRow();
 
                     imgui_sort_weak(_triggered_by,

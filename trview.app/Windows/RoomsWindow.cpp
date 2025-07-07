@@ -647,21 +647,21 @@ namespace trview
         _filters.add_getter<bool>("Bit 13", [](auto&& room) { return room.flag(IRoom::Flag::Bit13); });
         _filters.add_getter<bool>("Bit 14", [](auto&& room) { return room.flag(IRoom::Flag::Bit14); });
         _filters.add_getter<bool>("Bit 15", [](auto&& room) { return room.flag(IRoom::Flag::Bit15); });
-        _filters.add_getter<float>("Alternate", [](auto&& room) { return room.alternate_room(); }, [](auto&& room) { return room.alternate_mode() != IRoom::AlternateMode::None; });
+        _filters.add_getter<int>("Alternate", [](auto&& room) { return room.alternate_room(); }, [](auto&& room) { return room.alternate_mode() != IRoom::AlternateMode::None; });
         _filters.add_getter<int>("Alternate Group", [](auto&& room) { return room.alternate_group(); }, [](auto&& room) { return room.alternate_mode() != IRoom::AlternateMode::None; });
         _filters.add_getter<bool>("No Space", room_is_no_space);
         if (_level_version < trlevel::LevelVersion::Tomb4)
         {
-            _filters.add_getter<float>("Ambient Intensity", [](auto&& room) { return room.ambient_intensity_1(); });
-            _filters.add_getter<float>("Ambient Intensity %", [](auto&& room) { return ambient_percentage(room.ambient_intensity_1()) * 100.0f; });
+            _filters.add_getter<int>("Ambient Intensity", [](auto&& room) { return room.ambient_intensity_1(); });
+            _filters.add_getter<float>("Ambient Intensity %%", [](auto&& room) { return ambient_percentage(room.ambient_intensity_1()) * 100.0f; });
             if (_level_version > trlevel::LevelVersion::Tomb1)
             {
                 if (_level_version == trlevel::LevelVersion::Tomb2)
                 {
-                    _filters.add_getter<float>("Ambient Intensity 2", [](auto&& room) { return room.ambient_intensity_2(); });
-                    _filters.add_getter<float>("Ambient Intensity 2 %", [](auto&& room) { return ambient_percentage(room.ambient_intensity_2()) * 100.0f; });
+                    _filters.add_getter<int>("Ambient Intensity 2", [](auto&& room) { return room.ambient_intensity_2(); });
+                    _filters.add_getter<float>("Ambient Intensity 2 %%", [](auto&& room) { return ambient_percentage(room.ambient_intensity_2()) * 100.0f; });
                 }
-                _filters.add_getter<float>("Light Mode", [](auto&& room) { return room.light_mode(); });
+                _filters.add_getter<int>("Light Mode", [](auto&& room) { return room.light_mode(); });
             }
         }
         else
@@ -782,7 +782,7 @@ namespace trview
         if (ImGui::BeginTable("Neighbours", 1, ImGuiTableFlags_ScrollY | ImGuiTableFlags_SizingStretchProp))
         {
             ImGui::TableSetupColumn("#");
-            ImGui::TableSetupScrollFreeze(1, 1);
+            ImGui::TableSetupScrollFreeze(0, 1);
             ImGui::TableHeadersRow();
 
             for (auto& neighbour : room->neighbours())
@@ -815,7 +815,7 @@ namespace trview
         {
             ImGui::TableSetupColumn("#");
             ImGui::TableSetupColumn("Type");
-            ImGui::TableSetupScrollFreeze(1, 1);
+            ImGui::TableSetupScrollFreeze(0, 1);
             ImGui::TableHeadersRow();
 
             imgui_sort_weak(_all_items,
@@ -868,7 +868,7 @@ namespace trview
         {
             ImGui::TableSetupColumn("#");
             ImGui::TableSetupColumn("Type");
-            ImGui::TableSetupScrollFreeze(1, 1);
+            ImGui::TableSetupScrollFreeze(0, 1);
             ImGui::TableHeadersRow();
 
             imgui_sort_weak(_triggers,
@@ -927,7 +927,7 @@ namespace trview
             {
                 ImGui::TableSetupColumn("Meaning");
             }
-            ImGui::TableSetupScrollFreeze(1, 1);
+            ImGui::TableSetupScrollFreeze(0, 1);
             ImGui::TableHeadersRow();
 
             if (selected_sector)
@@ -1037,7 +1037,7 @@ namespace trview
         {
             ImGui::TableSetupColumn("#");
             ImGui::TableSetupColumn("Type");
-            ImGui::TableSetupScrollFreeze(1, 1);
+            ImGui::TableSetupScrollFreeze(0, 1);
             ImGui::TableHeadersRow();
 
             imgui_sort_weak(_camera_sinks,
@@ -1085,7 +1085,7 @@ namespace trview
         {
             ImGui::TableSetupColumn("#");
             ImGui::TableSetupColumn("Type");
-            ImGui::TableSetupScrollFreeze(1, 1);
+            ImGui::TableSetupScrollFreeze(0, 1);
             ImGui::TableHeadersRow();
 
             imgui_sort_weak(_lights,
@@ -1177,7 +1177,7 @@ namespace trview
         {
             ImGui::TableSetupColumn("#");
             ImGui::TableSetupColumn("ID");
-            ImGui::TableSetupScrollFreeze(1, 1);
+            ImGui::TableSetupScrollFreeze(0, 1);
             ImGui::TableHeadersRow();
 
             for (const auto& static_mesh : _static_meshes)

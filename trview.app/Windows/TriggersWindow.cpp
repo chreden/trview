@@ -346,7 +346,7 @@ namespace trview
                 {
                     ImGui::TableSetupColumn("Extra");
                 }
-                ImGui::TableSetupScrollFreeze(1, 1);
+                ImGui::TableSetupScrollFreeze(0, 1);
                 ImGui::TableHeadersRow();
 
                 imgui_sort(_local_selected_trigger_commands,

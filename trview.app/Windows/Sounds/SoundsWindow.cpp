@@ -315,9 +315,9 @@ namespace trview
     {
         _filters.clear_all_getters();
         _filters.add_getter<int>("#", [](auto&& sound_source) { return static_cast<int>(sound_source.number()); });
-        _filters.add_getter<float>("X", [](auto&& sound_source) { return sound_source.position().x * trlevel::Scale_X; });
-        _filters.add_getter<float>("Y", [](auto&& sound_source) { return sound_source.position().y * trlevel::Scale_Y; });
-        _filters.add_getter<float>("Z", [](auto&& sound_source) { return sound_source.position().z * trlevel::Scale_Z; });
+        _filters.add_getter<int>("X", [](auto&& sound_source) { return static_cast<int>(sound_source.position().x * trlevel::Scale_X); });
+        _filters.add_getter<int>("Y", [](auto&& sound_source) { return static_cast<int>(sound_source.position().y * trlevel::Scale_Y); });
+        _filters.add_getter<int>("Z", [](auto&& sound_source) { return static_cast<int>(sound_source.position().z * trlevel::Scale_Z); });
         _filters.add_getter<int>("ID", [](auto&& sound_source) { return static_cast<int>(sound_source.id()); });
         _filters.add_getter<int>("Flags", [](auto&& sound_source) { return static_cast<int>(sound_source.flags()); });
         _filters.add_getter<int>("Chance", [](auto&& sound_source) { return static_cast<int>(sound_source.chance()); });
