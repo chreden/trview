@@ -82,19 +82,19 @@ namespace trlevel
             return { x, y };
         }
 
-        std::vector<trview_room_vertex> convert_vertices_tr4_psx(std::vector<uint32_t> vertices, int32_t y_top)
+        std::vector<trview_vertex> convert_vertices_tr4_psx(std::vector<uint32_t> vertices, int32_t y_top)
         {
             return vertices |
                 std::views::transform([=](auto&& v)
                     {
                         const uint16_t colour = (v >> 15) & 0x7fff;
-                        return trview_room_vertex
+                        return trview_vertex
                         {
                             .vertex =
                             {
-                                .x = static_cast<int16_t>(((v >> 10) & 0x1f) << 10),
-                                .y = static_cast<int16_t>((((v >> 5) & 0x1f) << 8) + y_top),
-                                .z = static_cast<int16_t>((v & 0x1f) << 10)
+                                static_cast<float>(((v >> 10) & 0x1f) << 10),
+                                static_cast<float>((((v >> 5) & 0x1f) << 8) + y_top),
+                                static_cast<float>((v & 0x1f) << 10)
                              },
                             .attributes = 0,
                             .colour = trview::Colour(
@@ -254,7 +254,7 @@ namespace trlevel
             uint8_t num_triangles = read<uint8_t>(file);
 
             room.data.vertices.append_range(convert_vertices_tr4_psx(read_vector<uint32_t>(file, num_vertices), room.info.yTop));
-            room.data.triangles.append_range(convert_tr3_psx_room_triangles(read_vector<uint32_t>(file, num_triangles), total_vertices));
+            room.data.triangles.append_range(convert_triangles_2(convert_tr3_psx_room_triangles(read_vector<uint32_t>(file, num_triangles), total_vertices)));
 
             bool more_quads = true;
             while (more_quads)
@@ -272,16 +272,16 @@ namespace trlevel
 
                     room.data.rectangles.push_back
                     (
-                        tr4_mesh_face4
+                        trview_mesh_face4
                         {
                             .vertices =
                             {
-                                static_cast<uint16_t>(total_vertices + (face & 0x7f)),
-                                static_cast<uint16_t>(total_vertices + ((face >> 7) & 0x7f)),
-                                static_cast<uint16_t>(total_vertices + ((face >> 21) & 0x7f)),    // swapped with last
-                                static_cast<uint16_t>(total_vertices + ((face >> 14) & 0x7f))
+                                static_cast<uint32_t>(total_vertices + (face & 0x7f)),
+                                static_cast<uint32_t>(total_vertices + ((face >> 7) & 0x7f)),
+                                static_cast<uint32_t>(total_vertices + ((face >> 21) & 0x7f)),    // swapped with last
+                                static_cast<uint32_t>(total_vertices + ((face >> 14) & 0x7f))
                             },
-                            .texture = static_cast<uint16_t>((tex_info >> (face_index * 10)) & 0x3ff),
+                            .texture = static_cast<uint32_t>((tex_info >> (face_index * 10)) & 0x3ff),
                             .effects = 0
                         }
                     );

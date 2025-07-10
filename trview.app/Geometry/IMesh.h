@@ -80,6 +80,10 @@ namespace trview
         DirectX::SimpleMath::Matrix& offset,
         SpriteOffsetMode offset_mode);
 
+    void preprocess_textured_rectangles(
+        std::vector<trlevel::trview_mesh_face4>& rectangles,
+        const ILevelTextureStorage& texture_storage);
+
     /// Convert the textured rectangles into collections required to create a mesh.
     /// @param rectangles The rectangles from the mesh or room geometry.
     /// @param input_vertices The vertices that the rectangle indices refer to.
@@ -90,14 +94,17 @@ namespace trview
     /// @param collision_triangles The collection to add collision triangles to.
     /// @param transparent_collision Whether to add transparent rectangles as collision triangles.
     void process_textured_rectangles(
-        const std::vector<trlevel::tr4_mesh_face4>& rectangles,
-        const std::vector<trlevel::trview_room_vertex>& input_vertices,
-        const ILevelTextureStorage& texture_storage,
+        const std::vector<trlevel::trview_mesh_face4>& rectangles,
+        const std::vector<trlevel::trview_vertex>& input_vertices,
         std::vector<MeshVertex>& output_vertices,
         std::vector<std::vector<uint32_t>>& output_indices,
         std::vector<TransparentTriangle>& transparent_triangles,
         std::vector<Triangle>& collision_triangles,
         bool transparent_collision = true);
+
+    void preprocess_textured_triangles(
+        std::vector<trlevel::trview_mesh_face3>& triangles,
+        const ILevelTextureStorage& texture_storage);
 
     /// Convert the textured triangles into collections required to create a mesh.
     /// @param triangles The triangles from the mesh or room geometry.
@@ -109,9 +116,8 @@ namespace trview
     /// @param collision_triangles The collection to add collision triangles to.
     /// @param transparent_collision Whether to add transparent rectangles as collision triangles.
     void process_textured_triangles(
-        const std::vector<trlevel::tr4_mesh_face3>& triangles,
-        const std::vector<trlevel::trview_room_vertex>& input_vertices,
-        const ILevelTextureStorage& texture_storage,
+        const std::vector<trlevel::trview_mesh_face3>& triangles,
+        const std::vector<trlevel::trview_vertex>& input_vertices,
         std::vector<MeshVertex>& output_vertices,
         std::vector<std::vector<uint32_t>>& output_indices,
         std::vector<TransparentTriangle>& transparent_triangles,
@@ -127,7 +133,7 @@ namespace trview
     // collision_triangles: The collection to add collision triangles to.
     void process_coloured_rectangles(
         const std::vector<trlevel::tr_face4>& rectangles,
-        const std::vector<trlevel::trview_room_vertex>& input_vertices,
+        const std::vector<trlevel::trview_vertex>& input_vertices,
         const ILevelTextureStorage& texture_storage,
         std::vector<MeshVertex>& output_vertices,
         std::vector<uint32_t>& output_indices,
@@ -143,17 +149,12 @@ namespace trview
     // collision_triangles: The collection to add collision triangles to.
     void process_coloured_triangles(
         const std::vector<trlevel::tr_face3>& triangles,
-        const std::vector<trlevel::trview_room_vertex>& input_vertices,
+        const std::vector<trlevel::trview_vertex>& input_vertices,
         const ILevelTextureStorage& texture_storage,
         std::vector<MeshVertex>& output_vertices,
         std::vector<uint32_t>& output_indices,
         std::vector<Triangle>& collision_triangles,
         const trlevel::PlatformAndVersion& platform_and_version);
-
-    /// Convert the vertex to the scale used by the viewer.
-    /// @param vertex The vertex to convert.
-    /// @retrurns The scaled vector.
-    DirectX::SimpleMath::Vector3 convert_vertex(const trlevel::tr_vertex& vertex);
 
 #pragma warning(push)
 #pragma warning(disable : 4324)

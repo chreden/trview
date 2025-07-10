@@ -40,6 +40,7 @@
     <ClInclude Include="TileMapper.h">
       <Filter>Level\Saturn</Filter>
     </ClInclude>
+    <ClInclude Include="tr_mesh.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="trtypes.cpp" />
@@ -50,7 +51,6 @@
     <ClCompile Include="Mocks\MockLevel.cpp">
       <Filter>Mocks</Filter>
     </ClCompile>
-    <ClCompile Include="tr_rooms.cpp" />
     <ClCompile Include="Level.cpp">
       <Filter>Level</Filter>
     </ClCompile>
@@ -100,6 +100,7 @@
     <ClCompile Include="TileMapper.cpp">
       <Filter>Level\Saturn</Filter>
     </ClCompile>
+    <ClCompile Include="tr_mesh.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Mocks">

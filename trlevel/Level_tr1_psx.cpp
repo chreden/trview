@@ -103,8 +103,8 @@ namespace trlevel
             }
 
             auto [min, max] = std::ranges::minmax(room.data.vertices | std::views::transform([](auto&& v) { return v.vertex.y; }));
-            room.info.yTop = min;
-            room.info.yBottom = max;
+            room.info.yTop = static_cast<int32_t>(min);
+            room.info.yBottom = static_cast<int32_t>(max);
 
             read_room_portals(activity, file, room);
             read_room_sectors(activity, file, room);
