@@ -56,6 +56,7 @@ namespace trview
         std::unordered_map<std::string, std::string> _tips;
         std::shared_ptr<IClipboard> _clipboard;
         Filters<ICameraSink> _filters;
+        Filters<IFlyby> _flyby_filters;
         std::weak_ptr<ITrigger> _selected_trigger;
         bool _sync{ true };
         bool _scroll_to{ false };

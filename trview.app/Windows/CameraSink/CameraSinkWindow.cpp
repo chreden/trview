@@ -139,6 +139,9 @@ namespace trview
                 _settings.camera_sink_window_columns = _filters.columns();
                 on_settings(_settings);
             };
+
+        _flyby_filters.set_columns(std::vector<std::string>{ "#" });
+        _flyby_filters.add_getter<int>("#", [](auto&& flyby) { return static_cast<int>(flyby.number()); });
     }
 
     void CameraSinkWindow::render()
@@ -261,28 +264,7 @@ namespace trview
                     {
                         on_camera_sink_selected(camera);
                     }
-                },
-                {
-                    {
-                        "Hide",
-                        {
-                            .on_toggle = [&](auto&& camera, auto&& value)
-                                {
-                                    if (auto camera_ptr = camera.lock())
-                                    {
-                                        camera_ptr->set_visible(!value);
-                                        on_scene_changed();
-                                    }
-                                },
-                            .on_toggle_all = [&](bool value)
-                                {
-                                    std::ranges::for_each(filtered_camera_sinks, [=](auto&& camera) { camera->set_visible(!value); });
-                                    on_scene_changed();
-                                },
-                            .all_toggled = [&]() { return std::ranges::all_of(filtered_camera_sinks, [](auto&& camera) { return !camera->visible(); }); }
-                        }
-                    }
-                });
+                }, default_hide(filtered_camera_sinks));
         }
         ImGui::EndChild();
     }
@@ -500,7 +482,7 @@ namespace trview
         // TODO: Playback tab
         // TODO: Nodes tab
         // TODO: Filters
-
+        /*
         if (ImGui::BeginCombo("##Flyby", selected_flyby ? std::format("Flyby {}", selected_flyby->number()).c_str() : ""))
         {
             int index = 0;
@@ -517,7 +499,7 @@ namespace trview
                 }
             }
             ImGui::EndCombo();
-        }
+        }*/
 
         if (selected_flyby)
         {
@@ -741,6 +723,28 @@ namespace trview
     {
         if (ImGui::BeginChild("##flybylist", ImVec2(0, 0), ImGuiChildFlags_AlwaysAutoResize | ImGuiChildFlags_AutoResizeX, ImGuiWindowFlags_NoScrollbar))
         {
+            _flyby_filters.render();
+            ImGui::SameLine();
+
+            _flyby_filters.render_settings();
+
+            auto filtered_flybys =
+                _all_flybys |
+                std::views::filter([&](auto&& flyby)
+                    {
+                        const auto flyby_ptr = flyby.lock();
+                        return !(!flyby_ptr || !_flyby_filters.match(*flyby_ptr));
+                    }) |
+                std::views::transform([](auto&& flyby) { return flyby.lock(); }) | std::ranges::to<std::vector>();
+
+            RowCounter counter{ "flyby", _all_flybys.size() };
+            _flyby_filters.render_table(filtered_flybys, _all_flybys, _selected_flyby, counter,
+                [&](auto&& flyby)
+                {
+                    _selected_flyby = flyby;
+                    _state = {};
+                }, default_hide(filtered_flybys));
+
             ImGui::EndChild();
         }
     }
@@ -752,14 +756,14 @@ namespace trview
         {
             if (ImGui::BeginTabBar("TabBar"))
             {
-                if (ImGui::BeginTabItem("Details"))
+                if (ImGui::BeginTabItem("Playback"))
                 {
+                    render_flybys();
                     ImGui::EndTabItem();
                 }
 
-                if (ImGui::BeginTabItem("Playback"))
+                if (ImGui::BeginTabItem("Details"))
                 {
-                    // render_flybys();
                     ImGui::EndTabItem();
                 }
 
