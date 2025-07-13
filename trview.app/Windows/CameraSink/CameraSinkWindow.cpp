@@ -457,7 +457,7 @@ namespace trview
         // Camera:
         _filters.add_getter<int>("Flag", [](auto&& camera_sink) { return static_cast<int>(camera_sink.flag()); }, is_camera);
         _filters.add_getter<bool>("Persistent", [](auto&& camera_sink) { return (camera_sink.flag() & 0x1) == 1; }, is_camera);
-        
+
         // Sink:
         _filters.add_getter<int>("Strength", [](auto&& camera_sink) { return static_cast<int>(camera_sink.strength()); }, is_sink);
         _filters.add_getter<int>("Box Index", [](auto&& camera_sink) { return static_cast<int>(camera_sink.flag()); }, is_sink);
@@ -476,200 +476,177 @@ namespace trview
     void CameraSinkWindow::render_flybys()
     {
         const auto selected_flyby = _selected_flyby.lock();
-
-        // TODO: List of flybys
-        // TODO: Right window
-        // TODO: Playback tab
-        // TODO: Nodes tab
-        // TODO: Filters
-        /*
-        if (ImGui::BeginCombo("##Flyby", selected_flyby ? std::format("Flyby {}", selected_flyby->number()).c_str() : ""))
+        if (!selected_flyby)
         {
-            int index = 0;
-            for (const auto& flyby : _all_flybys)
+            return;
+        }
+
+        if (ImGui::Button(_playing_flyby ? "X" : ">"))
+        {
+            if (!_playing_flyby)
             {
-                if (const auto flyby_ptr = flyby.lock())
+                if (_state.state == IFlyby::CameraState::State::Ended)
                 {
-                    bool is_selected = flyby_ptr == selected_flyby;
-                    if (ImGui::Selectable(std::format("Flyby {}", index++).c_str(), is_selected))
-                    {
-                        _selected_flyby = flyby_ptr;
-                        _state = {};
-                    }
+                    _state = {};
+                }
+                else
+                {
+                    _state.state = IFlyby::CameraState::State::Active;
                 }
             }
-            ImGui::EndCombo();
-        }*/
+            _playing_flyby = !_playing_flyby;
+        }
+        ImGui::SameLine();
 
-        if (selected_flyby)
+        const float offset_y = 6;
+        const float offset_x = 4;
+
+        const auto pos = ImGui::GetWindowPos() + ImGui::GetCursorPos() + ImVec2(offset_x, offset_y);
+        const auto width = ImGui::GetWindowWidth() - ImGui::GetCursorPosX() - 50 - offset_x * 2;
+
+        auto list = ImGui::GetWindowDrawList();
+
+        const auto nodes = selected_flyby->nodes();
+        if (!nodes.empty())
         {
-            if (ImGui::Button(_playing_flyby ? "X" : ">"))
+            float current_node_x = 0;
+            float next_node_x = 0;
+
+            ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 75);
+            if (ImGui::BeginTable("Flyby Data", 4, ImGuiTableFlags_SizingStretchSame))
             {
-                if (!_playing_flyby)
+                auto add_row = [&](auto&& label, auto&& previous, auto&& current, auto&& next)
                 {
-                    if (_state.state == IFlyby::CameraState::State::Ended)
+                    ImGui::TableNextRow();
+                    ImGui::TableNextColumn();
+                    ImGui::Text(label);
+                    ImGui::TableNextColumn();
+                    current_node_x = ImGui::GetCursorPosX();
+                    ImGui::Text(std::format("{}", previous).c_str());
+                    ImGui::TableNextColumn();
+                    ImGui::Text(std::format("{}", current).c_str());
+                    if (next)
                     {
-                        _state = {};
+                        ImGui::TableNextColumn();
+                        next_node_x = ImGui::GetCursorPosX();
+                        ImGui::Text(std::format("{}", next.value()).c_str());
                     }
-                    else
-                    {
-                        _state.state = IFlyby::CameraState::State::Active;
-                    }
-                }
-                _playing_flyby = !_playing_flyby;
-            }
-            ImGui::SameLine();
+                };
 
-            const float offset_y = 6;
-            const float offset_x = 4;
-
-            const auto pos = ImGui::GetWindowPos() + ImGui::GetCursorPos() + ImVec2(offset_x, offset_y);
-            const auto width = ImGui::GetWindowWidth() - ImGui::GetCursorPosX() - 50 - offset_x * 2;
-
-            auto list = ImGui::GetWindowDrawList();
-
-            const auto nodes = selected_flyby->nodes();
-            if (!nodes.empty())
-            {
-                float current_node_x = 0;
-                float next_node_x = 0;
-
-                ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 75);
-                if (ImGui::BeginTable("Flyby Data", 4, ImGuiTableFlags_SizingStretchSame))
-                {
-                    auto add_row = [&](auto&& label, auto&& previous, auto&& current, auto&& next)
+                auto add_flag_row = [&](auto&& label, auto&& previous, auto&& current, auto&& next)
                     {
                         ImGui::TableNextRow();
                         ImGui::TableNextColumn();
                         ImGui::Text(label);
                         ImGui::TableNextColumn();
                         current_node_x = ImGui::GetCursorPosX();
-                        ImGui::Text(std::format("{}", previous).c_str());
+                        ImGui::BeginDisabled();
+                        ImGui::Checkbox(std::format("##{}_prev", label).c_str(), &previous);
+                        ImGui::EndDisabled();
                         ImGui::TableNextColumn();
-                        ImGui::Text(std::format("{}", current).c_str());
+                        ImGui::BeginDisabled();
+                        ImGui::Checkbox(std::format("##{}_current", label).c_str(), &current);
+                        ImGui::EndDisabled();
                         if (next)
                         {
                             ImGui::TableNextColumn();
                             next_node_x = ImGui::GetCursorPosX();
-                            ImGui::Text(std::format("{}", next.value()).c_str());
+                            ImGui::BeginDisabled();
+                            ImGui::Checkbox(std::format("##{}_next", label).c_str(), &next.value());
+                            ImGui::EndDisabled();
                         }
                     };
 
-                    auto add_flag_row = [&](auto&& label, auto&& previous, auto&& current, auto&& next)
-                        {
-                            ImGui::TableNextRow();
-                            ImGui::TableNextColumn();
-                            ImGui::Text(label);
-                            ImGui::TableNextColumn();
-                            current_node_x = ImGui::GetCursorPosX();
-                            ImGui::BeginDisabled();
-                            ImGui::Checkbox(std::format("##{}_prev", label).c_str(), &previous);
-                            ImGui::EndDisabled();
-                            ImGui::TableNextColumn();
-                            ImGui::BeginDisabled();
-                            ImGui::Checkbox(std::format("##{}_current", label).c_str(), &current);
-                            ImGui::EndDisabled();
-                            if (next)
-                            {
-                                ImGui::TableNextColumn();
-                                next_node_x = ImGui::GetCursorPosX();
-                                ImGui::BeginDisabled();
-                                ImGui::Checkbox(std::format("##{}_next", label).c_str(), &next.value());
-                                ImGui::EndDisabled();
-                            }
-                        };
-
-                    std::optional<trlevel::tr4_flyby_camera> next;
-                    if (_state.index + 1 < nodes.size())
-                    {
-                        next = nodes[_state.index + 1];
-                    }
-
-                    add_row("X", nodes[_state.index].x, _state.position.x * trlevel::Scale, get<int32_t>(next, [](auto&& n) { return n.x; }));
-                    add_row("Y", nodes[_state.index].y, _state.position.y * trlevel::Scale, get<int32_t>(next, [](auto&& n) { return n.y; }));
-                    add_row("Z", nodes[_state.index].z, _state.position.z * trlevel::Scale, get<int32_t>(next, [](auto&& n) { return n.z; }));
-                    add_row("DX", nodes[_state.index].dx, _state.raw_direction.x * trlevel::Scale, get<int32_t>(next, [](auto&& n) { return n.dx; }));
-                    add_row("DY", nodes[_state.index].dy, _state.raw_direction.y * trlevel::Scale, get<int32_t>(next, [](auto&& n) { return n.dy; }));
-                    add_row("DZ", nodes[_state.index].dz, _state.raw_direction.z * trlevel::Scale, get<int32_t>(next, [](auto&& n) { return n.dz; }));
-                    add_row("Roll", nodes[_state.index].roll, static_cast<int16_t>(_state.roll * -182.0f), get<int16_t>(next, [](auto&& n) { return n.roll; }));
-                    add_row("Speed", nodes[_state.index].speed, _state.speed, get<uint16_t>(next, [](auto&& n) { return n.speed; }));
-                    add_row("FOV", nodes[_state.index].fov, static_cast<int16_t>(_state.fov * 182.0f), get<int16_t>(next, [](auto&& n) { return n.fov; }));
-                    add_row("Timer", nodes[_state.index].timer, _state.timer, get<uint16_t>(next, [](auto&& n) { return n.timer; }));
-                    add_row("Room", nodes[_state.index].room_id, _state.room_id, get<uint32_t>(next, [](auto&& n) { return n.room_id; }));
-
-                    // TODO: Flags
-                    for (int i = 0; i < 16; ++i)
-                    {
-                        add_flag_row(
-                            flag_name(_platform_and_version, i).c_str(),
-                            (nodes[_state.index].flags & (1 << i)) != 0,
-                            _state.flags[i] != 0,
-                            get<bool>(next, [=](auto&& n) { return (n.flags & (1 << i)) != 0; }));
-                    }
-
-                    ImGui::EndTable();
-                }
-
-                list->AddRectFilled(pos, pos + ImVec2(width, 5), ImColor(0.4f, 0.4f, 0.4f));
-
-                // TODO: Handle 1 length flybys.
-                const float spacing = 1.0f / (nodes.size() - 1);
-                for (uint32_t i = 0; i < nodes.size(); ++i)
+                std::optional<trlevel::tr4_flyby_camera> next;
+                if (_state.index + 1 < nodes.size())
                 {
-                    const float x = i * spacing * width;
-                    if (static_cast<int32_t>(i) == _state.index)
-                    {
-                        const ImVec2 points[4] = {
-                            pos + ImVec2(x, 0),
-                            pos + ImVec2(x, 30),
-                            pos + ImVec2(current_node_x, 30),
-                            pos + ImVec2(current_node_x, 40)
-                        };
-                        list->AddPolyline(points, 4, ImColor(0.0f, 1.0f, 0.0f), ImDrawFlags_None, 4.0f);
-                    }
-                    else if (static_cast<int32_t>(i) == (_state.index + 1))
-                    {
-                        const ImVec2 points[4] = {
-                            pos + ImVec2(x, 0),
-                            pos + ImVec2(x, 20),
-                            pos + ImVec2(next_node_x, 20),
-                            pos + ImVec2(next_node_x, 40)
-                        };
-                        list->AddPolyline(points, 4, ImColor(1.0f, 1.0f, 0.0f), ImDrawFlags_None, 4.0f);
-                    }
-                    else
-                    {
-                        const ImVec2 points[2] =
-                        {
-                            pos + ImVec2(x, 0),
-                            pos + ImVec2(x, 10),
-                        };
-                        list->AddPolyline(points, 2, ImColor(0.0f, 0.0f, 1.0f), ImDrawFlags_None, 4.0f);
-                    }
+                    next = nodes[_state.index + 1];
                 }
+
+                add_row("X", nodes[_state.index].x, _state.position.x * trlevel::Scale, get<int32_t>(next, [](auto&& n) { return n.x; }));
+                add_row("Y", nodes[_state.index].y, _state.position.y * trlevel::Scale, get<int32_t>(next, [](auto&& n) { return n.y; }));
+                add_row("Z", nodes[_state.index].z, _state.position.z * trlevel::Scale, get<int32_t>(next, [](auto&& n) { return n.z; }));
+                add_row("DX", nodes[_state.index].dx, _state.raw_direction.x * trlevel::Scale, get<int32_t>(next, [](auto&& n) { return n.dx; }));
+                add_row("DY", nodes[_state.index].dy, _state.raw_direction.y * trlevel::Scale, get<int32_t>(next, [](auto&& n) { return n.dy; }));
+                add_row("DZ", nodes[_state.index].dz, _state.raw_direction.z * trlevel::Scale, get<int32_t>(next, [](auto&& n) { return n.dz; }));
+                add_row("Roll", nodes[_state.index].roll, static_cast<int16_t>(_state.roll * -182.0f), get<int16_t>(next, [](auto&& n) { return n.roll; }));
+                add_row("Speed", nodes[_state.index].speed, _state.speed, get<uint16_t>(next, [](auto&& n) { return n.speed; }));
+                add_row("FOV", nodes[_state.index].fov, static_cast<int16_t>(_state.fov * 182.0f), get<int16_t>(next, [](auto&& n) { return n.fov; }));
+                add_row("Timer", nodes[_state.index].timer, _state.timer, get<uint16_t>(next, [](auto&& n) { return n.timer; }));
+                add_row("Room", nodes[_state.index].room_id, _state.room_id, get<uint32_t>(next, [](auto&& n) { return n.room_id; }));
+
+                // TODO: Flags
+                for (int i = 0; i < 16; ++i)
+                {
+                    add_flag_row(
+                        flag_name(_platform_and_version, i).c_str(),
+                        (nodes[_state.index].flags & (1 << i)) != 0,
+                        _state.flags[i] != 0,
+                        get<bool>(next, [=](auto&& n) { return (n.flags & (1 << i)) != 0; }));
+                }
+
+                ImGui::EndTable();
             }
 
-            ImGui::SetCursorPos(pos - ImGui::GetWindowPos() - ImVec2(offset_x, offset_y));
-            const float step = 1.0f / static_cast<float>(selected_flyby->nodes().size() - 1);
-            float percentage = (_state.t * step) + step * _state.index;
-            ImGui::PushItemWidth(width + offset_x * 2);
-            ImGui::PushStyleColor(ImGuiCol_FrameBg, ImVec4(0.0f, 0.0f, 0.0f, 0.0f));
-            ImGui::PushStyleColor(ImGuiCol_FrameBgActive, ImVec4(0.0f, 0.0f, 0.0f, 0.0f));
-            ImGui::PushStyleColor(ImGuiCol_FrameBgHovered, ImVec4(0.0f, 0.0f, 0.0f, 0.0f));
-            ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.0f, 0.0f, 0.0f, 0.0f));
-            ImGui::PushStyleVar(ImGuiStyleVar_GrabMinSize, 3.0f);
-            if (ImGui::SliderFloat("##Position", &percentage, 0.0f, 1.0f, "%.3f", ImGuiSliderFlags_AlwaysClamp))
+            list->AddRectFilled(pos, pos + ImVec2(width, 5), ImColor(0.4f, 0.4f, 0.4f));
+
+            // TODO: Handle 1 length flybys.
+            const float spacing = 1.0f / (nodes.size() - 1);
+            for (uint32_t i = 0; i < nodes.size(); ++i)
             {
-                _state.index = static_cast<int32_t>(floor(percentage / step));
-                _state.t = (percentage - (step * _state.index)) / step;
-                _state.state = IFlyby::CameraState::State::Active;
-                _state = selected_flyby->update_state(_state, 0.0f);
-                sync_flyby();
+                const float x = i * spacing * width;
+                if (static_cast<int32_t>(i) == _state.index)
+                {
+                    const ImVec2 points[4] = {
+                        pos + ImVec2(x, 0),
+                        pos + ImVec2(x, 30),
+                        pos + ImVec2(current_node_x, 30),
+                        pos + ImVec2(current_node_x, 40)
+                    };
+                    list->AddPolyline(points, 4, ImColor(0.0f, 1.0f, 0.0f), ImDrawFlags_None, 4.0f);
+                }
+                else if (static_cast<int32_t>(i) == (_state.index + 1))
+                {
+                    const ImVec2 points[4] = {
+                        pos + ImVec2(x, 0),
+                        pos + ImVec2(x, 20),
+                        pos + ImVec2(next_node_x, 20),
+                        pos + ImVec2(next_node_x, 40)
+                    };
+                    list->AddPolyline(points, 4, ImColor(1.0f, 1.0f, 0.0f), ImDrawFlags_None, 4.0f);
+                }
+                else
+                {
+                    const ImVec2 points[2] =
+                    {
+                        pos + ImVec2(x, 0),
+                        pos + ImVec2(x, 10),
+                    };
+                    list->AddPolyline(points, 2, ImColor(0.0f, 0.0f, 1.0f), ImDrawFlags_None, 4.0f);
+                }
             }
-            ImGui::PopStyleColor(4);
-            ImGui::PopStyleVar();
-            ImGui::PopItemWidth();
         }
+
+        ImGui::SetCursorPos(pos - ImGui::GetWindowPos() - ImVec2(offset_x, offset_y));
+        const float step = 1.0f / static_cast<float>(selected_flyby->nodes().size() - 1);
+        float percentage = (_state.t * step) + step * _state.index;
+        ImGui::PushItemWidth(width + offset_x * 2);
+        ImGui::PushStyleColor(ImGuiCol_FrameBg, ImVec4(0.0f, 0.0f, 0.0f, 0.0f));
+        ImGui::PushStyleColor(ImGuiCol_FrameBgActive, ImVec4(0.0f, 0.0f, 0.0f, 0.0f));
+        ImGui::PushStyleColor(ImGuiCol_FrameBgHovered, ImVec4(0.0f, 0.0f, 0.0f, 0.0f));
+        ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.0f, 0.0f, 0.0f, 0.0f));
+        ImGui::PushStyleVar(ImGuiStyleVar_GrabMinSize, 3.0f);
+        if (ImGui::SliderFloat("##Position", &percentage, 0.0f, 1.0f, "%.3f", ImGuiSliderFlags_AlwaysClamp))
+        {
+            _state.index = static_cast<int32_t>(floor(percentage / step));
+            _state.t = (percentage - (step * _state.index)) / step;
+            _state.state = IFlyby::CameraState::State::Active;
+            _state = selected_flyby->update_state(_state, 0.0f);
+            sync_flyby();
+        }
+        ImGui::PopStyleColor(4);
+        ImGui::PopStyleVar();
+        ImGui::PopItemWidth();
     }
 
     void CameraSinkWindow::sync_flyby()
