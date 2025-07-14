@@ -128,20 +128,7 @@ namespace trview
         : _clipboard(clipboard), _camera(camera)
     {
         setup_filters();
-
-        _filters.set_columns(std::vector<std::string>{ "#", "Room", "Type", "Hide" });
-        _token_store += _filters.on_columns_reset += [this]()
-            {
-                _filters.set_columns(std::vector<std::string>{ "#", "Room", "Type", "Hide" });
-            };
-        _token_store += _filters.on_columns_saved += [this]()
-            {
-                _settings.camera_sink_window_columns = _filters.columns();
-                on_settings(_settings);
-            };
-
-        _flyby_filters.set_columns(std::vector<std::string>{ "#" });
-        _flyby_filters.add_getter<int>("#", [](auto&& flyby) { return static_cast<int>(flyby.number()); });
+        setup_flyby_filters();
     }
 
     void CameraSinkWindow::render()
@@ -461,6 +448,32 @@ namespace trview
         // Sink:
         _filters.add_getter<int>("Strength", [](auto&& camera_sink) { return static_cast<int>(camera_sink.strength()); }, is_sink);
         _filters.add_getter<int>("Box Index", [](auto&& camera_sink) { return static_cast<int>(camera_sink.flag()); }, is_sink);
+
+        _filters.set_columns(std::vector<std::string>{ "#", "Room", "Type", "Hide" });
+        _token_store += _filters.on_columns_reset += [this]()
+            {
+                _filters.set_columns(std::vector<std::string>{ "#", "Room", "Type", "Hide" });
+            };
+        _token_store += _filters.on_columns_saved += [this]()
+            {
+                _settings.camera_sink_window_columns = _filters.columns();
+                on_settings(_settings);
+            };
+    }
+
+    void CameraSinkWindow::setup_flyby_filters()
+    {
+        _flyby_filters.set_columns(std::vector<std::string>{ "#" });
+        _flyby_filters.add_getter<int>("#", [](auto&& flyby) { return static_cast<int>(flyby.number()); });
+        _flyby_filters.add_multi_getter<int>("Room", [](auto&& flyby)
+            {
+                std::unordered_set<int> rooms;
+                for (const auto& node : flyby.nodes())
+                {
+                    rooms.insert(node.room_id);
+                }
+                return rooms | std::ranges::to<std::vector>();
+            });
     }
 
     void CameraSinkWindow::set_settings(const UserSettings& settings)
@@ -502,7 +515,7 @@ namespace trview
         const float offset_x = 4;
 
         const auto pos = ImGui::GetWindowPos() + ImGui::GetCursorPos() + ImVec2(offset_x, offset_y);
-        const auto width = ImGui::GetWindowWidth() - ImGui::GetCursorPosX() - 50 - offset_x * 2;
+        const auto width = ImGui::GetWindowWidth() - ImGui::GetCursorPosX() - 20 - offset_x * 2;
 
         auto list = ImGui::GetWindowDrawList();
 

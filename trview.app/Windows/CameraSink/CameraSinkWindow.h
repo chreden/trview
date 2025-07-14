@@ -42,6 +42,7 @@ namespace trview
         void render_list();
         void render_details();
         void setup_filters();
+        void setup_flyby_filters();
         void render_flybys();
         void sync_flyby();
         void render_flyby_list();
