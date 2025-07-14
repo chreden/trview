@@ -300,9 +300,12 @@ namespace trview
                 }
             }
 
-            for (const auto& flyby : _flybys)
+            if (has_flag(_render_filters, RenderFilter::CameraSinks))
             {
-                flyby->render(camera, Colour::White);
+                for (const auto& flyby : _flybys)
+                {
+                    flyby->render(camera, Colour::White);
+                }
             }
 
             graphics::set_data(*_pixel_shader_data, context, PixelShaderData{ false });

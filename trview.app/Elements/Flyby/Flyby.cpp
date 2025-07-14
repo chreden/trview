@@ -27,13 +27,14 @@ namespace trview
     {
     }
 
-    Flyby::Flyby(const std::shared_ptr<IMesh>& mesh, const std::vector<trlevel::tr4_flyby_camera>& camera_nodes, uint32_t index)
+    Flyby::Flyby(const IMesh::Source& mesh_source, const std::shared_ptr<IMesh>& mesh, const std::vector<trlevel::tr4_flyby_camera>& camera_nodes, uint32_t index)
         : _mesh(mesh), _camera_nodes(camera_nodes), _index(index)
     {
         _colour = Color(
             static_cast<float>(rand()) / RAND_MAX,
             static_cast<float>(rand()) / RAND_MAX,
             static_cast<float>(rand()) / RAND_MAX);
+        generate_path(mesh_source);
     }
 
     void Flyby::render(const ICamera& camera, const DirectX::SimpleMath::Color&)
@@ -57,6 +58,16 @@ namespace trview
             light_direction.Normalize();
 
             _mesh->render(wvp, _colour, 1.0f, light_direction);
+        }
+
+        for (const auto& pos : _temp)
+        {
+            // const auto world = Matrix::CreateScale(0.05f) * Matrix::CreateTranslation(pos);
+            const auto world = Matrix::Identity;
+            const auto wvp = world * camera.view_projection();
+            auto light_direction = Vector3::TransformNormal(camera.position() - pos, world.Invert());
+            light_direction.Normalize();
+            _path_mesh->render(wvp, _colour, 1.0f, light_direction);
         }
     }
 
@@ -116,6 +127,106 @@ namespace trview
         }
 
         // 5. Calculate outputs
+        state_at(state);
+        return state;
+    }
+
+    void Flyby::generate_path(const IMesh::Source& mesh_source)
+    {
+        // Samples per node - probably need more.
+        const int path_samples = 10;
+        const int num_vertices = 10;
+        const float width = 0.01f;
+
+        std::vector<Vector3> points;
+        for (uint32_t n = 0; n < _camera_nodes.size() - 1; ++n)
+        {
+            CameraState state;
+            state.index = n;
+
+            for (int s = 0; s < path_samples; ++s)
+            {
+                state.t = static_cast<float>(s * (1.0f / path_samples));
+                state_at(state);
+                points.push_back(state.position);
+            }
+        }
+
+        if (points.size() < 2)
+        {
+            return;
+        }
+
+        std::vector<MeshVertex> vertices;
+        std::vector<uint32_t> indices;
+
+        Vector3 direction;
+        for (uint32_t n = 0; n < points.size(); ++n)
+        {
+            const Vector3 at = points[n];
+            if (n == 0)
+            {
+                vertices.push_back({ .pos = at, .colour = Colour::White });
+                for (uint32_t v = 1; v <= num_vertices; ++v)
+                {
+                    indices.push_back(0);
+                    indices.push_back(v);
+                    indices.push_back(v == num_vertices ? 1 : v + 1);
+                }
+            }
+
+            if (n == points.size() - 1)
+            {
+                (at - points[n - 1]).Normalize(direction);
+            }
+            else
+            {
+                (points[n + 1] - at).Normalize(direction);
+            }
+
+            for (int v = 0; v < num_vertices; ++v)
+            {
+                const Matrix rotation =
+                    Matrix::CreateRotationZ(v * (DirectX::g_XMTwoPi.f[0] / static_cast<float>(num_vertices))) *
+                    Matrix::CreateFromQuaternion(Quaternion::FromToRotation(Vector3::Backward, direction));
+                const Vector3 pos = at + Vector3::TransformNormal(Vector3(0, width, 0), rotation);
+                _temp.push_back(pos);
+                vertices.push_back({ .pos = pos, .colour = Colour::White });
+            }
+
+            const uint32_t base_index = 1 + n * num_vertices;
+            base_index;
+
+            if (n == points.size() - 1)
+            {
+                vertices.push_back({ .pos = at, .colour = Colour::White });
+                for (uint32_t v = 0; v < num_vertices; ++v)
+                {
+                    indices.push_back(base_index + num_vertices);
+                    indices.push_back(v == (num_vertices - 1) ? base_index : v + base_index + 1);
+                    indices.push_back(v + base_index);
+                }
+            }
+            else
+            {
+                for (uint32_t v = base_index; v < base_index + num_vertices; ++v)
+                {
+                    indices.push_back(v);
+                    indices.push_back(v + num_vertices);
+                    indices.push_back(v == (base_index + num_vertices - 1) ? (base_index + num_vertices) : (v + num_vertices + 1));
+
+                    indices.push_back(v);
+                    indices.push_back(v == (base_index + num_vertices - 1) ? (base_index + num_vertices) : (v + num_vertices + 1));
+                    indices.push_back(v == (base_index + num_vertices - 1) ? base_index : v + 1);
+                }
+            }
+        }
+
+        _path_mesh = mesh_source(vertices, {}, indices, {}, {});
+    }
+
+    void Flyby::state_at(CameraState& state) const
+    {
         const int next_step = state.index + 1;
         const float t = state.t;
 
@@ -134,6 +245,5 @@ namespace trview
         state.timer = n1.timer;
         state.room_id = n1.room_id;
         state.flags = n1.flags;
-        return state;
     }
 }
