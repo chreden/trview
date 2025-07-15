@@ -133,85 +133,96 @@ namespace trview
         const int num_vertices = 10;
         const float width = 0.01f;
 
-        std::vector<Vector3> points;
+        std::vector<std::vector<Vector3>> paths;
+        paths.push_back({});
+
         for (uint32_t n = 0; n < _camera_nodes.size() - 1; ++n)
         {
             CameraState state;
             state.index = n;
 
-            for (int s = 0; s < path_samples; ++s)
+            if (_camera_nodes[n].flags & 0x80)
+            {
+                n = _camera_nodes[n].timer;
+                state.index = n;
+                paths.push_back({});
+            }
+
+            for (int s = 0; s <= path_samples; ++s)
             {
                 state.t = static_cast<float>(s * (1.0f / path_samples));
                 state_at(state);
-                points.push_back(state.position);
+                paths.back().push_back(state.position);
             }
-        }
-
-        if (points.size() < 2)
-        {
-            return;
         }
 
         std::vector<MeshVertex> vertices;
         std::vector<uint32_t> indices;
 
-        Vector3 direction;
-        for (uint32_t n = 0; n < points.size(); ++n)
+        for (uint32_t p = 0; p < paths.size(); ++p)
         {
-            const Vector3 at = points[n];
-            if (n == 0)
+            uint32_t path_base_index = static_cast<uint32_t>(vertices.size());
+
+            const auto& points = paths[p];
+
+            Vector3 direction;
+            for (uint32_t n = 0; n < points.size(); ++n)
             {
-                vertices.push_back({ .pos = at, .colour = Colour::White });
-                for (uint32_t v = 1; v <= num_vertices; ++v)
+                const Vector3 at = points[n];
+                if (n == 0)
                 {
-                    indices.push_back(0);
-                    indices.push_back(v);
-                    indices.push_back(v == num_vertices ? 1 : v + 1);
+                    vertices.push_back({ .pos = at, .colour = Colour::White });
+                    for (uint32_t v = path_base_index + 1; v <= num_vertices; ++v)
+                    {
+                        indices.push_back(path_base_index);
+                        indices.push_back(v);
+                        indices.push_back(v == num_vertices ? path_base_index + 1 : v + 1);
+                    }
                 }
-            }
 
-            if (n == points.size() - 1)
-            {
-                (at - points[n - 1]).Normalize(direction);
-            }
-            else
-            {
-                (points[n + 1] - at).Normalize(direction);
-            }
-
-            for (int v = 0; v < num_vertices; ++v)
-            {
-                const Matrix rotation =
-                    Matrix::CreateRotationZ(v * (DirectX::g_XMTwoPi.f[0] / static_cast<float>(num_vertices))) *
-                    Matrix::CreateFromQuaternion(Quaternion::FromToRotation(Vector3::Backward, direction));
-                const Vector3 pos = at + Vector3::TransformNormal(Vector3(0, width, 0), rotation);
-                vertices.push_back({ .pos = pos, .colour = Colour::White });
-            }
-
-            const uint32_t base_index = 1 + n * num_vertices;
-            base_index;
-
-            if (n == points.size() - 1)
-            {
-                vertices.push_back({ .pos = at, .colour = Colour::White });
-                for (uint32_t v = 0; v < num_vertices; ++v)
+                if (n == points.size() - 1)
                 {
-                    indices.push_back(base_index + num_vertices);
-                    indices.push_back(v == (num_vertices - 1) ? base_index : v + base_index + 1);
-                    indices.push_back(v + base_index);
+                    (at - points[n - 1]).Normalize(direction);
                 }
-            }
-            else
-            {
-                for (uint32_t v = base_index; v < base_index + num_vertices; ++v)
+                else
                 {
-                    indices.push_back(v);
-                    indices.push_back(v + num_vertices);
-                    indices.push_back(v == (base_index + num_vertices - 1) ? (base_index + num_vertices) : (v + num_vertices + 1));
+                    (points[n + 1] - at).Normalize(direction);
+                }
 
-                    indices.push_back(v);
-                    indices.push_back(v == (base_index + num_vertices - 1) ? (base_index + num_vertices) : (v + num_vertices + 1));
-                    indices.push_back(v == (base_index + num_vertices - 1) ? base_index : v + 1);
+                for (int v = 0; v < num_vertices; ++v)
+                {
+                    const Matrix rotation =
+                        Matrix::CreateRotationZ(v * (DirectX::g_XMTwoPi.f[0] / static_cast<float>(num_vertices))) *
+                        Matrix::CreateFromQuaternion(Quaternion::FromToRotation(Vector3::Backward, direction));
+                    const Vector3 pos = at + Vector3::TransformNormal(Vector3(0, width, 0), rotation);
+                    vertices.push_back({ .pos = pos, .colour = Colour::White });
+                }
+
+                const uint32_t base_index = path_base_index + 1 + n * num_vertices;
+                base_index;
+
+                if (n == points.size() - 1)
+                {
+                    vertices.push_back({ .pos = at, .colour = Colour::White });
+                    for (uint32_t v = 0; v < num_vertices; ++v)
+                    {
+                        indices.push_back(base_index + num_vertices);
+                        indices.push_back(v == (num_vertices - 1) ? base_index : v + base_index + 1);
+                        indices.push_back(v + base_index);
+                    }
+                }
+                else
+                {
+                    for (uint32_t v = base_index; v < base_index + num_vertices; ++v)
+                    {
+                        indices.push_back(v);
+                        indices.push_back(v + num_vertices);
+                        indices.push_back(v == (base_index + num_vertices - 1) ? (base_index + num_vertices) : (v + num_vertices + 1));
+
+                        indices.push_back(v);
+                        indices.push_back(v == (base_index + num_vertices - 1) ? (base_index + num_vertices) : (v + num_vertices + 1));
+                        indices.push_back(v == (base_index + num_vertices - 1) ? base_index : v + 1);
+                    }
                 }
             }
         }
