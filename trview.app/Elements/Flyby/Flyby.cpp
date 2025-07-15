@@ -60,15 +60,10 @@ namespace trview
             _mesh->render(wvp, _colour, 1.0f, light_direction);
         }
 
-        for (const auto& pos : _temp)
-        {
-            // const auto world = Matrix::CreateScale(0.05f) * Matrix::CreateTranslation(pos);
-            const auto world = Matrix::Identity;
-            const auto wvp = world * camera.view_projection();
-            auto light_direction = Vector3::TransformNormal(camera.position() - pos, world.Invert());
-            light_direction.Normalize();
-            _path_mesh->render(wvp, _colour, 1.0f, light_direction);
-        }
+        const auto pos = to_position(_camera_nodes[0]);
+        auto light_direction = Vector3::TransformNormal(camera.position() - pos, Matrix::Identity);
+        light_direction.Normalize();
+        _path_mesh->render(camera.view_projection(), _colour, 1.0f, light_direction);
     }
 
     void Flyby::get_transparent_triangles(ITransparencyBuffer&, const ICamera&, const DirectX::SimpleMath::Color&)
@@ -190,7 +185,6 @@ namespace trview
                     Matrix::CreateRotationZ(v * (DirectX::g_XMTwoPi.f[0] / static_cast<float>(num_vertices))) *
                     Matrix::CreateFromQuaternion(Quaternion::FromToRotation(Vector3::Backward, direction));
                 const Vector3 pos = at + Vector3::TransformNormal(Vector3(0, width, 0), rotation);
-                _temp.push_back(pos);
                 vertices.push_back({ .pos = pos, .colour = Colour::White });
             }
 

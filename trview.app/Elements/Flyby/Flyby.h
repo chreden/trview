@@ -30,7 +30,6 @@ namespace trview
         std::shared_ptr<IMesh> _mesh;
         bool _visible{ true };
         DirectX::SimpleMath::Color _colour;
-        std::vector<DirectX::SimpleMath::Vector3> _temp;
         std::shared_ptr<IMesh> _path_mesh;
     };
 }
