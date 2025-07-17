@@ -9,6 +9,8 @@
 
 #include <trlevel/trtypes.h>
 
+#include <trview.common/Event.h>
+
 #include "../../Geometry/IRenderable.h"
 
 namespace trview
@@ -63,5 +65,7 @@ namespace trview
         virtual std::vector<trlevel::tr4_flyby_camera> nodes() const = 0;
         virtual uint32_t number() const = 0;
         virtual [[nodiscard]] CameraState update_state(const CameraState& state, float delta) const = 0;
+
+        Event<> on_changed;
     };
 }

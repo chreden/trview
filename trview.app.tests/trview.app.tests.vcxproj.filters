@@ -217,6 +217,9 @@
     <ClCompile Include="Windows\AboutWindowManagerTests.cpp">
       <Filter>Windows</Filter>
     </ClCompile>
+    <ClCompile Include="Elements\FlybyTests.cpp">
+      <Filter>Elements</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Input">

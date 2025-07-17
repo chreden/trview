@@ -771,6 +771,24 @@ namespace trview
             }
         }
 
+        if (has_flag(_render_filters, RenderFilter::CameraSinks))
+        {
+            for (const auto& flyby : _flybys)
+            {
+                if (!flyby->visible())
+                {
+                    continue;
+                }
+
+                // auto flyby_result = flyby->pick(position, direction);
+                // if (flyby_result.hit)
+                // {
+                //     results.push_back(flyby_result);
+                // }
+            }
+        }
+
+
         uint32_t index = 0;
         for (const auto& scriptable : _scriptables)
         {
@@ -1335,6 +1353,7 @@ namespace trview
         for (const auto& flyby : grouped)
         {
             auto new_flyby = flyby_source(flyby, index++);
+            _token_store += new_flyby->on_changed += [this]() { content_changed(); };
             _flybys.push_back(new_flyby);
         }
     }

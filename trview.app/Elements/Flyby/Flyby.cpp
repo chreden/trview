@@ -60,10 +60,13 @@ namespace trview
             _mesh->render(wvp, _colour, 1.0f, light_direction);
         }
 
-        const auto pos = to_position(_camera_nodes[0]);
-        auto light_direction = Vector3::TransformNormal(camera.position() - pos, Matrix::Identity);
-        light_direction.Normalize();
-        _path_mesh->render(camera.view_projection(), _colour, 1.0f, light_direction);
+        if (_path_mesh)
+        {
+            const auto pos = to_position(_camera_nodes[0]);
+            auto light_direction = Vector3::TransformNormal(camera.position() - pos, Matrix::Identity);
+            light_direction.Normalize();
+            _path_mesh->render(camera.view_projection(), _colour, 1.0f, light_direction);
+        }
     }
 
     void Flyby::get_transparent_triangles(ITransparencyBuffer&, const ICamera&, const DirectX::SimpleMath::Color&)
@@ -78,6 +81,7 @@ namespace trview
     void Flyby::set_visible(bool value)
     {
         _visible = value;
+        on_changed();
     }
 
     std::vector<trlevel::tr4_flyby_camera> Flyby::nodes() const
@@ -128,6 +132,11 @@ namespace trview
 
     void Flyby::generate_path(const IMesh::Source& mesh_source)
     {
+        if (_camera_nodes.empty())
+        {
+            return;
+        }
+
         // Samples per node - probably need more.
         const int path_samples = 10;
         const int num_vertices = 10;

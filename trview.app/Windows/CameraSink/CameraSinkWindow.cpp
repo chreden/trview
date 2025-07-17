@@ -463,8 +463,9 @@ namespace trview
 
     void CameraSinkWindow::setup_flyby_filters()
     {
-        _flyby_filters.set_columns(std::vector<std::string>{ "#" });
+        _flyby_filters.set_columns(std::vector<std::string>{ "#", "Hide" });
         _flyby_filters.add_getter<int>("#", [](auto&& flyby) { return static_cast<int>(flyby.number()); });
+        _flyby_filters.add_getter<bool>("Hide", [](auto&& flyby) { return !flyby.visible(); }, EditMode::ReadWrite);
         _flyby_filters.add_multi_getter<int>("Room", [](auto&& flyby)
             {
                 std::unordered_set<int> rooms;
