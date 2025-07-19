@@ -172,7 +172,7 @@ namespace trview
                 {
                     render_flyby_list();
                     ImGui::SameLine();
-                    render_flyby_details();
+                    render_flyby_tab();
                     ImGui::EndTabItem();
                 }
 
@@ -740,7 +740,7 @@ namespace trview
         }
     }
 
-    void CameraSinkWindow::render_flyby_details()
+    void CameraSinkWindow::render_flyby_tab()
     {
         auto selected = _selected_flyby.lock();
         if (ImGui::BeginChild("Flyby Details", ImVec2(), true) && selected)
@@ -755,6 +755,7 @@ namespace trview
 
                 if (ImGui::BeginTabItem("Details"))
                 {
+                    render_flyby_details();
                     ImGui::EndTabItem();
                 }
 
@@ -762,5 +763,47 @@ namespace trview
             }
         }
         ImGui::EndChild();
+    }
+
+    void CameraSinkWindow::render_flyby_details()
+    {
+        if (auto selected_flyby = _selected_flyby.lock())
+        {
+            ImGui::Text("Nodes");
+            if (ImGui::BeginTable("Nodes", 1))
+            {
+                ImGui::TableSetupColumn("#", ImGuiTableColumnFlags_WidthFixed);
+                ImGui::TableSetupScrollFreeze(0, 1);
+                ImGui::TableHeadersRow();
+
+                const auto nodes = selected_flyby->nodes();
+                uint32_t index = 0;
+                for (const auto& node : nodes)
+                {
+                    node;
+
+                    ImGui::TableNextRow();
+                    ImGui::TableNextColumn();
+                    bool selected = _selected_node.value_or(0) == index;
+                    if (ImGui::Selectable(std::to_string(index).c_str(), &selected, ImGuiSelectableFlags_SpanAllColumns | static_cast<int>(ImGuiSelectableFlags_SelectOnNav)))
+                    {
+                        _selected_node = index;
+                    }
+                    ++index;
+                }
+
+                ImGui::EndTable();
+            }
+
+            if (_selected_node.has_value())
+            {
+                const auto nodes = selected_flyby->nodes();
+                if (_selected_node.value() < nodes.size())
+                {
+                    const auto node = selected_flyby->nodes()[_selected_node.value()];
+                    ImGui::Text(std::format("{},{},{}", node.x, node.y, node.z).c_str());
+                }
+            }
+        }
     }
 }

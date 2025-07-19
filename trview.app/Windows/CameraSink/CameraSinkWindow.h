@@ -46,6 +46,7 @@ namespace trview
         void render_flybys();
         void sync_flyby();
         void render_flyby_list();
+        void render_flyby_tab();
         void render_flyby_details();
 
         std::string _id{ "Camera/Sink 0" };
@@ -75,5 +76,6 @@ namespace trview
         TokenStore _token_store;
         IFlyby::CameraState _state;
         trlevel::PlatformAndVersion _platform_and_version;
+        std::optional<uint32_t> _selected_node;
     };
 }
