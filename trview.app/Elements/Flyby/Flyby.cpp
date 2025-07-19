@@ -1,35 +1,19 @@
 #include "Flyby.h"
+#include <ranges>
 
 namespace trview
 {
     using namespace DirectX;
     using namespace DirectX::SimpleMath;
 
-    namespace
-    {
-        Vector3 to_vector(int32_t x, int32_t y, int32_t z)
-        {
-            return Vector3(static_cast<float>(x), static_cast<float>(y), static_cast<float>(z)) / trlevel::Scale;
-        }
-
-        Vector3 to_position(const trlevel::tr4_flyby_camera& node)
-        {
-            return to_vector(node.x, node.y, node.z);
-        }
-
-        Vector3 to_direction(const trlevel::tr4_flyby_camera& node)
-        {
-            return to_vector(node.dx, node.dy, node.dz);
-        }
-    }
-
     IFlyby::~IFlyby()
     {
     }
 
-    Flyby::Flyby(const IMesh::Source& mesh_source, const std::shared_ptr<IMesh>& mesh, const std::vector<trlevel::tr4_flyby_camera>& camera_nodes, uint32_t index)
-        : _mesh(mesh), _camera_nodes(camera_nodes), _index(index)
+    Flyby::Flyby(const IFlybyNode::Source& flyby_node_source, const IMesh::Source& mesh_source, const std::shared_ptr<IMesh>& mesh, const std::vector<trlevel::tr4_flyby_camera>& camera_nodes, uint32_t index)
+        : _mesh(mesh), _index(index)
     {
+        _camera_nodes = camera_nodes | std::views::transform([&](auto&& n) { return flyby_node_source(n); }) | std::ranges::to<std::vector>();
         _colour = Color(
             static_cast<float>(rand()) / RAND_MAX,
             static_cast<float>(rand()) / RAND_MAX,
@@ -46,12 +30,12 @@ namespace trview
 
         for (const auto& node : _camera_nodes)
         {
-            auto position = to_position(node);
-            Vector3 target = to_direction(node);
+            auto position = node->position();
+            Vector3 target = node->direction();
             Vector3 direction;
             (target - position).Normalize(direction);
             const Vector3 angles = Quaternion::FromToRotation(Vector3::Backward, direction).ToEuler();
-            const Matrix rotation = Matrix::CreateFromYawPitchRoll(angles.y, angles.x, DirectX::XMConvertToRadians(static_cast<float>(node.roll) / 182.0f));
+            const Matrix rotation = Matrix::CreateFromYawPitchRoll(angles.y, angles.x, DirectX::XMConvertToRadians(static_cast<float>(node->roll()) / 182.0f));
             const auto world = Matrix::CreateScale(0.2f) * rotation * Matrix::CreateTranslation(position);
             const auto wvp = world * camera.view_projection();
             auto light_direction = Vector3::TransformNormal(camera.position() - position, world.Invert());
@@ -62,7 +46,7 @@ namespace trview
 
         if (_path_mesh)
         {
-            const auto pos = to_position(_camera_nodes[0]);
+            const auto pos = _camera_nodes[0]->position();
             auto light_direction = Vector3::TransformNormal(camera.position() - pos, Matrix::Identity);
             light_direction.Normalize();
             _path_mesh->render(camera.view_projection(), _colour, 1.0f, light_direction);
@@ -84,9 +68,9 @@ namespace trview
         on_changed();
     }
 
-    std::vector<trlevel::tr4_flyby_camera> Flyby::nodes() const
+    std::vector<std::weak_ptr<IFlybyNode>> Flyby::nodes() const
     {
-        return _camera_nodes;
+        return _camera_nodes | std::ranges::to<std::vector<std::weak_ptr<IFlybyNode>>>();
     }
 
     uint32_t Flyby::number() const
@@ -111,9 +95,9 @@ namespace trview
         if (state.t >= 1.0f)
         {
             ++state.index;
-            if (_camera_nodes[state.index].flags & 0x80)
+            if (_camera_nodes[state.index]->flags() & 0x80)
             {
-                state.index = _camera_nodes[state.index].timer;
+                state.index = _camera_nodes[state.index]->timer();
             }
             state.t = 0;
         }
@@ -150,9 +134,9 @@ namespace trview
             CameraState state;
             state.index = n;
 
-            if (_camera_nodes[n].flags & 0x80)
+            if (_camera_nodes[n]->flags() & 0x80)
             {
-                n = _camera_nodes[n].timer;
+                n = _camera_nodes[n]->timer();
                 state.index = n;
                 paths.push_back({});
             }
@@ -248,16 +232,16 @@ namespace trview
         const auto n1 = _camera_nodes[state.index];
         const auto n2 = _camera_nodes[next_step];
         const auto n3 = (next_step == _camera_nodes.size() - 1) ? _camera_nodes[next_step] : _camera_nodes[next_step + 1];
-        state.position = Vector3::CatmullRom(to_position(n0), to_position(n1), to_position(n2), to_position(n3), t);
-        Vector3 target = Vector3::CatmullRom(to_direction(n0), to_direction(n1), to_direction(n2), to_direction(n3), t);
+        state.position = Vector3::CatmullRom(n0->position(), n1->position(), n2->position(), n3->position(), t);
+        Vector3 target = Vector3::CatmullRom(n0->direction(), n1->direction(), n2->direction(), n3->direction(), t);
         state.raw_direction = target;
         (target - state.position).Normalize(state.direction);
 
-        state.roll = (n1.roll + (n2.roll - n1.roll) * t) / -182.0f;
-        state.fov = (n1.fov + (n2.fov - n1.fov) * t) / 182.0f;
-        state.speed = n1.speed + (n2.speed - n1.speed) * t;
-        state.timer = n1.timer;
-        state.room_id = n1.room_id;
-        state.flags = n1.flags;
+        state.roll = (n1->roll() + (n2->roll() - n1->roll()) * t) / -182.0f;
+        state.fov = (n1->fov() + (n2->fov() - n1->fov()) * t) / 182.0f;
+        state.speed = n1->speed() + (n2->speed() - n1->speed()) * t;
+        state.timer = n1->timer();
+        state.room_id = n1->room();
+        state.flags = n1->flags();
     }
 }

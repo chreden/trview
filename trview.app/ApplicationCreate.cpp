@@ -24,6 +24,7 @@
 #include "Elements/TypeInfoLookup.h"
 #include "Elements/CameraSink/CameraSink.h"
 #include "Elements/Flyby/Flyby.h"
+#include "Elements/Flyby/FlybyNode.h"
 #include "Elements/Item.h"
 #include "Elements/Light.h"
 #include "Elements/Trigger.h"
@@ -248,8 +249,9 @@ namespace trview
         const auto sound_source = [=](auto&&... args) { return create_sound(args...); };
         const auto sound_source_source = [=](auto&&... args) { return std::make_shared<SoundSource>(cube_mesh, texture_storage, args...); };
 
+        const auto flyby_node_source = [=](auto&&... args) { return std::make_shared<FlybyNode>(args...); };
         const auto flyby_mesh = create_frustum_mesh(default_mesh_source);
-        const auto flyby_source = [=](auto&&... args) { return std::make_shared<Flyby>(default_mesh_source, flyby_mesh, args...); };
+        const auto flyby_source = [=](auto&&... args) { return std::make_shared<Flyby>(flyby_node_source, default_mesh_source, flyby_mesh, args...); };
 
         auto decrypter = std::make_shared<trlevel::Decrypter>();
         auto trlevel_pack_source = [=](auto&&... args) { return std::make_shared<trlevel::Level>(args..., files, decrypter, log); };

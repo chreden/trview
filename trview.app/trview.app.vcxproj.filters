@@ -383,6 +383,9 @@
     <ClCompile Include="Elements\Flyby\Flyby.cpp">
       <Filter>Elements\Flyby</Filter>
     </ClCompile>
+    <ClCompile Include="Elements\Flyby\FlybyNode.cpp">
+      <Filter>Elements\Flyby</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera\Camera.h">
@@ -1283,6 +1286,15 @@
       <Filter>Elements\Flyby</Filter>
     </ClInclude>
     <ClInclude Include="Mocks\Elements\IFlyby.h">
+      <Filter>Mocks\Elements</Filter>
+    </ClInclude>
+    <ClInclude Include="Elements\Flyby\IFlybyNode.h">
+      <Filter>Elements\Flyby</Filter>
+    </ClInclude>
+    <ClInclude Include="Elements\Flyby\FlybyNode.h">
+      <Filter>Elements\Flyby</Filter>
+    </ClInclude>
+    <ClInclude Include="Mocks\Elements\IFlybyNode.h">
       <Filter>Mocks\Elements</Filter>
     </ClInclude>
   </ItemGroup>

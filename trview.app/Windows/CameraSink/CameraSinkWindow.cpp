@@ -2,6 +2,7 @@
 #include "../../trview_imgui.h"
 #include "../../Elements/IRoom.h"
 #include "../RowCounter.h"
+#include "../../Elements/Flyby/IFlybyNode.h"
 
 namespace trview
 {
@@ -68,12 +69,12 @@ namespace trview
 
         template <typename T>
         std::optional<T> get(
-            const std::optional<trlevel::tr4_flyby_camera>& value, 
-            const std::function<T (const trlevel::tr4_flyby_camera&)>& callback)
+            const std::shared_ptr<IFlybyNode>& value, 
+            const std::function<T (const IFlybyNode&)>& callback)
         {
             if (value)
             {
-                return callback(value.value());
+                return callback(*value);
             }
             return std::nullopt;
         };
@@ -448,7 +449,10 @@ namespace trview
                 std::unordered_set<int> rooms;
                 for (const auto& node : flyby.nodes())
                 {
-                    rooms.insert(node.room_id);
+                    if (const auto node_ptr = node.lock())
+                    {
+                        rooms.insert(node_ptr->room());
+                    }
                 }
                 return rooms | std::ranges::to<std::vector>();
             });
@@ -497,7 +501,7 @@ namespace trview
 
         auto list = ImGui::GetWindowDrawList();
 
-        const auto nodes = selected_flyby->nodes();
+        const auto nodes = selected_flyby->nodes() | std::views::transform([](auto&& n) { return n.lock(); }) | std::ranges::to<std::vector>();
         if (!nodes.empty())
         {
             float current_node_x = 0;
@@ -548,32 +552,32 @@ namespace trview
                         }
                     };
 
-                std::optional<trlevel::tr4_flyby_camera> next;
+                std::shared_ptr<IFlybyNode> next;
                 if (_state.index + 1 < nodes.size())
                 {
                     next = nodes[_state.index + 1];
                 }
 
-                add_row("X", nodes[_state.index].x, _state.position.x * trlevel::Scale, get<int32_t>(next, [](auto&& n) { return n.x; }));
-                add_row("Y", nodes[_state.index].y, _state.position.y * trlevel::Scale, get<int32_t>(next, [](auto&& n) { return n.y; }));
-                add_row("Z", nodes[_state.index].z, _state.position.z * trlevel::Scale, get<int32_t>(next, [](auto&& n) { return n.z; }));
-                add_row("DX", nodes[_state.index].dx, _state.raw_direction.x * trlevel::Scale, get<int32_t>(next, [](auto&& n) { return n.dx; }));
-                add_row("DY", nodes[_state.index].dy, _state.raw_direction.y * trlevel::Scale, get<int32_t>(next, [](auto&& n) { return n.dy; }));
-                add_row("DZ", nodes[_state.index].dz, _state.raw_direction.z * trlevel::Scale, get<int32_t>(next, [](auto&& n) { return n.dz; }));
-                add_row("Roll", nodes[_state.index].roll, static_cast<int16_t>(_state.roll * -182.0f), get<int16_t>(next, [](auto&& n) { return n.roll; }));
-                add_row("Speed", nodes[_state.index].speed, _state.speed, get<uint16_t>(next, [](auto&& n) { return n.speed; }));
-                add_row("FOV", nodes[_state.index].fov, static_cast<int16_t>(_state.fov * 182.0f), get<int16_t>(next, [](auto&& n) { return n.fov; }));
-                add_row("Timer", nodes[_state.index].timer, _state.timer, get<uint16_t>(next, [](auto&& n) { return n.timer; }));
-                add_row("Room", nodes[_state.index].room_id, _state.room_id, get<uint32_t>(next, [](auto&& n) { return n.room_id; }));
+                add_row("X", nodes[_state.index]->position().x * trlevel::Scale, _state.position.x * trlevel::Scale, get<int32_t>(next, [](auto&& n) { return static_cast<int32_t>(n.position().x * trlevel::Scale); }));
+                add_row("Y", nodes[_state.index]->position().y * trlevel::Scale, _state.position.y * trlevel::Scale, get<int32_t>(next, [](auto&& n) { return static_cast<int32_t>(n.position().y * trlevel::Scale); }));
+                add_row("Z", nodes[_state.index]->position().z * trlevel::Scale, _state.position.z * trlevel::Scale, get<int32_t>(next, [](auto&& n) { return static_cast<int32_t>(n.position().z * trlevel::Scale); }));
+                add_row("DX", nodes[_state.index]->direction().x * trlevel::Scale, _state.raw_direction.x * trlevel::Scale, get<int32_t>(next, [](auto&& n) { return static_cast<int32_t>(n.direction().x * trlevel::Scale); }));
+                add_row("DY", nodes[_state.index]->direction().y * trlevel::Scale, _state.raw_direction.y * trlevel::Scale, get<int32_t>(next, [](auto&& n) { return static_cast<int32_t>(n.direction().y * trlevel::Scale); }));
+                add_row("DZ", nodes[_state.index]->direction().z * trlevel::Scale, _state.raw_direction.z * trlevel::Scale, get<int32_t>(next, [](auto&& n) { return static_cast<int32_t>(n.direction().z * trlevel::Scale); }));
+                add_row("Roll", nodes[_state.index]->roll(), static_cast<int16_t>(_state.roll * -182.0f), get<int16_t>(next, [](auto&& n) { return n.roll(); }));
+                add_row("Speed", nodes[_state.index]->speed(), _state.speed, get<uint16_t>(next, [](auto&& n) { return n.speed(); }));
+                add_row("FOV", nodes[_state.index]->fov(), static_cast<int16_t>(_state.fov * 182.0f), get<int16_t>(next, [](auto&& n) { return n.fov(); }));
+                add_row("Timer", nodes[_state.index]->timer(), _state.timer, get<uint16_t>(next, [](auto&& n) { return n.timer(); }));
+                add_row("Room", nodes[_state.index]->room(), _state.room_id, get<uint32_t>(next, [](auto&& n) { return n.room(); }));
 
                 // TODO: Flags
                 for (int i = 0; i < 16; ++i)
                 {
                     add_flag_row(
                         flag_name(_platform_and_version, i).c_str(),
-                        (nodes[_state.index].flags & (1 << i)) != 0,
+                        (nodes[_state.index]->flags() & (1 << i)) != 0,
                         _state.flags[i] != 0,
-                        get<bool>(next, [=](auto&& n) { return (n.flags & (1 << i)) != 0; }));
+                        get<bool>(next, [=](auto&& n) { return (n.flags() & (1 << i)) != 0; }));
                 }
 
                 ImGui::EndTable();
@@ -777,8 +781,11 @@ namespace trview
                 const auto nodes = selected_flyby->nodes();
                 if (_selected_node.value() < nodes.size())
                 {
-                    const auto node = selected_flyby->nodes()[_selected_node.value()];
-                    ImGui::Text(std::format("{},{},{}", node.x, node.y, node.z).c_str());
+                    if (const auto node = selected_flyby->nodes()[_selected_node.value()].lock())
+                    {
+                        const auto pos = node->position() * trlevel::Scale;
+                        ImGui::Text(std::format("{},{},{}", static_cast<int32_t>(pos.x), static_cast<int32_t>(pos.y), static_cast<int32_t>(pos.z)).c_str());
+                    }
                 }
             }
         }

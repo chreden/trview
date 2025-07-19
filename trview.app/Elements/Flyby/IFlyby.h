@@ -15,6 +15,7 @@
 
 namespace trview
 {
+    struct IFlybyNode;
     struct IFlyby : public IRenderable
     {
         using Source = std::function<std::shared_ptr<IFlyby>(const std::vector<trlevel::tr4_flyby_camera>&, uint32_t)>;
@@ -62,7 +63,7 @@ namespace trview
         };
 
         virtual ~IFlyby() = 0;
-        virtual std::vector<trlevel::tr4_flyby_camera> nodes() const = 0;
+        virtual std::vector<std::weak_ptr<IFlybyNode>> nodes() const = 0;
         virtual uint32_t number() const = 0;
         virtual [[nodiscard]] CameraState update_state(const CameraState& state, float delta) const = 0;
 

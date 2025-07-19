@@ -3,6 +3,7 @@
 
 #include "Camera/ICamera.h"
 #include "Elements/IFlyby.h"
+#include "Elements/IFlybyNode.h"
 #include "Elements/IItem.h"
 #include "Elements/ILevel.h"
 #include "Elements/ILight.h"
@@ -317,5 +318,8 @@ namespace trview
 
         MockFlyby::MockFlyby() {};
         MockFlyby::~MockFlyby() {};
+
+        MockFlybyNode::MockFlybyNode() {};
+        MockFlybyNode::~MockFlybyNode() {};
     }
 }

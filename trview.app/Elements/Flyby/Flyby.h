@@ -1,6 +1,7 @@
 #pragma once
 
 #include "IFlyby.h"
+#include "IFlybyNode.h"
 #include "../../Geometry/IMesh.h"
 
 namespace trview
@@ -9,12 +10,13 @@ namespace trview
     {
     public:
         explicit Flyby(
+            const IFlybyNode::Source& flyby_node_source,
             const IMesh::Source& mesh_source,
             const std::shared_ptr<IMesh>& mesh,
             const std::vector<trlevel::tr4_flyby_camera>& camera_nodes, 
             uint32_t index);
         virtual ~Flyby() = default;
-        std::vector<trlevel::tr4_flyby_camera> nodes() const override;
+        std::vector<std::weak_ptr<IFlybyNode>> nodes() const override;
         uint32_t number() const override;
         void render(const ICamera& camera, const DirectX::SimpleMath::Color& colour) override;
         void get_transparent_triangles(ITransparencyBuffer& transparency, const ICamera& camera, const DirectX::SimpleMath::Color& colour) override;
@@ -26,7 +28,7 @@ namespace trview
         void state_at(CameraState& state) const;
 
         uint32_t _index{ 0u };
-        std::vector<trlevel::tr4_flyby_camera> _camera_nodes;
+        std::vector<std::shared_ptr<IFlybyNode>> _camera_nodes;
         std::shared_ptr<IMesh> _mesh;
         bool _visible{ true };
         DirectX::SimpleMath::Color _colour;
