@@ -63,6 +63,8 @@ namespace trview
         std::vector<std::weak_ptr<IFlyby>> _all_flybys;
         std::weak_ptr<IFlyby> _selected_flyby;
         Filters<IFlyby> _flyby_filters;
+        Filters<IFlybyNode> _node_filters;
+        std::weak_ptr<IFlybyNode> _selected_node;
 
         std::unordered_map<std::string, std::string> _tips;
         std::shared_ptr<IClipboard> _clipboard;
@@ -84,7 +86,6 @@ namespace trview
         TokenStore _token_store;
         IFlyby::CameraState _state;
         trlevel::PlatformAndVersion _platform_and_version;
-        std::optional<uint32_t> _selected_node;
     };
 }
 

@@ -17,6 +17,7 @@ namespace trview
         virtual DirectX::SimpleMath::Vector3 direction() const = 0;
         virtual uint16_t flags() const = 0;
         virtual uint16_t fov() const = 0;
+        virtual int32_t number() const = 0;
         virtual DirectX::SimpleMath::Vector3 position() const = 0;
         virtual int16_t roll() const = 0;
         virtual uint32_t room() const = 0;

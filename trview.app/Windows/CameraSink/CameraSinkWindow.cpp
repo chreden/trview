@@ -456,6 +456,9 @@ namespace trview
                 }
                 return rooms | std::ranges::to<std::vector>();
             });
+
+        _node_filters.set_columns(std::vector<std::string>{ "#" });
+        _node_filters.add_getter<int>("#", [](auto&& node) { return static_cast<int>(node.number()); });
     }
 
     void CameraSinkWindow::set_settings(const UserSettings& settings)
@@ -714,6 +717,7 @@ namespace trview
                 [&](auto&& flyby)
                 {
                     _selected_flyby = flyby;
+                    _selected_node.reset();
                     _state = {};
                 }, default_hide(filtered_flybys));
 
@@ -750,44 +754,71 @@ namespace trview
     {
         if (auto selected_flyby = _selected_flyby.lock())
         {
-            ImGui::Text("Nodes");
-            if (ImGui::BeginTable("Nodes", 1))
+            if (ImGui::BeginChild("##flybynodelist", ImVec2(0, 0), ImGuiChildFlags_AlwaysAutoResize | ImGuiChildFlags_AutoResizeX, ImGuiWindowFlags_NoScrollbar))
             {
-                ImGui::TableSetupColumn("#", ImGuiTableColumnFlags_WidthFixed);
-                ImGui::TableSetupScrollFreeze(0, 1);
-                ImGui::TableHeadersRow();
+                _node_filters.render();
+                ImGui::SameLine();
 
-                const auto nodes = selected_flyby->nodes();
-                uint32_t index = 0;
-                for (const auto& node : nodes)
+                _node_filters.render_settings();
+
+                auto all_nodes = selected_flyby->nodes();
+                auto filtered_nodes = all_nodes | 
+                    std::views::filter([&](auto&& node)
+                        {
+                            const auto node_ptr = node.lock();
+                            return !(!node_ptr || !_node_filters.match(*node_ptr));
+                        }) |
+                    std::views::transform([](auto&& node) { return node.lock(); }) | std::ranges::to<std::vector>();
+
+                RowCounter counter{ "camera", all_nodes.size() };
+                _node_filters.render_table(filtered_nodes, all_nodes, _selected_node, counter,
+                    [&](auto&& node)
+                    {
+                        _selected_node = node;
+                    }, {});
+
+                ImGui::EndChild();
+            }
+
+            ImGui::SameLine();
+
+            auto selected = _selected_node.lock();
+            if (ImGui::BeginChild("Node Details", ImVec2(), true) && selected)
+            {
+                if (ImGui::BeginTable(Names::stats_listbox.c_str(), 2, 0, ImVec2(-1, 0)))
                 {
-                    node;
-
+                    ImGui::TableSetupColumn("Name");
+                    ImGui::TableSetupColumn("Value");
                     ImGui::TableNextRow();
-                    ImGui::TableNextColumn();
-                    bool selected = _selected_node.value_or(0) == index;
-                    if (ImGui::Selectable(std::to_string(index).c_str(), &selected, ImGuiSelectableFlags_SpanAllColumns | static_cast<int>(ImGuiSelectableFlags_SelectOnNav)))
-                    {
-                        _selected_node = index;
-                    }
-                    ++index;
-                }
 
-                ImGui::EndTable();
-            }
+                    add_stat("#", selected->number());
+                    const auto pos = selected->position() * trlevel::Scale;
+                    add_stat("Position", std::format("{:.0f}, {:.0f}, {:.0f}", pos.x, pos.y, pos.z));
+                    const auto dir = selected->direction() * trlevel::Scale;
+                    add_stat("Direction", std::format("{:.0f}, {:.0f}, {:.0f}", dir.x, dir.y, dir.z));
+                    add_stat("Roll", selected->roll());
+                    add_stat("Speed", selected->speed());
+                    add_stat("Fov", selected->fov());
+                    add_stat("Timer", selected->timer());
+                    add_stat("Room", selected->room());
 
-            if (_selected_node.has_value())
-            {
-                const auto nodes = selected_flyby->nodes();
-                if (_selected_node.value() < nodes.size())
-                {
-                    if (const auto node = selected_flyby->nodes()[_selected_node.value()].lock())
+                    for (int i = 0; i < 16; ++i)
                     {
-                        const auto pos = node->position() * trlevel::Scale;
-                        ImGui::Text(std::format("{},{},{}", static_cast<int32_t>(pos.x), static_cast<int32_t>(pos.y), static_cast<int32_t>(pos.z)).c_str());
+                        bool state = (selected->flags() & (1 << i)) != 0;
+                        const auto label = flag_name(_platform_and_version, i);
+                        ImGui::TableNextRow();
+                        ImGui::TableNextColumn();
+                        ImGui::Text(label.c_str());
+                        ImGui::TableNextColumn();
+                        ImGui::BeginDisabled();
+                        ImGui::Checkbox(std::format("##{}_state", label).c_str(), &state);
+                        ImGui::EndDisabled();
                     }
+
+                    ImGui::EndTable();
                 }
             }
+            ImGui::EndChild();
         }
     }
 }

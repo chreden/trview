@@ -13,6 +13,7 @@ namespace trview
         : _direction(Vector3(static_cast<float>(node.dx), static_cast<float>(node.dy), static_cast<float>(node.dz)) / trlevel::Scale),
         _flags(node.flags),
         _fov(node.fov),
+        _number(node.index),
         _position(Vector3(static_cast<float>(node.x), static_cast<float>(node.y), static_cast<float>(node.z)) / trlevel::Scale),
         _roll(node.roll),
         _room(node.room_id),
@@ -34,6 +35,11 @@ namespace trview
     uint16_t FlybyNode::fov() const
     {
         return _fov;
+    }
+
+    int32_t FlybyNode::number() const
+    {
+        return _number;
     }
 
     Vector3 FlybyNode::position() const

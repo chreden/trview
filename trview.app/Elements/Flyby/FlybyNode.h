@@ -12,6 +12,7 @@ namespace trview
         DirectX::SimpleMath::Vector3 direction() const override;
         uint16_t flags() const override;
         uint16_t fov() const override;
+        int32_t number() const override;
         DirectX::SimpleMath::Vector3 position() const override;
         int16_t roll() const override;
         uint32_t room() const override;
@@ -21,6 +22,7 @@ namespace trview
         DirectX::SimpleMath::Vector3 _direction;
         uint16_t _flags{ 0 };
         uint16_t _fov{ 0 };
+        int32_t _number{ 0 };
         DirectX::SimpleMath::Vector3 _position;
         int16_t _roll{ 0 };
         uint32_t _room{ 0 };
