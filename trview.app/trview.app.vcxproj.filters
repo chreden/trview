@@ -1584,6 +1584,9 @@
     <None Include="Windows\AutoHider.inl">
       <Filter>Windows</Filter>
     </None>
+    <None Include="Windows\CameraSink\CameraSinkWindow.inl">
+      <Filter>Windows\CameraSink</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Resources\trview.app.rc">

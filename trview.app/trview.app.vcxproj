@@ -490,6 +490,7 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <None Include="Lua\Lua.inl" />
     <None Include="Track\Track.inl" />
     <None Include="Windows\AutoHider.inl" />
+    <None Include="Windows\CameraSink\CameraSinkWindow.inl" />
     <Text Include="Resources\Files\actions.json">
       <FileType>Document</FileType>
     </Text>

@@ -49,16 +49,24 @@ namespace trview
         void render_flyby_tab();
         void render_flyby_details();
 
+        template <typename T>
+        void add_stat(const std::string& name, const T&& value);
+
         std::string _id{ "Camera/Sink 0" };
+        // Camera sinks
         std::vector<std::weak_ptr<ICameraSink>> _all_camera_sinks;
         std::weak_ptr<ICameraSink> _selected_camera_sink;
         std::weak_ptr<ICameraSink> _global_selected_camera_sink;
+        Filters<ICameraSink> _filters;
+
+        // Flybys
         std::vector<std::weak_ptr<IFlyby>> _all_flybys;
         std::weak_ptr<IFlyby> _selected_flyby;
+        Filters<IFlyby> _flyby_filters;
+
         std::unordered_map<std::string, std::string> _tips;
         std::shared_ptr<IClipboard> _clipboard;
-        Filters<ICameraSink> _filters;
-        Filters<IFlyby> _flyby_filters;
+
         std::weak_ptr<ITrigger> _selected_trigger;
         bool _sync{ true };
         bool _scroll_to{ false };
@@ -79,3 +87,6 @@ namespace trview
         std::optional<uint32_t> _selected_node;
     };
 }
+
+#include "CameraSinkWindow.inl"
+
