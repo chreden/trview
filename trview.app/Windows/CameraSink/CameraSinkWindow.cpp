@@ -459,6 +459,10 @@ namespace trview
 
         _node_filters.set_columns(std::vector<std::string>{ "#" });
         _node_filters.add_getter<int>("#", [](auto&& node) { return static_cast<int>(node.number()); });
+        _node_filters.add_getter<int>("X", [](auto&& node) { return static_cast<int>(node.position().x * trlevel::Scale_X); });
+        _node_filters.add_getter<int>("Y", [](auto&& node) { return static_cast<int>(node.position().y * trlevel::Scale_Y); });
+        _node_filters.add_getter<int>("Z", [](auto&& node) { return static_cast<int>(node.position().z * trlevel::Scale_Z); });
+        _node_filters.add_getter<int>("Room", [](auto&& node) { return node.room(); });
     }
 
     void CameraSinkWindow::set_settings(const UserSettings& settings)
