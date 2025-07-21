@@ -150,6 +150,7 @@ namespace trview
         virtual void select_camera_sink(const std::weak_ptr<ICameraSink>& camera_sink) = 0;
         virtual void select_static_mesh(const std::weak_ptr<IStaticMesh>& static_mesh) = 0;
         virtual void select_sound_source(const std::weak_ptr<ISoundSource>& sound_source) = 0;
+        virtual void select_flyby_node(const std::weak_ptr<IFlybyNode>& flyby_node) = 0;
         virtual std::weak_ptr<ILevel> level() const = 0;
     };
 }

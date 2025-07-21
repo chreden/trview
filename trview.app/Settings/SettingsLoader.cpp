@@ -126,6 +126,8 @@ namespace trview
             read_attribute(json, settings.lights_window_columns, "lights_window_columns");
             read_attribute(json, settings.camera_sink_window_columns, "camera_sink_window_columns");
             read_attribute(json, settings.triggers_window_columns, "triggers_window_columns");
+            read_attribute(json, settings.flyby_columns, "flyby_columns");
+            read_attribute(json, settings.flyby_node_columns, "flyby_node_columns");
 
             settings.recent_files.resize(std::min<std::size_t>(settings.recent_files.size(), settings.max_recent_files));
         }
@@ -204,6 +206,8 @@ namespace trview
             json["lights_window_columns"] = settings.lights_window_columns;
             json["camera_sink_window_columns"] = settings.camera_sink_window_columns;
             json["triggers_window_columns"] = settings.triggers_window_columns;
+            json["flyby_columns"] = settings.flyby_columns;
+            json["flyby_node_columns"] = settings.flyby_node_columns;
             _files->save_file(file_path, json.dump());
         }
         catch (...)

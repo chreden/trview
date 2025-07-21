@@ -89,6 +89,7 @@ namespace trview
         virtual void set_selected_trigger(uint32_t number) override;
         virtual void set_selected_light(uint32_t number) override;
         virtual void set_selected_camera_sink(uint32_t number) override;
+        void set_selected_flyby_node(const std::weak_ptr<IFlybyNode>& node) override;
         virtual std::shared_ptr<ILevelTextureStorage> texture_storage() const override;
         virtual std::set<uint32_t> alternate_groups() const override;
         virtual trlevel::LevelVersion version() const override;
@@ -205,6 +206,7 @@ namespace trview
         std::weak_ptr<ITrigger> _selected_trigger;
         std::weak_ptr<ILight> _selected_light;
         std::weak_ptr<ICameraSink> _selected_camera_sink;
+        std::weak_ptr<IFlybyNode> _selected_flyby_node;
         uint32_t           _neighbour_depth{ 1 };
         std::set<uint16_t> _neighbours;
 

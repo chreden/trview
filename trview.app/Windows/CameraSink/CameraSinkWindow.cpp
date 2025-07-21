@@ -208,6 +208,11 @@ namespace trview
         }
     }
 
+    void CameraSinkWindow::set_local_selected_flyby_node(const std::weak_ptr<IFlybyNode>& flyby_node)
+    {
+        _selected_node = flyby_node;
+    }
+
     void CameraSinkWindow::render_list()
     {
         if (ImGui::BeginChild(Names::list_panel.c_str(), ImVec2(0, 0), ImGuiChildFlags_AlwaysAutoResize | ImGuiChildFlags_AutoResizeX, ImGuiWindowFlags_NoScrollbar))
@@ -369,6 +374,15 @@ namespace trview
         }
     }
 
+    void CameraSinkWindow::set_selected_flyby_node(const std::weak_ptr<IFlybyNode>& flyby_node)
+    {
+        _global_selected_flyby_node = flyby_node;
+        if (_sync)
+        {
+            set_local_selected_flyby_node(flyby_node);
+        }
+    }
+
     void CameraSinkWindow::set_current_room(const std::weak_ptr<IRoom>& room)
     {
         _current_room = room;
@@ -441,7 +455,9 @@ namespace trview
 
     void CameraSinkWindow::setup_flyby_filters()
     {
-        _flyby_filters.set_columns(std::vector<std::string>{ "#", "Hide" });
+        _flyby_filters.clear_all_getters();
+        _node_filters.clear_all_getters();
+
         _flyby_filters.add_getter<int>("#", [](auto&& flyby) { return static_cast<int>(flyby.number()); });
         _flyby_filters.add_getter<bool>("Hide", [](auto&& flyby) { return !flyby.visible(); }, EditMode::ReadWrite);
         _flyby_filters.add_multi_getter<int>("Room", [](auto&& flyby)
@@ -457,12 +473,41 @@ namespace trview
                 return rooms | std::ranges::to<std::vector>();
             });
 
-        _node_filters.set_columns(std::vector<std::string>{ "#" });
+        _flyby_filters.set_columns(std::vector<std::string>{ "#", "Hide" });
+        _token_store += _flyby_filters.on_columns_reset += [this]()
+            {
+                _flyby_filters.set_columns(std::vector<std::string>{ "#", "Hide" });
+            };
+        _token_store += _flyby_filters.on_columns_saved += [this]()
+            {
+                _settings.flyby_columns = _flyby_filters.columns();
+                on_settings(_settings);
+            };
+
         _node_filters.add_getter<int>("#", [](auto&& node) { return static_cast<int>(node.number()); });
         _node_filters.add_getter<int>("X", [](auto&& node) { return static_cast<int>(node.position().x * trlevel::Scale_X); });
         _node_filters.add_getter<int>("Y", [](auto&& node) { return static_cast<int>(node.position().y * trlevel::Scale_Y); });
         _node_filters.add_getter<int>("Z", [](auto&& node) { return static_cast<int>(node.position().z * trlevel::Scale_Z); });
         _node_filters.add_getter<int>("Room", [](auto&& node) { return node.room(); });
+        _node_filters.add_getter<int>("Roll", [](auto&& node) { return node.roll(); });
+        _node_filters.add_getter<int>("Speed", [](auto&& node) { return node.speed(); });
+        _node_filters.add_getter<int>("Fov", [](auto&& node) { return node.fov(); });
+        _node_filters.add_getter<int>("Timer", [](auto&& node) { return node.timer(); });
+        for (int i = 0; i < 16; ++i)
+        {
+            _node_filters.add_getter<bool>(flag_name(_platform_and_version, i), [=](auto&& node) { return (node.flags() & (1 << i)) != 0; });
+        }
+
+        _node_filters.set_columns(std::vector<std::string>{ "#", "Room" });
+        _token_store += _node_filters.on_columns_reset += [this]()
+            {
+                _node_filters.set_columns(std::vector<std::string>{ "#", "Room" });
+            };
+        _token_store += _node_filters.on_columns_saved += [this]()
+            {
+                _settings.flyby_node_columns= _node_filters.columns();
+                on_settings(_settings);
+            };
     }
 
     void CameraSinkWindow::set_settings(const UserSettings& settings)
@@ -471,6 +516,8 @@ namespace trview
         if (!_columns_set)
         {
             _filters.set_columns(settings.camera_sink_window_columns);
+            _flyby_filters.set_columns(settings.flyby_columns);
+            _node_filters.set_columns(settings.flyby_node_columns);
             _columns_set = true;
         }
     }
@@ -705,6 +752,14 @@ namespace trview
             _flyby_filters.render();
             ImGui::SameLine();
 
+            ImGui::SameLine();
+            bool sync = _sync;
+            if (ImGui::Checkbox(Names::sync.c_str(), &sync))
+            {
+                set_sync(sync);
+            }
+
+            ImGui::SameLine();
             _flyby_filters.render_settings();
 
             auto filtered_flybys =
@@ -778,7 +833,11 @@ namespace trview
                 _node_filters.render_table(filtered_nodes, all_nodes, _selected_node, counter,
                     [&](auto&& node)
                     {
-                        _selected_node = node;
+                        set_local_selected_flyby_node(node);
+                        if (_sync)
+                        {
+                            on_flyby_node_selected(node);
+                        }
                     }, {});
 
                 ImGui::EndChild();

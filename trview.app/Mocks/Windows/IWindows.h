@@ -14,6 +14,7 @@ namespace trview
             MOCK_METHOD(void, update, (float), (override));
             MOCK_METHOD(void, render, (), (override));
             MOCK_METHOD(void, select, (const std::weak_ptr<ICameraSink>&), (override));
+            MOCK_METHOD(void, select, (const std::weak_ptr<IFlybyNode>&), (override));
             MOCK_METHOD(void, select, (const std::weak_ptr<IItem>&), (override));
             MOCK_METHOD(void, select, (const std::weak_ptr<ILight>&), (override));
             MOCK_METHOD(void, select, (const std::weak_ptr<ISoundSource>&), (override));

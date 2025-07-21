@@ -18,11 +18,13 @@ namespace trview
         auto window = _camera_sink_window_source();
         window->set_camera_sinks(_camera_sinks);
         window->set_flybys(_flybys);
+        window->set_selected_flyby_node(_selected_flyby_node);
         window->set_selected_camera_sink(_selected_camera_sink);
         window->set_current_room(_current_room);
         window->set_platform_and_version(_platform_and_version);
         window->set_settings(_settings);
         window->on_camera_sink_selected += on_camera_sink_selected;
+        window->on_flyby_node_selected += on_flyby_node_selected;
         window->on_trigger_selected += on_trigger_selected;
         window->on_scene_changed += on_scene_changed;
         window->on_settings += on_settings;
@@ -67,6 +69,15 @@ namespace trview
         for (auto& window : _windows)
         {
             window.second->set_selected_camera_sink(_selected_camera_sink);
+        }
+    }
+
+    void CameraSinkWindowManager::set_selected_flyby_node(const std::weak_ptr<IFlybyNode>& flyby_node)
+    {
+        _selected_flyby_node = flyby_node;
+        for (auto& window : _windows)
+        {
+            window.second->set_selected_flyby_node(_selected_flyby_node);
         }
     }
 

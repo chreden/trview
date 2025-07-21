@@ -8,6 +8,7 @@
 #include <trview.common/Strings.h>
 
 #include "../Windows/IItemsWindow.h"
+#include "../Elements/Flyby/IFlybyNode.h"
 
 using namespace DirectX::SimpleMath;
 
@@ -1660,5 +1661,18 @@ namespace trview
     std::weak_ptr<ILevel> Viewer::level() const
     {
         return _level;
+    }
+
+    void Viewer::select_flyby_node(const std::weak_ptr<IFlybyNode>& flyby_node)
+    {
+        if (auto flyby_node_ptr = flyby_node.lock())
+        {
+            set_target(flyby_node_ptr->position());
+            if (_settings.auto_orbit)
+            {
+                set_camera_mode(ICamera::Mode::Orbit);
+            }
+            _scene_changed = true;
+        }
     }
 }

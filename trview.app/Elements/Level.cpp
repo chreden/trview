@@ -1050,6 +1050,12 @@ namespace trview
         on_level_changed();
     }
 
+    void Level::set_selected_flyby_node(const std::weak_ptr<IFlybyNode>& node)
+    {
+        _selected_flyby_node = node;
+        on_level_changed();
+    }
+
     std::shared_ptr<ILevelTextureStorage> Level::texture_storage() const
     {
         return _texture_storage;

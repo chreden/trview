@@ -92,6 +92,7 @@ namespace trview
         virtual void select_camera_sink(const std::weak_ptr<ICameraSink>& camera_sink) override;
         void select_static_mesh(const std::weak_ptr<IStaticMesh>& static_mesh) override;
         void select_sound_source(const std::weak_ptr<ISoundSource>& sound_source) override;
+        void select_flyby_node(const std::weak_ptr<IFlybyNode>& flyby_node) override;
         std::weak_ptr<ILevel> level() const override;
     private:
         void initialise_input();

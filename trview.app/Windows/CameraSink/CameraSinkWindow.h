@@ -31,6 +31,7 @@ namespace trview
         void set_camera_sinks(const std::vector<std::weak_ptr<ICameraSink>>& camera_sinks) override;
         void set_flybys(const std::vector<std::weak_ptr<IFlyby>>& flybys) override;
         void set_selected_camera_sink(const std::weak_ptr<ICameraSink>& camera_sink) override;
+        void set_selected_flyby_node(const std::weak_ptr<IFlybyNode>& flyby_node) override;
         void set_current_room(const std::weak_ptr<IRoom>& room) override;
         void set_settings(const UserSettings& settings) override;
         void update(float delta) override;
@@ -48,6 +49,7 @@ namespace trview
         void render_flyby_list();
         void render_flyby_tab();
         void render_flyby_details();
+        void set_local_selected_flyby_node(const std::weak_ptr<IFlybyNode>& flyby_node);
 
         template <typename T>
         void add_stat(const std::string& name, const T&& value);
@@ -62,6 +64,7 @@ namespace trview
         // Flybys
         std::vector<std::weak_ptr<IFlyby>> _all_flybys;
         std::weak_ptr<IFlyby> _selected_flyby;
+        std::weak_ptr<IFlybyNode> _global_selected_flyby_node;
         Filters<IFlyby> _flyby_filters;
         Filters<IFlybyNode> _node_filters;
         std::weak_ptr<IFlybyNode> _selected_node;

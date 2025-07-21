@@ -47,6 +47,7 @@ namespace trview
         void update(float elapsed) override;
         void render() override;
         void select(const std::weak_ptr<ICameraSink>& camera_sink) override;
+        void select(const std::weak_ptr<IFlybyNode>& flyby_node) override;
         void select(const std::weak_ptr<IItem>& item) override;
         void select(const std::weak_ptr<ILight>& light) override;
         void select(const std::weak_ptr<ISoundSource>& sound_source) override;

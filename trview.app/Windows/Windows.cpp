@@ -50,6 +50,7 @@ namespace trview
         _textures_windows(std::move(textures_window_manager)), _triggers_windows(std::move(triggers_window_manager)), _pack_windows(std::move(pack_window_manager))
     {
         _camera_sink_windows->on_camera_sink_selected += on_camera_sink_selected;
+        _camera_sink_windows->on_flyby_node_selected += on_flyby_node_selected;
         _camera_sink_windows->on_trigger_selected += on_trigger_selected;
         _camera_sink_windows->on_scene_changed += on_scene_changed;
         _camera_sink_windows->on_settings += on_settings;
@@ -168,6 +169,11 @@ namespace trview
     {
         _camera_sink_windows->set_selected_camera_sink(camera_sink);
         _rooms_windows->set_selected_camera_sink(camera_sink);
+    }
+
+    void Windows::select(const std::weak_ptr<IFlybyNode>& flyby_node)
+    {
+        _camera_sink_windows->set_selected_flyby_node(flyby_node);
     }
 
     void Windows::select(const std::weak_ptr<IItem>& item)
