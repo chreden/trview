@@ -208,6 +208,33 @@ namespace trview
         }
     }
 
+    void CameraSinkWindow::set_local_selected_flyby(const std::weak_ptr<IFlyby>& flyby)
+    {
+        _selected_flyby = flyby;
+        if (auto selected_flyby = _selected_flyby.lock())
+        {
+            const auto nodes = selected_flyby->nodes();
+            if (nodes.empty())
+            {
+                set_local_selected_flyby_node({});
+            }
+            else
+            {
+                set_local_selected_flyby_node(nodes[0]);
+                if (_sync)
+                {
+                    on_flyby_node_selected(_selected_node);
+                }
+            }
+        }
+        else
+        {
+            set_local_selected_flyby_node({});
+        }
+        _state = {};
+        restore_camera_state();
+    }
+
     void CameraSinkWindow::set_local_selected_flyby_node(const std::weak_ptr<IFlybyNode>& flyby_node)
     {
         _selected_node = flyby_node;
@@ -361,7 +388,10 @@ namespace trview
     {
         _all_flybys = flybys;
         _state = {};
-        if (!_all_flybys.empty()) { _selected_flyby = _all_flybys[0]; };
+        if (!_all_flybys.empty())
+        {
+            set_local_selected_flyby(_all_flybys[0]);
+        };
     }
 
     void CameraSinkWindow::set_selected_camera_sink(const std::weak_ptr<ICameraSink>& camera_sink)
@@ -781,9 +811,7 @@ namespace trview
             _flyby_filters.render_table(filtered_flybys, _all_flybys, _selected_flyby, counter,
                 [&](auto&& flyby)
                 {
-                    _selected_flyby = flyby;
-                    _selected_node.reset();
-                    _state = {};
+                    set_local_selected_flyby(flyby);
                 }, default_hide(filtered_flybys));
 
             ImGui::EndChild();

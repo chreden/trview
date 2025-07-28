@@ -50,6 +50,7 @@ namespace trview
         void render_flyby_tab();
         void render_flyby_details();
         void set_local_selected_flyby_node(const std::weak_ptr<IFlybyNode>& flyby_node);
+        void set_local_selected_flyby(const std::weak_ptr<IFlyby>& flyby);
 
         template <typename T>
         void add_stat(const std::string& name, const T&& value);
