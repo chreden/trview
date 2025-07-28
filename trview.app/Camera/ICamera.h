@@ -33,6 +33,8 @@ namespace trview
         /// @returns The forward direction.
         virtual DirectX::SimpleMath::Vector3 forward() const = 0;
 
+        virtual float fov() const = 0;
+
         /// Get the bounding frustum for the camera. This is a left handed frustum and can be used for culling.
         /// @returns The bounding frustum.
         virtual const DirectX::BoundingFrustum frustum() const = 0;
@@ -56,6 +58,8 @@ namespace trview
         /// Gets the pitch rotation of the camera in radians.
         /// @returns The pitch rotation.
         virtual float rotation_pitch() const = 0;
+
+        virtual float rotation_roll() const = 0;
 
         /// Gets the yaw rotation of the camera in radians.
         /// @returns The yaw rotation.

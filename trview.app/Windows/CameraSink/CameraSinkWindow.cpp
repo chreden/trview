@@ -534,6 +534,7 @@ namespace trview
         {
             if (!_playing_flyby)
             {
+                capture_camera_state();
                 if (_state.state == IFlyby::CameraState::State::Ended)
                 {
                     _state = {};
@@ -542,6 +543,10 @@ namespace trview
                 {
                     _state.state = IFlyby::CameraState::State::Active;
                 }
+            }
+            else
+            {
+                restore_camera_state();
             }
             _playing_flyby = !_playing_flyby;
         }
@@ -732,6 +737,7 @@ namespace trview
             {
                 _playing_flyby = false;
                 _state = {};
+                restore_camera_state();
             }
             else
             {
@@ -883,5 +889,33 @@ namespace trview
             }
             ImGui::EndChild();
         }
+    }
+
+    void CameraSinkWindow::capture_camera_state()
+    {
+        restore_camera_state();
+        if (auto camera = _camera.lock())
+        {
+            IFlyby::CameraState existing_state;
+            existing_state.fov = camera->fov();
+            existing_state.roll = camera->rotation_roll();
+            _initial_state = existing_state;
+        }
+    }
+
+    void CameraSinkWindow::restore_camera_state()
+    {
+        if (!_initial_state.has_value())
+        {
+            return;
+        }
+
+        if (auto camera = _camera.lock())
+        {
+            camera->set_fov(_initial_state->fov);
+            camera->set_rotation_roll(_initial_state->roll);
+        }
+
+        _initial_state.reset();
     }
 }

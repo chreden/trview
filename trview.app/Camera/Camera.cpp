@@ -39,6 +39,11 @@ namespace trview
         return _forward;
     }
 
+    float Camera::fov() const
+    {
+        return _fov;
+    }
+
     const DirectX::BoundingFrustum Camera::frustum() const
     {
         return _bounding_frustum;
@@ -69,6 +74,11 @@ namespace trview
     float Camera::rotation_pitch() const
     {
         return _rotation_pitch;
+    }
+
+    float Camera::rotation_roll() const
+    {
+        return _rotation_roll;
     }
 
     float Camera::rotation_yaw() const

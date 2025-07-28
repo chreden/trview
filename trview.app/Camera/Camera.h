@@ -27,12 +27,14 @@ namespace trview
         explicit Camera(const Size& size);
         virtual ~Camera() = default;
         virtual DirectX::SimpleMath::Vector3 forward() const override;
+        float fov() const override;
         virtual const DirectX::BoundingFrustum frustum() const override;
         virtual DirectX::SimpleMath::Vector3 position() const override;
         virtual DirectX::SimpleMath::Vector3 rendering_position() const override;
         virtual const DirectX::SimpleMath::Matrix projection() const override;
         virtual ProjectionMode projection_mode() const override;
         virtual float rotation_pitch() const override;
+        float rotation_roll() const override;
         virtual float rotation_yaw() const override;
         virtual void rotate_to_pitch(float rotation) override;
         virtual void rotate_to_yaw(float rotation) override;

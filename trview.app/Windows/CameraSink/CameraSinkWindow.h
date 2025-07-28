@@ -54,6 +54,9 @@ namespace trview
         template <typename T>
         void add_stat(const std::string& name, const T&& value);
 
+        void capture_camera_state();
+        void restore_camera_state();
+
         std::string _id{ "Camera/Sink 0" };
         // Camera sinks
         std::vector<std::weak_ptr<ICameraSink>> _all_camera_sinks;
@@ -82,12 +85,12 @@ namespace trview
         std::weak_ptr<ICamera> _camera;
 
         bool _playing_flyby{ false };
-        float _original_fov;
         UserSettings _settings;
         bool _columns_set{ false };
         bool _force_sort{ false };
         TokenStore _token_store;
         IFlyby::CameraState _state;
+        std::optional<IFlyby::CameraState> _initial_state;
         trlevel::PlatformAndVersion _platform_and_version;
     };
 }
