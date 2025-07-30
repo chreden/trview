@@ -1438,6 +1438,11 @@ namespace trview
             on_sound_source_selected(pick.sound_source);
             break;
         }
+        case PickResult::Type::FlybyNode:
+        {
+            on_flyby_node_selected(pick.flyby_node);
+            break;
+        }
         }
     }
 

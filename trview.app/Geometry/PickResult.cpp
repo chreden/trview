@@ -3,6 +3,7 @@
 #include "../Elements/ILevel.h"
 #include "../Routing/IRoute.h"
 #include "../Elements/SoundSource/ISoundSource.h"
+#include "../Elements/Flyby/IFlybyNode.h"
 
 namespace trview
 {
@@ -144,6 +145,14 @@ namespace trview
                     stream << "Sound Source " << sound_source->number() << " - ";
                     const auto sample = sound_source->sample();
                     stream << (sample ? std::format("Sample {}", sample.value()) : "Missing Sample");
+                }
+                break;
+            }
+            case PickResult::Type::FlybyNode:
+            {
+                if (const auto flyby_node = result.flyby_node.lock())
+                {
+                    stream << "Flyby Camera " << flyby_node->number();
                 }
                 break;
             }

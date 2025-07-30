@@ -12,6 +12,7 @@
 #include <trview.common/Event.h>
 
 #include "../../Geometry/IRenderable.h"
+#include "../../Geometry/PickResult.h"
 
 namespace trview
 {
@@ -65,6 +66,7 @@ namespace trview
         virtual ~IFlyby() = 0;
         virtual std::vector<std::weak_ptr<IFlybyNode>> nodes() const = 0;
         virtual uint32_t number() const = 0;
+        virtual PickResult pick(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& direction) const = 0;
         virtual [[nodiscard]] CameraState update_state(const CameraState& state, float delta) const = 0;
 
         Event<> on_changed;

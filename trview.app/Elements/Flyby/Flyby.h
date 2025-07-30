@@ -23,6 +23,7 @@ namespace trview
         bool visible() const override;
         void set_visible(bool value) override;
         [[nodiscard]] CameraState update_state(const CameraState& state, float delta) const override;
+        PickResult pick(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& direction) const override;
     private:
         void generate_path(const IMesh::Source& mesh_source);
         void state_at(CameraState& state) const;

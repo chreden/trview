@@ -780,11 +780,11 @@ namespace trview
                     continue;
                 }
 
-                // auto flyby_result = flyby->pick(position, direction);
-                // if (flyby_result.hit)
-                // {
-                //     results.push_back(flyby_result);
-                // }
+                auto flyby_result = flyby->pick(position, direction);
+                if (flyby_result.hit)
+                {
+                    results.push_back(flyby_result);
+                }
             }
         }
 

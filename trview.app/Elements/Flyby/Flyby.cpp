@@ -244,4 +244,26 @@ namespace trview
         state.room_id = n1->room();
         state.flags = n1->flags();
     }
+
+    PickResult Flyby::pick(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& direction) const
+    {
+        PickResult result{};
+
+        for (const auto& node : _camera_nodes)
+        {
+            BoundingSphere sphere(node->position(), 0.125f);
+
+            float distance = 0;
+            if (sphere.Intersects(position, direction, distance))
+            {
+                result.distance = distance;
+                result.hit = true;
+                result.position = position + direction * distance;
+                result.type = PickResult::Type::FlybyNode;
+                result.flyby_node = std::const_pointer_cast<IFlybyNode>(node);
+            }
+        }
+
+        return result;
+    }
 }
