@@ -251,7 +251,12 @@ namespace trview
 
         const auto flyby_node_source = [=](auto&&... args) { return std::make_shared<FlybyNode>(args...); };
         const auto flyby_mesh = create_frustum_mesh(default_mesh_source);
-        const auto flyby_source = [=](auto&&... args) { return std::make_shared<Flyby>(flyby_node_source, default_mesh_source, flyby_mesh, args...); };
+        const auto flyby_source = [=](auto&& nodes, auto&& index)
+            { 
+                auto flyby = std::make_shared<Flyby>(flyby_mesh, index);
+                flyby->initialise(flyby_node_source, default_mesh_source, nodes);
+                return flyby;
+            };
 
         auto decrypter = std::make_shared<trlevel::Decrypter>();
         auto trlevel_pack_source = [=](auto&&... args) { return std::make_shared<trlevel::Level>(args..., files, decrypter, log); };

@@ -9,13 +9,15 @@
 
 namespace trview
 {
+    struct IFlyby;
     struct IFlybyNode
     {
-        using Source = std::function<std::shared_ptr<IFlybyNode>(const trlevel::tr4_flyby_camera&)>;
+        using Source = std::function<std::shared_ptr<IFlybyNode>(const trlevel::tr4_flyby_camera&, const std::weak_ptr<IFlyby>&)>;
 
         virtual ~IFlybyNode() = 0;
         virtual DirectX::SimpleMath::Vector3 direction() const = 0;
         virtual uint16_t flags() const = 0;
+        virtual std::weak_ptr<IFlyby> flyby() const = 0;
         virtual uint16_t fov() const = 0;
         virtual int32_t number() const = 0;
         virtual DirectX::SimpleMath::Vector3 position() const = 0;

@@ -169,7 +169,7 @@ namespace trview
                     ImGui::EndTabItem();
                 }
 
-                if (ImGui::BeginTabItem("Flyby"))
+                if (ImGui::BeginTabItem("Flyby", 0, _go_to_details ? ImGuiTabItemFlags_SetSelected : ImGuiTabItemFlags_None))
                 {
                     render_flyby_list();
                     ImGui::SameLine();
@@ -237,7 +237,16 @@ namespace trview
 
     void CameraSinkWindow::set_local_selected_flyby_node(const std::weak_ptr<IFlybyNode>& flyby_node)
     {
+        if (auto selected_node = flyby_node.lock())
+        {
+            const auto current = _selected_flyby.lock();
+            if (current != selected_node->flyby().lock())
+            {
+                set_local_selected_flyby(selected_node->flyby());
+            }
+        }
         _selected_node = flyby_node;
+        _go_to_details = true;
     }
 
     void CameraSinkWindow::render_list()
@@ -831,8 +840,9 @@ namespace trview
                     ImGui::EndTabItem();
                 }
 
-                if (ImGui::BeginTabItem("Details"))
+                if (ImGui::BeginTabItem("Details", 0, _go_to_details ? ImGuiTabItemFlags_SetSelected : ImGuiTabItemFlags_None))
                 {
+                    _go_to_details = false;
                     render_flyby_details();
                     ImGui::EndTabItem();
                 }

@@ -12,6 +12,7 @@ namespace trview
             virtual ~MockFlybyNode();
             MOCK_METHOD(DirectX::SimpleMath::Vector3, direction, (), (const, override));
             MOCK_METHOD(uint16_t, flags, (), (const, override));
+            MOCK_METHOD(std::weak_ptr<IFlyby>, flyby, (), (const, override));
             MOCK_METHOD(uint16_t, fov, (), (const, override));
             MOCK_METHOD(int32_t, number, (), (const, override));
             MOCK_METHOD(DirectX::SimpleMath::Vector3, position, (), (const, override));

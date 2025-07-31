@@ -20,9 +20,11 @@ namespace
             std::vector<tr4_flyby_camera> nodes;
             uint32_t number{ 0u };
 
-            Flyby build()
+            std::shared_ptr<Flyby> build()
             {
-                return Flyby(flyby_node_source, mesh_source, mesh, nodes, number);
+                auto flyby = std::make_shared<Flyby>(mesh, number);
+                flyby->initialise(flyby_node_source, mesh_source, nodes);
+                return flyby;
             }
         };
 
@@ -35,9 +37,9 @@ TEST(Flyby, SetVisible)
     auto flyby = register_test_module().build();
 
     bool raised = false;
-    auto token = flyby.on_changed += capture_called(raised);
+    auto token = flyby->on_changed += capture_called(raised);
 
-    flyby.set_visible(true);
+    flyby->set_visible(true);
 
     ASSERT_TRUE(raised);
 }

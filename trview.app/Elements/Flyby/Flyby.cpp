@@ -10,10 +10,14 @@ namespace trview
     {
     }
 
-    Flyby::Flyby(const IFlybyNode::Source& flyby_node_source, const IMesh::Source& mesh_source, const std::shared_ptr<IMesh>& mesh, const std::vector<trlevel::tr4_flyby_camera>& camera_nodes, uint32_t index)
+    Flyby::Flyby(const std::shared_ptr<IMesh>& mesh, uint32_t index)
         : _mesh(mesh), _index(index)
     {
-        _camera_nodes = camera_nodes | std::views::transform([&](auto&& n) { return flyby_node_source(n); }) | std::ranges::to<std::vector>();
+    }
+
+    void Flyby::initialise(const IFlybyNode::Source& flyby_node_source, const IMesh::Source& mesh_source, const std::vector<trlevel::tr4_flyby_camera>& camera_nodes)
+    {
+        _camera_nodes = camera_nodes | std::views::transform([&](auto&& n) { return flyby_node_source(n, weak_from_this()); }) | std::ranges::to<std::vector>();
         _colour = Color(
             static_cast<float>(rand()) / RAND_MAX,
             static_cast<float>(rand()) / RAND_MAX,
