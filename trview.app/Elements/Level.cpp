@@ -1355,10 +1355,9 @@ namespace trview
         const auto grouped = level.flyby_cameras() |
             std::views::chunk_by([](auto&& l, auto&& r) { return l.sequence == r.sequence; }) |
             std::ranges::to<std::vector<std::vector<trlevel::tr4_flyby_camera>>>();
-        uint32_t index = 0;
         for (const auto& flyby : grouped)
         {
-            auto new_flyby = flyby_source(flyby, index++);
+            auto new_flyby = flyby_source(flyby);
             _token_store += new_flyby->on_changed += [this]() { content_changed(); };
             _flybys.push_back(new_flyby);
         }

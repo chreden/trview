@@ -19,7 +19,7 @@ namespace trview
     struct IFlybyNode;
     struct IFlyby : public IRenderable
     {
-        using Source = std::function<std::shared_ptr<IFlyby>(const std::vector<trlevel::tr4_flyby_camera>&, uint32_t)>;
+        using Source = std::function<std::shared_ptr<IFlyby>(const std::vector<trlevel::tr4_flyby_camera>&)>;
 
         struct CameraState
         {

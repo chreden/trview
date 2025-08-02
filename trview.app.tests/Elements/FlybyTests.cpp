@@ -18,11 +18,10 @@ namespace
             IMesh::Source mesh_source{ [](auto&&...) { return mock_shared<MockMesh>(); } };
             std::shared_ptr<IMesh> mesh{ mock_shared<MockMesh>() };
             std::vector<tr4_flyby_camera> nodes;
-            uint32_t number{ 0u };
 
             std::shared_ptr<Flyby> build()
             {
-                auto flyby = std::make_shared<Flyby>(mesh, number);
+                auto flyby = std::make_shared<Flyby>(mesh);
                 flyby->initialise(flyby_node_source, mesh_source, nodes);
                 return flyby;
             }

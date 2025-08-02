@@ -9,7 +9,7 @@ namespace trview
     class Flyby final : public IFlyby, public std::enable_shared_from_this<IFlyby>
     {
     public:
-        explicit Flyby(const std::shared_ptr<IMesh>& mesh, uint32_t index);
+        explicit Flyby(const std::shared_ptr<IMesh>& mesh);
         void initialise(const IFlybyNode::Source& flyby_node_source, const IMesh::Source& mesh_source, const std::vector<trlevel::tr4_flyby_camera>& camera_nodes);
         virtual ~Flyby() = default;
         std::vector<std::weak_ptr<IFlybyNode>> nodes() const override;
