@@ -933,6 +933,7 @@ namespace trview
             IFlyby::CameraState existing_state;
             existing_state.fov = camera->fov();
             existing_state.roll = camera->rotation_roll();
+            existing_state.mode = camera->mode();
             _initial_state = existing_state;
         }
     }
@@ -948,6 +949,8 @@ namespace trview
         {
             camera->set_fov(_initial_state->fov);
             camera->set_rotation_roll(_initial_state->roll);
+            camera->set_mode(_initial_state->mode);
+            camera->set_rotation_yaw(camera->rotation_yaw());
         }
 
         _initial_state.reset();

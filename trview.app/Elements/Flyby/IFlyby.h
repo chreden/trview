@@ -63,6 +63,7 @@ namespace trview
             uint32_t room_id{ 0 };
             uint16_t timer{ 0 };
             std::bitset<16> flags;
+            ICamera::Mode mode{ ICamera::Mode::Orbit };
         };
 
         virtual ~IFlyby() = 0;
