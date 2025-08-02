@@ -152,7 +152,10 @@ namespace trview
             {
                 if (const auto flyby_node = result.flyby_node.lock())
                 {
-                    stream << "Flyby Camera " << flyby_node->number();
+                    if (const auto flyby = flyby_node->flyby().lock())
+                    {
+                        stream << "Flyby " << flyby->number() << " Camera " << flyby_node->number();
+                    }
                 }
                 break;
             }

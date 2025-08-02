@@ -251,9 +251,9 @@ namespace trview
 
         const auto flyby_node_source = [=](auto&&... args) { return std::make_shared<FlybyNode>(args...); };
         const auto flyby_mesh = create_frustum_mesh(default_mesh_source);
-        const auto flyby_source = [=](auto&& nodes)
+        const auto flyby_source = [=](auto&& nodes, auto&& level)
             { 
-                auto flyby = std::make_shared<Flyby>(flyby_mesh);
+                auto flyby = std::make_shared<Flyby>(flyby_mesh, level);
                 flyby->initialise(flyby_node_source, default_mesh_source, nodes);
                 return flyby;
             };

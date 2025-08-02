@@ -17,9 +17,11 @@
 namespace trview
 {
     struct IFlybyNode;
+    struct ILevel;
+
     struct IFlyby : public IRenderable
     {
-        using Source = std::function<std::shared_ptr<IFlyby>(const std::vector<trlevel::tr4_flyby_camera>&)>;
+        using Source = std::function<std::shared_ptr<IFlyby>(const std::vector<trlevel::tr4_flyby_camera>&, const std::weak_ptr<ILevel>&)>;
 
         struct CameraState
         {
@@ -64,6 +66,7 @@ namespace trview
         };
 
         virtual ~IFlyby() = 0;
+        virtual std::weak_ptr<ILevel> level() const = 0;
         virtual std::vector<std::weak_ptr<IFlybyNode>> nodes() const = 0;
         virtual uint32_t number() const = 0;
         virtual PickResult pick(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& direction) const = 0;

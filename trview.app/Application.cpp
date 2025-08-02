@@ -941,16 +941,14 @@ namespace trview
 
     void Application::select_flyby_node(const std::weak_ptr<IFlybyNode>& node)
     {
-        // const auto [flyby_node_ptr, level] = get_entity_and_level(node);
-        // if (!flyby_node_ptr || !level)
-        // {
-        //     return;
-        // }
+        const auto [flyby_node_ptr, level] = get_entity_and_level(node);
+        if (!flyby_node_ptr || !level)
+        {
+            return;
+        }
 
-        // _viewer->open(level, ILevel::OpenMode::Reload);
-        // select_room(flyby_node_ptr->room());
-        auto flyby_node_ptr = node.lock();
-        // level->set_selected_flyby_node(node);
+        _viewer->open(level, ILevel::OpenMode::Reload);
+        level->set_selected_flyby_node(node);
         _viewer->select_flyby_node(node);
         _windows->select(node);
     }

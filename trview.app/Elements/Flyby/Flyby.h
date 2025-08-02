@@ -9,9 +9,10 @@ namespace trview
     class Flyby final : public IFlyby, public std::enable_shared_from_this<IFlyby>
     {
     public:
-        explicit Flyby(const std::shared_ptr<IMesh>& mesh);
+        explicit Flyby(const std::shared_ptr<IMesh>& mesh, const std::weak_ptr<ILevel>& level);
         void initialise(const IFlybyNode::Source& flyby_node_source, const IMesh::Source& mesh_source, const std::vector<trlevel::tr4_flyby_camera>& camera_nodes);
         virtual ~Flyby() = default;
+        std::weak_ptr<ILevel> level() const override;
         std::vector<std::weak_ptr<IFlybyNode>> nodes() const override;
         uint32_t number() const override;
         void render(const ICamera& camera, const DirectX::SimpleMath::Color& colour) override;
@@ -24,6 +25,7 @@ namespace trview
         void generate_path(const IMesh::Source& mesh_source);
         void state_at(CameraState& state) const;
 
+        std::weak_ptr<ILevel> _level;
         uint32_t _index{ 0u };
         std::vector<std::shared_ptr<IFlybyNode>> _camera_nodes;
         std::shared_ptr<IMesh> _mesh;

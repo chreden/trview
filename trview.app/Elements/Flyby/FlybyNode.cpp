@@ -9,8 +9,9 @@ namespace trview
     {
     }
 
-    FlybyNode::FlybyNode(const tr4_flyby_camera& node, const std::weak_ptr<IFlyby>& flyby)
+    FlybyNode::FlybyNode(const tr4_flyby_camera& node, const std::weak_ptr<IFlyby>& flyby, const std::weak_ptr<ILevel>& level)
         : _flyby(flyby),
+        _level(level),
         _direction(Vector3(static_cast<float>(node.dx), static_cast<float>(node.dy), static_cast<float>(node.dz)) / trlevel::Scale),
         _flags(node.flags),
         _fov(node.fov),
@@ -41,6 +42,11 @@ namespace trview
     uint16_t FlybyNode::fov() const
     {
         return _fov;
+    }
+
+    std::weak_ptr<ILevel> FlybyNode::level() const
+    {
+        return _level;
     }
 
     int32_t FlybyNode::number() const

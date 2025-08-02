@@ -1357,7 +1357,7 @@ namespace trview
             std::ranges::to<std::vector<std::vector<trlevel::tr4_flyby_camera>>>();
         for (const auto& flyby : grouped)
         {
-            auto new_flyby = flyby_source(flyby);
+            auto new_flyby = flyby_source(flyby, shared_from_this());
             _token_store += new_flyby->on_changed += [this]() { content_changed(); };
             _flybys.push_back(new_flyby);
         }

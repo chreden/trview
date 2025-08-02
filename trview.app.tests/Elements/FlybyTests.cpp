@@ -1,6 +1,7 @@
 #include <trview.app/Elements/Flyby/Flyby.h>
 #include <trview.tests.common/Event.h>
 #include <trview.app/Mocks/Elements/IFlybyNode.h>
+#include <trview.app/Mocks/Elements/ILevel.h>
 
 using namespace trlevel;
 using namespace trview;
@@ -18,10 +19,11 @@ namespace
             IMesh::Source mesh_source{ [](auto&&...) { return mock_shared<MockMesh>(); } };
             std::shared_ptr<IMesh> mesh{ mock_shared<MockMesh>() };
             std::vector<tr4_flyby_camera> nodes;
+            std::shared_ptr<trview::ILevel> level{ mock_shared<MockLevel>() };
 
             std::shared_ptr<Flyby> build()
             {
-                auto flyby = std::make_shared<Flyby>(mesh);
+                auto flyby = std::make_shared<Flyby>(mesh, level);
                 flyby->initialise(flyby_node_source, mesh_source, nodes);
                 return flyby;
             }
