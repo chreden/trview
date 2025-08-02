@@ -35,6 +35,7 @@ namespace trview
         triggers_window->on_scene_changed += on_scene_changed;
         triggers_window->on_add_to_route += on_add_to_route;
         triggers_window->on_camera_sink_selected += on_camera_sink_selected;
+        triggers_window->on_flyby_node_selected += on_flyby_node_selected;
         triggers_window->on_settings += on_settings;
         triggers_window->set_items(_items);
         triggers_window->set_platform_and_version(_platform_and_version);

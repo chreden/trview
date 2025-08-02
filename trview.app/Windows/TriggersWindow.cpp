@@ -380,6 +380,28 @@ namespace trview
                                 }
                             }
                         }
+                        else if (command.type() == TriggerCommandType::Flyby)
+                        {
+                            _track.set_enabled<Type::Room>(false);
+                            if (selected_trigger)
+                            {
+                                if (auto level = selected_trigger->level().lock())
+                                {
+                                    for (const auto flyby : level->flybys() | std::views::transform([](auto&& f) { return f.lock(); }))
+                                    {
+                                        if (flyby && flyby->number() == command.index())
+                                        {
+                                            const auto nodes = flyby->nodes();
+                                            if (!nodes.empty())
+                                            {
+                                                on_flyby_node_selected(nodes[0]);
+                                            }
+                                            break;
+                                        }
+                                    }
+                                }
+                            }
+                        }
                     }
                     ImGui::TableNextColumn();
                     ImGui::Text(command_type_name(command.type()).c_str());

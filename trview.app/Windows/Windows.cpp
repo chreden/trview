@@ -127,6 +127,7 @@ namespace trview
             };
         _triggers_windows->on_camera_sink_selected += on_camera_sink_selected;
         _triggers_windows->on_scene_changed += on_scene_changed;
+        _triggers_windows->on_flyby_node_selected += on_flyby_node_selected;
     }
 
     bool Windows::is_route_window_open() const
