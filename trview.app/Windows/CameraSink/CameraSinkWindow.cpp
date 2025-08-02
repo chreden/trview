@@ -244,9 +244,9 @@ namespace trview
             {
                 set_local_selected_flyby(selected_node->flyby());
             }
+            _go_to_details = true;
         }
         _selected_node = flyby_node;
-        _go_to_details = true;
     }
 
     void CameraSinkWindow::render_list()
@@ -397,10 +397,6 @@ namespace trview
     {
         _all_flybys = flybys;
         _state = {};
-        if (!_all_flybys.empty())
-        {
-            set_local_selected_flyby(_all_flybys[0]);
-        };
     }
 
     void CameraSinkWindow::set_selected_camera_sink(const std::weak_ptr<ICameraSink>& camera_sink)
