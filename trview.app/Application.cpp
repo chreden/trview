@@ -6,6 +6,7 @@
 
 #include "Resources/resource.h"
 #include "Elements/SoundSource/ISoundSource.h"
+#include "Elements/Flyby/IFlybyNode.h"
 
 using namespace DirectX::SimpleMath;
 
@@ -74,6 +75,7 @@ namespace trview
         setup_view_menu();
 
         _token_store += _windows->on_camera_sink_selected += [this](const auto& sink) {  select_camera_sink(sink); };
+        _token_store += _windows->on_flyby_node_selected += [this](const auto& node) { select_flyby_node(node); };
         _token_store += _windows->on_trigger_selected += [this](const auto& trigger) { select_trigger(trigger); };
         _token_store += _windows->on_scene_changed += [this]() { _viewer->set_scene_changed(); };
         _token_store += _windows->on_item_selected += [this](const auto& item) { select_item(item); };
@@ -306,6 +308,7 @@ namespace trview
         _token_store += _viewer->on_waypoint_selected += [this](auto index) { select_waypoint(index); };
         _token_store += _viewer->on_waypoint_removed += [this](auto index) { remove_waypoint(index); };
         _token_store += _viewer->on_camera_sink_selected += [this](const auto& camera_sink) { select_camera_sink(camera_sink); };
+        _token_store += _viewer->on_flyby_node_selected += [this](const auto& flyby_node) { select_flyby_node(flyby_node); };
         _token_store += _viewer->on_settings += [this](auto&& settings)
         {
             _settings = settings;
@@ -934,5 +937,19 @@ namespace trview
         {
             _viewer->open(_level, ILevel::OpenMode::Reload);
         }
+    }
+
+    void Application::select_flyby_node(const std::weak_ptr<IFlybyNode>& node)
+    {
+        const auto [flyby_node_ptr, level] = get_entity_and_level(node);
+        if (!flyby_node_ptr || !level)
+        {
+            return;
+        }
+
+        _viewer->open(level, ILevel::OpenMode::Reload);
+        level->set_selected_flyby_node(node);
+        _viewer->select_flyby_node(node);
+        _windows->select(node);
     }
 }

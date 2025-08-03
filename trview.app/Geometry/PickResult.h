@@ -7,6 +7,7 @@ namespace trview
 {
     struct Colour;
     struct ICameraSink;
+    struct IFlybyNode;
     struct IItem;
     struct ILevel;
     struct ILight;
@@ -32,7 +33,8 @@ namespace trview
             Light,
             CameraSink,
             Scriptable,
-            SoundSource
+            SoundSource,
+            FlybyNode
         };
 
         bool                         hit{ false };
@@ -55,6 +57,7 @@ namespace trview
         std::weak_ptr<IRoom>         room;
         std::weak_ptr<ITrigger>      trigger;
         std::weak_ptr<IWaypoint>     waypoint;
+        std::weak_ptr<IFlybyNode>    flyby_node;
     };
 
     /// Get the appropriate colour for a pick.

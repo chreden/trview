@@ -567,6 +567,8 @@ TEST(Windows, SetLevel)
 {
     auto [cameras_ptr, cameras] = create_mock<MockCameraSinkWindowManager>();
     EXPECT_CALL(cameras, set_camera_sinks).Times(1);
+    EXPECT_CALL(cameras, set_flybys).Times(1);
+    EXPECT_CALL(cameras, set_platform_and_version).Times(1);
     auto [items_ptr, items] = create_mock<MockItemsWindowManager>();
     EXPECT_CALL(items, set_items).Times(1);
     EXPECT_CALL(items, set_triggers).Times(1);
@@ -860,6 +862,8 @@ TEST(Windows, WindowsRendered)
 
 TEST(Windows, WindowsUpdated)
 {
+    auto [cameras_ptr, cameras] = create_mock<MockCameraSinkWindowManager>();
+    EXPECT_CALL(cameras, update).Times(1);
     auto [items_ptr, items] = create_mock<MockItemsWindowManager>();
     EXPECT_CALL(items, update).Times(1);
     auto [lights_ptr, lights] = create_mock<MockLightsWindowManager>();
@@ -875,6 +879,7 @@ TEST(Windows, WindowsUpdated)
     auto [triggers_ptr, triggers] = create_mock<MockTriggersWindowManager>();
     EXPECT_CALL(triggers, update).Times(1);
     auto windows = register_test_module()
+        .with_camera_sinks(std::move(cameras_ptr))
         .with_items(std::move(items_ptr))
         .with_lights(std::move(lights_ptr))
         .with_plugins(std::move(plugins_ptr))

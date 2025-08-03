@@ -11,12 +11,14 @@ namespace trview
             MockCamera();
             virtual ~MockCamera();
             MOCK_METHOD(DirectX::SimpleMath::Vector3, forward, (), (const, override));
+            MOCK_METHOD(float, fov, (), (const, override));
             MOCK_METHOD(const DirectX::BoundingFrustum, frustum, (), (const, override));
             MOCK_METHOD(DirectX::SimpleMath::Vector3, position, (), (const, override));
             MOCK_METHOD(DirectX::SimpleMath::Vector3, rendering_position, (), (const, override));
             MOCK_METHOD(const DirectX::SimpleMath::Matrix, projection, (), (const, override));
             MOCK_METHOD(ProjectionMode, projection_mode, (), (const, override));
             MOCK_METHOD(float, rotation_pitch, (), (const, override));
+            MOCK_METHOD(float, rotation_roll, (), (const, override));
             MOCK_METHOD(float, rotation_yaw, (), (const, override));
             MOCK_METHOD(void, rotate_to_pitch, (float), (override));
             MOCK_METHOD(void, rotate_to_yaw, (float), (override));
@@ -40,6 +42,8 @@ namespace trview
             MOCK_METHOD(void, reset, (), (override));
             MOCK_METHOD(DirectX::SimpleMath::Vector3, target, (), (const, override));
             MOCK_METHOD(Mode, mode, (), (const, override));
+            MOCK_METHOD(void, set_forward, (const DirectX::SimpleMath::Vector3&), (override));
+            MOCK_METHOD(void, set_rotation_roll, (float), (override));
         };
     }
 }

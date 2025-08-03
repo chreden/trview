@@ -120,6 +120,7 @@ namespace trview
         void select_sound_source(const std::weak_ptr<ISoundSource>& sound_source);
         void check_load();
         void end_diff(const std::weak_ptr<ILevel>& level);
+        void select_flyby_node(const std::weak_ptr<IFlybyNode>& node);
 
         TokenStore _token_store;
 

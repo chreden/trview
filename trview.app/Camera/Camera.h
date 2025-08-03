@@ -27,12 +27,14 @@ namespace trview
         explicit Camera(const Size& size);
         virtual ~Camera() = default;
         virtual DirectX::SimpleMath::Vector3 forward() const override;
+        float fov() const override;
         virtual const DirectX::BoundingFrustum frustum() const override;
         virtual DirectX::SimpleMath::Vector3 position() const override;
         virtual DirectX::SimpleMath::Vector3 rendering_position() const override;
         virtual const DirectX::SimpleMath::Matrix projection() const override;
         virtual ProjectionMode projection_mode() const override;
         virtual float rotation_pitch() const override;
+        float rotation_roll() const override;
         virtual float rotation_yaw() const override;
         virtual void rotate_to_pitch(float rotation) override;
         virtual void rotate_to_yaw(float rotation) override;
@@ -56,6 +58,8 @@ namespace trview
         void reset() override;
         DirectX::SimpleMath::Vector3 target() const override;
         Mode mode() const override;
+        void set_forward(const DirectX::SimpleMath::Vector3& forward) override;
+        void set_rotation_roll(float roll) override;
     private:
         /// Calculate the bounding frustum based on the view and projection matrices.
         void calculate_bounding_frustum();
@@ -79,14 +83,16 @@ namespace trview
 
         const float default_pitch = -0.78539f;
         const float default_yaw = 0.0f;
+        const float default_roll = 0.0f;
         const float default_zoom = 8.0f;
         static constexpr float default_fov = 45;
 
         DirectX::SimpleMath::Vector3 _position;
-        DirectX::SimpleMath::Vector3 _forward;
+        DirectX::SimpleMath::Vector3 _forward{ DirectX::SimpleMath::Vector3::Backward };
         DirectX::SimpleMath::Vector3 _up;
         float _rotation_yaw{ default_yaw };
         float _rotation_pitch{ default_pitch };
+        float _rotation_roll{ default_roll };
         float _zoom{ default_zoom };
         ProjectionMode _projection_mode{ ProjectionMode::Perspective };
         std::optional<float> _last_rotation;

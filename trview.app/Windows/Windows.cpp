@@ -50,6 +50,7 @@ namespace trview
         _textures_windows(std::move(textures_window_manager)), _triggers_windows(std::move(triggers_window_manager)), _pack_windows(std::move(pack_window_manager))
     {
         _camera_sink_windows->on_camera_sink_selected += on_camera_sink_selected;
+        _camera_sink_windows->on_flyby_node_selected += on_flyby_node_selected;
         _camera_sink_windows->on_trigger_selected += on_trigger_selected;
         _camera_sink_windows->on_scene_changed += on_scene_changed;
         _camera_sink_windows->on_settings += on_settings;
@@ -126,6 +127,7 @@ namespace trview
             };
         _triggers_windows->on_camera_sink_selected += on_camera_sink_selected;
         _triggers_windows->on_scene_changed += on_scene_changed;
+        _triggers_windows->on_flyby_node_selected += on_flyby_node_selected;
     }
 
     bool Windows::is_route_window_open() const
@@ -135,6 +137,7 @@ namespace trview
 
     void Windows::update(float elapsed)
     {
+        _camera_sink_windows->update(elapsed);
         _items_windows->update(elapsed);
         _lights_windows->update(elapsed);
         _plugins_windows->update(elapsed);
@@ -167,6 +170,11 @@ namespace trview
     {
         _camera_sink_windows->set_selected_camera_sink(camera_sink);
         _rooms_windows->set_selected_camera_sink(camera_sink);
+    }
+
+    void Windows::select(const std::weak_ptr<IFlybyNode>& flyby_node)
+    {
+        _camera_sink_windows->set_selected_flyby_node(flyby_node);
     }
 
     void Windows::select(const std::weak_ptr<IItem>& item)
@@ -211,6 +219,8 @@ namespace trview
         }
 
         _camera_sink_windows->set_camera_sinks(new_level->camera_sinks());
+        _camera_sink_windows->set_flybys(new_level->flybys());
+        _camera_sink_windows->set_platform_and_version(new_level->platform_and_version());
         _diff_windows->set_level(new_level);
         _items_windows->set_items(new_level->items());
         _items_windows->set_triggers(new_level->triggers());

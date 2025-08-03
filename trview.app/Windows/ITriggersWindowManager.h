@@ -20,6 +20,7 @@ namespace trview
         Event<std::weak_ptr<ITrigger>> on_add_to_route;
 
         Event<std::weak_ptr<ICameraSink>> on_camera_sink_selected;
+        Event<std::weak_ptr<IFlybyNode>> on_flyby_node_selected;
 
         Event<UserSettings> on_settings;
 

@@ -187,6 +187,7 @@ namespace trlevel
         skip(file, info.boxes_length + info.overlaps_length);
         skip(file, 2 * (info.ground_zone_length + info.ground_zone_length2 + info.ground_zone_length3 + info.ground_zone_length4 + info.ground_zone_length5));
         _cameras = read_vector<tr_camera>(file, info.num_cameras);
+        _flyby_cameras = read_vector<tr4_flyby_camera>(file, info.num_flyby_cameras);
         _frames = read_frames(activity, file, start, info, callbacks);
         _models = read_models(activity, file, start, info, callbacks, model_count(_platform_and_version));
         _static_meshes = read_static_meshes_tr4_psx(activity, file, callbacks, static_count(_platform_and_version));

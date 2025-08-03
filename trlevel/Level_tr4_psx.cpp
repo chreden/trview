@@ -748,6 +748,7 @@ namespace trlevel
         skip(file, info.boxes_length + info.overlaps_length);
         skip(file, 2 * (info.ground_zone_length + info.ground_zone_length2 + info.ground_zone_length3 + info.ground_zone_length4 + info.ground_zone_length5));
         _cameras = read_vector<tr_camera>(file, info.num_cameras);
+        _flyby_cameras = read_vector<tr4_flyby_camera>(file, info.num_flyby_cameras);
         _frames = read_frames(activity, file, start, info, callbacks);
         _models = read_models(activity, file, start, info, callbacks, model_count(_platform_and_version));
         _static_meshes = read_static_meshes_tr4_psx(activity, file, callbacks, 60);
@@ -805,7 +806,7 @@ namespace trlevel
             uint32_t ground_zone_length4;
             uint32_t ground_zone_length5;
             uint32_t num_cameras;
-            char     unknown_5a[4];
+            uint32_t num_flyby_cameras;
             int      camera_length;
             uint32_t unknown_6;
             uint16_t num_ai_objects;
@@ -851,7 +852,7 @@ namespace trlevel
             .ground_zone_length4 = opsm_info.ground_zone_length4,
             .ground_zone_length5 = opsm_info.ground_zone_length5,
             .num_cameras = opsm_info.num_cameras,
-            .unknown_6 = opsm_info.unknown_6,
+            .num_flyby_cameras = opsm_info.num_flyby_cameras,
             .num_ai_objects = opsm_info.num_ai_objects
         };
 
@@ -915,7 +916,7 @@ namespace trlevel
         skip(file, info.boxes_length + info.overlaps_length);
         skip(file, 2 * (info.ground_zone_length + info.ground_zone_length2 + info.ground_zone_length3 + info.ground_zone_length4 + info.ground_zone_length5));
         _cameras = read_vector<tr_camera>(file, info.num_cameras);
-        skip(file, info.unknown_6);
+        _flyby_cameras = read_vector<tr4_flyby_camera>(file, info.num_flyby_cameras);
         info.models_offset = static_cast<uint32_t>(file.tellg());
         _models = read_models(activity, file, start, info, callbacks, model_count(_platform_and_version));
         _static_meshes = read_static_meshes_tr4_psx(activity, file, callbacks, 60);

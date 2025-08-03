@@ -65,12 +65,10 @@ namespace trview
         Event<DirectX::SimpleMath::Vector3, DirectX::SimpleMath::Vector3, std::weak_ptr<IRoom>, IWaypoint::Type, uint32_t> on_waypoint_added;
 
         Event<std::weak_ptr<ICameraSink>> on_camera_sink_selected;
-
         Event<std::string, FontSetting> on_font;
-
         Event<std::weak_ptr<IStaticMesh>> on_static_mesh_selected;
-
         Event<std::weak_ptr<ISoundSource>> on_sound_source_selected;
+        Event<std::weak_ptr<IFlybyNode>> on_flyby_node_selected;
 
         virtual std::weak_ptr<ICamera> camera() const = 0;
 
@@ -150,6 +148,7 @@ namespace trview
         virtual void select_camera_sink(const std::weak_ptr<ICameraSink>& camera_sink) = 0;
         virtual void select_static_mesh(const std::weak_ptr<IStaticMesh>& static_mesh) = 0;
         virtual void select_sound_source(const std::weak_ptr<ISoundSource>& sound_source) = 0;
+        virtual void select_flyby_node(const std::weak_ptr<IFlybyNode>& flyby_node) = 0;
         virtual std::weak_ptr<ILevel> level() const = 0;
     };
 }

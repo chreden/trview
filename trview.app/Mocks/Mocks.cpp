@@ -2,6 +2,8 @@
 #include <gmock/gmock.h>
 
 #include "Camera/ICamera.h"
+#include "Elements/IFlyby.h"
+#include "Elements/IFlybyNode.h"
 #include "Elements/IItem.h"
 #include "Elements/ILevel.h"
 #include "Elements/ILight.h"
@@ -313,5 +315,11 @@ namespace trview
 
         MockModelStorage::MockModelStorage() {};
         MockModelStorage::~MockModelStorage() {};
+
+        MockFlyby::MockFlyby() {};
+        MockFlyby::~MockFlyby() {};
+
+        MockFlybyNode::MockFlybyNode() {};
+        MockFlybyNode::~MockFlybyNode() {};
     }
 }

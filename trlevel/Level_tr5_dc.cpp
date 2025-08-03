@@ -239,7 +239,7 @@ namespace trlevel
         {
             DreamcastPage page{ file };
             _cameras = read_cameras(activity, file, callbacks);
-            read_flyby_cameras(activity, file, callbacks);
+            _flyby_cameras = read_flyby_cameras(activity, file, callbacks);
         }
 
         {

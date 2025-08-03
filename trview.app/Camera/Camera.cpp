@@ -39,6 +39,11 @@ namespace trview
         return _forward;
     }
 
+    float Camera::fov() const
+    {
+        return _fov;
+    }
+
     const DirectX::BoundingFrustum Camera::frustum() const
     {
         return _bounding_frustum;
@@ -69,6 +74,11 @@ namespace trview
     float Camera::rotation_pitch() const
     {
         return _rotation_pitch;
+    }
+
+    float Camera::rotation_roll() const
+    {
+        return _rotation_roll;
     }
 
     float Camera::rotation_yaw() const
@@ -394,5 +404,19 @@ namespace trview
     ICamera::Mode Camera::mode() const
     {
         return _mode;
+    }
+
+    void Camera::set_forward(const DirectX::SimpleMath::Vector3& forward)
+    {
+        _forward = forward;
+        _up = Vector3::Down;
+        calculate_view_matrix();
+    }
+
+    void Camera::set_rotation_roll(float roll)
+    {
+        _rotation_roll = roll;
+        _up = Vector3::Transform(Vector3::Down, Matrix::CreateRotationZ(DirectX::XMConvertToRadians(roll)));
+        calculate_view_matrix();
     }
 }

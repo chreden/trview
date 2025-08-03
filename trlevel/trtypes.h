@@ -798,9 +798,9 @@ namespace trlevel
         uint32_t ground_zone_length4;
         uint32_t ground_zone_length5;
         uint32_t num_cameras;
-        char     unknown_5a[4];
+        uint32_t num_flyby_cameras;
         int      camera_length;
-        uint32_t unknown_6;
+        uint32_t flyby_camera_size;
         uint16_t num_ai_objects;
         char     unknown_7[38];
     };
