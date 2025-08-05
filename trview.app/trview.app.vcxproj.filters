@@ -374,6 +374,9 @@
     <ClCompile Include="Windows\Pack\PackWindowManager.cpp">
       <Filter>Windows\Pack</Filter>
     </ClCompile>
+    <ClCompile Include="Elements\Level\LevelNameLookup.cpp">
+      <Filter>Elements\Level</Filter>
+    </ClCompile>
     <ClCompile Include="Geometry\Model\Model.cpp">
       <Filter>Geometry\Model</Filter>
     </ClCompile>
@@ -1264,23 +1267,41 @@
     <ClInclude Include="Mocks\Windows\IPackWindow.h">
       <Filter>Mocks\Windows</Filter>
     </ClInclude>
+    <ClInclude Include="Elements\Level\ILevelNameLookup.h">
+      <Filter>Elements\Level</Filter>
     <ClInclude Include="Geometry\Model\IModel.h">
       <Filter>Geometry\Model</Filter>
     </ClInclude>
+    <ClInclude Include="Elements\Level\LevelNameLookup.h">
+      <Filter>Elements\Level</Filter>
     <ClInclude Include="Geometry\Model\Model.h">
       <Filter>Geometry\Model</Filter>
     </ClInclude>
+    <ClInclude Include="UI\ILevelInfo.h">
+      <Filter>UI</Filter>
     <ClInclude Include="Geometry\Model\IModelStorage.h">
       <Filter>Geometry\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="Mocks\UI\ILevelInfo.h">
+      <Filter>Mocks\UI</Filter>
     </ClInclude>
     <ClInclude Include="Geometry\Model\ModelStorage.h">
       <Filter>Geometry\Model</Filter>
     </ClInclude>
+    <ClInclude Include="Mocks\Elements\ILevelNameLookup.h">
+      <Filter>Mocks\Elements</Filter>
+    </ClInclude>
     <ClInclude Include="Mocks\Geometry\IModelStorage.h">
       <Filter>Mocks\Geometry</Filter>
     </ClInclude>
+    <ClInclude Include="Menus\LevelSortingMode.h">
+      <Filter>Menus</Filter>
+    </ClInclude>
     <ClInclude Include="Elements\Flyby\IFlyby.h">
       <Filter>Elements\Flyby</Filter>
+    </ClInclude>
+    <ClInclude Include="Menus\LevelSortingMode.hpp">
+      <Filter>Menus</Filter>
     </ClInclude>
     <ClInclude Include="Elements\Flyby\Flyby.h">
       <Filter>Elements\Flyby</Filter>
@@ -1615,5 +1636,6 @@
     <Text Include="Resources\Files\actions.json">
       <Filter>Resources\Files</Filter>
     </Text>
+    <Text Include="Resources\Files\level_hashes.json" />
   </ItemGroup>
 </Project>

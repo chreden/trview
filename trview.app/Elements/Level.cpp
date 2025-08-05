@@ -265,6 +265,11 @@ namespace trview
         return _platform_and_version.platform;
     }
 
+    trlevel::PlatformAndVersion Level::platform_and_version() const
+    {
+        return _platform_and_version;
+    }
+
     void Level::render(const ICamera& camera, bool render_selection)
     {
         using namespace DirectX;
@@ -1402,6 +1407,7 @@ namespace trview
         _name = level->name();
         _ng = level->trng();
         _pack = level->pack().lock();
+        _hash = level->hash();
         _model_storage = model_storage;
 
         record_models(*level);
@@ -1595,9 +1601,9 @@ namespace trview
         return _pack;
     }
 
-    trlevel::PlatformAndVersion Level::platform_and_version() const
+    std::string Level::hash() const
     {
-        return _platform_and_version;
+        return _hash;
     }
 
     std::vector<std::weak_ptr<IFlyby>> Level::flybys() const
