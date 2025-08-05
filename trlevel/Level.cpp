@@ -689,12 +689,15 @@ namespace trlevel
     void Level::load(const LoadCallbacks& callbacks)
     {
         // Clear the log before loading the level so we don't keep accumulating memory.
-        _log->clear();
+        if (callbacks.open_mode != LoadCallbacks::OpenMode::Preview)
+        {
+            _log->clear();
+        }
 
         // Load the level from the file.
         _name = trview::filename_without_path(_filename);
 
-        trview::Activity activity(_log, "IO", "Load Level " + _name);
+        trview::Activity activity(callbacks.open_mode != LoadCallbacks::OpenMode::Preview ? _log : nullptr, "IO", "Load Level " + _name);
 
         try
         {

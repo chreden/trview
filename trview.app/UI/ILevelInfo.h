@@ -2,6 +2,8 @@
 
 #include <memory>
 
+#include <trview.common/Event.h>
+
 namespace trview
 {
     struct ILevel;

@@ -10,12 +10,9 @@
 #include <unordered_map>
 #include <trlevel/LevelVersion.h>
 #include <trview.graphics/Texture.h>
-#include <trview.common/Event.h>
-#include <trview.app/Graphics/ITextureStorage.h>
-#include <trview.common/IFiles.h>
-
-#include "ILevelInfo.h"
 #include "../Elements/Level/ILevelNameLookup.h"
+#include "../Graphics/ITextureStorage.h"
+#include "ILevelInfo.h"
 
 namespace trview
 {
@@ -29,14 +26,11 @@ namespace trview
         /// Creates an instance of the LevelInfo class. 
         /// @param texture_storage Texture storage instance to use.
         explicit LevelInfo(const ITextureStorage& texture_storage, const std::shared_ptr<ILevelNameLookup>& level_name_lookup);
-
         virtual ~LevelInfo() = default;
-
-        virtual void render() override;
-
+        void render() override;
         /// Sets the name of the level.
         /// @param name The level name.
-        virtual void set_level(const std::weak_ptr<ILevel>& level) override;
+        void set_level(const std::weak_ptr<ILevel>& level) override;
     private:
         graphics::Texture get_version_image(trlevel::LevelVersion version) const;
         std::unordered_map<trlevel::LevelVersion, graphics::Texture> _version_textures;
