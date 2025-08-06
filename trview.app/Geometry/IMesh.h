@@ -119,6 +119,7 @@ namespace trview
         std::vector<std::vector<uint32_t>>& output_indices,
         std::vector<TransparentTriangle>& transparent_triangles,
         std::vector<Triangle>& collision_triangles,
+        std::vector<AnimatedTriangle>& animated_triangles,
         bool transparent_collision = true);
 
     // Convert the coloured rectangles into collections required to create a mesh.

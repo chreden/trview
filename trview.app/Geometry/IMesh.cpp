@@ -220,7 +220,7 @@ namespace trview
             [](const auto& v) { return trlevel::trview_room_vertex { v, 0, 0, Color(1, 1, 1, 1) }; });
 
         process_textured_rectangles(mesh.textured_rectangles, in_vertices, texture_storage, vertices, indices, transparent_triangles, collision_triangles, animated_triangles, transparent_collision);
-        process_textured_triangles(mesh.textured_triangles, in_vertices, texture_storage, vertices, indices, transparent_triangles, collision_triangles, transparent_collision);
+        process_textured_triangles(mesh.textured_triangles, in_vertices, texture_storage, vertices, indices, transparent_triangles, collision_triangles, animated_triangles, transparent_collision);
         process_coloured_rectangles(mesh.coloured_rectangles, in_vertices, texture_storage, vertices, untextured_indices, collision_triangles, platform_and_version);
         process_coloured_triangles(mesh.coloured_triangles, in_vertices, texture_storage, vertices, untextured_indices, collision_triangles, platform_and_version);
 
@@ -463,34 +463,75 @@ namespace trview
             }
 
             const bool double_sided = texture_storage.platform_and_version().platform != Platform::Saturn && (rect.texture & 0x8000);
+            const bool animated = texture_storage.is_animated(texture);
 
             TransparentTriangle::Mode transparency_mode;
             if (determine_transparency(
                 version.platform == Platform::Saturn ? rect.effects : texture_storage.attribute(texture),
                 version.platform == Platform::Saturn ? 0 : rect.effects, transparency_mode))
             {
-                transparent_triangles.emplace_back(verts[0], verts[1], verts[2], uvs[0], uvs[1], uvs[2], texture_storage.tile(texture), transparency_mode, colors[0], colors[1], colors[2]);
-                transparent_triangles.emplace_back(verts[2], verts[3], verts[0], uvs[2], uvs[3], uvs[0], texture_storage.tile(texture), transparency_mode, colors[2], colors[3], colors[0]);
-                if (transparent_collision)
+                if (animated)
                 {
+                    const auto sequence = texture_storage.animated_texture(static_cast<uint16_t>(texture));
+                    const bool need_rect_uv_swap = needs_rect_uv_swap(version);
+                    animated_triangles.push_back(AnimatedTriangle
+                        {
+                            .vertices = { verts[0], verts[1], verts[2] },
+                            .colours = { colors[0], colors[1], colors[2] },
+                            .frames = sequence | std::views::transform([&](auto&& e) -> AnimatedTriangle::Frame
+                                {
+                                    return
+                                    {
+                                        .uvs = {  texture_storage.uv(e, 0), texture_storage.uv(e, 1), texture_storage.uv(e, need_rect_uv_swap ? 3 : 2) },
+                                        .texture = texture_storage.tile(e)
+                                    };
+                                }) | std::ranges::to<std::vector>(),
+                            .transparency_mode = transparency_mode
+                        });
+                    animated_triangles.push_back(AnimatedTriangle
+                        {
+                            .vertices = { verts[2], verts[3], verts[0] },
+                            .colours = { colors[2], colors[3], colors[0] },
+                            .frames = sequence | std::views::transform([&](auto&& e) -> AnimatedTriangle::Frame
+                                {
+                                    return
+                                    {
+                                        .uvs = {  texture_storage.uv(e, need_rect_uv_swap ? 3 : 2), texture_storage.uv(e, need_rect_uv_swap ? 2 : 3), texture_storage.uv(e, 0) },
+                                        .texture = texture_storage.tile(e)
+                                    };
+                                }) | std::ranges::to<std::vector>(),
+                            .transparency_mode = transparency_mode
+                        });
+
                     collision_triangles.emplace_back(verts[0], verts[1], verts[2]);
                     collision_triangles.emplace_back(verts[2], verts[3], verts[0]);
                 }
-
-                if (double_sided)
+                else
                 {
-
-                    transparent_triangles.emplace_back(verts[2], verts[1], verts[0], uvs[2], uvs[1], uvs[0], texture_storage.tile(texture), transparency_mode, colors[2], colors[1], colors[0]);
-                    transparent_triangles.emplace_back(verts[0], verts[3], verts[2], uvs[0], uvs[3], uvs[2], texture_storage.tile(texture), transparency_mode, colors[0], colors[3], colors[2]);
+                    transparent_triangles.emplace_back(verts[0], verts[1], verts[2], uvs[0], uvs[1], uvs[2], texture_storage.tile(texture), transparency_mode, colors[0], colors[1], colors[2]);
+                    transparent_triangles.emplace_back(verts[2], verts[3], verts[0], uvs[2], uvs[3], uvs[0], texture_storage.tile(texture), transparency_mode, colors[2], colors[3], colors[0]);
                     if (transparent_collision)
                     {
-                        collision_triangles.emplace_back(verts[2], verts[1], verts[0]);
-                        collision_triangles.emplace_back(verts[0], verts[3], verts[2]);
+                        collision_triangles.emplace_back(verts[0], verts[1], verts[2]);
+                        collision_triangles.emplace_back(verts[2], verts[3], verts[0]);
+                    }
+
+                    if (double_sided)
+                    {
+
+                        transparent_triangles.emplace_back(verts[2], verts[1], verts[0], uvs[2], uvs[1], uvs[0], texture_storage.tile(texture), transparency_mode, colors[2], colors[1], colors[0]);
+                        transparent_triangles.emplace_back(verts[0], verts[3], verts[2], uvs[0], uvs[3], uvs[2], texture_storage.tile(texture), transparency_mode, colors[0], colors[3], colors[2]);
+                        if (transparent_collision)
+                        {
+                            collision_triangles.emplace_back(verts[2], verts[1], verts[0]);
+                            collision_triangles.emplace_back(verts[0], verts[3], verts[2]);
+                        }
                     }
                 }
                 continue;
             }
 
+            const auto normal = calculate_normal(&verts[0]);
             if (texture_storage.is_animated(texture))
             {
                 const auto sequence = texture_storage.animated_texture(static_cast<uint16_t>(texture));
@@ -528,7 +569,6 @@ namespace trview
             }
 
             const uint32_t base = static_cast<uint32_t>(output_vertices.size());
-            const auto normal = calculate_normal(&verts[0]);
             for (int i = 0; i < 4; ++i)
             {
                 output_vertices.push_back({ verts[i], normal, uvs[i], colors[i] });
@@ -570,6 +610,7 @@ namespace trview
         std::vector<std::vector<uint32_t>>& output_indices,
         std::vector<TransparentTriangle>& transparent_triangles,
         std::vector<Triangle>& collision_triangles,
+        std::vector<AnimatedTriangle>& animated_triangles,
         bool transparent_collision)
     {
         using namespace trlevel;
@@ -616,29 +657,74 @@ namespace trview
             }
 
             const bool double_sided = version.platform != Platform::Saturn && (tri.texture & 0x8000);
+            const bool animated = texture_storage.is_animated(texture);
 
             TransparentTriangle::Mode transparency_mode;
             if (determine_transparency(
                 version.platform == Platform::Saturn ? tri.effects : texture_storage.attribute(texture),
                 version.platform == Platform::Saturn ? 0 : tri.effects, transparency_mode))
             {
-                transparent_triangles.emplace_back(verts[0], verts[1], verts[2], uvs[0], uvs[1], uvs[2], texture_storage.tile(texture), transparency_mode, colors[0], colors[1], colors[2]);
-                if (transparent_collision)
+                if (animated)
                 {
+                    const auto sequence = texture_storage.animated_texture(static_cast<uint16_t>(texture));
+                    animated_triangles.push_back(AnimatedTriangle
+                        {
+                            .vertices = { verts[0], verts[1], verts[2] },
+                            .colours = { colors[0], colors[1], colors[2] },
+                            .frames = sequence | std::views::transform([&](auto&& e) -> AnimatedTriangle::Frame
+                                {
+                                    return
+                                    {
+                                        .uvs = {  texture_storage.uv(e, 0), texture_storage.uv(e, 1), texture_storage.uv(e, 2) },
+                                        .texture = texture_storage.tile(e)
+                                    };
+                                }) | std::ranges::to<std::vector>(),
+                            .transparency_mode = transparency_mode
+                        });
+
                     collision_triangles.emplace_back(verts[0], verts[1], verts[2]);
                 }
-                if (double_sided)
+                else
                 {
-                    transparent_triangles.emplace_back(verts[2], verts[1], verts[0], uvs[2], uvs[1], uvs[0], texture_storage.tile(texture), transparency_mode, colors[2], colors[1], colors[0]);
+                    transparent_triangles.emplace_back(verts[0], verts[1], verts[2], uvs[0], uvs[1], uvs[2], texture_storage.tile(texture), transparency_mode, colors[0], colors[1], colors[2]);
                     if (transparent_collision)
                     {
-                        collision_triangles.emplace_back(verts[2], verts[1], verts[0]);
+                        collision_triangles.emplace_back(verts[0], verts[1], verts[2]);
+                    }
+                    if (double_sided)
+                    {
+                        transparent_triangles.emplace_back(verts[2], verts[1], verts[0], uvs[2], uvs[1], uvs[0], texture_storage.tile(texture), transparency_mode, colors[2], colors[1], colors[0]);
+                        if (transparent_collision)
+                        {
+                            collision_triangles.emplace_back(verts[2], verts[1], verts[0]);
+                        }
                     }
                 }
                 continue;
             }
 
             const uint32_t base = static_cast<uint32_t>(output_vertices.size());
+            if (texture_storage.is_animated(texture))
+            {
+                const auto sequence = texture_storage.animated_texture(static_cast<uint16_t>(texture));
+                animated_triangles.push_back(AnimatedTriangle
+                    {
+                        .vertices = { verts[0], verts[1], verts[2] },
+                        .colours = { colors[0], colors[1], colors[2] },
+                        .frames = sequence | std::views::transform([&](auto&& e) -> AnimatedTriangle::Frame
+                            {
+                                return
+                                {
+                                    .uvs = {  texture_storage.uv(e, 0), texture_storage.uv(e, 1), texture_storage.uv(e, 2) },
+                                    .texture = texture_storage.tile(e)
+                                };
+                            }) | std::ranges::to<std::vector>()
+                    });
+
+                collision_triangles.emplace_back(verts[0], verts[1], verts[2]);
+                continue;
+            }
+
             const auto normal = calculate_normal(&verts[0]);
             for (int i = 0; i < 3; ++i)
             {

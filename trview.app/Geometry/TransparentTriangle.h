@@ -8,6 +8,7 @@ namespace trview
     {
         enum class Mode
         {
+            None,
             Normal,
             Additive
         };

@@ -394,7 +394,7 @@ namespace trview
         std::vector<AnimatedTriangle> animated_triangles;
 
         process_textured_rectangles(room.data.rectangles, room.data.vertices, *_texture_storage, vertices, indices, transparent_triangles, collision_triangles, animated_triangles, false);
-        process_textured_triangles(room.data.triangles, room.data.vertices, *_texture_storage, vertices, indices, transparent_triangles, collision_triangles, false);
+        process_textured_triangles(room.data.triangles, room.data.vertices, *_texture_storage, vertices, indices, transparent_triangles, collision_triangles, animated_triangles, false);
         process_collision_transparency(transparent_triangles, collision_triangles);
 
         _mesh = mesh_source(vertices, indices, std::vector<uint32_t>{}, transparent_triangles, collision_triangles, animated_triangles);

@@ -1,5 +1,7 @@
 #pragma once
 
+#include "TransparentTriangle.h"
+
 namespace trview
 {
     struct AnimatedTriangle
@@ -18,5 +20,6 @@ namespace trview
         std::vector<Frame> frames;
         uint32_t current_frame{ 0u };
         float current_time{ 0.0f };
+        TransparentTriangle::Mode transparency_mode{ TransparentTriangle::Mode::None };
     };
 }

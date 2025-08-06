@@ -1,5 +1,6 @@
 #include "LevelTextureStorage.h"
 #include "TextureStorage.h"
+#include <ranges>
 
 namespace trview
 {
@@ -203,6 +204,14 @@ namespace trview
     std::vector<uint32_t> LevelTextureStorage::animated_texture(uint32_t texture_index) const
     {
         auto found = _animated_textures.find(texture_index);
-        return found != _animated_textures.end() ? found->second : std::vector<uint32_t>{};
+        if (found == _animated_textures.end())
+        {
+            return {};
+        }
+
+        auto sequence = found->second;
+        auto inner = std::ranges::find(sequence, texture_index);
+        std::ranges::rotate(sequence, inner);
+        return sequence;
     }
 }

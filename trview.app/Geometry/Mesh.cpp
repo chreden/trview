@@ -1,4 +1,5 @@
 #include "Mesh.h"
+#include <ranges>
 
 using namespace Microsoft::WRL;
 using namespace DirectX::SimpleMath;
@@ -15,6 +16,29 @@ namespace trview
         const std::shared_ptr<ITextureStorage>& texture_storage)
         : _device(device), _transparent_triangles(transparent_triangles), _collision_triangles(collision_triangles), _texture_storage(texture_storage), _animated_triangles(animated_triangles)
     {
+        for (const auto& tex_indices : indices)
+        {
+            _index_counts.push_back(static_cast<uint32_t>(tex_indices.size()));
+
+            if (!tex_indices.size())
+            {
+                _index_buffers.push_back(nullptr);
+                continue;
+            }
+
+            D3D11_BUFFER_DESC index_desc;
+            memset(&index_desc, 0, sizeof(index_desc));
+            index_desc.Usage = D3D11_USAGE_DEFAULT;
+            index_desc.ByteWidth = sizeof(uint32_t) * static_cast<uint32_t>(tex_indices.size());
+            index_desc.BindFlags = D3D11_BIND_INDEX_BUFFER;
+
+            D3D11_SUBRESOURCE_DATA index_data;
+            memset(&index_data, 0, sizeof(index_data));
+            index_data.pSysMem = &tex_indices[0];
+
+            _index_buffers.push_back(device->create_buffer(index_desc, index_data));
+        }
+
         if (!vertices.empty())
         {
             D3D11_BUFFER_DESC vertex_desc;
@@ -28,29 +52,6 @@ namespace trview
             vertex_data.pSysMem = &vertices[0];
 
             _vertex_buffer = device->create_buffer(vertex_desc, vertex_data);
-
-            for (const auto& tex_indices : indices)
-            {
-                _index_counts.push_back(static_cast<uint32_t>(tex_indices.size()));
-
-                if (!tex_indices.size())
-                {
-                    _index_buffers.push_back(nullptr);
-                    continue;
-                }
-
-                D3D11_BUFFER_DESC index_desc;
-                memset(&index_desc, 0, sizeof(index_desc));
-                index_desc.Usage = D3D11_USAGE_DEFAULT;
-                index_desc.ByteWidth = sizeof(uint32_t) * static_cast<uint32_t>(tex_indices.size());
-                index_desc.BindFlags = D3D11_BIND_INDEX_BUFFER;
-
-                D3D11_SUBRESOURCE_DATA index_data;
-                memset(&index_data, 0, sizeof(index_data));
-                index_data.pSysMem = &tex_indices[0];
-
-                _index_buffers.push_back(device->create_buffer(index_desc, index_data));
-            }
 
             if (!untextured_indices.empty())
             {
@@ -67,17 +68,17 @@ namespace trview
                 _untextured_index_buffer = device->create_buffer(index_desc, index_data);
                 _untextured_index_count = static_cast<uint32_t>(untextured_indices.size());
             }
-
-            D3D11_BUFFER_DESC matrix_desc;
-            memset(&matrix_desc, 0, sizeof(matrix_desc));
-
-            matrix_desc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-            matrix_desc.ByteWidth = sizeof(MeshData);
-            matrix_desc.Usage = D3D11_USAGE_DYNAMIC;
-            matrix_desc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-
-            _matrix_buffer = device->create_buffer(matrix_desc, std::optional<D3D11_SUBRESOURCE_DATA>());
         }
+
+        D3D11_BUFFER_DESC matrix_desc;
+        memset(&matrix_desc, 0, sizeof(matrix_desc));
+
+        matrix_desc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+        matrix_desc.ByteWidth = sizeof(MeshData);
+        matrix_desc.Usage = D3D11_USAGE_DYNAMIC;
+        matrix_desc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+
+        _matrix_buffer = device->create_buffer(matrix_desc, std::optional<D3D11_SUBRESOURCE_DATA>());
 
         generate_animated_vertex_buffer();
 
@@ -120,12 +121,6 @@ namespace trview
 
     void Mesh::render(const Matrix& world_view_projection, const Color& colour, float light_intensity, Vector3 light_direction, bool geometry_mode, bool use_colour_override)
     {
-        // There are no vertices.
-        if (!_vertex_buffer)
-        {
-            return;
-        }
-
         const auto texture_storage = _texture_storage.lock();
         if (!texture_storage)
         {
@@ -135,37 +130,40 @@ namespace trview
 
         auto context = _device->context();
 
-        D3D11_MAPPED_SUBRESOURCE mapped_resource;
-        memset(&mapped_resource, 0, sizeof(mapped_resource));
-
-        MeshData data{ world_view_projection, colour, Vector4(light_direction.x, light_direction.y, light_direction.z, 1), light_intensity, light_direction != Vector3::Zero, use_colour_override };
-        context->Map(_matrix_buffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mapped_resource); 
-        memcpy(mapped_resource.pData, &data, sizeof(data));
-        context->Unmap(_matrix_buffer.Get(), 0);
-
-        UINT stride = sizeof(MeshVertex);
-        UINT offset = 0;
-        context->IASetVertexBuffers(0, 1, _vertex_buffer.GetAddressOf(), &stride, &offset);
-        context->VSSetConstantBuffers(0, 1, _matrix_buffer.GetAddressOf());
-
-        for (uint32_t i = 0; i < _index_buffers.size(); ++i)
+        if (_vertex_buffer)
         {
-            auto& index_buffer = _index_buffers[i];
-            if (index_buffer)
+            D3D11_MAPPED_SUBRESOURCE mapped_resource;
+            memset(&mapped_resource, 0, sizeof(mapped_resource));
+
+            MeshData data{ world_view_projection, colour, Vector4(light_direction.x, light_direction.y, light_direction.z, 1), light_intensity, light_direction != Vector3::Zero, use_colour_override };
+            context->Map(_matrix_buffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mapped_resource);
+            memcpy(mapped_resource.pData, &data, sizeof(data));
+            context->Unmap(_matrix_buffer.Get(), 0);
+
+            UINT stride = sizeof(MeshVertex);
+            UINT offset = 0;
+            context->IASetVertexBuffers(0, 1, _vertex_buffer.GetAddressOf(), &stride, &offset);
+            context->VSSetConstantBuffers(0, 1, _matrix_buffer.GetAddressOf());
+
+            for (uint32_t i = 0; i < _index_buffers.size(); ++i)
             {
-                auto texture = geometry_mode ? texture_storage->geometry_texture() : texture_storage->texture(i);
-                context->PSSetShaderResources(0, 1, texture.view().GetAddressOf());
-                context->IASetIndexBuffer(index_buffer.Get(), DXGI_FORMAT_R32_UINT, 0);
-                context->DrawIndexed(_index_counts[i], 0, 0);
+                auto& index_buffer = _index_buffers[i];
+                if (index_buffer)
+                {
+                    auto texture = geometry_mode ? texture_storage->geometry_texture() : texture_storage->texture(i);
+                    context->PSSetShaderResources(0, 1, texture.view().GetAddressOf());
+                    context->IASetIndexBuffer(index_buffer.Get(), DXGI_FORMAT_R32_UINT, 0);
+                    context->DrawIndexed(_index_counts[i], 0, 0);
+                }
             }
-        }
 
-        if (_untextured_index_count)
-        {
-            auto texture = texture_storage->untextured();
-            context->PSSetShaderResources(0, 1, texture.view().GetAddressOf());
-            context->IASetIndexBuffer(_untextured_index_buffer.Get(), DXGI_FORMAT_R32_UINT, 0);
-            context->DrawIndexed(_untextured_index_count, 0, 0);
+            if (_untextured_index_count)
+            {
+                auto texture = texture_storage->untextured();
+                context->PSSetShaderResources(0, 1, texture.view().GetAddressOf());
+                context->IASetIndexBuffer(_untextured_index_buffer.Get(), DXGI_FORMAT_R32_UINT, 0);
+                context->DrawIndexed(_untextured_index_count, 0, 0);
+            }
         }
 
         if (_animated_vertex_buffer)
@@ -175,7 +173,6 @@ namespace trview
             // 2. Group them by tile
             // 3. Put into each buffer
             // 4. Render each buffer
-
             const float delta = 0.1f;
             const float frame_time = 1.0f;
             for (auto& triangle : _animated_triangles)
@@ -192,6 +189,15 @@ namespace trview
                 }
             }
 
+            D3D11_MAPPED_SUBRESOURCE mapped_resource;
+            memset(&mapped_resource, 0, sizeof(mapped_resource));
+
+            MeshData data{ world_view_projection, colour, Vector4(light_direction.x, light_direction.y, light_direction.z, 1), light_intensity, light_direction != Vector3::Zero, use_colour_override };
+            context->Map(_matrix_buffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mapped_resource);
+            memcpy(mapped_resource.pData, &data, sizeof(data));
+            context->Unmap(_matrix_buffer.Get(), 0);
+            
+
             for (uint32_t tex = 0; tex < _index_buffers.size(); ++tex)
             {
                 D3D11_MAPPED_SUBRESOURCE mapped{};
@@ -201,7 +207,8 @@ namespace trview
                     uint32_t triangles_written = 0;
                     for (const auto& triangle : _animated_triangles)
                     {
-                        if (triangle.frames[triangle.current_frame].texture == tex)
+                        if (triangle.transparency_mode == TransparentTriangle::Mode::None &&
+                            triangle.frames[triangle.current_frame].texture == tex)
                         {
                             ++triangles_written;
                             *vertex++ = { .pos = triangle.vertices[0], .normal = { 0, 1, 0 }, .uv = triangle.frames[triangle.current_frame].uvs[0], .colour = triangle.colours[0] };
@@ -213,7 +220,10 @@ namespace trview
 
                     if (triangles_written)
                     {
+                        UINT stride = sizeof(MeshVertex);
+                        UINT offset = 0;
                         context->IASetVertexBuffers(0, 1, _animated_vertex_buffer.GetAddressOf(), &stride, &offset);
+                        context->VSSetConstantBuffers(0, 1, _matrix_buffer.GetAddressOf());
                         auto texture = geometry_mode ? texture_storage->geometry_texture() : texture_storage->texture(tex);
                         context->PSSetShaderResources(0, 1, texture.view().GetAddressOf());
                         context->Draw(triangles_written * 3, 0);
@@ -256,6 +266,18 @@ namespace trview
 
     std::vector<TransparentTriangle> Mesh::transparent_triangles() const
     {
+        if (!_animated_triangles.empty())
+        {
+            auto transparent_triangles = _transparent_triangles;
+            transparent_triangles.append_range(
+                _animated_triangles
+                | std::views::filter([](auto&& t) { return t.transparency_mode != TransparentTriangle::Mode::None; })
+                | std::views::transform([](auto&& t)
+                    {
+                        return TransparentTriangle(t.vertices[0], t.vertices[1], t.vertices[2], t.frames[t.current_frame].uvs[0], t.frames[t.current_frame].uvs[1], t.frames[t.current_frame].uvs[2], t.frames[t.current_frame].texture, t.transparency_mode, t.colours[0], t.colours[1], t.colours[2]);
+                    }));
+            return transparent_triangles;
+        }
         return _transparent_triangles;
     }
 
