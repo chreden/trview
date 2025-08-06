@@ -391,12 +391,13 @@ namespace trview
         std::vector<std::vector<uint32_t>> indices(_texture_storage->num_tiles());
         
         std::vector<Triangle> collision_triangles;
+        std::vector<AnimatedTriangle> animated_triangles;
 
-        process_textured_rectangles(room.data.rectangles, room.data.vertices, *_texture_storage, vertices, indices, transparent_triangles, collision_triangles, false);
+        process_textured_rectangles(room.data.rectangles, room.data.vertices, *_texture_storage, vertices, indices, transparent_triangles, collision_triangles, animated_triangles, false);
         process_textured_triangles(room.data.triangles, room.data.vertices, *_texture_storage, vertices, indices, transparent_triangles, collision_triangles, false);
         process_collision_transparency(transparent_triangles, collision_triangles);
 
-        _mesh = mesh_source(vertices, indices, std::vector<uint32_t>{}, transparent_triangles, collision_triangles);
+        _mesh = mesh_source(vertices, indices, std::vector<uint32_t>{}, transparent_triangles, collision_triangles, animated_triangles);
 
         // Generate the bounding box based on the room dimensions.
         update_bounding_box();
@@ -1032,7 +1033,7 @@ namespace trview
         {
             std::vector<std::vector<uint32_t>> vec;
             vec.push_back(parts.second.untextured_indices);
-            auto mesh = mesh_source(parts.second.vertices, vec, std::vector<uint32_t>{}, std::vector<TransparentTriangle>{}, parts.second.collision_triangles);
+            auto mesh = mesh_source(parts.second.vertices, vec, std::vector<uint32_t>{}, std::vector<TransparentTriangle>{}, parts.second.collision_triangles, {});
             _all_geometry_meshes[parts.first] = mesh;
         }
     }

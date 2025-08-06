@@ -230,7 +230,7 @@ namespace trview
             }
         }
 
-        _path_mesh = mesh_source(vertices, {}, indices, {}, {});
+        _path_mesh = mesh_source(vertices, {}, indices, {}, {}, {});
     }
 
     void Flyby::state_at(CameraState& state) const

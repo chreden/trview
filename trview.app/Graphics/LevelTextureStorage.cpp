@@ -150,10 +150,14 @@ namespace trview
         _platform_and_version = level->platform_and_version();
         _level = level;
 
-        // Copy object textures locally from the level.
-        for (uint32_t i = 0; i < level->num_object_textures(); ++i)
+        _object_textures = level->object_textures();
+
+        for (const auto& sequence : level->animated_textures())
         {
-            _object_textures.push_back(level->get_object_texture(i));
+            for (const auto& entry : sequence)
+            {
+                _animated_textures[static_cast<uint32_t>(entry)] = sequence | std::ranges::to<std::vector<uint32_t>>();
+            }
         }
 
         if (_platform_and_version.version < trlevel::LevelVersion::Tomb4)
@@ -178,5 +182,27 @@ namespace trview
             d |= 0xff000000;
         }
         _opaque_tiles.emplace_back(*_device, 256, 256, opaque);
+    }
+
+    void LevelTextureStorage::update(float delta)
+    {
+        const float interval = 0.5f;
+        _total_time += delta;
+        if (_total_time >= interval)
+        {
+            _total_time -= interval;
+            ++_animated_texture_index;
+        }
+    }
+
+    bool LevelTextureStorage::is_animated(uint32_t texture_index) const
+    {
+        return _animated_textures.find(texture_index) != _animated_textures.end();
+    }
+
+    std::vector<uint32_t> LevelTextureStorage::animated_texture(uint32_t texture_index) const
+    {
+        auto found = _animated_textures.find(texture_index);
+        return found != _animated_textures.end() ? found->second : std::vector<uint32_t>{};
     }
 }

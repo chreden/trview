@@ -1,5 +1,6 @@
 #include "IMesh.h"
 #include <random>
+#include <ranges>
 #include <trlevel/trtypes.h>
 
 using namespace DirectX::SimpleMath;
@@ -78,7 +79,7 @@ namespace trview
                 offset = Vector3(0, object_height / -2.0f, 0);
             }
 
-            return source(std::vector<MeshVertex>(), std::vector<std::vector<uint32_t>>(), std::vector<uint32_t>(), transparent_triangles, collision_triangles);
+            return source(std::vector<MeshVertex>(), std::vector<std::vector<uint32_t>>(), std::vector<uint32_t>(), transparent_triangles, collision_triangles, {});
         }
 
         void adjust_rect_uvs_tr1_1996_pc(std::array<Vector2, 4>& uvs, uint16_t texture)
@@ -212,17 +213,18 @@ namespace trview
         std::vector<uint32_t> untextured_indices;
         std::vector<TransparentTriangle> transparent_triangles;
         std::vector<Triangle> collision_triangles;
+        std::vector<AnimatedTriangle> animated_triangles;
 
         std::vector<trlevel::trview_room_vertex> in_vertices;
         std::ranges::transform(mesh.vertices, std::back_inserter(in_vertices),
             [](const auto& v) { return trlevel::trview_room_vertex { v, 0, 0, Color(1, 1, 1, 1) }; });
 
-        process_textured_rectangles(mesh.textured_rectangles, in_vertices, texture_storage, vertices, indices, transparent_triangles, collision_triangles, transparent_collision);
+        process_textured_rectangles(mesh.textured_rectangles, in_vertices, texture_storage, vertices, indices, transparent_triangles, collision_triangles, animated_triangles, transparent_collision);
         process_textured_triangles(mesh.textured_triangles, in_vertices, texture_storage, vertices, indices, transparent_triangles, collision_triangles, transparent_collision);
         process_coloured_rectangles(mesh.coloured_rectangles, in_vertices, texture_storage, vertices, untextured_indices, collision_triangles, platform_and_version);
         process_coloured_triangles(mesh.coloured_triangles, in_vertices, texture_storage, vertices, untextured_indices, collision_triangles, platform_and_version);
 
-        return source(vertices, indices, untextured_indices, transparent_triangles, collision_triangles);
+        return source(vertices, indices, untextured_indices, transparent_triangles, collision_triangles, animated_triangles);
     }
 
     std::shared_ptr<IMesh> create_cube_mesh(const IMesh::Source& source)
@@ -277,7 +279,7 @@ namespace trview
             20, 21, 22, 22, 23, 20  // -y
         };
 
-        return source(vertices, std::vector<std::vector<uint32_t>>(), indices, std::vector<TransparentTriangle>(), {});
+        return source(vertices, std::vector<std::vector<uint32_t>>(), indices, std::vector<TransparentTriangle>(), {}, {});
     }
 
     std::shared_ptr<IMesh> create_frustum_mesh(const IMesh::Source& source)
@@ -332,7 +334,7 @@ namespace trview
             20, 21, 22, 22, 23, 20  // -y
         };
 
-        return source(vertices, std::vector<std::vector<uint32_t>>(), indices, std::vector<TransparentTriangle>(), {});
+        return source(vertices, std::vector<std::vector<uint32_t>>(), indices, std::vector<TransparentTriangle>(), {}, {});
     }
 
     std::shared_ptr<IMesh> create_sphere_mesh(const IMesh::Source& source, uint32_t stacks, uint32_t slices)
@@ -386,7 +388,7 @@ namespace trview
             }
         }
 
-        return source(points, std::vector<std::vector<uint32_t>>(), indices, std::vector<TransparentTriangle>(), std::vector<Triangle>());
+        return source(points, std::vector<std::vector<uint32_t>>(), indices, std::vector<TransparentTriangle>(), std::vector<Triangle>(), {});
     }
 
     std::shared_ptr<IMesh> create_sprite_mesh(const IMesh::Source& source, const std::optional<trlevel::tr_sprite_texture>& sprite, Matrix& scale, Vector3& offset, SpriteOffsetMode offset_mode)
@@ -415,6 +417,7 @@ namespace trview
         std::vector<std::vector<uint32_t>>& output_indices,
         std::vector<TransparentTriangle>& transparent_triangles,
         std::vector<Triangle>& collision_triangles,
+        std::vector<AnimatedTriangle>& animated_triangles,
         bool transparent_collision)
     {
         using namespace trlevel;
@@ -485,6 +488,42 @@ namespace trview
                         collision_triangles.emplace_back(verts[0], verts[3], verts[2]);
                     }
                 }
+                continue;
+            }
+
+            if (texture_storage.is_animated(texture))
+            {
+                const auto sequence = texture_storage.animated_texture(static_cast<uint16_t>(texture));
+                const bool need_rect_uv_swap = needs_rect_uv_swap(version);
+                animated_triangles.push_back(AnimatedTriangle
+                    {
+                        .vertices = { verts[0], verts[1], verts[2] },
+                        .colours = { colors[0], colors[1], colors[2] },
+                        .frames = sequence | std::views::transform([&](auto&& e) -> AnimatedTriangle::Frame
+                            {
+                                return
+                                {
+                                    .uvs = {  texture_storage.uv(e, 0), texture_storage.uv(e, 1), texture_storage.uv(e, need_rect_uv_swap ? 3 : 2) },
+                                    .texture = texture_storage.tile(e)
+                                };
+                            }) | std::ranges::to<std::vector>()
+                    });
+                animated_triangles.push_back(AnimatedTriangle
+                    {
+                        .vertices = { verts[2], verts[3], verts[0] },
+                        .colours = { colors[2], colors[3], colors[0] },
+                        .frames = sequence | std::views::transform([&](auto&& e) -> AnimatedTriangle::Frame
+                            {
+                                return
+                                {
+                                    .uvs = {  texture_storage.uv(e, need_rect_uv_swap ? 3 : 2), texture_storage.uv(e, need_rect_uv_swap ? 2 : 3), texture_storage.uv(e, 0) },
+                                    .texture = texture_storage.tile(e)
+                                };
+                            }) | std::ranges::to<std::vector>()
+                    });
+
+                collision_triangles.emplace_back(verts[0], verts[1], verts[2]);
+                collision_triangles.emplace_back(verts[2], verts[3], verts[0]);
                 continue;
             }
 

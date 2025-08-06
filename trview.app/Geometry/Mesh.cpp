@@ -11,8 +11,9 @@ namespace trview
         const std::vector<uint32_t>& untextured_indices, 
         const std::vector<TransparentTriangle>& transparent_triangles,
         const std::vector<Triangle>& collision_triangles,
+        const std::vector<AnimatedTriangle>& animated_triangles,
         const std::shared_ptr<ITextureStorage>& texture_storage)
-        : _device(device), _transparent_triangles(transparent_triangles), _collision_triangles(collision_triangles), _texture_storage(texture_storage)
+        : _device(device), _transparent_triangles(transparent_triangles), _collision_triangles(collision_triangles), _texture_storage(texture_storage), _animated_triangles(animated_triangles)
     {
         if (!vertices.empty())
         {
@@ -77,6 +78,8 @@ namespace trview
 
             _matrix_buffer = device->create_buffer(matrix_desc, std::optional<D3D11_SUBRESOURCE_DATA>());
         }
+
+        generate_animated_vertex_buffer();
 
         // Generate the bounding box for use in picking.
         calculate_bounding_box(vertices, transparent_triangles);
@@ -164,6 +167,60 @@ namespace trview
             context->IASetIndexBuffer(_untextured_index_buffer.Get(), DXGI_FORMAT_R32_UINT, 0);
             context->DrawIndexed(_untextured_index_count, 0, 0);
         }
+
+        if (_animated_vertex_buffer)
+        {
+            // TODO: Animated faces
+            // 1. Update the face Tile and UV references
+            // 2. Group them by tile
+            // 3. Put into each buffer
+            // 4. Render each buffer
+
+            const float delta = 0.1f;
+            const float frame_time = 1.0f;
+            for (auto& triangle : _animated_triangles)
+            {
+                triangle.current_time += delta;
+                if (triangle.current_time >= frame_time)
+                {
+                    triangle.current_time -= frame_time;
+                    triangle.current_frame++;
+                    if (triangle.current_frame >= triangle.frames.size())
+                    {
+                        triangle.current_frame = 0;
+                    }
+                }
+            }
+
+            for (uint32_t tex = 0; tex < _index_buffers.size(); ++tex)
+            {
+                D3D11_MAPPED_SUBRESOURCE mapped{};
+                if (S_OK == context->Map(_animated_vertex_buffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mapped))
+                {
+                    MeshVertex* vertex = reinterpret_cast<MeshVertex*>(mapped.pData);
+                    uint32_t triangles_written = 0;
+                    for (const auto& triangle : _animated_triangles)
+                    {
+                        if (triangle.frames[triangle.current_frame].texture == tex)
+                        {
+                            ++triangles_written;
+                            *vertex++ = { .pos = triangle.vertices[0], .normal = { 0, 1, 0 }, .uv = triangle.frames[triangle.current_frame].uvs[0], .colour = triangle.colours[0] };
+                            *vertex++ = { .pos = triangle.vertices[1], .normal = { 0, 1, 0 }, .uv = triangle.frames[triangle.current_frame].uvs[1], .colour = triangle.colours[1] };
+                            *vertex++ = { .pos = triangle.vertices[2], .normal = { 0, 1, 0 }, .uv = triangle.frames[triangle.current_frame].uvs[2], .colour = triangle.colours[2] };
+                        }
+                    }
+                    context->Unmap(_animated_vertex_buffer.Get(), 0);
+
+                    if (triangles_written)
+                    {
+                        context->IASetVertexBuffers(0, 1, _animated_vertex_buffer.GetAddressOf(), &stride, &offset);
+                        auto texture = geometry_mode ? texture_storage->geometry_texture() : texture_storage->texture(tex);
+                        context->PSSetShaderResources(0, 1, texture.view().GetAddressOf());
+                        context->Draw(triangles_written * 3, 0);
+                    }
+                }
+            }
+        }
     }
 
     void Mesh::render(const Matrix& world_view_projection, const graphics::Texture& replacement_texture, const DirectX::SimpleMath::Color& colour, float light_intensity, Vector3 light_direction)
@@ -233,5 +290,21 @@ namespace trview
         }
 
         return result;
+    }
+
+    void Mesh::generate_animated_vertex_buffer()
+    {
+        if (_animated_triangles.empty())
+        {
+            return;
+        }
+
+        D3D11_BUFFER_DESC animated_vertex_desc;
+        memset(&animated_vertex_desc, 0, sizeof(animated_vertex_desc));
+        animated_vertex_desc.Usage = D3D11_USAGE_DYNAMIC;
+        animated_vertex_desc.ByteWidth = sizeof(MeshVertex) * static_cast<uint32_t>(_animated_triangles.size() * 3);
+        animated_vertex_desc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+        animated_vertex_desc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+        _animated_vertex_buffer = _device->create_buffer(animated_vertex_desc, std::nullopt);
     }
 }

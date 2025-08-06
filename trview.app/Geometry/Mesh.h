@@ -26,6 +26,7 @@ namespace trview
              const std::vector<uint32_t>& untextured_indices,
              const std::vector<TransparentTriangle>& transparent_triangles,
              const std::vector<Triangle>& collision_triangles,
+             const std::vector<AnimatedTriangle>& animated_triangles,
              const std::shared_ptr<ITextureStorage>& texture_storage);
 
         /// Create a mesh using the specified vertices and indices.
@@ -55,6 +56,7 @@ namespace trview
         virtual PickResult pick(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& direction) const override;
     private:
         void calculate_bounding_box(const std::vector<MeshVertex>& vertices, const std::vector<TransparentTriangle>& transparent_triangles);
+        void generate_animated_vertex_buffer();
 
         std::shared_ptr<graphics::IDevice> _device;
         Microsoft::WRL::ComPtr<ID3D11Buffer>              _vertex_buffer;
@@ -67,5 +69,7 @@ namespace trview
         std::vector<Triangle>                             _collision_triangles;
         DirectX::BoundingBox                              _bounding_box;
         std::weak_ptr<ITextureStorage>                    _texture_storage;
+        std::vector<AnimatedTriangle>                     _animated_triangles;
+        Microsoft::WRL::ComPtr<ID3D11Buffer>              _animated_vertex_buffer;
     };
 }

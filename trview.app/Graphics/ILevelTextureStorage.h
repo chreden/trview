@@ -23,6 +23,9 @@ namespace trview
         virtual DirectX::SimpleMath::Color palette_from_texture(uint32_t texture) const = 0;
         virtual uint32_t num_object_textures() const = 0;
         virtual trlevel::PlatformAndVersion platform_and_version() const = 0;
+        virtual void update(float delta) = 0;
+        virtual bool is_animated(uint32_t texture_index) const = 0;
+        virtual std::vector<uint32_t> animated_texture(uint32_t texture_index) const = 0;
     };
 }
 

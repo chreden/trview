@@ -1,5 +1,6 @@
 #pragma once
 
+#include "AnimatedTriangle.h"
 #include "TransparentTriangle.h"
 #include "MeshVertex.h"
 #include "Triangle.h"
@@ -12,7 +13,7 @@ namespace trview
     {
         using Source = std::function<std::shared_ptr<IMesh>(
             const std::vector<MeshVertex>&, const std::vector<std::vector<uint32_t>>&, const std::vector<uint32_t>&,
-            const std::vector<TransparentTriangle>&, const std::vector<Triangle>&)>;
+            const std::vector<TransparentTriangle>&, const std::vector<Triangle>&, const std::vector<AnimatedTriangle>&)>;
 
         using TransparentSource = std::function<std::shared_ptr<IMesh>(const std::vector<TransparentTriangle>&, const std::vector<Triangle>&)>;
 
@@ -98,7 +99,8 @@ namespace trview
         std::vector<std::vector<uint32_t>>& output_indices,
         std::vector<TransparentTriangle>& transparent_triangles,
         std::vector<Triangle>& collision_triangles,
-        bool transparent_collision = true);
+        std::vector<AnimatedTriangle>& animated_triangles,
+        bool transparent_collision);
 
     /// Convert the textured triangles into collections required to create a mesh.
     /// @param triangles The triangles from the mesh or room geometry.

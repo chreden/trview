@@ -101,6 +101,7 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClInclude Include="Elements\Remastered\NgPlusSwitcher.h" />
     <ClInclude Include="Elements\SoundSource\ISoundSource.h" />
     <ClInclude Include="Elements\SoundSource\SoundSource.h" />
+    <ClInclude Include="Geometry\AnimatedTriangle.h" />
     <ClInclude Include="Geometry\Model\IModel.h" />
     <ClInclude Include="Geometry\Model\IModelStorage.h" />
     <ClInclude Include="Geometry\Model\Model.h" />
