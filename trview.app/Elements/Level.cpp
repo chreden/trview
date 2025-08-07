@@ -267,12 +267,12 @@ namespace trview
 
     void Level::render(const ICamera& camera, bool render_selection, float elapsed)
     {
+        elapsed;
+
         using namespace DirectX;
 
         auto context = _device->context();
 
-        _texture_storage->update(elapsed);
-        
         {
             graphics::RasterizerStateStore rasterizer_store(context);
             context->PSSetSamplers(0, 1, _sampler_state.GetAddressOf());

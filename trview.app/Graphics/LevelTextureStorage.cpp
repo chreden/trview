@@ -185,17 +185,6 @@ namespace trview
         _opaque_tiles.emplace_back(*_device, 256, 256, opaque);
     }
 
-    void LevelTextureStorage::update(float delta)
-    {
-        const float interval = 0.5f;
-        _total_time += delta;
-        if (_total_time >= interval)
-        {
-            _total_time -= interval;
-            ++_animated_texture_index;
-        }
-    }
-
     bool LevelTextureStorage::is_animated(uint32_t texture_index) const
     {
         return _animated_textures.find(texture_index) != _animated_textures.end();

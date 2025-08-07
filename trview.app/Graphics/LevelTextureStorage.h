@@ -35,7 +35,6 @@ namespace trview
         trlevel::PlatformAndVersion platform_and_version() const override;
         void load(const std::shared_ptr<trlevel::ILevel>& level);
         void add_textile(const std::vector<uint32_t>& textile);
-        void update(float delta) override;
         bool is_animated(uint32_t texture_index) const override;
         std::vector<uint32_t> animated_texture(uint32_t texture_index) const override;
     private:
@@ -55,7 +54,5 @@ namespace trview
         };
         TextureMode _texture_mode{ TextureMode::Official };
         std::unordered_map<uint32_t, std::vector<uint32_t>> _animated_textures;
-        float    _total_time{ 0.0f };
-        uint32_t _animated_texture_index{ 0 };
     };
 }
