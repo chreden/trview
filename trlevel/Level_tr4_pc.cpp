@@ -142,7 +142,8 @@ namespace trlevel
             _animated_textures = read_animated_textures(activity, data_stream, callbacks);
 
             // Animated textures uv count - not yet used:
-            read_animated_textures_uv_count(activity, data_stream, callbacks);
+            uint8_t atuvc = read_animated_textures_uv_count(activity, data_stream, callbacks);
+            atuvc;
 
             log_file(activity, data_stream, "Skipping TEX marker");
             data_stream.seekg(3, std::ios::cur);

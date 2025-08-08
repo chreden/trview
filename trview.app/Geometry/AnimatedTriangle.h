@@ -20,6 +20,7 @@ namespace trview
         std::vector<Frame> frames;
         uint32_t current_frame{ 0u };
         float current_time{ 0.0f };
-        TransparentTriangle::Mode transparency_mode{ TransparentTriangle::Mode::None };
+        float frame_time{ 0.0f };
+        UniTriangle::TransparencyMode transparency_mode{ UniTriangle::TransparencyMode::None };
     };
 }

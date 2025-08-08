@@ -15,6 +15,7 @@ namespace trview
             MOCK_METHOD(std::vector<TransparentTriangle>, transparent_triangles, (), (const, override));
             MOCK_METHOD(const DirectX::BoundingBox&, bounding_box, (), (const, override));
             MOCK_METHOD(PickResult, pick, (const DirectX::SimpleMath::Vector3&, const DirectX::SimpleMath::Vector3&), (const, override));
+            MOCK_METHOD(void, update, (float), (override));
         };
     }
 }

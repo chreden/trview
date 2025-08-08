@@ -45,7 +45,7 @@ namespace trview
         void create_buffer();
         void create_matrix_buffer();
         void complete();
-        void set_blend_mode(const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context, TransparentTriangle::Mode mode) const;
+        void set_blend_mode(const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context, UniTriangle::TransparencyMode mode) const;
 
         std::shared_ptr<graphics::IDevice> _device;
         Microsoft::WRL::ComPtr<ID3D11Buffer> _vertex_buffer;
@@ -60,7 +60,7 @@ namespace trview
         struct TextureRun
         {
             uint32_t texture;
-            TransparentTriangle::Mode mode;
+            UniTriangle::TransparencyMode mode;
             uint32_t count;
         };
 

@@ -4,21 +4,71 @@
 
 namespace trview
 {
-    struct TransparentTriangle
+    /// <summary>
+    /// The triangle that does it all.
+    /// </summary>
+    struct UniTriangle
     {
-        enum class Mode
+        enum class AnimationMode
+        {
+            None,
+            Swap,
+            UV
+        };
+
+        enum class TransparencyMode
         {
             None,
             Normal,
             Additive
         };
 
+        enum class CollisionMode
+        {
+            Disabled,
+            Enabled
+        };
+
+        enum class TextureMode
+        {
+            Textured,
+            Untextured
+        };
+
+        enum class SideMode
+        {
+            Single,
+            Double
+        };
+
+        struct Frame
+        {
+            DirectX::SimpleMath::Vector2 uvs[3];
+            uint32_t texture;
+        };
+
+        AnimationMode animation_mode{ AnimationMode::None };
+        CollisionMode collision_mode{ CollisionMode::Enabled };
+        DirectX::SimpleMath::Color colours[3];
+        uint32_t current_frame{ 0u };
+        float current_time{ 0.0f };
+        std::vector<Frame> frames;
+        float frame_time{ 0.0f };
+        DirectX::SimpleMath::Vector3 normal;
+        SideMode side_mode{ SideMode::Single };
+        TextureMode texture_mode{ TextureMode::Textured };
+        TransparencyMode transparency_mode{ TransparencyMode::None };
+        DirectX::SimpleMath::Vector3 vertices[3];
+    };
+
+    struct TransparentTriangle
+    {
         // Use the untextured texture instead of a texture from the level textures.
         const static uint32_t Untextured{ 0xffffffff };
 
         TransparentTriangle(const DirectX::SimpleMath::Vector3& v0, const DirectX::SimpleMath::Vector3& v1, const DirectX::SimpleMath::Vector3& v2,
             const DirectX::SimpleMath::Vector2& uv0, const DirectX::SimpleMath::Vector2& uv1, const DirectX::SimpleMath::Vector2& uv2,
-            uint32_t texture, Mode mode, const DirectX::SimpleMath::Color& c0, const DirectX::SimpleMath::Color& c1, const DirectX::SimpleMath::Color& c2);
+            uint32_t texture, UniTriangle::TransparencyMode mode, const DirectX::SimpleMath::Color& c0, const DirectX::SimpleMath::Color& c1, const DirectX::SimpleMath::Color& c2);
 
         /// Create an untextured transparent triangle with the specified colour.
         /// @param v0 The first vertex.
@@ -40,7 +90,7 @@ namespace trview
         // The level texture index to use.
         uint32_t                     texture;
         
-        Mode                         mode;
+        UniTriangle::TransparencyMode                         mode;
 
         DirectX::SimpleMath::Color   colours[3];
     };
@@ -50,5 +100,5 @@ namespace trview
     // attribute: The texture attribute value.
     // effects: The face effects value.
     // Returns: True if the face is transparent. If this is false, out is not set.
-    bool determine_transparency(uint16_t attribute, uint16_t effects, TransparentTriangle::Mode& out);
+    bool determine_transparency(uint16_t attribute, uint16_t effects, UniTriangle::TransparencyMode& out);
 }

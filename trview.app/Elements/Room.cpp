@@ -384,20 +384,12 @@ namespace trview
 
     void Room::generate_geometry(const IMesh::Source& mesh_source, const trlevel::tr3_room& room)
     {
-        std::vector<MeshVertex> vertices;
-        std::vector<TransparentTriangle> transparent_triangles;
+        std::vector<UniTriangle> triangles;
+        process_textured_rectangles(room.data.rectangles, room.data.vertices, *_texture_storage, triangles, false);
+        process_textured_triangles(room.data.triangles, room.data.vertices, *_texture_storage, triangles, false);
+        process_collision_transparency(triangles);
 
-        // The indices are grouped by the number of textiles so that it can be drawn as the selected texture.
-        std::vector<std::vector<uint32_t>> indices(_texture_storage->num_tiles());
-        
-        std::vector<Triangle> collision_triangles;
-        std::vector<AnimatedTriangle> animated_triangles;
-
-        process_textured_rectangles(room.data.rectangles, room.data.vertices, *_texture_storage, vertices, indices, transparent_triangles, collision_triangles, animated_triangles, false);
-        process_textured_triangles(room.data.triangles, room.data.vertices, *_texture_storage, vertices, indices, transparent_triangles, collision_triangles, animated_triangles, false);
-        process_collision_transparency(transparent_triangles, collision_triangles);
-
-        _mesh = mesh_source(vertices, indices, std::vector<uint32_t>{}, transparent_triangles, collision_triangles, animated_triangles);
+        _mesh = mesh_source({}, {}, {}, {}, {}, {}, triangles);
 
         // Generate the bounding box based on the room dimensions.
         update_bounding_box();
@@ -783,10 +775,15 @@ namespace trview
         }
     }
 
-    void Room::process_collision_transparency(const std::vector<TransparentTriangle>& transparent_triangles, std::vector<Triangle>& collision_triangles)
+    void Room::process_collision_transparency(std::vector<UniTriangle>& triangles)
     {
-        for (const auto& triangle : transparent_triangles)
+        for (auto& triangle : triangles)
         {
+            if (triangle.transparency_mode == UniTriangle::TransparencyMode::None)
+            {
+                continue;
+            }
+
             for (const auto& sector : _sectors)
             {
                 if (!sector->is_floor())
@@ -805,8 +802,7 @@ namespace trview
                       { x + 0.5f, corners[3], z + 0.5f },
                       { x - 0.5f, corners[0], z - 0.5f } }))
                 {
-                    collision_triangles.push_back(Triangle(triangle.vertices[0], triangle.vertices[1], triangle.vertices[2]));
-
+                    triangle.collision_mode = UniTriangle::CollisionMode::Enabled;
                     // A triangle can only match in one sector, so stop after adding it once.
                     break;
                 }
@@ -1033,7 +1029,7 @@ namespace trview
         {
             std::vector<std::vector<uint32_t>> vec;
             vec.push_back(parts.second.untextured_indices);
-            auto mesh = mesh_source(parts.second.vertices, vec, std::vector<uint32_t>{}, std::vector<TransparentTriangle>{}, parts.second.collision_triangles, {});
+            auto mesh = mesh_source(parts.second.vertices, vec, std::vector<uint32_t>{}, std::vector<TransparentTriangle>{}, parts.second.collision_triangles, {}, {});
             _all_geometry_meshes[parts.first] = mesh;
         }
     }
@@ -1161,6 +1157,14 @@ namespace trview
     std::vector<std::weak_ptr<IStaticMesh>> Room::static_meshes() const
     {
         return { std::from_range, _static_meshes };
+    }
+
+    void Room::update(float delta)
+    {
+        if (_mesh)
+        {
+            _mesh->update(delta);
+        }
     }
 
     std::shared_ptr<ISector> sector_from_point(const IRoom& room, const Vector3& point)

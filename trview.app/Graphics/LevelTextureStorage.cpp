@@ -63,10 +63,30 @@ namespace trview
         }
 
         const auto& vert = _object_textures[texture_index].Vertices[uv_index];
-
         if (_texture_mode == TextureMode::Official)
         {
-            return Vector2(static_cast<float>(vert.x_whole + static_cast<int8_t>(vert.x_frac)), static_cast<float>(vert.y_whole + static_cast<int8_t>(vert.y_frac))) / 255.0f;
+            float u = static_cast<float>(vert.x_whole);
+            float v = static_cast<float>(vert.y_whole);
+
+            if (vert.x_frac == 1)
+            {
+                u += 1;
+            }
+            else if (vert.x_frac == 255)
+            {
+                u -= 1;
+            }
+
+            if (vert.y_frac == 1)
+            {
+                v += 1;
+            }
+            else if (vert.y_frac == 255)
+            {
+                v -= 1;
+            }
+
+            return Vector2(u, v) / 256.0f;
         }
         
         float x = static_cast<float>(vert.x_whole) + (vert.x_frac / 256.0f);

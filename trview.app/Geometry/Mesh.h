@@ -1,5 +1,6 @@
 #pragma once
 
+#include <unordered_set>
 #include <memory>
 #include <trlevel/trtypes.h>
 #include <trlevel/LevelVersion.h>
@@ -27,6 +28,7 @@ namespace trview
              const std::vector<TransparentTriangle>& transparent_triangles,
              const std::vector<Triangle>& collision_triangles,
              const std::vector<AnimatedTriangle>& animated_triangles,
+             const std::vector<UniTriangle>& triangles,
              const std::shared_ptr<ITextureStorage>& texture_storage);
 
         /// Create a mesh using the specified vertices and indices.
@@ -51,25 +53,34 @@ namespace trview
 
         virtual std::vector<TransparentTriangle> transparent_triangles() const override;
 
+        void update(float delta) override;
+
         virtual const DirectX::BoundingBox& bounding_box() const override;
 
         virtual PickResult pick(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& direction) const override;
     private:
-        void calculate_bounding_box(const std::vector<MeshVertex>& vertices, const std::vector<TransparentTriangle>& transparent_triangles);
+        void calculate_bounding_box(const std::vector<UniTriangle>& triangles);
+        void generate_matrix_buffer();
         void generate_animated_vertex_buffer();
+
+        struct Indices
+        {
+            uint32_t count{ 0u };
+            Microsoft::WRL::ComPtr<ID3D11Buffer> buffer;
+        };
 
         std::shared_ptr<graphics::IDevice> _device;
         Microsoft::WRL::ComPtr<ID3D11Buffer>              _vertex_buffer;
-        std::vector<uint32_t>                             _index_counts;
-        std::vector<Microsoft::WRL::ComPtr<ID3D11Buffer>> _index_buffers;
+        std::unordered_map<uint32_t, Indices>             _index_buffers2;
         Microsoft::WRL::ComPtr<ID3D11Buffer>              _matrix_buffer;
         Microsoft::WRL::ComPtr<ID3D11Buffer>              _untextured_index_buffer;
         uint32_t                                          _untextured_index_count{ 0u };
-        std::vector<TransparentTriangle>                  _transparent_triangles;
-        std::vector<Triangle>                             _collision_triangles;
+        std::vector<UniTriangle>                          _transparent_triangles;
+        std::vector<UniTriangle>                          _collision_triangles;
         DirectX::BoundingBox                              _bounding_box;
         std::weak_ptr<ITextureStorage>                    _texture_storage;
-        std::vector<AnimatedTriangle>                     _animated_triangles;
+        std::vector<UniTriangle>                          _animated_triangles2;
+        std::unordered_set<uint32_t>                      _animated_triangle_textures;
         Microsoft::WRL::ComPtr<ID3D11Buffer>              _animated_vertex_buffer;
     };
 }

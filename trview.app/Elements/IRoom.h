@@ -327,6 +327,7 @@ namespace trview
         virtual std::vector<std::weak_ptr<IItem>> items() const = 0;
         virtual std::weak_ptr<ILevel> level() const = 0;
         virtual std::vector<std::weak_ptr<IStaticMesh>> static_meshes() const = 0;
+        virtual void update(float delta) = 0;
     };
 
     /// <summary>

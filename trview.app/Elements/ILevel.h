@@ -150,6 +150,7 @@ namespace trview
         virtual std::weak_ptr<trlevel::IPack> pack() const = 0;
         virtual trlevel::PlatformAndVersion platform_and_version() const = 0;
         virtual std::vector<std::weak_ptr<IFlyby>> flybys() const = 0;
+        virtual void update(float delta) = 0;
 
         Event<std::weak_ptr<IItem>> on_item_selected;
         // Event raised when the level needs to change the selected room.
