@@ -31,11 +31,6 @@ namespace trview
              const std::vector<UniTriangle>& triangles,
              const std::shared_ptr<ITextureStorage>& texture_storage);
 
-        /// Create a mesh using the specified vertices and indices.
-        /// @param transparent_triangles The triangles to use to create the mesh.
-        /// @param collision_triangles The triangles for picking.
-        Mesh(const std::vector<TransparentTriangle>& transparent_triangles, const std::vector<Triangle>& collision_triangles);
-
         virtual ~Mesh() = default;
 
         virtual void render(const DirectX::SimpleMath::Matrix& world_view_projection,

@@ -48,7 +48,6 @@ namespace trview
         const std::vector<UniTriangle>& triangles,
         const std::shared_ptr<ITextureStorage>& texture_storage)
         : _device(device), _texture_storage(texture_storage)
-        //, _collision_triangles(collision_triangles), _texture_storage(texture_storage), _animated_triangles(animated_triangles)
     {
         if (!triangles.empty())
         {
@@ -157,12 +156,6 @@ namespace trview
         generate_matrix_buffer();
         generate_animated_vertex_buffer();
         calculate_bounding_box(triangles);
-    }
-    
-    Mesh::Mesh(const std::vector<TransparentTriangle>&, const std::vector<Triangle>&)
-        // : _collision_triangles(collision_triangles)
-    {
-        // calculate_bounding_box({}, transparent_triangles);
     }
 
     void Mesh::calculate_bounding_box(const std::vector<UniTriangle>& triangles)
@@ -320,7 +313,12 @@ namespace trview
         return transparent_triangles
             | std::views::transform([](auto&& t)
                 {
-                    return TransparentTriangle(t.vertices[0], t.vertices[1], t.vertices[2], t.frames[t.current_frame].uvs[0], t.frames[t.current_frame].uvs[1], t.frames[t.current_frame].uvs[2], t.frames[t.current_frame].texture, t.transparency_mode, t.colours[0], t.colours[1], t.colours[2]);
+                    return TransparentTriangle(t.vertices[0], t.vertices[1], t.vertices[2], 
+                        t.frames.empty() ? Vector2() : t.frames[t.current_frame].uvs[0],
+                        t.frames.empty() ? Vector2() : t.frames[t.current_frame].uvs[1],
+                        t.frames.empty() ? Vector2() : t.frames[t.current_frame].uvs[2],
+                        t.frames.empty() ? TransparentTriangle::Untextured : t.frames[t.current_frame].texture,
+                        t.transparency_mode, t.colours[0], t.colours[1], t.colours[2]);
                 })
             | std::ranges::to<std::vector>();
     }
