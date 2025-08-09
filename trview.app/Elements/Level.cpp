@@ -265,8 +265,10 @@ namespace trview
         return _platform_and_version.platform;
     }
 
-    void Level::render(const ICamera& camera, bool render_selection)
+    void Level::render(const ICamera& camera, bool render_selection, float elapsed)
     {
+        elapsed;
+
         using namespace DirectX;
 
         auto context = _device->context();
@@ -1603,6 +1605,14 @@ namespace trview
     std::vector<std::weak_ptr<IFlyby>> Level::flybys() const
     {
         return _flybys | std::ranges::to<std::vector<std::weak_ptr<IFlyby>>>();
+    }
+
+    void Level::update(float delta)
+    {
+        for (auto& room : _rooms)
+        {
+            room->update(delta);
+        }
     }
 
     bool find_item_by_type_id(const ILevel& level, uint32_t type_id, std::weak_ptr<IItem>& output_item)

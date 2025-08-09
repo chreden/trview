@@ -849,7 +849,7 @@ namespace trview
         _main_window->begin();
         _main_window->clear(Colour(_settings.background_colour));
 
-        if (_scene_changed)
+        // if (_scene_changed)
         {
             _scene_target->clear(Colour::Transparent);
 
@@ -887,7 +887,7 @@ namespace trview
     {
         if (auto level = _level.lock())
         {
-            level->render(*_camera, _show_selection);
+            level->render(*_camera, _show_selection, _timer.elapsed());
             auto texture_storage = level->texture_storage();
 
             _sector_highlight->render(*_camera);

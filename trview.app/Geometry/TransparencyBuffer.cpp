@@ -115,7 +115,7 @@ namespace trview
         context->OMSetBlendState(_alpha_blend.Get(), 0, 0xffffffff);
 
         uint32_t sum = 0;
-        TransparentTriangle::Mode previous_mode = TransparentTriangle::Mode::Normal;
+        UniTriangle::TransparencyMode previous_mode = UniTriangle::TransparencyMode::Normal;
 
         for (const auto& run : _texture_run)
         {
@@ -210,9 +210,9 @@ namespace trview
         create_buffer();
     }
 
-    void TransparencyBuffer::set_blend_mode(const ComPtr<ID3D11DeviceContext>& context, TransparentTriangle::Mode mode) const
+    void TransparencyBuffer::set_blend_mode(const ComPtr<ID3D11DeviceContext>& context, UniTriangle::TransparencyMode mode) const
     {
-        if (mode == TransparentTriangle::Mode::Normal)
+        if (mode == UniTriangle::TransparencyMode::Normal)
         {
             context->OMSetBlendState(_alpha_blend.Get(), 0, 0xffffffff);
         }

@@ -279,7 +279,7 @@ namespace trlevel
         const auto boxes = read_boxes(activity, file, callbacks);
         read_overlaps(activity, file, callbacks);
         read_zones(activity, file, callbacks, static_cast<uint32_t>(boxes.size()));
-        read_animated_textures(activity, file, callbacks);
+        _animated_textures = read_animated_textures(activity, file, callbacks);
         _entities = read_entities(activity, file, callbacks);
         read<int32_t>(file); // horizon colour
         read_room_textures_tr3_psx(file, activity, callbacks);

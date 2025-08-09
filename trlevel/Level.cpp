@@ -424,14 +424,9 @@ namespace trlevel
         return _rooms[index];
     }
 
-    uint32_t Level::num_object_textures() const
+    std::vector<tr_object_texture> Level::object_textures() const
     {
-        return static_cast<uint32_t>(_object_textures.size());
-    }
-
-    tr_object_texture Level::get_object_texture(uint32_t index) const
-    {
-        return _object_textures[index];
+        return _object_textures;
     }
 
     uint32_t Level::num_floor_data() const
@@ -1022,5 +1017,10 @@ namespace trlevel
 
         _sound_data = {};
         _sound_samples = {};
+    }
+
+    std::vector<std::vector<int16_t>> Level::animated_textures() const
+    {
+        return _animated_textures;
     }
 }

@@ -57,13 +57,23 @@ namespace trlevel
         return ai_objects;
     }
 
-    std::vector<uint16_t> read_animated_textures(trview::Activity& activity, std::basic_ispanstream<uint8_t>& file, const ILevel::LoadCallbacks& callbacks)
+    std::vector<std::vector<int16_t>> read_animated_textures(trview::Activity& activity, std::basic_ispanstream<uint8_t>& file, const ILevel::LoadCallbacks& callbacks)
     {
         callbacks.on_progress("Reading animated textures");
         log_file(activity, file, "Reading animated textures");
-        std::vector<uint16_t> animated_textures = read_vector<uint32_t, uint16_t>(file);
-        log_file(activity, file, std::format("Read {} animated textures", animated_textures.size()));
-        return animated_textures;
+
+        skip(file, 4); // word count
+
+        std::vector<std::vector<int16_t>> textures;
+        int16_t num_animated_texture_sequences = read<int16_t>(file);
+        for (int16_t t = 0; t < num_animated_texture_sequences; ++t)
+        {
+            int16_t num_texture_ids = read<int16_t>(file) + 1;
+            textures.push_back(read_vector<int16_t>(file, num_texture_ids));
+        }
+
+        log_file(activity, file, std::format("Read {} animated textures sequences", textures.size()));
+        return textures;
     }
 
     uint8_t read_animated_textures_uv_count(trview::Activity& activity, std::basic_ispanstream<uint8_t>& file, const ILevel::LoadCallbacks& callbacks)

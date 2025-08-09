@@ -758,7 +758,7 @@ TEST(Viewer, SelectionRendered)
     auto texture_storage = mock_shared<MockLevelTextureStorage>();
     auto level = mock_shared<MockLevel>();
     ON_CALL(*level, texture_storage).WillByDefault(testing::Return(texture_storage));
-    EXPECT_CALL(*level, render(A<const ICamera&>(), true)).Times(1);
+    EXPECT_CALL(*level, render(A<const ICamera&>(), true, A<float>())).Times(1);
     auto route = mock_shared<MockRoute>();
     EXPECT_CALL(*route, render(A<const ICamera&>(), true)).Times(1);
 
@@ -778,7 +778,7 @@ TEST(Viewer, SelectionNotRendered)
     auto texture_storage = mock_shared<MockLevelTextureStorage>();
     auto level = mock_shared<MockLevel>();
     ON_CALL(*level, texture_storage).WillByDefault(testing::Return(texture_storage));
-    EXPECT_CALL(*level, render(A<const ICamera&>(), false)).Times(1);
+    EXPECT_CALL(*level, render(A<const ICamera&>(), false, A<float>())).Times(1);
     auto route = mock_shared<MockRoute>();
     EXPECT_CALL(*route, render(A<const ICamera&>(), false)).Times(1);
 

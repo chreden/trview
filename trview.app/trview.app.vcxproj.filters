@@ -1297,6 +1297,9 @@
     <ClInclude Include="Mocks\Elements\IFlybyNode.h">
       <Filter>Mocks\Elements</Filter>
     </ClInclude>
+    <ClInclude Include="Geometry\AnimatedTriangle.h">
+      <Filter>Geometry</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Windows">

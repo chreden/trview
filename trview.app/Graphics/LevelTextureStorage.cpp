@@ -1,5 +1,6 @@
 #include "LevelTextureStorage.h"
 #include "TextureStorage.h"
+#include <ranges>
 
 namespace trview
 {
@@ -62,10 +63,30 @@ namespace trview
         }
 
         const auto& vert = _object_textures[texture_index].Vertices[uv_index];
-
         if (_texture_mode == TextureMode::Official)
         {
-            return Vector2(static_cast<float>(vert.x_whole + static_cast<int8_t>(vert.x_frac)), static_cast<float>(vert.y_whole + static_cast<int8_t>(vert.y_frac))) / 255.0f;
+            float u = static_cast<float>(vert.x_whole);
+            float v = static_cast<float>(vert.y_whole);
+
+            if (vert.x_frac == 1)
+            {
+                u += 1;
+            }
+            else if (vert.x_frac == 255)
+            {
+                u -= 1;
+            }
+
+            if (vert.y_frac == 1)
+            {
+                v += 1;
+            }
+            else if (vert.y_frac == 255)
+            {
+                v -= 1;
+            }
+
+            return Vector2(u, v) / 256.0f;
         }
         
         float x = static_cast<float>(vert.x_whole) + (vert.x_frac / 256.0f);
@@ -150,10 +171,14 @@ namespace trview
         _platform_and_version = level->platform_and_version();
         _level = level;
 
-        // Copy object textures locally from the level.
-        for (uint32_t i = 0; i < level->num_object_textures(); ++i)
+        _object_textures = level->object_textures();
+
+        for (const auto& sequence : level->animated_textures())
         {
-            _object_textures.push_back(level->get_object_texture(i));
+            for (const auto& entry : sequence)
+            {
+                _animated_textures[static_cast<uint32_t>(entry)] = sequence | std::ranges::to<std::vector<uint32_t>>();
+            }
         }
 
         if (_platform_and_version.version < trlevel::LevelVersion::Tomb4)
@@ -178,5 +203,24 @@ namespace trview
             d |= 0xff000000;
         }
         _opaque_tiles.emplace_back(*_device, 256, 256, opaque);
+    }
+
+    bool LevelTextureStorage::is_animated(uint32_t texture_index) const
+    {
+        return _animated_textures.find(texture_index) != _animated_textures.end();
+    }
+
+    std::vector<uint32_t> LevelTextureStorage::animated_texture(uint32_t texture_index) const
+    {
+        auto found = _animated_textures.find(texture_index);
+        if (found == _animated_textures.end())
+        {
+            return {};
+        }
+
+        auto sequence = found->second;
+        auto inner = std::ranges::find(sequence, texture_index);
+        std::ranges::rotate(sequence, inner);
+        return sequence;
     }
 }

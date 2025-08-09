@@ -512,6 +512,10 @@ namespace trview
         _timer.update();
         const auto elapsed = _timer.elapsed();
         _windows->update(elapsed);
+        if (_level)
+        {
+            _level->update(elapsed);
+        }
 
         _viewer->render();
 

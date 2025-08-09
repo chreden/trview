@@ -328,7 +328,7 @@ TEST(Level, BoundingBoxesNotRenderedWhenDisabled)
         .build();
 
     NiceMock<MockCamera> camera;
-    level->render(camera, false);
+    level->render(camera, false, 0.0f);
 }
 
 TEST(Level, BoundingBoxesRenderedWhenEnabled)
@@ -359,7 +359,7 @@ TEST(Level, BoundingBoxesRenderedWhenEnabled)
     level->set_show_bounding_boxes(true);
 
     NiceMock<MockCamera> camera;
-    level->render(camera, false);
+    level->render(camera, false, 0.0f);
 }
 
 TEST(Level, SetShowBoundingBoxesRaisesLevelChangedEvent)
@@ -403,7 +403,7 @@ TEST(Level, ItemsNotRenderedWhenDisabled)
     level->set_show_items(false);
 
     NiceMock<MockCamera> camera;
-    level->render(camera, false);
+    level->render(camera, false, 0.0f);
 }
 
 TEST(Level, ItemsRenderedWhenEnabled)
@@ -435,7 +435,7 @@ TEST(Level, ItemsRenderedWhenEnabled)
     level->set_alternate_mode(true);
 
     NiceMock<MockCamera> camera;
-    level->render(camera, false);
+    level->render(camera, false, 0.0f);
 }
 
 TEST(Level, RoomNotRenderedWhenNotVisible)
@@ -467,7 +467,7 @@ TEST(Level, RoomNotRenderedWhenNotVisible)
     level->set_alternate_mode(true);
 
     NiceMock<MockCamera> camera;
-    level->render(camera, false);
+    level->render(camera, false, 0.0f);
 }
 
 TEST(Level, SelectedItem)
@@ -750,7 +750,7 @@ TEST(Level, CameraSinksNotRenderedWhenDisabled)
     level->set_show_camera_sinks(false);
 
     NiceMock<MockCamera> camera;
-    level->render(camera, false);
+    level->render(camera, false, 0.0f);
 }
 
 TEST(Level, CameraSinksRenderedWhenEnabled)
@@ -783,7 +783,7 @@ TEST(Level, CameraSinksRenderedWhenEnabled)
 
     level->set_alternate_mode(true);
     level->set_show_camera_sinks(true);
-    level->render(camera, false);
+    level->render(camera, false, 0.0f);
 }
 
 TEST(Level, SetShowLightingRaisesLevelChangedEvent)

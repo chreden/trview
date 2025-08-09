@@ -49,14 +49,7 @@ namespace trlevel
         // Returns: The room.
         virtual tr3_room get_room(uint32_t index) const = 0;
 
-        // Get the number of object textures in the level.
-        // Returns: The number of object textures.
-        virtual uint32_t num_object_textures() const = 0;
-
-        // Get one of the object texture in the level.
-        // index: The index of the texture to get.
-        // Returns: The object texture.
-        virtual tr_object_texture get_object_texture(uint32_t index) const = 0;
+        virtual std::vector<tr_object_texture> object_textures() const = 0;
 
         /// Get the number of floordata values in the level.
         /// @returns The number of floordata values.
@@ -161,6 +154,8 @@ namespace trlevel
 
         virtual Platform platform() const = 0;
         virtual PlatformAndVersion platform_and_version() const = 0;
+
+        virtual std::vector<std::vector<int16_t>> animated_textures() const = 0;
 
         struct LoadCallbacks
         {

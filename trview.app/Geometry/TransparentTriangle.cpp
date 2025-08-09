@@ -4,7 +4,7 @@ using namespace DirectX::SimpleMath;
 
 namespace trview
 {
-    TransparentTriangle::TransparentTriangle(const Vector3& v0, const Vector3& v1, const Vector3& v2, const Vector2& uv0, const Vector2& uv1, const Vector2& uv2, uint32_t texture, Mode mode, const DirectX::SimpleMath::Color& c0, const DirectX::SimpleMath::Color& c1, const DirectX::SimpleMath::Color& c2)
+    TransparentTriangle::TransparentTriangle(const Vector3& v0, const Vector3& v1, const Vector3& v2, const Vector2& uv0, const Vector2& uv1, const Vector2& uv2, uint32_t texture, UniTriangle::TransparencyMode mode, const DirectX::SimpleMath::Color& c0, const DirectX::SimpleMath::Color& c1, const DirectX::SimpleMath::Color& c2)
         : vertices{ v0, v1, v2 }, uvs{ uv0, uv1, uv2 }, texture(texture), mode(mode), colours{ c0, c1, c2 }
     {
         Vector3 minimum = Vector3::Min(Vector3::Min(v0, v1), v2);
@@ -13,7 +13,7 @@ namespace trview
     }
 
     TransparentTriangle::TransparentTriangle(const Vector3& v0, const Vector3& v1, const Vector3& v2, const DirectX::SimpleMath::Color& c0, const DirectX::SimpleMath::Color& c1, const DirectX::SimpleMath::Color& c2)
-        : TransparentTriangle(v0, v1, v2, Vector2::Zero, Vector2::Zero, Vector2::Zero, Untextured, Mode::Normal, c0, c1, c2)
+        : TransparentTriangle(v0, v1, v2, Vector2::Zero, Vector2::Zero, Vector2::Zero, Untextured, UniTriangle::TransparencyMode::Normal, c0, c1, c2)
     {
     }
 
@@ -44,21 +44,22 @@ namespace trview
     // attribute: The texture attribute value.
     // effects: The face effects value.
     // Returns: True if the face is transparent. If this is false, out is not set.
-    bool determine_transparency(uint16_t attribute, uint16_t effects, TransparentTriangle::Mode& out)
+    bool determine_transparency(uint16_t attribute, uint16_t effects, UniTriangle::TransparencyMode& out)
     {
         // The effects value takes precendence over the attribute value.
         if (effects & 0x1)
         {
-            out = TransparentTriangle::Mode::Additive;
+            out = UniTriangle::TransparencyMode::Additive;
             return true;
         }
 
         if (!attribute)
         {
+            out = UniTriangle::TransparencyMode::None;
             return false;
         }
 
-        out = attribute == 2 ? TransparentTriangle::Mode::Additive : TransparentTriangle::Mode::Normal;
+        out = attribute == 2 ? UniTriangle::TransparencyMode::Additive : UniTriangle::TransparencyMode::Normal;
         return true;
     }
 }

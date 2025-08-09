@@ -1,5 +1,6 @@
 #pragma once
 
+#include "AnimatedTriangle.h"
 #include "TransparentTriangle.h"
 #include "MeshVertex.h"
 #include "Triangle.h"
@@ -12,7 +13,8 @@ namespace trview
     {
         using Source = std::function<std::shared_ptr<IMesh>(
             const std::vector<MeshVertex>&, const std::vector<std::vector<uint32_t>>&, const std::vector<uint32_t>&,
-            const std::vector<TransparentTriangle>&, const std::vector<Triangle>&)>;
+            const std::vector<TransparentTriangle>&, const std::vector<Triangle>&, const std::vector<AnimatedTriangle>&,
+            const std::vector<UniTriangle>&)>;
 
         using TransparentSource = std::function<std::shared_ptr<IMesh>(const std::vector<TransparentTriangle>&, const std::vector<Triangle>&)>;
 
@@ -32,6 +34,8 @@ namespace trview
             DirectX::SimpleMath::Vector3 light_direction = DirectX::SimpleMath::Vector3::Zero) = 0;
 
         virtual std::vector<TransparentTriangle> transparent_triangles() const = 0;
+
+        virtual void update(float delta) = 0;
 
         virtual const DirectX::BoundingBox& bounding_box() const = 0;
 
@@ -94,11 +98,8 @@ namespace trview
         const std::vector<trlevel::tr4_mesh_face4>& rectangles,
         const std::vector<trlevel::trview_room_vertex>& input_vertices,
         const ILevelTextureStorage& texture_storage,
-        std::vector<MeshVertex>& output_vertices,
-        std::vector<std::vector<uint32_t>>& output_indices,
-        std::vector<TransparentTriangle>& transparent_triangles,
-        std::vector<Triangle>& collision_triangles,
-        bool transparent_collision = true);
+        std::vector<UniTriangle>& out_triangles,
+        bool transparent_collision);
 
     /// Convert the textured triangles into collections required to create a mesh.
     /// @param triangles The triangles from the mesh or room geometry.
@@ -113,10 +114,7 @@ namespace trview
         const std::vector<trlevel::tr4_mesh_face3>& triangles,
         const std::vector<trlevel::trview_room_vertex>& input_vertices,
         const ILevelTextureStorage& texture_storage,
-        std::vector<MeshVertex>& output_vertices,
-        std::vector<std::vector<uint32_t>>& output_indices,
-        std::vector<TransparentTriangle>& transparent_triangles,
-        std::vector<Triangle>& collision_triangles,
+        std::vector<UniTriangle>& out_triangles,
         bool transparent_collision = true);
 
     // Convert the coloured rectangles into collections required to create a mesh.
@@ -130,9 +128,7 @@ namespace trview
         const std::vector<trlevel::tr_face4>& rectangles,
         const std::vector<trlevel::trview_room_vertex>& input_vertices,
         const ILevelTextureStorage& texture_storage,
-        std::vector<MeshVertex>& output_vertices,
-        std::vector<uint32_t>& output_indices,
-        std::vector<Triangle>& collision_triangles,
+        std::vector<UniTriangle>& out_triangles,
         const trlevel::PlatformAndVersion& platform_and_version);
 
     // Convert the coloured triangles into collections required to create a mesh.
@@ -146,9 +142,7 @@ namespace trview
         const std::vector<trlevel::tr_face3>& triangles,
         const std::vector<trlevel::trview_room_vertex>& input_vertices,
         const ILevelTextureStorage& texture_storage,
-        std::vector<MeshVertex>& output_vertices,
-        std::vector<uint32_t>& output_indices,
-        std::vector<Triangle>& collision_triangles,
+        std::vector<UniTriangle>& out_triangles,
         const trlevel::PlatformAndVersion& platform_and_version);
 
     /// Convert the vertex to the scale used by the viewer.
