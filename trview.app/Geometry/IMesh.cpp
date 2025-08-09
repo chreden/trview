@@ -356,15 +356,20 @@ namespace trview
             }
         }
 
-        std::vector<uint32_t> indices;
+        const Color colour = Colour::White;
+        std::vector<UniTriangle> triangles;
         for (uint32_t slice = 0; slice < slices; ++slice)
         {
-            indices.push_back(0);
-            indices.push_back(slice + 1);
-            indices.push_back(slice == slices - 1 ? 1 : slice + 2);
+            triangles.push_back(
+                {
+                    .colours = { colour, colour, colour },
+                    .normal = points[0].normal,
+                    .texture_mode = UniTriangle::TextureMode::Untextured,
+                    .vertices = { points[0].pos, points[slice + 1].pos, points[slice == slices - 1 ? 1 : slice + 2].pos }
+                });
         }
 
-        for (uint32_t stack = 0; stack < stacks; ++stack)
+        for (uint32_t stack = 0; stack < stacks - 1; ++stack)
         {
             uint32_t b = 1 + stack * slices;
             for (uint32_t slice = 0; slice < slices; ++slice)
@@ -372,16 +377,25 @@ namespace trview
                 const uint32_t top_right = (slice == slices - 1 ? 0 : slice + 1);
                 const uint32_t bottom_right = (slice == slices - 1 ? 0 : slice + 1);
 
-                indices.push_back(b + slice);
-                indices.push_back(b + slice + slices);
-                indices.push_back(b + slices + bottom_right);
-                indices.push_back(b + slice);
-                indices.push_back(b + slices + bottom_right);
-                indices.push_back(b + top_right);
+                triangles.push_back(
+                    {
+                        .colours = { colour, colour, colour },
+                        .normal = points[b + slice].normal,
+                        .texture_mode = UniTriangle::TextureMode::Untextured,
+                        .vertices = { points[b + slice].pos, points[b + slice + slices].pos, points[b + slices + bottom_right].pos }
+                    });
+
+                triangles.push_back(
+                    {
+                        .colours = { colour, colour, colour },
+                        .normal = points[b + slice].normal,
+                        .texture_mode = UniTriangle::TextureMode::Untextured,
+                        .vertices = { points[b + slice].pos, points[b + slices + bottom_right].pos, points[b + top_right].pos }
+                    });
             }
         }
 
-        return source(points, std::vector<std::vector<uint32_t>>(), indices, std::vector<TransparentTriangle>(), std::vector<Triangle>(), {}, {});
+        return source({}, {}, {}, {}, {}, {}, triangles);
     }
 
     std::shared_ptr<IMesh> create_sprite_mesh(const IMesh::Source& source, const std::optional<trlevel::tr_sprite_texture>& sprite, Matrix& scale, Vector3& offset, SpriteOffsetMode offset_mode)

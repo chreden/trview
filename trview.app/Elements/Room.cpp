@@ -754,7 +754,7 @@ namespace trview
 
     namespace
     {
-        void add_triangle(ISector::Triangle& tri, std::vector<UniTriangle>& triangles, const Color& color)
+        void add_triangle(const ISector::Triangle& tri, std::vector<UniTriangle>& triangles, const Color& color)
         {
             triangles.push_back(
                 {
