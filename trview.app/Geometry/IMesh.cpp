@@ -11,6 +11,36 @@ namespace trview
     {
         const uint16_t Texture_Mask = 0x3fff;
 
+        void add_rect(std::vector<UniTriangle>& triangles, const Vector3& v0, const Vector3& v1, const Vector3& v2, const Vector3& v3, const Vector3& normal)
+        {
+            constexpr Vector2 uv0 = { 0, 0 };
+            constexpr Vector2 uv1 = { 1, 0 };
+            constexpr Vector2 uv2 = { 1, 1 };
+            constexpr Vector2 uv3 = { 0, 1 };
+            const Color color = Colour::White;
+
+            triangles.push_back(
+                UniTriangle
+                {
+                    .collision_mode = UniTriangle::CollisionMode::Disabled,
+                    .colours = { color, color, color },
+                    .frames = { {.uvs = { uv0, uv1, uv2 } } },
+                    .normal = normal,
+                    .texture_mode = UniTriangle::TextureMode::Untextured,
+                    .vertices = { v0, v1, v2 }
+                });
+            triangles.push_back(
+                UniTriangle
+                {
+                    .collision_mode = UniTriangle::CollisionMode::Disabled,
+                    .colours = { color, color, color },
+                    .frames = { {.uvs = { uv2, uv3, uv0 } } },
+                    .normal = normal,
+                    .texture_mode = UniTriangle::TextureMode::Untextured,
+                    .vertices = { v2, v3, v0 }
+                });
+        }
+
         Vector3 calculate_normal(const Vector3* const vertices)
         {
             auto first = vertices[1] - vertices[0];
@@ -42,24 +72,24 @@ namespace trview
 
             // Generate quad.
             using namespace DirectX::SimpleMath;
-            std::vector<MeshVertex> vertices
-            {
-                { Vector3(-0.5f, -0.5f, 0), Vector3::Zero, Vector2(u + width, v + height), Color(1,1,1,1)  },
-                { Vector3(0.5f, -0.5f, 0), Vector3::Zero, Vector2(u, v + height), Color(1,1,1,1) },
-                { Vector3(-0.5f, 0.5f, 0), Vector3::Zero, Vector2(u + width, v), Color(1,1,1,1) },
-                { Vector3(0.5f, 0.5f, 0), Vector3::Zero, Vector2(u, v), Color(1,1,1,1) },
-            };
 
-            std::vector<TransparentTriangle> transparent_triangles
+            const Color colour = Colour::White;
+            const std::vector<UniTriangle> triangles
             {
-                { vertices[0].pos, vertices[1].pos, vertices[2].pos, vertices[0].uv, vertices[1].uv, vertices[2].uv, tile, UniTriangle::TransparencyMode::Normal, Colour::White, Colour::White, Colour::White },
-                { vertices[2].pos, vertices[1].pos, vertices[3].pos, vertices[2].uv, vertices[1].uv, vertices[3].uv, tile, UniTriangle::TransparencyMode::Normal, Colour::White, Colour::White, Colour::White },
-            };
-
-            std::vector<Triangle> collision_triangles
-            {
-                Triangle(vertices[0].pos, vertices[1].pos, vertices[2].pos),
-                Triangle(vertices[2].pos, vertices[1].pos, vertices[3].pos)
+                {
+                    .colours = { colour, colour, colour },
+                    .frames = { { .uvs = { Vector2(u + width, v + height), Vector2(u, v + height), Vector2(u + width, v) }, .texture = tile } },
+                    .normal = Vector3::Forward,
+                    .transparency_mode = UniTriangle::TransparencyMode::Normal,
+                    .vertices = { Vector3(-0.5f, -0.5f, 0), Vector3(0.5f, -0.5f, 0), Vector3(-0.5f, 0.5f, 0) }
+                },
+                {
+                    .colours = { colour, colour, colour },
+                    .frames = { {.uvs = { Vector2(u + width, v), Vector2(u, v + height), Vector2(u, v) }, .texture = tile } },
+                    .normal = Vector3::Forward,
+                    .transparency_mode = UniTriangle::TransparencyMode::Normal,
+                    .vertices = { Vector3(-0.5f, 0.5f, 0), Vector3(0.5f, -0.5f, 0), Vector3(0.5f, 0.5f, 0) }
+                }
             };
 
             float object_width = static_cast<float>(right - left) / trlevel::Scale_X;
@@ -79,7 +109,7 @@ namespace trview
                 offset = Vector3(0, object_height / -2.0f, 0);
             }
 
-            return source(std::vector<MeshVertex>(), std::vector<std::vector<uint32_t>>(), std::vector<uint32_t>(), transparent_triangles, collision_triangles, {}, {});
+            return source({}, {}, {}, {}, {}, {}, triangles);
         }
 
         void adjust_rect_uvs_tr1_1996_pc(std::array<Vector2, 4>& uvs, uint16_t texture)
@@ -236,42 +266,12 @@ namespace trview
     std::shared_ptr<IMesh> create_cube_mesh(const IMesh::Source& source)
     {
         std::vector<UniTriangle> triangles;
-        const Vector2 uv0 = { 0, 0 };
-        const Vector2 uv1 = { 1, 0 };
-        const Vector2 uv2 = { 1, 1 };
-        const Vector2 uv3 = { 0, 1 };
-        const Color color = Colour::White;
-
-        auto add_rect = [&](const Vector3& v0, const Vector3& v1, const Vector3& v2, const Vector3& v3, const Vector3& normal)
-            {
-                triangles.push_back(
-                    UniTriangle
-                    { 
-                        .collision_mode = UniTriangle::CollisionMode::Disabled,
-                        .colours = { color, color, color },
-                        .frames = { {.uvs = { uv0, uv1, uv2 } } },
-                        .normal = normal,
-                        .texture_mode = UniTriangle::TextureMode::Untextured,
-                        .vertices = { v0, v1, v2 }
-                    });
-                triangles.push_back(
-                    UniTriangle
-                    {
-                        .collision_mode = UniTriangle::CollisionMode::Disabled,
-                        .colours = { color, color, color },
-                        .frames = { {.uvs = { uv2, uv3, uv0 } } },
-                        .normal = normal,
-                        .texture_mode = UniTriangle::TextureMode::Untextured,
-                        .vertices = { v2, v3, v0 }
-                    });
-            };
-
-        add_rect({ -0.5, 0.5, -0.5 }, { 0.5, 0.5, -0.5 }, { 0.5, 0.5, 0.5 }, { -0.5, 0.5, 0.5 }, Vector3::Down);
-        add_rect({ 0.5, -0.5, -0.5 }, { 0.5, -0.5, 0.5 }, { 0.5, 0.5, 0.5 }, { 0.5, 0.5, -0.5 }, Vector3::Left);
-        add_rect({ -0.5, -0.5, 0.5 }, { -0.5, -0.5, -0.5 }, { -0.5, 0.5, -0.5 }, { -0.5, 0.5, 0.5 }, Vector3::Right);
-        add_rect({ 0.5, -0.5, 0.5 }, { -0.5, -0.5, 0.5 } , { -0.5, 0.5, 0.5 }, { 0.5, 0.5, 0.5 }, Vector3::Forward);
-        add_rect({ -0.5, -0.5, -0.5 }, { 0.5, -0.5, -0.5 }, { 0.5, 0.5, -0.5 }, { -0.5, 0.5, -0.5 }, Vector3::Backward);
-        add_rect({ -0.5, -0.5, 0.5 }, { 0.5, -0.5, 0.5 }, { 0.5, -0.5, -0.5 }, { -0.5, -0.5, -0.5 }, Vector3::Up);
+        add_rect(triangles, { -0.5, 0.5, -0.5 }, { 0.5, 0.5, -0.5 }, { 0.5, 0.5, 0.5 }, { -0.5, 0.5, 0.5 }, Vector3::Down);
+        add_rect(triangles, { 0.5, -0.5, -0.5 }, { 0.5, -0.5, 0.5 }, { 0.5, 0.5, 0.5 }, { 0.5, 0.5, -0.5 }, Vector3::Left);
+        add_rect(triangles, { -0.5, -0.5, 0.5 }, { -0.5, -0.5, -0.5 }, { -0.5, 0.5, -0.5 }, { -0.5, 0.5, 0.5 }, Vector3::Right);
+        add_rect(triangles, { 0.5, -0.5, 0.5 }, { -0.5, -0.5, 0.5 } , { -0.5, 0.5, 0.5 }, { 0.5, 0.5, 0.5 }, Vector3::Forward);
+        add_rect(triangles, { -0.5, -0.5, -0.5 }, { 0.5, -0.5, -0.5 }, { 0.5, 0.5, -0.5 }, { -0.5, 0.5, -0.5 }, Vector3::Backward);
+        add_rect(triangles, { -0.5, -0.5, 0.5 }, { 0.5, -0.5, 0.5 }, { 0.5, -0.5, -0.5 }, { -0.5, -0.5, -0.5 }, Vector3::Up);
         return source({}, {}, {}, {}, {}, {}, triangles);
     }
 
