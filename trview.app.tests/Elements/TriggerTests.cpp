@@ -20,7 +20,7 @@ namespace
             uint16_t z{ 0 };
             TriggerInfo trigger_info{};
             trlevel::LevelVersion level_version{ trlevel::LevelVersion::Tomb3 };
-            IMesh::TransparentSource mesh_source{ [](auto&&...) { return mock_shared<MockMesh>(); } };
+            IMesh::Source mesh_source{ [](auto&&...) { return mock_shared<MockMesh>(); } };
             std::shared_ptr<trview::ILevel> level{ mock_shared<MockLevel>() };
             std::shared_ptr<ISector> sector{ mock_shared<MockSector>() };
 

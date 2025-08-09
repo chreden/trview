@@ -16,8 +16,6 @@ namespace trview
             const std::vector<TransparentTriangle>&, const std::vector<Triangle>&, const std::vector<AnimatedTriangle>&,
             const std::vector<UniTriangle>&)>;
 
-        using TransparentSource = std::function<std::shared_ptr<IMesh>(const std::vector<TransparentTriangle>&, const std::vector<Triangle>&)>;
-
         virtual ~IMesh() = 0;
 
         virtual void render(const DirectX::SimpleMath::Matrix& world_view_projection,
