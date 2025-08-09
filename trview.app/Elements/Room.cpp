@@ -754,24 +754,15 @@ namespace trview
 
     namespace
     {
-        void add_triangle(
-            const ISector::Triangle& tri,
-            std::vector<MeshVertex>& output_vertices,
-            std::vector<uint32_t>& output_indices,
-            std::vector<Triangle>& collision_triangles,
-            const Color& color)
+        void add_triangle(ISector::Triangle& tri, std::vector<UniTriangle>& triangles, const Color& color)
         {
-            uint32_t base = static_cast<uint32_t>(output_vertices.size());
-
-            output_vertices.push_back({ tri.v0, Vector3::Down, tri.uv0, color });
-            output_vertices.push_back({ tri.v1, Vector3::Down, tri.uv1, color });
-            output_vertices.push_back({ tri.v2, Vector3::Down, tri.uv2, color });
-
-            output_indices.push_back(base);
-            output_indices.push_back(base + 1);
-            output_indices.push_back(base + 2);
-
-            collision_triangles.emplace_back(tri.v0, tri.v1, tri.v2);
+            triangles.push_back(
+                {
+                    .colours = { color, color, color },
+                    .frames = { { .uvs = { tri.uv0, tri.uv1, tri.uv2 } } },
+                    .normal = Vector3::Down,
+                    .vertices = { tri.v0, tri.v1, tri.v2 }
+                });
         }
     }
 
@@ -1004,9 +995,7 @@ namespace trview
 
         struct MeshPart
         {
-            std::vector<MeshVertex> vertices;
-            std::vector<Triangle> collision_triangles;
-            std::vector<uint32_t> untextured_indices;
+            std::vector<UniTriangle> triangles;
         };
 
         std::unordered_map<uint32_t, MeshPart> mesh_parts;
@@ -1020,17 +1009,14 @@ namespace trview
                 auto& part = mesh_parts[_all_geometry_sector_rooms[base + i]];
                 auto colour = tri_colour(tri);
                 colour.a = 1.0f;
-                add_triangle(tri, part.vertices, part.untextured_indices, part.collision_triangles, colour);
+                add_triangle(tri, part.triangles, colour);
             }
             base += tris.size();
         }
 
         for (const auto& parts : mesh_parts)
         {
-            std::vector<std::vector<uint32_t>> vec;
-            vec.push_back(parts.second.untextured_indices);
-            auto mesh = mesh_source(parts.second.vertices, vec, std::vector<uint32_t>{}, std::vector<TransparentTriangle>{}, parts.second.collision_triangles, {}, {});
-            _all_geometry_meshes[parts.first] = mesh;
+            _all_geometry_meshes[parts.first] = mesh_source({}, {}, {}, {}, {}, {}, parts.second.triangles);
         }
     }
 
