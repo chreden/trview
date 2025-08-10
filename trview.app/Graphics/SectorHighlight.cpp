@@ -56,7 +56,7 @@ namespace trview
                         };
                     }) | std::ranges::to<std::vector>();
 
-            _mesh = _mesh_source({}, {}, {}, {}, {}, {}, out_triangles);
+            _mesh = _mesh_source(out_triangles);
         }
 
         _mesh->render(_room_offset * camera.view_projection(), Color(1,1,1));

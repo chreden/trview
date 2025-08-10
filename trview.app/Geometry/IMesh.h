@@ -11,10 +11,7 @@ namespace trview
 {
     struct IMesh
     {
-        using Source = std::function<std::shared_ptr<IMesh>(
-            const std::vector<MeshVertex>&, const std::vector<std::vector<uint32_t>>&, const std::vector<uint32_t>&,
-            const std::vector<TransparentTriangle>&, const std::vector<Triangle>&, const std::vector<AnimatedTriangle>&,
-            const std::vector<UniTriangle>&)>;
+        using Source = std::function<std::shared_ptr<IMesh>(const std::vector<UniTriangle>&)>;
 
         virtual ~IMesh() = 0;
 

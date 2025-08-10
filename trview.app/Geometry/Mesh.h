@@ -21,15 +21,7 @@ namespace trview
         /// @param untextured_indices The indices for triangles that do not use level textures.
         /// @param transparent_triangles The transparent triangles to use to create the mesh.
         /// @param collision_triangles The triangles for picking.
-        Mesh(const std::shared_ptr<graphics::IDevice>& device,
-             const std::vector<MeshVertex>& vertices, 
-             const std::vector<std::vector<uint32_t>>& indices, 
-             const std::vector<uint32_t>& untextured_indices,
-             const std::vector<TransparentTriangle>& transparent_triangles,
-             const std::vector<Triangle>& collision_triangles,
-             const std::vector<AnimatedTriangle>& animated_triangles,
-             const std::vector<UniTriangle>& triangles,
-             const std::shared_ptr<ITextureStorage>& texture_storage);
+        Mesh(const std::shared_ptr<graphics::IDevice>& device, const std::vector<UniTriangle>& triangles, const std::shared_ptr<ITextureStorage>& texture_storage);
 
         virtual ~Mesh() = default;
 
@@ -66,7 +58,7 @@ namespace trview
 
         std::shared_ptr<graphics::IDevice> _device;
         Microsoft::WRL::ComPtr<ID3D11Buffer>              _vertex_buffer;
-        std::unordered_map<uint32_t, Indices>             _index_buffers2;
+        std::unordered_map<uint32_t, Indices>             _index_buffers;
         Microsoft::WRL::ComPtr<ID3D11Buffer>              _matrix_buffer;
         Microsoft::WRL::ComPtr<ID3D11Buffer>              _untextured_index_buffer;
         uint32_t                                          _untextured_index_count{ 0u };
@@ -74,7 +66,7 @@ namespace trview
         std::vector<UniTriangle>                          _collision_triangles;
         DirectX::BoundingBox                              _bounding_box;
         std::weak_ptr<ITextureStorage>                    _texture_storage;
-        std::vector<UniTriangle>                          _animated_triangles2;
+        std::vector<UniTriangle>                          _animated_triangles;
         std::unordered_set<uint32_t>                      _animated_triangle_textures;
         Microsoft::WRL::ComPtr<ID3D11Buffer>              _animated_vertex_buffer;
     };

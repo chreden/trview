@@ -128,7 +128,7 @@ namespace trview
                         .vertices = { t.vertices[0], t.vertices[1], t.vertices[2] }
                     };
                 }) | std::ranges::to<std::vector>();
-        _mesh = _mesh_source({}, {}, {}, {}, {}, {}, triangles);
+        _mesh = _mesh_source(triangles);
     }
 
     PickResult Trigger::pick(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& direction) const

@@ -109,7 +109,7 @@ namespace trview
                 offset = Vector3(0, object_height / -2.0f, 0);
             }
 
-            return source({}, {}, {}, {}, {}, {}, triangles);
+            return source(triangles);
         }
 
         void adjust_rect_uvs_tr1_1996_pc(std::array<Vector2, 4>& uvs, uint16_t texture)
@@ -260,7 +260,7 @@ namespace trview
         process_coloured_rectangles(mesh.coloured_rectangles, in_vertices, texture_storage, triangles, platform_and_version);
         process_coloured_triangles(mesh.coloured_triangles, in_vertices, texture_storage, triangles, platform_and_version);
 
-        return source({}, {}, {}, {}, {}, {}, triangles);
+        return source(triangles);
     }
 
     std::shared_ptr<IMesh> create_cube_mesh(const IMesh::Source& source)
@@ -272,7 +272,7 @@ namespace trview
         add_rect(triangles, { 0.5, -0.5, 0.5 }, { -0.5, -0.5, 0.5 } , { -0.5, 0.5, 0.5 }, { 0.5, 0.5, 0.5 }, Vector3::Forward);
         add_rect(triangles, { -0.5, -0.5, -0.5 }, { 0.5, -0.5, -0.5 }, { 0.5, 0.5, -0.5 }, { -0.5, 0.5, -0.5 }, Vector3::Backward);
         add_rect(triangles, { -0.5, -0.5, 0.5 }, { 0.5, -0.5, 0.5 }, { 0.5, -0.5, -0.5 }, { -0.5, -0.5, -0.5 }, Vector3::Up);
-        return source({}, {}, {}, {}, {}, {}, triangles);
+        return source(triangles);
     }
 
     std::shared_ptr<IMesh> create_frustum_mesh(const IMesh::Source& source)
@@ -284,7 +284,7 @@ namespace trview
         add_rect(triangles, { 0.5f, 0.5f, 0.5f }, { 0.5f, -0.5f, 0.5f }, { -0.5f, -0.5f, 0.5f }, { -0.5f, 0.5f, 0.5f }, Vector3::Forward);
         add_rect(triangles, { 0.1f, -0.1f, -0.5f }, { 0.1f, 0.1f, -0.5f }, { -0.1f, 0.1f, -0.5f }, { -0.1f, -0.1f, -0.5f }, Vector3::Backward);
         add_rect(triangles, { 0.5f, -0.5f, 0.5f }, { 0.1f, -0.1f, -0.5f }, { -0.1f, -0.1f, -0.5f }, { -0.5f, -0.5f, 0.5f }, Vector3::Up);
-        return source({}, {}, {}, {}, {}, {}, triangles);
+        return source(triangles);
     }
 
     std::shared_ptr<IMesh> create_sphere_mesh(const IMesh::Source& source, uint32_t stacks, uint32_t slices)
@@ -352,7 +352,7 @@ namespace trview
             }
         }
 
-        return source({}, {}, {}, {}, {}, {}, triangles);
+        return source(triangles);
     }
 
     std::shared_ptr<IMesh> create_sprite_mesh(const IMesh::Source& source, const std::optional<trlevel::tr_sprite_texture>& sprite, Matrix& scale, Vector3& offset, SpriteOffsetMode offset_mode)

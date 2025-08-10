@@ -38,15 +38,7 @@ namespace trview
         }
     }
 
-    Mesh::Mesh(const std::shared_ptr<graphics::IDevice>& device,
-        const std::vector<MeshVertex>&, 
-        const std::vector<std::vector<uint32_t>>&, 
-        const std::vector<uint32_t>&, 
-        const std::vector<TransparentTriangle>&,
-        const std::vector<Triangle>&,
-        const std::vector<AnimatedTriangle>&,
-        const std::vector<UniTriangle>& triangles,
-        const std::shared_ptr<ITextureStorage>& texture_storage)
+    Mesh::Mesh(const std::shared_ptr<graphics::IDevice>& device, const std::vector<UniTriangle>& triangles, const std::shared_ptr<ITextureStorage>& texture_storage)
         : _device(device), _texture_storage(texture_storage)
     {
         if (!triangles.empty())
@@ -79,10 +71,10 @@ namespace trview
                 }
                 else
                 {
-                    _animated_triangles2.push_back(t);
+                    _animated_triangles.push_back(t);
                     if (t.side_mode == UniTriangle::SideMode::Double)
                     {
-                        _animated_triangles2.push_back(reverse(t));
+                        _animated_triangles.push_back(reverse(t));
                     }
 
                     for (const auto& frame : t.frames)
@@ -128,7 +120,7 @@ namespace trview
                 memset(&index_data, 0, sizeof(index_data));
                 index_data.pSysMem = &map_indices.second[0];
 
-                _index_buffers2[map_indices.first] =
+                _index_buffers[map_indices.first] =
                 {
                     .count = static_cast<uint32_t>(map_indices.second.size()),
                     .buffer = device->create_buffer(index_desc, index_data)
@@ -204,9 +196,9 @@ namespace trview
             context->IASetVertexBuffers(0, 1, _vertex_buffer.GetAddressOf(), &stride, &offset);
             context->VSSetConstantBuffers(0, 1, _matrix_buffer.GetAddressOf());
 
-            if (!_index_buffers2.empty())
+            if (!_index_buffers.empty())
             {
-                for (const auto& indices : _index_buffers2)
+                for (const auto& indices : _index_buffers)
                 {
                     auto texture = geometry_mode ? texture_storage->geometry_texture() : texture_storage->texture(indices.first);
                     context->PSSetShaderResources(0, 1, texture.view().GetAddressOf());
@@ -234,7 +226,7 @@ namespace trview
             memcpy(mapped_resource.pData, &data, sizeof(data));
             context->Unmap(_matrix_buffer.Get(), 0);
 
-            if (!_animated_triangles2.empty())
+            if (!_animated_triangles.empty())
             {
                 for (const auto& tex : _animated_triangle_textures)
                 {
@@ -243,7 +235,7 @@ namespace trview
                     {
                         MeshVertex* vertex = reinterpret_cast<MeshVertex*>(mapped.pData);
                         uint32_t triangles_written = 0;
-                        for (const auto& triangle : _animated_triangles2)
+                        for (const auto& triangle : _animated_triangles)
                         {
                             if (triangle.transparency_mode == UniTriangle::TransparencyMode::None &&
                                 triangle.frames[triangle.current_frame].texture == tex)
@@ -306,9 +298,9 @@ namespace trview
     std::vector<TransparentTriangle> Mesh::transparent_triangles() const
     {
         auto transparent_triangles = _transparent_triangles;
-        if (!_animated_triangles2.empty())
+        if (!_animated_triangles.empty())
         {
-            transparent_triangles.append_range(_animated_triangles2 | std::views::filter([](auto&& t) { return t.transparency_mode != UniTriangle::TransparencyMode::None; }));
+            transparent_triangles.append_range(_animated_triangles | std::views::filter([](auto&& t) { return t.transparency_mode != UniTriangle::TransparencyMode::None; }));
         }
         return transparent_triangles
             | std::views::transform([](auto&& t)
@@ -358,12 +350,12 @@ namespace trview
 
     void Mesh::generate_animated_vertex_buffer()
     {
-        if (!_animated_triangles2.empty())
+        if (!_animated_triangles.empty())
         {
             D3D11_BUFFER_DESC animated_vertex_desc;
             memset(&animated_vertex_desc, 0, sizeof(animated_vertex_desc));
             animated_vertex_desc.Usage = D3D11_USAGE_DYNAMIC;
-            animated_vertex_desc.ByteWidth = sizeof(MeshVertex) * static_cast<uint32_t>(_animated_triangles2.size() * 3);
+            animated_vertex_desc.ByteWidth = sizeof(MeshVertex) * static_cast<uint32_t>(_animated_triangles.size() * 3);
             animated_vertex_desc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
             animated_vertex_desc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
             _animated_vertex_buffer = _device->create_buffer(animated_vertex_desc, std::nullopt);
@@ -383,12 +375,12 @@ namespace trview
 
     void Mesh::update(float delta)
     {
-        if (_animated_triangles2.empty())
+        if (_animated_triangles.empty())
         {
             return;
         }
 
-        for (auto& triangle : _animated_triangles2)
+        for (auto& triangle : _animated_triangles)
         {
             triangle.current_time += delta;
             if (triangle.current_time >= triangle.frame_time)

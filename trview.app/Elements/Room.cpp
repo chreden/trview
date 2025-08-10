@@ -389,7 +389,7 @@ namespace trview
         process_textured_triangles(room.data.triangles, room.data.vertices, *_texture_storage, triangles, false);
         process_collision_transparency(triangles);
 
-        _mesh = mesh_source({}, {}, {}, {}, {}, {}, triangles);
+        _mesh = mesh_source(triangles);
 
         // Generate the bounding box based on the room dimensions.
         update_bounding_box();
@@ -1016,7 +1016,7 @@ namespace trview
 
         for (const auto& parts : mesh_parts)
         {
-            _all_geometry_meshes[parts.first] = mesh_source({}, {}, {}, {}, {}, {}, parts.second.triangles);
+            _all_geometry_meshes[parts.first] = mesh_source(parts.second.triangles);
         }
     }
 
