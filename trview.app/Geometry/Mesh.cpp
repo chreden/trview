@@ -28,10 +28,10 @@ namespace trview
         void add_tri(auto&& t, auto&& vertices, auto&& indices, auto&& untextured)
         {
             const uint32_t base = static_cast<uint32_t>(vertices.size());
-            vertices.push_back(MeshVertex{ .pos = t.vertices[0], .normal = t.normals[0], .uv = t.frames.empty() ? Vector2() : t.frames[0].uvs[0], .colour = t.colours[0] });
-            vertices.push_back(MeshVertex{ .pos = t.vertices[1], .normal = t.normals[1], .uv = t.frames.empty() ? Vector2() : t.frames[0].uvs[1], .colour = t.colours[1] });
-            vertices.push_back(MeshVertex{ .pos = t.vertices[2], .normal = t.normals[2], .uv = t.frames.empty() ? Vector2() : t.frames[0].uvs[2], .colour = t.colours[2] });
-            auto& target_indices = t.texture_mode == Triangle::TextureMode::Textured ? indices[t.frames[0].texture] : untextured;
+            vertices.push_back(MeshVertex{ .pos = t.vertices[0], .normal = t.normals[0], .uv = t.uv(0), .colour = t.colours[0] });
+            vertices.push_back(MeshVertex{ .pos = t.vertices[1], .normal = t.normals[1], .uv = t.uv(1), .colour = t.colours[1] });
+            vertices.push_back(MeshVertex{ .pos = t.vertices[2], .normal = t.normals[2], .uv = t.uv(2), .colour = t.colours[2] });
+            auto& target_indices = t.texture_mode == Triangle::TextureMode::Textured ? indices[t.texture()] : untextured;
             target_indices.push_back(base);
             target_indices.push_back(base + 1);
             target_indices.push_back(base + 2);
@@ -238,12 +238,12 @@ namespace trview
                         for (const auto& triangle : _animated_triangles)
                         {
                             if (triangle.transparency_mode == Triangle::TransparencyMode::None &&
-                                triangle.frames[triangle.current_frame].texture == tex)
+                                triangle.texture() == tex)
                             {
                                 ++triangles_written;
-                                *vertex++ = { .pos = triangle.vertices[0], .normal = { 0, 1, 0 }, .uv = triangle.frames[triangle.current_frame].uvs[0], .colour = triangle.colours[0] };
-                                *vertex++ = { .pos = triangle.vertices[1], .normal = { 0, 1, 0 }, .uv = triangle.frames[triangle.current_frame].uvs[1], .colour = triangle.colours[1] };
-                                *vertex++ = { .pos = triangle.vertices[2], .normal = { 0, 1, 0 }, .uv = triangle.frames[triangle.current_frame].uvs[2], .colour = triangle.colours[2] };
+                                *vertex++ = { .pos = triangle.vertices[0], .normal = { 0, 1, 0 }, .uv = triangle.uv(0), .colour = triangle.colours[0] };
+                                *vertex++ = { .pos = triangle.vertices[1], .normal = { 0, 1, 0 }, .uv = triangle.uv(1), .colour = triangle.colours[1] };
+                                *vertex++ = { .pos = triangle.vertices[2], .normal = { 0, 1, 0 }, .uv = triangle.uv(2), .colour = triangle.colours[2] };
                             }
                         }
                         context->Unmap(_animated_vertex_buffer.Get(), 0);

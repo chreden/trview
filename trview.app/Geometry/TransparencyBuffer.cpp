@@ -189,7 +189,7 @@ namespace trview
         std::size_t index = 0;
         for (const auto& triangle : _triangles)
         {
-            const auto texture = triangle.frames.empty() ? 0 : triangle.frames[triangle.current_frame].texture;
+            const auto texture = triangle.texture();
             if (_texture_run.empty() ||
                 (_texture_run.back().texture_mode != triangle.texture_mode || _texture_run.back().texture != texture) ||
                 _texture_run.back().transparency_mode != triangle.transparency_mode)
@@ -201,10 +201,10 @@ namespace trview
                 ++_texture_run.back().count;
             }
 
-            auto normal = triangle.normal();
+            const auto normal = triangle.normal();
             for (uint32_t i = 0; i < 3; ++i)
             {
-                _vertices[index++] = { triangle.vertices[i], normal, triangle.frames.empty() ? Vector2() : triangle.frames[triangle.current_frame].uvs[i], triangle.colours[i] };
+                _vertices[index++] = { triangle.vertices[i], normal, triangle.uv(i), triangle.colours[i] };
             }
         }
 

@@ -59,7 +59,9 @@ namespace trview
 
         DirectX::SimpleMath::Vector3 normal() const;
         DirectX::SimpleMath::Vector3 position() const;
+        uint32_t texture() const;
         Triangle transform(const DirectX::SimpleMath::Matrix& matrix, const DirectX::SimpleMath::Color& colour_override, bool use_colour_override) const;
+        DirectX::SimpleMath::Vector2 uv(uint32_t index) const;
         mutable std::optional<DirectX::SimpleMath::Vector3> calculated_position;
     };
 

@@ -21,6 +21,15 @@ namespace trview
         return calculated_position.value();
     }
 
+    uint32_t Triangle::texture() const
+    {
+        if (current_frame < frames.size())
+        {
+            return frames[current_frame].texture;
+        }
+        return 0;
+    }
+
     Triangle Triangle::transform(const DirectX::SimpleMath::Matrix& matrix, const DirectX::SimpleMath::Color& colour_override, bool use_colour_override) const
     {
         Triangle copy = *this;
@@ -35,6 +44,15 @@ namespace trview
             copy.colours[2] = colour_override;
         }
         return copy;
+    }
+
+    Vector2 Triangle::uv(uint32_t index) const
+    {
+        if (current_frame < frames.size() && index < 3)
+        {
+            return frames[current_frame].uvs[index];
+        }
+        return Vector2();
     }
 
     // Determine whether the face should be transparent give the attribute and effects values. The 
