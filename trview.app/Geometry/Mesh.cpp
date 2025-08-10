@@ -325,7 +325,7 @@ namespace trview
             {
                 result.hit = true;
                 result.distance = std::min(distance, result.distance);
-                result.triangle = Triangle(tri.vertices[0], tri.vertices[1], tri.vertices[2]);
+                result.triangle = tri;
             }
         }
 

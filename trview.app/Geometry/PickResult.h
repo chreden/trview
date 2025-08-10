@@ -1,7 +1,7 @@
 #pragma once
 
 #include <SimpleMath.h>
-#include <trview.app/Geometry/Triangle.h>
+#include "Triangle.h"
 
 namespace trview
 {
@@ -47,7 +47,7 @@ namespace trview
         bool                         stop{ false };
         std::string                  text;
         bool                         override_centre{ false };
-        Triangle                     triangle;
+        UniTriangle                  triangle;
         std::weak_ptr<IScriptable>   scriptable;
         std::weak_ptr<ISoundSource>  sound_source;
         std::weak_ptr<IItem>         item;

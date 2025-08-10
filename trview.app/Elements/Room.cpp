@@ -925,10 +925,10 @@ namespace trview
         geometry_result.position = Vector3::Transform(geometry_result.position, _room_offset);
 
         const auto& tri = geometry_result.triangle;
-        if (tri.normal.y < 0)
+        if (tri.normal().y < 0)
         {
             Vector3 centroid = { std::floor(geometry_result.position.x) + 0.5f, geometry_result.position.y, std::floor(geometry_result.position.z) + 0.5f };
-            Vector3 ray_direction = { 0, -tri.normal.y, 0 };
+            Vector3 ray_direction = { 0, -tri.normal().y, 0 };
 
             centroid = Vector3::Transform(centroid, _inverted_room_offset);
             ray_direction.Normalize();

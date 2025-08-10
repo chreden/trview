@@ -1,6 +1,6 @@
 #pragma once
 
-#include "TransparentTriangle.h"
+#include "Triangle.h"
 #include <trview.app/Camera/ICamera.h>
 
 namespace trview

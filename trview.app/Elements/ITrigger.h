@@ -6,7 +6,7 @@
 #include <trlevel/LevelVersion.h>
 
 #include <trview.app/Geometry/IRenderable.h>
-#include "../Geometry/TransparentTriangle.h"
+#include "../Geometry/Triangle.h"
 #include <trview.app/Geometry/PickResult.h>
 #include <trview.app/Elements/Types.h>
 #include <trview.common/Event.h>

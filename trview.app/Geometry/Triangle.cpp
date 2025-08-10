@@ -1,4 +1,4 @@
-#include "TransparentTriangle.h"
+#include "Triangle.h"
 
 using namespace DirectX::SimpleMath;
 

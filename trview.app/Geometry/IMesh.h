@@ -1,8 +1,7 @@
 #pragma once
 
-#include "TransparentTriangle.h"
-#include "MeshVertex.h"
 #include "Triangle.h"
+#include "MeshVertex.h"
 #include <trview.app/Graphics/ILevelTextureStorage.h>
 #include <trview.app/Geometry/PickResult.h>
 
