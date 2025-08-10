@@ -66,40 +66,6 @@ namespace trview
         mutable std::optional<DirectX::SimpleMath::Vector3> calculated_position;
     };
 
-    struct TransparentTriangle
-    {
-        // Use the untextured texture instead of a texture from the level textures.
-        const static uint32_t Untextured{ 0xffffffff };
-
-        TransparentTriangle(const DirectX::SimpleMath::Vector3& v0, const DirectX::SimpleMath::Vector3& v1, const DirectX::SimpleMath::Vector3& v2,
-            const DirectX::SimpleMath::Vector2& uv0, const DirectX::SimpleMath::Vector2& uv1, const DirectX::SimpleMath::Vector2& uv2,
-            uint32_t texture, UniTriangle::TransparencyMode mode, const DirectX::SimpleMath::Color& c0, const DirectX::SimpleMath::Color& c1, const DirectX::SimpleMath::Color& c2);
-
-        /// Create an untextured transparent triangle with the specified colour.
-        /// @param v0 The first vertex.
-        /// @param v1 The second vertex.
-        /// @param v2 The third vertex.
-        /// @param colour The colour for the triangle.
-        TransparentTriangle(const DirectX::SimpleMath::Vector3& v0, const DirectX::SimpleMath::Vector3& v1, const DirectX::SimpleMath::Vector3& v2, const DirectX::SimpleMath::Color& c0, const DirectX::SimpleMath::Color& c1, const DirectX::SimpleMath::Color& c2);
-
-        DirectX::SimpleMath::Vector3 normal() const;
-
-        TransparentTriangle transform(const DirectX::SimpleMath::Matrix& matrix, const DirectX::SimpleMath::Color& colour_override, bool use_colour_override) const;
-
-        // The world space positions that make up the triangle.
-        DirectX::SimpleMath::Vector3 vertices[3];
-        // UV coordinates for the triangle.
-        DirectX::SimpleMath::Vector2 uvs[3];
-        // The world space centre position of the three vertices.
-        DirectX::SimpleMath::Vector3 position;
-        // The level texture index to use.
-        uint32_t                     texture;
-        
-        UniTriangle::TransparencyMode                         mode;
-
-        DirectX::SimpleMath::Color   colours[3];
-    };
-
     // Determine whether the face should be transparent give the attribute and effects values. The 
     // mode is stored in out if it is transparent.
     // attribute: The texture attribute value.
