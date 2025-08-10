@@ -62,7 +62,8 @@ namespace trview
             int16_t bottom,
             Matrix& scale,
             Vector3& offset,
-            SpriteOffsetMode offset_mode)
+            SpriteOffsetMode offset_mode,
+            UniTriangle::TextureMode texture_mode)
         {
             // Calculate UVs.
             float u = static_cast<float>(x) / 256.0f;
@@ -80,6 +81,7 @@ namespace trview
                     .colours = { colour, colour, colour },
                     .frames = { { .uvs = { Vector2(u + width, v + height), Vector2(u, v + height), Vector2(u + width, v) }, .texture = tile } },
                     .normals = { Vector3::Forward, Vector3::Forward, Vector3::Forward },
+                    .texture_mode = texture_mode,
                     .transparency_mode = UniTriangle::TransparencyMode::Normal,
                     .vertices = { Vector3(-0.5f, -0.5f, 0), Vector3(0.5f, -0.5f, 0), Vector3(-0.5f, 0.5f, 0) }
                 },
@@ -87,6 +89,7 @@ namespace trview
                     .colours = { colour, colour, colour },
                     .frames = { {.uvs = { Vector2(u + width, v), Vector2(u, v + height), Vector2(u, v) }, .texture = tile } },
                     .normals = { Vector3::Forward, Vector3::Forward, Vector3::Forward },
+                    .texture_mode = texture_mode,
                     .transparency_mode = UniTriangle::TransparencyMode::Normal,
                     .vertices = { Vector3(-0.5f, 0.5f, 0), Vector3(0.5f, -0.5f, 0), Vector3(0.5f, 0.5f, 0) }
                 }
@@ -360,9 +363,9 @@ namespace trview
         if (sprite)
         {
             const auto& s = sprite.value();
-            return create_sprite_mesh(source, s.x + 1, s.y + 1, s.Width - 1, s.Height - 1, s.Tile, s.LeftSide, s.RightSide, s.TopSide, s.BottomSide, scale, offset, offset_mode);
+            return create_sprite_mesh(source, s.x + 1, s.y + 1, s.Width - 1, s.Height - 1, s.Tile, s.LeftSide, s.RightSide, s.TopSide, s.BottomSide, scale, offset, offset_mode, UniTriangle::TextureMode::Textured);
         }
-        return create_sprite_mesh(source, 0, 0, 0, 0, TransparentTriangle::Untextured, -256, 256, -256, 256, scale, offset, offset_mode);
+        return create_sprite_mesh(source, 0, 0, 0, 0, 0, -256, 256, -256, 256, scale, offset, offset_mode, UniTriangle::TextureMode::Untextured);
     }
 
     std::shared_ptr<IMesh> create_sprite_mesh(const IMesh::Source& source, const std::optional<trlevel::tr_sprite_texture>& sprite, Matrix& scale, Matrix& offset, SpriteOffsetMode offset_mode)

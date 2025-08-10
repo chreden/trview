@@ -295,24 +295,14 @@ namespace trview
         }
     }
 
-    std::vector<TransparentTriangle> Mesh::transparent_triangles() const
+    std::vector<UniTriangle> Mesh::transparent_triangles() const
     {
         auto transparent_triangles = _transparent_triangles;
         if (!_animated_triangles.empty())
         {
             transparent_triangles.append_range(_animated_triangles | std::views::filter([](auto&& t) { return t.transparency_mode != UniTriangle::TransparencyMode::None; }));
         }
-        return transparent_triangles
-            | std::views::transform([](auto&& t)
-                {
-                    return TransparentTriangle(t.vertices[0], t.vertices[1], t.vertices[2], 
-                        t.frames.empty() ? Vector2() : t.frames[t.current_frame].uvs[0],
-                        t.frames.empty() ? Vector2() : t.frames[t.current_frame].uvs[1],
-                        t.frames.empty() ? Vector2() : t.frames[t.current_frame].uvs[2],
-                        t.frames.empty() ? TransparentTriangle::Untextured : t.frames[t.current_frame].texture,
-                        t.transparency_mode, t.colours[0], t.colours[1], t.colours[2]);
-                })
-            | std::ranges::to<std::vector>();
+        return transparent_triangles;
     }
 
     const DirectX::BoundingBox& Mesh::bounding_box() const

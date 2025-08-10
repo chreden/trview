@@ -38,7 +38,7 @@ namespace trview
             float light_intensity = 1.0f,
             DirectX::SimpleMath::Vector3 light_direction = DirectX::SimpleMath::Vector3::Zero) override;
 
-        virtual std::vector<TransparentTriangle> transparent_triangles() const override;
+        std::vector<UniTriangle> transparent_triangles() const override;
 
         void update(float delta) override;
 

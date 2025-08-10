@@ -60,10 +60,10 @@ namespace trview
         TransparencyMode transparency_mode{ TransparencyMode::None };
         DirectX::SimpleMath::Vector3 vertices[3];
 
-        DirectX::SimpleMath::Vector3 normal() const
-        {
-            return (vertices[2] - vertices[1]).Cross(vertices[1] - vertices[0]);
-        }
+        DirectX::SimpleMath::Vector3 normal() const;
+        DirectX::SimpleMath::Vector3 position() const;
+        UniTriangle transform(const DirectX::SimpleMath::Matrix& matrix, const DirectX::SimpleMath::Color& colour_override, bool use_colour_override) const;
+        mutable std::optional<DirectX::SimpleMath::Vector3> calculated_position;
     };
 
     struct TransparentTriangle

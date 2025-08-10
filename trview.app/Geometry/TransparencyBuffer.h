@@ -26,7 +26,7 @@ namespace trview
         // Add a triangle to the transparency buffer. The triangle will be added to the end
         // of the collection.
         // triangle: The triangle to add.
-        void add(const TransparentTriangle& triangle) override;
+        void add(const UniTriangle& triangle) override;
 
         // Sort the accumulated transparent triangles in order of farthest to
         // nearest, based on the position of the camera.
@@ -54,13 +54,14 @@ namespace trview
         Microsoft::WRL::ComPtr<ID3D11BlendState> _additive_blend;
         Microsoft::WRL::ComPtr<ID3D11DepthStencilState> _transparency_depth_state;
 
-        std::vector<TransparentTriangle> _triangles;
+        std::vector<UniTriangle> _triangles;
         std::vector<MeshVertex> _vertices;
 
         struct TextureRun
         {
             uint32_t texture;
-            UniTriangle::TransparencyMode mode;
+            UniTriangle::TextureMode texture_mode;
+            UniTriangle::TransparencyMode transparency_mode;
             uint32_t count;
         };
 

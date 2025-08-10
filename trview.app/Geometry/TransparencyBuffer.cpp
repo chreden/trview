@@ -62,7 +62,7 @@ namespace trview
         _transparency_depth_state = _device->create_depth_stencil_state(stencil_desc);
     }
 
-    void TransparencyBuffer::add(const TransparentTriangle& triangle)
+    void TransparencyBuffer::add(const UniTriangle& triangle)
     {
         _triangles.push_back(triangle);
     }
@@ -72,7 +72,7 @@ namespace trview
         std::sort(_triangles.begin(), _triangles.end(),
             [&eye_position](const auto& l, const auto& r)
         {
-            return Vector3::DistanceSquared(eye_position, l.position) > Vector3::DistanceSquared(eye_position, r.position);
+            return Vector3::DistanceSquared(eye_position, l.position()) > Vector3::DistanceSquared(eye_position, r.position());
         });
         complete();
     }
@@ -119,13 +119,13 @@ namespace trview
 
         for (const auto& run : _texture_run)
         {
-            if (run.mode != previous_mode && !ignore_blend)
+            if (run.transparency_mode != previous_mode && !ignore_blend)
             {
-                set_blend_mode(context, run.mode);
+                set_blend_mode(context, run.transparency_mode);
             }
-            previous_mode = run.mode;
+            previous_mode = run.transparency_mode;
 
-            auto texture = run.texture == TransparentTriangle::Untextured ? texture_storage->untextured() : texture_storage->texture(run.texture);
+            auto texture = run.texture_mode == UniTriangle::TextureMode::Untextured ? texture_storage->untextured() : texture_storage->texture(run.texture);
             context->PSSetShaderResources(0, 1, texture.view().GetAddressOf());
             context->Draw(run.count * 3, sum);
             sum += run.count * 3;
@@ -189,11 +189,12 @@ namespace trview
         std::size_t index = 0;
         for (const auto& triangle : _triangles)
         {
+            const auto texture = triangle.frames.empty() ? 0 : triangle.frames[triangle.current_frame].texture;
             if (_texture_run.empty() ||
-                _texture_run.back().texture != triangle.texture || 
-                _texture_run.back().mode != triangle.mode) 
+                (_texture_run.back().texture_mode != triangle.texture_mode || _texture_run.back().texture != texture) ||
+                _texture_run.back().transparency_mode != triangle.transparency_mode)
             {
-                _texture_run.push_back({ triangle.texture, triangle.mode, 1 });
+                _texture_run.push_back({ texture, triangle.texture_mode, triangle.transparency_mode, 1 });
             }
             else
             {
@@ -203,7 +204,7 @@ namespace trview
             auto normal = triangle.normal();
             for (uint32_t i = 0; i < 3; ++i)
             {
-                _vertices[index++] = { triangle.vertices[i], normal, triangle.uvs[i], triangle.colours[i] };
+                _vertices[index++] = { triangle.vertices[i], normal, triangle.frames.empty() ? Vector2() : triangle.frames[triangle.current_frame].uvs[i], triangle.colours[i] };
             }
         }
 

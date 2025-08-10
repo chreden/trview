@@ -27,7 +27,7 @@ namespace trview
             float light_intensity = 1.0f,
             DirectX::SimpleMath::Vector3 light_direction = DirectX::SimpleMath::Vector3::Zero) = 0;
 
-        virtual std::vector<TransparentTriangle> transparent_triangles() const = 0;
+        virtual std::vector<UniTriangle> transparent_triangles() const = 0;
 
         virtual void update(float delta) = 0;
 

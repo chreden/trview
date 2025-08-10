@@ -4,6 +4,39 @@ using namespace DirectX::SimpleMath;
 
 namespace trview
 {
+    Vector3 UniTriangle::normal() const
+    {
+        return (vertices[2] - vertices[1]).Cross(vertices[1] - vertices[0]);
+    }
+
+    Vector3 UniTriangle::position() const
+    {
+        if (calculated_position.has_value())
+        {
+            return calculated_position.value();
+        }
+        Vector3 minimum = Vector3::Min(Vector3::Min(vertices[0], vertices[1]), vertices[2]);
+        Vector3 maximum = Vector3::Max(Vector3::Max(vertices[0], vertices[1]), vertices[2]);
+        calculated_position = Vector3::Lerp(minimum, maximum, 0.5f);
+        return calculated_position.value();
+    }
+
+    UniTriangle UniTriangle::transform(const DirectX::SimpleMath::Matrix& matrix, const DirectX::SimpleMath::Color& colour_override, bool use_colour_override) const
+    {
+        UniTriangle copy = *this;
+        copy.calculated_position.reset();
+        copy.vertices[0] = Vector3::Transform(vertices[0], matrix);
+        copy.vertices[1] = Vector3::Transform(vertices[1], matrix);
+        copy.vertices[2] = Vector3::Transform(vertices[2], matrix);
+        if (use_colour_override)
+        {
+            copy.colours[0] = colour_override;
+            copy.colours[1] = colour_override;
+            copy.colours[2] = colour_override;
+        }
+        return copy;
+    }
+
     TransparentTriangle::TransparentTriangle(const Vector3& v0, const Vector3& v1, const Vector3& v2, const Vector2& uv0, const Vector2& uv1, const Vector2& uv2, uint32_t texture, UniTriangle::TransparencyMode mode, const DirectX::SimpleMath::Color& c0, const DirectX::SimpleMath::Color& c1, const DirectX::SimpleMath::Color& c2)
         : vertices{ v0, v1, v2 }, uvs{ uv0, uv1, uv2 }, texture(texture), mode(mode), colours{ c0, c1, c2 }
     {
