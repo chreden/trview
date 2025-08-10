@@ -645,11 +645,21 @@ namespace trview
                 Vector3(x + 0.5f, y_bottom[3], z + 0.5f)
             };
 
-            std::vector<TransparentTriangle> triangles;
+            std::vector<UniTriangle> triangles;
+            const Color colour = ITrigger::Trigger_Colour;
 
-            const auto add_tri = [&triangles](const Vector3& v0, const Vector3& v1, const Vector3& v2)
+            const auto add_tri = [&triangles, &colour](const Vector3& v0, const Vector3& v1, const Vector3& v2)
             {
-                triangles.push_back(TransparentTriangle(v0, v1, v2, ITrigger::Trigger_Colour, ITrigger::Trigger_Colour, ITrigger::Trigger_Colour));
+                const auto normal = (v2 - v1).Cross(v1 - v0);
+                triangles.push_back(
+                    UniTriangle
+                    {
+                        .colours = { colour, colour, colour },
+                        .normals { normal, normal, normal },
+                        .texture_mode = UniTriangle::TextureMode::Untextured,
+                        .transparency_mode = UniTriangle::TransparencyMode::Normal,
+                        .vertices = { v0, v1, v2 }
+                    });
             };
 
             // + Y

@@ -27,7 +27,7 @@ namespace trview
             MOCK_METHOD(Colour, colour, (), (const, override));
             MOCK_METHOD(std::vector<Command>, commands, (), (const, override));
             MOCK_METHOD(void, set_colour, (const std::optional<Colour>&), (override));
-            MOCK_METHOD(void, set_triangles, (const std::vector<TransparentTriangle>&), (override));
+            MOCK_METHOD(void, set_triangles, (const std::vector<UniTriangle>&), (override));
             MOCK_METHOD(PickResult, pick, (const DirectX::SimpleMath::Vector3&, const DirectX::SimpleMath::Vector3&), (const, override));
             MOCK_METHOD(void, set_position, (const DirectX::SimpleMath::Vector3&), (override));
             MOCK_METHOD(DirectX::SimpleMath::Vector3, position, (), (const, override));

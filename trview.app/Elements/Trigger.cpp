@@ -112,23 +112,9 @@ namespace trview
         on_changed();
     }
 
-    void Trigger::set_triangles(const std::vector<TransparentTriangle>& transparent_triangles)
+    void Trigger::set_triangles(const std::vector<UniTriangle>& transparent_triangles)
     {
-        std::vector<UniTriangle> triangles = transparent_triangles
-            | std::views::transform([](auto&& t) -> UniTriangle
-                {
-                    const auto normal = (t.vertices[2] - t.vertices[1]).Cross(t.vertices[1] - t.vertices[0]);
-                    return
-                    {
-                        .collision_mode = UniTriangle::CollisionMode::Enabled,
-                        .colours = { t.colours[0], t.colours[1], t.colours[2] },
-                        .normals = { normal, normal, normal },
-                        .texture_mode = UniTriangle::TextureMode::Untextured,
-                        .transparency_mode = UniTriangle::TransparencyMode::Normal,
-                        .vertices = { t.vertices[0], t.vertices[1], t.vertices[2] }
-                    };
-                }) | std::ranges::to<std::vector>();
-        _mesh = _mesh_source(triangles);
+        _mesh = _mesh_source(transparent_triangles);
     }
 
     PickResult Trigger::pick(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& direction) const

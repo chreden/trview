@@ -29,7 +29,7 @@ namespace trview
         Colour colour() const override;
         std::vector<Command> commands() const override;
         void set_colour(const std::optional<Colour>& colour) override;
-        virtual void set_triangles(const std::vector<TransparentTriangle>& transparent_triangles) override;
+        void set_triangles(const std::vector<UniTriangle>& transparent_triangles) override;
         virtual PickResult pick(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& direction) const override;
         virtual void set_position(const DirectX::SimpleMath::Vector3& position) override;
         virtual DirectX::SimpleMath::Vector3 position() const override;
