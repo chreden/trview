@@ -4,6 +4,7 @@
 #include <array>
 #include <memory>
 #include <unordered_map>
+#include <unordered_set>
 #include <SimpleMath.h>
 #include <trlevel/trtypes.h>
 #include <trlevel/ILevel.h>
@@ -35,7 +36,7 @@ namespace trview
         trlevel::PlatformAndVersion platform_and_version() const override;
         void load(const std::shared_ptr<trlevel::ILevel>& level);
         void add_textile(const std::vector<uint32_t>& textile);
-        bool is_animated(uint32_t texture_index) const override;
+        Triangle::AnimationMode animation_mode(uint32_t texture_index) const override;
         std::vector<uint32_t> animated_texture(uint32_t texture_index) const override;
     private:
         void determine_texture_mode();
@@ -54,5 +55,12 @@ namespace trview
         };
         TextureMode _texture_mode{ TextureMode::Official };
         std::unordered_map<uint32_t, std::vector<uint32_t>> _animated_textures;
+
+        struct UVTextureReplacment
+        {
+            trlevel::tr_object_texture object_texture;
+            uint32_t new_tile;
+        };
+        std::unordered_map<uint32_t, UVTextureReplacment> _animated_uv_textures;
     };
 }

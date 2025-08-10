@@ -75,6 +75,7 @@ namespace trview
         for (uint32_t i = 0; i < _meshes.size(); ++i)
         {
             auto wvp = _world_transforms[i] * world * view_projection;
+            _meshes[i]->update(0.1f);
             _meshes[i]->render(wvp, colour);
         }
     }

@@ -1023,4 +1023,9 @@ namespace trlevel
     {
         return _animated_textures;
     }
+
+    uint32_t Level::animated_texture_uv_count() const
+    {
+        return _animated_texture_uv_count;
+    }
 }

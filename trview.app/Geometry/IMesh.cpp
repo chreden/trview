@@ -427,7 +427,7 @@ namespace trview
             }
 
             const bool double_sided = texture_storage.platform_and_version().platform != Platform::Saturn && (rect.texture & 0x8000);
-            const bool animated = texture_storage.is_animated(texture);
+            const Triangle::AnimationMode animation_mode = texture_storage.animation_mode(texture);
             Triangle::TransparencyMode transparency_mode;
             determine_transparency(
                 version.platform == Platform::Saturn ? rect.effects : texture_storage.attribute(texture),
@@ -436,7 +436,7 @@ namespace trview
             const auto normal = (verts[2] - verts[1]).Cross(verts[1] - verts[0]);
             auto triangle = Triangle
             {
-                .animation_mode = animated ? Triangle::AnimationMode::Swap : Triangle::AnimationMode::None,
+                .animation_mode = animation_mode,
                 .collision_mode = (transparency_mode == Triangle::TransparencyMode::None || transparent_collision) ? Triangle::CollisionMode::Enabled : Triangle::CollisionMode::Disabled,
                 .colours = { colors[0], colors[1], colors[2] },
                 .frames = { Triangle::Frame {.uvs = { uvs[0], uvs[1], uvs[2] }, .texture = texture_storage.tile(texture) }},
@@ -447,7 +447,7 @@ namespace trview
                 .vertices = { verts[0], verts[1], verts[2] }
             };
 
-            if (animated)
+            if (animation_mode == Triangle::AnimationMode::Swap)
             {
                 const auto sequence = texture_storage.animated_texture(static_cast<uint16_t>(texture));
                 triangle.frames = sequence | std::views::transform([&](auto&& e) -> Triangle::Frame
@@ -459,11 +459,14 @@ namespace trview
                         };
                     }) | std::ranges::to<std::vector>();
             }
+            else if (animation_mode == Triangle::AnimationMode::UV)
+            {
+            }
 
             const auto normal2 = (verts[0] - verts[3]).Cross(verts[3] - verts[2]);
             auto triangle2 = Triangle
             {
-                .animation_mode = animated ? Triangle::AnimationMode::Swap : Triangle::AnimationMode::None,
+                .animation_mode = animation_mode,
                 .collision_mode = (transparency_mode == Triangle::TransparencyMode::None || transparent_collision) ? Triangle::CollisionMode::Enabled : Triangle::CollisionMode::Disabled,
                 .colours = { colors[2], colors[3], colors[0] },
                 .frames = { Triangle::Frame {.uvs = { uvs[2], uvs[3], uvs[0] }, .texture = texture_storage.tile(texture) }},
@@ -474,7 +477,7 @@ namespace trview
                 .vertices = { verts[2], verts[3], verts[0] }
             };
 
-            if (animated)
+            if (animation_mode == Triangle::AnimationMode::Swap)
             {
                 const auto sequence = texture_storage.animated_texture(static_cast<uint16_t>(texture));
                 triangle2.frames = sequence | std::views::transform([&](auto&& e) -> Triangle::Frame
@@ -485,6 +488,9 @@ namespace trview
                             .texture = texture_storage.tile(e)
                         };
                     }) | std::ranges::to<std::vector>();
+            }
+            else if (animation_mode == Triangle::AnimationMode::UV)
+            {
             }
 
             out_triangles.push_back(triangle);
@@ -543,7 +549,7 @@ namespace trview
             }
 
             const bool double_sided = version.platform != Platform::Saturn && (tri.texture & 0x8000);
-            const bool animated = texture_storage.is_animated(texture);
+            const Triangle::AnimationMode animation_mode = texture_storage.animation_mode(texture);
             Triangle::TransparencyMode transparency_mode;
             determine_transparency(
                 version.platform == Platform::Saturn ? tri.effects : texture_storage.attribute(texture),
@@ -552,7 +558,7 @@ namespace trview
             const auto normal = (verts[2] - verts[1]).Cross(verts[1] - verts[0]);
             auto triangle = Triangle
             {
-                .animation_mode = animated ? Triangle::AnimationMode::Swap : Triangle::AnimationMode::None,
+                .animation_mode = animation_mode,
                 .collision_mode = (transparency_mode == Triangle::TransparencyMode::None || transparent_collision) ? Triangle::CollisionMode::Enabled : Triangle::CollisionMode::Disabled,
                 .colours = { colors[0], colors[1], colors[2] },
                 .frames = { Triangle::Frame {.uvs = { uvs[0], uvs[1], uvs[2] }, .texture = texture_storage.tile(texture) }},
@@ -563,7 +569,7 @@ namespace trview
                 .vertices = { verts[0], verts[1], verts[2] }
             };
 
-            if (animated)
+            if (animation_mode == Triangle::AnimationMode::Swap)
             {
                 const auto sequence = texture_storage.animated_texture(static_cast<uint16_t>(texture));
                 triangle.frames = sequence | std::views::transform([&](auto&& e) -> Triangle::Frame
@@ -574,6 +580,9 @@ namespace trview
                             .texture = texture_storage.tile(e)
                         };
                     }) | std::ranges::to<std::vector>();
+            }
+            else if (animation_mode == Triangle::AnimationMode::UV)
+            {
             }
 
             out_triangles.push_back(triangle);

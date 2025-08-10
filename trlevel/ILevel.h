@@ -156,6 +156,7 @@ namespace trlevel
         virtual PlatformAndVersion platform_and_version() const = 0;
 
         virtual std::vector<std::vector<int16_t>> animated_textures() const = 0;
+        virtual uint32_t animated_texture_uv_count() const = 0;
 
         struct LoadCallbacks
         {

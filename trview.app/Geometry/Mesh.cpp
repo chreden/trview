@@ -372,14 +372,26 @@ namespace trview
 
         for (auto& triangle : _animated_triangles)
         {
-            triangle.current_time += delta;
-            if (triangle.current_time >= triangle.frame_time)
+            if (triangle.animation_mode == Triangle::AnimationMode::Swap)
             {
-                triangle.current_time -= static_cast<int>(triangle.current_time / triangle.frame_time) * triangle.frame_time;
-                triangle.current_frame++;
-                if (triangle.current_frame >= triangle.frames.size())
+                triangle.current_time += delta;
+                if (triangle.current_time >= triangle.frame_time)
                 {
-                    triangle.current_frame = 0;
+                    triangle.current_time -= static_cast<int>(triangle.current_time / triangle.frame_time) * triangle.frame_time;
+                    triangle.current_frame++;
+                    if (triangle.current_frame >= triangle.frames.size())
+                    {
+                        triangle.current_frame = 0;
+                    }
+                }
+            }
+            else if (triangle.animation_mode == Triangle::AnimationMode::UV)
+            {
+                if (!triangle.frames.empty())
+                {
+                    triangle.frames[triangle.current_frame].uvs[0].y -= delta;
+                    triangle.frames[triangle.current_frame].uvs[1].y -= delta;
+                    triangle.frames[triangle.current_frame].uvs[2].y -= delta;
                 }
             }
         }

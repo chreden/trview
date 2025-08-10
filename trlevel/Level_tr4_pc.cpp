@@ -140,10 +140,7 @@ namespace trlevel
             read_overlaps(activity, data_stream, callbacks);
             read_zones(activity, data_stream, callbacks, static_cast<uint32_t>(boxes.size()));
             _animated_textures = read_animated_textures(activity, data_stream, callbacks);
-
-            // Animated textures uv count - not yet used:
-            uint8_t atuvc = read_animated_textures_uv_count(activity, data_stream, callbacks);
-            atuvc;
+            _animated_texture_uv_count = read_animated_textures_uv_count(activity, data_stream, callbacks);
 
             log_file(activity, data_stream, "Skipping TEX marker");
             data_stream.seekg(3, std::ios::cur);
@@ -235,9 +232,7 @@ namespace trlevel
         read_overlaps(activity, file, callbacks);
         read_zones(activity, file, callbacks, static_cast<uint32_t>(boxes.size()));
         _animated_textures = read_animated_textures(activity, file, callbacks);
-
-        // Animated textures uv count - not yet used:
-        read_animated_textures_uv_count(activity, file, callbacks);
+        _animated_texture_uv_count = read_animated_textures_uv_count(activity, file, callbacks);
 
         log_file(activity, file, "Skipping TEX marker");
         file.seekg(3, std::ios::cur);
