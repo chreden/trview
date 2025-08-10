@@ -54,11 +54,16 @@ namespace trview
         float current_time{ 0.0f };
         std::vector<Frame> frames;
         float frame_time{ 0.0f };
-        DirectX::SimpleMath::Vector3 normal;
+        DirectX::SimpleMath::Vector3 normals[3];
         SideMode side_mode{ SideMode::Single };
         TextureMode texture_mode{ TextureMode::Textured };
         TransparencyMode transparency_mode{ TransparencyMode::None };
         DirectX::SimpleMath::Vector3 vertices[3];
+
+        DirectX::SimpleMath::Vector3 normal() const
+        {
+            return (vertices[2] - vertices[1]).Cross(vertices[1] - vertices[0]);
+        }
     };
 
     struct TransparentTriangle

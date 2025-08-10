@@ -28,9 +28,9 @@ namespace trview
         void add_tri(auto&& t, auto&& vertices, auto&& indices, auto&& untextured)
         {
             const uint32_t base = static_cast<uint32_t>(vertices.size());
-            vertices.push_back(MeshVertex{ .pos = t.vertices[0], .normal = t.normal, .uv = t.frames.empty() ? Vector2() : t.frames[0].uvs[0], .colour = t.colours[0] });
-            vertices.push_back(MeshVertex{ .pos = t.vertices[1], .normal = t.normal, .uv = t.frames.empty() ? Vector2() : t.frames[0].uvs[1], .colour = t.colours[1] });
-            vertices.push_back(MeshVertex{ .pos = t.vertices[2], .normal = t.normal, .uv = t.frames.empty() ? Vector2() : t.frames[0].uvs[2], .colour = t.colours[2] });
+            vertices.push_back(MeshVertex{ .pos = t.vertices[0], .normal = t.normals[0], .uv = t.frames.empty() ? Vector2() : t.frames[0].uvs[0], .colour = t.colours[0] });
+            vertices.push_back(MeshVertex{ .pos = t.vertices[1], .normal = t.normals[1], .uv = t.frames.empty() ? Vector2() : t.frames[0].uvs[1], .colour = t.colours[1] });
+            vertices.push_back(MeshVertex{ .pos = t.vertices[2], .normal = t.normals[2], .uv = t.frames.empty() ? Vector2() : t.frames[0].uvs[2], .colour = t.colours[2] });
             auto& target_indices = t.texture_mode == UniTriangle::TextureMode::Textured ? indices[t.frames[0].texture] : untextured;
             target_indices.push_back(base);
             target_indices.push_back(base + 1);
@@ -337,7 +337,7 @@ namespace trview
         for (const auto& tri : _collision_triangles)
         {
             float distance = 0;
-            if (direction.Dot(tri.normal) < 0 &&
+            if (direction.Dot(tri.normal()) < 0 &&
                 Intersects(position, direction, tri.vertices[0], tri.vertices[1], tri.vertices[2], distance) &&
                 distance < result.distance)
             {

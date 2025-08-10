@@ -50,7 +50,7 @@ namespace trview
                         {
                             .collision_mode = UniTriangle::CollisionMode::Disabled,
                             .colours = { Highlight_Colour, Highlight_Colour, Highlight_Colour },
-                            .normal = Vector3::Down,
+                            .normals = { Vector3::Down, Vector3::Down, Vector3::Down },
                             .texture_mode = UniTriangle::TextureMode::Untextured,
                             .vertices = { t.v0 - c * 0.05f, t.v1 - c * 0.05f, t.v2 - c * 0.05f }
                         };

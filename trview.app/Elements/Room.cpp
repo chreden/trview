@@ -760,7 +760,7 @@ namespace trview
                 {
                     .colours = { color, color, color },
                     .frames = { { .uvs = { tri.uv0, tri.uv1, tri.uv2 } } },
-                    .normal = Vector3::Down,
+                    .normals = { Vector3::Down, Vector3::Down, Vector3::Down },
                     .vertices = { tri.v0, tri.v1, tri.v2 }
                 });
         }

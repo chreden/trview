@@ -117,11 +117,12 @@ namespace trview
         std::vector<UniTriangle> triangles = transparent_triangles
             | std::views::transform([](auto&& t) -> UniTriangle
                 {
+                    const auto normal = (t.vertices[2] - t.vertices[1]).Cross(t.vertices[1] - t.vertices[0]);
                     return
                     {
                         .collision_mode = UniTriangle::CollisionMode::Enabled,
                         .colours = { t.colours[0], t.colours[1], t.colours[2] },
-                        .normal = (t.vertices[2] - t.vertices[1]).Cross(t.vertices[1] - t.vertices[0]),
+                        .normals = { normal, normal, normal },
                         .texture_mode = UniTriangle::TextureMode::Untextured,
                         .transparency_mode = UniTriangle::TransparencyMode::Normal,
                         .vertices = { t.vertices[0], t.vertices[1], t.vertices[2] }

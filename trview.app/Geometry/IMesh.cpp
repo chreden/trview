@@ -25,7 +25,7 @@ namespace trview
                     .collision_mode = UniTriangle::CollisionMode::Disabled,
                     .colours = { color, color, color },
                     .frames = { {.uvs = { uv0, uv1, uv2 } } },
-                    .normal = normal,
+                    .normals = { normal, normal, normal },
                     .texture_mode = UniTriangle::TextureMode::Untextured,
                     .vertices = { v0, v1, v2 }
                 });
@@ -35,7 +35,7 @@ namespace trview
                     .collision_mode = UniTriangle::CollisionMode::Disabled,
                     .colours = { color, color, color },
                     .frames = { {.uvs = { uv2, uv3, uv0 } } },
-                    .normal = normal,
+                    .normals = { normal, normal, normal },
                     .texture_mode = UniTriangle::TextureMode::Untextured,
                     .vertices = { v2, v3, v0 }
                 });
@@ -79,14 +79,14 @@ namespace trview
                 {
                     .colours = { colour, colour, colour },
                     .frames = { { .uvs = { Vector2(u + width, v + height), Vector2(u, v + height), Vector2(u + width, v) }, .texture = tile } },
-                    .normal = Vector3::Forward,
+                    .normals = { Vector3::Forward, Vector3::Forward, Vector3::Forward },
                     .transparency_mode = UniTriangle::TransparencyMode::Normal,
                     .vertices = { Vector3(-0.5f, -0.5f, 0), Vector3(0.5f, -0.5f, 0), Vector3(-0.5f, 0.5f, 0) }
                 },
                 {
                     .colours = { colour, colour, colour },
                     .frames = { {.uvs = { Vector2(u + width, v), Vector2(u, v + height), Vector2(u, v) }, .texture = tile } },
-                    .normal = Vector3::Forward,
+                    .normals = { Vector3::Forward, Vector3::Forward, Vector3::Forward },
                     .transparency_mode = UniTriangle::TransparencyMode::Normal,
                     .vertices = { Vector3(-0.5f, 0.5f, 0), Vector3(0.5f, -0.5f, 0), Vector3(0.5f, 0.5f, 0) }
                 }
@@ -363,7 +363,7 @@ namespace trview
             triangles.push_back(
                 {
                     .colours = { colour, colour, colour },
-                    .normal = points[0].normal,
+                    .normals = { points[0].normal, points[slice + 1].normal, points[slice == slices - 1 ? 1 : slice + 2].normal },
                     .texture_mode = UniTriangle::TextureMode::Untextured,
                     .vertices = { points[0].pos, points[slice + 1].pos, points[slice == slices - 1 ? 1 : slice + 2].pos }
                 });
@@ -380,7 +380,7 @@ namespace trview
                 triangles.push_back(
                     {
                         .colours = { colour, colour, colour },
-                        .normal = points[b + slice].normal,
+                        .normals = { points[b + slice].normal, points[b + slice + slices].normal, points[b + slices + bottom_right].normal },
                         .texture_mode = UniTriangle::TextureMode::Untextured,
                         .vertices = { points[b + slice].pos, points[b + slice + slices].pos, points[b + slices + bottom_right].pos }
                     });
@@ -388,7 +388,7 @@ namespace trview
                 triangles.push_back(
                     {
                         .colours = { colour, colour, colour },
-                        .normal = points[b + slice].normal,
+                        .normals = { points[b + slice].normal, points[b + slices + bottom_right].normal, points[b + top_right].normal },
                         .texture_mode = UniTriangle::TextureMode::Untextured,
                         .vertices = { points[b + slice].pos, points[b + slices + bottom_right].pos, points[b + top_right].pos }
                     });
@@ -473,6 +473,7 @@ namespace trview
                 version.platform == Platform::Saturn ? rect.effects : texture_storage.attribute(texture),
                 version.platform == Platform::Saturn ? 0 : rect.effects, transparency_mode);
 
+            const auto normal = (verts[2] - verts[1]).Cross(verts[1] - verts[0]);
             auto triangle = UniTriangle
             {
                 .animation_mode = animated ? UniTriangle::AnimationMode::Swap : UniTriangle::AnimationMode::None,
@@ -480,7 +481,7 @@ namespace trview
                 .colours = { colors[0], colors[1], colors[2] },
                 .frames = { UniTriangle::Frame {.uvs = { uvs[0], uvs[1], uvs[2] }, .texture = texture_storage.tile(texture) }},
                 .frame_time = animated_texture_frame_time(version),
-                .normal = (verts[2] - verts[1]).Cross(verts[1] - verts[0]),
+                .normals = { normal, normal, normal },
                 .side_mode = double_sided ? UniTriangle::SideMode::Double : UniTriangle::SideMode::Single,
                 .transparency_mode = transparency_mode,
                 .vertices = { verts[0], verts[1], verts[2] }
@@ -499,6 +500,7 @@ namespace trview
                     }) | std::ranges::to<std::vector>();
             }
 
+            const auto normal2 = (verts[0] - verts[3]).Cross(verts[3] - verts[2]);
             auto triangle2 = UniTriangle
             {
                 .animation_mode = animated ? UniTriangle::AnimationMode::Swap : UniTriangle::AnimationMode::None,
@@ -506,7 +508,7 @@ namespace trview
                 .colours = { colors[2], colors[3], colors[0] },
                 .frames = { UniTriangle::Frame {.uvs = { uvs[2], uvs[3], uvs[0] }, .texture = texture_storage.tile(texture) }},
                 .frame_time = animated_texture_frame_time(version),
-                .normal = (verts[0] - verts[3]).Cross(verts[3] - verts[2]),
+                .normals = { normal2, normal2, normal2 },
                 .side_mode = double_sided ? UniTriangle::SideMode::Double : UniTriangle::SideMode::Single,
                 .transparency_mode = transparency_mode,
                 .vertices = { verts[2], verts[3], verts[0] }
@@ -587,6 +589,7 @@ namespace trview
                 version.platform == Platform::Saturn ? tri.effects : texture_storage.attribute(texture),
                 version.platform == Platform::Saturn ? 0 : tri.effects, transparency_mode);
 
+            const auto normal = (verts[2] - verts[1]).Cross(verts[1] - verts[0]);
             auto triangle = UniTriangle
             {
                 .animation_mode = animated ? UniTriangle::AnimationMode::Swap : UniTriangle::AnimationMode::None,
@@ -594,7 +597,7 @@ namespace trview
                 .colours = { colors[0], colors[1], colors[2] },
                 .frames = { UniTriangle::Frame {.uvs = { uvs[0], uvs[1], uvs[2] }, .texture = texture_storage.tile(texture) }},
                 .frame_time = animated_texture_frame_time(version),
-                .normal = (verts[2] - verts[1]).Cross(verts[1] - verts[0]),
+                .normals = { normal, normal, normal },
                 .side_mode = double_sided ? UniTriangle::SideMode::Double : UniTriangle::SideMode::Single,
                 .transparency_mode = transparency_mode,
                 .vertices = { verts[0], verts[1], verts[2] }
@@ -638,19 +641,21 @@ namespace trview
             const auto colour = platform_and_version.platform == trlevel::Platform::Saturn ? colour_from_texture(rect.texture) : texture_storage.palette_from_texture(texture);
             const auto normal = calculate_normal(&verts[0]);
 
+            const auto normal1 = (verts[2] - verts[1]).Cross(verts[1] - verts[0]);
             out_triangles.push_back(
                 {
                     .colours = { colour, colour, colour },
-                    .normal = normal,
+                    .normals = { normal1, normal1, normal1 },
                     .side_mode = double_sided ? UniTriangle::SideMode::Double : UniTriangle::SideMode::Single,
                     .texture_mode = UniTriangle::TextureMode::Untextured,
                     .vertices = { verts[0], verts[1], verts[2] }
                 });
 
+            const auto normal2 = (verts[0] - verts[3]).Cross(verts[3] - verts[2]);
             out_triangles.push_back(
                 {
                     .colours = { colour, colour, colour },
-                    .normal = normal,
+                    .normals = { normal2, normal2, normal2 },
                     .side_mode = double_sided ? UniTriangle::SideMode::Double : UniTriangle::SideMode::Single,
                     .texture_mode = UniTriangle::TextureMode::Untextured,
                     .vertices = { verts[2], verts[3], verts[0] }
@@ -682,7 +687,7 @@ namespace trview
             out_triangles.push_back(
                 {
                     .colours = { colour, colour, colour },
-                    .normal = normal,
+                    .normals = { normal, normal, normal },
                     .side_mode = double_sided ? UniTriangle::SideMode::Double : UniTriangle::SideMode::Single,
                     .texture_mode = UniTriangle::TextureMode::Untextured,
                     .vertices = { verts[0], verts[1], verts[2] }
