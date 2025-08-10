@@ -277,57 +277,14 @@ namespace trview
 
     std::shared_ptr<IMesh> create_frustum_mesh(const IMesh::Source& source)
     {
-        const std::vector<MeshVertex> vertices
-        {
-            // Body:
-            // + y
-            { { -0.1f, 0.1f, -0.5f }, Vector3::Down, { 0, 0 }, { 1.0f, 1.0f, 1.0f } },       // 2
-            { { 0.1f, 0.1f, -0.5f }, Vector3::Down, { 1, 0 }, { 1.0f, 1.0f, 1.0f } },        // 1
-            { { 0.5f, 0.5f, 0.5f }, Vector3::Down, { 1, 1 }, { 1.0f, 1.0f, 1.0f } },         // 0
-            { { -0.5f, 0.5f, 0.5f }, Vector3::Down, { 0, 1 }, { 1.0f, 1.0f, 1.0f } },        // 3
-
-            // +x
-            { { 0.1f, -0.1f, -0.5f }, Vector3::Left, { 0, 0 }, { 1.0f, 1.0f, 1.0f } },       // 5
-            { { 0.5f, -0.5f, 0.5f }, Vector3::Left, { 1, 0 }, { 1.0f, 1.0f, 1.0f } },        // 4
-            { { 0.5f, 0.5f, 0.5f }, Vector3::Left, { 1, 1 }, { 1.0f, 1.0f, 1.0f } },         // 0
-            { { 0.1f, 0.1f, -0.5f }, Vector3::Left, { 0, 1 }, { 1.0f, 1.0f, 1.0f } },        // 1
-
-            // -x 
-            { { -0.1f, 0.1f, -0.5f }, Vector3::Right, { 1, 1 }, { 1.0f, 1.0f, 1.0f } },       // 2
-            { { -0.5f, 0.5f, 0.5f }, Vector3::Right, { 0, 1 }, { 1.0f, 1.0f, 1.0f } },        // 3
-            { { -0.5f, -0.5f, 0.5f }, Vector3::Right, { 0, 0 }, { 1.0f, 1.0f, 1.0f } },       // 7
-            { { -0.1f, -0.1f, -0.5f }, Vector3::Right, { 1, 0 }, { 1.0f, 1.0f, 1.0f } },      // 6
-
-            // +z
-            { { 0.5f, 0.5f, 0.5f }, Vector3::Forward, { 0, 1 }, { 1.0f, 1.0f, 1.0f } },         // 0
-            { { 0.5f, -0.5f, 0.5f }, Vector3::Forward, { 0, 0 }, { 1.0f, 1.0f, 1.0f } },        // 4
-            { { -0.5f, 0.5f, 0.5f }, Vector3::Forward, { 1, 1 }, { 1.0f, 1.0f, 1.0f } },        // 3
-            { { -0.5f, -0.5f, 0.5f }, Vector3::Forward, { 1, 0 }, { 1.0f, 1.0f, 1.0f } },       // 7
-
-            // -z
-            { { 0.1f, -0.1f, -0.5f }, Vector3::Backward, { 1, 0 }, { 1.0f, 1.0f, 1.0f } },       // 5
-            { { 0.1f, 0.1f, -0.5f }, Vector3::Backward, { 1, 1 }, { 1.0f, 1.0f, 1.0f } },        // 1
-            { { -0.1f, 0.1f, -0.5f }, Vector3::Backward, { 0, 1 }, { 1.0f, 1.0f, 1.0f } },       // 2
-            { { -0.1f, -0.1f, -0.5f }, Vector3::Backward, { 0, 0 }, { 1.0f, 1.0f, 1.0f } },      // 6
-
-            // -y
-            { { 0.5f, -0.5f, 0.5f }, Vector3::Up, { 1, 0 }, { 1.0f, 1.0f, 1.0f } },        // 4
-            { { 0.1f, -0.1f, -0.5f }, Vector3::Up, { 1, 1 }, { 1.0f, 1.0f, 1.0f } },       // 5
-            { { -0.1f, -0.1f, -0.5f }, Vector3::Up, { 0, 1 }, { 1.0f, 1.0f, 1.0f } },      // 6
-            { { -0.5f, -0.5f, 0.5f }, Vector3::Up, { 0, 0 }, { 1.0f, 1.0f, 1.0f } },        // 7
-        };
-
-        const std::vector<uint32_t> indices
-        {
-            0,  1,  2,  2,  3,  0,  // +y
-            4,  5,  6,  6,  7,  4,  // +x
-            8,  9,  10, 10, 11, 8,  // -x
-            12, 13, 14, 13, 15, 14, // +z
-            16, 17, 18, 18, 19, 16, // -z
-            20, 21, 22, 22, 23, 20  // -y
-        };
-
-        return source(vertices, std::vector<std::vector<uint32_t>>(), indices, std::vector<TransparentTriangle>(), {}, {}, {});
+        std::vector<UniTriangle> triangles;
+        add_rect(triangles, { -0.1f, 0.1f, -0.5f }, { 0.1f, 0.1f, -0.5f }, { 0.5f, 0.5f, 0.5f }, { -0.5f, 0.5f, 0.5f }, Vector3::Down);
+        add_rect(triangles, { 0.1f, -0.1f, -0.5f }, { 0.5f, -0.5f, 0.5f }, { 0.5f, 0.5f, 0.5f }, { 0.1f, 0.1f, -0.5f }, Vector3::Left);
+        add_rect(triangles, { -0.1f, 0.1f, -0.5f }, { -0.5f, 0.5f, 0.5f }, { -0.5f, -0.5f, 0.5f }, { -0.1f, -0.1f, -0.5f }, Vector3::Right);
+        add_rect(triangles, { 0.5f, 0.5f, 0.5f }, { 0.5f, -0.5f, 0.5f }, { -0.5f, -0.5f, 0.5f }, { -0.5f, 0.5f, 0.5f }, Vector3::Forward);
+        add_rect(triangles, { 0.1f, -0.1f, -0.5f }, { 0.1f, 0.1f, -0.5f }, { -0.1f, 0.1f, -0.5f }, { -0.1f, -0.1f, -0.5f }, Vector3::Backward);
+        add_rect(triangles, { 0.5f, -0.5f, 0.5f }, { 0.1f, -0.1f, -0.5f }, { -0.1f, -0.1f, -0.5f }, { -0.5f, -0.5f, 0.5f }, Vector3::Up);
+        return source({}, {}, {}, {}, {}, {}, triangles);
     }
 
     std::shared_ptr<IMesh> create_sphere_mesh(const IMesh::Source& source, uint32_t stacks, uint32_t slices)
