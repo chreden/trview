@@ -1,6 +1,5 @@
 #pragma once
 
-#include "AnimatedTriangle.h"
 #include "TransparentTriangle.h"
 #include "MeshVertex.h"
 #include "Triangle.h"
