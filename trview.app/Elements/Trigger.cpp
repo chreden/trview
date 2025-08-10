@@ -112,7 +112,7 @@ namespace trview
         on_changed();
     }
 
-    void Trigger::set_triangles(const std::vector<UniTriangle>& transparent_triangles)
+    void Trigger::set_triangles(const std::vector<Triangle>& transparent_triangles)
     {
         _mesh = _mesh_source(transparent_triangles);
     }

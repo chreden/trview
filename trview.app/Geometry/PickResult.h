@@ -47,7 +47,7 @@ namespace trview
         bool                         stop{ false };
         std::string                  text;
         bool                         override_centre{ false };
-        UniTriangle                  triangle;
+        Triangle                  triangle;
         std::weak_ptr<IScriptable>   scriptable;
         std::weak_ptr<ISoundSource>  sound_source;
         std::weak_ptr<IItem>         item;

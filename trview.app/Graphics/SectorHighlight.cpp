@@ -41,17 +41,17 @@ namespace trview
                 return;
             }
 
-            std::vector<UniTriangle> out_triangles = triangles |
-                std::views::transform([](auto&& t) -> UniTriangle
+            std::vector<Triangle> out_triangles = triangles |
+                std::views::transform([](auto&& t) -> Triangle
                     {
                         auto c = (t.v1 - t.v0).Cross(t.v2 - t.v0);
                         c.Normalize();
                         return
                         {
-                            .collision_mode = UniTriangle::CollisionMode::Disabled,
+                            .collision_mode = Triangle::CollisionMode::Disabled,
                             .colours = { Highlight_Colour, Highlight_Colour, Highlight_Colour },
                             .normals = { Vector3::Down, Vector3::Down, Vector3::Down },
-                            .texture_mode = UniTriangle::TextureMode::Untextured,
+                            .texture_mode = Triangle::TextureMode::Untextured,
                             .vertices = { t.v0 - c * 0.05f, t.v1 - c * 0.05f, t.v2 - c * 0.05f }
                         };
                     }) | std::ranges::to<std::vector>();

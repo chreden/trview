@@ -11,7 +11,7 @@ namespace trview
     {
         const uint16_t Texture_Mask = 0x3fff;
 
-        void add_rect(std::vector<UniTriangle>& triangles, const Vector3& v0, const Vector3& v1, const Vector3& v2, const Vector3& v3, const Vector3& normal)
+        void add_rect(std::vector<Triangle>& triangles, const Vector3& v0, const Vector3& v1, const Vector3& v2, const Vector3& v3, const Vector3& normal)
         {
             constexpr Vector2 uv0 = { 0, 0 };
             constexpr Vector2 uv1 = { 1, 0 };
@@ -20,23 +20,23 @@ namespace trview
             const Color color = Colour::White;
 
             triangles.push_back(
-                UniTriangle
+                Triangle
                 {
-                    .collision_mode = UniTriangle::CollisionMode::Disabled,
+                    .collision_mode = Triangle::CollisionMode::Disabled,
                     .colours = { color, color, color },
                     .frames = { {.uvs = { uv0, uv1, uv2 } } },
                     .normals = { normal, normal, normal },
-                    .texture_mode = UniTriangle::TextureMode::Untextured,
+                    .texture_mode = Triangle::TextureMode::Untextured,
                     .vertices = { v0, v1, v2 }
                 });
             triangles.push_back(
-                UniTriangle
+                Triangle
                 {
-                    .collision_mode = UniTriangle::CollisionMode::Disabled,
+                    .collision_mode = Triangle::CollisionMode::Disabled,
                     .colours = { color, color, color },
                     .frames = { {.uvs = { uv2, uv3, uv0 } } },
                     .normals = { normal, normal, normal },
-                    .texture_mode = UniTriangle::TextureMode::Untextured,
+                    .texture_mode = Triangle::TextureMode::Untextured,
                     .vertices = { v2, v3, v0 }
                 });
         }
@@ -63,7 +63,7 @@ namespace trview
             Matrix& scale,
             Vector3& offset,
             SpriteOffsetMode offset_mode,
-            UniTriangle::TextureMode texture_mode)
+            Triangle::TextureMode texture_mode)
         {
             // Calculate UVs.
             float u = static_cast<float>(x) / 256.0f;
@@ -75,14 +75,14 @@ namespace trview
             using namespace DirectX::SimpleMath;
 
             const Color colour = Colour::White;
-            const std::vector<UniTriangle> triangles
+            const std::vector<Triangle> triangles
             {
                 {
                     .colours = { colour, colour, colour },
                     .frames = { { .uvs = { Vector2(u + width, v + height), Vector2(u, v + height), Vector2(u + width, v) }, .texture = tile } },
                     .normals = { Vector3::Forward, Vector3::Forward, Vector3::Forward },
                     .texture_mode = texture_mode,
-                    .transparency_mode = UniTriangle::TransparencyMode::Normal,
+                    .transparency_mode = Triangle::TransparencyMode::Normal,
                     .vertices = { Vector3(-0.5f, -0.5f, 0), Vector3(0.5f, -0.5f, 0), Vector3(-0.5f, 0.5f, 0) }
                 },
                 {
@@ -90,7 +90,7 @@ namespace trview
                     .frames = { {.uvs = { Vector2(u + width, v), Vector2(u, v + height), Vector2(u, v) }, .texture = tile } },
                     .normals = { Vector3::Forward, Vector3::Forward, Vector3::Forward },
                     .texture_mode = texture_mode,
-                    .transparency_mode = UniTriangle::TransparencyMode::Normal,
+                    .transparency_mode = Triangle::TransparencyMode::Normal,
                     .vertices = { Vector3(-0.5f, 0.5f, 0), Vector3(0.5f, -0.5f, 0), Vector3(0.5f, 0.5f, 0) }
                 }
             };
@@ -252,7 +252,7 @@ namespace trview
 
     std::shared_ptr<IMesh> create_mesh(const trlevel::tr_mesh& mesh, const IMesh::Source& source, const ILevelTextureStorage& texture_storage, const trlevel::PlatformAndVersion& platform_and_version, bool transparent_collision)
     {
-        std::vector<UniTriangle> triangles;
+        std::vector<Triangle> triangles;
 
         std::vector<trlevel::trview_room_vertex> in_vertices;
         std::ranges::transform(mesh.vertices, std::back_inserter(in_vertices),
@@ -268,7 +268,7 @@ namespace trview
 
     std::shared_ptr<IMesh> create_cube_mesh(const IMesh::Source& source)
     {
-        std::vector<UniTriangle> triangles;
+        std::vector<Triangle> triangles;
         add_rect(triangles, { -0.5, 0.5, -0.5 }, { 0.5, 0.5, -0.5 }, { 0.5, 0.5, 0.5 }, { -0.5, 0.5, 0.5 }, Vector3::Down);
         add_rect(triangles, { 0.5, -0.5, -0.5 }, { 0.5, -0.5, 0.5 }, { 0.5, 0.5, 0.5 }, { 0.5, 0.5, -0.5 }, Vector3::Left);
         add_rect(triangles, { -0.5, -0.5, 0.5 }, { -0.5, -0.5, -0.5 }, { -0.5, 0.5, -0.5 }, { -0.5, 0.5, 0.5 }, Vector3::Right);
@@ -280,7 +280,7 @@ namespace trview
 
     std::shared_ptr<IMesh> create_frustum_mesh(const IMesh::Source& source)
     {
-        std::vector<UniTriangle> triangles;
+        std::vector<Triangle> triangles;
         add_rect(triangles, { -0.1f, 0.1f, -0.5f }, { 0.1f, 0.1f, -0.5f }, { 0.5f, 0.5f, 0.5f }, { -0.5f, 0.5f, 0.5f }, Vector3::Down);
         add_rect(triangles, { 0.1f, -0.1f, -0.5f }, { 0.5f, -0.5f, 0.5f }, { 0.5f, 0.5f, 0.5f }, { 0.1f, 0.1f, -0.5f }, Vector3::Left);
         add_rect(triangles, { -0.1f, 0.1f, -0.5f }, { -0.5f, 0.5f, 0.5f }, { -0.5f, -0.5f, 0.5f }, { -0.1f, -0.1f, -0.5f }, Vector3::Right);
@@ -317,14 +317,14 @@ namespace trview
         }
 
         const Color colour = Colour::White;
-        std::vector<UniTriangle> triangles;
+        std::vector<Triangle> triangles;
         for (uint32_t slice = 0; slice < slices; ++slice)
         {
             triangles.push_back(
                 {
                     .colours = { colour, colour, colour },
                     .normals = { points[0].normal, points[slice + 1].normal, points[slice == slices - 1 ? 1 : slice + 2].normal },
-                    .texture_mode = UniTriangle::TextureMode::Untextured,
+                    .texture_mode = Triangle::TextureMode::Untextured,
                     .vertices = { points[0].pos, points[slice + 1].pos, points[slice == slices - 1 ? 1 : slice + 2].pos }
                 });
         }
@@ -341,7 +341,7 @@ namespace trview
                     {
                         .colours = { colour, colour, colour },
                         .normals = { points[b + slice].normal, points[b + slice + slices].normal, points[b + slices + bottom_right].normal },
-                        .texture_mode = UniTriangle::TextureMode::Untextured,
+                        .texture_mode = Triangle::TextureMode::Untextured,
                         .vertices = { points[b + slice].pos, points[b + slice + slices].pos, points[b + slices + bottom_right].pos }
                     });
 
@@ -349,7 +349,7 @@ namespace trview
                     {
                         .colours = { colour, colour, colour },
                         .normals = { points[b + slice].normal, points[b + slices + bottom_right].normal, points[b + top_right].normal },
-                        .texture_mode = UniTriangle::TextureMode::Untextured,
+                        .texture_mode = Triangle::TextureMode::Untextured,
                         .vertices = { points[b + slice].pos, points[b + slices + bottom_right].pos, points[b + top_right].pos }
                     });
             }
@@ -363,9 +363,9 @@ namespace trview
         if (sprite)
         {
             const auto& s = sprite.value();
-            return create_sprite_mesh(source, s.x + 1, s.y + 1, s.Width - 1, s.Height - 1, s.Tile, s.LeftSide, s.RightSide, s.TopSide, s.BottomSide, scale, offset, offset_mode, UniTriangle::TextureMode::Textured);
+            return create_sprite_mesh(source, s.x + 1, s.y + 1, s.Width - 1, s.Height - 1, s.Tile, s.LeftSide, s.RightSide, s.TopSide, s.BottomSide, scale, offset, offset_mode, Triangle::TextureMode::Textured);
         }
-        return create_sprite_mesh(source, 0, 0, 0, 0, 0, -256, 256, -256, 256, scale, offset, offset_mode, UniTriangle::TextureMode::Untextured);
+        return create_sprite_mesh(source, 0, 0, 0, 0, 0, -256, 256, -256, 256, scale, offset, offset_mode, Triangle::TextureMode::Untextured);
     }
 
     std::shared_ptr<IMesh> create_sprite_mesh(const IMesh::Source& source, const std::optional<trlevel::tr_sprite_texture>& sprite, Matrix& scale, Matrix& offset, SpriteOffsetMode offset_mode)
@@ -380,7 +380,7 @@ namespace trview
         const std::vector<trlevel::tr4_mesh_face4>& rectangles,
         const std::vector<trlevel::trview_room_vertex>& input_vertices,
         const ILevelTextureStorage& texture_storage,
-        std::vector<UniTriangle>& out_triangles,
+        std::vector<Triangle>& out_triangles,
         bool transparent_collision)
     {
         using namespace trlevel;
@@ -428,21 +428,21 @@ namespace trview
 
             const bool double_sided = texture_storage.platform_and_version().platform != Platform::Saturn && (rect.texture & 0x8000);
             const bool animated = texture_storage.is_animated(texture);
-            UniTriangle::TransparencyMode transparency_mode;
+            Triangle::TransparencyMode transparency_mode;
             determine_transparency(
                 version.platform == Platform::Saturn ? rect.effects : texture_storage.attribute(texture),
                 version.platform == Platform::Saturn ? 0 : rect.effects, transparency_mode);
 
             const auto normal = (verts[2] - verts[1]).Cross(verts[1] - verts[0]);
-            auto triangle = UniTriangle
+            auto triangle = Triangle
             {
-                .animation_mode = animated ? UniTriangle::AnimationMode::Swap : UniTriangle::AnimationMode::None,
-                .collision_mode = (transparency_mode == UniTriangle::TransparencyMode::None || transparent_collision) ? UniTriangle::CollisionMode::Enabled : UniTriangle::CollisionMode::Disabled,
+                .animation_mode = animated ? Triangle::AnimationMode::Swap : Triangle::AnimationMode::None,
+                .collision_mode = (transparency_mode == Triangle::TransparencyMode::None || transparent_collision) ? Triangle::CollisionMode::Enabled : Triangle::CollisionMode::Disabled,
                 .colours = { colors[0], colors[1], colors[2] },
-                .frames = { UniTriangle::Frame {.uvs = { uvs[0], uvs[1], uvs[2] }, .texture = texture_storage.tile(texture) }},
+                .frames = { Triangle::Frame {.uvs = { uvs[0], uvs[1], uvs[2] }, .texture = texture_storage.tile(texture) }},
                 .frame_time = animated_texture_frame_time(version),
                 .normals = { normal, normal, normal },
-                .side_mode = double_sided ? UniTriangle::SideMode::Double : UniTriangle::SideMode::Single,
+                .side_mode = double_sided ? Triangle::SideMode::Double : Triangle::SideMode::Single,
                 .transparency_mode = transparency_mode,
                 .vertices = { verts[0], verts[1], verts[2] }
             };
@@ -450,7 +450,7 @@ namespace trview
             if (animated)
             {
                 const auto sequence = texture_storage.animated_texture(static_cast<uint16_t>(texture));
-                triangle.frames = sequence | std::views::transform([&](auto&& e) -> UniTriangle::Frame
+                triangle.frames = sequence | std::views::transform([&](auto&& e) -> Triangle::Frame
                     {
                         return
                         {
@@ -461,15 +461,15 @@ namespace trview
             }
 
             const auto normal2 = (verts[0] - verts[3]).Cross(verts[3] - verts[2]);
-            auto triangle2 = UniTriangle
+            auto triangle2 = Triangle
             {
-                .animation_mode = animated ? UniTriangle::AnimationMode::Swap : UniTriangle::AnimationMode::None,
-                .collision_mode = (transparency_mode == UniTriangle::TransparencyMode::None || transparent_collision) ? UniTriangle::CollisionMode::Enabled : UniTriangle::CollisionMode::Disabled,
+                .animation_mode = animated ? Triangle::AnimationMode::Swap : Triangle::AnimationMode::None,
+                .collision_mode = (transparency_mode == Triangle::TransparencyMode::None || transparent_collision) ? Triangle::CollisionMode::Enabled : Triangle::CollisionMode::Disabled,
                 .colours = { colors[2], colors[3], colors[0] },
-                .frames = { UniTriangle::Frame {.uvs = { uvs[2], uvs[3], uvs[0] }, .texture = texture_storage.tile(texture) }},
+                .frames = { Triangle::Frame {.uvs = { uvs[2], uvs[3], uvs[0] }, .texture = texture_storage.tile(texture) }},
                 .frame_time = animated_texture_frame_time(version),
                 .normals = { normal2, normal2, normal2 },
-                .side_mode = double_sided ? UniTriangle::SideMode::Double : UniTriangle::SideMode::Single,
+                .side_mode = double_sided ? Triangle::SideMode::Double : Triangle::SideMode::Single,
                 .transparency_mode = transparency_mode,
                 .vertices = { verts[2], verts[3], verts[0] }
             };
@@ -477,7 +477,7 @@ namespace trview
             if (animated)
             {
                 const auto sequence = texture_storage.animated_texture(static_cast<uint16_t>(texture));
-                triangle2.frames = sequence | std::views::transform([&](auto&& e) -> UniTriangle::Frame
+                triangle2.frames = sequence | std::views::transform([&](auto&& e) -> Triangle::Frame
                     {
                         return
                         {
@@ -496,7 +496,7 @@ namespace trview
         const std::vector<trlevel::tr4_mesh_face3>& triangles,
         const std::vector<trlevel::trview_room_vertex>& input_vertices,
         const ILevelTextureStorage& texture_storage,
-        std::vector<UniTriangle>& out_triangles,
+        std::vector<Triangle>& out_triangles,
         bool transparent_collision)
     {
         using namespace trlevel;
@@ -544,21 +544,21 @@ namespace trview
 
             const bool double_sided = version.platform != Platform::Saturn && (tri.texture & 0x8000);
             const bool animated = texture_storage.is_animated(texture);
-            UniTriangle::TransparencyMode transparency_mode;
+            Triangle::TransparencyMode transparency_mode;
             determine_transparency(
                 version.platform == Platform::Saturn ? tri.effects : texture_storage.attribute(texture),
                 version.platform == Platform::Saturn ? 0 : tri.effects, transparency_mode);
 
             const auto normal = (verts[2] - verts[1]).Cross(verts[1] - verts[0]);
-            auto triangle = UniTriangle
+            auto triangle = Triangle
             {
-                .animation_mode = animated ? UniTriangle::AnimationMode::Swap : UniTriangle::AnimationMode::None,
-                .collision_mode = (transparency_mode == UniTriangle::TransparencyMode::None || transparent_collision) ? UniTriangle::CollisionMode::Enabled : UniTriangle::CollisionMode::Disabled,
+                .animation_mode = animated ? Triangle::AnimationMode::Swap : Triangle::AnimationMode::None,
+                .collision_mode = (transparency_mode == Triangle::TransparencyMode::None || transparent_collision) ? Triangle::CollisionMode::Enabled : Triangle::CollisionMode::Disabled,
                 .colours = { colors[0], colors[1], colors[2] },
-                .frames = { UniTriangle::Frame {.uvs = { uvs[0], uvs[1], uvs[2] }, .texture = texture_storage.tile(texture) }},
+                .frames = { Triangle::Frame {.uvs = { uvs[0], uvs[1], uvs[2] }, .texture = texture_storage.tile(texture) }},
                 .frame_time = animated_texture_frame_time(version),
                 .normals = { normal, normal, normal },
-                .side_mode = double_sided ? UniTriangle::SideMode::Double : UniTriangle::SideMode::Single,
+                .side_mode = double_sided ? Triangle::SideMode::Double : Triangle::SideMode::Single,
                 .transparency_mode = transparency_mode,
                 .vertices = { verts[0], verts[1], verts[2] }
             };
@@ -566,7 +566,7 @@ namespace trview
             if (animated)
             {
                 const auto sequence = texture_storage.animated_texture(static_cast<uint16_t>(texture));
-                triangle.frames = sequence | std::views::transform([&](auto&& e) -> UniTriangle::Frame
+                triangle.frames = sequence | std::views::transform([&](auto&& e) -> Triangle::Frame
                     {
                         return
                         {
@@ -584,7 +584,7 @@ namespace trview
         const std::vector<trlevel::tr_face4>& rectangles,
         const std::vector<trlevel::trview_room_vertex>& input_vertices,
         const ILevelTextureStorage& texture_storage,
-        std::vector<UniTriangle>& out_triangles,
+        std::vector<Triangle>& out_triangles,
         const trlevel::PlatformAndVersion& platform_and_version)
     {
         for (const auto& rect : rectangles)
@@ -606,8 +606,8 @@ namespace trview
                 {
                     .colours = { colour, colour, colour },
                     .normals = { normal1, normal1, normal1 },
-                    .side_mode = double_sided ? UniTriangle::SideMode::Double : UniTriangle::SideMode::Single,
-                    .texture_mode = UniTriangle::TextureMode::Untextured,
+                    .side_mode = double_sided ? Triangle::SideMode::Double : Triangle::SideMode::Single,
+                    .texture_mode = Triangle::TextureMode::Untextured,
                     .vertices = { verts[0], verts[1], verts[2] }
                 });
 
@@ -616,8 +616,8 @@ namespace trview
                 {
                     .colours = { colour, colour, colour },
                     .normals = { normal2, normal2, normal2 },
-                    .side_mode = double_sided ? UniTriangle::SideMode::Double : UniTriangle::SideMode::Single,
-                    .texture_mode = UniTriangle::TextureMode::Untextured,
+                    .side_mode = double_sided ? Triangle::SideMode::Double : Triangle::SideMode::Single,
+                    .texture_mode = Triangle::TextureMode::Untextured,
                     .vertices = { verts[2], verts[3], verts[0] }
                 });
         }
@@ -627,7 +627,7 @@ namespace trview
         const std::vector<trlevel::tr_face3>& triangles,
         const std::vector<trlevel::trview_room_vertex>& input_vertices,
         const ILevelTextureStorage& texture_storage,
-        std::vector<UniTriangle>& out_triangles,
+        std::vector<Triangle>& out_triangles,
         const trlevel::PlatformAndVersion& platform_and_version)
     {
         for (const auto& tri : triangles)
@@ -648,8 +648,8 @@ namespace trview
                 {
                     .colours = { colour, colour, colour },
                     .normals = { normal, normal, normal },
-                    .side_mode = double_sided ? UniTriangle::SideMode::Double : UniTriangle::SideMode::Single,
-                    .texture_mode = UniTriangle::TextureMode::Untextured,
+                    .side_mode = double_sided ? Triangle::SideMode::Double : Triangle::SideMode::Single,
+                    .texture_mode = Triangle::TextureMode::Untextured,
                     .vertices = { verts[0], verts[1], verts[2] }
                 });
         }

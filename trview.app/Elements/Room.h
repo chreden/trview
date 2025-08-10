@@ -109,7 +109,7 @@ namespace trview
         /// Find any transparent triangles that match floor data geometry.
         /// @param transparent_triangles The transparent triangles in the sector.
         /// @param collision_triangles The collision output vector.
-        void process_collision_transparency(std::vector<UniTriangle>& triangles);
+        void process_collision_transparency(std::vector<Triangle>& triangles);
 
         void generate_all_geometry_mesh(const IMesh::Source& mesh_source);
 

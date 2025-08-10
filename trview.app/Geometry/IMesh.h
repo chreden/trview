@@ -9,7 +9,7 @@ namespace trview
 {
     struct IMesh
     {
-        using Source = std::function<std::shared_ptr<IMesh>(const std::vector<UniTriangle>&)>;
+        using Source = std::function<std::shared_ptr<IMesh>(const std::vector<Triangle>&)>;
 
         virtual ~IMesh() = 0;
 
@@ -26,7 +26,7 @@ namespace trview
             float light_intensity = 1.0f,
             DirectX::SimpleMath::Vector3 light_direction = DirectX::SimpleMath::Vector3::Zero) = 0;
 
-        virtual std::vector<UniTriangle> transparent_triangles() const = 0;
+        virtual std::vector<Triangle> transparent_triangles() const = 0;
 
         virtual void update(float delta) = 0;
 
@@ -91,7 +91,7 @@ namespace trview
         const std::vector<trlevel::tr4_mesh_face4>& rectangles,
         const std::vector<trlevel::trview_room_vertex>& input_vertices,
         const ILevelTextureStorage& texture_storage,
-        std::vector<UniTriangle>& out_triangles,
+        std::vector<Triangle>& out_triangles,
         bool transparent_collision);
 
     /// Convert the textured triangles into collections required to create a mesh.
@@ -107,7 +107,7 @@ namespace trview
         const std::vector<trlevel::tr4_mesh_face3>& triangles,
         const std::vector<trlevel::trview_room_vertex>& input_vertices,
         const ILevelTextureStorage& texture_storage,
-        std::vector<UniTriangle>& out_triangles,
+        std::vector<Triangle>& out_triangles,
         bool transparent_collision = true);
 
     // Convert the coloured rectangles into collections required to create a mesh.
@@ -121,7 +121,7 @@ namespace trview
         const std::vector<trlevel::tr_face4>& rectangles,
         const std::vector<trlevel::trview_room_vertex>& input_vertices,
         const ILevelTextureStorage& texture_storage,
-        std::vector<UniTriangle>& out_triangles,
+        std::vector<Triangle>& out_triangles,
         const trlevel::PlatformAndVersion& platform_and_version);
 
     // Convert the coloured triangles into collections required to create a mesh.
@@ -135,7 +135,7 @@ namespace trview
         const std::vector<trlevel::tr_face3>& triangles,
         const std::vector<trlevel::trview_room_vertex>& input_vertices,
         const ILevelTextureStorage& texture_storage,
-        std::vector<UniTriangle>& out_triangles,
+        std::vector<Triangle>& out_triangles,
         const trlevel::PlatformAndVersion& platform_and_version);
 
     /// Convert the vertex to the scale used by the viewer.

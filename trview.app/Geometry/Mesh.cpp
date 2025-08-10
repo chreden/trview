@@ -13,9 +13,9 @@ namespace trview
             std::swap(trio[0], trio[2]);
         }
 
-        UniTriangle reverse(const UniTriangle& tri)
+        Triangle reverse(const Triangle& tri)
         {
-            UniTriangle copy = tri;
+            Triangle copy = tri;
             reverse(copy.vertices);
             reverse(copy.colours);
             for (auto& f : copy.frames)
@@ -31,14 +31,14 @@ namespace trview
             vertices.push_back(MeshVertex{ .pos = t.vertices[0], .normal = t.normals[0], .uv = t.frames.empty() ? Vector2() : t.frames[0].uvs[0], .colour = t.colours[0] });
             vertices.push_back(MeshVertex{ .pos = t.vertices[1], .normal = t.normals[1], .uv = t.frames.empty() ? Vector2() : t.frames[0].uvs[1], .colour = t.colours[1] });
             vertices.push_back(MeshVertex{ .pos = t.vertices[2], .normal = t.normals[2], .uv = t.frames.empty() ? Vector2() : t.frames[0].uvs[2], .colour = t.colours[2] });
-            auto& target_indices = t.texture_mode == UniTriangle::TextureMode::Textured ? indices[t.frames[0].texture] : untextured;
+            auto& target_indices = t.texture_mode == Triangle::TextureMode::Textured ? indices[t.frames[0].texture] : untextured;
             target_indices.push_back(base);
             target_indices.push_back(base + 1);
             target_indices.push_back(base + 2);
         }
     }
 
-    Mesh::Mesh(const std::shared_ptr<graphics::IDevice>& device, const std::vector<UniTriangle>& triangles, const std::shared_ptr<ITextureStorage>& texture_storage)
+    Mesh::Mesh(const std::shared_ptr<graphics::IDevice>& device, const std::vector<Triangle>& triangles, const std::shared_ptr<ITextureStorage>& texture_storage)
         : _device(device), _texture_storage(texture_storage)
     {
         if (!triangles.empty())
@@ -50,12 +50,12 @@ namespace trview
             // Make everything based off the triangles.
             for (const auto& t : triangles)
             {
-                if (t.animation_mode == UniTriangle::AnimationMode::None)
+                if (t.animation_mode == Triangle::AnimationMode::None)
                 {
-                    if (t.transparency_mode == UniTriangle::TransparencyMode::None)
+                    if (t.transparency_mode == Triangle::TransparencyMode::None)
                     {
                         add_tri(t, out_vertices, mapped_indices, new_untextured_indices);
-                        if (t.side_mode == UniTriangle::SideMode::Double)
+                        if (t.side_mode == Triangle::SideMode::Double)
                         {
                             add_tri(reverse(t), out_vertices, mapped_indices, new_untextured_indices);
                         }
@@ -63,7 +63,7 @@ namespace trview
                     else
                     {
                         _transparent_triangles.push_back(t);
-                        if (t.side_mode == UniTriangle::SideMode::Double)
+                        if (t.side_mode == Triangle::SideMode::Double)
                         {
                             _transparent_triangles.push_back(reverse(t));
                         }
@@ -72,7 +72,7 @@ namespace trview
                 else
                 {
                     _animated_triangles.push_back(t);
-                    if (t.side_mode == UniTriangle::SideMode::Double)
+                    if (t.side_mode == Triangle::SideMode::Double)
                     {
                         _animated_triangles.push_back(reverse(t));
                     }
@@ -83,10 +83,10 @@ namespace trview
                     }
                 }
 
-                if (t.collision_mode == UniTriangle::CollisionMode::Enabled)
+                if (t.collision_mode == Triangle::CollisionMode::Enabled)
                 {
                     _collision_triangles.push_back(t);
-                    if (t.side_mode == UniTriangle::SideMode::Double)
+                    if (t.side_mode == Triangle::SideMode::Double)
                     {
                         _collision_triangles.push_back(reverse(t));
                     }
@@ -150,7 +150,7 @@ namespace trview
         calculate_bounding_box(triangles);
     }
 
-    void Mesh::calculate_bounding_box(const std::vector<UniTriangle>& triangles)
+    void Mesh::calculate_bounding_box(const std::vector<Triangle>& triangles)
     {
         Vector3 minimum(FLT_MAX, FLT_MAX, FLT_MAX);
         Vector3 maximum(-FLT_MAX, -FLT_MAX, -FLT_MAX);
@@ -237,7 +237,7 @@ namespace trview
                         uint32_t triangles_written = 0;
                         for (const auto& triangle : _animated_triangles)
                         {
-                            if (triangle.transparency_mode == UniTriangle::TransparencyMode::None &&
+                            if (triangle.transparency_mode == Triangle::TransparencyMode::None &&
                                 triangle.frames[triangle.current_frame].texture == tex)
                             {
                                 ++triangles_written;
@@ -295,12 +295,12 @@ namespace trview
         }
     }
 
-    std::vector<UniTriangle> Mesh::transparent_triangles() const
+    std::vector<Triangle> Mesh::transparent_triangles() const
     {
         auto transparent_triangles = _transparent_triangles;
         if (!_animated_triangles.empty())
         {
-            transparent_triangles.append_range(_animated_triangles | std::views::filter([](auto&& t) { return t.transparency_mode != UniTriangle::TransparencyMode::None; }));
+            transparent_triangles.append_range(_animated_triangles | std::views::filter([](auto&& t) { return t.transparency_mode != Triangle::TransparencyMode::None; }));
         }
         return transparent_triangles;
     }

@@ -39,7 +39,7 @@ namespace trview
         virtual Colour colour() const = 0;
         virtual std::vector<Command> commands() const = 0;
         virtual void set_colour(const std::optional<Colour>& colour) = 0;
-        virtual void set_triangles(const std::vector<UniTriangle>& triangles) = 0;
+        virtual void set_triangles(const std::vector<Triangle>& triangles) = 0;
         virtual PickResult pick(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& direction) const = 0;
         virtual void set_position(const DirectX::SimpleMath::Vector3& position) = 0;
         virtual DirectX::SimpleMath::Vector3 position() const = 0;

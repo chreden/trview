@@ -384,7 +384,7 @@ namespace trview
 
     void Room::generate_geometry(const IMesh::Source& mesh_source, const trlevel::tr3_room& room)
     {
-        std::vector<UniTriangle> triangles;
+        std::vector<Triangle> triangles;
         process_textured_rectangles(room.data.rectangles, room.data.vertices, *_texture_storage, triangles, false);
         process_textured_triangles(room.data.triangles, room.data.vertices, *_texture_storage, triangles, false);
         process_collision_transparency(triangles);
@@ -645,19 +645,19 @@ namespace trview
                 Vector3(x + 0.5f, y_bottom[3], z + 0.5f)
             };
 
-            std::vector<UniTriangle> triangles;
+            std::vector<Triangle> triangles;
             const Color colour = ITrigger::Trigger_Colour;
 
             const auto add_tri = [&triangles, &colour](const Vector3& v0, const Vector3& v1, const Vector3& v2)
             {
                 const auto normal = (v2 - v1).Cross(v1 - v0);
                 triangles.push_back(
-                    UniTriangle
+                    Triangle
                     {
                         .colours = { colour, colour, colour },
                         .normals { normal, normal, normal },
-                        .texture_mode = UniTriangle::TextureMode::Untextured,
-                        .transparency_mode = UniTriangle::TransparencyMode::Normal,
+                        .texture_mode = Triangle::TextureMode::Untextured,
+                        .transparency_mode = Triangle::TransparencyMode::Normal,
                         .vertices = { v0, v1, v2 }
                     });
             };
@@ -764,7 +764,7 @@ namespace trview
 
     namespace
     {
-        void add_triangle(const ISector::Triangle& tri, std::vector<UniTriangle>& triangles, const Color& color)
+        void add_triangle(const ISector::Triangle& tri, std::vector<Triangle>& triangles, const Color& color)
         {
             triangles.push_back(
                 {
@@ -776,11 +776,11 @@ namespace trview
         }
     }
 
-    void Room::process_collision_transparency(std::vector<UniTriangle>& triangles)
+    void Room::process_collision_transparency(std::vector<Triangle>& triangles)
     {
         for (auto& triangle : triangles)
         {
-            if (triangle.transparency_mode == UniTriangle::TransparencyMode::None)
+            if (triangle.transparency_mode == Triangle::TransparencyMode::None)
             {
                 continue;
             }
@@ -803,7 +803,7 @@ namespace trview
                       { x + 0.5f, corners[3], z + 0.5f },
                       { x - 0.5f, corners[0], z - 0.5f } }))
                 {
-                    triangle.collision_mode = UniTriangle::CollisionMode::Enabled;
+                    triangle.collision_mode = Triangle::CollisionMode::Enabled;
                     // A triangle can only match in one sector, so stop after adding it once.
                     break;
                 }
@@ -1005,7 +1005,7 @@ namespace trview
 
         struct MeshPart
         {
-            std::vector<UniTriangle> triangles;
+            std::vector<Triangle> triangles;
         };
 
         std::unordered_map<uint32_t, MeshPart> mesh_parts;

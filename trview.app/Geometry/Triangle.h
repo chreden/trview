@@ -4,10 +4,7 @@
 
 namespace trview
 {
-    /// <summary>
-    /// The triangle that does it all.
-    /// </summary>
-    struct UniTriangle
+    struct Triangle
     {
         enum class AnimationMode
         {
@@ -62,7 +59,7 @@ namespace trview
 
         DirectX::SimpleMath::Vector3 normal() const;
         DirectX::SimpleMath::Vector3 position() const;
-        UniTriangle transform(const DirectX::SimpleMath::Matrix& matrix, const DirectX::SimpleMath::Color& colour_override, bool use_colour_override) const;
+        Triangle transform(const DirectX::SimpleMath::Matrix& matrix, const DirectX::SimpleMath::Color& colour_override, bool use_colour_override) const;
         mutable std::optional<DirectX::SimpleMath::Vector3> calculated_position;
     };
 
@@ -71,5 +68,5 @@ namespace trview
     // attribute: The texture attribute value.
     // effects: The face effects value.
     // Returns: True if the face is transparent. If this is false, out is not set.
-    bool determine_transparency(uint16_t attribute, uint16_t effects, UniTriangle::TransparencyMode& out);
+    bool determine_transparency(uint16_t attribute, uint16_t effects, Triangle::TransparencyMode& out);
 }

@@ -231,13 +231,13 @@ namespace trview
         }
 
         const Color colour = Colour::White;
-        std::vector<UniTriangle> triangles;
+        std::vector<Triangle> triangles;
         for (auto t = 0; t < indices.size(); t += 3)
         {
             triangles.push_back(
                 {
                     .colours = { colour, colour, colour },
-                    .texture_mode = UniTriangle::TextureMode::Untextured,
+                    .texture_mode = Triangle::TextureMode::Untextured,
                     .vertices = { vertices[indices[t]], vertices[indices[t + 1]], vertices[indices[t + 2]] }
                 });
         }
