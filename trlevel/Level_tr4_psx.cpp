@@ -994,7 +994,7 @@ namespace trlevel
 
         skip(file, 2); // TODO: Figure out
 
-        read_animated_textures(activity, file, callbacks);
+        _animated_textures = read_animated_textures(activity, file, callbacks);
         _entities = read_entities(activity, file, callbacks);
         read<int32_t>(file); // horizon colour
         read_room_textures_tr3_psx(file, activity, callbacks);

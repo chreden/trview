@@ -459,9 +459,6 @@ namespace trview
                         };
                     }) | std::ranges::to<std::vector>();
             }
-            else if (animation_mode == Triangle::AnimationMode::UV)
-            {
-            }
 
             const auto normal2 = (verts[0] - verts[3]).Cross(verts[3] - verts[2]);
             auto triangle2 = Triangle
@@ -488,9 +485,6 @@ namespace trview
                             .texture = texture_storage.tile(e)
                         };
                     }) | std::ranges::to<std::vector>();
-            }
-            else if (animation_mode == Triangle::AnimationMode::UV)
-            {
             }
 
             out_triangles.push_back(triangle);
@@ -580,9 +574,6 @@ namespace trview
                             .texture = texture_storage.tile(e)
                         };
                     }) | std::ranges::to<std::vector>();
-            }
-            else if (animation_mode == Triangle::AnimationMode::UV)
-            {
             }
 
             out_triangles.push_back(triangle);
