@@ -227,17 +227,14 @@ namespace trview
             ++sequence_index;
         }
 
-        // TODO: Make tiles for the animated textures.
         for (auto& uv_texture : _animated_uv_textures)
         {
             const auto& object_texture = _object_textures[uv_texture.first];
             const auto& tile = _opaque_tiles[object_texture.TileAndFlag & 0x7FFF];
 
-            // TODO:
             // 1. Copy the contents of the object texture to new texture.
             auto source_texture = tile.texture();
 
-            // TODO: Actually get these coords from somewhere.
             D3D11_BOX box = to_box(object_texture);
             const uint32_t width = box.right - box.left;
             const uint32_t height = box.bottom - box.top;
@@ -255,7 +252,7 @@ namespace trview
 
             _device->context()->CopySubresourceRegion(dest_resource.Get(), 0, 0, 0, 0, source_resource.Get(), 0, &box);
 
-            // 2. Store altered UVs (or calculate?)
+            // 2. Store altered UVs
             // 3. Map object texture to new tile number
             trlevel::tr_object_texture remapped_texture = object_texture;
             for (auto& v : remapped_texture.Vertices)

@@ -125,25 +125,6 @@ namespace trlevel
             }
             return 70;
         }
-
-        std::vector<std::vector<int16_t>> read_animated_textures_tr5_psx(trview::Activity& activity, std::basic_ispanstream<uint8_t>& file, const ILevel::LoadCallbacks& callbacks)
-        {
-            callbacks.on_progress("Reading animated textures");
-            log_file(activity, file, "Reading animated textures");
-
-            // skip(file, 4); // word count
-
-            std::vector<std::vector<int16_t>> textures;
-            int16_t num_animated_texture_sequences = read<int16_t>(file);
-            for (int16_t t = 0; t < num_animated_texture_sequences; ++t)
-            {
-                int16_t num_texture_ids = read<int16_t>(file) + 1;
-                textures.push_back(read_vector<int16_t>(file, num_texture_ids));
-            }
-
-            log_file(activity, file, std::format("Read {} animated textures sequences", textures.size()));
-            return textures;
-        }
     }
 
     void Level::read_sound_map_tr5_psx(std::basic_ispanstream<uint8_t>& file, const tr4_psx_level_info& info, trview::Activity& activity, const LoadCallbacks& callbacks)
@@ -194,10 +175,7 @@ namespace trlevel
         skip(file, info.dispatches_size);
         skip(file, info.commands_size);
         _meshtree = read_meshtree(activity, file, info, callbacks);
-        skip(file, info.animated_texture_length);
-        // auto x = file.tellg();
-        // _animated_textures = read_animated_textures_tr5_psx(activity, file, callbacks);
-        // x = file.tellg();
+        _animated_textures = read_animated_textures_tr4_psx(activity, file, info, callbacks);
         _object_textures_psx = read_object_textures(activity, file, info, callbacks);
         skip(file, info.sprite_info_length);
         adjust_room_textures_psx();

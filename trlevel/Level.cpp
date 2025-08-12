@@ -950,6 +950,14 @@ namespace trlevel
                 face.texture += static_cast<uint16_t>(_object_textures_psx.size());
             }
         }
+
+        for (auto& sequence : _animated_textures)
+        {
+            for (auto& tex : sequence)
+            {
+                tex += static_cast<int16_t>(_object_textures_psx.size());
+            }
+        }
     }
 
     void Level::adjust_room_textures()
