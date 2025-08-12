@@ -80,7 +80,7 @@ namespace trview
         /// Render the current scene.
         /// @param camera The current camera.
         /// @param render_selection Whether to render selection highlights on selected items.
-        virtual void render(const ICamera& camera, bool render_selection, float elapsed) = 0;
+        virtual void render(const ICamera& camera, bool render_selection) = 0;
         /// Render the transparent triangles in the scene.
         /// @param camera The current camera.
         virtual void render_transparency(const ICamera& camera) = 0;

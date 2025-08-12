@@ -889,7 +889,7 @@ namespace trview
     {
         if (auto level = _level.lock())
         {
-            level->render(*_camera, _show_selection, _timer.elapsed());
+            level->render(*_camera, _show_selection);
             auto texture_storage = level->texture_storage();
 
             _sector_highlight->render(*_camera);

@@ -265,10 +265,8 @@ namespace trview
         return _platform_and_version.platform;
     }
 
-    void Level::render(const ICamera& camera, bool render_selection, float elapsed)
+    void Level::render(const ICamera& camera, bool render_selection)
     {
-        elapsed;
-
         using namespace DirectX;
 
         auto context = _device->context();

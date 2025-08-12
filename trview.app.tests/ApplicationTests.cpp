@@ -1061,3 +1061,14 @@ TEST(Application, OnStaticMeshSelected)
     EXPECT_CALL(windows, select(A<const std::weak_ptr<IStaticMesh>&>())).Times(1);
     windows.on_static_selected(static_mesh);
 }
+
+TEST(Application, LevelUpdated)
+{
+    auto level = mock_shared<trview::mocks::MockLevel>();
+    EXPECT_CALL(*level, update).Times(1);
+
+    auto application = register_test_module()
+        .build();
+    application->set_current_level(level, ILevel::OpenMode::Full, false);
+    application->render();
+}

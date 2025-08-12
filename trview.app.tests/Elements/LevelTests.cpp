@@ -328,7 +328,7 @@ TEST(Level, BoundingBoxesNotRenderedWhenDisabled)
         .build();
 
     NiceMock<MockCamera> camera;
-    level->render(camera, false, 0.0f);
+    level->render(camera, false);
 }
 
 TEST(Level, BoundingBoxesRenderedWhenEnabled)
@@ -359,7 +359,7 @@ TEST(Level, BoundingBoxesRenderedWhenEnabled)
     level->set_show_bounding_boxes(true);
 
     NiceMock<MockCamera> camera;
-    level->render(camera, false, 0.0f);
+    level->render(camera, false);
 }
 
 TEST(Level, SetShowBoundingBoxesRaisesLevelChangedEvent)
@@ -403,7 +403,7 @@ TEST(Level, ItemsNotRenderedWhenDisabled)
     level->set_show_items(false);
 
     NiceMock<MockCamera> camera;
-    level->render(camera, false, 0.0f);
+    level->render(camera, false);
 }
 
 TEST(Level, ItemsRenderedWhenEnabled)
@@ -435,7 +435,7 @@ TEST(Level, ItemsRenderedWhenEnabled)
     level->set_alternate_mode(true);
 
     NiceMock<MockCamera> camera;
-    level->render(camera, false, 0.0f);
+    level->render(camera, false);
 }
 
 TEST(Level, RoomNotRenderedWhenNotVisible)
@@ -467,7 +467,7 @@ TEST(Level, RoomNotRenderedWhenNotVisible)
     level->set_alternate_mode(true);
 
     NiceMock<MockCamera> camera;
-    level->render(camera, false, 0.0f);
+    level->render(camera, false);
 }
 
 TEST(Level, SelectedItem)
@@ -750,7 +750,7 @@ TEST(Level, CameraSinksNotRenderedWhenDisabled)
     level->set_show_camera_sinks(false);
 
     NiceMock<MockCamera> camera;
-    level->render(camera, false, 0.0f);
+    level->render(camera, false);
 }
 
 TEST(Level, CameraSinksRenderedWhenEnabled)
@@ -783,7 +783,7 @@ TEST(Level, CameraSinksRenderedWhenEnabled)
 
     level->set_alternate_mode(true);
     level->set_show_camera_sinks(true);
-    level->render(camera, false, 0.0f);
+    level->render(camera, false);
 }
 
 TEST(Level, SetShowLightingRaisesLevelChangedEvent)
@@ -855,4 +855,26 @@ TEST(Level, SetShowSoundSourcesRaisesLevelChangedEvent)
 
     level->set_show_sound_sources(true);
     ASSERT_EQ(raised, true);
+}
+
+TEST(Level, RoomUpdated)
+{
+    auto [mock_level_ptr, mock_level] = create_mock<trlevel::mocks::MockLevel>();
+    EXPECT_CALL(mock_level, get_version).WillRepeatedly(Return(LevelVersion::Tomb4));
+    EXPECT_CALL(mock_level, num_rooms()).WillRepeatedly(Return(1));
+
+    auto room = mock_shared<MockRoom>();
+    EXPECT_CALL(*room, update(1.0f)).Times(1);
+
+    int room_called = 0;
+    auto level = register_test_module().with_level(std::move(mock_level_ptr))
+        .with_room_source(
+            [&](auto&&...)
+            {
+                ++room_called;
+                return room;
+            }).build();
+
+    ASSERT_EQ(room_called, 1);
+    level->update(1.0f);
 }
