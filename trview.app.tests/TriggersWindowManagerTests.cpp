@@ -122,20 +122,6 @@ TEST(TriggersWindowManager, TriggerSelectedEventRaised)
     ASSERT_EQ(raised_trigger.value().lock(), trigger);
 }
 
-TEST(TriggersWindowManager, SceneChangedEventRaised)
-{
-    auto manager = register_test_module().build();
-
-    bool raised = false;
-    auto token = manager->on_scene_changed += [&raised]() { raised = true; };
-
-    auto created_window = manager->create_window().lock();
-    ASSERT_NE(created_window, nullptr);
-
-    created_window->on_scene_changed();
-    ASSERT_TRUE(raised);
-}
-
 TEST(TriggersWindowManager, AddToRouteEventRaised)
 {
     auto manager = register_test_module().build();

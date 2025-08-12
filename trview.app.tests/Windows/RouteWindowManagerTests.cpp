@@ -94,20 +94,6 @@ TEST(RouteWindowManager, RandomizerSettingsPassedToNewWindow)
     manager->create_window();
 }
 
-TEST(RouteWindowManager, OnSceneChangedEventRaised)
-{
-    auto mock_window = mock_shared<MockRouteWindow>();
-    auto manager = register_test_module().with_window_source([&](auto&&...) { return mock_window; }).build();
-
-    bool raised = false;
-    auto token = manager->on_scene_changed += [&]() { raised = true; };
-
-    manager->create_window();
-    mock_window->on_scene_changed();
-
-    ASSERT_TRUE(raised);
-}
-
 TEST(RouteWindowManager, OnWindowCreatedEventRaised)
 {
     auto manager = register_test_module().build();

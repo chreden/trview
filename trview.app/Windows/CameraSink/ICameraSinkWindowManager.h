@@ -22,7 +22,6 @@ namespace trview
         Event<std::weak_ptr<ICameraSink>> on_camera_sink_selected;
         Event<std::weak_ptr<IFlybyNode>> on_flyby_node_selected;
         Event<std::weak_ptr<ITrigger>> on_trigger_selected;
-        Event<> on_scene_changed;
         Event<UserSettings> on_settings;
     };
 }

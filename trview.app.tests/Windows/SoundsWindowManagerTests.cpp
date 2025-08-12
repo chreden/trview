@@ -43,18 +43,14 @@ TEST(SoundsWindowManager, EventsForwarded)
     auto window = mock_shared<MockSoundsWindow>();
     auto manager = register_test_module().with_window_source([&]() { return window; }).build();
 
-    bool scene_changed = false;
-    auto t1 = manager->on_scene_changed += capture_called(scene_changed);
     std::shared_ptr<ISoundSource> raised;
     auto t2 = manager->on_sound_source_selected += capture(raised);
 
     manager->create_window();
 
     auto sound_source = mock_shared<MockSoundSource>();
-    window->on_scene_changed();
     window->on_sound_source_selected(sound_source);
 
-    ASSERT_EQ(scene_changed, true);
     ASSERT_EQ(raised, sound_source);
 }
 

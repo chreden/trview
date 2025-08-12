@@ -39,7 +39,6 @@ namespace trview
             MOCK_METHOD(void, render_ui, (), (override));
             MOCK_METHOD(void, set_target, (const DirectX::SimpleMath::Vector3&), (override));
             MOCK_METHOD(DirectX::SimpleMath::Vector3, target, (), (const, override));
-            MOCK_METHOD(void, set_scene_changed, (), (override));
             MOCK_METHOD(std::weak_ptr<ILevel>, level, (), (const, override));
         };
     }

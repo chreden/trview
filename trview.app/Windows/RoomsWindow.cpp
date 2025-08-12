@@ -334,10 +334,7 @@ namespace trview
                 std::views::transform([](auto&& room) { return room.lock(); }) |
                 std::ranges::to<std::vector>();
 
-            if (_auto_hider.apply(_all_rooms, filtered_rooms, _filters))
-            {
-                on_scene_changed();
-            }
+            _auto_hider.apply(_all_rooms, filtered_rooms, _filters);
 
             ImGui::SameLine();
             _filters.render_settings();

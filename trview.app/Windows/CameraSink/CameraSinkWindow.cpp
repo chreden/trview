@@ -279,10 +279,7 @@ namespace trview
                 std::views::transform([](auto&& cs) { return cs.lock(); }) |
                 std::ranges::to<std::vector>();
 
-            if (_auto_hider.apply(_all_camera_sinks, filtered_camera_sinks, _filters))
-            {
-                on_scene_changed();
-            }
+            _auto_hider.apply(_all_camera_sinks, filtered_camera_sinks, _filters);
 
             RowCounter counter{ "camera/sink", _all_camera_sinks.size() };
             _filters.render_table(filtered_camera_sinks, _all_camera_sinks, _selected_camera_sink, counter,
@@ -309,13 +306,11 @@ namespace trview
                 if (ImGui::Selectable("Camera##type", &camera_selected))
                 {
                     selected->set_type(ICameraSink::Type::Camera);
-                    on_scene_changed();
                 }
                 bool sink_selected = selected->type() == ICameraSink::Type::Sink;
                 if (ImGui::Selectable("Sink##type", &sink_selected))
                 {
                     selected->set_type(ICameraSink::Type::Sink);
-                    on_scene_changed();
                 }
                 ImGui::EndCombo();
             }

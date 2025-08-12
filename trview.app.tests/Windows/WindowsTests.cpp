@@ -177,19 +177,14 @@ TEST(Windows, CameraSinkEventsForwarded)
     std::shared_ptr<ITrigger> raised_trigger;
     store += windows->on_trigger_selected += capture(raised_trigger);
 
-    bool raised = false;
-    store += windows->on_scene_changed += capture_called(raised);
-
     auto camera = mock_shared<MockCameraSink>();
     auto trigger = mock_shared<MockTrigger>();
 
     camera_sinks.on_camera_sink_selected(camera);
     camera_sinks.on_trigger_selected(trigger);
-    camera_sinks.on_scene_changed();
 
     ASSERT_EQ(raised_camera, camera);
     ASSERT_EQ(raised_trigger, trigger);
-    ASSERT_EQ(raised, true);
 }
 
 TEST(Windows, CameraSinkStartup)
@@ -223,21 +218,16 @@ TEST(Windows, ItemsEventsForwarded)
     std::shared_ptr<ITrigger> raised_trigger;
     store += windows->on_trigger_selected += capture(raised_trigger);
 
-    bool raised = false;
-    store += windows->on_scene_changed += capture_called(raised);
-
     auto item = mock_shared<MockItem>();
     auto trigger = mock_shared<MockTrigger>();
 
     items.on_add_to_route(item);
     items.on_item_selected(item);
     items.on_trigger_selected(trigger);
-    items.on_scene_changed();
 
     ASSERT_EQ(raised_waypoint, waypoint);
     ASSERT_EQ(raised_item, item);
     ASSERT_EQ(raised_trigger, trigger);
-    ASSERT_EQ(raised, true);
 }
 
 TEST(Windows, ItemsStartup)
@@ -259,17 +249,12 @@ TEST(Windows, LightsEventsForwarded)
     std::shared_ptr<ILight> raised_light;
     store += windows->on_light_selected += [&](auto s) { raised_light = s.lock(); };
 
-    bool raised = false;
-    store += windows->on_scene_changed += [&]() { raised = true; };
-
     auto light = mock_shared<MockLight>();
     auto trigger = mock_shared<MockTrigger>();
 
     lights.on_light_selected(light);
-    lights.on_scene_changed();
 
     ASSERT_EQ(raised_light, light);
-    ASSERT_EQ(raised, true);
 }
 
 TEST(Windows, OnNgPlusForwarded)
@@ -319,8 +304,6 @@ TEST(Windows, RoomsEventsForwarded)
     store += windows->on_light_selected += capture(raised_light);
     std::shared_ptr<IRoom> raised_room;
     store += windows->on_room_selected += capture(raised_room);
-    bool scene_changed = false;
-    store += windows->on_scene_changed += capture_called(scene_changed);
     std::shared_ptr<ISector> raised_sector;
     store += windows->on_sector_hover += capture(raised_sector);
     std::shared_ptr<IStaticMesh> raised_static;
@@ -340,8 +323,6 @@ TEST(Windows, RoomsEventsForwarded)
     auto room = mock_shared<MockRoom>();
     rooms.on_room_selected(room);
 
-    rooms.on_scene_changed();
-
     auto sector = mock_shared<MockSector>();
     rooms.on_sector_hover(sector);
 
@@ -355,7 +336,6 @@ TEST(Windows, RoomsEventsForwarded)
     ASSERT_EQ(raised_item, item);
     ASSERT_EQ(raised_light, light);
     ASSERT_EQ(raised_room, room);
-    ASSERT_EQ(scene_changed, true);
     ASSERT_EQ(raised_sector, sector);
     ASSERT_EQ(raised_static, static_mesh);
     ASSERT_EQ(raised_trigger, trigger);
@@ -382,8 +362,6 @@ TEST(Windows, RouteEventsForwarded)
     store += route.on_waypoint_selected += capture(raised_waypoint);
     std::shared_ptr<IItem> raised_item;
     store += route.on_item_selected += capture(raised_item);
-    bool scene_changed = false;
-    store += route.on_scene_changed += capture_called(scene_changed);
     std::shared_ptr<ITrigger> raised_trigger;
     store += route.on_trigger_selected += capture(raised_trigger);
     bool route_open = false;
@@ -405,7 +383,6 @@ TEST(Windows, RouteEventsForwarded)
     route.on_waypoint_selected(waypoint);
     auto item = mock_shared<MockItem>();
     route.on_item_selected(item);
-    route.on_scene_changed();
     auto trigger = mock_shared<MockTrigger>();
     route.on_trigger_selected(trigger);
     route.on_route_open();
@@ -418,7 +395,6 @@ TEST(Windows, RouteEventsForwarded)
 
     ASSERT_EQ(raised_waypoint, waypoint);
     ASSERT_EQ(raised_item, item);
-    ASSERT_EQ(scene_changed, true);
     ASSERT_EQ(raised_trigger, trigger);
     ASSERT_EQ(route_open, true);
     ASSERT_EQ(route_reload, true);
@@ -729,16 +705,10 @@ TEST(Windows, SoundsEventsForwarded)
     std::shared_ptr<ISoundSource> raised_sound_source;
     auto t1 = windows->on_sound_source_selected += capture(raised_sound_source);
 
-    bool raised = false;
-    auto t2 = windows->on_scene_changed += capture_called(raised);
-
     auto sound_source = mock_shared<MockSoundSource>();
     sounds.on_sound_source_selected(sound_source);
 
-    sounds.on_scene_changed();
-
     ASSERT_EQ(raised_sound_source, sound_source);
-    ASSERT_EQ(raised, true);
 }
 
 TEST(Windows, StaticsEventsForwarded)
@@ -786,8 +756,6 @@ TEST(Windows, TriggersEventsForwarded)
     store += windows->on_waypoint_selected += capture(raised_waypoint);
     std::shared_ptr<ICameraSink> raised_camera_sink;
     store += windows->on_camera_sink_selected += capture(raised_camera_sink);
-    bool raised = false;
-    store += windows->on_scene_changed += capture_called(raised);
 
     auto item = mock_shared<MockItem>();
     auto trigger = mock_shared<MockTrigger>();
@@ -796,13 +764,11 @@ TEST(Windows, TriggersEventsForwarded)
     triggers.on_add_to_route(trigger);
     triggers.on_item_selected(item);
     triggers.on_trigger_selected(trigger);
-    triggers.on_scene_changed();
     triggers.on_camera_sink_selected(camera_sink);
 
     ASSERT_EQ(raised_item, item);
     ASSERT_EQ(raised_trigger, trigger);
     ASSERT_EQ(raised_waypoint, waypoint);
-    ASSERT_EQ(raised, true);
     ASSERT_EQ(raised_camera_sink, camera_sink);
 }
 

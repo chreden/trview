@@ -27,7 +27,6 @@ namespace trview
         /// Event raised when a light is selected in the list.
         /// </summary>
         Event<std::weak_ptr<ILight>> on_light_selected;
-        Event<> on_scene_changed;
         Event<UserSettings> on_settings;
     };
 }

@@ -307,9 +307,6 @@ void register_triggers_window_tests(ImGuiTestEngine* engine)
             auto& context = ctx->GetVars<TriggersWindowContext>();
             context.ptr = register_test_module().build();
 
-            bool raised = false;
-            auto token = context.ptr->on_scene_changed += [&raised]() { raised = true; };
-
             auto trigger = mock_shared<MockTrigger>()->with_updating_visible(true);
             context.triggers = { trigger };
             context.ptr->set_triggers({ trigger });
@@ -317,7 +314,6 @@ void register_triggers_window_tests(ImGuiTestEngine* engine)
 
             ctx->ItemCheck("/**/##hide-0");
 
-            IM_CHECK_EQ(raised, true);
             IM_CHECK_EQ(Mock::VerifyAndClearExpectations(trigger.get()), true);
         });
 }

@@ -20,7 +20,6 @@ namespace trview
         virtual void set_settings(const UserSettings& settings) = 0;
 
         Event<std::weak_ptr<ILight>> on_light_selected;
-        Event<> on_scene_changed;
         Event<UserSettings> on_settings;
     };
 }

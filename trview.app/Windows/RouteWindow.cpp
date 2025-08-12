@@ -182,7 +182,6 @@ namespace trview
             if (move_from && move_to)
             {
                 route->move(move_from.value(), move_to.value());
-                on_scene_changed();
                 if (selected_index == move_from.value())
                 {
                     on_waypoint_selected(_selected_waypoint);
@@ -253,7 +252,6 @@ namespace trview
                     if (ImGui::DragScalarN("Position", ImGuiDataType_S32, pos_value, 3))
                     {
                         waypoint->set_position(Vector3(static_cast<float>(pos_value[0]), static_cast<float>(pos_value[1]), static_cast<float>(pos_value[2])) / trlevel::Scale);
-                        on_scene_changed();
                     }
 
                     if (ImGui::BeginPopupContextItem("Position"))
@@ -325,7 +323,6 @@ namespace trview
                     {
                         route->remove(waypoint);
                         on_waypoint_selected(route->waypoint(route->selected_waypoint()));
-                        on_scene_changed();
                     }
                     else
                     {
@@ -634,13 +631,11 @@ namespace trview
                 if (ImGui::ColorEdit3("Route##colour", &colour.r, ImGuiColorEditFlags_NoInputs))
                 {
                     route->set_colour(colour);
-                    on_scene_changed();
                 }
                 auto waypoint_colour = route ? route->waypoint_colour() : Colour::White;
                 if (ImGui::ColorEdit3("Waypoint##colour", &waypoint_colour.r, ImGuiColorEditFlags_NoInputs))
                 {
                     route->set_waypoint_colour(waypoint_colour);
-                    on_scene_changed();
                 }
                 bool route_line = route->show_route_line();;
                 if (ImGui::Checkbox("Route Line", &route_line))

@@ -136,10 +136,7 @@ namespace trview
                     }) |
                 std::ranges::to<std::vector>();
 
-            if (_auto_hider.apply(_all_items, filtered_items, _filters))
-            {
-                on_scene_changed();
-            }
+            _auto_hider.apply(_all_items, filtered_items, _filters);
 
             ImGui::SameLine();
             _filters.render_settings();

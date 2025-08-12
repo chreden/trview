@@ -60,7 +60,6 @@ namespace trview
         Event<std::weak_ptr<IWaypoint>> on_waypoint_selected;
         Event<std::weak_ptr<ISector>> on_sector_selected;
         Event<> on_route_window_created;
-        Event<> on_scene_changed;
         Event<UserSettings> on_settings;
     };
 }

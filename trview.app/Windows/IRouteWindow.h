@@ -24,8 +24,6 @@ namespace trview
         /// Event raised when a trigger is selected.
         Event<std::weak_ptr<ITrigger>> on_trigger_selected;
 
-        Event<> on_scene_changed;
-
         /// Event raised when a route file is opened.
         Event<> on_route_open;
 
