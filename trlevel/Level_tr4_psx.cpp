@@ -228,13 +228,11 @@ namespace trlevel
         log_file(activity, file, "Reading animated textures");
 
         const auto start = file.tellg();
-
         std::vector<std::vector<int16_t>> textures;
-        int16_t num_texture_ids = read<int16_t>(file);
-        while (num_texture_ids > 0)
+        for (uint16_t index = 0; index < info.num_animated_textures; ++index)
         {
-            textures.push_back(read_vector<int16_t>(file, num_texture_ids + 1));
-            num_texture_ids = read<int16_t>(file);
+            int16_t num_texture_ids = read<int16_t>(file) + 1;
+            textures.push_back(read_vector<int16_t>(file, num_texture_ids));
         }
 
         file.seekg(static_cast<std::size_t>(start) + info.animated_texture_length);
@@ -746,6 +744,7 @@ namespace trlevel
         skip(file, info.commands_size);
         _meshtree = read_meshtree(activity, file, info, callbacks);
         _animated_textures = read_animated_textures_tr4_psx(activity, file, info, callbacks);;
+        _animated_texture_uv_count = info.num_animated_uv_ranges;
         _object_textures_psx = read_object_textures(activity, file, info, callbacks);
         skip(file, info.sprite_info_length);
         adjust_room_textures_psx();
@@ -795,7 +794,9 @@ namespace trlevel
             uint16_t num_rooms;
             uint8_t  unknown_1[2];
             uint16_t num_items;
-            uint8_t  unknown_2[8];
+            uint16_t num_animated_textures;
+            uint16_t num_animated_uv_ranges;
+            uint32_t room_data_size;
             uint32_t floor_data_size;
             uint32_t outside_room_size;
             uint32_t bounding_boxes_size;
@@ -843,6 +844,8 @@ namespace trlevel
         {
             .num_rooms = opsm_info.num_rooms,
             .num_items = opsm_info.num_items,
+            .num_animated_textures = opsm_info.num_animated_textures,
+            .num_animated_uv_ranges = opsm_info.num_animated_uv_ranges,
             .floor_data_size = opsm_info.floor_data_size,
             .outside_room_size = opsm_info.outside_room_size,
             .bounding_boxes_size = opsm_info.bounding_boxes_size,
@@ -911,7 +914,8 @@ namespace trlevel
         info.frames_offset = static_cast<uint32_t>(file.tellg());
         _frames = read_frames(activity, file, start, info, callbacks);
 
-        skip(file, info.animated_texture_length);
+        _animated_textures = read_animated_textures_tr4_psx(activity, file, info, callbacks);
+        _animated_texture_uv_count = info.num_animated_uv_ranges;
 
         _object_textures_psx = read_object_textures(activity, file, info, callbacks);
         skip(file, info.sprite_info_length);
