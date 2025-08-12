@@ -385,15 +385,6 @@ namespace trview
                     }
                 }
             }
-            else if (triangle.animation_mode == Triangle::AnimationMode::UV)
-            {
-                if (!triangle.frames.empty())
-                {
-                    triangle.frames[triangle.current_frame].uvs[0].y -= delta * 3.5f;
-                    triangle.frames[triangle.current_frame].uvs[1].y -= delta * 3.5f;
-                    triangle.frames[triangle.current_frame].uvs[2].y -= delta * 3.5f;
-                }
-            }
         }
     }
 }

@@ -297,12 +297,6 @@ namespace trview
         {
             return Triangle::AnimationMode::Swap;
         }
-
-        if (_animated_uv_textures.find(texture_index) != _animated_uv_textures.end())
-        {
-            return Triangle::AnimationMode::UV;
-        }
-
         return Triangle::AnimationMode::None;
     }
 
