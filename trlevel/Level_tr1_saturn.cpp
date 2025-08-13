@@ -856,6 +856,13 @@ namespace trlevel
                 if (face.effects)
                 {
                     transparent_room_object_textures.insert(face.texture & 0xFFF);
+                    for (const auto& animated_sequence : _animated_textures)
+                    {
+                        if (std::ranges::find(animated_sequence, face.texture & 0xFFF) != animated_sequence.end())
+                        {
+                            transparent_room_object_textures.insert_range(animated_sequence);
+                        }
+                    }
                 }
             }
 
@@ -865,6 +872,13 @@ namespace trlevel
                 if (face.effects)
                 {
                     transparent_room_object_textures.insert(face.texture & 0xFFF);
+                    for (const auto& animated_sequence : _animated_textures)
+                    {
+                        if (std::ranges::find(animated_sequence, face.texture & 0xFFF) != animated_sequence.end())
+                        {
+                            transparent_room_object_textures.insert_range(animated_sequence);
+                        }
+                    }
                 }
             }
         }
