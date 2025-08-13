@@ -69,7 +69,7 @@ namespace trlevel
         const auto boxes = read_boxes(activity, file, callbacks);
         read_overlaps(activity, file, callbacks);
         read_zones(activity, file, callbacks, static_cast<uint32_t>(boxes.size()));
-        read_animated_textures(activity, file, callbacks);
+        _animated_textures = read_animated_textures(activity, file, callbacks);
         _object_textures = read_object_textures_tr1_3(activity, file, callbacks);
         _entities = read_entities(activity, file, callbacks);
         read_light_map(activity, file, callbacks);

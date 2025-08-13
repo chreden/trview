@@ -17,8 +17,6 @@ namespace trview
         /// Event raised when a trigger is selected in the list.
         Event<std::weak_ptr<ITrigger>> on_trigger_selected;
 
-        Event<> on_scene_changed;
-
         /// Event raised when an item is selected in the list.
         Event<std::weak_ptr<IItem>> on_item_selected;
 

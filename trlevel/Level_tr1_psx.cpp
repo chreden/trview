@@ -327,7 +327,7 @@ namespace trlevel
         const auto boxes = read_boxes_tr1(activity, file, callbacks);
         read_overlaps(activity, file, callbacks);
         read_zones_tr1(activity, file, callbacks, static_cast<uint32_t>(boxes.size()));
-        read_animated_textures(activity, file, callbacks);
+        _animated_textures = read_animated_textures(activity, file, callbacks);
         _entities = read_entities_tr1(activity, file, callbacks);
         _sound_map = read_sound_map(activity, file, callbacks);
         _sound_details = read_sound_details(activity, file, callbacks);
@@ -456,7 +456,7 @@ namespace trlevel
         const auto boxes = read_boxes_tr1(activity, file, callbacks);
         read_overlaps(activity, file, callbacks);
         read_zones_tr1_version_27(activity, file, callbacks, static_cast<uint32_t>(boxes.size()));
-        read_animated_textures(activity, file, callbacks);
+        _animated_textures = read_animated_textures(activity, file, callbacks);
         _entities = read_entities_tr1(activity, file, callbacks);
         _sound_map = read_sound_map(activity, file, callbacks);
         _sound_details = read_sound_details(activity, file, callbacks);
@@ -521,7 +521,7 @@ namespace trlevel
         _cameras = read_cameras(activity, file, callbacks);
         read_boxes_tr1(activity, file, callbacks);
         read_overlaps(activity, file, callbacks);
-        read_animated_textures(activity, file, callbacks);
+        _animated_textures = read_animated_textures(activity, file, callbacks);
 
         _entities = read_vector<uint32_t, tr_entity_may_1996>(file) |
             std::views::transform([](auto&& e) -> tr2_entity {

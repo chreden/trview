@@ -52,7 +52,6 @@ namespace trview
         _camera_sink_windows->on_camera_sink_selected += on_camera_sink_selected;
         _camera_sink_windows->on_flyby_node_selected += on_flyby_node_selected;
         _camera_sink_windows->on_trigger_selected += on_trigger_selected;
-        _camera_sink_windows->on_scene_changed += on_scene_changed;
         _camera_sink_windows->on_settings += on_settings;
 
         _diff_windows->on_item_selected += on_item_selected;
@@ -74,12 +73,10 @@ namespace trview
                 }
             };
         _items_windows->on_item_selected += on_item_selected;
-        _items_windows->on_scene_changed += on_scene_changed;
         _items_windows->on_settings += on_settings;
         _items_windows->on_trigger_selected += on_trigger_selected;
 
         _lights_windows->on_light_selected += on_light_selected;
-        _lights_windows->on_scene_changed += on_scene_changed;
         _lights_windows->on_settings += on_settings;
             
         _pack_windows->on_level_open += on_level_open;
@@ -90,7 +87,6 @@ namespace trview
         _rooms_windows->on_item_selected += on_item_selected;
         _rooms_windows->on_light_selected += on_light_selected;
         _rooms_windows->on_room_selected += on_room_selected;
-        _rooms_windows->on_scene_changed += on_scene_changed;
         _rooms_windows->on_sector_hover += on_sector_hover;
         _rooms_windows->on_settings += on_settings;
         _rooms_windows->on_static_mesh_selected += on_static_selected;
@@ -98,7 +94,6 @@ namespace trview
 
         _route_window->on_waypoint_selected += on_waypoint_selected;
         _route_window->on_item_selected += on_item_selected;
-        _route_window->on_scene_changed += on_scene_changed;
         _route_window->on_trigger_selected += on_trigger_selected;
         _route_window->on_route_open += on_route_open;
         _route_window->on_route_reload += on_route_reload;
@@ -109,7 +104,6 @@ namespace trview
         _route_window->on_new_route += on_new_route;
         _route_window->on_new_randomizer_route += on_new_randomizer_route;
 
-        _sounds_windows->on_scene_changed += on_scene_changed;
         _sounds_windows->on_settings += on_settings;
         _sounds_windows->on_sound_source_selected += on_sound_source_selected;
 
@@ -126,7 +120,6 @@ namespace trview
                 }
             };
         _triggers_windows->on_camera_sink_selected += on_camera_sink_selected;
-        _triggers_windows->on_scene_changed += on_scene_changed;
         _triggers_windows->on_flyby_node_selected += on_flyby_node_selected;
     }
 

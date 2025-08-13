@@ -604,10 +604,7 @@ namespace trview
         _need_filtering = false;
         _force_sort = true;
 
-        if (_auto_hider.apply(_all_triggers, _filtered_triggers | std::views::transform([](auto&& t) { return t.lock(); })))
-        {
-            on_scene_changed();
-        }
+        _auto_hider.apply(_all_triggers, _filtered_triggers | std::views::transform([](auto&& t) { return t.lock(); }));
     }
 
     std::optional<int> TriggersWindow::index_of_selected() const

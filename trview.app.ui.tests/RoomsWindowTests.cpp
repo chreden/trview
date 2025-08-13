@@ -97,9 +97,6 @@ void register_rooms_window_tests(ImGuiTestEngine* engine)
             auto& context = ctx->GetVars<RoomsWindowContext>();
             context.ptr = register_test_module().build();
 
-            bool raised = false;
-            auto token = context.ptr->on_scene_changed += [&raised]() { raised = true; };
-
             auto room1 = mock_shared<MockRoom>()->with_number(0);
             auto room2 = mock_shared<MockRoom>()->with_number(1)->with_updating_visible(false);
             EXPECT_CALL(*room2, set_visible(true)).Times(1);
@@ -107,7 +104,6 @@ void register_rooms_window_tests(ImGuiTestEngine* engine)
 
             ctx->ItemUncheck("/**/##hide-1");
 
-            IM_CHECK_EQ(raised, true);
             IM_CHECK_EQ(Mock::VerifyAndClearExpectations(room2.get()), true);
         });
 

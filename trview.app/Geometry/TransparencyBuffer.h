@@ -26,7 +26,7 @@ namespace trview
         // Add a triangle to the transparency buffer. The triangle will be added to the end
         // of the collection.
         // triangle: The triangle to add.
-        void add(const TransparentTriangle& triangle) override;
+        void add(const Triangle& triangle) override;
 
         // Sort the accumulated transparent triangles in order of farthest to
         // nearest, based on the position of the camera.
@@ -45,7 +45,7 @@ namespace trview
         void create_buffer();
         void create_matrix_buffer();
         void complete();
-        void set_blend_mode(const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context, TransparentTriangle::Mode mode) const;
+        void set_blend_mode(const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context, Triangle::TransparencyMode mode) const;
 
         std::shared_ptr<graphics::IDevice> _device;
         Microsoft::WRL::ComPtr<ID3D11Buffer> _vertex_buffer;
@@ -54,13 +54,14 @@ namespace trview
         Microsoft::WRL::ComPtr<ID3D11BlendState> _additive_blend;
         Microsoft::WRL::ComPtr<ID3D11DepthStencilState> _transparency_depth_state;
 
-        std::vector<TransparentTriangle> _triangles;
+        std::vector<Triangle> _triangles;
         std::vector<MeshVertex> _vertices;
 
         struct TextureRun
         {
             uint32_t texture;
-            TransparentTriangle::Mode mode;
+            Triangle::TextureMode texture_mode;
+            Triangle::TransparencyMode transparency_mode;
             uint32_t count;
         };
 

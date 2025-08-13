@@ -81,6 +81,7 @@ namespace trview
         Event<bool> on_camera_sink_startup;
         Event<std::string, FontSetting> on_font;
         Event<bool> on_statics_startup;
+        Event<bool> on_animated_textures;
 
         virtual void render() = 0;
         /// <summary>
@@ -183,5 +184,6 @@ namespace trview
         /// </summary>
         virtual void toggle_visibility() = 0;
         virtual void set_statics_startup(bool value) = 0;
+        virtual void set_animated_textures(bool value) = 0;
     };
 }

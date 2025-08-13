@@ -222,6 +222,23 @@ namespace trlevel
         return meshtree;
     }
 
+    std::vector<std::vector<int16_t>> read_animated_textures_tr4_psx(trview::Activity& activity, std::basic_ispanstream<uint8_t>& file, const tr4_psx_level_info& info, const ILevel::LoadCallbacks& callbacks)
+    {
+        callbacks.on_progress("Reading animated textures");
+        log_file(activity, file, "Reading animated textures");
+
+        const auto start = file.tellg();
+        std::vector<std::vector<int16_t>> textures;
+        for (uint16_t index = 0; index < info.num_animated_textures; ++index)
+        {
+            int16_t num_texture_ids = read<int16_t>(file) + 1;
+            textures.push_back(read_vector<int16_t>(file, num_texture_ids));
+        }
+
+        file.seekg(static_cast<std::size_t>(start) + info.animated_texture_length);
+        return textures;
+    }
+
     std::vector<tr_object_texture_psx> read_object_textures(trview::Activity& activity, std::basic_ispanstream<uint8_t>& file, const tr4_psx_level_info& info, const ILevel::LoadCallbacks& callbacks)
     {
         callbacks.on_progress("Reading object textures");
@@ -726,7 +743,8 @@ namespace trlevel
         skip(file, info.dispatches_size);
         skip(file, info.commands_size);
         _meshtree = read_meshtree(activity, file, info, callbacks);
-        skip(file, info.animated_texture_length);
+        _animated_textures = read_animated_textures_tr4_psx(activity, file, info, callbacks);;
+        _animated_texture_uv_count = info.num_animated_uv_ranges;
         _object_textures_psx = read_object_textures(activity, file, info, callbacks);
         skip(file, info.sprite_info_length);
         adjust_room_textures_psx();
@@ -776,7 +794,9 @@ namespace trlevel
             uint16_t num_rooms;
             uint8_t  unknown_1[2];
             uint16_t num_items;
-            uint8_t  unknown_2[8];
+            uint16_t num_animated_textures;
+            uint16_t num_animated_uv_ranges;
+            uint32_t room_data_size;
             uint32_t floor_data_size;
             uint32_t outside_room_size;
             uint32_t bounding_boxes_size;
@@ -824,6 +844,8 @@ namespace trlevel
         {
             .num_rooms = opsm_info.num_rooms,
             .num_items = opsm_info.num_items,
+            .num_animated_textures = opsm_info.num_animated_textures,
+            .num_animated_uv_ranges = opsm_info.num_animated_uv_ranges,
             .floor_data_size = opsm_info.floor_data_size,
             .outside_room_size = opsm_info.outside_room_size,
             .bounding_boxes_size = opsm_info.bounding_boxes_size,
@@ -892,7 +914,8 @@ namespace trlevel
         info.frames_offset = static_cast<uint32_t>(file.tellg());
         _frames = read_frames(activity, file, start, info, callbacks);
 
-        skip(file, info.animated_texture_length);
+        _animated_textures = read_animated_textures_tr4_psx(activity, file, info, callbacks);
+        _animated_texture_uv_count = info.num_animated_uv_ranges;
 
         _object_textures_psx = read_object_textures(activity, file, info, callbacks);
         skip(file, info.sprite_info_length);
@@ -994,7 +1017,7 @@ namespace trlevel
 
         skip(file, 2); // TODO: Figure out
 
-        read_animated_textures(activity, file, callbacks);
+        _animated_textures = read_animated_textures(activity, file, callbacks);
         _entities = read_entities(activity, file, callbacks);
         read<int32_t>(file); // horizon colour
         read_room_textures_tr3_psx(file, activity, callbacks);

@@ -26,6 +26,8 @@ namespace trview
             MOCK_METHOD(graphics::Texture, geometry_texture, (), (const, override));
             MOCK_METHOD(uint32_t, num_object_textures, (), (const, override));
             MOCK_METHOD(trlevel::PlatformAndVersion, platform_and_version, (), (const, override));
+            MOCK_METHOD(Triangle::AnimationMode, animation_mode, (uint32_t), (const, override));
+            MOCK_METHOD(std::vector<uint32_t>, animated_texture, (uint32_t), (const, override));
         };
     }
 }

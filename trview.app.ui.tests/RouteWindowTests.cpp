@@ -294,12 +294,8 @@ void register_route_window_tests(ImGuiTestEngine* engine)
             context.ptr->set_route(route);
             context.ptr->select_waypoint(waypoint);
 
-            bool raised = false;
-            auto token = context.ptr->on_scene_changed += [&]() { raised = true; };
-
             ctx->ItemClick("/**/Delete Waypoint");
 
-            IM_CHECK_EQ(raised, true);
             IM_CHECK_EQ(waypoint, removed);
             IM_CHECK_EQ(Mock::VerifyAndClearExpectations(route.get()), true);
             IM_CHECK_EQ(Mock::VerifyAndClearExpectations(waypoint.get()), true);

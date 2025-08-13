@@ -50,7 +50,7 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClCompile Include="Geometry\Picking.cpp" />
     <ClCompile Include="Geometry\PickResult.cpp" />
     <ClCompile Include="Geometry\TransparencyBuffer.cpp" />
-    <ClCompile Include="Geometry\TransparentTriangle.cpp" />
+    <ClCompile Include="Geometry\Triangle.cpp" />
     <ClCompile Include="Graphics\LevelTextureStorage.cpp" />
     <ClCompile Include="Graphics\MeshStorage.cpp" />
     <ClCompile Include="Graphics\SectorHighlight.cpp" />
@@ -302,7 +302,6 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClInclude Include="Geometry\Picking.h" />
     <ClInclude Include="Geometry\PickResult.h" />
     <ClInclude Include="Geometry\TransparencyBuffer.h" />
-    <ClInclude Include="Geometry\TransparentTriangle.h" />
     <ClInclude Include="Geometry\Triangle.h" />
     <ClInclude Include="Graphics\ILevelTextureStorage.h" />
     <ClInclude Include="Graphics\IMeshStorage.h" />

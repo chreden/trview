@@ -10,7 +10,7 @@
     <ClCompile Include="Geometry\Mesh.cpp">
       <Filter>Geometry</Filter>
     </ClCompile>
-    <ClCompile Include="Geometry\TransparentTriangle.cpp">
+    <ClCompile Include="Geometry\Triangle.cpp">
       <Filter>Geometry</Filter>
     </ClCompile>
     <ClCompile Include="Geometry\TransparencyBuffer.cpp">
@@ -401,9 +401,6 @@
       <Filter>Geometry</Filter>
     </ClInclude>
     <ClInclude Include="Geometry\MeshVertex.h">
-      <Filter>Geometry</Filter>
-    </ClInclude>
-    <ClInclude Include="Geometry\TransparentTriangle.h">
       <Filter>Geometry</Filter>
     </ClInclude>
     <ClInclude Include="Geometry\Triangle.h">

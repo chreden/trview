@@ -131,22 +131,6 @@ TEST(CameraSinkWindowManager, SelectedSinkRaised)
     ASSERT_EQ(raised, sink);
 }
 
-TEST(CameraSinkWindowManager, SceneChangedRaised)
-{
-    auto window = mock_shared<MockCameraSinkWindow>();
-    auto manager = register_test_module().with_window_source([&]() { return window; }).build();
-
-    bool raised = false;
-    auto token = manager->on_scene_changed += [&]() { raised = true; };
-
-    manager->create_window();
-
-    auto sink = mock_shared<MockCameraSink>();
-    window->on_scene_changed();
-
-    ASSERT_TRUE(raised);
-}
-
 TEST(CameraSinkWindowManager, TriggerSelectedRaised)
 {
     auto window = mock_shared<MockCameraSinkWindow>();

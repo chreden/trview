@@ -61,21 +61,6 @@ TEST(LightsWindowManager, OnLightSelectedRaised)
     ASSERT_EQ(raised.lock(), light);
 }
 
-TEST(LightsWindowManager, SceneChangedRaised)
-{
-    auto manager = register_test_module().build();
-    auto light = mock_shared<MockLight>();
-
-    bool raised = false;
-    auto token = manager->on_scene_changed += [&]() { raised = true; };
-
-    auto window = manager->create_window().lock();
-    ASSERT_NE(window, nullptr);
-
-    window->on_scene_changed();
-    ASSERT_TRUE(raised);
-}
-
 TEST(LightsWindowManager, SetLightsUpdatesExistingWindows)
 {
     auto window = mock_shared<MockLightsWindow>();

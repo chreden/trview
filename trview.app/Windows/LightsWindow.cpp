@@ -119,10 +119,7 @@ namespace trview
                 std::views::transform([](auto&& light) { return light.lock(); }) |
                 std::ranges::to<std::vector>();
 
-            if (_auto_hider.apply(_all_lights, filtered_lights, _filters))
-            {
-                on_scene_changed();
-            }
+            _auto_hider.apply(_all_lights, filtered_lights, _filters);
 
             RowCounter counter{ "light", _all_lights.size() };
             _filters.render_table(filtered_lights, _all_lights, _selected_light, counter,

@@ -96,21 +96,6 @@ TEST(RoomsWindowManager, SettingsPassedToNewWindows)
     manager->create_window();
 }
 
-TEST(RoomsWindowManager, SceneChangedRaised)
-{
-    auto manager = register_test_module().build();
-    auto room = mock_shared<MockRoom>();
-
-    bool raised = false;
-    auto token = manager->on_scene_changed += [&]() { raised = true; };
-
-    auto window = manager->create_window().lock();
-    ASSERT_NE(window, nullptr);
-
-    window->on_scene_changed();
-    ASSERT_TRUE(raised);
-}
-
 TEST(RoomsWindowManager, SetFloordataPassedToWindows)
 {
     auto mock_window = mock_shared<MockRoomsWindow>();

@@ -34,7 +34,7 @@ namespace trview
             {
                 if (ImGui::BeginTabItem("General"))
                 {
-                    checkbox(Names::vsync, _vsync, on_vsync);
+                    
                     checkbox(Names::go_to_lara, _go_to_lara, on_go_to_lara);
                     checkbox(Names::items_startup, _items_startup, on_items_startup);
                     checkbox(Names::triggers_startup, _triggers_startup, on_triggers_startup);
@@ -48,11 +48,18 @@ namespace trview
                         _max_recent_files = std::max(0, _max_recent_files);
                         on_max_recent_files(_max_recent_files);
                     }
+
+                    ImGui::EndTabItem();
+                }
+
+                if (ImGui::BeginTabItem("Visuals"))
+                {
+                    checkbox(Names::vsync, _vsync, on_vsync);
+                    checkbox(Names::animated_textures, _animated_textures, on_animated_textures);
                     if (ImGui::ColorEdit3(Names::background_colour.c_str(), _colour))
                     {
                         on_background_colour(Colour(1.0f, _colour[0], _colour[1], _colour[2]));
                     }
-
                     ImGui::EndTabItem();
                 }
 
@@ -330,5 +337,10 @@ namespace trview
     void SettingsWindow::set_statics_startup(bool value)
     {
         _statics_startup = value;
+    }
+
+    void SettingsWindow::set_animated_textures(bool value)
+    {
+        _animated_textures = value;
     }
 }

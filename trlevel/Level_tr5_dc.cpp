@@ -256,8 +256,8 @@ namespace trlevel
 
         {
             DreamcastPage page{ file };
-            read_animated_textures(activity, file, callbacks);
-            read_animated_textures_uv_count(activity, file, callbacks);
+            _animated_textures = read_animated_textures(activity, file, callbacks);
+            _animated_texture_uv_count = read_animated_textures_uv_count(activity, file, callbacks);
         }
 
         {

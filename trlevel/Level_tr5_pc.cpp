@@ -244,8 +244,8 @@ namespace trlevel
         const auto boxes = read_boxes(activity, file, callbacks);
         read_overlaps(activity, file, callbacks);
         read_zones(activity, file, callbacks, static_cast<uint32_t>(boxes.size()));
-        read_animated_textures(activity, file, callbacks);
-        read_animated_textures_uv_count(activity, file, callbacks);
+        _animated_textures = read_animated_textures(activity, file, callbacks);
+        _animated_texture_uv_count = read_animated_textures_uv_count(activity, file, callbacks);
 
         log_file(activity, file, "Skipping TEX marker");
         file.seekg(4, std::ios::cur);
@@ -321,8 +321,8 @@ namespace trlevel
         const auto boxes = read_boxes(activity, file, callbacks);
         read_overlaps(activity, file, callbacks);
         read_zones(activity, file, callbacks, static_cast<uint32_t>(boxes.size()));
-        read_animated_textures(activity, file, callbacks);
-        read_animated_textures_uv_count(activity, file, callbacks);
+        _animated_textures = read_animated_textures(activity, file, callbacks);
+        _animated_texture_uv_count = read_animated_textures_uv_count(activity, file, callbacks);
 
         log_file(activity, file, "Skipping TEX marker");
         file.seekg(3, std::ios::cur);

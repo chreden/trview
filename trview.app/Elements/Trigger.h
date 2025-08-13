@@ -14,7 +14,7 @@ namespace trview
     class Trigger final : public ITrigger, public std::enable_shared_from_this<ITrigger>
     {
     public:
-        explicit Trigger(uint32_t number, const std::weak_ptr<IRoom>& room, uint16_t x, uint16_t z, const TriggerInfo& trigger_info, trlevel::LevelVersion level_version, const std::weak_ptr<ILevel>& level, const std::weak_ptr<ISector>& sector, const IMesh::TransparentSource& mesh_source);
+        explicit Trigger(uint32_t number, const std::weak_ptr<IRoom>& room, uint16_t x, uint16_t z, const TriggerInfo& trigger_info, trlevel::LevelVersion level_version, const std::weak_ptr<ILevel>& level, const std::weak_ptr<ISector>& sector, const IMesh::Source& mesh_source);
         virtual ~Trigger() = default;
         virtual uint32_t number() const override;
         std::weak_ptr<IRoom> room() const override;
@@ -29,7 +29,7 @@ namespace trview
         Colour colour() const override;
         std::vector<Command> commands() const override;
         void set_colour(const std::optional<Colour>& colour) override;
-        virtual void set_triangles(const std::vector<TransparentTriangle>& transparent_triangles) override;
+        void set_triangles(const std::vector<Triangle>& transparent_triangles) override;
         virtual PickResult pick(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& direction) const override;
         virtual void set_position(const DirectX::SimpleMath::Vector3& position) override;
         virtual DirectX::SimpleMath::Vector3 position() const override;
@@ -44,7 +44,7 @@ namespace trview
         std::vector<Command> _commands;
         std::shared_ptr<IMesh> _mesh;
         DirectX::SimpleMath::Vector3 _position;
-        IMesh::TransparentSource _mesh_source;
+        IMesh::Source _mesh_source;
         TriggerType _type;
         uint32_t _number;
         std::weak_ptr<IRoom> _room;

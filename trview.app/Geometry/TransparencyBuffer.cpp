@@ -62,7 +62,7 @@ namespace trview
         _transparency_depth_state = _device->create_depth_stencil_state(stencil_desc);
     }
 
-    void TransparencyBuffer::add(const TransparentTriangle& triangle)
+    void TransparencyBuffer::add(const Triangle& triangle)
     {
         _triangles.push_back(triangle);
     }
@@ -72,7 +72,7 @@ namespace trview
         std::sort(_triangles.begin(), _triangles.end(),
             [&eye_position](const auto& l, const auto& r)
         {
-            return Vector3::DistanceSquared(eye_position, l.position) > Vector3::DistanceSquared(eye_position, r.position);
+            return Vector3::DistanceSquared(eye_position, l.position()) > Vector3::DistanceSquared(eye_position, r.position());
         });
         complete();
     }
@@ -115,17 +115,17 @@ namespace trview
         context->OMSetBlendState(_alpha_blend.Get(), 0, 0xffffffff);
 
         uint32_t sum = 0;
-        TransparentTriangle::Mode previous_mode = TransparentTriangle::Mode::Normal;
+        Triangle::TransparencyMode previous_mode = Triangle::TransparencyMode::Normal;
 
         for (const auto& run : _texture_run)
         {
-            if (run.mode != previous_mode && !ignore_blend)
+            if (run.transparency_mode != previous_mode && !ignore_blend)
             {
-                set_blend_mode(context, run.mode);
+                set_blend_mode(context, run.transparency_mode);
             }
-            previous_mode = run.mode;
+            previous_mode = run.transparency_mode;
 
-            auto texture = run.texture == TransparentTriangle::Untextured ? texture_storage->untextured() : texture_storage->texture(run.texture);
+            auto texture = run.texture_mode == Triangle::TextureMode::Untextured ? texture_storage->untextured() : texture_storage->texture(run.texture);
             context->PSSetShaderResources(0, 1, texture.view().GetAddressOf());
             context->Draw(run.count * 3, sum);
             sum += run.count * 3;
@@ -189,30 +189,31 @@ namespace trview
         std::size_t index = 0;
         for (const auto& triangle : _triangles)
         {
+            const auto texture = triangle.texture();
             if (_texture_run.empty() ||
-                _texture_run.back().texture != triangle.texture || 
-                _texture_run.back().mode != triangle.mode) 
+                (_texture_run.back().texture_mode != triangle.texture_mode || _texture_run.back().texture != texture) ||
+                _texture_run.back().transparency_mode != triangle.transparency_mode)
             {
-                _texture_run.push_back({ triangle.texture, triangle.mode, 1 });
+                _texture_run.push_back({ texture, triangle.texture_mode, triangle.transparency_mode, 1 });
             }
             else
             {
                 ++_texture_run.back().count;
             }
 
-            auto normal = triangle.normal();
+            const auto normal = triangle.normal();
             for (uint32_t i = 0; i < 3; ++i)
             {
-                _vertices[index++] = { triangle.vertices[i], normal, triangle.uvs[i], triangle.colours[i] };
+                _vertices[index++] = { triangle.vertices[i], normal, triangle.uv(i), triangle.colours[i] };
             }
         }
 
         create_buffer();
     }
 
-    void TransparencyBuffer::set_blend_mode(const ComPtr<ID3D11DeviceContext>& context, TransparentTriangle::Mode mode) const
+    void TransparencyBuffer::set_blend_mode(const ComPtr<ID3D11DeviceContext>& context, Triangle::TransparencyMode mode) const
     {
-        if (mode == TransparentTriangle::Mode::Normal)
+        if (mode == Triangle::TransparencyMode::Normal)
         {
             context->OMSetBlendState(_alpha_blend.Get(), 0, 0xffffffff);
         }

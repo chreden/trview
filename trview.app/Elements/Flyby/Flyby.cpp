@@ -159,7 +159,7 @@ namespace trview
             }
         }
 
-        std::vector<MeshVertex> vertices;
+        std::vector<Vector3> vertices;
         std::vector<uint32_t> indices;
 
         for (uint32_t p = 0; p < paths.size(); ++p)
@@ -174,7 +174,7 @@ namespace trview
                 const Vector3 at = points[n];
                 if (n == 0)
                 {
-                    vertices.push_back({ .pos = at, .colour = Colour::White });
+                    vertices.push_back(at);
                     for (uint32_t v = path_base_index + 1; v <= num_vertices; ++v)
                     {
                         indices.push_back(path_base_index);
@@ -198,7 +198,7 @@ namespace trview
                         Matrix::CreateRotationZ(v * (DirectX::g_XMTwoPi.f[0] / static_cast<float>(num_vertices))) *
                         Matrix::CreateFromQuaternion(Quaternion::FromToRotation(Vector3::Backward, direction));
                     const Vector3 pos = at + Vector3::TransformNormal(Vector3(0, width, 0), rotation);
-                    vertices.push_back({ .pos = pos, .colour = Colour::White });
+                    vertices.push_back(pos);
                 }
 
                 const uint32_t base_index = path_base_index + 1 + n * num_vertices;
@@ -206,7 +206,7 @@ namespace trview
 
                 if (n == points.size() - 1)
                 {
-                    vertices.push_back({ .pos = at, .colour = Colour::White });
+                    vertices.push_back(at);
                     for (uint32_t v = 0; v < num_vertices; ++v)
                     {
                         indices.push_back(base_index + num_vertices);
@@ -230,7 +230,19 @@ namespace trview
             }
         }
 
-        _path_mesh = mesh_source(vertices, {}, indices, {}, {});
+        const Color colour = Colour::White;
+        std::vector<Triangle> triangles;
+        for (auto t = 0; t < indices.size(); t += 3)
+        {
+            triangles.push_back(
+                {
+                    .colours = { colour, colour, colour },
+                    .texture_mode = Triangle::TextureMode::Untextured,
+                    .vertices = { vertices[indices[t]], vertices[indices[t + 1]], vertices[indices[t + 2]] }
+                });
+        }
+        
+        _path_mesh = mesh_source(triangles);
     }
 
     void Flyby::state_at(CameraState& state) const

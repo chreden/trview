@@ -31,12 +31,10 @@ namespace trview
 
         _scene_target = _render_target_source(static_cast<uint32_t>(window.size().width), static_cast<uint32_t>(window.size().height), graphics::IRenderTarget::DepthStencilMode::Enabled);
         _scene_sprite = sprite_source(window.size());
-        _token_store += _camera->on_view_changed += [&]() { _scene_changed = true; };
         _token_store += _camera->on_mode_changed += [&](auto mode)
             {
                 _ui->set_camera_mode(mode);
                 _camera_moved = true;
-                _scene_changed = true;
             };
 
         _main_window = device_window_source(window);
@@ -118,11 +116,12 @@ namespace trview
         _token_store += _ui->on_add_waypoint += [&]()
         {
             auto type = _context_pick.type == PickResult::Type::Entity ? IWaypoint::Type::Entity : _context_pick.type == PickResult::Type::Trigger ? IWaypoint::Type::Trigger : IWaypoint::Type::Position;
-            if (_context_pick.triangle.normal.y != 0)
+            Vector3 normal = _context_pick.triangle.normal();
+            if (normal.y != 0)
             {
-                _context_pick.triangle.normal.x = 0;
-                _context_pick.triangle.normal.z = 0;
-                _context_pick.triangle.normal.Normalize();
+                normal.x = 0;
+                normal.z = 0;
+                normal.Normalize();
             }
 
             uint32_t index = 0;
@@ -156,7 +155,7 @@ namespace trview
                 }
             }
 
-            on_waypoint_added(_context_pick.position, _context_pick.triangle.normal, room_from_pick(_context_pick), type, index);
+            on_waypoint_added(_context_pick.position, normal, room_from_pick(_context_pick), type, index);
         };
         _token_store += _ui->on_add_mid_waypoint += [&]()
         {
@@ -189,14 +188,15 @@ namespace trview
             }
 
             // Filter out non-wall normals - ceiling and floor normals should be vertical.
-            if (_context_pick.triangle.normal.y != 0)
+            Vector3 normal = _context_pick.triangle.normal();
+            if (normal.y != 0)
             {
-                _context_pick.triangle.normal.x = 0;
-                _context_pick.triangle.normal.z = 0;
-                _context_pick.triangle.normal.Normalize();
+                normal.x = 0;
+                normal.z = 0;
+                normal.Normalize();
             }
 
-            on_waypoint_added(_context_pick.position, _context_pick.triangle.normal, room_from_pick(_context_pick), type, index);
+            on_waypoint_added(_context_pick.position, normal, room_from_pick(_context_pick), type, index);
         };
         _token_store += _ui->on_remove_waypoint += [&]() { on_waypoint_removed(_context_pick.waypoint_index); };
         _token_store += _ui->on_hide += [&]()
@@ -451,7 +451,6 @@ namespace trview
             if (_active_tool == Tool::Measure && result.hit && !result.stop)
             {
                 _measure->set(result.position);
-                _scene_changed = true;
                 if (_measure->measuring())
                 {
                     result.text = _measure->distance();
@@ -548,7 +547,6 @@ namespace trview
         {
             _active_tool = Tool::Measure;
             _measure->reset();
-            _scene_changed = true;
         });
         add_shortcut(false, 'I', [&]() { toggle_show_items(); });
         add_shortcut(false, 'T', [&]() { toggle_show_triggers(); });
@@ -702,7 +700,7 @@ namespace trview
                 _camera_input.reset(true);
                 _ui->set_remove_waypoint_enabled(_current_pick.type == PickResult::Type::Waypoint);
                 _ui->set_hide_enabled(equals_any(_current_pick.type, PickResult::Type::Entity, PickResult::Type::Trigger, PickResult::Type::Light, PickResult::Type::Room, PickResult::Type::CameraSink, PickResult::Type::StaticMesh, PickResult::Type::SoundSource));
-                _ui->set_mid_waypoint_enabled(_current_pick.type == PickResult::Type::Room && _current_pick.triangle.normal.y < 0);
+                _ui->set_mid_waypoint_enabled(_current_pick.type == PickResult::Type::Room && _current_pick.triangle.normal().y < 0);
                 _ui->set_tile_filter_enabled(equals_any(_current_pick.type, PickResult::Type::Room, PickResult::Type::Entity, PickResult::Type::Trigger, PickResult::Type::Light, PickResult::Type::CameraSink));
 
                 const auto level = _level.lock();
@@ -757,7 +755,6 @@ namespace trview
 
         _level_token_store += new_level->on_alternate_mode_selected += [&](bool enabled) { set_alternate_mode(enabled); };
         _level_token_store += new_level->on_alternate_group_selected += [&](uint16_t group, bool enabled) { set_alternate_group(group, enabled); };
-        _level_token_store += new_level->on_level_changed += [&]() { _scene_changed = true; };
         new_level->on_room_selected += on_room_selected;
         new_level->on_item_selected += on_item_selected;
         new_level->on_trigger_selected += on_trigger_selected;
@@ -828,8 +825,6 @@ namespace trview
         _ui->set_use_alternate_groups(new_level->version() >= trlevel::LevelVersion::Tomb4);
         _ui->set_alternate_groups(new_level->alternate_groups());
         _ui->set_flip_enabled(new_level->any_alternates());
-
-        _scene_changed = true;
     }
 
     void Viewer::render()
@@ -849,16 +844,12 @@ namespace trview
         _main_window->begin();
         _main_window->clear(Colour(_settings.background_colour));
 
-        if (_scene_changed)
         {
             _scene_target->clear(Colour::Transparent);
-
             graphics::RenderTargetStore rs_store(_device->context());
             graphics::ViewportStore vp_store(_device->context());
             _scene_target->apply();
-
             render_scene();
-            _scene_changed = false;
         }
 
         _scene_sprite->render(_scene_target->texture(), 0, 0, window().size().width, window().size().height);
@@ -908,14 +899,12 @@ namespace trview
         _camera_moved = true;
         _camera->set_mode(camera_mode);
         _ui->set_camera_mode(camera_mode);
-        _scene_changed = true;
     }
 
     void Viewer::set_camera_projection_mode(ProjectionMode projection_mode)
     {
         _camera->set_projection_mode(projection_mode);
         _ui->set_camera_projection_mode(projection_mode);
-        _scene_changed = true;
     }
 
     void Viewer::toggle_highlight()
@@ -939,7 +928,6 @@ namespace trview
         _was_alternate_select = false;
         _ui->set_selected_room(room_ptr);
         set_target(room_ptr->centre());
-        _scene_changed = true;
         if (_settings.auto_orbit)
         {
             set_camera_mode(ICamera::Mode::Orbit);
@@ -956,7 +944,6 @@ namespace trview
             {
                 set_camera_mode(ICamera::Mode::Orbit);
             }
-            _scene_changed = true;
         }
     }
 
@@ -969,7 +956,6 @@ namespace trview
             {
                 set_camera_mode(ICamera::Mode::Orbit);
             }
-            _scene_changed = true;
         }
     }
 
@@ -982,7 +968,6 @@ namespace trview
             {
                 set_camera_mode(ICamera::Mode::Orbit);
             }
-            _scene_changed = true;
         }
     }
 
@@ -990,13 +975,11 @@ namespace trview
     {
         _route = route;
         _ui->set_route(route);
-        _scene_changed = true;
     }
 
     void Viewer::set_show_compass(bool value)
     {
         _compass->set_visible(value);
-        _scene_changed = true;
     }
 
     void Viewer::set_show_minimap(bool value)
@@ -1007,19 +990,16 @@ namespace trview
     void Viewer::set_show_route(bool value)
     {
         _show_route = value;
-        _scene_changed = true;
     }
 
     void Viewer::set_show_selection(bool value)
     {
         _show_selection = value;
-        _scene_changed = true;
     }
 
     void Viewer::set_show_tools(bool value)
     {
         _measure->set_visible(value);
-        _scene_changed = true;
     }
 
     void Viewer::set_show_tooltip(bool value)
@@ -1091,7 +1071,6 @@ namespace trview
         _ui->set_host_size(size);
         _scene_target = _render_target_source(static_cast<uint32_t>(size.width), static_cast<uint32_t>(size.height), graphics::IRenderTarget::DepthStencilMode::Enabled);
         _scene_sprite->set_host_size(size);
-        _scene_changed = true;
     }
 
     // Set up keyboard and mouse input for the camera.
@@ -1205,7 +1184,6 @@ namespace trview
             {
                 level->on_camera_moved();
             }
-            _scene_changed = true;
         };
 
         _token_store += _camera_input.on_mode_change += [&](auto mode) { set_camera_mode(mode); };
@@ -1456,7 +1434,6 @@ namespace trview
         _settings = settings;
         _ui->set_settings(_settings);
         apply_camera_settings();
-        _scene_changed = true;
     }
 
     std::weak_ptr<ICamera> Viewer::camera() const
@@ -1477,7 +1454,6 @@ namespace trview
         {
             set_camera_mode(ICamera::Mode::Orbit);
         }
-        _scene_changed = true;
     }
 
     std::optional<int> Viewer::process_message(UINT message, WPARAM wParam, LPARAM)
@@ -1559,12 +1535,6 @@ namespace trview
         const auto room_info = room->info();
         _sector_highlight->set_sector(sector,
             Matrix::CreateTranslation(room_info.x / trlevel::Scale_X, 0, room_info.z / trlevel::Scale_Z));
-        _scene_changed = true;
-    }
-
-    void Viewer::set_scene_changed()
-    {
-        _scene_changed = true;
     }
 
     void Viewer::select_camera_sink(const std::weak_ptr<ICameraSink>& camera_sink)
@@ -1575,7 +1545,6 @@ namespace trview
         {
             set_camera_mode(ICamera::Mode::Orbit);
         }
-        _scene_changed = true;
     }
 
     void Viewer::set_show_camera_sinks(bool show)
@@ -1621,7 +1590,6 @@ namespace trview
             {
                 set_camera_mode(ICamera::Mode::Orbit);
             }
-            _scene_changed = true;
         }
     }
 
@@ -1650,7 +1618,6 @@ namespace trview
             {
                 set_camera_mode(ICamera::Mode::Orbit);
             }
-            _scene_changed = true;
         }
     }
 
@@ -1677,7 +1644,6 @@ namespace trview
             {
                 set_camera_mode(ICamera::Mode::Orbit);
             }
-            _scene_changed = true;
         }
     }
 }

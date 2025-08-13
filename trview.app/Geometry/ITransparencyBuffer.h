@@ -1,6 +1,6 @@
 #pragma once
 
-#include <trview.app/Geometry/TransparentTriangle.h>
+#include "Triangle.h"
 #include <trview.app/Camera/ICamera.h>
 
 namespace trview
@@ -11,7 +11,7 @@ namespace trview
         // Add a triangle to the transparency buffer. The triangle will be added to the end
         // of the collection.
         // triangle: The triangle to add.
-        virtual void add(const TransparentTriangle& triangle) = 0;
+        virtual void add(const Triangle& triangle) = 0;
 
         // Sort the accumulated transparent triangles in order of farthest to
         // nearest, based on the position of the camera.

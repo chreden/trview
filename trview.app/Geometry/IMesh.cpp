@@ -1,5 +1,6 @@
 #include "IMesh.h"
 #include <random>
+#include <ranges>
 #include <trlevel/trtypes.h>
 
 using namespace DirectX::SimpleMath;
@@ -9,6 +10,36 @@ namespace trview
     namespace
     {
         const uint16_t Texture_Mask = 0x3fff;
+
+        void add_rect(std::vector<Triangle>& triangles, const Vector3& v0, const Vector3& v1, const Vector3& v2, const Vector3& v3, const Vector3& normal)
+        {
+            constexpr Vector2 uv0 = { 0, 0 };
+            constexpr Vector2 uv1 = { 1, 0 };
+            constexpr Vector2 uv2 = { 1, 1 };
+            constexpr Vector2 uv3 = { 0, 1 };
+            const Color color = Colour::White;
+
+            triangles.push_back(
+                Triangle
+                {
+                    .collision_mode = Triangle::CollisionMode::Disabled,
+                    .colours = { color, color, color },
+                    .frames = { {.uvs = { uv0, uv1, uv2 } } },
+                    .normals = { normal, normal, normal },
+                    .texture_mode = Triangle::TextureMode::Untextured,
+                    .vertices = { v0, v1, v2 }
+                });
+            triangles.push_back(
+                Triangle
+                {
+                    .collision_mode = Triangle::CollisionMode::Disabled,
+                    .colours = { color, color, color },
+                    .frames = { {.uvs = { uv2, uv3, uv0 } } },
+                    .normals = { normal, normal, normal },
+                    .texture_mode = Triangle::TextureMode::Untextured,
+                    .vertices = { v2, v3, v0 }
+                });
+        }
 
         Vector3 calculate_normal(const Vector3* const vertices)
         {
@@ -31,7 +62,8 @@ namespace trview
             int16_t bottom,
             Matrix& scale,
             Vector3& offset,
-            SpriteOffsetMode offset_mode)
+            SpriteOffsetMode offset_mode,
+            Triangle::TextureMode texture_mode)
         {
             // Calculate UVs.
             float u = static_cast<float>(x) / 256.0f;
@@ -41,24 +73,26 @@ namespace trview
 
             // Generate quad.
             using namespace DirectX::SimpleMath;
-            std::vector<MeshVertex> vertices
-            {
-                { Vector3(-0.5f, -0.5f, 0), Vector3::Zero, Vector2(u + width, v + height), Color(1,1,1,1)  },
-                { Vector3(0.5f, -0.5f, 0), Vector3::Zero, Vector2(u, v + height), Color(1,1,1,1) },
-                { Vector3(-0.5f, 0.5f, 0), Vector3::Zero, Vector2(u + width, v), Color(1,1,1,1) },
-                { Vector3(0.5f, 0.5f, 0), Vector3::Zero, Vector2(u, v), Color(1,1,1,1) },
-            };
 
-            std::vector<TransparentTriangle> transparent_triangles
+            const Color colour = Colour::White;
+            const std::vector<Triangle> triangles
             {
-                { vertices[0].pos, vertices[1].pos, vertices[2].pos, vertices[0].uv, vertices[1].uv, vertices[2].uv, tile, TransparentTriangle::Mode::Normal, Colour::White, Colour::White, Colour::White },
-                { vertices[2].pos, vertices[1].pos, vertices[3].pos, vertices[2].uv, vertices[1].uv, vertices[3].uv, tile, TransparentTriangle::Mode::Normal, Colour::White, Colour::White, Colour::White },
-            };
-
-            std::vector<Triangle> collision_triangles
-            {
-                Triangle(vertices[0].pos, vertices[1].pos, vertices[2].pos),
-                Triangle(vertices[2].pos, vertices[1].pos, vertices[3].pos)
+                {
+                    .colours = { colour, colour, colour },
+                    .frames = { { .uvs = { Vector2(u + width, v + height), Vector2(u, v + height), Vector2(u + width, v) }, .texture = tile } },
+                    .normals = { Vector3::Forward, Vector3::Forward, Vector3::Forward },
+                    .texture_mode = texture_mode,
+                    .transparency_mode = Triangle::TransparencyMode::Normal,
+                    .vertices = { Vector3(-0.5f, -0.5f, 0), Vector3(0.5f, -0.5f, 0), Vector3(-0.5f, 0.5f, 0) }
+                },
+                {
+                    .colours = { colour, colour, colour },
+                    .frames = { {.uvs = { Vector2(u + width, v), Vector2(u, v + height), Vector2(u, v) }, .texture = tile } },
+                    .normals = { Vector3::Forward, Vector3::Forward, Vector3::Forward },
+                    .texture_mode = texture_mode,
+                    .transparency_mode = Triangle::TransparencyMode::Normal,
+                    .vertices = { Vector3(-0.5f, 0.5f, 0), Vector3(0.5f, -0.5f, 0), Vector3(0.5f, 0.5f, 0) }
+                }
             };
 
             float object_width = static_cast<float>(right - left) / trlevel::Scale_X;
@@ -78,7 +112,7 @@ namespace trview
                 offset = Vector3(0, object_height / -2.0f, 0);
             }
 
-            return source(std::vector<MeshVertex>(), std::vector<std::vector<uint32_t>>(), std::vector<uint32_t>(), transparent_triangles, collision_triangles);
+            return source(triangles);
         }
 
         void adjust_rect_uvs_tr1_1996_pc(std::array<Vector2, 4>& uvs, uint16_t texture)
@@ -199,6 +233,17 @@ namespace trview
                 is_tr1_version_21(version) ||
                 version.platform == trlevel::Platform::Saturn;
         }
+
+        constexpr float animated_texture_frame_time(trlevel::PlatformAndVersion version)
+        {
+            switch (version.version)
+            {
+                case trlevel::LevelVersion::Tomb1:
+                case trlevel::LevelVersion::Tomb2:
+                    return 1.0f / 5.0f;
+            }
+            return 1.0f / 10.0f;
+        }
     }
 
     IMesh::~IMesh()
@@ -207,132 +252,42 @@ namespace trview
 
     std::shared_ptr<IMesh> create_mesh(const trlevel::tr_mesh& mesh, const IMesh::Source& source, const ILevelTextureStorage& texture_storage, const trlevel::PlatformAndVersion& platform_and_version, bool transparent_collision)
     {
-        std::vector<std::vector<uint32_t>> indices(texture_storage.num_tiles());
-        std::vector<MeshVertex> vertices;
-        std::vector<uint32_t> untextured_indices;
-        std::vector<TransparentTriangle> transparent_triangles;
-        std::vector<Triangle> collision_triangles;
+        std::vector<Triangle> triangles;
 
         std::vector<trlevel::trview_room_vertex> in_vertices;
         std::ranges::transform(mesh.vertices, std::back_inserter(in_vertices),
             [](const auto& v) { return trlevel::trview_room_vertex { v, 0, 0, Color(1, 1, 1, 1) }; });
 
-        process_textured_rectangles(mesh.textured_rectangles, in_vertices, texture_storage, vertices, indices, transparent_triangles, collision_triangles, transparent_collision);
-        process_textured_triangles(mesh.textured_triangles, in_vertices, texture_storage, vertices, indices, transparent_triangles, collision_triangles, transparent_collision);
-        process_coloured_rectangles(mesh.coloured_rectangles, in_vertices, texture_storage, vertices, untextured_indices, collision_triangles, platform_and_version);
-        process_coloured_triangles(mesh.coloured_triangles, in_vertices, texture_storage, vertices, untextured_indices, collision_triangles, platform_and_version);
+        process_textured_rectangles(mesh.textured_rectangles, in_vertices, texture_storage, triangles, transparent_collision);
+        process_textured_triangles(mesh.textured_triangles, in_vertices, texture_storage, triangles, transparent_collision);
+        process_coloured_rectangles(mesh.coloured_rectangles, in_vertices, texture_storage, triangles, platform_and_version);
+        process_coloured_triangles(mesh.coloured_triangles, in_vertices, texture_storage, triangles, platform_and_version);
 
-        return source(vertices, indices, untextured_indices, transparent_triangles, collision_triangles);
+        return source(triangles);
     }
 
     std::shared_ptr<IMesh> create_cube_mesh(const IMesh::Source& source)
     {
-        const std::vector<MeshVertex> vertices
-        {
-            // Body:
-            // + y
-            { { -0.5, 0.5f, -0.5 }, Vector3::Down, { 0, 0 }, { 1.0f, 1.0f, 1.0f } },       // 2
-            { { 0.5, 0.5f, -0.5 }, Vector3::Down, { 1, 0 }, { 1.0f, 1.0f, 1.0f } },        // 1
-            { { 0.5, 0.5f, 0.5 }, Vector3::Down, { 1, 1 }, { 1.0f, 1.0f, 1.0f } },         // 0
-            { { -0.5, 0.5f, 0.5 }, Vector3::Down, { 0, 1 }, { 1.0f, 1.0f, 1.0f } },        // 3
-
-            // +x
-            { { 0.5, -0.5f, -0.5 }, Vector3::Left, { 0, 0 }, { 1.0f, 1.0f, 1.0f } },       // 5
-            { { 0.5, -0.5f, 0.5 }, Vector3::Left, { 1, 0 }, { 1.0f, 1.0f, 1.0f } },        // 4
-            { { 0.5, 0.5f, 0.5 }, Vector3::Left, { 1, 1 }, { 1.0f, 1.0f, 1.0f } },         // 0
-            { { 0.5, 0.5f, -0.5 }, Vector3::Left, { 0, 1 }, { 1.0f, 1.0f, 1.0f } },        // 1
-
-            // -x 
-            { { -0.5, 0.5f, -0.5 }, Vector3::Right, { 1, 1 }, { 1.0f, 1.0f, 1.0f } },       // 2
-            { { -0.5, 0.5f, 0.5 }, Vector3::Right, { 0, 1 }, { 1.0f, 1.0f, 1.0f } },        // 3
-            { { -0.5, -0.5f, 0.5 }, Vector3::Right, { 0, 0 }, { 1.0f, 1.0f, 1.0f } },       // 7
-            { { -0.5, -0.5f, -0.5 }, Vector3::Right, { 1, 0 }, { 1.0f, 1.0f, 1.0f } },      // 6
-
-            // +z
-            { { 0.5, 0.5f, 0.5 }, Vector3::Forward, { 0, 1 }, { 1.0f, 1.0f, 1.0f } },         // 0
-            { { 0.5, -0.5f, 0.5 }, Vector3::Forward, { 0, 0 }, { 1.0f, 1.0f, 1.0f } },        // 4
-            { { -0.5, 0.5f, 0.5 }, Vector3::Forward, { 1, 1 }, { 1.0f, 1.0f, 1.0f } },        // 3
-            { { -0.5, -0.5f, 0.5 }, Vector3::Forward, { 1, 0 }, { 1.0f, 1.0f, 1.0f } },       // 7
-
-            // -z
-            { { 0.5, -0.5f, -0.5 }, Vector3::Backward, { 1, 0 }, { 1.0f, 1.0f, 1.0f } },       // 5
-            { { 0.5, 0.5f, -0.5 }, Vector3::Backward, { 1, 1 }, { 1.0f, 1.0f, 1.0f } },        // 1
-            { { -0.5, 0.5f, -0.5 }, Vector3::Backward, { 0, 1 }, { 1.0f, 1.0f, 1.0f } },       // 2
-            { { -0.5, -0.5f, -0.5 }, Vector3::Backward, { 0, 0 }, { 1.0f, 1.0f, 1.0f } },      // 6
-
-            // -y
-            { { 0.5, -0.5f, 0.5 }, Vector3::Up, { 1, 0 }, { 1.0f, 1.0f, 1.0f } },        // 4
-            { { 0.5, -0.5f, -0.5 }, Vector3::Up, { 1, 1 }, { 1.0f, 1.0f, 1.0f } },       // 5
-            { { -0.5, -0.5f, -0.5 }, Vector3::Up, { 0, 1 }, { 1.0f, 1.0f, 1.0f } },      // 6
-            { { -0.5, -0.5f, 0.5 }, Vector3::Up, { 0, 0 }, { 1.0f, 1.0f, 1.0f } },        // 7
-        };
-
-        const std::vector<uint32_t> indices
-        {
-            0,  1,  2,  2,  3,  0,  // +y
-            4,  5,  6,  6,  7,  4,  // +x
-            8,  9,  10, 10, 11, 8,  // -x
-            12, 13, 14, 13, 15, 14, // +z
-            16, 17, 18, 18, 19, 16, // -z
-            20, 21, 22, 22, 23, 20  // -y
-        };
-
-        return source(vertices, std::vector<std::vector<uint32_t>>(), indices, std::vector<TransparentTriangle>(), {});
+        std::vector<Triangle> triangles;
+        add_rect(triangles, { -0.5, 0.5, -0.5 }, { 0.5, 0.5, -0.5 }, { 0.5, 0.5, 0.5 }, { -0.5, 0.5, 0.5 }, Vector3::Down);
+        add_rect(triangles, { 0.5, -0.5, -0.5 }, { 0.5, -0.5, 0.5 }, { 0.5, 0.5, 0.5 }, { 0.5, 0.5, -0.5 }, Vector3::Left);
+        add_rect(triangles, { -0.5, -0.5, 0.5 }, { -0.5, -0.5, -0.5 }, { -0.5, 0.5, -0.5 }, { -0.5, 0.5, 0.5 }, Vector3::Right);
+        add_rect(triangles, { 0.5, -0.5, 0.5 }, { -0.5, -0.5, 0.5 } , { -0.5, 0.5, 0.5 }, { 0.5, 0.5, 0.5 }, Vector3::Forward);
+        add_rect(triangles, { -0.5, -0.5, -0.5 }, { 0.5, -0.5, -0.5 }, { 0.5, 0.5, -0.5 }, { -0.5, 0.5, -0.5 }, Vector3::Backward);
+        add_rect(triangles, { -0.5, -0.5, 0.5 }, { 0.5, -0.5, 0.5 }, { 0.5, -0.5, -0.5 }, { -0.5, -0.5, -0.5 }, Vector3::Up);
+        return source(triangles);
     }
 
     std::shared_ptr<IMesh> create_frustum_mesh(const IMesh::Source& source)
     {
-        const std::vector<MeshVertex> vertices
-        {
-            // Body:
-            // + y
-            { { -0.1f, 0.1f, -0.5f }, Vector3::Down, { 0, 0 }, { 1.0f, 1.0f, 1.0f } },       // 2
-            { { 0.1f, 0.1f, -0.5f }, Vector3::Down, { 1, 0 }, { 1.0f, 1.0f, 1.0f } },        // 1
-            { { 0.5f, 0.5f, 0.5f }, Vector3::Down, { 1, 1 }, { 1.0f, 1.0f, 1.0f } },         // 0
-            { { -0.5f, 0.5f, 0.5f }, Vector3::Down, { 0, 1 }, { 1.0f, 1.0f, 1.0f } },        // 3
-
-            // +x
-            { { 0.1f, -0.1f, -0.5f }, Vector3::Left, { 0, 0 }, { 1.0f, 1.0f, 1.0f } },       // 5
-            { { 0.5f, -0.5f, 0.5f }, Vector3::Left, { 1, 0 }, { 1.0f, 1.0f, 1.0f } },        // 4
-            { { 0.5f, 0.5f, 0.5f }, Vector3::Left, { 1, 1 }, { 1.0f, 1.0f, 1.0f } },         // 0
-            { { 0.1f, 0.1f, -0.5f }, Vector3::Left, { 0, 1 }, { 1.0f, 1.0f, 1.0f } },        // 1
-
-            // -x 
-            { { -0.1f, 0.1f, -0.5f }, Vector3::Right, { 1, 1 }, { 1.0f, 1.0f, 1.0f } },       // 2
-            { { -0.5f, 0.5f, 0.5f }, Vector3::Right, { 0, 1 }, { 1.0f, 1.0f, 1.0f } },        // 3
-            { { -0.5f, -0.5f, 0.5f }, Vector3::Right, { 0, 0 }, { 1.0f, 1.0f, 1.0f } },       // 7
-            { { -0.1f, -0.1f, -0.5f }, Vector3::Right, { 1, 0 }, { 1.0f, 1.0f, 1.0f } },      // 6
-
-            // +z
-            { { 0.5f, 0.5f, 0.5f }, Vector3::Forward, { 0, 1 }, { 1.0f, 1.0f, 1.0f } },         // 0
-            { { 0.5f, -0.5f, 0.5f }, Vector3::Forward, { 0, 0 }, { 1.0f, 1.0f, 1.0f } },        // 4
-            { { -0.5f, 0.5f, 0.5f }, Vector3::Forward, { 1, 1 }, { 1.0f, 1.0f, 1.0f } },        // 3
-            { { -0.5f, -0.5f, 0.5f }, Vector3::Forward, { 1, 0 }, { 1.0f, 1.0f, 1.0f } },       // 7
-
-            // -z
-            { { 0.1f, -0.1f, -0.5f }, Vector3::Backward, { 1, 0 }, { 1.0f, 1.0f, 1.0f } },       // 5
-            { { 0.1f, 0.1f, -0.5f }, Vector3::Backward, { 1, 1 }, { 1.0f, 1.0f, 1.0f } },        // 1
-            { { -0.1f, 0.1f, -0.5f }, Vector3::Backward, { 0, 1 }, { 1.0f, 1.0f, 1.0f } },       // 2
-            { { -0.1f, -0.1f, -0.5f }, Vector3::Backward, { 0, 0 }, { 1.0f, 1.0f, 1.0f } },      // 6
-
-            // -y
-            { { 0.5f, -0.5f, 0.5f }, Vector3::Up, { 1, 0 }, { 1.0f, 1.0f, 1.0f } },        // 4
-            { { 0.1f, -0.1f, -0.5f }, Vector3::Up, { 1, 1 }, { 1.0f, 1.0f, 1.0f } },       // 5
-            { { -0.1f, -0.1f, -0.5f }, Vector3::Up, { 0, 1 }, { 1.0f, 1.0f, 1.0f } },      // 6
-            { { -0.5f, -0.5f, 0.5f }, Vector3::Up, { 0, 0 }, { 1.0f, 1.0f, 1.0f } },        // 7
-        };
-
-        const std::vector<uint32_t> indices
-        {
-            0,  1,  2,  2,  3,  0,  // +y
-            4,  5,  6,  6,  7,  4,  // +x
-            8,  9,  10, 10, 11, 8,  // -x
-            12, 13, 14, 13, 15, 14, // +z
-            16, 17, 18, 18, 19, 16, // -z
-            20, 21, 22, 22, 23, 20  // -y
-        };
-
-        return source(vertices, std::vector<std::vector<uint32_t>>(), indices, std::vector<TransparentTriangle>(), {});
+        std::vector<Triangle> triangles;
+        add_rect(triangles, { -0.1f, 0.1f, -0.5f }, { 0.1f, 0.1f, -0.5f }, { 0.5f, 0.5f, 0.5f }, { -0.5f, 0.5f, 0.5f }, Vector3::Down);
+        add_rect(triangles, { 0.1f, -0.1f, -0.5f }, { 0.5f, -0.5f, 0.5f }, { 0.5f, 0.5f, 0.5f }, { 0.1f, 0.1f, -0.5f }, Vector3::Left);
+        add_rect(triangles, { -0.1f, 0.1f, -0.5f }, { -0.5f, 0.5f, 0.5f }, { -0.5f, -0.5f, 0.5f }, { -0.1f, -0.1f, -0.5f }, Vector3::Right);
+        add_rect(triangles, { 0.5f, 0.5f, 0.5f }, { 0.5f, -0.5f, 0.5f }, { -0.5f, -0.5f, 0.5f }, { -0.5f, 0.5f, 0.5f }, Vector3::Forward);
+        add_rect(triangles, { 0.1f, -0.1f, -0.5f }, { 0.1f, 0.1f, -0.5f }, { -0.1f, 0.1f, -0.5f }, { -0.1f, -0.1f, -0.5f }, Vector3::Backward);
+        add_rect(triangles, { 0.5f, -0.5f, 0.5f }, { 0.1f, -0.1f, -0.5f }, { -0.1f, -0.1f, -0.5f }, { -0.5f, -0.5f, 0.5f }, Vector3::Up);
+        return source(triangles);
     }
 
     std::shared_ptr<IMesh> create_sphere_mesh(const IMesh::Source& source, uint32_t stacks, uint32_t slices)
@@ -361,15 +316,20 @@ namespace trview
             }
         }
 
-        std::vector<uint32_t> indices;
+        const Color colour = Colour::White;
+        std::vector<Triangle> triangles;
         for (uint32_t slice = 0; slice < slices; ++slice)
         {
-            indices.push_back(0);
-            indices.push_back(slice + 1);
-            indices.push_back(slice == slices - 1 ? 1 : slice + 2);
+            triangles.push_back(
+                {
+                    .colours = { colour, colour, colour },
+                    .normals = { points[0].normal, points[slice + 1].normal, points[slice == slices - 1 ? 1 : slice + 2].normal },
+                    .texture_mode = Triangle::TextureMode::Untextured,
+                    .vertices = { points[0].pos, points[slice + 1].pos, points[slice == slices - 1 ? 1 : slice + 2].pos }
+                });
         }
 
-        for (uint32_t stack = 0; stack < stacks; ++stack)
+        for (uint32_t stack = 0; stack < stacks - 1; ++stack)
         {
             uint32_t b = 1 + stack * slices;
             for (uint32_t slice = 0; slice < slices; ++slice)
@@ -377,16 +337,25 @@ namespace trview
                 const uint32_t top_right = (slice == slices - 1 ? 0 : slice + 1);
                 const uint32_t bottom_right = (slice == slices - 1 ? 0 : slice + 1);
 
-                indices.push_back(b + slice);
-                indices.push_back(b + slice + slices);
-                indices.push_back(b + slices + bottom_right);
-                indices.push_back(b + slice);
-                indices.push_back(b + slices + bottom_right);
-                indices.push_back(b + top_right);
+                triangles.push_back(
+                    {
+                        .colours = { colour, colour, colour },
+                        .normals = { points[b + slice].normal, points[b + slice + slices].normal, points[b + slices + bottom_right].normal },
+                        .texture_mode = Triangle::TextureMode::Untextured,
+                        .vertices = { points[b + slice].pos, points[b + slice + slices].pos, points[b + slices + bottom_right].pos }
+                    });
+
+                triangles.push_back(
+                    {
+                        .colours = { colour, colour, colour },
+                        .normals = { points[b + slice].normal, points[b + slices + bottom_right].normal, points[b + top_right].normal },
+                        .texture_mode = Triangle::TextureMode::Untextured,
+                        .vertices = { points[b + slice].pos, points[b + slices + bottom_right].pos, points[b + top_right].pos }
+                    });
             }
         }
 
-        return source(points, std::vector<std::vector<uint32_t>>(), indices, std::vector<TransparentTriangle>(), std::vector<Triangle>());
+        return source(triangles);
     }
 
     std::shared_ptr<IMesh> create_sprite_mesh(const IMesh::Source& source, const std::optional<trlevel::tr_sprite_texture>& sprite, Matrix& scale, Vector3& offset, SpriteOffsetMode offset_mode)
@@ -394,9 +363,9 @@ namespace trview
         if (sprite)
         {
             const auto& s = sprite.value();
-            return create_sprite_mesh(source, s.x + 1, s.y + 1, s.Width - 1, s.Height - 1, s.Tile, s.LeftSide, s.RightSide, s.TopSide, s.BottomSide, scale, offset, offset_mode);
+            return create_sprite_mesh(source, s.x + 1, s.y + 1, s.Width - 1, s.Height - 1, s.Tile, s.LeftSide, s.RightSide, s.TopSide, s.BottomSide, scale, offset, offset_mode, Triangle::TextureMode::Textured);
         }
-        return create_sprite_mesh(source, 0, 0, 0, 0, TransparentTriangle::Untextured, -256, 256, -256, 256, scale, offset, offset_mode);
+        return create_sprite_mesh(source, 0, 0, 0, 0, 0, -256, 256, -256, 256, scale, offset, offset_mode, Triangle::TextureMode::Untextured);
     }
 
     std::shared_ptr<IMesh> create_sprite_mesh(const IMesh::Source& source, const std::optional<trlevel::tr_sprite_texture>& sprite, Matrix& scale, Matrix& offset, SpriteOffsetMode offset_mode)
@@ -411,10 +380,7 @@ namespace trview
         const std::vector<trlevel::tr4_mesh_face4>& rectangles,
         const std::vector<trlevel::trview_room_vertex>& input_vertices,
         const ILevelTextureStorage& texture_storage,
-        std::vector<MeshVertex>& output_vertices,
-        std::vector<std::vector<uint32_t>>& output_indices,
-        std::vector<TransparentTriangle>& transparent_triangles,
-        std::vector<Triangle>& collision_triangles,
+        std::vector<Triangle>& out_triangles,
         bool transparent_collision)
     {
         using namespace trlevel;
@@ -454,72 +420,75 @@ namespace trview
                 adjust_rect_uvs_tr1_1996_pc(uvs, rect.texture);
             }
 
-            if (needs_rect_uv_swap(version))
+            const bool need_rect_uv_swap = needs_rect_uv_swap(version);
+            if (need_rect_uv_swap)
             {
                 std::swap(uvs[2], uvs[3]);
             }
 
             const bool double_sided = texture_storage.platform_and_version().platform != Platform::Saturn && (rect.texture & 0x8000);
-
-            TransparentTriangle::Mode transparency_mode;
-            if (determine_transparency(
+            const Triangle::AnimationMode animation_mode = texture_storage.animation_mode(texture);
+            Triangle::TransparencyMode transparency_mode;
+            determine_transparency(
                 version.platform == Platform::Saturn ? rect.effects : texture_storage.attribute(texture),
-                version.platform == Platform::Saturn ? 0 : rect.effects, transparency_mode))
+                version.platform == Platform::Saturn ? 0 : rect.effects, transparency_mode);
+
+            const auto normal = (verts[2] - verts[1]).Cross(verts[1] - verts[0]);
+            auto triangle = Triangle
             {
-                transparent_triangles.emplace_back(verts[0], verts[1], verts[2], uvs[0], uvs[1], uvs[2], texture_storage.tile(texture), transparency_mode, colors[0], colors[1], colors[2]);
-                transparent_triangles.emplace_back(verts[2], verts[3], verts[0], uvs[2], uvs[3], uvs[0], texture_storage.tile(texture), transparency_mode, colors[2], colors[3], colors[0]);
-                if (transparent_collision)
-                {
-                    collision_triangles.emplace_back(verts[0], verts[1], verts[2]);
-                    collision_triangles.emplace_back(verts[2], verts[3], verts[0]);
-                }
+                .animation_mode = animation_mode,
+                .collision_mode = (transparency_mode == Triangle::TransparencyMode::None || transparent_collision) ? Triangle::CollisionMode::Enabled : Triangle::CollisionMode::Disabled,
+                .colours = { colors[0], colors[1], colors[2] },
+                .frames = { Triangle::Frame {.uvs = { uvs[0], uvs[1], uvs[2] }, .texture = texture_storage.tile(texture) }},
+                .frame_time = animated_texture_frame_time(version),
+                .normals = { normal, normal, normal },
+                .side_mode = double_sided ? Triangle::SideMode::Double : Triangle::SideMode::Single,
+                .transparency_mode = transparency_mode,
+                .vertices = { verts[0], verts[1], verts[2] }
+            };
 
-                if (double_sided)
-                {
-
-                    transparent_triangles.emplace_back(verts[2], verts[1], verts[0], uvs[2], uvs[1], uvs[0], texture_storage.tile(texture), transparency_mode, colors[2], colors[1], colors[0]);
-                    transparent_triangles.emplace_back(verts[0], verts[3], verts[2], uvs[0], uvs[3], uvs[2], texture_storage.tile(texture), transparency_mode, colors[0], colors[3], colors[2]);
-                    if (transparent_collision)
+            if (animation_mode == Triangle::AnimationMode::Swap)
+            {
+                const auto sequence = texture_storage.animated_texture(static_cast<uint16_t>(texture));
+                triangle.frames = sequence | std::views::transform([&](auto&& e) -> Triangle::Frame
                     {
-                        collision_triangles.emplace_back(verts[2], verts[1], verts[0]);
-                        collision_triangles.emplace_back(verts[0], verts[3], verts[2]);
-                    }
-                }
-                continue;
+                        return
+                        {
+                            .uvs = {  texture_storage.uv(e, 0), texture_storage.uv(e, 1), texture_storage.uv(e, need_rect_uv_swap ? 3 : 2) },
+                            .texture = texture_storage.tile(e)
+                        };
+                    }) | std::ranges::to<std::vector>();
             }
 
-            const uint32_t base = static_cast<uint32_t>(output_vertices.size());
-            const auto normal = calculate_normal(&verts[0]);
-            for (int i = 0; i < 4; ++i)
+            const auto normal2 = (verts[0] - verts[3]).Cross(verts[3] - verts[2]);
+            auto triangle2 = Triangle
             {
-                output_vertices.push_back({ verts[i], normal, uvs[i], colors[i] });
-            }
+                .animation_mode = animation_mode,
+                .collision_mode = (transparency_mode == Triangle::TransparencyMode::None || transparent_collision) ? Triangle::CollisionMode::Enabled : Triangle::CollisionMode::Disabled,
+                .colours = { colors[2], colors[3], colors[0] },
+                .frames = { Triangle::Frame {.uvs = { uvs[2], uvs[3], uvs[0] }, .texture = texture_storage.tile(texture) }},
+                .frame_time = animated_texture_frame_time(version),
+                .normals = { normal2, normal2, normal2 },
+                .side_mode = double_sided ? Triangle::SideMode::Double : Triangle::SideMode::Single,
+                .transparency_mode = transparency_mode,
+                .vertices = { verts[2], verts[3], verts[0] }
+            };
 
-            auto& tex_indices = output_indices[texture_storage.tile(texture)];
-            tex_indices.push_back(base);
-            tex_indices.push_back(base + 1);
-            tex_indices.push_back(base + 2);
-            tex_indices.push_back(base + 2);
-            tex_indices.push_back(base + 3);
-            tex_indices.push_back(base + 0);
-
-            if (double_sided)
+            if (animation_mode == Triangle::AnimationMode::Swap)
             {
-                tex_indices.push_back(base + 2);
-                tex_indices.push_back(base + 1);
-                tex_indices.push_back(base);
-                tex_indices.push_back(base);
-                tex_indices.push_back(base + 3);
-                tex_indices.push_back(base + 2);
+                const auto sequence = texture_storage.animated_texture(static_cast<uint16_t>(texture));
+                triangle2.frames = sequence | std::views::transform([&](auto&& e) -> Triangle::Frame
+                    {
+                        return
+                        {
+                            .uvs = {  texture_storage.uv(e, need_rect_uv_swap ? 3 : 2), texture_storage.uv(e, need_rect_uv_swap ? 2 : 3), texture_storage.uv(e, 0) },
+                            .texture = texture_storage.tile(e)
+                        };
+                    }) | std::ranges::to<std::vector>();
             }
 
-            collision_triangles.emplace_back(verts[0], verts[1], verts[2]);
-            collision_triangles.emplace_back(verts[2], verts[3], verts[0]);
-            if (double_sided)
-            {
-                collision_triangles.emplace_back(verts[2], verts[1], verts[0]);
-                collision_triangles.emplace_back(verts[0], verts[3], verts[2]);
-            }
+            out_triangles.push_back(triangle);
+            out_triangles.push_back(triangle2);
         }
     }
 
@@ -527,10 +496,7 @@ namespace trview
         const std::vector<trlevel::tr4_mesh_face3>& triangles,
         const std::vector<trlevel::trview_room_vertex>& input_vertices,
         const ILevelTextureStorage& texture_storage,
-        std::vector<MeshVertex>& output_vertices,
-        std::vector<std::vector<uint32_t>>& output_indices,
-        std::vector<TransparentTriangle>& transparent_triangles,
-        std::vector<Triangle>& collision_triangles,
+        std::vector<Triangle>& out_triangles,
         bool transparent_collision)
     {
         using namespace trlevel;
@@ -577,51 +543,40 @@ namespace trview
             }
 
             const bool double_sided = version.platform != Platform::Saturn && (tri.texture & 0x8000);
-
-            TransparentTriangle::Mode transparency_mode;
-            if (determine_transparency(
+            const Triangle::AnimationMode animation_mode = texture_storage.animation_mode(texture);
+            Triangle::TransparencyMode transparency_mode;
+            determine_transparency(
                 version.platform == Platform::Saturn ? tri.effects : texture_storage.attribute(texture),
-                version.platform == Platform::Saturn ? 0 : tri.effects, transparency_mode))
+                version.platform == Platform::Saturn ? 0 : tri.effects, transparency_mode);
+
+            const auto normal = (verts[2] - verts[1]).Cross(verts[1] - verts[0]);
+            auto triangle = Triangle
             {
-                transparent_triangles.emplace_back(verts[0], verts[1], verts[2], uvs[0], uvs[1], uvs[2], texture_storage.tile(texture), transparency_mode, colors[0], colors[1], colors[2]);
-                if (transparent_collision)
-                {
-                    collision_triangles.emplace_back(verts[0], verts[1], verts[2]);
-                }
-                if (double_sided)
-                {
-                    transparent_triangles.emplace_back(verts[2], verts[1], verts[0], uvs[2], uvs[1], uvs[0], texture_storage.tile(texture), transparency_mode, colors[2], colors[1], colors[0]);
-                    if (transparent_collision)
+                .animation_mode = animation_mode,
+                .collision_mode = (transparency_mode == Triangle::TransparencyMode::None || transparent_collision) ? Triangle::CollisionMode::Enabled : Triangle::CollisionMode::Disabled,
+                .colours = { colors[0], colors[1], colors[2] },
+                .frames = { Triangle::Frame {.uvs = { uvs[0], uvs[1], uvs[2] }, .texture = texture_storage.tile(texture) }},
+                .frame_time = animated_texture_frame_time(version),
+                .normals = { normal, normal, normal },
+                .side_mode = double_sided ? Triangle::SideMode::Double : Triangle::SideMode::Single,
+                .transparency_mode = transparency_mode,
+                .vertices = { verts[0], verts[1], verts[2] }
+            };
+
+            if (animation_mode == Triangle::AnimationMode::Swap)
+            {
+                const auto sequence = texture_storage.animated_texture(static_cast<uint16_t>(texture));
+                triangle.frames = sequence | std::views::transform([&](auto&& e) -> Triangle::Frame
                     {
-                        collision_triangles.emplace_back(verts[2], verts[1], verts[0]);
-                    }
-                }
-                continue;
+                        return
+                        {
+                            .uvs = {  texture_storage.uv(e, 0), texture_storage.uv(e, 1), texture_storage.uv(e, 2) },
+                            .texture = texture_storage.tile(e)
+                        };
+                    }) | std::ranges::to<std::vector>();
             }
 
-            const uint32_t base = static_cast<uint32_t>(output_vertices.size());
-            const auto normal = calculate_normal(&verts[0]);
-            for (int i = 0; i < 3; ++i)
-            {
-                output_vertices.push_back({ verts[i], normal, uvs[i], colors[i] });
-            }
-
-            auto& tex_indices = output_indices[texture_storage.tile(texture)];
-            tex_indices.push_back(base);
-            tex_indices.push_back(base + 1);
-            tex_indices.push_back(base + 2);
-            if (double_sided)
-            {
-                tex_indices.push_back(base + 2);
-                tex_indices.push_back(base + 1);
-                tex_indices.push_back(base);
-            }
-
-            collision_triangles.emplace_back(verts[0], verts[1], verts[2]);
-            if (double_sided)
-            {
-                collision_triangles.emplace_back(verts[2], verts[1], verts[0]);
-            }
+            out_triangles.push_back(triangle);
         }
     }
 
@@ -629,9 +584,7 @@ namespace trview
         const std::vector<trlevel::tr_face4>& rectangles,
         const std::vector<trlevel::trview_room_vertex>& input_vertices,
         const ILevelTextureStorage& texture_storage,
-        std::vector<MeshVertex>& output_vertices,
-        std::vector<uint32_t>& output_indices,
-        std::vector<Triangle>& collision_triangles,
+        std::vector<Triangle>& out_triangles,
         const trlevel::PlatformAndVersion& platform_and_version)
     {
         for (const auto& rect : rectangles)
@@ -645,36 +598,28 @@ namespace trview
                 verts[i] = convert_vertex(input_vertices[rect.vertices[i]].vertex);
             }
 
-            const uint32_t base = static_cast<uint32_t>(output_vertices.size());
+            const auto colour = platform_and_version.platform == trlevel::Platform::Saturn ? colour_from_texture(rect.texture) : texture_storage.palette_from_texture(texture);
             const auto normal = calculate_normal(&verts[0]);
-            for (int i = 0; i < 4; ++i)
-            {
-                output_vertices.push_back({ verts[i], normal, Vector2::Zero, platform_and_version.platform == trlevel::Platform::Saturn ? colour_from_texture(rect.texture) : texture_storage.palette_from_texture(texture) });
-            }
 
-            output_indices.push_back(base);
-            output_indices.push_back(base + 1);
-            output_indices.push_back(base + 2);
-            output_indices.push_back(base + 2);
-            output_indices.push_back(base + 3);
-            output_indices.push_back(base + 0);
-            if (double_sided)
-            {
-                output_indices.push_back(base + 2);
-                output_indices.push_back(base + 1);
-                output_indices.push_back(base);
-                output_indices.push_back(base);
-                output_indices.push_back(base + 3);
-                output_indices.push_back(base + 2);
-            }
+            const auto normal1 = (verts[2] - verts[1]).Cross(verts[1] - verts[0]);
+            out_triangles.push_back(
+                {
+                    .colours = { colour, colour, colour },
+                    .normals = { normal1, normal1, normal1 },
+                    .side_mode = double_sided ? Triangle::SideMode::Double : Triangle::SideMode::Single,
+                    .texture_mode = Triangle::TextureMode::Untextured,
+                    .vertices = { verts[0], verts[1], verts[2] }
+                });
 
-            collision_triangles.emplace_back(verts[0], verts[1], verts[2]);
-            collision_triangles.emplace_back(verts[2], verts[3], verts[0]);
-            if (double_sided)
-            {
-                collision_triangles.emplace_back(verts[2], verts[1], verts[0]);
-                collision_triangles.emplace_back(verts[0], verts[3], verts[2]);
-            }
+            const auto normal2 = (verts[0] - verts[3]).Cross(verts[3] - verts[2]);
+            out_triangles.push_back(
+                {
+                    .colours = { colour, colour, colour },
+                    .normals = { normal2, normal2, normal2 },
+                    .side_mode = double_sided ? Triangle::SideMode::Double : Triangle::SideMode::Single,
+                    .texture_mode = Triangle::TextureMode::Untextured,
+                    .vertices = { verts[2], verts[3], verts[0] }
+                });
         }
     }
 
@@ -682,9 +627,7 @@ namespace trview
         const std::vector<trlevel::tr_face3>& triangles,
         const std::vector<trlevel::trview_room_vertex>& input_vertices,
         const ILevelTextureStorage& texture_storage,
-        std::vector<MeshVertex>& output_vertices,
-        std::vector<uint32_t>& output_indices,
-        std::vector<Triangle>& collision_triangles,
+        std::vector<Triangle>& out_triangles,
         const trlevel::PlatformAndVersion& platform_and_version)
     {
         for (const auto& tri : triangles)
@@ -698,25 +641,17 @@ namespace trview
                 verts[i] = convert_vertex(input_vertices[tri.vertices[i]].vertex);
             }
 
-            const uint32_t base = static_cast<uint32_t>(output_vertices.size());
+            const auto colour = platform_and_version.platform == trlevel::Platform::Saturn ? colour_from_texture(tri.texture) : texture_storage.palette_from_texture(texture);
             const auto normal = calculate_normal(&verts[0]);
-            for (int i = 0; i < 3; ++i)
-            {
-                output_vertices.push_back({ verts[i], normal, Vector2::Zero, platform_and_version.platform == trlevel::Platform::Saturn ? colour_from_texture(tri.texture) : texture_storage.palette_from_texture(texture) });
-            }
 
-            output_indices.push_back(base);
-            output_indices.push_back(base + 1);
-            output_indices.push_back(base + 2);
-            collision_triangles.emplace_back(verts[0], verts[1], verts[2]);
-
-            if (double_sided)
-            {
-                output_indices.push_back(base + 2);
-                output_indices.push_back(base + 1);
-                output_indices.push_back(base);
-                collision_triangles.emplace_back(verts[2], verts[1], verts[0]);
-            }
+            out_triangles.push_back(
+                {
+                    .colours = { colour, colour, colour },
+                    .normals = { normal, normal, normal },
+                    .side_mode = double_sided ? Triangle::SideMode::Double : Triangle::SideMode::Single,
+                    .texture_mode = Triangle::TextureMode::Untextured,
+                    .vertices = { verts[0], verts[1], verts[2] }
+                });
         }
     }
 

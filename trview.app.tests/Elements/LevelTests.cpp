@@ -856,3 +856,25 @@ TEST(Level, SetShowSoundSourcesRaisesLevelChangedEvent)
     level->set_show_sound_sources(true);
     ASSERT_EQ(raised, true);
 }
+
+TEST(Level, RoomUpdated)
+{
+    auto [mock_level_ptr, mock_level] = create_mock<trlevel::mocks::MockLevel>();
+    EXPECT_CALL(mock_level, get_version).WillRepeatedly(Return(LevelVersion::Tomb4));
+    EXPECT_CALL(mock_level, num_rooms()).WillRepeatedly(Return(1));
+
+    auto room = mock_shared<MockRoom>();
+    EXPECT_CALL(*room, update(1.0f)).Times(1);
+
+    int room_called = 0;
+    auto level = register_test_module().with_level(std::move(mock_level_ptr))
+        .with_room_source(
+            [&](auto&&...)
+            {
+                ++room_called;
+                return room;
+            }).build();
+
+    ASSERT_EQ(room_called, 1);
+    level->update(1.0f);
+}

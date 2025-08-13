@@ -767,7 +767,8 @@ namespace trlevel
         uint16_t num_rooms;
         char     unknown_2[2];
         uint16_t num_items;
-        char     unknown_3[4];
+        uint16_t num_animated_textures;
+        uint16_t num_animated_uv_ranges;
         uint32_t room_data_size;
         uint32_t floor_data_size;
         uint32_t outside_room_size;

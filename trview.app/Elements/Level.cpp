@@ -1605,6 +1605,14 @@ namespace trview
         return _flybys | std::ranges::to<std::vector<std::weak_ptr<IFlyby>>>();
     }
 
+    void Level::update(float delta)
+    {
+        for (auto& room : _rooms)
+        {
+            room->update(delta);
+        }
+    }
+
     bool find_item_by_type_id(const ILevel& level, uint32_t type_id, std::weak_ptr<IItem>& output_item)
     {
         const auto& items = level.items();

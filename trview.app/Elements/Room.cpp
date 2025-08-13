@@ -384,19 +384,12 @@ namespace trview
 
     void Room::generate_geometry(const IMesh::Source& mesh_source, const trlevel::tr3_room& room)
     {
-        std::vector<MeshVertex> vertices;
-        std::vector<TransparentTriangle> transparent_triangles;
+        std::vector<Triangle> triangles;
+        process_textured_rectangles(room.data.rectangles, room.data.vertices, *_texture_storage, triangles, false);
+        process_textured_triangles(room.data.triangles, room.data.vertices, *_texture_storage, triangles, false);
+        process_collision_transparency(triangles);
 
-        // The indices are grouped by the number of textiles so that it can be drawn as the selected texture.
-        std::vector<std::vector<uint32_t>> indices(_texture_storage->num_tiles());
-        
-        std::vector<Triangle> collision_triangles;
-
-        process_textured_rectangles(room.data.rectangles, room.data.vertices, *_texture_storage, vertices, indices, transparent_triangles, collision_triangles, false);
-        process_textured_triangles(room.data.triangles, room.data.vertices, *_texture_storage, vertices, indices, transparent_triangles, collision_triangles, false);
-        process_collision_transparency(transparent_triangles, collision_triangles);
-
-        _mesh = mesh_source(vertices, indices, std::vector<uint32_t>{}, transparent_triangles, collision_triangles);
+        _mesh = mesh_source(triangles);
 
         // Generate the bounding box based on the room dimensions.
         update_bounding_box();
@@ -652,11 +645,21 @@ namespace trview
                 Vector3(x + 0.5f, y_bottom[3], z + 0.5f)
             };
 
-            std::vector<TransparentTriangle> triangles;
+            std::vector<Triangle> triangles;
+            const Color colour = ITrigger::Trigger_Colour;
 
-            const auto add_tri = [&triangles](const Vector3& v0, const Vector3& v1, const Vector3& v2)
+            const auto add_tri = [&triangles, &colour](const Vector3& v0, const Vector3& v1, const Vector3& v2)
             {
-                triangles.push_back(TransparentTriangle(v0, v1, v2, ITrigger::Trigger_Colour, ITrigger::Trigger_Colour, ITrigger::Trigger_Colour));
+                const auto normal = (v2 - v1).Cross(v1 - v0);
+                triangles.push_back(
+                    Triangle
+                    {
+                        .colours = { colour, colour, colour },
+                        .normals { normal, normal, normal },
+                        .texture_mode = Triangle::TextureMode::Untextured,
+                        .transparency_mode = Triangle::TransparencyMode::Normal,
+                        .vertices = { v0, v1, v2 }
+                    });
             };
 
             // + Y
@@ -761,31 +764,27 @@ namespace trview
 
     namespace
     {
-        void add_triangle(
-            const ISector::Triangle& tri,
-            std::vector<MeshVertex>& output_vertices,
-            std::vector<uint32_t>& output_indices,
-            std::vector<Triangle>& collision_triangles,
-            const Color& color)
+        void add_triangle(const ISector::Triangle& tri, std::vector<Triangle>& triangles, const Color& color)
         {
-            uint32_t base = static_cast<uint32_t>(output_vertices.size());
-
-            output_vertices.push_back({ tri.v0, Vector3::Down, tri.uv0, color });
-            output_vertices.push_back({ tri.v1, Vector3::Down, tri.uv1, color });
-            output_vertices.push_back({ tri.v2, Vector3::Down, tri.uv2, color });
-
-            output_indices.push_back(base);
-            output_indices.push_back(base + 1);
-            output_indices.push_back(base + 2);
-
-            collision_triangles.emplace_back(tri.v0, tri.v1, tri.v2);
+            triangles.push_back(
+                {
+                    .colours = { color, color, color },
+                    .frames = { { .uvs = { tri.uv0, tri.uv1, tri.uv2 } } },
+                    .normals = { Vector3::Down, Vector3::Down, Vector3::Down },
+                    .vertices = { tri.v0, tri.v1, tri.v2 }
+                });
         }
     }
 
-    void Room::process_collision_transparency(const std::vector<TransparentTriangle>& transparent_triangles, std::vector<Triangle>& collision_triangles)
+    void Room::process_collision_transparency(std::vector<Triangle>& triangles)
     {
-        for (const auto& triangle : transparent_triangles)
+        for (auto& triangle : triangles)
         {
+            if (triangle.transparency_mode == Triangle::TransparencyMode::None)
+            {
+                continue;
+            }
+
             for (const auto& sector : _sectors)
             {
                 if (!sector->is_floor())
@@ -804,8 +803,7 @@ namespace trview
                       { x + 0.5f, corners[3], z + 0.5f },
                       { x - 0.5f, corners[0], z - 0.5f } }))
                 {
-                    collision_triangles.push_back(Triangle(triangle.vertices[0], triangle.vertices[1], triangle.vertices[2]));
-
+                    triangle.collision_mode = Triangle::CollisionMode::Enabled;
                     // A triangle can only match in one sector, so stop after adding it once.
                     break;
                 }
@@ -927,10 +925,10 @@ namespace trview
         geometry_result.position = Vector3::Transform(geometry_result.position, _room_offset);
 
         const auto& tri = geometry_result.triangle;
-        if (tri.normal.y < 0)
+        if (tri.normal().y < 0)
         {
             Vector3 centroid = { std::floor(geometry_result.position.x) + 0.5f, geometry_result.position.y, std::floor(geometry_result.position.z) + 0.5f };
-            Vector3 ray_direction = { 0, -tri.normal.y, 0 };
+            Vector3 ray_direction = { 0, -tri.normal().y, 0 };
 
             centroid = Vector3::Transform(centroid, _inverted_room_offset);
             ray_direction.Normalize();
@@ -1007,9 +1005,7 @@ namespace trview
 
         struct MeshPart
         {
-            std::vector<MeshVertex> vertices;
-            std::vector<Triangle> collision_triangles;
-            std::vector<uint32_t> untextured_indices;
+            std::vector<Triangle> triangles;
         };
 
         std::unordered_map<uint32_t, MeshPart> mesh_parts;
@@ -1023,17 +1019,14 @@ namespace trview
                 auto& part = mesh_parts[_all_geometry_sector_rooms[base + i]];
                 auto colour = tri_colour(tri);
                 colour.a = 1.0f;
-                add_triangle(tri, part.vertices, part.untextured_indices, part.collision_triangles, colour);
+                add_triangle(tri, part.triangles, colour);
             }
             base += tris.size();
         }
 
         for (const auto& parts : mesh_parts)
         {
-            std::vector<std::vector<uint32_t>> vec;
-            vec.push_back(parts.second.untextured_indices);
-            auto mesh = mesh_source(parts.second.vertices, vec, std::vector<uint32_t>{}, std::vector<TransparentTriangle>{}, parts.second.collision_triangles);
-            _all_geometry_meshes[parts.first] = mesh;
+            _all_geometry_meshes[parts.first] = mesh_source(parts.second.triangles);
         }
     }
 
@@ -1160,6 +1153,14 @@ namespace trview
     std::vector<std::weak_ptr<IStaticMesh>> Room::static_meshes() const
     {
         return { std::from_range, _static_meshes };
+    }
+
+    void Room::update(float delta)
+    {
+        if (_mesh)
+        {
+            _mesh->update(delta);
+        }
     }
 
     std::shared_ptr<ISector> sector_from_point(const IRoom& room, const Vector3& point)

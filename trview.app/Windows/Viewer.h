@@ -88,7 +88,6 @@ namespace trview
         virtual DirectX::SimpleMath::Vector3 target() const override;
         virtual void set_target(const DirectX::SimpleMath::Vector3& target) override;
         virtual void select_sector(const std::weak_ptr<ISector>& sector) override;
-        virtual void set_scene_changed() override;
         virtual void select_camera_sink(const std::weak_ptr<ICameraSink>& camera_sink) override;
         void select_static_mesh(const std::weak_ptr<IStaticMesh>& static_mesh) override;
         void select_sound_source(const std::weak_ptr<ISoundSource>& sound_source) override;
@@ -174,7 +173,6 @@ namespace trview
         graphics::IRenderTarget::SizeSource _render_target_source;
         std::unique_ptr<graphics::IRenderTarget> _scene_target;
         std::unique_ptr<graphics::ISprite> _scene_sprite;
-        bool _scene_changed{ true };
 
         std::vector<PickResult> _recent_orbits;
         std::size_t _recent_orbit_index{ 0u };

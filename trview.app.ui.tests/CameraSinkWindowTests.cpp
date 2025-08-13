@@ -143,8 +143,6 @@ void register_camera_sink_window_tests(ImGuiTestEngine* engine)
             auto& context = ctx->GetVars<CameraSinkWindowContext>();
             context.ptr = register_test_module().build();
 
-            bool raised = false;
-            auto token = context.ptr->on_scene_changed += [&raised]() { raised = true; };
             auto camera_sink = mock_shared<MockCameraSink>()->with_number(0)->with_type(ICameraSink::Type::Camera);
             EXPECT_CALL(*camera_sink, set_type(ICameraSink::Type::Sink)).Times(1);
 
@@ -155,7 +153,6 @@ void register_camera_sink_window_tests(ImGuiTestEngine* engine)
             ctx->SetRef("/Camera\\/Sink 0\\/Details_8FE7677A");
             ctx->ComboClick("Type/Sink##type");
 
-            IM_CHECK_EQ(raised, true);
             IM_CHECK_EQ(Mock::VerifyAndClearExpectations(camera_sink.get()), true);
         });
 
@@ -166,9 +163,6 @@ void register_camera_sink_window_tests(ImGuiTestEngine* engine)
             auto& context = ctx->GetVars<CameraSinkWindowContext>();
             context.ptr = register_test_module().build();
 
-            bool raised = false;
-            auto token = context.ptr->on_scene_changed += [&raised]() { raised = true; };
-
             auto camera_sink1 = mock_shared<MockCameraSink>()->with_number(0);
             auto camera_sink2 = mock_shared<MockCameraSink>()->with_number(1)->with_updating_visible(true);
             ON_CALL(*camera_sink2, visible).WillByDefault(testing::Return(true));
@@ -178,7 +172,6 @@ void register_camera_sink_window_tests(ImGuiTestEngine* engine)
 
             ctx->ItemClick("/**/##hide-1");
 
-            IM_CHECK_EQ(raised, true);
             IM_CHECK_EQ(Mock::VerifyAndClearExpectations(camera_sink2.get()), true);
         });
 }

@@ -83,22 +83,6 @@ TEST(ItemsWindowManager, ItemSelectedEventRaised)
     ASSERT_EQ(raised_item, test_item);
 }
 
-TEST(ItemsWindowManager, SceneChangedRaised)
-{
-    auto manager = register_test_module().build();
-
-    bool raised = false;
-    auto token = manager->on_scene_changed += [&raised]() { raised = true; };
-
-    auto created_window = manager->create_window().lock();
-    ASSERT_NE(created_window, nullptr);
-
-    auto test_item = mock_shared<MockItem>();
-    created_window->on_scene_changed();
-
-    ASSERT_TRUE(raised);
-}
-
 TEST(ItemsWindowManager, TriggerSelectedEventRaised)
 {
     auto manager = register_test_module().build();

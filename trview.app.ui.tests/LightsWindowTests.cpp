@@ -157,9 +157,6 @@ void register_lights_window_tests(ImGuiTestEngine* engine)
             auto& context = ctx->GetVars<LightsWindowContext>();
             context.ptr = register_test_module().build();
 
-            bool raised = false;
-            auto token = context.ptr->on_scene_changed += [&raised]() { raised = true; };
-
             auto light1 = mock_shared<MockLight>()->with_number(0);
             auto light2 = mock_shared<MockLight>()->with_number(1)->with_updating_visible(false);
             EXPECT_CALL(*light2, set_visible(true)).Times(1);
@@ -169,7 +166,6 @@ void register_lights_window_tests(ImGuiTestEngine* engine)
 
             ctx->ItemUncheck("/**/##hide-1");
 
-            IM_CHECK_EQ(raised, true);
             IM_CHECK_EQ(Mock::VerifyAndClearExpectations(light2.get()), true);
         });
 

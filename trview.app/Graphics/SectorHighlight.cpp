@@ -1,4 +1,5 @@
 #include "SectorHighlight.h"
+#include <ranges>
 
 using namespace DirectX::SimpleMath;
 
@@ -40,23 +41,22 @@ namespace trview
                 return;
             }
 
-            std::vector<MeshVertex> vertices;
-            std::vector<uint32_t> indices;
+            std::vector<Triangle> out_triangles = triangles |
+                std::views::transform([](auto&& t) -> Triangle
+                    {
+                        auto c = (t.v1 - t.v0).Cross(t.v2 - t.v0);
+                        c.Normalize();
+                        return
+                        {
+                            .collision_mode = Triangle::CollisionMode::Disabled,
+                            .colours = { Highlight_Colour, Highlight_Colour, Highlight_Colour },
+                            .normals = { Vector3::Down, Vector3::Down, Vector3::Down },
+                            .texture_mode = Triangle::TextureMode::Untextured,
+                            .vertices = { t.v0 - c * 0.05f, t.v1 - c * 0.05f, t.v2 - c * 0.05f }
+                        };
+                    }) | std::ranges::to<std::vector>();
 
-            for (const auto& t : triangles)
-            {
-                auto c = (t.v1 - t.v0).Cross(t.v2 - t.v0);
-                c.Normalize();
-
-                vertices.push_back({ t.v0 - c * 0.05f, Vector3::Down, { 0, 0 }, Highlight_Colour });
-                vertices.push_back({ t.v1 - c * 0.05f, Vector3::Down, { 0, 0 }, Highlight_Colour });
-                vertices.push_back({ t.v2 - c * 0.05f, Vector3::Down, { 0, 0 }, Highlight_Colour });
-                indices.push_back(static_cast<uint32_t>(indices.size()));
-                indices.push_back(static_cast<uint32_t>(indices.size()));
-                indices.push_back(static_cast<uint32_t>(indices.size()));
-            }
-
-            _mesh = _mesh_source(vertices, std::vector<std::vector<uint32_t>>(), indices, std::vector<TransparentTriangle>(), std::vector<Triangle>());
+            _mesh = _mesh_source(out_triangles);
         }
 
         _mesh->render(_room_offset * camera.view_projection(), Color(1,1,1));

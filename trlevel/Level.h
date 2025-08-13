@@ -64,14 +64,7 @@ namespace trlevel
         // Returns: The room.
         virtual tr3_room get_room(uint32_t index) const override;
 
-        // Get the number of object textures in the level.
-        // Returns: The number of object textures.
-        virtual uint32_t num_object_textures() const override;
-
-        // Get one of the object texture in the level.
-        // index: The index of the texture to get.
-        // Returns: The object texture.
-        virtual tr_object_texture get_object_texture(uint32_t index) const override;
+        std::vector<tr_object_texture> object_textures() const override;
 
         /// Get the number of floordata values in the level.
         /// @returns The number of floordata values.
@@ -176,6 +169,8 @@ namespace trlevel
         PlatformAndVersion platform_and_version() const override;
         std::weak_ptr<IPack> pack() const override;
         std::vector<tr4_flyby_camera> flyby_cameras() const override;
+        std::vector<std::vector<int16_t>> animated_textures() const override;
+        uint32_t animated_texture_uv_count() const override;
     private:
         void generate_meshes(const std::vector<uint16_t>& mesh_data);
         tr_colour4 colour_from_object_texture(uint32_t texture) const;
@@ -275,6 +270,8 @@ namespace trlevel
         std::vector<tr3_room>          _rooms;
         std::vector<tr_object_texture> _object_textures;
         std::vector<tr_object_texture_psx> _object_textures_psx;
+        std::vector<std::vector<int16_t>> _animated_textures;
+        uint32_t _animated_texture_uv_count{ 0u };
         std::vector<uint16_t>          _floor_data;
         std::vector<tr_model>          _models;
         std::vector<tr2_entity>        _entities;

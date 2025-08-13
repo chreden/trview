@@ -27,8 +27,6 @@ namespace trview
         /// Event raised when a trigger is selected.
         Event<std::weak_ptr<ITrigger>> on_trigger_selected;
 
-        Event<> on_scene_changed;
-
         Event<> on_window_created;
 
         Event<std::string> on_level_switch;

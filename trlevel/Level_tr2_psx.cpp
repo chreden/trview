@@ -425,7 +425,7 @@ namespace trlevel
         const auto boxes = read_boxes(activity, file, callbacks);
         read_overlaps(activity, file, callbacks);
         read_zones(activity, file, callbacks, static_cast<uint32_t>(boxes.size()));
-        read_animated_textures(activity, file, callbacks);
+        _animated_textures = read_animated_textures(activity, file, callbacks);
         _entities = read_entities(activity, file, callbacks);
         read<int32_t>(file); // Unknown
 
@@ -473,7 +473,7 @@ namespace trlevel
         const auto boxes = read_boxes_tr1(activity, file, callbacks);
         read_overlaps(activity, file, callbacks);
         read_zones(activity, file, callbacks, static_cast<uint32_t>(boxes.size()));
-        read_animated_textures(activity, file, callbacks);
+        _animated_textures = read_animated_textures(activity, file, callbacks);
 
         _entities = read_entities(activity, file, callbacks);
         read<int32_t>(file); // Unknown
@@ -529,7 +529,7 @@ namespace trlevel
         uint32_t overlap_count = read<uint32_t>(file);
         skip(file, overlap_count * 2);
         skip(file, box_count * 20);
-        read_animated_textures(activity, file, callbacks);
+        _animated_textures = read_animated_textures(activity, file, callbacks);
 
         _entities = read_entities(activity, file, callbacks);
         read<int32_t>(file); // Unknown
@@ -596,7 +596,7 @@ namespace trlevel
         const auto boxes = read_boxes(activity, file, callbacks);
         read_overlaps(activity, file, callbacks);
         read_zones(activity, file, callbacks, static_cast<uint32_t>(boxes.size()));
-        read_animated_textures(activity, file, callbacks);
+        _animated_textures = read_animated_textures(activity, file, callbacks);
         _entities = read_entities(activity, file, callbacks);
         read<int32_t>(file); // Unknown
 

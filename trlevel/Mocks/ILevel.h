@@ -19,8 +19,7 @@ namespace trlevel
             MOCK_METHOD(tr_colour4, get_palette_entry, (uint32_t, uint32_t), (const, override));
             MOCK_METHOD(uint32_t, num_rooms, (), (const, override));
             MOCK_METHOD(tr3_room, get_room, (uint32_t), (const, override));
-            MOCK_METHOD(uint32_t, num_object_textures, (), (const, override));
-            MOCK_METHOD(tr_object_texture, get_object_texture, (uint32_t), (const, override));
+            MOCK_METHOD(std::vector<tr_object_texture>, object_textures, (), (const, override));
             MOCK_METHOD(uint32_t, num_floor_data, (), (const, override));
             MOCK_METHOD(uint16_t, get_floor_data, (uint32_t), (const, override));
             MOCK_METHOD(std::vector<uint16_t>, get_floor_data_all, (), (const, override));
@@ -53,6 +52,8 @@ namespace trlevel
             MOCK_METHOD(PlatformAndVersion, platform_and_version, (), (const, override));
             MOCK_METHOD(std::weak_ptr<IPack>, pack, (), (const, override));
             MOCK_METHOD(std::vector<tr4_flyby_camera>, flyby_cameras, (), (const, override));
+            MOCK_METHOD(std::vector<std::vector<int16_t>>, animated_textures, (), (const, override));
+            MOCK_METHOD(uint32_t, animated_texture_uv_count, (), (const, override));
         };
     }
 }

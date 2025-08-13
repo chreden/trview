@@ -804,6 +804,24 @@ namespace trlevel
                 log_file(activity, file, std::format("Read {} entities", _entities.size()));
             };
 
+        const auto read_aranges = [&](auto& file)
+            {
+                callbacks.on_progress("Reading animated texture ranges");
+                log_file(activity, file, "Reading animated texture ranges");
+                uint32_t aranges_size = to_le(read<uint32_t>(file));
+                aranges_size;
+                uint32_t aranges_count = to_le(read<uint32_t>(file));
+
+                std::vector<std::vector<int16_t>> textures;
+                for (uint32_t t = 0; t < aranges_count; ++t)
+                {
+                    int16_t start = static_cast<int16_t>(to_le(read<uint32_t>(file)));
+                    int16_t end = static_cast<int16_t>(to_le(read<uint32_t>(file)));
+                    textures.push_back({ std::from_range, std::views::iota(static_cast<int16_t>(start + _object_textures.size()), static_cast<int16_t>(end + 1 + _object_textures.size())) });
+                }
+                _animated_textures = textures;
+            };
+
         const std::unordered_map<std::string, std::function<void(std::basic_ispanstream<uint8_t>&)>> loader_functions
         {
             { "ROOMTINF", read_list(room_textures) },
@@ -821,7 +839,7 @@ namespace trlevel
             { "GND_ZONE", read_generic },
             { "GND_ZON2", read_generic },
             { "FLY_ZONE", read_generic },
-            { "ARANGES",  read_generic },
+            { "ARANGES",  read_aranges },
             { "ITEMDATA", read_itemdata }
         };
 
@@ -836,6 +854,13 @@ namespace trlevel
                 if (face.effects)
                 {
                     transparent_room_object_textures.insert(face.texture & 0xFFF);
+                    for (const auto& animated_sequence : _animated_textures)
+                    {
+                        if (std::ranges::find(animated_sequence, face.texture & 0xFFF) != animated_sequence.end())
+                        {
+                            transparent_room_object_textures.insert_range(animated_sequence);
+                        }
+                    }
                 }
             }
 
@@ -845,6 +870,13 @@ namespace trlevel
                 if (face.effects)
                 {
                     transparent_room_object_textures.insert(face.texture & 0xFFF);
+                    for (const auto& animated_sequence : _animated_textures)
+                    {
+                        if (std::ranges::find(animated_sequence, face.texture & 0xFFF) != animated_sequence.end())
+                        {
+                            transparent_room_object_textures.insert_range(animated_sequence);
+                        }
+                    }
                 }
             }
         }

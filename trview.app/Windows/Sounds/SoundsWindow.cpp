@@ -133,10 +133,7 @@ namespace trview
                 std::views::transform([](auto&& sound) { return sound.lock(); }) |
                 std::ranges::to<std::vector>();
 
-            if (_auto_hider.apply(_all_sound_sources, filtered_sound_sources, _filters))
-            {
-                on_scene_changed();
-            }
+            _auto_hider.apply(_all_sound_sources, filtered_sound_sources, _filters);
 
             RowCounter counter{ "sound source", _all_sound_sources.size() };
             _filters.render_table(filtered_sound_sources, _all_sound_sources, _selected_sound_source, counter,

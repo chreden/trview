@@ -237,6 +237,25 @@ namespace trlevel
                 }
             };
         }
+
+        std::vector<std::vector<int16_t>> read_animated_textures_21(trview::Activity& activity, std::basic_ispanstream<uint8_t>& file, const ILevel::LoadCallbacks& callbacks, uint32_t room_texture_adjustment)
+        {
+            callbacks.on_progress("Reading animated textures");
+            log_file(activity, file, "Reading animated textures");
+
+            uint32_t num_animated_texture_sequences = read<uint32_t>(file);
+
+            std::vector<std::vector<int16_t>> textures;
+            for (uint32_t t = 0; t < num_animated_texture_sequences; ++t)
+            {
+                int16_t start = static_cast<int16_t>(read<uint32_t>(file));
+                int16_t end = static_cast<int16_t>(read<uint32_t>(file));
+                textures.push_back({ std::from_range, std::views::iota(static_cast<int16_t>(start + room_texture_adjustment), static_cast<int16_t>(end + 1 + room_texture_adjustment)) });
+            }
+
+            log_file(activity, file, std::format("Read {} animated textures sequences", textures.size()));
+            return textures;
+        }
     }
 
     std::vector<tr_box> read_boxes_tr1(trview::Activity& activity, std::basic_ispanstream<uint8_t>& file, const ILevel::LoadCallbacks& callbacks)
@@ -519,6 +538,7 @@ namespace trlevel
 
         adjust_room_textures();
 
+        const uint32_t before_room_size = static_cast<uint32_t>(_object_textures.size());
         auto new_room_textures = room_object_textures | std::views::transform(convert_object_texture) | std::ranges::to<std::vector>();
         for (auto& texture : new_room_textures)
         {
@@ -533,8 +553,8 @@ namespace trlevel
         const auto boxes = read_boxes_tr1(activity, file, callbacks);
         read_overlaps(activity, file, callbacks);
         skip(file, static_cast<uint32_t>(boxes.size()) * 4);
-        const uint32_t num_animated_textures = read<uint32_t>(file);
-        skip(file, num_animated_textures * 8);
+        _animated_textures = read_animated_textures_21(activity, file, callbacks, before_room_size);
+
         _entities = read_entities_tr1(activity, file, callbacks);
         read_light_map(activity, file, callbacks);
 
@@ -575,6 +595,7 @@ namespace trlevel
 
         adjust_room_textures();
 
+        const uint32_t before_room_size = static_cast<uint32_t>(_object_textures.size());
         auto new_room_textures = room_object_textures | std::views::transform(convert_object_texture) | std::ranges::to<std::vector>();
         for (auto& texture : new_room_textures)
         {
@@ -607,9 +628,7 @@ namespace trlevel
             skip(file, 4);
             read_boxes_tr1(activity, file, callbacks);
             read_overlaps(activity, file, callbacks);
-
-            uint32_t num_things = read<uint32_t>(file);
-            skip(file, num_things * 8);
+            _animated_textures = read_animated_textures_21(activity, file, callbacks, before_room_size);
 
             _entities = read_vector<uint32_t, tr_entity_may_1996>(file) |
                 std::views::transform([](auto&& e) -> tr2_entity {
@@ -697,7 +716,7 @@ namespace trlevel
                 const auto boxes = read_boxes_tr1(activity, file, callbacks);
                 read_overlaps(activity, file, callbacks);
                 read_zones_tr1(activity, file, callbacks, static_cast<uint32_t>(boxes.size()));
-                read_animated_textures(activity, file, callbacks);
+                _animated_textures = read_animated_textures(activity, file, callbacks);
                 _entities = read_entities_tr1(activity, file, callbacks);
                 read_light_map(activity, file, callbacks);
 

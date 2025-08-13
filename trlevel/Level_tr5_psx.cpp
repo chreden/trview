@@ -175,7 +175,8 @@ namespace trlevel
         skip(file, info.dispatches_size);
         skip(file, info.commands_size);
         _meshtree = read_meshtree(activity, file, info, callbacks);
-        skip(file, info.animated_texture_length);
+        _animated_textures = read_animated_textures_tr4_psx(activity, file, info, callbacks);
+        _animated_texture_uv_count = info.num_animated_uv_ranges;
         _object_textures_psx = read_object_textures(activity, file, info, callbacks);
         skip(file, info.sprite_info_length);
         adjust_room_textures_psx();

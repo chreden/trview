@@ -26,7 +26,6 @@ namespace trview
         window->on_camera_sink_selected += on_camera_sink_selected;
         window->on_flyby_node_selected += on_flyby_node_selected;
         window->on_trigger_selected += on_trigger_selected;
-        window->on_scene_changed += on_scene_changed;
         window->on_settings += on_settings;
         return add_window(window);
     }

@@ -40,6 +40,7 @@ namespace trview
             static inline const std::string camera_sink_startup = "Open Camera/Sink Window at startup";
             static inline const std::string reset_fov = "Reset##Fov";
             static inline const std::string statics_startup = "Open Statics Window at startup";
+            static inline const std::string animated_textures = "Animated Textures";
         };
 
         explicit SettingsWindow(const std::shared_ptr<IDialogs>& dialogs, const std::shared_ptr<IShell>& shell, const std::shared_ptr<IFonts>& fonts);
@@ -69,6 +70,7 @@ namespace trview
         virtual void set_fov(float value) override;
         virtual void set_camera_sink_startup(bool value) override;
         void set_statics_startup(bool value) override;
+        void set_animated_textures(bool value) override;
     private:
         std::shared_ptr<IDialogs> _dialogs;
         std::shared_ptr<IShell> _shell;
@@ -98,5 +100,6 @@ namespace trview
         std::vector<FontSetting> _all_fonts;
         std::shared_ptr<IFonts> _fonts;
         bool _statics_startup{ false };
+        bool _animated_textures{ true };
     };
 }

@@ -77,7 +77,6 @@ namespace trview
         _token_store += _windows->on_camera_sink_selected += [this](const auto& sink) {  select_camera_sink(sink); };
         _token_store += _windows->on_flyby_node_selected += [this](const auto& node) { select_flyby_node(node); };
         _token_store += _windows->on_trigger_selected += [this](const auto& trigger) { select_trigger(trigger); };
-        _token_store += _windows->on_scene_changed += [this]() { _viewer->set_scene_changed(); };
         _token_store += _windows->on_item_selected += [this](const auto& item) { select_item(item); };
         _token_store += _windows->on_light_selected += [this](const auto& light) { select_light(light); };
         _token_store += _windows->on_room_selected += [this](const auto& room) { select_room(room); };
@@ -512,6 +511,10 @@ namespace trview
         _timer.update();
         const auto elapsed = _timer.elapsed();
         _windows->update(elapsed);
+        if (_level && _settings.animated_textures)
+        {
+            _level->update(elapsed);
+        }
 
         _viewer->render();
 
@@ -867,7 +870,6 @@ namespace trview
     void Application::set_route(const std::shared_ptr<IRoute>& route)
     {
         _route = route;
-        _token_store += _route->on_changed += [&]() { if (_viewer) { _viewer->set_scene_changed(); } };
         _token_store += _route->on_waypoint_selected += [&](auto&& r) { select_waypoint(r); };
         _route->set_level(_level);
         _viewer->set_route(_route);

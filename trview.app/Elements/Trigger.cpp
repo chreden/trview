@@ -1,5 +1,6 @@
 #include "Trigger.h"
 #include <trview.app/Elements/Types.h>
+#include <ranges>
 
 namespace trview
 {
@@ -28,7 +29,7 @@ namespace trview
         return _data;
     }
 
-    Trigger::Trigger(uint32_t number, const std::weak_ptr<IRoom>& room, uint16_t x, uint16_t z, const TriggerInfo& trigger_info, trlevel::LevelVersion level_version, const std::weak_ptr<ILevel>& level, const std::weak_ptr<ISector>& sector, const IMesh::TransparentSource& mesh_source)
+    Trigger::Trigger(uint32_t number, const std::weak_ptr<IRoom>& room, uint16_t x, uint16_t z, const TriggerInfo& trigger_info, trlevel::LevelVersion level_version, const std::weak_ptr<ILevel>& level, const std::weak_ptr<ISector>& sector, const IMesh::Source& mesh_source)
         : _number(number), _room(room), _x(x), _z(z), _type(trigger_info.type), _only_once(trigger_info.oneshot), _flags(trigger_info.mask),
         _timer(level_version >= trlevel::LevelVersion::Tomb4 ? static_cast<int8_t>(trigger_info.timer) : trigger_info.timer), _sector_id(trigger_info.sector_id),
         _level_version(level_version), _mesh_source(mesh_source), _level(level), _sector(sector)
@@ -111,12 +112,9 @@ namespace trview
         on_changed();
     }
 
-    void Trigger::set_triangles(const std::vector<TransparentTriangle>& transparent_triangles)
+    void Trigger::set_triangles(const std::vector<Triangle>& transparent_triangles)
     {
-        std::vector<Triangle> collision;
-        std::transform(transparent_triangles.begin(), transparent_triangles.end(), std::back_inserter(collision),
-            [](const auto& tri) { return Triangle(tri.vertices[0], tri.vertices[1], tri.vertices[2]); });
-        _mesh = _mesh_source(transparent_triangles, collision);
+        _mesh = _mesh_source(transparent_triangles);
     }
 
     PickResult Trigger::pick(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& direction) const

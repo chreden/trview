@@ -291,7 +291,6 @@ namespace trview
                 level_texture_storage->load(level);
 
                 auto mesh_source = [=](auto&&... args) { return std::make_shared<Mesh>(device, args..., level_texture_storage); };
-                auto mesh_transparent_source = [=](auto&&... args) { return std::make_shared<Mesh>(args...); };
 
                 auto entity_source = [=](auto&& level, auto&& entity, auto&& index, auto&& triggers, auto&& model_storage, auto&& owning_level, auto&& room)
                     {
@@ -315,7 +314,7 @@ namespace trview
                         new_room->initialise(level, room, mesh_storage, static_mesh_source, static_mesh_position_source, sector_source, sector_base_index, activity);
                         return new_room;
                     };
-                auto trigger_source = [=](auto&&... args) { return std::make_shared<Trigger>(args..., mesh_transparent_source); };
+                auto trigger_source = [=](auto&&... args) { return std::make_shared<Trigger>(args..., mesh_source); };
 
                 auto mesh_storage = std::make_shared<MeshStorage>(mesh_source, *level, *level_texture_storage);
 

@@ -737,21 +737,6 @@ TEST(Application, SectorHoverForwarded)
     windows.on_sector_hover(mock_shared<MockSector>());
 }
 
-TEST(Application, SceneChangedUpdatesViewer)
-{
-    auto [viewer_ptr, viewer] = create_mock<MockViewer>();
-    EXPECT_CALL(viewer, set_scene_changed).Times(1);
-
-    auto [windows_ptr, windows] = create_mock<MockWindows>();
-
-    auto application = register_test_module()
-        .with_viewer(std::move(viewer_ptr))
-        .with_windows(std::move(windows_ptr))
-        .build();
-
-    windows.on_scene_changed();
-}
-
 TEST(Application, CameraSinkSelectedEventForwarded)
 {
     auto [windows_ptr, windows] = create_mock<MockWindows>();
@@ -1060,4 +1045,36 @@ TEST(Application, OnStaticMeshSelected)
     EXPECT_CALL(viewer, select_static_mesh).Times(1);
     EXPECT_CALL(windows, select(A<const std::weak_ptr<IStaticMesh>&>())).Times(1);
     windows.on_static_selected(static_mesh);
+}
+
+TEST(Application, LevelUpdatedWithAnimationsEnabled)
+{
+    auto level = mock_shared<trview::mocks::MockLevel>();
+    EXPECT_CALL(*level, update).Times(1);
+
+    UserSettings settings;
+    settings.animated_textures = true;
+    auto [settings_loader_ptr, settings_loader] = create_mock<MockSettingsLoader>();
+    ON_CALL(settings_loader, load_user_settings).WillByDefault(Return(settings));
+    auto application = register_test_module()
+        .with_settings_loader(std::move(settings_loader_ptr))
+        .build();
+    application->set_current_level(level, ILevel::OpenMode::Full, false);
+    application->render();
+}
+
+TEST(Application, LevelNotUpdatedWithAnimationsDisabled)
+{
+    auto level = mock_shared<trview::mocks::MockLevel>();
+    EXPECT_CALL(*level, update).Times(0);
+
+    UserSettings settings;
+    settings.animated_textures = false;
+    auto [settings_loader_ptr, settings_loader] = create_mock<MockSettingsLoader>();
+    ON_CALL(settings_loader, load_user_settings).WillByDefault(Return(settings));
+    auto application = register_test_module()
+        .with_settings_loader(std::move(settings_loader_ptr))
+        .build();
+    application->set_current_level(level, ILevel::OpenMode::Full, false);
+    application->render();
 }
