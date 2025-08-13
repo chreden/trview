@@ -511,7 +511,7 @@ namespace trview
         _timer.update();
         const auto elapsed = _timer.elapsed();
         _windows->update(elapsed);
-        if (_level)
+        if (_level && _settings.animated_textures)
         {
             _level->update(elapsed);
         }

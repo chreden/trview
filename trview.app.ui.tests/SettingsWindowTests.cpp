@@ -538,10 +538,10 @@ void register_settings_window_tests(ImGuiTestEngine* engine)
             };
 
             ctx->SetRef("Settings");
-            ctx->ItemClick("TabBar/General");
-            IM_CHECK_EQ(ctx->ItemIsChecked("TabBar/General/Vsync"), false);
-            ctx->ItemCheck("TabBar/General/Vsync");
-            IM_CHECK_EQ(ctx->ItemIsChecked("TabBar/General/Vsync"), true);
+            ctx->ItemClick("TabBar/Visuals");
+            IM_CHECK_EQ(ctx->ItemIsChecked("TabBar/Visuals/Vsync"), false);
+            ctx->ItemCheck("TabBar/Visuals/Vsync");
+            IM_CHECK_EQ(ctx->ItemIsChecked("TabBar/Visuals/Vsync"), true);
             IM_CHECK_EQ(received_value.has_value(), true);
             IM_CHECK_EQ(received_value.value(), true);
         });
@@ -951,10 +951,49 @@ void register_settings_window_tests(ImGuiTestEngine* engine)
             controls.ptr->toggle_visibility();
 
             ctx->SetRef("Settings");
-            ctx->ItemClick("TabBar/General");
-            IM_CHECK_EQ(ctx->ItemIsChecked("TabBar/General/Vsync"), false);
+            ctx->ItemClick("TabBar/Visuals");
+            IM_CHECK_EQ(ctx->ItemIsChecked("TabBar/Visuals/Vsync"), false);
             controls.ptr->set_vsync(true);
             ctx->Yield();
-            IM_CHECK_EQ(ctx->ItemIsChecked("TabBar/General/Vsync"), true);
+            IM_CHECK_EQ(ctx->ItemIsChecked("TabBar/Visuals/Vsync"), true);
+        });
+
+    test<MockWrapper<SettingsWindow>>(engine, "Settings Window", "Clicking Animated Textures Raises Event",
+        [](ImGuiTestContext* ctx) { render(ctx->GetVars<MockWrapper<SettingsWindow>>()); },
+        [](ImGuiTestContext* ctx)
+        {
+            auto& controls = ctx->GetVars<MockWrapper<SettingsWindow>>();
+            controls.ptr = register_test_module().build();
+            controls.ptr->toggle_visibility();
+
+            std::optional<bool> received_value;
+            auto token = controls.ptr->on_animated_textures += [&](bool value)
+                {
+                    received_value = value;
+                };
+
+            ctx->SetRef("Settings");
+            ctx->ItemClick("TabBar/Visuals");
+            IM_CHECK_EQ(ctx->ItemIsChecked("TabBar/Visuals/Animated Textures"), true);
+            ctx->ItemUncheck("TabBar/Visuals/Animated Textures");
+            IM_CHECK_EQ(ctx->ItemIsChecked("TabBar/Visuals/Animated Textures"), false);
+            IM_CHECK_EQ(received_value.has_value(), true);
+            IM_CHECK_EQ(received_value.value(), false);
+        });
+
+    test<MockWrapper<SettingsWindow>>(engine, "Settings Window", "Set Animated Textures Updates Checkbox",
+        [](ImGuiTestContext* ctx) { render(ctx->GetVars<MockWrapper<SettingsWindow>>()); },
+        [](ImGuiTestContext* ctx)
+        {
+            auto& controls = ctx->GetVars<MockWrapper<SettingsWindow>>();
+            controls.ptr = register_test_module().build();
+            controls.ptr->toggle_visibility();
+
+            ctx->SetRef("Settings");
+            ctx->ItemClick("TabBar/Visuals");
+            IM_CHECK_EQ(ctx->ItemIsChecked("TabBar/Visuals/Animated Textures"), true);
+            controls.ptr->set_animated_textures(false);
+            ctx->Yield();
+            IM_CHECK_EQ(ctx->ItemIsChecked("TabBar/Visuals/Animated Textures"), false);
         });
 }

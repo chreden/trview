@@ -802,3 +802,28 @@ TEST(SettingsLoader, PluginsSaved)
     loader->save_user_settings(settings);
     EXPECT_THAT(output, HasSubstr("\"plugins\":{\"Default\":{\"enabled\":true}}"));
 }
+
+TEST(SettingsLoader, AnimatedTexturesLoaded)
+{
+    auto loader = setup_setting("{\"animated_textures\":false}");
+    auto settings = loader->load_user_settings();
+    ASSERT_EQ(settings.animated_textures, false);
+
+    auto loader_true = setup_setting("{\"animated_textures\":true}");
+    auto settings_true = loader_true->load_user_settings();
+    ASSERT_EQ(settings_true.animated_textures, true);
+}
+
+TEST(SettingsLoader, AnimatedTexturesSaved)
+{
+    std::string output;
+    auto loader = setup_save_setting(output);
+    UserSettings settings;
+    settings.animated_textures = false;
+    loader->save_user_settings(settings);
+    EXPECT_THAT(output, HasSubstr("\"animated_textures\":false"));
+
+    settings.animated_textures = true;
+    loader->save_user_settings(settings);
+    EXPECT_THAT(output, HasSubstr("\"animated_textures\":true"));
+}

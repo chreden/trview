@@ -820,8 +820,6 @@ namespace trlevel
                     textures.push_back({ std::from_range, std::views::iota(static_cast<int16_t>(start + _object_textures.size()), static_cast<int16_t>(end + 1 + _object_textures.size())) });
                 }
                 _animated_textures = textures;
-
-                skip(file, aranges_size * aranges_count);
             };
 
         const std::unordered_map<std::string, std::function<void(std::basic_ispanstream<uint8_t>&)>> loader_functions

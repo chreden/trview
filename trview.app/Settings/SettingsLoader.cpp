@@ -128,6 +128,7 @@ namespace trview
             read_attribute(json, settings.triggers_window_columns, "triggers_window_columns");
             read_attribute(json, settings.flyby_columns, "flyby_columns");
             read_attribute(json, settings.flyby_node_columns, "flyby_node_columns");
+            read_attribute(json, settings.animated_textures, "animated_textures");
 
             settings.recent_files.resize(std::min<std::size_t>(settings.recent_files.size(), settings.max_recent_files));
         }
@@ -208,6 +209,7 @@ namespace trview
             json["triggers_window_columns"] = settings.triggers_window_columns;
             json["flyby_columns"] = settings.flyby_columns;
             json["flyby_node_columns"] = settings.flyby_node_columns;
+            json["animated_textures"] = settings.animated_textures;
             _files->save_file(file_path, json.dump());
         }
         catch (...)

@@ -62,7 +62,8 @@ namespace trlevel
         callbacks.on_progress("Reading animated textures");
         log_file(activity, file, "Reading animated textures");
 
-        skip(file, 4); // word count
+        uint32_t word_count = read<uint32_t>(file);
+        const auto start = file.tellg();
 
         std::vector<std::vector<int16_t>> textures;
         int16_t num_animated_texture_sequences = read<int16_t>(file);
@@ -72,6 +73,7 @@ namespace trlevel
             textures.push_back(read_vector<int16_t>(file, num_texture_ids));
         }
 
+        file.seekg(static_cast<std::size_t>(start) + word_count * 2);
         log_file(activity, file, std::format("Read {} animated textures sequences", textures.size()));
         return textures;
     }

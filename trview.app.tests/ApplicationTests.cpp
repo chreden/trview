@@ -1047,12 +1047,33 @@ TEST(Application, OnStaticMeshSelected)
     windows.on_static_selected(static_mesh);
 }
 
-TEST(Application, LevelUpdated)
+TEST(Application, LevelUpdatedWithAnimationsEnabled)
 {
     auto level = mock_shared<trview::mocks::MockLevel>();
     EXPECT_CALL(*level, update).Times(1);
 
+    UserSettings settings;
+    settings.animated_textures = true;
+    auto [settings_loader_ptr, settings_loader] = create_mock<MockSettingsLoader>();
+    ON_CALL(settings_loader, load_user_settings).WillByDefault(Return(settings));
     auto application = register_test_module()
+        .with_settings_loader(std::move(settings_loader_ptr))
+        .build();
+    application->set_current_level(level, ILevel::OpenMode::Full, false);
+    application->render();
+}
+
+TEST(Application, LevelNotUpdatedWithAnimationsDisabled)
+{
+    auto level = mock_shared<trview::mocks::MockLevel>();
+    EXPECT_CALL(*level, update).Times(0);
+
+    UserSettings settings;
+    settings.animated_textures = false;
+    auto [settings_loader_ptr, settings_loader] = create_mock<MockSettingsLoader>();
+    ON_CALL(settings_loader, load_user_settings).WillByDefault(Return(settings));
+    auto application = register_test_module()
+        .with_settings_loader(std::move(settings_loader_ptr))
         .build();
     application->set_current_level(level, ILevel::OpenMode::Full, false);
     application->render();

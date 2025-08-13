@@ -531,3 +531,15 @@ TEST(ViewerUI, SetTileFilterEnabled)
 
     ui->set_tile_filter_enabled(true);
 }
+
+TEST(ViewerUI, SetAnimatedTexturesUpdatesSettingsWindow)
+{
+    auto [settings_window_ptr, settings_window] = create_mock<MockSettingsWindow>();
+    EXPECT_CALL(settings_window, set_animated_textures(true)).Times(1);
+
+    auto ui = register_test_module().with_settings_window(std::move(settings_window_ptr)).build();
+
+    UserSettings settings{};
+    settings.animated_textures = true;
+    ui->set_settings(settings);
+}
