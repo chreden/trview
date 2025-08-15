@@ -3,6 +3,7 @@
 #include "IShader.h"
 #include "Texture.h"
 #include <trview.app/Geometry/IMesh.h>
+#include <array>
 
 using namespace Microsoft::WRL;
 
@@ -103,6 +104,9 @@ namespace trview
             context->VSSetConstantBuffers(0, 1, _matrix_buffer.GetAddressOf());
             context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
             context->DrawIndexed(4, 0, 0);
+
+            constexpr std::array<ID3D11ShaderResourceView*, 1> null{ nullptr };
+            context->PSSetShaderResources(0, 1, &null[0]);
         }
 
         void Sprite::create_matrix()
