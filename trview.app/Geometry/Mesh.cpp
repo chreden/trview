@@ -262,6 +262,9 @@ namespace trview
                 }
             }
         }
+
+        constexpr std::array<ID3D11ShaderResourceView*, 1> null{ nullptr };
+        context->PSSetShaderResources(0, 1, &null[0]);
     }
 
     void Mesh::render(const Matrix& world_view_projection, const graphics::Texture& replacement_texture, const DirectX::SimpleMath::Color& colour, float light_intensity, Vector3 light_direction)

@@ -133,6 +133,8 @@ namespace trview
 
         context->OMSetDepthStencilState(old_depth_state.Get(), 1);
         context->OMSetBlendState(old_blend_state.Get(), nullptr, 0xffffffff);
+        constexpr std::array<ID3D11ShaderResourceView*, 1> null{ nullptr };
+        context->PSSetShaderResources(0, 1, &null[0]);
     }
 
     void TransparencyBuffer::reset()
