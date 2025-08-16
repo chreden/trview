@@ -96,7 +96,7 @@ namespace trview
             float u = static_cast<float>(vert.x_whole);
             float v = static_cast<float>(vert.y_whole);
 
-            if (vert.x_frac == 1)
+            if (vert.x_frac == 1 || vert.x_frac == 0)
             {
                 u += 1;
             }
@@ -105,7 +105,7 @@ namespace trview
                 u -= 1;
             }
 
-            if (vert.y_frac == 1)
+            if (vert.y_frac == 1 || vert.y_frac == 0)
             {
                 v += 1;
             }
