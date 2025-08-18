@@ -857,7 +857,7 @@ namespace trview
         _main_window->clear(Colour(_settings.background_colour));
 
         {
-            _scene_target->clear(Colour::Transparent);
+            _scene_target->clear(Colour(_settings.background_colour));
             graphics::RenderTargetStore rs_store(_device->context());
             graphics::ViewportStore vp_store(_device->context());
             _scene_target->apply();

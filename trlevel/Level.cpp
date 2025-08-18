@@ -15,6 +15,82 @@
 
 namespace trlevel
 {
+    std::optional<uint16_t> get_skybox_id(PlatformAndVersion version)
+    {
+        auto raw_version = abs(version.raw_version);
+        if (raw_version <= 42)
+        {
+            return std::nullopt;
+        }
+
+        if (raw_version <= 45)
+        {
+            return static_cast<uint16_t>(254);
+        }
+
+        if (raw_version == 53)
+        {
+            return static_cast<uint16_t>(312);
+        }
+
+        if (raw_version == 55)
+        {
+            return static_cast<uint16_t>(315);
+        }
+
+        if (raw_version == 56)
+        {
+            return static_cast<uint16_t>(355);
+        }
+
+        if (raw_version == 129)
+        {
+            return static_cast<uint16_t>(459);
+        }
+
+        if (raw_version == 209)
+        {
+            return static_cast<uint16_t>(387);
+        }
+
+        if (raw_version == 219)
+        {
+            return static_cast<uint16_t>(435);
+        }
+
+        if (raw_version == 223)
+        {
+            return static_cast<uint16_t>(446);
+        }
+
+        if (raw_version == 224)
+        {
+            return static_cast<uint16_t>(448);
+        }
+
+        if (raw_version == 225)
+        {
+            return static_cast<uint16_t>(454);
+        }
+
+        if (version.version == LevelVersion::Tomb3)
+        {
+            return static_cast<uint16_t>(355);
+        }
+
+        if (version.version == LevelVersion::Tomb4)
+        {
+            return static_cast<uint16_t>(459);
+        }
+
+        if (version.version == LevelVersion::Tomb5)
+        {
+            return static_cast<uint16_t>(454);
+        }
+
+        return std::nullopt;
+    }
+
     ILevel::~ILevel()
     {
     }

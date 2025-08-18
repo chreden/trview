@@ -3,6 +3,8 @@
 #include <trview.graphics/IShaderStorage.h>
 #include <trview.graphics/IShader.h>
 
+#include "../Geometry/Model/IModelStorage.h"
+#include "../Geometry/Model/IModel.h"
 #include "../Graphics/LevelTextureStorage.h"
 #include "../Camera/ICamera.h"
 #include "Remastered/INgPlusSwitcher.h"
@@ -273,6 +275,15 @@ namespace trview
             context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
             _vertex_shader->apply(context);
             _pixel_shader->apply(context);
+
+            graphics::set_data(*_pixel_shader_data, context, PixelShaderData{ false });
+            _pixel_shader_data->apply(context, graphics::IBuffer::ApplyTo::PS);
+            if (_skybox)
+            {
+                // TODO: TR4+ skyboxes are transparent sometimes...
+                // Needs to do transparent buffer render separate from the main one.
+                _skybox->render(camera);
+            }
 
             graphics::set_data(*_pixel_shader_data, context, PixelShaderData{ true });
             _pixel_shader_data->apply(context, graphics::IBuffer::ApplyTo::PS);
@@ -1453,6 +1464,8 @@ namespace trview
         callbacks.on_progress("Generating static meshes");
         record_static_meshes();
 
+
+        _skybox = Skybox(_device, *model_storage, _platform_and_version, _texture_storage);
         callbacks.on_progress("Done");
     }
 

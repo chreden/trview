@@ -8,6 +8,8 @@
 #include "Elements/SoundSource/ISoundSource.h"
 #include "Elements/Flyby/IFlybyNode.h"
 
+#include "Elements/Skybox.h"
+
 using namespace DirectX::SimpleMath;
 
 namespace trview
@@ -550,6 +552,12 @@ namespace trview
         _viewer->render_ui();
         _windows->render();
         _plugins->render_ui();
+
+        if (ImGui::Begin("Skybox debug"))
+        {
+            ImGui::InputFloat("Offset", &Skybox::offset);
+            ImGui::End();
+        }
 
         ImGui::PopFont();
         ImGui::Render();

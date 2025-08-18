@@ -9,19 +9,6 @@ namespace trlevel
 {
     namespace
     {
-        uint32_t get_skybox_id(PlatformAndVersion version)
-        {
-            if (is_tr3_ects(version))
-            {
-                return 312;
-            }
-            if (is_tr3_demo_55(version))
-            {
-                return 315;
-            }
-            return 355;
-        }
-
         std::vector<trview_room_vertex> convert_vertices_tr3_psx(std::vector<uint32_t> vertices, int32_t y_top)
         {
             return vertices |
@@ -127,13 +114,16 @@ namespace trlevel
 
     void Level::generate_mesh_tr3_psx(tr_mesh& mesh, std::basic_ispanstream<uint8_t>& stream)
     {
-        const uint32_t skybox_id = get_skybox_id(_platform_and_version);
-        const auto skybox_model = std::ranges::find_if(_models, [skybox_id](auto&& m) { return m.ID == skybox_id; });
-        if (skybox_model != _models.end())
+        const auto skybox_id = get_skybox_id(_platform_and_version);
+        if (skybox_id)
         {
-            if (stream.tellg() == _mesh_pointers[skybox_model->StartingMesh])
+            const auto skybox_model = std::ranges::find_if(_models, [skybox_id](auto&& m) { return m.ID == skybox_id.value(); });
+            if (skybox_model != _models.end())
             {
-                return;
+                if (stream.tellg() == _mesh_pointers[skybox_model->StartingMesh])
+                {
+                    return;
+                }
             }
         }
 

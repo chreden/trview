@@ -49,7 +49,6 @@ namespace trview
         std::array<DirectX::SimpleMath::Color, 256> _palette;
         trlevel::PlatformAndVersion _platform_and_version;
         std::unordered_map<uint32_t, std::vector<uint32_t>> _animated_textures;
-
         struct SourceTexture
         {
             uint32_t width;

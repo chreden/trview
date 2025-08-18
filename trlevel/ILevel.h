@@ -177,4 +177,6 @@ namespace trlevel
         virtual std::weak_ptr<IPack> pack() const = 0;
         virtual std::vector<tr4_flyby_camera> flyby_cameras() const = 0;
     };
+
+    std::optional<uint16_t> get_skybox_id(PlatformAndVersion version);
 }

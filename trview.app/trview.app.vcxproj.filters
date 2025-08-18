@@ -132,6 +132,7 @@
     <ClCompile Include="Geometry\Model\ModelStorage.cpp" Filter="Geometry\Model" />
     <ClCompile Include="Elements\Flyby\Flyby.cpp" Filter="Elements\Flyby" />
     <ClCompile Include="Elements\Flyby\FlybyNode.cpp" Filter="Elements\Flyby" />
+    <ClCompile Include="Elements\Skybox.cpp" Filter="Elements" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera\Camera.h" Filter="Camera" />
@@ -441,6 +442,7 @@
     <ClInclude Include="Elements\Flyby\IFlybyNode.h" Filter="Elements\Flyby" />
     <ClInclude Include="Elements\Flyby\FlybyNode.h" Filter="Elements\Flyby" />
     <ClInclude Include="Mocks\Elements\IFlybyNode.h" Filter="Mocks\Elements" />
+    <ClInclude Include="Elements\Skybox.h" Filter="Elements" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Windows">
