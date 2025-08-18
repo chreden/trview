@@ -18,6 +18,7 @@
 
 #include "SoundSource/ISoundSource.h"
 #include "Flyby/IFlyby.h"
+#include "Skybox.h"
 
 namespace trview
 {
@@ -241,6 +242,7 @@ namespace trview
         std::shared_ptr<trlevel::IPack> _pack;
         trlevel::PlatformAndVersion _platform_and_version;
         std::shared_ptr<IModelStorage> _model_storage;
+        std::optional<Skybox> _skybox;
     };
 
     /// Find the first item with the type id specified.

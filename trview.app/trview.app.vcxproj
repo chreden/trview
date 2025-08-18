@@ -37,6 +37,7 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClCompile Include="Elements\Remastered\NgPlusSwitcher.cpp" />
     <ClCompile Include="Elements\Room.cpp" />
     <ClCompile Include="Elements\Sector.cpp" />
+    <ClCompile Include="Elements\Skybox.cpp" />
     <ClCompile Include="Elements\SoundSource\SoundSource.cpp" />
     <ClCompile Include="Elements\StaticMesh.cpp" />
     <ClCompile Include="Elements\Trigger.cpp" />
@@ -99,6 +100,7 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClInclude Include="Elements\Flyby\IFlybyNode.h" />
     <ClInclude Include="Elements\Remastered\INgPlusSwitcher.h" />
     <ClInclude Include="Elements\Remastered\NgPlusSwitcher.h" />
+    <ClInclude Include="Elements\Skybox.h" />
     <ClInclude Include="Elements\SoundSource\ISoundSource.h" />
     <ClInclude Include="Elements\SoundSource\SoundSource.h" />
     <ClInclude Include="Geometry\Model\IModel.h" />

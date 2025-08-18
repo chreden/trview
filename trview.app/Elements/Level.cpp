@@ -3,6 +3,8 @@
 #include <trview.graphics/IShaderStorage.h>
 #include <trview.graphics/IShader.h>
 
+#include "../Geometry/Model/IModelStorage.h"
+#include "../Geometry/Model/IModel.h"
 #include "../Graphics/LevelTextureStorage.h"
 #include "../Camera/ICamera.h"
 #include "Remastered/INgPlusSwitcher.h"
@@ -81,7 +83,7 @@ namespace trview
         // Create a texture sampler state description.
         D3D11_SAMPLER_DESC sampler_desc;
         memset(&sampler_desc, 0, sizeof(sampler_desc));
-        sampler_desc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
+        sampler_desc.Filter = D3D11_FILTER_MIN_MAG_MIP_POINT;
         sampler_desc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
         sampler_desc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
         sampler_desc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
@@ -291,6 +293,15 @@ namespace trview
             context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
             _vertex_shader->apply(context);
             _pixel_shader->apply(context);
+
+            graphics::set_data(*_pixel_shader_data, context, PixelShaderData{ false });
+            _pixel_shader_data->apply(context, graphics::IBuffer::ApplyTo::PS);
+            if (_skybox)
+            {
+                // TODO: TR4+ skyboxes are transparent sometimes...
+                // Needs to do transparent buffer render separate from the main one.
+                _skybox->render(camera);
+            }
 
             graphics::set_data(*_pixel_shader_data, context, PixelShaderData{ true });
             _pixel_shader_data->apply(context, graphics::IBuffer::ApplyTo::PS);
@@ -1456,6 +1467,8 @@ namespace trview
                 _entities.push_back(value);
             }
         }
+
+        _skybox = Skybox(_device, *model_storage, _platform_and_version, _texture_storage);
 
         callbacks.on_progress("Done");
     }

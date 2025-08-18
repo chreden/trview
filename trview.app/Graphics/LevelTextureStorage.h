@@ -56,7 +56,6 @@ namespace trview
         };
         TextureMode _texture_mode{ TextureMode::Official };
         std::unordered_map<uint32_t, std::vector<uint32_t>> _animated_textures;
-
         struct SourceTexture
         {
             uint32_t width;

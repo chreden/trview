@@ -14,6 +14,38 @@
 
 namespace trlevel
 {
+    uint32_t get_skybox_id(PlatformAndVersion version)
+    {
+        switch (version.version)
+        {
+            case LevelVersion::Tomb2:
+            {
+                return 254;
+            }
+            case LevelVersion::Tomb3:
+            {
+                if (is_tr3_ects(version))
+                {
+                    return 312;
+                }
+                if (is_tr3_demo_55(version))
+                {
+                    return 315;
+                }
+                return 355;
+            }
+            case LevelVersion::Tomb4:
+            {
+                return 459;
+            }
+            case LevelVersion::Tomb5:
+            {
+                return 454;
+            }
+        }
+        return UINT_MAX;
+    }
+
     ILevel::~ILevel()
     {
     }

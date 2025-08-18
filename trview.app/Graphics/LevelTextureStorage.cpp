@@ -62,7 +62,6 @@ namespace trview
         }
 
         auto vert = _object_textures[texture_index].Vertices[uv_index];
-
         const auto found_repl = _texture_replacements.find(texture_index);
         if (found_repl != _texture_replacements.end())
         {
@@ -73,28 +72,9 @@ namespace trview
         {
             float u = static_cast<float>(vert.x_whole);
             float v = static_cast<float>(vert.y_whole);
-
-            if (vert.x_frac == 1 || vert.x_frac == 0)
-            {
-                u += 1;
-            }
-            else if (vert.x_frac == 255)
-            {
-                u -= 1;
-            }
-
-            if (vert.y_frac == 1 || vert.y_frac == 0)
-            {
-                v += 1;
-            }
-            else if (vert.y_frac == 255)
-            {
-                v -= 1;
-            }
-
             return Vector2(u, v) / 256.0f;
         }
-        
+
         float x = static_cast<float>(vert.x_whole) + (vert.x_frac / 256.0f);
         float y = static_cast<float>(vert.y_whole) + (vert.y_frac / 256.0f);
         return Vector2(x, y) / 256.0f;

@@ -9,19 +9,6 @@ namespace trlevel
 {
     namespace
     {
-        uint32_t get_skybox_id(PlatformAndVersion version)
-        {
-            if (is_tr3_ects(version))
-            {
-                return 312;
-            }
-            if (is_tr3_demo_55(version))
-            {
-                return 315;
-            }
-            return 355;
-        }
-
         std::vector<trview_room_vertex> convert_vertices_tr3_psx(std::vector<uint32_t> vertices, int32_t y_top)
         {
             return vertices |
