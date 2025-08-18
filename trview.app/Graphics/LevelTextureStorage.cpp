@@ -95,10 +95,6 @@ namespace trview
         if (found_repl != _texture_replacements.end())
         {
             return found_repl->second.uvs[uv_index];
-            // vert = found_repl->second.object_texture.Vertices[uv_index];
-            // float u = static_cast<float>(vert.x_whole);
-            // float v = static_cast<float>(vert.y_whole);
-            // return Vector2(u, v) / 255.0f;
         }
 
         if (_texture_mode == TextureMode::Official)
@@ -144,11 +140,6 @@ namespace trview
         if (found_repl != _texture_replacements.end())
         {
             return found_repl->second.tile;
-            // vert = found->second.object_texture.Vertices[uv_index];
-            // float u = static_cast<float>(vert.x_whole);
-            // float v = static_cast<float>(vert.y_whole);
-            // return Vector2(u, v) / 255.0f;
-            
         }
 
         if (texture_index < _object_textures.size())
@@ -375,5 +366,7 @@ namespace trview
             _texture_replacements[static_cast<uint32_t>(i)] = repl;
             add_textile(output_texture, width, height);
         }
+
+        _source_textures = {};
     }
 }
