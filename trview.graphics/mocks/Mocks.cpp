@@ -2,6 +2,8 @@
 
 #include <gmock/gmock.h>
 
+#include "mocks/ISamplerState.h"
+
 // Fix for printing ComPtr - removes value printing:
 namespace testing
 {
@@ -69,6 +71,9 @@ namespace trview
 
             MockBuffer::MockBuffer() {}
             MockBuffer::~MockBuffer() {}
+
+            MockSamplerState::MockSamplerState() {}
+            MockSamplerState::~MockSamplerState() {}
         }
     }
 }

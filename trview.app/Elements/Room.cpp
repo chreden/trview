@@ -42,7 +42,8 @@ namespace trview
         const IMesh::Source& mesh_source,
         std::shared_ptr<ILevelTextureStorage> texture_storage,
         uint32_t index,
-        const std::weak_ptr<ILevel>& parent_level)
+        const std::weak_ptr<ILevel>& parent_level,
+        const graphics::ISamplerState::Source& sampler_source)
         : _info { room.info.x, 0, room.info.z, room.info.yBottom, room.info.yTop }, 
         _alternate_room(room.alternate_room),
         _alternate_group(room.alternate_group),
@@ -72,6 +73,9 @@ namespace trview
         {
             _token_store += parent->on_geometry_colours_changed += [&]() { _all_geometry_meshes.clear(); };
         }
+
+        _room_sampler_state = sampler_source(graphics::ISamplerState::AddressMode::Wrap);
+        _object_sampler_state = sampler_source(graphics::ISamplerState::AddressMode::Clamp);
     }
 
     void Room::initialise(const trlevel::ILevel& level, const trlevel::tr3_room& room, const IMeshStorage& mesh_storage,
@@ -237,6 +241,7 @@ namespace trview
     {
         Color colour = room_colour(water() && has_flag(render_filter, RenderFilter::Water), selected);
 
+        _room_sampler_state->apply();
         if (has_flag(render_filter, RenderFilter::Rooms))
         {
             if (has_flag(render_filter, RenderFilter::AllGeometry))
@@ -318,6 +323,7 @@ namespace trview
             return;
         }
 
+        _object_sampler_state->apply();
         for (const auto& entity : _entities)
         {
             if (auto entity_ptr = entity.lock())

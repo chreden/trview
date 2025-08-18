@@ -338,29 +338,9 @@ namespace trview
     void LevelTextureStorage::generate_replacement_textures()
     {
         using namespace DirectX::SimpleMath;
-
-        // Todo:
-        // Find the largest object texture to set dimensions for the replacement texture pages
-        // While there are still object textures 
-        // Attempt to place each object texture on the destination texture
-        //      Render the texture in that position (not copy subresource)
-
-        // 1. Output texture
-        // Find the one texture for a test:
-        std::optional<std::size_t> index;
         for (auto i = 0; i < _object_textures.size(); ++i)
         {
-            if (_object_textures[i].TileAndFlag == 0 &&
-                _object_textures[i].Vertices[0].x_whole == 128)
-            {
-                index = i;
-                break;
-            }
-        }
-
-        if (index)
-        {
-            const trlevel::tr_object_texture& ot = _object_textures[index.value()];
+            const trlevel::tr_object_texture& ot = _object_textures[i];
 
             auto [min_x, max_x] = std::ranges::minmax(ot.Vertices | std::views::transform([](auto&& v) { return v.x_whole; }));
             auto [min_y, max_y] = std::ranges::minmax(ot.Vertices | std::views::transform([](auto&& v) { return v.y_whole; }));
@@ -371,12 +351,12 @@ namespace trview
             std::vector<uint32_t> output_texture;
             output_texture.resize(width * height, 0xffff00ff);
 
-            const auto& source_texture = _source_textures[_object_textures[index.value()].TileAndFlag];
+            const auto& source_texture = _source_textures[ot.TileAndFlag & 0x7fff];
 
             for (uint32_t y = 0; y < height; ++y)
             {
                 memcpy(
-                    &output_texture[y * 64],
+                    &output_texture[y * width],
                     &source_texture.bytes[(min_y + y) * source_texture.width + min_x],
                     sizeof(uint32_t) * width);
             }
@@ -392,7 +372,7 @@ namespace trview
                 .tile = _texture_storage->num_textures()
             };
 
-            _texture_replacements[static_cast<uint32_t>(index.value())] = repl;
+            _texture_replacements[static_cast<uint32_t>(i)] = repl;
             add_textile(output_texture, width, height);
         }
     }

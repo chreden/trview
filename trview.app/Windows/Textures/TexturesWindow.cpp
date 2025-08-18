@@ -33,7 +33,7 @@ namespace trview
             if (_texture_storage && _index < static_cast<int32_t>(_texture_storage->num_tiles()))
             {
                 auto texture = _transparency ? _texture_storage->texture(_index) : _texture_storage->opaque_texture(_index);
-                ImGui::Image(texture.view().Get(), ImVec2(256, 256));
+                ImGui::Image(texture.view().Get(), ImVec2(texture.size().width, texture.size().height));
             }
         }
         ImGui::End();

@@ -120,6 +120,15 @@
     <ClInclude Include="mocks\IBuffer.h">
       <Filter>Mocks</Filter>
     </ClInclude>
+    <ClInclude Include="Sampler\ISamplerState.h">
+      <Filter>Sampler</Filter>
+    </ClInclude>
+    <ClInclude Include="Sampler\SamplerState.h">
+      <Filter>Sampler</Filter>
+    </ClInclude>
+    <ClInclude Include="Mocks\ISamplerState.h">
+      <Filter>Mocks</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="PixelShader.cpp">
@@ -184,6 +193,9 @@
     <ClCompile Include="Buffer.cpp">
       <Filter>Buffer</Filter>
     </ClCompile>
+    <ClCompile Include="Sampler\SamplerState.cpp">
+      <Filter>Sampler</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Shaders">
@@ -218,6 +230,9 @@
     </Filter>
     <Filter Include="Buffer">
       <UniqueIdentifier>{b68f0cbd-a3d1-4736-bb51-2a72974a2394}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Sampler">
+      <UniqueIdentifier>{aec37760-5c07-4fb0-bcb3-7019c5c12021}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
