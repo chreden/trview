@@ -57,14 +57,6 @@ namespace trview
         TextureMode _texture_mode{ TextureMode::Official };
         std::unordered_map<uint32_t, std::vector<uint32_t>> _animated_textures;
 
-        struct UVTextureReplacment
-        {
-            trlevel::tr_object_texture object_texture;
-            uint32_t new_tile;
-        };
-        std::unordered_map<uint32_t, UVTextureReplacment> _animated_uv_textures;
-
-        // Texture replacement mode:
         struct SourceTexture
         {
             uint32_t width;
