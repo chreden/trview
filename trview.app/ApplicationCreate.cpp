@@ -274,10 +274,10 @@ namespace trview
 
                 auto level_texture_storage = std::make_shared<LevelTextureStorage>(device, std::make_unique<TextureStorage>(device));
                 int count = 0;
-                callbacks.on_textile_callback = [&](auto&& textile)
+                callbacks.on_textile_callback = [&](auto&& textile, auto&& width, auto&& height)
                     {
                         callbacks.on_progress(std::format("Loading texture {}", ++count));
-                        level_texture_storage->add_textile(textile);
+                        level_texture_storage->add_textile(textile, width, height);
                     };
 
                 auto sound_storage = std::make_shared<SoundStorage>(sound_source);

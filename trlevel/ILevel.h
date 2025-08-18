@@ -161,7 +161,7 @@ namespace trlevel
         struct LoadCallbacks
         {
             std::function<void(const std::string&)> on_progress_callback;
-            std::function<void(const std::vector<uint32_t>&)> on_textile_callback;
+            std::function<void(const std::vector<uint32_t>&, uint32_t, uint32_t)> on_textile_callback;
             std::function<void(uint16_t, uint16_t, uint16_t, const std::vector<uint8_t>&)> on_sound_callback;
 
             void on_progress(const std::string& message) const;
