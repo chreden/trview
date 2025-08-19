@@ -117,12 +117,12 @@ namespace trview
 
     uint32_t LevelTextureStorage::num_textures() const
     {
-        return _texture_storage->num_textures();
+        return _num_textiles;
     }
 
     uint32_t LevelTextureStorage::num_tiles() const
     {
-        return _texture_storage->num_textures();
+        return _num_textiles;
     }
 
     uint16_t LevelTextureStorage::attribute(uint32_t texture_index) const
@@ -250,14 +250,16 @@ namespace trview
 
     void LevelTextureStorage::generate_replacement_textures()
     {
+        // For the purposes of external viewers they don't need to know about the extra
+        // textures, so lie about the number we have.
+        _num_textiles = _texture_storage->num_textures();
+
         using namespace DirectX::SimpleMath;
         for (auto i = 0; i < _object_textures.size(); ++i)
         {
             const trlevel::tr_object_texture& ot = _object_textures[i];
-
-            auto [min_x, max_x] = std::ranges::minmax(ot.Vertices | std::views::transform([](auto&& v) { return v.x_whole; }));
-            auto [min_y, max_y] = std::ranges::minmax(ot.Vertices | std::views::transform([](auto&& v) { return v.y_whole; }));
-
+            const auto [min_x, max_x] = std::ranges::minmax(ot.Vertices | std::views::transform([](auto&& v) { return v.x_whole; }));
+            const auto [min_y, max_y] = std::ranges::minmax(ot.Vertices | std::views::transform([](auto&& v) { return v.y_whole; }));
             const uint32_t width = max_x - min_x + 1;
             const uint32_t height = max_y - min_y + 1;
 

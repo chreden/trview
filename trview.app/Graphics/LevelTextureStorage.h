@@ -71,5 +71,6 @@ namespace trview
         };
         std::vector<SourceTexture> _source_textures;
         std::unordered_map<uint32_t, TextureReplacement> _texture_replacements;
+        uint32_t _num_textiles{ 0u };
     };
 }
