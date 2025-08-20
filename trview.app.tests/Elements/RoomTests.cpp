@@ -13,10 +13,12 @@
 #include <trview.app/Mocks/Elements/ICameraSink.h>
 #include <trview.common/Algorithms.h>
 #include <trview.common/Mocks/Logs/ILog.h>
+#include <trview.graphics/Mocks/ISamplerState.h>
 
 using namespace trview;
 using namespace trview::mocks;
 using namespace trview::tests;
+using namespace trview::graphics::mocks;
 using testing::Return;
 using testing::NiceMock;
 
@@ -37,10 +39,11 @@ namespace
             IStaticMesh::PositionSource static_mesh_position_source{ [](auto&&...) { return mock_shared<MockStaticMesh>(); } };
             ISector::Source sector_source{ [](auto&&...) { return mock_shared<MockSector>(); } };
             std::shared_ptr<ILog> log{ mock_shared<MockLog>() };
+            graphics::ISamplerState::Source sampler_source{ [](auto&&...) { return mock_shared<MockSamplerState>(); } };
 
             std::shared_ptr<Room> build()
             {
-                auto new_room = std::make_shared<Room>(room, mesh_source, level_texture_storage, index, level);
+                auto new_room = std::make_shared<Room>(room, mesh_source, level_texture_storage, index, level, sampler_source);
                 new_room->initialise(*tr_level, room, *mesh_storage, static_mesh_source, static_mesh_position_source, sector_source, 0, Activity(log, "Level", "Room 0"));
                 return new_room;
             }

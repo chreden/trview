@@ -1,30 +1,8 @@
 #include "LevelTextureStorage.h"
-#include "TextureStorage.h"
 #include <ranges>
 
 namespace trview
 {
-    namespace
-    {
-        D3D11_BOX to_box(const trlevel::tr_object_texture& object_texture)
-        {
-            uint8_t left = UINT8_MAX;
-            uint8_t top = UINT8_MAX;
-            uint8_t right = 0;
-            uint8_t bottom = 0;
-
-            for (const auto& v : object_texture.Vertices)
-            {
-                left = std::min(left, v.x_whole);
-                top = std::min(top, v.y_whole);
-                right = std::max(right, v.x_whole);
-                bottom = std::max(bottom, v.y_whole);
-            }
-
-            return D3D11_BOX { .left = left, .top = top, .front = 0, .right = static_cast<uint32_t>(right) + 1, .bottom = static_cast<uint32_t>(bottom) + 1, .back = 1 };
-        }
-    }
-
     ILevelTextureStorage::~ILevelTextureStorage()
     {
     }
@@ -85,10 +63,10 @@ namespace trview
 
         auto vert = _object_textures[texture_index].Vertices[uv_index];
 
-        const auto found = _animated_uv_textures.find(texture_index);
-        if (found != _animated_uv_textures.end())
+        const auto found_repl = _texture_replacements.find(texture_index);
+        if (found_repl != _texture_replacements.end())
         {
-            vert = found->second.object_texture.Vertices[uv_index];
+            return found_repl->second.uvs[uv_index];
         }
 
         if (_texture_mode == TextureMode::Official)
@@ -124,10 +102,10 @@ namespace trview
 
     uint32_t LevelTextureStorage::tile(uint32_t texture_index) const
     {
-        const auto found = _animated_uv_textures.find(texture_index);
-        if (found != _animated_uv_textures.end())
+        const auto found_repl = _texture_replacements.find(texture_index);
+        if (found_repl != _texture_replacements.end())
         {
-            return found->second.new_tile;
+            return found_repl->second.tile;
         }
 
         if (texture_index < _object_textures.size())
@@ -139,12 +117,12 @@ namespace trview
 
     uint32_t LevelTextureStorage::num_textures() const
     {
-        return _texture_storage->num_textures();
+        return _num_textiles;
     }
 
     uint32_t LevelTextureStorage::num_tiles() const
     {
-        return _texture_storage->num_textures();
+        return _num_textiles;
     }
 
     uint16_t LevelTextureStorage::attribute(uint32_t texture_index) const
@@ -207,61 +185,19 @@ namespace trview
 
         _object_textures = level->object_textures();
 
+        generate_replacement_textures();
+
         uint32_t sequence_index = 0;
         for (const auto& sequence : level->animated_textures())
         {
             for (const auto& entry : sequence)
             {
-                if (sequence_index < level->animated_texture_uv_count())
-                {
-                    if (_animated_uv_textures.find(entry) == _animated_uv_textures.end())
-                    {
-                        _animated_uv_textures.insert({ entry, {} });
-                    }
-                }
-                else
+                if (sequence_index >= level->animated_texture_uv_count())
                 {
                     _animated_textures[static_cast<uint32_t>(entry)] = sequence | std::ranges::to<std::vector<uint32_t>>();
                 }
             }
             ++sequence_index;
-        }
-
-        for (auto& uv_texture : _animated_uv_textures)
-        {
-            const auto& object_texture = _object_textures[uv_texture.first];
-            const auto& tile = _opaque_tiles[object_texture.TileAndFlag & 0x7FFF];
-
-            // 1. Copy the contents of the object texture to new texture.
-            auto source_texture = tile.texture();
-
-            D3D11_BOX box = to_box(object_texture);
-            const uint32_t width = box.right - box.left;
-            const uint32_t height = box.bottom - box.top;
-
-            std::vector<uint32_t> blank;
-            blank.resize(width * height, 0xffffffff);
-            _texture_storage->add_texture(blank, width, height);
-            uint32_t new_index = _texture_storage->num_textures() - 1;
-            auto dest_texture = _texture_storage->texture(new_index);
-
-            Microsoft::WRL::ComPtr<ID3D11Resource> source_resource;
-            Microsoft::WRL::ComPtr<ID3D11Resource> dest_resource;
-            source_texture.As<ID3D11Resource>(&source_resource);
-            dest_texture.texture().As<ID3D11Resource>(&dest_resource);
-
-            _device->context()->CopySubresourceRegion(dest_resource.Get(), 0, 0, 0, 0, source_resource.Get(), 0, &box);
-
-            // 2. Store altered UVs
-            // 3. Map object texture to new tile number
-            trlevel::tr_object_texture remapped_texture = object_texture;
-            for (auto& v : remapped_texture.Vertices)
-            {
-                v.x_whole = static_cast<uint8_t>((static_cast<float>(v.x_whole - box.left) / (width - 1)) * 255);
-                v.y_whole = static_cast<uint8_t>((static_cast<float>(v.y_whole - box.top) / (height - 1)) * 255);
-            }
-            uv_texture.second.object_texture = remapped_texture;
-            uv_texture.second.new_tile = new_index;
         }
 
         if (_platform_and_version.version < trlevel::LevelVersion::Tomb4)
@@ -277,15 +213,16 @@ namespace trview
         determine_texture_mode();
     }
 
-    void LevelTextureStorage::add_textile(const std::vector<uint32_t>& textile)
+    void LevelTextureStorage::add_textile(const std::vector<uint32_t>& textile, uint32_t width, uint32_t height)
     {
-        _texture_storage->add_texture(textile, 256, 256);
+        _texture_storage->add_texture(textile, width, height);
         auto opaque = textile;
         for (auto& d : opaque)
         {
             d |= 0xff000000;
         }
-        _opaque_tiles.emplace_back(*_device, 256, 256, opaque);
+        _opaque_tiles.emplace_back(*_device, width, height, opaque);
+        _source_textures.push_back({ .width = width, .height = height, .bytes = textile });
     }
 
     Triangle::AnimationMode LevelTextureStorage::animation_mode(uint32_t texture_index) const
@@ -309,5 +246,51 @@ namespace trview
         auto inner = std::ranges::find(sequence, texture_index);
         std::ranges::rotate(sequence, inner);
         return sequence;
+    }
+
+    void LevelTextureStorage::generate_replacement_textures()
+    {
+        // For the purposes of external viewers they don't need to know about the extra
+        // textures, so lie about the number we have.
+        _num_textiles = _texture_storage->num_textures();
+
+        using namespace DirectX::SimpleMath;
+        for (auto i = 0; i < _object_textures.size(); ++i)
+        {
+            const trlevel::tr_object_texture& ot = _object_textures[i];
+            const auto [min_x, max_x] = std::ranges::minmax(ot.Vertices | std::views::transform([](auto&& v) { return v.x_whole; }));
+            const auto [min_y, max_y] = std::ranges::minmax(ot.Vertices | std::views::transform([](auto&& v) { return v.y_whole; }));
+            const uint32_t width = max_x - min_x + 1;
+            const uint32_t height = max_y - min_y + 1;
+
+            std::vector<uint32_t> output_texture;
+            output_texture.resize(width * height, 0xffff00ff);
+
+            const auto& source_texture = _source_textures[ot.TileAndFlag & 0x7fff];
+
+            for (uint32_t y = 0; y < height; ++y)
+            {
+                memcpy(
+                    &output_texture[y * width],
+                    &source_texture.bytes[(min_y + y) * source_texture.width + min_x],
+                    sizeof(uint32_t) * width);
+            }
+
+            TextureReplacement repl =
+            {
+                .uvs = ot.Vertices | std::views::transform([&](auto&& v) -> Vector2
+                {
+                    return Vector2(
+                        (static_cast<float>(v.x_whole - min_x) / (width - 1)),
+                        (static_cast<float>(v.y_whole - min_y) / (height - 1)));
+                }) | std::ranges::to<std::vector>(),
+                .tile = _texture_storage->num_textures()
+            };
+
+            _texture_replacements[static_cast<uint32_t>(i)] = repl;
+            add_textile(output_texture, width, height);
+        }
+
+        _source_textures = {};
     }
 }

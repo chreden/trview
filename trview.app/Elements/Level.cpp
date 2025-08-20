@@ -108,7 +108,12 @@ namespace trview
         _pixel_shader_data = buffer_source(sizeof(PixelShaderData));
 
         // Create the texture sampler state.
-        _sampler_state = device->create_sampler_state(sampler_desc);
+        _room_sampler_state = device->create_sampler_state(sampler_desc);
+
+        sampler_desc.AddressU = D3D11_TEXTURE_ADDRESS_CLAMP;
+        sampler_desc.AddressV = D3D11_TEXTURE_ADDRESS_CLAMP;
+        sampler_desc.AddressW = D3D11_TEXTURE_ADDRESS_CLAMP;
+        _object_sampler_state = device->create_sampler_state(sampler_desc);
     }
 
     std::vector<graphics::Texture> Level::level_textures() const
@@ -273,7 +278,7 @@ namespace trview
 
         {
             graphics::RasterizerStateStore rasterizer_store(context);
-            context->PSSetSamplers(0, 1, _sampler_state.GetAddressOf());
+            context->PSSetSamplers(0, 1, _room_sampler_state.GetAddressOf());
             if (_show_wireframe)
             {
                 context->RSSetState(_wireframe_rasterizer.Get());

@@ -30,7 +30,7 @@ namespace trlevel
     {
         if (on_textile_callback)
         {
-            on_textile_callback(data);
+            on_textile_callback(data, 256, 256);
         }
     }
 

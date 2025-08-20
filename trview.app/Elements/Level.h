@@ -195,7 +195,8 @@ namespace trview
 
         graphics::IShader*          _vertex_shader;
         graphics::IShader*          _pixel_shader;
-        Microsoft::WRL::ComPtr<ID3D11SamplerState> _sampler_state;
+        Microsoft::WRL::ComPtr<ID3D11SamplerState> _room_sampler_state;
+        Microsoft::WRL::ComPtr<ID3D11SamplerState> _object_sampler_state;
         Microsoft::WRL::ComPtr<ID3D11RasterizerState> _default_rasterizer;
         Microsoft::WRL::ComPtr<ID3D11RasterizerState> _wireframe_rasterizer;
         std::unique_ptr<graphics::IBuffer> _pixel_shader_data;

@@ -37,12 +37,15 @@
     <ClInclude Include="Mocks\IShader.h" />
     <ClInclude Include="Mocks\IShaderStorage.h" />
     <ClInclude Include="Mocks\ISprite.h" />
+    <ClInclude Include="Mocks\ISamplerState.h" />
     <ClInclude Include="ParagraphAlignment.h" />
     <ClInclude Include="PixelShader.h" />
     <ClInclude Include="PixelShaderStore.h" />
     <ClInclude Include="RasterizerStateStore.h" />
     <ClInclude Include="RenderTarget.h" />
     <ClInclude Include="RenderTargetStore.h" />
+    <ClInclude Include="Sampler\ISamplerState.h" />
+    <ClInclude Include="Sampler\SamplerState.h" />
     <ClInclude Include="ShaderStorage.h" />
     <ClInclude Include="Sprite.h" />
     <ClInclude Include="SpriteSizeStore.h" />
@@ -70,6 +73,7 @@
     <ClCompile Include="RasterizerStateStore.cpp" />
     <ClCompile Include="RenderTarget.cpp" />
     <ClCompile Include="RenderTargetStore.cpp" />
+    <ClCompile Include="Sampler\SamplerState.cpp" />
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="ShaderStorage.cpp" />
     <ClCompile Include="Sprite.cpp" />

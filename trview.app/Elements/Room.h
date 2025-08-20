@@ -21,8 +21,16 @@
 #include <trview.common/TokenStore.h>
 #include <trview.common/Logs/ILog.h>
 
+#include <trview.graphics/Sampler/ISamplerState.h>
+
 namespace trview
 {
+    struct Sampler
+    {
+    public:
+        void apply();
+    };
+
     class Room final : public IRoom, public std::enable_shared_from_this<IRoom>
     {
     public:
@@ -30,7 +38,8 @@ namespace trview
             const IMesh::Source& mesh_source,
             std::shared_ptr<ILevelTextureStorage> texture_storage,
             uint32_t index,
-            const std::weak_ptr<ILevel>& parent_level);
+            const std::weak_ptr<ILevel>& parent_level,
+            const graphics::ISamplerState::Source& sampler_source);
 
         Room(const Room&) = delete;
         Room& operator=(const Room&) = delete;
@@ -157,5 +166,8 @@ namespace trview
         int16_t _ambient_intensity_1;
         int16_t _ambient_intensity_2;
         int16_t _light_mode;
+
+        std::shared_ptr<graphics::ISamplerState> _room_sampler_state;
+        std::shared_ptr<graphics::ISamplerState> _object_sampler_state;
     };
 }
