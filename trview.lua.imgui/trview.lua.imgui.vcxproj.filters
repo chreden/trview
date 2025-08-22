@@ -9,34 +9,16 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="inc\trview.lua.imgui.h">
-      <Filter>inc</Filter>
-    </ClInclude>
-    <ClInclude Include="src\framework.h">
-      <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="src\pch.h">
-      <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="src\trview.lua.imgui.input.h">
-      <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="src\tables.h">
-      <Filter>src</Filter>
-    </ClInclude>
+    <ClInclude Include="inc\trview.lua.imgui.h" Filter="inc" />
+    <ClInclude Include="src\framework.h" Filter="src" />
+    <ClInclude Include="src\pch.h" Filter="src" />
+    <ClInclude Include="src\trview.lua.imgui.input.h" Filter="src" />
+    <ClInclude Include="src\tables.h" Filter="src" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\pch.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\trview.lua.imgui.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\trview.lua.imgui.input.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\tables.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
+    <ClCompile Include="src\pch.cpp" Filter="src" />
+    <ClCompile Include="src\trview.lua.imgui.cpp" Filter="src" />
+    <ClCompile Include="src\trview.lua.imgui.input.cpp" Filter="src" />
+    <ClCompile Include="src\tables.cpp" Filter="src" />
   </ItemGroup>
 </Project>

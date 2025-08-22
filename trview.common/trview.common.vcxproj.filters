@@ -6,80 +6,38 @@
     <ClInclude Include="Window.h" />
     <ClInclude Include="Point.h" />
     <ClInclude Include="Colour.h" />
-    <ClInclude Include="MessageHandler.h">
-      <Filter>Windows</Filter>
-    </ClInclude>
-    <ClInclude Include="Event.h">
-      <Filter>Events</Filter>
-    </ClInclude>
-    <ClInclude Include="TokenStore.h">
-      <Filter>Events</Filter>
-    </ClInclude>
+    <ClInclude Include="MessageHandler.h" Filter="Windows" />
+    <ClInclude Include="Event.h" Filter="Events" />
+    <ClInclude Include="TokenStore.h" Filter="Events" />
     <ClInclude Include="Strings.h" />
-    <ClInclude Include="Windows\Clipboard.h">
-      <Filter>Windows</Filter>
-    </ClInclude>
-    <ClInclude Include="Windows\Shortcuts.h">
-      <Filter>Windows</Filter>
-    </ClInclude>
+    <ClInclude Include="Windows\Clipboard.h" Filter="Windows" />
+    <ClInclude Include="Windows\Shortcuts.h" Filter="Windows" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="Maths.h" />
     <ClInclude Include="Algorithms.h" />
     <ClInclude Include="Algorithms.hpp" />
-    <ClInclude Include="Mocks\Windows\IShortcuts.h">
-      <Filter>Mocks\Windows</Filter>
-    </ClInclude>
-    <ClInclude Include="Windows\IShortcuts.h">
-      <Filter>Windows</Filter>
-    </ClInclude>
-    <ClInclude Include="Windows\IClipboard.h">
-      <Filter>Windows</Filter>
-    </ClInclude>
-    <ClInclude Include="Mocks\Windows\IClipboard.h">
-      <Filter>Mocks\Windows</Filter>
-    </ClInclude>
+    <ClInclude Include="Mocks\Windows\IShortcuts.h" Filter="Mocks\Windows" />
+    <ClInclude Include="Windows\IShortcuts.h" Filter="Windows" />
+    <ClInclude Include="Windows\IClipboard.h" Filter="Windows" />
+    <ClInclude Include="Mocks\Windows\IClipboard.h" Filter="Mocks\Windows" />
     <ClInclude Include="Json.h" />
     <ClInclude Include="Json.hpp" />
-    <ClInclude Include="Windows\IDialogs.h">
-      <Filter>Windows</Filter>
-    </ClInclude>
-    <ClInclude Include="Windows\Dialogs.h">
-      <Filter>Windows</Filter>
-    </ClInclude>
-    <ClInclude Include="Mocks\Windows\IDialogs.h">
-      <Filter>Mocks\Windows</Filter>
-    </ClInclude>
+    <ClInclude Include="Windows\IDialogs.h" Filter="Windows" />
+    <ClInclude Include="Windows\Dialogs.h" Filter="Windows" />
+    <ClInclude Include="Mocks\Windows\IDialogs.h" Filter="Mocks\Windows" />
     <ClInclude Include="IFiles.h" />
     <ClInclude Include="Files.h" />
-    <ClInclude Include="Mocks\IFiles.h">
-      <Filter>Mocks</Filter>
-    </ClInclude>
+    <ClInclude Include="Mocks\IFiles.h" Filter="Mocks" />
     <ClInclude Include="Resources.h" />
     <ClInclude Include="JsonSerializers.h" />
-    <ClInclude Include="Windows\IShell.h">
-      <Filter>Windows</Filter>
-    </ClInclude>
-    <ClInclude Include="Windows\Shell.h">
-      <Filter>Windows</Filter>
-    </ClInclude>
-    <ClInclude Include="Mocks\Windows\IShell.h">
-      <Filter>Mocks\Windows</Filter>
-    </ClInclude>
-    <ClInclude Include="Logs\ILog.h">
-      <Filter>Logs</Filter>
-    </ClInclude>
-    <ClInclude Include="Logs\Log.h">
-      <Filter>Logs</Filter>
-    </ClInclude>
-    <ClInclude Include="Mocks\Logs\ILog.h">
-      <Filter>Mocks\Logs</Filter>
-    </ClInclude>
-    <ClInclude Include="Logs\Activity.h">
-      <Filter>Logs</Filter>
-    </ClInclude>
-    <ClInclude Include="Logs\Message.h">
-      <Filter>Logs</Filter>
-    </ClInclude>
+    <ClInclude Include="Windows\IShell.h" Filter="Windows" />
+    <ClInclude Include="Windows\Shell.h" Filter="Windows" />
+    <ClInclude Include="Mocks\Windows\IShell.h" Filter="Mocks\Windows" />
+    <ClInclude Include="Logs\ILog.h" Filter="Logs" />
+    <ClInclude Include="Logs\Log.h" Filter="Logs" />
+    <ClInclude Include="Mocks\Logs\ILog.h" Filter="Mocks\Logs" />
+    <ClInclude Include="Logs\Activity.h" Filter="Logs" />
+    <ClInclude Include="Logs\Message.h" Filter="Logs" />
     <ClInclude Include="Version.h" />
     <ClInclude Include="Version.hpp" />
   </ItemGroup>
@@ -89,41 +47,21 @@
     <ClCompile Include="Window.cpp" />
     <ClCompile Include="Point.cpp" />
     <ClCompile Include="Colour.cpp" />
-    <ClCompile Include="MessageHandler.cpp">
-      <Filter>Windows</Filter>
-    </ClCompile>
-    <ClCompile Include="EventToken.cpp">
-      <Filter>Events</Filter>
-    </ClCompile>
-    <ClCompile Include="TokenStore.cpp">
-      <Filter>Events</Filter>
-    </ClCompile>
+    <ClCompile Include="MessageHandler.cpp" Filter="Windows" />
+    <ClCompile Include="EventToken.cpp" Filter="Events" />
+    <ClCompile Include="TokenStore.cpp" Filter="Events" />
     <ClCompile Include="Strings.cpp" />
-    <ClCompile Include="Windows\Clipboard.cpp">
-      <Filter>Windows</Filter>
-    </ClCompile>
-    <ClCompile Include="Windows\Shortcuts.cpp">
-      <Filter>Windows</Filter>
-    </ClCompile>
+    <ClCompile Include="Windows\Clipboard.cpp" Filter="Windows" />
+    <ClCompile Include="Windows\Shortcuts.cpp" Filter="Windows" />
     <ClCompile Include="stdafx.cpp" />
-    <ClCompile Include="Windows\Dialogs.cpp">
-      <Filter>Windows</Filter>
-    </ClCompile>
+    <ClCompile Include="Windows\Dialogs.cpp" Filter="Windows" />
     <ClCompile Include="Files.cpp" />
     <ClCompile Include="Resources.cpp" />
     <ClCompile Include="JsonSerializers.cpp" />
-    <ClCompile Include="Windows\Shell.cpp">
-      <Filter>Windows</Filter>
-    </ClCompile>
-    <ClCompile Include="Logs\Log.cpp">
-      <Filter>Logs</Filter>
-    </ClCompile>
-    <ClCompile Include="Logs\Activity.cpp">
-      <Filter>Logs</Filter>
-    </ClCompile>
-    <ClCompile Include="Mocks\Mocks.cpp">
-      <Filter>Mocks</Filter>
-    </ClCompile>
+    <ClCompile Include="Windows\Shell.cpp" Filter="Windows" />
+    <ClCompile Include="Logs\Log.cpp" Filter="Logs" />
+    <ClCompile Include="Logs\Activity.cpp" Filter="Logs" />
+    <ClCompile Include="Mocks\Mocks.cpp" Filter="Mocks" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Windows">
@@ -146,9 +84,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Event.inl">
-      <Filter>Events</Filter>
-    </None>
+    <None Include="Event.inl" Filter="Events" />
     <None Include="Strings.inl" />
   </ItemGroup>
 </Project>

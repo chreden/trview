@@ -6,30 +6,14 @@
   <ItemGroup>
     <ClCompile Include="stdafx.cpp" />
     <ClCompile Include="trview.cpp" />
-    <ClCompile Include="..\external\imgui\imgui.cpp">
-      <Filter>ImGui</Filter>
-    </ClCompile>
-    <ClCompile Include="..\external\imgui\imgui_draw.cpp">
-      <Filter>ImGui</Filter>
-    </ClCompile>
-    <ClCompile Include="..\external\imgui\imgui_tables.cpp">
-      <Filter>ImGui</Filter>
-    </ClCompile>
-    <ClCompile Include="..\external\imgui\imgui_widgets.cpp">
-      <Filter>ImGui</Filter>
-    </ClCompile>
-    <ClCompile Include="..\external\imgui\backends\imgui_impl_dx11.cpp">
-      <Filter>ImGui</Filter>
-    </ClCompile>
-    <ClCompile Include="..\external\imgui\backends\imgui_impl_win32.cpp">
-      <Filter>ImGui</Filter>
-    </ClCompile>
-    <ClCompile Include="..\external\imgui\misc\cpp\imgui_stdlib.cpp">
-      <Filter>ImGui</Filter>
-    </ClCompile>
-    <ClCompile Include="..\external\imgui\misc\freetype\imgui_freetype.cpp">
-      <Filter>ImGui</Filter>
-    </ClCompile>
+    <ClCompile Include="..\external\imgui\imgui.cpp" Filter="ImGui" />
+    <ClCompile Include="..\external\imgui\imgui_draw.cpp" Filter="ImGui" />
+    <ClCompile Include="..\external\imgui\imgui_tables.cpp" Filter="ImGui" />
+    <ClCompile Include="..\external\imgui\imgui_widgets.cpp" Filter="ImGui" />
+    <ClCompile Include="..\external\imgui\backends\imgui_impl_dx11.cpp" Filter="ImGui" />
+    <ClCompile Include="..\external\imgui\backends\imgui_impl_win32.cpp" Filter="ImGui" />
+    <ClCompile Include="..\external\imgui\misc\cpp\imgui_stdlib.cpp" Filter="ImGui" />
+    <ClCompile Include="..\external\imgui\misc\freetype\imgui_freetype.cpp" Filter="ImGui" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="ImGui">

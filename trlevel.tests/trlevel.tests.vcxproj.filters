@@ -15,12 +15,8 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Files\lake.trc">
-      <Filter>Files</Filter>
-    </None>
-    <None Include="Files\lake-enc.tr4">
-      <Filter>Files</Filter>
-    </None>
+    <None Include="Files\lake.trc" Filter="Files" />
+    <None Include="Files\lake-enc.tr4" Filter="Files" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Resource.rc" />

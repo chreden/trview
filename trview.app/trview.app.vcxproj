@@ -403,7 +403,6 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClInclude Include="Type.h" />
     <ClInclude Include="UI\CameraControls.h" />
     <ClInclude Include="UI\CameraPosition.h" />
-    <ClInclude Include="UI\Console.h" />
     <ClInclude Include="UI\ContextMenu.h" />
     <ClInclude Include="UI\DX11ImGuiBackend.h" />
     <ClInclude Include="UI\GoTo.h" />

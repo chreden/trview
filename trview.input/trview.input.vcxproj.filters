@@ -5,9 +5,7 @@
     <ClCompile Include="Keyboard.cpp" />
     <ClCompile Include="WindowTester.cpp" />
     <ClCompile Include="stdafx.cpp" />
-    <ClCompile Include="Mocks\Mocks.cpp">
-      <Filter>Mocks</Filter>
-    </ClCompile>
+    <ClCompile Include="Mocks\Mocks.cpp" Filter="Mocks" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Mouse.h" />
@@ -16,9 +14,7 @@
     <ClInclude Include="WindowTester.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="IMouse.h" />
-    <ClInclude Include="Mocks\IMouse.h">
-      <Filter>Mocks</Filter>
-    </ClInclude>
+    <ClInclude Include="Mocks\IMouse.h" Filter="Mocks" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Mocks">
