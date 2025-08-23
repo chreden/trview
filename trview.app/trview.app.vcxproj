@@ -474,6 +474,7 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Resources\Files\camera.png" />
+    <Image Include="Resources\Files\placeholder.png" />
     <Image Include="Resources\Files\sink.png" />
     <Image Include="Resources\Files\small.ico" />
     <Image Include="Resources\Files\sound.png" />

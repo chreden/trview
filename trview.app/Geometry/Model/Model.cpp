@@ -3,13 +3,34 @@
 
 namespace trview
 {
+    namespace
+    {
+        bool is_null_model(const std::vector<std::shared_ptr<IMesh>>& meshes)
+        {
+            if (meshes.size() != 1)
+            {
+                return false;
+            }
+
+            const auto triangles = meshes[0]->triangles();
+            if (triangles.empty() ||
+                triangles.size() == 1 && triangles[0].transparency_mode != Triangle::TransparencyMode::None)
+            {
+                return true;
+            }
+
+            return false;
+        }
+    }
+
     IModel::~IModel()
     {
     }
 
-    Model::Model(const trlevel::tr_model& model, const std::vector<std::shared_ptr<IMesh>>& meshes, const std::vector<DirectX::SimpleMath::Matrix>& transforms)
+    Model::Model(const trlevel::tr_model& model, const std::vector<std::shared_ptr<IMesh>>& meshes, const std::vector<DirectX::SimpleMath::Matrix>& transforms, const std::weak_ptr<IMesh>& null_mesh, const std::weak_ptr<ITextureStorage>& texture_storage)
         : _meshes(meshes), _world_transforms(transforms), _model(model)
     {
+        check_for_null_model(null_mesh, texture_storage);
         generate_bounding_box();
     }
 
@@ -74,9 +95,15 @@ namespace trview
     {
         for (uint32_t i = 0; i < _meshes.size(); ++i)
         {
-            auto wvp = _world_transforms[i] * world * view_projection;
-            _meshes[i]->update(0.1f);
-            _meshes[i]->render(wvp, colour);
+            const auto wvp = _world_transforms[i] * world * view_projection;
+            if (_null_texture.has_value())
+            {
+                _meshes[i]->render(wvp, _null_texture.value(), colour);
+            }
+            else
+            {
+                _meshes[i]->render(wvp, colour);
+            }
         }
     }
 
@@ -125,6 +152,19 @@ namespace trview
         {
             // Create an axis-aligned BB from the points of the oriented ones.
             BoundingBox::CreateFromPoints(_bounding_box, corners.size(), &corners[0], sizeof(Vector3));
+        }
+    }
+
+    void Model::check_for_null_model(const std::weak_ptr<IMesh>& null_mesh, const std::weak_ptr<ITextureStorage>& texture_storage)
+    {
+        if (is_null_model(_meshes))
+        {
+            _meshes = { null_mesh.lock() };
+            _world_transforms = { DirectX::SimpleMath::Matrix::CreateScale(0.1f) * _world_transforms[0] };
+            if (auto ts = texture_storage.lock())
+            {
+                _null_texture = ts->lookup("placeholder_texture");
+            }
         }
     }
 }

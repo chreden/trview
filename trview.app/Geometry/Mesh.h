@@ -24,27 +24,22 @@ namespace trview
         Mesh(const std::shared_ptr<graphics::IDevice>& device, const std::vector<Triangle>& triangles, const std::shared_ptr<ITextureStorage>& texture_storage);
 
         virtual ~Mesh() = default;
-
-        virtual void render(const DirectX::SimpleMath::Matrix& world_view_projection,
+        void render(const DirectX::SimpleMath::Matrix& world_view_projection,
             const DirectX::SimpleMath::Color& colour,
             float light_intensity = 1.0f,
             DirectX::SimpleMath::Vector3 light_direction = DirectX::SimpleMath::Vector3::Zero,
             bool geometry_mode = false,
             bool use_colour_override = false) override;
-
-        virtual void render(const DirectX::SimpleMath::Matrix& world_view_projection,
+        void render(const DirectX::SimpleMath::Matrix& world_view_projection,
             const graphics::Texture& replacement_texture,
             const DirectX::SimpleMath::Color& colour,
             float light_intensity = 1.0f,
             DirectX::SimpleMath::Vector3 light_direction = DirectX::SimpleMath::Vector3::Zero) override;
-
         std::vector<Triangle> transparent_triangles() const override;
-
+        std::vector<Triangle> triangles() const override;
         void update(float delta) override;
-
-        virtual const DirectX::BoundingBox& bounding_box() const override;
-
-        virtual PickResult pick(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& direction) const override;
+        const DirectX::BoundingBox& bounding_box() const override;
+        PickResult pick(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& direction) const override;
     private:
         void calculate_bounding_box(const std::vector<Triangle>& triangles);
         void generate_matrix_buffer();
@@ -69,5 +64,6 @@ namespace trview
         std::vector<Triangle>                          _animated_triangles;
         std::unordered_set<uint32_t>                      _animated_triangle_textures;
         Microsoft::WRL::ComPtr<ID3D11Buffer>              _animated_vertex_buffer;
+        std::vector<Triangle> _triangles;
     };
 }

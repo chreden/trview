@@ -22,7 +22,7 @@ namespace trview
             triangles.push_back(
                 Triangle
                 {
-                    .collision_mode = Triangle::CollisionMode::Disabled,
+                    .collision_mode = Triangle::CollisionMode::Enabled,
                     .colours = { color, color, color },
                     .frames = { {.uvs = { uv0, uv1, uv2 } } },
                     .normals = { normal, normal, normal },
@@ -32,7 +32,7 @@ namespace trview
             triangles.push_back(
                 Triangle
                 {
-                    .collision_mode = Triangle::CollisionMode::Disabled,
+                    .collision_mode = Triangle::CollisionMode::Enabled,
                     .colours = { color, color, color },
                     .frames = { {.uvs = { uv2, uv3, uv0 } } },
                     .normals = { normal, normal, normal },
