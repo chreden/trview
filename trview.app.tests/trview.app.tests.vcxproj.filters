@@ -4,222 +4,80 @@
     <ClCompile Include="WindowResizerTests.cpp" />
     <ClCompile Include="FileMenuTests.cpp" />
     <ClCompile Include="CameraTests.cpp" />
-    <ClCompile Include="AlternateGroupTogglerTests.cpp">
-      <Filter>Input</Filter>
-    </ClCompile>
-    <ClCompile Include="Camera\CameraInputTests.cpp">
-      <Filter>Camera</Filter>
-    </ClCompile>
-    <ClCompile Include="Graphics\LevelTextureStorageTests.cpp">
-      <Filter>Graphics</Filter>
-    </ClCompile>
-    <ClCompile Include="Elements\TypeInfoLookupTests.cpp">
-      <Filter>Elements</Filter>
-    </ClCompile>
-    <ClCompile Include="Elements\LevelTests.cpp">
-      <Filter>Elements</Filter>
-    </ClCompile>
-    <ClCompile Include="Menus\MenuDetectorTests.cpp">
-      <Filter>Menus</Filter>
-    </ClCompile>
+    <ClCompile Include="AlternateGroupTogglerTests.cpp" Filter="Input" />
+    <ClCompile Include="Camera\CameraInputTests.cpp" Filter="Camera" />
+    <ClCompile Include="Graphics\LevelTextureStorageTests.cpp" Filter="Graphics" />
+    <ClCompile Include="Elements\TypeInfoLookupTests.cpp" Filter="Elements" />
+    <ClCompile Include="Elements\LevelTests.cpp" Filter="Elements" />
+    <ClCompile Include="Menus\MenuDetectorTests.cpp" Filter="Menus" />
     <ClCompile Include="stdafx.cpp" />
-    <ClCompile Include="ItemsWindowManagerTests.cpp">
-      <Filter>Windows</Filter>
-    </ClCompile>
-    <ClCompile Include="TriggersWindowManagerTests.cpp">
-      <Filter>Windows</Filter>
-    </ClCompile>
+    <ClCompile Include="ItemsWindowManagerTests.cpp" Filter="Windows" />
+    <ClCompile Include="TriggersWindowManagerTests.cpp" Filter="Windows" />
     <ClCompile Include="Main.cpp" />
-    <ClCompile Include="ViewMenuTests.cpp">
-      <Filter>Menus</Filter>
-    </ClCompile>
-    <ClCompile Include="Windows\ViewerTests.cpp">
-      <Filter>Windows</Filter>
-    </ClCompile>
+    <ClCompile Include="ViewMenuTests.cpp" Filter="Menus" />
+    <ClCompile Include="Windows\ViewerTests.cpp" Filter="Windows" />
     <ClCompile Include="ApplicationTests.cpp" />
-    <ClCompile Include="RoomsWindowManagerTests.cpp">
-      <Filter>Windows</Filter>
-    </ClCompile>
-    <ClCompile Include="RoomsWindowTests.cpp">
-      <Filter>Windows</Filter>
-    </ClCompile>
-    <ClCompile Include="Settings\StartupOptionsTests.cpp">
-      <Filter>Settings</Filter>
-    </ClCompile>
-    <ClCompile Include="Graphics\MeshStorageTests.cpp">
-      <Filter>Graphics</Filter>
-    </ClCompile>
-    <ClCompile Include="Elements\RoomTests.cpp">
-      <Filter>Elements</Filter>
-    </ClCompile>
-    <ClCompile Include="Routing\ActionsTests.cpp">
-      <Filter>Routing</Filter>
-    </ClCompile>
-    <ClCompile Include="Routing\ActionTests.cpp">
-      <Filter>Routing</Filter>
-    </ClCompile>
-    <ClCompile Include="Routing\RouteTests.cpp">
-      <Filter>Routing</Filter>
-    </ClCompile>
-    <ClCompile Include="UI\ViewerUITests.cpp">
-      <Filter>UI</Filter>
-    </ClCompile>
-    <ClCompile Include="Windows\RouteWindowManagerTests.cpp">
-      <Filter>Windows</Filter>
-    </ClCompile>
-    <ClCompile Include="Routing\WaypointTests.cpp">
-      <Filter>Routing</Filter>
-    </ClCompile>
-    <ClCompile Include="Elements\StaticMeshTests.cpp">
-      <Filter>Elements</Filter>
-    </ClCompile>
-    <ClCompile Include="Settings\SettingsLoaderTests.cpp">
-      <Filter>Settings</Filter>
-    </ClCompile>
-    <ClCompile Include="Settings\RandomizerSettingsTests.cpp">
-      <Filter>Settings</Filter>
-    </ClCompile>
-    <ClCompile Include="Graphics\TextureStorage.cpp">
-      <Filter>Graphics</Filter>
-    </ClCompile>
-    <ClCompile Include="NullImGuiBackend.cpp">
-      <Filter>ImGui</Filter>
-    </ClCompile>
-    <ClCompile Include="UI\MapColoursTests.cpp">
-      <Filter>UI</Filter>
-    </ClCompile>
-    <ClCompile Include="Elements\LightTests.cpp">
-      <Filter>Elements</Filter>
-    </ClCompile>
-    <ClCompile Include="Windows\LightsWindowManagerTests.cpp">
-      <Filter>Windows</Filter>
-    </ClCompile>
-    <ClCompile Include="Filters\FiltersTests.cpp">
-      <Filter>Filters</Filter>
-    </ClCompile>
-    <ClCompile Include="Elements\TriggerTests.cpp">
-      <Filter>Elements</Filter>
-    </ClCompile>
-    <ClCompile Include="Windows\LogWindowManagerTests.cpp">
-      <Filter>Windows</Filter>
-    </ClCompile>
-    <ClCompile Include="Elements\ItemTests.cpp">
-      <Filter>Elements</Filter>
-    </ClCompile>
-    <ClCompile Include="Elements\SectorTests.cpp">
-      <Filter>Elements</Filter>
-    </ClCompile>
-    <ClCompile Include="TexturesWindowManagerTests.cpp">
-      <Filter>Windows</Filter>
-    </ClCompile>
-    <ClCompile Include="CameraSinkWindowManagerTests.cpp">
-      <Filter>Windows</Filter>
-    </ClCompile>
-    <ClCompile Include="Elements\CameraSinkTests.cpp">
-      <Filter>Elements</Filter>
-    </ClCompile>
-    <ClCompile Include="Lua\Elements\Lua_LevelTests.cpp">
-      <Filter>Lua\Elements</Filter>
-    </ClCompile>
-    <ClCompile Include="Lua\Elements\Lua_ItemTests.cpp">
-      <Filter>Lua\Elements</Filter>
-    </ClCompile>
-    <ClCompile Include="Lua\Elements\Lua_RoomTests.cpp">
-      <Filter>Lua\Elements</Filter>
-    </ClCompile>
-    <ClCompile Include="Lua\Elements\Lua_TriggerTests.cpp">
-      <Filter>Lua\Elements</Filter>
-    </ClCompile>
-    <ClCompile Include="Lua\Elements\Lua_SectorTests.cpp">
-      <Filter>Lua\Elements</Filter>
-    </ClCompile>
-    <ClCompile Include="Windows\ConsoleManagerTests.cpp">
-      <Filter>Windows</Filter>
-    </ClCompile>
-    <ClCompile Include="Lua\Elements\Lua_CameraSinkTests.cpp">
-      <Filter>Lua\Elements</Filter>
-    </ClCompile>
-    <ClCompile Include="Lua\Elements\Lua_LightTests.cpp">
-      <Filter>Lua\Elements</Filter>
-    </ClCompile>
-    <ClCompile Include="Lua\Lua_trviewTests.cpp">
-      <Filter>Lua</Filter>
-    </ClCompile>
-    <ClCompile Include="Plugins\PluginTests.cpp">
-      <Filter>Plugins</Filter>
-    </ClCompile>
-    <ClCompile Include="Plugins\PluginsTests.cpp">
-      <Filter>Plugins</Filter>
-    </ClCompile>
-    <ClCompile Include="PluginsWindowManagerTests.cpp">
-      <Filter>Windows</Filter>
-    </ClCompile>
-    <ClCompile Include="Lua\Elements\Lua_StaticMeshTests.cpp">
-      <Filter>Lua\Elements</Filter>
-    </ClCompile>
-    <ClCompile Include="Lua\Route\Lua_RouteTests.cpp">
-      <Filter>Lua\Route</Filter>
-    </ClCompile>
-    <ClCompile Include="Lua\Lua_ColourTests.cpp">
-      <Filter>Lua</Filter>
-    </ClCompile>
-    <ClCompile Include="Lua\Route\Lua_WaypointTests.cpp">
-      <Filter>Lua\Route</Filter>
-    </ClCompile>
-    <ClCompile Include="Lua\Lua_Vector3Tests.cpp">
-      <Filter>Lua</Filter>
-    </ClCompile>
-    <ClCompile Include="Routing\RandomizerRouteTests.cpp">
-      <Filter>Routing</Filter>
-    </ClCompile>
-    <ClCompile Include="Lua\Lua.cpp">
-      <Filter>Lua</Filter>
-    </ClCompile>
-    <ClCompile Include="..\external\imgui\imgui.cpp">
-      <Filter>ImGui</Filter>
-    </ClCompile>
-    <ClCompile Include="..\external\imgui\imgui_demo.cpp">
-      <Filter>ImGui</Filter>
-    </ClCompile>
-    <ClCompile Include="..\external\imgui\imgui_draw.cpp">
-      <Filter>ImGui</Filter>
-    </ClCompile>
-    <ClCompile Include="..\external\imgui\imgui_tables.cpp">
-      <Filter>ImGui</Filter>
-    </ClCompile>
-    <ClCompile Include="..\external\imgui\imgui_widgets.cpp">
-      <Filter>ImGui</Filter>
-    </ClCompile>
-    <ClCompile Include="..\external\imgui\misc\cpp\imgui_stdlib.cpp">
-      <Filter>ImGui</Filter>
-    </ClCompile>
-    <ClCompile Include="..\external\shared\imgui_app.cpp">
-      <Filter>ImGui</Filter>
-    </ClCompile>
-    <ClCompile Include="..\external\imgui\misc\freetype\imgui_freetype.cpp">
-      <Filter>ImGui</Filter>
-    </ClCompile>
-    <ClCompile Include="Windows\StaticsWindowManagerTests.cpp">
-      <Filter>Windows</Filter>
-    </ClCompile>
-    <ClCompile Include="Windows\WindowsTests.cpp">
-      <Filter>Windows</Filter>
-    </ClCompile>
-    <ClCompile Include="Lua\Camera\Lua_CameraTests.cpp">
-      <Filter>Lua\Camera</Filter>
-    </ClCompile>
-    <ClCompile Include="Windows\SoundsWindowManagerTests.cpp">
-      <Filter>Windows</Filter>
-    </ClCompile>
-    <ClCompile Include="Sound\SoundStorageTests.cpp">
-      <Filter>Sound</Filter>
-    </ClCompile>
-    <ClCompile Include="Windows\AboutWindowManagerTests.cpp">
-      <Filter>Windows</Filter>
-    </ClCompile>
-    <ClCompile Include="Elements\FlybyTests.cpp">
-      <Filter>Elements</Filter>
-    </ClCompile>
+    <ClCompile Include="RoomsWindowManagerTests.cpp" Filter="Windows" />
+    <ClCompile Include="RoomsWindowTests.cpp" Filter="Windows" />
+    <ClCompile Include="Settings\StartupOptionsTests.cpp" Filter="Settings" />
+    <ClCompile Include="Graphics\MeshStorageTests.cpp" Filter="Graphics" />
+    <ClCompile Include="Elements\RoomTests.cpp" Filter="Elements" />
+    <ClCompile Include="Routing\ActionsTests.cpp" Filter="Routing" />
+    <ClCompile Include="Routing\ActionTests.cpp" Filter="Routing" />
+    <ClCompile Include="Routing\RouteTests.cpp" Filter="Routing" />
+    <ClCompile Include="UI\ViewerUITests.cpp" Filter="UI" />
+    <ClCompile Include="Windows\RouteWindowManagerTests.cpp" Filter="Windows" />
+    <ClCompile Include="Routing\WaypointTests.cpp" Filter="Routing" />
+    <ClCompile Include="Elements\StaticMeshTests.cpp" Filter="Elements" />
+    <ClCompile Include="Settings\SettingsLoaderTests.cpp" Filter="Settings" />
+    <ClCompile Include="Settings\RandomizerSettingsTests.cpp" Filter="Settings" />
+    <ClCompile Include="Graphics\TextureStorage.cpp" Filter="Graphics" />
+    <ClCompile Include="NullImGuiBackend.cpp" Filter="ImGui" />
+    <ClCompile Include="UI\MapColoursTests.cpp" Filter="UI" />
+    <ClCompile Include="Elements\LightTests.cpp" Filter="Elements" />
+    <ClCompile Include="Windows\LightsWindowManagerTests.cpp" Filter="Windows" />
+    <ClCompile Include="Filters\FiltersTests.cpp" Filter="Filters" />
+    <ClCompile Include="Elements\TriggerTests.cpp" Filter="Elements" />
+    <ClCompile Include="Windows\LogWindowManagerTests.cpp" Filter="Windows" />
+    <ClCompile Include="Elements\ItemTests.cpp" Filter="Elements" />
+    <ClCompile Include="Elements\SectorTests.cpp" Filter="Elements" />
+    <ClCompile Include="TexturesWindowManagerTests.cpp" Filter="Windows" />
+    <ClCompile Include="CameraSinkWindowManagerTests.cpp" Filter="Windows" />
+    <ClCompile Include="Elements\CameraSinkTests.cpp" Filter="Elements" />
+    <ClCompile Include="Lua\Elements\Lua_LevelTests.cpp" Filter="Lua\Elements" />
+    <ClCompile Include="Lua\Elements\Lua_ItemTests.cpp" Filter="Lua\Elements" />
+    <ClCompile Include="Lua\Elements\Lua_RoomTests.cpp" Filter="Lua\Elements" />
+    <ClCompile Include="Lua\Elements\Lua_TriggerTests.cpp" Filter="Lua\Elements" />
+    <ClCompile Include="Lua\Elements\Lua_SectorTests.cpp" Filter="Lua\Elements" />
+    <ClCompile Include="Windows\ConsoleManagerTests.cpp" Filter="Windows" />
+    <ClCompile Include="Lua\Elements\Lua_CameraSinkTests.cpp" Filter="Lua\Elements" />
+    <ClCompile Include="Lua\Elements\Lua_LightTests.cpp" Filter="Lua\Elements" />
+    <ClCompile Include="Lua\Lua_trviewTests.cpp" Filter="Lua" />
+    <ClCompile Include="Plugins\PluginTests.cpp" Filter="Plugins" />
+    <ClCompile Include="Plugins\PluginsTests.cpp" Filter="Plugins" />
+    <ClCompile Include="PluginsWindowManagerTests.cpp" Filter="Windows" />
+    <ClCompile Include="Lua\Elements\Lua_StaticMeshTests.cpp" Filter="Lua\Elements" />
+    <ClCompile Include="Lua\Route\Lua_RouteTests.cpp" Filter="Lua\Route" />
+    <ClCompile Include="Lua\Lua_ColourTests.cpp" Filter="Lua" />
+    <ClCompile Include="Lua\Route\Lua_WaypointTests.cpp" Filter="Lua\Route" />
+    <ClCompile Include="Lua\Lua_Vector3Tests.cpp" Filter="Lua" />
+    <ClCompile Include="Routing\RandomizerRouteTests.cpp" Filter="Routing" />
+    <ClCompile Include="Lua\Lua.cpp" Filter="Lua" />
+    <ClCompile Include="..\external\imgui\imgui.cpp" Filter="ImGui" />
+    <ClCompile Include="..\external\imgui\imgui_demo.cpp" Filter="ImGui" />
+    <ClCompile Include="..\external\imgui\imgui_draw.cpp" Filter="ImGui" />
+    <ClCompile Include="..\external\imgui\imgui_tables.cpp" Filter="ImGui" />
+    <ClCompile Include="..\external\imgui\imgui_widgets.cpp" Filter="ImGui" />
+    <ClCompile Include="..\external\imgui\misc\cpp\imgui_stdlib.cpp" Filter="ImGui" />
+    <ClCompile Include="..\external\shared\imgui_app.cpp" Filter="ImGui" />
+    <ClCompile Include="..\external\imgui\misc\freetype\imgui_freetype.cpp" Filter="ImGui" />
+    <ClCompile Include="Windows\StaticsWindowManagerTests.cpp" Filter="Windows" />
+    <ClCompile Include="Windows\WindowsTests.cpp" Filter="Windows" />
+    <ClCompile Include="Lua\Camera\Lua_CameraTests.cpp" Filter="Lua\Camera" />
+    <ClCompile Include="Windows\SoundsWindowManagerTests.cpp" Filter="Windows" />
+    <ClCompile Include="Sound\SoundStorageTests.cpp" Filter="Sound" />
+    <ClCompile Include="Windows\AboutWindowManagerTests.cpp" Filter="Windows" />
+    <ClCompile Include="Elements\FlybyTests.cpp" Filter="Elements" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Input">
@@ -276,11 +134,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
-    <ClInclude Include="NullImGuiBackend.h">
-      <Filter>ImGui</Filter>
-    </ClInclude>
-    <ClInclude Include="Lua\Lua.h">
-      <Filter>Lua</Filter>
-    </ClInclude>
+    <ClInclude Include="NullImGuiBackend.h" Filter="ImGui" />
+    <ClInclude Include="Lua\Lua.h" Filter="Lua" />
   </ItemGroup>
 </Project>

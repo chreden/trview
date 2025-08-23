@@ -1,201 +1,75 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClInclude Include="IShader.h">
-      <Filter>Shaders</Filter>
-    </ClInclude>
-    <ClInclude Include="IShaderStorage.h">
-      <Filter>Shaders</Filter>
-    </ClInclude>
-    <ClInclude Include="PixelShader.h">
-      <Filter>Shaders</Filter>
-    </ClInclude>
-    <ClInclude Include="ShaderStorage.h">
-      <Filter>Shaders</Filter>
-    </ClInclude>
-    <ClInclude Include="VertexShader.h">
-      <Filter>Shaders</Filter>
-    </ClInclude>
-    <ClInclude Include="RenderTarget.h">
-      <Filter>RenderTarget</Filter>
-    </ClInclude>
-    <ClInclude Include="RenderTargetStore.h">
-      <Filter>RenderTarget</Filter>
-    </ClInclude>
-    <ClInclude Include="ViewportStore.h">
-      <Filter>RenderTarget</Filter>
-    </ClInclude>
-    <ClInclude Include="Sprite.h">
-      <Filter>Sprite</Filter>
-    </ClInclude>
-    <ClInclude Include="SpriteSizeStore.h">
-      <Filter>Sprite</Filter>
-    </ClInclude>
-    <ClInclude Include="Texture.h">
-      <Filter>Texture</Filter>
-    </ClInclude>
-    <ClInclude Include="DepthStencil.h">
-      <Filter>DepthStencil</Filter>
-    </ClInclude>
-    <ClInclude Include="Font.h">
-      <Filter>Font</Filter>
-    </ClInclude>
-    <ClInclude Include="FontFactory.h">
-      <Filter>Font</Filter>
-    </ClInclude>
-    <ClInclude Include="Device.h">
-      <Filter>Device</Filter>
-    </ClInclude>
-    <ClInclude Include="ParagraphAlignment.h">
-      <Filter>Font</Filter>
-    </ClInclude>
-    <ClInclude Include="TextAlignment.h">
-      <Filter>Font</Filter>
-    </ClInclude>
-    <ClInclude Include="DeviceWindow.h">
-      <Filter>Device</Filter>
-    </ClInclude>
-    <ClInclude Include="VertexShaderStore.h">
-      <Filter>Shaders</Filter>
-    </ClInclude>
-    <ClInclude Include="PixelShaderStore.h">
-      <Filter>Shaders</Filter>
-    </ClInclude>
+    <ClInclude Include="IShader.h" Filter="Shaders" />
+    <ClInclude Include="IShaderStorage.h" Filter="Shaders" />
+    <ClInclude Include="PixelShader.h" Filter="Shaders" />
+    <ClInclude Include="ShaderStorage.h" Filter="Shaders" />
+    <ClInclude Include="VertexShader.h" Filter="Shaders" />
+    <ClInclude Include="RenderTarget.h" Filter="RenderTarget" />
+    <ClInclude Include="RenderTargetStore.h" Filter="RenderTarget" />
+    <ClInclude Include="ViewportStore.h" Filter="RenderTarget" />
+    <ClInclude Include="Sprite.h" Filter="Sprite" />
+    <ClInclude Include="SpriteSizeStore.h" Filter="Sprite" />
+    <ClInclude Include="Texture.h" Filter="Texture" />
+    <ClInclude Include="DepthStencil.h" Filter="DepthStencil" />
+    <ClInclude Include="Font.h" Filter="Font" />
+    <ClInclude Include="FontFactory.h" Filter="Font" />
+    <ClInclude Include="Device.h" Filter="Device" />
+    <ClInclude Include="ParagraphAlignment.h" Filter="Font" />
+    <ClInclude Include="TextAlignment.h" Filter="Font" />
+    <ClInclude Include="DeviceWindow.h" Filter="Device" />
+    <ClInclude Include="VertexShaderStore.h" Filter="Shaders" />
+    <ClInclude Include="PixelShaderStore.h" Filter="Shaders" />
     <ClInclude Include="stdafx.h" />
-    <ClInclude Include="IFontFactory.h">
-      <Filter>Font</Filter>
-    </ClInclude>
-    <ClInclude Include="IFont.h">
-      <Filter>Font</Filter>
-    </ClInclude>
-    <ClInclude Include="mocks\IFontFactory.h">
-      <Filter>Mocks</Filter>
-    </ClInclude>
-    <ClInclude Include="mocks\IFont.h">
-      <Filter>Mocks</Filter>
-    </ClInclude>
-    <ClInclude Include="RasterizerStateStore.h">
-      <Filter>Rasterizer</Filter>
-    </ClInclude>
-    <ClInclude Include="Mocks\IShaderStorage.h">
-      <Filter>Mocks</Filter>
-    </ClInclude>
-    <ClInclude Include="IDevice.h">
-      <Filter>Device</Filter>
-    </ClInclude>
-    <ClInclude Include="Mocks\IDevice.h">
-      <Filter>Mocks</Filter>
-    </ClInclude>
-    <ClInclude Include="ISprite.h">
-      <Filter>Sprite</Filter>
-    </ClInclude>
-    <ClInclude Include="Mocks\ISprite.h">
-      <Filter>Mocks</Filter>
-    </ClInclude>
-    <ClInclude Include="IRenderTarget.h">
-      <Filter>RenderTarget</Filter>
-    </ClInclude>
-    <ClInclude Include="mocks\IRenderTarget.h">
-      <Filter>Mocks</Filter>
-    </ClInclude>
-    <ClInclude Include="IDeviceWindow.h">
-      <Filter>Device</Filter>
-    </ClInclude>
-    <ClInclude Include="mocks\IDeviceWindow.h">
-      <Filter>Mocks</Filter>
-    </ClInclude>
-    <ClInclude Include="Mocks\D3D\ID3D11DeviceContext.h">
-      <Filter>Mocks\D3D</Filter>
-    </ClInclude>
-    <ClInclude Include="Mocks\IShader.h">
-      <Filter>Mocks</Filter>
-    </ClInclude>
+    <ClInclude Include="IFontFactory.h" Filter="Font" />
+    <ClInclude Include="IFont.h" Filter="Font" />
+    <ClInclude Include="mocks\IFontFactory.h" Filter="Mocks" />
+    <ClInclude Include="mocks\IFont.h" Filter="Mocks" />
+    <ClInclude Include="RasterizerStateStore.h" Filter="Rasterizer" />
+    <ClInclude Include="Mocks\IShaderStorage.h" Filter="Mocks" />
+    <ClInclude Include="IDevice.h" Filter="Device" />
+    <ClInclude Include="Mocks\IDevice.h" Filter="Mocks" />
+    <ClInclude Include="ISprite.h" Filter="Sprite" />
+    <ClInclude Include="Mocks\ISprite.h" Filter="Mocks" />
+    <ClInclude Include="IRenderTarget.h" Filter="RenderTarget" />
+    <ClInclude Include="mocks\IRenderTarget.h" Filter="Mocks" />
+    <ClInclude Include="IDeviceWindow.h" Filter="Device" />
+    <ClInclude Include="mocks\IDeviceWindow.h" Filter="Mocks" />
+    <ClInclude Include="Mocks\D3D\ID3D11DeviceContext.h" Filter="Mocks\D3D" />
+    <ClInclude Include="Mocks\IShader.h" Filter="Mocks" />
     <ClInclude Include="JsonSerializers.h" />
-    <ClInclude Include="IBuffer.h">
-      <Filter>Buffer</Filter>
-    </ClInclude>
-    <ClInclude Include="Buffer.h">
-      <Filter>Buffer</Filter>
-    </ClInclude>
-    <ClInclude Include="mocks\IBuffer.h">
-      <Filter>Mocks</Filter>
-    </ClInclude>
-    <ClInclude Include="Sampler\ISamplerState.h">
-      <Filter>Sampler</Filter>
-    </ClInclude>
-    <ClInclude Include="Sampler\SamplerState.h">
-      <Filter>Sampler</Filter>
-    </ClInclude>
-    <ClInclude Include="Mocks\ISamplerState.h">
-      <Filter>Mocks</Filter>
-    </ClInclude>
+    <ClInclude Include="IBuffer.h" Filter="Buffer" />
+    <ClInclude Include="Buffer.h" Filter="Buffer" />
+    <ClInclude Include="mocks\IBuffer.h" Filter="Mocks" />
+    <ClInclude Include="Sampler\ISamplerState.h" Filter="Sampler" />
+    <ClInclude Include="Sampler\SamplerState.h" Filter="Sampler" />
+    <ClInclude Include="Mocks\ISamplerState.h" Filter="Mocks" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="PixelShader.cpp">
-      <Filter>Shaders</Filter>
-    </ClCompile>
-    <ClCompile Include="Shader.cpp">
-      <Filter>Shaders</Filter>
-    </ClCompile>
-    <ClCompile Include="ShaderStorage.cpp">
-      <Filter>Shaders</Filter>
-    </ClCompile>
-    <ClCompile Include="VertexShader.cpp">
-      <Filter>Shaders</Filter>
-    </ClCompile>
-    <ClCompile Include="RenderTarget.cpp">
-      <Filter>RenderTarget</Filter>
-    </ClCompile>
-    <ClCompile Include="RenderTargetStore.cpp">
-      <Filter>RenderTarget</Filter>
-    </ClCompile>
-    <ClCompile Include="ViewportStore.cpp">
-      <Filter>RenderTarget</Filter>
-    </ClCompile>
-    <ClCompile Include="Sprite.cpp">
-      <Filter>Sprite</Filter>
-    </ClCompile>
-    <ClCompile Include="SpriteSizeStore.cpp">
-      <Filter>Sprite</Filter>
-    </ClCompile>
-    <ClCompile Include="Texture.cpp">
-      <Filter>Texture</Filter>
-    </ClCompile>
-    <ClCompile Include="DepthStencil.cpp">
-      <Filter>DepthStencil</Filter>
-    </ClCompile>
-    <ClCompile Include="Font.cpp">
-      <Filter>Font</Filter>
-    </ClCompile>
-    <ClCompile Include="FontFactory.cpp">
-      <Filter>Font</Filter>
-    </ClCompile>
-    <ClCompile Include="Device.cpp">
-      <Filter>Device</Filter>
-    </ClCompile>
-    <ClCompile Include="DeviceWindow.cpp">
-      <Filter>Device</Filter>
-    </ClCompile>
-    <ClCompile Include="VertexShaderStore.cpp">
-      <Filter>Shaders</Filter>
-    </ClCompile>
-    <ClCompile Include="PixelShaderStore.cpp">
-      <Filter>Shaders</Filter>
-    </ClCompile>
+    <ClCompile Include="PixelShader.cpp" Filter="Shaders" />
+    <ClCompile Include="Shader.cpp" Filter="Shaders" />
+    <ClCompile Include="ShaderStorage.cpp" Filter="Shaders" />
+    <ClCompile Include="VertexShader.cpp" Filter="Shaders" />
+    <ClCompile Include="RenderTarget.cpp" Filter="RenderTarget" />
+    <ClCompile Include="RenderTargetStore.cpp" Filter="RenderTarget" />
+    <ClCompile Include="ViewportStore.cpp" Filter="RenderTarget" />
+    <ClCompile Include="Sprite.cpp" Filter="Sprite" />
+    <ClCompile Include="SpriteSizeStore.cpp" Filter="Sprite" />
+    <ClCompile Include="Texture.cpp" Filter="Texture" />
+    <ClCompile Include="DepthStencil.cpp" Filter="DepthStencil" />
+    <ClCompile Include="Font.cpp" Filter="Font" />
+    <ClCompile Include="FontFactory.cpp" Filter="Font" />
+    <ClCompile Include="Device.cpp" Filter="Device" />
+    <ClCompile Include="DeviceWindow.cpp" Filter="Device" />
+    <ClCompile Include="VertexShaderStore.cpp" Filter="Shaders" />
+    <ClCompile Include="PixelShaderStore.cpp" Filter="Shaders" />
     <ClCompile Include="stdafx.cpp" />
-    <ClCompile Include="RasterizerStateStore.cpp">
-      <Filter>Rasterizer</Filter>
-    </ClCompile>
+    <ClCompile Include="RasterizerStateStore.cpp" Filter="Rasterizer" />
     <ClCompile Include="JsonSerializers.cpp" />
-    <ClCompile Include="Mocks\Mocks.cpp">
-      <Filter>Mocks</Filter>
-    </ClCompile>
-    <ClCompile Include="Buffer.cpp">
-      <Filter>Buffer</Filter>
-    </ClCompile>
-    <ClCompile Include="Sampler\SamplerState.cpp">
-      <Filter>Sampler</Filter>
-    </ClCompile>
+    <ClCompile Include="Mocks\Mocks.cpp" Filter="Mocks" />
+    <ClCompile Include="Buffer.cpp" Filter="Buffer" />
+    <ClCompile Include="Sampler\SamplerState.cpp" Filter="Sampler" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Shaders">
@@ -236,8 +110,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <None Include="IBuffer.inl">
-      <Filter>Buffer</Filter>
-    </None>
+    <None Include="IBuffer.inl" Filter="Buffer" />
   </ItemGroup>
 </Project>

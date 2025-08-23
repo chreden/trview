@@ -1,1299 +1,446 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClCompile Include="Camera\Camera.cpp">
-      <Filter>Camera</Filter>
-    </ClCompile>
-    <ClCompile Include="Geometry\IRenderable.cpp">
-      <Filter>Geometry</Filter>
-    </ClCompile>
-    <ClCompile Include="Geometry\Mesh.cpp">
-      <Filter>Geometry</Filter>
-    </ClCompile>
-    <ClCompile Include="Geometry\Triangle.cpp">
-      <Filter>Geometry</Filter>
-    </ClCompile>
-    <ClCompile Include="Geometry\TransparencyBuffer.cpp">
-      <Filter>Geometry</Filter>
-    </ClCompile>
-    <ClCompile Include="UI\CameraControls.cpp">
-      <Filter>UI</Filter>
-    </ClCompile>
-    <ClCompile Include="UI\GoTo.cpp">
-      <Filter>UI</Filter>
-    </ClCompile>
-    <ClCompile Include="UI\LevelInfo.cpp">
-      <Filter>UI</Filter>
-    </ClCompile>
-    <ClCompile Include="UI\RoomNavigator.cpp">
-      <Filter>UI</Filter>
-    </ClCompile>
-    <ClCompile Include="UI\ViewerUI.cpp">
-      <Filter>UI</Filter>
-    </ClCompile>
-    <ClCompile Include="UI\CameraPosition.cpp">
-      <Filter>UI</Filter>
-    </ClCompile>
-    <ClCompile Include="Tools\Compass.cpp">
-      <Filter>Tools</Filter>
-    </ClCompile>
-    <ClCompile Include="Tools\Measure.cpp">
-      <Filter>Tools</Filter>
-    </ClCompile>
-    <ClCompile Include="Tools\Toolbar.cpp">
-      <Filter>Tools</Filter>
-    </ClCompile>
-    <ClCompile Include="UI\ContextMenu.cpp">
-      <Filter>UI</Filter>
-    </ClCompile>
-    <ClCompile Include="Menus\ViewMenu.cpp">
-      <Filter>Menus</Filter>
-    </ClCompile>
-    <ClCompile Include="Windows\WindowResizer.cpp">
-      <Filter>Windows</Filter>
-    </ClCompile>
-    <ClCompile Include="Geometry\Picking.cpp">
-      <Filter>Geometry</Filter>
-    </ClCompile>
-    <ClCompile Include="Geometry\PickResult.cpp">
-      <Filter>Geometry</Filter>
-    </ClCompile>
-    <ClCompile Include="Graphics\SectorHighlight.cpp">
-      <Filter>Graphics</Filter>
-    </ClCompile>
-    <ClCompile Include="Graphics\SelectionRenderer.cpp">
-      <Filter>Graphics</Filter>
-    </ClCompile>
-    <ClCompile Include="Routing\Route.cpp">
-      <Filter>Routing</Filter>
-    </ClCompile>
-    <ClCompile Include="Routing\Waypoint.cpp">
-      <Filter>Routing</Filter>
-    </ClCompile>
-    <ClCompile Include="Settings\UserSettings.cpp">
-      <Filter>Settings</Filter>
-    </ClCompile>
-    <ClCompile Include="Menus\AlternateGroupToggler.cpp">
-      <Filter>Menus</Filter>
-    </ClCompile>
-    <ClCompile Include="UI\Tooltip.cpp">
-      <Filter>UI</Filter>
-    </ClCompile>
-    <ClCompile Include="UI\ViewOptions.cpp">
-      <Filter>UI</Filter>
-    </ClCompile>
-    <ClCompile Include="Menus\UpdateChecker.cpp">
-      <Filter>Menus</Filter>
-    </ClCompile>
-    <ClCompile Include="Camera\CameraInput.cpp">
-      <Filter>Camera</Filter>
-    </ClCompile>
-    <ClCompile Include="Graphics\LevelTextureStorage.cpp">
-      <Filter>Graphics</Filter>
-    </ClCompile>
-    <ClCompile Include="Graphics\TextureStorage.cpp">
-      <Filter>Graphics</Filter>
-    </ClCompile>
-    <ClCompile Include="Graphics\MeshStorage.cpp">
-      <Filter>Graphics</Filter>
-    </ClCompile>
-    <ClCompile Include="Elements\TypeInfoLookup.cpp">
-      <Filter>Elements</Filter>
-    </ClCompile>
-    <ClCompile Include="Menus\MenuDetector.cpp">
-      <Filter>Menus</Filter>
-    </ClCompile>
-    <ClCompile Include="Lua\Lua.cpp">
-      <Filter>Lua</Filter>
-    </ClCompile>
+    <ClCompile Include="Camera\Camera.cpp" Filter="Camera" />
+    <ClCompile Include="Geometry\IRenderable.cpp" Filter="Geometry" />
+    <ClCompile Include="Geometry\Mesh.cpp" Filter="Geometry" />
+    <ClCompile Include="Geometry\Triangle.cpp" Filter="Geometry" />
+    <ClCompile Include="Geometry\TransparencyBuffer.cpp" Filter="Geometry" />
+    <ClCompile Include="UI\CameraControls.cpp" Filter="UI" />
+    <ClCompile Include="UI\GoTo.cpp" Filter="UI" />
+    <ClCompile Include="UI\LevelInfo.cpp" Filter="UI" />
+    <ClCompile Include="UI\RoomNavigator.cpp" Filter="UI" />
+    <ClCompile Include="UI\ViewerUI.cpp" Filter="UI" />
+    <ClCompile Include="UI\CameraPosition.cpp" Filter="UI" />
+    <ClCompile Include="Tools\Compass.cpp" Filter="Tools" />
+    <ClCompile Include="Tools\Measure.cpp" Filter="Tools" />
+    <ClCompile Include="Tools\Toolbar.cpp" Filter="Tools" />
+    <ClCompile Include="UI\ContextMenu.cpp" Filter="UI" />
+    <ClCompile Include="Menus\ViewMenu.cpp" Filter="Menus" />
+    <ClCompile Include="Windows\WindowResizer.cpp" Filter="Windows" />
+    <ClCompile Include="Geometry\Picking.cpp" Filter="Geometry" />
+    <ClCompile Include="Geometry\PickResult.cpp" Filter="Geometry" />
+    <ClCompile Include="Graphics\SectorHighlight.cpp" Filter="Graphics" />
+    <ClCompile Include="Graphics\SelectionRenderer.cpp" Filter="Graphics" />
+    <ClCompile Include="Routing\Route.cpp" Filter="Routing" />
+    <ClCompile Include="Routing\Waypoint.cpp" Filter="Routing" />
+    <ClCompile Include="Settings\UserSettings.cpp" Filter="Settings" />
+    <ClCompile Include="Menus\AlternateGroupToggler.cpp" Filter="Menus" />
+    <ClCompile Include="UI\Tooltip.cpp" Filter="UI" />
+    <ClCompile Include="UI\ViewOptions.cpp" Filter="UI" />
+    <ClCompile Include="Menus\UpdateChecker.cpp" Filter="Menus" />
+    <ClCompile Include="Camera\CameraInput.cpp" Filter="Camera" />
+    <ClCompile Include="Graphics\LevelTextureStorage.cpp" Filter="Graphics" />
+    <ClCompile Include="Graphics\TextureStorage.cpp" Filter="Graphics" />
+    <ClCompile Include="Graphics\MeshStorage.cpp" Filter="Graphics" />
+    <ClCompile Include="Elements\TypeInfoLookup.cpp" Filter="Elements" />
+    <ClCompile Include="Menus\MenuDetector.cpp" Filter="Menus" />
+    <ClCompile Include="Lua\Lua.cpp" Filter="Lua" />
     <ClCompile Include="stdafx.cpp" />
-    <ClCompile Include="Windows\Viewer.cpp">
-      <Filter>Windows</Filter>
-    </ClCompile>
-    <ClCompile Include="Resources\DefaultShaders.cpp">
-      <Filter>Resources</Filter>
-    </ClCompile>
-    <ClCompile Include="Resources\DefaultTextures.cpp">
-      <Filter>Resources</Filter>
-    </ClCompile>
+    <ClCompile Include="Windows\Viewer.cpp" Filter="Windows" />
+    <ClCompile Include="Resources\DefaultShaders.cpp" Filter="Resources" />
+    <ClCompile Include="Resources\DefaultTextures.cpp" Filter="Resources" />
     <ClCompile Include="Application.cpp" />
-    <ClCompile Include="Settings\SettingsLoader.cpp">
-      <Filter>Settings</Filter>
-    </ClCompile>
-    <ClCompile Include="Geometry\IMesh.cpp">
-      <Filter>Geometry</Filter>
-    </ClCompile>
-    <ClCompile Include="Geometry\Matrix.cpp">
-      <Filter>Geometry</Filter>
-    </ClCompile>
-    <ClCompile Include="Settings\StartupOptions.cpp">
-      <Filter>Settings</Filter>
-    </ClCompile>
-    <ClCompile Include="Routing\Action.cpp">
-      <Filter>Routing</Filter>
-    </ClCompile>
-    <ClCompile Include="Routing\Actions.cpp">
-      <Filter>Routing</Filter>
-    </ClCompile>
-    <ClCompile Include="Routing\IWaypoint.cpp">
-      <Filter>Routing</Filter>
-    </ClCompile>
-    <ClCompile Include="Settings\RandomizerSettings.cpp">
-      <Filter>Settings</Filter>
-    </ClCompile>
-    <ClCompile Include="Resources\DefaultFonts.cpp">
-      <Filter>Resources</Filter>
-    </ClCompile>
+    <ClCompile Include="Settings\SettingsLoader.cpp" Filter="Settings" />
+    <ClCompile Include="Geometry\IMesh.cpp" Filter="Geometry" />
+    <ClCompile Include="Geometry\Matrix.cpp" Filter="Geometry" />
+    <ClCompile Include="Settings\StartupOptions.cpp" Filter="Settings" />
+    <ClCompile Include="Routing\Action.cpp" Filter="Routing" />
+    <ClCompile Include="Routing\Actions.cpp" Filter="Routing" />
+    <ClCompile Include="Routing\IWaypoint.cpp" Filter="Routing" />
+    <ClCompile Include="Settings\RandomizerSettings.cpp" Filter="Settings" />
+    <ClCompile Include="Resources\DefaultFonts.cpp" Filter="Resources" />
     <ClCompile Include="trview_imgui.cpp" />
-    <ClCompile Include="Windows\LightsWindowManager.cpp">
-      <Filter>Windows\Lights</Filter>
-    </ClCompile>
-    <ClCompile Include="Windows\LightsWindow.cpp">
-      <Filter>Windows\Lights</Filter>
-    </ClCompile>
-    <ClCompile Include="Windows\ItemsWindow.cpp">
-      <Filter>Windows\Items</Filter>
-    </ClCompile>
-    <ClCompile Include="Windows\ItemsWindowManager.cpp">
-      <Filter>Windows\Items</Filter>
-    </ClCompile>
-    <ClCompile Include="Windows\TriggersWindow.cpp">
-      <Filter>Windows\Triggers</Filter>
-    </ClCompile>
-    <ClCompile Include="Windows\TriggersWindowManager.cpp">
-      <Filter>Windows\Triggers</Filter>
-    </ClCompile>
-    <ClCompile Include="Windows\RoomsWindow.cpp">
-      <Filter>Windows\Rooms</Filter>
-    </ClCompile>
-    <ClCompile Include="Windows\RoomsWindowManager.cpp">
-      <Filter>Windows\Rooms</Filter>
-    </ClCompile>
-    <ClCompile Include="Windows\RouteWindow.cpp">
-      <Filter>Windows\Route</Filter>
-    </ClCompile>
-    <ClCompile Include="Windows\RouteWindowManager.cpp">
-      <Filter>Windows\Route</Filter>
-    </ClCompile>
-    <ClCompile Include="UI\DX11ImGuiBackend.cpp">
-      <Filter>UI</Filter>
-    </ClCompile>
-    <ClCompile Include="UI\MapRenderer.cpp">
-      <Filter>UI\Minimap</Filter>
-    </ClCompile>
-    <ClCompile Include="Elements\ILight.cpp">
-      <Filter>Elements\Light</Filter>
-    </ClCompile>
-    <ClCompile Include="Elements\Light.cpp">
-      <Filter>Elements\Light</Filter>
-    </ClCompile>
-    <ClCompile Include="UI\MapColours.cpp">
-      <Filter>UI\Minimap</Filter>
-    </ClCompile>
-    <ClCompile Include="UI\SettingsWindow.cpp">
-      <Filter>UI\Settings</Filter>
-    </ClCompile>
-    <ClCompile Include="Elements\Floordata.cpp">
-      <Filter>Elements</Filter>
-    </ClCompile>
+    <ClCompile Include="Windows\LightsWindowManager.cpp" Filter="Windows\Lights" />
+    <ClCompile Include="Windows\LightsWindow.cpp" Filter="Windows\Lights" />
+    <ClCompile Include="Windows\ItemsWindow.cpp" Filter="Windows\Items" />
+    <ClCompile Include="Windows\ItemsWindowManager.cpp" Filter="Windows\Items" />
+    <ClCompile Include="Windows\TriggersWindow.cpp" Filter="Windows\Triggers" />
+    <ClCompile Include="Windows\TriggersWindowManager.cpp" Filter="Windows\Triggers" />
+    <ClCompile Include="Windows\RoomsWindow.cpp" Filter="Windows\Rooms" />
+    <ClCompile Include="Windows\RoomsWindowManager.cpp" Filter="Windows\Rooms" />
+    <ClCompile Include="Windows\RouteWindow.cpp" Filter="Windows\Route" />
+    <ClCompile Include="Windows\RouteWindowManager.cpp" Filter="Windows\Route" />
+    <ClCompile Include="UI\DX11ImGuiBackend.cpp" Filter="UI" />
+    <ClCompile Include="UI\MapRenderer.cpp" Filter="UI\Minimap" />
+    <ClCompile Include="Elements\ILight.cpp" Filter="Elements\Light" />
+    <ClCompile Include="Elements\Light.cpp" Filter="Elements\Light" />
+    <ClCompile Include="UI\MapColours.cpp" Filter="UI\Minimap" />
+    <ClCompile Include="UI\SettingsWindow.cpp" Filter="UI\Settings" />
+    <ClCompile Include="Elements\Floordata.cpp" Filter="Elements" />
     <ClCompile Include="ApplicationCreate.cpp" />
-    <ClCompile Include="Elements\Room.cpp">
-      <Filter>Elements\Room</Filter>
-    </ClCompile>
-    <ClCompile Include="Elements\Level.cpp">
-      <Filter>Elements\Level</Filter>
-    </ClCompile>
-    <ClCompile Include="Menus\FileMenu.cpp">
-      <Filter>Menus</Filter>
-    </ClCompile>
-    <ClCompile Include="Windows\Log\LogWindow.cpp">
-      <Filter>Windows\Log</Filter>
-    </ClCompile>
-    <ClCompile Include="Windows\Log\LogWindowManager.cpp">
-      <Filter>Windows\Log</Filter>
-    </ClCompile>
-    <ClCompile Include="Mocks\Mocks.cpp">
-      <Filter>Mocks</Filter>
-    </ClCompile>
-    <ClCompile Include="Elements\CameraSink\CameraSink.cpp">
-      <Filter>Elements\CameraSink</Filter>
-    </ClCompile>
-    <ClCompile Include="Windows\Textures\TexturesWindow.cpp">
-      <Filter>Windows\Textures</Filter>
-    </ClCompile>
-    <ClCompile Include="Windows\CameraSink\CameraSinkWindowManager.cpp">
-      <Filter>Windows\CameraSink</Filter>
-    </ClCompile>
-    <ClCompile Include="Windows\Textures\TexturesWindowManager.cpp">
-      <Filter>Windows\Textures</Filter>
-    </ClCompile>
-    <ClCompile Include="Windows\CameraSink\CameraSinkWindow.cpp">
-      <Filter>Windows\CameraSink</Filter>
-    </ClCompile>
-    <ClCompile Include="Lua\trview\trview.cpp">
-      <Filter>Lua\trview</Filter>
-    </ClCompile>
-    <ClCompile Include="Lua\Elements\Level\Lua_Level.cpp">
-      <Filter>Lua\Elements\Level</Filter>
-    </ClCompile>
-    <ClCompile Include="Lua\Elements\Item\Lua_Item.cpp">
-      <Filter>Lua\Elements\Item</Filter>
-    </ClCompile>
-    <ClCompile Include="Lua\Elements\Room\Lua_Room.cpp">
-      <Filter>Lua\Elements\Room</Filter>
-    </ClCompile>
-    <ClCompile Include="Elements\Item.cpp">
-      <Filter>Elements\Item</Filter>
-    </ClCompile>
-    <ClCompile Include="Lua\Elements\Trigger\Lua_Trigger.cpp">
-      <Filter>Lua\Elements\Trigger</Filter>
-    </ClCompile>
-    <ClCompile Include="Lua\Vector3.cpp">
-      <Filter>Lua</Filter>
-    </ClCompile>
-    <ClCompile Include="Elements\ITrigger.cpp">
-      <Filter>Elements\Trigger</Filter>
-    </ClCompile>
-    <ClCompile Include="Elements\Trigger.cpp">
-      <Filter>Elements\Trigger</Filter>
-    </ClCompile>
-    <ClCompile Include="Elements\ISector.cpp">
-      <Filter>Elements\Sector</Filter>
-    </ClCompile>
-    <ClCompile Include="Elements\Sector.cpp">
-      <Filter>Elements\Sector</Filter>
-    </ClCompile>
-    <ClCompile Include="Lua\Elements\Sector\Lua_Sector.cpp">
-      <Filter>Lua\Elements\Sector</Filter>
-    </ClCompile>
-    <ClCompile Include="Lua\Elements\CameraSink\Lua_CameraSink.cpp">
-      <Filter>Lua\Elements\CameraSink</Filter>
-    </ClCompile>
-    <ClCompile Include="Windows\Console\ConsoleManager.cpp">
-      <Filter>Windows\Console</Filter>
-    </ClCompile>
-    <ClCompile Include="Windows\Console\Console.cpp">
-      <Filter>Windows\Console</Filter>
-    </ClCompile>
-    <ClCompile Include="Lua\Elements\Light\Lua_Light.cpp">
-      <Filter>Lua\Elements\Light</Filter>
-    </ClCompile>
-    <ClCompile Include="Lua\Colour.cpp">
-      <Filter>Lua</Filter>
-    </ClCompile>
-    <ClCompile Include="Plugins\Plugins.cpp">
-      <Filter>Plugins</Filter>
-    </ClCompile>
-    <ClCompile Include="Plugins\Plugin.cpp">
-      <Filter>Plugins</Filter>
-    </ClCompile>
-    <ClCompile Include="Windows\Plugins\PluginsWindow.cpp">
-      <Filter>Windows\Plugins</Filter>
-    </ClCompile>
-    <ClCompile Include="Windows\Plugins\PluginsWindowManager.cpp">
-      <Filter>Windows\Plugins</Filter>
-    </ClCompile>
-    <ClCompile Include="Lua\Elements\StaticMesh\Lua_StaticMesh.cpp">
-      <Filter>Lua\Elements\StaticMesh</Filter>
-    </ClCompile>
-    <ClCompile Include="Elements\StaticMesh.cpp">
-      <Filter>Elements\StaticMesh</Filter>
-    </ClCompile>
-    <ClCompile Include="Lua\BoundingBox.cpp">
-      <Filter>Lua</Filter>
-    </ClCompile>
-    <ClCompile Include="Lua\Route\Lua_Route.cpp">
-      <Filter>Lua\Route</Filter>
-    </ClCompile>
-    <ClCompile Include="Lua\Route\Lua_Waypoint.cpp">
-      <Filter>Lua\Route</Filter>
-    </ClCompile>
-    <ClCompile Include="Routing\RandomizerRoute.cpp">
-      <Filter>Routing</Filter>
-    </ClCompile>
-    <ClCompile Include="Windows\RowCounter.cpp">
-      <Filter>Windows</Filter>
-    </ClCompile>
-    <ClCompile Include="UI\Fonts\Fonts.cpp">
-      <Filter>UI\Fonts</Filter>
-    </ClCompile>
-    <ClCompile Include="Windows\Statics\StaticsWindowManager.cpp">
-      <Filter>Windows\Statics</Filter>
-    </ClCompile>
-    <ClCompile Include="Windows\Statics\StaticsWindow.cpp">
-      <Filter>Windows\Statics</Filter>
-    </ClCompile>
-    <ClCompile Include="Windows\Windows.cpp">
-      <Filter>Windows</Filter>
-    </ClCompile>
-    <ClCompile Include="Lua\Scriptable\Scriptable.cpp">
-      <Filter>Lua\Scriptable</Filter>
-    </ClCompile>
-    <ClCompile Include="Lua\Camera\Lua_Camera.cpp">
-      <Filter>Lua\Camera</Filter>
-    </ClCompile>
-    <ClCompile Include="Sound\SoundStorage.cpp">
-      <Filter>Sound</Filter>
-    </ClCompile>
-    <ClCompile Include="Sound\Sound.cpp">
-      <Filter>Sound</Filter>
-    </ClCompile>
-    <ClCompile Include="Windows\Sounds\SoundsWindow.cpp">
-      <Filter>Windows\Sounds</Filter>
-    </ClCompile>
-    <ClCompile Include="Windows\Sounds\SoundsWindowManager.cpp">
-      <Filter>Windows\Sounds</Filter>
-    </ClCompile>
-    <ClCompile Include="Elements\SoundSource\SoundSource.cpp">
-      <Filter>Elements\SoundSource</Filter>
-    </ClCompile>
-    <ClCompile Include="Elements\Remastered\NgPlusSwitcher.cpp">
-      <Filter>Elements\Remastered</Filter>
-    </ClCompile>
-    <ClCompile Include="Windows\AutoHider.cpp">
-      <Filter>Windows</Filter>
-    </ClCompile>
-    <ClCompile Include="Windows\About\AboutWindow.cpp">
-      <Filter>Windows\About</Filter>
-    </ClCompile>
-    <ClCompile Include="Windows\About\AboutWindowManager.cpp">
-      <Filter>Windows\About</Filter>
-    </ClCompile>
-    <ClCompile Include="Windows\Diff\DiffWindow.cpp">
-      <Filter>Windows\Diff</Filter>
-    </ClCompile>
-    <ClCompile Include="Windows\Diff\DiffWindowManager.cpp">
-      <Filter>Windows\Diff</Filter>
-    </ClCompile>
-    <ClCompile Include="Menus\ImGuiFileMenu.cpp">
-      <Filter>Menus</Filter>
-    </ClCompile>
-    <ClCompile Include="Windows\Pack\PackWindow.cpp">
-      <Filter>Windows\Pack</Filter>
-    </ClCompile>
-    <ClCompile Include="Windows\Pack\PackWindowManager.cpp">
-      <Filter>Windows\Pack</Filter>
-    </ClCompile>
-    <ClCompile Include="Geometry\Model\Model.cpp">
-      <Filter>Geometry\Model</Filter>
-    </ClCompile>
-    <ClCompile Include="Geometry\Model\ModelStorage.cpp">
-      <Filter>Geometry\Model</Filter>
-    </ClCompile>
-    <ClCompile Include="Elements\Flyby\Flyby.cpp">
-      <Filter>Elements\Flyby</Filter>
-    </ClCompile>
-    <ClCompile Include="Elements\Flyby\FlybyNode.cpp">
-      <Filter>Elements\Flyby</Filter>
-    </ClCompile>
+    <ClCompile Include="Elements\Room.cpp" Filter="Elements\Room" />
+    <ClCompile Include="Elements\Level.cpp" Filter="Elements\Level" />
+    <ClCompile Include="Menus\FileMenu.cpp" Filter="Menus" />
+    <ClCompile Include="Windows\Log\LogWindow.cpp" Filter="Windows\Log" />
+    <ClCompile Include="Windows\Log\LogWindowManager.cpp" Filter="Windows\Log" />
+    <ClCompile Include="Mocks\Mocks.cpp" Filter="Mocks" />
+    <ClCompile Include="Elements\CameraSink\CameraSink.cpp" Filter="Elements\CameraSink" />
+    <ClCompile Include="Windows\Textures\TexturesWindow.cpp" Filter="Windows\Textures" />
+    <ClCompile Include="Windows\CameraSink\CameraSinkWindowManager.cpp" Filter="Windows\CameraSink" />
+    <ClCompile Include="Windows\Textures\TexturesWindowManager.cpp" Filter="Windows\Textures" />
+    <ClCompile Include="Windows\CameraSink\CameraSinkWindow.cpp" Filter="Windows\CameraSink" />
+    <ClCompile Include="Lua\trview\trview.cpp" Filter="Lua\trview" />
+    <ClCompile Include="Lua\Elements\Level\Lua_Level.cpp" Filter="Lua\Elements\Level" />
+    <ClCompile Include="Lua\Elements\Item\Lua_Item.cpp" Filter="Lua\Elements\Item" />
+    <ClCompile Include="Lua\Elements\Room\Lua_Room.cpp" Filter="Lua\Elements\Room" />
+    <ClCompile Include="Elements\Item.cpp" Filter="Elements\Item" />
+    <ClCompile Include="Lua\Elements\Trigger\Lua_Trigger.cpp" Filter="Lua\Elements\Trigger" />
+    <ClCompile Include="Lua\Vector3.cpp" Filter="Lua" />
+    <ClCompile Include="Elements\ITrigger.cpp" Filter="Elements\Trigger" />
+    <ClCompile Include="Elements\Trigger.cpp" Filter="Elements\Trigger" />
+    <ClCompile Include="Elements\ISector.cpp" Filter="Elements\Sector" />
+    <ClCompile Include="Elements\Sector.cpp" Filter="Elements\Sector" />
+    <ClCompile Include="Lua\Elements\Sector\Lua_Sector.cpp" Filter="Lua\Elements\Sector" />
+    <ClCompile Include="Lua\Elements\CameraSink\Lua_CameraSink.cpp" Filter="Lua\Elements\CameraSink" />
+    <ClCompile Include="Windows\Console\ConsoleManager.cpp" Filter="Windows\Console" />
+    <ClCompile Include="Windows\Console\Console.cpp" Filter="Windows\Console" />
+    <ClCompile Include="Lua\Elements\Light\Lua_Light.cpp" Filter="Lua\Elements\Light" />
+    <ClCompile Include="Lua\Colour.cpp" Filter="Lua" />
+    <ClCompile Include="Plugins\Plugins.cpp" Filter="Plugins" />
+    <ClCompile Include="Plugins\Plugin.cpp" Filter="Plugins" />
+    <ClCompile Include="Windows\Plugins\PluginsWindow.cpp" Filter="Windows\Plugins" />
+    <ClCompile Include="Windows\Plugins\PluginsWindowManager.cpp" Filter="Windows\Plugins" />
+    <ClCompile Include="Lua\Elements\StaticMesh\Lua_StaticMesh.cpp" Filter="Lua\Elements\StaticMesh" />
+    <ClCompile Include="Elements\StaticMesh.cpp" Filter="Elements\StaticMesh" />
+    <ClCompile Include="Lua\BoundingBox.cpp" Filter="Lua" />
+    <ClCompile Include="Lua\Route\Lua_Route.cpp" Filter="Lua\Route" />
+    <ClCompile Include="Lua\Route\Lua_Waypoint.cpp" Filter="Lua\Route" />
+    <ClCompile Include="Routing\RandomizerRoute.cpp" Filter="Routing" />
+    <ClCompile Include="Windows\RowCounter.cpp" Filter="Windows" />
+    <ClCompile Include="UI\Fonts\Fonts.cpp" Filter="UI\Fonts" />
+    <ClCompile Include="Windows\Statics\StaticsWindowManager.cpp" Filter="Windows\Statics" />
+    <ClCompile Include="Windows\Statics\StaticsWindow.cpp" Filter="Windows\Statics" />
+    <ClCompile Include="Windows\Windows.cpp" Filter="Windows" />
+    <ClCompile Include="Lua\Scriptable\Scriptable.cpp" Filter="Lua\Scriptable" />
+    <ClCompile Include="Lua\Camera\Lua_Camera.cpp" Filter="Lua\Camera" />
+    <ClCompile Include="Sound\SoundStorage.cpp" Filter="Sound" />
+    <ClCompile Include="Sound\Sound.cpp" Filter="Sound" />
+    <ClCompile Include="Windows\Sounds\SoundsWindow.cpp" Filter="Windows\Sounds" />
+    <ClCompile Include="Windows\Sounds\SoundsWindowManager.cpp" Filter="Windows\Sounds" />
+    <ClCompile Include="Elements\SoundSource\SoundSource.cpp" Filter="Elements\SoundSource" />
+    <ClCompile Include="Elements\Remastered\NgPlusSwitcher.cpp" Filter="Elements\Remastered" />
+    <ClCompile Include="Windows\AutoHider.cpp" Filter="Windows" />
+    <ClCompile Include="Windows\About\AboutWindow.cpp" Filter="Windows\About" />
+    <ClCompile Include="Windows\About\AboutWindowManager.cpp" Filter="Windows\About" />
+    <ClCompile Include="Windows\Diff\DiffWindow.cpp" Filter="Windows\Diff" />
+    <ClCompile Include="Windows\Diff\DiffWindowManager.cpp" Filter="Windows\Diff" />
+    <ClCompile Include="Menus\ImGuiFileMenu.cpp" Filter="Menus" />
+    <ClCompile Include="Windows\Pack\PackWindow.cpp" Filter="Windows\Pack" />
+    <ClCompile Include="Windows\Pack\PackWindowManager.cpp" Filter="Windows\Pack" />
+    <ClCompile Include="Geometry\Model\Model.cpp" Filter="Geometry\Model" />
+    <ClCompile Include="Geometry\Model\ModelStorage.cpp" Filter="Geometry\Model" />
+    <ClCompile Include="Elements\Flyby\Flyby.cpp" Filter="Elements\Flyby" />
+    <ClCompile Include="Elements\Flyby\FlybyNode.cpp" Filter="Elements\Flyby" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Camera\Camera.h">
-      <Filter>Camera</Filter>
-    </ClInclude>
-    <ClInclude Include="Camera\ICamera.h">
-      <Filter>Camera</Filter>
-    </ClInclude>
-    <ClInclude Include="Geometry\IRenderable.h">
-      <Filter>Geometry</Filter>
-    </ClInclude>
-    <ClInclude Include="Geometry\Mesh.h">
-      <Filter>Geometry</Filter>
-    </ClInclude>
-    <ClInclude Include="Geometry\MeshVertex.h">
-      <Filter>Geometry</Filter>
-    </ClInclude>
-    <ClInclude Include="Geometry\Triangle.h">
-      <Filter>Geometry</Filter>
-    </ClInclude>
-    <ClInclude Include="Geometry\TransparencyBuffer.h">
-      <Filter>Geometry</Filter>
-    </ClInclude>
-    <ClInclude Include="UI\CameraControls.h">
-      <Filter>UI</Filter>
-    </ClInclude>
-    <ClInclude Include="UI\GoTo.h">
-      <Filter>UI</Filter>
-    </ClInclude>
-    <ClInclude Include="UI\LevelInfo.h">
-      <Filter>UI</Filter>
-    </ClInclude>
-    <ClInclude Include="UI\RoomNavigator.h">
-      <Filter>UI</Filter>
-    </ClInclude>
-    <ClInclude Include="UI\ViewerUI.h">
-      <Filter>UI</Filter>
-    </ClInclude>
-    <ClInclude Include="UI\CameraPosition.h">
-      <Filter>UI</Filter>
-    </ClInclude>
-    <ClInclude Include="Tools\Compass.h">
-      <Filter>Tools</Filter>
-    </ClInclude>
-    <ClInclude Include="Tools\Measure.h">
-      <Filter>Tools</Filter>
-    </ClInclude>
-    <ClInclude Include="Tools\Toolbar.h">
-      <Filter>Tools</Filter>
-    </ClInclude>
-    <ClInclude Include="UI\ContextMenu.h">
-      <Filter>UI</Filter>
-    </ClInclude>
-    <ClInclude Include="Menus\ViewMenu.h">
-      <Filter>Menus</Filter>
-    </ClInclude>
-    <ClInclude Include="Windows\WindowResizer.h">
-      <Filter>Windows</Filter>
-    </ClInclude>
-    <ClInclude Include="Elements\Types.h">
-      <Filter>Elements</Filter>
-    </ClInclude>
-    <ClInclude Include="Geometry\PickInfo.h">
-      <Filter>Geometry</Filter>
-    </ClInclude>
-    <ClInclude Include="Geometry\Picking.h">
-      <Filter>Geometry</Filter>
-    </ClInclude>
-    <ClInclude Include="Geometry\PickResult.h">
-      <Filter>Geometry</Filter>
-    </ClInclude>
-    <ClInclude Include="Graphics\ILevelTextureStorage.h">
-      <Filter>Graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="Graphics\ITextureStorage.h">
-      <Filter>Graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="Graphics\SectorHighlight.h">
-      <Filter>Graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="Graphics\SelectionRenderer.h">
-      <Filter>Graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="Routing\Route.h">
-      <Filter>Routing</Filter>
-    </ClInclude>
-    <ClInclude Include="Routing\Waypoint.h">
-      <Filter>Routing</Filter>
-    </ClInclude>
-    <ClInclude Include="Settings\UserSettings.h">
-      <Filter>Settings</Filter>
-    </ClInclude>
-    <ClInclude Include="Menus\AlternateGroupToggler.h">
-      <Filter>Menus</Filter>
-    </ClInclude>
-    <ClInclude Include="UI\Tooltip.h">
-      <Filter>UI</Filter>
-    </ClInclude>
-    <ClInclude Include="UI\ViewOptions.h">
-      <Filter>UI</Filter>
-    </ClInclude>
-    <ClInclude Include="Menus\UpdateChecker.h">
-      <Filter>Menus</Filter>
-    </ClInclude>
-    <ClInclude Include="Camera\CameraInput.h">
-      <Filter>Camera</Filter>
-    </ClInclude>
-    <ClInclude Include="Graphics\LevelTextureStorage.h">
-      <Filter>Graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="Graphics\TextureStorage.h">
-      <Filter>Graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="Graphics\IMeshStorage.h">
-      <Filter>Graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="Graphics\MeshStorage.h">
-      <Filter>Graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="Elements\TypeInfoLookup.h">
-      <Filter>Elements</Filter>
-    </ClInclude>
-    <ClInclude Include="Elements\ITypeInfoLookup.h">
-      <Filter>Elements</Filter>
-    </ClInclude>
-    <ClInclude Include="Menus\MenuDetector.h">
-      <Filter>Menus</Filter>
-    </ClInclude>
-    <ClInclude Include="Camera\ProjectionMode.h">
-      <Filter>Camera</Filter>
-    </ClInclude>
-    <ClInclude Include="Lua\Lua.h">
-      <Filter>Lua</Filter>
-    </ClInclude>
+    <ClInclude Include="Camera\Camera.h" Filter="Camera" />
+    <ClInclude Include="Camera\ICamera.h" Filter="Camera" />
+    <ClInclude Include="Geometry\IRenderable.h" Filter="Geometry" />
+    <ClInclude Include="Geometry\Mesh.h" Filter="Geometry" />
+    <ClInclude Include="Geometry\MeshVertex.h" Filter="Geometry" />
+    <ClInclude Include="Geometry\Triangle.h" Filter="Geometry" />
+    <ClInclude Include="Geometry\TransparencyBuffer.h" Filter="Geometry" />
+    <ClInclude Include="UI\CameraControls.h" Filter="UI" />
+    <ClInclude Include="UI\GoTo.h" Filter="UI" />
+    <ClInclude Include="UI\LevelInfo.h" Filter="UI" />
+    <ClInclude Include="UI\RoomNavigator.h" Filter="UI" />
+    <ClInclude Include="UI\ViewerUI.h" Filter="UI" />
+    <ClInclude Include="UI\CameraPosition.h" Filter="UI" />
+    <ClInclude Include="Tools\Compass.h" Filter="Tools" />
+    <ClInclude Include="Tools\Measure.h" Filter="Tools" />
+    <ClInclude Include="Tools\Toolbar.h" Filter="Tools" />
+    <ClInclude Include="UI\ContextMenu.h" Filter="UI" />
+    <ClInclude Include="Menus\ViewMenu.h" Filter="Menus" />
+    <ClInclude Include="Windows\WindowResizer.h" Filter="Windows" />
+    <ClInclude Include="Elements\Types.h" Filter="Elements" />
+    <ClInclude Include="Geometry\PickInfo.h" Filter="Geometry" />
+    <ClInclude Include="Geometry\Picking.h" Filter="Geometry" />
+    <ClInclude Include="Geometry\PickResult.h" Filter="Geometry" />
+    <ClInclude Include="Graphics\ILevelTextureStorage.h" Filter="Graphics" />
+    <ClInclude Include="Graphics\ITextureStorage.h" Filter="Graphics" />
+    <ClInclude Include="Graphics\SectorHighlight.h" Filter="Graphics" />
+    <ClInclude Include="Graphics\SelectionRenderer.h" Filter="Graphics" />
+    <ClInclude Include="Routing\Route.h" Filter="Routing" />
+    <ClInclude Include="Routing\Waypoint.h" Filter="Routing" />
+    <ClInclude Include="Settings\UserSettings.h" Filter="Settings" />
+    <ClInclude Include="Menus\AlternateGroupToggler.h" Filter="Menus" />
+    <ClInclude Include="UI\Tooltip.h" Filter="UI" />
+    <ClInclude Include="UI\ViewOptions.h" Filter="UI" />
+    <ClInclude Include="Menus\UpdateChecker.h" Filter="Menus" />
+    <ClInclude Include="Camera\CameraInput.h" Filter="Camera" />
+    <ClInclude Include="Graphics\LevelTextureStorage.h" Filter="Graphics" />
+    <ClInclude Include="Graphics\TextureStorage.h" Filter="Graphics" />
+    <ClInclude Include="Graphics\IMeshStorage.h" Filter="Graphics" />
+    <ClInclude Include="Graphics\MeshStorage.h" Filter="Graphics" />
+    <ClInclude Include="Elements\TypeInfoLookup.h" Filter="Elements" />
+    <ClInclude Include="Elements\ITypeInfoLookup.h" Filter="Elements" />
+    <ClInclude Include="Menus\MenuDetector.h" Filter="Menus" />
+    <ClInclude Include="Camera\ProjectionMode.h" Filter="Camera" />
+    <ClInclude Include="Lua\Lua.h" Filter="Lua" />
     <ClInclude Include="stdafx.h" />
-    <ClInclude Include="Windows\Viewer.h">
-      <Filter>Windows</Filter>
-    </ClInclude>
-    <ClInclude Include="Resources\resource.h">
-      <Filter>Resources</Filter>
-    </ClInclude>
-    <ClInclude Include="Resources\DefaultShaders.h">
-      <Filter>Resources</Filter>
-    </ClInclude>
-    <ClInclude Include="Resources\DefaultTextures.h">
-      <Filter>Resources</Filter>
-    </ClInclude>
-    <ClInclude Include="Resources\targetver.h">
-      <Filter>Resources</Filter>
-    </ClInclude>
+    <ClInclude Include="Windows\Viewer.h" Filter="Windows" />
+    <ClInclude Include="Resources\resource.h" Filter="Resources" />
+    <ClInclude Include="Resources\DefaultShaders.h" Filter="Resources" />
+    <ClInclude Include="Resources\DefaultTextures.h" Filter="Resources" />
+    <ClInclude Include="Resources\targetver.h" Filter="Resources" />
     <ClInclude Include="Application.h" />
-    <ClInclude Include="Mocks\Elements\ILevel.h">
-      <Filter>Mocks\Elements</Filter>
-    </ClInclude>
-    <ClInclude Include="Mocks\UI\IViewerUI.h">
-      <Filter>Mocks\UI</Filter>
-    </ClInclude>
-    <ClInclude Include="Geometry\IPicking.h">
-      <Filter>Geometry</Filter>
-    </ClInclude>
-    <ClInclude Include="Mocks\Geometry\IPicking.h">
-      <Filter>Mocks\Geometry</Filter>
-    </ClInclude>
-    <ClInclude Include="Menus\IUpdateChecker.h">
-      <Filter>Menus</Filter>
-    </ClInclude>
-    <ClInclude Include="Mocks\Menus\IUpdateChecker.h">
-      <Filter>Mocks\Menus</Filter>
-    </ClInclude>
-    <ClInclude Include="Settings\ISettingsLoader.h">
-      <Filter>Settings</Filter>
-    </ClInclude>
-    <ClInclude Include="Settings\SettingsLoader.h">
-      <Filter>Settings</Filter>
-    </ClInclude>
-    <ClInclude Include="Mocks\Settings\ISettingsLoader.h">
-      <Filter>Mocks\Settings</Filter>
-    </ClInclude>
-    <ClInclude Include="Windows\IViewer.h">
-      <Filter>Windows</Filter>
-    </ClInclude>
-    <ClInclude Include="Mocks\Windows\IViewer.h">
-      <Filter>Mocks\Windows</Filter>
-    </ClInclude>
-    <ClInclude Include="Mocks\Graphics\ITextureStorage.h">
-      <Filter>Mocks\Graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="Routing\IRoute.h">
-      <Filter>Routing</Filter>
-    </ClInclude>
-    <ClInclude Include="Mocks\Routing\IRoute.h">
-      <Filter>Mocks\Routing</Filter>
-    </ClInclude>
-    <ClInclude Include="Mocks\Windows\IItemsWindowManager.h">
-      <Filter>Mocks\Windows</Filter>
-    </ClInclude>
-    <ClInclude Include="Mocks\Windows\ITriggersWindowManager.h">
-      <Filter>Mocks\Windows</Filter>
-    </ClInclude>
-    <ClInclude Include="Mocks\Windows\IRouteWindowManager.h">
-      <Filter>Mocks\Windows</Filter>
-    </ClInclude>
-    <ClInclude Include="Mocks\Windows\IRoomsWindowManager.h">
-      <Filter>Mocks\Windows</Filter>
-    </ClInclude>
-    <ClInclude Include="Mocks\Windows\ITriggersWindow.h">
-      <Filter>Mocks\Windows</Filter>
-    </ClInclude>
-    <ClInclude Include="Mocks\Windows\IItemsWindow.h">
-      <Filter>Mocks\Windows</Filter>
-    </ClInclude>
-    <ClInclude Include="Tools\ICompass.h">
-      <Filter>Tools</Filter>
-    </ClInclude>
-    <ClInclude Include="Mocks\Tools\ICompass.h">
-      <Filter>Mocks\Tools</Filter>
-    </ClInclude>
-    <ClInclude Include="Tools\IMeasure.h">
-      <Filter>Tools</Filter>
-    </ClInclude>
-    <ClInclude Include="Mocks\Tools\IMeasure.h">
-      <Filter>Mocks\Tools</Filter>
-    </ClInclude>
-    <ClInclude Include="Mocks\Graphics\ILevelTextureStorage.h">
-      <Filter>Mocks\Graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="Mocks\Graphics\IMeshStorage.h">
-      <Filter>Mocks\Graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="Mocks\Graphics\ISelectionRenderer.h">
-      <Filter>Mocks\Graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="Graphics\ISelectionRenderer.h">
-      <Filter>Graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="Geometry\ITransparencyBuffer.h">
-      <Filter>Geometry</Filter>
-    </ClInclude>
-    <ClInclude Include="Mocks\Geometry\ITransparencyBuffer.h">
-      <Filter>Mocks\Geometry</Filter>
-    </ClInclude>
-    <ClInclude Include="Mocks\Elements\ITypeInfoLookup.h">
-      <Filter>Mocks\Elements</Filter>
-    </ClInclude>
-    <ClInclude Include="Geometry\IMesh.h">
-      <Filter>Geometry</Filter>
-    </ClInclude>
-    <ClInclude Include="Mocks\Geometry\IMesh.h">
-      <Filter>Mocks\Geometry</Filter>
-    </ClInclude>
-    <ClInclude Include="Geometry\Matrix.h">
-      <Filter>Geometry</Filter>
-    </ClInclude>
-    <ClInclude Include="Graphics\ISectorHighlight.h">
-      <Filter>Graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="Mocks\Graphics\ISectorHighlight.h">
-      <Filter>Mocks\Graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="UI\IViewerUI.h">
-      <Filter>UI</Filter>
-    </ClInclude>
-    <ClInclude Include="Mocks\Windows\IRoomsWindow.h">
-      <Filter>Mocks\Windows</Filter>
-    </ClInclude>
-    <ClInclude Include="Mocks\Elements\IItem.h">
-      <Filter>Mocks\Elements</Filter>
-    </ClInclude>
-    <ClInclude Include="Mocks\Elements\IRoom.h">
-      <Filter>Mocks\Elements</Filter>
-    </ClInclude>
-    <ClInclude Include="Settings\IStartupOptions.h">
-      <Filter>Settings</Filter>
-    </ClInclude>
-    <ClInclude Include="Settings\StartupOptions.h">
-      <Filter>Settings</Filter>
-    </ClInclude>
-    <ClInclude Include="Mocks\Settings\IStartupOptions.h">
-      <Filter>Mocks\Settings</Filter>
-    </ClInclude>
-    <ClInclude Include="Mocks\Elements\ITrigger.h">
-      <Filter>Mocks\Elements</Filter>
-    </ClInclude>
-    <ClInclude Include="Mocks\Elements\IStaticMesh.h">
-      <Filter>Mocks\Elements</Filter>
-    </ClInclude>
-    <ClInclude Include="Mocks\Elements\ISector.h">
-      <Filter>Mocks\Elements</Filter>
-    </ClInclude>
-    <ClInclude Include="Mocks\Camera\ICamera.h">
-      <Filter>Mocks\Camera</Filter>
-    </ClInclude>
-    <ClInclude Include="Elements\PickFilter.h">
-      <Filter>Elements</Filter>
-    </ClInclude>
-    <ClInclude Include="Routing\Action.h">
-      <Filter>Routing</Filter>
-    </ClInclude>
-    <ClInclude Include="Routing\IActions.h">
-      <Filter>Routing</Filter>
-    </ClInclude>
-    <ClInclude Include="Routing\Actions.h">
-      <Filter>Routing</Filter>
-    </ClInclude>
-    <ClInclude Include="Mocks\UI\ISettingsWindow.h">
-      <Filter>Mocks\UI</Filter>
-    </ClInclude>
-    <ClInclude Include="Mocks\Windows\IRouteWindow.h">
-      <Filter>Mocks\Windows</Filter>
-    </ClInclude>
-    <ClInclude Include="Routing\IWaypoint.h">
-      <Filter>Routing</Filter>
-    </ClInclude>
-    <ClInclude Include="Mocks\Routing\IWaypoint.h">
-      <Filter>Mocks\Routing</Filter>
-    </ClInclude>
-    <ClInclude Include="UI\IViewOptions.h">
-      <Filter>UI</Filter>
-    </ClInclude>
-    <ClInclude Include="Mocks\UI\IViewOptions.h">
-      <Filter>Mocks\UI</Filter>
-    </ClInclude>
-    <ClInclude Include="UI\IContextMenu.h">
-      <Filter>UI</Filter>
-    </ClInclude>
-    <ClInclude Include="Mocks\UI\IContextMenu.h">
-      <Filter>Mocks\UI</Filter>
-    </ClInclude>
-    <ClInclude Include="UI\ICameraControls.h">
-      <Filter>UI</Filter>
-    </ClInclude>
-    <ClInclude Include="Mocks\UI\ICameraControls.h">
-      <Filter>Mocks\UI</Filter>
-    </ClInclude>
-    <ClInclude Include="Settings\RandomizerSettings.h">
-      <Filter>Settings</Filter>
-    </ClInclude>
-    <ClInclude Include="Resources\DefaultFonts.h">
-      <Filter>Resources</Filter>
-    </ClInclude>
-    <ClInclude Include="Mocks\UI\IMapRenderer.h">
-      <Filter>Mocks\UI</Filter>
-    </ClInclude>
-    <ClInclude Include="Windows\ILightsWindowManager.h">
-      <Filter>Windows\Lights</Filter>
-    </ClInclude>
-    <ClInclude Include="Windows\LightsWindowManager.h">
-      <Filter>Windows\Lights</Filter>
-    </ClInclude>
-    <ClInclude Include="Windows\LightsWindow.h">
-      <Filter>Windows\Lights</Filter>
-    </ClInclude>
-    <ClInclude Include="Windows\ILightsWindow.h">
-      <Filter>Windows\Lights</Filter>
-    </ClInclude>
-    <ClInclude Include="Mocks\Windows\ILightsWindowManager.h">
-      <Filter>Mocks\Windows</Filter>
-    </ClInclude>
-    <ClInclude Include="Mocks\Elements\ILight.h">
-      <Filter>Mocks\Elements</Filter>
-    </ClInclude>
+    <ClInclude Include="Mocks\Elements\ILevel.h" Filter="Mocks\Elements" />
+    <ClInclude Include="Mocks\UI\IViewerUI.h" Filter="Mocks\UI" />
+    <ClInclude Include="Geometry\IPicking.h" Filter="Geometry" />
+    <ClInclude Include="Mocks\Geometry\IPicking.h" Filter="Mocks\Geometry" />
+    <ClInclude Include="Menus\IUpdateChecker.h" Filter="Menus" />
+    <ClInclude Include="Mocks\Menus\IUpdateChecker.h" Filter="Mocks\Menus" />
+    <ClInclude Include="Settings\ISettingsLoader.h" Filter="Settings" />
+    <ClInclude Include="Settings\SettingsLoader.h" Filter="Settings" />
+    <ClInclude Include="Mocks\Settings\ISettingsLoader.h" Filter="Mocks\Settings" />
+    <ClInclude Include="Windows\IViewer.h" Filter="Windows" />
+    <ClInclude Include="Mocks\Windows\IViewer.h" Filter="Mocks\Windows" />
+    <ClInclude Include="Mocks\Graphics\ITextureStorage.h" Filter="Mocks\Graphics" />
+    <ClInclude Include="Routing\IRoute.h" Filter="Routing" />
+    <ClInclude Include="Mocks\Routing\IRoute.h" Filter="Mocks\Routing" />
+    <ClInclude Include="Mocks\Windows\IItemsWindowManager.h" Filter="Mocks\Windows" />
+    <ClInclude Include="Mocks\Windows\ITriggersWindowManager.h" Filter="Mocks\Windows" />
+    <ClInclude Include="Mocks\Windows\IRouteWindowManager.h" Filter="Mocks\Windows" />
+    <ClInclude Include="Mocks\Windows\IRoomsWindowManager.h" Filter="Mocks\Windows" />
+    <ClInclude Include="Mocks\Windows\ITriggersWindow.h" Filter="Mocks\Windows" />
+    <ClInclude Include="Mocks\Windows\IItemsWindow.h" Filter="Mocks\Windows" />
+    <ClInclude Include="Tools\ICompass.h" Filter="Tools" />
+    <ClInclude Include="Mocks\Tools\ICompass.h" Filter="Mocks\Tools" />
+    <ClInclude Include="Tools\IMeasure.h" Filter="Tools" />
+    <ClInclude Include="Mocks\Tools\IMeasure.h" Filter="Mocks\Tools" />
+    <ClInclude Include="Mocks\Graphics\ILevelTextureStorage.h" Filter="Mocks\Graphics" />
+    <ClInclude Include="Mocks\Graphics\IMeshStorage.h" Filter="Mocks\Graphics" />
+    <ClInclude Include="Mocks\Graphics\ISelectionRenderer.h" Filter="Mocks\Graphics" />
+    <ClInclude Include="Graphics\ISelectionRenderer.h" Filter="Graphics" />
+    <ClInclude Include="Geometry\ITransparencyBuffer.h" Filter="Geometry" />
+    <ClInclude Include="Mocks\Geometry\ITransparencyBuffer.h" Filter="Mocks\Geometry" />
+    <ClInclude Include="Mocks\Elements\ITypeInfoLookup.h" Filter="Mocks\Elements" />
+    <ClInclude Include="Geometry\IMesh.h" Filter="Geometry" />
+    <ClInclude Include="Mocks\Geometry\IMesh.h" Filter="Mocks\Geometry" />
+    <ClInclude Include="Geometry\Matrix.h" Filter="Geometry" />
+    <ClInclude Include="Graphics\ISectorHighlight.h" Filter="Graphics" />
+    <ClInclude Include="Mocks\Graphics\ISectorHighlight.h" Filter="Mocks\Graphics" />
+    <ClInclude Include="UI\IViewerUI.h" Filter="UI" />
+    <ClInclude Include="Mocks\Windows\IRoomsWindow.h" Filter="Mocks\Windows" />
+    <ClInclude Include="Mocks\Elements\IItem.h" Filter="Mocks\Elements" />
+    <ClInclude Include="Mocks\Elements\IRoom.h" Filter="Mocks\Elements" />
+    <ClInclude Include="Settings\IStartupOptions.h" Filter="Settings" />
+    <ClInclude Include="Settings\StartupOptions.h" Filter="Settings" />
+    <ClInclude Include="Mocks\Settings\IStartupOptions.h" Filter="Mocks\Settings" />
+    <ClInclude Include="Mocks\Elements\ITrigger.h" Filter="Mocks\Elements" />
+    <ClInclude Include="Mocks\Elements\IStaticMesh.h" Filter="Mocks\Elements" />
+    <ClInclude Include="Mocks\Elements\ISector.h" Filter="Mocks\Elements" />
+    <ClInclude Include="Mocks\Camera\ICamera.h" Filter="Mocks\Camera" />
+    <ClInclude Include="Elements\PickFilter.h" Filter="Elements" />
+    <ClInclude Include="Routing\Action.h" Filter="Routing" />
+    <ClInclude Include="Routing\IActions.h" Filter="Routing" />
+    <ClInclude Include="Routing\Actions.h" Filter="Routing" />
+    <ClInclude Include="Mocks\UI\ISettingsWindow.h" Filter="Mocks\UI" />
+    <ClInclude Include="Mocks\Windows\IRouteWindow.h" Filter="Mocks\Windows" />
+    <ClInclude Include="Routing\IWaypoint.h" Filter="Routing" />
+    <ClInclude Include="Mocks\Routing\IWaypoint.h" Filter="Mocks\Routing" />
+    <ClInclude Include="UI\IViewOptions.h" Filter="UI" />
+    <ClInclude Include="Mocks\UI\IViewOptions.h" Filter="Mocks\UI" />
+    <ClInclude Include="UI\IContextMenu.h" Filter="UI" />
+    <ClInclude Include="Mocks\UI\IContextMenu.h" Filter="Mocks\UI" />
+    <ClInclude Include="UI\ICameraControls.h" Filter="UI" />
+    <ClInclude Include="Mocks\UI\ICameraControls.h" Filter="Mocks\UI" />
+    <ClInclude Include="Settings\RandomizerSettings.h" Filter="Settings" />
+    <ClInclude Include="Resources\DefaultFonts.h" Filter="Resources" />
+    <ClInclude Include="Mocks\UI\IMapRenderer.h" Filter="Mocks\UI" />
+    <ClInclude Include="Windows\ILightsWindowManager.h" Filter="Windows\Lights" />
+    <ClInclude Include="Windows\LightsWindowManager.h" Filter="Windows\Lights" />
+    <ClInclude Include="Windows\LightsWindow.h" Filter="Windows\Lights" />
+    <ClInclude Include="Windows\ILightsWindow.h" Filter="Windows\Lights" />
+    <ClInclude Include="Mocks\Windows\ILightsWindowManager.h" Filter="Mocks\Windows" />
+    <ClInclude Include="Mocks\Elements\ILight.h" Filter="Mocks\Elements" />
     <ClInclude Include="trview_imgui.h" />
     <ClInclude Include="trview_imgui.hpp" />
-    <ClInclude Include="Windows\IItemsWindow.h">
-      <Filter>Windows\Items</Filter>
-    </ClInclude>
-    <ClInclude Include="Windows\IItemsWindowManager.h">
-      <Filter>Windows\Items</Filter>
-    </ClInclude>
-    <ClInclude Include="Windows\ItemsWindow.h">
-      <Filter>Windows\Items</Filter>
-    </ClInclude>
-    <ClInclude Include="Windows\ItemsWindowManager.h">
-      <Filter>Windows\Items</Filter>
-    </ClInclude>
-    <ClInclude Include="Windows\ITriggersWindow.h">
-      <Filter>Windows\Triggers</Filter>
-    </ClInclude>
-    <ClInclude Include="Windows\ITriggersWindowManager.h">
-      <Filter>Windows\Triggers</Filter>
-    </ClInclude>
-    <ClInclude Include="Windows\TriggersWindow.h">
-      <Filter>Windows\Triggers</Filter>
-    </ClInclude>
-    <ClInclude Include="Windows\TriggersWindowManager.h">
-      <Filter>Windows\Triggers</Filter>
-    </ClInclude>
-    <ClInclude Include="Windows\IRoomsWindow.h">
-      <Filter>Windows\Rooms</Filter>
-    </ClInclude>
-    <ClInclude Include="Windows\IRoomsWindowManager.h">
-      <Filter>Windows\Rooms</Filter>
-    </ClInclude>
-    <ClInclude Include="Windows\RoomsWindow.h">
-      <Filter>Windows\Rooms</Filter>
-    </ClInclude>
-    <ClInclude Include="Windows\RoomsWindowManager.h">
-      <Filter>Windows\Rooms</Filter>
-    </ClInclude>
-    <ClInclude Include="Windows\IRouteWindow.h">
-      <Filter>Windows\Route</Filter>
-    </ClInclude>
-    <ClInclude Include="Windows\IRouteWindowManager.h">
-      <Filter>Windows\Route</Filter>
-    </ClInclude>
-    <ClInclude Include="Windows\RouteWindow.h">
-      <Filter>Windows\Route</Filter>
-    </ClInclude>
-    <ClInclude Include="Windows\RouteWindowManager.h">
-      <Filter>Windows\Route</Filter>
-    </ClInclude>
-    <ClInclude Include="UI\IImGuiBackend.h">
-      <Filter>UI</Filter>
-    </ClInclude>
-    <ClInclude Include="UI\DX11ImGuiBackend.h">
-      <Filter>UI</Filter>
-    </ClInclude>
-    <ClInclude Include="Mocks\UI\IImGuiBackend.h">
-      <Filter>Mocks\UI</Filter>
-    </ClInclude>
-    <ClInclude Include="UI\IMapRenderer.h">
-      <Filter>UI\Minimap</Filter>
-    </ClInclude>
-    <ClInclude Include="UI\MapRenderer.h">
-      <Filter>UI\Minimap</Filter>
-    </ClInclude>
-    <ClInclude Include="Elements\ILight.h">
-      <Filter>Elements\Light</Filter>
-    </ClInclude>
-    <ClInclude Include="UI\MapColours.h">
-      <Filter>UI\Minimap</Filter>
-    </ClInclude>
-    <ClInclude Include="Elements\Light.h">
-      <Filter>Elements\Light</Filter>
-    </ClInclude>
-    <ClInclude Include="Mocks\Windows\ILightsWindow.h">
-      <Filter>Mocks\Windows</Filter>
-    </ClInclude>
-    <ClInclude Include="UI\ISettingsWindow.h">
-      <Filter>UI\Settings</Filter>
-    </ClInclude>
-    <ClInclude Include="UI\SettingsWindow.h">
-      <Filter>UI\Settings</Filter>
-    </ClInclude>
-    <ClInclude Include="Elements\Floordata.h">
-      <Filter>Elements</Filter>
-    </ClInclude>
-    <ClInclude Include="Filters\Filters.h">
-      <Filter>Filters</Filter>
-    </ClInclude>
-    <ClInclude Include="Filters\Filters.hpp">
-      <Filter>Filters</Filter>
-    </ClInclude>
-    <ClInclude Include="Windows\WindowManager.h">
-      <Filter>Windows</Filter>
-    </ClInclude>
-    <ClInclude Include="Windows\WindowManager.hpp">
-      <Filter>Windows</Filter>
-    </ClInclude>
-    <ClInclude Include="Elements\IRoom.h">
-      <Filter>Elements\Room</Filter>
-    </ClInclude>
-    <ClInclude Include="Elements\Room.h">
-      <Filter>Elements\Room</Filter>
-    </ClInclude>
-    <ClInclude Include="Elements\RoomInfo.h">
-      <Filter>Elements\Room</Filter>
-    </ClInclude>
-    <ClInclude Include="Elements\ILevel.h">
-      <Filter>Elements\Level</Filter>
-    </ClInclude>
-    <ClInclude Include="Elements\Level.h">
-      <Filter>Elements\Level</Filter>
-    </ClInclude>
-    <ClInclude Include="Menus\FileMenu.h">
-      <Filter>Menus</Filter>
-    </ClInclude>
-    <ClInclude Include="Menus\IFileMenu.h">
-      <Filter>Menus</Filter>
-    </ClInclude>
-    <ClInclude Include="Mocks\Menus\IFileMenu.h">
-      <Filter>Mocks\Menus</Filter>
-    </ClInclude>
-    <ClInclude Include="Windows\Log\ILogWindow.h">
-      <Filter>Windows\Log</Filter>
-    </ClInclude>
-    <ClInclude Include="Windows\Log\LogWindow.h">
-      <Filter>Windows\Log</Filter>
-    </ClInclude>
-    <ClInclude Include="Windows\Log\ILogWindowManager.h">
-      <Filter>Windows\Log</Filter>
-    </ClInclude>
-    <ClInclude Include="Windows\Log\LogWindowManager.h">
-      <Filter>Windows\Log</Filter>
-    </ClInclude>
-    <ClInclude Include="Mocks\Windows\ILogWindowManager.h">
-      <Filter>Mocks\Windows</Filter>
-    </ClInclude>
-    <ClInclude Include="Mocks\Windows\ILogWindow.h">
-      <Filter>Mocks\Windows</Filter>
-    </ClInclude>
-    <ClInclude Include="Elements\RenderFilter.h">
-      <Filter>Elements</Filter>
-    </ClInclude>
-    <ClInclude Include="Elements\CameraSink\ICameraSink.h">
-      <Filter>Elements\CameraSink</Filter>
-    </ClInclude>
-    <ClInclude Include="Windows\Textures\ITexturesWindow.h">
-      <Filter>Windows\Textures</Filter>
-    </ClInclude>
-    <ClInclude Include="Elements\CameraSink\CameraSink.h">
-      <Filter>Elements\CameraSink</Filter>
-    </ClInclude>
-    <ClInclude Include="Windows\Textures\ITexturesWindowManager.h">
-      <Filter>Windows\Textures</Filter>
-    </ClInclude>
-    <ClInclude Include="Mocks\Elements\ICameraSink.h">
-      <Filter>Mocks\Elements</Filter>
-    </ClInclude>
-    <ClInclude Include="Windows\Textures\TexturesWindow.h">
-      <Filter>Windows\Textures</Filter>
-    </ClInclude>
-    <ClInclude Include="Windows\CameraSink\ICameraSinkWindowManager.h">
-      <Filter>Windows\CameraSink</Filter>
-    </ClInclude>
-    <ClInclude Include="Windows\Textures\TexturesWindowManager.h">
-      <Filter>Windows\Textures</Filter>
-    </ClInclude>
-    <ClInclude Include="Windows\CameraSink\ICameraSinkWindow.h">
-      <Filter>Windows\CameraSink</Filter>
-    </ClInclude>
-    <ClInclude Include="Mocks\Windows\ITexturesWindowManager.h">
-      <Filter>Mocks\Windows</Filter>
-    </ClInclude>
-    <ClInclude Include="Windows\CameraSink\CameraSinkWindowManager.h">
-      <Filter>Windows\CameraSink</Filter>
-    </ClInclude>
-    <ClInclude Include="Mocks\Windows\ITexturesWindow.h">
-      <Filter>Mocks\Windows</Filter>
-    </ClInclude>
+    <ClInclude Include="Windows\IItemsWindow.h" Filter="Windows\Items" />
+    <ClInclude Include="Windows\IItemsWindowManager.h" Filter="Windows\Items" />
+    <ClInclude Include="Windows\ItemsWindow.h" Filter="Windows\Items" />
+    <ClInclude Include="Windows\ItemsWindowManager.h" Filter="Windows\Items" />
+    <ClInclude Include="Windows\ITriggersWindow.h" Filter="Windows\Triggers" />
+    <ClInclude Include="Windows\ITriggersWindowManager.h" Filter="Windows\Triggers" />
+    <ClInclude Include="Windows\TriggersWindow.h" Filter="Windows\Triggers" />
+    <ClInclude Include="Windows\TriggersWindowManager.h" Filter="Windows\Triggers" />
+    <ClInclude Include="Windows\IRoomsWindow.h" Filter="Windows\Rooms" />
+    <ClInclude Include="Windows\IRoomsWindowManager.h" Filter="Windows\Rooms" />
+    <ClInclude Include="Windows\RoomsWindow.h" Filter="Windows\Rooms" />
+    <ClInclude Include="Windows\RoomsWindowManager.h" Filter="Windows\Rooms" />
+    <ClInclude Include="Windows\IRouteWindow.h" Filter="Windows\Route" />
+    <ClInclude Include="Windows\IRouteWindowManager.h" Filter="Windows\Route" />
+    <ClInclude Include="Windows\RouteWindow.h" Filter="Windows\Route" />
+    <ClInclude Include="Windows\RouteWindowManager.h" Filter="Windows\Route" />
+    <ClInclude Include="UI\IImGuiBackend.h" Filter="UI" />
+    <ClInclude Include="UI\DX11ImGuiBackend.h" Filter="UI" />
+    <ClInclude Include="Mocks\UI\IImGuiBackend.h" Filter="Mocks\UI" />
+    <ClInclude Include="UI\IMapRenderer.h" Filter="UI\Minimap" />
+    <ClInclude Include="UI\MapRenderer.h" Filter="UI\Minimap" />
+    <ClInclude Include="Elements\ILight.h" Filter="Elements\Light" />
+    <ClInclude Include="UI\MapColours.h" Filter="UI\Minimap" />
+    <ClInclude Include="Elements\Light.h" Filter="Elements\Light" />
+    <ClInclude Include="Mocks\Windows\ILightsWindow.h" Filter="Mocks\Windows" />
+    <ClInclude Include="UI\ISettingsWindow.h" Filter="UI\Settings" />
+    <ClInclude Include="UI\SettingsWindow.h" Filter="UI\Settings" />
+    <ClInclude Include="Elements\Floordata.h" Filter="Elements" />
+    <ClInclude Include="Filters\Filters.h" Filter="Filters" />
+    <ClInclude Include="Filters\Filters.hpp" Filter="Filters" />
+    <ClInclude Include="Windows\WindowManager.h" Filter="Windows" />
+    <ClInclude Include="Windows\WindowManager.hpp" Filter="Windows" />
+    <ClInclude Include="Elements\IRoom.h" Filter="Elements\Room" />
+    <ClInclude Include="Elements\Room.h" Filter="Elements\Room" />
+    <ClInclude Include="Elements\RoomInfo.h" Filter="Elements\Room" />
+    <ClInclude Include="Elements\ILevel.h" Filter="Elements\Level" />
+    <ClInclude Include="Elements\Level.h" Filter="Elements\Level" />
+    <ClInclude Include="Menus\FileMenu.h" Filter="Menus" />
+    <ClInclude Include="Menus\IFileMenu.h" Filter="Menus" />
+    <ClInclude Include="Mocks\Menus\IFileMenu.h" Filter="Mocks\Menus" />
+    <ClInclude Include="Windows\Log\ILogWindow.h" Filter="Windows\Log" />
+    <ClInclude Include="Windows\Log\LogWindow.h" Filter="Windows\Log" />
+    <ClInclude Include="Windows\Log\ILogWindowManager.h" Filter="Windows\Log" />
+    <ClInclude Include="Windows\Log\LogWindowManager.h" Filter="Windows\Log" />
+    <ClInclude Include="Mocks\Windows\ILogWindowManager.h" Filter="Mocks\Windows" />
+    <ClInclude Include="Mocks\Windows\ILogWindow.h" Filter="Mocks\Windows" />
+    <ClInclude Include="Elements\RenderFilter.h" Filter="Elements" />
+    <ClInclude Include="Elements\CameraSink\ICameraSink.h" Filter="Elements\CameraSink" />
+    <ClInclude Include="Windows\Textures\ITexturesWindow.h" Filter="Windows\Textures" />
+    <ClInclude Include="Elements\CameraSink\CameraSink.h" Filter="Elements\CameraSink" />
+    <ClInclude Include="Windows\Textures\ITexturesWindowManager.h" Filter="Windows\Textures" />
+    <ClInclude Include="Mocks\Elements\ICameraSink.h" Filter="Mocks\Elements" />
+    <ClInclude Include="Windows\Textures\TexturesWindow.h" Filter="Windows\Textures" />
+    <ClInclude Include="Windows\CameraSink\ICameraSinkWindowManager.h" Filter="Windows\CameraSink" />
+    <ClInclude Include="Windows\Textures\TexturesWindowManager.h" Filter="Windows\Textures" />
+    <ClInclude Include="Windows\CameraSink\ICameraSinkWindow.h" Filter="Windows\CameraSink" />
+    <ClInclude Include="Mocks\Windows\ITexturesWindowManager.h" Filter="Mocks\Windows" />
+    <ClInclude Include="Windows\CameraSink\CameraSinkWindowManager.h" Filter="Windows\CameraSink" />
+    <ClInclude Include="Mocks\Windows\ITexturesWindow.h" Filter="Mocks\Windows" />
     <ClInclude Include="Lua\trview\trview.h" Filter="Lua\trview" />
-    <ClInclude Include="Windows\CameraSink\CameraSinkWindow.h">
-      <Filter>Windows\CameraSink</Filter>
-    </ClInclude>
-    <ClInclude Include="Mocks\Windows\ICameraSinkWindowManager.h">
-      <Filter>Mocks\Windows</Filter>
-    </ClInclude>
-    <ClInclude Include="Lua\Elements\Level\Lua_Level.h">
-      <Filter>Lua\Elements\Level</Filter>
-    </ClInclude>
-    <ClInclude Include="Mocks\Windows\ICameraSinkWindow.h">
-      <Filter>Mocks\Windows</Filter>
-    </ClInclude>
-    <ClInclude Include="Track\Track.h">
-      <Filter>Track</Filter>
-    </ClInclude>
+    <ClInclude Include="Windows\CameraSink\CameraSinkWindow.h" Filter="Windows\CameraSink" />
+    <ClInclude Include="Mocks\Windows\ICameraSinkWindowManager.h" Filter="Mocks\Windows" />
+    <ClInclude Include="Lua\Elements\Level\Lua_Level.h" Filter="Lua\Elements\Level" />
+    <ClInclude Include="Mocks\Windows\ICameraSinkWindow.h" Filter="Mocks\Windows" />
+    <ClInclude Include="Track\Track.h" Filter="Track" />
     <ClInclude Include="Type.h" />
     <ClInclude Include="Type.inl" />
-    <ClInclude Include="Lua\Elements\Item\Lua_Item.h">
-      <Filter>Lua\Elements\Item</Filter>
-    </ClInclude>
-    <ClInclude Include="Lua\Elements\Room\Lua_Room.h">
-      <Filter>Lua\Elements\Room</Filter>
-    </ClInclude>
-    <ClInclude Include="Elements\Item.h">
-      <Filter>Elements\Item</Filter>
-    </ClInclude>
-    <ClInclude Include="Elements\IItem.h">
-      <Filter>Elements\Item</Filter>
-    </ClInclude>
-    <ClInclude Include="Lua\Elements\Trigger\Lua_Trigger.h">
-      <Filter>Lua\Elements\Trigger</Filter>
-    </ClInclude>
-    <ClInclude Include="Lua\Vector3.h">
-      <Filter>Lua</Filter>
-    </ClInclude>
-    <ClInclude Include="Elements\ITrigger.h">
-      <Filter>Elements\Trigger</Filter>
-    </ClInclude>
-    <ClInclude Include="Elements\Trigger.h">
-      <Filter>Elements\Trigger</Filter>
-    </ClInclude>
-    <ClInclude Include="Elements\ISector.h">
-      <Filter>Elements\Sector</Filter>
-    </ClInclude>
-    <ClInclude Include="Elements\Sector.h">
-      <Filter>Elements\Sector</Filter>
-    </ClInclude>
-    <ClInclude Include="Lua\Elements\Sector\Lua_Sector.h">
-      <Filter>Lua\Elements\Sector</Filter>
-    </ClInclude>
-    <ClInclude Include="Lua\Elements\CameraSink\Lua_CameraSink.h">
-      <Filter>Lua\Elements\CameraSink</Filter>
-    </ClInclude>
-    <ClInclude Include="UI\Console.h" />
-    <ClInclude Include="Windows\Console\IConsole.h">
-      <Filter>Windows\Console</Filter>
-    </ClInclude>
-    <ClInclude Include="Windows\Console\IConsoleManager.h">
-      <Filter>Windows\Console</Filter>
-    </ClInclude>
-    <ClInclude Include="Windows\Console\ConsoleManager.h">
-      <Filter>Windows\Console</Filter>
-    </ClInclude>
-    <ClInclude Include="Mocks\Windows\IConsoleManager.h">
-      <Filter>Mocks\Windows</Filter>
-    </ClInclude>
-    <ClInclude Include="Windows\Console\Console.h">
-      <Filter>Windows\Console</Filter>
-    </ClInclude>
-    <ClInclude Include="Mocks\Windows\IConsole.h">
-      <Filter>Mocks\Windows</Filter>
-    </ClInclude>
-    <ClInclude Include="Lua\Elements\Light\Lua_Light.h">
-      <Filter>Lua\Elements\Light</Filter>
-    </ClInclude>
-    <ClInclude Include="Lua\Colour.h">
-      <Filter>Lua</Filter>
-    </ClInclude>
+    <ClInclude Include="Lua\Elements\Item\Lua_Item.h" Filter="Lua\Elements\Item" />
+    <ClInclude Include="Lua\Elements\Room\Lua_Room.h" Filter="Lua\Elements\Room" />
+    <ClInclude Include="Elements\Item.h" Filter="Elements\Item" />
+    <ClInclude Include="Elements\IItem.h" Filter="Elements\Item" />
+    <ClInclude Include="Lua\Elements\Trigger\Lua_Trigger.h" Filter="Lua\Elements\Trigger" />
+    <ClInclude Include="Lua\Vector3.h" Filter="Lua" />
+    <ClInclude Include="Elements\ITrigger.h" Filter="Elements\Trigger" />
+    <ClInclude Include="Elements\Trigger.h" Filter="Elements\Trigger" />
+    <ClInclude Include="Elements\ISector.h" Filter="Elements\Sector" />
+    <ClInclude Include="Elements\Sector.h" Filter="Elements\Sector" />
+    <ClInclude Include="Lua\Elements\Sector\Lua_Sector.h" Filter="Lua\Elements\Sector" />
+    <ClInclude Include="Lua\Elements\CameraSink\Lua_CameraSink.h" Filter="Lua\Elements\CameraSink" />
+    <ClInclude Include="Windows\Console\IConsole.h" Filter="Windows\Console" />
+    <ClInclude Include="Windows\Console\IConsoleManager.h" Filter="Windows\Console" />
+    <ClInclude Include="Windows\Console\ConsoleManager.h" Filter="Windows\Console" />
+    <ClInclude Include="Mocks\Windows\IConsoleManager.h" Filter="Mocks\Windows" />
+    <ClInclude Include="Windows\Console\Console.h" Filter="Windows\Console" />
+    <ClInclude Include="Mocks\Windows\IConsole.h" Filter="Mocks\Windows" />
+    <ClInclude Include="Lua\Elements\Light\Lua_Light.h" Filter="Lua\Elements\Light" />
+    <ClInclude Include="Lua\Colour.h" Filter="Lua" />
     <ClInclude Include="UserCancelledException.h" />
-    <ClInclude Include="Mocks\IApplication.h">
-      <Filter>Mocks</Filter>
-    </ClInclude>
-    <ClInclude Include="Lua\ILua.h">
-      <Filter>Lua</Filter>
-    </ClInclude>
-    <ClInclude Include="Mocks\Lua\ILua.h">
-      <Filter>Mocks\Lua</Filter>
-    </ClInclude>
-    <ClInclude Include="Elements\ISector.hpp">
-      <Filter>Elements\Sector</Filter>
-    </ClInclude>
-    <ClInclude Include="Plugins\IPlugins.h">
-      <Filter>Plugins</Filter>
-    </ClInclude>
-    <ClInclude Include="Plugins\Plugins.h">
-      <Filter>Plugins</Filter>
-    </ClInclude>
-    <ClInclude Include="Mocks\Plugins\IPlugins.h">
-      <Filter>Mocks\Plugins</Filter>
-    </ClInclude>
-    <ClInclude Include="Plugins\IPlugin.h">
-      <Filter>Plugins</Filter>
-    </ClInclude>
-    <ClInclude Include="Plugins\Plugin.h">
-      <Filter>Plugins</Filter>
-    </ClInclude>
-    <ClInclude Include="Mocks\Plugins\IPlugin.h">
-      <Filter>Mocks\Plugins</Filter>
-    </ClInclude>
-    <ClInclude Include="Windows\Plugins\IPluginsWindow.h">
-      <Filter>Windows\Plugins</Filter>
-    </ClInclude>
-    <ClInclude Include="Windows\Plugins\IPluginsWindowManager.h">
-      <Filter>Windows\Plugins</Filter>
-    </ClInclude>
-    <ClInclude Include="Windows\Plugins\PluginsWindowManager.h">
-      <Filter>Windows\Plugins</Filter>
-    </ClInclude>
-    <ClInclude Include="Windows\Plugins\PluginsWindow.h">
-      <Filter>Windows\Plugins</Filter>
-    </ClInclude>
-    <ClInclude Include="Mocks\Windows\IPluginsWindow.h">
-      <Filter>Mocks\Windows</Filter>
-    </ClInclude>
-    <ClInclude Include="Mocks\Windows\IPluginsWindowManager.h">
-      <Filter>Mocks\Windows</Filter>
-    </ClInclude>
-    <ClInclude Include="Lua\Elements\StaticMesh\Lua_StaticMesh.h">
-      <Filter>Lua\Elements\StaticMesh</Filter>
-    </ClInclude>
-    <ClInclude Include="Elements\IStaticMesh.h">
-      <Filter>Elements\StaticMesh</Filter>
-    </ClInclude>
-    <ClInclude Include="Elements\StaticMesh.h">
-      <Filter>Elements\StaticMesh</Filter>
-    </ClInclude>
-    <ClInclude Include="Lua\BoundingBox.h">
-      <Filter>Lua</Filter>
-    </ClInclude>
-    <ClInclude Include="Tools\IToolbar.h">
-      <Filter>Tools</Filter>
-    </ClInclude>
-    <ClInclude Include="Mocks\Tools\IToolbar.h">
-      <Filter>Mocks\Tools</Filter>
-    </ClInclude>
-    <ClInclude Include="Lua\Route\Lua_Route.h">
-      <Filter>Lua\Route</Filter>
-    </ClInclude>
-    <ClInclude Include="Lua\Route\Lua_Waypoint.h">
-      <Filter>Lua\Route</Filter>
-    </ClInclude>
-    <ClInclude Include="Routing\RandomizerRoute.h">
-      <Filter>Routing</Filter>
-    </ClInclude>
-    <ClInclude Include="Routing\IRandomizerRoute.h">
-      <Filter>Routing</Filter>
-    </ClInclude>
-    <ClInclude Include="Mocks\Routing\IRandomizerRoute.h">
-      <Filter>Mocks\Routing</Filter>
-    </ClInclude>
-    <ClInclude Include="Elements\TypeInfo.h">
-      <Filter>Elements</Filter>
-    </ClInclude>
-    <ClInclude Include="Windows\RowCounter.h">
-      <Filter>Windows</Filter>
-    </ClInclude>
-    <ClInclude Include="Settings\FontSetting.h">
-      <Filter>Settings</Filter>
-    </ClInclude>
-    <ClInclude Include="UI\Fonts\IFonts.h">
-      <Filter>UI\Fonts</Filter>
-    </ClInclude>
-    <ClInclude Include="UI\Fonts\Fonts.h">
-      <Filter>UI\Fonts</Filter>
-    </ClInclude>
-    <ClInclude Include="Mocks\UI\IFonts.h">
-      <Filter>Mocks\UI</Filter>
-    </ClInclude>
-    <ClInclude Include="Windows\Statics\IStaticsWindowManager.h">
-      <Filter>Windows\Statics</Filter>
-    </ClInclude>
-    <ClInclude Include="Windows\Statics\IStaticsWindow.h">
-      <Filter>Windows\Statics</Filter>
-    </ClInclude>
-    <ClInclude Include="Windows\Statics\StaticsWindowManager.h">
-      <Filter>Windows\Statics</Filter>
-    </ClInclude>
-    <ClInclude Include="Windows\Statics\StaticsWindow.h">
-      <Filter>Windows\Statics</Filter>
-    </ClInclude>
-    <ClInclude Include="Mocks\Windows\IStaticsWindow.h">
-      <Filter>Mocks\Windows</Filter>
-    </ClInclude>
-    <ClInclude Include="Mocks\Windows\IStaticsWindowManager.h">
-      <Filter>Mocks\Windows</Filter>
-    </ClInclude>
-    <ClInclude Include="Windows\IWindows.h">
-      <Filter>Windows</Filter>
-    </ClInclude>
-    <ClInclude Include="Windows\Windows.h">
-      <Filter>Windows</Filter>
-    </ClInclude>
-    <ClInclude Include="Mocks\Windows\IWindows.h">
-      <Filter>Mocks\Windows</Filter>
-    </ClInclude>
-    <ClInclude Include="Lua\Scriptable\Scriptable.h">
-      <Filter>Lua\Scriptable</Filter>
-    </ClInclude>
-    <ClInclude Include="Lua\Camera\Lua_Camera.h">
-      <Filter>Lua\Camera</Filter>
-    </ClInclude>
-    <ClInclude Include="Lua\Scriptable\IScriptable.h">
-      <Filter>Lua\Scriptable</Filter>
-    </ClInclude>
-    <ClInclude Include="Mocks\Lua\IScriptable.h">
-      <Filter>Mocks\Lua</Filter>
-    </ClInclude>
-    <ClInclude Include="Sound\ISoundStorage.h">
-      <Filter>Sound</Filter>
-    </ClInclude>
-    <ClInclude Include="Sound\SoundStorage.h">
-      <Filter>Sound</Filter>
-    </ClInclude>
-    <ClInclude Include="Sound\ISound.h">
-      <Filter>Sound</Filter>
-    </ClInclude>
-    <ClInclude Include="Sound\Sound.h">
-      <Filter>Sound</Filter>
-    </ClInclude>
-    <ClInclude Include="Windows\Sounds\ISoundsWindow.h">
-      <Filter>Windows\Sounds</Filter>
-    </ClInclude>
-    <ClInclude Include="Windows\Sounds\SoundsWindow.h">
-      <Filter>Windows\Sounds</Filter>
-    </ClInclude>
-    <ClInclude Include="Windows\Sounds\ISoundsWindowManager.h">
-      <Filter>Windows\Sounds</Filter>
-    </ClInclude>
-    <ClInclude Include="Windows\Sounds\SoundsWindowManager.h">
-      <Filter>Windows\Sounds</Filter>
-    </ClInclude>
-    <ClInclude Include="Mocks\Windows\ISoundsWindow.h">
-      <Filter>Mocks\Windows</Filter>
-    </ClInclude>
-    <ClInclude Include="Mocks\Windows\ISoundsWindowManager.h">
-      <Filter>Mocks\Windows</Filter>
-    </ClInclude>
-    <ClInclude Include="Elements\SoundSource\ISoundSource.h">
-      <Filter>Elements\SoundSource</Filter>
-    </ClInclude>
-    <ClInclude Include="Elements\SoundSource\SoundSource.h">
-      <Filter>Elements\SoundSource</Filter>
-    </ClInclude>
-    <ClInclude Include="Mocks\Elements\ISoundSource.h">
-      <Filter>Mocks\Elements</Filter>
-    </ClInclude>
-    <ClInclude Include="Mocks\Sound\ISoundStorage.h">
-      <Filter>Mocks\Sound</Filter>
-    </ClInclude>
-    <ClInclude Include="Mocks\Sound\ISound.h">
-      <Filter>Mocks\Sound</Filter>
-    </ClInclude>
-    <ClInclude Include="Elements\Remastered\INgPlusSwitcher.h">
-      <Filter>Elements\Remastered</Filter>
-    </ClInclude>
-    <ClInclude Include="Elements\Remastered\NgPlusSwitcher.h">
-      <Filter>Elements\Remastered</Filter>
-    </ClInclude>
-    <ClInclude Include="Mocks\Elements\INgPlusSwitcher.h">
-      <Filter>Mocks\Elements</Filter>
-    </ClInclude>
-    <ClInclude Include="Windows\AutoHider.h">
-      <Filter>Windows</Filter>
-    </ClInclude>
-    <ClInclude Include="Windows\About\IAboutWindow.h">
-      <Filter>Windows\About</Filter>
-    </ClInclude>
-    <ClInclude Include="Windows\About\IAboutWindowManager.h">
-      <Filter>Windows\About</Filter>
-    </ClInclude>
-    <ClInclude Include="Windows\About\AboutWindow.h">
-      <Filter>Windows\About</Filter>
-    </ClInclude>
-    <ClInclude Include="Windows\About\AboutWindowManager.h">
-      <Filter>Windows\About</Filter>
-    </ClInclude>
-    <ClInclude Include="Mocks\Windows\IAboutWindow.h">
-      <Filter>Mocks\Windows</Filter>
-    </ClInclude>
-    <ClInclude Include="Mocks\Windows\IAboutWindowManager.h">
-      <Filter>Mocks\Windows</Filter>
-    </ClInclude>
-    <ClInclude Include="Windows\Diff\IDiffWindowManager.h">
-      <Filter>Windows\Diff</Filter>
-    </ClInclude>
-    <ClInclude Include="Windows\Diff\DiffWindowManager.h">
-      <Filter>Windows\Diff</Filter>
-    </ClInclude>
-    <ClInclude Include="Windows\Diff\IDiffWindow.h">
-      <Filter>Windows\Diff</Filter>
-    </ClInclude>
-    <ClInclude Include="Windows\Diff\DiffWindow.h">
-      <Filter>Windows\Diff</Filter>
-    </ClInclude>
-    <ClInclude Include="Mocks\Windows\IDiffWindowManager.h">
-      <Filter>Mocks\Windows</Filter>
-    </ClInclude>
-    <ClInclude Include="Mocks\Windows\IDiffWindow.h">
-      <Filter>Mocks\Windows</Filter>
-    </ClInclude>
-    <ClInclude Include="Menus\ImGuiFileMenu.h">
-      <Filter>Menus</Filter>
-    </ClInclude>
-    <ClInclude Include="Settings\PluginSetting.h">
-      <Filter>Settings</Filter>
-    </ClInclude>
-    <ClInclude Include="Windows\Pack\IPackWindow.h">
-      <Filter>Windows\Pack</Filter>
-    </ClInclude>
-    <ClInclude Include="Windows\Pack\PackWindow.h">
-      <Filter>Windows\Pack</Filter>
-    </ClInclude>
-    <ClInclude Include="Windows\Pack\IPackWindowManager.h">
-      <Filter>Windows\Pack</Filter>
-    </ClInclude>
-    <ClInclude Include="Windows\Pack\PackWindowManager.h">
-      <Filter>Windows\Pack</Filter>
-    </ClInclude>
-    <ClInclude Include="Mocks\Windows\IPackWindowManager.h">
-      <Filter>Mocks\Windows</Filter>
-    </ClInclude>
-    <ClInclude Include="Mocks\Windows\IPackWindow.h">
-      <Filter>Mocks\Windows</Filter>
-    </ClInclude>
-    <ClInclude Include="Geometry\Model\IModel.h">
-      <Filter>Geometry\Model</Filter>
-    </ClInclude>
-    <ClInclude Include="Geometry\Model\Model.h">
-      <Filter>Geometry\Model</Filter>
-    </ClInclude>
-    <ClInclude Include="Geometry\Model\IModelStorage.h">
-      <Filter>Geometry\Model</Filter>
-    </ClInclude>
-    <ClInclude Include="Geometry\Model\ModelStorage.h">
-      <Filter>Geometry\Model</Filter>
-    </ClInclude>
-    <ClInclude Include="Mocks\Geometry\IModelStorage.h">
-      <Filter>Mocks\Geometry</Filter>
-    </ClInclude>
-    <ClInclude Include="Elements\Flyby\IFlyby.h">
-      <Filter>Elements\Flyby</Filter>
-    </ClInclude>
-    <ClInclude Include="Elements\Flyby\Flyby.h">
-      <Filter>Elements\Flyby</Filter>
-    </ClInclude>
-    <ClInclude Include="Mocks\Elements\IFlyby.h">
-      <Filter>Mocks\Elements</Filter>
-    </ClInclude>
-    <ClInclude Include="Elements\Flyby\IFlybyNode.h">
-      <Filter>Elements\Flyby</Filter>
-    </ClInclude>
-    <ClInclude Include="Elements\Flyby\FlybyNode.h">
-      <Filter>Elements\Flyby</Filter>
-    </ClInclude>
-    <ClInclude Include="Mocks\Elements\IFlybyNode.h">
-      <Filter>Mocks\Elements</Filter>
-    </ClInclude>
+    <ClInclude Include="Mocks\IApplication.h" Filter="Mocks" />
+    <ClInclude Include="Lua\ILua.h" Filter="Lua" />
+    <ClInclude Include="Mocks\Lua\ILua.h" Filter="Mocks\Lua" />
+    <ClInclude Include="Elements\ISector.hpp" Filter="Elements\Sector" />
+    <ClInclude Include="Plugins\IPlugins.h" Filter="Plugins" />
+    <ClInclude Include="Plugins\Plugins.h" Filter="Plugins" />
+    <ClInclude Include="Mocks\Plugins\IPlugins.h" Filter="Mocks\Plugins" />
+    <ClInclude Include="Plugins\IPlugin.h" Filter="Plugins" />
+    <ClInclude Include="Plugins\Plugin.h" Filter="Plugins" />
+    <ClInclude Include="Mocks\Plugins\IPlugin.h" Filter="Mocks\Plugins" />
+    <ClInclude Include="Windows\Plugins\IPluginsWindow.h" Filter="Windows\Plugins" />
+    <ClInclude Include="Windows\Plugins\IPluginsWindowManager.h" Filter="Windows\Plugins" />
+    <ClInclude Include="Windows\Plugins\PluginsWindowManager.h" Filter="Windows\Plugins" />
+    <ClInclude Include="Windows\Plugins\PluginsWindow.h" Filter="Windows\Plugins" />
+    <ClInclude Include="Mocks\Windows\IPluginsWindow.h" Filter="Mocks\Windows" />
+    <ClInclude Include="Mocks\Windows\IPluginsWindowManager.h" Filter="Mocks\Windows" />
+    <ClInclude Include="Lua\Elements\StaticMesh\Lua_StaticMesh.h" Filter="Lua\Elements\StaticMesh" />
+    <ClInclude Include="Elements\IStaticMesh.h" Filter="Elements\StaticMesh" />
+    <ClInclude Include="Elements\StaticMesh.h" Filter="Elements\StaticMesh" />
+    <ClInclude Include="Lua\BoundingBox.h" Filter="Lua" />
+    <ClInclude Include="Tools\IToolbar.h" Filter="Tools" />
+    <ClInclude Include="Mocks\Tools\IToolbar.h" Filter="Mocks\Tools" />
+    <ClInclude Include="Lua\Route\Lua_Route.h" Filter="Lua\Route" />
+    <ClInclude Include="Lua\Route\Lua_Waypoint.h" Filter="Lua\Route" />
+    <ClInclude Include="Routing\RandomizerRoute.h" Filter="Routing" />
+    <ClInclude Include="Routing\IRandomizerRoute.h" Filter="Routing" />
+    <ClInclude Include="Mocks\Routing\IRandomizerRoute.h" Filter="Mocks\Routing" />
+    <ClInclude Include="Elements\TypeInfo.h" Filter="Elements" />
+    <ClInclude Include="Windows\RowCounter.h" Filter="Windows" />
+    <ClInclude Include="Settings\FontSetting.h" Filter="Settings" />
+    <ClInclude Include="UI\Fonts\IFonts.h" Filter="UI\Fonts" />
+    <ClInclude Include="UI\Fonts\Fonts.h" Filter="UI\Fonts" />
+    <ClInclude Include="Mocks\UI\IFonts.h" Filter="Mocks\UI" />
+    <ClInclude Include="Windows\Statics\IStaticsWindowManager.h" Filter="Windows\Statics" />
+    <ClInclude Include="Windows\Statics\IStaticsWindow.h" Filter="Windows\Statics" />
+    <ClInclude Include="Windows\Statics\StaticsWindowManager.h" Filter="Windows\Statics" />
+    <ClInclude Include="Windows\Statics\StaticsWindow.h" Filter="Windows\Statics" />
+    <ClInclude Include="Mocks\Windows\IStaticsWindow.h" Filter="Mocks\Windows" />
+    <ClInclude Include="Mocks\Windows\IStaticsWindowManager.h" Filter="Mocks\Windows" />
+    <ClInclude Include="Windows\IWindows.h" Filter="Windows" />
+    <ClInclude Include="Windows\Windows.h" Filter="Windows" />
+    <ClInclude Include="Mocks\Windows\IWindows.h" Filter="Mocks\Windows" />
+    <ClInclude Include="Lua\Scriptable\Scriptable.h" Filter="Lua\Scriptable" />
+    <ClInclude Include="Lua\Camera\Lua_Camera.h" Filter="Lua\Camera" />
+    <ClInclude Include="Lua\Scriptable\IScriptable.h" Filter="Lua\Scriptable" />
+    <ClInclude Include="Mocks\Lua\IScriptable.h" Filter="Mocks\Lua" />
+    <ClInclude Include="Sound\ISoundStorage.h" Filter="Sound" />
+    <ClInclude Include="Sound\SoundStorage.h" Filter="Sound" />
+    <ClInclude Include="Sound\ISound.h" Filter="Sound" />
+    <ClInclude Include="Sound\Sound.h" Filter="Sound" />
+    <ClInclude Include="Windows\Sounds\ISoundsWindow.h" Filter="Windows\Sounds" />
+    <ClInclude Include="Windows\Sounds\SoundsWindow.h" Filter="Windows\Sounds" />
+    <ClInclude Include="Windows\Sounds\ISoundsWindowManager.h" Filter="Windows\Sounds" />
+    <ClInclude Include="Windows\Sounds\SoundsWindowManager.h" Filter="Windows\Sounds" />
+    <ClInclude Include="Mocks\Windows\ISoundsWindow.h" Filter="Mocks\Windows" />
+    <ClInclude Include="Mocks\Windows\ISoundsWindowManager.h" Filter="Mocks\Windows" />
+    <ClInclude Include="Elements\SoundSource\ISoundSource.h" Filter="Elements\SoundSource" />
+    <ClInclude Include="Elements\SoundSource\SoundSource.h" Filter="Elements\SoundSource" />
+    <ClInclude Include="Mocks\Elements\ISoundSource.h" Filter="Mocks\Elements" />
+    <ClInclude Include="Mocks\Sound\ISoundStorage.h" Filter="Mocks\Sound" />
+    <ClInclude Include="Mocks\Sound\ISound.h" Filter="Mocks\Sound" />
+    <ClInclude Include="Elements\Remastered\INgPlusSwitcher.h" Filter="Elements\Remastered" />
+    <ClInclude Include="Elements\Remastered\NgPlusSwitcher.h" Filter="Elements\Remastered" />
+    <ClInclude Include="Mocks\Elements\INgPlusSwitcher.h" Filter="Mocks\Elements" />
+    <ClInclude Include="Windows\AutoHider.h" Filter="Windows" />
+    <ClInclude Include="Windows\About\IAboutWindow.h" Filter="Windows\About" />
+    <ClInclude Include="Windows\About\IAboutWindowManager.h" Filter="Windows\About" />
+    <ClInclude Include="Windows\About\AboutWindow.h" Filter="Windows\About" />
+    <ClInclude Include="Windows\About\AboutWindowManager.h" Filter="Windows\About" />
+    <ClInclude Include="Mocks\Windows\IAboutWindow.h" Filter="Mocks\Windows" />
+    <ClInclude Include="Mocks\Windows\IAboutWindowManager.h" Filter="Mocks\Windows" />
+    <ClInclude Include="Windows\Diff\IDiffWindowManager.h" Filter="Windows\Diff" />
+    <ClInclude Include="Windows\Diff\DiffWindowManager.h" Filter="Windows\Diff" />
+    <ClInclude Include="Windows\Diff\IDiffWindow.h" Filter="Windows\Diff" />
+    <ClInclude Include="Windows\Diff\DiffWindow.h" Filter="Windows\Diff" />
+    <ClInclude Include="Mocks\Windows\IDiffWindowManager.h" Filter="Mocks\Windows" />
+    <ClInclude Include="Mocks\Windows\IDiffWindow.h" Filter="Mocks\Windows" />
+    <ClInclude Include="Menus\ImGuiFileMenu.h" Filter="Menus" />
+    <ClInclude Include="Settings\PluginSetting.h" Filter="Settings" />
+    <ClInclude Include="Windows\Pack\IPackWindow.h" Filter="Windows\Pack" />
+    <ClInclude Include="Windows\Pack\PackWindow.h" Filter="Windows\Pack" />
+    <ClInclude Include="Windows\Pack\IPackWindowManager.h" Filter="Windows\Pack" />
+    <ClInclude Include="Windows\Pack\PackWindowManager.h" Filter="Windows\Pack" />
+    <ClInclude Include="Mocks\Windows\IPackWindowManager.h" Filter="Mocks\Windows" />
+    <ClInclude Include="Mocks\Windows\IPackWindow.h" Filter="Mocks\Windows" />
+    <ClInclude Include="Geometry\Model\IModel.h" Filter="Geometry\Model" />
+    <ClInclude Include="Geometry\Model\Model.h" Filter="Geometry\Model" />
+    <ClInclude Include="Geometry\Model\IModelStorage.h" Filter="Geometry\Model" />
+    <ClInclude Include="Geometry\Model\ModelStorage.h" Filter="Geometry\Model" />
+    <ClInclude Include="Mocks\Geometry\IModelStorage.h" Filter="Mocks\Geometry" />
+    <ClInclude Include="Elements\Flyby\IFlyby.h" Filter="Elements\Flyby" />
+    <ClInclude Include="Elements\Flyby\Flyby.h" Filter="Elements\Flyby" />
+    <ClInclude Include="Mocks\Elements\IFlyby.h" Filter="Mocks\Elements" />
+    <ClInclude Include="Elements\Flyby\IFlybyNode.h" Filter="Elements\Flyby" />
+    <ClInclude Include="Elements\Flyby\FlybyNode.h" Filter="Elements\Flyby" />
+    <ClInclude Include="Mocks\Elements\IFlybyNode.h" Filter="Mocks\Elements" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Windows">
@@ -1526,91 +673,39 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <Image Include="Resources\Files\tomb1.png">
-      <Filter>Resources\Files</Filter>
-    </Image>
-    <Image Include="small.ico">
-      <Filter>Resources\Files</Filter>
-    </Image>
-    <Image Include="Resources\Files\tomb3.png">
-      <Filter>Resources\Files</Filter>
-    </Image>
-    <Image Include="Resources\Files\tomb2.png">
-      <Filter>Resources\Files</Filter>
-    </Image>
-    <Image Include="Resources\Files\tomb5.png">
-      <Filter>Resources\Files</Filter>
-    </Image>
-    <Image Include="trview.ico">
-      <Filter>Resources\Files</Filter>
-    </Image>
-    <Image Include="Resources\Files\tomb4.png">
-      <Filter>Resources\Files</Filter>
-    </Image>
-    <Image Include="Resources\Files\unknown.png">
-      <Filter>Resources\Files</Filter>
-    </Image>
+    <Image Include="Resources\Files\tomb1.png" Filter="Resources\Files" />
+    <Image Include="small.ico" Filter="Resources\Files" />
+    <Image Include="Resources\Files\tomb3.png" Filter="Resources\Files" />
+    <Image Include="Resources\Files\tomb2.png" Filter="Resources\Files" />
+    <Image Include="Resources\Files\tomb5.png" Filter="Resources\Files" />
+    <Image Include="trview.ico" Filter="Resources\Files" />
+    <Image Include="Resources\Files\tomb4.png" Filter="Resources\Files" />
+    <Image Include="Resources\Files\unknown.png" Filter="Resources\Files" />
     <Image Include="Resources\Files\trview.ico" />
     <Image Include="Resources\Files\small.ico" />
-    <Image Include="Resources\Files\camera.png">
-      <Filter>Resources\Files</Filter>
-    </Image>
-    <Image Include="Resources\Files\sink.png">
-      <Filter>Resources\Files</Filter>
-    </Image>
-    <Image Include="Resources\Files\sound.png">
-      <Filter>Resources\Files</Filter>
-    </Image>
+    <Image Include="Resources\Files\camera.png" Filter="Resources\Files" />
+    <Image Include="Resources\Files\sink.png" Filter="Resources\Files" />
+    <Image Include="Resources\Files\sound.png" Filter="Resources\Files" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\Generated\level_pixel_shader.cso">
-      <Filter>Resources\Generated</Filter>
-    </None>
-    <None Include="Resources\Generated\level_vertex_shader.cso">
-      <Filter>Resources\Generated</Filter>
-    </None>
-    <None Include="Resources\Generated\selection_pixel_shader.cso">
-      <Filter>Resources\Generated</Filter>
-    </None>
-    <None Include="Resources\Generated\ui_pixel_shader.cso">
-      <Filter>Resources\Generated</Filter>
-    </None>
-    <None Include="Resources\Generated\ui_vertex_shader.cso">
-      <Filter>Resources\Generated</Filter>
-    </None>
-    <None Include="Resources\Files\Fonts\arial7.bin">
-      <Filter>Resources\Files\Fonts</Filter>
-    </None>
-    <None Include="Track\Track.inl">
-      <Filter>Track</Filter>
-    </None>
-    <None Include="Lua\Lua.inl">
-      <Filter>Lua</Filter>
-    </None>
-    <None Include="Elements\IStaticMesh.inl">
-      <Filter>Elements\StaticMesh</Filter>
-    </None>
-    <None Include="Windows\AutoHider.inl">
-      <Filter>Windows</Filter>
-    </None>
-    <None Include="Windows\CameraSink\CameraSinkWindow.inl">
-      <Filter>Windows\CameraSink</Filter>
-    </None>
+    <None Include="Resources\Generated\level_pixel_shader.cso" Filter="Resources\Generated" />
+    <None Include="Resources\Generated\level_vertex_shader.cso" Filter="Resources\Generated" />
+    <None Include="Resources\Generated\selection_pixel_shader.cso" Filter="Resources\Generated" />
+    <None Include="Resources\Generated\ui_pixel_shader.cso" Filter="Resources\Generated" />
+    <None Include="Resources\Generated\ui_vertex_shader.cso" Filter="Resources\Generated" />
+    <None Include="Resources\Files\Fonts\arial7.bin" Filter="Resources\Files\Fonts" />
+    <None Include="Track\Track.inl" Filter="Track" />
+    <None Include="Lua\Lua.inl" Filter="Lua" />
+    <None Include="Elements\IStaticMesh.inl" Filter="Elements\StaticMesh" />
+    <None Include="Windows\AutoHider.inl" Filter="Windows" />
+    <None Include="Windows\CameraSink\CameraSinkWindow.inl" Filter="Windows\CameraSink" />
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="Resources\trview.app.rc">
-      <Filter>Resources</Filter>
-    </ResourceCompile>
+    <ResourceCompile Include="Resources\trview.app.rc" Filter="Resources" />
   </ItemGroup>
   <ItemGroup>
-    <Text Include="Resources\Files\type_names.txt">
-      <Filter>Resources\Files</Filter>
-    </Text>
-    <Text Include="Resources\Files\ng_plus.json">
-      <Filter>Resources\Files</Filter>
-    </Text>
-    <Text Include="Resources\Files\actions.json">
-      <Filter>Resources\Files</Filter>
-    </Text>
+    <Text Include="Resources\Files\type_names.txt" Filter="Resources\Files" />
+    <Text Include="Resources\Files\ng_plus.json" Filter="Resources\Files" />
+    <Text Include="Resources\Files\actions.json" Filter="Resources\Files" />
   </ItemGroup>
 </Project>

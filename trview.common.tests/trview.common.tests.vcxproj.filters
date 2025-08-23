@@ -9,9 +9,7 @@
     <ClCompile Include="PointTests.cpp" />
     <ClCompile Include="ColourTests.cpp" />
     <ClCompile Include="stdafx.cpp" />
-    <ClCompile Include="Logs\LogTests.cpp">
-      <Filter>Logs</Filter>
-    </ClCompile>
+    <ClCompile Include="Logs\LogTests.cpp" Filter="Logs" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
