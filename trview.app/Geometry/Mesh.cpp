@@ -39,7 +39,7 @@ namespace trview
     }
 
     Mesh::Mesh(const std::shared_ptr<graphics::IDevice>& device, const std::vector<Triangle>& triangles, const std::shared_ptr<ITextureStorage>& texture_storage)
-        : _device(device), _texture_storage(texture_storage)
+        : _device(device), _texture_storage(texture_storage), _triangles(triangles)
     {
         if (!triangles.empty())
         {
@@ -306,6 +306,11 @@ namespace trview
             transparent_triangles.append_range(_animated_triangles | std::views::filter([](auto&& t) { return t.transparency_mode != Triangle::TransparencyMode::None; }));
         }
         return transparent_triangles;
+    }
+
+    std::vector<Triangle> Mesh::triangles() const
+    {
+        return _triangles;
     }
 
     const DirectX::BoundingBox& Mesh::bounding_box() const

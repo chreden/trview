@@ -8,7 +8,7 @@ namespace trview
     class Model final : public IModel
     {
     public:
-        explicit Model(const trlevel::tr_model& model, const std::vector<std::shared_ptr<IMesh>>& meshes, const std::vector<DirectX::SimpleMath::Matrix>& transforms);
+        explicit Model(const trlevel::tr_model& model, const std::vector<std::shared_ptr<IMesh>>& meshes, const std::vector<DirectX::SimpleMath::Matrix>& transforms, const std::weak_ptr<IMesh>& null_mesh, const std::weak_ptr<ITextureStorage>& texture_storage);
         virtual ~Model() = default;
         DirectX::BoundingBox bounding_box() const override;
         PickResult pick(const DirectX::SimpleMath::Matrix& world, const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& direction) const override;
@@ -17,12 +17,14 @@ namespace trview
         uint32_t type_id() const override;
     private:
         void generate_bounding_box();
+        void check_for_null_model(const std::weak_ptr<IMesh>& null_mesh, const std::weak_ptr<ITextureStorage>& texture_storage);
 
         std::vector<std::shared_ptr<IMesh>>       _meshes;
         std::vector<DirectX::SimpleMath::Matrix>  _world_transforms;
         DirectX::BoundingBox                      _bounding_box;
         std::vector<DirectX::BoundingOrientedBox> _oriented_boxes;
         trlevel::tr_model                         _model;
+        std::optional<graphics::Texture>          _null_texture;
     };
 }
 

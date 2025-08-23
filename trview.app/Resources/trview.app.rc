@@ -210,6 +210,7 @@ TOMB5_ICON          TEXTURE                     "Files\\tomb5.png"
 CAMERA_TEXTURE      TEXTURE                     "Files\\camera.png"
 SINK_TEXTURE        TEXTURE                     "Files\\sink.png"
 SOUND_TEXTURE       TEXTURE                     "Files\\sound.png"
+PLACEHOLDER_TEXTURE TEXTURE                     "Files\\placeholder.png"
 
 
 /////////////////////////////////////////////////////////////////////////////

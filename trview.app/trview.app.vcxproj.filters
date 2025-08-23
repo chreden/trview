@@ -686,6 +686,7 @@
     <Image Include="Resources\Files\camera.png" Filter="Resources\Files" />
     <Image Include="Resources\Files\sink.png" Filter="Resources\Files" />
     <Image Include="Resources\Files\sound.png" Filter="Resources\Files" />
+    <Image Include="Resources\Files\placeholder.png" Filter="Resources\Files" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Generated\level_pixel_shader.cso" Filter="Resources\Generated" />

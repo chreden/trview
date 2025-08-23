@@ -342,7 +342,7 @@ namespace trview
 
                 auto mesh_storage = std::make_shared<MeshStorage>(mesh_source, *level, *level_texture_storage);
 
-                auto model_source = [=](auto&&... args) { return std::make_shared<Model>(args...); };
+                auto model_source = [=](auto&&... args) { return std::make_shared<Model>(args..., cube_mesh, texture_storage); };
                 auto model_storage = std::make_shared<ModelStorage>(mesh_storage, model_source, *level);
                 auto new_level = std::make_shared<Level>(
                     device, 
