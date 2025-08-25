@@ -16,7 +16,6 @@ namespace trlevel
 {
     std::optional<uint16_t> get_skybox_id(PlatformAndVersion version)
     {
-        // TODO: Change this to ranges.
         auto raw_version = abs(version.raw_version);
         if (raw_version <= 42)
         {
@@ -48,20 +47,34 @@ namespace trlevel
             return static_cast<uint16_t>(355);
         }
 
-        switch (version.version)
+        if (raw_version == 129)
         {
-            case LevelVersion::Tomb4:
-            {
-                return static_cast<uint16_t>(459);
-            }
-            case LevelVersion::Tomb5:
-            {
-                if (is_tr5_version_223(version))
-                {
-                    return static_cast<uint16_t>(446);
-                }
-                return static_cast<uint16_t>(454);
-            }
+            return static_cast<uint16_t>(459);
+        }
+
+        if (raw_version == 209)
+        {
+            return static_cast<uint16_t>(387);
+        }
+
+        if (raw_version == 219)
+        {
+            return static_cast<uint16_t>(435);
+        }
+
+        if (raw_version == 223)
+        {
+            return static_cast<uint16_t>(446);
+        }
+
+        if (raw_version == 224)
+        {
+            return static_cast<uint16_t>(448);
+        }
+
+        if (raw_version == 225)
+        {
+            return static_cast<uint16_t>(454);
         }
 
         return std::nullopt;
