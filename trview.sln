@@ -129,6 +129,11 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "imgui_test_engine", "extern
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "freetype", "external\freetype\builds\windows\vc2010\freetype.vcxproj", "{78B079BD-9FC7-4B9E-B4A6-96DA0F00248B}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "formats", "formats", "{02EA681E-C7D8-13C7-8484-4AC65E1B71E8}"
+	ProjectSection(SolutionItems) = preProject
+		doc\formats\index.md = doc\formats\index.md
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -248,6 +253,7 @@ Global
 		{D6B95B54-7EBF-4D18-AE50-F82BD0B7CA62} = {B3A7F8A1-CC61-4082-BFF5-A072AF85754C}
 		{E6FAC6EF-4B54-45C4-9E76-3B063B51D4B9} = {14424861-057E-431A-97B1-0F482C6DD4E0}
 		{78B079BD-9FC7-4B9E-B4A6-96DA0F00248B} = {14424861-057E-431A-97B1-0F482C6DD4E0}
+		{02EA681E-C7D8-13C7-8484-4AC65E1B71E8} = {B3A7F8A1-CC61-4082-BFF5-A072AF85754C}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {E1BD837F-81FB-40A7-879E-E411807799F4}
