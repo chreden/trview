@@ -178,5 +178,5 @@ namespace trlevel
         virtual std::vector<tr4_flyby_camera> flyby_cameras() const = 0;
     };
 
-    uint32_t get_skybox_id(PlatformAndVersion version);
+    std::optional<uint16_t> get_skybox_id(PlatformAndVersion version);
 }

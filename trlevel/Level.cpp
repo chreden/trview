@@ -14,36 +14,57 @@
 
 namespace trlevel
 {
-    uint32_t get_skybox_id(PlatformAndVersion version)
+    std::optional<uint16_t> get_skybox_id(PlatformAndVersion version)
     {
+        // TODO: Change this to ranges.
+        auto raw_version = abs(version.raw_version);
+        if (raw_version <= 42)
+        {
+            return std::nullopt;
+        }
+
+        if (raw_version < 45)
+        {
+            return static_cast<uint16_t>(254);
+        }
+
+        if (raw_version == 45)
+        {
+            return static_cast<uint16_t>(255);
+        }
+
+        if (raw_version == 53)
+        {
+            return static_cast<uint16_t>(312);
+        }
+
+        if (raw_version == 55)
+        {
+            return static_cast<uint16_t>(315);
+        }
+
+        if (raw_version == 56)
+        {
+            return static_cast<uint16_t>(355);
+        }
+
         switch (version.version)
         {
-            case LevelVersion::Tomb2:
-            {
-                return 254;
-            }
-            case LevelVersion::Tomb3:
-            {
-                if (is_tr3_ects(version))
-                {
-                    return 312;
-                }
-                if (is_tr3_demo_55(version))
-                {
-                    return 315;
-                }
-                return 355;
-            }
             case LevelVersion::Tomb4:
             {
-                return 459;
+                return static_cast<uint16_t>(459);
             }
             case LevelVersion::Tomb5:
             {
-                return 454;
+                if (is_tr5_version_223(version))
+                {
+                    return static_cast<uint16_t>(446);
+                }
+                return static_cast<uint16_t>(454);
             }
         }
-        return UINT_MAX;
+
+        return std::nullopt;
     }
 
     ILevel::~ILevel()

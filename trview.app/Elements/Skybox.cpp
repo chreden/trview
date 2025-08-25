@@ -13,7 +13,11 @@ namespace trview
         const std::weak_ptr<ILevelTextureStorage>& texture_storage)
         : _context(device->context()), _platform_and_version(platform_and_version)
     {
-        _model = model_storage.find_by_type_id(static_cast<uint16_t>(trlevel::get_skybox_id(platform_and_version)));
+        auto skybox_id = trlevel::get_skybox_id(platform_and_version);
+        if (skybox_id)
+        {
+            _model = model_storage.find_by_type_id(static_cast<uint16_t>(skybox_id.value()));
+        }
 
         D3D11_DEPTH_STENCIL_DESC stencil_desc;
         memset(&stencil_desc, 0, sizeof(stencil_desc));

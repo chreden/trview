@@ -1015,8 +1015,6 @@ namespace trlevel
         // Zones
         skip(file, static_cast<uint32_t>(boxes.size() * 20));
 
-        skip(file, 2); // TODO: Figure out
-
         _animated_textures = read_animated_textures(activity, file, callbacks);
         _entities = read_entities(activity, file, callbacks);
         read<int32_t>(file); // horizon colour
