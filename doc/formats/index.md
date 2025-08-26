@@ -12,6 +12,7 @@ Earliest version that TRView supports. The only example of this is the early ver
 
 ### Todo
 - [WAD](wad.md)
+- Floordata meanings
 
 ## Version 11
 
@@ -19,11 +20,17 @@ Earliest version that TRView supports. The only example of this is the early ver
 
 The 'May 1996' version of TR1.
 
+### Todo
+- Floordata meanings
+
 ## Version 21
 
 - [Version 21](version21.md)
 
 'July 1996' PC version of TR1.
+
+### Todo
+- Zones
 
 ## Version 26
 
