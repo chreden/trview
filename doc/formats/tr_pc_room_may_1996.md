@@ -8,7 +8,8 @@ Note this is not a fixed length structure.
 | ----------| -------------  |
 | `int32`   | X position |
 | `int32`   | Z position |
-| `?` | Todo: room mesh |
+| `uint32` | Number of data words for room mesh. See [Room Mesh (May 1996)](tr_pc_room_mesh_may_1996.md). |
+| `uint16`[n] | Room mesh data words |
 | `uint16` | Number of portals |
 | [tr_room_portal](tr_room_portal.md)[n] | Portals |
 | `uint16` | Number of Z sectors |
