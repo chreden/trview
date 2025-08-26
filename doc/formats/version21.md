@@ -29,20 +29,20 @@ The WAD and SWD files will be merged into the main file in later versions.
 | `uint8`[n] | Textile bytes ||
 | [tr_colour](tr_colour.md)[256] | 8-bit palette ||
 | `uint16` | Room count ||
-| [tr_pc_room_21](tr_pc_room_21.md)[n] | Rooms ||
+| [tr_pc_room_21](tr_pc_room_21.md)[n] | Rooms | :pencil2: |
 | `uint32` | Floordata length ||
 | `uint16` | Floordata ||
 | `uint32` | Number of cameras. ||
-| [tr_camera](tr_camera.md)[n] | Cameras ||
+| [tr_camera](tr_camera.md)[n] | Cameras | :sparkles: |
 | `uint32` | Number of boxes ||
 | [tr_box](tr_box.md)[n] | Boxes ||
 | `uint32` | Number of overlaps ||
 | `uint16`[n] | Overlaps ||
-| `uint32`[boxes * 4] | Zones* ||
+| `uint32`[boxes * 4] | Zones* | :sparkles: |
 | `uint32` | Number of animated texture ranges ||
 | [tr_animated_texture_range](tr_animated_texture_range.md) | Animated texture ranges ||
 | `uint32` | Number of entities ||
-| [tr_entity](tr_entity.md)[n] | Entities ||
+| [tr_entity](tr_entity.md)[n] | Entities | :pencil2: |
 | `uint8`[8192] | Light map ||
 
 ## .WAD Format
