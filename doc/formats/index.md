@@ -6,13 +6,22 @@ TRView has support for several older formats including some demos and other vers
 
 ## Version 9
 
-Earliest version that TRView supports. The only example of this is the early version of The Lost Valley in LEVEL3.TOM.
+- [Version 9](version9.md)
+
+Earliest version that TRView supports. The only example of this is the early version of The Lost Valley in LEVEL3.TOM in the May 1996 version of TR1.
+
+### Todo
+- [WAD](wad.md)
 
 ## Version 11
+
+- [Version 11](version11.md)
 
 The 'May 1996' version of TR1.
 
 ## Version 21
+
+- [Version 21](version21.md)
 
 'July 1996' PC version of TR1.
 
@@ -66,7 +75,11 @@ TR4 OPSM 90 demo. 436 models
 
 ## Version 121
 
-426 models
+426 models???
+
+## Version 124
+
+427 models.
 
 ## Version 126
 
@@ -74,7 +87,7 @@ TOM. 444 models.
 
 ## Version 129
 
-TR4 retail
+TR4 retail, 465 models.
 
 ## Version 201
 
