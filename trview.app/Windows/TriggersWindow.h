@@ -53,19 +53,15 @@ namespace trview
         bool render_triggers_window();
         void set_local_selected_trigger(const std::weak_ptr<ITrigger>& trigger);
         void setup_filters();
-        void filter_triggers();
-        std::optional<int> index_of_selected() const;
         void find_trigger_triggerers();
 
         std::string _id{ "Triggers 0" };
         std::vector<std::weak_ptr<IItem>> _all_items;
         std::vector<std::weak_ptr<ITrigger>> _all_triggers;
-        std::vector<std::weak_ptr<ITrigger>> _filtered_triggers;
 
         TokenStore _token_store;
         std::weak_ptr<IRoom> _current_room;
         /// Whether the room tracking filter has been applied.
-        bool _filter_applied{ false };
         bool _sync_trigger{ true };
         std::vector<TriggerCommandType> _selected_commands;
         std::shared_ptr<IClipboard> _clipboard;
@@ -85,7 +81,6 @@ namespace trview
         std::vector<Command> _local_selected_trigger_commands;
         std::vector<std::weak_ptr<IItem>> _local_selected_trigger_trigger_triggerers;
         Filters<ITrigger> _filters;
-        bool _need_filtering{ true };
         bool _force_sort{ false };
         Track<Type::Room> _track;
         AutoHider _auto_hider;
