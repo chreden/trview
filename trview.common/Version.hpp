@@ -4,6 +4,6 @@ namespace trview
 {
     constexpr std::string version()
     {
-        return "2.7.6";
+        return "2.7.7";
     }
 }

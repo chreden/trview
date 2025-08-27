@@ -164,8 +164,8 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_UK
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 2,7,6,0
- PRODUCTVERSION 2,7,6,0
+ FILEVERSION 2,7,7,0
+ PRODUCTVERSION 2,7,7,0
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -181,12 +181,12 @@ BEGIN
         BLOCK "080904b0"
         BEGIN
             VALUE "FileDescription", "TRView"
-            VALUE "FileVersion", "2.7.6.0"
+            VALUE "FileVersion", "2.7.7.0"
             VALUE "InternalName", "trview.exe"
             VALUE "LegalCopyright", "Copyright (C) chreden 2025"
             VALUE "OriginalFilename", "trview.exe"
             VALUE "ProductName", "TRView"
-            VALUE "ProductVersion", "2.7.6.0"
+            VALUE "ProductVersion", "2.7.7.0"
         END
     END
     BLOCK "VarFileInfo"
