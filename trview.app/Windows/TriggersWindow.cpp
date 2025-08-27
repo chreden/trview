@@ -57,14 +57,12 @@ namespace trview
 
         _token_store += _track.on_toggle<Type::Room>() += [&](bool value)
         {
-            _need_filtering = true;
             if (value)
             {
                 set_current_room(_current_room);
             }
             else
             {
-                _filter_applied = false;
                 set_triggers(_all_triggers);
             }
         };
@@ -88,7 +86,6 @@ namespace trview
         _all_commands = all_commands;
 
         setup_filters();
-        _need_filtering = true;
     }
 
     void TriggersWindow::clear_selected_trigger()
@@ -100,7 +97,6 @@ namespace trview
     void TriggersWindow::set_current_room(const std::weak_ptr<IRoom>& room)
     {
         _current_room = room;
-        _need_filtering = true;
     }
 
     void TriggersWindow::set_number(int32_t number)
@@ -209,7 +205,6 @@ namespace trview
                             _selected_commands.push_back(command.type);
                         }
                         _selected_command = command;
-                        _need_filtering = true;
                     }
 
                     if (is_selected)
@@ -220,8 +215,18 @@ namespace trview
                 ImGui::EndCombo();
             }
 
-            filter_triggers();
-            auto filtered_triggers = _filtered_triggers | std::views::transform([](auto&& t) { return t.lock(); }) | std::ranges::to<std::vector>();
+            auto filtered_triggers = 
+                _all_triggers | 
+                std::views::transform([](auto&& t) { return t.lock(); }) |
+                std::views::filter([&](auto&& t)
+                    {
+                        return !((_track.enabled<Type::Room>() && t->room().lock() != _current_room.lock() || !_filters.match(*t)) ||
+                                (!_selected_commands.empty() && !has_any_command(*t, _selected_commands)));
+                    }) |
+                std::ranges::to<std::vector>();
+
+            _auto_hider.apply(_all_triggers, filtered_triggers, _filters);
+
             RowCounter counter{ "trigger", _all_triggers.size() };
             _filters.render_table(filtered_triggers, _all_triggers, _selected_trigger, counter,
                 [&](auto&& trigger)
@@ -471,7 +476,6 @@ namespace trview
         {
             _local_selected_trigger_commands = selected_trigger->commands();
             find_trigger_triggerers();
-            _need_filtering = true;
         }
     }
 
@@ -584,46 +588,6 @@ namespace trview
         add_multi_getter(TriggerCommandType::ClearBodies);
         add_multi_getter(TriggerCommandType::Flyby);
         add_multi_getter(TriggerCommandType::Cutscene);
-    }
-
-    void TriggersWindow::filter_triggers()
-    {
-        if (!_need_filtering && !_filters.test_and_reset_changed() && !_auto_hider.changed())
-        {
-            return;
-        }
-
-        _filtered_triggers.clear();
-        std::copy_if(_all_triggers.begin(), _all_triggers.end(), std::back_inserter(_filtered_triggers),
-            [&](const auto& trigger)
-            {
-                const auto trigger_ptr = trigger.lock();
-                return !((_track.enabled<Type::Room>() && trigger_ptr->room().lock() != _current_room.lock() || !_filters.match(*trigger_ptr)) ||
-                         (!_selected_commands.empty() && !has_any_command(*trigger_ptr, _selected_commands)));
-            });
-        _need_filtering = false;
-        _force_sort = true;
-
-        _auto_hider.apply(_all_triggers, _filtered_triggers | std::views::transform([](auto&& t) { return t.lock(); }));
-    }
-
-    std::optional<int> TriggersWindow::index_of_selected() const
-    {
-        const auto selected = _selected_trigger.lock();
-        if (selected && _scroll_to_trigger)
-        {
-            const auto found = std::find_if(_filtered_triggers.begin(), _filtered_triggers.end(),
-                [&](auto&& t)
-                {
-                    auto t_l = t.lock();
-                    return t_l && t_l->number() == selected->number();
-                });
-            if (found != _filtered_triggers.end())
-            {
-                return static_cast<int>(found - _filtered_triggers.begin());
-            }
-        }
-        return std::nullopt;
     }
 
     bool TriggersWindow::VirtualCommand::operator == (const VirtualCommand& other) const noexcept
