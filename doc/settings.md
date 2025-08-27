@@ -5,6 +5,9 @@ The settings window allows you to change how parts of trview behave.
 ## General
 ![Settings - General](settings_general.png)
 
+## Visuals
+![Settings - Visuals](settings_visuals.png)
+
 ## Fonts
 ![Settings - Fonts](settings_fonts.png)
 

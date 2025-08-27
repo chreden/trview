@@ -1,6 +1,8 @@
 # Windows
 Aside from the [main 3D view](viewer.md) there are specialised windows for different elements of the level and route. These can be rearranged and dragged outside of the main view if desired.
 
+Tables in most windows can have their column order rearranged.
+
 ## [Camera/Sink](camerasinkwindow.md)
 Cameras and Sinks (underwater currents) share a data structure in the level so they share a window.
 ## [Items](itemswindow.md)
