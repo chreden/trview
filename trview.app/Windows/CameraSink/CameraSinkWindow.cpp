@@ -169,8 +169,9 @@ namespace trview
                     ImGui::EndTabItem();
                 }
 
-                if (ImGui::BeginTabItem("Flyby", 0, _go_to_details ? ImGuiTabItemFlags_SetSelected : ImGuiTabItemFlags_None))
+                if (ImGui::BeginTabItem("Flyby", 0, _go_to_flybys ? ImGuiTabItemFlags_SetSelected : ImGuiTabItemFlags_None))
                 {
+                    _go_to_flybys = false;
                     render_flyby_list();
                     ImGui::SameLine();
                     render_flyby_tab();
@@ -243,8 +244,8 @@ namespace trview
             if (current != selected_node->flyby().lock())
             {
                 set_local_selected_flyby(selected_node->flyby());
+                _go_to_flybys = true;
             }
-            _go_to_details = true;
         }
         _selected_node = flyby_node;
     }
@@ -584,8 +585,7 @@ namespace trview
 
         const float offset_y = 6;
         const float offset_x = 4;
-
-        const auto pos = ImGui::GetWindowPos() + ImGui::GetCursorPos() + ImVec2(offset_x, offset_y);
+        const auto pos = ImGui::GetWindowPos() + ImGui::GetCursorPos() + ImVec2(offset_x, offset_y) - ImVec2(0, ImGui::GetScrollY());
         const auto width = ImGui::GetWindowWidth() - ImGui::GetCursorPosX() - 20 - offset_x * 2;
 
         auto list = ImGui::GetWindowDrawList();
@@ -831,9 +831,8 @@ namespace trview
                     ImGui::EndTabItem();
                 }
 
-                if (ImGui::BeginTabItem("Details", 0, _go_to_details ? ImGuiTabItemFlags_SetSelected : ImGuiTabItemFlags_None))
+                if (ImGui::BeginTabItem("Details"))
                 {
-                    _go_to_details = false;
                     render_flyby_details();
                     ImGui::EndTabItem();
                 }
