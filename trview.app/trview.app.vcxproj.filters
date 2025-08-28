@@ -119,6 +119,7 @@
     <ClCompile Include="Messages\Messages.cpp" Filter="Messages" />
     <ClCompile Include="Elements\Level\LevelNameLookup.cpp" Filter="Elements\Level" />
     <ClCompile Include="Filters\Filters.cpp" Filter="Filters" />
+    <ClCompile Include="Elements\Portal\Portal.cpp" Filter="Elements\Portal" />
     <ClCompile Include="Elements\ElementFilters.cpp" Filter="Elements" />
     <ClCompile Include="Settings\UserSettingsPatches.cpp" Filter="Settings" />
     <ClCompile Include="Filters\FilterStore.cpp" Filter="Filters" />
@@ -362,6 +363,9 @@
     <ClInclude Include="Menus\LevelSortingMode.h" Filter="Menus" />
     <ClInclude Include="Menus\LevelSortingMode.hpp" Filter="Menus" />
     <ClInclude Include="Windows\IWindow.h" Filter="Windows" />
+    <ClInclude Include="Elements\Portal\IPortal.h" Filter="Elements\Portal" />
+    <ClInclude Include="Elements\Portal\Portal.h" Filter="Elements\Portal" />
+    <ClInclude Include="Mocks\Elements\IPortal.h" Filter="Mocks\Elements" />
     <ClInclude Include="Mocks\Windows\IWindow.h" Filter="Mocks\Windows" />
     <ClInclude Include="Filters\IFilterable.h" Filter="Filters" />
     <ClInclude Include="Elements\ElementFilters.h" Filter="Elements" />
@@ -598,6 +602,9 @@
     </Filter>
     <Filter Include="Elements\Flyby">
       <UniqueIdentifier>{52dec27a-a711-4587-9a97-4ae9bdb7a050}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Elements\Portal">
+      <UniqueIdentifier>{25931d9f-2166-459b-b2fb-b78b5c70b82d}</UniqueIdentifier>
     </Filter>
     <Filter Include="Messages">
       <UniqueIdentifier>{a047438d-5a92-49e4-b596-108105134baa}</UniqueIdentifier>

@@ -1,7 +1,7 @@
 #pragma once
 
 #include <memory>
-#include <trview.common/Event.h>
+#include <trlevel/trtypes.h>
 
 namespace trview
 {
@@ -16,6 +16,7 @@ namespace trview
     struct IWaypoint;
     struct IWindow;
     struct UserSettings;
+    struct IPortal;
 
     struct IWindows
     {

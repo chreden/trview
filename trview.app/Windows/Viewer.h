@@ -135,6 +135,9 @@ namespace trview
         void set_show_sound_sources(bool show);
         void set_ng_plus(bool show);
         void set_show_animation(bool show);
+        void set_show_portals(bool show);
+        void set_show_horizontal_portals(bool show);
+        void set_show_vertical_portals(bool show);
 
         template <typename T>
         std::shared_ptr<T> get_entity_and_sync_level(const std::weak_ptr<T>& entity);

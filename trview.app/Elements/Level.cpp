@@ -1767,6 +1767,24 @@ namespace trview
     {
         _show_animation = show;
     }
+    
+    void Level::set_show_portals(bool show)
+    {
+        _render_filters = set_flag(_render_filters, RenderFilter::Portals, show);
+        _regenerate_transparency = true;
+    }
+
+    void Level::set_show_horizontal_portals(bool show)
+    {
+        _render_filters = set_flag(_render_filters, RenderFilter::PortalsHorizontal, show);
+        _regenerate_transparency = true;
+    }
+
+    void Level::set_show_vertical_portals(bool show)
+    {
+        _render_filters = set_flag(_render_filters, RenderFilter::PortalsVertical, show);
+        _regenerate_transparency = true;
+    }
 
     void Level::receive_message(const Message& message)
     {
