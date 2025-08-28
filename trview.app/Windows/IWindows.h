@@ -2,6 +2,7 @@
 
 #include <memory>
 #include <trview.common/Event.h>
+#include <trlevel/trtypes.h>
 
 namespace trview
 {
@@ -18,6 +19,7 @@ namespace trview
     struct ITrigger;
     struct IWaypoint;
     struct UserSettings;
+    struct IPortal;
 
     struct IWindows
     {
@@ -61,5 +63,6 @@ namespace trview
         Event<std::weak_ptr<ISector>> on_sector_selected;
         Event<> on_route_window_created;
         Event<UserSettings> on_settings;
+        Event<std::weak_ptr<IPortal>> on_portal_selected;
     };
 }

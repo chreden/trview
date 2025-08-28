@@ -330,11 +330,16 @@ namespace trview
 
                 auto ngplus = std::make_shared<NgPlusSwitcher>(entity_source);
 
+                auto portal_source = [&](auto&&... args)
+                    {
+                        return std::make_shared<Portal>(args...);
+                    };
+
                 auto room_source = [=](const trlevel::ILevel& level, const trlevel::tr3_room& room,
                     const std::shared_ptr<ILevelTextureStorage>& texture_storage, const IMeshStorage& mesh_storage, uint32_t index, const std::weak_ptr<ILevel>& parent_level, uint32_t sector_base_index, const Activity& activity)
                     {
                         auto new_room = std::make_shared<Room>(room, mesh_source, texture_storage, index, parent_level, sampler_source);
-                        new_room->initialise(level, room, mesh_storage, static_mesh_source, static_mesh_position_source, sector_source, sector_base_index, activity);
+                        new_room->initialise(level, room, mesh_storage, static_mesh_source, static_mesh_position_source, sector_source, sector_base_index, portal_source, activity);
                         return new_room;
                     };
                 auto trigger_source = [=](auto&&... args) { return std::make_shared<Trigger>(args..., mesh_source); };

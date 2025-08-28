@@ -74,6 +74,9 @@ namespace trview
         toggles[Options::notes] = [](bool) {};
         toggles[Options::sound_sources] = [this](bool value) { set_show_sound_sources(value); };
         toggles[Options::ng_plus] = [this](bool value) { set_ng_plus(value); };
+        toggles[Options::portals_enabled] = [this](bool value) { set_show_portals(value); };
+        toggles[Options::horizontal_portals] = [this](bool value) { set_show_horizontal_portals(value); };
+        toggles[Options::vertical_portals] = [this](bool value) { set_show_vertical_portals(value); };
 
         const auto persist_toggle_value = [&](const std::string& name, bool value)
         {
@@ -779,6 +782,9 @@ namespace trview
         new_level->set_show_sound_sources(_ui->toggle(Options::sound_sources));
         new_level->set_ng_plus(_ui->toggle(Options::ng_plus));
         new_level->set_show_animation(_ui->toggle(Options::animation));
+        new_level->set_show_portals(_ui->toggle(Options::portals_enabled));
+        new_level->set_show_horizontal_portals(_ui->toggle(Options::horizontal_portals));
+        new_level->set_show_vertical_portals(_ui->toggle(Options::vertical_portals));
 
         // Set up the views.
         auto rooms = new_level->rooms();
@@ -1663,5 +1669,32 @@ namespace trview
             level->set_show_animation(show);
         }
         set_toggle(Options::animation, show);
+    }
+    
+    void Viewer::set_show_portals(bool show)
+    {
+        if (auto level = _level.lock())
+        {
+            level->set_show_portals(show);
+        }
+        set_toggle(Options::portals_enabled, show);
+    }
+
+    void Viewer::set_show_horizontal_portals(bool show)
+    {
+        if (auto level = _level.lock())
+        {
+            level->set_show_horizontal_portals(show);
+        }
+        set_toggle(Options::horizontal_portals, show);
+    }
+
+    void Viewer::set_show_vertical_portals(bool show)
+    {
+        if (auto level = _level.lock())
+        {
+            level->set_show_vertical_portals(show);
+        }
+        set_toggle(Options::vertical_portals, show);
     }
 }

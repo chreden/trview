@@ -132,6 +132,9 @@
     <ClCompile Include="Geometry\Model\ModelStorage.cpp" Filter="Geometry\Model" />
     <ClCompile Include="Elements\Flyby\Flyby.cpp" Filter="Elements\Flyby" />
     <ClCompile Include="Elements\Flyby\FlybyNode.cpp" Filter="Elements\Flyby" />
+    <ClCompile Include="Elements\Portal\Portal.cpp">
+      <Filter>Elements\Portal</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera\Camera.h" Filter="Camera" />
@@ -441,6 +444,15 @@
     <ClInclude Include="Elements\Flyby\IFlybyNode.h" Filter="Elements\Flyby" />
     <ClInclude Include="Elements\Flyby\FlybyNode.h" Filter="Elements\Flyby" />
     <ClInclude Include="Mocks\Elements\IFlybyNode.h" Filter="Mocks\Elements" />
+    <ClInclude Include="Elements\Portal\IPortal.h">
+      <Filter>Elements\Portal</Filter>
+    </ClInclude>
+    <ClInclude Include="Elements\Portal\Portal.h">
+      <Filter>Elements\Portal</Filter>
+    </ClInclude>
+    <ClInclude Include="Mocks\Elements\IPortal.h">
+      <Filter>Mocks\Elements</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Windows">
@@ -670,6 +682,9 @@
     </Filter>
     <Filter Include="Elements\Flyby">
       <UniqueIdentifier>{52dec27a-a711-4587-9a97-4ae9bdb7a050}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Elements\Portal">
+      <UniqueIdentifier>{25931d9f-2166-459b-b2fb-b78b5c70b82d}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

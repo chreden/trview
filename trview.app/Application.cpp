@@ -117,6 +117,9 @@ namespace trview
                     _level->set_map_colours(settings.map_colours);
                 }
             };
+        _token_store += _windows->on_portal_selected += [this](auto&&)
+            {
+            };
 
         _windows->setup(_settings);
         setup_viewer(*startup_options);

@@ -91,6 +91,7 @@ namespace trview
         _rooms_windows->on_settings += on_settings;
         _rooms_windows->on_static_mesh_selected += on_static_selected;
         _rooms_windows->on_trigger_selected += on_trigger_selected;
+        _rooms_windows->on_portal_selected += on_portal_selected;
 
         _route_window->on_waypoint_selected += on_waypoint_selected;
         _route_window->on_item_selected += on_item_selected;

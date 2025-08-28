@@ -63,6 +63,7 @@ namespace trview
             MOCK_METHOD(std::weak_ptr<ILevel>, level, (), (const, override));
             MOCK_METHOD(std::vector<std::weak_ptr<IStaticMesh>>, static_meshes, (), (const));
             MOCK_METHOD(void, update, (float), (override));
+            MOCK_METHOD(std::vector<std::weak_ptr<IPortal>>, portals, (), (const, override));
 
             bool _visible_state{ false };
 

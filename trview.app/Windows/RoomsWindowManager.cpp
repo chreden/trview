@@ -107,6 +107,7 @@ namespace trview
         rooms_window->on_camera_sink_selected += on_camera_sink_selected;
         rooms_window->on_static_mesh_selected += on_static_mesh_selected;
         rooms_window->on_settings += on_settings;
+        rooms_window->on_portal_selected += on_portal_selected;
         rooms_window->set_level_version(_level_version);
         rooms_window->set_items(_all_items);
         rooms_window->set_rooms(_all_rooms);

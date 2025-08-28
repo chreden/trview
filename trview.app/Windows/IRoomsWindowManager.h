@@ -22,6 +22,7 @@ namespace trview
         Event<std::weak_ptr<ICameraSink>> on_camera_sink_selected;
         Event<std::weak_ptr<IStaticMesh>> on_static_mesh_selected;
         Event<UserSettings> on_settings;
+        Event<std::weak_ptr<IPortal>> on_portal_selected;
 
         /// Render all of the rooms windows.
         virtual void render() = 0;

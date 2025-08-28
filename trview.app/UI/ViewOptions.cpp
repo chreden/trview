@@ -66,6 +66,8 @@ namespace trview
         _toggles[IViewer::Options::notes] = true;
         _toggles[IViewer::Options::sound_sources] = false;
         _toggles[IViewer::Options::ng_plus] = false;
+        _toggles[IViewer::Options::horizontal_portals] = false;
+        _toggles[IViewer::Options::vertical_portals] = false;
     }
 
     void ViewOptions::render()
@@ -97,16 +99,6 @@ namespace trview
                 add_toggle(IViewer::Options::rooms);
                 add_toggle(IViewer::Options::camera_sinks);
                 ImGui::TableNextRow();
-                add_toggle(IViewer::Options::depth_enabled);
-                ImGui::TableNextColumn();
-                ImGui::PushItemWidth(-1);
-                if (ImGui::InputInt(IViewer::Options::depth.c_str(), &_scalars[IViewer::Options::depth], 1, 10))
-                {
-                    _scalars[IViewer::Options::depth] = std::max(0, _scalars[IViewer::Options::depth]);
-                    on_scalar_changed(IViewer::Options::depth, _scalars[IViewer::Options::depth]);
-                }
-                ImGui::PopItemWidth();
-                ImGui::TableNextRow();
                 add_toggle(IViewer::Options::wireframe);
                 add_toggle(IViewer::Options::geometry);
                 ImGui::TableNextRow();
@@ -118,6 +110,60 @@ namespace trview
                 ImGui::TableNextRow();
                 ImGui::BeginDisabled(!_ng_plus_enabled); 
                 add_toggle(IViewer::Options::ng_plus);
+                ImGui::EndDisabled();
+
+                ImGui::TableNextRow();
+                add_toggle(IViewer::Options::depth_enabled);
+                ImGui::TableNextColumn();
+                ImGui::BeginDisabled(!_toggles[IViewer::Options::depth_enabled]);
+                ImGui::PushItemWidth(-1);
+                if (ImGui::InputInt(IViewer::Options::depth.c_str(), &_scalars[IViewer::Options::depth], 1, 10))
+                {
+                    _scalars[IViewer::Options::depth] = std::max(0, _scalars[IViewer::Options::depth]);
+                    on_scalar_changed(IViewer::Options::depth, _scalars[IViewer::Options::depth]);
+                }
+                ImGui::PopItemWidth();
+                ImGui::EndDisabled();
+
+                ImGui::TableNextRow();
+                add_toggle(IViewer::Options::portals_enabled);
+                ImGui::TableNextColumn();
+                ImGui::SetNextItemWidth(-1);
+
+                const bool horizontal_portals = _toggles[IViewer::Options::horizontal_portals];
+                const bool vertical_portals = _toggles[IViewer::Options::vertical_portals];
+                const std::string current_portal_option =
+                    (horizontal_portals && vertical_portals) ? "All" :
+                    horizontal_portals ? "Horizontal" :
+                    vertical_portals ? "Vertical" :
+                    "None";
+
+                ImGui::BeginDisabled(!_toggles[IViewer::Options::portals_enabled]);
+                if (ImGui::BeginCombo("##Portals", current_portal_option.c_str()))
+                {
+                    if (ImGui::Selectable("Horizontal"))
+                    {
+                        _toggles[IViewer::Options::horizontal_portals] = true;
+                        _toggles[IViewer::Options::vertical_portals] = false;
+                        on_toggle_changed(IViewer::Options::horizontal_portals, true);
+                        on_toggle_changed(IViewer::Options::vertical_portals, false);
+                    }
+                    if (ImGui::Selectable("Vertical"))
+                    {
+                        _toggles[IViewer::Options::horizontal_portals] = false;
+                        _toggles[IViewer::Options::vertical_portals] = true;
+                        on_toggle_changed(IViewer::Options::horizontal_portals, false);
+                        on_toggle_changed(IViewer::Options::vertical_portals, true);
+                    }
+                    if (ImGui::Selectable("All"))
+                    {
+                        _toggles[IViewer::Options::horizontal_portals] = true;
+                        _toggles[IViewer::Options::vertical_portals] = true;
+                        on_toggle_changed(IViewer::Options::horizontal_portals, true);
+                        on_toggle_changed(IViewer::Options::vertical_portals, true);
+                    }
+                    ImGui::EndCombo();
+                }
                 ImGui::EndDisabled();
                 ImGui::TableNextRow();
                 if (!_use_alternate_groups)
@@ -134,7 +180,7 @@ namespace trview
                             ImGui::Text("Click to toggle flip map, right click for filter options.");
                             ImGui::EndTooltip();
                         }
-                        show_room_filter(_rooms_window_manager, {{.key = "Alternate", .compare = CompareOp::Exists, .op = Op::And }});
+                        show_room_filter(_rooms_window_manager, { {.key = "Alternate", .compare = CompareOp::Exists, .op = Op::And } });
                     }
                 }
                 ImGui::EndTable();

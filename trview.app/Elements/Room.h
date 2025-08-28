@@ -14,6 +14,7 @@
 #include <trview.app/Geometry/IMesh.h>
 #include <trview.app/Elements/ISector.h>
 #include <trview.app/Geometry/PickResult.h>
+#include "Portal/IPortal.h"
 #include <trview.graphics/Texture.h>
 #include "IStaticMesh.h"
 #include "IRoom.h"
@@ -101,9 +102,11 @@ namespace trview
             const IStaticMesh::PositionSource& static_mesh_position_source,
             const ISector::Source& sector_source,
             uint32_t sector_base_index,
+            const IPortal::Source& portal_source,
             const Activity& activity);
         std::vector<std::weak_ptr<IStaticMesh>> static_meshes() const override;
         void update(float delta) override;
+        std::vector<std::weak_ptr<IPortal>> portals() const override;
     private:
         void generate_geometry(const IMesh::Source& mesh_source, const trlevel::tr3_room& room);
         void generate_adjacency();
@@ -114,15 +117,13 @@ namespace trview
         void generate_sectors(const trlevel::ILevel& level, const trlevel::tr3_room& room, const ISector::Source& sector_source, uint32_t sector_base_index);
         ISector* get_trigger_sector(int32_t x, int32_t z);
         uint32_t get_sector_id(int32_t x, int32_t z) const;
-
         /// Find any transparent triangles that match floor data geometry.
         /// @param transparent_triangles The transparent triangles in the sector.
         /// @param collision_triangles The collision output vector.
         void process_collision_transparency(std::vector<Triangle>& triangles);
-
         void generate_all_geometry_mesh(const IMesh::Source& mesh_source);
-
         void add_centroid_to_pick(const IMesh& mesh, PickResult& geometry_result) const;
+        void generate_portals(const IPortal::Source& portal_source, const trlevel::tr3_room& room);
 
         RoomInfo                           _info;
         std::set<uint16_t>                 _neighbours;
@@ -169,5 +170,6 @@ namespace trview
 
         std::shared_ptr<graphics::ISamplerState> _geometry_sampler_state;
         std::shared_ptr<graphics::ISamplerState> _sampler_state;
+        std::vector<std::shared_ptr<IPortal>> _portals;
     };
 }

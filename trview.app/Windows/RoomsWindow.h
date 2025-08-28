@@ -75,6 +75,7 @@ namespace trview
         void select_room(std::weak_ptr<IRoom> room);
         void render_statics_tab();
         void set_static_meshes(const std::vector<std::weak_ptr<IStaticMesh>>& static_meshes);
+        void render_portals_tab();
 
         std::vector<std::weak_ptr<IRoom>> _all_rooms;
         std::vector<std::weak_ptr<IItem>> _all_items;

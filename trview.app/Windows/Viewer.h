@@ -138,6 +138,9 @@ namespace trview
         void set_show_sound_sources(bool show);
         void set_ng_plus(bool show);
         void set_show_animation(bool show);
+        void set_show_portals(bool show);
+        void set_show_horizontal_portals(bool show);
+        void set_show_vertical_portals(bool show);
 
         const std::shared_ptr<graphics::IDevice> _device;
         const std::shared_ptr<IShortcuts>& _shortcuts;

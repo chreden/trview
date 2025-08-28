@@ -1627,6 +1627,27 @@ namespace trview
     {
         _show_animation = show;
     }
+    
+    void Level::set_show_portals(bool show)
+    {
+        _render_filters = set_flag(_render_filters, RenderFilter::Portals, show);
+        _regenerate_transparency = true;
+        on_level_changed();
+    }
+
+    void Level::set_show_horizontal_portals(bool show)
+    {
+        _render_filters = set_flag(_render_filters, RenderFilter::PortalsHorizontal, show);
+        _regenerate_transparency = true;
+        on_level_changed();
+    }
+
+    void Level::set_show_vertical_portals(bool show)
+    {
+        _render_filters = set_flag(_render_filters, RenderFilter::PortalsVertical, show);
+        _regenerate_transparency = true;
+        on_level_changed();
+    }
 
     bool find_item_by_type_id(const ILevel& level, uint32_t type_id, std::weak_ptr<IItem>& output_item)
     {

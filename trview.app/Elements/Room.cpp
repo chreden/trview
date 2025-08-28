@@ -5,6 +5,7 @@
 #include <trview.common/Algorithms.h>
 #include <format>
 #include <trview.common/Logs/Activity.h>
+#include <ranges>
 
 using namespace DirectX::SimpleMath;
 
@@ -80,12 +81,13 @@ namespace trview
 
     void Room::initialise(const trlevel::ILevel& level, const trlevel::tr3_room& room, const IMeshStorage& mesh_storage,
         const IStaticMesh::MeshSource& static_mesh_mesh_source, const IStaticMesh::PositionSource& static_mesh_position_source,
-        const ISector::Source& sector_source, uint32_t sector_base_index, const Activity& activity)
+        const ISector::Source& sector_source, uint32_t sector_base_index, const IPortal::Source& portal_source, const Activity& activity)
     {
         generate_sectors(level, room, sector_source, sector_base_index);
         generate_geometry(_mesh_source, room);
         generate_adjacency();
         generate_static_meshes(_mesh_source, level, room, mesh_storage, static_mesh_mesh_source, static_mesh_position_source, activity);
+        generate_portals(portal_source, room);
     }
 
     RoomInfo Room::info() const
@@ -501,6 +503,19 @@ namespace trview
                 if (auto trigger = trigger_pair.second.lock())
                 {
                     trigger->get_transparent_triangles(transparency, camera, trigger->colour());
+                }
+            }
+        }
+
+        if (has_flag(render_filter, RenderFilter::Portals) &&
+            has_any_flag(render_filter, RenderFilter::PortalsHorizontal, RenderFilter::PortalsVertical))
+        {
+            for (const auto& portal : _portals)
+            {
+                if ((has_flag(render_filter, RenderFilter::PortalsHorizontal) && portal->normal().y == 0) ||
+                    (has_flag(render_filter, RenderFilter::PortalsVertical) && portal->normal().y != 0))
+                {
+                    portal->get_transparent_triangles(transparency, camera);
                 }
             }
         }
@@ -1167,6 +1182,21 @@ namespace trview
         if (_mesh)
         {
             _mesh->update(delta);
+        }
+    }
+
+    std::vector<std::weak_ptr<IPortal>> Room::portals() const
+    {
+        return _portals | std::ranges::to<std::vector<std::weak_ptr<IPortal>>>();
+    }
+
+    void Room::generate_portals(const IPortal::Source& portal_source, const trlevel::tr3_room& room)
+    {
+        if (auto level = _level.lock())
+        {
+            const float offset_y = level->platform_and_version().platform == trlevel::Platform::PSX ? static_cast<float>(room.info.yTop) : 0.0f;
+            const auto offset = DirectX::SimpleMath::Vector3 { static_cast<float>(room.info.x), offset_y, static_cast<float>(room.info.z) } / trlevel::Scale;
+            _portals = room.portals | std::views::transform([&](auto&& p) { return portal_source(p, offset); }) | std::ranges::to<std::vector>();
         }
     }
 

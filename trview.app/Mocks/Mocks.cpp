@@ -14,6 +14,7 @@
 #include "Elements/ISoundSource.h"
 #include "Elements/ITrigger.h"
 #include "Elements/ITypeInfoLookup.h"
+#include "Elements/IPortal.h"
 #include "Geometry/IMesh.h"
 #include "Geometry/IPicking.h"
 #include "Geometry/ITransparencyBuffer.h"
@@ -321,5 +322,8 @@ namespace trview
 
         MockFlybyNode::MockFlybyNode() {};
         MockFlybyNode::~MockFlybyNode() {};
+
+        MockPortal::MockPortal() {};
+        MockPortal::~MockPortal() {};
     }
 }
