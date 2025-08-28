@@ -93,7 +93,7 @@ namespace trview
         IFlyby::CameraState _state;
         std::optional<IFlyby::CameraState> _initial_state;
         trlevel::PlatformAndVersion _platform_and_version;
-        bool _go_to_details{ false };
+        bool _go_to_flybys{ false };
     };
 }
 
