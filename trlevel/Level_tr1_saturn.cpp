@@ -1255,7 +1255,7 @@ namespace trlevel
             uint32_t index = to_le(read<uint32_t>(file));
             index;
             uint32_t count = to_le(read<uint32_t>(file));
-            if (count != 16)
+            if (count != 0 && count != 16)
             {
                 auto data = read_vector<uint8_t>(file, count);
 
@@ -1295,7 +1295,7 @@ namespace trlevel
             }
             else
             {
-                skip(file, 16);
+                skip(file, count);
                 _sound_samples.push_back({});
             }
         };
