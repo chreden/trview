@@ -167,7 +167,7 @@ namespace trview
         int16_t _ambient_intensity_2;
         int16_t _light_mode;
 
-        std::shared_ptr<graphics::ISamplerState> _room_sampler_state;
-        std::shared_ptr<graphics::ISamplerState> _object_sampler_state;
+        std::shared_ptr<graphics::ISamplerState> _geometry_sampler_state;
+        std::shared_ptr<graphics::ISamplerState> _sampler_state;
     };
 }

@@ -1529,6 +1529,7 @@ namespace trview
     {
         if (!sector)
         {
+            _sector_highlight->set_sector(nullptr, Matrix::Identity);
             return;
         }
 
