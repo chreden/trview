@@ -37,6 +37,8 @@
 #include <trview.app/Windows/IViewer.h>
 #include <trview.common/Windows/IClipboard.h>
 
+#include <trview.graphics/Sampler/ISamplerState.h>
+
 namespace trview
 {
     /// Class that coordinates all the parts of the application.
@@ -60,7 +62,8 @@ namespace trview
             const graphics::IDeviceWindow::Source& device_window_source,
             std::unique_ptr<ISectorHighlight> sector_highlight,
             const std::shared_ptr<IClipboard>& clipboard,
-            const std::shared_ptr<ICamera>& camera);
+            const std::shared_ptr<ICamera>& camera,
+            const graphics::ISamplerState::Source& sampler_source);
         virtual ~Viewer() = default;
         std::weak_ptr<ICamera> camera() const override;
         virtual ICamera::Mode camera_mode() const override;
@@ -181,6 +184,7 @@ namespace trview
 
         Point _previous_mouse_pos;
         bool _camera_moved{ false };
+        graphics::ISamplerState::Source _sampler_source;
     };
 }
 

@@ -269,11 +269,33 @@ namespace trview
             };
         auto trlevel_source = [=](auto&&... args) { return std::make_shared<trlevel::Level>(args..., files, decrypter, log, pack_source); };
 
+        D3D11_SAMPLER_DESC sampler_desc;
+        memset(&sampler_desc, 0, sizeof(sampler_desc));
+        sampler_desc.Filter = settings_loader->load_user_settings().linear_filtering ? D3D11_FILTER_MIN_MAG_MIP_LINEAR : D3D11_FILTER_MIN_MAG_MIP_POINT;
+        sampler_desc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
+        sampler_desc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
+        sampler_desc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
+        sampler_desc.MaxAnisotropy = 1;
+        sampler_desc.ComparisonFunc = D3D11_COMPARISON_ALWAYS;
+        sampler_desc.MaxLOD = D3D11_FLOAT32_MAX;
+        auto wrap_sampler_state = std::make_shared<graphics::SamplerState>(device, device->create_sampler_state(sampler_desc));
+
+        sampler_desc.AddressU = D3D11_TEXTURE_ADDRESS_CLAMP;
+        sampler_desc.AddressV = D3D11_TEXTURE_ADDRESS_CLAMP;
+        sampler_desc.AddressW = D3D11_TEXTURE_ADDRESS_CLAMP;
+        auto clamp_sampler_state = std::make_shared<graphics::SamplerState>(device, device->create_sampler_state(sampler_desc));
+
+        auto sampler_source = [=](graphics::ISamplerState::AddressMode mode)
+            {
+                return mode == graphics::ISamplerState::AddressMode::Wrap ?
+                    wrap_sampler_state : clamp_sampler_state;
+            };
+
         auto level_source = [=](auto&& filename, auto&& pack, auto&& callbacks)
             {
                 auto level = trlevel_source(filename, pack);
-
                 auto level_texture_storage = std::make_shared<LevelTextureStorage>(device, std::make_unique<TextureStorage>(device));
+
                 int count = 0;
                 callbacks.on_textile_callback = [&](auto&& textile, auto&& width, auto&& height)
                     {
@@ -307,29 +329,6 @@ namespace trview
                     };
 
                 auto ngplus = std::make_shared<NgPlusSwitcher>(entity_source);
-
-
-                D3D11_SAMPLER_DESC sampler_desc;
-                memset(&sampler_desc, 0, sizeof(sampler_desc));
-                sampler_desc.Filter = D3D11_FILTER_MIN_MAG_MIP_POINT;
-                sampler_desc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
-                sampler_desc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
-                sampler_desc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
-                sampler_desc.MaxAnisotropy = 1;
-                sampler_desc.ComparisonFunc = D3D11_COMPARISON_ALWAYS;
-                sampler_desc.MaxLOD = D3D11_FLOAT32_MAX;
-                auto room_sampler_state = std::make_shared<graphics::SamplerState>(device->context(), device->create_sampler_state(sampler_desc));
-
-                sampler_desc.AddressU = D3D11_TEXTURE_ADDRESS_CLAMP;
-                sampler_desc.AddressV = D3D11_TEXTURE_ADDRESS_CLAMP;
-                sampler_desc.AddressW = D3D11_TEXTURE_ADDRESS_CLAMP;
-                auto object_sampler_state = std::make_shared<graphics::SamplerState>(device->context(), device->create_sampler_state(sampler_desc));
-
-                auto sampler_source = [&](graphics::ISamplerState::AddressMode mode)
-                    {
-                        return mode == graphics::ISamplerState::AddressMode::Wrap ?
-                            room_sampler_state : object_sampler_state;
-                    };
 
                 auto room_source = [=](const trlevel::ILevel& level, const trlevel::tr3_room& room,
                     const std::shared_ptr<ILevelTextureStorage>& texture_storage, const IMeshStorage& mesh_storage, uint32_t index, const std::weak_ptr<ILevel>& parent_level, uint32_t sector_base_index, const Activity& activity)
@@ -418,7 +417,8 @@ namespace trview
             device_window_source,
             std::make_unique<SectorHighlight>(default_mesh_source),
             clipboard,
-            camera);
+            camera,
+            sampler_source);
 
         auto triggers_window_source = [=]() { return std::make_shared<TriggersWindow>(clipboard); };
         auto route_window_source = [=]() { return std::make_shared<RouteWindow>(clipboard, dialogs, files); };

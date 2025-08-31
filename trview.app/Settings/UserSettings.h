@@ -79,6 +79,7 @@ namespace trview
         std::vector<std::string> flyby_columns{ "#", "Hide" };
         std::vector<std::string> flyby_node_columns{ "#", "Room" };
         bool animated_textures{ true };
+        bool linear_filtering{ false };
 
         bool operator==(const UserSettings& other) const;
     };

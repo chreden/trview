@@ -13,6 +13,7 @@ namespace trview
                 MockSamplerState();
                 virtual ~MockSamplerState();
                 MOCK_METHOD(void, apply, (), (override));
+                MOCK_METHOD(void, set_filter_mode, (FilterMode), (override));
             };
         }
     }

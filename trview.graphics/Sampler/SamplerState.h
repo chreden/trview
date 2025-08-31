@@ -9,16 +9,19 @@ namespace trview
 {
     namespace graphics
     {
+        struct IDevice;
+
         class SamplerState final : public ISamplerState
         {
         public:
             SamplerState(
-                const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context,
+                const std::weak_ptr<IDevice>& device,
                 const Microsoft::WRL::ComPtr<ID3D11SamplerState>& sampler_state);
             virtual ~SamplerState() = default;
             void apply() override;
+            void set_filter_mode(FilterMode mode) override;
         private:
-            Microsoft::WRL::ComPtr<ID3D11DeviceContext> _context;
+            std::weak_ptr<IDevice> _device;
             Microsoft::WRL::ComPtr<ID3D11SamplerState> _sampler_state;
         };
     }

@@ -74,7 +74,7 @@ namespace trview
             _token_store += parent->on_geometry_colours_changed += [&]() { _all_geometry_meshes.clear(); };
         }
 
-        _room_sampler_state = sampler_source(graphics::ISamplerState::AddressMode::Wrap);
+        _room_sampler_state = sampler_source(graphics::ISamplerState::AddressMode::Clamp);
         _object_sampler_state = sampler_source(graphics::ISamplerState::AddressMode::Clamp);
     }
 
