@@ -23,6 +23,7 @@
 #include <trview.common/Mocks/Windows/IClipboard.h>
 #include <trview.app/Mocks/Elements/ISector.h>
 #include <trview.app/Mocks/Elements/ISoundSource.h>
+#include <trview.graphics/Mocks/ISamplerState.h>
 
 #include <trview.tests.common/Event.h>
 
@@ -147,13 +148,14 @@ namespace
             std::unique_ptr<ISectorHighlight> sector_highlight{ mock_unique<MockSectorHighlight>() };
             std::shared_ptr<IClipboard> clipboard{ mock_shared<MockClipboard>() };
             std::shared_ptr<MockCamera> camera{ mock_shared<MockCamera>() };
+            ISamplerState::Source sampler_source{ [](auto&&...) { return mock_shared<MockSamplerState>(); } };
 
             std::unique_ptr<Viewer> build()
             {
                 EXPECT_CALL(*shortcuts, add_shortcut).WillRepeatedly([&](auto, auto) -> Event<>&{ return shortcut_handler; });
                 ON_CALL(*camera, idle_rotation).WillByDefault(Return(true));
                 return std::make_unique<Viewer>(window, device, std::move(ui), std::move(picking), std::move(mouse), shortcuts, route, sprite_source,
-                    std::move(compass), std::move(measure), render_target_source, device_window_source, std::move(sector_highlight), clipboard, camera);
+                    std::move(compass), std::move(measure), render_target_source, device_window_source, std::move(sector_highlight), clipboard, camera, sampler_source);
             }
 
             test_module& with_camera(const std::shared_ptr<MockCamera>& camera)
