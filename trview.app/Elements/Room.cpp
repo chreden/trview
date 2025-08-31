@@ -74,8 +74,8 @@ namespace trview
             _token_store += parent->on_geometry_colours_changed += [&]() { _all_geometry_meshes.clear(); };
         }
 
-        _room_sampler_state = sampler_source(graphics::ISamplerState::AddressMode::Clamp);
-        _object_sampler_state = sampler_source(graphics::ISamplerState::AddressMode::Clamp);
+        _geometry_sampler_state = sampler_source(graphics::ISamplerState::AddressMode::Wrap);
+        _sampler_state = sampler_source(graphics::ISamplerState::AddressMode::Clamp);
     }
 
     void Room::initialise(const trlevel::ILevel& level, const trlevel::tr3_room& room, const IMeshStorage& mesh_storage,
@@ -241,7 +241,6 @@ namespace trview
     {
         Color colour = room_colour(water() && has_flag(render_filter, RenderFilter::Water), selected);
 
-        _room_sampler_state->apply();
         if (has_flag(render_filter, RenderFilter::Rooms))
         {
             if (has_flag(render_filter, RenderFilter::AllGeometry))
@@ -251,6 +250,7 @@ namespace trview
                     generate_all_geometry_mesh(_mesh_source);
                 }
 
+                _geometry_sampler_state->apply();
                 for (const auto& mesh : _all_geometry_meshes)
                 {
                     if (mesh.first == _index || (visible_rooms.find(mesh.first) == visible_rooms.end() || _index < mesh.first))
@@ -261,6 +261,7 @@ namespace trview
             }
             else
             {
+                _sampler_state->apply();
                 _mesh->render(_room_offset * camera.view_projection(), colour, 1.0f, Vector3::Zero, false, !has_flag(render_filter, RenderFilter::Lighting));
                 for (const auto& mesh : _static_meshes)
                 {
@@ -323,7 +324,7 @@ namespace trview
             return;
         }
 
-        _object_sampler_state->apply();
+        _sampler_state->apply();
         for (const auto& entity : _entities)
         {
             if (auto entity_ptr = entity.lock())
