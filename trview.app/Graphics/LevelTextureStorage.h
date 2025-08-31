@@ -39,7 +39,6 @@ namespace trview
         Triangle::AnimationMode animation_mode(uint32_t texture_index) const override;
         std::vector<uint32_t> animated_texture(uint32_t texture_index) const override;
     private:
-        void determine_texture_mode();
         void generate_replacement_textures();
 
         std::weak_ptr<trlevel::ILevel> _level;
@@ -49,12 +48,6 @@ namespace trview
         std::unique_ptr<ITextureStorage> _texture_storage;
         std::array<DirectX::SimpleMath::Color, 256> _palette;
         trlevel::PlatformAndVersion _platform_and_version;
-        enum class TextureMode
-        {
-            Official,
-            Custom
-        };
-        TextureMode _texture_mode{ TextureMode::Official };
         std::unordered_map<uint32_t, std::vector<uint32_t>> _animated_textures;
 
         struct SourceTexture

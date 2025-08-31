@@ -12,22 +12,6 @@ namespace trview
     {
     }
 
-    void LevelTextureStorage::determine_texture_mode()
-    {
-        for (const auto& object_texture : _object_textures)
-        {
-            for (const auto& vert : object_texture.Vertices)
-            {
-                if ((vert.x_frac > 1 && vert.x_frac < 255) ||
-                    (vert.y_frac > 1 && vert.y_frac < 255))
-                {
-                    _texture_mode = TextureMode::Custom;
-                    return;
-                }
-            }
-        }
-    }
-
     void LevelTextureStorage::add_texture(const std::vector<uint32_t>& pixels, uint32_t width, uint32_t height)
     {
         _texture_storage->add_texture(pixels, width, height);
@@ -56,48 +40,12 @@ namespace trview
     DirectX::SimpleMath::Vector2 LevelTextureStorage::uv(uint32_t texture_index, uint32_t uv_index) const
     {
         using namespace DirectX::SimpleMath;
-        if (texture_index >= _object_textures.size())
-        {
-            return Vector2::Zero;
-        }
-
-        auto vert = _object_textures[texture_index].Vertices[uv_index];
-
         const auto found_repl = _texture_replacements.find(texture_index);
         if (found_repl != _texture_replacements.end())
         {
             return found_repl->second.uvs[uv_index];
         }
-
-        if (_texture_mode == TextureMode::Official)
-        {
-            float u = static_cast<float>(vert.x_whole);
-            float v = static_cast<float>(vert.y_whole);
-
-            if (vert.x_frac == 1 || vert.x_frac == 0)
-            {
-                u += 1;
-            }
-            else if (vert.x_frac == 255)
-            {
-                u -= 1;
-            }
-
-            if (vert.y_frac == 1 || vert.y_frac == 0)
-            {
-                v += 1;
-            }
-            else if (vert.y_frac == 255)
-            {
-                v -= 1;
-            }
-
-            return Vector2(u, v) / 256.0f;
-        }
-        
-        float x = static_cast<float>(vert.x_whole) + (vert.x_frac / 256.0f);
-        float y = static_cast<float>(vert.y_whole) + (vert.y_frac / 256.0f);
-        return Vector2(x, y) / 256.0f;
+        return Vector2::Zero;
     }
 
     uint32_t LevelTextureStorage::tile(uint32_t texture_index) const
@@ -106,11 +54,6 @@ namespace trview
         if (found_repl != _texture_replacements.end())
         {
             return found_repl->second.tile;
-        }
-
-        if (texture_index < _object_textures.size())
-        {
-            return _object_textures[texture_index].TileAndFlag & 0x7FFF;
         }
         return 0;
     }
@@ -209,8 +152,6 @@ namespace trview
                 _palette[i] = Color(entry.Red / 255.f, entry.Green / 255.f, entry.Blue / 255.f, 1.0f);
             }
         }
-
-        determine_texture_mode();
     }
 
     void LevelTextureStorage::add_textile(const std::vector<uint32_t>& textile, uint32_t width, uint32_t height)

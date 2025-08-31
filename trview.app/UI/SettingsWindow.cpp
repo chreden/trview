@@ -56,6 +56,7 @@ namespace trview
                 {
                     checkbox(Names::vsync, _vsync, on_vsync);
                     checkbox(Names::animated_textures, _animated_textures, on_animated_textures);
+                    checkbox(Names::linear_filtering, _linear_filtering, on_linear_filtering);
                     if (ImGui::ColorEdit3(Names::background_colour.c_str(), _colour))
                     {
                         on_background_colour(Colour(1.0f, _colour[0], _colour[1], _colour[2]));
@@ -342,5 +343,10 @@ namespace trview
     void SettingsWindow::set_animated_textures(bool value)
     {
         _animated_textures = value;
+    }
+
+    void SettingsWindow::set_linear_filtering(bool value)
+    {
+        _linear_filtering = value;
     }
 }

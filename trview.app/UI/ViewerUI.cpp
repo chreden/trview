@@ -156,7 +156,9 @@ namespace trview
         forward_setting(_settings_window->on_camera_sink_startup, _settings.camera_sink_startup);
         forward_setting(_settings_window->on_statics_startup, _settings.statics_startup);
         forward_setting(_settings_window->on_animated_textures, _settings.animated_textures);
+        forward_setting(_settings_window->on_linear_filtering, _settings.linear_filtering);
         _settings_window->on_font += on_font;
+        _settings_window->on_linear_filtering += on_linear_filtering;
 
         _camera_position = std::make_unique<CameraPosition>();
         _camera_position->on_position_changed += on_camera_position;
@@ -408,6 +410,7 @@ namespace trview
         _settings_window->set_camera_sink_startup(settings.camera_sink_startup);
         _settings_window->set_statics_startup(settings.statics_startup);
         _settings_window->set_animated_textures(settings.animated_textures);
+        _settings_window->set_linear_filtering(settings.linear_filtering);
         _camera_position->set_display_degrees(settings.camera_display_degrees);
         _camera_position->set_visible(settings.camera_position_window);
         _map_renderer->set_colours(settings.map_colours);
