@@ -55,7 +55,6 @@ namespace trview
                 if (ImGui::BeginTabItem("Visuals"))
                 {
                     checkbox(Names::vsync, _vsync, on_vsync);
-                    checkbox(Names::animated_textures, _animated_textures, on_animated_textures);
                     checkbox(Names::linear_filtering, _linear_filtering, on_linear_filtering);
                     if (ImGui::ColorEdit3(Names::background_colour.c_str(), _colour))
                     {
@@ -338,11 +337,6 @@ namespace trview
     void SettingsWindow::set_statics_startup(bool value)
     {
         _statics_startup = value;
-    }
-
-    void SettingsWindow::set_animated_textures(bool value)
-    {
-        _animated_textures = value;
     }
 
     void SettingsWindow::set_linear_filtering(bool value)

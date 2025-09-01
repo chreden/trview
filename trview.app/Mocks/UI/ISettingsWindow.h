@@ -35,7 +35,6 @@ namespace trview
             MOCK_METHOD(void, set_fov, (float), (override));
             MOCK_METHOD(void, set_camera_sink_startup, (bool), (override));
             MOCK_METHOD(void, set_statics_startup, (bool), (override));
-            MOCK_METHOD(void, set_animated_textures, (bool), (override));
             MOCK_METHOD(void, set_linear_filtering, (bool), (override));
         };
     }
