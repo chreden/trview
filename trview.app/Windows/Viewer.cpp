@@ -70,6 +70,7 @@ namespace trview
         toggles[Options::rooms] = [this](bool value) { set_show_rooms(value); };
         toggles[Options::camera_sinks] = [this](bool value) { set_show_camera_sinks(value); };
         toggles[Options::lighting] = [this](bool value) { set_show_lighting(value); };
+        toggles[Options::animation] = [this](bool value) { set_show_animation(value); };
         toggles[Options::notes] = [](bool) {};
         toggles[Options::sound_sources] = [this](bool value) { set_show_sound_sources(value); };
         toggles[Options::ng_plus] = [this](bool value) { set_ng_plus(value); };
@@ -777,6 +778,7 @@ namespace trview
         new_level->set_show_lighting(_ui->toggle(Options::lighting));
         new_level->set_show_sound_sources(_ui->toggle(Options::sound_sources));
         new_level->set_ng_plus(_ui->toggle(Options::ng_plus));
+        new_level->set_show_animation(_ui->toggle(Options::animation));
 
         // Set up the views.
         auto rooms = new_level->rooms();
@@ -1652,5 +1654,14 @@ namespace trview
                 set_camera_mode(ICamera::Mode::Orbit);
             }
         }
+    }
+
+    void Viewer::set_show_animation(bool show)
+    {
+        if (auto level = _level.lock())
+        {
+            level->set_show_animation(show);
+        }
+        set_toggle(Options::animation, show);
     }
 }

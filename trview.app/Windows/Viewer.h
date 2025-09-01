@@ -137,6 +137,7 @@ namespace trview
         void set_toggle(const std::string& name, bool value);
         void set_show_sound_sources(bool show);
         void set_ng_plus(bool show);
+        void set_show_animation(bool show);
 
         const std::shared_ptr<graphics::IDevice> _device;
         const std::shared_ptr<IShortcuts>& _shortcuts;

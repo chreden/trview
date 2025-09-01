@@ -62,6 +62,7 @@ namespace trview
         _toggles[IViewer::Options::rooms] = true;
         _toggles[IViewer::Options::camera_sinks] = false;
         _toggles[IViewer::Options::lighting] = true;
+        _toggles[IViewer::Options::animation] = true;
         _toggles[IViewer::Options::notes] = true;
         _toggles[IViewer::Options::sound_sources] = false;
         _toggles[IViewer::Options::ng_plus] = false;
@@ -110,9 +111,11 @@ namespace trview
                 add_toggle(IViewer::Options::geometry);
                 ImGui::TableNextRow();
                 add_toggle(IViewer::Options::lighting);
-                add_toggle(IViewer::Options::notes);
+                add_toggle(IViewer::Options::animation);
                 ImGui::TableNextRow();
+                add_toggle(IViewer::Options::notes);
                 add_toggle(IViewer::Options::sound_sources);
+                ImGui::TableNextRow();
                 ImGui::BeginDisabled(!_ng_plus_enabled); 
                 add_toggle(IViewer::Options::ng_plus);
                 ImGui::EndDisabled();

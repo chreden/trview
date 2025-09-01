@@ -1612,10 +1612,20 @@ namespace trview
 
     void Level::update(float delta)
     {
+        if (!_show_animation)
+        {
+            return;
+        }
+
         for (auto& room : _rooms)
         {
             room->update(delta);
         }
+    }
+
+    void Level::set_show_animation(bool show)
+    {
+        _show_animation = show;
     }
 
     bool find_item_by_type_id(const ILevel& level, uint32_t type_id, std::weak_ptr<IItem>& output_item)

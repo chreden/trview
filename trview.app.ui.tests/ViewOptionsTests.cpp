@@ -714,4 +714,40 @@ void register_view_options_tests(ImGuiTestEngine* engine)
 
             IM_CHECK_EQ(ctx->ItemIsChecked("flags/Wireframe"), true);
         });
+
+    test<ViewOptionsContext>(engine, "View Options", "Animation Checkbox Toggle",
+        [](ImGuiTestContext* ctx) { render(ctx->GetVars<ViewOptionsContext>()); },
+        [](ImGuiTestContext* ctx)
+        {
+            auto& context = ctx->GetVars<ViewOptionsContext>();
+            context.ptr = register_test_module().build();
+            std::optional<std::tuple<std::string, bool>> clicked;
+            auto token = context.ptr->on_toggle_changed += [&](const std::string& name, bool value)
+                {
+                    clicked = { name, value };
+                };
+
+            ctx->SetRef("View Options");
+            ctx->ItemUncheck("flags/Animation");
+
+            IM_CHECK_EQ(clicked.has_value(), true);
+            IM_CHECK_EQ(std::get<0>(clicked.value()), IViewer::Options::animation);
+            IM_CHECK_EQ(std::get<1>(clicked.value()), false);
+        });
+
+    test<ViewOptionsContext>(engine, "View Options", "Animation Checkbox Updated",
+        [](ImGuiTestContext* ctx) { render(ctx->GetVars<ViewOptionsContext>()); },
+        [](ImGuiTestContext* ctx)
+        {
+            auto& context = ctx->GetVars<ViewOptionsContext>();
+            context.ptr = register_test_module().build();
+
+            ctx->SetRef("View Options");
+            IM_CHECK_EQ(ctx->ItemIsChecked("flags/Animation"), true);
+
+            context.ptr->set_toggle(IViewer::Options::animation, true);
+            ctx->Yield();
+
+            IM_CHECK_EQ(ctx->ItemIsChecked("flags/Wireframe"), false);
+        });
 }

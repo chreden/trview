@@ -135,6 +135,7 @@ namespace trview
         trlevel::PlatformAndVersion platform_and_version() const override;
         std::vector<std::weak_ptr<IFlyby>> flybys() const override;
         void update(float delta) override;
+        void set_show_animation(bool show) override;
     private:
         void generate_rooms(const trlevel::ILevel& level, const IRoom::Source& room_source, const IMeshStorage& mesh_storage);
         void generate_triggers(const ITrigger::Source& trigger_source);
@@ -241,6 +242,7 @@ namespace trview
         std::shared_ptr<trlevel::IPack> _pack;
         trlevel::PlatformAndVersion _platform_and_version;
         std::shared_ptr<IModelStorage> _model_storage;
+        bool _show_animation{ true };
     };
 
     /// Find the first item with the type id specified.
