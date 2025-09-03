@@ -11,6 +11,8 @@
 
 namespace trview
 {
+    struct ITextureStorage;
+
     /// UI window for program level settings.
     class SettingsWindow final : public ISettingsWindow
     {
@@ -43,7 +45,10 @@ namespace trview
             static inline const std::string linear_filtering = "Linear Filtering";
         };
 
-        explicit SettingsWindow(const std::shared_ptr<IDialogs>& dialogs, const std::shared_ptr<IShell>& shell, const std::shared_ptr<IFonts>& fonts);
+        explicit SettingsWindow(const std::shared_ptr<IDialogs>& dialogs,
+            const std::shared_ptr<IShell>& shell,
+            const std::shared_ptr<IFonts>& fonts,
+            const std::shared_ptr<ITextureStorage>& texture_storage);
         virtual ~SettingsWindow() = default;
         virtual void render() override;
         virtual void set_vsync(bool value) override;
@@ -72,6 +77,8 @@ namespace trview
         void set_statics_startup(bool value) override;
         void set_linear_filtering(bool value) override;
     private:
+        void show_texture_filtering_window();
+
         std::shared_ptr<IDialogs> _dialogs;
         std::shared_ptr<IShell> _shell;
         bool _visible{ false };
@@ -101,5 +108,9 @@ namespace trview
         std::shared_ptr<IFonts> _fonts;
         bool _statics_startup{ false };
         bool _linear_filtering{ false };
+
+        bool _showing_filtering_popup{ false };
+        graphics::Texture _linear_texture;
+        graphics::Texture _point_texture;
     };
 }

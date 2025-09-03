@@ -395,7 +395,7 @@ namespace trview
             texture_storage,
             shortcuts,
             map_renderer_source,
-            std::make_unique<SettingsWindow>(dialogs, shell, fonts),
+            std::make_unique<SettingsWindow>(dialogs, shell, fonts, texture_storage),
             std::make_unique<ViewOptions>(rooms_window_manager),
             std::make_unique<ContextMenu>(items_window_manager),
             std::make_unique<CameraControls>(),
