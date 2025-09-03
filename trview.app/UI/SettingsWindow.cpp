@@ -56,6 +56,11 @@ namespace trview
                 {
                     checkbox(Names::vsync, _vsync, on_vsync);
                     checkbox(Names::linear_filtering, _linear_filtering, on_linear_filtering);
+                    if (ImGui::IsItemHovered() && ImGui::BeginTooltip())
+                    {
+                        ImGui::Text("Use the smooth texture appearance of the classics on PC. This may also cause some seams to appear as they did in the game.\nDisable this to use point filtering which doesn't have seams/tiling issues and is how the game appeared on PlayStation and PC without linear enabled.");
+                        ImGui::EndTooltip();
+                    }
                     if (ImGui::ColorEdit3(Names::background_colour.c_str(), _colour))
                     {
                         on_background_colour(Colour(1.0f, _colour[0], _colour[1], _colour[2]));
