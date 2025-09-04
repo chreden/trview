@@ -7,6 +7,7 @@
 #include <trview.common/Mocks/Windows/IShell.h>
 #include <trview.common/Mocks/Windows/IDialogs.h>
 #include <trview.app/Mocks/UI/IFonts.h>
+#include <trview.app/Mocks/Graphics/ITextureStorage.h>
 
 using namespace testing;
 using namespace trview;
@@ -22,10 +23,11 @@ namespace
             std::shared_ptr<IDialogs> dialogs{ mock_shared<MockDialogs>() };
             std::shared_ptr<IShell> shell{ mock_shared<MockShell>() };
             std::shared_ptr<IFonts> fonts{ mock_shared<MockFonts>() };
+            std::shared_ptr<ITextureStorage> texture_storage{ mock_shared<MockTextureStorage>() };
 
             std::unique_ptr<SettingsWindow> build()
             {
-                return std::make_unique<SettingsWindow>(dialogs, shell, fonts);
+                return std::make_unique<SettingsWindow>(dialogs, shell, fonts, texture_storage);
             }
 
             test_module& with_dialogs(const std::shared_ptr<IDialogs>& dialogs)

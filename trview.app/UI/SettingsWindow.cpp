@@ -1,4 +1,5 @@
 #include "SettingsWindow.h"
+#include "../Graphics/ITextureStorage.h"
 
 namespace trview
 {
@@ -6,9 +7,11 @@ namespace trview
     {
     }
 
-    SettingsWindow::SettingsWindow(const std::shared_ptr<IDialogs>& dialogs, const std::shared_ptr<IShell>& shell, const std::shared_ptr<IFonts>& fonts)
+    SettingsWindow::SettingsWindow(const std::shared_ptr<IDialogs>& dialogs, const std::shared_ptr<IShell>& shell, const std::shared_ptr<IFonts>& fonts, const std::shared_ptr<ITextureStorage>& texture_storage)
         : _dialogs(dialogs), _shell(shell), _fonts(fonts)
     {
+        _linear_texture = texture_storage->lookup("texture_filtering_linear");
+        _point_texture = texture_storage->lookup("texture_filtering_point");
     }
 
     void SettingsWindow::render()
@@ -56,6 +59,9 @@ namespace trview
                 {
                     checkbox(Names::vsync, _vsync, on_vsync);
                     checkbox(Names::linear_filtering, _linear_filtering, on_linear_filtering);
+                    show_texture_filtering_window();
+                    
+
                     if (ImGui::ColorEdit3(Names::background_colour.c_str(), _colour))
                     {
                         on_background_colour(Colour(1.0f, _colour[0], _colour[1], _colour[2]));
@@ -342,5 +348,39 @@ namespace trview
     void SettingsWindow::set_linear_filtering(bool value)
     {
         _linear_filtering = value;
+    }
+
+    void SettingsWindow::show_texture_filtering_window()
+    {
+        ImGui::SameLine();
+        if (ImGui::Button("?"))
+        {
+            ImGui::OpenPopup("Texture Filtering");
+            _showing_filtering_popup = true;
+        }
+
+        if (ImGui::BeginPopupModal("Texture Filtering", &_showing_filtering_popup, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoResize))
+        {
+            ImGui::Text("Enable Linear Filtering to use the smooth texture appearance of the classics on PC. This may also cause some seams to appear as they did in the game.");
+            ImGui::Text("Disable this to use point filtering which doesn't have seams/tiling issues and is how the game appeared on PlayStation and PC without linear enabled.");
+            ImGui::NewLine();
+            if (ImGui::BeginTable("Comparison", 2))
+            {
+                ImGui::TableNextRow();
+                ImGui::TableNextColumn();
+                ImGui::SetCursorPosX(ImGui::GetCursorPosX() + ImGui::GetContentRegionAvail().x * 0.5f - ImGui::CalcTextSize("Point Filtering").x * 0.5f);
+                ImGui::Text("Point Filtering");
+                ImGui::TableNextColumn();
+                ImGui::SetCursorPosX(ImGui::GetCursorPosX() + ImGui::GetContentRegionAvail().x * 0.5f - ImGui::CalcTextSize("Linear Filtering").x * 0.5f);
+                ImGui::Text("Linear Filtering");
+                ImGui::TableNextRow();
+                ImGui::TableNextColumn();
+                ImGui::Image(_point_texture.view().Get(), ImVec2(512, 512));
+                ImGui::TableNextColumn();
+                ImGui::Image(_linear_texture.view().Get(), ImVec2(512, 512));
+                ImGui::EndTable();
+            }
+            ImGui::EndPopup();
+        }
     }
 }
