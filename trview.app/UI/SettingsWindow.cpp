@@ -359,16 +359,15 @@ namespace trview
             _showing_filtering_popup = true;
         }
 
-        if (ImGui::BeginPopupModal("Texture Filtering", &_showing_filtering_popup, ImGuiWindowFlags_NoResize))
+        if (ImGui::BeginPopupModal("Texture Filtering", &_showing_filtering_popup, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoResize))
         {
-            ImGui::TextWrapped("Enable Linear Filtering to use the smooth texture appearance of the classics on PC. This may also cause some seams to appear as they did in the game.\nDisable this to use point filtering which doesn't have seams/tiling issues and is how the game appeared on PlayStation and PC without linear enabled.");
+            ImGui::Text("Enable Linear Filtering to use the smooth texture appearance of the classics on PC. This may also cause some seams to appear as they did in the game.");
+            ImGui::Text("Disable this to use point filtering which doesn't have seams/tiling issues and is how the game appeared on PlayStation and PC without linear enabled.");
             ImGui::NewLine();
-
             if (ImGui::BeginTable("Comparison", 2))
             {
                 ImGui::TableNextRow();
                 ImGui::TableNextColumn();
-
                 ImGui::SetCursorPosX(ImGui::GetCursorPosX() + ImGui::GetContentRegionAvail().x * 0.5f - ImGui::CalcTextSize("Point Filtering").x * 0.5f);
                 ImGui::Text("Point Filtering");
                 ImGui::TableNextColumn();
@@ -381,7 +380,6 @@ namespace trview
                 ImGui::Image(_linear_texture.view().Get(), ImVec2(512, 512));
                 ImGui::EndTable();
             }
-
             ImGui::EndPopup();
         }
     }
