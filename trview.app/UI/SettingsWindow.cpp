@@ -359,13 +359,29 @@ namespace trview
             _showing_filtering_popup = true;
         }
 
-        if (ImGui::BeginPopup("Texture Filtering"))
+        if (ImGui::BeginPopupModal("Texture Filtering", &_showing_filtering_popup, ImGuiWindowFlags_NoResize))
         {
-            ImGui::TextWrapped("Use the smooth texture appearance of the classics on PC. This may also cause some seams to appear as they did in the game.\nDisable this to use point filtering which doesn't have seams/tiling issues and is how the game appeared on PlayStation and PC without linear enabled.");
+            ImGui::TextWrapped("Enable Linear Filtering to use the smooth texture appearance of the classics on PC. This may also cause some seams to appear as they did in the game.\nDisable this to use point filtering which doesn't have seams/tiling issues and is how the game appeared on PlayStation and PC without linear enabled.");
             ImGui::NewLine();
-            ImGui::Image(_point_texture.view().Get(), ImVec2(512, 512));
-            ImGui::SameLine();
-            ImGui::Image(_linear_texture.view().Get(), ImVec2(512, 512));
+
+            if (ImGui::BeginTable("Comparison", 2))
+            {
+                ImGui::TableNextRow();
+                ImGui::TableNextColumn();
+
+                ImGui::SetCursorPosX(ImGui::GetCursorPosX() + ImGui::GetContentRegionAvail().x * 0.5f - ImGui::CalcTextSize("Point Filtering").x * 0.5f);
+                ImGui::Text("Point Filtering");
+                ImGui::TableNextColumn();
+                ImGui::SetCursorPosX(ImGui::GetCursorPosX() + ImGui::GetContentRegionAvail().x * 0.5f - ImGui::CalcTextSize("Linear Filtering").x * 0.5f);
+                ImGui::Text("Linear Filtering");
+                ImGui::TableNextRow();
+                ImGui::TableNextColumn();
+                ImGui::Image(_point_texture.view().Get(), ImVec2(512, 512));
+                ImGui::TableNextColumn();
+                ImGui::Image(_linear_texture.view().Get(), ImVec2(512, 512));
+                ImGui::EndTable();
+            }
+
             ImGui::EndPopup();
         }
     }
