@@ -118,7 +118,11 @@ namespace trview
         {
             auto type = _context_pick.type == PickResult::Type::Entity ? IWaypoint::Type::Entity : _context_pick.type == PickResult::Type::Trigger ? IWaypoint::Type::Trigger : IWaypoint::Type::Position;
             Vector3 normal = _context_pick.triangle.normal();
-            if (normal.y != 0)
+            if (type == IWaypoint::Type::Entity)
+            {
+                normal = Vector3::Down;
+            }
+            else if (normal.y != 0)
             {
                 normal.x = 0;
                 normal.z = 0;

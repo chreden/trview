@@ -499,6 +499,185 @@
             "CHAMBER.TR2": [
                 { "item":29, "type":170 }
             ]
+        },
+        "tr4": {
+            "SETTOMB1.TR4": [
+                { "item":4, "type":359 },
+                { "item":22, "type":354 },
+                { "item":25, "type":354 },
+                { "item":30, "type":352 },
+                { "item":40, "type":362 },
+                { "item":49, "type":367 },
+                { "item":55, "type":352 },
+                { "item":77, "type":362 },
+                { "item":85, "type":359 },
+                { "item":86, "type":354 },
+                { "item":101, "type":363 },
+                { "item":150, "type":363 }
+            ],
+            "SETTOMB2.TR4": [
+                { "item":0, "type":359 },
+                { "item":36, "type":354 },
+                { "item":39, "type":358 },
+                { "item":90, "type":352 },
+                { "item":113, "type":352 },
+                { "item":133, "type":352 },
+                { "item":159, "type":358 },
+                { "item":211, "type":367 },
+                { "item":222, "type":354 },
+            ],
+            "JEEPCHAS.TR4": [
+                { "item":14, "type":352 },
+                { "item":15, "type":352 },
+                { "item":17, "type":357 },
+                { "item":30, "type":358 },
+                { "item":45, "type":358 }
+            ],
+            "JEEPCHS2.TR4": [
+                { "item":2, "type":357 },
+                { "item":16, "type":352 },
+                { "item":63, "type":357 },
+                { "item":65, "type":358 },
+                { "item":66, "type":352 },
+                { "item":86, "type":352 },
+                { "item":87, "type":358 }
+            ],
+            "KARNAK1.TR4": [
+                { "item":10, "type":352 },
+                { "item":11, "type":367 },
+                { "item":15, "type":367 },
+                { "item":33, "type":364 },
+                { "item":58, "type":359 },
+                { "item":69, "type":354 },
+                { "item":74, "type":359 },
+                { "item":95, "type":354 }
+            ],
+            "HALL.TR4": [
+                { "item":7, "type":352 },
+                { "item":8, "type":352 },
+                { "item":13, "type":352 },
+                { "item":76, "type":352 },
+                { "item":79, "type":352 }
+            ],
+            "LAKE.TR4": [
+                { "item":3, "type":362 },
+                { "item":18, "type":352 },
+                { "item":28, "type":367 },
+                { "item":33, "type":367 },
+                { "item":37, "type":354 },
+                { "item":43, "type":367 },
+                { "item":68, "type":354 },
+                { "item":76, "type":354 },
+                { "item":87, "type":354 }
+            ],
+            "SEMER.TR4": [
+                { "item":23, "type":354 },
+                { "item":31, "type":357 },
+                { "item":43, "type":363 },
+                { "item":53, "type":362 },
+                { "item":84, "type":357 },
+                { "item":127, "type":357 },
+                { "item":168, "type":358 },
+                { "item":169, "type":362 },
+                { "item":179, "type":363 },
+                { "item":188, "type":367 },
+                { "item":200, "type":357 },
+                { "item":204, "type":354 },
+                { "item":212, "type":358 },
+                { "item":222, "type":367 },
+                { "item":229, "type":359 },
+                { "item":235, "type":364 }
+            ],
+            "SEMER2.TR4": [
+                { "item":17, "type":354 },
+                { "item":44, "type":352 },
+                { "item":52, "type":358 },
+                { "item":59, "type":352 },
+                { "item":92, "type":354 },
+                { "item":96, "type":352 },
+                { "item":125, "type":358 }
+            ],
+            "TRAIN.TR4": [
+                { "item":31, "type":354 },
+                { "item":32, "type":362 },
+                { "item":35, "type":354 },
+                { "item":78, "type":362 }
+            ],
+            "ALEXHUB.TR4": [
+                
+            ]
+        },
+        "tr5": {
+            "ANDREA1.TRC": [
+                { "item":3, "type":339 },
+                { "item":10, "type":339 },
+                { "item":13, "type":339 },
+                { "item":19, "type":339 },
+                { "item":28, "type":340 },
+                { "item":42, "type":340 },
+                { "item":101, "type":348 },
+                { "item":111, "type":339 },
+                { "item":115, "type":348 },
+                { "item":139, "type":348 },
+                { "item":150, "type":348 }
+            ],
+            "ANDREA2.TRC": [
+                { "item":30, "type":339 },
+                { "item":33, "type":340 },
+                { "item":46, "type":348 },
+                { "item":75, "type":340 },
+                { "item":78, "type":337 },
+                { "item":83, "type":337 },
+                { "item":88, "type":340 },
+                { "item":127, "type":340 },
+                { "item":140, "type":337 }
+            ],
+            "ANDREA3.TRC": [
+                { "item":84, "type":337 },
+                { "item":97, "type":337 }
+            ],
+            "JOBY2.TRC": [
+                { "item":32, "type":348 },
+                { "item":116, "type":348 },
+                { "item":127, "type":348 }
+            ],
+            "JOBY3.TRC": [
+                { "item":27, "type":337 },
+                { "item":118, "type":339 },
+                { "item":209, "type":339 }
+            ],
+            "JOBY5.TRC": [
+                { "item":120, "type":339 },
+                { "item":133, "type":337 },
+                { "item":183, "type":348 }
+            ],
+            "RICH1.TRC": [
+                { "item":7, "type":346 },
+                { "item":41, "type":346 },
+                { "item":61, "type":346 },
+                { "item":92, "type":346 },
+                { "item":139, "type":346 },
+                { "item":140, "type":346 },
+                { "item":178, "type":346 },
+                { "item":195, "type":346 }
+            ],
+            "RICH2.TRC": [
+                { "item":1, "type":346 },
+                { "item":13, "type":346 },
+                { "item":42, "type":346 },
+                { "item":70, "type":346 },
+                { "item":71, "type":346 },
+                { "item":102, "type":346 },
+                { "item":113, "type":346 },
+                { "item":201, "type":346 }
+            ],
+            "RICH3.TRC": [
+                { "item":0, "type":346 },
+                { "item":158, "type":346 },
+                { "item":197, "type":346 },
+                { "item":199, "type":346 },
+                { "item":220, "type":346 }
+            ]
         }
     }
 }

@@ -1,0 +1,625 @@
+{
+    "games": {
+        "tr4": {
+            "ANGKOR1.TR4": [
+                {
+                    "NgPlus": true,
+                    "Index": 114,
+                    "TypeID": 369,
+                    "Room": 20,
+                    "X": 6635,
+                    "Y": 1256,
+                    "Z": 89522
+                },
+                {
+                    "NgPlus": true,
+                    "Index": 115,
+                    "TypeID": 368,
+                    "Room": 142,
+                    "X": 16933,
+                    "Y": 2052,
+                    "Z": 51790
+                },
+                {
+                    "NgPlus": true,
+                    "Index": 116,
+                    "TypeID": 369,
+                    "Room": 32,
+                    "X": 92558,
+                    "Y": 744,
+                    "Z": 65940
+                }
+            ],
+            "ANG_RACE.TR4": [
+                {
+                    "NgPlus": true,
+                    "Note": "This replaces a Lara Start Pos",
+                    "Index": 88,
+                    "TypeID": 369,
+                    "Room": 23,
+                    "X": 28243,
+                    "Y": -24,
+                    "Z": 57825
+                },
+                {
+                    "NgPlus": true,
+                    "Index": 89,
+                    "TypeID": 368,
+                    "Room": 27,
+                    "X": 37364,
+                    "Y": -3146,
+                    "Z": 32339
+                },
+                {
+                    "NgPlus": true,
+                    "Index": 90,
+                    "TypeID": 368,
+                    "Room": 27,
+                    "X": 36337,
+                    "Y": -3146,
+                    "Z": 32243
+                },
+                {
+                    "NgPlus": true,
+                    "Index": 91,
+                    "TypeID": 368,
+                    "Room": 124,
+                    "X": 44497,
+                    "Y": -586,
+                    "Z": 28177
+                }
+            ],
+            "SETTOMB1.TR4": [
+                {
+                    "NgPlus": true,
+                    "Index": 151,
+                    "TypeID": 368,
+                    "Room": 36,
+                    "X": 90570,
+                    "Y": -14691,
+                    "Z": 22116
+                },
+                {
+                    "NgPlus": true,
+                    "Index": 152,
+                    "TypeID": 369,
+                    "Room": 30,
+                    "X": 82370,
+                    "Y": -12315,
+                    "Z": 21063
+                },
+                {
+                    "NgPlus": true,
+                    "Index": 153,
+                    "TypeID": 369,
+                    "Room": 34,
+                    "X": 65024,
+                    "Y": -3608,
+                    "Z": 34304
+                },
+                {
+                    "NgPlus": true,
+                    "Index": 154,
+                    "TypeID": 368,
+                    "Room": 34,
+                    "X": 64000,
+                    "Y": -3658,
+                    "Z": 33280
+                },
+                {
+                    "NgPlus": true,
+                    "Index": 155,
+                    "TypeID": 369,
+                    "Room": 38,
+                    "X": 60952,
+                    "Y": -5395,
+                    "Z": 33328
+                },
+                {
+                    "NgPlus": true,
+                    "Index": 156,
+                    "TypeID": 368,
+                    "Room": 42,
+                    "X": 33341,
+                    "Y": -4170,
+                    "Z": 32166
+                },
+                {
+                    "NgPlus": true,
+                    "Index": 157,
+                    "TypeID": 369,
+                    "Room": 48,
+                    "X": 8809,
+                    "Y": -6080,
+                    "Z": 47561
+                },
+                {
+                    "NgPlus": true,
+                    "Index": 158,
+                    "TypeID": 369,
+                    "Room": 110,
+                    "X": 24890,
+                    "Y": -6632,
+                    "Z": 50585
+                },
+                {
+                    "NgPlus": true,
+                    "Index": 159,
+                    "TypeID": 369,
+                    "Room": 23,
+                    "X": 22075,
+                    "Y": -2072,
+                    "Z": 42503
+                },
+                {
+                    "NgPlus": true,
+                    "Index": 160,
+                    "TypeID": 369,
+                    "Room": 5,
+                    "X": 32256,
+                    "Y": -280,
+                    "Z": 49664
+                },
+                {
+                    "NgPlus": true,
+                    "Index": 161,
+                    "TypeID": 369,
+                    "Room": 25,
+                    "X": 22001,
+                    "Y": 1768,
+                    "Z": 56824
+                },
+                {
+                    "NgPlus": true,
+                    "Index": 162,
+                    "TypeID": 368,
+                    "Room": 143,
+                    "X": 25076,
+                    "Y": 3510,
+                    "Z": 45562
+                }
+            ],
+            "SETTOMB2.TR4": [
+                
+            ],
+            "JEEPCHAS.TR4": [
+                {
+                    "NgPlus": true,
+                    "Index": 48,
+                    "TypeID": 369,
+                    "Room": 20,
+                    "X": 76210,
+                    "Y": -4376,
+                    "Z": 8699
+                },
+                {
+                    "NgPlus": true,
+                    "Index": 49,
+                    "TypeID": 368,
+                    "Room": 28,
+                    "X": 47600,
+                    "Y": 2486,
+                    "Z": 37401
+                },
+                {
+                    "NgPlus": true,
+                    "Index": 50,
+                    "TypeID": 369,
+                    "Room": 41,
+                    "X": 6657,
+                    "Y": 1512,
+                    "Z": 38343
+                },
+                {
+                    "NgPlus": true,
+                    "Index": 51,
+                    "TypeID": 369,
+                    "Room": 40,
+                    "X": 14865,
+                    "Y": 2024,
+                    "Z": 42482
+                },
+                {
+                    "NgPlus": true,
+                    "Index": 52,
+                    "TypeID": 369,
+                    "Room": 5,
+                    "X": 78306,
+                    "Y": -536,
+                    "Z": 26140
+                },
+                {
+                    "NgPlus": true,
+                    "Index": 53,
+                    "TypeID": 368,
+                    "Room": 21,
+                    "X": 62009,
+                    "Y": -4426,
+                    "Z": 19965
+                }
+            ],
+            "JEEPCHS2.TR4": [
+                {
+                    "NgPlus": true,
+                    "Index": 108,
+                    "TypeID": 368,
+                    "Room": 10,
+                    "X": 11817,
+                    "Y": 5046,
+                    "Z": 93675
+                },
+                {
+                    "NgPlus": true,
+                    "Index": 109,
+                    "TypeID": 369,
+                    "Room": 12,
+                    "X": 9851,
+                    "Y": -27,
+                    "Z": 56965
+                },
+                {
+                    "NgPlus": true,
+                    "Index": 110,
+                    "TypeID": 368,
+                    "Room": 58,
+                    "X": 49693,
+                    "Y": -1866,
+                    "Z": 18966
+                },
+                {
+                    "NgPlus": true,
+                    "Index": 111,
+                    "TypeID": 368,
+                    "Room": 42,
+                    "X": 60942,
+                    "Y": -2634,
+                    "Z": 23029
+                },
+                {
+                    "NgPlus": true,
+                    "Index": 112,
+                    "TypeID": 368,
+                    "Room": 43,
+                    "X": 83461,
+                    "Y": -3146,
+                    "Z": 20955
+                },
+                {
+                    "NgPlus": true,
+                    "Index": 113,
+                    "TypeID": 368,
+                    "Room": 76,
+                    "X": 95725,
+                    "Y": -3146,
+                    "Z": 58981
+                },
+                {
+                    "NgPlus": true,
+                    "Index": 114,
+                    "TypeID": 368,
+                    "Room": 73,
+                    "X": 77349,
+                    "Y": -5962,
+                    "Z": 47673
+                }
+            ],
+            "KARNAK1.TR4": [
+                {
+                    "NgPlus": true,
+                    "Index": 99,
+                    "TypeID": 369,
+                    "Room": 0,
+                    "X": 84438,
+                    "Y": -24,
+                    "Z": 44594
+                },
+                {
+                    "NgPlus": true,
+                    "Index": 100,
+                    "TypeID": 369,
+                    "Room": 14,
+                    "X": 81433,
+                    "Y": -24,
+                    "Z": 40462
+                },
+                {
+                    "NgPlus": true,
+                    "Index": 101,
+                    "TypeID": 368,
+                    "Room": 93,
+                    "X": 69051,
+                    "Y": 1718,
+                    "Z": 72155
+                },
+                {
+                    "NgPlus": true,
+                    "Index": 102,
+                    "TypeID": 369,
+                    "Room": 33,
+                    "X": 68092,
+                    "Y": -155,
+                    "Z": 78321
+                },
+                {
+                    "NgPlus": true,
+                    "Index": 103,
+                    "TypeID": 368,
+                    "Room": 47,
+                    "X": 76234,
+                    "Y": 7094,
+                    "Z": 72219
+                },
+                {
+                    "NgPlus": true,
+                    "Index": 104,
+                    "TypeID": 368,
+                    "Room": 47,
+                    "X": 77312,
+                    "Y": 7094,
+                    "Z": 72219
+                },
+                {
+                    "NgPlus": true,
+                    "Index": 105,
+                    "TypeID": 369,
+                    "Room": 92,
+                    "X": 79299,
+                    "Y": 1768,
+                    "Z": 71938
+                },
+                {
+                    "NgPlus": true,
+                    "Index": 106,
+                    "TypeID": 369,
+                    "Room": 104,
+                    "X": 71168,
+                    "Y": 5223,
+                    "Z": 52736
+                }
+            ],
+            "HALL.TR4": [
+                {
+                    "NgPlus": true,
+                    "Index": 86,
+                    "TypeID": 369,
+                    "Room": 9,
+                    "X": 84513,
+                    "Y": -40,
+                    "Z": 28258
+                },
+                {
+                    "NgPlus": true,
+                    "Index": 87,
+                    "TypeID": 369,
+                    "Room": 166,
+                    "X": 71191,
+                    "Y": -2072,
+                    "Z": 38348
+                },
+                {
+                    "NgPlus": true,
+                    "Index": 88,
+                    "TypeID": 369,
+                    "Room": 71,
+                    "X": 76293,
+                    "Y": -2328,
+                    "Z": 35317
+                },
+                {
+                    "NgPlus": true,
+                    "Index": 89,
+                    "TypeID": 369,
+                    "Room": 37,
+                    "X": 75322,
+                    "Y": -24,
+                    "Z": 15872
+                },
+                {
+                    "NgPlus": true,
+                    "Index": 90,
+                    "TypeID": 369,
+                    "Room": 62,
+                    "X": 62998,
+                    "Y": -74,
+                    "Z": 32204
+                }
+            ],
+            "LAKE.TR4": [
+                {
+                    "NgPlus": true,
+                    "Index": 95,
+                    "TypeID": 369,
+                    "Room": 139,
+                    "X": 50590,
+                    "Y": 5248,
+                    "Z": 53878
+                },
+                {
+                    "NgPlus": true,
+                    "Index": 96,
+                    "TypeID": 369,
+                    "Room": 137,
+                    "X": 51737,
+                    "Y": 5352,
+                    "Z": 36225
+                },
+                {
+                    "NgPlus": true,
+                    "Index": 97,
+                    "TypeID": 369,
+                    "Room": 141,
+                    "X": 49714,
+                    "Y": 1512,
+                    "Z": 57840
+                },
+                {
+                    "NgPlus": true,
+                    "Index": 98,
+                    "TypeID": 368,
+                    "Room": 11,
+                    "X": 41535,
+                    "Y": 2230,
+                    "Z": 33261
+                },
+                {
+                    "NgPlus": true,
+                    "Index": 99,
+                    "TypeID": 369,
+                    "Room": 11,
+                    "X": 43542,
+                    "Y": 2280,
+                    "Z": 33319
+                },
+                {
+                    "NgPlus": true,
+                    "Index": 100,
+                    "TypeID": 369,
+                    "Room": 113,
+                    "X": 29267,
+                    "Y": -308,
+                    "Z": 6683
+                }
+            ],
+            "SEMER.TR4": [
+            ],
+            "SEMER2.TR4": [
+                {
+                    "NgPlus": true,
+                    "Index": 133,
+                    "TypeID": 369,
+                    "Room": 43,
+                    "X": 58885,
+                    "Y": -16152,
+                    "Z": 1561
+                },
+                {
+                    "NgPlus": true,
+                    "Index": 134,
+                    "TypeID": 368,
+                    "Room": 51,
+                    "X": 59925,
+                    "Y": -8522,
+                    "Z": 39425
+                },
+                {
+                    "NgPlus": true,
+                    "Index": 135,
+                    "TypeID": 369,
+                    "Room": 61,
+                    "X": 89625,
+                    "Y": 1000,
+                    "Z": 44554
+                },
+                {
+                    "NgPlus": true,
+                    "Index": 136,
+                    "TypeID": 369,
+                    "Room": 19,
+                    "X": 80417,
+                    "Y": -14,
+                    "Z": 55803
+                },
+                {
+                    "NgPlus": true,
+                    "Index": 137,
+                    "TypeID": 369,
+                    "Room": 26,
+                    "X": 48617,
+                    "Y": -2584,
+                    "Z": 37352
+                },
+                {
+                    "NgPlus": true,
+                    "Index": 138,
+                    "TypeID": 368,
+                    "Room": 27,
+                    "X": 40442,
+                    "Y": -74,
+                    "Z": 30245
+                },
+                {
+                    "NgPlus": true,
+                    "Index": 139,
+                    "TypeID": 368,
+                    "Room": 30,
+                    "X": 61937,
+                    "Y": -74,
+                    "Z": 34322
+                }
+            ],
+            "TRAIN.TR4": [
+                {
+                    "NgPlus": true,
+                    "Index": 79,
+                    "TypeID": 369,
+                    "Room": 94,
+                    "X": 63952,
+                    "Y": -1816,
+                    "Z": 53793
+                },
+                {
+                    "NgPlus": true,
+                    "Index": 80,
+                    "TypeID": 368,
+                    "Room": 10,
+                    "X": 32251,
+                    "Y": -1098,
+                    "Z": 53799
+                },
+                {
+                    "NgPlus": true,
+                    "Index": 81,
+                    "TypeID": 369,
+                    "Room": 24,
+                    "X": 28127,
+                    "Y": -1048,
+                    "Z": 53781
+                },
+                {
+                    "NgPlus": true,
+                    "Index": 82,
+                    "TypeID": 369,
+                    "Room": 55,
+                    "X": 58880,
+                    "Y": -792,
+                    "Z": 51712
+                }
+            ],
+            "ALEXHUB.TR4": [
+                
+            ]
+        },
+        "tr5": {
+            "ANDY3": [
+                {
+                    "Index": 60,
+                    "TypeID": 241,
+                    "Room": 11,
+                    "X": 65598,
+                    "Y": 4805,
+                    "Z": 32530
+                }
+            ],
+            "JOBY3": [
+                {
+                    "Index": 244,
+                    "TypeID": 355,
+                    "Room": 61,
+                    "X": 56832,
+                    "Y": 8852,
+                    "Z": 55808
+                }
+            ],
+            "JOBY5": [
+                {
+                    "Index": 216,
+                    "TypeID": 355,
+                    "Room": 38,
+                    "X": 58880,
+                    "Y": 5012,
+                    "Z": 76288
+                }
+            ]
+        }
+    }
+}
