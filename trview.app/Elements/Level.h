@@ -8,6 +8,9 @@
 
 #include <trlevel/ILevel.h>
 #include "ILevel.h"
+
+#include <trview.graphics/Sampler/ISamplerState.h>
+
 #include "../Geometry/ITransparencyBuffer.h"
 #include "../Graphics/ISelectionRenderer.h"
 #include "../Graphics/IMeshStorage.h"
@@ -42,7 +45,8 @@ namespace trview
             const std::shared_ptr<ILog>& log,
             const graphics::IBuffer::ConstantSource& buffer_source,
             std::shared_ptr<ISoundStorage> sound_storage,
-            std::shared_ptr<INgPlusSwitcher> ngplus_switcher);
+            std::shared_ptr<INgPlusSwitcher> ngplus_switcher,
+            const std::shared_ptr<graphics::ISamplerState>& sampler_state);
         virtual ~Level() = default;
         virtual std::vector<graphics::Texture> level_textures() const override;
         virtual std::optional<uint32_t> selected_item() const override;
@@ -196,8 +200,7 @@ namespace trview
 
         graphics::IShader*          _vertex_shader;
         graphics::IShader*          _pixel_shader;
-        Microsoft::WRL::ComPtr<ID3D11SamplerState> _room_sampler_state;
-        Microsoft::WRL::ComPtr<ID3D11SamplerState> _object_sampler_state;
+        std::shared_ptr<graphics::ISamplerState> _room_sampler_state;
         Microsoft::WRL::ComPtr<ID3D11RasterizerState> _default_rasterizer;
         Microsoft::WRL::ComPtr<ID3D11RasterizerState> _wireframe_rasterizer;
         std::unique_ptr<graphics::IBuffer> _pixel_shader_data;
