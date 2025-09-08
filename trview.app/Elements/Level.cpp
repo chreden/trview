@@ -70,24 +70,14 @@ namespace trview
         const std::shared_ptr<ILog>& log,
         const graphics::IBuffer::ConstantSource& buffer_source,
         std::shared_ptr<ISoundStorage> sound_storage,
-        std::shared_ptr<INgPlusSwitcher> ngplus_switcher)
+        std::shared_ptr<INgPlusSwitcher> ngplus_switcher,
+        const std::shared_ptr<graphics::ISamplerState>& sampler_state)
         : _device(device), _texture_storage(level_texture_storage),
         _transparency(std::move(transparency_buffer)), _selection_renderer(std::move(selection_renderer)), _log(log), _sound_storage(sound_storage),
-        _ngplus_switcher(ngplus_switcher)
+        _ngplus_switcher(ngplus_switcher), _room_sampler_state(sampler_state)
     {
         _vertex_shader = shader_storage->get("level_vertex_shader");
         _pixel_shader = shader_storage->get("level_pixel_shader");
-
-        // Create a texture sampler state description.
-        D3D11_SAMPLER_DESC sampler_desc;
-        memset(&sampler_desc, 0, sizeof(sampler_desc));
-        sampler_desc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
-        sampler_desc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
-        sampler_desc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
-        sampler_desc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
-        sampler_desc.MaxAnisotropy = 1;
-        sampler_desc.ComparisonFunc = D3D11_COMPARISON_ALWAYS;
-        sampler_desc.MaxLOD = D3D11_FLOAT32_MAX;
 
         D3D11_RASTERIZER_DESC default_rasterizer_desc;
         memset(&default_rasterizer_desc, 0, sizeof(default_rasterizer_desc));
@@ -106,14 +96,6 @@ namespace trview
         _wireframe_rasterizer = device->create_rasterizer_state(rasterizer_desc);
 
         _pixel_shader_data = buffer_source(sizeof(PixelShaderData));
-
-        // Create the texture sampler state.
-        _room_sampler_state = device->create_sampler_state(sampler_desc);
-
-        sampler_desc.AddressU = D3D11_TEXTURE_ADDRESS_CLAMP;
-        sampler_desc.AddressV = D3D11_TEXTURE_ADDRESS_CLAMP;
-        sampler_desc.AddressW = D3D11_TEXTURE_ADDRESS_CLAMP;
-        _object_sampler_state = device->create_sampler_state(sampler_desc);
     }
 
     std::vector<graphics::Texture> Level::level_textures() const
@@ -278,7 +260,7 @@ namespace trview
 
         {
             graphics::RasterizerStateStore rasterizer_store(context);
-            context->PSSetSamplers(0, 1, _room_sampler_state.GetAddressOf());
+            _room_sampler_state->apply();
             if (_show_wireframe)
             {
                 context->RSSetState(_wireframe_rasterizer.Get());
@@ -423,7 +405,7 @@ namespace trview
         graphics::set_data(*_pixel_shader_data, context, PixelShaderData{ false });
         _pixel_shader_data->apply(context, graphics::IBuffer::ApplyTo::PS);
 
-        // Render the triangles that the transparency buffer has produced.
+        _room_sampler_state->apply();
         _transparency->render(camera);
     }
 

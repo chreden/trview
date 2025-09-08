@@ -352,7 +352,8 @@ namespace trview
                     log,
                     buffer_source,
                     sound_storage,
-                    ngplus);
+                    ngplus,
+                    clamp_sampler_state);
                 new_level->initialise(level,
                     mesh_storage,
                     model_storage,
