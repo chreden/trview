@@ -33,13 +33,13 @@
             "ANG_RACE.TR4": [
                 {
                     "NgPlus": true,
-                    "Note": "This replaces a Lara Start Pos",
                     "Index": 88,
                     "TypeID": 369,
                     "Room": 23,
                     "X": 28243,
                     "Y": -24,
-                    "Z": 57825
+                    "Z": 57825,
+                    "Note": "Lara Start Pos"
                 },
                 {
                     "NgPlus": true,
@@ -130,7 +130,7 @@
                     "TypeID": 369,
                     "Room": 48,
                     "X": 8809,
-                    "Y": -6080,
+                    "Y": 6080,
                     "Z": 47561
                 },
                 {
@@ -139,7 +139,7 @@
                     "TypeID": 369,
                     "Room": 110,
                     "X": 24890,
-                    "Y": -6632,
+                    "Y": 6632,
                     "Z": 50585
                 },
                 {
@@ -311,7 +311,8 @@
                     "Room": 0,
                     "X": 84438,
                     "Y": -24,
-                    "Z": 44594
+                    "Z": 44594,
+                    "Note": "Lara Start Pos"
                 },
                 {
                     "NgPlus": true,
@@ -417,7 +418,7 @@
                 {
                     "NgPlus": true,
                     "Index": 90,
-                    "TypeID": 369,
+                    "TypeID": 368,
                     "Room": 62,
                     "X": 62998,
                     "Y": -74,
@@ -432,7 +433,8 @@
                     "Room": 139,
                     "X": 50590,
                     "Y": 5248,
-                    "Z": 53878
+                    "Z": 53878,
+                    "Note": "Lara Start Pos"
                 },
                 {
                     "NgPlus": true,
@@ -586,7 +588,223 @@
                 }
             ],
             "ALEXHUB.TR4": [
-                
+                {
+                    "NgPlus": true,
+                    "Index": 49,
+                    "TypeID": 369,
+                    "Room": 47,
+                    "X": 40465,
+                    "Y": -5912,
+                    "Z": 39415,
+                    "Note": "Lara Start Pos"
+                },
+                {
+                    "NgPlus": true,
+                    "Index": 50,
+                    "TypeID": 369,
+                    "Room": 54,
+                    "X": 50696,
+                    "Y": -7960,
+                    "Z": 56824
+                },
+                {
+                    "NgPlus": true,
+                    "Index": 51,
+                    "TypeID": 368,
+                    "Room": 11,
+                    "X": 56847,
+                    "Y": -7498,
+                    "Z": 42499
+                }
+            ],
+            "ALEXHUB2.TR4": [
+                {
+                    "NgPlus": true,
+                    "Index": 92,
+                    "TypeID": 368,
+                    "Room": 53,
+                    "X": 58889,
+                    "Y": -2122,
+                    "Z": 19006,
+                    "Note": "Lara Start Pos"
+                },
+                {
+                    "NgPlus": true,
+                    "Index": 93,
+                    "TypeID": 369,
+                    "Room": 23,
+                    "X": 62965,
+                    "Y": -536,
+                    "Z": 38414,
+                    "Note": "Lara Start Pos"
+                },
+                {
+                    "NgPlus": true,
+                    "Index": 94,
+                    "TypeID": 368,
+                    "Room": 69,
+                    "X": 41440,
+                    "Y": -2890,
+                    "Z": 33248,
+                    "Note": "Lara Start Pos"
+                }
+            ],
+            "PALACES.TR4": [
+                {
+                    "NgPlus": true,
+                    "Index": 105,
+                    "TypeID": 368,
+                    "Room": 0,
+                    "X": 73174,
+                    "Y": -74,
+                    "Z": 51734,
+                    "Note": "Lara Start Pos"
+                },
+                {
+                    "NgPlus": true,
+                    "Index": 106,
+                    "TypeID": 369,
+                    "Room": 26,
+                    "X": 46581,
+                    "Y": -792,
+                    "Z": 38412
+                },
+                {
+                    "NgPlus": true,
+                    "Index": 107,
+                    "TypeID": 368,
+                    "Room": 59,
+                    "X": 15854,
+                    "Y": -2634,
+                    "Z": 52716
+                }
+            ],
+            "PALACES2.TR4": [
+                {
+                    "NgPlus": true,
+                    "Index": 129,
+                    "TypeID": 369,
+                    "Room": 32,
+                    "X": 33305,
+                    "Y": -3096,
+                    "Z": 41431
+                },
+                {
+                    "NgPlus": true,
+                    "Index": 130,
+                    "TypeID": 368,
+                    "Room": 68,
+                    "X": 51665,
+                    "Y": -5194,
+                    "Z": 71117
+                },
+                {
+                    "NgPlus": true,
+                    "Index": 131,
+                    "TypeID": 369,
+                    "Room": 48,
+                    "X": 48620,
+                    "Y": -5144,
+                    "Z": 59843
+                },
+                {
+                    "NgPlus": true,
+                    "Index": 132,
+                    "TypeID": 369,
+                    "Room": 53,
+                    "X": 51718,
+                    "Y": -5144,
+                    "Z": 68059
+                },
+                {
+                    "NgPlus": true,
+                    "Index": 133,
+                    "TypeID": 369,
+                    "Room": 76,
+                    "X": 69146,
+                    "Y": -5912,
+                    "Z": 75221
+                },
+                {
+                    "NgPlus": true,
+                    "Index": 134,
+                    "TypeID": 368,
+                    "Room": 39,
+                    "X": 75238,
+                    "Y": -10826,
+                    "Z": 61975
+                },
+                {
+                    "NgPlus": true,
+                    "Index": 135,
+                    "TypeID": 368,
+                    "Room": 96,
+                    "X": 50665,
+                    "Y": -4938,
+                    "Z": 40426
+                }
+            ],
+            "CSPLIT1.TR4": [
+                {
+                    "NgPlus": true,
+                    "Index": 128,
+                    "TypeID": 368,
+                    "Room": 97,
+                    "X": 68170,
+                    "Y": 3510,
+                    "Z": 25167,
+                    "Note": "Lara Start Pos"
+                },
+                {
+                    "NgPlus": true,
+                    "Index": 129,
+                    "TypeID": 368,
+                    "Room": 44,
+                    "X": 43425,
+                    "Y": 1206,
+                    "Z": 68071,
+                    "Note": "Lara Start Pos"
+                },
+                {
+                    "NgPlus": true,
+                    "Index": 130,
+                    "TypeID": 369,
+                    "Room": 15,
+                    "X": 42411,
+                    "Y": 488,
+                    "Z": 49661,
+                    "Note": "Lara Start Pos"
+                },
+                {
+                    "NgPlus": true,
+                    "Index": 131,
+                    "TypeID": 368,
+                    "Room": 111,
+                    "X": 68082,
+                    "Y": 7862,
+                    "Z": 34331
+                },
+                {
+                    "NgPlus": true,
+                    "Index": 132,
+                    "TypeID": 368,
+                    "Room": 60,
+                    "X": 27132,
+                    "Y": -5194,
+                    "Z": 49647
+                },
+                {
+                    "NgPlus": true,
+                    "Index": 133,
+                    "TypeID": 368,
+                    "Room": 54,
+                    "X": 53786,
+                    "Y": 1206,
+                    "Z": 60961
+                }
+            ],
+            "CSPLIT2.TR4": [
+            
             ]
         },
         "tr5": {

@@ -180,6 +180,17 @@ namespace trview
                 lua_pushstring(L, out.c_str());
                 return 2;
             }
+
+            int input_text_multiline(lua_State* L)
+            {
+                const auto label = get_string(L, 1, "label");
+                std::string out = get_string(L, 1, "value");
+                const auto flags = get_optional_integer(L, 1, "flags");
+                bool result = ImGui::InputTextMultiline(label.c_str(), &out, ImVec2(), flags.value_or(ImGuiInputTextFlags_None));
+                lua_pushboolean(L, result);
+                lua_pushstring(L, out.c_str());
+                return 2;
+            }
         }
 
         void register_input(lua_State* L)
@@ -223,6 +234,7 @@ namespace trview
                 // { "InputScalar", input_scalar },
                 // { "InputScalarN", input_scalarN },
                 { "InputText", input_text },
+                { "InputTextMultiline", input_text_multiline },
                 { nullptr, nullptr }
             };
             luaL_setfuncs(L, funcs, 0);

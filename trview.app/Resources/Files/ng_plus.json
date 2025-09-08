@@ -524,7 +524,7 @@
                 { "item":133, "type":352 },
                 { "item":159, "type":358 },
                 { "item":211, "type":367 },
-                { "item":222, "type":354 },
+                { "item":222, "type":354 }
             ],
             "JEEPCHAS.TR4": [
                 { "item":14, "type":352 },
@@ -604,7 +604,41 @@
                 { "item":78, "type":362 }
             ],
             "ALEXHUB.TR4": [
-                
+                { "item":3, "type":357 },
+                { "item":14, "type":352 },
+                { "item":27, "type":357 }
+            ],
+            "ALEXHUB2.TR4": [
+                { "item":40, "type":352 },
+                { "item":44, "type":352 },
+                { "item":87, "type":352 }
+            ],
+            "PALACES.TR4": [
+                { "item":23, "type":352 },
+                { "item":24, "type":352 },
+                { "item":68, "type":367 }
+            ],
+            "PALACES2.TR4": [
+                { "item":9, "type":367 },
+                { "item":22, "type":354 },
+                { "item":57, "type":352 },
+                { "item":61, "type":352 },
+                { "item":68, "type":352 },
+                { "item":93, "type":367 },
+                { "item":99, "type":352 }
+            ],
+            "CSPLIT1.TR4": [
+                { "item":41, "type":359 },
+                { "item":44, "type":352 },
+                { "item":62, "type":362 },
+                { "item":71, "type":367 },
+                { "item":75, "type":367 },
+                { "item":100, "type":359 },
+                { "item":109, "type":362 },
+                { "item":112, "type":359 }
+            ],
+            "CSPLIT2.TR4": [
+            
             ]
         },
         "tr5": {
