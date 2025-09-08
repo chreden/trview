@@ -938,15 +938,88 @@
             ],
             "LIBEND.TR4": [],
             "BIKEBIT.TR4": [
-                { "item":9, "type":352 },
-                { "item":40, "type":364 },
-                { "item":42, "type":364 },
-                { "item":46, "type":358 },
-                { "item":47, "type":357 },
-                { "item":64, "type":357 },
-                { "item":65, "type":364 },
-                { "item":84, "type":364 },
-                { "item":85, "type":358 }
+                {
+                    "NgPlus": true,
+                    "Index": 93,
+                    "TypeID": 369,
+                    "Room": 25,
+                    "X": 53798,
+                    "Y": -280,
+                    "Z": 26062,
+                    "Note": "Lara Start Pos"
+                },
+                {
+                    "NgPlus": true,
+                    "Index": 94,
+                    "TypeID": 369,
+                    "Room": 165,
+                    "X": 50727,
+                    "Y": -910,
+                    "Z": 54787
+                },
+                {
+                    "NgPlus": true,
+                    "Index": 95,
+                    "TypeID": 368,
+                    "Room": 67,
+                    "X": 58856,
+                    "Y": -3658,
+                    "Z": 58981
+                },
+                {
+                    "NgPlus": true,
+                    "Index": 96,
+                    "TypeID": 369,
+                    "Room": 80,
+                    "X": 44544,
+                    "Y": 232,
+                    "Z": 67029
+                },
+                {
+                    "NgPlus": true,
+                    "Index": 97,
+                    "TypeID": 369,
+                    "Room": 94,
+                    "X": 59957,
+                    "Y": -2328,
+                    "Z": 67097
+                },
+                {
+                    "NgPlus": true,
+                    "Index": 98,
+                    "TypeID": 369,
+                    "Room": 112,
+                    "X": 51714,
+                    "Y": 3170,
+                    "Z": 47589
+                },
+                {
+                    "NgPlus": true,
+                    "Index": 99,
+                    "TypeID": 368,
+                    "Room": 144,
+                    "X": 39367,
+                    "Y": 5302,
+                    "Z": 43491
+                },
+                {
+                    "NgPlus": true,
+                    "Index": 100,
+                    "TypeID": 369,
+                    "Room": 126,
+                    "X": 37401,
+                    "Y": 3816,
+                    "Z": 39446
+                },
+                {
+                    "NgPlus": true,
+                    "Index": 101,
+                    "TypeID": 369,
+                    "Room": 31,
+                    "X": 54685,
+                    "Y": 2788,
+                    "Z": 42589
+                }
             ],
             "NUTRENCH.TR4": [
                 {
