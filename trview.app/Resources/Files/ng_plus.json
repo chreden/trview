@@ -638,8 +638,181 @@
                 { "item":112, "type":359 }
             ],
             "CSPLIT2.TR4": [
-            
-            ]
+                { "item":21, "type":363 },
+                { "item":34, "type":362 }
+            ],
+            "LIBRARY.TR4": [
+                { "item":14, "type":354 },
+                { "item":16, "type":352 },
+                { "item":65, "type":367 },
+                { "item":84, "type":352 },
+                { "item":152, "type":354 },
+                { "item":162, "type":354 },
+                { "item":179, "type":352 },
+                { "item":184, "type":354 },
+                { "item":192, "type":352 },
+                { "item":209, "type":367 }
+            ],
+            "LIBEND.TR4": [],
+            "BIKEBIT.TR4": [
+                {
+                    "NgPlus": true,
+                    "Index": 93,
+                    "TypeID": 369,
+                    "Room": 25,
+                    "X": 53798,
+                    "Y": -280,
+                    "Z": 26062,
+                    "Note": "Lara Start Pos"
+                },
+                {
+                    "NgPlus": true,
+                    "Index": 94,
+                    "TypeID": 369,
+                    "Room": 165,
+                    "X": 50727,
+                    "Y": -910,
+                    "Z": 54787
+                },
+                {
+                    "NgPlus": true,
+                    "Index": 95,
+                    "TypeID": 368,
+                    "Room": 67,
+                    "X": 58856,
+                    "Y": -3658,
+                    "Z": 58981
+                },
+                {
+                    "NgPlus": true,
+                    "Index": 96,
+                    "TypeID": 369,
+                    "Room": 80,
+                    "X": 44544,
+                    "Y": 232,
+                    "Z": 67029
+                },
+                {
+                    "NgPlus": true,
+                    "Index": 97,
+                    "TypeID": 369,
+                    "Room": 94,
+                    "X": 59957,
+                    "Y": -2328,
+                    "Z": 67097
+                },
+                {
+                    "NgPlus": true,
+                    "Index": 98,
+                    "TypeID": 369,
+                    "Room": 112,
+                    "X": 51714,
+                    "Y": 3170,
+                    "Z": 47589
+                },
+                {
+                    "NgPlus": true,
+                    "Index": 99,
+                    "TypeID": 368,
+                    "Room": 144,
+                    "X": 39367,
+                    "Y": 5302,
+                    "Z": 43491
+                },
+                {
+                    "NgPlus": true,
+                    "Index": 100,
+                    "TypeID": 369,
+                    "Room": 126,
+                    "X": 37401,
+                    "Y": 3816,
+                    "Z": 39446
+                },
+                {
+                    "NgPlus": true,
+                    "Index": 101,
+                    "TypeID": 369,
+                    "Room": 31,
+                    "X": 54685,
+                    "Y": 2788,
+                    "Z": 42589
+                }
+            ],
+            "NUTRENCH.TR4": [
+                { "item":3, "type":364 },
+                { "item":18, "type":358 },
+                { "item":41, "type":352 },
+                { "item":54, "type":352 },
+                { "item":63, "type":352 },
+                { "item":73, "type":357 }
+            ],
+            "CORTYARD.TR4": [
+                { "item":13, "type":364 },
+                { "item":20, "type":359 },
+                { "item":30, "type":359 },
+                { "item":37, "type":367 },
+                { "item":57, "type":367 }
+            ],
+            "LOWSTRT.TR4": [
+                { "item":20, "type":354 },
+                { "item":53, "type":367 }
+            ],
+            "HIGHSTRT.TR4": [
+                { "item":2, "type":352 },
+                { "item":44, "type":352 },
+                { "item":52, "type":354 },
+                { "item":54, "type":354 }
+            ],
+            "CITNEW.TR4": [
+                { "item":10, "type":359 },
+                { "item":12, "type":363 },
+                { "item":25, "type":362 },
+                { "item":32, "type":363 },
+                { "item":38, "type":362 },
+                { "item":55, "type":362 },
+                { "item":59, "type":363 }
+            ],
+            "JOBY1A.TR4": [
+                { "item":7, "type":362 },
+                { "item":14, "type":362 }
+            ],
+            "JOBY2.TR4": [
+                { "item":148, "type":352 }
+            ],
+            "JOBY3A.TR4": [
+                { "item":8, "type":363 },
+                { "item":27, "type":362 },
+                { "item":31, "type":364 },
+                { "item":34, "type":367 }
+            ],
+            "JOBY3B.TR4": [],
+            "JOBY4A.TR4": [
+                { "item":38, "type":354 },
+                { "item":42, "type":363 },
+                { "item":81, "type":359 },
+                { "item":105, "type":359 },
+                { "item":143, "type":363 }
+            ],
+            "JOBY4B.TR4": [
+                { "item":1, "type":354 },
+                { "item":11, "type":367 },
+                { "item":31, "type":358 }
+            ],
+            "JOBY4C.TR4": [
+                { "item":63, "type":354 },
+                { "item":68, "type":352 },
+                { "item":121, "type":363 },
+                { "item":127, "type":352 }
+            ],
+            "JOBY5A.TR4": [
+                { "item":28, "type":367 },
+                { "item":55, "type":367 },
+                { "item":96, "type":367 },
+                { "item":146, "type":367 },
+                { "item":155, "type":367 }
+            ],
+            "JOBY5B.TR4": [],
+            "JOBY5c.TR4": [],
         },
         "tr5": {
             "ANDREA1.TRC": [
