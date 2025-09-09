@@ -38,8 +38,9 @@ namespace trview
             std::unordered_map<std::string, std::unordered_map<uint16_t, int16_t>> level_maps;
             for (auto& [level_key, level_value] : value.items())
             {
+                const auto swaps = level_value["swaps"];
                 std::unordered_map<uint16_t, int16_t> entries;
-                for (auto& [_, item_value] : level_value.items())
+                for (auto& [_, item_value] : swaps.items())
                 {
                     entries[item_value["item"].get<uint16_t>()] = item_value["type"].get<uint16_t>();
                 }
