@@ -6,6 +6,7 @@ The Item library provides information about an item in a [level](level.md).
 | Name | Type | Mode | Description |
 | ---- | ---- | ---- | ---- |
 | activation_flags | number | R | Bit flags used in combination with trigger flags |
+| ai | boolean | R | Whether this is an AI object (only potentially true in TR4+) |
 | angle | number | R | Y rotation in range 0-65535 |
 | categories | string[] | RW | Categories that the item belongs to. Initially inherited by trview type list but can be overwrritten |
 | clear_body | boolean | R | Flag used together with Clear Bodies trigger action to remove the body of dead enemy from the level to conserve resources |

@@ -38,8 +38,7 @@
                     "Room": 23,
                     "X": 28243,
                     "Y": -24,
-                    "Z": 57825,
-                    "Note": "Lara Start Pos"
+                    "Z": 57825
                 },
                 {
                     "NgPlus": true,
@@ -311,8 +310,7 @@
                     "Room": 0,
                     "X": 84438,
                     "Y": -24,
-                    "Z": 44594,
-                    "Note": "Lara Start Pos"
+                    "Z": 44594
                 },
                 {
                     "NgPlus": true,
@@ -433,8 +431,7 @@
                     "Room": 139,
                     "X": 50590,
                     "Y": 5248,
-                    "Z": 53878,
-                    "Note": "Lara Start Pos"
+                    "Z": 53878
                 },
                 {
                     "NgPlus": true,
@@ -595,8 +592,7 @@
                     "Room": 47,
                     "X": 40465,
                     "Y": -5912,
-                    "Z": 39415,
-                    "Note": "Lara Start Pos"
+                    "Z": 39415
                 },
                 {
                     "NgPlus": true,
@@ -625,8 +621,7 @@
                     "Room": 53,
                     "X": 58889,
                     "Y": -2122,
-                    "Z": 19006,
-                    "Note": "Lara Start Pos"
+                    "Z": 19006
                 },
                 {
                     "NgPlus": true,
@@ -635,8 +630,7 @@
                     "Room": 23,
                     "X": 62965,
                     "Y": -536,
-                    "Z": 38414,
-                    "Note": "Lara Start Pos"
+                    "Z": 38414
                 },
                 {
                     "NgPlus": true,
@@ -645,8 +639,7 @@
                     "Room": 69,
                     "X": 41440,
                     "Y": -2890,
-                    "Z": 33248,
-                    "Note": "Lara Start Pos"
+                    "Z": 33248
                 }
             ],
             "PALACES.TR4": [
@@ -657,8 +650,7 @@
                     "Room": 0,
                     "X": 73174,
                     "Y": -74,
-                    "Z": 51734,
-                    "Note": "Lara Start Pos"
+                    "Z": 51734
                 },
                 {
                     "NgPlus": true,
@@ -752,8 +744,7 @@
                     "Room": 97,
                     "X": 68170,
                     "Y": 3510,
-                    "Z": 25167,
-                    "Note": "Lara Start Pos"
+                    "Z": 25167
                 },
                 {
                     "NgPlus": true,
@@ -762,8 +753,7 @@
                     "Room": 44,
                     "X": 43425,
                     "Y": 1206,
-                    "Z": 68071,
-                    "Note": "Lara Start Pos"
+                    "Z": 68071
                 },
                 {
                     "NgPlus": true,
@@ -772,8 +762,7 @@
                     "Room": 15,
                     "X": 42411,
                     "Y": 488,
-                    "Z": 49661,
-                    "Note": "Lara Start Pos"
+                    "Z": 49661
                 },
                 {
                     "NgPlus": true,
@@ -811,8 +800,7 @@
                     "Room": 116,
                     "X": 97833,
                     "Y": -2840,
-                    "Z": 54810,
-                    "Note": "Lara Start Pos"
+                    "Z": 54810
                 },
                 {
                     "NgPlus": true,
@@ -821,8 +809,7 @@
                     "Room": 33,
                     "X": 73214,
                     "Y": 10216,
-                    "Z": 52746,
-                    "Note": "Lara Start Pos"
+                    "Z": 52746
                 },
                 {
                     "NgPlus": true,
@@ -842,8 +829,7 @@
                     "Room": 11,
                     "X": 53760,
                     "Y": -24,
-                    "Z": 61952,
-                    "Note": "Lara Start Pos"
+                    "Z": 61952
                 },
                 {
                     "NgPlus": true,
@@ -945,8 +931,7 @@
                     "Room": 25,
                     "X": 53798,
                     "Y": -280,
-                    "Z": 26062,
-                    "Note": "Lara Start Pos"
+                    "Z": 26062
                 },
                 {
                     "NgPlus": true,
@@ -1029,8 +1014,7 @@
                     "Room": 1,
                     "X": 59883,
                     "Y": 223,
-                    "Z": 35309,
-                    "Note": "Lara Start Pos"
+                    "Z": 35309
                 },
                 {
                     "NgPlus": true,
@@ -1039,8 +1023,7 @@
                     "Room": 96,
                     "X": 76773,
                     "Y": 694,
-                    "Z": 55509,
-                    "Note": "Lara Start Pos"
+                    "Z": 55509
                 },
                 {
                     "NgPlus": true,
@@ -1049,8 +1032,7 @@
                     "Room": 9,
                     "X": 39372,
                     "Y": -177,
-                    "Z": 46491,
-                    "Note": "Lara Start Pos"
+                    "Z": 46491
                 },
                 {
                     "NgPlus": true,
@@ -1059,8 +1041,7 @@
                     "Room": 129,
                     "X": 32281,
                     "Y": 488,
-                    "Z": 48604,
-                    "Note": "Lara Start Pos"
+                    "Z": 48604
                 },
                 {
                     "NgPlus": true,
@@ -1089,8 +1070,7 @@
                     "Room": 102,
                     "X": 46663,
                     "Y": 1718,
-                    "Z": 42554,
-                    "Note": "Lara Start Pos"
+                    "Z": 42554
                 },
                 {
                     "NgPlus": true,
@@ -1099,8 +1079,7 @@
                     "Room": 100,
                     "X": 63984,
                     "Y": 1256,
-                    "Z": 60938,
-                    "Note": "Lara Start Pos"
+                    "Z": 60938
                 },
                 {
                     "NgPlus": true,
@@ -1138,8 +1117,7 @@
                     "Room": 22,
                     "X": 52748,
                     "Y": -5144,
-                    "Z": 50701,
-                    "Note": "Lara Start Pos"
+                    "Z": 50701
                 },
                 {
                     "NgPlus": true,
@@ -1168,8 +1146,7 @@
                     "Room": 89,
                     "X": 64039,
                     "Y": -2328,
-                    "Z": 73256,
-                    "Note": "Lara Start Pos"
+                    "Z": 73256
                 },
                 {
                     "NgPlus": true,
@@ -1272,8 +1249,7 @@
                     "Room": 49,
                     "X": 38375,
                     "Y": -342,
-                    "Z": 45585,
-                    "Note": "Lara Start Pos"
+                    "Z": 45585
                 }
             ],
             "JOBY2.TR4": [
@@ -1284,8 +1260,7 @@
                     "Room": 196,
                     "X": 79386,
                     "Y": 4198,
-                    "Z": 77316,
-                    "Note": "Lara Start Pos"
+                    "Z": 77316
                 }
             ],
             "JOBY3A.TR4": [
@@ -1296,8 +1271,7 @@
                     "Room": 71,
                     "X": 53824,
                     "Y": -2215,
-                    "Z": 52676,
-                    "Note": "Lara Start Pos"
+                    "Z": 52676
                 },
                 {
                     "NgPlus": true,
@@ -1412,8 +1386,7 @@
                     "Room": 86,
                     "X": 33246,
                     "Y": -8216,
-                    "Z": 44515,
-                    "Note": "Lara Start Pos"
+                    "Z": 44515
                 },
                 {
                     "NgPlus": true,

@@ -212,6 +212,7 @@ namespace trview
                     add_stat(std::format("Type{}", is_bad_mutant_egg() ? "*" : ""), item->type());
                     add_stat("#", item->number());
                     add_stat("Position", position_text());
+                    add_stat("AI", item->is_ai());
                     add_stat("Angle", bound_rotation(item->angle()));
                     add_stat("Angle Degrees", bound_rotation(item->angle()) / 182);
                     add_stat("Type ID", item->type_id());
@@ -355,6 +356,7 @@ namespace trview
         _filters.add_getter<int>("X", [](auto&& item) { return static_cast<int>(item.position().x * trlevel::Scale_X); });
         _filters.add_getter<int>("Y", [](auto&& item) { return static_cast<int>(item.position().y * trlevel::Scale_Y); });
         _filters.add_getter<int>("Z", [](auto&& item) { return static_cast<int>(item.position().z * trlevel::Scale_Z); });
+        _filters.add_getter<bool>("AI", [](auto&& item) { return item.is_ai(); });
         _filters.add_getter<int>("Angle", [](auto&& item) { return static_cast<int>(bound_rotation(item.angle())); });
         _filters.add_getter<int>("Angle Degrees", [](auto&& item) { return static_cast<int>(bound_rotation(item.angle()) / 182); });
         _filters.add_getter<int>("Type ID", [](auto&& item) { return static_cast<int>(item.type_id()); }, EditMode::Read);

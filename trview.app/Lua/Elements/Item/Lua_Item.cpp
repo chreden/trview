@@ -22,6 +22,11 @@ namespace trview
                     lua_pushinteger(L, item->activation_flags());
                     return 1;
                 }
+                else if (key == "ai")
+                {
+                    lua_pushboolean(L, item->is_ai());
+                    return 1;
+                }
                 else if (key == "angle")
                 {
                     lua_pushinteger(L, item->angle());
