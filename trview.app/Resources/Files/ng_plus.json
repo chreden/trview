@@ -556,360 +556,620 @@
             "ANGKOR1.TR4": {
                 "swaps" : [],
                 "adds": [
-                    { "NgPlus": true, "TypeID": 369, "Room": 20, "X": 6635, "Y": 1256, "Z": 89522 },
-                    { "NgPlus": true, "TypeID": 368, "Room": 142, "X": 16933, "Y": 2052, "Z": 51790 },
-                    { "NgPlus": true, "TypeID": 369, "Room": 32, "X": 92558, "Y": 744, "Z": 65940 }
+                    { "NgPlus": true, "Index":114, "TypeID": 369, "Room": 20, "X": 6635, "Y": 1256, "Z": 89522 },
+                    { "NgPlus": true, "Index":115, "TypeID": 368, "Room": 142, "X": 16933, "Y": 2052, "Z": 51790 },
+                    { "NgPlus": true, "Index":116, "TypeID": 369, "Room": 32, "X": 92558, "Y": 744, "Z": 65940 }
+                ]
+            },
+            "ANG_RACE.TR4": {
+                "swaps": [],
+                "adds": [
+                    {"NgPlus":true,"Index":88,"TypeID":369,"Room":23,"X":28243,"Y":-24,"Z":57825},
+                    {"NgPlus":true,"Index":89,"TypeID":368,"Room":27,"X":37364,"Y":-3146,"Z":32339},
+                    {"NgPlus":true,"Index":90,"TypeID":368,"Room":27,"X":36337,"Y":-3146,"Z":32243},
+                    {"NgPlus":true,"Index":91,"TypeID":368,"Room":124,"X":44497,"Y":-586,"Z":28177}
                 ]
             },
             "SETTOMB1.TR4": {
-                    "swaps": [
-                { "item":4, "type":359 },
-                { "item":22, "type":354 },
-                { "item":25, "type":354 },
-                { "item":30, "type":352 },
-                { "item":40, "type":362 },
-                { "item":49, "type":367 },
-                { "item":55, "type":352 },
-                { "item":77, "type":362 },
-                { "item":85, "type":359 },
-                { "item":86, "type":354 },
-                { "item":101, "type":363 },
-                { "item":150, "type":363 }]
+                "swaps": [
+                    { "item":4, "type":359 },
+                    { "item":22, "type":354 },
+                    { "item":25, "type":354 },
+                    { "item":30, "type":352 },
+                    { "item":40, "type":362 },
+                    { "item":49, "type":367 },
+                    { "item":55, "type":352 },
+                    { "item":77, "type":362 },
+                    { "item":85, "type":359 },
+                    { "item":86, "type":354 },
+                    { "item":101, "type":363 },
+                    { "item":150, "type":363 }
+                ],
+                "adds": [
+                    {"NgPlus":true,"Index":151,"TypeID":368,"Room":36,"X":90570,"Y":-14691,"Z":22116},
+                    {"NgPlus":true,"Index":152,"TypeID":369,"Room":30,"X":82370,"Y":-12315,"Z":21063},
+                    {"NgPlus":true,"Index":153,"TypeID":369,"Room":34,"X":65024,"Y":-3608,"Z":34304},
+                    {"NgPlus":true,"Index":154,"TypeID":368,"Room":34,"X":64000,"Y":-3658,"Z":33280},
+                    {"NgPlus":true,"Index":155,"TypeID":369,"Room":38,"X":60952,"Y":-5395,"Z":33328},
+                    {"NgPlus":true,"Index":156,"TypeID":368,"Room":42,"X":33341,"Y":-4170,"Z":32166},
+                    {"NgPlus":true,"Index":157,"TypeID":369,"Room":48,"X":8809,"Y":6080,"Z":47561},
+                    {"NgPlus":true,"Index":158,"TypeID":369,"Room":110,"X":24890,"Y":6632,"Z":50585},
+                    {"NgPlus":true,"Index":159,"TypeID":369,"Room":23,"X":22075,"Y":-2072,"Z":42503},
+                    {"NgPlus":true,"Index":160,"TypeID":369,"Room":5,"X":32256,"Y":-280,"Z":49664},
+                    {"NgPlus":true,"Index":161,"TypeID":369,"Room":25,"X":22001,"Y":1768,"Z":56824},
+                    {"NgPlus":true,"Index":162,"TypeID":368,"Room":143,"X":25076,"Y":3510,"Z":45562}
+                ]
             },
             "SETTOMB2.TR4": {
-                    "swaps": [
-                { "item":0, "type":359 },
-                { "item":36, "type":354 },
-                { "item":39, "type":358 },
-                { "item":90, "type":352 },
-                { "item":113, "type":352 },
-                { "item":133, "type":352 },
-                { "item":159, "type":358 },
-                { "item":211, "type":367 },
-                { "item":222, "type":354 }]
+                "swaps": [
+                    { "item":0, "type":359 },
+                    { "item":36, "type":354 },
+                    { "item":39, "type":358 },
+                    { "item":90, "type":352 },
+                    { "item":113, "type":352 },
+                    { "item":133, "type":352 },
+                    { "item":159, "type":358 },
+                    { "item":211, "type":367 },
+                    { "item":222, "type":354 }
+                ]
             },
             "JEEPCHAS.TR4": {
-                    "swaps": [
-                { "item":14, "type":352 },
-                { "item":15, "type":352 },
-                { "item":17, "type":357 },
-                { "item":30, "type":358 },
-                { "item":45, "type":358 }]
+                "swaps": [
+                    { "item":14, "type":352 },
+                    { "item":15, "type":352 },
+                    { "item":17, "type":357 },
+                    { "item":30, "type":358 },
+                    { "item":45, "type":358 }
+                ],
+                "adds": [
+                    {"NgPlus":true,"Index":48,"TypeID":369,"Room":20,"X":76210,"Y":-4376,"Z":8699},
+                    {"NgPlus":true,"Index":49,"TypeID":368,"Room":28,"X":47600,"Y":2486,"Z":37401},
+                    {"NgPlus":true,"Index":50,"TypeID":369,"Room":41,"X":6657,"Y":1512,"Z":38343},
+                    {"NgPlus":true,"Index":51,"TypeID":369,"Room":40,"X":14865,"Y":2024,"Z":42482},
+                    {"NgPlus":true,"Index":52,"TypeID":369,"Room":5,"X":78306,"Y":-536,"Z":26140},
+                    {"NgPlus":true,"Index":53,"TypeID":368,"Room":21,"X":62009,"Y":-4426,"Z":19965}
+                ]
             },
             "JEEPCHS2.TR4": {
-                    "swaps": [
-                { "item":2, "type":357 },
-                { "item":16, "type":352 },
-                { "item":63, "type":357 },
-                { "item":65, "type":358 },
-                { "item":66, "type":352 },
-                { "item":86, "type":352 },
-                { "item":87, "type":358 }]
+                "swaps": [
+                    { "item":2, "type":357 },
+                    { "item":16, "type":352 },
+                    { "item":63, "type":357 },
+                    { "item":65, "type":358 },
+                    { "item":66, "type":352 },
+                    { "item":86, "type":352 },
+                    { "item":87, "type":358 }
+                ],
+                "adds": [
+                    {"NgPlus":true,"Index":108,"TypeID":368,"Room":10,"X":11817,"Y":5046,"Z":93675},
+                    {"NgPlus":true,"Index":109,"TypeID":369,"Room":12,"X":9851,"Y":-27,"Z":56965},
+                    {"NgPlus":true,"Index":110,"TypeID":368,"Room":58,"X":49693,"Y":-1866,"Z":18966},
+                    {"NgPlus":true,"Index":111,"TypeID":368,"Room":42,"X":60942,"Y":-2634,"Z":23029},
+                    {"NgPlus":true,"Index":112,"TypeID":368,"Room":43,"X":83461,"Y":-3146,"Z":20955},
+                    {"NgPlus":true,"Index":113,"TypeID":368,"Room":76,"X":95725,"Y":-3146,"Z":58981},
+                    {"NgPlus":true,"Index":114,"TypeID":368,"Room":73,"X":77349,"Y":-5962,"Z":47673}
+                ]
             },
             "KARNAK1.TR4": {
-                    "swaps": [
-                { "item":10, "type":352 },
-                { "item":11, "type":367 },
-                { "item":15, "type":367 },
-                { "item":33, "type":364 },
-                { "item":58, "type":359 },
-                { "item":69, "type":354 },
-                { "item":74, "type":359 },
-                { "item":95, "type":354 }]
+                "swaps": [
+                    { "item":10, "type":352 },
+                    { "item":11, "type":367 },
+                    { "item":15, "type":367 },
+                    { "item":33, "type":364 },
+                    { "item":58, "type":359 },
+                    { "item":69, "type":354 },
+                    { "item":74, "type":359 },
+                    { "item":95, "type":354 }
+                ],
+                "adds": [
+                    {"NgPlus":true,"Index":99,"TypeID":369,"Room":0,"X":84438,"Y":-24,"Z":44594},
+                    {"NgPlus":true,"Index":100,"TypeID":369,"Room":14,"X":81433,"Y":-24,"Z":40462},
+                    {"NgPlus":true,"Index":101,"TypeID":368,"Room":93,"X":69051,"Y":1718,"Z":72155},
+                    {"NgPlus":true,"Index":102,"TypeID":369,"Room":33,"X":68092,"Y":-155,"Z":78321},
+                    {"NgPlus":true,"Index":103,"TypeID":368,"Room":47,"X":76234,"Y":7094,"Z":72219},
+                    {"NgPlus":true,"Index":104,"TypeID":368,"Room":47,"X":77312,"Y":7094,"Z":72219},
+                    {"NgPlus":true,"Index":105,"TypeID":369,"Room":92,"X":79299,"Y":1768,"Z":71938},
+                    {"NgPlus":true,"Index":106,"TypeID":369,"Room":104,"X":71168,"Y":5223,"Z":52736}
+                ]
             },
             "HALL.TR4": {
-                    "swaps": [
-                { "item":7, "type":352 },
-                { "item":8, "type":352 },
-                { "item":13, "type":352 },
-                { "item":76, "type":352 },
-                { "item":79, "type":352 }]
+                "swaps": [
+                    { "item":7, "type":352 },
+                    { "item":8, "type":352 },
+                    { "item":13, "type":352 },
+                    { "item":76, "type":352 },
+                    { "item":79, "type":352 }
+                ],
+                "adds": [
+                    {"NgPlus":true,"Index":86,"TypeID":369,"Room":9,"X":84513,"Y":-40,"Z":28258},
+                    {"NgPlus":true,"Index":87,"TypeID":369,"Room":166,"X":71191,"Y":-2072,"Z":38348},
+                    {"NgPlus":true,"Index":88,"TypeID":369,"Room":71,"X":76293,"Y":-2328,"Z":35317},
+                    {"NgPlus":true,"Index":89,"TypeID":369,"Room":37,"X":75322,"Y":-24,"Z":15872},
+                    {"NgPlus":true,"Index":90,"TypeID":368,"Room":62,"X":62998,"Y":-74,"Z":32204}
+                ]
             },
             "LAKE.TR4": {
-                    "swaps": [
-                { "item":3, "type":362 },
-                { "item":18, "type":352 },
-                { "item":28, "type":367 },
-                { "item":33, "type":367 },
-                { "item":37, "type":354 },
-                { "item":43, "type":367 },
-                { "item":68, "type":354 },
-                { "item":76, "type":354 },
-                { "item":87, "type":354 }]
+                "swaps": [
+                    { "item":3, "type":362 },
+                    { "item":18, "type":352 },
+                    { "item":28, "type":367 },
+                    { "item":33, "type":367 },
+                    { "item":37, "type":354 },
+                    { "item":43, "type":367 },
+                    { "item":68, "type":354 },
+                    { "item":76, "type":354 },
+                    { "item":87, "type":354 }
+                ],
+                "adds": [
+                    {"NgPlus":true,"Index":95,"TypeID":369,"Room":139,"X":50590,"Y":5248,"Z":53878},
+                    {"NgPlus":true,"Index":96,"TypeID":369,"Room":137,"X":51737,"Y":5352,"Z":36225},
+                    {"NgPlus":true,"Index":97,"TypeID":369,"Room":141,"X":49714,"Y":1512,"Z":57840},
+                    {"NgPlus":true,"Index":98,"TypeID":368,"Room":11,"X":41535,"Y":2230,"Z":33261},
+                    {"NgPlus":true,"Index":99,"TypeID":369,"Room":11,"X":43542,"Y":2280,"Z":33319},
+                    {"NgPlus":true,"Index":100,"TypeID":369,"Room":113,"X":29267,"Y":-308,"Z":6683}
+                ]
             },
             "SEMER.TR4": {
-                    "swaps": [
-                { "item":23, "type":354 },
-                { "item":31, "type":357 },
-                { "item":43, "type":363 },
-                { "item":53, "type":362 },
-                { "item":84, "type":357 },
-                { "item":127, "type":357 },
-                { "item":168, "type":358 },
-                { "item":169, "type":362 },
-                { "item":179, "type":363 },
-                { "item":188, "type":367 },
-                { "item":200, "type":357 },
-                { "item":204, "type":354 },
-                { "item":212, "type":358 },
-                { "item":222, "type":367 },
-                { "item":229, "type":359 },
-                { "item":235, "type":364 }]
+                "swaps": [
+                    { "item":23, "type":354 },
+                    { "item":31, "type":357 },
+                    { "item":43, "type":363 },
+                    { "item":53, "type":362 },
+                    { "item":84, "type":357 },
+                    { "item":127, "type":357 },
+                    { "item":168, "type":358 },
+                    { "item":169, "type":362 },
+                    { "item":179, "type":363 },
+                    { "item":188, "type":367 },
+                    { "item":200, "type":357 },
+                    { "item":204, "type":354 },
+                    { "item":212, "type":358 },
+                    { "item":222, "type":367 },
+                    { "item":229, "type":359 },
+                    { "item":235, "type":364 }
+                ]
             },
             "SEMER2.TR4": {
-                    "swaps": [
-                { "item":17, "type":354 },
-                { "item":44, "type":352 },
-                { "item":52, "type":358 },
-                { "item":59, "type":352 },
-                { "item":92, "type":354 },
-                { "item":96, "type":352 },
-                { "item":125, "type":358 }]
+                "swaps": [
+                    { "item":17, "type":354 },
+                    { "item":44, "type":352 },
+                    { "item":52, "type":358 },
+                    { "item":59, "type":352 },
+                    { "item":92, "type":354 },
+                    { "item":96, "type":352 },
+                    { "item":125, "type":358 }
+                ],
+                "adds": [
+                    {"NgPlus":true,"Index":133,"TypeID":369,"Room":43,"X":58885,"Y":-16152,"Z":1561},
+                    {"NgPlus":true,"Index":134,"TypeID":368,"Room":51,"X":59925,"Y":-8522,"Z":39425},
+                    {"NgPlus":true,"Index":135,"TypeID":369,"Room":61,"X":89625,"Y":1000,"Z":44554},
+                    {"NgPlus":true,"Index":136,"TypeID":369,"Room":19,"X":80417,"Y":-14,"Z":55803},
+                    {"NgPlus":true,"Index":137,"TypeID":369,"Room":26,"X":48617,"Y":-2584,"Z":37352},
+                    {"NgPlus":true,"Index":138,"TypeID":368,"Room":27,"X":40442,"Y":-74,"Z":30245},
+                    {"NgPlus":true,"Index":139,"TypeID":368,"Room":30,"X":61937,"Y":-74,"Z":34322}
+                ]
             },
             "TRAIN.TR4": {
-                    "swaps": [
-                { "item":31, "type":354 },
-                { "item":32, "type":362 },
-                { "item":35, "type":354 },
-                { "item":78, "type":362 }]
+                "swaps": [
+                    { "item":31, "type":354 },
+                    { "item":32, "type":362 },
+                    { "item":35, "type":354 },
+                    { "item":78, "type":362 }
+                ],
+                "adds": [
+                    {"NgPlus":true,"Index":79,"TypeID":369,"Room":94,"X":63952,"Y":-1816,"Z":53793},
+                    {"NgPlus":true,"Index":80,"TypeID":368,"Room":10,"X":32251,"Y":-1098,"Z":53799},
+                    {"NgPlus":true,"Index":81,"TypeID":369,"Room":24,"X":28127,"Y":-1048,"Z":53781},
+                    {"NgPlus":true,"Index":82,"TypeID":369,"Room":55,"X":58880,"Y":-792,"Z":51712}
+                ]
             },
             "ALEXHUB.TR4": {
-                    "swaps": [
-                { "item":3, "type":357 },
-                { "item":14, "type":352 },
-                { "item":27, "type":357 }]
+                "swaps": [
+                    { "item":3, "type":357 },
+                    { "item":14, "type":352 },
+                    { "item":27, "type":357 }
+                ],
+                "adds": [
+                    {"NgPlus":true,"Index":49,"TypeID":369,"Room":47,"X":40465,"Y":-5912,"Z":39415},
+                    {"NgPlus":true,"Index":50,"TypeID":369,"Room":54,"X":50696,"Y":-7960,"Z":56824},
+                    {"NgPlus":true,"Index":51,"TypeID":368,"Room":11,"X":56847,"Y":-7498,"Z":42499}
+                ]
             },
             "ALEXHUB2.TR4": {
-                    "swaps": [
-                { "item":40, "type":352 },
-                { "item":44, "type":352 },
-                { "item":87, "type":352 }]
+                "swaps": [
+                    { "item":40, "type":352 },
+                    { "item":44, "type":352 },
+                    { "item":87, "type":352 }
+                ],
+                "adds": [
+                    {"NgPlus":true,"Index":92,"TypeID":368,"Room":53,"X":58889,"Y":-2122,"Z":19006},
+                    {"NgPlus":true,"Index":93,"TypeID":369,"Room":23,"X":62965,"Y":-536,"Z":38414},
+                    {"NgPlus":true,"Index":94,"TypeID":368,"Room":69,"X":41440,"Y":-2890,"Z":33248}
+                ]
             },
             "PALACES.TR4": {
-                    "swaps": [
-                { "item":23, "type":352 },
-                { "item":24, "type":352 },
-                { "item":68, "type":367 }]
+                "swaps": [
+                    { "item":23, "type":352 },
+                    { "item":24, "type":352 },
+                    { "item":68, "type":367 }
+                ],
+                "adds": [
+                    {"NgPlus":true,"Index":105,"TypeID":368,"Room":0,"X":73174,"Y":-74,"Z":51734},
+                    {"NgPlus":true,"Index":106,"TypeID":369,"Room":26,"X":46581,"Y":-792,"Z":38412},
+                    {"NgPlus":true,"Index":107,"TypeID":368,"Room":59,"X":15854,"Y":-2634,"Z":52716}
+                ]
             },
             "PALACES2.TR4": {
-                    "swaps": [
-                { "item":9, "type":367 },
-                { "item":22, "type":354 },
-                { "item":57, "type":352 },
-                { "item":61, "type":352 },
-                { "item":68, "type":352 },
-                { "item":93, "type":367 },
-                { "item":99, "type":352 }]
+                "swaps": [
+                    { "item":9, "type":367 },
+                    { "item":22, "type":354 },
+                    { "item":57, "type":352 },
+                    { "item":61, "type":352 },
+                    { "item":68, "type":352 },
+                    { "item":93, "type":367 },
+                    { "item":99, "type":352 }
+                ],
+                "adds": [
+                    {"NgPlus":true,"Index":129,"TypeID":369,"Room":32,"X":33305,"Y":-3096,"Z":41431},
+                    {"NgPlus":true,"Index":130,"TypeID":368,"Room":68,"X":51665,"Y":-5194,"Z":71117},
+                    {"NgPlus":true,"Index":131,"TypeID":369,"Room":48,"X":48620,"Y":-5144,"Z":59843},
+                    {"NgPlus":true,"Index":132,"TypeID":369,"Room":53,"X":51718,"Y":-5144,"Z":68059},
+                    {"NgPlus":true,"Index":133,"TypeID":369,"Room":76,"X":69146,"Y":-5912,"Z":75221},
+                    {"NgPlus":true,"Index":134,"TypeID":368,"Room":39,"X":75238,"Y":-10826,"Z":61975},
+                    {"NgPlus":true,"Index":135,"TypeID":368,"Room":96,"X":50665,"Y":-4938,"Z":40426}
+                ]
             },
             "CSPLIT1.TR4": {
-                    "swaps": [
-                { "item":41, "type":359 },
-                { "item":44, "type":352 },
-                { "item":62, "type":362 },
-                { "item":71, "type":367 },
-                { "item":75, "type":367 },
-                { "item":100, "type":359 },
-                { "item":109, "type":362 },
-                { "item":112, "type":359 }]
+                "swaps": [
+                    { "item":41, "type":359 },
+                    { "item":44, "type":352 },
+                    { "item":62, "type":362 },
+                    { "item":71, "type":367 },
+                    { "item":75, "type":367 },
+                    { "item":100, "type":359 },
+                    { "item":109, "type":362 },
+                    { "item":112, "type":359 }
+                ],
+                "adds": [
+                    {"NgPlus":true,"Index":128,"TypeID":368,"Room":97,"X":68170,"Y":3510,"Z":25167},
+                    {"NgPlus":true,"Index":129,"TypeID":368,"Room":44,"X":43425,"Y":1206,"Z":68071},
+                    {"NgPlus":true,"Index":130,"TypeID":369,"Room":15,"X":42411,"Y":488,"Z":49661},
+                    {"NgPlus":true,"Index":131,"TypeID":368,"Room":111,"X":68082,"Y":7862,"Z":34331},
+                    {"NgPlus":true,"Index":132,"TypeID":368,"Room":60,"X":27132,"Y":-5194,"Z":49647},
+                    {"NgPlus":true,"Index":133,"TypeID":368,"Room":54,"X":53786,"Y":1206,"Z":60961}
+                ]
             },
             "CSPLIT2.TR4": {
-                    "swaps": [
-                { "item":21, "type":363 },
-                { "item":34, "type":362 }]
+                "swaps": [
+                    { "item":21, "type":363 },
+                    { "item":34, "type":362 }
+                ],
+                "adds": [
+                    {"NgPlus":true,"Index":107,"TypeID":369,"Room":116,"X":97833,"Y":-2840,"Z":54810},
+                    {"NgPlus":true,"Index":108,"TypeID":369,"Room":33,"X":73214,"Y":10216,"Z":52746},
+                    {"NgPlus":true,"Index":109,"TypeID":368,"Room":27,"X":49665,"Y":11190,"Z":52729}
+                ]
             },
             "LIBRARY.TR4": {
-                    "swaps": [
-                { "item":14, "type":354 },
-                { "item":16, "type":352 },
-                { "item":65, "type":367 },
-                { "item":84, "type":352 },
-                { "item":152, "type":354 },
-                { "item":162, "type":354 },
-                { "item":179, "type":352 },
-                { "item":184, "type":354 },
-                { "item":192, "type":352 },
-                { "item":209, "type":367 }]
+                "swaps": [
+                    { "item":14, "type":354 },
+                    { "item":16, "type":352 },
+                    { "item":65, "type":367 },
+                    { "item":84, "type":352 },
+                    { "item":152, "type":354 },
+                    { "item":162, "type":354 },
+                    { "item":179, "type":352 },
+                    { "item":184, "type":354 },
+                    { "item":192, "type":352 },
+                    { "item":209, "type":367 }
+                ],
+                "adds": [
+                    {"NgPlus":true,"Index":210,"TypeID":369,"Room":11,"X":53760,"Y":-24,"Z":61952},
+                    {"NgPlus":true,"Index":211,"TypeID":369,"Room":147,"X":75310,"Y":-24,"Z":44587},
+                    {"NgPlus":true,"Index":212,"TypeID":368,"Room":25,"X":71171,"Y":-330,"Z":78311},
+                    {"NgPlus":true,"Index":213,"TypeID":369,"Room":167,"X":73257,"Y":4072,"Z":49704},
+                    {"NgPlus":true,"Index":214,"TypeID":369,"Room":28,"X":49725,"Y":1256,"Z":40462},
+                    {"NgPlus":true,"Index":215,"TypeID":368,"Room":42,"X":35342,"Y":3254,"Z":50687},
+                    {"NgPlus":true,"Index":216,"TypeID":369,"Room":80,"X":37373,"Y":7014,"Z":54788},
+                    {"NgPlus":true,"Index":217,"TypeID":369,"Room":79,"X":33293,"Y":6376,"Z":55812},
+                    {"NgPlus":true,"Index":218,"TypeID":368,"Room":86,"X":17917,"Y":8118,"Z":57853},
+                    {"NgPlus":true,"Index":219,"TypeID":368,"Room":173,"X":59907,"Y":-3914,"Z":67094},
+                    {"NgPlus":true,"Index":220,"TypeID":369,"Room":114,"X":55818,"Y":-6680,"Z":74228}
+                ]
             },
             "LIBEND.TR4": {},
             "BIKEBIT.TR4": {
-                    "swaps": [
-                { "item":9, "type":352 },
-                { "item":40, "type":364 },
-                { "item":42, "type":364 },
-                { "item":46, "type":358 },
-                { "item":47, "type":357 },
-                { "item":64, "type":357 },
-                { "item":65, "type":364 },
-                { "item":84, "type":364 },
-                { "item":85, "type":358 }]
+                "swaps": [
+                    { "item":9, "type":352 },
+                    { "item":40, "type":364 },
+                    { "item":42, "type":364 },
+                    { "item":46, "type":358 },
+                    { "item":47, "type":357 },
+                    { "item":64, "type":357 },
+                    { "item":65, "type":364 },
+                    { "item":84, "type":364 },
+                    { "item":85, "type":358 }
+                ],
+                "adds": [
+                    {"NgPlus":true,"Index":93,"TypeID":369,"Room":25,"X":53798,"Y":-280,"Z":26062},
+                    {"NgPlus":true,"Index":94,"TypeID":369,"Room":165,"X":50727,"Y":-910,"Z":54787},
+                    {"NgPlus":true,"Index":95,"TypeID":368,"Room":67,"X":58856,"Y":-3658,"Z":58981},
+                    {"NgPlus":true,"Index":96,"TypeID":369,"Room":80,"X":44544,"Y":232,"Z":67029},
+                    {"NgPlus":true,"Index":97,"TypeID":369,"Room":94,"X":59957,"Y":-2328,"Z":67097},
+                    {"NgPlus":true,"Index":98,"TypeID":369,"Room":112,"X":51714,"Y":3170,"Z":47589},
+                    {"NgPlus":true,"Index":99,"TypeID":368,"Room":144,"X":39367,"Y":5302,"Z":43491},
+                    {"NgPlus":true,"Index":100,"TypeID":369,"Room":126,"X":37401,"Y":3816,"Z":39446},
+                    {"NgPlus":true,"Index":101,"TypeID":369,"Room":31,"X":54685,"Y":2788,"Z":42589}
+                ]
             },
             "NUTRENCH.TR4": {
-                    "swaps": [
-                { "item":3, "type":364 },
-                { "item":18, "type":358 },
-                { "item":41, "type":352 },
-                { "item":54, "type":352 },
-                { "item":63, "type":352 },
-                { "item":73, "type":357 }]
+                "swaps": [
+                    { "item":3, "type":364 },
+                    { "item":18, "type":358 },
+                    { "item":41, "type":352 },
+                    { "item":54, "type":352 },
+                    { "item":63, "type":352 },
+                    { "item":73, "type":357 }
+                ],
+                "adds": [
+                    {"NgPlus":true,"Index":74,"TypeID":369,"Room":1,"X":59883,"Y":223,"Z":35309},
+                    {"NgPlus":true,"Index":75,"TypeID":368,"Room":96,"X":76773,"Y":694,"Z":55509},
+                    {"NgPlus":true,"Index":76,"TypeID":368,"Room":9,"X":39372,"Y":-177,"Z":46491},
+                    {"NgPlus":true,"Index":77,"TypeID":369,"Room":129,"X":32281,"Y":488,"Z":48604},
+                    {"NgPlus":true,"Index":78,"TypeID":368,"Room":145,"X":66148,"Y":1462,"Z":48565},
+                    {"NgPlus":true,"Index":79,"TypeID":368,"Room":5,"X":40507,"Y":950,"Z":51718}
+                ]
             },
             "CORTYARD.TR4": {
-                    "swaps": [
-                { "item":13, "type":364 },
-                { "item":20, "type":359 },
-                { "item":30, "type":359 },
-                { "item":37, "type":367 },
-                { "item":57, "type":367 }]
+                "swaps": [
+                    { "item":13, "type":364 },
+                    { "item":20, "type":359 },
+                    { "item":30, "type":359 },
+                    { "item":37, "type":367 },
+                    { "item":57, "type":367 }
+                ],
+                "adds": [
+                    {"NgPlus":true,"Index":58,"TypeID":368,"Room":102,"X":46663,"Y":1718,"Z":42554},
+                    {"NgPlus":true,"Index":59,"TypeID":369,"Room":100,"X":63984,"Y":1256,"Z":60938},
+                    {"NgPlus":true,"Index":60,"TypeID":368,"Room":81,"X":49604,"Y":1462,"Z":57883},
+                    {"NgPlus":true,"Index":61,"TypeID":368,"Room":81,"X":54767,"Y":1462,"Z":57789},
+                    {"NgPlus":true,"Index":62,"TypeID":369,"Room":125,"X":59861,"Y":-792,"Z":76364}
+                ]
             },
             "LOWSTRT.TR4": {
-                    "swaps": [
-                { "item":20, "type":354 },
-                { "item":53, "type":367 }]
+                "swaps": [
+                    { "item":20, "type":354 },
+                    { "item":53, "type":367 }
+                ],
+                "adds": [
+                    {"NgPlus":true,"Index":55,"TypeID":369,"Room":22,"X":52748,"Y":-5144,"Z":50701},
+                    {"NgPlus":true,"Index":56,"TypeID":368,"Room":100,"X":63083,"Y":-1610,"Z":48700},
+                    {"NgPlus":true,"Index":57,"TypeID":368,"Room":54,"X":66974,"Y":438,"Z":45596}
+                ]
             },
             "HIGHSTRT.TR4": {
-                    "swaps": [
-                { "item":2, "type":352 },
-                { "item":44, "type":352 },
-                { "item":52, "type":354 },
-                { "item":54, "type":354 }]
+                "swaps": [
+                    { "item":2, "type":352 },
+                    { "item":44, "type":352 },
+                    { "item":52, "type":354 },
+                    { "item":54, "type":354 }
+                ],
+                "adds": [
+                    {"NgPlus":true,"Index":66,"TypeID":369,"Room":89,"X":64039,"Y":-2328,"Z":73256},
+                    {"NgPlus":true,"Index":67,"TypeID":368,"Room":3,"X":65011,"Y":-2122,"Z":63992},
+                    {"NgPlus":true,"Index":68,"TypeID":369,"Room":121,"X":54803,"Y":-2088,"Z":44458},
+                    {"NgPlus":true,"Index":69,"TypeID":368,"Room":115,"X":53753,"Y":-1742,"Z":77293}
+                ]
             },
             "CITNEW.TR4": {
-                    "swaps": [
-                { "item":10, "type":359 },
-                { "item":12, "type":363 },
-                { "item":25, "type":362 },
-                { "item":32, "type":363 },
-                { "item":38, "type":362 },
-                { "item":55, "type":362 },
-                { "item":59, "type":363 }]
+                "swaps": [
+                    { "item":10, "type":359 },
+                    { "item":12, "type":363 },
+                    { "item":25, "type":362 },
+                    { "item":32, "type":363 },
+                    { "item":38, "type":362 },
+                    { "item":55, "type":362 },
+                    { "item":59, "type":363 }
+                ],
+                "adds": [
+                    {"NgPlus":true,"Index":108,"TypeID":369,"Room":140,"X":62933,"Y":-792,"Z":33265},
+                    {"NgPlus":true,"Index":109,"TypeID":369,"Room":40,"X":50675,"Y":1768,"Z":55881},
+                    {"NgPlus":true,"Index":110,"TypeID":369,"Room":76,"X":48678,"Y":10204,"Z":57860},
+                    {"NgPlus":true,"Index":111,"TypeID":369,"Room":70,"X":47632,"Y":8291,"Z":53823},
+                    {"NgPlus":true,"Index":112,"TypeID":368,"Room":75,"X":47602,"Y":-74,"Z":53716},
+                    {"NgPlus":true,"Index":113,"TypeID":368,"Room":75,"X":47578,"Y":-74,"Z":52692},
+                    {"NgPlus":true,"Index":114,"TypeID":368,"Room":10,"X":41439,"Y":10934,"Z":70161}
+                ]
             },
             "JOBY1A.TR4": {
-                    "swaps": [
-                { "item":7, "type":362 },
-                { "item":14, "type":362 }]
+                "swaps": [
+                    { "item":7, "type":362 },
+                    { "item":14, "type":362 }
+                ],
+                "adds": [
+                    {"NgPlus":true,"Index":41,"TypeID":368,"Room":49,"X":38375,"Y":-342,"Z":45585}
+                ]
             },
             "JOBY2.TR4": {
-                    "swaps": [
-                { "item":148, "type":352 }]
+                "swaps": [
+                    { "item":148, "type":352 }
+                ],
+                "adds": [
+                    {"NgPlus":true,"Index":224,"TypeID":369,"Room":196,"X":79386,"Y":4198,"Z":77316}
+                ]
             },
             "JOBY3A.TR4": {
-                    "swaps": [
-                { "item":8, "type":363 },
-                { "item":27, "type":362 },
-                { "item":31, "type":364 },
-                { "item":34, "type":367 }]
+                "swaps": [
+                    { "item":8, "type":363 },
+                    { "item":27, "type":362 },
+                    { "item":31, "type":364 },
+                    { "item":34, "type":367 }
+                ],
+                "adds": [
+                    {"NgPlus":true,"Index":45,"TypeID":369,"Room":71,"X":53824,"Y":-2215,"Z":52676},
+                    {"NgPlus":true,"Index":46,"TypeID":369,"Room":76,"X":56863,"Y":-8096,"Z":47577},
+                    {"NgPlus":true,"Index":47,"TypeID":369,"Room":84,"X":45605,"Y":-7960,"Z":57877},
+                    {"NgPlus":true,"Index":48,"TypeID":368,"Room":20,"X":65037,"Y":-11618,"Z":60974}
+                ]
             },
             "JOBY3B.TR4": {},
             "JOBY4A.TR4": {
-                    "swaps": [
-                { "item":38, "type":354 },
-                { "item":42, "type":363 },
-                { "item":81, "type":359 },
-                { "item":105, "type":359 },
-                { "item":143, "type":363 }]
+                "swaps": [
+                    { "item":38, "type":354 },
+                    { "item":42, "type":363 },
+                    { "item":81, "type":359 },
+                    { "item":105, "type":359 },
+                    { "item":143, "type":363 }
+                ],
+                "adds": [
+                    {"NgPlus":true,"Index":189,"TypeID":369,"Room":110,"X":10765,"Y":-8472,"Z":22032},
+                    {"NgPlus":true,"Index":190,"TypeID":369,"Room":13,"X":31234,"Y":-8472,"Z":4520},
+                    {"NgPlus":true,"Index":191,"TypeID":368,"Room":130,"X":57897,"Y":-8778,"Z":23070},
+                    {"NgPlus":true,"Index":192,"TypeID":368,"Room":255,"X":61952,"Y":-5450,"Z":41472},
+                    {"NgPlus":true,"Index":193,"TypeID":368,"Room":255,"X":62976,"Y":-5450,"Z":41472}
+                ]
             },
             "JOBY4B.TR4": {
-                    "swaps": [
-                { "item":1, "type":354 },
-                { "item":11, "type":367 },
-                { "item":31, "type":358 }]
+                "swaps": [
+                    { "item":1, "type":354 },
+                    { "item":11, "type":367 },
+                    { "item":31, "type":358 }
+                ],
+                "adds": [
+                    {"NgPlus":true,"Index":44,"TypeID":369,"Room":30,"X":78346,"Y":-11286,"Z":78312},
+                    {"NgPlus":true,"Index":45,"TypeID":368,"Room":81,"X":77337,"Y":-9667,"Z":69107},
+                    {"NgPlus":true,"Index":46,"TypeID":368,"Room":48,"X":67056,"Y":-9676,"Z":69110}
+                ]
             },
             "JOBY4C.TR4": {
-                    "swaps": [
-                { "item":63, "type":354 },
-                { "item":68, "type":352 },
-                { "item":121, "type":363 },
-                { "item":127, "type":352 }]
+                "swaps": [
+                    { "item":63, "type":354 },
+                    { "item":68, "type":352 },
+                    { "item":121, "type":363 },
+                    { "item":127, "type":352 }
+                ],
+                "adds": [
+                    {"NgPlus":true,"Index":165,"TypeID":369,"Room":86,"X":33246,"Y":-8216,"Z":44515},
+                    {"NgPlus":true,"Index":166,"TypeID":368,"Room":255,"X":14848,"Y":-3786,"Z":30208},
+                    {"NgPlus":true,"Index":167,"TypeID":369,"Room":143,"X":12800,"Y":-3864,"Z":34315},
+                    {"NgPlus":true,"Index":168,"TypeID":369,"Room":143,"X":16959,"Y":-3864,"Z":32237}
+                ]
             },
             "JOBY5A.TR4": {
-                    "swaps": [
-                { "item":28, "type":367 },
-                { "item":55, "type":367 },
-                { "item":96, "type":367 },
-                { "item":146, "type":367 },
-                { "item":155, "type":367 }]
+                "swaps": [
+                    { "item":28, "type":367 },
+                    { "item":55, "type":367 },
+                    { "item":96, "type":367 },
+                    { "item":146, "type":367 },
+                    { "item":155, "type":367 }
+                ],
+                "adds": [
+                    {"NgPlus":true,"Index":177,"TypeID":368,"Room":11,"X":13787,"Y":-16849,"Z":12767},
+                    {"NgPlus":true,"Index":178,"TypeID":368,"Room":119,"X":10756,"Y":1974,"Z":42494}
+                ]
             },
             "JOBY5B.TR4": {},
             "JOBY5C.TR4": {}
         },
         "tr5": {
             "ANDREA1.TRC": {
-                    "swaps": [
-                { "item":3, "type":339 },
-                { "item":10, "type":339 },
-                { "item":13, "type":339 },
-                { "item":19, "type":339 },
-                { "item":28, "type":340 },
-                { "item":42, "type":340 },
-                { "item":101, "type":348 },
-                { "item":111, "type":339 },
-                { "item":115, "type":348 },
-                { "item":139, "type":348 },
-                { "item":150, "type":348 }]
+                "swaps": [
+                    { "item":3, "type":339 },
+                    { "item":10, "type":339 },
+                    { "item":13, "type":339 },
+                    { "item":19, "type":339 },
+                    { "item":28, "type":340 },
+                    { "item":42, "type":340 },
+                    { "item":101, "type":348 },
+                    { "item":111, "type":339 },
+                    { "item":115, "type":348 },
+                    { "item":139, "type":348 },
+                    { "item":150, "type":348 }
+                ]
             },
             "ANDREA2.TRC": {
-                    "swaps": [
-                { "item":30, "type":339 },
-                { "item":33, "type":340 },
-                { "item":46, "type":348 },
-                { "item":75, "type":340 },
-                { "item":78, "type":337 },
-                { "item":83, "type":337 },
-                { "item":88, "type":340 },
-                { "item":127, "type":340 },
-                { "item":140, "type":337 }]
+                "swaps": [
+                    { "item":30, "type":339 },
+                    { "item":33, "type":340 },
+                    { "item":46, "type":348 },
+                    { "item":75, "type":340 },
+                    { "item":78, "type":337 },
+                    { "item":83, "type":337 },
+                    { "item":88, "type":340 },
+                    { "item":127, "type":340 },
+                    { "item":140, "type":337 }
+                ]
             },
             "ANDREA3.TRC": {
-                    "swaps": [
-                { "item":84, "type":337 },
-                { "item":97, "type":337 }]
+                "swaps": [
+                    { "item":84, "type":337 },
+                    { "item":97, "type":337 }
+                ]
+            },
+            "ANDY3.TRC": {
+                "adds": [
+                    {"NgPlus":false,"Index":60,"TypeID":241,"Room":11,"X":65598,"Y":4805,"Z":32530}
+                ]
             },
             "JOBY2.TRC": {
-                    "swaps": [
-                { "item":32, "type":348 },
-                { "item":116, "type":348 },
-                { "item":127, "type":348 }]
+                "swaps": [
+                    { "item":32, "type":348 },
+                    { "item":116, "type":348 },
+                    { "item":127, "type":348 }
+                ]
             },
             "JOBY3.TRC": {
-                    "swaps": [
-                { "item":27, "type":337 },
-                { "item":118, "type":339 },
-                { "item":209, "type":339 }]
+                "swaps": [
+                    { "item":27, "type":337 },
+                    { "item":118, "type":339 },
+                    { "item":209, "type":339 }
+                ],
+                "adds": [
+                    {"NgPlus":false,"Index":244,"TypeID":355,"Room":61,"X":56832,"Y":8852,"Z":55808}
+                ]
             },
             "JOBY5.TRC": {
-                    "swaps": [
-                { "item":120, "type":339 },
-                { "item":133, "type":337 },
-                { "item":183, "type":348 }]
+                "swaps": [
+                    { "item":120, "type":339 },
+                    { "item":133, "type":337 },
+                    { "item":183, "type":348 }
+                ],
+                "adds": [
+                    {"NgPlus":false,"Index":216,"TypeID":355,"Room":38,"X":58880,"Y":5012,"Z":76288}
+                ]
             },
             "RICH1.TRC": {
-                    "swaps": [
-                { "item":7, "type":346 },
-                { "item":41, "type":346 },
-                { "item":61, "type":346 },
-                { "item":92, "type":346 },
-                { "item":139, "type":346 },
-                { "item":140, "type":346 },
-                { "item":178, "type":346 },
-                { "item":195, "type":346 }]
+                "swaps": [
+                    { "item":7, "type":346 },
+                    { "item":41, "type":346 },
+                    { "item":61, "type":346 },
+                    { "item":92, "type":346 },
+                    { "item":139, "type":346 },
+                    { "item":140, "type":346 },
+                    { "item":178, "type":346 },
+                    { "item":195, "type":346 }
+                ]
             },
             "RICH2.TRC": {
-                    "swaps": [
-                { "item":1, "type":346 },
-                { "item":13, "type":346 },
-                { "item":42, "type":346 },
-                { "item":70, "type":346 },
-                { "item":71, "type":346 },
-                { "item":102, "type":346 },
-                { "item":113, "type":346 },
-                { "item":201, "type":346 }]
+                "swaps": [
+                    { "item":1, "type":346 },
+                    { "item":13, "type":346 },
+                    { "item":42, "type":346 },
+                    { "item":70, "type":346 },
+                    { "item":71, "type":346 },
+                    { "item":102, "type":346 },
+                    { "item":113, "type":346 },
+                    { "item":201, "type":346 }
+                ]
             },
             "RICH3.TRC": {
-                    "swaps": [
-                { "item":0, "type":346 },
-                { "item":158, "type":346 },
-                { "item":197, "type":346 },
-                { "item":199, "type":346 },
-                { "item":220, "type":346 }]
+                "swaps": [
+                    { "item":0, "type":346 },
+                    { "item":158, "type":346 },
+                    { "item":197, "type":346 },
+                    { "item":199, "type":346 },
+                    { "item":220, "type":346 }
+                ]
             }
         }
     }
