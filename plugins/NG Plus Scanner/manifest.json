@@ -1,0 +1,5 @@
+{
+    "name": "NG+ Scanner",
+    "author": "chreden",
+    "description": "Scans levels for NG+ changes at runtime when given the start of the item list"
+}
