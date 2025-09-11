@@ -339,6 +339,16 @@ namespace trview
         return _is_ai;
     }
 
+    void Item::set_remastered_extra(bool value)
+    {
+        _is_remastered_extra = value;
+    }
+
+    bool Item::is_remastered_extra() const
+    {
+        return _is_remastered_extra;
+    }
+
     bool is_mutant_egg(const IItem& item)
     {
         return is_mutant_egg(item.type_id());

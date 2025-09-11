@@ -93,6 +93,7 @@ namespace trview
         {
             auto room = level->room(entry.entity.Room);
             auto item = _item_source(tr_level, entry.entity, entry.index, {}, model_storage, level, room);
+            item->set_remastered_extra(true);
             if (entry.ng_plus)
             {
                 item->set_ng_plus(entry.ng_plus);

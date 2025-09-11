@@ -54,6 +54,8 @@ namespace trview
         virtual void set_ng_plus(bool value) = 0;
         virtual std::optional<bool> ng_plus() const = 0;
         virtual bool is_ai() const = 0;
+        virtual void set_remastered_extra(bool value) = 0;
+        virtual bool is_remastered_extra() const = 0;
     };
 
     bool is_mutant_egg(const IItem& item);

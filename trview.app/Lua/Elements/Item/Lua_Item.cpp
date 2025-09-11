@@ -72,6 +72,11 @@ namespace trview
                 {
                     return create_vector3(L, item->position() * trlevel::Scale);
                 }
+                else if (key == "remastered_extra")
+                {
+                    lua_pushboolean(L, item->is_remastered_extra());
+                    return 1;
+                }
                 else if (key == "room")
                 {
                     return create_room(L, item->room().lock());

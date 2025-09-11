@@ -37,6 +37,8 @@ namespace trview
         _tips["Clear Body"] = "If true, removed when Bodybag is triggered";
         _tips["Trigger triggerer"] = "Disables the trigger on the same sector until this item is triggered";
         _tips["Type*"] = "Mutant Egg spawn target is missing; egg will be empty";
+        _tips["Remastered Extra"] = "Item is added at runtime by the remasters, not present in level file";
+        _tips["NG+"] = "Item only appears in NG+ mode in the remasters";
 
         setup_filters();
 
@@ -222,6 +224,14 @@ namespace trview
                     add_stat("Flags", format_binary(item->activation_flags()));
                     add_stat("OCB", item->ocb());
                     add_stat("Category", join(item->categories()));
+                    if (item->is_remastered_extra())
+                    {
+                        add_stat("Remastered Extra", item->is_remastered_extra());
+                    }
+                    if (item->ng_plus().value_or(false))
+                    {
+                        add_stat("NG+", item->ng_plus().value());
+                    }
                 }
 
                 ImGui::EndTable();
@@ -366,6 +376,7 @@ namespace trview
         _filters.add_getter<std::string>("Flags", [](auto&& item) { return format_binary(item.activation_flags()); });
         _filters.add_getter<int>("OCB", [](auto&& item) { return static_cast<int>(item.ocb()); });
         _filters.add_getter<bool>("Hide", [](auto&& item) { return !item.visible(); }, EditMode::ReadWrite);
+        _filters.add_getter<bool>("Remastered Extra", [](auto&& item) { return item.is_remastered_extra(); });
         _filters.add_multi_getter<float>("Trigger References", [](auto&& item)
             {
                 std::vector<float> results;
