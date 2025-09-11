@@ -594,7 +594,7 @@ namespace trview
         deduplicate_triangles();
     }
 
-    void Level::generate_entities(const trlevel::ILevel& level, const IItem::EntitySource& entity_source, const IItem::AiSource& ai_source, const IModelStorage& model_storage)
+    void Level::generate_entities(const trlevel::ILevel& level, const IItem::EntitySource& entity_source, const IItem::AiSource& ai_source, const IModelStorage& model_storage, const trlevel::ILevel::LoadCallbacks& callbacks)
     {
         std::vector<std::weak_ptr<IItem>> skidoo_drivers;
 
@@ -626,36 +626,38 @@ namespace trview
             }
         }
 
-        // callbacks.on_progress("Generating NG+ items");
-
-        const auto extras = _ngplus_switcher->extras_for_level(shared_from_this(), level, model_storage);
-        for (const auto& extra : extras)
+        if (_platform_and_version.remastered)
         {
-            if (auto room = extra->room().lock())
+            callbacks.on_progress("Generating NG+ items");
+            const auto extras = _ngplus_switcher->extras_for_level(shared_from_this(), level, model_storage);
+            for (const auto& extra : extras)
             {
-                room->add_entity(extra);
-            }
-            _token_store += extra->on_changed += [this]() { content_changed(); };
-            _entities.push_back(extra);
-        }
-
-        const auto swapset = _ngplus_switcher->create_for_level(shared_from_this(), level, model_storage);
-        for (const auto& [key, value] : swapset)
-        {
-            if (key > _entities.size())
-            {
-                continue;
-            }
-
-            if (value)
-            {
-                const auto existing_item = _entities[key];
-                if (auto room = existing_item->room().lock())
+                if (auto room = extra->room().lock())
                 {
-                    room->add_entity(value);
+                    room->add_entity(extra);
                 }
-                _token_store += value->on_changed += [this]() { content_changed(); };
-                _entities.push_back(value);
+                _token_store += extra->on_changed += [this]() { content_changed(); };
+                _entities.push_back(extra);
+            }
+
+            const auto swapset = _ngplus_switcher->create_for_level(shared_from_this(), level, model_storage);
+            for (const auto& [key, value] : swapset)
+            {
+                if (key > _entities.size())
+                {
+                    continue;
+                }
+
+                if (value)
+                {
+                    const auto existing_item = _entities[key];
+                    if (auto room = existing_item->room().lock())
+                    {
+                        room->add_entity(value);
+                    }
+                    _token_store += value->on_changed += [this]() { content_changed(); };
+                    _entities.push_back(value);
+                }
             }
         }
 
@@ -1415,7 +1417,7 @@ namespace trview
         const ICameraSink::Source& camera_sink_source,
         const ISoundSource::Source& sound_source_source,
         const IFlyby::Source& flyby_source,
-        const trlevel::ILevel::LoadCallbacks callbacks)
+        const trlevel::ILevel::LoadCallbacks& callbacks)
     {
         _platform_and_version = level->platform_and_version();
         _floor_data = level->get_floor_data_all();
@@ -1430,7 +1432,7 @@ namespace trview
         callbacks.on_progress("Generating triggers");
         generate_triggers(trigger_source);
         callbacks.on_progress("Generating entities");
-        generate_entities(*level, entity_source, ai_source, *model_storage);
+        generate_entities(*level, entity_source, ai_source, *model_storage, callbacks);
         callbacks.on_progress("Generating lights");
         generate_lights(*level, light_source);
         callbacks.on_progress("Generating camera/sinks");

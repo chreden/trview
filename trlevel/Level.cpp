@@ -6,6 +6,7 @@
 #include <spanstream>
 #include <numeric>
 #include <span>
+#include <filesystem>
 
 #include "Level_common.h"
 #include "Level_psx.h"
@@ -720,6 +721,14 @@ namespace trlevel
                 _platform_and_version.is_pack = false;
             }
 
+            // TR1-3 remastered aren't identified by version - check for MAP file presence instead.
+            if (!_platform_and_version.remastered)
+            {
+                std::filesystem::path level_path{ _filename };
+                level_path.replace_extension(".MAP");
+                _platform_and_version.remastered = _files->load_file(level_path.string()).has_value();
+            }
+
             const std::unordered_map<PlatformAndVersion, std::function<void()>> loaders
             {
                 {{.platform = Platform::PSX, .version = LevelVersion::Tomb1 }, [&]() { load_tr1_psx(file, activity, callbacks); }},
@@ -729,8 +738,11 @@ namespace trlevel
                 {{.platform = Platform::PSX, .version = LevelVersion::Tomb5 }, [&]() { load_tr5_psx(file, activity, callbacks); }},
                 {{.platform = Platform::PSX, .version = LevelVersion::Unknown, .is_pack = true }, [&]() { load_psx_pack(file, activity, callbacks); }},
                 {{.platform = Platform::PC, .version = LevelVersion::Tomb1 }, [&]() { load_tr1_pc(file, activity, callbacks); }},
+                {{.platform = Platform::PC, .version = LevelVersion::Tomb1, .remastered = true }, [&]() { load_tr1_pc(file, activity, callbacks); }},
                 {{.platform = Platform::PC, .version = LevelVersion::Tomb2 }, [&]() { load_tr2_pc(file, activity, callbacks); }},
+                {{.platform = Platform::PC, .version = LevelVersion::Tomb2, .remastered = true }, [&]() { load_tr2_pc(file, activity, callbacks); }},
                 {{.platform = Platform::PC, .version = LevelVersion::Tomb3 }, [&]() { load_tr3_pc(file, activity, callbacks); }},
+                {{.platform = Platform::PC, .version = LevelVersion::Tomb3, .remastered = true }, [&]() { load_tr3_pc(file, activity, callbacks); }},
                 {{.platform = Platform::PC, .version = LevelVersion::Tomb4 }, [&]() { load_tr4_pc(file, activity, callbacks); }},
                 {{.platform = Platform::PC, .version = LevelVersion::Tomb4, .remastered = true }, [&]() { load_tr4_pc_remastered(file, activity, callbacks); }},
                 {{.platform = Platform::PC, .version = LevelVersion::Tomb5 }, [&]() { load_tr5_pc(file, activity, callbacks); }},
@@ -838,7 +850,7 @@ namespace trlevel
             sfx_file.exceptions(std::ios::failbit | std::ios::badbit | std::ios::eofbit);
 
             // Remastered has a sound map like structure at the start of main.sfx, so skip that if present:
-            if (_platform_and_version.remastered)
+            if (_platform_and_version.remastered && _platform_and_version.version >= LevelVersion::Tomb4)
             {
                 _sound_map = read_sound_map(activity, sfx_file, callbacks);
                 _sound_details = read_sound_details(activity, sfx_file, callbacks);
@@ -873,7 +885,7 @@ namespace trlevel
         }
     }
 
-    std::optional<std::vector<uint8_t>> Level::load_main_sfx() const
+    std::optional<std::vector<uint8_t>> Level::load_main_sfx()
     {
         const auto path = trview::path_for_filename(_filename);
         const auto og_main = _files->load_file(std::format("{}/MAIN.SFX", path));
@@ -881,7 +893,20 @@ namespace trlevel
         {
             return og_main;
         }
-        return _files->load_file(std::format("{}/../SFX/MAIN.SFX", path));
+
+        if (auto remastered_main = _files->load_file(std::format("{}/../SFX/MAIN.SFX", path)))
+        {
+            _platform_and_version.remastered = true;
+            return remastered_main;
+        }
+
+        if (auto remastered_main_expansion = _files->load_file(std::format("{}/../../SFX/MAIN.SFX", path)))
+        {
+            _platform_and_version.remastered = true;
+            return remastered_main_expansion;
+        }
+
+        return std::nullopt;
     }
 
     bool Level::trng() const
