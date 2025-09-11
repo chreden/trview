@@ -185,160 +185,178 @@
         },
         "tr2": {
             "WALL.TR2": {
-                    "swaps": [
-                { "item":28, "type":148 },
-                { "item":92, "type":148 } ]
+                "swaps": [
+                    { "item":28, "type":148 },
+                    { "item":92, "type":148 }
+                ]
             },
             "BOAT.TR2": {
-                    "swaps": [
-                { "item":12, "type":144 },
-                { "item":60, "type":144 },
-                { "item":105, "type":147 },
-                { "item":122, "type":143 },
-                { "item":129, "type":147 },
-                { "item":132, "type":144 } ]
+                "swaps": [
+                    { "item":12, "type":144 },
+                    { "item":60, "type":144 },
+                    { "item":105, "type":147 },
+                    { "item":122, "type":143 },
+                    { "item":129, "type":147 },
+                    { "item":132, "type":144 }
+                ]
             },
             "VENICE.TR2": {
                 "swaps": [
-                { "item":33, "type":144 },
-                { "item":47, "type":145 },
-                { "item":57, "type":143 },
-                { "item":65, "type":143 },
-                { "item":79, "type":144 },
-                { "item":115, "type":143 }]
+                    { "item":33, "type":144 },
+                    { "item":47, "type":145 },
+                    { "item":57, "type":143 },
+                    { "item":65, "type":143 },
+                    { "item":79, "type":144 },
+                    { "item":115, "type":143 }
+                ]
             },
             "OPERA.TR2": {
-                    "swaps": [
-                { "item":27, "type":145 },
-                { "item":35, "type":145 },
-                { "item":59, "type":143 },
-                { "item":86, "type":145 },
-                { "item":130, "type":145 },
-                { "item":141, "type":143 },
-                { "item":169, "type":147 },
-                { "item":186, "type":148 }]
+                "swaps": [
+                    { "item":27, "type":145 },
+                    { "item":35, "type":145 },
+                    { "item":59, "type":143 },
+                    { "item":86, "type":145 },
+                    { "item":130, "type":145 },
+                    { "item":141, "type":143 },
+                    { "item":169, "type":147 },
+                    { "item":186, "type":148 }
+                ]
             },
             "RIG.TR2": {
                 "swaps": [
-                { "item":15, "type":145 },
-                { "item":29, "type":145 },
-                { "item":37, "type":144 },
-                { "item":64, "type":141 },
-                { "item":72, "type":145 },
-                { "item":81, "type":138 },
-                { "item":111, "type":140 }]
+                    { "item":15, "type":145 },
+                    { "item":29, "type":145 },
+                    { "item":37, "type":144 },
+                    { "item":64, "type":141 },
+                    { "item":72, "type":145 },
+                    { "item":81, "type":138 },
+                    { "item":111, "type":140 }
+                ]
             },
             "PLATFORM.TR2": {
-                    "swaps": [
-                { "item":30, "type":147 },
-                { "item":33, "type":145 },
-                { "item":44, "type":146 },
-                { "item":76, "type":147 },
-                { "item":64, "type":146 },
-                { "item":104, "type":147 }]
+                "swaps": [
+                    { "item":30, "type":147 },
+                    { "item":33, "type":145 },
+                    { "item":44, "type":146 },
+                    { "item":64, "type":146 },
+                    { "item":76, "type":147 },
+                    { "item":104, "type":143 }
+                ]
             },
             "UNWATER.TR2": {
-                    "swaps": [
-                { "item":58, "type":147 },
-                { "item":63, "type":147 }]
+                "swaps": [
+                    { "item":58, "type":148 },
+                    { "item":63, "type":148 }
+                ]
             },
             "KEEL.TR2": {
-                    "swaps": [
-                { "item":24, "type":148 },
-                { "item":47, "type":143 },
-                { "item":64, "type":148 },
-                { "item":73, "type":148 },
-                { "item":74, "type":147 },
-                { "item":95, "type":147 },
-                { "item":151, "type":147 },
-                { "item":154, "type":146 },
-                { "item":170, "type":144 }]
+                "swaps": [
+                    { "item":24, "type":148 },
+                    { "item":47, "type":143 },
+                    { "item":64, "type":148 },
+                    { "item":73, "type":148 },
+                    { "item":74, "type":147 },
+                    { "item":95, "type":147 },
+                    { "item":151, "type":147 },
+                    { "item":154, "type":146 },
+                    { "item":170, "type":144 }
+                ]
             },
             "LIVING.TR2": {
-                    "swaps": [
-                { "item":4, "type":144 }]
+                "swaps": [
+                    { "item":4, "type":144 }
+                ]
             },
             "DECK.TR2": {
-                    "swaps": [
-                { "item":16, "type":145 },
-                { "item":38, "type":145 },
-                { "item":93, "type":145 }]
+                "swaps": [
+                    { "item":16, "type":145 },
+                    { "item":38, "type":145 },
+                    { "item":93, "type":145 }
+                ]
             },
             "SKIDOO.TR2": {
                 "swaps": [
-                { "item":0, "type":145 },
-                { "item":9, "type":147 },
-                { "item":22, "type":144 },
-                { "item":80, "type":145 },
-                { "item":93, "type":148 },
-                { "item":94, "type":148 }]
+                    { "item":0, "type":145 },
+                    { "item":9, "type":147 },
+                    { "item":22, "type":144 },
+                    { "item":80, "type":145 },
+                    { "item":93, "type":148 },
+                    { "item":94, "type":148 }
+                ]
             },
             "MONASTRY.TR2": {
-                    "swaps": [
-                { "item":27, "type":147 },
-                { "item":48, "type":145 },
-                { "item":77, "type":145 },
-                { "item":92, "type":147 },
-                { "item":93, "type":148 },
-                { "item":119, "type":147 },
-                { "item":121, "type":145 },
-                { "item":157, "type":147 },
-                { "item":158, "type":148 }]
+                "swaps": [
+                    { "item":27, "type":147 },
+                    { "item":48, "type":148 },
+                    { "item":77, "type":147 },
+                    { "item":92, "type":147 },
+                    { "item":93, "type":148 },
+                    { "item":119, "type":147 },
+                    { "item":121, "type":148 },
+                    { "item":157, "type":147 },
+                    { "item":158, "type":148 }
+                ]
             },
             "CATACOMB.TR2": {
-                    "swaps": [
-                { "item":17, "type":147 },
-                { "item":28, "type":145 },
-                { "item":46, "type":148 },
-                { "item":47, "type":148 },
-                { "item":55, "type":145 },
-                { "item":114, "type":147 },
-                { "item":152, "type":144 }]
+                "swaps": [
+                    { "item":17, "type":147 },
+                    { "item":28, "type":145 },
+                    { "item":46, "type":148 },
+                    { "item":47, "type":148 },
+                    { "item":55, "type":145 },
+                    { "item":114, "type":147 },
+                    { "item":152, "type":144 }
+                ]
             },
             "ICECAVE.TR2": {
-                    "swaps": [
-                { "item":71, "type":148 },
-                { "item":90, "type":145 },
-                { "item":93, "type":143 },
-                { "item":127, "type":145 },
-                { "item":130, "type":144 },
-                { "item":133, "type":148 },
-                { "item":151, "type":148 }]
+                "swaps": [
+                    { "item":71, "type":148 },
+                    { "item":90, "type":145 },
+                    { "item":93, "type":143 },
+                    { "item":127, "type":145 },
+                    { "item":130, "type":144 },
+                    { "item":133, "type":148 },
+                    { "item":151, "type":148 }
+                ]
             },
             "EMPRTOMB.TR2": {
-                    "swaps": [
-                { "item":0, "type":143 },
-                { "item":39, "type":145 },
-                { "item":103, "type":145 },
-                { "item":133, "type":145 },
-                { "item":137, "type":143 },
-                { "item":160, "type":145 },
-                { "item":181, "type":145 },
-                { "item":202, "type":148 }]
+                "swaps": [
+                    { "item":0, "type":143 },
+                    { "item":39, "type":145 },
+                    { "item":103, "type":145 },
+                    { "item":133, "type":145 },
+                    { "item":137, "type":143 },
+                    { "item":160, "type":145 },
+                    { "item":181, "type":145 },
+                    { "item":202, "type":148 }
+                ]
             },
             "FLOATING.TR2": {
-                    "swaps": [
-                { "item":4, "type":145 },
-                { "item":26, "type":148 },
-                { "item":45, "type":147 },
-                { "item":84, "type":147 },
-                { "item":112, "type":148 },
-                { "item":117, "type":148 }]
+                "swaps": [
+                    { "item":4, "type":145 },
+                    { "item":26, "type":148 },
+                    { "item":45, "type":147 },
+                    { "item":84, "type":147 },
+                    { "item":112, "type":148 },
+                    { "item":117, "type":148 }
+                ]
             },
             "XIAN.TR2": {
-                    "swaps": [
-                { "item":0, "type":145 },
-                { "item":13, "type":145 },
-                { "item":14, "type":148 },
-                { "item":34, "type":145 },
-                { "item":37, "type":145 }]
+                "swaps": [
+                    { "item":0, "type":145 },
+                    { "item":13, "type":145 },
+                    { "item":14, "type":148 },
+                    { "item":34, "type":145 },
+                    { "item":37, "type":145 }
+                ]
             },
             "HOUSE.TR2": {
-                    "swaps": [
-                { "item":3, "type":143 },
-                { "item":63, "type":143 },
-                { "item":64, "type":143 },
-                { "item":66, "type":143 }]
+                "swaps": [
+                    { "item":3, "type":143 },
+                    { "item":63, "type":143 },
+                    { "item":64, "type":143 },
+                    { "item":66, "type":143 }
+                ]
             }
         },
         "tr3": {
