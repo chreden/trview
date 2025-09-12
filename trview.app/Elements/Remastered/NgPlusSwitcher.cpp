@@ -36,17 +36,72 @@ namespace trview
             }
 
             std::unordered_map<std::string, std::unordered_map<uint16_t, int16_t>> level_maps;
+            std::unordered_map<std::string, std::vector<ReplacementEntity>> level_extras_maps;
             for (auto& [level_key, level_value] : value.items())
             {
+                if (level_value.contains("adds"))
+                {
+                    const auto adds = level_value["adds"];
+                    std::vector<ReplacementEntity> extra_entries;
+                    for (auto& [_, item_value] : adds.items())
+                    {
+                        ReplacementEntity new_entity;
+                        new_entity.ng_plus = item_value["NgPlus"].get<bool>();
+                        new_entity.index = item_value["Index"].get<uint16_t>();
+                        new_entity.entity.TypeID = item_value["TypeID"].get<uint16_t>();
+                        new_entity.entity.Room = item_value["Room"].get<uint16_t>();
+                        new_entity.entity.x = item_value["X"].get<int32_t>();
+                        new_entity.entity.y = item_value["Y"].get<int32_t>();
+                        new_entity.entity.z = item_value["Z"].get<int32_t>();
+                        extra_entries.push_back(new_entity);
+                    }
+                    level_extras_maps[level_key] = extra_entries;
+                }
+
+                const auto swaps = level_value["swaps"];
                 std::unordered_map<uint16_t, int16_t> entries;
-                for (auto& [_, item_value] : level_value.items())
+                for (auto& [_, item_value] : swaps.items())
                 {
                     entries[item_value["item"].get<uint16_t>()] = item_value["type"].get<uint16_t>();
                 }
                 level_maps[level_key] = entries;
             }
+            _extra_item_mapping[version->second] = level_extras_maps;
             _item_mapping[version->second] = level_maps;
         }
+    }
+
+    std::vector<std::shared_ptr<IItem>> NgPlusSwitcher::extras_for_level(
+        const std::shared_ptr<ILevel>& level,
+        const trlevel::ILevel& tr_level,
+        const IModelStorage& model_storage) const
+    {
+        const auto game_mapping = _extra_item_mapping.find(level->version());
+        if (game_mapping == _extra_item_mapping.end())
+        {
+            return {};
+        }
+
+        const auto level_mapping = game_mapping->second.find(level->name());
+        if (level_mapping == game_mapping->second.end())
+        {
+            return {};
+        }
+
+        std::vector<std::shared_ptr<IItem>> results;
+        for (const auto& entry : level_mapping->second)
+        {
+            auto room = level->room(entry.entity.Room);
+            auto item = _item_source(tr_level, entry.entity, entry.index, {}, model_storage, level, room);
+            item->set_remastered_extra(true);
+            if (entry.ng_plus)
+            {
+                item->set_ng_plus(entry.ng_plus);
+            }
+            results.push_back(item);
+        }
+
+        return results;
     }
 
     std::unordered_map<uint16_t, std::shared_ptr<IItem>> NgPlusSwitcher::create_for_level(const std::shared_ptr<ILevel>& level, const trlevel::ILevel& tr_level, const IModelStorage& model_storage) const

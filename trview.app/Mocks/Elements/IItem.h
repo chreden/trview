@@ -35,6 +35,9 @@ namespace trview
             MOCK_METHOD(void, set_categories, (const std::unordered_set<std::string>&), (override));
             MOCK_METHOD(std::optional<bool>, ng_plus, (), (const, override));
             MOCK_METHOD(void, set_ng_plus, (bool), (override));
+            MOCK_METHOD(bool, is_ai, (), (const, override));
+            MOCK_METHOD(bool, is_remastered_extra, (), (const, override));
+            MOCK_METHOD(void, set_remastered_extra, (bool), (override));
 
             bool _visible_state;
 

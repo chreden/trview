@@ -22,6 +22,11 @@ namespace trview
                     lua_pushinteger(L, item->activation_flags());
                     return 1;
                 }
+                else if (key == "ai")
+                {
+                    lua_pushboolean(L, item->is_ai());
+                    return 1;
+                }
                 else if (key == "angle")
                 {
                     lua_pushinteger(L, item->angle());
@@ -66,6 +71,11 @@ namespace trview
                 else if (key == "position")
                 {
                     return create_vector3(L, item->position() * trlevel::Scale);
+                }
+                else if (key == "remastered_extra")
+                {
+                    lua_pushboolean(L, item->is_remastered_extra());
+                    return 1;
                 }
                 else if (key == "room")
                 {

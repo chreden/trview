@@ -26,6 +26,20 @@ TEST(Lua_Item, ActivationFlags)
     ASSERT_EQ(123, lua_tointeger(L, -1));
 }
 
+TEST(Lua_Item, Ai)
+{
+    auto item = mock_shared<MockItem>();
+    EXPECT_CALL(*item, is_ai).WillOnce(Return(true));
+
+    LuaState L;
+    lua::create_item(L, item);
+    lua_setglobal(L, "i");
+
+    ASSERT_EQ(0, luaL_dostring(L, "return i.ai"));
+    ASSERT_EQ(LUA_TBOOLEAN, lua_type(L, -1));
+    ASSERT_EQ(true, lua_toboolean(L, -1));
+}
+
 TEST(Lua_Item, Angle)
 {
     auto item = mock_shared<MockItem>();
@@ -156,6 +170,20 @@ TEST(Lua_Item, Position)
     ASSERT_EQ(0, luaL_dostring(L, "return i.position.z"));
     ASSERT_EQ(LUA_TNUMBER, lua_type(L, -1));
     ASSERT_DOUBLE_EQ(3072.0, lua_tonumber(L, -1));
+}
+
+TEST(Lua_Item, RemasteredExtra)
+{
+    auto item = mock_shared<MockItem>();
+    EXPECT_CALL(*item, is_remastered_extra).WillOnce(Return(true));
+
+    LuaState L;
+    lua::create_item(L, item);
+    lua_setglobal(L, "i");
+
+    ASSERT_EQ(0, luaL_dostring(L, "return i.remastered_extra"));
+    ASSERT_EQ(LUA_TBOOLEAN, lua_type(L, -1));
+    ASSERT_EQ(true, lua_toboolean(L, -1));
 }
 
 TEST(Lua_Item, Room)

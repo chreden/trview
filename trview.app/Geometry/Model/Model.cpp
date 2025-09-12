@@ -85,6 +85,7 @@ namespace trview
                 result.hit = true;
                 result.distance = mesh_result.distance;
                 result.position = position + direction * mesh_result.distance;
+                result.triangle = mesh_result.triangle;
             }
         }
 

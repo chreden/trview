@@ -124,7 +124,7 @@ namespace trview
             const ICameraSink::Source& camera_sink_source,
             const ISoundSource::Source& sound_source_source,
             const IFlyby::Source& flyby_source,
-            const trlevel::ILevel::LoadCallbacks callbacks);
+            const trlevel::ILevel::LoadCallbacks& callbacks);
         std::vector<std::weak_ptr<IStaticMesh>> static_meshes() const override;
         std::weak_ptr<IStaticMesh> static_mesh(uint32_t index) const override;
         void add_scriptable(const std::weak_ptr<IScriptable>& scriptable) override;
@@ -143,7 +143,7 @@ namespace trview
     private:
         void generate_rooms(const trlevel::ILevel& level, const IRoom::Source& room_source, const IMeshStorage& mesh_storage);
         void generate_triggers(const ITrigger::Source& trigger_source);
-        void generate_entities(const trlevel::ILevel& level, const IItem::EntitySource& entity_source, const IItem::AiSource& ai_source, const IModelStorage& model_storage);
+        void generate_entities(const trlevel::ILevel& level, const IItem::EntitySource& entity_source, const IItem::AiSource& ai_source, const IModelStorage& model_storage, const trlevel::ILevel::LoadCallbacks& callbacks);
         void regenerate_neighbours();
         void generate_neighbours(std::set<uint16_t>& results, uint16_t selected_room, int32_t max_depth);
         void generate_lights(const trlevel::ILevel& level, const ILight::Source& light_source);

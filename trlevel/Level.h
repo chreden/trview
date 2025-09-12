@@ -236,7 +236,7 @@ namespace trlevel
         void load_psx_pack(std::basic_ispanstream<uint8_t>& file, trview::Activity& activity, const LoadCallbacks& callbacks);
 
         void load_sound_fx(trview::Activity& activity, const LoadCallbacks& callbacks);
-        std::optional<std::vector<uint8_t>> load_main_sfx() const;
+        std::optional<std::vector<uint8_t>> load_main_sfx();
         void load_ngle_sound_fx(trview::Activity& activity, std::basic_ispanstream<uint8_t>& file, const LoadCallbacks& callbacks);
 
         void generate_mesh(tr_mesh& mesh, std::basic_ispanstream<uint8_t>& stream);

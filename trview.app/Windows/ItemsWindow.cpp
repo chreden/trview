@@ -37,6 +37,8 @@ namespace trview
         _tips["Clear Body"] = "If true, removed when Bodybag is triggered";
         _tips["Trigger triggerer"] = "Disables the trigger on the same sector until this item is triggered";
         _tips["Type*"] = "Mutant Egg spawn target is missing; egg will be empty";
+        _tips["Remastered Extra"] = "Item is added at runtime by the remasters, not present in level file";
+        _tips["NG+"] = "Item only appears in NG+ mode in the remasters";
 
         setup_filters();
 
@@ -212,6 +214,7 @@ namespace trview
                     add_stat(std::format("Type{}", is_bad_mutant_egg() ? "*" : ""), item->type());
                     add_stat("#", item->number());
                     add_stat("Position", position_text());
+                    add_stat("AI", item->is_ai());
                     add_stat("Angle", bound_rotation(item->angle()));
                     add_stat("Angle Degrees", bound_rotation(item->angle()) / 182);
                     add_stat("Type ID", item->type_id());
@@ -221,6 +224,14 @@ namespace trview
                     add_stat("Flags", format_binary(item->activation_flags()));
                     add_stat("OCB", item->ocb());
                     add_stat("Category", join(item->categories()));
+                    if (item->is_remastered_extra())
+                    {
+                        add_stat("Remastered Extra", item->is_remastered_extra());
+                    }
+                    if (item->ng_plus().value_or(false))
+                    {
+                        add_stat("NG+", item->ng_plus().value());
+                    }
                 }
 
                 ImGui::EndTable();
@@ -355,6 +366,7 @@ namespace trview
         _filters.add_getter<int>("X", [](auto&& item) { return static_cast<int>(item.position().x * trlevel::Scale_X); });
         _filters.add_getter<int>("Y", [](auto&& item) { return static_cast<int>(item.position().y * trlevel::Scale_Y); });
         _filters.add_getter<int>("Z", [](auto&& item) { return static_cast<int>(item.position().z * trlevel::Scale_Z); });
+        _filters.add_getter<bool>("AI", [](auto&& item) { return item.is_ai(); });
         _filters.add_getter<int>("Angle", [](auto&& item) { return static_cast<int>(bound_rotation(item.angle())); });
         _filters.add_getter<int>("Angle Degrees", [](auto&& item) { return static_cast<int>(bound_rotation(item.angle()) / 182); });
         _filters.add_getter<int>("Type ID", [](auto&& item) { return static_cast<int>(item.type_id()); }, EditMode::Read);
@@ -364,6 +376,7 @@ namespace trview
         _filters.add_getter<std::string>("Flags", [](auto&& item) { return format_binary(item.activation_flags()); });
         _filters.add_getter<int>("OCB", [](auto&& item) { return static_cast<int>(item.ocb()); });
         _filters.add_getter<bool>("Hide", [](auto&& item) { return !item.visible(); }, EditMode::ReadWrite);
+        _filters.add_getter<bool>("Remastered Extra", [](auto&& item) { return item.is_remastered_extra(); });
         _filters.add_multi_getter<float>("Trigger References", [](auto&& item)
             {
                 std::vector<float> results;

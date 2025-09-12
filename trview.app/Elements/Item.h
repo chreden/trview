@@ -58,6 +58,9 @@ namespace trview
         void set_categories(const std::unordered_set<std::string>& categories) override;
         void set_ng_plus(bool value) override;
         std::optional<bool> ng_plus() const override;
+        bool is_ai() const override;
+        void set_remastered_extra(bool value) override;
+        bool is_remastered_extra() const override;
     private:
         Item(const IMesh::Source& mesh_source, const IModelStorage& model_storage, const trlevel::ILevel& level, const std::weak_ptr<ILevel>& owning_level, const std::weak_ptr<IRoom>& room, uint32_t number, uint16_t type_id, const DirectX::SimpleMath::Vector3& position, int32_t angle, int32_t ocb, const TypeInfo& type, const std::vector<std::weak_ptr<ITrigger>>& triggers, uint16_t flags);
 
@@ -89,5 +92,7 @@ namespace trview
         std::weak_ptr<ILevel> _level;
         int32_t _angle;
         std::optional<bool> _ng_plus;
+        bool _is_ai{ false };
+        bool _is_remastered_extra{ false };
     };
 }

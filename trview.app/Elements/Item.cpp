@@ -73,6 +73,7 @@ namespace trview
     Item::Item(const IMesh::Source& mesh_source, const trlevel::ILevel& level, const trlevel::tr4_ai_object& entity, const IModelStorage& model_storage, const std::weak_ptr<ILevel>& owning_level, uint32_t number, const TypeInfo& type, const std::vector<std::weak_ptr<ITrigger>>& triggers, const std::weak_ptr<IRoom>& room)
         : Item(mesh_source, model_storage, level, owning_level, room, number, entity.type_id, entity.position(), entity.angle, entity.ocb, type, triggers, entity.flags)
     {
+        _is_ai = true;
     }
 
     Item::Item(const IMesh::Source& mesh_source, const IModelStorage& model_storage, const trlevel::ILevel& level, const std::weak_ptr<ILevel>& owning_level, const std::weak_ptr<IRoom>& room, uint32_t number, uint16_t type_id,
@@ -331,6 +332,21 @@ namespace trview
     std::optional<bool> Item::ng_plus() const
     {
         return _ng_plus;
+    }
+
+    bool Item::is_ai() const
+    {
+        return _is_ai;
+    }
+
+    void Item::set_remastered_extra(bool value)
+    {
+        _is_remastered_extra = value;
+    }
+
+    bool Item::is_remastered_extra() const
+    {
+        return _is_remastered_extra;
     }
 
     bool is_mutant_egg(const IItem& item)
