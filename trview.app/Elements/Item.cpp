@@ -183,6 +183,7 @@ namespace trview
             if (result.hit)
             {
                 result.item = std::const_pointer_cast<IItem>(shared_from_this());
+                result.type = PickResult::Type::Entity;
                 return result;
             }
         }

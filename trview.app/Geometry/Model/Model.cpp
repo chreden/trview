@@ -52,7 +52,8 @@ namespace trview
             // Transform the position and the direction into mesh space.
             const auto transform = world.Invert();
             const auto transformed_position = Vector3::Transform(position, transform);
-            const auto transformed_direction = Vector3::TransformNormal(direction, transform);
+            auto transformed_direction = Vector3::TransformNormal(direction, transform);
+            transformed_direction.Normalize();
 
             // Try and pick against the bounding box.
             float obb_distance = 0;
@@ -69,23 +70,27 @@ namespace trview
         }
 
         PickResult result;
-        result.type = PickResult::Type::Entity;
-
         for (auto i : pick_meshes)
         {
             // Transform the position and the direction into mesh space.
             const auto transform = (_world_transforms[i] * world).Invert();
             const auto transformed_position = Vector3::Transform(position, transform);
-            const auto transformed_direction = Vector3::TransformNormal(direction, transform);
+            auto transformed_direction = Vector3::TransformNormal(direction, transform);
+            transformed_direction.Normalize();
 
-            // Pick against mesh.
             auto mesh_result = _meshes[i]->pick(transformed_position, transformed_direction);
-            if (mesh_result.hit && mesh_result.distance < result.distance)
+            if (mesh_result.hit)
             {
-                result.hit = true;
-                result.distance = mesh_result.distance;
-                result.position = position + direction * mesh_result.distance;
-                result.triangle = mesh_result.triangle;
+                // Transform back out of model space to remove any scaling that may have been applied.
+                const auto world_hit_pos = Vector3::Transform(result.position, _world_transforms[i] * world);
+                const auto world_distance = (position - world_hit_pos).Length();
+                if (world_distance < result.distance)
+                {
+                    result.hit = true;
+                    result.distance = world_distance;
+                    result.position = world_hit_pos;
+                    result.triangle = mesh_result.triangle;
+                }
             }
         }
 
