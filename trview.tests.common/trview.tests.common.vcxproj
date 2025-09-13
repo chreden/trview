@@ -24,7 +24,7 @@
     <ProjectGuid>{3AB44A93-DBBA-405E-8164-E5B20866EE1D}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>trviewtestscommon</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0.19041.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.26100.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
