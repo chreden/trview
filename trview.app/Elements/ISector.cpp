@@ -20,6 +20,10 @@ namespace trview
 
     Vector3 ISector::Portal::ceiling(Corner corner) const
     {
+        if (has_flag(direct->flags(), SectorFlag::Portal) && target)
+        {
+            return target->ceiling(corner) + offset;
+        }
         return direct->ceiling(corner);
     }
 

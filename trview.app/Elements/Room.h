@@ -105,6 +105,7 @@ namespace trview
         std::vector<std::weak_ptr<IStaticMesh>> static_meshes() const override;
         void update(float delta) override;
         uint16_t water_scheme() const override;
+        std::vector<trlevel::tr_room_portal> portals() const override;
     private:
         void generate_geometry(const IMesh::Source& mesh_source, const trlevel::tr3_room& room);
         void generate_adjacency();
@@ -157,7 +158,6 @@ namespace trview
         std::vector<std::weak_ptr<ILight>> _lights;
         IMesh::Source _mesh_source;
         std::vector<uint32_t> _all_geometry_sector_rooms;
-        std::function<std::shared_ptr<IMesh>()> _unmatched_mesh_generator;
 
         bool _visible{ true };
 
@@ -172,5 +172,9 @@ namespace trview
         std::shared_ptr<graphics::ISamplerState> _sampler_state;
 
         uint16_t _water_scheme{ 0u };
+        std::vector<trlevel::tr_room_portal> _portals;
+
+        mutable std::vector<DirectX::SimpleMath::Ray> _rays;
+        std::shared_ptr<IMesh> _ray;
     };
 }
