@@ -142,6 +142,7 @@ namespace trview
         _token_store += _track.on_toggle<Type::Trigger>() += [&](bool) { set_selected_trigger(_global_selected_trigger); };
         _token_store += _track.on_toggle<Type::Light>() += [&](bool) { set_selected_light(_global_selected_light); };
         _token_store += _track.on_toggle<Type::CameraSink>() += [&](bool) { set_selected_camera_sink(_global_selected_camera_sink); };
+        _token_store += _track.on_toggle<Type::Sector>() += [&](bool) { set_selected_sector(_global_selected_sector); };
     }
 
     void RoomsWindow::set_current_room(const std::weak_ptr<IRoom>& room)
@@ -153,7 +154,7 @@ namespace trview
             return;
         }
 
-        set_selected_sector(nullptr);
+        _local_selected_sector.reset();
         _current_room = room;
         _scroll_to_room = true;
         if (_sync_room && room_ptr)
@@ -203,7 +204,7 @@ namespace trview
         generate_filters();
         _force_sort = true;
         _filters.force_sort();
-        set_selected_sector(nullptr);
+        _local_selected_sector.reset();
     }
 
     void RoomsWindow::set_selected_item(const std::weak_ptr<IItem>& item)
@@ -391,7 +392,8 @@ namespace trview
                             {
                                 if (_in_floordata_mode)
                                 {
-                                    set_selected_sector(sector);
+                                    _local_selected_sector = sector;
+                                    _map_renderer->set_selection(sector);
                                 }
                                 else
                                 {
@@ -911,7 +913,7 @@ namespace trview
     {
         ImGui::Checkbox(Names::simple_mode.c_str(), &_simple_mode);
 
-        auto selected_sector = _selected_sector.lock();
+        auto selected_sector = _local_selected_sector.lock();
         if (!selected_sector)
         {
             ImGui::Text("Select a sector to view floordata");
@@ -981,10 +983,24 @@ namespace trview
         _floordata = data;
     }
 
-    void RoomsWindow::set_selected_sector(const std::shared_ptr<ISector>& sector)
+    void RoomsWindow::set_selected_sector(const std::weak_ptr<ISector>& sector)
     {
-        _selected_sector = sector;
-        _map_renderer->set_selection(sector);
+        _global_selected_sector = sector;
+        if (_track.enabled<Type::Sector>())
+        {
+            if (const auto sector_ptr = sector.lock())
+            {
+                if (_selected_room.lock() != _current_room.lock())
+                {
+                    const auto actual = sector_ptr->room();
+                    select_room(actual);
+                    _scroll_to_room = true;
+                    load_room_details(actual);
+                }
+                _local_selected_sector = sector;
+            }
+        }
+        _map_renderer->set_selection(_local_selected_sector.lock());
     }
 
     void RoomsWindow::set_selected_light(const std::weak_ptr<ILight>& light)

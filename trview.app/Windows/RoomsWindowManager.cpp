@@ -117,6 +117,7 @@ namespace trview
         rooms_window->set_selected_trigger(_selected_trigger);
         rooms_window->set_selected_camera_sink(_selected_camera_sink);
         rooms_window->set_selected_light(_selected_light);
+        rooms_window->set_selected_sector(_selected_sector);
         rooms_window->set_ng_plus(_ng_plus);
         rooms_window->set_trng(_trng);
         return add_window(rooms_window);
@@ -151,6 +152,15 @@ namespace trview
         for (auto& window : _windows)
         {
             window.second->set_selected_camera_sink(camera_sink);
+        }
+    }
+
+    void RoomsWindowManager::set_selected_sector(const std::weak_ptr<ISector>& sector)
+    {
+        _selected_sector = sector;
+        for (auto& window : _windows)
+        {
+            window.second->set_selected_sector(sector);
         }
     }
 

@@ -8,6 +8,7 @@ namespace trview
         Item,
         Light,
         Room,
+        Sector,
         Trigger
     };
 

@@ -45,6 +45,7 @@ namespace trview
         void set_floordata(const std::vector<uint16_t>& data) override;
         void set_selected_light(const std::weak_ptr<ILight>& light) override;
         void set_selected_camera_sink(const std::weak_ptr<ICameraSink>& camera_sink) override;
+        void set_selected_sector(const std::weak_ptr<ISector>& sector) override;
         void set_ng_plus(bool value) override;
         void set_trng(bool value) override;
         std::vector<std::weak_ptr<IRoomsWindow>> windows() const override;
@@ -61,6 +62,7 @@ namespace trview
         std::vector<std::weak_ptr<ICameraSink>> _all_camera_sinks;
         std::weak_ptr<ICameraSink> _selected_camera_sink;
         std::weak_ptr<ILight> _selected_light;
+        std::weak_ptr<ISector> _selected_sector;
         bool _ng_plus{ false };
         bool _trng{ false };
     };

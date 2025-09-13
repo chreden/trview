@@ -167,3 +167,21 @@ TEST(RoomsWindowManager, SetTrngPassedToWindows)
     manager->create_window();
     manager->set_trng(true);
 }
+
+TEST(RoomsWindowManager, SetSelectedSectorForwarded)
+{
+    auto mock_window = mock_shared<MockRoomsWindow>();
+    EXPECT_CALL(*mock_window, set_selected_sector).Times(2);
+
+    auto manager = register_test_module().with_window_source([&](auto&&...) { return mock_window; }).build();
+    manager->create_window();
+    manager->set_selected_sector(mock_shared<MockSector>());
+}
+
+TEST(RoomsWindowManager, SelectedSectorPassedToNewWindows)
+{
+    auto mock_window = mock_shared<MockRoomsWindow>();
+    EXPECT_CALL(*mock_window, set_selected_sector).Times(1);
+    auto manager = register_test_module().with_window_source([&](auto&&...) { return mock_window; }).build();
+    manager->create_window();
+}
