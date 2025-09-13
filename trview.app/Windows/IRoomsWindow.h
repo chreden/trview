@@ -89,5 +89,6 @@ namespace trview
         virtual void set_trng(bool value) = 0;
         virtual std::string name() const = 0;
         virtual void set_filters(std::vector<Filters<IRoom>::Filter> filters) = 0;
+        virtual void set_selected_sector(const std::weak_ptr<ISector>& sector) = 0;
     };
 }

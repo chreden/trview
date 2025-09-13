@@ -54,6 +54,7 @@ namespace trview
         void set_trng(bool value) override;
         std::string name() const override;
         void set_filters(std::vector<Filters<IRoom>::Filter> filters) override;
+        void set_selected_sector(const std::weak_ptr<ISector>& sector) override;
     private:
         void set_sync_room(bool value);
         void render_rooms_list();
@@ -66,7 +67,6 @@ namespace trview
         void render_items_tab(const std::shared_ptr<IRoom>& room);
         void render_triggers_tab();
         void render_floordata_tab(const std::shared_ptr<IRoom>& room);
-        void set_selected_sector(const std::shared_ptr<ISector>& sector);
         void render_camera_sink_tab();
         void render_lights_tab();
         void set_triggers(const std::vector<std::weak_ptr<ITrigger>>& triggers);
@@ -104,6 +104,9 @@ namespace trview
         std::weak_ptr<IStaticMesh> _local_selected_static_mesh;
         bool _scroll_to_static_mesh{ false };
 
+        std::weak_ptr<ISector> _global_selected_sector;
+        std::weak_ptr<ISector> _local_selected_sector;
+
         std::weak_ptr<IRoom> _current_room;
         std::weak_ptr<IRoom> _selected_room;
 
@@ -124,9 +127,8 @@ namespace trview
         std::vector<uint16_t> _floordata;
         bool _simple_mode{ true };
         bool _in_floordata_mode{ false };
-        std::weak_ptr<ISector> _selected_sector;
         uint32_t _selected_floordata{ 0 };
-        Track<Type::Item, Type::Trigger, Type::Light, Type::CameraSink> _track;
+        Track<Type::Item, Type::Trigger, Type::Light, Type::CameraSink, Type::Sector> _track;
 
         bool _ng_plus{ false };
         AutoHider _auto_hider;

@@ -62,7 +62,11 @@ namespace trview
         _diff_windows->on_static_mesh_selected += on_static_selected;
         _diff_windows->on_sound_source_selected += on_sound_source_selected;
         _diff_windows->on_room_selected += on_room_selected;
-        _diff_windows->on_sector_selected += on_sector_selected;
+        _token_store += _diff_windows->on_sector_selected += [this](auto sector)
+            {
+                on_sector_selected(sector);
+                _rooms_windows->set_selected_sector(sector);
+            };
         _diff_windows->on_settings += on_settings;
 
         _token_store += _items_windows->on_add_to_route += [this](auto item)

@@ -857,3 +857,18 @@ TEST(Windows, WindowsUpdated)
 
     windows->update(1.0f);
 }
+
+TEST(Windows, SectorSelectedForwarded)
+{
+    auto [rooms_ptr, rooms] = create_mock<MockRoomsWindowManager>();
+    EXPECT_CALL(rooms, set_selected_sector).Times(1);
+
+    auto [diffs_ptr, diffs] = create_mock<MockDiffWindowManager>();
+
+    auto windows = register_test_module()
+        .with_rooms(std::move(rooms_ptr))
+        .with_diffs(std::move(diffs_ptr))
+        .build();
+
+    diffs.on_sector_selected(mock_shared<MockSector>());
+}

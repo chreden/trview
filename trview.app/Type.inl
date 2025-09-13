@@ -14,6 +14,8 @@ namespace trview
             return "Light";
         case Type::Room:
             return "Room";
+        case Type::Sector:
+            return "Sector";
         case Type::Trigger:
             return "Trigger";
         }
