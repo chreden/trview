@@ -22,6 +22,7 @@ The Room library provides information about a room in a [level](level.md).
 | static_meshes | [StaticMesh](staticmesh.md)[] | R | Static meshes in the room |
 | triggers | [Trigger](trigger.md)[] | R | Triggers in the room |
 | visible | boolean | RW | Whether the room is visible in the viewer |
+| water_scheme | number | R | Water scheme value for room (TR3+) |
 
 # Functions
 

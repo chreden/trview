@@ -57,7 +57,8 @@ namespace trview
         _ambient(room.colour),
         _ambient_intensity_1(room.ambient_intensity_1),
         _ambient_intensity_2(room.ambient_intensity_2),
-        _light_mode(room.light_mode)
+        _light_mode(room.light_mode),
+        _water_scheme(room.water_scheme)
     {
         _ambient.a = 1.0f;
 
@@ -1168,6 +1169,11 @@ namespace trview
         {
             _mesh->update(delta);
         }
+    }
+
+    uint16_t Room::water_scheme() const
+    {
+        return _water_scheme;
     }
 
     std::shared_ptr<ISector> sector_from_point(const IRoom& room, const Vector3& point)

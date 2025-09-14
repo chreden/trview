@@ -631,6 +631,10 @@ namespace trview
             });
         _filters.add_getter<bool>("Hide", [](auto&& room) { return !room.visible(); }, EditMode::ReadWrite);
         _filters.add_getter<bool>("Water", [](auto&& room) { return room.water(); });
+        if (_level_version >= trlevel::LevelVersion::Tomb3)
+        {
+            _filters.add_getter<int>("Water Scheme", [](auto&& room) { return room.water_scheme(); });
+        }
         _filters.add_getter<bool>("Bit 1", [](auto&& room) { return room.flag(IRoom::Flag::Bit1); });
         _filters.add_getter<bool>("Bit 2", [](auto&& room) { return room.flag(IRoom::Flag::Bit2); });
         _filters.add_getter<bool>("Outside/Bit 3", [](auto&& room) { return room.outside(); });
@@ -771,6 +775,12 @@ namespace trview
                 ImGui::SetCursorPosY(ImGui::GetCursorPosY() - 2.0f);
                 ImGui::ColorButton("##ambientbutton", ImVec4(ambient.r, ambient.g, ambient.b, 1.0f), 0, ImVec2(16, 16));
             }
+
+            if (_level_version >= trlevel::LevelVersion::Tomb3)
+            {
+                add_stat("Water Scheme", room->water_scheme());
+            }
+
             add_room_flags(*_clipboard, _level_version, *room);
             ImGui::EndTable();
         }

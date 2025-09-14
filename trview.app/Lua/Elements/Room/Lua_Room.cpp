@@ -147,6 +147,11 @@ namespace trview
                     lua_pushboolean(L, room->visible());
                     return 1;
                 }
+                else if (key == "water_scheme")
+                {
+                    lua_pushnumber(L, room->water_scheme());
+                    return 1;
+                }
 
                 return 0;
             }
