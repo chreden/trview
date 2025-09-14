@@ -63,6 +63,7 @@ namespace trview
             MOCK_METHOD(std::weak_ptr<ILevel>, level, (), (const, override));
             MOCK_METHOD(std::vector<std::weak_ptr<IStaticMesh>>, static_meshes, (), (const));
             MOCK_METHOD(void, update, (float), (override));
+            MOCK_METHOD(uint16_t, water_scheme, (), (const, override));
 
             bool _visible_state{ false };
 
@@ -119,6 +120,12 @@ namespace trview
                 _visible_state = value;
                 ON_CALL(*this, visible).WillByDefault([&]() { return _visible_state; });
                 ON_CALL(*this, set_visible).WillByDefault([&](auto v) { _visible_state = v; });
+                return shared_from_this();
+            }
+
+            std::shared_ptr<MockRoom> with_water_scheme(uint16_t value)
+            {
+                ON_CALL(*this, water_scheme).WillByDefault(testing::Return(value));
                 return shared_from_this();
             }
         };

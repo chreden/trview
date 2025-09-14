@@ -104,6 +104,7 @@ namespace trview
             const Activity& activity);
         std::vector<std::weak_ptr<IStaticMesh>> static_meshes() const override;
         void update(float delta) override;
+        uint16_t water_scheme() const override;
     private:
         void generate_geometry(const IMesh::Source& mesh_source, const trlevel::tr3_room& room);
         void generate_adjacency();
@@ -169,5 +170,7 @@ namespace trview
 
         std::shared_ptr<graphics::ISamplerState> _geometry_sampler_state;
         std::shared_ptr<graphics::ISamplerState> _sampler_state;
+
+        uint16_t _water_scheme{ 0u };
     };
 }

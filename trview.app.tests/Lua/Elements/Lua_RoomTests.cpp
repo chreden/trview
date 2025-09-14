@@ -367,3 +367,15 @@ TEST(Lua_Room, SetVisible)
     ASSERT_EQ(0, luaL_dostring(L, "r.visible = true"));
 }
 
+TEST(Lua_Room, WaterScheme)
+{
+    auto room = mock_shared<MockRoom>()->with_water_scheme(9);
+
+    LuaState L;
+    lua::create_room(L, room);
+    lua_setglobal(L, "r");
+
+    ASSERT_EQ(0, luaL_dostring(L, "return r.water_scheme"));
+    ASSERT_EQ(LUA_TNUMBER, lua_type(L, -1));
+    ASSERT_EQ(9, lua_tonumber(L, -1));
+}
