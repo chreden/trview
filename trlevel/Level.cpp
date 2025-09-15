@@ -822,7 +822,7 @@ namespace trlevel
             log_file(activity, file, std::format("File is encrypted, decrypting"));
             _decrypter->decrypt(bytes);
             file.seekg(0, std::ios::beg);
-            _platform_and_version = convert_level_version(read<uint32_t>(file));
+            _platform_and_version = convert_level_version(peek<uint32_t>(file));
             log_file(activity, file, std::format("Version number is {:X} ({})", _platform_and_version.raw_version, to_string(get_version())));
         }
 
