@@ -59,6 +59,13 @@ namespace trview
         void add_quad(const ISector::Portal& portal, Quad quad);
         DirectX::SimpleMath::Vector2 corner_uv(Corner corner) const;
 
+        void generate_floor();
+        void generate_ceiling();
+        void generate_ceiling_steps(const Portal& self, const Portal& north, const Portal& east, const Portal& south, const Portal& west);
+        void generate_outsides(const Portal& self, const Portal& north, const Portal& east, const Portal& south, const Portal& west);
+
+
+
         SectorFlag _flags{ SectorFlag::None };
 
         // Holds the "wall portal" that this sector points to - this is the id of the room 
