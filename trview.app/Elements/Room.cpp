@@ -591,7 +591,7 @@ namespace trview
             // Figure out if we should make the walls based on adjacent triggers.
             bool pos_x = true, neg_x = true, pos_z = true, neg_z = true;
 
-            if (auto other = get_trigger_sector(trigger->x() + 1, trigger->z()))
+            if (auto other = get_trigger_sector(*trigger, 1, 0))
             {
                 auto corners = other->corners();
                 if (y_bottom[3] == corners[1] && y_bottom[2] == corners[0])
@@ -600,7 +600,7 @@ namespace trview
                 }
             }
 
-            if (auto other = get_trigger_sector(static_cast<int32_t>(trigger->x()) - 1, trigger->z()))
+            if (auto other = get_trigger_sector(*trigger, -1, 0))
             {
                 auto corners = other->corners();
                 if (y_bottom[1] == corners[3] && y_bottom[0] == corners[2])
@@ -609,7 +609,7 @@ namespace trview
                 }
             }
 
-            if (auto other = get_trigger_sector(trigger->x(), static_cast<int32_t>(trigger->z()) - 1))
+            if (auto other = get_trigger_sector(*trigger, 0, -1))
             {
                 auto corners = other->corners();
                 if (y_bottom[2] == corners[3] && y_bottom[0] == corners[1])
@@ -618,7 +618,7 @@ namespace trview
                 }
             }
 
-           if (auto other = get_trigger_sector(trigger->x(), trigger->z() + 1))
+           if (auto other = get_trigger_sector(*trigger, 0, 1))
            {
                 auto corners = other->corners();
                 if (y_bottom[3] == corners[2] && y_bottom[1] == corners[0])
@@ -723,11 +723,13 @@ namespace trview
         return x * _num_z_sectors + z;
     }
 
-    ISector* Room::get_trigger_sector(int32_t x, int32_t z)
+    ISector* Room::get_trigger_sector(const ITrigger& trigger, int32_t dx, int32_t dz)
     {
+        const int16_t x = static_cast<int16_t>(trigger.x() + dx);
+        const int16_t z = static_cast<int16_t>(trigger.z() + dz);
         auto sector_id = get_sector_id(x, z);
-        auto trigger = _triggers.find(sector_id);
-        if (trigger != _triggers.end())
+        auto next_trigger = _triggers.find(sector_id);
+        if (next_trigger != _triggers.end())
         {
             return _sectors[sector_id].get();
         }
@@ -738,35 +740,40 @@ namespace trview
         }
 
         // Check if this sector is a portal.
-        auto sector = _sectors[sector_id];
+        const auto sector = _sectors[sector_id];
         if (!has_flag(sector->flags(), SectorFlag::Portal))
         {
             return nullptr;
         }
 
         auto level = _level.lock();
-        auto room =
-            sector->portal() != 0xff && level ?
-            level->room(sector->portal()).lock() : nullptr;
-        if (!room)
+        if (!level)
         {
             return nullptr;
         }
 
-        // Get the world position of the target sector.
-        auto world_x = (_info.x / trlevel::Scale_X) + x;
-        auto world_z = (_info.z / trlevel::Scale_Z) + z;
-
-        // Convert the world position into the space of the other room.
-        auto other_x = static_cast<int32_t>(world_x - (room->info().x / trlevel::Scale_X));
-        auto other_z = static_cast<int32_t>(world_z - (room->info().z / trlevel::Scale_Z));
-
-        auto other_trigger = room->trigger_at(other_x, other_z).lock();
-        if (other_trigger)
+        for (auto p : sector->portals())
         {
-            return room->sectors()[other_trigger->sector_id()].get();
-        }
+            auto room = level->room(p).lock();
+            if (!room)
+            {
+                continue;
+            }
 
+            // Get the world position of the target sector.
+            auto world_x = (_info.x / trlevel::Scale_X) + x;
+            auto world_z = (_info.z / trlevel::Scale_Z) + z;
+
+            // Convert the world position into the space of the other room.
+            auto other_x = static_cast<int32_t>(world_x - (room->info().x / trlevel::Scale_X));
+            auto other_z = static_cast<int32_t>(world_z - (room->info().z / trlevel::Scale_Z));
+
+            auto other_trigger = room->trigger_at(other_x, other_z).lock();
+            if (other_trigger)
+            {
+                return room->sectors()[other_trigger->sector_id()].get();
+            }
+        }
         return nullptr;
     }
 
@@ -1071,9 +1078,9 @@ namespace trview
 
         portal.direct = _sectors[id];
         portal.direct_room = std::const_pointer_cast<IRoom>(shared_from_this());
-        if (has_flag(portal.direct->flags(), SectorFlag::Portal) && portal.direct->portal() != 0xff)
+        if (has_flag(portal.direct->flags(), SectorFlag::Portal) && !portal.direct->portals().empty())
         {
-            const auto other_room = level->room(portal.direct->portal()).lock();
+            const auto other_room = level->room(portal.direct->portals()[0]).lock();
             const auto diff = (position() - other_room->position()) + Vector3(static_cast<float>(x2), 0, static_cast<float>(z2));
             const int other_id = static_cast<int>(diff.x * other_room->num_z_sectors() + diff.z);
             const auto sectors = other_room->sectors();
@@ -1083,7 +1090,6 @@ namespace trview
                 portal.offset = Vector3(static_cast<float>(x2), 0, static_cast<float>(z2)) - diff;
             }
         }
-
         return portal;
     }
 

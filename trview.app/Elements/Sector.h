@@ -13,7 +13,7 @@ namespace trview
         Sector(const trlevel::ILevel& level, const trlevel::tr3_room& room, const trlevel::tr_room_sector& sector, int sector_id, const std::weak_ptr<IRoom>& room_ptr, uint32_t sector_number);
         virtual ~Sector() = default;
         // Returns the id of the room that this floor data points to 
-        virtual std::uint16_t portal() const override;
+        virtual std::vector<std::uint16_t> portals() const override;
         // Gets/sets id of the sector. Used by map renderer. 
         virtual int id() const override { return _sector_id; }
         // Returns all neighbours for the current sector, maximum of 3 (up, down, portal). 
@@ -62,7 +62,7 @@ namespace trview
         SectorFlag _flags{ SectorFlag::None };
 
         // Holds the "wall portal" that this sector points to - this is the id of the room 
-        std::uint16_t _portal;
+        std::vector<uint16_t> _portals;
         std::uint8_t _room_above;
         std::uint8_t _room_below;
 

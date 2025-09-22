@@ -17,13 +17,9 @@ namespace trview
         calculate_neighbours(level);
     }
 
-    std::uint16_t
-    Sector::portal() const
+    std::vector<std::uint16_t> Sector::portals() const
     {
-        if (!has_flag(_flags, SectorFlag::Portal))
-            throw std::runtime_error("Sector does not have portal function");
-
-        return _portal;
+        return _portals;
     }
 
     std::set<std::uint16_t> 
@@ -75,7 +71,7 @@ namespace trview
                 case Function::Portal:
                 {
                     _flags |= SectorFlag::Portal;
-                    _portal = command.data[1];
+                    _portals.push_back(command.data[1]);
                     break;
                 }
                 case Function::FloorSlant:
@@ -386,7 +382,10 @@ namespace trview
 
         if (has_flag(_flags, SectorFlag::Portal))
         {
-            add_neighbour(_portal);
+            for (const auto& portal : _portals)
+            {
+                add_neighbour(portal);
+            }
         }
 
         if (has_flag(_flags, SectorFlag::RoomAbove))

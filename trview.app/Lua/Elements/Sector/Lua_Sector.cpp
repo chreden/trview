@@ -171,7 +171,25 @@ namespace trview
                         {
                             if (auto level = room->level().lock())
                             {
-                                return create_room(L, level->room(sector->portal()).lock());
+                                return create_room(L, level->room(sector->portals()[0]).lock());
+                            }
+                        }
+                    }
+                    lua_pushnil(L);
+                }
+                else if (key == "portals")
+                {
+                    if (sector->is_portal())
+                    {
+                        if (auto room = sector->room().lock())
+                        {
+                            if (auto level = room->level().lock())
+                            {
+                                lua_newtable(L);
+                                push_list(L,
+                                    sector->portals(),
+                                    [&](auto L, auto f) { create_room(L, level->room(f).lock()); });
+                                return 1;
                             }
                         }
                     }

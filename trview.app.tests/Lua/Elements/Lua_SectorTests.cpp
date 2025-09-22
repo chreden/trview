@@ -209,6 +209,31 @@ TEST(Lua_Sector, Portal)
     ASSERT_EQ(10, lua_tointeger(L, -1));
 }
 
+TEST(Lua_Sector, Portals)
+{
+    auto level = mock_shared<MockLevel>();
+    auto room_10 = mock_shared<MockRoom>()->with_level(level)->with_number(10);
+    ON_CALL(*level, room(10)).WillByDefault(Return(room_10));
+    auto room_12 = mock_shared<MockRoom>()->with_level(level)->with_number(12);
+    ON_CALL(*level, room(12)).WillByDefault(Return(room_12));
+
+    auto sector = mock_shared<MockSector>()->with_room(room_10)->with_portals({ 10, 12 });
+    ON_CALL(*sector, is_portal).WillByDefault(Return(true));
+
+    LuaState L;
+    lua::create_sector(L, sector);
+    lua_setglobal(L, "s");
+
+    ASSERT_EQ(0, luaL_dostring(L, "return s.portals"));
+    ASSERT_EQ(LUA_TTABLE, lua_type(L, -1));
+    ASSERT_EQ(0, luaL_dostring(L, "return s.portals[1].number"));
+    ASSERT_EQ(LUA_TNUMBER, lua_type(L, -1));
+    ASSERT_EQ(10, lua_tointeger(L, -1));
+    ASSERT_EQ(0, luaL_dostring(L, "return s.portals[2].number"));
+    ASSERT_EQ(LUA_TNUMBER, lua_type(L, -1));
+    ASSERT_EQ(12, lua_tointeger(L, -1));
+}
+
 TEST(Lua_Sector, Room)
 {
     auto room = mock_shared<MockRoom>()->with_number(10);

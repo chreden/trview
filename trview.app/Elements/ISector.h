@@ -94,7 +94,7 @@ namespace trview
         };
 
         virtual ~ISector() = 0;
-        virtual std::uint16_t portal() const = 0;
+        virtual std::vector<std::uint16_t> portals() const = 0;
         virtual int id() const = 0;
         virtual std::set<std::uint16_t> neighbours() const = 0;
         virtual std::uint16_t room_below() const = 0;

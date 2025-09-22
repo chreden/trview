@@ -401,7 +401,7 @@ namespace trview
                                     {
                                         if (auto level = room->level().lock())
                                         {
-                                            on_room_selected(level->room(sector->portal()));
+                                            on_room_selected(level->room(sector->portals()[0]));
                                         }
                                     }
                                     else if (sector->room_below() != 0xff)
