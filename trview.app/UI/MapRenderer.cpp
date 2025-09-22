@@ -127,7 +127,8 @@ namespace trview
 
             if (has_flag(tile.sector->flags(), SectorFlag::Portal))
             {
-                _font->render(context, std::to_wstring(tile.sector->portal()), tile.position.x - 1, tile.position.y, tile.size.width, tile.size.height, text_color);
+                const std::wstring text = std::format(L"{}{}", tile.sector->portals()[0], tile.sector->portals().size() > 1 ? L"+" : L"");
+                _font->render(context, text, tile.position.x - 1, tile.position.y, tile.size.width, tile.size.height, text_color);
             }
 
             if (_selected_sector.lock() == tile.sector)

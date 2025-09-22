@@ -113,7 +113,7 @@ namespace trview
         void render_contained(const ICamera& camera, const DirectX::SimpleMath::Color& colour, RenderFilter render_filter);
         void get_contained_transparent_triangles(ITransparencyBuffer& transparency, const ICamera& camera, const DirectX::SimpleMath::Color& colour, RenderFilter render_filter);
         void generate_sectors(const trlevel::ILevel& level, const trlevel::tr3_room& room, const ISector::Source& sector_source, uint32_t sector_base_index);
-        ISector* get_trigger_sector(int32_t x, int32_t z);
+        ISector* get_trigger_sector(const ITrigger& trigger, int32_t dx, int32_t dz);
         uint32_t get_sector_id(int32_t x, int32_t z) const;
 
         /// Find any transparent triangles that match floor data geometry.

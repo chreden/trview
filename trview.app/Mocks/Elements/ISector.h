@@ -10,7 +10,7 @@ namespace trview
         {
             MockSector();
             virtual ~MockSector();
-            MOCK_METHOD(std::uint16_t, portal, (), (const, override));
+            MOCK_METHOD(std::vector<std::uint16_t>, portals, (), (const, override));
             MOCK_METHOD(int, id, (), (const, override));
             MOCK_METHOD(std::set<std::uint16_t>, neighbours, (), (const, override));
             MOCK_METHOD(std::uint16_t, room_below, (), (const, override));
@@ -74,7 +74,13 @@ namespace trview
 
             std::shared_ptr<MockSector> with_portal(uint16_t portal)
             {
-                ON_CALL(*this, portal).WillByDefault(testing::Return(portal));
+                ON_CALL(*this, portals).WillByDefault(testing::Return(std::vector<uint16_t>{ portal }));
+                return shared_from_this();
+            }
+
+            std::shared_ptr<MockSector> with_portals(const std::vector<uint16_t>& portals)
+            {
+                ON_CALL(*this, portals).WillByDefault(testing::Return(portals));
                 return shared_from_this();
             }
 

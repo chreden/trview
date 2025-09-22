@@ -25,5 +25,5 @@ TEST(Sector, HighNumberedPortal)
 
     Sector s(level, tr_room, sector, 0, room, 0);
 
-    ASSERT_EQ(s.portal(), 378);
+    ASSERT_EQ(s.portals(), std::vector<uint16_t>{ 378 });
 }

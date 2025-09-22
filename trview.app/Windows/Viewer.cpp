@@ -659,7 +659,7 @@ namespace trview
                         {
                             if (has_flag(sector->flags(), SectorFlag::Portal))
                             {
-                                on_room_selected(level->room(sector->portal()));
+                                on_room_selected(level->room(sector->portals()[0]));
                             }
                             else if (!_settings.invert_map_controls && has_flag(sector->flags(), SectorFlag::RoomBelow))
                             {
