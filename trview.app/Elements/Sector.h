@@ -50,6 +50,7 @@ namespace trview
         std::weak_ptr<ITrigger> trigger() const override;
         TriangulationDirection ceiling_triangulation() const override;
         uint32_t number() const override;
+        DirectX::BoundingBox bounding_box() const override;
     private:
         bool parse(const trlevel::ILevel& level);
         void parse_slope();

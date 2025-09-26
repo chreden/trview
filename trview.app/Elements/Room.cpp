@@ -1160,6 +1160,30 @@ namespace trview
             return portal;
         }
 
+        // Bounding box for the sector including the vertical
+        const auto box = sector->bounding_box();
+        for (const auto& p : sector->portals())
+        {
+            if (const auto other_room = level->room(p).lock())
+            {
+                const auto room_box = other_room->bounding_box();
+                if (box.Intersects(room_box))
+                {
+                    // Todo: ???
+
+                }
+            }
+        }
+        /*
+        // Since we now know all of the portals, calculate overlaps.
+        for (const auto& p : _portals)
+        {
+            // Calculate overlap with that room and this room.
+            
+            
+        }
+        
+
         // Cast rays against all portals at each vertical cube on this sector.
         const Vector3 offset = portal_offset(level->platform_and_version(), _info);
         Ray ray = ray_for_sector(*sector, offset, x1, z1, x2, z2);
@@ -1178,7 +1202,7 @@ namespace trview
                 }
             }
             ray.position.y -= 512;
-        }
+        }*/
         return portal;
     }
 

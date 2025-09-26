@@ -128,6 +128,7 @@ namespace trview
 
         virtual TriangulationDirection ceiling_triangulation() const = 0;
         virtual uint32_t number() const = 0;
+        virtual DirectX::BoundingBox bounding_box() const = 0;
     };
 
     bool is_no_space(SectorFlag flags);
