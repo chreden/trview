@@ -455,12 +455,6 @@ namespace trview
         return _room_above == 0xff && !is_wall() && !is_portal();
     }
 
-    DirectX::BoundingBox Sector::bounding_box() const
-    {
-        DirectX::BoundingBox box;
-        return box;
-    }
-
     namespace
     {
         Vector3 portal_offset(const trlevel::PlatformAndVersion& platform_and_version, const RoomInfo& info)
