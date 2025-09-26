@@ -1155,15 +1155,25 @@ namespace trview
             {
                 const auto target_room_box = target_room->bounding_box();
                 const float top = box.Center.y - box.Extents.y;
-                const float target_bottom = target_room_box.Center.y + target_room_box.Extents.y;
-                const float target_top = target_room_box.Center.y - target_room_box.Extents.y;
-                const bool above = target_top < top && target_bottom <= top;
 
-                // Only include rooms that overlap and aren't completely above.
-                if (box.Intersects(target_room_box) && !above)
+                // TODO: Function for getting sector in other room.
+                // TODO: Check more than just the NE corner.
+                const auto diff = (position() - target_room->position()) + Vector3(static_cast<float>(x2), 0, static_cast<float>(z2));
+                const int other_id = static_cast<int>(diff.x * target_room->num_z_sectors() + diff.z);
+                const auto target_sectors = target_room->sectors();
+                if (other_id >= 0 && other_id < std::ssize(target_sectors))
                 {
-                    follow_portal(portal, level, *this, portal.direct->portals()[0], x2, z2);
-                    return portal;
+                    const auto target_sector = target_sectors[other_id];
+                    const float target_bottom = target_sector->corner(ISector::Corner::NE).y;
+                    const float target_top = target_sector->ceiling(ISector::Corner::NE).y;
+                    const bool above = target_top < top && target_bottom <= top;
+
+                    // Only include rooms that overlap and aren't completely above.
+                    if (box.Intersects(target_room_box) && !above)
+                    {
+                        follow_portal(portal, level, *this, portal.direct->portals()[0], x2, z2);
+                        return portal;
+                    }
                 }
             }
         }
