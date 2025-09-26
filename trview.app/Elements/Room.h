@@ -173,8 +173,5 @@ namespace trview
 
         uint16_t _water_scheme{ 0u };
         std::vector<trlevel::tr_room_portal> _portals;
-
-        mutable std::vector<DirectX::SimpleMath::Ray> _rays;
-        std::shared_ptr<IMesh> _ray;
     };
 }

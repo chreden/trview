@@ -141,7 +141,6 @@ namespace trview
         const IStaticMesh::MeshSource& static_mesh_mesh_source, const IStaticMesh::PositionSource& static_mesh_position_source,
         const ISector::Source& sector_source, uint32_t sector_base_index, const Activity& activity)
     {
-        _ray = create_sphere_mesh(_mesh_source, 24, 24);
         generate_sectors(level, room, sector_source, sector_base_index);
         generate_geometry(_mesh_source, room);
         generate_adjacency();
@@ -300,16 +299,6 @@ namespace trview
     void Room::render(const ICamera& camera, SelectionMode selected, RenderFilter render_filter, const std::unordered_set<uint32_t>& visible_rooms)
     {
         Color colour = room_colour(water() && has_flag(render_filter, RenderFilter::Water), selected);
-
-        if (has_flag(render_filter, RenderFilter::BoundingBoxes))
-        {
-            for (const auto& ray : _rays)
-            {
-                Matrix world = Matrix::CreateScale(0.1f) * Matrix::CreateTranslation(ray.position / trlevel::Scale);
-                Matrix wvp = world * camera.view_projection();
-                _ray->render(wvp, Colour::LightGrey, 1.0f);
-            }
-        }
 
         if (has_flag(render_filter, RenderFilter::Rooms))
         {
@@ -1154,55 +1143,23 @@ namespace trview
             return portal;
         }
 
-        // Only raycast when the adjacent sector is a portal.
         if (!portal.direct->is_portal() || sector->is_wall())
         {
             return portal;
         }
 
-        // Bounding box for the sector including the vertical
-        const auto box = sector->bounding_box();
-        for (const auto& p : sector->portals())
+        const auto box = bounding_box();
+        for (const auto& p : portal.direct->portals())
         {
-            if (const auto other_room = level->room(p).lock())
+            if (const auto target_room = level->room(p).lock())
             {
-                const auto room_box = other_room->bounding_box();
-                if (box.Intersects(room_box))
+                if (box.Intersects(target_room->bounding_box()))
                 {
-                    // Todo: ???
-
-                }
-            }
-        }
-        /*
-        // Since we now know all of the portals, calculate overlaps.
-        for (const auto& p : _portals)
-        {
-            // Calculate overlap with that room and this room.
-            
-            
-        }
-        
-
-        // Cast rays against all portals at each vertical cube on this sector.
-        const Vector3 offset = portal_offset(level->platform_and_version(), _info);
-        Ray ray = ray_for_sector(*sector, offset, x1, z1, x2, z2);
-        while (ray.position.y > _info.yTop)
-        {
-            _rays.push_back(ray);
-            for (const auto& p : _portals)
-            {
-                const BoundingBox box = box_for_portal(p, offset);
-
-                float distance = 0;
-                if (ray.Intersects(box, distance) && distance <= 768)
-                {
-                    follow_portal(portal, level, *this, p.adjoining_room, x2, z2);
+                    follow_portal(portal, level, *this, portal.direct->portals()[0], x2, z2);
                     return portal;
                 }
             }
-            ray.position.y -= 512;
-        }*/
+        }
         return portal;
     }
 
