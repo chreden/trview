@@ -1153,7 +1153,14 @@ namespace trview
         {
             if (const auto target_room = level->room(p).lock())
             {
-                if (box.Intersects(target_room->bounding_box()))
+                const auto target_room_box = target_room->bounding_box();
+                const float top = box.Center.y - box.Extents.y;
+                const float target_bottom = target_room_box.Center.y + target_room_box.Extents.y;
+                const float target_top = target_room_box.Center.y - target_room_box.Extents.y;
+                const bool above = target_top < top && target_bottom <= top;
+
+                // Only include rooms that overlap and aren't completely above.
+                if (box.Intersects(target_room_box) && !above)
                 {
                     follow_portal(portal, level, *this, portal.direct->portals()[0], x2, z2);
                     return portal;

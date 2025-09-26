@@ -31,6 +31,24 @@ namespace trview
                     {
                         target.target->add_triangle(target_portal, triangle, {});
                     }
+
+                    // If the remote is an alternate or has an alternate also add geometry to that room.
+                    if (target_room->alternate_mode() != IRoom::AlternateMode::None)
+                    {
+                        if (auto level = target_room->level().lock())
+                        {
+                            if (auto alternate_room = level->room(target_room->alternate_room()).lock())
+                            {
+                                const auto alternate_target_portal = alternate_room->sector_portal(target.target->x(), target.target->z(), target.target->x(), target.target->z());
+                                quad.room = alternate_room->number();
+                                for (const auto& triangle : quad.triangles())
+                                {
+                                    alternate_target_portal.direct->add_triangle(alternate_target_portal, triangle, {});
+                                }
+                            }
+                        }
+                    }
+
                     return;
                 }
             }
