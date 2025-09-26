@@ -720,22 +720,22 @@ namespace trview
         }
 
         const SectorFlag wall_flags = _flags & ~(SectorFlag::Death | SectorFlag::MonkeySwing);
-        if (north && (ceiling(Corner::NW) != north.ceiling(Corner::SW) || ceiling(Corner::NE) != north.ceiling(Corner::SE)))
+        if (north && !north.is_wall() && (ceiling(Corner::NW) != north.ceiling(Corner::SW) || ceiling(Corner::NE) != north.ceiling(Corner::SE)))
         {
             add_quad_remote(self, north, Quad(ceiling(Corner::NW), north.ceiling(Corner::SE), north.ceiling(Corner::SW), ceiling(Corner::NE), wall_flags & (~SectorFlag::Climbable | SectorFlag::ClimbableNorth), _room));
         }
 
-        if (south && (ceiling(Corner::SW) != south.ceiling(Corner::NW) || ceiling(Corner::SE) != south.ceiling(Corner::NE)))
+        if (south && !south.is_wall() && (ceiling(Corner::SW) != south.ceiling(Corner::NW) || ceiling(Corner::SE) != south.ceiling(Corner::NE)))
         {
             add_quad_remote(self, south, Quad(south.ceiling(Corner::NW), ceiling(Corner::SE), ceiling(Corner::SW), south.ceiling(Corner::NE), wall_flags & (~SectorFlag::Climbable | SectorFlag::ClimbableSouth), _room));
         }
 
-        if (east && (ceiling(Corner::NE) != east.ceiling(Corner::NW) || ceiling(Corner::SE) != east.ceiling(Corner::SW)))
+        if (east && !east.is_wall() && (ceiling(Corner::NE) != east.ceiling(Corner::NW) || ceiling(Corner::SE) != east.ceiling(Corner::SW)))
         {
             add_quad_remote(self, east, Quad(east.ceiling(Corner::SW), ceiling(Corner::NE), ceiling(Corner::SE), east.ceiling(Corner::NW), wall_flags & (~SectorFlag::Climbable | SectorFlag::ClimbableEast), _room));
         }
 
-        if (west && (ceiling(Corner::NW) != west.ceiling(Corner::NE) || ceiling(Corner::SW) != west.ceiling(Corner::SE)))
+        if (west && !west.is_wall() && (ceiling(Corner::NW) != west.ceiling(Corner::NE) || ceiling(Corner::SW) != west.ceiling(Corner::SE)))
         {
             add_quad_remote(self, west, Quad(ceiling(Corner::SW), west.ceiling(Corner::NE), west.ceiling(Corner::SE), ceiling(Corner::NW), wall_flags & (~SectorFlag::Climbable | SectorFlag::ClimbableWest), _room));
         }
