@@ -42,6 +42,7 @@ namespace trview
             DirectX::SimpleMath::Vector2 uv0;
             DirectX::SimpleMath::Vector2 uv1;
             DirectX::SimpleMath::Vector2 uv2;
+            DirectX::SimpleMath::Vector3 normal;
             SectorFlag type;
             uint32_t room;
 
