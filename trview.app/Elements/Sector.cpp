@@ -882,7 +882,7 @@ namespace trview
                         {
                             const SectorFlag west_wall_flags = west.flags() & ~(SectorFlag::Death | SectorFlag::MonkeySwing);
                             quad.type = west_wall_flags & (~SectorFlag::Climbable | SectorFlag::ClimbableEast);
-                            add_quad(east, quad);
+                            add_quad(west, quad);
                         }
                         else
                         {
