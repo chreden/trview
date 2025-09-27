@@ -81,9 +81,11 @@ namespace trview
             /// </summary>
             DirectX::SimpleMath::Vector3 offset;
             DirectX::SimpleMath::Vector3 above_offset;
-
             std::shared_ptr<ISector> sector_above;
             std::shared_ptr<IRoom> room_above;
+            DirectX::SimpleMath::Vector3 below_offset;
+            std::shared_ptr<ISector> sector_below;
+            std::shared_ptr<IRoom> room_below;
 
             SectorFlag flags() const;
             DirectX::SimpleMath::Vector3 corner(Corner corner) const;

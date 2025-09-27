@@ -1129,6 +1129,20 @@ namespace trview
             }
         }
 
+        if (sector->room_below() != 0xff)
+        {
+            const auto other_room = level->room(sector->room_below()).lock();
+            const auto diff = (position() - other_room->position()) + Vector3(static_cast<float>(x1), 0, static_cast<float>(z1));
+            const int other_id = static_cast<int>(diff.x * other_room->num_z_sectors() + diff.z);
+            const auto sectors = other_room->sectors();
+            if (other_id >= 0 && other_id < std::ssize(sectors))
+            {
+                portal.sector_below = other_room->sectors()[other_id];
+                portal.below_offset = Vector3(static_cast<float>(x1), 0, static_cast<float>(z1)) - diff;
+                portal.room_below = other_room;
+            }
+        }
+
         if (x2 >= _num_x_sectors || x2 < 0 || z2 >= _num_z_sectors || z2 < 0)
         {
             return portal;
