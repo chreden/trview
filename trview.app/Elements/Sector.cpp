@@ -72,7 +72,6 @@ namespace trview
                     self.direct->add_triangle(self, triangle, {});
                 }
             }
-            
         }
     }
 
@@ -816,7 +815,7 @@ namespace trview
         }
         else
         {
-            if (north && (north.is_portal() || !has_flag(north.flags(), SectorFlag::Wall)))
+            if (ISector::make_outsides_north && north && (north.is_portal() || !has_flag(north.flags(), SectorFlag::Wall)))
             {
                 if (north.is_portal() && !north.target)
                 {
@@ -827,7 +826,8 @@ namespace trview
                     Quad quad{ north.corner(Corner::SW), corner(Corner::NE), corner(Corner::NW), north.corner(Corner::SE), wall_flags, _room };
                     if (quad.triangles()[0].normal == Vector3::Backward)
                     {
-                        const SectorFlag north_wall_flags = north.flags() & ~(SectorFlag::Death | SectorFlag::MonkeySwing);
+                        const auto flags = north.target ? north.target->flags() : north.flags();
+                        const SectorFlag north_wall_flags = flags & ~(SectorFlag::Death | SectorFlag::MonkeySwing);
                         quad.type = north_wall_flags & (~SectorFlag::Climbable | SectorFlag::ClimbableSouth);
                         add_quad(north, quad);
                     }
@@ -839,7 +839,7 @@ namespace trview
                 }
             }
 
-            if (south && (south.is_portal() || !has_flag(south.flags(), SectorFlag::Wall)))
+            if (ISector::make_outsides_south && south && (south.is_portal() || !has_flag(south.flags(), SectorFlag::Wall)))
             {
                 if (south.is_portal() && !south.target)
                 {
@@ -850,7 +850,8 @@ namespace trview
                     Quad quad{ corner(Corner::SW), south.corner(Corner::NE), south.corner(Corner::NW), corner(Corner::SE), wall_flags, _room };
                     if (quad.triangles()[0].normal == Vector3::Forward)
                     {
-                        const SectorFlag south_wall_flags = south.flags() & ~(SectorFlag::Death | SectorFlag::MonkeySwing);
+                        const auto flags = south.target ? south.target->flags() : south.flags();
+                        const SectorFlag south_wall_flags = flags & ~(SectorFlag::Death | SectorFlag::MonkeySwing);
                         quad.type = south_wall_flags & (~SectorFlag::Climbable | SectorFlag::ClimbableNorth);
                         add_quad(south, quad);
                     }
@@ -862,7 +863,7 @@ namespace trview
                 }
             }
 
-            if (east && (east.is_portal() || !has_flag(east.flags(), SectorFlag::Wall)))
+            if (ISector::make_outsides_east && east && (east.is_portal() || !has_flag(east.flags(), SectorFlag::Wall)))
             {
                 if (east.is_portal() && !east.target)
                 {
@@ -873,7 +874,8 @@ namespace trview
                     Quad quad{ corner(Corner::SE), east.corner(Corner::NW), east.corner(Corner::SW), corner(Corner::NE), wall_flags, _room };
                     if (quad.triangles()[0].normal == Vector3::Right)
                     {
-                        const SectorFlag east_wall_flags = east.flags() & ~(SectorFlag::Death | SectorFlag::MonkeySwing);
+                        const auto flags = east.target ? east.target->flags() : east.flags();
+                        const SectorFlag east_wall_flags = flags & ~(SectorFlag::Death | SectorFlag::MonkeySwing);
                         quad.type = east_wall_flags & (~SectorFlag::Climbable | SectorFlag::ClimbableWest);
                         add_quad(east, quad);
                     }
@@ -885,7 +887,7 @@ namespace trview
                 }
             }
 
-            if (west && (west.is_portal() || !has_flag(west.flags(), SectorFlag::Wall)))
+            if (ISector::make_outsides_west && west && (west.is_portal() || !has_flag(west.flags(), SectorFlag::Wall)))
             {
                 if (west.is_portal() && !west.target)
                 {
@@ -896,7 +898,8 @@ namespace trview
                     Quad quad{ west.corner(Corner::SE), corner(Corner::NW), corner(Corner::SW), west.corner(Corner::NE), wall_flags, _room };
                     if (quad.triangles()[0].normal == Vector3::Left)
                     {
-                        const SectorFlag west_wall_flags = west.flags() & ~(SectorFlag::Death | SectorFlag::MonkeySwing);
+                        const auto flags = west.target ? west.target->flags() : west.flags();
+                        const SectorFlag west_wall_flags = flags & ~(SectorFlag::Death | SectorFlag::MonkeySwing);
                         quad.type = west_wall_flags & (~SectorFlag::Climbable | SectorFlag::ClimbableEast);
                         add_quad(west, quad);
                     }

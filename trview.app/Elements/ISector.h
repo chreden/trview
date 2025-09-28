@@ -141,6 +141,10 @@ namespace trview
         static bool make_ceiling_steps_south;
         static bool make_ceiling_steps_west;
         static bool make_outsides;
+        static bool make_outsides_north;
+        static bool make_outsides_east;
+        static bool make_outsides_south;
+        static bool make_outsides_west;
     };
 
     bool is_no_space(SectorFlag flags);
