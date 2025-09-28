@@ -56,6 +56,43 @@ namespace trview
 
             return id == 52;
         }
+
+        void add_ladder_up(const std::shared_ptr<ISector>& sector, SectorFlag flag)
+        {
+            if (auto room = sector->room().lock())
+            {
+                sector->add_flag(flag);
+                auto portal = room->sector_portal(sector->x(), sector->z(), -1, -1);
+                if (portal.sector_above)
+                {
+                    add_ladder_up(portal.sector_above, flag);
+                }
+            }
+        }
+
+        void add_ladder_down(const std::shared_ptr<ISector>& sector, SectorFlag flag)
+        {
+            if (auto room = sector->room().lock())
+            {
+                auto portal = room->sector_portal(sector->x(), sector->z(), -1, -1);
+                if (portal.sector_below)
+                {
+                    add_ladder_down(portal.sector_below, flag);
+                }
+                else
+                {
+                    add_ladder_up(sector, flag);
+                }
+            }
+        }
+
+        void add_ladders(const std::shared_ptr<ISector>& sector)
+        {
+            if (has_any_flag(sector->flags(), SectorFlag::ClimbableNorth, SectorFlag::ClimbableSouth, SectorFlag::ClimbableWest, SectorFlag::ClimbableEast))
+            {
+                add_ladder_down(sector, sector->flags() & SectorFlag::Climbable);
+            }
+        }
     }
 
     ILevel::~ILevel()
@@ -559,47 +596,6 @@ namespace trview
                     portal.sector_above->add_flag(SectorFlag::MonkeySwing);
                     add_monkey_swing(portal.sector_above);
                 }
-            }
-        };
-
-        std::function<void(std::shared_ptr<ISector>, SectorFlag)> add_ladders_down;
-        std::function<void(std::shared_ptr<ISector>, SectorFlag)> add_ladders_up;
-
-        add_ladders_down = [&](auto&& sector, auto&& flag)
-            {
-                if (auto room = sector->room().lock())
-                {
-                    auto portal = room->sector_portal(sector->x(), sector->z(), -1, -1);
-                    if (portal.sector_below)
-                    {
-                        add_ladders_down(portal.sector_below, flag);
-                    }
-                    else
-                    {
-                        add_ladders_up(sector, flag);
-                    }
-                }
-            };
-
-        add_ladders_up = [&](auto&& sector, auto&& flag)
-            {
-                if (auto room = sector->room().lock())
-                {
-                    sector->add_flag(flag);
-                    auto portal = room->sector_portal(sector->x(), sector->z(), -1, -1);
-                    if (portal.sector_above)
-                    {
-                        add_ladders_up(portal.sector_above, flag);
-                    }
-                }
-            };
-
-        std::function<void(std::shared_ptr<ISector>)> add_ladders;
-        add_ladders = [&](auto&& sector)
-        {
-            if (has_any_flag(sector->flags(), SectorFlag::ClimbableNorth, SectorFlag::ClimbableSouth, SectorFlag::ClimbableWest, SectorFlag::ClimbableEast))
-            {
-                add_ladders_down(sector, sector->flags() & SectorFlag::Climbable);
             }
         };
 
