@@ -510,10 +510,25 @@ namespace trview
             return;
         }
 
-        generate_floor();
-        generate_ceiling();
-        generate_ceiling_steps(self, north, east, south, west);
-        generate_outsides(self, north, east, south, west);
+        if (ISector::make_floor)
+        {
+            generate_floor();
+        }
+
+        if (ISector::make_ceiling)
+        {
+            generate_ceiling();
+        }
+
+        if (ISector::make_ceiling_steps)
+        {
+            generate_ceiling_steps(self, north, east, south, west);
+        }
+
+        if (ISector::make_outsides)
+        {
+            generate_outsides(self, north, east, south, west);
+        }
     }
 
     void Sector::add_triangle(const ISector::Portal& portal, const Triangle& triangle, std::unordered_set<uint32_t> visited_rooms)

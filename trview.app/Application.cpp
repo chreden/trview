@@ -551,6 +551,31 @@ namespace trview
         _windows->render();
         _plugins->render_ui();
 
+        // Geometry settings:
+        if (ImGui::Begin("Geometry Debug"))
+        {
+            if (ImGui::Checkbox("Floor", &ISector::make_floor))
+            {
+                reload();
+            }
+
+            if (ImGui::Checkbox("Ceiling", &ISector::make_ceiling))
+            {
+                reload();
+            }
+
+            if (ImGui::Checkbox("Ceiling Steps", &ISector::make_ceiling_steps))
+            {
+                reload();
+            }
+
+            if (ImGui::Checkbox("Outside", &ISector::make_outsides))
+            {
+                reload();
+            }
+            ImGui::End();
+        }
+
         ImGui::PopFont();
         ImGui::Render();
         _imgui_backend->render();

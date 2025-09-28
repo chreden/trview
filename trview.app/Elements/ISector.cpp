@@ -5,6 +5,11 @@ using namespace DirectX::SimpleMath;
 
 namespace trview
 {
+    bool ISector::make_floor = true;
+    bool ISector::make_ceiling = true;
+    bool ISector::make_ceiling_steps = true;
+    bool ISector::make_outsides = true;
+
     ISector::~ISector()
     {
     }
