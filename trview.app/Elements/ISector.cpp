@@ -9,6 +9,10 @@ namespace trview
     bool ISector::make_ceiling = true;
     bool ISector::make_ceiling_steps = true;
     bool ISector::make_outsides = true;
+    bool ISector::make_ceiling_steps_north = true;
+    bool ISector::make_ceiling_steps_east = true;
+    bool ISector::make_ceiling_steps_south = true;
+    bool ISector::make_ceiling_steps_west = true;
 
     ISector::~ISector()
     {

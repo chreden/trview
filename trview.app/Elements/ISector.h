@@ -136,6 +136,10 @@ namespace trview
         static bool make_floor;
         static bool make_ceiling;
         static bool make_ceiling_steps;
+        static bool make_ceiling_steps_north;
+        static bool make_ceiling_steps_east;
+        static bool make_ceiling_steps_south;
+        static bool make_ceiling_steps_west;
         static bool make_outsides;
     };
 

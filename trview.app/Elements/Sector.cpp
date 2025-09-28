@@ -11,7 +11,7 @@ namespace trview
 {
     namespace
     {
-        void add_quad_remote(const ISector::Portal& self, const ISector::Portal& target, ISector::Quad quad, SectorFlag remote_filter)
+        void add_quad_remote(const ISector::Portal& self, const ISector::Portal& target, ISector::Quad quad, SectorFlag remote_filter, const Vector3& away)
         {
             if (target.is_portal() && target.target)
             {
@@ -56,11 +56,23 @@ namespace trview
             }
 
             auto triangles = quad.triangles();
-            for (auto& triangle : triangles)
+            if (triangles[0].normal == away)
             {
-                triangle.type = (target.flags() & ~(SectorFlag::Death | SectorFlag::MonkeySwing)) & remote_filter;
-                self.direct->add_triangle(self, triangle, {});
+                for (auto& triangle : triangles)
+                {
+                    const auto flag = target.target ? target.target->flags() : target.direct->flags();
+                    triangle.type = (flag & ~(SectorFlag::Death | SectorFlag::MonkeySwing)) & remote_filter;
+                    target.direct->add_triangle(self, triangle, {});
+                }
             }
+            else
+            {
+                for (auto& triangle : triangles)
+                {
+                    self.direct->add_triangle(self, triangle, {});
+                }
+            }
+            
         }
     }
 
@@ -756,24 +768,24 @@ namespace trview
         }
 
         const SectorFlag wall_flags = _flags & ~(SectorFlag::Death | SectorFlag::MonkeySwing);
-        if (north && (north.is_portal() || !north.is_wall()) && (ceiling(Corner::NW) != north.ceiling(Corner::SW) || ceiling(Corner::NE) != north.ceiling(Corner::SE)))
+        if (ISector::make_ceiling_steps_north && north && (north.is_portal() || !north.is_wall()) && (ceiling(Corner::NW) != north.ceiling(Corner::SW) || ceiling(Corner::NE) != north.ceiling(Corner::SE)))
         {
-            add_quad_remote(self, north, Quad(ceiling(Corner::NW), north.ceiling(Corner::SE), north.ceiling(Corner::SW), ceiling(Corner::NE), wall_flags & (~SectorFlag::Climbable | SectorFlag::ClimbableNorth), _room), (~SectorFlag::Climbable | SectorFlag::ClimbableSouth));
+            add_quad_remote(self, north, Quad{ ceiling(Corner::NW), north.ceiling(Corner::SE), north.ceiling(Corner::SW), ceiling(Corner::NE), wall_flags & (~SectorFlag::Climbable | SectorFlag::ClimbableNorth), _room }, (~SectorFlag::Climbable | SectorFlag::ClimbableSouth), Vector3::Backward);
         }
 
-        if (south && (south.is_portal() || !south.is_wall()) && (ceiling(Corner::SW) != south.ceiling(Corner::NW) || ceiling(Corner::SE) != south.ceiling(Corner::NE)))
+        if (ISector::make_ceiling_steps_south && south && (south.is_portal() || !south.is_wall()) && (ceiling(Corner::SW) != south.ceiling(Corner::NW) || ceiling(Corner::SE) != south.ceiling(Corner::NE)))
         {
-            add_quad_remote(self, south, Quad(south.ceiling(Corner::NW), ceiling(Corner::SE), ceiling(Corner::SW), south.ceiling(Corner::NE), wall_flags & (~SectorFlag::Climbable | SectorFlag::ClimbableSouth), _room), (~SectorFlag::Climbable | SectorFlag::ClimbableNorth));
+            add_quad_remote(self, south, Quad{ south.ceiling(Corner::NW), ceiling(Corner::SE), ceiling(Corner::SW), south.ceiling(Corner::NE), wall_flags & (~SectorFlag::Climbable | SectorFlag::ClimbableSouth), _room }, (~SectorFlag::Climbable | SectorFlag::ClimbableNorth), Vector3::Forward);
         }
 
-        if (east && (east.is_portal() || !east.is_wall()) && (ceiling(Corner::NE) != east.ceiling(Corner::NW) || ceiling(Corner::SE) != east.ceiling(Corner::SW)))
+        if (ISector::make_ceiling_steps_east && east && (east.is_portal() || !east.is_wall()) && (ceiling(Corner::NE) != east.ceiling(Corner::NW) || ceiling(Corner::SE) != east.ceiling(Corner::SW)))
         {
-            add_quad_remote(self, east, Quad(east.ceiling(Corner::SW), ceiling(Corner::NE), ceiling(Corner::SE), east.ceiling(Corner::NW), wall_flags & (~SectorFlag::Climbable | SectorFlag::ClimbableEast), _room), (~SectorFlag::Climbable | SectorFlag::ClimbableWest));
+            add_quad_remote(self, east, Quad{ east.ceiling(Corner::SW), ceiling(Corner::NE), ceiling(Corner::SE), east.ceiling(Corner::NW), wall_flags & (~SectorFlag::Climbable | SectorFlag::ClimbableEast), _room }, (~SectorFlag::Climbable | SectorFlag::ClimbableWest), Vector3::Right);
         }
 
-        if (west && (west.is_portal() || !west.is_wall()) && (ceiling(Corner::NW) != west.ceiling(Corner::NE) || ceiling(Corner::SW) != west.ceiling(Corner::SE)))
+        if (ISector::make_ceiling_steps_west && west && (west.is_portal() || !west.is_wall()) && (ceiling(Corner::NW) != west.ceiling(Corner::NE) || ceiling(Corner::SW) != west.ceiling(Corner::SE)))
         {
-            add_quad_remote(self, west, Quad(ceiling(Corner::SW), west.ceiling(Corner::NE), west.ceiling(Corner::SE), ceiling(Corner::NW), wall_flags & (~SectorFlag::Climbable | SectorFlag::ClimbableWest), _room), (~SectorFlag::Climbable | SectorFlag::ClimbableEast));
+            add_quad_remote(self, west, Quad{ ceiling(Corner::SW), west.ceiling(Corner::NE), west.ceiling(Corner::SE), ceiling(Corner::NW), wall_flags & (~SectorFlag::Climbable | SectorFlag::ClimbableWest), _room }, (~SectorFlag::Climbable | SectorFlag::ClimbableEast), Vector3::Left);
         }
     }
 

@@ -569,10 +569,31 @@ namespace trview
                 reload();
             }
 
+            if (ImGui::Checkbox("Ceiling Steps North", &ISector::make_ceiling_steps_north))
+            {
+                reload();
+            }
+
+            if (ImGui::Checkbox("Ceiling Steps East", &ISector::make_ceiling_steps_east))
+            {
+                reload();
+            }
+
+            if (ImGui::Checkbox("Ceiling Steps South", &ISector::make_ceiling_steps_south))
+            {
+                reload();
+            }
+
+            if (ImGui::Checkbox("Ceiling West", &ISector::make_ceiling_steps_west))
+            {
+                reload();
+            }
+
             if (ImGui::Checkbox("Outside", &ISector::make_outsides))
             {
                 reload();
             }
+
             ImGui::End();
         }
 
