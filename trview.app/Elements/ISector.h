@@ -131,20 +131,6 @@ namespace trview
 
         virtual TriangulationDirection ceiling_triangulation() const = 0;
         virtual uint32_t number() const = 0;
-
-        // Temporary debug settings:
-        static bool make_floor;
-        static bool make_ceiling;
-        static bool make_ceiling_steps;
-        static bool make_ceiling_steps_north;
-        static bool make_ceiling_steps_east;
-        static bool make_ceiling_steps_south;
-        static bool make_ceiling_steps_west;
-        static bool make_outsides;
-        static bool make_outsides_north;
-        static bool make_outsides_east;
-        static bool make_outsides_south;
-        static bool make_outsides_west;
     };
 
     bool is_no_space(SectorFlag flags);
