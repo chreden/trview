@@ -42,7 +42,8 @@ namespace trview
                             {
                                 const auto alternate_target_portal = alternate_room->sector_portal(target.target->x(), target.target->z(), target.target->x(), target.target->z());
                                 quad.room = alternate_room->number();
-                                quad.type = (alternate_target_portal.direct->flags() & ~(SectorFlag::Death | SectorFlag::MonkeySwing)) & remote_filter;
+                                const auto flag = alternate_target_portal.target ? alternate_target_portal.target->flags() : alternate_target_portal.direct->flags();
+                                quad.type = (flag & ~(SectorFlag::Death | SectorFlag::MonkeySwing)) & remote_filter;
                                 for (const auto& triangle : quad.triangles())
                                 {
                                     alternate_target_portal.direct->add_triangle(alternate_target_portal, triangle, {});
@@ -485,15 +486,6 @@ namespace trview
     bool Sector::is_ceiling() const
     {
         return _room_above == 0xff && !is_wall() && !is_portal();
-    }
-
-    namespace
-    {
-        Vector3 portal_offset(const trlevel::PlatformAndVersion& platform_and_version, const RoomInfo& info)
-        {
-            const float offset_y = platform_and_version.platform == trlevel::Platform::PSX ? static_cast<float>(info.yTop) : 0.0f;
-            return Vector3{ static_cast<float>(info.x), offset_y, static_cast<float>(info.z) };
-        }
     }
 
     void Sector::generate_triangles()
