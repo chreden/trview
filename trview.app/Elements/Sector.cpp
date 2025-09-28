@@ -521,25 +521,10 @@ namespace trview
             return;
         }
 
-        if (ISector::make_floor)
-        {
-            generate_floor();
-        }
-
-        if (ISector::make_ceiling)
-        {
-            generate_ceiling();
-        }
-
-        if (ISector::make_ceiling_steps)
-        {
-            generate_ceiling_steps(self, north, east, south, west);
-        }
-
-        if (ISector::make_outsides)
-        {
-            generate_outsides(self, north, east, south, west);
-        }
+        generate_floor();
+        generate_ceiling();
+        generate_ceiling_steps(self, north, east, south, west);
+        generate_outsides(self, north, east, south, west);
     }
 
     void Sector::add_triangle(const ISector::Portal& portal, const Triangle& triangle, std::unordered_set<uint32_t> visited_rooms)
@@ -767,22 +752,22 @@ namespace trview
         }
 
         const SectorFlag wall_flags = _flags & ~(SectorFlag::Death | SectorFlag::MonkeySwing);
-        if (ISector::make_ceiling_steps_north && north && (north.is_portal() || !north.is_wall()) && (ceiling(Corner::NW) != north.ceiling(Corner::SW) || ceiling(Corner::NE) != north.ceiling(Corner::SE)))
+        if (north && (north.is_portal() || !north.is_wall()) && (ceiling(Corner::NW) != north.ceiling(Corner::SW) || ceiling(Corner::NE) != north.ceiling(Corner::SE)))
         {
             add_quad_remote(self, north, Quad{ ceiling(Corner::NW), north.ceiling(Corner::SE), north.ceiling(Corner::SW), ceiling(Corner::NE), wall_flags & (~SectorFlag::Climbable | SectorFlag::ClimbableNorth), _room }, (~SectorFlag::Climbable | SectorFlag::ClimbableSouth), Vector3::Backward);
         }
 
-        if (ISector::make_ceiling_steps_south && south && (south.is_portal() || !south.is_wall()) && (ceiling(Corner::SW) != south.ceiling(Corner::NW) || ceiling(Corner::SE) != south.ceiling(Corner::NE)))
+        if (south && (south.is_portal() || !south.is_wall()) && (ceiling(Corner::SW) != south.ceiling(Corner::NW) || ceiling(Corner::SE) != south.ceiling(Corner::NE)))
         {
             add_quad_remote(self, south, Quad{ south.ceiling(Corner::NW), ceiling(Corner::SE), ceiling(Corner::SW), south.ceiling(Corner::NE), wall_flags & (~SectorFlag::Climbable | SectorFlag::ClimbableSouth), _room }, (~SectorFlag::Climbable | SectorFlag::ClimbableNorth), Vector3::Forward);
         }
 
-        if (ISector::make_ceiling_steps_east && east && (east.is_portal() || !east.is_wall()) && (ceiling(Corner::NE) != east.ceiling(Corner::NW) || ceiling(Corner::SE) != east.ceiling(Corner::SW)))
+        if (east && (east.is_portal() || !east.is_wall()) && (ceiling(Corner::NE) != east.ceiling(Corner::NW) || ceiling(Corner::SE) != east.ceiling(Corner::SW)))
         {
             add_quad_remote(self, east, Quad{ east.ceiling(Corner::SW), ceiling(Corner::NE), ceiling(Corner::SE), east.ceiling(Corner::NW), wall_flags & (~SectorFlag::Climbable | SectorFlag::ClimbableEast), _room }, (~SectorFlag::Climbable | SectorFlag::ClimbableWest), Vector3::Right);
         }
 
-        if (ISector::make_ceiling_steps_west && west && (west.is_portal() || !west.is_wall()) && (ceiling(Corner::NW) != west.ceiling(Corner::NE) || ceiling(Corner::SW) != west.ceiling(Corner::SE)))
+        if (west && (west.is_portal() || !west.is_wall()) && (ceiling(Corner::NW) != west.ceiling(Corner::NE) || ceiling(Corner::SW) != west.ceiling(Corner::SE)))
         {
             add_quad_remote(self, west, Quad{ ceiling(Corner::SW), west.ceiling(Corner::NE), west.ceiling(Corner::SE), ceiling(Corner::NW), wall_flags & (~SectorFlag::Climbable | SectorFlag::ClimbableWest), _room }, (~SectorFlag::Climbable | SectorFlag::ClimbableEast), Vector3::Left);
         }
@@ -815,7 +800,7 @@ namespace trview
         }
         else
         {
-            if (ISector::make_outsides_north && north && (north.is_portal() || !has_flag(north.flags(), SectorFlag::Wall)))
+            if (north && (north.is_portal() || !has_flag(north.flags(), SectorFlag::Wall)))
             {
                 if (north.is_portal() && !north.target)
                 {
@@ -839,7 +824,7 @@ namespace trview
                 }
             }
 
-            if (ISector::make_outsides_south && south && (south.is_portal() || !has_flag(south.flags(), SectorFlag::Wall)))
+            if (south && (south.is_portal() || !has_flag(south.flags(), SectorFlag::Wall)))
             {
                 if (south.is_portal() && !south.target)
                 {
@@ -863,7 +848,7 @@ namespace trview
                 }
             }
 
-            if (ISector::make_outsides_east && east && (east.is_portal() || !has_flag(east.flags(), SectorFlag::Wall)))
+            if (east && (east.is_portal() || !has_flag(east.flags(), SectorFlag::Wall)))
             {
                 if (east.is_portal() && !east.target)
                 {
@@ -887,7 +872,7 @@ namespace trview
                 }
             }
 
-            if (ISector::make_outsides_west && west && (west.is_portal() || !has_flag(west.flags(), SectorFlag::Wall)))
+            if (west && (west.is_portal() || !has_flag(west.flags(), SectorFlag::Wall)))
             {
                 if (west.is_portal() && !west.target)
                 {
