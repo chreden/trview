@@ -329,7 +329,6 @@ namespace trview
         virtual std::vector<std::weak_ptr<IStaticMesh>> static_meshes() const = 0;
         virtual void update(float delta) = 0;
         virtual uint16_t water_scheme() const = 0;
-        virtual std::vector<trlevel::tr_room_portal> portals() const = 0;
     };
 
     /// <summary>

@@ -35,43 +35,6 @@ namespace trview
             return (x + z) % 2 ? Unmatched_Colour : Unmatched_Colour + Color(0, 0.05f, 0.05f);
         }
 
-        Vector3 portal_offset(const trlevel::PlatformAndVersion& platform_and_version, const RoomInfo& info)
-        {
-            const float offset_y = platform_and_version.platform == trlevel::Platform::PSX ? static_cast<float>(info.yTop) : 0.0f;
-            return Vector3{ static_cast<float>(info.x), offset_y, static_cast<float>(info.z) };
-        }
-
-        Ray ray_for_sector(ISector& sector, Vector3 offset, int x1, int z1, int x2, int z2)
-        {
-            const auto room = sector.room().lock();
-            if (!room)
-            {
-                return {};
-            }
-            const auto info = room->info();
-
-            // Try and be at floor level (if there is one).
-            // TODO: Room offset is still not right.
-            const auto ne_corner =
-                sector.is_floor() ? (sector.corner(ISector::Corner::NE).y * trlevel::Scale) :
-                info.yBottom;
-            Vector3 source_position = Vector3(static_cast<float>(x1 * 1024 + 512), static_cast<float>(ne_corner - 500), static_cast<float>(z1 * 1024 + 512)) + offset;
-            Vector3 direction{ static_cast<float>(x2 - x1), 0, static_cast<float>(z2 - z1) };
-            return Ray(source_position, direction);
-        }
-
-        DirectX::BoundingBox box_for_portal(trlevel::tr_room_portal portal, const Vector3& offset)
-        {
-            Vector3 vertices[4];
-            for (auto i = 0; i < 4; ++i)
-            {
-                vertices[i] = Vector3(portal.vertices[i].x, portal.vertices[i].y, portal.vertices[i].z) + offset;
-            }
-            DirectX::BoundingBox box;
-            DirectX::BoundingBox::CreateFromPoints(box, 4, vertices, sizeof(Vector3));
-            return box;
-        }
-
         // Follow portals until we hit a non portal sector
         void follow_portal(ISector::Portal& portal, const std::shared_ptr<ILevel>& level, const IRoom& room, uint16_t target_room, int x, int z)
         {
@@ -115,8 +78,7 @@ namespace trview
         _ambient_intensity_1(room.ambient_intensity_1),
         _ambient_intensity_2(room.ambient_intensity_2),
         _light_mode(room.light_mode),
-        _water_scheme(room.water_scheme),
-        _portals(room.portals)
+        _water_scheme(room.water_scheme)
     {
         _ambient.a = 1.0f;
 
@@ -464,14 +426,12 @@ namespace trview
     void Room::generate_adjacency()
     {
         _neighbours.clear(); 
-
         std::for_each(_sectors.begin(), _sectors.end(),
             [&] (const auto& sector)
         {
             const std::set<std::uint16_t> n = sector->neighbours(); 
             _neighbours.insert(n.begin(), n.end());
         });
-        _neighbours.insert_range(_portals | std::views::transform([](auto&& p) { return p.adjoining_room; }));
     }
 
     void Room::add_entity(const std::weak_ptr<IItem>& entity)
@@ -1281,11 +1241,6 @@ namespace trview
     uint16_t Room::water_scheme() const
     {
         return _water_scheme;
-    }
-
-    std::vector<trlevel::tr_room_portal> Room::portals() const
-    {
-        return _portals;
     }
 
     std::shared_ptr<ISector> sector_from_point(const IRoom& room, const Vector3& point)
