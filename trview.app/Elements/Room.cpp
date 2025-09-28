@@ -1129,9 +1129,6 @@ namespace trview
             {
                 const auto target_room_box = target_room->bounding_box();
                 const float top = box.Center.y - box.Extents.y;
-
-                // TODO: Function for getting sector in other room.
-                // TODO: Check more than just the NE corner.
                 const auto diff = (position() - target_room->position()) + Vector3(static_cast<float>(x2), 0, static_cast<float>(z2));
                 const int other_id = static_cast<int>(diff.x * target_room->num_z_sectors() + diff.z);
                 const auto target_sectors = target_room->sectors();
